@@ -26,7 +26,7 @@ on `S ∪ S̄` and `δ = ȷκκ̄`. Then this coefficient vanishes at all points
   all others by 1.
 * `New.Exchange.StraightPoint`, `New.Exchange.exists_straightPoint`: points whose lattice splits
   along the two isotropic lines, and the straightening of a point by singularity.
-* `New.Exchange.centreCoeff_eq_zero_of_unimodular`: the vanishing theorem.
+* `New.Exchange.centerCoeff_eq_zero_of_unimodular`: the vanishing theorem.
 
 Notions from other files:
 * `New.Space.Splitting`: a decomposition of a hermitian space into two dual isotropic frames k, l
@@ -52,7 +52,7 @@ Notions from other files:
 Known result: Singular forms are governed by their coefficients at unimodular indices. Here the
 setting is adelic, unitary and not holomorphic, and singularity comes from invariance under shears
 at a nonempty set of places. The result here is the vanishing criterion
-`centreCoeff_eq_zero_of_unimodular`, proved by choosing a point at which the denominator of the
+`centerCoeff_eq_zero_of_unimodular`, proved by choosing a point at which the denominator of the
 inverse determinant of the index is least. Source: E. Freitag, Singular Modular Forms and Theta
 Relations, Lecture Notes in Math. 1487, Springer 1991; see also J.-S. Li, Automorphic forms with
 degenerate Fourier coefficients, Amer. J. Math. 119 (1997).
@@ -267,7 +267,7 @@ lemma closurePart_radicalElement (c : Matrix n₁ p (𝔸 E)) (z : Matrix p p (�
 `1 + D.kAdelic * (M - Mᴴ) * D.lCoord`, so only `M - Mᴴ` matters) of the centre of the unipotent
 radical is the element whose parameter is multiplied by the adele that is 1 on S ∪ S̄ and 0
 elsewhere. -/
-lemma closurePart_radicalCentre (M : Matrix p p (𝔸 E)) :
+lemma closurePart_radicalCenter (M : Matrix p p (𝔸 E)) :
     closurePart S (D.radicalCenter M) = D.radicalCenter (idemAdele S.conjClosure • M) := by
   apply ext_adeleMatrix
   simp only [adeleMatrix_closurePart, adeleMatrix_radicalCenter, conjTranspose_smul,
@@ -291,7 +291,7 @@ isotropic frame of `D` by `c`, and let `D.radicalCenter M`, whose matrix is
 translation of `X` by the part on `S ∪ S̄` of this element divides the Fourier coefficient at `T` by
 the value of the character `selfDualAddChar E : z ↦ ψ_f(ȷαᾱz)` of the finite adeles at the part on
 `S ∪ S̄` of `tr (M * siegelBracket T c)`. Here `siegelBracket T c = δ⁻¹ cᴴ T c`. -/
-lemma centreCoeff_mul_radicalCentre (hf : IsAutFunction W f) {T : Matrix p p E} {X g : G E s}
+lemma centerCoeff_mul_radicalCenter (hf : IsAutFunction W f) {T : Matrix p p E} {X g : G E s}
     {c : Matrix p p (𝔸 E)} (hX : closurePart S X = closurePart S g) (hg : D.ActsOnFrame g c)
     (M : Matrix p p (𝔸 E)) :
     selfDualAddChar E (idemAdele S.conjClosure * (M * siegelBracket T c).trace).2 *
@@ -305,7 +305,7 @@ lemma centreCoeff_mul_radicalCentre (hf : IsAutFunction W f) {T : Matrix p p E} 
   have h_comm : X * closurePart S (D.radicalCenter M) =
       closurePart S (D.radicalCenter (c * M * cᴴ)) * X := ext_adeleMatrix <| by
     have h_mat := congrArg adeleMatrix h_part
-    simp only [adeleMatrix_mul, closurePart_radicalCentre, adeleMatrix_closurePart,
+    simp only [adeleMatrix_mul, closurePart_radicalCenter, adeleMatrix_closurePart,
       adeleMatrix_radicalCenter, conjTranspose_smul, star_idemAdele_conjClosure, Matrix.mul_sub,
       Matrix.sub_mul, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, smul_add, smul_sub,
       sub_smul, smul_smul, Matrix.mul_smul, smul_mul, Matrix.mul_one, Matrix.one_mul, one_smul,
@@ -315,8 +315,8 @@ lemma centreCoeff_mul_radicalCentre (hf : IsAutFunction W f) {T : Matrix p p E} 
       stdAddChar E (T.map toAdele * idemAdele S.conjClosure • (c * M * cᴴ)).trace := by
     rw [← stdAddChar_idemAdele_mul]
     simp [M.trace_mul_cycle', siegelBracket, Matrix.mul_assoc]
-  rw [h_comm, h_char, closurePart_radicalCentre]
-  exact D.centreCoeff_radicalCentre_mul hf _ X
+  rw [h_comm, h_char, closurePart_radicalCenter]
+  exact D.centerCoeff_radicalCenter_mul hf _ X
 
 /-! ### The index of a lattice in its dual -/
 
@@ -462,7 +462,7 @@ lemma invDifferentIdele_mul_siegelBracket_apply {γ : Matrix p p (𝔸 E)} (hγ 
 /-- Let `f` be right invariant under the integral points supported on `S ∪ S̄`, and let `k` be
 integral at the finite places. Right translation by the part of `k` on `S ∪ S̄` does not change the
 Fourier coefficients of `f` along `D`. -/
-lemma centreCoeff_mul_closurePart (hK : HasLevel f (stdLevel E n ⊓ supportedOn n S)) (X : G E s)
+lemma centerCoeff_mul_closurePart (hK : HasLevel f (stdLevel E n ⊓ supportedOn n S)) (X : G E s)
     {k : G E s} (hk : k.2 ∈ stdLevel E n) :
     D.centerCoeff T f (X * closurePart S k) = D.centerCoeff T f X := by
   simp [centerCoeff, ← mul_assoc, closurePart, Prod.map, hK, componentOn_mem_stdLevel, hk,
@@ -507,8 +507,8 @@ lemma isIntMatrix_siegelBracket {T : Matrix p p E} {s₂ : n₂ → ℤˣ}
   have h_centre : (D.radicalCenter M).2 ∈ stdLevel E n := mem_stdLevel.2 h_mat
   have h_char : selfDualAddChar E (idemAdele S.conjClosure * (M * siegelBracket T γ).trace).2 *
       D.centerCoeff T f (X * closurePart S (D.radicalCenter M)) = D.centerCoeff T f X :=
-    centreCoeff_mul_radicalCentre hf hX hu M
-  rw [centreCoeff_mul_closurePart hK X h_centre, mul_eq_right₀ h_ne] at h_char
+    centerCoeff_mul_radicalCenter hf hX hu M
+  rw [centerCoeff_mul_closurePart hK X h_centre, mul_eq_right₀ h_ne] at h_char
   have h_trace : (M * siegelBracket T γ).trace = siegelBracket T γ i j * (0, a) := by
     simp [M, trace_single_mul, mul_comm]
   rw [h_trace] at h_char
@@ -666,12 +666,12 @@ lemma isUnit_det (hD : D.kAdelic = A.iAdelic * B.kAdelic) : IsUnit P.γ.det :=
 function φ⁺ (`shiftedMean`) of a straight point is not zero, then the coefficient of `f` along `D`
 at `T` is not zero at some point that agrees on `S ∪ S̄` with one acting on the frame of `D` by `γ`
 and fixes this frame elsewhere. -/
-lemma exists_centreCoeff_ne_zero (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma exists_centerCoeff_ne_zero (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (h_ne : A.shiftedMean B D T f P.point ≠ 0) :
     ∃ Y v : G E s, AgreesOnClosure S D Y v ∧ D.ActsOnFrame v P.γ ∧ D.centerCoeff T f Y ≠ 0 := by
   obtain ⟨a, ha⟩ : ∃ a : Matrix Unit p (𝔸 E),
       A.partialMean B D T f (A.lineShift B a * P.point) ≠ 0 := Function.ne_iff.1 h_ne
-  obtain ⟨b, hb⟩ := Splitting.exists_centreCoeff_ne_zero ha
+  obtain ⟨b, hb⟩ := Splitting.exists_centerCoeff_ne_zero ha
   refine ⟨_, _, (P.agrees.lineShift_mul hD a).lineShift_mul (A := A.symm) hD b, ?_, hb⟩
   have h_plus : D.ActsOnFrame (A.lineShift B a) 1 := actsOnFrame_lineShift_one hD a
   have h_minus : D.ActsOnFrame (A.symm.lineShift B b) 1 :=
@@ -686,7 +686,7 @@ lemma isIntMatrix_siegelBracket (hK : HasLevel f (stdLevel E n ⊓ supportedOn n
     (hf : IsAutFunction W f) [IsBaseAdapted A] [IsBaseAdapted B]
     (hD : D.kAdelic = A.iAdelic * B.kAdelic) (h_ne : A.shiftedMean B D T f P.point ≠ 0) :
     IsIntMatrix (closureIntegers S) (siegelBracket T P.γ) := by
-  obtain ⟨Y, v, hY, hv, hY_ne⟩ := P.exists_centreCoeff_ne_zero hD h_ne
+  obtain ⟨Y, v, hY, hv, hY_ne⟩ := P.exists_centerCoeff_ne_zero hD h_ne
   exact Exchange.isIntMatrix_siegelBracket hK hf hD hY.closurePart_eq hv hY_ne
 
 end StraightPoint
@@ -727,7 +727,7 @@ lemma exists_straightPoint (hK : HasLevel f (stdLevel E n ⊓ supportedOn n S))
     exact partialMean_radicalElement_mul hD hf hU h_shear hXκ.mem_frameStabilizer
       hX'.mem_frameStabilizer
   have h_level : A.partialMean B D T f (X * closurePart S κ) = A.partialMean B D T f X := by
-    simp only [partialMean, ← mul_assoc, centreCoeff_mul_closurePart hK _ hκ]
+    simp only [partialMean, ← mul_assoc, centerCoeff_mul_closurePart hK _ hκ]
   rwa [shiftedMean_apply_zero, h_radical, h_level]
 
 namespace StraightPoint
@@ -871,7 +871,7 @@ at `T` vanishes at the points that act on the frame by `γ` on `S ∪ S̄` and t
 whenever `siegelBracket T γ = δ⁻¹ γᴴ T γ` and a left inverse of it are integral on `S ∪ S̄`
 (`h_unimodular`). Then the coefficient vanishes at all points that fix the frame of `D` off
 `S ∪ S̄`. -/
-theorem centreCoeff_eq_zero_of_unimodular (hK : HasLevel f (stdLevel E n ⊓ supportedOn n S))
+theorem centerCoeff_eq_zero_of_unimodular (hK : HasLevel f (stdLevel E n ⊓ supportedOn n S))
     (hf : IsAutFunction W f)
     {T : Matrix p p E} {s₂ : n₂ → ℤˣ} {W₀ : Space E ((p ⊕ p) ⊕ n₂) (hyperbolicSigns p ⊕ᵥ s₂)}
     {W₂ : Space E n₂ s₂} {U : Set (FinPlace E)}
@@ -893,7 +893,7 @@ theorem centreCoeff_eq_zero_of_unimodular (hK : HasLevel f (stdLevel E n ⊓ sup
   have h_exists : {P : StraightPoint S A B D | A.shiftedMean B D T f P.point ≠ 0}.Nonempty := by
     -- φ⁺ determines the coefficient at `g`, so it is not zero; straighten a shift of `g`
     obtain ⟨a, ha⟩ := Function.ne_iff.1 <|
-      mt (centreCoeff_eq_zero_of_shiftedMean_eq_zero hD hf hT) hg_ne
+      mt (centerCoeff_eq_zero_of_shiftedMean_eq_zero hD hf hT) hg_ne
     obtain ⟨κ, α, β, γ, hκ, h_flag⟩ :=
       exists_mem_stdLevel_actsOnFrame_fromBlocks A B (A.lineShift B a * g)
     obtain ⟨P, -, hP⟩ := exists_straightPoint hK hf hD hU_ne h_shear
@@ -916,7 +916,7 @@ theorem centreCoeff_eq_zero_of_unimodular (hK : HasLevel f (stdLevel E n ⊓ sup
     ⟨P.isIntMatrix_siegelBracket hK hf hD hP, _,
       P.isIntMatrix_inv_siegelBracket hf hD hT hP h_plus h_minus,
       nonsing_inv_mul _ (isUnit_det_siegelBracket hT (P.isUnit_det hD))⟩
-  obtain ⟨Y, v, hY, hv, hY_ne⟩ := P.exists_centreCoeff_ne_zero hD hP
+  obtain ⟨Y, v, hY, hv, hY_ne⟩ := P.exists_centerCoeff_ne_zero hD hP
   exact hY_ne (h_unimodular Y P.γ (hY.actsOnFrame hv) h_prim)
 
 end SingularForms

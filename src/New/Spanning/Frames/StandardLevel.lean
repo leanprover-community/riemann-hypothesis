@@ -263,7 +263,7 @@ lemma IntegralPlace.exists_isIntMatrix_hyperbolicBasis {N : A} (hN : N ∈ P.int
       fromBlocks !![-1, -N * P.element; 0, 1] 0 0 C
   have E_int : IsIntMatrix P.integers E :=
     .mul (by simp [IsIntMatrix, inclMatrix, Matrix.one_apply, ite_mem]) (by
-      simp [C, hc, hN, IsIntMatrix, data_normalised, mul_mem, Matrix.one_apply, ite_mem,
+      simp [C, hc, hN, IsIntMatrix, data_normalized, mul_mem, Matrix.one_apply, ite_mem,
         IsStarStable.star_mem])
   have E_form : Eᴴ * latticeMiddleGram 𝔰 N * E = planeSumGram (hyperbolicGram (Fin m) 1) := by
     have h_ne (i : SplitIndex m ι) : (f i : 𝔰.κ) ≠ 𝔰.k₀ := (f i).prop.symm
@@ -334,7 +334,7 @@ lemma IntegralPlace.flatChart_mem_intVectors {J : Matrix ι ι A} (hJ : IsIntMat
     {t : Aˣ} (ht : t.val ∈ P.integers) (ht_inv : t⁻¹.val ∈ P.integers)
     {w : ι → A} (hw : w ∈ intVectors P.integers ι) :
     flatChart J β ((t, w), a) ∈ intVectors P.integers (Fin 2 ⊕ ι) := by
-  obtain ⟨h_element, -, h_skew_inv, -⟩ := data_normalised (A := A)
+  obtain ⟨h_element, -, h_skew_inv, -⟩ := data_normalized (A := A)
   have h_norm : P.skewUnit⁻¹.val * β - star w ⬝ᵥ J *ᵥ w ∈ P.integers :=
     sub_mem (mul_mem h_skew_inv hβ) (star_dotProduct_mulVec_mem_integers hJ hw hw)
   have h_inv : Ring.inverse (star t.val) ∈ P.integers := by
@@ -369,7 +369,7 @@ lemma IntegralPlace.topEichler_mem_unitaryLevel_one (hT : IsUnimodular P.integer
   have hz : z ∈ intVectors P.integers 𝔰.BesselIndex := single_mem_intVectors _
   have hv : e - z ∈ intVectors P.integers 𝔰.BesselIndex := sub_mem he hz
   have hs : s ∈ P.integers :=
-    sub_mem (star_dotProduct_mulVec_mem_integers hJ hv he) (mul_mem data_normalised.1
+    sub_mem (star_dotProduct_mulVec_mem_integers hJ hv he) (mul_mem data_normalized.1
       (sub_mem (star_dotProduct_mulVec_mem_integers hJ he he)
         (star_dotProduct_mulVec_mem_integers hJ hz hz)))
   have hru : e 𝔰.z • u ∈ intVectors P.integers 𝔰.BesselIndex := fun i ↦ mul_mem (he 𝔰.z) (hu i)
@@ -432,7 +432,7 @@ lemma IntegralPlace.exists_measure_floorGroup_top (hT : IsUnimodular P.integers 
       {a : skewAdjoint A | a.val ∈ P.integers} ⊆ Φ ⁻¹' unitaryLevel P.integers 1 T.splitGram := by
     rintro ⟨⟨_, w⟩, a⟩ ⟨⟨⟨ht, t, ht_inv, rfl⟩, hw⟩, ha⟩
     have hJ : IsIntMatrix P.integers J := by simp [J, IsIntMatrix, Matrix.one_apply, ite_mem]
-    obtain ⟨-, h_skew, -⟩ := data_normalised (A := A)
+    obtain ⟨-, h_skew, -⟩ := data_normalized (A := A)
     have hβ : (β : A) ∈ P.integers := mul_mem h_skew (hT.isIntMatrix _ _)
     have φ_int : φ ((t, w), a) ∈ intVectors P.integers 𝔰.BesselIndex :=
       (isIntMatrix_floorBasis hB _).mulVec (flatChart_mem_intVectors hJ hβ ha ht ht_inv hw)
@@ -448,7 +448,7 @@ lemma IntegralPlace.exists_measure_floorGroup_top (hT : IsUnimodular P.integers 
     filter_upwards [quasiMeasurePreserving_fst.ae (quasiMeasurePreserving_fst.ae ae_isUnit)]
       with ⟨⟨t, w⟩, a⟩ ht using Φ_orbit t w a ht
   · grw [← le_map_apply Φ_meas.aemeasurable, ← Φ_box]
-    simp [volume_eq_prod, isOpen_isCompact_volume_intVectors, data_normalised]
+    simp [volume_eq_prod, isOpen_isCompact_volume_intVectors, data_normalized]
 
 
 /-- At the finite place `P`, let `N` be in `P.integers` with `star N = N`, let `g` be a unit of `A`
@@ -728,10 +728,10 @@ def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
   two_le_loss := two_le_two_div_modulus hα
   loss_ne_top := by simp [div_eq_top]
   pairs_le := h.zeta_le_and_le_card.2.1
-  one_le_kernelBound := by simp [data_normalised]
+  one_le_kernelBound := by simp [data_normalized]
   levelUnit_mem_ofSize := by simp [hα, h.integral_data, mul_mem]
   hasMatrixSize_basisMatrix := by simp [hα, h.integral_data.2.1 _, Size.HasMatrixSize, mul_mem]
-  traceOne_div_mem_ofSize := by simp [hα, data_normalised, mul_mem]
+  traceOne_div_mem_ofSize := by simp [hα, data_normalized, mul_mem]
   hasMatrixSize_boxSet := by
           simp_all [h.volume_le_and_boxSet_closePairs_positions_eq, unitaryLevel, mem_intGL,
             -Sum.forall, Size.HasMatrixSize, mul_mem]
@@ -788,7 +788,7 @@ lemma exists_mul_heisenbergElem_mem_unitaryLevel_iff
   obtain ⟨hg_mem, hg_star⟩ := hg
   have h_form (hw_int : w ∈ intVectors integers 𝔰.BesselIndex) :
       P.element * g * star w ⬝ᵥ T.splitGram *ᵥ w ∈ integers :=
-    mul_mem (mul_mem data_normalised.1 hg_mem)
+    mul_mem (mul_mem data_normalized.1 hg_mem)
       (h.star_dotProduct_splitGram_mulVec_mem hw_int hw_int)
   rw [h_int]
   constructor

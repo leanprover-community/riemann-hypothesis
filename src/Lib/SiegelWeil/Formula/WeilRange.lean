@@ -35,7 +35,7 @@ in the proof of the formula.
   `κ` in a compact set.
 * `New.SiegelWeil.exists_summable_zeroTerm_bound`: in Weil's range the zero terms
   `New.SiegelWeil.Lagrangian.zeroTerm`, composed with the normalised torus action
-  `New.SiegelWeil.normalisedTorus` (`splitWeil S T`, the Weil representation on `𝒮 (S.hom T)`, of
+  `New.SiegelWeil.normalizedTorus` (`splitWeil S T`, the Weil representation on `𝒮 (S.hom T)`, of
   `a_x` scaled by `2 ^ (-d * card m * ∑ i, x i)`, with `d` the number of infinite places), are
   bounded by one summable function of the Lagrangian.
 * `New.SiegelWeil.siegel_weil`: the mean of theta over `[U(T)]` is the sum of the zero terms.
@@ -298,9 +298,9 @@ lemma lagrangian_isometrySplitting_comp_eq (L : Lagrangian S) {γ δ : U S.J} {y
 open Pointwise in
 /-- Let `P` be a complete splitting of `S` into `p` hyperbolic planes and let `T` have rank greater
 than `2 p`. There is a summable function `c` on the Lagrangians `L` of `S` such that, for every
-`x : p → ℕ`, the operator norm of `Lagrangian.zeroTerm T L` composed with `normalisedTorus T P x` is
+`x : p → ℕ`, the operator norm of `Lagrangian.zeroTerm T L` composed with `normalizedTorus T P x` is
 at most `c L`. Here the zero term along `L` sends `f` to its value at `0` in the Schrödinger model
-of a splitting whose frame `k` spans `L`, and `normalisedTorus T P x` is `splitWeil S T` of the Levi
+of a splitting whose frame `k` spans `L`, and `normalizedTorus T P x` is `splitWeil S T` of the Levi
 element `diag (2 ^ x i)` (entries `1` at the finite places) scaled by
 `2 ^ (-d * rank T * ∑ i, x i)`, with `d` the number of infinite places. At `x = 0` this is the
 convergence of the Eisenstein series in the Siegel–Weil formula. -/
@@ -308,7 +308,7 @@ lemma exists_summable_zeroTerm_bound (hm : 2 * Fintype.card p < Fintype.card m) 
     ∃ c : Lagrangian S → ℝ,
       Summable c ∧
       ∀ (x : p → ℕ) (L : Lagrangian S),
-        ‖Lagrangian.zeroTerm T L ∘L normalisedTorus T P x‖ ≤ c L := by
+        ‖Lagrangian.zeroTerm T L ∘L normalizedTorus T P x‖ ≤ c L := by
   -- Put each `L` in the normal form `exists_compact_parabolic_normal_form` at `g = 1`, with torus
   -- exponents `d + t L`, `t L ∈ ℕ^p`. Then the term of `L` is `O(2 ^ (-f ∑ t L i * card m))` with
   -- `f = Core.numInfPlaces E`, while only `O(2 ^ (2 f ∑ t i * card p))` Lagrangians have a given
@@ -339,7 +339,7 @@ lemma exists_summable_zeroTerm_bound (hm : 2 * Fintype.card p < Fintype.card m) 
   have hK : IsCompact K := (hN.image_of_continuous _).mul (hΩ.image_of_continuous _)
   -- Three uniform bounds: on the operators attached to points of `K`, on rational points of
   -- `K⁻¹ * K`, and on rational hermitian matrices in a scaled compact set.
-  obtain ⟨R, hR⟩ := exists_zeroTerm_normalisedTorus_le T P P P.kCoord (by simp) hK
+  obtain ⟨R, hR⟩ := exists_zeroTerm_normalizedTorus_le T P P P.kCoord (by simp) hK
   obtain ⟨F, hF⟩ : ∃ F : ℕ, (S.ratEmbed ⁻¹' (K⁻¹ * K)).encard = F :=
     (tendsto_cofinite_cocompact_iff.1 (tendsto_coe_cofinite_of_isDiscrete S.ratEmbed_injective
       ⟨S.discreteTopology_Gamma⟩) _ (hK.inv.mul hK)).exists_encard_eq_coe
@@ -402,7 +402,7 @@ lemma exists_summable_zeroTerm_bound (hm : 2 * Fintype.card p < Fintype.card m) 
       norm_zeroTerm_parabolic_mul (actsOnFrame_levi ..), h_term]
     simp
   have h_bound : √(ideleAbs (diagT L).det) ^ card m *
-      ‖L.zeroTerm T (normalisedTorus T P x f)‖ ≤ R * ‖f‖ := by
+      ‖L.zeroTerm T (normalizedTorus T P x f)‖ ≤ R * ‖f‖ := by
     simpa [← h_norm] using hR _ (h_inK L) x x rfl f
   simpa [bound, diagT, field, mul_comm, ideleAbs_det_dyadicDiag_natCast,
     Real.sqrt_sq_eq_abs] using h_bound
@@ -414,10 +414,10 @@ end SiegelSets
 /-!
 ## The Siegel–Weil formula in Weil's range
 
-`New.SiegelWeil.normalisedTorus T P x`, for `x : p → ℕ`, is the normalised action of the torus
+`New.SiegelWeil.normalizedTorus T P x`, for `x : p → ℕ`, is the normalised action of the torus
 element `diag (2 ^ x i)` (at the infinite places) of the Levi subgroup of `P`. Let `ℓ` be the
 difference of the two sides of `New.SiegelWeil.siegel_weil`. Splitting off one isotropic line and
-using induction on the rank of `S`, `ℓ ∘ normalisedTorus T P x` tends to `0` as any `x ι → ∞`.
+using induction on the rank of `S`, `ℓ ∘ normalizedTorus T P x` tends to `0` as any `x ι → ∞`.
 Siegel sets turn this into a bound in the cusp, from which
 `New.SiegelWeil.eq_zero_of_le_tsum_zeroTerm` gives `ℓ = 0`.
 -/
@@ -452,8 +452,8 @@ lemma New.SiegelWeil.lCoord_mul_levi_dyadicDiag {n₁ : Type} [Fintype n₁] [De
 /-- Let `P` be a complete splitting of `S` into `p` planes, let the rank of `T` exceed `2 p`, and
 let `D₁` split off the isotropic line spanned by the column `ι` of `P.k`, with complement `S₁`. As
 `x ι → ∞`, uniformly for `f` in a compact set `C`, the integral over `[U(T)]` of the difference
-between the theta function of the zero term of `normalisedTorus T P x f` along the line and that of
-`normalisedTorus T P x f` tends to `0`. Here `splitWeil` is the Weil representation of the pair of
+between the theta function of the zero term of `normalizedTorus T P x f` along the line and that of
+`normalizedTorus T P x f` tends to `0`. Here `splitWeil` is the Weil representation of the pair of
 unitary groups, `D₁.homSource T` is the splitting that `D₁` gives of the space on which it acts, and
 `T.quotMeasure` is the measure of `[U(T)]`. -/
 lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
@@ -463,11 +463,11 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
     Tendsto
       (fun z : (p → ℕ) × C ↦
         ∫ h : G E t, θ (S₁.hom T)
-            (splitWeil S₁ T (1, h) ((D₁.homSource T).zeroTerm (normalisedTorus T P z.1 z.2))) -
-          θ (S.hom T) (splitWeil S T (1, h) (normalisedTorus T P z.1 z.2)) ∂T.quotMeasure)
+            (splitWeil S₁ T (1, h) ((D₁.homSource T).zeroTerm (normalizedTorus T P z.1 z.2))) -
+          θ (S.hom T) (splitWeil S T (1, h) (normalizedTorus T P z.1 z.2)) ∂T.quotMeasure)
       (atTop.comap fun z : (p → ℕ) × C ↦ z.1 ι) (nhds 0) := by
   -- The zero term is a mean of Heisenberg translates. Moved through the torus element, the
-  -- translations shrink by `2 ^ x ι` at infinity, and `theta_normalisedTorus_le` bounds the error
+  -- translations shrink by `2 ^ x ι` at infinity, and `theta_normalizedTorus_le` bounds the error
   -- by `B h` times the modulus of continuity of the translates on `C`.
   -- `B h` bounds the normalised theta function at `h`, uniformly in the torus element.
   obtain ⟨B, hB_meas, hB_fin, h_theta⟩ :
@@ -475,8 +475,8 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
         Measurable B ∧
         ∫⁻ (h : G E t), B h ∂T.quotMeasure ≠ ⊤ ∧
         ∀ (h : G E t) (x : p → ℕ) (f : 𝒮 (S.hom T)),
-          ‖(S.hom T).θ (splitWeil S T (1, h) (normalisedTorus T P x f))‖ₑ ≤ B h * ‖f‖ₑ :=
-    theta_normalisedTorus_le T P hm
+          ‖(S.hom T).θ (splitWeil S T (1, h) (normalizedTorus T P x f))‖ₑ ≤ B h * ‖f‖ₑ :=
+    theta_normalizedTorus_le T P hm
   obtain ⟨R, hR⟩ : ∃ R : ℝ, ∀ f ∈ C, ‖f‖ ≤ R := hC.isBounded.exists_norm_le
   obtain ⟨Ω, hΩ, h_cover⟩ := IsCovolOneLattice.exists_compact_cover (ratVectors E (m × Unit))
   let translate (h : G E t) (y : m × Unit → 𝔸 E) (f : 𝒮 (S.hom T)) : 𝒮 (S.hom T) :=
@@ -523,7 +523,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
       (D₁.homSource T).zeroTerm (splitWeil S T (1, h) g) := by
     simpa [splitWeil, D₁.card_eq, pow_succ, Prod.mk_one_one] using
       (D₁.homSlice_levi T _ 1 1 1 h 0 g).symm
-  let F : 𝒮 (S.hom T) := splitWeil S T (1, h) (normalisedTorus T P x f)
+  let F : 𝒮 (S.hom T) := splitWeil S T (1, h) (normalizedTorus T P x f)
   rw [h_comm, theta_apply, Splitting.zeroTerm_apply, ← eDist_eq_eNorm_sub]
   -- A mean lies in a closed ball if all values do.
   refine (convex_closedEBall ..).integral_mem isClosed_closedEBall (.of_forall fun q ↦ ?_)
@@ -543,10 +543,10 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
     le_sSup ⟨(c + b, f), ⟨hcb, f.prop⟩, by simp only [hy]⟩
   calc edist (along q.out) (θ _ F)
     _ = edist (along (M • c + q.out)) (θ _ F) := by rw [h_periodic]
-    _ = ‖θ _ (splitWeil S T (1, h) (normalisedTorus T P x (translate h y f - f)))‖ₑ := by
+    _ = ‖θ _ (splitWeil S T (1, h) (normalizedTorus T P x (translate h y f - f)))‖ₑ := by
       -- Commute the translation past `h` and the torus element, using `h_torus`.
       simp only [along, F, translate, y]
-      simp [normalisedTorus, rho_pairWeil, -theta_apply, h_torus, ← mul_sub, ← theta_rho,
+      simp [normalizedTorus, rho_pairWeil, -theta_apply, h_torus, ← mul_sub, ← theta_rho,
         splitWeil, ↓mulVec_smul, kronecker_mulVec_eq_matrixToVec, homSource_kAdelic,
         eDist_eq_eNorm_sub, Matrix.mul_assoc]
     _ ≤ B h * ‖translate h y f - f‖ₑ := h_theta h x _
@@ -554,14 +554,14 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
 
 /-- Let `T` have nonzero rank, and let the Lagrangian `L` of `S` not contain the column `ι` of
 `P.k`, where `P` is a complete splitting `S = l E ^ p ⊕ k E ^ p` with isotropic frame `P.k`. Then
-the zero term along `L` of `normalisedTorus T P x f` tends to `0` as `x ι → ∞`, uniformly for `f` in
-a set `C` of norm at most `R`. Here `normalisedTorus T P x` is the normalised action of the torus
+the zero term along `L` of `normalizedTorus T P x f` tends to `0` as `x ι → ∞`, uniformly for `f` in
+a set `C` of norm at most `R`. Here `normalizedTorus T P x` is the normalised action of the torus
 element `diag (2 ^ x i)`, and the zero term along `L` sends `f` to the mean of `θ (ϱ z f)` over the
 maps `z : S → T` vanishing on `L`, adelic modulo rational. -/
 lemma New.SiegelWeil.tendsto_zeroTerm_of_notMem (hm : card m ≠ 0) {L : Lagrangian S} {ι : p}
     (hL_notMem : P.k.col ι ∉ L.val) {C : Set (𝒮 (S.hom T))} {R : ℝ}
     (h_norm_le : ∀ f ∈ C, ‖f‖ ≤ R) :
-    Tendsto (fun z : (p → ℕ) × C ↦ Lagrangian.zeroTerm T L (normalisedTorus T P z.1 z.2))
+    Tendsto (fun z : (p → ℕ) × C ↦ Lagrangian.zeroTerm T L (normalizedTorus T P z.1 z.2))
       (atTop.comap fun z : (p → ℕ) × C ↦ z.1 ι) (nhds 0) := by
   -- Write `L = k' E^r` and extend `l'* J` from `L` to a rational `Y` that kills column `ι` of `k`.
   obtain ⟨⟨r, P'⟩, rfl⟩ : { P : (r : ℕ) × CompleteSplitting S (Fin r) // P.snd.lagrangian = L } :=
@@ -576,12 +576,12 @@ lemma New.SiegelWeil.tendsto_zeroTerm_of_notMem (hm : card m ≠ 0) {L : Lagrang
     ext_iff_mulVec.mpr fun v ↦ by simpa [← Matrix.mul_assoc] using hY _ ⟨v, rfl⟩
   have h_left_inv : Y.map (toAdele : E → 𝔸 E) * (S.x : Matrix n n (𝔸 E)) * kAdelic P' = 1 := by
     simp [kAdelic, ← Matrix.mul_assoc, ← Matrix.map_mul, hYk]
-  obtain ⟨c, hc⟩ := exists_zeroTerm_normalisedTorus_le T P P' (Y.map toAdele * S.x.val) h_left_inv
+  obtain ⟨c, hc⟩ := exists_zeroTerm_normalizedTorus_le T P P' (Y.map toAdele * S.x.val) h_left_inv
     (isCompact_singleton (x := 1))
   -- Column `ι` of `Y k` vanishes, so the exponent `x ι` may be replaced by `0`.
   have hYkι (i : Fin r) : (Y * P.k) i ι = 0 := congrFun hYι i
   have bound (x : p → ℕ) (f : 𝒮 (S.hom T)) :
-      ‖Lagrangian.zeroTerm T P'.lagrangian (normalisedTorus T P x f)‖ ≤
+      ‖Lagrangian.zeroTerm T P'.lagrangian (normalizedTorus T P x f)‖ ≤
         c * ‖f‖ / ((2 ^ Core.numInfPlaces E) ^ x ι) ^ card m := by
     let u : p → ℕ := indicator {ι}ᶜ x
     -- `Z` applies `Y`, a left inverse of the frame of `P'`, to the columns of the frame of `P`.
@@ -602,17 +602,17 @@ lemma New.SiegelWeil.tendsto_zeroTerm_of_notMem (hm : card m ≠ 0) {L : Lagrang
   exact h_grow.const_div_atTop _
 
 /-- Let `ℓ` be a continuous linear functional on `𝒮 (S.hom T)` that is invariant under the rational
-points of `S`. Suppose that `ℓ (normalisedTorus T P x f)` tends to `0` as any `x ι → ∞`, uniformly
+points of `S`. Suppose that `ℓ (normalizedTorus T P x f)` tends to `0` as any `x ι → ∞`, uniformly
 for `f` in compact sets, and that the zero terms are absolutely summable over the Lagrangians of
 `S`. Then for each `f`, `‖ℓ (ω(g) f)‖` exceeds `∑' L, ‖zeroTerm L (ω(g) vacElem)‖` by at most a
 constant independent of `g`. Here `ω(g)` is `splitWeil S T (g, 1)`, `vacElem` is the vacuum vector
-of `𝒮`, `normalisedTorus T P x` is the normalised action of the torus element `diag (2 ^ x i)`, and
+of `𝒮`, `normalizedTorus T P x` is the normalised action of the torus element `diag (2 ^ x i)`, and
 the zero term along a Lagrangian `L` sends `f` to the mean of `θ (ϱ z f)` over the maps `z : S → T`
 vanishing on `L`, adelic modulo rational. -/
 lemma New.SiegelWeil.bddAbove_norm_sub_tsum_norm_zeroTerm {ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ}
     (h_inv : ∀ (γ : U S.J) (f : 𝒮 (S.hom T)), ℓ (splitWeil S T (S.ratEmbed γ, 1) f) = ℓ f)
     (h_lim : ∀ C : Set (𝒮 (S.hom T)), IsCompact C → ∀ ι : p,
-      Tendsto (fun z : (p → ℕ) × C ↦ ℓ (normalisedTorus T P z.1 z.2))
+      Tendsto (fun z : (p → ℕ) × C ↦ ℓ (normalizedTorus T P z.1 z.2))
         (atTop.comap fun z : (p → ℕ) × C ↦ z.1 ι) (nhds 0))
     (h_summable : ∀ f : 𝒮 (S.hom T),
       Summable fun L : Lagrangian S ↦ ‖Lagrangian.zeroTerm T L f‖)
@@ -632,12 +632,12 @@ lemma New.SiegelWeil.bddAbove_norm_sub_tsum_norm_zeroTerm {ℓ : 𝒮 (S.hom T) 
   have h_vacSize : Continuous fun κ : G E s ↦ (vacSize κ)⁻¹ :=
     .inv₀ (by fun_prop) fun κ ↦ (norm_zeroTerm_vacElem_pos T P κ).ne'
   have hK : IsCompact K := hΩ.image (by fun_prop)
-  let bad : Set (p → ℕ) := {x | ∃ v ∈ K, 1 < ‖ℓ (normalisedTorus T P x v)‖}
+  let bad : Set (p → ℕ) := {x | ∃ v ∈ K, 1 < ‖ℓ (normalizedTorus T P x v)‖}
   have h_fin : bad.Finite := by
     -- For each `ι` the norm is at most `1` for large `x ι`, so each coordinate of a bad `x` lies
     -- in a finite set.
     have h_ev (ι : p) : ∀ᶠ j : ℕ in cofinite,
-        ∀ z : (p → ℕ) × K, z.1 ι = j → ‖ℓ (normalisedTorus T P z.1 z.2)‖ ≤ 1 :=
+        ∀ z : (p → ℕ) × K, z.1 ι = j → ‖ℓ (normalizedTorus T P z.1 z.2)‖ ≤ 1 :=
       Nat.cofinite_eq_atTop.le (eventually_comap.mp
         ((h_lim K hK ι).norm.eventually_le_const (by simp)))
     exact (Finite.pi' h_ev).subset
@@ -660,14 +660,14 @@ lemma New.SiegelWeil.bddAbove_norm_sub_tsum_norm_zeroTerm {ℓ : 𝒮 (S.hom T) 
   by_cases hx : x ∈ bad
   · exact le_add_of_nonneg_of_le (by positivity)
       (hB _ (mem_image_of_mem _ (mul_mem_mul (mem_image_of_mem a hx) hκ)))
-  have h_small : ‖ℓ (normalisedTorus T P x ((vacSize κ)⁻¹ • splitWeil S T (κ, 1) f))‖ ≤ 1 :=
+  have h_small : ‖ℓ (normalizedTorus T P x ((vacSize κ)⁻¹ • splitWeil S T (κ, 1) f))‖ ≤ 1 :=
     not_lt.1 fun h_gt ↦ hx ⟨_, mem_image_of_mem _ hκ, h_gt⟩
   -- Keep only the term of `σ P.lagrangian`; the torus scales it by the factor that normalises
-  -- `normalisedTorus`.
+  -- `normalizedTorus`.
   let v : 𝒮 (S.hom T) := splitWeil S T ((S.ratEmbed γ, 1) * (a x * κ, 1)) (vacElem (S.hom T))
   have h_term :
       ‖ℓ (splitWeil S T (a x * κ, 1) f)‖ ≤ ‖Lagrangian.zeroTerm T (σ P.lagrangian).val v‖ := by
-    simpa [v, a, vacSize, hσ, zeroTerm_isometrySplitting, normalisedTorus,
+    simpa [v, a, vacSize, hσ, zeroTerm_isometrySplitting, normalizedTorus,
       norm_zeroTerm_parabolic_mul (actsOnFrame_levi ..), rep_apply_apply, field,
       div_le_iff₀ (norm_zeroTerm_vacElem_pos ..), mul_assoc, ideleAbs_det_dyadicDiag_natCast,
       Real.sqrt_sq_eq_abs] using h_small
@@ -693,7 +693,7 @@ lemma New.SiegelWeil.exists_lagrangian_equiv_col_mem
 /-- The induction step of the Siegel–Weil formula. In Weil's range, let `D₁` split off the line
 spanned by the column `ι` of `P.k`, let the zero terms of `S` be summable and theta integrable, and
 let the formula hold for the complement `S₁`. Then the difference of the two sides of the formula
-for `S` at `normalisedTorus T P x f` tends to `0` as `x ι → ∞`, uniformly for `f` in a compact
+for `S` at `normalizedTorus T P x f` tends to `0` as `x ι → ∞`, uniformly for `f` in a compact
 set. Here Weil's range means `2 * card p < card m`, `θ` is the theta functional on the test
 functions and `splitWeil` is the Weil representation of the pair of unitary groups. -/
 lemma New.SiegelWeil.tendsto_tsum_zeroTerm_sub_integral_theta (hm : 2 * card p < card m)
@@ -710,8 +710,8 @@ lemma New.SiegelWeil.tendsto_tsum_zeroTerm_sub_integral_theta (hm : 2 * card p <
     Tendsto
       (fun z : (p → ℕ) × C ↦
         T.quotMeasure.real univ *
-            ∑' L : Lagrangian S, Lagrangian.zeroTerm T L (normalisedTorus T P z.1 z.2) -
-          ∫ h : G E t, θ (S.hom T) (splitWeil S T (1, h) (normalisedTorus T P z.1 z.2))
+            ∑' L : Lagrangian S, Lagrangian.zeroTerm T L (normalizedTorus T P z.1 z.2) -
+          ∫ h : G E t, θ (S.hom T) (splitWeil S T (1, h) (normalizedTorus T P z.1 z.2))
             ∂T.quotMeasure)
       (atTop.comap fun z : (p → ℕ) × C ↦ z.1 ι) (nhds 0) := by
   -- The terms through the line give theta of `S₁` by the formula; those off the line tend to `0`.
@@ -737,11 +737,11 @@ lemma New.SiegelWeil.tendsto_tsum_zeroTerm_sub_integral_theta (hm : 2 * card p <
   obtain ⟨R, hR⟩ := hC.isBounded.exists_norm_le
   have h_off : Tendsto
       (fun z : (p → ℕ) × C ↦
-        ∑' L : ↑Aᶜ, Lagrangian.zeroTerm T L.val (normalisedTorus T P z.1 z.2))
+        ∑' L : ↑Aᶜ, Lagrangian.zeroTerm T L.val (normalizedTorus T P z.1 z.2))
       (atTop.comap fun z : (p → ℕ) × C ↦ z.1 ι) (nhds (∑' _ : ↑Aᶜ, 0)) :=
     tendsto_tsum_of_dominated_convergence ((hb.mul_right R).subtype _)
       (fun L ↦ tendsto_zeroTerm_of_notMem T P hm.ne_bot L.prop hR) (.of_forall fun z L ↦
-        ((Lagrangian.zeroTerm T L.val).comp (normalisedTorus T P z.1)).le_of_opNorm_le_of_le
+        ((Lagrangian.zeroTerm T L.val).comp (normalizedTorus T P z.1)).le_of_opNorm_le_of_le
           (h_term z.1 L) (hR _ z.2.prop))
   simpa [h_split, -theta_apply] using
     (tendsto_integral_theta_zeroTerm_sub T P hm D₁ hk hC).add
@@ -752,11 +752,11 @@ the quotient `[U(T)]` for every test function `f`, where `ω` is `splitWeil S T`
 lemma New.SiegelWeil.integrable_theta_splitWeil (P : SiegelWeil.CompleteSplitting S p)
     (hm : 2 * card p < card m) (f : 𝒮 (S.hom T)) :
     Integrable (fun h : G E t ↦ θ (S.hom T) (splitWeil S T (1, h) f)) T.quotMeasure := by
-  -- It is dominated by `N h * ‖f‖ₑ`: this is `theta_normalisedTorus_le` at `x = 0`.
-  obtain ⟨N, mN, hN, h_theta⟩ := theta_normalisedTorus_le T P hm
+  -- It is dominated by `N h * ‖f‖ₑ`: this is `theta_normalizedTorus_le` at `x = 0`.
+  obtain ⟨N, mN, hN, h_theta⟩ := theta_normalizedTorus_le T P hm
   refine ⟨by fun_prop, ?_⟩
   calc ∫⁻ h, ‖θ _ (splitWeil S T (1, h) f)‖ₑ ∂T.quotMeasure ≤ ∫⁻ h, N h * ‖f‖ₑ ∂T.quotMeasure :=
-      lintegral_mono fun h ↦ by simpa [normalisedTorus_zero, -theta_apply] using h_theta h 0 f
+      lintegral_mono fun h ↦ by simpa [normalizedTorus_zero, -theta_apply] using h_theta h 0 f
     _ < ⊤ := (lintegral_mul_const _ mN).trans_lt (by finiteness)
 
 /-- The Siegel–Weil formula in Weil's range. Let `S` be split into `p` hyperbolic planes and let `T`
@@ -767,7 +767,7 @@ equals the sum of the zero terms of `f`, that is, the Eisenstein series at `f`. 
 representation `splitWeil S T`, `𝒮 (S.hom T)` is the space of test functions on which it acts, and
 the zero term of `f` along `L` is the value of `f` at `0` in the Schrödinger model of a splitting
 whose isotropic frame spans `L`. An integrable majorant of theta that is uniform in `f` is given by
-`New.SiegelWeil.theta_normalisedTorus_le`.
+`New.SiegelWeil.theta_normalizedTorus_le`.
 
 The pairs are unimodular over a CM field with `WeilData`, and the test functions are taken in `𝒮`
 rather than among Schwartz–Bruhat functions. -/
@@ -783,7 +783,7 @@ theorem New.SiegelWeil.siegel_weil (P : SiegelWeil.CompleteSplitting S p)
   -- induction on `card n`, `ℓ` tends to `0` along the torus, so it is small in the cusp and
   -- `eq_zero_of_le_tsum_zeroTerm` gives `ℓ = 0`.
   induction h_card : card n using Nat.strongRec generalizing n p with | _ d IH =>
-  -- The zero terms of `normalisedTorus T P x` have norm at most `b L` with `b` summable; at
+  -- The zero terms of `normalizedTorus T P x` have norm at most `b L` with `b` summable; at
   -- `x = 0` this gives summability.
   obtain ⟨b, hb, h_term⟩ := exists_summable_zeroTerm_bound T P hm
   have h_int := integrable_theta_splitWeil T P hm
@@ -807,7 +807,7 @@ theorem New.SiegelWeil.siegel_weil (P : SiegelWeil.CompleteSplitting S p)
     simp [Lagrangian.zeroTerm, mixedValue, Splitting.zeroTerm_apply, pairWeil, eq_one (G.onHom _),
       eq_zero (_ + _), sum_subsingleton _ P.lagrangian]
   have h_lim (C : Set (𝒮 (S.hom T))) (hC : IsCompact C) (ι : p) :
-      Tendsto (fun z : (p → ℕ) × C ↦ ℓ (normalisedTorus T P z.1 z.2))
+      Tendsto (fun z : (p → ℕ) × C ↦ ℓ (normalizedTorus T P z.1 z.2))
         (atTop.comap fun z : (p → ℕ) × C ↦ z.1 ι) (nhds 0) := by
     -- Split off the line spanned by the column `ι`. Its complement `S₁` has a Lagrangian, hence a
     -- complete splitting, and the formula holds for it by induction.

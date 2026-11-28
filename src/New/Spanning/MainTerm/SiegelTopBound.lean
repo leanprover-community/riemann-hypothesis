@@ -173,7 +173,7 @@ lemma ψf_quadric_eq_mul (hψ : P.ψ = S.charOnPlaces T) {κ : Type} [Fintype κ
     have h_norm : evalPlaces T (star w ⬝ᵥ w - β') ∈ P.integers := by
       simpa [β', dotProduct, ← star_evalPlaces] using
         sum_mem fun i _ ↦ mul_mem (P.isAdelic.star_mem (hw i)) (hw i)
-    obtain ⟨tau_mem : P.element ∈ P.integers, -⟩ := P.data_normalised
+    obtain ⟨tau_mem : P.element ∈ P.integers, -⟩ := P.data_normalized
     exact (P.self_dual _).2 h_norm _ (mul_mem tau_mem hz)
   rw [h_arg, mul_sub, mul_add, AddChar.map_sub_eq_div, AddChar.map_add_eq_mul, Circle.coe_div,
     Circle.coe_mul, ψf_adelicFrequency_mul hψ _ (by simp [norm_star, hβ]),
@@ -206,7 +206,7 @@ lemma normDensity_indicator_eq_mul (hψ : P.ψ = S.charOnPlaces T) {κ : Type} [
   let L : Set (κ → 𝔸f E) := intVectors (integralOff T) κ
   have L_meas : MeasurableSet L := (isOpen_intVectors (isOpen_integralOff T)).measurableSet
   obtain ⟨lat_open, -, lat_vol⟩ := P.isOpen_isCompact_volume_intVectors (ι := κ)
-  obtain ⟨-, -, -, -, skew_vol⟩ := P.data_normalised
+  obtain ⟨-, -, -, -, skew_vol⟩ := P.data_normalized
   have lattice_eq : (stdLattice E κ : Set (κ → 𝔸f E)) =
       (evalPlaces T ∘ ·) ⁻¹' intVectors P.integers κ ∩ L := by
     ext

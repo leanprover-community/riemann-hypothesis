@@ -29,14 +29,14 @@ infinite places for comparing theta integrals.
   functions.
 * `New.Space.Splitting.lineShift`, `New.Space.Splitting.partialMean`,
   `New.Space.Splitting.shiftedMean`: the shifts n₊(a), the partial mean f⁺ and the function φ⁺_g.
-* `New.Space.Splitting.centreCoeff_eq_mul_of_shiftedMean_eq_smul`,
+* `New.Space.Splitting.centerCoeff_eq_mul_of_shiftedMean_eq_smul`,
   `New.Space.Splitting.shiftedMean_symm_eq_smul`: for det T ≠ 0, a relation φ⁺_{g'} = c φ⁺_g passes
   to the coefficients along `D` at the points n₋(b) n₊(a) g and to φ⁻.
 * `New.Space.Splitting.partialMean_radicalElement_mul`: singularity. Let f⁺ be invariant under the
   shears at a nonempty set of finite places (`New.Space.Splitting.ShearInvariant`) at all points
   that fix e·k for an adele e (`New.Space.Splitting.frameStabilizer`). Then f⁺(h g) = f⁺(g) for h in
   the adelic radical of the stabiliser of the line of u, whenever g and h g fix e·k. The proof
-  compares f⁺ with `New.Space.Splitting.borderedCentreCoeff`.
+  compares f⁺ with `New.Space.Splitting.borderedCenterCoeff`.
 
 Notions from other files:
 * `New.Space`: A hermitian space with a point: a matrix J over E and x in GL_n(𝔸) with xᴴJx equal to
@@ -79,14 +79,14 @@ variable {W : Space E n s} {D : G E s → ℂ} {s₀ : n₀ → ℤˣ} {W₀ : S
 /-- If D is continuous and left invariant under the rational points, then M ↦ D (z(M) g) is
 continuous and periodic under rational matrices, z(M) being the element `H.radicalCenter M` of the
 centre of the radical. -/
-lemma isContPeriodic_radicalCentre (hD : IsAutFunction W D) (g : G E s) :
+lemma isContPeriodic_radicalCenter (hD : IsAutFunction W D) (g : G E s) :
     IsContPeriodic (ratMatrices E p p) fun M : Matrix p p (𝔸 E) ↦ D (H.radicalCenter M * g) := by
   refine ⟨hD.1.comp (by fun_prop), fun γ hγ M ↦ ?_⟩
   simp [AddChar.map_add_eq_mul, mul_assoc, hD.2 (H.radicalCenter γ) (by simp [hγ])]
 
 /-- Let D and D' be continuous and left invariant under the rational points. The coefficient at T
 of D(· Y) − c D' at the point g is that of D at g Y minus c times that of D' at g. -/
-lemma centreCoeff_mul_right_sub_smul {D' : G E s → ℂ} (hD : IsAutFunction W D)
+lemma centerCoeff_mul_right_sub_smul {D' : G E s → ℂ} (hD : IsAutFunction W D)
     (hD' : IsAutFunction W D') (c : ℂ) (Y : G E s) (T : Matrix p p E) (g : G E s) :
     H.centerCoeff T ((fun x : G E s ↦ D (x * Y)) - c • D') g =
       H.centerCoeff T D (g * Y) - c * H.centerCoeff T D' g := by
@@ -94,15 +94,15 @@ lemma centreCoeff_mul_right_sub_smul {D' : G E s → ℂ} (hD : IsAutFunction W 
   simp only [centerCoeff, Pi.sub_apply, mul_assoc, Pi.smul_apply, smul_eq_mul, mul_sub,
     mul_left_comm _ c, ← quotMean_const_mul]
   exact integral_sub
-    (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD (g * Y)) T).integrable_out
-    ((isContPeriodic_mul (H.isContPeriodic_radicalCentre hD' g) T).integrable_out.const_mul c)
+    (isContPeriodic_mul (H.isContPeriodic_radicalCenter hD (g * Y)) T).integrable_out
+    ((isContPeriodic_mul (H.isContPeriodic_radicalCenter hD' g) T).integrable_out.const_mul c)
 
 /-- The coefficient at T is additive on functions that are continuous and left invariant under the
 rational points. -/
-lemma centreCoeff_add {D' : G E s → ℂ} (hD : IsAutFunction W D) (hD' : IsAutFunction W D')
+lemma centerCoeff_add {D' : G E s → ℂ} (hD : IsAutFunction W D) (hD' : IsAutFunction W D')
     (T : Matrix p p E) (g : G E s) :
     H.centerCoeff T (D + D') g = H.centerCoeff T D g + H.centerCoeff T D' g := by
-  simpa using H.centreCoeff_mul_right_sub_smul hD hD' (-1) 1 T g
+  simpa using H.centerCoeff_mul_right_sub_smul hD hD' (-1) 1 T g
 
 variable (hD : IsAutFunction W D) {T : Matrix p p E}
 include hD
@@ -111,7 +111,7 @@ include hD
 along the centre of the radical, the mean of ψ(tr TM) D(z(M) g) over M modulo rational matrices, is
 a continuous function of g. -/
 @[fun_prop]
-lemma continuous_centreCoeff : Continuous (H.centerCoeff T D) := by
+lemma continuous_centerCoeff : Continuous (H.centerCoeff T D) := by
   -- The mean is an integral over a compact quotient, so it is enough that the integrand is jointly
   -- continuous; this can be tested before passing to the quotient.
   unfold centerCoeff quotMean
@@ -120,13 +120,13 @@ lemma continuous_centreCoeff : Continuous (H.centerCoeff T D) := by
       fun _ ↦ setIntegral_univ
   -- by periodicity the choice of coset representatives does not matter
   simp only [Function.uncurry_apply_pair,
-    (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD _) T).apply_out_mk]
+    (isContPeriodic_mul (H.isContPeriodic_radicalCenter hD _) T).apply_out_mk]
   exact (continuous_stdAddChar.subtypeVal.comp (by fun_prop)).mul (hD.1.comp (by fun_prop))
 
 /-- For D continuous and left invariant under the rational points, left translation by
 z(M) = `H.radicalCenter M` divides the coefficient at T by ψ(tr TM), ψ the standard additive
 character. -/
-lemma centreCoeff_radicalCentre_mul (M : Matrix p p (𝔸 E)) (g : G E s) :
+lemma centerCoeff_radicalCenter_mul (M : Matrix p p (𝔸 E)) (g : G E s) :
     stdAddChar E (T.map toAdele * M).trace * H.centerCoeff T D (H.radicalCenter M * g) =
       H.centerCoeff T D g := by
   have h_translate : H.centerCoeff T D (H.radicalCenter M * g) =
@@ -134,12 +134,12 @@ lemma centreCoeff_radicalCentre_mul (M : Matrix p p (𝔸 E)) (g : G E s) :
         stdAddChar E (T.map toAdele * N).trace * D (H.radicalCenter (N + M) * g) := by
     simp [centerCoeff, AddChar.map_add_eq_mul, mul_assoc]
   rw [h_translate]
-  exact mul_quotMean_translate (H.isContPeriodic_radicalCentre hD g) T M
+  exact mul_quotMean_translate (H.isContPeriodic_radicalCenter hD g) T M
 
 /-- For D continuous and left invariant under the rational points, a rational point γ that acts on
 the isotropic frame k of H through the rational matrix c (γ k = k c) carries the coefficient at T to
 the coefficient at cᴴ T c. -/
-lemma centreCoeff_rat_mul (T : Matrix p p E) {γ : G E s} (hγ : γ ∈ W.Γ) (c : Matrix p p E)
+lemma centerCoeff_rat_mul (T : Matrix p p E) {γ : G E s} (hγ : γ ∈ W.Γ) (c : Matrix p p E)
     (h_frame : H.ActsOnFrame γ (c.map toAdele)) (g : G E s) :
     H.centerCoeff T D (γ * g) = H.centerCoeff (cᴴ * T * c) D g := by
   obtain ⟨a, ha⟩ : IsUnit (c.map toAdele) := h_frame.isUnit
@@ -159,16 +159,16 @@ lemma centreCoeff_rat_mul (T : Matrix p p E) {γ : G E s} (hγ : γ ∈ W.Γ) (c
       (T.map toAdele * φ M).trace = ((cᴴ * T * c).map toAdele * M).trace := by
     simp [φ, ha, Matrix.map_mul, Matrix.mul_assoc, (cᴴ.map toAdele).trace_mul_comm]
   rw [centerCoeff, ← quotMean_comp _ φ
-    (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD (γ * g)) T) hrat hsurj
+    (isContPeriodic_mul (H.isContPeriodic_radicalCenter hD (γ * g)) T) hrat hsurj
     ((continuous_const_mul _).comp (continuous_mul_const _))]
   simp only [centerCoeff, h_move, h_trace]
 
 /-- For D continuous and left invariant under the rational points, a rational point that fixes the
 isotropic frame of H does not change the coefficient at T. -/
-lemma centreCoeff_rat_mul_of_actsOnFrame_one {γ : G E s} (hγ : γ ∈ W.Γ)
+lemma centerCoeff_rat_mul_of_actsOnFrame_one {γ : G E s} (hγ : γ ∈ W.Γ)
     (h_frame : H.ActsOnFrame γ 1) (g : G E s) :
     H.centerCoeff T D (γ * g) = H.centerCoeff T D g := by
-  simpa using H.centreCoeff_rat_mul hD T hγ 1 (by simpa using h_frame) g
+  simpa using H.centerCoeff_rat_mul hD T hγ 1 (by simpa using h_frame) g
 
 end New.Space.Splitting
 
@@ -414,7 +414,7 @@ variable {A B D T f}
 
 /-- If the partial mean f⁺ is not zero at g, then the coefficient of f along D at T is not zero at
 some point n₋(b) g. -/
-lemma exists_centreCoeff_ne_zero {g : G E s} (h_ne : A.partialMean B D T f g ≠ 0) :
+lemma exists_centerCoeff_ne_zero {g : G E s} (h_ne : A.partialMean B D T f g ≠ 0) :
     ∃ b : Matrix Unit p (𝔸 E), D.centerCoeff T f (A.symm.lineShift B b * g) ≠ 0 := by
   by_contra! h_zero
   simp [partialMean, h_zero] at h_ne
@@ -496,23 +496,23 @@ lemma lineShift_mul_lineShift_symm (hD : D.kAdelic = A.iAdelic * B.kAdelic)
 
 /-- Let the frame of D be the image of the frame of B and let f be automorphic. The coefficient
 along D at T at the point n₋(b) n₊(a) g is ψ(−tr T aᴴ b) times that at n₊(a) n₋(b) g. -/
-lemma centreCoeff_lineShift_symm_mul_lineShift (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma centerCoeff_lineShift_symm_mul_lineShift (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (a b : Matrix Unit p (𝔸 E)) (g : G E s) :
     D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g)) =
       stdAddChar E (T.map toAdele * -(aᴴ * b)).trace *
         D.centerCoeff T f (A.lineShift B a * (A.symm.lineShift B b * g)) := by
   rw [← mul_assoc (A.lineShift B a), lineShift_mul_lineShift_symm hD, mul_assoc, mul_assoc,
-    D.centreCoeff_radicalCentre_mul hf]
+    D.centerCoeff_radicalCenter_mul hf]
 
 /-- If the frame of D is the image of the frame of B and f is automorphic, then the coefficient of f
 along D at T at the point n₊(a) g is a continuous function of a, periodic under rational rows. -/
-lemma isContPeriodic_centreCoeff_lineShift (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma isContPeriodic_centerCoeff_lineShift (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (g : G E s) :
     IsContPeriodic (ratMatrices E Unit p)
       fun a : Matrix Unit p (𝔸 E) ↦ D.centerCoeff T f (A.lineShift B a * g) := by
   refine ⟨by fun_prop (disch := exact hf), fun γ hγ a ↦ ?_⟩
   simp only [lineShift_add, mul_assoc]
-  exact D.centreCoeff_rat_mul_of_actsOnFrame_one hf (A.lineShift_mem B hγ)
+  exact D.centerCoeff_rat_mul_of_actsOnFrame_one hf (A.lineShift_mem B hγ)
     (actsOnFrame_lineShift_one hD γ) _
 
 /-- If the frame of D is the image of the frame of B and f is automorphic, the partial mean f⁺ is
@@ -525,18 +525,18 @@ lemma continuous_partialMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) (hf : IsAu
     ((QuotientAddGroup.isQuotientMap_mk _).continuous_lift_prod_right ?_) isCompact_univ).congr
       fun _ ↦ MeasureTheory.setIntegral_univ
   simp only [Function.uncurry_apply_pair,
-    (isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf _).apply_out_mk]
-  exact (D.continuous_centreCoeff hf).comp (by fun_prop)
+    (isContPeriodic_centerCoeff_lineShift (A := A.symm) hD hf _).apply_out_mk]
+  exact (D.continuous_centerCoeff hf).comp (by fun_prop)
 
 /-- If the frame of D is the image of the frame of B, the partial mean is additive on automorphic
 functions. -/
 lemma partialMean_add (hD : D.kAdelic = A.iAdelic * B.kAdelic) (hf : IsAutFunction W f)
     {f' : G E s → ℂ} (hf' : IsAutFunction W f') (g : G E s) :
     A.partialMean B D T (f + f') g = A.partialMean B D T f g + A.partialMean B D T f' g := by
-  simp only [partialMean, D.centreCoeff_add hf hf']
+  simp only [partialMean, D.centerCoeff_add hf hf']
   exact MeasureTheory.integral_add
-    (isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf g).integrable_out
-    (isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf' g).integrable_out
+    (isContPeriodic_centerCoeff_lineShift (A := A.symm) hD hf g).integrable_out
+    (isContPeriodic_centerCoeff_lineShift (A := A.symm) hD hf' g).integrable_out
 
 /-- If the frame of D is the image of the frame of B and f is automorphic, the partial mean f⁺ is
 left invariant under all shifts n₋(b). -/
@@ -544,11 +544,11 @@ lemma partialMean_lineShift_symm_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (b : Matrix Unit p (𝔸 E)) (g : G E s) :
     A.partialMean B D T f (A.symm.lineShift B b * g) = A.partialMean B D T f g := by
   simpa only [partialMean, lineShift_add, mul_assoc] using
-    quotMean_translate (isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf g) b
+    quotMean_translate (isContPeriodic_centerCoeff_lineShift (A := A.symm) hD hf g) b
 
 /-- Let the frame of D be the image of the frame of B and let f be automorphic. Left translation by
 the element z(M) of the centre of the radical for D divides the partial mean f⁺ by ψ(tr TM). -/
-lemma partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma partialMean_radicalCenter_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (M : Matrix p p (𝔸 E)) (g : G E s) :
     stdAddChar E (T.map toAdele * M).trace * A.partialMean B D T f (D.radicalCenter M * g) =
       A.partialMean B D T f g := by
@@ -556,7 +556,7 @@ lemma partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
       A.symm.lineShift B b * D.radicalCenter M = D.radicalCenter M * A.symm.lineShift B b := by
     simpa using D.mul_radicalCenter (actsOnFrame_lineShift_one (A := A.symm) hD b) M
   simp only [partialMean, ← quotMean_const_mul, ← mul_assoc (A.symm.lineShift B _), h_comm]
-  simp only [mul_assoc, D.centreCoeff_radicalCentre_mul hf]
+  simp only [mul_assoc, D.centerCoeff_radicalCenter_mul hf]
 
 /-- Replacing g by n₊(a) g translates φ⁺_g by a. -/
 lemma shiftedMean_lineShift_mul (a x : Matrix Unit p (𝔸 E)) (g : G E s) :
@@ -575,7 +575,7 @@ lemma shiftedMean_symm_lineShift_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     partialMean_lineShift_symm_mul (A := A.symm) hD hf a _
   rw [shiftedMean, shiftedMean, ← h_fix, ← mul_assoc (A.lineShift B a),
     lineShift_mul_lineShift_symm hD, mul_assoc, mul_assoc,
-    partialMean_radicalCentre_mul (A := A.symm) hD hf]
+    partialMean_radicalCenter_mul (A := A.symm) hD hf]
 
 /-- Let the frame of D be the image of the frame of B and let f be automorphic. For a rational row
 a₀, the value φ⁺_g(a₀ + a) is the Fourier coefficient at −T a₀ᴴ of the function that sends b to the
@@ -589,19 +589,19 @@ lemma shiftedMean_rat_add (hD : D.kAdelic = A.iAdelic * B.kAdelic) (hf : IsAutFu
   -- Move n₊(a₀) to the left, where it fixes the coefficient along D.
   have h_rat (x : G E s) :
       D.centerCoeff T f (A.lineShift B (a₀.map toAdele) * x) = D.centerCoeff T f x :=
-    D.centreCoeff_rat_mul_of_actsOnFrame_one hf (A.lineShift_mem B ⟨a₀, rfl⟩)
+    D.centerCoeff_rat_mul_of_actsOnFrame_one hf (A.lineShift_mem B ⟨a₀, rfl⟩)
       (actsOnFrame_lineShift_one hD _) x
   have h_index (b : Matrix Unit p (𝔸 E)) :
       T.map toAdele * -((a₀.map toAdele)ᴴ * b) = (-(T * a₀ᴴ)).map toAdele * b := by
     rw [Matrix.map_neg _ (map_neg toAdele), Matrix.map_mul, ← conjTranspose_map_toAdele,
       Matrix.neg_mul, Matrix.mul_neg, Matrix.mul_assoc]
   simp only [shiftedMean, partialMean, lineShift_add, mul_assoc,
-    centreCoeff_lineShift_symm_mul_lineShift hD hf (a₀.map toAdele), h_rat, h_index]
+    centerCoeff_lineShift_symm_mul_lineShift hD hf (a₀.map toAdele), h_rat, h_index]
 
 /-- Let the frame of D be the image of the frame of B, f automorphic and det T ≠ 0. If
 φ⁺_{g'} = c φ⁺_g, then the coefficient of f along D at T at each point n₋(b) n₊(a) g' is c times
 that at n₋(b) n₊(a) g. -/
-lemma centreCoeff_eq_mul_of_shiftedMean_eq_smul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma centerCoeff_eq_mul_of_shiftedMean_eq_smul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (hT : T.det ≠ 0) {g g' : G E s} {c : ℂ}
     (h_eq : A.shiftedMean B D T f g' = c • A.shiftedMean B D T f g) (a b : Matrix Unit p (𝔸 E)) :
     D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g')) =
@@ -610,7 +610,7 @@ lemma centreCoeff_eq_mul_of_shiftedMean_eq_smul (hD : D.kAdelic = A.iAdelic * B.
   let F (x : G E s) (b : Matrix Unit p (𝔸 E)) : ℂ :=
     D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * x))
   have hF (x : G E s) : IsContPeriodic (ratMatrices E Unit p) (F x) :=
-    isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf _
+    isContPeriodic_centerCoeff_lineShift (A := A.symm) hD hf _
   have h_sub : IsContPeriodic (ratMatrices E Unit p) fun b ↦ F g' b - c * F g b :=
     ⟨(hF g').1.sub ((hF g).1.const_mul c), fun γ hγ b ↦ by simp [(hF g').2 γ hγ, (hF g).2 γ hγ]⟩
   refine sub_eq_zero.1 (eq_zero_of_quotMean_mul_eq_zero h_sub (fun (R : Matrix p Unit E) _ ↦ ?_) b)
@@ -641,17 +641,17 @@ lemma shiftedMean_symm_eq_smul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     have h_swap (x : G E s) : D.centerCoeff T f (A.lineShift B a * (A.symm.lineShift B b * x)) =
         stdAddChar E (T.map toAdele * -(bᴴ * a)).trace *
           D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * x)) :=
-      centreCoeff_lineShift_symm_mul_lineShift (A := A.symm) hD hf b a x
-    rw [h_swap, h_swap, centreCoeff_eq_mul_of_shiftedMean_eq_smul hD hf hT h_eq, mul_left_comm]
+      centerCoeff_lineShift_symm_mul_lineShift (A := A.symm) hD hf b a x
+    rw [h_swap, h_swap, centerCoeff_eq_mul_of_shiftedMean_eq_smul hD hf hT h_eq, mul_left_comm]
   simp [shiftedMean, partialMean, h_point]
 
 /-- Let the frame of D be the image of the frame of B, f automorphic and det T ≠ 0. If φ⁺_g is zero,
 then the coefficient of f along D at T is zero at g. -/
-lemma centreCoeff_eq_zero_of_shiftedMean_eq_zero (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma centerCoeff_eq_zero_of_shiftedMean_eq_zero (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (hT : T.det ≠ 0) {g : G E s}
     (h_zero : A.shiftedMean B D T f g = 0) : D.centerCoeff T f g = 0 := by
   simpa [lineShift_zero] using
-    centreCoeff_eq_mul_of_shiftedMean_eq_smul (c := 0) (g := g) hD hf hT (by simp [h_zero]) 0 0
+    centerCoeff_eq_mul_of_shiftedMean_eq_smul (c := 0) (g := g) hD hf hT (by simp [h_zero]) 0 0
 
 /-- Let the frame of D be the image of the frame of B, f automorphic and det T ≠ 0. If φ⁺_g is zero,
 then so is φ⁻_g. -/
@@ -691,7 +691,7 @@ def ShearInvariant (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p) (D : 
 
 /-- The Fourier coefficient of f along the composite of the splittings A (one line) and B, at the
 block diagonal matrix 0 ⊕ T. -/
-noncomputable abbrev borderedCentreCoeff (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
+noncomputable abbrev borderedCenterCoeff (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
     (T : Matrix p p E) (f : G E s → ℂ) : G E s → ℂ :=
   (A.comp B).centerCoeff (fromBlocks 0 0 0 T) f
 
@@ -700,7 +700,7 @@ variable {A : W.Splitting W₀ Unit} {B : W₀.Splitting W₂ p} {D : W.Splittin
 /-- If the frame of D is the image of the frame of B, the central element for the composite of A and
 B with blocks z, b, c, N is the product of the central element for D at N, the shift n₋(b − cᴴ) and
 the central element for A at z. -/
-lemma radicalCentre_comp_fromBlocks (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma radicalCenter_comp_fromBlocks (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (z : Matrix Unit Unit (𝔸 E)) (b : Matrix Unit p (𝔸 E)) (c : Matrix p Unit (𝔸 E))
     (N : Matrix p p (𝔸 E)) :
     (A.comp B).radicalCenter (fromBlocks z b c N) =
@@ -745,9 +745,9 @@ of `B` (`hD`), and let `f` be automorphic. Then the coefficient of `f` along the
 and `B` at `0 ⊕ T` is the mean, over the centre of the radical for `A`, of the partial mean f⁺. Here
 f⁺(g) is the mean over adelic rows `b` modulo rational rows of the coefficient of `f` along `D` at
 `T` at `n₋(b) g`. -/
-lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {f : G E s → ℂ}
+lemma borderedCenterCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {f : G E s → ℂ}
     (hf : IsAutFunction W f) (T : Matrix p p E) (g : G E s) :
-    A.borderedCentreCoeff B T f g =
+    A.borderedCenterCoeff B T f g =
       quotMean (ratMatrices E Unit Unit) fun z : Matrix Unit Unit (𝔸 E) ↦
         A.partialMean B D T f (A.radicalCenter z * g) := by
   -- The integrand `Φ M` depends only on M₁₁, on M₁₂ − M₂₁ᴴ and on M₂₂. Take the mean over M₂₂, then
@@ -755,13 +755,13 @@ lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {
   let Φ (M : Matrix (Unit ⊕ p) (Unit ⊕ p) (𝔸 E)) : ℂ :=
     stdAddChar E ((fromBlocks 0 0 0 T).map toAdele * M).trace * f ((A.comp B).radicalCenter M * g)
   have hΦ : IsContPeriodic (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) Φ :=
-    isDualFamily_ratMatrices.isContPeriodic_mul (isContPeriodic_radicalCentre _ hf g) _
+    isDualFamily_ratMatrices.isContPeriodic_mul (isContPeriodic_radicalCenter _ hf g) _
   have hΦ_eq (z : Matrix Unit Unit (𝔸 E)) (b : Matrix Unit p (𝔸 E)) (c : Matrix p Unit (𝔸 E))
       (N : Matrix p p (𝔸 E)) :
       Φ (fromBlocks z b c N) = stdAddChar E (T.map toAdele * N).trace *
         f (D.radicalCenter N * (A.symm.lineShift B (b - cᴴ) * (A.radicalCenter z * g))) := by
     dsimp only [Φ]
-    rw [radicalCentre_comp_fromBlocks hD, mul_assoc, mul_assoc]
+    rw [radicalCenter_comp_fromBlocks hD, mul_assoc, mul_assoc]
     simp only [fromBlocks_map, Matrix.map_zero _ (map_zero toAdele), fromBlocks_multiply,
       Matrix.zero_mul, zero_add, add_zero, trace_fromBlocks, trace_zero]
   let φ₁ : Matrix Unit Unit (𝔸 E) × Matrix (Unit ⊕ p) (Unit ⊕ p) (𝔸 E) →+
@@ -810,7 +810,7 @@ lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {
             D.centerCoeff T f (A.symm.lineShift B (π M) * (A.radicalCenter z * g)) := by
         simp only [hφ₁₂, hΦ_eq, centerCoeff, π, AddMonoidHom.mk'_apply]
       _ = A.partialMean B D T f (A.radicalCenter z * g) := by
-        refine quotMean_comp _ π (isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf _) ?_
+        refine quotMean_comp _ π (isContPeriodic_centerCoeff_lineShift (A := A.symm) hD hf _) ?_
           (fun b ↦ ⟨fromBlocks 0 b 0 0, by simp [π]⟩) hπ
         rintro _ ⟨M, rfl⟩
         exact ⟨M.toBlocks₁₂ - M.toBlocks₂₁ᴴ, by ext1; simp [π, toBlocks₁₂, toBlocks₂₁]⟩
@@ -819,7 +819,7 @@ lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {
     fun M ↦ ⟨(M.toBlocks₁₁, M), M.fromBlocks_toBlocks⟩).symm
 
 /-- If the frame of D is the image of the frame of B, the centre of the radical for A fixes it. -/
-lemma actsOnFrame_radicalCentre_one (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma actsOnFrame_radicalCenter_one (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (z : Matrix Unit Unit (𝔸 E)) : D.ActsOnFrame (A.radicalCenter z) 1 := by
   simp [hD, Matrix.add_mul, Matrix.mul_assoc]
 
@@ -829,7 +829,7 @@ adelic rows b modulo rational rows, of the Fourier coefficient of `f` along `D` 
 `A.symm.lineShift B b * x`. If f⁺ takes the same value at `g` and at νg for every shear
 ν = 1 + ē·uc − e·a (e the idempotent adele of `U`, u = `A.kAdelic`, cu = 0), then
 f⁺(`A.radicalCenter z * g`) = f⁺(g) for every adelic 1×1 matrix `z`. -/
-lemma ShearInvariant.partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma ShearInvariant.partialMean_radicalCenter_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     {f : G E s → ℂ} (hf : IsAutFunction W f) {T : Matrix p p E} {U : Set (FinPlace E)}
     (hU : U.Nonempty) {g : G E s} (h_shear : A.ShearInvariant B D T f (idemAdele U) g) :
     ∀ z : Matrix Unit Unit (𝔸 E),
@@ -864,8 +864,8 @@ lemma ShearInvariant.partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic *
       rwa [Matrix.one_mul, conjTranspose_one, Matrix.mul_one] at h
     simp only [partialMean, ← mul_assoc (A.symm.lineShift B _), h_comm]
     have h_mem : A.radicalCenter (Y.map toAdele) ∈ W.Γ := A.radicalCenter_mem ⟨Y, rfl⟩
-    simp only [mul_assoc, D.centreCoeff_rat_mul_of_actsOnFrame_one hf h_mem
-      (actsOnFrame_radicalCentre_one hD _)]
+    simp only [mul_assoc, D.centerCoeff_rat_mul_of_actsOnFrame_one hf h_mem
+      (actsOnFrame_radicalCenter_one hD _)]
   -- A point of the centre supported on U ∪ Ū is a shear.
   have h_mat : (A.radicalCenter (e • y)).adeleMatrix =
       1 + (star e • (A.kAdelic * -(yᴴ * A.lCoord) :) - e • -(A.kAdelic * y * A.lCoord)) := by
@@ -878,11 +878,11 @@ lemma ShearInvariant.partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic *
 /-- Let the frame of D be the image of the frame of B, let f be automorphic and U a nonempty set of
 finite places. If the partial mean f⁺ is invariant at g under the shears for U, then f⁺(g) is the
 coefficient of f along the composite of A and B at 0 ⊕ T. -/
-lemma ShearInvariant.borderedCentreCoeff_eq (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma ShearInvariant.borderedCenterCoeff_eq (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     {f : G E s → ℂ} (hf : IsAutFunction W f) {T : Matrix p p E} {U : Set (FinPlace E)}
     (hU : U.Nonempty) {g : G E s} (h_shear : A.ShearInvariant B D T f (idemAdele U) g) :
-    A.borderedCentreCoeff B T f g = A.partialMean B D T f g := by
-  simp [borderedCentreCoeff_eq_quotMean hD hf, h_shear.partialMean_radicalCentre_mul hD hf hU]
+    A.borderedCenterCoeff B T f g = A.partialMean B D T f g := by
+  simp [borderedCenterCoeff_eq_quotMean hD hf, h_shear.partialMean_radicalCenter_mul hD hf hU]
 
 /-- Let the frame of D be the image of the frame of B, let f be automorphic, T a p×p matrix over E
 and U a nonempty set of finite places. Let f⁺(g) be the mean over adelic rows b, modulo rational
@@ -891,14 +891,14 @@ for z in the adelic centre of the radical for A, under the shears for U: the ν 
 1 + ē·uc − e·a, where e is the idempotent of U, u the isotropic vector of A and cu = 0. Then the
 coefficient of f along the composite of A and B at 0 ⊕ T is invariant at g under the elements
 `A.radicalElement c z` of the adelic radical for A. -/
-lemma borderedCentreCoeff_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+lemma borderedCenterCoeff_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
   {f : G E s → ℂ}
     (hf : IsAutFunction W f) {T : Matrix p p E} {U : Set (FinPlace E)} (hU : U.Nonempty)
     {g : G E s} (h_shear : ∀ z : Matrix Unit Unit (𝔸 E),
       A.ShearInvariant B D T f (idemAdele U) (A.radicalCenter z * g))
     (z : Matrix Unit Unit (𝔸 E)) :
     ∀ c : Matrix ((p ⊕ p) ⊕ n₂) Unit (𝔸 E),
-      A.borderedCentreCoeff B T f (A.radicalElement c z * g) = A.borderedCentreCoeff B T f g := by
+      A.borderedCenterCoeff B T f (A.radicalElement c z * g) = A.borderedCenterCoeff B T f g := by
   let e : 𝔸 E := idemAdele U
   -- By strong approximation it suffices to take `c = W₀.x⁻¹ Y + e • y` with `Y` rational.
   refine (denseRange_rat_matrix_add hU W₀.x).eq fun ⟨Y, y⟩ ↦ ?_
@@ -923,26 +923,26 @@ lemma borderedCentreCoeff_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAd
         conjTranspose_mul]
       simp only [Matrix.mul_assoc]
   have h_rat (g' : G E s) :
-      A.borderedCentreCoeff B T f (A.radicalElement Y₀ 0 * g') =
-        A.borderedCentreCoeff B T f g' := by
-    rw [borderedCentreCoeff,
-      centreCoeff_rat_mul _ hf _ (A.radicalElement_mem_Gamma Y (by simp)) u h_frame]
+      A.borderedCenterCoeff B T f (A.radicalElement Y₀ 0 * g') =
+        A.borderedCenterCoeff B T f g' := by
+    rw [borderedCenterCoeff,
+      centerCoeff_rat_mul _ hf _ (A.radicalElement_mem_Gamma Y (by simp)) u h_frame]
     simp only [u, fromBlocks_conjTranspose, conjTranspose_one, conjTranspose_zero,
       fromBlocks_multiply, Matrix.mul_zero, Matrix.zero_mul, Matrix.one_mul, Matrix.mul_one,
       add_zero, zero_add]
   -- The centre of the radical for `A` pairs trivially with `0 ⊕ T`.
   have h_centre (M : Matrix Unit Unit (𝔸 E)) (g' : G E s) :
-      A.borderedCentreCoeff B T f (A.radicalCenter M * g') = A.borderedCentreCoeff B T f g' := by
-    have h := centreCoeff_radicalCentre_mul (A.comp B) hf (T := fromBlocks 0 0 0 T)
+      A.borderedCenterCoeff B T f (A.radicalCenter M * g') = A.borderedCenterCoeff B T f g' := by
+    have h := centerCoeff_radicalCenter_mul (A.comp B) hf (T := fromBlocks 0 0 0 T)
       (fromBlocks M 0 0 0) g'
-    rw [radicalCentre_comp_fromBlocks hD] at h
+    rw [radicalCenter_comp_fromBlocks hD] at h
     simp only [conjTranspose_zero, sub_self, lineShift_zero, one_mul, AddChar.map_zero_eq_one,
       fromBlocks_map, Matrix.map_zero _ (map_zero toAdele), fromBlocks_multiply, Matrix.zero_mul,
       Matrix.mul_zero, add_zero, trace_fromBlocks, trace_zero, Circle.coe_one] at h
     exact h
   -- The element `ν` of the radical is a shear, and it commutes with the centre.
   let ν : G E s := A.radicalElement (e • y) 0
-  have h_local : A.borderedCentreCoeff B T f (ν * g) = A.borderedCentreCoeff B T f g := by
+  have h_local : A.borderedCenterCoeff B T f (ν * g) = A.borderedCenterCoeff B T f g := by
     let c₁ : Matrix Unit n (𝔸 E) := yᴴ * stdForm E (hyperbolicSigns p ⊕ᵥ s₂) *
       (A.iCoord - toAdele (2⁻¹ : E) • e • y * A.lCoord)
     have h_mat : ν.adeleMatrix = 1 + (star e • (A.kAdelic * c₁ :) - e •
@@ -964,7 +964,7 @@ lemma borderedCentreCoeff_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAd
         A.radicalCenter w * (ν * g) = ν * (A.radicalCenter w * g) := by
       rw [← mul_assoc ν, A.mul_radicalCenter (A.actsOnFrame_radicalElement _ _), mul_assoc]
       simp [ν]
-    simp only [borderedCentreCoeff_eq_quotMean hD hf, h_comm,
+    simp only [borderedCenterCoeff_eq_quotMean hD hf, h_comm,
       h_shear _ c₁ _ (by simp [c₁, sub_eq_add_neg, Matrix.mul_assoc, Matrix.add_mul]) h_mat]
   -- The element is a product of a rational point, a point of the centre and the shear.
   let z' : Matrix Unit Unit (𝔸 E) :=
@@ -991,12 +991,12 @@ lemma partialMean_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic) {f
     (hg : g ∈ D.frameStabilizer e) (h_mem : A.radicalElement c z * g ∈ D.frameStabilizer e) :
     A.partialMean B D T f (A.radicalElement c z * g) = A.partialMean B D T f g := by
   calc A.partialMean B D T f (A.radicalElement c z * g)
-    _ = A.borderedCentreCoeff B T f (A.radicalElement c z * g) :=
-      ((h_shear _ h_mem).borderedCentreCoeff_eq hD hf hU).symm
-    _ = A.borderedCentreCoeff B T f g := borderedCentreCoeff_radicalElement_mul hD hf hU
-      (fun w ↦ h_shear _ (mul_mem ((actsOnFrame_radicalCentre_one hD w).mem_frameStabilizer e) hg))
+    _ = A.borderedCenterCoeff B T f (A.radicalElement c z * g) :=
+      ((h_shear _ h_mem).borderedCenterCoeff_eq hD hf hU).symm
+    _ = A.borderedCenterCoeff B T f g := borderedCenterCoeff_radicalElement_mul hD hf hU
+      (fun w ↦ h_shear _ (mul_mem ((actsOnFrame_radicalCenter_one hD w).mem_frameStabilizer e) hg))
       z c
-    _ = A.partialMean B D T f g := (h_shear g hg).borderedCentreCoeff_eq hD hf hU
+    _ = A.partialMean B D T f g := (h_shear g hg).borderedCenterCoeff_eq hD hf hU
 
 end Singularity
 

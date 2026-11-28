@@ -48,12 +48,12 @@ vacuum and `rank T > rank S > 0`.
 * `New.SiegelWeil.mixedValue`, `New.SiegelWeil.Lagrangian.zeroTerm`: the value `f[x]` in the model
   of a splitting, and the zero term `f[0]` of a Lagrangian, which depends on the Lagrangian only
   (`New.SiegelWeil.zeroTerm_lagrangian_eq_theta`).
-* `New.SiegelWeil.theta_normalisedTorus_le`: if `rank T > rank S`, an integrable bound for theta,
-  uniform along the torus `New.SiegelWeil.normalisedTorus`.
+* `New.SiegelWeil.theta_normalizedTorus_le`: if `rank T > rank S`, an integrable bound for theta,
+  uniform along the torus `New.SiegelWeil.normalizedTorus`.
 * `New.SiegelWeil.norm_zeroTerm_parabolic_mul`: an element `g` with `g k = k a` multiplies the norm
   of the zero term by `√|det a| ^ rank T`.
-* `New.SiegelWeil.exists_zeroTerm_normalisedTorus_le`: an upper bound, along the normalised torus
-  `New.SiegelWeil.normalisedTorus T P x`, for the zero term of a second splitting.
+* `New.SiegelWeil.exists_zeroTerm_normalizedTorus_le`: an upper bound, along the normalised torus
+  `New.SiegelWeil.normalizedTorus T P x`, for the zero term of a second splitting.
 * `New.SiegelWeil.eq_zero_of_le_tsum_zeroTerm`: let `S` have even positive rank less than that of
   `T`, with summable zero terms. A continuous functional `ℓ` that is invariant under the group of
   `T` and is dominated, up to an additive constant, by the sum of the norms of the zero terms of the
@@ -373,39 +373,39 @@ lemma hasSum_mixedValue_theta_splitWeil (h : G E t) (f : 𝒮 (S.hom T)) :
 /-- For `x : p → ℕ`, the operator `2 ^ (-d * rank T * ∑ i, x i) • splitWeil S T (P.levi (δ, 1), 1)`,
 where `d` is the number of infinite places and `δ = New.Core.dyadicDiag x` is diagonal with entries
 `2 ^ x i` at the infinite places and `1` at the finite places. -/
-def normalisedTorus : 𝒮 (S.hom T) →L[ℂ] 𝒮 (S.hom T) :=
+def normalizedTorus : 𝒮 (S.hom T) →L[ℂ] 𝒮 (S.hom T) :=
   (((2 ^ Core.numInfPlaces E) ^ ∑ i : p, x i) ^ card m : ℂ)⁻¹ •
     splitWeil S T (P.levi (dyadicDiag (x ·), 1), 1)
 
-/-- For a complete splitting `P` of `S`, the normalised torus operator `normalisedTorus T P x` on
+/-- For a complete splitting `P` of `S`, the normalised torus operator `normalizedTorus T P x` on
 the function space of `Hom(S, T)` is the identity at `x = 0`. -/
 @[simp]
-lemma normalisedTorus_zero : normalisedTorus T P 0 = 1 := by
-  simp [normalisedTorus, dyadicDiag, ← Pi.one_def, Prod.mk_one_one]
+lemma normalizedTorus_zero : normalizedTorus T P 0 = 1 := by
+  simp [normalizedTorus, dyadicDiag, ← Pi.one_def, Prod.mk_one_one]
 
-/-- The normalising factor of `normalisedTorus T P x` cancels `√|det δ| ^ rank T` for
+/-- The normalising factor of `normalizedTorus T P x` cancels `√|det δ| ^ rank T` for
 `δ = New.Core.dyadicDiag x`: the value at `y` of the image of `f` has the norm of `f[y δ]`. -/
-lemma norm_mixedValue_normalisedTorus (y : Matrix m p (𝔸 E)) (f : 𝒮 (S.hom T)) :
-    ‖mixedValue T P y (normalisedTorus T P x f)‖ =
+lemma norm_mixedValue_normalizedTorus (y : Matrix m p (𝔸 E)) (f : 𝒮 (S.hom T)) :
+    ‖mixedValue T P y (normalizedTorus T P x f)‖ =
       ‖mixedValue T P (y * (dyadicDiag fun i : p ↦ x i : GL p (𝔸 E)).val) f‖ := by
-  simp [normalisedTorus, mixedValue_splitWeil_levi, ideleAbs_det_dyadicDiag_natCast,
+  simp [normalizedTorus, mixedValue_splitWeil_levi, ideleAbs_det_dyadicDiag_natCast,
     Real.sqrt_sq_eq_abs, Circle.norm_coe, field]
 
 /-- Let `P` be a complete splitting of `S` into `p` planes and let the rank of `T` exceed `2 p`.
 There is a measurable function `N` on the group of `T`, with finite integral for `T.quotMeasure`
 (the measure that computes integrals over the quotient by the rational points), such that the theta
 functional `θ` satisfies `‖θ (splitWeil S T (1, h) (A x f))‖ ≤ N h * ‖f‖` for all `h`, `f` and
-`x : p → ℕ`, where `A x = normalisedTorus T P x`. At `x = 0` this is the convergence of the theta
+`x : p → ℕ`, where `A x = normalizedTorus T P x`. At `x = 0` this is the convergence of the theta
 integral in the Siegel–Weil formula; the bound is uniform in the torus element.
 
 Compare Weil's convergence criterion for the theta integral of a unitary dual pair; the hypothesis
 here, that `T` has rank above `2 p`, is stronger than Weil's condition on the Witt index of `T`. -/
-lemma theta_normalisedTorus_le (hm : 2 * card p < card m) :
+lemma theta_normalizedTorus_le (hm : 2 * card p < card m) :
     ∃ N : G E t → ℝ≥0∞,
       Measurable N ∧
       ∫⁻ h : G E t, N h ∂T.quotMeasure ≠ ⊤ ∧
       ∀ (h : G E t) (x : p → ℕ) (f : 𝒮 (S.hom T)),
-        ‖θ (S.hom T) (splitWeil S T (1, h) (normalisedTorus T P x f))‖ₑ ≤ N h * ‖f‖ₑ := by
+        ‖θ (S.hom T) (splitWeil S T (1, h) (normalizedTorus T P x f))‖ₑ ≤ N h * ‖f‖ₑ := by
   -- Expand `θ` as a sum over rational matrices `ξ`. The term of `ξ` is read at `pt ξ = h⁻¹ ξ δ`
   -- with `δ = dyadicDiag x`, so `exists_tsum_slice_le` bounds the sum by `M * ‖f‖` times the
   -- number of `ξ` with `pt ξ` in a compact set `Ω`. For these, `h⁻¹ ξ` lies in a compact set `B`
@@ -439,12 +439,12 @@ lemma theta_normalisedTorus_le (hm : 2 * card p < card m) :
   have preimage_sub : pt ⁻¹' Ω ⊆ near h :=
     fun ξ hξ ↦ ⟨(pt ξ, δ⁻¹.val), ⟨hξ, dyadicDiag_inv_mem x⟩, by simp [pt]⟩
   have term_eq (ξ : Matrix m p E) :
-      ‖mixedValue T P (h⁻¹.adeleMatrix * (T.x⁻¹.val * ξ.map toAdele)) (normalisedTorus T P x f)‖ₑ =
+      ‖mixedValue T P (h⁻¹.adeleMatrix * (T.x⁻¹.val * ξ.map toAdele)) (normalizedTorus T P x f)‖ₑ =
         ‖θ ((stdSpace E Empty).hom T) ((P.homSource T).slice (pt ξ) f)‖ₑ := by
     have h_point : h⁻¹.adeleMatrix * (T.x⁻¹.val * ξ.map toAdele) * δ.val =
         T.x⁻¹.val * ((T.toRatCoords h).val⁻¹.val * ξ.map toAdele * δ.val) := by
       simp [toRatCoords, G.adeleMatrix, ← Matrix.mul_assoc]
-    rw [← ofReal_norm, norm_mixedValue_normalisedTorus, ofReal_norm, h_point, mixedValue,
+    rw [← ofReal_norm, norm_mixedValue_normalizedTorus, ofReal_norm, h_point, mixedValue,
       ContinuousLinearMap.comp_apply, homSlice_eq_slice, AddMonoidHom.mk'_apply]
   calc _ ≤ ∑' ξ, ‖θ ((stdSpace E Empty).hom T) ((P.homSource T).slice (pt ξ) f)‖ₑ := by
         grw [← (hasSum_mixedValue_theta_splitWeil T P h _).tsum_eq, eNorm_tsum_le_tsum_eNorm]
@@ -572,21 +572,21 @@ lemma exists_ideleAbs_le_of_isCompact {F : Type} [Field F] [CMType F] {C : Set (
 
 /-- Let `P` and `P'` be complete splittings of `S` into `p` and `r` planes, with frames `k` and
 `k'`. Let `Z` be an adelic `r × n` matrix with `Z k' = 1`, and let `K` be a compact set in the group
-of `S`. Let `normalisedTorus T P x` be the normalised action of the Levi element `δ(x)` of `P`
+of `S`. Let `normalizedTorus T P x` be the normalised action of the Levi element `δ(x)` of `P`
 (`δ = New.Core.dyadicDiag`). There is a constant `R` such that, for all `g ∈ K`, all `x`, `u` in
 `ℕ ^ p` with `Z g k δ(x) = Z g k δ(u)` and all `f`, the zero term along the Lagrangian of `P'` of
-`splitWeil S T (g, 1) (normalisedTorus T P x f)` has norm at most
+`splitWeil S T (g, 1) (normalizedTorus T P x f)` has norm at most
 `R * ‖f‖ * 2 ^ (d * (∑ u - ∑ x) * card m)`. Here `d` is the number of infinite places and `card m`
 is the rank of `T`. `splitWeil` is the Weil representation of the pair `(S, T)` on test functions on
 `Hom(S, T)`. The zero term along `L` sends `f` to the mean of `θ (ϱ z f)` over the maps `z : S → T`
 vanishing on `L`, adelic modulo rational. -/
-lemma exists_zeroTerm_normalisedTorus_le {K : Set (G E s)} (Z : Matrix r n (𝔸 E))
+lemma exists_zeroTerm_normalizedTorus_le {K : Set (G E s)} (Z : Matrix r n (𝔸 E))
     (hZ : Z * P'.kAdelic = 1) (hK : IsCompact K) :
     ∃ R : NNReal, ∀ g ∈ K, ∀ x u : p → ℕ,
       Z * g.adeleMatrix * P.kAdelic * (dyadicDiag fun i : p ↦ x i : GL p (𝔸 E)).val =
         Z * g.adeleMatrix * P.kAdelic * (dyadicDiag fun i : p ↦ u i : GL p (𝔸 E)).val →
       ∀ f : 𝒮 (S.hom T),
-        ‖P'.lagrangian.zeroTerm T (splitWeil S T (g, 1) (normalisedTorus T P x f))‖ ≤
+        ‖P'.lagrangian.zeroTerm T (splitWeil S T (g, 1) (normalizedTorus T P x f))‖ ≤
           R * ‖f‖ * ((2 ^ Core.numInfPlaces E) ^ (∑ i : p, u i - ∑ i : p, x i : ℤ)) ^ card m := by
   -- Write `g · levi (dyadicDiag x) · κ · k' = k' a` by Iwasawa. Then `det a / det (dyadicDiag u)`
   -- is the determinant of a block matrix that stays in a compact set, and
@@ -620,11 +620,11 @@ lemma exists_zeroTerm_normalisedTorus_le {K : Set (G E s)} (Z : Matrix r n (𝔸
     rw [← mul_inv_cancel_left δu.det a.det, map_mul, sqrt_mul' _ ideleAbs_nonneg_and_ne_zero.1,
       ideleAbs_det_dyadicDiag_natCast u, sqrt_sq (by positivity)]
     grw [hR₁ _ h_mem]
-  -- Clear the normalising factor of `normalisedTorus`, which accounts for `∑ i, x i`.
-  have h_norm : ‖P'.lagrangian.zeroTerm T (splitWeil S T (g, 1) (normalisedTorus T P x f))‖ =
+  -- Clear the normalising factor of `normalizedTorus`, which accounts for `∑ i, x i`.
+  have h_norm : ‖P'.lagrangian.zeroTerm T (splitWeil S T (g, 1) (normalizedTorus T P x f))‖ =
       (((2 ^ Core.numInfPlaces E : ℝ) ^ ∑ i, x i) ^ card m)⁻¹ *
         ‖P'.lagrangian.zeroTerm T (splitWeil S T (g * P.levi (δx, 1), 1) f)‖ := by
-    simp [δx, normalisedTorus, rep_apply_apply]
+    simp [δx, normalizedTorus, rep_apply_apply]
   suffices h_unscaled : ‖P'.lagrangian.zeroTerm T (splitWeil S T (g * P.levi (δx, 1), 1) f)‖ ≤
       √R₁ ^ card m * (‖P'.lagrangian.zeroTerm T‖ * R₂) * ‖f‖ *
         ((2 ^ Core.numInfPlaces E) ^ ∑ i, u i) ^ card m by

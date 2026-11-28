@@ -1158,7 +1158,7 @@ lemma exists_thetaLarge_eq_smul_of_isPeriodIdentity [IsBaseAdapted D₁] {σ' : 
   calc D.centerCoeff ((j : E) • T) (𝒟 (stdColDatum 𝔠.semilocalChar z₀)) p
       = D.centerCoeff ((j : E) • T) F p - C * D.centerCoeff ((j : E) • T) F' p := by
         simpa only [h_diff₀, mul_one] using
-          D.centreCoeff_mul_right_sub_smul hF hF' C 1 ((j : E) • T) p
+          D.centerCoeff_mul_right_sub_smul hF hF' C 1 ((j : E) • T) p
     _ = 0 := sub_eq_zero.2 (coeff_eq T c y q g hT)
 
 /-- Let the adapted splittings `D` and `D₁` split `X` as `W₁` plus a hyperbolic space and `W₁`, of

@@ -452,7 +452,7 @@ lemma New.Exchange.IsEquivariantLift.apply_eq_zero_of_centreCoeff_eq_zero
   -- Apply `IntegralFrame.match_mem_of_isPrimitiveMatrix_vanishing` to `M ⊓ ker 𝒟`. Its functionals
   -- are the coefficients: `Λ T x` agrees on `M` with the `T`-th coefficient of `𝒟` at `x`, and a
   -- shear along the frame at `x` multiplies it by a value of the additive character.
-  choose Λ hΛ using h_lift.exists_linear_centreCoeff D
+  choose Λ hΛ using h_lift.exists_linear_centerCoeff D
   let Ψ₀ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ :=
     stdColDatum 𝔠.semilocalChar (adaptedFrame 𝔠.readsAt D).dualL
   let τ (T : Matrix b b E) : Matrix b b (LocProd 𝔠.ramifiedPlaces) :=
@@ -478,7 +478,7 @@ lemma New.Exchange.IsEquivariantLift.apply_eq_zero_of_centreCoeff_eq_zero
     h_cont)
   suffices h_centre : 𝒟 f (D.radicalCenter 0 * (1, g)) = 0 by simpa [h_left] using h_centre
   refine IsDualFamily.eq_zero_of_quotMean_mul_eq_zero
-    (D.isContPeriodic_radicalCentre ⟨h_cont, h_left⟩ (1, g))
+    (D.isContPeriodic_radicalCenter ⟨h_cont, h_left⟩ (1, g))
     (fun T h_per ↦ ?_) 0
   -- Hermitian matrices are periods of `D.radicalCenter`, so only skew-hermitian `T` are to be
   -- tested.
@@ -593,11 +593,11 @@ lemma New.Space.Splitting.centreCoeff_eq_zero_of_orthonormal
     simpa [← coe_snd, mul_assoc] using! h_orth
   obtain ⟨c, w, rfl : _ = β, hw, -⟩ :=
     V'.exists_x_eq_and_ratEmbed_conj_eq ⟨β, _, gram_mkAdelicGL h_infinite h_finite⟩
-  -- Move `c` from the index to the point (`centreCoeff_rat_mul` for the rational point
+  -- Move `c` from the index to the point (`centerCoeff_rat_mul` for the rational point
   -- `D.levi (c, 1)`), then commute that point past the radical: the new Levi part is
   -- `scaleIdele E • (c * q)`.
   rw [← smul_mul, ← mul_smul_comm,
-    ← centreCoeff_rat_mul _ h_aut _ (levi_mem_Gamma _ _ (one_mem _)) _ (actsOnFrame_levi ..),
+    ← centerCoeff_rat_mul _ h_aut _ (levi_mem_Gamma _ _ (one_mem _)) _ (actsOnFrame_levi ..),
     ← mul_assoc, levi_conj_radicalElement, mul_assoc, ← map_mul]
   refine h_van _ _ _ _ _
     (.inl ⟨V'.x⁻¹ * (c.map toAdele * q), k, k_int, Units.ext (by simp), ?_, rfl⟩)
@@ -823,7 +823,7 @@ theorem New.Exchange.IsEquivariantLift.apply_eq_zero_of_areMatched
   have h_level : HasLevel f (stdLevel E m ⊓ supportedOn m S) :=
     supportedOn_compl.substr (h_lift.invariant_off _ h_frame)
   have hg₀_supp : g₀ ∈ supportedOn m S := supportedOn_compl.ge hg₀
-  refine centreCoeff_eq_zero_of_unimodular h_level h_aut A _ hD_frame hdet (.star 𝔠.nonempty)
+  refine centerCoeff_eq_zero_of_unimodular h_level h_aut A _ hD_frame hdet (.star 𝔠.nonempty)
     (h_lift.shearInvariant_stdColDatum D h_frame T A hD_frame rfl)
     (h_lift.shearInvariant_stdColDatum D h_frame T A.symm hD_frame rfl)
     (fun x γ hx hγ ↦ ?_) (mem_frameStabilizer_of_mem_supportedOn hg₀_supp)

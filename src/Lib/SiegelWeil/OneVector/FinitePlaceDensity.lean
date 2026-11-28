@@ -104,7 +104,7 @@ variable [P : IntegralPlace A]
 
 /-- The data of a finite place are normalised to its ring of integers: `element`, `skewUnit` and its
 inverse are integral, `kernelBound` is `1`, and the integral skew elements have measure `1`. -/
-theorem data_normalised :
+theorem data_normalized :
     P.element ∈ O ∧
     P.skewUnit.val ∈ O ∧
     P.skewUnit⁻¹.val ∈ O ∧

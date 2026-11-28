@@ -36,7 +36,7 @@ along a splitting `H` of a hermitian space `X` of an equivariant lift `𝒟`
   `a` and `ϖ ā` are units of `O` at the set `S` of places where `χ` is read. Then it is
   `l β * γ * χ⁻¹(a) * χ(ϖ ā)`, where `l β` is a nonzero constant for each of the two terms `β` and
   `|γ|²` is the inverse of the order of the residue ring.
-* `New.Exchange.IsEquivariantLift.exists_linear_centreCoeff`: the coefficient at a point is a linear
+* `New.Exchange.IsEquivariantLift.exists_linear_centerCoeff`: the coefficient at a point is a linear
   functional of the datum. A shear of the datum by `z` along the centre of the radical multiplies it
   by the additive character at `S` of `tr (T_S z)`, where `T_S` is the component at `S` of the
   product of `T` with the inverse of the idele `invDifferentIdele E`.
@@ -603,7 +603,7 @@ lemma apply_shear (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) {Ψ : Matrix m b (Lo
 Shearing a datum in `M` by the components at `S` (`componentsAt`) of `x⁻¹ ν x` keeps it in `M` and
 moves the point at which the Fourier coefficient `H.centerCoeff T` of its lift is taken from
 `ν⁻¹ x` to `x`. -/
-lemma centreCoeff_shear (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Fintype p] [DecidableEq p] [Fintype n₀]
+lemma centerCoeff_shear (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Fintype p] [DecidableEq p] [Fintype n₀]
     [DecidableEq n₀] {s₀ : n₀ → ℤˣ} {X₀ : Space E n₀ s₀} (H : X.Splitting X₀ p) (T : Matrix p p E)
     {Ψ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ} (hΨ : Ψ ∈ M) {ν : G E r} {c : Matrix m a (𝔸 E)}
     {k : Matrix a m (𝔸 E)} {B : Matrix m m (𝔸 E)}
@@ -624,7 +624,7 @@ a linear functional `L`. Here `H.kAdelic` is the adelic frame of the isotropic s
 `z` along this frame at `x` stays in `M` and multiplies `L Ψ` by `ψ_S (tr (T_S z))`, with `ψ_S` the
 additive character at `S` and `T_S` the matrix of components at `S` of `δ⁻¹ T`, where `δ` is the
 idele `invDifferentIdele E`. -/
-lemma exists_linear_centreCoeff (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Fintype p] [DecidableEq p]
+lemma exists_linear_centerCoeff (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Fintype p] [DecidableEq p]
     [Fintype n₀] [DecidableEq n₀] {s₀ : n₀ → ℤˣ} {X₀ : Space E n₀ s₀} (H : X.Splitting X₀ p)
     (T : Matrix p p E) (x : G E r) :
     ∃ L : (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) →ₗ[ℂ] ℂ, ∀ Ψ ∈ M,
@@ -641,12 +641,12 @@ lemma exists_linear_centreCoeff (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Finty
   let L₀ : M →ₗ[ℂ] ℂ :=
     { toFun Ψ := H.centerCoeff T (𝒟 Ψ) x
       map_add' Ψ Φ := by
-        simpa using H.centreCoeff_add (h𝒟.isAutFunction Ψ.2) (h𝒟.isAutFunction Φ.2) T x
+        simpa using H.centerCoeff_add (h𝒟.isAutFunction Ψ.2) (h𝒟.isAutFunction Φ.2) T x
       map_smul' := by simp [centerCoeff, mul_left_comm] }
   obtain ⟨L, hL₀ : L ∘ₗ M.subtype = L₀⟩ := L₀.exists_extend
   have hL Φ (hΦ : Φ ∈ M) : L Φ = H.centerCoeff T (𝒟 Φ) x := LinearMap.congr_fun hL₀ ⟨Φ, hΦ⟩
   refine ⟨L, fun Ψ hΨ ↦ ⟨hL Ψ hΨ, fun z ↦ ?_⟩⟩
-  -- Lift z to an adelic matrix N. The shear by z is the one of `centreCoeff_shear` for the central
+  -- Lift z to an adelic matrix N. The shear by z is the one of `centerCoeff_shear` for the central
   -- element `ν = H.radicalCenter (idemAdele S • N)`.
   obtain ⟨N, rfl⟩ : ∃ N : Matrix p p (𝔸 E), N.map (componentsAt 𝔠) = z :=
     ⟨z.map (0, adeleOfLocal _ ·), ext fun i j ↦ evalPlaces_adeleOfLocal _ (z i j)⟩
@@ -655,9 +655,9 @@ lemma exists_linear_centreCoeff (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Finty
       (e • (H.kAdelic * N * H.lCoord) - star e • (H.kAdelic * Nᴴ * H.lCoord)) := by
     rw [H.adeleMatrix_radicalCenter]
     simp [Matrix.mul_sub, Matrix.sub_mul]
-  obtain ⟨h_mem, h_cf⟩ := h𝒟.centreCoeff_shear H T hΨ h_mat (by simp [← Matrix.mul_assoc]) x
+  obtain ⟨h_mem, h_cf⟩ := h𝒟.centerCoeff_shear H T hΨ h_mat (by simp [← Matrix.mul_assoc]) x
   -- The coefficient at `ν⁻¹ * x` is `ψ (tr (T * idemAdele S • N))` times the coefficient at `x`.
-  rw [← H.centreCoeff_radicalCentre_mul (h𝒟.isAutFunction hΨ) (e • N) (_ * x),
+  rw [← H.centerCoeff_radicalCenter_mul (h𝒟.isAutFunction hΨ) (e • N) (_ * x),
     mul_inv_cancel_left] at h_cf
   -- The character at S is `ψf` twisted by the finite part of `invDifferentIdele E`, which cancels
   -- `(invDifferentIdele E)⁻¹`.

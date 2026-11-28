@@ -441,7 +441,7 @@ lemma exists_doubling_bound (h_rank : 2 * card n < card m) : ∃ C : ENNReal, C 
         C * (‖pairWeil S T 1 b (g', 1) f'‖ₑ * ‖pairWeil S T 1 b (g, 1) f‖ₑ) := by
   -- The theta kernel of `S ⊕ S⁻, T` at a datum `d` is at most `N x * ‖d‖` with `N` integrable, and
   -- the sum `Z` of the norms of the terms of the graphs is finite by the Siegel–Weil theorem.
-  obtain ⟨N, hN_meas, hN_int, hN⟩ := theta_normalisedTorus_le T (graphSplitting S 1) h_rank
+  obtain ⟨N, hN_meas, hN_int, hN⟩ := theta_normalizedTorus_le T (graphSplitting S 1) h_rank
   have h_kernel (x : G E t) (d : 𝒮 ((S.sum S.neg).hom T)) :
       ‖θ ((S.sum S.neg).hom T) (splitWeil (S.sum S.neg) T (1, x) d)‖ₑ ≤ N x * ‖d‖ₑ := by
     simpa [-theta_apply] using hN x 0 d

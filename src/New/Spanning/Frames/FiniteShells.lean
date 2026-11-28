@@ -304,7 +304,7 @@ theorem lintegral_shells_le {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGrou
         Γ.weightedSquareProduct j p q Z.besselVector x := by
     grw [he he_lt x hx, ← one_le_mass, one_mul]
   have h_unit : F.shellNormalization Z.besselVector ≤ Z.massRatio := by
-    simpa [shellNormalization, data_normalised, mul_comm] using pairingNormSq_mul_le_massRatio Z
+    simpa [shellNormalization, data_normalized, mul_comm] using pairingNormSq_mul_le_massRatio Z
   calc F.headDensity j p q * ∫⁻ x : T.G, f x ∂F.groupMeasure
       ≤ 2 ^ (99 * (𝔰.n * 13)) * min 1 e ^ r * Γ.loss ^ (4 * 10 ^ 8 * 𝔰.n ^ 4) *
           F.shellNormalization Z.besselVector :=
@@ -524,7 +524,7 @@ theorem enorm_floorForm_le {F : PlaceData ι T (m + 1)} [h : IsLargeLatticeData 
   have h_gain (he_lt : e < 1) (x : T.G) (hx : x ∈ F.positions) :
       F.formIntegrandL1Norm j p q Z.besselVector x ω ^ 2 ≤
         (e ^ F.volumeExponent) ^ 2 * Γ.weightedSquareProduct j p q Z.besselVector x := by
-    have h_kernel : P.kernelBound = 1 := by simp [data_normalised]
+    have h_kernel : P.kernelBound = 1 := by simp [data_normalized]
     have h_exp : F.volumeExponent ≤ card F.FreeIndex := tsub_le_self
     grw [h_local x hx, h_kernel, one_div, inv_modulus_eq_sqrt_genIndex_sq, pow_right_comm, ← he,
       pow_le_pow_right_of_le_one' he_lt.le h_exp]
