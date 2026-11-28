@@ -139,16 +139,30 @@ open Amax Algebra algebraMap NeZero
 
 variable {p : ℕ} [ThePrime p]
 
-/-- Let `u` be an element of `Amax` divisible by `p`. Then for every `w` the equation
-`c - u φ(c) = w` has a solution `c` in `Amax`, where `φ` is the Frobenius `frobEnd`. -/
-lemma Amax.exists_sub_mul_frobEnd_eq {u : Amax} (hp_dvd : (p : Amax) ∣ u) (w : Amax) :
-    ∃ c : Amax, c - u * frobEnd c = w := by
-  -- `c ↦ c - u * φ c` is the identity modulo `p`, so it is onto by successive approximation
+/-- If `u` is divisible by `p` in `Amax`, the equation `c - u φ(c) = w` has a unique solution
+in `Amax`, where `φ` is the Frobenius `frobEnd`. -/
+lemma Amax.existsUnique_sub_mul_frobEnd_eq {u : Amax} (hp_dvd : (p : Amax) ∣ u) (w : Amax) :
+    ∃! c : Amax, c - u * frobEnd c = w := by
+  -- The map is the identity modulo `p`, so it is onto by successive approximation.
   let f : Amax →+ Amax := .id Amax - u • frobEnd.toAddMonoidHom
   have h_step (v : Amax) : ∃ n y : Amax, v = f n + (p : ℤ) • y := by
     obtain ⟨y, hy⟩ : (p : Amax) ∣ u * frobEnd v := hp_dvd.mul_right _
     exact ⟨v, y, by simp [f, ← hy]⟩
-  simpa [f] using mem_range_of_approx f (map_zsmul f p) id h_step w
+  obtain ⟨c, hc⟩ : ∃ c : Amax, c - u * frobEnd c = w := by
+    simpa [f] using mem_range_of_approx f (map_zsmul f p) id h_step w
+  refine ⟨c, hc, fun d hd ↦ eq_of_forall_pow_dvd_sub p ?_⟩
+  -- The difference of two solutions is multiplied by `u` after Frobenius, gaining a factor of p.
+  have h_diff : d - c = u * frobEnd (d - c) := by
+    rw [map_sub]
+    linear_combination hd - hc
+  intro n
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    have h_phi : (p : Amax) ^ n ∣ frobEnd (d - c) := by
+      simpa only [map_pow, map_natCast] using map_dvd frobEnd ih
+    rw [h_diff, pow_succ']
+    exact mul_dvd_mul hp_dvd h_phi
 
 /-- There is an element `t` of Colmez's period ring `Amax` (the p-adic completion of
 `A_inf[X]/(pX − ξ)`) that is a unit multiple of `μ p`, where `μ = [ε] − 1` is the element `mu` of
@@ -168,8 +182,8 @@ lemma exists_tPeriod : ∃ t : Amax,
   obtain ⟨w, hw⟩ : μ ∣ p * u - p := by
     simpa [hu, hμ, -isUnit_map_iff] using
       map_dvd (algebraMap Ainf Amax) (map_dvd frobEnd tau_dvd_xi_sub_p)
-  obtain ⟨c, hc⟩ : ∃ c : Amax, c - p * u ^ 2 * frobEnd c = w :=
-    exists_sub_mul_frobEnd_eq (dvd_mul_right _ _) w
+  obtain ⟨c, hc, -⟩ : ∃! c : Amax, c - p * u ^ 2 * frobEnd c = w :=
+    existsUnique_sub_mul_frobEnd_eq (dvd_mul_right _ _) w
   have phi_μ : frobEnd μ = p * u * μ := by
     rw [hu, hμ, frobEnd_algebraMap, ← map_mul, ← frobEnd_tau, ← map_mul, xi_mul_tau, frobEnd_tau]
   let t : Amax := μ * (p + μ * c)
@@ -185,7 +199,7 @@ lemma exists_tPeriod : ∃ t : Amax,
     simp [μ, ← xi_mul_tau, mul_assoc]
   have h_unit : IsUnit (u + μ * u ^ 2 * frobEnd c) := isUnit_of_dvd_sub u.isUnit h_p_dvd
   refine ⟨t, ⟨h_unit.unit, t_eq⟩, phi_t, fun g ↦ ?_⟩
-  -- `δ = g t - χ(g) t` is divisible by every `p ^ n μ²`, so it vanishes
+  -- After removing the factor `μ²`, the Galois defect satisfies the homogeneous equation.
   set χ : ℤ_[p] := ↑(cyclotomicGp g)
   set δ : Amax := g • t - χ • t with hδ
   have phi_δ : frobEnd δ = p * δ := by
@@ -193,24 +207,27 @@ lemma exists_tPeriod : ∃ t : Amax,
       let φ : FrobGal := (Multiplicative.ofAdd 1, 1)
       exact smul_comm φ χ t
     simp [hδ, ← smul_frobEnd, phi_smul, phi_t, mul_sub]
-  have h_dvd (n : ℕ) : p ^ n * μ ^ 2 ∣ δ := by
-    induction n with
-    | zero =>
-      -- `g μ = μ² d + χ(g) μ` and `t = μ (p + μ c)`; expand `g t - χ(g) t`
-      obtain ⟨d, hd⟩ : mu ^ 2 ∣ g • mu - χ • mu := Lift.mu_sq_dvd_smul_mu_sub g
-      have h_gμ : g • μ = μ ^ 2 * d + algebraMap ℤ_[p] Amax χ * μ := by
-        simp [μ, χ, eq_add_of_sub_eq hd, Algebra.smul_def, ← IsScalarTower.algebraMap_apply]
-      have h_gt : g • t = g • μ * (p + g • μ * g • c) := by simp [t, smul_mul', smul_add]
-      refine ⟨p * d + (algebraMap ℤ_[p] Amax χ + μ * d) ^ 2 * g • c - χ • c, ?_⟩
-      rw [hδ, h_gt, h_gμ, Algebra.smul_def χ c, Algebra.smul_def χ t]
-      ring
-    | succ n ih =>
-      -- applying `φ` to `δ = p ^ n μ² z` gives `p δ = p ^ n (p u μ)² φ z`; cancel `p`
-      obtain ⟨z, hz⟩ := ih
-      refine ⟨u ^ 2 * frobEnd z, mul_left_cancel₀ (ne (p : Amax)) ?_⟩
-      rw [← phi_δ, hz, map_mul, map_mul, map_pow, map_pow, map_natCast, phi_μ]
-      ring
-  exact eq_of_forall_pow_dvd_sub p fun n ↦ dvd_of_mul_right_dvd (h_dvd n)
+  obtain ⟨z, hz⟩ : μ ^ 2 ∣ δ := by
+    -- `g μ = μ² d + χ(g) μ` and `t = μ (p + μ c)`; expand `g t - χ(g) t`.
+    obtain ⟨d, hd⟩ : mu ^ 2 ∣ g • mu - χ • mu := Lift.mu_sq_dvd_smul_mu_sub g
+    have h_gμ : g • μ = μ ^ 2 * d + algebraMap ℤ_[p] Amax χ * μ := by
+      simp [μ, χ, eq_add_of_sub_eq hd, Algebra.smul_def, ← IsScalarTower.algebraMap_apply]
+    have h_gt : g • t = g • μ * (p + g • μ * g • c) := by simp [t, smul_mul', smul_add]
+    refine ⟨p * d + (algebraMap ℤ_[p] Amax χ + μ * d) ^ 2 * g • c - χ • c, ?_⟩
+    rw [hδ, h_gt, h_gμ, Algebra.smul_def χ c, Algebra.smul_def χ t]
+    ring
+  have h_mu_ne : μ ≠ 0 := by
+    intro h_zero
+    apply BPlus.mu_ne_zero (p := p)
+    simpa [hμ, ← IsScalarTower.algebraMap_apply] using congrArg (algebraMap Amax BPlus) h_zero
+  have h_z : z - p * u ^ 2 * frobEnd z = 0 := by
+    apply (mul_left_cancel₀ (mul_ne_zero (ne (p : Amax)) (pow_ne_zero 2 h_mu_ne)))
+    rw [mul_zero]
+    rw [hz, map_mul, map_pow, phi_μ] at phi_δ
+    linear_combination -phi_δ
+  have hz_zero : z = 0 :=
+    (existsUnique_sub_mul_frobEnd_eq (dvd_mul_right _ _) (0 : Amax)).unique h_z (by simp)
+  exact sub_eq_zero.mp (by simpa [hz_zero] using hz)
 
 /-- A chosen element `t` of `Amax` with the three properties of `exists_tPeriod`. These properties
 are unchanged when `t` is multiplied by a unit of `ℤ_[p]`, so they do not fix a normalisation. -/
@@ -400,7 +417,7 @@ lemma Bmax.exists_frobEnd_sub_eq_and_coe_eq (a : Bmax (p := p)) :
   obtain ⟨n, e, _, ⟨w, rfl⟩, h_dense⟩ := b.exists_Ainf_approx 0 (m + 1)
   -- Solve `e = φ c - ξ ^ m c` and `w = d - φ(ξ) φ(d)` (since `p ∣ φ(ξ)` in `A`).
   obtain ⟨c, rfl⟩ := e.exists_frobEnd_sub_xi_pow_mul_eq m
-  obtain ⟨d, rfl⟩ := exists_sub_mul_frobEnd_eq associated_p_frobEnd_xi.dvd w
+  obtain ⟨d, rfl, -⟩ := existsUnique_sub_mul_frobEnd_eq associated_p_frobEnd_xi.dvd w
   -- The denominator `p ^ n τ ^ m` is a unit `s` of `B` and a unit `v` of `B_dR⁺`.
   have h_tau : IsUnit (tau : Bmax) := isUnit_coe_Bmax_of_dvd_mu (Dvd.intro_left xi xi_mul_tau)
   obtain ⟨s, hs⟩ : IsUnit ((p : BPlus) ^ n • (tau : Bmax) ^ m) :=
