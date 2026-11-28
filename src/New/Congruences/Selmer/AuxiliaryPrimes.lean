@@ -134,11 +134,8 @@ lemma New.Selmer.exists_discreteLog {E : Type*} [Field E] [NumberField E] {P : F
   set g : (IsLocalRing.ResidueField (LocInt P))ˣ := (LocInt P).unitGroupToResidueFieldUnits ⟨u, hu⟩
   have hu_unit : v u.val = 1 := (v.mem_unitGroup_iff _ u).mp hu
   have h_unit_mem (t : (LocField P)ˣ) :
-      t * uniformizer P ^ (v t.val).log ∈ (LocInt P).unitGroup := by
-    refine (v.mem_unitGroup_iff ..).mpr ?_
-    have h_cancel : v t.val * WithZero.exp (-(v t.val).log) = 1 := by
-      rw [WithZero.exp_neg, WithZero.exp_log (by simp), mul_inv_cancel₀ (by simp)]
-    simpa [v_uniformizer, ← WithZero.exp_zsmul] using h_cancel
+      t * uniformizer P ^ (v t.val).log ∈ (LocInt P).unitGroup :=
+    (v.mem_unitGroup_iff ..).mpr (by simp [-WithZero.inv_exp, WithZero.exp_neg])
   -- `unitPart` divides out the power of the uniformizer; `residueUnit` is the residue of the result
   let unitPart : (LocField P)ˣ →* (LocInt P).unitGroup :=
     .mk' (fun t ↦ ⟨t * uniformizer P ^ (v t.val).log, h_unit_mem t⟩) <| by
@@ -348,8 +345,7 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
     simp [hA.valuation_natCast_eq_one_iff, hℓw]
   -- the `T`-units are finitely generated, say by `s`
   obtain ⟨h_finite, -⟩ := SUnit.dirichlet_unit_theorem (K := E) hT
-  obtain ⟨s, hs⟩ : ∃ s : Finset (Additive (T.unit E)),
-      Submodule.span ℤ (s : Set (Additive (T.unit E))) = ⊤ := h_finite.fg_top
+  obtain ⟨s, hs⟩ := h_finite.fg_top
   have h_root (x : E) : ∃ y : Ω, y ^ ℓ ^ N = algebraMap E Ω x :=
     Variety.IsAbsIntegrallyClosed.exists_pow_eq (ℓ ^ N) (algebraMap E Ω x)
   choose y hy using h_root
@@ -374,7 +370,7 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
   have hP_ne_star : star P ≠ P := fun h ↦ hP (.inr ⟨hp, h⟩)
   -- `σ` fixes the roots of unity, so the norm of `P` is `1` modulo `ℓ ^ N`
   have h_norm : P.q ≡ 1 [MOD ℓ ^ N] := (hσ.mem_ker_cyclotomicCharMod_iff (hℓ hPT hA)).1 hσ_cyc
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, P.q = 1 + ℓ ^ N * k := (modEq_iff_exists_eq_add hp.pos).1 h_norm.symm
+  obtain ⟨k, hk⟩ := (modEq_iff_exists_eq_add P.one_le_q).1 h_norm.symm
   obtain ⟨χ, θ, hχ_cont, hχ_tg, hθ_rat, hθ_one, hχ⟩ :=
     exists_anticyclotomicChar_of_frob_fixes_roots h_gen hs hp hk hPT hP_ne_star hA hσ
       fun u hu ↦ ⟨y (u.toMul : Eˣ), hy _, mem_iInf.1 hσ_root ⟨u, hu⟩⟩
@@ -383,13 +379,12 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
   have hτ : IsFrob A P.q τ := by simpa using hσ.mul_iff.2 (pow_mem hA.tameGenerator.property _)
   have hχτ : χ τ = 1 := by simp [τ, hχ_tg, ← ofAdd_nsmul]
   obtain ⟨-, hτW⟩ := h_frob τ hτ
-  have hχ_lc : IsLocallyConstant χ := fun V ↦ hχ_cont.isOpen_preimage V (isOpen_discrete V)
   refine ⟨P, fun h ↦ hP (.inl (.inr h)), hp, ⟨A, hA.tameGenerator, τ, χ⟩, hτW.self_of_nhds, hχτ,
     fun T' hT' ↦ ?_⟩
   have hT'T : T'.conjClosure ⊆ T :=
     (Set.union_subset_union hT' (Set.preimage_mono hT')).trans hST
-  refine ⟨⟨hχ_lc, θ, hθ_rat, fun a ha ha_one ↦ ?_, hχ⟩, h_norm, hA, hτ,
-    fun h ↦ hPT (hT'T (.inl h)), hP_ne_star, hA.tameGenerator.property, hχ_tg, rfl⟩
+  refine ⟨⟨(IsLocallyConstant.iff_continuous χ).2 hχ_cont, θ, hθ_rat, fun a ha ha_one ↦ ?_, hχ⟩,
+    h_norm, hA, hτ, fun h ↦ hPT (hT'T (.inl h)), hP_ne_star, hA.tameGenerator.property, hχ_tg, rfl⟩
   -- an idele that is a unit off `T'.conjClosure ⊆ T` and `≡ 1` at `P` is killed by `θ`
   exact hθ_one a (idelesUnitOff_mono hT'T ha) (ha_one P ⟨rfl, fun h ↦ hPT (hT'T h)⟩)
 
