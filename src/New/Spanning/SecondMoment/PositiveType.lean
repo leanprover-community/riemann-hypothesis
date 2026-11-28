@@ -11,6 +11,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
+import TauCeti.InformationTheory.Coding.CharacterSum
 public import Lib.General.LinearAlgebra.IntegralLattices
 import Lib.General.Analysis.FiniteFourier
 
@@ -81,23 +82,6 @@ lemma expect_addChar_dotProduct [DecidableEq m] [Fintype k] [DecidableEq k] {ψ 
     𝔼 x : m → k, ψ (z ⬝ᵥ x) = if z = 0 then 1 else 0 := by
   simp [Fintype.expect_eq_sum_div_card, sum_addChar_dotProduct hψ, ite_div]
 
-/-- For a primitive additive character `ψ` of a finite field with `q` elements, the functions
-`ζ ↦ ψ (-x ⬝ᵥ ζ) / √(q ^ |n|)`, one for each `x : kⁿ`, are orthonormal. -/
-lemma orthonormal_addChar_div_sqrt [Fintype k] [DecidableEq k] {ψ : AddChar k ℂ}
-    (hψ : ψ.IsPrimitive) :
-    Orthonormal ℂ fun x : n → k ↦ (toLp 2 fun ζ : n → k ↦
-      ψ (-x ⬝ᵥ ζ) / √((Fintype.card k : ℝ) ^ Fintype.card n) : EuclideanSpace ℂ (n → k)) := by
-  rw [orthonormal_iff_ite]
-  intro x y
-  have h_mul (ζ : n → k) :
-      ψ (-(y ⬝ᵥ ζ)) * starRingEnd ℂ (ψ (-(x ⬝ᵥ ζ))) = ψ ((x - y) ⬝ᵥ ζ) := by
-    rw [← map_neg_eq_conj, ← map_add_eq_mul, sub_dotProduct, neg_neg, neg_add_eq_sub]
-  -- The character sum is `q ^ |n|` for `x = y` and `0` otherwise.
-  have h_sum : ∑ ζ : n → k, ψ (-(y ⬝ᵥ ζ)) * starRingEnd ℂ (ψ (-(x ⬝ᵥ ζ))) =
-      if x = y then (Fintype.card k : ℂ) ^ Fintype.card n else 0 := by
-    simp [h_mul, sum_addChar_dotProduct hψ, sub_eq_zero, -sub_dotProduct]
-  simp [PiLp.inner_apply, div_mul_div_comm, ← ofReal_mul, ← sum_div, h_sum, ite_div]
-
 /-- For an additive character `ψ`, the inner product of the function
 `ζ ↦ ψ (-((gᵀ)⁻¹ x) ⬝ᵥ ζ) / r` with the indicator of `g' z` is `ψ (x ⬝ᵥ g⁻¹ g' z) / r`. -/
 lemma inner_addChar_invTranspose_smul_single [Fintype k] [DecidableEq k] (ψ : AddChar k ℂ)
@@ -126,7 +110,8 @@ lemma re_sum_addChar_dotProduct_mul_le [Fintype k] [DecidableEq k] {ψ : AddChar
   let π' : G →* GL n k := invTransposeGL.toMonoidHom.comp π
   let c (v : n → k) : EuclideanSpace ℂ (n → k) := toLp 2 fun ζ ↦ ψ (-v ⬝ᵥ ζ) / r
   let e (v : n → k) : EuclideanSpace ℂ (n → k) := EuclideanSpace.single v 1
-  have hc : Orthonormal ℂ c := orthonormal_addChar_div_sqrt hψ
+  have hc : Orthonormal ℂ c := by
+    simpa only [c, neg_dotProduct] using (AddChar.orthonormal_dotProduct (ι := n) hψ)
   have he : Orthonormal ℂ e := orthonormal_single
   let X₁ : TensorProduct ℂ (EuclideanSpace ℂ (n → k)) H := ∑ a, c (π' a • x) ⊗ₜ[ℂ] u a
   let X₀ : TensorProduct ℂ (EuclideanSpace ℂ (n → k)) H := ∑ a, e (π a • z) ⊗ₜ[ℂ] u a
