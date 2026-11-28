@@ -10,6 +10,7 @@ import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
 import Mathlib.NumberTheory.Multiplicity
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
+import TauCeti.Algebra.BigOperators.Finset.Range
 import TauCeti.NumberTheory.Bernoulli.Basic
 import TauCeti.NumberTheory.DirichletCharacter.BernoulliBounds
 public import Lib.Speed
@@ -204,12 +205,8 @@ omit [NeZero N] in
 `0 ≤ i < K`. -/
 lemma sum_range_mul_eq_sum_sum {α : Type*} [AddCommMonoid α] (F : ℕ → α) (K : ℕ) :
     ∑ t ∈ range (N * K), F t = ∑ a ∈ range N, ∑ i ∈ range K, F (a + i * N) := by
-  induction K with
-  | zero => simp
-  | succ K ih =>
-    rw [Nat.mul_succ, sum_range_add, ih, ← sum_add_distrib]
-    refine sum_congr rfl fun a _ ↦ ?_
-    rw [sum_range_succ, add_comm (N * K) a, mul_comm N K]
+  rw [Finset.sum_range_mul_eq_sum_sum, Finset.sum_comm]
+  simp only [Nat.add_comm, Nat.mul_comm]
 
 /-- Voronoi's congruence for the Stickelberger sums. Let `χ` be a character mod `N` with values in
 a commutative ring without additive torsion, let `c ≡ 1 mod N` be prime to `m ≥ 1`, and let
