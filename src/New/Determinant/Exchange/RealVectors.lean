@@ -516,18 +516,14 @@ lemma exists_isSchwartzVector_realSlice_bump (D : X.Splitting W₁ b) [IsBaseAda
         (contDiff_mat_det (contDiff_pi.1 C.contDiff w)).pow (N w)))
   -- `x` is recovered from the frame `(x, 0)`, which lies in the support of `σ`.
   have τ_cpt : HasCompactSupport (τ ∘ C) := by
-    have h_cont : Continuous (C.symm ∘ fun (x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) w ↦
-        (fromRows 1 0 : Matrix (b ⊕ n) b ℂ)ᴴ * x w) :=
-      C.symm.continuous.comp (continuous_pi fun w ↦
-        continuous_mat_mul continuous_const (continuous_apply w))
+    refine HasCompactSupport.comp_homeomorph (f := τ) ?_ C.toHomeomorph
+    have h_cont : Continuous (fun (x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) w ↦
+        (x w).submatrix Sum.inl id) := by fun_prop
     refine (hσ_cpt.image h_cont).closure_of_subset fun x hx ↦
-      ⟨fun w ↦ fromRows 1 0 * C x w, subset_closure (left_ne_zero_of_mul hx), ?_⟩
-    apply C.injective
-    rw [Function.comp_apply, C.apply_symm_apply]
+      ⟨fun w ↦ fromRows 1 0 * x w, subset_closure (left_ne_zero_of_mul hx), ?_⟩
     funext w
-    rw [← Matrix.mul_assoc, conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromRows,
-      conjTranspose_one, conjTranspose_zero, Matrix.one_mul, Matrix.zero_mul, add_zero,
-      Matrix.one_mul]
+    change (fromRows (1 : Matrix b b ℂ) (0 : Matrix n b ℂ) * x w).toRows₁ = x w
+    rw [fromRows_mul, toRows₁_fromRows, Matrix.one_mul]
   obtain ⟨κ, Λ, hΛ, hΛ₀, hΛ_slice⟩ := exists_isSchwartzVector_realSlice_eq D V' (τ ∘ C) τ_smooth hv
     τ_cpt
     (fun _ ↦ mul_nonneg (hσ₀ _) (sq_nonneg _)) (C.symm fun _ ↦ 1) (by
@@ -594,16 +590,15 @@ lemma exists_isSchwartzVector_exchangeSection (D : X.Splitting W₁ b) [IsBaseAd
     fun_prop
   -- On the support, `x = k y * w x` with `y = z ∘ x` and `w x` in the support of `σ`.
   have τ_cpt : HasCompactSupport (τ ∘ C) := by
-    have h_cont : Continuous (C.symm ∘ fun (p : (InfinitePlace E → Matrix (b ⊕ n) b ℂ) ×
+    refine HasCompactSupport.comp_homeomorph (f := τ) ?_ C.toHomeomorph
+    have h_cont : Continuous (fun (p : (InfinitePlace E → Matrix (b ⊕ n) b ℂ) ×
         (InfinitePlace E → Matrix (b ⊕ n) b ℂ)) v ↦ S (p.1 v) * p.2 v) :=
-      C.symm.continuous.comp (continuous_pi fun v ↦
-        continuous_mat_mul (hk.continuous.comp ((_root_.continuous_apply v).comp continuous_fst))
-          ((_root_.continuous_apply v).comp continuous_snd))
+      continuous_pi fun v ↦ continuous_mat_mul
+        (hk.continuous.comp ((_root_.continuous_apply v).comp continuous_fst))
+        ((_root_.continuous_apply v).comp continuous_snd)
     refine ((hσ_cpt.prod hσ_cpt).image h_cont).closure_of_subset fun x hx ↦ ?_
-    have hσ_ne : σ (z ∘ C x) ≠ 0 ∧ σ (w (C x)) ≠ 0 := mul_ne_zero_iff.1 (left_ne_zero_of_smul hx)
-    refine ⟨(z ∘ C x, w (C x)), closure_prod_eq.le (subset_closure hσ_ne), ?_⟩
-    apply C.injective
-    rw [Function.comp_apply, C.apply_symm_apply]
+    have hσ_ne : σ (z ∘ x) ≠ 0 ∧ σ (w x) ≠ 0 := mul_ne_zero_iff.1 (left_ne_zero_of_smul hx)
+    refine ⟨(z ∘ x, w x), closure_prod_eq.le (subset_closure hσ_ne), ?_⟩
     funext v
     simp only [S, w, unitaryMovedFrame, Function.comp_apply, ← Matrix.mul_assoc, ← Units.val_mul,
       ← Subgroup.coe_mul, mul_inv_cancel, Subgroup.coe_one, Units.val_one, Matrix.one_mul]
