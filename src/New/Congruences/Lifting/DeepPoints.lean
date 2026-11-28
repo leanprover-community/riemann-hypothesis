@@ -185,19 +185,12 @@ lemma SidePairing.isScaledCupCoboundary_of_gap (P : S.SidePairing S') {a κ η H
   refine P.isScaledCupCoboundary_of_stops_at_all_letters x x' h_kill_tateDual
     (fun i ↦ mem_standardPoints_of_plainDepth (hx i))
     (fun i ↦ mem_standardPoints_of_plainDepth (hx' i)) (fun i ↦ ?_) (by omega)
-  obtain Pε | Pε := units_eq_one_or (ε i)
-  · have h_down : ∀ u ∈ S.jumpSet i, u ≤ η :=
-      jump_le_of_fitsWindows (h_window i) (.inl (neg_inj.2 Pε))
-    have h_up : ∀ u ∈ S'.jumpSet i, -η ≤ u := neg_le_jump_of_fitsWindows (h_window' i) (.inl Pε)
-    exact .inl (P.exists_mem_stopPoints_isSafeMoveSnd one_pos (h_kill_tateDual i)
-      (forall_mem_U_stepBack_of_lt_one h_down)
-      (forall_mem_U_stepBack_of_lt_one h_up) (hx i) (hx' i) (hx'_no_pole (i.stepBack 1)))
-  · have h_down : ∀ u ∈ S'.jumpSet i, u ≤ η := jump_le_of_fitsWindows (h_window' i) (.inl Pε)
-    have h_up : ∀ u ∈ S.jumpSet i, -η ≤ u :=
-      neg_le_jump_of_fitsWindows (h_window i) (.inl (neg_eq_iff_eq_neg.2 Pε))
-    exact .inr (P.exists_mem_stopPoints_isSafeMoveFst one_pos (h_kill_tateDual i)
-      (forall_mem_U_stepBack_of_lt_one h_down)
-      (forall_mem_U_stepBack_of_lt_one h_up) (hx' i) (hx i) (hx_no_pole (i.stepBack 1)))
+  have h_sign : ∀ j < 1, ε (i.stepBack j) = ε i ∨ b (i.stepBack j) + W ≤ η := by
+    intro j hj
+    obtain rfl : j = 0 := by omega
+    exact .inl (by rw [stepBack_zero])
+  exact P.exists_stop_of_aligned_windows h_window h_window' one_pos (h_kill_tateDual i) h_sign
+    (hx i) (hx' i) (hx_no_pole (i.stepBack 1)) (hx'_no_pole (i.stepBack 1))
 
 /-- Free steps. Let the Kummer chart be unramified, let `p` divide no nonzero integer within `n` of
 `0`, `β` or `-β`, and let the side `S` have a point over `p ^ κ • c` at the letter `i` with orders

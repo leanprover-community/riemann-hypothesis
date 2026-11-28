@@ -20,9 +20,8 @@ with the larger size, are sparse, and one where they form any pattern.
 
 * `New.Lift.KummerChart.PairingSide.killsCokernel_of_isKillingCut`: at a cut `i`, `p ^ κ * E ^ s i`
   kills the cokernel.
-* `New.Lift.KummerChart.PairingSide.SidePairing.exists_stop_of_hasSignBefore`,
-  `New.Lift.KummerChart.PairingSide.SidePairing.exists_stop_of_isLongGap`: the stop of the walk at a
-  plain cut and at a cut with a long gap.
+* `New.Lift.KummerChart.PairingSide.SidePairing.exists_stop_of_isLongGap`: the stop of the walk
+  at a cut with a long gap.
 * `New.Lift.KummerChart.PairingSide.SidePairing.isScaledCupCoboundary_of_cut_windows`: the scheme.
   It derives the bound from a cut 1 to `2J + 1` letters back from each letter.
 * `New.Lift.KummerChart.PairingSide.SidePairing.isScaledCupCoboundary_sparse_thick`,
@@ -540,41 +539,6 @@ lemma SidePairing.exists_stop_of_isLongGap {ε : k.Letter → ℤˣ} {s β : k.L
       (sub_mem_kerWithOrders_of_pointsOver hx (phi_pow_smul_mem_pointsOver hx₀)) hq'
       fun a u hu v _ ↦ h_rule a u hu v⟩
 
-/-- Let the paired sides have their jumps at each letter `j` in `[-η, η]` and in opposite far
-windows `∓ε j • [β j, β j + V]`. Let `i` be a plain cut: `0 < l`, and the `l` letters after
-`i.stepBack l` share the sign `ρ`, up to far windows that end at or below `η`. Let `x`, `x'` at `i`
-and `x₀`, `x₀'` at `i.stepBack l` be points of the two sides over `p ^ e c`, `p ^ e c'` with orders
-`-u` on each jump `u`, lowered by `η` at the distinguished element `E` (level `0`). Let `x`, `x'`
-have the depth `plainDepth s η l η`: `-u`, raised by `s` at the level `0` and by `η` at the levels
-up to `l`. Let `p ^ κ * E ^ s` kill the cokernel at `i` of the Tate dual side, with lattice
-`Hom(Y ⊗ Y', O(1))`. Then one side has a stop, at which it rests while the other side moves from
-`φ ^ l` of its point at `i.stepBack l` to its point at `i`, safely: `p ^ κ` times the pairing of
-this move with all `g • q - q` (`q` the stop) lies in the image of `W(𝔪^♭)`. -/
-lemma SidePairing.exists_stop_of_hasSignBefore {ε : k.Letter → ℤˣ} {β : k.Letter → ℕ}
-    {η V κ e : ℕ} (h : S.SidePairing S')
-    (hU : ∀ i : k.Letter, FitsWindows η (-ε i) (β i) V (S.jumpSet i))
-    (hU' : ∀ i : k.Letter, FitsWindows η (ε i) (β i) V (S'.jumpSet i)) {i : k.Letter} {l s : ℕ}
-    {ρ : ℤˣ} (hl : 0 < l) (h_kill : h.tateDualSide.KillsCokernel i κ s)
-    (h_plain : i.HasSignBefore ε β η V l ρ) {c : S.paramLattice} {c' : S'.paramLattice}
-    {d₀ : ℕ → ℤ → ℤ} {x₀ x : S.extensionLattice.Ambient} {x₀' x' : S'.extensionLattice.Ambient}
-    (hx : x ∈ S.pointsOver c i e (raisedOrdersAtZero (-η)) (plainDepth s η l η))
-    (hx' : x' ∈ S'.pointsOver c' i e (raisedOrdersAtZero (-η)) (plainDepth s η l η))
-    (hx₀ : x₀ ∈ S.pointsOver c (i.stepBack l) e (raisedOrdersAtZero (-η)) d₀)
-    (hx₀' : x₀' ∈ S'.pointsOver c' (i.stepBack l) e (raisedOrdersAtZero (-η)) d₀) :
-    (∃ q ∈ S.stopPoints c i e η l, h.IsSafeMoveSnd κ q (FrobGroup.φ ^ l • x₀' - x')) ∨
-      ∃ q' ∈ S'.stopPoints c' i e η l, h.IsSafeMoveFst κ (FrobGroup.φ ^ l • x₀ - x) q' := by
-  obtain rfl | rfl := Int.units_eq_one_or ρ
-  · have h_down (a : ℕ) (ha : a < l) : ∀ u ∈ S.jumpSet (i.stepBack a), u ≤ η :=
-      jump_le_of_fitsWindows (hU _) ((h_plain a ha).imp_left neg_inj.2)
-    have h_up (a : ℕ) (ha : a < l) : ∀ u ∈ S'.jumpSet (i.stepBack a), -η ≤ u :=
-      neg_le_jump_of_fitsWindows (hU' _) (h_plain a ha)
-    exact .inl (h.exists_mem_stopPoints_isSafeMoveSnd hl h_kill h_down h_up hx hx' hx₀')
-  · have h_down (a : ℕ) (ha : a < l) : ∀ u ∈ S'.jumpSet (i.stepBack a), u ≤ η :=
-      jump_le_of_fitsWindows (hU' _) (h_plain a ha)
-    have h_up (a : ℕ) (ha : a < l) : ∀ u ∈ S.jumpSet (i.stepBack a), -η ≤ u :=
-      neg_le_jump_of_fitsWindows (hU _) ((h_plain a ha).imp_left neg_eq_iff_eq_neg.2)
-    exact .inr (h.exists_mem_stopPoints_isSafeMoveFst hl h_kill h_down h_up hx' hx hx₀)
-
 /-- The scheme of cuts, a chosen set of letters. Let paired sides have their jumps in the low window
 `[-η, η]` and in opposite far windows `∓ε i • [β i, β i + V]`. Suppose that `η ≥ 1`, `V + 4 η ≤ W`,
 that the shifts have `s i + W ≤ p n`, and that the size conditions `CutSizes` hold: `2 b` bounds all
@@ -635,7 +599,7 @@ lemma SidePairing.isScaledCupCoboundary_of_cut_windows {cut : k.Letter → Prop}
     (fun i hi ↦ mem_standardPoints_of_plainDepth (hx'_plain i hi)) (fun i hi ↦ ?_) (by omega)
   have h_before : cut (i.stepBack (l i)) := (hl_nearest i).cut_stepBack
   obtain ⟨t, h_plain | h_long⟩ := h_gap i (l i) (hl_nearest i)
-  · exact h.exists_stop_of_hasSignBefore hU hU' (hl_nearest i).pos (h_kill i hi) h_plain
+  · exact h.exists_stop_of_aligned_windows hU hU' (hl_nearest i).pos (h_kill i hi) h_plain
       (hx_plain i hi) (hx'_plain i hi) (hx_plain _ h_before) (hx'_plain _ h_before)
   · -- The cut before a long gap has shift `0`.
     have h_kill_before := h_kill _ h_before
