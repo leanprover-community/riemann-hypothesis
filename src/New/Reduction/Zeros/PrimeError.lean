@@ -5,6 +5,7 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.MeasureTheory.Function.Floor
 import Mathlib.NumberTheory.LSeries.Linearity
 import Mathlib.NumberTheory.LSeries.SumCoeff
+public import TauCeti.NumberTheory.ArithmeticDirichletSeries.Riesz.Basic
 public import Lib.Analytic.EntireLFunction
 
 /-!
@@ -209,21 +210,38 @@ lemma abs_primeRemainder_exp_le {v : ℝ} (hv : 0 ≤ v) :
 
 variable {d q}
 
+/-- The prime remainder is the normalized first Riesz sum of its quadratic weights
+after subtracting the logarithmic main term and the constant at infinity. -/
+lemma primeRemainder_eq_normalized_rieszSum {y : ℝ} (hy : 0 < y) :
+    (primeRemainder d q y : ℂ) =
+      TauCeti.rieszSum (fun n ↦ (lambdaKResidueClass d q n : ℂ)) y / y -
+        (φ q : ℂ)⁻¹ * Real.log y - (logDerivMean d q 1).re := by
+  have weight (n : ℕ) (hn : n ∈ Icc 1 ⌊y⌋₊) (w : ℂ) :
+      w / n - w / n * n / y = w * ((y : ℂ) / n - 1) / y := by
+    have hn_pos : 0 < n := (mem_Icc.1 hn).1
+    field [hn_pos.ne', hy.ne']
+  simpa [primeRemainder, lambdaKSum, TauCeti.rieszSum_def, ← div_eq_inv_mul, sum_div,
+    ← sum_sub_distrib] using
+    (sum_congr (rfl : Icc 1 ⌊y⌋₊ = _) fun n hn ↦ weight n hn (lambdaKResidueClass d q n))
+
 /-- In the remainder `primeRemainder d q z = ∑_{1 ≤ n ≤ z} λ(n) (1/n - 1/z) - log z / φ(q) - re
 G_q(1)` with `z > 0`, the sum equals `∑_{1 ≤ n ≤ A} λ(n) (1/n - 1/z)⁺` for any integer `A ≥ ⌊z⌋`. -/
 lemma primeRemainder_eq_sum_posPart {A : ℕ} {z : ℝ} (hz_pos : 0 < z) (hz_le : ⌊z⌋₊ ≤ A) :
     primeRemainder d q z = ∑ n ∈ Icc 1 A,
       lambdaKResidueClass d q n * (1 / n - 1 / z)⁺ - z.log / φ q -
       re (logDerivMean d q 1) := by
-  simp only [primeRemainder, lambdaKSum, sum_div, ← sum_sub_distrib, sub_left_inj]
-  -- The positive part of `1 / n - 1 / z` vanishes for `z < n` and is the number itself for `n ≤ z`.
-  refine sum_subset_zero_on_sdiff (Icc_subset_Icc_right hz_le) (fun n hn ↦ ?_) fun n hn ↦ ?_
-  · have hz_lt : z < n := Nat.lt_of_floor_lt (by grind)
-    rw [posPart_of_nonpos (sub_nonpos.2 (by gcongr)), mul_zero]
-  · have hn_le : (n : ℝ) ≤ z := (Nat.le_floor_iff hz_pos.le).1 (mem_Icc.1 hn).2
-    have hn_pos : 0 < n := (mem_Icc.1 hn).1
-    rw [posPart_of_nonneg (sub_nonneg.2 (by gcongr))]
+  apply Complex.ofReal_injective
+  rw [primeRemainder_eq_normalized_rieszSum hz_pos, TauCeti.rieszSum_eq_sum_max_of_floor_le _ hz_le]
+  simp only [ofReal_sub, ofReal_div, ofReal_sum, ofReal_mul, ofReal_natCast]
+  rw [div_eq_inv_mul (Real.log z : ℂ), sub_left_inj, sub_left_inj, sum_div]
+  apply sum_congr rfl
+  intro n _
+  have ramp : max (z / (n : ℝ) - 1) 0 = z * (1 / n - 1 / z)⁺ := by
+    rw [posPart_def, mul_max_of_nonneg _ _ hz_pos.le, mul_zero]
+    congr 1
     field
+  rw [ramp, Complex.ofReal_mul]
+  field_simp [Complex.ofReal_ne_zero.2 hz_pos.ne']
 
 /-- In the remainder `primeRemainder d q z = ∑_{1 ≤ n ≤ z} λ(n) (1/n - 1/z) - log z / φ(q) - re
 G_q(1)` with `z > 0`, the sum equals `A⁻¹ ∑_{1 ≤ n ≤ A} λ(n) (A/n - A/z)⁺` for any integer

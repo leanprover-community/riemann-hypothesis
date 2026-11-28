@@ -2,6 +2,7 @@ module
 
 import Mathlib.MeasureTheory.Function.Floor
 public import New.Reduction.Zeros.PrimeError
+import TauCeti.NumberTheory.ArithmeticDirichletSeries.Riesz.SummatoryTail
 import Lib.Analytic.PrimeNumberTheorem.Tauberian
 import Lib.Analytic.PrimeNumberTheorem.ZeroFreeRegion
 
@@ -84,35 +85,15 @@ lemma intervalIntegrable_countError_div_sq {y z : ℝ} (hy : 1 ≤ y) (hyz : y �
 `𝓔_q(t) = countError d q t` is `∑_{n ≤ t} λ(n) - t / φ(q)`. -/
 lemma primeRemainder_eq_integral_countError_sub {y : ℝ} (hy : 1 ≤ y) :
     primeRemainder d q y = (∫ t in 1..y, countError d q t / t ^ 2) - re (logDerivMean d q 1) := by
-  have h_sq_ne (t : ℝ) (ht : t ∈ Set.Icc 1 y) : t ^ 2 ≠ 0 := by positivity [ht.1]
-  have h_zero : lambdaKResidueClass d q 0 = 0 := by simp [lambdaKResidueClass, residueClass]
-  have h_abel : ∑ n ∈ Icc 0 ⌊y⌋₊, lambdaKResidueClass d q n / n =
-      (∑ n ∈ Icc 0 ⌊y⌋₊, lambdaKResidueClass d q n) / y +
-        ∫ t in Set.Ioc 1 y, (∑ n ∈ Icc 0 ⌊t⌋₊, lambdaKResidueClass d q n) / t ^ 2 := by
-    have h_int : IntegrableOn (deriv fun t : ℝ ↦ t⁻¹) (Set.Icc 1 y) := by
-      rw [deriv_inv']
-      exact ContinuousOn.integrableOn_Icc (by fun_prop (disch := assumption))
-    simpa only [deriv_inv', neg_mul, integral_neg, sub_neg_eq_add, ← div_eq_inv_mul] using
-      sum_mul_eq_sub_integral_mul₀ (lambdaKResidueClass d q) h_zero y
-        (fun t ht ↦ differentiableAt_inv (by positivity [ht.1])) h_int
-  have h_log : ∫ t in 1..y, t / φ q / t ^ 2 = y.log / φ q := by
-    rw [← div_one y, ← integral_one_div_of_pos one_pos (by linarith), div_one,
-      ← intervalIntegral.integral_div]
-    exact intervalIntegral.integral_congr fun t _ ↦ by field
-  have h_count : ∫ t in 1..y, countError d q t / t ^ 2 =
-      (∫ t in 1..y, (∑ n ∈ Icc 0 ⌊t⌋₊, lambdaKResidueClass d q n) / t ^ 2) - y.log / φ q := by
-    rw [← h_log, eq_sub_iff_add_eq,
-      ← intervalIntegral.integral_add (intervalIntegrable_countError_div_sq le_rfl hy)
-        (ContinuousOn.intervalIntegrable_of_Icc hy (by fun_prop (disch := assumption)))]
-    simp only [countError, sub_div, sub_add_cancel]
-  have h_sum (r : ℕ) : lambdaKSum d q r y =
-      (∑ n ∈ Icc 0 ⌊y⌋₊, lambdaKResidueClass d q n / n * n ^ r) / y ^ r := by
-    simp [lambdaKSum, Icc_eq_cons_Ioc (Nat.zero_le _), ← Icc_add_one_left_eq_Ioc]
-  have h_div_mul_cancel (n : ℕ) : lambdaKResidueClass d q n / n * n = lambdaKResidueClass d q n :=
-    div_mul_cancel_of_imp (by simp +contextual [h_zero])
-  rw [primeRemainder, h_count, intervalIntegral.integral_of_le hy, h_sum, h_sum]
-  simp only [pow_zero, mul_one, div_one, pow_one, h_div_mul_cancel, h_abel]
-  ring
+  have count (t : ℝ) : (countError d q t : ℂ) =
+      (∑ n ∈ Icc 1 ⌊t⌋₊, (lambdaKResidueClass d q n : ℂ)) - (φ q : ℂ)⁻¹ * t := by
+    simp [countError, Icc_eq_cons_Ioc (Nat.zero_le _), ← Icc_add_one_left_eq_Ioc,
+      lambdaKResidueClass, residueClass, div_eq_inv_mul]
+  apply Complex.ofReal_injective
+  rw [primeRemainder_eq_normalized_rieszSum (zero_lt_one.trans_le hy),
+    TauCeti.rieszSum_div_sub_log_eq_integral _ _ hy, Complex.ofReal_sub,
+    intervalIntegral.integral_of_le hy]
+  simp_rw [← integral_complex_ofReal, Complex.ofReal_div, Complex.ofReal_pow, count]
 
 /-- Let `d` be a prime and `q ≠ 0`, and let `λ(n) = lambdaKResidueClass d q n` be `Λ(n) (1 - (n/d))`
 for `n ≡ 1` mod `q` and `0` otherwise. The remainder `R_q = primeRemainder d q`, that is
