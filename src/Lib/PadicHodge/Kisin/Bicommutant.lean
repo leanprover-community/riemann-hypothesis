@@ -88,8 +88,10 @@ lemma theta_z_dvd_p : theta c.z ∣ p := by
 lemma theta_z_ne_zero : theta c.z ≠ 0 :=
   ne_zero_of_dvd_ne_zero (out : (p : OC) ≠ 0) c.theta_z_dvd_p
 
-/-- The ring S_B of the chart: the elements of `BPlus` whose multiplication commutes with every
-`c.S`-linear map of `BPlus` that keeps `amaxImage`, the image of A_max. -/
+/--
+The ring S_B of the chart: the elements of `BPlus` whose multiplication commutes with every
+`c.S`-linear map of `BPlus` that keeps `amaxImage`, the image of A_max.
+-/
 def bicommutant : Subalgebra c.S BPlus :=
   Subalgebra.comap (lmul c.S BPlus)
     (Subalgebra.centralizer c.S {G : Module.End c.S BPlus | ∀ y ∈ amaxImage, G y ∈ amaxImage})
@@ -184,9 +186,11 @@ lemma exists_extendToBPlus (f : Ainf →ₗ[c.S] Ainf) :
     rintro _ ⟨x, rfl⟩
     exact ⟨G₀ x, (hG x).symm⟩
 
-/-- For a `c.S`-linear map `f` of A_inf, a chosen `c.S`-linear extension of `f` to B^+ that
+/--
+For a `c.S`-linear map `f` of A_inf, a chosen `c.S`-linear extension of `f` to B^+ that
 keeps `amaxImage`; it is even linear over S_B = `c.bicommutant`
-(`New.Lift.Chart.extendToBPlus_mul`). -/
+(`New.Lift.Chart.extendToBPlus_mul`).
+-/
 def extendToBPlus (f : Ainf →ₗ[c.S] Ainf) : BPlus →ₗ[c.S] BPlus := (c.exists_extendToBPlus f).choose
 
 /-- On the image of A_inf the extension of `f` is `f`. -/
@@ -207,9 +211,11 @@ lemma extendToBPlus_mul {y : BPlus} (f : Ainf →ₗ[c.S] Ainf) (hy : y ∈ c.bi
   -- Multiplication by `y` commutes with every map that keeps `amaxImage`, such as the extension.
   c.mem_bicommutant_iff.mp hy (c.extendToBPlus f) (c.extendToBPlus_mem_amaxImage f) x
 
-/-- For a chart and an index `i`, the extension to B^+ of the coordinate
+/--
+For a chart and an index `i`, the extension to B^+ of the coordinate
 `c.adicBasis.coord i : Ainf → c.S` followed by the inclusion into A_inf, as a `c.S`-linear map
-B^+ → B^+. -/
+B^+ → B^+.
+-/
 abbrev extendedCoord (i : c.adicBasis.Index) : BPlus →ₗ[c.S] BPlus :=
   c.extendToBPlus (Algebra.linearMap c.S Ainf ∘ₗ c.adicBasis.coord i)
 

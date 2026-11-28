@@ -78,70 +78,93 @@ namespace New.Data
 
 variable {P : Parameters} (D : Data P) (p : ℕ)
 
-/-- The prime sum s_p(y, σ) = v(π_p) ∑_{e ∈ I_p} (y/p^e − w(u(−p^e) σ))⁺. Here v(π_p) is
+/--
+The prime sum s_p(y, σ) = v(π_p) ∑_{e ∈ I_p} (y/p^e − w(u(−p^e) σ))⁺. Here v(π_p) is
 `New.piPrimeValuation` (1/2 if p = d, and 1 otherwise), I_p is `New.positivePartnerExponents` (the
 odd numbers if p is inert, all e ≥ 1 if p = d, none if p splits), and w is `New.Data.weight` (b on
 the set `New.Data.bPlaces`, a/x₁ elsewhere). The infinite places form the group (ℤ/q₁)^×, with
 q₁ = `New.Data.q₁`; u(ν) = `New.Data.placeOfInt` ν is the place given by the class of ν if ν is
-prime to q₁, and the identity place otherwise. -/
-def localPrimeSum (y : ℝ) (σ : D.Φ) : ℝ := piPrimeValuation P.d p *
-  ∑' e : ℕ, if e ∈ positivePartnerExponents P.d p then
-    (y / p ^ e - D.weight (D.placeOfInt (-p ^ e) * σ))⁺ else 0
+prime to q₁, and the identity place otherwise.
+-/
+def localPrimeSum (y : ℝ) (σ : D.Φ) : ℝ :=
+  piPrimeValuation P.d p
+    * ∑' e : ℕ, if e ∈ positivePartnerExponents P.d p then
+        (y / p ^ e - D.weight (D.placeOfInt (-p ^ e) * σ))⁺ else 0
 
-/-- The total F(p) = ∑_σ s_p(w(σ), σ) of the prime sums s_p = `New.Data.localPrimeSum` p over the
-infinite places σ, with w = `New.Data.weight`. -/
+/--
+The total F(p) = ∑_σ s_p(w(σ), σ) of the prime sums s_p = `New.Data.localPrimeSum` p over the
+infinite places σ, with w = `New.Data.weight`.
+-/
 def localPrimeSumTotal : ℝ := ∑ σ : D.Φ, D.localPrimeSum p (D.weight σ) σ
 
-/-- The divisibility asked of the chain of m lifts at p: gain(p) = m(∑_τ s_p(a, τ) + k F(p)). The
+/--
+The divisibility asked of the chain of m lifts at p: gain(p) = m(∑_τ s_p(a, τ) + k F(p)). The
 sum runs over the a-places τ (`New.Data.aPlaces`, the infinite places of class 1 modulo q₀), s_p is
-`New.Data.localPrimeSum` p and F(p) is `New.Data.localPrimeSumTotal` p. -/
+`New.Data.localPrimeSum` p and F(p) is `New.Data.localPrimeSumTotal` p.
+-/
 def gain : ℝ := D.m * (∑ τ ∈ D.aPlaces, D.localPrimeSum p D.a τ + D.k * D.localPrimeSumTotal p)
 
-/-- The natural number p satisfies p < x₁ and χ_K(p) ≠ 1; for prime p, this says that p is below
-x₁ and inert or ramified in the quadratic field of the character χ_K = `New.chiK`. -/
+/--
+The natural number p satisfies p < x₁ and χ_K(p) ≠ 1; for prime p, this says that p is below
+x₁ and inert or ramified in the quadratic field of the character χ_K = `New.chiK`.
+-/
 abbrev IsSmallNonsplit : Prop := p < D.x₁ ∧ chiK P.d p ≠ 1
 
-/-- The number m of lifts divides p − 1 (truncated at 0) or p + 1; for a prime p, this says
-p ≡ ±1 modulo m. -/
+/--
+The number m of lifts divides p − 1 (truncated at 0) or p + 1; for a prime p, this says
+p ≡ ±1 modulo m.
+-/
 def IsPlusMinusOneModLifts : Prop := D.m ∣ p - 1 ∨ D.m ∣ p + 1
 
 open scoped Classical in
-/-- The unit of the allowed losses at a non-split p < x₁: f a (log b)²/p, times m if p ≡ ±1 modulo
-m. -/
+/--
+The unit of the allowed losses at a non-split p < x₁: f a (log b)²/p, times m if p ≡ ±1 modulo
+m.
+-/
 def loss : ℝ := D.f * D.logB ^ 2 * (D.a / p * (if D.IsPlusMinusOneModLifts p then D.m else 1))
 
 /-- The least natural number 𝔯 with m ≤ p^𝔯 (for p > 1). -/
 def ceilLogLifts : ℕ := p.clog D.m
 
-/-- The natural number ν_p = 𝔯f(n_m + 𝔯), with 𝔯 = `New.Data.ceilLogLifts` p and f the number of
+/--
+The natural number ν_p = 𝔯f(n_m + 𝔯), with 𝔯 = `New.Data.ceilLogLifts` p and f the number of
 infinite places of E. Here n_j = k + j(t + 1) (`New.Data.n`) is the rank of the space X_j of stage
-j, and m is the number of lifts. -/
+j, and m is the number of lifts.
+-/
 def transferExponent : ℕ := D.ceilLogLifts p * D.f * (D.n D.m + D.ceilLogLifts p)
 
 /-- The natural number j_p = ⌈2mfa/p⌉, with f the number of infinite places of E. -/
 def collisionExponent : ℕ := ⌈(D.m * (2 * D.f * D.a / p) : ℝ)⌉₊
 
-/-- The order o₀ in (ℤ/q₀)^× of the class of the infinite place named by −p
+/--
+The order o₀ in (ℤ/q₀)^× of the class of the infinite place named by −p
 (`New.Data.placeOfInt`). The places form the group (ℤ/q₁)^×, where q₁ = q₀ · `New.towerDeg` s and
 s = `D.towerExp`, and `New.Parameters.placeClass` reduces modulo the divisor q₀ of q₁. For p prime
-to q₀, o₀ is the order of −p in (ℤ/q₀)^×. -/
+to q₀, o₀ is the order of −p in (ℤ/q₀)^×.
+-/
 def o₀ : ℕ := orderOf (P.placeClass ⟨towerDeg D.towerExp, rfl⟩ (D.placeOfInt (-p)))
 
-/-- p is exceptional if χ_K(p) = −1, p is not ±1 modulo the number m of lifts, and the order
+/--
+p is exceptional if χ_K(p) = −1, p is not ±1 modulo the number m of lifts, and the order
 o₀ = `New.Data.o₀` p is odd and at most 𝔯 = `New.Data.ceilLogLifts` p. Then, for e = o₀, the
-infinite place named by −p^e is an a-place. -/
+infinite place named by −p^e is an a-place.
+-/
 def IsExceptional : Prop :=
-  chiK P.d p = -1 ∧ ¬D.IsPlusMinusOneModLifts p ∧ Odd (D.o₀ p) ∧ D.o₀ p ≤ D.ceilLogLifts p
+  chiK P.d p = -1 ∧ ¬ D.IsPlusMinusOneModLifts p ∧ Odd (D.o₀ p) ∧ D.o₀ p ≤ D.ceilLogLifts p
 
-/-- A collision outside ev: e lies in I_p = `New.positivePartnerExponents`, and both τ and its
-product with the place named by −p^e are a-places not in ev. -/
+/--
+A collision outside ev: e lies in I_p = `New.positivePartnerExponents`, and both τ and its
+product with the place named by −p^e are a-places not in ev.
+-/
 def IsCollision (ev : Finset D.Φ) (τ : D.Φ) (e : ℕ) : Prop :=
-  e ∈ positivePartnerExponents P.d p ∧ τ ∈ D.aPlaces \ ev ∧
-    D.placeOfInt (-p ^ e) * τ ∈ D.aPlaces \ ev
+  e ∈ positivePartnerExponents P.d p ∧ τ ∈ D.aPlaces \ ev
+    ∧ D.placeOfInt (- p ^ e) * τ ∈ D.aPlaces \ ev
 
 open scoped Classical in
-/-- The sum of a/p^e over all pairs (τ, e) that are collisions outside ev
-(`New.Data.IsCollision`). -/
+/--
+The sum of a/p^e over all pairs (τ, e) that are collisions outside ev
+(`New.Data.IsCollision`).
+-/
 def collisionSum (ev : Finset D.Φ) : ℝ :=
   ∑ τ : D.Φ, ∑' e : ℕ, if D.IsCollision p ev τ e then (D.a / p ^ e : ℝ) else 0
 
@@ -160,16 +183,19 @@ namespace New
 
 open NumberField Matrix Finset Fintype Submodule Space Rows Norms.L2Operator MvPolynomial
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ}
 
 /-! ### Short forms -/
 
-/-- A form φ is B-short if each value φ(g) is integral for Weyl's lattice at g at every p-adic
-embedding, and all conjugates of φ(g) under Aut(ℂ) have squared norm at most B. -/
+/--
+A form φ is B-short if each value φ(g) is integral for Weyl's lattice at g at every p-adic
+embedding, and all conjugates of φ(g) under Aut(ℂ) have squared norm at most B.
+-/
 def IsShort (B : ℝ) (φ : AlgForm n κ e) : Prop :=
-  (∀ (p : ℕ) [Fact p.Prime] [PadicPlace p], GaugeLe 1 1 φ) ∧
-  ∀ (σ : ℂ ≃+* ℂ) (g : Gf E n), weylNormSq (σ ∘ φ.val g) ≤ B
+  (∀ (p : ℕ) [Fact p.Prime] [PadicPlace p], GaugeLe 1 1 φ)
+    ∧ ∀ (σ : ℂ ≃+* ℂ) (g : Gf E n), weylNormSq (σ ∘ φ.val g) ≤ B
 
 /-- Let G_f = `Gf E n` be the unitary group of the form ∑ xᵢx̄ᵢ over the finite adeles of the CM
 field E, and φ an algebraic form on G_f of weight (κ, e): at the infinite place τ the Young diagram
@@ -443,13 +469,17 @@ lemma span_isShort_eq_top {K : Subgroup (Gf E n)} [IsLevel K] [Nonempty n]
   rw [← LinearMap.zero_comp (A (.id _)).mulVecLin, LinearMap.cancel_right h_surj] at h_zero
   exact (Quotient.mk_eq_zero _).1 (LinearMap.congr_fun h_zero _)
 
-/-- The representation of the norm-one finite adeles, acting by translation by scalar matrices,
-on algebraic forms of weight (κ, e) on which J acts through χ. -/
-def algFormCentralRep {J : Subgroup (Gf E n)} {χ : J →* ℂ} :
-    Representation ℂ (unitary (𝔸f E)) (levelSpace (algFormRep κ e) J χ) :=
+/--
+The representation of the norm-one finite adeles, acting by translation by scalar matrices,
+on algebraic forms of weight (κ, e) on which J acts through χ.
+-/
+def algFormCentralRep {J : Subgroup (Gf E n)} {χ : J →* ℂ}
+    : Representation ℂ (unitary (𝔸f E)) (levelSpace (algFormRep κ e) J χ) :=
   Representation.subrepresentation ((algFormRep κ e).comp (scalarFin n))
-    (levelSpace (algFormRep κ e) J χ) fun _ _ hφ ↦ map_mem_levelSpace_of_commute hφ fun k ↦
-      (Seesaw.commute_scalarFin k.val).symm.map (algFormRep κ e)
+    (levelSpace (algFormRep κ e) J χ)
+    fun _ _ hφ ↦
+      map_mem_levelSpace_of_commute hφ fun k ↦
+        (Seesaw.commute_scalarFin k.val).symm.map (algFormRep κ e)
 
 /-- For `φ` in the level space of `algFormRep κ e` for `J` and `χ`, the form underlying
 `algFormCentralRep z φ` is `φ` right-translated by the scalar matrix `scalarFin n z` under
@@ -611,8 +641,10 @@ lemma inf_supportedOn_le_chosenLevel {P : Parameters} (D : Data P) {j : ℕ}
   (inf_supportedOn_le_principalLevel fun w hw ↦ D.not_isChosen_of_N_mem (hS w hw)).trans
     (D.principalLevel_le_chosenLevel dvd_rfl)
 
-/-- The scalings at a prime `w` dividing `π = D.piN`: the integral ideles of norm one that are `1`
-off `w` and its conjugate. -/
+/--
+The scalings at a prime `w` dividing `π = D.piN`: the integral ideles of norm one that are `1`
+off `w` and its conjugate.
+-/
 def IsScalingAt {P : Parameters} (D : Data P) (w : D.piNPlaces) (z : unitary (𝔸f D.E)) : Prop :=
   z.val ∈ Ô D.E ∧ ∀ u : FinPlace D.E, u ≠ w.val → star u ≠ w.val → z.val u = 1
 
@@ -646,9 +678,11 @@ lemma exists_isScalingAt_valuation_pow_iff {P : Parameters} (D : Data P) (w : D.
   · -- As `w` splits, the component at `w` is `x`.
     simpa [coe_divStar, ← map_inv, h_split, ← WithZero.exp_add] using h_order i
 
-/-- A chosen scaling `z_w` at a prime `w` dividing `π`: it is integral, it is `1` off `w` and its
+/--
+A chosen scaling `z_w` at a prime `w` dividing `π`: it is integral, it is `1` off `w` and its
 conjugate, and its component at `w` has order `N - 1` modulo `w`, so it reduces to a generator of
-the units of the residue field. -/
+the units of the residue field.
+-/
 def scalingGenerator {P : Parameters} (D : Data P) (w : D.piNPlaces) : unitary (𝔸f D.E) :=
   (D.exists_isScalingAt_valuation_pow_iff w).choose
 
@@ -719,8 +753,10 @@ lemma scalarFin_scalingGenerator_pow_mem_levelX_iff {P : Parameters} (D : Data P
 
 /-! ### Ramified source forms -/
 
-/-- The representation of the norm-one finite adeles U(1)(𝔸_f) on source forms, by right translation
-by scalar matrices. -/
+/--
+The representation of the norm-one finite adeles U(1)(𝔸_f) on source forms, by right translation
+by scalar matrices.
+-/
 def centralRep {P : Parameters} (D : Data P) : Representation ℂ (unitary (𝔸f D.E)) D.SourceForm :=
   algFormCentralRep
 
@@ -753,18 +789,22 @@ lemma centralRep_scalingGenerator_pow_eq_one {P : Parameters} (D : Data P) (w : 
     D.centralRep (D.scalingGenerator w) ^ (D.N - 1) = 1 :=
   D.algFormCentralRep_scalingGenerator_pow w
 
-/-- The ramified source forms: those for which, at each `w ∣ π`, the translates by the powers
-`z_w ^ i`, `0 ≤ i < N - 1`, of the chosen scaling `z_w = D.scalingGenerator w` have sum `0`. -/
+/--
+The ramified source forms: those for which, at each `w ∣ π`, the translates by the powers
+`z_w ^ i`, `0 ≤ i < N - 1`, of the chosen scaling `z_w = D.scalingGenerator w` have sum `0`.
+-/
 def ramifiedSourceForms {P : Parameters} (D : Data P) : Submodule ℂ D.SourceForm :=
   ⨅ w : D.piNPlaces, LinearMap.ker (∑ i ∈ range (D.N - 1), D.centralRep (D.scalingGenerator w) ^ i)
 
 lemma cast_N_sub_one_ne_zero {P : Parameters} (D : Data P) : (↑(D.N - 1) : ℂ) ≠ 0 :=
   Nat.cast_ne_zero.2 (Nat.sub_ne_zero_of_lt D.N_prime.one_lt)
 
-/-- The product over `w ∈ s` of the operators `1 - z_w` on source forms, where
-`z_w = D.scalingGenerator w` acts through `D.centralRep`. -/
-def ramifyingOp {P : Parameters} (D : Data P) (s : Finset D.piNPlaces) :
-    Module.End ℂ D.SourceForm :=
+/--
+The product over `w ∈ s` of the operators `1 - z_w` on source forms, where
+`z_w = D.scalingGenerator w` acts through `D.centralRep`.
+-/
+def ramifyingOp {P : Parameters} (D : Data P) (s : Finset D.piNPlaces)
+    : Module.End ℂ D.SourceForm :=
   D.centralRep.asAlgebraHom (∏ w ∈ s, (1 - .of ℂ _ (D.scalingGenerator w)))
 
 /-- For admissible data `D`, let `π = D.piN` be the integer of `E` with `π π̄ = N`, the prime `D.N`.
@@ -777,7 +817,8 @@ lemma ramifiedSourceForms_eq_range {P : Parameters} (D : Data P) :
   iInf_ker_sum_pow_eq_range D.centralRep D.scalingGenerator D.cast_N_sub_one_ne_zero
     D.centralRep_scalingGenerator_pow_eq_one
 
-/-- Let `D` be admissible data for the parameters `P`, with CM field `E = D.E`, prime `N = D.N` and
+/--
+Let `D` be admissible data for the parameters `P`, with CM field `E = D.E`, prime `N = D.N` and
 integer `π = D.piN` of `E` with `π π̄ = N`, and let `w` be a prime dividing `π`. The finite adelic
 unitary group of `X_j` acts by right translation (`algFormRep`) on the algebraic forms whose weight
 at each infinite place `τ` has `D.columnCount τ h` columns of height `h` and last entry
@@ -785,23 +826,30 @@ at each infinite place `τ` has `D.columnCount τ h` columns of height `h` and l
 finite idele `z_w = D.scalingGenerator w` is `1` off `w` and its conjugate, has order `N - 1` modulo
 `w`, and acts through its scalar matrix (`scalarFin`). The translates of `φ` by `z_w ^ i`,
 `0 ≤ i < N - 1`, have sum `0` if and only if `φ = ψ - z_w ψ` for a form `ψ` of the same weight and
-level. -/
-theorem sum_scalingGenerator_pow_eq_zero_iff_exists_eq_sub {P : Parameters} (D : Data P) {j : ℕ}
-    (w : D.piNPlaces) (φ : levelSpace (algFormRep D.columnCount (D.lastEntry j)) (D.levelX j)) :
-    ∑ i ∈ range (D.N - 1), algFormRep D.columnCount (D.lastEntry j)
-        (scalarFin (D.X j) (D.scalingGenerator w) ^ i) φ.val = 0 ↔
-      ∃ ψ : levelSpace (algFormRep D.columnCount (D.lastEntry j)) (D.levelX j),
-        φ.val = ψ.val - algFormRep D.columnCount (D.lastEntry j)
-          (scalarFin (D.X j) (D.scalingGenerator w)) ψ.val := by
+level.
+-/
+theorem sum_scalingGenerator_pow_eq_zero_iff_exists_eq_sub
+    {P : Parameters} (D : Data P)
+    {j : ℕ}
+    (w : D.piNPlaces) (φ : levelSpace (algFormRep D.columnCount (D.lastEntry j)) (D.levelX j))
+    : ∑ i ∈ range (D.N - 1), algFormRep D.columnCount (D.lastEntry j)
+          (scalarFin (D.X j) (D.scalingGenerator w) ^ i) φ.val
+        = 0
+      ↔ ∃ ψ : levelSpace (algFormRep D.columnCount (D.lastEntry j)) (D.levelX j),
+        φ.val
+          = ψ.val - algFormRep D.columnCount (D.lastEntry j)
+            (scalarFin (D.X j) (D.scalingGenerator w)) ψ.val := by
   -- The operator `T` of `z_w` on the forms of this level has `T ^ (N - 1) = 1`.
   let T : End ℂ (levelSpace (algFormRep D.columnCount (D.lastEntry j)) (D.levelX j)) :=
     algFormCentralRep (D.scalingGenerator w)
-  have h_iff : ∑ i ∈ range (D.N - 1), (T ^ i) φ = 0 ↔
-      ∃ ψ : levelSpace (algFormRep D.columnCount (D.lastEntry j)) (D.levelX j), φ = ψ - T ψ :=
+  have h_iff
+      : ∑ i ∈ range (D.N - 1), (T ^ i) φ = 0
+        ↔ ∃ ψ : levelSpace (algFormRep D.columnCount (D.lastEntry j)) (D.levelX j), φ = ψ - T ψ :=
     sum_pow_apply_eq_zero_iff_exists_eq_sub D.cast_N_sub_one_ne_zero
       (D.algFormCentralRep_scalingGenerator_pow w) φ
   simpa only [T, Subtype.ext_iff, Submodule.coe_sum, Submodule.coe_sub, Submodule.coe_zero,
-    ← map_pow, coe_algFormCentralRep_apply] using h_iff
+      ← map_pow, coe_algFormCentralRep_apply]
+    using h_iff
 
 /-- For admissible data `D`, let `π = D.piN` be the integer of `E` with `π π̄ = N`, the prime `D.N`.
 The source forms `D.SourceForm` are the algebraic forms on the unitary group of `X_0`, of the weight

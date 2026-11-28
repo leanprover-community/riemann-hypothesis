@@ -68,10 +68,12 @@ namespace New.Variety
 open CategoryTheory Function Ideal WittVector Period Algebra IsLocalization RingHom PadicTest
   Functor CommAlgCat Quot FormallySmooth FormallyUnramified
 
-/-- The field k has characteristic zero and comes with an embedding in Q̄_p, the algebraic
-closure of ℚ_p, for the fixed prime p. -/
-class EmbeddedInQpBar (p : outParam ℕ) (k : outParam Type) [Field k] extends ThePrime p,
-  Algebra k (PadicAlgCl p), CharZero k
+/--
+The field k has characteristic zero and comes with an embedding in Q̄_p, the algebraic
+closure of ℚ_p, for the fixed prime p.
+-/
+class EmbeddedInQpBar (p : outParam ℕ) (k : outParam Type) [Field k]
+  extends ThePrime p, Algebra k (PadicAlgCl p), CharZero k
 
 section
 
@@ -79,9 +81,11 @@ variable {p : ℕ} [ThePrime p] (c : PadicTest)
 
 namespace PadicTest
 
-/-- The ℂ_p-algebra structure on R[1/p] of a p-adic test with ring R, induced from its structure map
+/--
+The ℂ_p-algebra structure on R[1/p] of a p-adic test with ring R, induced from its structure map
 O_C → R by inverting p. It is introduced through a choice, so that its definition does not
-unfold. -/
+unfold.
+-/
 instance algebraGenericRing : ∀ c : PadicTest, Algebra ℂ_[p] c.GenericRing :=
   (@exists_eq _ (map _ ·.structureMap (powers_le_comap_powers p _) |>.toAlgebra)).choose
 
@@ -96,13 +100,17 @@ lemma genericStructureMap_coe (x : OC) :
   -- The algebra structure is defined through a choice, so the proof opens that choice.
   simpa +instances [genericStructureMap, algebraGenericRing] using! map_eq ..
 
-/-- `O_C → ℂ_p → R[1/p]` is a scalar tower: on `O_C`, `genericStructureMap` is the structure map
-`O_C → R` followed by `R → R[1/p]` (`genericStructureMap_coe`). -/
+/--
+`O_C → ℂ_p → R[1/p]` is a scalar tower: on `O_C`, `genericStructureMap` is the structure map
+`O_C → R` followed by `R → R[1/p]` (`genericStructureMap_coe`).
+-/
 instance : IsScalarTower OC ℂ_[p] c.GenericRing :=
   .of_algebraMap_eq fun x ↦ (c.genericStructureMap_coe x).symm
 
-/-- For a p-adic test with ring R, the map W(R^♭)[1/p] → R[1/p] obtained from Fontaine's map θ:
-W(R^♭) → R by inverting p. -/
+/--
+For a p-adic test with ring R, the map W(R^♭)[1/p] → R[1/p] obtained from Fontaine's map θ:
+W(R^♭) → R by inverting p.
+-/
 def thetaGeneric : Localization.Away (p : WittVector p c.TiltRing) →+* c.GenericRing :=
   IsLocalization.map c.GenericRing (fontaineTheta c.ProdRing p)
     (powers_le_comap_powers p (fontaineTheta c.ProdRing p))
@@ -122,19 +130,23 @@ lemma thetaGeneric_mu :
     c.thetaGeneric (algebraMap Ainf (Localization.Away (p : WittVector p c.TiltRing)) mu) = 0 := by
   simp [thetaGeneric_algebraMap_ainf, mu_eq]
 
-/-- For a p-adic test with ring R, the quotient B = W(R^♭)[1/p]/(ker θ)², where
-θ: W(R^♭)[1/p] → R[1/p]. -/
+/--
+For a p-adic test with ring R, the quotient B = W(R^♭)[1/p]/(ker θ)², where
+θ: W(R^♭)[1/p] → R[1/p].
+-/
 abbrev Thickening : Type := Localization.Away (p : WittVector p c.TiltRing) ⧸ ker c.thetaGeneric ^ 2
 
 /-- For a p-adic test with ring R, the ring map W(R^♭)[1/p]/(ker θ)² → R[1/p] induced by θ. -/
-def thickeningProj :
-    Localization.Away (p : WittVector p c.TiltRing) ⧸ ker c.thetaGeneric ^ 2 →+* c.GenericRing :=
+def thickeningProj
+    : Localization.Away (p : WittVector p c.TiltRing) ⧸ ker c.thetaGeneric ^ 2 →+* c.GenericRing :=
   Ideal.Quotient.lift (ker c.thetaGeneric ^ 2) c.thetaGeneric (pow_le_self (by simp))
 
-/-- `R[1/p]` is the localisation of `R` at the image under `f : S → R` of the powers of `p`, for any
-ring `S`. -/
-instance isLocalization_genericRing {S : Type*} [CommRing S] (f : S →+* c.ProdRing) :
-    IsLocalization (Submonoid.map f (Submonoid.powers (p : S))) c.GenericRing := by
+/--
+`R[1/p]` is the localisation of `R` at the image under `f : S → R` of the powers of `p`, for any
+ring `S`.
+-/
+instance isLocalization_genericRing {S : Type*} [CommRing S] (f : S →+* c.ProdRing)
+    : IsLocalization (Submonoid.map f (Submonoid.powers (p : S))) c.GenericRing := by
   rw [Submonoid.map_powers, map_natCast]
   infer_instance
 
@@ -191,10 +203,11 @@ lemma existsUnique_lift_thickening :
   simpa only [AlgHom.ext_iff, AlgHom.comp_apply] using
     New.Variety.existsUnique_algHom_lift s π h_surj h_nil
 
-/-- The unique `ℤ_p`-algebra map from `ℚ̄_p` to the thickening that lifts the structure map
-`ℚ̄_p → ℂ_p → R[1/p]` along `thickeningProj`. -/
-def uniqueLift : PadicAlgCl p →ₐ[ℤ_[p]] c.Thickening :=
-  c.existsUnique_lift_thickening.exists.choose
+/--
+The unique `ℤ_p`-algebra map from `ℚ̄_p` to the thickening that lifts the structure map
+`ℚ̄_p → ℂ_p → R[1/p]` along `thickeningProj`.
+-/
+def uniqueLift : PadicAlgCl p →ₐ[ℤ_[p]] c.Thickening := c.existsUnique_lift_thickening.exists.choose
 
 lemma thickeningProj_uniqueLift (z : PadicAlgCl p) :
     c.thickeningProj (c.uniqueLift z) = c.genericStructureMap z :=
@@ -211,8 +224,10 @@ variable {c} {d : PadicTest} (f : c ⟶ d)
 
 /-! ### Maps induced by a morphism of tests -/
 
-/-- For a morphism of p-adic tests with rings R, R', the induced ℂ_p-algebra map
-R[1/p] → R'[1/p]. -/
+/--
+For a morphism of p-adic tests with rings R, R', the induced ℂ_p-algebra map
+R[1/p] → R'[1/p].
+-/
 def mapGeneric : c.GenericRing →ₐ[ℂ_[p]] d.GenericRing where
   toRingHom := IsLocalization.map d.GenericRing f.toRingHom (powers_le_comap_powers p f.toRingHom)
   commutes' _ := by
@@ -226,14 +241,18 @@ lemma mapGeneric_algebraMap (x : c.ProdRing) :
       algebraMap d.ProdRing d.GenericRing (f.toRingHom x) :=
   lift_eq ..
 
-/-- For a morphism of p-adic tests, the induced A_inf-algebra map between the quotients
-W(R^♭)[1/p]/(ker θ)². -/
+/--
+For a morphism of p-adic tests, the induced A_inf-algebra map between the quotients
+W(R^♭)[1/p]/(ker θ)².
+-/
 def mapThickening : c.Thickening →ₐ[Ainf] d.Thickening :=
   quotientMapₐ (ker d.thetaGeneric ^ 2)
     -- the map of Witt vectors induced by `f`, with `p` inverted
-    ⟨IsLocalization.map _ (_ : WittVector p c.TiltRing →+* WittVector p d.TiltRing)
+    ⟨
+      IsLocalization.map _ (_ : WittVector p c.TiltRing →+* WittVector p d.TiltRing)
         (powers_le_comap_powers p _),
-      fun a ↦ (map_eq ..).trans (congrArg _ (((tilt ⋙ wittFunctor).map f).hom'.commutes' a))⟩
+      fun a ↦ (map_eq ..).trans (congrArg _ (((tilt ⋙ wittFunctor).map f).hom'.commutes' a))
+    ⟩
     -- both kernels are generated by the image of `xi`
     (by simp [thickeningProj_surjective_and_ker_thetaGeneric, span_singleton_pow, -AlgHom.coe_mk])
 
@@ -267,15 +286,19 @@ def genericAlg : PadicTest ⥤ CommAlg ℂ_[p] where
   map_id _ := CommAlgCat.hom_ext (AlgHom.ext IsLocalization.map_id)
   map_comp := by aesop (add simp [mapGeneric, IsLocalization.map_map])
 
-/-- The functor from p-adic tests to test rings (`TestRing`: commutative rings with the test
-property, which passes from R to R[1/p]) sending a test with ring R to R[1/p]. -/
+/--
+The functor from p-adic tests to test rings (`TestRing`: commutative rings with the test
+property, which passes from R to R[1/p]) sending a test with ring R to R[1/p].
+-/
 def genericTest : PadicTest ⥤ TestRing :=
   -- The maps are written out, so that the kernel compares a test with its twists without
   -- unfolding `genericAlg`.
   ObjectProperty.lift _
-    { genericAlg ⋙ forget₂ (CommAlg ℂ_[p]) CommRingCat with
-      obj := _,
-      map f := CommRingCat.ofHom (mapGeneric f).toRingHom }
+    {
+      genericAlg ⋙ forget₂ (CommAlg ℂ_[p]) CommRingCat with
+      obj := _
+      map f := CommRingCat.ofHom (mapGeneric f).toRingHom
+    }
     fun c ↦ c.isTest.localization
 
 end PadicTest
@@ -330,8 +353,10 @@ instance : Algebra k ℂ_[p] := .restrictScalars k (PadicAlgCl p) _
 /-- `k` acts on `R[1/p]` through `k → ℂ_p`. -/
 instance : CoeffAction k genericCoeff := ⟨CoeffAction.act.comp (algebraMap k ℂ_[p])⟩
 
-/-- For a field k with an embedding in Q̄_p, the functor sending a p-adic test with ring R to
-R[1/p], as a k-algebra. -/
+/--
+For a field k with an embedding in Q̄_p, the functor sending a p-adic test with ring R to
+R[1/p], as a k-algebra.
+-/
 def genericOver : PadicTest ⥤ CommAlg k := genericAlg ⋙ restrictAlg k ℂ_[p]
 
 /-- The thickening is a `k`-algebra through `k → ℚ̄_p` followed by `uniqueLift`. -/
@@ -341,8 +366,8 @@ instance : Algebra k c.Thickening :=
 /-- The functor sending a test `c` to the `k`-algebra `c.Thickening = W(R♭)[1/p] / (ker θ)²`. -/
 def thickeningOver : PadicTest ⥤ CommAlg k where
   obj c := .of k c.Thickening
-  map f := ofHom
-    ⟨mapThickening f, fun a ↦ mapThickening_uniqueLift f (algebraMap k (PadicAlgCl p) a)⟩
+  map f :=
+    ofHom ⟨mapThickening f, fun a ↦ mapThickening_uniqueLift f (algebraMap k (PadicAlgCl p) a)⟩
   map_id c := by
     ext ⟨x⟩
     exact congrArg (⟦·⟧) (by simpa using! IsLocalization.map_id x)
@@ -370,23 +395,31 @@ namespace thickeningOver
 
 /-! ### The square-zero extension `0 → c.GenericRing → c.Thickening → c.GenericRing → 0` -/
 
-/-- The projection `thickeningProj` from the thickening onto `R[1/p]`, as a natural map of
-`k`-algebras. -/
+/--
+The projection `thickeningProj` from the thickening onto `R[1/p]`, as a natural map of
+`k`-algebras.
+-/
 def proj : thickeningOver (k := k) ⟶ genericOver where
-  app c := CommAlg.homOfRingHom c.thickeningProj fun a ↦
-    c.thickeningProj_uniqueLift (algebraMap k (PadicAlgCl p) a)
+  app c :=
+    CommAlg.homOfRingHom c.thickeningProj fun a ↦
+      c.thickeningProj_uniqueLift (algebraMap k (PadicAlgCl p) a)
   naturality c d f := by
     ext x
     exact thickeningProj_mapThickening f x
 
-/-- The additive map R[1/p] → W(R^♭)[1/p]/(ker θ)² sending θ(x) to the class of μx, where
-μ = [ε] − 1. It is well defined since θ is onto and μ · ker θ ⊆ (ker θ)². -/
+/--
+The additive map R[1/p] → W(R^♭)[1/p]/(ker θ)² sending θ(x) to the class of μx, where
+μ = [ε] − 1. It is well defined since θ is onto and μ · ker θ ⊆ (ker θ)².
+-/
 def mulMu : genericOver c →+ thickeningOver c :=
   c.thickeningProj.toAddMonoidHom.liftOfSurjective
     c.thickeningProj_surjective_and_ker_thetaGeneric.1
-    ⟨AddMonoidHom.mulLeft ⟦algebraMap Ainf _ mu⟧, fun b hb ↦ by
-      -- `μ` and `b` both lie in the kernel of `thickeningProj`, whose square is zero.
-      exact (sq _).ge.trans_eq c.ker_thickeningProj_sq (mul_mem_mul c.thetaGeneric_mu hb)⟩
+    ⟨
+      AddMonoidHom.mulLeft ⟦algebraMap Ainf _ mu⟧,
+      fun b hb ↦ by
+        -- `μ` and `b` both lie in the kernel of `thickeningProj`, whose square is zero.
+        exact (sq _).ge.trans_eq c.ker_thickeningProj_sq (mul_mem_mul c.thetaGeneric_mu hb)
+    ⟩
 
 /-- `mulMu` sends `θ(b)` to `μ b`. -/
 lemma mulMu_thickeningProj (b : c.Thickening) :
@@ -474,8 +507,10 @@ lemma exact_mulMu_proj :
   obtain ⟨y, rfl⟩ := mem_span_singleton.mp (h_ker_eq.le hx)
   exact ⟨_, (h_mulMu_eq_iff y _).mpr (t.mul_inv_cancel_left _)⟩
 
-/-- For a p-adic test with ring R, the multiplicative map x ↦ [x] from the tilt R^♭ to
-B = W(R^♭)[1/p]/(ker θ)², the image of the Teichmüller lift. -/
+/--
+For a p-adic test with ring R, the multiplicative map x ↦ [x] from the tilt R^♭ to
+B = W(R^♭)[1/p]/(ker θ)², the image of the Teichmüller lift.
+-/
 def teichmullerLift : tilt c →* thickeningOver c :=
   (algebraMap (WittVector p c.TiltRing) c.Thickening).toMonoidHom.comp
     (@teichmuller p c.TiltRing ..)

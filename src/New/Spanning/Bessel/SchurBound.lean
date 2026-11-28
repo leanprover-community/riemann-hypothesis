@@ -51,8 +51,9 @@ namespace New
 open Matrix MeasureTheory ENNReal Norms.L2Operator Fintype CStarRing Set DiscreteSeries
   InnerProductSpace
 
-variable {𝔰 : Shape} {I : Type} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I] [DecidableEq I]
-  [p : UnitarySignFrame 𝔰 ε]
+variable
+  {𝔰 : Shape} {I : Type} {ε : 𝔰.BesselIndex → ℤˣ}
+  [Fintype I] [DecidableEq I] [p : UnitarySignFrame 𝔰 ε]
 
 section Kernels
 
@@ -161,30 +162,33 @@ lemma HCParam.HasLargeGap.norm_sq_eq_formalDegree_mul_integral (h_gap : l.HasLar
     congrArg Complex.re h_inner
 
 omit [DecidableEq I] in
-/-- Let `l = 2λ` be a doubled Harish-Chandra parameter of large gap with entries bounded by `L`,
+/--
+Let `l = 2λ` be a doubled Harish-Chandra parameter of large gap with entries bounded by `L`,
 `c_λ = l.dsCoeffInFrame` the coefficient on `G₁` of its discrete series, `deg = l.formalDegree` the
 formal degree, and `r = 𝔰.r` the size of the matrices of `G₁`. To each word `w` in the matrix units
 belongs an integrable kernel `X w`, with `X [] = deg · c_λ` and `X [] * X w = X w`. For a word of
 length `s` the number `‖X w‖₂ ^ 2 / deg` is at most `((r + 1) ^ 4 (L + r + 1 + s)) ^ (2 s)`. For
 every bounded measurable `F` with `F * X [] = F` the functions `F * X w` are the right derivatives
 of `F`: along a curve `γ` with `γ' t = γ t · Z`, the derivative of `F * X w` at `t` is
-`∑ Z a b • (F * X ((a, b) :: w)) (γ t)`. -/
-theorem exists_derivative_kernels (h_gap : l.HasLargeGap A)
-    (hL : ∀ a : 𝔰.BesselIndex, |l a| ≤ L) :
-    ∃ X : List (𝔰.BesselIndex × 𝔰.BesselIndex) → 𝔰.G₁ → ℂ,
-      (X [] = fun g : 𝔰.G₁ ↦ l.formalDegree * l.dsCoeffInFrame g) ∧
-      (∀ w : List (𝔰.BesselIndex × 𝔰.BesselIndex), Integrable (X w)) ∧
-      (∀ w : List (𝔰.BesselIndex × 𝔰.BesselIndex), convolve (X []) (X w) = X w) ∧
-      (∀ w : List (𝔰.BesselIndex × 𝔰.BesselIndex),
-        (∫ g : 𝔰.G₁, ‖X w g‖ ^ 2) / l.formalDegree ≤
-          ((𝔰.r + 1) ^ 4 * (L + 𝔰.r + 1 + w.length)) ^ (2 * w.length)) ∧
-      ∀ F : 𝔰.G₁ → EuclideanSpace ℂ I, IsBoundedMeasurable F → convolve F (X []) = F →
-        ∀ (w : List (𝔰.BesselIndex × 𝔰.BesselIndex)) (γ : ℝ → 𝔰.G₁)
-          (Z : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (t : ℝ),
-          HasDerivAt (fun s : ℝ ↦ (γ s : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) (γ t * Z) t →
-          HasDerivAt (convolve F (X w) ∘ γ)
-            (∑ a : 𝔰.BesselIndex, ∑ b : 𝔰.BesselIndex,
-              Z a b • convolve F (X ((a, b) :: w)) (γ t)) t := by
+`∑ Z a b • (F * X ((a, b) :: w)) (γ t)`.
+-/
+theorem exists_derivative_kernels (h_gap : l.HasLargeGap A) (hL : ∀ a : 𝔰.BesselIndex, |l a| ≤ L)
+    : ∃ X : List (𝔰.BesselIndex × 𝔰.BesselIndex) → 𝔰.G₁ → ℂ,
+      (X [] = fun g : 𝔰.G₁ ↦ l.formalDegree * l.dsCoeffInFrame g)
+        ∧ (∀ w : List (𝔰.BesselIndex × 𝔰.BesselIndex), Integrable (X w))
+        ∧ (∀ w : List (𝔰.BesselIndex × 𝔰.BesselIndex), convolve (X []) (X w) = X w)
+        ∧ (∀ w : List (𝔰.BesselIndex × 𝔰.BesselIndex),
+          (∫ g : 𝔰.G₁, ‖X w g‖ ^ 2) / l.formalDegree
+            ≤ ((𝔰.r + 1) ^ 4 * (L + 𝔰.r + 1 + w.length)) ^ (2 * w.length))
+        ∧ ∀ F : 𝔰.G₁ → EuclideanSpace ℂ I,
+          IsBoundedMeasurable F → convolve F (X []) = F
+            → ∀ (w : List (𝔰.BesselIndex × 𝔰.BesselIndex)) (γ : ℝ → 𝔰.G₁)
+                (Z : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (t : ℝ),
+              HasDerivAt (fun s : ℝ ↦ (γ s : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) (γ t * Z) t
+                → HasDerivAt (convolve F (X w) ∘ γ)
+                  (∑ a : 𝔰.BesselIndex, ∑ b : 𝔰.BesselIndex,
+                    Z a b • convolve F (X ((a, b) :: w)) (γ t))
+                  t := by
   -- A bump `β` reproduces `c_λ`. Let `bump w` be its derivative along `w`, and
   -- `X w = idem * bump w` with `idem = deg · c_λ`. Then `X w / deg` is a vector of `U(𝔤) c_λ`,
   -- whose norm is bounded letter by letter.
@@ -200,11 +204,11 @@ theorem exists_derivative_kernels (h_gap : l.HasLargeGap A)
   let smearCoeff : Bumps ε →ₗ[ℂ] USign ε → ℂ := smear l.dsCoeffSmooth.val
   let X (w : List (𝔰.BesselIndex × 𝔰.BesselIndex)) (g : 𝔰.G₁) : ℂ :=
     l.formalDegree * smearCoeff (bump w) (π g)
-  have bump_int (w : List (𝔰.BesselIndex × 𝔰.BesselIndex)) :
-      Integrable ((bump w : USign ε → ℂ) ∘ π) :=
+  have bump_int (w : List (𝔰.BesselIndex × 𝔰.BesselIndex))
+      : Integrable ((bump w : USign ε → ℂ) ∘ π) :=
     measurePreserving_frameEquiv.integrable_comp_of_integrable (bump w).prop.integrable
-  have X_eq (w : List (𝔰.BesselIndex × 𝔰.BesselIndex)) :
-      convolve idem ((bump w : USign ε → ℂ) ∘ π) = X w :=
+  have X_eq (w : List (𝔰.BesselIndex × 𝔰.BesselIndex))
+      : convolve idem ((bump w : USign ε → ℂ) ∘ π) = X w :=
     convolve_formalDegree_mul_dsCoeffInFrame_comp_frameEquiv l (bump w)
   -- The generator is `dsCoeff`, whose pullback by the frame is `dsCoeffInFrame` by definition.
   have X_nil : X [] = idem := funext fun g ↦ congrArg (_ * ·) (congrFun hβ (π g))
@@ -223,14 +227,14 @@ theorem exists_derivative_kernels (h_gap : l.HasLargeGap A)
     rw [X_nil] at F_conv
     have F_cont : Continuous (F ∘ π.invFun) := by
       simpa only [F_conv] using (hF.continuous_convolve idem_int).comp π.continuous_invFun
-    have FX_eq (w : List (𝔰.BesselIndex × 𝔰.BesselIndex)) :
-        convolve F (X w) = smear (F ∘ π.invFun) F_cont (bump w) ∘ π := by
+    have FX_eq (w : List (𝔰.BesselIndex × 𝔰.BesselIndex))
+        : convolve F (X w) = smear (F ∘ π.invFun) F_cont (bump w) ∘ π := by
       rw [← X_eq, ← hF.convolve_assoc idem_int (bump_int w), F_conv]
       simp [funext_iff, π, convolve, ← integral_comp_frameEquiv]
     rw [FX_eq w]
     refine .congr_deriv (hasDerivAt_smear _ _ F_cont (X := p.matrix⁻¹.val * Z * p.matrix) ?_) ?_
-    · simpa [π, frameEquiv, U.conj, mul_assoc] using (hZ.const_mul p.matrix⁻¹.val).mul_const
-        p.matrix.val
+    · simpa [π, frameEquiv, U.conj, mul_assoc] using
+        (hZ.const_mul p.matrix⁻¹.val).mul_const p.matrix.val
     · -- Conjugating by the frame twists the action; the letter `(a, b)` acts by a matrix unit.
       change smear _ F_cont (bumpDeriv.adTwist p.matrix⁻¹ Z (bump w)) (π (γ t)) = _
       rw [(bumpDeriv.adTwist p.matrix⁻¹).apply_eq_sum Z]
@@ -240,35 +244,40 @@ theorem exists_derivative_kernels (h_gap : l.HasLargeGap A)
 
 end Kernels
 
-/-- Let `l = 2λ` satisfy `l.HasLargeGap A` (gap `500 r³ + A`), with coefficient `c_λ` on `G₁` and
+/--
+Let `l = 2λ` satisfy `l.HasLargeGap A` (gap `500 r³ + A`), with coefficient `c_λ` on `G₁` and
 formal degree `deg`. Let `rep` be a unitary representation of `U(κ)` on `ℂ^I`. Let `F` be a Bessel
 function for `rep`, integrable over `𝖴 ∖ G₁` (`besselQuotMeasure`) and fixed by convolution with
 `deg · c_λ`. The squared norm in `L²(G₁)` of the matrix coefficient `g ↦ ∫ ⟪F y, F (y g)⟫` is
 `‖F‖₂ ^ 4 / deg`, as this coefficient is `c_λ` times `‖F‖₂ ^ 2`. The integral in `y` and the norm
-`‖F‖₂` are taken over `𝖴 ∖ G₁`. -/
+`‖F‖₂` are taken over `𝖴 ∖ G₁`.
+-/
 theorem IsBesselFunction.lintegral_enorm_sq_integral_inner_translate
     {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ} {l : HCParam ε} {A : ℕ}
-    (h_gap : l.HasLargeGap A) {F : 𝔰.G₁ → EuclideanSpace ℂ I} (hF : IsBesselFunction rep F)
-    (F_int : Integrable F besselQuotMeasure)
-    (F_conv : convolve F (fun g : 𝔰.G₁ ↦ l.formalDegree * l.dsCoeffInFrame g) = F) :
-    ∫⁻ g : 𝔰.G₁, ‖∫ y : 𝔰.G₁, ⟪F y, F (y * g)⟫_ℂ ∂besselQuotMeasure‖ₑ ^ 2 =
-      ENNReal.ofReal l.formalDegree⁻¹ *
-        (∫⁻ y : 𝔰.G₁, ‖F y‖ₑ ^ 2 ∂besselQuotMeasure) ^ 2 := by
+    (h_gap : l.HasLargeGap A)
+    {F : 𝔰.G₁ → EuclideanSpace ℂ I}
+    (hF : IsBesselFunction rep F) (F_int : Integrable F besselQuotMeasure)
+    (F_conv : convolve F (fun g : 𝔰.G₁ ↦ l.formalDegree * l.dsCoeffInFrame g) = F)
+    : ∫⁻ g : 𝔰.G₁, ‖∫ y : 𝔰.G₁, ⟪F y, F (y * g)⟫_ℂ ∂besselQuotMeasure‖ₑ ^ 2
+      = ENNReal.ofReal l.formalDegree⁻¹ * (∫⁻ y : 𝔰.G₁, ‖F y‖ₑ ^ 2 ∂besselQuotMeasure) ^ 2 := by
   have h_deg : 0 < l.formalDegree := formalDegree_pos h_gap
   -- The matrix coefficient of `F` is `c_λ` times its squared norm.
-  have h_coeff (g : 𝔰.G₁) : ∫ y, ⟪F y, F (y * g)⟫_ℂ ∂besselQuotMeasure =
-      l.dsCoeffInFrame g * (∫ y, ‖F y‖ ^ 2 ∂besselQuotMeasure : ℝ) := by
-    have h_inner : ∫ y, ⟪F (y * 1), F (y * g)⟫_ℂ ∂besselQuotMeasure =
-        l.formalDegree * l.dsCoeffInFrame (1⁻¹ * g) / l.formalDegree *
-          (∫ y, ‖F y‖ ^ 2 ∂besselQuotMeasure : ℝ) :=
+  have h_coeff (g : 𝔰.G₁)
+      : ∫ y, ⟪F y, F (y * g)⟫_ℂ ∂besselQuotMeasure
+        = l.dsCoeffInFrame g * (∫ y, ‖F y‖ ^ 2 ∂besselQuotMeasure : ℝ) := by
+    have h_inner
+        : ∫ y, ⟪F (y * 1), F (y * g)⟫_ℂ ∂besselQuotMeasure
+          = l.formalDegree * l.dsCoeffInFrame (1⁻¹ * g) / l.formalDegree
+            * (∫ y, ‖F y‖ ^ 2 ∂besselQuotMeasure : ℝ) :=
       hF.integral_inner_translate rfl (by simp) hF.map_unipotent_mul F_int
         (isIdempotentKernel_dsCoeffInFrame h_gap) (by simp [HCParam.dsCoeffInFrame]) F_conv 1 g
     simpa [h_deg.ne'] using h_inner
   have h_norm : ∫⁻ g : 𝔰.G₁, ‖l.dsCoeffInFrame g‖ₑ ^ 2 = .ofReal l.formalDegree⁻¹ := by
-    have h_int : Integrable (l.dsCoeffInFrame : 𝔰.G₁ → ℂ) := (integrable_const_mul_iff
-      (by simp [h_deg.ne']) _).1 (isIdempotentKernel_dsCoeffInFrame h_gap).integrable
+    have h_int : Integrable (l.dsCoeffInFrame : 𝔰.G₁ → ℂ) :=
+      (integrable_const_mul_iff (by simp [h_deg.ne']) _).1
+        (isIdempotentKernel_dsCoeffInFrame h_gap).integrable
     rw [lintegral_enorm_sq h_int
-      (IsBoundedMeasurable.of_continuous ⟨1, fun _ ↦ norm_dsCoeff_le_one h_gap _⟩).memLp_top,
+        (IsBoundedMeasurable.of_continuous ⟨1, fun _ ↦ norm_dsCoeff_le_one h_gap _⟩).memLp_top,
       HCParam.formalDegree, inv_inv, ← integral_comp_frameEquiv (J := 𝔰.J₁)]
     -- `formalDegree` is the inverse of the integral of `‖dsCoeff‖ ^ 2`.
     rfl
@@ -289,7 +298,8 @@ lemma IsBesselFunction.convolve_of_integrable
   · simp [convolve, mul_assoc, hF.map_unitary_mul, ← ContinuousLinearMap.integral_comp_comm,
       hF.integrable_smul k_int.comp_inv]
 
-/-- **Schur's bound for a Bessel function.** Let `l = 2λ` be a doubled Harish-Chandra parameter with
+/--
+**Schur's bound for a Bessel function.** Let `l = 2λ` be a doubled Harish-Chandra parameter with
 gap `500 r ^ 3 + A` (`l.HasLargeGap A`) and entries bounded by `L`. Its coefficient is
 `c_λ = l.dsCoeffInFrame` on `G₁`, and its formal degree is `deg = l.formalDegree`. Let `rep` be a
 unitary representation on `ℂ^I` of `U(κ)`, the unitary group of the positive definite middle part.
@@ -298,35 +308,42 @@ Let `F` be a Bessel function for `rep`, integrable over `𝖴 ∖ G₁` and fixe
 the words `w` in the matrix units, which are again Bessel functions for `rep`. Take
 `s = |w| ≤ 2 n ^ 2` and `φ` integrable on `G₁`. Then the function `g ↦ ∫ φ y • V w (g y)` has
 squared norm at most `B ^ (2 s) ‖F‖₂ ^ 2 ‖φ‖₂ ^ 2 / deg` in `L²(𝖴 ∖ G₁)`, with `‖F‖₂` taken over
-`𝖴 ∖ G₁`. -/
+`𝖴 ∖ G₁`.
+-/
 theorem IsBesselFunction.hasSchurBound_of_convolve_eq
     {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ} {l : HCParam ε} {A L : ℕ}
     (h_gap : l.HasLargeGap A) (hL : ∀ a : 𝔰.BesselIndex, |l a| ≤ L)
-    {F : 𝔰.G₁ → EuclideanSpace ℂ I} (hF : IsBesselFunction rep F)
-    (F_int : Integrable F besselQuotMeasure) (B : ℝ)
+    {F : 𝔰.G₁ → EuclideanSpace ℂ I}
+    (hF : IsBesselFunction rep F) (F_int : Integrable F besselQuotMeasure)
+    (B : ℝ)
     (F_conv : convolve F (fun g : 𝔰.G₁ ↦ l.formalDegree * l.dsCoeffInFrame g) = F)
-    (hB : (𝔰.r + 1) ^ 4 * (L + 𝔰.r + 1 + (2 * 𝔰.n ^ 2 : ℕ)) ≤ B) :
-    RealPlace.HasSchurBound F rep B
+    (hB : (𝔰.r + 1) ^ 4 * (L + 𝔰.r + 1 + (2 * 𝔰.n ^ 2 : ℕ)) ≤ B)
+    : RealPlace.HasSchurBound F rep B
       (ENNReal.ofReal l.formalDegree⁻¹ * ∫⁻ y : 𝔰.G₁, ‖F y‖ₑ ^ 2 ∂besselQuotMeasure) := by
   let idem : 𝔰.G₁ → ℂ := fun g ↦ l.formalDegree * l.dsCoeffInFrame g
   -- The derivatives are the convolutions of `F` with the kernels `X w`.
   obtain ⟨X, (X_nil : X [] = idem), X_int, X_conv, X_norm, X_deriv⟩ :=
     exists_derivative_kernels (I := I) h_gap hL
   have F_conv_nil : convolve F (X []) = F := by rw [X_nil, F_conv]
-  refine ⟨fun w ↦ ⟨convolve F (X w), hF.continuous_convolve (X_int w)⟩, F_conv_nil.symm,
-    fun w ↦ ⟨?_, X_deriv F hF.toIsBoundedMeasurable F_conv_nil w, fun hw φ φ_int ↦ ?_⟩⟩
+  refine ⟨
+    fun w ↦ ⟨convolve F (X w), hF.continuous_convolve (X_int w)⟩,
+    F_conv_nil.symm,
+    fun w ↦ ⟨?_, X_deriv F hF.toIsBoundedMeasurable F_conv_nil w, fun hw φ φ_int ↦ ?_⟩
+  ⟩
   · exact hF.convolve_of_integrable (X_int w)
   · have idem_conv : convolve idem (X w) = X w := by rw [← X_nil, X_conv]
     have norm_le : (∫ g, ‖X w g‖ ^ 2) / l.formalDegree ≤ B ^ (2 * w.length) :=
-      calc (∫ g, ‖X w g‖ ^ 2) / l.formalDegree
+      calc
+        (∫ g, ‖X w g‖ ^ 2) / l.formalDegree
         _ ≤ ((𝔰.r + 1) ^ 4 * (L + 𝔰.r + 1 + w.length)) ^ (2 * w.length) := X_norm w
         _ ≤ B ^ (2 * w.length) := by grw [← hB, ← hw]
     -- Schur orthogonality bounds the integral by the norms of `X w`, `F` and `φ`.
-    calc ∫⁻ g, ‖∫ y, φ y • convolve F (X w) (g * y)‖ₑ ^ 2 ∂besselQuotMeasure
+    calc
+      ∫⁻ g, ‖∫ y, φ y • convolve F (X w) (g * y)‖ₑ ^ 2 ∂besselQuotMeasure
       _ = ∫⁻ y, ‖convolve (convolve F (X w)) (fun a ↦ φ a⁻¹) y‖ₑ ^ 2 ∂besselQuotMeasure := by
         simp only [convolve.eq_1 (convolve F (X w)), inv_inv]
-      _ ≤ .ofReal ((∫ g, ‖X w g‖ ^ 2) / l.formalDegree) *
-          (.ofReal l.formalDegree⁻¹ * ∫⁻ y, ‖F y‖ₑ ^ 2 ∂besselQuotMeasure) * ∫⁻ y, ‖φ y‖ₑ ^ 2 :=
+      _ ≤ .ofReal ((∫ g, ‖X w g‖ ^ 2) / l.formalDegree)
+          * (.ofReal l.formalDegree⁻¹ * ∫⁻ y, ‖F y‖ₑ ^ 2 ∂besselQuotMeasure) * ∫⁻ y, ‖φ y‖ₑ ^ 2 :=
         hF.lintegral_sq_convolve_convolve_le rfl (by simp) hF.map_unipotent_mul F_int (X_int w)
           (isIdempotentKernel_dsCoeffInFrame h_gap) (by simp [HCParam.dsCoeffInFrame]) F_conv
           (isBoundedMeasurable_formalDegree_mul_dsCoeffInFrame h_gap) idem_conv φ_int

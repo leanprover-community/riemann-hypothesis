@@ -62,9 +62,12 @@ namespace New.Exchange
 
 open Matrix Fintype WeilData Gf Finset
 
-variable {E : Type} [Field E] [CMType E] {n : Type _} [Fintype n] [DecidableEq n]
+variable
+  {E : Type} [Field E] [CMType E]
+  {n : Type _} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} {P : Finset (FinPlace E)} {μ : NumberField.InfinitePlace E → ℤ}
-  (𝔠 : SplitTameChar E μ) {k : Gf E n}
+  (𝔠 : SplitTameChar E μ)
+  {k : Gf E n}
 
 /-- Given Weil data on E, `upsilonU1` is the restriction of its splitting character υ to the
 norm-one ideles, a character of U(1)(𝔸) trivial on E, with trivial tame part. It is trivial on
@@ -148,8 +151,10 @@ attribute [local instance low] Fintype.ofFinite
 
 section
 
-variable {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
-  {𝔪 : Modulus E} {a : 𝓞 E} (g : GL n 𝔪.ResidueRing) {H : Subgroup (GL n 𝔪.ResidueRing)}
+variable
+  {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
+  {𝔪 : Modulus E} {a : 𝓞 E} (g : GL n 𝔪.ResidueRing)
+  {H : Subgroup (GL n 𝔪.ResidueRing)}
 
 /-! ### Reduction modulo 𝔪 -/
 
@@ -185,8 +190,10 @@ lemma Rows.exists_reductionGL_eq :
   exact reduction_congr 𝔪 fun w hw ↦
     congrArg (fun A : GL n (LocField w) ↦ A i j) (atPlace_ofSplitPlaces h_split γ ⟨w, hS.ge hw⟩)
 
-/-- A chosen lift of g ∈ GL_n(O_E/𝔪) to K₀, with component 1 outside the places dividing 𝔪 and their
-conjugates. -/
+/--
+A chosen lift of g ∈ GL_n(O_E/𝔪) to K₀, with component 1 outside the places dividing 𝔪 and their
+conjugates.
+-/
 def Rows.liftMod : stdLevel E n := (exists_reductionGL_eq g).choose
 
 @[simp]
@@ -197,10 +204,12 @@ lemma Rows.reductionGL_liftMod : 𝔪.reductionGL (liftMod g) = g :=
 lemma Rows.reductionGL_surjective : Surjective (𝔪.reductionGL (n := n)) :=
   fun g ↦ ⟨liftMod g, reductionGL_liftMod g⟩
 
-/-- The level cut out by a subgroup H of GL_n(O_E/𝔪): the elements of K_0 (`New.stdLevel`) whose
-reduction modulo 𝔪 lies in H, as a subgroup of G_f. -/
-abbrev Modulus.levelOfSubgroup (𝔪 : Modulus E) (H : Subgroup (GL n 𝔪.ResidueRing)) :
-    Subgroup (Gf E n) :=
+/--
+The level cut out by a subgroup H of GL_n(O_E/𝔪): the elements of K_0 (`New.stdLevel`) whose
+reduction modulo 𝔪 lies in H, as a subgroup of G_f.
+-/
+abbrev Modulus.levelOfSubgroup (𝔪 : Modulus E) (H : Subgroup (GL n 𝔪.ResidueRing))
+    : Subgroup (Gf E n) :=
   (Subgroup.comap (reductionGL 𝔪) H).map (stdLevel E n).subtype
 
 /-- If `a ∈ 𝔪`, the principal level of `a` (the elements of `K₀` congruent to `1` modulo `a`) lies
@@ -218,8 +227,9 @@ lemma Modulus.principalLevel_le_levelOfSubgroup (ha : a ∈ 𝔪.ideal) :
 instance : IsLevel (𝔪.levelOfSubgroup H) where
   le := map_subtype_le _
   -- it contains the open principal level of the norm of `𝔪`
-  isOpen := isOpen_mono (principalLevel_le_levelOfSubgroup 𝔪.ideal.absNorm_mem)
-    (isOpen_principalLevel (by simp [ne_bot, absNorm_eq_zero_iff]))
+  isOpen :=
+    isOpen_mono (principalLevel_le_levelOfSubgroup 𝔪.ideal.absNorm_mem)
+      (isOpen_principalLevel (by simp [ne_bot, absNorm_eq_zero_iff]))
 
 /-- Let `𝔪` be a modulus of the CM field `E` and `H` a subgroup of `GL_n(O_E/𝔪)`. Let
 `𝔪.levelOfSubgroup H` be the preimage of `H` under reduction mod `𝔪` inside `K₀ = stdLevel`, the
@@ -238,15 +248,19 @@ lemma Modulus.mem_principalLevel_iff (h𝔪 : 𝔪.ideal = span {a}) (k : stdLev
 
 /-! ### Tame characters -/
 
-/-- The multiplicative character x ↦ ∏_{w∣𝔪} ψ_w(x mod w) of O_E/𝔪, for characters ψ_w of the
-residue fields. -/
+/--
+The multiplicative character x ↦ ∏_{w∣𝔪} ψ_w(x mod w) of O_E/𝔪, for characters ψ_w of the
+residue fields.
+-/
 @[simps -isSimp]
-def Modulus.charOfTamePart (𝔪 : Modulus E) (ψ : ∀ w : FinPlace E, MulChar (ResField w) ℂ) :
-    MulChar 𝔪.ResidueRing ℂ :=
+def Modulus.charOfTamePart (𝔪 : Modulus E) (ψ : ∀ w : FinPlace E, MulChar (ResField w) ℂ)
+    : MulChar 𝔪.ResidueRing ℂ :=
   MulChar.mk
-    { toFun x := ∏ᶠ w : places 𝔪, ψ w (modulusResidue 𝔪 w.property x)
+    {
+      toFun x := ∏ᶠ w : places 𝔪, ψ w (modulusResidue 𝔪 w.property x)
       map_one' := by simp
-      map_mul' := by simp [finprod_eq_prod_of_fintype, Finset.prod_mul_distrib] }
+      map_mul' := by simp [finprod_eq_prod_of_fintype, Finset.prod_mul_distrib]
+    }
     (by
       -- a non-unit lies in a maximal ideal `M`; the factor at the place under `M` vanishes
       rintro ⟨x⟩ hx
@@ -257,17 +271,25 @@ def Modulus.charOfTamePart (𝔪 : Modulus E) (ψ : ∀ w : FinPlace E, MulChar 
       change ψ w.val (algebraMap (𝓞 E) (ResField w.val) x) = 0
       rw [algebraMap_ResField_eq_zero.mpr hM, MulChar.map_zero])
 
-/-- ν is tame for 𝔪 with weight e and character χ: 𝔪 ≠ (1), ν has weight e and a tame part (ψ_w)
-that is nontrivial exactly at the primes w dividing 𝔪, and χ = ∏_{w∣𝔪} ψ_w on O_E/𝔪. -/
-def Exchange.IsTameFor {E : Type} [Field E] [CMType E] (𝔪 : Modulus E) (ν : AutChar E)
-    (e : InfinitePlace E → ℤ) (χ : MulChar 𝔪.ResidueRing ℂ) : Prop :=
-  Nonempty 𝔪.places ∧ ∃ ψ : (w : FinPlace E) → MulChar (ResField w) ℂ,
-    ν.HasWeight e ψ ∧ (∀ w : FinPlace E, ψ w ≠ 1 ↔ w ∈ 𝔪.places) ∧ χ = 𝔪.charOfTamePart ψ
+/--
+ν is tame for 𝔪 with weight e and character χ: 𝔪 ≠ (1), ν has weight e and a tame part (ψ_w)
+that is nontrivial exactly at the primes w dividing 𝔪, and χ = ∏_{w∣𝔪} ψ_w on O_E/𝔪.
+-/
+def Exchange.IsTameFor
+    {E : Type} [Field E] [CMType E]
+    (𝔪 : Modulus E)
+    (ν : AutChar E) (e : InfinitePlace E → ℤ) (χ : MulChar 𝔪.ResidueRing ℂ)
+    : Prop :=
+  Nonempty 𝔪.places
+    ∧ ∃ ψ : (w : FinPlace E) → MulChar (ResField w) ℂ,
+      ν.HasWeight e ψ ∧ (∀ w : FinPlace E, ψ w ≠ 1 ↔ w ∈ 𝔪.places) ∧ χ = 𝔪.charOfTamePart ψ
 
 end
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {𝔪 : Modulus E} {a : 𝓞 E}
-  {ν : AutChar E} {e : InfinitePlace E → ℤ} {χ : MulChar 𝔪.ResidueRing ℂ} {s : n → ℤˣ}
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {𝔪 : Modulus E} {a : 𝓞 E} {ν : AutChar E} {e : InfinitePlace E → ℤ}
+  {χ : MulChar 𝔪.ResidueRing ℂ} {s : n → ℤˣ}
 
 /-- Let `ν` be a character of `[U(1)]`, that is, an `AutChar E`, a character of U(1)(𝔸) trivial on
 elements coming from E, that has weight `e` and tame part `ψ` (`HasWeight`), where `ψ` is a family
@@ -319,8 +341,8 @@ namespace New.Exchange
 
 open Finset SemilocalField
 
-variable {E : Type} [Field E] [CMType E] {μ : NumberField.InfinitePlace E → ℤ}
-  (𝔠 : SplitTameChar E μ)
+variable
+  {E : Type} [Field E] [CMType E] {μ : NumberField.InfinitePlace E → ℤ} (𝔠 : SplitTameChar E μ)
 
 /-- For a finite idele `u` that is a unit at every place, `χ(u_S)⁻¹ · ν(u/ū) / χ(ū_S)⁻¹ = 1`.
 Here `χ` is `New.Exchange.SplitTameChar.semilocalChar`, `u_S = evalPlaces 𝔠.ramifiedPlaces u`

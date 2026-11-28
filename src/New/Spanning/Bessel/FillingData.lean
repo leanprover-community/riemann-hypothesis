@@ -82,19 +82,21 @@ lemma card_X₀ : Fintype.card (D.X 0) = D.k := by grind [card_X, n]
 /-- An orthonormal frame with the signs of `Y₀`. -/
 noncomputable instance unitarySignFrameY : UnitarySignFrame D.shape (D.signsY 0 ·) :=
   Nonempty.some <|
-  -- For a string of length `2 ϱ + 1`, `exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix` asks
-  -- for `ϱ + 1` minus signs.
-  have ⟨p, hp_form, hp_unitary⟩ := Seesaw.exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix
-    D.shape.besselIndexEquiv (.id ℂ)
-    one_pos ((D.negCount_gridSigns false 0 0).trans (by grind))
-  ⟨{ matrix := (.mkOfMulEqOne _ _ (hp_unitary rfl))⁻¹
-     gram_eq := by
-       -- The two Gram matrices agree entry by entry.
-       convert! hp_form
-       simp [← ext_iff, gradedGram, Shape.besselIndexEquiv, splitGram, middleGram, Fin.rev,
-         Matrix.one_apply]
-       lia
-     mem_unitary := ⟨hp_unitary rfl, Units.inv_mul _⟩ }⟩
+    -- For a string of length `2 ϱ + 1`, `exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix` asks
+    -- for `ϱ + 1` minus signs.
+    have ⟨p, hp_form, hp_unitary⟩ :=
+      Seesaw.exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix D.shape.besselIndexEquiv (.id ℂ)
+        one_pos ((D.negCount_gridSigns false 0 0).trans (by grind))
+    ⟨{
+      matrix := (.mkOfMulEqOne _ _ (hp_unitary rfl))⁻¹
+      gram_eq := by
+        -- The two Gram matrices agree entry by entry.
+        convert! hp_form
+        simp [← ext_iff, gradedGram, Shape.besselIndexEquiv, splitGram, middleGram, Fin.rev,
+          Matrix.one_apply]
+        lia
+      mem_unitary := ⟨hp_unitary rfl, Units.inv_mul _⟩
+    }⟩
 
 /-- The Schur matrices of weight `w`, written in an orthonormal basis for their Gram form, give a
 continuous unitary representation of U(n), with n = `𝔰.κ`, which is conjugate to the transposed
@@ -469,10 +471,12 @@ instance : D.HasLogLower (ofNat(2) ^ D.ϱ) (10 * D.logB) where
     norm_num
     exact D.le_of_hasLogBound
 
-/-- The filling data `New.Filling` attached to the admissible data D. They record the prime N, the
+/--
+The filling data `New.Filling` attached to the admissible data D. They record the prime N, the
 idele of π (in the field `piN`), the primes p₀, p₁ with chosen places, `deltaE`, and Bessel systems
 chosen from `New.Data.exists_besselSystem`. The type of the chosen systems is stated in
-`New.Data.isDiscreteSeriesBessel_filling_besselSystem`. -/
+`New.Data.isDiscreteSeriesBessel_filling_besselSystem`.
+-/
 noncomputable def filling : Filling D.E D.shape where
   N := D.N
   levelPrime := D.levelPrime
@@ -504,27 +508,29 @@ noncomputable def filling : Filling D.E D.shape where
     -- iff both do.
     have h_prod : ↑(D.levelPrime 0 * D.levelPrime 1) ∣ r ↔ ∀ i : Fin 2, ↑(D.levelPrime i) ∣ r := by
       have h_cop : (D.levelPrime 0).Coprime (D.levelPrime 1) := by grind [coprime_primes, Data]
-      simpa using ⟨fun h ↦ ⟨dvd_of_mul_right_dvd h, dvd_of_mul_left_dvd h⟩,
-        fun ⟨h₀, h₁⟩ ↦ h_cop.cast.mul_dvd h₀ h₁⟩
+      simpa using ⟨
+        fun h ↦ ⟨dvd_of_mul_right_dvd h, dvd_of_mul_left_dvd h⟩,
+        fun ⟨h₀, h₁⟩ ↦ h_cop.cast.mul_dvd h₀ h₁
+      ⟩
     rw [h_prod, Sigma.forall]
-    exact forall_congr' fun i ↦ (D.natCast_levelPrime_dvd_iff i r).trans
-      (forall_congr' fun w ↦ by simp)
+    exact forall_congr' fun i ↦
+      (D.natCast_levelPrime_dvd_iff i r).trans (forall_congr' fun w ↦ by simp)
   card_chosenPlaces := D.card_chosenPlace
   star_deltaE := P.star_deltaE
   span_deltaE := P.differentIdeal_eq_span_deltaE
   -- Each size inequality is compared on the logarithmic scale; `D.card_X₀` identifies the rank.
   ten_pow_five_le_varrho := D.nat_le_of_hasLogBound
   half_pow_le_inv_pow_six := by
-                 rify [inv_pow]
-                 exact D.le_of_hasLogBound
+    rify [inv_pow]
+    exact D.le_of_hasLogBound
   mul_finrank_le_pow := by
-             rify [finrank_eq_two_mul_card_infinitePlace, pow_mul']
-             exact D.le_of_hasLogBound
+    rify [finrank_eq_two_mul_card_infinitePlace, pow_mul']
+    exact D.le_of_hasLogBound
   pow_le_k := D.nat_le_of_hasLogBound.trans D.card_X₀.ge
   k_le_f := D.card_X₀.trans_le D.nat_le_of_hasLogBound
   mul_rootDiscr_pow_le := by
-                 rify [Shape.k, card_X₀]
-                 exact D.le_of_hasLogBound
+    rify [Shape.k, card_X₀]
+    exact D.le_of_hasLogBound
   numInfPlaces_le_div := D.le_of_hasLogBound
   k_le_b := (Nat.cast_le.2 D.card_X₀.le).trans D.le_of_hasLogBound
   rootDiscr_le_b := D.le_of_hasLogBound

@@ -167,41 +167,52 @@ section Operator
 
 variable {P : Parameters} {D : Data P}
 
-/-- A comparison operator for the lift from `W_j`: a family of operators `U_ϑ` on the forms on `V_j`
+/--
+A comparison operator for the lift from `W_j`: a family of operators `U_ϑ` on the forms on `V_j`
 through which the lifts `Θ_ϑ = D.goodLift ϑ j` at the twists `ϑ` are compared with the untwisted
 one. In the bound, `f = D.f` is the number of infinite places, `m = D.m` the number of lifts in the
-chain and `b = D.b`, with `log b = D.logB`, the weight at the infinite places in `D.bPlaces`. -/
-structure IsComparisonOperator (j : D.LiftIndex)
-    (U : ∀ ϑ : D.Twist, End ℂ (D.descentPair ϑ j).FormV) : Prop where
+chain and `b = D.b`, with `log b = D.logB`, the weight at the infinite places in `D.bPlaces`.
+-/
+structure IsComparisonOperator
+    (j : D.LiftIndex) (U : ∀ ϑ : D.Twist, End ℂ (D.descentPair ϑ j).FormV)
+    : Prop where
   /-- The ratio of the twisted to the untwisted Hecke values of the lift is not `0`. -/
   ratio_ne_zero (ϑ : D.Twist) : heckeValueProd j ϑ / heckeValueProd j 1 ≠ 0
-  /-- `⟨Θ_ϑ y', U_ϑ Θ_ϑ y⟩` is this ratio times `⟨y', U° y⟩`, for a positive definite operator `U°`
+  /--
+  `⟨Θ_ϑ y', U_ϑ Θ_ϑ y⟩` is this ratio times `⟨y', U° y⟩`, for a positive definite operator `U°`
   on the good forms that does not depend on `ϑ`. The shape of the ratio is given by
-  `exists_heckeValueProd_eq_mul_prod_ratio`. -/
-  exists_inner_eq : ∃ U₀ : End ℂ (D.goodForms (D.spaceW j)),
-    (∀ y : D.goodForms (D.spaceW j), y ≠ 0 → 0 < inner ℂ y (U₀ y)) ∧
-    ∀ (ϑ : D.Twist) (y' y : D.goodForms (D.spaceW j)),
-      inner ℂ (D.goodLift ϑ j y') (U ϑ (D.goodLift ϑ j y)) =
-        heckeValueProd j ϑ / heckeValueProd j 1 * inner ℂ y' (U₀ y)
-  /-- `U_ϑ` takes lifts to forms that are orthogonal to the false lifts
-  (`IsOrthogonalToFalseLifts`). -/
-  isOrthogonalToFalseLifts (ϑ : D.Twist) (z : (D.goodLift ϑ j).range) :
-    IsOrthogonalToFalseLifts (D.descentPair ϑ j) D.e₀ (D.goodLift ϑ j).rangeᗮ (U ϑ z)
-  /-- `U_ϑ` keeps integrality above every prime that does not divide `ϑ.normQ`, the product
-  of the norms of the places in the set `Q` of `ϑ`. -/
-  mem_integralForms (ϑ : D.Twist) (l : ℕ) [Fact l.Prime] (ι : PadicPlace l)
-    (hl : l.Coprime ϑ.normQ) : ∀ φ ∈ integralForms ι, U ϑ φ ∈ integralForms ι
+  `exists_heckeValueProd_eq_mul_prod_ratio`.
+  -/
+  exists_inner_eq
+    : ∃ U₀ : End ℂ (D.goodForms (D.spaceW j)),
+      (∀ y : D.goodForms (D.spaceW j), y ≠ 0 → 0 < inner ℂ y (U₀ y))
+        ∧ ∀ (ϑ : D.Twist) (y' y : D.goodForms (D.spaceW j)),
+          inner ℂ (D.goodLift ϑ j y') (U ϑ (D.goodLift ϑ j y))
+            = heckeValueProd j ϑ / heckeValueProd j 1 * inner ℂ y' (U₀ y)
+  /--
+  `U_ϑ` takes lifts to forms that are orthogonal to the false lifts
+  (`IsOrthogonalToFalseLifts`).
+  -/
+  isOrthogonalToFalseLifts (ϑ : D.Twist) (z : (D.goodLift ϑ j).range)
+    : IsOrthogonalToFalseLifts (D.descentPair ϑ j) D.e₀ (D.goodLift ϑ j).rangeᗮ (U ϑ z)
+  /--
+  `U_ϑ` keeps integrality above every prime that does not divide `ϑ.normQ`, the product
+  of the norms of the places in the set `Q` of `ϑ`.
+  -/
+  mem_integralForms (ϑ : D.Twist) (l : ℕ) [Fact l.Prime] (ι : PadicPlace l) (hl : l.Coprime ϑ.normQ)
+    : ∀ φ ∈ integralForms ι, U ϑ φ ∈ integralForms ι
   /-- `U_1` multiplies norms at every `σ` by at most `exp (3 f m b log² b)`. -/
-  normSqAt_le (φ : (D.descentPair (1 : D.Twist) j).FormV) (σ : ℂ ≃+* ℂ) :
-    (U 1 φ).normSqAt σ ≤ exp (3 * (D.f * D.m * D.b * D.logB ^ 2)) ^ 2 * φ.normSqAt σ
+  normSqAt_le (φ : (D.descentPair (1 : D.Twist) j).FormV) (σ : ℂ ≃+* ℂ)
+    : (U 1 φ).normSqAt σ ≤ exp (3 * (D.f * D.m * D.b * D.logB ^ 2)) ^ 2 * φ.normSqAt σ
 
-/-- The operator `U_ϑ = n_Aut hk² glue_ϑ glue_ϑ*` on the forms on `V_j`. Here `glue_ϑ = glue j ϑ`
+/--
+The operator `U_ϑ = n_Aut hk² glue_ϑ glue_ϑ*` on the forms on `V_j`. Here `glue_ϑ = glue j ϑ`
 is the linear map that builds a form on `V_j` from a tuple of forms on `V°`,
 `hk = hookNumberMinus j` is the hook number of the diagram `μ⁻` (the weight of the forms on `V°`),
-and `n_Aut = D.chosenGroupOrder` is a multiple of the orders of all stabilisers. -/
+and `n_Aut = D.chosenGroupOrder` is a multiple of the orders of all stabilisers.
+-/
 noncomputable def comparisonOp (j : D.LiftIndex) (ϑ : D.Twist) : End ℂ (D.descentPair ϑ j).FormV :=
-  (D.chosenGroupOrder * hookNumberMinus j ^ 2 : ℂ) •
-    glue j ϑ ∘ₗ (glue j ϑ).adjoint
+  (D.chosenGroupOrder * hookNumberMinus j ^ 2 : ℂ) • glue j ϑ ∘ₗ (glue j ϑ).adjoint
 
 /-- The ratio of the twisted to the untwisted product of Hecke values (`heckeValueProd`) is
 `|c′_1|² / |c′_ϑ|²`, where `c′_ϑ = twistFactor j ϑ` is the nonzero scalar that normalises the
@@ -270,13 +281,15 @@ variable {P : Parameters} {D : Data P}
 
 section Gluing
 
-/-- The index set of the frame of tuples of forms on `V°`: an index `ChoiceIndex j` of a component
+/--
+The index set of the frame of tuples of forms on `V°`: an index `ChoiceIndex j` of a component
 of the tuple (a matrix modulo `D.piM ^ 2` with a row choice), a class of `U(V°)` at principal level
 `D.piM ^ 2`, and a basis tensor of the shape `μ⁻ = (untwistedDescentPair j).colsMinus`, the column
-counts of the negative sign for the descent pair at the trivial twist. -/
+counts of the negative sign for the descent pair at the trivial twist.
+-/
 abbrev TightFrameIndex (j : D.LiftIndex) : Type :=
-  (ChoiceIndex j × D.SecondFactorClasses) ×
-    ColumnFilling (fun _ ↦ D.SecondFactorIndex) (untwistedDescentPair j).colsMinus
+  (ChoiceIndex j × D.SecondFactorClasses)
+    × ColumnFilling (fun _ ↦ D.SecondFactorIndex) (untwistedDescentPair j).colsMinus
 
 /-- Let `V° = stdSpace D.E D.SecondFactorIndex` be the standard definite hermitian space over the CM
 field `D.E` of the data `D`, with basis `D.SecondFactorIndex`. Let `γ` be an element of its rational
@@ -543,7 +556,8 @@ lemma normSqAt_comparisonOp_le (j : D.LiftIndex) (φ : (D.descentPair (1 : D.Twi
       simp only [S, ← exp_natCast_mul, ← mul_assoc, ← exp_add]
       ring_nf
 
-/-- The operators `U_ϑ = comparisonOp j ϑ = n_Aut hk² glue_ϑ glue_ϑ*` on the forms on `V_j`, one for
+/--
+The operators `U_ϑ = comparisonOp j ϑ = n_Aut hk² glue_ϑ glue_ϑ*` on the forms on `V_j`, one for
 each twist `ϑ`, satisfy `IsComparisonOperator`. Here `glue_ϑ = glue j ϑ` builds a form on `V_j` from
 a tuple of forms on `V°`, `n_Aut = D.chosenGroupOrder` and `hk = hookNumberMinus j`. That is, for
 the theta lift `Θ_ϑ = D.goodLift ϑ j` and the nonzero ratio
@@ -552,15 +566,18 @@ the theta lift `Θ_ϑ = D.goodLift ϑ j` and the nonzero ratio
 `U_ϑ` takes lifts to forms orthogonal to the false lifts, which are the forms orthogonal to the
 lifts with the same idempotent and Hecke conditions at a split place. `U_ϑ` keeps integrality above
 the primes that do not divide `ϑ.normQ`, and `U_1` multiplies norms by at most
-`exp (3 f m b log² b)`, with `f = D.f`, `m = D.m` and `b = D.b`. -/
-theorem isComparisonOperator_comparisonOp (j : D.LiftIndex) :
-    IsComparisonOperator j (comparisonOp j) where
+`exp (3 f m b log² b)`, with `f = D.f`, `m = D.m` and `b = D.b`.
+-/
+theorem isComparisonOperator_comparisonOp (j : D.LiftIndex)
+    : IsComparisonOperator j (comparisonOp j) where
   ratio_ne_zero ϑ := by simp [heckeValueProd_div_eq, twistFactor_ne_zero]
   exists_inner_eq := by
     -- Take `U° = n_Aut hk² |c′_1|⁻² Θ°* Θ°`; it is positive definite, as `Θ°` is injective.
     let scale : ℝ := D.chosenGroupOrder * hookNumberMinus j ^ 2 / ‖Rows.twistFactor j 1‖ ^ 2
-    have h_scale_pos : 0 < scale := div_pos (mul_pos (Nat.cast_pos.2 (NeZero.pos _))
-      (sq_pos_of_pos (Int.cast_pos.2 hookNumber_pos))) (by simp [twistFactor_ne_zero])
+    have h_scale_pos : 0 < scale :=
+      div_pos
+        (mul_pos (Nat.cast_pos.2 (NeZero.pos _)) (sq_pos_of_pos (Int.cast_pos.2 hookNumber_pos)))
+        (by simp [twistFactor_ne_zero])
     refine ⟨(scale : ℂ) • (periodLift j).adjoint ∘ₗ periodLift j, fun y hy ↦ ?_, fun ϑ y' y ↦ ?_⟩
     · have h_norm : 0 < ‖periodLift j y‖ :=
         norm_pos_iff.2 ((map_ne_zero_iff _ (periodLift_injective j)).2 hy)
@@ -607,13 +624,15 @@ lemma normSqAt_starProjection_range_goodLift_le {j : D.LiftIndex} {ϑ : D.Twist}
   exact normSqAt_starProjection_le _ hw hw_off D.isCentralProj_e₀
     (range_goodLift_le_range_inf_ker hw hw_off) hy σ
 
-/-- For operators `U_ϑ` on the forms on `V_j`, the operator `pr U_ϑ` on the lifts (the range of
-`D.goodLift ϑ j`), with `pr` the orthogonal projection to them. -/
-noncomputable def liftCompression {j : D.LiftIndex}
-    (U : ∀ ϑ : D.Twist, End ℂ (D.descentPair ϑ j).FormV) (ϑ : D.Twist) :
-    End ℂ (D.goodLift ϑ j).range :=
-  (D.goodLift ϑ j).range.orthogonalProjectionOnto.toLinearMap ∘ₗ
-    (U ϑ).domRestrict (D.goodLift ϑ j).range
+/--
+For operators `U_ϑ` on the forms on `V_j`, the operator `pr U_ϑ` on the lifts (the range of
+`D.goodLift ϑ j`), with `pr` the orthogonal projection to them.
+-/
+noncomputable def liftCompression
+    {j : D.LiftIndex} (U : ∀ ϑ : D.Twist, End ℂ (D.descentPair ϑ j).FormV) (ϑ : D.Twist)
+    : End ℂ (D.goodLift ϑ j).range :=
+  (D.goodLift ϑ j).range.orthogonalProjectionOnto.toLinearMap
+    ∘ₗ (U ϑ).domRestrict (D.goodLift ϑ j).range
 
 section Comparison
 

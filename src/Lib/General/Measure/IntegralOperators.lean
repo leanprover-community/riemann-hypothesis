@@ -47,7 +47,8 @@ section ProductMeasure
 
 open MeasureTheory Sigma
 
-variable {Y ι κ : Type*} {α : Type*} {n : ι → Type*} [Fintype Y] [Fintype ι] [Fintype κ]
+variable
+  {Y ι κ : Type*} {α : Type*} {n : ι → Type*} [Fintype Y] [Fintype ι] [Fintype κ]
   [∀ i : ι, Fintype (n i)] [MeasureSpace α] [SigmaFinite (volume : Measure α)]
 
 /-- For a bijection `e` from the disjoint union of the finite types `n i` onto `Y`, the regrouping
@@ -75,8 +76,8 @@ section LayerCake
 
 open MeasureTheory Set Real Filter
 
-variable {S : Type*} [MeasurableSpace S] {ν : Measure S} {u : S → ℝ} {K A c : ℝ} {e d : ℕ}
-  {V : ENNReal}
+variable
+  {S : Type*} [MeasurableSpace S] {ν : Measure S} {u : S → ℝ} {K A c : ℝ} {e d : ℕ} {V : ENNReal}
 
 /-- Layer cake bound for a negative power. Let `u ≥ 1` be measurable and suppose that
 `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`, where `K ≥ 0`. If `e d < A` and `A ≤ c (A - e d)`, then
@@ -158,8 +159,8 @@ section CocompactIntegrable
 
 open MeasureTheory
 
-variable {G H : Type*} [Group G] [TopologicalSpace G] [Group H] [TopologicalSpace H]
-  {Γ : Subgroup G}
+variable
+  {G H : Type*} [Group G] [TopologicalSpace G] [Group H] [TopologicalSpace H] {Γ : Subgroup G}
 
 /-- If the subgroup `Γ` of `G` is cocompact (some compact set meets every orbit `Γg`), then a
 continuous function `F : G → ℂ` with `F (γ g) = F g` for `γ ∈ Γ` is integrable for every finite
@@ -199,8 +200,9 @@ open MeasureTheory Measure Fin Fintype
 
 namespace New
 
-variable {V Y X I A : Type*} [MeasurableSpace Y] {μ : Measure Y} [NormedAddCommGroup V]
-  [NormedSpace ℝ V] [MeasurableSpace X] [Monoid A]
+variable
+  {V Y X I A : Type*} [MeasurableSpace Y]
+  {μ : Measure Y} [NormedAddCommGroup V] [NormedSpace ℝ V] [MeasurableSpace X] [Monoid A]
 
 /-- The bound `‖x.toReal • v‖ₑ ≤ x * ‖v‖ₑ`; for `x = ∞` the left side is `0`. -/
 lemma enorm_toReal_smul_le (x : ENNReal) (v : V) : ‖x.toReal • v‖ₑ ≤ x * ‖v‖ₑ := by
@@ -226,13 +228,16 @@ lemma measurable_integral [SFinite μ] [MeasurableSpace V] [BorelSpace V] [Secon
 
 /-! ### `L²` bounds of integral operators -/
 
-/-- The finite family of kernels `k i : X → Y → ℂ`, integrated against `μ`, satisfies the bound
+/--
+The finite family of kernels `k i : X → Y → ℂ`, integrated against `μ`, satisfies the bound
 `∫ ∑ᵢ |∫ φ(y) kᵢ(x, y) dμ(y)|² dm(x) ≤ ∫ |φ|² dn` for every bounded measurable `φ : Y → ℂ`.
 For measurable kernels that are integrable in `y`, this says that the integral operator from
-`L²(Y, n)` to `L²(X, m)^I` has norm at most one on bounded functions. -/
+`L²(Y, n)` to `L²(X, m)^I` has norm at most one on bounded functions.
+-/
 def IsL2Contraction [Fintype I] (m : Measure X) (μ n : Measure Y) (k : I → X → Y → ℂ) : Prop :=
-  ∀ (φ : Y → ℂ) (C : ℝ), Measurable φ → (∀ y : Y, ‖φ y‖ ≤ C) →
-    ∫⁻ x : X, ∑ i : I, ‖∫ y : Y, φ y * k i x y ∂μ‖ₑ ^ 2 ∂m ≤ ∫⁻ y : Y, ‖φ y‖ₑ ^ 2 ∂n
+  ∀ (φ : Y → ℂ) (C : ℝ),
+    Measurable φ → (∀ y : Y, ‖φ y‖ ≤ C)
+      → ∫⁻ x : X, ∑ i : I, ‖∫ y : Y, φ y * k i x y ∂μ‖ₑ ^ 2 ∂m ≤ ∫⁻ y : Y, ‖φ y‖ₑ ^ 2 ∂n
 
 /-- Let `k` and `k'` be finite families of measurable kernels, integrable in the last variable
 against `μ` and `μ'`, each satisfying `IsL2Contraction`. For `k` this means
@@ -363,10 +368,17 @@ lemma IsL2Contraction.pi {ι : Type*} [Fintype ι] [DecidableEq ι] {I : ι → 
 
 /-! ### Padded tuples and units -/
 
-/-- The sequence indexed by `ℕ` that is the tuple `c` at indices below `n`, `t` at index `n`, and
-`1` at indices above `n`. -/
+/--
+The sequence indexed by `ℕ` that is the tuple `c` at indices below `n`, `t` at index `n`, and
+`1` at indices above `n`.
+-/
 def padTuple {C : Type*} {n : ℕ} [One C] (c : Fin n → C) (t : C) (a : ℕ) : C :=
-  if h : a < n then c ⟨a, h⟩ else if a = n then t else 1
+  if h : a < n then
+    c ⟨a, h⟩
+  else if a = n then
+    t
+  else
+    1
 
 open scoped Classical in
 /-- The element `c` as a unit if it is invertible, and the unit `1` otherwise. -/

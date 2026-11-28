@@ -194,8 +194,10 @@ namespace New
 section Forms
 variable {R : Type*} [CommRing R]
 
-/-- The pair of quartic forms `B₀ = (w₀² - w₁²)²` and `B₁ = w₀ w₁ (4 w₀² + c² w₀ w₁ + 4 w₁²)` at
-`w = (w₀, w₁)`. -/
+/--
+The pair of quartic forms `B₀ = (w₀² - w₁²)²` and `B₁ = w₀ w₁ (4 w₀² + c² w₀ w₁ + 4 w₁²)` at
+`w = (w₀, w₁)`.
+-/
 def doublingForms (c : R) (w : R × R) : R × R :=
   ((w.1 ^ 2 - w.2 ^ 2) ^ 2, w.1 * w.2 * (4 * w.1 ^ 2 + c ^ 2 * w.1 * w.2 + 4 * w.2 ^ 2))
 

@@ -43,8 +43,10 @@ open Matrix Topology
 
 namespace New
 
-variable {E : Type*} [Field E] [NumberField E] [NumberField.IsCMField E]
-  {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] {s : n → ℤˣ} {t : m → ℤˣ}
+variable
+  {E : Type*} [Field E] [NumberField E] [NumberField.IsCMField E]
+  {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {t : m → ℤˣ}
 
 /-! ### Block embeddings and continuity -/
 

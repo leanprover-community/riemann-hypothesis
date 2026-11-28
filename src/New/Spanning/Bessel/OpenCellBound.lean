@@ -175,8 +175,8 @@ lemma gramDiscReal_div_two_le_and_isBoundedInCell {𝔰 : Shape} {M P : ℝ} {Z 
   refine ⟨h_cell.gramDiscReal_div_two_le (by linarith) (hnM.trans hM_half) h_near, ?_⟩
   simpa only [mul_div_cancel₀ P two_ne_zero] using h_cell.of_mem_ball (by linarith) h_near
 
-theorem euclidean_enorm_sq_eq_sum {I : Type*} [Fintype I] (u : EuclideanSpace ℂ I) :
-    ‖u‖ₑ ^ 2 = ∑ i : I, ‖u i‖ₑ ^ 2 := by
+theorem euclidean_enorm_sq_eq_sum {I : Type*} [Fintype I] (u : EuclideanSpace ℂ I)
+    : ‖u‖ₑ ^ 2 = ∑ i : I, ‖u i‖ₑ ^ 2 := by
   simp [eNorm_eq_nnNorm, u.nnNorm_eq, ← ENNReal.coe_pow]
 
 end New.RealPlace
@@ -578,8 +578,10 @@ lemma New.isL2Contraction_of_columns {𝔰 : Shape} {I : Type*} [Fintype I] [Dec
           volume.withDensity fun y : 𝔰.G₁ ↦ A.indicator 1 y * ‖W y‖ₑ ^ 2) := by
         rw [← mul_sum, h_weight, lintegral_smul_measure, smul_eq_mul, ← mul_assoc]
 
-/-- The pairs `(h, v)` with `h` in the unitary group `U(κ)` of the positive definite middle part and
-`v` in the frame-fixing unipotent subgroup `besselU0` of `G₁`. -/
+/--
+The pairs `(h, v)` with `h` in the unitary group `U(κ)` of the positive definite middle part and
+`v` in the frame-fixing unipotent subgroup `besselU0` of `G₁`.
+-/
 abbrev New.Shape.FixerFactors (𝔰 : Shape) : Type :=
   U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0
 
@@ -731,15 +733,20 @@ lemma New.exists_mul_eq_mul_gramSection_mul {𝔰 : Shape} {γ : 𝔰.G₁}
   rw [hγ_eq, hkh, Subgroup.coe_inv, _root_.mul_inv_rev, _root_.mul_inv_rev]
   simp only [mul_assoc, inv_mul_cancel_left]
 
-/-- The conclusion of the open cell bound at `γ` in `G₁` and scale `ρ`, for the uncut function
+/--
+The conclusion of the open cell bound at `γ` in `G₁` and scale `ρ`, for the uncut function
 `W = X.besselFn .full` of a Bessel system `X`. The shifts `t x`, with `x` drawn from `m`, fix the
 frame, and the kernels `W (γ t z) ⊗ conj (W (t z))` on the set `A` are bounded on average by the
 measure `ν`. Its mass is at most `pairingBoundSq`, the number
 `(ρ ^ (9 n) / 𝗀) ^ (10⁵ n⁴) |I|² / (X.deg · openCellConst · (𝗀 / 2) ^ (k - 1))` with
-`𝗀 = gramDiscReal (realFrameGram γ)`, `n = ϱ + 1`, `k = |κ|` and `I = X.Index`. -/
-structure New.BesselSystem.IsOpenCellBound {𝔰 : Shape} {B : ℝ} {f : ℕ} (X : BesselSystem 𝔰 B f)
-    (γ : 𝔰.G₁) (ρ : ℝ) {T : Type*} [MeasurableSpace T] (A : Set 𝔰.G₁) (ν : Measure 𝔰.G₁)
-    (m : Measure T) (t : T → 𝔰.G₁) : Prop where
+`𝗀 = gramDiscReal (realFrameGram γ)`, `n = ϱ + 1`, `k = |κ|` and `I = X.Index`.
+-/
+structure New.BesselSystem.IsOpenCellBound
+    {𝔰 : Shape} {B : ℝ} {f : ℕ} (X : BesselSystem 𝔰 B f) (γ : 𝔰.G₁)
+    (ρ : ℝ)
+    {T : Type*} [MeasurableSpace T]
+    (A : Set 𝔰.G₁) (ν : Measure 𝔰.G₁) (m : Measure T) (t : T → 𝔰.G₁)
+    : Prop where
   /-- The domain `A` is compact. -/
   isCompact : IsCompact A
   /-- The shift is a measurable map. -/
@@ -748,34 +755,43 @@ structure New.BesselSystem.IsOpenCellBound {𝔰 : Shape} {B : ℝ} {f : ℕ} (X
   mem_besselFixer (x : T) : t x ∈ besselFixer
   /-- The shifts are averaged by a probability measure. -/
   isProbabilityMeasure : IsProbabilityMeasure m
-  /-- The mean over `m` of the squared Hilbert–Schmidt norm of
-  `∫_A φ z • W (γ t z) ⊗ conj (W (t z))` is at most `∫ ‖φ‖ ^ 2 dν`, for bounded measurable `φ`. -/
-  isL2Contraction : IsL2Contraction m (volume.restrict A) ν
-    fun (i : X.Index × X.Index) (x : T) (z : 𝔰.G₁) ↦
+  /--
+  The mean over `m` of the squared Hilbert–Schmidt norm of
+  `∫_A φ z • W (γ t z) ⊗ conj (W (t z))` is at most `∫ ‖φ‖ ^ 2 dν`, for bounded measurable `φ`.
+  -/
+  isL2Contraction
+    : IsL2Contraction m (volume.restrict A) ν fun (i : X.Index × X.Index) (x : T) (z : 𝔰.G₁) ↦
       X.besselFn .full (γ * t x * z) i.1 * conj (X.besselFn .full (t x * z) i.2)
   /-- The bounding measure is finite. -/
   isFiniteMeasure : IsFiniteMeasure ν
   /-- The total mass of the bounding measure is at most `pairingBoundSq`. -/
   measureReal_univ_le : ν.real .univ ≤ pairingBoundSq γ X.deg ρ (card X.Index)
-  /-- For almost every shift, `A` contains every `z` in `frameBox ρ` such that `γ t z` has
-  `besselLength` at most `ρ`. -/
-  ae_mem_of_besselLength_le :
-    ∀ᵐ x : T ∂m, ∀ z ∈ frameBox ρ, besselLength (γ * t x * z) ≤ ρ → z ∈ A
+  /--
+  For almost every shift, `A` contains every `z` in `frameBox ρ` such that `γ t z` has
+  `besselLength` at most `ρ`.
+  -/
+  ae_mem_of_besselLength_le : ∀ᵐ x : T ∂m, ∀ z ∈ frameBox ρ, besselLength (γ * t x * z) ≤ ρ → z ∈ A
 
-/-- A mean `L²` bound for the kernels `W (g x * z) ⊗ conj (W (t x * z))`, where
+/--
+A mean `L²` bound for the kernels `W (g x * z) ⊗ conj (W (t x * z))`, where
 `W = X.besselFn .full` is the uncut function of a Bessel system `X`, `x` is drawn from `m` and `z`
 ranges over `A`. The bounding measure `ν` has mass at most `C`, and `A` captures the points of
-Bessel length at most `M`. -/
-structure New.BesselSystem.IsKernelBound {𝔰 : Shape} {B : ℝ} {f : ℕ} (X : BesselSystem 𝔰 B f)
-    {T : Type*} [MeasurableSpace T] (g t : T → 𝔰.G₁) (M C : ℝ) (A : Set 𝔰.G₁) (ν : Measure 𝔰.G₁)
-    (m : Measure T) : Prop where
+Bessel length at most `M`.
+-/
+structure New.BesselSystem.IsKernelBound
+    {𝔰 : Shape} {B : ℝ} {f : ℕ} (X : BesselSystem 𝔰 B f)
+    {T : Type*} [MeasurableSpace T]
+    (g t : T → 𝔰.G₁) (M C : ℝ) (A : Set 𝔰.G₁) (ν : Measure 𝔰.G₁) (m : Measure T)
+    : Prop where
   /-- The domain `A` is compact. -/
   isCompact : IsCompact A
-  /-- The mean over `m` of the squared Hilbert–Schmidt norm of
+  /--
+  The mean over `m` of the squared Hilbert–Schmidt norm of
   `∫_A φ z • W (g x * z) ⊗ conj (W (t x * z))` is at most `∫ ‖φ‖ ^ 2 dν`, for bounded measurable
-  `φ`. -/
-  isL2Contraction : IsL2Contraction m (volume.restrict A) ν
-    fun (i : X.Index × X.Index) (x : T) (z : 𝔰.G₁) ↦
+  `φ`.
+  -/
+  isL2Contraction
+    : IsL2Contraction m (volume.restrict A) ν fun (i : X.Index × X.Index) (x : T) (z : 𝔰.G₁) ↦
       X.besselFn .full (g x * z) i.1 * conj (X.besselFn .full (t x * z) i.2)
   /-- The parameters are averaged by a probability measure. -/
   isProbabilityMeasure : IsProbabilityMeasure m
@@ -783,10 +799,11 @@ structure New.BesselSystem.IsKernelBound {𝔰 : Shape} {B : ℝ} {f : ℕ} (X :
   isFiniteMeasure : IsFiniteMeasure ν
   /-- The total mass of the bounding measure is at most `C`. -/
   measureReal_univ_le : ν.real .univ ≤ C
-  /-- For almost every `x`, `A` contains every `z` in `frameBox M` such that `g x * z` has
-  `besselLength` at most `M`. -/
-  ae_mem_of_besselLength_le :
-    ∀ᵐ x : T ∂m, ∀ z ∈ frameBox M, besselLength (g x * z) ≤ M → z ∈ A
+  /--
+  For almost every `x`, `A` contains every `z` in `frameBox M` such that `g x * z` has
+  `besselLength` at most `M`.
+  -/
+  ae_mem_of_besselLength_le : ∀ᵐ x : T ∂m, ∀ z ∈ frameBox M, besselLength (g x * z) ≤ M → z ∈ A
 
 private lemma cast_frameRank_le_rank {𝔰 : New.Shape} : (𝔰.n : ℝ) ≤ 𝔰.r :=
   Nat.cast_le.2 (by simpa only [Fintype.card_fin] using

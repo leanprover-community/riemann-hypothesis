@@ -58,7 +58,8 @@ namespace New.SiegelWeil
 
 open Matrix MeasureTheory Fintype Space Gf G WeilData NumberField Rows
 
-variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
+variable
+  {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
   {s : n → ℤˣ} {b : AutChar E} {A : Set (FinPlace E)} {y : G E s → ℂ}
 
 /-! ### Convergence, level and forms -/
@@ -251,17 +252,21 @@ lemma isForm_rallisSeries {S : Space E n s} (h_rank : 2 * card n < card m)
   realConv_eq he := by
     rw [realConv_rallisSeries h_rank b A hy.isBoundedMeasurable he, hy.realConv_eq he]
 
-/-- The series `rallisSeries (card m) b A` keeps the forms of each type and level for a hermitian
+/--
+The series `rallisSeries (card m) b A` keeps the forms of each type and level for a hermitian
 space `S : Space E n s`. This series is `∑ mc(q) R(q) y`, summed over the cosets `q` of the finite
 points integral at `A`, with coefficient `vacuumCoeff (card m) b` and right translation taken at
 `cosetRep q`. Let `2 * card n < card m`, let `b ∘ det` be unramified on `A`, and let `J` consist of
 points integral at `A` and contain the integral points supported on `A` and its conjugate; then the
 series of a form `y` of type `e` for `S` (automorphic, bounded and, if `e` is integrable, fixed by
-convolution with `e`) that is fixed by `J` is again a form of type `e` for `S` fixed by `J`. -/
-theorem exists_form_eq_rallisSeries {S : Space E n s} (h_rank : 2 * card n < card m)
-    (hb : IsUnramifiedOn b n A) {J : Subgroup (Gf E n)} (h_ge : stdLevel E n ⊓ supportedOn n A ≤ J)
-    (h_le : J ≤ localLevel n A) {e : GInf E s → ℂ} {y : S.Form e} (hy : HasLevel y J) :
-    ∃ z : S.Form e, HasLevel z J ∧ ⇑z = rallisSeries (card m) b A y := by
+convolution with `e`) that is fixed by `J` is again a form of type `e` for `S` fixed by `J`.
+-/
+theorem exists_form_eq_rallisSeries
+    {S : Space E n s}
+    (h_rank : 2 * card n < card m) (hb : IsUnramifiedOn b n A)
+    {J : Subgroup (Gf E n)} (h_ge : stdLevel E n ⊓ supportedOn n A ≤ J) (h_le : J ≤ localLevel n A)
+    {e : GInf E s → ℂ} {y : S.Form e} (hy : HasLevel y J)
+    : ∃ z : S.Form e, HasLevel z J ∧ ⇑z = rallisSeries (card m) b A y := by
   have h_form : S.IsForm e (rallisSeries (card m) b A y) :=
     isForm_rallisSeries h_rank hb y.property fun k hk ↦ hy k (h_ge hk)
   exact ⟨⟨_, h_form⟩, hasLevel_rallisSeries hb (card m) h_ge h_le hy, rfl⟩
@@ -304,10 +309,12 @@ lemma rallisSeries_union {A₁ A₂ : Set (FinPlace E)} (h_rank : 2 * card n < c
 /-! ### The sum of the coefficients as a product over the places -/
 
 variable (n) in
-/-- The sum `∑ mc(q)` of the coefficients of the vacuum `mc = vacuumCoeff M b` over the cosets `q`,
+/--
+The sum `∑ mc(q)` of the coefficients of the vacuum `mc = vacuumCoeff M b` over the cosets `q`,
 in the finite points, of the subgroup of the points integral at `A`, taken at the representatives
 `cosetRep q`. It is the value of the series of the constant function `1` (`rallisSeries_const`),
-and it is `0` if the terms are not summable. -/
+and it is `0` if the terms are not summable.
+-/
 def vacuumSum (M : ℕ) (b : AutChar E) (A : Set (FinPlace E)) : ℂ :=
   ∑' q : Gf E n ⧸ localLevel n A, vacuumCoeff M b (cosetRep q).val
 

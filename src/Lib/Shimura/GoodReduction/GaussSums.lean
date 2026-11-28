@@ -59,15 +59,19 @@ open Complex ComplexConjugate QuotientAddGroup LinearMap LinearEquiv NeZero Alge
 
 namespace New.ThetaTori
 
-variable {V R : Type} [FinComplexSpace V] [CommRing R] [StarRing R]
-  (L : Submodule ℤ V) (B : LatticeForm L) (F : R →+* V →L[ℂ] V)
-  (β : R) [IsDomain R] [Module.Finite ℤ R]
+variable
+  {V R : Type} [FinComplexSpace V] [CommRing R] [StarRing R]
+  (L : Submodule ℤ V) (B : LatticeForm L)
+  (F : R →+* V →L[ℂ] V) (β : R)
+  [IsDomain R] [Module.Finite ℤ R]
 
 /-! ### Hermitian data and invertibility of multiplications -/
 
-/-- B : LatticeForm L is a positive definite hermitian form on V, ℂ-valued and ℂ-linear in its
+/--
+B : LatticeForm L is a positive definite hermitian form on V, ℂ-valued and ℂ-linear in its
 second argument, with Riemann form integral on L, the action F of R on the finite-dimensional
-complex space V (`FinComplexSpace V`) preserves L with ā adjoint to a, and β̄ = 1 − β. -/
+complex space V (`FinComplexSpace V`) preserves L with ā adjoint to a, and β̄ = 1 − β.
+-/
 structure IsHermitianAction where
   /-- Every multiplication `F a` maps the lattice `L` into itself. -/
   map_mem (a : R) : ∀ l ∈ L, F a l ∈ L
@@ -114,28 +118,35 @@ namespace IsHermitianAction
 
 /-! ### Multiplier, normalised translations and kernels -/
 
-/-- The canonical multiplier x ↦ exp(πi E(βx, x)) of the hermitian data, where E is the Riemann
-form of B. The hermitian data only fix `B`, `F` and `β`. -/
+/--
+The canonical multiplier x ↦ exp(πi E(βx, x)) of the hermitian data, where E is the Riemann
+form of B. The hermitian data only fix `B`, `F` and `β`.
+-/
 @[simp]
 abbrev multiplier (_ : IsHermitianAction L B F β) : V → ℂ := canonicalMultiplier B (F β)
 
-/-- Normalised translation by x, acting on functions V → ℂ: the twisted translation
+/--
+Normalised translation by x, acting on functions V → ℂ: the twisted translation
 `New.RealComplexForm.thetaShift` for B, divided by exp(πi E(βx, x)), E the Riemann form of B. The
-hermitian data only fix `B`, `F` and `β`. -/
+hermitian data only fix `B`, `F` and `β`.
+-/
 @[simp]
 abbrev normShift (_ : IsHermitianAction L B F β) : V → (V → ℂ) →ₗ[ℂ] V → ℂ :=
   normalizedShift B (F β)
 
 variable (L F) in
-/-- The lattice a⁻¹L: the additive subgroup of the vectors y of V with ay in L, where a acts
-through F. -/
-def divLattice (a : R) : AddSubgroup V :=
-  L.toAddSubgroup.comap (F a).toAddMonoidHom
+/--
+The lattice a⁻¹L: the additive subgroup of the vectors y of V with ay in L, where a acts
+through F.
+-/
+def divLattice (a : R) : AddSubgroup V := L.toAddSubgroup.comap (F a).toAddMonoidHom
 
-/-- The kernel a⁻¹L / L of multiplication by a on the torus V/L. The hermitian action
-provides the finite quotient instance. -/
+/--
+The kernel a⁻¹L / L of multiplication by a on the torus V/L. The hermitian action
+provides the finite quotient instance.
+-/
 abbrev MulKernel (_ : IsHermitianAction L B F β) : Type :=
-    divLattice L F a ⧸ L.toAddSubgroup.addSubgroupOf (divLattice L F a)
+  divLattice L F a ⧸ L.toAddSubgroup.addSubgroupOf (divLattice L F a)
 
 omit [StarRing R] [IsDomain R] [Module.Finite ℤ R] [NeZero a] in
 @[simp]
@@ -228,8 +239,9 @@ lemma card_mulKernel : Nat.card (h.MulKernel a) = (F a).det * conj (F a).det :=
 
 instance : Fintype (h.MulKernel a) :=
   -- The index is `|det (F a)|²`, which is not zero as `F a` is injective.
-  AddSubgroup.fintypeOfIndexNeZero (ne_of_apply_ne _ ((h.card_mulKernel a).trans_ne
-    (by simp [det_eq_zero_iff_ker_ne_bot, ker_eq_bot, action_injective])))
+  AddSubgroup.fintypeOfIndexNeZero (ne_of_apply_ne _
+    ((h.card_mulKernel a).trans_ne
+      (by simp [det_eq_zero_iff_ker_ne_bot, ker_eq_bot, action_injective])))
 
 /-- Let `h` be hermitian data and `a ≠ 0`. Let `f` be fixed by the normalised translations by `a l`,
 `l ∈ L`, let `ξ` be a character of the finite kernel `a⁻¹ L / L`, and let
@@ -271,9 +283,11 @@ namespace New.ThetaTori.IsHermitianAction
 
 open Complex ComplexConjugate Matrix Module MeasureTheory ComplexOrder QuotientAddGroup Fintype Fock
 
-variable {V R : Type} [FinComplexSpace V] [CommRing R] [StarRing R]
+variable
+  {V R : Type} [FinComplexSpace V] [CommRing R] [StarRing R]
   {L : Submodule ℤ V} {B : LatticeForm L} {F : R →+* V →L[ℂ] V} {β : R}
-  (h : IsHermitianAction L B F β) {x y : V}
+  (h : IsHermitianAction L B F β)
+  {x y : V}
 
 /-- The fourth power of a Gauss sum is real. Let `h` be hermitian data, `κ ≠ 0`, and let `q` be a
 function on the finite group `κ⁻¹ L / L` with `q z = exp (B x (F r x))` for every lift `x ∈ κ⁻¹ L`

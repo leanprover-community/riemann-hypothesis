@@ -68,14 +68,17 @@ section CharacterLifts
 
 open Finset Matrix GeneralLinearGroup Hall SemidirectProduct Function Fintype Submodule
 
-variable (k k' Z : Type*)
+variable
+  (k k' Z : Type*)
   {k₀ R : Type*} [Field k] [Field k'] [Field k₀] [Algebra k k'] [Finite k] [Algebra k₀ k']
   [Finite k'] [Finite k₀] [CommSemiring Z] [Algebra Z ℂ] [CommRing R] [Algebra R ℂ]
   {F G : Hall k} {F' G' : Hall k'} {σ : Gal(k'/k)}
   (n : Type*) [Fintype n] [DecidableEq n]
 
-/-- The action of Gal(k'/k) on GL_n(k') by group automorphisms, applying the field automorphism
-to each matrix entry. -/
+/--
+The action of Gal(k'/k) on GL_n(k') by group automorphisms, applying the field automorphism
+to each matrix entry.
+-/
 noncomputable def galActionGL : Gal(k'/k) →* MulAut (GL n k') :=
   MonoidHom.mk' (fun σ ↦ Units.mapEquiv σ.mapMatrix.toMulEquiv) (by tauto)
 
@@ -85,25 +88,34 @@ abbrev GalSemidirect : Type _ := GL n k' ⋊[galActionGL k k' n] Gal(k'/k)
 variable {k k' n} (Φ : GalSemidirect k k' n → ℂ) (X : Hall k₀)
 
 variable (k₀) in
-/-- The fixed field of σ ∈ Gal(k'/k) is k₀: the image of k₀ in k' is exactly the set of elements
-fixed by σ. -/
+/--
+The fixed field of σ ∈ Gal(k'/k) is k₀: the image of k₀ in k' is exactly the set of elements
+fixed by σ.
+-/
 abbrev HasFixedField (σ : Gal(k'/k)) : Prop := Set.range (algebraMap k₀ k') = fixedPoints σ
 
-/-- For each σ ∈ Gal(k'/k) with fixed field k₀ and each s over σ in GL_n(k')⋊Gal(k'/k) whose
-power s^{ord σ} is γ ∈ GL_n(k₀), Φ(s) = X(γ). -/
+/--
+For each σ ∈ Gal(k'/k) with fixed field k₀ and each s over σ in GL_n(k')⋊Gal(k'/k) whose
+power s^{ord σ} is γ ∈ GL_n(k₀), Φ(s) = X(γ).
+-/
 def DescendsTo : Prop :=
-  ∀ σ : Gal(k'/k), HasFixedField k₀ σ →
-    DescendsOnCoset rightHom σ (fun γ : GL n k₀ ↦ inl (γ.map (algebraMap k₀ k'))) Φ X.evalGL
+  ∀ σ : Gal(k'/k),
+    HasFixedField k₀ σ
+      → DescendsOnCoset rightHom σ (fun γ : GL n k₀ ↦ inl (γ.map (algebraMap k₀ k'))) Φ X.evalGL
 
 variable (F F' n)
 
-/-- Some Z-combination Φ of characters of GL_n(k') ⋊ Gal(k'/k) descends, in the sense of
-`New.DescendsTo`, both to F over k and to F' over k'. -/
+/--
+Some Z-combination Φ of characters of GL_n(k') ⋊ Gal(k'/k) descends, in the sense of
+`New.DescendsTo`, both to F over k and to F' over k'.
+-/
 def HasCommonLift : Prop :=
   ∃ Φ ∈ virtualChars Z (GalSemidirect k k' n), DescendsTo Φ F ∧ DescendsTo Φ F'
 
-/-- F lifts to F' over Z: for every m, one Z-combination Φ of characters of GL_m(k')⋊Gal(k'/k)
-satisfies `New.DescendsTo` for both F (over k) and F' (over k'). -/
+/--
+F lifts to F' over Z: for every m, one Z-combination Φ of characters of GL_m(k')⋊Gal(k'/k)
+satisfies `New.DescendsTo` for both F (over k) and F' (over k').
+-/
 def Lift : Prop := ∀ m : ℕ, HasCommonLift Z F F' (Fin m)
 
 end CharacterLifts
@@ -112,10 +124,12 @@ section CharacterLifts
 
 open Finset Matrix GeneralLinearGroup Hall SemidirectProduct Function Fintype Submodule
 
-variable {k k' Z : Type*} {k₀ R : Type*} [Field k] [Field k'] [Field k₀] [Algebra k k']
-  [Algebra k₀ k'] [Finite k₀] [CommSemiring Z] [Algebra Z ℂ] [CommRing R] [Algebra R ℂ]
+variable
+  {k k' Z : Type*} {k₀ R : Type*} [Field k] [Field k'] [Field k₀] [Algebra k k'] [Algebra k₀ k']
+  [Finite k₀] [CommSemiring Z] [Algebra Z ℂ] [CommRing R] [Algebra R ℂ]
   {F G : Hall k} {F' G' : Hall k'} {σ : Gal(k'/k)} {n : Type*} [Fintype n] [DecidableEq n]
-  {Φ : GalSemidirect k k' n → ℂ} (X : Hall k₀)
+  {Φ : GalSemidirect k k' n → ℂ}
+  (X : Hall k₀)
 
 /-- Renumbering the rows and columns along `e` commutes with the action of `τ` on the entries. -/
 private lemma reindexGL_comp_galActionGL {n' : Type*} [Fintype n'] [DecidableEq n'] (e : n ≃ n')
@@ -510,10 +524,12 @@ open Module Hall ComplexConjugate SemidirectProduct Algebra TensorProduct Linear
 
 attribute [local instance low] Fintype.ofFinite
 
-variable (k k' : Type*) {K L : Type*}
-  {m : ℕ} [Field k] [Field k'] [Algebra k k'] [Finite k'] [Field K] [IsAlgClosed K]
+variable
+  (k k' : Type*)
+  {K L : Type*} {m : ℕ} [Field k] [Field k'] [Algebra k k'] [Finite k'] [Field K] [IsAlgClosed K]
   [Algebra k K] [Algebra k' K] [IsScalarTower k k' K]
-  (θ : MulChar K ℂ) [Field L] [Finite L] [Algebra k L]
+  (θ : MulChar K ℂ)
+  [Field L] [Finite L] [Algebra k L]
 
 /-- For a basis `b` of a finite `k`-algebra `A` and an element `t` of `A`, the matrix of left
 multiplication by `t` in the basis `b` and left multiplication by `t` on `A` have the same

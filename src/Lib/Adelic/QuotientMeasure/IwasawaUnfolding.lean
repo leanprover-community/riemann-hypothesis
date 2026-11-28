@@ -90,8 +90,10 @@ lemma New.integrable_tsum_of_lintegral_lt_top {X Y : Type*} [MeasurableSpace X] 
     integrable_prod_count_of_lintegral_lt_top hk_meas h_fin
   simpa only [integral_count_eq_tsum] using h_prod.integral_prod_left
 
-variable {Λ G Y : Type*} [Group Λ] [Group G] [TopologicalSpace G] [MeasurableSpace G]
-  [MulAction Λ Y] [Countable Y] {i : Λ →* G}
+variable
+  {Λ G Y : Type*}
+  [Group Λ] [Group G] [TopologicalSpace G] [MeasurableSpace G] [MulAction Λ Y] [Countable Y]
+  {i : Λ →* G}
 
 omit [Group G] [TopologicalSpace G] in
 /-- If the `k y` are almost everywhere strongly measurable and `∑ ‖k y‖` has finite integral, then
@@ -123,7 +125,8 @@ lemma New.tsum_cutoff_smul_mem_block (hi : Function.Injective i) {Γ S : Subgrou
     exact tsum_cutoff_smul_mem_eq_one hi hS hC hβ_one hγ₀ x
   · simp [not_exists.1 (mt (hD y).2 hy)]
 
-variable [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
+variable
+  [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
   [BorelSpace G]
 
 /-- Unfolding of a sum of nonnegative terms over the translates of a block. Let `i` map `Λ`
@@ -434,14 +437,17 @@ lemma New.exists_equiv_prod_subgroupOf {G M D : Type*} [Group G] [Group M] {N Γ
       ⟨⟨(g : G)⁻¹ * i (δ d), h_mem⟩, mul_mem (inv_mem g.property) (hδ_mem d)⟩
     exact ⟨(d, γ⁻¹), by simp [φ, γ]⟩
 
-variable {G M : Type*} [Group G] [Group M] [TopologicalSpace G] [IsTopologicalGroup G]
-  [PolishSpace G] (w : M → ℝ) [MeasurableSpace G] [BorelSpace G] [TopologicalSpace M]
-  [IsTopologicalGroup M] [MeasurableSpace M] [BorelSpace M]
+variable
+  {G M : Type*} [Group G] [Group M] [TopologicalSpace G] [IsTopologicalGroup G] [PolishSpace G]
+  (w : M → ℝ)
+  [MeasurableSpace G] [BorelSpace G] [TopologicalSpace M] [IsTopologicalGroup M] [MeasurableSpace M]
+  [BorelSpace M]
   (μ : Measure G) [IsHaarMeasure μ] [IsMulRightInvariant μ]
   (ν : Measure M) [IsHaarMeasure ν]
   {N K Γ : Subgroup G} [IsMulRightInvariant ν] [CompactSpace K]
   (κ : Measure K) [IsHaarMeasure κ]
-  {lam : Measure N} [IsHaarMeasure lam] (i : M →* G)
+  {lam : Measure N} [IsHaarMeasure lam]
+  (i : M →* G)
 
 omit [IsHaarMeasure ν] [IsHaarMeasure lam] in
 /-- Let `N` be unimodular, and let conjugation by `i m` multiply integrals over `N` by `w m`. The

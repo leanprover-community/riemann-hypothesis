@@ -69,61 +69,77 @@ open NumberField Polynomial Function
 
 namespace New
 
-variable {E n M : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
-  (f : Gf E n → M → ℂ) {w : FinPlace E} (hw : star w ≠ w)
+variable
+  {E n M : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
+  (f : Gf E n → M → ℂ)
+  {w : FinPlace E} (hw : star w ≠ w)
 
 variable (E) in
-/-- Weights. For `κ : Weight E` and an infinite place `v` of `E`, `κ.1 v h` is the number of columns
-of height `h` of a Young diagram, and `κ.2 v` is an integer exponent of the determinant. -/
+/--
+Weights. For `κ : Weight E` and an infinite place `v` of `E`, `κ.1 v h` is the number of columns
+of height `h` of a Young diagram, and `κ.2 v` is an integer exponent of the determinant.
+-/
 abbrev Weight : Type := (InfinitePlace E → ℕ → ℕ) × (InfinitePlace E → ℤ)
 
-/-- For natural numbers q, N and a sequence t in a commutative ring, the polynomial Σ_{j=0}^{N}
-(−1)^j q^{j(j−1)/2} t_j X^{N−j}. -/
+/--
+For natural numbers q, N and a sequence t in a commutative ring, the polynomial Σ_{j=0}^{N}
+(−1)^j q^{j(j−1)/2} t_j X^{N−j}.
+-/
 def heckePoly {R : Type} [CommRing R] (q N : ℕ) (t : ℕ → R) : R[X] :=
   ∑ j ∈ Finset.range (N + 1), C ((-1) ^ j * q ^ j.choose 2 * t j) * X ^ (N - j)
 
-/-- `f` is spherical at the split place `w` with Hecke polynomial `P`: the maximal compact subgroup
+/--
+`f` is spherical at the split place `w` with Hecke polynomial `P`: the maximal compact subgroup
 `maxCompactAt n w` at `w` and `star w` fixes `f`, the `j`-th Hecke operator at `w` (`heckeSplit`)
 acts on `f` by a scalar `t j`, and `P = heckePoly q (Fintype.card n) t`, that is
-`P = Σ_j (−1)^j q^{j(j−1)/2} t_j X^{n−j}`, with `q` the order of the residue field at `w`. -/
+`P = Σ_j (−1)^j q^{j(j−1)/2} t_j X^{n−j}`, with `q` the order of the residue field at `w`.
+-/
 def HasHeckePolyAt (w : FinPlace E) (hw : star w ≠ w) (P : ℂ[X]) : Prop :=
-  f ∈ levelSpace (rightRegular ℂ (Gf E n) (M → ℂ)) (maxCompactAt n w) ∧
-  ∃ t : ℕ → ℂ,
-    P = heckePoly w.q (Fintype.card n) t ∧
-      ∀ j : ℕ, heckeSplit (rightRegular ℂ (Gf E n) (M → ℂ)) hw j f = t j • f
+  f ∈ levelSpace (rightRegular ℂ (Gf E n) (M → ℂ)) (maxCompactAt n w)
+    ∧ ∃ t : ℕ → ℂ,
+      P = heckePoly w.q (Fintype.card n) t
+        ∧ ∀ j : ℕ, heckeSplit (rightRegular ℂ (Gf E n) (M → ℂ)) hw j f = t j • f
 
-/-- `f` is an eigenform for the system `P` of polynomials: `f ≠ 0`, and for all but finitely many
+/--
+`f` is an eigenform for the system `P` of polynomials: `f ≠ 0`, and for all but finitely many
 places `w`, if the norm of `w` is prime then `w` is split (`star w ≠ w`) and `f` is spherical
-at `w` with Hecke polynomial `P w` (`New.HasHeckePolyAt`). Splitting is part of the assertion. -/
+at `w` with Hecke polynomial `P w` (`New.HasHeckePolyAt`). Splitting is part of the assertion.
+-/
 def IsEigenform (P : FinPlace E → ℂ[X]) : Prop :=
-  f ≠ 0 ∧
-  ∀ᶠ w : FinPlace E in Filter.cofinite, w.q.Prime → ∃ hw : star w ≠ w, HasHeckePolyAt f w hw (P w)
+  f ≠ 0
+    ∧ ∀ᶠ w : FinPlace E in Filter.cofinite, w.q.Prime → ∃ hw : star w ≠ w, HasHeckePolyAt f w hw (P w)
 
-/-- `f` is spherical off the finite set `S` of places with Hecke polynomials `P`: `f ≠ 0`, `f` is
+/--
+`f` is spherical off the finite set `S` of places with Hecke polynomials `P`: `f ≠ 0`, `f` is
 fixed by the integral points `stdLevel E n` that are trivial at the places of `S`
 (`Gf.trivialOn n S`), and `f` has Hecke polynomial `P w` (`New.HasHeckePolyAt`) at every split
-place `w` with `w ∉ S` and `star w ∉ S`. -/
+place `w` with `w ∉ S` and `star w ∉ S`.
+-/
 def IsSphericalOff (S : Finset (FinPlace E)) (f : Gf E n → M → ℂ) (P : FinPlace E → ℂ[X]) : Prop :=
-  f ≠ 0 ∧
-  (∀ k ∈ stdLevel E n ⊓ Gf.trivialOn n S, rightRegular ℂ (Gf E n) (M → ℂ) k f = f) ∧
-  ∀ (w : FinPlace E) (hw : star w ≠ w), w ∉ S → star w ∉ S → HasHeckePolyAt f w hw (P w)
+  f ≠ 0 ∧ (∀ k ∈ stdLevel E n ⊓ Gf.trivialOn n S, rightRegular ℂ (Gf E n) (M → ℂ) k f = f)
+    ∧ ∀ (w : FinPlace E) (hw : star w ≠ w), w ∉ S → star w ∉ S → HasHeckePolyAt f w hw (P w)
 
-/-- `f` has the label `Ξ`, a function on `GL n (ResField w)` with `ResField w` the residue field at
+/--
+`f` has the label `Ξ`, a function on `GL n (ResField w)` with `ResField w` the residue field at
 the split place `w`: the kernel of the reduction `reduceGL` from the integral matrices
 `intGL n Valued.v.integer` at `w` to `GL n (ResField w)` fixes `f`, and the sum over `x` of
-`star (Ξ x)` times the translate of `f` by a lift of `x` is nonzero. -/
+`star (Ξ x)` times the translate of `f` by a lift of `x` is nonzero.
+-/
 def HasLabel (Ξ : GL n (ResField w) → ℂ) : Prop :=
-  (∀ k : intGL n Valued.v.integer, reduceGL k = 1 →
-    rightRegular ℂ (Gf E n) (M → ℂ) (ofSplitPlace hw k.val) f = f) ∧
-  ∑ᶠ x : GL n (ResField w),
-    star (Ξ x) •
-      rightRegular ℂ (Gf E n) (M → ℂ) (ofSplitPlace hw (surjInv reduceGL_surjective x).val) f ≠ 0
+  (∀ k : intGL n Valued.v.integer,
+      reduceGL k = 1 → rightRegular ℂ (Gf E n) (M → ℂ) (ofSplitPlace hw k.val) f = f)
+    ∧ ∑ᶠ x : GL n (ResField w),
+        star (Ξ x) •
+          rightRegular ℂ (Gf E n) (M → ℂ) (ofSplitPlace hw (surjInv reduceGL_surjective x).val) f
+      ≠ 0
 
 open scoped Classical in
-/-- The multiset {j − 1 − λ_j} if σ is in the CM type `Φ`, that is if σ equals `Φ v`, the embedding
+/--
+The multiset {j − 1 − λ_j} if σ is in the CM type `Φ`, that is if σ equals `Φ v`, the embedding
 that `Φ` picks at the place v of σ, else {λ_j + N − j}, 1 ≤ j ≤ N, with λ the highest weight of κ at
 the place v of σ: λ_j = `κ.2 v` + Σ_{j ≤ h < N} `κ.1 v h`. The index in the code is j − 1, and `u`
-is λ_j + N − j. -/
+is λ_j + N − j.
+-/
 def jumps {E : Type} [Field E] [CMType E] (κ : Weight E) (N : ℕ) (σ : E →+* ℂ) : Multiset ℤ :=
   (Multiset.range N).map fun j ↦
     let u : ℤ :=
@@ -202,9 +218,11 @@ namespace New
 
 variable (E : Type) [Field E] [EmbeddedNumberField E]
 
-/-- A finite place w = `place` of E of prime norm, a valuation subring A = `valuationSubring` of Ω
+/--
+A finite place w = `place` of E of prime norm, a valuation subring A = `valuationSubring` of Ω
 (a term of `ClosurePlace`) above w in the sense of `IsPlaceOver`, and a geometric Frobenius
-s = `frob` in Gal(Ω/E) at A. -/
+s = `frob` in Gal(Ω/E) at A.
+-/
 structure FrobeniusDatum where
   /-- The finite place of `E`. -/
   place : FinPlace E
@@ -219,9 +237,11 @@ structure FrobeniusDatum where
   /-- The inverse of the element is an arithmetic Frobenius at the valuation subring. -/
   isFrob_inv : IsFrob valuationSubring place.q frob⁻¹
 
-/-- The filter 'most Frobenii' on `New.FrobeniusDatum E`. A set `X` of data `(w, A, s)` belongs to
+/--
+The filter 'most Frobenii' on `New.FrobeniusDatum E`. A set `X` of data `(w, A, s)` belongs to
 it if each nonempty open `V ⊆ Gal(Ω/E)` has a nonempty open part `O` such that, for almost all `w`,
-`X` contains every datum `(w, A, s)` with `s ∈ O`. -/
+`X` contains every datum `(w, A, s)` with `s ∈ O`.
+-/
 def mostFrobenii : Filter (FrobeniusDatum E) where
   sets :=
     {X : Set (FrobeniusDatum E) |
@@ -244,8 +264,10 @@ def mostFrobenii : Filter (FrobeniusDatum E) where
     filter_upwards [hX_ev, hY_ev] with w hwX hwY A s hp hA hs hsO'
     exact ⟨hwX A s hp hA hs (hO'O hsO'), hwY A s hp hA hs hsO'⟩
 
-/-- The filter of most Frobenii tending to `g`: `New.mostFrobenii` on data `(w, A, s)`, refined by
-the condition that `s` lies near `g`. -/
+/--
+The filter of most Frobenii tending to `g`: `New.mostFrobenii` on data `(w, A, s)`, refined by
+the condition that `s` lies near `g`.
+-/
 noncomputable abbrev mostFrobeniiAt (g : Gal(Ω/E)) : Filter (FrobeniusDatum E) :=
   mostFrobenii E ⊓ comap (fun x : FrobeniusDatum E ↦ x.frob) (𝓝 g)
 
@@ -331,8 +353,8 @@ lemma dense_of_mostFrobenii {p : Gal(Ω/E) → Prop}
 instance {g : Gal(Ω/E)} : NeBot (mostFrobeniiAt E g) :=
   -- Chebotarev gives density for each set in the Frobenius filter, hence compatibility
   -- with every neighbourhood of `g`. This is the nontriviality used for uniqueness of limits.
-  neBot_inf_comap_iff_map.mpr
-    (inf_neBot_iff.mpr fun _ h_most _ ↦ (dense_of_mostFrobenii h_most).inter_nhds_nonempty)
+  neBot_inf_comap_iff_map.mpr (inf_neBot_iff.mpr fun _ h_most _ ↦
+    (dense_of_mostFrobenii h_most).inter_nhds_nonempty)
 
 end New
 

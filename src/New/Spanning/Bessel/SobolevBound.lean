@@ -173,29 +173,34 @@ section SobolevCell
 open Complex ComplexOrder Set Metric Function Fintype Matrix MeasureTheory Subgroup Norms.L2Operator
   Real
 
-/-- The index set of the real coordinates on the complex matrices of size `ϱ + 1`: the index
+/--
+The index set of the real coordinates on the complex matrices of size `ϱ + 1`: the index
 `(0, a, b)` stands for the real part of the entry `(a, b)`, and `(1, a, b)` for its imaginary
-part. -/
+part.
+-/
 abbrev New.Shape.FrameCoord (𝔰 : Shape) : Type := Fin 2 × Fin (𝔰.ϱ + 1) × Fin (𝔰.ϱ + 1)
 
 /-- The positions `(a, b)` of the entries of a matrix in `G₁`; they index the matrix units. -/
 abbrev New.Shape.EntryIndex (𝔰 : Shape) : Type := 𝔰.BesselIndex × 𝔰.BesselIndex
 
-/-- The product of the Haar measures of `U(κ)` and `𝖴⁰ = besselU0`, times the constant
+/--
+The product of the Haar measures of `U(κ)` and `𝖴⁰ = besselU0`, times the constant
 `openCellConst * c ^ (|κ| - 1)`. The constant is the lower bound of `lintegral_gramSection_le` for
 the density of Haar measure of `G₁`, in the coordinates of the open cell, at a matrix `Z` with
-`gramDiscReal Z = c`. -/
-noncomputable def New.Shape.fixerMeasure (𝔰 : Shape) (c : ℝ) :
-    Measure (U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0) :=
+`gramDiscReal Z = c`.
+-/
+noncomputable def New.Shape.fixerMeasure (𝔰 : Shape) (c : ℝ)
+    : Measure (U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0) :=
   ENNReal.ofReal (𝔰.openCellConst * c ^ (𝔰.k - 1)) • volume.prod 𝔰.besselHaar₀
 
-instance (𝔰 : New.Shape) (c : ℝ) : SFinite (𝔰.fixerMeasure c) :=
-  inferInstanceAs (SFinite (_ • _))
+instance (𝔰 : New.Shape) (c : ℝ) : SFinite (𝔰.fixerMeasure c) := inferInstanceAs (SFinite (_ • _))
 
-/-- The pairs `(h, u)` in `U(κ) × 𝖴⁰`, `𝖴⁰ = besselU0`, such that `u` has operator norm at most
-`R`. -/
-def New.Shape.fixerBall (𝔰 : Shape) (R : ℝ) :
-    Set (U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0) :=
+/--
+The pairs `(h, u)` in `U(κ) × 𝖴⁰`, `𝖴⁰ = besselU0`, such that `u` has operator norm at most
+`R`.
+-/
+def New.Shape.fixerBall (𝔰 : Shape) (R : ℝ)
+    : Set (U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0) :=
   {ω | ‖(ω.2 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ R}
 
 lemma New.Shape.mem_fixerBall {𝔰 : Shape} {R : ℝ}
@@ -363,17 +368,21 @@ lemma New.RealPlace.lintegral_lintegral_gramSection_le {𝔰 : Shape} {P c : ℝ
     _ ≤ ∫⁻ γ, χQ γ * w γ := lintegral_gramSection_le (f := fun γ ↦ χQ γ * w γ) h_xw
     _ ≤ _ := by rwa [one_mul] at unfolding
 
-/-- The family `V` of functions on `G₁`, indexed by the words in an alphabet `L`, behaves like the
+/--
+The family `V` of functions on `G₁`, indexed by the words in an alphabet `L`, behaves like the
 iterated right derivatives of `V []`: along a curve `γ` in `G₁` with `γ' = γ X` and `‖X‖ ≤ C` near
 `t`, the function `V w ∘ γ` is differentiable at `t`, with derivative of norm at most `Λ C` times
-the sum over the letters `l` of the norms of `V (l :: w) (γ t)`. -/
-def New.RealPlace.HasDerivWords {𝔰 : Shape} {I L : Type} [Fintype I] [Fintype L]
-    (V : List L → 𝔰.G₁ → EuclideanSpace ℂ I) (Λ : ℝ) : Prop :=
+the sum over the letters `l` of the norms of `V (l :: w) (γ t)`.
+-/
+def New.RealPlace.HasDerivWords
+    {𝔰 : Shape} {I L : Type} [Fintype I] [Fintype L]
+    (V : List L → 𝔰.G₁ → EuclideanSpace ℂ I) (Λ : ℝ)
+    : Prop :=
   ∀ (w : List L) (γ : ℝ → 𝔰.G₁) (X : ℝ → Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (C t : ℝ),
     (∀ᶠ s : ℝ in nhds t,
       HasDerivAt (fun s : ℝ ↦ (γ s : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) (γ s * X s) s ∧
-        ‖X s‖ ≤ C) →
-      ∃ v : EuclideanSpace ℂ I,
+        ‖X s‖ ≤ C)
+      → ∃ v : EuclideanSpace ℂ I,
         HasDerivAt (fun s : ℝ ↦ V w (γ s)) v t ∧ ‖v‖ ≤ ∑ l : L, Λ * C * ‖V (l :: w) (γ t)‖
 
 /-- Let the family `V` satisfy `HasDerivWords V Λ`: along a curve in `G₁` with `γ' = γ X` and
@@ -451,7 +460,8 @@ lemma New.RealPlace.exists_real_coordinates_mapsTo_ball {𝔰 : Shape} {P : ℝ}
           mul_inv_cancel₀ (pow_ne_zero 2 P_pos.ne'), one_mul]
       _ < (P ^ 6)⁻¹ := div_lt_self (by positivity) (by norm_num)
 
-/-- Let `P ≥ 8 r`, where `r = 𝔰.r` is the size of the matrices in `G₁`, and let `n = ϱ + 1`. Let `Z`
+/--
+Let `P ≥ 8 r`, where `r = 𝔰.r` is the size of the matrices in `G₁`, and let `n = ϱ + 1`. Let `Z`
 be a complex `n × n` matrix (`FrameMatrix`) such that every `Y` within `P⁻⁶` of `Z` is invertible
 with |ξ| < 1 and with ‖Y‖, ‖Y⁻¹‖ and (1 − |ξ|²)^{−1/2} at most `P`, ξ the last diagonal entry of
 `Y⁻¹` (`IsBoundedInCell`), and has `0 < c ≤ gramDiscReal Y` = |det Y|² − |det Y₀|², Y₀ the upper
@@ -461,19 +471,21 @@ left `ϱ × ϱ` block of `Y`. Let `HasDerivWords V Λ` hold: along a curve in `G
 Bessel subgroup `besselS`, and let `K` bound their squared norms in `L²(𝖴∖G₁)` (`besselQuotMeasure`)
 for the words `w` of length at most `2 n ^ 2`. Then the integral of `‖V [] (γ_Z (u h)⁻¹)‖ ^ 2` over
 the `ω = (h, u)` in `U(κ) × 𝖴⁰` with `‖u‖ ≤ P ^ 20` (`fixerBall`), for Haar measure times
-`openCellConst * c ^ (|κ| - 1)` (`fixerMeasure`), is at most `P ^ (550 n ^ 2) K`. -/
-theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords {𝔰 : Shape} {I L : Type}
-    [Fintype I] [Fintype L] {P c Λ : ℝ} {Z : 𝔰.FrameMatrix} (hP : 8 * 𝔰.r ≤ P) (hc : 0 < c)
-    (h_disc : ∀ Y ∈ ball Z (P ^ 6)⁻¹, c ≤ gramDiscReal Y)
+`openCellConst * c ^ (|κ| - 1)` (`fixerMeasure`), is at most `P ^ (550 n ^ 2) K`.
+-/
+theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords
+    {𝔰 : Shape} {I L : Type} [Fintype I] [Fintype L]
+    {P c Λ : ℝ} {Z : 𝔰.FrameMatrix}
+    (hP : 8 * 𝔰.r ≤ P) (hc : 0 < c) (h_disc : ∀ Y ∈ ball Z (P ^ 6)⁻¹, c ≤ gramDiscReal Y)
     (h_cell : ∀ Y ∈ ball Z (P ^ 6)⁻¹, IsBoundedInCell Y P)
-    {V : List L → 𝔰.G₁ → EuclideanSpace ℂ I} (hV : HasDerivWords V Λ) (hΛ_nonneg : 0 ≤ Λ)
-    (hΛ : card L * Λ ≤ P ^ 44) (hV_meas : ∀ w : List L, Measurable (V w))
+    {V : List L → 𝔰.G₁ → EuclideanSpace ℂ I} (hV : HasDerivWords V Λ)
+    (hΛ_nonneg : 0 ≤ Λ) (hΛ : card L * Λ ≤ P ^ 44) (hV_meas : ∀ w : List L, Measurable (V w))
     (hV_inv : ∀ w : List L, besselS.FixesLeft fun g : 𝔰.G₁ ↦ ‖V w g‖ₑ)
-    {K : ENNReal} (hK : ∀ w : List L,
-      w.length ≤ 2 * 𝔰.n ^ 2 → ∫⁻ g : 𝔰.G₁, ‖V w g‖ₑ ^ 2 ∂besselQuotMeasure ≤ K) :
-    ∫⁻ ω : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0 in 𝔰.fixerBall (P ^ 20),
-        ‖V [] (gramSection Z * ((ω.2 : 𝔰.G₁) * embedH ω.1)⁻¹)‖ₑ ^ 2 ∂𝔰.fixerMeasure c ≤
-      ENNReal.ofReal (P ^ (550 * 𝔰.n ^ 2)) * K := by
+    {K : ENNReal}
+    (hK : ∀ w : List L, w.length ≤ 2 * 𝔰.n ^ 2 → ∫⁻ g : 𝔰.G₁, ‖V w g‖ₑ ^ 2 ∂besselQuotMeasure ≤ K)
+    : ∫⁻ ω : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0 in 𝔰.fixerBall (P ^ 20),
+          ‖V [] (gramSection Z * ((ω.2 : 𝔰.G₁) * embedH ω.1)⁻¹)‖ₑ ^ 2 ∂𝔰.fixerMeasure c
+      ≤ ENNReal.ofReal (P ^ (550 * 𝔰.n ^ 2)) * K := by
   -- Sobolev's inequality on a cube of side `P⁻⁸` at `Z`, in the `2 n ^ 2` real coordinates of the
   -- matrix; the integrals over the cube are bounded by `lintegral_lintegral_gramSection_le`.
   have one_le_rank : (1 : ℝ) ≤ 𝔰.r := Nat.one_le_cast.2 card_pos
@@ -484,15 +496,20 @@ theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords {𝔰 : Shape} {
   have cube_subset : cube ⊆ (fun x ↦ Z + e x) ⁻¹' Q := e_mapsTo.subset_preimage
   let shift (ω : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0) : 𝔰.G₁ :=
     ((ω.2 : 𝔰.G₁) * embedH ω.1)⁻¹
-  let f (w : List L) (x : 𝔰.FrameCoord → ℝ)
-      (ω : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0) : EuclideanSpace ℂ I :=
+  let f
+      (w : List L) (x : 𝔰.FrameCoord → ℝ)
+      (ω : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0)
+      : EuclideanSpace ℂ I :=
     V w (gramSection (Z + e x) * shift ω)
   set μ := 𝔰.fixerMeasure c
   set B := 𝔰.fixerBall (P ^ 20)
-  have deriv_bound (ω : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0) (hω : ω ∈ B)
-      (w : List L) (j : 𝔰.FrameCoord) (x : 𝔰.FrameCoord → ℝ) (t₀ : ℝ) (ht₀ : update x j t₀ ∈ cube) :
-      ∃ f' : EuclideanSpace ℂ I, HasDerivAt (fun t ↦ f w (update x j t) ω) f' t₀ ∧
-        ‖f'‖ ≤ ∑ l, Λ * P ^ 85 * ‖f (l :: w) (update x j t₀) ω‖ := by
+  have deriv_bound
+      (ω : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0) (hω : ω ∈ B)
+      (w : List L)
+      (j : 𝔰.FrameCoord) (x : 𝔰.FrameCoord → ℝ) (t₀ : ℝ) (ht₀ : update x j t₀ ∈ cube)
+      : ∃ f' : EuclideanSpace ℂ I,
+        HasDerivAt (fun t ↦ f w (update x j t) ω) f' t₀
+          ∧ ‖f'‖ ≤ ∑ l, Λ * P ^ 85 * ‖f (l :: w) (update x j t₀) ω‖ := by
     have deriv_line (t : ℝ) : HasDerivAt (fun t ↦ Z + e (update x j t)) (e (Pi.single j 1)) t :=
       (e.hasFDerivAt.comp_hasDerivAt t (hasDerivAt_update x j t)).const_add Z
     have norm_shift : ‖(shift ω : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ P ^ 20 := by
@@ -507,18 +524,19 @@ theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords {𝔰 : Shape} {
     (hV_meas w).comp
       (((measurable_gramSection.comp (measurable_const.add e.continuous.measurable)).comp
         measurable_fst).mul (h_shift_meas.comp measurable_snd))
-  have cube_bound (w : List L) (hw : w.length ≤ 2 * 𝔰.n ^ 2) :
-      ∫⁻ x in cube, ∫⁻ ω in B, ‖f w x ω‖ₑ ^ 2 ∂μ ≤ .ofReal ((2 * P ^ 2) ^ (2 * 𝔰.n ^ 2)) * K := by
-    have hw_inv : besselS.FixesLeft fun g : 𝔰.G₁ ↦ ‖V w g‖ₑ ^ 2 :=
-      fun s hs g ↦ congrArg (· ^ 2) (hV_inv w s hs g)
+  have cube_bound (w : List L) (hw : w.length ≤ 2 * 𝔰.n ^ 2)
+      : ∫⁻ x in cube, ∫⁻ ω in B, ‖f w x ω‖ₑ ^ 2 ∂μ ≤ .ofReal ((2 * P ^ 2) ^ (2 * 𝔰.n ^ 2)) * K := by
+    have hw_inv : besselS.FixesLeft fun g : 𝔰.G₁ ↦ ‖V w g‖ₑ ^ 2 := fun s hs g ↦
+      congrArg (· ^ 2) (hV_inv w s hs g)
     calc
       _ ≤ ∫⁻ x in (fun x ↦ Z + e x) ⁻¹' Q, ∫⁻ ω, ‖f w x ω‖ₑ ^ 2 ∂μ := by
         grw [← cube_subset, setLIntegral_le_lintegral B]
       _ = ∫⁻ Y in Q, ∫⁻ ω, ‖V w (gramSection Y * shift ω)‖ₑ ^ 2 ∂μ :=
         e_preserving.setLIntegral_comp_preimage measurableSet_ball
           (f := fun Y ↦ ∫⁻ ω, ‖V w (gramSection Y * shift ω)‖ₑ ^ 2 ∂μ)
-          ((((hV_meas w).comp ((measurable_gramSection.comp measurable_fst).mul
-            (h_shift_meas.comp measurable_snd))).eNorm.pow_const 2).lintegral_prod_right')
+          ((((hV_meas w).comp
+            ((measurable_gramSection.comp measurable_fst).mul
+              (h_shift_meas.comp measurable_snd))).eNorm.pow_const 2).lintegral_prod_right')
       _ ≤ .ofReal ((2 * P ^ 2) ^ (2 * 𝔰.n ^ 2)) * ∫⁻ g, ‖V w g‖ₑ ^ 2 ∂besselQuotMeasure :=
         lintegral_lintegral_gramSection_le one_le hc measurableSet_ball h_disc h_cell
           ((hV_meas w).eNorm.pow_const 2) hw_inv
@@ -531,8 +549,7 @@ theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords {𝔰 : Shape} {
   calc
     _ = ∫⁻ ω in B, ‖f [] 0 ω‖ₑ ^ 2 ∂μ := by simp only [f, shift, B, μ, map_zero, add_zero]
     _ ≤ .ofReal (a ^ card 𝔰.FrameCoord) * (.ofReal ((2 * P ^ 2) ^ (2 * 𝔰.n ^ 2)) * K) :=
-      sobolev_trace_cube f hf_meas (by positivity)
-        (inv_le_one_of_one_le₀ (one_le_pow₀ one_le))
+      sobolev_trace_cube f hf_meas (by positivity) (inv_le_one_of_one_le₀ (one_le_pow₀ one_le))
         (ae_restrict_of_forall_mem (𝔰.measurableSet_fixerBall _) deriv_bound)
         fun w hw ↦ cube_bound w (hcard ▸ hw)
     _ = .ofReal ((a * (2 * P ^ 2)) ^ (2 * 𝔰.n ^ 2)) * K := by
@@ -540,17 +557,21 @@ theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords {𝔰 : Shape} {
     _ ≤ .ofReal ((P ^ 275) ^ (2 * 𝔰.n ^ 2)) * K := by gcongr
     _ = _ := by rw [← pow_mul, show 275 * (2 * 𝔰.n ^ 2) = 550 * 𝔰.n ^ 2 by ring]
 
-/-- The letters `((a, b), c, d)` that index the derivatives of a convolution on `G₁`: `(a, b)` is
+/--
+The letters `((a, b), c, d)` that index the derivatives of a convolution on `G₁`: `(a, b)` is
 the matrix unit along which the function is differentiated, and `c`, `d` select the entries of `y`
-and `y⁻¹` that the weight gains. -/
+and `y⁻¹` that the weight gains.
+-/
 abbrev New.Shape.ConvolutionDerivIndex (𝔰 : Shape) : Type :=
   (𝔰.BesselIndex × 𝔰.BesselIndex) × 𝔰.BesselIndex × 𝔰.BesselIndex
 
-/-- The weight on `G₁` attached to a word, starting from `φ` at the empty word: the letter
+/--
+The weight on `G₁` attached to a word, starting from `φ` at the empty word: the letter
 `((a, b), c, d)` multiplies the weight at `y` by the entry `(a, d)` of `y⁻¹` and the entry `(c, b)`
-of `y`, over `R ^ 2`. -/
-noncomputable def New.RealPlace.convolutionWeight {𝔰 : Shape} (R : ℝ) (φ : 𝔰.G₁ → ℂ) :
-    List 𝔰.ConvolutionDerivIndex → 𝔰.G₁ → ℂ
+of `y`, over `R ^ 2`.
+-/
+noncomputable def New.RealPlace.convolutionWeight {𝔰 : Shape} (R : ℝ) (φ : 𝔰.G₁ → ℂ)
+    : List 𝔰.ConvolutionDerivIndex → 𝔰.G₁ → ℂ
   | [] => φ
   | ((a, b), c, d) :: i => fun y ↦ convolutionWeight R φ i y * (y⁻¹.val a d * y.val c b / R ^ 2)
 
@@ -675,7 +696,8 @@ lemma New.RealPlace.hasDerivWords_integral {𝔰 : Shape} {I : Type} [Fintype I]
           (Finset.sum_congr rfl fun l _ ↦ integral_smul _ _)]
     _ ≤ _ := by grw [norm_sum_le, norm_smul_le, coeff_le t₀ t₀_mem]
 
-/-- Let `P ≥ 8 r`, where `r = 𝔰.r` is the size of the matrices in `G₁`, and let `n = ϱ + 1`. Let `F`
+/--
+Let `P ≥ 8 r`, where `r = 𝔰.r` is the size of the matrices in `G₁`, and let `n = ϱ + 1`. Let `F`
 and its iterated right derivatives `V w` be Bessel functions of type `rep`, that is, bounded
 functions that transform on the left by a fixed character under the unipotent group `𝖴` and by the
 unitary representation `rep` under `U(κ)`, such that `g ↦ ∫ ψ y • V w (g y)` has squared norm at
@@ -686,19 +708,21 @@ complex `n × n` matrix (`FrameMatrix`) such that every `Y` within `P⁻⁶` of 
 `ϱ × ϱ` block of `Y`. Let the measurable integrable function `φ` vanish where the operator norm
 exceeds `P ^ 20`. Then the integral of `‖∫ φ y • F (γ_Z (u h)⁻¹ y)‖ ^ 2` over the `ω = (h, u)` in
 `U(κ) × 𝖴⁰` with `‖u‖ ≤ P ^ 20` (`fixerBall`), for Haar measure times
-`openCellConst * c ^ (|κ| - 1)` (`fixerMeasure`), is at most `P ^ (2000 n ^ 2) D ∫ ‖φ‖ ^ 2`. -/
-theorem New.RealPlace.lintegral_gramSection_integral_le {𝔰 : Shape} {I : Type} [Fintype I]
-    [DecidableEq I] {P c : ℝ} {D : ENNReal} {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ}
-    {F : 𝔰.G₁ → EuclideanSpace ℂ I} {Z : 𝔰.FrameMatrix} (hP : 8 * 𝔰.r ≤ P)
-    (hF_schur : HasSchurBound F rep P D) (hc : 0 < c)
+`openCellConst * c ^ (|κ| - 1)` (`fixerMeasure`), is at most `P ^ (2000 n ^ 2) D ∫ ‖φ‖ ^ 2`.
+-/
+theorem New.RealPlace.lintegral_gramSection_integral_le
+    {𝔰 : Shape} {I : Type} [Fintype I] [DecidableEq I]
+    {P c : ℝ} {D : ENNReal} {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ}
+    {F : 𝔰.G₁ → EuclideanSpace ℂ I} {Z : 𝔰.FrameMatrix}
+    (hP : 8 * 𝔰.r ≤ P) (hF_schur : HasSchurBound F rep P D) (hc : 0 < c)
     (h_disc : ∀ Y ∈ ball Z (P ^ 6)⁻¹, c ≤ gramDiscReal Y)
     (h_cell : ∀ Y ∈ ball Z (P ^ 6)⁻¹, IsBoundedInCell Y P)
     {φ : 𝔰.G₁ → ℂ} (hφ : Measurable φ) (hφ_int : Integrable φ)
-    (hφ_supp : ∀ y : 𝔰.G₁, φ y ≠ 0 → ‖(y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ P ^ 20) :
-    ∫⁻ ω : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0 in 𝔰.fixerBall (P ^ 20),
-        ‖∫ y : 𝔰.G₁, φ y • F (gramSection Z * ((ω.2 : 𝔰.G₁) * embedH ω.1)⁻¹ * y)‖ₑ ^ 2
-        ∂𝔰.fixerMeasure c ≤
-      ENNReal.ofReal (P ^ (2000 * 𝔰.n ^ 2)) * D * ∫⁻ y : 𝔰.G₁, ‖φ y‖ₑ ^ 2 := by
+    (hφ_supp : ∀ y : 𝔰.G₁, φ y ≠ 0 → ‖(y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ P ^ 20)
+    : ∫⁻ ω : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) × (𝔰.middleGram (1 : ℂ)).besselU0 in 𝔰.fixerBall (P ^ 20),
+          ‖∫ y : 𝔰.G₁, φ y • F (gramSection Z * ((ω.2 : 𝔰.G₁) * embedH ω.1)⁻¹ * y)‖ₑ ^ 2
+          ∂𝔰.fixerMeasure c
+      ≤ ENNReal.ofReal (P ^ (2000 * 𝔰.n ^ 2)) * D * ∫⁻ y : 𝔰.G₁, ‖φ y‖ₑ ^ 2 := by
   -- The weighted integrals of the derivatives `V w` of `F` form a family of derivatives whose
   -- first member is `g ↦ ∫ φ y • F (g y)`; apply `lintegral_gramSection_le_of_hasDerivWords`.
   have one_le_rank : (1 : ℝ) ≤ 𝔰.r := Nat.one_le_cast.2 card_pos
@@ -718,8 +742,9 @@ theorem New.RealPlace.lintegral_gramSection_integral_le {𝔰 : Shape} {I : Type
   let W (i : List 𝔰.ConvolutionDerivIndex) (g : 𝔰.G₁) : EuclideanSpace ℂ I :=
     ∫ y, ψ i y • V (i.map Prod.fst) (g * y)
   have W_deriv : HasDerivWords W ((P ^ 20) ^ 2) :=
-    hasDerivWords_integral (by positivity) (fun w ↦ (V_bessel w).toIsBoundedMeasurable) V_deriv
-      (convolutionWeight_cons (P ^ 20) φ) ψ_int
+    hasDerivWords_integral (by positivity)
+      (fun w ↦ (V_bessel w).toIsBoundedMeasurable)
+      V_deriv (convolutionWeight_cons (P ^ 20) φ) ψ_int
   have W_inv (i : List 𝔰.ConvolutionDerivIndex) : besselS.FixesLeft fun g : 𝔰.G₁ ↦ ‖W i g‖ₑ :=
     fun s hs g ↦ (V_bessel (i.map Prod.fst)).enorm_integral_besselS_mul hs (ψ i) g
   -- There are `r ^ 4` letters, and each costs `(P ^ 20) ^ 2`.
@@ -730,9 +755,9 @@ theorem New.RealPlace.lintegral_gramSection_integral_le {𝔰 : Shape} {I : Type
         ring
       _ ≤ P ^ 44 := by grw [rank_le, ← pow_add]
   -- Schur's bound for the derivatives, at the price `P ^ 2` for each letter.
-  have schur (i : List 𝔰.ConvolutionDerivIndex) (hi : i.length ≤ 2 * 𝔰.n ^ 2) :
-      ∫⁻ g, ‖W i g‖ₑ ^ 2 ∂besselQuotMeasure ≤
-        .ofReal (P ^ (2 * (2 * 𝔰.n ^ 2))) * D * ∫⁻ y, ‖φ y‖ₑ ^ 2 := by
+  have schur (i : List 𝔰.ConvolutionDerivIndex) (hi : i.length ≤ 2 * 𝔰.n ^ 2)
+      : ∫⁻ g, ‖W i g‖ₑ ^ 2 ∂besselQuotMeasure
+        ≤ .ofReal (P ^ (2 * (2 * 𝔰.n ^ 2))) * D * ∫⁻ y, ‖φ y‖ₑ ^ 2 := by
     have h_len : (i.map Prod.fst).length ≤ 2 * 𝔰.n ^ 2 := by rwa [List.length_map]
     refine (V_schur (i.map Prod.fst) h_len (ψ i) (ψ_int i)).trans ?_
     rw [List.length_map]
@@ -745,8 +770,8 @@ theorem New.RealPlace.lintegral_gramSection_integral_le {𝔰 : Shape} {I : Type
       ((V (i.map Prod.fst)).continuous.measurable.comp
         (measurable_fst.mul measurable_snd))).stronglyMeasurable.integral_prod_right').measurable
   calc
-    _ ≤ .ofReal (P ^ (550 * 𝔰.n ^ 2)) *
-        (.ofReal (P ^ (2 * (2 * 𝔰.n ^ 2))) * D * ∫⁻ y, ‖φ y‖ₑ ^ 2) := by
+    _ ≤ .ofReal (P ^ (550 * 𝔰.n ^ 2))
+        * (.ofReal (P ^ (2 * (2 * 𝔰.n ^ 2))) * D * ∫⁻ y, ‖φ y‖ₑ ^ 2) := by
       simpa only [W, ψ, convolutionWeight_nil, List.map_nil, ← hF] using
         lintegral_gramSection_le_of_hasDerivWords hP hc h_disc h_cell W_deriv (by positivity)
           letters_le W_meas W_inv schur

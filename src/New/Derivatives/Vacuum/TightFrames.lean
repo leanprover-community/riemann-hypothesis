@@ -91,13 +91,17 @@ namespace New.Parameters
 
 variable (P : Parameters) (s : ℕ)
 
-/-- The curve `𝓔 = ℂ / Ω₀ 𝓞_K`: a chosen CM lattice that is a complex multiple of `𝓞_K`.
-See `latticeModule_cmCurve`. -/
+/--
+The curve `𝓔 = ℂ / Ω₀ 𝓞_K`: a chosen CM lattice that is a complex multiple of `𝓞_K`.
+See `latticeModule_cmCurve`.
+-/
 def cmCurve : CMLattice P.d :=
   (QuadField.exists_cmLattice_latticeModule_eq_scaledIdeal (d := P.d) 1).choose
 
-/-- The period of `K`: a nonzero complex number `Ω₀`, fixed once, such that the lattice of `cmCurve`
-is `Ω₀ 𝓞_K`. See `latticeModule_cmCurve`. -/
+/--
+The period of `K`: a nonzero complex number `Ω₀`, fixed once, such that the lattice of `cmCurve`
+is `Ω₀ 𝓞_K`. See `latticeModule_cmCurve`.
+-/
 def cmPeriod : ℂˣ :=
   (QuadField.exists_cmLattice_latticeModule_eq_scaledIdeal (d := P.d) 1).choose_spec.choose
 
@@ -108,8 +112,10 @@ lemma latticeModule_cmCurve :
     P.cmCurve.latticeModule = QuadField.scaledIdeal P.d (P.cmPeriod, 1) :=
   (QuadField.exists_cmLattice_latticeModule_eq_scaledIdeal (d := P.d) 1).choose_spec.choose_spec
 
-/-- The number `u` chosen in the Chowla–Selberg formula `CMLattice.chowla_selberg` for
-`cmCurve`. See `norm_iota_chowlaSelbergUnit` and `area_mul_norm_chowlaSelbergUnit_sq`. -/
+/--
+The number `u` chosen in the Chowla–Selberg formula `CMLattice.chowla_selberg` for
+`cmCurve`. See `norm_iota_chowlaSelbergUnit` and `area_mul_norm_chowlaSelbergUnit_sq`.
+-/
 def chowlaSelbergUnit : ℂ := P.cmCurve.chowla_selberg.choose
 
 lemma norm_iota_chowlaSelbergUnit (p : ℕ) [Fact p.Prime] [PadicPlace p] :
@@ -127,15 +133,19 @@ lemma area_mul_norm_chowlaSelbergUnit_sq (σ : Gal(ℂ/P.K)) :
 /-- The number `√(2π / √d)`, as a unit of `ℂ`. -/
 def areaScale : ℂˣ := Units.mk0 √(2 * π / √P.d) (by simp [pi_nonneg, ne])
 
-/-- The quotient of `vacuumRoot` by `chowlaSelbergUnit`. Here `vacuumRoot` is `(chiFin α)⁻¹ ^ (1/f)`
+/--
+The quotient of `vacuumRoot` by `chowlaSelbergUnit`. Here `vacuumRoot` is `(chiFin α)⁻¹ ^ (1/f)`
 with the principal branch of the complex power, `f` is the number of infinite places of `E`, and
 `chiFin` is the character `x ↦ υ(x) |x| ^ (-1/2)` of the finite ideles, `υ` the splitting character
 of the Weil data. The denominator is a unit at every `p`-adic place of `ℂ`, so the two numbers have
-the same absolute value there. -/
+the same absolute value there.
+-/
 def periodFactor : ℂ := P.vacuumRoot s / P.chowlaSelbergUnit
 
-/-- The number `periodFactor * √(2π / √d) / Ω₀`. Taylor series of theta functions are taken at
-multiples of this scale. -/
+/--
+The number `periodFactor * √(2π / √d) / Ω₀`. Taylor series of theta functions are taken at
+multiples of this scale.
+-/
 def jetScale : ℂ := P.periodFactor s * P.areaScale / P.cmPeriod
 
 end New.Parameters
@@ -362,8 +372,8 @@ namespace New.Space
 
 open MvPowerSeries MeasureTheory Fock NormedSpace Finset
 
-variable {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
-  {V : Space E n 1}
+variable
+  {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] {V : Space E n 1}
 
 open NumberField (InfinitePlace)
 
@@ -608,19 +618,23 @@ section FrameProduct
 
 variable {V : Space (P.E s) n ε} {I : Type}
 
-/-- The point `-b ⟨γ k, w j⟩` of `ℂ` for `i = (j, k)`, where
-`⟨x, y⟩ = ∑ τ, Φ τ x * conj (Φ τ y)` is the sum over the CM type. -/
+/--
+The point `-b ⟨γ k, w j⟩` of `ℂ` for `i = (j, k)`, where
+`⟨x, y⟩ = ∑ τ, Φ τ x * conj (Φ τ y)` is the sum over the CM type.
+-/
 def resolutionShift (b : ℂ) (w : I → P.E s) (γ : n → P.E s) (i : I × n) : ℂ :=
-  b * -∑ τ : InfinitePlace (P.E s), Φ τ (γ i.2) * conj (Φ τ (w i.1))
+  b * - ∑ τ : InfinitePlace (P.E s), Φ τ (γ i.2) * conj (Φ τ (w i.1))
 
-/-- The coefficients of the linear form `z ↦ a * ∑ τ, conj (Φ τ (w j)) * z (τ, k)` for
-`i = (j, k)`. -/
+/--
+The coefficients of the linear form `z ↦ a * ∑ τ, conj (Φ τ (w j)) * z (τ, k)` for
+`i = (j, k)`.
+-/
 def resolutionFormCoeff (a : ℂ) (w : I → P.E s) (i : I × n) (y : InfinitePlace (P.E s) × n) : ℂ :=
   if y.2 = i.2 then a * conj (Φ y.1 (w i.1)) else 0
 
 /-- The linear form `z ↦ a * ∑ τ, conj (Φ τ (w j)) * z (τ, k)` for `i = (j, k)`. -/
-def resolutionLinearForm (a : ℂ) (w : I → P.E s) (i : I × n) :
-    (InfinitePlace (P.E s) × n → ℂ) →L[ℂ] ℂ :=
+def resolutionLinearForm (a : ℂ) (w : I → P.E s) (i : I × n)
+    : (InfinitePlace (P.E s) × n → ℂ) →L[ℂ] ℂ :=
   ∑ τ : InfinitePlace (P.E s), (a * conj (Φ τ (w i.1))) • .proj (τ, i.2)
 
 lemma resolutionLinearForm_apply_eq_dotProduct (a : ℂ) (w : I → P.E s) (i : I × n)
@@ -657,22 +671,27 @@ lemma mul_sum_mul_conj_mem_lattice {C : CMLattice P.d} {a : ℂ} {x y : P.E s} (
   rw [mul_comm]
   exact C.mul_mem_of_quadInt (sum_mul_conj_mem_quadInt hy hx) ha
 
-/-- `F` is the product of the functions `f i` along the vectors `w` at scale `b`: for a rational
+/--
+`F` is the product of the functions `f i` along the vectors `w` at scale `b`: for a rational
 vector `γ`, the theta function of `V.ϱ (finVec (finiteImage γ)) F`, the translate of `F` by the
 finite image of `γ`, is the product of the twisted translates of the `f i`, each evaluated at a
 linear form. The factor `i = (j, k)` is translated by `resolutionShift b w γ i` in degree `m j`:
-`C.twistedTranslate m l g` is `z ↦ g (z + l)` times a Gaussian factor. -/
-structure IsResolutionProduct [Fintype I] (V : Space (P.E s) n ε) (C : CMLattice P.d) (b : ℂ)
-    (w : I → P.E s) (m : I → ℕ) (f : I × n → ℂ → ℂ) (F : 𝒮 V) : Prop where
+`C.twistedTranslate m l g` is `z ↦ g (z + l)` times a Gaussian factor.
+-/
+structure IsResolutionProduct
+    [Fintype I]
+    (V : Space (P.E s) n ε)
+    (C : CMLattice P.d) (b : ℂ) (w : I → P.E s) (m : I → ℕ) (f : I × n → ℂ → ℂ) (F : 𝒮 V)
+    : Prop where
   /-- `F` lies in the finite part of `V`. -/
   mem_finitePart : F ∈ V.finitePart
   /-- The factors are entire. -/
   differentiable (i : I × n) : Differentiable ℂ (f i)
   /-- The product formula; `P.areaScale = √(2π / √d)`. -/
-  entireTheta_translate (γ : n → P.E s) (z : InfinitePlace (P.E s) × n → ℂ) :
-    entireTheta (V.ϱ (finVec (finiteImage γ)) F) z =
-      ∏ i : I × n, C.twistedTranslate (m i.1) (resolutionShift b w γ i) (f i)
-        (resolutionLinearForm (b / P.areaScale) w i z)
+  entireTheta_translate (γ : n → P.E s) (z : InfinitePlace (P.E s) × n → ℂ)
+    : entireTheta (V.ϱ (finVec (finiteImage γ)) F) z
+      = ∏ i : I × n, C.twistedTranslate (m i.1) (resolutionShift b w γ i) (f i)
+          (resolutionLinearForm (b / P.areaScale) w i z)
 
 variable [Fintype I]
 

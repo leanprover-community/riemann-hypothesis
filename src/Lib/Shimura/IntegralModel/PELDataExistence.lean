@@ -391,10 +391,13 @@ private lemma exists_lagrangian_xiForm {E : Type} [Field E] [NumberField E] [IsC
   · intro x hx y hy _
     exact .inl (ψf_xiForm_eq_one_of_torsionClass_eq_zero hξ_int hx hy)
 
-/-- The vectors `x` that pair trivially with every integral vector under `ψf (ξ zᴴ x)`: the dual of
-the integral vectors for this pairing. -/
-private noncomputable def dualOfIntegral {E : Type} [Field E] [NumberField E] [IsCMField E] (n : ℕ)
-    (ξ : E) : AddSubgroup (Fin n → 𝔸f E) :=
+/--
+The vectors `x` that pair trivially with every integral vector under `ψf (ξ zᴴ x)`: the dual of
+the integral vectors for this pairing.
+-/
+private noncomputable def dualOfIntegral
+    {E : Type} [Field E] [NumberField E] [IsCMField E] (n : ℕ) (ξ : E)
+    : AddSubgroup (Fin n → 𝔸f E) :=
   ofSub {x : Fin n → 𝔸f E | ∀ z : Fin n → 𝔸f E, torsionClass z = 0 → ψf E (xiForm ξ x z) = 1}
     ⟨0, by simp [xiForm]⟩
     (by simp +contextual [← sub_eq_add_neg, xiForm, mul_sub, AddChar.map_sub_eq_div])
@@ -448,11 +451,14 @@ private lemma natCast_notMem_of_coprime {E : Type} [Field E] [NumberField E] {s 
     (w : FinPlace E) (h_dvd : w.q ∣ s) (h_coprime : s.Coprime N) :
     (N : 𝓞 E) ∉ w.asIdeal :=
   w.isPrime.notMem_of_isCoprime_of_mem (h_coprime.of_dvd_left h_dvd).cast w.asIdeal.absNorm_mem
-/-- PEL data `D` as `exists_pel` supplies them at the level `𝔑`: rank `n`, level `𝔑`,
+/--
+PEL data `D` as `exists_pel` supplies them at the level `𝔑`: rank `n`, level `𝔑`,
 `β = (1 + √-d) / 2`, and good reduction (`New.PEL.IsGoodAt`) at every place `w` that is safe for
-`𝔑` (`New.Variety.IsSafe 𝔑 w`). -/
-structure IsSafeGoodPEL (d n : ℕ) {E : Type} [Field E] [CMBase E]
-    [HasQuadSubfield d E] (𝔑 : 𝓞 E) (D : PEL E) : Prop where
+`𝔑` (`New.Variety.IsSafe 𝔑 w`).
+-/
+structure IsSafeGoodPEL
+    (d n : ℕ) {E : Type} [Field E] [CMBase E] [HasQuadSubfield d E] (𝔑 : 𝓞 E) (D : PEL E)
+    : Prop where
   /-- The data have rank `n`. -/
   rank_eq : D.rank = n
   /-- The data have level `𝔑`. -/

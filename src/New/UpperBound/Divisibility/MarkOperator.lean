@@ -54,35 +54,41 @@ namespace New.Data
 
 open Finset ZMod Nat Columns Parameters RingHom Module Real IsLocalization AtPrime NumberField
 
-/-- Let `T` be a Frobenius cycle with `N` letters: a cycle of `N` ring maps from a local ring `W`,
+/--
+Let `T` be a Frobenius cycle with `N` letters: a cycle of `N` ring maps from a local ring `W`,
 each congruent modulo the prime `p = T.p` to the `P`-th power of the one before, with
 `P = p ^ T.frobExp`; put `q = P ^ N`, the size of the residue field. Let `13 ≤ p < D.x₁`, let
 `0 < T.frobExp ≤ r`, where `r = D.ceilLogLifts p` is the least natural number with `D.m ≤ p ^ r`,
 let `N` be at most the number of infinite places, and let `D.m ≤ T.frobExp * N`. With `k = D.k`,
 `a = D.a` and `θ = 1 / (m ^ 2 f)` for the numerical parameters `m = D.m`, `f = D.f` of the data, the
 size conditions `IsLargeDegree` then hold: `0 < r`, `2 r ≤ k`, `0 < θ ≤ 1`, `a ^ 4 ≤ q` and
-`(N k log q / θ) ^ 5 P ^ (3 r) ≤ a`. -/
-theorem isLargeDegree_of_le_card {P : Parameters} (D : Data P) {N : ℕ} {W O : Type}
-    [CommRing W] [IsLocalRing W] [CommRing O] (T : FrobeniusCycle N W O) (h13 : 13 ≤ T.p)
-    (hp : T.p < D.x₁) (hfrobExp_pos : 0 < T.frobExp)
+`(N k log q / θ) ^ 5 P ^ (3 r) ≤ a`.
+-/
+theorem isLargeDegree_of_le_card
+    {P : Parameters} (D : Data P)
+    {N : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
+    (T : FrobeniusCycle N W O) (h13 : 13 ≤ T.p) (hp : T.p < D.x₁) (hfrobExp_pos : 0 < T.frobExp)
     (hfrobExp_le : T.frobExp ≤ D.ceilLogLifts T.p)
-    (hN_le : N ≤ Fintype.card D.Φ) (hm_le : D.m ≤ T.frobExp * N) :
-    T.IsLargeDegree D.k D.a (D.ceilLogLifts T.p) (1 / (D.m ^ 2 * D.f)) := by
+    (hN_le : N ≤ Fintype.card D.Φ) (hm_le : D.m ≤ T.frobExp * N)
+    : T.IsLargeDegree D.k D.a (D.ceilLogLifts T.p) (1 / (D.m ^ 2 * D.f)) := by
   have : Fact T.p.Prime := ⟨T.prime⟩
   have hq : T.q = T.p ^ (T.frobExp * N) := (pow_mul _ _ _).symm
-  refine
-    { block_pos := hfrobExp_pos.trans_le hfrobExp_le
-      two_mul_block_le := D.nat_le_of_hasLogBound
-      proportion_pos := one_div_pos.2 (HasLogBound.pos D)
-      proportion_le_one := D.le_of_hasLogBound
-      degree_pow_le := ?_
-      le_degree := ?_ }
+  refine {
+    block_pos := hfrobExp_pos.trans_le hfrobExp_le
+    two_mul_block_le := D.nat_le_of_hasLogBound
+    proportion_pos := one_div_pos.2 (HasLogBound.pos D)
+    proportion_le_one := D.le_of_hasLogBound
+    degree_pow_le := ?_
+    le_degree := ?_
+  }
   · -- `q = p ^ (frobExp * N) ≥ 3 ^ m ≥ exp m ≥ exp (logB * 5)`
     have h_three : 3 ^ D.m ≤ T.q := by
       rw [hq]
       exact (Nat.pow_le_pow_right (by norm_num) hm_le).trans (Nat.pow_le_pow_left (by lia) _)
     rw [← Nat.cast_le (α := ℝ), Nat.cast_pow]
-    calc (D.a : ℝ) ^ 4 ≤ exp (D.logB * 5) := D.le_of_hasLogBound
+    calc
+      (D.a : ℝ) ^ 4
+        ≤ exp (D.logB * 5) := D.le_of_hasLogBound
       _ ≤ exp 1 ^ D.m := (exp_le_exp.2 D.le_of_hasLogBound).trans_eq (exp_one_pow _).symm
       _ ≤ 3 ^ D.m := by grw [exp_one_lt_three.le]
       _ ≤ T.q := mod_cast h_three
@@ -101,25 +107,31 @@ theorem isLargeDegree_of_le_card {P : Parameters} (D : Data P) {N : ℕ} {W O : 
       have h_exp : T.frobExp * (3 * D.ceilLogLifts T.p) ≤ 3 * l₀ D.towerExp ^ 2 := by
         grw [hfrobExp_le, (ceilLogLifts_le_l₀ : D.ceilLogLifts T.p ≤ l₀ D.towerExp), sq,
           mul_left_comm]
-      calc (D.x₁ ^ T.frobExp) ^ (3 * D.ceilLogLifts T.p) = D.x₁ ^
-             (T.frobExp * (3 * D.ceilLogLifts T.p)) :=
-            (pow_mul _ _ _).symm
+      calc
+        (D.x₁ ^ T.frobExp) ^ (3 * D.ceilLogLifts T.p)
+          = D.x₁ ^ (T.frobExp * (3 * D.ceilLogLifts T.p)) := (pow_mul _ _ _).symm
         _ ≤ D.x₁ ^ (3 * l₀ D.towerExp ^ 2) := pow_le_pow_right₀ (one_le_exp h_logX₁.le) h_exp
         _ ≤ √D.b := D.x₁_pow_le_sqrt_b
-    calc ((N : ℝ) * D.k * Real.log T.q / (1 / (D.m ^ 2 * D.f))) ^ 5 *
-          (T.P : ℝ) ^ (3 * D.ceilLogLifts T.p)
-        ≤ ((N : ℝ) * D.k * (T.frobExp * N * D.logX₁) / (1 / (D.m ^ 2 * D.f))) ^ 5 * √D.b := by
-          grw [h_log, T.p.cast_pow, hp, h_pow]
+    calc
+      ((N : ℝ) * D.k * Real.log T.q / (1 / (D.m ^ 2 * D.f))) ^ 5
+            * (T.P : ℝ) ^ (3 * D.ceilLogLifts T.p)
+          ≤ ((N : ℝ) * D.k * (T.frobExp * N * D.logX₁) / (1 / (D.m ^ 2 * D.f))) ^ 5 * √D.b := by
+        grw [h_log, T.p.cast_pow, hp, h_pow]
       _ ≤ (D.a : ℝ) := D.le_of_hasLogBound
 
-/-- For a Frobenius cycle with `N = ℓ + ℓ` letters, prime `p = T.p` and `P = p ^ T.frobExp`, where
+/--
+For a Frobenius cycle with `N = ℓ + ℓ` letters, prime `p = T.p` and `P = p ^ T.frobExp`, where
 `0 < T.frobExp ≤ r` and `r = D.ceilLogLifts p` is the least natural number with `D.m ≤ p ^ r`, the
 divisor constant `c = T.divisorConstant D.k a r = N a (P ^ (-2 r) + r ^ 2 / (k P))` for `k = D.k`
-and `a = D.a` satisfies `3 c ≤ 12 a ℓ / (m p)`, with `m = D.m`. -/
-theorem three_mul_divisorConstant_le {P : Parameters} (D : Data P) {N ℓ : ℕ} {W O : Type}
-    [CommRing W] [IsLocalRing W] [CommRing O] (T : FrobeniusCycle N W O)
-    (hfrobExp_pos : 0 < T.frobExp) (hfrobExp_le : T.frobExp ≤ D.ceilLogLifts T.p) (hℓ : ℓ + ℓ = N) :
-    3 * T.divisorConstant D.k D.a (D.ceilLogLifts T.p) ≤ 12 * (D.a * ℓ : ℕ) / (D.m * T.p) := by
+and `a = D.a` satisfies `3 c ≤ 12 a ℓ / (m p)`, with `m = D.m`.
+-/
+theorem three_mul_divisorConstant_le
+    {P : Parameters} (D : Data P)
+    {N ℓ : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
+    (T : FrobeniusCycle N W O)
+    (hfrobExp_pos : 0 < T.frobExp) (hfrobExp_le : T.frobExp ≤ D.ceilLogLifts T.p)
+    (hℓ : ℓ + ℓ = N)
+    : 3 * T.divisorConstant D.k D.a (D.ceilLogLifts T.p) ≤ 12 * (D.a * ℓ : ℕ) / (D.m * T.p) := by
   -- Each of the two terms of the bracket in `T.divisorConstant` is at most `1 / (m p)`.
   have : Fact T.p.Prime := ⟨T.prime⟩
   set r : ℕ := D.ceilLogLifts T.p
@@ -129,18 +141,20 @@ theorem three_mul_divisorConstant_le {P : Parameters} (D : Data P) {N ℓ : ℕ}
   have hp_le : T.p ≤ T.P := Nat.le_self_pow hfrobExp_pos.ne' T.p
   have hP_pos : (0 : ℝ) < T.P := hp_pos.trans_le (mod_cast hp_le)
   have h_first : D.m * T.p ≤ T.P ^ (2 * r) :=
-    calc D.m * T.p ≤ T.p ^ r * T.p ^ r :=
-          Nat.mul_le_mul (le_pow_clog T.prime.one_lt D.m)
-            (Nat.le_self_pow (hfrobExp_pos.trans_le hfrobExp_le).ne' T.p)
+    calc
+      D.m * T.p ≤ T.p ^ r * T.p ^ r :=
+        Nat.mul_le_mul (le_pow_clog T.prime.one_lt D.m)
+          (Nat.le_self_pow (hfrobExp_pos.trans_le hfrobExp_le).ne' T.p)
       _ = T.p ^ (2 * r) := by rw [two_mul, pow_add]
       _ ≤ T.P ^ (2 * r) := Nat.pow_le_pow_left hp_le _
   have h_second : (r ^ 2 / (D.k * T.P) : ℝ) ≤ 1 / (D.m * T.p) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity), one_mul, ← mul_assoc]
     exact mul_le_mul (D.le_of_hasLogBound : (r ^ 2 * D.m : ℝ) ≤ D.k) (mod_cast hp_le) hp_pos.le
       hk_pos.le
-  calc 3 * T.divisorConstant D.k D.a r
-      = 3 * (N * D.a * (1 / T.P ^ (2 * r) + r ^ 2 / (D.k * T.P))) := by
-        rw [FrobeniusCycle.divisorConstant]
+  calc
+    3 * T.divisorConstant D.k D.a r
+        = 3 * (N * D.a * (1 / T.P ^ (2 * r) + r ^ 2 / (D.k * T.P))) := by
+      rw [FrobeniusCycle.divisorConstant]
     _ ≤ 3 * (N * D.a * (1 / (D.m * T.p) + 1 / (D.m * T.p))) := by
       gcongr
       exact_mod_cast h_first
@@ -149,23 +163,26 @@ theorem three_mul_divisorConstant_le {P : Parameters} (D : Data P) {N ℓ : ℕ}
       push_cast
       ring
 
-/-- Let `p` be inert in the imaginary quadratic field of discriminant datum `P.d`
+/--
+Let `p` be inert in the imaginary quadratic field of discriminant datum `P.d`
 (`chiK P.d p = -1`), let `o₀` be odd, let `τ` be an a-place and let `N` be the order of the `o₀`-th
 power of the place named by `-p`. Then some injective family `t` of places, indexed modulo `N`, goes
 from each member to the next by multiplication with the place named by `-p ^ o₀` and consists of
-exactly the a-places that induce the same prime as `τ` or its conjugate prime. -/
-theorem exists_orbit_of_mem_aPlaces {P : Parameters} {p : ℕ} (D : Data P) [Fact p.Prime]
-    [PadicPlace p]
-    (h_inert : chiK P.d p = -1) (ho₀_odd : Odd (D.o₀ p)) {τ : D.Φ} (hτ : τ ∈ D.aPlaces)
-    [NeZero (orderOf (D.placeOfInt (-p) ^ D.o₀ p))] :
-    ∃ t : ZMod (orderOf (D.placeOfInt (-p) ^ D.o₀ p)) → D.Φ,
-      t.Injective ∧
-      (∀ i : ZMod (orderOf (D.placeOfInt (-p) ^ D.o₀ p)),
-        t (i + 1) = D.placeOfInt (-p ^ D.o₀ p) * t i) ∧
-      ∀ σ : D.Φ,
-        σ ∈ Set.range t ↔
-          σ ∈ D.aPlaces ∧
-          (inducedPlace σ = inducedPlace τ ∨ inducedPlace σ = star (inducedPlace τ)) := by
+exactly the a-places that induce the same prime as `τ` or its conjugate prime.
+-/
+theorem exists_orbit_of_mem_aPlaces
+    {P : Parameters} {p : ℕ} (D : Data P) [Fact p.Prime] [PadicPlace p]
+    (h_inert : chiK P.d p = -1) (ho₀_odd : Odd (D.o₀ p))
+    {τ : D.Φ} (hτ : τ ∈ D.aPlaces)
+    [NeZero (orderOf (D.placeOfInt (-p) ^ D.o₀ p))]
+    : ∃ t : ZMod (orderOf (D.placeOfInt (-p) ^ D.o₀ p)) → D.Φ,
+      t.Injective
+        ∧ (∀ i : ZMod (orderOf (D.placeOfInt (-p) ^ D.o₀ p)),
+          t (i + 1) = D.placeOfInt (- p ^ D.o₀ p) * t i)
+        ∧ ∀ σ : D.Φ,
+          σ ∈ Set.range t
+            ↔ σ ∈ D.aPlaces
+              ∧ (inducedPlace σ = inducedPlace τ ∨ inducedPlace σ = star (inducedPlace τ)) := by
   set o : ℕ := D.o₀ p
   let c : D.Φ := D.placeOfInt (-p) ^ o
   refine ⟨fun i ↦ c ^ i.val * τ, fun _ _ ↦ ?_, fun i ↦ ?_, fun σ ↦ ?_⟩
@@ -176,8 +193,9 @@ theorem exists_orbit_of_mem_aPlaces {P : Parameters} {p : ℕ} (D : Data P) [Fac
     -- such a place is an a-place exactly if `o ∣ i`.
     have h_aPlace_iff (i : ℕ) : D.placeOfInt (-p) ^ i * τ ∈ D.aPlaces ↔ o ∣ i := by
       simp_all [o, aPlaces, o₀, orderOf_dvd_iff_pow_eq_one]
-    have h_range : σ ∈ Set.range (fun i : ZMod (orderOf c) ↦ c ^ i.val * τ) ↔
-        ∃ k : ℕ, D.placeOfInt (-p) ^ (o * k) * τ = σ := by
+    have h_range
+        : σ ∈ Set.range (fun i : ZMod (orderOf c) ↦ c ^ i.val * τ)
+          ↔ ∃ k : ℕ, D.placeOfInt (-p) ^ (o * k) * τ = σ := by
       simp [natCast_zmod_surjective.exists, c, pow_mul]
     rw [h_range, inducedPlace_eq_or_star_iff h_inert]
     constructor
@@ -194,8 +212,10 @@ open ComplexConjugate
 variable {P : Parameters} {D : Data P} {p : ℕ} [Fact p.Prime] [PadicPlace p] {l : FinPlace D.E}
 
 open scoped Classical in
-/-- The embedding at the infinite place `σ`, composed with conjugation if `σ` does not induce the
-prime `l`. -/
+/--
+The embedding at the infinite place `σ`, composed with conjugation if `σ` does not induce the
+prime `l`.
+-/
 noncomputable def embeddingToward (l : FinPlace D.E) (σ : D.Φ) : D.E →+* ℂ :=
   if inducedPlace σ = l then Φ σ else (Φ σ).comp conj
 
@@ -216,10 +236,12 @@ lemma embeddingToward_mem_embValRing {σ : D.Φ} (hσ : inducedPlace σ = l ∨ 
     ← placeOfEmb_embeddingToward hσ] at hx
   exact (isEquiv_placeOfEmb (ιₚ.comp (embeddingToward l σ))).le_one_iff_le_one.2 hx
 
-/-- For an infinite place `σ` that induces `l` or its conjugate, `embeddingToward l σ` as a map
-from the valuation ring of `l` to `embValRing`. -/
-noncomputable def letterEmbedding (σ : D.Φ) (hσ : inducedPlace σ = l ∨ inducedPlace σ = star l) :
-    l.valuationSubringAtPrime D.E →+* embValRing :=
+/--
+For an infinite place `σ` that induces `l` or its conjugate, `embeddingToward l σ` as a map
+from the valuation ring of `l` to `embValRing`.
+-/
+noncomputable def letterEmbedding (σ : D.Φ) (hσ : inducedPlace σ = l ∨ inducedPlace σ = star l)
+    : l.valuationSubringAtPrime D.E →+* embValRing :=
   (embeddingToward l σ).restrict _ _ fun _ ↦ embeddingToward_mem_embValRing hσ
 
 lemma coe_letterEmbedding (σ : D.Φ) (hσ : inducedPlace σ = l ∨ inducedPlace σ = star l)
@@ -301,42 +323,50 @@ lemma IsExceptional.card_residueField (h_served : D.IsExceptional p)
       q_eq_pow_lcm_of_inert hpl h_served.chiK_eq_neg_one
     _ = p ^ orderOf (D.placeOfInt (-p)) := by rw [Nat.lcm_eq_left h_even]
 
-/-- Let `Λ` be a marked set for `p`, let `l ∈ Λ`, and let `o₀ = D.o₀ p`, the order modulo `q₀` of
+/--
+Let `Λ` be a marked set for `p`, let `l ∈ Λ`, and let `o₀ = D.o₀ p`, the order modulo `q₀` of
 the place named by the integer `-p`. Let `o₀ N` be the order of this place itself, and let `t i`,
 for `i` modulo `N`, be infinite places that induce `l` or its conjugate, with `t (i + 1)` the place
 named by `-p ^ o₀` times `t i`. Then the maps `New.Data.letterEmbedding (t i)` from the valuation
 ring of `l` to the ring `embValRing` of `p`-integral complex numbers form a Frobenius cycle for the
 prime `p` and the exponent `o₀`: each is congruent modulo `p` to the `p ^ o₀`-th power of the one
 before, and a letter `i` is flagged as even (`isEven`) exactly if `t i` induces `l`, so parities
-alternate. -/
-theorem IsMarked.exists_frobeniusCycle {P : Parameters} {D : Data P} {p : ℕ} [Fact p.Prime]
-    [PadicPlace p] {l : FinPlace D.E} {Λ : Finset (FinPlace D.E)} (hΛ : D.IsMarked Λ) (hl : l ∈ Λ)
-    {N : ℕ} (h_order : orderOf (D.placeOfInt (-p)) = D.o₀ p * N) {t : ZMod N → D.Φ}
-    (ht_succ : ∀ i : ZMod N, t (i + 1) = D.placeOfInt (-p ^ D.o₀ p) * t i)
-    (ht_ind : ∀ i : ZMod N, inducedPlace (t i) = l ∨ inducedPlace (t i) = star l) :
-    ∃ T : FrobeniusCycle N (l.valuationSubringAtPrime D.E) embValRing,
-      T.p = p ∧
-      T.frobExp = D.o₀ p ∧
-      (∀ i : ZMod N, T.isEven i ↔ inducedPlace (t i) = l) ∧
-      ∀ i : ZMod N, T.embedding i = letterEmbedding (t i) (ht_ind i) := by
+alternate.
+-/
+theorem IsMarked.exists_frobeniusCycle
+    {P : Parameters} {D : Data P} {p : ℕ} [Fact p.Prime] [PadicPlace p]
+    {l : FinPlace D.E} {Λ : Finset (FinPlace D.E)} (hΛ : D.IsMarked Λ) (hl : l ∈ Λ)
+    {N : ℕ} (h_order : orderOf (D.placeOfInt (-p)) = D.o₀ p * N)
+    {t : ZMod N → D.Φ} (ht_succ : ∀ i : ZMod N, t (i + 1) = D.placeOfInt (- p ^ D.o₀ p) * t i)
+    (ht_ind : ∀ i : ZMod N, inducedPlace (t i) = l ∨ inducedPlace (t i) = star l)
+    : ∃ T : FrobeniusCycle N (l.valuationSubringAtPrime D.E) embValRing,
+      T.p = p ∧ T.frobExp = D.o₀ p ∧ (∀ i : ZMod N, T.isEven i ↔ inducedPlace (t i) = l)
+        ∧ ∀ i : ZMod N, T.embedding i = letterEmbedding (t i) (ht_ind i) := by
   classical
   obtain ⟨h_inert, -, h_odd, -⟩ : D.IsExceptional p := hΛ.isExceptional
   have h_split : l.IsSplit := hΛ.isSplit hl
   have h13 : 13 ≤ p := P.thirteen_le_of_chiK_ne_one Fact.out hΛ.isSmallNonsplit.2
   obtain ⟨w, hw⟩ : ∃ w : ℂ, p = w ^ 2 := (Complex.isSquare p).exists_sq
   have hw_mem : w ∈ embValRing := by simpa [hw, pow_le_one_iff] using natCast_mem embValRing p
-  refine ⟨{
-    p := p
-    frobExp := D.o₀ p
-    embedding i := letterEmbedding (t i) (ht_ind i)
-    isEven i := decide (inducedPlace (t i) = l)
-    sqrtPrime := ⟨w, hw_mem⟩
-    prime := Fact.out
-    five_le_P := (by lia : 5 ≤ p).trans (Nat.le_self_pow h_odd.pos.ne' p)
-    sqrtPrime_sq := Subtype.ext hw.symm
-    frobenius_congr i := dvd_letterEmbedding_sub_pow h_inert h_split h_odd (ht_succ i) _ _
-    isEven_succ i := ?_
-    card_residueField := ?_ }, rfl, rfl, fun i ↦ decide_eq_true_iff, fun i ↦ rfl⟩
+  refine ⟨
+    {
+      p := p
+      frobExp := D.o₀ p
+      embedding i := letterEmbedding (t i) (ht_ind i)
+      isEven i := decide (inducedPlace (t i) = l)
+      sqrtPrime := ⟨w, hw_mem⟩
+      prime := Fact.out
+      five_le_P := (by lia : 5 ≤ p).trans (Nat.le_self_pow h_odd.pos.ne' p)
+      sqrtPrime_sq := Subtype.ext hw.symm
+      frobenius_congr i := dvd_letterEmbedding_sub_pow h_inert h_split h_odd (ht_succ i) _ _
+      isEven_succ i := ?_
+      card_residueField := ?_
+    },
+    rfl,
+    rfl,
+    fun i ↦ decide_eq_true_iff,
+    fun i ↦ rfl
+  ⟩
   · -- Multiplication with the place named by `-p ^ o₀` exchanges `l` and `star l`.
     rw [ht_succ, D.inducedPlace_neg_pow_mul_of_odd h_inert h_odd]
     obtain h | h := ht_ind i <;> simp [h, h_split]
@@ -344,7 +374,8 @@ theorem IsMarked.exists_frobeniusCycle {P : Parameters} {D : Data P} {p : ℕ} [
 
 end Ring
 
-/-- Let `Λ` be a marked set of finite places above `p`, let `l ∈ Λ`, and let `j₀` be a natural
+/--
+Let `Λ` be a marked set of finite places above `p`, let `l ∈ Λ`, and let `j₀` be a natural
 number. The scaled Hecke operator at `l` acts on `D.SourceForm`, the forms of weight `D.columnCount`
 and level `D.levelX 0`; it is `p ^ A` times the Hecke operator of index `r` at `l`, where
 `A = D.heckeScalingExponent l` is `D.a` times the number of a-places inducing `l` and
@@ -352,13 +383,16 @@ and level `D.levelX 0`; it is `p ^ A` times the Hecke operator of index `r` at `
 at most `1`) to itself, and it is onto modulo `p ^ j₀` up to an index dividing `p ^ i` for some
 natural `i ≤ (12 A / (m p) + j₀ / (m ^ 2 f)) * dim`, the divisions being those of real numbers. Here
 `m = D.m` and `f = D.f` are the numerical parameters of `D`, and `dim` is the complex dimension of
-`D.SourceForm`. -/
-theorem IsMarked.isOntoUpToColength_scaledHeckeOperator {P : Parameters} {p : ℕ} {D : Data P}
-    [Fact p.Prime] [PadicPlace p] {Λ : Finset (FinPlace D.E)} (hΛ : D.IsMarked Λ) (j₀ : ℕ)
-    {l : FinPlace D.E} (hl : l ∈ Λ) :
-    IsOntoUpToColength (p : embValRing) D.integralSourceForms j₀ (hΛ.scaledHeckeOperator ⟨l, hl⟩)
-      ((12 * D.heckeScalingExponent l / (D.m * p) + 1 / (D.m ^ 2 * D.f) * j₀) *
-        finrank ℂ D.SourceForm) := by
+`D.SourceForm`.
+-/
+theorem IsMarked.isOntoUpToColength_scaledHeckeOperator
+    {P : Parameters} {p : ℕ} {D : Data P} [Fact p.Prime] [PadicPlace p]
+    {Λ : Finset (FinPlace D.E)} (hΛ : D.IsMarked Λ)
+    (j₀ : ℕ)
+    {l : FinPlace D.E} (hl : l ∈ Λ)
+    : IsOntoUpToColength (p : embValRing) D.integralSourceForms j₀ (hΛ.scaledHeckeOperator ⟨l, hl⟩)
+      ((12 * D.heckeScalingExponent l / (D.m * p) + 1 / (D.m ^ 2 * D.f) * j₀)
+        * finrank ℂ D.SourceForm) := by
   classical
   -- The a-places that induce `l` or `star l` form one orbit `t` under the place named by `-p ^ o₀`.
   -- Apply the bound for the edge Hecke operator to the Frobenius cycle of this orbit.
@@ -371,25 +405,25 @@ theorem IsMarked.isOntoUpToColength_scaledHeckeOperator {P : Parameters} {p : �
     have h_dvd : D.o₀ p ∣ orderOf (D.placeOfInt (-p)) := orderOf_map_dvd _ _
     rw [hN_def, orderOf_pow_of_dvd h_odd.pos.ne' h_dvd, Nat.mul_div_cancel' h_dvd]
   have : NeZero N := .of_pos (orderOf_pos _)
-  obtain ⟨t, ht_inj, ht_succ, ht_range⟩ : ∃ t : ZMod N → D.Φ, t.Injective ∧
-      (∀ i : ZMod N, t (i + 1) = D.placeOfInt (-p ^ D.o₀ p) * t i) ∧
-      ∀ σ : D.Φ, σ ∈ Set.range t ↔
-        σ ∈ D.aPlaces ∧ (inducedPlace σ = l ∨ inducedPlace σ = star l) := by
+  obtain ⟨t, ht_inj, ht_succ, ht_range⟩
+      : ∃ t : ZMod N → D.Φ,
+        t.Injective ∧ (∀ i : ZMod N, t (i + 1) = D.placeOfInt (- p ^ D.o₀ p) * t i)
+          ∧ ∀ σ : D.Φ,
+            σ ∈ Set.range t ↔ σ ∈ D.aPlaces ∧ (inducedPlace σ = l ∨ inducedPlace σ = star l) := by
     simpa only [hτl] using D.exists_orbit_of_mem_aPlaces hΛ.isExceptional.chiK_eq_neg_one h_odd hτ
   have ht_ind (i : ZMod N) : inducedPlace (t i) = l ∨ inducedPlace (t i) = star l :=
     ((ht_range _).1 ⟨i, rfl⟩).2
-  obtain ⟨T, hT_p, hT_o₀, hT_even, hT_ι⟩ :
-      ∃ T : FrobeniusCycle N (l.valuationSubringAtPrime D.E) embValRing,
-        T.p = p ∧ T.frobExp = D.o₀ p ∧
-        (∀ i : ZMod N, T.isEven i ↔ inducedPlace (t i) = l) ∧
-        ∀ i : ZMod N, T.embedding i = letterEmbedding (t i) (ht_ind i) :=
+  obtain ⟨T, hT_p, hT_o₀, hT_even, hT_ι⟩
+      : ∃ T : FrobeniusCycle N (l.valuationSubringAtPrime D.E) embValRing,
+        T.p = p ∧ T.frobExp = D.o₀ p ∧ (∀ i : ZMod N, T.isEven i ↔ inducedPlace (t i) = l)
+          ∧ ∀ i : ZMod N, T.embedding i = letterEmbedding (t i) (ht_ind i) :=
     hΛ.exists_frobeniusCycle hl hN ht_succ ht_ind
-  have h_nonunit : ¬IsUnit (T.p : embValRing) := by
+  have h_nonunit : ¬ IsUnit (T.p : embValRing) := by
     simpa only [hT_p] using not_isUnit_natCast_embValRing
-  have hι (i : ZMod N) (x : l.valuationSubringAtPrime D.E) :
-      T.embedding i x = (if T.isEven i then Φ (t i) else (Φ (t i)).comp (starRingEnd D.E)) x := by
+  have hι (i : ZMod N) (x : l.valuationSubringAtPrime D.E)
+      : T.embedding i x = (if T.isEven i then Φ (t i) else (Φ (t i)).comp (starRingEnd D.E)) x := by
     simp only [hT_ι, hT_even, coe_letterEmbedding, embeddingToward]
-  have h_exponent : heckeScalingExponent l = D.a * #{i : ZMod N | T.isEven i} := by
+  have h_exponent : heckeScalingExponent l = D.a * # {i : ZMod N | T.isEven i} := by
     have h_image : {σ ∈ D.aPlaces | inducedPlace σ = l} = image t {i : ZMod N | T.isEven i} := by
       ext σ
       simp only [mem_filter, mem_image, mem_univ, true_and, hT_even]
@@ -410,18 +444,20 @@ theorem IsMarked.isOntoUpToColength_scaledHeckeOperator {P : Parameters} {p : �
     rw [← hT_p] at h13 hp_lt
     simpa only [hT_p] using
       D.isLargeDegree_of_le_card T h13 hp_lt hfrobExp_pos hfrobExp_le orderOf_le_card_univ hm
-  have h_cost : 3 * T.divisorConstant D.k D.a (D.ceilLogLifts p) ≤
-      12 * D.heckeScalingExponent l / (D.m * p) := by
+  have h_cost
+      : 3 * T.divisorConstant D.k D.a (D.ceilLogLifts p)
+        ≤ 12 * D.heckeScalingExponent l / (D.m * p) := by
     simpa only [hT_p, h_exponent] using
       D.three_mul_divisorConstant_le T hfrobExp_pos hfrobExp_le T.card_isEven_add_self
   -- The constant of the Frobenius cycle is at most the stated one.
-  obtain ⟨h_stable, i, hi, h_index⟩ :
-      IsOntoUpToColength (p : embValRing) D.integralSourceForms j₀ (hΛ.scaledHeckeOperator ⟨l, hl⟩)
-        ((3 * T.divisorConstant D.k D.a (D.ceilLogLifts p) + 1 / (D.m ^ 2 * D.f) * j₀) *
-          finrank ℂ D.SourceForm) := by
-    simpa only [hT_p] using Columns.isOntoUpToColength_scaledHeckeOperator_of_frobeniusCycle hΛ hl
-      l.valuationSubringAtPrime_eq_valuationSubring T h_nonunit hT_p (.ofInjective t ht_inj)
-      ht_range hι h_exponent h_large j₀
+  obtain ⟨h_stable, i, hi, h_index⟩ : IsOntoUpToColength (p : embValRing) D.integralSourceForms j₀
+      (hΛ.scaledHeckeOperator ⟨l, hl⟩)
+      ((3 * T.divisorConstant D.k D.a (D.ceilLogLifts p) + 1 / (D.m ^ 2 * D.f) * j₀)
+        * finrank ℂ D.SourceForm) := by
+    simpa only [hT_p] using
+      Columns.isOntoUpToColength_scaledHeckeOperator_of_frobeniusCycle hΛ hl
+        l.valuationSubringAtPrime_eq_valuationSubring T h_nonunit hT_p (.ofInjective t ht_inj)
+        ht_range hι h_exponent h_large j₀
   exact ⟨h_stable, i, hi.trans (by grw [h_cost]), h_index⟩
 
 end New.Data

@@ -49,17 +49,20 @@ namespace New
 
 section KernelDecay
 
-open MeasureTheory Matrix Kronecker
-  Fock WeilData Space Prod G IsDualFamily Heisenberg ENNReal
+open MeasureTheory Matrix Kronecker Fock WeilData Space Prod G IsDualFamily Heisenberg ENNReal
 
-variable {E : Type} [Field E] [CMType E] {n n' p q : Type} [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
+variable
+  {E : Type} [Field E] [CMType E]
+  {n n' p q : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
   (a b : AutChar E) (g : G E s) (c : Matrix n q E)
 
 /-! ### Rational matrices in adelic coordinates, short vectors -/
 
-/-- The coordinates at an adelic point `g` of a matrix `c` over `E`: the adelic matrix `g⁻¹ x⁻¹ c`,
-where `x = S.x` carries the form of `S` to the standard form. -/
+/--
+The coordinates at an adelic point `g` of a matrix `c` over `E`: the adelic matrix `g⁻¹ x⁻¹ c`,
+where `x = S.x` carries the form of `S` to the standard form.
+-/
 noncomputable def Space.coordMatrix : Matrix n q (𝔸 E) :=
   g⁻¹.adeleMatrix * (S.x⁻¹.val * c.map toAdele)
 
@@ -133,17 +136,21 @@ lemma apply_vecAtPoint (f : 𝒮 S) (γ : n → E) : f (S.vecAtPoint γ) = f 0 :
 
 /-! ### Supports -/
 
-/-- Let `Ψ` be Schwartz–Bruhat above a set `P` of finite places disjoint from its conjugate, `I` a
+/--
+Let `Ψ` be Schwartz–Bruhat above a set `P` of finite places disjoint from its conjugate, `I` a
 submodule of the adelic vectors of `V`, and `A` a bounded linear map on `𝒮 V` that is invariant
 under the Heisenberg operators `ϱ z` for `z` in `I`. If no `y` with `Ψ y ≠ 0` is orthogonal to the
-finite part of `I`, then `A` kills `Ψ ⊗ f` (`schrodingerOp`). -/
-theorem Space.map_eq_zero_of_support_not_orthogonal {E n X : Type*} [Field E] [CMType E]
-    [WeilData E] [Fintype n] [DecidableEq n] [NormedAddCommGroup X] [NormedSpace ℂ X] {s : n → ℤˣ}
-    {V : Space E n s} {P : Set (FinPlace E)} (hP : Set.IsConjDisjoint P)
-    {Ψ : (n → 𝔸f E) → ℂ} [hΨ : IsSchwartzBruhat P Ψ] (I : Submodule (𝔸 E) (n → 𝔸 E))
+finite part of `I`, then `A` kills `Ψ ⊗ f` (`schrodingerOp`).
+-/
+theorem Space.map_eq_zero_of_support_not_orthogonal
+    {E n X : Type*} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
+    [NormedAddCommGroup X] [NormedSpace ℂ X]
+    {s : n → ℤˣ} {V : Space E n s} {P : Set (FinPlace E)} (hP : Set.IsConjDisjoint P)
+    {Ψ : (n → 𝔸f E) → ℂ} [hΨ : IsSchwartzBruhat P Ψ]
+    (I : Submodule (𝔸 E) (n → 𝔸 E))
     {A : 𝒮 V →L[ℂ] X} (hA : ∀ z ∈ I, ∀ f : 𝒮 V, A (V.ϱ z f) = A f)
-    (h_supp : ∀ y : n → 𝔸f E, Ψ y ≠ 0 → ∃ z ∈ I, star (fun k : n ↦ (z k).2) ⬝ᵥ y ≠ 0)
-    (f : 𝒮 V) : A (V.schrodingerOp P Ψ f) = 0 := by
+    (h_supp : ∀ y : n → 𝔸f E, Ψ y ≠ 0 → ∃ z ∈ I, star (fun k : n ↦ (z k).2) ⬝ᵥ y ≠ 0) (f : 𝒮 V)
+    : A (V.schrodingerOp P Ψ f) = 0 := by
   classical
   -- It is enough to kill the indicators of small cosets near a point `y` of the support. Some
   -- `ϱ z`, with `z` in `I` above the conjugate of `P`, multiplies them by a constant other than
@@ -166,11 +173,14 @@ theorem Space.map_eq_zero_of_support_not_orthogonal {E n X : Type*} [Field E] [C
       ext1 <;> simp [a, u, finVec, mul_assoc]
     rw [h_vec, hA _ (I.smul_mem a hz)]
   -- The neighbourhood of `y` is where the locally constant multiplier keeps its value.
-  refine ⟨{x : n → 𝔸f E | χ c x = χ c y},
+  refine ⟨
+    {x : n → 𝔸f E | χ c x = χ c y},
     (isLocallyConstant_selfDualAddChar.comp_continuous (by fun_prop)).eventually_eq y,
-      fun t w _ h_coset ↦ ?_⟩
-  have h_const : (fun x : n → 𝔸f E ↦ χ c (idem P • x) * cosetIndicator P t w x) =
-      χ c y • cosetIndicator P t w :=
+    fun t w _ h_coset ↦ ?_
+  ⟩
+  have h_const
+      : (fun x : n → 𝔸f E ↦ χ c (idem P • x) * cosetIndicator P t w x)
+        = χ c y • cosetIndicator P t w :=
     funext fun x ↦ mul_eq_mul_right_iff.2 (or_not.imp (h_coset x) fun hx ↦ ite_eq_right hx)
   -- That operator multiplies the function in `schrodingerOp` by the character above.
   let F : 𝒮 V := V.schrodingerOp P (cosetIndicator P t w) f
@@ -185,10 +195,12 @@ section Supports
 
 variable {S : Space E n s} {T : Space E n' s'}
 
-/-- The matrix of the map `z ↦ X z Yᴴ ε` on matrices written as vectors, where `ε` is the standard
-form of signs `s`. -/
-noncomputable abbrev shiftMatrix (s : n → ℤˣ) (X : Matrix n' p (𝔸 E)) (Y : Matrix n q (𝔸 E)) :
-    Matrix (n' × n) (p × q) (𝔸 E) :=
+/--
+The matrix of the map `z ↦ X z Yᴴ ε` on matrices written as vectors, where `ε` is the standard
+form of signs `s`.
+-/
+noncomputable abbrev shiftMatrix (s : n → ℤˣ) (X : Matrix n' p (𝔸 E)) (Y : Matrix n q (𝔸 E))
+    : Matrix (n' × n) (p × q) (𝔸 E) :=
   X ⊗ₖ (Yᴴ * stdForm E s)ᵀ
 
 /-- Let `Ψ` be Schwartz–Bruhat above a set `P` of finite places disjoint from its conjugate. Let
@@ -220,16 +232,21 @@ end Supports
 
 section AdelicPoints
 
-variable {E n ι : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype ι] {s : n → ℤˣ}
-  (V : Space E n s)
+variable
+  {E n ι : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype ι]
+  {s : n → ℤˣ} (V : Space E n s)
 
-/-- The adelic points of a subspace `Z` of `V`: the span over the adeles of the adelic vectors of
-the elements of `Z`. -/
+/--
+The adelic points of a subspace `Z` of `V`: the span over the adeles of the adelic vectors of
+the elements of `Z`.
+-/
 noncomputable def Space.adelicPoints (Z : Submodule E (n → E)) : Submodule (𝔸 E) (n → 𝔸 E) :=
   Submodule.span (𝔸 E) (V.vecAtPoint '' Z)
 
-/-- The rational points among the adelic points of a subspace `Z` of `V`: the adelic vectors of the
-elements of `Z`. -/
+/--
+The rational points among the adelic points of a subspace `Z` of `V`: the adelic vectors of the
+elements of `Z`.
+-/
 noncomputable def Space.ratPoints (Z : Submodule E (n → E)) : AddSubgroup (V.adelicPoints Z) where
   carrier := {x : V.adelicPoints Z | ∃ γ ∈ Z, V.vecAtPoint γ = x}
   add_mem' := by
@@ -269,12 +286,15 @@ lemma exists_toAdele_add_eq_nsmul (E : Type) [Field E] [CMType E] :
   rw [nsmul_eq_mul, ← map_natCast (toAdele (E := E)), mul_add, ← mul_assoc, ← map_mul, ← map_mul,
     mul_inv_cancel₀ (Nat.cast_ne_zero.2 hM), map_one, one_mul]
 
-/-- The map `c ↦ ∑ c i • z i` from adelic coefficients to the adelic points of the span of the
-vectors `z i`. -/
-noncomputable def Space.adelicCombination (z : ι → n → E) :
-    (ι → 𝔸 E) →+ V.adelicPoints (Submodule.span E (Set.range z)) :=
-  .mk' (fun c : ι → 𝔸 E ↦ ⟨∑ i : ι, c i • V.vecAtPoint (z i),
-      (V.mem_adelicPoints_span_range_iff z _).2 ⟨c, rfl⟩⟩)
+/--
+The map `c ↦ ∑ c i • z i` from adelic coefficients to the adelic points of the span of the
+vectors `z i`.
+-/
+noncomputable def Space.adelicCombination (z : ι → n → E)
+    : (ι → 𝔸 E) →+ V.adelicPoints (Submodule.span E (Set.range z)) :=
+  .mk'
+    (fun c : ι → 𝔸 E ↦
+      ⟨∑ i : ι, c i • V.vecAtPoint (z i), (V.mem_adelicPoints_span_range_iff z _).2 ⟨c, rfl⟩⟩)
     fun c c' ↦ Subtype.ext (by simp [add_smul, Finset.sum_add_distrib])
 
 lemma Space.continuous_adelicCombination {E n ι : Type} [Field E] [CMType E] [Fintype n]
@@ -315,9 +335,11 @@ lemma Space.compactSpace_adelicPoints_quotient {E n : Type} [Field E] [CMType E]
   exact hψ_onto.compactSpace <| QuotientAddGroup.isOpenQuotientMap_mk.continuous_comp_iff.1
     (QuotientAddGroup.continuous_mk.comp (V.continuous_adelicCombination z))
 
-/-- The mean of a function `F` on adelic vectors over the adelic points of a subspace `Z` of `V`
+/--
+The mean of a function `F` on adelic vectors over the adelic points of a subspace `Z` of `V`
 modulo the rational ones, for the Haar probability measure of this compact group. It is meant for
-`F` periodic under the rational points. -/
+`F` periodic under the rational points.
+-/
 noncomputable def Space.subspaceMean (Z : Submodule E (n → E)) (F : (n → 𝔸 E) → ℂ) : ℂ :=
   haveI : CompactSpace (V.adelicPoints Z ⧸ V.ratPoints Z) := V.compactSpace_adelicPoints_quotient Z
   quotMean (V.ratPoints Z) fun x : V.adelicPoints Z ↦ F x
@@ -535,27 +557,32 @@ lemma Space.exists_norm_le_of_differences {E n : Type} [Field E] [CMType E] [Wei
     _ ≤ C * (‖L‖ * ‖J‖) * (C₀ * δ) ^ l * (fockMoment l v).toReal := by grw [L.opNorm_comp_le]
     _ = _ := by ring
 
-/-- Let `f₀` lie in the finite part of `𝒮 V`, let `l` be a natural number and `ι` a finite index
+/--
+Let `f₀` lie in the finite part of `𝒮 V`, let `l` be a natural number and `ι` a finite index
 type. There is `C` as follows. Let `g` be an adelic point of the unitary group, `δ ≥ 0`, and let the
 vectors `z i` of the lattice at `g` have lengths at most `δ` (`latticeBall`) and span an isotropic
 subspace `Z` of `V`. Let `Λ` be a bounded functional on `𝒮 V` that is invariant under the Heisenberg
 operators `ϱ` of `Z`, and `Λ₀` the mean of `Λ ∘ ϱ x` over the adelic points `x` of `Z` modulo the
 rational ones (it exists by `exists_eq_subspaceMean`). Then `‖(Λ - Λ₀) (ω g (v ⊗ f₀))‖ ≤ C ‖Λ ∘ ω g‖
 δ ^ l ‖v‖_l` for all `v` in Fock space whose moment `‖v‖_l` (`fockMoment`) is finite. Here `ω` is
-the Weil representation and `v ⊗ f₀` is `V.integrated v f₀`. -/
-theorem Space.exists_norm_sub_subspaceMean_le {E n : Type} [Field E] [CMType E] [WeilData E]
-    [Fintype n] [DecidableEq n] {s : n → ℤˣ} {V : Space E n s} {f₀ : 𝒮 V} (hf₀ : f₀ ∈ V.finitePart)
-    (l : ℕ) (ι : Type) [Fintype ι] :
-    ∃ C : ℝ, 0 ≤ C ∧
-      ∀ (g : G E s) (δ : ℝ) (z : ι → n → E) (Z : Submodule E (n → E)) (Λ Λ₀ : 𝒮 V →L[ℂ] ℂ),
-      0 ≤ δ → (∀ i : ι, z i ∈ (V.move g).latticeBall δ) →
-      Submodule.span E (Set.range z) = Z →
-      (∀ γ ∈ Z, ∀ η ∈ Z, star γ ⬝ᵥ V.J *ᵥ η = 0) →
-      (∀ γ ∈ Z, ∀ f : 𝒮 V, Λ (V.ϱ (V.vecAtPoint γ) f) = Λ f) →
-      (∀ f : 𝒮 V, Λ₀ f = V.subspaceMean Z fun x : n → 𝔸 E ↦ Λ (V.ϱ x f)) →
-      ∀ v : fockSpace (realSigns E s), fockMoment l v ≠ ⊤ →
-      ‖(Λ - Λ₀) (V.ω g (V.integrated v f₀))‖ ≤
-        C * ‖Λ ∘L V.ω g‖ * δ ^ l * (fockMoment l v).toReal := by
+the Weil representation and `v ⊗ f₀` is `V.integrated v f₀`.
+-/
+theorem Space.exists_norm_sub_subspaceMean_le
+    {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
+    {s : n → ℤˣ} {V : Space E n s} {f₀ : 𝒮 V} (hf₀ : f₀ ∈ V.finitePart)
+    (l : ℕ)
+    (ι : Type) [Fintype ι]
+    : ∃ C : ℝ,
+      0 ≤ C
+        ∧ ∀ (g : G E s) (δ : ℝ) (z : ι → n → E) (Z : Submodule E (n → E)) (Λ Λ₀ : 𝒮 V →L[ℂ] ℂ),
+          0 ≤ δ → (∀ i : ι, z i ∈ (V.move g).latticeBall δ) → Submodule.span E (Set.range z) = Z
+            → (∀ γ ∈ Z, ∀ η ∈ Z, star γ ⬝ᵥ V.J *ᵥ η = 0)
+            → (∀ γ ∈ Z, ∀ f : 𝒮 V, Λ (V.ϱ (V.vecAtPoint γ) f) = Λ f)
+            → (∀ f : 𝒮 V, Λ₀ f = V.subspaceMean Z fun x : n → 𝔸 E ↦ Λ (V.ϱ x f))
+            → ∀ v : fockSpace (realSigns E s),
+              fockMoment l v ≠ ⊤
+                → ‖(Λ - Λ₀) (V.ω g (V.integrated v f₀))‖
+                  ≤ C * ‖Λ ∘L V.ω g‖ * δ ^ l * (fockMoment l v).toReal := by
   -- The functional `Λ - Λ₀` has mean zero, so it is the mean of its differences, and
   -- `‖(Λ - Λ₀) ∘ ω g‖ ≤ 2 ‖Λ ∘ ω g‖` because the operators `ϱ` preserve norms.
   obtain ⟨C, hC, h_differences⟩ := exists_norm_le_of_differences hf₀ l ι
@@ -572,20 +599,24 @@ theorem Space.exists_norm_sub_subspaceMean_le {E n : Type} [Field E] [CMType E] 
     grw [ContinuousLinearMap.sub_comp, norm_sub_le, h_norm_mean, two_mul]
   have h_mean_inv {x : n → 𝔸 E} (hx : x ∈ V.adelicPoints Z) (f : 𝒮 V) : Λ₀ (V.ϱ x f) = Λ₀ f :=
     subspaceMean_rho h_iso h_inv h_mean hx f
-  have h_inv_sub (γ : n → E) (hγ : γ ∈ Z) (f : 𝒮 V) :
-      (Λ - Λ₀) (V.ϱ (V.vecAtPoint γ) f) = (Λ - Λ₀) f := by
+  have h_inv_sub (γ : n → E) (hγ : γ ∈ Z) (f : 𝒮 V)
+      : (Λ - Λ₀) (V.ϱ (V.vecAtPoint γ) f) = (Λ - Λ₀) f := by
     simp only [_root_.sub_apply, h_inv γ hγ, h_mean_inv (Submodule.subset_span ⟨γ, hγ, rfl⟩)]
-  have h_as_mean (f : 𝒮 V) : (Λ - Λ₀) f = quotMean (V.ratPoints Z)
-      fun x : V.adelicPoints Z ↦ (Λ - Λ₀) f - (Λ - Λ₀) (V.ϱ x f) := by
+  have h_as_mean (f : 𝒮 V)
+      : (Λ - Λ₀) f
+        = quotMean (V.ratPoints Z) fun x : V.adelicPoints Z ↦ (Λ - Λ₀) f - (Λ - Λ₀) (V.ϱ x f) := by
     simp only [_root_.sub_apply, h_mean_inv (Submodule.coe_mem _), sub_sub_sub_cancel_right]
     rw [h_mean, subspaceMean, quotMean, quotMean,
       integral_sub (integrable_const _) (isContPeriodic_ratPoints h_iso h_inv f).integrable_out]
     simp
-  have h_shifts (f : 𝒮 V) (B : ℝ) (hB : ∀ x ∈ V.adelicPoints Z,
-      ‖(Λ - Λ₀) (V.ω g f) - (Λ - Λ₀) (V.ϱ x (V.ω g f))‖ ≤ B) : ‖(Λ - Λ₀) (V.ω g f)‖ ≤ B := by
+  have h_shifts
+      (f : 𝒮 V) (B : ℝ)
+      (hB : ∀ x ∈ V.adelicPoints Z, ‖(Λ - Λ₀) (V.ω g f) - (Λ - Λ₀) (V.ϱ x (V.ω g f))‖ ≤ B)
+      : ‖(Λ - Λ₀) (V.ω g f)‖ ≤ B := by
     rw [h_as_mean]
     exact norm_quotMean_le _ fun x ↦ hB x (Submodule.coe_mem x)
-  calc ‖(Λ - Λ₀) (V.ω g (V.integrated v f₀))‖
+  calc
+    ‖(Λ - Λ₀) (V.ω g (V.integrated v f₀))‖
     _ ≤ C * ‖(Λ - Λ₀) ∘L V.ω g‖ * δ ^ l * (fockMoment l v).toReal :=
       h_differences g δ z Z (Λ - Λ₀) hδ hz hZ h_iso h_inv_sub h_shifts v hv
     _ ≤ C * (2 * ‖Λ ∘L V.ω g‖) * δ ^ l * (fockMoment l v).toReal := by gcongr

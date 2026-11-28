@@ -72,7 +72,8 @@ namespace New.Period
 
 open TensorProduct Module
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ T R : Type} [Group Γ] [OverGp Γ p] [AddCommGroup T] [Module ℤ_[p] T] [CommRing R] [Module R T]
   [Algebra ℤ_[p] R] [IsScalarTower ℤ_[p] R T]
 
@@ -83,13 +84,17 @@ lemma periodTensorMap_injective [Flat ℤ_[p] T] :
   Flat.rTensor_preserves_injective_linearMap (Algebra.algHom ℤ_[p] Amax Bmax).toLinearMap
     (injective_BPlus_Bmax.comp injective_Amax_BPlus)
 
-/-- The representation is crystalline and all its Hodge–Tate jumps, at every γ: R → C_p, lie in
-[0, h]. -/
+/--
+The representation is crystalline and all its Hodge–Tate jumps, at every γ: R → C_p, lie in
+[0, h].
+-/
 def IsCrystallineUpTo (h : ℕ) (ρ : Representation R Γ T) : Prop :=
   IsCrystalline ρ ∧ ∀ (γ : R →ₐ[ℤ_[p]] ℂ_[p]) (k : ℤ), jump ρ γ k ≠ 0 → 0 ≤ k ∧ k ≤ h
 
-/-- A finite index type m with a group homomorphism Γ → GL_m(ℚ̄_p): a matrix representation of
-unspecified dimension. -/
+/--
+A finite index type m with a group homomorphism Γ → GL_m(ℚ̄_p): a matrix representation of
+unspecified dimension.
+-/
 structure PadicRep (Γ : Type*) [Group Γ] (p : ℕ) [ThePrime p] where
   /-- The index set of the rows and columns. -/
   {Index : Type}
@@ -102,10 +107,13 @@ structure PadicRep (Γ : Type*) [Group Γ] (p : ℕ) [ThePrime p] where
 
 attribute [instance] PadicRep.fintypeIndex PadicRep.decEqIndex
 
-/-- For a Z_p-linear map u from T to square matrices over Q̄_p and a vector v, the Z_p-linear
-map sending x to u(x)v. -/
-noncomputable abbrev applyVec {m : Type*} [Fintype m] (u : T →ₗ[ℤ_[p]] Matrix m m (PadicAlgCl p))
-    (v : m → PadicAlgCl p) : T →ₗ[ℤ_[p]] m → PadicAlgCl p :=
+/--
+For a Z_p-linear map u from T to square matrices over Q̄_p and a vector v, the Z_p-linear
+map sending x to u(x)v.
+-/
+noncomputable abbrev applyVec
+    {m : Type*} [Fintype m] (u : T →ₗ[ℤ_[p]] Matrix m m (PadicAlgCl p)) (v : m → PadicAlgCl p)
+    : T →ₗ[ℤ_[p]] m → PadicAlgCl p :=
   (Matrix.mulVecBilin ℤ_[p] ℤ_[p]).flip v ∘ₗ u
 
 end New.Period
@@ -246,30 +254,39 @@ namespace New.Period
 open TensorProduct Matrix MonoidAlgebra Submodule Finset LinearMap Algebra Module Lift nsmulRange
   NeZero ContinuousMap Set Metric IsLocalRing PadicInt WittVector
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {G Δ κ I : Type} [Group G] [Group Δ] [OverGp Δ p] [TopologicalSpace G] [CompactSpace G]
   {ι : I → Type} [∀ η, Finite (ι η)]
-  (w : Δ →* ℤ_[p][G]) (σ : PadicRep G p) {R : PadicRep G p}
+  (w : Δ →* ℤ_[p][G]) (σ : PadicRep G p)
+  {R : PadicRep G p}
 
-/-- For a matrix representation σ: G→GL_m(Q̄_p), the Z_p-algebra homomorphism from the group
-ring Z_p[G] to m×m matrices over Q̄_p extending σ. -/
+/--
+For a matrix representation σ: G→GL_m(Q̄_p), the Z_p-algebra homomorphism from the group
+ring Z_p[G] to m×m matrices over Q̄_p extending σ.
+-/
 noncomputable abbrev groupRingHom : ℤ_[p][G] →ₐ[ℤ_[p]] Matrix σ.Index σ.Index (PadicAlgCl p) :=
   MonoidAlgebra.lift ℤ_[p] (Matrix σ.Index σ.Index (PadicAlgCl p)) G
     ((Units.coeHom (Matrix σ.Index σ.Index (PadicAlgCl p))).comp σ.rep)
 
-/-- For a multiplicative map w: Δ→Z_p[G] and a matrix representation σ of G over Q̄_p, the matrix
-representation of Δ sending g to σ(w(g)), σ extended linearly. -/
+/--
+For a multiplicative map w: Δ→Z_p[G] and a matrix representation σ of G over Q̄_p, the matrix
+representation of Δ sending g to σ(w(g)), σ extended linearly.
+-/
 noncomputable abbrev viaGroupRing : Representation (PadicAlgCl p) Δ (σ.Index → PadicAlgCl p) :=
   matrixRep ((groupRingHom σ).toMonoidHom.comp w).toHomUnits
 
 variable (Δ) in
-/-- `q : ℤ_p[G] → T` and the maps `u s` from `T` to matrices over `Q̄_p` indexed by `(τ s).Index`
+/--
+`q : ℤ_p[G] → T` and the maps `u s` from `T` to matrices over `Q̄_p` indexed by `(τ s).Index`
 present `T` as a finite free quotient of the group ring `ℤ_p[G]` through which the representations
 `τ s` factor; along any multiplicative map `w : Δ → ℤ_p[G]`, `T` is crystalline with jumps in
-`[0, h]` if all `τ s`, read along `w`, are. -/
-structure IsFiniteGroupRingQuotient (τ : κ → PadicRep G p) (T : AlgCat ℤ_[p])
-    (q : ℤ_[p][G] →ₐ[ℤ_[p]] T)
-    (u : ∀ s : κ, T →ₐ[ℤ_[p]] Matrix (τ s).Index (τ s).Index (PadicAlgCl p)) : Prop where
+`[0, h]` if all `τ s`, read along `w`, are.
+-/
+structure IsFiniteGroupRingQuotient
+    (τ : κ → PadicRep G p) (T : AlgCat ℤ_[p]) (q : ℤ_[p][G] →ₐ[ℤ_[p]] T)
+    (u : ∀ s : κ, T →ₐ[ℤ_[p]] Matrix (τ s).Index (τ s).Index (PadicAlgCl p))
+    : Prop where
   /-- `T` is free as a `ℤ_p`-module. -/
   free : Free ℤ_[p] T
   /-- `T` is finitely generated as a `ℤ_p`-module. -/
@@ -280,11 +297,14 @@ structure IsFiniteGroupRingQuotient (τ : κ → PadicRep G p) (T : AlgCat ℤ_[
   factors : ∀ (s : κ) (y : ℤ_[p][G]), u s (q y) = groupRingHom (τ s) y
   /-- The kernel of `q` is the common kernel of these extensions. -/
   apply_eq_zero_iff : ∀ y : ℤ_[p][G], q y = 0 ↔ ∀ s : κ, groupRingHom (τ s) y = 0
-  /-- If every `τ s`, read along `w`, is crystalline with jumps in `[0, h]`, so is `Δ` acting on `T`
-  by left multiplication with `q (w g)`. -/
-  isCrystallineUpTo : ∀ {h : ℕ} {w : Δ →* ℤ_[p][G]},
-    (∀ s : κ, IsCrystallineUpTo h (viaGroupRing w (τ s))) →
-      IsCrystallineUpTo h (actionRep ℤ_[p] T (q.toMonoidHom.comp w))
+  /--
+  If every `τ s`, read along `w`, is crystalline with jumps in `[0, h]`, so is `Δ` acting on `T`
+  by left multiplication with `q (w g)`.
+  -/
+  isCrystallineUpTo
+    : ∀ {h : ℕ} {w : Δ →* ℤ_[p][G]},
+      (∀ s : κ, IsCrystallineUpTo h (viaGroupRing w (τ s)))
+        → IsCrystallineUpTo h (actionRep ℤ_[p] T (q.toMonoidHom.comp w))
 
 variable (Δ) in
 /-- For finitely many continuous representations `τ s` of the compact group `G` over `Q̄_p`, there

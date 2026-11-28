@@ -60,11 +60,14 @@ section GramLiouville
 
 open NumberField Matrix Module
 
-variable {E P σ τ m n k : Type} [Field E] [NumberField E] [IsCMField E] [Fintype P] [Fintype σ]
-  [DecidableEq σ] [Field k]
+variable
+  {E P σ τ m n k : Type}
+  [Field E] [NumberField E] [IsCMField E] [Fintype P] [Fintype σ] [DecidableEq σ] [Field k]
 
-/-- For a matrix over `E`, the matrix over the finite adeles of `E` obtained by embedding each
-entry. -/
+/--
+For a matrix over `E`, the matrix over the finite adeles of `E` obtained by embedding each
+entry.
+-/
 abbrev finAdeleMatrix (M : Matrix m n E) : Matrix m n (𝔸f E) := M.map ((↑) : E → 𝔸f E)
 
 lemma finAdeleMatrix_conjTranspose (M : Matrix m n E) :
@@ -87,11 +90,14 @@ lemma mul_eq_zero_of_colSpan_le_ker [Fintype τ] {y : Matrix P τ k} {A : Matrix
     (h_le : colSpan y ≤ A.mulVecLin.ker) : A * y = 0 := by
   simpa [IsConcreteLE.le_iff, ext_iff_mulVec] using h_le
 
-/-- The columns of `y` lie in `L` and in the kernel of `A`, and together with the columns of `x`
+/--
+The columns of `y` lie in `L` and in the kernel of `A`, and together with the columns of `x`
 they form a basis of `L`. `colSpan` is the span of the columns, and `HasLeftInv` says that there is
-a left inverse. -/
-structure IsKernelExtension (A : Matrix σ P k) (x : Matrix P σ k) (L : Submodule k (P → k)) {s : ℕ}
-    (y : Matrix P (Fin s) k) : Prop where
+a left inverse.
+-/
+structure IsKernelExtension
+    (A : Matrix σ P k) (x : Matrix P σ k) (L : Submodule k (P → k)) {s : ℕ} (y : Matrix P (Fin s) k)
+    : Prop where
   /-- The columns of `x` and `y` together are independent. -/
   hasLeftInv : HasLeftInv (fromCols x y)
   /-- The columns of `x` and `y` together span `L`. -/
@@ -161,14 +167,15 @@ lemma exists_isPrimitiveMatrix_mul_finAdeleMatrix (hLH : L * H = 1) (V : Submodu
   exact ⟨y, a, ⟨l, hl⟩, hy, by rwa [← H.mul_assoc]⟩
 
 open scoped Classical in
-/-- Let `H` have a left inverse `L`. This is a chosen matrix `m = y a`, with the columns of `y` a
+/--
+Let `H` have a left inverse `L`. This is a chosen matrix `m = y a`, with the columns of `y` a
 basis of `V` over `E`, `a` invertible over `𝔸_f` and `H m` primitive over `Ô` (integral, with an
-integral left inverse); it exists by `exists_isPrimitiveMatrix_mul_finAdeleMatrix`. -/
+integral left inverse); it exists by `exists_isPrimitiveMatrix_mul_finAdeleMatrix`.
+-/
 @[irreducible]
-def sublatticeBasis (hLH : L * H = 1) (V : Submodule E (σ → E)) :
-    {m : Matrix σ (Fin (finrank E V)) (𝔸f E) //
-      IsPrimitiveMatrix (Ô E) (H * m) ∧
-      ∃ y : Matrix σ (Fin (finrank E V)) E, ∃ a : GL (Fin (finrank E V)) (𝔸f E),
+def sublatticeBasis (hLH : L * H = 1) (V : Submodule E (σ → E))
+    : {m : Matrix σ (Fin (finrank E V)) (𝔸f E) // IsPrimitiveMatrix (Ô E) (H * m)
+      ∧ ∃ y : Matrix σ (Fin (finrank E V)) E, ∃ a : GL (Fin (finrank E V)) (𝔸f E),
         HasLeftInv y ∧ colSpan y = V ∧ m = finAdeleMatrix y * a.val} :=
   Nonempty.some <| by
     obtain ⟨y, a, hy_inv, hy_span, h_prim⟩ := exists_isPrimitiveMatrix_mul_finAdeleMatrix hLH V rfl
@@ -185,18 +192,24 @@ lemma exists_sublatticeBasis_eq_finAdeleMatrix_mul (hLH : L * H = 1) (V : Submod
       HasLeftInv y ∧ colSpan y = V ∧ (sublatticeBasis hLH V).val = finAdeleMatrix y * a.val :=
   (sublatticeBasis hLH V).property.right
 
-/-- The discriminant `√[det mᴴ m]` of the lattice of adelic points of `V` that `H` makes integral,
+/--
+The discriminant `√[det mᴴ m]` of the lattice of adelic points of `V` that `H` makes integral,
 for its basis `m = New.Filling.sublatticeBasis hLH V`. Here `[·]` is the generalised index
 `New.genIndex`, which is `|N(z)|` at a nonzero `z ∈ E` for the norm `N` from `E` to `ℚ`. So for a
-lattice with a basis `x` over `E` the discriminant is `√|N(det xᴴ x)|`. -/
+lattice with a basis `x` over `E` the discriminant is `√|N(det xᴴ x)|`.
+-/
 def sublatticeDiscriminant (hLH : L * H = 1) (V : Submodule E (σ → E)) : ℝ :=
   √(genIndex ((sublatticeBasis hLH V).valᴴ * (sublatticeBasis hLH V).val).det)
 
-/-- The index of `K ∩ M` in `M` (`0` if infinite), where `M` is the `Ô`-span of the columns of
+/--
+The index of `K ∩ M` in `M` (`0` if infinite), where `M` is the `Ô`-span of the columns of
 `Y H m` and `m = New.Filling.sublatticeBasis hLH V` is the basis of the points of `V` that `H`
-makes integral. -/
-abbrev sublatticeIndex (hLH : L * H = 1) (V : Submodule E (σ → E)) (Y : Matrix τ P (𝔸f E))
-    (K : Submodule (Ô E) (τ → 𝔸f E)) : ℕ :=
+makes integral.
+-/
+abbrev sublatticeIndex
+    (hLH : L * H = 1) (V : Submodule E (σ → E)) (Y : Matrix τ P (𝔸f E))
+    (K : Submodule (Ô E) (τ → 𝔸f E))
+    : ℕ :=
   submoduleIndex K (colLattice (Ô E) (Y * (H * (sublatticeBasis hLH V).val)))
 
 /-- Let `E` be a CM field containing a primitive `5040`-th root of unity, and let the finite adelic
@@ -316,8 +329,7 @@ infinite places, and `numInfPlaces E` the number of infinite places.
 
 section SiegelLemma
 
-open NumberField Matrix Module Finset Fintype ENNReal Space AddSubgroup RingHom New.Core
-  Prod
+open NumberField Matrix Module Finset Fintype ENNReal Space AddSubgroup RingHom New.Core Prod
 
 section Steps
 
@@ -518,8 +530,8 @@ lemma exists_det_ne_zero_prod_frameLength_le {s : ℕ} (r : InfinitePlace E → 
 
 end Steps
 
-variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {κ : Type} [Fintype κ]
-  [DecidableEq κ]
+variable
+  {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {κ : Type} [Fintype κ] [DecidableEq κ]
 
 /-- A form of Siegel's lemma (compare Bombieri–Vaaler). A subspace `T` of `E^κ` of codimension `s`
 is (a) the hermitian orthogonal of `s` vectors `X i` that are (b) nonzero and in `E^κ ∩ u Ô^κ`, with

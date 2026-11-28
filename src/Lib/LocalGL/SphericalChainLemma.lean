@@ -47,12 +47,16 @@ GL(N), LNM 1041 (1983) for the inequality at the ends of segments.
 
 open ComplexOrder Finset Module New Pi Polynomial Valued Complex
 
-/-- P has the chain of roots d, dq, …, dq^{t−1}, and the other factor divides e after scaling:
-P(dX) equals (X − 1)(X − q)⋯(X − q^{t−1}) times a divisor of the polynomial e. -/
+/--
+P has the chain of roots d, dq, …, dq^{t−1}, and the other factor divides e after scaling:
+P(dX) equals (X − 1)(X − q)⋯(X − q^{t−1}) times a divisor of the polynomial e.
+-/
 def New.Patching.HasRootChain (P e : ℂ[X]) (q d : ℂ) (t : ℕ) : Prop :=
   ∃ S : ℂ[X], P.comp (C d * X) = (∏ i ∈ range t, (X - C (q ^ i))) * S ∧ S ∣ e
 
-variable {E : Type _} [Field E] [NumberField E] {w : FinPlace E} {N : ℕ} [NeZero N]
+variable
+  {E : Type _} [Field E] [NumberField E]
+  {w : FinPlace E} {N : ℕ} [NeZero N]
   {ρ : Rep ℂ (GL (Fin N) (LocField w))} [IsSmoothRep ρ.ρ]
   {B : ρ →ₗ⋆[ℂ] ρ →ₗ[ℂ] ℂ} {x : ρ} {P : ℂ[X]} {t : ℕ → ℂ}
 

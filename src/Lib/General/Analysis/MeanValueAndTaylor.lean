@@ -52,33 +52,41 @@ section CircleMean
 
 open MeasureTheory Real AddCircle
 
-/-- Averaging over a family of measure preserving maps. Let `μ` be s-finite. Let `T θ`, for `θ` in
+/--
+Averaging over a family of measure preserving maps. Let `μ` be s-finite. Let `T θ`, for `θ` in
 `ℝ / ℤ`, be jointly measurable maps that preserve `μ`. If `f` is integrable and the mean of
-`f (T θ x)` over `θ` is `g x` for every `x`, then `f` and `g` have the same integral. -/
-theorem New.integral_eq_of_circle_mean {G : Type*} [MeasurableSpace G] {μ : Measure G} [SFinite μ]
-    {f g : G → ℂ} {T : UnitAddCircle → G → G} (hT_meas : Measurable T.uncurry)
-    (hT : ∀ θ : UnitAddCircle, MeasurePreserving (T θ) μ μ) (hf : Integrable f μ)
-    (h_mean : ∀ x : G, ∫ θ : UnitAddCircle, f (T θ x) = g x) :
-    ∫ x : G, f x ∂μ = ∫ x : G, g x ∂μ := by
+`f (T θ x)` over `θ` is `g x` for every `x`, then `f` and `g` have the same integral.
+-/
+theorem New.integral_eq_of_circle_mean
+    {G : Type*} [MeasurableSpace G]
+    {μ : Measure G} [SFinite μ]
+    {f g : G → ℂ} {T : UnitAddCircle → G → G}
+    (hT_meas : Measurable T.uncurry) (hT : ∀ θ : UnitAddCircle, MeasurePreserving (T θ) μ μ)
+    (hf : Integrable f μ) (h_mean : ∀ x : G, ∫ θ : UnitAddCircle, f (T θ x) = g x)
+    : ∫ x : G, f x ∂μ = ∫ x : G, g x ∂μ := by
   -- Fubini's theorem: average over `θ` last; each `T θ` preserves `μ`, so the inner integral is
   -- then the integral of `f`.
-  calc ∫ x : G, f x ∂μ = ∫ _ : UnitAddCircle, ∫ x : G, f x ∂μ := by simp [Measure.real]
+  calc
+    ∫ x : G, f x ∂μ
+      = ∫ _ : UnitAddCircle, ∫ x : G, f x ∂μ := by simp [Measure.real]
     _ = ∫ x : G, (∫ θ : UnitAddCircle, f (T θ x)) ∂μ :=
       (integral_integral_skew_product (fun θ ↦ (hT θ).map_eq) (hf.comp_snd _) hT_meas).symm
     _ = ∫ x : G, g x ∂μ := by simp only [h_mean]
 
-/-- The mean value property: the mean over the unit circle of a function holomorphic on the closed
-unit disc is its value at the centre. -/
-theorem New.integral_comp_toCircle_eq_apply_zero {f : ℂ → ℂ}
-    (hf : DifferentiableOn ℂ f (Metric.closedBall 0 1)) :
-    ∫ θ : UnitAddCircle, f θ.toCircle = f 0 := by
+/--
+The mean value property: the mean over the unit circle of a function holomorphic on the closed
+unit disc is its value at the centre.
+-/
+theorem New.integral_comp_toCircle_eq_apply_zero
+    {f : ℂ → ℂ} (hf : DifferentiableOn ℂ f (Metric.closedBall 0 1))
+    : ∫ θ : UnitAddCircle, f θ.toCircle = f 0 := by
   -- Mathlib's mean value property, with the period of the angle rescaled from `2π` to `1`.
-  calc ∫ θ : UnitAddCircle, f θ.toCircle
-      = ∫ t in (0 : ℝ)..1, f (Circle.exp (2 * π * t)) := by
-        simp [← AddCircle.intervalIntegral_preimage 1 0, toCircle, -Circle.coe_exp]
+  calc
+    ∫ θ : UnitAddCircle, f θ.toCircle = ∫ t in (0 : ℝ)..1, f (Circle.exp (2 * π * t)) := by
+      simp [← AddCircle.intervalIntegral_preimage 1 0, toCircle, -Circle.coe_exp]
     _ = circleAverage f 0 1 := by
-        rw [intervalIntegral.integral_comp_mul_left (fun t : ℝ ↦ f (Circle.exp t)) (by positivity)]
-        simp [circleAverage, circleMap]
+      rw [intervalIntegral.integral_comp_mul_left (fun t : ℝ ↦ f (Circle.exp t)) (by positivity)]
+      simp [circleAverage, circleMap]
     _ = f 0 := (hf.diffContOnCl_ball (by rw [abs_one])).circleAverage
 
 /-- Halving criterion: let `f` be a real function bounded above and `c ≥ 0`. If for every upper
@@ -224,8 +232,8 @@ open Matrix ContDiff Norms.Elementwise NormedSpace
 
 namespace New
 
-variable {X l m o : Type*}
-  {N : ℕ∞ω} [NormedAddCommGroup X] [NormedSpace ℝ X] [Fintype l] [Fintype m]
+variable
+  {X l m o : Type*} {N : ℕ∞ω} [NormedAddCommGroup X] [NormedSpace ℝ X] [Fintype l] [Fintype m]
 
 /-- A map from a finite-dimensional real normed space to a real normed space that is of class
 `C^ω` at `x` (analytic, if the target is complete) agrees near `x` with a globally smooth map. -/

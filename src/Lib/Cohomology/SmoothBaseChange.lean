@@ -58,10 +58,12 @@ section BaseChange
 
 variable {R : CommRingCat} (A : Type) [CommRing A] [Algebra R A] (Y : Over (Spec R))
 
-/-- For Y over R, the map sending a point of Y over R in an A-algebra c to the point of the base
-change Y_A given by it and the structure map A → c. -/
-noncomputable def algToBaseChange :
-    algPointsOf A R Y ⟶ forget₂ (CommAlg A) CommRingCat ⋙ geomPoints R A Y where
+/--
+For Y over R, the map sending a point of Y over R in an A-algebra c to the point of the base
+change Y_A given by it and the structure map A → c.
+-/
+noncomputable def algToBaseChange
+    : algPointsOf A R Y ⟶ forget₂ (CommAlg A) CommRingCat ⋙ geomPoints R A Y where
   -- the point `y` together with the structure map `A → c`; the two are compatible over `R`
   app c :=
     ↾fun y ↦ ⟨(⟨y.1.1⟩, ⟨ofHom (algebraMap A c)⟩), congr(⟨$(Spec.homEquiv.eq_symm_apply.1 y.1.w)⟩)⟩
@@ -103,8 +105,10 @@ lemma isBijective_algToBaseChange (F : AbFunctor TestRing) :
 
 end BaseChange
 
-variable {C : Type _} [Category C] {ℓ : ℕ} {R : CommRingCat} {A : Type} [CommRing A]
-  [Algebra R A] [InvertsPrime A ℓ] {g : C ⥤ TestOver A} (D : ComparedTheory g)
+variable
+  {C : Type _} [Category C]
+  {ℓ : ℕ} {R : CommRingCat} {A : Type} [CommRing A] [Algebra R A] [InvertsPrime A ℓ]
+  {g : C ⥤ TestOver A} (D : ComparedTheory g)
 
 /-- Let `A` be a valuation ring (`PreValuationRing`) and a `k`-algebra in which `ℓ` is a unit, `D` a
 compared theory along `g`, and `P` a closed class of functors on tests over `A` that contains

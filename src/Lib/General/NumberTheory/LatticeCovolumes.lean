@@ -67,10 +67,13 @@ section LatticeComplement
 
 open Matrix Fintype AddSubgroup Submodule
 
-variable {A : Type*} [CommRing A] {R : Subring A}
-  {π σ τ ρ : Type} [Fintype π] [DecidableEq π] [Fintype σ] [DecidableEq σ]
-  [DecidableEq τ] [Fintype ρ] {M D : Submodule R (τ → A)} {K K' : Submodule R (σ → A)}
-  {H J : Matrix π π A} {m F : Matrix π σ A} {n : Matrix π τ A} (P : (τ → A) →ₗ[R] σ → A)
+variable
+  {A : Type*} [CommRing A]
+  {R : Subring A} {π σ τ ρ : Type}
+  [Fintype π] [DecidableEq π] [Fintype σ] [DecidableEq σ] [DecidableEq τ] [Fintype ρ]
+  {M D : Submodule R (τ → A)} {K K' : Submodule R (σ → A)} {H J : Matrix π π A} {m F : Matrix π σ A}
+  {n : Matrix π τ A}
+  (P : (τ → A) →ₗ[R] σ → A)
 
 /-! ### Indices under a linear map and divisibility -/
 
@@ -129,8 +132,9 @@ lemma exists_mulVec_eq_of_orthogonal [Fintype τ] [StarRing A] {J : GL π A} {F 
 
 variable [Fintype τ]
 
-variable [StarRing A] [TopologicalSpace A] [IsTopologicalRing A] [LocallyCompactSpace A]
-  [ad : IsAdelic R] {l : Matrix τ π A}
+variable
+  [StarRing A] [TopologicalSpace A] [IsTopologicalRing A] [LocallyCompactSpace A] [ad : IsAdelic R]
+  {l : Matrix τ π A}
 
 include ad
 
@@ -357,8 +361,10 @@ section Quotient
 
 open Matrix Fintype Sum
 
-variable {A : Type*} {π σ μ : Type} [CommRing A] [StarRing A] {R : Subring A} [Fintype π]
-  [Fintype σ] [Fintype μ] [DecidableEq π] [DecidableEq σ] [DecidableEq μ]
+variable
+  {A : Type*} {π σ μ : Type} [CommRing A] [StarRing A]
+  {R : Subring A}
+  [Fintype π] [Fintype σ] [Fintype μ] [DecidableEq π] [DecidableEq σ] [DecidableEq μ]
 
 omit [DecidableEq π] in
 /-- Orthogonality for a hermitian form `J` is symmetric. -/
@@ -368,11 +374,14 @@ lemma orthogonal_symm {J : Matrix π π A} (hJ : Jᴴ = J) {ρ ρ' : Type} {x : 
     hJ, ← Matrix.mul_assoc, h]
 
 variable (R) in
-/-- Let `Λ = R ^ π` carry the form `J`, and let the columns of `ι` be a basis of `Λ ∩ I` for an
+/--
+Let `Λ = R ^ π` carry the form `J`, and let the columns of `ι` be a basis of `Λ ∩ I` for an
 isotropic space `I`. The columns of `B` represent a basis of the lattice `(Λ ∩ I^⊥)/(Λ ∩ I)`, and
-`q` gives the coordinates of the class of a vector of `I^⊥` in this basis. -/
-structure IsQuotientBasis (J : Matrix π π A) (ι : Matrix π σ A) (B : Matrix π μ A)
-    (q : Matrix μ π A) : Prop where
+`q` gives the coordinates of the class of a vector of `I^⊥` in this basis.
+-/
+structure IsQuotientBasis
+    (J : Matrix π π A) (ι : Matrix π σ A) (B : Matrix π μ A) (q : Matrix μ π A)
+    : Prop where
   /-- The representatives lie in `Λ`. -/
   isIntMatrix_basis : IsIntMatrix R B
   /-- A vector of `Λ` has integral coordinates. -/
@@ -383,15 +392,20 @@ structure IsQuotientBasis (J : Matrix π π A) (ι : Matrix π σ A) (B : Matrix
   coord_mul_basis : q * B = 1
   /-- The representatives lie in `I^⊥`. -/
   basis_orthogonal : ιᴴ * J * B = 0
-  /-- A vector of `I^⊥` differs from the representative of its class by a vector of `I`, with
-  coefficients that depend integrally on the vector. -/
-  exists_eq_add : ∃ l : Matrix σ π A, IsIntMatrix R l ∧
-    ∀ {ρ : Type} {x : Matrix π ρ A}, ιᴴ * J * x = 0 → x = ι * (l * x) + B * (q * x)
+  /--
+  A vector of `I^⊥` differs from the representative of its class by a vector of `I`, with
+  coefficients that depend integrally on the vector.
+  -/
+  exists_eq_add
+    : ∃ l : Matrix σ π A,
+      IsIntMatrix R l
+        ∧ ∀ {ρ : Type} {x : Matrix π ρ A}, ιᴴ * J * x = 0 → x = ι * (l * x) + B * (q * x)
 
 namespace IsQuotientBasis
 
-variable {J : Matrix π π A} {ι : Matrix π σ A} {B : Matrix π μ A} {q : Matrix μ π A}
-  {ρ ρ' : Type} {x : Matrix π ρ A} {y : Matrix π ρ' A}
+variable
+  {J : Matrix π π A} {ι : Matrix π σ A} {B : Matrix π μ A} {q : Matrix μ π A} {ρ ρ' : Type}
+  {x : Matrix π ρ A} {y : Matrix π ρ' A}
 
 omit [DecidableEq π] [DecidableEq σ] in
 /-- The product of two vectors of `I^⊥` depends only on the class of the second. -/
@@ -641,13 +655,15 @@ lemma Filling.existsUnique_mul_mem_box {G ι : Type*} [Group G] [Fintype ι] {V 
     simpa [h_one] using h_zero
   simpa using h_inj (funext h_coord)
 
-/-- The group of the vectors `(t v * Im Φ_v(s))_v`, for integers `s` of the CM field `E` with
-`star s = -s`; here `Φ` is the CM type. -/
-noncomputable def Filling.imSkewLattice (t : InfinitePlace E → ℝ) :
-    AddSubgroup (InfinitePlace E → ℝ) :=
+/--
+The group of the vectors `(t v * Im Φ_v(s))_v`, for integers `s` of the CM field `E` with
+`star s = -s`; here `Φ` is the CM type.
+-/
+noncomputable def Filling.imSkewLattice (t : InfinitePlace E → ℝ)
+    : AddSubgroup (InfinitePlace E → ℝ) :=
   (skewAdjoint (𝓞 E)).map
-    (AddMonoidHom.mk' (fun (s : 𝓞 E) (v : InfinitePlace E) ↦ t v * (Φ v s.val).im)
-      (by simp [funext_iff, mul_add]))
+    (AddMonoidHom.mk' (fun (s : 𝓞 E) (v : InfinitePlace E) ↦ t v * (Φ v s.val).im) (by
+      simp [funext_iff, mul_add]))
 
 /-- If `ι² = -1`, `star ι = -ι` and all `Φ_v(ι)` are imaginary, the group `imSkewLattice t`
 consists of the vectors `(t v * Im Φ_v(ι) * Re Φ_v(a))_v`, `a` an integer of the maximal real

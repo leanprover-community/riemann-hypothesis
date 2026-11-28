@@ -53,9 +53,11 @@ variable {p : ℕ} [Fact p.Prime]
 namespace CMLattice
 variable {d : ℕ} (C : CMLattice d) [PadicPlace p]
 
-/-- The order in `y` of a series `f ∈ 𝒪[[y]]` modulo the maximal ideal of `𝒪`: write `f = g(y)` with
+/--
+The order in `y` of a series `f ∈ 𝒪[[y]]` modulo the maximal ideal of `𝒪`: write `f = g(y)` with
 `g ∈ 𝒪[[X]]` and take the order of the reduction of `g`. Here `y` is the Taylor series of
-`C.translatedY`. The value for `f` outside `𝒪[[y]]` has no meaning. -/
+`C.translatedY`. The value for `f` outside `𝒪[[y]]` has no meaning.
+-/
 noncomputable def reducedOrder (f : ℂ_[p]⟦X⟧) : ℕ∞ :=
   let expansion : (valRingCp p)⟦X⟧ :=
     Function.invFun (fun g ↦ subst (taylorVia ιₚ C.translatedY) (seriesToCp g)) f
@@ -156,8 +158,10 @@ lemma reducedOrder_translatedX : C.reducedOrder (taylorVia ιₚ C.translatedX) 
     C.reducedOrder x = C.reducedOrder (x * u) := by rw [C.reducedOrder_mul hx hu, hu₀, add_zero]
     _ = 2 := by rw [h_cubic, C.reducedOrder_mul hy hy, hy₁, one_add_one_eq_two]
 
-/-- The number `o(α)`: the order in `y` of `y(α z)` modulo the maximal ideal of `𝒪`, where `y` is
-the Taylor series of `C.translatedY`. -/
+/--
+The number `o(α)`: the order in `y` of `y(α z)` modulo the maximal ideal of `𝒪`, where `y` is
+the Taylor series of `C.translatedY`.
+-/
 noncomputable def insepDegree (α : ℂ) : ℕ∞ :=
   C.reducedOrder (rescale (ιₚ α) (taylorVia ιₚ C.translatedY))
 

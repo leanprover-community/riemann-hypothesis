@@ -83,8 +83,10 @@ lemma derivative_seriesToCp (g : (valRingCp p)⟦X⟧) :
     d⁄dX (seriesToCp g) = seriesToCp (d⁄dX g) :=
   (map_pderiv (valRingCp p).subtype () g).symm
 
-/-- The series `T = X + ⋯` generates the subring `A` of `ℂ_[p]⟦X⟧`: `A = 𝔬[[T]]` consists exactly
-of the `g(T)` with `g` a series over the valuation ring `𝔬` of `ℂ_[p]`. -/
+/--
+The series `T = X + ⋯` generates the subring `A` of `ℂ_[p]⟦X⟧`: `A = 𝔬[[T]]` consists exactly
+of the `g(T)` with `g` a series over the valuation ring `𝔬` of `ℂ_[p]`.
+-/
 structure IsSeriesGenerator (A : Subring ℂ_[p]⟦X⟧) (T : ℂ_[p]⟦X⟧) : Prop where
   /-- The constant term of `T` is `0`. -/
   constantCoeff_eq_zero : constantCoeff T = 0
@@ -162,14 +164,12 @@ lemma smul_mem (hB : IsSeriesGenerator B T) {c : ℂ_[p]} {f : ℂ_[p]⟦X⟧} (
   rw [subst_smul (.of_constantCoeff_zero' hZ₀), coeff_smul, norm_smul]
   exact (mul_le_of_le_one_left (norm_nonneg _) hc).trans (hf n)
 
-
 lemma norm_coeff_one_le_one (hB : IsSeriesGenerator B T) {f : ℂ_[p]⟦X⟧} (hf : f ∈ B) :
     ‖f.coeff 1‖ ≤ 1 := by
   -- The linear coefficient of `f = g(T)` is that of the integral series `g`, as `T = X + ⋯`.
   obtain ⟨g, rfl⟩ := (hB.mem_iff f).1 hf
   simpa [coeff_one_subst hB.constantCoeff_eq_zero, hB.coeff_one] using
     mem_range_seriesToCp.1 ⟨g, rfl⟩ 1
-
 
 /-- Let `B = 𝔬[[T]]` be the ring of series in `T` over the valuation ring `𝔬` of `ℂ_[p]`. Any
 `f = X + ⋯` in `B` generates the same ring: `𝔬[[f]] = B`. -/
@@ -223,8 +223,10 @@ variable {d : ℕ} (C : CMLattice d) [PadicPlace p]
 
 /-! ### The ring `𝔬[[y]]` of a CM curve -/
 
-/-- The subring `𝔬[[y]]` of `ℂ_[p]⟦X⟧` of integral power series in the Taylor series of the
-coordinate `y = C.translatedY`, with the `p`-adic place `ιₚ` applied to its coefficients. -/
+/--
+The subring `𝔬[[y]]` of `ℂ_[p]⟦X⟧` of integral power series in the Taylor series of the
+coordinate `y = C.translatedY`, with the `p`-adic place `ιₚ` applied to its coefficients.
+-/
 noncomputable def integralSeriesRing : Subring ℂ_[p]⟦X⟧ :=
   ((substAlgHom (a := taylorVia ιₚ C.translatedY)
     (.of_constantCoeff_zero' (by simp))).toRingHom.comp (seriesToCp (p := p))).range

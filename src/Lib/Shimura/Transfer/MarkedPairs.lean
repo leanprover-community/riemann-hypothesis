@@ -50,8 +50,9 @@ open NumberField Finset Matrix Polynomial Lagrange MulAction Quotient ConjAct
 
 namespace New.Variety
 
-variable {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n] {x g : GL n (𝔸f E)}
-  {ℓ : Matrix n n ℂ} {y : GL n E} {𝔑 : 𝓞 E} {f : heckeAlgebra n ℂ 𝔑}
+variable
+  {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n]
+  {x g : GL n (𝔸f E)} {ℓ : Matrix n n ℂ} {y : GL n E} {𝔑 : 𝓞 E} {f : heckeAlgebra n ℂ 𝔑}
 
 /-- For y, z in GL_n(E), conjugating the eigenline reflection `New.Variety.eigenReflection` of y by
 Φ_{v₀}(z) gives the eigenline reflection of zyz⁻¹. -/

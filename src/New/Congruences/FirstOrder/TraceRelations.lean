@@ -82,10 +82,12 @@ section Constants
 
 variable {P : Parameters} (D : Data P) (ℓ : ℕ)
 
-/-- A positive integer, at most `2 ^ (4 (N + t + 3) ^ 27) h_E` for the conductor `N` and the class
+/--
+A positive integer, at most `2 ^ (4 (N + t + 3) ^ 27) h_E` for the conductor `N` and the class
 number `h_E`, whose valuation in large coefficient rings bounds, for each `0 < e < t`, the length of
 the odd classes (`shaOdd`) in `(O/ℓ^ν)(-e)`, and for `e = 0` the length of the unramified
-homomorphisms. -/
+homomorphisms.
+-/
 noncomputable def oddClassBound : ℕ :=
   (exists_length_shaOdd_le D.cyclotomicConductor D.t D.E D.algebraMap_mem_cycloField).choose
 
@@ -108,20 +110,24 @@ lemma eventually_length_shaOdd_le [ThePrime ℓ] : ∀ᶠ O : CoeffRing ℓ in a
     (exists_length_shaOdd_le D.cyclotomicConductor D.t D.E D.algebraMap_mem_cycloField).choose_spec
   exact (eventually_exists_isPrimitiveRoot _).mono fun O hO ↦ h_odd ℓ O ⟨hO, inferInstance⟩
 
-/-- The number `loc_ℓ = 4 f defect_ℓ`: a bound, per unit of rank, for the local defect above `ℓ`.
+/--
+The number `loc_ℓ = 4 f defect_ℓ`: a bound, per unit of rank, for the local defect above `ℓ`.
 Here `f = D.f` is the number of infinite places of `E`, and `defect_ℓ = defectBound D ℓ` is an
-explicit number that depends only on `D` and `ℓ`. -/
+explicit number that depends only on `D` and `ℓ`.
+-/
 noncomputable def localDefectBound : NNReal := 4 * D.f * defectBound D ℓ
 
-/-- The error term `e_ℓ`, with crude constants. Its four terms pay for the class group and the odd
+/--
+The error term `e_ℓ`, with crude constants. Its four terms pay for the class group and the odd
 classes, the places above `p₀ p₁` (the principal level `D.M`), the idempotent and the automorphisms,
 and the congruences between the characters `O(-e)`. Here `D.f` is the number of infinite places of
 `E`, `D.halfGap = D.r ^ 8`, and `D.chosenGroupOrder` is the product of the orders of
-`GL (D.r * D.t)` over the residue fields at the chosen places above `p₀` and `p₁`. -/
+`GL (D.r * D.t)` over the residue fields at the chosen places above `p₀` and `p₁`.
+-/
 noncomputable def denominatorError : ℝ≥0∞ :=
-  D.t * padicValNat ℓ (oddClassBound D) + 8 * D.f * D.t * padicValNat ℓ D.chosenGroupOrder +
-    2 * padicValNat ℓ D.chosenGroupOrder +
-    ((4 * D.t + 1) * D.halfGap ^ 22 + D.halfGap) * padicValNat ℓ D.chosenGroupOrder
+  D.t * padicValNat ℓ (oddClassBound D) + 8 * D.f * D.t * padicValNat ℓ D.chosenGroupOrder
+    + 2 * padicValNat ℓ D.chosenGroupOrder
+    + ((4 * D.t + 1) * D.halfGap ^ 22 + D.halfGap) * padicValNat ℓ D.chosenGroupOrder
 
 /-- The error term `denominatorError D ℓ` is the cast of a natural number, a combination of the
 `ℓ`-adic valuations of `oddClassBound D` and `D.chosenGroupOrder`. -/
@@ -136,13 +142,15 @@ lemma denominatorError_eq_natCast :
 lemma denominatorError_ne_top : denominatorError D ℓ ≠ ⊤ :=
   (denominatorError_eq_natCast D ℓ).trans_ne (ENNReal.natCast_ne_top _)
 
-/-- The clearing bound `β_ℓ = loc_ℓ + (1 + 2 t) e'_ℓ + e_ℓ + v_ℓ(N)` per unit of rank of a main
+/--
+The clearing bound `β_ℓ = loc_ℓ + (1 + 2 t) e'_ℓ + e_ℓ + v_ℓ(N)` per unit of rank of a main
 summand at `ℓ`, where `N = D.chosenGroupOrder`. Here `loc_ℓ = localDefectBound D ℓ` bounds the local
 defect, `e'_ℓ = twistError ℓ D` is the number `(4 f + 3) r v_ℓ(N) + 2 ^ (-ℓ)` allowed for the Selmer
-length and for the ramification of a twist, and `e_ℓ` is the error term `denominatorError`. -/
+length and for the ramification of a twist, and `e_ℓ` is the error term `denominatorError`.
+-/
 noncomputable def clearingBound : NNReal :=
-  localDefectBound D ℓ + (1 + 2 * D.t) * twistError ℓ D + (denominatorError D ℓ).toNNReal +
-    padicValNat ℓ D.chosenGroupOrder
+  localDefectBound D ℓ + (1 + 2 * D.t) * twistError ℓ D + (denominatorError D ℓ).toNNReal
+    + padicValNat ℓ D.chosenGroupOrder
 
 variable {D ℓ}
 
@@ -211,8 +219,10 @@ lemma mul_padicValNat_add_le_add_denominatorError {t' h k nTest nDetect : ℕ} (
 
 end Constants
 
-variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P}
-  {K Y n r : Type} [Fintype n] [DecidableEq n] [Fintype r] [DecidableEq r]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {P : Parameters} {D : Data P} {K Y n r : Type}
+  [Fintype n] [DecidableEq n] [Fintype r] [DecidableEq r]
   {t ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D} {O : CoeffRing ℓ}
 
 /-- Ribet's cocycles vanish on the kernel of `u`: a cocycle `z` that obeys the linear relations
@@ -335,13 +345,17 @@ lemma isTraceIdeal_withConjInv (hw : IsTameGeneratorFamily ν w τ φ)
   exact h_smul _ (sub_mem h_old h_X_err)
 
 /-- A subalgebra over the integers of `ℚ̄_ℓ`, read as a subalgebra over a coefficient ring. -/
-abbrev restrictToCoeffRing {A : Type} [CommRing A] [Algebra (PadicAlgCl ℓ) A]
-    [Algebra (intQpBar ℓ) A] [IsScalarTower (intQpBar ℓ) (PadicAlgCl ℓ) A]
-    (S : Subalgebra (intQpBar ℓ) A) (O : CoeffRing ℓ) : Subalgebra O A :=
-  ⟨S.toSubsemiring, fun a ↦ by
+abbrev restrictToCoeffRing
+    {A : Type} [CommRing A] [Algebra (PadicAlgCl ℓ) A] [Algebra (intQpBar ℓ) A]
+    [IsScalarTower (intQpBar ℓ) (PadicAlgCl ℓ) A]
+    (S : Subalgebra (intQpBar ℓ) A) (O : CoeffRing ℓ)
+    : Subalgebra O A := ⟨
+  S.toSubsemiring,
+  fun a ↦ by
     have h := S.algebraMap_mem ⟨a, norm_le_one a⟩
     rw [IsScalarTower.algebraMap_apply (intQpBar ℓ) (PadicAlgCl ℓ) A] at h
-    exact h⟩
+    exact h
+⟩
 
 /-- Let `w j` be new places: `w j` is not above `ℓ`, `τ j` is a tame generator at `w j`, and `φ j`
 fixes the `ℓ ^ ν`-th roots of unity. Let `u' x` be lattices over `O` in the conjugate self-dual
@@ -389,8 +403,8 @@ lemma summandRep_some_apply (T : AbsGal D →* Matrix r r O) (e : Fin t) (g : Ab
   rfl
 
 /-- The index set of a main summand and `t` characters, as a sum and as a family of summands. -/
-def summandCoordIndexEquiv (r : Type) (t : ℕ) :
-    r ⊕ Fin t ≃ Sigma (SummandCoordIndex r (t := t)) where
+def summandCoordIndexEquiv (r : Type) (t : ℕ)
+    : r ⊕ Fin t ≃ Sigma (SummandCoordIndex r (t := t)) where
   toFun := Sum.elim (fun a ↦ ⟨none, a⟩) fun e ↦ ⟨some e, ()⟩
   invFun := Sigma.rec (Option.rec .inl fun e _ ↦ .inr e)
   left_inv := by rintro (_ | _) <;> rfl
@@ -505,8 +519,9 @@ lemma exists_blockDiagonal_lattices {u : Y → GalRep ℓ D.E n}
 
 section Model
 
-variable {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalRep ℓ D.E r} {Q : Finset (FinPlace D.E)}
-  {γ : AbsGal D} {R₀ : AbsGal D →* Matrix r r O} {ψ' : AbsGal D →* O} {ζ' : ↑O}
+variable
+  {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalRep ℓ D.E r} {Q : Finset (FinPlace D.E)} {γ : AbsGal D}
+  {R₀ : AbsGal D →* Matrix r r O} {ψ' : AbsGal D →* O} {ζ' : ↑O}
 
 /-- Let `R₀`, `ψ'`, `ζ'` be a model over `O` (`IsTwistedLattice`): `R₀` is a lattice in `R`, `ψ'`
 is `ψ` with values in `O`, and `γ` acts on the twisted lattice `ψ' R₀` by the

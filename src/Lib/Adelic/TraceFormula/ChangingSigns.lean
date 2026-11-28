@@ -67,9 +67,11 @@ lemma eval_interpolate_univ_node (r : n ↪ ℂ) (f : n → ℂ) (i : n) :
     (interpolate univ r f).eval (r i) = f i :=
   eval_interpolate_at_node _ r.injective.injOn (mem_univ i)
 
-/-- The element y is an elliptic similitude of β with multiplier ν: its characteristic polynomial is
+/--
+The element y is an elliptic similitude of β with multiplier ν: its characteristic polynomial is
 irreducible, ν ≠ 0, yᴴβy = νβ, and under each embedding of the CM type every complex root r of the
-characteristic polynomial satisfies r r̄ = ν. -/
+characteristic polynomial satisfies r r̄ = ν.
+-/
 structure IsEllipticSimilitude (ν : ℚ) (y : GL n E) (β : Matrix n n E) : Prop where
   /-- The characteristic polynomial of y is irreducible. -/
   irreducible_charpoly : Irreducible y.val.charpoly
@@ -78,22 +80,26 @@ structure IsEllipticSimilitude (ν : ℚ) (y : GL n E) (β : Matrix n n E) : Pro
   /-- The element y multiplies the form β by ν. -/
   conjTranspose_mul_mul : y.valᴴ * β * y.val = (ν : E) • β
   /-- Under each embedding of the CM type, every complex root r satisfies r r̄ = ν. -/
-  root_mul_star_Φ (w : InfinitePlace E) (r : ℂ) (hr : r ∈ (y.val.charpoly.map (Φ w)).roots) :
-    r * star r = ν
+  root_mul_star_Φ (w : InfinitePlace E) (r : ℂ) (hr : r ∈ (y.val.charpoly.map (Φ w)).roots)
+    : r * star r = ν
 
-/-- The pair (y, x) has type ε for the multiplier ν and the condition F if there is a matrix β over
+/--
+The pair (y, x) has type ε for the multiplier ν and the condition F if there is a matrix β over
 E such that (a) y is an elliptic similitude of β with multiplier ν
 (`New.Variety.IsEllipticSimilitude`); (b) F holds for the Gram matrix xᴴβx over the finite adeles;
 (c) at each infinite place w, βp_w(y) is positive definite, p_w the polynomial interpolating the
-signs ε_w at the roots numbered by `New.Variety.numberedRoots`. -/
-def HasSignType (ε : InfinitePlace E → n → ℤˣ) (ν : ℚ) (y : GL n E) (F : Set (Matrix n n (𝔸f E)))
-    (x : GL n (𝔸f E)) : Prop :=
+signs ε_w at the roots numbered by `New.Variety.numberedRoots`.
+-/
+def HasSignType
+    (ε : InfinitePlace E → n → ℤˣ) (ν : ℚ) (y : GL n E) (F : Set (Matrix n n (𝔸f E)))
+    (x : GL n (𝔸f E))
+    : Prop :=
   ∃ β : Matrix n n E,
-    IsEllipticSimilitude ν y β ∧
-    x.valᴴ * β.map (↑) * x.val ∈ F ∧
-    ∀ w : InfinitePlace E,
-      (β.map (Φ w) * (interpolate univ (numberedRoots (Φ w) y.val.charpoly)
-        fun i : n ↦ (ε w i : ℂ)).aeval (y.val.map (Φ w))).PosDef
+    IsEllipticSimilitude ν y β ∧ x.valᴴ * β.map (↑) * x.val ∈ F
+      ∧ ∀ w : InfinitePlace E,
+        (β.map (Φ w)
+          * (interpolate univ (numberedRoots (Φ w) y.val.charpoly) fun i : n ↦ (ε w i : ℂ)).aeval
+            (y.val.map (Φ w))).PosDef
 
 /-- Let `y` be an elliptic similitude of `β` with multiplier `ν`: its characteristic polynomial is
 irreducible, `ν ≠ 0`, `yᴴβy = νβ`, and under each embedding of the CM type every root `r` satisfies

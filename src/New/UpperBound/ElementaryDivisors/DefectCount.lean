@@ -82,13 +82,14 @@ open Subgroup MvPolynomial Matrix Finset Module Nat Fintype Finsupp MeasureTheor
 
 namespace New
 
-variable {N k : ℕ}
-  {W K : Type} [NeZero N] [CommRing W] [IsLocalRing W] [Field K]
+variable {N k : ℕ} {W K : Type} [NeZero N] [CommRing W] [IsLocalRing W] [Field K]
 
-/-- Over a local ring `W` with finite residue field, the parahoric subgroup of `GL_k(W)` of every
-labelling `τ` has finite index. -/
-instance [Finite (IsLocalRing.ResidueField W)] (τ : Fin k → ℕ) :
-    (parahoric (k := k) W τ).FiniteIndex :=
+/--
+Over a local ring `W` with finite residue field, the parahoric subgroup of `GL_k(W)` of every
+labelling `τ` has finite index.
+-/
+instance [Finite (IsLocalRing.ResidueField W)] (τ : Fin k → ℕ)
+    : (parahoric (k := k) W τ).FiniteIndex :=
   finiteIndex_of_le (ker_le_comap (GeneralLinearGroup.map (IsLocalRing.residue W)) _)
 
 /-- Bound for the number of full flags over a finite field `K` with `q` elements: the index of the
@@ -123,16 +124,18 @@ lemma index_borel_le [Finite K] :
   rw [← prod_mul_distrib]
   exact prod_congr rfl fun i _ ↦ by field [(sub_pos.2 hq).ne']
 
-/-- The defect of a vector `β` indexed by `(b, s) ∈ Fin k × ZMod N`, at the letter `i` along the
+/--
+The defect of a vector `β` indexed by `(b, s) ∈ Fin k × ZMod N`, at the letter `i` along the
 root `(b, b')`, is the linear form with coefficients `T.defectWeight i b b'`, namely
 `β v + ∑ s, ± P ^ ((s - i) mod N) * (β (b', s) - β (b, s)) / (q - 1)`, with the sign `+` at even
 `s`, and `v = (b', i)` for even `i`, `v = (b, i)` for odd `i`. The set `T.defectCone a h` consists
 of the real vectors `β` whose defect, at every letter, is at most `h` along the simple root
 `(a, a + 1)` and at most `0` along the other simple roots `(b, b + 1)`. For `h = 0` these are
 Pieri's inequalities, see `New.FrobeniusCycle.permStep_mem_defectCone_iff`. The condition `β ≥ 0` is
-not part of this set; it comes with the slab. -/
-def FrobeniusCycle.defectCone (T : FrobeniusCycle N W K) (a : Fin k) (h : ℝ) :
-    Set (Fin k × ZMod N → ℝ) :=
+not part of this set; it comes with the slab.
+-/
+def FrobeniusCycle.defectCone (T : FrobeniusCycle N W K) (a : Fin k) (h : ℝ)
+    : Set (Fin k × ZMod N → ℝ) :=
   {β : Fin k × ZMod N → ℝ |
     ∀ (i : ZMod N) (b b' : Fin k), b.val + 1 = b' → T.defectWeight i b b' ⬝ᵥ β ≤
       (if b = a then h else 0)}
@@ -202,11 +205,13 @@ lemma FrobeniusCycle.sum_eq_of_coeff_polyAction_monomial (T : FrobeniusCycle N W
 
 /-! ### Powers -/
 
-/-- An exponent in the class `u` modulo `m` whose degree in each letter `s` lies in
+/--
+An exponent in the class `u` modulo `m` whose degree in each letter `s` lies in
 `[m k, m k + m]`: the number `m (k - ⌊(∑ b, u (b, s)) / m⌋)` is added to the entry of `u` at the
-index `(a, s)`. -/
-noncomputable def residueExponent (a : Fin k) {m : ℕ} (u : Fin k × ZMod N → Fin m) :
-    Fin k × ZMod N →₀ ℕ :=
+index `(a, s)`.
+-/
+noncomputable def residueExponent (a : Fin k) {m : ℕ} (u : Fin k × ZMod N → Fin m)
+    : Fin k × ZMod N →₀ ℕ :=
   equivFunOnFinite.symm fun x : Fin k × ZMod N ↦
     u x + m * if x.1 = a then k - (∑ b : Fin k, (u (b, x.2)).val) / m else 0
 
@@ -233,11 +238,13 @@ lemma sum_residueExponent_mem_Icc (a : Fin k) {m : ℕ} (u : Fin k × ZMod N →
   rw [h_sum, Set.mem_Icc]
   omega
 
-/-- Packing of a family `F` of forms of degree `n` in each letter, one for each class `u` of
+/--
+Packing of a family `F` of forms of degree `n` in each letter, one for each class `u` of
 exponents modulo `m`, into the polynomial `∑ u, F u (x ^ m) * x ^ γ u`, with
-`γ u = New.residueExponent a u`. -/
-noncomputable def powerPacking (a : Fin k) (n m : ℕ) :
-    ((Fin k × ZMod N → Fin m) → Exponents N k n → K) →ₗ[K] MvPolynomial (Fin k × ZMod N) K :=
+`γ u = New.residueExponent a u`.
+-/
+noncomputable def powerPacking (a : Fin k) (n m : ℕ)
+    : ((Fin k × ZMod N → Fin m) → Exponents N k n → K) →ₗ[K] MvPolynomial (Fin k × ZMod N) K :=
   ∑ u : Fin k × ZMod N → Fin m, .mulRight K (monomial (residueExponent a u) 1) ∘ₗ
     (expand m).toLinearMap ∘ₗ polyOfCoeffs ∘ₗ .proj u
 
@@ -798,8 +805,7 @@ open Finset Module MeasureTheory Measure Real Nat Subgroup Set Matrix
 
 namespace New
 
-variable {N k : ℕ}
-  {W K : Type} [NeZero N] [CommRing W] [IsLocalRing W] [Field K]
+variable {N k : ℕ} {W K : Type} [NeZero N] [CommRing W] [IsLocalRing W] [Field K]
 
 /-- The slab of nonnegative vectors in `ℝ ^ (n + 1)` with sum in `[d - 1, d]`, where `d ≤ D`, has
 volume at most `|Dⁿ / n!|`. -/

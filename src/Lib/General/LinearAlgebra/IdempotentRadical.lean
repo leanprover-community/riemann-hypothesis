@@ -23,8 +23,10 @@ namespace New
 variable {n k : Type*} [Fintype n] [DecidableEq n] [CommRing k] {ε : Matrix n n k}
 
 variable (ε) in
-/-- The upper right blocks with respect to `ε`: the matrices `Z` with `ε Z = Z` and `Z ε = 0`. For
-an idempotent `ε` these are the maps that kill the image of `ε` and send everything into it. -/
+/--
+The upper right blocks with respect to `ε`: the matrices `Z` with `ε Z = Z` and `Z ε = 0`. For
+an idempotent `ε` these are the maps that kill the image of `ε` and send everything into it.
+-/
 def upperBlocks : Submodule k (Matrix n n k) where
   carrier := {Z : Matrix n n k | ε * Z = Z ∧ Z * ε = 0}
   add_mem' := by
@@ -67,20 +69,22 @@ lemma mul_mem_upperBlocks_right {g Z : Matrix n n k} (hg : ε * (g * ε) = g * �
   exact mem_upperBlocks_iff.mpr
     ⟨by rw [← mul_assoc, hεZ], by rw [mul_assoc, mul_eq_zero_of_mem_upperBlocks hZ hg]⟩
 
-/-- The homomorphism `Y ↦ 1 + ε Y (1 - ε)` from the additive group of matrices to `GL n k`. Its
+/--
+The homomorphism `Y ↦ 1 + ε Y (1 - ε)` from the additive group of matrices to `GL n k`. Its
 image is the unipotent radical of the parabolic subgroup that keeps the image of the idempotent
-`ε`. -/
-noncomputable def radicalHom (hε : IsIdempotentElem ε) :
-    Multiplicative (Matrix n n k) →* GL n k :=
-  MonoidHom.toHomUnits
-    { toFun Y := 1 + ε * Y.toAdd * (1 - ε)
-      map_one' := by rw [toAdd_one, mul_zero, zero_mul, add_zero]
-      map_mul' Y Z := by
-        have h_zero : ε * Y.toAdd * (1 - ε) * (ε * Z.toAdd * (1 - ε)) = 0 :=
-          mul_eq_zero_of_mem_upperBlocks (mul_mul_one_sub_mem_upperBlocks hε Y.toAdd)
-            (mem_upperBlocks_iff.mp (mul_mul_one_sub_mem_upperBlocks hε Z.toAdd)).1
-        rw [toAdd_mul]
-        linear_combination (norm := noncomm_ring) -h_zero }
+`ε`.
+-/
+noncomputable def radicalHom (hε : IsIdempotentElem ε) : Multiplicative (Matrix n n k) →* GL n k :=
+  MonoidHom.toHomUnits {
+    toFun Y := 1 + ε * Y.toAdd * (1 - ε)
+    map_one' := by rw [toAdd_one, mul_zero, zero_mul, add_zero]
+    map_mul' Y Z := by
+      have h_zero : ε * Y.toAdd * (1 - ε) * (ε * Z.toAdd * (1 - ε)) = 0 :=
+        mul_eq_zero_of_mem_upperBlocks (mul_mul_one_sub_mem_upperBlocks hε Y.toAdd)
+          (mem_upperBlocks_iff.mp (mul_mul_one_sub_mem_upperBlocks hε Z.toAdd)).1
+      rw [toAdd_mul]
+      linear_combination (norm := noncomm_ring) -h_zero
+  }
 
 lemma coe_radicalHom (hε : IsIdempotentElem ε) (Y : Multiplicative (Matrix n n k)) :
     (radicalHom hε Y : Matrix n n k) = 1 + ε * Y.toAdd * (1 - ε) := rfl

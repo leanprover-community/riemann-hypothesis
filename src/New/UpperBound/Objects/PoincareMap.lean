@@ -41,7 +41,8 @@ noncomputable section
 namespace New
 
 section Riesz
-variable {M F : Type*} [AddCommGroup M] [Module ℂ M] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
+variable
+  {M F : Type*} [AddCommGroup M] [Module ℂ M] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
   [FiniteDimensional ℂ F]
 
 /-- On an inner product space `F` of finite dimension, every conjugate linear form is `y ↦ ⟨y, z⟩`
@@ -70,17 +71,20 @@ lemma inner_rieszMap (B : M →ₗ[ℂ] F →ₗ⋆[ℂ] ℂ) (x : M) (y : F) :
 end Riesz
 
 namespace Space
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  {V : Space E n s} {e : GInf E s → ℂ}
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {V : Space E n s} {e : GInf E s → ℂ}
 
 lemma Form.add_apply (y z : V.Form e) (x : G E s) : (y + z) x = y x + z x := rfl
 
 lemma Form.smul_apply (c : ℂ) (y : V.Form e) (x : G E s) : (c • y) x = c * y x := rfl
 
-/-- The sum of the right translates of a form `z` under the chosen representatives of
-`K / (J ∩ K)`, for subgroups `J` and `K` of the finite adelic group. -/
-def Form.levelTrace (J K : Subgroup (Gf E n)) [Fintype (K ⧸ J.subgroupOf K)] (z : V.Form e) :
-    V.Form e :=
+/--
+The sum of the right translates of a form `z` under the chosen representatives of
+`K / (J ∩ K)`, for subgroups `J` and `K` of the finite adelic group.
+-/
+def Form.levelTrace (J K : Subgroup (Gf E n)) [Fintype (K ⧸ J.subgroupOf K)] (z : V.Form e)
+    : V.Form e :=
   ∑ q : K ⧸ J.subgroupOf K, V.formRep e q.out z
 
 /-- The value of `z.levelTrace J K` at `x` is the sum, over the cosets `q` in `K ⧸ J.subgroupOf K`,
@@ -131,8 +135,10 @@ lemma Form.integral_levelTrace_mul {J : Subgroup (Gf E n)} (K : Subgroup (Gf E n
 end Space
 
 namespace Grading
-variable {E ι X : Type} [Field E] [CMType E] [WeilData E] [Fintype ι] [DecidableEq ι] [Fintype X]
-  [DecidableEq X] {s : ℕ} {ε : ι → ℤˣ} {N : E} {V : Space E ι ε} {Y : Grading V N X s}
+variable
+  {E ι X : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
+  {s : ℕ} {ε : ι → ℤˣ} {N : E} {V : Space E ι ε} {Y : Grading V N X s}
 
 /-- Let `W` be an equivariant function on `R(𝔸)`: it is continuous and left invariant under `R(F)`,
 and `W (u r) = ψ_U (u) W (r)` for `u` in the subgroup `U^{≥2}(𝔸)` of elements for which `u - 1`
@@ -150,8 +156,9 @@ lemma IsEquivariant.integrable_mul {W : Y.besselGroup → ℂ} (hW : Y.IsEquivar
 end Grading
 
 namespace Data
-variable {P : Parameters} (D : Data P) (g : GInf D.E (D.signsY 0))
-  (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ)
+variable
+  {P : Parameters}
+  (D : Data P) (g : GInf D.E (D.signsY 0)) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ)
 
 /-- For a source form `φ` on `X₀`, the function `𝒲_φ = sourceFn t φ` on the Bessel group `R₀(𝔸)`
 of `D.gradingY 0` is continuous, left invariant under the rational points, and transforms by the
@@ -160,9 +167,11 @@ lemma isEquivariant_sourceFn (φ : D.SourceForm) :
     (D.gradingY 0).IsEquivariant ((D.gradingY 0).sourceFn t φ.val) :=
   (D.gradingY 0).isEquivariant_sourceFn (odd_two_mul_add_one D.ϱ) t φ.val
 
-/-- The Bessel period `∫_{[R₀]} 𝒲_φ (r) conj (y (r g)) dr`, linear in the source form `φ` and
+/--
+The Bessel period `∫_{[R₀]} 𝒲_φ (r) conj (y (r g)) dr`, linear in the source form `φ` and
 conjugate linear in the form `y` on `Y₀`. Here `g` is an archimedean point of `G₀`, and `𝒲_φ` is
-formed with the linear form `t`. -/
+formed with the linear form `t`.
+-/
 def besselPeriod : D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) →ₗ⋆[ℂ] ℂ :=
   have h_int (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0)) : Integrable
       (fun r : (D.gradingY 0).besselGroup ↦
@@ -173,13 +182,10 @@ def besselPeriod : D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) →ₗ
     (fun (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0)) ↦
       ∫ r : (D.gradingY 0).besselGroup, (D.gradingY 0).sourceFn t φ.1 r * conj (y.1 (r.1 * (g, 1)))
         ∂(D.gradingY 0).besselMeasure)
-    (fun φ ψ y ↦ by
-      simp [Grading.sourceFn_add, add_mul, integral_add (h_int φ y) (h_int ψ y)])
+    (fun φ ψ y ↦ by simp [Grading.sourceFn_add, add_mul, integral_add (h_int φ y) (h_int ψ y)])
     (fun c φ y ↦ by simp [Grading.sourceFn_smul, mul_assoc, integral_const_mul])
-    (fun φ y y' ↦ by
-      simp [Space.Form.add_apply, mul_add, integral_add (h_int φ y) (h_int φ y')])
-    (fun c φ y ↦ by
-      simp [Space.Form.smul_apply, mul_left_comm _ (conj c), integral_const_mul])
+    (fun φ y y' ↦ by simp [Space.Form.add_apply, mul_add, integral_add (h_int φ y) (h_int φ y')])
+    (fun c φ y ↦ by simp [Space.Form.smul_apply, mul_left_comm _ (conj c), integral_const_mul])
 
 /-- Let `g` be an archimedean point of the unitary group `G₀` of `Y₀`, let `φ` be a source form and
 `t` a linear form on the Weyl module of its values. Let `y` be a form on `G₀` of discrete series
@@ -192,68 +198,75 @@ lemma besselPeriod_apply (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0))
         ∂(D.gradingY 0).besselMeasure :=
   rfl
 
-/-- The Poincaré map `𝒫 : 𝒜(X₀) → 𝒜(Y₀)` for an archimedean point `g` of `G₀` and a linear form
+/--
+The Poincaré map `𝒫 : 𝒜(X₀) → 𝒜(Y₀)` for an archimedean point `g` of `G₀` and a linear form
 `t`: the form `𝒫 φ` represents the Bessel period of `φ`. The measure on `[R₀]` is `besselMeasure`;
 another Haar measure on `R₀(𝔸)` would multiply `𝒫` by a positive constant, which can be absorbed
-in `t`. -/
-def poincareAt (g : GInf D.E (D.signsY 0)) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) :
-    D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) :=
+in `t`.
+-/
+def poincareAt (g : GInf D.E (D.signsY 0)) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ)
+    : D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) :=
   rieszMap (D.besselPeriod g t)
 
-/-- The defining property of the Poincaré map `𝒫 = D.poincareAt g t`. Let `g` be an archimedean
+/--
+The defining property of the Poincaré map `𝒫 = D.poincareAt g t`. Let `g` be an archimedean
 point of the unitary group `G₀` of `Y₀`, let `φ` be a source form and `t` a linear form on the Weyl
 module `ρ = conjWeylRep` of its values. Let `y` be a form on `G₀` of level `D.chosenLevel` whose
 archimedean type is the discrete series of doubled parameter `D.paramW`. Then the Petersson product
-`⟨y, 𝒫 φ⟩` is the Bessel period `∫_{[R₀]} 𝒲_φ (r) conj (y (r g)) dr`. -/
-theorem inner_poincareAt (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0)) :
-    inner ℂ y (D.poincareAt g t φ) =
-      ∫ r : (D.gradingY 0).besselGroup,
-        (D.gradingY 0).sourceFn t φ.val r * conj (y.val (r.val * (g, 1)))
-        ∂(D.gradingY 0).besselMeasure := by
+`⟨y, 𝒫 φ⟩` is the Bessel period `∫_{[R₀]} 𝒲_φ (r) conj (y (r g)) dr`.
+-/
+theorem inner_poincareAt (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0))
+    : inner ℂ y (D.poincareAt g t φ)
+      = ∫ r : (D.gradingY 0).besselGroup,
+          (D.gradingY 0).sourceFn t φ.val r * conj (y.val (r.val * (g, 1)))
+          ∂(D.gradingY 0).besselMeasure := by
   rw [poincareAt, inner_rieszMap, besselPeriod_apply]
 
-/-- Let `z` be a form on `G₀`, right invariant under `J`, whose archimedean type is conjugate to
+/--
+Let `z` be a form on `G₀`, right invariant under `J`, whose archimedean type is conjugate to
 that of the values of `𝒫 = D.poincareAt g t`. Then `[J_M : J ∩ J_M] ∫_{[G₀]} z · 𝒫 φ` is the sum
-over representatives `γ` of `J_M / (J ∩ J_M)` of `∫_{[R₀]} 𝒲_φ (r) z (r g γ) dr`. -/
-theorem integral_mul_poincareAt (g : GInf D.E (D.signsY 0))
-    (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) (φ : D.SourceForm)
-    {J : Subgroup (Gf D.E (D.Y 0))}
-    [Fintype (D.chosenLevel ⧸ J.subgroupOf D.chosenLevel)]
-    (z : (D.spaceY 0).Form (star (typeKernel (D.paramY 0) (D.signsY 0))))
-    (hz_level : HasLevel z J) :
-    J.relIndex D.chosenLevel *
-        ∫ x : New.G D.E (D.signsY 0), z x * (D.poincareAt g t φ).val x ∂(D.spaceY 0).quotMeasure =
-      ∑ q : D.chosenLevel ⧸ J.subgroupOf D.chosenLevel,
-        ∫ r : (D.gradingY 0).besselGroup,
-          (D.gradingY 0).sourceFn t φ.val r * z (r.val * (g, q.out.val))
-          ∂(D.gradingY 0).besselMeasure := by
+over representatives `γ` of `J_M / (J ∩ J_M)` of `∫_{[R₀]} 𝒲_φ (r) z (r g γ) dr`.
+-/
+theorem integral_mul_poincareAt
+    (g : GInf D.E (D.signsY 0)) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ)
+    (φ : D.SourceForm)
+    {J : Subgroup (Gf D.E (D.Y 0))} [Fintype (D.chosenLevel ⧸ J.subgroupOf D.chosenLevel)]
+    (z : (D.spaceY 0).Form (star (typeKernel (D.paramY 0) (D.signsY 0)))) (hz_level : HasLevel z J)
+    : J.relIndex D.chosenLevel
+        * ∫ x : New.G D.E (D.signsY 0), z x * (D.poincareAt g t φ).val x ∂(D.spaceY 0).quotMeasure
+      = ∑ q : D.chosenLevel ⧸ J.subgroupOf D.chosenLevel,
+          ∫ r : (D.gradingY 0).besselGroup,
+            (D.gradingY 0).sourceFn t φ.val r * z (r.val * (g, q.out.val))
+            ∂(D.gradingY 0).besselMeasure := by
   -- The conjugate `y` of the sum of the translates of `z` lies in `𝒜(Y₀)`.
   have h_trace : HasLevel (z.levelTrace J D.chosenLevel) D.chosenLevel :=
     Space.Form.hasLevel_levelTrace D.chosenLevel hz_level
-  let y : D.principalForms (D.spaceY 0) :=
-    ⟨conjForm (star_star _).symm (z.levelTrace J D.chosenLevel),
-      Space.mem_levelSpace_formRep_iff.2 fun k hk x ↦ congrArg star (h_trace k hk x)⟩
+  let y : D.principalForms (D.spaceY 0) := ⟨
+    conjForm (star_star _).symm (z.levelTrace J D.chosenLevel),
+    Space.mem_levelSpace_formRep_iff.2 fun k hk x ↦ congrArg star (h_trace k hk x)
+  ⟩
   have hy (x : New.G D.E (D.signsY 0)) : conj (y.val x) = z.levelTrace J D.chosenLevel x :=
     Complex.conj_conj _
   have h_level : HasLevel (D.poincareAt g t φ).val D.chosenLevel :=
     Space.mem_levelSpace_formRep_iff.1 (D.poincareAt g t φ).property
-  calc J.relIndex D.chosenLevel * ∫ x, z x * (D.poincareAt g t φ).val x ∂(D.spaceY 0).quotMeasure
+  calc
+    J.relIndex D.chosenLevel * ∫ x, z x * (D.poincareAt g t φ).val x ∂(D.spaceY 0).quotMeasure
     _ = ∫ x, z.levelTrace J D.chosenLevel x * (D.poincareAt g t φ).1 x ∂(D.spaceY 0).quotMeasure :=
-        (z.integral_levelTrace_mul D.chosenLevel h_level).symm
+      (z.integral_levelTrace_mul D.chosenLevel h_level).symm
     _ = ∫ x, conj (y.val x) * (D.poincareAt g t φ).val x ∂(D.spaceY 0).quotMeasure := by
-        simp only [hy]
+      simp only [hy]
     -- The inner product on `𝒜(Y₀)` is `⟨y, y'⟩ = ∫ conj y · y'` by definition.
     _ = inner ℂ y (D.poincareAt g t φ) := rfl
     _ = ∫ r, ∑ q : D.chosenLevel ⧸ J.subgroupOf D.chosenLevel,
           (D.gradingY 0).sourceFn t φ.val r * z (r.val * (g, q.out.val))
           ∂(D.gradingY 0).besselMeasure := by
-        simp only [inner_poincareAt, hy, Space.Form.levelTrace_apply, Finset.mul_sum, mul_assoc,
-          Prod.mk_mul_mk, mul_one, one_mul]
+      simp only [inner_poincareAt, hy, Space.Form.levelTrace_apply, Finset.mul_sum, mul_assoc,
+        Prod.mk_mul_mk, mul_one, one_mul]
     _ = ∑ q : D.chosenLevel ⧸ J.subgroupOf D.chosenLevel,
           ∫ r, (D.gradingY 0).sourceFn t φ.val r * z (r.val * (g, q.out.val))
             ∂(D.gradingY 0).besselMeasure :=
-        integral_finsetSum _ fun q _ ↦
-          (D.isEquivariant_sourceFn t φ).integrable_mul z.property.toIsAutomorphic (g, q.out.val)
+      integral_finsetSum _ fun q _ ↦
+        (D.isEquivariant_sourceFn t φ).integrable_mul z.property.toIsAutomorphic (g, q.out.val)
 
 end Data
 

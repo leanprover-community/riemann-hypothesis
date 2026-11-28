@@ -72,9 +72,11 @@ section Projections
 open MeasureTheory Matrix Set AddChar Prod Heisenberg Rep Gf Circle Fock stdLattice _root_.Sum
   OrthogonalSum Set.Sum IsVacuum
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E] {n : Type*} [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} (V : Space E n s) {S : Set (FinPlace E)}
-  {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y] [CompleteSpace Y]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} (V : Space E n s)
+  {S : Set (FinPlace E)} {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y] [CompleteSpace Y]
   (v : Model (realHeisenberg (realSigns E s))) (w : Model (realHeisenberg (realSigns E s)))
   (f f' : 𝒮 V) (L : 𝒮 V →L[ℂ] Y)
 
@@ -753,12 +755,16 @@ section FinitePart
 
 open Matrix Submodule Set stdLattice IsLocallyConstant Filter
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type*} [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} {V : Space E n s} {f : 𝒮 V} (x : n → 𝔸f E)
+  {s : n → ℤˣ} {V : Space E n s} {f : 𝒮 V}
+  (x : n → 𝔸f E)
 
-/-- The finite part 𝒮_f: the subspace of 𝒮(V) spanned by the translates of the vacuum under the
-finite Heisenberg operators `New.Space.finHeisenbergOp`. -/
+/--
+The finite part 𝒮_f: the subspace of 𝒮(V) spanned by the translates of the vacuum under the
+finite Heisenberg operators `New.Space.finHeisenbergOp`.
+-/
 noncomputable def finitePart (V : Space E n s) : Submodule ℂ (𝒮 V) :=
   span ℂ (range fun z ↦ V.finHeisenbergOp z V.vacElem)
 

@@ -86,7 +86,9 @@ section MixedModelIntegrable
 
 open MeasureTheory Equiv
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E] {n : Type*} [Fintype n] [DecidableEq n]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n : Type*} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} {n₀ p : Type*} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
   {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} (D : V.Splitting V₀ p)
 
@@ -137,11 +139,13 @@ on `𝒮`.
 open Exchange MeasureTheory Matrix ComplexOrder WeilData Fock Finset Complex G Circle
   Heisenberg.IsVacuum
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E] {n : Type*} [Fintype n] [DecidableEq n]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n : Type*} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} {n₀ p : Type*} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
-  {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} (D : V.Splitting V₀ p) {g : G E s}
-  (g₀ : G E s₀) (hi : D.iCoord * (g.adeleMatrix * D.iAdelic) = g₀.adeleMatrix) (a : GL p (𝔸 E))
-  (hk : D.ActsOnFrame g a.val)
+  {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} (D : V.Splitting V₀ p)
+  {g : G E s} (g₀ : G E s₀) (hi : D.iCoord * (g.adeleMatrix * D.iAdelic) = g₀.adeleMatrix)
+  (a : GL p (𝔸 E)) (hk : D.ActsOnFrame g a.val)
 
 /-- For a in GL_p(𝔸) and x the point of the space `New.hyperbolicSpace` of p hyperbolic planes
 (signs `hyperbolicSigns p`: +1 on the first p and −1 on the last p coordinates; x is (1, −1; 1,
@@ -484,12 +488,16 @@ section RationalInvariance
 
 open Matrix Splitting Exchange
 
-variable {E : Type*} [Field E] [CMType E] {n p : Type*} [Fintype n] [DecidableEq n]
+variable
+  {E : Type*} [Field E] [CMType E]
+  {n p : Type*} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} {V : Space E n s} [Fintype p] [WeilData E]
 
 variable (V) in
-/-- The subgroup of the rational unitary γ whose Weil operator ω(γ) fixes the theta functional of
-V. -/
+/--
+The subgroup of the rational unitary γ whose Weil operator ω(γ) fixes the theta functional of
+V.
+-/
 noncomputable def thetaStabilizer : Subgroup (U V.J) where
   carrier := {γ : U V.J | ∀ f : 𝒮 V, V.θ (V.ω (V.ratEmbed γ) f) = V.θ f}
   one_mem' f := by simp
@@ -539,8 +547,10 @@ lemma theta_omega_ratEmbed_of_splitting (γ : U V.J) [DecidableEq p]
     (Subgroup.mem_top γ)) f
 
 variable (V) in
-/-- The splitting without middle part of `V ⊕ V⁻`, with `V⁻` the space of the negative form, whose
-frame `k` spans the diagonal `{(v, v)}` and whose frame `l` spans the antidiagonal `{(v, -v)}`. -/
+/--
+The splitting without middle part of `V ⊕ V⁻`, with `V⁻` the space of the negative form, whose
+frame `k` spans the diagonal `{(v, v)}` and whose frame `l` spans the antidiagonal `{(v, -v)}`.
+-/
 noncomputable def diagonalSplitting : (V.sum V.neg).Splitting (stdSpace E Empty) n where
   k := fromRows 1 1
   l := fromRows ((2⁻¹ : E) • V.J⁻¹) (-((2⁻¹ : E) • V.J⁻¹))

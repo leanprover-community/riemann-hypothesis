@@ -115,26 +115,33 @@ lemma New.dotProduct_sum_mul {O n : Type*} [CommRing O] [Fintype n] {h : ℕ} (u
   simp only [dotProduct, mul_sum, mul_left_comm]
   exact sum_comm
 
-/-- The term of the deduction, in units of `v(π)`, for a place `σ`, a partner `σ'` and an exponent
+/--
+The term of the deduction, in units of `v(π)`, for a place `σ`, a partner `σ'` and an exponent
 `e`, when `κ σ h` is the number of columns of height `h` at `σ`, counted only for `h < n'`, and
 `ev` is the set of marked places. Let `t σ` be the number of columns of height one (`0` if `σ` is
 marked), `r σ` the number of columns of height other than one, and `B σ` the sum of their heights,
 that is, their number of boxes. The term is the real number
-`min (t σ / p ^ e) (r σ' + t σ') + r σ / p ^ e + min (B σ / p ^ e) (B σ')`. -/
-noncomputable def New.deductionTerm {Φ : Type*} [DecidableEq Φ] (p : ℕ) (κ : Φ → ℕ → ℕ) (n' : ℕ)
-    (ev : Finset Φ) (σ σ' : Φ) (e : ℕ) : ℝ :=
+`min (t σ / p ^ e) (r σ' + t σ') + r σ / p ^ e + min (B σ / p ^ e) (B σ')`.
+-/
+noncomputable def New.deductionTerm
+    {Φ : Type*} [DecidableEq Φ] (p : ℕ) (κ : Φ → ℕ → ℕ) (n' : ℕ) (ev : Finset Φ) (σ σ' : Φ) (e : ℕ)
+    : ℝ :=
   let t (σ : Φ) : ℕ := ∑ h ∈ range n', if h = 1 ∧ σ ∉ ev then κ σ h else 0
   let r (σ : Φ) : ℕ := ∑ h ∈ range n', if h = 1 then 0 else κ σ h
   let B (σ : Φ) : ℕ := ∑ h ∈ range n', h * if h = 1 then 0 else κ σ h
   min (t σ / p ^ e : ℝ) (r σ' + t σ') + r σ / p ^ e + min (B σ / p ^ e : ℝ) (B σ')
 
-/-- The pair of heights `h` at the place `σ` and `h'` at the place `σ'` is exempt for the set `ev`
-of marked places: `h = 1`, and either `σ` is marked or `h' = 1` and `σ'` is marked. -/
+/--
+The pair of heights `h` at the place `σ` and `h'` at the place `σ'` is exempt for the set `ev`
+of marked places: `h = 1`, and either `σ` is marked or `h' = 1` and `σ'` is marked.
+-/
 def New.IsExemptPair {Φ : Type*} (ev : Finset Φ) (σ σ' : Φ) (h h' : ℕ) : Prop :=
   h = 1 ∧ (σ ∈ ev ∨ h' = 1 ∧ σ' ∈ ev)
 
-/-- A choice of congruences for a place (the source) and its partner: for each height `h`, which
-of four kinds of congruence are imposed on the rows of height `h`. -/
+/--
+A choice of congruences for a place (the source) and its partner: for each height `h`, which
+of four kinds of congruence are imposed on the rows of height `h`.
+-/
 structure New.CongruenceChoice where
   /-- Congruences on all `h` entries of each row at the source. -/
   sourceEntries : ℕ → Bool
@@ -151,7 +158,7 @@ inductive New.PairingSide
   | source
   /-- The side of the partner. -/
   | partner
-  deriving DecidableEq
+deriving DecidableEq
 
 namespace New.PairingSide
 
@@ -165,8 +172,10 @@ def place {Φ : Type*} (side : PairingSide) (σ σ' : Φ) : Φ :=
   | source => σ
   | partner => σ'
 
-/-- For a pairing at the exponent `e`, congruences on a side are taken modulo a `p ^ r`-th root of
-`π`, where `r` is this number: `e` at the source and `0` at the partner. -/
+/--
+For a pairing at the exponent `e`, congruences on a side are taken modulo a `p ^ r`-th root of
+`π`, where `r` is this number: `e` at the source and `0` at the partner.
+-/
 def rootExponent (side : PairingSide) (e : ℕ) : ℕ :=
   match side with
   | source => e
@@ -188,20 +197,25 @@ def sourceCount (c : CongruenceChoice) (h : ℕ) : ℕ :=
 def partnerCount (c : CongruenceChoice) (h : ℕ) : ℕ :=
   (if c.partnerPairing h then 1 else 0) + h * if c.partnerEntries h then 1 else 0
 
-/-- The number of congruences on the heights `h < N`, counted once for each of the `κ h` columns
-at the source, with weight `1 / p ^ e`, and once for each of the `κ' h` columns at the partner. -/
+/--
+The number of congruences on the heights `h < N`, counted once for each of the `κ h` columns
+at the source, with weight `1 / p ^ e`, and once for each of the `κ' h` columns at the partner.
+-/
 noncomputable def cost (c : CongruenceChoice) (p e N : ℕ) (κ κ' : ℕ → ℕ) : ℝ :=
   ∑ h ∈ range N, (c.sourceCount h * κ h / p ^ e + c.partnerCount h * κ' h : ℝ)
 
-/-- The pair of heights `h` at the source and `h'` at the partner is covered by one of the four
+/--
+The pair of heights `h` at the source and `h'` at the partner is covered by one of the four
 kinds of congruence. A congruence on a pairing counts only if the height on the other side is
-one. -/
+one.
+-/
 def Covers (c : CongruenceChoice) (h h' : ℕ) : Prop :=
-  c.partnerPairing h' ∧ h = 1 ∨ c.partnerEntries h' ∨
-    c.sourcePairing h ∧ h' = 1 ∨ c.sourceEntries h
+  c.partnerPairing h' ∧ h = 1 ∨ c.partnerEntries h' ∨ c.sourcePairing h ∧ h' = 1 ∨ c.sourceEntries h
 
-/-- Whether a congruence is imposed on the rows of height `h` on the given side, on the pairing
-(`none`) or on the entry `k` (`some k`). -/
+/--
+Whether a congruence is imposed on the rows of height `h` on the given side, on the pairing
+(`none`) or on the entry `k` (`some k`).
+-/
 def imposes (c : CongruenceChoice) (h : ℕ) : PairingSide → Option (Fin h) → Bool
   | .source, none => c.sourcePairing h
   | .source, some _ => c.sourceEntries h
@@ -279,17 +293,21 @@ lemma New.exists_congruenceChoice_cost_eq_and_covers {Φ : Type*} [DecidableEq �
     simp only [c, CongruenceChoice.Covers, decide_eq_true_eq]
     grind [IsExemptPair]
 
-/-- The moduli of the congruences on the rows of height `h` at the place `τ`, when `c e σ` is the
+/--
+The moduli of the congruences on the rows of height `h` at the place `τ`, when `c e σ` is the
 choice of congruences for the place `σ` and its partner `pr e σ` at the exponent `e ∈ S`. They are
 indexed by `e`, `σ`, the side of the pairing from `σ` to `pr e σ` and the form (`none` for the
 pairing, `some k` for an entry). If `τ` is the place of that side and `c e σ` imposes the
-congruence, the modulus is `root e` at `σ` and `root 0` at `pr e σ`; otherwise it is `1`. -/
-def New.congruenceModulus {O Φ : Type*} [One O] [DecidableEq Φ] (pr : ℕ → Φ → Φ) (S : Finset ℕ)
-    (root : ℕ → O) (c : ℕ → Φ → CongruenceChoice) (τ : Φ) (h : ℕ) :
-    S × Φ × PairingSide × Option (Fin h) → O :=
-  fun (e, σ, side, form) ↦
-    if side.place σ (pr e σ) = τ ∧ (c e σ).imposes h side form then root (side.rootExponent e)
-    else 1
+congruence, the modulus is `root e` at `σ` and `root 0` at `pr e σ`; otherwise it is `1`.
+-/
+def New.congruenceModulus
+    {O Φ : Type*} [One O] [DecidableEq Φ]
+    (pr : ℕ → Φ → Φ) (S : Finset ℕ) (root : ℕ → O) (c : ℕ → Φ → CongruenceChoice) (τ : Φ) (h : ℕ)
+    : S × Φ × PairingSide × Option (Fin h) → O := fun (e, σ, side, form) ↦
+  if side.place σ (pr e σ) = τ ∧ (c e σ).imposes h side form then
+    root (side.rootExponent e)
+  else
+    1
 
 /-- Let `c e σ` be a choice of congruences for each exponent `e ∈ S`, place `σ` and partner
 `pr e σ`, let `κ τ h` be the number of columns of height `h` at the place `τ`, and let `root e` be a
@@ -352,10 +370,16 @@ lemma New.norm_rpow_sum_cost_eq_prod_congruenceModulus {p : ℕ} [Fact p.Prime] 
   simp (disch := exact fun _ _ ↦ by positivity) only [total_cost, norm_moduli,
     ← Real.rpow_mul_natCast (norm_nonneg π), Real.rpow_sum_of_nonneg (norm_nonneg π)]
 
-/-- Coordinate `a` of the new direction `k` for the place `τ` and the height `h`: the combination
-`∑ k' : Fin h, g τ h k k' * y τ a k'` of the given directions `y τ · k'`. -/
-def New.newDirection {Φ n R : Type} [CommRing R] (g : Φ → ∀ h : ℕ, Matrix (Fin h) (Fin h) R)
-    (y : Φ → n → ℕ → R) (τ : Φ) (h : ℕ) (k : Fin h) (a : n) : R :=
+/--
+Coordinate `a` of the new direction `k` for the place `τ` and the height `h`: the combination
+`∑ k' : Fin h, g τ h k k' * y τ a k'` of the given directions `y τ · k'`.
+-/
+def New.newDirection
+    {Φ n R : Type} [CommRing R]
+    (g : Φ → ∀ h : ℕ, Matrix (Fin h) (Fin h) R) (y : Φ → n → ℕ → R) (τ : Φ)
+    (h : ℕ) (k : Fin h)
+    (a : n)
+    : R :=
   g τ h k ⬝ᵥ fun k' : Fin h ↦ y τ a k'
 
 /-- **Changing the directions.** Let `π` divide `p` in the integers `valRingCp p` of `ℂ_p`, and let

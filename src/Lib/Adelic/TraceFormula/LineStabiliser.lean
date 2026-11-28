@@ -52,8 +52,10 @@ section DoubleCoset
 
 variable {G W ι : Type} [Group G] {J : Subgroup G} {t : G}
 
-/-- The sum in the group algebra of the chosen representatives of the cosets in `J t J / J`. It is
-zero if there are infinitely many of them. -/
+/--
+The sum in the group algebra of the chosen representatives of the cosets in `J t J / J`. It is
+zero if there are infinitely many of them.
+-/
 def doubleCosetSum (J : Subgroup G) (t : G) : ℂ[G] :=
   ∑ᶠ q : G ⧸ J, .single q.out ((doubleCoset t J J).indicator 1 q.out)
 
@@ -160,8 +162,10 @@ def lineStabilizer : Subgroup (GL n (LocField w)) :=
 def hyperplaneStabilizer : Subgroup (GL n (LocField w)) :=
   ((parabolic (· = i)).comap reduceGL).map (localIntGL n w).subtype
 
-/-- The matrix `diag (ϖ, 1, …, 1)`, with the uniformiser `ϖ` of `w` at the index `i` and `1`
-elsewhere. -/
+/--
+The matrix `diag (ϖ, 1, …, 1)`, with the uniformiser `ϖ` of `w` at the index `i` and `1`
+elsewhere.
+-/
 def lineElement : GL n (LocField w) := diagGL fun j : n ↦ if j = i then uniformizer w else 1
 
 lemma lineStabilizer_le_localIntGL : lineStabilizer w i ≤ localIntGL n w :=
@@ -177,7 +181,7 @@ lemma isOpen_lineStabilizer : (lineStabilizer w i).IsOpen := by
 instance : CompactSpace (lineStabilizer w i) :=
   isCompact_iff_compactSpace.1 <| (isCompact_localIntGL w).of_isClosed_subset
     ((lineStabilizer w i).isClosed_of_isOpen (isOpen_lineStabilizer w i))
-      (lineStabilizer_le_localIntGL w i)
+    (lineStabilizer_le_localIntGL w i)
 
 /-- For every `t`, the indicator function of `J t J`, where `J` is the stabiliser of a line modulo
 `w`, is invariant under `J` on both sides and lives on finitely many cosets of `J`. -/
@@ -311,8 +315,10 @@ lemma conj_lineElement_mem_lineStabilizer_iff :
       (fun j hj ↦ (h_small' j hj).le)
       fun a ha b hb ↦ (h_rest a b ha hb).2 (h_int a b), h_unit⟩, h_small'⟩
 
-/-- A chosen element of `GL_n(𝒪)` with reduction `M`, for an invertible matrix `M` over the residue
-field. -/
+/--
+A chosen element of `GL_n(𝒪)` with reduction `M`, for an invertible matrix `M` over the residue
+field.
+-/
 def liftMatrix (M : Matrix n n (ResField w)) : localIntGL n w :=
   Function.invFun (fun k : localIntGL n w ↦ (reduceGL k).val) M
 
@@ -326,13 +332,17 @@ lemma reduceGL_liftMatrix {M : Matrix n n (ResField w)} (hM_det : M.det ≠ 0) :
 lemma reduceGL_liftMatrix_val (g : GL n (ResField w)) : reduceGL (liftMatrix g.val) = g :=
   Units.ext (reduceGL_liftMatrix g.det_ne_zero)
 
-/-- The representative of the coset in `J_line diag (ϖ, 1, …, 1) J_line / J_line` that corresponds
-to the hyperplane on which the linear form `ξ` with `ξ e_i = 1` vanishes. -/
+/--
+The representative of the coset in `J_line diag (ϖ, 1, …, 1) J_line / J_line` that corresponds
+to the hyperplane on which the linear form `ξ` with `ξ e_i = 1` vanishes.
+-/
 def raiseCosetRep (i : n) (ξ : n → ResField w) : GL n (LocField w) :=
   (liftMatrix (updateRow 1 i ξ)).val⁻¹ * lineElement w i
 
-/-- The representative of the coset in `J_line diag (ϖ, 1, …, 1)⁻¹ J_line / J_line` that corresponds
-to the line of a vector `z` with `z i = 1`. -/
+/--
+The representative of the coset in `J_line diag (ϖ, 1, …, 1)⁻¹ J_line / J_line` that corresponds
+to the line of a vector `z` with `z i = 1`.
+-/
 def lowerCosetRep (i : n) (z : n → ResField w) : GL n (LocField w) :=
   (lineElement w i)⁻¹ * (liftMatrix (updateCol 1 i z)).val
 
@@ -413,17 +423,23 @@ section Operators
 
 variable {E n : Type} [Field E] [NumberField E] [Fintype n] [DecidableEq n] (w : FinPlace E) (i : n)
 
-/-- The sum in the group algebra of chosen representatives of the cosets in
-`J_line diag (ϖ, 1, …, 1) J_line / J_line`. -/
+/--
+The sum in the group algebra of chosen representatives of the cosets in
+`J_line diag (ϖ, 1, …, 1) J_line / J_line`.
+-/
 def lineHecke : ℂ[GL n (LocField w)] := doubleCosetSum (lineStabilizer w i) (lineElement w i)
 
-/-- The sum in the group algebra of chosen representatives of the cosets in
-`J_line diag (ϖ, 1, …, 1)⁻¹ J_line / J_line`. It acts as `T⁻`. -/
+/--
+The sum in the group algebra of chosen representatives of the cosets in
+`J_line diag (ϖ, 1, …, 1)⁻¹ J_line / J_line`. It acts as `T⁻`.
+-/
 def lineHeckeLower : ℂ[GL n (LocField w)] := doubleCosetSum (lineStabilizer w i) (lineElement w i)⁻¹
 
 variable (n) in
-/-- The mean in the group algebra of chosen lifts to `GL_n(𝒪)` of all elements of `GL_n` of the
-residue field. -/
+/--
+The mean in the group algebra of chosen lifts to `GL_n(𝒪)` of all elements of `GL_n` of the
+residue field.
+-/
 def sphericalMeanElement : ℂ[GL n (LocField w)] :=
   (Nat.card (GL n (ResField w)) : ℂ)⁻¹ • ∑ᶠ g : GL n (ResField w), .single (liftMatrix g.val).val 1
 
@@ -435,13 +451,17 @@ def lineRaise : Module.End ℂ W := heckeCoset ρ (lineStabilizer w i) (lineElem
 /-- The operator `T⁻`, the sum over the cosets in `J_line diag (ϖ, 1, …, 1)⁻¹ J_line / J_line`. -/
 def lineLower : Module.End ℂ W := heckeCoset ρ (lineStabilizer w i) (lineElement w i)⁻¹
 
-/-- The operator `e_sph`, the action of the mean of chosen lifts to `GL_n(𝒪)` of the elements of
-`GL_n` of the residue field. -/
+/--
+The operator `e_sph`, the action of the mean of chosen lifts to `GL_n(𝒪)` of the elements of
+`GL_n` of the residue field.
+-/
 def sphericalMean : Module.End ℂ W := ρ.asAlgebraHom (sphericalMeanElement n w)
 
-/-- The translate `y[z]` of `y` by a chosen element of `GL_n(𝒪)` that takes `e_i` to `z` modulo
+/--
+The translate `y[z]` of `y` by a chosen element of `GL_n(𝒪)` that takes `e_i` to `z` modulo
 `w`. It is used for `z ≠ 0` and `y` fixed by `J_line`; then it depends only on the line of `z`
-(`lineTranslate_eq_apply_of_col_eq_smul`). -/
+(`lineTranslate_eq_apply_of_col_eq_smul`).
+-/
 def lineTranslate (y : W) (z : n → ResField w) : W :=
   ρ (Function.invFun (fun k : localIntGL n w ↦ (reduceGL k).val.col i) z).val y
 
@@ -458,11 +478,12 @@ end Operators
 
 section FixedVectors
 
-variable {E n : Type} [Field E] [NumberField E] [Fintype n] [DecidableEq n] {w : FinPlace E} {i : n}
-  {k : localIntGL n w} {z ξ : n → ResField w}
+variable
+  {E n : Type} [Field E] [NumberField E] [Fintype n] [DecidableEq n]
+  {w : FinPlace E} {i : n} {k : localIntGL n w} {z ξ : n → ResField w}
 
-variable {W : Type} [AddCommGroup W] [Module ℂ W] {ρ : Representation ℂ (GL n (LocField w)) W}
-  {y : W}
+variable
+  {W : Type} [AddCommGroup W] [Module ℂ W] {ρ : Representation ℂ (GL n (LocField w)) W} {y : W}
 
 lemma lineRaise_mem (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
     lineRaise i ρ y ∈ levelSpace ρ (lineStabilizer w i) :=
@@ -696,26 +717,30 @@ lemma sum_lineTranslate [Fintype (ResField w)] [DecidableEq (ResField w)]
     _ = sphericalMean ρ (∑ z : n → ResField w with z ≠ 0, lineTranslate i ρ y z) :=
       (sphericalMean_eq_self h_fixed).symm
     _ = _ := by simp only [map_sum, h_term, sum_const, ← Nat.cast_smul_eq_nsmul ℂ, h_card]
-/-- Let `ρ` be a complex representation of `GL_n(E_w)` at a finite place `w` of the number field
+/--
+Let `ρ` be a complex representation of `GL_n(E_w)` at a finite place `w` of the number field
 `E`, and let `y` be a vector fixed by the stabiliser `J_line` in `GL_n(𝒪_w)` of the line of `e_i`
 modulo `w`. Then `T⁺ T⁻ y = q ^ (n - 2) (y + (q ^ n - 1) e_sph y)`. Here `T⁺ = lineRaise i ρ` and
 `T⁻ = lineLower i ρ` are the sums over the cosets in `J_line diag (ϖ, 1, …, 1) J_line / J_line` and
 in `J_line diag (ϖ, 1, …, 1)⁻¹ J_line / J_line`, `e_sph = sphericalMean ρ` is the action of the mean
 of chosen lifts to `GL_n(𝒪_w)` of all elements of `GL_n` of the residue field, `q` is the order of
-the residue field, and the exponent `n` stands for the number of indices. -/
-theorem lineRaise_lineLower (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
-    lineRaise i ρ (lineLower i ρ y) = (w.q : ℂ) ^ (Fintype.card n - 2 : ℤ) •
-      (y + ((w.q : ℂ) ^ Fintype.card n - 1) • sphericalMean ρ y) := by
+the residue field, and the exponent `n` stands for the number of indices.
+-/
+theorem lineRaise_lineLower (hy : y ∈ levelSpace ρ (lineStabilizer w i))
+    : lineRaise i ρ (lineLower i ρ y)
+      = (w.q : ℂ) ^ (Fintype.card n - 2 : ℤ)
+        • (y + ((w.q : ℂ) ^ Fintype.card n - 1) • sphericalMean ρ y) := by
   classical
   -- The line of `z` is reached once for each hyperplane that contains neither `e_i` nor `z`.
   let : Fintype (ResField w) := Fintype.ofFinite _
-  calc lineRaise i ρ (lineLower i ρ y)
+  calc
+    lineRaise i ρ (lineLower i ρ y)
     _ = ∑ ξ : n → ResField w with ξ i = 1, ∑ z : n → ResField w with ξ ⬝ᵥ z = 1,
         lineTranslate i ρ y z := by
       rw [lineRaise_eq_sum (lineLower_mem hy)]
       exact sum_congr rfl fun ξ hξ ↦ raiseCosetRep_apply_lineLower hy (mem_filter.1 hξ).2
-    _ = (w.q : ℂ) ^ (Fintype.card n - 2 : ℤ) •
-        (y + ∑ z : n → ResField w with z ≠ 0, lineTranslate i ρ y z) := by
+    _ = (w.q : ℂ) ^ (Fintype.card n - 2 : ℤ)
+        • (y + ∑ z : n → ResField w with z ≠ 0, lineTranslate i ρ y z) := by
       rw [sum_sum_dotProduct_eq_one_eq_smul fun _ ↦ lineTranslate_eq_self hy,
         ← Nat.card_eq_fintype_card, card_ResField]
     _ = _ := by rw [sum_lineTranslate hy]
@@ -726,36 +751,46 @@ section LineOperators
 
 variable {E n : Type} [Field E] [NumberField E] [Fintype n] [DecidableEq n] {w : FinPlace E} {i : n}
 
-/-- Let `W` carry a unitary representation of `GL_n` of the local field at `w`. On the vectors fixed
+/--
+Let `W` carry a unitary representation of `GL_n` of the local field at `w`. On the vectors fixed
 by the stabiliser `J_line` of the line of `e_i` modulo `w`, the operator `T⁻ = lineLower i ρ` of the
 double coset of `diag (ϖ, 1, …, 1)⁻¹` is the adjoint of the operator `T⁺ = lineRaise i ρ` of the
-double coset of `diag (ϖ, 1, …, 1)`. -/
-theorem inner_lineRaise {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
+double coset of `diag (ϖ, 1, …, 1)`.
+-/
+theorem inner_lineRaise
+    {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
     {ρ : Representation ℂ (GL n (LocField w)) W}
-    (hρ : ∀ (g : GL n (LocField w)) (x y : W), ⟪ρ g x, ρ g y⟫_ℂ = ⟪x, y⟫_ℂ) {x y : W}
-    (hx : x ∈ levelSpace ρ (lineStabilizer w i)) (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
-    ⟪lineRaise i ρ x, y⟫_ℂ = ⟪x, lineLower i ρ y⟫_ℂ := by
+    (hρ : ∀ (g : GL n (LocField w)) (x y : W), ⟪ρ g x, ρ g y⟫_ℂ = ⟪x, y⟫_ℂ)
+    {x y : W}
+    (hx : x ∈ levelSpace ρ (lineStabilizer w i)) (hy : y ∈ levelSpace ρ (lineStabilizer w i))
+    : ⟪lineRaise i ρ x, y⟫_ℂ = ⟪x, lineLower i ρ y⟫_ℂ := by
   classical
   -- The two double cosets are mutually inverse and have the same number of cosets.
   let : Fintype (ResField w) := Fintype.ofFinite _
   have h_inv : ⟪ρ (lineElement w i) x, y⟫_ℂ = ⟪x, ρ (lineElement w i)⁻¹ y⟫_ℂ := by
     rw [← hρ (lineElement w i) x, ρ.self_inv_apply]
-  have h_raise : ⟪lineRaise i ρ x, y⟫_ℂ =
-      #{ξ : n → ResField w | ξ i = 1} • ⟪ρ (lineElement w i) x, y⟫_ℂ := by
-    rw [lineRaise_eq_sum hx, inner_sum_of_mem_doubleCoset hρ hx hy
-      fun ξ hξ ↦ raiseCosetRep_mem_doubleCoset (mem_filter.1 hξ).2]
-  have h_lower : ⟪lineLower i ρ y, x⟫_ℂ =
-      #{z : n → ResField w | z i = 1} • ⟪ρ (lineElement w i)⁻¹ y, x⟫_ℂ := by
-    rw [lineLower_eq_sum hy, inner_sum_of_mem_doubleCoset hρ hy hx
-      fun z hz ↦ lowerCosetRep_mem_doubleCoset (mem_filter.1 hz).2]
+  have h_raise
+      : ⟪lineRaise i ρ x, y⟫_ℂ
+        = # {ξ : n → ResField w | ξ i = 1} • ⟪ρ (lineElement w i) x, y⟫_ℂ := by
+    rw [lineRaise_eq_sum hx,
+      inner_sum_of_mem_doubleCoset hρ hx hy fun ξ hξ ↦
+        raiseCosetRep_mem_doubleCoset (mem_filter.1 hξ).2]
+  have h_lower
+      : ⟪lineLower i ρ y, x⟫_ℂ
+        = # {z : n → ResField w | z i = 1} • ⟪ρ (lineElement w i)⁻¹ y, x⟫_ℂ := by
+    rw [lineLower_eq_sum hy,
+      inner_sum_of_mem_doubleCoset hρ hy hx fun z hz ↦
+        lowerCosetRep_mem_doubleCoset (mem_filter.1 hz).2]
   rw [h_raise, h_inv, ← inner_conj_symm x (lineLower i ρ y), h_lower, map_nsmul, inner_conj_symm]
 
 /-! ### The support of the powers of `lineHecke` -/
 
 variable {g h : GL n (LocField w)}
 
-/-- The matrix `g` is integral and keeps the line of `e_i` modulo `w`, with an invertible action on
-the quotient by that line. -/
+/--
+The matrix `g` is integral and keeps the line of `e_i` modulo `w`, with an invertible action on
+the quotient by that line.
+-/
 structure KeepsLineMod (i : n) (g : GL n (LocField w)) : Prop where
   /-- The entries are integral. -/
   v_le_one : ∀ a b : n, v (g a b) ≤ 1
@@ -829,20 +864,23 @@ lemma spanOn_mono {G : Type} [Group G] {D D' : Set G} (h_sub : D ⊆ D') :
   Submodule.span_mono (Set.image_mono h_sub)
 
 variable (w i) in
-/-- For `m > 0`, the `m`-th power of the element `lineHecke w i` of the group algebra, which acts as
+/--
+For `m > 0`, the `m`-th power of the element `lineHecke w i` of the group algebra, which acts as
 `T⁺`, is supported on the matrices `g` such that every element of `g J_line` is integral, with `0` a
 simple root of its characteristic polynomial modulo `w`. Here `J_line` is the stabiliser of the line
-of `e_i` modulo `w`. -/
-theorem lineHecke_pow_mem_spanOn {m : ℕ} (hm : 0 < m) : lineHecke w i ^ m ∈
-    spanOn ℂ {g : GL n (LocField w) | ∀ k ∈ lineStabilizer w i, HasSimpleZero (g * k)} := by
+of `e_i` modulo `w`.
+-/
+theorem lineHecke_pow_mem_spanOn {m : ℕ} (hm : 0 < m)
+    : lineHecke w i ^ m
+      ∈ spanOn ℂ {g : GL n (LocField w) | ∀ k ∈ lineStabilizer w i, HasSimpleZero (g * k)} := by
   -- The shape `(0 ∗; 0 g')` modulo `w` is kept by products and by right translation by `J_line`.
   let D : Set (GL n (LocField w)) := {g | KeepsLineMod i g ∧ residueOrZero (g i i) = 0}
   have h_mem : lineHecke w i ∈ spanOn ℂ D :=
-    spanOn_mono (fun _ ↦ keepsLineMod_of_mem_doubleCoset)
+    spanOn_mono
+      (fun _ ↦ keepsLineMod_of_mem_doubleCoset)
       (doubleCosetSum_mem_spanOn (isHeckeFunction_indicator_doubleCoset w i _).1)
   have h_mul : ∀ g ∈ D, ∀ h : GL n (LocField w), KeepsLineMod i h → g * h ∈ D :=
-    fun g ⟨hg, hg_zero⟩ h hh ↦
-      hg.mul_residue_eq_zero hh (.inl hg_zero)
+    fun g ⟨hg, hg_zero⟩ h hh ↦ hg.mul_residue_eq_zero hh (.inl hg_zero)
   have h_pow : lineHecke w i ^ m ∈ spanOn ℂ D := by
     induction hm with
     | refl => rwa [pow_one]

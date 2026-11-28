@@ -46,8 +46,10 @@ open NumberField
 
 variable {E n n₀ : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] {q : ℕ}
 
-/-- The denominators allowed on `X⁻ ⊕ X''`: the integral adele `β` on the first block of indices
-and its conjugate on the second. -/
+/--
+The denominators allowed on `X⁻ ⊕ X''`: the integral adele `β` on the first block of indices
+and its conjugate on the second.
+-/
 def selfOrConj {ι κ : Type*} (β : Ô E) (j : ι ⊕ κ) : 𝔸f E :=
   if j.isLeft then (β : 𝔸f E) else star (β : 𝔸f E)
 
@@ -95,8 +97,10 @@ lemma star_mem_weightedTranslations {ι X : Type*} {c : 𝔸f E} (hc : c ∈ Ô 
 
 end Denominators
 
-/-- The basis indices of the sum `X⁻ ⊕ X''` of two definite spaces: those of the first space are
-`X ⊕ Unit` and those of the second `X'' ⊕ Unit`, `Unit` indexing a last basis vector. -/
+/--
+The basis indices of the sum `X⁻ ⊕ X''` of two definite spaces: those of the first space are
+`X ⊕ Unit` and those of the second `X'' ⊕ Unit`, `Unit` indexing a last basis vector.
+-/
 abbrev PairIndex (X X'' : Type) : Type := (X ⊕ Unit) ⊕ X'' ⊕ Unit
 
 /-- The index of the last basis vector `e` of the first space. -/
@@ -111,26 +115,32 @@ section Neighbour
 
 variable {E X X' X'' : Type} [Field E] [CMType E] [WeilData E]
 
-/-- The gluing conditions on a vector `x` of `X⁻ ⊕ X''` and an adele `c`, which in the application
+/--
+The gluing conditions on a vector `x` of `X⁻ ⊕ X''` and an adele `c`, which in the application
 is the coefficient of an isotropic vector: `x` is integral except at `e` and `e''`, where it has
-denominator at most `π̄`, and its entries there, divided by `π`, are congruent to `c` and `η̄ c`. -/
+denominator at most `π̄`, and its entries there, divided by `π`, are congruent to `c` and `η̄ c`.
+-/
 structure IsNeighbourVector (π : (𝔸f E)ˣ) (δ c : 𝔸f E) (x : PairIndex X X'' → 𝔸f E) : Prop where
   /-- The coefficient `c` is unchanged by `δ`. -/
   mul_coeff : δ * c = c
   /-- The entries other than those at `e` and `e''` are integral. -/
-  mem_of_ne (i : PairIndex X X'') (h_source : i ≠ lastSource) (h_target : i ≠ lastTarget) :
-    x i ∈ Ô E
+  mem_of_ne (i : PairIndex X X'') (h_source : i ≠ lastSource) (h_target : i ≠ lastTarget)
+    : x i ∈ Ô E
   /-- All entries have denominator at most `π̄`. -/
   star_mul_mem (i : PairIndex X X'') : star (π : 𝔸f E) * x i ∈ Ô E
   /-- The entry at `e`, divided by `π`, differs from `c` by an integral adele. -/
   sub_source_mem : c - ↑π⁻¹ * x lastSource ∈ Ô E
-  /-- The entry at `e''`, divided by `π`, differs from `η̄ c` by an integral adele, where `η` is the
-  unit `normNegOne` of norm `-1`. -/
+  /--
+  The entry at `e''`, divided by `π`, differs from `η̄ c` by an integral adele, where `η` is the
+  unit `normNegOne` of norm `-1`.
+  -/
   sub_target_mem : star (normNegOne (E := E) : 𝔸f E) * c - ↑π⁻¹ * x lastTarget ∈ Ô E
 
-/-- The factors `κ` by which the rows of the standard lattice are scaled at the places dividing
+/--
+The factors `κ` by which the rows of the standard lattice are scaled at the places dividing
 `β` and `β̄`: each is `1` or a fixed adele `δ` of norm one, and nothing happens above `N`. In the
-application `β β̄` is the auxiliary level `M` and `δ` generates the ideal `(β / β̄)`. -/
+application `β β̄` is the auxiliary level `M` and `δ` generates the ideal `(β / β̄)`.
+-/
 structure IsScalingAtM (N : ℕ) (β : Ô E) (δ : 𝔸f E) (κ : PairIndex X X'' → 𝔸f E) : Prop where
   /-- `δ` has norm one. -/
   mul_star_self_eq_one : δ * star δ = 1
@@ -149,40 +159,52 @@ variable [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X'] [Fintype X'']
 
 variable (X X'') (P : Finset (FinPlace E)) (π : (𝔸f E)ˣ)
 
-/-- The vector `ρ = e + η̄ j̄ e''`, where `j` is the idempotent of `P` and `η` the unit of norm
+/--
+The vector `ρ = e + η̄ j̄ e''`, where `j` is the idempotent of `P` and `η` the unit of norm
 `-1`. It is `e` except at the places conjugate to `P`, where it is `e + η̄ e''`. It has norm one
-when `P` is disjoint from its conjugate. -/
+when `P` is disjoint from its conjugate.
+-/
 def neighbourAxis : PairIndex X X'' → 𝔸f E :=
   (0 ⊕ᵥ fun _ ↦ 1) ⊕ᵥ (0 ⊕ᵥ fun _ ↦ star ((normNegOne (E := E) : 𝔸f E) * idem P))
 
-/-- The adele `A` such that, when `P` is disjoint from its conjugate, `1 + A` is `π` at `P`, `π̄⁻¹`
-at the conjugate places and `1` elsewhere. -/
-def neighbourScale : 𝔸f E :=
-  idem P * ((π : 𝔸f E) - 1) + star (idem P) * (star (↑π⁻¹ : 𝔸f E) - 1)
+/--
+The adele `A` such that, when `P` is disjoint from its conjugate, `1 + A` is `π` at `P`, `π̄⁻¹`
+at the conjugate places and `1` elsewhere.
+-/
+def neighbourScale : 𝔸f E := idem P * ((π : 𝔸f E) - 1) + star (idem P) * (star (↑π⁻¹ : 𝔸f E) - 1)
 
-/-- The matrix `γ = 1 + A ρ ρ*`. When `P` is disjoint from its conjugate, so that `ρ` has norm one,
+/--
+The matrix `γ = 1 + A ρ ρ*`. When `P` is disjoint from its conjugate, so that `ρ` has norm one,
 it scales `ρ` by `1 + A` and fixes its orthogonal complement; its columns then span a neighbour at
-`N` of the standard lattice. -/
+`N` of the standard lattice.
+-/
 def neighbourMatrix : Matrix (PairIndex X X'') (PairIndex X X'') (𝔸f E) :=
   1 + neighbourScale P π • vecMulVec (neighbourAxis X X'' P) (star (neighbourAxis X X'' P))
 
-/-- The coefficient of the isotropic vector that goes with each column of `neighbourMatrix`; it is
-zero except for the columns of `e` and `e''`. -/
+/--
+The coefficient of the isotropic vector that goes with each column of `neighbourMatrix`; it is
+zero except for the columns of `e` and `e''`.
+-/
 def neighbourCoeff : PairIndex X X'' → 𝔸f E :=
-  (0 ⊕ᵥ fun _ ↦ neighbourScale P π * (↑π⁻¹ : 𝔸f E) * star (idem P)) ⊕ᵥ
-    (0 ⊕ᵥ fun _ ↦ neighbourScale P π * (↑π⁻¹ : 𝔸f E) * ((normNegOne (E := E) : 𝔸f E) * idem P))
+  (0 ⊕ᵥ fun _ ↦ neighbourScale P π * (↑π⁻¹ : 𝔸f E) * star (idem P))
+    ⊕ᵥ (0 ⊕ᵥ fun _ ↦ neighbourScale P π * (↑π⁻¹ : 𝔸f E) * ((normNegOne (E := E) : 𝔸f E) * idem P))
 
-/-- The translation `n y` attached to residues `y` at `P`: the matrix with row `η ȳ / N` at `e`,
-row `-ȳ / N` at `e''` and zero elsewhere. It is supported at the places conjugate to `P`. -/
-def neighbourTranslation {P : Finset (FinPlace E)} {N : ℕ} (y : X' → P → ZMod N)
-    (i : PairIndex X X'' × X') : 𝔸f E :=
+/--
+The translation `n y` attached to residues `y` at `P`: the matrix with row `η ȳ / N` at `e`,
+row `-ȳ / N` at `e''` and zero elsewhere. It is supported at the places conjugate to `P`.
+-/
+def neighbourTranslation
+    {P : Finset (FinPlace E)} {N : ℕ} (y : X' → P → ZMod N) (i : PairIndex X X'' × X')
+    : 𝔸f E :=
   Sum.elim (0 ⊕ᵥ fun _ ↦ (normNegOne (E := E) : 𝔸f E) * star (residueOverN (y i.2)))
-    (0 ⊕ᵥ fun _ ↦ -star (residueOverN (y i.2))) i.1
+    (0 ⊕ᵥ fun _ ↦ - star (residueOverN (y i.2))) i.1
 
 end Neighbour
 
-variable {E X X' X'' : Type} [Field E] [CMType E] [WeilData E] [Fintype X]
-  [Fintype X'] [DecidableEq X'] [Fintype X''] {N : ℕ} {P : Finset (FinPlace E)}
+variable
+  {E X X' X'' : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype X] [Fintype X'] [DecidableEq X'] [Fintype X'']
+  {N : ℕ} {P : Finset (FinPlace E)}
 
 section Unitary
 
@@ -478,10 +500,12 @@ lemma neighbourMatrix_mulVec [DecidableEq X] [DecidableEq X'']
     mul_comm, mul_left_comm]
 
 variable (X X'') in
-/-- The matrix `γ` (`neighbourMatrix`) as a finite point of the unitary group, for a split
-squarefree idele `π` for `N` at `P`. -/
-def neighbourUnitary [DecidableEq X] [DecidableEq X'']
-    (hπ : IsSplitSquarefree P (N : E) π) : Gf E (PairIndex X X'') :=
+/--
+The matrix `γ` (`neighbourMatrix`) as a finite point of the unitary group, for a split
+squarefree idele `π` for `N` at `P`.
+-/
+def neighbourUnitary [DecidableEq X] [DecidableEq X''] (hπ : IsSplitSquarefree P (N : E) π)
+    : Gf E (PairIndex X X'') :=
   U.of isUnit_one (neighbourMatrix X X'' P π) <| by
     rw [mul_one]
     exact conjTranspose_mul_one_add_smul_vecMulVec (star_neighbourAxis_dotProduct_self hπ)
@@ -523,8 +547,10 @@ lemma commute_neighbourMatrix_diagonal (hP : IsSplitLevel P N)
   simp only [neighbourMatrix, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply]
   grind [h_scale i, h_scale m]
 
-/-- The diagonal matrix of the factors `κ`, each of which has norm one, as a finite point of the
-unitary group. -/
+/--
+The diagonal matrix of the factors `κ`, each of which has norm one, as a finite point of the
+unitary group.
+-/
 def scalingUnitary (hκ : IsScalingAtM N β δ κ) : Gf E (PairIndex X X'') :=
   U.of isUnit_one (diagonal κ) <| by simp [mul_comm (star _), hκ.apply_mul_star_eq_one]
 
@@ -532,8 +558,10 @@ section Vanishing
 
 omit [WeilData E]
 
-/-- The vectors that vanish at the places of `P` and at their conjugates. For a split level `N`
-these are the places above `N`. -/
+/--
+The vectors that vanish at the places of `P` and at their conjugates. For a split level `N`
+these are the places above `N`.
+-/
 def vanishingAbove (ι : Type) (P : Finset (FinPlace E)) : AddSubgroup (ι → 𝔸f E) :=
   ((idem (P : Set (FinPlace E)).conjClosure : 𝔸f E) • AddMonoidHom.id (ι → 𝔸f E)).ker
 
@@ -555,34 +583,42 @@ end Vanishing
 section Lattices
 
 variable (X')
-/-- The homomorphism `g ↦ g ⊗ 1`. Its values act on matrices with columns indexed by `X'` by left
-multiplication with `g`. -/
+/--
+The homomorphism `g ↦ g ⊗ 1`. Its values act on matrices with columns indexed by `X'` by left
+multiplication with `g`.
+-/
 def kroneckerOne (ι : Type) [Fintype ι] [DecidableEq ι] : Gf E ι →* Gf E (ι × X') :=
   (U.kroneckerHom (S := (1 : Matrix X' X' (𝔸f E))) (one_mul 1) (by simp)).comp
     (MonoidHom.inr (U (1 : Matrix X' X' (𝔸f E))) (Gf E ι))
 
-/-- The unitary `(γ κ) ⊗ 1`. It carries the standard lattice of `Hom (X', X⁻ ⊕ X'')` to the lattice
-that is the neighbour above `N` and has its rows scaled by `κ` elsewhere. -/
-def latticeUnitary (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
-    Gf E (PairIndex X X'' × X') :=
+/--
+The unitary `(γ κ) ⊗ 1`. It carries the standard lattice of `Hom (X', X⁻ ⊕ X'')` to the lattice
+that is the neighbour above `N` and has its rows scaled by `κ` elsewhere.
+-/
+def latticeUnitary (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
+    : Gf E (PairIndex X X'' × X') :=
   kroneckerOne X' (PairIndex X X'') (neighbourUnitary X X'' hπ * scalingUnitary hκ)
 
-/-- The image of the standard lattice under `latticeUnitary`. For a pair of edges it is the lattice
-`zeroTermLattice` of their splitting, by `DoubleLiftData.zeroTermLattice_splitting_eq`. -/
-def neighbourLattice (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
-    AddSubgroup (PairIndex X X'' × X' → 𝔸f E) :=
+/--
+The image of the standard lattice under `latticeUnitary`. For a pair of edges it is the lattice
+`zeroTermLattice` of their splitting, by `DoubleLiftData.zeroTermLattice_splitting_eq`.
+-/
+def neighbourLattice (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
+    : AddSubgroup (PairIndex X X'' × X' → 𝔸f E) :=
   (stdLattice E (PairIndex X X'' × X')).map
     (DistribSMul.toAddMonoidHom (PairIndex X X'' × X' → 𝔸f E) (latticeUnitary X' hπ hκ))
 
 /-- The elements of the lattice that vanish above `N`. -/
-def awayLattice (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
-    AddSubgroup (PairIndex X X'' × X' → 𝔸f E) :=
+def awayLattice (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
+    : AddSubgroup (PairIndex X X'' × X' → 𝔸f E) :=
   neighbourLattice X' hπ hκ ⊓ vanishingAbove (PairIndex X X'' × X') P
 
-/-- The classes of `awayLattice` modulo its integral points. Only the rows scaled by `δ` can fail
-to be integral. -/
-abbrev AwayLatticeQuotient (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
-    Type :=
+/--
+The classes of `awayLattice` modulo its integral points. Only the rows scaled by `δ` can fail
+to be integral.
+-/
+abbrev AwayLatticeQuotient (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
+    : Type :=
   awayLattice X' hπ hκ ⧸ (stdLattice E (PairIndex X X'' × X')).addSubgroupOf (awayLattice X' hπ hκ)
 
 end Lattices
@@ -752,8 +788,8 @@ lemma latticeUnitary_smul (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalin
         fun i : PairIndex X X'' × X' ↦ κ i.1 * x i := by
   rw [latticeUnitary, map_mul, mul_smul, funext (kroneckerOne_scalingUnitary_smul hκ x)]
 
-instance (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
-    Fintype (AwayLatticeQuotient X' hπ hκ) := by
+instance (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
+    : Fintype (AwayLatticeQuotient X' hπ hκ) := by
   -- The integral points have finite index in the whole lattice.
   refine AddSubgroup.fintypeOfIndexNeZero fun h_zero ↦ ?_
   exact relIndex_map_stdLattice_ne_zero (latticeUnitary X' hπ hκ)
@@ -955,12 +991,16 @@ lemma idem_conjClosure_smul_neighbourTranslation {π : (𝔸f E)ˣ} [Fact N.Prim
     idem_conjClosure_eq_add_star hπ.isConjDisjoint,
     add_mul, idem_mul_star hπ.isConjDisjoint, star_idem_mul_self, zero_add]
 
-/-- The representative `n y + t`, where `n y = neighbourTranslation X X'' y` is attached to residues
-`y` at `P` and `t` is the chosen representative of a class in `AwayLatticeQuotient`. -/
-def neighbourCosetRep {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E} {κ : PairIndex X X'' → 𝔸f E}
+/--
+The representative `n y + t`, where `n y = neighbourTranslation X X'' y` is attached to residues
+`y` at `P` and `t` is the chosen representative of a class in `AwayLatticeQuotient`.
+-/
+def neighbourCosetRep
+    {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E} {κ : PairIndex X X'' → 𝔸f E}
     [DecidableEq X] [DecidableEq X'']
     {hπ : IsSplitSquarefree P (N : E) π} {hκ : IsScalingAtM N β δ κ}
-    (a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ) : PairIndex X X'' × X' → 𝔸f E :=
+    (a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ)
+    : PairIndex X X'' × X' → 𝔸f E :=
   neighbourTranslation X X'' a.1 + a.2.out.val
 
 /-- Let `N` be prime, `IsSplitLevel P N`, `IsSplitSquarefree P (N : E) π` and

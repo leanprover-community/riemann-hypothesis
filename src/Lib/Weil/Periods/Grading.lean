@@ -82,37 +82,49 @@ open Matrix
 
 namespace New
 
-variable {R X X' ι ι' : Type*} {s s' : ℕ} [CommRing R]
+variable
+  {R X X' ι ι' : Type*} {s s' : ℕ} [CommRing R]
   {E : Type*} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
-  (e' : X' ⊕ Fin s' ≃ ι') (e : X ⊕ Fin s ≃ ι) {ε : ι → ℤˣ} {N : E} (V : Space E ι ε)
+  (e' : X' ⊕ Fin s' ≃ ι') (e : X ⊕ Fin s ≃ ι)
+  {ε : ι → ℤˣ} {N : E} (V : Space E ι ε)
 
-/-- The block diagonal matrix with block A from X to X' and block B from string to string,
-reindexed along e and e'. -/
+/--
+The block diagonal matrix with block A from X to X' and block B from string to string,
+reindexed along e and e'.
+-/
 abbrev gradedBlocks (A : Matrix X' X R) (B : Matrix (Fin s') (Fin s) R) : Matrix ι' ι R :=
   (fromBlocks (α := R) A 0 0 B).submatrix e'.symm e.symm
 
-/-- The Gram matrix of X plus a string of length s: identity on X; string vectors a, b with
-a + b = s − 1 pair to 1, or to −N if a = b. -/
+/--
+The Gram matrix of X plus a string of length s: identity on X; string vectors a, b with
+a + b = s − 1 pair to 1, or to −N if a = b.
+-/
 def gradedGram (N : R) : Matrix ι ι R :=
   gradedBlocks e e 1 (of fun a b : Fin s ↦ if a = b.rev then (if a = b then -N else 1) else 0)
 
-/-- For a space (J, x) and g in G, the adelic matrix x g x⁻¹ of g in rational coordinates. This is
-the matrix of an element of U(J)(𝔸), and it is multiplicative in g. -/
+/--
+For a space (J, x) and g in G, the adelic matrix x g x⁻¹ of g in rational coordinates. This is
+the matrix of an element of U(J)(𝔸), and it is multiplicative in g.
+-/
 def Space.ratCoordMatrix : G E ε →* Matrix ι ι (𝔸 E) where
   toFun g := V.toRatCoords g
   map_one' := by simp
   map_mul' := by simp
 
-/-- A presentation of `V` as `X ⊕ J_s`: an indexing of the basis by `X` and a string of `s` vectors
+/--
+A presentation of `V` as `X ⊕ J_s`: an indexing of the basis by `X` and a string of `s` vectors
 for which the Gram matrix is `New.gradedGram`, with `N = N̄ ≠ 0`. It also carries a constant
 `c = genericConst`, with `c = c̄ ≠ 0` in `E`, for the generic character. Certain multiples of the
 string vectors, defined in `Lib.Weil.Periods.StringPowers`, are the vectors `𝔢 ^ i`, which pair to
-`-N` for opposite grades. -/
+`-N` for opposite grades.
+-/
 structure Grading (N : E) (X : Type _) [DecidableEq X] (s : ℕ) where
   /-- The splitting of the basis of `V` into `X`, of grade 0, and a string of `s` vectors. -/
   indexEquiv : X ⊕ Fin s ≃ ι
-  /-- The Gram matrix is 1 on `X`; vector i of the string pairs only with vector s - 1 - i, to 1,
-  but to -N if it is the middle vector. -/
+  /--
+  The Gram matrix is 1 on `X`; vector i of the string pairs only with vector s - 1 - i, to 1,
+  but to -N if it is the middle vector.
+  -/
   gram_eq : V.J = gradedGram indexEquiv N
   /-- `N` is nonzero and fixed by complex conjugation. -/
   N_ne_zero_and_star_eq : N ≠ 0 ∧ star N = N
@@ -123,8 +135,10 @@ namespace Grading
 
 variable {V} (Y : Grading V N X s)
 
-/-- The grade of a basis index of X plus a string of length s: 0 on X, and s − 1 − 2i on the
-i-th string vector. -/
+/--
+The grade of a basis index of X plus a string of length s: 0 on X, and s − 1 − 2i on the
+i-th string vector.
+-/
 @[local simp]
 def gradeOf (i : ι) : ℤ :=
   (Y.indexEquiv.symm i).elim (0 : X → ℤ) fun a : Fin s ↦ s - 1 - 2 * (a : ℕ)
@@ -140,22 +154,26 @@ vectors, the `a`-th string vector (the basis index `Y.indexEquiv (Sum.inr a)`) h
 @[simp]
 lemma gradeOf_inr (a : Fin s) : Y.gradeOf (Y.indexEquiv (Sum.inr a)) = s - 1 - 2 * a := by simp
 
-/-- The unipotent subgroup of the g in G whose matrix in rational coordinates, minus 1, strictly
-raises grades. -/
+/--
+The unipotent subgroup of the g in G whose matrix in rational coordinates, minus 1, strictly
+raises grades.
+-/
 def unipotent : Subgroup (G E ε) :=
-  (unitriangular (fun i ↦ -Y.gradeOf i) (𝔸 E)).comap V.ratCoordMatrix.toHomUnits
+  (unitriangular (fun i ↦ - Y.gradeOf i) (𝔸 E)).comap V.ratCoordMatrix.toHomUnits
 
-/-- The homomorphism from the adelic unitary group of the standard definite space on X to that
-of V, acting on X and fixing the string vectors. -/
+/--
+The homomorphism from the adelic unitary group of the standard definite space on X to that
+of V, acting on X and fixing the string vectors.
+-/
 def inclX : G E (1 : X → ℤˣ) →* G E ε :=
   ((U.reindex Y.indexEquiv (by
-        -- The Gram matrix in the adeles is block diagonal with the standard form on X; the block of
-        -- the string is given explicitly.
-        rw [Y.gram_eq, gradedGram, gradedBlocks, ← submatrix_map]
-        aesop (add simp fromBlocks_map))).trans V.toRatCoords.symm).toMonoidHom.comp
-    ((U.sum (J' := (of fun a b : Fin s ↦
-        if a = b.rev then (if a = b then -N else 1) else 0).map toAdele) rfl).comp
-      ((G.toUnitary (s := 1)).toMonoidHom.prod 1))
+      -- The Gram matrix in the adeles is block diagonal with the standard form on X; the block of
+      -- the string is given explicitly.
+      rw [Y.gram_eq, gradedGram, gradedBlocks, ← submatrix_map]
+      aesop (add simp fromBlocks_map))).trans V.toRatCoords.symm).toMonoidHom.comp
+    ((U.sum
+      (J' := (of fun a b : Fin s ↦ if a = b.rev then (if a = b then -N else 1) else 0).map toAdele)
+      rfl).comp ((G.toUnitary (s := 1)).toMonoidHom.prod 1))
 
 /-- In rational coordinates, `Y.inclX h` is block diagonal: the matrix of `h` on `X` and the
 identity on the string. -/
@@ -163,23 +181,27 @@ lemma ratCoordMatrix_inclX (h : G E 1) :
     V.ratCoordMatrix (Y.inclX h) = gradedBlocks Y.indexEquiv Y.indexEquiv h.adeleMatrix 1 := by
   simp [Space.ratCoordMatrix, inclX, U.reindex, U.sum, blockGL, G.toUnitary, G.adeleMatrix]
 
-/-- The Bessel (Fourier–Jacobi) subgroup: the `g` whose matrix in rational coordinates sends each
+/--
+The Bessel (Fourier–Jacobi) subgroup: the `g` whose matrix in rational coordinates sends each
 string vector of weight `≥ 0` to itself plus a combination of string vectors of higher weight.
 In the column `k` of such a vector, the entries in the rows `i` of weight at most that of `k` are
-those of the identity matrix. -/
+those of the identity matrix.
+-/
 def besselGroup : Subgroup (G E ε) :=
-  Subgroup.comap V.ratCoordMatrix.toHomUnits <| agreeWithOneOn
-    (fun i k : ι ↦ (Y.indexEquiv.symm k).isRight ∧ 0 ≤ Y.gradeOf k ∧ Y.gradeOf i ≤ Y.gradeOf k)
-    (𝔸 E) <| by
-      -- Given a prescribed entry `(i, j)` and any `k`, one of `(i, k)` and `(k, j)` is prescribed:
-      -- `(k, j)` if the weight of `k` is at most that of `j`, and `(i, k)` otherwise.
-      intro i k j ⟨hj_string, hj_nonneg, hij⟩
-      obtain hkj | hjk := le_or_gt (Y.gradeOf k) (Y.gradeOf j)
-      · exact .inr ⟨hj_string, hj_nonneg, hkj⟩
-      · refine .inl ⟨?_, hj_nonneg.trans hjk.le, hij.trans hjk.le⟩
-        -- The weight of `k` is positive, while the vectors of `X` have weight `0`.
-        have hk_pos : 0 < Y.gradeOf k := hj_nonneg.trans_lt hjk
-        cases hk : Y.indexEquiv.symm k <;> simp_all
+  Subgroup.comap V.ratCoordMatrix.toHomUnits <|
+    agreeWithOneOn
+        (fun i k : ι ↦ (Y.indexEquiv.symm k).isRight ∧ 0 ≤ Y.gradeOf k ∧ Y.gradeOf i ≤ Y.gradeOf k)
+        (𝔸 E) <|
+      by
+        -- Given a prescribed entry `(i, j)` and any `k`, one of `(i, k)` and `(k, j)` is prescribed:
+        -- `(k, j)` if the weight of `k` is at most that of `j`, and `(i, k)` otherwise.
+        intro i k j ⟨hj_string, hj_nonneg, hij⟩
+        obtain hkj | hjk := le_or_gt (Y.gradeOf k) (Y.gradeOf j)
+        · exact .inr ⟨hj_string, hj_nonneg, hkj⟩
+        · refine .inl ⟨?_, hj_nonneg.trans hjk.le, hij.trans hjk.le⟩
+          -- The weight of `k` is positive, while the vectors of `X` have weight `0`.
+          have hk_pos : 0 < Y.gradeOf k := hj_nonneg.trans_lt hjk
+          cases hk : Y.indexEquiv.symm k <;> simp_all
 
 omit [Fintype X] in
 /-- An element `g` lies in the Bessel subgroup if and only if its matrix in rational coordinates
@@ -192,8 +214,10 @@ lemma mem_besselGroup {g : G E ε} :
   -- `gradeOf` is a local simp lemma, which would unfold the grades on one side only.
   simp [besselGroup, -gradeOf]
 
-/-- The rational points of U(V) that lie in the Bessel (Fourier–Jacobi) subgroup of the grading
-Y. -/
+/--
+The rational points of U(V) that lie in the Bessel (Fourier–Jacobi) subgroup of the grading
+Y.
+-/
 abbrev ratBessel : Subgroup (G E ε) := V.Γ ⊓ Y.besselGroup
 
 end Grading
@@ -212,15 +236,17 @@ namespace New
 
 open Matrix Space
 
-variable {E : Type*} [Field E] [CMType E] {ι X : Type _} [Fintype ι] [DecidableEq ι] [Fintype X]
-  [DecidableEq X] {s : ℕ} {ε : ι → ℤˣ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
+variable
+  {E : Type*} [Field E] [CMType E]
+  {ι X : Type _} [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
+  {s : ℕ} {ε : ι → ℤˣ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
   {ι' : Type*} [Fintype ι']
 
 /-! ### Degrees and rational coordinates -/
 
 /-- The matrix x raises weights by at least d: x_{ba} = 0 whenever w'(b) < w(a) + d. -/
-def HasDegreeGe {R ι ι' : Type*} [Zero R] (w' : ι' → ℤ) (w : ι → ℤ) (d : ℤ)
-    (x : Matrix ι' ι R) : Prop :=
+def HasDegreeGe {R ι ι' : Type*} [Zero R] (w' : ι' → ℤ) (w : ι → ℤ) (d : ℤ) (x : Matrix ι' ι R)
+    : Prop :=
   ∀ (b : ι') (a : ι), w' b < w a + d → x b a = 0
 
 /-- Degree bounds add: if `x` has degree at least `d` and `y` has degree at least `d'`, then
@@ -340,55 +366,77 @@ end New
 
 namespace New.Grading
 
-variable {E ι ι' X X' : Type} [DecidableEq X] [DecidableEq X'] [Field E] [CMType E] [Fintype ι]
-  [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] {s s' : ℕ} {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {N : E}
-  {V : Space E ι ε} {V' : Space E ι' ε'} (Y : Grading V N X s) (Y' : Grading V' N X' s')
+variable
+  {E ι ι' X X' : Type} [DecidableEq X] [DecidableEq X'] [Field E] [CMType E] [Fintype ι]
+  [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
+  {s s' : ℕ} {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
+  (Y : Grading V N X s) (Y' : Grading V' N X' s')
   (d : ι' → ℤ)
 
-/-- The involution of the basis indices of V that fixes the indices of X and exchanges the
-string vectors i and s − 1 − i. -/
+/--
+The involution of the basis indices of V that fixes the indices of X and exchanges the
+string vectors i and s − 1 − i.
+-/
 def stringReversal (i : ι) : ι := Y.indexEquiv ((Y.indexEquiv.symm i).map id Fin.rev)
 
-/-- The rational map `V → V'` that kills `X` and sends the string vector `a` to `t a` times the
+/--
+The rational map `V → V'` that kills `X` and sends the string vector `a` to `t a` times the
 string vector of `V'` with the same number (to `0` if there is none). For `s` odd, `t a` is
 `1`, `-N c`, `c` when the weight of `a` is positive, zero, negative. For `s` even, `t a` is
 `c`, `1` when the weight is positive, negative. It has degree at least `-1` when `s' = s - 1`.
 For `s' = s - 1` and equal constants `c` it sends each `𝔢 ^ i` (`New.Grading.stringPower`) to
-`𝔢 ^ i`, which is `0` in `V'` for `i = s - 1` (`New.Grading.stringMap_mulVec_stringPower`). -/
+`𝔢 ^ i`, which is `0` in `V'` for `i = s - 1` (`New.Grading.stringMap_mulVec_stringPower`).
+-/
 def stringMap : Matrix ι' ι (𝔸 E) :=
   -- The weight of `a` is positive iff `2 * a + 1 < s`, and zero iff `2 * a + 1 = s`.
   (gradedBlocks Y'.indexEquiv Y.indexEquiv 0 <| Matrix.of fun (b : Fin s') (a : Fin s) ↦
     if (b : ℕ) = a then
       (if Odd s ↔ 2 * a + 1 < s then 1 else ↑Y.genericConst) * (if 2 * a + 1 = s then -N else 1)
-    else 0).map toAdele
+    else
+      0).map toAdele
 
-/-- The condition that the matrix w agrees with T (`New.Grading.stringMap`) at all entries (b, a)
-where a has positive grade and b has grade below that of a. -/
+/--
+The condition that the matrix w agrees with T (`New.Grading.stringMap`) at all entries (b, a)
+where a has positive grade and b has grade below that of a.
+-/
 abbrev AgreesWithStringMap (w : Matrix ι' ι (𝔸 E)) : Prop :=
   ∀ (b : ι') (a : ι), 0 < Y.gradeOf a → Y'.gradeOf b < Y.gradeOf a → w b a = Y.stringMap Y' b a
 
-/-- For weights d on the target basis and an index pair (b, a), the integer d(b) minus the grade
-of a in Y: the amount by which the entry (b, a) of a map raises grades. -/
+/--
+For weights d on the target basis and an index pair (b, a), the integer d(b) minus the grade
+of a in Y: the amount by which the entry (b, a) of a map raises grades.
+-/
 abbrev mapDegree (r : ι' × ι) : ℤ := d r.1 - Y.gradeOf r.2
 
-/-- For weights d on the target indices, the additive group of rational matrices
+/--
+For weights d on the target indices, the additive group of rational matrices
 (`ratMatrices E ι' ι`, adelic matrices with entries from E) whose entry (b, a) vanishes whenever
-d(b) is less than the grade of a. -/
+d(b) is less than the grade of a.
+-/
 def nonnegMaps : AddSubgroup (ratMatrices E ι' ι) where
   carrier := {w : ratMatrices E ι' ι | HasDegreeGe d Y.gradeOf 0 (w : Matrix ι' ι (𝔸 E))}
   add_mem' := by simp_all [HasDegreeGe]
   zero_mem' := by simp [HasDegreeGe]
   neg_mem' := by simp_all [HasDegreeGe]
 
-/-- Multiplication by `𝔢`: the rational map `V → V` that kills `X` and the last string vector and
+/--
+Multiplication by `𝔢`: the rational map `V → V` that kills `X` and the last string vector and
 sends the string vector `b` to a multiple of the vector `b + 1`. The factor is `-N c` if `b` has
-weight `0`, `-N c²` if `b` has weight `1`, and `c` otherwise. It sends `𝔢 ^ i` to `𝔢 ^ (i + 1)`. -/
+weight `0`, `-N c²` if `b` has weight `1`, and `c` otherwise. It sends `𝔢 ^ i` to `𝔢 ^ (i + 1)`.
+-/
 def shift : Matrix ι ι (𝔸 E) :=
   -- For `a = b + 1`: `b` has weight zero iff `2 * b + 1 = s`, and weight one iff `2 * a = s`.
   (gradedBlocks Y.indexEquiv Y.indexEquiv 0 <| Matrix.of fun a b : Fin s ↦
     if (a : ℕ) = b + 1 then
-      Y.genericConst * (if 2 * b + 1 = s then -N else if 2 * a = s then -N * Y.genericConst else 1)
-    else 0).map toAdele
+      Y.genericConst
+        * (if 2 * b + 1 = s then
+             -N
+           else if 2 * a = s then
+             -N * Y.genericConst
+           else
+             1)
+    else
+      0).map toAdele
 
 end New.Grading
 
@@ -405,12 +453,15 @@ namespace New
 
 open Matrix Fintype Space
 
-variable {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
-  [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X'] {s s' : ℕ} {ε : ι → ℤˣ}
-  {ε' : ι' → ℤˣ} {N : E} (V : Space E ι ε) (V' : Space E ι' ε')
+variable
+  {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+  [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X']
+  {s s' : ℕ} {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {N : E} (V : Space E ι ε) (V' : Space E ι' ε')
 
-/-- The adjoint J⁻¹yᴴJ' of an adelic map y from the space with Gram matrix J to the space with
-Gram matrix J'. -/
+/--
+The adjoint J⁻¹yᴴJ' of an adelic map y from the space with Gram matrix J to the space with
+Gram matrix J'.
+-/
 noncomputable def Space.formAdjoint (y : Matrix ι' ι (𝔸 E)) : Matrix ι ι' (𝔸 E) :=
   V.J⁻¹.map toAdele * yᴴ * V'.J.map toAdele
 
@@ -567,15 +618,19 @@ lemma submatrix_inl_ratCoordMatrix_mul {g h : G E ε} (hg : g ∈ Y.besselGroup)
     · rw [ratCoordMatrix_inr_inl_eq_zero Y hh a y h_nonpos, mul_zero]
   exact Matrix.ext fun x y ↦ by simp [Matrix.mul_apply, reindex_equiv Y.indexEquiv, h_string]
 
-/-- The projection from `New.Grading.besselGroup` to the adelic unitary group of the standard
-definite space on X: it takes an element to the X-block of its matrix in rational coordinates. -/
+/--
+The projection from `New.Grading.besselGroup` to the adelic unitary group of the standard
+definite space on X: it takes an element to the X-block of its matrix in rational coordinates.
+-/
 def besselProj : Y.besselGroup →* G E (1 : X → ℤˣ) :=
   .mk'
-    (fun r : Y.besselGroup ↦ G.toUnitary.symm <| U.of (by simp)
-      ((V.ratCoordMatrix r).submatrix (Y.indexEquiv ∘ Sum.inl) (Y.indexEquiv ∘ Sum.inl))
-      (Y.submatrix_inl_ratCoordMatrix_unitary r.property))
-    fun a b ↦ (stdSpace E X).isEmbedding_ratCoordMatrix.injective <| by
-      simpa [G.adeleMatrix] using Y.submatrix_inl_ratCoordMatrix_mul a.property b.property
+    (fun r : Y.besselGroup ↦
+      G.toUnitary.symm <| U.of (by simp)
+        ((V.ratCoordMatrix r).submatrix (Y.indexEquiv ∘ Sum.inl) (Y.indexEquiv ∘ Sum.inl))
+        (Y.submatrix_inl_ratCoordMatrix_unitary r.property))
+    fun a b ↦
+      (stdSpace E X).isEmbedding_ratCoordMatrix.injective <| by
+        simpa [G.adeleMatrix] using Y.submatrix_inl_ratCoordMatrix_mul a.property b.property
 
 /-- The matrix of `Y.besselProj r` is the X-block of the matrix of `r` in rational coordinates. -/
 lemma adeleMatrix_besselProj (r : Y.besselGroup) :
@@ -660,7 +715,8 @@ section FiniteBesselGroup
 
 open Matrix RingHom New Space
 
-variable {E X ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
+variable
+  {E X ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
   {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
 
 namespace New.Space
@@ -703,8 +759,10 @@ namespace Grading
 /-- The finite points `g` such that `(1, g)` lies in the Bessel subgroup `Y.besselGroup`. -/
 def besselFin : Subgroup (Gf E ι) := Y.besselGroup.comap (MonoidHom.inr (GInf E ε) (Gf E ι))
 
-/-- The embedding of the finite points of `U(X)` in those of `U(V)`: the finite component of
-`Y.inclX (1, h)`. -/
+/--
+The embedding of the finite points of `U(X)` in those of `U(V)`: the finite component of
+`Y.inclX (1, h)`.
+-/
 def inclXFin : Gf E X →* Gf E ι :=
   (MonoidHom.snd (GInf E ε) (Gf E ι)).comp (Y.inclX.comp (MonoidHom.inr (GInf E 1) (Gf E X)))
 
@@ -755,26 +813,33 @@ open DiscreteSeries Matrix MeasureTheory
 
 variable {n : Type _} [Fintype n] [DecidableEq n]
 
-/-- A frame for the complex matrix J with signs ε: an invertible matrix p (the field `matrix`) with
-pᴴJp = diag(ε). -/
+/--
+A frame for the complex matrix J with signs ε: an invertible matrix p (the field `matrix`) with
+pᴴJp = diag(ε).
+-/
 class DiscreteSeries.SignFrame (J : outParam (Matrix n n ℂ)) (ε : outParam (n → ℤˣ)) where
   /-- The invertible matrix p of the frame. -/
   matrix : GL n ℂ
   /-- The matrix p satisfies pᴴJp = diag(ε). -/
   gram_eq : matrix.valᴴ * J * matrix.val = signMatrix ε
 
-variable {ε : n → ℤˣ} {A : ℕ} {J : Matrix n n ℂ}
-  {l : HCParam (n := n) ε} [p : SignFrame J ε] [IsHermitianInvolution J]
+variable
+  {ε : n → ℤˣ} {A : ℕ} {J : Matrix n n ℂ} {l : HCParam (n := n) ε}
+  [p : SignFrame J ε] [IsHermitianInvolution J]
 
-/-- The isomorphism of topological groups U(J) → U(diag ε), g ↦ p⁻¹gp, for the frame p of
-`New.DiscreteSeries.SignFrame J ε`, so that pᴴJp = diag(ε). -/
+/--
+The isomorphism of topological groups U(J) → U(diag ε), g ↦ p⁻¹gp, for the frame p of
+`New.DiscreteSeries.SignFrame J ε`, so that pᴴJp = diag(ε).
+-/
 def DiscreteSeries.frameEquiv : U J ≃ₜ* USign ε :=
   ContinuousMulEquiv.mk (U.conj p.matrix p.gram_eq).symm
     (continuous_induced_rng.2 ((continuous_const.mul continuous_subtypeVal).mul continuous_const))
     (continuous_induced_rng.2 ((continuous_const.mul continuous_subtypeVal).mul continuous_const))
 
-/-- The function g ↦ c_λ(p⁻¹gp) on U(J), for l = 2λ and the frame p of
-`New.DiscreteSeries.SignFrame J ε`, so that pᴴJp = diag(ε). -/
+/--
+The function g ↦ c_λ(p⁻¹gp) on U(J), for l = 2λ and the frame p of
+`New.DiscreteSeries.SignFrame J ε`, so that pᴴJp = diag(ε).
+-/
 def HCParam.dsCoeffInFrame (l : HCParam ε) (g : U J) : ℂ := l.dsCoeff (frameEquiv g)
 
 omit [IsHermitianInvolution J] in
@@ -789,26 +854,30 @@ lemma DiscreteSeries.measurePreserving_frameEquiv : MeasurePreserving (frameEqui
   measurePreserving_haarU p.matrix⁻¹ p.matrix 1 _ (by simp [p.gram_eq]) (fun _ ↦ rfl)
 
 /-- The integral over U(J) of f(p⁻¹gp), for the frame p, is the integral of f over U(diag ε). -/
-theorem DiscreteSeries.integral_comp_frameEquiv {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    (f : USign ε → E) : ∫ g : U J, f (frameEquiv g) = ∫ g : USign ε, f g :=
+theorem DiscreteSeries.integral_comp_frameEquiv
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (f : USign ε → E)
+    : ∫ g : U J, f (frameEquiv g) = ∫ g : USign ε, f g :=
   measurePreserving_frameEquiv.integral_comp frameEquiv.measurableEmbedding _
 
-/-- If l = 2λ is a parameter with gap 500n³+A, J is a hermitian involution and pᴴJp = diag(ε), the
+/--
+If l = 2λ is a parameter with gap 500n³+A, J is a hermitian involution and pᴴJp = diag(ε), the
 function deg_λ c_λ (formal degree times coefficient), carried to U(J) by the frame p, is an
 idempotent kernel on U(J): continuous, integrable, self-adjoint, nonzero at 1 and reproducing
-under convolution. -/
-theorem isIdempotentKernel_dsCoeffInFrame [Nonempty n] (hl_gap : l.HasLargeGap A) :
-    IsIdempotentKernel fun g : U J ↦ l.formalDegree * l.dsCoeffInFrame g := by
+under convolution.
+-/
+theorem isIdempotentKernel_dsCoeffInFrame [Nonempty n] (hl_gap : l.HasLargeGap A)
+    : IsIdempotentKernel fun g : U J ↦ l.formalDegree * l.dsCoeffInFrame g := by
   -- The kernel of `-l` is `l.formalDegree * l.dsCoeff`, the complex conjugate of that of `l`; carry
   -- it over to `U J` along the measure preserving isomorphism `frameEquiv`.
   have h_kernel : IsIdempotentKernel (-l).dsKernel :=
     HCParam.HasLargeGap.isIdempotentKernel_dsKernel hl_gap.neg
-  have h_pullback : IsIdempotentKernel fun g : U J ↦ (-l).dsKernel (frameEquiv g) :=
-    { continuous := by fun_prop
-      integrable := measurePreserving_frameEquiv.integrable_comp_of_integrable h_kernel.integrable
-      apply_inv g := by simp [← h_kernel.apply_inv]
-      apply_one_ne_zero := by simp [h_kernel.apply_one_ne_zero]
-      convolution_eq x y := by simp [← h_kernel.convolution_eq, ← integral_comp_frameEquiv] }
+  have h_pullback : IsIdempotentKernel fun g : U J ↦ (-l).dsKernel (frameEquiv g) := {
+    continuous := by fun_prop
+    integrable := measurePreserving_frameEquiv.integrable_comp_of_integrable h_kernel.integrable
+    apply_inv g := by simp [← h_kernel.apply_inv]
+    apply_one_ne_zero := by simp [h_kernel.apply_one_ne_zero]
+    convolution_eq x y := by simp [← h_kernel.convolution_eq, ← integral_comp_frameEquiv]
+  }
   simpa [dsKernel, HCParam.formalDegree, HCParam.dsCoeffInFrame] using h_pullback
 
 end New
@@ -817,10 +886,12 @@ end New
 
 namespace New.Grading
 
-variable {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+variable
+  {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
   [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X']
   {s : ℕ} {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
-  (Y : Grading V N X s) {Y' : Grading V' N X' (s - 1)}
+  (Y : Grading V N X s)
+  {Y' : Grading V' N X' (s - 1)}
 
 omit [Fintype X] [Fintype X'] in
 /-- For s' = s − 1, the map T = `New.Grading.stringMap` lowers weights by at most 1. -/

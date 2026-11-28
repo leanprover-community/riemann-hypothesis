@@ -49,13 +49,17 @@ open CategoryTheory Functor Function Module ExteriorAlgebra TrivSqZeroExt CommAl
 
 namespace New.Variety
 
-variable {T T' M M' : Type} [CommRing T] [CommRing T'] [AddCommGroup M] [AddCommGroup M']
-  [Module T M] [Module T' M'] {a : T →+* T'} (m : M →ₛₗ[a] M')
+variable
+  {T T' M M' : Type}
+  [CommRing T] [CommRing T'] [AddCommGroup M] [AddCommGroup M'] [Module T M] [Module T' M']
+  {a : T →+* T'} (m : M →ₛₗ[a] M')
 
 /-! ### Semilinear maps on exterior algebras -/
 
-/-- For a ring map a: T → T' and an a-semilinear map m: M → M', the ring homomorphism ⋀_T M →
-⋀_{T'} M' extending a and m. -/
+/--
+For a ring map a: T → T' and an a-semilinear map m: M → M', the ring homomorphism ⋀_T M →
+⋀_{T'} M' extending a and m.
+-/
 def exteriorMap : ExteriorAlgebra T M →+* ExteriorAlgebra T' M' :=
   -- View the target as a `T`-algebra through `a`; then `ι ∘ m` is `T`-linear with squares zero.
   letI := Algebra.compHom (ExteriorAlgebra T' M') a
@@ -79,15 +83,20 @@ lemma exteriorMap_iotaMulti {d : ℕ} (v : Fin d → M) :
 
 variable {k : Type} [CommRing k] (ι : Type) [Fintype ι] [LinearOrder ι]
 
-/-- Pairs form a category: a morphism (A, A^ι) → (B, B^κ) is a pair f = ⟨f.1, f.2⟩ of a
-k-algebra map f.1 : A → B and an f.1-semilinear map f.2 : A^ι → B^κ. -/
+/--
+Pairs form a category: a morphism (A, A^ι) → (B, B^κ) is a pair f = ⟨f.1, f.2⟩ of a
+k-algebra map f.1 : A → B and an f.1-semilinear map f.2 : A^ι → B^κ.
+-/
 instance : Category (HodgeTest k) where
   Hom X Y :=
     Σ a : X.baseAlg ⟶ Y.baseAlg,
       (X.Index → X.baseAlg) →ₛₗ[(a.hom : X.baseAlg →+* Y.baseAlg)] Y.Index → Y.baseAlg
   id _ := ⟨𝟙 _, .id⟩
-  comp f g := ⟨f.1 ≫ g.1, g.2.toAddHom.comp f.2.toAddHom,
-    fun m x ↦ (congrArg g.2 (f.2.map_smulₛₗ m x)).trans (g.2.map_smulₛₗ _ _)⟩
+  comp f g := ⟨
+    f.1 ≫ g.1,
+    g.2.toAddHom.comp f.2.toAddHom,
+    fun m x ↦ (congrArg g.2 (f.2.map_smulₛₗ m x)).trans (g.2.map_smulₛₗ _ _)
+  ⟩
 
 /-- The semilinear map of a composite of morphisms of pairs is the composite of the semilinear
 maps. -/
@@ -96,16 +105,20 @@ private lemma HodgeTest.comp_snd_apply {P Q R : HodgeTest k} (f : P ⟶ Q) (g : 
 
 /-! ### Functors on pairs: square-zero extension and exterior algebra -/
 
-/-- For a finite set ι, the functor A ↦ (A, A^ι) from k-algebras to pairs; an algebra map acts
-coordinatewise on A^ι. -/
+/--
+For a finite set ι, the functor A ↦ (A, A^ι) from k-algebras to pairs; an algebra map acts
+coordinatewise on A^ι.
+-/
 abbrev HodgeTest.withIndex : CommAlg k ⥤ HodgeTest k where
   obj A := ⟨A, ι⟩
   map a := ⟨a, { toFun x := a ∘ x, map_add' := by simp, map_smul' := by aesop }⟩
 
 variable {ι} {A B : CommAlg k} (f : A ⟶ B) (a) (v : ι → M')
 
-/-- For a ring map a: T → T' and vectors v_i in M', the a-semilinear map T^ι → M', (t_i) ↦ Σ
-a(t_i) v_i. -/
+/--
+For a ring map a: T → T' and vectors v_i in M', the a-semilinear map T^ι → M', (t_i) ↦ Σ
+a(t_i) v_i.
+-/
 def semilinearOfBasis : (ι → T) →ₛₗ[a] M' :=
   ∑ i : ι, LinearMap.toSpanSingleton T' M' (v i) ∘ₛₗ a.toSemilinearMap ∘ₛₗ LinearMap.proj i
 
@@ -117,33 +130,32 @@ lemma semilinearOfBasis_single (i : ι) : semilinearOfBasis a v (single i 1) = v
 def HodgeTest.sqZeroExt : HodgeTest k ⥤ CommAlg k where
   obj X := CommAlgCat.of k (TrivSqZeroExt X.baseAlg (X.Index → X.baseAlg))
   map {_ Y} f :=
-    ofHom
-      { toFun x := (f.1 x.fst, f.2 x.snd)
-        map_one' := by
-          apply TrivSqZeroExt.ext <;>
-            simp only [fst_one, snd_one, map_one, map_zero, fst_mk, snd_mk]
-        map_mul' := by
-          intro x y
-          apply TrivSqZeroExt.ext
-          · simp only [fst_mul, map_mul, fst_mk]
-            rfl
-          · let image (z : TrivSqZeroExt _ _) : TrivSqZeroExt Y.baseAlg (Y.Index → Y.baseAlg) :=
-              (f.1 z.fst, f.2 z.snd)
-            change f.2 (x * y).snd = (image x * image y).snd
-            rw [TrivSqZeroExt.snd_mul, TrivSqZeroExt.snd_mul, op_smul_eq_smul,
-              op_smul_eq_smul, _root_.map_add, LinearMap.map_smulₛₗ, LinearMap.map_smulₛₗ]
-            rfl
-        map_zero' := by
-          apply TrivSqZeroExt.ext <;> simp only [fst_zero, snd_zero, map_zero, fst_mk, snd_mk]
-        map_add' := by
-          intro x y
-          apply TrivSqZeroExt.ext <;>
-            simp only [fst_add, snd_add, _root_.map_add, fst_mk, snd_mk] <;> rfl
-        commutes' := by
-          intro r
-          apply TrivSqZeroExt.ext <;>
-            simp only [Algebra.algebraMap_eq_smul_one, fst_smul, snd_smul, fst_one, snd_one,
-              _root_.map_smul, map_one, smul_zero, map_zero, fst_mk, snd_mk] }
+    ofHom {
+      toFun x := (f.1 x.fst, f.2 x.snd)
+      map_one' := by
+        apply TrivSqZeroExt.ext <;> simp only [fst_one, snd_one, map_one, map_zero, fst_mk, snd_mk]
+      map_mul' := by
+        intro x y
+        apply TrivSqZeroExt.ext
+        · simp only [fst_mul, map_mul, fst_mk]
+          rfl
+        · let image (z : TrivSqZeroExt _ _) : TrivSqZeroExt Y.baseAlg (Y.Index → Y.baseAlg) :=
+            (f.1 z.fst, f.2 z.snd)
+          change f.2 (x * y).snd = (image x * image y).snd
+          rw [TrivSqZeroExt.snd_mul, TrivSqZeroExt.snd_mul, op_smul_eq_smul, op_smul_eq_smul,
+            _root_.map_add, LinearMap.map_smulₛₗ, LinearMap.map_smulₛₗ]
+          rfl
+      map_zero' := by
+        apply TrivSqZeroExt.ext <;> simp only [fst_zero, snd_zero, map_zero, fst_mk, snd_mk]
+      map_add' := by
+        intro x y
+        apply TrivSqZeroExt.ext <;> simp only [fst_add, snd_add, _root_.map_add, fst_mk, snd_mk]
+          <;> rfl
+      commutes' := by
+        intro r
+        apply TrivSqZeroExt.ext <;> simp only [Algebra.algebraMap_eq_smul_one, fst_smul, snd_smul,
+          fst_one, snd_one, _root_.map_smul, map_one, smul_zero, map_zero, fst_mk, snd_mk]
+    }
 
 private lemma exteriorHom_ext {X : HodgeTest k} {Y : AlgCat k}
     {f g : AlgCat.of k (ExteriorAlgebra X.baseAlg (X.Index → X.baseAlg)) ⟶ Y}
@@ -160,45 +172,51 @@ private lemma exteriorHom_ext {X : HodgeTest k} {Y : AlgCat k}
 def exteriorAlg : HodgeTest k ⥤ AlgCat k where
   obj X := AlgCat.of k (ExteriorAlgebra X.baseAlg (X.Index → X.baseAlg))
   map f :=
-    AlgCat.ofHom <|
-      AlgHom.mk' (exteriorMap f.2) fun r x ↦ by
-        simpa only [algebraMap_smul, RingHom.coe_coe, AlgHom.commutes] using
-          exteriorMap_smul f.2 (algebraMap k _ r) x
+    AlgCat.ofHom <| AlgHom.mk' (exteriorMap f.2) fun r x ↦ by
+      simpa only [algebraMap_smul, RingHom.coe_coe, AlgHom.commutes] using
+        exteriorMap_smul f.2 (algebraMap k _ r) x
   map_id _ := by
-    apply exteriorHom_ext <;> intro x <;>
-      simp only [ConcreteCategory.hom_ofHom, Algebra.algebraMap_eq_smul_one, AlgHom.coe_mk',
+    apply exteriorHom_ext <;> intro x
+      <;> simp only [ConcreteCategory.hom_ofHom, Algebra.algebraMap_eq_smul_one, AlgHom.coe_mk',
         exteriorMap_smul, exteriorMap_iota, RingHom.coe_coe, map_one, AlgCat.hom_id, AlgHom.coe_id,
         id_eq]
     all_goals rfl
   map_comp _ _ := by
-    apply exteriorHom_ext <;> intro x <;>
-      simp only [ConcreteCategory.hom_ofHom, Algebra.algebraMap_eq_smul_one, AlgHom.coe_mk',
+    apply exteriorHom_ext <;> intro x
+      <;> simp only [ConcreteCategory.hom_ofHom, Algebra.algebraMap_eq_smul_one, AlgHom.coe_mk',
         exteriorMap_smul, exteriorMap_iota, RingHom.coe_coe, map_one, AlgCat.hom_comp,
         AlgHom.coe_comp, Function.comp_apply]
     all_goals rfl
 
-/-- The functor (A, M) ↦ ⋀_A M with values in abelian groups: the coefficient of Hodge
-cohomology. -/
+/--
+The functor (A, M) ↦ ⋀_A M with values in abelian groups: the coefficient of Hodge
+cohomology.
+-/
 abbrev hodgeCoeff : AbFunctor (HodgeTest k) :=
   moduleCoeff (exteriorAlg ⋙ forget₂ (AlgCat k) (ModuleCat k))
 
 open HodgeTest Comparison H IsLocalization
-variable {N N' : AbFunctor (CommAlg k)} {q : ℕ} (t : k) {C : Type _} [Category C]
-  {P Q : HodgeTest k}
+variable
+  {N N' : AbFunctor (CommAlg k)} {q : ℕ} (t : k) {C : Type _} [Category C] {P Q : HodgeTest k}
 
-/-- For a functor Φ to k-algebras with underlying functor F to abelian groups, the pairing F ⊗ F
-→ F given by multiplication. -/
-def _root_.CategoryTheory.Functor.mulPairing (Φ : C ⥤ AlgCat k) :
-    let F := moduleCoeff (Φ ⋙ forget₂ (AlgCat k) (ModuleCat k))
-    abTensor F F ⟶ F :=
-  { app c := AddCommGrpCat.ofHom (LinearMap.mul' ℤ (ULift (Φ c))).toAddMonoidHom
-    naturality _ _ f :=
-      addCommGrp_tensor_hom_ext fun _ _ ↦ congrArg ULift.up (map_mul (Φ.map f).hom' ..).symm }
+/--
+For a functor Φ to k-algebras with underlying functor F to abelian groups, the pairing F ⊗ F
+→ F given by multiplication.
+-/
+def _root_.CategoryTheory.Functor.mulPairing (Φ : C ⥤ AlgCat k)
+    : let F := moduleCoeff (Φ ⋙ forget₂ (AlgCat k) (ModuleCat k))
+      abTensor F F ⟶ F := {
+  app c := AddCommGrpCat.ofHom (LinearMap.mul' ℤ (ULift (Φ c))).toAddMonoidHom
+  naturality _ _ f :=
+    addCommGrp_tensor_hom_ext fun _ _ ↦ congrArg ULift.up (map_mul (Φ.map f).hom' ..).symm
+}
 
-/-- For a test (A, A^ι), the basis of the exterior algebra ⋀_A A^ι over A formed by the wedge
-products of standard basis vectors. -/
-abbrev HodgeTest.formBasis {c : HodgeTest k} :
-    Basis (Finset c.Index) c.baseAlg (ExteriorAlgebra c.baseAlg (c.Index → c.baseAlg)) :=
+/--
+For a test (A, A^ι), the basis of the exterior algebra ⋀_A A^ι over A formed by the wedge
+products of standard basis vectors.
+-/
+abbrev HodgeTest.formBasis {c : HodgeTest k}
+    : Basis (Finset c.Index) c.baseAlg (ExteriorAlgebra c.baseAlg (c.Index → c.baseAlg)) :=
   (basisFun c.baseAlg c.Index).ExteriorAlgebra
 
 /-- Let f : P → Q be a morphism of pairs whose semilinear map f.2 sends the i-th standard basis
@@ -239,8 +257,10 @@ lemma HodgeTest.repr_withIndex_map (x :
   simp only [exteriorMap_smul, h_form]
   exact congrFun (formBasis.repr_sum_self _) s
 
-/-- For a pair C = (A, M), the k-algebra projection A ⊕ M → A, (a, m) ↦ a, from the square-zero
-extension. -/
+/--
+For a pair C = (A, M), the k-algebra projection A ⊕ M → A, (a, m) ↦ a, from the square-zero
+extension.
+-/
 abbrev HodgeTest.baseProj (C : HodgeTest k) : sqZeroExt C ⟶ C.baseAlg :=
   ofHom (fstHom k C.baseAlg (C.Index → C.baseAlg))
 
@@ -258,8 +278,10 @@ lemma HodgeTest.hom_ext {f g : P ⟶ Q} (h_ring : f.1 = g.1)
 
 /-! ### Hodge cohomology, scaling, localisation and base change -/
 
-/-- Hodge cohomology: for a functor N from k-algebras to abelian groups, Ext^q from (A, M) ↦ N(A
-⊕ M) to (A, M) ↦ ⋀_A M, in functors on pairs. -/
+/--
+Hodge cohomology: for a functor N from k-algebras to abelian groups, Ext^q from (A, M) ↦ N(A
+⊕ M) to (A, M) ↦ ⋀_A M, in functors on pairs.
+-/
 abbrev HodgeH (N : CommAlg k ⥤ AddCommGrpCat) (q : ℕ) : Type 2 :=
   H (HodgeTest.sqZeroExt (k := k) ⋙ N) hodgeCoeff q
 
@@ -267,11 +289,14 @@ abbrev HodgeH (N : CommAlg k ⥤ AddCommGrpCat) (q : ℕ) : Type 2 :=
 abbrev HodgeH.map (α : N' ⟶ N) : HodgeH N q →ₗ[k] HodgeH N' q :=
   mapₗ k hodgeCoeff (whiskerLeft HodgeTest.sqZeroExt α) q
 
-/-- For t in k and a functor F on pairs, the natural endomorphism of F induced on each pair (A, M)
-by the identity of A and multiplication by t on M. -/
+/--
+For t in k and a functor F on pairs, the natural endomorphism of F induced on each pair (A, M)
+by the identity of A and multiplication by t on M.
+-/
 def HodgeTest.scaleModule (F : HodgeTest k ⥤ C) : F ⟶ F :=
   whiskerRight
-    ({ app _ := ⟨𝟙 _, t • LinearMap.id⟩
+    ({
+       app _ := ⟨𝟙 _, t • LinearMap.id⟩
        naturality X Y f := by
          refine hom_ext rfl fun i ↦ ?_
          -- `f.2` is semilinear over `f.1`, a map of `k`-algebras, which fixes `t • 1`.
@@ -279,12 +304,15 @@ def HodgeTest.scaleModule (F : HodgeTest k ⥤ C) : F ⟶ F :=
            f.2.map_smulₛₗ (t • 1) (single i 1)
          rw [comp_snd_apply, comp_snd_apply]
          change t • f.2 (single i 1) = f.2 (t • single i 1)
-         simpa using h_smul.symm } :
-      𝟭 (HodgeTest k) ⟶ 𝟭 (HodgeTest k))
+         simpa using h_smul.symm
+     }
+      : 𝟭 (HodgeTest k) ⟶ 𝟭 (HodgeTest k))
     F
 
-/-- For t ∈ k, the endomorphism of the degree-q Hodge cohomology of N induced by (a, m) ↦ (a, tm) on
-A ⊕ M. -/
+/--
+For t ∈ k, the endomorphism of the degree-q Hodge cohomology of N induced by (a, m) ↦ (a, tm) on
+A ⊕ M.
+-/
 abbrev HodgeH.scale : HodgeH N q →+ HodgeH N q :=
   H.map hodgeCoeff (HodgeTest.scaleModule t (HodgeTest.sqZeroExt ⋙ N)) q
 
@@ -323,20 +351,26 @@ lemma HodgeTest.existsUnique_lift_away (g : A) (h_loc : (Submonoid.powers g).IsL
 
 variable {E : Type} [CommRing E] [Algebra E k] {N N' : AbFunctor (CommAlg E)}
 
-/-- For an E-algebra k, the comparison from Hodge coefficients over E to those over k, given by
-restriction of scalars on pairs and the identity of ⋀_A M. -/
+/--
+For an E-algebra k, the comparison from Hodge coefficients over E to those over k, given by
+restriction of scalars on pairs and the identity of ⋀_A M.
+-/
 def HodgeTest.baseComparison : Comparison (hodgeCoeff (k := E)) (hodgeCoeff (k := k)) where
-  functor :=
-          { obj X := ⟨(restrictAlg E k).obj X.baseAlg, X.Index⟩
-            map f := ⟨(restrictAlg E k).map f.1, f.2⟩ }
-  coeffHom :=
-    { app X := by
-        change (hodgeCoeff (k := k)).obj X ⟶ (hodgeCoeff (k := k)).obj X
-        exact 𝟙 _
-      naturality X Y f := by rfl }
+  functor := {
+    obj X := ⟨(restrictAlg E k).obj X.baseAlg, X.Index⟩
+    map f := ⟨(restrictAlg E k).map f.1, f.2⟩
+  }
+  coeffHom := {
+    app X := by
+      change (hodgeCoeff (k := k)).obj X ⟶ (hodgeCoeff (k := k)).obj X
+      exact 𝟙 _
+    naturality X Y f := by rfl
+  }
 
-/-- Base change: for an E-algebra k, the additive map from the Hodge cohomology over E of N to
-that over k of N restricted to k-algebras. -/
+/--
+Base change: for an E-algebra k, the additive map from the Hodge cohomology over E of N to
+that over k of N restricted to k-algebras.
+-/
 def HodgeH.baseChange : HodgeH N q →+ HodgeH (restrictAlg E k ⋙ N) q :=
   baseComparison.pull (whiskerRight (𝟙 (HodgeTest.sqZeroExt ⋙ restrictAlg E k)) N) q
 
@@ -362,9 +396,11 @@ private lemma EtaleChart.existsUnique_univPoint :
     (𝟙 _)
     (fun i ↦ (a.coordinate i, single i 1)) fun _ ↦ rfl
 
-/-- The universal point of an étale chart a with ring R = a.coordRing and d coordinates x_i: the
+/--
+The universal point of an étale chart a with ring R = a.coordRing and d coordinates x_i: the
 k-algebra map u : R → R ⊕ R^d that lifts the identity of R and sends each x_i to (x_i, e_i), where
-e_i is the i-th basis vector of R^d. These two conditions determine u. -/
+e_i is the i-th basis vector of R^d. These two conditions determine u.
+-/
 @[no_expose]
 def EtaleChart.univPoint : a.coordRing ⟶ HodgeTest.sqZeroExt.obj ⟨a.coordRing, Fin d⟩ :=
   (EtaleChart.existsUnique_univPoint a).exists.choose
@@ -425,8 +461,10 @@ lemma EtaleChart.exists_univPoint :
           pointMap (Y := HodgeTest.sqZeroExt ⋙ reprBy a.coordRing) ⟨u⟩ c :=
   ⟨a.univPoint, a.leftInverse_fst_univPoint, a.bijective_pointMap_univPoint⟩
 
-/-- Over a field k of characteristic zero, the values of a functor F to k-vector spaces are flat
-as abelian groups: k is flat over ℤ, and every k-vector space is flat over k. -/
+/--
+Over a field k of characteristic zero, the values of a functor F to k-vector spaces are flat
+as abelian groups: k is flat over ℤ, and every k-vector space is flat over k.
+-/
 instance [CharZero k] (F : C ⥤ ModuleCat k) : HasFlatValues (moduleCoeff (k := k) (C := C) F) :=
   ⟨fun c : C ↦ Module.Flat.trans ℤ k (ULift (F.obj c))⟩
 

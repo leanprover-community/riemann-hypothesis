@@ -42,8 +42,10 @@ namespace New.DescentPair
 
 open Matrix Space ComplexConjugate ComplexOrder
 
-variable {E r n : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n]
-  [DecidableEq n] (O : DescentPair E r n)
+variable
+  {E r n : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+  (O : DescentPair E r n)
 
 /-- The value at `ξ` of the linear form `O.conjKernel g h` is the conjugate of the theta kernel at
 `(g, h)` of `O.fockDatum (star ξ)`. The kernel `New.pairTheta` is formed with the characters
@@ -53,10 +55,12 @@ lemma conjKernel_apply (g : G E O.signs) (h : Gf E n) (ξ : WeylIndex n O.column
     O.conjKernel g h ξ =
       conj (pairTheta O.W (stdSpace E n) O.charW O.charV (O.fockDatum (star ξ)) (g, 1, h)) := rfl
 
-/-- The theta kernel `θ_W(g, h)` with values in the representation of weight
+/--
+The theta kernel `θ_W(g, h)` with values in the representation of weight
 `(O.columnCount, O.detExp)`, for `g` in `U(W)(𝔸)` and a finite point `h` of `U(V)`. It is the vector
 whose pairing with `ζ` is the theta kernel of the datum `O.fockDatum (star ζ)` at `(g, h)`
-(`New.DescentPair.gramForm_vectorKernel`). -/
+(`New.DescentPair.gramForm_vectorKernel`).
+-/
 def vectorKernel (g : G E O.signs) (h : Gf E n) : WeylIndex n O.columnCount → ℂ :=
   weylGramOver⁻¹ *ᵥ fun i : WeylIndex n O.columnCount ↦ conj (O.conjKernel g h (Pi.single i 1))
 
@@ -139,18 +143,25 @@ lemma vectorKernel_mul_level (k : O.levelGroup) (g : G E O.signs) (x : Gf E n) :
     O.vectorKernel g (x * k.val) = O.levelChar k • O.vectorKernel g x := by
   simpa using O.vectorKernel_equivariant 1 k g x
 
-/-- For `g` in `U(W)(𝔸)`, the function `θ_W(g, ·) = O.vectorKernel g` as an element of `O.FormV`,
+/--
+For `g` in `U(W)(𝔸)`, the function `θ_W(g, ·) = O.vectorKernel g` as an element of `O.FormV`,
 the algebraic forms on `V`: smooth functions on the finite points of `U(V)` with values in the
 representation of weight `(O.columnCount, O.detExp)` that are equivariant under the rational points
-and transform by `O.levelChar` under the level `O.levelGroup`. -/
+and transform by `O.levelChar` under the level `O.levelGroup`.
+-/
 def vectorKernelForm (g : G E O.signs) : O.FormV :=
-  have h_level (k : O.levelGroup) :
-      rightRegular ℂ (Gf E n) (WeylIndex n O.columnCount → ℂ) k.val (O.vectorKernel g) =
-        O.levelChar k • O.vectorKernel g :=
+  have h_level (k : O.levelGroup)
+      : rightRegular ℂ (Gf E n) (WeylIndex n O.columnCount → ℂ) k.val (O.vectorKernel g)
+        = O.levelChar k • O.vectorKernel g :=
     funext (O.vectorKernel_mul_level k g)
-  ⟨⟨O.vectorKernel g, mem_smoothFunctions_of_eigen O.levelChar isOpen_levelOf h_level,
-      fun (γ : U (stdSpace E n).J) (x : Gf E n) ↦ O.vectorKernel_rational_mul γ g x⟩,
-    fun k : O.levelGroup ↦ Subtype.ext (h_level k)⟩
+  ⟨
+    ⟨
+      O.vectorKernel g,
+      mem_smoothFunctions_of_eigen O.levelChar isOpen_levelOf h_level,
+      fun (γ : U (stdSpace E n).J) (x : Gf E n) ↦ O.vectorKernel_rational_mul γ g x
+    ⟩,
+    fun k : O.levelGroup ↦ Subtype.ext (h_level k)
+  ⟩
 
 /-- Let `Ξ` be an algebraic form on `V`. The normalized descent `O.normalizedDescent Ξ` has at `g`
 the value `⟨θ_W(g, ·), Ξ⟩`, the inner product of the form `θ_W(g, ·) = O.vectorKernelForm g` with

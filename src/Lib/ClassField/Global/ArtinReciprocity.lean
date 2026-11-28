@@ -92,7 +92,8 @@ namespace New
 open NumberField Set Subgroup QZChar QZ Nat Algebra IsCyclotomicExtension Cohomology
   MulSemiringAction HeightOneSpectrum Polynomial Valuation IsAlgClosed ZMod
 
-variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [EmbeddedNumberField K]
+variable
+  {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [EmbeddedNumberField K]
   [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
 
 omit [TopologicalSpace Γ] in
@@ -437,19 +438,27 @@ lemma abelianLift_artinAt_eq_of_cyclicClass_eq {ξ χ : QZChar Γ} {x y : Kˣ}
     Γ).left.isClassOfInvariant_classOfInvariant.left
   rw [h_inv, h_inv, h_eq]
 
-/-- The characters `χ : Γ → ℚ/ℤ` that satisfy the reciprocity law over `K`: `χ` kills the Artin
-symbol of the finite idele of every `y ∈ Kˣ`. -/
-private noncomputable def reciprocityChars (K : Type) [Field K] [EmbeddedNumberField K]
-    [IsProGalois Γ K Ω] : AddSubgroup (QZChar Γ) :=
+/--
+The characters `χ : Γ → ℚ/ℤ` that satisfy the reciprocity law over `K`: `χ` kills the Artin
+symbol of the finite idele of every `y ∈ Kˣ`.
+-/
+private noncomputable def reciprocityChars
+    (K : Type) [Field K] [EmbeddedNumberField K] [IsProGalois Γ K Ω]
+    : AddSubgroup (QZChar Γ) :=
   ⨅ y : Kˣ, AddMonoidHom.ker
     (.mk' (fun χ : QZChar Γ ↦ (abelianLift χ (artinMap Γ (principalIdele y))).toAdd)
       fun χ ψ ↦ by simp [abelianLift_add_eq_mul])
 
-/-- For `g : Γ` and `n l : ℕ`, the characters `χ` for which `n • χ g` has order prime to `l`: some
-`a` prime to `l` has `a • n • χ g = 0`. -/
+/--
+For `g : Γ` and `n l : ℕ`, the characters `χ` for which `n • χ g` has order prime to `l`: some
+`a` prime to `l` has `a • n • χ g = 0`.
+-/
 private noncomputable def QZChar.coprimeOrderSubgroup (g : Γ) (n l : ℕ) : AddSubgroup (QZChar Γ) :=
-  let primeToL : Submonoid ℕ :=
-    { carrier := {a | l.Coprime a}, mul_mem' := Nat.Coprime.mul_right, one_mem' := l.gcd_one_right }
+  let primeToL : Submonoid ℕ := {
+    carrier := {a | l.Coprime a}
+    mul_mem' := Nat.Coprime.mul_right
+    one_mem' := l.gcd_one_right
+  }
   (Submodule.torsion' ℤ QZ primeToL).toAddSubgroup.comap
     (.mk' (fun χ : QZChar Γ ↦ n • χ.val g) (by simp))
 

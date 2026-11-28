@@ -137,22 +137,28 @@ lemma exists_reduceAboveM_eq
   · rw [reduceAboveM_false, (hy p).1]
   · rw [reduceAboveM_true, RingHom.comp_apply, starRingEnd_apply, (hy p).2]
 
-/-- The action of `s` on the lattice modulo the place `p` of `E` above `M`: by its component at the
-chosen place `w`, or by the inverse adjoint if `p` is the conjugate of `w`. -/
-def actionAt (s : S.ResidueGL) (p : (Σ i : Fin 2, S.chosenPlaces i) × Bool) :
-    Matrix 𝔰.BesselIndex 𝔰.BesselIndex (ResField (p.1.snd : FinPlace E)) :=
+/--
+The action of `s` on the lattice modulo the place `p` of `E` above `M`: by its component at the
+chosen place `w`, or by the inverse adjoint if `p` is the conjugate of `w`.
+-/
+def actionAt (s : S.ResidueGL) (p : (Σ i : Fin 2, S.chosenPlaces i) × Bool)
+    : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (ResField (p.1.snd : FinPlace E)) :=
   (S.idOrInvAdjoint p.2 (s p.1.fst p.1.snd)).val
 
-/-- A nonzero vector of the span of the frame modulo the chosen place `w` (first component `false`)
-or modulo its conjugate (`true`), given by its coordinates in the frame. -/
+/--
+A nonzero vector of the span of the frame modulo the chosen place `w` (first component `false`)
+or modulo its conjugate (`true`), given by its coordinates in the frame.
+-/
 abbrev FrameVector {i : Fin 2} (w : S.chosenPlaces i) : Type :=
   Bool × {v : Fin (𝔰.ϱ + 1) → ResField (w : FinPlace E) // v ≠ 0}
 
-/-- For `d = (ε, v)`, the subgroup of the `s` that fix the vector of the span of the frame with
+/--
+For `d = (ε, v)`, the subgroup of the `s` that fix the vector of the span of the frame with
 coordinates `v`; the columns of `inclMatrix _ 𝔰.besselFrame` are the frame vectors. If `ε` is false,
 `s` acts modulo `w` by its component at `w`; if `ε` is true, it acts modulo the conjugate of `w` by
 the inverse adjoint of that component (`S.idOrInvAdjoint ε` makes this choice). See
-`mem_vectorFixer`, `mem_vectorFixer_false` and `mem_vectorFixer_true`. -/
+`mem_vectorFixer`, `mem_vectorFixer_false` and `mem_vectorFixer_true`.
+-/
 def vectorFixer {i : Fin 2} (w : S.chosenPlaces i) (d : S.FrameVector w) : Subgroup S.ResidueGL :=
   (MulAction.stabilizer (GL 𝔰.BesselIndex (ResField (w : FinPlace E)))
       (inclMatrix (ResField (w : FinPlace E)) 𝔰.besselFrame *ᵥ d.2.val)).comap
@@ -197,15 +203,19 @@ lemma mulVec_frameImage_one_mulVec {R : Type*} [CommRing R]
   rw [mulVec_mulVec]
   exact congrArg (fun N ↦ N *ᵥ x) (mul_inclMatrix g 𝔰.besselFrame)
 
-/-- The element `s` meets at the place `p` of `E` above `M`: modulo `p`, the span of the frame and
-its image under `s` share a nonzero vector. -/
+/--
+The element `s` meets at the place `p` of `E` above `M`: modulo `p`, the span of the frame and
+its image under `s` share a nonzero vector.
+-/
 def MeetsAt (s : S.ResidueGL) (p : (Σ i : Fin 2, S.chosenPlaces i) × Bool) : Prop :=
   ∃ x y : Fin (𝔰.ϱ + 1) → ResField (p.1.snd : FinPlace E),
     x ≠ 0 ∧ frameImage 1 *ᵥ x = frameImage (S.actionAt s p) *ᵥ y
 
 open Classical in
-/-- The absolute norm of the product of the places at which `s` meets; a place above
-`S.levelPrime i` has norm `S.levelPrime i`. -/
+/--
+The absolute norm of the product of the places at which `s` meets; a place above
+`S.levelPrime i` has norm `S.levelPrime i`.
+-/
 def meetNorm (s : S.ResidueGL) : ℕ :=
   ∏ p : (Σ i : Fin 2, S.chosenPlaces i) × Bool with S.MeetsAt s p, S.levelPrime p.1.fst
 
@@ -227,11 +237,13 @@ lemma prod_le_meetNorm {s : S.ResidueGL} {A : Finset ((Σ i : Fin 2, S.chosenPla
 lemma one_le_meetNorm (s : S.ResidueGL) : 1 ≤ S.meetNorm s := by
   simpa using prod_le_meetNorm (s := s) (A := ∅) (by simp)
 
-/-- The subgroup of the elements that fix the given vector modulo `w` or its conjugate, for every
+/--
+The subgroup of the elements that fix the given vector modulo `w` or its conjugate, for every
 `w` in a set of chosen places above the first level prime. The vectors at other places are
-ignored. -/
-def fixer (places : Finset (S.chosenPlaces 0))
-    (vectors : ∀ w : S.chosenPlaces 0, S.FrameVector w) : Subgroup S.ResidueGL :=
+ignored.
+-/
+def fixer (places : Finset (S.chosenPlaces 0)) (vectors : ∀ w : S.chosenPlaces 0, S.FrameVector w)
+    : Subgroup S.ResidueGL :=
   ⨅ w ∈ places, S.vectorFixer w (vectors w)
 
 /-- An element lies in `fixer places vectors` iff it fixes `vectors w` for every `w` in
@@ -252,17 +264,21 @@ lemma mem_fixer_insert {places : Finset (S.chosenPlaces 0)} {w : S.chosenPlaces 
   rw [mem_fixer, mem_fixer, forall_mem_insert, update_self, and_comm]
   exact and_congr_left' (forall₂_congr fun v hv ↦ by rw [update_of_ne (ne_of_mem_of_not_mem hv hw)])
 
-/-- The element `s` is open: at some chosen place `w` above the first level prime, the leading
+/--
+The element `s` is open: at some chosen place `w` above the first level prime, the leading
 principal minors of order less than `𝔰.n = ϱ + 1` of the matrix `(h(f_j, s f_l))` are all nonzero.
 Here `f` is the frame, which has `𝔰.n` vectors, `h` is the form in the lattice basis modulo `w`
-(its middle block is `S.latticeMiddle`), and `frameGram` is this matrix of products. -/
+(its middle block is `S.latticeMiddle`), and `frameGram` is this matrix of products.
+-/
 def IsOpenElement (s : S.ResidueGL) : Prop :=
   ∃ w : S.chosenPlaces 0, ∀ l : Fin 𝔰.n,
-    leadingMinor ((S.latticeMiddle (ResField (w : FinPlace E))).frameGram (s 0 w).val) l.castSucc ≠
-      0
+    leadingMinor ((S.latticeMiddle (ResField (w : FinPlace E))).frameGram (s 0 w).val) l.castSucc
+      ≠ 0
 
-/-- The element `s` is `ζ` times an element of the reduction of the Bessel subgroup, the integral
-adele `ζ` acting through its residues at the chosen places. -/
+/--
+The element `s` is `ζ` times an element of the reduction of the Bessel subgroup, the integral
+adele `ζ` acting through its residues at the chosen places.
+-/
 def InScalarCoset (ζ : Ô E) (s : S.ResidueGL) : Prop :=
   ∃ t ∈ S.reducedImage besselS, ∀ (i : Fin 2) (w : S.chosenPlaces i),
     (s i w).val = New.reduceAt (w : FinPlace E) ζ • (t i w).val
@@ -585,16 +601,21 @@ columns. A common vector is a relation `P *ᵥ x = P' *ᵥ y`. Indices start at 
 namespace New
 open Matrix Fin
 
-variable {F ι : Type*} [Field F] {n : ℕ} {P P' : Matrix ι (Fin (n + 1)) F}
-  {x y : Fin (n + 1) → F} {μ μ' : F} {j l : Fin (n + 1)}
+variable
+  {F ι : Type*} [Field F]
+  {n : ℕ} {P P' : Matrix ι (Fin (n + 1)) F} {x y : Fin (n + 1) → F} {μ μ' : F} {j l : Fin (n + 1)}
 
-/-- Some vector lies in the span of the columns of index at most `j` of both `P` and `P'`, and
-its coefficients at `j` are `μ` and `μ'`. -/
+/--
+Some vector lies in the span of the columns of index at most `j` of both `P` and `P'`, and
+its coefficients at `j` are `μ` and `μ'`.
+-/
 def PairOccursInColumnsAt (P P' : Matrix ι (Fin (n + 1)) F) (μ μ' : F) (j : Fin (n + 1)) : Prop :=
   ∃ x y : Fin (n + 1) → F, P *ᵥ x = P' *ᵥ y ∧ x j = μ ∧ y j = μ' ∧ ∀ b > j, x b = 0 ∧ y b = 0
 
-/-- The index `j` is the top index of the vector with coordinates `x` in one frame and `y` in the
-other: the least index above which both vanish. -/
+/--
+The index `j` is the top index of the vector with coordinates `x` in one frame and `y` in the
+other: the least index above which both vanish.
+-/
 def IsTopIndex (x y : Fin (n + 1) → F) (j : Fin (n + 1)) : Prop :=
   IsLeast {a : Fin (n + 1) | ∀ b > a, x b = 0 ∧ y b = 0} j
 
@@ -980,8 +1001,10 @@ lemma meetNorm_le_genIndex_star {s : S.ResidueGL} {δ : Ô E} (h_unit : IsUnit (
       card_le_card_of_surjective _ (Ideal.Quotient.lift_surjective_of_surjective _ h_ker h_onto)
 
 variable (𝔰) in
-/-- The two indices of the pair of frames `(f | k f)` that belong to the last vector of `f` and to
-the last vector of `k f`, listed along the bijection `ρ` of `W` with a set of two elements. -/
+/--
+The two indices of the pair of frames `(f | k f)` that belong to the last vector of `f` and to
+the last vector of `k f`, listed along the bijection `ρ` of `W` with a set of two elements.
+-/
 def lastIndices (ρ : W ≃ Unit ⊕ Unit) : W → Fin (𝔰.ϱ + 1) ⊕ Fin (𝔰.ϱ + 1) :=
   Sum.map (fun _ : Unit ↦ 𝔰.top) (fun _ : Unit ↦ 𝔰.top) ∘ ρ
 

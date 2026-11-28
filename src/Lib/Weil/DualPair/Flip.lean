@@ -74,22 +74,27 @@ section Flip
 
 open NumberField Matrix WeilData Fock stdLattice Fintype CoordChange G Int Weil MvPolynomial
 
-variable {E : Type} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
   {n a : Type} [Fintype n] [DecidableEq n] [Fintype a] [DecidableEq a]
   {s : n → ℤˣ} {t t' : a → ℤˣ} {c : (Ô E)ˣ} (hc : star (c : 𝔸f E) * c = -1) (ht : t' = -t)
   (V : Space E a t) (W : Space E n s) (V' : Space E a t')
 
-/-- For a unit `c` of `Ô` and a sign `t`, the idele with component `t` at every infinite place and
-finite part `c α / ᾱ`, where `α` is the finite idele of the Weil data. -/
+/--
+For a unit `c` of `Ô` and a sign `t`, the idele with component `t` at every infinite place and
+finite part `c α / ᾱ`, where `α` is the finite idele of the Weil data.
+-/
 @[simps! -isSimp val]
 def flipIdele (c : (Ô E)ˣ) (t : ℤˣ) : (𝔸 E)ˣ :=
-  MulEquiv.prodUnits.symm (t.map (castRingHom (InfinitePlace E → ℂ)).1, c.map (Ô E).subtype * α *
-    star α⁻¹)
+  MulEquiv.prodUnits.symm
+    (t.map (castRingHom (InfinitePlace E → ℂ)).1, c.map (Ô E).subtype * α * star α⁻¹)
 
-/-- For a unit c of Ô with c̄c = −1 (hypothesis `hc`) and signs t′ = −t (hypothesis `ht`), the
+/--
+For a unit c of Ô with c̄c = −1 (hypothesis `hc`) and signs t′ = −t (hypothesis `ht`), the
 change of coordinates x ↦ (1, cα/ᾱ) ε_s xᴴ ε_t, where ε_s, ε_t are the standard diagonal forms of
 the signs (`New.flipCoords_apply`). On points it goes from signs t′_i s_j to signs s_j t_i. It
-carries functions from signs s_j t_i to signs t′_i s_j. -/
+carries functions from signs s_j t_i to signs t′_i s_j.
+-/
 def flipCoords : CoordChange E (.id ℂ) (homSigns t s) (homSigns s t') where
   φ := starCoordEquiv (.prodComm ..) (flipIdele c ∘ homSigns t s)
   realEquiv :=
@@ -97,14 +102,13 @@ def flipCoords : CoordChange E (.id ℂ) (homSigns t s) (homSigns s t') where
   finEquiv := starCoordEquiv (.prodComm ..) fun _ ↦ c.map (Ô E).subtype
   apply_adelicSum := by
     -- In the finite part the factors `star α` and `star α⁻¹` cancel.
-    simp [adelicSum, val_scaleIdele_fst, val_scaleIdele_snd, ← mul_assoc,
-      starCoordEquiv, val_flipIdele, _root_.funext_iff, Prod.ext_iff]
+    simp [adelicSum, val_scaleIdele_fst, val_scaleIdele_snd, ← mul_assoc, starCoordEquiv,
+      val_flipIdele, _root_.funext_iff, Prod.ext_iff]
     grind [star_mul', star_one, α.mul_inv]
   beta_realEquiv := by
     -- Conjugation exchanges the two sums in the exponent, and `t' = -t` changes their signs.
     simp [ht, realHeisenberg, signMatrix, dotProduct, Finset.sum_comm (γ := a), ← mul_assoc,
-      ← cast_mul,
-      mul_comm, pairSign, mulVec_diagonal, sum_prod_type, starCoordEquiv]
+      ← cast_mul, mul_comm, pairSign, mulVec_diagonal, sum_prod_type, starCoordEquiv]
     grind
   vac_realEquiv := by
     simp [dotProduct, Finset.sum_comm (γ := a), ← mul_assoc, ← cast_mul, mul_comm, realVac,
@@ -179,9 +183,11 @@ lemma flipCoords_map_omega (hc : star (c : 𝔸f E) * c = -1) (V : Space E a t) 
   simpa [Δ_transpose, det_onHom, weilMultiplier_inv]
     using conj_weilMultiplier_of_eq_neg rfl (onHom (g, h))⁻¹.adeleMatrix_neg
 
-/-- The opposite space of the space V with matrix J and point x: it has matrix −J and the opposite
+/--
+The opposite space of the space V with matrix J and point x: it has matrix −J and the opposite
 signs. Its point is x scaled by the idele (1, ūᾱ/α), where u = `New.Weil.normNegOne` is a fixed
-unit of Ô with ūu = −1. -/
+unit of Ô with ūu = −1.
+-/
 @[simps -isSimp]
 def Seesaw.flipSpace : Space E a (-t) where
   J := -V.J
@@ -297,10 +303,12 @@ lemma exists_pairTheta_flip (l : G E t')
   rw [hW] at h_move
   rw [mul_assoc, ← h_adjoint, h_move, mul_inv_cancel_left₀ (Circle.coe_ne_zero _)]
 
-/-- The ℂ-algebra map on polynomials sending the variable X_(τ,i,j) to −s_i t_j X_(τ,j,i):
-transposition with signs. -/
-def flipPoly (t : a → ℤˣ) (s : n → ℤˣ) :
-    MvPolynomial (InfinitePlace E × n × a) ℂ →ₐ[ℂ] MvPolynomial (InfinitePlace E × a × n) ℂ :=
+/--
+The ℂ-algebra map on polynomials sending the variable X_(τ,i,j) to −s_i t_j X_(τ,j,i):
+transposition with signs.
+-/
+def flipPoly (t : a → ℤˣ) (s : n → ℤˣ)
+    : MvPolynomial (InfinitePlace E × n × a) ℂ →ₐ[ℂ] MvPolynomial (InfinitePlace E × a × n) ℂ :=
   aeval fun p : InfinitePlace E × n × a ↦ (homSigns (-t) s p.2 : ℂ) • X (R := ℂ) (p.1, p.2.swap)
 
 /-- The archimedean part `New.CoordChange.realMap` of `New.flipCoords` sends the Fock vector of a
@@ -340,21 +348,27 @@ section KernelFlip
 
 open NumberField Matrix ComplexConjugate WeilData Space Fintype G Gf CoordChange Weil Exchange
 
-variable {E n m : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  [Fintype m] [DecidableEq m] {s : n → ℤˣ} {t : m → ℤˣ} [WeilData E]
+variable
+  {E n m : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {t : m → ℤˣ} [WeilData E]
   (𝔪 : Modulus E) (S : Space E n s) (T : Space E m t)
 
-/-- The scalar matrix ū / u in the finite adelic unitary group `Gf E n` of rank n, where u is α
+/--
+The scalar matrix ū / u in the finite adelic unitary group `Gf E n` of rank n, where u is α
 times the chosen idele generating 𝔪. The index type n defaults to `Unit`: a bare `𝔪.flipScalar`
-is the rank-one case `𝔪.flipScalar Unit`. -/
+is the rank-one case `𝔪.flipScalar Unit`.
+-/
 noncomputable def Modulus.flipScalar (n := Unit) [Fintype n] [DecidableEq n] : Gf E n :=
   scalarFin n (divStar (star (𝔪.generator * α)))
 
-/-- The Heisenberg translate of the vacuum of a space `X` by the finite vector with entries
+/--
+The Heisenberg translate of the vacuum of a space `X` by the finite vector with entries
 −α w_i / 𝔪.generator at the places dividing 𝔪 and 0 at the other places (`New.finVec` multiplies
-by α), for an integral vector `w`. -/
-private def Modulus.vacTranslate {ι : Type} [Fintype ι] [DecidableEq ι] {r : ι → ℤˣ}
-    (X : Space E ι r) (w : ι → Ô E) : 𝒮 X :=
+by α), for an integral vector `w`.
+-/
+private def Modulus.vacTranslate
+    {ι : Type} [Fintype ι] [DecidableEq ι] {r : ι → ℤˣ} (X : Space E ι r) (w : ι → Ô E)
+    : 𝒮 X :=
   X.ϱ (finVec (idem 𝔪.places • -(↑𝔪.generator⁻¹ : 𝔸f E) • Subtype.val ∘ w)) X.vacElem
 
 /-- The translate of the vacuum by a vector above 𝔪 is the operator named by the indicator of the

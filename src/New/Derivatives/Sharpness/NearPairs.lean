@@ -115,8 +115,10 @@ lemma notMem_bPlaces_of_two_partners (D : Data P) {p : ℕ} (hp : p.Prime)
 
 /-! ## Near pairs -/
 
-/-- `(τ, e)` is a near pair with start `τ` and end `-p ^ e τ`: the exponent `e` lies in `I_p` (odd
-if `p` is inert, positive if `p = d`), `e < l₀ / 2`, and both places are `b`-places. -/
+/--
+`(τ, e)` is a near pair with start `τ` and end `-p ^ e τ`: the exponent `e` lies in `I_p` (odd
+if `p` is inert, positive if `p = d`), `e < l₀ / 2`, and both places are `b`-places.
+-/
 structure IsNearPair (D : Data P) (p : ℕ) (τ : D.Φ) (e : ℕ) : Prop where
   /-- The exponent lies in `I_p`. -/
   exponent_mem : e ∈ positivePartnerExponents P.d p
@@ -126,7 +128,6 @@ structure IsNearPair (D : Data P) (p : ℕ) (τ : D.Φ) (e : ℕ) : Prop where
   start_mem : τ ∈ D.bPlaces
   /-- The end is a `b`-place. -/
   end_mem : P.partner D.towerExp p e τ ∈ D.bPlaces
-
 
 /-- For `p = d` there are no near pairs, as all `b`-places have the same class modulo `q₀`. -/
 lemma IsNearPair.ne_d {D : Data P} {p : ℕ} {τ : D.Φ} {e : ℕ} (h : D.IsNearPair p τ e) : p ≠ P.d :=
@@ -234,12 +235,16 @@ namespace Data
 
 variable {P : Parameters}
 
-/-- The number `n♯ = ⌈6 b / k⌉` of factors given up at each place, for the numbers `b` and `k` of
-the data `D`. -/
+/--
+The number `n♯ = ⌈6 b / k⌉` of factors given up at each place, for the numbers `b` and `k` of
+the data `D`.
+-/
 noncomputable def lossFactorCount (D : Data P) : ℕ := ⌈6 * D.b / D.k⌉₊
 
-/-- The product `B = (l⁻ + 1) ⋯ (l⁻ + n♯)` of the `n♯` integers after `l⁻ = (l - n♯)₊`, where
-`n♯ = D.lossFactorCount`. -/
+/--
+The product `B = (l⁻ + 1) ⋯ (l⁻ + n♯)` of the `n♯` integers after `l⁻ = (l - n♯)₊`, where
+`n♯ = D.lossFactorCount`.
+-/
 noncomputable def lossProduct (D : Data P) (l : ℕ) : ℕ :=
   (l - D.lossFactorCount + 1).ascFactorial D.lossFactorCount
 
@@ -309,14 +314,20 @@ lemma lossFactorCount_div_sub_one_le (D : Data P) {p : ℕ} [Fact p.Prime] (l : 
     (D.lossFactorCount / p - 1 : ℝ) ≤ padicValNat p (D.lossProduct l) := by
   grw [div_sub_one_le_padicValNat_factorial, D.padicValNat_factorial_lossFactorCount_le l]
 
-/-- The term `min (κ(τ) / p ^ e) (κ(-p ^ e τ))` for `e ∈ I_p = positivePartnerExponents P.d p`, and
-`0` for the other `e`; `κ` is the weight of a place. -/
+/--
+The term `min (κ(τ) / p ^ e) (κ(-p ^ e τ))` for `e ∈ I_p = positivePartnerExponents P.d p`, and
+`0` for the other `e`; `κ` is the weight of a place.
+-/
 noncomputable def partnerMinTerm (D : Data P) (p : ℕ) (τ : D.Φ) (e : ℕ) : ℝ :=
   if e ∈ positivePartnerExponents P.d p then
-    min (D.weight τ / p ^ e : ℝ) (D.weight (P.partner D.towerExp p e τ)) else 0
+    min (D.weight τ / p ^ e : ℝ) (D.weight (P.partner D.towerExp p e τ))
+  else
+    0
 
-/-- The sum `R_τ` of `min (κ(τ) / p ^ e) (κ(-p ^ e τ))` over `e ∈ I_p` (the odd numbers if `p` is
-inert, all `e ≥ 1` if `p = d`); `κ` is the weight of a place. -/
+/--
+The sum `R_τ` of `min (κ(τ) / p ^ e) (κ(-p ^ e τ))` over `e ∈ I_p` (the odd numbers if `p` is
+inert, all `e ≥ 1` if `p = d`); `κ` is the weight of a place.
+-/
 noncomputable def partnerMinSum (D : Data P) (p : ℕ) (τ : D.Φ) : ℝ :=
   ∑' e : ℕ, D.partnerMinTerm p τ e
 

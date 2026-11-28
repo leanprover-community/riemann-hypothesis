@@ -84,14 +84,17 @@ namespace New
 
 open NumberField Subgroup GaloisRep QZChar
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+variable
+  {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
   {E n M M' : Type} [Field E] [CMType E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
-  {χ : QZChar Gal(Ω/E)} {f : Gf E n → M → ℂ} {f' : Gf (stepField χ) n → M' → ℂ}
-  {S : Set (FinPlace E)} {P : FinPlace E → Polynomial ℂ}
+  {χ : QZChar Gal(Ω/E)} {f : Gf E n → M → ℂ}
+  {f' : Gf (stepField χ) n → M' → ℂ} {S : Set (FinPlace E)} {P : FinPlace E → Polynomial ℂ}
   {P' : FinPlace (stepField χ) → Polynomial ℂ} {r' : GalRep ℓ (stepField χ) n}
 
-/-- The subgroup Gal(Ω/L) ∩ ker χ of Gal(Ω/E), where L = `New.QZChar.stepField` χ: the elements
-killed by χ and by its symmetrisation. -/
+/--
+The subgroup Gal(Ω/L) ∩ ker χ of Gal(Ω/E), where L = `New.QZChar.stepField` χ: the elements
+killed by χ and by its symmetrisation.
+-/
 noncomputable abbrev QZChar.stepKer (χ : QZChar Gal(Ω/E)) : Subgroup Gal(Ω/E) :=
   ker (symmetrize χ) ⊓ ker χ
 
@@ -103,23 +106,28 @@ lemma QZChar.stepKer_le_fixingSubgroup (χ : QZChar Gal(Ω/E)) :
   fun s hs x ↦ x.prop ⟨s, (mem_inf.1 hs).1⟩
 
 /-- The inclusion of Gal(Ω/L) ∩ ker χ in Gal(Ω/L), where L = `New.QZChar.stepField` χ. -/
-noncomputable def QZChar.stepKerInclusion (χ : QZChar Gal(Ω/E)) :
-    stepKer χ →* Gal(Ω/stepField χ) :=
+noncomputable def QZChar.stepKerInclusion (χ : QZChar Gal(Ω/E)) : stepKer χ →* Gal(Ω/stepField χ) :=
   (stepField χ).fixingSubgroupEquiv.toMonoidHom.comp (inclusion (stepKer_le_fixingSubgroup χ))
 
-/-- The local conditions at the valuation subring A of Ω pass from the representation r' of
-Gal(Ω/L), where L = `New.QZChar.stepField` χ, to the representation r of Gal(Ω/E). -/
-structure GaloisRep.DescendsAt (χ : QZChar Gal(Ω/E)) (r' : GalRep ℓ (stepField χ) n)
-    (r : GalRep ℓ E n) (A : ClosurePlace) : Prop where
+/--
+The local conditions at the valuation subring A of Ω pass from the representation r' of
+Gal(Ω/L), where L = `New.QZChar.stepField` χ, to the representation r of Gal(Ω/E).
+-/
+structure GaloisRep.DescendsAt
+    (χ : QZChar Gal(Ω/E)) (r' : GalRep ℓ (stepField χ) n) (r : GalRep ℓ E n) (A : ClosurePlace)
+    : Prop where
   /-- If r' is of finite type at A, so is r. -/
   isFiniteTypeAt (h : IsFiniteTypeAt r' A) : IsFiniteTypeAt r A
   /-- If r' has the jumps of the weight κ pulled back to L, in rank m, then r has those of κ. -/
-  hasJumpsAt {κ : Weight E} (m : ℕ) (h : HasJumpsAt r' A (jumps κ.baseChange m)) :
-    HasJumpsAt r A (jumps κ m)
-  /-- For s in Gal(Ω/L) ∩ ker χ, a polynomial that kills the image of s in Gal(Ω/L) for r' kills s
-  for r. -/
-  polyKillsAt (s : stepKer χ) (Q : Polynomial (PadicAlgCl ℓ))
-    (h : PolyKillsAt r' A (stepKerInclusion χ s) Q) : PolyKillsAt r A s.val Q
+  hasJumpsAt {κ : Weight E} (m : ℕ) (h : HasJumpsAt r' A (jumps κ.baseChange m))
+    : HasJumpsAt r A (jumps κ m)
+  /--
+  For s in Gal(Ω/L) ∩ ker χ, a polynomial that kills the image of s in Gal(Ω/L) for r' kills s
+  for r.
+  -/
+  polyKillsAt
+    (s : stepKer χ) (Q : Polynomial (PadicAlgCl ℓ)) (h : PolyKillsAt r' A (stepKerInclusion χ s) Q)
+    : PolyKillsAt r A s.val Q
 
 /-- If the decomposition group of a place `A` of the closure above `w` is killed by `χ` and by its
 symmetrisation, so that it fixes the field of the step, then `w` is matched: `ideleChar χ` is

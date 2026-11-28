@@ -28,17 +28,21 @@ namespace New
 
 open Matrix Submodule Finset Pointwise Module
 
-variable {O U V ι : Type*} [CommRing O] [AddCommGroup U] [Module O U] [AddCommGroup V] [Module O V]
+variable
+  {O U V ι : Type*} [CommRing O] [AddCommGroup U] [Module O U] [AddCommGroup V] [Module O V]
   {M N P : Submodule O V} {M' N' : Submodule O U} {z z' a : O}
 
 variable (M N z) in
-/-- `New.ColengthDvd M N z`, for submodules `M`, `N` of `V` and `z : O`, is read as "the colength of
+/--
+`New.ColengthDvd M N z`, for submodules `M`, `N` of `V` and `z : O`, is read as "the colength of
 `N` in `M` divides `z`" (over a valuation ring: it is at most `v(z)`). It needs no bases and no
 inclusion `N ≤ M`: for every finite family `Φ k` (`k : Fin n`) of vectors of `M` there is a square
-matrix `m` indexed by `Fin n` with `det m ∣ z` such that all `∑ k, m i k • Φ k` lie in `N`. -/
+matrix `m` indexed by `Fin n` with `det m ∣ z` such that all `∑ k, m i k • Φ k` lie in `N`.
+-/
 def ColengthDvd : Prop :=
-  ∀ (n : ℕ) (Φ : Fin n → V), (∀ k : Fin n, Φ k ∈ M) → ∃ m : Matrix (Fin n) (Fin n) O,
-    det m ∣ z ∧ ∀ i : Fin n, ∑ k : Fin n, m i k • Φ k ∈ N
+  ∀ (n : ℕ) (Φ : Fin n → V),
+    (∀ k : Fin n, Φ k ∈ M)
+      → ∃ m : Matrix (Fin n) (Fin n) O, det m ∣ z ∧ ∀ i : Fin n, ∑ k : Fin n, m i k • Φ k ∈ N
 
 @[simp]
 lemma ColengthDvd.of_le (hMN : M ≤ N) : ColengthDvd M N z := fun _ _ hΦ ↦
@@ -104,9 +108,11 @@ lemma ColengthDvd.comp {f : V →ₗ[O] V} (hf_keep : M.map f ≤ M)
 
 /-! ### Endomorphisms that are onto up to a bounded colength -/
 
-/-- The endomorphism `y` of `V` keeps `M` and is onto on `M` modulo `p ^ n` up to a colength
+/--
+The endomorphism `y` of `V` keeps `M` and is onto on `M` modulo `p ^ n` up to a colength
 dividing `p ^ l`, for some natural number `l ≤ c`: every finite family in `M` is carried into
-`y (M) + p ^ n • M` by a square matrix whose determinant divides `p ^ l` (see `ColengthDvd`). -/
+`y (M) + p ^ n • M` by a square matrix whose determinant divides `p ^ l` (see `ColengthDvd`).
+-/
 def IsOntoUpToColength (p : O) (M : Submodule O V) (n : ℕ) (y : End O V) (c : ℝ) : Prop :=
   M.map y ≤ M ∧ ∃ l : ℕ, l ≤ c ∧ ColengthDvd M (M.map y ⊔ p ^ n • M) (p ^ l)
 

@@ -275,12 +275,16 @@ end Congruence
 
 section Line
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E σ : Type} [Field E] [EmbeddedNumberField E]
-  [NumberField.IsCMField E] {q : ℕ} {Q : Finset (FinPlace E)}
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E σ : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+  {q : ℕ} {Q : Finset (FinPlace E)}
 
-/-- The polynomial `(1 + X) ^ (h g)`, with the exponent `h g ∈ ℤ / q` read as a natural number. It
+/--
+The polynomial `(1 + X) ^ (h g)`, with the exponent `h g ∈ ℤ / q` read as a natural number. It
 is the restriction of `ψ_X(g) = ∏ (1 + X_j) ^ (h_j g)` to the line on which all variables but the
-one belonging to `h` vanish. -/
+one belonging to `h` vanish.
+-/
 def lineChar (h : Gal(Ω/E) →* Multiplicative (ZMod q)) (g : Gal(Ω/E)) : (intQpBar ℓ)[X] :=
   (1 + X) ^ (h g).toAdd.val
 
@@ -349,8 +353,9 @@ lemma le_ellVal_natCast_sub_one {ℓ : ℕ} [ThePrime ℓ] {q N : ℕ} (hq : q �
 
 namespace StickelbergerSystem
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E ι O : Type} [Field E] [EmbeddedNumberField E]
-  [NumberField.IsCMField E] [CommRing O]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E ι O : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E] [CommRing O]
   {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} (Y : StickelbergerSystem ℓ S₀ g₀)
 
 /-- Near `g₀` the values of the continuous character `ϑ = Y.twistChar` of the Stickelberger system
@@ -363,8 +368,9 @@ lemma eventually_le_ellVal_sub (M : ℕ) :
     (Metric.closedBall_mem_nhds _ h_pos)] with g hg using
     by simpa using ellVal_le_ellVal (mem_closedBall_iff_norm.1 hg)
 
-variable {U : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {N : ℕ} {P₀ : FinPlace E}
-  {J : Finset (FinPlace E)} {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
+variable
+  {U : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {N : ℕ} {P₀ : FinPlace E} {J : Finset (FinPlace E)}
+  {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
 
 open scoped Classical in
 /-- The norm relation of a Stickelberger system along tied primes. If `ζ ^ ℓ ^ N = 1`, the value of
@@ -466,21 +472,25 @@ lemma ellVal_one_element_singleton_le (h_tied : IsTiedPrimes ℓ S₀ U W N P₀
     h_frob ((Nat.cast_le.2 hMN).trans (le_ellVal_natCast_sub_one h_data.norm_modEq))
     (le_add_self.trans_lt hM)))
 
-/-- The system `Y`, for a set `S₀` of places and `g₀ ∈ Gal(Ω/E)`, gives elements `Θ_Q = Y.element Q`
+/--
+The system `Y`, for a set `S₀` of places and `g₀ ∈ Gal(Ω/E)`, gives elements `Θ_Q = Y.element Q`
 of the group rings of class groups `Cl_Q` with a norm relation, a character `ϑ = Y.twistChar` and
 `r` integers (`Y.exponents`); `β = v(1(Θ_∅)) + 2 r v(ϑ(g₀) - 1)`, with `v = ellVal`. Suppose
 `ϑ(φ_{P₀}) ≡ ϑ(g₀)` modulo `ℓ ^ M`, `β + 1 < M ≤ N ρ`, and a natural number `s₀ ≥ 1` satisfies
 `2 r #J ≤ s₀` and `s₀ ρ < 1`. Then `v(P(y)) ≤ β + s₀ ρ` at some point `y` whose coordinates have
-valuation at least `ρ`. -/
-theorem exists_point_ellVal_universalChar_le (h_tied : IsTiedPrimes ℓ S₀ U W N P₀ J x)
+valuation at least `ρ`.
+-/
+theorem exists_point_ellVal_universalChar_le
+    (h_tied : IsTiedPrimes ℓ S₀ U W N P₀ J x)
     {M s₀ : ℕ} {ρ : ℚ≥0} (hM : Y.β + 1 < M)
     (h_frob : (M : ℝ≥0∞) ≤ ellVal (Y.twistChar (x P₀).1.frob - Y.twistChar g₀ : PadicAlgCl ℓ))
     (hs₀ : 1 ≤ s₀) (h_card : 2 * Y.exponents.length * #J ≤ s₀) (hρ : s₀ * ρ < 1)
-    (h_level : M ≤ N * ρ) :
-    ∃ y : J → intQpBar ℓ, (∀ j : J, (ρ : ℝ≥0) ≤ ellVal (y j : PadicAlgCl ℓ)) ∧
-      ellVal (MvPolynomial.eval y
-          (groupRingEval (universalChar fun j : J ↦ (x j).1.character) (Y.element J))).val ≤
-        Y.β + s₀ * (ρ : ℝ≥0) := by
+    (h_level : M ≤ N * ρ)
+    : ∃ y : J → intQpBar ℓ,
+      (∀ j : J, (ρ : ℝ≥0) ≤ ellVal (y j : PadicAlgCl ℓ))
+        ∧ ellVal (MvPolynomial.eval y
+            (groupRingEval (universalChar fun j : J ↦ (x j).1.character) (Y.element J))).val
+          ≤ Y.β + s₀ * (ρ : ℝ≥0) := by
   -- The point lies on the line on which all variables but the one of `P₀` vanish. There `P` is
   -- congruent to `R₀ R₁` up to a power of `1 + X`, and `v_ρ(R₀ R₁) ≤ β + s₀ ρ < N ρ`.
   classical
@@ -488,10 +498,13 @@ theorem exists_point_ellVal_universalChar_le (h_tied : IsTiedPrimes ℓ S₀ U W
   have hMN : M ≤ N := mod_cast h_level.trans (mul_le_of_le_one_right zero_le hρ_le)
   let R₀ : (intQpBar ℓ)[X] := groupRingEval (lineChar (x P₀).1.character) (Y.element {P₀})
   have hN : N ≠ 0 := ((Nat.cast_pos.1 hM.pos : 0 < M).trans_le hMN).ne'
-  obtain ⟨R₁, hR₁_le, h_congr⟩ : ∃ R₁ : (intQpBar ℓ)[X],
-      gaussVal ρ R₁ ≤ #(J.erase P₀) * (Y.exponents.length * (2 * (ρ : ℝ≥0))) ∧
-      (1 + X) ^ ℓ ^ N - 1 ∣ (1 + X) ^ (Y.exponents.length * #(J.erase P₀)) *
-        groupRingEval (lineChar (x P₀).1.character) (Y.element J) - R₀ * R₁ :=
+  obtain ⟨R₁, hR₁_le, h_congr⟩
+      : ∃ R₁ : (intQpBar ℓ)[X],
+        gaussVal ρ R₁ ≤ #(J.erase P₀) * (Y.exponents.length * (2 * (ρ : ℝ≥0)))
+          ∧ (1 + X) ^ ℓ ^ N - 1
+            ∣ (1 + X) ^ (Y.exponents.length * #(J.erase P₀))
+                * groupRingEval (lineChar (x P₀).1.character) (Y.element J)
+              - R₀ * R₁ :=
     Y.exists_congruence_lineChar_element h_tied hN ρ
   have hR₀ : gaussVal ρ R₀ ≤ Y.β := by
     refine (gaussVal_le_eval_zero R₀).trans ?_
@@ -499,23 +512,29 @@ theorem exists_point_ellVal_universalChar_le (h_tied : IsTiedPrimes ℓ S₀ U W
     exact Y.ellVal_one_element_singleton_le h_tied (le_self_add.trans_lt hM) hMN h_frob
   have hR₁ : gaussVal ρ R₁ ≤ s₀ * (ρ : ℝ≥0) := by
     have h_count : #(J.erase P₀) * (Y.exponents.length * 2) ≤ s₀ :=
-      calc #(J.erase P₀) * (Y.exponents.length * 2) ≤ #J * (Y.exponents.length * 2) :=
-          Nat.mul_le_mul_right _ card_erase_le
+      calc
+        #(J.erase P₀) * (Y.exponents.length * 2)
+          ≤ #J * (Y.exponents.length * 2) := Nat.mul_le_mul_right _ card_erase_le
         _ = 2 * Y.exponents.length * #J := by ring
         _ ≤ s₀ := h_card
-    calc gaussVal ρ R₁ ≤ #(J.erase P₀) * (Y.exponents.length * 2) * (ρ : ℝ≥0) := by
-          rwa [mul_assoc, mul_assoc]
+    calc
+      gaussVal ρ R₁
+        ≤ #(J.erase P₀) * (Y.exponents.length * 2) * (ρ : ℝ≥0) := by rwa [mul_assoc, mul_assoc]
       _ ≤ s₀ * (ρ : ℝ≥0) := mul_le_mul_left (mod_cast h_count) _
   have hR : gaussVal ρ (R₀ * R₁) ≤ Y.β + s₀ * (ρ : ℝ≥0) :=
     (gaussVal_mul _ _).trans_le (add_le_add hR₀ hR₁)
   have hR_lt : gaussVal ρ (R₀ * R₁) < N * (ρ : ℝ≥0) :=
-    calc gaussVal ρ (R₀ * R₁) ≤ Y.β + s₀ * (ρ : ℝ≥0) := hR
+    calc
+      gaussVal ρ (R₀ * R₁)
+        ≤ Y.β + s₀ * (ρ : ℝ≥0) := hR
       _ ≤ Y.β + 1 := add_le_add le_rfl (mod_cast hρ.le)
       _ < M := hM
       _ ≤ N * (ρ : ℝ≥0) := mod_cast h_level
-  obtain ⟨y, hy, hP⟩ : ∃ y : intQpBar ℓ, (ρ : ℝ≥0) ≤ ellVal (y : PadicAlgCl ℓ) ∧
-      ellVal ((groupRingEval (lineChar (x P₀).1.character) (Y.element J)).eval y).val ≤
-        gaussVal ρ (R₀ * R₁) :=
+  obtain ⟨y, hy, hP⟩
+      : ∃ y : intQpBar ℓ,
+        (ρ : ℝ≥0) ≤ ellVal (y : PadicAlgCl ℓ)
+          ∧ ellVal ((groupRingEval (lineChar (x P₀).1.character) (Y.element J)).eval y).val
+            ≤ gaussVal ρ (R₀ * R₁) :=
     exists_ellVal_eval_le_gaussVal hρ_le h_congr hR_lt
   refine ⟨Pi.single ⟨P₀, h_tied.first_mem⟩ y, fun j ↦ ?_, ?_⟩
   · obtain rfl | hj := eq_or_ne j ⟨P₀, h_tied.first_mem⟩

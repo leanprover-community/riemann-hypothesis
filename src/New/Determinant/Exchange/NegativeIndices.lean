@@ -52,9 +52,10 @@ section Rotation
 
 open MvPolynomial hiding funext_iff
 
-variable {E : Type} [Field E] [NumberField E] {a b n : Type} [Fintype a] [DecidableEq a]
-  [Fintype b] [DecidableEq b] [Fintype n] [DecidableEq n] {s : n → ℤˣ} {t : a → ℤˣ}
-  {μ : NumberField.InfinitePlace E → ℤ}
+variable
+  {E : Type} [Field E] [NumberField E]
+  {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {t : a → ℤˣ} {μ : NumberField.InfinitePlace E → ℤ}
 
 /-- Let `s` be a vector of signs and `U (signMatrix s)` the unitary group of the diagonal Hermitian
 form with entries `s` (`u.val.val` is the matrix of `u`). If the Gram matrix of the columns of `x`
@@ -369,9 +370,10 @@ lemma New.Exchange.haar_map_mul_right_of_isCompact {H : Type*} [Group H] [Topolo
       ← QuotientGroup.preimage_image_mk_eq_mul]
   rw [haarMeasure_unique (map _ _) K, h_eq, ← haarMeasure_unique]
 
-variable {E : Type} [Field E] [CMType E] [H : WeilData E] {a b m n : Type} [Fintype a]
-  [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m] [Fintype n]
-  [DecidableEq n]
+variable
+  {E : Type} [Field E] [CMType E] [H : WeilData E]
+  {a b m n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype m]
+  [DecidableEq m] [Fintype n] [DecidableEq n]
 
 omit [DecidableEq b] in
 /-- Let `C` be the elements of the stabiliser of an adelic frame `x'` that lie in the conjugate of

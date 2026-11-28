@@ -40,16 +40,22 @@ namespace New
 
 open Variety
 
-variable {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
   {v w : FinPlace E}
 
-/-- The homomorphism that removes from an element its components at the split place `v` and at
-the conjugate of `v`. -/
+/--
+The homomorphism that removes from an element its components at the split place `v` and at
+the conjugate of `v`.
+-/
 noncomputable def offPlace (hv : v.IsSplit) : Gf E n →* Gf E n :=
-  MonoidHom.mk' (fun g ↦ g * (ofSplitPlace hv (g.atPlace v))⁻¹) fun g h ↦ by
-    have h_comm : Commute (ofSplitPlace hv (g.atPlace v)) (h * (ofSplitPlace hv (h.atPlace v))⁻¹) :=
-      Gf.commute_supportedOn_trivialOn (ofSplitPlace_mem_supportedOn hv _) (by simp)
-    simp only [map_mul, mul_inv_rev, mul_assoc, h_comm.inv_left.eq]
+  MonoidHom.mk'
+    (fun g ↦ g * (ofSplitPlace hv (g.atPlace v))⁻¹)
+    fun g h ↦ by
+      have h_comm
+          : Commute (ofSplitPlace hv (g.atPlace v)) (h * (ofSplitPlace hv (h.atPlace v))⁻¹) :=
+        Gf.commute_supportedOn_trivialOn (ofSplitPlace_mem_supportedOn hv _) (by simp)
+      simp only [map_mul, mul_inv_rev, mul_assoc, h_comm.inv_left.eq]
 
 /-- Removing the components of `g` at `v` and its conjugate is dividing `g` by the element
 `ofSplitPlace hv (g.atPlace v)`, which has these components and is `1` at all other places. -/

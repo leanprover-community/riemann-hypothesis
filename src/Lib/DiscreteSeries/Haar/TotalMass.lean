@@ -125,33 +125,42 @@ lemma measurePreserving_normSq_sphereDensity [Nonempty κ] :
     ← intervalIntegral.integral_of_le (sq_nonneg _), integral_sphereDensity_div_two card_pos,
     ENNReal.ofReal_mul (by positivity), ← pow_mul, ENNReal.ofReal_pow (by positivity)]
 
-/-- The real coordinates of the hermitian matrix `w wᴴ` of rank at most one, in the same convention
-as `New.gramCoords`. -/
+/--
+The real coordinates of the hermitian matrix `w wᴴ` of rank at most one, in the same convention
+as `New.gramCoords`.
+-/
 noncomputable def outerCoords (w : n → ℂ) : Matrix n n ℝ := skewCoords (I • vecMulVec w (star w))
 
 @[fun_prop]
 theorem continuous_outerCoords : Continuous (outerCoords : (n → ℂ) → Matrix n n ℝ) :=
   skewCoords.continuous_of_finiteDimensional.comp (by fun_prop)
 
-/-- The Gram map `Y ↦ gramCoords 1 Y`, the real coordinates of `Yᴴ Y` for square matrices `Y`, has
+/--
+The Gram map `Y ↦ gramCoords 1 Y`, the real coordinates of `Yᴴ Y` for square matrices `Y`, has
 density `c` on the set `W` of real matrices: on `W` it carries Lebesgue measure to `c` times
-Lebesgue measure. -/
+Lebesgue measure.
+-/
 def HasGramDensity (W : Set (Matrix n n ℝ)) (c : ENNReal) : Prop :=
-  ∀ G : Matrix n n ℝ → ENNReal, Measurable G → G.support ⊆ W →
-    ∫⁻ Y : Matrix n n ℂ, G (gramCoords 1 Y) = c * ∫⁻ t : Matrix n n ℝ, G t
+  ∀ G : Matrix n n ℝ → ENNReal,
+    Measurable G → G.support ⊆ W
+      → ∫⁻ Y : Matrix n n ℂ, G (gramCoords 1 Y) = c * ∫⁻ t : Matrix n n ℝ, G t
 
-/-- Let the index set `n` consist of `n'` and one further index, fix a vector `v` of squared norm
+/--
+Let the index set `n` consist of `n'` and one further index, fix a vector `v` of squared norm
 `r > 0` in `ℂ ^ n`, and let the Gram map in size `n'` have the density `c` on `W`. Let `k` be the
 number of elements of `n'`. The map that sends `k` vectors `Y` of `ℂ ^ n` to the coordinates `t` of
 their Gram matrix and their products `w` with `v` carries Lebesgue measure to `c / r ^ k` times
 Lebesgue measure, on the set where `t - outerCoords w / r`, the coordinates of the Gram matrix
-minus `w wᴴ / r`, lies in `W`. -/
-theorem HasGramDensity.lintegral_conjTranspose_mulVec {W : Set (Matrix n' n' ℝ)} {c : ENNReal}
-    (hW : HasGramDensity W c) (e : n' ⊕ Unit ≃ n) {v : n → ℂ} {r : ℝ} (hr : 0 < r)
-    (hv : star v ⬝ᵥ v = r) {F : Matrix n' n' ℝ × (n' → ℂ) → ENNReal} (hF : Measurable F)
-    (h_supp : ∀ p ∈ F.support, p.1 - r⁻¹ • outerCoords p.2 ∈ W) :
-    ENNReal.ofReal (r ^ card n') * ∫⁻ Y : Matrix n n' ℂ, F (gramCoords 1 Y, Yᴴ *ᵥ v) =
-      c * ∫⁻ p : Matrix n' n' ℝ × (n' → ℂ), F p := by
+minus `w wᴴ / r`, lies in `W`.
+-/
+theorem HasGramDensity.lintegral_conjTranspose_mulVec
+    {W : Set (Matrix n' n' ℝ)} {c : ENNReal} (hW : HasGramDensity W c)
+    (e : n' ⊕ Unit ≃ n)
+    {v : n → ℂ} {r : ℝ} (hr : 0 < r) (hv : star v ⬝ᵥ v = r)
+    {F : Matrix n' n' ℝ × (n' → ℂ) → ENNReal}
+    (hF : Measurable F) (h_supp : ∀ p ∈ F.support, p.1 - r⁻¹ • outerCoords p.2 ∈ W)
+    : ENNReal.ofReal (r ^ card n') * ∫⁻ Y : Matrix n n' ℂ, F (gramCoords 1 Y, Yᴴ *ᵥ v)
+      = c * ∫⁻ p : Matrix n' n' ℝ × (n' → ℂ), F p := by
   -- Rotate `v` to `√r` times a basis vector. Then `Y` consists of a square matrix `X` and a row
   -- `wᴴ`; its Gram matrix is `Xᴴ X + w wᴴ` and its products with `v` are `√r w`.
   let v₀ : n → ℂ := √r • Pi.single (e (.inr ())) 1
@@ -161,14 +170,14 @@ theorem HasGramDensity.lintegral_conjTranspose_mulVec {W : Set (Matrix n' n' ℝ
   have h_rows : MeasurePreserving fun p ↦ (u : Matrix n n ℂ) * rows p :=
     (measurePreserving_U_mul u).comp <| measurePreserving_conjTranspose.comp <|
       (measurePreserving_joinCol e).comp (measurePreserving_conjTranspose.prod (.id _))
-  have h_gram (X : Matrix n' n' ℂ) (w : n' → ℂ) :
-      gramCoords 1 ((u : Matrix n n ℂ) * rows (X, w)) = gramCoords 1 X + outerCoords w := by
+  have h_gram (X : Matrix n' n' ℂ) (w : n' → ℂ)
+      : gramCoords 1 ((u : Matrix n n ℂ) * rows (X, w)) = gramCoords 1 X + outerCoords w := by
     have h_sum : (rows (X, w))ᴴ * rows (X, w) = Xᴴ * X + vecMulVec w (star w) := by
       simp [← ext_iff, rows, Matrix.mul_apply, ← e.sum_comp, vecMulVec_apply]
     rw [gramCoords_U_mul]
     simp [gramCoords, outerCoords, h_sum]
-  have h_prod (X : Matrix n' n' ℂ) (w : n' → ℂ) :
-      ((u : Matrix n n ℂ) * rows (X, w))ᴴ *ᵥ v = √r • w := by
+  have h_prod (X : Matrix n' n' ℂ) (w : n' → ℂ)
+      : ((u : Matrix n n ℂ) * rows (X, w))ᴴ *ᵥ v = √r • w := by
     have h_unitary : (u : Matrix n n ℂ)ᴴ * u = 1 := by
       simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u.property
     rw [← hu, mulVec_mulVec, conjTranspose_mul, Matrix.mul_assoc, h_unitary]
@@ -176,81 +185,93 @@ theorem HasGramDensity.lintegral_conjTranspose_mulVec {W : Set (Matrix n' n' ℝ
   have h_outer (w : n' → ℂ) : r⁻¹ • outerCoords (√r • w) = outerCoords w := by
     simp [outerCoords, star_trivial, smul_comm I, smul_smul, hr.le, hr.ne']
   -- For fixed `w`, the translate of `F` by `outerCoords w` is supported in `W`.
-  have h_inner (w : n' → ℂ) : ∫⁻ X : Matrix n' n' ℂ, F (gramCoords 1 X + outerCoords w, √r • w) =
-      c * ∫⁻ t, F (t, √r • w) := by
-    rw [hW (fun t ↦ F (t + outerCoords w, √r • w)) (by fun_prop)
+  have h_inner (w : n' → ℂ)
+      : ∫⁻ X : Matrix n' n' ℂ, F (gramCoords 1 X + outerCoords w, √r • w)
+        = c * ∫⁻ t, F (t, √r • w) := by
+    rw [hW
+        (fun t ↦ F (t + outerCoords w, √r • w))
+        (by fun_prop)
         fun t ht ↦ by simpa [h_outer] using h_supp _ ht,
       lintegral_add_right_eq_self fun t ↦ F (t, √r • w)]
   let T : (n' → ℂ) →ₗ[ℝ] n' → ℂ := √r • .id
   have hT : T.det = r ^ card n' := by simp [T, Module.finrank_pi_fintype, pow_mul', hr.le]
-  calc _ = ENNReal.ofReal (r ^ card n') *
-          ∫⁻ w, ∫⁻ X : Matrix n' n' ℂ, F (gramCoords 1 X + outerCoords w, √r • w) := by
-        rw [← h_rows.lintegral_comp (hF.fun_comp (Continuous.measurable (by fun_prop)))]
-        simp only [h_gram, h_prod]
-        rw [volume_eq_prod, lintegral_prod_symm' _ (by fun_prop)]
+  calc
+    _ = ENNReal.ofReal (r ^ card n')
+        * ∫⁻ w, ∫⁻ X : Matrix n' n' ℂ, F (gramCoords 1 X + outerCoords w, √r • w) := by
+      rw [← h_rows.lintegral_comp (hF.fun_comp (Continuous.measurable (by fun_prop)))]
+      simp only [h_gram, h_prod]
+      rw [volume_eq_prod, lintegral_prod_symm' _ (by fun_prop)]
     _ = ENNReal.ofReal (r ^ card n') * ∫⁻ w, c * ∫⁻ t, F (t, √r • w) := by simp only [h_inner]
     _ = ∫⁻ w, c * ∫⁻ t, F (t, w) := by
-        rw [eq_comm, lintegral_eq_abs_det_mul_comp volume (hT.trans_ne (by positivity))
-          (by fun_prop), hT]
-        simp [T, abs_of_pos hr]
+      rw [eq_comm, lintegral_eq_abs_det_mul_comp volume (hT.trans_ne (by positivity)) (by fun_prop),
+        hT]
+      simp [T, abs_of_pos hr]
     _ = c * ∫⁻ p, F p := by
-        rw [volume_eq_prod, lintegral_prod_symm' _ hF, lintegral_const_mul c (by fun_prop)]
+      rw [volume_eq_prod, lintegral_prod_symm' _ hF, lintegral_const_mul c (by fun_prop)]
 
-/-- The step from size `n'` to size `n`, one more than `n'`. Let `φ` be a volume-preserving
+/--
+The step from size `n'` to size `n`, one more than `n'`. Let `φ` be a volume-preserving
 homeomorphism that splits the coordinates of the Gram matrix of the columns `(Y, v)` (joined by
 `joinCol e`, which puts column `a` of `Y` at index `e (.inl a)` and `v` at index `e (.inr ())`) into
 the block `t = gramCoords 1 Y`, the column `w = Yᴴ v` and the corner `r = |v|²`. Suppose the Gram
 map `Y ↦ gramCoords 1 Y` (real coordinates of `Yᴴ Y`) carries Lebesgue measure on `W` to `c` times
 Lebesgue measure in size `n'`. Then in size `n` it does so with constant `sphereDensity (card n)
 1 / 2 * c = (π^k / (k−1)!) c`, where `k = card n`, on the set where `r > 0` and
-`t - outerCoords w / r` lies in `W`; here `outerCoords w` is the real coordinates of `w wᴴ`. -/
-theorem HasGramDensity.succ {W : Set (Matrix n' n' ℝ)} {c : ENNReal} (hW : HasGramDensity W c)
-    (e : n' ⊕ Unit ≃ n) {φ : Matrix n n ℝ ≃ₜ Matrix n' n' ℝ × (n' → ℂ) × ℝ}
-    (φ_vol : MeasurePreserving φ)
+`t - outerCoords w / r` lies in `W`; here `outerCoords w` is the real coordinates of `w wᴴ`.
+-/
+theorem HasGramDensity.succ
+    {W : Set (Matrix n' n' ℝ)} {c : ENNReal} (hW : HasGramDensity W c)
+    (e : n' ⊕ Unit ≃ n)
+    {φ : Matrix n n ℝ ≃ₜ Matrix n' n' ℝ × (n' → ℂ) × ℝ} (φ_vol : MeasurePreserving φ)
     (φ_gram : ∀ (Y : Matrix n n' ℂ) (v : n → ℂ),
-      φ (gramCoords 1 (joinCol e (Y, v))) = (gramCoords 1 Y, Yᴴ *ᵥ v, ‖star v ⬝ᵥ v‖)) :
-    HasGramDensity (φ ⁻¹' {p : Matrix n' n' ℝ × (n' → ℂ) × ℝ |
-        0 < p.2.2 ∧ p.1 - p.2.2⁻¹ • outerCoords p.2.1 ∈ W})
+      φ (gramCoords 1 (joinCol e (Y, v))) = (gramCoords 1 Y, Yᴴ *ᵥ v, ‖star v ⬝ᵥ v‖))
+    : HasGramDensity
+      (φ
+        ⁻¹' {p : Matrix n' n' ℝ × (n' → ℂ) × ℝ |
+          0 < p.2.2 ∧ p.1 - p.2.2⁻¹ • outerCoords p.2.1 ∈ W})
       (ENNReal.ofReal (sphereDensity (card n) 1 / 2) * c) := by
   -- Let `m = card n'`. One column `v` ranges over the sphere `|v|² = r`, whose mass
   -- `π ^ (m + 1) r ^ m / m!` cancels the power of `r` that comes from the other `m` columns.
   intro G hG h_supp
   have : Nonempty n := ⟨e (.inr ())⟩
   let F (r : ℝ) (p : Matrix n' n' ℝ × (n' → ℂ)) : ENNReal := G (φ.symm (p.1, p.2, r))
-  have hF_supp (r : ℝ) (p : Matrix n' n' ℝ × (n' → ℂ)) (hp : F r p ≠ 0) :
-      0 < r ∧ p.1 - r⁻¹ • outerCoords p.2 ∈ W := by simpa using h_supp hp
+  have hF_supp (r : ℝ) (p : Matrix n' n' ℝ × (n' → ℂ)) (hp : F r p ≠ 0)
+      : 0 < r ∧ p.1 - r⁻¹ • outerCoords p.2 ∈ W := by
+    simpa using h_supp hp
   let H (r : ℝ) : ENNReal := ENNReal.ofReal (r ^ card n')⁻¹ * (c * ∫⁻ p, F r p)
-  have h_column (v : n → ℂ) (hv : v ≠ 0) :
-      ∫⁻ Y : Matrix n n' ℂ, G (gramCoords 1 (joinCol e (Y, v))) = H ‖star v ⬝ᵥ v‖ := by
+  have h_column (v : n → ℂ) (hv : v ≠ 0)
+      : ∫⁻ Y : Matrix n n' ℂ, G (gramCoords 1 (joinCol e (Y, v))) = H ‖star v ⬝ᵥ v‖ := by
     have hr : 0 < ‖star v ⬝ᵥ v‖ := by simpa using hv
     simp only [H]
     rw [← hW.lintegral_conjTranspose_mulVec e hr
-      (norm_of_nonneg' (dotProduct_star_self_nonneg v)).symm (by fun_prop)
-      fun p hp ↦ (hF_supp _ p hp).right, ← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
+        (norm_of_nonneg' (dotProduct_star_self_nonneg v)).symm (by fun_prop)
+        fun p hp ↦ (hF_supp _ p hp).right,
+      ← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
     simp [F, ← φ_gram, hv]
-  have h_mass (r : ℝ) (hr : 0 < r) :
-      sphereDensity (card n) r / 2 * (r ^ card n')⁻¹ = sphereDensity (card n) 1 / 2 := by
+  have h_mass (r : ℝ) (hr : 0 < r)
+      : sphereDensity (card n) r / 2 * (r ^ card n')⁻¹ = sphereDensity (card n) 1 / 2 := by
     simp [← card_congr e, field]
   have hF_subset : (fun r : ℝ ↦ ∫⁻ p, F r p).support ⊆ Ioi 0 := fun r hr ↦ by
     obtain ⟨p, hp⟩ : ∃ p, F r p ≠ 0 := by_contra fun h ↦ hr (by simp_all)
     exact (hF_supp r p hp).left
-  calc ∫⁻ Y, G (gramCoords 1 Y) = ∫⁻ v : n → ℂ, H ‖star v ⬝ᵥ v‖ := by
-        rw [← (measurePreserving_joinCol e).lintegral_comp (by fun_prop), volume_eq_prod,
-          lintegral_prod_symm' _ (by fun_prop)]
-        exact lintegral_congr_ae ((ae_ne volume 0).mono h_column)
+  calc
+    ∫⁻ Y, G (gramCoords 1 Y) = ∫⁻ v : n → ℂ, H ‖star v ⬝ᵥ v‖ := by
+      rw [← (measurePreserving_joinCol e).lintegral_comp (by fun_prop), volume_eq_prod,
+        lintegral_prod_symm' _ (by fun_prop)]
+      exact lintegral_congr_ae ((ae_ne volume 0).mono h_column)
     _ = ∫⁻ r in Ioi 0, ENNReal.ofReal (sphereDensity (card n) r / 2) * H r := by
-        rw [measurePreserving_normSq_sphereDensity.lintegral_comp (by fun_prop)]
-        exact lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)
+      rw [measurePreserving_normSq_sphereDensity.lintegral_comp (by fun_prop)]
+      exact lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)
     _ = ∫⁻ r in Ioi 0, ENNReal.ofReal (sphereDensity (card n) 1 / 2) * c * ∫⁻ p, F r p := by
-        refine setLIntegral_congr_fun measurableSet_Ioi fun r (hr : 0 < r) ↦ ?_
-        simp (disch := positivity) only [H, ← h_mass r hr, ENNReal.ofReal_mul, mul_assoc]
+      refine setLIntegral_congr_fun measurableSet_Ioi fun r (hr : 0 < r) ↦ ?_
+      simp (disch := positivity) only [H, ← h_mass r hr, ENNReal.ofReal_mul, mul_assoc]
     _ = ENNReal.ofReal (sphereDensity (card n) 1 / 2) * c * ∫⁻ r, ∫⁻ p, F r p := by
-        rw [lintegral_const_mul _ (by fun_prop), setLIntegral_eq_of_support_subset hF_subset]
+      rw [lintegral_const_mul _ (by fun_prop), setLIntegral_eq_of_support_subset hF_subset]
     _ = ENNReal.ofReal (sphereDensity (card n) 1 / 2) * c * ∫⁻ t : Matrix n n ℝ, G t := by
-        rw [← (φ_vol.symm φ.toMeasurableEquiv).lintegral_comp hG,
-          ← volume_preserving_prodAssoc.lintegral_comp (by fun_prop), volume_eq_prod _ ℝ,
-          lintegral_prod_symm' _ (by fun_prop)]
-        rfl
+      rw [← (φ_vol.symm φ.toMeasurableEquiv).lintegral_comp hG,
+        ← volume_preserving_prodAssoc.lintegral_comp (by fun_prop), volume_eq_prod _ ℝ,
+        lintegral_prod_symm' _ (by fun_prop)]
+      rfl
 
 omit [Fintype n'] in
 /-- The Gram matrix of columns `(Y, v)`, joined by `joinCol e`, in the coordinates `φ` of block,
@@ -272,15 +293,18 @@ lemma apply_gramCoords_joinCol (e : n' ⊕ Unit ≃ n)
   · simp [funext_iff, Matrix.mul_apply, mulVec, dotProduct]
   · simp [gramCoords, skewCoords, h_corner]
 
-/-- There is an open set `W` of real `n × n` matrices containing `gramCoords 1 1` on which the Gram
+/--
+There is an open set `W` of real `n × n` matrices containing `gramCoords 1 1` on which the Gram
 map `Y ↦ gramCoords 1 Y` has density `volU (card n) / 2 ^ card n`. Here `gramCoords 1 Y` is the
 vector of real coordinates, in the sense of `hermOfReal` (which takes real coordinates back to the
 hermitian matrix), of `Yᴴ Y` for complex square matrices `Y`. Having this density means that on `W`
 the map carries Lebesgue measure to that constant times Lebesgue measure, where
-`volU j = ∏ i < j, 2 π ^ (i + 1) / i!`. -/
-theorem exists_hasGramDensity :
-    ∃ W : Set (Matrix n n ℝ), IsOpen W ∧ gramCoords 1 (1 : Matrix n n ℂ) ∈ W ∧
-      HasGramDensity W (ENNReal.ofReal (volU (card n) / 2 ^ card n)) := by
+`volU j = ∏ i < j, 2 π ^ (i + 1) / i!`.
+-/
+theorem exists_hasGramDensity
+    : ∃ W : Set (Matrix n n ℝ),
+      IsOpen W ∧ gramCoords 1 (1 : Matrix n n ℂ) ∈ W
+        ∧ HasGramDensity W (ENNReal.ofReal (volU (card n) / 2 ^ card n)) := by
   induction hk : card n generalizing n with
   | zero =>
     rw [card_eq_zero_iff] at hk
@@ -294,26 +318,35 @@ theorem exists_hasGramDensity :
     obtain ⟨W, hW_open, hW_one, hW⟩ := ih (n := n') (by simp [n', hk])
     -- `φ` splits the coordinates of a hermitian matrix into block, column and corner.
     obtain ⟨φ, φ_vol, φ_apply⟩ := exists_measurePreserving_hermCorner e
-    have h_const : ENNReal.ofReal (volU (k + 1) / 2 ^ (k + 1)) =
-        ENNReal.ofReal (sphereDensity (card n) 1 / 2) * ENNReal.ofReal (volU k / 2 ^ k) := by
+    have h_const
+        : ENNReal.ofReal (volU (k + 1) / 2 ^ (k + 1))
+          = ENNReal.ofReal (sphereDensity (card n) 1 / 2) * ENNReal.ofReal (volU k / 2 ^ k) := by
       rw [← ENNReal.ofReal_mul (by positivity), hk, volU, Finset.prod_range_succ_comm, ← volU,
         pow_succ', mul_div_mul_comm]
-    have h_open : IsOpen {p : Matrix n' n' ℝ × (n' → ℂ) × ℝ |
-        0 < p.2.2 ∧ p.1 - p.2.2⁻¹ • outerCoords p.2.1 ∈ W} := by
-      refine ContinuousOn.isOpen_inter_preimage (fun p hp ↦ ContinuousAt.continuousWithinAt ?_)
+    have h_open : IsOpen
+        {p : Matrix n' n' ℝ × (n' → ℂ) × ℝ |
+          0 < p.2.2 ∧ p.1 - p.2.2⁻¹ • outerCoords p.2.1 ∈ W} := by
+      refine ContinuousOn.isOpen_inter_preimage
+        (fun p hp ↦ ContinuousAt.continuousWithinAt ?_)
         (isOpen_Ioi.preimage continuous_snd.snd) hW_open
       fun_prop (disch := exact ne_of_gt hp)
-    have h_one : φ (gramCoords 1 (1 : Matrix n n ℂ)) =
-        (gramCoords 1 (1 : Matrix n' n' ℂ), 0, 1) := by
+    have h_one
+        : φ (gramCoords 1 (1 : Matrix n n ℂ)) = (gramCoords 1 (1 : Matrix n' n' ℂ), 0, 1) := by
       rw [φ_apply, hermOfReal_gramCoords isHermitian_one]
       simp [← ext_iff, funext_iff, gramCoords, skewCoords, Matrix.one_apply]
-    exact ⟨_, h_open.preimage φ.continuous, by simpa [h_one, outerCoords] using hW_one,
-      by simpa only [h_const] using hW.succ e φ_vol (apply_gramCoords_joinCol e φ_apply)⟩
+    exact ⟨
+      _,
+      h_open.preimage φ.continuous,
+      by simpa [h_one, outerCoords] using hW_one,
+      by simpa only [h_const] using hW.succ e φ_vol (apply_gramCoords_joinCol e φ_apply)
+    ⟩
 
-/-- The compact unitary group `U(n)` has total mass one for the measure `New.haarU 1`, which is
-the `volume` of `U 1`. -/
-instance isProbabilityMeasure_haarU :
-    IsProbabilityMeasure (volume : Measure (U (1 : Matrix n n ℂ))) where
+/--
+The compact unitary group `U(n)` has total mass one for the measure `New.haarU 1`, which is
+the `volume` of `U 1`.
+-/
+instance isProbabilityMeasure_haarU
+    : IsProbabilityMeasure (volume : Measure (U (1 : Matrix n n ℂ))) where
   measure_univ := by
     -- Compute the volume of the matrices with Gram matrix in a small open set `S` in two ways: by
     -- the polar formula over a section `σ`, and by the density of the Gram map near the identity.
@@ -328,20 +361,22 @@ instance isProbabilityMeasure_haarU :
     set c : ENNReal := ENNReal.ofReal (volU (card n) / 2 ^ card n)
     have hc : c ≠ 0 := by simp [c, volU_pos]
     rw [← ENNReal.mul_left_inj hS_pos hS_fin, ← ENNReal.mul_right_inj hc ENNReal.ofReal_ne_top]
-    calc c * (volume (univ : Set (U (1 : Matrix n n ℂ))) * volume S)
-        = c * ∫⁻ t : Matrix n n ℝ in S, ∫⁻ g : U (1 : Matrix n n ℂ), 1 := by
-          simp [Set.univ_inter]
+    calc
+      c * (volume (univ : Set (U (1 : Matrix n n ℂ))) * volume S)
+        = c * ∫⁻ t : Matrix n n ℝ in S, ∫⁻ g : U (1 : Matrix n n ℂ), 1 := by simp [Set.univ_inter]
       _ = ∫⁻ Y : Matrix n n ℂ in gramCoords 1 ⁻¹' S, 1 :=
-          ((hσ.mono hS (by grind)).lintegral_eq measurable_const).symm
+        ((hσ.mono hS (by grind)).lintegral_eq measurable_const).symm
       _ = ∫⁻ Y : Matrix n n ℂ, S.indicator 1 (gramCoords 1 Y) :=
-          (lintegral_indicator ((continuous_gramCoords 1).measurable hS.measurableSet) _).symm
+        (lintegral_indicator ((continuous_gramCoords 1).measurable hS.measurableSet) _).symm
       _ = c * (1 * volume S) := by
-          simpa [hS.measurableSet, Set.univ_inter] using
-            hW _ (measurable_one.indicator hS.measurableSet)
-              (support_indicator_subset.trans (by grind))
+        simpa [hS.measurableSet, Set.univ_inter] using
+          hW _ (measurable_one.indicator hS.measurableSet)
+            (support_indicator_subset.trans (by grind))
 
-/-- For all signs equal to one, the unitary group of the sign matrix `signMatrix 1`, which equals
-`1` by `signMatrix_one`, has total mass one. -/
+/--
+For all signs equal to one, the unitary group of the sign matrix `signMatrix 1`, which equals
+`1` by `signMatrix_one`, has total mass one.
+-/
 instance : IsProbabilityMeasure (α := U (signMatrix (n := n) 1)) volume := by
   rw! [signMatrix_one]
   infer_instance
@@ -359,7 +394,9 @@ section HaarCovering
 
 open New U MeasureTheory ENNReal Fintype Matrix.Norms.L2Operator
 
-variable {n : Type} [Fintype n] [DecidableEq n] {J : Matrix n n ℂ} [IsHermitianInvolution J]
+variable
+  {n : Type} [Fintype n] [DecidableEq n]
+  {J : Matrix n n ℂ} [IsHermitianInvolution J]
   {S : Type} [Group S] [MeasurableSpace S]
 
 omit [IsHermitianInvolution J] in
@@ -386,14 +423,18 @@ lemma New.measure_sublevel_ne_zero (ν : Measure S) [TopologicalSpace S] [ν.IsO
 
 namespace New.DiscreteSeries
 
-/-- Covering bound. For `D, R ≥ 1` and `3 D R² ≤ K`, the set where `‖j s * y‖ ≤ R` has measure
+/--
+Covering bound. For `D, R ≥ 1` and `3 D R² ≤ K`, the set where `‖j s * y‖ ≤ R` has measure
 at most `K ^ (2 n²)` times the measure of the set where `‖j s - 1‖ ≤ 1 / D`. Here `ν` is a
 right invariant measure on `S`, `j` is a homomorphism to the unitary group `U J` of a hermitian
-involution `J` of size `n`, and the norms are operator norms. -/
-theorem measure_ball_le_covering (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvariant]
-    (j : S →* U J) (y : U J) {D R K : ℝ} (hD : 1 ≤ D) (hR : 1 ≤ R) (hK : 3 * D * R ^ 2 ≤ K) :
-    ν {s : S | ‖((j s * y : U J) : Matrix n n ℂ)‖ ≤ R} ≤
-      ENNReal.ofReal (K ^ (2 * card n ^ 2)) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ D⁻¹} := by
+involution `J` of size `n`, and the norms are operator norms.
+-/
+theorem measure_ball_le_covering
+    (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvariant]
+    (j : S →* U J) (y : U J)
+    {D R K : ℝ} (hD : 1 ≤ D) (hR : 1 ≤ R) (hK : 3 * D * R ^ 2 ≤ K)
+    : ν {s : S | ‖((j s * y : U J) : Matrix n n ℂ)‖ ≤ R}
+      ≤ ENNReal.ofReal (K ^ (2 * card n ^ 2)) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ D⁻¹} := by
   -- Among the `s` with `‖j s * y‖ ≤ R` take a maximal family `M` whose matrices `j s * y` are
   -- `1 / (D R)`-separated. The packing bound counts `M`, and by maximality the right translates
   -- of the small ball `B` by the points of `M` cover the set on the left.
@@ -404,10 +445,12 @@ theorem measure_ball_le_covering (ν : Measure S) [MeasurableMul S] [ν.IsMulRig
   have h_card : M.encard ≤ ENNReal.ofReal (K ^ (2 * card n ^ 2)) := by
     have h_pairwise : M.Pairwise IsFar := by simpa [IsChain, IsFar, norm_sub_rev] using h_sep
     have h_base : 1 + 2 * R / (D⁻¹ / R) ≤ K :=
-      calc _ = 1 + 2 * D * R ^ 2 := by field
+      calc
+        _ = 1 + 2 * D * R ^ 2 := by field
         _ ≤ K := by linarith [show 1 ≤ D * R ^ 2 by bound]
-    calc _ ≤ ENNReal.ofReal ((1 + 2 * R / (D⁻¹ / R)) ^ Module.finrank ℝ (Matrix n n ℂ)) :=
-          encard_le_of_separated (by positivity) (by positivity) h_pairwise fun s _ ↦ s.property
+    calc
+      _ ≤ ENNReal.ofReal ((1 + 2 * R / (D⁻¹ / R)) ^ Module.finrank ℝ (Matrix n n ℂ)) :=
+        encard_le_of_separated (by positivity) (by positivity) h_pairwise fun s _ ↦ s.property
       _ ≤ ENNReal.ofReal (K ^ Module.finrank ℝ (Matrix n n ℂ)) := by gcongr
       _ = _ := by simp [Module.finrank_matrix, ← sq, mul_comm 2]
   have : Finite M := Set.Finite.to_subtype (by simpa using h_card.trans_lt ofReal_lt_top)
@@ -416,18 +459,21 @@ theorem measure_ball_le_covering (ν : Measure S) [MeasurableMul S] [ν.IsMulRig
     by_contra h_not_mem
     -- Otherwise `g` is far from all of `M`: `j (g k⁻¹) - 1 = (f g - f k) (j k * y)⁻¹`, and an
     -- element of `U J` has the norm of its inverse.
-    have h_far (k : M) : IsFar ⟨g, hg⟩ k := (div_le_iff₀ (by positivity)).2 <|
-      calc D⁻¹ ≤ ‖(j (g * (k : S)⁻¹) : Matrix n n ℂ) - 1‖ :=
+    have h_far (k : M) : IsFar ⟨g, hg⟩ k :=
+      (div_le_iff₀ (by positivity)).2 <| calc
+        D⁻¹ ≤ ‖(j (g * (k : S)⁻¹) : Matrix n n ℂ) - 1‖ :=
           le_of_not_ge fun h ↦ h_not_mem (Set.mem_iUnion.2 ⟨k, h⟩)
         _ = ‖(f g - f k) * (((j k * y)⁻¹ : U J) : Matrix n n ℂ)‖ := by simp [f, sub_mul, mul_assoc]
         _ ≤ ‖f g - f k‖ * R := by grw [norm_mul_le, U.norm_inv, k.val.property]
     -- Maximality puts `g` into `M`, so `g` is far from itself.
-    have h_mem : ⟨g, hg⟩ ∈ M := Set.insert_eq_self.1
-      (h_max (h_sep.insert fun k hk _ ↦ .inl (h_far ⟨k, hk⟩)) (Set.subset_insert ..)).symm
+    have h_mem : ⟨g, hg⟩ ∈ M :=
+      Set.insert_eq_self.1 (h_max (h_sep.insert fun k hk _ ↦ .inl (h_far ⟨k, hk⟩))
+        (Set.subset_insert ..)).symm
     have h_self : D⁻¹ / R ≤ 0 := by simpa [IsFar] using h_far ⟨_, h_mem⟩
     exact h_self.not_gt (by positivity)
-  calc ν {s : S | ‖f s‖ ≤ R} ≤ ∑' k : M, ν ((· * (k : S)⁻¹) ⁻¹' B) :=
-        (measure_mono h_cover).trans (measure_iUnion_le _)
+  calc
+    ν {s : S | ‖f s‖ ≤ R}
+      ≤ ∑' k : M, ν ((· * (k : S)⁻¹) ⁻¹' B) := (measure_mono h_cover).trans (measure_iUnion_le _)
     _ = M.encard * ν B := by simp only [measure_preimage_mul_right, tsum_set_const]
     _ ≤ ENNReal.ofReal (K ^ (2 * card n ^ 2)) * ν B := by gcongr
 
@@ -440,62 +486,77 @@ lemma measure_ball_ne_top_of_isProperMap (ν : Measure S)
     Set.ext fun s ↦ (mem_closedBall_iff_norm (b := (j s : Matrix n n ℂ))).symm
   simpa only [h_eq] using (hj.isCompact_preimage (isCompact_closedBall 1 R)).measure_ne_top
 
-/-- Let `J` be a hermitian involution of size `n ≥ 1`, let `j : S →* U J` be proper, let `ν` be
+/--
+Let `J` be a hermitian involution of size `n ≥ 1`, let `j : S →* U J` be proper, let `ν` be
 right invariant and finite on compact sets, and let `c > 8 n²` be a natural number. Then
 `s ↦ (2 / ‖j s * y‖) ^ c` is integrable, and its integral is at most `16 ^ c` times the measure of
-the set where `‖j s - 1‖ ≤ 1` (operator norms). The bound does not depend on `y`. -/
-theorem integral_decay_le (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvariant]
+the set where `‖j s - 1‖ ≤ 1` (operator norms). The bound does not depend on `y`.
+-/
+theorem integral_decay_le
+    (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvariant]
     {j : S →* U J} [TopologicalSpace S] [IsFiniteMeasureOnCompacts ν] [BorelSpace S] [Nonempty n]
-    (hj : IsProperMap j) {c : ℕ} (hc : 8 * card n ^ 2 < c) (y : U J) :
-    Integrable (fun s : S ↦ (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) ν ∧
-      ∫ s : S, (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c ∂ν ≤
-        16 ^ c * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
+    (hj : IsProperMap j)
+    {c : ℕ} (hc : 8 * card n ^ 2 < c)
+    (y : U J)
+    : Integrable (fun s : S ↦ (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) ν
+      ∧ ∫ s : S, (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c ∂ν
+        ≤ 16 ^ c * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
   -- By `measure_ball_le_covering` with `D = 1`, the set `‖j s * y‖ ≤ R` has measure at most
   -- `(3 R²) ^ (2 n²)` times that of `‖j s - 1‖ ≤ 1`. As `‖j s * y‖ ≥ 1` and `c ≤ 3 (c - 4 n²)`,
   -- integration by layers gives the factor `3 ^ (2 n²) * 3`.
   let N (s : S) : ℝ := ‖((j s * y : U J) : Matrix n n ℂ)‖
-  have h_layers (R : ℝ) (hR : 1 ≤ R) : ν {s : S | N s ≤ R} ≤
-      ENNReal.ofReal ((3 * 1 * R ^ 2) ^ (2 * card n ^ 2)) *
-        ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1⁻¹} :=
+  have h_layers (R : ℝ) (hR : 1 ≤ R)
+      : ν {s : S | N s ≤ R}
+        ≤ ENNReal.ofReal ((3 * 1 * R ^ 2) ^ (2 * card n ^ 2))
+          * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1⁻¹} :=
     measure_ball_le_covering ν j y le_rfl hR le_rfl
   have hc_real : 8 * (card n : ℝ) ^ 2 < c := mod_cast hc
   have h_exp : (2 : ℕ) * (2 * card n ^ 2 : ℕ) < (c : ℝ) := mod_cast by lia
   have h_factor : (c : ℝ) ≤ 3 * (c - (2 : ℕ) * (2 * card n ^ 2 : ℕ)) := by grind
-  obtain ⟨h_int, h_le⟩ : Integrable (fun s : S ↦ N s ^ (-c : ℝ)) ν ∧
-      ∫ s : S, N s ^ (-c : ℝ) ∂ν ≤
-        (3 * 1) ^ (2 * card n ^ 2) * 3 * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1⁻¹} :=
-    integral_rpow_neg_le_of_measure_le (Continuous.measurable (by fun_prop)) (fun _ ↦ one_le_norm _)
+  obtain ⟨h_int, h_le⟩
+      : Integrable (fun s : S ↦ N s ^ (-c : ℝ)) ν
+        ∧ ∫ s : S, N s ^ (-c : ℝ) ∂ν
+          ≤ (3 * 1) ^ (2 * card n ^ 2) * 3 * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1⁻¹} :=
+    integral_rpow_neg_le_of_measure_le (Continuous.measurable (by fun_prop))
+      (fun _ ↦ one_le_norm _)
       (by norm_num) (measure_ball_ne_top_of_isProperMap ν hj 1⁻¹) h_layers h_exp h_factor
-  have h_split (s : S) :
-      (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c = 2 ^ c * N s ^ (-c : ℝ) := by
+  have h_split (s : S) : (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c = 2 ^ c * N s ^ (-c : ℝ) := by
     rw [Real.rpow_neg (norm_nonneg _), Real.rpow_natCast, div_pow, div_eq_mul_inv]
   have h_const : (2 : ℝ) ^ c * (3 ^ (2 * card n ^ 2) * 3) ≤ 16 ^ c :=
-    calc _ ≤ (2 : ℝ) ^ c * 3 ^ c := by
-          grw [← pow_succ, pow_le_pow_right₀ (by norm_num) (show 2 * card n ^ 2 + 1 ≤ c by lia)]
+    calc
+      _ ≤ (2 : ℝ) ^ c * 3 ^ c := by
+        grw [← pow_succ, pow_le_pow_right₀ (by norm_num) (show 2 * card n ^ 2 + 1 ≤ c by lia)]
       _ ≤ 16 ^ c := by grw [← mul_pow, show (2 * 3 : ℝ) ≤ 16 by norm_num]
   simp only [h_split]
   refine ⟨h_int.const_mul _, ?_⟩
-  calc ∫ s : S, 2 ^ c * N s ^ (-c : ℝ) ∂ν
-      ≤ 2 ^ c * (3 ^ (2 * card n ^ 2) * 3) * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
-        grw [integral_const_mul, h_le, mul_one, inv_one, ← mul_assoc]
+  calc
+    ∫ s : S, 2 ^ c * N s ^ (-c : ℝ) ∂ν
+        ≤ 2 ^ c * (3 ^ (2 * card n ^ 2) * 3) * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
+      grw [integral_const_mul, h_le, mul_one, inv_one, ← mul_assoc]
     _ ≤ 16 ^ c * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by gcongr
 
-/-- The bound of `integral_decay_le` for the lower Lebesgue integral: for a proper `j : S →* U J`,
+/--
+The bound of `integral_decay_le` for the lower Lebesgue integral: for a proper `j : S →* U J`,
 `ν` right invariant and finite on compact sets, `n ≥ 1` and `c > 8 n²`, the integral of
-`(2 / ‖j s * y‖) ^ c` is at most `16 ^ c` times the measure of the set where `‖j s - 1‖ ≤ 1`. -/
-theorem lintegral_decay_le (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvariant]
+`(2 / ‖j s * y‖) ^ c` is at most `16 ^ c` times the measure of the set where `‖j s - 1‖ ≤ 1`.
+-/
+theorem lintegral_decay_le
+    (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvariant]
     {j : S →* U J} [TopologicalSpace S] [IsFiniteMeasureOnCompacts ν] [BorelSpace S] [Nonempty n]
-    (hj : IsProperMap j) {c : ℕ} (hc : 8 * card n ^ 2 < c) (y : U J) :
-    ∫⁻ s : S, ENNReal.ofReal ((2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) ∂ν ≤
-      ENNReal.ofReal (16 ^ c) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
+    (hj : IsProperMap j)
+    {c : ℕ} (hc : 8 * card n ^ 2 < c)
+    (y : U J)
+    : ∫⁻ s : S, ENNReal.ofReal ((2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) ∂ν
+      ≤ ENNReal.ofReal (16 ^ c) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
   obtain ⟨h_int, h_le⟩ := integral_decay_le ν hj hc y
-  calc _ = ENNReal.ofReal (∫ s : S, (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c ∂ν) :=
-        (ofReal_integral_eq_lintegral_ofReal h_int (.of_forall fun s ↦ by positivity)).symm
+  calc
+    _ = ENNReal.ofReal (∫ s : S, (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c ∂ν) :=
+      (ofReal_integral_eq_lintegral_ofReal h_int (.of_forall fun s ↦ by positivity)).symm
     _ ≤ ENNReal.ofReal (16 ^ c * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1}) :=
-        ENNReal.ofReal_le_ofReal h_le
+      ENNReal.ofReal_le_ofReal h_le
     _ = ENNReal.ofReal (16 ^ c) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
-        rw [ENNReal.ofReal_mul (by positivity),
-          ofReal_measureReal (measure_ball_ne_top_of_isProperMap ν hj 1)]
+      rw [ENNReal.ofReal_mul (by positivity),
+        ofReal_measureReal (measure_ball_ne_top_of_isProperMap ν hj 1)]
 
 end New.DiscreteSeries
 

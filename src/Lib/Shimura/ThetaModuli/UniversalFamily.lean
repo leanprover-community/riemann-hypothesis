@@ -59,8 +59,10 @@ noncomputable section
 
 namespace New.Variety.ThetaNull
 
-/-- The datum `D` is good at every closed point of `Spec R`: for each maximal ideal `m` of the
-`𝓞 E`-subalgebra `R` of `E`, the datum `D` is good at the contraction of `m` to `𝓞 E`. -/
+/--
+The datum `D` is good at every closed point of `Spec R`: for each maximal ideal `m` of the
+`𝓞 E`-subalgebra `R` of `E`, the datum `D` is good at the contraction of `m` to `𝓞 E`.
+-/
 def IsGoodOver {E : Type} [Field E] [CMBase E] (D : PEL E) (R : Subalgebra (𝓞 E) E) : Prop :=
   ∀ m : Ideal R, m.IsMaximal → D.IsGoodAt (m.comap (algebraMap (𝓞 E) R))
 
@@ -81,12 +83,17 @@ lemma isUnit_star_sub_and_card_of_isGoodOver {E : Type} [Field E] [CMBase E] {D 
     simpa using add_mem h_diff hβ
   exact notMem_of_isCoprime_of_mem h_coprime hβ h_conj
 
-/-- The charts of the bundles `c l`, for `l` in `D.dualTorsion` seen inside the larger
+/--
+The charts of the bundles `c l`, for `l` in `D.dualTorsion` seen inside the larger
 `D.levelTorsion` that indexes the level points, cover the point `t` in the pattern of the largest
 theta constants: for each `s` there is `o` such that `t` lands in the chart `k` of `c l` whenever
-`l + k` is `o`, `-o` or `s - o`. -/
-def HasPeakCharts {E : Type} [Field E] [CMBase E] {D : PEL E} {S : Scheme} {A : CommRingCat}
-    (c : D.levelTorsion → LineBundle S D.dualTorsion) (t : Spec A ⟶ S) : Prop :=
+`l + k` is `o`, `-o` or `s - o`.
+-/
+def HasPeakCharts
+    {E : Type} [Field E] [CMBase E]
+    {D : PEL E} {S : Scheme} {A : CommRingCat}
+    (c : D.levelTorsion → LineBundle S D.dualTorsion) (t : Spec A ⟶ S)
+    : Prop :=
   ∀ s : D.dualTorsion, ∃ o : D.dualTorsion, ∀ l k : D.dualTorsion,
     l + k ∈ [o, -o, s - o] → LandsIn t ((c ⟨l, D.dualTorsion_le_levelTorsion l.property⟩).opens k)
 
@@ -200,13 +207,13 @@ variable {E : Type} [Field E] [CMBase E] {D : PEL E} {R : Subalgebra (𝓞 E) E}
 abbrev FamilyParameter (D : PEL E) : Type := AnalyticFamily D × BallBase D.Index
 
 /-- The theta torus of the family `a.1` at the point `a.2`. -/
-abbrev FamilyParameter.torus (a : FamilyParameter D) :
-    ThetaTorus D a.1.frame (a.1.reflection a.2) (BallFibre E D.Index) :=
+abbrev FamilyParameter.torus (a : FamilyParameter D)
+    : ThetaTorus D a.1.frame (a.1.reflection a.2) (BallFibre E D.Index) :=
   a.1.torus a.2
 
 /-- The theta coordinates of the level point `ω` of the theta torus at the parameter `a`. -/
-abbrev FamilyParameter.levelCoords (a : FamilyParameter D) (ω : D.levelTorsion)
-    (j : D.dualTorsion) : ℂ :=
+abbrev FamilyParameter.levelCoords (a : FamilyParameter D) (ω : D.levelTorsion) (j : D.dualTorsion)
+    : ℂ :=
   a.torus.thetaCoord j (a.torus.torsionLift ω)
 
 /-- For a parameter `a` and a level point `ω`, some complex point `t` of projective space over `R`
@@ -220,10 +227,12 @@ lemma exists_isHomogeneousCoords_levelCoords (R : Subalgebra (𝓞 E) E) (ω : D
     Function.ne_iff.mp (a.torus.thetaCoord_vector_ne_zero _)
   exact exists_isHomogeneousCoords (specOver R ℂ).hom hj.isUnit
 
-/-- The complex point of projective space over `R` whose homogeneous coordinates are the theta
-coordinates of the level point `ω` at the parameter `a`. -/
-def levelPoint (R : Subalgebra (𝓞 E) E) (ω : D.levelTorsion) (a : FamilyParameter D) :
-    specOver R ℂ ⟶ Over.mk (prod.snd : ProjSpace D.dualTorsion ⨯ Spec (.of R) ⟶ Spec (.of R)) :=
+/--
+The complex point of projective space over `R` whose homogeneous coordinates are the theta
+coordinates of the level point `ω` at the parameter `a`.
+-/
+def levelPoint (R : Subalgebra (𝓞 E) E) (ω : D.levelTorsion) (a : FamilyParameter D)
+    : specOver R ℂ ⟶ Over.mk (prod.snd : ProjSpace D.dualTorsion ⨯ Spec (.of R) ⟶ Spec (.of R)) :=
   homMk (exists_isHomogeneousCoords_levelCoords R ω a).choose
     (exists_isHomogeneousCoords_levelCoords R ω a).choose_spec.1
 
@@ -234,10 +243,13 @@ lemma isHomogeneousCoords_levelPoint (ω : D.levelTorsion) (a : FamilyParameter 
       (a.levelCoords ω) :=
   (exists_isHomogeneousCoords_levelCoords R ω a).choose_spec.2
 
-/-- The reduced closure, in a product of projective spaces over `R` indexed by the level torsion,
-of the theta coordinates of the level points at the parameters `y b`. -/
-abbrev ThetaClosure [Fintype D.levelTorsion] (R : Subalgebra (𝓞 E) E) {B : Type}
-    (y : B → FamilyParameter D) : Type 1 :=
+/--
+The reduced closure, in a product of projective spaces over `R` indexed by the level torsion,
+of the theta coordinates of the level points at the parameters `y b`.
+-/
+abbrev ThetaClosure
+    [Fintype D.levelTorsion] (R : Subalgebra (𝓞 E) E) {B : Type} (y : B → FamilyParameter D)
+    : Type 1 :=
   ReducedClosure fun (ω : D.levelTorsion) (b : B) ↦ levelPoint R ω (y b)
 
 namespace ThetaClosure
@@ -268,8 +280,10 @@ lemma isHomogeneousCoords_complexPoint (b : B) (ω : D.levelTorsion) :
   rw [IsHomogeneousCoords.pull_iff, ← comp_left, C.point_comp_proj]
   exact isHomogeneousCoords_levelPoint ω (y b)
 
-/-- The morphism `C.scheme.hom` has a projective embedding, obtained via `C.incl` into a product of
-projective spaces. -/
+/--
+The morphism `C.scheme.hom` has a projective embedding, obtained via `C.incl` into a product of
+projective spaces.
+-/
 instance hasProjEmbedding : HasProjEmbedding C.scheme.hom :=
   HasProjEmbedding.of_isClosedImmersion_pi C.incl (h := fun _ ↦ ⟨isProjEmbedding_projSpace⟩)
 
@@ -308,8 +322,10 @@ lemma exists_arc_isGoodAt (hR_good : IsGoodOver D R)
   rw [h_ideal, hw]
   exact hR_good m hm
 
-/-- The family `X` over the closure has the theta tori as fibres: at each point `b` there is a model
-of the fibre on the torus at `y b` whose theta coordinates are those of the torus. -/
+/--
+The family `X` over the closure has the theta tori as fibres: at each point `b` there is a model
+of the fibre on the torus at `y b` whose theta coordinates are those of the torus.
+-/
 def HasThetaFibres (X : ThetaFamily D C.scheme.left C.toIntegers) : Prop :=
   ∀ b : B, X.IsModelledOn (C.complexPoint b) (y b).torus
 
@@ -440,11 +456,14 @@ lemma point_eq_of_isLevelIso (hR_good : IsGoodOver D R) {x x' : FamilyParameter 
     simpa using h_eq =≫ C'.proj ω
   exact C.hom_ext h_proj
 
-/-- The point `b` of the domain of `F` is generic: the point of the closure at `b` specialises to
-the points at all parameters in the domain of `F`. -/
+/--
+The point `b` of the domain of `F` is generic: the point of the closure at `b` specialises to
+the points at all parameters in the domain of `F`.
+-/
 def IsGenericParameter (F : AnalyticFamily D) (b : BallBase D.Index) : Prop :=
-  b ∈ F.domain ∧
-    ∀ b' ∈ F.domain, C.complexPoint (F, b) (closedPoint ℂ) ⤳ C.complexPoint (F, b') (closedPoint ℂ)
+  b ∈ F.domain
+    ∧ ∀ b' ∈ F.domain,
+      C.complexPoint (F, b) (closedPoint ℂ) ⤳ C.complexPoint (F, b') (closedPoint ℂ)
 
 include M in
 /-- The generic points of finitely many analytic families are dense in the closure. -/
@@ -501,16 +520,19 @@ lemma exists_smooth_near_arc {X : ThetaFamily D C.scheme.left C.toIntegers}
 
 end ThetaClosure
 
-/-- Existence of the universal family. Let `R` be the localisation of `𝓞 E` at a submonoid of
+/--
+Existence of the universal family. Let `R` be the localisation of `𝓞 E` at a submonoid of
 non-zero-divisors, and let `D` be good (`New.PEL.IsGoodAt`) at the contraction to `𝓞 E` of every
 maximal ideal of `R`. Then there is a theta family (an abelian scheme with `𝓞 E`-action, a line
 bundle with point-separating coordinates and level points) over an `R`-scheme `S`, projective and
 smooth of relative dimension `card D.Index - 1`. It comes with a dense set of complex points indexed
 by pairs of an analytic family of tori `f` and a parameter `b`, at which the fibres are uniformised
-by the tori, holomorphically in `b` on the domain of `f`. -/
-theorem nonempty_universalFamily {M : Submonoid (𝓞 E)} [IsLocalization M R]
-    (hM_le : M ≤ nonZeroDivisors (𝓞 E)) (hR_good : IsGoodOver D R) :
-    Nonempty (UniversalFamily D R) := by
+by the tori, holomorphically in `b` on the domain of `f`.
+-/
+theorem nonempty_universalFamily
+    {M : Submonoid (𝓞 E)} [IsLocalization M R]
+    (hM_le : M ≤ nonZeroDivisors (𝓞 E)) (hR_good : IsGoodOver D R)
+    : Nonempty (UniversalFamily D R) := by
   -- The base is the closure `C` of the theta coordinates of the level points at all parameters.
   -- Finitely many generic points are dense in it, so it carries a family `X`. It is smooth near
   -- each of the arcs `α z`, and these neighbourhoods cover it.
@@ -525,12 +547,18 @@ theorem nonempty_universalFamily {M : Submonoid (𝓞 E)} [IsLocalization M R]
     C.exists_smooth_near_arc hX (h_generic (i z)) (hα z) (h_good z)
   choose m hθ using hX
   exact ⟨{
-    isDedekindDomain := inferInstance, base := C.scheme, family := X
-    hasProjEmbedding := C.hasProjEmbedding, obj := C.point, model := m
-    holomorphic := C.holomorphicAt_uniformisation m hθ, dense := C.isSeparatingFamily.right
-    smooth := HasRingHomProperty.instIsZariskiLocalAtSource.of_iSup_eq_top U
-      (top_unique fun z _ ↦ le_iSup U z ((h_spec z).mem_open (U z).isOpen (hU z ⟨⟩)))
-      hU_smooth }⟩
+    isDedekindDomain := inferInstance
+    base := C.scheme
+    family := X
+    hasProjEmbedding := C.hasProjEmbedding
+    obj := C.point
+    model := m
+    holomorphic := C.holomorphicAt_uniformisation m hθ
+    dense := C.isSeparatingFamily.right
+    smooth :=
+      HasRingHomProperty.instIsZariskiLocalAtSource.of_iSup_eq_top U
+        (top_unique fun z _ ↦ le_iSup U z ((h_spec z).mem_open (U z).isOpen (hU z ⟨⟩))) hU_smooth
+  }⟩
 
 end New.Variety.ThetaNull
 

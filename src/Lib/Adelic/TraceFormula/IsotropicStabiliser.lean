@@ -64,15 +64,17 @@ lemma not_irreducible_charpoly_of_mul_eq_mul {γ X r : Matrix n n E} (hγ : γ.d
 
 variable [StarRing E]
 
-/-- The stabiliser in the unitary group `U J` of the span of the columns of `X`: the isometries
-`γ` of `J` with `γ * X = X * r` for some matrix `r`. -/
+/--
+The stabiliser in the unitary group `U J` of the span of the columns of `X`: the isometries
+`γ` of `J` with `γ * X = X * r` for some matrix `r`.
+-/
 def spanStabilizer (J X : Matrix n n E) : Subgroup (U J) where
   carrier := {γ : U J | ∃ r : Matrix n n E, γ * X = X * r}
   one_mem' := ⟨1, by simp⟩
   mul_mem' := by
     rintro γ δ ⟨r, hr⟩ ⟨t, ht⟩
-    exact ⟨r * t, by
-      rw [Subgroup.coe_mul, Units.val_mul, mul_assoc, ht, ← mul_assoc, hr, mul_assoc]⟩
+    exact
+      ⟨r * t, by rw [Subgroup.coe_mul, Units.val_mul, mul_assoc, ht, ← mul_assoc, hr, mul_assoc]⟩
   inv_mem' := by
     rintro γ ⟨r, hr⟩
     -- The inverse of `γ` is a polynomial in `γ`.
@@ -80,8 +82,10 @@ def spanStabilizer (J X : Matrix n n E) : Subgroup (U J) where
       isUnit_aeval_iff_isCoprime.1 (by simpa only [aeval_X] using γ.val.isUnit)
     have h_inv : aeval (γ : Matrix n n E) q * (γ : Matrix n n E) = 1 := by
       simpa [aeval_self_charpoly] using congrArg (aeval (γ : Matrix n n E)) hpq
-    exact ⟨aeval r q,
-      by rw [aeval_semiconj hr.symm, Subgroup.coe_inv, Units.inv_eq_of_mul_eq_one_left h_inv]⟩
+    exact ⟨
+      aeval r q,
+      by rw [aeval_semiconj hr.symm, Subgroup.coe_inv, Units.inv_eq_of_mul_eq_one_left h_inv]
+    ⟩
 
 variable {J X Y : Matrix n n E}
 
@@ -116,8 +120,10 @@ lemma mem_spanStabilizer_of_mem_dilationGroup {ν : U J} (hν : (ν, 1) ∈ dila
     ν ∈ spanStabilizer J X :=
   mem_spanStabilizer.2 ⟨1, by rw [mul_eq_self_of_mem_dilationGroup hν, mul_one]⟩
 
-/-- For a nondegenerate hermitian form `J`, the columns of `X` span an isotropic subspace `A` and
-the columns of `Y` span its orthogonal `A^⊥`. -/
+/--
+For a nondegenerate hermitian form `J`, the columns of `X` span an isotropic subspace `A` and
+the columns of `Y` span its orthogonal `A^⊥`.
+-/
 structure IsIsotropicFrame (J X Y : Matrix n n E) : Prop where
   /-- The form is hermitian. -/
   isHermitian : J.IsHermitian
@@ -127,8 +133,10 @@ structure IsIsotropicFrame (J X Y : Matrix n n E) : Prop where
   isotropic : Xᴴ * (J * X) = 0
   /-- The columns of `Y` lie in `A^⊥`. -/
   orthogonal : Xᴴ * (J * Y) = 0
-  /-- There are matrices `e` and `b` with `Y * e + b * (Xᴴ * J) = 1`. So every `v` in `A^⊥` is
-  `Y * (e * v)`, that is, the columns of `Y` span `A^⊥`. -/
+  /--
+  There are matrices `e` and `b` with `Y * e + b * (Xᴴ * J) = 1`. So every `v` in `A^⊥` is
+  `Y * (e * v)`, that is, the columns of `Y` span `A^⊥`.
+  -/
   spans : ∃ e b : Matrix n n E, Y * e + b * (Xᴴ * J) = 1
 
 namespace IsIsotropicFrame

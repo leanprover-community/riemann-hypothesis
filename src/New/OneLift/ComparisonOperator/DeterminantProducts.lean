@@ -36,8 +36,9 @@ section StackedDeterminants
 
 open Matrix MvPolynomial Finset Fintype
 
-variable {Φ a L N : Type} [Fintype a] [DecidableEq a] [Fintype N] [DecidableEq N] [Fintype L]
-  [DecidableEq L]
+variable
+  {Φ a L N : Type}
+  [Fintype a] [DecidableEq a] [Fintype N] [DecidableEq N] [Fintype L] [DecidableEq L]
 
 /-- Let `Z` be a complex matrix with rows indexed by `L` and columns by `N`, and let `e` identify
 `L` with `a ⊕ N`. There are a matrix `Y` and a constant `γ` such that for all `X` the determinant
@@ -69,25 +70,35 @@ lemma New.exists_det_fromCols_eq_mul_det (e : L ≃ a ⊕ N) (Z : Matrix L N ℂ
 
 namespace New.Rows
 
-/-- The substitution `x_τ ↦ c_τᵀ x_τ g_τᵀ` on complex polynomials in the entries of `N × L`
-matrices `x_τ`. -/
-abbrev twoSidedSubst (c : Φ → Matrix N N ℂ) (g : Φ → Matrix L L ℂ) :
-    MvPolynomial (Φ × N × L) ℂ →ₐ[ℂ] MvPolynomial (Φ × N × L) ℂ :=
+/--
+The substitution `x_τ ↦ c_τᵀ x_τ g_τᵀ` on complex polynomials in the entries of `N × L`
+matrices `x_τ`.
+-/
+abbrev twoSidedSubst (c : Φ → Matrix N N ℂ) (g : Φ → Matrix L L ℂ)
+    : MvPolynomial (Φ × N × L) ℂ →ₐ[ℂ] MvPolynomial (Φ × N × L) ℂ :=
   aeval (R := ℂ) fun ((τ, a, b) : Φ × N × L) ↦
     ∑ i : N, ∑ j : L, (c τ i a * g τ b j) • X (R := ℂ) (τ, i, j)
 
-/-- Rewrites a polynomial in matrix entries `x_{τ,i,j}` as a polynomial in the first `p` columns,
-with coefficients polynomials in the entries of the columns indexed by `L`. -/
-def inFirstCols {p : ℕ} :
-    MvPolynomial (Φ × N × (Fin p ⊕ L)) ℂ →ₐ[ℂ]
-      MatrixPoly ((_ : Φ) × N) (MvPolynomial (Φ × N × L) ℂ) :=
+/--
+Rewrites a polynomial in matrix entries `x_{τ,i,j}` as a polynomial in the first `p` columns,
+with coefficients polynomials in the entries of the columns indexed by `L`.
+-/
+def inFirstCols {p : ℕ}
+    : MvPolynomial (Φ × N × (Fin p ⊕ L)) ℂ →ₐ[ℂ]
+        MatrixPoly ((_ : Φ) × N) (MvPolynomial (Φ × N × L) ℂ) :=
   aeval (R := ℂ) fun ((τ, a, b) : Φ × N × (Fin p ⊕ L)) ↦
     Sum.elim (fun i : Fin p ↦ X ⟨⟨τ, a⟩, i.val⟩) (fun l : L ↦ C (X (τ, a, l))) b
 
-/-- The product over `τ` and `k` of the determinants of `M τ k` stacked over the variable matrix
-`x_τ` (`New.Rows.stackedDet`), columns ordered by `e`. -/
-def stackedDetProd (e : a ⊕ N ≃ L) [Fintype Φ] {ι : Φ → Type} [∀ τ : Φ, Fintype (ι τ)]
-    (M : (τ : Φ) → ι τ → Matrix a L ℂ) : MvPolynomial (Φ × N × L) ℂ :=
+/--
+The product over `τ` and `k` of the determinants of `M τ k` stacked over the variable matrix
+`x_τ` (`New.Rows.stackedDet`), columns ordered by `e`.
+-/
+def stackedDetProd
+    (e : a ⊕ N ≃ L)
+    [Fintype Φ]
+    {ι : Φ → Type} [∀ τ : Φ, Fintype (ι τ)]
+    (M : (τ : Φ) → ι τ → Matrix a L ℂ)
+    : MvPolynomial (Φ × N × L) ℂ :=
   ∏ τ : Φ, ∏ k : ι τ, stackedDet τ (M τ k) e
 
 /-- Write `det (A; x_τ)` for the determinant of a constant matrix `A` stacked over the variable
@@ -118,18 +129,22 @@ lemma twoSidedSubst_stackedDetProd (e : a ⊕ N ≃ L) [Fintype Φ] {ι : Φ →
     simpa [stackedDet, A, ← C_mul', mul_assoc] using .inl (mul_comm _ _)
   simp only [stackedDetProd, map_prod, h_factor, prod_smul, prod_const, card_univ]
 
-/-- The coordinate `l` of `F` in the first `p` columns: regard `F` as a polynomial in these
+/--
+The coordinate `l` of `F` in the first `p` columns: regard `F` as a polynomial in these
 columns (`New.Rows.inFirstCols`), pair it with the basis polynomial `l` of weight `κ` (a product of
 minors, `nablaBasis`) by the form `⟨P, Q⟩ = P(∂) Q (0)` (`fockPairing`) and divide by the hook
 number. This is the integer `⟨f, f⟩` for the product `f` of the leading principal minors with
 exponents `κ`, at the ranks `rankAt (fun _ ↦ N) τ = card N`. The result is a polynomial in the
 entries of the columns `L`. If `F` is the polynomial (`toPoly`) of a vector `ζ (z)` of the Weyl
-module of weight `κ`, with `z` the columns `L`, these are the coordinates of `ζ (z)`. -/
-def firstColsCoord {p : ℕ} [Fintype Φ] (κ : Φ → ℕ → ℕ) (F : MvPolynomial (Φ × N × (Fin p ⊕ L)) ℂ)
-    (l : WeylIndexFamily (fun _ : Φ ↦ N) κ) : MvPolynomial (Φ × N × L) ℂ :=
-  (hookNumber κ (rankAt fun _ : Φ ↦ N) : ℂ)⁻¹ •
-    fockPairing (MvPolynomial (Φ × N × L) ℂ) (inFirstCols F)
-      (nablaBasis (MvPolynomial (Φ × N × L) ℂ) (fun _ : Φ ↦ N) κ l)
+module of weight `κ`, with `z` the columns `L`, these are the coordinates of `ζ (z)`.
+-/
+def firstColsCoord
+    {p : ℕ} [Fintype Φ]
+    (κ : Φ → ℕ → ℕ)
+    (F : MvPolynomial (Φ × N × (Fin p ⊕ L)) ℂ) (l : WeylIndexFamily (fun _ : Φ ↦ N) κ)
+    : MvPolynomial (Φ × N × L) ℂ :=
+  (hookNumber κ (rankAt fun _ : Φ ↦ N) : ℂ)⁻¹ • fockPairing (MvPolynomial (Φ × N × L) ℂ)
+    (inFirstCols F) (nablaBasis (MvPolynomial (Φ × N × L) ℂ) (fun _ : Φ ↦ N) κ l)
 
 omit [DecidableEq L] in
 /-- Let `F`, `F'` be polynomials in the entries of matrices `x_τ` with columns `Fin p ⊕ L`, and

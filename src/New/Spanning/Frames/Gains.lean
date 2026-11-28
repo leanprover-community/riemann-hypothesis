@@ -57,94 +57,116 @@ namespace New.Floors
 open Matrix MeasureTheory Measure ENNReal Fintype FloorGroups ComplexConjugate InnerProductSpace
   PlaceData Finset Function RCLike Place
 
-variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  {ι : Type} [Fintype ι] [DecidableEq ι] {m : ℕ} {𝔰 : Shape} (j : ℕ)
+variable
+  {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  {ι : Type} [Fintype ι] [DecidableEq ι]
+  {m : ℕ} {𝔰 : Shape}
+  (j : ℕ)
   {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
-  {F : PlaceData ι T m} (p q : ℕ → Aˣ) {ξ : Aˣ} {I : Type} [Fintype I]
+  {F : PlaceData ι T m}
+  (p q : ℕ → Aˣ)
+  {ξ : Aˣ} {I : Type} [Fintype I]
   (W : T.G → EuclideanSpace ℂ I) (x : T.G) (Γ : Gauge F)
 
 variable {j p q W x}
 
-/-- **Separating the frames.** Let `p` be a head of length j ≤ ϱ with Weyl element
+/--
+**Separating the frames.** Let `p` be a head of length j ≤ ϱ with Weyl element
 w_p = `weylElem j p`, let `x` be a position and `F.groupMeasure` a Haar measure. Let `B`, `B'` be
 measurable, left invariant under `partialUnitriangularGroup j` and zero off the points near at `j`.
 Suppose `f(g)² ≤ K · B(g) / wgt(g) · B'(w_p⁻¹ g) / wgt(w_p⁻¹ g)` where `f(g) ≠ 0`, for the weight
 `wgt = F.depthWeight j · x`. Then the square of the integral of `f` against
 `F.partialGroupMeasure 0 j` is at most `K · D² · ∫ B · ∫ B'`, with `B`, `B'` integrated against the
 convolution of the measures of the floors below `j`. Here `D` is the product of the
-`F.floorModulus a (p a)⁻¹` over a < j, times `Γ.floorsConst`. -/
-theorem Gauge.sq_lintegral_le_mul_lintegral (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p)
-    (hx : x ∈ F.positions) [F.groupMeasure.IsHaarMeasure] {f B B' : T.G → ℝ≥0∞} {K : ℝ≥0∞}
-    (hB : (partialUnitriangularGroup j).FixesLeft B ∧ ∀ g : T.G, ¬F.IsNear j g → B g = 0)
-    (hB' : (partialUnitriangularGroup j).FixesLeft B' ∧ ∀ g : T.G, ¬F.IsNear j g → B' g = 0)
+`F.floorModulus a (p a)⁻¹` over a < j, times `Γ.floorsConst`.
+-/
+theorem Gauge.sq_lintegral_le_mul_lintegral
+    (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p) (hx : x ∈ F.positions)
+    [F.groupMeasure.IsHaarMeasure]
+    {f B B' : T.G → ℝ≥0∞} {K : ℝ≥0∞}
+    (hB : (partialUnitriangularGroup j).FixesLeft B ∧ ∀ g : T.G, ¬ F.IsNear j g → B g = 0)
+    (hB' : (partialUnitriangularGroup j).FixesLeft B' ∧ ∀ g : T.G, ¬ F.IsNear j g → B' g = 0)
     (hB_meas : Measurable B) (hB'_meas : Measurable B')
-    (hf : ∀ g : T.G, f g ≠ 0 → f g ^ 2 ≤ K * (B g / F.depthWeight j g x) *
-      (B' ((weylElem j p)⁻¹ * g) / F.depthWeight j ((weylElem j p)⁻¹ * g) x)) :
-    (∫⁻ g : T.G, f g ∂F.partialGroupMeasure 0 j) ^ 2 ≤
-      K * ((∏ a ∈ range j, F.floorModulus a (p a)⁻¹) * Γ.floorsConst) ^ 2 *
-        (∫⁻ g : T.G, B g ∂descConv F.floorMeasure 0 j) *
-        ∫⁻ g : T.G, B' g ∂descConv F.floorMeasure 0 j := by
+    (hf : ∀ g : T.G,
+      f g ≠ 0
+        → f g ^ 2
+          ≤ K * (B g / F.depthWeight j g x)
+            * (B' ((weylElem j p)⁻¹ * g) / F.depthWeight j ((weylElem j p)⁻¹ * g) x))
+    : (∫⁻ g : T.G, f g ∂F.partialGroupMeasure 0 j) ^ 2
+      ≤ K * ((∏ a ∈ range j, F.floorModulus a (p a)⁻¹) * Γ.floorsConst) ^ 2
+        * (∫⁻ g : T.G, B g ∂descConv F.floorMeasure 0 j)
+        * ∫⁻ g : T.G, B' g ∂descConv F.floorMeasure 0 j := by
   -- Cauchy–Schwarz with the weights crossed: `B` at `g` is paired with the inverse weight at
   -- `w_p⁻¹ g`, and conversely. Then integrate each inverse weight over the unipotent group.
   let D : ℝ≥0∞ := (∏ a ∈ range j, F.floorModulus a (p a)⁻¹) * Γ.floorsConst
-  have h_weight {Φ : T.G → ℝ≥0∞} (hΦ : ∀ g : T.G, ¬F.IsNear j g → Φ g = 0) (g : T.G) :
-      Φ g / F.depthWeight j g x = Φ g * F.invDepthWeight j x g := by
+  have h_weight {Φ : T.G → ℝ≥0∞} (hΦ : ∀ g : T.G, ¬ F.IsNear j g → Φ g = 0) (g : T.G)
+      : Φ g / F.depthWeight j g x = Φ g * F.invDepthWeight j x g := by
     by_cases h_near : F.IsNear j g
     · simp [invDepthWeight, h_near, div_eq_mul_inv]
     · simp [hΦ g h_near]
-  have h_cross (g : T.G) : f g ^ 2 ≤ B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g *
-      (K * (B g * F.invDepthWeight j x ((weylElem j p)⁻¹ * g))) := by
+  have h_cross (g : T.G)
+      : f g ^ 2
+        ≤ B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g
+          * (K * (B g * F.invDepthWeight j x ((weylElem j p)⁻¹ * g))) := by
     by_cases h_zero : f g = 0
     · simp [h_zero]
     refine (hf g h_zero).trans_eq ?_
     rw [h_weight hB.2, h_weight hB'.2]
     ring
   -- In the first integral put `w_p g` for `g`.
-  have h_first : ∫⁻ g, B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g ∂F.partialGroupMeasure 0 j
-    ≤
-      D * ∫⁻ g, B' g ∂descConv F.floorMeasure 0 j := by
+  have h_first
+      : ∫⁻ g, B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g ∂F.partialGroupMeasure 0 j
+        ≤ D * ∫⁻ g, B' g ∂descConv F.floorMeasure 0 j := by
     let Φ (g : T.G) : ℝ≥0∞ := B' g * F.invDepthWeight j x (weylElem j p * g)
     have hΦ_inv : (floorGroup j).FixesLeft Φ := by
       simp +contextual [Φ, weylElem_mul_left_comm, hB'.1]
-    calc ∫⁻ g, B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g ∂F.partialGroupMeasure 0 j
+    calc
+      ∫⁻ g, B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g ∂F.partialGroupMeasure 0 j
         = ∫⁻ g, Φ ((weylElem j p)⁻¹ * g) ∂F.partialGroupMeasure 0 j := by simp [Φ]
       _ = ∫⁻ g, Φ g ∂F.partialGroupMeasure 0 j :=
-          lintegral_partialGroupMeasure_weylElem_inv_mul p (by fun_prop) hΦ_inv
+        lintegral_partialGroupMeasure_weylElem_inv_mul p (by fun_prop) hΦ_inv
       _ ≤ D * ∫⁻ g, B' g ∂descConv F.floorMeasure 0 j := by
-          rw [partialGroupMeasure_zero_eq]
-          exact Γ.lintegral_mul_invDepthWeight_le hj hp hx .refl hB' hB'_meas
+        rw [partialGroupMeasure_zero_eq]
+        exact Γ.lintegral_mul_invDepthWeight_le hj hp hx .refl hB' hB'_meas
   -- In the second, `w_p⁻¹` is the Weyl element of the head `star p`.
-  have h_second : ∫⁻ g, B g * F.invDepthWeight j x ((weylElem j p)⁻¹ * g) ∂F.partialGroupMeasure 0 j
-    ≤
-      D * ∫⁻ g, B g ∂descConv F.floorMeasure 0 j := by
+  have h_second
+      : ∫⁻ g, B g * F.invDepthWeight j x ((weylElem j p)⁻¹ * g) ∂F.partialGroupMeasure 0 j
+        ≤ D * ∫⁻ g, B g ∂descConv F.floorMeasure 0 j := by
     grw [← weylElem_star, partialGroupMeasure_zero_eq,
       Γ.lintegral_mul_invDepthWeight_le hj hp.star_head hx .refl hB hB_meas]
     simp [D, floorModulus]
-  calc (∫⁻ g, f g ∂F.partialGroupMeasure 0 j) ^ 2
-      ≤ (∫⁻ g, B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g ∂F.partialGroupMeasure 0 j) *
-          ∫⁻ g, K * (B g * F.invDepthWeight j x ((weylElem j p)⁻¹ * g)) ∂F.partialGroupMeasure 0
-            j :=
-        sq_lintegral_le (by fun_prop) (by fun_prop) h_cross
-    _ ≤ (D * ∫⁻ g, B' g ∂descConv F.floorMeasure 0 j) *
-          (K * (D * ∫⁻ g, B g ∂descConv F.floorMeasure 0 j)) := by
-        grw [lintegral_const_mul _ (by fun_prop), h_first, h_second]
+  calc
+    (∫⁻ g, f g ∂F.partialGroupMeasure 0 j) ^ 2
+        ≤ (∫⁻ g, B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g ∂F.partialGroupMeasure 0 j)
+          * ∫⁻ g, K * (B g * F.invDepthWeight j x ((weylElem j p)⁻¹ * g)) ∂F.partialGroupMeasure 0
+              j :=
+      sq_lintegral_le (by fun_prop) (by fun_prop) h_cross
+    _ ≤ (D * ∫⁻ g, B' g ∂descConv F.floorMeasure 0 j)
+        * (K * (D * ∫⁻ g, B g ∂descConv F.floorMeasure 0 j)) := by
+      grw [lintegral_const_mul _ (by fun_prop), h_first, h_second]
     _ = _ := by ring
 
-/-- The separation of the frames for the weighted squares of the two correlations ⟨W g, W y⟩ and ⟨W
+/--
+The separation of the frames for the weighted squares of the two correlations ⟨W g, W y⟩ and ⟨W
 g, W (w_q⁻¹ w_p y)⟩. Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `x` a position
 and `F.groupMeasure` a Haar measure. Suppose that, where `f(g) ≠ 0`, the square f(g)² is at most
 `K * Γ.floorsConst` times the two sums of weighted squares, at g and at w_p⁻¹ g, each divided by its
 weight. Then the square of the integral of `f` against `F.partialGroupMeasure 0 j` is at most `K`
 times `Γ.weightedSquareProduct j p q W x`, the product of the second moments
-`F.weightedSquareIntegral` of the two correlations and of a constant that depends on `Γ` and `p`. -/
-theorem Gauge.sq_lintegral_le_weightedSquareProduct (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ)
-    (hp : Γ.IsHead j p) (hx : x ∈ F.positions) [F.groupMeasure.IsHaarMeasure]
+`F.weightedSquareIntegral` of the two correlations and of a constant that depends on `Γ` and `p`.
+-/
+theorem Gauge.sq_lintegral_le_weightedSquareProduct
+    (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p) (hx : x ∈ F.positions)
+    [F.groupMeasure.IsHaarMeasure]
     {f : T.G → ℝ≥0∞} {K : ℝ≥0∞}
-    (hf : ∀ g : T.G, f g ≠ 0 → f g ^ 2 ≤ K * Γ.floorsConst *
-      (F.weightedSquareSum (frameCorrelation W 1) x j g / F.depthWeight j g x) *
-      (F.weightedSquareSum (frameCorrelation W (weylRatio j p q)) x j ((weylElem j p)⁻¹ * g) /
-        F.depthWeight j ((weylElem j p)⁻¹ * g) x)) :
-    (∫⁻ g : T.G, f g ∂F.partialGroupMeasure 0 j) ^ 2 ≤ K * Γ.weightedSquareProduct j p q W x := by
+    (hf : ∀ g : T.G,
+      f g ≠ 0
+        → f g ^ 2
+          ≤ K * Γ.floorsConst
+            * (F.weightedSquareSum (frameCorrelation W 1) x j g / F.depthWeight j g x)
+            * (F.weightedSquareSum (frameCorrelation W (weylRatio j p q)) x j ((weylElem j p)⁻¹ * g)
+              / F.depthWeight j ((weylElem j p)⁻¹ * g) x))
+    : (∫⁻ g : T.G, f g ∂F.partialGroupMeasure 0 j) ^ 2 ≤ K * Γ.weightedSquareProduct j p q W x := by
   let k₁ : T.G → T.G → ℂ := frameCorrelation W 1
   let k₂ : T.G → T.G → ℂ := frameCorrelation W (weylRatio j p q)
   have ker₁ : F.IsPairingKernel j k₁ 1 := Γ.isPairingKernel_frameCorrelation_one hk j
@@ -152,20 +174,23 @@ theorem Gauge.sq_lintegral_le_weightedSquareProduct (hk : F.IsCut W) (hj : j ≤
     Γ.isPairingKernel_frameCorrelation hk j p q
   have h_norm : F.weightedSquareIntegral j k₁ x ≤ F.weightedSquareIntegral 0 k₁ x :=
     ker₁.weightedSquareIntegral_le_weightedSquareIntegral_zero hj.step
-  calc (∫⁻ g, f g ∂F.partialGroupMeasure 0 j) ^ 2
-      ≤ K * Γ.floorsConst * ((∏ a ∈ range j, F.floorModulus a (p a)⁻¹) * Γ.floorsConst) ^ 2 *
-          F.weightedSquareIntegral j k₁ x * F.weightedSquareIntegral j k₂ x :=
-        Γ.sq_lintegral_le_mul_lintegral hj hp hx (ker₁.fixesLeft_weightedSquareSum_and_eq_zero x)
-          (ker₂.fixesLeft_weightedSquareSum_and_eq_zero x) (by fun_prop) (by fun_prop) hf
+  calc
+    (∫⁻ g, f g ∂F.partialGroupMeasure 0 j) ^ 2
+        ≤ K * Γ.floorsConst * ((∏ a ∈ range j, F.floorModulus a (p a)⁻¹) * Γ.floorsConst) ^ 2
+          * F.weightedSquareIntegral j k₁ x * F.weightedSquareIntegral j k₂ x :=
+      Γ.sq_lintegral_le_mul_lintegral hj hp hx (ker₁.fixesLeft_weightedSquareSum_and_eq_zero x)
+        (ker₂.fixesLeft_weightedSquareSum_and_eq_zero x) (by fun_prop) (by fun_prop) hf
     _ ≤ K * Γ.weightedSquareProduct j p q W x := by
-        grw [h_norm, weightedSquareProduct]
-        exact le_of_eq (by ring)
+      grw [h_norm, weightedSquareProduct]
+      exact le_of_eq (by ring)
 
-/-- The modulus of the correlation of the kernel `k` above floor `a` at the points `y`, `y x`, cut
-to the `y` at which the vector of floor `a` has depth at least `D`. -/
-def PlaceData.deepModulus (F : PlaceData ι T m) (x : T.G) (D : ℝ≥0∞) (k : T.G → T.G → ℂ)
-    (a : Fin 𝔰.ϱ) :
-    T.G → ℝ≥0∞ :=
+/--
+The modulus of the correlation of the kernel `k` above floor `a` at the points `y`, `y x`, cut
+to the `y` at which the vector of floor `a` has depth at least `D`.
+-/
+def PlaceData.deepModulus
+    (F : PlaceData ι T m) (x : T.G) (D : ℝ≥0∞) (k : T.G → T.G → ℂ) (a : Fin 𝔰.ϱ)
+    : T.G → ℝ≥0∞ :=
   {y : T.G | D ≤ F.depth a y x}.indicator fun y : T.G ↦ ‖F.partialCorrelation (a + 1) k y (y * x)‖ₑ
 
 /-- For a pairing kernel `k`, the cut modulus `F.deepModulus x D k a` is measurable. -/
@@ -177,22 +202,25 @@ lemma PlaceData.IsPairingKernel.measurable_deepModulus {k : T.G → T.G → ℂ}
     measurableSet_le measurable_const (by fun_prop)
   exact Measurable.indicator (by fun_prop) h_deep
 
-/-- **The cut at the first deep vector.** Let `k` be a pairing kernel (`F.IsPairingKernel`), and
+/--
+**The cut at the first deep vector.** Let `k` be a pairing kernel (`F.IsPairingKernel`), and
 suppose that for each `σ` in `floorGroup l` with k(σ g, σ g x) ≠ 0 some vector from floor `l` on has
 depth at least `D` at `σ g`. Then `F.pivotL1Norm l k g (g * x)`, the integral over floor `l` of the
 modulus of the correlation from floor `l + 1` on, is at most a sum of pieces, one for each floor `a`
-with `l ≤ a < ϱ`: the integral of `F.deepModulus x D k a` over the floors from `l` to `a`. -/
-theorem PlaceData.IsPairingKernel.pivotL1Norm_le_sum_deepModulus {k : T.G → T.G → ℂ} {d g : T.G}
-    {D : ℝ≥0∞} {l : ℕ} (hK : F.IsPairingKernel j k d)
-    (h_deep : ∀ σ ∈ floorGroup l, k (σ * g) (σ * (g * x)) ≠ 0 →
-      ∃ a : Fin 𝔰.ϱ, l ≤ a ∧ D ≤ F.depth a (σ * g) x) :
-    F.pivotL1Norm l k g (g * x) ≤ ∑ a : Fin 𝔰.ϱ with l ≤ a.val,
-      ∫⁻ σ : T.G, F.deepModulus x D k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1) := by
+with `l ≤ a < ϱ`: the integral of `F.deepModulus x D k a` over the floors from `l` to `a`.
+-/
+theorem PlaceData.IsPairingKernel.pivotL1Norm_le_sum_deepModulus
+    {k : T.G → T.G → ℂ} {d g : T.G} {D : ℝ≥0∞} {l : ℕ} (hK : F.IsPairingKernel j k d)
+    (h_deep : ∀ σ ∈ floorGroup l,
+      k (σ * g) (σ * (g * x)) ≠ 0 → ∃ a : Fin 𝔰.ϱ, l ≤ a ∧ D ≤ F.depth a (σ * g) x)
+    : F.pivotL1Norm l k g (g * x)
+      ≤ ∑ a : Fin 𝔰.ϱ with l ≤ a.val,
+        ∫⁻ σ : T.G, F.deepModulus x D k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1) := by
   -- Downward induction on `l`: a frame is deep on floor `l`, or its first deep vector comes later.
   induction h_gap : 𝔰.ϱ - l generalizing l g with
   | zero =>
     -- No floor `a` has `l ≤ a`, so the kernel vanishes along the orbit.
-    have h_vanish : ¬∃ σ ∈ floorGroup l, k (σ * g) (σ * (g * x)) ≠ 0 := by
+    have h_vanish : ¬ ∃ σ ∈ floorGroup l, k (σ * g) (σ * (g * x)) ≠ 0 := by
       rintro ⟨σ, hσ, h_ne⟩
       obtain ⟨a, hla, -⟩ : ∃ a : Fin 𝔰.ϱ, l ≤ a ∧ D ≤ F.depth a (σ * g) x := h_deep σ hσ h_ne
       lia
@@ -203,10 +231,10 @@ theorem PlaceData.IsPairingKernel.pivotL1Norm_le_sum_deepModulus {k : T.G → T.
   | succ i ih =>
     lift l to Fin 𝔰.ϱ using (by lia)
     -- Each piece is an integral over floor `l` of an integral over the floors from `l + 1` to `a`.
-    have h_piece (a : Fin 𝔰.ϱ) :
-        ∫⁻ σ, F.deepModulus x D k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1) =
-          ∫⁻ σ, ∫⁻ τ, F.deepModulus x D k a (τ * (σ * g))
-            ∂descConv F.floorMeasure (l + 1) (a - l) ∂F.floorMeasure l := by
+    have h_piece (a : Fin 𝔰.ϱ)
+        : ∫⁻ σ, F.deepModulus x D k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1)
+          = ∫⁻ σ, ∫⁻ τ, F.deepModulus x D k a (τ * (σ * g))
+              ∂descConv F.floorMeasure (l + 1) (a - l) ∂F.floorMeasure l := by
       have h_meas : Measurable fun σ : T.G ↦ F.deepModulus x D k a (σ * g) := by fun_prop
       simp only [descConv, lintegral_mconv_symm h_meas, mul_assoc]
     rw [Finset.sum_congr rfl fun a _ ↦ h_piece a, ← lintegral_finsetSum _ (by fun_prop)]
@@ -217,8 +245,10 @@ theorem PlaceData.IsPairingKernel.pivotL1Norm_le_sum_deepModulus {k : T.G → T.
       refine le_trans (le_of_eq ?_) (single_le_sum (fun _ _ ↦ zero_le) (a := l) (by simp))
       simp [descConv, deepModulus, h_first, mul_assoc]
     · -- The depth on floor `l` is the same at all `τ * (σ * g)`, so a later vector is deep.
-      have h_later : ∀ τ ∈ floorGroup (l + 1), k (τ * (σ * g)) (τ * (σ * g * x)) ≠ 0 →
-          ∃ a : Fin 𝔰.ϱ, l.val + 1 ≤ a ∧ D ≤ F.depth a (τ * (σ * g)) x := by
+      have h_later
+          : ∀ τ ∈ floorGroup (l + 1),
+            k (τ * (σ * g)) (τ * (σ * g * x)) ≠ 0
+              → ∃ a : Fin 𝔰.ϱ, l.val + 1 ≤ a ∧ D ≤ F.depth a (τ * (σ * g)) x := by
         intro τ hτ h_ne
         have h_mem : τ * σ ∈ floorGroup l.val := mul_mem (floorGroup_anti l.val.le_succ hτ) hσ
         have h_same : F.depth l (τ * (σ * g)) x = F.depth l (σ * g) x :=
@@ -228,16 +258,17 @@ theorem PlaceData.IsPairingKernel.pivotL1Norm_le_sum_deepModulus {k : T.G → T.
         refine ⟨a, Nat.lt_of_le_of_ne hla fun h_eq ↦ h_first ?_, h_depth⟩
         rwa [← Fin.ext h_eq, h_same] at h_depth
       have h_len (a : Fin 𝔰.ϱ) (ha : l.val + 1 ≤ a) : a.val - (l + 1) + 1 = a - l := by lia
-      calc ‖F.partialCorrelation (l + 1) k (σ * g) (σ * (g * x))‖ₑ
-          ≤ F.pivotL1Norm (l + 1) k (σ * g) (σ * g * x) := by
-            grw [hK.enorm_partialCorrelation_le, mul_assoc]
+      calc
+        ‖F.partialCorrelation (l + 1) k (σ * g) (σ * (g * x))‖ₑ
+            ≤ F.pivotL1Norm (l + 1) k (σ * g) (σ * g * x) := by
+          grw [hK.enorm_partialCorrelation_le, mul_assoc]
         _ ≤ ∑ a : Fin 𝔰.ϱ with l.val + 1 ≤ a.val, ∫⁻ τ, F.deepModulus x D k a (τ * (σ * g))
               ∂descConv F.floorMeasure (l + 1) (a - l) :=
-            (ih h_later (by lia)).trans_eq
-              (Finset.sum_congr rfl fun a ha ↦ by rw [h_len a (mem_filter.1 ha).2])
+          (ih h_later (by lia)).trans_eq
+            (Finset.sum_congr rfl fun a ha ↦ by rw [h_len a (mem_filter.1 ha).2])
         _ ≤ ∑ a : Fin 𝔰.ϱ with l.val ≤ a.val, ∫⁻ τ, F.deepModulus x D k a (τ * (σ * g))
               ∂descConv F.floorMeasure (l + 1) (a - l) :=
-            sum_le_sum_of_subset (monotone_filter_right _ fun a _ ↦ Nat.le_of_succ_le)
+          sum_le_sum_of_subset (monotone_filter_right _ fun a _ ↦ Nat.le_of_succ_le)
 
 /-- One piece of the cut. Let `Γ` be a gauge with constant Λ = `Γ.loss`, `k` a pairing kernel for
 `j` and `d`, `x` a position, `l ≤ a` and `g` a point. The piece is the integral of
@@ -298,32 +329,38 @@ lemma Gauge.lintegral_deepModulus_sq_le {x : T.G} (Γ : Gauge F) {k : T.G → T.
         rw [div_eq_mul_inv]
         ring
 
-/-- **Gain from a deep vector.** Let `x` be a position and `k` a pairing kernel
+/--
+**Gain from a deep vector.** Let `x` be a position and `k` a pairing kernel
 (`F.IsPairingKernel`), and suppose that for each `σ` in `floorGroup l` with k(σ g, σ g x) ≠ 0 some
 vector from floor `l` on has depth at least `ε⁻¹` at `σ g`. Then the square of `F.pivotL1Norm`, the
 integral over floor `l` of the modulus of the correlation from floor `l + 1` on, is at most
 `ε ^ F.volumeExponent` times `Γ.floorsConst` times the sum of the weighted squared correlations from
-floor `l` on, divided by the weight `F.depthWeight` of length `l`. -/
-theorem Gauge.pivotL1Norm_sq_le_of_deep {k : T.G → T.G → ℂ} {d g : T.G} {ε : ℝ≥0∞} {l : ℕ}
-    (hK : F.IsPairingKernel j k d) (hx : x ∈ F.positions)
-    (h_deep : ∀ σ ∈ floorGroup l, k (σ * g) (σ * (g * x)) ≠ 0 →
-      ∃ a : Fin 𝔰.ϱ, l ≤ a ∧ ε⁻¹ ≤ F.depth a (σ * g) x) :
-    F.pivotL1Norm l k g (g * x) ^ 2 ≤ ε ^ F.volumeExponent * Γ.floorsConst *
-      (F.weightedSquareSum k x l g / F.depthWeight l g x) := by
+floor `l` on, divided by the weight `F.depthWeight` of length `l`.
+-/
+theorem Gauge.pivotL1Norm_sq_le_of_deep
+    {k : T.G → T.G → ℂ} {d g : T.G} {ε : ℝ≥0∞} {l : ℕ} (hK : F.IsPairingKernel j k d)
+    (hx : x ∈ F.positions)
+    (h_deep : ∀ σ ∈ floorGroup l,
+      k (σ * g) (σ * (g * x)) ≠ 0 → ∃ a : Fin 𝔰.ϱ, l ≤ a ∧ ε⁻¹ ≤ F.depth a (σ * g) x)
+    : F.pivotL1Norm l k g (g * x) ^ 2
+      ≤ ε ^ F.volumeExponent * Γ.floorsConst
+        * (F.weightedSquareSum k x l g / F.depthWeight l g x) := by
   -- Cut into at most `𝔰.ϱ` pieces, each at most the square root of `B`.
-  let B : ℝ≥0∞ := ε ^ F.volumeExponent * (Γ.loss ^ (10 ^ 4 * 𝔰.n)) ^ 𝔰.ϱ *
-    (F.weightedSquareSum k x l g / F.depthWeight l g x)
-  have h_piece (a : Fin 𝔰.ϱ) (hla : l ≤ a) :
-      ∫⁻ σ, F.deepModulus x ε⁻¹ k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1) ≤
-        B ^ (2 : ℝ)⁻¹ :=
+  let B : ℝ≥0∞ :=
+    ε ^ F.volumeExponent * (Γ.loss ^ (10 ^ 4 * 𝔰.n)) ^ 𝔰.ϱ
+      * (F.weightedSquareSum k x l g / F.depthWeight l g x)
+  have h_piece (a : Fin 𝔰.ϱ) (hla : l ≤ a)
+      : ∫⁻ σ, F.deepModulus x ε⁻¹ k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1)
+        ≤ B ^ (2 : ℝ)⁻¹ :=
     (le_rpow_inv_iff two_pos).2 (mod_cast Γ.lintegral_deepModulus_sq_le hK hx hla ε g)
   have h_sum : F.pivotL1Norm l k g (g * x) ≤ 𝔰.ϱ * B ^ (2 : ℝ)⁻¹ := by
-    calc F.pivotL1Norm l k g (g * x)
-        ≤ ∑ a : Fin 𝔰.ϱ with l ≤ a.val,
-            ∫⁻ σ, F.deepModulus x ε⁻¹ k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1) :=
-          hK.pivotL1Norm_le_sum_deepModulus h_deep
+    calc
+      F.pivotL1Norm l k g (g * x)
+          ≤ ∑ a : Fin 𝔰.ϱ with l ≤ a.val,
+              ∫⁻ σ, F.deepModulus x ε⁻¹ k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1) :=
+        hK.pivotL1Norm_le_sum_deepModulus h_deep
       _ ≤ ∑ a : Fin 𝔰.ϱ with l ≤ a.val, B ^ (2 : ℝ)⁻¹ :=
-          sum_le_sum fun a ha ↦ h_piece a (mem_filter.1 ha).2
+        sum_le_sum fun a ha ↦ h_piece a (mem_filter.1 ha).2
       _ ≤ 𝔰.ϱ * B ^ (2 : ℝ)⁻¹ := by grw [sum_const, nsmul_eq_mul, card_finset_fin_le]
   have h_count : (𝔰.ϱ : ℝ≥0∞) ≤ Γ.loss ^ 𝔰.ϱ := by
     grw [← Γ.two_le_loss]
@@ -332,26 +369,30 @@ theorem Gauge.pivotL1Norm_sq_le_of_deep {k : T.G → T.G → ℂ} {d g : T.G} {�
     have h_exp : 𝔰.ϱ * 2 + 10 ^ 4 * 𝔰.n * 𝔰.ϱ ≤ 10 ^ 6 * 𝔰.n ^ 3 := by lia
     rw [← pow_mul, ← pow_mul, ← pow_add]
     exact pow_le_pow_right₀ Γ.one_le_loss h_exp
-  calc F.pivotL1Norm l k g (g * x) ^ 2
+  calc
+    F.pivotL1Norm l k g (g * x) ^ 2
       ≤ (Γ.loss ^ 𝔰.ϱ) ^ 2 * (B ^ (2 : ℝ)⁻¹) ^ 2 := by grw [h_sum, h_count, mul_pow]
     _ = (Γ.loss ^ 𝔰.ϱ) ^ 2 * B := by
-        have h_sq : (B ^ (2 : ℝ)⁻¹) ^ 2 = B := rpow_inv_natCast_pow two_ne_zero B
-        rw [h_sq]
-    _ = ε ^ F.volumeExponent * ((Γ.loss ^ 𝔰.ϱ) ^ 2 * (Γ.loss ^ (10 ^ 4 * 𝔰.n)) ^ 𝔰.ϱ) *
-          (F.weightedSquareSum k x l g / F.depthWeight l g x) := by
-        simp only [B]
-        ring
+      have h_sq : (B ^ (2 : ℝ)⁻¹) ^ 2 = B := rpow_inv_natCast_pow two_ne_zero B
+      rw [h_sq]
+    _ = ε ^ F.volumeExponent * ((Γ.loss ^ 𝔰.ϱ) ^ 2 * (Γ.loss ^ (10 ^ 4 * 𝔰.n)) ^ 𝔰.ϱ)
+        * (F.weightedSquareSum k x l g / F.depthWeight l g x) := by
+      simp only [B]
+      ring
     _ ≤ _ := by grw [h_const]
 
-/-- One position, no gain. Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `q` any
+/--
+One position, no gain. Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `q` any
 sequence of units, `x` a position and `F.groupMeasure` a Haar measure. Let `V` bound the mass of
 floor `j`: for every g, the τ with τ g near at j + 1 have `F.floorMeasure j`-measure at most `V`.
 Then Cauchy–Schwarz on floor `j` for each of the two factors `F.pivotL1Norm` gives `F.formMajorant
-j p q W x ^ 2 ≤ V ^ 2 * Γ.weightedSquareProduct j p q W x`. -/
-theorem Gauge.formMajorant_sq_le_of_floorMassLe (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ)
-    (hp : Γ.IsHead j p) (hx : x ∈ F.positions) [F.groupMeasure.IsHaarMeasure] {V : ℝ≥0∞}
-    (h_vol : F.FloorMassLe j V 1) :
-    F.formMajorant j p q W x ^ 2 ≤ V ^ 2 * Γ.weightedSquareProduct j p q W x := by
+j p q W x ^ 2 ≤ V ^ 2 * Γ.weightedSquareProduct j p q W x`.
+-/
+theorem Gauge.formMajorant_sq_le_of_floorMassLe
+    (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p) (hx : x ∈ F.positions)
+    [F.groupMeasure.IsHaarMeasure]
+    {V : ℝ≥0∞} (h_vol : F.FloorMassLe j V 1)
+    : F.formMajorant j p q W x ^ 2 ≤ V ^ 2 * Γ.weightedSquareProduct j p q W x := by
   -- Each pivot costs a factor `V`; the constant `Γ.floorsConst ≥ 1` is not needed.
   refine Γ.sq_lintegral_le_weightedSquareProduct hk hj hp hx fun y _ ↦ ?_
   have h_const : (1 : ℝ≥0∞) ≤ Γ.floorsConst := one_le_pow₀ Γ.one_le_loss
@@ -361,18 +402,21 @@ theorem Gauge.formMajorant_sq_le_of_floorMassLe (hk : F.IsCut W) (hj : j ≤ �
     lintegral_partialCorrelation_sq_le hj, lintegral_partialCorrelation_sq_le hj, ← h_const]
   exact le_of_eq (by ring)
 
-/-- Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `q` a second sequence of units,
+/--
+Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `q` a second sequence of units,
 `x` a position and `F.groupMeasure` a Haar measure. Let `V ≥ 1` bound the mass of floor `j`: for
 every g, the τ with τ g near at j + 1 have `F.floorMeasure j`-measure at most `V`. Suppose that
 every active point g has a floor a ≥ j with `σ⁻¹ ≤ F.depth a g x`. Then the square of the majorant
 `F.formMajorant j p q W x` of the form at `x` is at most `σ ^ F.volumeExponent * V ^ 2` times
 `Γ.weightedSquareProduct`, the product of the second moments of the two correlations with its
-constants. -/
-theorem Gauge.formMajorant_sq_le_of_hasDeepVector (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ)
-    (hp : Γ.IsHead j p) (hx : x ∈ F.positions) [F.groupMeasure.IsHaarMeasure] {σ V : ℝ≥0∞}
-    (h_vol : F.FloorMassLe j V 1) (hV : 1 ≤ V) (h_deep : F.HasDeepVector j p q W x σ⁻¹) :
-    F.formMajorant j p q W x ^ 2 ≤
-      σ ^ F.volumeExponent * V ^ 2 * Γ.weightedSquareProduct j p q W x := by
+constants.
+-/
+theorem Gauge.formMajorant_sq_le_of_hasDeepVector
+    (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p) (hx : x ∈ F.positions)
+    [F.groupMeasure.IsHaarMeasure]
+    {σ V : ℝ≥0∞} (h_vol : F.FloorMassLe j V 1) (hV : 1 ≤ V) (h_deep : F.HasDeepVector j p q W x σ⁻¹)
+    : F.formMajorant j p q W x ^ 2
+      ≤ σ ^ F.volumeExponent * V ^ 2 * Γ.weightedSquareProduct j p q W x := by
   -- The second pivot is bounded by the mass `V`, the first by the lemma on a deep vector.
   refine Γ.sq_lintegral_le_weightedSquareProduct hk hj hp hx fun y h_ne ↦ ?_
   have ker₁ : F.IsPairingKernel j (frameCorrelation W 1) 1 :=
@@ -381,32 +425,39 @@ theorem Gauge.formMajorant_sq_le_of_hasDeepVector (hk : F.IsCut W) (hj : j ≤ �
     Γ.isPairingKernel_frameCorrelation hk j p q
   grw [mul_pow, ker₂.pivotL1Norm_sq_le_of_floorMassLe_one h_vol,
     lintegral_partialCorrelation_sq_le hj]
-  have h_deep_orbit (ρ : T.G) (hρ : ρ ∈ floorGroup j)
-      (h_pair : frameCorrelation W 1 (ρ * y) (ρ * (y * x)) ≠ 0) :
-      ∃ a : Fin 𝔰.ϱ, j ≤ a ∧ σ⁻¹ ≤ F.depth a (ρ * y) x := by
+  have h_deep_orbit
+      (ρ : T.G) (hρ : ρ ∈ floorGroup j) (h_pair : frameCorrelation W 1 (ρ * y) (ρ * (y * x)) ≠ 0)
+      : ∃ a : Fin 𝔰.ϱ, j ≤ a ∧ σ⁻¹ ≤ F.depth a (ρ * y) x := by
     have h_inner : ⟪W (ρ * y), W (ρ * y * x)⟫_ℂ ≠ 0 := by simpa [mul_assoc] using h_pair
-    obtain ⟨near_p, near_q⟩ := hk.isNear_pair_of_pivot_ne_zero
-      (by intro τ hτ; simp [weylRatio, mul_assoc, weylElem_mul_left_comm hτ])
-      (right_ne_zero_of_mul h_ne) hρ
+    obtain ⟨near_p, near_q⟩ :=
+      hk.isNear_pair_of_pivot_ne_zero
+        (by intro τ hτ; simp [weylRatio, mul_assoc, weylElem_mul_left_comm hτ])
+        (right_ne_zero_of_mul h_ne) hρ
     apply h_deep (ρ * y)
-    exact ⟨h_inner, by simpa only [weylElem_mul_left_comm hρ] using near_p,
-      by simpa [weylRatio, mul_assoc, weylElem_mul_left_comm hρ] using near_q⟩
+    exact ⟨
+      h_inner,
+      by simpa only [weylElem_mul_left_comm hρ] using near_p,
+      by simpa [weylRatio, mul_assoc, weylElem_mul_left_comm hρ] using near_q
+    ⟩
   grw [Γ.pivotL1Norm_sq_le_of_deep ker₁ hx h_deep_orbit, ← le_self_pow hV two_ne_zero]
   exact le_of_eq (by ring)
 
-/-- Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `x` a position, `F.groupMeasure` a
+/--
+Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `x` a position, `F.groupMeasure` a
 Haar measure and `V ≥ 1` a bound for the mass of floor `j`. Write w_p = `weylElem j p` and
 w_q = `weylElem j q`. Suppose that, if `σ < 1`, every active point g has a floor a ≥ j with
 `σ⁻¹ ≤ F.depth a g x`; g is active when ⟨W g, W (g x)⟩ ≠ 0 and w_p⁻¹ g, w_q⁻¹ g x are near at j.
 Then the square of the majorant of the form at `x` is at most `σ ^ F.volumeExponent * V ^ 2` times
 `Γ.weightedSquareProduct`, the product of the second moments of the two correlations with its
-constants. -/
-theorem Gauge.formMajorant_sq_le (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p)
-    (hx : x ∈ F.positions) [F.groupMeasure.IsHaarMeasure] {σ V : ℝ≥0∞}
-    (h_vol : F.FloorMassLe j V 1) (hV : 1 ≤ V)
-    (h_deep : σ < 1 → F.HasDeepVector j p q W x σ⁻¹) :
-    F.formMajorant j p q W x ^ 2 ≤
-      σ ^ F.volumeExponent * V ^ 2 * Γ.weightedSquareProduct j p q W x := by
+constants.
+-/
+theorem Gauge.formMajorant_sq_le
+    (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p) (hx : x ∈ F.positions)
+    [F.groupMeasure.IsHaarMeasure]
+    {σ V : ℝ≥0∞}
+    (h_vol : F.FloorMassLe j V 1) (hV : 1 ≤ V) (h_deep : σ < 1 → F.HasDeepVector j p q W x σ⁻¹)
+    : F.formMajorant j p q W x ^ 2
+      ≤ σ ^ F.volumeExponent * V ^ 2 * Γ.weightedSquareProduct j p q W x := by
   rcases lt_or_ge σ 1 with hσ | hσ
   · exact Γ.formMajorant_sq_le_of_hasDeepVector hk hj hp hx h_vol hV (h_deep hσ)
   · grw [Γ.formMajorant_sq_le_of_floorMassLe hk hj hp hx h_vol, ← hσ, one_pow, one_mul]
@@ -418,30 +469,35 @@ lemma PlaceData.formMajorant_zero_eq :
     F.formMajorant 0 1 1 W x = F.pivotL1Norm 0 (frameCorrelation W 1) 1 x ^ 2 := by
   simp [formMajorant, descConv, weylRatio, sq]
 
-/-- One position, no head. Let `W` be a cut Bessel function and `x` a position, and take both
+/--
+One position, no head. Let `W` be a cut Bessel function and `x` a position, and take both
 sequences p, q equal to the constant `1`. Suppose every active point g has a floor a with
 `σ⁻¹ ≤ F.depth a g x`; at floor `0`, g is active when ⟨W g, W (g x)⟩ ≠ 0. Then
 `F.formMajorant 0 1 1 W x ^ 2` is at most `(σ ^ F.volumeExponent) ^ 2` times
-`Γ.weightedSquareProduct 0 1 1 W x`, the product of the second moments with its constants. -/
-theorem Gauge.formMajorant_zero_sq_le_of_hasDeepVector (hk : F.IsCut W) (hx : x ∈ F.positions)
-    {σ : ℝ≥0∞} (h_deep : F.HasDeepVector 0 1 1 W x σ⁻¹) :
-    F.formMajorant 0 1 1 W x ^ 2 ≤ (σ ^ F.volumeExponent) ^ 2 * Γ.weightedSquareProduct 0 1 1 W
-      x := by
+`Γ.weightedSquareProduct 0 1 1 W x`, the product of the second moments with its constants.
+-/
+theorem Gauge.formMajorant_zero_sq_le_of_hasDeepVector
+    (hk : F.IsCut W) (hx : x ∈ F.positions) {σ : ℝ≥0∞} (h_deep : F.HasDeepVector 0 1 1 W x σ⁻¹)
+    : F.formMajorant 0 1 1 W x ^ 2
+      ≤ (σ ^ F.volumeExponent) ^ 2 * Γ.weightedSquareProduct 0 1 1 W x := by
   let k : T.G → T.G → ℂ := frameCorrelation W 1
   -- At floor `0` every point is near as soon as the box is nonempty.
   have h_near {y z : T.G} (hy : W y ≠ 0) : F.IsNear 0 z :=
     let ⟨u, _, hu⟩ := hk.exists_mul_mem_box hy
     ⟨u * y * z⁻¹, by simp, by simpa using hu⟩
   -- The gain for one pivot; the weight of length `0` is `1`.
-  have h_pivot_le : F.pivotL1Norm 0 k 1 x ^ 2 ≤
-      σ ^ F.volumeExponent * Γ.floorsConst * F.weightedSquareSum k x 0 1 := by
-    simpa [depthWeight] using Γ.pivotL1Norm_sq_le_of_deep (l := 0) (g := 1)
-      (Γ.isPairingKernel_frameCorrelation_one hk 0) hx fun y _ hy ↦ by
-        have h_pair : ⟪W y, W (y * x)⟫_ℂ ≠ 0 := by simpa [k] using hy
-        have h_ne : W y ≠ 0 := fun h ↦ h_pair (by simp [h])
-        simpa using h_deep y ⟨h_pair, h_near h_ne, h_near h_ne⟩
-  have h_norm : Γ.weightedSquareProduct 0 1 1 W x =
-      Γ.floorsConst ^ 3 * F.weightedSquareSum k x 0 1 ^ 2 := by
+  have h_pivot_le
+      : F.pivotL1Norm 0 k 1 x ^ 2
+        ≤ σ ^ F.volumeExponent * Γ.floorsConst * F.weightedSquareSum k x 0 1 := by
+    simpa [depthWeight] using
+      Γ.pivotL1Norm_sq_le_of_deep (l := 0) (g := 1) (Γ.isPairingKernel_frameCorrelation_one hk 0) hx
+        fun y _ hy ↦ by
+          have h_pair : ⟪W y, W (y * x)⟫_ℂ ≠ 0 := by simpa [k] using hy
+          have h_ne : W y ≠ 0 := fun h ↦ h_pair (by simp [h])
+          simpa using h_deep y ⟨h_pair, h_near h_ne, h_near h_ne⟩
+  have h_norm
+      : Γ.weightedSquareProduct 0 1 1 W x
+        = Γ.floorsConst ^ 3 * F.weightedSquareSum k x 0 1 ^ 2 := by
     simp [k, descConv, weylRatio, Gauge.weightedSquareProduct, PlaceData.weightedSquareIntegral,
       mul_assoc, sq]
   rw [formMajorant_zero_eq, h_norm]
@@ -449,19 +505,23 @@ theorem Gauge.formMajorant_zero_sq_le_of_hasDeepVector (hk : F.IsCut W) (hx : x 
   rw [mul_pow, mul_pow, mul_assoc]
   grw [pow_le_pow_right₀ (one_le_pow₀ Γ.one_le_loss) (show 2 ≤ 3 by norm_num)]
 
-/-- Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `q` a second sequence of units,
+/--
+Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `q` a second sequence of units,
 `x` a position and `F.groupMeasure` a Haar measure. Let ψ be the additive character of the place,
 and let ψ(ηz) = ψ(ξz) for the unit ξ and all numbers z of size 200 n² (n = `𝔰.n`) in the gauge
 (`Γ.ofSize`). Weight the form by ψ(η Z_jj), where Z_jj is the diagonal entry j of the frame Gram
 matrix `T.frameGram`. Then the square of its modulus `F.formIntegrandL1Norm j p q W x` is at most
 `(P.kernelBound / P.modulus ξ) ^ card F.FreeIndex` times `Γ.weightedSquareProduct`, the product of
-the second moments of the two correlations with its constants. -/
-theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p)
-    (hx : x ∈ F.positions) [F.groupMeasure.IsHaarMeasure] {η : A}
-    (hφ : ∀ z ∈ Γ.ofSize (200 * 𝔰.n ^ 2), ψ (η * z) = ψ (ξ * z)) :
-    F.formIntegrandL1Norm j p q W x
-        (fun y : T.G ↦ ψ (η * (T.frameGram y).diag ⟨j, Nat.lt_succ_of_le hj⟩)) ^ 2 ≤
-      (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * Γ.weightedSquareProduct j p q W x := by
+the second moments of the two correlations with its constants.
+-/
+theorem Gauge.formIntegrandL1Norm_sq_le_of_char
+    (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p) (hx : x ∈ F.positions)
+    [F.groupMeasure.IsHaarMeasure]
+    {η : A} (hφ : ∀ z ∈ Γ.ofSize (200 * 𝔰.n ^ 2), ψ (η * z) = ψ (ξ * z))
+    : F.formIntegrandL1Norm j p q W x
+          (fun y : T.G ↦ ψ (η * (T.frameGram y).diag ⟨j, Nat.lt_succ_of_le hj⟩))
+        ^ 2
+      ≤ (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * Γ.weightedSquareProduct j p q W x := by
   -- On the supports the weight is the character of frequency `ξ`, so the inner integral is `f σ`
   -- times the conjugate of a Fourier transform `G` of `f'`. Cauchy–Schwarz in `σ` and the
   -- Plancherel bound of `Gauge.correlation_plancherel` conclude.
@@ -473,27 +533,31 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
   have ker₂ : F.IsPairingKernel j (frameCorrelation W (weylRatio j p q)) (weylRatio j p q) :=
     Γ.isPairingKernel_frameCorrelation hk j p q
   let f (σ : T.G) : ℂ := F.partialCorrelation (j + 1) (frameCorrelation W 1) (σ * g) (σ * (g * x))
-  let f' (τ : T.G) : ℂ := F.partialCorrelation (j + 1) (frameCorrelation W (weylRatio j p q))
-    (τ * ((weylElem j p)⁻¹ * g)) (τ * ((weylElem j p)⁻¹ * (g * x)))
-  have h_form : F.formIntegrand j p q W x
-      (fun y : T.G ↦ ψ (η * (T.frameGram y).diag ⟨j, Nat.lt_succ_of_le hj⟩)) g =
-        ∫ σ, ∫ τ, ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) *
-          (f σ * conj (f' τ)) ∂F.floorMeasure j ∂F.floorMeasure j := by
+  let f' (τ : T.G) : ℂ :=
+    F.partialCorrelation (j + 1) (frameCorrelation W (weylRatio j p q)) (τ * ((weylElem j p)⁻¹ * g))
+      (τ * ((weylElem j p)⁻¹ * (g * x)))
+  have h_form
+      : F.formIntegrand j p q W x
+          (fun y : T.G ↦ ψ (η * (T.frameGram y).diag ⟨j, Nat.lt_succ_of_le hj⟩))
+          g
+        = ∫ σ, ∫ τ, ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) *
+            (f σ * conj (f' τ)) ∂F.floorMeasure j ∂F.floorMeasure j := by
     -- The Gram entry is rewritten before `simp` distributes the coercion over `σ * τ⁻¹`.
-    simp [Matrix.diag, ↓frameGram_eq_form_orbitPoint, formIntegrand, partialCorrelationProduct,
-      mul_assoc,
-      f, f']
+    simp [Matrix.diag, ↓ frameGram_eq_form_orbitPoint, formIntegrand, partialCorrelationProduct,
+      mul_assoc, f, f']
   rw [h_form] at h_ne ⊢
   -- The double integral is not zero, so `g` and `(weylElem j p)⁻¹ * g` are near at `j`, and one
   -- `t` moves both to a bounded size.
   obtain ⟨σ, hσ, τ, hτ, hfσ, hfτ⟩ : ∃ σ ∈ floorGroup j, ∃ τ ∈ floorGroup j, f σ ≠ 0 ∧ f' τ ≠ 0 := by
     by_contra! h_zero
-    refine eNorm_ne_zero.1 h_ne (integral_eq_zero_of_ae (ae_floorMeasure_mem.mono fun σ hσ ↦
-      integral_eq_zero_of_ae (ae_floorMeasure_mem.mono fun τ hτ ↦ ?_)))
+    refine eNorm_ne_zero.1 h_ne
+      (integral_eq_zero_of_ae (ae_floorMeasure_mem.mono fun σ hσ ↦
+        integral_eq_zero_of_ae (ae_floorMeasure_mem.mono fun τ hτ ↦ ?_)))
     exact mul_eq_zero_of_right _ (by simpa [or_iff_not_imp_left] using h_zero σ hσ τ hτ)
-  obtain ⟨t, ht, h_size, h_size'⟩ := Γ.exists_hasMatrixSize_of_isNear hj hp
-    ((ker₁.isNear_of_partialCorrelation_ne_zero hfσ).of_floorGroup_mul hσ)
-    ((ker₂.isNear_of_partialCorrelation_ne_zero hfτ).of_floorGroup_mul hτ)
+  obtain ⟨t, ht, h_size, h_size'⟩ :=
+    Γ.exists_hasMatrixSize_of_isNear hj hp
+      ((ker₁.isNear_of_partialCorrelation_ne_zero hfσ).of_floorGroup_mul hσ)
+      ((ker₂.isNear_of_partialCorrelation_ne_zero hfτ).of_floorGroup_mul hτ)
   let S : Set T.G := {σ | t.val.val *ᵥ orbitPoint j σ ∈ Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6)}
   let S' : Set T.G := {τ | t.val.val *ᵥ orbitPoint j τ ∈ Γ.vecsOfSize (99 * 𝔰.n ^ 2 + 6)}
   have h_supp : ∀ᵐ σ ∂F.floorMeasure j, f σ ≠ 0 → σ ∈ S :=
@@ -501,23 +565,27 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
   have h_supp' : ∀ᵐ τ ∂F.floorMeasure j, f' τ ≠ 0 → τ ∈ S' :=
     Γ.correlation_support ht h_size' ker₂ ((weylElem j p)⁻¹ * (g * x))
   -- On the supports the Gram entry has size `200 * 𝔰.n ^ 2`, where `hφ` applies.
-  have h_char {σ τ : T.G} (hσ : σ ∈ S) (hτ : τ ∈ S') :
-      ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) =
-        ψ (ξ * star (t.val.val *ᵥ orbitPoint j σ) ⬝ᵥ
-          T.splitGram *ᵥ t.val.val *ᵥ orbitPoint j τ) := by
+  have h_char {σ τ : T.G} (hσ : σ ∈ S) (hτ : τ ∈ S')
+      : ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ)
+        = ψ
+          (ξ
+            * star (t.val.val *ᵥ orbitPoint j σ)
+              ⬝ᵥ T.splitGram *ᵥ t.val.val *ᵥ orbitPoint j τ) := by
     rw [← U.form_mulVec_mulVec t]
-    exact hφ _ (Γ.mem_ofSize_mono (Γ.dotProduct_mem_ofSize
-      (fun a _ ↦ Γ.neg_mem_iff_and_star_mem_iff.2.2 (hσ a))
-      (Size.HasMatrixSize.mulVec Γ.splitGram_and_inv_mem.1 hτ)))
+    exact hφ _
+      (Γ.mem_ofSize_mono (Γ.dotProduct_mem_ofSize
+        (fun a _ ↦ Γ.neg_mem_iff_and_star_mem_iff.2.2 (hσ a))
+        (Size.HasMatrixSize.mulVec Γ.splitGram_and_inv_mem.1 hτ)))
   let G (v : 𝔰.BesselIndex → A) : ℂ :=
     ∫ τ, ψ ((-ξ).val * star (v + 0) ⬝ᵥ T.splitGram *ᵥ t *ᵥ orbitPoint j τ) * f' τ
       ∂F.floorMeasure j
   have hG : Measurable G := by
     unfold G f'
     fun_prop
-  have h_inner : ∀ᵐ σ ∂F.floorMeasure j,
-      ∫ τ, ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) *
-        (f σ * conj (f' τ)) ∂F.floorMeasure j = f σ * conj (G (t *ᵥ orbitPoint j σ)) := by
+  have h_inner
+      : ∀ᵐ σ ∂F.floorMeasure j,
+        ∫ τ, ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) *
+          (f σ * conj (f' τ)) ∂F.floorMeasure j = f σ * conj (G (t *ᵥ orbitPoint j σ)) := by
     filter_upwards [h_supp] with σ hσ
     rw [← integral_conj, ← integral_const_mul]
     refine integral_congr_ae ?_
@@ -528,39 +596,44 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
     · simp [hfτ]
     rw [h_char (hσ hfσ) (hτ hfτ)]
     simp [P.ψ.map_neg_eq_inv, inv_eq_conj, mul_left_comm _ (ψ _)]
-  have h_const : Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) *
-      Γ.loss ^ (99 * 𝔰.n * (99 * 𝔰.n ^ 2 + 12)) ≤ Γ.floorsConst := by
+  have h_const
+      : Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) * Γ.loss ^ (99 * 𝔰.n * (99 * 𝔰.n ^ 2 + 12))
+        ≤ Γ.floorsConst := by
     have h_cube : 𝔰.n ≤ 𝔰.n ^ 3 := Nat.le_self_pow three_ne_zero _
     rw [← pow_add]
     exact pow_le_pow_right₀ Γ.one_le_loss (by linarith)
-  have h_bound : ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j ≤
-      Γ.floorsConst * (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex *
-        ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j := by
-    calc ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j
-        = ∫⁻ v in Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6), ‖G v‖ₑ ^ 2 ∂F.floorQuadricMeasure j :=
-          (measurePreserving_mulVec_orbitPoint j ht).setLIntegral_comp_preimage
-            (f := fun v ↦ ‖G v‖ₑ ^ 2) measurableSet_vecsOfSize (by fun_prop)
-      _ ≤ Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) * Γ.loss ^ (99 * 𝔰.n * (99 * 𝔰.n ^ 2 + 12)) *
-            (P.kernelBound / P.modulus (-ξ).val) ^ card F.FreeIndex *
-            ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j :=
-          Γ.correlation_plancherel ht h_size' ker₂ ((weylElem j p)⁻¹ * (g * x)) (by simp) (-ξ) 0
-            (.inr rfl)
+  have h_bound
+      : ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j
+        ≤ Γ.floorsConst * (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex
+          * ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j := by
+    calc
+      ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j
+          = ∫⁻ v in Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6), ‖G v‖ₑ ^ 2 ∂F.floorQuadricMeasure j :=
+        (measurePreserving_mulVec_orbitPoint j ht).setLIntegral_comp_preimage
+          (f := fun v ↦ ‖G v‖ₑ ^ 2)
+          measurableSet_vecsOfSize (by fun_prop)
+      _ ≤ Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) * Γ.loss ^ (99 * 𝔰.n * (99 * 𝔰.n ^ 2 + 12))
+          * (P.kernelBound / P.modulus (-ξ).val) ^ card F.FreeIndex
+          * ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j :=
+        Γ.correlation_plancherel ht h_size' ker₂ ((weylElem j p)⁻¹ * (g * x)) (by simp) (-ξ) 0
+          (.inr rfl)
       _ ≤ _ := by
-          grw [h_const]
-          simp
+        grw [h_const]
+        simp
   have h_off : ∀ᵐ σ ∂F.floorMeasure j, σ ∉ S → f σ * conj (G (t *ᵥ orbitPoint j σ)) = 0 :=
     h_supp.mono fun σ hσ h_out ↦ mul_eq_zero_of_left (of_not_not (mt hσ h_out)) _
   rw [integral_congr_ae h_inner, ← setIntegral_eq_integral_of_ae_compl_eq_zero h_off]
-  calc ‖∫ σ in S, f σ * conj (G (t *ᵥ orbitPoint j σ)) ∂F.floorMeasure j‖ₑ ^ 2
-      ≤ (∫⁻ σ in S, ‖f σ * conj (G (t *ᵥ orbitPoint j σ))‖ₑ ∂F.floorMeasure j) ^ 2 := by
-        grw [eNorm_integral_le_lintegral_eNorm]
-    _ ≤ (∫⁻ σ in S, ‖f σ‖ₑ ^ 2 ∂F.floorMeasure j) *
-          ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j :=
-        sq_lintegral_le (by fun_prop) (by fun_prop) (by simp [mul_pow])
-    _ ≤ (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * Γ.floorsConst *
-          (∫⁻ σ, ‖f σ‖ₑ ^ 2 ∂F.floorMeasure j) * ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j := by
-        grw [h_bound, setLIntegral_le_lintegral]
-        exact le_of_eq (by ring)
+  calc
+    ‖∫ σ in S, f σ * conj (G (t *ᵥ orbitPoint j σ)) ∂F.floorMeasure j‖ₑ ^ 2
+        ≤ (∫⁻ σ in S, ‖f σ * conj (G (t *ᵥ orbitPoint j σ))‖ₑ ∂F.floorMeasure j) ^ 2 := by
+      grw [eNorm_integral_le_lintegral_eNorm]
+    _ ≤ (∫⁻ σ in S, ‖f σ‖ₑ ^ 2 ∂F.floorMeasure j)
+        * ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j :=
+      sq_lintegral_le (by fun_prop) (by fun_prop) (by simp [mul_pow])
+    _ ≤ (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * Γ.floorsConst
+        * (∫⁻ σ, ‖f σ‖ₑ ^ 2 ∂F.floorMeasure j) * ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j := by
+      grw [h_bound, setLIntegral_le_lintegral]
+      exact le_of_eq (by ring)
     _ = _ := by simp only [f, f', mul_assoc]
 
 /-- Let `t₀`, `t` lie in `floorGroup (a + 1)`, and let the matrices `t₀ n₀ g` and `t n g` have size
@@ -752,7 +825,8 @@ lemma Gauge.lintegral_indicator_le_of_section (hx : x ∈ F.positions)
         grw [lintegral_mono h_heisenberg, lintegral_const_mul _ (by fun_prop)]
     _ ≤ _ := by grw [Γ.lintegral_mul_invDepthWeight_le (by lia) hp_short hx i.le_succ hB hB_meas]
 
-/-- **Separating the frames when one pivot runs over a section.** Let `p` be a head of length
+/--
+**Separating the frames when one pivot runs over a section.** Let `p` be a head of length
 i + 1 ≤ ϱ with Weyl element w_p = `weylElem (i + 1) p`, let `x` be a position and `F.groupMeasure`
 a Haar measure. Let `wgt_i φ₁²` and `B` be left invariant under `partialUnitriangularGroup (i + 1)`
 and `φ₂` under `floorGroup (i + 1)`, and let all three vanish off the points near at `i + 1`; here
@@ -762,25 +836,28 @@ Heisenberg group of floor `i` with `w_p n g` near at `i + 1` is at most `K` time
 integral of `φ₁(g) φ₂(w_p⁻¹ g)` against `F.partialGroupMeasure 0 (i + 1)` is at most
 `K · ∫ wgt_i φ₁² · ∫ B` times `Γ.floorsConst ^ 3` and the square of the product of the
 `F.floorModulus a (p a)⁻¹` over a ≤ i. The last two integrals are against the convolution of the
-measures of the floors up to `i`. -/
-theorem Gauge.sq_lintegral_mul_comp_weylElem_inv_le_of_section (hx : x ∈ F.positions)
-    [F.groupMeasure.IsHaarMeasure] {i : ℕ} (hi : i + 1 ≤ 𝔰.ϱ) (hp : Γ.IsHead (i + 1) p)
-    {φ₁ φ₂ B : T.G → ℝ≥0∞} {K : ℝ≥0∞} (hφ₁_meas : Measurable φ₁) (hφ₂_meas : Measurable φ₂)
-    (hB_meas : Measurable B)
-    (hφ₁ : ((partialUnitriangularGroup (i + 1)).FixesLeft
-        fun g : T.G ↦ F.depthWeight i g x * φ₁ g ^ 2) ∧
-      ∀ g : T.G, ¬F.IsNear (i + 1) g → F.depthWeight i g x * φ₁ g ^ 2 = 0)
-    (hφ₂ : (floorGroup (i + 1)).FixesLeft φ₂ ∧ ∀ g : T.G, ¬F.IsNear (i + 1) g → φ₂ g = 0)
-    (hB : (partialUnitriangularGroup (i + 1)).FixesLeft B ∧ ∀ g : T.G,
-      ¬F.IsNear (i + 1) g → B g = 0)
+measures of the floors up to `i`.
+-/
+theorem Gauge.sq_lintegral_mul_comp_weylElem_inv_le_of_section
+    (hx : x ∈ F.positions)
+    [F.groupMeasure.IsHaarMeasure]
+    {i : ℕ} (hi : i + 1 ≤ 𝔰.ϱ) (hp : Γ.IsHead (i + 1) p)
+    {φ₁ φ₂ B : T.G → ℝ≥0∞} {K : ℝ≥0∞}
+    (hφ₁_meas : Measurable φ₁) (hφ₂_meas : Measurable φ₂) (hB_meas : Measurable B)
+    (hφ₁
+      : ((partialUnitriangularGroup (i + 1)).FixesLeft fun g : T.G ↦ F.depthWeight i g x * φ₁ g ^ 2)
+        ∧ ∀ g : T.G, ¬ F.IsNear (i + 1) g → F.depthWeight i g x * φ₁ g ^ 2 = 0)
+    (hφ₂ : (floorGroup (i + 1)).FixesLeft φ₂ ∧ ∀ g : T.G, ¬ F.IsNear (i + 1) g → φ₂ g = 0)
+    (hB
+      : (partialUnitriangularGroup (i + 1)).FixesLeft B ∧ ∀ g : T.G, ¬ F.IsNear (i + 1) g → B g = 0)
     (h_section : ∀ g : T.G,
       ∫⁻ n in {n : T.G | F.IsNear (i + 1) (weylElem (i + 1) p * (n * g))}, φ₂ (n * g) ^ 2
-          ∂heisenbergMeasure i ≤
-        K * F.floorModulus i (p i)⁻¹ * Γ.floorsConst * (B g / F.depthWeight (i + 1) g x)) :
-    (∫⁻ g : T.G, φ₁ g * φ₂ ((weylElem (i + 1) p)⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1)) ^ 2 ≤
-      K * (∏ a ∈ range (i + 1), F.floorModulus a (p a)⁻¹) ^ 2 * Γ.floorsConst ^ 3 *
-        (∫⁻ g : T.G, F.depthWeight i g x * φ₁ g ^ 2 ∂descConv F.floorMeasure 0 (i + 1)) *
-        ∫⁻ g : T.G, B g ∂descConv F.floorMeasure 0 (i + 1) := by
+          ∂heisenbergMeasure i
+        ≤ K * F.floorModulus i (p i)⁻¹ * Γ.floorsConst * (B g / F.depthWeight (i + 1) g x))
+    : (∫⁻ g : T.G, φ₁ g * φ₂ ((weylElem (i + 1) p)⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1)) ^ 2
+      ≤ K * (∏ a ∈ range (i + 1), F.floorModulus a (p a)⁻¹) ^ 2 * Γ.floorsConst ^ 3
+        * (∫⁻ g : T.G, F.depthWeight i g x * φ₁ g ^ 2 ∂descConv F.floorMeasure 0 (i + 1))
+        * ∫⁻ g : T.G, B g ∂descConv F.floorMeasure 0 (i + 1) := by
   -- Cauchy–Schwarz with the weights crossed: `wgt_i φ₁²` at `g` is paired with the inverse weight
   -- of length `i + 1` at `w⁻¹ g`, and `wgt_(i+1) φ₂²` at `w⁻¹ g` with that of length `i` at `g`.
   obtain ⟨hφ₂_inv, hφ₂_zero⟩ := hφ₂
@@ -789,8 +866,9 @@ theorem Gauge.sq_lintegral_mul_comp_weylElem_inv_le_of_section (hx : x ∈ F.pos
   let u : T.G → ℝ≥0∞ := {g | F.IsNear (i + 1) (w * g)}.indicator fun g ↦ r g * φ₂ g ^ 2
   have hu_meas : Measurable u :=
     .indicator (by fun_prop) (measurable_const_mul w measurableSet_isNear)
-  have h_cross (g : T.G) : (φ₁ g * φ₂ (w⁻¹ * g)) ^ 2 ≤
-      F.depthWeight i g x * φ₁ g ^ 2 * F.invDepthWeight (i + 1) x (w⁻¹ * g) * u (w⁻¹ * g) := by
+  have h_cross (g : T.G)
+      : (φ₁ g * φ₂ (w⁻¹ * g)) ^ 2
+        ≤ F.depthWeight i g x * φ₁ g ^ 2 * F.invDepthWeight (i + 1) x (w⁻¹ * g) * u (w⁻¹ * g) := by
     -- Where the left side is not zero, both points are near and the weights cancel.
     rcases em' (F.IsNear (i + 1) g) with h_far | h_near
     · have h_zero : φ₁ g = 0 := by simpa using hφ₁.2 g h_far
@@ -803,33 +881,39 @@ theorem Gauge.sq_lintegral_mul_comp_weylElem_inv_le_of_section (hx : x ∈ F.pos
       simp [invDepthWeight, h_near']
     have h_u : u (w⁻¹ * g) = r (w⁻¹ * g) * φ₂ (w⁻¹ * g) ^ 2 :=
       Set.indicator_of_mem (by simpa using h_near) _
-    calc (φ₁ g * φ₂ (w⁻¹ * g)) ^ 2
-        = F.depthWeight i g x * (F.depthWeight i g x)⁻¹ *
-            (F.depthWeight (i + 1) (w⁻¹ * g) x * (F.depthWeight (i + 1) (w⁻¹ * g) x)⁻¹) *
-            (φ₁ g * φ₂ (w⁻¹ * g)) ^ 2 := by simp [ENNReal.mul_inv_cancel]
+    calc
+      (φ₁ g * φ₂ (w⁻¹ * g)) ^ 2
+          = F.depthWeight i g x * (F.depthWeight i g x)⁻¹
+            * (F.depthWeight (i + 1) (w⁻¹ * g) x * (F.depthWeight (i + 1) (w⁻¹ * g) x)⁻¹)
+            * (φ₁ g * φ₂ (w⁻¹ * g)) ^ 2 := by
+        simp [ENNReal.mul_inv_cancel]
       _ ≤ _ := by
-          simp only [h_long, h_u, r, h_short]
-          exact le_of_eq (by ring)
+        simp only [h_long, h_u, r, h_short]
+        exact le_of_eq (by ring)
   -- In the first integral, `w⁻¹` is the Weyl element of the head `star p`.
-  have h_first : ∫⁻ g, F.depthWeight i g x * φ₁ g ^ 2 * F.invDepthWeight (i + 1) x (w⁻¹ * g)
-        ∂F.partialGroupMeasure 0 (i + 1) ≤
-      (∏ a ∈ range (i + 1), F.floorModulus a (p a)⁻¹) * Γ.floorsConst *
-        ∫⁻ g, F.depthWeight i g x * φ₁ g ^ 2 ∂descConv F.floorMeasure 0 (i + 1) := by
+  have h_first
+      : ∫⁻ g, F.depthWeight i g x * φ₁ g ^ 2 * F.invDepthWeight (i + 1) x (w⁻¹ * g)
+          ∂F.partialGroupMeasure 0 (i + 1)
+        ≤ (∏ a ∈ range (i + 1), F.floorModulus a (p a)⁻¹) * Γ.floorsConst
+          * ∫⁻ g, F.depthWeight i g x * φ₁ g ^ 2 ∂descConv F.floorMeasure 0 (i + 1) := by
     grw [← weylElem_star, partialGroupMeasure_zero_eq,
       Γ.lintegral_mul_invDepthWeight_le hi hp.star_head hx .refl hφ₁ (by fun_prop)]
     simp [floorModulus]
-  have h_second : ∫⁻ g, u (w⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1) ≤
-      K * F.floorModulus i (p i)⁻¹ * Γ.floorsConst *
-        ((∏ a ∈ range i, F.floorModulus a (p a)⁻¹) * Γ.floorsConst *
-          ∫⁻ g, B g ∂descConv F.floorMeasure 0 (i + 1)) :=
+  have h_second
+      : ∫⁻ g, u (w⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1)
+        ≤ K * F.floorModulus i (p i)⁻¹ * Γ.floorsConst
+          * ((∏ a ∈ range i, F.floorModulus a (p a)⁻¹) * Γ.floorsConst
+            * ∫⁻ g, B g ∂descConv F.floorMeasure 0 (i + 1)) :=
     Γ.lintegral_indicator_le_of_section hx hi hp hφ₂_meas hB_meas hφ₂_inv hB h_section rfl
-  calc (∫⁻ g, φ₁ g * φ₂ (w⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1)) ^ 2
-      ≤ (∫⁻ g, F.depthWeight i g x * φ₁ g ^ 2 * F.invDepthWeight (i + 1) x (w⁻¹ * g)
-          ∂F.partialGroupMeasure 0 (i + 1)) * ∫⁻ g, u (w⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1) :=
-        sq_lintegral_le (by fun_prop) (by fun_prop) h_cross
+  calc
+    (∫⁻ g, φ₁ g * φ₂ (w⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1)) ^ 2
+        ≤ (∫⁻ g, F.depthWeight i g x * φ₁ g ^ 2 * F.invDepthWeight (i + 1) x (w⁻¹ * g)
+            ∂F.partialGroupMeasure 0 (i + 1))
+          * ∫⁻ g, u (w⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1) :=
+      sq_lintegral_le (by fun_prop) (by fun_prop) h_cross
     _ ≤ _ := by
-        grw [h_first, h_second, prod_range_succ]
-        exact le_of_eq (by ring)
+      grw [h_first, h_second, prod_range_succ]
+      exact le_of_eq (by ring)
 
 /-- The phase of the lifts. Let the place datum `F` have a gauge, let `W` be a cut Bessel function,
 `ξ = (1 / p_i - 1 / q_i) / F.levelUnit`, and let `n` lie in the Heisenberg group of floor `i`. Let
@@ -922,18 +1006,21 @@ lemma Gauge.lintegral_section_le (hk : F.IsCut W) {i : Fin 𝔰.ϱ} (hp : Γ.IsH
     one_mul]
   exact ⟨h_near, le_rfl⟩
 
-/-- Let `W` be a cut Bessel function, `p` a head of length j = i + 1 ≤ ϱ, `q` a second sequence of
+/--
+Let `W` be a cut Bessel function, `p` a head of length j = i + 1 ≤ ϱ, `q` a second sequence of
 units, `x` a position and `F.groupMeasure` a Haar measure, and let
 `ξ = (1 / p_i - 1 / q_i) / F.levelUnit` be a unit. Then the square of the L¹ norm
 `F.formIntegrandL1Norm j p q W x 1` of the form integrand with weight `1` at `x` is at most
 `(P.kernelBound / P.modulus ξ) ^ card F.FreeIndex` times `Γ.weightedSquareProduct j p q W x`, the
 product of the second moments of the two correlations with `Γ.floorsConst ^ 3` and the squares of
-the `F.floorModulus a (p a)⁻¹` over a < j. -/
-theorem Gauge.formIntegrandL1Norm_sq_le_of_heads (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p)
-    (hx : x ∈ F.positions) [F.groupMeasure.IsHaarMeasure] {i : ℕ} (hi : j = i + 1)
-    (hξ : ξ.val = F.levelUnit⁻¹.val * ((p i)⁻¹.val - (q i)⁻¹.val)) :
-    F.formIntegrandL1Norm j p q W x 1 ^ 2 ≤
-      (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * Γ.weightedSquareProduct j p q W x := by
+the `F.floorModulus a (p a)⁻¹` over a < j.
+-/
+theorem Gauge.formIntegrandL1Norm_sq_le_of_heads
+    (hk : F.IsCut W) (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p) (hx : x ∈ F.positions)
+    [F.groupMeasure.IsHaarMeasure]
+    {i : ℕ} (hi : j = i + 1) (hξ : ξ.val = F.levelUnit⁻¹.val * ((p i)⁻¹.val - (q i)⁻¹.val))
+    : F.formIntegrandL1Norm j p q W x 1 ^ 2
+      ≤ (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * Γ.weightedSquareProduct j p q W x := by
   -- Separate the frames, with the first pivot `y'` on a section. The second correlation carries
   -- the phase `ψ(-ξ ⟨y', y⟩)`, and Plancherel's formula gives the gain.
   subst hi
@@ -944,44 +1031,45 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_heads (hk : F.IsCut W) (hj : j ≤ �
     Γ.isPairingKernel_frameCorrelation hk (i + 1) p q
   let φ₁ (g : T.G) : ℝ≥0∞ := ‖F.partialCorrelation (i + 1) k₁ g (g * x)‖ₑ
   let φ₂ (g : T.G) : ℝ≥0∞ := ‖F.partialCorrelation (i + 1) k₂ g (g * x)‖ₑ
-  have h_form : F.formIntegrandL1Norm (i + 1) p q W x 1 =
-      ∫⁻ g, φ₁ g * φ₂ ((weylElem (i + 1) p)⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1) := by
+  have h_form
+      : F.formIntegrandL1Norm (i + 1) p q W x 1
+        = ∫⁻ g, φ₁ g * φ₂ ((weylElem (i + 1) p)⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1) := by
     simp [formIntegrandL1Norm, ← partialCorrelationProduct_eq Γ hk, partialCorrelationProduct, φ₁,
       φ₂, k₁, k₂]
-  have hφ₂ : (floorGroup (i + 1)).FixesLeft φ₂ ∧ ∀ g : T.G, ¬F.IsNear (i + 1) g → φ₂ g = 0 :=
-    ⟨fun σ hσ g ↦ by simp [φ₂, ker₂.partialCorrelation_mul_left, hσ, mul_assoc],
-      fun g hg ↦ eNorm_eq_zero.2 (not_imp_comm.1 ker₂.isNear_of_partialCorrelation_ne_zero hg)⟩
-  have h_section (g : T.G) :
-      ∫⁻ n in {n | F.IsNear (i + 1) (weylElem (i + 1) p * (n * g))}, φ₂ (n * g) ^ 2
-          ∂heisenbergMeasure i ≤
-        (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * F.floorModulus i (p i)⁻¹ *
-          Γ.floorsConst *
-          (F.weightedSquareSum k₂ x (i + 1) g / F.depthWeight (i + 1) g x) := by
+  have hφ₂ : (floorGroup (i + 1)).FixesLeft φ₂ ∧ ∀ g : T.G, ¬ F.IsNear (i + 1) g → φ₂ g = 0 := ⟨
+    fun σ hσ g ↦ by simp [φ₂, ker₂.partialCorrelation_mul_left, hσ, mul_assoc],
+    fun g hg ↦ eNorm_eq_zero.2 (not_imp_comm.1 ker₂.isNear_of_partialCorrelation_ne_zero hg)
+  ⟩
+  have h_section (g : T.G)
+      : ∫⁻ n in {n | F.IsNear (i + 1) (weylElem (i + 1) p * (n * g))}, φ₂ (n * g) ^ 2
+            ∂heisenbergMeasure i
+        ≤ (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * F.floorModulus i (p i)⁻¹
+          * Γ.floorsConst * (F.weightedSquareSum k₂ x (i + 1) g / F.depthWeight (i + 1) g x) := by
     grw [← lintegral_partialCorrelation_sq_le hj, ← Γ.lintegral_section_le hk (i := ⟨i, hj⟩) hp hξ]
     refine le_of_eq (lintegral_congr_ae (ae_restrict_of_ae (ae_mem_floorUnipotent.mono ?_)))
     intro n hn
     simp only [φ₂, k₂, mul_assoc n]
     rw [Γ.partialCorrelation_mul_eq_integral_sectionPoint hk (i := ⟨i, hj⟩) hξ hn]
-  have h_energy : ∫⁻ g, F.weightedSquare i k₁ x g ∂descConv F.floorMeasure 0 (i + 1) ≤
-      F.weightedSquareIntegral 0 k₁ x := by
+  have h_energy
+      : ∫⁻ g, F.weightedSquare i k₁ x g ∂descConv F.floorMeasure 0 (i + 1)
+        ≤ F.weightedSquareIntegral 0 k₁ x := by
     grw [← ker₁.weightedSquareIntegral_le_weightedSquareIntegral_zero (by lia : i ≤ 𝔰.n),
       ker₁.weightedSquareIntegral_eq_add_succ (by lia),
       ← le_self_add]
-  calc F.formIntegrandL1Norm (i + 1) p q W x 1 ^ 2
-      ≤ (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex *
-          (∏ a ∈ range (i + 1), F.floorModulus a (p a)⁻¹) ^ 2 * Γ.floorsConst ^ 3 *
-          (∫⁻ g, F.weightedSquare i k₁ x g ∂descConv F.floorMeasure 0 (i + 1)) *
-          ∫⁻ g, F.weightedSquareSum k₂ x (i + 1) g ∂descConv F.floorMeasure 0 (i + 1) := by
-        rw [h_form]
-        exact Γ.sq_lintegral_mul_comp_weylElem_inv_le_of_section hx hj hp
-          (by fun_prop) (by fun_prop) (by fun_prop)
-          ker₁.fixesLeft_weightedSquare_and_eq_zero hφ₂
-            (ker₂.fixesLeft_weightedSquareSum_and_eq_zero x)
-          h_section
+  calc
+    F.formIntegrandL1Norm (i + 1) p q W x 1 ^ 2
+        ≤ (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex
+          * (∏ a ∈ range (i + 1), F.floorModulus a (p a)⁻¹) ^ 2 * Γ.floorsConst ^ 3
+          * (∫⁻ g, F.weightedSquare i k₁ x g ∂descConv F.floorMeasure 0 (i + 1))
+          * ∫⁻ g, F.weightedSquareSum k₂ x (i + 1) g ∂descConv F.floorMeasure 0 (i + 1) := by
+      rw [h_form]
+      exact Γ.sq_lintegral_mul_comp_weylElem_inv_le_of_section hx hj hp (by fun_prop) (by fun_prop)
+        (by fun_prop) ker₁.fixesLeft_weightedSquare_and_eq_zero hφ₂
+        (ker₂.fixesLeft_weightedSquareSum_and_eq_zero x) h_section
     _ ≤ _ := by
-        grw [h_energy]
-        exact le_of_eq (by simp only [weightedSquareProduct, weightedSquareIntegral, k₁, k₂,
-          mul_assoc])
+      grw [h_energy]
+      exact le_of_eq (by
+        simp only [weightedSquareProduct, weightedSquareIntegral, k₁, k₂, mul_assoc])
 
 end New.Floors
 

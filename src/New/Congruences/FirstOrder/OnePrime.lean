@@ -59,11 +59,12 @@ section Congruence
 
 variable {R S : Type*} [Ring R] [Ring S] {σ : R →+* S} {m k : ℕ}
 
-/-- A ring map `σ` is a reduction modulo `m / k` if it kills every `x` with `k x ∈ m R`. Then a
+/--
+A ring map `σ` is a reduction modulo `m / k` if it kills every `x` with `k x ∈ m R`. Then a
 congruence `a ≡ b` modulo `m / k` implies `σ a = σ b`; `exists_isReductionMod` gives a `σ` for which
-the converse holds. -/
-def IsReductionMod (σ : R →+* S) (m k : ℕ) : Prop :=
-  ∀ x y : R, k • x = m • y → σ x = 0
+the converse holds.
+-/
+def IsReductionMod (σ : R →+* S) (m k : ℕ) : Prop := ∀ x y : R, k • x = m • y → σ x = 0
 
 lemma IsReductionMod.natCast_eq_zero (hσ : IsReductionMod σ m k) : (m : S) = 0 := by
   rw [← map_natCast σ]
@@ -125,8 +126,9 @@ end Norms
 
 section Family
 
-variable {J R R' : Type*} [Fintype J] [DecidableEq J] [Ring R] [Ring R'] {σ : R →+* R'}
-  {Γ : J → Type*} [∀ j : J, Group (Γ j)] [∀ j : J, Fintype (Γ j)]
+variable
+  {J R R' : Type*} [Fintype J] [DecidableEq J] [Ring R] [Ring R']
+  {σ : R →+* R'} {Γ : J → Type*} [∀ j : J, Group (Γ j)] [∀ j : J, Fintype (Γ j)]
 
 /-- Let `ρ` map the product of the finite groups `Γ j` to the ring `R`, and let `σ : R → R'` be a
 ring map. Write `g` for `ρ g`, `Nm = ∑ g`, and `a ≡ b` for `σ a = σ b`. If `∑ g⁻¹ Ψ g = n` and
@@ -148,9 +150,11 @@ lemma map_nsmul_eq_mul_norm (ρ : (∀ j : J, Γ j) →* R) {Ψ A : R} {n : ℕ}
   exact nsmul_eq_mul_norm (σ.toMonoidHom.comp ρ) (by simpa using congrArg σ hΨ) invariant
 
 /-- The product `x ↦ ∏ x j` of elements `x j ∈ 𝒜 j` of pairwise commuting subrings of `R`. -/
-noncomputable def commutingProd {𝒜 : J → Subring R}
-    (h𝒜 : ∀ i j : J, i ≠ j → ∀ a ∈ 𝒜 i, ∀ b ∈ 𝒜 j, Commute a b) : (∀ j : J, 𝒜 j) →* R :=
-  MonoidHom.noncommPiCoprod (fun j ↦ (𝒜 j).subtype.toMonoidHom)
+noncomputable def commutingProd
+    {𝒜 : J → Subring R} (h𝒜 : ∀ i j : J, i ≠ j → ∀ a ∈ 𝒜 i, ∀ b ∈ 𝒜 j, Commute a b)
+    : (∀ j : J, 𝒜 j) →* R :=
+  MonoidHom.noncommPiCoprod
+    (fun j ↦ (𝒜 j).subtype.toMonoidHom)
     fun i j hij a b ↦ h𝒜 i j hij a a.property b b.property
 
 /-- In a product of elements of pairwise commuting subrings, any one factor can be written last. -/
@@ -183,12 +187,16 @@ lemma commutingProd_sum {𝒜 : J → Subring R}
   let M : MultilinearMap (RingHom.id ℕ) (fun j : J ↦ 𝒜 j) R := .mk' Φ Φ_add Φ_smul
   exact M.map_sum x
 
-/-- The coefficient `∏_{j ∈ S} ∂ j ∏_{j ∉ S} Nm j` of `∏_{j ∈ S} α j` in the family
+/--
+The coefficient `∏_{j ∈ S} ∂ j ∏_{j ∉ S} Nm j` of `∏_{j ∈ S} α j` in the family
 `∏ (Nm j + α j ∂ j)` in commuting variables `α j`, where `Nm j` and `∂ j = der j` lie in the `j`-th
-of the pairwise commuting subrings `𝒜 j`. -/
-noncomputable def familyCoeff {𝒜 : J → Subring R}
+of the pairwise commuting subrings `𝒜 j`.
+-/
+noncomputable def familyCoeff
+    {𝒜 : J → Subring R}
     (h𝒜 : ∀ i j : J, i ≠ j → ∀ a ∈ 𝒜 i, ∀ b ∈ 𝒜 j, Commute a b) (Nm der : ∀ j : J, 𝒜 j)
-    (S : Finset J) : R :=
+    (S : Finset J)
+    : R :=
   commutingProd h𝒜 (S.piecewise der Nm)
 
 /-- An element that commutes with all the subrings `𝒜 j` commutes with every product
@@ -417,14 +425,16 @@ lemma mul_apply_zero_of_mem_residueLineStabilizer (h : GL (Fin N) F) {p : GL (Fi
     _ = h i 0 * p 0 0 := Fintype.sum_eq_single 0 fun j hj ↦ by
         rw [mem_residueLineStabilizer.1 hp j hj, mul_zero]
 
-/-- The first entry `g ↦ g 0 0`, a character of the stabiliser of the line of the first basis
-vector: the scalar by which `g` acts on that line. -/
+/--
+The first entry `g ↦ g 0 0`, a character of the stabiliser of the line of the first basis
+vector: the scalar by which `g` acts on that line.
+-/
 noncomputable def firstEntry : residueLineStabilizer F N →* Fˣ :=
-  MonoidHom.toHomUnits
-    { toFun g := (g : GL (Fin N) F) 0 0
-      map_one' := by simp
-      map_mul' g h := mul_apply_zero_of_mem_residueLineStabilizer (g : GL (Fin N) F) h.property 0 }
-
+  MonoidHom.toHomUnits {
+    toFun g := (g : GL (Fin N) F) 0 0
+    map_one' := by simp
+    map_mul' g h := mul_apply_zero_of_mem_residueLineStabilizer (g : GL (Fin N) F) h.property 0
+  }
 
 /-- Let `d = diagGL t` be the diagonal matrix with entries `t i`. If `h⁻¹ d h` stabilises the line
 of the first basis vector, then the first column of `h` is an eigenvector of `d`, so the first entry
@@ -543,8 +553,10 @@ section Residue
 variable {E : Type} [Field E] [NumberField E] {w : FinPlace E}
 
 open scoped Classical in
-/-- The reduction of a unit of `O_w` as a unit of the residue field, and `1` for the other elements
-of `E_w`. -/
+/--
+The reduction of a unit of `O_w` as a unit of the residue field, and `1` for the other elements
+of `E_w`.
+-/
 noncomputable def residueUnit (x : LocField w) : (ResField w)ˣ :=
   if h : IsUnit (residueOrZero x) then h.unit else 1
 
@@ -642,9 +654,11 @@ lemma map_eq_of_weights_modEq {m : ℕ} {σ : R →+* S} (hm : (m : S) = 0) {ι 
 
 variable {m : ℕ} (ρ : Γ →* R) {σ : R →+* S}
 
-/-- The weighted norm `∑ f (c g) ρ g` for a homomorphism `c : Γ → ℤ/m`, as an additive function of
+/--
+The weighted norm `∑ f (c g) ρ g` for a homomorphism `c : Γ → ℤ/m`, as an additive function of
 the weight `f : ℤ/m → ℤ`. The weight `1` gives the norm; the weight `valMinAbs`, which lifts
-`ℤ/m` to `ℤ`, gives the logarithm of `c`. -/
+`ℤ/m` to `ℤ`, gives the logarithm of `c`.
+-/
 def weightedSum (c : Γ →* Multiplicative (ZMod m)) : (ZMod m → ℤ) →+ R :=
   .mk' (fun f ↦ ∑ g : Γ, f (c g).toAdd • ρ g) (by simp [add_smul, sum_add_distrib])
 
@@ -675,23 +689,31 @@ lemma weightedSum_mul (c : Γ →* Multiplicative (ZMod m)) (f : ZMod m → ℤ)
   exact Fintype.sum_equiv (.mulRight g) _ _ shift
 
 open scoped Classical in
-/-- The sum `∑ ρ h` over the fixed representatives `h` of `Γ / H`, namely the elements `η.out` that
-`Quotient.out` chooses in the cosets `η`. -/
+/--
+The sum `∑ ρ h` over the fixed representatives `h` of `Γ / H`, namely the elements `η.out` that
+`Quotient.out` chooses in the cosets `η`.
+-/
 noncomputable def cosetNorm (H : Subgroup Γ) : R := ∑ η : Γ ⧸ H, ρ η.out
 
 open scoped Classical in
-/-- The sum `∑ ρ h⁻¹` over the fixed representatives `h` of `Γ / H`. A sum `∑ f p ρ p` over `H`,
-times this sum, is the sum over `Γ` in which `ρ (p h⁻¹)` has the weight `f p`. -/
+/--
+The sum `∑ ρ h⁻¹` over the fixed representatives `h` of `Γ / H`. A sum `∑ f p ρ p` over `H`,
+times this sum, is the sum over `Γ` in which `ρ (p h⁻¹)` has the weight `f p`.
+-/
 noncomputable def cosetNormInv (H : Subgroup Γ) : R := ∑ η : Γ ⧸ H, ρ η.out⁻¹
 
-/-- The derivative `∂ = -(∑ ρ h) B(valMinAbs) (∑ ρ h⁻¹)` attached to an additive map `B` on weights
+/--
+The derivative `∂ = -(∑ ρ h) B(valMinAbs) (∑ ρ h⁻¹)` attached to an additive map `B` on weights
 `ℤ/m → ℤ`, where `h` runs over the fixed representatives of `Γ / H`. For the weighted norm `B` of a
-homomorphism `a : H → ℤ/m`, the middle factor is the logarithm of `a`. -/
+homomorphism `a : H → ℤ/m`, the middle factor is the logarithm of `a`.
+-/
 noncomputable def cosetDerivative (H : Subgroup Γ) (B : (ZMod m → ℤ) →+ R) : R :=
   -(cosetNorm ρ H * B valMinAbs * cosetNormInv ρ H)
 
-/-- The element `p ∈ H` with `g x = h p`, where `h` is the fixed representative of the coset
-`g x H`. -/
+/--
+The element `p ∈ H` with `g x = h p`, where `h` is the fixed representative of the coset
+`g x H`.
+-/
 noncomputable def cosetComponent (H : Subgroup Γ) (g x : Γ) : H :=
   ⟨(g • x : Γ ⧸ H).out⁻¹ * (g * x), QuotientGroup.eq.1 (g • x : Γ ⧸ H).out_eq⟩
 

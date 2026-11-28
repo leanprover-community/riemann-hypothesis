@@ -29,19 +29,23 @@ attribute [local simp] Matrix.GeneralLinearGroup.kronecker
 
 /-- For SK = 1 and J = T ⊗ Kᵀ, the homomorphism (g, h) ↦ h ⊗ (g⁻¹)ᵀ from U(S) × U(T) to U(J). -/
 @[simps! apply_coe_val]
-noncomputable def New.U.kroneckerHom [CommRing R] [StarRing R] {S K : Matrix n n R}
-    {T : Matrix m m R} {J : Matrix (m × n) (m × n) R} (hS : S * K = 1) (h : J = T ⊗ₖ Kᵀ) :
-    U S × U T →* U J :=
+noncomputable def New.U.kroneckerHom
+    [CommRing R] [StarRing R]
+    {S K : Matrix n n R} {T : Matrix m m R} {J : Matrix (m × n) (m × n) R}
+    (hS : S * K = 1) (h : J = T ⊗ₖ Kᵀ)
+    : U S × U T →* U J :=
   MonoidHom.mk'
-    (fun p ↦
-      ⟨Matrix.GeneralLinearGroup.kronecker p.2 (transposeGL p.1⁻¹), by
+    (fun p ↦ ⟨
+      Matrix.GeneralLinearGroup.kronecker p.2 (transposeGL p.1⁻¹),
+      by
         -- For `p = (x, y)`: the Kronecker product of `yᴴ T y = T` and the inverse transpose of
         -- `xᴴ S x = S`.
         simpa [mem_unitaryGroupOf_iff, star_eq_conjTranspose, inv_eq_right_inv hS, h,
             conjTranspose_nonsing_inv, conjTranspose_kronecker,
-          conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul,
-          Matrix.mul_inv_rev] using!
-          congr($(mem_unitaryGroupOf_iff.1 p.2.2) ⊗ₖ $(mem_unitaryGroupOf_iff.1 p.1.2)⁻¹ᵀ)⟩)
+            conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul,
+            Matrix.mul_inv_rev]
+          using! congr($(mem_unitaryGroupOf_iff.1 p.2.2) ⊗ₖ $(mem_unitaryGroupOf_iff.1 p.1.2)⁻¹ᵀ)
+    ⟩)
     (fun _ _ ↦ Subtype.ext <| Units.ext <| by simp [← mul_kronecker_mul])
 
 /-- Applying a ring homomorphism `f` entrywise commutes with the Kronecker product:

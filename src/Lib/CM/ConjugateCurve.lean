@@ -70,8 +70,10 @@ open PowerSeries CMLattice PeriodPair Submodule
 
 variable {d d' : ℕ}
 
-/-- The power series θ′/σθ: the Taylor series of the theta function of C' times the inverse of
-the σ-conjugate of that of C. -/
+/--
+The power series θ′/σθ: the Taylor series of the theta function of C' times the inverse of
+the σ-conjugate of that of C.
+-/
 noncomputable def thetaQuotient (C : CMLattice d) (σ : ℂ ≃+* ℂ) (C' : CMLattice d') : ℂ⟦X⟧ :=
   taylorAtZero C'.θ * (taylorVia σ C.θ)⁻¹
 
@@ -397,8 +399,10 @@ lemma exists_galConjugate : ∃ C' : CMLattice d, C'.a₁ = σ C.a₁ := by
   obtain ⟨C', -, h_a₁⟩ := C.exists_galConjugate_of_g₂_g₃ σ L hg₂ hg₃
   exact ⟨C', h_a₁⟩
 
-/-- The conjugate curve: a chosen CM lattice whose number `a₁` is `σ C.a₁`, see
-`New.CMLattice.galConjugate_a₁`. -/
+/--
+The conjugate curve: a chosen CM lattice whose number `a₁` is `σ C.a₁`, see
+`New.CMLattice.galConjugate_a₁`.
+-/
 noncomputable def galConjugate : CMLattice d := (C.exists_galConjugate σ).choose
 
 /-- For `d` a prime `≡ 7 mod 8` and `σ` an automorphism of `ℂ` fixing `QuadField d = ℚ(√-d)`, the

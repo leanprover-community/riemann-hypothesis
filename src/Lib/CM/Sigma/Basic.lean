@@ -85,14 +85,19 @@ lemma PeriodPair.eq_of_eq_off_lattice (t : ℂ) (hf_diff : Differentiable ℂ f)
 /-- The area of the period parallelogram spanned by `ω₁` and `ω₂`. -/
 def PeriodPair.area : ℝ := |(conj L.ω₁ * L.ω₂).im|
 
-/-- The hermitian form (l, z) ↦ (π/A)·l̄·z on ℂ, A the area of the lattice of L, as a map
-real-linear in l and complex-linear in z. -/
+/--
+The hermitian form (l, z) ↦ (π/A)·l̄·z on ℂ, A the area of the lattice of L, as a map
+real-linear in l and complex-linear in z.
+-/
 def PeriodPair.hermitianForm : ThetaTori.LatticeForm L.lattice :=
   (Real.pi / L.area) • (ContinuousLinearMap.mul ℂ ℂ).restrictScalars ℝ ∘L conjCLE
 
-/-- Multiplication by a maps the lattice of L into that of M, and a·ā·area(L) = N·area(M). For a ≠ 0
-this says that multiplication by a is an isogeny of degree N from L to M. -/
-@[simp] def PeriodPair.IsIsogeny (M : PeriodPair) (a : ℂ) (N : ℕ) : Prop :=
+/--
+Multiplication by a maps the lattice of L into that of M, and a·ā·area(L) = N·area(M). For a ≠ 0
+this says that multiplication by a is an isogeny of degree N from L to M.
+-/
+@[simp]
+def PeriodPair.IsIsogeny (M : PeriodPair) (a : ℂ) (N : ℕ) : Prop :=
   (∀ x ∈ L.lattice, a * x ∈ M.lattice) ∧ a * conj a * L.area = N * M.area
 
 namespace New
@@ -145,8 +150,10 @@ lemma half_mem_lattice_iff_even (m n : ℤ) :
 variable {L}
 
 open scoped Classical in
-/-- The form H(l, z) = (π/A)·l̄·z and the multiplier `New.sigmaSign` are Appell–Humbert data
-for the lattice. -/
+/--
+The form H(l, z) = (π/A)·l̄·z and the multiplier `New.sigmaSign` are Appell–Humbert data
+for the lattice.
+-/
 instance isAppellHumbert_hermitianForm : IsAppellHumbert L.hermitianForm (sigmaSign L) where
   re_symm u v := by simp [field]
   norm_eq_one l _ := by simp [sigmaSign, apply_ite]
@@ -156,20 +163,23 @@ instance isAppellHumbert_hermitianForm : IsAppellHumbert L.hermitianForm (sigmaS
     obtain ⟨a, b, rfl⟩ := mem_lattice.1 hl
     obtain ⟨c, d, rfl⟩ := mem_lattice.1 hm
     obtain ⟨k, hk, h_riem⟩ := exists_riemannForm_periods_eq_sign L
-    have h_det : L.hermitianForm.riemannForm (c * L.ω₁ + d * L.ω₂) (a * L.ω₁ + b * L.ω₂) =
-        ((c * b - d * a) * k : ℤ) := by
+    have h_det
+        : L.hermitianForm.riemannForm (c * L.ω₁ + d * L.ω₂) (a * L.ω₁ + b * L.ω₂)
+          = ((c * b - d * a) * k : ℤ) := by
       rw [Int.cast_mul, ← h_riem]
       simp [riemannForm_hermitianForm]
       ring
-    have h_sum : (a * L.ω₁ + b * L.ω₂ + (c * L.ω₁ + d * L.ω₂)) / 2 ∈ L.lattice ↔
-        Even (a + c) ∧ Even (b + d) := by
+    have h_sum
+        : (a * L.ω₁ + b * L.ω₂ + (c * L.ω₁ + d * L.ω₂)) / 2 ∈ L.lattice
+          ↔ Even (a + c) ∧ Even (b + d) := by
       rw [← half_mem_lattice_iff_even]
       push_cast
       ring_nf
     have hk_odd : ¬ Even k := by fin_cases hk <;> simp
-    have h_parity : ((if Even (a + c) ∧ Even (b + d) then 1 else -1) : ℂ) =
-        (if Even a ∧ Even b then 1 else -1) * (if Even c ∧ Even d then 1 else -1) *
-          (if Even ((c * b - d * a) * k) then 1 else -1) := by
+    have h_parity
+        : ((if Even (a + c) ∧ Even (b + d) then 1 else -1) : ℂ)
+          = (if Even a ∧ Even b then 1 else -1) * (if Even c ∧ Even d then 1 else -1)
+            * (if Even ((c * b - d * a) * k) then 1 else -1) := by
       grind [Int.even_add, Int.even_sub]
     rw [h_det, ofReal_intCast, mul_comm (_ * I), exp_intCast_mul, exp_pi_mul_I]
     simpa only [sigmaSign, h_sum, half_mem_lattice_iff_even, neg_one_zpow_eq_ite] using h_parity
@@ -256,8 +266,10 @@ lemma IsAppellHumbert.finrank_thetaSpace_nsmul [h : IsAppellHumbert L.hermitianF
   simpa [Λ', ZLattice.rank ℝ] using sq_eq
 
 open scoped Classical in
-/-- The function `℘ f²` for the lattice of `L`, given the value `f′²` at the lattice points,
-where `℘` has its poles. -/
+/--
+The function `℘ f²` for the lattice of `L`, given the value `f′²` at the lattice points,
+where `℘` has its poles.
+-/
 def _root_.PeriodPair.weierstrassPMulSq (L : PeriodPair) (f : ℂ → ℂ) (z : ℂ) : ℂ :=
   if z ∈ L.lattice then deriv f z ^ 2 else ℘[L] z * f z ^ 2
 
@@ -461,8 +473,10 @@ lemma exists_odd_mem_thetaSpace_deriv_eq_one :
   refine ⟨(deriv g 0)⁻¹ • g, smul_mem _ _ hg, fun z ↦ by simp [g, mul_sub], ?_⟩
   exact (deriv_const_mul_field _).trans (inv_mul_cancel₀ deriv_ne)
 
-/-- The sigma function of `L`: an odd theta function for `L.hermitianForm` and the multiplier
-`sigmaSign L`, with derivative `1` at `0`. -/
+/--
+The sigma function of `L`: an odd theta function for `L.hermitianForm` and the multiplier
+`sigmaSign L`, with derivative `1` at `0`.
+-/
 def _root_.PeriodPair.σ (L : PeriodPair) : ℂ → ℂ :=
   (exists_odd_mem_thetaSpace_deriv_eq_one (L := L)).choose
 
@@ -626,35 +640,41 @@ namespace New
 
 /-! ### Taylor series -/
 
-/-- The Taylor series of f at 0 with the ring homomorphism ι : ℂ → K applied to its
-coefficients. -/
+/--
+The Taylor series of f at 0 with the ring homomorphism ι : ℂ → K applied to its
+coefficients.
+-/
 abbrev taylorVia {K : Type*} [Semiring K] (ι : ℂ →+* K) (f : ℂ → ℂ) : PowerSeries K :=
   (taylorAtZero f).map ι
 
 /-! ### Lattices with complex multiplication -/
 
-/-- A lattice `Λ` with a point `t` of order two modulo `Λ`, scaled so that `℘''(t) = 2`, and a
+/--
+A lattice `Λ` with a point `t` of order two modulo `Λ`, scaled so that `℘''(t) = 2`, and a
 square root `a₁` of `12 ℘(t)`. If `d ≠ 0`, then moreover `Λ` is stable under the ring of integers of
 `ℚ(√-d)`, and neither `ω t` nor `ω̄ t` lies in `Λ`, where `ω = (1 + √-d) / 2`. For `d = 0` these two
-conditions are void. -/
+conditions are void.
+-/
 structure CMLattice (d : ℕ) extends periodPair : PeriodPair where
   /-- The point `t`, of order two modulo the lattice. -/
   t : ℂ
   /-- A square root of `12 ℘(t)`. -/
   a₁ : ℂ
-  /-- The scaling of the lattice: `g₂ = 12 ℘(t)² - 4`, which says `℘''(t) = 2` because
-  `℘'' = 6 ℘² - g₂ / 2` off the lattice. -/
+  /--
+  The scaling of the lattice: `g₂ = 12 ℘(t)² - 4`, which says `℘''(t) = 2` because
+  `℘'' = 6 ℘² - g₂ / 2` off the lattice.
+  -/
   g₂_eq : periodPair.g₂ = 12 * ℘[periodPair] t ^ 2 - 4
   /-- If `d ≠ 0`, the lattice is stable under the ring of integers of `ℚ(√-d)`. -/
-  mul_mem_of_quadInt [NeZero d] {a : ℂ} :
-      a ∈ quadInt d → ∀ ⦃x : ℂ⦄, x ∈ periodPair.lattice → a * x ∈ periodPair.lattice
+  mul_mem_of_quadInt [NeZero d] {a : ℂ}
+    : a ∈ quadInt d → ∀ ⦃x : ℂ⦄, x ∈ periodPair.lattice → a * x ∈ periodPair.lattice
   /-- `2 t` lies in the lattice. -/
   two_t_mem : t + t ∈ periodPair.lattice
   /-- `t` does not lie in the lattice. -/
   t_notMem : t ∉ periodPair.lattice
   /-- If `d ≠ 0`, neither `ω t` nor `ω̄ t` lies in the lattice, where `ω = (1 + √-d) / 2`. -/
-  quadGen_mul_t_notMem [NeZero d] :
-      quadGen d * t ∉ periodPair.lattice ∧ conj (quadGen d) * t ∉ periodPair.lattice
+  quadGen_mul_t_notMem [NeZero d]
+    : quadGen d * t ∉ periodPair.lattice ∧ conj (quadGen d) * t ∉ periodPair.lattice
   /-- `a₁² = 12 ℘(t)`. -/
   a₁_sq : a₁ ^ 2 = 12 * ℘[periodPair] t
 
@@ -667,20 +687,28 @@ variable {d : ℕ} (C : CMLattice d) (m : ℕ)
 /-- The period lattice Λ ⊂ ℂ of `C`. -/
 abbrev Λ : Submodule ℤ ℂ := C.lattice
 
-/-- The twisted translation T of degree m by the point y, for the form mH with
-H = `C.hermitianForm`: (T f)(z) = exp(−mπ(zȳ + |y|²/2)/A)·f(z + y), A the area of Λ. -/
+/--
+The twisted translation T of degree m by the point y, for the form mH with
+H = `C.hermitianForm`: (T f)(z) = exp(−mπ(zȳ + |y|²/2)/A)·f(z + y), A the area of Λ.
+-/
 abbrev twistedTranslate (y : ℂ) (f : ℂ → ℂ) : ℂ → ℂ := (m • C.hermitianForm).thetaShift y f
 
-/-- The multiplier χ : l ↦ ±exp(2πi E(l,t)), with sign + exactly when l/2 ∈ Λ, and E the Riemann
-form of H = `C.hermitianForm`. -/
+/--
+The multiplier χ : l ↦ ±exp(2πi E(l,t)), with sign + exactly when l/2 ∈ Λ, and E the Riemann
+form of H = `C.hermitianForm`.
+-/
 def multiplier (l : ℂ) : ℂ := sigmaSign C.periodPair l * C.hermitianForm.riemannPhase l C.t
 
-/-- The sections of degree m: theta functions for the lattice Λ with hermitian form mH and
-multiplier χ^m. -/
+/--
+The sections of degree m: theta functions for the lattice Λ with hermitian form mH and
+multiplier χ^m.
+-/
 abbrev sections : Submodule ℂ (ℂ → ℂ) := (m • C.hermitianForm).thetaSpace (C.multiplier ^ m)
 
-/-- The function z ↦ (T_tσ)(z)/(T_tσ)(0): the twisted translate of the sigma function by the
-2-torsion point t, normalised to 1 at 0. -/
+/--
+The function z ↦ (T_tσ)(z)/(T_tσ)(0): the twisted translate of the sigma function by the
+2-torsion point t, normalised to 1 at 0.
+-/
 def θ (z : ℂ) : ℂ := C.twistedTranslate 1 C.t C.σ z / C.twistedTranslate 1 C.t C.σ 0
 
 /-- The function x(z) = ℘(z + t) − ℘(t) for the lattice Λ and its 2-torsion point t. -/
@@ -689,8 +717,10 @@ def translatedX (z : ℂ) : ℂ := ℘[C.periodPair] (z + C.t) - ℘[C.periodPai
 /-- The function y(z) = ½(℘′(z + t) − a₁x(z)), where x(z) = ℘(z + t) − ℘(t). -/
 def translatedY (z : ℂ) : ℂ := (℘'[C.periodPair] (z + C.t) - C.a₁ * C.translatedX z) / 2
 
-/-- The entire function G = σ·(σ′θ − σ·(θ′ + ½a₁θ)), written as a pointwise product of functions. It
-equals yθ³ off t + Λ, with y = `C.translatedY`. -/
+/--
+The entire function G = σ·(σ′θ − σ·(θ′ + ½a₁θ)), written as a pointwise product of functions. It
+equals yθ³ off t + Λ, with y = `C.translatedY`.
+-/
 def translatedYThetaCube : ℂ → ℂ := C.σ * (deriv C.σ * C.θ - C.σ * (deriv C.θ + (C.a₁ / 2) • C.θ))
 
 /-- The function `y = C.translatedY`, given by `y(z) = ½(℘′(z + t) − a₁(℘(z + t) − ℘(t)))`, vanishes

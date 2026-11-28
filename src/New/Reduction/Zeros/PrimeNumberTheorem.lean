@@ -47,9 +47,11 @@ lemma sum_Icc_vonMangoldt_le_six_mul {z : ℝ} (hz : 0 ≤ z) : ∑ n ∈ Icc 0 
     _ ≤ 6 * z := by gcongr; linarith [log_four_eq, log_two_lt_d9]
 
 variable (d q) in
-/-- The error `𝓔_q(t) = ∑_{n ≤ t} λ(n) - t / φ(q)` in the count with the weights
+/--
+The error `𝓔_q(t) = ∑_{n ≤ t} λ(n) - t / φ(q)` in the count with the weights
 `λ = lambdaKResidueClass d q`, that is `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q` and `λ(n) = 0`
-otherwise. -/
+otherwise.
+-/
 noncomputable def countError (t : ℝ) : ℝ := ∑ n ∈ Icc 0 ⌊t⌋₊, lambdaKResidueClass d q n - t / φ q
 
 /-- Let `d` be a prime and `q ≠ 0`, and let `λ(n) = lambdaKResidueClass d q n` be `Λ(n) (1 - (n/d))`
@@ -203,21 +205,25 @@ lemma eventually_norm_logDerivMean_div_le : ∀ᶠ l : ℝ in atTop, ∀ s : ℂ
       _ ≤ 10 * l ^ 25 := by linarith [one_le_pow₀ hl_one (n := 25)]
       _ ≤ l ^ 26 := by grw [hl, pow_succ' l 25]
 
-/-- **Prime number theorem** in the class `1` mod `q`, with weights `λ(n) = Λ(n) (1 - (n/d))`. Let
+/--
+**Prime number theorem** in the class `1` mod `q`, with weights `λ(n) = Λ(n) (1 - (n/d))`. Let
 `d` be an odd prime and `q` prime to `d`. For every natural number `B` the remainder
 `primeRemainder d q`, that is `R_q(y) = ∑_{n ≤ y, n ≡ 1} λ(n) (1/n - 1/y) - log y / φ(q) - c_q`,
 satisfies `|R_q(y)| ≤ (log y) ^ (-B)` for all large `y`, by a Tauberian theorem applied to the
-Laplace transform of `v ↦ R_q(e ^ v)`; it also follows from the Siegel–Walfisz theorem. -/
-theorem eventually_abs_primeRemainder_le (hd : d ≠ 2) (h_cop : q.Coprime d) (B : ℕ) :
-    ∀ᶠ y : ℝ in atTop, |primeRemainder d q y| ≤ 1 / y.log ^ B := by
+Laplace transform of `v ↦ R_q(e ^ v)`; it also follows from the Siegel–Walfisz theorem.
+-/
+theorem eventually_abs_primeRemainder_le (hd : d ≠ 2) (h_cop : q.Coprime d) (B : ℕ)
+    : ∀ᶠ y : ℝ in atTop, |primeRemainder d q y| ≤ 1 / y.log ^ B := by
   -- Apply the Tauberian theorem to `v ↦ R_q(e^v)` and `F(s) = logDerivMean d q s / s`.
   let F : ℂ → ℂ := fun s ↦ logDerivMean d q s / s
-  have h_transform (s : ℂ) (hs : 2 < s.re) : (F s - F 1) / (s - 1) =
-      ∫ v : ℝ in Set.Ioi 0, (primeRemainder d q (rexp v) : ℂ) * cexp ((1 - s) * v) := by
+  have h_transform (s : ℂ) (hs : 2 < s.re)
+      : (F s - F 1) / (s - 1)
+        = ∫ v : ℝ in Set.Ioi 0, (primeRemainder d q (rexp v) : ℂ) * cexp ((1 - s) * v) := by
     simp [F, integral_primeRemainder hd h_cop hs, ofReal_re_logDerivMean_one hd h_cop]
   have h_bound : ∀ᶠ v : ℝ in atTop, |primeRemainder d q (rexp v)| ≤ 1 / v ^ B :=
     eventually_abs_le_inv_pow_of_transform (by fun_prop [primeRemainder, lambdaKSum])
-      (fun u v ↦ abs_primeRemainder_exp_sub_le) h_transform eventually_norm_logDerivMean_div_le B
+      (fun u v ↦ abs_primeRemainder_exp_sub_le)
+      h_transform eventually_norm_logDerivMean_div_le B
   filter_upwards [tendsto_log_atTop.eventually h_bound, eventually_gt_atTop 0] with y hy hy_pos
   rwa [Real.exp_log hy_pos] at hy
 

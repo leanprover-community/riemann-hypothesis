@@ -75,23 +75,31 @@ instance : FinComplexSpace ℂ where
 
 instance {ι V : Type*} [Fintype ι] [FinComplexSpace V] : FinComplexSpace (ι → V) where
 
-/-- The continuous complex-valued forms B(u, v) on V that are real-linear in u and
-complex-linear in v. -/
+/--
+The continuous complex-valued forms B(u, v) on V that are real-linear in u and
+complex-linear in v.
+-/
 abbrev RealComplexForm (V : Type*) [FinComplexSpace V] : Type _ := V →L[ℝ] V →L[ℂ] ℂ
 
 instance {V V' : Type*} [FinComplexSpace V] [FinComplexSpace V'] : FinComplexSpace (V × V') where
 
-/-- The subgroup `L` of `V` is a lattice of full rank: it is discrete and spans `V` over the
-reals. -/
+/--
+The subgroup `L` of `V` is a lattice of full rank: it is discrete and spans `V` over the
+reals.
+-/
 class abbrev IsFullRankLattice {V : Type*} [FinComplexSpace V] (L : Submodule ℤ V) :=
   DiscreteTopology L, IsZLattice ℝ L
 
-variable {V V' : Type*} [FinComplexSpace V] [FinComplexSpace V'] {L : Submodule ℤ V}
+variable
+  {V V' : Type*} [FinComplexSpace V] [FinComplexSpace V']
+  {L : Submodule ℤ V}
   (φ : V' →L[ℂ] V) (B : RealComplexForm V) (χ : V → ℂ) (u v : V)
 
-/-- The type `New.RealComplexForm` V of forms on V, tagged with a subgroup L of V (the lattice).
+/--
+The type `New.RealComplexForm` V of forms on V, tagged with a subgroup L of V (the lattice).
 `New.RealComplexForm.thetaSpace` and `New.RealComplexForm.dualLattice` read L from the type. No
-condition is imposed. -/
+condition is imposed.
+-/
 abbrev ThetaTori.LatticeForm (_ : Submodule ℤ V) : Type _ := RealComplexForm V
 
 /-! ### Definitions -/
@@ -101,43 +109,55 @@ abbrev ThetaTori.LatticeForm (_ : Submodule ℤ V) : Type _ := RealComplexForm V
 def RealComplexForm.pullForm : V' →L[ℝ] V' →L[ℂ] ℂ :=
   (φ.precomp ℂ).restrictScalars ℝ ∘L B ∘L φ.restrictScalars ℝ
 
-/-- The space of theta functions of type (B, χ) for L: entire f on V with
-f(z + l) = χ(l)·exp(B(l,z) + B(l,l)/2)·f(z) for l in L. -/
+/--
+The space of theta functions of type (B, χ) for L: entire f on V with
+f(z + l) = χ(l)·exp(B(l,z) + B(l,l)/2)·f(z) for l in L.
+-/
 def RealComplexForm.thetaSpace (B : ThetaTori.LatticeForm L) : Submodule ℂ (V → ℂ) :=
   ofLinearComb
     {f : V → ℂ |
       Differentiable ℂ f ∧
       ∀ l ∈ L, ∀ z : V, f (z + l) = χ l * Complex.exp (B l z + B l l / 2) * f z}
-    ⟨0, by simp⟩ (by
+    ⟨0, by simp⟩
+    (by
       simp +contextual only [Set.mem_ofPred_eq, Pi.add_apply, Pi.smul_apply, smul_eq_mul, and_imp,
         field, implies_true, and_true]
       fun_prop)
 
-/-- The Riemann form of B: the alternating real form E(u, v) = Im(B(u,v) − B(v,u))/(2π). It is
-additive in B, as a map from forms to real bilinear forms on V. -/
+/--
+The Riemann form of B: the alternating real form E(u, v) = Im(B(u,v) − B(v,u))/(2π). It is
+additive in B, as a map from forms to real bilinear forms on V.
+-/
 def RealComplexForm.riemannForm : RealComplexForm V →+ LinearMap.BilinForm ℝ V :=
   AddMonoidHom.mk'
     (fun B ↦
-      mk₂ ℝ (fun u v ↦ (B u v - B v u).im / (2 * π)) (by simp; grind) (by simp; grind)
-        (by simp; grind) (by simp; grind))
+      mk₂ ℝ
+        (fun u v ↦ (B u v - B v u).im / (2 * π))
+        (by simp; grind) (by simp; grind) (by simp; grind) (by simp; grind))
     (by simp [ext_iff₂]; grind)
 
-/-- The complex number exp(2πi E(u, v)) of modulus one, where E is the Riemann form
-`New.RealComplexForm.riemannForm` of B. -/
+/--
+The complex number exp(2πi E(u, v)) of modulus one, where E is the Riemann form
+`New.RealComplexForm.riemannForm` of B.
+-/
 abbrev RealComplexForm.riemannPhase : ℂ := 𝐞 (B.riemannForm u v)
 
 lemma riemannForm_def : B.riemannForm u v = (B u v - B v u).im / (2 * π) := rfl
 
-/-- Appell–Humbert data: Re B is symmetric, and on L one has |χ| = 1 and
-χ(l + m) = χ(l)χ(m)·exp(πi E(m, l)), E the Riemann form of B. -/
+/--
+Appell–Humbert data: Re B is symmetric, and on L one has |χ| = 1 and
+χ(l + m) = χ(l)χ(m)·exp(πi E(m, l)), E the Riemann form of B.
+-/
 @[mk_iff]
 class IsAppellHumbert (B : ThetaTori.LatticeForm L) (χ : V → ℂ) where
   /-- The real part of B is symmetric. -/
   re_symm (u v : V) : (B u v).re = (B v u).re
   /-- The multiplier χ has absolute value 1 on L. -/
   norm_eq_one : ∀ l ∈ L, ‖χ l‖ = 1
-  /-- χ is a semicharacter of L for the Riemann form E of B:
-  χ(l + m) = χ(l) χ(m) exp(π i E(m, l)). -/
+  /--
+  χ is a semicharacter of L for the Riemann form E of B:
+  χ(l + m) = χ(l) χ(m) exp(π i E(m, l)).
+  -/
   semicharacter : ∀ l ∈ L, ∀ m ∈ L, χ (l + m) = χ l * χ m * exp (π * I * B.riemannForm m l)
 
 /-- The Riemann form E of B is positive: E(u, iu) > 0 for every u ≠ 0. -/
@@ -146,22 +166,26 @@ class IsPosRiemann : Prop where
   /-- E(u, iu) > 0 for every u ≠ 0. -/
   riemannForm_pos : ∀ u ≠ (0 : V), 0 < B.riemannForm u (I • u)
 
-/-- The twisted translation by `a`, a complex-linear map on all functions `V → ℂ`:
+/--
+The twisted translation by `a`, a complex-linear map on all functions `V → ℂ`:
 `thetaShift B a f z = exp (-(B a z + B a a / 2)) * f (z + a)`. The factor is the inverse of the
 exponential in `New.RealComplexForm.thetaSpace`, so for `a ∈ L` it multiplies a theta function by
-`χ a`. -/
+`χ a`.
+-/
 @[simps! -isSimp apply]
 def RealComplexForm.thetaShift (a : V) : (V → ℂ) →ₗ[ℂ] V → ℂ :=
   (fun z ↦ Complex.exp (-(B a z + B a a / 2))) • funLeft ℂ ℂ (· + a)
 
-/-- The dual of L for the Riemann form E of B: the v in V with E(v, l) an integer for all l in
-L. -/
+/--
+The dual of L for the Riemann form E of B: the v in V with E(v, l) an integer for all l in
+L.
+-/
 def RealComplexForm.dualLattice (B : ThetaTori.LatticeForm L) : Submodule ℤ V :=
   (B.riemannForm.dualSubmodule L).copy {v : V | ∀ l ∈ L, ∃ n : ℤ, B.riemannForm v l = n}
     (by simp [BilinForm.dualSubmodule, eq_comm])
 
-export RealComplexForm (pullForm pullForm_apply_apply riemannForm thetaShift thetaShift_apply
-  thetaSpace)
+export RealComplexForm
+  (pullForm pullForm_apply_apply riemannForm thetaShift thetaShift_apply thetaSpace)
 
 /-- A form B with B(u, v) = B(v, u) is complex linear in both arguments, hence holomorphic. -/
 @[fun_prop]
@@ -222,20 +246,25 @@ lemma IsPosRiemann.nsmul (h_pos : IsPosRiemann B) {n : ℕ} (hn : n ≠ 0) : IsP
 
 instance [h : IsPosRiemann B] [NeZero n] : IsPosRiemann (n • B) := h.nsmul NeZero.out
 
-variable {B B' : ThetaTori.LatticeForm L} {χ} {χ' : V → ℂ} {l : V} {m : ℕ}
-  {a : V} [hB : IsAppellHumbert B χ]
+variable
+  {B B' : ThetaTori.LatticeForm L} {χ} {χ' : V → ℂ} {l : V} {m : ℕ} {a : V}
+  [hB : IsAppellHumbert B χ]
 
 omit hB in
 variable (B χ) in
-/-- The term exp(B(x, y − x + l) − B(l,y) − B(l,l)/2)/χ(l) of the Poincaré series at (x, y), for
-l in L. -/
+/--
+The term exp(B(x, y − x + l) − B(l,y) − B(l,l)/2)/χ(l) of the Poincaré series at (x, y), for
+l in L.
+-/
 def ThetaTori.LatticeForm.poincareTerm (x y : V) (l : L) : ℂ :=
   Complex.exp (B x (y - x + l) - B l y - B l l / 2) / χ l
 
 omit hB in
 variable (B χ) in
-/-- The Poincaré series K(x, y) = ∑_{l ∈ L} exp(B(x, y − x + l) − B(l,y) − B(l,l)/2)/χ(l) of
-Appell–Humbert data (B, χ). -/
+/--
+The Poincaré series K(x, y) = ∑_{l ∈ L} exp(B(x, y − x + l) − B(l,y) − B(l,l)/2)/χ(l) of
+Appell–Humbert data (B, χ).
+-/
 def ThetaTori.LatticeForm.poincareSeries (x y : V) : ℂ := tsum (B.poincareTerm χ x y)
 
 omit hB in
@@ -295,10 +324,12 @@ instance IsAppellHumbert.nsmul : IsAppellHumbert (n • B) (χ ^ n) where
   semicharacter l hl m hm := by
     simp [hB.semicharacter l hl m hm, mul_pow, ← exp_natCast_mul, mul_left_comm]
 
-/-- Multiplying `χ` by the unitary character `l ↦ exp (2πi E(l, a))`, with `E` the Riemann form of
-any `C` (by default `B`), keeps the Appell–Humbert conditions. -/
-instance IsAppellHumbert.mul_riemannPhase (a : V) (C : RealComplexForm V := B) :
-    IsAppellHumbert B fun l : V ↦ χ l * C.riemannPhase l a where
+/--
+Multiplying `χ` by the unitary character `l ↦ exp (2πi E(l, a))`, with `E` the Riemann form of
+any `C` (by default `B`), keeps the Appell–Humbert conditions.
+-/
+instance IsAppellHumbert.mul_riemannPhase (a : V) (C : RealComplexForm V := B)
+    : IsAppellHumbert B fun l : V ↦ χ l * C.riemannPhase l a where
   re_symm := hB.re_symm
   norm_eq_one l hl := by simp [hB.norm_eq_one l hl, norm_exp]
   semicharacter l hl m hm := by
@@ -413,9 +444,11 @@ lemma IsAppellHumbert.thetaShift_mem_of_mem_dualLattice (ha : a ∈ B.dualLattic
   have h_one : B.riemannPhase l a = 1 := by simp [riemannForm_swap a, hk, ← zsmul_eq_mul', exp_neg]
   simpa only [h_one, mul_one] using apply_add_of_mem_thetaSpace h_mem hl z
 
-/-- Let (B, χ) be Appell–Humbert data and `a` a vector in the dual lattice of L. This is the twisted
+/--
+Let (B, χ) be Appell–Humbert data and `a` a vector in the dual lattice of L. This is the twisted
 translation `New.RealComplexForm.thetaShift` by `a`, as an endomorphism of the theta functions of
-type (B, χ). -/
+type (B, χ).
+-/
 abbrev IsAppellHumbert.thetaShiftEnd (a : B.dualLattice) : B.thetaSpace χ →ₗ[ℂ] B.thetaSpace χ :=
   (B.thetaShift a).restrict fun _ ↦ hB.thetaShift_mem_of_mem_dualLattice a.prop
 
@@ -462,9 +495,11 @@ namespace New
 open FourierTransform Complex Module MeasureTheory QuotientAddGroup Fintype Quotient
   LinearMap.BilinForm Submodule Finset ComplexConjugate IsZLattice
 
-variable {V : Type} [FinComplexSpace V]
-  {L : Submodule ℤ V} [IsFullRankLattice L] {B : ThetaTori.LatticeForm L}
-  {χ f : V → ℂ} [hB : IsAppellHumbert B χ] [hp : IsPosRiemann B] (hf : f ∈ B.thetaSpace χ)
+variable
+  {V : Type} [FinComplexSpace V]
+  {L : Submodule ℤ V} [IsFullRankLattice L]
+  {B : ThetaTori.LatticeForm L} {χ f : V → ℂ} [hB : IsAppellHumbert B χ] [hp : IsPosRiemann B]
+  (hf : f ∈ B.thetaSpace χ)
 
 /-- Let f : V → ℂ have no zero, and for each l in the lattice L let the quotient w ↦ f(l + w)/f(w)
 have as logarithmic derivative a constant complex-linear form. Then there is a form B, real-linear
@@ -535,10 +570,12 @@ lemma IsPosRiemann.eventually_add_neg :
   have h_unit : ‖u‖⁻¹ • u ∈ Metric.sphere (0 : V) 1 := by simp [norm_smul, hu]
   simpa [smul_comm I, hu, norm_smul] using hA (‖u‖⁻¹ • u) h_unit
 
-/-- If the Riemann form of `B` is positive (instance `hp`), the dual lattice
-`New.RealComplexForm.dualLattice` is a full lattice in `V`. -/
-scoped instance IsAppellHumbert.isFullRankLattice_dualLattice :
-    IsFullRankLattice B.dualLattice := by
+/--
+If the Riemann form of `B` is positive (instance `hp`), the dual lattice
+`New.RealComplexForm.dualLattice` is a full lattice in `V`.
+-/
+scoped instance IsAppellHumbert.isFullRankLattice_dualLattice
+    : IsFullRankLattice B.dualLattice := by
   rw [RealComplexForm.dualLattice, copy_eq, ← (finBasis _ L).ofZLatticeBasis_span ℝ,
     dualSubmodule_span_of_basis _ hp.nondegenerate]
   exact {}

@@ -114,17 +114,21 @@ variable [WeilData E]
 lemma nonempty_unit_embedding {α : Type} [h : Nonempty α] : Nonempty (Unit ↪ α) :=
   h.map Function.Embedding.punit
 
-/-- For non-empty `n`, an arbitrary embedding of the one-point type `Unit` into `n`, that is, an
-arbitrary index. -/
+/--
+For non-empty `n`, an arbitrary embedding of the one-point type `Unit` into `n`, that is, an
+arbitrary index.
+-/
 def arbitraryIndexEmbedding [h : Nonempty n] : Unit ↪ n := (nonempty_unit_embedding (h := h)).some
 
 /-! ### The data and the theta kernel -/
 
 variable (E n) in
-/-- Data for a lift from `U(1)` to the definite unitary group of rank `card n > 1`: two finite
+/--
+Data for a lift from `U(1)` to the definite unitary group of rank `card n > 1`: two finite
 families of finite places (`New.LevelPlaces`), the chosen places, which give the level, and the
 places of the twist; row lengths `rowLength τ`; and a character of weight
-`-(rowLength τ + ⌊card n / 2⌋)` whose tame part is trivial off these places. -/
+`-(rowLength τ + ⌊card n / 2⌋)` whose tame part is trivial off these places.
+-/
 structure LValueData extends LevelPlaces E where
   /-- The length of the one row of the weight at `τ`; it is the order of the derivatives taken. -/
   rowLength : NumberField.InfinitePlace E → ℕ
@@ -133,8 +137,10 @@ structure LValueData extends LevelPlaces E where
   /-- The tame part of `u1Char`: a character of the residue field at each finite place. -/
   tamePart : (w : FinPlace E) → MulChar (ResField w) ℂ
   /-- `u1Char` has weight `-(rowLength τ + ⌊card n / 2⌋)` at `τ` and tame part `tamePart`. -/
-  hasWeight : u1Char.HasWeight (fun τ : NumberField.InfinitePlace E ↦
-    -(rowLength τ + card n / 2 : ℕ)) tamePart
+  hasWeight
+    : u1Char.HasWeight
+      (fun τ : NumberField.InfinitePlace E ↦ -(rowLength τ + card n / 2 : ℕ))
+      tamePart
   /-- The rank `card n` is at least `2`. -/
   one_lt_card : 1 < card n
   /-- The tame part is trivial off `toLevelPlaces.places`, the places of the two families. -/
@@ -146,15 +152,18 @@ section Definitions
 
 variable (X : LValueData E n)
 
-/-- The descent datum (`New.DescentPair`) attached to `X`: the source `W` is the standard definite
-line, and the weight has one row of length `rowLength τ` at each `τ`. -/
+/--
+The descent datum (`New.DescentPair`) attached to `X`: the source `W` is the standard definite
+line, and the weight has one row of length `rowLength τ` at each `τ`.
+-/
 abbrev descentPair : DescentPair E Unit n :=
   DescentPair.mk X.toLevelPlaces (signs := 1) (W := stdSpace E Unit)
     (incl := arbitraryIndexEmbedding (h := card_pos_iff.1 X.one_lt_card.le)) (numbering := 0)
-    (colsPlus := fun τ ↦ Pi.single 1 (X.rowLength τ)) (colsMinus := 0) (u1Char := X.u1Char)
-    (weight := fun τ ↦ -(X.rowLength τ + card n / 2 : ℕ)) (tamePart := X.tamePart)
-      (hasWeight := X.hasWeight)
-    (tame_eq_one := X.unramified) (rank_lt := X.one_lt_card)
+    (colsPlus := fun τ ↦ Pi.single 1 (X.rowLength τ))
+    (colsMinus := 0) (u1Char := X.u1Char)
+    (weight := fun τ ↦ -(X.rowLength τ + card n / 2 : ℕ))
+    (tamePart := X.tamePart) (hasWeight := X.hasWeight) (tame_eq_one := X.unramified)
+    (rank_lt := X.one_lt_card)
 
 section
 
@@ -167,12 +176,16 @@ lemma descentPair_colsPlus_apply (τ : NumberField.InfinitePlace E) (k : ℕ) :
     X.descentPair.colsPlus τ k = if k = 1 then X.rowLength τ else 0 :=
       Pi.single_apply 1 (X.rowLength τ) k
 
-/-- The vector of derivatives, for the one-row weight of `X` and with variables scaled by `c`, of
-the theta function of the datum `ω(g, h) f`, for a finite point `(g, h)` of `U(1) × U(n)`. -/
-def kernelValue (c : ℂ) (f : 𝒮 (X.descentPair.W.hom (stdSpace E n))) (g : Gf E Unit) (h : Gf E n) :
-    WeylIndexFamily (fun _ : NumberField.InfinitePlace E ↦ n) X.descentPair.columnCount → ℂ :=
-  schurJet X.descentPair.columnCount (jetSeries (X.descentPair.W.hom (stdSpace E n)) c
-    (X.descentPair.pairThetaKernel.ω ((1, g), 1, h) f)) *ᵥ 1
+/--
+The vector of derivatives, for the one-row weight of `X` and with variables scaled by `c`, of
+the theta function of the datum `ω(g, h) f`, for a finite point `(g, h)` of `U(1) × U(n)`.
+-/
+def kernelValue (c : ℂ) (f : 𝒮 (X.descentPair.W.hom (stdSpace E n))) (g : Gf E Unit) (h : Gf E n)
+    : WeylIndexFamily (fun _ : NumberField.InfinitePlace E ↦ n) X.descentPair.columnCount → ℂ :=
+  schurJet X.descentPair.columnCount
+      (jetSeries (X.descentPair.W.hom (stdSpace E n)) c
+        (X.descentPair.pairThetaKernel.ω ((1, g), 1, h) f))
+    *ᵥ 1
 
 omit [DecidableEq n] in
 /-- The weight `X.descentPair.columnCount` with exponent `0` in rank `1` goes up to rank `card n`
@@ -185,26 +198,32 @@ lemma isLiftWeight : IsLiftWeight Unit n X.descentPair.columnCount (-X.rowLength
   · simp_all [FitsRanks, le_of_lt, ne_of_gt]
   · simp [funext_iff, DescentPair.columnCount, mixedWeight]
 
-/-- The character `X.descentPair.charW`, the power of the splitting character of the Weil
+/--
+The character `X.descentPair.charW`, the power of the splitting character of the Weil
 representation whose exponent is the number of negative signs of the source, has trivial tame part
 and weight `X.descentPair.detExp`, the exponent of the determinant in the weight on `V`. The source
-is definite and the weight has no `colsMinus`, so both exponents are `0`. -/
+is definite and the weight has no `colsMinus`, so both exponents are `0`.
+-/
 instance charW_hasWeight : X.descentPair.charW.HasWeight X.descentPair.detExp 1 :=
   (WeilData.hasWeight_upsilonU1_pow _).of_weight_eq (by simp [funext_iff])
 
-/-- The character `X.descentPair.charV`, which is `X.u1Char` times the power `⌊card n / 2⌋` of
+/--
+The character `X.descentPair.charV`, which is `X.u1Char` times the power `⌊card n / 2⌋` of
 `WeilData.upsilonU1`, has weight `-rowLength τ` at each infinite place `τ` and tame part
-`X.tamePart`. -/
-instance charV_hasWeight : X.descentPair.charV.HasWeight (-X.rowLength ·) X.tamePart :=
+`X.tamePart`.
+-/
+instance charV_hasWeight : X.descentPair.charV.HasWeight (- X.rowLength ·) X.tamePart :=
   X.hasWeight.hasWeight_rankTwist.of_weight_eq (by simp)
 
-/-- The theta kernel `New.thetaKernel` between the standard spaces of ranks `1` and `card n`, for
+/--
+The theta kernel `New.thetaKernel` between the standard spaces of ranks `1` and `card n`, for
 the weight and the characters of `X`, with derivatives scaled by `1`. As a `New.Kernel` it is an
 action of the finite points of both groups on Schwartz functions, with a jet map to vectors of the
 weight, of exponent `0` in rank `1` and `detExp` in rank `card n`. The subgroup `⊤` is the level
-at which its lifts would integrate. -/
-abbrev liftKernel :
-    Kernel Unit n X.descentPair.columnCount 0 X.descentPair.detExp ⊤
+at which its lifts would integrate.
+-/
+abbrev liftKernel
+    : Kernel Unit n X.descentPair.columnCount 0 X.descentPair.detExp ⊤
       ↥((stdSpace E Unit).hom (stdSpace E n)).finitePart :=
   thetaKernel X.isLiftWeight 1 X.charW_hasWeight X.charV_hasWeight ⊤
 
@@ -221,43 +240,53 @@ end
 
 /-! ### The kernel as a form on `V`, and the lift -/
 
-/-- For a finite point `g` of `U(1)`, the function `h ↦ X.kernelValue 1 f g h` as an algebraic
+/--
+For a finite point `g` of `U(1)`, the function `h ↦ X.kernelValue 1 f g h` as an algebraic
 form on the standard space `V` of rank `card n`. Here `f = X.descentPair.blockDatum` is the block
-datum at the places of `X` times the vacuum. -/
+datum at the places of `X` times the vacuum.
+-/
 def kernelForm (g : Gf E Unit) : X.descentPair.FormV :=
   -- The level acts through its character, by the law `DescentPair.omega_blockDatum_eq_smul`; so the
   -- function is smooth.
-  have h_level (k : X.descentPair.levelGroup) :
-      rightRegular ℂ (Gf E n) _ k.val (X.kernelValue 1 X.descentPair.blockDatum g) =
-        X.descentPair.residueLevelChar.comp (levelOf.reduction ..) k •
-          X.kernelValue 1 X.descentPair.blockDatum g := by
+  have h_level (k : X.descentPair.levelGroup)
+      : rightRegular ℂ (Gf E n) _ k.val (X.kernelValue 1 X.descentPair.blockDatum g)
+        = X.descentPair.residueLevelChar.comp (levelOf.reduction ..) k
+          • X.kernelValue 1 X.descentPair.blockDatum g := by
     ext h' i
-    have h_omega : X.descentPair.pairThetaKernel.ω ((1, 1), 1, k.val) X.descentPair.blockDatum.val =
-        X.descentPair.residueLevelChar.comp (levelOf.reduction ..) k •
-          X.descentPair.blockDatum.val := by
-      simpa using X.descentPair.omega_blockDatum_eq_smul 1 ⟨k, levelOf_le_stdLevel k.property⟩
-        (levelOf.reduction _ _ k) (by simp [levelOf.reduction]; rfl)
+    have h_omega
+        : X.descentPair.pairThetaKernel.ω ((1, 1), 1, k.val) X.descentPair.blockDatum.val
+          = X.descentPair.residueLevelChar.comp (levelOf.reduction ..) k
+            • X.descentPair.blockDatum.val := by
+      simpa using
+        X.descentPair.omega_blockDatum_eq_smul 1 ⟨k, levelOf_le_stdLevel k.property⟩
+          (levelOf.reduction _ _ k) (by simp [levelOf.reduction]; rfl)
     -- The jets are linear in the datum, and `ω` is multiplicative.
     simpa [kernelValue, rep_apply_apply, smul_mulVec] using
       congr_fun (congr_fun (congr_arg (X.kernelValue 1 · g) h_omega) h') i
   -- Equivariance under the rational points of `V` is that of the theta kernel.
-  ⟨⟨X.kernelValue 1 X.descentPair.blockDatum g,
-    mem_smoothFunctions_of_eigen _ isOpen_levelOf h_level,
+  ⟨
+    ⟨
+      X.kernelValue 1 X.descentPair.blockDatum g,
+      mem_smoothFunctions_of_eigen _ isOpen_levelOf h_level,
       fun γ h ↦ by
-        have h_eq :=
-          X.liftKernel.equivariant 1 γ (X.liftKernel.ω (g, h) X.descentPair.blockDatum) 1
-        simp only [Kernel.omega_omega, Prod.mk_mul_mk, map_one, one_mul, one_apply_eq_self]
-          at h_eq
-        exact h_eq⟩,
-    fun k ↦ Subtype.ext (h_level k)⟩
+        have h_eq := X.liftKernel.equivariant 1 γ (X.liftKernel.ω (g, h) X.descentPair.blockDatum) 1
+        simp only [Kernel.omega_omega, Prod.mk_mul_mk, map_one, one_mul, one_apply_eq_self] at h_eq
+        exact h_eq
+    ⟩,
+    fun k ↦ Subtype.ext (h_level k)
+  ⟩
 
-/-- The principal level of the finite adelic U(1) at the places `chosenPlace`: integral elements
-that reduce to 1 at each of these places. -/
+/--
+The principal level of the finite adelic U(1) at the places `chosenPlace`: integral elements
+that reduce to 1 at each of these places.
+-/
 abbrev chosenLevel : Subgroup (Gf E Unit) := levelOf (n := Unit) X.chosenPlace ⊥
 
-/-- The lift of the character of `X`: the class sum of the kernel `New.LValueData.kernelForm` over
+/--
+The lift of the character of `X`: the class sum of the kernel `New.LValueData.kernelForm` over
 `U(1)` at the principal level at the chosen places. It is a multiple of the theta lift of the
-constant function `1`. -/
+constant function `1`.
+-/
 def trivialLift : X.descentPair.FormV := stdClassSum X.chosenLevel X.kernelForm
 
 end Definitions
@@ -628,10 +657,13 @@ lemma onHom_mul_scalarFin_inv {E n : Type} [Field E] [CMType E] [Fintype n] [Dec
   rw [← h_scalar, ← MonoidHom.map_mul, Prod.mk_mul_mk, Prod.mk_mul_mk, Prod.mk_mul_mk,
     mul_one, map_one, mul_one, mul_one]
 
-/-- The space `Hom(W, V)` from the standard line `W` to the standard space `V` of rank `card n`;
-its signs `homSigns 1 1`, the products of those of `W` and `V`, are all `1`. -/
-abbrev stdLineHom (E n : Type) [Field E] [CMType E] [Fintype n] [DecidableEq n] :
-    Space E (n × Unit) (homSigns 1 1) := (stdSpace E Unit).hom (stdSpace E n)
+/--
+The space `Hom(W, V)` from the standard line `W` to the standard space `V` of rank `card n`;
+its signs `homSigns 1 1`, the products of those of `W` and `V`, are all `1`.
+-/
+abbrev stdLineHom (E n : Type) [Field E] [CMType E] [Fintype n] [DecidableEq n]
+    : Space E (n × Unit) (homSigns 1 1) :=
+  (stdSpace E Unit).hom (stdSpace E n)
 
 /-- Let `L` be a `σ`-semilinear map on the Schwartz space of `stdLineHom`, the space `Hom(W, V)` of
 columns for the standard spaces `W`, `V` of ranks `1` and `card n = 2 * m`. Let `L` scale finite

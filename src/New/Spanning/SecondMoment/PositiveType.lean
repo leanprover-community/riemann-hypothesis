@@ -45,8 +45,10 @@ open InnerProductSpace Finset EuclideanSpace Complex Matrix WithLp Fintype AddCh
 
 namespace New
 
-variable {G H k n m : Type*} [Group G] [Fintype G] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-  [Field k] [Fintype n] [DecidableEq n] [Fintype m] {u : G → H}
+variable
+  {G H k n m : Type*} [Group G] [Fintype G] [NormedAddCommGroup H] [InnerProductSpace ℂ H] [Field k]
+  [Fintype n] [DecidableEq n] [Fintype m]
+  {u : G → H}
 
 /-- If the inner product of two families of vectors indexed by a finite group `G` has the form
 `⟪u a, v b⟫ = f (a⁻¹ * b)`, then `⟪∑ a, u a, ∑ a, v a⟫ = |G| · ∑ s, f s`. -/

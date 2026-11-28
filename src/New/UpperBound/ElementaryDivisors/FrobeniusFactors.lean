@@ -66,78 +66,95 @@ namespace New.FrobeniusCycle
 
 open MvPolynomial Matrix Finsupp SetLike IsRealFiltration Ideal.Quotient Fintype Function List Nat
 
-variable {N k : ℕ} {W O R : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
-  [CommRing R] (T : FrobeniusCycle N W O)
+variable
+  {N k : ℕ} {W O R : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O] [CommRing R]
+  (T : FrobeniusCycle N W O)
 
 /-! ### The substitution and the weights -/
 
-/-- The generic matrix of the copy `s - d`, whose entries are the variables `X (s - d, b, c)`, with
-its entries raised to the power `P ^ d`. -/
-abbrev frobGenericMatrix (s : ZMod N) (d : ℕ) :
-    Matrix (Fin k) (Fin k) (MvPolynomial (ZMod N × Fin k × Fin k) O) :=
+/--
+The generic matrix of the copy `s - d`, whose entries are the variables `X (s - d, b, c)`, with
+its entries raised to the power `P ^ d`.
+-/
+abbrev frobGenericMatrix (s : ZMod N) (d : ℕ)
+    : Matrix (Fin k) (Fin k) (MvPolynomial (ZMod N × Fin k × Fin k) O) :=
   of fun b c : Fin k ↦ X (s - d, b, c) ^ T.P ^ d
 
 /-- The matrix `M` if the letter `s` is even, and the transposed adjugate of `M` if `s` is odd. -/
 def parityCofactor (s : ZMod N) (M : Matrix (Fin k) (Fin k) R) : Matrix (Fin k) (Fin k) R :=
   if T.isEven s then M else M.adjugateᵀ
 
-/-- The matrix of the letter `s` in `substitutionOperator`. Its row `b` is row `b` of
+/--
+The matrix of the letter `s` in `substitutionOperator`. Its row `b` is row `b` of
 `T.parityCofactor s` of the product `ψ s (m - 1) * ⋯ * ψ s 0`, where `m = ℓ + 1` if the variable
-`(b, s)` is deep (`T.deepIndicator r (b, s) = 1`) and `m = ℓ` if not. -/
-def substitutionLetterMatrix (r ℓ : ℕ) (ψ : ZMod N → ℕ → Matrix (Fin k) (Fin k) R) (s : ZMod N) :
-    Matrix (Fin k) (Fin k) R :=
+`(b, s)` is deep (`T.deepIndicator r (b, s) = 1`) and `m = ℓ` if not.
+-/
+def substitutionLetterMatrix (r ℓ : ℕ) (ψ : ZMod N → ℕ → Matrix (Fin k) (Fin k) R) (s : ZMod N)
+    : Matrix (Fin k) (Fin k) R :=
   of fun b c : Fin k ↦
     T.parityCofactor s ((range (ℓ + T.deepIndicator r (b, s))).map (ψ s)).reverse.prod b c
 
-/-- The Kronecker product over the letters `s` of the `n`-th symmetric powers of the matrices
+/--
+The Kronecker product over the letters `s` of the `n`-th symmetric powers of the matrices
 `T.substitutionLetterMatrix r ℓ ψ s`. In use the factors `ψ s d` are the entrywise powers `P ^ d` of
 the copies `s - d` (`frobGenericMatrix`), or these after a change of frame
-(`conjFrobGenericMatrix`). -/
-def substitutionOperator (r ℓ n : ℕ) (ψ : ZMod N → ℕ → Matrix (Fin k) (Fin k) R) :
-    Matrix (Exponents N k n) (Exponents N k n) R :=
+(`conjFrobGenericMatrix`).
+-/
+def substitutionOperator (r ℓ n : ℕ) (ψ : ZMod N → ℕ → Matrix (Fin k) (Fin k) R)
+    : Matrix (Exponents N k n) (Exponents N k n) R :=
   kroneckerPi fun s : ZMod N ↦ symPowMatrix n (T.substitutionLetterMatrix r ℓ ψ s)
 
 /-- Conjugation `M ↦ ι(h) M ι(h)⁻¹` by the image of `h` under `ι = T.embedding s`. -/
-def letterConj (h : GL (Fin k) W) (s : ZMod N) :
-    Matrix (Fin k) (Fin k) O →* Matrix (Fin k) (Fin k) O where
+def letterConj (h : GL (Fin k) W) (s : ZMod N)
+    : Matrix (Fin k) (Fin k) O →* Matrix (Fin k) (Fin k) O where
   toFun M := h.val.map (T.embedding s) * M * h⁻¹.val.map (T.embedding s)
   map_one' := by simp
   map_mul' := by simp [mul_assoc, ← (h.val⁻¹.map _).mul_assoc]
 
-/-- The integer vector `ρ = e_{a'} - e_a`: its entry at `a'` is `1`, at `a` it is `-1`, and the
+/--
+The integer vector `ρ = e_{a'} - e_a`: its entry at `a'` is `1`, at `a` it is `-1`, and the
 other entries are `0` (for `a ≠ a'`). For `a' = a + 1` it is minus the simple root
-`e_a - e_{a + 1}` of `GL_k`. -/
-def _root_.New.rootVector (a a' b : Fin k) : ℤ :=
-  (if b = a' then 1 else 0) - if b = a then 1 else 0
+`e_a - e_{a + 1}` of `GL_k`.
+-/
+def _root_.New.rootVector (a a' b : Fin k) : ℤ := (if b = a' then 1 else 0) - if b = a then 1 else 0
 
-/-- The weight of the index `b`: the entry at `b` of `ρ = New.rootVector a a'`, divided by
-`P ^ ℓ`. -/
-def indexWeight (ℓ : ℕ) (a a' b : Fin k) : ℝ :=
-  rootVector a a' b / (T.P ^ ℓ : ℝ)
+/--
+The weight of the index `b`: the entry at `b` of `ρ = New.rootVector a a'`, divided by
+`P ^ ℓ`.
+-/
+def indexWeight (ℓ : ℕ) (a a' b : Fin k) : ℝ := rootVector a a' b / (T.P ^ ℓ : ℝ)
 
-/-- The weight at the copy `i` of a monomial `ν` in the entries of all the generic matrices. For a
+/--
+The weight at the copy `i` of a monomial `ν` in the entries of all the generic matrices. For a
 monomial in one matrix let `row` and `col` be the sums of the entries of
 `ρ = New.rootVector a a'` over its row indices and over its column indices. The weight is
 `P ^ (-ℓ)` times the sum of `row` at the copy `i` and of `P ^ (-u) (row - col)` at the copies
-`i - u`, `0 < u < N`. -/
+`i - u`, `0 < u < N`.
+-/
 def copyWeight (ℓ : ℕ) (a a' : Fin k) (i : ZMod N) (ν : ZMod N × Fin k × Fin k →₀ ℕ) : ℝ :=
-  ((weight (fun v : Fin k × Fin k ↦ rootVector a a' v.1) (ν.curry i) : ℤ) +
-    ∑ j ∈ Finset.univ.erase i, (T.P ^ (j - i).val / T.q : ℝ) *
-      ((weight (fun v : Fin k × Fin k ↦ rootVector a a' v.1) (ν.curry j) : ℤ) -
-        (weight (fun v : Fin k × Fin k ↦ rootVector a a' v.2) (ν.curry j) : ℤ))) / T.P ^ ℓ
+  ((weight (fun v : Fin k × Fin k ↦ rootVector a a' v.1) (ν.curry i) : ℤ)
+      + ∑ j ∈ Finset.univ.erase i, (T.P ^ (j - i).val / T.q : ℝ) *
+          ((weight (fun v : Fin k × Fin k ↦ rootVector a a' v.1) (ν.curry j) : ℤ) -
+            (weight (fun v : Fin k × Fin k ↦ rootVector a a' v.2) (ν.curry j) : ℤ)))
+    / T.P ^ ℓ
 
-/-- The scaled index weight of the index `b` at the exponent `m`: its weight
-`New.FrobeniusCycle.indexWeight` times `P ^ m / q`. -/
+/--
+The scaled index weight of the index `b` at the exponent `m`: its weight
+`New.FrobeniusCycle.indexWeight` times `P ^ m / q`.
+-/
 def scaledIndexWeight (ℓ : ℕ) (a a' : Fin k) (m : ℕ) (b : Fin k) : ℝ :=
   T.indexWeight ℓ a a' b * (T.P ^ m / T.q)
 
-/-- The weight at the copy `i` of the entry `(b, c)` of the generic matrix of the copy `j`: the
+/--
+The weight at the copy `i` of the entry `(b, c)` of the generic matrix of the copy `j`: the
 weight of the row `b` if `j = i`, and else the difference of the scaled index weights of `b` and `c`
-at the exponent `(j - i) mod N`. -/
+at the exponent `(j - i) mod N`.
+-/
 def entryWeight (ℓ : ℕ) (a a' : Fin k) (i : ZMod N) (v : ZMod N × Fin k × Fin k) : ℝ :=
-  if v.1 = i then T.indexWeight ℓ a a' v.2.1
-  else T.scaledIndexWeight ℓ a a' (v.1 - i).val v.2.1 - T.scaledIndexWeight ℓ a a' (v.1 - i).val
-    v.2.2
+  if v.1 = i then
+    T.indexWeight ℓ a a' v.2.1
+  else
+    T.scaledIndexWeight ℓ a a' (v.1 - i).val v.2.1 - T.scaledIndexWeight ℓ a a' (v.1 - i).val v.2.2
 
 /-- The adjugate commutes with conjugation: if `A B = 1`, then `B adj(A M B) A = adj(M)`. -/
 lemma _root_.New.mul_adjugate_conj_mul {A B : Matrix (Fin k) (Fin k) R} (hAB : A * B = 1)
@@ -267,7 +284,8 @@ end
 
 section
 
-variable {h : GL (Fin k) W} {s : ZMod N} {r ℓ n d : ℕ} {a a' : Fin k}
+variable
+  {h : GL (Fin k) W} {s : ZMod N} {r ℓ n d : ℕ} {a a' : Fin k}
   {ψ : ZMod N → ℕ → Matrix (Fin k) (Fin k) R}
 
 /-- Let each entry of row `b` of `M` lie in `G (x b - v)` for the filtration `G`, where `v ≥ 0` and
@@ -500,11 +518,13 @@ lemma p_dvd_letterConj_pow_sub {Y : Matrix (Fin k) (Fin k) O} {b c : Fin k} :
   rw [← eq_zero_iff_dvd, map_sub, sub_eq_zero]
   exact congrFun₂ h_cancel b c
 
-/-- The matrix `T.frobGenericMatrix s d` with a change of frame by `h`: the generic matrix of the
+/--
+The matrix `T.frobGenericMatrix s d` with a change of frame by `h`: the generic matrix of the
 copy `s - d` is conjugated by `h⁻¹` through `T.embedding (s - d)`, its entries are raised to the
-power `P ^ d`, and the result is conjugated by `h` through `T.embedding s`. -/
-def conjFrobGenericMatrix (h : GL (Fin k) W) (s : ZMod N) (d : ℕ) :
-    Matrix (Fin k) (Fin k) (MvPolynomial (ZMod N × Fin k × Fin k) O) :=
+power `P ^ d`, and the result is conjugated by `h` through `T.embedding s`.
+-/
+def conjFrobGenericMatrix (h : GL (Fin k) W) (s : ZMod N) (d : ℕ)
+    : Matrix (Fin k) (Fin k) (MvPolynomial (ZMod N × Fin k × Fin k) O) :=
   (T.map C).letterConj h s
     (((T.map C).letterConj h⁻¹ (s - d) (of fun b c : Fin k ↦ X (s - d, b, c))).map (· ^ T.P ^ d))
 

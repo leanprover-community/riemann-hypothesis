@@ -68,9 +68,11 @@ namespace New
 open FourierTransform Complex Module MeasureTheory QuotientAddGroup Fintype Quotient
   LinearMap.BilinForm Submodule Finset ComplexConjugate IsZLattice
 
-variable {V : Type} [FinComplexSpace V]
-  {L : Submodule ℤ V} [IsFullRankLattice L] {B : ThetaTori.LatticeForm L}
-  {χ f : V → ℂ} [hB : IsAppellHumbert B χ] [hp : IsPosRiemann B] (hf : f ∈ B.thetaSpace χ)
+variable
+  {V : Type} [FinComplexSpace V]
+  {L : Submodule ℤ V} [IsFullRankLattice L]
+  {B : ThetaTori.LatticeForm L} {χ f : V → ℂ} [hB : IsAppellHumbert B χ] [hp : IsPosRiemann B]
+  (hf : f ∈ B.thetaSpace χ)
 
 include hB hf
 
@@ -267,8 +269,10 @@ lemma IsAppellHumbert.finite_dualLattice_quotient :
   refine (finiteQuotient_iff _).mpr ?_
   simp [ZLattice.rank ℝ, (submoduleOfEquivOfLe hB.le_dualLattice).finrank_eq]
 
-/-- The form `T u v = (i / 2) (C (i u) v + i C u v)`, which is minus the part of `C` that is
-complex-linear in the first variable. -/
+/--
+The form `T u v = (i / 2) (C (i u) v + i C u v)`, which is minus the part of `C` that is
+complex-linear in the first variable.
+-/
 private def linearPartForm (C : RealComplexForm V) : RealComplexForm V :=
   (I / 2) • (C ∘L .lsmul ℝ ℂ I + I • C)
 
@@ -279,13 +283,14 @@ private lemma continuous_uncurry_thetaShift (f : B.thetaSpace χ) :
     Continuous ↿(fun u : V ↦ B.thetaShift u f) :=
   .mul (by fun_prop) ((differentiable_of_mem_thetaSpace f.prop).continuous.comp (by fun_prop))
 
-/-- For tuples `s`, `t` of theta functions, the function
+/--
+For tuples `s`, `t` of theta functions, the function
 `x ↦ exp (T b b / 2) * ∑ i, conj ((thetaShift x (s i)) 0) * (thetaShift x (t i)) b` on `V`, with `T`
-the form `linearPartForm B`. Its mean over `V ⧸ L` pairs `s` with `t`. -/
-private def pairingIntegrand {n : ℕ} (s t : Fin n → B.thetaSpace χ) (b : V) : V → ℂ :=
-  fun x : V ↦
-    (linearPartForm B b b / 2).exp *
-      ∑ i : Fin n, conj (B.thetaShift x (s i) 0) * B.thetaShift x (t i) b
+the form `linearPartForm B`. Its mean over `V ⧸ L` pairs `s` with `t`.
+-/
+private def pairingIntegrand {n : ℕ} (s t : Fin n → B.thetaSpace χ) (b : V) : V → ℂ := fun x : V ↦
+  (linearPartForm B b b / 2).exp
+    * ∑ i : Fin n, conj (B.thetaShift x (s i) 0) * B.thetaShift x (t i) b
 
 omit [IsFullRankLattice L] hp in
 /-- The integrand `pairingIntegrand s t b` is continuous and periodic under `L`. -/
@@ -306,8 +311,10 @@ private lemma isContPeriodic_pairingIntegrand {n : ℕ}
   have h_conj_mul : conj c * c = 1 := by simp [conj_mul', h_norm_c]
   simp [pairingIntegrand, h_shift, mul_mul_mul_comm _ (conj _), h_conj_mul]
 
-/-- The mean over `V ⧸ L` of `pairingIntegrand s t b`; at `b = 0` it is the inner product of the
-tuples `s` and `t` of theta functions. -/
+/--
+The mean over `V ⧸ L` of `pairingIntegrand s t b`; at `b = 0` it is the inner product of the
+tuples `s` and `t` of theta functions.
+-/
 private def pairingMean {n : ℕ} (s t : Fin n → B.thetaSpace χ) (b : V) : ℂ :=
   quotMean L.toAddSubgroup (pairingIntegrand s t b)
 
@@ -647,7 +654,8 @@ section BasePointFree
 
 open New ThetaTori thetaSpace Complex
 
-variable {V : Type} [FinComplexSpace V]
+variable
+  {V : Type} [FinComplexSpace V]
   {L : Submodule ℤ V} [IsFullRankLattice L]
   {B : LatticeForm L} {χ : V → ℂ}
 
@@ -719,15 +727,21 @@ namespace New
 
 open Complex Finset ThetaTori
 
-variable {V V' ι : Type} [FinComplexSpace V] [FinComplexSpace V']
-  (B : RealComplexForm V) (b : V →L[ℂ] V) {L : Submodule ℤ V}
+variable
+  {V V' ι : Type} [FinComplexSpace V] [FinComplexSpace V']
+  (B : RealComplexForm V) (b : V →L[ℂ] V)
+  {L : Submodule ℤ V}
 
-/-- The canonical multiplier x ↦ exp(πi E(bx, x)) attached to a complex-linear endomorphism b of
-V, where E is the Riemann form of B. -/
+/--
+The canonical multiplier x ↦ exp(πi E(bx, x)) attached to a complex-linear endomorphism b of
+V, where E is the Riemann form of B.
+-/
 def ThetaTori.canonicalMultiplier (x : V) : ℂ := Complex.exp (Real.pi * I * B.riemannForm (b x) x)
 
-/-- Normalised translation: the twisted translation by x, divided by the canonical multiplier
-exp(πi E(bx, x)). -/
+/--
+Normalised translation: the twisted translation by x, divided by the canonical multiplier
+exp(πi E(bx, x)).
+-/
 def ThetaTori.normalizedShift (x : V) : (V → ℂ) →ₗ[ℂ] V → ℂ :=
   (canonicalMultiplier B b x)⁻¹ • B.thetaShift x
 

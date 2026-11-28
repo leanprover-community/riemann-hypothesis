@@ -52,16 +52,20 @@ namespace New
 open NumberField Matrix MvPolynomial ComplexConjugate WeilData Space Fock Weil CoordChange Modulus
   Fintype Function Pi Ideal.Quotient
 
-variable {E : Type} [Field E] [CMType E]
+variable
+  {E : Type} [Field E] [CMType E]
   {n n' n₁ n₂ : Type _} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype n₁]
-  [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] [WeilData E] {s : n → ℤˣ} {s' : n' → ℤˣ}
-  {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ} (S : Space E n s) (T : Space E n' s') (a b : AutChar E)
-  (𝔪 : Modulus E) (V : Space E n₁ s₁)
+  [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] [WeilData E]
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ} (S : Space E n s) (T : Space E n' s')
+  (a b : AutChar E) (𝔪 : Modulus E) (V : Space E n₁ s₁)
 
-/-- Reduction modulo 𝔪, as a homomorphism from the stabiliser of Ô^n in the finite adelic
-unitary group to GL_n(O_E/𝔪). -/
-def Modulus.reductionGL {E : Type} [Field E] [NumberField E] [IsCMField E] (𝔪 : Modulus E) :
-    stdLevel E n →* GL n 𝔪.ResidueRing := stdLevel.map n 𝔪.reduction
+/--
+Reduction modulo 𝔪, as a homomorphism from the stabiliser of Ô^n in the finite adelic
+unitary group to GL_n(O_E/𝔪).
+-/
+def Modulus.reductionGL {E : Type} [Field E] [NumberField E] [IsCMField E] (𝔪 : Modulus E)
+    : stdLevel E n →* GL n 𝔪.ResidueRing :=
+  stdLevel.map n 𝔪.reduction
 
 omit [WeilData E] in
 @[simp]
@@ -69,31 +73,43 @@ lemma Modulus.factor_reductionGL {𝔪 𝔫 : Modulus E} {h : 𝔫.ideal ≤ �
     (reductionGL 𝔫 k).val.map (factor h) = (reductionGL 𝔪 k).val :=
   Matrix.ext fun i j ↦ by simp [reductionGL]
 
-/-- The theta kernel θ^{S,I}_{a,b}[Ψ, P](g, (1, h)), where I is the standard space I_{n′} of rank n′
-and h lies in its finite adelic unitary group. -/
-abbrev modKernelStdSpace (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) (g : G E s) (h : Gf E n') : ℂ :=
+/--
+The theta kernel θ^{S,I}_{a,b}[Ψ, P](g, (1, h)), where I is the standard space I_{n′} of rank n′
+and h lies in its finite adelic unitary group.
+-/
+abbrev modKernelStdSpace
+    (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ) (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) (g : G E s)
+    (h : Gf E n')
+    : ℂ :=
   modKernel S (stdSpace E n') a b 𝔪 Ψ P g (1, h)
 
-/-- The datum on Hom(S, T) with the function Ψ on matrices modulo 𝔪 at the places dividing 𝔪 and the
-vacuum at the other finite places, as an element of the finite part of the space of data. -/
-def vacuumDatum (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ) : (S.hom T).finitePart :=
-  ⟨(S.hom T).schrodingerOp 𝔪.places (𝔪.liftFn (Ψ ∘ vecToMatrix)) (vacElem (S.hom T)),
-    schrodingerOp_mem_finitePart ..⟩
+/--
+The datum on Hom(S, T) with the function Ψ on matrices modulo 𝔪 at the places dividing 𝔪 and the
+vacuum at the other finite places, as an element of the finite part of the space of data.
+-/
+def vacuumDatum (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ) : (S.hom T).finitePart := ⟨
+  (S.hom T).schrodingerOp 𝔪.places (𝔪.liftFn (Ψ ∘ vecToMatrix)) (vacElem (S.hom T)),
+  schrodingerOp_mem_finitePart ..
+⟩
 
-/-- For maps e, f of row and column indices, the ℂ-algebra map of polynomial rings sending the
-variable X_(i,r,c) to X_(i,e(r),f(c)). -/
-abbrev renameRowsCols {ι a b c d : Type*} (e : a → c) (f : b → d) :
-    MvPolynomial (ι × a × b) ℂ →ₐ[ℂ] MvPolynomial (ι × c × d) ℂ :=
+/--
+For maps e, f of row and column indices, the ℂ-algebra map of polynomial rings sending the
+variable X_(i,r,c) to X_(i,e(r),f(c)).
+-/
+abbrev renameRowsCols {ι a b c d : Type*} (e : a → c) (f : b → d)
+    : MvPolynomial (ι × a × b) ℂ →ₐ[ℂ] MvPolynomial (ι × c × d) ℂ :=
   rename (R := ℂ) (Prod.map (id (α := ι)) (Prod.map e f))
 
 /-! ### Bilinearity, twisting, integral translations and seesaw identities -/
 
-/-- The value θ^{S,T}_{a,b}[Ψ, P](g, h) of the theta kernel as a complex bilinear form in the
-function Ψ modulo 𝔪 and the polynomial P. -/
-def modKernelBilin (g : G E s) (h : G E s') :
-    (Matrix n' n 𝔪.ResidueRing → ℂ) →ₗ[ℂ] MvPolynomial (InfinitePlace E × n' × n) ℂ →ₗ[ℂ] ℂ :=
-  LinearMap.mk₂ ℂ (fun Ψ P ↦ modKernel S T a b 𝔪 Ψ P g h)
+/--
+The value θ^{S,T}_{a,b}[Ψ, P](g, h) of the theta kernel as a complex bilinear form in the
+function Ψ modulo 𝔪 and the polynomial P.
+-/
+def modKernelBilin (g : G E s) (h : G E s')
+    : (Matrix n' n 𝔪.ResidueRing → ℂ) →ₗ[ℂ] MvPolynomial (InfinitePlace E × n' × n) ℂ →ₗ[ℂ] ℂ :=
+  LinearMap.mk₂ ℂ
+    (fun Ψ P ↦ modKernel S T a b 𝔪 Ψ P g h)
     (fun Ψ Ψ' P ↦ by simp [modKernel, pairTheta, modDatum, Pi.add_comp])
     (fun c Ψ P ↦ by simp [modKernel, pairTheta, modDatum, Pi.smul_comp])
     (fun Ψ P P' ↦ by simp [modKernel, pairTheta, modDatum])

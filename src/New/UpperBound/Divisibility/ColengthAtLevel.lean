@@ -38,10 +38,12 @@ open Matrix Finset Equiv IsSplitLevel
 
 variable {P : Parameters} (D : Data P)
 
-/-- The degree in the variable `a`, summed over all pairs of a class and a basis vector of the
+/--
+The degree in the variable `a`, summed over all pairs of a class and a basis vector of the
 values of source forms. A basis vector is a family of tableaux (`WeylIndex`), one for each infinite
 place `τ : D.Φ` of `E`; its degree in `a` is the number of entries equal to `a` (`tableauWeight`),
-summed over `τ`. -/
+summed over `τ`.
+-/
 noncomputable def sumDegreeOf (a : D.X 0) : ℕ :=
   ∑ i : StdClasses (D.levelX 0) × WeylIndex (D.X 0) D.columnCount, ∑ τ : D.Φ,
     tableauWeight i.2 τ a

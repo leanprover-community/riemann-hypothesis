@@ -35,7 +35,8 @@ namespace New
 
 open Matrix Algebra Submodule Polynomial MonoidAlgebra Finset
 
-variable {O Y σ G L R N Λ : Type*} [CommRing O] [Fintype σ] [DecidableEq σ] [Group G] [CommRing L]
+variable
+  {O Y σ G L R N Λ : Type*} [CommRing O] [Fintype σ] [DecidableEq σ] [Group G] [CommRing L]
   [Algebra O L] [CommRing R] [Algebra R L]
   {S : Subalgebra R (Y → L)} [Fintype N] [DecidableEq N] [Ring Λ] [Algebra R Λ]
 
@@ -69,12 +70,15 @@ private lemma ringHom_map_sub {A B : Type*} [Ring A] [Ring B] (f : A →+* B) (x
     f (x - y) = f x - f y :=
   eq_sub_of_add_eq (by rw [← ringHom_map_add, sub_add_cancel])
 
-/-- The `R`-algebra isomorphism from `N × N` matrices whose entries are `σ × σ` matrices over `L`
-onto `(N × σ) × (N × σ)` matrices over `L`, flattening blocks. -/
-def blockFlattenAlgEquiv (N : Type*) [Fintype N] [DecidableEq N] :
-    Matrix N N (Matrix σ σ L) ≃ₐ[R] Matrix (N × σ) (N × σ) L :=
-  { compRingEquiv N σ L with
-    commutes' _ := comp_diagonal_diagonal _ }
+/--
+The `R`-algebra isomorphism from `N × N` matrices whose entries are `σ × σ` matrices over `L`
+onto `(N × σ) × (N × σ)` matrices over `L`, flattening blocks.
+-/
+def blockFlattenAlgEquiv (N : Type*) [Fintype N] [DecidableEq N]
+    : Matrix N N (Matrix σ σ L) ≃ₐ[R] Matrix (N × σ) (N × σ) L := {
+  compRingEquiv N σ L with
+  commutes' _ := comp_diagonal_diagonal _
+}
 
 /-- Amitsur's formula for block matrices. Let `ρ` be an `R`-algebra map from `Λ` to square matrices
 over `L` such that all characteristic polynomials of the `ρ w` have their coefficients in the image
@@ -392,7 +396,6 @@ lemma exists_family_algHom_charpoly_mem {A : Type*} [CommRing A] [Algebra A (Y �
       (ρ (.single g 1)).charpoly.coeff k x
     rw [h_eval, charpoly_map, Polynomial.coeff_map, Pi.evalRingHom_apply]
 
-
 /-- Suppose that every matrix `χ c` is, after reindexing along `blockEquiv`, the block `ψ c` plus
 the diagonal matrix of the `η e c`. Then the determinant of a matrix `M` over `A`, read through `χ`
 as a block matrix, is the product of its determinants through `ψ` and through the `η e`. -/
@@ -445,8 +448,10 @@ lemma Selmer.det_mem_of_coeff_mem (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ 
   rw [← hD]
   exact D.property
 
-/-- The elements of `Λ` whose traces against every element of `Λ`, through `ρ`, lie in `𝒥`. They
-form a two-sided ideal, as traces are cyclic. -/
+/--
+The elements of `Λ` whose traces against every element of `Λ`, through `ρ`, lie in `𝒥`. They
+form a two-sided ideal, as traces are cyclic.
+-/
 def Selmer.traceIdeal (ρ : Λ →ₐ[R] Matrix σ σ L) (𝒥 : Submodule R L) : TwoSidedIdeal Λ :=
   .mk' {w | ∀ s : Λ, (ρ (w * s)).trace ∈ 𝒥}
     (fun s ↦ by rw [zero_mul, algHom_map_zero ρ, trace_zero]; exact zero_mem 𝒥)

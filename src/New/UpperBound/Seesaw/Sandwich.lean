@@ -50,7 +50,8 @@ namespace New
 
 open Seesaw Gf Space
 
-variable {E X X' ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+variable
+  {E X X' ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
   [DecidableEq ι'] [Fintype X] [DecidableEq X] [DecidableEq X']
   {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
 
@@ -58,10 +59,12 @@ namespace Grading
 
 section Splitting
 
-/-- Let `Y` split the basis of `V` into `X` and a string spanning `X^⊥`, and let `Λ' = V.lattice x`
+/--
+Let `Y` split the basis of `V` into `X` and a string spanning `X^⊥`, and let `Λ' = V.lattice x`
 be the lattice of the point `x` of the finite adelic unitary group. Then `Λ'` splits along `X` at
 the place `w` if there the projection `Λ'⁺` of `Λ'` to `X^⊥` lies in the intersection `Λ'⁻` of `Λ'`
-with `X^⊥`, so the two are equal. The idempotent `idem {w}` cuts out the component at `w`. -/
+with `X^⊥`, so the two are equal. The idempotent `idem {w}` cuts out the component at `w`.
+-/
 def LatticeSplitsAt (Y : Grading V N X s) (w : FinPlace E) (x : Gf E ι) : Prop :=
   (idem {w} : 𝔸f E) • Y.latticePlus x ≤ Y.latticeMinus x
 

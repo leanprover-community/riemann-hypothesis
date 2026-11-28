@@ -68,39 +68,53 @@ namespace New.ThetaTori.ThetaTorus
 open Module Submodule NNReal Variety ThetaNull MvPolynomial Complex Function NumberField Finset
   Fintype thetaSpace Finite LatticeForm PeriodMap
 
-variable {V E k K : Type} [FinComplexSpace V]
+variable
+  {V E k K : Type} [FinComplexSpace V]
   {v : Valuation ℂ ℝ≥0} [Field E] [CMBase E]
-  {D : PEL E} {g : GL D.Index (𝔸f E)} {ℓ : Matrix D.Index D.Index ℂ}
-  (x : ThetaTorus D g ℓ V) [Fintype K]
-  (a : K → 𝓞 E) {μ μ' : K → D.dualTorsion} {w : V} {t : D.dualTorsion} (p : K → 𝓞 E × 𝓞 E)
+  {D : PEL E} {g : GL D.Index (𝔸f E)} {ℓ : Matrix D.Index D.Index ℂ} (x : ThetaTorus D g ℓ V)
+  [Fintype K]
+  (a : K → 𝓞 E)
+  {μ μ' : K → D.dualTorsion} {w : V} {t : D.dualTorsion}
+  (p : K → 𝓞 E × 𝓞 E)
 
-/-- The ring of integers `𝓞 E` acts on the torsion group `D.dualTorsion`: the action of `𝓞 E` on
-adelic torsion classes preserves `D.dualTorsion`. -/
+/--
+The ring of integers `𝓞 E` acts on the torsion group `D.dualTorsion`: the action of `𝓞 E` on
+adelic torsion classes preserves `D.dualTorsion`.
+-/
 instance : Module (𝓞 E) D.dualTorsion :=
-  module ⟨_, by
-    -- Move `a` across the form: it becomes `star a`, which preserves the kernel of `torsionClass`.
-    rintro a ⟨y⟩ hy
-    refine (D.mem_dualTorsion _).mpr fun z hz ↦ ?_
-    simpa [xiForm, ↓star_smul] using
-      (D.mem_dualTorsion y).mp hy (algebraMap E (𝔸f E) (star a) • z)
-        (torsionClass.ker.smul_mem (star a) hz)⟩
+  module ⟨
+    _,
+    by
+      -- Move `a` across the form: it becomes `star a`, which preserves the kernel of `torsionClass`.
+      rintro a ⟨y⟩ hy
+      refine (D.mem_dualTorsion _).mpr fun z hz ↦ ?_
+      simpa [xiForm, ↓ star_smul] using
+        (D.mem_dualTorsion y).mp hy (algebraMap E (𝔸f E) (star a) • z)
+          (torsionClass.ker.smul_mem (star a) hz)
+  ⟩
 
 /-! ### Systems of coefficients -/
 
-/-- The pairs `p l = (a_l, b_l)` in `𝓞 E` satisfy `∑ ā_l a_l = r` and `∑ ā_l b_l = 0`, where
+/--
+The pairs `p l = (a_l, b_l)` in `𝓞 E` satisfy `∑ ā_l a_l = r` and `∑ ā_l b_l = 0`, where
 `r = D.paddedNorm` is the degree attached to the PEL datum `D` and `ā` is the complex conjugate
-(`star`). -/
+(`star`).
+-/
 def IsRiemannTuple (D : PEL E) : Prop :=
   ∑ l : K, star (p l).1 * (p l).1 = D.paddedNorm ∧ ∑ l : K, star (p l).1 * (p l).2 = 0
 
-/-- The family of coefficient pairs on two copies of the index set `K`: `(0, b_l)` on the first
-copy, where `k l = (a_l, b_l)`, and `p l` on the second. -/
+/--
+The family of coefficient pairs on two copies of the index set `K`: `(0, b_l)` on the first
+copy, where `k l = (a_l, b_l)`, and `p l` on the second.
+-/
 def doubledCoeffs (k : K → 𝓞 E × 𝓞 E) : K ⊕ K → 𝓞 E × 𝓞 E := Sum.elim (fun l ↦ (0, (k l).2)) p
 
 /-! ### Products of theta functions and Riemann's relation -/
 
-/-- The function `z ↦ ∏_k θ_{μ_k}(a_k z + b_k w)` on `V`, where `p k = (a_k, b_k)`, `θ_s` is the
-theta coordinate `x.thetaCoord s` and `x.intAction a` is multiplication by `a ∈ 𝓞 E` on `V`. -/
+/--
+The function `z ↦ ∏_k θ_{μ_k}(a_k z + b_k w)` on `V`, where `p k = (a_k, b_k)`, `θ_s` is the
+theta coordinate `x.thetaCoord s` and `x.intAction a` is multiplication by `a ∈ 𝓞 E` on `V`.
+-/
 def thetaProduct (μ : K → D.dualTorsion) (w z : V) : ℂ :=
   ∏ k : K, x.thetaCoord (μ k) (x.intAction (p k).1 z + x.intAction (p k).2 w)
 
@@ -504,15 +518,19 @@ lemma surjective_map_homogeneous {σ A B : Type} [CommRing A] [CommRing B] {φ :
     sum_mem fun m hm ↦ isHomogeneous_monomial _ (hg.degree_eq_sum_deg_support hm).symm
   exact ⟨⟨f, hf_hom⟩, Subtype.ext (by simp [f, surjInv_eq])⟩
 
-/-- A form `f` of degree `r ^ j` in the theta coordinates is small at the chart `c` if the theta
+/--
+A form `f` of degree `r ^ j` in the theta coordinates is small at the chart `c` if the theta
 function `f(θ)` has norm (`New.ThetaTori.LatticeForm.thetaNorm` at `v` for `r ^ j • B`) below
 `‖θ_c‖ ^ (r ^ j)`, the norm of `θ_c ^ (r ^ j)`. Here `r = D.paddedNorm` and
-`B = x.automorphyForm`. -/
-private def IsSmallForm (c : D.dualTorsion) (j : ℕ)
-    (f : homogeneousSubmodule D.dualTorsion v.valuationSubring (D.paddedNorm ^ j)) : Prop :=
+`B = x.automorphyForm`.
+-/
+private def IsSmallForm
+    (c : D.dualTorsion)
+    (j : ℕ) (f : homogeneousSubmodule D.dualTorsion v.valuationSubring (D.paddedNorm ^ j))
+    : Prop :=
   (D.paddedNorm ^ j • x.automorphyForm).thetaNorm v
-    (aeval x.thetaCoord (f : MvPolynomial D.dualTorsion v.valuationSubring)) <
-    x.automorphyForm.thetaNorm v (x.thetaCoord c) ^ D.paddedNorm ^ j
+      (aeval x.thetaCoord (f : MvPolynomial D.dualTorsion v.valuationSubring))
+    < x.automorphyForm.thetaNorm v (x.thetaCoord c) ^ D.paddedNorm ^ j
 
 /-- Under good reduction, the forms of degree `r ^ j` in the theta coordinates with integral
 coefficients give exactly the norm ball of `θ_c ^ (r ^ j)`: the theta functions of `r ^ j • B` with
@@ -712,11 +730,13 @@ lemma isCutOutAt_reduction [Field k] {φ : v.valuationSubring →+* k} (hφ : Su
       ((hN_coords b (chart b)).left.mp (h_chart b)).ne_zero
     simp [hN_coords _ _, h_unit, f.property.eval₂_const_mul, comp_def, mul_comm (φ _)]
 
-/-- The family of coefficient pairs in `𝓞 E` consisting of `(1, 0)` twice (on the first copy of
+/--
+The family of coefficient pairs in `𝓞 E` consisting of `(1, 0)` twice (on the first copy of
 `Bool`), `(c, 1)` and `(1, −c̄)` (at `true` and `false` of the second copy), and `(a l, 0)` for
-every `l : K`. -/
+every `l : K`.
+-/
 def _root_.New.paddingTuple (c : 𝓞 E) : Bool ⊕ Bool ⊕ K → 𝓞 E × 𝓞 E :=
-  Sum.elim (fun _ : Bool ↦ (1, 0)) (Sum.elim (fun b ↦ cond b (c, 1) (1, -star c)) fun l ↦ (a l, 0))
+  Sum.elim (fun _ : Bool ↦ (1, 0)) (Sum.elim (fun b ↦ cond b (c, 1) (1, - star c)) fun l ↦ (a l, 0))
 
 end New.ThetaTori.ThetaTorus
 

@@ -60,8 +60,9 @@ open Finset LinearMap Module
 
 section
 
-variable {U V : Type*} [NormedAddCommGroup U] [InnerProductSpace ℂ U]
-  [NormedAddCommGroup V] [InnerProductSpace ℂ V] [Module.Finite ℂ V]
+variable
+  {U V : Type*} [NormedAddCommGroup U] [InnerProductSpace ℂ U] [NormedAddCommGroup V]
+  [InnerProductSpace ℂ V] [Module.Finite ℂ V]
 
 variable {P : Parameters} (D : Data P)
 
@@ -76,44 +77,56 @@ lemma _root_.New.normDet_sq_eq_pow_mul_det [Module.Finite ℂ U] (u : U →ₗ[�
     ext fun y ↦ ext_inner_left ℂ fun x ↦ by simp [adjoint_inner_right, inner_smul_right, h_gram]
   simpa [← normDet_sq] using congrArg LinearMap.det h_adjoint_comp
 
-/-- The volume `liftDeterminant ϑ j` = det(u* u) = `u.normDet ^ 2` of the lift u = `singleLift` at
-`j` for the twist ϑ^j, restricted to the good forms on U(W_j) (`New.Data.goodLift`). -/
+/--
+The volume `liftDeterminant ϑ j` = det(u* u) = `u.normDet ^ 2` of the lift u = `singleLift` at
+`j` for the twist ϑ^j, restricted to the good forms on U(W_j) (`New.Data.goodLift`).
+-/
 def liftDeterminant (ϑ : D.MFoldTwist) (j : ℕ) : ℂ := ((D.goodLift (ϑ.pow j) j).normDet : ℂ) ^ 2
 
-/-- For `1 ≤ j ≤ m` and every tame character `ϑ`, the volume `det(u* u) = u.normDet ^ 2` is
+/--
+For `1 ≤ j ≤ m` and every tame character `ϑ`, the volume `det(u* u) = u.normDet ^ 2` is
 positive, where `u` is the lift from `W_j` for `ϑ`, restricted to the good forms: the lift is
-injective. -/
-theorem normDet_goodLift_sq_pos (ϑ : D.TameChar) (j : D.LiftIndex) :
-    0 < (D.goodLift ϑ j).normDet ^ 2 := by
+injective.
+-/
+theorem normDet_goodLift_sq_pos (ϑ : D.TameChar) (j : D.LiftIndex)
+    : 0 < (D.goodLift ϑ j).normDet ^ 2 := by
   rw [sq_pos_iff, Ne, normDet_eq_zero_iff_ker_ne_bot, not_not, ker_eq_bot]
   exact (D.singleLift_injective ϑ).comp (Submodule.injective_subtype _)
 
 open scoped ComplexOrder in
-/-- For `1 ≤ j ≤ m` the volume of the lift from `W_j` for the twist `ϑ ^ j`, restricted to the good
-forms, is a positive real number. -/
+/--
+For `1 ≤ j ≤ m` the volume of the lift from `W_j` for the twist `ϑ ^ j`, restricted to the good
+forms, is a positive real number.
+-/
 theorem liftDeterminant_pos (ϑ : D.MFoldTwist) (j : D.LiftIndex) : 0 < D.liftDeterminant ϑ j := by
   rw [liftDeterminant]
   exact_mod_cast D.normDet_goodLift_sq_pos (ϑ.pow j) j
 
-/-- The map ι_ϑ (`New.Data.lowerChainAtLevel`) restricted to the target forms, that is to the good
+/--
+The map ι_ϑ (`New.Data.lowerChainAtLevel`) restricted to the target forms, that is to the good
 forms on Y₀. It takes values in the algebraic forms on Y_m whose weight has `columnsY` columns of
 each height and last entry `lastEntry m`, and whose level is given by `lastResidueLevel` (trivial at
 the chosen places, block upper triangular at the places of the twist) with the character
-`lastLevelChar` made of the tame characters of the lifts on the diagonal blocks. -/
-abbrev Θ (ϑ : D.MFoldTwist) :
-    D.targetForms →ₗ[ℂ] (D.levelPlaces ϑ.toTameChar).LevelForm (lastResidueLevel ϑ.toTameChar)
-      (lastLevelChar ϑ.toTameChar) D.columnsY (D.lastEntry D.m) :=
-        D.lowerChainAtLevel ϑ ∘ₗ D.targetForms.subtype
+`lastLevelChar` made of the tame characters of the lifts on the diagonal blocks.
+-/
+abbrev Θ (ϑ : D.MFoldTwist)
+    : D.targetForms →ₗ[ℂ] (D.levelPlaces ϑ.toTameChar).LevelForm (lastResidueLevel ϑ.toTameChar)
+        (lastLevelChar ϑ.toTameChar) D.columnsY (D.lastEntry D.m) :=
+  D.lowerChainAtLevel ϑ ∘ₗ D.targetForms.subtype
 
-/-- The volume `chainDeterminant ϑ` = det(u*u) of u = ι_ϑ (`New.Data.lowerChainAtLevel`), the map
+/--
+The volume `chainDeterminant ϑ` = det(u*u) of u = ι_ϑ (`New.Data.lowerChainAtLevel`), the map
 from forms of principal level on Y₀ to forms on Y_m, restricted to the target forms (the good forms
-on Y₀). -/
+on Y₀).
+-/
 def chainDeterminant (ϑ : D.MFoldTwist) : ℂ := ((D.Θ ϑ).normDet : ℂ) ^ 2
 
 open scoped ComplexOrder in
-/-- For every m-fold twist `ϑ : D.MFoldTwist`, `D.chainDeterminant ϑ` is a positive real number.
+/--
+For every m-fold twist `ϑ : D.MFoldTwist`, `D.chainDeterminant ϑ` is a positive real number.
 This is the volume det(u* u) of the map u = ι_ϑ from forms on Y₀ to forms on Y_m, restricted to the
-target forms. So this map is injective. -/
+target forms. So this map is injective.
+-/
 theorem chainDeterminant_pos (ϑ : D.MFoldTwist) : 0 < D.chainDeterminant ϑ := by
   rw [chainDeterminant, ← Complex.ofReal_pow, Complex.zero_lt_real, sq_pos_iff, Ne,
     normDet_eq_zero_iff_ker_ne_bot, not_not, ker_eq_bot]
@@ -144,9 +157,11 @@ lemma exists_normDet_goodLift_sq_eq (j : D.LiftIndex) :
         rw [h_norm, LinearMap.smul_apply, inner_smul_right]
         rfl
 
-/-- The product, in the order `j = 1, …, m`, of the operators `rallisOnGood` on the target forms for
+/--
+The product, in the order `j = 1, …, m`, of the operators `rallisOnGood` on the target forms for
 the twists `ϑ ^ j` and the indices `j`. The `j`-th one is the series of Rallis' formula for the
-`j`-th lift at `ϑ ^ j`, which acts as a spherical Hecke operator. -/
+`j`-th lift at `ϑ ^ j`, which acts as a spherical Hecke operator.
+-/
 def rallisProduct (ϑ : D.MFoldTwist) : End ℂ D.targetForms :=
   ((List.range D.m).map fun i : ℕ ↦ D.rallisOnGood (D.spaceY 0) (ϑ.pow (i + 1)) (i + 1)).prod
 
@@ -205,7 +220,8 @@ lemma exists_inner_weightedChain_eq :
     ← inner_smul_right, ← LinearMap.smul_apply, ← h_prod]
   exact h_inner ϑ x.val y
 
-/-- The Gram form of the chain. For an `m`-fold twist `ϑ` let `Θ = D.Θ ϑ` be the chain of lifts from
+/--
+The Gram form of the chain. For an `m`-fold twist `ϑ` let `Θ = D.Θ ϑ` be the chain of lifts from
 forms on `Y₀` to forms on `Y_m`, restricted to the target forms. There are numbers `c ϑ`, a real `C`
 (possibly `0`) and an integer `k` such that for all `ϑ`
 * `‖c ϑ‖ ^ 2 = C (Nm Q) ^ k (∏_{1 ≤ i < j ≤ m} quotientRatio i j ϑ) ^ 2` (`HasAbsUpToNormPower`),
@@ -216,12 +232,14 @@ operator `R = D.rallisProduct ϑ` is the product over `1 ≤ j ≤ m` of the ser
 for the `j`-th lift at `ϑ ^ j`. The number `c_Q = (D.descentPair ϑ 1).twistFactor` is
 `(Nm Q) ^ (r t) ∏_{w ∈ Q} ∏_{t < i ≤ t + r} (1 - q_w ^ (-i))`, and `quotientRatio i j ϑ` is the
 product of the ratios of Hecke values of the quotient of the `j`-th and `i`-th lift characters at
-`ϑ ^ (j - i)`. -/
-theorem exists_inner_chain_eq :
-    ∃ c : D.MFoldTwist → ℂ,
-      D.HasAbsUpToNormPower c (∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j) ∧
-      ∀ (ϑ : D.MFoldTwist) (x y : D.targetForms), inner ℂ (D.Θ ϑ x) (D.Θ ϑ y) =
-        c ϑ * (D.descentPair ϑ 1).twistFactor ^ D.m * inner ℂ x (D.rallisProduct ϑ y) := by
+`ϑ ^ (j - i)`.
+-/
+theorem exists_inner_chain_eq
+    : ∃ c : D.MFoldTwist → ℂ,
+      D.HasAbsUpToNormPower c (∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j)
+        ∧ ∀ (ϑ : D.MFoldTwist) (x y : D.targetForms),
+          inner ℂ (D.Θ ϑ x) (D.Θ ϑ y)
+            = c ϑ * (D.descentPair ϑ 1).twistFactor ^ D.m * inner ℂ x (D.rallisProduct ϑ y) := by
   obtain ⟨κ, hκ, h_weighted⟩ := D.exists_inner_weightedChain_eq
   -- The index of the last level is `γ * N ^ l * gramFactor ^ m * N_m / (N_0 * N_1 ^ m)`, with `N`
   -- the norm of the modulus and `N_n` the orders `triangleGLCard`.
@@ -239,15 +257,19 @@ theorem exists_inner_chain_eq :
   refine ⟨κ * indexFactor, by simpa using hκ.mul h_index_factor, fun ϑ x y ↦ ?_⟩
   let matrixCard : ℂ := Fintype.card (D.Y 1 × D.RowIndex → (D.twistModulus ϑ 1).ResidueRing)
   -- On the target the inner product is the index times a dimension times the Petersson product.
-  have h_chain : inner ℂ (D.Θ ϑ x) (D.Θ ϑ y) =
-      stdLevelIndex (lastLevel ϑ.toTameChar) * Fintype.card (WeylIndex (D.Y D.m) D.columnsY) *
-        (κ ϑ * (triangleGLCard false ϑ 0 * triangleGLCard false ϑ 1 ^ D.m /
-          triangleGLCard false ϑ D.m) / matrixCard ^ D.m * inner ℂ x (D.rallisProduct ϑ y)) := by
+  have h_chain
+      : inner ℂ (D.Θ ϑ x) (D.Θ ϑ y)
+        = stdLevelIndex (lastLevel ϑ.toTameChar) * Fintype.card (WeylIndex (D.Y D.m) D.columnsY)
+          * (κ ϑ
+            * (triangleGLCard false ϑ 0 * triangleGLCard false ϑ 1 ^ D.m
+              / triangleGLCard false ϑ D.m)
+            / matrixCard ^ D.m * inner ℂ x (D.rallisProduct ϑ y)) := by
     rw [← h_weighted ϑ x y]
     exact D.inner_lowerChainAtLevel ϑ x.val y.val
   -- The chosen places and the ranks do not depend on `ϑ`.
-  have h_factor : (D.descentPair ϑ 1).gramFactor / matrixCard =
-      (D.descentPair .one 1).chosenFactor * (D.descentPair ϑ 1).twistFactor :=
+  have h_factor
+      : (D.descentPair ϑ 1).gramFactor / matrixCard
+        = (D.descentPair .one 1).chosenFactor * (D.descentPair ϑ 1).twistFactor :=
     (D.descentPair ϑ 1).gramFactor_div_card
   -- The orders `triangleGLCard` cancel.
   rw [h_chain, h_index, (div_eq_iff (NeZero.out : matrixCard ≠ 0)).1 h_factor]
@@ -296,7 +318,8 @@ lemma HasAbsUpToNormPower.exists_norm_div_eq_mul_prod_quotientRatio {D : Data P}
   simpa only [Finset.prod_apply] using h_modulus.exists_norm_div_eq
     (by simp [prod_quotientRatio_one]) (by simp [prod_quotientRatio_nonneg]) hc
 
-/-- **Norm of the chain.** For an `m`-fold twist `ϑ` let `Θ = D.Θ ϑ` be the chain of lifts from
+/--
+**Norm of the chain.** For an `m`-fold twist `ϑ` let `Θ = D.Θ ϑ` be the chain of lifts from
 forms on `Y₀` to forms on `Y_m`, restricted to the target forms. There are a constant `C > 0`, an
 integer `e` and numbers `c ϑ` such that for all `ϑ`
 * `‖c ϑ‖ = C (Nm Q) ^ (e / 2) ∏_{1 ≤ i < j ≤ m} quotientRatio i j ϑ`, and
@@ -307,14 +330,19 @@ operator `R = D.rallisProduct ϑ` is the product over `1 ≤ j ≤ m` of the ser
 for the `j`-th lift at `ϑ ^ j`. The number `c_Q = (D.descentPair ϑ 1).twistFactor` is
 `(Nm Q) ^ (r t) ∏_{w ∈ Q} ∏_{t < i ≤ t + r} (1 - q_w ^ (-i))`, and `quotientRatio i j ϑ` is the
 product of the ratios of Hecke values of the quotient of the `j`-th and `i`-th lift characters at
-`ϑ ^ (j - i)`. -/
-theorem exists_adjoint_chain_comp_eq_smul_rallisProduct (D : Data P) :
-    ∃ (C : ℝ) (e : ℤ) (c : D.MFoldTwist → ℂ),
-      0 < C ∧
-      (∀ ϑ : D.MFoldTwist, ‖c ϑ‖ = C * ((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) *
-        ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ)) ∧
-      ∀ ϑ : D.MFoldTwist, (D.Θ ϑ).adjoint ∘ₗ D.Θ ϑ =
-        (c ϑ * (D.descentPair ϑ 1).twistFactor ^ D.m) • D.rallisProduct ϑ := by
+`ϑ ^ (j - i)`.
+-/
+theorem exists_adjoint_chain_comp_eq_smul_rallisProduct (D : Data P)
+    : ∃ (C : ℝ) (e : ℤ) (c : D.MFoldTwist → ℂ),
+      0 < C
+        ∧ (∀ ϑ : D.MFoldTwist,
+          ‖c ϑ‖
+            = C
+              * ((ϑ.normQ : ℝ) ^ (e / 2 : ℝ)
+                * ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ))
+        ∧ ∀ ϑ : D.MFoldTwist,
+          (D.Θ ϑ).adjoint ∘ₗ D.Θ ϑ
+            = (c ϑ * (D.descentPair ϑ 1).twistFactor ^ D.m) • D.rallisProduct ϑ := by
   -- The Gram form of the chain gives the operator identity. If `c 1 ≠ 0`, divide by `c 1` to get
   -- the modulus of `c`; if `c 1 = 0`, the target forms are zero and any factor serves.
   obtain ⟨c, h_modulus, h_gram⟩ := D.exists_inner_chain_eq
@@ -323,28 +351,28 @@ theorem exists_adjoint_chain_comp_eq_smul_rallisProduct (D : Data P) :
   · have h_injective : Function.Injective (D.Θ 1) :=
       (D.lowerChainAtLevel_injective 1).comp D.targetForms.injective_subtype
     have h_forms_zero (y : D.targetForms) : y = 0 := by
-      have h_inner : inner ℂ (D.Θ 1 y) (D.Θ 1 y) = 0 := by
-        rw [h_gram, hc_one, zero_mul, zero_mul]
+      have h_inner : inner ℂ (D.Θ 1 y) (D.Θ 1 y) = 0 := by rw [h_gram, hc_one, zero_mul, zero_mul]
       have h_image : D.Θ 1 y = 0 := inner_self_eq_zero.1 h_inner
       exact (map_eq_zero_iff (D.Θ 1) h_injective).1 h_image
     have h_end (S : End ℂ D.targetForms) : S = 0 := LinearMap.ext fun y ↦ h_forms_zero (S y)
-    have h_norm (ϑ : D.MFoldTwist) :
-        ‖(ratio ϑ : ℂ)‖ = 1 * ((ϑ.normQ : ℝ) ^ ((0 : ℤ) / 2 : ℝ) * ratio ϑ) := by
+    have h_norm (ϑ : D.MFoldTwist)
+        : ‖(ratio ϑ : ℂ)‖ = 1 * ((ϑ.normQ : ℝ) ^ ((0 : ℤ) / 2 : ℝ) * ratio ϑ) := by
       rw [Complex.norm_real, Real.norm_of_nonneg (D.prod_quotientRatio_nonneg ϑ), Int.cast_zero,
         zero_div, Real.rpow_zero, one_mul, one_mul]
     refine ⟨1, 0, fun ϑ ↦ ratio ϑ, one_pos, h_norm, fun ϑ ↦ ?_⟩
     rw [h_end ((D.Θ ϑ).adjoint ∘ₗ D.Θ ϑ), h_end (D.rallisProduct ϑ), smul_zero]
-  · obtain ⟨e, h_div⟩ : ∃ e : ℤ, ∀ ϑ : D.MFoldTwist,
-        ‖c ϑ / c 1‖ = (ϑ.normQ : ℝ) ^ (e / 2 : ℝ) * ratio ϑ :=
+  · obtain ⟨e, h_div⟩
+        : ∃ e : ℤ, ∀ ϑ : D.MFoldTwist, ‖c ϑ / c 1‖ = (ϑ.normQ : ℝ) ^ (e / 2 : ℝ) * ratio ϑ :=
       h_modulus.exists_norm_div_eq_mul_prod_quotientRatio hc_one
     have h_pos : 0 < ‖c 1‖ := norm_pos_iff.2 hc_one
-    have h_norm (ϑ : D.MFoldTwist) :
-        ‖c ϑ‖ = ‖c 1‖ * ((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) * ratio ϑ) :=
-      calc ‖c ϑ‖ = ‖c 1‖ * (‖c ϑ‖ / ‖c 1‖) := (mul_div_cancel₀ ‖c ϑ‖ h_pos.ne').symm
+    have h_norm (ϑ : D.MFoldTwist) : ‖c ϑ‖ = ‖c 1‖ * ((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) * ratio ϑ) :=
+      calc
+        ‖c ϑ‖
+          = ‖c 1‖ * (‖c ϑ‖ / ‖c 1‖) := (mul_div_cancel₀ ‖c ϑ‖ h_pos.ne').symm
         _ = ‖c 1‖ * ((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) * ratio ϑ) := by rw [← norm_div, h_div]
-    have h_inner (ϑ : D.MFoldTwist) (x y : D.targetForms) :
-        inner ℂ x (((D.Θ ϑ).adjoint ∘ₗ D.Θ ϑ) y) =
-          inner ℂ x (((c ϑ * (D.descentPair ϑ 1).twistFactor ^ D.m) • D.rallisProduct ϑ) y) := by
+    have h_inner (ϑ : D.MFoldTwist) (x y : D.targetForms)
+        : inner ℂ x (((D.Θ ϑ).adjoint ∘ₗ D.Θ ϑ) y)
+          = inner ℂ x (((c ϑ * (D.descentPair ϑ 1).twistFactor ^ D.m) • D.rallisProduct ϑ) y) := by
       rw [comp_apply, adjoint_inner_right, h_gram, LinearMap.smul_apply, inner_smul_right]
     refine ⟨‖c 1‖, e, c, h_pos, h_norm, fun ϑ ↦ ?_⟩
     exact LinearMap.ext fun y ↦ ext_inner_left ℂ fun x ↦ h_inner ϑ x y
@@ -398,43 +426,50 @@ lemma exists_chainDeterminant_eq_pow_mul_prod_liftDeterminant :
   simpa [chainDeterminant, liftDeterminant] using
     congrArg (fun z : ℂ ↦ (‖z‖ : ℂ)) h_chain_factorization
 
-/-- There is an integer `e` such that, for every twist `ϑ` whose first `m` powers are twists, the
+/--
+There is an integer `e` such that, for every twist `ϑ` whose first `m` powers are twists, the
 ratio `chainDeterminant ϑ / chainDeterminant 1` is `(normQ ϑ ^ (e / 2) * ∏_{1 ≤ i < j ≤ m}
 quotientRatio i j ϑ) ^ targetDim` times the product over `1 ≤ j ≤ m` of the ratios
-`liftDeterminant ϑ j / liftDeterminant 1 j`. -/
-theorem exists_div_chainDeterminant_one_eq :
-    ∃ e : ℤ, ∀ ϑ : D.MFoldTwist,
-      D.chainDeterminant ϑ / D.chainDeterminant 1 =
-        (((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) *
-            ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ : ℝ) : ℂ) ^ D.targetDim *
-          ∏ j ∈ Icc 1 D.m, D.liftDeterminant ϑ j / D.liftDeterminant 1 j := by
+`liftDeterminant ϑ j / liftDeterminant 1 j`.
+-/
+theorem exists_div_chainDeterminant_one_eq
+    : ∃ e : ℤ, ∀ ϑ : D.MFoldTwist,
+      D.chainDeterminant ϑ / D.chainDeterminant 1
+        = (((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) * ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ
+                : ℝ)
+              : ℂ)
+            ^ D.targetDim
+          * ∏ j ∈ Icc 1 D.m, D.liftDeterminant ϑ j / D.liftDeterminant 1 j := by
   obtain ⟨C, e, hC, h_absolute_volume⟩ := D.exists_chainDeterminant_eq_pow_mul_prod_liftDeterminant
   refine ⟨e, fun ϑ ↦ ?_⟩
   -- Divide by the untwisted volume: the character-independent normalization cancels,
   -- leaving the pairwise exchange ratios and the single-lift ratios.
-  have h_untwisted_volume :
-      D.chainDeterminant 1 = C ^ D.targetDim * ∏ j ∈ Icc 1 D.m, D.liftDeterminant 1 j := by
+  have h_untwisted_volume
+      : D.chainDeterminant 1 = C ^ D.targetDim * ∏ j ∈ Icc 1 D.m, D.liftDeterminant 1 j := by
     simp [h_absolute_volume, D.prod_quotientRatio_one, toAutChar_one_and_toTwist_one_and_Q_one]
   rw [h_absolute_volume ϑ, h_untwisted_volume, prod_div_distrib, Complex.ofReal_mul, mul_pow,
     mul_assoc, mul_div_mul_left _ _ (by simp [hC.ne']), mul_div_assoc]
 
 open scoped ComplexOrder in
-/-- **Factorization of the determinant.** For the data `D`, let `ϑ` be an `m`-fold twist
+/--
+**Factorization of the determinant.** For the data `D`, let `ϑ` be an `m`-fold twist
 (`MFoldTwist`): a twist whose tame part has `ψ_wⁿ` nontrivial for all `w` in `Q` and `1 ≤ n ≤ m`.
 Let `Θ = D.Θ ϑ` be the chain of lifts restricted to the target forms, and `u = goodLift` the lift at
 `1 ≤ j ≤ m` for `ϑ ^ j`, restricted to the good forms on W_j. Then the volumes
 `chainDeterminant ϑ` = det(Θ* Θ) and `liftDeterminant ϑ j` = det(u* u), with * the adjoint, are
 positive. The ratio `chainDeterminant ϑ / chainDeterminant 1` is `(normQ ϑ ^ (e / 2) * ∏_{i < j}
 quotientRatio i j ϑ) ^ targetDim` times the product of the ratios
-`liftDeterminant ϑ j / liftDeterminant 1 j`, with an integer `e` independent of `ϑ`. -/
-theorem exists_chainDeterminant_pos_and_div_chainDeterminant_one_eq :
-    ∃ e : ℤ, ∀ ϑ : D.MFoldTwist,
-      0 < D.chainDeterminant ϑ ∧
-      (∀ j : D.LiftIndex, 0 < D.liftDeterminant ϑ j) ∧
-      D.chainDeterminant ϑ / D.chainDeterminant 1 =
-        (((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) *
-            ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ : ℝ) : ℂ) ^ D.targetDim *
-          ∏ j ∈ Icc 1 D.m, D.liftDeterminant ϑ j / D.liftDeterminant 1 j := by
+`liftDeterminant ϑ j / liftDeterminant 1 j`, with an integer `e` independent of `ϑ`.
+-/
+theorem exists_chainDeterminant_pos_and_div_chainDeterminant_one_eq
+    : ∃ e : ℤ, ∀ ϑ : D.MFoldTwist,
+      0 < D.chainDeterminant ϑ ∧ (∀ j : D.LiftIndex, 0 < D.liftDeterminant ϑ j)
+        ∧ D.chainDeterminant ϑ / D.chainDeterminant 1
+          = (((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) * ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ
+                  : ℝ)
+                : ℂ)
+              ^ D.targetDim
+            * ∏ j ∈ Icc 1 D.m, D.liftDeterminant ϑ j / D.liftDeterminant 1 j := by
   obtain ⟨e, h_factor⟩ := D.exists_div_chainDeterminant_one_eq
   exact ⟨e, fun ϑ ↦ ⟨D.chainDeterminant_pos ϑ, D.liftDeterminant_pos ϑ, h_factor ϑ⟩⟩
 

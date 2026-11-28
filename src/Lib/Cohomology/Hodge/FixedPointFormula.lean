@@ -97,20 +97,24 @@ open CategoryTheory Ideal CommAlgCat Algebra TrivSqZeroExt Matrix Set SqZeroExt 
 
 variable {k E : Type} {d : ℕ} [Field k] {W X : CommAlg k ⥤ Type 1} [Field E] [Algebra E k]
 
-/-- For two maps `u c : W ⟶ X`: if the `k[ε]`-valued point `x` of `W` is a coincidence of `u` and
-`c`, then it is constant, that is, the image of its base point under `k → k[ε]`. -/
+/--
+For two maps `u c : W ⟶ X`: if the `k[ε]`-valued point `x` of `W` is a coincidence of `u` and
+`c`, then it is constant, that is, the image of its base point under `k → k[ε]`.
+-/
 abbrev ConstIfCoincident (u c : W ⟶ X) (x : W.obj (CommAlgCat.of k k[ε])) : Prop :=
-  c.app (CommAlgCat.of k k[ε]) x = u.app (CommAlgCat.of k k[ε]) x →
-    x = W.map (SqZeroExt.fst ≫ structureMap) x
+  c.app (CommAlgCat.of k k[ε]) x = u.app (CommAlgCat.of k k[ε]) x
+    → x = W.map (SqZeroExt.fst ≫ structureMap) x
 
-/-- The finite set `s` of `k`-points of `W` is the set of coincidences of the maps `u c : W ⟶ X`,
+/--
+The finite set `s` of `k`-points of `W` is the set of coincidences of the maps `u c : W ⟶ X`,
 and these are reduced: every `k[ε]`-valued coincidence is constant, every point of `s` is a
-coincidence, and every field-valued coincidence comes from a point of `s`. -/
+coincidence, and every field-valued coincidence comes from a point of `s`.
+-/
 def IsCoincidenceSet (u c : W ⟶ X) (s : Finset (W.obj (CommAlgCat.of k k))) : Prop :=
-  (∀ x : W.obj (CommAlgCat.of k k[ε]), ConstIfCoincident u c x) ∧
-  (∀ w ∈ s, c.app (CommAlgCat.of k k) w = u.app (CommAlgCat.of k k) w) ∧
-  ∀ K : CommAlg k, IsField K → ∀ x : W.obj K, c.app K x = u.app K x →
-    ∃ w ∈ s, x = W.map structureMap w
+  (∀ x : W.obj (CommAlgCat.of k k[ε]), ConstIfCoincident u c x)
+    ∧ (∀ w ∈ s, c.app (CommAlgCat.of k k) w = u.app (CommAlgCat.of k k) w)
+    ∧ ∀ K : CommAlg k,
+      IsField K → ∀ x : W.obj K, c.app K x = u.app K x → ∃ w ∈ s, x = W.map structureMap w
 
 /-- Let `k` be algebraically closed, `X` separated (`IsSeparatedFunctor X`) and `u c : W ⟶ X` two
 maps. Suppose that every `k[ε]`-valued coincidence of `u` and `c` is constant (`h_red`) and that
@@ -177,29 +181,36 @@ lemma exists_isCoincidenceSet (u c : W ⟶ X) [IsAlgClosed k] [hX : IsSeparatedF
       eq_comp_structureMap_of_ker_le (h_ker.trans hp_ker)
     exact ⟨_, (h_mem _).mpr ⟨i, p, hp, rfl⟩, W.map_comp_apply (ofHom (o hp)) structureMap _⟩
 
-/-- For a scalar `t` of `k`, the number `n` is `det ((t du - dc) (du - dc)⁻¹)` at `w`: in every
+/--
+For a scalar `t` of `k`, the number `n` is `det ((t du - dc) (du - dc)⁻¹)` at `w`: in every
 chart `A` of `X` that contains `c w` there is a matrix `N` of determinant `n` with
 `t du v - dc v = N (du v - dc v)` for all tangent vectors `v` at `w`, where `ξ` gives the
 coordinates of a tangent vector in `A`. Here `X` is a functor on `E`-algebras, and `u`, `c` map
-`W` to `X` read on `k`-algebras (`restrictAlg E k ⋙ X`). -/
-def HasJacobianRatio {X : CommAlg E ⥤ Type 1} (u c : W ⟶ restrictAlg E k ⋙ X) (d : ℕ) (t n : k)
-    (w : W.obj (CommAlgCat.of k k)) : Prop :=
+`W` to `X` read on `k`-algebras (`restrictAlg E k ⋙ X`).
+-/
+def HasJacobianRatio
+    {X : CommAlg E ⥤ Type 1} (u c : W ⟶ restrictAlg E k ⋙ X)
+    (d : ℕ) (t n : k) (w : W.obj (CommAlgCat.of k k))
+    : Prop :=
   ∀ A : EtaleChart d X,
-    c.app (CommAlgCat.of k k) w ∈ A.locus.obj ((restrictAlg E k).obj (CommAlgCat.of k k)) →
-    let ξ (γ : A.coordRing ⟶ (restrictAlg E k).obj (CommAlgCat.of k k[ε])) (i : Fin d) : k :=
-      (γ (A.coordinate i)).snd
-    ∃ N : Matrix (Fin d) (Fin d) k, N.det = n ∧
-      ∀ (v : W.obj (CommAlgCat.of k k[ε]))
-        (α γ : A.coordRing ⟶ (restrictAlg E k).obj (CommAlgCat.of k k[ε])),
-        W.map SqZeroExt.fst v = w →
-        X.map α A.point = u.app (CommAlgCat.of k k[ε]) v →
-        X.map γ A.point = c.app (CommAlgCat.of k k[ε]) v →
-        t • ξ α - ξ γ = N *ᵥ (ξ α - ξ γ)
+    c.app (CommAlgCat.of k k) w ∈ A.locus.obj ((restrictAlg E k).obj (CommAlgCat.of k k))
+      → let ξ (γ : A.coordRing ⟶ (restrictAlg E k).obj (CommAlgCat.of k k[ε])) (i : Fin d) : k :=
+          (γ (A.coordinate i)).snd
+        ∃ N : Matrix (Fin d) (Fin d) k,
+          N.det = n
+            ∧ ∀ (v : W.obj (CommAlgCat.of k k[ε]))
+                (α γ : A.coordRing ⟶ (restrictAlg E k).obj (CommAlgCat.of k k[ε])),
+              W.map SqZeroExt.fst v = w → X.map α A.point = u.app (CommAlgCat.of k k[ε]) v
+                → X.map γ A.point = c.app (CommAlgCat.of k k[ε]) v
+                → t • ξ α - ξ γ = N *ᵥ (ξ α - ξ γ)
 
-/-- The tangent vector of a jet `v`, a point of `W` with values in `k ⊕ T*`, in the direction
-`φ ∈ T`: the image of `v` under the map `k ⊕ T* → k[ε]` given by evaluation at `φ`. -/
-abbrev jetTangent {T : FGModuleCat k} (v : W.obj (CommAlgCat.of k (TrivSqZeroExt k (Dual k T))))
-    (φ : T) : W.obj (CommAlgCat.of k k[ε]) :=
+/--
+The tangent vector of a jet `v`, a point of `W` with values in `k ⊕ T*`, in the direction
+`φ ∈ T`: the image of `v` under the map `k ⊕ T* → k[ε]` given by evaluation at `φ`.
+-/
+abbrev jetTangent
+    {T : FGModuleCat k} (v : W.obj (CommAlgCat.of k (TrivSqZeroExt k (Dual k T)))) (φ : T)
+    : W.obj (CommAlgCat.of k k[ε]) :=
   W.map (ofHom (TrivSqZeroExt.map (Dual.eval k T φ))) v
 
 /-- Let `v` be a jet of `X` with values in `k ⊕ T*`, where `T` has dimension `d`, whose base point
@@ -425,15 +436,19 @@ open CategoryTheory MonoidalCategory CartesianMonoidalCategory RingHom Ideal Tri
 
 variable {k : Type} [Field k] [CharZero k] {d : ℕ} {W X : CommAlg k ⥤ Type 1}
 
-/-- The graph of the pair `(u, c)` twisted by `t` in the first factor. For a scalar `t` of `k`
+/--
+The graph of the pair `(u, c)` twisted by `t` in the first factor. For a scalar `t` of `k`
 and maps `u c : W ⟶ X`, it is the natural map `W(A ⊕ M) → X(A ⊕ M) × X(A ⊕ M)` on square-zero
-extensions, `w ↦ (u (s_t w), c w)`, where `s_t : A ⊕ M → A ⊕ M` is `(a, m) ↦ (a, t m)`. -/
+extensions, `w ↦ (u (s_t w), c w)`, where `s_t : A ⊕ M → A ⊕ M` is `(a, m) ↦ (a, t m)`.
+-/
 def scaledGraph (t : k) (u c : W ⟶ X) : sqZeroExt ⋙ W ⟶ sqZeroExt ⋙ X ⊗ sqZeroExt ⋙ X :=
   CartesianMonoidalCategory.lift (scaleModule t (HodgeTest.sqZeroExt ⋙ W) ≫ sqZeroExt.whiskerLeft u)
     (sqZeroExt.whiskerLeft c)
 
-/-- For a `k`-point `z` of `X`, the constant map `W ⟶ X` that sends every `A`-point of `W` to
-the image of `z` in `X(A)`. -/
+/--
+For a `k`-point `z` of `X`, the constant map `W ⟶ X` that sends every `A`-point of `W` to
+the image of `z` in `X(A)`.
+-/
 def constMap (z : X (of k k)) : W ⟶ X where
   app A := ↾fun _ ↦ X.map structureMap z
 
@@ -968,7 +983,6 @@ a curve `Y` is the class of the product point. On a product chart this is
 section PointClassProduct
 
 open CategoryTheory MonoidalCategory CartesianMonoidalCategory Functor New.Variety.relFreeAb
-
 
 /-- Let `x` be a class of degree `d` on `X` relative to `U`, `y` a class of degree `1` on `Y`
 relative to `W`, and `s`, `t` points of `X` and `Y` with values in `R` that map `T` into `U` and

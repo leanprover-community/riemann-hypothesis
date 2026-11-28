@@ -72,12 +72,14 @@ section MovingKernel
 
 open CategoryTheory Fin TotalH
 
-variable {C : Type 1} [Category C] {ℓ : ℕ}
-  {A : Type} [CommRing A] [InvertsPrime A ℓ] {g : C ⥤ TestOver A} {d : ℕ}
+variable
+  {C : Type 1} [Category C]
+  {ℓ : ℕ} {A : Type} [CommRing A] [InvertsPrime A ℓ]
+  {g : C ⥤ TestOver A} {d : ℕ}
 
 /-- For a section q of (P¹)^ι along g and i in ι, its i-th component, a section of P¹ along g. -/
-def projLinePow.component {ι : Type} (q : (ringOf g ⋙ projLinePow ι).sections) (i : ι) :
-    (projLineAlong g).sections :=
+def projLinePow.component {ι : Type} (q : (ringOf g ⋙ projLinePow ι).sections) (i : ι)
+    : (projLineAlong g).sections :=
   ⟨fun c ↦ q.val c i, fun f ↦ congrFun (q.property f) i⟩
 
 section AtSection
@@ -86,47 +88,58 @@ variable (Θ : Theory g)
 
 namespace IdealFamily
 
-variable {X : TestOver A ⥤ Type 1} (I : IdealFamily (ringOf (elementsProj X ⋙ 𝟭 (TestOver A))))
-  (q : (g ⋙ X).sections)
+variable
+  {X : TestOver A ⥤ Type 1}
+  (I : IdealFamily (ringOf (elementsProj X ⋙ 𝟭 (TestOver A)))) (q : (g ⋙ X).sections)
 
-/-- For a compatible family I of ideals on the elements of X, the subfunctor of X of points x in
-X(c) at which I is the unit ideal. -/
+/--
+For a compatible family I of ideals on the elements of X, the subfunctor of X of points x in
+X(c) at which I is the unit ideal.
+-/
 def topPoints : Subfunctor X where
   obj c := {x : X.obj c | I.ideal (X.elementsMk c x) = ⊤}
   map f _ := I.topLocus.map ⟨f, rfl⟩ (a := ⟨⟩)
 
-/-- The morphism ℤ[pt]/ℤ[O] → (ℤ[X]/ℤ[U])∘g induced by the section q, where U ⊆ X and O ⊆ pt
-are the loci where I and its pull-back along q are the unit ideal. -/
+/--
+The morphism ℤ[pt]/ℤ[O] → (ℤ[X]/ℤ[U])∘g induced by the section q, where U ⊆ X and O ⊆ pt
+are the loci where I and its pull-back along q are the unit ideal.
+-/
 def atSection : relFreeAb (I.whisker (sectionLift g q)).topLocus ⟶ g ⋙ relFreeAb I.topPoints :=
   relFreeAb.map (U := I.topPoints.whisker g) (sectionMap q) le_rfl
 
-/-- The reduction modulo ℓ of `New.Variety.IdealFamily.atSection`: the morphism
+/--
+The reduction modulo ℓ of `New.Variety.IdealFamily.atSection`: the morphism
 (ℤ[pt]/ℤ[O])/ℓ → ((ℤ[X]/ℤ[U])∘g)/ℓ induced by the section q, where U ⊆ X and O ⊆ pt are the loci
-where I and its pull-back along q are the unit ideal. -/
-def atSectionMod :
-    abCoker (ℓ • 𝟙 (relFreeAb (I.whisker (sectionLift g q)).topLocus)) ⟶
-      abCoker (ℓ • 𝟙 (g ⋙ relFreeAb I.topPoints)) :=
+where I and its pull-back along q are the unit ideal.
+-/
+def atSectionMod
+    : abCoker (ℓ • 𝟙 (relFreeAb (I.whisker (sectionLift g q)).topLocus))
+      ⟶ abCoker (ℓ • 𝟙 (g ⋙ relFreeAb I.topPoints)) :=
   abCoker.desc (I.atSection q ≫ abCoker.π (ℓ • 𝟙 (g ⋙ relFreeAb I.topPoints)))
     (by simpa using I.atSection q ≫= shortExact_nsmul_abCoker.1)
 
-/-- The isomorphism of total Ext groups into Θ given by pull-back along
+/--
+The isomorphism of total Ext groups into Θ given by pull-back along
 `New.Variety.IdealFamily.constToZeros` (constants mod ℓ to functions on the zeros of I), restricted
-along the section q. -/
-def zerosEquiv :
-    TotalH (sectionLift g q ⋙ zerosCoeff (locConstAlong (elementsProj X ⋙ 𝟭 (TestOver A))) I)
-        Θ.functor ≃+
-      TotalH (sectionLift g q ⋙ abCoker (ℓ • 𝟙 (relFreeAb I.topLocus))) Θ.functor :=
+along the section q.
+-/
+def zerosEquiv
+    : TotalH (sectionLift g q ⋙ zerosCoeff (locConstAlong (elementsProj X ⋙ 𝟭 (TestOver A))) I)
+        Θ.functor
+      ≃+ TotalH (sectionLift g q ⋙ abCoker (ℓ • 𝟙 (relFreeAb I.topLocus))) Θ.functor :=
   AddEquiv.ofBijective (pullbackAlong ((sectionLift g q).whiskerLeft I.constToZeros))
     (I.isCohomEquiv_constToZeros (sectionLift g q) (Theory.onElements Theory.locallyConstant) rfl
       Θ.zariski_descent).bijective_pullbackAlong
 
-/-- From classes on (ℤ[X]/ℤ[`New.Variety.IdealFamily.topPoints`])/ℓ along g to classes on the
+/--
+From classes on (ℤ[X]/ℤ[`New.Variety.IdealFamily.topPoints`])/ℓ along g to classes on the
 locally constant ℤ/ℓ-valued functions modulo those dying where I = 0
 (`New.Variety.IdealFamily.zerosCoeff`), taken along q: pull back along q, then invert
-`New.Variety.IdealFamily.zerosEquiv`. -/
-def extendToZeros :
-    TotalH (abCoker (ℓ • 𝟙 (g ⋙ relFreeAb I.topPoints))) Θ.functor →+
-      TotalH (sectionLift g q ⋙ zerosCoeff (locConstAlong (elementsProj X ⋙ 𝟭 (TestOver A))) I)
+`New.Variety.IdealFamily.zerosEquiv`.
+-/
+def extendToZeros
+    : TotalH (abCoker (ℓ • 𝟙 (g ⋙ relFreeAb I.topPoints))) Θ.functor
+      →+ TotalH (sectionLift g q ⋙ zerosCoeff (locConstAlong (elementsProj X ⋙ 𝟭 (TestOver A))) I)
         Θ.functor :=
   (I.zerosEquiv Θ q).symm.toAddMonoidHom.comp (pullbackAlong (I.atSectionMod q))
 
@@ -370,11 +383,11 @@ section IntegrationOverLine
 open CategoryTheory Fin TotalH Functor.Elements Finsupp
 open Function hiding comp comp_id id_comp
 
-variable {C : Type 1}
-  {C' D : Type _} [Category C] [Category C'] [Category D] {ℓ : ℕ}
-  {A : Type} [CommRing A] [InvertsPrime A ℓ]
-  {g : C ⥤ TestOver A} {M : TorsionCoeff g} {S F : AbFunctor C} (φ : C' ⥤ C) (ψ : D ⥤ C')
-  (x : TotalH S F)
+variable
+  {C : Type 1} {C' D : Type _} [Category C] [Category C'] [Category D]
+  {ℓ : ℕ} {A : Type} [CommRing A] [InvertsPrime A ℓ]
+  {g : C ⥤ TestOver A} {M : TorsionCoeff g} {S F : AbFunctor C}
+  (φ : C' ⥤ C) (ψ : D ⥤ C') (x : TotalH S F)
 
 /-! ### Integration over the projective line -/
 
@@ -476,11 +489,13 @@ protected lemma onElements (h : M.HasLineFormula) {X : C ⥤ Type 1} :
   exact isLerayHirschBasis_of_reprBy fun c ↦
     (bijective_iff_of_hasUniversalPoints _ (hasUniversalPoints_reprBy_elements c)).mp (h _)
 
-/-- Integration over the projective line: given the projective line formula for M, the map
-sending a class a + ηb over the points of P¹ to b. -/
-def integrate :
-    TotalH (elementsProj (projLineAlong g) ⋙ S) (elementsProj (projLineAlong g) ⋙ M.functor) →+
-      TotalH S M.functor :=
+/--
+Integration over the projective line: given the projective line formula for M, the map
+sending a class a + ηb over the points of P¹ to b.
+-/
+def integrate
+    : TotalH (elementsProj (projLineAlong g) ⋙ S) (elementsProj (projLineAlong g) ⋙ M.functor)
+      →+ TotalH S M.functor :=
   (applyAddHom false).comp
     (LinearEquiv.ofBijective (lerayHirsch M.lineBasis S) (h S)).symm.toAddMonoidHom
 
@@ -539,14 +554,18 @@ section ComparedTheories
 open CategoryTheory Fin TotalH Functor.Elements Finsupp
 open Function hiding comp comp_id id_comp
 
-variable {C : Type 1} [Category C] {ℓ : ℕ} {A : Type} [CommRing A] [InvertsPrime A ℓ]
+variable
+  {C : Type 1} [Category C]
+  {ℓ : ℕ} {A : Type} [CommRing A] [InvertsPrime A ℓ]
   {g : C ⥤ TestOver A} {N N' : AbFunctor (TestOver A)} {d : ℕ} {ι : Type*} [Fintype ι]
 
 /-! ### Compared theories and natural operations -/
 
-/-- A theory along g with morphisms b i (the field `comparison`, indexed by `Index`) to its
+/--
+A theory along g with morphisms b i (the field `comparison`, indexed by `Index`) to its
 coefficient F (the field `functor`) from the locally constant ℤ/ℓ-valued functions, such that it and
-`New.Variety.Theory.locallyConstant` satisfy the projective line formula. -/
+`New.Variety.Theory.locallyConstant` satisfy the projective line formula.
+-/
 structure ComparedTheory (g : C ⥤ TestOver A) extends Theory g where
   /-- The index set of the comparison morphisms. -/
   Index : Type
@@ -558,9 +577,11 @@ structure ComparedTheory (g : C ⥤ TestOver A) extends Theory g where
   line_formula_const : (Theory.locallyConstant (A := A)).HasLineFormula
 
 variable (A) in
-/-- A functor g (the field `toTestOver`) from a category C (the field `Base`) to tests over A, a
+/--
+A functor g (the field `toTestOver`) from a category C (the field `Base`) to tests over A, a
 theory Θ (the field `theory`) along g satisfying the projective line formula, and d compatible
-points of P¹ over the rings g(c). -/
+points of P¹ over the rings g(c).
+-/
 structure LineStage (d : ℕ) where
   /-- The category on which the stage lives. -/
   {Base : Type 1}
@@ -577,47 +598,58 @@ structure LineStage (d : ℕ) where
 
 attribute [instance] LineStage.category
 
-/-- Operations with d parameters: additive maps from total Ext(N∘g, Θ) to total Ext(N'∘g, Θ),
+/--
+Operations with d parameters: additive maps from total Ext(N∘g, Θ) to total Ext(N'∘g, Θ),
 for every g, theory Θ with the projective line formula and section of (P¹)^d, commuting with
-comparisons along functors. -/
+comparisons along functors.
+-/
 structure NaturalOp (d : ℕ) (N N' : AbFunctor (TestOver A)) where
-  /-- For a stage `t`, with theory `Θ = t.theory` along `g = t.toTestOver`, the projective line
+  /--
+  For a stage `t`, with theory `Θ = t.theory` along `g = t.toTestOver`, the projective line
   formula and the section `t.points` of `(ℙ¹)^d`, an additive map from the total cohomology of
-  `g ⋙ N` to that of `g ⋙ N'`, coefficients in `Θ.functor`. -/
-  app (t : LineStage A d) : TotalH (t.toTestOver ⋙ N) t.theory.functor →+ TotalH (t.toTestOver ⋙ N')
-    t.theory.functor
-  /-- The maps `app` commute with restriction along a functor `φ`, followed by the product with a
-  class `b` from `φ ⋙ t.theory.functor` to `Θ.functor`. -/
-  naturality :
-      ∀ {C : Type 1} [Category C] (t : LineStage A d) (φ : C ⥤ t.Base)
-        (Θ : Theory (φ ⋙ t.toTestOver))
-          (l : Θ.HasLineFormula) (b : TotalH (φ ⋙ t.theory.functor) Θ.functor)
-            (x : TotalH (t.toTestOver ⋙ N) t.theory.functor),
-        mapThenComp (restrictAlong φ) b (app t x) =
-          app ⟨Θ, l, φ.sectionsPrecomp t.points⟩ (mapThenComp (restrictAlong φ) b x)
+  `g ⋙ N` to that of `g ⋙ N'`, coefficients in `Θ.functor`.
+  -/
+  app (t : LineStage A d)
+    : TotalH (t.toTestOver ⋙ N) t.theory.functor →+ TotalH (t.toTestOver ⋙ N') t.theory.functor
+  /--
+  The maps `app` commute with restriction along a functor `φ`, followed by the product with a
+  class `b` from `φ ⋙ t.theory.functor` to `Θ.functor`.
+  -/
+  naturality
+    : ∀ {C : Type 1} [Category C] (t : LineStage A d) (φ : C ⥤ t.Base)
+        (Θ : Theory (φ ⋙ t.toTestOver)) (l : Θ.HasLineFormula)
+        (b : TotalH (φ ⋙ t.theory.functor) Θ.functor)
+        (x : TotalH (t.toTestOver ⋙ N) t.theory.functor),
+      mapThenComp (restrictAlong φ) b (app t x)
+        = app ⟨Θ, l, φ.sectionsPrecomp t.points⟩ (mapThenComp (restrictAlong φ) b x)
 
-/-- The restriction of t to the category of pairs (c, x) with x ∈ P¹(t.toTestOver(c)), with the
-tautological point x placed before the d points of t. -/
+/--
+The restriction of t to the category of pairs (c, x) with x ∈ P¹(t.toTestOver(c)), with the
+tautological point x placed before the d points of t.
+-/
 def LineStage.consTautologicalPoint (t : LineStage A d) : LineStage A (d + 1) where
   theory := t.theory.onElements (X := projLineAlong t.toTestOver)
   line_formula := t.line_formula.onElements
-  points :=
-    ⟨fun x ↦ Fin.cons x.2 (t.points.1 ((elementsProj (projLineAlong t.toTestOver)).obj x)), fun f ↦
-      funext (cases f.map_val (congrFun (t.points.property
-        ((elementsProj (projLineAlong t.toTestOver)).map f))))⟩
+  points := ⟨
+    fun x ↦ Fin.cons x.2 (t.points.1 ((elementsProj (projLineAlong t.toTestOver)).obj x)),
+    fun f ↦
+      funext (cases f.map_val
+        (congrFun (t.points.property ((elementsProj (projLineAlong t.toTestOver)).map f))))
+  ⟩
 
 seal Abelian.Ext Abelian.Ext.instAddCommGroup in
-/-- Integrating out the first parameter of r: pull back to the points of P¹, apply r with the
-tautological point as first parameter, and integrate over the line. -/
+/--
+Integrating out the first parameter of r: pull back to the points of P¹, apply r with the
+tautological point as first parameter, and integrate over the line.
+-/
 def NaturalOp.integrate (r : NaturalOp (d + 1) N N') : NaturalOp d N N' where
   app t :=
-    t.line_formula.integrate.comp
-      ((r.app t.consTautologicalPoint).comp
-        (TotalH.map (restrictAlong (elementsProj (projLineAlong t.toTestOver)))))
+    t.line_formula.integrate.comp ((r.app t.consTautologicalPoint).comp
+      (TotalH.map (restrictAlong (elementsProj (projLineAlong t.toTestOver)))))
   naturality t φ K l b x := by
     -- Integration, `r` and restriction to the line each commute with maps of theories.
     refine (t.line_formula.integrate_naturality _
-        (lerayHirsch_naturality _ _ (lineBasis_naturality b)) _).trans (congrArg _ ?_)
+      (lerayHirsch_naturality _ _ (lineBasis_naturality b)) _).trans (congrArg _ ?_)
     refine (r.naturality t.consTautologicalPoint (precomp ..) K.onElements ..).trans (congrArg _ ?_)
     -- This is `lineBasis_naturality` for the class `1`, which is the identity.
     exact (congrArg _ comp_id).symm.trans ((lineBasis_naturality b true x).symm.trans comp_id)
@@ -633,17 +665,19 @@ lemma finite_of_exact {K I P : Type*} [AddGroup I] [AddGroup P] {f : K → I} {g
 
 namespace ComparedTheory
 
-variable (D : ComparedTheory g) {m : ℕ}
-  (I : IdealFamily (ringOf (testOfPoint A (projLinePow (Fin m)))))
+variable
+  (D : ComparedTheory g) {m : ℕ} (I : IdealFamily (ringOf (testOfPoint A (projLinePow (Fin m)))))
 
 /-! ### The comparison property and its permanence -/
 
-/-- `D.IsFiniteLerayHirsch N`, for a functor `N` from tests over `A` to abelian groups. Write `L`
+/--
+`D.IsFiniteLerayHirsch N`, for a functor `N` from tests over `A` to abelian groups. Write `L`
 for the locally constant `ℤ/ℓ`-valued functions and `F` for the coefficient of `D`. Then (1) the
 Leray–Hirsch map of the classes `D.comparison i`, which sends a family `(w i)` of classes in the
 total Ext group of `N` into `L` to `∑ i, (w i restricted along g) · D.comparison i`, is a bijection
 onto the total Ext group of `g ⋙ N` into `F`, and (2) the total Ext group of `N` into `L` is
-finite. -/
+finite.
+-/
 def IsFiniteLerayHirsch (N : AbFunctor (TestOver A)) : Prop :=
   IsLerayHirschBasis D.comparison N ∧ Finite (TotalH N (locConstAlong (𝟭 (TestOver A))))
 

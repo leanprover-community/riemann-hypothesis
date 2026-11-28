@@ -44,14 +44,17 @@ Known; see `Lib.Weil.Periods.Unfolding` for sources.
 open MeasureTheory Matrix
 noncomputable section
 namespace New.Grading
-variable {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
+variable
+  {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
   {s : ℕ} {ε : ι → ℤˣ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
 
 /-! ### The factor in `H` of an element of `R = U ⋊ H` -/
 
-/-- The factor `h ∈ H` of an element `u h` of `R = U ⋊ H`: the continuous homomorphism `R → H`
+/--
+The factor `h ∈ H` of an element `u h` of `R = U ⋊ H`: the continuous homomorphism `R → H`
 given by `New.Grading.exists_besselGroup_proj`, a retraction of `New.Grading.inclX` with kernel
-`U`. -/
+`U`.
+-/
 def leviPart : Y.besselGroup →* G E (1 : X → ℤˣ) := Y.exists_besselGroup_proj.choose
 
 @[fun_prop]
@@ -129,13 +132,14 @@ lemma leviPart_snd_eq_one {r : Y.besselGroup} (hr : (r : G E ε).2 = 1) :
 
 /-! ### The character `ψ_U` -/
 
-/-- The part of degree `d` of a matrix on the basis of `V`: it keeps the entries `(b, a)` with
-`gradeOf b = gradeOf a + d` and replaces the others by `0`. -/
+/--
+The part of degree `d` of a matrix on the basis of `V`: it keeps the entries `(b, a)` with
+`gradeOf b = gradeOf a + d` and replaces the others by `0`.
+-/
 def degreePart (d : ℤ) : Matrix ι ι (𝔸 E) →+ Matrix ι ι (𝔸 E) where
   toFun A := of fun b a ↦ if Y.gradeOf b = Y.gradeOf a + d then A b a else 0
   map_zero' := Matrix.ext fun b a ↦ by simp
-  map_add' A B := Matrix.ext fun b a ↦ by
-    by_cases h : Y.gradeOf b = Y.gradeOf a + d <;> simp [h]
+  map_add' A B := Matrix.ext fun b a ↦ by by_cases h : Y.gradeOf b = Y.gradeOf a + d <;> simp [h]
 
 omit [Fintype X] in
 lemma degreePart_apply (d : ℤ) (A : Matrix ι ι (𝔸 E)) (b a : ι) :
@@ -222,9 +226,11 @@ lemma hasDegreeGe_conj {d : ℤ} {r u : G E ε} (hr : r ∈ Y.besselGroup)
 
 variable [WeilData E]
 
-/-- The function `ψ_U (u) = ψ (½ ȷ tr (𝔢 u))` on `G`, where `ψ` is the standard additive character,
+/--
+The function `ψ_U (u) = ψ (½ ȷ tr (𝔢 u))` on `G`, where `ψ` is the standard additive character,
 `ȷ` is the element of the Weil data, `𝔢 = Y.shift`, and `u` stands for its matrix in rational
-coordinates. -/
+coordinates.
+-/
 def unipotentChar (u : G E ε) : ℂ :=
   stdAddChar E (↑(WeilData.j / 2 : E) * (Y.shift * V.ratCoordMatrix u).trace)
 
@@ -279,27 +285,33 @@ lemma unipotentChar_conj (a : G E (1 : X → ℤˣ)) (u : G E ε) :
 
 /-! ### Equivariant functions and the function `𝒲_φ` -/
 
-/-- A function `W` on `R(𝔸)` is `ψ_U`-equivariant if it is continuous, left invariant under `R(F)`
-(a function on `[R] = R(F) \ R(𝔸)`), and `W (u r) = ψ_U (u) W (r)` for `u ∈ U^{≥2}(𝔸)`. -/
+/--
+A function `W` on `R(𝔸)` is `ψ_U`-equivariant if it is continuous, left invariant under `R(F)`
+(a function on `[R] = R(F) \ R(𝔸)`), and `W (u r) = ψ_U (u) W (r)` for `u ∈ U^{≥2}(𝔸)`.
+-/
 structure IsEquivariant (W : Y.besselGroup → ℂ) : Prop where
   /-- The function is continuous. -/
   continuous : Continuous W
   /-- The function is left invariant under `R(F)`. -/
   rat_mul : ∀ γ : Y.besselGroup, (γ : G E ε) ∈ V.Γ → ∀ r : Y.besselGroup, W (γ * r) = W r
   /-- The function transforms by `ψ_U` under `U^{≥2}(𝔸)`. -/
-  unipotent_mul : ∀ u : Y.besselGroup,
-    HasDegreeGe Y.gradeOf Y.gradeOf 2 (V.ratCoordMatrix u - 1) →
-      ∀ r : Y.besselGroup, W (u * r) = Y.unipotentChar u * W r
+  unipotent_mul
+    : ∀ u : Y.besselGroup,
+      HasDegreeGe Y.gradeOf Y.gradeOf 2 (V.ratCoordMatrix u - 1)
+        → ∀ r : Y.besselGroup, W (u * r) = Y.unipotentChar u * W r
 
-variable {κ : NumberField.InfinitePlace E → ℕ → ℕ} {e : NumberField.InfinitePlace E → ℤ}
+variable
+  {κ : NumberField.InfinitePlace E → ℕ → ℕ} {e : NumberField.InfinitePlace E → ℤ}
   (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) (φ : AlgForm (E := E) X κ e)
 
-/-- The function `𝒲_φ (u h) = ψ_U (u) (φ (h_fin), π_X (h_∞) v_*)` on `R(𝔸)`. The vector `v_*` enters
+/--
+The function `𝒲_φ (u h) = ψ_U (u) (φ (h_fin), π_X (h_∞) v_*)` on `R(𝔸)`. The vector `v_*` enters
 through the linear form `t = (·, v_*)`. The values of `φ` transform under `ȟ = ᵗh⁻¹`
 (`conjWeylRep`), and `(ȟ ζ, π_X (h) v) = (ζ, v)`, so the second factor is `t (ȟ_∞⁻¹ φ (h_fin))`,
-which is `algFormCoeff 1 t φ h`. -/
-def sourceFn (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) (φ : AlgForm (E := E) X κ e)
-    (r : Y.besselGroup) : ℂ :=
+which is `algFormCoeff 1 t φ h`.
+-/
+def sourceFn (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) (φ : AlgForm (E := E) X κ e) (r : Y.besselGroup)
+    : ℂ :=
   Y.unipotentChar (r * (Y.inclX (Y.leviPart r))⁻¹) * algFormCoeff 1 t φ (Y.leviPart r)
 
 /-- Let `u` lie in the unipotent subgroup `U = Y.unipotent`, and let `a` lie in `H`, the adelic

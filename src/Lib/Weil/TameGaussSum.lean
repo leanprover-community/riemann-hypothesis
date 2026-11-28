@@ -110,10 +110,14 @@ open Matrix MeasureTheory SemilocalField Fintype
 
 attribute [local instance low] Fintype.ofFinite
 
-/-- An integral invertible matrix over F cut into column blocks (K I L), with its integral inverse
-cut into row blocks `dualK`, `dualI`, `dualL`; the blocks K and L have `p` columns, I has `n`. -/
-structure IntegralFrame (F : Type*) [SemilocalField F] (m n p : Type) [Fintype m] [DecidableEq m]
-    [Fintype n] [DecidableEq n] [Fintype p] [DecidableEq p] where
+/--
+An integral invertible matrix over F cut into column blocks (K I L), with its integral inverse
+cut into row blocks `dualK`, `dualI`, `dualL`; the blocks K and L have `p` columns, I has `n`.
+-/
+structure IntegralFrame
+    (F : Type*) [SemilocalField F]
+    (m n p : Type)
+    [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] [Fintype p] [DecidableEq p] where
   /-- The first block of columns of the basis. -/
   K : Matrix m p F
   /-- The last block of columns of the basis. -/
@@ -126,16 +130,20 @@ structure IntegralFrame (F : Type*) [SemilocalField F] (m n p : Type) [Fintype m
   dualL : Matrix p m F
   /-- The block of rows of the dual basis that is dual to `I`. -/
   dualI : Matrix n m F
-  /-- The matrix `P` with column blocks `K, I, L` and the matrix `Q` with row blocks
-  `dualK, dualI, dualL` have entries in `O` and are inverse to each other. -/
-  isIntMatrix_and_mul_eq_one :
-      let P : Matrix m (p ⊕ n ⊕ p) F := fromCols K (fromCols I L)
+  /--
+  The matrix `P` with column blocks `K, I, L` and the matrix `Q` with row blocks
+  `dualK, dualI, dualL` have entries in `O` and are inverse to each other.
+  -/
+  isIntMatrix_and_mul_eq_one
+    : let P : Matrix m (p ⊕ n ⊕ p) F := fromCols K (fromCols I L)
       let Q : Matrix (p ⊕ n ⊕ p) m F := fromRows dualK (fromRows dualI dualL)
       IsIntMatrix O P ∧ IsIntMatrix O Q ∧ P * Q = 1 ∧ Q * P = 1
 
 -- `Type _` lets each declaration fix the universe of `F`: some need `Type`, others stay general.
-variable {F : Type _} [SemilocalField F] {m n p a : Type} [Fintype m] [DecidableEq m] [Fintype n]
-  [DecidableEq n] [Fintype p] [DecidableEq p]
+variable
+  {F : Type _} [SemilocalField F]
+  {m n p a : Type}
+  [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] [Fintype p] [DecidableEq p]
 
 omit [DecidableEq n] [Fintype p] [DecidableEq p] in
 /-- Selecting rows of `M` and then multiplying by `N` selects the same rows of `M * N`. -/
@@ -220,8 +228,10 @@ lemma exists_local_gauss_sum {χ : MulChar F ℂ} (hχ : TameLocalChar χ) {ψ :
         mul_left_comm _ (ψ _), mul_left_comm t, mul_assoc] using h_shift _ (O.mul_mem ϖ_mem hs)
     simp [h_zero, invOnUnits, IsIntegralUnit, ht]
 
-/-- The six blocks of an integral frame have entries in `O`, and each block of the dual basis
-is a left inverse of its own block of the basis and vanishes on the other two. -/
+/--
+The six blocks of an integral frame have entries in `O`, and each block of the dual basis
+is a left inverse of its own block of the basis and vanishes on the other two.
+-/
 structure IntegralFrame.BlockRelations (A : IntegralFrame F m n p) : Prop where
   /-- The block `dualL` has entries in `O`. -/
   isIntMatrix_dualL : IsIntMatrix O A.dualL
@@ -274,10 +284,13 @@ lemma IntegralFrame.blockRelations (A : IntegralFrame F m n p) : A.BlockRelation
     | exact ext fun i j ↦ by simp [Matrix.one_apply, hQP']
 
 open scoped Classical in
-/-- For an integral frame A with blocks K, I, L and a function G on `a × (p ⊕ n)` matrices, the
-function of an `a × m` matrix x equal to G(x·(K I)) if x has entries in O and 0 otherwise. -/
-noncomputable def IntegralFrame.stdDatum (A : IntegralFrame F m n p) (G : Matrix a (p ⊕ n) F → ℂ)
-    (x : Matrix a m F) : ℂ :=
+/--
+For an integral frame A with blocks K, I, L and a function G on `a × (p ⊕ n)` matrices, the
+function of an `a × m` matrix x equal to G(x·(K I)) if x has entries in O and 0 otherwise.
+-/
+noncomputable def IntegralFrame.stdDatum
+    (A : IntegralFrame F m n p) (G : Matrix a (p ⊕ n) F → ℂ) (x : Matrix a m F)
+    : ℂ :=
   if IsIntMatrix O x then G (x * A.K.fromCols A.I) else 0
 
 end New.Exchange

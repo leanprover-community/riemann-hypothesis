@@ -34,11 +34,12 @@ open scoped NNReal NNRat
 
 variable {ℓ : ℕ} [ThePrime ℓ]
 
-/-- The inclusion of a coefficient ring `O` (the ring of integers of a finite Galois extension of
-`ℚ_ℓ` inside `ℚ̄_ℓ`) into the ring `ℤ̄_ℓ` of all integral elements. -/
+/--
+The inclusion of a coefficient ring `O` (the ring of integers of a finite Galois extension of
+`ℚ_ℓ` inside `ℚ̄_ℓ`) into the ring `ℤ̄_ℓ` of all integral elements.
+-/
 def CoeffRing.toIntQpBar (O : CoeffRing ℓ) : O.val →+* intQpBar ℓ :=
-  (Subalgebra.val O.val).toRingHom.codRestrict (intQpBar ℓ)
-    fun x : O.val ↦ CoeffRing.norm_le_one x
+  (Subalgebra.val O.val).toRingHom.codRestrict (intQpBar ℓ) fun x : O.val ↦ CoeffRing.norm_le_one x
 
 @[simp] lemma CoeffRing.coe_toIntQpBar {O : CoeffRing ℓ} (x : O.val) :
     (O.toIntQpBar x).val = x.val := rfl

@@ -57,13 +57,16 @@ open Matrix MeasureTheory Measure ENNReal Sum Ring Units Function Set TraceOne
 
 variable (A : Type) [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A]
 
-/-- A place, such as ℂ or a finite product of completions: a locally compact star ring A with Haar
+/--
+A place, such as ℂ or a finite product of completions: a locally compact star ring A with Haar
 volume, an element τ = `element` of trace one, a skew unit δ, a Haar measure ν on the skew elements,
 a modulus `modulus` that describes how matrices scale the volume, a unitary additive character ψ,
 and a bound c = `kernelBound` in [0, ∞] such that some kernel has Fourier transform of L¹ norm at
-most `c`. -/
-class Place extends IsTopologicalRing A, ContinuousStar A, LocallyCompactSpace A, PolishSpace A,
-  BorelSpace A, (volume : Measure A).IsAddHaarMeasure, TraceOne A where
+most `c`.
+-/
+class Place
+    extends IsTopologicalRing A, ContinuousStar A, LocallyCompactSpace A, PolishSpace A,
+      BorelSpace A, (volume : Measure A).IsAddHaarMeasure, TraceOne A where
   /-- A unit δ, skew by `star_skewUnit`. -/
   skewUnit : Aˣ
   /-- A measure ν on the skew elements, Haar by `haar`. -/
@@ -72,8 +75,10 @@ class Place extends IsTopologicalRing A, ContinuousStar A, LocallyCompactSpace A
   modulus : A →* ℝ≥0∞
   /-- An additive character ψ. -/
   ψ : AddChar A ℂ
-  /-- A bound for the L¹ norm of the Fourier transform of the kernel in
-  `exists_plancherel_kernel`. -/
+  /--
+  A bound for the L¹ norm of the Fourier transform of the kernel in
+  `exists_plancherel_kernel`.
+  -/
   kernelBound : ℝ≥0∞
   /-- ν is an additive Haar measure. -/
   [haar : IsAddHaarMeasure skewMeasure]
@@ -84,30 +89,33 @@ class Place extends IsTopologicalRing A, ContinuousStar A, LocallyCompactSpace A
   /-- δ is skew: δ̄ = −δ. -/
   star_skewUnit : star skewUnit.val = -skewUnit
   /-- The map (a, b) ↦ τδ⁻¹a + b on pairs of skew elements carries ν × ν to the volume of A. -/
-  measurePreserving_split : MeasurePreserving
-    (fun p : skewAdjoint A × skewAdjoint A ↦ element * skewUnit⁻¹ * p.1 + p.2)
-    (skewMeasure.prod skewMeasure) volume
+  measurePreserving_split
+    : MeasurePreserving
+      (fun p : skewAdjoint A × skewAdjoint A ↦ element * skewUnit⁻¹ * p.1 + p.2)
+      (skewMeasure.prod skewMeasure) volume
   /-- The modulus is invariant under conjugation and under negation. -/
   modulus_star_and_neg (x : A) : modulus (star x) = modulus x ∧ modulus (-x) = modulus x
   /-- An invertible matrix M maps the volume of Aⁿ to (`modulus` (det M))⁻¹ times itself. -/
-  map_mulVec_volume (n : Type) [Fintype n] [DecidableEq n] (M : Matrix n n A) :
-    IsUnit M.det → volume.map (M *ᵥ ·) = (modulus M.det)⁻¹ • volume
+  map_mulVec_volume (n : Type) [Fintype n] [DecidableEq n] (M : Matrix n n A)
+    : IsUnit M.det → volume.map (M *ᵥ ·) = (modulus M.det)⁻¹ • volume
   /-- Almost every element is a unit. -/
   ae_isUnit : ∀ᵐ t : A, IsUnit t
-  /-- On units, the power −1/2 of the modulus has a locally integrable majorant:
-  (`modulus` u)⁻¹ ≤ |g(u)|² for some locally integrable g. -/
-  exists_locallyIntegrable_bound :
-    ∃ g : A → ℝ, LocallyIntegrable g volume ∧ ∀ u : Aˣ, (modulus u)⁻¹ ≤ ‖g u‖ₑ ^ 2
+  /--
+  On units, the power −1/2 of the modulus has a locally integrable majorant:
+  (`modulus` u)⁻¹ ≤ |g(u)|² for some locally integrable g.
+  -/
+  exists_locallyIntegrable_bound
+    : ∃ g : A → ℝ, LocallyIntegrable g volume ∧ ∀ u : Aˣ, (modulus u)⁻¹ ≤ ‖g u‖ₑ ^ 2
   /-- The values of ψ have absolute value one. -/
   norm_psi (x : A) : ‖ψ x‖ = 1
-  /-- There is a continuous integrable G ≥ 0 with G(0) = 1 whose Fourier transform
-  z ↦ ∫ G(v) ψ(v̄z) dv has L¹ norm at most c. -/
-  exists_plancherel_kernel : ∃ G : A → ℝ,
-    Continuous G ∧
-    Integrable G ∧
-    0 ≤ G ∧
-    G 0 = 1 ∧
-    ∫⁻ z : A, ‖∫ v : A, G v * ψ (star v * z)‖ₑ ≤ kernelBound
+  /--
+  There is a continuous integrable G ≥ 0 with G(0) = 1 whose Fourier transform
+  z ↦ ∫ G(v) ψ(v̄z) dv has L¹ norm at most c.
+  -/
+  exists_plancherel_kernel
+    : ∃ G : A → ℝ,
+      Continuous G ∧ Integrable G ∧ 0 ≤ G ∧ G 0 = 1
+        ∧ ∫⁻ z : A, ‖∫ v : A, G v * ψ (star v * z)‖ₑ ≤ kernelBound
 
 variable {A}
 
@@ -124,8 +132,10 @@ section
 
 variable [IsTopologicalRing A] [ContinuousStar A] [PolishSpace A]
 
-/-- The skew elements form a closed subset of `A`, so they inherit a Polish and a locally compact
-topology. -/
+/--
+The skew elements form a closed subset of `A`, so they inherit a Polish and a locally compact
+topology.
+-/
 instance isClosed_skewAdjoint : IsClosed (skewAdjoint A : Set A) :=
   isClosed_eq continuous_star continuous_neg
 
@@ -136,8 +146,11 @@ instance [LocallyCompactSpace A] : LocallyCompactSpace (skewAdjoint A) :=
 
 end
 
-variable [P : Place A] {ι : Type} [Fintype ι] [DecidableEq ι] (u : Aˣ) (T : Matrix ι ι A)
-  (b : skewAdjoint A) (μ : Measure (ι → A)) {κ : Type*} [Fintype κ]
+variable
+  [P : Place A]
+  {ι : Type} [Fintype ι] [DecidableEq ι]
+  (u : Aˣ) (T : Matrix ι ι A) (b : skewAdjoint A) (μ : Measure (ι → A))
+  {κ : Type*} [Fintype κ]
 
 /-! ### Lemmas on measures, and the hyperbolic plane plus a form -/
 
@@ -225,8 +238,10 @@ lemma measurePreserving_pair_sumElim :
 
 end
 
-/-- The Gram matrix of a hyperbolic plane plus the form T: block diagonal with blocks (0 1; 1 0)
-and T. -/
+/--
+The Gram matrix of a hyperbolic plane plus the form T: block diagonal with blocks (0 1; 1 0)
+and T.
+-/
 abbrev planeSumGram : Matrix (Fin 2 ⊕ ι) (Fin 2 ⊕ ι) A := fromBlocks !![0, 1; 1, 0] 0 0 T
 
 /-- The unitary group of the Gram matrix T is a Borel space. -/
@@ -244,38 +259,50 @@ attribute [fun_prop] continuous_psi measurable_modulus
 
 attribute [simp, grind! .] element_add_star
 
-/-- The flat chart of the quadric h(v, v) = δ⁻¹b in a hyperbolic plane (e, e') plus T:
+/--
+The flat chart of the quadric h(v, v) = δ⁻¹b in a hyperbolic plane (e, e') plus T:
 (t, w, a) ↦ (t̄⁻¹τ(δ⁻¹b − h(w, w)) + ta)e + te' + w, with a skew. Here t̄⁻¹ is the ring inverse,
 which is zero when t̄ is not a unit; the image point lies on the quadric when T is hermitian and t
-is a unit. -/
+is a unit.
+-/
 noncomputable def flatChart : (A × (ι → A)) × skewAdjoint A → Fin 2 ⊕ ι → A
-  | ((t, w), a) => ![(star t)⁻¹ʳ * element * (skewUnit⁻¹.val * b - star w ⬝ᵥ T *ᵥ w) + t * a, t] ⊕ᵥ
-    w
+  | ((t, w), a) =>
+    ![(star t)⁻¹ʳ * element * (skewUnit⁻¹.val * b - star w ⬝ᵥ T *ᵥ w) + t * a, t] ⊕ᵥ w
 
-/-- The image of dt dw dν(a) under the flat chart `New.Floors.Place.flatChart`. For hermitian T it
+/--
+The image of dt dw dν(a) under the flat chart `New.Floors.Place.flatChart`. For hermitian T it
 is the fiber measure dv / dh(v, v) on the quadric h(v, v) = δ⁻¹b
 (`isDisintegration_quadricMeasure`).
 
 This makes Weil's fiber measures for a submersion explicit for the map v ↦ h(v, v), which is a
-submersion at points whose coordinate t is a unit. -/
+submersion at points whose coordinate t is a unit.
+-/
 noncomputable abbrev quadricMeasure : Measure (Fin 2 ⊕ ι → A) :=
   (volume.prod skewMeasure).map (flatChart T b)
 
 /-! ### Disintegrations along the form, and scaling of the volume -/
 
-/-- The family l_b, indexed by skew b, disintegrates μ along h(x, x) = x̄ᵀJx. For continuous
+/--
+The family l_b, indexed by skew b, disintegrates μ along h(x, x) = x̄ᵀJx. For continuous
 compactly supported f ≥ 0, the integrals ∫ f dl_b are finite and continuous in b. Moreover, for
-measurable f, we have ∫ f(h(x, x), x) dμ = ∬ f(δ⁻¹b, x) dl_b dν(b). -/
+measurable f, we have ∫ f(h(x, x), x) dμ = ∬ f(δ⁻¹b, x) dl_b dν(b).
+-/
 structure IsDisintegration (J : Matrix ι ι A) (l : skewAdjoint A → Measure (ι → A)) where
-  /-- For continuous f ≥ 0 of compact support, b ↦ ∫ f d`l b` is continuous on the skew elements and
-  finite. -/
-  continuous_and_lt_top {f : (ι → A) → NNReal} : Continuous f → HasCompactSupport f →
-      Continuous (∫⁻ x : ι → A, f x ∂l ·) ∧ ∀ b : skewAdjoint A, ∫⁻ x : ι → A, f x ∂l b < ∞
-  /-- For measurable f, the integral of f(x̄ᵀJx, x) against μ is the integral over skew b, against
-  ν, of the integral of f(δ⁻¹b, x) against `l b`. -/
-  lintegral_eq (f : A × (ι → A) → ℝ≥0∞) : Measurable f →
-      ∫⁻ x : ι → A, f (star x ⬝ᵥ J *ᵥ x, x) ∂μ =
-        ∫⁻ b : skewAdjoint A, ∫⁻ x : ι → A, f (skewUnit⁻¹.val * b, x) ∂l b ∂skewMeasure
+  /--
+  For continuous f ≥ 0 of compact support, b ↦ ∫ f d`l b` is continuous on the skew elements and
+  finite.
+  -/
+  continuous_and_lt_top {f : (ι → A) → NNReal}
+    : Continuous f → HasCompactSupport f
+      → Continuous (∫⁻ x : ι → A, f x ∂l ·) ∧ ∀ b : skewAdjoint A, ∫⁻ x : ι → A, f x ∂l b < ∞
+  /--
+  For measurable f, the integral of f(x̄ᵀJx, x) against μ is the integral over skew b, against
+  ν, of the integral of f(δ⁻¹b, x) against `l b`.
+  -/
+  lintegral_eq (f : A × (ι → A) → ℝ≥0∞)
+    : Measurable f
+      → ∫⁻ x : ι → A, f (star x ⬝ᵥ J *ᵥ x, x) ∂μ
+        = ∫⁻ b : skewAdjoint A, ∫⁻ x : ι → A, f (skewUnit⁻¹.val * b, x) ∂l b ∂skewMeasure
 
 lemma modulus_star (x : A) : P.modulus (star x) = P.modulus x := (modulus_star_and_neg x).left
 
@@ -374,20 +401,25 @@ lemma map_skewMeasure_mul_unit (hu : star u.val = u) :
 
 /-! ### Properties of the chart and of disintegrations -/
 
-variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  {ι : Type} [Fintype ι] (u : Aˣ) {T : Matrix ι ι A} {b : skewAdjoint A}
-  {μ : Measure (ι → A)} {κ : Type} [Fintype κ]
+variable
+  {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  {ι : Type} [Fintype ι]
+  (u : Aˣ)
+  {T : Matrix ι ι A} {b : skewAdjoint A} {μ : Measure (ι → A)} {κ : Type} [Fintype κ]
 
 @[fun_prop]
 lemma measurable_flatChart :
     Measurable fun p : skewAdjoint A × (A × (ι → A)) × skewAdjoint A ↦ flatChart T p.1 p.2 := by
   fun_prop [flatChart]
 
-/-- The skew element δΓ of a hermitian element Γ. The default proof of star Γ = Γ applies when Γ
-is a diagonal entry of a matrix of class `IsHermitianUnit` (hermitian and invertible). -/
-@[simps] def skewUnitMul (Γ : A)
-    (hΓ : star Γ = Γ := by apply IsHermitian.apply IsHermitianUnit.conjTranspose_eq) :
-      skewAdjoint A :=
+/--
+The skew element δΓ of a hermitian element Γ. The default proof of star Γ = Γ applies when Γ
+is a diagonal entry of a matrix of class `IsHermitianUnit` (hermitian and invertible).
+-/
+@[simps]
+def skewUnitMul
+    (Γ : A) (hΓ : star Γ = Γ := by apply IsHermitian.apply IsHermitianUnit.conjTranspose_eq)
+    : skewAdjoint A :=
   ⟨P.skewUnit * Γ, by simp [skewAdjoint, star_skewUnit, hΓ]⟩
 
 /-- For a place `A` with skew unit δ (`skewUnit`) and trace-one element τ, let `T` be a hermitian

@@ -70,8 +70,10 @@ open Matrix Polynomial Fintype Module Filter ENNReal Finset CoeffRing
 
 open IsDiscreteValuationRing (addVal)
 
-variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P}
-  {K Y n r : Type} [Fintype n] [DecidableEq n] [Fintype Y] [Fintype r] [DecidableEq r]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {P : Parameters} {D : Data P} {K Y n r : Type}
+  [Fintype n] [DecidableEq n] [Fintype Y] [Fintype r] [DecidableEq r]
 
 /-- A polynomial over the integers of `ℚ̄_ℓ` is defined over every large coefficient ring. -/
 lemma eventually_exists_map_eq (H : (intQpBar ℓ)[X]) : ∀ᶠ O : CoeffRing ℓ in atTop,

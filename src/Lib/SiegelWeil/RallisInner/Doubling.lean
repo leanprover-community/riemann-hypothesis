@@ -68,12 +68,16 @@ namespace New.SiegelWeil
 
 open WeilData Fintype Space Prod Lagrangian G Splitting Gf stdLattice Valued
 
-variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
-  [DecidableEq m] {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s} {T : Space E m t}
+variable
+  {E n m : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s} {T : Space E m t}
 
-/-- A chosen number `c` of modulus one with `θ (c • conj f) = conj (θ f)` for all data `f` on
+/--
+A chosen number `c` of modulus one with `θ (c • conj f) = conj (θ f)` for all data `f` on
 `Hom(S, T)`, where `conj f = negSource.map f` is the transport of `f` to `Hom(S⁻, T)`; see
-`exists_theta_negSource` and `theta_negSourceFactor_smul`. -/
+`exists_theta_negSource` and `theta_negSourceFactor_smul`.
+-/
 def negSourceFactor (S : Space E n s) (T : Space E m t) : ℂ := (exists_theta_negSource S T).choose
 
 /-- The theta functional of `S⁻, T` at the transport of `f`, multiplied by `negSourceFactor S T`,
@@ -83,16 +87,20 @@ lemma theta_negSourceFactor_smul (f : 𝒮 (S.hom T)) :
       conj (θ (S.hom T) f) :=
   (exists_theta_negSource S T).choose_spec.2 f
 
-/-- The doubling map sending `(f', f)` to the datum `f ⊠ c • conj f'` on `Hom(S ⊕ S⁻, T)`,
+/--
+The doubling map sending `(f', f)` to the datum `f ⊠ c • conj f'` on `Hom(S ⊕ S⁻, T)`,
 conjugate-linear in `f'` and linear in `f`. Here `conj f' = negSource.map f'` is the transport of
-`f'` to `Hom(S⁻, T)`, and `c = negSourceFactor S T`, so that `θ (c • conj f') = conj (θ f')`. -/
+`f'` to `Hom(S⁻, T)`, and `c = negSourceFactor S T`, so that `θ (c • conj f') = conj (θ f')`.
+-/
 def doubleDatum : 𝒮 (S.hom T) →L⋆[ℂ] 𝒮 (S.hom T) →L[ℂ] 𝒮 ((S.sum S.neg).hom T) :=
   (Space.boxProd homSigns_sum_source).flip.comp
     (negSourceFactor S T • negSource.map (V := S.neg.hom T))
 
-/-- For a rational isometry `δ` of `S`, the splitting of `S ⊕ S⁻` into hyperbolic planes whose
+/--
+For a rational isometry `δ` of `S`, the splitting of `S ⊕ S⁻` into hyperbolic planes whose
 Lagrangian is the graph `{(δ y, -y)}`; the dual frame spans `{(δ y, y)}`. Here `k` is the isotropic
-frame, `l` the dual frame (`lᴴ J k = 1`), and the anisotropic part `i` is empty. -/
+frame, `l` the dual frame (`lᴴ J k = 1`), and the anisotropic part `i` is empty.
+-/
 @[simp]
 def graphSplitting (S : Space E n s) (δ : U S.J) : CompleteSplitting (S.sum S.neg) n where
   k := fromRows δ (-1)
@@ -112,60 +120,79 @@ def graphSplitting (S : Space E n s) (δ : U S.J) : CompleteSplitting (S.sum S.n
   gram_il := by simp
   card_eq := by simp [two_mul]
 
-/-- The term `ρ(g) ⟨y', g y⟩` of a coset `γ` of the finite points integral at `A`. Here
+/--
+The term `ρ(g) ⟨y', g y⟩` of a coset `γ` of the finite points integral at `A`. Here
 `g = cosetRep γ` is the representative of `γ` supported above `A` and its conjugate,
 `ρ = vacuumCoeff M b`, and `y'`, `y` are forms of type `e` on `S`, on which `g` acts by right
-translation. -/
-def cosetTerm (M : ℕ) (b : AutChar E) (A : Set (FinPlace E)) {e : GInf E s → ℂ} (y' y : S.Form e)
-    (γ : Gf E n ⧸ localLevel n A) : ℂ :=
+translation.
+-/
+def cosetTerm
+    (M : ℕ) (b : AutChar E)
+    (A : Set (FinPlace E))
+    {e : GInf E s → ℂ} (y' y : S.Form e)
+    (γ : Gf E n ⧸ localLevel n A)
+    : ℂ :=
   vacuumCoeff M b (cosetRep γ : Gf E n) * inner ℂ y' (S.formRep e (cosetRep γ) y)
 
-/-- The matrix coefficient `g ↦ ⟨f', ω(g, 1) f⟩` of the twisted Weil representation
+/--
+The matrix coefficient `g ↦ ⟨f', ω(g, 1) f⟩` of the twisted Weil representation
 `ω = pairWeil S T 1 b`. The argument `f'` defaults to `f`: `weilMatrixCoeff b f` is the function
-`g ↦ weilMatrixCoeff b f f g`. -/
+`g ↦ weilMatrixCoeff b f f g`.
+-/
 abbrev weilMatrixCoeff (b : AutChar E) (f : 𝒮 (S.hom T)) (f' : 𝒮 (S.hom T) := f) (g : G E s) : ℂ :=
   dataInner (S.hom T) f' (pairWeil S T 1 b (g, 1) f)
 
-/-- The datum `F` is clean: (a) all signs of `S` agree, or (b) `F` is a datum
+/--
+The datum `F` is clean: (a) all signs of `S` agree, or (b) `F` is a datum
 `Ψ ⊗ f = (S.hom T).schrodingerOp A Ψ f`, where `A` is a set of places disjoint from its conjugate,
 `Ψ` is Schwartz–Bruhat above `A`, and at some place `w` every matrix `y` with `Ψ y ≠ 0` has a left
 inverse. In both cases the only Lagrangians with a nonzero term are graphs
-(`New.SiegelWeil.exists_graph_eq_of_zeroTerm_ne_zero`). -/
+(`New.SiegelWeil.exists_graph_eq_of_zeroTerm_ne_zero`).
+-/
 def IsClean (F : 𝒮 (S.hom T)) : Prop :=
-  (∀ i j : n, s i = s j) ∨
-  ∃ (A : Set (FinPlace E)) (Ψ : (m × n → 𝔸f E) → ℂ) (w : FinPlace E) (f : 𝒮 (S.hom T)),
-    A.IsConjDisjoint ∧ IsSchwartzBruhat A Ψ ∧
-    (∀ y : m × n → 𝔸f E, Ψ y ≠ 0 → HasLeftInv ((vecToMatrix y).map (evalAt w))) ∧
-    F = (S.hom T).schrodingerOp A Ψ f
+  (∀ i j : n, s i = s j)
+    ∨ ∃ (A : Set (FinPlace E)) (Ψ : (m × n → 𝔸f E) → ℂ) (w : FinPlace E) (f : 𝒮 (S.hom T)),
+      A.IsConjDisjoint ∧ IsSchwartzBruhat A Ψ
+        ∧ (∀ y : m × n → 𝔸f E, Ψ y ≠ 0 → HasLeftInv ((vecToMatrix y).map (evalAt w)))
+        ∧ F = (S.hom T).schrodingerOp A Ψ f
 
 open scoped Classical in
-/-- The datum `F` of the finite part is sharp for the level `J` off `S₀`. With `K₀ = stdLevel E n`
+/--
+The datum `F` of the finite part is sharp for the level `J` off `S₀`. With `K₀ = stdLevel E n`
 the stabiliser of `Ô ^ n`, at the finite points `g` integral off `S₀` the coefficient `⟨F, ω(g) F⟩`
 equals `⟨F, F⟩` if `g ∈ J ∩ K₀` and is zero otherwise, and the quotient of `⟨F, F⟩` by the index
 `[K₀ : J ∩ K₀]` is the constant `c`. Also `⟨F, F⟩ ≠ 0`, and for each vector `v` of the Fock model
 the datum `v ⊗ F = integrated (S.hom T) v F` is clean and a vacuum off `S₀`. The datum `Ψ ⊗ vac` of
 a sharp function `Ψ` modulo `𝔪` has these properties if `𝔪 ≠ (1)` or all signs of `S` agree
-(`New.SiegelWeil.IsSharpFn.isSharp`). -/
-structure IsSharp (b : AutChar E) (S₀ : Set (FinPlace E)) (F : 𝒮 (S.hom T)) (J : Subgroup (Gf E n))
-    (c : ℂ) : Prop where
+(`New.SiegelWeil.IsSharpFn.isSharp`).
+-/
+structure IsSharp
+    (b : AutChar E) (S₀ : Set (FinPlace E)) (F : 𝒮 (S.hom T)) (J : Subgroup (Gf E n)) (c : ℂ)
+    : Prop where
   /-- The inner product `⟨F, F⟩` is not zero. -/
   self_ne_zero : dataInner (S.hom T) F F ≠ 0
   /-- The datum `F` lies in the finite part, the span of the finite translates of the vacuum. -/
   mem_finitePart : F ∈ finitePart (S.hom T)
-  /-- For every `v`, the datum `v ⊗ F` is a vacuum above any set `A` of places disjoint from
-  `S₀`. -/
-  vacuum_off (A : Set (FinPlace E))
-    (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s t)))) :
-    Disjoint S₀ A → projOn (S.hom T) A (integrated (S.hom T) v F) = integrated (S.hom T) v F
-  /-- At the finite points `g` integral off `S₀`, the coefficient `⟨F, ω(g) F⟩` is `⟨F, F⟩` on
-  `J ∩ stdLevel E n` and zero elsewhere. -/
-  weilMatrixCoeff_eq : ∀ g ∈ localLevel n S₀ᶜ,
-    weilMatrixCoeff b F F g = if g ∈ J ⊓ stdLevel E n then dataInner (S.hom T) F F else 0
+  /--
+  For every `v`, the datum `v ⊗ F` is a vacuum above any set `A` of places disjoint from
+  `S₀`.
+  -/
+  vacuum_off
+    (A : Set (FinPlace E))
+    (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s t))))
+    : Disjoint S₀ A → projOn (S.hom T) A (integrated (S.hom T) v F) = integrated (S.hom T) v F
+  /--
+  At the finite points `g` integral off `S₀`, the coefficient `⟨F, ω(g) F⟩` is `⟨F, F⟩` on
+  `J ∩ stdLevel E n` and zero elsewhere.
+  -/
+  weilMatrixCoeff_eq
+    : ∀ g ∈ localLevel n S₀ᶜ,
+      weilMatrixCoeff b F F g = if g ∈ J ⊓ stdLevel E n then dataInner (S.hom T) F F else 0
   /-- The quotient of `⟨F, F⟩` by the index `stdLevelIndex J = [K₀ : J ∩ K₀]` is `c`. -/
   mass_eq : dataInner (S.hom T) F F / stdLevelIndex J = c
   /-- For every `v`, the datum `v ⊗ F` is clean (`IsClean`). -/
-  clean (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s t)))) :
-    IsClean (integrated (S.hom T) v F)
+  clean (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s t))))
+    : IsClean (integrated (S.hom T) v F)
 
 lemma doubleDatum_apply (f f' : 𝒮 (S.hom T)) :
     doubleDatum f' f = boxProd homSigns_sum_source f
@@ -403,29 +430,35 @@ lemma zeroTerm_graphSplitting_doubleDatum (b : AutChar E) (f f' : 𝒮 (S.hom T)
   rw [zeroTerm_graphSplitting b, weilMatrixCoeff, ← dataInner_pairWeil _ _ 1 b (g'⁻¹, 1)]
   simp [← mul_apply_eq_comp, ← map_mul, mk_one_one]
 
-/-- Doubling. Let `T` have rank `m`, `S` rank `n`, with `2 n < m`, and let the datum `f` be clean
+/--
+Doubling. Let `T` have rank `m`, `S` rank `n`, with `2 n < m`, and let the datum `f` be clean
 (`IsClean`: only graphs of isometries have nonzero terms). The integral over `[U(T)]` of the theta
 kernel of `f` at `g` times the conjugate kernel of any datum `f'` at `g'` is the volume of `[U(T)]`
-times the sum over the rational points `γ` of `U(S)` of `⟨f', ω(g'⁻¹ γ g) f⟩`. -/
-theorem integral_conj_theta_mul_theta (h_rank : 2 * card n < card m) (a b : AutChar E)
-    {f : 𝒮 (S.hom T)} (hf : IsClean f) (f' : 𝒮 (S.hom T)) (g g' : G E s) :
-    ∫ x : G E t, conj (θ (S.hom T) (pairWeil S T a b (g', x) f')) *
-        θ (S.hom T) (pairWeil S T a b (g, x) f) ∂T.quotMeasure =
-      T.quotMeasure.real Set.univ * ∑' γ : S.Γ, weilMatrixCoeff b f f' (g'⁻¹ * (γ * g)) := by
+times the sum over the rational points `γ` of `U(S)` of `⟨f', ω(g'⁻¹ γ g) f⟩`.
+-/
+theorem integral_conj_theta_mul_theta
+    (h_rank : 2 * card n < card m) (a b : AutChar E)
+    {f : 𝒮 (S.hom T)} (hf : IsClean f)
+    (f' : 𝒮 (S.hom T)) (g g' : G E s)
+    : ∫ x : G E t, conj (θ (S.hom T) (pairWeil S T a b (g', x) f')) *
+          θ (S.hom T) (pairWeil S T a b (g, x) f) ∂T.quotMeasure
+      = T.quotMeasure.real Set.univ * ∑' γ : S.Γ, weilMatrixCoeff b f f' (g'⁻¹ * (γ * g)) := by
   -- Siegel–Weil turns the integral into a sum over the Lagrangians of `S ⊕ S⁻`; only the graphs
   -- of isometries contribute, each once.
   let d : 𝒮 ((S.sum S.neg).hom T) :=
     doubleDatum (pairWeil S T 1 b (g', 1) f') (pairWeil S T 1 b (g, 1) f)
   let e : U S.J ≃ S.Γ := .ofInjective _ S.ratEmbed_injective
-  have h_support : Function.support (fun L : Lagrangian (S.sum S.neg) ↦ L.zeroTerm T d) ⊆
-      Set.range fun δ : U S.J ↦ (graphSplitting S δ⁻¹).lagrangian :=
+  have h_support
+      : Function.support (fun L : Lagrangian (S.sum S.neg) ↦ L.zeroTerm T d)
+        ⊆ Set.range fun δ : U S.J ↦ (graphSplitting S δ⁻¹).lagrangian :=
     exists_graph_eq_of_zeroTerm_ne_zero hf
   obtain ⟨-, h_integral⟩ := (siegel_weil T (graphSplitting S 1) h_rank).2 d
-  calc _ = T.quotMeasure.real Set.univ * ∑' L : Lagrangian (S.sum S.neg), L.zeroTerm T d := by
-        simp_rw [← theta_splitWeil_doubleDatum a b, ← h_integral, d]
+  calc
+    _ = T.quotMeasure.real Set.univ * ∑' L : Lagrangian (S.sum S.neg), L.zeroTerm T d := by
+      simp_rw [← theta_splitWeil_doubleDatum a b, ← h_integral, d]
     _ = _ := by
-        rw [← graphSplitting_lagrangian_injective.tsum_eq h_support, ← e.tsum_eq]
-        exact congrArg _ (tsum_congr (zeroTerm_graphSplitting_doubleDatum b f f' g g'))
+      rw [← graphSplitting_lagrangian_injective.tsum_eq h_support, ← e.tsum_eq]
+      exact congrArg _ (tsum_congr (zeroTerm_graphSplitting_doubleDatum b f f' g g'))
 
 open ContinuousLinearMap in
 /-- Let the rank of `T` exceed twice that of `S`. There is a finite constant `C` such that, with
@@ -530,21 +563,25 @@ lemma enorm_mul_height_pow_le {y y' : G E s → ℂ} {l : ℕ} {B B' : ℝ}
     _ ≤ C * (.ofReal B' * .ofReal B) := by grw [hB, hB']
 
 open ContinuousLinearMap Continuous in
-/-- The inner product formula before the choice of a sharp datum. Let `2 n < m` for the ranks of
+/--
+The inner product formula before the choice of a sharp datum. Let `2 n < m` for the ranks of
 `S`, `T`, let `f` be clean (`IsClean`) and `f'` any datum (by default `f`); `a`, `b` are the
 characters that twist the Weil representation `ω`. For automorphic `y`, `y'` of rapid decay
 (`rapidFunctions`), the Petersson product of the theta lifts `⟨Θ_{f'} y', Θ_f y⟩` (`lift`,
 `petersson`) is the volume of `[U(T)]` times `∫ ⟨f', ω(g) f⟩ ⟨y', R(g) y⟩ dg` over the adelic
 points of `U(S)`, with `⟨f', ω(g) f⟩ = weilMatrixCoeff b f f' g` and `R` the right translation,
-and this integral converges absolutely. -/
-theorem inner_product_formula (h_rank : 2 * card n < card m) (a b : AutChar E)
-    {f : 𝒮 (S.hom T)} (hf : IsClean f) {y y' : G E s → ℂ} (hy : y ∈ S.rapidFunctions)
-    (hy' : y' ∈ S.rapidFunctions) (f' : 𝒮 (S.hom T) := f) :
-    let k (g : G E s) : ℂ :=
-      weilMatrixCoeff b f f' g * S.petersson y' (rightRegular ℂ (G E s) ℂ g y)
-    Integrable k ∧
-    T.petersson (lift (pairThetaKer S T a b) f' y') (lift (pairThetaKer S T a b) f y) =
-      T.quotMeasure.real Set.univ * ∫ g : G E s, k g := by
+and this integral converges absolutely.
+-/
+theorem inner_product_formula
+    (h_rank : 2 * card n < card m) (a b : AutChar E)
+    {f : 𝒮 (S.hom T)} (hf : IsClean f)
+    {y y' : G E s → ℂ} (hy : y ∈ S.rapidFunctions) (hy' : y' ∈ S.rapidFunctions)
+    (f' : 𝒮 (S.hom T) := f)
+    : let k (g : G E s) : ℂ :=
+        weilMatrixCoeff b f f' g * S.petersson y' (rightRegular ℂ (G E s) ℂ g y)
+      Integrable k
+        ∧ T.petersson (lift (pairThetaKer S T a b) f' y') (lift (pairThetaKer S T a b) f y)
+          = T.quotMeasure.real Set.univ * ∫ g : G E s, k g := by
   -- Integrate the doubling identity against `conj (y' g') * y g` over `[U(S)] × [U(S)]`; the sum
   -- over the rational points unfolds one of the two integrals.
   let Θ (g g' : G E s) (x : G E t) : ℂ :=
@@ -558,21 +595,25 @@ theorem inner_product_formula (h_rank : 2 * card n < card m) (a b : AutChar E)
   obtain ⟨l, C, hC, h_bound⟩ := exists_doubling_le_height h_rank a b f f'
   obtain ⟨B, hB⟩ : ∃ B : ℝ, ∀ g : G E s, ‖y g‖ * S.height g ^ l ≤ B := hy_rapid l
   obtain ⟨B', hB'⟩ : ∃ B' : ℝ, ∀ g : G E s, ‖y' g‖ * S.height g ^ l ≤ B' := hy'_rapid l
-  have h_finite : ∫⁻ _ : G E s × G E s, C * (.ofReal B' * .ofReal B)
-      ∂S.quotMeasure.prod S.quotMeasure < ⊤ := lintegral_const_lt_top (by finiteness)
+  have h_finite
+      : ∫⁻ _ : G E s × G E s, C * (.ofReal B' * .ofReal B)
+          ∂S.quotMeasure.prod S.quotMeasure
+        < ⊤ :=
+    lintegral_const_lt_top (by finiteness)
   -- Unfolding turns the double integral of the sum over `S.Γ` into the integral of `Φ`.
   have h_unfold := measurePreserving_quotMeasure_unfold S
-  have hΦ_unfold (g g' : G E s) (γ : S.Γ) : Φ (g', g'⁻¹ * (γ * g)) =
-      conj (y' g') * y g * weilMatrixCoeff b f f' (g'⁻¹ * (γ * g)) := by
+  have hΦ_unfold (g g' : G E s) (γ : S.Γ)
+      : Φ (g', g'⁻¹ * (γ * g)) = conj (y' g') * y g * weilMatrixCoeff b f f' (g'⁻¹ * (γ * g)) := by
     simp only [Φ, mul_inv_cancel_left, hy_aut.rat_mul γ γ.property]
     exact mul_comm ..
   have hΦ : Integrable Φ (S.quotMeasure.prod volume) := by
     refine ⟨aestronglyMeasurable (by fun_prop), h_finite.trans_le' ?_⟩
     grw [← h_unfold.lintegral_comp (by fun_prop), lintegral_prod_le]
     gcongr with p
-    calc ∫⁻ γ : S.Γ, ‖Φ (p.1, p.1⁻¹ * (γ * p.2))‖ₑ ∂.count
-        = ‖y' p.1‖ₑ * ‖y p.2‖ₑ * ∑' γ : S.Γ, ‖weilMatrixCoeff b f f' (p.1⁻¹ * (γ * p.2))‖ₑ := by
-          simp [lintegral_count, hΦ_unfold, eNorm_mul, ENNReal.tsum_mul_left]
+    calc
+      ∫⁻ γ : S.Γ, ‖Φ (p.1, p.1⁻¹ * (γ * p.2))‖ₑ ∂.count
+          = ‖y' p.1‖ₑ * ‖y p.2‖ₑ * ∑' γ : S.Γ, ‖weilMatrixCoeff b f f' (p.1⁻¹ * (γ * p.2))‖ₑ := by
+        simp [lintegral_count, hΦ_unfold, eNorm_mul, ENNReal.tsum_mul_left]
       _ ≤ _ := by grw [(h_bound p.2 p.1).2, enorm_mul_height_pow_le hB hB']
   have h_swap : Integrable
       (Function.uncurry fun (p : G E s × G E s) x ↦ conj (y' p.1) * y p.2 * Θ p.2 p.1 x)
@@ -580,30 +621,33 @@ theorem inner_product_formula (h_rank : 2 * card n < card m) (a b : AutChar E)
     refine ⟨by fun_prop, h_finite.trans_le' ?_⟩
     grw [lintegral_prod_le]
     gcongr with p
-    calc ∫⁻ x, ‖conj (y' p.1) * y p.2 * Θ p.2 p.1 x‖ₑ ∂T.quotMeasure
-        = ‖y' p.1‖ₑ * ‖y p.2‖ₑ * ∫⁻ x, ‖Θ p.2 p.1 x‖ₑ ∂T.quotMeasure := by
-          simp [eNorm_mul, lintegral_const_mul', ENNReal.mul_eq_top]
+    calc
+      ∫⁻ x, ‖conj (y' p.1) * y p.2 * Θ p.2 p.1 x‖ₑ ∂T.quotMeasure
+          = ‖y' p.1‖ₑ * ‖y p.2‖ₑ * ∫⁻ x, ‖Θ p.2 p.1 x‖ₑ ∂T.quotMeasure := by
+        simp [eNorm_mul, lintegral_const_mul', ENNReal.mul_eq_top]
       _ ≤ _ := by grw [(h_bound p.2 p.1).1, enorm_mul_height_pow_le hB hB']
-  have h_fubini (g : G E s) : weilMatrixCoeff b f f' g *
-      S.petersson y' (rightRegular ℂ (G E s) ℂ g y) = ∫ g', Φ (g', g) ∂S.quotMeasure := by
+  have h_fubini (g : G E s)
+      : weilMatrixCoeff b f f' g * S.petersson y' (rightRegular ℂ (G E s) ℂ g y)
+        = ∫ g', Φ (g', g) ∂S.quotMeasure := by
     simp [Space.petersson, Φ, integral_const_mul]
   simp only [h_fubini]
   refine ⟨hΦ.integral_prod_right, ?_⟩
-  calc _ = ∫ x, ∫ p : G E s × G E s, conj (y' p.1) * y p.2 * Θ p.2 p.1 x
-          ∂S.quotMeasure.prod S.quotMeasure ∂T.quotMeasure := by
-        simp_rw [petersson, lift, ← integral_conj, ← integral_prod_mul]
-        congr! 4 with x p
-        simp only [Θ, map_mul]
-        ring
+  calc
+    _ = ∫ x, ∫ p : G E s × G E s, conj (y' p.1) * y p.2 * Θ p.2 p.1 x
+        ∂S.quotMeasure.prod S.quotMeasure ∂T.quotMeasure := by
+      simp_rw [petersson, lift, ← integral_conj, ← integral_prod_mul]
+      congr! 4 with x p
+      simp only [Θ, map_mul]
+      ring
     _ = ∫ p : G E s × G E s, T.quotMeasure.real Set.univ *
           ∑' γ : S.Γ, Φ (p.1, p.1⁻¹ * (γ * p.2)) ∂S.quotMeasure.prod S.quotMeasure := by
-        rw [← integral_integral_swap h_swap]
-        simp_rw [integral_const_mul (conj (y' _) * y _), Θ,
-          integral_conj_theta_mul_theta h_rank a b hf, hΦ_unfold, tsum_mul_left]
-        exact integral_congr_ae (.of_forall fun p ↦ mul_left_comm ..)
+      rw [← integral_integral_swap h_swap]
+      simp_rw [integral_const_mul (conj (y' _) * y _), Θ,
+        integral_conj_theta_mul_theta h_rank a b hf, hΦ_unfold, tsum_mul_left]
+      exact integral_congr_ae (.of_forall fun p ↦ mul_left_comm ..)
     _ = T.quotMeasure.real Set.univ * ∫ g, ∫ g', Φ (g', g) ∂S.quotMeasure := by
-        rw [integral_const_mul, ← integral_prod_symm _ hΦ, ← (h_unfold.fubini hΦ).2]
-        simp_rw [integral_count_eq_tsum]
+      rw [integral_const_mul, ← integral_prod_symm _ hΦ, ← (h_unfold.fubini hΦ).2]
+      simp_rw [integral_count_eq_tsum]
 
 /-! ### The coefficient of the vacuum -/
 

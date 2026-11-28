@@ -78,25 +78,31 @@ open Module Quot
 
 variable (k : Type*) [Field k]
 
-/-- Similarity classes of square matrices over k of all sizes: pairs (n, endomorphism of kⁿ)
-modulo intertwining by linear isomorphisms. -/
+/--
+Similarity classes of square matrices over k of all sizes: pairs (n, endomorphism of kⁿ)
+modulo intertwining by linear isomorphisms.
+-/
 def SimClass : Type _ :=
   Quot fun a b : Σ n : ℕ, End k (Fin n → k) ↦
     ∃ e : (Fin a.fst → k) ≃ₗ[k] Fin b.fst → k, e.conj a.2 = b.2
 
-/-- The complex-valued functions on similarity classes of square matrices over k of all sizes; the
-product is parabolic induction (sum over stable subspaces). -/
+/--
+The complex-valued functions on similarity classes of square matrices over k of all sizes; the
+product is parabolic induction (sum over stable subspaces).
+-/
 @[implicit_reducible]
 def Hall : Type _ := SimClass k → ℂ
-  deriving AddCommGroup, Module ℂ, TopologicalSpace, T2Space, IsTopologicalAddGroup
+deriving AddCommGroup, Module ℂ, TopologicalSpace, T2Space, IsTopologicalAddGroup
 
-variable {k}
-  {V : Type*} [AddCommGroup V] [Module k V] [Module.Finite k V] (g : End k V) (c : SimClass k)
+variable
+  {k} {V : Type*} [AddCommGroup V] [Module k V] [Module.Finite k V] (g : End k V) (c : SimClass k)
 
 /-! ### The class of an endomorphism; stable subspaces -/
 
-/-- The similarity class of an endomorphism g of a finite-dimensional k-vector space V, obtained
-by choosing a basis of V. -/
+/--
+The similarity class of an endomorphism g of a finite-dimensional k-vector space V, obtained
+by choosing a basis of V.
+-/
 def simClassOf : SimClass k := Quot.mk _ ⟨finrank k V, (finBasis k V).equivFun.conj g⟩
 
 @[simp]
@@ -114,7 +120,8 @@ def StableSubspace.endOnSub : End k W := g.restrict W.prop
 def StableSubspace.endOnQuot : V ⧸ (W : Submodule k V) →ₗ[k] V ⧸ (W : Submodule k V) :=
   W.val.mapQ _ g W.prop
 
-/-- The dimension `n` of the space `k ^ n` on which the chosen representative of the class `c` acts.
+/--
+The dimension `n` of the space `k ^ n` on which the chosen representative of the class `c` acts.
 -/
 abbrev SimClass.dim : ℕ := c.out.1
 
@@ -127,36 +134,48 @@ lemma SimClass.dim_mk (a : Σ n : ℕ, End k (Fin n → k)) :
   let dimOf : SimClass k → ℕ := Quot.lift (·.1) fun _ _ ⟨e, _⟩ ↦ eq_of_fin_equiv k e
   exact congrArg dimOf (Quot.out_eq (Quot.mk _ a : SimClass k))
 
-/-- The function sending the similarity class of a k-linear endomorphism of k^n to its
-characteristic polynomial in k[X]. -/
+/--
+The function sending the similarity class of a k-linear endomorphism of k^n to its
+characteristic polynomial in k[X].
+-/
 def SimClass.charpoly : SimClass k → Polynomial k :=
   lift (·.2.charpoly) fun _ _ ⟨_, h⟩ ↦ by simp [← h]
 
-/-- The induction product: `(f * h) c` is the sum, over the subspaces `W` stable under the chosen
-representative of `c`, of `f` at its class on `W` times `h` at its class on the quotient by `W`. -/
+/--
+The induction product: `(f * h) c` is the sum, over the subspaces `W` stable under the chosen
+representative of `c`, of `f` at its class on `W` times `h` at its class on the quotient by `W`.
+-/
 instance : Mul (Hall k) where
   mul f h := (∑ᶠ W : StableSubspace ·.out.2, f (simClassOf W.endOnSub) * h (simClassOf W.endOnQuot))
 
 /-! ### Particular class functions -/
 
-/-- The complex-valued function on classes of endomorphisms that takes the value 1 on every class,
-in every dimension. -/
+/--
+The complex-valued function on classes of endomorphisms that takes the value 1 on every class,
+in every dimension.
+-/
 @[simp]
 def Hall.constOne : Hall k := fun _ ↦ 1
 
-/-- The function on similarity classes equal to F on classes of dimension n and zero on the
-others. -/
+/--
+The function on similarity classes equal to F on classes of dimension n and zero on the
+others.
+-/
 @[simp]
 def Hall.rankPart : Hall k := fun c ↦ if c.dim = n then F c else 0
 
-/-- The unit of the induction product: the function that is `1` on the classes of dimension `0`
-and `0` elsewhere. -/
+/--
+The unit of the induction product: the function that is `1` on the classes of dimension `0`
+and `0` elsewhere.
+-/
 instance : One (Hall k) := ⟨.rankPart 0 .constOne⟩
 
-/-- For a complex function F on similarity classes and an invertible matrix g in `GL n k`, indexed
-by a finite type n, the value of F at the class of the endomorphism of `n → k` given by g. -/
-def Hall.evalGL {n : Type*} [Fintype n] [DecidableEq n] (g : GL n k) :
-    ℂ := F (simClassOf g.val.toLin')
+/--
+For a complex function F on similarity classes and an invertible matrix g in `GL n k`, indexed
+by a finite type n, the value of F at the class of the endomorphism of `n → k` given by g.
+-/
+def Hall.evalGL {n : Type*} [Fintype n] [DecidableEq n] (g : GL n k) : ℂ :=
+  F (simClassOf g.val.toLin')
 
 end HallDefs
 
@@ -174,8 +193,9 @@ open Module StableSubspace Submodule Function Finset LinearMap LinearEquiv Polyn
 
 section
 
-variable {k V V' : Type*} [Field k] [AddCommGroup V] [Module k V] [Module.Finite k V]
-  [AddCommGroup V'] [Module k V'] [Module.Finite k V']
+variable
+  {k V V' : Type*} [Field k] [AddCommGroup V] [Module k V] [Module.Finite k V] [AddCommGroup V']
+  [Module k V'] [Module.Finite k V']
   {g : End k V} {g' : End k V'} {f h : Hall k}
 
 /-! ### Similarity classes and stable subspaces -/
@@ -263,7 +283,7 @@ lemma Hall.add_apply (c : SimClass k) : (f + h) c = f c + h c := rfl
 lemma Hall.zero_apply (c : SimClass k) : (0 : Hall k) c = 0 := rfl
 
 @[simp]
-theorem Hall.neg_apply (c : SimClass k) : (-f) c = -f c := rfl
+theorem Hall.neg_apply (c : SimClass k) : (-f) c = - f c := rfl
 
 @[simp]
 lemma Hall.smul_apply (a : ℂ) (c : SimClass k) : (a • f) c = a * f c := rfl
@@ -275,8 +295,10 @@ lemma Hall.one_apply (c : SimClass k) : (1 : Hall k) c = if c.dim = 0 then 1 els
 abbrev blockTriangularEnd (a : End k V) (b : End k V') (x : V' →ₗ[k] V) : V' × V →ₗ[k] V' × V :=
   (b.prod x).coprod (LinearMap.prod 0 a)
 
-/-- For finite `k`, an endomorphism of a finite-dimensional space has finitely many stable
-subspaces. -/
+/--
+For finite `k`, an endomorphism of a finite-dimensional space has finitely many stable
+subspaces.
+-/
 instance fintypeStableSubspace [Finite k] : Fintype (StableSubspace g) :=
   have := @finite_of_finite k V
   .ofFinite _
@@ -306,10 +328,12 @@ lemma simClassOf_endOnSub (p : V →ₗ[k] V') (hp : ∀ x : V, p (g x) = g' (p 
   have he (x : V) : e (g x) = U.endOnSub (e x) := Subtype.ext (hp x)
   exact (simClassOf_eq_of_equiv e he).symm
 
-/-- For a `k`-linear map `p` intertwining `g` and `g'`, the preimage `p⁻¹(U)` of a `g'`-stable
-subspace `U`, as a `g`-stable subspace. -/
-def StableSubspace.comap (p : V →ₗ[k] V') (hp : ∀ x : V, p (g x) = g' (p x))
-    (U : StableSubspace g') : StableSubspace g :=
+/--
+For a `k`-linear map `p` intertwining `g` and `g'`, the preimage `p⁻¹(U)` of a `g'`-stable
+subspace `U`, as a `g`-stable subspace.
+-/
+def StableSubspace.comap (p : V →ₗ[k] V') (hp : ∀ x : V, p (g x) = g' (p x)) (U : StableSubspace g')
+    : StableSubspace g :=
   ⟨Submodule.comap p U, fun x hx ↦ by simpa [hp] using U.prop (p x) hx⟩
 
 /-- For injective `p` intertwining `g` and `g'` and `U` in the image of `p`, `g` on `p⁻¹(U)` has
@@ -429,7 +453,8 @@ instance : CommRing (Hall k) := by
   refine' { mul_assoc := _, .. } <;> intros <;> ext _ g
   -- The laws of `0` and distributivity hold term by term; in `1 * a` only `W = ⊥` contributes,
   -- in `a * 1` only `W = ⊤`.
-  any_goals solve
+  any_goals
+    solve
     | simp [simClassOf_endOnQuot (g' := g) 1 _ ⟨⊥, _⟩ surjective_id rfl,
         simClassOf_endOnSub (g := g) .id, finsum_eq_sum_of_fintype, injective_id, finrank_zero_iff,
         subsingleton_iff_eq_bot, Subtype.coe_eq_iff, mul_add, sum_add_distrib, add_mul]
@@ -495,8 +520,8 @@ lemma Hall.one_sub_constOne_pow_apply_eq_zero (m : ℕ) :
 /-- The class functions form a `ℂ`-algebra: scalars act pointwise. -/
 instance : Algebra ℂ (Hall k) := by
   -- At each class, a scalar comes out of every term of the finite sum defining the product.
-  refine Algebra.ofModule ?_ ?_ <;>
-    aesop (add simp [mul_sum, finsum_eq_sum_of_fintype]) (add 1% (by ring))
+  refine Algebra.ofModule ?_ ?_
+    <;> aesop (add simp [mul_sum, finsum_eq_sum_of_fintype]) (add 1% (by ring))
 
 /-- Over a finite field `k`, the constant function `𝟙` on similarity classes of square matrices of
 all sizes is invertible for the induction product. -/
@@ -541,40 +566,54 @@ open Module ComplexConjugate Ring
 
 variable {k : Type*} [Field k] [Finite k] (n : ℕ) (F H : Hall k)
 
-/-- For F on similarity classes, the function of two classes a, b averaging F over block upper
-triangular endomorphisms with diagonal blocks a, b and arbitrary off-diagonal block. -/
-def blockAverage : SimClass k → Hall k :=
-  fun a b ↦ finMean fun x ↦ F (simClassOf (blockTriangularEnd a.out.2 b.out.2 x))
+/--
+For F on similarity classes, the function of two classes a, b averaging F over block upper
+triangular endomorphisms with diagonal blocks a, b and arbitrary off-diagonal block.
+-/
+def blockAverage : SimClass k → Hall k := fun a b ↦
+  finMean fun x ↦ F (simClassOf (blockTriangularEnd a.out.2 b.out.2 x))
 
 /-- The inverse μ of the constant function `New.Hall.constOne` for the induction product. -/
 abbrev moebius : Hall k := constOne⁻¹ʳ
 
-/-- The pointwise product F·μ, where μ is the inverse, for the parabolic-induction product, of
-the constant class function 1. -/
+/--
+The pointwise product F·μ, where μ is the inverse, for the parabolic-induction product, of
+the constant class function 1.
+-/
 abbrev mulMoebius : Hall k := fun c ↦ F c * moebius c
 
-/-- F is cuspidal: its average over block triangular endomorphisms with diagonal blocks a, b
-vanishes whenever both a and b have nonzero dimension. -/
+/--
+F is cuspidal: its average over block triangular endomorphisms with diagonal blocks a, b
+vanishes whenever both a and b have nonzero dimension.
+-/
 def IsCuspidal : Prop := ∀ a b : SimClass k, a.dim ≠ 0 → b.dim ≠ 0 → F.blockAverage a b = 0
 
-/-- For n and complex functions F, H on similarity classes, the average over GL_n(k) of the
-conjugate of F times H. -/
+/--
+For n and complex functions F, H on similarity classes, the average over GL_n(k) of the
+conjugate of F times H.
+-/
 def rankInner : ℂ :=
   finMean fun g : (End k (Fin n → k))ˣ ↦ conj (F (simClassOf g.val)) * H (simClassOf g.val)
 
-/-- The function sending a class a to the average over b in GL_n(k) of conj F(b) times the block
-average `New.Hall.blockAverage` of H at (a, b). -/
+/--
+The function sending a class a to the average over b in GL_n(k) of conj F(b) times the block
+average `New.Hall.blockAverage` of H at (a, b).
+-/
 def skew : Hall k := fun a ↦ rankInner n F (H.blockAverage a)
 
 variable (k) {K : Type*} [Field K] [Algebra k K] (η : K → ℂ)
 
-/-- The class function β_η sending an endomorphism to the sum of η over the roots in K of its
-characteristic polynomial, counted with multiplicity. -/
+/--
+The class function β_η sending an endomorphism to the sum of η over the roots in K of its
+characteristic polynomial, counted with multiplicity.
+-/
 @[simp]
 def brauerLift : Hall k := fun c ↦ ((c.charpoly.aroots K).map η).sum
 
-/-- The class function C_η = (β_η·μ) ∗ 𝟙: the pointwise product of the eigenvalue sum β_η with
-the inverse μ of 𝟙, multiplied in the induction product by the constant function 𝟙. -/
+/--
+The class function C_η = (β_η·μ) ∗ 𝟙: the pointwise product of the eigenvalue sum β_η with
+the inverse μ of 𝟙, multiplied in the induction product by the constant function 𝟙.
+-/
 def greenCuspidal : Hall k := (brauerLift k η).mulMoebius * constOne
 
 end CoproductDefs
@@ -585,7 +624,8 @@ section MackeyFormula
 
 open Module Submodule.Quotient StableSubspace Free LinearMap Fintype QuotientAddGroup
 
-variable {k V W : Type*} [Field k] [Finite k] [AddCommGroup V] [Module k V] [Module.Finite k V]
+variable
+  {k V W : Type*} [Field k] [Finite k] [AddCommGroup V] [Module k V] [Module.Finite k V]
   [AddCommGroup W] [Module k W] [Module.Finite k W]
   (F H : Hall k) (a : End k V) (b : End k W)
 
@@ -799,8 +839,11 @@ open Module Pointwise LinearMap GeneralLinearGroup StableSubspace Submodule Fins
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {k V ι : Type*} [Field k] [Finite k] [AddCommGroup V] [Module k V] [Module.Finite k V]
-  {F H : Hall k} {a : End k V} (n : ℕ) (X A B : Hall k) [Fintype ι]
+variable
+  {k V ι : Type*} [Field k] [Finite k] [AddCommGroup V] [Module k V] [Module.Finite k V]
+  {F H : Hall k} {a : End k V}
+  (n : ℕ) (X A B : Hall k)
+  [Fintype ι]
 
 omit [Finite k] in
 /-- The chosen representative of the class of `a` is the identity if and only if `a` is. -/
@@ -934,7 +977,8 @@ section SkewOperator
 
 open Module Finset
 
-variable {k : Type*} [Field k] [Finite k]
+variable
+  {k : Type*} [Field k] [Finite k]
   {F H c f : Hall k} {d n : ℕ} {o : SimClass k} (hc : c.IsCuspidal) (hd : d ≠ 0)
 
 /-- Here `rankInner m F₁ F₂` is the average over g ∈ GL_m(k) of conj F₁(g)·F₂(g), and `skew d f F`
@@ -1044,8 +1088,9 @@ namespace New
 
 open Matrix Function Hall GeneralLinearGroup Finset Fintype Equiv
 
-variable {k m n ι : Type*} [Field k] [Fintype m] [Fintype n] [DecidableEq n]
-  [LinearOrder ι] (b : n → ι) (F : ι → Hall k)
+variable
+  {k m n ι : Type*} [Field k] [Fintype m] [Fintype n] [DecidableEq n] [LinearOrder ι]
+  (b : n → ι) (F : ι → Hall k)
 
 /-- Reindexing the rows and columns of a matrix by one bijection does not change its similarity
 class. -/

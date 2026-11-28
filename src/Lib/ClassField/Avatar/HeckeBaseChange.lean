@@ -75,15 +75,17 @@ open WeilData Finset Complex Real Variety
 
 variable {E : Type _} [Field E] [CMType E] {e : NumberField.InfinitePlace E → ℤ} (ν : AutChar E)
 
-/-- The Euler product of the character `x ↦ ν (x / x̄)` of `E`, without the factors at `S ∪ S̄`.
-It is the partial Hecke `L`-function if `S ∪ S̄` contains the ramified places. -/
+/--
+The Euler product of the character `x ↦ ν (x / x̄)` of `E`, without the factors at `S ∪ S̄`.
+It is the partial Hecke `L`-function if `S ∪ S̄` contains the ramified places.
+-/
 def AutChar.L (S : Set (FinPlace E)) : ℝ → ℂ :=
   eulerProd (heckeCoeff ν.baseChange.finPart (Set.conjClosure S))
 
 namespace AutChar.HasWeight
 
-variable {ν} {S : Set (FinPlace E)}
-  {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ} [h : ν.HasWeight e ψ]
+variable
+  {ν} {S : Set (FinPlace E)} {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ} [h : ν.HasWeight e ψ]
   {w : FinPlace E} (hψ_w : ψ w = 1) (hψ_star : ψ (star w) = 1)
 
 include h
@@ -150,33 +152,35 @@ lemma atUniformizer_star (hψ_w : ψ w = 1) (hψ_star : ψ (star w) = 1) :
     Units.ext_iff]
     using h_star (locIdele w (uniformizer w))
 
-/-- Let ν be a continuous circle-valued character of the norm-one adeles of the CM field E that is
+/--
+Let ν be a continuous circle-valued character of the norm-one adeles of the CM field E that is
 trivial on E. Suppose ν has weight `e` and tame part `ψ`: almost all residue characters ψ_w are
 trivial, and ν(u) = ∏_v u_v^{e(v)} · ∏_w ψ_w(u mod w) whenever u has integral finite part. If
 ψ_v = 1 for all v ∉ S, then `ν⁻¹` and `ν` have the same `L`-function without the factors at
-`S ∪ S̄`. -/
+`S ∪ S̄`.
+-/
 theorem L_inv (hS : ∀ v : FinPlace E, v ∉ S → ψ v = 1) : ν⁻¹.L S = ν.L S := by
   -- The Euler factor of `ν⁻¹` at `v` is that of `ν` at `star v`: both coefficients are `0` on
   -- `S ∪ S̄`, and outside it conjugation of the prime inverts the value of the base change.
   let c : FinPlace E → ℂ := heckeCoeff ν.baseChange.finPart S.conjClosure
-  have h_coeff (v : FinPlace E) :
-      heckeCoeff ν⁻¹.baseChange.finPart S.conjClosure v = c (star v) := by
+  have h_coeff (v : FinPlace E)
+      : heckeCoeff ν⁻¹.baseChange.finPart S.conjClosure v = c (star v) := by
     have hv_star : star v ∈ S.conjClosure ↔ v ∈ S.conjClosure := by simp [or_comm]
     unfold c heckeCoeff
     by_cases hv : v ∈ S.conjClosure
     · rw [Set.indicator_of_notMem (not_not.mpr hv),
         Set.indicator_of_notMem (not_not.mpr (hv_star.mpr hv))]
-    · obtain ⟨hv_out, hv_star_out⟩ : v ∉ S ∧ star v ∉ S := by
-        simpa [not_or] using hv
+    · obtain ⟨hv_out, hv_star_out⟩ : v ∉ S ∧ star v ∉ S := by simpa [not_or] using hv
       rw [Set.indicator_of_mem hv, Set.indicator_of_mem (mt hv_star.mp hv)]
       simpa [HeckeChar.atUniformizer] using
         (h.atUniformizer_star (hS v hv_out) (hS (star v) hv_star_out)).symm
   -- Reindex the sum over the primes by conjugation, which preserves the norm `q`.
-  have h_sum (s : ℝ) :
-      ∑' v : FinPlace E, Complex.log (1 + -(c (star v) * (v.q : ℂ) ^ (-s : ℂ))) =
-        ∑' v : FinPlace E, Complex.log (1 + -(c v * (v.q : ℂ) ^ (-s : ℂ))) := by
-    simpa [q_star] using (Function.Involutive.toPerm star star_involutive).tsum_eq
-      fun v : FinPlace E ↦ Complex.log (1 + -(c v * (v.q : ℂ) ^ (-s : ℂ)))
+  have h_sum (s : ℝ)
+      : ∑' v : FinPlace E, Complex.log (1 + -(c (star v) * (v.q : ℂ) ^ (-s : ℂ)))
+        = ∑' v : FinPlace E, Complex.log (1 + -(c v * (v.q : ℂ) ^ (-s : ℂ))) := by
+    simpa [q_star] using
+      (Function.Involutive.toPerm star star_involutive).tsum_eq fun v : FinPlace E ↦
+        Complex.log (1 + -(c v * (v.q : ℂ) ^ (-s : ℂ)))
   unfold AutChar.L eulerProd
   simp only [h_coeff, h_sum]
   rfl
@@ -186,17 +190,17 @@ include hψ_w hψ_star
 variable [WeilData E] (k j : ℤ)
 
 open scoped Classical in
-/-- For a character ν of U(1)(𝔸) of weight e, the algebraic Hecke character ν(x/x̄) υ(x)^{−k}
-|x|^{j−k/2}, of infinity type j + e − k on the CM type, j − e on its conjugate. -/
+/--
+For a character ν of U(1)(𝔸) of weight e, the algebraic Hecke character ν(x/x̄) υ(x)^{−k}
+|x|^{j−k/2}, of infinity type j + e − k on the CM type, j − e on its conjugate.
+-/
 def toAlgebraic : AlgHeckeChar E :=
   IsHeckeOfType.toAlgebraic (k := 2 * j - k)
-    (m :=
-      fun σ ↦
-        j +
-          if σ = Φ (NumberField.InfinitePlace.mk σ) then
+    (m := fun σ ↦
+      j + if σ = Φ (NumberField.InfinitePlace.mk σ) then
             e (NumberField.InfinitePlace.mk σ) - k
           else
-            -e (NumberField.InfinitePlace.mk σ))
+            - e (NumberField.InfinitePlace.mk σ))
     (by simp +arith)
     ((ν.baseChange * (υ ^ k)⁻¹).isHeckeOfType_finPart fun z ↦ by
       -- The type at infinity is `2 * e w - k = (j + (e w - k)) - (j - e w)`.
@@ -229,8 +233,8 @@ jump multiplicities are related to J by R, and P kills every geometric Frobenius
 
 section HeckeTwist
 
-variable {E K₀ : Type _}
-  {ℓ : ℕ} [Field E] [EmbeddedNumberField E] [Field K₀] [NumberField K₀] [ThePrime ℓ]
+variable
+  {E K₀ : Type _} {ℓ : ℕ} [Field E] [EmbeddedNumberField E] [Field K₀] [NumberField K₀] [ThePrime ℓ]
 
 open Polynomial GaloisRep Units Fintype Period
 
@@ -252,13 +256,16 @@ lemma prod_norm_zpow [Algebra K₀ E] (x : E) (n : (K₀ →+* ℂ) → ℤ) :
   exact (prod_equiv extensions _ (fun τ ↦ τ x ^ n s)
     fun σ ↦ congrArg (fun t ↦ σ.val x ^ n t) σ.prop).symm
 
-/-- Base change `ω ∘ N` to `E` of an algebraic Hecke character `ω` of `K₀`; its exponent at an
-embedding `σ` of `E` is that of `ω` at `σ|K₀`. -/
-noncomputable def AlgHeckeChar.baseChange [Algebra K₀ E] (ω : AlgHeckeChar K₀) :
-    AlgHeckeChar E where
-  val :=
-    (ω.val.1.comp (Units.map (adeleNorm K₀ E)),
-      Multiplicative.ofAdd fun σ ↦ ω.val.2.toAdd (σ.comp (algebraMap K₀ E)))
+/--
+Base change `ω ∘ N` to `E` of an algebraic Hecke character `ω` of `K₀`; its exponent at an
+embedding `σ` of `E` is that of `ω` at `σ|K₀`.
+-/
+noncomputable def AlgHeckeChar.baseChange [Algebra K₀ E] (ω : AlgHeckeChar K₀)
+    : AlgHeckeChar E where
+  val := (
+    ω.val.1.comp (Units.map (adeleNorm K₀ E)),
+    Multiplicative.ofAdd fun σ ↦ ω.val.2.toAdd (σ.comp (algebraMap K₀ E))
+  )
   property := by
     refine ⟨ω.property.1.preimage (by fun_prop), fun x ↦ ?_⟩
     -- On a principal idele the norm of ideles is the norm of the fields.

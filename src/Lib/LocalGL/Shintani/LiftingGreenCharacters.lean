@@ -146,15 +146,17 @@ section TorusLift
 
 namespace New
 
-open Polynomial Module Finset Hall ComplexConjugate LinearMap Algebra TensorProduct
-  FiniteField Function Fin IntermediateField IsGalois Units minpoly Nat
+open Polynomial Module Finset Hall ComplexConjugate LinearMap Algebra TensorProduct FiniteField
+  Function Fin IntermediateField IsGalois Units minpoly Nat
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {k L K : Type*} {r : ℕ}
-  (k' : Type*) [Field k] [Field k'] [Algebra k k'] [Finite k] [Finite k'] [Field L]
-  [Algebra k L] [Field K] [Algebra k K] [Algebra k' K] [IsScalarTower k k' K]
-  (T : MulChar K ℂ) {P : k[X]} {x : K}
+variable
+  {k L K : Type*} {r : ℕ}
+  (k' : Type*) [Field k] [Field k'] [Algebra k k'] [Finite k] [Finite k'] [Field L] [Algebra k L]
+  [Field K] [Algebra k K] [Algebra k' K] [IsScalarTower k k' K]
+  (T : MulChar K ℂ)
+  {P : k[X]} {x : K}
 
 omit [IsScalarTower k k' K] in
 /-- Let irreducible polynomials `S` over `k'` and `P` over `k` have a common root `z`. Then
@@ -436,9 +438,12 @@ namespace New
 open Module Polynomial Finset Matrix Hall FiniteField Finite SemidirectProduct Subgroup Function
   Subalgebra IsScalarTower
 
-variable {k k' n K : Type*} {r : ℕ} [Field k] [Field k'] [Algebra k k'] [Finite k] [Finite k']
-  [Fintype n] [DecidableEq n] [Field K] [Algebra k K] [Algebra k' K] (hp : (finrank k k').Prime)
-  (T : MulChar K ℂ) [IsFaithfulMulChar K T] {c : k[X]}
+variable
+  {k k' n K : Type*} {r : ℕ} [Field k] [Field k'] [Algebra k k'] [Finite k] [Finite k'] [Fintype n]
+  [DecidableEq n] [Field K] [Algebra k K] [Algebra k' K]
+  (hp : (finrank k k').Prime)
+  (T : MulChar K ℂ) [IsFaithfulMulChar K T]
+  {c : k[X]}
 
 /-- Let `k'` be an algebra over itself (through some automorphism) whose Galois group is trivial
 (`h_gal`), and let the structure map raise the roots of every polynomial to the power `a`

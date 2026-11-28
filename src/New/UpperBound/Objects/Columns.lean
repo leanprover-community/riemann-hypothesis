@@ -74,8 +74,10 @@ open Matrix GeneralLinearGroup Fintype WeilData Exchange Finset Gf stdLattice Sp
   SemilocalField
 open scoped TensorProduct
 
-variable {E n n' : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
-  [DecidableEq n] [Fintype n'] [DecidableEq n'] {P S : Finset (FinPlace E)} {N : ℕ} [Fact N.Prime]
+variable
+  {E n n' : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {P S : Finset (FinPlace E)} {N : ℕ} [Fact N.Prime]
   {m : Type} [Fintype m] [DecidableEq m]
 
 omit [WeilData E] in
@@ -101,16 +103,20 @@ lemma Seesaw.pairWeilFinite_scalarFin (a b : AutChar E) (ν ν' : unitary (𝔸f
 
 variable {E n : Type} [Field E] [NumberField E] {P : Finset (FinPlace E)} in
 variable (n) in
-/-- The finite adelic matrix whose last column is `-y / N` at the places of `P` and zero at the
-other places, and whose other columns are zero. -/
-abbrev Seesaw.poleColumn (y : n' → P → ZMod N) : n' × (n ⊕ Unit) → 𝔸f E :=
-  fun p ↦ if p.2.isRight then -residueOverN (y p.1) else 0
+/--
+The finite adelic matrix whose last column is `-y / N` at the places of `P` and zero at the
+other places, and whose other columns are zero.
+-/
+abbrev Seesaw.poleColumn (y : n' → P → ZMod N) : n' × (n ⊕ Unit) → 𝔸f E := fun p ↦
+  if p.2.isRight then - residueOverN (y p.1) else 0
 
 variable (m) in
-/-- The finite adelic matrix whose last row is the conjugate of `-y / N`, supported at the
-conjugates of the places of `P`, and whose other rows are zero. -/
-abbrev Seesaw.poleRow (y : n' → P → ZMod N) : (m ⊕ Unit) × n' → 𝔸f E :=
-  fun p ↦ if p.1.isRight then -star (residueOverN (y p.2)) else 0
+/--
+The finite adelic matrix whose last row is the conjugate of `-y / N`, supported at the
+conjugates of the places of `P`, and whose other rows are zero.
+-/
+abbrev Seesaw.poleRow (y : n' → P → ZMod N) : (m ⊕ Unit) × n' → 𝔸f E := fun p ↦
+  if p.1.isRight then - star (residueOverN (y p.2)) else 0
 
 omit [WeilData E] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fact N.Prime] in
 /-- The entries of `poleColumn n y` vanish at the places outside `P`. -/
@@ -126,42 +132,56 @@ lemma Seesaw.poleRow_apply_eq_zero (y : n' → P → ZMod N) (k : (m ⊕ Unit) �
 
 open scoped Classical in
 variable (n n' P N m) in
-/-- For a double lift, the sum over the vectors `y / N` with at most simple poles at `P`, modulo
+/--
+For a double lift, the sum over the vectors `y / N` with at most simple poles at `P`, modulo
 integral vectors, of the translation of the first datum by the last column `-y / N` and of the
-second by the last row `-ȳ / N`. -/
-def Seesaw.doubleLiftGluing : Module.End ℂ
-    (((stdSpace E (n ⊕ Unit)).hom (stdSpace E n')).finitePart ⊗[ℂ]
-      ((stdSpace E n').hom (stdSpace E (m ⊕ Unit))).finitePart) :=
+second by the last row `-ȳ / N`.
+-/
+def Seesaw.doubleLiftGluing
+    : Module.End ℂ
+      (((stdSpace E (n ⊕ Unit)).hom (stdSpace E n')).finitePart ⊗[ℂ]
+        ((stdSpace E n').hom (stdSpace E (m ⊕ Unit))).finitePart) :=
   ∑ y : n' → P → ZMod N,
     TensorProduct.map (heisenbergFinPart _ (poleColumn n y)) (heisenbergFinPart _ (poleRow m y))
 
-/-- The projection `V.projOn S` on the vacuum at the places of `S` and their conjugates, restricted
-to the finite part of the data space of `V`. -/
-abbrev Space.vacuumProjFinPart {s : n → ℤˣ} (V : Space E n s) (S : Set (FinPlace E)) :
-    Module.End ℂ V.finitePart :=
+/--
+The projection `V.projOn S` on the vacuum at the places of `S` and their conjugates, restricted
+to the finite part of the data space of `V`.
+-/
+abbrev Space.vacuumProjFinPart {s : n → ℤˣ} (V : Space E n s) (S : Set (FinPlace E))
+    : Module.End ℂ V.finitePart :=
   (V.projOn S).toLinearMap.restrict fun _ ↦ projOn_mem_finitePart
 
 namespace IsSplitLevel
 
-/-- The character `g ↦ χ (det g) |det g| ^ (-k / 2)` of `GL n` over `LocProd P`, the product of the
-completions of `E` at the places of `P`. -/
+/--
+The character `g ↦ χ (det g) |det g| ^ (-k / 2)` of `GL n` over `LocProd P`, the product of the
+completions of `E` at the places of `P`.
+-/
 def detCharAt (χ : HeckeChar E) (k : ℕ) : GL n (LocProd P) →* ℂˣ :=
   (localChar P χ (-k)).toUnitHom.comp det
 
-/-- The operator `v ↦ Ψ ⊗ v` of the Schrödinger model at `P` on the finite part for the standard
+/--
+The operator `v ↦ Ψ ⊗ v` of the Schrödinger model at `P` on the finite part for the standard
 spaces on `n` and `n'`, as a linear function of the function `Ψ` of matrices over `LocProd P`. Here
-`Ψ` is read as a function of finite adelic matrices through their components at `P`. -/
-def schrodingerOpAt : (Matrix n' n (LocProd P) → ℂ) →ₗ[ℂ]
-    Module.End ℂ ((stdSpace E n).hom (stdSpace E n')).finitePart :=
+`Ψ` is read as a function of finite adelic matrices through their components at `P`.
+-/
+def schrodingerOpAt
+    : (Matrix n' n (LocProd P) → ℂ) →ₗ[ℂ]
+      Module.End ℂ ((stdSpace E n).hom (stdSpace E n')).finitePart :=
   LinearMap.mk₂ ℂ
-    (fun Ψ v ↦ ⟨_, schrodingerOp_mem_finitePart P (Ψ ∘ fun T ↦ (vecToMatrix T).map (evalPlaces P))
-      v.property⟩)
+    (fun Ψ v ↦ ⟨
+      _,
+      schrodingerOp_mem_finitePart P (Ψ ∘ fun T ↦ (vecToMatrix T).map (evalPlaces P)) v.property
+    ⟩)
     (by simp [Pi.add_comp]) (by simp [Pi.smul_comp]) (by simp) (by simp)
 
 variable [h : IsSplitLevel P N]
 
-/-- The element of the finite adelic unitary group that is supported above `N` and has the given
-components at `P`. -/
+/--
+The element of the finite adelic unitary group that is supported above `N` and has the given
+components at `P`.
+-/
 def embedGL : GL n (LocProd P) →* Gf E n :=
   (ofSplitPlaces h.star_notMem).comp (.pi fun w ↦ map (Pi.evalRingHom _ w))
 
@@ -265,11 +285,13 @@ lemma liftFn_eq_residueDatum [h : IsSplitLevel P N] (f : Matrix n' n (P → ZMod
   · congr!
     exact congrArg _ (dite_eq_left _)
 
-/-- The composite of `h.liftFn f` with the map sending `T` to the entrywise image of `vecToMatrix T`
-under `evalPlaces P` is a Schwartz–Bruhat function at `P`. -/
-instance isSchwartzBruhat_liftFn (f : Matrix n' n (P → ZMod N) → ℂ) :
-    IsSchwartzBruhat P (h.liftFn f ∘ fun T : n' × n → 𝔸f E ↦
-      (vecToMatrix T).map (evalPlaces P)) := by
+/--
+The composite of `h.liftFn f` with the map sending `T` to the entrywise image of `vecToMatrix T`
+under `evalPlaces P` is a Schwartz–Bruhat function at `P`.
+-/
+instance isSchwartzBruhat_liftFn (f : Matrix n' n (P → ZMod N) → ℂ)
+    : IsSchwartzBruhat P
+      (h.liftFn f ∘ fun T : n' × n → 𝔸f E ↦ (vecToMatrix T).map (evalPlaces P)) := by
   simpa [liftFn_eq_residueDatum] using
     isSchwartzBruhat_residueDatum (w := fun w : P ↦ w.val) _ (by grind [star_notMem])
 
@@ -645,12 +667,13 @@ lemma card_piNPlaces : #D.piNPlaces = D.f := by
 
 /-! ### The level of stage `j` -/
 
-/-- The level of stage j: elements of the chosen level `New.Data.chosenLevel` on X_j whose last row
-is congruent to (0, …, 0, 1) modulo π. -/
+/--
+The level of stage j: elements of the chosen level `New.Data.chosenLevel` on X_j whose last row
+is congruent to (0, …, 0, 1) modulo π.
+-/
 def levelX : Subgroup (Gf D.E (D.X j)) :=
-  D.chosenLevel (n := D.X j) ⊓
-    (congruenceGL (Ô D.E ∙ algebraMap (NumberField.RingOfIntegers D.E) (𝔸f D.E) D.piN)
-        Sum.inr).subgroupOf (U 1)
+  D.chosenLevel (n := D.X j) ⊓ (congruenceGL
+    (Ô D.E ∙ algebraMap (NumberField.RingOfIntegers D.E) (𝔸f D.E) D.piN) Sum.inr).subgroupOf (U 1)
 
 lemma principalLevel_le_levelX : principalLevel (D.X j) (D.piM * D.piN) ≤ D.levelX j := by
   -- Level `piM * π` lies in level `piM` and in level `π`; the latter constrains every row.
@@ -663,8 +686,10 @@ instance isLevel_levelX {j : ℕ} : IsLevel (D.levelX j) where
   le := inf_le_of_left_le levelOf_le_stdLevel
   isOpen := isOpen_mono (D.principalLevel_le_levelX j) (isOpen_principalLevel (by simp))
 
-/-- A chosen bijection between the finite index sets Y_m and `InitIndex m`, which have the same
-cardinality. -/
+/--
+A chosen bijection between the finite index sets Y_m and `InitIndex m`, which have the same
+cardinality.
+-/
 def lastIndexEquiv : D.Y D.m ≃ D.InitIndex D.m :=
   Fintype.equivOfCardEq <| by
     simp only [BlockIndex.card, card_sum, Fintype.card_fin, card_unique]
@@ -684,30 +709,46 @@ lemma cast_diagramWeight_columnCount (τ : D.Φ) (i : ℕ) :
       D.liftDiagram j τ i := by
   rw [diagramWeight_apply, rankAt, card_X, liftDiagram_eq_sum_columnCount]
 
-/-- The properties of a branching map from the Weyl module of the weight `μ(X_m)` to that of
+/--
+The properties of a branching map from the Weyl module of the weight `μ(X_m)` to that of
 `μ(Y_m)`. The weights have the column numbers `D.columnCount` and `D.columnsY`, and both have the
-determinant exponents `D.lastEntry D.m`. -/
+determinant exponents `D.lastEntry D.m`.
+-/
 structure IsBranchingMap
-    (br : Matrix (WeylIndex (D.Y D.m) D.columnsY) (WeylIndex (D.X D.m) D.columnCount) ℤ) :
-      Prop where
-  /-- Over every field of characteristic zero, `br` takes the action of `y = diag (g, z)` to
+    (br : Matrix (WeylIndex (D.Y D.m) D.columnsY) (WeylIndex (D.X D.m) D.columnCount) ℤ)
+    : Prop where
+  /--
+  Over every field of characteristic zero, `br` takes the action of `y = diag (g, z)` to
   `∏ τ, z τ ^ n_τ` times the action of `g`, where `n_τ = D.branchExponent τ` is the sum of the
-  entries of `μ(X_m)` at `τ` less that of `μ(Y_m)`. -/
-  mul_weylRep (R : Type) [Field R] [CharZero R] (g : D.Φ → GL (D.Y D.m) R) (z : D.Φ → Rˣ)
-    (y : D.Φ → GL (D.X D.m) R)
-    (hy : ∀ τ : D.Φ, (y τ).val = GL.blockScalar (fun _ ↦ D.lastIndexEquiv.sumCongr (.refl Unit))
-      (fun τ : D.Φ ↦ (g τ).val) (fun τ : D.Φ ↦ (z τ).val) τ) :
-    br.map ((↑) : ℤ → R) * weylRep D.columnCount (D.lastEntry D.m) y =
-      (∏ τ : D.Φ, z τ ^ D.branchExponent τ) •
-        (weylRep D.columnsY (D.lastEntry D.m) g * br.map ((↑) : ℤ → R))
-  /-- The square of the operator norm of `br` is at most `exp (x ^ 70)`, with `x = D.x` the length
-  of the prime sum. -/
-  weylNormSq_le (ξ : WeylIndex (D.X D.m) D.columnCount → ℂ) :
-    weylNormSq (br.map (↑) *ᵥ ξ) ≤ Real.exp (D.x ^ 70) * weylNormSq ξ
-  /-- Every complex matrix that is equivariant for the elements `diag (g, 1)`, `g` unitary, is a
-  multiple of `br`. -/
-  spans : SpansBranchingMaps (fun _ ↦ D.lastIndexEquiv.sumCongr (.refl Unit)) (D.lastEntry D.m)
-    (D.lastEntry D.m) (br.map (↑))
+  entries of `μ(X_m)` at `τ` less that of `μ(Y_m)`.
+  -/
+  mul_weylRep
+    (R : Type) [Field R] [CharZero R]
+    (g : D.Φ → GL (D.Y D.m) R) (z : D.Φ → Rˣ) (y : D.Φ → GL (D.X D.m) R)
+    (hy : ∀ τ : D.Φ,
+      (y τ).val
+        = GL.blockScalar
+          (fun _ ↦ D.lastIndexEquiv.sumCongr (.refl Unit))
+          (fun τ : D.Φ ↦ (g τ).val)
+          (fun τ : D.Φ ↦ (z τ).val)
+          τ)
+    : br.map ((↑) : ℤ → R) * weylRep D.columnCount (D.lastEntry D.m) y
+      = (∏ τ : D.Φ, z τ ^ D.branchExponent τ)
+        • (weylRep D.columnsY (D.lastEntry D.m) g * br.map ((↑) : ℤ → R))
+  /--
+  The square of the operator norm of `br` is at most `exp (x ^ 70)`, with `x = D.x` the length
+  of the prime sum.
+  -/
+  weylNormSq_le (ξ : WeylIndex (D.X D.m) D.columnCount → ℂ)
+    : weylNormSq (br.map (↑) *ᵥ ξ) ≤ Real.exp (D.x ^ 70) * weylNormSq ξ
+  /--
+  Every complex matrix that is equivariant for the elements `diag (g, 1)`, `g` unitary, is a
+  multiple of `br`.
+  -/
+  spans
+    : SpansBranchingMaps
+      (fun _ ↦ D.lastIndexEquiv.sumCongr (.refl Unit))
+      (D.lastEntry D.m) (D.lastEntry D.m) (br.map (↑))
 
 /-- The weight on `Y_m` has `D.columnsY τ u` columns of height `u` at the infinite place `τ`. There
 is a number `l` that bounds the boxes in the columns of height at least `k` and less than
@@ -778,62 +819,75 @@ lemma classAut_levelX_zero_eq_bot :
 
 /-! ### Source forms and smooth forms -/
 
-/-- The space of source forms: algebraic forms on X_0 of weight (`D.columnCount`, `D.lastEntry 0`)
-(column numbers, determinant exponents) fixed by the level `New.Data.levelX` of stage 0. -/
+/--
+The space of source forms: algebraic forms on X_0 of weight (`D.columnCount`, `D.lastEntry 0`)
+(column numbers, determinant exponents) fixed by the level `New.Data.levelX` of stage 0.
+-/
 abbrev SourceForm := levelSpace (algFormRep D.columnCount (D.lastEntry 0)) (D.levelX 0)
 
-/-- The space of smooth algebraic forms on X_j of weight (`D.columnCount`, `D.lastEntry j`): column
-numbers and determinant exponents. -/
+/--
+The space of smooth algebraic forms on X_j of weight (`D.columnCount`, `D.lastEntry j`): column
+numbers and determinant exponents.
+-/
 abbrev FormX : Submodule ℂ (Gf D.E (D.X j) → WeylIndex (D.X j) D.columnCount → ℂ) :=
   AlgForm (D.X j) D.columnCount (D.lastEntry j)
 
 /-! ### Restriction of forms from `X_m` to `Y_m` -/
 
-/-- The homomorphism g ↦ diag(g, 1) from the finite adelic unitary group on Y_m to that on X_m,
-relabelling along `New.Data.lastIndexEquiv`. -/
-def borderU :
-    U (1 : Matrix (D.Y D.m) (D.Y D.m) (𝔸f D.E)) →*
-      U (1 : Matrix (D.InitIndex D.m ⊕ Unit) (D.InitIndex D.m ⊕ Unit) (𝔸f D.E)) :=
+/--
+The homomorphism g ↦ diag(g, 1) from the finite adelic unitary group on Y_m to that on X_m,
+relabelling along `New.Data.lastIndexEquiv`.
+-/
+def borderU
+    : U (1 : Matrix (D.Y D.m) (D.Y D.m) (𝔸f D.E))
+      →* U (1 : Matrix (D.InitIndex D.m ⊕ Unit) (D.InitIndex D.m ⊕ Unit) (𝔸f D.E)) :=
   (U.block (R := 𝔸f D.E) (D.lastIndexEquiv.sumCongr (Equiv.refl Unit))).comp
     (MonoidHom.inl (U 1) (U (1 : Matrix Unit Unit (𝔸f D.E))))
 
-/-- The restriction of algebraic forms from X_m to Y_m: restrict to points diag(h,1), apply the
-branching matrix, and multiply by ∏_τ τ(π̄)^{−n_τ}, τ read as its embedding in the CM type. -/
-def restrictToY :
-    AlgForm (D.InitIndex D.m ⊕ Unit) D.columnCount (D.lastEntry D.m) →ₗ[ℂ]
-      AlgForm (D.Y D.m) D.columnsY (D.lastEntry D.m) :=
-  (∏ τ : NumberField.InfinitePlace D.E, Φ τ (star ↑D.piN) ^ (-D.branchExponent τ)) •
-    ((D.branching.map (↑)).mulVecLin.compLeft (U 1) ∘ₗ
-      .funLeft ℂ (WeylIndex (D.X D.m) D.columnCount → ℂ) D.borderU).restrict
+/--
+The restriction of algebraic forms from X_m to Y_m: restrict to points diag(h,1), apply the
+branching matrix, and multiply by ∏_τ τ(π̄)^{−n_τ}, τ read as its embedding in the CM type.
+-/
+def restrictToY
+    : AlgForm (D.InitIndex D.m ⊕ Unit) D.columnCount (D.lastEntry D.m) →ₗ[ℂ]
+        AlgForm (D.Y D.m) D.columnsY (D.lastEntry D.m) :=
+  (∏ τ : NumberField.InfinitePlace D.E, Φ τ (star ↑D.piN) ^ (-D.branchExponent τ))
+    • ((D.branching.map (↑)).mulVecLin.compLeft (U 1)
+        ∘ₗ .funLeft ℂ (WeylIndex (D.X D.m) D.columnCount → ℂ) D.borderU).restrict
       (p := AlgForm (D.InitIndex D.m ⊕ Unit) D.columnCount (D.lastEntry D.m))
-      (q := AlgForm (D.Y D.m) D.columnsY (D.lastEntry D.m)) (by
-    rintro ψ ⟨smooth, equivariant⟩
-    refine ⟨?_, fun γ g ↦ ?_⟩
-    · -- the stabiliser contains the preimage under `borderU` of the open stabiliser of `ψ`
-      have cont : Continuous D.borderU := by
-        refine (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).continuous_iff.2
-            (.matrix_reindex ?_ ..)
-        -- each entry of `diag (g, 1)` is a constant or an entry of `g`
-        simp only [U.sum, MonoidHom.inl_apply, MonoidHom.codRestrict_apply, MonoidHom.coe_comp,
-          MonoidHom.coe_prodMap, Function.comp_apply, val_blockGL_apply]
-        fun_prop
-      exact ((rightStabilizer ψ).comap D.borderU).isOpen_mono (fun _ hk ↦ by simp [hk _])
-        (smooth.preimage cont)
-    -- `branching` intertwines the action of `diag (γ, 1)` with that of `γ`
-    simp only [LinearMap.coe_comp, Function.comp_apply, LinearMap.compLeft_apply,
-      LinearMap.funLeft_apply, map_mul, mulVecBilin_apply, stdSpace_weightRep_apply, mulVec_mulVec]
-    let ε := D.lastIndexEquiv.sumCongr (Equiv.refl Unit)
-    have h_block : D.borderU ((stdSpace D.E (D.Y D.m)).embFin γ) =
-        (stdSpace D.E (D.InitIndex D.m ⊕ Unit)).embFin (U.block ε (γ, 1)) :=
-      block_embFin ε γ
-    rw [h_block]
-    refine (congrArg (D.branching.map (↑) *ᵥ ·)
-      (equivariant (U.block ε (γ, 1)) (D.borderU g))).trans ?_
-    refine (congrArg (D.branching.map (↑) *ᵥ ·)
-      (stdSpace_weightRep_apply (γ := U.block ε (γ, 1)) (v := ψ (D.borderU g)))).trans ?_
-    rw [mulVec_mulVec, D.isBranchingMap_branching.mul_weylRep _ _ 1, Finset.prod_eq_one,
-      one_smul] <;>
-      simp [← ext_iff, GL.blockScalar, ε])
+      (q := AlgForm (D.Y D.m) D.columnsY (D.lastEntry D.m))
+      (by
+        rintro ψ ⟨smooth, equivariant⟩
+        refine ⟨?_, fun γ g ↦ ?_⟩
+        · -- the stabiliser contains the preimage under `borderU` of the open stabiliser of `ψ`
+          have cont : Continuous D.borderU := by
+            refine (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).continuous_iff.2
+              (.matrix_reindex ?_ ..)
+            -- each entry of `diag (g, 1)` is a constant or an entry of `g`
+            simp only [U.sum, MonoidHom.inl_apply, MonoidHom.codRestrict_apply, MonoidHom.coe_comp,
+              MonoidHom.coe_prodMap, Function.comp_apply, val_blockGL_apply]
+            fun_prop
+          exact ((rightStabilizer ψ).comap D.borderU).isOpen_mono
+            (fun _ hk ↦ by simp [hk _])
+            (smooth.preimage cont)
+        -- `branching` intertwines the action of `diag (γ, 1)` with that of `γ`
+        simp only [LinearMap.coe_comp, Function.comp_apply, LinearMap.compLeft_apply,
+          LinearMap.funLeft_apply, map_mul, mulVecBilin_apply, stdSpace_weightRep_apply,
+          mulVec_mulVec]
+        let ε := D.lastIndexEquiv.sumCongr (Equiv.refl Unit)
+        have h_block
+            : D.borderU ((stdSpace D.E (D.Y D.m)).embFin γ)
+              = (stdSpace D.E (D.InitIndex D.m ⊕ Unit)).embFin (U.block ε (γ, 1)) :=
+          block_embFin ε γ
+        rw [h_block]
+        refine
+          (congrArg (D.branching.map (↑) *ᵥ ·) (equivariant (U.block ε (γ, 1)) (D.borderU g))).trans
+            ?_
+        refine (congrArg (D.branching.map (↑) *ᵥ ·)
+          (stdSpace_weightRep_apply (γ := U.block ε (γ, 1)) (v := ψ (D.borderU g)))).trans ?_
+        rw [mulVec_mulVec, D.isBranchingMap_branching.mul_weylRep _ _ 1, Finset.prod_eq_one,
+            one_smul]
+          <;> simp [← ext_iff, GL.blockScalar, ε])
 
 end New.Data
 
@@ -867,53 +921,64 @@ lemma isLiftWeight_columnCount (j : ℕ) : IsLiftWeight (D.X j) (D.X (j + 1)) D.
   · simpa only [rankAt, card_X] using hu
   · rw [lastEntry_eq, card_X, card_X, Int.natCast_ediv, Nat.cast_ofNat]
 
-/-- The hermitian space Hom(X_j, X_{j+1}) of the standard definite spaces on the index sets X_j
-and X_{j+1}. -/
+/--
+The hermitian space Hom(X_j, X_{j+1}) of the standard definite spaces on the index sets X_j
+and X_{j+1}.
+-/
 abbrev homX : Space D.E (D.X (j + 1) × D.X j) (homSigns 1 1) :=
   (stdSpace D.E (D.X j)).hom (stdSpace D.E (D.X (j + 1)))
 
-/-- The theta kernel of lift j + 1, for a character ϑ of U(1)(𝔸) of weight 0 with given tame part
+/--
+The theta kernel of lift j + 1, for a character ϑ of U(1)(𝔸) of weight 0 with given tame part
 (`New.Data.TameChar`). It goes from forms on X_j to forms on X_{j+1}, and its level on X_j is
 `D.levelX j`. Its two characters are the twists `New.rankTwist`, by the ranks of X_j and X_{j+1}, of
 `D.chainChar ϑ (j + 1)`, the product of `D.untwistedLiftChar (j + 1)` and ϑ^{j+1}. Derivatives are
 scaled by π_M times the period `P.jetScale D.towerExp`, where π_M is the conjugate of the integer
-`D.piMBar` of K of norm `D.M`. -/
+`D.piMBar` of K of norm `D.M`.
+-/
 @[simps! -isSimp ω]
-def liftKernel :
-    Kernel (D.X j) (D.X (j + 1)) D.columnCount (D.lastEntry j) (D.lastEntry (j + 1))
-      (D.levelX j)
+def liftKernel
+    : Kernel (D.X j) (D.X (j + 1)) D.columnCount (D.lastEntry j) (D.lastEntry (j + 1)) (D.levelX j)
       (D.homX j).finitePart := by
   -- Both characters are twists of `chainChar ϑ (j + 1)`, whose weight is
   -- `-D.liftWeight (j + 1)`; the twist by the rank `n_j` raises this weight to `lastEntry (j + 1)`.
-  obtain weight :
-      (D.chainChar ϑ j.succ).HasWeight (-D.liftWeight j.succ ·)
-        (D.liftTamePart (ϑ.pow j.succ) j.succ) :=
+  obtain weight : (D.chainChar ϑ j.succ).HasWeight (- D.liftWeight j.succ ·)
+      (D.liftTamePart (ϑ.pow j.succ) j.succ) :=
     D.hasWeight_liftChar
   exact thetaKernel (D.isLiftWeight_columnCount j) (star ↑D.piMBar * P.jetScale D.towerExp)
-    ((weight.hasWeight_rankTwist (n := D.X j)).of_weight_eq (funext fun _ ↦ by
-      grind [lastEntry, card_X]))
+    ((weight.hasWeight_rankTwist (n := D.X j)).of_weight_eq
+      (funext fun _ ↦ by grind [lastEntry, card_X]))
     weight.hasWeight_rankTwist (D.levelX j)
 
-/-- Tuples (x_j) of finite adelic matrices with rows X_{j+1} and columns X_j, the translations
-that define the data of a chain. -/
+/--
+Tuples (x_j) of finite adelic matrices with rows X_{j+1} and columns X_j, the translations
+that define the data of a chain.
+-/
 abbrev Translations : Type := ∀ j : ℕ, D.X (j + 1) × D.X j → 𝔸f D.E
 
-/-- The j-th datum of the tuple x: the normalised vacuum `New.Parameters.intVacuum` of Hom(X_j,
-X_{j+1}) translated by the finite Heisenberg operator of x_j. -/
+/--
+The j-th datum of the tuple x: the normalised vacuum `New.Parameters.intVacuum` of Hom(X_j,
+X_{j+1}) translated by the finite Heisenberg operator of x_j.
+-/
 def translateDatum (x : D.Translations) (j : ℕ) : (D.homX j).finitePart :=
   (D.homX j).heisenbergFinPart (x j) ⟨P.intVacuum (homX j), SMulMemClass.smul_mem _ (by simp)⟩
 
-/-- The linear map ∑_x Ψ(x)·C_x from algebraic forms of stage 0 to stage j, where C_x is the chain
-(`New.chain`) of j theta lifts with data Φ x. -/
-abbrev chainCombination (Ψ : D.Translations →₀ ℂ)
-    (Φ : D.Translations → ∀ i : ℕ, (D.homX i).finitePart) (j : ℕ) : D.FormX 0 →ₗ[ℂ] D.FormX j :=
+/--
+The linear map ∑_x Ψ(x)·C_x from algebraic forms of stage 0 to stage j, where C_x is the chain
+(`New.chain`) of j theta lifts with data Φ x.
+-/
+abbrev chainCombination
+    (Ψ : D.Translations →₀ ℂ) (Φ : D.Translations → ∀ i : ℕ, (D.homX i).finitePart) (j : ℕ)
+    : D.FormX 0 →ₗ[ℂ] D.FormX j :=
   Ψ.sum fun x c ↦ c • chain (D.liftKernel ϑ) (Φ x) j
 
-/-- The combination `Ψ` of the chains of `m` lifts whose data are translates of the integral vacuum,
+/--
+The combination `Ψ` of the chains of `m` lifts whose data are translates of the integral vacuum,
 followed by the restriction to `Y_m`. The composite lift of a chain datum has this form, with `Ψ`
-obtained by expanding its glued tensor (`IsChainDatum.exists_isWeakChainDatum_compositeLift_eq`). -/
-def restrictedChain (Ψ : D.Translations →₀ ℂ) :
-    D.SourceForm →ₗ[ℂ] AlgForm (E := D.E) (D.Y D.m) D.columnsY (D.lastEntry D.m) :=
+obtained by expanding its glued tensor (`IsChainDatum.exists_isWeakChainDatum_compositeLift_eq`).
+-/
+def restrictedChain (Ψ : D.Translations →₀ ℂ)
+    : D.SourceForm →ₗ[ℂ] AlgForm (E := D.E) (D.Y D.m) D.columnsY (D.lastEntry D.m) :=
   D.restrictToY ∘ₗ chainCombination ϑ Ψ D.translateDatum D.m ∘ₗ D.SourceForm.subtype
 
 variable (D) in
@@ -940,30 +1005,37 @@ open scoped TensorProduct
 
 variable {P : Parameters} {D : Data P} (ϑ : D.Twist)
 
-/-- The gluing for the double lift `X_{2i} → X_{2i+1} → X_{2i+2}`: the sum `doubleLiftGluing` of the
+/--
+The gluing for the double lift `X_{2i} → X_{2i+1} → X_{2i+2}`: the sum `doubleLiftGluing` of the
 translates of `v (2 i) ⊗ v (2 i + 1)`, with simple poles at the places `w ∣ π` in the first factor
-and at their conjugates in the second. -/
-noncomputable def gluedDoubleLiftDatum (v : ∀ j : ℕ, (D.homX j).finitePart) (i : ℕ) :
-    (D.homX (2 * i)).finitePart ⊗[ℂ] (D.homX (2 * i + 1)).finitePart :=
+and at their conjugates in the second.
+-/
+noncomputable def gluedDoubleLiftDatum (v : ∀ j : ℕ, (D.homX j).finitePart) (i : ℕ)
+    : (D.homX (2 * i)).finitePart ⊗[ℂ] (D.homX (2 * i + 1)).finitePart :=
   doubleLiftGluing (D.InitIndex (2 * i)) (D.X (2 * i + 1)) D.piNPlaces D.N
-    (D.InitIndex (2 * i + 1 + 1))
-    (v (2 * i) ⊗ₜ v (2 * i + 1))
+    (D.InitIndex (2 * i + 1 + 1)) (v (2 * i) ⊗ₜ v (2 * i + 1))
 
-/-- The tuples of translations that become integral at all places prime to `q` after multiplication
-by the conjugate of `D.piM`. -/
+/--
+The tuples of translations that become integral at all places prime to `q` after multiplication
+by the conjugate of `D.piM`.
+-/
 def admissibleTranslations (q : ℕ) : Set D.Translations :=
   {t : D.Translations | ∀ j : ℕ, t j ∈ translations (D.X (j + 1) × D.X j) q (star ↑D.piM)}
 
 /-- Tensors of finite data for the chain `X_0 → ⋯ → X_m`, grouped by double lifts. -/
 abbrev ChainTensor (D : Data P) : Type :=
-  TensorChain (fun i : ℕ ↦ (D.homX (2 * i)).finitePart ⊗[ℂ] (D.homX (2 * i + 1)).finitePart)
+  TensorChain
+    (fun i : ℕ ↦ (D.homX (2 * i)).finitePart ⊗[ℂ] (D.homX (2 * i + 1)).finitePart)
     (D.ϱ + 1)
 
-/-- A tensor is jointly invariant if the levels of `X_0, …, X_{m-1}` fix it under the Weil actions
-for `ϑ`, with the identity on `X_m`. -/
+/--
+A tensor is jointly invariant if the levels of `X_0, …, X_{m-1}` fix it under the Weil actions
+for `ϑ`, with the identity on `X_m`.
+-/
 def ChainTensor.IsInvariant (ϑ : D.TameChar) (w : D.ChainTensor) : Prop :=
-  ∀ b : ∀ j : ℕ, D.levelX j, b (2 * D.ϱ + 2) = 1 →
-    TensorChain.map (twoKernelAction (D.liftKernel ϑ) fun j : ℕ ↦ b j) (D.ϱ + 1) w = w
+  ∀ b : ∀ j : ℕ, D.levelX j,
+    b (2 * D.ϱ + 2) = 1
+      → TensorChain.map (twoKernelAction (D.liftKernel ϑ) fun j : ℕ ↦ b j) (D.ϱ + 1) w = w
 
 variable (D) in
 /-- The tensor of the translates of the integral vacuum by `t`, glued in each double lift. -/
@@ -972,8 +1044,10 @@ noncomputable def gluedVacuum (t : D.Translations) : D.ChainTensor :=
 
 /-- The tensor `φ♭ = ∑ x, Ψ x • ⊗ⱼ translateDatum x j`. -/
 noncomputable def plainTensor (Ψ : D.Translations →₀ ℂ) : D.ChainTensor :=
-  Ψ.sum fun (x : D.Translations) (c : ℂ) ↦ c • TensorChain.pure
-    (fun i : ℕ ↦ D.translateDatum x (2 * i) ⊗ₜ D.translateDatum x (2 * i + 1)) (D.ϱ + 1)
+  Ψ.sum fun (x : D.Translations) (c : ℂ) ↦
+    c • TensorChain.pure
+      (fun i : ℕ ↦ D.translateDatum x (2 * i) ⊗ₜ D.translateDatum x (2 * i + 1))
+      (D.ϱ + 1)
 
 /-- The glued tensor `φ^ch = Glue φ♭`, with `Glue` applied to each term of `φ♭`. -/
 noncomputable def gluedTensor (Ψ : D.Translations →₀ ℂ) : D.ChainTensor :=
@@ -983,15 +1057,18 @@ noncomputable def gluedTensor (Ψ : D.Translations →₀ ℂ) : D.ChainTensor :
 def supportedTranslations (q : ℕ) : Set D.Translations :=
   {t | ∀ (j : ℕ) (i : D.X (j + 1) × D.X j) (w : FinPlace D.E), ↑q ∉ w.asIdeal → t j i w = 0}
 
-/-- `Ψ` is a chain datum for the twist `ϑ`, a character of weight 0 whose tame part is non-trivial
+/--
+`Ψ` is a chain datum for the twist `ϑ`, a character of weight 0 whose tame part is non-trivial
 exactly at the places of the finite set `ϑ.Q`. Let `q` be the product of their norms and `M` the
 principal level `D.M`. The translations in the support of `Ψ` vanish at the places prime to `M q`
 and lie in `admissibleTranslations q`; the values of `Ψ` are integral away from `q`, with
 denominator `1`; if `ϑ.Q` is empty, then `∑ x, |σ (Ψ x)| ≤ M ^ (3 f m n_m²)` for every automorphism
-`σ` of `ℂ`; and the glued tensor is jointly invariant. -/
-structure IsChainDatum (Ψ : D.Translations →₀ ℂ) : Prop extends IsAdmissibleCoeffs
-    (D.admissibleTranslations ϑ.normQ ∩ D.supportedTranslations (D.M * ϑ.normQ))
-    ϑ.normQ 1 (ϑ.Q = ∅) (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2)) Ψ where
+`σ` of `ℂ`; and the glued tensor is jointly invariant.
+-/
+structure IsChainDatum (Ψ : D.Translations →₀ ℂ) : Prop
+    extends IsAdmissibleCoeffs
+      (D.admissibleTranslations ϑ.normQ ∩ D.supportedTranslations (D.M * ϑ.normQ)) ϑ.normQ 1
+      (ϑ.Q = ∅) (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2)) Ψ where
   /-- The glued tensor is jointly invariant. -/
   isInvariant : (gluedTensor Ψ).IsInvariant ϑ
 
@@ -1003,8 +1080,8 @@ lemma IsChainDatum.mem_admissibleTranslations {ϑ : D.Twist} {Ψ : D.Translation
   Set.inter_subset_left (hΨ.support_subset x hx)
 
 /-- The restriction map `restrictToY` on forms on `X_l`, for a number `l` equal to `m`. -/
-noncomputable def restrictToYOfEq {l : ℕ} (hl : D.m = l) :
-    D.FormX l →ₗ[ℂ] AlgForm (E := D.E) (D.Y D.m) D.columnsY (D.lastEntry D.m) := by
+noncomputable def restrictToYOfEq {l : ℕ} (hl : D.m = l)
+    : D.FormX l →ₗ[ℂ] AlgForm (E := D.E) (D.Y D.m) D.columnsY (D.lastEntry D.m) := by
   subst hl
   exact D.restrictToY
 
@@ -1015,27 +1092,33 @@ lemma restrictToYOfEq_apply {l : ℕ} (hl : D.m = l) (F : ∀ j : ℕ, D.FormX j
   rfl
 
 /-- The chain of double lifts of a form on `X_0`, as a linear function of the tensor of data. -/
-noncomputable abbrev chainOfTensor (ϑ : D.TameChar) (φ : D.FormX 0) :
-    D.ChainTensor →ₗ[ℂ] D.FormX (2 * D.ϱ + 2) :=
+noncomputable abbrev chainOfTensor (ϑ : D.TameChar) (φ : D.FormX 0)
+    : D.ChainTensor →ₗ[ℂ] D.FormX (2 * D.ϱ + 2) :=
   TensorChain.lift (TensorChain.liftInPairs fun j : ℕ ↦ (D.liftKernel ϑ j).lift) φ (D.ϱ + 1)
 
-/-- The composite lift: the chain of double lifts with the glued tensor of `Ψ` as data, followed by
-the restriction of forms from `X_m` to `Y_m`. -/
-noncomputable def compositeLift (ϑ : D.TameChar) (Ψ : D.Translations →₀ ℂ) (φ : D.SourceForm) :
-    AlgForm (E := D.E) (D.Y D.m) D.columnsY (D.lastEntry D.m) :=
+/--
+The composite lift: the chain of double lifts with the glued tensor of `Ψ` as data, followed by
+the restriction of forms from `X_m` to `Y_m`.
+-/
+noncomputable def compositeLift (ϑ : D.TameChar) (Ψ : D.Translations →₀ ℂ) (φ : D.SourceForm)
+    : AlgForm (E := D.E) (D.Y D.m) D.columnsY (D.lastEntry D.m) :=
   restrictToYOfEq D.m_eq_two_mul_varrho_add_two (chainOfTensor ϑ φ (gluedTensor Ψ))
 
-/-- A weak chain datum: the coefficients `Ψ` of a jointly invariant sum of translates of the
+/--
+A weak chain datum: the coefficients `Ψ` of a jointly invariant sum of translates of the
 integral vacuum. The conditions are those of a chain datum, but there is no gluing, the translations
 need not vanish anywhere and may have denominators above `N`, and the size is at most
 `exp (D.x ^ 60)` if `ϑ.Q` is empty. For a chain datum, both `φ♭` and the expansion of `Glue φ♭` have
-this form. -/
-structure IsWeakChainDatum (Ψ : D.Translations →₀ ℂ) : Prop extends
-    IsAdmissibleCoeffs (D.admissibleTranslations (ϑ.normQ * D.N)) ϑ.normQ 1 (ϑ.Q = ∅)
+this form.
+-/
+structure IsWeakChainDatum (Ψ : D.Translations →₀ ℂ) : Prop
+    extends IsAdmissibleCoeffs (D.admissibleTranslations (ϑ.normQ * D.N)) ϑ.normQ 1 (ϑ.Q = ∅)
       (Real.exp (D.x ^ 60)) Ψ where
   /-- The tensor `∑ x, Ψ x • ⊗ⱼ translateDatum x j` is jointly invariant. -/
-  isJointlyInvariant : IsJointlyInvariant (D.liftKernel ϑ) D.m Ψ.support
-    (fun x : D.Translations ↦ Ψ x • .id) D.translateDatum
+  isJointlyInvariant
+    : IsJointlyInvariant (D.liftKernel ϑ) D.m Ψ.support
+      (fun x : D.Translations ↦ Ψ x • .id)
+      D.translateDatum
 
 end GoodDatumDefs
 

@@ -33,8 +33,10 @@ namespace New
 
 open Finset
 
-/-- A monotone path in a grid from the node `(a₀, b₀)` to the node `(a, b)`: each step lowers the
-second index or raises the first. -/
+/--
+A monotone path in a grid from the node `(a₀, b₀)` to the node `(a, b)`: each step lowers the
+second index or raises the first.
+-/
 inductive GridPath (a₀ b₀ : ℕ) : ℕ → ℕ → Type
   /-- The path without steps. -/
   | nil : GridPath a₀ b₀ a₀ b₀
@@ -62,9 +64,11 @@ def row (m : ℕ) : ∀ a : ℕ, GridPath 0 m a m
   | 0 => nil
   | a + 1 => (row m a).right
 
-/-- The unit squares between the first column and the steps down of a path, each named by its
+/--
+The unit squares between the first column and the steps down of a path, each named by its
 corner with the least indices: the step from `(a, b + 1)` to `(a, b)` contributes the `(i, b)` with
-`i < a`. -/
+`i < a`.
+-/
 def squares : ∀ {a b : ℕ}, GridPath a₀ b₀ a b → Finset (ℕ × ℕ)
   | _, _, nil => ∅
   | a, b, down p => p.squares ∪ range a ×ˢ {b}
@@ -150,11 +154,13 @@ lemma exists_corner_or_eq_down_or_eq (p : GridPath a₀ b₀ a b) :
 
 end GridPath
 
-/-- A path from `(m, 0)` to `(0, m)` by steps up or left, through the two grids. It meets the
+/--
+A path from `(m, 0)` to `(0, m)` by steps up or left, through the two grids. It meets the
 diagonal at `(l, l)` with `l = diagonalIndex`. Both halves are recorded as paths from `(0, m)` to
 `(l, l)`: `half false` is the part after the diagonal read backwards, in the grid of the `Y`, where
 `(a, b)` is `Y^a_b`, and `half true` is the part before the diagonal with the two indices
-exchanged, in the grid of the `Ỹ`, where `(a, b)` is `Ỹ^b_a`. -/
+exchanged, in the grid of the `Ỹ`, where `(a, b)` is `Ỹ^b_a`.
+-/
 structure TwoGridPath (m : ℕ) where
   /-- The index `l` of the node `(l, l)` at which the path meets the diagonal. -/
   diagonalIndex : ℕ
@@ -165,34 +171,45 @@ namespace TwoGridPath
 
 variable {m : ℕ} {Γ Γ' : TwoGridPath m} {s : ℕ × ℕ}
 
-/-- The first path, through `(0, 0)`: it goes left from `Ỹ^m_0` to `Ỹ^0_0` and up from `Y^0_0` to
-`Y^0_m`, so both halves are recorded as going down the first column. -/
+/--
+The first path, through `(0, 0)`: it goes left from `Ỹ^m_0` to `Ỹ^0_0` and up from `Y^0_0` to
+`Y^0_m`, so both halves are recorded as going down the first column.
+-/
 def first (m : ℕ) : TwoGridPath m := ⟨0, fun _ : Bool ↦ .column m.zero_le⟩
 
-/-- The last path, through `(m, m)`: it goes up from `Ỹ^m_0` to `Ỹ^m_m` and left from `Y^m_m` to
-`Y^0_m`, so both halves are recorded as going along the row `m`. -/
+/--
+The last path, through `(m, m)`: it goes up from `Ỹ^m_0` to `Ỹ^m_m` and left from `Y^m_m` to
+`Y^0_m`, so both halves are recorded as going along the row `m`.
+-/
 def last (m : ℕ) : TwoGridPath m := ⟨m, fun _ : Bool ↦ .row m m⟩
 
-/-- `Turn Γ (i, j) Γ'`: the path `Γ` reaches `(i, j)` from the right and leaves it upwards, and `Γ'`
-arises from `Γ` by replacing the node `(i, j)` by `(i + 1, j + 1)`. -/
+/--
+`Turn Γ (i, j) Γ'`: the path `Γ` reaches `(i, j)` from the right and leaves it upwards, and `Γ'`
+arises from `Γ` by replacing the node `(i, j)` by `(i + 1, j + 1)`.
+-/
 inductive Turn : TwoGridPath m → ℕ × ℕ → TwoGridPath m → Prop
-  /-- A turn off the diagonal, at a corner `(a, b)` where one half comes down and leaves to the
-  right. For `half true` the node has the indices `(b, a)`. -/
-  | inner (Γ : TwoGridPath m) (z : Bool) {a b : ℕ} (q : GridPath 0 m a (b + 1))
-      (r : GridPath (a + 1) b Γ.diagonalIndex Γ.diagonalIndex)
-      (hΓ : Γ.half z = q.down.right.append r) :
-      Turn Γ (bif z then (b, a) else (a, b))
-        ⟨Γ.diagonalIndex, Function.update Γ.half z (q.right.down.append r)⟩
+  /--
+  A turn off the diagonal, at a corner `(a, b)` where one half comes down and leaves to the
+  right. For `half true` the node has the indices `(b, a)`.
+  -/
+  | inner
+    (Γ : TwoGridPath m) (z : Bool)
+    {a b : ℕ} (q : GridPath 0 m a (b + 1)) (r : GridPath (a + 1) b Γ.diagonalIndex Γ.diagonalIndex)
+    (hΓ : Γ.half z = q.down.right.append r)
+    : Turn Γ (bif z then (b, a) else (a, b))
+      ⟨Γ.diagonalIndex, Function.update Γ.half z (q.right.down.append r)⟩
   /-- A turn on the diagonal: both halves end with a step down. -/
-  | diagonal {j : ℕ} (q : Bool → GridPath 0 m j (j + 1)) :
-      Turn ⟨j, fun z : Bool ↦ (q z).down⟩ (j, j) ⟨j + 1, fun z : Bool ↦ (q z).right⟩
+  | diagonal {j : ℕ} (q : Bool → GridPath 0 m j (j + 1))
+    : Turn ⟨j, fun z : Bool ↦ (q z).down⟩ (j, j) ⟨j + 1, fun z : Bool ↦ (q z).right⟩
 
-/-- The unit squares between the first path and `Γ`, each named by its corner with the least
+/--
+The unit squares between the first path and `Γ`, each named by its corner with the least
 indices: the `(i, j)` with `i, j < Γ.diagonalIndex`, the squares of `Γ.half false`, and the mirror
-images in the diagonal of the squares of `Γ.half true`. -/
+images in the diagonal of the squares of `Γ.half true`.
+-/
 def squares (Γ : TwoGridPath m) : Finset (ℕ × ℕ) :=
-  range Γ.diagonalIndex ×ˢ range Γ.diagonalIndex ∪ (Γ.half false).squares ∪
-    (Γ.half true).squares.image Prod.swap
+  range Γ.diagonalIndex ×ˢ range Γ.diagonalIndex ∪ (Γ.half false).squares
+    ∪ (Γ.half true).squares.image Prod.swap
 
 /-- The unit square with least corner `s` lies between the first path, through `(0, 0)`, and the
 path `Γ` if and only if both indices of `s` are less than `Γ.diagonalIndex`, or `s` lies to the left

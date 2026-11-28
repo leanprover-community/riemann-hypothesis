@@ -72,17 +72,23 @@ abbrev principalIdele : Kˣ →* (𝔸f K)ˣ := map (algebraMap K (𝔸f K)).toM
 
 variable (S : Set (FinPlace K)) (a : (𝔸f K)ˣ) (v : FinPlace K)
 
-/-- The homomorphism sending x ∈ K_v^× to the finite idele with component x at v and 1
-elsewhere. -/
+/--
+The homomorphism sending x ∈ K_v^× to the finite idele with component x at v and 1
+elsewhere.
+-/
 def locIdele : (LocField v)ˣ →* (𝔸f K)ˣ := unitsMapNonUnital (singleAdele v)
 
-/-- The homomorphism from the finite ideles of K to the units of `New.𝔸 K` sending a to (1, a), with
-component 1 at every infinite place. -/
+/--
+The homomorphism from the finite ideles of K to the units of `New.𝔸 K` sending a to (1, a), with
+component 1 at every infinite place.
+-/
 abbrev finIdeleIncl : (𝔸f K)ˣ →* (𝔸 K)ˣ :=
   map (MonoidHom.inr (NumberField.InfinitePlace K → ℂ) (𝔸f K))
 
-/-- For a finite place v, the homomorphism from K_v^× to the units of `New.𝔸 K` placing the element
-at v and 1 at all other places, finite and infinite. -/
+/--
+For a finite place v, the homomorphism from K_v^× to the units of `New.𝔸 K` placing the element
+at v and 1 at all other places, finite and infinite.
+-/
 def locFullIdele : (LocField v)ˣ →* (𝔸 K)ˣ := finIdeleIncl.comp (unitsMapNonUnital (singleAdele v))
 
 /-- The homomorphism sending a finite idele to its component in K_v^×. -/
@@ -413,8 +419,10 @@ lemma finiteIndex_idele_subgroup_of_isOpen (H : Subgroup (𝔸f K)ˣ) (h_open : 
   · simpa [P, ← index_comap] using (sgn.ker.finiteIndex_of_le h_ker_le).index_ne_zero
   · simpa using isCompact_idelesUnitOff_empty.relIndex_ne_zero (isOpen_mono le_sup_left h_open)
 
-/-- The finite ideles form a nonarchimedean group: they have the compact open subgroup
-`idelesUnitOff ∅`. -/
+/--
+The finite ideles form a nonarchimedean group: they have the compact open subgroup
+`idelesUnitOff ∅`.
+-/
 instance : NonarchimedeanGroup (𝔸f K)ˣ :=
   -- The open subgroup `idelesUnitOff ∅` is compact and totally disconnected, hence nonarchimedean.
   -- The ideles map continuously and injectively to the product of the completions, which is

@@ -127,30 +127,32 @@ lemma exists_unit_forall_apply_eq_of_inv_smul_sub_mem {A n : Type} [SemilocalFie
   rw [h_point] at h_step
   exact h_step hx
 
-/-- Let `φ` be a function on vectors over a finite place `A`, supported in `C ∩ Q` with `C` compact,
+/--
+Let `φ` be a function on vectors over a finite place `A`, supported in `C ∩ Q` with `C` compact,
 locally constant along `Q` at the points of `C`, and invariant on its support under a group `H` of
 matrices in `GL n R`, where `R = P.integers` is the ring of integers. Then `φ` agrees on `Q` with a
-compactly supported function `Φ` that is invariant under small translations and under `H`. -/
-theorem exists_step_function_extension {A n : Type} [SemilocalField A] [StarRing A]
-    [P : IntegralPlace A] [Fintype n] [DecidableEq n] {G : Subgroup (GL n A)} {H : Subgroup G}
-    (hH : H ≤ (intGL n P.integers).subgroupOf G) {Q C : Set (n → A)} (hC : IsCompact C)
+compactly supported function `Φ` that is invariant under small translations and under `H`.
+-/
+theorem exists_step_function_extension
+    {A n : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A] [Fintype n] [DecidableEq n]
+    {G : Subgroup (GL n A)} {H : Subgroup G} (hH : H ≤ (intGL n P.integers).subgroupOf G)
+    {Q C : Set (n → A)} (hC : IsCompact C)
     {φ : (n → A) → ℂ} (h_supp : ∀ x : n → A, φ x ≠ 0 → x ∈ C ∩ Q)
     (h_inv : ∀ k ∈ H, ∀ x : n → A, φ x ≠ 0 → φ ((k : GL n A).val *ᵥ x) = φ x)
-    (h_loc : ∀ e ∈ C, ∀ᶠ x : n → A in nhds e, x ∈ Q → φ x = φ e) :
-    ∃ Φ : (n → A) → ℂ,
-      HasCompactSupport Φ ∧
-      (∀ᶠ v : n → A in nhds 0, ∀ x : n → A, Φ (x + v) = Φ x) ∧
-      (∀ k ∈ H, ∀ x : n → A, Φ ((k : GL n A).val *ᵥ x) = Φ x) ∧
-      ∀ x ∈ Q, Φ x = φ x := by
+    (h_loc : ∀ e ∈ C, ∀ᶠ x : n → A in nhds e, x ∈ Q → φ x = φ e)
+    : ∃ Φ : (n → A) → ℂ,
+      HasCompactSupport Φ ∧ (∀ᶠ v : n → A in nhds 0, ∀ x : n → A, Φ (x + v) = Φ x)
+        ∧ (∀ k ∈ H, ∀ x : n → A, Φ ((k : GL n A).val *ᵥ x) = Φ x) ∧ ∀ x ∈ Q, Φ x = φ x := by
   classical
   -- Let `L = R ^ n`. For a small unit `u`, `φ` is constant on `(y + u • L) ∩ Q` for `y` in `C ∩ Q`.
   -- Give `Φ` this value on the class `y + u • L` if `φ y ≠ 0`, and `0` on the other classes.
-  obtain ⟨hL_open, hL_compact, -⟩ : IsOpen (intVectors P.integers n : Set (n → A)) ∧
-      IsCompact (intVectors P.integers n : Set (n → A)) ∧ volume
-        (intVectors P.integers n : Set (n → A)) = 1 :=
+  obtain ⟨hL_open, hL_compact, -⟩
+      : IsOpen (intVectors P.integers n : Set (n → A))
+        ∧ IsCompact (intVectors P.integers n : Set (n → A))
+        ∧ volume (intVectors P.integers n : Set (n → A)) = 1 :=
     P.isOpen_isCompact_volume_intVectors
-  obtain ⟨u, hu⟩ : ∃ u : Aˣ, ∀ x ∈ Q, ∀ y ∈ C ∩ Q,
-    u⁻¹ • (x - y) ∈ intVectors P.integers n → φ x = φ y :=
+  obtain ⟨u, hu⟩
+      : ∃ u : Aˣ, ∀ x ∈ Q, ∀ y ∈ C ∩ Q, u⁻¹ • (x - y) ∈ intVectors P.integers n → φ x = φ y :=
     exists_unit_forall_apply_eq_of_inv_smul_sub_mem hC hL_compact h_loc
   let Near (x y : n → A) : Prop := φ y ≠ 0 ∧ u⁻¹ • (x - y) ∈ intVectors P.integers n
   have const (x y : n → A) (hx : x ∈ Q) (hy : Near x y) : φ x = φ y :=
@@ -163,18 +165,19 @@ theorem exists_step_function_extension {A n : Type} [SemilocalField A] [StarRing
     have h_diff : u⁻¹ • (hx.choose - y) ∈ intVectors P.integers n := by
       simpa [smul_sub] using sub_mem hy_int h_int
     exact (dite_eq_left hx).trans (const hx.choose y (h_supp hx.choose h_ne).2 ⟨hy_ne, h_diff⟩)
-  have Φ_zero (x : n → A) (hx : ¬∃ y : n → A, Near x y) : Φ x = 0 := dite_eq_right hx
+  have Φ_zero (x : n → A) (hx : ¬ ∃ y : n → A, Near x y) : Φ x = 0 := dite_eq_right hx
   -- `Φ x'` equals `Φ x` as soon as the near points of `x` and `x'` correspond with equal values.
-  have Φ_congr (x x' : n → A) (h : ∀ y : n → A, Near x y → ∃ y' : n → A, Near x' y' ∧ φ y' = φ y)
-      (h' : ∀ y' : n → A, Near x' y' → ∃ y : n → A, Near x y) : Φ x' = Φ x := by
+  have Φ_congr
+      (x x' : n → A) (h : ∀ y : n → A, Near x y → ∃ y' : n → A, Near x' y' ∧ φ y' = φ y)
+      (h' : ∀ y' : n → A, Near x' y' → ∃ y : n → A, Near x y)
+      : Φ x' = Φ x := by
     by_cases hx : ∃ y : n → A, Near x y
     · obtain ⟨y, hy⟩ : ∃ y : n → A, Near x y := hx
       obtain ⟨y', hy', h_eq⟩ : ∃ y' : n → A, Near x' y' ∧ φ y' = φ y := h y hy
       rw [Φ_eq x y hy, Φ_eq x' y' hy', h_eq]
     · rw [Φ_zero x hx, Φ_zero x' fun ⟨y', hy'⟩ ↦ hx (h' y' hy')]
-  have move (k : G) (hk : k ∈ H) (x y : n → A) (hy : Near x y) :
-      Near ((k : GL n A).val *ᵥ x) ((k : GL n A).val *ᵥ y) ∧
-        φ ((k : GL n A).val *ᵥ y) = φ y := by
+  have move (k : G) (hk : k ∈ H) (x y : n → A) (hy : Near x y)
+      : Near ((k : GL n A).val *ᵥ x) ((k : GL n A).val *ᵥ y) ∧ φ ((k : GL n A).val *ᵥ y) = φ y := by
     obtain ⟨hy_ne, hy_int⟩ := hy
     have h_value : φ ((k : GL n A).val *ᵥ y) = φ y := h_inv k hk y hy_ne
     refine ⟨⟨h_value.trans_ne hy_ne, ?_⟩, h_value⟩
@@ -195,7 +198,8 @@ theorem exists_step_function_extension {A n : Type} [SemilocalField A] [StarRing
     exact Φ_congr x (x + v) (fun y hy ↦ ⟨y, (h_iff y).2 hy, rfl⟩) fun y hy ↦ ⟨y, (h_iff y).1 hy⟩
   · -- The matrices `k` and `k⁻¹` exchange the near points of `x` and of `k *ᵥ x`.
     refine Φ_congr x ((k : GL n A).val *ᵥ x)
-      (fun y hy ↦ ⟨(k : GL n A).val *ᵥ y, move k hk x y hy⟩) fun y hy ↦ ?_
+      (fun y hy ↦ ⟨(k : GL n A).val *ᵥ y, move k hk x y hy⟩)
+      fun y hy ↦ ?_
     have h_back : Near (((k⁻¹ : G) : GL n A).val *ᵥ (k : GL n A).val *ᵥ x)
         (((k⁻¹ : G) : GL n A).val *ᵥ y) :=
       (move k⁻¹ (inv_mem hk) ((k : GL n A).val *ᵥ x) y hy).1
@@ -251,18 +255,22 @@ lemma IntegralPlace.modulus_eq_of_inv_mul_mem_units {A : Type} [SemilocalField A
 
 section Correlation
 
-
-variable {A ι : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A] {m : ℕ} {T : 𝔰.Form A}
+variable
+  {A ι : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A]
+  {m : ℕ} {T : 𝔰.Form A}
   [P : IntegralPlace A] [IsHermitianUnit T.splitGram] [Fintype ι] [DecidableEq ι]
-  {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGroup) (p q : ℕ → Aˣ)
+  {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGroup)
+  (p q : ℕ → Aˣ)
 
-/-- The normalized orbital integral at the element `w_p l⁻¹` with head `p` and link `l⁻¹`, where
+/--
+The normalized orbital integral at the element `w_p l⁻¹` with head `p` and link `l⁻¹`, where
 `w_p` is the Weyl element `weylElem 𝔰.ϱ p`: the density `F.headDensity 𝔰.ϱ p 1` times the
 correlations of the finite Bessel vector of `Z` with its translate by `w_p l⁻¹`, indexed by pairs of
-cosets. Functions of the link are written below as functions of its inverse `l`. -/
+cosets. Functions of the link are written below as functions of its inverse `l`.
+-/
 def PlaceData.scaledOrbitalIntegral (l : T.G) : EuclideanSpace ℂ (Z.Cosets × Z.Cosets) :=
-  (F.headDensity 𝔰.ϱ p 1).toReal •
-    besselOrbitalIntegral F.groupMeasure Z.besselVector (weylElem 𝔰.ϱ p * l⁻¹)
+  (F.headDensity 𝔰.ϱ p 1).toReal
+    • besselOrbitalIntegral F.groupMeasure Z.besselVector (weylElem 𝔰.ϱ p * l⁻¹)
 
 /-- The coordinate of the finite Bessel vector of `Z` at a coset `c` of `F.congruenceSubgroup` in
 `Z`, in terms of the chosen representative `c.out`. -/
@@ -300,13 +308,15 @@ lemma PlaceData.besselVector_mul_right (x : T.G) {k : T.G} (hk : k ∈ F.congrue
 @[fun_prop] lemma PlaceData.continuous_besselVector : Continuous Z.besselVector := by
   fun_prop [IntermediateGroup.besselVector]
 
-/-- The integrand of the pairing of the scaled orbital integrals with heads `p`, `q` at the inverse
+/--
+The integrand of the pairing of the scaled orbital integrals with heads `p`, `q` at the inverse
 link `l`, on two copies of the group: with `W` the finite Bessel vector of `Z`, its value at
-`(y₁, y₂)` is `⟪W y₁, W y₂⟫ * ⟪W ((w_q l⁻¹)⁻¹ y₂), W ((w_p l⁻¹)⁻¹ y₁)⟫`. -/
+`(y₁, y₂)` is `⟪W y₁, W y₂⟫ * ⟪W ((w_q l⁻¹)⁻¹ y₂), W ((w_p l⁻¹)⁻¹ y₁)⟫`.
+-/
 def PlaceData.unfoldedPairing (l : T.G) (y : T.G × T.G) : ℂ :=
-  ⟪Z.besselVector y.1, Z.besselVector y.2⟫_ℂ *
-    ⟪Z.besselVector ((weylElem 𝔰.ϱ q * l⁻¹)⁻¹ * y.2),
-      Z.besselVector ((weylElem 𝔰.ϱ p * l⁻¹)⁻¹ * y.1)⟫_ℂ
+  ⟪Z.besselVector y.1, Z.besselVector y.2⟫_ℂ
+    * ⟪Z.besselVector ((weylElem 𝔰.ϱ q * l⁻¹)⁻¹ * y.2),
+        Z.besselVector ((weylElem 𝔰.ϱ p * l⁻¹)⁻¹ * y.1)⟫_ℂ
 
 /-- The integrand `unfoldedPairing Z p q l y` is continuous in the inverse link `l` and the pair
 `y` of group variables together. -/

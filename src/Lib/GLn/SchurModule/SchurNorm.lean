@@ -66,9 +66,11 @@ namespace New
 
 open Finset Matrix ComplexOrder MatrixOrder «GL» Complex
 
-variable {Φ : Type} [Fintype Φ] [DecidableEq Φ]
-  {n n' : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
-  [∀ τ : Φ, Fintype (n' τ)] [∀ τ : Φ, DecidableEq (n' τ)] {κ : Φ → ℕ → ℕ}
+variable
+  {Φ : Type} [Fintype Φ] [DecidableEq Φ]
+  {n n' : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (n' τ)]
+  [∀ τ : Φ, DecidableEq (n' τ)]
+  {κ : Φ → ℕ → ℕ}
 
 /-- The adjoint formula: let `w`, `z` be families of complex `n' τ × n τ` matrices, and assume
 `FitsRanks n n' κ`: at each `τ`, `#(n τ) ≤ #(n' τ)` and `κ τ h = 0` for `#(n τ) < h < #(n' τ)`. Let
@@ -329,7 +331,8 @@ open Matrix ComplexConjugate Units
 
 namespace New
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   {T R S : Type} [CommRing R] [CommRing S] [Fintype T] [DecidableEq T]
   {κ : NumberField.InfinitePlace E → ℕ → ℕ} {e : NumberField.InfinitePlace E → ℤ}
   (γ : U (stdSpace E n).J) (v : WeylIndex n κ → ℂ)

@@ -51,32 +51,40 @@ section StepMap
 
 variable {T : Type} [Add T] [One T] (v : T → Bool) (P : ℝ)
 
-/-- The step map. For permutations `σ j` of `Fin k`, one for each letter `j`, it is the linear map
+/--
+The step map. For permutations `σ j` of `Fin k`, one for each letter `j`, it is the linear map
 `ν ↦ β` with `β (b, j) = ± (P * ν (b, j + 1) - ν (σ j b, j))`, the sign being `+` if `v j` is true
-and `-` otherwise. The entries of `β` are the steps of `ν`. -/
+and `-` otherwise. The entries of `β` are the steps of `ν`.
+-/
 @[simps!]
 def permStep (σ : T → Equiv.Perm (Fin k)) : Module.End ℝ (Fin k × T → ℝ) :=
   LinearMap.pi fun x : Fin k × T ↦
     (if v x.2 then (1 : ℝ) else -1) • (P • .proj (x.1, x.2 + 1) - .proj (σ x.2 x.1, x.2))
 
-/-- The slab: the vectors `β ≥ 0` whose degree `∑ b, β (b, j)` lies in `[D j - 1, D j]` for every
-letter `j`. -/
+/--
+The slab: the vectors `β ≥ 0` whose degree `∑ b, β (b, j)` lies in `[D j - 1, D j]` for every
+letter `j`.
+-/
 def degreeSlab (k : ℕ) (D : T → ℝ) : Set (Fin k × T → ℝ) :=
   {β : Fin k × T → ℝ | 0 ≤ β ∧ ∀ j : T, ∑ b : Fin k, β (b, j) ∈ Set.Icc (D j - 1) (D j)}
 
-/-- The Pieri cone: the vectors `ν` such that, for all `j` and `b`,
+/--
+The Pieri cone: the vectors `ν` such that, for all `j` and `b`,
 `P * ν (b + 1, j + 1) ≤ ν (b, j)` if `v j` is true, and `ν (b + 1, j) ≤ P * ν (b, j + 1)`
-otherwise. -/
+otherwise.
+-/
 def pieriCone : Set (Fin k × T → ℝ) :=
   {ν : Fin k × T → ℝ |
     ∀ (j : T) (b b' : Fin k), b.val + 1 = b' →
       permStep v P 1 ν ((if v j then b' else b), j) ≤ ν (b, j) - ν (b', j)}
 
-/-- The set of `ν` whose steps have degrees `∑ b, permStep v P 1 ν (b, j)` in `[D j - 1, D j]` and
+/--
+The set of `ν` whose steps have degrees `∑ b, permStep v P 1 ν (b, j)` in `[D j - 1, D j]` and
 such that, after block `j` of `ν` is rearranged by `τ j`, the image under `permStep v P σ` has
-positive entries and lies in `Y`. -/
-def positiveStepSet (D : T → ℝ) (σ τ : T → Perm (Fin k)) (Y : Set (Fin k × T → ℝ)) :
-    Set (Fin k × T → ℝ) :=
+positive entries and lies in `Y`.
+-/
+def positiveStepSet (D : T → ℝ) (σ τ : T → Perm (Fin k)) (Y : Set (Fin k × T → ℝ))
+    : Set (Fin k × T → ℝ) :=
   {ν : Fin k × T → ℝ |
     (∀ j : T, ∑ b : Fin k, permStep v P 1 ν (b, j) ∈ Icc (D j - 1) (D j)) ∧
       (∀ (j : T) (b : Fin k), 0 < permStep v P σ (ν ∘ prodCongrLeft τ) (b, j)) ∧
@@ -122,8 +130,10 @@ lemma isBounded_inter_degreeSlab [Fintype T] (D : T → ℝ) (Y : Set (Fin k × 
 
 end StepMap
 
-/-- The determinant `det (1 - τ / q)`, where the permutation `τ` acts on `Fin k → ℝ` by permuting
-coordinates, `x ↦ x ∘ τ`. -/
+/--
+The determinant `det (1 - τ / q)`, where the permutation `τ` acts on `Fin k → ℝ` by permuting
+coordinates, `x ↦ x ∘ τ`.
+-/
 noncomputable def detOneSubPerm (q : ℝ) (τ : Perm (Fin k)) : ℝ :=
   (1 - q⁻¹ • funLeft ℝ ℝ τ : Module.End ℝ (Fin k → ℝ)).det
 
@@ -493,34 +503,40 @@ lemma volume_real_pieriCone_inter_degreeSlab_one (k : ℕ) {q : ℝ} (hq : 1 < q
   rw [h_slab_preimage, Measure.real, volume.addHaar_preimage_linearMap h_det_pos.ne', toReal_mul,
     toReal_ofReal (abs_nonneg _), abs_inv, abs_of_pos h_det_pos, h_jacobian, Measure.real]
 
-/-- Volume of the image of the cone in a slab. Let `P > 1` and `q = P ^ N`, and let `Ω` be a set
+/--
+Volume of the image of the cone in a slab. Let `P > 1` and `q = P ^ N`, and let `Ω` be a set
 whose preimage under the step map is the cone. Then the volume of `Ω ∩ degreeSlab k D`, multiplied
-by `∏ l < k, (q ^ (l + 1) - 1) / (q - 1)`, equals the volume of the slab. -/
-theorem prod_mul_volume_real_inter_degreeSlab {k N : ℕ} [NeZero N] {v : ZMod N → Bool} {P : ℝ}
-    (hP : 1 < P) (D : ZMod N → ℝ) {Ω : Set (Fin k × ZMod N → ℝ)}
-    (hΩ : ∀ ν : Fin k × ZMod N → ℝ, permStep v P 1 ν ∈ Ω ↔ ν ∈ pieriCone v P) :
-    (∏ l : Fin k, ((P ^ N) ^ (l.val + 1) - 1) / (P ^ N - 1)) * volume.real (Ω ∩ degreeSlab k D) =
-      volume.real (degreeSlab k D) := by
+by `∏ l < k, (q ^ (l + 1) - 1) / (q - 1)`, equals the volume of the slab.
+-/
+theorem prod_mul_volume_real_inter_degreeSlab
+    {k N : ℕ} [NeZero N]
+    {v : ZMod N → Bool} {P : ℝ} (hP : 1 < P)
+    (D : ZMod N → ℝ)
+    {Ω : Set (Fin k × ZMod N → ℝ)}
+    (hΩ : ∀ ν : Fin k × ZMod N → ℝ, permStep v P 1 ν ∈ Ω ↔ ν ∈ pieriCone v P)
+    : (∏ l : Fin k, ((P ^ N) ^ (l.val + 1) - 1) / (P ^ N - 1)) * volume.real (Ω ∩ degreeSlab k D)
+      = volume.real (degreeSlab k D) := by
   -- By `volume_real_inter_degreeSlab_eq_signed_sum` the share `c` of `Ω` in the slab depends only
   -- on `k` and `q = P ^ N`. So it can be computed for one letter with the sign `+` and `q` in place
   -- of `P`.
   obtain ⟨m, rfl⟩ : ∃ m : ℕ, N = m + 1 := Nat.exists_eq_succ_of_ne_zero (NeZero.ne N)
   set q : ℝ := P ^ (m + 1)
   have hq : 1 < q := one_lt_pow₀ hP m.succ_ne_zero
-  let c : ℝ := |detOneSubPerm q (1 : Perm (Fin k))| / k.factorial *
-    ∑ τ : Perm (Fin k), τ.sign / |detOneSubPerm q τ|
+  let c : ℝ :=
+    |detOneSubPerm q (1 : Perm (Fin k))| / k.factorial
+      * ∑ τ : Perm (Fin k), τ.sign / |detOneSubPerm q τ|
   -- `ZMod (m + 1)` is `Fin (m + 1)` by definition.
   have h_universal_share : volume.real (Ω ∩ degreeSlab k D) = c * volume.real (degreeSlab k D) :=
     volume_real_inter_degreeSlab_eq_signed_sum P hP D hΩ
-  have h_one_letter_share : volume.real (pieriCone ⊤ q ∩ degreeSlab k (1 : Fin 1 → ℝ)) =
-      c * volume.real (degreeSlab k (1 : Fin 1 → ℝ)) := by
+  have h_one_letter_share
+      : volume.real (pieriCone ⊤ q ∩ degreeSlab k (1 : Fin 1 → ℝ))
+        = c * volume.real (degreeSlab k (1 : Fin 1 → ℝ)) := by
     -- For one letter the step map is the homothety of ratio `q - 1 > 0`.
-    have h_cone (ν : Fin k × Fin 1 → ℝ) :
-        permStep ⊤ q 1 ν ∈ pieriCone ⊤ q ↔ ν ∈ pieriCone ⊤ q := by
+    have h_cone (ν : Fin k × Fin 1 → ℝ) : permStep ⊤ q 1 ν ∈ pieriCone ⊤ q ↔ ν ∈ pieriCone ⊤ q := by
       have h_pos : 0 < q - 1 := sub_pos.2 hq
       simp [pieriCone, field]
-    simpa only [zero_add, pow_one] using volume_real_inter_degreeSlab_eq_signed_sum (m := 0) q hq 1
-      h_cone
+    simpa only [zero_add, pow_one] using
+      volume_real_inter_degreeSlab_eq_signed_sum (m := 0) q hq 1 h_cone
   -- The one-letter simplex has positive volume, so comparing its two formulas determines `c`.
   have h_share_formula : (∏ l : Fin k, (q ^ (l.val + 1) - 1) / (q - 1))⁻¹ = c :=
     mul_right_cancel₀ (volume_real_degreeSlab_one_pos k).ne'

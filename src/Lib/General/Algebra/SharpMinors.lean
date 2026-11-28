@@ -46,16 +46,20 @@ open Matrix Module Submodule IsDiscreteValuationRing
 
 variable {Λ O r k : Type*} [CommRing Λ] [CommRing O] [Fintype k] [DecidableEq k]
 
-/-- The minors of size `card k` of the matrix formed by the rows of `A` and of `a • 1`, where `k`
+/--
+The minors of size `card k` of the matrix formed by the rows of `A` and of `a • 1`, where `k`
 indexes the columns. The family of rows of `A` may be infinite. A choice of rows with a repetition
-is allowed; it contributes the minor `0`. -/
+is allowed; it contributes the minor `0`.
+-/
 def maximalMinors (A : Matrix r k Λ) (a : Λ) : Set Λ :=
   Set.range fun f : k → r ⊕ k ↦ ((A.fromRows (a • 1)).submatrix f id).det
 
-/-- The kernel of `A` on `B ^ k`, for an `O`-module `B`: the vectors `w` such that
-`∑ j, A i j • w j = 0` for every row index `i`. -/
-def matrixKernel (A : Matrix r k O) (B : Type*) [AddCommGroup B] [Module O B] :
-    Submodule O (k → B) :=
+/--
+The kernel of `A` on `B ^ k`, for an `O`-module `B`: the vectors `w` such that
+`∑ j, A i j • w j = 0` for every row index `i`.
+-/
+def matrixKernel (A : Matrix r k O) (B : Type*) [AddCommGroup B] [Module O B]
+    : Submodule O (k → B) :=
   ⨅ i : r, LinearMap.ker (∑ j : k, A i j • LinearMap.proj j : (k → B) →ₗ[O] B)
 
 /-- The submodule of `O ^ k` spanned by the rows of `A` and of `a • 1`. -/
@@ -222,13 +226,15 @@ lemma isLeast_length_quotient_rowLattice (A : Matrix r k O) {a : O} (ha : a ≠ 
   exact ⟨⟨(M.submatrix f₀ id).det, ⟨f₀, rfl⟩, h_upper.antisymm (h_lower f₀)⟩,
     Set.forall_mem_image.2 (Set.forall_mem_range.2 h_lower)⟩
 
-/-- Let `A` be a matrix over `Λ` with columns indexed by `k`, let `ev : Λ →+* O` be a ring
+/--
+Let `A` be a matrix over `Λ` with columns indexed by `k`, let `ev : Λ →+* O` be a ring
 homomorphism to a discrete valuation ring (`[DVR O]`), and let `ev a ≠ 0`. The length of
 `matrixKernel (A.map ev) (QuotSpan (ev a))`, the kernel of `A.map ev` on `(O / ev a) ^ k`, is the
 least `addVal (ev P)`, where `P` runs over `maximalMinors A a`, the maximal minors of the matrix
-formed by the rows of `A` and of `a • 1`. -/
-theorem isLeast_length_matrixKernel (A : Matrix r k Λ) (a : Λ) (ev : Λ →+* O) (ha : ev a ≠ 0) :
-    IsLeast ((fun P : Λ ↦ addVal O (ev P)) '' maximalMinors A a)
+formed by the rows of `A` and of `a • 1`.
+-/
+theorem isLeast_length_matrixKernel (A : Matrix r k Λ) (a : Λ) (ev : Λ →+* O) (ha : ev a ≠ 0)
+    : IsLeast ((fun P : Λ ↦ addVal O (ev P)) '' maximalMinors A a)
       (length O (matrixKernel (A.map ev) (QuotSpan (ev a)))) := by
   have h_kill (x : (k → O) ⧸ rowLattice (A.map ev) (ev a)) : ev a • x = 0 := by
     obtain ⟨v, rfl⟩ := mkQ_surjective _ x

@@ -139,7 +139,8 @@ lemma relIndex_map_nsmul_toAddSubgroup {M : Type} [AddCommGroup M] (N : ℕ) (L 
   rw [AddSubgroup.relIndex, AddSubgroup.addSubgroupOf_map_nsmulAddMonoidHom_eq_range]
   exact AddSubgroup.index_range_nsmul L N
 
-variable {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
+variable
+  {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
   {F : (InfinitePlace E × n → ℂ) → ℂ} {δ : E} {N : ℕ}
 
 lemma ratShift_neg_ratShift (y : n → E) : ratShift (-y) (ratShift y F) = F := by
@@ -376,7 +377,8 @@ lemma Space.exists_smul_entireTheta_vacElem_eq {ε : n → ℤˣ} (V : Space E n
     _ = (N : ℂ) ^ Fintype.card (InfinitePlace E × n) • F := by
         rw [(card_representatives_idealLattice hy hγ hδ hN_ne hN).1, Nat.cast_pow]
 
-/-- Fourier inversion in a standard space `V` (all signs are `+1`, the point is the identity). Let
+/--
+Fourier inversion in a standard space `V` (all signs are `+1`, the point is the identity). Let
 `δ` be integral with `δ δ̄ = N ≠ 0` and let the theta function `entireTheta φ` of a vector `φ` of
 `𝒮 V` be entire and fixed by the signed translations along `δ̄ 𝔞₀ⁿ`, where `𝔞₀ⁿ = idealLattice E n`.
 Let `y` run over `δ⁻¹ 𝔞₀ⁿ⧸𝔞₀ⁿ` and `γ` over `𝔞₀ⁿ⧸δ̄ 𝔞₀ⁿ`. Then the sum of the signed translates, by
@@ -388,71 +390,96 @@ and `finVec` multiplies by it) and infinite part zero, and `r` is the number of 
 
 This is used instead of the upper bound in Frobenius's formula for the dimension of a space of
 classical theta functions (the Pfaffian of the Riemann form), for the lattice `δ̄ 𝔞₀ⁿ` and theta
-functions of the form `entireTheta φ` only. -/
-theorem Space.fourier_inversion {ε : n → ℤˣ} (V : Space E n ε) [V.IsStd]
+functions of the form `entireTheta φ` only.
+-/
+theorem Space.fourier_inversion
+    {ε : n → ℤˣ} (V : Space E n ε) [V.IsStd]
     (hy : IsRepresentativeSystem y (δ⁻¹ • idealLattice E n) (idealLattice E n))
     (hγ : IsRepresentativeSystem γ (idealLattice E n) (star δ • idealLattice E n))
-    (hδ : (δ : 𝔸f E) ∈ Ô E) (hN_ne : N ≠ 0) (hN : δ * star δ = N) {φ : 𝒮 V}
-    (hφ : IsThetaFunction (star δ • idealLattice E n) (entireTheta φ)) :
-    ∃ c : Y → ℂ,
-      (∀ i : Y, c i • V.vacElem =
-        ∑ j : Γ, V.finHeisenbergOp (finiteImage (γ j)) (V.ϱ (finVec (finiteImage (-y i))) φ)) ∧
-      ∑ i : Y, c i • V.ϱ (finVec (finiteImage (y i))) V.vacElem =
-        (N : ℂ) ^ Fintype.card (InfinitePlace E × n) • φ := by
+    (hδ : (δ : 𝔸f E) ∈ Ô E) (hN_ne : N ≠ 0) (hN : δ * star δ = N)
+    {φ : 𝒮 V} (hφ : IsThetaFunction (star δ • idealLattice E n) (entireTheta φ))
+    : ∃ c : Y → ℂ,
+      (∀ i : Y,
+          c i • V.vacElem
+            = ∑ j : Γ, V.finHeisenbergOp (finiteImage (γ j)) (V.ϱ (finVec (finiteImage (-y i))) φ))
+        ∧ ∑ i : Y, c i • V.ϱ (finVec (finiteImage (y i))) V.vacElem
+          = (N : ℂ) ^ Fintype.card (InfinitePlace E × n) • φ := by
   -- Both equations may be checked on theta functions, as `φ ↦ entireTheta φ` is injective.
   obtain ⟨c, h_average, h_inversion⟩ := V.exists_smul_entireTheta_vacElem_eq hy hγ hδ hN_ne hN hφ
   refine ⟨c, fun i ↦ V.injective_entireThetaHom ?_, V.injective_entireThetaHom ?_⟩
   · simpa only [map_sum, map_smul, entireThetaHom_apply, entireTheta_finHeisenbergOp,
-      entireTheta_rho, neg_neg] using h_average i
+        entireTheta_rho, neg_neg]
+      using h_average i
   · simpa only [map_sum, map_smul, entireThetaHom_apply, entireTheta_rho] using h_inversion
 
 end Inversion
 
-/-- Let `δ` be integral with `δ δ̄ = N ≠ 0` and let `V` be a standard space (all signs are `+1` and
+/--
+Let `δ` be integral with `δ δ̄ = N ≠ 0` and let `V` be a standard space (all signs are `+1` and
 the point is the identity). Every theta function `F` for the lattice
 `δ̄ 𝔞₀ⁿ = star δ • idealLattice E n`, that is, every entire function fixed by the signed
 translations along it, is the theta function `entireTheta φ` of a vector `φ` of the finite part
 `V.finitePart` (a subspace containing the vacuum and stable under the translations `V.ϱ (finVec _)`)
-of `𝒮 V`. -/
-theorem Space.exists_entireTheta_eq_of_isThetaFunction {ε : n → ℤˣ} (V : Space E n ε) [V.IsStd]
+of `𝒮 V`.
+-/
+theorem Space.exists_entireTheta_eq_of_isThetaFunction
+    {ε : n → ℤˣ} (V : Space E n ε) [V.IsStd]
     (hδ : (δ : 𝔸f E) ∈ Ô E) (hN_ne : N ≠ 0) (hN : δ * star δ = N)
-    (hF : IsThetaFunction (star δ • idealLattice E n) F) :
-    ∃ φ ∈ V.finitePart, entireTheta φ = F := by
+    (hF : IsThetaFunction (star δ • idealLattice E n) F)
+    : ∃ φ ∈ V.finitePart, entireTheta φ = F := by
   obtain ⟨Y, _, y, hy⟩ := exists_isRepresentativeSystem_inv_smul (n := n) hδ hN_ne hN
   obtain ⟨Γ, _, γ, hγ⟩ := exists_isRepresentativeSystem_star_smul (n := n) hδ hN_ne hN
   obtain ⟨c, -, h_inversion⟩ := V.exists_smul_entireTheta_vacElem_eq hy hγ hδ hN_ne hN hF
-  refine ⟨((N : ℂ) ^ Fintype.card (InfinitePlace E × n))⁻¹ •
-    ∑ i : Y, c i • V.ϱ (finVec (finiteImage (y i))) V.vacElem, ?_, ?_⟩
-  · exact Submodule.smul_mem _ _ <| sum_mem fun i _ ↦
-      Submodule.smul_mem _ _ (rho_finVec_mem_finitePart _ vacElem_mem_finitePart)
+  refine ⟨
+    ((N : ℂ) ^ Fintype.card (InfinitePlace E × n))⁻¹
+      • ∑ i : Y, c i • V.ϱ (finVec (finiteImage (y i))) V.vacElem,
+    ?_,
+    ?_
+  ⟩
+  · exact Submodule.smul_mem _ _ <|
+      sum_mem fun i _ ↦ Submodule.smul_mem _ _ (rho_finVec_mem_finitePart _ vacElem_mem_finitePart)
   · rw [← entireThetaHom_apply, map_smul, map_sum]
     simp [entireThetaHom_apply, entireTheta_rho, h_inversion, smul_smul, hN_ne]
 
-/-- Let `V` be a standard space (all signs are `+1` and the point is the identity), let `δ` be
+/--
+Let `V` be a standard space (all signs are `+1` and the point is the identity), let `δ` be
 integral with `δ δ̄ = N ≠ 0`, and let the theta function `entireTheta φ` of `φ` be one for `δ̄ 𝔞₀ⁿ`
 (fixed by the signed translations along it), where `𝔞₀ⁿ = idealLattice E n`. There are finite
 families of `y` with `δ y ∈ 𝔞₀ⁿ` and, indexed by `N ^ r` elements, of `γ ∈ 𝔞₀ⁿ`, and numbers
 `c_y`, such that `c_y vac` is the signed sum of the translates of `ρ(-y) φ` by the `γ`, and
 `∑ c_y ρ(y) vac = N ^ r φ`. Here `r` is the number of elements of `InfinitePlace E × n`, `vac` the
 vacuum `V.vacElem`, `ρ(y)` the translation `V.ϱ` by the vector `finVec (finiteImage y)` with
-infinite part zero, and `V.finHeisenbergOp` the signed translation. -/
-theorem Space.exists_fourier_coefficients {ε : n → ℤˣ} (V : Space E n ε) [V.IsStd]
-    (hδ : (δ : 𝔸f E) ∈ Ô E) (hN_ne : N ≠ 0) (hN : δ * star δ = N) {φ : 𝒮 V}
-    (hφ : IsThetaFunction (star δ • idealLattice E n) (entireTheta φ)) :
-    ∃ (Y Γ : Type) (_ : Fintype Y) (_ : Fintype Γ) (y : Y → n → E) (γ : Γ → n → E) (c : Y → ℂ),
-      (∀ i : Y, δ • y i ∈ idealLattice E n) ∧
-      (∀ j : Γ, γ j ∈ idealLattice E n) ∧
-      Fintype.card Γ = N ^ Fintype.card (InfinitePlace E × n) ∧
-      (∀ i : Y, c i • V.vacElem =
-        ∑ j : Γ, V.finHeisenbergOp (finiteImage (γ j)) (V.ϱ (finVec (finiteImage (-y i))) φ)) ∧
-      ∑ i : Y, c i • V.ϱ (finVec (finiteImage (y i))) V.vacElem =
-        (N : ℂ) ^ Fintype.card (InfinitePlace E × n) • φ := by
+infinite part zero, and `V.finHeisenbergOp` the signed translation.
+-/
+theorem Space.exists_fourier_coefficients
+    {ε : n → ℤˣ} (V : Space E n ε) [V.IsStd]
+    (hδ : (δ : 𝔸f E) ∈ Ô E) (hN_ne : N ≠ 0) (hN : δ * star δ = N)
+    {φ : 𝒮 V} (hφ : IsThetaFunction (star δ • idealLattice E n) (entireTheta φ))
+    : ∃ (Y Γ : Type) (_ : Fintype Y) (_ : Fintype Γ) (y : Y → n → E) (γ : Γ → n → E) (c : Y → ℂ),
+      (∀ i : Y, δ • y i ∈ idealLattice E n) ∧ (∀ j : Γ, γ j ∈ idealLattice E n)
+        ∧ Fintype.card Γ = N ^ Fintype.card (InfinitePlace E × n)
+        ∧ (∀ i : Y,
+          c i • V.vacElem
+            = ∑ j : Γ, V.finHeisenbergOp (finiteImage (γ j)) (V.ϱ (finVec (finiteImage (-y i))) φ))
+        ∧ ∑ i : Y, c i • V.ϱ (finVec (finiteImage (y i))) V.vacElem
+          = (N : ℂ) ^ Fintype.card (InfinitePlace E × n) • φ := by
   obtain ⟨Y, _, y, hy⟩ := exists_isRepresentativeSystem_inv_smul (n := n) hδ hN_ne hN
   obtain ⟨Γ, _, γ, hγ⟩ := exists_isRepresentativeSystem_star_smul (n := n) hδ hN_ne hN
   obtain ⟨c, h_average, h_inversion⟩ := V.fourier_inversion hy hγ hδ hN_ne hN hφ
-  exact ⟨Y, Γ, inferInstance, inferInstance, y, γ, c,
+  exact ⟨
+    Y,
+    Γ,
+    inferInstance,
+    inferInstance,
+    y,
+    γ,
+    c,
     fun i ↦ (mem_inv_smul_idealLattice (ne_zero_of_mul_star_eq hN_ne hN)).1 (hy.mem i),
-    hγ.mem, (card_representatives_idealLattice hy hγ hδ hN_ne hN).2, h_average, h_inversion⟩
+    hγ.mem,
+    (card_representatives_idealLattice hy hγ hδ hN_ne hN).2,
+    h_average,
+    h_inversion
+  ⟩
 
 /-- Let `E` be a CM field with Weil data, `V : Space E n ε` a hermitian space, `φ` a vector of
 `𝒮 V`, and `a j`, `b`, `x` finite adelic vectors. Write `ρ(b) φ = V.ϱ (finVec b) φ` for the

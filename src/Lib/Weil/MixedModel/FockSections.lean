@@ -60,14 +60,18 @@ section MixedFockModel
 
 open Matrix ENNReal Exchange
 
-variable {ι ι' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] (ε' : ι' → ℤˣ)
-  (ε : ι → ℤˣ) (p : Type*) [Fintype p] [DecidableEq p]
+variable
+  {ι ι' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
+  (ε' : ι' → ℤˣ) (ε : ι → ℤˣ)
+  (p : Type*) [Fintype p] [DecidableEq p]
 
-/-- A mixed (Schrödinger–Fock) model for a decomposition `ℂ^ι' = L ℂ^p + I ℂ^ι + K ℂ^p`: a vector
+/--
+A mixed (Schrödinger–Fock) model for a decomposition `ℂ^ι' = L ℂ^p + I ℂ^ι + K ℂ^p`: a vector
 `v` of the large Fock space is read as the function `a ↦ slice a v` on `ℂ^p` with values in the
 small one. The Heisenberg operator of `L a' + I w + K b` translates `a` by `a'`, acts by `w`
 on the value and multiplies by `exp (i Im b* (2 a + a'))`. The vacuum is `exp (-|a|²)` times
-the small vacuum. -/
+the small vacuum.
+-/
 structure MixedModel where
   /-- The matrix of the directions that translate the argument in `ℂ^p`. -/
   L : Matrix ι' p ℂ
@@ -77,16 +81,20 @@ structure MixedModel where
   I : Matrix ι' ι ℂ
   /-- The value at `a ∈ ℂ^p`: a bounded map from the large Fock space to the small one. -/
   slice : (p → ℂ) → fockSpace ε' →L[ℂ] fockSpace ε
-  /-- Every vector `y` is `L a + I w + K b` with `a`, `w`, `b` given by matrices applied to `y`, so
-  that their norms are bounded by a multiple of that of `y`. -/
-  exists_decomp :
-    ∃ (A : Matrix p ι' ℂ) (W : Matrix ι ι' ℂ) (B : Matrix p ι' ℂ),
-      ∀ y : ι' → ℂ, L *ᵥ A *ᵥ y + I *ᵥ W *ᵥ y + K *ᵥ B *ᵥ y = y
-  /-- The Heisenberg operator of `L a' + I w + K b` translates the argument by `a'`, applies the
-  operator of `w` to the value and multiplies by the phase `β (2 a + a') b`. -/
-  slice_realHeisenbergOp (a a' : p → ℂ) (w : ι → ℂ) (b : p → ℂ) (v : fockSpace ε') :
-      slice a (realHeisenbergOp (L *ᵥ a' + I *ᵥ w + K *ᵥ b) v) =
-        (realHeisenberg 1).β (2 • a + a') b • realHeisenbergOp w (slice (a + a') v)
+  /--
+  Every vector `y` is `L a + I w + K b` with `a`, `w`, `b` given by matrices applied to `y`, so
+  that their norms are bounded by a multiple of that of `y`.
+  -/
+  exists_decomp
+    : ∃ (A : Matrix p ι' ℂ) (W : Matrix ι ι' ℂ) (B : Matrix p ι' ℂ), ∀ y : ι' → ℂ,
+      L *ᵥ A *ᵥ y + I *ᵥ W *ᵥ y + K *ᵥ B *ᵥ y = y
+  /--
+  The Heisenberg operator of `L a' + I w + K b` translates the argument by `a'`, applies the
+  operator of `w` to the value and multiplies by the phase `β (2 a + a') b`.
+  -/
+  slice_realHeisenbergOp (a a' : p → ℂ) (w : ι → ℂ) (b : p → ℂ) (v : fockSpace ε')
+    : slice a (realHeisenbergOp (L *ᵥ a' + I *ᵥ w + K *ᵥ b) v)
+      = (realHeisenberg 1).β (2 • a + a') b • realHeisenbergOp w (slice (a + a') v)
   /-- The vacuum is the Gaussian `exp (-|a|²)` times the vacuum of the small space. -/
   slice_vac (a : p → ℂ) : slice a vacVector = Complex.exp (-(star a ⬝ᵥ a)) • vacVector
 
@@ -159,8 +167,10 @@ section RapidSections
 open MeasureTheory Function ContinuousLinearMap Real Complex Heisenberg IsVacuum Matrix Finset
   Exchange Norms.Elementwise ContDiff Continuous ENNReal
 
-variable {ι ι' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
-  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {p : Type} [Fintype p] [DecidableEq p] (h : MixedModel ε' ε p)
+variable
+  {ι ι' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
+  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {p : Type} [Fintype p] [DecidableEq p]
+  (h : MixedModel ε' ε p)
 
 omit [DecidableEq ι] [DecidableEq p] in
 /-- Let `A x` be a smooth family of real-linear maps from `ℂ ^ ι` to `ℂ ^ ι'`. The value at `w` of

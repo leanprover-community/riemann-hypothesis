@@ -57,19 +57,26 @@ open Matrix MeasureTheory Measure Set ENNReal SemilocalField FloorGroups InnerPr
 
 section FiberPairing
 
-variable {A ι : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A] {m : ℕ} {T : 𝔰.Form A}
+variable
+  {A ι : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A]
+  {m : ℕ} {T : 𝔰.Form A}
   [P : IntegralPlace A] [IsHermitianUnit T.splitGram] [Fintype ι] [DecidableEq ι]
-  {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGroup) (p q : ℕ → Aˣ) {j : Type} [Fintype j]
+  {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGroup)
+  (p q : ℕ → Aˣ)
+  {j : Type} [Fintype j]
 
 open scoped Classical in
-/-- The pairing of the scaled orbital integrals of `Z` with heads `p` and `q` at `k * l`, integrated
+/--
+The pairing of the scaled orbital integrals of `Z` with heads `p` and `q` at `k * l`, integrated
 over `k` in `besselH`, the fixer of the last frame vector `z` in the floor group G^(ϱ), as a
-function of the vector `e = l⁻¹ z` for `l` in G^(ϱ); it is zero off the orbit of `z`. -/
+function of the vector `e = l⁻¹ z` for `l` in G^(ϱ); it is zero off the orbit of `z`.
+-/
 def PlaceData.fiberPairing (e : 𝔰.BesselIndex → A) : ℂ :=
   if h : ∃ l ∈ T.floorGroup 𝔰.ϱ, orbitPoint 𝔰.top l = e then
     ∫ k : T.G, ⟪scaledOrbitalIntegral Z p (k * h.choose),
       scaledOrbitalIntegral Z q (k * h.choose)⟫_ℂ ∂F.measureH
-  else 0
+  else
+    0
 
 /-- Two elements `l`, `l'` of the floor group G^(ϱ) with `l'⁻¹ z = l⁻¹ z` differ on the left by an
 element of `besselH`, the fixer in G^(ϱ) of the last frame vector `z`. -/
@@ -120,9 +127,11 @@ lemma mulVec_mem_lastVectorQuadric {A : Type} {𝔰 : Shape} [SemilocalField A] 
     apply_eq_one_apply_of_mem_floorGroup hl i a (.inl ⟨hi, hi⟩)
   simp [mulVec, dotProduct, h_row, Matrix.one_apply, h_floor i hi]
 
-/-- The pairings of the scaled orbital integrals of `Z` at `l`, for the heads `ω a`, summed against
+/--
+The pairings of the scaled orbital integrals of `Z` at `l`, for the heads `ω a`, summed against
 a matrix `R`. If `R` is the Gram matrix of vectors `x a`, this is the squared norm of the sum over
-`a` of the scaled orbital integrals tensored with the `x a`. -/
+`a` of the scaled orbital integrals tensored with the `x a`.
+-/
 def PlaceData.headSumNormSq (R : Matrix j j ℂ) (ω : j → ℕ → Aˣ) (l : T.G) : ℂ :=
   ∑ a : j, ∑ b : j, R a b * ⟪scaledOrbitalIntegral Z (ω a) l, scaledOrbitalIntegral Z (ω b) l⟫_ℂ
 
@@ -515,19 +524,28 @@ end FiberPairing
 
 section TopDensity
 
-variable {A ι : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A] {m : ℕ} [P : IntegralPlace A]
-  [Fintype ι] [DecidableEq ι] {j : Type} [Fintype j] {N : A}
+variable
+  {A ι : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A]
+  {m : ℕ} [P : IntegralPlace A] [Fintype ι] [DecidableEq ι]
+  {j : Type} [Fintype j]
+  {N : A}
 
-/-- The density at the last entry `t = p 𝔰.ϱ` of the head `p`: the integral of the fiber pairing of
+/--
+The density at the last entry `t = p 𝔰.ϱ` of the head `p`: the integral of the fiber pairing of
 the heads `p`, `q` over the vectors `e` of the last vector quadric with `⟨z, e⟩ = t` (`z` the last
 frame vector), with `(modulus π)⁻¹` times the measure `dx / d⟨x, x⟩` on the sphere over `t`. It is
 used with `π * star π = N`, so that this factor is `|N| ^ (-1/2)`, and for heads with `q 𝔰.ϱ = t`,
-although the definition does not read `q 𝔰.ϱ`. -/
-def PlaceData.lastEntryDensity (π : Aˣ) [IsHermitianUnit (latticeMiddleGram 𝔰 N).splitGram]
-    {F : PlaceData ι (latticeMiddleGram 𝔰 N) (m + 1)} (Z : F.IntermediateGroup) (p q : ℕ → Aˣ) :
-      ℂ :=
-  (P.modulus π)⁻¹.toReal * ∫ x : 𝔰.κ → A, fiberPairing Z p q (vectorOfLastEntry π (p 𝔰.ϱ) x)
-    ∂P.normFiberMeasure 𝔰.κ (lastEntrySphereIndex π (p 𝔰.ϱ))
+although the definition does not read `q 𝔰.ϱ`.
+-/
+def PlaceData.lastEntryDensity
+    (π : Aˣ)
+    [IsHermitianUnit (latticeMiddleGram 𝔰 N).splitGram]
+    {F : PlaceData ι (latticeMiddleGram 𝔰 N) (m + 1)} (Z : F.IntermediateGroup)
+    (p q : ℕ → Aˣ)
+    : ℂ :=
+  (P.modulus π)⁻¹.toReal
+    * ∫ x : 𝔰.κ → A, fiberPairing Z p q (vectorOfLastEntry π (p 𝔰.ϱ) x)
+      ∂P.normFiberMeasure 𝔰.κ (lastEntrySphereIndex π (p 𝔰.ϱ))
 
 variable {π : Aˣ} [IsHermitianUnit (latticeMiddleGram 𝔰 N).splitGram]
 

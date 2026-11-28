@@ -46,12 +46,16 @@ namespace New.Period
 
 open Filter Module Submodule LinearMap Fintype Finset Set RingHomClass FaithfulSMul
 
-variable {p : ℕ} [ThePrime p] {Γ R T : Type*}
-  {ι : Type*} [Group Γ] [CommRing R] [AddCommGroup T] [Module R T] [Algebra ℤ_[p] R] [OverGp Γ p]
+variable
+  {p : ℕ} [ThePrime p]
+  {Γ R T : Type*} {ι : Type*}
+  [Group Γ] [CommRing R] [AddCommGroup T] [Module R T] [Algebra ℤ_[p] R] [OverGp Γ p]
   {ρ : Representation R Γ T} {γ : R →ₐ[ℤ_[p]] ℂ_[p]}
 
-/-- For an R-basis b of T indexed by ι, the C_p-linear isomorphism from γ-semilinear maps f: T →
-C_p to C_p^ι sending f to its values f(b_i). -/
+/--
+For an R-basis b of T indexed by ι, the C_p-linear isomorphism from γ-semilinear maps f: T →
+C_p to C_p^ι sending f to its values f(b_i).
+-/
 noncomputable def evalOnBasis (b : Basis ι R T) : (T →ₛₗ[toRingHom γ] ℂ_[p]) ≃ₗ[ℂ_[p]] ι → ℂ_[p] :=
   LinearEquiv.ofBijective (LinearMap.pi fun i ↦ LinearMap.id.flip (b i)) <| by
     refine ⟨fun f g hfg ↦ b.ext (congrFun hfg), fun c ↦ ?_⟩
@@ -103,8 +107,10 @@ lemma mem_hodgeTateMaps_of_span [Algebra.IsAlgebraic ℤ_[p] R] {ι : Sort*} {s 
 
 variable [F : Module.Finite R T]
 
-/-- If `T` is finite over `R`, the `γ`-semilinear maps `T → ℂ_[p]` form a finite-dimensional
-`ℂ_[p]`-space. -/
+/--
+If `T` is finite over `R`, the `γ`-semilinear maps `T → ℂ_[p]` form a finite-dimensional
+`ℂ_[p]`-space.
+-/
 instance : Module.Finite ℂ_[p] (T →ₛₗ[toRingHom γ] ℂ_[p]) := by
   -- a semilinear map is determined by its values on finitely many generators of `T`
   obtain ⟨n, x, hx⟩ := F.exists_fin
@@ -148,13 +154,15 @@ lemma hodgeTateMaps.mem_span_same_weight {k : ι → ℤ} {f : ι → T →ₛ�
     simp [tate_eq_zero_of_cyclotomicGp_twist (neg_add_eq_zero.not.mpr hu)
       (by simpa using h_coeff i)]
 
-/-- If `toGp` has open image (as the instance `OverGp Γ p` gives) and T is finite over R, the
-ℚ̄_p-space `New.Period.hodgeTateMaps` for γ and u is finite-dimensional, for every integer u. -/
+/--
+If `toGp` has open image (as the instance `OverGp Γ p` gives) and T is finite over R, the
+ℚ̄_p-space `New.Period.hodgeTateMaps` for γ and u is finite-dimensional, for every integer u.
+-/
 instance finite_hodgeTateMaps (u : ℤ) : Module.Finite (PadicAlgCl p) (hodgeTateMaps ρ γ u) := by
   -- Finitely many `f i` in the space have the same span over `ℂ_[p]` as the space itself; by
   -- `hodgeTateMaps.mem_span_same_weight` they span it over `PadicAlgCl p`.
-  obtain ⟨f, hf, h_span, -⟩ := exists_fun_fin_finrank_span_eq ℂ_[p]
-    (hodgeTateMaps ρ γ u : Set (T →ₛₗ[toRingHom γ] ℂ_[p]))
+  obtain ⟨f, hf, h_span, -⟩ :=
+    exists_fun_fin_finrank_span_eq ℂ_[p] (hodgeTateMaps ρ γ u : Set (T →ₛₗ[toRingHom γ] ℂ_[p]))
   have h_le : hodgeTateMaps ρ γ u ≤ span (PadicAlgCl p) (f '' {i | u = u}) := fun φ hφ ↦
     hodgeTateMaps.mem_span_same_weight hf hφ (h_span.ge (subset_span hφ))
   exact .of_fg ((fg_span (toFinite _)).of_le h_le)

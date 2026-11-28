@@ -66,7 +66,8 @@ namespace New
 
 open NumberField MeasureTheory Fintype Subgroup DiscreteSeries
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ} {l : InfinitePlace E → n → ℤ} {s : n → ℤˣ}
   {V : Space E n s} {φ : AlgForm n κ e}
 
@@ -117,12 +118,15 @@ lemma isAutomorphic_algFormCoeff [hV : V.IsStd] {L : (WeylIndex n κ → ℂ) �
         weightRep κ e (stdSpace E n) γ (φ.val g.2) := φ_rat γ g.2
     simp [algFormCoeff_apply, weightRep, h_rat]
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {κ : InfinitePlace E → ℕ → ℕ}
-  {e : InfinitePlace E → ℤ} {l : InfinitePlace E → n → ℤ} in
+variable
+  {E : Type} [Field E] [NumberField E] [IsCMField E]
+  {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ} {l : InfinitePlace E → n → ℤ} in
 variable (κ e l) in
-/-- The function `y♭` on `G_f` attached to a function `y` on the definite group:
+/--
+The function `y♭` on `G_f` attached to a function `y` on the definite group:
 `y♭ g = d ∫ y (x, g) • x v` over `G_∞`, where `d` is the dimension of the Weyl module, `x` acts by
-`conjWeylRep` and `v` is the highest vector. -/
+`conjWeylRep` and `v` is the highest vector.
+-/
 def toAlgFormFun (y : G E (1 : n → ℤˣ) → ℂ) (g : Gf E n) : WeylIndex n κ → ℂ :=
   ∫ x : GInf E (1 : n → ℤˣ),
     (card (WeylIndex n κ) * y (x, g)) • conjWeylRep κ e (s := 1) x (highestVector κ l)
@@ -216,11 +220,13 @@ lemma isForm_ofAlgForm [hV : V.IsStd] (h : IsHCParam (n := n) κ e l) (ψ : AlgF
 /-! ### The equivalence and its equivariance -/
 
 variable (V) in
-/-- On a standard space, for `l` twice the Harish-Chandra parameter of `(κ, e)`, the forms of type
+/--
+On a standard space, for `l` twice the Harish-Chandra parameter of `(κ, e)`, the forms of type
 `typeKernel l s` are the smooth algebraic forms of weight `(κ, e)`. This is the inverse `y ↦ y♭` of
-`φ ↦ φ♮ = ofAlgForm l s φ`, which is injective as `(φ♮)♭ = φ`, and surjective as `y = (y♭)♮`. -/
-def toAlgForm [hV : V.IsStd] (h : IsHCParam (n := n) κ e l) :
-    V.Form (typeKernel l s) ≃ₗ[ℂ] AlgForm n κ e :=
+`φ ↦ φ♮ = ofAlgForm l s φ`, which is injective as `(φ♮)♭ = φ`, and surjective as `y = (y♭)♮`.
+-/
+def toAlgForm [hV : V.IsStd] (h : IsHCParam (n := n) κ e l)
+    : V.Form (typeKernel l s) ≃ₗ[ℂ] AlgForm n κ e :=
   .symm <| .ofBijective ((ofAlgForm l s).codRestrict _ (isForm_ofAlgForm h)) <| by
     induction hV
     refine ⟨fun φ ψ h_eq ↦ Subtype.ext ?_, ?_⟩
@@ -229,8 +235,9 @@ def toAlgForm [hV : V.IsStd] (h : IsHCParam (n := n) κ e l) :
     rintro ⟨y, hy⟩
     let φ : AlgForm n κ e := ⟨toAlgFormFun κ e l y, toAlgFormFun_mem_algForm hy.toIsAutomorphic⟩
     refine ⟨φ, Subtype.ext ?_⟩
-    calc ofAlgForm l 1 φ = realConv (typeKernel l 1) y :=
-          funext fun g ↦ (realConv_typeKernel h hy.continuous g).symm
+    calc
+      ofAlgForm l 1 φ
+        = realConv (typeKernel l 1) y := funext fun g ↦ (realConv_typeKernel h hy.continuous g).symm
       _ = y := hy.realConv_eq integrable_of_compactSpace
 
 /-- Let `V` be a standard space and `l` twice the Harish-Chandra parameter of `(κ, e)`. Let `y` be a
@@ -258,16 +265,19 @@ lemma toAlgForm_formRep [V.IsStd] (h : IsHCParam (n := n) κ e l) (a : Gf E n)
       (algFormCoeff_algFormRep _ a g).symm
 
 variable (V) in
-/-- For V standard and l twice the Harish-Chandra parameter of (κ, e), the isomorphism
+/--
+For V standard and l twice the Harish-Chandra parameter of (κ, e), the isomorphism
 φ ↦ `ofAlgForm l s φ` from K-fixed algebraic forms to K-fixed forms of type `typeKernel l s`. No
-hypothesis is put on K. -/
-def algFormEquiv [V.IsStd] (h : IsHCParam (n := n) κ e l) (K : Subgroup (Gf E n)) :
-    levelSpace (algFormRep κ e) K ≃ₗ[ℂ] levelSpace (V.formRep (typeKernel l s)) K :=
+hypothesis is put on K.
+-/
+def algFormEquiv [V.IsStd] (h : IsHCParam (n := n) κ e l) (K : Subgroup (Gf E n))
+    : levelSpace (algFormRep κ e) K ≃ₗ[ℂ] levelSpace (V.formRep (typeKernel l s)) K :=
   -- `V.toAlgForm h` is equivariant, so it matches the vectors fixed by `K`.
   (V.toAlgForm h).symm.ofSubmodules (levelSpace (algFormRep κ e) K)
-    (levelSpace (V.formRep (typeKernel l s)) K) <| by
-    ext
-    simp [-toAlgForm_formRep, ← toAlgForm_formRep]
+      (levelSpace (V.formRep (typeKernel l s)) K) <|
+    by
+      ext
+      simp [-toAlgForm_formRep, ← toAlgForm_formRep]
 
 variable (V) in
 /-- For V standard and l twice the Harish-Chandra parameter of (κ, e), a form y of type
@@ -318,35 +328,39 @@ lemma integral_eq_classIntegral_of_isLevel [hV : V.IsStd] {F : G E s → ℂ}
       rw [h_index, mul_inv_rev, mul_assoc]
     _ = _ := by rw [classIntegral, inv_natCast_smul_eq ℚ ℂ, smul_eq_mul]
 
-/-- Let `K` be a level. Let `y`, `y'` be automorphic functions on the group `G` of the standard
+/--
+Let `K` be a level. Let `y`, `y'` be automorphic functions on the group `G` of the standard
 space: continuous, left `Γ`-invariant, and right invariant under an open subgroup of `G_f`. Suppose
 `y'(x, g) = L g (ρ(x) v⁺)` for linear functionals `L g`, where `ρ = conjWeylRep` and `v⁺` is the
 highest vector for `l`. Then `d ∫_{Γ\G} y' y` (for `quotMeasure`, with `d` the dimension of the Weyl
 module) equals `(stdLevelIndex K)⁻¹ = [stdLevel : K]⁻¹` times the `classIntegral` at `K` of
 `g ↦ L g (y♭ g)`, i.e. the integral over `Γ \ G_f` for `vol K = 1`, where
-`y♭ g = d ∫_{G_∞} y(x, g) ρ(x) v⁺ dx` is `toAlgFormFun κ e l y`. -/
-theorem integral_mul_eq_classIntegral_toAlgFormFun (K : Subgroup (Gf E n)) [hK : IsLevel K]
-    {y y' : G E (1 : n → ℤˣ) → ℂ} (hy : (stdSpace E n).IsAutomorphic y)
-    (hy' : (stdSpace E n).IsAutomorphic y')
+`y♭ g = d ∫_{G_∞} y(x, g) ρ(x) v⁺ dx` is `toAlgFormFun κ e l y`.
+-/
+theorem integral_mul_eq_classIntegral_toAlgFormFun
+    (K : Subgroup (Gf E n)) [hK : IsLevel K]
+    {y y' : G E (1 : n → ℤˣ) → ℂ}
+    (hy : (stdSpace E n).IsAutomorphic y) (hy' : (stdSpace E n).IsAutomorphic y')
     (L : Gf E n → (WeylIndex n κ → ℂ) →ₗ[ℂ] ℂ)
     (hy'_eq : ∀ (x : GInf E (1 : n → ℤˣ)) (g : Gf E n),
-      y' (x, g) = L g (conjWeylRep κ e x (highestVector κ l))) :
-    (card (WeylIndex n κ) : ℂ) * ∫ g : G E (1 : n → ℤˣ), y' g * y g ∂(stdSpace E n).quotMeasure =
-      (stdLevelIndex K : ℂ)⁻¹ *
-        classIntegral stdRatPoints K fun g : Gf E n ↦ L g (toAlgFormFun κ e l y g) := by
+      y' (x, g) = L g (conjWeylRep κ e x (highestVector κ l)))
+    : (card (WeylIndex n κ) : ℂ) * ∫ g : G E (1 : n → ℤˣ), y' g * y g ∂(stdSpace E n).quotMeasure
+      = (stdLevelIndex K : ℂ)⁻¹
+        * classIntegral stdRatPoints K fun g : Gf E n ↦ L g (toAlgFormFun κ e l y g) := by
   set d : ℂ := ((card (WeylIndex n κ) : ℕ) : ℂ)
   have h_cont : Continuous y := hy.continuous
   -- Integrate over `G_∞` first.
-  have h_infinite (g : Gf E n) :
-      ∫ x, d * (y' (x, g) * y (x, g)) = L g (toAlgFormFun κ e l y g) := by
-    calc ∫ x, d * (y' (x, g) * y (x, g))
+  have h_infinite (g : Gf E n)
+      : ∫ x, d * (y' (x, g) * y (x, g)) = L g (toAlgFormFun κ e l y g) := by
+    calc
+      ∫ x, d * (y' (x, g) * y (x, g))
       _ = ∫ x, L g ((d * y (x, g)) • conjWeylRep κ e (s := 1) x (highestVector κ l)) := by
         refine integral_congr_ae (.of_forall fun x ↦ ?_)
         simp [hy'_eq, mul_comm, mul_assoc]
       _ = L g (toAlgFormFun κ e l y g) :=
         (L g).toContinuousLinearMap.integral_comp_comm integrable_of_compactSpace
-  rw [← integral_const_mul, integral_eq_classIntegral_of_isLevel
-    (hy'.map₂ hy fun a b ↦ d * (a * b)) hK]
+  rw [← integral_const_mul,
+    integral_eq_classIntegral_of_isLevel (hy'.map₂ hy fun a b ↦ d * (a * b)) hK]
   simp only [h_infinite]
 
 /-- Let `V` be standard, `l` twice the Harish-Chandra parameter of `(κ, e)`, `φ` an algebraic form,
@@ -377,28 +391,34 @@ lemma star_ofAlgForm (h : s = 1) (x : GInf E s) (g : Gf E n) :
   simp [← gramForm_conjWeylRep (e := e) x⁻¹ (φ.val _), conj_gramForm, algFormCoeff_apply]
 
 variable (V) in
-/-- Let `V` be standard (all signs `+1`, point the identity), `l` twice the Harish-Chandra parameter
+/--
+Let `V` be standard (all signs `+1`, point the identity), `l` twice the Harish-Chandra parameter
 of `(κ, e)`, `K` a level and `χ` a character of `K` whose values have finite order. For algebraic
 forms `φ`, `φ'` on which `K` acts by `χ`, the class sum at `K` (over `Γ\G_f/K`, the term at `g`
 weighted by `1/#(Γ ∩ gKg⁻¹)`) of the Gram pairings `⟨φ(g), φ'(g)⟩` is the index
 `stdLevelIndex K = [stdLevel : K]`, times the dimension of the weight, times the Petersson product
 `∫_{Γ\G} conj(F_φ) F_φ'`, where `F_φ = ofAlgForm l s φ` is the function
-`F_φ(g) = ⟨v⁺, ρ(g_∞⁻¹) φ(g_f)⟩` on the group. -/
-theorem classSum_gramForm_eq_mul_petersson [hV : V.IsStd] (h : IsHCParam (n := n) κ e l)
-    (K : Subgroup (Gf E n)) [IsLevel K] (χ : K →* ℂ) (hχ : ∀ k : K, IsOfFinOrder (χ k))
+`F_φ(g) = ⟨v⁺, ρ(g_∞⁻¹) φ(g_f)⟩` on the group.
+-/
+theorem classSum_gramForm_eq_mul_petersson
+    [hV : V.IsStd]
+    (h : IsHCParam (n := n) κ e l)
+    (K : Subgroup (Gf E n)) [IsLevel K]
+    (χ : K →* ℂ) (hχ : ∀ k : K, IsOfFinOrder (χ k))
     {φ φ' : AlgForm n κ e}
-    (hφ : φ ∈ levelSpace (algFormRep κ e) K χ) (hφ' : φ' ∈ levelSpace (algFormRep κ e) K χ) :
-    classSum stdRatPoints K (fun g : Gf E n ↦ gramForm (φ.val g) (φ'.val g)) =
-      (stdLevelIndex K : ℂ) * (card (WeylIndex n κ) : ℂ) *
-        V.petersson (ofAlgForm l s φ) (ofAlgForm l s φ') := by
+    (hφ : φ ∈ levelSpace (algFormRep κ e) K χ) (hφ' : φ' ∈ levelSpace (algFormRep κ e) K χ)
+    : classSum stdRatPoints K (fun g : Gf E n ↦ gramForm (φ.val g) (φ'.val g))
+      = (stdLevelIndex K : ℂ) * (card (WeylIndex n κ) : ℂ)
+        * V.petersson (ofAlgForm l s φ) (ofAlgForm l s φ') := by
   -- The Petersson product is an integral over `Γ \ G`, hence a multiple of the class integral of
   -- the Gram pairings. As `χ` has values of norm `1`, these are fixed by `K`: it is the class sum.
-  have h_pet :
-      V.petersson (ofAlgForm l s φ) (ofAlgForm l s φ') =
-        (card (WeylIndex n κ) * stdLevelIndex K : ℂ)⁻¹ *
-          classIntegral stdRatPoints K fun g : Gf E n ↦ gramForm (φ.val g) (φ'.val g) :=
+  have h_pet
+      : V.petersson (ofAlgForm l s φ) (ofAlgForm l s φ')
+        = (card (WeylIndex n κ) * stdLevelIndex K : ℂ)⁻¹
+          * classIntegral stdRatPoints K fun g : Gf E n ↦ gramForm (φ.val g) (φ'.val g) :=
     integral_mul_eq_classIntegral h K (isForm_ofAlgForm h φ).conj.toIsAutomorphic
-      (fun g : Gf E n ↦ gramForm (φ.val g)) (star_ofAlgForm hV.signs_eq_one)
+      (fun g : Gf E n ↦ gramForm (φ.val g))
+      (star_ofAlgForm hV.signs_eq_one)
   have h_fix : K ≤ rightStabilizer fun g : Gf E n ↦ gramForm (φ.val g) (φ'.val g) := by
     intro k hk g
     have h_left : φ.val (g * k) = χ ⟨k, hk⟩ • φ.val g :=

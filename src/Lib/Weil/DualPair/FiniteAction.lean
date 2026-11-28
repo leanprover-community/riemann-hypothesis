@@ -63,7 +63,8 @@ open NumberField Matrix GeneralLinearGroup Kronecker Unitary Fintype Gf G Space
 
 section
 
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
+variable
+  {E : Type*} [Field E] [NumberField E] [IsCMField E]
   {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
   {s : n → ℤˣ} {s' : n' → ℤˣ} {A : Set (FinPlace E)}
 
@@ -150,9 +151,11 @@ lemma G.onHom_scalarFin (ν ν' : unitary (𝔸f E)) :
 
 end
 
-variable {E : Type*} [Field E] [CMType E] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} {A : Set (FinPlace E)} [WeilData E] {S : Space E n s}
-  {T : Space E n' s'} {a b : AutChar E}
+variable
+  {E : Type*} [Field E] [CMType E]
+  {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {A : Set (FinPlace E)} [WeilData E]
+  {S : Space E n s} {T : Space E n' s'} {a b : AutChar E}
 
 /-- The finite multiplier `finMultiplier`, written Δ_f, of the image `G.onHom (g, 1)`, which acts on
 Hom(S,T) by x ↦ x g⁻¹, is Δ_f(g_f⁻¹)^(n'), where n' is the rank of the second space. -/
@@ -285,12 +288,14 @@ section PairSumNegation
 
 open NumberField Matrix WeilData Space Equiv CoordChange Fintype G Fock ComplexConjugate Weil Int
 
-variable {E : Type} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
   {n n' n₁ n₂ : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype n₁]
-  [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] {s : n → ℤˣ} {s' : n' → ℤˣ} {s₁ : n₁ → ℤˣ}
-  {s₂ : n₂ → ℤˣ} {e : n₁ ⊕ n₂ ≃ n} {S V : Space E n s} {V₁ : Space E n₁ s₁}
-  {V₂ : Space E n₂ s₂} {T : Space E n' s'} (a b b' : AutChar E) {g : G E s} {g₁ : G E s₁}
-  {g₂ : G E s₂}
+  [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂]
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ} {e : n₁ ⊕ n₂ ≃ n}
+  {S V : Space E n s} {V₁ : Space E n₁ s₁} {V₂ : Space E n₂ s₂} {T : Space E n' s'}
+  (a b b' : AutChar E)
+  {g : G E s} {g₁ : G E s₁} {g₂ : G E s₂}
 
 omit [WeilData E] in
 /-- A vector x on pairs of indices is a rational point of Hom(S,T) exactly when the matrix
@@ -387,9 +392,11 @@ end Sums
 
 lemma normNegOne_inv : normNegOne⁻¹.val.val = -star (normNegOne.val.val : 𝔸f E) := rfl
 
-/-- The negation change of coordinates from Hom(S⁻,T) to Hom(S,T): x ↦ (1, u⁻¹)x, u the chosen
+/--
+The negation change of coordinates from Hom(S⁻,T) to Hom(S,T): x ↦ (1, u⁻¹)x, u the chosen
 element of Ô of norm −1. It conjugates the bicharacter β of the Heisenberg group, so it induces an
-antilinear map `negSource.map` from data on Hom(S,T) to data on Hom(S⁻,T). -/
+antilinear map `negSource.map` from data on Hom(S,T) to data on Hom(S⁻,T).
+-/
 noncomputable def negSource : CoordChange E conj (homSigns s s') (homSigns (-s) s') where
   φ := ContinuousAddEquiv.mk' (Homeomorph.smul (normNegOneIdele E)⁻¹) (by simp)
   realEquiv := ContinuousAddEquiv.refl (InfinitePlace E × n' × n → ℂ)
@@ -398,7 +405,7 @@ noncomputable def negSource : CoordChange E conj (homSigns s s') (homSigns (-s) 
     simp [adelicSum, Units.smul_def, Subring.smul_def, normNegOneIdele, mul_left_comm,
       ContinuousAddEquiv.mk', funext_iff]
   beta_realEquiv := by
-    simp [↓Heisenberg.conj_beta, realHeisenberg, dotProduct, signMatrix, neg_add_eq_sub, pairSign,
+    simp [↓ Heisenberg.conj_beta, realHeisenberg, dotProduct, signMatrix, neg_add_eq_sub, pairSign,
       mulVec_diagonal]
   vac_realEquiv := by simp
   selfDualAddChar_finEquiv := by

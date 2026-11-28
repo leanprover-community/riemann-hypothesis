@@ -56,37 +56,43 @@ namespace New.Selmer
 
 open Patching Subgroup Representation MonoidAlgebra Gf stdLevel Set Matrix Polynomial Space
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {P : Parameters} {D : Data P}
-  {r n : Type} [Fintype r] [DecidableEq r] [Fintype n]
+variable
+  {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+  {P : Parameters} {D : Data P} {r n : Type} [Fintype r] [DecidableEq r] [Fintype n]
 
 section
 
 variable {O : DescentPair D.E r n} [DecidableEq n]
 
 open scoped Classical in
-/-- Let `w = O.chosenPlace i` be a chosen place of the pair `O`, assumed split (`hw`), and write
+/--
+Let `w = O.chosenPlace i` be a chosen place of the pair `O`, assumed split (`hw`), and write
 `ψ_w` for the character `O.tamePart w` of its residue field `k_w`. The map `ofSplitPlace hw` places
 `GL_n(E_w)` in the finite adelic group. Let `π` be a representation of that group on a space `S` of
 functions, and `u` a vector of the level and character of `O`. Suppose that `π k u` is the right
 translate of `f` by `k` for all `k` in `GL_n(E_w)`. Then `f` has a parahoric type at `w`: an
 integral `k` whose reduction keeps the span of the indices `O.incl` and acts on it by `g` sends `f`
 to `ψ_w⁻¹(det g)` times the image of `u` under `g`, placed at `i`, in the representation
-`O.chosenGLRep π`; the one other block (`s := 1`) carries the trivial character. -/
-theorem hasParahoricType_chosenGLRep {S : Submodule ℂ (Gf D.E n → WeylIndex n O.columnCount → ℂ)}
-    {π : Representation ℂ (Gf D.E n) S}
+`O.chosenGLRep π`; the one other block (`s := 1`) carries the trivial character.
+-/
+theorem hasParahoricType_chosenGLRep
+    {S : Submodule ℂ (Gf D.E n → WeylIndex n O.columnCount → ℂ)} {π : Representation ℂ (Gf D.E n) S}
     {u : levelSpace π (levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl)) O.levelChar}
     {i : O.ChosenIndex} {hw : (O.chosenPlace i).IsSplit}
-      {f : Gf D.E n → WeylIndex n O.columnCount → ℂ}
+    {f : Gf D.E n → WeylIndex n O.columnCount → ℂ}
     (h_loc : ∀ k : GL n (LocField (O.chosenPlace i)),
-      (π (ofSplitPlace hw k) u.val).val = fun x : Gf D.E n ↦ f (x * ofSplitPlace hw k)) :
-    HasParahoricType f hw O.incl (fun a : n ↦ if a ∈ Set.range O.incl then 0 else 1)
-      (O.tamePart (O.chosenPlace i))⁻¹ (s := 1) 1 fun g : GL r (ResField (O.chosenPlace i)) ↦
+      (π (ofSplitPlace hw k) u.val).val = fun x : Gf D.E n ↦ f (x * ofSplitPlace hw k))
+    : HasParahoricType f hw O.incl
+      (fun a : n ↦ if a ∈ Set.range O.incl then 0 else 1)
+      (O.tamePart (O.chosenPlace i))⁻¹ (s := 1) 1
+      fun g : GL r (ResField (O.chosenPlace i)) ↦
         (O.chosenGLRep π (Pi.mulSingle i g) u).val.val := by
   refine ⟨by simp, fun k g h_parab h_block ↦ ?_⟩
   -- Let `c` be `k` placed at `i`: its reductions are `reduceGL k` at `i` and `1` elsewhere.
   let c : stdLevel D.E n := ⟨ofSplitPlace hw k.val, (ofSplitPlace_mem_stdLevel hw k.val).2 k.prop⟩
-  obtain ⟨h_red_same, h_red_ne⟩ : stdLevel.reduceAt (O.chosenPlace i) c = reduceGL k ∧
-      ∀ j : O.ChosenIndex ⊕ O.TwistIndex, j ≠ .inl i → stdLevel.reduceAt (O.placeAt j) c = 1 :=
+  obtain ⟨h_red_same, h_red_ne⟩
+      : stdLevel.reduceAt (O.chosenPlace i) c = reduceGL k
+        ∧ ∀ j : O.ChosenIndex ⊕ O.TwistIndex, j ≠ .inl i → stdLevel.reduceAt (O.placeAt j) c = 1 :=
     Function.eq_update_iff.mp (reduceFamily_ofSplitPlace (w := O.placeAt) (.inl i) k)
   -- These reductions are block triangular, with first block `g` at `i` and `1` elsewhere.
   let s₀ : ∀ j : O.ChosenIndex, GL r (ResField (O.chosenPlace j)) := Pi.mulSingle i g
@@ -97,49 +103,54 @@ theorem hasParahoricType_chosenGLRep {S : Submodule ℂ (Gf D.E n → WeylIndex 
   let s : ∀ j : O.ChosenIndex ⊕ O.TwistIndex, GL r (ResField (O.placeAt j))
     | .inl j => s₀ j
     | .inr _ => 1
-  have h_upper (j : O.ChosenIndex) :
-      (stdLevel.reduceAt (O.placeAt (.inl j)) c).val *
-          inclMatrix (ResField (O.placeAt (.inl j))) O.incl =
-        inclMatrix (ResField (O.placeAt (.inl j))) O.incl * (s (.inl j)).val := by
+  have h_upper (j : O.ChosenIndex)
+      : (stdLevel.reduceAt (O.placeAt (.inl j)) c).val
+          * inclMatrix (ResField (O.placeAt (.inl j))) O.incl
+        = inclMatrix (ResField (O.placeAt (.inl j))) O.incl * (s (.inl j)).val := by
     obtain rfl | hj := eq_or_ne j i
-    · change (stdLevel.reduceAt (O.chosenPlace j) c).val *
-          inclMatrix (ResField (O.chosenPlace j)) O.incl =
-        inclMatrix (ResField (O.chosenPlace j)) O.incl * (s₀ j).val
+    · change (stdLevel.reduceAt (O.chosenPlace j) c).val
+          * inclMatrix (ResField (O.chosenPlace j)) O.incl
+        = inclMatrix (ResField (O.chosenPlace j)) O.incl * (s₀ j).val
       rw [h_red_same, hs₀_same, ← h_block, mul_inclMatrix]
       -- The columns of `reduceGL k` in `O.incl` vanish outside the block `g`, by `h_parab`.
-      exact (eq_inclMatrix_mul_iff _).2 fun a ha b ↦ h_parab (by
-        simp only [Nat.reduceAdd, mem_range, EmbeddingLike.apply_eq_iff_eq, exists_eq, ↓reduceIte,
-          Fin.isValue, id_eq, ha, zero_lt_one])
+      exact (eq_inclMatrix_mul_iff _).2 fun a ha b ↦
+        h_parab (by
+          simp only [Nat.reduceAdd, mem_range, EmbeddingLike.apply_eq_iff_eq, exists_eq,
+            ↓ reduceIte, Fin.isValue, id_eq, ha, zero_lt_one])
     · have hne : (Sum.inl j : O.ChosenIndex ⊕ O.TwistIndex) ≠ .inl i := by
         simp only [ne_eq, Sum.inl.injEq, hj, not_false_eq_true]
       have hs : s (.inl j) = 1 := hs₀_ne hj
       rw [h_red_ne (.inl j) hne, hs]
       simp only [Units.val_one, Matrix.one_mul, Matrix.mul_one]
-  have h_lower (j : O.TwistIndex) :
-      (stdLevel.reduceAt (O.placeAt (.inr j)) c).valᵀ *
-          inclMatrix (ResField (O.placeAt (.inr j))) O.incl =
-        inclMatrix (ResField (O.placeAt (.inr j))) O.incl * (s (.inr j)).valᵀ := by
+  have h_lower (j : O.TwistIndex)
+      : (stdLevel.reduceAt (O.placeAt (.inr j)) c).valᵀ
+          * inclMatrix (ResField (O.placeAt (.inr j))) O.incl
+        = inclMatrix (ResField (O.placeAt (.inr j))) O.incl * (s (.inr j)).valᵀ := by
     have hne : (Sum.inr j : O.ChosenIndex ⊕ O.TwistIndex) ≠ .inl i := by
       simp only [ne_eq, reduceCtorEq, not_false_eq_true]
     have hs : s (.inr j) = 1 := rfl
     rw [h_red_ne (.inr j) hne, hs]
     simp only [Units.val_one, Matrix.transpose_one, Matrix.one_mul, Matrix.mul_one]
   -- So `c` acts as `chosenGLRep` times `∏ j, ψ⁻¹ (det (s j))`, where only `j = i` contributes.
-  have h_act : (O.tamePart (O.chosenPlace i))⁻¹ g.val.det •
-      (O.chosenGLRep π s₀ u).val = π c u := by
+  have h_act : (O.tamePart (O.chosenPlace i))⁻¹ g.val.det • (O.chosenGLRep π s₀ u).val = π c u := by
     have h_tri := O.smul_chosenGLRep_eq_apply_of_triangular u c s h_upper h_lower
-    have h_prod : (∏ j : O.ChosenIndex ⊕ O.TwistIndex,
-        (O.tamePart (O.placeAt j))⁻¹ (s j).val.det) =
-        (O.tamePart (O.chosenPlace i))⁻¹ g.val.det := by
+    have h_prod
+        : (∏ j : O.ChosenIndex ⊕ O.TwistIndex,
+            (O.tamePart (O.placeAt j))⁻¹ (s j).val.det)
+          = (O.tamePart (O.chosenPlace i))⁻¹ g.val.det := by
       rw [Fintype.prod_sum_type]
-      have h_l : (∏ j : O.ChosenIndex, (O.tamePart (O.chosenPlace j))⁻¹
-          (s₀ j).val.det) = (O.tamePart (O.chosenPlace i))⁻¹ g.val.det := by
+      have h_l
+          : (∏ j : O.ChosenIndex, (O.tamePart (O.chosenPlace j))⁻¹
+              (s₀ j).val.det)
+            = (O.tamePart (O.chosenPlace i))⁻¹ g.val.det := by
         rw [Fintype.prod_eq_single i]
         · rw [hs₀_same]
         · intro j hj
           rw [hs₀_ne hj, Units.val_one, Matrix.det_one, map_one]
-      have h_r : (∏ j : O.TwistIndex,
-          (O.tamePart (O.twistPlace j))⁻¹ (1 : GL r (ResField (O.twistPlace j))).val.det) = 1 :=
+      have h_r
+          : (∏ j : O.TwistIndex,
+              (O.tamePart (O.twistPlace j))⁻¹ (1 : GL r (ResField (O.twistPlace j))).val.det)
+            = 1 :=
         Finset.prod_eq_one fun j _ ↦ by rw [Units.val_one, Matrix.det_one, map_one]
       exact (congrArg₂ (· * ·) h_l h_r).trans (mul_one _)
     rw [h_prod] at h_tri
@@ -304,12 +315,14 @@ lemma notMem_and_star_notMem_range_union_places {ϑ : D.Twist}
   simp only [h_places, h_range, mem_union, mem_preimage, not_or] at h_off h_chosen ⊢
   exact ⟨⟨h_off.2.1, h_chosen.1, h_off.1.1⟩, h_off.2.2, h_chosen.2, h_off.1.2⟩
 
-/-- The jumps of a normalised representation (`normalizedRep`) attached to a form of weight
+/--
+The jumps of a normalised representation (`normalizedRep`) attached to a form of weight
 `(O.columnCount, O.detExp)`: the jumps of the weight minus the infinity type of the algebraic Hecke
-character whose `ℓ`-adic avatar is `normalizingAvatar O`. -/
+character whose `ℓ`-adic avatar is `normalizingAvatar O`.
+-/
 noncomputable def normalizedJumps (O : DescentPair D.E r n) (σ : D.E →+* ℂ) : Multiset ℤ :=
   (jumps (O.columnCount, O.detExp) (Fintype.card n) σ).map fun u : ℤ ↦
-    u + -((AutChar.HasWeight.inv (μ := O.charW)).toAlgebraic (-Fintype.card r) 0).val.2.toAdd σ
+    u + - ((AutChar.HasWeight.inv (μ := O.charW)).toAlgebraic (- Fintype.card r) 0).val.2.toAdd σ
 
 /-- Let the labels `c` form a lift setting for `O` and `ϑ`, and let `R` be attached to an eigenform
 `f` of weight `(O.columnCount, O.detExp)`. Suppose that at the chosen places `f` has the labels
@@ -504,70 +517,86 @@ lemma exists_mem_levelSpace_chosenGLRep_map_eq {W : Type*} [AddCommGroup W] [Mod
 
 open scoped Classical in
 variable (O) in
-/-- Right translation of forms of weight `(O.columnCount, O.detExp)` by the components of an element
-at the places of `O` and their conjugates (`componentOn`, which puts `1` at all other places). -/
-noncomputable abbrev translationAtPlaces :
-    Representation ℂ (Gf D.E n) ((stdSpace D.E n).forms (O.columnCount, O.detExp)) :=
+/--
+Right translation of forms of weight `(O.columnCount, O.detExp)` by the components of an element
+at the places of `O` and their conjugates (`componentOn`, which puts `1` at all other places).
+-/
+noncomputable abbrev translationAtPlaces
+    : Representation ℂ (Gf D.E n) ((stdSpace D.E n).forms (O.columnCount, O.detExp)) :=
   ((stdSpace D.E n).formTranslation (O.columnCount, O.detExp)).comp
     (componentOn n O.places.toFinset)
 
 open scoped Classical in
 variable (O) in
-/-- A `(c, S)`-form, for labels `c` at the chosen places of the descent pair `O` and a set `S` of
+/--
+A `(c, S)`-form, for labels `c` at the chosen places of the descent pair `O` and a set `S` of
 places: an eigenform `f` on the larger space of `O`, of the weight `(O.columnCount, O.detExp)` of
 the pair and of type `c`, with the level and character of the forms of `O` off `S` and its
 conjugate, and with any level there. The level of `O` is maximal off the places of `O` and their
-conjugates; `S` is meant to avoid these. `H` gives the Hecke polynomials of `f`. -/
-structure IsFormOfType (c : (i : O.ChosenIndex) → (ResField (O.chosenPlace i))[X])
-    (S : Set (FinPlace D.E)) (f : (stdSpace D.E n).forms (O.columnCount, O.detExp))
-    (H : FinPlace D.E → ℂ[X]) : Prop where
+conjugates; `S` is meant to avoid these. `H` gives the Hecke polynomials of `f`.
+-/
+structure IsFormOfType
+    (c : (i : O.ChosenIndex) → (ResField (O.chosenPlace i))[X]) (S : Set (FinPlace D.E))
+    (f : (stdSpace D.E n).forms (O.columnCount, O.detExp)) (H : FinPlace D.E → ℂ[X])
+    : Prop where
   /-- The form `f` is a nonzero eigenform with Hecke polynomials `H` (`IsEigenform`). -/
   isEigenform : IsEigenform f.val H
   /-- At the places of `O`, the form `f` has the level and character of `O`. -/
-  mem_levelSpace : f ∈ levelSpace (translationAtPlaces O)
-    (levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl)) O.levelChar
-  /-- The form `f` is of type `c`: the idempotent `tupleIdem r c` of the labels fixes it, for the
-  action `O.chosenGLRep` of `∏ GL_r(k_w)` over the chosen places `w`. -/
-  tupleIdem_apply :
-    (O.chosenGLRep (translationAtPlaces O)).asAlgebraHom (tupleIdem r c) ⟨f, mem_levelSpace⟩ =
-      ⟨f, mem_levelSpace⟩
-  /-- The form `f` has maximal level at each place `v` such that `v` and its conjugate avoid `S`
-  and the places of `O`. -/
-  mem_sphericalAt (v : FinPlace D.E) (hv : v ∉ S ∪ O.places) (hv_star : star v ∉ S ∪ O.places) :
-    f.val ∈ sphericalAt (rightRegular ℂ (Gf D.E n) (WeylIndex n O.columnCount → ℂ)) v
+  mem_levelSpace
+    : f ∈ levelSpace (translationAtPlaces O)
+      (levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl)) O.levelChar
+  /--
+  The form `f` is of type `c`: the idempotent `tupleIdem r c` of the labels fixes it, for the
+  action `O.chosenGLRep` of `∏ GL_r(k_w)` over the chosen places `w`.
+  -/
+  tupleIdem_apply
+    : (O.chosenGLRep (translationAtPlaces O)).asAlgebraHom (tupleIdem r c) ⟨f, mem_levelSpace⟩
+      = ⟨f, mem_levelSpace⟩
+  /--
+  The form `f` has maximal level at each place `v` such that `v` and its conjugate avoid `S`
+  and the places of `O`.
+  -/
+  mem_sphericalAt (v : FinPlace D.E) (hv : v ∉ S ∪ O.places) (hv_star : star v ∉ S ∪ O.places)
+    : f.val ∈ sphericalAt (rightRegular ℂ (Gf D.E n) (WeylIndex n O.columnCount → ℂ)) v
 
-/-- Let the labels `c` form a lift setting for `O` and the twist `ϑ` (`IsLiftSetting`), let the
+/--
+Let the labels `c` form a lift setting for `O` and the twist `ϑ` (`IsLiftSetting`), let the
 modulus `ϑ.Q` be auxiliary (`IsAuxiliary`), and let `S` be a set of places outside `badPlaces D ℓ`,
 the places dividing `ℓ p₀ p₁ N`. Let `f` be a `(c, S)`-form (`IsFormOfType`) and `R` attached to
 its Hecke polynomials. Then the normalised representation `normalizedRep O R` is a representation
 of a type (`IsRepOfType`): it is conjugate self-dual with jumps `normalizedJumps O` and level `ϑ.Q`,
 `S` and their conjugates, and inertia at the chosen places acts through the roots of
-`scaledTypePoly O c i * (X - 1) ^ O.rankDiff`. -/
-theorem IsFormOfType.isRepOfType_normalizedRep [Nonempty n] {ϑ : D.Twist}
-    {c : (i : O.ChosenIndex) → (ResField (O.chosenPlace i))[X]} {S : Set (FinPlace D.E)}
-    {f : (stdSpace D.E n).forms (O.columnCount, O.detExp)} {H : FinPlace D.E → ℂ[X]}
-    (hf : IsFormOfType O c S f H) (h_lift : IsLiftSetting O c ϑ)
+`scaledTypePoly O c i * (X - 1) ^ O.rankDiff`.
+-/
+theorem IsFormOfType.isRepOfType_normalizedRep
+    [Nonempty n]
+    {ϑ : D.Twist} {c : (i : O.ChosenIndex) → (ResField (O.chosenPlace i))[X]}
+    {S : Set (FinPlace D.E)} {f : (stdSpace D.E n).forms (O.columnCount, O.detExp)}
+    {H : FinPlace D.E → ℂ[X]} (hf : IsFormOfType O c S f H) (h_lift : IsLiftSetting O c ϑ)
     (hQ : IsAuxiliary (badPlaces D ℓ) ϑ.Q) (hS : ∀ v ∈ S, v ∉ badPlaces D ℓ)
-    {R : GalRep ℓ D.E n} (h_att : GaloisRep.Attached H R) :
-    IsRepOfType O O.rankDiff (normalizedJumps O)
+    {R : GalRep ℓ D.E n} (h_att : GaloisRep.Attached H R)
+    : IsRepOfType O O.rankDiff (normalizedJumps O)
       (fun i : O.ChosenIndex ↦ scaledTypePoly O c i * (X - 1) ^ O.rankDiff)
       (Set.conjClosure ϑ.Q ∪ S.conjClosure) (normalizedRep O R) := by
   classical
-  have h_transl (k : Gf D.E n) (hk : k ∈ supportedOn n O.places) : translationAtPlaces O k =
-      (stdSpace D.E n).formTranslation (O.columnCount, O.detExp) k :=
+  have h_transl (k : Gf D.E n) (hk : k ∈ supportedOn n O.places)
+      : translationAtPlaces O k = (stdSpace D.E n).formTranslation (O.columnCount, O.detExp) k :=
     congrArg (formTranslation _ _) (componentOn_places_eq_self hk)
   -- The idempotent fixes `f ≠ 0`, so it does not kill `f`, and `f` has the labels made from `c`.
-  have h_ne : (O.chosenGLRep (translationAtPlaces O)).asAlgebraHom (tupleIdem r c)
-      ⟨f, hf.mem_levelSpace⟩ ≠ 0 := by
-    simpa only [hf.tupleIdem_apply, ne_eq, Submodule.mk_eq_zero,
-      ZeroMemClass.coe_eq_zero] using hf.isEigenform.left
+  have h_ne
+      : (O.chosenGLRep (translationAtPlaces O)).asAlgebraHom (tupleIdem r c) ⟨f, hf.mem_levelSpace⟩
+        ≠ 0 := by
+    simpa only [hf.tupleIdem_apply, ne_eq, Submodule.mk_eq_zero, ZeroMemClass.coe_eq_zero] using
+      hf.isEigenform.left
   refine Selmer.isRepOfType_normalizedRep h_lift hf.isEigenform h_att
-    (fun v h_exc h_chosen ↦ ?_) (hasProductLabel_of_tupleIdem_apply_ne_zero h_lift h_transl h_ne)
+    (fun v h_exc h_chosen ↦ ?_)
+    (hasProductLabel_of_tupleIdem_apply_ne_zero h_lift h_transl h_ne)
   -- A place neither chosen nor exceptional avoids `S` and `O.places`, as does its conjugate.
   obtain ⟨hv, hv_star⟩ : v ∉ S ∪ O.places ∧ star v ∉ S ∪ O.places := by
-    simpa only [Subtype.range_coe] using notMem_and_star_notMem_range_union_places h_lift hQ
-      (U := (Subtype.val : S → FinPlace D.E)) (fun k ↦ hS k k.property)
-      (by rwa [Subtype.range_coe]) h_chosen
+    simpa only [Subtype.range_coe] using
+      notMem_and_star_notMem_range_union_places h_lift hQ (U := (Subtype.val : S → FinPlace D.E))
+        (fun k ↦ hS k k.property)
+        (by rwa [Subtype.range_coe]) h_chosen
   exact hf.mem_sphericalAt v hv hv_star
 
 /-- Fix a prime `ℓ` with an isomorphism `ιℓ : ℂ ≃ ℚ̄_ℓ`, data `D` (among them a CM field `D.E`, two

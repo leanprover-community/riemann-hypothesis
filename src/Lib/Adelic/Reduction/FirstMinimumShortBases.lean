@@ -246,21 +246,26 @@ open NumberField Matrix
 
 namespace New
 
-variable {n : Type _} [Fintype n] [DecidableEq n]
-  {R : Type _} [CommRing R] [StarRing R] {m : Type _} (A : Matrix n m R)
+variable
+  {n : Type _} [Fintype n] [DecidableEq n]
+  {R : Type _} [CommRing R] [StarRing R]
+  {m : Type _} (A : Matrix n m R)
   {E : Type*} [Field E] [CMType E]
 
-/-- The dilations along the columns of `A` for the form `J` (implicit, read from the type of the
+/--
+The dilations along the columns of `A` for the form `J` (implicit, read from the type of the
 unitary group `U J`): the pairs `(g, c)` in `U J × Rˣ` such that `g` is the scalar `c` on the
 columns of `A` and `wᴴ J g v = wᴴ J v` whenever `Aᴴ J v = 0` and `Aᴴ J w = 0`. The test objects `v`,
-`w` are square matrices, standing for families of vectors orthogonal to the columns of `A`. -/
+`w` are square matrices, standing for families of vectors orthogonal to the columns of `A`.
+-/
 def dilationGroup {J : Matrix n n R} : Subgroup (U J × Rˣ) :=
   Subgroup.ofDiv
-    {g : U J × Rˣ |
-      ((g.1 : GL n R) : Matrix n n R) * A = g.2 • A ∧
-      ∀ v w : Matrix n n R, Aᴴ * (J * v) = 0 → Aᴴ * (J * w) = 0 →
-        wᴴ * (J * (((g.1 : GL n R) : Matrix n n R) * v)) = wᴴ * (J * v)}
-    ⟨1, by simp⟩ <| by
+      {g : U J × Rˣ |
+        ((g.1 : GL n R) : Matrix n n R) * A = g.2 • A ∧
+        ∀ v w : Matrix n n R, Aᴴ * (J * v) = 0 → Aᴴ * (J * w) = 0 →
+          wᴴ * (J * (((g.1 : GL n R) : Matrix n n R) * v)) = wᴴ * (J * v)}
+      ⟨1, by simp⟩ <|
+    by
       rintro ⟨g, c⟩ ⟨hg_scale, hg_form⟩ ⟨k, d⟩ ⟨hk_scale, hk_form⟩
       let M (u : U J) : Matrix n n R := (u : GL n R)
       have M_mul (u u' : U J) : M (u * u') = M u * M u' := rfl
@@ -285,34 +290,45 @@ namespace Space
 
 variable {s : n → ℤˣ} (V : Space E n s)
 
-/-- The additive map sending y ∈ E^n to the archimedean components of x⁻¹y (`V.vecAtPoint y`), with
+/--
+The additive map sending y ∈ E^n to the archimedean components of x⁻¹y (`V.vecAtPoint y`), with
 x the point of V, as a vector in a Euclidean space indexed by the infinite places and `n`. Its norm
-is the length of y. -/
+is the length of y.
+-/
 def archCoords : (n → E) →+ EuclideanSpace ℂ (InfinitePlace E × n) :=
   AddMonoidHom.mk'
     (fun y : n → E ↦ WithLp.toLp 2 fun p : InfinitePlace E × n ↦ (V.vecAtPoint y p.2).1 p.1)
     (fun x y ↦ by ext p; simp)
 
-/-- The set of vectors `y` of the lattice `V.baseLattice` whose length `‖V.archCoords y‖` is at most
-`r`. -/
+/--
+The set of vectors `y` of the lattice `V.baseLattice` whose length `‖V.archCoords y‖` is at most
+`r`.
+-/
 abbrev latticeBall (r : ℝ) : Set (n → E) := {y ∈ V.baseLattice | ‖V.archCoords y‖ ≤ r}
 
-/-- The first minimum cut off at 1: `λ = min(1, inf ‖y‖)`, where `y` runs over the nonzero vectors
-of the lattice `V.baseLattice` and `‖y‖` is the norm of `V.archCoords y`. -/
+/--
+The first minimum cut off at 1: `λ = min(1, inf ‖y‖)`, where `y` runs over the nonzero vectors
+of the lattice `V.baseLattice` and `‖y‖` is the norm of `V.archCoords y`.
+-/
 def firstMinimum : ℝ :=
   sInf (insert 1 ((fun y : n → E ↦ ‖V.archCoords y‖) '' {y ∈ V.baseLattice | y ≠ 0}))
 
-/-- The height `ht(g) = 1 / λ`, with `λ` the first minimum cut off at 1 (`New.Space.firstMinimum`)
-of the moved space `V.move g`. -/
+/--
+The height `ht(g) = 1 / λ`, with `λ` the first minimum cut off at 1 (`New.Space.firstMinimum`)
+of the moved space `V.move g`.
+-/
 def height (g : G E s) : ℝ := (V.move g).firstMinimum⁻¹
 
-/-- A function `F` on the adelic unitary group has moderate growth: `|F g| ≤ C * ht(g) ^ B` for all
-`g`, for some real `C` and natural number `B`, where `ht` is the height `V.height`. -/
-def IsModerate (F : G E s → ℂ) : Prop :=
-  ∃ (C : ℝ) (B : ℕ), ∀ g : G E s, ‖F g‖ ≤ C * V.height g ^ B
+/--
+A function `F` on the adelic unitary group has moderate growth: `|F g| ≤ C * ht(g) ^ B` for all
+`g`, for some real `C` and natural number `B`, where `ht` is the height `V.height`.
+-/
+def IsModerate (F : G E s → ℂ) : Prop := ∃ (C : ℝ) (B : ℕ), ∀ g : G E s, ‖F g‖ ≤ C * V.height g ^ B
 
-/-- A function `F` on the adelic unitary group has rapid decay: `|F g| * ht(g) ^ B` is bounded for
-every natural number `B`, where `ht` is the height `V.height`. -/
+/--
+A function `F` on the adelic unitary group has rapid decay: `|F g| * ht(g) ^ B` is bounded for
+every natural number `B`, where `ht` is the height `V.height`.
+-/
 def IsRapid (F : G E s → ℂ) : Prop := ∀ B : ℕ, ∃ C : ℝ, ∀ g : G E s, ‖F g‖ * V.height g ^ B ≤ C
 
 end Space
@@ -535,8 +551,10 @@ lemma isIntegral_form {a b : n → E} (ha : a ∈ V.baseLattice) (hb : b ∈ V.b
   exact sum_mem fun i _ ↦ mul_mem (star_mem_Ô (ha i)) (hb i)
 
 variable (V) in
-/-- The coordinates of the rational vector `a` in the basis `V.x` at the infinite place `w`, as a
-vector in the Euclidean space `ℂ^n`. -/
+/--
+The coordinates of the rational vector `a` in the basis `V.x` at the infinite place `w`, as a
+vector in the Euclidean space `ℂ^n`.
+-/
 def coordsAt (w : NumberField.InfinitePlace E) (a : n → E) : EuclideanSpace ℂ n :=
   .toLp 2 fun i : n ↦ (V.vecAtPoint a i).1 w
 
@@ -852,8 +870,10 @@ instance : NeZero (differentIdeal ℤ (𝓞 E)).absNorm :=
   ⟨mt Ideal.absNorm_eq_zero_iff.mp differentIdeal_ne_bot⟩
 
 variable (E n) in
-/-- The constant `6 N (f n)²` in the bound for short bases, where `f` is the number of infinite
-places of `E` and `n` is the rank. -/
+/--
+The constant `6 N (f n)²` in the bound for short bases, where `f` is the number of infinite
+places of `E` and `n` is the rank.
+-/
 noncomputable abbrev shortBasisConst (N : ℕ) : ℕ :=
   6 * N * (Core.numInfPlaces E * Fintype.card n) ^ 2
 

@@ -50,37 +50,50 @@ noncomputable section
 open NumberField Set
 open Real (exp log)
 
-/-- A bound for the constants that depend on `q₀` and `d` only. It is the sum of the constant
+/--
+A bound for the constants that depend on `q₀` and `d` only. It is the sum of the constant
 `P.vacuumBoundConst` in the bound for the conjugates of the integral vacuum, `2 d + 6`, `q₀`, the
 absolute value of `chowlaSelbergConst d = γ - Re L'/L(1, χ_K)`, and `∑_w |log ‖Φ'(w)‖|`, where `w`
-runs over the complex roots of the cyclotomic polynomial `Φ` of order `q₀`. -/
+runs over the complex roots of the cyclotomic polynomial `Φ` of order `q₀`.
+-/
 def New.Parameters.constantBound (P : Parameters) : ℝ :=
-  P.vacuumBoundConst + (2 * P.d + 6) + (P.q₀ + |chowlaSelbergConst P.d| +
-    ∑ w ∈ primitiveRoots P.q₀ ℂ, |log ‖(Polynomial.cyclotomic P.q₀ ℂ).derivative.eval w‖|)
+  P.vacuumBoundConst + (2 * P.d + 6)
+    + (P.q₀ + |chowlaSelbergConst P.d|
+      + ∑ w ∈ primitiveRoots P.q₀ ℂ, |log ‖(Polynomial.cyclotomic P.q₀ ℂ).derivative.eval w‖|)
 
-/-- A set `T` of infinite places of `P.E s`, viewed in `(ℤ/q₁)ˣ` with `q₁ = P.q₁ s`, is sparse for
+/--
+A set `T` of infinite places of `P.E s`, viewed in `(ℤ/q₁)ˣ` with `q₁ = P.q₁ s`, is sparse for
 the primes up to `L` if for all primes `ℓ ≤ L` and integers `0 < i < j < l₀ s` there are no places
 `σ, τ, ρ` in `T`, distinct or not, with `τ / σ ≡ ± ℓ ^ i` and `ρ / σ ≡ ± ℓ ^ j` modulo the part of
-`q₁` prime to `ℓ`. The two signs are independent. -/
+`q₁` prime to `ℓ`. The two signs are independent.
+-/
 def New.Parameters.IsSparse (P : Parameters) (s L : ℕ) (T : Finset (P.Φ s)) : Prop :=
-  ∀ ℓ : ℕ, ℓ.Prime → ℓ ≤ L → ∀ i j : ℕ, 0 < i → i < j → j < l₀ s →
-    let φ : P.Φ s →* (ZMod (ordCompl[ℓ] (P.q₁ s)))ˣ := P.placeClass (Nat.ordCompl_dvd (P.q₁ s) ℓ)
-    ¬∃ σ ∈ T, ∃ τ ∈ T, ∃ ρ ∈ T, ∃ ε ε' : ℤˣ,
-      (φ (τ / σ)).val = (ε : ℤ) * ℓ ^ i ∧ (φ (ρ / σ)).val = (ε' : ℤ) * ℓ ^ j
+  ∀ ℓ : ℕ,
+    ℓ.Prime → ℓ ≤ L
+      → ∀ i j : ℕ,
+        0 < i → i < j → j < l₀ s
+          → let φ : P.Φ s →* (ZMod (ordCompl[ℓ] (P.q₁ s)))ˣ :=
+              P.placeClass (Nat.ordCompl_dvd (P.q₁ s) ℓ)
+            ¬ ∃ σ ∈ T, ∃ τ ∈ T, ∃ ρ ∈ T, ∃ ε ε' : ℤˣ,
+              (φ (τ / σ)).val = (ε : ℤ) * ℓ ^ i ∧ (φ (ρ / σ)).val = (ε' : ℤ) * ℓ ^ j
 
-/-- The logarithm of `N₋ = κ̄ ^ m (M rd_E / 2π) ^ (m - 1) b ^ (-15 / 2)`, the lower end of the
+/--
+The logarithm of `N₋ = κ̄ ^ m (M rd_E / 2π) ^ (m - 1) b ^ (-15 / 2)`, the lower end of the
 range for the level. Here `κ̄` is the geometric mean of the weights `κ τ` over the infinite
-places `τ` of `E = P.E s`, `rd_E` is the root discriminant of `E`, and `logB = log b`. -/
+places `τ` of `E = P.E s`, `rd_E` is the root discriminant of `E`, and `logB = log b`.
+-/
 def New.Parameters.logLevelMin (P : Parameters) (s m : ℕ) (κ : P.Φ s → ℕ) (M : ℕ) (logB : ℝ) : ℝ :=
-  m * ((∑ τ : P.Φ s, log (κ τ)) / Core.numInfPlaces (P.E s)) +
-    (m - 1) * log (M * rootDiscr (P.E s) / (2 * Real.pi)) - 15 / 2 * logB
+  m * ((∑ τ : P.Φ s, log (κ τ)) / Core.numInfPlaces (P.E s))
+    + (m - 1) * log (M * rootDiscr (P.E s) / (2 * Real.pi)) - 15 / 2 * logB
 
-/-- The data for the parameters `P`: scales `x`, `x₁`, `b`, the number `m` of lifts, the rank `r`,
+/--
+The data for the parameters `P`: scales `x`, `x₁`, `b`, the number `m` of lifts, the rank `r`,
 the exponent `s` of the field `E = P.E s`, a sparse set of `b`-places with the weights that it
 determines, and primes `p₀`, `p₁`, `N` with integers of `K` and of `E` whose products with their
 conjugates are `p₀ p₁` and `N`. The scales, `m` and `r` are not fixed: they lie in ranges, `m` and
 `r` are powers of `2` and `3`, and `q₁ x₁` divides `b`. `New.eventually_exists_data` constructs data
-with explicit `x₁`, `b`, `m`, `r` for every large integer `x`. -/
+with explicit `x₁`, `b`, `m`, `r` for every large integer `x`.
+-/
 structure New.Data (P : Parameters) where
   /-- The length `x` of the prime sum, an integer. -/
   natX : ℕ
@@ -100,8 +113,10 @@ structure New.Data (P : Parameters) where
   exp_logX₁ : exp logX₁ = natX₁
   /-- `logB = log b`. -/
   exp_logB : exp logB = natB
-  /-- `log log b ≥ 10¹² c`, where `c = P.constantBound` bounds the constants that depend on `P`
-  only. -/
+  /--
+  `log log b ≥ 10¹² c`, where `c = P.constantBound` bounds the constants that depend on `P`
+  only.
+  -/
   constantBound_le : 1e12 * P.constantBound ≤ log logB
   /-- `(log b) ^ 100 ≤ x`. -/
   mul_log_logB_le_logX : 100 * log logB ≤ logX
@@ -132,10 +147,12 @@ structure New.Data (P : Parameters) where
   /-- The set `Φ_b` of `b`-places. -/
   bPlaces : Finset (P.Φ towerExp)
   /-- The `b`-places are `≡ -1` modulo `q₀`. -/
-  placeClass_of_mem_bPlaces : ∀ σ ∈ bPlaces,
-    P.placeClass (P.q₀.dvd_mul_right (towerDeg towerExp)) σ = -1
-  /-- There are at least `towerDeg s / log b` of them; `towerDeg s` is the number of places `≡ 1`
-  modulo `q₀`. -/
+  placeClass_of_mem_bPlaces
+    : ∀ σ ∈ bPlaces, P.placeClass (P.q₀.dvd_mul_right (towerDeg towerExp)) σ = -1
+  /--
+  There are at least `towerDeg s / log b` of them; `towerDeg s` is the number of places `≡ 1`
+  modulo `q₀`.
+  -/
   towerDeg_le_card_bPlaces_mul : towerDeg towerExp ≤ bPlaces.card * logB
   /-- The `b`-places are sparse for the primes up to `k t`, where `k = r + 1 - m` and `t = 5 r`. -/
   sparse : P.IsSparse towerExp ((r + 1 - m) * (5 * r)) bPlaces
@@ -164,8 +181,9 @@ structure New.Data (P : Parameters) where
   /-- `N ≡ 1` modulo `q₂²`. -/
   N_modEq_one_q₂_sq : N ≡ 1 [MOD P.q₂ towerExp ^ 2]
   /-- `log N₋ ≤ log N ≤ log N₋ + √(log b)`, with `N₋` as in `New.Parameters.logLevelMin`. -/
-  log_N_mem : log N ∈ Icc (P.logLevelMin towerExp m weight (levelPrime 0 * levelPrime 1) logB)
-    (P.logLevelMin towerExp m weight (levelPrime 0 * levelPrime 1) logB + √logB)
+  log_N_mem
+    : log N ∈ Icc (P.logLevelMin towerExp m weight (levelPrime 0 * levelPrime 1) logB)
+      (P.logLevelMin towerExp m weight (levelPrime 0 * levelPrime 1) logB + √logB)
   /-- An integer `π_N` of `E` whose product with its complex conjugate is `N`. -/
   piN : 𝓞 (P.E towerExp)
   /-- `π_N` times its conjugate is `N`. -/
@@ -185,13 +203,17 @@ abbrev x₁ : ℝ := exp D.logX₁
 abbrev b : ℝ := exp D.logB
 
 /-- The field `E = K(ζ)`, with `ζ` a primitive root of unity of order `q₁`. -/
-@[reducible] def E : Type := P.E D.towerExp deriving NumberField, CharZero, IsCMField
+@[reducible]
+def E : Type := P.E D.towerExp
+deriving NumberField, CharZero, IsCMField
 
 /-- The infinite places of `E`; they form the group `Gal(E/K) = (ℤ/q₁)ˣ`. -/
 protected abbrev Φ : Type := InfinitePlace D.E
 
-/-- The order `q₁ = 3 l₀ m ^ 22 q₀` of the root of unity that generates `E` over `K`; here
-`l₀ = New.l₀ D.towerExp` and `m ^ 22 = 2 ^ D.towerExp`. -/
+/--
+The order `q₁ = 3 l₀ m ^ 22 q₀` of the root of unity that generates `E` over `K`; here
+`l₀ = New.l₀ D.towerExp` and `m ^ 22 = 2 ^ D.towerExp`.
+-/
 abbrev q₁ : ℕ := P.q₁ D.towerExp
 
 /-- The number `f` of infinite places of `E`. -/
@@ -224,50 +246,64 @@ def a : ℕ := D.natX * D.natB
 /-- The weight `a / x₁` at the places outside the set `D.bPlaces` of `b`-places. -/
 def offWeight : ℕ := D.a / D.natX₁
 
-/-- The place that corresponds to the class of `j` in `(ℤ/q₁)ˣ` if `j` is prime to `q₁`, and the
-identity place otherwise. -/
+/--
+The place that corresponds to the class of `j` in `(ℤ/q₁)ˣ` if `j` is prime to `q₁`, and the
+identity place otherwise.
+-/
 abbrev placeOfInt (j : ℤ) : D.Φ := P.placeOfInt D.towerExp j
 
 /-- The ranks `n_j = k + j (t + 1)`. -/
 def n (j : ℕ) : ℕ := D.k + j * (D.t + 1)
 
-/-- The number `k + j - 1`. In the `j`-th step, `1 ≤ j ≤ m`, of the chain of theta lifts it is the
+/--
+The number `k + j - 1`. In the `j`-th step, `1 ≤ j ≤ m`, of the chain of theta lifts it is the
 number of plus signs of the diagonal hermitian space `W_j = New.Data.spaceW` of rank `r` over `E`,
-whose signs are `New.Data.signsW`. -/
+whose signs are `New.Data.signsW`.
+-/
 abbrev posRank (j : ℕ) : ℕ := D.k + j - 1
 
 instance (j : Fin 2) : Fact (D.levelPrime j).Prime := ⟨D.levelPrime_prime j⟩
 
 /-- The principal level `M = p₀ p₁`. -/
-def M : ℕ := D.levelPrime 0 * D.levelPrime 1 deriving NeZero
+def M : ℕ := D.levelPrime 0 * D.levelPrime 1
+deriving NeZero
 
 /-- The set `Φ_a` of `a`-places: the places `≡ 1` modulo `q₀`. -/
-def aPlaces : Finset D.Φ := {τ : D.Φ | P.placeClass (P.q₀.dvd_mul_right
-  (towerDeg D.towerExp)) τ = 1}
+def aPlaces : Finset D.Φ :=
+  {τ : D.Φ | P.placeClass (P.q₀.dvd_mul_right
+    (towerDeg D.towerExp)) τ = 1}
 
-/-- The number `κ(σ) + (i + 1) Δ / 2`, where `κ = D.weight` and `Δ / 2 = D.halfGap` is half the
-gap. -/
+/--
+The number `κ(σ) + (i + 1) Δ / 2`, where `κ = D.weight` and `Δ / 2 = D.halfGap` is half the
+gap.
+-/
 def shiftedWeight (i : ℕ) (σ : D.Φ) : ℕ := D.weight σ + (i + 1) * D.halfGap
 
 /-- The weight `κ_j(σ) = κ(σ) + (j + 1/2) Δ` of the character of the `j`-th lift. -/
 def liftWeight (j : ℕ) (σ : D.Φ) : ℕ := D.shiftedWeight (2 * j) σ
 
-/-- The prime sum `s_fin(y, σ) = ∑ Λ_K(ν) (y / ν - κ(-ν σ))₊` over `1 ≤ ν ≤ a`. Here
+/--
+The prime sum `s_fin(y, σ) = ∑ Λ_K(ν) (y / ν - κ(-ν σ))₊` over `1 ≤ ν ≤ a`. Here
 `Λ_K(ν) = Λ(ν) (1 - χ_K(ν))` is `lambdaKResidueClass P.d 1 ν`, and `-ν σ` is the product of `σ` with
-`D.placeOfInt (-ν)`, which is the identity place if `ν` is not prime to `q₁`. -/
+`D.placeOfInt (-ν)`, which is the identity place if `ν` is not prime to `q₁`.
+-/
 def primeSum (y : ℝ) (σ : D.Φ) : ℝ :=
   ∑ ν ∈ Finset.Icc 1 D.a, lambdaKResidueClass P.d 1 ν * (y / ν - D.weight (D.placeOfInt (-ν) * σ))⁺
 
 /-- The unit of loss `f a log³ b`, with `f` the number of infinite places and `a = x b`. -/
 abbrev errorUnit : ℝ := D.f * D.a * D.logB ^ 3
 
-/-- The size `s_∞(j) = log j! + j log (M / Ω)` of a derivative of order `j`. Here `M = D.M` and
-`Ω = P.bigOmega D.towerExp = exp (γ - Re L'/L(1, χ_K)) 2π / rd_E`. -/
+/--
+The size `s_∞(j) = log j! + j log (M / Ω)` of a derivative of order `j`. Here `M = D.M` and
+`Ω = P.bigOmega D.towerExp = exp (γ - Re L'/L(1, χ_K)) 2π / rd_E`.
+-/
 def jetSize (j : ℕ) : ℝ := log j.factorial + j * log (D.M / P.bigOmega D.towerExp)
 
-/-- The direction amount `∑_σ (s_∞(κ(σ)) - s_fin(κ(σ), σ))`, summed over all infinite places `σ`:
+/--
+The direction amount `∑_σ (s_∞(κ(σ)) - s_fin(κ(σ), σ))`, summed over all infinite places `σ`:
 the size `s_∞ = D.jetSize` of a derivative of order `κ(σ)`, less the prime sum `s_fin = D.primeSum`
-that measures its guaranteed divisibility. -/
+that measures its guaranteed divisibility.
+-/
 def directionAmount : ℝ := ∑ σ : D.Φ, (D.jetSize (D.weight σ) - D.primeSum (D.weight σ) σ)
 
 end New.Data

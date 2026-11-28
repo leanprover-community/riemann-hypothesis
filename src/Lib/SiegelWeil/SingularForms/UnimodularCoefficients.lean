@@ -73,8 +73,8 @@ section LineRadical
 
 open MeasureTheory Measure WeilData
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
-  {m : Type} [Fintype m] [DecidableEq m] {t : m → ℤˣ}
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E] {m : Type} [Fintype m] [DecidableEq m] {t : m → ℤˣ}
 
 instance : CompactSpace (maxCompact E t) := isCompact_iff_compactSpace.1 isCompact_maxCompact
 
@@ -148,30 +148,34 @@ determinant of the normalised index is from a unit.
 
 section SingularForms
 
-open AddSubgroup Matrix Circle RingHom NumberField WeilData G Gf Space Splitting Prod
-  stdLattice
+open AddSubgroup Matrix Circle RingHom NumberField WeilData G Gf Space Splitting Prod stdLattice
 
-variable {E n n₁ n₂ p : Type} [Field E] [CMType E]
-  [Fintype n] [DecidableEq n] [Fintype n₁] [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂]
-  [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₁ : n₁ → ℤˣ}
-variable {S : Set (FinPlace E)} {W : Space E n s} {W₁ : Space E n₁ s₁} {f : G E s → ℂ}
+variable
+  {E n n₁ n₂ p : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n₁]
+  [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s₁ : n₁ → ℤˣ}
+variable
+  {S : Set (FinPlace E)} {W : Space E n s} {W₁ : Space E n₁ s₁} {f : G E s → ℂ}
   {D : W.Splitting W₁ p}
-variable {T : Matrix p p E} {s₂ : n₂ → ℤˣ} {W₀ : Space E ((p ⊕ p) ⊕ n₂) (hyperbolicSigns p ⊕ᵥ s₂)}
+variable
+  {T : Matrix p p E} {s₂ : n₂ → ℤˣ} {W₀ : Space E ((p ⊕ p) ⊕ n₂) (hyperbolicSigns p ⊕ᵥ s₂)}
   {W₂ : Space E n₂ s₂} {A : W.Splitting W₀ Unit} {B : W₀.Splitting W₂ p} {U : Set (FinPlace E)}
 
 /-- The ring of adeles that are integral at the places of S ∪ S̄. -/
-def closureIntegers {E : Type} [Field E] [NumberField E] [IsCMField E] (S : Set (FinPlace E)) :
-    Subring (𝔸 E) := by
+def closureIntegers {E : Type} [Field E] [NumberField E] [IsCMField E] (S : Set (FinPlace E))
+    : Subring (𝔸 E) := by
   -- the set is closed under the ring operations, as one sees place by place
-  refine
-    { carrier := {x | (idemAdele S.conjClosure * x).2 ∈ Ô E}
-      mul_mem' := fun {a b} ha hb ↦ ?_
-      one_mem' := ?_
-      add_mem' := fun ha hb ↦ ?_
-      zero_mem' := ?_
-      neg_mem' := fun ha ↦ ?_ }
-  · have h : (idemAdele S.conjClosure * (a * b)).2 =
-        (idemAdele S.conjClosure * a).2 * (idemAdele S.conjClosure * b).2 := by
+  refine {
+    carrier := {x | (idemAdele S.conjClosure * x).2 ∈ Ô E}
+    mul_mem' := fun {a b} ha hb ↦ ?_
+    one_mem' := ?_
+    add_mem' := fun ha hb ↦ ?_
+    zero_mem' := ?_
+    neg_mem' := fun ha ↦ ?_
+  }
+  · have h
+        : (idemAdele S.conjClosure * (a * b)).2
+          = (idemAdele S.conjClosure * a).2 * (idemAdele S.conjClosure * b).2 := by
       rw [← snd_mul, mul_mul_mul_comm]
       simp [idem_mul_self]
     change (idemAdele S.conjClosure * (a * b)).2 ∈ Ô E
@@ -194,10 +198,12 @@ def closureIntegers {E : Type} [Field E] [NumberField E] [IsCMField E] (S : Set 
     rw [mul_neg, snd_neg]
     exact (Ô E).neg_mem ha
 
-/-- The endomorphism of the adelic unitary group that keeps the components on S ∪ S̄ and
-replaces all others by 1. -/
-def closurePart {E : Type} [Field E] [NumberField E] [IsCMField E] (S : Set (FinPlace E)) :
-    G E s →* G E s :=
+/--
+The endomorphism of the adelic unitary group that keeps the components on S ∪ S̄ and
+replaces all others by 1.
+-/
+def closurePart {E : Type} [Field E] [NumberField E] [IsCMField E] (S : Set (FinPlace E))
+    : G E s →* G E s :=
   MonoidHom.prodMap 1 (componentOn n S)
 
 lemma mem_closureIntegers_iff {x : 𝔸 E} :
@@ -219,8 +225,8 @@ lemma snd_idemAdele_conjClosure_mul_mul (x y : 𝔸 E) :
       (idemAdele S.conjClosure * x).2 * (idemAdele S.conjClosure * y).2 := by
   rw [← snd_mul, mul_mul_mul_comm, idemAdele_conjClosure_mul_self]
 
-instance {E : Type} [Field E] [NumberField E] [IsCMField E] {S : Set (FinPlace E)} :
-    IsStarStable (closureIntegers S) :=
+instance {E : Type} [Field E] [NumberField E] [IsCMField E] {S : Set (FinPlace E)}
+    : IsStarStable (closureIntegers S) :=
   ⟨fun h ↦ by simpa [closureIntegers] using star_mem_Ô h⟩
 
 /-- The matrix of `closurePart S g` is that of `g` on S ∪ S̄ and the identity elsewhere. -/
@@ -242,8 +248,10 @@ lemma snd_invDifferentIdele :
     (invDifferentIdele E).val.2 = algebraMap E (𝔸f E) j * α.val * star α.val :=
   rfl
 
-/-- Siegel's T[γ] = γᴴTγ for a matrix T over E, read in the adeles, and an adelic matrix γ, divided
-by the idele δ = ȷκκ̄ (`New.Exchange.invDifferentIdele`). -/
+/--
+Siegel's T[γ] = γᴴTγ for a matrix T over E, read in the adeles, and an adelic matrix γ, divided
+by the idele δ = ȷκκ̄ (`New.Exchange.invDifferentIdele`).
+-/
 def siegelBracket (T : Matrix p p E) (γ : Matrix p p (𝔸 E)) : Matrix p p (𝔸 E) :=
   (invDifferentIdele E)⁻¹.val • (γᴴ * T.map toAdele * γ)
 
@@ -338,10 +346,12 @@ lemma denomIndex_lt_of_mul_mem_of_mul_notMem {a b u y : 𝔸f E} (hu : u ∈ Ô 
   exact index_strictAnti (lt_of_le_not_ge h_le fun h_ge ↦
     hby ((mem_H b ⟨y, hy⟩).1 (h_ge ((mem_H a _).2 hay))))
 
-/-- The denominator (`denomIndex`, an index of subgroups of `Ô`) of the part on `S ∪ S̄` of the
+/--
+The denominator (`denomIndex`, an index of subgroups of `Ô`) of the part on `S ∪ S̄` of the
 determinant of the inverse of `siegelBracket T γ = δ⁻¹ γᴴ T γ`. If `siegelBracket T γ` is
 invertible and integral on `S ∪ S̄`, this is the index there of the lattice spanned by `γ` in its
-dual. -/
+dual.
+-/
 def dualIndex (S : Set (FinPlace E)) (T : Matrix p p E) (γ : Matrix p p (𝔸 E)) : ℕ :=
   denomIndex (Ô E) (idemAdele S.conjClosure * (siegelBracket T γ)⁻¹.det).2
 
@@ -385,8 +395,11 @@ lemma dualIndex_lt_dualIndex_mul_of_det_inv_notMem {T : Matrix p p E} {γ r : Ma
 /-! ### Points that agree on `S ∪ S̄` -/
 
 /-- The point `X` agrees with `g` on `S ∪ S̄` and fixes the isotropic frame of `D` elsewhere. -/
-structure AgreesOnClosure (S : Set (FinPlace E)) {W : Space E n s} {W₁ : Space E n₁ s₁}
-    (D : W.Splitting W₁ p) (X g : G E s) : Prop where
+structure AgreesOnClosure
+    (S : Set (FinPlace E))
+    {W : Space E n s} {W₁ : Space E n₁ s₁} (D : W.Splitting W₁ p)
+    (X g : G E s)
+    : Prop where
   /-- `X` and `g` have the same components on `S ∪ S̄`. -/
   closurePart_eq : closurePart S X = closurePart S g
   /-- `X` fixes the frame of `D` off `S ∪ S̄`. -/
@@ -608,13 +621,16 @@ lemma dualIndex_lt_of_actsOnFrame [IsBaseAdapted A] [IsBaseAdapted B] {h κ : G 
 
 /-! ### Straight points -/
 
-/-- A straight point for the plane split off by `A`: a point that fixes the frame of `D` off
+/--
+A straight point for the plane split off by `A`: a point that fixes the frame of `D` off
 `S ∪ S̄` and agrees on `S ∪ S̄` with a point `u` = `blockPoint` that scales the two isotropic
 vectors of `A` by `t` = `lineScalar` and `t'` = `dualScalar` and acts on the image of the frame of
 `B` by `γ`. If `A` and `B` are adapted to the integral structure, then on `S ∪ S̄` the lattice of
 the point is the direct sum of its parts in the two isotropic lines and in their orthogonal
-complement, and the columns of `γ` span its part in the span of the frame of `B`. -/
-structure StraightPoint (S : Set (FinPlace E)) (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
+complement, and the columns of `γ` span its part in the span of the frame of `B`.
+-/
+structure StraightPoint
+    (S : Set (FinPlace E)) (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
     (D : W.Splitting W₁ p) where
   /-- The point. -/
   point : G E s
@@ -858,7 +874,8 @@ lemma isIntMatrix_inv_siegelBracket (hf : IsAutFunction W f)
 
 end StraightPoint
 
-/-- After Freitag: a singular form is governed by its unimodular coefficients.
+/--
+After Freitag: a singular form is governed by its unimodular coefficients.
 
 Let `f` be an automorphic function that is right invariant under the integral points supported on
 `S ∪ S̄` (`hK`, `hf`), and let the splittings `A`, `B` be adapted to the integral structure. Let the
@@ -870,52 +887,58 @@ f⁺ drop a left factor `A.radicalElement c z` taken on `S ∪ S̄`) at the poin
 at `T` vanishes at the points that act on the frame by `γ` on `S ∪ S̄` and trivially elsewhere,
 whenever `siegelBracket T γ = δ⁻¹ γᴴ T γ` and a left inverse of it are integral on `S ∪ S̄`
 (`h_unimodular`). Then the coefficient vanishes at all points that fix the frame of `D` off
-`S ∪ S̄`. -/
-theorem centreCoeff_eq_zero_of_unimodular (hK : HasLevel f (stdLevel E n ⊓ supportedOn n S))
-    (hf : IsAutFunction W f)
+`S ∪ S̄`.
+-/
+theorem centreCoeff_eq_zero_of_unimodular
+    (hK : HasLevel f (stdLevel E n ⊓ supportedOn n S)) (hf : IsAutFunction W f)
     {T : Matrix p p E} {s₂ : n₂ → ℤˣ} {W₀ : Space E ((p ⊕ p) ⊕ n₂) (hyperbolicSigns p ⊕ᵥ s₂)}
-    {W₂ : Space E n₂ s₂} {U : Set (FinPlace E)}
-    (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p) [IsBaseAdapted A] [IsBaseAdapted B]
+    {W₂ : Space E n₂ s₂} {U : Set (FinPlace E)} (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
+    [IsBaseAdapted A] [IsBaseAdapted B]
     (hD : D.kAdelic = A.iAdelic * B.kAdelic) (hT : T.det ≠ 0) (hU_ne : U.Nonempty)
     (h_shear : ∀ g ∈ D.frameStabilizer (1 - idemAdele S.conjClosure),
       A.ShearInvariant B D T f (idemAdele U) g)
     (h_shear_symm : ∀ g ∈ D.frameStabilizer (1 - idemAdele S.conjClosure),
       A.symm.ShearInvariant B D T f (idemAdele U) g)
     (h_unimodular : ∀ (X : G E s) (γ : Matrix p p (𝔸 E)),
-      D.ActsOnFrame X (idemAdele S.conjClosure • γ + (1 - idemAdele S.conjClosure) • 1) →
-      IsPrimitiveMatrix (closureIntegers S) (siegelBracket T γ) → D.centerCoeff T f X = 0)
-    {g : G E s} (hg : g ∈ D.frameStabilizer (1 - idemAdele S.conjClosure)) :
-    D.centerCoeff T f g = 0 := by
+      D.ActsOnFrame X (idemAdele S.conjClosure • γ + (1 - idemAdele S.conjClosure) • 1)
+        → IsPrimitiveMatrix (closureIntegers S) (siegelBracket T γ)
+        → D.centerCoeff T f X = 0)
+    {g : G E s} (hg : g ∈ D.frameStabilizer (1 - idemAdele S.conjClosure))
+    : D.centerCoeff T f g = 0 := by
   -- Otherwise some straight point has φ⁺ ≠ 0. For one with the least index, φ⁺ and φ⁻ are supported
   -- on its lattice up to the scales `P.lineScalar`, `P.dualScalar`. The lattice is then self-dual,
   -- and `h_unimodular` makes φ⁺ zero.
   by_contra hg_ne
   have h_exists : {P : StraightPoint S A B D | A.shiftedMean B D T f P.point ≠ 0}.Nonempty := by
     -- φ⁺ determines the coefficient at `g`, so it is not zero; straighten a shift of `g`
-    obtain ⟨a, ha⟩ := Function.ne_iff.1 <|
-      mt (centreCoeff_eq_zero_of_shiftedMean_eq_zero hD hf hT) hg_ne
+    obtain ⟨a, ha⟩ :=
+      Function.ne_iff.1 <| mt (centreCoeff_eq_zero_of_shiftedMean_eq_zero hD hf hT) hg_ne
     obtain ⟨κ, α, β, γ, hκ, h_flag⟩ :=
       exists_mem_stdLevel_actsOnFrame_fromBlocks A B (A.lineShift B a * g)
-    obtain ⟨P, -, hP⟩ := exists_straightPoint hK hf hD hU_ne h_shear
-      (AgreesOnClosure.lineShift_mul hD ⟨rfl, hg⟩ a) hκ h_flag ha
+    obtain ⟨P, -, hP⟩ :=
+      exists_straightPoint hK hf hD hU_ne h_shear (AgreesOnClosure.lineShift_mul hD ⟨rfl, hg⟩ a) hκ
+        h_flag ha
     exact ⟨P, hP⟩
   obtain ⟨P, hP, h_least⟩ :=
     (measure fun P : StraightPoint S A B D ↦ dualIndex S T P.γ).wf.has_min _ h_exists
-  have h_min (Q : StraightPoint S A B D) (hQ : A.shiftedMean B D T f Q.point ≠ 0) :
-      dualIndex S T P.γ ≤ dualIndex S T Q.γ := not_lt.1 (h_least Q hQ)
-  have h_min_symm (Q : StraightPoint S A.symm B D) (hQ : A.symm.shiftedMean B D T f Q.point ≠ 0) :
-      dualIndex S T P.γ ≤ dualIndex S T Q.γ :=
+  have h_min (Q : StraightPoint S A B D) (hQ : A.shiftedMean B D T f Q.point ≠ 0)
+      : dualIndex S T P.γ ≤ dualIndex S T Q.γ :=
+    not_lt.1 (h_least Q hQ)
+  have h_min_symm (Q : StraightPoint S A.symm B D) (hQ : A.symm.shiftedMean B D T f Q.point ≠ 0)
+      : dualIndex S T P.γ ≤ dualIndex S T Q.γ :=
     h_min Q.symm (mt (shiftedMean_symm_eq_zero hD hf hT) hQ)
-  have h_plus (a : Matrix Unit p (𝔸 E)) (ha : A.shiftedMean B D T f P.point a ≠ 0) :
-      IsIntMatrix (closureIntegers S) (P.γ⁻¹ * (aᴴ * P.lineScalar)) :=
+  have h_plus (a : Matrix Unit p (𝔸 E)) (ha : A.shiftedMean B D T f P.point a ≠ 0)
+      : IsIntMatrix (closureIntegers S) (P.γ⁻¹ * (aᴴ * P.lineScalar)) :=
     P.isIntMatrix_of_shiftedMean_ne_zero hK hf hD hT hU_ne h_shear h_min ha
-  have h_minus (b : Matrix Unit p (𝔸 E)) (hb : A.symm.shiftedMean B D T f P.point b ≠ 0) :
-      IsIntMatrix (closureIntegers S) (P.γ⁻¹ * (bᴴ * P.dualScalar)) :=
+  have h_minus (b : Matrix Unit p (𝔸 E)) (hb : A.symm.shiftedMean B D T f P.point b ≠ 0)
+      : IsIntMatrix (closureIntegers S) (P.γ⁻¹ * (bᴴ * P.dualScalar)) :=
     P.symm.isIntMatrix_of_shiftedMean_ne_zero hK hf hD hT hU_ne h_shear_symm h_min_symm hb
-  have h_prim : IsPrimitiveMatrix (closureIntegers S) (siegelBracket T P.γ) :=
-    ⟨P.isIntMatrix_siegelBracket hK hf hD hP, _,
-      P.isIntMatrix_inv_siegelBracket hf hD hT hP h_plus h_minus,
-      nonsing_inv_mul _ (isUnit_det_siegelBracket hT (P.isUnit_det hD))⟩
+  have h_prim : IsPrimitiveMatrix (closureIntegers S) (siegelBracket T P.γ) := ⟨
+    P.isIntMatrix_siegelBracket hK hf hD hP,
+    _,
+    P.isIntMatrix_inv_siegelBracket hf hD hT hP h_plus h_minus,
+    nonsing_inv_mul _ (isUnit_det_siegelBracket hT (P.isUnit_det hD))
+  ⟩
   obtain ⟨Y, v, hY, hv, hY_ne⟩ := P.exists_centreCoeff_ne_zero hD hP
   exact hY_ne (h_unimodular Y P.γ (hY.actsOnFrame hv) h_prim)
 

@@ -64,27 +64,34 @@ lemma exists_conj_pow_mem_stdLevel {j : ℕ} {x : Gf D.E (D.Y j)}
   · exact hw.elim h_onQ fun hw ↦ atPlace_star_mem_iff.1 (h_onQ hw)
   · simp [hx w hw, mul_mem, pow_mem (hu_int w)]
 
-/-- A cut for the `j`-th outer variable: a finite set `T` of classes of `G_j = Gf D.E (D.Y j)`
+/--
+A cut for the `j`-th outer variable: a finite set `T` of classes of `G_j = Gf D.E (D.Y j)`
 modulo the level `levelY ϑ j`, used to write integrals over `R_j \ G_j` as finite sums. Here `R_j`
 is the finite Bessel subgroup `(D.gradingY j hj).besselFin`. The multiplicity of a class is the
 number of translates of `T` under `R_j / (R_j ∩ stdLevel)` that contain it, `stdLevel` the lattice
-stabiliser. -/
-structure IsStageCut (j : ℕ) (hj : j ≤ 2 * D.ϱ + 1) (T : Finset (Gf D.E (D.Y j) ⧸ levelY ϑ j)) :
-    Prop where
+stabiliser.
+-/
+structure IsStageCut (j : ℕ) (hj : j ≤ 2 * D.ϱ + 1) (T : Finset (Gf D.E (D.Y j) ⧸ levelY ϑ j))
+    : Prop where
   /-- The group `R_j ∩ stdLevel` permutes `T`. -/
-  mem_iff_smul_mem : ∀ p : (D.gradingY j hj).besselFin,
-    ↑p ∈ stdLevel D.E (D.Y j) → ∀ c : Gf D.E (D.Y j) ⧸ levelY ϑ j, c ∈ T ↔ p • c ∈ T
+  mem_iff_smul_mem
+    : ∀ p : (D.gradingY j hj).besselFin,
+      ↑p ∈ stdLevel D.E (D.Y j) → ∀ c : Gf D.E (D.Y j) ⧸ levelY ϑ j, c ∈ T ↔ p • c ∈ T
   /-- The points over `T` are integral at the places that do not divide `ϑ.normQ`. -/
-  integral : ∀ x : Gf D.E (D.Y j), ↑x ∈ T →
-    x ∈ localLevel (D.Y j) {w : FinPlace D.E | ↑ϑ.normQ ∉ w.asIdeal}
+  integral
+    : ∀ x : Gf D.E (D.Y j),
+      ↑x ∈ T → x ∈ localLevel (D.Y j) {w : FinPlace D.E | ↑ϑ.normQ ∉ w.asIdeal}
   /-- On `T` the multiplicity divides a power of `ϑ.normQ`. -/
-  multiplicity_dvd_pow : ∀ x : Gf D.E (D.Y j), ↑x ∈ T →
-    ∃ n : ℕ,
-      coverMultiplicity (D.gradingY j hj).besselFin (stdLevel D.E (D.Y j)) T x ∣ ϑ.normQ ^ n
+  multiplicity_dvd_pow
+    : ∀ x : Gf D.E (D.Y j),
+      ↑x ∈ T
+        → ∃ n : ℕ,
+          coverMultiplicity (D.gradingY j hj).besselFin (stdLevel D.E (D.Y j)) T x ∣ ϑ.normQ ^ n
   /-- The multiplicity is nonzero at the points whose `R_j`-orbit meets the lattice bounds. -/
-  ne_zero_of_hasBoundedOrbit : ∀ x : Gf D.E (D.Y j),
-    (D.gradingY j hj).HasBoundedOrbit (twistIdele ϑ).val j x →
-    coverMultiplicity (D.gradingY j hj).besselFin (stdLevel D.E (D.Y j)) T x ≠ 0
+  ne_zero_of_hasBoundedOrbit
+    : ∀ x : Gf D.E (D.Y j),
+      (D.gradingY j hj).HasBoundedOrbit (twistIdele ϑ).val j x
+        → coverMultiplicity (D.gradingY j hj).besselFin (stdLevel D.E (D.Y j)) T x ≠ 0
 
 open scoped Pointwise in
 /-- For every `j ≤ 2 D.ϱ + 1` there is a finite set `T` of classes of `Gf D.E (D.Y j)` modulo
@@ -121,11 +128,14 @@ lemma exists_isStageCut (j : ℕ) (hj : j ≤ 2 * D.ϱ + 1) :
   exact ne_zero_of_dvd_ne_zero
     (pow_ne_zero n (by simp [prod_eq_zero_iff, IsDedekindDomain.HeightOneSpectrum.ne_bot])) hn
 
-/-- The classes `Ω_j` modulo `levelY ϑ j` over which the `j`-th outer variable is summed: the
+/--
+The classes `Ω_j` modulo `levelY ϑ j` over which the `j`-th outer variable is summed: the
 classes of the elements of `D.chosenLevel` (integral points that reduce to `1` at the chosen places)
-for `j = 0`, and a chosen cut (`IsStageCut`) for `j > 0`. -/
+for `j = 0`, and a chosen cut (`IsStageCut`) for `j > 0`.
+-/
 def cutPoints : ∀ j : ℕ, j ≤ 2 * D.ϱ + 1 → Finset (Gf D.E (D.Y j) ⧸ levelY ϑ j)
-  | 0, _ => (finite_quotient_image_of_isCompact (IsLevel.isOpen (K := levelY ϑ 0))
+  | 0, _ =>
+    (finite_quotient_image_of_isCompact (IsLevel.isOpen (K := levelY ϑ 0))
       (IsLevel.isCompact (K := D.chosenLevel))).toFinset
   | k + 1, hk => (exists_isStageCut ϑ (k + 1) hk).choose
 
@@ -134,12 +144,15 @@ lemma isStageCut_cutPoints (k : ℕ) (hk : k + 1 ≤ 2 * D.ϱ + 1) :
     IsStageCut ϑ (k + 1) hk (cutPoints ϑ (k + 1) hk) :=
   (exists_isStageCut ϑ (k + 1) hk).choose_spec
 
-/-- The multiplicity of a class modulo `levelY ϑ j`: it is `1` for `j = 0`, and for `j > 0` the
+/--
+The multiplicity of a class modulo `levelY ϑ j`: it is `1` for `j = 0`, and for `j > 0` the
 number of translates of `cutPoints ϑ j` under `R_j / (R_j ∩ stdLevel)` that contain the class, with
-`R_j` the finite Bessel subgroup and `stdLevel` the lattice stabiliser. -/
+`R_j` the finite Bessel subgroup and `stdLevel` the lattice stabiliser.
+-/
 def cutMultiplicity : ∀ j : ℕ, j ≤ 2 * D.ϱ + 1 → Gf D.E (D.Y j) ⧸ levelY ϑ j → ℕ
   | 0, _ => fun _ ↦ 1
-  | k + 1, hk => coverMultiplicity (D.gradingY (k + 1) hk).besselFin (stdLevel D.E (D.Y (k + 1)))
+  | k + 1, hk =>
+    coverMultiplicity (D.gradingY (k + 1) hk).besselFin (stdLevel D.E (D.Y (k + 1)))
       (cutPoints ϑ (k + 1) hk)
 
 /-- The set `cutPoints ϑ 0` consists of the classes modulo `levelY ϑ 0` of the elements of
@@ -241,14 +254,20 @@ lemma card_le_residueMatrixCount (hQ : ϑ.Q = ∅) {k : ℕ} (hk : k < D.m)
 section CutSum
 variable {M M' : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup M'] [Module ℂ M']
 
-/-- The sum of `S` over the tuples obtained from `c` by letting the `j`-th coordinate run over
-`cutPoints ϑ j`, each term divided by the multiplicity of that coordinate. -/
-def cutSumAt (j : ℕ) (hj : j ≤ 2 * D.ϱ + 1) (S : (∀ i : ℕ, Gf D.E (D.Y i) ⧸ levelY ϑ i) → M)
-    (c : ∀ i : ℕ, Gf D.E (D.Y i) ⧸ levelY ϑ i) : M :=
+/--
+The sum of `S` over the tuples obtained from `c` by letting the `j`-th coordinate run over
+`cutPoints ϑ j`, each term divided by the multiplicity of that coordinate.
+-/
+def cutSumAt
+    (j : ℕ) (hj : j ≤ 2 * D.ϱ + 1)
+    (S : (∀ i : ℕ, Gf D.E (D.Y i) ⧸ levelY ϑ i) → M) (c : ∀ i : ℕ, Gf D.E (D.Y i) ⧸ levelY ϑ i)
+    : M :=
   ∑ x ∈ cutPoints ϑ j hj, (cutMultiplicity ϑ j hj x : ℂ)⁻¹ • S (update c j x)
 
-/-- The sum of `S` over `Ω_0 × ⋯ × Ω_{k-1}`, `Ω_j = cutPoints ϑ j`, each term divided by the
-multiplicities of its coordinates; the coordinates from `k` on are the class of `1`. -/
+/--
+The sum of `S` over `Ω_0 × ⋯ × Ω_{k-1}`, `Ω_j = cutPoints ϑ j`, each term divided by the
+multiplicities of its coordinates; the coordinates from `k` on are the class of `1`.
+-/
 def cutSum : ∀ k : ℕ, k ≤ 2 * D.ϱ + 2 → ((∀ i : ℕ, Gf D.E (D.Y i) ⧸ levelY ϑ i) → M) → M
   | 0, _, S => S fun i ↦ (1 : Gf D.E (D.Y i))
   | k + 1, hk, S => cutSum k (by omega) (cutSumAt ϑ k (by omega) S)

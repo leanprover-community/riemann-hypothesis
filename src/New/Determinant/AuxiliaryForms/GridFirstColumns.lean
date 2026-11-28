@@ -81,13 +81,16 @@ lemma disjoint_edges_column {D : Data P} {b : ℕ} (hb : b ≤ D.m) :
   have hu_true : u.1 = true := (GridPath.eq_and_le_of_mem_edges h_true).1
   simp [hu_false] at hu_true
 
-/-- Reduction modulo `𝔪₀ = π_M Q` from the residue ring of `𝔪 = 𝔟Q` (`reduceToTriangle ϑ false`, for
-the grid of the `Y`) is a local homomorphism, because the two moduli have the same primes. -/
+/--
+Reduction modulo `𝔪₀ = π_M Q` from the residue ring of `𝔪 = 𝔟Q` (`reduceToTriangle ϑ false`, for
+the grid of the `Y`) is a local homomorphism, because the two moduli have the same primes.
+-/
 instance (D : Data P) (ϑ : D.MFoldTwist) : IsLocalHom (reduceToTriangle ϑ false) where
   -- A unit modulo an ideal `I` is a unit modulo `I ^ D.natB`, which lies in the ideal of `𝔪`.
-  map_nonunit := Quot.ind fun _ h ↦
-    ((isUnit_mk_pow_iff_isUnit_mk _ (NeZero.ne D.natB)).2 h).map
-      (factor (by simp [levelModulus, mul_pow, mul_mono, pow_le_self NeZero.out]))
+  map_nonunit :=
+    Quot.ind fun _ h ↦
+      ((isUnit_mk_pow_iff_isUnit_mk _ (NeZero.ne D.natB)).2 h).map
+        (factor (by simp [levelModulus, mul_pow, mul_mono, pow_le_self NeZero.out]))
 
 /-- Let `π_M = D.piM`, let `Q` be the product of the places of a twist `ϑ`, and put `𝔪₀ = π_M Q` and
 `𝔪 = π_M ^ D.natB * Q` (`gridModulus ϑ`). For the space `Y_j` at the node `(false, 0, j)`, the order
@@ -448,17 +451,22 @@ lemma mem_edges_first {e : GridNode × GridNode} :
 
 /-! ### The point data -/
 
-/-- The point datum of the edge from `(0, b)` to `(0, b + 1)`, regarded modulo `𝔪`: the
+/--
+The point datum of the edge from `(0, b)` to `(0, b + 1)`, regarded modulo `𝔪`: the
 indicator of the matrices that reduce to the standard inclusion modulo `𝔪₀` in the grid of the
-`Y` and modulo `𝔟` in that of the `Ỹ`. -/
-def edgePointDatum {ϑ : D.MFoldTwist} (z : Bool) (b : ℕ)
-    (y : Matrix (D.NodeIndex (z, 0, b + 1)) (D.NodeIndex (z, 0, b)) (gridModulus ϑ).ResidueRing) :
-    ℂ :=
+`Y` and modulo `𝔟` in that of the `Ỹ`.
+-/
+def edgePointDatum
+    {ϑ : D.MFoldTwist} (z : Bool) (b : ℕ)
+    (y : Matrix (D.NodeIndex (z, 0, b + 1)) (D.NodeIndex (z, 0, b)) (gridModulus ϑ).ResidueRing)
+    : ℂ :=
   pointDatum (triangleModulus z ϑ).ResidueRing (y.map (reduceToTriangle ϑ z))
 
-/-- The product of the point data `edgePointDatum` of the edges from `(0, b)` to `(0, m)` in the
+/--
+The product of the point data `edgePointDatum` of the edges from `(0, b)` to `(0, m)` in the
 grid `z`, at the matrices of `S`: the indicator that each of these matrices reduces to the standard
-inclusion modulo `triangleModulus z ϑ`. -/
+inclusion modulo `triangleModulus z ϑ`.
+-/
 def columnPointDatum {ϑ : D.MFoldTwist} (z : Bool) (b : ℕ) (S : EdgeTuple ϑ) : ℂ :=
   ∏ i ∈ Ico b D.m, edgePointDatum z i (S (columnEdge z 0 i))
 
@@ -691,12 +699,14 @@ lemma firstPointDatum_invariant {ϑ : D.MFoldTwist} {g : NodeFamily ϑ}
   simp [h_char, firstPointDatum, h_column]
 
 /-- The cosets of the level `nodeLevel` at a node form a finite type. -/
-instance fintypeQuotientNodeLevel {ϑ : D.MFoldTwist} (z : Bool) (a b : ℕ) :
-    Fintype (GL (D.GridIndex z a b) (gridModulus ϑ).ResidueRing ⧸ nodeLevel ϑ (z, a, b)) :=
+instance fintypeQuotientNodeLevel {ϑ : D.MFoldTwist} (z : Bool) (a b : ℕ)
+    : Fintype (GL (D.GridIndex z a b) (gridModulus ϑ).ResidueRing ⧸ nodeLevel ϑ (z, a, b)) :=
   .ofFinite _
 
-/-- A coset of the level `nodeLevel` for each of the spaces `Y_i` and `Ỹ^i_0` with `i < m`: of the
-level `𝔪` at `Y_i` and of the level `𝔟` at `Ỹ^i_0`. -/
+/--
+A coset of the level `nodeLevel` for each of the spaces `Y_i` and `Ỹ^i_0` with `i < m`: of the
+level `𝔪` at `Y_i` and of the level `𝔟` at `Ỹ^i_0`.
+-/
 abbrev LevelCosets (ϑ : D.MFoldTwist) : Type :=
   ∀ p : Bool × Fin D.m,
     GL (D.NodeIndex (p.1, 0, p.2)) (gridModulus ϑ).ResidueRing ⧸ nodeLevel ϑ (p.1, 0, p.2)
@@ -709,14 +719,18 @@ def LevelCosets.out {ϑ : D.MFoldTwist} (x : LevelCosets ϑ) : NodeFamily ϑ
 private lemma LevelCosets.out_zero {ϑ : D.MFoldTwist} (x : LevelCosets ϑ) (z : Bool) (i : ℕ) :
     x.out (z, 0, i) = if h : i < D.m then (x (z, ⟨i, h⟩)).out else 1 := rfl
 
-/-- The family by which the cosets `x` translate: the representatives, except that `Ỹ^0_0`
-moves with `Y^0_0`. -/
+/--
+The family by which the cosets `x` translate: the representatives, except that `Ỹ^0_0`
+moves with `Y^0_0`.
+-/
 def LevelCosets.family {ϑ : D.MFoldTwist} (x : LevelCosets ϑ) : NodeFamily ϑ :=
   update x.out (true, 0, 0) (blockInlGL (D.gridDiagEquiv 0) (x.out (false, 0, 0)))
 
-/-- The sum `Ψ⁰` of the translates of `Ψ¹` over the coset families, each weighted by the
+/--
+The sum `Ψ⁰` of the translates of `Ψ¹` over the coset families, each weighted by the
 characters of the edges. The coset at `Ỹ^0_0` does not act, so each translate is counted a constant
-number of times. -/
+number of times.
+-/
 def firstPathDatum (ϑ : D.MFoldTwist) (S : EdgeTuple ϑ) : ℂ :=
   ∑ x : LevelCosets ϑ, edgeCharProd x.family (TwoGridPath.first D.m).edges *
     firstPointDatum (tupleAction x.family S)

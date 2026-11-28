@@ -68,8 +68,11 @@ namespace New.Lift
 
 open Period Ainf BPlus Fintype RingHom Function Algebra Matrix Amax Fact Ideal
 
-variable {p : ℕ} [ThePrime p] {d : Type}
-  (c : Chart) [Fintype d] [DecidableEq d]
+variable
+  {p : ℕ} [ThePrime p]
+  {d : Type}
+  (c : Chart)
+  [Fintype d] [DecidableEq d]
   (U : Matrix d d BPlus) (h : ℕ) (v : Ainfˣ)
 
 @[simp]
@@ -205,25 +208,30 @@ lemma exists_tau_mul_E_eq_mul_epsTilt_pow_sub_one {n : ℕ} (hn : n ≠ 0) :
   rw [Finset.prod_range_succ', show (c.frobE 0).val = c.E by simp [frobE]] at hα
   exact ⟨α, β, by linear_combination hα - tau * c.E * hβ⟩
 
-/-- `U` over `B⁺` is a period matrix of height `h`, with the unit `v` of `A_inf` as Frobenius
+/--
+`U` over `B⁺` is a period matrix of height `h`, with the unit `v` of `A_inf` as Frobenius
 factor: `U` divides `(E τ) ^ h`; `φ(U) = v U F` with `F` over `S_B` and invertible over `B⁺`; every
 `g` satisfying `c.FixesThetaZ` (`g` fixes Λ pointwise and fixes θ(z)) acts on `U` through matrices
 over `A_inf`; and divisibility of `U y` by `E ^ h` is kept when `c.extendToBPlus f` is applied to
-`y`. -/
+`y`.
+-/
 structure IsPeriodMatrix where
   /-- `U` divides the scalar matrix `(E τ) ^ h` over `B⁺`; here `E τ` is `μ` up to a unit. -/
   exists_mul_eq_smul_one : ∃ W : Matrix d d BPlus, U * W = (c.E * tau) ^ h • 1
   /-- `φ(U) = v U F` for a matrix `F` with entries in `S_B` that has a left inverse over `B⁺`. -/
-  exists_frob : ∃ F F' : Matrix d d BPlus,
-    (∀ i j : d, F i j ∈ c.bicommutant) ∧ F' * F = 1 ∧ U.map frobEnd = v • (U * F)
+  exists_frob
+    : ∃ F F' : Matrix d d BPlus,
+      (∀ i j : d, F i j ∈ c.bicommutant) ∧ F' * F = 1 ∧ U.map frobEnd = v • (U * F)
   /-- If `g` satisfies `c.FixesThetaZ`, then `U = ρ g(U)` for a matrix `ρ` over `A_inf`. -/
-  exists_gal (g : Gp p) :
-    c.FixesThetaZ g → ∃ ρ : Matrix d d Ainf, Matrix.map ρ ainfToBPlus * g • U = U
-  /-- If `E ^ h` divides `U y`, it divides `U y'`, where `y'` is `y` with the extension
-  `c.extendToBPlus f` of an `S`-linear map `f` applied to each coordinate. -/
-  extendToBPlus_stable (f : Ainf →ₗ[c.S] Ainf) (y : d → BPlus) :
-      (∃ w : d → BPlus, U *ᵥ y = c.E.val ^ h • w) →
-      ∃ w : d → BPlus, U *ᵥ c.extendToBPlus f ∘ y = c.E.val ^ h • w
+  exists_gal (g : Gp p)
+    : c.FixesThetaZ g → ∃ ρ : Matrix d d Ainf, Matrix.map ρ ainfToBPlus * g • U = U
+  /--
+  If `E ^ h` divides `U y`, it divides `U y'`, where `y'` is `y` with the extension
+  `c.extendToBPlus f` of an `S`-linear map `f` applied to each coordinate.
+  -/
+  extendToBPlus_stable (f : Ainf →ₗ[c.S] Ainf) (y : d → BPlus)
+    : (∃ w : d → BPlus, U *ᵥ y = c.E.val ^ h • w)
+      → ∃ w : d → BPlus, U *ᵥ c.extendToBPlus f ∘ y = c.E.val ^ h • w
 
 /-- `E` is nonzero, being associated to the prime `ξ`. -/
 lemma E_ne_zero : c.E.val ≠ 0 := (c.associated_E_xi.symm.prime prime_xi).ne_zero
@@ -245,12 +253,16 @@ lemma frobEnd_extendToBPlus_eq_extendToBPlus_frobEnd_of_comm {f f' : Ainf →ₗ
   have hG_zero (a : Ainf) : G (ainfToBPlus a) = 0 := by simp [G, h_comm, extendToBPlus_ainfToBPlus]
   exact sub_eq_zero.mp (eq_zero_of_map_ainfToBPlus_eq_zero G hG_int hG_zero)
 
-/-- Let `ψ` be a right inverse of `φ = frobEnd` on `A_inf`, and let `φ` be injective. For an
+/--
+Let `ψ` be a right inverse of `φ = frobEnd` on `A_inf`, and let `φ` be injective. For an
 `S`-linear map `f` on `A_inf`, the map `ψ ∘ f ∘ φ` is again `S`-linear, since `φ` maps `S` into
-itself. -/
-private noncomputable def frobeniusConj (f : Ainf →ₗ[c.S] Ainf) {ψ : Ainf → Ainf}
-    (φ_inj : Injective (frobEnd : Ainf → Ainf)) (hψ : ∀ a : Ainf, frobEnd (ψ a) = a) :
-    Ainf →ₗ[c.S] Ainf where
+itself.
+-/
+private noncomputable def frobeniusConj
+    (f : Ainf →ₗ[c.S] Ainf)
+    {ψ : Ainf → Ainf}
+    (φ_inj : Injective (frobEnd : Ainf → Ainf)) (hψ : ∀ a : Ainf, frobEnd (ψ a) = a)
+    : Ainf →ₗ[c.S] Ainf where
   toFun := ψ ∘ f ∘ frobEnd
   map_add' a₁ a₂ := φ_inj (by simp [hψ])
   map_smul' s a := by
@@ -326,24 +338,33 @@ lemma rank_le_card_of_sum_smul_eq_zero_iff {P : Submodule c.S (d → Ainf)}
   rw [← card_coe, ← Module.finrank_fintype_fun_eq_card Ainf (η := d)]
   exact hb'.fintype_card_le_finrank
 
-/-- `Q` over `A_inf` and `Z` over `B⁺` form a basis for the period matrix `U` of height `h`: `Q` is
+/--
+`Q` over `A_inf` and `Z` over `B⁺` form a basis for the period matrix `U` of height `h`: `Q` is
 nonsingular, `Z` lies over `c.bicommutant` with `U Z = E ^ h Q`, the columns of `Q` span the `x`
-that have solutions over `c.bicommutant`, and `Q` controls divisibility for solutions over `B⁺`. -/
-structure IsPeriodBasis (c : Chart) (U : Matrix d d BPlus) (h : ℕ) (Q : Matrix d d Ainf)
-    (Z : Matrix d d BPlus) : Prop where
+that have solutions over `c.bicommutant`, and `Q` controls divisibility for solutions over `B⁺`.
+-/
+structure IsPeriodBasis
+    (c : Chart) (U : Matrix d d BPlus) (h : ℕ) (Q : Matrix d d Ainf) (Z : Matrix d d BPlus)
+    : Prop where
   /-- `Q` is nonsingular. -/
   det_ne_zero : Q.det ≠ 0
   /-- The entries of `Z` lie in `c.bicommutant`. -/
   mem_bicommutant : ∀ i j : d, Z i j ∈ c.bicommutant
   /-- `U Z = E ^ h Q` over `B⁺`. -/
   mul_eq : U * Z = c.E.val ^ h • Q.map ainfToBPlus
-  /-- Every `x` over `A_inf` with `U y = E ^ h x` for some `y` over `c.bicommutant` is `Q s` with
-  `s` over `c.S`. -/
-  exists_mulVec_eq : ∀ (x : d → Ainf) (y : d → BPlus), (∀ i : d, y i ∈ c.bicommutant) →
-    U *ᵥ y = c.E.val ^ h • ainfToBPlus ∘ x → ∃ s : d → c.S, Q *ᵥ (↑) ∘ s = x
+  /--
+  Every `x` over `A_inf` with `U y = E ^ h x` for some `y` over `c.bicommutant` is `Q s` with
+  `s` over `c.S`.
+  -/
+  exists_mulVec_eq
+    : ∀ (x : d → Ainf) (y : d → BPlus),
+      (∀ i : d, y i ∈ c.bicommutant) → U *ᵥ y = c.E.val ^ h • ainfToBPlus ∘ x
+        → ∃ s : d → c.S, Q *ᵥ (↑) ∘ s = x
   /-- If `U y = E ^ h x` with `y` over `B⁺`, `p ∤ δ` and `l Q = δ g`, then `δ` divides `l · x`. -/
-  dvd_dotProduct : ∀ (x : d → Ainf) (y : d → BPlus), U *ᵥ y = c.E.val ^ h • ainfToBPlus ∘ x →
-    ∀ (δ : Ainf) (l g : d → Ainf), ¬↑p ∣ δ → l ᵥ* Q = δ • g → δ ∣ l ⬝ᵥ x
+  dvd_dotProduct
+    : ∀ (x : d → Ainf) (y : d → BPlus),
+      U *ᵥ y = c.E.val ^ h • ainfToBPlus ∘ x
+        → ∀ (δ : Ainf) (l g : d → Ainf), ¬ ↑p ∣ δ → l ᵥ* Q = δ • g → δ ∣ l ⬝ᵥ x
 
 namespace IsPeriodMatrix
 
@@ -694,21 +715,35 @@ namespace New.Lift.Chart
 
 open Period Module Function Algebra Matrix RingHom BdRPlus algebraMap Basis
 
-variable {p : ℕ} [ThePrime p] {T Γ ι : Type} [AddCommGroup T] [Module ℤ_[p] T] [Group Γ] [Fintype ι]
-  [DecidableEq ι] [𝒥 : OverGp Γ p] {ρ : Representation ℤ_[p] Γ T} (a b : ℕ) {c : Chart}
+variable
+  {p : ℕ} [ThePrime p]
+  {T Γ ι : Type}
+  [AddCommGroup T] [Module ℤ_[p] T] [Group Γ] [Fintype ι] [DecidableEq ι] [𝒥 : OverGp Γ p]
+  {ρ : Representation ℤ_[p] Γ T}
+  (a b : ℕ)
+  {c : Chart}
 
-/-- The columns of `M` are the coordinates, in the basis `e`, of vectors of `B ⊗ T` fixed by `Γ`:
+/--
+The columns of `M` are the coordinates, in the basis `e`, of vectors of `B ⊗ T` fixed by `Γ`:
 `ρ(g) * g M = M`, where `ρ(g)` is the matrix of `ρ g` in `e` and `g` acts on entries through
-`toGp`. -/
-def _root_.New.Period.HasInvariantColumns (ρ : Representation ℤ_[p] Γ T) (e : Basis ι ℤ_[p] T)
-    {B : Type} [CommRing B] [Algebra ℤ_[p] B] [SMul (Gp p) B] (M : Matrix ι ι B) : Prop :=
+`toGp`.
+-/
+def _root_.New.Period.HasInvariantColumns
+    (ρ : Representation ℤ_[p] Γ T) (e : Basis ι ℤ_[p] T)
+    {B : Type} [CommRing B] [Algebra ℤ_[p] B] [SMul (Gp p) B]
+    (M : Matrix ι ι B)
+    : Prop :=
   ∀ g : Γ, (repMatrix ρ e g).map (algebraMap ℤ_[p] B) * M.map (toGp g • ·) = M
 
-/-- `U` over `BPlus` is the period matrix of `ρ` in the basis `e` made from the matrix `M` over
+/--
+`U` over `BPlus` is the period matrix of `ρ` in the basis `e` made from the matrix `M` over
 `Bmax` with invariant columns by the factor `(E τ) ^ a`. Here `v` is the unit `μ / (E τ)`. Its
-height is `a + b` and its Frobenius factor is `v ^ a`. -/
-structure IsPeriodMatrixOf (ρ : Representation ℤ_[p] Γ T) (a b : ℕ) (c : Chart)
-    (e : Basis ι ℤ_[p] T) (M : Matrix ι ι Bmax) (U : Matrix ι ι BPlus) (v : Ainfˣ) : Prop where
+height is `a + b` and its Frobenius factor is `v ^ a`.
+-/
+structure IsPeriodMatrixOf
+    (ρ : Representation ℤ_[p] Γ T) (a b : ℕ) (c : Chart) (e : Basis ι ℤ_[p] T) (M : Matrix ι ι Bmax)
+    (U : Matrix ι ι BPlus) (v : Ainfˣ)
+    : Prop where
   /-- The columns of `M` are invariant vectors. -/
   hasInvariantColumns : HasInvariantColumns ρ e M
   /-- The unit `v` is `μ / (E τ)`. -/
@@ -718,10 +753,12 @@ structure IsPeriodMatrixOf (ρ : Representation ℤ_[p] Γ T) (a b : ℕ) (c : C
   /-- `U = (E τ) ^ a M` over `Bmax`. -/
   map_eq_smul : U.map (algebraMap BPlus Bmax) = (c.E * tau) ^ a • M
 
-/-- The action of an element of `FrobGal` on matrices over `Bmax`, entry by entry; `(.ofAdd n, 1)`
-acts as `φ ^ n` and `(1, g)` as `g` in `Gal(ℚ̄_p/ℚ_p)`. -/
-noncomputable abbrev _root_.New.Period.matrixAction (m : FrobGal) :
-    Matrix ι ι Bmax →+* Matrix ι ι Bmax :=
+/--
+The action of an element of `FrobGal` on matrices over `Bmax`, entry by entry; `(.ofAdd n, 1)`
+acts as `φ ^ n` and `(1, g)` as `g` in `Gal(ℚ̄_p/ℚ_p)`.
+-/
+noncomputable abbrev _root_.New.Period.matrixAction (m : FrobGal)
+    : Matrix ι ι Bmax →+* Matrix ι ι Bmax :=
   (MulSemiringAction.toRingHom FrobGal Bmax m).mapMatrix
 
 /-- The twist `φ ^ n M` of an invertible matrix over `Bmax` by a power of Frobenius. -/

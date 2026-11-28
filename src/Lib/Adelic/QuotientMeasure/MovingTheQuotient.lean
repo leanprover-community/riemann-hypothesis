@@ -41,21 +41,26 @@ lemma IsCutoff.integrable_orbitMeasure_iff {H X : Type*} [Group H] [MeasurableSp
   rw [(identDistrib_orbitMeasure hβ hf h_inv).integrable_iff,
     integrable_withDensity_iff_integrable_smul' hβ_meas hβ.ae_cutoff_lt_top]
 
-/-- **Moving the quotient from one variable to the other.** Let `R` be a subgroup of `G`, with left
+/--
+**Moving the quotient from one variable to the other.** Let `R` be a subgroup of `G`, with left
 invariant measures `ν` and `μ`, and let `i` be a homomorphism from a countable group `Λ` to `R`.
 Let the translates under `Λ` of the measurable weight `β` on `G` add up to one, so that `β μ` and
 `β ν` compute integrals over `Λ \ G` and `Λ \ R`. If `F` on `R × G` is measurable, invariant under
 the diagonal action of `Λ` and integrable over `(Λ \ R) × G`, then
-`∫_{Λ \ G} ∫_R F = ∫_{Λ \ R} ∫_G F`. -/
-theorem integral_cutoff_swap {G Λ : Type*} [Group G] [MeasurableSpace G] [MeasurableMul₂ G]
-    [Group Λ] [Countable Λ] {R : Subgroup G} [MeasurableMul R]
+`∫_{Λ \ G} ∫_R F = ∫_{Λ \ R} ∫_G F`.
+-/
+theorem integral_cutoff_swap
+    {G Λ : Type*} [Group G] [MeasurableSpace G] [MeasurableMul₂ G] [Group Λ] [Countable Λ]
+    {R : Subgroup G} [MeasurableMul R]
     (μ : Measure G) [SFinite μ] [μ.IsMulLeftInvariant]
-    (ν : Measure R) [SFinite ν] [ν.IsMulLeftInvariant] (i : Λ →* R) {β : G → ENNReal}
-    (hβ : Measurable β) (hβ_one : ∀ x : G, ∑' l : Λ, β (i l * x) = 1) {F : R × G → ℂ}
+    (ν : Measure R) [SFinite ν] [ν.IsMulLeftInvariant]
+    (i : Λ →* R)
+    {β : G → ENNReal} (hβ : Measurable β) (hβ_one : ∀ x : G, ∑' l : Λ, β (i l * x) = 1)
+    {F : R × G → ℂ}
     (hF : Measurable F) (hF_inv : ∀ (l : Λ) (s : R) (x : G), F (i l * s, i l * x) = F (s, x))
-    (h_int : Integrable (fun p : R × G ↦ (β p.1).toReal • F p) (ν.prod μ)) :
-    ∫ x : G, (β x).toReal • ∫ s : R, F (s, x) ∂ν ∂μ =
-      ∫ s : R, (β s).toReal • ∫ x : G, F (s, x) ∂μ ∂ν := by
+    (h_int : Integrable (fun p : R × G ↦ (β p.1).toReal • F p) (ν.prod μ))
+    : ∫ x : G, (β x).toReal • ∫ s : R, F (s, x) ∂ν ∂μ
+      = ∫ s : R, (β s).toReal • ∫ x : G, F (s, x) ∂μ ∂ν := by
   -- Both `β s` and `β x` are cutoffs for the diagonal action of `Λ` on `R × G`, and the integral of
   -- an invariant function does not depend on the cutoff.
   let : MeasurableSpace Λ := ⊤
@@ -75,13 +80,14 @@ theorem integral_cutoff_swap {G Λ : Type*} [Group G] [MeasurableSpace G] [Measu
   have h_inv (l : Λ) (p : R × G) : F (l • p) = F p := hF_inv l p.1 p.2
   have h_int_snd : Integrable (fun p : R × G ↦ (β p.2).toReal • F p) (ν.prod μ) := by
     rwa [← h_snd.integrable_orbitMeasure_iff h_inv hF, h_fst.integrable_orbitMeasure_iff h_inv hF]
-  calc ∫ x : G, (β x).toReal • ∫ s : R, F (s, x) ∂ν ∂μ
-      = ∫ p : R × G, (β p.2).toReal • F p ∂ν.prod μ := by
-        simp only [integral_prod_symm _ h_int_snd, integral_smul]
+  calc
+    ∫ x : G, (β x).toReal • ∫ s : R, F (s, x) ∂ν ∂μ
+        = ∫ p : R × G, (β p.2).toReal • F p ∂ν.prod μ := by
+      simp only [integral_prod_symm _ h_int_snd, integral_smul]
     _ = ∫ p : R × G, (β p.1).toReal • F p ∂ν.prod μ := by
-        rw [← h_snd.integral_orbitMeasure h_inv hF, h_fst.integral_orbitMeasure h_inv hF]
+      rw [← h_snd.integral_orbitMeasure h_inv hF, h_fst.integral_orbitMeasure h_inv hF]
     _ = ∫ s : R, (β s).toReal • ∫ x : G, F (s, x) ∂μ ∂ν := by
-        simp only [integral_prod _ h_int, integral_smul]
+      simp only [integral_prod _ h_int, integral_smul]
 
 /-- If `a` is integrable on a subgroup `R` of `G` and `e` is integrable on `G` for a left invariant
 measure, then `(s, x) ↦ a s * e (g * s⁻¹ * x)` is integrable on `R × G`. -/

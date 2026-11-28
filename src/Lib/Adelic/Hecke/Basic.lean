@@ -67,22 +67,28 @@ def rightRegular : Representation A G (G → W) where
 
 variable {A G W} (π : Representation A G W) (Γ K H : Subgroup G)
 
-/-- For a representation π of G, a subgroup K and a character χ of K, the submodule of vectors v
-with π(k)v = χ(k)v for all k in K. -/
+/--
+For a representation π of G, a subgroup K and a character χ of K, the submodule of vectors v
+with π(k)v = χ(k)v for all k in K.
+-/
 def levelSpace (χ : K →* A := 1) : Submodule A W where
   carrier := {v : W | ∀ k : K, π k v = χ k • v}
   add_mem' hv hw k := by rw [map_add, hv k, hw k, smul_add]
   zero_mem' k := by rw [map_zero, smul_zero]
   smul_mem' a v hv k := by rw [map_smul, hv k, smul_comm]
 
-/-- For a function f on G, the operator ∑ f(g)π(g), summed over chosen representatives g of G/K
+/--
+For a function f on G, the operator ∑ f(g)π(g), summed over chosen representatives g of G/K
 (zero if infinitely many terms are nonzero). Let f be right K-invariant and supported on finitely
 many cosets gK. On a vector fixed by K the value does not depend on the representatives
-(`New.heckeFun_eq_sum`), and it is the action of f for the measure with vol K = 1. -/
+(`New.heckeFun_eq_sum`), and it is the action of f for the measure with vol K = 1.
+-/
 def heckeFun (f : G → A) : Module.End A W := ∑ᶠ q : G ⧸ K, f q.out • π q.out
 
-/-- The Hecke operator of the double coset KgK: the sum of π(h) over chosen representatives h of
-the cosets hK in KgK (zero if there are infinitely many). -/
+/--
+The Hecke operator of the double coset KgK: the sum of π(h) over chosen representatives h of
+the cosets hK in KgK (zero if there are infinitely many).
+-/
 def heckeCoset (g : G) : Module.End A W := heckeFun π K ((doubleCoset g K K).indicator 1)
 
 /-- The subgroup Γ ∩ gKg⁻¹, the stabiliser in Γ of the coset gK. -/
@@ -135,9 +141,11 @@ lemma eq_and_eq_one_of_doubleCoset_rep {e : Δ →* G}
   obtain rfl : c = d := by rw [← hr c, ← h_same, hr d]
   exact ⟨rfl, h_free γ hγ⟩
 
-/-- The class sum of f: the sum over the double cosets c in Γ\G/K of f(g_c)/#(Γ ∩ g_c K g_c⁻¹), g_c
+/--
+The class sum of f: the sum over the double cosets c in Γ\G/K of f(g_c)/#(Γ ∩ g_c K g_c⁻¹), g_c
 a chosen representative. For f left invariant under Γ and right invariant under K the choice of
-representatives does not matter. -/
+representatives does not matter.
+-/
 def classSum [Module ℚ W] (Γ K : Subgroup G) (f : G → W) : W :=
   ∑ᶠ c : DoubleCoset.Quotient (Γ : Set G) K, (Nat.card (classAut Γ K c.out) : ℚ)⁻¹ • f c.out
 
@@ -223,13 +231,19 @@ section HeckeBasic
 
 open Set Function HasFiniteSupport DoubleCoset QuotientGroup Finset
 
-variable {A : Type*}
-  {G W W' : Type*} [Group G] [CommSemiring A] [AddCommMonoid W] [Module A W] [AddCommMonoid W']
-  [Module A W'] {π : Representation A G W} (K K' : Subgroup G) {χ' : K' →* A} (f : G → A) {v : W}
-  {G' : Type*} [Group G']
+variable
+  {A : Type*} {G W W' : Type*}
+  [Group G] [CommSemiring A] [AddCommMonoid W] [Module A W] [AddCommMonoid W'] [Module A W']
+  {π : Representation A G W}
+  (K K' : Subgroup G)
+  {χ' : K' →* A}
+  (f : G → A)
+  {v : W} {G' : Type*} [Group G']
 
-/-- The function f on G is nonzero at the chosen representatives of only finitely many cosets
-gK. -/
+/--
+The function f on G is nonzero at the chosen representatives of only finitely many cosets
+gK.
+-/
 abbrev HasFiniteCosets : Prop := (support fun q : G ⧸ K ↦ f q.out).Finite
 
 /-- The function f on G is left and right K-invariant and supported on finitely many cosets gK. -/

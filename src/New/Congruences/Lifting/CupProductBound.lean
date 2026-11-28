@@ -66,9 +66,11 @@ open Period KummerChart Topology crysCocycles FrobGroup Submodule Selmer IsLocal
 
 variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] [k : KummerChart Γ] {O : Coeffs}
 
-/-- One side of a pairing: a lattice Y (`kerLattice`), a lattice C (`paramLattice`), an O-linear map
+/--
+One side of a pairing: a lattice Y (`kerLattice`), a lattice C (`paramLattice`), an O-linear map
 α (`cocycleMap`) from C to the crystalline cocycles Z_f(Y), and for each letter a finite set of
-integers that contains 0. -/
+integers that contains 0.
+-/
 structure KummerChart.PairingSide (O : Coeffs) extends kerLattice : JumpLattice O where
   /-- The lattice C that parametrises the cocycles. -/
   paramLattice : GalLattice O Γ
@@ -81,10 +83,12 @@ section
 
 variable {k} (S S' : PairingSide O)
 
-/-- For a side S, the lattice datum formed by the extension of the trivial lattice on
+/--
+For a side S, the lattice datum formed by the extension of the trivial lattice on
 `S.paramLattice` by Y given by the cocycles of S. At each letter it has the jump set of S; at each
 embedding of O into ℂ_p its set `embJumps` is that of S with 0 added. The field `inClass` says that
-the extension is crystalline over Γ' with its jumps in these sets. -/
+the extension is crystalline over Γ' with its jumps in these sets.
+-/
 abbrev KummerChart.PairingSide.extensionLattice : JumpLattice O where
   toGalLattice := ⟨S.Carrier × S.paramLattice.Carrier, extensionRep S.cocycleMap⟩
   jumpSet := S.jumpSet
@@ -96,9 +100,11 @@ abbrev KummerChart.PairingSide.extensionLattice : JumpLattice O where
       S.inClass.2.1 g u (ne_bot_of_le_ne_bot hu (jump_extensionRep_le _ hu₀))
   embJumps_subset h := insert_subset (S.zero_mem _) (S.embJumps_subset h)
 
-/-- For a side S, the lattice datum formed by C with trivial action of Γ, with jump set {0} at
+/--
+For a side S, the lattice datum formed by C with trivial action of Γ, with jump set {0} at
 every letter and at every embedding of O into ℂ_p. The latter is written {−0}, the case c = 0 of
-the jump −c of the c-th power of the cyclotomic character. -/
+the jump −c of the c-th power of the cyclotomic character.
+-/
 abbrev KummerChart.PairingSide.trivialLattice : JumpLattice O where
   toGalLattice := ⟨S.paramLattice, 1⟩
   jumpSet _ := {0}
@@ -106,19 +112,26 @@ abbrev KummerChart.PairingSide.trivialLattice : JumpLattice O where
   inClass := InClass.of_cyclotomic_pow 0 (by simp)
   embJumps_subset := by simp
 
-/-- The projection from the extension of C by Y onto the trivial lattice C, as an equivariant
-map of lattice data. -/
+/--
+The projection from the extension of C by Y onto the trivial lattice C, as an equivariant
+map of lattice data.
+-/
 abbrev KummerChart.PairingSide.projTrivial : S.extensionLattice.Hom S.trivialLattice :=
   ⟨LinearMap.snd O S.Carrier S.paramLattice.Carrier, fun _ ↦ rfl⟩
 
-/-- For a side S, the W(C^♭)-linear extension of the projection of Y × C onto Y, from the ambient
-module of the extension lattice to that of Y. -/
-abbrev KummerChart.PairingSide.wittFst : S.extensionLattice.Ambient →ₗ[WittCFlat]
-  S.kerLattice.Ambient :=
+/--
+For a side S, the W(C^♭)-linear extension of the projection of Y × C onto Y, from the ambient
+module of the extension lattice to that of Y.
+-/
+abbrev KummerChart.PairingSide.wittFst
+    : S.extensionLattice.Ambient →ₗ[WittCFlat]
+      S.kerLattice.Ambient :=
   S.extensionLattice.wittMap S.kerLattice (LinearMap.fst O S.Carrier S.paramLattice.Carrier)
 
-/-- For two sides S, S', the lattice datum Y ⊗_O Y' with, at each letter i, the sumset U(i) + U'(i)
-of their integer sets. -/
+/--
+For two sides S, S', the lattice datum Y ⊗_O Y' with, at each letter i, the sumset U(i) + U'(i)
+of their integer sets.
+-/
 abbrev KummerChart.PairingSide.tensorLattice : JumpLattice O where
   toGalLattice := S.toGalLattice.tensor S'.toGalLattice
   jumpSet i := (S.jumpSet i).image₂ (· + ·) (S'.jumpSet i)
@@ -128,56 +141,71 @@ abbrev KummerChart.PairingSide.tensorLattice : JumpLattice O where
 
 end
 
-variable {k} {S S' : PairingSide O} {e : ℕ} (P : Pairing S.toGalLattice S'.toGalLattice)
-  (n : FrobGroup Γ)
+variable
+  {k} {S S' : PairingSide O} {e : ℕ} (P : Pairing S.toGalLattice S'.toGalLattice) (n : FrobGroup Γ)
 
-/-- The third side of a pairing P. Its lattice is the Tate dual Hom(Y ⊗ Y', O(1)), and
+/--
+The third side of a pairing P. Its lattice is the Tate dual Hom(Y ⊗ Y', O(1)), and
 `paramLattice` = O maps 1 to `P.cocycle`, the crystalline cocycle c with gψ − ψ = p^m c(g) for the
 form ψ of P. The jump sets are {0} ∪ {−u − u' − 1 : u ∈ `S.jumpSet i`, u' ∈ `S'.jumpSet i`} at the
 letters i; at the embeddings of O into ℂ_p (`embJumps`) they are formed in the same way, without
-adding 0. -/
+adding 0.
+-/
 abbrev Pairing.tateDualSide : PairingSide O :=
   let T := S.tensorLattice S'
-  { toGalLattice := T.toGalLattice.tateDual
+  {
+    toGalLattice := T.toGalLattice.tateDual
     jumpSet i := insert 0 ((T.jumpSet i).image fun u ↦ -u - 1)
     embJumps g := (T.embJumps g).image fun u ↦ -u - 1
     inClass := T.inClass.dual
     embJumps_subset h := by grind [T.embJumps_subset h]
     paramLattice := ⟨O, 1⟩
     cocycleMap := LinearMap.toSpanSingleton O _ P.cocycle
-    zero_mem := by simp }
+    zero_mem := by simp
+  }
 
-/-- The W(C^♭)-bilinear extension of the pairing Y × Y' → ℤ/p^m(1) of P to a pairing of
+/--
+The W(C^♭)-bilinear extension of the pairing Y × Y' → ℤ/p^m(1) of P to a pairing of
 W(C^♭) ⊗ Y and W(C^♭) ⊗ Y' with values in W(C^♭) ⊗ ℤ/p^m(1). Here `DiagTensor T` is W(C^♭) ⊗ T
 over ℤ_p, `overZp` reads a representation over O as one over ℤ_p, and `charRep M χ` is M with Γ
-acting through the cyclotomic character χ. -/
-abbrev Pairing.wittPairing :
-    DiagTensor (Rep.of (overZp S.ρ)) →ₗ[WittCFlat] DiagTensor (Rep.of (overZp S'.ρ)) →ₗ[WittCFlat]
-      DiagTensor (Rep.of (charRep (ℤ_[p] ⧸ Ideal.span {(p : ℤ_[p]) ^ P.exponent}) χ)) :=
+acting through the cyclotomic character χ.
+-/
+abbrev Pairing.wittPairing
+    : DiagTensor (Rep.of (overZp S.ρ)) →ₗ[WittCFlat] DiagTensor (Rep.of (overZp S'.ρ)) →ₗ[WittCFlat]
+        DiagTensor (Rep.of (charRep (ℤ_[p] ⧸ Ideal.span {(p : ℤ_[p]) ^ P.exponent}) χ)) :=
   DiagTensor.pair P.modPairing
 
-/-- The pair (w, y) of elements of the ambient modules of the two extension lattices is safe: p^e
+/--
+The pair (w, y) of elements of the ambient modules of the two extension lattices is safe: p^e
 times the pairing of their components in W(C^♭) ⊗ Y and W(C^♭) ⊗ Y' lies in `New.Lift.smallPart`,
-the image of W(𝔪^♭). -/
-def Pairing.IsSafe (e : ℕ) (w : S.extensionLattice.Ambient) (y : S'.extensionLattice.Ambient) :
-    Prop :=
+the image of W(𝔪^♭).
+-/
+def Pairing.IsSafe (e : ℕ) (w : S.extensionLattice.Ambient) (y : S'.extensionLattice.Ambient)
+    : Prop :=
   p ^ e • P.wittPairing (S.wittFst w) (S'.wittFst y) ∈ smallPart P.exponent
 
-/-- The move of the first side by `y` is safe while `x'` is at rest: for every `g` in `k.galMonoid`
-(the elements (0, g) with g in Γ'), the pair `(y, g • x' - x')` is safe. -/
-def Pairing.IsSafeMoveFst (e : ℕ) (y : S.extensionLattice.Ambient)
-    (x' : S'.extensionLattice.Ambient) : Prop :=
+/--
+The move of the first side by `y` is safe while `x'` is at rest: for every `g` in `k.galMonoid`
+(the elements (0, g) with g in Γ'), the pair `(y, g • x' - x')` is safe.
+-/
+def Pairing.IsSafeMoveFst
+    (e : ℕ) (y : S.extensionLattice.Ambient) (x' : S'.extensionLattice.Ambient)
+    : Prop :=
   ∀ g : k.galMonoid, P.IsSafe e y (g • x' - x')
 
-/-- The move of the second side by `y'` is safe while `x` is at rest: for every `g` in
-`k.galMonoid`, the pair `(g • x - x, g • y')` is safe. -/
-def Pairing.IsSafeMoveSnd (e : ℕ) (x : S.extensionLattice.Ambient)
-    (y' : S'.extensionLattice.Ambient) : Prop :=
+/--
+The move of the second side by `y'` is safe while `x` is at rest: for every `g` in
+`k.galMonoid`, the pair `(g • x - x, g • y')` is safe.
+-/
+def Pairing.IsSafeMoveSnd
+    (e : ℕ) (x : S.extensionLattice.Ambient) (y' : S'.extensionLattice.Ambient)
+    : Prop :=
   ∀ g : k.galMonoid, P.IsSafe e (g • x - x) (g • y')
 
 /-- Four safe moves lead from `(y, y')` by `(w, y')`, `(w, w')` and `(x, w')` to `(x, x')`. -/
-structure Pairing.IsSafePath (e : ℕ) (y w x : S.extensionLattice.Ambient)
-    (y' w' x' : S'.extensionLattice.Ambient) : Prop where
+structure Pairing.IsSafePath
+    (e : ℕ) (y w x : S.extensionLattice.Ambient) (y' w' x' : S'.extensionLattice.Ambient)
+    : Prop where
   /-- The first side moves between `y` and `w` with `y'` at rest. -/
   isSafeMoveFst_start : P.IsSafeMoveFst e (y - w) y'
   /-- The second side moves between `y'` and `w'` with `w` at rest. -/
@@ -187,13 +215,16 @@ structure Pairing.IsSafePath (e : ℕ) (y w x : S.extensionLattice.Ambient)
   /-- The second side moves between `w'` and `x'` with `x` at rest. -/
   isSafeMoveSnd_end : P.IsSafeMoveSnd e x (w' - x')
 
-/-- The conclusion of the pairing lemma. For every topology on Γ for which the map to G_p is an open
+/--
+The conclusion of the pairing lemma. For every topology on Γ for which the map to G_p is an open
 embedding, the cup product of the cocycles `S.cocycleMap c` and `p ^ e • S'.cocycleMap c'`, read in
-ℚ̄_p^×, is the coboundary of a continuous cochain (`New.Lift.Pairing.IsCupCoboundary`). -/
-def Pairing.IsScaledCupCoboundary (e : ℕ) (c : S.paramLattice.Carrier)
-    (c' : S'.paramLattice.Carrier) : Prop :=
-  ∀ ⦃_ : TopologicalSpace Γ⦄, IsOpenEmbedding Γ.overGp.toGp → P.IsCupCoboundary (S.cocycleMap c)
-    (p ^ e • S'.cocycleMap c')
+ℚ̄_p^×, is the coboundary of a continuous cochain (`New.Lift.Pairing.IsCupCoboundary`).
+-/
+def Pairing.IsScaledCupCoboundary
+    (e : ℕ) (c : S.paramLattice.Carrier) (c' : S'.paramLattice.Carrier)
+    : Prop :=
+  ∀ ⦃_ : TopologicalSpace Γ⦄,
+    IsOpenEmbedding Γ.overGp.toGp → P.IsCupCoboundary (S.cocycleMap c) (p ^ e • S'.cocycleMap c')
 
 /-- For `n` in ℤ × Γ and `x` in the extension lattice tensored with W(C^♭), the Y-component of
 `n • x` is `n` applied to the Y-component of `x`, plus the cocycle of the Γ-component of `n` at
@@ -615,22 +646,28 @@ section
 
 variable (S : PairingSide O) (r l : ℕ) (i : Letter)
 
-/-- For c in the lattice C and a letter i, the image of 1⊗c, in the ambient module of the trivial
-lattice, under the projector to the letter i. -/
+/--
+For c in the lattice C and a letter i, the image of 1⊗c, in the ambient module of the trivial
+lattice, under the projector to the letter i.
+-/
 def constantAt : S.paramLattice →ₗ[ℤ_[p]] S.trivialLattice.Ambient :=
-  (S.trivialLattice.letterProj i).restrictScalars ℤ_[p] ∘ₗ
-    DiagTensor.mk (ρ := Rep.of (overZp S.trivialLattice.ρ)) 1
+  (S.trivialLattice.letterProj i).restrictScalars ℤ_[p]
+    ∘ₗ DiagTensor.mk (ρ := Rep.of (overZp S.trivialLattice.ρ)) 1
 
-/-- The ideal J_l(i) of A_inf generated by r and the elements a of A_inf that multiply the letter-i
-part of A_inf ⊗ C into the image of the extension's module of standard exponents of level l. -/
+/--
+The ideal J_l(i) of A_inf generated by r and the elements a of A_inf that multiply the letter-i
+part of A_inf ⊗ C into the image of the extension's module of standard exponents of level l.
+-/
 def liftIdeal : Ideal Ainf :=
   Ideal.span {↑r} ⊔ (S.extensionLattice.withOrders i (stdOrders l)
     |>.map (S.projTrivial.wittMap.restrictScalars Ainf)
-    |>.colon (S.trivialLattice.ainfLattice.map
-      ((S.trivialLattice.letterProj i).restrictScalars Ainf)))
+    |>.colon (S.trivialLattice.ainfLattice.map ((S.trivialLattice.letterProj i).restrictScalars
+      Ainf)))
 
-/-- p^κE^s kills the cokernel at the letter i: it multiplies the letter-i part of A_inf ⊗ C into
-the image of the extension's module of standard exponents of level 0. -/
+/--
+p^κE^s kills the cokernel at the letter i: it multiplies the letter-i part of A_inf ⊗ C into
+the image of the extension's module of standard exponents of level 0.
+-/
 def KillsCokernel (κ s : ℕ) : Prop := ↑(p ^ κ * k.E ^ s) ∈ S.liftIdeal 0 0 i
 
 end

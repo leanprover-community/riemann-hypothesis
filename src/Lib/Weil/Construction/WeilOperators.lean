@@ -72,20 +72,24 @@ namespace New.Heisenberg.IsVacuum
 
 open MeasureTheory Heisenberg.Rep ContinuousLinearMap
 
-variable {W : Type*} [AddCommGroup W] [TopologicalSpace W]
-  {H : Heisenberg W} [MeasurableSpace W] [IsTopologicalAddGroup W] [BorelSpace W]
-  [SecondCountableTopology W] {μ : Measure W} [μ.IsAddHaarMeasure]
+variable
+  {W : Type*} [AddCommGroup W] [TopologicalSpace W]
+  {H : Heisenberg W}
+  [MeasurableSpace W] [IsTopologicalAddGroup W] [BorelSpace W] [SecondCountableTopology W]
+  {μ : Measure W} [μ.IsAddHaarMeasure]
   {e : W → ℂ} [he : IsVacuum H μ e]
   {G : Type*} [Group G] [TopologicalSpace G] [DistribMulAction G W] [ContinuousSMul G W]
-  {c : G → G → ℂ} (B : H.MultiplierAction μ e G c) (A : H.MultiplierAction μ e G) (g h k : G)
-  (x : W) (v w : Model H)
+  {c : G → G → ℂ} (B : H.MultiplierAction μ e G c)
+  (A : H.MultiplierAction μ e G) (g h k : G) (x : W) (v w : Model H)
 
 /-! ### The operators of an action with a cocycle -/
 
-/-- The Weil operator of `g` for the action `B`: the operator v ↦ Δ(g) ∫ v(y) ρ(g • y) vac dμ(y) on
+/--
+The Weil operator of `g` for the action `B`: the operator v ↦ Δ(g) ∫ v(y) ρ(g • y) vac dμ(y) on
 the model space, where `Δ = B.Δ`, `ρ = heisenbergOp` and `vac = vacElem`. The integral is the
 integrated action of `v` on `vac` for the representation `y ↦ ρ (g • y)`
-(`New.Heisenberg.Rep.moveBy`). -/
+(`New.Heisenberg.Rep.moveBy`).
+-/
 def weilOp : Model H →L[ℂ] Model H := B.Δ g • (heisenbergRep.moveBy B g).integrated.flip vacElem
 
 /-- Write P_g(w) for the operator ∫ w(y) ρ(g • y) dμ(y) on the model space, the integrated action
@@ -234,8 +238,10 @@ lemma modelInner_weilOp (hc_one : c g 1 = 1) :
           MultiplierAction.Δ_inv]
   rw [h_adjoint, h_inv, conj_modelInner]
 
-/-- For an action `B` with cocycle c such that c(g, 1) = 1 for all g, the subgroup of those s in G
-with c(g, s) = 1 for every g. -/
+/--
+For an action `B` with cocycle c such that c(g, 1) = 1 for all g, the subgroup of those s in G
+with c(g, s) = 1 for every g.
+-/
 def cocycleRadical (h1 : ∀ g : G, c g 1 = 1) : Subgroup G :=
   have h_assoc (g h k : G) := mul_assoc (weilOp B g) (weilOp B h) (weilOp B k)
   -- Apply both products to the vacuum and pair with the unit vector `weilOp B (g * h * k) vacElem`:
@@ -243,16 +249,20 @@ def cocycleRadical (h1 : ∀ g : G, c g 1 = 1) : Subgroup G :=
   have h_cocycle (g h k : G) : c g h * c (g * h) k = c h k * c g (h * k) := by
     simpa [weilOp_mul, h1, he.apply_zero, mul_assoc g, modelInner_weilOp] using
       congr(modelInner (weilOp B (g * h * k) vacElem) ($(h_assoc g h k) vacElem))
-  { carrier := {s : G | ∀ g : G, c g s = 1}
+  {
+    carrier := {s : G | ∀ g : G, c g s = 1}
     one_mem' := h1
     mul_mem' {s t} hs ht g := by simpa [hs g, ht _] using (h_cocycle g s t).symm
-    inv_mem' {s} hs g := by simpa [hs _, h1] using h_cocycle g s⁻¹ s }
+    inv_mem' {s} hs g := by simpa [hs _, h1] using h_cocycle g s⁻¹ s
+  }
 
 /-! ### The Weil representation -/
 
-/-- The Weil representation of an action `A` with cocycle 1: the homomorphism
+/--
+The Weil representation of an action `A` with cocycle 1: the homomorphism
 g ↦ (v ↦ Δ(g) ∫ v(y) ρ(g • y) vac dμ(y)) from G to the bounded operators on the model space, whose
-value at g is `weilOp A g`. -/
+value at g is `weilOp A g`.
+-/
 def weilRep : G →* Model H →L[ℂ] Model H :=
   MonoidHom.mk ⟨weilOp A, weilOp_one A⟩ (by simp [weilOp_mul])
 
@@ -371,20 +381,29 @@ namespace New.Heisenberg
 
 open MeasureTheory Heisenberg.Rep IsVacuum Measure ENNReal Set MultiplierAction
 
-variable {W : Type*} [AddCommGroup W] [TopologicalSpace W]
-  {H : Heisenberg W} [MeasurableSpace W] [IsTopologicalAddGroup W] [BorelSpace W]
-  [SecondCountableTopology W] {μ : Measure W} [μ.IsAddHaarMeasure] {e : W → ℂ}
-  {W₁ : Type*} [AddCommGroup W₁] [TopologicalSpace W₁]
-  {H₁ : Heisenberg W₁} [MeasurableSpace W₁] [IsTopologicalAddGroup W₁] [BorelSpace W₁]
-  [SecondCountableTopology W₁] {μ₁ : Measure W₁} [μ₁.IsAddHaarMeasure] {e₁ : W₁ → ℂ}
-  {W₂ : Type*} [AddCommGroup W₂] [TopologicalSpace W₂]
-  {H₂ : Heisenberg W₂} [MeasurableSpace W₂] [IsTopologicalAddGroup W₂] [BorelSpace W₂]
-  [SecondCountableTopology W₂] {μ₂ : Measure W₂} [μ₂.IsAddHaarMeasure] {e₂ : W₂ → ℂ}
-  {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X]
+variable
+  {W : Type*} [AddCommGroup W] [TopologicalSpace W]
+  {H : Heisenberg W}
+  [MeasurableSpace W] [IsTopologicalAddGroup W] [BorelSpace W] [SecondCountableTopology W]
+  {μ : Measure W} [μ.IsAddHaarMeasure]
+  {e : W → ℂ} {W₁ : Type*} [AddCommGroup W₁] [TopologicalSpace W₁]
+  {H₁ : Heisenberg W₁}
+  [MeasurableSpace W₁] [IsTopologicalAddGroup W₁] [BorelSpace W₁] [SecondCountableTopology W₁]
+  {μ₁ : Measure W₁} [μ₁.IsAddHaarMeasure]
+  {e₁ : W₁ → ℂ} {W₂ : Type*} [AddCommGroup W₂] [TopologicalSpace W₂]
+  {H₂ : Heisenberg W₂}
+  [MeasurableSpace W₂] [IsTopologicalAddGroup W₂] [BorelSpace W₂] [SecondCountableTopology W₂]
+  {μ₂ : Measure W₂} [μ₂.IsAddHaarMeasure]
+  {e₂ : W₂ → ℂ} {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X]
 
-/-- An isomorphism φ: W₁ × W₂ → W of topological groups under which the bicharacter of H and the
-function e are the products of those of the factors (β₁β₂, e₁e₂). -/
-structure OrthogonalSum (H : Heisenberg W) (H₁ : Heisenberg W₁) (H₂ : Heisenberg W₂) (e : W → ℂ)
+/--
+An isomorphism φ: W₁ × W₂ → W of topological groups under which the bicharacter of H and the
+function e are the products of those of the factors (β₁β₂, e₁e₂).
+-/
+structure OrthogonalSum
+    (H : Heisenberg W)
+    (H₁ : Heisenberg W₁) (H₂ : Heisenberg W₂)
+    (e : W → ℂ)
     [IsVacuum H₁ μ₁ e₁] [IsVacuum H₂ μ₂ e₂] where
   /-- The isomorphism of topological groups from `W₁ × W₂` onto `W`. -/
   equiv : W₁ × W₂ ≃ₜ+ W
@@ -393,8 +412,11 @@ structure OrthogonalSum (H : Heisenberg W) (H₁ : Heisenberg W₁) (H₂ : Heis
   /-- Along `equiv`, the function `e` is the product of the two vacua `e₁` and `e₂`. -/
   vac_equiv (x : W₁ × W₂) : e (equiv x) = e₁ x.1 * e₂ x.2
 
-variable (R : Rep H X) [IsVacuum H₁ μ₁ e₁] [IsVacuum H₂ μ₂ e₂]
-  (S : H.OrthogonalSum H₁ H₂ e) [he : H.IsVacuum μ e]
+variable
+  (R : Rep H X)
+  [IsVacuum H₁ μ₁ e₁] [IsVacuum H₂ μ₂ e₂]
+  (S : H.OrthogonalSum H₁ H₂ e)
+  [he : H.IsVacuum μ e]
   (v : Model H₁) (w : Model H₂) (x : W) (f : X)
 
 /-! ### Wiener's bound -/
@@ -494,8 +516,10 @@ lemma IsVacuum.wiener_bound [LocallyCompactSpace W] [LocallyCompactSpace W₁]
 
 /-! ### Tensor products along a splitting -/
 
-/-- For a representation `R` of `H` on `X` and an orthogonal splitting `S` with `φ = S.equiv`, the
-representation x ↦ R.ρ(φ(x, 0)) of `H₁` on `X`. -/
+/--
+For a representation `R` of `H` on `X` and an orthogonal splitting `S` with `φ = S.equiv`, the
+representation x ↦ R.ρ(φ(x, 0)) of `H₁` on `X`.
+-/
 @[local simp]
 def Rep.left : H₁.Rep X where
   ρ x := R.ρ (S.equiv (x, 0))
@@ -503,8 +527,10 @@ def Rep.left : H₁.Rep X where
   norm_map := by simp [norm_map]
   cont := by fun_prop
 
-/-- For a representation `R` of `H` on `X` and an orthogonal splitting `S` with `φ = S.equiv`, the
-representation x ↦ R.ρ(φ(0, x)) of `H₂` on `X`. -/
+/--
+For a representation `R` of `H` on `X` and an orthogonal splitting `S` with `φ = S.equiv`, the
+representation x ↦ R.ρ(φ(0, x)) of `H₂` on `X`.
+-/
 @[local simp]
 def Rep.right : H₂.Rep X where
   ρ x := R.ρ (S.equiv (0, x))
@@ -512,11 +538,13 @@ def Rep.right : H₂.Rep X where
   norm_map := by simp [norm_map]
   cont := by fun_prop
 
-/-- The tensor product of model vectors, a bounded bilinear map
+/--
+The tensor product of model vectors, a bounded bilinear map
 `Model H₁ →L[ℂ] Model H₂ →L[ℂ] Model H`. With `φ = S.equiv`, it sends `v`, `w` to the iterated
 integral `∫ v(y₁) ρ(φ(y₁, 0)) (∫ w(y₂) ρ(φ(0, y₂)) e dμ₂) dμ₁`, where `ρ` acts on the model space of
 `e`. As a function it is `φ(x₁, x₂) ↦ v x₁ * w x₂`, see
-`New.Heisenberg.OrthogonalSum.tmul_apply`. -/
+`New.Heisenberg.OrthogonalSum.tmul_apply`.
+-/
 noncomputable def OrthogonalSum.tmul : Model H₁ →L[ℂ] Model H₂ →L[ℂ] Model H :=
   ((heisenbergRep.left S).integrated.flip ∘L (heisenbergRep.right S).integrated.flip vacElem).flip
 
@@ -739,13 +767,15 @@ open MeasureTheory Measure Complex
 
 namespace New.Heisenberg.IsVacuum
 
-variable {W W' : Type*} [AddCommGroup W] [TopologicalSpace W] [MeasurableSpace W]
-  [IsTopologicalAddGroup W] [BorelSpace W] [SecondCountableTopology W] [LocallyCompactSpace W]
-  [AddCommGroup W'] [TopologicalSpace W'] [MeasurableSpace W'] [IsTopologicalAddGroup W']
-  [BorelSpace W']
+variable
+  {W W' : Type*} [AddCommGroup W] [TopologicalSpace W] [MeasurableSpace W] [IsTopologicalAddGroup W]
+  [BorelSpace W] [SecondCountableTopology W] [LocallyCompactSpace W] [AddCommGroup W']
+  [TopologicalSpace W'] [MeasurableSpace W'] [IsTopologicalAddGroup W'] [BorelSpace W']
   {H : Heisenberg W} {μ : Measure W} {e : W → ℂ} {H' : Heisenberg W'} {μ' : Measure W'}
-  {e' : W' → ℂ} [IsAddHaarMeasure μ] [IsAddHaarMeasure μ'] [he : IsVacuum H μ e]
-  [he' : IsVacuum H' μ' e'] {σ : ℂ →+* ℂ} [RingHomIsometric σ] {φ : W' ≃ₜ+ W}
+  {e' : W' → ℂ}
+  [IsAddHaarMeasure μ] [IsAddHaarMeasure μ'] [he : IsVacuum H μ e] [he' : IsVacuum H' μ' e']
+  {σ : ℂ →+* ℂ} [RingHomIsometric σ]
+  {φ : W' ≃ₜ+ W}
 
 include he he'
 
@@ -796,22 +826,30 @@ lemma map_integral_and_map_vacuum
 
 variable [SecondCountableTopology W']
 
-/-- For a topological isomorphism `φ : W' ≃ W` matching the vacua and, up to `σ`, the
-bicharacters, the continuous `σ`-semilinear map `v ↦ σ ∘ v ∘ φ` between the reproducing spaces. -/
-noncomputable def transport (hβ : ∀ x y : W', σ (H.β (φ x) (φ y)) = H'.β x y)
-    (hφ : ∀ x : W', e (φ x) = e' x) : Model H →SL[σ] Model H' :=
+/--
+For a topological isomorphism `φ : W' ≃ W` matching the vacua and, up to `σ`, the
+bicharacters, the continuous `σ`-semilinear map `v ↦ σ ∘ v ∘ φ` between the reproducing spaces.
+-/
+noncomputable def transport
+    (hβ : ∀ x y : W', σ (H.β (φ x) (φ y)) = H'.β x y) (hφ : ∀ x : W', e (φ x) = e' x)
+    : Model H →SL[σ] Model H' :=
   have h_pres : MeasurePreserving φ μ' μ := measurePreserving_equiv H H' hφ
   let σL : ℂ →SL[σ] ℂ := σ.toSemilinearMap.mkContinuous 1 (by simp)
   LinearMap.mkContinuous
-    { toFun v :=
-        ⟨fun x ↦ σL ((v.1 ∘ φ) x), σL.integrable_comp (h_pres.integrable_comp_of_integrable v.2.1),
-          -- Apply `σ` to the reproducing formula of `v` at `φ x` and substitute `φ`.
-          fun x ↦ by
-            simpa [σL, map_integral_and_map_vacuum H H' hφ, ← map_sub, hβ] using
-              congrArg σ (v.property.2 (φ x))⟩
+    {
+      toFun v := ⟨
+        fun x ↦ σL ((v.1 ∘ φ) x),
+        σL.integrable_comp (h_pres.integrable_comp_of_integrable v.2.1),
+        -- Apply `σ` to the reproducing formula of `v` at `φ x` and substitute `φ`.
+        fun x ↦ by
+          simpa [σL, map_integral_and_map_vacuum H H' hφ, ← map_sub, hβ] using
+            congrArg σ (v.property.2 (φ x))
+      ⟩
       map_add' := by aesop
-      map_smul' := by aesop }
-    1 fun v ↦ by
+      map_smul' := by aesop
+    }
+    1
+    fun v ↦ by
       -- `σ` is isometric and `φ` preserves the measure, so the `L¹` norm is kept.
       refine le_of_eq ?_
       rw [norm_eq_integral_norm, norm_eq_integral_norm, one_mul,

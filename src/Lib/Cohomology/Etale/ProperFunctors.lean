@@ -300,14 +300,16 @@ lemma surjective_of_isFilteredColimit_of_exists_lift {α : Type} [PartialOrder �
     rw [← K.map_comp_apply]
     exact hm b hb
 
-/-- The subfunctors `U a ⊆ Y`, for ideals `a` of `R`, behave like the zero loci `V(a)` of the
-ideals in `Spec R`. -/
+/--
+The subfunctors `U a ⊆ Y`, for ideals `a` of `R`, behave like the zero loci `V(a)` of the
+ideals in `Spec R`.
+-/
 structure IsZeroLocusFamily (U : Ideal R → Subfunctor Y) : Prop where
   /-- Each inclusion `U a ⊆ Y` is relatively affine. -/
   isRelAffine (a : Ideal R) : IsRelAffine (U a).ι
   /-- The zero locus of a sum of ideals is the intersection of their zero loci. -/
-  mem_sSup_iff {A : CommRingCat} {x : Y.obj A} {c : Set (Ideal R)} :
-    x ∈ (U (sSup c)).obj A ↔ ∀ a ∈ c, x ∈ (U a).obj A
+  mem_sSup_iff {A : CommRingCat} {x : Y.obj A} {c : Set (Ideal R)}
+    : x ∈ (U (sSup c)).obj A ↔ ∀ a ∈ c, x ∈ (U a).obj A
   /-- The zero locus of the unit ideal has points only over the zero ring. -/
   subsingleton_of_mem_top {A : CommRingCat} {x : Y.obj A} (hx : x ∈ (U ⊤).obj A) : Subsingleton A
 

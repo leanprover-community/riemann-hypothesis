@@ -45,8 +45,10 @@ open scoped NumberField
 
 variable {P : Parameters} (D : Data P)
 
-/-- The quotient `c / c̄` of the finite idele `c = D.chosenIdele`, which generates the ideal of
-`D.piM`, by its conjugate. -/
+/--
+The quotient `c / c̄` of the finite idele `c = D.chosenIdele`, which generates the ideal of
+`D.piM`, by its conjugate.
+-/
 noncomputable def chosenRatio : 𝔸f D.E := star (↑D.chosenIdele⁻¹ : 𝔸f D.E) * D.chosenIdele
 
 /-- The adele `D.chosenRatio = c / c̄` has norm one. -/
@@ -209,8 +211,9 @@ namespace New.Seesaw
 
 open Matrix Space Weil Valued
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {q : ℕ} {g : Gf E n}
-  {d : 𝔸f E} {x : n → 𝔸f E}
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {q : ℕ} {g : Gf E n} {d : 𝔸f E} {x : n → 𝔸f E}
 
 /-- An element `g` of the finite adelic unitary group that is integral away from `q` preserves the
 group of vectors `x` with `d x` integral away from `q`. -/

@@ -84,22 +84,29 @@ namespace New.Floors
 
 open IntegralPlace PlaceData
 
-variable {A ι : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A] [P : IntegralPlace A] [Fintype ι]
-  [DecidableEq ι] {m : ℕ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram] (F : PlaceData ι T (m + 1))
+variable
+  {A ι : Type} {𝔰 : Shape}
+  [SemilocalField A] [StarRing A] [P : IntegralPlace A] [Fintype ι] [DecidableEq ι]
+  {m : ℕ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
+  (F : PlaceData ι T (m + 1))
 
-/-- The cosets `u (𝖴 ∩ K(M))` in the unipotent group `𝖴 = T.besselU`, where
+/--
+The cosets `u (𝖴 ∩ K(M))` in the unipotent group `𝖴 = T.besselU`, where
 `K(M) = F.congruenceSubgroup` is the principal congruence subgroup of the place data `F`. In the
 type of `F`, `ι` and `m + 1` give the shape of the basis of the middle space in `F`: `m + 2`
-hyperbolic pairs and orthonormal vectors indexed by `ι`. -/
+hyperbolic pairs and orthonormal vectors indexed by `ι`.
+-/
 abbrev PlaceData.UnipotentCosets : Type := T.besselU ⧸ F.congruenceSubgroup.subgroupOf T.besselU
 
 open scoped Classical in
-/-- The Kloosterman sum of `x` at `s`: the sum of `χ(u) conj χ(u')` over the pairs of cosets
+/--
+The Kloosterman sum of `x` at `s`: the sum of `χ(u) conj χ(u')` over the pairs of cosets
 `u`, `u'` in `𝖴 / (𝖴 ∩ K(M))` with `u⁻¹ x u' ∈ s K(M)`, each coset being read through its chosen
 representative. Here `𝖴 = T.besselU` is the Bessel unipotent group, `K(M) = F.congruenceSubgroup` is
 the principal congruence subgroup of level `M = F.levelUnit`, and
 `χ = extendedBesselChar F.levelUnit` is the finite Bessel function, which on `𝖴` is the character
-`ψ_𝖴`. -/
+`ψ_𝖴`.
+-/
 def PlaceData.kloostermanSum (x s : T.G) : ℂ :=
   ∑' w : F.UnipotentCosets × F.UnipotentCosets,
     if s⁻¹ * ((w.1.out : T.G)⁻¹ * x * (w.2.out : T.G)) ∈ F.congruenceSubgroup then
@@ -213,7 +220,8 @@ lemma PlaceData.tsum_extendedBesselChar_mul_star_extendedBesselChar {F : PlaceDa
     rw [ite_eq_left h_cond, extendedBesselChar_eq_of_inv_mul_mem h_left,
       extendedBesselChar_eq_of_inv_mul_mem h_right]
 
-/-- Assume `P.IsLargeLatticeData F`, which says, with `R = P.integers`, that: the form is unimodular
+/--
+Assume `P.IsLargeLatticeData F`, which says, with `R = P.integers`, that: the form is unimodular
 over `R`, and the basis and the level `M = F.levelUnit` are integral;
 * the compact set, the close pairs, the positions and the measures of `F` are those given by the
 lattice of integral vectors, and some isotropic vector is dual to the last frame vector;
@@ -226,21 +234,26 @@ group between the principal congruence subgroup `K(M) = F.congruenceSubgroup` an
 points, and `a`, `b` cosets of `K(M)` in `Z` whose representatives satisfy `a b⁻¹ ∈ s K(M)`. Let `W`
 be the Bessel vector of `Z`, with coordinates `W_a(y) = χ(y a⁻¹)` for the finite Bessel function
 `χ = extendedBesselChar F.levelUnit`. Then `∫ W_a(y) conj W_b(x⁻¹ y) dμ(y)` is `μ(K(M))` times the
-Kloosterman sum of `x` at `s`. -/
+Kloosterman sum of `x` at `s`.
+-/
 theorem IntegralPlace.IsLargeLatticeData.besselOrbitalIntegral_besselVector_apply
-    [hF : P.IsLargeLatticeData F] (Z : F.IntermediateGroup) (x : T.G) {s : T.G} {a b : Z.Cosets}
-    (hab : s⁻¹ * (a.out : T.G) * (b.out : T.G)⁻¹ ∈ F.congruenceSubgroup) :
-    besselOrbitalIntegral F.groupMeasure Z.besselVector x (a, b) =
-      F.groupMeasure.real F.congruenceSubgroup • F.kloostermanSum x s := by
+    [hF : P.IsLargeLatticeData F]
+    (Z : F.IntermediateGroup)
+    (x : T.G)
+    {s : T.G} {a b : Z.Cosets} (hab : s⁻¹ * (a.out : T.G) * (b.out : T.G)⁻¹ ∈ F.congruenceSubgroup)
+    : besselOrbitalIntegral F.groupMeasure Z.besselVector x (a, b)
+      = F.groupMeasure.real F.congruenceSubgroup • F.kloostermanSum x s := by
   have hZ : (Z : Subgroup T.G) ≤ unitaryLevel P.integers 1 T.splitGram := Z.property.2
   have hs : s ∈ unitaryLevel P.integers 1 T.splitGram :=
     mem_unitaryLevel_one_of_inv_mul_mul_inv_mem (hZ a.out.property) (hZ b.out.property) hab
   -- Put `y b` for `y`. The integrand is then constant on the cosets `y K(M)`.
-  let Φ (q : T.G ⧸ F.congruenceSubgroup) : ℂ := extendedBesselChar F.levelUnit (q.out * s⁻¹) * star
-    (extendedBesselChar F.levelUnit (x⁻¹ * q.out))
-  have h_coset (y : T.G) :
-      extendedBesselChar F.levelUnit (y * (b.out : T.G) * (a.out : T.G)⁻¹) * star
-        (extendedBesselChar F.levelUnit (x⁻¹ * y)) = Φ y := by
+  let Φ (q : T.G ⧸ F.congruenceSubgroup) : ℂ :=
+    extendedBesselChar F.levelUnit (q.out * s⁻¹)
+      * star (extendedBesselChar F.levelUnit (x⁻¹ * q.out))
+  have h_coset (y : T.G)
+      : extendedBesselChar F.levelUnit (y * (b.out : T.G) * (a.out : T.G)⁻¹)
+          * star (extendedBesselChar F.levelUnit (x⁻¹ * y))
+        = Φ y := by
     let z : T.G := (y : T.G ⧸ F.congruenceSubgroup).out
     have hz : y⁻¹ * z ∈ F.congruenceSubgroup := inv_mul_out_coe_mem _ y
     have h_first : (y * (b.out : T.G) * (a.out : T.G)⁻¹)⁻¹ * (z * s⁻¹) ∈ F.congruenceSubgroup := by

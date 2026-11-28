@@ -82,11 +82,14 @@ lemma min_ellVal_le_ellVal_add (x y : intQpBar ℓ) :
   · have h_dvd : y ∣ x + y := dvd_add (dvd_iff_ellVal_le.2 h) dvd_rfl
     exact min_le_of_right_le (dvd_iff_ellVal_le.1 h_dvd)
 
-/-- The valuation `v = ellVal`, with `v(ℓ) = 1`, as an additive valuation on `ℤ̄_ℓ = intQpBar ℓ`,
-the ring of integral elements of `ℚ̄_ℓ`. -/
+/--
+The valuation `v = ellVal`, with `v(ℓ) = 1`, as an additive valuation on `ℤ̄_ℓ = intQpBar ℓ`,
+the ring of integral elements of `ℚ̄_ℓ`.
+-/
 def ellAddVal : AddValuation (intQpBar ℓ) ℝ≥0∞ :=
-  .of (fun x : intQpBar ℓ ↦ ellVal x.val) ellVal_zero (by simp [ellVal]) min_ellVal_le_ellVal_add
-    ellVal_val_mul
+  .of
+    (fun x : intQpBar ℓ ↦ ellVal x.val)
+    ellVal_zero (by simp [ellVal]) min_ellVal_le_ellVal_add ellVal_val_mul
 
 lemma ellAddVal_apply (x : intQpBar ℓ) : ellAddVal x = ellVal x.val := rfl
 
@@ -160,20 +163,24 @@ lemma exists_ellVal_eq (ρ : ℚ≥0) : ∃ π : intQpBar ℓ, ellVal π.val = (
     mod_cast congrArg (NNRat.cast : ℚ≥0 → ℝ≥0) ρ.den_mul_eq_num
   exact ⟨π, (ENNReal.mul_right_inj (by simp) (by simp)).1 (h_val.trans h_den.symm)⟩
 
-/-- The residue field of `ℤ̄_ℓ = intQpBar ℓ`, the ring of integral elements of `ℚ̄_ℓ`, is
-algebraically closed. -/
+/--
+The residue field of `ℤ̄_ℓ = intQpBar ℓ`, the ring of integral elements of `ℚ̄_ℓ`, is
+algebraically closed.
+-/
 instance isAlgClosed_residueField : IsAlgClosed (ResidueField (intQpBar ℓ)) := by
   refine .of_exists_root _ fun f hf h_irred ↦ ?_
   obtain ⟨g, rfl, h_deg, hg⟩ :=
     lifts_and_degree_eq_and_monic (mem_lifts_of_surjective residue_surjective f) hf
-  obtain ⟨α, hα⟩ := exists_eval_eq_zero_of_monic hg
-    (h_deg.trans_ne (degree_pos_of_irreducible h_irred).ne')
+  obtain ⟨α, hα⟩ :=
+    exists_eval_eq_zero_of_monic hg (h_deg.trans_ne (degree_pos_of_irreducible h_irred).ne')
   exact ⟨residue _ α, by rw [eval_map_apply, hα, map_zero]⟩
 
 /-! ### The Gauss valuation -/
 
-/-- The Gauss valuation `v_ρ(g)` of radius `ρ` of a polynomial `g = ∑ y_i Y ^ i` over
-`ℤ̄_ℓ = intQpBar ℓ`: the least of the numbers `v(y_i) + ρ i`, where `v = ellVal`. -/
+/--
+The Gauss valuation `v_ρ(g)` of radius `ρ` of a polynomial `g = ∑ y_i Y ^ i` over
+`ℤ̄_ℓ = intQpBar ℓ`: the least of the numbers `v(y_i) + ρ i`, where `v = ellVal`.
+-/
 def gaussVal (ρ : ℚ≥0) (g : (intQpBar ℓ)[X]) : ℝ≥0∞ :=
   ⨅ i : ℕ, ellVal (g.coeff i).val + (ρ : ℝ≥0) * (i : ℝ≥0∞)
 
@@ -365,23 +372,27 @@ lemma exists_eq_mul_prod_roots (g : (intQpBar ℓ)[X]) :
     simp [gaussVal_prod_X_sub_C, min_eq_right zero_le]
   rw [ellVal_eval_eq_of_roots_eq_zero hq y z, hz, ← h_eq, gaussVal_mul, h_prod, zero_add]
 
-/-- The Gauss valuation `v_ρ(g)` of radius `ρ`, the least of the `v(y_i) + ρ i` for the coefficients
+/--
+The Gauss valuation `v_ρ(g)` of radius `ρ`, the least of the `v(y_i) + ρ i` for the coefficients
 `y_i` of `g`, is `v₀(g) + ∑ min(v(α), ρ)`: the sum is over the integral roots `α` of `g` with
-multiplicity, `v` is the valuation `ellVal` and `v₀` the Gauss valuation of radius `0`. -/
-theorem gaussVal_eq_add_sum_roots (g : (intQpBar ℓ)[X]) :
-    gaussVal ρ g =
-      gaussVal 0 g + (g.roots.map fun α : intQpBar ℓ ↦ min (ellVal α.val) (ρ : ℝ≥0)).sum := by
+multiplicity, `v` is the valuation `ellVal` and `v₀` the Gauss valuation of radius `0`.
+-/
+theorem gaussVal_eq_add_sum_roots (g : (intQpBar ℓ)[X])
+    : gaussVal ρ g
+      = gaussVal 0 g + (g.roots.map fun α : intQpBar ℓ ↦ min (ellVal α.val) (ρ : ℝ≥0)).sum := by
   obtain ⟨q, h_eq, hq⟩ := exists_eq_mul_prod_roots g
   obtain ⟨y, -, hy⟩ := exists_ellVal_eval_eq_gaussVal ρ q
   have h_const : gaussVal ρ q = gaussVal 0 g := hy.symm.trans (hq y)
   conv_lhs => rw [h_eq, gaussVal_mul, gaussVal_prod_X_sub_C, h_const]
 
-/-- At an integral point `y` an integral polynomial `g` has `v(g(y)) = v₀(g) + ∑ v(y - α)`, the sum
+/--
+At an integral point `y` an integral polynomial `g` has `v(g(y)) = v₀(g) + ∑ v(y - α)`, the sum
 over the integral roots `α` of `g` with multiplicity; `v` is the valuation `ellVal` and `v₀` the
-Gauss valuation of radius `0`. -/
-theorem ellVal_eval_eq_add_sum_roots (g : (intQpBar ℓ)[X]) (y : intQpBar ℓ) :
-    ellVal (g.eval y).val =
-      gaussVal 0 g + (g.roots.map fun α : intQpBar ℓ ↦ ellVal (y - α).val).sum := by
+Gauss valuation of radius `0`.
+-/
+theorem ellVal_eval_eq_add_sum_roots (g : (intQpBar ℓ)[X]) (y : intQpBar ℓ)
+    : ellVal (g.eval y).val
+      = gaussVal 0 g + (g.roots.map fun α : intQpBar ℓ ↦ ellVal (y - α).val).sum := by
   obtain ⟨q, h_eq, hq⟩ := exists_eq_mul_prod_roots g
   have h_eval : g.eval y = q.eval y * (g.roots.map fun α : intQpBar ℓ ↦ y - α).prod := by
     simpa [eval_multiset_prod] using congrArg (eval y) h_eq

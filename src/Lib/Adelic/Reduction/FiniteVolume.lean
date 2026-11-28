@@ -237,12 +237,15 @@ noncomputable def projectionOff (s : Finset n) : Matrix n n E :=
 noncomputable def formDualOff (J Y : GL n E) (s : Finset n) : Matrix n n E :=
   (formDual J Y).val * projectionOff E s
 
-/-- The columns of `Y` indexed by `s` span an isotropic subspace for `J`, and the basis `W` dual to
+/--
+The columns of `Y` indexed by `s` span an isotropic subspace for `J`, and the basis `W` dual to
 `Y` is bounded at the frame `y`: the finite part of `W⁻¹ y` lies in `Cf`, and the matrix `Z` made
-from `W` by setting the columns indexed by `s` to zero has `y⁻¹ Z ∈ C` and `Zᴴ J Z ∈ F`. -/
-structure IsBoundedDualBasis (F : Set (Matrix n n E)) (C : Set (Matrix n n (𝔸 E)))
-    (Cf : Set (GL n (𝔸f E))) (J : GL n E) (y : GL n (𝔸 E)) (Y : GL n E) (s : Finset n) :
-    Prop where
+from `W` by setting the columns indexed by `s` to zero has `y⁻¹ Z ∈ C` and `Zᴴ J Z ∈ F`.
+-/
+structure IsBoundedDualBasis
+    (F : Set (Matrix n n E)) (C : Set (Matrix n n (𝔸 E))) (Cf : Set (GL n (𝔸f E))) (J : GL n E)
+    (y : GL n (𝔸 E)) (Y : GL n E) (s : Finset n)
+    : Prop where
   /-- The columns of `Y` indexed by `s` span an isotropic subspace. -/
   isotropic : ∀ i ∈ s, ∀ j ∈ s, (Y.valᴴ * J.val * Y.val) i j = 0
   /-- The Gram matrix of the remaining dual columns lies in `F`. -/
@@ -365,8 +368,8 @@ open MeasureTheory Measure NumberField
 
 namespace New
 
-variable {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ}
+variable
+  {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
 
 deriving instance MeasurableMul₂, MeasurableInv for G
 
@@ -376,11 +379,13 @@ instance : (volume : Measure (G E s)).IsHaarMeasure :=
 
 instance : SFinite (volume : Measure (G E s)) := inferInstance
 
-/-- The measure on `G E s` that computes integrals over the quotient `V.Γ \ G E s` by the rational
+/--
+The measure on `G E s` that computes integrals over the quotient `V.Γ \ G E s` by the rational
 points of the space `V`: Haar measure weighted by a cutoff for counting measure on `V.Γ`, chosen so
-that integrating `∑ γ : V.Γ, F (γ • g)` against it gives `∫⁻ F` for `volume`. -/
-noncomputable abbrev Space.quotMeasure {E : Type} [Field E] [CMType E]
-    (V : Space E n s) : Measure (G E s) :=
+that integrating `∑ γ : V.Γ, F (γ • g)` against it gives `∫⁻ F` for `volume`.
+-/
+noncomputable abbrev Space.quotMeasure {E : Type} [Field E] [CMType E] (V : Space E n s)
+    : Measure (G E s) :=
   V.Γ.quotMeasure
 
 end New
@@ -395,8 +400,8 @@ open NumberField Matrix MeasureTheory New.Core Set ENNReal Finset Fintype Functi
 
 section
 
-variable {E n : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  (V : Space E n s)
+variable
+  {E n : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ} (V : Space E n s)
 
 omit [Fintype n] [DecidableEq n] in
 /-- If `θ - star θ` is invertible, then `S + θ • T` determines the hermitian matrices `S`, `T`. -/
@@ -454,8 +459,10 @@ lemma Space.ideleAbs_det_x : ideleAbs V.x.det = 1 := by
   simpa [J, field, pow_eq_one_iff_of_nonneg] using congrArg (fun g ↦ ideleAbs g.det) h_sq
 
 variable (E n) in
-/-- The invertible adelic matrices with entries in the closed unit box (absolute value at most `1`
-at the infinite places, integral at the finite places) and determinant of module at least `1`. -/
+/--
+The invertible adelic matrices with entries in the closed unit box (absolute value at most `1`
+at the infinite places, integral at the finite places) and determinant of module at least `1`.
+-/
 def Core.unitBoxGL : Set (GL n (𝔸 E)) :=
   {A : GL n (𝔸 E) | A.val ∈ (Metric.closedBall 0 1 ×ˢ Ô E).matrix ∧ 1 ≤ ideleAbs A.det}
 
@@ -575,8 +582,8 @@ lemma Core.sum_toNat_neg_add_le {m B : ℕ} (h_rank : Nonempty n → 2 * m < car
 
 end
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  (V : Space E n s)
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ} (V : Space E n s)
 
 open Pointwise in
 /-- For `g` in the adelic unitary group `G E s`, a basis at `g` is a rational `Z` in
@@ -776,10 +783,12 @@ lemma Space.lintegral_encard_ne_top {t : Type*} [Fintype t] {Ω : Set (Matrix n 
       simp only [ω, div_eq_mul_inv, prod_pow_eq_pow_sum, ENNReal.inv_pow]
       exact le_of_eq (by ring)
 
-/-- The quotient `V.Γ \ G` of the adelic unitary group by its rational points has finite volume.
+/--
+The quotient `V.Γ \ G` of the adelic unitary group by its rational points has finite volume.
 
 This is the finite volume theorem for adelic quotients in the case of unitary groups over CM
-fields of hermitian forms with an adelic orthonormal frame, of any rank and signs. -/
+fields of hermitian forms with an adelic orthonormal frame, of any rank and signs.
+-/
 instance Space.isFiniteMeasure_quotMeasure : IsFiniteMeasure V.quotMeasure := by
   -- The case `t = Empty`: there is exactly one matrix `ξ`, so the integrand is `1`.
   simpa [isFiniteMeasure_iff, lt_top_iff_ne_top, ENat.card, Cardinal.mk_eq_one] using

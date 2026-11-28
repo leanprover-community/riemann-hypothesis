@@ -53,17 +53,20 @@ open Finset AddMonoidAlgebra Equiv Fintype Matrix HCParam
 
 variable {n : Type _} [Fintype n] [DecidableEq n]
 
-/-- Rearrangement with a gain: if `o` strictly reverses the order of `b`, then permuting `b` by `w`
-raises `o ⬝ᵥ b` by at least `|b i - b (w i)|`, for every `i`. -/
-theorem dotProduct_add_gain_le_comp_perm (o b : n → ℤ) (ho : ∀ i j : n, b j < b i → o i < o j)
-    (w : Perm n) (i : n) : o ⬝ᵥ b + |b i - b (w i)| ≤ o ⬝ᵥ b ∘ w := by
+/--
+Rearrangement with a gain: if `o` strictly reverses the order of `b`, then permuting `b` by `w`
+raises `o ⬝ᵥ b` by at least `|b i - b (w i)|`, for every `i`.
+-/
+theorem dotProduct_add_gain_le_comp_perm
+    (o b : n → ℤ) (ho : ∀ i j : n, b j < b i → o i < o j) (w : Perm n) (i : n)
+    : o ⬝ᵥ b + |b i - b (w i)| ≤ o ⬝ᵥ b ∘ w := by
   -- Moving `o i` by `± 1` keeps `o` antivarying with `b`, so the rearrangement inequality applies
   -- to the moved vector; the extra terms give `± (b i - b (w i))`.
-  have rearr (c : ℤ) (hc : c = 1 ∨ c = -1) :
-      (o + Pi.single i c) ⬝ᵥ b ≤ (o + Pi.single i c) ⬝ᵥ b ∘ w :=
+  have rearr (c : ℤ) (hc : c = 1 ∨ c = -1)
+      : (o + Pi.single i c) ⬝ᵥ b ≤ (o + Pi.single i c) ⬝ᵥ b ∘ w :=
     Antivary.sum_mul_le_sum_mul_comp_perm fun x y hxy ↦ by grind [ho y x hxy, Pi.add_apply]
   have up : o ⬝ᵥ b + b i ≤ o ⬝ᵥ b ∘ w + b (w i) := by simpa using rearr 1 (.inl rfl)
-  have down : o ⬝ᵥ b + -b i ≤ o ⬝ᵥ b ∘ w + -b (w i) := by simpa using rearr (-1) (.inr rfl)
+  have down : o ⬝ᵥ b + - b i ≤ o ⬝ᵥ b ∘ w + - b (w i) := by simpa using rearr (-1) (.inr rfl)
   grind
 
 /-- Antisymmetrising the alternant over the Weyl group of `K` (the permutations that fix the signs
@@ -299,8 +302,10 @@ lemma lowerCount_neg_compactForm_lt {ε : n → ℤˣ} (l : HCParam ε) {i j : n
     (ssubset_iff_of_subset (by grind)).2 ⟨i, by simpa using h_lt, by simp⟩
   simpa [lowerCount] using card_lt_card h_ssubset
 
-/-- The exponent `κ` of the numerator in Weyl's character formula for the compact form of `l`. It
-is `paramAddRho l` plus the vector that counts, at `i`, the entries of `l` above `l i`. -/
+/--
+The exponent `κ` of the numerator in Weyl's character formula for the compact form of `l`. It
+is `paramAddRho l` plus the vector that counts, at `i`, the entries of `l` above `l i`.
+-/
 def numeratorExponent {ε : n → ℤˣ} (l : HCParam ε) : n → ℤ :=
   paramAddRho l + (-l).compactForm.lowerCount Eq
 
@@ -475,15 +480,19 @@ lemma formalDegree_mul_kTypeNormSq_and_isOrbitalLaurent [Nonempty n] {ε : n →
     simp [scalar, noncompactSign, abs_of_pos, formalDegree_pos hg, norm_σ]
   exact ⟨by rw [← norm_eq, scalar_eq, norm_one], by rwa [P_eq, scalar_eq, one_smul] at hP⟩
 
-/-- **Harish-Chandra's formal degree formula**, for a parameter `l` of gap `500 n³ + 10 n⁵`: the
+/--
+**Harish-Chandra's formal degree formula**, for a parameter `l` of gap `500 n³ + 10 n⁵`: the
 formal degree of the discrete series, for the compact dual measure, is the value
-`weylDimensionPoly l` of Weyl's dimension polynomial. -/
-theorem formalDegree_eq_weylDimensionPoly [Nonempty n] {ε : n → ℤˣ} {l : HCParam ε}
-    (hg : l.HasLargeGap (10 * card n ^ 5)) : l.formalDegree = weylDimensionPoly l := by
+`weylDimensionPoly l` of Weyl's dimension polynomial.
+-/
+theorem formalDegree_eq_weylDimensionPoly
+    [Nonempty n] {ε : n → ℤˣ} {l : HCParam ε} (hg : l.HasLargeGap (10 * card n ^ 5))
+    : l.formalDegree = weylDimensionPoly l := by
   rw [eq_inv_of_mul_eq_one_left (formalDegree_mul_kTypeNormSq_and_isOrbitalLaurent hg).1]
   exact weyl_dimension_formula (HasGap.signs_one hg)
 
-/-- Let the Harish-Chandra parameter `l = 2λ` have gap `500 n³ + 10 n⁵`, and let `l.dsKernel g` be
+/--
+Let the Harish-Chandra parameter `l = 2λ` have gap `500 n³ + 10 n⁵`, and let `l.dsKernel g` be
 `l.formalDegree` (`deg_λ`) times the conjugate of the discrete series coefficient `l.dsCoeff g`
 (`c_λ(g)`). At a regular point `x` of the compact torus, the stable sum of the orbital integrals of
 `l.dsKernel` is, up to the sign `(-1) ^ #(oppositePairs ε)`, the order of the Weyl group of `K`
@@ -492,12 +501,15 @@ Here `oppositePairs ε` is the set of pairs `(a, b)` with `ε a = 1` and `ε b =
 
 This is a consequence of Harish-Chandra's elliptic orbital integral formula for discrete series
 coefficients. It gives only the sum over all permutations, and the integrals converge
-absolutely. -/
-theorem neg_one_pow_mul_sum_integral_dsKernel [Nonempty n] {ε : n → ℤˣ} {l : HCParam ε}
-    (hg : l.HasLargeGap (10 * card n ^ 5)) {x : n → Circle} (x_inj : x.Injective) :
-    (-1) ^ #(oppositePairs ε) *
-        ∑ σ : Perm n, ∫ g : USign ε, l.dsKernel (g⁻¹ * diagTorus ε (x ∘ σ) * g) =
-      #{σ : Perm n | ε ∘ σ = ε} * star (l.compactForm.lowestKType.kTypeChar (diagTorusK x)) := by
+absolutely.
+-/
+theorem neg_one_pow_mul_sum_integral_dsKernel
+    [Nonempty n]
+    {ε : n → ℤˣ} {l : HCParam ε} (hg : l.HasLargeGap (10 * card n ^ 5))
+    {x : n → Circle} (x_inj : x.Injective)
+    : (-1) ^ #(oppositePairs ε)
+        * ∑ σ : Perm n, ∫ g : USign ε, l.dsKernel (g⁻¹ * diagTorus ε (x ∘ σ) * g)
+      = # {σ : Perm n | ε ∘ σ = ε} * star (l.compactForm.lowestKType.kTypeChar (diagTorusK x)) := by
   -- Divide the Laurent polynomial `D ^ N * alternant ε κ` of the orbital integral by `D ^ N` and
   -- antisymmetrise over all permutations; Weyl's character formula identifies the result.
   let κ : n → ℤ := numeratorExponent l
@@ -515,12 +527,14 @@ theorem neg_one_pow_mul_sum_integral_dsKernel [Nonempty n] {ε : n → ℤˣ} {l
   have denom : l.rootProd Eq * D ^ (N + 1) = D ^ N * (s • V) := by
     rw [V_eq, ← mul_smul_comm, ← D_eq, pow_succ, mul_left_comm]
   -- Evaluate at `x ∘ τ` and cancel `D ^ N`.
-  have integral_eq (τ : Perm n) : torusEval x V * s * l.formalDegree *
-      ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε (x ∘ τ) * g :) =
-        τ.sign * torusEval (x ∘ τ) (alternant ε κ) := by
+  have integral_eq (τ : Perm n)
+      : torusEval x V * s * l.formalDegree
+          * ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε (x ∘ τ) * g :)
+        = τ.sign * torusEval (x ∘ τ) (alternant ε κ) := by
     set I : ℂ := ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε (x ∘ τ) * g :)
-    have eval_P : torusEval (x ∘ τ) (D ^ N * alternant ε κ) =
-        torusEval (x ∘ τ) (l.rootProd Eq * D ^ (N + 1)) * (l.formalDegree * I) :=
+    have eval_P
+        : torusEval (x ∘ τ) (D ^ N * alternant ε κ)
+          = torusEval (x ∘ τ) (l.rootProd Eq * D ^ (N + 1)) * (l.formalDegree * I) :=
       hP.torusEval_eq (x ∘ τ)
     have sign_sq : (τ.sign : ℂ) * τ.sign = 1 := by simp [← Int.cast_mul]
     have D_ne : torusEval (x ∘ τ) D ≠ 0 :=
@@ -529,20 +543,23 @@ theorem neg_one_pow_mul_sum_integral_dsKernel [Nonempty n] {ε : n → ℤˣ} {l
     rw [mul_left_cancel₀ (pow_ne_zero N D_ne) eval_P]
     linear_combination -(torusEval x V * s * l.formalDegree * I) * sign_sq
   -- Conjugate, multiply by the Weyl denominator, sum over `τ` and compare with Weyl's formula.
-  have kernel (τ : Perm n) : star (∫ g : USign ε, l.dsKernel (g⁻¹ * diagTorus ε (x ∘ τ) * g)) =
-      l.formalDegree * ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε (x ∘ τ) * g :) := by
+  have kernel (τ : Perm n)
+      : star (∫ g : USign ε, l.dsKernel (g⁻¹ * diagTorus ε (x ∘ τ) * g))
+        = l.formalDegree * ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε (x ∘ τ) * g :) := by
     simp [dsKernel, integral_conj, MeasureTheory.integral_const_mul]
   refine star_injective (mul_left_cancel₀ (torusEval_rootProd_ne_zero l.compactForm Eq x_inj) ?_)
-  calc torusEval x V *
-        star (s * ∑ τ : Perm n, ∫ g : USign ε, l.dsKernel (g⁻¹ * diagTorus ε (x ∘ τ) * g))
-      = ∑ τ : Perm n, τ.sign * torusEval (x ∘ τ) (alternant ε κ) := by
-        simp only [star_mul', show star s = s by simp [s], star_sum, kernel, mul_sum, ← mul_assoc,
-          integral_eq]
-    _ = #{σ : Perm n | ε ∘ σ = ε} * torusEval x (alternant 1 κ) :=
-        sum_sign_mul_eval_alternant ε κ x
+  calc
+    torusEval x V
+          * star (s * ∑ τ : Perm n, ∫ g : USign ε, l.dsKernel (g⁻¹ * diagTorus ε (x ∘ τ) * g))
+        = ∑ τ : Perm n, τ.sign * torusEval (x ∘ τ) (alternant ε κ) := by
+      simp only [star_mul', show star s = s by simp [s], star_sum, kernel, mul_sum, ← mul_assoc,
+        integral_eq]
+    _ = # {σ : Perm n | ε ∘ σ = ε} * torusEval x (alternant 1 κ) :=
+      sum_sign_mul_eval_alternant ε κ x
     _ = _ := by simp [κ, ← torusEval_rootProd_mul_kTypeChar hg, mul_left_comm]
 
-/-- Let `l = 2λ` be a Harish-Chandra parameter for the signs `ε`, with `n` nonempty and gap
+/--
+Let `l = 2λ` be a Harish-Chandra parameter for the signs `ε`, with `n` nonempty and gap
 `500 n³ + 10 n⁵`. Then (a) the formal degree, the reciprocal of `∫ |c_λ|²` over `USign ε`, equals
 `weylDimensionPoly l`; (b) at every regular point `x` of the compact torus (`x` injective), the sum
 over all permutations `σ` of the orbital integrals `∫ l.dsKernel (g⁻¹ diag(x ∘ σ) g) dg`, which
@@ -554,14 +571,17 @@ the complex conjugate of `c_λ`.
 
 These are Harish-Chandra's formal degree formula and the stable form, summed over all permutations,
 of his formula for elliptic orbital integrals of discrete series coefficients, for U(p, q),
-parameters with large gap and one coefficient. -/
-theorem harish_chandra_degree_and_orbital {ε : n → ℤˣ} {l : HCParam ε} [Nonempty n]
-    (hg : l.HasLargeGap (10 * card n ^ 5)) :
-    l.formalDegree = weylDimensionPoly l ∧
-    ∀ x : n → Circle, x.Injective →
-      (-1) ^ #(oppositePairs ε) *
-          ∑ σ : Perm n, ∫ g : USign ε, l.dsKernel (g⁻¹ * diagTorus ε (x ∘ σ) * g) =
-        #{σ : Perm n | ε ∘ σ = ε} * star (l.compactForm.lowestKType.kTypeChar (diagTorusK x)) :=
+parameters with large gap and one coefficient.
+-/
+theorem harish_chandra_degree_and_orbital
+    {ε : n → ℤˣ} {l : HCParam ε} [Nonempty n] (hg : l.HasLargeGap (10 * card n ^ 5))
+    : l.formalDegree = weylDimensionPoly l
+      ∧ ∀ x : n → Circle,
+        x.Injective
+          → (-1) ^ #(oppositePairs ε)
+              * ∑ σ : Perm n, ∫ g : USign ε, l.dsKernel (g⁻¹ * diagTorus ε (x ∘ σ) * g)
+            = # {σ : Perm n | ε ∘ σ = ε}
+              * star (l.compactForm.lowestKType.kTypeChar (diagTorusK x)) :=
   ⟨formalDegree_eq_weylDimensionPoly hg, fun _ ↦ neg_one_pow_mul_sum_integral_dsKernel hg⟩
 
 end New.Orbital

@@ -89,8 +89,9 @@ private lemma pi_mul_inv_apply {ι G : Type*} [Group G] (a b : ι → G) (w : ι
     (a * b)⁻¹ w = b⁻¹ w * a⁻¹ w := by
   rw [_root_.mul_inv_rev, Pi.mul_apply]
 
-variable {E n a b m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
-  [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m]
+variable
+  {E n a b m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype a]
+  [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m]
   {s : n → ℤˣ} {r : m → ℤˣ} {X : Space E m r} {W₁ : Space E n s}
 
 /-- Let `τ ≥ 0` be smooth, compactly supported and nonzero at some `y`, and let `v` be a Schwartz
@@ -200,16 +201,18 @@ lemma exists_isSchwartzVector_realSlice_zero_eq (A : X.Splitting W₁ b) [IsBase
     ExistsContDiffBumpBase.u_nonneg 0 hτ_zero
   exact ⟨w, hw, hw_zero⟩
 
-/-- A smooth local form of Witt's theorem, for spans. Let `J` be Hermitian and `x` a frame
+/--
+A smooth local form of Witt's theorem, for spans. Let `J` be Hermitian and `x` a frame
 (a matrix of column vectors) with invertible Gram matrix `xᴴ * J * x`. There are elements `k y` of
 the unitary group `U J`, indexed by all frames `y`, such that the matrix of `k y` is a smooth
 function of `y` and, for `y` near `x`, the columns of `y` are linear combinations of those of
-`k y * x`. -/
-theorem exists_contDiff_witt {J : Matrix m m ℂ} (hJ : Jᴴ = J) {x : Matrix m b ℂ}
-    (hdet : (xᴴ * J * x).det ≠ 0) :
-    ∃ k : Matrix m b ℂ → U J,
-      ContDiff ℝ ∞ (fun y : Matrix m b ℂ ↦ (k y : Matrix m m ℂ)) ∧
-      ∀ᶠ y : Matrix m b ℂ in nhds x, ∃ c : Matrix b b ℂ, (k y : Matrix m m ℂ) * x * c = y := by
+`k y * x`.
+-/
+theorem exists_contDiff_witt
+    {J : Matrix m m ℂ} (hJ : Jᴴ = J) {x : Matrix m b ℂ} (hdet : (xᴴ * J * x).det ≠ 0)
+    : ∃ k : Matrix m b ℂ → U J,
+      ContDiff ℝ ∞ (fun y : Matrix m b ℂ ↦ (k y : Matrix m m ℂ))
+        ∧ ∀ᶠ y : Matrix m b ℂ in nhds x, ∃ c : Matrix b b ℂ, (k y : Matrix m m ℂ) * x * c = y := by
   -- `L a` lies in the Lie algebra of `U J`, and `a - L a` keeps the span of `x`. The map
   -- `T a = exp (L a) * (a - L a)` has derivative the identity at `1`, so it has a local inverse
   -- `A`; apply `A` to a matrix `z y` near `1` with `z y * x = y`.
@@ -228,8 +231,7 @@ theorem exists_contDiff_witt {J : Matrix m m ℂ} (hJ : Jᴴ = J) {x : Matrix m 
   let T (a : Matrix m m ℂ) : Matrix m m ℂ := NormedSpace.exp (L a) * (a - L a)
   have hL₁ : L 1 = 0 := by
     simp only [L, Matrix.one_mul, conjTranspose_one, Matrix.mul_one, sub_self, Matrix.zero_mul]
-  have hT₁ : T 1 = 1 := by
-    simp only [T, hL₁, NormedSpace.exp_zero, sub_zero, Matrix.one_mul]
+  have hT₁ : T 1 = 1 := by simp only [T, hL₁, NormedSpace.exp_zero, sub_zero, Matrix.one_mul]
   have hL_smooth : ContDiff ℝ ω L :=
     contDiff_mat_mul
       ((contDiff_mat_mul (contDiff_mat_mul contDiff_id contDiff_const) contDiff_const).sub
@@ -238,31 +240,33 @@ theorem exists_contDiff_witt {J : Matrix m m ℂ} (hJ : Jᴴ = J) {x : Matrix m 
   have hT' : HasFDerivAt T (ContinuousLinearEquiv.refl ℝ _).toContinuousLinearMap 1 := by
     obtain ⟨L', hL'⟩ := (hL_smooth.of_le le_top).differentiable_one 1
     open Norms.L2Operator in
-      -- The product rule gives `(id - L') + L'`.
-      refine ((HasFDerivAt.comp 1 (by simpa only [hL₁] using hasFDerivAt_exp_zero) hL').fun_mul'
-        ((hasFDerivAt_id 1).fun_sub hL')).congr_fderiv ?_
-      simp only [hL₁, Function.comp_apply, NormedSpace.exp_zero, sub_zero, id, one_smul,
-        MulOpposite.op_one]
-      exact sub_add_cancel _ L'
+    -- The product rule gives `(id - L') + L'`.
+    refine ((HasFDerivAt.comp 1 (by simpa only [hL₁] using hasFDerivAt_exp_zero) hL').fun_mul'
+      ((hasFDerivAt_id 1).fun_sub hL')).congr_fderiv ?_
+    simp only [hL₁, Function.comp_apply, NormedSpace.exp_zero, sub_zero, id, one_smul,
+      MulOpposite.op_one]
+    exact sub_add_cancel _ L'
   obtain ⟨A, hA, hTA⟩ : ∃ A, ContDiff ℝ ∞ A ∧ ∀ᶠ z in nhds 1, T (A z) = z := by
     have hT : ContDiffAt ℝ ω T 1 :=
-      (contDiff_mat_mul (contDiff_matrix_exp.comp hL_smooth)
-        (contDiff_id.sub hL_smooth)).contDiffAt
-    obtain ⟨A, hA, h_eq⟩ := exists_contDiff_eventuallyEq
-      (hT.to_localInverse hT' (WithTop.coe_ne_top (a := (0 : ℕ∞))).symm)
+      (contDiff_mat_mul (contDiff_matrix_exp.comp hL_smooth) (contDiff_id.sub hL_smooth)).contDiffAt
+    obtain ⟨A, hA, h_eq⟩ :=
+      exists_contDiff_eventuallyEq (hT.to_localInverse hT'
+        (WithTop.coe_ne_top (a := (0 : ℕ∞))).symm)
     rw [← hT₁]
     exact ⟨A, hA, (h_eq.fun_comp T).trans (HasStrictFDerivAt.eventually_right_inverse _)⟩
   let z (y : Matrix m b ℂ) : Matrix m m ℂ := 1 - (x - y) * w * J
   have hz_smooth : ContDiff ℝ ∞ z :=
-    contDiff_const.sub
-      (contDiff_mat_mul (contDiff_mat_mul (contDiff_const.sub contDiff_id) contDiff_const)
-        contDiff_const)
+    contDiff_const.sub (contDiff_mat_mul
+      (contDiff_mat_mul (contDiff_const.sub contDiff_id) contDiff_const) contDiff_const)
   have hz : Tendsto z (nhds x) (nhds 1) :=
     hz_smooth.continuous.tendsto' _ _ (by simp only [z, sub_self, Matrix.zero_mul, sub_zero])
-  refine ⟨fun y ↦ expU ⟨L (A (z y)), hL _⟩,
+  refine ⟨
+    fun y ↦ expU ⟨L (A (z y)), hL _⟩,
     ((contDiff_matrix_exp.comp (hL_smooth.of_le le_top)).comp hA).comp hz_smooth,
-    (hz.eventually hTA).mono fun y hy ↦ ⟨w * (A (z y))ᴴ * J * x, ?_⟩⟩
-  calc NormedSpace.exp (L (A (z y))) * x * (w * (A (z y))ᴴ * J * x)
+    (hz.eventually hTA).mono fun y hy ↦ ⟨w * (A (z y))ᴴ * J * x, ?_⟩
+  ⟩
+  calc
+    NormedSpace.exp (L (A (z y))) * x * (w * (A (z y))ᴴ * J * x)
     _ = T (A (z y)) * x := by rw [Matrix.mul_assoc, ← hL_span, ← Matrix.mul_assoc]
     _ = z y * x := by rw [hy]
     _ = y := by rw [Matrix.sub_mul, Matrix.one_mul, hw, _root_.sub_sub_cancel]
@@ -347,13 +351,18 @@ lemma exists_mul_mul_eq_and_gram_eq {J : Matrix m m ℂ} (g : U J) {x₀ x : Mat
       mul_nonsing_inv _ (isUnit_iff_ne_zero.2 (right_ne_zero_of_mul hdet)), Matrix.mul_one]
   exact ⟨c * A⁻¹, hx, by conv_rhs => rw [← hx, gram_mul, U.gram_invariant]⟩
 
-/-- Smooth data for Witt's theorem near a frame `x₀`, for a form `J`: a function `γ` on square
+/--
+Smooth data for Witt's theorem near a frame `x₀`, for a form `J`: a function `γ` on square
 matrices, unitary elements `k y` indexed by frames `y`, and a bump function `σ` on families of
 frames. For each member `y` of a family at which `σ` does not vanish, `γ` inverts the Gram matrix of
-`y` and `y` lies in the span of `k y * x₀`. -/
-structure IsWittBump {ι : Type*} [Fintype ι] (J : Matrix m m ℂ) (x₀ : Matrix m b ℂ)
-    (γ : Matrix b b ℂ → Matrix b b ℂ) (k : Matrix m b ℂ → U J) (σ : (ι → Matrix m b ℂ) → ℝ) :
-    Prop where
+`y` and `y` lies in the span of `k y * x₀`.
+-/
+structure IsWittBump
+    {ι : Type*} [Fintype ι]
+    (J : Matrix m m ℂ)
+    (x₀ : Matrix m b ℂ) (γ : Matrix b b ℂ → Matrix b b ℂ) (k : Matrix m b ℂ → U J)
+    (σ : (ι → Matrix m b ℂ) → ℝ)
+    : Prop where
   /-- `γ` is smooth. -/
   contDiff_inv : ContDiff ℝ ∞ γ
   /-- `γ` inverts the Gram matrix of `x₀`. -/
@@ -369,11 +378,11 @@ structure IsWittBump {ι : Type*} [Fintype ι] (J : Matrix m m ℂ) (x₀ : Matr
   /-- `σ` is `1` at the constant family `x₀`. -/
   bump_base : σ (fun _ : ι ↦ x₀) = 1
   /-- Where `σ` does not vanish, each frame `y` lies in the span of `k y * x₀`. -/
-  exists_mul_eq : ∀ x : ι → Matrix m b ℂ, σ x ≠ 0 → ∀ i : ι,
-    ∃ c : Matrix b b ℂ, (k (x i) : Matrix m m ℂ) * x₀ * c = x i
+  exists_mul_eq
+    : ∀ x : ι → Matrix m b ℂ,
+      σ x ≠ 0 → ∀ i : ι, ∃ c : Matrix b b ℂ, (k (x i) : Matrix m m ℂ) * x₀ * c = x i
   /-- Where `σ` does not vanish, `γ` inverts the Gram matrix of each frame. -/
-  inv_gram : ∀ x : ι → Matrix m b ℂ, σ x ≠ 0 → ∀ i : ι,
-    γ ((x i)ᴴ * J * x i) = ((x i)ᴴ * J * x i)⁻¹
+  inv_gram : ∀ x : ι → Matrix m b ℂ, σ x ≠ 0 → ∀ i : ι, γ ((x i)ᴴ * J * x i) = ((x i)ᴴ * J * x i)⁻¹
   /-- Where `σ` does not vanish, the Gram matrix of each frame is invertible. -/
   det_gram_ne_zero : ∀ x : ι → Matrix m b ℂ, σ x ≠ 0 → ∀ i : ι, ((x i)ᴴ * J * x i).det ≠ 0
 
@@ -436,10 +445,12 @@ lemma exists_sum_one_eq_mul_mul_sum {t' : b → ℤˣ}
     mul_fromCols, toCols₁_fromCols, h_u, Matrix.mul_assoc,
     ← Matrix.mul_assoc (k : Matrix (b ⊕ n) (b ⊕ n) ℂ), h_fix]
 
-/-- The coordinates at the infinite places of an `a × b` matrix, read as one complex matrix for each
-place. -/
-noncomputable def placeMatrices (E a b : Type) [Field E] [CMType E] [Fintype a] [Fintype b] :
-    (InfinitePlace E × a × b → ℂ) ≃L[ℝ] InfinitePlace E → Matrix a b ℂ :=
+/--
+The coordinates at the infinite places of an `a × b` matrix, read as one complex matrix for each
+place.
+-/
+noncomputable def placeMatrices (E a b : Type) [Field E] [CMType E] [Fintype a] [Fintype b]
+    : (InfinitePlace E × a × b → ℂ) ≃L[ℝ] InfinitePlace E → Matrix a b ℂ :=
   (LinearEquiv.curry ℝ ℂ (InfinitePlace E) (a × b) ≪≫ₗ LinearEquiv.piCongrRight
     fun _ : InfinitePlace E ↦ LinearEquiv.curry ℝ ℂ a b).toContinuousLinearEquiv
 
@@ -450,10 +461,12 @@ lemma realSlice_eq_slice_placeMatrices_symm (D : X.Splitting W₁ b) [IsBaseAdap
       (isAdapted_homSource D V).mixedModel.slice ((placeMatrices E a b).symm (atRealPlace x)) :=
   rfl
 
-/-- For a function `γ` that inverts Gram matrices, the projection of the frame `fromRows 1 0` of the
-first summand to the span of the frame `x`, orthogonal for the form with signs `t' ⊕ᵥ s`. -/
-def frameProjection {t' : b → ℤˣ} (γ : Matrix b b ℂ → Matrix b b ℂ) (x : Matrix (b ⊕ n) b ℂ) :
-    Matrix (b ⊕ n) b ℂ :=
+/--
+For a function `γ` that inverts Gram matrices, the projection of the frame `fromRows 1 0` of the
+first summand to the span of the frame `x`, orthogonal for the form with signs `t' ⊕ᵥ s`.
+-/
+def frameProjection {t' : b → ℤˣ} (γ : Matrix b b ℂ → Matrix b b ℂ) (x : Matrix (b ⊕ n) b ℂ)
+    : Matrix (b ⊕ n) b ℂ :=
   x * (γ (xᴴ * signMatrix (t' ⊕ᵥ s) * x) * (xᴴ * signMatrix (t' ⊕ᵥ s) * fromRows 1 0))
 
 private lemma contDiff_frameProjection {t' : b → ℤˣ} {γ : Matrix b b ℂ → Matrix b b ℂ}
@@ -465,28 +478,34 @@ private lemma contDiff_frameProjection {t' : b → ℤˣ} {γ : Matrix b b ℂ �
       (contDiff_mat_mul hJ contDiff_const))
 
 /-- The family `x` of frames moved by the inverses of the unitary elements `k (y v)`. -/
-def unitaryMovedFrame {t' : b → ℤˣ}
-    (k : Matrix (b ⊕ n) b ℂ → U (signMatrix (t' ⊕ᵥ s) : Matrix (b ⊕ n) (b ⊕ n) ℂ))
-    (y x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) : InfinitePlace E → Matrix (b ⊕ n) b ℂ :=
-  fun v : InfinitePlace E ↦ (↑(k (y v))⁻¹ : Matrix (b ⊕ n) (b ⊕ n) ℂ) * x v
+def unitaryMovedFrame
+    {t' : b → ℤˣ} (k : Matrix (b ⊕ n) b ℂ → U (signMatrix (t' ⊕ᵥ s) : Matrix (b ⊕ n) (b ⊕ n) ℂ))
+    (y x : InfinitePlace E → Matrix (b ⊕ n) b ℂ)
+    : InfinitePlace E → Matrix (b ⊕ n) b ℂ := fun v : InfinitePlace E ↦
+  (↑(k (y v))⁻¹ : Matrix (b ⊕ n) (b ⊕ n) ℂ) * x v
 
-/-- For families `y`, `x` of frames, one for each infinite place `w`, unitary elements `k y` indexed
+/--
+For families `y`, `x` of frames, one for each infinite place `w`, unitary elements `k y` indexed
 by frames, a constant `κ` and vectors `v`, `v₁` in the Fock spaces `PairFock` of the signs `(s, t')`
 and `(s, s)`, the vector `(σ y * σ x' * κ * ∏ w, conj (det (x' w)₁) ^ (2 * M w)) • ω (1, k ∘ y) (v ⊠
 v₁)`, where `x' w = (k (y w))⁻¹ * x w` (`unitaryMovedFrame`), `(x' w)₁` is its upper square block,
 `ω` is the real Weil representation `realPairWeil` twisted by `det ^ (j - M w)` on the unitary group
 of `t' ⊕ᵥ s`, and `⊠` is the external product `realBoxProd`. In the applications `t'` and `s` are
 the signs of spaces `V'` and `W₁`, `j` is half the rank of `W₁`, `M` is the weight of a character,
-and this vector is a prescribed slice for the pair `(X, V' ⊕ W₁)`. -/
-noncomputable def exchangeSection {t' : b → ℤˣ}
+and this vector is a prescribed slice for the pair `(X, V' ⊕ W₁)`.
+-/
+noncomputable def exchangeSection
+    {t' : b → ℤˣ}
     (σ : (InfinitePlace E → Matrix (b ⊕ n) b ℂ) → ℝ)
-    (k : Matrix (b ⊕ n) b ℂ → U (signMatrix (t' ⊕ᵥ s) : Matrix (b ⊕ n) (b ⊕ n) ℂ))
-    (j : ℕ) (M : InfinitePlace E → ℕ) (κ : ℂ) (v : PairFock E s t') (v₁ : PairFock E s s)
-    (y x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) : PairFock E s (t' ⊕ᵥ s) :=
-  ((σ y * σ (unitaryMovedFrame k y x)) •
-      ((∏ w : InfinitePlace E, (unitaryMovedFrame k y x w).toRows₁ᴴ.det ^ (M w * 2)) * κ)) •
-    realPairWeil (fun w : InfinitePlace E ↦ (j : ℤ) - M w) 0 (1, k ∘ y)
-      (realBoxProd (realSigns_comp_split (homSigns_sum_target signs_comp_refl)) v v₁)
+    (k : Matrix (b ⊕ n) b ℂ → U (signMatrix (t' ⊕ᵥ s) : Matrix (b ⊕ n) (b ⊕ n) ℂ)) (j : ℕ)
+    (M : InfinitePlace E → ℕ) (κ : ℂ) (v : PairFock E s t') (v₁ : PairFock E s s)
+    (y x : InfinitePlace E → Matrix (b ⊕ n) b ℂ)
+    : PairFock E s (t' ⊕ᵥ s) :=
+  ((σ y * σ (unitaryMovedFrame k y x))
+      • ((∏ w : InfinitePlace E, (unitaryMovedFrame k y x w).toRows₁ᴴ.det ^ (M w * 2)) * κ))
+    • realPairWeil
+      (fun w : InfinitePlace E ↦ (j : ℤ) - M w)
+      0 (1, k ∘ y) (realBoxProd (realSigns_comp_split (homSigns_sum_target signs_comp_refl)) v v₁)
 
 /-- Let `σ ≥ 0` be a smooth compactly supported function on families of frames in `V' ⊕ W₁`, equal
 to 1 at the frame `(1, 0)` of `V'`, let `N` be a family of exponents and `v` a Schwartz vector (all
@@ -971,7 +990,8 @@ lemma IsWittBump.isPeriodIdentity {t' : b → ℤˣ} {γ : Matrix b b ℂ → Ma
   push_cast
   ring
 
-/-- Let `D` be an adapted Witt decomposition of the Hermitian space `X` (signs `r`) as `W₁` (signs
+/--
+Let `D` be an adapted Witt decomposition of the Hermitian space `X` (signs `r`) as `W₁` (signs
 `s`) plus `card b` hyperbolic planes, where `W₁` has even rank and an adapted splitting `D₁` along
 an isotropic line, and let `V'` be a space with basis indexed by `b` and signs `t'`. Let `v` and
 `v₁` be Schwartz vectors for `(W₁, V')` and `(W₁, W₁)`. Then there are vectors `Φ` for
@@ -982,48 +1002,57 @@ such that for each tame character `𝔠` of weight `μ` some `c : ℂ` has `C * 
 (rk (V' ⊕ W₁) - rk X / 2) * equalRankThetaRatio W₁ 𝔠 v₁`, and for all integral `z` the theta
 integral of `Φ` and the row datum of `z` is `c` times that of `Λ` and the column datum of `z`. With
 `χ` the character of `𝔠` at its ramified places, these data are `x ↦ χ⁻¹ (det)` of the matrix with
-the rows of `z` and `x` ordered by `e`, and `x ↦ χ⁻¹ (det (z * x))`. -/
-theorem exists_rowColExchangeIdentity_sum (D : X.Splitting W₁ b) [IsBaseAdapted D] {t : a → ℤˣ}
-    {t' : b → ℤˣ} {W : Space E a t} (D₁ : W₁.Splitting W Unit) [IsBaseAdapted D₁]
+the rows of `z` and `x` ordered by `e`, and `x ↦ χ⁻¹ (det (z * x))`.
+-/
+theorem exists_rowColExchangeIdentity_sum
+    (D : X.Splitting W₁ b) [IsBaseAdapted D]
+    {t : a → ℤˣ} {t' : b → ℤˣ} {W : Space E a t} (D₁ : W₁.Splitting W Unit) [IsBaseAdapted D₁]
     (V' : Space E b t') (e : b ⊕ b ⊕ n ≃ m) (hn : 2 ∣ Fintype.card n) (μ : InfinitePlace E → ℤ)
-    {v : PairFock E s t'} {v₁ : PairFock E s s} (hv : IsSchwartzVector v)
-    (hv₁ : IsSchwartzVector v₁) :
-    ∃ (Φ : fockSpace (realSigns E (homSigns r (t' ⊕ᵥ s)))) (Λ : PairFock E r t'),
-      realSlice D.symm V' 0 Λ = v ∧
-      RowColExchangeIdentity X (V'.sum W₁) V' μ e Φ Λ fun 𝔠 : SplitTameChar E μ ↦
-        equalRankThetaRatio W₁ 𝔠 v₁ := by
+    {v : PairFock E s t'} {v₁ : PairFock E s s}
+    (hv : IsSchwartzVector v) (hv₁ : IsSchwartzVector v₁)
+    : ∃ (Φ : fockSpace (realSigns E (homSigns r (t' ⊕ᵥ s)))) (Λ : PairFock E r t'),
+      realSlice D.symm V' 0 Λ = v ∧ RowColExchangeIdentity X (V'.sum W₁) V' μ e Φ Λ
+        fun 𝔠 : SplitTameChar E μ ↦ equalRankThetaRatio W₁ 𝔠 v₁ := by
   -- A smooth unitary `k y` moves the span of `x₀ = fromRows 1 0` onto that of a nearby frame `y`.
   -- The vectors have bump functions as slices, the one for `V' ⊕ W₁` twisted by `k`, and
   -- `rowColExchangeIdentity_of_periods` compares periods.
   obtain ⟨j, hj⟩ : ∃ j : ℕ, Fintype.card n = 2 * j := exists_eq_mul_right_of_dvd hn
-  obtain ⟨γ, k, σ, hW⟩ := exists_contDiff_witt_and_bump (ι := InfinitePlace E)
-    (J := signMatrix (t' ⊕ᵥ s)) (x₀ := fromRows (1 : Matrix b b ℂ) (0 : Matrix n b ℂ)) isHermitian
-    (by
-      rw [gram_signMatrix_fromRows_one_zero]
-      exact IsHermitianInvolution.det_ne_zero (signMatrix t'))
+  obtain ⟨γ, k, σ, hW⟩ :=
+    exists_contDiff_witt_and_bump (ι := InfinitePlace E) (J := signMatrix (t' ⊕ᵥ s))
+      (x₀ := fromRows (1 : Matrix b b ℂ) (0 : Matrix n b ℂ)) isHermitian
+      (by
+        rw [gram_signMatrix_fromRows_one_zero]
+        exact IsHermitianInvolution.det_ne_zero (signMatrix t'))
   let z : Matrix (b ⊕ n) b ℂ → Matrix (b ⊕ n) b ℂ := frameProjection (t' := t') (s := s) γ
   have γ_smooth : ContDiff ℝ ∞ γ := hW.contDiff_inv
   have z_smooth : ContDiff ℝ ∞ z := contDiff_frameProjection γ_smooth
   let M : InfinitePlace E → ℕ := Int.toNat ∘ μ
   obtain ⟨κ, Λ, hΛ, Λ_zero, Λ_slice⟩ :=
-    exists_isSchwartzVector_realSlice_bump D V' (fun w ↦ j + M w)
+    exists_isSchwartzVector_realSlice_bump D V'
+      (fun w ↦ j + M w)
       hW.contDiff_bump hW.hasCompactSupport_bump hW.bump_nonneg hW.bump_base hv
-  obtain ⟨Φ, hΦ, Φ_slice⟩ := exists_isSchwartzVector_exchangeSection D V' hW.contDiff_bump
-    hW.hasCompactSupport_bump hW.contDiff_unitary z_smooth j M κ hv hv₁
+  obtain ⟨Φ, hΦ, Φ_slice⟩ :=
+    exists_isSchwartzVector_exchangeSection D V' hW.contDiff_bump hW.hasCompactSupport_bump
+      hW.contDiff_unitary z_smooth j M κ hv hv₁
   -- Where the slice of `Φ` is nonzero, the frame is `k x₀ c`, and `c` represents its Gram matrix.
   have h_vanish : SlicesVanishOutside D (V'.sum W₁) t' Φ := fun x hx w ↦ by
     have hσ : σ (z ∘ atRealPlace x) ≠ 0 := fun h₀ ↦
       hx (by rw [Φ_slice, exchangeSection, h₀, zero_mul, zero_smul, zero_smul])
     obtain ⟨c, -, hc⟩ := hW.exists_mul_fromRows_mul_eq_of_ne_zero hσ w
     exact ⟨c, hc.trans (gram_atRealPlace _ w)⟩
-  let ρ (h : GInf E (t' ⊕ᵥ s)) : ℝ := σ (z ∘ fun w ↦
-    (↑(h⁻¹ w) : Matrix (b ⊕ n) (b ⊕ n) ℂ) * (fromRows 1 0 : Matrix (b ⊕ n) b ℂ))
-  have h_period (𝔠 : SplitTameChar E μ) :
-      IsPeriodIdentity X D V' 𝔠 Φ Λ ρ (thetaLarge W₁ W₁ 𝔠 v₁ (stdColDatum 𝔠.semilocalChar 1)
-        1) := by
+  let ρ (h : GInf E (t' ⊕ᵥ s)) : ℝ :=
+    σ (z ∘ fun w ↦ (↑(h⁻¹ w) : Matrix (b ⊕ n) (b ⊕ n) ℂ) * (fromRows 1 0 : Matrix (b ⊕ n) b ℂ))
+  have h_period (𝔠 : SplitTameChar E μ) : IsPeriodIdentity X D V' 𝔠 Φ Λ ρ
+      (thetaLarge W₁ W₁ 𝔠 v₁ (stdColDatum 𝔠.semilocalChar 1) 1) := by
     lift μ to InfinitePlace E → ℕ using fun w ↦ (𝔠.weight_pos w).le
     exact hW.isPeriodIdentity D D₁ V' hj 𝔠 hv₁ Φ_slice Λ_slice
-  exact ⟨Φ, Λ, Λ_zero, rowColExchangeIdentity_of_periods X D D₁ V' _ hn (fun _ ↦ hW.bump_nonneg _)
-    hW.eventually_bump_frameProjection_ne_zero hΦ hΛ h_period (.inl h_vanish)⟩
+  exact ⟨
+    Φ,
+    Λ,
+    Λ_zero,
+    rowColExchangeIdentity_of_periods X D D₁ V' _ hn
+      (fun _ ↦ hW.bump_nonneg _)
+      hW.eventually_bump_frameProjection_ne_zero hΦ hΛ h_period (.inl h_vanish)
+  ⟩
 
 end New.Exchange

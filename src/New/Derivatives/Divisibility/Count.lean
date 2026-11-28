@@ -107,26 +107,32 @@ lemma norm_jet_le_of_isHomogeneous {G : MvPowerSeries σ ℂ_[p]} {l : ℕ}
 end Factorials
 
 section Minors
-variable {Φ n n' R : Type} [Fintype Φ] [Fintype n] [Fintype n'] [DecidableEq n'] [CommRing R]
+variable
+  {Φ n n' R : Type} [Fintype Φ] [Fintype n] [Fintype n'] [DecidableEq n'] [CommRing R]
   {κ : Φ → ℕ → ℕ}
 
-/-- The polynomial `P_y(z)` in the entries `X (τ, b, a)` of matrices `z_τ` of size `n' × n`. It is
+/--
+The polynomial `P_y(z)` in the entries `X (τ, b, a)` of matrices `z_τ` of size `n' × n`. It is
 the product, over the places `τ` and the columns `j` of height `h < card n'` of the diagram `κ τ`,
 of the minor of `z_τ y_τ` on the rows `(i' τ).1 h j b` that the filling `i'` puts into the column
-and on the first `h` columns. -/
-noncomputable def minorProd (i' : WeylIndex n' κ) (y : Φ → n → ℕ → R) :
-    MvPolynomial (Φ × n' × n) R :=
+and on the first `h` columns.
+-/
+noncomputable def minorProd (i' : WeylIndex n' κ) (y : Φ → n → ℕ → R)
+    : MvPolynomial (Φ × n' × n) R :=
   ∏ τ : Φ, ∏ h : Fin (card n'), ∏ j : Fin (κ τ h),
     (of fun b k : Fin h ↦ ∑ a : n, y τ a k • X (τ, (i' τ).val h j b, a)).det
 
 end Minors
 
 section Directions
-variable {Φ n n' R : Type} [Fintype Φ] [Fintype n] [Fintype n'] [DecidableEq n']
-  [CommRing R] {κ : Φ → ℕ → ℕ}
+variable
+  {Φ n n' R : Type} [Fintype Φ] [Fintype n] [Fintype n'] [DecidableEq n'] [CommRing R]
+  {κ : Φ → ℕ → ℕ}
 
-/-- The index type of the new variables `s_(τ h k b)`: an index `(⟨h, k⟩, τ, b)` consists of a
-height `h < N`, a direction `k < h` of that height, a place `τ` and a row `b`. -/
+/--
+The index type of the new variables `s_(τ h k b)`: an index `(⟨h, k⟩, τ, b)` consists of a
+height `h < N`, a direction `k < h` of that height, a place `τ` and a row `b`.
+-/
 abbrev DirectionVar (Φ n' : Type) (N : ℕ) : Type := (Σ h : Fin N, Fin h) × Φ × n'
 
 omit [DecidableEq n'] in
@@ -136,12 +142,15 @@ lemma card_directionVar_le : card (DirectionVar Φ n' (card n')) ≤ card Φ * c
   rw [card_prod, card_prod]
   exact (Nat.mul_le_mul_right _ h_pairs).trans_eq (by ring)
 
-/-- The matrix of the linear substitution `z(s)` with row factors `c` and directions `β`: row `b`
+/--
+The matrix of the linear substitution `z(s)` with row factors `c` and directions `β`: row `b`
 of `z_τ(s)` is `∑_(h, k) c_(τ h b) s_(τ h k b) β_(τ h k)`. So the entry at `x = (τ, b, a)` and
-`o = (⟨h, k⟩, τ', b')` is `c τ h b * β τ h k a` if `(τ', b') = (τ, b)`, and zero otherwise. -/
-noncomputable def directionSubst [DecidableEq Φ]
-    {N : ℕ} (c : Φ → ℕ → n' → R) (β : Φ → ∀ h : ℕ, Fin h → n → R) :
-    Matrix (Φ × n' × n) (DirectionVar Φ n' N) R := open Classical in
+`o = (⟨h, k⟩, τ', b')` is `c τ h b * β τ h k a` if `(τ', b') = (τ, b)`, and zero otherwise.
+-/
+noncomputable def directionSubst
+    [DecidableEq Φ] {N : ℕ} (c : Φ → ℕ → n' → R) (β : Φ → ∀ h : ℕ, Fin h → n → R)
+    : Matrix (Φ × n' × n) (DirectionVar Φ n' N) R :=
+  open Classical in
   of fun (x : Φ × n' × n) (o : DirectionVar Φ n' N) ↦
     if o.2 = (x.1, x.2.1) then c x.1 o.1.1 x.2.1 * β x.1 o.1.1 o.1.2 x.2.2 else 0
 
@@ -157,11 +166,13 @@ lemma linSubst_directionSubst_X [DecidableEq Φ]
     mul_assoc]
 
 variable (R) in
-/-- The polynomial `P_*` in the new variables: the product, over the places `τ` and the columns `j`
+/--
+The polynomial `P_*` in the new variables: the product, over the places `τ` and the columns `j`
 of height `h < card n'` of the diagram `κ τ`, of the determinants `det (s_(τ h k b))`, with `k < h`
-and `b` among the rows that the filling `i'` puts into the column. -/
-noncomputable def columnDetProd (i' : WeylIndex n' κ) :
-    MvPolynomial (DirectionVar Φ n' (card n')) R :=
+and `b` among the rows that the filling `i'` puts into the column.
+-/
+noncomputable def columnDetProd (i' : WeylIndex n' κ)
+    : MvPolynomial (DirectionVar Φ n' (card n')) R :=
   ∏ τ : Φ, ∏ h : Fin (card n'), ∏ j : Fin (κ τ h),
     (of fun b k : Fin h ↦ X (⟨h, k⟩, τ, (i' τ).val h j b)).det
 
@@ -239,8 +250,10 @@ lemma jet_columnDetProd_subst [DecidableEq Φ] (i' : WeylIndex n' κ) (c : Φ �
 end Directions
 
 section Couplings
-variable {p : ℕ} [Fact p.Prime] {Φ n n' : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n] [Fintype n']
-  [DecidableEq n'] {π : valRingCp p} {pr : ℕ → Φ → Φ} {e : ℕ}
+variable
+  {p : ℕ} [Fact p.Prime]
+  {Φ n n' : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n] [Fintype n'] [DecidableEq n']
+  {π : valRingCp p} {pr : ℕ → Φ → Φ} {e : ℕ}
 
 omit [DecidableEq Φ] in
 /-- Let `π` divide `p`, let `α` be the index type of the entries at one place, and substitute linear
@@ -302,17 +315,20 @@ lemma dvd_subst_coupling_directionSubst (hπ : π ∣ p) {N : ℕ} {c : Φ → �
   split_ifs
   exacts [h_pair τ b h k h' k', dvd_zero π]
 
-/-- The charges `p ^ w τ h b` (place, height, row) cover the exempt pairs for the set `ev` of marked
+/--
+The charges `p ^ w τ h b` (place, height, row) cover the exempt pairs for the set `ev` of marked
 places and the map `partner` on places. A pair consists of the height one at `τ` and a height `h` at
 `partner τ`. It is exempt if `τ ∈ ev`, or if `h = 1` and `partner τ ∈ ev`. In each exempt pair and
 each row `b`, one of the two exponents is not zero, so that `p` divides the product of the
-charges. -/
+charges.
+-/
 def IsChargeExponent (partner : Φ → Φ) (ev : Finset Φ) (w : Φ → ℕ → n' → ℕ) : Prop :=
-  ∀ (τ : Φ) (h : ℕ) (b : n'),
-    τ ∈ ev ∨ h = 1 ∧ partner τ ∈ ev → w τ 1 b ≠ 0 ∨ w (partner τ) h b ≠ 0
+  ∀ (τ : Φ) (h : ℕ) (b : n'), τ ∈ ev ∨ h = 1 ∧ partner τ ∈ ev → w τ 1 b ≠ 0 ∨ w (partner τ) h b ≠ 0
 
-/-- The sum of the exponents `w τ h r` over the boxes in the columns of height `h < card n'` of the
-diagrams `κ τ`, where `r` is the row that the filling `i'` puts into the box. -/
+/--
+The sum of the exponents `w τ h r` over the boxes in the columns of height `h < card n'` of the
+diagrams `κ τ`, where `r` is the row that the filling `i'` puts into the box.
+-/
 def fillingCharge {κ : Φ → ℕ → ℕ} (w : Φ → ℕ → n' → ℕ) (i' : WeylIndex n' κ) : ℕ :=
   ∑ τ : Φ, ∑ h : Fin (card n'), ∑ j : Fin (κ τ h), ∑ b : Fin h, w τ h ((i' τ).val h j b)
 
@@ -393,44 +409,57 @@ section Predicted
 
 variable {Φ : Type} [Fintype Φ] [DecidableEq Φ] (d p : ℕ) (pr : ℕ → Φ → Φ) (κ : Φ → ℕ → ℕ) (N : ℕ)
 
-/-- The number `a_τ` of columns of height one at `τ`, among the heights below `N`. Here `κ τ h` is
-the number of columns of height `h` at the place `τ`. -/
+/--
+The number `a_τ` of columns of height one at `τ`, among the heights below `N`. Here `κ τ h` is
+the number of columns of height `h` at the place `τ`.
+-/
 def heightOneColumns (τ : Φ) : ℕ := ∑ h ∈ range N, if h = 1 then κ τ h else 0
 
-/-- The number `a'_τ` of low columns at `τ`, those whose height is below `N` and is not one. (A
-diagram has no column of height zero; if `κ τ 0 ≠ 0`, these columns count here.) -/
+/--
+The number `a'_τ` of low columns at `τ`, those whose height is below `N` and is not one. (A
+diagram has no column of height zero; if `κ τ 0 ≠ 0`, these columns count here.)
+-/
 def lowColumnCount (τ : Φ) : ℕ := ∑ h ∈ range N, if h = 1 then 0 else κ τ h
 
-/-- The number `l_τ` of boxes in the low columns at `τ`, those whose height is below `N` and is not
-one. -/
+/--
+The number `l_τ` of boxes in the low columns at `τ`, those whose height is below `N` and is not
+one.
+-/
 def lowBoxCount (τ : Φ) : ℕ := ∑ h ∈ range N, h * if h = 1 then 0 else κ τ h
 
-/-- The diagrams `κ` without their columns of height one at the places of the set `ev`, the marked
-places. -/
-def eraseHeightOne (ev : Finset Φ) (τ : Φ) (h : ℕ) : ℕ :=
-  if h = 1 ∧ τ ∈ ev then 0 else κ τ h
+/--
+The diagrams `κ` without their columns of height one at the places of the set `ev`, the marked
+places.
+-/
+def eraseHeightOne (ev : Finset Φ) (τ : Φ) (h : ℕ) : ℕ := if h = 1 ∧ τ ∈ ev then 0 else κ τ h
 
-/-- The predicted divisibility at a prime `p`. Let `a_τ` be the number of columns of
+/--
+The predicted divisibility at a prime `p`. Let `a_τ` be the number of columns of
 height one, `a'_τ` the number of the other columns and `l_τ` the number of boxes in these, all
 among the heights below `N`. With `τ' = pr e τ` the predicted divisibility is
 `v(π_p) ∑_e ∑_τ ((a_τ / p ^ e - a_τ' - a'_τ')₊ + (l_τ / p ^ e - l_τ')₊ - a'_τ / p ^ e)`. Here
 `v(π_p) = piPrimeValuation d p`, and `e` runs over `I_p = positivePartnerExponents d p` (the odd
 numbers if `p` is inert, all `e ≥ 1` if `p = d`, none if `p` splits). If `p = d`, half the sum of
-`min (a_τ, a_τ' + a'_τ') + a'_τ + min (l_τ, l_τ')` with `τ' = pr 0 τ` is subtracted. -/
+`min (a_τ, a_τ' + a'_τ') + a'_τ + min (l_τ, l_τ')` with `τ' = pr 0 τ` is subtracted.
+-/
 noncomputable def predictedDivisibility [Fact d.Prime] : ℝ :=
   let a (τ : Φ) : ℝ := heightOneColumns κ N τ
   let a' (τ : Φ) : ℝ := lowColumnCount κ N τ
   let l (τ : Φ) : ℝ := lowBoxCount κ N τ
-  piPrimeValuation d p * (∑' e : ℕ, if e ∈ positivePartnerExponents d p then
-      ∑ τ : Φ,
-        ((a τ / p ^ e - a (pr e τ) - a' (pr e τ))⁺ + (l τ / p ^ e - l (pr e τ))⁺ - a' τ / p ^ e)
-    else 0) -
-  if p = d then
-    1 / 2 * ∑ τ : Φ, (min (a τ) (a (pr 0 τ) + a' (pr 0 τ)) + a' τ + min (l τ) (l (pr 0 τ)))
-  else 0
+  piPrimeValuation d p
+      * (∑' e : ℕ, if e ∈ positivePartnerExponents d p then
+            ∑ τ : Φ,
+              ((a τ / p ^ e - a (pr e τ) - a' (pr e τ))⁺ + (l τ / p ^ e - l (pr e τ))⁺ - a' τ / p ^ e)
+          else 0)
+    - if p = d then
+        1 / 2 * ∑ τ : Φ, (min (a τ) (a (pr 0 τ) + a' (pr 0 τ)) + a' τ + min (l τ) (l (pr 0 τ)))
+      else
+        0
 
-/-- The sum of the deduction terms for the couplings of the places `τ` with their partners `pr e τ`,
-without marked places; it is zero unless `e` lies in `I_p° = partnerExponents d p`. -/
+/--
+The sum of the deduction terms for the couplings of the places `τ` with their partners `pr e τ`,
+without marked places; it is zero unless `e` lies in `I_p° = partnerExponents d p`.
+-/
 noncomputable def deductionAt [Fact d.Prime] (e : ℕ) : ℝ :=
   if e ∈ partnerExponents d p then ∑ τ : Φ, deductionTerm p κ N ∅ τ (pr e τ) e else 0
 
@@ -558,11 +587,15 @@ lemma mul_sum_deductionTerm_le [Fact p.Prime] [Fact d.Prime] (marked : Finset Φ
 end Predicted
 
 namespace Parameters
-variable (P : Parameters) (s : ℕ) {p : ℕ} [Fact p.Prime] [PadicPlace p] {n n' : Type} [Fintype n]
-  [Fintype n'] {κ : P.Φ s → ℕ → ℕ} {ϖ : ℂ_[p]} {l : ℕ → ℕ → valRingCp p}
+variable
+  (P : Parameters) (s : ℕ)
+  {p : ℕ} [Fact p.Prime] [PadicPlace p]
+  {n n' : Type} [Fintype n] [Fintype n']
+  {κ : P.Φ s → ℕ → ℕ} {ϖ : ℂ_[p]} {l : ℕ → ℕ → valRingCp p}
   {F : MvPowerSeries (P.Φ s × n' × n) ℂ_[p]}
 
-/-- The count with charges, with the deduction cut at `⌊log_p B⌋`. Here `P` fixes the prime `d` of
+/--
+The count with charges, with the deduction cut at `⌊log_p B⌋`. Here `P` fixes the prime `d` of
 `K = ℚ(√-d)`, `P.Φ s` is the set of infinite places of the field of level `s`, the instance
 `PadicPlace p` is an embedding of `ℂ` into `ℂ_[p]`, and `κ τ h` is the number of columns of height
 `h` at the place `τ`. Let `p` be non-split (`chiK P.d p ≠ 1`), let `v(ϖ) = ρ_p`, where
@@ -579,53 +612,67 @@ boxes. Then the valuation of `jet` of `F` along `P_y`, plus the sum `fillingChar
 exponents over the boxes, is at least `gammaPrime P.d p * B`, less `v(π_p) = piPrimeValuation P.d p`
 times the sum of `deductionTerm` over all places and the exponents `e ∈ I_p°` with `e ≤ ⌊log_p B⌋`,
 and less `f N ^ 3 (1 + ⌊log_p B⌋)`. Here `f` is the number of infinite places, `N` the number of
-rows, and only columns of height below `N` are counted. -/
-theorem norm_jet_minorProd_le_of_isChargeExponent [DecidableEq n'] (hp : chiK P.d p ≠ 1)
-    (hϖ : ‖ϖ‖ = p ^ (-varpiValuation P.d p))
+rows, and only columns of height below `N` are counted.
+-/
+theorem norm_jet_minorProd_le_of_isChargeExponent
+    [DecidableEq n']
+    (hp : chiK P.d p ≠ 1) (hϖ : ‖ϖ‖ = p ^ (- varpiValuation P.d p))
     (hF : HasNormalForm (partnerExponents P.d p) (P.partner s p) ϖ l F)
     (marked : Finset (P.Φ s)) (w : P.Φ s → ℕ → n' → ℕ)
     (hw : ∀ e ∈ partnerExponents P.d p, IsChargeExponent (P.partner s p e) marked w)
-    (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p) :
-    let N : ℕ := card n'
-    let B : ℕ := boxes κ N
-    ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ ≤
-      p ^ (fillingCharge w i' - (gammaPrime P.d p * B -
-        piPrimeValuation P.d p * ∑ e ≤ p.log B with e ∈ partnerExponents P.d p,
-          ∑ τ : P.Φ s, deductionTerm p κ N marked τ (P.partner s p e τ) e -
-        card (P.Φ s) * N ^ 3 * (p.log B + 1)) : ℝ) := by
+    (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p)
+    : let N : ℕ := card n'
+      let B : ℕ := boxes κ N
+      ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖
+        ≤ p
+          ^ (fillingCharge w i'
+              - (gammaPrime P.d p * B
+                - piPrimeValuation P.d p
+                  * ∑ e ≤ p.log B with e ∈ partnerExponents P.d p,
+                    ∑ τ : P.Φ s, deductionTerm p κ N marked τ (P.partner s p e τ) e
+                - card (P.Φ s) * N ^ 3 * (p.log B + 1))
+            : ℝ) := by
   classical
   intro N B
   set m : ℕ := fillingCharge w i'
   have hp_pos : (0 : ℝ) < p := mod_cast Nat.Prime.pos Fact.out
   let π : valRingCp p := piPrimeInt P.d
   have hπ_dvd : π ∣ p := piPrimeInt_dvd_natCast P.d
-  have hπ : ‖(π : ℂ_[p])‖ = p ^ (-piPrimeValuation P.d p) := norm_piPrimeInt P.d
+  have hπ : ‖(π : ℂ_[p])‖ = p ^ (- piPrimeValuation P.d p) := norm_piPrimeInt P.d
   -- Step 1: new directions, and the chain rule.
   let S : Finset ℕ := {e ≤ p.log B | e ∈ partnerExponents P.d p}
   let D : ℝ := ∑ e ∈ S, ∑ τ : P.Φ s, deductionTerm p κ N marked τ (P.partner s p e τ) e
-  obtain ⟨g, h_pair, h_det : ‖(π : ℂ_[p])‖ ^ D ≤
-      ∏ τ : P.Φ s, ∏ h : Fin N, ‖((g τ h).det : ℂ_[p])‖ ^ κ τ h⟩ :=
+  obtain ⟨
+      g,
+      h_pair,
+      h_det : ‖(π : ℂ_[p])‖ ^ D ≤ ∏ τ : P.Φ s, ∏ h : Fin N, ‖((g τ h).det : ℂ_[p])‖ ^ κ τ h
+    ⟩ :=
     exists_newDirection_dvd hπ_dvd (P.partner s p) S N κ marked y
   let z := directionSubst (N := N) (fun τ h b ↦ (p : valRingCp p) ^ w τ h b) (newDirection g y)
   let G : MvPowerSeries (DirectionVar (P.Φ s) n' N) ℂ_[p] :=
     F.subst fun x ↦ ϖ • seriesToCp (linearSeries (z x))
   let c : ℝ := ‖ϖ‖ ^ B * (p : ℝ)⁻¹ ^ m * ∏ τ, ∏ h : Fin N, ‖((g τ h).det : ℂ_[p])‖ ^ κ τ h
-  have h_chain : ‖jet ℂ_[p] (columnDetProd ℂ_[p] i') G‖ =
-      c * ‖jet ℂ_[p] (minorProd i' fun τ a k ↦ (y τ a k : ℂ_[p])) F‖ :=
+  have h_chain
+      : ‖jet ℂ_[p] (columnDetProd ℂ_[p] i') G‖
+        = c * ‖jet ℂ_[p] (minorProd i' fun τ a k ↦ (y τ a k : ℂ_[p])) F‖ :=
     norm_jet_columnDetProd_subst i' w g y ϖ F
   -- Step 2: `G` is integral in degree `B`, as `π` divides the couplings of `z` for `e ∈ S`.
   have hG (d : DirectionVar (P.Φ s) n' N →₀ ℕ) (hd : d.degree = B) : ‖G.coeff d‖ ≤ 1 :=
     hF.norm_coeff_subst_le_one (P.norm_pow_succ_div_mul_piPrimeInt hp hϖ).le
-      (by simp [linearSeries]) (fun e he he_le ↦ dvd_subst_coupling_directionSubst_of_charges
-        hπ_dvd (hw e he) (h_pair e (by simpa [S] using And.intro he_le he))) hd.le
+      (by simp [linearSeries])
+      (fun e he he_le ↦
+        dvd_subst_coupling_directionSubst_of_charges hπ_dvd (hw e he)
+          (h_pair e (by simpa [S] using And.intro he_le he)))
+      hd.le
   -- Step 3: Legendre's bound for `G`, divided by the factor `c` of the chain rule.
-  have h_legendre : ‖jet ℂ_[p] (columnDetProd ℂ_[p] i') G‖ ≤
-      p ^ (card (P.Φ s) * N ^ 3 * (p.log B + 1) - B / (p - 1) : ℝ) := by
+  have h_legendre
+      : ‖jet ℂ_[p] (columnDetProd ℂ_[p] i') G‖
+        ≤ p ^ (card (P.Φ s) * N ^ 3 * (p.log B + 1) - B / (p - 1) : ℝ) := by
     rw [← map_columnDetProd (valRingCp p).subtype]
     refine (norm_jet_le_of_isHomogeneous hG (isHomogeneous_columnDetProd i')).trans ?_
     gcongr
     exacts [mod_cast Nat.Prime.one_le Fact.out, mod_cast card_directionVar_le]
-  have h_factor : p ^ (-varpiValuation P.d p * B - m + -piPrimeValuation P.d p * D : ℝ) ≤ c := by
+  have h_factor : p ^ (- varpiValuation P.d p * B - m + - piPrimeValuation P.d p * D : ℝ) ≤ c := by
     rw [Real.rpow_add hp_pos, Real.rpow_sub hp_pos, Real.rpow_mul_natCast hp_pos.le, ← hϖ,
       Real.rpow_natCast, div_eq_mul_inv, ← inv_pow, Real.rpow_mul hp_pos.le, ← hπ]
     exact mul_le_mul_of_nonneg_left h_det (by positivity)
@@ -633,14 +680,18 @@ theorem norm_jet_minorProd_le_of_isChargeExponent [DecidableEq n'] (hp : chiK P.
   calc
     _ ≤ (p : ℝ) ^ (card (P.Φ s) * N ^ 3 * (p.log B + 1) - B / (p - 1) : ℝ) :=
       h_chain.symm.trans_le h_legendre
-    _ = p ^ (-varpiValuation P.d p * B - m + -piPrimeValuation P.d p * D : ℝ) *
-        p ^ (m - (gammaPrime P.d p * B - piPrimeValuation P.d p * D -
-          card (P.Φ s) * N ^ 3 * (p.log B + 1)) : ℝ) := by
+    _ = p ^ (- varpiValuation P.d p * B - m + - piPrimeValuation P.d p * D : ℝ)
+        * p
+          ^ (m
+              - (gammaPrime P.d p * B - piPrimeValuation P.d p * D
+                - card (P.Φ s) * N ^ 3 * (p.log B + 1))
+            : ℝ) := by
       rw [← Real.rpow_add hp_pos, gammaPrime]
       ring_nf
     _ ≤ _ := by gcongr
 
-/-- **The count with charges.** Here `P` fixes the prime `d` of `K = ℚ(√-d)`, `P.Φ s` is the set of
+/--
+**The count with charges.** Here `P` fixes the prime `d` of `K = ℚ(√-d)`, `P.Φ s` is the set of
 infinite places of the field of level `s`, the instance `PadicPlace p` is an embedding of `ℂ` into
 `ℂ_[p]`, and `κ τ h` is the number of columns of height `h` at the place `τ`. Let `p` be non-split,
 let `v(ϖ) = ρ_p`, where `ρ_p = varpiValuation P.d p = v(π_p) / (q_p - 1)` for the norm `q_p` of a
@@ -656,36 +707,43 @@ columns of height one at the places of `marked`. Let charges `p ^ w` be given su
 jet of `F` along `P_y`, plus the sum `fillingCharge w i'` of the exponents over the boxes, is at
 least the predicted divisibility of `κ°`, plus `γ_p = gammaPrime P.d p` for each removed box, less
 `f N ^ 3 (1 + log_p max (B, 1))`. Here `f` is the number of infinite places, `N` the number of rows
-and `B` the number of boxes of `κ` in columns of height below `N`. -/
-theorem norm_jet_minorProd_le_of_charges [DecidableEq n'] (hp : chiK P.d p ≠ 1)
-    (hϖ : ‖ϖ‖ = p ^ (-varpiValuation P.d p))
+and `B` the number of boxes of `κ` in columns of height below `N`.
+-/
+theorem norm_jet_minorProd_le_of_charges
+    [DecidableEq n']
+    (hp : chiK P.d p ≠ 1) (hϖ : ‖ϖ‖ = p ^ (- varpiValuation P.d p))
     (hF : HasNormalForm (partnerExponents P.d p) (P.partner s p) ϖ l F)
     (marked : Finset (P.Φ s)) (w : P.Φ s → ℕ → n' → ℕ)
     (hw : ∀ e ∈ partnerExponents P.d p, ∀ (τ : P.Φ s) (h : ℕ) (b : n'),
-      κ τ 1 ≠ 0 → κ (P.partner s p e τ) h ≠ 0 → τ ∈ marked ∨ h = 1 ∧ P.partner s p e τ ∈ marked →
-        w τ 1 b ≠ 0 ∨ w (P.partner s p e τ) h b ≠ 0)
-    (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p) :
-    let N : ℕ := card n'
-    let B : ℕ := boxes κ N
-    ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ ≤
-      p ^ (fillingCharge w i' -
-        (predictedDivisibility P.d p (P.partner s p) (eraseHeightOne κ marked) N +
-          gammaPrime P.d p * (B - boxes (eraseHeightOne κ marked) N) -
-          card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max B 1 : ℕ))) : ℝ) := by
+      κ τ 1 ≠ 0 → κ (P.partner s p e τ) h ≠ 0 → τ ∈ marked ∨ h = 1 ∧ P.partner s p e τ ∈ marked
+        → w τ 1 b ≠ 0 ∨ w (P.partner s p e τ) h b ≠ 0)
+    (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p)
+    : let N : ℕ := card n'
+      let B : ℕ := boxes κ N
+      ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖
+        ≤ p
+          ^ (fillingCharge w i'
+              - (predictedDivisibility P.d p (P.partner s p) (eraseHeightOne κ marked) N
+                + gammaPrime P.d p * (B - boxes (eraseHeightOne κ marked) N)
+                - card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max B 1 : ℕ)))
+            : ℝ) := by
   intro N B
   -- Heights that do not occur may carry any charge.
   let w' (τ : P.Φ s) (h : ℕ) (b : n') : ℕ := if κ τ h = 0 then 1 else w τ h b
-  have hw' (e : ℕ) (he : e ∈ partnerExponents P.d p) :
-      IsChargeExponent (P.partner s p e) marked w' := fun τ h b h_exempt ↦ by grind [hw e he τ h b]
-  have h_error : (card (P.Φ s) * N ^ 3 * (p.log B + 1) : ℝ) ≤
-      card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max B 1 : ℕ)) := by
+  have hw' (e : ℕ) (he : e ∈ partnerExponents P.d p)
+      : IsChargeExponent (P.partner s p e) marked w' := fun τ h b h_exempt ↦ by
+    grind [hw e he τ h b]
+  have h_error
+      : (card (P.Φ s) * N ^ 3 * (p.log B + 1) : ℝ)
+        ≤ card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max B 1 : ℕ)) := by
     grw [Nat.log_mono_right (le_max_left B 1), Real.natLog_le_logb, add_comm]
   refine (P.norm_jet_minorProd_le_of_isChargeExponent s hp hϖ hF marked w' hw' i' y).trans
     (Real.rpow_le_rpow_of_exponent_le (mod_cast Nat.Prime.one_le Fact.out) ?_)
   rw [fillingCharge_congr (w := w') (fun τ h b h_occurs ↦ ite_eq_right h_occurs) i']
   linarith [h_error, mul_sum_deductionTerm_le P.d p (P.partner s p) κ N marked (p.log B)]
 
-/-- **The count.** Here `P` fixes the prime `d` of `K = ℚ(√-d)`, `P.Φ s` is the set of infinite
+/--
+**The count.** Here `P` fixes the prime `d` of `K = ℚ(√-d)`, `P.Φ s` is the set of infinite
 places of the field of level `s`, and the instance `PadicPlace p` is an embedding of `ℂ` into
 `ℂ_[p]`. Let `p` be non-split (`chiK P.d p ≠ 1`), and let `v(ϖ) = ρ_p`, where
 `ρ_p = varpiValuation P.d p = v(π_p) / (q_p - 1)` for the norm `q_p` of a prime above `p`. Let `F`
@@ -701,15 +759,19 @@ below `N`. The predicted divisibility is
 `v(π_p) ∑_e ∑_τ ((a_τ / p ^ e - a_τ' - a'_τ')₊ + (l_τ / p ^ e - l_τ')₊ - a'_τ / p ^ e)` over
 positive `e ∈ I_p°`, where `τ' = P.partner s p e τ = -p ^ e τ` is the partner
 of `τ` and `a`, `a'`, `l` count the columns of height one, the other columns and the boxes in these;
-for `p = d` half a term for `e = 0` is subtracted (`predictedDivisibility`). -/
-theorem norm_jet_minorProd_le_of_hasNormalForm [DecidableEq n'] (hp : chiK P.d p ≠ 1)
-    (hϖ : ‖ϖ‖ = p ^ (-varpiValuation P.d p))
-    (hF : HasNormalForm (partnerExponents P.d p) (P.partner s p) ϖ l F)
-    (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p) :
-    let N : ℕ := card n'
-    ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ ≤
-      p ^ (-(predictedDivisibility P.d p (P.partner s p) κ N -
-        card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max (boxes κ N) 1 : ℕ))) : ℝ) := by
+for `p = d` half a term for `e = 0` is subtracted (`predictedDivisibility`).
+-/
+theorem norm_jet_minorProd_le_of_hasNormalForm
+    [DecidableEq n']
+    (hp : chiK P.d p ≠ 1) (hϖ : ‖ϖ‖ = p ^ (- varpiValuation P.d p))
+    (hF : HasNormalForm (partnerExponents P.d p) (P.partner s p) ϖ l F) (i' : WeylIndex n' κ)
+    (y : P.Φ s → n → ℕ → valRingCp p)
+    : let N : ℕ := card n'
+      ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖
+        ≤ p
+          ^ (-(predictedDivisibility P.d p (P.partner s p) κ N
+              - card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max (boxes κ N) 1 : ℕ)))
+            : ℝ) := by
   -- With no marked places and all charges equal to one, no column is removed.
   simpa [eraseHeightOne_empty, fillingCharge_zero] using
     P.norm_jet_minorProd_le_of_charges s hp hϖ hF ∅ 0 (by simp) i' y
@@ -719,8 +781,11 @@ end Parameters
 /-! ## From entries of the Schur matrix to products of minors -/
 
 section SchurEntries
-variable {p : ℕ} [Fact p.Prime] {Φ n n' R : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n]
-  [DecidableEq n] [Fintype n'] [DecidableEq n'] [CommRing R] {κ : Φ → ℕ → ℕ}
+variable
+  {p : ℕ} [Fact p.Prime]
+  {Φ n n' R : Type}
+  [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [CommRing R]
+  {κ : Φ → ℕ → ℕ}
 
 /-- If polynomials `b t` over the valuation ring of `ℂ_[p]` stay linearly independent over the
 residue field, then for all numbers `α t` there is an integral point `y` at which

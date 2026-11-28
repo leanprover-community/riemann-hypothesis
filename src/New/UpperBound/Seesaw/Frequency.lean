@@ -48,7 +48,8 @@ namespace New
 
 open Seesaw Space WeilData
 
-variable {E X X' ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+variable
+  {E X X' ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
   [DecidableEq ι'] [Fintype X] [DecidableEq X] [DecidableEq X']
   {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
   {Y : Grading V N X s} {Y' : Grading V' N X' (s - 1)}

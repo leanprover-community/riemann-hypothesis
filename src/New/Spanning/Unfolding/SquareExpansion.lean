@@ -44,9 +44,10 @@ section Scalars
 variable {R n : Type} [CommRing R] [StarRing R] [Fintype n] [DecidableEq n] (J : Matrix n n R)
 
 /-- A scalar `ζ` with `ζ ζ̄ = 1` as an isometry of the form `J`. -/
-noncomputable def scalarIsometry (ζ : R) (hζ : ζ * star ζ = 1) : U J :=
-  ⟨⟨ζ • 1, star ζ • 1, by simp [smul_smul, mul_comm, hζ], by simp [smul_smul, hζ]⟩,
-    mem_unitaryGroupOf_iff.2 <| show (ζ • 1)ᴴ * J * (ζ • 1) = J by simp [smul_smul, hζ]⟩
+noncomputable def scalarIsometry (ζ : R) (hζ : ζ * star ζ = 1) : U J := ⟨
+  ⟨ζ • 1, star ζ • 1, by simp [smul_smul, mul_comm, hζ], by simp [smul_smul, hζ]⟩,
+  mem_unitaryGroupOf_iff.2 <| show (ζ • 1)ᴴ * J * (ζ • 1) = J by simp [smul_smul, hζ]
+⟩
 
 lemma scalarIsometry_one (h : (1 : R) * star 1 = 1) : scalarIsometry J 1 h = 1 := by
   ext : 2
@@ -329,11 +330,13 @@ least `40`. -/
 lemma forty_le_k_mul_numInfPlaces (S : Filling E 𝔰) : 40 ≤ 𝔰.k * Core.numInfPlaces E :=
   le_mul_of_le_of_one_le (by linarith [S.thousand_mul_le_k]) NeZero.one_le
 
-/-- The set `Ω` is disjoint from the cosets `ζ R̄₀` of the reduction `R̄₀` of the Bessel subgroup,
-for all integral `ζ ≠ 1` in `E` with `ζ ζ̄ = 1`. -/
+/--
+The set `Ω` is disjoint from the cosets `ζ R̄₀` of the reduction `R̄₀` of the Bessel subgroup,
+for all integral `ζ ≠ 1` in `E` with `ζ ζ̄ = 1`.
+-/
 def AvoidsScalarCosets (S : Filling E 𝔰) (Ω : Set S.ResidueGL) : Prop :=
-  ∀ (ζ : E) (h_int : (ζ : 𝔸f E) ∈ Ô E), ζ * star ζ = 1 → ζ ≠ 1 →
-    ∀ s ∈ Ω, ¬S.InScalarCoset ⟨ζ, h_int⟩ s
+  ∀ (ζ : E) (h_int : (ζ : 𝔸f E) ∈ Ô E),
+    ζ * star ζ = 1 → ζ ≠ 1 → ∀ s ∈ Ω, ¬ S.InScalarCoset ⟨ζ, h_int⟩ s
 
 /-- Let `Ω` avoid the cosets of the reduction of the Bessel subgroup by the roots of unity `ζ ≠ 1`.
 Then no `γ` off the Bessel subgroup that lies over a block `(c, s, c')` with `s ∈ Ω` has a norm-one
@@ -546,7 +549,8 @@ lemma AvoidsScalarCosets.amplitudeSum_compl_besselS_eq [HasPrimitiveRoot5040 E] 
     amplitudeSum_eq_inter_compl_add_inter (offBessel ∩ S.remainingTermsᶜ) agreeing]
   simp [h_disagree, h_agree]
 
-/-- Let `E` contain a primitive `5040`-th root of unity, let the filling `S` be admissible
+/--
+Let `E` contain a primitive `5040`-th root of unity, let the filling `S` be admissible
 (`IsAdmissible`), and let `Ω` avoid the cosets of the reduction of the Bessel subgroup by the roots
 of unity `ζ ≠ 1`. For each block over `Ω` and each link, sum the amplitudes for the cut Bessel
 function of the terms with that link and nonzero `termDisc`; let the squared norms of these sums
@@ -555,36 +559,43 @@ constant `unipotentCovolume` that stands for the covolume of the unipotent latti
 the second moment over `Ω` of the terms off the Bessel subgroup, for the full Bessel function, has
 square root at most `C^(1/2) + b⁻¹⁵ 𝒟_id^(1/2)`, where `b = S.b` and `𝒟_id = identitySecondMoment`
 is the order of the reduction of the Bessel subgroup times the number `sourceDim` of pairs of a
-class and a coordinate. -/
-theorem sqrt_secondMoment_compl_besselS_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
-    {Ω : Set S.ResidueGL} (hΩ : S.AvoidsScalarCosets Ω) {C : ℝ} (hC : 0 ≤ C)
-    (h_links : linkSecondMoment {γ : S.G E | S.termDisc γ ≠ 0} Ω ≤ .ofReal
-      (C * S.unipotentCovolume ^ 2)) :
-    √(secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) Ω) ≤
-      √C + (S.b ^ 15)⁻¹ * √S.identitySecondMoment := by
+class and a coordinate.
+-/
+theorem sqrt_secondMoment_compl_besselS_le
+    [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+    {Ω : Set S.ResidueGL} (hΩ : S.AvoidsScalarCosets Ω)
+    {C : ℝ} (hC : 0 ≤ C)
+    (h_links
+      : linkSecondMoment {γ : S.G E | S.termDisc γ ≠ 0} Ω ≤ .ofReal (C * S.unipotentCovolume ^ 2))
+    : √(secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) Ω)
+      ≤ √C + (S.b ^ 15)⁻¹ * √S.identitySecondMoment := by
   classical
   have hb : 1000 ≤ S.b := S.thousand_le_b
   have h_id_nonneg : 0 ≤ S.identitySecondMoment := identitySecondMoment_nonneg
   set remaining : Set (S.G E) := S.remainingTerms
   -- Over `Ω` the blocks of `P_s - r_ψ(s)` are those of `Γ*`.
-  have h_blocks : secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) Ω =
-      secondMoment (S.amplitudeSum .full remaining) Ω :=
-    sum_congr rfl fun c _ ↦ sum_congr rfl fun c' _ ↦ sum_congr rfl fun s hs ↦ by
-      rw [hΩ.amplitudeSum_compl_besselS_eq (mem_filter.1 hs).2]
-  have h_sqrt : √((S.b ^ 40)⁻¹ * S.identitySecondMoment) = (S.b ^ 20)⁻¹ *
-    √S.identitySecondMoment := by
+  have h_blocks
+      : secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) Ω
+        = secondMoment (S.amplitudeSum .full remaining) Ω :=
+    sum_congr rfl fun c _ ↦
+      sum_congr rfl fun c' _ ↦
+        sum_congr rfl fun s hs ↦ by rw [hΩ.amplitudeSum_compl_besselS_eq (mem_filter.1 hs).2]
+  have h_sqrt
+      : √((S.b ^ 40)⁻¹ * S.identitySecondMoment) = (S.b ^ 20)⁻¹ * √S.identitySecondMoment := by
     rw [Real.sqrt_mul' _ h_id_nonneg, Real.sqrt_inv, pow_mul _ 20 2, Real.sqrt_sq (by positivity)]
   -- The pairs of terms with the same link give `C`, the other pairs at most `b^(-kf) 𝒟_id`.
-  have h_pairs : secondMoment (S.amplitudeSum .cut remaining) Ω ≤ C + (S.b ^ 40)⁻¹ *
-    S.identitySecondMoment := by
+  have h_pairs
+      : secondMoment (S.amplitudeSum .cut remaining) Ω
+        ≤ C + (S.b ^ 40)⁻¹ * S.identitySecondMoment := by
     grw [secondMoment_remainingTerms_le hC h_links,
       ← pow_le_pow_right₀ S.one_le_b S.forty_le_k_mul_numInfPlaces, div_eq_inv_mul]
   have h_small : 2 * (S.b ^ 5)⁻¹ ≤ 1 := by
     grw [← hb]
     norm_num
-  calc _ ≤ √(secondMoment (S.amplitudeSum .full remaining - S.amplitudeSum .cut remaining) Ω) +
-        √(secondMoment (S.amplitudeSum .cut remaining) Ω) := by
-        grw [h_blocks, ← sqrt_secondMoment_add_le, sub_add_cancel]
+  calc
+    _ ≤ √(secondMoment (S.amplitudeSum .full remaining - S.amplitudeSum .cut remaining) Ω)
+        + √(secondMoment (S.amplitudeSum .cut remaining) Ω) := by
+      grw [h_blocks, ← sqrt_secondMoment_add_le, sub_add_cancel]
     -- Passing to the cut function costs `b⁻²⁰ 𝒟_id^(1/2)`.
     _ ≤ (S.b ^ 20)⁻¹ * √S.identitySecondMoment + (√C + (S.b ^ 20)⁻¹ * √S.identitySecondMoment) := by
       grw [secondMoment_sub_cut_le, h_pairs, Real.sqrt_add_le_add_sqrt, h_sqrt]
@@ -631,7 +642,8 @@ lemma M_div_b_le_levelPrime_sq (i : Fin 2) : S.M / S.b ≤ (S.levelPrime i : ℝ
   · grw [h_le 1]
   · grw [mul_comm, h_le 0]
 
-/-- The second moment near the Bessel subgroup. Let `E` contain a primitive `5040`-th root of unity
+/--
+The second moment near the Bessel subgroup. Let `E` contain a primitive `5040`-th root of unity
 and let the filling `S` be admissible (`IsAdmissible`). Let `Ω` be the set of `s` that coincide with
 an element of `R̄₀` at the chosen places above `p_i`. Then the second moment over `Ω` of the terms
 off the Bessel subgroup, that is `∑ ‖P_s - r_ψ(s)‖²`, is at most `b⁻¹² 𝒟_id`. Here `P_s` and
@@ -639,11 +651,12 @@ off the Bessel subgroup, that is `∑ ‖P_s - r_ψ(s)‖²`, is at most `b⁻¹
 and of the terms in the Bessel subgroup, divided by `unipotentCovolume`, `R̄₀` is the reduction of
 the Bessel subgroup, `p_i = levelPrime i`, `b` is the parameter `S.b` of the filling and
 `𝒟_id = identitySecondMoment = #R̄₀ D_X`, with `D_X = sourceDim` the number of pairs of a class and
-a coordinate. -/
-theorem secondMoment_compl_besselS_le [HasPrimitiveRoot5040 E] [hS : S.IsAdmissible] (i : Fin 2) :
-    secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ)
-      {s : S.ResidueGL | ∃ t ∈ S.reducedImage besselS, s i = t i} ≤ (S.b ^ 12)⁻¹ *
-        S.identitySecondMoment := by
+a coordinate.
+-/
+theorem secondMoment_compl_besselS_le [HasPrimitiveRoot5040 E] [hS : S.IsAdmissible] (i : Fin 2)
+    : secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ)
+        {s : S.ResidueGL | ∃ t ∈ S.reducedImage besselS, s i = t i}
+      ≤ (S.b ^ 12)⁻¹ * S.identitySecondMoment := by
   have hb : 1000 ≤ S.b := S.thousand_le_b
   have h_id_nonneg : 0 ≤ S.identitySecondMoment := identitySecondMoment_nonneg
   have h_main_nonneg : 0 ≤ S.mainSecondMoment := mainSecondMoment_nonneg
@@ -656,29 +669,31 @@ theorem secondMoment_compl_besselS_le [HasPrimitiveRoot5040 E] [hS : S.IsAdmissi
     prod_levelPrime_le_meetNorm_of_eq ht hs
   -- With `m = k f`, `meetBound ≥ (M / b)^f` and `𝒟_main ≤ (M / b⁶)^m 𝒟_id`, the sums over links
   -- give at most `(b³ / M)^m (M / b⁶)^m 𝒟_id = b^(-3m) 𝒟_id ≤ b⁻³⁰ 𝒟_id`.
-  have h_links : (S.b ^ (2 * Core.numInfPlaces E) / meetBound) ^ 𝔰.k * S.mainSecondMoment ≤
-      (S.b ^ 30)⁻¹ * S.identitySecondMoment := by
+  have h_links
+      : (S.b ^ (2 * Core.numInfPlaces E) / meetBound) ^ 𝔰.k * S.mainSecondMoment
+        ≤ (S.b ^ 30)⁻¹ * S.identitySecondMoment := by
     have hM : (0 : ℝ) < S.M := Nat.cast_pos.2 (two_pos.trans_le two_le_M)
     have h_meetBound_ge : (S.M / S.b) ^ Core.numInfPlaces E ≤ meetBound := by
       grw [h_meetBound_def, prod_const, card_univ, Fintype.card_prod, S.card_chosenPlaces,
           Fintype.card_bool,
         Nat.cast_pow, pow_mul', M_div_b_le_levelPrime_sq]
-    have h_exp : 30 ≤ 3 * (𝔰.k * Core.numInfPlaces E) := by
-      linarith [S.forty_le_k_mul_numInfPlaces]
-    calc _ ≤ (S.b ^ (2 * Core.numInfPlaces E) / (S.M / S.b) ^ Core.numInfPlaces E) ^ 𝔰.k *
-          ((S.M / S.b ^ 6) ^ (𝔰.k * Core.numInfPlaces E) * S.identitySecondMoment) := by
-          grw [hS.mainSecondMoment_le, ← h_meetBound_ge]
+    have h_exp : 30 ≤ 3 * (𝔰.k * Core.numInfPlaces E) := by linarith [S.forty_le_k_mul_numInfPlaces]
+    calc
+      _ ≤ (S.b ^ (2 * Core.numInfPlaces E) / (S.M / S.b) ^ Core.numInfPlaces E) ^ 𝔰.k
+          * ((S.M / S.b ^ 6) ^ (𝔰.k * Core.numInfPlaces E) * S.identitySecondMoment) := by
+        grw [hS.mainSecondMoment_le, ← h_meetBound_ge]
       _ = (S.b ^ (3 * (𝔰.k * Core.numInfPlaces E)))⁻¹ * S.identitySecondMoment := by
         simp only [div_pow]
         field
       _ ≤ (S.b ^ 30)⁻¹ * S.identitySecondMoment := by grw [pow_le_pow_right₀ S.one_le_b h_exp]
-  have h_sqrt : √(secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) Ω) ≤
-      2 * (S.b ^ 15)⁻¹ * √S.identitySecondMoment :=
-    calc _ ≤ √((S.b ^ (2 * Core.numInfPlaces E) / meetBound) ^ 𝔰.k * S.mainSecondMoment) +
-          (S.b ^ 15)⁻¹ * √S.identitySecondMoment :=
-          sqrt_secondMoment_compl_besselS_le (avoidsScalarCosets_setOf_exists_apply_eq i)
-            (by positivity)
-            (linkSecondMoment_le_of_le_meetNorm h_meetBound_ne h_meet)
+  have h_sqrt
+      : √(secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) Ω)
+        ≤ 2 * (S.b ^ 15)⁻¹ * √S.identitySecondMoment :=
+    calc
+      _ ≤ √((S.b ^ (2 * Core.numInfPlaces E) / meetBound) ^ 𝔰.k * S.mainSecondMoment)
+          + (S.b ^ 15)⁻¹ * √S.identitySecondMoment :=
+        sqrt_secondMoment_compl_besselS_le (avoidsScalarCosets_setOf_exists_apply_eq i)
+          (by positivity) (linkSecondMoment_le_of_le_meetNorm h_meetBound_ne h_meet)
       _ ≤ √((S.b ^ 30)⁻¹ * S.identitySecondMoment) + (S.b ^ 15)⁻¹ * √S.identitySecondMoment := by
         grw [h_links]
       _ = 2 * (S.b ^ 15)⁻¹ * √S.identitySecondMoment := by

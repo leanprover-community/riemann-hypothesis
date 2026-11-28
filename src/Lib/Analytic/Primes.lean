@@ -372,12 +372,14 @@ lemma New.analyticOnNhd_sub_mul_sum_term (q : ℕ) [NeZero q] (N : ℕ) {r : ℝ
     Differentiable.analyticAt (fun s ↦ (hasDerivAt_term _ i s).differentiableAt) _
   fun_prop (disch := simp_all) [logDeriv]
 
-/-- Let `4 ∣ M` and let `A` be fixed. For all large `W` there is a prime `p ≡ 1` mod `M ^ k` with
+/--
+Let `4 ∣ M` and let `A` be fixed. For all large `W` there is a prime `p ≡ 1` mod `M ^ k` with
 `U ≤ log p ≤ U + W`, whenever `1 < k`, `M ^ k ≤ W ^ A` and `W ≤ U ≤ W ^ A`. This is a consequence
-of the Siegel–Walfisz theorem, proved here directly by Newman's contour method. -/
-theorem New.exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M) :
-    ∀ᶠ W : ℝ in atTop, ∀ k : ℕ, 1 < k → (M : ℝ) ^ k ≤ W ^ A → ∀ U : ℝ, U ∈ Set.Icc W (W ^ A) →
-      ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD M ^ k] ∧ Real.log p ∈ Set.Icc U (U + W) := by
+of the Siegel–Walfisz theorem, proved here directly by Newman's contour method.
+-/
+theorem New.exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M)
+    : ∀ᶠ W : ℝ in atTop, ∀ k : ℕ, 1 < k → (M : ℝ) ^ k ≤ W ^ A → ∀ U : ℝ, U ∈ Set.Icc W (W ^ A) →
+        ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD M ^ k] ∧ Real.log p ∈ Set.Icc U (U + W) := by
   -- Write `W = X ^ 2`, `q = M ^ k`. Let `F z / z` be the Dirichlet series of `Λ` on `1 mod q` at
   -- `1 + z`, and `P` its part with `n < e ^ U`. If the window has no prime, `F z - z P z` over
   -- `exp (2 - U z - X (1 + X z)² / 4)` is at most `3 U` on `‖z‖ = 1 / X`, yet of size
@@ -401,8 +403,8 @@ theorem New.exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M)
   obtain rfl : W = X ^ 2 := by rw [← hW, sq_sqrt (sqrt_pos.1 (hX.trans_eq hW.symm)).le]
   have hU_pos : 0 < U := (pow_pos hX 2).trans_le hWU
   set q : ℕ := M ^ k
-  simp only [← pow_mul, rpow_natCast, ← natCast_eq_natCast_iff, Nat.cast_one,
-    Set.mem_Icc] at hq hU h_exp ⊢
+  simp only [← pow_mul, rpow_natCast, ← natCast_eq_natCast_iff, Nat.cast_one, Set.mem_Icc]
+    at hq hU h_exp ⊢
   have hq_cast : (q : ℝ) ≤ X ^ (2 * A) := by simpa [q] using hq
   let a (n : ℕ) : ℂ := residueClass (1 : ZMod q) n
   let F (z : ℂ) : ℂ :=
@@ -410,11 +412,12 @@ theorem New.exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M)
   have h_series (z : ℂ) (hz : 0 < z.re) : LSeriesHasSum a (1 + z) (F z / z) :=
     hasSum_residueClass_one q hz
   -- For `‖z‖ ≤ 1 / X` each `z * logDeriv (entireL χ)` has norm at most `1`, so `‖F‖ ≤ 2`.
-  have h_disc {z : ℂ} (hz : ‖z‖ ≤ X⁻¹) (χ : DirichletCharacter ℂ q) :
-      entireL χ (1 + z) ≠ 0 ∧ ‖logDeriv (entireL χ) (1 + z)‖ ≤ X :=
+  have h_disc {z : ℂ} (hz : ‖z‖ ≤ X⁻¹) (χ : DirichletCharacter ℂ q)
+      : entireL χ (1 + z) ≠ 0 ∧ ‖logDeriv (entireL χ) (1 + z)‖ ≤ X :=
     h_free k hk χ (1 + z) hq (by simpa)
-  have hF (z : ℂ) (hz : ‖z‖ ≤ X⁻¹) : ‖F z‖ ≤ 2 := norm_one_sub_mul_sum_div_totient_le fun χ ↦ by
-    grw [norm_mul, hz, (h_disc hz χ).2, inv_mul_cancel₀ hX.ne']
+  have hF (z : ℂ) (hz : ‖z‖ ≤ X⁻¹) : ‖F z‖ ≤ 2 :=
+    norm_one_sub_mul_sum_div_totient_le fun χ ↦ by
+      grw [norm_mul, hz, (h_disc hz χ).2, inv_mul_cancel₀ hX.ne']
   by_contra h_none
   let P (z : ℂ) : ℂ := ∑ n ∈ .range ⌈U.exp⌉₊, term a (1 + z) n
   let G (z : ℂ) : ℂ := (F z - z * P z) / (2 - U * z - 4⁻¹ * X * (1 + X * z) ^ 2).exp
@@ -424,22 +427,23 @@ theorem New.exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M)
       (analyticOnNhd_sub_mul_sum_term q ⌈U.exp⌉₊ (fun z hz χ ↦ (h_disc hz χ).1) s hs).div
         (by fun_prop) (Complex.exp_ne_zero _)
     have h_zero : ‖G 0‖ ≤ 3 * U := by
-      simpa using norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le 0 (inv_pos.2 hX)
-        (hG.differentiableOn.diffContOnCl_ball le_rfl) (by simpa using h_circle)
+      simpa using
+        norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le 0 (inv_pos.2 hX)
+          (hG.differentiableOn.diffContOnCl_ball le_rfl) (by simpa using h_circle)
     have h_value : ‖G 0‖ = rexp (4⁻¹ * X) / rexp 2 / q.totient := by
       simp [G, F, norm_exp, Real.exp_sub, field]
     have h_large : 3 * U < rexp (4⁻¹ * X) / rexp 2 / q.totient := by
       rw [lt_div_iff₀ (mod_cast Nat.totient_pos.2 (NeZero.pos q)), lt_div_iff₀ (exp_pos 2)]
       calc
-        3 * U * q.totient * rexp 2 ≤ 3 * X ^ (2 * A) * X ^ (2 * A) * rexp 2 := by
-          grw [Nat.totient_le, hq_cast, hU]
+        3 * U * q.totient * rexp 2
+          ≤ 3 * X ^ (2 * A) * X ^ (2 * A) * rexp 2 := by grw [Nat.totient_le, hq_cast, hU]
         _ = rexp 2 * 3 * X ^ (4 * A) := by ring
         _ < rexp (4⁻¹ * X) := (lt_div_iff₀ (by positivity)).1 h_exp
     linarith
   intro z hz
   rw [norm_div, norm_exp, div_le_iff₀' (by bound)]
-  refine norm_sub_mul_sum_term_le (residueClass_nonneg _) h_series hF hC hXC hX200 hWU
-    (fun n hn ↦ ?_) hz
+  refine
+    norm_sub_mul_sum_term_le (residueClass_nonneg _) h_series hF hC hXC hX200 hWU (fun n hn ↦ ?_) hz
   -- In the window no `n ≡ 1` is prime, so `Λ` on the class is at most `Λ` on the non-primes.
   by_cases h_prime : n.Prime
   · have h_class : (n : ZMod q) ≠ 1 := fun h ↦ h_none ⟨n, h_prime, h, hn⟩

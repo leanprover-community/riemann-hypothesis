@@ -60,16 +60,23 @@ namespace New.Fock
 
 open MeasureTheory Matrix Heisenberg.IsVacuum Norms.Operator Complex Filter Finset Real
 
-variable {ι : Type _} [Fintype ι] [DecidableEq ι]
-  {ε : ι → ℤˣ} (N : ℕ) (c : ℂ) (v : fockSpace ε)
-  {Y : Type*} [MeasurableSpace Y] {ν : Measure Y} [SFinite ν] {F : Y → fockSpace ε}
+variable
+  {ι : Type _} [Fintype ι] [DecidableEq ι]
+  {ε : ι → ℤˣ}
+  (N : ℕ) (c : ℂ) (v : fockSpace ε)
+  {Y : Type*} [MeasurableSpace Y]
+  {ν : Measure Y} [SFinite ν]
+  {F : Y → fockSpace ε}
 
 /-! ### The weighted norms -/
 
-/-- The moment `fockMoment N v` = ∫ (1 + ‖y‖)^N |v(y)| dy in [0, ∞], with ‖y‖ the sup norm and dy
-Lebesgue measure divided by π^|ι|. -/
-noncomputable def fockMoment : ENNReal := ∫⁻ y : ι → ℂ,
-  (1 + ‖y‖ₑ) ^ N * ‖v y‖ₑ ∂normalizedVolume ι
+/--
+The moment `fockMoment N v` = ∫ (1 + ‖y‖)^N |v(y)| dy in [0, ∞], with ‖y‖ the sup norm and dy
+Lebesgue measure divided by π^|ι|.
+-/
+noncomputable def fockMoment : ENNReal :=
+  ∫⁻ y : ι → ℂ,
+    (1 + ‖y‖ₑ) ^ N * ‖v y‖ₑ ∂normalizedVolume ι
 
 /-- The moment of order 0 is the L¹ norm of the Fock vector `v`. -/
 lemma fockMoment_zero : fockMoment 0 v = ‖v‖ₑ := by
@@ -261,10 +268,12 @@ lemma pow_mul_realVac_mul_realVac_mul_exp_le (y w : ι → ℂ) :
 /-- The monomial `∏ j, X (p j)` of a word `p : Fin k → ι`. -/
 private noncomputable def prodX {k : ℕ} (p : Fin k → ι) : MvPolynomial ι ℂ := ∏ j, .X (p j)
 
-/-- The `n`-th partial sum of the exponential series of the reproducing kernel, as an operator:
+/--
+The `n`-th partial sum of the exponential series of the reproducing kernel, as an operator:
 `∑_{k < n} (1 / k!) ∑_{p : Fin k → ι} ⟨w_p, ·⟩ w_p`, where `w_p` is the polynomial vector of
 `prodX p`, and `⟨a, ·⟩` is the continuous linear functional `fockInner a`, linear in the second
-slot. -/
+slot.
+-/
 private noncomputable def partialKernelOp (ε : ι → ℤˣ) (n : ℕ) : fockSpace ε →L[ℂ] fockSpace ε :=
   ∑ k ∈ range n, ∑ p : Fin k → ι,
     (k.factorial⁻¹ : ℂ) • (fockInner (polyVector ε (prodX p))).smulRight (polyVector ε (prodX p))

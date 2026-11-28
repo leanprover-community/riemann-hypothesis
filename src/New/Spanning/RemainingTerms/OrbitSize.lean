@@ -50,20 +50,24 @@ namespace New.Filling
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
 
-/-- The second moment `D_j` against which the size of a term of cell rank `j` is measured:
+/--
+The second moment `D_j` against which the size of a term of cell rank `j` is measured:
 `mainSecondMoment` at the top cell rank `ϱ + 1`, and `τ ^ (-16)` times `identitySecondMoment` below
-it, where `τ` is `tailScale`. -/
+it, where `τ` is `tailScale`.
+-/
 noncomputable def cellRankSecondMoment (j : Fin (𝔰.ϱ + 2)) : ℝ :=
   if 𝔰.ϱ < j then S.mainSecondMoment else S.identitySecondMoment / S.tailScale ^ 16
 
-/-- The bound `τ² (D_j / (n_p (M ^ (2 j' f) x) ^ k)) ^ (1 / 2)`, `j' = min ϱ j`, for one near orbit
+/--
+The bound `τ² (D_j / (n_p (M ^ (2 j' f) x) ^ k)) ^ (1 / 2)`, `j' = min ϱ j`, for one near orbit
 of terms under left and right multiplication by the groups `classUnipotent₀`, of cell rank `j` and
 gauge `x`, in units of the covolume `unipotentCovolume`. Here `τ` is `tailScale`, `D_j` is
 `cellRankSecondMoment j`, `n_p` is `pairCountScale`, `M` is the level `S.M`, `k` is the rank of `X₀`
-and `f` is the number of infinite places. -/
+and `f` is the number of infinite places.
+-/
 noncomputable def orbitBound (j : Fin (𝔰.ϱ + 2)) (x : ℝ) : ℝ :=
-  S.tailScale ^ 2 * √(S.cellRankSecondMoment j /
-    (S.pairCountScale * (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * x) ^ 𝔰.k))
+  S.tailScale ^ 2 * √(S.cellRankSecondMoment j
+    / (S.pairCountScale * (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * x) ^ 𝔰.k))
 
 variable {S} {γ : S.G E}
 
@@ -139,9 +143,11 @@ lemma IsNear.inv_pow_le_orbitBound [S.IsAdmissible] (h_near : S.IsNear γ)
   exact inv_anti₀ (by positivity) h_den
 
 variable (S) in
-/-- The factor of the product over the infinite places of the open-cell bounds `pairingBoundSq` at
+/--
+The factor of the product over the infinite places of the open-cell bounds `pairingBoundSq` at
 `S.ratToInf γ v` that does not depend on `γ`: the product with the absolute values of
-`S.termDisc γ` replaced by `1` (see `prod_pairingBoundSq_eq`). -/
+`S.termDisc γ` replaced by `1` (see `prod_pairingBoundSq_eq`).
+-/
 noncomputable def pairingBoundConst : ℝ :=
   ∏ v : NumberField.InfinitePlace E,
     (S.frameBoxRadius ^ (9 * 𝔰.n) / (∏ a : Fin 𝔰.n, S.frameScaleSq v a) ^ 2) ^ (10 ^ 5 * 𝔰.n ^ 4) *

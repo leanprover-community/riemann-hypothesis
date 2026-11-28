@@ -54,29 +54,39 @@ variable {R G : Type} [CommRing R] [Group G] [TopologicalSpace G]
 
 /-! ### Finite modules, Higman's criterion and function modules -/
 
-/-- Higman's criterion for the discrete `G`-module `A` relative to a subgroup `Q` of finite index:
+/--
+Higman's criterion for the discrete `G`-module `A` relative to a subgroup `Q` of finite index:
 some additive `τ : A → A` has `∑ g τ g⁻¹ = 1`, summed over the chosen representatives `g.out` of the
 cosets in `G ⧸ Q`. The map `τ` is not asked to commute with `Q`. If `Q` acts trivially on `A`, the
-choice of representatives does not matter. -/
+choice of representatives does not matter.
+-/
 def IsHigmanProjective (Q : Subgroup G) [Finite (G ⧸ Q)] (A : DiscreteModule R G) : Prop :=
   ∃ τ : A →+ A, ∀ a : A.V, ∑ g : G ⧸ Q, A.ρ g.out (τ (A.ρ g.out⁻¹ a)) = a
 
 /-- The subgroup `Q` of `G` acts trivially on the discrete `G`-module `A`. -/
 abbrev TrivialOn (Q : Subgroup G) (A : DiscreteModule R G) : Prop := ∀ g ∈ Q, ∀ m : A.V, A.ρ g m = m
 
-/-- For a discrete `G`-module `A` and a finite set `Y` with an action of a discrete group `Δ`, the
-`G × Δ`-module of functions `f : Y → A`, with `((g, δ) f) x = g (f (δ⁻¹ x))`. -/
-abbrev permModule (A : DiscreteModule R G) {Δ : Type} [Group Δ] [TopologicalSpace Δ]
-    [DiscreteTopology Δ] (Y : Type) [Finite Y] [MulAction Δ Y] : DiscreteModule R (G × Δ) :=
-  of (V := Y → A)
-    { toFun g := LinearMap.pi fun x : Y ↦ A.ρ g.1 ∘ₗ LinearMap.proj (g.2⁻¹ • x)
-      map_one' := by aesop
-      map_mul' := by aesop (add simp mul_smul) }
+/--
+For a discrete `G`-module `A` and a finite set `Y` with an action of a discrete group `Δ`, the
+`G × Δ`-module of functions `f : Y → A`, with `((g, δ) f) x = g (f (δ⁻¹ x))`.
+-/
+abbrev permModule
+    (A : DiscreteModule R G)
+    {Δ : Type} [Group Δ] [TopologicalSpace Δ] [DiscreteTopology Δ]
+    (Y : Type) [Finite Y] [MulAction Δ Y]
+    : DiscreteModule R (G × Δ) :=
+  of (V := Y → A) {
+    toFun g := LinearMap.pi fun x : Y ↦ A.ρ g.1 ∘ₗ LinearMap.proj (g.2⁻¹ • x)
+    map_one' := by aesop
+    map_mul' := by aesop (add simp mul_smul)
+  }
 
-/-- The discrete `G`-module `A` is finite and killed by `n`, the subgroup `Q` acts trivially on it,
-and `ρ z - m` is injective on it. -/
-structure FiniteKilledFixedInj (n : ℕ) (Q : Subgroup G) (z : G) (m : ℕ) (A : DiscreteModule R G) :
-    Prop where
+/--
+The discrete `G`-module `A` is finite and killed by `n`, the subgroup `Q` acts trivially on it,
+and `ρ z - m` is injective on it.
+-/
+structure FiniteKilledFixedInj (n : ℕ) (Q : Subgroup G) (z : G) (m : ℕ) (A : DiscreteModule R G)
+    : Prop where
   /-- The module is finite. -/
   finite : Finite A
   /-- The module is killed by `n`. -/
@@ -212,15 +222,20 @@ lemma exists_open_sylow (l : ℕ) [hl : Fact l.Prime] (U : OpenNormalSubgroup G)
 
 /-! ### Function modules and multiplicative functions -/
 
-/-- Let `U` be open normal in `G`, let `S` be normal in `G ⧸ U` and let `Y` be a finite
+/--
+Let `U` be open normal in `G`, let `S` be normal in `G ⧸ U` and let `Y` be a finite
 `(G ⧸ U) ⧸ S`-set. The `G`-module of functions `f : Y → A` with the diagonal action
-`(g f) y = g (f (g⁻¹ y))`, where `g` acts on `Y` through its image in `(G ⧸ U) ⧸ S`. -/
-abbrev diagonalPermModule [IsTopologicalGroup G] (A : DiscreteModule R G)
-    (U : OpenNormalSubgroup G) (S : Subgroup (G ⧸ (U : Subgroup G))) [S.Normal] (Y : Type)
-    [Finite Y] [MulAction ((G ⧸ (U : Subgroup G)) ⧸ S) Y] : DiscreteModule R G :=
+`(g f) y = g (f (g⁻¹ y))`, where `g` acts on `Y` through its image in `(G ⧸ U) ⧸ S`.
+-/
+abbrev diagonalPermModule
+    [IsTopologicalGroup G]
+    (A : DiscreteModule R G)
+    (U : OpenNormalSubgroup G) (S : Subgroup (G ⧸ (U : Subgroup G))) [S.Normal]
+    (Y : Type) [Finite Y] [MulAction ((G ⧸ (U : Subgroup G)) ⧸ S) Y]
+    : DiscreteModule R G :=
   letI : MulAction (G ⧸ (U : Subgroup G)) Y := compHom Y (mk' S)
-  (A.permModule Y).restrictAlong ⟨(MonoidHom.id G).prod (mk' (U : Subgroup G)),
-    Continuous.prodMk continuous_id continuous_mk⟩
+  (A.permModule Y).restrictAlong
+    ⟨(MonoidHom.id G).prod (mk' (U : Subgroup G)), Continuous.prodMk continuous_id continuous_mk⟩
 
 /-- Let `l` be prime, `U` open normal in the compact group `G`, and suppose every commutator
 `⁅z, g⁆` lies in `U`. Then `G ⧸ U` has a normal subgroup of order prime to `l` that contains the
@@ -415,20 +430,26 @@ lemma perm_pow_eq_one_of_map_sub {V : Type*} [AddCommGroup V] {n : ℕ}
 def sumValuesHom (Δ M : Type) [Fintype Δ] [AddCommGroup M] : (Δ → M) →+ M :=
   .mk' (fun a : Δ → M ↦ ∑ g : Δ, a g) fun _ _ ↦ sum_add_distrib
 
-/-- A finite group `Δ` acts on the functions `Δ → M` by `(g • a) d = a (g⁻¹ * d)`, and this keeps
+/--
+A finite group `Δ` acts on the functions `Δ → M` by `(g • a) d = a (g⁻¹ * d)`, and this keeps
 the sum of the values. This is its action on the hyperplane of functions with the same sum as `e`,
-moved to the functions of sum zero by letting `x` stand for `e + x`. -/
-abbrev hyperplaneAction {Δ M : Type} [Group Δ] [Fintype Δ] [AddCommGroup M] (e : Δ → M) :
-    MulAction Δ (sumValuesHom Δ M).ker where
-  smul g x := ⟨fun d : Δ ↦ -e d + (e (g⁻¹ * d) + x.val (g⁻¹ * d)), by
-    have h_sum (a : Δ → M) : ∑ d : Δ, a (g⁻¹ * d) = ∑ d : Δ, a d := sum_comp (.mulLeft g⁻¹) a
-    simp [sumValuesHom, sum_add_distrib, h_sum, show ∑ d : Δ, x.val d = 0 from x.property]⟩
-  one_smul x := Subtype.ext <| funext fun d ↦
-    show -e d + (e (1⁻¹ * d) + x.val (1⁻¹ * d)) = x.val d by simp
-  mul_smul g h x := Subtype.ext <| funext fun d ↦ by
-    change -e d + (e ((g * h)⁻¹ * d) + x.val ((g * h)⁻¹ * d)) = -e d + (e (g⁻¹ * d) +
-      (-e (g⁻¹ * d) + (e (h⁻¹ * (g⁻¹ * d)) + x.val (h⁻¹ * (g⁻¹ * d)))))
-    simp [mul_assoc]
+moved to the functions of sum zero by letting `x` stand for `e + x`.
+-/
+abbrev hyperplaneAction {Δ M : Type} [Group Δ] [Fintype Δ] [AddCommGroup M] (e : Δ → M)
+    : MulAction Δ (sumValuesHom Δ M).ker where
+  smul g x := ⟨
+    fun d : Δ ↦ - e d + (e (g⁻¹ * d) + x.val (g⁻¹ * d)),
+    by
+      have h_sum (a : Δ → M) : ∑ d : Δ, a (g⁻¹ * d) = ∑ d : Δ, a d := sum_comp (.mulLeft g⁻¹) a
+      simp [sumValuesHom, sum_add_distrib, h_sum, show ∑ d : Δ, x.val d = 0 from x.property]
+  ⟩
+  one_smul x :=
+    Subtype.ext <| funext fun d ↦ show - e d + (e (1⁻¹ * d) + x.val (1⁻¹ * d)) = x.val d by simp
+  mul_smul g h x :=
+    Subtype.ext <| funext fun d ↦ by
+      change - e d + (e ((g * h)⁻¹ * d) + x.val ((g * h)⁻¹ * d))
+        = - e d + (e (g⁻¹ * d) + (- e (g⁻¹ * d) + (e (h⁻¹ * (g⁻¹ * d)) + x.val (h⁻¹ * (g⁻¹ * d)))))
+      simp [mul_assoc]
 
 /-- The value at `d` of the image of `x` under `g`, for the action on the hyperplane through `e`. -/
 lemma hyperplaneAction_toPerm_apply {Δ M : Type} [Group Δ] [Fintype Δ] [AddCommGroup M] (e : Δ → M)
@@ -454,17 +475,22 @@ lemma sum_hyperplaneAction_toPerm_apply_one {Δ M : Type} [Group Δ] [Fintype Δ
   simp only [hyperplaneAction_toPerm_apply]
   simp [sum_add_distrib, show ∑ g : Δ, y.val g = 0 from y.property]
 
-/-- A function `φ` of the modules that are finite, killed by `n` and fixed by `Q`, with `ρ z - m`
+/--
+A function `φ` of the modules that are finite, killed by `n` and fixed by `Q`, with `ρ z - m`
 injective, is multiplicative: `φ B = φ A * φ D` for every short exact `0 → A → B → D → 0` with `B`
-of this kind. -/
-def IsMultiplicative {n : ℕ} {Q : Subgroup G} {z : G} {m : ℕ}
-    (φ : ∀ A : DiscreteModule R G, A.FiniteKilledFixedInj n Q z m → ℚ≥0) : Prop :=
+of this kind.
+-/
+def IsMultiplicative
+    {n : ℕ} {Q : Subgroup G} {z : G} {m : ℕ}
+    (φ : ∀ A : DiscreteModule R G, A.FiniteKilledFixedInj n Q z m → ℚ≥0)
+    : Prop :=
   ∀ {A B D : DiscreteModule R G} {ι : A.Hom B} {π : B.Hom D} (h_exact : IsShortExact ι π)
-    (hB : B.FiniteKilledFixedInj n Q z m),
+      (hB : B.FiniteKilledFixedInj n Q z m),
     φ B hB = φ A (hB.left_of_isShortExact h_exact) * φ D (hB.right_of_isShortExact h_exact)
 
 section Multiplicative
-variable {l : ℕ} {U : OpenNormalSubgroup G} {z : G} [IsTopologicalGroup G] [CompactSpace G]
+variable
+  {l : ℕ} {U : OpenNormalSubgroup G} {z : G} [IsTopologicalGroup G] [CompactSpace G]
   {φ : ∀ A : DiscreteModule R G, A.FiniteKilledFixedInj l U z 1 → ℚ≥0}
 
 /-- Let `φ` be a function of the modules that are finite, killed by `l` and fixed by `U`, with

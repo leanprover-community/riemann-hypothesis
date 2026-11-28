@@ -301,20 +301,25 @@ lemma exists_forall_diagonalPeriodForm_ne_zero :
   exact (h_period _).trans (h_zero φ hφ)
 
 variable {D} in
-/-- `r` is a restriction map `res^♭` at the real point `g` of the unitary group of `Ỹ^0_0`, the sum
+/--
+`r` is a restriction map `res^♭` at the real point `g` of the unitary group of `Ỹ^0_0`, the sum
 of `Y₀` and a line, in the sense of its pairings: every form `y` on `Y₀` of level `𝔪₀ = π_M Q`,
 where `Q` is the modulus of some twist, has the same pairing with `r φ` as with the function
 `h ↦ (Θ^♭ φ) (h g)` on `U(Y₀)`. Here `φ` is a form of level `𝔟` on `Ỹ^m_0` and `Θ^♭` is
 `D.transposedChain 1 true 0`. The forms `y` of the level `J_M` (that of the prime divisors of
-`π_M`) are among these, and their pairings determine `r`. -/
-def IsFlatRestriction (g : GInf D.E (D.gridSigns true 0 0 0))
-    (r : D.gridLevelForms D.m →ₗ[ℂ] D.principalForms (D.spaceY 0)) : Prop :=
+`π_M`) are among these, and their pairings determine `r`.
+-/
+def IsFlatRestriction
+    (g : GInf D.E (D.gridSigns true 0 0 0))
+    (r : D.gridLevelForms D.m →ₗ[ℂ] D.principalForms (D.spaceY 0))
+    : Prop :=
   ∀ (φ : D.gridLevelForms D.m) (ϑ : D.MFoldTwist),
-    ∀ y ∈ levelSpace ((D.gridSpace 0 false 0 0).formRep (D.gridKernel false 0 0 false))
-      (levelY ϑ 0),
-    (D.spaceY 0).petersson y (r φ) =
-      diagonalPeriodForm ϑ zero_le g (conjForm D.gridKernel_zero_true_eq_star y)
-        (D.transposedChain 1 true 0 φ)
+    ∀ y
+        ∈ levelSpace ((D.gridSpace 0 false 0 0).formRep (D.gridKernel false 0 0 false))
+          (levelY ϑ 0),
+      (D.spaceY 0).petersson y (r φ)
+        = diagonalPeriodForm ϑ zero_le g (conjForm D.gridKernel_zero_true_eq_star y)
+          (D.transposedChain 1 true 0 φ)
 
 /-- Let `g` be a real point (`GInf`) of the unitary group of `Ỹ^0_0`, the sum of `Y₀ = D.spaceY 0`
 and a line. Some linear map `r` from the forms of level `𝔟 = π_M ^ D.natB`, where `π_M = D.piM`, on

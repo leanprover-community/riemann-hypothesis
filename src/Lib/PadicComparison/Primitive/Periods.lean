@@ -51,11 +51,13 @@ namespace New.Variety
 open CategoryTheory TensorProduct Functor Period PadicTest AlgebraTensorModule WittVector PadicInt
   ZMod Comparison
 
-variable {p : ℕ} [ThePrime p] {S : Type} [CommRing S] [Algebra Ainf S] [Algebra ℤ_[p] S]
-  [IsScalarTower ℤ_[p] Ainf S] (b : Type*) [CommRing b] [Algebra (ZMod p) b]
-  (K : Type) [CommRing K] [Algebra S K] [Module.Flat S K] [Algebra ℤ_[p] K]
-  [IsScalarTower ℤ_[p] S K] {Ψ : PadicTest ⥤ ModuleCat K}
-  (θ : asModules (tilt ⋙ periodAlg S) ⋙ tensorWith K K ≅ Ψ)
+variable
+  {p : ℕ} [ThePrime p]
+  {S : Type} [CommRing S] [Algebra Ainf S] [Algebra ℤ_[p] S] [IsScalarTower ℤ_[p] Ainf S]
+  (b : Type*) [CommRing b] [Algebra (ZMod p) b]
+  (K : Type)
+  [CommRing K] [Algebra S K] [Module.Flat S K] [Algebra ℤ_[p] K] [IsScalarTower ℤ_[p] S K]
+  {Ψ : PadicTest ⥤ ModuleCat K} (θ : asModules (tilt ⋙ periodAlg S) ⋙ tensorWith K K ≅ Ψ)
 
 /-- An `𝔽_p`-algebra `b` is a `ℤ_[p]`-algebra through reduction modulo `p`. -/
 noncomputable local instance : Algebra ℤ_[p] b := .compHom _ (constantCoeff.comp (fromPadicInt p))
@@ -81,74 +83,84 @@ lemma IsReductionMod.comp_of_exact_of_comp {W X Y Z : Type*} [SMul ℕ W] [AddCo
   exact ⟨w, by simpa [sub_eq_zero] using h_diff⟩
 
 variable (p) in
-/-- The functor from test rings to `ℤ_[p]`-algebras sending `A` to `W(L)`, where `L` is the ring
-of locally constant functions `Spec A → 𝔽_p`. -/
+/--
+The functor from test rings to `ℤ_[p]`-algebras sending `A` to `W(L)`, where `L` is the ring
+of locally constant functions `Spec A → 𝔽_p`.
+-/
 noncomputable abbrev wittLocConst : TestRing ⥤ CommAlg ℤ_[p] :=
   (testIncl ⋙ locConstAlg) ⋙ wittFunctor ℤ_[p]
 
 variable (S) in
-/-- For a test ring `A`, with `L` the ring of locally constant functions `Spec A → 𝔽_p`, the
-`ℤ_[p]`-algebra map `W(L) → W(O♭ ⊗ L) → S ⊗_{A_inf} W(O♭ ⊗ L)`, `w ↦ 1 ⊗ W(1 ⊗ –)(w)`. -/
-noncomputable def wittIncludeRight (A : TestRing) :
-    (wittLocConst p).obj A →ₐ[ℤ_[p]]
-      (oFlatLocConst ⋙ wittFunctor ⋙ algBaseChange S ⋙ restrictAlg ℤ_[p] S).obj A := by
+/--
+For a test ring `A`, with `L` the ring of locally constant functions `Spec A → 𝔽_p`, the
+`ℤ_[p]`-algebra map `W(L) → W(O♭ ⊗ L) → S ⊗_{A_inf} W(O♭ ⊗ L)`, `w ↦ 1 ⊗ W(1 ⊗ –)(w)`.
+-/
+noncomputable def wittIncludeRight (A : TestRing)
+    : (wittLocConst p).obj A →ₐ[ℤ_[p]]
+        (oFlatLocConst ⋙ wittFunctor ⋙ algBaseChange S ⋙ restrictAlg ℤ_[p] S).obj A := by
   open Algebra.TensorProduct in
-    refine ⟨includeRight.toRingHom.comp (map includeRight.toRingHom), fun z ↦ ?_⟩
-    -- Compare Witt coordinates, which come from `ZMod p`.
-    have h_coord :
-        WittVector.map includeRight.toRingHom (algebraMap ℤ_[p] ((wittLocConst p).obj A) z) =
-          algebraMap Ainf ((oFlatLocConst ⋙ wittFunctor).obj A) (algebraMap ℤ_[p] Ainf z) :=
-      WittVector.ext fun _ ↦ (includeRight.commutes _).trans (congrArg _ (cast_id p _))
-    refine .trans (congrArg (tmul _ 1) h_coord) ?_
-    -- `z` reaches `S` through `A_inf`.
-    exact (includeRight.commutes _).trans
-      (congrArg (fun s : S ↦ s ⊗ₜ 1) (IsScalarTower.algebraMap_apply ℤ_[p] Ainf S z)).symm
+  refine ⟨includeRight.toRingHom.comp (map includeRight.toRingHom), fun z ↦ ?_⟩
+  -- Compare Witt coordinates, which come from `ZMod p`.
+  have h_coord
+      : WittVector.map includeRight.toRingHom (algebraMap ℤ_[p] ((wittLocConst p).obj A) z)
+        = algebraMap Ainf ((oFlatLocConst ⋙ wittFunctor).obj A) (algebraMap ℤ_[p] Ainf z) :=
+    WittVector.ext fun _ ↦ (includeRight.commutes _).trans (congrArg _ (cast_id p _))
+  refine .trans (congrArg (tmul _ 1) h_coord) ?_
+  -- `z` reaches `S` through `A_inf`.
+  exact (includeRight.commutes _).trans
+    (congrArg (fun s : S ↦ s ⊗ₜ 1) (IsScalarTower.algebraMap_apply ℤ_[p] Ainf S z)).symm
 
 variable (S) in
-/-- The `S`-algebra map `S ⊗_{ℤ_p} W(L) → S ⊗_{A_inf} W(O♭ ⊗ L)`, natural in the test ring: the
-extension of `wittIncludeRight` to `S`-algebras, its transpose under base change to `S`. -/
-noncomputable def wittLocConstBaseChange :
-    wittLocConst p ⋙ algBaseChange S ⟶ oFlatLocConst ⋙ wittFunctor ⋙ algBaseChange S :=
+/--
+The `S`-algebra map `S ⊗_{ℤ_p} W(L) → S ⊗_{A_inf} W(O♭ ⊗ L)`, natural in the test ring: the
+extension of `wittIncludeRight` to `S`-algebras, its transpose under base change to `S`.
+-/
+noncomputable def wittLocConstBaseChange
+    : wittLocConst p ⋙ algBaseChange S ⟶ oFlatLocConst ⋙ wittFunctor ⋙ algBaseChange S :=
   (baseChangeTranspose (wittLocConst p) (oFlatLocConst ⋙ wittFunctor ⋙ algBaseChange S)).symm
     (.mk fun A ↦ ConcreteCategory.ofHom (wittIncludeRight S A))
 
 variable (S) in
-/-- The map `S ⊗_{ℤ_p} W(L) → (S ⊗_{A_inf} W(O♭ ⊗ L))^` of `S`-modules, where `^` is the `p`-adic
-completion: `wittLocConstBaseChange` followed by the map to the completion. -/
-noncomputable def wittLocConstToPeriodAlg :
-    asModules (wittLocConst p) ⋙ tensorWith S S ⟶ asModules (oFlatLocConst ⋙ periodAlg S) :=
+/--
+The map `S ⊗_{ℤ_p} W(L) → (S ⊗_{A_inf} W(O♭ ⊗ L))^` of `S`-modules, where `^` is the `p`-adic
+completion: `wittLocConstBaseChange` followed by the map to the completion.
+-/
+noncomputable def wittLocConstToPeriodAlg
+    : asModules (wittLocConst p) ⋙ tensorWith S S ⟶ asModules (oFlatLocConst ⋙ periodAlg S) :=
   whiskerRight
-    (wittLocConstBaseChange S ≫
-      whiskerLeft (oFlatLocConst ⋙ wittFunctor ⋙ algBaseChange S) (algCompletion.of S p))
+    (wittLocConstBaseChange S
+      ≫ whiskerLeft (oFlatLocConst ⋙ wittFunctor ⋙ algBaseChange S) (algCompletion.of S p))
     (asModules (𝟭 (CommAlg S)))
 
 variable (p S) in
 /-- The isomorphism `K ⊗_{ℤ_p} W(L) ≅ K ⊗_S (S ⊗_{ℤ_p} W(L))`, natural in the test ring. -/
-noncomputable def wittLocConstCancelIso :
-    asModules (wittLocConst p) ⋙ tensorWith K K ≅
-      (asModules (wittLocConst p) ⋙ tensorWith S S) ⋙ tensorWith K K :=
+noncomputable def wittLocConstCancelIso
+    : asModules (wittLocConst p) ⋙ tensorWith K K
+      ≅ (asModules (wittLocConst p) ⋙ tensorWith S S) ⋙ tensorWith K K :=
   NatIso.ofComponents
     (fun A ↦ (cancelBaseChange ℤ_[p] S K K ((wittLocConst p).obj A)).symm.toModuleIso)
     fun _ ↦ ModuleCat.hom_ext (tmul_ext fun _ _ ↦ rfl)
 
 variable (S) in
 /-- The image `1 ⊗ w` of a Witt vector `w ∈ W(B)` in the `p`-adic completion of `S ⊗ W(B)`. -/
-noncomputable abbrev wittToPeriodAlg (B : CommAlg OFlat) (w : WittVector p B) :
-    (periodAlg S).obj B :=
+noncomputable abbrev wittToPeriodAlg (B : CommAlg OFlat) (w : WittVector p B)
+    : (periodAlg S).obj B :=
   AdicCompletion.of (Ideal.span {(p : S ⊗[Ainf] wittFunctor.obj B)}) (S ⊗[Ainf] wittFunctor.obj B)
     (1 ⊗ₜ w)
 
-/-- Let `θ` be an isomorphism from the functor `c ↦ K ⊗ (S ⊗ W(R♭))^` to `Ψ`, where `R` is the ring
+/--
+Let `θ` be an isomorphism from the functor `c ↦ K ⊗ (S ⊗ W(R♭))^` to `Ψ`, where `R` is the ring
 of the test `c` and `^` is the `p`-adic completion. This is the natural map from `K ⊗ W(L)` to `Ψ`,
 where `L` is the ring of locally constant `𝔽_p`-valued functions on `Spec R[1/p]`. It is the
 composite `K ⊗ W(L) ≅ K ⊗ (S ⊗ W(L)) → K ⊗ (S ⊗ W(O♭ ⊗ L))^ → K ⊗ (S ⊗ W(R♭))^ ≅ Ψ c`, the
-third map induced by `primitiveMap`. -/
-noncomputable def primitivePeriodMap :
-    genericTest ⋙ asModules (wittLocConst p) ⋙ tensorWith K K ⟶ Ψ :=
+third map induced by `primitiveMap`.
+-/
+noncomputable def primitivePeriodMap
+    : genericTest ⋙ asModules (wittLocConst p) ⋙ tensorWith K K ⟶ Ψ :=
   whiskerLeft genericTest
-      ((wittLocConstCancelIso p S K).hom ≫
-        whiskerRight (wittLocConstToPeriodAlg S) (tensorWith K K)) ≫
-    whiskerRight primitiveMap (asModules (periodAlg S) ⋙ tensorWith K K) ≫ θ.hom
+      ((wittLocConstCancelIso p S K).hom
+        ≫ whiskerRight (wittLocConstToPeriodAlg S) (tensorWith K K))
+    ≫ whiskerRight primitiveMap (asModules (periodAlg S) ⋙ tensorWith K K) ≫ θ.hom
 
 omit [Module.Flat S K] in
 /-- `primitivePeriodMap K θ` sends `a ⊗ x` to `θ (a ⊗ 1 ⊗ x')`, where `x'` is the image of `x`

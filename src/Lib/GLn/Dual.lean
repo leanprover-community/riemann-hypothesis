@@ -82,8 +82,9 @@ section Duality
 
 open ComplexOrder Finset Matrix MvPolynomial «GL» SetLike Equiv
 
-variable {Φ : Type} {n : Φ → Type} [Fintype Φ] [∀ τ, Fintype (n τ)]
-  [∀ τ, DecidableEq (n τ)] {κ κ' : Φ → ℕ → ℕ}
+variable
+  {Φ : Type} {n : Φ → Type} [Fintype Φ] [∀ τ, Fintype (n τ)] [∀ τ, DecidableEq (n τ)]
+  {κ κ' : Φ → ℕ → ℕ}
 
 omit [Fintype Φ] in
 /-- For an enumeration `e` of the rows, every family `A` of square matrices is the square part
@@ -135,9 +136,9 @@ lemma GL.prod_columns_eq_prod_complementary {M : Type*} [CommMonoid M] {N : ℕ}
     exact Fintype.prod_equiv (finCongr h_card) _ _ fun j ↦ h_match ⟨h + 1, hh⟩ h' j _ (by grind) rfl
 
 /-- The increasing sequence of the indices outside an increasing sequence. -/
-noncomputable def columnComplement {N a b : ℕ} (hab : a + b = N) (I : IncreasingMap N a) :
-    IncreasingMap N b :=
-  have h_card : #(univ.image I.val)ᶜ = b := by
+noncomputable def columnComplement {N a b : ℕ} (hab : a + b = N) (I : IncreasingMap N a)
+    : IncreasingMap N b :=
+  have h_card : # (univ.image I.val)ᶜ = b := by
     simp [card_compl, card_image_of_injective _ I.property.injective, ← hab]
   ⟨(univ.image I.val)ᶜ.orderEmbOfFin h_card, OrderEmbedding.strictMono _⟩
 
@@ -192,17 +193,20 @@ lemma GL.exists_sign_minor_columnComplement {m : Type*} [Fintype m] [DecidableEq
   rw [h_jacobi, ← mul_assoc, ← mul_assoc, ← Int.cast_mul, Int.units_coe_mul_self, Int.cast_one,
     one_mul]
 
-/-- For complementary diagrams `κ`, `κ'`, the filling of `κ'` whose column of height `h' > 0` is the
+/--
+For complementary diagrams `κ`, `κ'`, the filling of `κ'` whose column of height `h' > 0` is the
 complement of the matching column of `T`, of height `|n_τ| - h'`. Columns of height `0` are
-empty. -/
+empty.
+-/
 noncomputable def fillingComplement
-    (hκ : ∀ τ : Φ, ∀ h ∈ Ico 1 (rankAt n τ), κ' τ h = κ τ (rankAt n τ - h))
-    (T : ColumnFilling n κ) : ColumnFilling n κ' :=
-  fun (τ : Φ) (h' : Fin (rankAt n τ)) (j : Fin (κ' τ h')) ↦
-  if h_zero : (h' : ℕ) = 0 then ⟨Fin.elim0 ∘ Fin.cast h_zero, fun s ↦ (Fin.cast h_zero s).elim0⟩
-  else columnComplement (a := rankAt n τ - h') (Nat.sub_add_cancel h'.is_le')
-    (T τ ⟨rankAt n τ - h', by omega⟩
-      (Fin.cast (hκ τ h' (mem_Ico.2 ⟨Nat.pos_of_ne_zero h_zero, h'.isLt⟩)) j))
+    (hκ : ∀ τ : Φ, ∀ h ∈ Ico 1 (rankAt n τ), κ' τ h = κ τ (rankAt n τ - h)) (T : ColumnFilling n κ)
+    : ColumnFilling n κ' := fun (τ : Φ) (h' : Fin (rankAt n τ)) (j : Fin (κ' τ h')) ↦
+  if h_zero : (h' : ℕ) = 0 then
+    ⟨Fin.elim0 ∘ Fin.cast h_zero, fun s ↦ (Fin.cast h_zero s).elim0⟩
+  else
+    columnComplement (a := rankAt n τ - h') (Nat.sub_add_cancel h'.is_le')
+      (T τ ⟨rankAt n τ - h', by omega⟩
+        (Fin.cast (hκ τ h' (mem_Ico.2 ⟨Nat.pos_of_ne_zero h_zero, h'.isLt⟩)) j))
 
 omit [Fintype Φ] [DecidableEq Φ] [∀ τ, DecidableEq (n τ)] in
 /-- The column `j` of height `h'` of the complementary filling is the complement of the column `j`
@@ -363,28 +367,36 @@ lemma GL.exists_int_duality_matrix (e e' : ∀ τ : Φ, n τ ≃ Fin (rankAt n �
     simp only [toLin'_apply, map_mul_intCast, ← mulVec_mulVec, h_tensor ℂ _ hg, mulVec_smul, h_left]
   · simp only [map_mul_intCast, ← mulVec_mulVec, h_tensor R g hg, mulVec_smul, h_left]
 
-/-- For an enumeration `e` of the rows, the integer matrix `J`, from coordinates of weight `κ'` to
+/--
+For an enumeration `e` of the rows, the integer matrix `J`, from coordinates of weight `κ'` to
 those of weight `κ`, identifies the lattice of weight `κ'` with that of weight `κ` composed with
 `g ↦ g⁻¹ᵀ` (this is the dual only over `ℚ`, since the Gram matrix is not unimodular): it is
 unimodular and isometric for the Gram matrices `New.weylGram`, sends the evaluation vector at the
 frame `e` to that at the reversed frame, and intertwines `g` with its inverse transpose up to a
-power of the determinant. -/
-structure GL.IsDualIsometry (e : ∀ τ : Φ, n τ ≃ Fin (rankAt n τ))
-    (J : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ') ℤ) : Prop where
+power of the determinant.
+-/
+structure GL.IsDualIsometry
+    (e : ∀ τ : Φ, n τ ≃ Fin (rankAt n τ))
+    (J : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ') ℤ)
+    : Prop where
   /-- `J` has a two-sided integer inverse. -/
   exists_inv : ∃ K : Matrix (WeylIndexFamily n κ') (WeylIndexFamily n κ) ℤ, J * K = 1 ∧ K * J = 1
   /-- `J` is an isometry for the Gram matrices: `Jᵀ G_κ J = G_κ'`. -/
   gram_eq : Jᵀ * weylGram n κ * J = weylGram n κ'
-  /-- Over a field of characteristic zero, `J` sends the evaluation vector at the frame `e` to
-  that at the reversed frame. -/
-  mulVec_weylEval (R : Type) [Field R] [CharZero R] :
-    J.map (Int.cast : ℤ → R) *ᵥ weylEval n κ' (permArray e) =
-      weylEval n κ (permArray fun (τ : Φ) (a : n τ) ↦ (e τ a).rev)
-  /-- Over a field of characteristic zero, `S_κ(g⁻¹ᵀ) J = ∏_τ det (g_τ)^(-d_τ) J S_κ'(g)` for
-  invertible `g`, where `S` is `New.schur` and `d_τ = ∑_{1 ≤ h < |n_τ|} κ_τ(h)`. -/
-  equivariant {R : Type} [Field R] [CharZero R] (g : ∀ τ : Φ, GL (n τ) R) :
-    schur κ (fun τ : Φ ↦ (g τ)⁻¹.valᵀ) * J.map (Int.cast : ℤ → R) =
-      J.map (Int.cast : ℤ → R) * weylRep κ' (fun τ : Φ ↦ -(∑ h ∈ Ico 1 (rankAt n τ), κ τ h : ℕ)) g
+  /--
+  Over a field of characteristic zero, `J` sends the evaluation vector at the frame `e` to
+  that at the reversed frame.
+  -/
+  mulVec_weylEval (R : Type) [Field R] [CharZero R]
+    : J.map (Int.cast : ℤ → R) *ᵥ weylEval n κ' (permArray e)
+      = weylEval n κ (permArray fun (τ : Φ) (a : n τ) ↦ (e τ a).rev)
+  /--
+  Over a field of characteristic zero, `S_κ(g⁻¹ᵀ) J = ∏_τ det (g_τ)^(-d_τ) J S_κ'(g)` for
+  invertible `g`, where `S` is `New.schur` and `d_τ = ∑_{1 ≤ h < |n_τ|} κ_τ(h)`.
+  -/
+  equivariant {R : Type} [Field R] [CharZero R] (g : ∀ τ : Φ, GL (n τ) R)
+    : schur κ (fun τ : Φ ↦ (g τ)⁻¹.valᵀ) * J.map (Int.cast : ℤ → R)
+      = J.map (Int.cast : ℤ → R) * weylRep κ' (fun τ : Φ ↦ -(∑ h ∈ Ico 1 (rankAt n τ), κ τ h : ℕ)) g
 
 /-- Suppose `κ' τ h = κ τ (|n_τ| - h)` for `1 ≤ h < |n_τ|` at every place `τ`. Then for every
 enumeration `e` of the rows there is an integer matrix `J`, from coordinates of weight `κ'` to those
@@ -517,52 +529,68 @@ section MixedCartan
 
 open Finset Matrix Kronecker Fintype «GL»
 
-variable {Φ : Type _} (n : Type _) [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
+variable
+  {Φ : Type _} (n : Type _) [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
   (kp km l : Φ → ℕ → ℕ)
 
-/-- The column multiplicity function sending (τ,i) to kp_τ(i) + km_τ(|n|−i), with truncated
-subtraction of natural numbers. -/
+/--
+The column multiplicity function sending (τ,i) to kp_τ(i) + km_τ(|n|−i), with truncated
+subtraction of natural numbers.
+-/
 abbrev mixedWeight (τ : Φ) (i : ℕ) : ℕ := kp τ i + km τ (Fintype.card n - i)
 
-/-- The vector of values of the basis of weight `κ` (`New.weylEval`) at the array over `R` that
+/--
+The vector of values of the basis of weight `κ` (`New.weylEval`) at the array over `R` that
 has, for every index `τ`, a `1` in row `(τ, a)` and column `p (equivFin n a)` and `0` elsewhere
-(`New.permArray`). -/
-noncomputable abbrev GL.weylEvalAt (R : Type) [CommRing R] (κ : Φ → ℕ → ℕ)
-    (p : Fin (Fintype.card n) → ℕ) : WeylIndex n κ → R :=
+(`New.permArray`).
+-/
+noncomputable abbrev GL.weylEvalAt
+    (R : Type) [CommRing R] (κ : Φ → ℕ → ℕ) (p : Fin (Fintype.card n) → ℕ)
+    : WeylIndex n κ → R :=
   weylEval (R := R) (fun _ : Φ ↦ n) κ (permArray fun (_ : Φ) (a : n) ↦ p (Fintype.equivFin n a))
 
-/-- For rows `n` and weights `kp`, `km` and `l`, the integer matrix `M` embeds the lattice of weight
+/--
+For rows `n` and weights `kp`, `km` and `l`, the integer matrix `M` embeds the lattice of weight
 `l` into the tensor product of those of weights `kp` and `km`: it has an integral left inverse, is
 an isometry for the Gram matrices, and over every field of characteristic zero it matches the
-evaluation vectors and intertwines the Schur matrices up to a determinant power. -/
+evaluation vectors and intertwines the Schur matrices up to a determinant power.
+-/
 structure GL.MixedCartanEmbedding where
-  /-- The integer matrix `M` from the basis of weight `l` to the tensor product of the bases of
-  weights `kp` and `km`. -/
+  /--
+  The integer matrix `M` from the basis of weight `l` to the tensor product of the bases of
+  weights `kp` and `km`.
+  -/
   matrix : Matrix (WeylIndex n kp × WeylIndex n km) (WeylIndex n l) ℤ
   /-- `M` has an integral left inverse. -/
   hasLeftInv : HasLeftInv matrix
-  /-- `M` is an isometry for the Gram matrices: the tensor product of those of `kp` and `km` pulls
-  back to that of `l`. -/
-  gram_eq :
-    matrixᵀ * weylGram (fun _ : Φ ↦ n) kp ⊗ₖ weylGram (fun _ : Φ ↦ n) km * matrix =
-      weylGram (fun _ : Φ ↦ n) l
-  /-- Over a field of characteristic zero, M ev₁ = ev₁ ⊗ ev_{w₀}: `M` sends the evaluation vector
+  /--
+  `M` is an isometry for the Gram matrices: the tensor product of those of `kp` and `km` pulls
+  back to that of `l`.
+  -/
+  gram_eq
+    : matrixᵀ * weylGram (fun _ : Φ ↦ n) kp ⊗ₖ weylGram (fun _ : Φ ↦ n) km * matrix
+      = weylGram (fun _ : Φ ↦ n) l
+  /--
+  Over a field of characteristic zero, M ev₁ = ev₁ ⊗ ev_{w₀}: `M` sends the evaluation vector
   `New.GL.weylEvalAt` of weight `l` at the identity to the tensor of that of weight `kp` at the
   identity and that of weight `km` at the reversal w₀. Here `(vecMulVec x y).vec` has the entry
-  `x j * y i` at `(i, j)`. -/
-  top (R : Type) [Field R] [CharZero R] :
-      matrix.map ((↑) : ℤ → R) *ᵥ weylEvalAt n R l Fin.val =
-        (vecMulVec (weylEvalAt n R km fun i : Fin (Fintype.card n) ↦ (i.rev : ℕ))
-          (weylEvalAt n R kp Fin.val)).vec
-  /-- Over a field of characteristic zero, `M` intertwines the Schur matrix of `g` for `l`, twisted
+  `x j * y i` at `(i, j)`.
+  -/
+  top (R : Type) [Field R] [CharZero R]
+    : matrix.map ((↑) : ℤ → R) *ᵥ weylEvalAt n R l Fin.val
+      = (vecMulVec (weylEvalAt n R km fun i : Fin (Fintype.card n) ↦ (i.rev : ℕ))
+        (weylEvalAt n R kp Fin.val)).vec
+  /--
+  Over a field of characteristic zero, `M` intertwines the Schur matrix of `g` for `l`, twisted
   by ∏_τ det(g_τ)^(-∑_{1 ≤ i < |n|} km τ i), with S_kp(g) ⊗ S_km(g⁻ᵀ). This identity of matrices is
-  stated after applying both sides to an arbitrary vector `v`. -/
-  intertwines {R : Type} [Field R] [CharZero R] (g : Φ → GL n R)
-    (v : WeylIndexFamily (fun _ : Φ ↦ n) l → R) :
-      matrix.map ((↑) : ℤ → R) *ᵥ
-          weylRep l (fun τ : Φ ↦ -((∑ i ∈ Ico 1 (Fintype.card n), km τ i : ℕ) : ℤ)) g *ᵥ v =
-        schur kp (fun τ : Φ ↦ (g τ : Matrix n n R)) ⊗ₖ schur km (fun τ : Φ ↦ (g τ)⁻¹.valᵀ) *ᵥ
-          matrix.map ((↑) : ℤ → R) *ᵥ v
+  stated after applying both sides to an arbitrary vector `v`.
+  -/
+  intertwines
+    {R : Type} [Field R] [CharZero R] (g : Φ → GL n R) (v : WeylIndexFamily (fun _ : Φ ↦ n) l → R)
+    : matrix.map ((↑) : ℤ → R)
+        *ᵥ weylRep l (fun τ : Φ ↦ -((∑ i ∈ Ico 1 (Fintype.card n), km τ i : ℕ) : ℤ)) g *ᵥ v
+      = schur kp (fun τ : Φ ↦ (g τ : Matrix n n R)) ⊗ₖ schur km (fun τ : Φ ↦ (g τ)⁻¹.valᵀ)
+        *ᵥ matrix.map ((↑) : ℤ → R) *ᵥ v
 
 /-- For rows `n` and column multiplicities `kp`, `km`, let `mixedWeight n kp km` be the weight with
 `kp τ i + km τ (card n - i)` columns of height `i` (truncated subtraction). Then there is an integer
@@ -619,9 +647,11 @@ lemma nonempty_mixedCartanEmbedding :
         simp [hJ_law, K, weylRep, ← (_ ⊗ₖ _).mul_assoc, ← mul_kronecker_mul,
           ← comulMatrix_equivariant, kronecker_smul, Matrix.mul_assoc] }
 
-/-- A chosen embedding with the properties `New.GL.MixedCartanEmbedding`, from the lattice of the
+/--
+A chosen embedding with the properties `New.GL.MixedCartanEmbedding`, from the lattice of the
 weight `New.mixedWeight n kp km`, with `kp τ i + km τ (card n - i)` columns of height `i`, into the
-tensor product of the lattices of weights `kp` and `km`. -/
+tensor product of the lattices of weights `kp` and `km`.
+-/
 noncomputable def mixedCartan : MixedCartanEmbedding n kp km (mixedWeight n kp km) :=
   (nonempty_mixedCartanEmbedding n kp km).some
 
@@ -646,8 +676,9 @@ namespace New.Rows
 
 open Finset Matrix Fintype Kronecker Sum «GL»
 
-variable {Φ n N m R L : Type} [CommRing R] [Fintype Φ] [DecidableEq Φ] [Fintype n]
-  [Fintype N] [Fintype m] {kp km : Φ → ℕ → ℕ} [NormedField L] [IsUltrametricDist L]
+variable
+  {Φ n N m R L : Type} [CommRing R] [Fintype Φ] [DecidableEq Φ] [Fintype n] [Fintype N] [Fintype m]
+  {kp km : Φ → ℕ → ℕ} [NormedField L] [IsUltrametricDist L]
 
 omit [Fintype n] in
 /-- Casting an integer matrix product entrywise to `R` and applying it to `v` is applying the
@@ -657,9 +688,10 @@ lemma _root_.New.map_intCast_mul_mulVec (A : Matrix n m ℤ) (B : Matrix m N ℤ
   simp [← Int.coe_castRingHom]
 
 /-- A chosen left inverse, with integer entries, of the matrix of `mixedCartan n kp km`. -/
-noncomputable def mixedCartanLeftInv {Φ : Type} (n : Type) [Fintype Φ] [DecidableEq Φ] [Fintype n]
-    [DecidableEq n] (kp km : Φ → ℕ → ℕ) :
-    Matrix (WeylIndex n (mixedWeight n kp km)) (WeylIndex n kp × WeylIndex n km) ℤ :=
+noncomputable def mixedCartanLeftInv
+    {Φ : Type} (n : Type) [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
+    (kp km : Φ → ℕ → ℕ)
+    : Matrix (WeylIndex n (mixedWeight n kp km)) (WeylIndex n kp × WeylIndex n km) ℤ :=
   (mixedCartan n kp km).hasLeftInv.choose
 
 /-- `mixedCartan n kp km` embeds the lattice of weight `mixedWeight n kp km` into the tensor product
@@ -709,11 +741,12 @@ lemma norm_schur_mulVec_le [DecidableEq n] [DecidableEq N]
     exact (schur kp A₀ i j).prop
   exact (norm_mulVec_le h_entry v).trans_eq (one_mul ‖v‖)
 
-/-- `New.FitsRanks` holds and `New.schurDetExp` vanishes: `card N ≤ card n`, and `kp τ h = 0` for
-every column height `h` with `card N ≤ h < card n`. -/
+/--
+`New.FitsRanks` holds and `New.schurDetExp` vanishes: `card N ≤ card n`, and `kp τ h = 0` for
+every column height `h` with `card N ≤ h < card n`.
+-/
 abbrev HasColumnsBelow {Φ : Type} (n N : Type) [Fintype n] [Fintype N] (kp : Φ → ℕ → ℕ) : Prop :=
-  FitsRanks (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp ∧
-    schurDetExp (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp = 0
+  FitsRanks (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp ∧ schurDetExp (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp = 0
 
 omit [Fintype Φ] [DecidableEq Φ] in
 /-- If `HasColumnsBelow n N kp`, then `kp` fits the ranks (`New.FitsRanks`): `card N ≤ card n`,
@@ -731,17 +764,19 @@ lemma HasColumnsBelow.schurDetExp_eq_zero (hkp : HasColumnsBelow n N kp) :
 
 variable [DecidableEq n] [DecidableEq N] [DecidableEq m] (ε : N ⊕ m ≃ n)
 
-/-- The product of a vector of weight `kp` in the letters `N` and a vector of weight `km` in the
+/--
+The product of a vector of weight `kp` in the letters `N` and a vector of weight `km` in the
 letters `m`, for the splitting `ε : N ⊕ m ≃ n` of the letters, moved by `g`: apply the Schur
 matrix of the `N`-columns of `g` to the first and that of the `m`-columns of the inverse
 transpose of `g` to the second, take the tensor product, and apply the left inverse of
-`mixedCartan`. -/
-noncomputable def cartanProduct (g : Φ → GL n R) :
-    (WeylIndex N kp → R) →ₗ[R] (WeylIndex m km → R) →ₗ[R] WeylIndex n (mixedWeight n kp km) → R :=
+`mixedCartan`.
+-/
+noncomputable def cartanProduct (g : Φ → GL n R)
+    : (WeylIndex N kp → R) →ₗ[R] (WeylIndex m km → R) →ₗ[R] WeylIndex n (mixedWeight n kp km) → R :=
   ((vecMulVecBilin R R).compl₁₂ (schur kp fun τ : Φ ↦ (g τ).val.submatrix id (ε ∘ inl)).mulVecLin
       (schur km fun τ : Φ ↦ (g τ)⁻¹.valᵀ.submatrix id (ε ∘ inr)).mulVecLin).compr₂
-    (((mixedCartanLeftInv n kp km).map (↑)).mulVecLin ∘ₗ
-      LinearMap.pi fun p : WeylIndex n kp × WeylIndex n km ↦ entryLinearMap R R p.1 p.2)
+    (((mixedCartanLeftInv n kp km).map (↑)).mulVecLin
+      ∘ₗ LinearMap.pi fun p : WeylIndex n kp × WeylIndex n km ↦ entryLinearMap R R p.1 p.2)
 
 /-- `cartanProduct ε g y η` is the left inverse of `New.mixedCartan` applied to the tensor
 product of the Schur images of `y` and `η`. -/
@@ -1006,31 +1041,40 @@ lemma IsHCParam.add_eq_neg_sum_of_neg [Nonempty n] (hl : IsHCParam κ e l)
 
 end Parameter
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   {κ κ' : InfinitePlace E → ℕ → ℕ} {e e' : InfinitePlace E → ℤ} {l : InfinitePlace E → n → ℤ}
 
 variable (κ κ' e e' l) in
-/-- The pairing `v' ⬝ᵥ A *ᵥ v` of the integer matrix `A` is a duality between the weights
-`(κ', e')` and `(κ, e)`, normalised at the highest vector of `l`. -/
+/--
+The pairing `v' ⬝ᵥ A *ᵥ v` of the integer matrix `A` is a duality between the weights
+`(κ', e')` and `(κ, e)`, normalised at the highest vector of `l`.
+-/
 structure IsDualPairing (A : Matrix (WeylIndex n κ') (WeylIndex n κ) ℤ) : Prop where
-  /-- The pairing is invariant under `GL n` at all places, over every field of characteristic
-  zero. -/
-  invariant (R : Type) [Field R] [CharZero R] (g : InfinitePlace E → GL n R)
-    (v' : WeylIndex n κ' → R) (v : WeylIndex n κ → R) :
-    weylRep κ' e' g *ᵥ v' ⬝ᵥ A.map (↑) *ᵥ weylRep κ e g *ᵥ v = v' ⬝ᵥ A.map (↑) *ᵥ v
-  /-- The function of a form of weight `(κ', e')` is the pairing of its value with a translate of
-  the highest vector of `l`. Here the pairing is written as a bilinear map. -/
-  ofAlgForm_eq_bilin (s : n → ℤˣ) (η : AlgForm n κ' e') (x : GInf E s) (g : Gf E n) :
-    ofAlgForm (-l) s η (x, g) = (dotProductBilin ℂ ℂ).compl₂ (A.map (↑)).mulVecLin (η.val g)
-      (conjWeylRep κ e x (highestVector κ l))
+  /--
+  The pairing is invariant under `GL n` at all places, over every field of characteristic
+  zero.
+  -/
+  invariant
+    (R : Type) [Field R] [CharZero R]
+    (g : InfinitePlace E → GL n R) (v' : WeylIndex n κ' → R) (v : WeylIndex n κ → R)
+    : weylRep κ' e' g *ᵥ v' ⬝ᵥ A.map (↑) *ᵥ weylRep κ e g *ᵥ v = v' ⬝ᵥ A.map (↑) *ᵥ v
+  /--
+  The function of a form of weight `(κ', e')` is the pairing of its value with a translate of
+  the highest vector of `l`. Here the pairing is written as a bilinear map.
+  -/
+  ofAlgForm_eq_bilin (s : n → ℤˣ) (η : AlgForm n κ' e') (x : GInf E s) (g : Gf E n)
+    : ofAlgForm (-l) s η (x, g)
+      = (dotProductBilin ℂ ℂ).compl₂ (A.map (↑)).mulVecLin (η.val g)
+        (conjWeylRep κ e x (highestVector κ l))
   /-- `A` has an integral left inverse up to the hook number of `κ'`. -/
-  exists_mul_eq_hookNumber :
-    ∃ C : Matrix (WeylIndex n κ) (WeylIndex n κ') ℤ, ∀ v : WeylIndex n κ → ℂ,
+  exists_mul_eq_hookNumber
+    : ∃ C : Matrix (WeylIndex n κ) (WeylIndex n κ') ℤ, ∀ v : WeylIndex n κ → ℂ,
       C.map (↑) *ᵥ A.map (↑) *ᵥ v = (hookNumber κ' (rankAt fun _ ↦ n) : ℂ) • v
   /-- Pairing with `v` is the Hermitian product with a vector of the same norm as `v`. -/
-  exists_eq_gramForm (v : WeylIndex n κ → ℂ) :
-    ∃ v' : WeylIndex n κ' → ℂ, weylNormSq v' = weylNormSq v ∧
-      ∀ u : WeylIndex n κ' → ℂ, u ⬝ᵥ A.map (↑) *ᵥ v = gramForm v' u
+  exists_eq_gramForm (v : WeylIndex n κ → ℂ)
+    : ∃ v' : WeylIndex n κ' → ℂ,
+      weylNormSq v' = weylNormSq v ∧ ∀ u : WeylIndex n κ' → ℂ, u ⬝ᵥ A.map (↑) *ᵥ v = gramForm v' u
 
 /-- Let `l` list twice the Harish-Chandra parameter of `(κ, e)`, and `-l` that of `(κ', e')`, in the
 sense of `New.IsHCParam`: at each place the entries are distinct values of `hcParameter` at

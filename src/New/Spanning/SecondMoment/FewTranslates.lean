@@ -48,12 +48,15 @@ open Submodule
 
 variable {Θ V : Type} [AddCommGroup V] [Module ℂ V]
 
-/-- The maps `B s` spread: for every subspace `F` of `W`, with share `α` of the dimension, the
+/--
+The maps `B s` spread: for every subspace `F` of `W`, with share `α` of the dimension, the
 preimage of `F` under one of them has dimension at most `((1 + α) / 2 + η) dim V`. The share is the
-quotient of the two values of `finrank`, so it is `0` if `finrank W = 0`. -/
+quotient of the two values of `finrank`, so it is `0` if `finrank W = 0`.
+-/
 def IsSpread {W : Type*} [AddCommMonoid W] [Module ℂ W] (B : Θ → V →ₗ[ℂ] W) (η : ℝ) : Prop :=
-  ∀ F : Submodule ℂ W, let α : ℝ := finrank ℂ F / finrank ℂ W
-  ∃ s : Θ, finrank ℂ (comap (B s) F) ≤ ((1 + α) / 2 + η) * finrank ℂ V
+  ∀ F : Submodule ℂ W,
+    let α : ℝ := finrank ℂ F / finrank ℂ W
+    ∃ s : Θ, finrank ℂ (comap (B s) F) ≤ ((1 + α) / 2 + η) * finrank ℂ V
 
 end Spread
 
@@ -61,15 +64,18 @@ section HilbertSchmidt
 
 open Complex
 
-variable {S T T' : Type}
-  [NormedAddCommGroup S] [InnerProductSpace ℂ S] [FiniteDimensional ℂ S]
-  [NormedAddCommGroup T] [InnerProductSpace ℂ T] [FiniteDimensional ℂ T]
-  [NormedAddCommGroup T'] [InnerProductSpace ℂ T'] [FiniteDimensional ℂ T']
+variable
+  {S T T' : Type} [NormedAddCommGroup S] [InnerProductSpace ℂ S] [FiniteDimensional ℂ S]
+  [NormedAddCommGroup T] [InnerProductSpace ℂ T] [FiniteDimensional ℂ T] [NormedAddCommGroup T']
+  [InnerProductSpace ℂ T'] [FiniteDimensional ℂ T']
 
-/-- The values of a linear map on an orthonormal basis of the source, as one vector of a Hilbert
-space. Its inner product is the Hilbert–Schmidt inner product of maps. -/
-noncomputable def hilbertSchmidtVector : (S →ₗ[ℂ] T) →ₗ[ℂ] PiLp 2 fun _ : Fin (finrank ℂ S) ↦
-  T where
+/--
+The values of a linear map on an orthonormal basis of the source, as one vector of a Hilbert
+space. Its inner product is the Hilbert–Schmidt inner product of maps.
+-/
+noncomputable def hilbertSchmidtVector
+    : (S →ₗ[ℂ] T) →ₗ[ℂ] PiLp 2 fun _ : Fin (finrank ℂ S) ↦
+      T where
   toFun A := WithLp.toLp 2 fun i ↦ A (stdOrthonormalBasis ℂ S i)
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
@@ -159,8 +165,10 @@ lemma hilbertSchmidtNorm_orthoProj_comp_sq (W : Submodule ℂ T) (A : S →ₗ[�
   rw [inner_hilbertSchmidtVector, adjoint_orthoProj, ← comp_assoc, trace_comp_comm', ← h_adjoint,
     ← hilbertSchmidtNorm_sq_eq_trace, ofReal_re]
 
-/-- `A` is almost an isometry from below in mean square, with the error `ε`: on every subspace `U`
-its squared Hilbert–Schmidt norm `‖A pr_U‖²` is at least `dim U - ε dim S`. -/
+/--
+`A` is almost an isometry from below in mean square, with the error `ε`: on every subspace `U`
+its squared Hilbert–Schmidt norm `‖A pr_U‖²` is at least `dim U - ε dim S`.
+-/
 def IsNearIsometry (A : S →ₗ[ℂ] T) (ε : ℝ) : Prop :=
   ∀ U : Submodule ℂ S, finrank ℂ U - ε * finrank ℂ S ≤ hilbertSchmidtNorm (A ∘ₗ orthoProj U) ^ 2
 
@@ -324,19 +332,22 @@ lemma sq_sum_hilbertSchmidtNorm_orthoProj_comp_le [Fintype Γ]
       hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2) := by
         rw [mul_pow, hilbertSchmidtNorm_orthoProj_sq, h_norm]
 
-/-- **One translate.** Let a finite group `Γ` act unitarily on `T` by `ρ`, and let `pr₀` be the
+/--
+**One translate.** Let a finite group `Γ` act unitarily on `T` by `ρ`, and let `pr₀` be the
 orthogonal projection onto a stable subspace `T₀`, so that `pr₀ s = s pr₀`. Suppose that `pr₀ B` is
 almost an isometry in mean square with the error `ε`, and that `dim T₀` times the mean of
 `‖B* s B‖²` is at most `(1 + ε) (dim S)²`. Then the maps `pr₀ s B` spread (`IsSpread`): for every
 subspace `W` of `T₀`, of dimension `α dim T₀`, the preimage of `W` under some `pr₀ s B` has
-dimension at most `(1 + α + 3 ε) / 2 · dim S`. -/
-theorem isSpread_of_second_moment [Fintype Γ]
-    (hρ : ∀ (s : Γ) (x y : T), ⟪ρ s x, ρ s y⟫_ℂ = ⟪x, y⟫_ℂ) {pr₀ : T →ₗ[ℂ] T}
-    (hpr₀ : pr₀.IsSymmetricProjection) (h_comm : ∀ s : Γ, Commute pr₀ (ρ s)) {B : S →ₗ[ℂ] T}
-    {ε : ℝ} (hε : 0 ≤ ε) (h_isom : IsNearIsometry (pr₀ ∘ₗ B) ε)
-    (h_moment : finrank ℂ (range pr₀) * ∑ s : Γ, hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2 ≤
-      Fintype.card Γ * ((1 + ε) * finrank ℂ S ^ 2)) :
-    IsSpread (fun s : Γ ↦ pr₀.rangeRestrict ∘ₗ ρ s ∘ₗ B) (3 / 2 * ε) := by
+dimension at most `(1 + α + 3 ε) / 2 · dim S`.
+-/
+theorem isSpread_of_second_moment
+    [Fintype Γ]
+    (hρ : ∀ (s : Γ) (x y : T), ⟪ρ s x, ρ s y⟫_ℂ = ⟪x, y⟫_ℂ)
+    {pr₀ : T →ₗ[ℂ] T} (hpr₀ : pr₀.IsSymmetricProjection) (h_comm : ∀ s : Γ, Commute pr₀ (ρ s))
+    {B : S →ₗ[ℂ] T} {ε : ℝ} (hε : 0 ≤ ε) (h_isom : IsNearIsometry (pr₀ ∘ₗ B) ε)
+    (h_moment : finrank ℂ (range pr₀) * ∑ s : Γ, hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2
+      ≤ Fintype.card Γ * ((1 + ε) * finrank ℂ S ^ 2))
+    : IsSpread (fun s : Γ ↦ pr₀.rangeRestrict ∘ₗ ρ s ∘ₗ B) (3 / 2 * ε) := by
   -- Cauchy–Schwarz bounds the mean of `‖pr_W s B‖²`, so for some `s` this squared norm is within
   -- that bound. For this `s` the near isometry, applied to the preimage of `W`, bounds the
   -- dimension of that preimage. Here `W₀` is `W` inside `T₀`, and `α = dim W / dim T₀`.
@@ -348,47 +359,51 @@ theorem isSpread_of_second_moment [Fintype Γ]
       mod_cast Nat.eq_zero_of_le_zero (W₀.finrank_le.trans_eq (mod_cast h))
     exact (div_mul_cancel_of_imp h_zero).symm
   set moment : ℝ := ∑ s : Γ, hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2
-  have h_mean : ∑ s, hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2 ≤
-      Fintype.card Γ * ((α + 1 + ε) / 2 * finrank ℂ S) := by
+  have h_mean
+      : ∑ s, hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2
+        ≤ Fintype.card Γ * ((α + 1 + ε) / 2 * finrank ℂ S) := by
     refine (abs_le_of_sq_le_sq' ?_ (by positivity)).2
-    calc (∑ s, hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2) ^ 2
-        ≤ finrank ℂ W * (Fintype.card Γ * moment) :=
-          sq_sum_hilbertSchmidtNorm_orthoProj_comp_le hρ B W
+    calc
+      (∑ s, hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2) ^ 2
+          ≤ finrank ℂ W * (Fintype.card Γ * moment) :=
+        sq_sum_hilbertSchmidtNorm_orthoProj_comp_le hρ B W
       _ = α * Fintype.card Γ * (finrank ℂ (range pr₀) * moment) := by
-          rw [h_dim]
-          ring
+        rw [h_dim]
+        ring
       _ ≤ α * Fintype.card Γ * (Fintype.card Γ * ((1 + ε) * finrank ℂ S ^ 2)) := by gcongr
       _ = α * (1 + ε) * (Fintype.card Γ * finrank ℂ S) ^ 2 := by ring
       _ ≤ ((α + 1 + ε) / 2) ^ 2 * (Fintype.card Γ * finrank ℂ S) ^ 2 := by
-          gcongr
-          nlinarith [sq_nonneg (α - (1 + ε))]
+        gcongr
+        nlinarith [sq_nonneg (α - (1 + ε))]
       _ = (Fintype.card Γ * ((α + 1 + ε) / 2 * finrank ℂ S)) ^ 2 := by ring
-  obtain ⟨s, -, hs⟩ : ∃ s ∈ (Finset.univ : Finset Γ),
-      hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2 ≤ (α + 1 + ε) / 2 * finrank ℂ S :=
+  obtain ⟨s, -, hs⟩
+      : ∃ s ∈ (Finset.univ : Finset Γ),
+        hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2 ≤ (α + 1 + ε) / 2 * finrank ℂ S :=
     exists_le_of_sum_le univ_nonempty (by rwa [sum_const, card_univ, nsmul_eq_mul])
   refine ⟨s, ?_⟩
   set W' : Submodule ℂ S := W₀.comap (pr₀.rangeRestrict ∘ₗ ρ s ∘ₗ B)
   -- On the preimage `W'` of `W` the maps `s pr₀ B` and `pr_W s B` agree.
   have h_agree (x : S) (hx : x ∈ W') : ρ s (pr₀ (B x)) = orthoProj W (ρ s (B x)) := by
-    have h_mem : pr₀ (ρ s (B x)) ∈ W :=
-      Submodule.mem_map_of_mem (f := (range pr₀).subtype) hx
+    have h_mem : pr₀ (ρ s (B x)) ∈ W := Submodule.mem_map_of_mem (f := (range pr₀).subtype) hx
     have h_orth (w : T) (hw : w ∈ W) : ⟪ρ s (B x) - pr₀ (ρ s (B x)), w⟫_ℂ = 0 := by
       obtain ⟨y, rfl⟩ : w ∈ range pr₀ := Submodule.map_subtype_le _ W₀ hw
       simp [← hpr₀.isSymmetric _ y, ← mul_apply_eq_comp pr₀ pr₀, hpr₀.isIdempotentElem.eq]
     rw [← mul_apply_eq_comp, ← (h_comm s).eq, mul_apply_eq_comp]
     exact (Submodule.eq_starProjection_of_mem_of_inner_eq_zero h_mem h_orth).symm
-  have h_preimage : hilbertSchmidtNorm ((pr₀ ∘ₗ B) ∘ₗ orthoProj W') ≤ hilbertSchmidtNorm
-    (orthoProj W ∘ₗ ρ s ∘ₗ B) := by
+  have h_preimage
+      : hilbertSchmidtNorm ((pr₀ ∘ₗ B) ∘ₗ orthoProj W')
+        ≤ hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) := by
     refine (hilbertSchmidtNorm_le_of_norm_le fun x ↦ ?_).trans
       (hilbertSchmidtNorm_comp_orthoProj_le _ W')
     have h_isometry (y : T) : ‖ρ s y‖ = ‖y‖ := by
       rw [norm_eq_sqrt_re_inner (𝕜 := ℂ), hρ, ← norm_eq_sqrt_re_inner]
-    calc ‖pr₀ (B (orthoProj W' x))‖
+    calc
+      ‖pr₀ (B (orthoProj W' x))‖
         = ‖ρ s (pr₀ (B (orthoProj W' x)))‖ := (h_isometry _).symm
       _ ≤ ‖orthoProj W (ρ s (B (orthoProj W' x)))‖ := by
-          rw [h_agree (orthoProj W' x) (W'.starProjection_apply_mem x)]
-  have h_near : finrank ℂ W' - ε * finrank ℂ S ≤ hilbertSchmidtNorm ((pr₀ ∘ₗ B) ∘ₗ orthoProj W') ^
-    2 :=
+        rw [h_agree (orthoProj W' x) (W'.starProjection_apply_mem x)]
+  have h_near
+      : finrank ℂ W' - ε * finrank ℂ S ≤ hilbertSchmidtNorm ((pr₀ ∘ₗ B) ∘ₗ orthoProj W') ^ 2 :=
     h_isom W'
   linarith [pow_le_pow_left₀ (hilbertSchmidtNorm_nonneg _) h_preimage 2]
 
@@ -398,8 +413,9 @@ section FewTranslates
 
 open Submodule Real
 
-variable {Θ V W : Type} [AddCommGroup V] [Module ℂ V] [Module.Finite ℂ V]
-  [AddCommGroup W] [Module ℂ W] [Module.Finite ℂ W]
+variable
+  {Θ V W : Type} [AddCommGroup V] [Module ℂ V] [Module.Finite ℂ V] [AddCommGroup W] [Module ℂ W]
+  [Module.Finite ℂ W]
 
 /-- The image of `A` adds `dim V - dim A⁻¹ F` dimensions to `F`. -/
 lemma finrank_sup_range_add_finrank_comap (A : V →ₗ[ℂ] W) (F : Submodule ℂ W) :
@@ -491,15 +507,18 @@ lemma IsSpread.exists_codim_le_max (h_spread : IsSpread B (3 / 2 * ε)) (hW : 0 
       _ ≤ max (16 * ε) (exp (-((l + 1 : ℕ) * rate))) * finrank ℂ W :=
           mul_le_mul_of_nonneg_right (le_max_right _ _) hW'.le
 
-/-- **Few maps span almost everything.** Let `V` and `W` be nonzero finite-dimensional spaces, let
+/--
+**Few maps span almost everything.** Let `V` and `W` be nonzero finite-dimensional spaces, let
 `0 < ε < 1 / 16`, and let the maps `B s : V → W` spread with the error `3 ε / 2`. Then the images of
 at most `(5/2) (1 + log (1 / (16 ε))) dim W / dim V` of them span a subspace of dimension at least
-`(1 - 16 ε) dim W`. -/
-theorem IsSpread.exists_few_le_finrank_iSup_range [Nontrivial V] (h_spread : IsSpread B (3 / 2 * ε))
-    (hW : 0 < finrank ℂ W) (hε : 0 < ε) (hε_lt : ε < 1 / 16) :
-    ∃ t : Finset Θ,
-      #t * finrank ℂ V ≤ 5 / 2 * (1 + log (16 * ε)⁻¹) * finrank ℂ W ∧
-      (1 - 16 * ε) * finrank ℂ W ≤ finrank ℂ ↥(⨆ s ∈ t, range (B s)) := by
+`(1 - 16 ε) dim W`.
+-/
+theorem IsSpread.exists_few_le_finrank_iSup_range
+    [Nontrivial V]
+    (h_spread : IsSpread B (3 / 2 * ε)) (hW : 0 < finrank ℂ W) (hε : 0 < ε) (hε_lt : ε < 1 / 16)
+    : ∃ t : Finset Θ,
+      #t * finrank ℂ V ≤ 5 / 2 * (1 + log (16 * ε)⁻¹) * finrank ℂ W
+        ∧ (1 - 16 * ε) * finrank ℂ W ≤ finrank ℂ ↥(⨆ s ∈ t, range (B s)) := by
   -- Choose the maps greedily. While more than a share `16 ε` is missing, each step multiplies the
   -- missing share by at most `1 - rate ≤ exp (-rate)`; about `log (1 / (16 ε)) / rate` steps do.
   have hW' : (0 : ℝ) < finrank ℂ W := by exact_mod_cast hW
@@ -516,24 +535,29 @@ theorem IsSpread.exists_few_le_finrank_iSup_range [Nontrivial V] (h_spread : IsS
     have h_nonneg : 0 ≤ (1 - rate) * finrank ℂ W := by simpa using h_codim_nonneg.trans h_step
     exact sub_nonneg.1 (nonneg_of_mul_nonneg_left h_nonneg hW')
   -- Stop at the least `l` with `l rate ≥ log (1 / (16 ε))`; then `l rate ≤ 1 + log (1 / (16 ε))`.
-  have h_log : 0 ≤ log (16 * ε)⁻¹ :=
-    log_nonneg ((one_le_inv₀ (by positivity)).2 (by linarith))
+  have h_log : 0 ≤ log (16 * ε)⁻¹ := log_nonneg ((one_le_inv₀ (by positivity)).2 (by linarith))
   set l : ℕ := ⌈log (16 * ε)⁻¹ / rate⌉₊
   have h_steps_suffice : log (16 * ε)⁻¹ ≤ l * rate := (div_le_iff₀ h_rate_pos).1 (Nat.le_ceil _)
   have h_steps_budget : l * rate ≤ 1 + log (16 * ε)⁻¹ :=
-    calc l * rate ≤ (log (16 * ε)⁻¹ / rate + 1) * rate := by
-          gcongr
-          exact (Nat.ceil_lt_add_one (by positivity)).le
+    calc
+      l * rate ≤ (log (16 * ε)⁻¹ / rate + 1) * rate := by
+        gcongr
+        exact (Nat.ceil_lt_add_one (by positivity)).le
       _ = rate + log (16 * ε)⁻¹ := by field
       _ ≤ 1 + log (16 * ε)⁻¹ := by gcongr
-  obtain ⟨t, h_card, h_codim⟩ : ∃ t : Finset Θ, #t ≤ l ∧
-      (finrank ℂ W - finrank ℂ ↥(⨆ s ∈ t, range (B s)) : ℝ) ≤
-        max (16 * ε) (exp (-(l * rate))) * finrank ℂ W := h_spread.exists_codim_le_max hW l
+  obtain ⟨t, h_card, h_codim⟩
+      : ∃ t : Finset Θ,
+        #t ≤ l
+          ∧ (finrank ℂ W - finrank ℂ ↥(⨆ s ∈ t, range (B s)) : ℝ)
+            ≤ max (16 * ε) (exp (-(l * rate))) * finrank ℂ W :=
+    h_spread.exists_codim_le_max hW l
   have h_decay_below_threshold : exp (-(l * rate)) ≤ 16 * ε := by
     rwa [← le_log_iff_exp_le (by positivity), _root_.neg_le, ← log_inv]
   rw [max_eq_left h_decay_below_threshold] at h_codim
   refine ⟨t, ?_, by linarith⟩
-  calc (#t * finrank ℂ V : ℝ) ≤ l * finrank ℂ V := by gcongr
+  calc
+    (#t * finrank ℂ V : ℝ)
+      ≤ l * finrank ℂ V := by gcongr
     _ = 5 / 2 * (l * rate) * finrank ℂ W := by rw [h_rate]; field
     _ ≤ 5 / 2 * (1 + log (16 * ε)⁻¹) * finrank ℂ W := by gcongr
 

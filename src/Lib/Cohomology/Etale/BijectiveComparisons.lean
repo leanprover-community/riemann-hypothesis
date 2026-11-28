@@ -88,22 +88,29 @@ variable {C : Type _} [Category C] {m n : ℕ} {V L : C ⥤ Type _} (R : Subfunc
 
 /-! ### The complex of points with witnesses -/
 
-/-- The functor of points with `m` witnesses: a point `x` of `V` together with `m` points `l i`
-of `L` such that each pair `(x, l i)` lies in `R`. -/
+/--
+The functor of points with `m` witnesses: a point `x` of `V` together with `m` points `l i`
+of `L` such that each pair `(x, l i)` lies in `R`.
+-/
 def witnessed (m : ℕ) : C ⥤ Type _ where
   obj A := {t : V.obj A × (Fin m → L.obj A) // ∀ i : Fin m, (t.fst, t.snd i) ∈ R.obj A}
-  map f := ↾fun t ↦
-    ⟨(V.map f t.val.fst, fun i ↦ L.map f (t.val.snd i)), fun i ↦ R.map f (t.property i)⟩
+  map f :=
+    ↾fun t ↦
+      ⟨(V.map f t.val.fst, fun i ↦ L.map f (t.val.snd i)), fun i ↦ R.map f (t.property i)⟩
 
 namespace witnessed
 
-/-- Reindexing the witnesses of a point along `g`: the `i`-th new witness is the `g i`-th old
-one. -/
+/--
+Reindexing the witnesses of a point along `g`: the `i`-th new witness is the `g i`-th old
+one.
+-/
 def reindexWitness (g : Fin m → Fin n) : witnessed R n ⟶ witnessed R m where
   app _ := ↾fun t ↦ ⟨(t.val.fst, t.val.snd ∘ g), fun i ↦ t.property (g i)⟩
 
-/-- The boundary map from chains with `m + 1` witnesses to chains with `m` witnesses: the
-alternating sum of the maps that drop one witness. -/
+/--
+The boundary map from chains with `m + 1` witnesses to chains with `m` witnesses: the
+alternating sum of the maps that drop one witness.
+-/
 def boundary (m : ℕ) : freeAb.obj (witnessed R (m + 1)) ⟶ freeAb.obj (witnessed R m) :=
   ∑ j : Fin (m + 1), (-1) ^ j.val • freeAb.map (reindexWitness R j.succAbove)
 
@@ -124,8 +131,10 @@ lemma boundary_comp_boundary (m : ℕ) : boundary R (m + 1) ≫ boundary R m = 0
     exact AlgebraicTopology.AlternatingFaceMapComplex.d_squared
       (.mk _ (fun g ↦ reindexWitness R g.unop) ⋙ freeAb) m
 
-/-- The map induced by the boundary, from the chains with `m + 1` witnesses modulo boundaries to
-the chains with `m` witnesses. -/
+/--
+The map induced by the boundary, from the chains with `m + 1` witnesses modulo boundaries to
+the chains with `m` witnesses.
+-/
 def boundaryFromCoker (m : ℕ) : abCoker (boundary R (m + 1)) ⟶ freeAb.obj (witnessed R m) :=
   desc (α := boundary R (m + 1)) (boundary R m) (boundary_comp_boundary R m)
 
@@ -133,8 +142,10 @@ lemma proj_comp_boundaryFromCoker (m : ℕ) :
     π (boundary R (m + 1)) ≫ boundaryFromCoker R m = boundary R m :=
   rfl
 
-/-- The natural isomorphism from points with `0` witnesses to points of `V` that forgets the empty
-tuple of witnesses. -/
+/--
+The natural isomorphism from points with `0` witnesses to points of `V` that forgets the empty
+tuple of witnesses.
+-/
 def noWitness : witnessed R 0 ≅ V :=
   NatIso.ofComponents fun A ↦
     ((Equiv.subtypeUnivEquiv fun _ ↦ nofun).trans
@@ -233,23 +244,29 @@ lemma shortExact_boundaryFromCoker_π :
       boundaryFromCoker_comp_π) :=
   shortExact_boundaryFromCoker.snd
 
-variable {U : Subfunctor V} (hU : ∀ A : C, ∀ x ∈ U.obj A, ∃ l : L.obj A, (x, l) ∈ R.obj A)
-  {F : AbFunctor C} {C' : Type 1} [Category C'] {F' : AbFunctor C'} {V' L' : C' ⥤ Type _}
-  {R' : Subfunctor (V' ⊗ L')} {U' : Subfunctor V'}
+variable
+  {U : Subfunctor V} (hU : ∀ A : C, ∀ x ∈ U.obj A, ∃ l : L.obj A, (x, l) ∈ R.obj A)
+  {F : AbFunctor C} {C' : Type 1} [Category C']
+  {F' : AbFunctor C'} {V' L' : C' ⥤ Type _} {R' : Subfunctor (V' ⊗ L')} {U' : Subfunctor V'}
   (hU' : ∀ A : C', ∀ x ∈ U'.obj A, ∃ l : L'.obj A, (x, l) ∈ R'.obj A)
 
 /-! ### The class of a cocycle -/
 
-/-- The map `x ↦ [x]` from `ℤ[V]/ℤ[U]` to the chains without witnesses modulo boundaries. It is
-well defined because every point of `U` has a witness. -/
+/--
+The map `x ↦ [x]` from `ℤ[V]/ℤ[U]` to the chains without witnesses modulo boundaries. It is
+well defined because every point of `U` has a witness.
+-/
 def fromRel : relFreeAb U ⟶ abCoker (boundary R 0) :=
   desc (freeAb.map (noWitness R).inv ≫ π (boundary R 0))
-    (freeAb.hom_ext fun A x ↦ proj_boundary_of_eq_zero
-      (R := R) (A := A) (t := (noWitness R).inv.app A x.val) (hU A x.val x.property))
+    (freeAb.hom_ext fun A x ↦
+      proj_boundary_of_eq_zero (R := R) (A := A) (t := (noWitness R).inv.app A x.val)
+        (hU A x.val x.property))
 
-/-- The universal class in degree `n`, with coefficients in the chains with `n` witnesses modulo
+/--
+The universal class in degree `n`, with coefficients in the chains with `n` witnesses modulo
 boundaries. In degree `0` it is the map `fromRel hU`; each further degree composes with the
-extension class of the short exact sequence `shortExact_boundaryFromCoker`. -/
+extension class of the short exact sequence `shortExact_boundaryFromCoker`.
+-/
 def universalClass : ∀ n : ℕ, H (relFreeAb U) (abCoker (boundary R n)) n
   | 0 => mk₀ (fromRel hU)
   | n + 1 => (universalClass n).comp shortExact_boundaryFromCoker_π.extClass rfl
@@ -262,12 +279,14 @@ lemma universalClass_succ (n : ℕ) :
       (universalClass hU n).comp shortExact_boundaryFromCoker_π.extClass rfl :=
   rfl
 
-/-- The class of a cocycle. A cocycle of degree `n` is a map `y` to `F` from the chains with `n`
+/--
+The class of a cocycle. A cocycle of degree `n` is a map `y` to `F` from the chains with `n`
 witnesses modulo boundaries. Its class in `Extⁿ(ℤ[V]/ℤ[U], F)` is the push-forward of
-`universalClass hU n` along `y`. -/
+`universalClass hU n` along `y`.
+-/
 def cocycleClass : (abCoker (boundary R n) ⟶ F) →+ H (relFreeAb U) F n :=
-  AddMonoidHom.mk' (fun y ↦ H.push (relFreeAb U) y n (universalClass hU n))
-    (by simp [H.push, mk₀_add])
+  AddMonoidHom.mk' (fun y ↦ H.push (relFreeAb U) y n (universalClass hU n)) (by
+    simp [H.push, mk₀_add])
 
 lemma cocycleClass_apply (y : abCoker (boundary R n) ⟶ F) :
     cocycleClass hU y = push (relFreeAb U) y n (universalClass hU n) :=
@@ -416,19 +435,23 @@ section CechDescent
 open CategoryTheory MonoidalCategory Subfunctor ShortComplex CartesianMonoidalCategory witnessed
   abCoker cech Function Limits
 
-variable {C C' D : Type _} [Category C] [Category C'] [Category D] {Y E : D ⥤ Type 1}
-  (F) (p : E ⟶ Y) {P : D ⥤ Ab → Prop} {A B : (D ⥤ Ab.{1}) → ℕ → Type*}
-  (f : ∀ (N : D ⥤ Ab) (n : ℕ), A N n → B N n)
+variable
+  {C C' D : Type _} [Category C] [Category C'] [Category D]
+  {Y E : D ⥤ Type 1}
+  (F) (p : E ⟶ Y)
+  {P : D ⥤ Ab → Prop} {A B : (D ⥤ Ab.{1}) → ℕ → Type*} (f : ∀ (N : D ⥤ Ab) (n : ℕ), A N n → B N n)
 
 /-! ### Closed classes -/
 
-/-- A closed class P of functors D → Ab: (a) P contains every zero functor N (written `𝟙 N = 0`);
+/--
+A closed class P of functors D → Ab: (a) P contains every zero functor N (written `𝟙 N = 0`);
 (b) for a short exact sequence 0 → X₁ → X₂ → X₃ → 0 with X₁ in P, the middle term X₂ is in P exactly
-when the quotient X₃ is. Nothing is asked about X₁ when X₂ and X₃ are in P. -/
+when the quotient X₃ is. Nothing is asked about X₁ when X₂ and X₃ are in P.
+-/
 def IsClosedClass (P : (D ⥤ Ab.{1}) → Prop) : Prop :=
-  (∀ N : D ⥤ Ab, 𝟙 N = 0 → P N) ∧
-  ∀ S : ShortComplex (CategoryTheory.Functor.{_, 1, _, 2} D Ab),
-    ShortExact S → P S.X₁ → (P S.X₂ ↔ P S.X₃)
+  (∀ N : D ⥤ Ab, 𝟙 N = 0 → P N)
+    ∧ ∀ S : ShortComplex (CategoryTheory.Functor.{_, 1, _, 2} D Ab),
+      ShortExact S → P S.X₁ → (P S.X₂ ↔ P S.X₃)
 
 /-- A closed class P is invariant under isomorphism: for an isomorphism g : M → N, P holds for M
 exactly when it holds for N. Proof: apply (b) to 0 → ker g → M → N → 0, whose kernel is zero. -/
@@ -446,20 +469,24 @@ lemma H.subsingleton_of_id_eq_zero {N : AbFunctor C} (h_id : 𝟙 N = 0) (F : Ab
   rw [← x.mk₀_id_comp, ← y.mk₀_id_comp]
   simp [h_id]
 
-/-- The stepwise four lemma for the family f: along every short exact sequence 0 → X₁ → X₂ → X₃ → 0,
+/--
+The stepwise four lemma for the family f: along every short exact sequence 0 → X₁ → X₂ → X₃ → 0,
 the first r conditions of `New.Variety.BijectiveUpTo` at X₂ and the first r − 1 at X₁ give the first
-r at X₃. -/
+r at X₃.
+-/
 structure StepwiseFourLemma where
   /-- The first r conditions at X₂ and the first r − 1 at X₁ give the first r at X₃. -/
-  bijectiveUpTo_quotient {X : ShortComplex (CategoryTheory.Functor.{_, 1, _, 2} D Ab)} {r : ℕ} :
-      ShortExact X → BijectiveUpTo (f X.X₂) r → BijectiveUpTo (f X.X₁) (r - 1) →
-        BijectiveUpTo (f X.X₃) r
+  bijectiveUpTo_quotient {X : ShortComplex (CategoryTheory.Functor.{_, 1, _, 2} D Ab)} {r : ℕ}
+    : ShortExact X → BijectiveUpTo (f X.X₂) r → BijectiveUpTo (f X.X₁) (r - 1)
+      → BijectiveUpTo (f X.X₃) r
 
 /-! ### Dévissage -/
 
-/-- The five and four lemmas for a family of maps f_{N,n} : A N n → B N n, indexed by functors N :
+/--
+The five and four lemmas for a family of maps f_{N,n} : A N n → B N n, indexed by functors N :
 D → Ab and degrees n, as for a map of contravariant δ-functors. In `bijectiveUpTo_quotient`, `r - 1`
-is subtraction of natural numbers; for r = 0 there is no condition. -/
+is subtraction of natural numbers; for r = 0 there is no condition.
+-/
 structure Devissage extends StepwiseFourLemma f where
   /-- Five lemma: the functors on which `f` is bijective in all degrees form a closed class. -/
   isClosedClass : IsClosedClass (AllBijective <| f ·)
@@ -496,46 +523,49 @@ instance : IsIso (proj p 0 0) :=
   (isoOfAppBijective _ fun _ ↦
     ((Equiv.subtypeUnivEquiv (by simp)).trans (.funUnique (Fin 1) _)).bijective).isIso_hom
 
-/-- Čech descent, for a family of maps f_{N,n} : A N n → B N n indexed by functors N : D → Ab and
+/--
+Čech descent, for a family of maps f_{N,n} : A N n → B N n indexed by functors N : D → Ab and
 degrees n. Suppose that, in short exact sequences, r conditions of
 `New.Variety.BijectiveUpTo` on the middle term and r − 1 on the kernel give r on the quotient. Then
-r on Z[E] and r − 1 on all fibre powers of p give r on Z[im p]. -/
-theorem cech_descent_step (h_four : StepwiseFourLemma f) {r : ℕ}
-    (hE : BijectiveUpTo (f (freeAb E)) r)
-    (h_cech : ∀ m : ℕ, BijectiveUpTo (f (freeAb (cech p m))) (r - 1)) :
-    BijectiveUpTo (f (freeAb (range p).toFunctor)) r := by
+r on Z[E] and r − 1 on all fibre powers of p give r on Z[im p].
+-/
+theorem cech_descent_step
+    (h_four : StepwiseFourLemma f)
+    {r : ℕ} (hE : BijectiveUpTo (f (freeAb E)) r)
+    (h_cech : ∀ m : ℕ, BijectiveUpTo (f (freeAb (cech p m))) (r - 1))
+    : BijectiveUpTo (f (freeAb (range p).toFunctor)) r := by
   -- Let `R` relate a point of the image to the points of `E` over it. The points of the image with
   -- `m + 1` witnesses for `R` form the fibre power `cech p m`.
   let R : Subfunctor ((range p).toFunctor ⊗ E) :=
     Subfunctor.equalizer (ι ⊤ ≫ snd _ _ ≫ p) (ι ⊤ ≫ fst _ _ ≫ (range p).ι)
   -- `e` forgets the point of the image, which is recovered as `p` of the first witness.
-  let e (m : ℕ) : witnessed R (m + 1) ≅ cech p m := NatIso.ofComponents fun A ↦ Equiv.toIso
-    { toFun := fun ⟨⟨y, x⟩, h_wit⟩ ↦ ⟨x, fun i j ↦ (h_wit i).2.trans (h_wit j).2.symm⟩
-      invFun := fun ⟨x, h_fibre⟩ ↦
-        ⟨(⟨p.app A (x 0), x 0, rfl⟩, x), fun i ↦ ⟨⟨⟩, h_fibre i 0⟩⟩
-      left_inv := fun ⟨⟨y, x⟩, h_wit⟩ ↦ Subtype.ext (Prod.ext (Subtype.ext (h_wit 0).2) rfl) }
+  let e (m : ℕ) : witnessed R (m + 1) ≅ cech p m :=
+    NatIso.ofComponents fun A ↦
+      Equiv.toIso {
+        toFun := fun ⟨⟨y, x⟩, h_wit⟩ ↦ ⟨x, fun i j ↦ (h_wit i).2.trans (h_wit j).2.symm⟩
+        invFun := fun ⟨x, h_fibre⟩ ↦ ⟨(⟨p.app A (x 0), x 0, rfl⟩, x), fun i ↦ ⟨⟨⟩, h_fibre i 0⟩⟩
+        left_inv := fun ⟨⟨y, x⟩, h_wit⟩ ↦ Subtype.ext (Prod.ext (Subtype.ext (h_wit 0).2) rfl)
+      }
   -- The four lemma for the short exact sequence `shortExact_boundaryFromCoker_π`, its last two
   -- terms changed by isomorphisms.
-  have h_four_iso {m k : ℕ} {P K : D ⥤ Ab} (eP : freeAb (witnessed R m) ≅ P)
-      (eK : abCoker (boundary R m) ≅ K) :
-      BijectiveUpTo (f P) k →
-      BijectiveUpTo (f (abCoker (boundary R (m + 1)))) (k - 1) →
-      BijectiveUpTo (f K) k := by
-    have h_comp_zero :
-        (boundaryFromCoker R m ≫ eP.hom) ≫ eP.inv ≫ π (boundary R m) ≫ eK.hom = 0 := by
+  have h_four_iso
+      {m k : ℕ} {P K : D ⥤ Ab} (eP : freeAb (witnessed R m) ≅ P) (eK : abCoker (boundary R m) ≅ K)
+      : BijectiveUpTo (f P) k → BijectiveUpTo (f (abCoker (boundary R (m + 1)))) (k - 1)
+        → BijectiveUpTo (f K) k := by
+    have h_comp_zero
+        : (boundaryFromCoker R m ≫ eP.hom) ≫ eP.inv ≫ π (boundary R m) ≫ eK.hom = 0 := by
       simp [reassoc_of% boundaryFromCoker_comp_π]
-    exact h_four.bijectiveUpTo_quotient (X :=
-      ⟨boundaryFromCoker R m ≫ eP.hom, eP.inv ≫ π _ ≫ eK.hom, h_comp_zero⟩)
+    exact h_four.bijectiveUpTo_quotient
+      (X := ⟨boundaryFromCoker R m ≫ eP.hom, eP.inv ≫ π _ ≫ eK.hom, h_comp_zero⟩)
       (shortExact_of_iso (isoMk (.refl (abCoker _)) eP eK) shortExact_boundaryFromCoker_π)
   -- By induction on `k`, for all `m` at once: if `k` conditions hold on the fibre powers, they
   -- hold on the chains with at least two witnesses modulo boundaries.
-  have h_cok (k : ℕ) (hk : ∀ m : ℕ, BijectiveUpTo (f (freeAb (cech p m))) k) (m : ℕ) :
-      BijectiveUpTo (f (abCoker (boundary R (m + 2)))) k := by
+  have h_cok (k : ℕ) (hk : ∀ m : ℕ, BijectiveUpTo (f (freeAb (cech p m))) k) (m : ℕ)
+      : BijectiveUpTo (f (abCoker (boundary R (m + 2)))) k := by
     induction k generalizing m with
     | zero => simp [BijectiveUpTo]
     | succ k ih =>
-      exact h_four_iso (freeAb.mapIso (e _)) (.refl _) (hk _)
-        (ih (by grind [BijectiveUpTo]) _)
+      exact h_four_iso (freeAb.mapIso (e _)) (.refl _) (hk _) (ih (by grind [BijectiveUpTo]) _)
   -- Every point of the image has a witness, so every chain without witnesses is a boundary and
   -- the chains with one witness modulo boundaries are `freeAb` of the image.
   have h_zero : π (boundary R 0) = 0 := by
@@ -559,8 +589,10 @@ lemma Devissage.allBijective_freeAb_range_of_cech (h_dev : Devissage f)
   simp only [allBijective_iff_forall_bijectiveUpTo] at hE h_cech ⊢
   exact fun r ↦ cech_descent_step p h_dev.toStepwiseFourLemma (hE r) (h_cech · (r - 1))
 
-/-- p: E → Y is a cover for F: the inclusion of the image of p in Y induces bijections on
-Ext^n(Z[−],F) for all n. -/
+/--
+p: E → Y is a cover for F: the inclusion of the image of p in Y induces bijections on
+Ext^n(Z[−],F) for all n.
+-/
 def IsCover : Prop := IsCohomEquiv F (freeAb.map (Subfunctor.range p).ι)
 
 lemma IsPointwiseSurjective.isCover {F : AbFunctor D} (hp : IsPointwiseSurjective p) :
@@ -584,8 +616,8 @@ section BijectiveEquivalence
 
 open CategoryTheory Limits cech fiberProd Fin
 
-variable {C : Type _} [Category C] {Y E W V : C ⥤ Type 1} {p : E ⟶ Y} {u : W ⟶ Y} {q : V ⟶ W}
-  {v : V ⟶ E}
+variable
+  {C : Type _} [Category C] {Y E W V : C ⥤ Type 1} {p : E ⟶ Y} {u : W ⟶ Y} {q : V ⟶ W} {v : V ⟶ E}
 
 /-- A map `p : E ⟶ Y` that is bijective at every object is an isomorphism, so `ℤ[E] ⟶ ℤ[Y]` is an
 equivalence for every coefficient functor `F`. -/
@@ -652,15 +684,18 @@ section BijectiveComparisons
 open CategoryTheory Abelian Function Functor Subfunctor Ext H IsCohomEquiv ConcreteCategory cech
   Arrow BijectiveUpTo sigma IsPointwiseSurjective fiberProd Iso
 
-variable {C C' C'' : Type 1} [Category C] [Category C'] [Category C'']
+variable
+  {C C' C'' : Type 1} [Category C] [Category C'] [Category C'']
   {F G N : AbFunctor C} {F' G' N' : AbFunctor C'} {F'' N'' : AbFunctor C''} {Y E : C ⥤ Type 1}
-  {Y' E' : C' ⥤ Type 1} {r : ℕ} {φ : C' ⥤ C} (c : Comparison F F') {A : C} {B : C'}
-  (u : Y' ⟶ c.functor ⋙ reprBy A)
+  {Y' E' : C' ⥤ Type 1} {r : ℕ} {φ : C' ⥤ C} (c : Comparison F F')
+  {A : C} {B : C'} (u : Y' ⟶ c.functor ⋙ reprBy A)
 
 /-! ### Bijective comparisons and representable functors -/
 
-/-- For a comparison (φ,β) from F to F' and α: N' → N∘φ, the property that Ext^n(N,F) →
-Ext^n(N',F') is bijective for every n. -/
+/--
+For a comparison (φ,β) from F to F' and α: N' → N∘φ, the property that Ext^n(N,F) →
+Ext^n(N',F') is bijective for every n.
+-/
 def Comparison.IsBijective {N : AbFunctor C} {N' : AbFunctor C'} (α : N' ⟶ c.functor ⋙ N) : Prop :=
   ∀ n : ℕ, Bijective (c.pull (N := N) (N' := N') α n)
 
@@ -703,13 +738,15 @@ lemma pointMap_id_bijective_of_fullyFaithful (ψ : C ⥤ C') [ψ.Full] [ψ.Faith
 
 namespace Comparison
 
-/-- For `u : Y' ⟶ c.functor ⋙ reprBy A`, which sends a point `y` of `Y' B` to a map
+/--
+For `u : Y' ⟶ c.functor ⋙ reprBy A`, which sends a point `y` of `Y' B` to a map
 `A ⟶ c.functor B`, the homomorphism `F A → (ℤ[Y'] ⟶ F')` that sends `x` (via the Yoneda bijection
 `homReprEquiv A F : (ℤ[reprBy A] ⟶ F) ≃ F A`) to the section taking `y` to
-`c.coeffHom B (F.map (u y) x)`. -/
+`c.coeffHom B (F.map (u y) x)`.
+-/
 noncomputable def homOfValue : F.obj A →+ (freeAb.obj Y' ⟶ F') :=
-  AddMonoidHom.mk' (fun x ↦ freeAbMap u ≫ whiskerLeft c.functor ((homReprEquiv A F).symm x) ≫
-    c.coeffHom)
+  AddMonoidHom.mk'
+    (fun x ↦ freeAbMap u ≫ whiskerLeft c.functor ((homReprEquiv A F).symm x) ≫ c.coeffHom)
     (by bound)
 
 variable {c} {c' : Comparison F' F''} {α : N' ⟶ c.functor ⋙ N} {α' : N'' ⟶ c'.functor ⋙ N'}
@@ -789,8 +826,10 @@ section ComparisonDescent
 open CategoryTheory Abelian Function Functor Subfunctor Ext H IsCohomEquiv ConcreteCategory cech
   Arrow BijectiveUpTo sigma IsPointwiseSurjective fiberProd Iso
 
-variable {C C' : Type 1} [Category C] [Category C'] {F : AbFunctor C} {F' : AbFunctor C'}
-  {Y E : C ⥤ Type 1} {Y' E' : C' ⥤ Type 1} {r : ℕ} {φ : C' ⥤ C} {c : Comparison F F'}
+variable
+  {C C' : Type 1} [Category C] [Category C']
+  {F : AbFunctor C} {F' : AbFunctor C'} {Y E : C ⥤ Type 1} {Y' E' : C' ⥤ Type 1} {r : ℕ}
+  {φ : C' ⥤ C} {c : Comparison F F'}
   {u : Y' ⟶ c.functor ⋙ Y} {v : E' ⟶ c.functor ⋙ E} {p : E ⟶ Y} {p' : E' ⟶ Y'}
 
 namespace Comparison
@@ -909,23 +948,27 @@ lemma isBijective_of_fibers (t : E ⟶ Y) (h_pb : IsPullback v p' (c.functor.whi
 /-! ### Universal points -/
 
 variable (c u) in
-/-- Let `u : Y' ⟶ c.functor ⋙ Y` and let `y` be a point of `Y A`. A pair `(z, f)` of a point `z` of
+/--
+Let `u : Y' ⟶ c.functor ⋙ Y` and let `y` be a point of `Y A`. A pair `(z, f)` of a point `z` of
 `Y' D` and a map `f : A ⟶ c.functor D` lies over `y` if `u z = f y`. The pair `(x, s)` over `B` is a
 universal point if it is universal among these pairs, so that `B` represents the fibre of `u` over
-`y`, and the coefficients `F A` and `F' B` agree along `s`. -/
-structure IsUnivPoint {A : C} (y : Y.obj A) {B : C'} (x : Y'.obj B) (s : A ⟶ c.functor.obj B) :
-  Prop where
+`y`, and the coefficients `F A` and `F' B` agree along `s`.
+-/
+structure IsUnivPoint {A : C} (y : Y.obj A) {B : C'} (x : Y'.obj B) (s : A ⟶ c.functor.obj B)
+    : Prop where
   /-- The pair `(x, s)` lies over `y`. -/
   apply_eq_map : u B x = Y.map s y
   /-- Every pair `(z, f)` that lies over `y` comes from `(x, s)` by exactly one map `g`. -/
-  existsUnique_hom (D : C') (z : Y'.obj D) (f : A ⟶ c.functor.obj D) (hz : u D z = Y.map f y) :
-    ∃! g : B ⟶ D, Y'.map g x = z ∧ s ≫ c.functor.map g = f
+  existsUnique_hom (D : C') (z : Y'.obj D) (f : A ⟶ c.functor.obj D) (hz : u D z = Y.map f y)
+    : ∃! g : B ⟶ D, Y'.map g x = z ∧ s ≫ c.functor.map g = f
   /-- The map `F A → F (c.functor B) → F' B` on coefficients is bijective. -/
   coeff_bijective : Bijective fun a : F.obj A ↦ c.coeffHom B (F.map s a)
 
 variable (c u) in
-/-- The map `u : Y' ⟶ c.functor ⋙ Y` has universal points: over every point of `Y` there is a
-universal point (`New.Variety.Comparison.IsUnivPoint`), at which the coefficients agree. -/
+/--
+The map `u : Y' ⟶ c.functor ⋙ Y` has universal points: over every point of `Y` there is a
+universal point (`New.Variety.Comparison.IsUnivPoint`), at which the coefficients agree.
+-/
 def HasUniversalPoints : Prop :=
   ∀ (A : C) (y : Y.obj A), ∃ (B : C') (x : Y'.obj B) (s : A ⟶ c.functor.obj B),
     c.IsUnivPoint u y x s

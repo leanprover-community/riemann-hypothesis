@@ -44,7 +44,8 @@ section SelmerLevels
 
 open Module Submodule Ideal IsDiscreteValuationRing LinearMap
 
-variable {O : Type} [CommRing O]
+variable
+  {O : Type} [CommRing O]
   {E n : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
   (ρ : Gal(Ω/E) → Matrix n n O) (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O))
   {B B' : Type} [AddCommGroup B] [Module O B] [AddCommGroup B'] [Module O B']
@@ -68,10 +69,12 @@ lemma comp_mem_selmerModule_iff {f : B →ₗ[O] B'} (hf : Function.Injective f)
   simp only [selmerModule, Submodule.mem_inf]
   exact and_congr (h_obeying _) h_locallyConstant
 
-/-- The map of Selmer modules `z ↦ f ∘ z` induced by an injective map `f` of coefficient
-modules. -/
-def selmerModuleMapOfInjective {f : B →ₗ[O] B'} (hf : Function.Injective f) :
-    selmerModule ρ S L B →ₗ[O] selmerModule ρ S L B' :=
+/--
+The map of Selmer modules `z ↦ f ∘ z` induced by an injective map `f` of coefficient
+modules.
+-/
+def selmerModuleMapOfInjective {f : B →ₗ[O] B'} (hf : Function.Injective f)
+    : selmerModule ρ S L B →ₗ[O] selmerModule ρ S L B' :=
   ((f.compLeft n).compLeft Gal(Ω/E)).restrict fun (_ : Gal(Ω/E) → n → B) hz ↦
     (comp_mem_selmerModule_iff ρ S L hf).2 hz
 
@@ -145,15 +148,17 @@ end SelmerLevels
 
 section DivisibleLength
 
-variable {E O n : Type} [Field E] [EmbeddedNumberField E] [CommRing O] [DVR O] [Fintype n]
-  [DecidableEq n]
+variable
+  {E O n : Type} [Field E] [EmbeddedNumberField E] [CommRing O] [DVR O] [Fintype n] [DecidableEq n]
   {ρ : Gal(Ω/E) → Matrix n n O} {S : Set (FinPlace E)} {L : Set (Gal(Ω/E) →₀ Matrix n n O)}
 
 omit [DVR O] in
 variable (ρ S L) in
-/-- For an embedded number field `E`, the length over `O` of the Selmer module with coefficients
+/--
+For an embedded number field `E`, the length over `O` of the Selmer module with coefficients
 in `Frac(O) / O`: the locally constant cocycles for `ρ`
-that are unramified outside `S` and obey the relations `L`. -/
+that are unramified outside `S` and obey the relations `L`.
+-/
 noncomputable def divisibleSelmerLength : ℕ∞ :=
   Module.length O (selmerModule ρ S L (DivisibleQuot O))
 

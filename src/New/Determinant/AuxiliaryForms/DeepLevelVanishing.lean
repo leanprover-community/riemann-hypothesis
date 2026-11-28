@@ -81,8 +81,12 @@ section DeepLevelTest
 open New MeasureTheory Matrix Finset Fintype Norms.L2Operator ComplexConjugate Space DiscreteSeries
   U
 
-variable {P : Parameters} {D : Data P} (n : Type) [Fintype n] [DecidableEq n] [Nonempty n]
-  {s : n → ℤˣ} {V : Space D.E n s} (A : ℕ) {L N : ℕ}
+variable
+  {P : Parameters} {D : Data P}
+  (n : Type) [Fintype n] [DecidableEq n] [Nonempty n]
+  {s : n → ℤˣ} {V : Space D.E n s}
+  (A : ℕ)
+  {L N : ℕ}
 
 /-- A Lipschitz bound under left translation for the product over the infinite places `w` of the
 conjugate matrix coefficients `(l w).dsCoeff`. The parameters `l w` are integer vectors with entries
@@ -127,23 +131,27 @@ lemma New.Exchange.norm_prod_conj_dsCoeff_inv_mul_sub_le {β δ : ℝ}
 
 variable {n A} {β m : ℝ}
 
-/-- The size conditions of the vanishing criterion for a space of rank `card n` over the field `D.E`
+/--
+The size conditions of the vanishing criterion for a space of rank `card n` over the field `D.E`
 of the data `D`. The exponent `A` dominates the rank, the exponent `N` of a lower bound
 `v * β ^ (-N)`, with `v` a volume, for local pairings of matrix coefficients, and the real
 dimension; `β` dominates the constants, among them the cusp constant
 `cuspConst D.E n D.cyclotomicConductor` and the bound `L` of the parameters; `m` is at least a large
 power of `β`; and the generator of the deep level is large against `m` at every infinite place `w`,
-with embedding `Φ w`. The radius `m` is a real number, not the number `D.m` of lifts. -/
-structure New.Exchange.HasDeepLevelSizes (D : Data P) (n : Type) [Fintype n] (A L N : ℕ)
-    (β m : ℝ) : Prop where
+with embedding `Φ w`. The radius `m` is a real number, not the number `D.m` of lifts.
+-/
+structure New.Exchange.HasDeepLevelSizes (D : Data P) (n : Type) [Fintype n] (A L N : ℕ) (β m : ℝ)
+    : Prop where
   /-- `A` is large against the square of the rank. -/
   rank_sq_lt : 8 * (card n + 1) ^ 2 < A
   /-- `A` exceeds the exponent `N` of the lower bound for the local pairings. -/
   exponent_lt : N < A
   /-- `A` exceeds by `2` or more the real dimension of a space of rank `card n + 1` over `E ⊗ ℝ`. -/
   dim_le : 2 * D.f * (card n + 1) + 2 ≤ A
-  /-- `β` bounds the constant of the cusp estimate: `D.M` is the level and `cuspConst` depends on
-  the rank and on the number `D.cyclotomicConductor` in the different of `D.E`. -/
+  /--
+  `β` bounds the constant of the cusp estimate: `D.M` is the level and `cuspConst` depends on
+  the rank and on the number `D.cyclotomicConductor` in the different of `D.E`.
+  -/
   cuspConst_sq_le : D.M * cuspConst D.E n D.cyclotomicConductor ^ 2 ≤ β
   /-- `β` bounds a polynomial in the rank and the bound `L` of the parameters. -/
   rank_pow_le : 2000 * (card n + L + 1) ^ 6 ≤ β
@@ -152,8 +160,8 @@ structure New.Exchange.HasDeepLevelSizes (D : Data P) (n : Type) [Fintype n] (A 
   /-- `m` is at least a large power of `β`. -/
   pow_le : β ^ (20 * A * (D.f + 1)) ≤ m
   /-- The level is deep: its generator is large at every infinite place. -/
-  pow_le_norm_gridLevelGen : ∀ w : NumberField.InfinitePlace D.E,
-    m ^ (3 * card n + 2) ≤ ‖Φ w D.gridLevelGen.val‖
+  pow_le_norm_gridLevelGen
+    : ∀ w : NumberField.InfinitePlace D.E, m ^ (3 * card n + 2) ≤ ‖Φ w D.gridLevelGen.val‖
 
 section Sizes
 omit [Nonempty n]
@@ -222,11 +230,14 @@ lemma New.Exchange.HasDeepLevelSizes.sq_le_pow_mul_firstMinimum
 
 end Sizes
 
-/-- The function `u ↦ ∏_w deg(l w) (2 / ‖u w‖) ^ (2 A)` on the real points, with `deg` the formal
+/--
+The function `u ↦ ∏_w deg(l w) (2 / ‖u w‖) ^ (2 A)` on the real points, with `deg` the formal
 degree. It is a majorant of `‖typeKernel l s‖` that keeps half of its decay when the parameters
-`l w` have large gaps for `4 A`. -/
-noncomputable def New.Exchange.typeKernelMajorant (l : NumberField.InfinitePlace D.E → HCParam s)
-    (A : ℕ) (u : GInf D.E s) : ℝ :=
+`l w` have large gaps for `4 A`.
+-/
+noncomputable def New.Exchange.typeKernelMajorant
+    (l : NumberField.InfinitePlace D.E → HCParam s) (A : ℕ) (u : GInf D.E s)
+    : ℝ :=
   ∏ w : NumberField.InfinitePlace D.E, (l w).formalDegree * (2 / ‖(u w).val.val‖) ^ (2 * A)
 
 -- Keeps definitional checks from unfolding the finite sums.
@@ -590,7 +601,8 @@ lemma New.Exchange.norm_le_half_of_le_firstMinimum {l : NumberField.InfinitePlac
   grw [← hβ₁₆] at norm_le
   linarith
 
-/-- The vanishing criterion at a real point `ω` of `GInf D.E (s ⊕ᵥ 1)`. Assume the following. First,
+/--
+The vanishing criterion at a real point `ω` of `GInf D.E (s ⊕ᵥ 1)`. Assume the following. First,
 the size conditions `HasDeepLevelSizes D n A L N β m`. Second, large gaps of the parameters: entries
 of `l w / 2` with different signs differ by at least `500 n³ + 4 A`, and likewise for `l'` with
 `n + 1` and `2 A`. Third, entries of `l` bounded by `L`. Fourth, `ω` is not large (`hω`). Fifth, at
@@ -598,7 +610,8 @@ each infinite place the coefficient for `l` pairs nontrivially with the restrict
 coefficient for `l'` conjugated by `ω`, with the explicit lower bound `h_pair`. Then a form `y` on
 `V` of type `l` and level `D.chosenLevel` vanishes if it is orthogonal to `x ↦ φ ((x ⊕ 1) ω)` for
 every form `φ` on `V ⊕ ⟨1⟩` of type `l'` and of the deep level
-`principalLevel (n ⊕ Unit) D.gridLevelGen`. -/
+`principalLevel (n ⊕ Unit) D.gridLevelGen`.
+-/
 theorem New.Exchange.eq_zero_of_petersson_translate_eq_zero
     {l : NumberField.InfinitePlace D.E → HCParam s}
     {l' : NumberField.InfinitePlace D.E → HCParam (s ⊕ᵥ (1 : Unit → ℤˣ))}
@@ -607,28 +620,28 @@ theorem New.Exchange.eq_zero_of_petersson_translate_eq_zero
     (h_gap' : ∀ w : NumberField.InfinitePlace D.E, (l' w).HasLargeGap (2 * A))
     (hl : ∀ (w : NumberField.InfinitePlace D.E) (i : n), |l w i| ≤ L)
     {ω : GInf D.E (s ⊕ᵥ (1 : Unit → ℤˣ))}
-    (hω : ∀ w : NumberField.InfinitePlace D.E,
-      ‖(ω w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖ ^ 2 ≤ β)
+    (hω : ∀ w : NumberField.InfinitePlace D.E, ‖(ω w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖ ^ 2 ≤ β)
     (h_pair : ∀ w : NumberField.InfinitePlace D.E,
-      volume.real {r : USign s | ‖(r : Matrix n n ℂ) - 1‖ ≤ 1} ≤ β ^ N *
-        ‖∫ r : USign s, (l w).dsCoeff r *
-          conj ((l' w).dsCoeff ((ω w)⁻¹ * inl s 1 r * ω w : USign (s ⊕ᵥ 1)))‖)
+      volume.real {r : USign s | ‖(r : Matrix n n ℂ) - 1‖ ≤ 1}
+        ≤ β ^ N
+          * ‖∫ r : USign s, (l w).dsCoeff r *
+              conj ((l' w).dsCoeff ((ω w)⁻¹ * inl s 1 r * ω w : USign (s ⊕ᵥ 1)))‖)
     {y : G D.E s → ℂ} (hy : V.IsForm (typeKernel l s) y) (hy_level : HasLevel y D.chosenLevel)
-    (h_orth : ∀ φ ∈ levelSpace
-        ((V.sum (signedSpace D.E (1 : Unit → ℤˣ))).formRep (typeKernel l' (s ⊕ᵥ 1)))
-        (principalLevel (n ⊕ Unit) D.gridLevelGen),
-      V.petersson y (fun x : G D.E s ↦ φ (G.sum (x, 1) * (ω, 1))) = 0) :
-    y = 0 := by
+    (h_orth : ∀ φ
+        ∈ levelSpace ((V.sum (signedSpace D.E (1 : Unit → ℤˣ))).formRep (typeKernel l' (s ⊕ᵥ 1)))
+          (principalLevel (n ⊕ Unit) D.gridLevelGen),
+      V.petersson y (fun x : G D.E s ↦ φ (G.sum (x, 1) * (ω, 1))) = 0)
+    : y = 0 := by
   -- By `le_of_halving` it is enough to halve every bound `S` of `‖y‖`.
   -- Where `(V.move x).firstMinimum` is large this follows from the orthogonality, by unfolding a
   -- Poincaré series; where it is small, from cuspidality and the fact that `y` varies slowly.
-  have level (a : NumberField.RingOfIntegers D.E) (ha : D.piM ∣ a) :
-      HasLevel y (principalLevel n a) :=
-    fun k hk ↦ hy_level k (D.principalLevel_le_chosenLevel ha hk)
+  have level (a : NumberField.RingOfIntegers D.E) (ha : D.piM ∣ a)
+      : HasLevel y (principalLevel n a) := fun k hk ↦
+    hy_level k (D.principalLevel_le_chosenLevel ha hk)
   have half (S : ℝ) (hS : ∀ g : G D.E s, ‖y g‖ ≤ S) (x : G D.E s) : ‖y x‖ ≤ S / 2 := by
-    obtain h_large | h_small := le_or_gt
-      ((m⁻¹ ^ 2 / (D.M * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n)
-      (V.move x).firstMinimum
+    obtain h_large | h_small :=
+      le_or_gt ((m⁻¹ ^ 2 / (D.M * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n)
+        (V.move x).firstMinimum
     · exact norm_le_half_of_le_firstMinimum h_size h_gap h_gap' hl hω h_pair hy
         (level D.gridLevelGen D.piM_dvd_gridLevelGen) h_orth hS h_large
     · exact norm_le_half_of_firstMinimum_lt h_size h_gap hl hy

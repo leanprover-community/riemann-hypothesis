@@ -174,8 +174,10 @@ namespace New
 
 variable {k K G n ι : Type} [Field k] [NormedField K] [Group G] [Fintype n] [DecidableEq n]
 
-/-- For a set `S` of functions `ι → K`, `K` a normed field, the closure of the `K`-span of `S` in
-the topology of uniform convergence. -/
+/--
+For a set `S` of functions `ι → K`, `K` a normed field, the closure of the `K`-span of `S` in
+the topology of uniform convergence.
+-/
 def uniformClosure (S : Set (ι → K)) : Submodule K (ι → K) :=
   (topologicalClosure (M := UniformFun ι K) (span K S) :)
 
@@ -189,15 +191,19 @@ lemma mem_uniformClosure :
   simpa [dist_eq_norm] using!
     mem_closure_iff_nhds_basis (UniformFun.hasBasis_nhds_of_basis _ _ f uniformity_basis_dist_le)
 
-/-- Approximation of a submonoid `N` of pairs `(t, φ)`, with `t` in `K` and `φ` a family indexed by
+/--
+Approximation of a submonoid `N` of pairs `(t, φ)`, with `t` in `K` and `φ` a family indexed by
 pairs `(η, i)` with `i < s η`. The set `N` is closed. As `η > 0` tends to `0`, the sum over `i` of
-`c η i * φ (η, i)` tends to `t`, uniformly over `(t, φ) ∈ N`. -/
-def IsApproximatingMonoid (s : Set.Ioi (0 : ℝ) → ℕ) (c : ∀ η : Set.Ioi (0 : ℝ), Fin (s η) → K)
-    (N : Submonoid (K × ((Σ η : Set.Ioi (0 : ℝ), Fin (s η)) → K))) :
-    Prop :=
-  IsClosed N.carrier ∧
-  TendstoUniformly (fun (η : Set.Ioi (0 : ℝ)) (p : N) ↦ ∑ i : Fin (s η), c η i * p.val.snd ⟨η, i⟩)
-    (fun p : N ↦ p.val.fst) atBot
+`c η i * φ (η, i)` tends to `t`, uniformly over `(t, φ) ∈ N`.
+-/
+def IsApproximatingMonoid
+    (s : Set.Ioi (0 : ℝ) → ℕ) (c : ∀ η : Set.Ioi (0 : ℝ), Fin (s η) → K)
+    (N : Submonoid (K × ((Σ η : Set.Ioi (0 : ℝ), Fin (s η)) → K)))
+    : Prop :=
+  IsClosed N.carrier ∧ TendstoUniformly
+    (fun (η : Set.Ioi (0 : ℝ)) (p : N) ↦ ∑ i : Fin (s η), c η i * p.val.snd ⟨η, i⟩)
+    (fun p : N ↦ p.val.fst)
+    atBot
 
 /-- The monoid `N` of an approximation `New.IsApproximatingMonoid s c N` is closed. -/
 lemma IsApproximatingMonoid.isClosed_carrier {s : Set.Ioi (0 : ℝ) → ℕ}
@@ -291,9 +297,11 @@ lemma IsApproximatingMonoid.tendstoUniformly_eval {P : Type*} {s : Set.Ioi (0 : 
       Prod.fst_prod] using (uniformContinuous_mul_left' a).comp_tendstoUniformly h_prod
   | add B B' hB hB' => simpa [mul_add, sum_add_distrib, Pi.add_def] using hB.add hB'
 
-/-- The polynomials `newtonPoly j m` over k in X_0, X_1, … are defined by `newtonPoly 0 m = 1` and
+/--
+The polynomials `newtonPoly j m` over k in X_0, X_1, … are defined by `newtonPoly 0 m = 1` and
 `newtonPoly (j + 1) m = X m * newtonPoly j 1 - j • newtonPoly j (m + 1)`. At the power sums,
-`newtonPoly j 1` equals j! times the j-th elementary symmetric function. -/
+`newtonPoly j 1` equals j! times the j-th elementary symmetric function.
+-/
 noncomputable def newtonPoly : ℕ → ℕ → MvPolynomial ℕ k :=
   Nat.rec 1 fun j b m ↦ X m * b 1 - j • b (m + 1)
 
@@ -406,12 +414,15 @@ private lemma eval_linearExtension_eq_zero {T : G → k}
   simpa [Finsupp.sum, lift_apply] using
     hB (MonoidAlgebra.lift k (Matrix n n k) G ((Units.coeHom (Matrix n n k)).comp ρ))
 
-/-- The kernel of the pairing `(x, y) ↦ t (x * y)` on `k[G]`, for a linear form `t` with
-`t (x * y) = t (y * x)`; this symmetry makes the kernel a left ideal. -/
-private def pairingKernel (t : k[G] →ₗ[k] k) (t_comm : ∀ x y : k[G], t (x * y) = t (y * x)) :
-    Ideal k[G] :=
-  { toAddSubmonoid := ((mul k k[G]).compr₂ t).ker.toAddSubmonoid
-    smul_mem' := fun a x hx ↦ by simp_all [t_comm a, DFunLike.ext_iff, mul_assoc] }
+/--
+The kernel of the pairing `(x, y) ↦ t (x * y)` on `k[G]`, for a linear form `t` with
+`t (x * y) = t (y * x)`; this symmetry makes the kernel a left ideal.
+-/
+private def pairingKernel (t : k[G] →ₗ[k] k) (t_comm : ∀ x y : k[G], t (x * y) = t (y * x))
+    : Ideal k[G] := {
+  toAddSubmonoid := ((mul k k[G]).compr₂ t).ker.toAddSubmonoid
+  smul_mem' := fun a x hx ↦ by simp_all [t_comm a, DFunLike.ext_iff, mul_assoc]
+}
 
 /-- Let `t` be a linear form on `k[G]` that obeys every polynomial identity among traces of algebra
 maps `k[G] → Matrix n n k`. Then the quotient of `k[G]` by the kernel of the pairing `t (x * y)` is

@@ -71,8 +71,9 @@ open Matrix Valued Finset Equiv IsLocalRing WithZero Function
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {F : Type*} [Field F] [Valued F ℤᵐ⁰] {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)}
-  {m : Fin N} {x : ρ} {φ : ρ →ₗ[ℂ] ℂ}
+variable
+  {F : Type*} [Field F] [Valued F ℤᵐ⁰]
+  {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)} {m : Fin N} {x : ρ} {φ : ρ →ₗ[ℂ] ℂ}
 
 /-- For `k` in `GL_N(𝒪)` there is an index `r` such that the entries `k r m` and `k⁻¹ m r` are both
 units. -/
@@ -126,8 +127,8 @@ private lemma permGL_swap_mem_blockParahoric_min {j : Fin N} (hj : m ≤ j) :
   grind [one_pos]
 
 /-- Reduction modulo `𝔭` on `blockParahoric (min m)`, a homomorphism to `GL_N(𝓀[F])`. -/
-private def reduceParahoric (m : Fin N) :
-    blockParahoric (F := F) (N := N) (min m) →* GL (Fin N) 𝓀[F] :=
+private def reduceParahoric (m : Fin N)
+    : blockParahoric (F := F) (N := N) (min m) →* GL (Fin N) 𝓀[F] :=
   (intGL.map (residue _)).comp ((blockParahoric (F := F) (N := N) (min m)).inclusion fun _ h ↦ h.1)
 
 /-- Column `m` of the reduction modulo `𝔭` of an element of `blockParahoric (min m)`. -/
@@ -338,8 +339,11 @@ open Valued WithZero Matrix Subgroup Pi
 
 namespace New.Patching
 
-variable {E : Type*} [Field E] [NumberField E] {w : FinPlace E} {N : ℕ} [NeZero N]
-  {g : GL (Fin N) (LocField w)} (ρ : Rep ℂ (GL (Fin N) (LocField w))) [IsSmoothRep ρ.ρ]
+variable
+  {E : Type*} [Field E] [NumberField E]
+  {w : FinPlace E} {N : ℕ} [NeZero N]
+  {g : GL (Fin N) (LocField w)}
+  (ρ : Rep ℂ (GL (Fin N) (LocField w))) [IsSmoothRep ρ.ρ]
 
 /-- One row operation clears the first row: if `g` lies in `blockParahoric (min 1)`, some `u` in
 `proIwahori` makes the first row of `u * g` vanish off the corner. -/
@@ -360,15 +364,18 @@ lemma exists_clear_first_row (hg : g ∈ blockParahoric (min 1)) :
   · -- the first row of `u g` is a multiple of the first row of `g⁻¹ g = 1`
     simp [u, updateRow_mul, smul_vecMul, ← mul_apply_eq_vecMul, hj.symm]
 
-/-- The vectors fixed by the pro-p Iwahori group on which each `k` in the parahoric subgroup of the
-level function `f` acts by the scalar `c k`. -/
-noncomputable def parahoricEigenspace (f : ℕ → ℕ) (c : GL (Fin N) (LocField w) → ℂ) :
-    Submodule ℂ ρ :=
-  levelSpace ρ.ρ proIwahori ⊓
-    { carrier := {z : ρ | ∀ k ∈ blockParahoric f, ρ k z = c k • z}
-      add_mem' := by simp_all
-      zero_mem' := by simp
-      smul_mem' := by simp_all [smul_comm (c _)] }
+/--
+The vectors fixed by the pro-p Iwahori group on which each `k` in the parahoric subgroup of the
+level function `f` acts by the scalar `c k`.
+-/
+noncomputable def parahoricEigenspace (f : ℕ → ℕ) (c : GL (Fin N) (LocField w) → ℂ)
+    : Submodule ℂ ρ :=
+  levelSpace ρ.ρ proIwahori ⊓ {
+    carrier := {z : ρ | ∀ k ∈ blockParahoric f, ρ k z = c k • z}
+    add_mem' := by simp_all
+    zero_mem' := by simp
+    smul_mem' := by simp_all [smul_comm (c _)]
+  }
 
 /-- For a uniformiser `ϖ` and `t = diag (ϖ, 1, …, 1)`: if `m` lies in `blockParahoric (min 1)` and
 its first row vanishes off the corner, then `t⁻¹ * m * t` lies in `blockParahoric (min 1)`. -/

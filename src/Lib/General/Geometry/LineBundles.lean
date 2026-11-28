@@ -62,15 +62,17 @@ variable {X Y Z : Scheme.{0}} {ι κ : Type}
 /-! ### Functions on ring-valued points -/
 
 /-- For a ring homomorphism `φ : R →+* B`, the induced morphism of schemes `Spec B ⟶ Spec R`. -/
-abbrev specMap {R B : Type} [CommRing R] [CommRing B] (φ : R →+* B) :
-    Spec (CommRingCat.of B) ⟶ Spec (CommRingCat.of R) :=
+abbrev specMap {R B : Type} [CommRing R] [CommRing B] (φ : R →+* B)
+    : Spec (CommRingCat.of B) ⟶ Spec (CommRingCat.of R) :=
   Spec.map (CommRingCat.ofHom φ)
 
 /-- The morphism `t : Y ⟶ X` lands in the open `U`, that is, `t ⁻¹ᵁ U` is all of `Y`. -/
 def LandsIn (t : Y ⟶ X) (U : X.Opens) : Prop := ⊤ ≤ t ⁻¹ᵁ U
 
-/-- Functions on ring-valued points of `X`: rules attaching an element of `A` to every point
-`Spec A ⟶ X`, for every ring `A`, with no compatibility required. -/
+/--
+Functions on ring-valued points of `X`: rules attaching an element of `A` to every point
+`Spec A ⟶ X`, for every ring `A`, with no compatibility required.
+-/
 abbrev PointFn (X : Scheme) : Type 1 := ∀ A : CommRingCat, (Spec.{0} A ⟶ X) → A
 
 variable {t : Y ⟶ X} {U : X.Opens} (f : PointFn X)
@@ -88,19 +90,25 @@ lemma landsIn_preimage {s : Z ⟶ Y} : LandsIn s (t ⁻¹ᵁ U) ↔ LandsIn (s �
 lemma LandsIn.comp (ht : LandsIn t U) (a : Z ⟶ Y) : LandsIn (Y := Z) (a ≫ t) U := by
   simpa [LandsIn] using a.preimage_mono ht
 
-/-- The function `f` is regular on `U`: for points `t : Spec A ⟶ X` landing in `U`, its value
-commutes with all ring maps `φ : A ⟶ B`. -/
+/--
+The function `f` is regular on `U`: for points `t : Spec A ⟶ X` landing in `U`, its value
+commutes with all ring maps `φ : A ⟶ B`.
+-/
 def PointFn.IsRegularOn (U : X.Opens) : Prop :=
   ∀ ⦃A B : CommRingCat⦄ (φ : A ⟶ B) (t : Spec A ⟶ X), LandsIn t U → f B (Spec.map φ ≫ t) = φ (f A t)
 
-/-- For a point `t : Spec A ⟶ X` landing in `U`, the ring map `Γ(X, U) ⟶ A` evaluating sections
-at `t`. -/
+/--
+For a point `t : Spec A ⟶ X` landing in `U`, the ring map `Γ(X, U) ⟶ A` evaluating sections
+at `t`.
+-/
 def PointFn.evalSection {A : CommRingCat} (t : Spec A ⟶ X) (h : LandsIn t U) : Γ(X, U) ⟶ A :=
   t.appLE U ⊤ h ≫ (Scheme.ΓSpecIso A).hom
 
 open scoped Classical in
-/-- The function on points given by a section `s` over `U`: its value at `t` is the pull-back of
-`s` along `t` if `t` lands in `U`, and `0` otherwise. -/
+/--
+The function on points given by a section `s` over `U`: its value at `t` is the pull-back of
+`s` along `t` if `t` lands in `U`, and `0` otherwise.
+-/
 def PointFn.ofSection : Γ(X, U) →ₙ+* PointFn X where
   toFun s _ t := if h : LandsIn t U then evalSection t h s else 0
   map_mul' := by aesop
@@ -108,8 +116,10 @@ def PointFn.ofSection : Γ(X, U) →ₙ+* PointFn X where
   map_add' := by aesop
 
 variable (X ι) in
-/-- A line bundle on X as an open cover U_i with transition functions g_ij regular on U_i ∩ U_j,
-satisfying g_ii = 1 and g_ij g_jk = g_ik (`opens i` is U_i, `transition i j` is g_ij). -/
+/--
+A line bundle on X as an open cover U_i with transition functions g_ij regular on U_i ∩ U_j,
+satisfying g_ii = 1 and g_ij g_jk = g_ik (`opens i` is U_i, `transition i j` is g_ij).
+-/
 @[ext]
 structure LineBundle where
   /-- The open sets on which the bundle is trivialised. -/
@@ -117,33 +127,36 @@ structure LineBundle where
   /-- The transition functions, as functions on ring-valued points of `X`. -/
   transition : ι → ι → PointFn X
   /-- The open sets cover `X`. -/
-  cover : ⨆ i : ι, opens i = ⊤ := by simp [← iSup_inf_iSup, ← iInf_iSup_eq_of_finite,
-    LineBundle.cover]
+  cover : ⨆ i : ι, opens i = ⊤ := by
+    simp [← iSup_inf_iSup, ← iInf_iSup_eq_of_finite, LineBundle.cover]
   /-- The transition function g_ij is regular on U_i ∩ U_j. -/
   regular (i j : ι) : (transition i j).IsRegularOn (opens i ⊓ opens j) := by
     simp_all [PointFn.IsRegularOn, LineBundle.regular _ _ _ _]
   /-- The function g_ii is 1 at the points of U_i. -/
-  transition_self (i : ι) (A : CommRingCat) (t : Spec A ⟶ X) :
-      LandsIn t (opens i) → transition i i A t = 1 := by
+  transition_self (i : ι) (A : CommRingCat) (t : Spec A ⟶ X)
+      : LandsIn t (opens i) → transition i i A t = 1 := by
     simp +contextual [LineBundle.transition_self]
   /-- The cocycle condition g_ij g_jk = g_ik at the points of U_i ∩ U_j ∩ U_k. -/
-  transition_trans (i j k : ι) (A : CommRingCat) (t : Spec A ⟶ X) :
-      LandsIn t (opens i) → LandsIn t (opens j) → LandsIn t (opens k) →
-      transition i j A t * transition j k A t = transition i k A t := by
-    (try simp +contextual [LineBundle.transition_trans, ← Finset.prod_mul_distrib]) <;>
-      grind [LineBundle.transition_trans]
+  transition_trans (i j k : ι) (A : CommRingCat) (t : Spec A ⟶ X)
+      : LandsIn t (opens i) → LandsIn t (opens j) → LandsIn t (opens k)
+        → transition i j A t * transition j k A t = transition i k A t := by
+    (try simp +contextual [LineBundle.transition_trans, ← Finset.prod_mul_distrib])
+      <;> grind [LineBundle.transition_trans]
 
-variable (L : LineBundle X ι) (M : LineBundle X κ) (R : Type) [CommRing R] [X.Over (Spec ⟨R⟩)]
-  (p : Y ⟶ X)
+variable
+  (L : LineBundle X ι) (M : LineBundle X κ) (R : Type) [CommRing R] [X.Over (Spec ⟨R⟩)] (p : Y ⟶ X)
 
-/-- For `p : Y ⟶ X` and a function `f` on ring-valued points of `X`, the function
-`t ↦ f (t ≫ p)` on ring-valued points of `Y`. -/
+/--
+For `p : Y ⟶ X` and a function `f` on ring-valued points of `X`, the function
+`t ↦ f (t ≫ p)` on ring-valued points of `Y`.
+-/
 @[simp]
-def PointFn.pull (f : PointFn X) : PointFn Y :=
-  fun (A : CommRingCat) (t : Spec A ⟶ Y) ↦ f A (t ≫ p)
+def PointFn.pull (f : PointFn X) : PointFn Y := fun (A : CommRingCat) (t : Spec A ⟶ Y) ↦ f A (t ≫ p)
 
-/-- For a scheme `X` over `R`, a point `t : Spec A ⟶ X` makes `A` an `R`-algebra, and a scalar
-`r : R` gives the function sending each such `t` to the image of `r` in `A`. -/
+/--
+For a scheme `X` over `R`, a point `t : Spec A ⟶ X` makes `A` an `R`-algebra, and a scalar
+`r : R` gives the function sending each such `t` to the image of `r` in `A`.
+-/
 instance : Algebra R (PointFn X) :=
   toAlgebra (.pi fun _ ↦ .pi (· ≫ X ↘ Spec ⟨R⟩ |> preimage |>.hom))
 
@@ -151,8 +164,10 @@ namespace LineBundle
 
 /-! ### Operations on line bundles -/
 
-/-- The pull-back of the line bundle (U_i, g_ij) along p: Y → X, with cover p⁻¹U_i and
-transition functions p*g_ij. -/
+/--
+The pull-back of the line bundle (U_i, g_ij) along p: Y → X, with cover p⁻¹U_i and
+transition functions p*g_ij.
+-/
 @[simps]
 def pull : LineBundle Y ι where
   opens i := p ⁻¹ᵁ L.opens i
@@ -171,8 +186,10 @@ def inv : LineBundle X ι where
   opens := L.opens
   transition i j := L.transition j i
 
-/-- The tensor product L ⊗ M: the cover by the intersections of an open of L with an open of M, with
-products of transition functions. -/
+/--
+The tensor product L ⊗ M: the cover by the intersections of an open of L with an open of M, with
+products of transition functions.
+-/
 @[simps]
 def mul : LineBundle X (ι × κ) where
   opens i := L.opens i.1 ⊓ M.opens i.2
@@ -180,24 +197,30 @@ def mul : LineBundle X (ι × κ) where
 
 /-! ### Sections -/
 
-/-- The family (s_i) is a global section of L: each s_i is regular on U_i, and s_i = g_ij s_j at
-points landing in U_i and U_j. -/
+/--
+The family (s_i) is a global section of L: each s_i is regular on U_i, and s_i = g_ij s_j at
+points landing in U_i and U_j.
+-/
 def IsSection (s : ι → PointFn X) : Prop :=
-  (∀ i : ι, (s i).IsRegularOn (L.opens i)) ∧
-  ∀ (i j : ι) (A : CommRingCat) (t : Spec A ⟶ X), LandsIn t (L.opens i) → LandsIn t (L.opens j) →
-    s i A t = L.transition i j A t * s j A t
+  (∀ i : ι, (s i).IsRegularOn (L.opens i))
+    ∧ ∀ (i j : ι) (A : CommRingCat) (t : Spec A ⟶ X),
+      LandsIn t (L.opens i) → LandsIn t (L.opens j) → s i A t = L.transition i j A t * s j A t
 
-/-- The family s is a nowhere vanishing global section of L: a section with s_i a unit at every
-point landing in U_i. -/
+/--
+The family s is a nowhere vanishing global section of L: a section with s_i a unit at every
+point landing in U_i.
+-/
 def IsFrame (s : ι → PointFn X) : Prop :=
-  L.IsSection s ∧
-  ∀ (i : ι) (A : CommRingCat) (t : Spec A ⟶ X), LandsIn t (L.opens i) → IsUnit (s i A t)
+  L.IsSection s
+    ∧ ∀ (i : ι) (A : CommRingCat) (t : Spec A ⟶ X), LandsIn t (L.opens i) → IsUnit (s i A t)
 
 /-- The line bundles L and M are isomorphic: L ⊗ M⁻¹ has a nowhere vanishing global section. -/
 def IsIsomorphic : Prop := ∃ u : ι × κ → PointFn X, (L.mul M.inv).IsFrame u
 
-/-- The R-module of global sections of L, for a scheme X over R. Each s_i is normalised to be zero
-at the points that do not land in U_i. -/
+/--
+The R-module of global sections of L, for a scheme X over R. Each s_i is normalised to be zero
+at the points that do not land in U_i.
+-/
 def H0 : Submodule R (ι → PointFn X) where
   carrier :=
     {s : ι → PointFn X |
@@ -233,8 +256,9 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace.Opens Scheme TopCat.Presh
   Limits.pullback EffectiveEpi Category IsLocalRing IsOpenImmersion
 open TopologicalSpace (IsOpenCover)
 
-variable {X Y : Scheme} {κ : Type}
-  {U : X.Opens} {A B : CommRingCat} {f g : PointFn X} {t : Spec A ⟶ X} (p : Y ⟶ X) (s : Γ(X, U))
+variable
+  {X Y : Scheme} {κ : Type} {U : X.Opens} {A B : CommRingCat} {f g : PointFn X} {t : Spec A ⟶ X}
+  (p : Y ⟶ X) (s : Γ(X, U))
 
 /-! ### Points that land in an open -/
 
@@ -601,9 +625,9 @@ section PicardGroup
 
 open CategoryTheory AlgebraicGeometry PointFn Ring LandsIn LineBundle
 
-variable {X Y Z : Scheme} {ι κ : Type}
-  {A : CommRingCat} {L : LineBundle X ι} {M : LineBundle X κ} {u s : ι → PointFn X}
-  (K : LineBundle X ι) (p : Y ⟶ X) (q : Z ⟶ Y)
+variable
+  {X Y Z : Scheme} {ι κ : Type} {A : CommRingCat} {L : LineBundle X ι} {M : LineBundle X κ}
+  {u s : ι → PointFn X} (K : LineBundle X ι) (p : Y ⟶ X) (q : Z ⟶ Y)
 
 namespace LineBundle
 
@@ -875,15 +899,19 @@ protected lemma LineBundle.IsIsomorphic.trans {μ : Type} {N : LineBundle X μ}
 
 /-! ### The Picard group -/
 
-/-- The Picard group of `X`: line bundles given by a cover and a cocycle, modulo isomorphism. The
-group law is written additively. -/
+/--
+The Picard group of `X`: line bundles given by a cover and a cocycle, modulo isomorphism. The
+group law is written additively.
+-/
 def Pic (X : Scheme) : Type 1 :=
-  Quotient (α := Σ ι : Type, LineBundle X ι)
-    { r := fun L M ↦ L.2.IsIsomorphic M.2
-      iseqv :=
-        { refl := fun L ↦ IsIsomorphic.refl L.2
-          symm := IsIsomorphic.symm
-          trans := IsIsomorphic.trans } }
+  Quotient (α := Σ ι : Type, LineBundle X ι) {
+    r := fun L M ↦ L.2.IsIsomorphic M.2
+    iseqv := {
+      refl := fun L ↦ IsIsomorphic.refl L.2
+      symm := IsIsomorphic.symm
+      trans := IsIsomorphic.trans
+    }
+  }
 
 /-- The class of the line bundle K in the Picard group of X. -/
 def LineBundle.picClass : Pic X := ⟦⟨ι, K⟩⟧
@@ -929,8 +957,10 @@ lemma LineBundle.picClass_mul_inv :
 
 /-- The sum in the Picard group is the tensor product of line bundles. -/
 instance : Add (Pic X) where
-  add := Quotient.map₂ (fun L M ↦ ⟨L.fst × M.fst, L.snd.mul M.snd⟩)
-    fun _ _ hL _ _ hM ↦ IsIsomorphic.mul hL hM
+  add :=
+    Quotient.map₂
+      (fun L M ↦ ⟨L.fst × M.fst, L.snd.mul M.snd⟩)
+      fun _ _ hL _ _ hM ↦ IsIsomorphic.mul hL hM
 
 /-- The negative in the Picard group is the dual line bundle. -/
 instance : Neg (Pic X) where
@@ -941,9 +971,10 @@ instance : Zero (Pic X) where
   zero := one.picClass
 
 instance : AddCommGroup (Pic X) where
-  toAddGroup := AddGroup.ofRightAxioms
-    (fun a b c ↦ Quotient.inductionOn₃ a b c fun _ _ N ↦ picClass_mul_assoc N.2)
-    (Quotient.ind fun _ ↦ picClass_mul_one) (Quotient.ind fun _ ↦ picClass_mul_inv)
+  toAddGroup :=
+    AddGroup.ofRightAxioms
+      (fun a b c ↦ Quotient.inductionOn₃ a b c fun _ _ N ↦ picClass_mul_assoc N.2)
+      (Quotient.ind fun _ ↦ picClass_mul_one) (Quotient.ind fun _ ↦ picClass_mul_inv)
   add_comm a b := Quotient.inductionOn₂ a b fun _ _ ↦ picClass_mul_comm
 
 @[simp]
@@ -963,8 +994,10 @@ lemma LineBundle.exists_isFrame_of_picClass_eq_zero (h_zero : L.picClass = 0) :
 
 namespace Pic
 
-/-- For p: Y → X, the homomorphism Pic X → Pic Y sending the class of a line bundle to the class
-of its pull-back. -/
+/--
+For p: Y → X, the homomorphism Pic X → Pic Y sending the class of a line bundle to the class
+of its pull-back.
+-/
 def pull : Pic X →+ Pic Y :=
   AddMonoidHom.mk' (Quotient.map (fun L ↦ ⟨L.fst, L.2.pull p⟩) fun _ _ ⟨_, h⟩ ↦ ⟨_, h.pull p⟩) <| by
     rintro ⟨L⟩ ⟨M⟩

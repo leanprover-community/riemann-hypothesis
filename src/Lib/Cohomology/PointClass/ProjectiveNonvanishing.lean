@@ -61,7 +61,6 @@ For a `p`-adic test with ring `R`, `T = R[1/p]` is `New.Variety.genericOver`, wi
 
 section KummerSymbol
 
-
 namespace New.Variety
 
 open CategoryTheory AddCommGrpCat TotalH thickeningOver
@@ -74,43 +73,46 @@ lemma isUnit_of_unimodular_one {A : CommAlg k} (v : (unimodular (d := 1)).toFunc
     IsUnit (v.val.down 0) := by
   simpa [unimodular, Set.range_unique] using v.prop
 
-/-- The coordinate of `𝔸¹ ∖ 0` as a map to the multiplicative group: the morphism from `ℤ[𝔸¹ ∖ 0]`,
+/--
+The coordinate of `𝔸¹ ∖ 0` as a map to the multiplicative group: the morphism from `ℤ[𝔸¹ ∖ 0]`,
 the free abelian group on the unimodular vectors of length one, to `A ↦ Aˣ` (written additively)
 on `k`-algebras. It sends a generator `[v]` to the coordinate `v 0`, a unit by
-`New.Variety.isUnit_of_unimodular_one`. -/
-def Gm.ofCoord :
-    freeAb (unimodular (k := k) (d := 1)).toFunctor ⟶ forget₂ (CommAlg k) CommRingCat ⋙ Gm :=
+`New.Variety.isUnit_of_unimodular_one`.
+-/
+def Gm.ofCoord
+    : freeAb (unimodular (k := k) (d := 1)).toFunctor ⟶ forget₂ (CommAlg k) CommRingCat ⋙ Gm :=
   freeAb.desc (fun _ v ↦ ⟨(isUnit_of_unimodular_one v).unit⟩) fun _ _ _ _ ↦ ext.2 rfl
 
-/-- On `p`-adic tests with ring `R`, the morphism `t ↦ 1 - μ t` from the additive group of
+/--
+On `p`-adic tests with ring `R`, the morphism `t ↦ 1 - μ t` from the additive group of
 `T = R[1/p]` (`New.Variety.genericCoeff`) to the units of `B = W(R♭)[1/p] / (ker θ)²`. Here `μ t` is
 `New.Variety.thickeningOver.mulMu`, the product with `μ = [ε] - 1`. As `(μ s) * (μ t) = 0`, the
-map sends sums to products, so its values are units. -/
-def thickeningOver.oneSubMu :
-    genericCoeff ⟶ thickeningOver ⋙ forget₂ (CommAlg k) CommRingCat ⋙ Gm where
+map sends sums to products, so its values are units.
+-/
+def thickeningOver.oneSubMu
+    : genericCoeff ⟶ thickeningOver ⋙ forget₂ (CommAlg k) CommRingCat ⋙ Gm where
   app c :=
-    uliftFunctor.map <| ofHom <| MonoidHom.toAdditiveRight <| MonoidHom.toHomUnits
-      { toFun t := 1 - mulMu c t.toAdd
-        map_one' := by
-          change 1 - mulMu c 0 = 1
-          rw [map_zero, sub_zero]
-        -- The product of two terms in the image of `mulMu` vanishes.
-        map_mul' := by
-          intro s t
-          let x : genericOver.obj c := s.toAdd
-          let y : genericOver.obj c := t.toAdd
-          change 1 - mulMu c (x + y) = (1 - mulMu c x) * (1 - mulMu c y)
-          have h_zero : mulMu c x * mulMu c y = 0 := by
-            exact (mulMu_proj_mul c (mulMu c x) y).symm.trans
-              (by rw [proj_mulMu, zero_mul, map_zero])
-          rw [map_add, mul_sub, sub_mul, sub_mul, mul_one, one_mul, h_zero, sub_zero, sub_sub,
-            mul_one] }
+    uliftFunctor.map <| ofHom <| MonoidHom.toAdditiveRight <| MonoidHom.toHomUnits {
+      toFun t := 1 - mulMu c t.toAdd
+      map_one' := by
+        change 1 - mulMu c 0 = 1
+        rw [map_zero, sub_zero]
+      -- The product of two terms in the image of `mulMu` vanishes.
+      map_mul' := by
+        intro s t
+        let x : genericOver.obj c := s.toAdd
+        let y : genericOver.obj c := t.toAdd
+        change 1 - mulMu c (x + y) = (1 - mulMu c x) * (1 - mulMu c y)
+        have h_zero : mulMu c x * mulMu c y = 0 := by
+          exact (mulMu_proj_mul c (mulMu c x) y).symm.trans (by rw [proj_mulMu, zero_mul, map_zero])
+        rw [map_add, mul_sub, sub_mul, sub_mul, mul_one, one_mul, h_zero, sub_zero, sub_sub,
+          mul_one]
+    }
   naturality c d f := by
     refine ext fun t ↦ Gm.ext.2 (.symm ?_)
     change thickeningOver.map f (1 - mulMu c t.down) = 1 - mulMu d (genericOver.map f t.down)
     calc
-      _ = thickeningOver.map f 1 - thickeningOver.map f (mulMu c t.down) :=
-        map_sub _ _ _
+      _ = thickeningOver.map f 1 - thickeningOver.map f (mulMu c t.down) := map_sub _ _ _
       _ = _ := congrArg₂ (· - ·) (map_one _) (map_mulMu c d f t.down)
 
 /-- On `p`-adic tests the sequence `0 → T → Bˣ → Tˣ → 0` is short exact: its first map is
@@ -296,7 +298,6 @@ product of classes.
 
 section LinePointClass
 
-
 namespace New.Variety
 
 open CategoryTheory MvPolynomial TotalH PadicTest Period PerfectLine thickeningOver CommAlgCat
@@ -438,13 +439,17 @@ private lemma thickeningOver.teichmullerLift_map {c d : PadicTest} (f : c ⟶ d)
     exact congr(.mk _ $(.symm ((IsLocalization.map_eq (powers_le_comap_powers ..) _).trans
       (congrArg _ (map_teichmuller ..)))))
 
-/-- The Teichmüller coordinate. For a `p`-adic test with ring `R`, a point `t` of the perfect disc
+/--
+The Teichmüller coordinate. For a `p`-adic test with ring `R`, a point `t` of the perfect disc
 over the tilt is an `O♭`-algebra map `O♭[ℚ≥0] → R♭` with coordinate `u = t (T ^ 1)`; it goes to the
-Teichmüller lift `[u]`, a point of the affine line over `B = W(R♭)[1/p] / (ker θ)²`. -/
-def teichmullerCoordinate : tilt ⋙ reprBy (monoidAlg ℚ≥0) ⟶ thickeningOver ⋙ affineSpace k 1 :=
-  ⟨fun c ↦ ↾fun t ↦ ⟨fun _ ↦ teichmullerLift c (t.down.hom (.single 1 1))⟩, fun c d f ↦ by
+Teichmüller lift `[u]`, a point of the affine line over `B = W(R♭)[1/p] / (ker θ)²`.
+-/
+def teichmullerCoordinate : tilt ⋙ reprBy (monoidAlg ℚ≥0) ⟶ thickeningOver ⋙ affineSpace k 1 := ⟨
+  fun c ↦ ↾fun t ↦ ⟨fun _ ↦ teichmullerLift c (t.down.hom (.single 1 1))⟩,
+  fun c d f ↦ by
     ext t
-    exact congrArg (fun b ↦ ULift.up fun (_ : Fin 1) ↦ b) (teichmullerLift_map f _)⟩
+    exact congrArg (fun b ↦ ULift.up fun (_ : Fin 1) ↦ b) (teichmullerLift_map f _)
+⟩
 
 /-- On a point of the torus `O♭[ℚ] → R♭`, the Teichmüller coordinates at `u` and at `u⁻¹` multiply
 to `1`. -/
@@ -538,14 +543,16 @@ lemma pullbackAlong_tensorPoint_comp_eq_self {N F : AbFunctor PadicTest} [HasFla
       rw [TotalH.map_id, ← homClass_comp, h_unit]
       exact comp_id
 
-/-- The class on `p`-adic tests that `λ₁` gives on the symbol `[dT/T]`
+/--
+The class on `p`-adic tests that `λ₁` gives on the symbol `[dT/T]`
 (`New.Variety.hodgeTateMap_symbolClass`): the boundary class of the pair `(𝔸¹, 𝔸¹ ∖ 0)` times the
 class of the extension `0 → T → Bˣ → Tˣ → 0` of `New.Variety.thickeningOver.shortExact_oneSubMu`,
-pulled back along `New.Variety.Gm.ofCoord`. -/
-private def unitsExtClass :
-    H (genericOver ⋙ relFreeAb (unimodular (k := k) (d := 1))) genericCoeff 2 :=
-  ((relFreeAb.shortExact (unimodular (k := k) (d := 1))).2.map_of_exact
-      (restrictAlong genericOver)).extClass.comp
+pulled back along `New.Variety.Gm.ofCoord`.
+-/
+private def unitsExtClass
+    : H (genericOver ⋙ relFreeAb (unimodular (k := k) (d := 1))) genericCoeff 2 :=
+  ((relFreeAb.shortExact (unimodular (k := k) (d := 1))).2.map_of_exact (restrictAlong
+      genericOver)).extClass.comp
     (H.map _ (genericOver.whiskerLeft Gm.ofCoord) 1 shortExact_oneSubMu.2.extClass) rfl
 
 /-- Let `s` be a section of the map of pairs induced by the coordinate of the chart `0` of `ℙ¹`
@@ -1059,7 +1066,6 @@ end LinePointClass
 section ProjectivePointClass
 
 open CategoryTheory Finset CartesianMonoidalCategory CommAlgCat Fin Polynomial
-
 
 /-- All `k`-points of projective space have the same class: a global function takes the same value
 at all of them. -/

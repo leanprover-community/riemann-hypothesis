@@ -68,10 +68,12 @@ The Heisenberg operators `V.ϱ y` and the unitary group (`V.ω g`) act on the Ba
 
 open Matrix IsDualFamily NumberField Heisenberg.IsVacuum ContinuousLinearMap
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  {n₀ p : Type*} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
-  {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} {D : V.Splitting V₀ p} (x) (f : 𝒮 V)
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {n₀ p : Type*} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} {D : V.Splitting V₀ p}
+  (x) (f : 𝒮 V)
 
 /-- For a splitting, f in 𝒮(V) and an adelic vector y of V₀, the function b ↦ f(ιy + kb) on 𝔸^p
 is continuous and periodic under E^p. -/
@@ -143,8 +145,10 @@ lemma exists_zeroTerm :
       hT (V₀.rawTheta ∘L V₀.ϱ y) (ℓ ∘L V.ϱ _) (h_vac y) _
     _ = _ := by simp [h_shift, rep_apply_apply]
 
-/-- The zero term along k: the bounded map 𝒮(V) → 𝒮(V₀) with (ev f)(y) the mean of f(ιy + kb)
-over b in 𝔸^p modulo E^p. Here f(x) = θ(ϱ(x)f) is the theta function of f. -/
+/--
+The zero term along k: the bounded map 𝒮(V) → 𝒮(V₀) with (ev f)(y) the mean of f(ιy + kb)
+over b in 𝔸^p modulo E^p. Here f(x) = θ(ϱ(x)f) is the theta function of f.
+-/
 noncomputable def zeroTerm : 𝒮 V →L[ℂ] 𝒮 V₀ := D.exists_zeroTerm.choose
 
 /-- The zero term of f at y is the mean of f(ιy + kb) over b in 𝔸^p / E^p. -/
@@ -166,8 +170,10 @@ lemma zeroTerm_rho_iAdelic : D.zeroTerm (V.ϱ (D.iAdelic *ᵥ x) f) = V₀.ϱ x 
   ext
   simp [zeroTerm_apply, D.beta_eq_coords, add_right_comm, mulVec_add]
 
-/-- The slice at x in 𝔸^p: the bounded map f ↦ f[x] = ev(ϱ(lx)f) from 𝒮(V) to 𝒮(V₀), where ev is the
-zero term `New.Space.Splitting.zeroTerm`. -/
+/--
+The slice at x in 𝔸^p: the bounded map f ↦ f[x] = ev(ϱ(lx)f) from 𝒮(V) to 𝒮(V₀), where ev is the
+zero term `New.Space.Splitting.zeroTerm`.
+-/
 noncomputable def slice (x : p → 𝔸 E) : 𝒮 V →L[ℂ] 𝒮 V₀ := D.zeroTerm ∘L V.ϱ (D.lAdelic *ᵥ x)
 
 lemma slice_zero : D.slice 0 = D.zeroTerm := by
@@ -191,9 +197,12 @@ namespace New.Space
 
 open Matrix Splitting
 
-variable {E n n₀ p n₁ q : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} [Fintype n₀] [DecidableEq n₀] {s₀ : n₀ → ℤˣ}
-  (V : Space E n s) (V₀ : Space E n₀ s₀) [Fintype n₁] [DecidableEq n₁] [Fintype q] [DecidableEq q]
+variable
+  {E n n₀ p n₁ q : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} [Fintype n₀] [DecidableEq n₀]
+  {s₀ : n₀ → ℤˣ}
+  (V : Space E n s) (V₀ : Space E n₀ s₀)
+  [Fintype n₁] [DecidableEq n₁] [Fintype q] [DecidableEq q]
   {s₁ : n₁ → ℤˣ} {V₁ : Space E n₁ s₁}
 
 /-- The rational map of a matrix i carries the frame x₀⁻¹k of V₀, for a rational matrix k, to the
@@ -312,18 +321,24 @@ section MixedModelNames
 
 open MeasureTheory Matrix stdLattice Prod Finset IsIntMatrix RingHom Complex Fock
 
-variable {E n n₀ p : Type*} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p] {s₀ : n₀ → ℤˣ}
-  {V : Space E n s} {V₀ : Space E n₀ s₀} (D : V.Splitting V₀ p) (S : Set (FinPlace E)) (g : G E s)
-  (t : GL p (𝔸 E)) (Ψ : (n → 𝔸f E) → ℂ) (a : p → 𝔸f E) (w : n₀ → 𝔸f E) (b : p → 𝔸f E)
+variable
+  {E n n₀ p : Type*} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} (D : V.Splitting V₀ p)
+  (S : Set (FinPlace E)) (g : G E s) (t : GL p (𝔸 E)) (Ψ : (n → 𝔸f E) → ℂ) (a : p → 𝔸f E)
+  (w : n₀ → 𝔸f E) (b : p → 𝔸f E)
 
-/-- The finite adelic vector g⁻¹(l t*⁻¹a + ιw + ktb), formed with the finite parts of the
-matrices g⁻¹l t*⁻¹, g⁻¹ι and g⁻¹kt. -/
+/--
+The finite adelic vector g⁻¹(l t*⁻¹a + ιw + ktb), formed with the finite parts of the
+matrices g⁻¹l t*⁻¹, g⁻¹ι and g⁻¹kt.
+-/
 def finFrameVector : n → 𝔸f E := (D.frameAt g t).map Prod.snd *ᵥ (a ⊕ᵥ b ⊕ᵥ w)
 
-/-- The function Ψ_x(y) = ∫ ψ_f(ȷαᾱ x*b_S) Ψ(g⁻¹(l t*⁻¹x + ιy + ktb)) db. The integral runs over
+/--
+The function Ψ_x(y) = ∫ ψ_f(ȷαᾱ x*b_S) Ψ(g⁻¹(l t*⁻¹x + ιy + ktb)) db. The integral runs over
 finite adelic b integral off S, b_S is the S-part of b, and Ô^p has mass one. Here ψ_f(ȷαᾱ ·) is
-`selfDualAddChar E`, the character from the Weil data for which Ô is self-dual. -/
+`selfDualAddChar E`, the character from the Weil data for which Ô is self-dual.
+-/
 def sliceDatum (x : p → 𝔸f E) (y : n₀ → 𝔸f E) : ℂ :=
   ∫ b : p → 𝔸f E in integralBox p Sᶜ, selfDualAddChar E (star x ⬝ᵥ idem S • b) *
     Ψ (D.finFrameVector g t x y b) ∂latticeMeasure E p
@@ -678,10 +693,11 @@ section RationalSums
 
 open Matrix IsDualFamily NumberField Heisenberg.IsVacuum ContinuousLinearMap
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ} {n₀ p : Type*} [Fintype n₀]
-  [DecidableEq n₀] [Fintype p] [DecidableEq p] {s₀ : n₀ → ℤˣ} {V : Space E n s}
-  {V₀ : Space E n₀ s₀} {D : V.Splitting V₀ p} (f : 𝒮 V)
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {n₀ p : Type*} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} {D : V.Splitting V₀ p} (f : 𝒮 V)
 
 /-- There are a compact B in 𝔸^p and M such that, for every additive group homomorphism φ into 𝔸^p
 and every f in 𝒮(V), ∑_ξ ‖f[φ(ξ)]‖ ≤ #(φ⁻¹B) · M · ‖f‖, where f[x] is the mixed model along the

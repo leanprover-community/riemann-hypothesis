@@ -68,8 +68,8 @@ lemma gridSpace_subdiagEquiv : D.gridSpace 0 true j (j + 1) =
   (gridSpace_subdiag (D := D) j).choose_spec.choose_spec
 
 /-- The identification of the group of `Ỹ^(j+1)_j` with that of `Y^(j+1)_j`. -/
-def subdiagMap :
-    C(New.G D.E (D.gridSigns true 0 j (j + 1)), New.G D.E (D.gridSigns false 0 (j + 1) j)) where
+def subdiagMap
+    : C(New.G D.E (D.gridSigns true 0 j (j + 1)), New.G D.E (D.gridSigns false 0 (j + 1) j)) where
   toFun := (G.reindex (D.subdiagEquiv j).symm (D.gridSigns_subdiagEquiv j)).symm
   continuous_toFun := G.continuous_reindex _ (by simp [← D.gridSigns_subdiagEquiv j, comp_def])
 
@@ -85,11 +85,14 @@ lemma height_subdiagMap (g : New.G D.E (D.gridSigns true 0 j (j + 1))) :
   rw [D.gridSpace_subdiagEquiv j, ← Space.height_reindex _ (D.gridSigns_subdiagEquiv j),
     reindex_subdiagMap]
 
-/-- A function of moderate growth on the group of `S = Y^(j+1)_j`, as a weight for periods of a
-form on `Ỹ^(j+1)_j` against a form on `Y^(j+1)_j`. -/
-def subdiagWeight (θ : C(New.G D.E (D.gridSigns false 0 (j + 1) j), ℂ))
-    (hθ : (D.gridSpace 0 false (j + 1) j).IsModerate θ) :
-    ModerateWeight (D.gridSpace 0 true j (j + 1)) (D.gridSpace 0 false (j + 1) j) where
+/--
+A function of moderate growth on the group of `S = Y^(j+1)_j`, as a weight for periods of a
+form on `Ỹ^(j+1)_j` against a form on `Y^(j+1)_j`.
+-/
+def subdiagWeight
+    (θ : C(New.G D.E (D.gridSigns false 0 (j + 1) j), ℂ))
+    (hθ : (D.gridSpace 0 false (j + 1) j).IsModerate θ)
+    : ModerateWeight (D.gridSpace 0 true j (j + 1)) (D.gridSpace 0 false (j + 1) j) where
   weightFn := θ.comp (D.subdiagMap j)
   comparisonMap := D.subdiagMap j
   isModerate := by
@@ -101,21 +104,27 @@ end Subdiagonal
 
 variable {P : Parameters} {D : Data P} {j : ℕ}
 
-/-- The kernel `θ^j_(v,p)` of the pair from the line `E ẽ_j`, the summand that `Ỹ^j_j` has beyond
+/--
+The kernel `θ^j_(v,p)` of the pair from the line `E ẽ_j`, the summand that `Ỹ^j_j` has beyond
 `Y^j_j`, to `S = Y^(j+1)_j`, for the point mass at the column `v` modulo `𝔪 = gridModulus ϑ` and
 the polynomial `p`, at `u ^ j` on the line. Here `u` is the scalar `flipScalar` of `U(1)` of the
 modulus `𝔪`, used to reverse a line. The character `gridChar ϑ false j` of `S` is that of a
 horizontal edge at the index `j`, here the edge from `Y^j_j`. The line has the splitting character
 `υ⁻¹`, given by the trivial character of `[U(1)]`; it completes the character of `Y^j_j` to that
-of `Ỹ^j_j`. -/
-def columnLineKernel (j : ℕ) (ϑ : D.MFoldTwist)
+of `Ỹ^j_j`.
+-/
+def columnLineKernel
+    (j : ℕ) (ϑ : D.MFoldTwist)
     (v : Matrix (D.GridIndex false (j + 1) j) Unit (gridModulus ϑ).ResidueRing)
-    (p : MvPolynomial (D.Φ × D.GridIndex false (j + 1) j × Unit) ℂ) :
-    ModerateWeight (D.gridSpace 0 true j (j + 1)) (D.gridSpace 0 false (j + 1) j) :=
+    (p : MvPolynomial (D.Φ × D.GridIndex false (j + 1) j × Unit) ℂ)
+    : ModerateWeight (D.gridSpace 0 true j (j + 1)) (D.gridSpace 0 false (j + 1) j) :=
   D.subdiagWeight j
-    ⟨modKernel (signedSpace D.E fun _ : Unit ↦ (-1) ^ j) (D.gridSpace 0 false (j + 1) j) 1
-      (gridChar ϑ false j (D.GridIndex false (j + 1) j)) (gridModulus ϑ) (Pi.single v 1) p
-      (1, (gridModulus ϑ).flipScalar ^ j), by fun_prop [modKernel]⟩
+    ⟨
+      modKernel (signedSpace D.E fun _ : Unit ↦ (-1) ^ j) (D.gridSpace 0 false (j + 1) j) 1
+        (gridChar ϑ false j (D.GridIndex false (j + 1) j)) (gridModulus ϑ) (Pi.single v 1) p
+        (1, (gridModulus ϑ).flipScalar ^ j),
+      by fun_prop [modKernel]
+    ⟩
     -- a theta kernel has moderate growth in each variable
     ((pairThetaKer ..).swap.isModerate ..)
 
@@ -133,21 +142,27 @@ lemma columnLineKernel_weightFn (j : ℕ) (ϑ : D.MFoldTwist)
         (1, (gridModulus ϑ).flipScalar ^ j) (D.subdiagMap j g) :=
   rfl
 
-/-- The kernel `θ^(j+1)_(v',p)` of the pair from `S = Y^(j+1)_j` to the line `E ẽ_(j+1)`, the
+/--
+The kernel `θ^(j+1)_(v',p)` of the pair from `S = Y^(j+1)_j` to the line `E ẽ_(j+1)`, the
 summand that `Ỹ^(j+1)_(j+1)` has beyond `Y^(j+1)_(j+1)`, for the point mass at the row `v'` modulo
 `𝔪 = gridModulus ϑ` and the polynomial `p`, at `u ^ (j + 1)` on the line, with `u = flipScalar`. The
 character `gridChar ϑ true j` of `S` is that of a vertical edge at the index `j`, here the edge to
 `Ỹ^(j+1)_(j+1)`. The line has the splitting character `υ`, given by `upsilonU1`; it completes the
-character of `Y^(j+1)_(j+1)` to that of `Ỹ^(j+1)_(j+1)`. -/
-def rowLineKernel (j : ℕ) (ϑ : D.MFoldTwist)
+character of `Y^(j+1)_(j+1)` to that of `Ỹ^(j+1)_(j+1)`.
+-/
+def rowLineKernel
+    (j : ℕ) (ϑ : D.MFoldTwist)
     (v' : Matrix Unit (D.GridIndex false (j + 1) j) (gridModulus ϑ).ResidueRing)
-    (p : MvPolynomial (D.Φ × Unit × D.GridIndex false (j + 1) j) ℂ) :
-    ModerateWeight (D.gridSpace 0 true j (j + 1)) (D.gridSpace 0 false (j + 1) j) :=
+    (p : MvPolynomial (D.Φ × Unit × D.GridIndex false (j + 1) j) ℂ)
+    : ModerateWeight (D.gridSpace 0 true j (j + 1)) (D.gridSpace 0 false (j + 1) j) :=
   D.subdiagWeight j
-    ⟨fun x : New.G D.E (D.gridSigns false 0 (j + 1) j) ↦ modKernel (D.gridSpace 0 false (j + 1) j)
-      (signedSpace D.E fun _ : Unit ↦ (-1) ^ (j + 1))
-      (gridChar ϑ true j (D.GridIndex false (j + 1) j)) WeilData.upsilonU1 (gridModulus ϑ)
-      (Pi.single v' 1) p x (1, (gridModulus ϑ).flipScalar ^ (j + 1)), by fun_prop [modKernel]⟩
+    ⟨
+      fun x : New.G D.E (D.gridSigns false 0 (j + 1) j) ↦
+        modKernel (D.gridSpace 0 false (j + 1) j) (signedSpace D.E fun _ : Unit ↦ (-1) ^ (j + 1))
+          (gridChar ϑ true j (D.GridIndex false (j + 1) j)) WeilData.upsilonU1 (gridModulus ϑ)
+          (Pi.single v' 1) p x (1, (gridModulus ϑ).flipScalar ^ (j + 1)),
+      by fun_prop [modKernel]
+    ⟩
     -- a theta kernel has moderate growth in each variable
     ((pairThetaKer ..).isModerate ..)
 
@@ -165,12 +180,14 @@ lemma rowLineKernel_weightFn (j : ℕ) (ϑ : D.MFoldTwist)
         (Pi.single v' 1) p (D.subdiagMap j g) (1, (gridModulus ϑ).flipScalar ^ (j + 1)) :=
   rfl
 
-/-- The corner for a turn at `(j, j)`, that is the six nodes at which such a turn changes a path. A
+/--
+The corner for a turn at `(j, j)`, that is the six nodes at which such a turn changes a path. A
 node `(z, a, b)` is `Y^a_b` for `z = false` and `Ỹ^b_a` for `z = true`. The turn removes the nodes
 `low = Y^j_j` and `lowExt = Ỹ^j_j`, keeps `fst = Y^j_(j+1)` and `snd = Ỹ^(j+1)_j`, and adds
 `high = Y^(j+1)_(j+1)` and `highExt = Ỹ^(j+1)_(j+1)`. The type `Unit` indexes the line by which
 `lowExt` exceeds `low` and `highExt` exceeds `high`; the basis of `snd` is numbered as that of
-`Y^(j+1)_j`. -/
+`Y^(j+1)_j`.
+-/
 abbrev diagonalCorner (D : Data P) (j : ℕ) : D.Corner (D.GridIndex false (j + 1) j) Unit where
   low := (false, j, j)
   lowExt := (true, j, j)
@@ -202,17 +219,21 @@ lemma edges_rightPath (q : Bool → GridPath 0 D.m j (j + 1)) : (rightPath q).ed
     (D.diagonalCorner j).newEdges ((q false).edges false ∪ (q true).edges true) := by
   simp [TwoGridPath.edges, GridPath.edges]
 
-/-- The integral `I^S(Ψ; z, p)` over the group of `S = Y^(j+1)_j`, on the path through `(j, j)`. The
+/--
+The integral `I^S(Ψ; z, p)` over the group of `S = Y^(j+1)_j`, on the path through `(j, j)`. The
 halves `q b` are monotone paths from `(0, m)` to `(j, j + 1)`, and `formMap` carries a form along
 one of them by the matrices of the edges, by a `liftMove` (lift) where the first index grows and a
 `transposedMove` (transposed lift) where the second drops. The `periodPairing` integrates the kernel
 of the line times the form that reaches `S` in the grid of the `Ỹ` times the conjugate form that
 reaches it through `Y^j_j`, translated by the point `z` of the archimedean group `GInf`. This is
 summed against `Ψ` over the tuples `S` in `tuplesOn`, one matrix for each edge. The triple `x` holds
-the twist and the two initial forms, and `D.Φ` indexes the infinite places. -/
-def columnPeriod (hj : j < D.m) (q : Bool → GridPath 0 D.m j (j + 1))
-    (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ) (z : GInf D.E (D.gridSigns false 0 (j + 1) j))
-    (p : MvPolynomial (D.Φ × D.GridIndex false (j + 1) j × Unit) ℂ) (x : D.PeriodTriple) : ℂ :=
+the twist and the two initial forms, and `D.Φ` indexes the infinite places.
+-/
+def columnPeriod
+    (hj : j < D.m) (q : Bool → GridPath 0 D.m j (j + 1)) (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ)
+    (z : GInf D.E (D.gridSigns false 0 (j + 1) j))
+    (p : MvPolynomial (D.Φ × D.GridIndex false (j + 1) j × Unit) ℂ) (x : D.PeriodTriple)
+    : ℂ :=
   ∑ S ∈ tuplesOn x.1 (downPath q).edges, Ψ x.1 S *
     periodPairing (isConjKernelPair_gridKernel ⟨hj.le, hj⟩)
       (columnLineKernel j x.1 ((D.diagonalCorner j).oldColumn S) p) z
@@ -221,14 +242,18 @@ def columnPeriod (hj : j < D.m) (q : Bool → GridPath 0 D.m j (j + 1))
         (transposedMove ((D.diagonalCorner j).oldMatrix S).toRows₁
           ((q false).formMap S false x.2.1)))
 
-/-- The integral `I^S(Ψ; z, p)` over the group of `S = Y^(j+1)_j`, on the path through
+/--
+The integral `I^S(Ψ; z, p)` over the group of `S = Y^(j+1)_j`, on the path through
 `(j + 1, j + 1)` that continues the halves `q b`, which are monotone paths from `(0, m)` to
 `(j, j + 1)`: as `columnPeriod`, with the kernel to the line `E ẽ_(j+1)`, and with the conjugate
 form reaching `S` by a lift to `Y^(j+1)_(j+1)` (`liftMove`) and a transposed lift
-(`transposedMove`). -/
-def rowPeriod (hj : j < D.m) (q : Bool → GridPath 0 D.m j (j + 1))
-    (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ) (z : GInf D.E (D.gridSigns false 0 (j + 1) j))
-    (p : MvPolynomial (D.Φ × Unit × D.GridIndex false (j + 1) j) ℂ) (x : D.PeriodTriple) : ℂ :=
+(`transposedMove`).
+-/
+def rowPeriod
+    (hj : j < D.m) (q : Bool → GridPath 0 D.m j (j + 1)) (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ)
+    (z : GInf D.E (D.gridSigns false 0 (j + 1) j))
+    (p : MvPolynomial (D.Φ × Unit × D.GridIndex false (j + 1) j) ℂ) (x : D.PeriodTriple)
+    : ℂ :=
   ∑ S ∈ tuplesOn x.1 (rightPath q).edges, Ψ x.1 S *
     periodPairing (isConjKernelPair_gridKernel ⟨hj.le, hj⟩)
       (rowLineKernel j x.1 ((D.diagonalCorner j).newRow S) p) z ((q true).formMap S true x.2.2)
@@ -620,14 +645,18 @@ lemma exists_transfersPeriods_diagonal (hj : j < D.m) :
       columnPeriod_eq_mul_rowPeriod hj q (fun v ↦ h_line x.1 v p) (h_law x.1) (h_match x.1) z
     _ = κ * β * (Ξ x / (c / c_line) x.1) := by simp [hβ, Units.val_div_eq_div_val, field]
 
-/-- One turn. For `i, j < m` there are numbers `c ϑ ≠ 0`, of absolute value `turnRatio i j` up to a
+/--
+One turn. For `i, j < m` there are numbers `c ϑ ≠ 0`, of absolute value `turnRatio i j` up to a
 constant and a power of `Nm Q`, with `Q` the modulus of `ϑ`, such that for every turn at `(i, j)`
 path data `Ψ'` on the old path give path data `Ψ` on the new one, with the bound for the number of
 roots of unity in a value multiplied by `vectorCountBound = (Nm 𝔪) ^ (2 * n_m)`, where
-`𝔪 = gridModulus ϑ` and `n_m = D.n D.m`, and `Ψ ∝ Ξ` implies `Ψ' ∝ Ξ / c`. -/
-theorem exists_transfersPeriods_of_turn {j i : ℕ} (hi : i < D.m) (hj : j < D.m) :
-    ∃ c : D.MFoldTwist → ℂˣ, D.HasAbsUpToNormPower (fun ϑ : D.MFoldTwist ↦ c ϑ) (D.turnRatio i j) ∧
-      ∀ Γ' Γ : TwoGridPath D.m, Γ'.Turn (i, j) Γ → TransfersPeriods Γ' Γ vectorCountBound c := by
+`𝔪 = gridModulus ϑ` and `n_m = D.n D.m`, and `Ψ ∝ Ξ` implies `Ψ' ∝ Ξ / c`.
+-/
+theorem exists_transfersPeriods_of_turn {j i : ℕ} (hi : i < D.m) (hj : j < D.m)
+    : ∃ c : D.MFoldTwist → ℂˣ,
+      D.HasAbsUpToNormPower (fun ϑ : D.MFoldTwist ↦ c ϑ) (D.turnRatio i j)
+        ∧ ∀ Γ' Γ : TwoGridPath D.m,
+          Γ'.Turn (i, j) Γ → TransfersPeriods Γ' Γ vectorCountBound c := by
   have h_one_le : (1 : D.MFoldTwist → ℕ) ≤ vectorCountBound := fun _ ↦ pow_pos Fintype.card_pos _
   obtain hij | rfl | hij := lt_trichotomy i j
   · obtain ⟨c, hc, h_transfer⟩ := exists_transfersPeriods_off_diagonal false hij hj
@@ -639,18 +668,23 @@ theorem exists_transfersPeriods_of_turn {j i : ℕ} (hi : i < D.m) (hj : j < D.m
   · obtain ⟨c, hc, h_transfer⟩ := exists_transfersPeriods_off_diagonal true hij hi
     exact ⟨c, hc, fun Γ' Γ h_turn ↦ (h_transfer Γ' Γ h_turn).mono h_one_le⟩
 
-/-- There are numbers `c ϑ ≠ 0` whose absolute value is the product over `i, j < m` of
+/--
+There are numbers `c ϑ ≠ 0` whose absolute value is the product over `i, j < m` of
 `turnRatio i j ϑ`, up to a constant and a power of `Nm Q`, with `Q` the modulus of the twist `ϑ`,
 such that path data `Ψ'` on the first path give path data `Ψ` on the last, with the bound for the
 number of roots of unity in a value multiplied by `vectorCountBound ^ m ^ 2`, and `Ψ ∝ Ξ` implies
-`Ψ' ∝ Ξ / c`. -/
-theorem exists_transfersPeriods_first_last (D : Data P) : ∃ c : D.MFoldTwist → ℂˣ,
-    D.HasAbsUpToNormPower (fun ϑ : D.MFoldTwist ↦ c ϑ)
-      (∏ s ∈ range D.m ×ˢ range D.m, D.turnRatio s.1 s.2) ∧
-    TransfersPeriods (.first D.m) (.last D.m) (vectorCountBound ^ D.m ^ 2) c := by
-  have h_turn (s : ℕ × ℕ) (hs : s ∈ range D.m ×ˢ range D.m) : ∃ c : D.MFoldTwist → ℂˣ,
-      D.HasAbsUpToNormPower (fun ϑ ↦ c ϑ) (D.turnRatio s.1 s.2) ∧
-      ∀ Γ' Γ : TwoGridPath D.m, Γ'.Turn s Γ → TransfersPeriods Γ' Γ vectorCountBound c :=
+`Ψ' ∝ Ξ / c`.
+-/
+theorem exists_transfersPeriods_first_last (D : Data P)
+    : ∃ c : D.MFoldTwist → ℂˣ,
+      D.HasAbsUpToNormPower
+          (fun ϑ : D.MFoldTwist ↦ c ϑ)
+          (∏ s ∈ range D.m ×ˢ range D.m, D.turnRatio s.1 s.2)
+        ∧ TransfersPeriods (.first D.m) (.last D.m) (vectorCountBound ^ D.m ^ 2) c := by
+  have h_turn (s : ℕ × ℕ) (hs : s ∈ range D.m ×ˢ range D.m)
+      : ∃ c : D.MFoldTwist → ℂˣ,
+        D.HasAbsUpToNormPower (fun ϑ ↦ c ϑ) (D.turnRatio s.1 s.2)
+          ∧ ∀ Γ' Γ : TwoGridPath D.m, Γ'.Turn s Γ → TransfersPeriods Γ' Γ vectorCountBound c :=
     exists_transfersPeriods_of_turn (mem_range.1 (mem_product.1 hs).1)
       (mem_range.1 (mem_product.1 hs).2)
   choose! c hc h_transfer using h_turn

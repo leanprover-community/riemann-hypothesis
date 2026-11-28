@@ -251,8 +251,10 @@ open Polynomial
 
 variable {F n : Type} [Field F] [Fintype n] [DecidableEq n] {i : n} {M N : Matrix n n F}
 
-/-- The matrix `M` has the block shape `(∗ ∗; 0 g')` with `g'` invertible, where the first block is
-the index `i`. -/
+/--
+The matrix `M` has the block shape `(∗ ∗; 0 g')` with `g'` invertible, where the first block is
+the index `i`.
+-/
 structure KeepsLine (i : n) (M : Matrix n n F) : Prop where
   /-- The `i`-th column vanishes off the diagonal. -/
   col_eq_zero : ∀ j ≠ i, M j i = 0

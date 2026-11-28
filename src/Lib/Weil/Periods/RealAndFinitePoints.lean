@@ -55,7 +55,8 @@ lemma New.isMulRightInvariant_of_prod {A B : Type*} [Group A] [MeasurableSpace A
 
 namespace New.Grading
 
-variable {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [DecidableEq X]
+variable
+  {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [DecidableEq X]
   {s : ℕ} {ε : ι → ℤˣ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
 
 /-- A real point `x` lies in `R(F_∞)` if and only if `(x, 1)` lies in the Bessel group `R(𝔸)`. -/
@@ -82,9 +83,11 @@ lemma fst_mem_besselReal (r : Y.besselGroup) : (r : G E ε).1 ∈ Y.besselReal :
     Y.mem_besselFin_iff.mp (Y.snd_mem_besselFin r.prop)
   simpa [Y.mem_besselReal_iff, Prod.mul_def] using mul_mem r.prop (inv_mem h_fin)
 
-/-- The decomposition `R(𝔸) = R(F_∞) × R(𝔸_fin)`: the map `(s, t) ↦ (s, t)` from the real points
+/--
+The decomposition `R(𝔸) = R(F_∞) × R(𝔸_fin)`: the map `(s, t) ↦ (s, t)` from the real points
 times the finite points of the Bessel group to the Bessel group, as an isomorphism of
-topological groups. -/
+topological groups.
+-/
 def besselProdEquiv : Y.besselReal × Y.besselFin ≃ₜ* Y.besselGroup where
   toFun z := ⟨(z.1.val, z.2.val), Y.mk_mem_besselGroup z⟩
   invFun r := (⟨r.val.1, Y.fst_mem_besselReal r⟩, ⟨r.val.2, Y.snd_mem_besselFin r.property⟩)
@@ -100,10 +103,12 @@ lemma isHaarMeasure_map_besselProdEquiv :
     prod.instIsHaarMeasure haar haar
   Y.besselProdEquiv.isHaarMeasure_map _
 
-/-- The group `R(F_∞)` of real points of the Bessel subgroup `R` is unimodular: its left Haar
-measure is right invariant. -/
-theorem isMulRightInvariant_haar_besselReal [Fintype X] :
-    (haar : Measure Y.besselReal).IsMulRightInvariant := by
+/--
+The group `R(F_∞)` of real points of the Bessel subgroup `R` is unimodular: its left Haar
+measure is right invariant.
+-/
+theorem isMulRightInvariant_haar_besselReal [Fintype X]
+    : (haar : Measure Y.besselReal).IsMulRightInvariant := by
   -- The group `R(𝔸)` is unimodular and is the product of the two groups.
   let ν : Measure Y.besselGroup := (haar.prod haar).map Y.besselProdEquiv
   have : ν.IsHaarMeasure := Y.isHaarMeasure_map_besselProdEquiv

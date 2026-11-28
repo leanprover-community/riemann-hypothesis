@@ -79,8 +79,10 @@ variable {p : ℕ} [ThePrime p] (f : ℕ+)
 
 /-! ### The ring of constants -/
 
-/-- The subring of the x with x^{p^f} = x in O^♭ = `OFlat`, the tilt of the integers of ℂ_p; it is
-a field with p^f elements. -/
+/--
+The subring of the x with x^{p^f} = x in O^♭ = `OFlat`, the tilt of the integers of ℂ_p; it is
+a field with p^f elements.
+-/
 def flatFq : Subring OFlat := (iterateFrobenius OFlat p f).eqLocus (RingHom.id OFlat)
 
 /-- The subring `flatFq f` of the x in `OFlat` (O^♭, the tilt of the integers of ℂ_p) with
@@ -110,11 +112,13 @@ instance : Finite (flatFq f) := Nat.finite_of_card_ne_zero (by simp [NeZero.ne])
 
 instance : Field (flatFq f) := (Finite.isField_of_domain _).toField
 
-/-- The ring Λ = W(k) of p-typical Witt vectors over the field k of elements x of O^♭ with
-x^{p^f} = x. -/
+/--
+The ring Λ = W(k) of p-typical Witt vectors over the field k of elements x of O^♭ with
+x^{p^f} = x.
+-/
 @[reducible]
 def WittFq : Type := WittVector p (flatFq f)
-  deriving CommRing
+deriving CommRing
 
 instance : Algebra (WittFq f) Ainf := inferInstance
 
@@ -122,20 +126,26 @@ deriving instance Algebra (WittFq f) for @WittCFlat p _
 
 /-! ### Charts and their existence -/
 
-/-- A chart is a Λ-algebra map Λ[[X]] → A_inf, with Λ = W(F_{p^f}) = `WittFq f`. It sends X to a
+/--
+A chart is a Λ-algebra map Λ[[X]] → A_inf, with Λ = W(F_{p^f}) = `WittFq f`. It sends X to a
 non-unit Teichmüller lift z = [ϖ^♭], where ϖ^♭ is the field `varpiFlat`, and it sends a series
-X^e A + p, with A a unit, to ξ times a unit. -/
+X^e A + p, with A a unit, to ξ times a unit.
+-/
 structure Chart where
-  /-- The positive integer `f`: the constants are `Λ = WittFq f`, the Witt vectors of the field
-  with `p ^ f` elements. -/
+  /--
+  The positive integer `f`: the constants are `Λ = WittFq f`, the Witt vectors of the field
+  with `p ^ f` elements.
+  -/
   f : ℕ+
-  /-- The map of `Λ`-algebras `Λ⟦X⟧ → A_inf`, `Λ = WittFq f`; the image of `X` is called
-  `z`. -/
+  /--
+  The map of `Λ`-algebras `Λ⟦X⟧ → A_inf`, `Λ = WittFq f`; the image of `X` is called
+  `z`.
+  -/
   seriesMap : (WittFq f)⟦X⟧ →ₐ[WittFq f] Ainf
   /-- The unit power series `A` that multiplies `X ^ e` in `X ^ e * A + p`. -/
   unitSeries : (WittFq f)⟦X⟧ˣ
   /-- `z` is not a unit of `A_inf`. -/
-  not_isUnit_z : ¬IsUnit (seriesMap X)
+  not_isUnit_z : ¬ IsUnit (seriesMap X)
   /-- The element `ϖ^♭` of `O^♭` whose Teichmüller lift is `z`. -/
   varpiFlat : OFlat
   /-- The exponent `e` of `X` in `X ^ e * A + p`. -/
@@ -217,16 +227,18 @@ lemma exists_chart_of_pow_mul_eq_neg (f : ℕ+) {x : OC} {e : ℕ} (v : OCˣ) (h
       varpiFlat := u, e := e, associated_xi := h_assoc, seriesMap_X := hev }
   exact ⟨chart, rfl, .rfl, hu, rfl, .rfl⟩
 
-/-- The ring `WittFq f` of Witt vectors of the field with `p ^ f` elements is a finite
-`ℤ_p`-module. -/
+/--
+The ring `WittFq f` of Witt vectors of the field with `p ^ f` elements is a finite
+`ℤ_p`-module.
+-/
 instance {f : ℕ+} : Module.Finite ℤ_[p] (WittFq f) := by
   -- The finitely many Teichmüller lifts generate `WittFq f` modulo `p`, hence generate it.
   let T : (flatFq f →₀ ℤ_[p]) →ₗ[ℤ_[p]] WittFq f :=
     Finsupp.lift (WittFq f) ℤ_[p] (flatFq f) (teichmuller p)
   have h_haus : IsHausdorff (maximalIdeal ℤ_[p]) (WittFq f) := by
     simp [(isAdicComplete_over_base _).toIsHausdorff, PadicInt.maximalIdeal_eq_span_p]
-  have mod_p :
-      Function.Surjective ((maximalIdeal ℤ_[p] • ⊤ : Submodule ℤ_[p] (WittFq f)).mkQ ∘ₗ T) := by
+  have mod_p
+      : Function.Surjective ((maximalIdeal ℤ_[p] • ⊤ : Submodule ℤ_[p] (WittFq f)).mkQ ∘ₗ T) := by
     rintro ⟨a⟩
     refine ⟨Finsupp.single (a.coeff 0) 1, SModEq.sub_mem.mpr ?_⟩
     simp [T, p_dvd_iff, map_sub, PadicInt.maximalIdeal_eq_span_p, map_span, mem_span_singleton]
@@ -257,8 +269,10 @@ namespace Chart
 
 /-! ### The ring of a chart: a complete local Noetherian ring -/
 
-/-- For a chart, the Λ-subalgebra S of A_inf that is the image of the chart's map Λ[[X]] →
-A_inf. -/
+/--
+For a chart, the Λ-subalgebra S of A_inf that is the image of the chart's map Λ[[X]] →
+A_inf.
+-/
 def S : Subalgebra (WittFq c.f) Ainf := c.seriesMap.range
 
 /-- For a chart, the image z of the variable X, as an element of S. -/
@@ -267,9 +281,11 @@ def z : c.S := ⟨c.seriesMap X, X, rfl⟩
 /-- For a chart, the ideal (p, z) of S, which is its maximal ideal. -/
 abbrev maxIdeal : Ideal c.S := span {↑p, c.z}
 
-/-- The element g of G_p fixes the image of Λ in A_inf pointwise and fixes θ(z), z the
+/--
+The element g of G_p fixes the image of Λ in A_inf pointwise and fixes θ(z), z the
 coordinate of the chart c. The two parts are `New.Lift.Chart.FixesThetaZ.fixesLambda` and
-`New.Lift.Chart.FixesThetaZ.smul_theta_z`. -/
+`New.Lift.Chart.FixesThetaZ.smul_theta_z`.
+-/
 abbrev FixesThetaZ (g : Gp p) : Prop := FixesLambda c.f g ∧ g • theta c.z = theta c.z
 
 lemma FixesThetaZ.fixesLambda {c : Chart} {g : Gp p} (h : c.FixesThetaZ g) : FixesLambda c.f g :=
@@ -279,9 +295,11 @@ lemma FixesThetaZ.smul_theta_z {c : Chart} {g : Gp p} (h : c.FixesThetaZ g) :
     g • theta c.z = theta c.z :=
   h.right
 
-/-- The chart `c` is a chart of a group homomorphism `j : Γ →* G_p`: every g in G_p that fixes Λ
+/--
+The chart `c` is a chart of a group homomorphism `j : Γ →* G_p`: every g in G_p that fixes Λ
 pointwise and fixes θ(z) lies in the image of j. So the field fixed by all g that fix Λ pointwise
-and fix θ(z) contains the field fixed by the image of j. -/
+and fix θ(z) contains the field fixed by the image of j.
+-/
 def IsChartOf (j : Γ →* Gp p) : Prop := ∀ g : Gp p, c.FixesThetaZ g → g ∈ j.range
 
 lemma z_eq_teichmuller : c.z = teichmuller p c.varpiFlat := c.seriesMap_X
@@ -330,8 +348,10 @@ lemma seriesMap_injective : Function.Injective c.seriesMap := by
   exact constantCoeff_divXPowOrder_eq_zero_iff.mp
     (wittFq_map_residue_injective (red_const.trans (map_zero _).symm))
 
-/-- For a chart, the Λ-algebra isomorphism from Λ[[X]] onto S given by the chart's map, which is
-injective. -/
+/--
+For a chart, the Λ-algebra isomorphism from Λ[[X]] onto S given by the chart's map, which is
+injective.
+-/
 def seriesEquiv : (WittFq c.f)⟦X⟧ ≃ₐ[WittFq c.f] c.S :=
   AlgEquiv.ofInjective c.seriesMap c.seriesMap_injective
 
@@ -373,8 +393,8 @@ lemma exists_eq_const_add_z_mul (s : c.S) :
 /-- The ideal `(p, z)` of the ring `S` of a chart is maximal. -/
 instance : c.maxIdeal.IsMaximal := by
   -- The maximal ideal of the power series ring is `(p, X)`; transport it along `c.seriesEquiv`.
-  have h_const :
-      span {(p : WittFq c.f)} = (maximalIdeal (WittFq c.f)⟦X⟧).map PowerSeries.constantCoeff := by
+  have h_const
+      : span {(p : WittFq c.f)} = (maximalIdeal (WittFq c.f)⟦X⟧).map PowerSeries.constantCoeff := by
     rw [map_maximalIdeal_of_surjective _ constantCoeff_surj, (irreducible p).maximalIdeal_eq]
   have h_max : maximalIdeal (WittFq c.f)⟦X⟧ = span {X, C (p : WittFq c.f)} := by
     simpa using eq_span_insert_X_of_X_mem_of_span_eq prime_X.not_isUnit h_const
@@ -393,8 +413,9 @@ instance : IsAdicComplete c.maxIdeal c.S := by
   have precomplete : IsPrecomplete (span {(p : (WittFq c.f)⟦X⟧), X}) (WittFq c.f)⟦X⟧ := by
     refine isPrecomplete_of_shiftDiff_surjective (fun b ↦ ?_) out
     -- For `p`, solve the equations coefficient by coefficient.
-    have h_solve (n : ℕ) : ∃ a : ℕ → WittFq c.f,
-        shiftDiff (WittFq c.f) (p : WittFq c.f) a = fun j ↦ PowerSeries.coeff n (b j) :=
+    have h_solve (n : ℕ)
+        : ∃ a : ℕ → WittFq c.f,
+          shiftDiff (WittFq c.f) (p : WittFq c.f) a = fun j ↦ PowerSeries.coeff n (b j) :=
       (out : (shiftDiff (WittFq c.f) (p : WittFq c.f)).Surjective) _
     choose a ha using h_solve
     refine ⟨fun j ↦ .mk fun n ↦ a n j, funext fun j ↦ PowerSeries.ext fun n ↦ ?_⟩
@@ -470,16 +491,22 @@ lemma exists_adicBasis_coord_eq_self :
     simp [hi, c.S.smul_def]
   rw [← h_comb, d.dual i (Finsupp.single i s), Finsupp.single_eq_same]
 
-/-- For a chart, a chosen (p, z)-adic topological basis (b_i) of A_inf over its ring S, with its
-S-linear coordinates λ_i, such that one coordinate is the identity on S. -/
+/--
+For a chart, a chosen (p, z)-adic topological basis (b_i) of A_inf over its ring S, with its
+S-linear coordinates λ_i, such that one coordinate is the identity on S.
+-/
 def adicBasis : AdicBasis c.maxIdeal Ainf := c.exists_adicBasis_coord_eq_self.choose
 
-/-- For a chart, a chosen index of the topological basis `New.Lift.Chart.adicBasis` of A_inf over S
-whose coordinate function A_inf → S is the identity on S (`New.Lift.Chart.coord₀_coe`). -/
+/--
+For a chart, a chosen index of the topological basis `New.Lift.Chart.adicBasis` of A_inf over S
+whose coordinate function A_inf → S is the identity on S (`New.Lift.Chart.coord₀_coe`).
+-/
 def oneIndex : c.adicBasis.Index := c.exists_adicBasis_coord_eq_self.choose_spec.choose
 
-/-- The S-linear coordinate λ₀: A_inf → S of the chosen topological basis of A_inf over S that
-is the identity on S. -/
+/--
+The S-linear coordinate λ₀: A_inf → S of the chosen topological basis of A_inf over S that
+is the identity on S.
+-/
 abbrev coord₀ : Ainf →ₗ[c.S] c.S := c.adicBasis.coord c.oneIndex
 
 /-- The coordinate λ₀ is the identity on S. -/
@@ -518,8 +545,10 @@ lemma frobEnd_mem (s : c.S) : frobEnd s.val ∈ c.S := by
 /-- For a chart, the ring endomorphism of S obtained by restricting the Frobenius φ of A_inf. -/
 def φ : c.S →+* c.S := (frobEnd.comp c.S.val.toRingHom).codRestrict c.S c.frobEnd_mem
 
-/-- For a chart and n ≥ 0, the element φ^n(E) of its ring S, where E = `c.E` is the image of
-X^e A + p and φ = `c.φ` is the Frobenius of S. -/
+/--
+For a chart and n ≥ 0, the element φ^n(E) of its ring S, where E = `c.E` is the image of
+X^e A + p and φ = `c.φ` is the Frobenius of S.
+-/
 def frobE (n : ℕ) : c.S := (c.φ ^ n) c.E
 
 /-- The Frobenius `c.φ` of S is the Frobenius of A_inf on values. -/
@@ -647,8 +676,10 @@ open Period Ideal WittVector RingEquiv PreTilt Set NeZero OC Witt Algebra RingHo
 
 variable {p : ℕ} [ThePrime p] (c : Chart) (n : ℕ)
 
-/-- For n ≥ 0, the ring homomorphism θ ∘ φ^{−n} from A_inf to O_C, with φ the Frobenius of A_inf
-and θ Fontaine's map. -/
+/--
+For n ≥ 0, the ring homomorphism θ ∘ φ^{−n} from A_inf to O_C, with φ the Frobenius of A_inf
+and θ Fontaine's map.
+-/
 def thetaPhiInv : Ainf →+* OC :=
   theta.comp ((ofBijective frobEnd frobEnd_bijective)⁻¹ ^ n).toRingHom
 
@@ -727,8 +758,10 @@ lemma exists_frobE_dvd_sub_of_dvd (f : Ainf →ₗ[c.S] c.S) (α : c.S) (r : Ain
   have h_f : f r - α * f a = c.frobE n * f b := by simpa [map_smul] using congrArg f hb
   exact ⟨f a, f b, h_f⟩
 
-/-- For a chart and n ≥ 0, the Z_p-algebra homomorphism S → C_p given by restricting θ ∘ φ^{−n} to
-the ring S of the chart. -/
+/--
+For a chart and n ≥ 0, the Z_p-algebra homomorphism S → C_p given by restricting θ ∘ φ^{−n} to
+the ring S of the chart.
+-/
 abbrev thetaPhiInvS : c.S →ₐ[ℤ_[p]] ℂ_[p] := toPadicIntAlgHom ((thetaPhiInv n).comp c.S.val)
 
 /-- Let K be a Q_p-subalgebra of C_p and y in Q̄_p. If every g in G_p fixing all those

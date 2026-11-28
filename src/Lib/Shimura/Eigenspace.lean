@@ -140,16 +140,19 @@ namespace New.Variety
 open Polynomial TensorProduct Period Submodule Module LinearMap IsScalarTower nonZeroDivisors
   ModuleCat.Algebra DFinsupp
 
-variable {ℓ : ℕ} {Γ ι : Type*}
-  {σ : Sort _} [ThePrime ℓ] [Group Γ] {V : ι → ModuleCat ℚ_[ℓ]}
+variable
+  {ℓ : ℕ} {Γ ι : Type*} {σ : Sort _} [ThePrime ℓ] [Group Γ]
+  {V : ι → ModuleCat ℚ_[ℓ]}
   (ρ : ∀ i : ι, Representation ℚ_[ℓ] Γ (V i)) (T : ∀ i : ι, σ → End ℚ_[ℓ] (V i))
-  (θ : σ → PadicAlgCl ℓ) {N : ℕ} (r : Γ →* GL (Fin N) (PadicAlgCl ℓ))
-  (F : ∀ i : ι, V i →ₗ[ℚ_[ℓ]] Fin N → PadicAlgCl ℓ)
+  (θ : σ → PadicAlgCl ℓ)
+  {N : ℕ} (r : Γ →* GL (Fin N) (PadicAlgCl ℓ)) (F : ∀ i : ι, V i →ₗ[ℚ_[ℓ]] Fin N → PadicAlgCl ℓ)
 
-/-- `r` is the largest quotient on which `T` acts by `θ`: the `ℚ_ℓ`-linear maps
+/--
+`r` is the largest quotient on which `T` acts by `θ`: the `ℚ_ℓ`-linear maps
 `F i : V i → ℚ̄_ℓ ^ N` intertwine `ρ i` with `matrixRep r` (the matrices `r g` acting on
 `ℚ̄_ℓ ^ N`), have values that span, turn `T i s` into the scalar `θ s`, and are universal among the
-families of maps to `ℚ̄_ℓ`-vector spaces that do so. -/
+families of maps to `ℚ̄_ℓ`-vector spaces that do so.
+-/
 structure IsEigenQuotient : Prop where
   /-- The `F i` are equivariant. -/
   map_equivariant : ∀ (i : ι) (g : Γ) (x : V i), matrixRep r g (F i x) = F i (ρ i g x)
@@ -157,12 +160,15 @@ structure IsEigenQuotient : Prop where
   span_range_eq_top : span (PadicAlgCl ℓ) (Set.range fun x : Σ i : ι, V i ↦ F x.1 x.2) = ⊤
   /-- `F i` turns `T i s` into the scalar `θ s`. -/
   map_T_eq_smul : ∀ (i : ι) (s : σ) (x : V i), F i (T i s x) = θ s • F i x
-  /-- Every family `f` of maps to a `ℚ̄_ℓ`-vector space that turns each `T i s` into `θ s` factors
-  through `F`. -/
-  exists_factor : ∀ (M : Type) [AddCommGroup M] [Module (PadicAlgCl ℓ) M] [Module ℚ_[ℓ] M]
-      [IsScalarTower ℚ_[ℓ] (PadicAlgCl ℓ) M] (f : ∀ i : ι, V i →ₗ[ℚ_[ℓ]] M),
-    (∀ (i : ι) (s : σ) (x : V i), f i (T i s x) = θ s • f i x) →
-    ∃ φ : (Fin N → PadicAlgCl ℓ) →ₗ[PadicAlgCl ℓ] M, ∀ (i : ι) (x : V i), φ (F i x) = f i x
+  /--
+  Every family `f` of maps to a `ℚ̄_ℓ`-vector space that turns each `T i s` into `θ s` factors
+  through `F`.
+  -/
+  exists_factor
+    : ∀ (M : Type) [AddCommGroup M] [Module (PadicAlgCl ℓ) M] [Module ℚ_[ℓ] M]
+        [IsScalarTower ℚ_[ℓ] (PadicAlgCl ℓ) M] (f : ∀ i : ι, V i →ₗ[ℚ_[ℓ]] M),
+      (∀ (i : ι) (s : σ) (x : V i), f i (T i s x) = θ s • f i x)
+        → ∃ φ : (Fin N → PadicAlgCl ℓ) →ₗ[PadicAlgCl ℓ] M, ∀ (i : ι) (x : V i), φ (F i x) = f i x
 
 variable {ρ T}
 
@@ -229,8 +235,12 @@ lemma exists_isEigenQuotient [Fintype ι] [∀ i, Module.Finite ℚ_[ℓ] (V i)]
     exact h_top (mem_top (x := y))
   exact .of_coeHom_comp (.matrix_transpose (continuous_pi fun l ↦ h_cont _))
 
-variable {θ r F} (h : IsEigenQuotient ρ T θ r F) {s : Finset ℕ} {m : ℕ → ℤ} {d : ℕ → ℕ}
-  (t : ℕ → σ) [OverGp Γ ℓ] (hρ : ∀ i : ι, IsCrystalline (ρ i))
+variable
+  {θ r F} (h : IsEigenQuotient ρ T θ r F)
+  {s : Finset ℕ} {m : ℕ → ℤ} {d : ℕ → ℕ}
+  (t : ℕ → σ)
+  [OverGp Γ ℓ]
+  (hρ : ∀ i : ι, IsCrystalline (ρ i))
 
 include h hρ
 

@@ -60,14 +60,16 @@ section TameKiller
 open KummerChart JumpLattice Period WittVector Submodule FrobGroup Module Finset Polynomial
   LinearMap PairingSide algebraMap
 
-/-- A tame Kummer chart for `Γ → G_p`. A Kummer chart gives constants `Λ = W(𝔽_{p^f})`, a
+/--
+A tame Kummer chart for `Γ → G_p`. A Kummer chart gives constants `Λ = W(𝔽_{p^f})`, a
 coordinate `z = chart.z ∈ A_inf`, an exponent `e` and a subgroup `Γ'` of `Γ` that fixes `Λ` and
 `θ(z)`. A tame chart has `Γ'` normal and `p ∤ e`, an element `ϖ ∈ ℚ̄_p` fixed by `Γ'` with
 `ϖ ^ e = p`, and an element `s ∈ Γ` with image in inertia (`IsWeilPair (toGp s) 0`) whose powers fix
 `Λ` pointwise in `A_inf` (`FixesLambda`), such that `s ^ k` multiplies `z` by `ξ ^ k`. Here `ξ ∈ Λ`
-is, modulo `p`, a primitive `e`-th root of unity. -/
-class TameChart {p : outParam ℕ} [ThePrime p] (Γ : outParam (GroupOverGp p)) extends
-    KummerChart Γ where
+is, modulo `p`, a primitive `e`-th root of unity.
+-/
+class TameChart {p : outParam ℕ} [ThePrime p] (Γ : outParam (GroupOverGp p))
+    extends KummerChart Γ where
   /-- The element ξ of Λ = W(𝔽_{p^f}) by which the tame generator multiplies z. -/
   tameMultiplier : WittFq f
   /-- The tame generator s, an element of Γ. -/
@@ -87,7 +89,7 @@ class TameChart {p : outParam ℕ} [ThePrime p] (Γ : outParam (GroupOverGp p)) 
   /-- ϖ^e = p. -/
   varpi_pow_eq : ϖ ^ e = p
   /-- p does not divide e. -/
-  tame : ¬p ∣ e
+  tame : ¬ p ∣ e
   /-- Γ' is normal in Γ. -/
   [normal : subgroup.Normal]
 

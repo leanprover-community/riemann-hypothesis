@@ -47,8 +47,10 @@ open NumberField Filter MeasureTheory Matrix ComplexConjugate AddSubgroup Quotie
 
 section
 
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
-  (n : Type*) [Fintype n] [DecidableEq n] (S : Set (FinPlace E))
+variable
+  {E : Type*} [Field E] [NumberField E] [IsCMField E]
+  (n : Type*) [Fintype n] [DecidableEq n]
+  (S : Set (FinPlace E))
 
 /-! ### The box, coset functions and the partial determinant -/
 
@@ -57,14 +59,18 @@ def integralBox : AddSubgroup (n → 𝔸f E) :=
   (stdLattice E n).comap (idem S • AddMonoidHom.id (n → 𝔸f E))
 
 open scoped Classical in
-/-- The complex-valued indicator function of the finite adelic n-vectors that are integral at
-every place of S. -/
+/--
+The complex-valued indicator function of the finite adelic n-vectors that are integral at
+every place of S.
+-/
 def boxIndicator (x : n → 𝔸f E) : ℂ := if x ∈ integralBox n S then (1 : ℂ) else 0
 
 variable {n}
 
-/-- Ψ is Schwartz–Bruhat above S: it depends only on the components at S, is locally constant,
-and the S-parts of its support lie in a compact set. -/
+/--
+Ψ is Schwartz–Bruhat above S: it depends only on the components at S, is locally constant,
+and the S-parts of its support lie in a compact set.
+-/
 @[local grind]
 class IsSchwartzBruhat (Ψ : (n → 𝔸f E) → ℂ) where
   /-- `Ψ x` depends only on the components of `x` at the places of `S`. -/
@@ -74,14 +80,18 @@ class IsSchwartzBruhat (Ψ : (n → 𝔸f E) → ℂ) where
   /-- On the support of `Ψ`, the part of `x` at the places of `S` stays in a compact set. -/
   compact_support : ∃ C : Set (n → 𝔸f E), IsCompact C ∧ ∀ x : n → 𝔸f E, Ψ x ≠ 0 → idem S • x ∈ C
 
-/-- The homomorphism sending g in GL_n of the finite adeles to the idele equal to det g at the
-places of S and 1 elsewhere. -/
+/--
+The homomorphism sending g in GL_n of the finite adeles to the idele equal to det g at the
+places of S and 1 elsewhere.
+-/
 @[simps! apply_val_fst]
 def detOn : GL n (𝔸f E) →* (𝔸 E)ˣ :=
   finIdeleIncl.comp (GeneralLinearGroup.det.comp (cutGL (idem_mul_self S)))
 
-/-- The indicator function of the finite adelic vectors x such that t⁻¹(x − z) is integral at
-every place of S. -/
+/--
+The indicator function of the finite adelic vectors x such that t⁻¹(x − z) is integral at
+every place of S.
+-/
 abbrev cosetIndicator (t : (𝔸f E)ˣ) (z x : n → 𝔸f E) : ℂ := boxIndicator n S (t⁻¹.val • (x - z))
 
 variable {S} (g : Gf E n) (hS : S.IsConjDisjoint) {Φ Ψ : (n → 𝔸f E) → ℂ} [hΨ : IsSchwartzBruhat S Ψ]
@@ -130,18 +140,23 @@ end
 
 attribute [local grind] IsSchwartzBruhat
 
-variable {E : Type*} [Field E] [CMType E] {n : Type*} [Fintype n] [DecidableEq n]
-  (S : Set (FinPlace E)) (g : Gf E n) (hS : S.IsConjDisjoint) {Ψ : (n → 𝔸f E) → ℂ}
-  [hΨ : IsSchwartzBruhat S Ψ]
+variable
+  {E : Type*} [Field E] [CMType E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  (S : Set (FinPlace E))
+  (g : Gf E n) (hS : S.IsConjDisjoint)
+  {Ψ : (n → 𝔸f E) → ℂ} [hΨ : IsSchwartzBruhat S Ψ]
 
 /-! ### The Schrödinger model -/
 
-/-- The Schrödinger model at the places of `S`: the vector `y` acts on functions by
+/--
+The Schrödinger model at the places of `S`: the vector `y` acts on functions by
 `Ψ ↦ (x ↦ selfDualAddChar E (½ y* (2 x + y)_S) * Ψ (x + y))`, where `z_S = idem S • z` is the part
-of `z` at `S`. -/
+of `z` at `S`.
+-/
 def schrodingerAct [WeilData E] (y : n → 𝔸f E) : Module.End ℂ ((n → 𝔸f E) → ℂ) :=
-  LinearMap.pi fun x ↦ selfDualAddChar E (half * star y ⬝ᵥ idem S • (x + (x + y))) • LinearMap.proj
-    (x + y)
+  LinearMap.pi fun x ↦
+    selfDualAddChar E (half * star y ⬝ᵥ idem S • (x + (x + y))) • LinearMap.proj (x + y)
 
 omit [DecidableEq n] in
 /-- The value of the Schrödinger operator of `y` on `f` at `x`. -/
@@ -150,13 +165,17 @@ lemma schrodingerAct_apply [WeilData E] (y x : n → 𝔸f E) (f : (n → 𝔸f 
       (x + y) :=
   rfl
 
-/-- The linear map sending finitely supported coefficients c_y to the function ∑ c_y
-`New.schrodingerAct` S y applied to the indicator of vectors integral on S. -/
+/--
+The linear map sending finitely supported coefficients c_y to the function ∑ c_y
+`New.schrodingerAct` S y applied to the indicator of vectors integral on S.
+-/
 abbrev schrodingerCombination [WeilData E] : ((n → 𝔸f E) →₀ ℂ) →ₗ[ℂ] (n → 𝔸f E) → ℂ :=
   Finsupp.lift ((n → 𝔸f E) → ℂ) ℂ (n → 𝔸f E) (schrodingerAct S · (boxIndicator n S))
 
-/-- The inner product ∫ conj(Ψ) Ψ′ over the finite adelic vectors integral off S, for the Haar
-measure giving Ô^n mass one. -/
+/--
+The inner product ∫ conj(Ψ) Ψ′ over the finite adelic vectors integral off S, for the Haar
+measure giving Ô^n mass one.
+-/
 def localInner (Ψ Ψ' : (n → 𝔸f E) → ℂ) : ℂ :=
   ∫ x : n → 𝔸f E in integralBox n Sᶜ, conj (Ψ x) * Ψ' x ∂latticeMeasure E n
 
@@ -207,10 +226,11 @@ lemma comp {m : Type*} [Fintype m] {A : Matrix n m (𝔸f E)} (B : Matrix m n (�
 instance comp_add (y : n → 𝔸f E) : IsSchwartzBruhat S fun x : n → 𝔸f E ↦ Ψ (x + y) := by
   simpa using comp (A := diagonal 1) 1 (by simp) y
 
-/-- The composite of a Schwartz–Bruhat function above `S` with an invertible matrix over the finite
-adeles is Schwartz–Bruhat above `S`. -/
-instance comp_mulVec (g : GL n (𝔸f E)) :
-    IsSchwartzBruhat S fun x : n → 𝔸f E ↦ Ψ (g.val *ᵥ x) := by
+/--
+The composite of a Schwartz–Bruhat function above `S` with an invertible matrix over the finite
+adeles is Schwartz–Bruhat above `S`.
+-/
+instance comp_mulVec (g : GL n (𝔸f E)) : IsSchwartzBruhat S fun x : n → 𝔸f E ↦ Ψ (g.val *ᵥ x) := by
   simpa using comp g.inv (by simp) 0
 
 /-- Let Ψ be Schwartz–Bruhat above S (instance `hΨ`) and t a finite idele, with Ψ(y) = Ψ(x) when
@@ -327,8 +347,8 @@ end IsSchwartzBruhat
 
 open scoped Classical in
 /-- The coset functions are Schwartz–Bruhat above `S`. -/
-instance (t : (𝔸f E)ˣ) (z : n → 𝔸f E) :
-    IsSchwartzBruhat S fun x : n → 𝔸f E ↦ cosetIndicator S t z x := by
+instance (t : (𝔸f E)ˣ) (z : n → 𝔸f E)
+    : IsSchwartzBruhat S fun x : n → 𝔸f E ↦ cosetIndicator S t z x := by
   -- `using!`: simp unfolds `boxIndicator` only in the goal, and unfolding it in the term times out.
   simpa [sub_eq_add_neg] using! (isSchwartzBruhat_boxIndicator.comp_add _).comp_mulVec (.scalar _ _)
 
@@ -490,14 +510,16 @@ include hS in
 instance (y : n → 𝔸f E) : IsSchwartzBruhat S (schrodingerAct S y Ψ) := by
   -- `schrodingerAct S y Ψ` is the translate of `Ψ` by `y` times a locally constant function.
   have h_add : IsSchwartzBruhat S fun x : n → 𝔸f E ↦ Ψ (x + y) := hΨ.comp_add y
-  refine ⟨?_, (isLocallyConstant_selfDualAddChar.comp_continuous (by fun_prop)).mul
-    h_add.locally_constant, ?_⟩
+  refine ⟨
+    ?_,
+    (isLocallyConstant_selfDualAddChar.comp_continuous (by fun_prop)).mul h_add.locally_constant,
+    ?_
+  ⟩
   · intro x
     -- The phase and `Ψ` only see the part of `x` at `S`.
     have h_vec : idem S • (idem S • x + (idem S • x + y)) = idem S • (x + (x + y)) := by
       simp only [smul_add, smul_smul, idem_mul_self]
-    rw [schrodingerAct_apply, schrodingerAct_apply, h_vec, ← hΨ.idem_smul,
-      ← hΨ.idem_smul (x + y)]
+    rw [schrodingerAct_apply, schrodingerAct_apply, h_vec, ← hΨ.idem_smul, ← hΨ.idem_smul (x + y)]
     simp only [smul_add, smul_smul, idem_mul_self]
   · simp only [schrodingerAct_apply]
     -- Where the product is not zero, `Ψ (x + y)` is not zero.

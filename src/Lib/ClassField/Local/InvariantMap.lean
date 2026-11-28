@@ -54,8 +54,11 @@ namespace New.IsLocalGalois
 
 open Cohomology Function DiscreteModule Subgroup QZChar QuotientGroup QZ DiscreteUnits AddMonoidHom
 
-variable {Γ k Ω : Type} [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω]
-  [MulSemiringAction Γ Ω] (V : OpenSubgroup Γ) {A : ValuationSubring Ω} [L : IsLocalGalois Γ k A]
+variable
+  {Γ k Ω : Type}
+  [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω] [MulSemiringAction Γ Ω]
+  (V : OpenSubgroup Γ)
+  {A : ValuationSubring Ω} [L : IsLocalGalois Γ k A]
 
 /-- Let `V` be an open normal subgroup of prime index in `Γ`. If `β ≠ 0` in `H²(Γ, Ωˣ)` is split
 by `V` (its restriction to `V` is zero), then every class `x` split by `V` is an integer multiple
@@ -229,8 +232,10 @@ characteristic 0, expressed through the inverse map and an arithmetic Frobenius.
 lemma isClassOfInvariant_classOfInvariant : IsClassOfInvariant Γ k A (classOfInvariant Γ k A) :=
   Cohomology.isClassOfInvariant_classOfInvariant_of_exists Γ k A exists_isClassOfInvariant
 
-variable {Γ' k' Ω' : Type} [Group Γ'] [TopologicalSpace Γ'] [Field k'] [Field Ω'] [Algebra k' Ω']
-  [MulSemiringAction Γ' Ω'] {A' : ValuationSubring Ω'} [L' : IsLocalGalois Γ' k' A']
+variable
+  {Γ' k' Ω' : Type}
+  [Group Γ'] [TopologicalSpace Γ'] [Field k'] [Field Ω'] [Algebra k' Ω'] [MulSemiringAction Γ' Ω']
+  {A' : ValuationSubring Ω'} [L' : IsLocalGalois Γ' k' A']
 
 /-- Let `k'` be a second local field, with Galois group `Γ'` acting on `Ω'` and valuation ring `A'`,
 and let `j : Ω → Ω'` be a field map compatible with `φ : Γ' → Γ` (`hj`) with `A'` pulling back to

@@ -71,13 +71,17 @@ open Finset Matrix
 
 namespace New.GL
 
-variable {Φ : Type} (R : Type) [CommRing R] [Fintype Φ] {n N : Φ → Type}
-  [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (N τ)]
-  (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ N τ) {κ₀ γ κ' : Φ → ℕ → ℕ}
+variable
+  {Φ : Type} (R : Type) [CommRing R] [Fintype Φ]
+  {n N : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (N τ)]
+  (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ N τ)
+  {κ₀ γ κ' : Φ → ℕ → ℕ}
 
 open scoped Classical in
-/-- The numbering of the rows `N τ` by `0, …, rankAt N τ - 1` that gives the added row the number
-`i τ` and keeps the rows of `n τ` in their fixed order. -/
+/--
+The numbering of the rows `N τ` by `0, …, rankAt N τ - 1` that gives the added row the number
+`i τ` and keeps the rows of `n τ` in their fixed order.
+-/
 def newRowOrder (i : ∀ τ : Φ, Fin (rankAt n τ + 1)) (τ : Φ) : N τ ≃ Fin (rankAt N τ) :=
   -- Insert the new row at position `i τ` into the fixed numbering `rowEquivFin n τ`, then invert.
   finCongr (rankAt_eq_succ ι τ)
@@ -87,11 +91,13 @@ def newRowOrder (i : ∀ τ : Φ, Fin (rankAt n τ + 1)) (τ : Φ) : N τ ≃ Fi
     |>.trans (ι τ)
     |>.symm
 
-/-- The product over `τ` and `h < rankAt N τ` of the leading `h × h` minors to the power `γ τ h`
-with the added row first, and to the power `κ τ h` with it last. -/
+/--
+The product over `τ` and `h < rankAt N τ` of the leading `h × h` minors to the power `γ τ h`
+with the added row first, and to the power `κ τ h` with it last.
+-/
 def branchVector (γ κ : Φ → ℕ → ℕ) : MatrixPoly ((τ : Φ) × N τ) R :=
-  weylKernel N γ (permArray fun (τ : Φ) (i : N τ) ↦ (newRowOrder ι 0 τ i : ℕ)) *
-    weylKernel (R := R) N κ (permArray fun (τ : Φ) (i : N τ) ↦ (newRowOrder ι ⊤ τ i : ℕ))
+  weylKernel N γ (permArray fun (τ : Φ) (i : N τ) ↦ (newRowOrder ι 0 τ i : ℕ))
+    * weylKernel (R := R) N κ (permArray fun (τ : Φ) (i : N τ) ↦ (newRowOrder ι ⊤ τ i : ℕ))
 
 /-- Multiplying the new row by `s τ` (substituting the matrix `blockScalar ι 1 s`, that is
 `diag(1, s τ)` at each `τ`) multiplies `branchVector R ι γ κ'` by the product over `τ` of `s τ` to
@@ -485,9 +491,12 @@ open Matrix ComplexOrder
 
 namespace New.GL
 
-variable {Φ : Type} [Fintype Φ] [DecidableEq Φ] {n N : Φ → Type} [∀ τ : Φ, Fintype (n τ)]
-  [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (N τ)] [∀ τ : Φ, DecidableEq (N τ)]
-  (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ N τ) {κ₀ γ κ' : Φ → ℕ → ℕ}
+variable
+  {Φ : Type} [Fintype Φ] [DecidableEq Φ]
+  {n N : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (N τ)]
+  [∀ τ : Φ, DecidableEq (N τ)]
+  (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ N τ)
+  {κ₀ γ κ' : Φ → ℕ → ℕ}
 
 /-- Let `B` be an integral matrix with
 `B * schur (γ + κ') (diag(g, 1)) = (∏ τ, det (g τ) ^ κ' τ (rankAt n τ)) • (schur κ₀ g * B)`

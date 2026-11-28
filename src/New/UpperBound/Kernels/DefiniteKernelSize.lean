@@ -50,8 +50,9 @@ namespace New.Rows
 open Matrix MvPolynomial Real Fintype Finset Space Parameters RingHom NeZero
 open NumberField (InfinitePlace)
 
-variable {E L N : Type} [Field E] [CMType E] [WeilData E] [Fintype L] [DecidableEq L] [Fintype N]
-  [DecidableEq N]
+variable
+  {E L N : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype L] [DecidableEq L] [Fintype N] [DecidableEq N]
 
 /-- Let `a`, `b` be automorphic characters of `U(1)` (`AutChar`) with exponents `e`, `e'` at the
 infinite places and residue characters `ψ`, `ψ'`. Translating the finite adelic points `g`, `h` by
@@ -124,15 +125,18 @@ lemma blockSumOne_mul_mem_integralAbove {p : ℕ} {γ : U (stdSpace E L).J} {γ'
     stdEmbFin (U.blockSumOne (γ, γ')) * U.blockSumOne (g, g') ∈ integralAbove (L ⊕ N) p := by
   simpa [stdEmbFin_blockSumOne, ← map_mul] using blockSumOne_mem_integralAbove hg hg'
 
-/-- The constant that normalises the theta kernels of the standard definite spaces `I_L`, `I_N`
+/--
+The constant that normalises the theta kernels of the standard definite spaces `I_L`, `I_N`
 over the field `D.E = P.E s` of the data `D`, where `s = D.towerExp` is its exponent in the tower
 over `K = ℚ(√-P.d)`, for polynomials homogeneous of degree `d`. It is built from the principal
 level `D.M` (a product of two primes), the number `P.vacuumScale s` that makes the values of the
-vacuum of rank one (`Space.vacElem`) integral, and the scale `P.jetScale s` of the Taylor series. -/
-noncomputable def modKernelScale (L N : Type) [Fintype L] [Fintype N] {P : Parameters} (D : Data P)
-    (d : ℕ) : ℂ :=
-  (D.M ^ 2) ^ (2 * Core.numInfPlaces D.E * card (N × L)) *
-    P.vacuumScale D.towerExp ^ card (N × L) * (D.M ^ 2 * P.d * P.jetScale D.towerExp) ^ d
+vacuum of rank one (`Space.vacElem`) integral, and the scale `P.jetScale s` of the Taylor series.
+-/
+noncomputable def modKernelScale
+    (L N : Type) [Fintype L] [Fintype N] {P : Parameters} (D : Data P) (d : ℕ)
+    : ℂ :=
+  (D.M ^ 2) ^ (2 * Core.numInfPlaces D.E * card (N × L)) * P.vacuumScale D.towerExp ^ card (N × L)
+    * (D.M ^ 2 * P.d * P.jetScale D.towerExp) ^ d
 
 variable (L N) in
 omit [DecidableEq L] [DecidableEq N] in
@@ -339,40 +343,54 @@ lemma norm_modKernelScale_mul_modKernelStdSpace_le {P : Parameters} {D : Data P}
     _ ≤ exp D.x₁ * A * B := by grw [M_pow_mul_card_mul_exp_le hL hN hd h𝔪]
 
 variable (L N) in
-/-- The constant `c` is a scale for the theta kernels `modKernelStdSpace` of the standard definite
+/--
+The constant `c` is a scale for the theta kernels `modKernelStdSpace` of the standard definite
 spaces `I_L`, `I_N` over the field `D.E` of the data `D`, for polynomials `Q` homogeneous of degree
 `d` and characters `a`, `b` with exponents `ea`, `eb` at the infinite places and tame parts `ψ`,
 `ψ'` (`HasWeight`): `c` times the kernel is integral at `p` when the input is, and its conjugates
 are bounded when `L`, `N`, `d` and the input are. Here the principal level `D.M` is a product of
 two primes, `D.gap = 2 * D.r ^ 8` with `D.r` the rank of the target (a power of `3`), and `D.x₁`
-is the second cut-off of `D`, a large integer. -/
+is the second cut-off of `D`, a large integer.
+-/
 structure IsModKernelScale {P : Parameters} (D : Data P) (d : ℕ) (c : ℂ) : Prop where
-  /-- Let `𝔪` contain `q * D.M ^ 2` and let the values of `Ψ` be integral at the primes coprime
+  /--
+  Let `𝔪` contain `q * D.M ^ 2` and let the values of `Ψ` be integral at the primes coprime
   to `q`. If `p` is such a prime and `g`, `h` and the coefficients of `Q` are integral at `p`, then
-  `c` times the kernel has `p`-adic norm at most `1`. -/
-  norm_le_one {a b : AutChar D.E} {ea eb : InfinitePlace D.E → ℤ}
+  `c` times the kernel has `p`-adic norm at most `1`.
+  -/
+  norm_le_one
+    {a b : AutChar D.E} {ea eb : InfinitePlace D.E → ℤ}
     {ψ ψ' : (w : FinPlace D.E) → MulChar (ResField w) ℂ} {𝔪 : Modulus D.E}
     {Ψ : Matrix N L 𝔪.ResidueRing → ℂ} {Q : MvPolynomial (InfinitePlace D.E × N × L) ℂ}
-    (ha : a.HasWeight ea ψ) (hb : b.HasWeight eb ψ') {q : ℕ} (hq : ↑(q * D.M ^ 2) ∈ 𝔪.ideal)
-    (hΨ : ∀ x : Matrix N L 𝔪.ResidueRing, Ψ x ∈ Seesaw.integralAway q) (hQ : Q.IsHomogeneous d)
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] (hp : p.Coprime q) {g : Gf D.E L} {h : Gf D.E N}
-    (hg : g ∈ integralAbove L p) (hh : h ∈ integralAbove N p)
-    (hQ_int : Q ∈ (MvPolynomial.map embValRing.subtype).range) :
-    ‖ιₚ (c * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h)‖ ≤ 1
-  /-- Let `L`, `N` have at most `D.gap` elements, let `d ≤ D.M` and let `𝔪` contain
+    (ha : a.HasWeight ea ψ) (hb : b.HasWeight eb ψ')
+    {q : ℕ} (hq : ↑(q * D.M ^ 2) ∈ 𝔪.ideal)
+    (hΨ : ∀ x : Matrix N L 𝔪.ResidueRing, Ψ x ∈ Seesaw.integralAway q)
+    (hQ : Q.IsHomogeneous d)
+    {p : ℕ} [Fact p.Prime] [PadicPlace p]
+    (hp : p.Coprime q)
+    {g : Gf D.E L} {h : Gf D.E N} (hg : g ∈ integralAbove L p) (hh : h ∈ integralAbove N p)
+    (hQ_int : Q ∈ (MvPolynomial.map embValRing.subtype).range)
+    : ‖ιₚ (c * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h)‖ ≤ 1
+  /--
+  Let `L`, `N` have at most `D.gap` elements, let `d ≤ D.M` and let `𝔪` contain
   `D.M ^ 2`. If `A` bounds all conjugates of the values of `Ψ`, and `B` bounds `σ ∘ Q` on the
   polydisc `‖σ (z i)‖ ≤ D.M ^ 4`, then the `σ`-conjugate of `c` times the kernel has norm at
-  most `exp D.x₁ * A * B`. -/
-  norm_map_le {a b : AutChar D.E} {ea eb : InfinitePlace D.E → ℤ}
+  most `exp D.x₁ * A * B`.
+  -/
+  norm_map_le
+    {a b : AutChar D.E} {ea eb : InfinitePlace D.E → ℤ}
     {ψ ψ' : (w : FinPlace D.E) → MulChar (ResField w) ℂ} {𝔪 : Modulus D.E}
     {Ψ : Matrix N L 𝔪.ResidueRing → ℂ} {Q : MvPolynomial (InfinitePlace D.E × N × L) ℂ}
     (hL : card L ≤ D.gap) (hN : card N ≤ D.gap) (hd : d ≤ D.M) (ha : a.HasWeight ea ψ)
-    (hb : b.HasWeight eb ψ') (h𝔪 : ↑(D.M ^ 2) ∈ 𝔪.ideal) {A : ℕ}
-    (hA : ∀ (τ : ℂ ≃+* ℂ) (x : Matrix N L 𝔪.ResidueRing), ‖τ (Ψ x)‖ ≤ A) (hQ : Q.IsHomogeneous d)
-    (σ : ℂ ≃+* ℂ) {B : ℝ} (hB : ∀ z : InfinitePlace D.E × N × L → ℂ,
+    (hb : b.HasWeight eb ψ') (h𝔪 : ↑(D.M ^ 2) ∈ 𝔪.ideal)
+    {A : ℕ} (hA : ∀ (τ : ℂ ≃+* ℂ) (x : Matrix N L 𝔪.ResidueRing), ‖τ (Ψ x)‖ ≤ A)
+    (hQ : Q.IsHomogeneous d)
+    (σ : ℂ ≃+* ℂ)
+    {B : ℝ}
+    (hB : ∀ z : InfinitePlace D.E × N × L → ℂ,
       (∀ i : InfinitePlace D.E × N × L, ‖σ (z i)‖ ≤ D.M ^ 4) → ‖σ (Q.eval z)‖ ≤ B)
-    (g : Gf D.E L) (h : Gf D.E N) :
-    ‖σ (c * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h)‖ ≤ exp D.x₁ * A * B
+    (g : Gf D.E L) (h : Gf D.E N)
+    : ‖σ (c * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h)‖ ≤ exp D.x₁ * A * B
 
 /-- Integrality and size of the theta kernels `modKernelStdSpace` of the standard definite spaces
 `I_L`, `I_N` over the field `D.E` of the data `D`, built from a function `Ψ` on matrices modulo `𝔪`

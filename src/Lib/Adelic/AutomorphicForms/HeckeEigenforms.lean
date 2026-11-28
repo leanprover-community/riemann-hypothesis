@@ -67,7 +67,9 @@ namespace New
 
 open DoubleCoset Finset Function LinearMap HasFiniteType Module
 
-variable {G Γ W : Type*} [Group G] [Group Γ] {K : Subgroup G} [AddCommGroup W] [Module ℂ W]
+variable
+  {G Γ W : Type*} [Group G] [Group Γ]
+  {K : Subgroup G} [AddCommGroup W] [Module ℂ W]
   {e : Γ →* G} {ρ : Representation ℂ Γ W} {χ : K →* ℂ} [TopologicalSpace G]
 
 /-- Let `φ : G → W` be a smooth form (left equivariant for `e` and `ρ`, with open right stabiliser)
@@ -93,12 +95,13 @@ lemma levelSpace_ext_doubleCosets [IsTopologicalGroup G] {r : DoubleCosets e.ran
   simp [levelSpace_smoothFormRep_apply φ.property, levelSpace_smoothFormRep_apply ψ.property, h_rep]
 
 variable (e ρ χ) in
-/-- For points `r c` of `G` indexed by the double cosets `c` in `e(Γ) \ G / K`, the linear map
-sending a form `φ` of level `(K, χ)` to the family of its values `c ↦ φ (r c)`. -/
-def evalClassReps [IsTopologicalGroup G] (r : DoubleCosets e.range K → G) :
-    levelSpace (smoothFormRep e ρ) K χ →ₗ[ℂ] DoubleCosets e.range K → W :=
+/--
+For points `r c` of `G` indexed by the double cosets `c` in `e(Γ) \ G / K`, the linear map
+sending a form `φ` of level `(K, χ)` to the family of its values `c ↦ φ (r c)`.
+-/
+def evalClassReps [IsTopologicalGroup G] (r : DoubleCosets e.range K → G)
+    : levelSpace (smoothFormRep e ρ) K χ →ₗ[ℂ] DoubleCosets e.range K → W :=
   ((funLeft ℂ W r).domRestrict (SmoothForm e ρ)).domRestrict (levelSpace (smoothFormRep e ρ) K χ)
-
 
 /-- Evaluation of forms of level `(K, χ)` at representatives `r c` of the double cosets `c` in
 `e(Γ) \ G / K` is injective. -/
@@ -110,10 +113,10 @@ lemma evalClassReps_injective [IsTopologicalGroup G] {r : DoubleCosets e.range K
 /-- The trivial character is trivial near `1`. -/
 instance : Fact ((1 : K →* ℂ) =ᶠ[nhds 1] 1) := ⟨.rfl⟩
 
-variable (e ρ χ)
-  [o : Fact (χ =ᶠ[nhds 1] 1)] -- `χ` is trivial near `1`
+variable
+  (e ρ χ) [o : Fact (χ =ᶠ[nhds 1] 1)] -- `χ` is trivial near `1`
   [H : HasFiniteType e.range K] -- `K` is compact open, with finitely many classes and finite
-                                -- stabilisers
+  -- stabilisers
   [i : Fact (Injective e)] -- `e` is injective
 
 omit H i in
@@ -132,8 +135,10 @@ lemma mem_smoothFunctions_of_eigen [IsTopologicalGroup G] (hK : IsOpen (K : Set 
 /-! ### Forms supported on one class -/
 
 variable (K) in
-/-- For injective `e` and `K` of finite type for `e(Γ)`, the finite set of the `γ : Γ` with
-`x⁻¹ * e γ * y ∈ K`. -/
+/--
+For injective `e` and `K` of finite type for `e(Γ)`, the finite set of the `γ : Γ` with
+`x⁻¹ * e γ * y ∈ K`.
+-/
 noncomputable def transporter (x y : G) : Finset Γ :=
   (exists_transporter e.range i.out .rfl K x y).choose
 
@@ -162,11 +167,14 @@ lemma card_transporter (x y : G) :
   (mem_transporter_iff_and_card x y).right
 
 open scoped Classical in
-/-- The function `y ↦ ∑ χ (x⁻¹ * e γ * y) • ρ γ⁻¹ v`, summed over the `γ` with
-`x⁻¹ * e γ * y ∈ K`, as a linear map in `v`. -/
+/--
+The function `y ↦ ∑ χ (x⁻¹ * e γ * y) • ρ γ⁻¹ v`, summed over the `γ` with
+`x⁻¹ * e γ * y ∈ K`, as a linear map in `v`.
+-/
 noncomputable def deltaFun (x : G) : W →ₗ[ℂ] G → W :=
-  .pi fun y : G ↦ ∑ γ ∈ transporter K e x y,
-    if h : x⁻¹ * e γ * y ∈ K then χ ⟨x⁻¹ * e γ * y, h⟩ • ρ γ⁻¹ else 0
+  .pi fun y : G ↦
+    ∑ γ ∈ transporter K e x y,
+      if h : x⁻¹ * e γ * y ∈ K then χ ⟨x⁻¹ * e γ * y, h⟩ • ρ γ⁻¹ else 0
 
 open scoped Classical in
 omit o in
@@ -204,15 +212,18 @@ lemma deltaFun_map_mul (x : G) (v : W) (γ : Γ) (y : G) :
 
 variable [IsTopologicalGroup G]
 
-/-- The linear map sending `v` to the form of level `(K, χ)` supported on the double coset
+/--
+The linear map sending `v` to the form of level `(K, χ)` supported on the double coset
 `e(Γ) x K` whose value at `y` is the sum of `χ (x⁻¹ * e γ * y) • ρ γ⁻¹ v` over the `γ` with
 `x⁻¹ * e γ * y ∈ K`. With `γ⁻¹` in place of `γ`, this is the sum of `χ (x⁻¹ * e γ⁻¹ * y) • ρ γ v`
-over the `γ` with `x⁻¹ * e γ⁻¹ * y ∈ K`. -/
+over the `γ` with `x⁻¹ * e γ⁻¹ * y ∈ K`.
+-/
 noncomputable def deltaForm (x : G) : W →ₗ[ℂ] levelSpace (smoothFormRep e ρ) K χ :=
   .codRestrict (levelSpace (smoothFormRep e ρ) K χ)
-    (.codRestrict (SmoothForm e ρ) (deltaFun e ρ χ x) fun v ↦
-      ⟨mem_smoothFunctions_of_eigen χ H.isOpen (rightRegular_deltaFun e ρ χ x v),
-        deltaFun_map_mul e ρ χ x v⟩)
+    (.codRestrict (SmoothForm e ρ) (deltaFun e ρ χ x) fun v ↦ ⟨
+      mem_smoothFunctions_of_eigen χ H.isOpen (rightRegular_deltaFun e ρ χ x v),
+      deltaFun_map_mul e ρ χ x v
+    ⟩)
     fun v k ↦ Subtype.ext (rightRegular_deltaFun e ρ χ x v k)
 
 open scoped Classical in
@@ -242,19 +253,22 @@ lemma sum_deltaForm_apply_rep (h_free : ∀ g : G, classAut e.range K g = ⊥)
   rw [Fintype.sum_eq_single d fun c hc ↦ by rw [h_off c hc, sum_empty], h_diag]
   simp [← K.one_def]
 
-/-- If every stabiliser `classAut e.range K g` is trivial, evaluation at representatives `r c` of
+/--
+If every stabiliser `classAut e.range K g` is trivial, evaluation at representatives `r c` of
 the double cosets `c` in `e(Γ) \ G / K` is a linear isomorphism from the forms of level `(K, χ)` to
 the `W`-valued functions on the double cosets. The inverse sends `f` to the sum of the forms
-`deltaForm e ρ χ (r c) (f c)`. -/
-noncomputable def freeLevelEquiv (h_free : ∀ g : G, classAut e.range K g = ⊥)
+`deltaForm e ρ χ (r c) (f c)`.
+-/
+noncomputable def freeLevelEquiv
+    (h_free : ∀ g : G, classAut e.range K g = ⊥)
     {r : DoubleCosets e.range K → G}
-    (hr : ∀ c : DoubleCosets e.range K, DoubleCoset.mk e.range K (r c) = c) :
-    levelSpace (smoothFormRep e ρ) K χ ≃ₗ[ℂ] DoubleCosets e.range K → W where
+    (hr : ∀ c : DoubleCosets e.range K, DoubleCoset.mk e.range K (r c) = c)
+    : levelSpace (smoothFormRep e ρ) K χ ≃ₗ[ℂ] DoubleCosets e.range K → W where
   toLinearMap := evalClassReps e ρ χ r
   invFun f := ∑ c : DoubleCosets e.range K, deltaForm e ρ χ (r c) (f c)
   left_inv φ :=
-    levelSpace_ext_doubleCosets hr (sum_deltaForm_apply_rep e ρ χ h_free hr
-      (evalClassReps e ρ χ r φ))
+    levelSpace_ext_doubleCosets hr
+      (sum_deltaForm_apply_rep e ρ χ h_free hr (evalClassReps e ρ χ r φ))
   right_inv f := funext (sum_deltaForm_apply_rep e ρ χ h_free hr f)
 
 variable {e ρ χ}
@@ -286,10 +300,12 @@ lemma classSum_deltaForm (L : G → W →+ ℂ) {x : G} {v : W}
 
 /-! ### Dimension -/
 
-/-- Forms embed in the `W`-valued functions on the finite set of classes, by their values at
-representatives, so they span a finite-dimensional space. -/
-instance finite_levelSpace_smoothFormRep [Module.Finite ℂ W] :
-    Module.Finite ℂ (levelSpace (smoothFormRep e ρ) K χ) :=
+/--
+Forms embed in the `W`-valued functions on the finite set of classes, by their values at
+representatives, so they span a finite-dimensional space.
+-/
+instance finite_levelSpace_smoothFormRep [Module.Finite ℂ W]
+    : Module.Finite ℂ (levelSpace (smoothFormRep e ρ) K χ) :=
   .of_injective (evalClassReps e ρ χ Quot.out) (evalClassReps_injective Quot.out_eq)
 
 /-- Let `e : Γ →* G` be injective, `K` a level of finite type for `e(Γ)` (`New.HasFiniteType`), `χ`
@@ -313,8 +329,8 @@ open Submodule Subgroup ComplexOrder
 
 namespace New.Space
 
-variable {E n : Type} [Field E] [Fintype n] [DecidableEq n] [CMType E] (V : Space E n 1)
-  (κ : Weight E)
+variable
+  {E n : Type} [Field E] [Fintype n] [DecidableEq n] [CMType E] (V : Space E n 1) (κ : Weight E)
 
 /-- For a definite hermitian space `V` and a weight `κ`, the forms of weight `κ` on `V` carry a
 sesquilinear form `B` that is positive definite and invariant under right translation by the finite
@@ -395,10 +411,12 @@ lemma hasHeckePolyAt_iff (hw : star w ≠ w) {P : Polynomial ℂ} :
     (map_heckeSplit hw j (V.forms κ).subtype fun _ _ ↦ rfl).symm
   simp [HasHeckePolyAt, h_map, Subtype.ext_iff]
 
-/-- For a split place `w` and an open subgroup `H`, the preimage of `H` under the endomorphism of
-the finite adelic unitary group that replaces the components at `w` and `w̄` by `1`. -/
-noncomputable def offPartComap (hw : star w ≠ w) (H : OpenSubgroup (Gf E n)) :
-    OpenSubgroup (Gf E n) :=
+/--
+For a split place `w` and an open subgroup `H`, the preimage of `H` under the endomorphism of
+the finite adelic unitary group that replaces the components at `w` and `w̄` by `1`.
+-/
+noncomputable def offPartComap (hw : star w ≠ w) (H : OpenSubgroup (Gf E n))
+    : OpenSubgroup (Gf E n) :=
   H.comap
     (MonoidHom.mk' (fun g ↦ g * (ofSplitPlace hw (g.atPlace w))⁻¹) (by
       simp [(commute_supportedOn_trivialOn (ofSplitPlace_mem_supportedOn _ _) _).inv_left.eq,

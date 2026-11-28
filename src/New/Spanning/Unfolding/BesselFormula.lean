@@ -65,10 +65,12 @@ lemma dotProduct_prod_integral {T X : Type} [Fintype T] [DecidableEq T] [Measura
   exact (integral_finsetSum _ fun i _ ↦
     (Integrable.fintype_prod_dep fun v ↦ h_coord v (i v)).const_mul (a i)).symm
 
-/-- The unitary group of the standard form, written with signs all equal to one, is isomorphic to
-the one written with the unit matrix, by the identity on matrices. -/
-def unitSignEquiv (n : Type) [Fintype n] [DecidableEq n] :
-    USign (1 : n → ℤˣ) ≃ₜ* U (1 : Matrix n n ℂ) where
+/--
+The unitary group of the standard form, written with signs all equal to one, is isomorphic to
+the one written with the unit matrix, by the identity on matrices.
+-/
+def unitSignEquiv (n : Type) [Fintype n] [DecidableEq n]
+    : USign (1 : n → ℤˣ) ≃ₜ* U (1 : Matrix n n ℂ) where
   __ := MulEquiv.subgroupCongr (congrArg U signMatrix_one)
   continuous_toFun := continuous_subtypeVal.subtype_mk _
   continuous_invFun := continuous_subtypeVal.subtype_mk _
@@ -81,16 +83,19 @@ namespace Filling.Fits
 
 open RealPlace DiscreteSeries
 
-variable {E : Type} {𝔰 : Shape} [Field E] [CMType E] {S : Filling E 𝔰}
-  {ε : 𝔰.BesselIndex → ℤˣ} {l : InfinitePlace E → HCParam ε}
-  {kw : InfinitePlace E → ℕ → ℕ} {V : Space E 𝔰.BesselIndex ε}
-  {Y : Grading V S.N 𝔰.κ (2 * 𝔰.ϱ + 1)} {η : Gf E 𝔰.κ} [UnitarySignFrame 𝔰 ε]
+variable
+  {E : Type} {𝔰 : Shape} [Field E] [CMType E]
+  {S : Filling E 𝔰} {ε : 𝔰.BesselIndex → ℤˣ} {l : InfinitePlace E → HCParam ε}
+  {kw : InfinitePlace E → ℕ → ℕ} {V : Space E 𝔰.BesselIndex ε} {Y : Grading V S.N 𝔰.κ (2 * 𝔰.ϱ + 1)}
+  {η : Gf E 𝔰.κ} [UnitarySignFrame 𝔰 ε]
 
 /-! ### The group `R(F_∞)` place by place -/
 
-/-- The homomorphism that takes a real point of the group of `V` to the components at the infinite
+/--
+The homomorphism that takes a real point of the group of `V` to the components at the infinite
 places (`S.adelicToInf`) of its image in the adelic group of `S` (`h.adelicEquiv`). At each place it
-is a conjugation that carries `U(diag ε)` onto `G₁`. -/
+is a conjugation that carries `U(diag ε)` onto `G₁`.
+-/
 def realCoords (h : S.Fits V l kw Y η) : GInf E ε →* InfinitePlace E → 𝔰.G₁ :=
   S.adelicToInf.comp (h.adelicEquiv.toMonoidHom.comp (MonoidHom.inl _ _))
 
@@ -100,8 +105,10 @@ lemma realCoords_mul_realHomeomorph (h : S.Fits V l kw Y η) (s y : GInf E ε) :
     h.realCoords s * h.realHomeomorph y = h.realHomeomorph (s * y) :=
   (h.realHomeomorph_mul (s, 1) (y, 1)).symm
 
-/-- The map `realCoords` as a homeomorphism: it is `realHomeomorph` followed by right multiplication
-by the inverse of its value at one. -/
+/--
+The map `realCoords` as a homeomorphism: it is `realHomeomorph` followed by right multiplication
+by the inverse of its value at one.
+-/
 def realCoordsHomeomorph (h : S.Fits V l kw Y η) : GInf E ε ≃ₜ (InfinitePlace E → 𝔰.G₁) :=
   h.realHomeomorph.trans (Homeomorph.mulRight (h.realHomeomorph 1)⁻¹)
 
@@ -156,16 +163,22 @@ lemma adelicToInf_mul_inv_inclX (h : S.Fits V l kw Y η) (s : GInf E ε)
   -- Both sides put the same matrix into the middle block.
   rfl
 
-/-- The components at the infinite places of an element `s` of `R(F_∞)`: the pair of the component
-of `s` in `G₁` and of its Levi part in `U(κ)`. -/
-def besselRealToPi (h : S.Fits V l kw Y η) :
-    Y.besselReal →* InfinitePlace E → 𝔰.besselGraph :=
-  .mk' (fun s v ↦ ⟨(h.realCoords s v, unitSignEquiv 𝔰.κ ((Y.leviPart ⟨(s.1, 1), s.2⟩).1 v)), by
-      rw [Shape.mem_besselGraph_iff_mul_inv_mem, ← h.adelicToInf_mul_inv_inclX]
-      exact h.adelicToInf_mem_besselU (Y.mul_inv_inclX_leviPart_mem ⟨(s.val, 1), s.property⟩) v⟩)
+/--
+The components at the infinite places of an element `s` of `R(F_∞)`: the pair of the component
+of `s` in `G₁` and of its Levi part in `U(κ)`.
+-/
+def besselRealToPi (h : S.Fits V l kw Y η) : Y.besselReal →* InfinitePlace E → 𝔰.besselGraph :=
+  .mk'
+    (fun s v ↦ ⟨
+      (h.realCoords s v, unitSignEquiv 𝔰.κ ((Y.leviPart ⟨(s.1, 1), s.2⟩).1 v)),
+      by
+        rw [Shape.mem_besselGraph_iff_mul_inv_mem, ← h.adelicToInf_mul_inv_inclX]
+        exact h.adelicToInf_mem_besselU (Y.mul_inv_inclX_leviPart_mem ⟨(s.val, 1), s.property⟩) v
+    ⟩)
     fun s t ↦ by
-      have h_levi : Y.leviPart ⟨((s * t).val, 1), (s * t).property⟩ =
-          Y.leviPart ⟨(s.val, 1), s.property⟩ * Y.leviPart ⟨(t.val, 1), t.property⟩ := by
+      have h_levi
+          : Y.leviPart ⟨((s * t).val, 1), (s * t).property⟩
+            = Y.leviPart ⟨(s.val, 1), s.property⟩ * Y.leviPart ⟨(t.val, 1), t.property⟩ := by
         rw [← map_mul]
         exact congrArg _ (Subtype.ext (by simp))
       ext v : 3
@@ -217,16 +230,20 @@ lemma besselRealToPi_surjective (h : S.Fits V l kw Y η) :
   · rw [besselRealToPi_apply_fst, hs]
   · simp [besselRealToPi_apply_snd, h_levi, a]
 
-/-- The group `R(F_∞)` is the product of the groups `R` at the infinite places: `besselRealToPi` as
-an isomorphism of topological groups. -/
-def besselRealEquiv (h : S.Fits V l kw Y η) :
-    Y.besselReal ≃ₜ* (InfinitePlace E → 𝔰.besselGraph) :=
+/--
+The group `R(F_∞)` is the product of the groups `R` at the infinite places: `besselRealToPi` as
+an isomorphism of topological groups.
+-/
+def besselRealEquiv (h : S.Fits V l kw Y η) : Y.besselReal ≃ₜ* (InfinitePlace E → 𝔰.besselGraph) :=
   -- The first components of the image are given by `realCoords`, an embedding of `G(F_∞)`.
   have h_emb : Topology.IsEmbedding h.besselRealToPi :=
-    .of_comp h.continuous_besselRealToPi (g := fun q (v : InfinitePlace E) ↦ (q v).val.1)
+    .of_comp h.continuous_besselRealToPi
+      (g := fun q (v : InfinitePlace E) ↦ (q v).val.1)
       (by fun_prop) (h.isEmbedding_realCoords.comp .subtypeVal)
-  { h_emb.toHomeomorphOfSurjective h.besselRealToPi_surjective with
-    map_mul' := h.besselRealToPi.map_mul }
+  {
+    h_emb.toHomeomorphOfSurjective h.besselRealToPi_surjective with
+    map_mul' := h.besselRealToPi.map_mul
+  }
 
 /-- Suppose the hermitian space `V` with grading `Y` fits the filling data `S` (the hypothesis `h`),
 so that `besselRealToPi` identifies `Y.besselReal`, the real points of the Bessel group `R = U ⋊ H`,
@@ -253,12 +270,14 @@ lemma exists_integral_pi_eq (h : S.Fits V l kw Y η) :
 
 /-! ### The three factors of the integrand -/
 
-/-- The standard additive character of `E` at `-(M ϖ)⁻¹` times the sum `simpleRootSum` of the
+/--
+The standard additive character of `E` at `-(M ϖ)⁻¹` times the sum `simpleRootSum` of the
 entries at the simple roots of the image of `r` in the adelic group of `S`. Here `M = S.M` is the
 product of the two level primes and `ϖ = S.deltaE` is the chosen generator of the different of `E`.
 On `R(𝔸)` this is a character that is trivial on `H(𝔸)`; it extends `ψ_U` when the constant
 `c = Y.genericConst` of `ψ_U` satisfies `ȷ * c = -(M ϖ)⁻¹`, where `ȷ = WeilData.j` is the purely
-imaginary element of `E` fixed by the Weil data. -/
+imaginary element of `E` fixed by the Weil data.
+-/
 def besselChar (h : S.Fits V l kw Y η) (r : New.G E ε) : ℂ :=
   stdAddChar E (toAdele (-(S.M * S.deltaE : E)⁻¹) * simpleRootSum (h.adelicEquiv r))
 
@@ -364,7 +383,8 @@ lemma prod_besselIntegrand (h : S.Fits V l kw Y η) (g y : GInf E ε)
   -- Factor by factor this is the definition of `besselIntegrand`.
   rfl
 
-/-- **The Bessel function as one integral.** Let `E` be a CM field, fix a unitary matrix that
+/--
+**The Bessel function as one integral.** Let `E` be a CM field, fix a unitary matrix that
 carries the form of `G₁` to the diagonal form of signs `ε`, and suppose the hermitian space `V` with
 grading `Y` and central element `η` fits the filling data `S`; in particular the Bessel system of
 `S` at `v` has type `(l v, kw v)`. There are a point `g` of `GInf E ε = ∏_v U(diag ε)` and a linear
@@ -374,26 +394,28 @@ following property. Evaluate the tensor product `S.besselFn .full` of the local 
 `ζ` of the Weyl module, carried to the dual of the values of the Bessel function by
 `weylBesselEquiv`. The result is the integral of `conj (typeKernel l ε (g⁻¹ s y)) (besselChar s)⁻¹
 t(a ζ)` over `s = n a` in `Y.besselReal`, the real points of the Bessel group `R = U ⋊ H` of `Y`,
-against the Haar measure `haar`, whose normalisation is absorbed in `t`. -/
-theorem exists_besselFn_eq_integral (h : S.Fits V l kw Y η) :
-    ∃ (g : GInf E ε) (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ),
+against the Haar measure `haar`, whose normalisation is absorbed in `t`.
+-/
+theorem exists_besselFn_eq_integral (h : S.Fits V l kw Y η)
+    : ∃ (g : GInf E ε) (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ),
       ∀ (y : GInf E ε) (ζ : WeylIndex 𝔰.κ kw → ℂ),
-        h.weylBesselEquiv ζ ⬝ᵥ S.besselFn .full (h.realHomeomorph y) =
-          ∫ s : Y.besselReal, conj (typeKernel l ε (g⁻¹ * s.val * y)) *
-            ((h.besselChar (s.val, 1))⁻¹ *
-              t (conjWeylRep kw 0 (Y.leviPart ⟨(s.val, 1), s.property⟩).fst ζ)) ∂haar := by
+        h.weylBesselEquiv ζ ⬝ᵥ S.besselFn .full (h.realHomeomorph y)
+          = ∫ s : Y.besselReal, conj (typeKernel l ε (g⁻¹ * s.val * y)) *
+              ((h.besselChar (s.val, 1))⁻¹ *
+                t (conjWeylRep kw 0 (Y.leviPart ⟨(s.val, 1), s.property⟩).fst ζ)) ∂haar := by
   -- Take the point with components `x v` and pair with the tensor product of the vectors `u v`;
   -- the constants `a v`, the formal degrees and the ratio `c` of the Haar measures go into `t`.
-  have h_avg (v : InfinitePlace E) :
-      ∃ (a : ℝ) (x : 𝔰.G₁) (u : EuclideanSpace ℂ (S.besselSystem v).Index), ∀ y : 𝔰.G₁,
-        Integrable (besselIntegrand (l v) (S.besselSystem v).rep x u y) 𝔰.besselGraphMeasure ∧
-          (S.besselSystem v).besselFn .full y =
-            a • besselAverage (l v) (S.besselSystem v).rep x u y :=
+  have h_avg (v : InfinitePlace E)
+      : ∃ (a : ℝ) (x : 𝔰.G₁) (u : EuclideanSpace ℂ (S.besselSystem v).Index), ∀ y : 𝔰.G₁,
+        Integrable (besselIntegrand (l v) (S.besselSystem v).rep x u y) 𝔰.besselGraphMeasure
+          ∧ (S.besselSystem v).besselFn .full y
+            = a • besselAverage (l v) (S.besselSystem v).rep x u y :=
     (h.isDiscreteSeriesBessel v).exists_eq_besselAverage
   choose a x u h_int h_eq using h_avg
-  obtain ⟨c, hc⟩ : ∃ c : ℝ, ∀ F : (InfinitePlace E → 𝔰.besselGraph) → ℂ,
-      ∫ q, F q ∂(Measure.pi fun _ : InfinitePlace E ↦ 𝔰.besselGraphMeasure) =
-        c * ∫ s : Y.besselReal, F (h.besselRealToPi s) ∂haar :=
+  obtain ⟨c, hc⟩
+      : ∃ c : ℝ, ∀ F : (InfinitePlace E → 𝔰.besselGraph) → ℂ,
+        ∫ q, F q ∂(Measure.pi fun _ : InfinitePlace E ↦ 𝔰.besselGraphMeasure)
+          = c * ∫ s : Y.besselReal, F (h.besselRealToPi s) ∂haar :=
     h.exists_integral_pi_eq
   obtain ⟨g, rfl⟩ : ∃ g : GInf E ε, h.realHomeomorph g = x := h.realHomeomorph.surjective x
   let w : S.BesselCoord → ℂ := fun i ↦ ∏ v, u v (i v)
@@ -403,27 +425,33 @@ theorem exists_besselFn_eq_integral (h : S.Fits V l kw Y η) :
   refine ⟨g, t, fun y ζ ↦ ?_⟩
   let f (v : InfinitePlace E) : 𝔰.besselGraph → EuclideanSpace ℂ (S.besselSystem v).Index :=
     besselIntegrand (l v) (S.besselSystem v).rep (h.realHomeomorph g v) (u v) (h.realHomeomorph y v)
-  have h_prod (s : Y.besselReal) :
-      (fun i : S.BesselCoord ↦ ∏ v, f v (h.besselRealToPi s v) (i v)) =
-        (∏ v, (l v).dsCoeffInFrame ((h.realHomeomorph g v)⁻¹ * h.realHomeomorph (s * y) v)) •
-          (h.besselChar (s.val, 1))⁻¹ • (kroneckerPi fun v ↦ ((S.besselSystem v).rep
-            (unitSignEquiv 𝔰.κ ((Y.leviPart ⟨(s.val, 1), s.property⟩).1 v))⁻¹).val) *ᵥ w :=
+  have h_prod (s : Y.besselReal)
+      : (fun i : S.BesselCoord ↦ ∏ v, f v (h.besselRealToPi s v) (i v))
+        = (∏ v, (l v).dsCoeffInFrame ((h.realHomeomorph g v)⁻¹ * h.realHomeomorph (s * y) v))
+          • (h.besselChar (s.val, 1))⁻¹
+          • (kroneckerPi fun v ↦
+            ((S.besselSystem v).rep
+              (unitSignEquiv 𝔰.κ ((Y.leviPart ⟨(s.val, 1), s.property⟩).1 v))⁻¹).val)
+          *ᵥ w :=
     h.prod_besselIntegrand g y u s
-  have h_besselFn : S.besselFn .full (h.realHomeomorph y) = (∏ v, (a v : ℂ)) •
-      fun i ↦ ∏ v, (∫ s, f v s ∂𝔰.besselGraphMeasure) (i v) := by
+  have h_besselFn
+      : S.besselFn .full (h.realHomeomorph y)
+        = (∏ v, (a v : ℂ)) • fun i ↦ ∏ v, (∫ s, f v s ∂𝔰.besselGraphMeasure) (i v) := by
     simp [funext_iff, Filling.besselFn, f, h_eq, besselAverage, Finset.prod_mul_distrib]
   have ht (ξ : WeylIndex 𝔰.κ kw → ℂ) : t ξ = C * h.weylBesselEquiv ξ ⬝ᵥ w := rfl
-  calc _ = (∏ v, (a v : ℂ)) * c * ∫ s : Y.besselReal,
+  calc
+    _ = (∏ v, (a v : ℂ)) * c
+        * ∫ s : Y.besselReal,
           h.weylBesselEquiv ζ ⬝ᵥ fun i ↦ ∏ v, f v (h.besselRealToPi s v) (i v) ∂haar := by
-        rw [h_besselFn, dotProduct_smul, dotProduct_prod_integral _ fun v ↦ h_int v _, hc,
-          smul_eq_mul, mul_assoc]
+      rw [h_besselFn, dotProduct_smul, dotProduct_prod_integral _ fun v ↦ h_int v _, hc,
+        smul_eq_mul, mul_assoc]
     _ = _ := by
-        -- Compare the integrands at `s` by the factorization `h_prod`.
-        rw [← integral_const_mul]
-        refine integral_congr_ae (.of_forall fun s ↦ ?_)
-        simp only [h_prod, mul_assoc g⁻¹, h.conj_typeKernel, ht, C, weylBesselEquiv_conjWeylRep,
-          dotProduct_smul, dotProduct_mulVec, smul_eq_mul]
-        field_simp [h.prod_formalDegree_ne_zero]
+      -- Compare the integrands at `s` by the factorization `h_prod`.
+      rw [← integral_const_mul]
+      refine integral_congr_ae (.of_forall fun s ↦ ?_)
+      simp only [h_prod, mul_assoc g⁻¹, h.conj_typeKernel, ht, C, weylBesselEquiv_conjWeylRep,
+        dotProduct_smul, dotProduct_mulVec, smul_eq_mul]
+      field_simp [h.prod_formalDegree_ne_zero]
 
 end Filling.Fits
 

@@ -119,11 +119,12 @@ lemma norm_mul_inv_sub_one_le {z z' : USign s} {δ : ℝ} (hδ : δ ≤ 1) (hz :
     _ = 4 * δ := by ring
 
 variable (E s) in
-/-- The box of the points whose real components are within distance `δ` of the identity and whose
-finite component lies in `J`. -/
+/--
+The box of the points whose real components are within distance `δ` of the identity and whose
+finite component lies in `J`.
+-/
 def levelBox (δ : ℝ) (J : Subgroup (Gf E n)) : Set (G E s) :=
-  (Set.univ.pi fun _ : InfinitePlace E ↦ {z : USign s | ‖z.val.val - 1‖ ≤ δ}) ×ˢ
-    (J : Set (Gf E n))
+  (Set.univ.pi fun _ : InfinitePlace E ↦ {z : USign s | ‖z.val.val - 1‖ ≤ δ}) ×ˢ (J : Set (Gf E n))
 
 omit [Nonempty n] in
 /-- A point lies in the box `levelBox E s δ J` if and only if each real component is within
@@ -208,46 +209,57 @@ lemma mulVec_eq_self_of_norm_sub_one_le {x : G E s} {γ : U V.J} {b : ℕ}
     _ = (V.move x).firstMinimum := by rw [Space.height, inv_inv]
 
 omit [Nonempty n] in
-/-- There is a constant `c ≥ 1` such that a rational point `γ` is trivial if `x⁻¹ γ x` is integral
+/--
+There is a constant `c ≥ 1` such that a rational point `γ` is trivial if `x⁻¹ γ x` is integral
 at the finite places (lies in `stdLevel E n`) and within distance `(c Ht(x)²)⁻¹` of the identity at
 the infinite places. Here `Ht(x) = V.height x ≥ 1` is the inverse of the first minimum, cut off at
-`1` from above, of the lattice of `V` at `x`. -/
-theorem exists_eq_one_of_norm_sub_one_le : ∃ c ≥ (1 : ℝ), ∀ (x : G E s) (γ : U V.J),
-    (x⁻¹ * V.ratEmbed γ * x).2 ∈ stdLevel E n →
-    (∀ w : InfinitePlace E,
-      ‖((x⁻¹ * V.ratEmbed γ * x).1 w).val.val - 1‖ ≤ (c * V.height x ^ 2)⁻¹) → γ = 1 := by
+`1` from above, of the lattice of `V` at `x`.
+-/
+theorem exists_eq_one_of_norm_sub_one_le
+    : ∃ c ≥ (1 : ℝ), ∀ (x : G E s) (γ : U V.J),
+      (x⁻¹ * V.ratEmbed γ * x).2 ∈ stdLevel E n
+        → (∀ w : InfinitePlace E,
+          ‖((x⁻¹ * V.ratEmbed γ * x).1 w).val.val - 1‖ ≤ (c * V.height x ^ 2)⁻¹)
+        → γ = 1 := by
   -- `γ` fixes a basis of `Eⁿ` consisting of short lattice vectors at `x`.
   obtain ⟨b, h_short⟩ := V.exists_short_basis_matrix
   refine ⟨b + 1, le_add_of_nonneg_left b.cast_nonneg, fun x γ h_int h_close ↦ ?_⟩
-  obtain ⟨Y, hY⟩ : ∃ Y : GL n E, ∀ j : n,
-      Y.val.col j ∈ (V.move x).latticeBall (b * V.height x) := h_short x
-  have h_mul : γ.val.val * Y.val = 1 * Y.val := ext_col fun j ↦ by
-    rw [one_mul]
-    exact V.mulVec_eq_self_of_norm_sub_one_le h_int h_close (hY j)
+  obtain ⟨Y, hY⟩ : ∃ Y : GL n E, ∀ j : n, Y.val.col j ∈ (V.move x).latticeBall (b * V.height x) :=
+    h_short x
+  have h_mul : γ.val.val * Y.val = 1 * Y.val :=
+    ext_col fun j ↦ by
+      rw [one_mul]
+      exact V.mulVec_eq_self_of_norm_sub_one_le h_int h_close (hY j)
   exact Subtype.ext (Units.ext (Y.mul_left_inj.1 h_mul))
 
-/-- Let `J` be a subgroup of the integral finite points. There is `c ≥ 1` such that, for all adelic
+/--
+Let `J` be a subgroup of the integral finite points. There is `c ≥ 1` such that, for all adelic
 points `g`, `x` and for the box `B` of points within distance `δ = (c Ht(x)²)⁻¹` of the identity at
 the infinite places and in `J` at the finite ones (`levelBox E s δ J`, with `Ht(x) = V.height x`),
-the translates `g⁻¹ γ x B` by the rational points `γ` are disjoint. -/
-theorem exists_levelBox_disjoint {J : Subgroup (Gf E n)} (hJ : J ≤ stdLevel E n) :
-    ∃ c ≥ (1 : ℝ), ∀ (g x : G E s) (γ γ' : U V.J),
-      ∀ z ∈ levelBox E s (c * V.height x ^ 2)⁻¹ J, ∀ z' ∈ levelBox E s (c * V.height x ^ 2)⁻¹ J,
-      g⁻¹ * V.ratEmbed γ * x * z = g⁻¹ * V.ratEmbed γ' * x * z' → γ = γ' := by
+the translates `g⁻¹ γ x B` by the rational points `γ` are disjoint.
+-/
+theorem exists_levelBox_disjoint {J : Subgroup (Gf E n)} (hJ : J ≤ stdLevel E n)
+    : ∃ c ≥ (1 : ℝ), ∀ (g x : G E s) (γ γ' : U V.J), ∀ z ∈ levelBox E s (c * V.height x ^ 2)⁻¹ J,
+      ∀ z' ∈ levelBox E s (c * V.height x ^ 2)⁻¹ J,
+        g⁻¹ * V.ratEmbed γ * x * z = g⁻¹ * V.ratEmbed γ' * x * z' → γ = γ' := by
   -- The quotient `γ'⁻¹ γ` is conjugate to `z' z⁻¹`, which is integral and close to the identity.
   obtain ⟨c, hc, h_one⟩ := V.exists_eq_one_of_norm_sub_one_le
   refine ⟨4 * c, by linarith, fun g x γ γ' z hz z' hz' h_eq ↦ ?_⟩
   rw [mem_levelBox] at hz hz'
-  have h_quot : x⁻¹ * V.ratEmbed (γ'⁻¹ * γ) * x = z' * z⁻¹ := eq_mul_inv_iff_mul_eq.2 <| by
-    simpa [mul_assoc] using congrArg ((g⁻¹ * V.ratEmbed γ' * x)⁻¹ * ·) h_eq
-  have h_rad : (4 * c * V.height x ^ 2)⁻¹ ≤ 1 := inv_le_one_of_one_le₀
-    (one_le_mul_of_one_le_of_one_le (by linarith) (one_le_pow₀ (V.one_le_height x)))
+  have h_quot : x⁻¹ * V.ratEmbed (γ'⁻¹ * γ) * x = z' * z⁻¹ :=
+    eq_mul_inv_iff_mul_eq.2 <| by
+      simpa [mul_assoc] using congrArg ((g⁻¹ * V.ratEmbed γ' * x)⁻¹ * ·) h_eq
+  have h_rad : (4 * c * V.height x ^ 2)⁻¹ ≤ 1 :=
+    inv_le_one_of_one_le₀ (one_le_mul_of_one_le_of_one_le (by linarith)
+      (one_le_pow₀ (V.one_le_height x)))
   exact (inv_mul_eq_one.1 (h_one x (γ'⁻¹ * γ) (h_quot.symm ▸ hJ (J.mul_mem hz'.2 (J.inv_mem hz.2)))
-    fun w ↦ h_quot.symm ▸
-      (norm_mul_inv_sub_one_le h_rad (hz.1 w) (hz'.1 w)).trans_eq (by ring))).symm
+    fun w ↦
+      h_quot.symm ▸ (norm_mul_inv_sub_one_le h_rad (hz.1 w) (hz'.1 w)).trans_eq (by ring))).symm
 
-/-- The majorant `|φ(y_fin)| ‖y_∞‖ ^ (-A)`, where `‖y_∞‖` is the product of the operator norms at
-the infinite places. -/
+/--
+The majorant `|φ(y_fin)| ‖y_∞‖ ^ (-A)`, where `‖y_∞‖` is the product of the operator norms at
+the infinite places.
+-/
 def majorant (φ : Gf E n → ℂ) (A : ℕ) (y : G E s) : ℝ :=
   ‖φ y.2‖ * ((∏ w : InfinitePlace E, ‖(y.1 w).val.val‖) ^ A)⁻¹
 
@@ -298,16 +310,19 @@ lemma integrable_majorant (φ : TestFunction (Gf E n)) {A : ℕ} (hA : 8 * card 
     simp [majorant, Finset.prod_pow, mul_comm]
   exact (h_inf.mul_prod h_fin.norm).congr (.of_forall h_eq)
 
-/-- Let `E` be a CM field and `V` a hermitian space with a point. Let `φ` be a test function on the
+/--
+Let `E` be a CM field and `V` a hermitian space with a point. Let `φ` be a test function on the
 finite unitary group, a locally constant, compactly supported complex function. Then there is a
 constant `C ≥ 0` such that, for all adelic points `g` and `x`, the following holds with `f` the
 number of infinite places and `V.height x` equal to `1/λ`, where `λ` is the first minimum, capped at
 1, of the space `V` moved by `x`: the sum of the majorant `|φ(y_fin)| ‖y_∞‖ ^ (-8 n² - 1)` over all
 `y = g⁻¹ · V.ratEmbed γ · x`, with `γ` running over the rational unitary group `U(V.J)` and `‖y_∞‖`
-the product of the operator norms at the infinite places, is at most `C * V.height x ^ (4 f n²)`. -/
-theorem exists_tsum_majorant_le (φ : TestFunction (Gf E n)) : ∃ C ≥ (0 : ℝ), ∀ g x : G E s,
-    ∑' γ : U V.J, ENNReal.ofReal (majorant φ (8 * card n ^ 2 + 1) (g⁻¹ * V.ratEmbed γ * x)) ≤
-      .ofReal (C * V.height x ^ (4 * Core.numInfPlaces E * card n ^ 2)) := by
+the product of the operator norms at the infinite places, is at most `C * V.height x ^ (4 f n²)`.
+-/
+theorem exists_tsum_majorant_le (φ : TestFunction (Gf E n))
+    : ∃ C ≥ (0 : ℝ), ∀ g x : G E s,
+      ∑' γ : U V.J, ENNReal.ofReal (majorant φ (8 * card n ^ 2 + 1) (g⁻¹ * V.ratEmbed γ * x))
+        ≤ .ofReal (C * V.height x ^ (4 * Core.numInfPlaces E * card n ^ 2)) := by
   -- Compare the sum, times the volume of a box of radius `(c Ht(x)²)⁻¹`, with the integral.
   obtain ⟨J, hJ, -, hJ_fix⟩ := TestFunction.exists_isLevel_invariant φ
   obtain ⟨c, hc, h_disjoint⟩ := V.exists_levelBox_disjoint hJ.le
@@ -327,22 +342,28 @@ theorem exists_tsum_majorant_le (φ : TestFunction (Gf E n)) : ∃ C ≥ (0 : �
   set cover : ℝ := (12 * (c * V.height x ^ 2)) ^ d
   have h_sum : S * volume B ≤ bound := by
     refine tsum_mul_measure_le_lintegral volume (measurableSet_levelBox _ hJ.isOpen)
-      (h_disjoint g x) (f := fun y ↦ .ofReal (majorant φ A y)) ofReal_ne_top fun y z hz ↦ ?_
+      (h_disjoint g x)
+      (f := fun y ↦ .ofReal (majorant φ A y))
+      ofReal_ne_top
+      fun y z hz ↦ ?_
     rw [← ofReal_mul (by positivity)]
     exact ofReal_le_ofReal (majorant_le_mul_majorant_mul hJ_fix A (inv_le_one_of_one_le₀ hD) y hz)
   have h_le : S * v ≤ .ofReal cover * bound :=
-    calc S * v ≤ S * (.ofReal cover * volume B) := by gcongr; exact h_volume _ hD
+    calc
+      S * v
+        ≤ S * (.ofReal cover * volume B) := by gcongr; exact h_volume _ hD
       _ = .ofReal cover * (S * volume B) := mul_left_comm _ _ _
       _ ≤ .ofReal cover * bound := by gcongr
-  calc S ≤ .ofReal cover * bound / v :=
-        (ENNReal.le_div_iff_mul_le (.inl hv)
-          (.inr (mul_ne_top ofReal_ne_top h_bound_ne_top))).2 h_le
+  calc
+    S ≤ .ofReal cover * bound / v :=
+      (ENNReal.le_div_iff_mul_le (.inl hv) (.inr (mul_ne_top ofReal_ne_top h_bound_ne_top))).2 h_le
     _ = .ofReal (cover * (bound / v).toReal) := by
-        rw [mul_div_assoc, ofReal_mul (by positivity), ofReal_toReal (div_ne_top h_bound_ne_top hv)]
-    _ = .ofReal ((12 * c) ^ d * (bound / v).toReal *
-          V.height x ^ (4 * Core.numInfPlaces E * card n ^ 2)) := by
-        simp only [cover, hd]
-        ring_nf
+      rw [mul_div_assoc, ofReal_mul (by positivity), ofReal_toReal (div_ne_top h_bound_ne_top hv)]
+    _ = .ofReal
+        ((12 * c) ^ d * (bound / v).toReal
+          * V.height x ^ (4 * Core.numInfPlaces E * card n ^ 2)) := by
+      simp only [cover, hd]
+      ring_nf
 
 end Space
 

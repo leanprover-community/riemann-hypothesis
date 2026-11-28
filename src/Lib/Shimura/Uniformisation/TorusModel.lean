@@ -75,15 +75,19 @@ namespace New
 open CategoryTheory Complex LinearMap Submodule NumberField LineBundle Variety ThetaTori Set
   AlgebraicGeometry Polynomial AddChar IsIntegrallyClosed
 
-variable {E : Type} [Field E] [CMBase E]
-  {D : PEL E} {Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ}
-  {O : Type} [CommRing O] [ValuativeArc O] (y : ThetaObject X (Spec ⟨O⟩))
+variable
+  {E : Type} [Field E] [CMBase E]
+  {D : PEL E} {Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ} {O : Type}
+  [CommRing O] [ValuativeArc O]
+  (y : ThetaObject X (Spec ⟨O⟩))
   {g : GL D.Index (𝔸f E)} {ℓ : Matrix D.Index D.Index ℂ} {V : Type} [FinComplexSpace V]
   (Y : PeriodMap D g ℓ V)
 
-/-- The object `y` is modelled on the torus of the polarised period map `Y` onto `V`. The model is a
+/--
+The object `y` is modelled on the torus of the polarised period map `Y` onto `V`. The model is a
 uniformisation of `y.groupScheme` by `V`. It is compatible with the action of `𝓞 E` and the level
-points. Its kernel is the period lattice. Along it, `y.lineBundle` has theta coordinates. -/
+points. Its kernel is the period lattice. Along it, `y.lineBundle` has theta coordinates.
+-/
 structure ThetaObject.TorusModel where
   /-- The map `𝓞 E → O → ℂ` is the embedding `Φ v₀`. -/
   baseHom_eq (c : 𝓞 E) : algebraMap O ℂ (y.baseHom c) = Φ v₀ c.val
@@ -93,15 +97,17 @@ structure ThetaObject.TorusModel where
   χ : V → ℂ
   /-- The theta coordinates, indexed by `D.dualTorsion`. -/
   θ : V → D.dualTorsion → ℂ
-  /-- Along the uniformisation, `θ` are coordinates of `y.lineBundle` and theta functions of type
-  `(B, χ)`. -/
-  hasThetaCoords :
-      HasThetaCoords uniformisation.lattice (atGeneric uniformisation.expMap) y.lineBundle
-        Y.automorphyForm χ θ
+  /--
+  Along the uniformisation, `θ` are coordinates of `y.lineBundle` and theta functions of type
+  `(B, χ)`.
+  -/
+  hasThetaCoords
+    : HasThetaCoords uniformisation.lattice (atGeneric uniformisation.expMap) y.lineBundle
+      Y.automorphyForm χ θ
   /-- The composite of `Q` and the uniformisation commutes with the action of `𝓞 E`. -/
-  equivariant (c : 𝓞 E) (w : RealVectors E D.Index) :
-      uniformisation.expMap (Y.realEquiv (cmEmbedding c.val • w)) = c • uniformisation.expMap
-        (Y.realEquiv w)
+  equivariant (c : 𝓞 E) (w : RealVectors E D.Index)
+    : uniformisation.expMap (Y.realEquiv (cmEmbedding c.val • w))
+      = c • uniformisation.expMap (Y.realEquiv w)
   /-- The level points are the images of the chosen rational vectors. -/
   level_eq (l : D.levelTorsion) : y.levelPoints l = uniformisation.expMap (Y.torsionLift l)
   /-- The kernel of the uniformisation is the period lattice. -/
@@ -313,18 +319,22 @@ namespace New.ThetaObject.TorusModel
 open CategoryTheory Complex LinearMap Submodule NumberField LineBundle Variety ThetaTori Set
   AlgebraicGeometry Polynomial AddChar IsIntegrallyClosed
 
-variable {E : Type} [Field E] [CMBase E]
-  {D : PEL E} {Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ}
-  {O : Type} [CommRing O] [ValuativeArc O] {y : ThetaObject X (Spec ⟨O⟩)}
-  {g : GL D.Index (𝔸f E)} {ℓ : Matrix D.Index D.Index ℂ} {V : Type} [FinComplexSpace V]
+variable
+  {E : Type} [Field E] [CMBase E]
+  {D : PEL E} {Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ} {O : Type}
+  [CommRing O] [ValuativeArc O]
+  {y : ThetaObject X (Spec ⟨O⟩)} {g : GL D.Index (𝔸f E)} {ℓ : Matrix D.Index D.Index ℂ} {V : Type}
+  [FinComplexSpace V]
   {Y : PeriodMap D g ℓ V} (m : y.TorusModel Y)
 
 /-! ### The full structure of a model -/
 
-/-- The map `π` of a model `m` sends (E ⊗ ℝ)ⁿ to the sections of `y.groupScheme` over `O`. It is the
-period map `Q` followed by the uniformisation. -/
-noncomputable def π (w : RealVectors E D.Index) :
-    MonoidalCategoryStruct.tensorUnit (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme :=
+/--
+The map `π` of a model `m` sends (E ⊗ ℝ)ⁿ to the sections of `y.groupScheme` over `O`. It is the
+period map `Q` followed by the uniformisation.
+-/
+noncomputable def π (w : RealVectors E D.Index)
+    : MonoidalCategoryStruct.tensorUnit (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme :=
   m.uniformisation.expMap (Y.realEquiv w)
 
 /-- A ring homomorphism `φ : O → ℂ` acts on roots of unity through a unit of Ẑ. Here `ψf E` is the
@@ -399,18 +409,21 @@ lemma expMap_periodPoint_eq_iff (a b : D.Index → E) :
       Variety.frameTorsionClass g a = Variety.frameTorsionClass g b := by
   simpa [← m.lattice_eq, sub_eq_zero] using Y.sub_mem_periodLattice_iff (y := a) (z := b)
 
-/-- The full structure of a model: the class of g⁻¹a in (𝔸_f / Ô)ⁿ, for a in Eⁿ, is sent to the
+/--
+The full structure of a model: the class of g⁻¹a in (𝔸_f / Ô)ⁿ, for a in Eⁿ, is sent to the
 torsion section `expMap (Q (toRealVectors a))`, computed at the chosen rational lift `ratLift g` of
-the class. -/
+the class.
+-/
 noncomputable def fullStructure : y.FullLevelStructure where
-  torsionPoint :=
-    { toFun x := m.uniformisation.expMap (Y.periodPoint (ratLift g x))
-      map_add' := by
-        simp only [← map_add, m.expMap_periodPoint_eq_iff, frameTorsionClass_ratLift,
-          map_add (frameTorsionClass g), implies_true]
-      map_smul' := by
-        simp only [RingHom.id_apply, ← equivariant, ← toRealVectors_smul,
-          m.expMap_periodPoint_eq_iff, frameTorsionClass_ratLift, map_smul, implies_true] }
+  torsionPoint := {
+    toFun x := m.uniformisation.expMap (Y.periodPoint (ratLift g x))
+    map_add' := by
+      simp only [← map_add, m.expMap_periodPoint_eq_iff, frameTorsionClass_ratLift,
+        map_add (frameTorsionClass g), implies_true]
+    map_smul' := by
+      simp only [RingHom.id_apply, ← equivariant, ← toRealVectors_smul, m.expMap_periodPoint_eq_iff,
+        frameTorsionClass_ratLift, map_smul, implies_true]
+  }
   injective _ := by
     simp only [LinearMap.coe_mk, AddHom.coe_mk, m.expMap_periodPoint_eq_iff,
       frameTorsionClass_ratLift, imp_self, implies_true]
@@ -421,32 +434,37 @@ noncomputable def fullStructure : y.FullLevelStructure where
     obtain ⟨ε, hε⟩ := exists_unit_on_roots_of_unity (E := E) ι
     refine ⟨a * ε, fun k s t hs ht ↦ ?_⟩
     obtain ⟨c, hc, hιc⟩ := hε (finAdeleIncl ℚ E a * (k * xiForm D.ξ s t))
-    refine ⟨c, by simpa only [Units.val_mul, Subring.coe_mul, map_mul, mul_right_comm] using hιc,
-      fun Φ Ψ hΦ hΨ ↦ (lift_commutator_iff_weil_pairing _ m.hasThetaCoords hΦ hΨ).2 ?_⟩
+    refine ⟨
+      c,
+      by simpa only [Units.val_mul, Subring.coe_mul, map_mul, mul_right_comm] using hιc,
+      fun Φ Ψ hΦ hΨ ↦ (lift_commutator_iff_weil_pairing _ m.hasThetaCoords hΦ hΨ).2 ?_
+    ⟩
     -- It remains to see that `c` is `Real.fourierChar` of `polarisationForm` at `s'` and `k • t'`,
     -- where `s'`, `t'` are rational lifts of the classes of `s` and `t`.
     -- `fourierChar_polarisationForm` rewrites this through `ψf`.
     set s' := ratLift g (torsionClass s) with hs'
     set t' := ratLift g (torsionClass t) with ht'
-    have h_repr :
-        ψf E (finAdeleIncl ℚ E a * xiForm D.ξ (frameCoords g s') (frameCoords g (k • t'))) =
-          Real.fourierChar (polarisationForm D Y.formMatrix (toRealVectors s')
+    have h_repr
+        : ψf E (finAdeleIncl ℚ E a * xiForm D.ξ (frameCoords g s') (frameCoords g (k • t')))
+          = Real.fourierChar (polarisationForm D Y.formMatrix (toRealVectors s')
             (toRealVectors (k • t'))) :=
       (fourierChar_polarisationForm ha s' (k • t')).symm
     -- Up to the main term, the form pairs integral vectors, on which `ψf` is trivial
     -- (`D.mem_dualTorsion`).
-    have h_form (ξ : E) (v : D.Index → E) (w : D.Index → 𝔸f E) :
-        xiForm ξ (frameCoords g v) (k • w) =
-          k * xiForm ξ s t + xiForm ξ (k • s) (w - t) + xiForm ξ (frameCoords g v - s) (k • w) := by
+    have h_form (ξ : E) (v : D.Index → E) (w : D.Index → 𝔸f E)
+        : xiForm ξ (frameCoords g v) (k • w)
+          = k * xiForm ξ s t + xiForm ξ (k • s) (w - t)
+            + xiForm ξ (frameCoords g v - s) (k • w) := by
       -- Expand the form by bilinearity; the identity is then one of the commutative ring `𝔸f E`.
       simp only [xiForm, star_sub, star_smul, star_trivial, dotProduct_sub, sub_dotProduct,
         smul_dotProduct, dotProduct_smul]
       ring
     simpa only [hc, hs', ht', coe_fourierChar_eq_exp, map_nsmul, LinearMap.smul_apply,
-      Y.riemannForm_eq, polarisationForm_toRealVectors, map_smul_of_tower, h_form, mul_add,
-      map_add_eq_mul, hs, zero_mem, map_sub, ← frameTorsionClass_apply, frameTorsionClass_ratLift,
-      sub_self, (D.mem_dualTorsion _).1, (ψf_unit_mul_eq_one_iff _).2, mul_one, ht,
-      Circle.ext_iff] using h_repr
+        Y.riemannForm_eq, polarisationForm_toRealVectors, map_smul_of_tower, h_form, mul_add,
+        map_add_eq_mul, hs, zero_mem, map_sub, ← frameTorsionClass_apply, frameTorsionClass_ratLift,
+        sub_self, (D.mem_dualTorsion _).1, (ψf_unit_mul_eq_one_iff _).2, mul_one, ht,
+        Circle.ext_iff]
+      using h_repr
 
 /-- `New.ThetaObject.TorusModel.fullStructure` sends the class of g⁻¹z to the section at the period
 of z for every z in Eⁿ, not only for the chosen representative of the class. -/
@@ -579,11 +597,12 @@ namespace New.ThetaObject.TorusModel
 open CategoryTheory AlgebraicGeometry NumberField Matrix Category LineBundle ThetaTori Variety
   LinearMap Function
 
-variable {E : Type} [Field E] [CMBase E]
+variable
+  {E : Type} [Field E] [CMBase E]
   {V V' : Type} [FinComplexSpace V] [FinComplexSpace V']
   {D : PEL E} {g g' : GL D.Index (𝔸f E)} {ℓ ℓ' : Matrix D.Index D.Index ℂ} {Z : Scheme}
-  {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ}
-  {O : Type} [CommRing O] [ValuativeArc O]
+  {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ} {O : Type}
+  [CommRing O] [ValuativeArc O]
   {x x' : ThetaObject X (Spec ⟨O⟩)} {Y : PeriodMap D g ℓ V} {Y' : PeriodMap D g' ℓ' V'}
 
 /-- If `ψ` carries `m.π w` to `m'.π (z w)` for all `w`, then it carries the torsion point of the
@@ -725,10 +744,14 @@ lemma baseHom_eq_baseHom (m : x.TorusModel Y) (m' : x'.TorusModel Y') :
     x'.baseHom = x.baseHom :=
   RingHom.ext fun c ↦ IsFractionRing.injective O ℂ (by rw [m'.baseHom_eq, m.baseHom_eq])
 
-/-- `ψ` is an `𝓞 E`-linear isogeny from `x` to `x'` of multiplier `μ` that acts on torsion by
-the adelic matrix `k` and on periods by the rational matrix `z`. -/
-structure IsIsogenyOfMatrix (m : x.TorusModel Y) (m' : x'.TorusModel Y') (z : GL D.Index E)
-    (k : GL D.Index (𝔸f E)) (μ : ℕ) (ψ : x.groupScheme ⟶ x'.groupScheme) : Prop where
+/--
+`ψ` is an `𝓞 E`-linear isogeny from `x` to `x'` of multiplier `μ` that acts on torsion by
+the adelic matrix `k` and on periods by the rational matrix `z`.
+-/
+structure IsIsogenyOfMatrix
+    (m : x.TorusModel Y) (m' : x'.TorusModel Y') (z : GL D.Index E) (k : GL D.Index (𝔸f E)) (μ : ℕ)
+    (ψ : x.groupScheme ⟶ x'.groupScheme)
+    : Prop where
   /-- `ψ` is an isogeny. -/
   isIsogeny : IsIsogeny ψ
   /-- `ψ` commutes with the action of `𝓞 E`. -/
@@ -736,9 +759,9 @@ structure IsIsogenyOfMatrix (m : x.TorusModel Y) (m' : x'.TorusModel Y') (z : GL
   /-- `ψ` pulls the class of `x'.lineBundle` back to `μ` times that of `x.lineBundle`. -/
   pull_picClass : x'.lineBundle.picClass.pull ψ.left = μ • x.lineBundle.picClass
   /-- `ψ` sends the torsion point of the class of `y` to that of `k y`. -/
-  torsionPoint_comp (y : D.Index → 𝔸f E) :
-    m.fullStructure.torsionPoint (torsionClass y) ≫ ψ =
-      m'.fullStructure.torsionPoint (torsionClass (k.val *ᵥ y))
+  torsionPoint_comp (y : D.Index → 𝔸f E)
+    : m.fullStructure.torsionPoint (torsionClass y) ≫ ψ
+      = m'.fullStructure.torsionPoint (torsionClass (k.val *ᵥ y))
   /-- `ψ` sends `m.π w` to `m'.π (z w)`. -/
   π_comp (w : RealVectors E D.Index) : m.π w ≫ ψ = m'.π (realVecAction z w)
 

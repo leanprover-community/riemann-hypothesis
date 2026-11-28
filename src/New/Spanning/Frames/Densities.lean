@@ -59,91 +59,121 @@ namespace New.Floors
 open Matrix MeasureTheory Measure ENNReal Fintype FloorGroups ComplexConjugate InnerProductSpace
   PlaceData Finset Function RCLike Place
 
-variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  {ι : Type} [Fintype ι] [DecidableEq ι] {m : ℕ} {𝔰 : Shape} (j : ℕ)
+variable
+  {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  {ι : Type} [Fintype ι] [DecidableEq ι]
+  {m : ℕ} {𝔰 : Shape}
+  (j : ℕ)
   {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
-  {F : PlaceData ι T m} (p q : ℕ → Aˣ) {I : Type} [Fintype I]
+  {F : PlaceData ι T m}
+  (p q : ℕ → Aˣ)
+  {I : Type} [Fintype I]
   (W : T.G → EuclideanSpace ℂ I) (x : T.G) (Γ : Gauge F)
 
 section
 
-/-- The density κ_j of two sequences of units `p`, `q`: the product over `a < j` of
+/--
+The density κ_j of two sequences of units `p`, `q`: the product over `a < j` of
 `modulus (p a * q a) ^ (d a / 2)` with `d a = 𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1))`. The power `d a / 2` is
-written as the `d a`-th power of a square root. -/
+written as the `d a`-th power of a square root.
+-/
 def PlaceData.headDensity (_ : PlaceData ι T m) : ℝ≥0∞ :=
   ∏ a ∈ .range j, (P.modulus (p a * q a) ^ (2⁻¹ : ℝ)) ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1)))
 
 /-- The correlation `⟨W x, W (d y)⟩` of two points, the second translated by `d`. -/
-@[simp] abbrev frameCorrelation (d x y : T.G) : ℂ := ⟪W x, W (d * y)⟫_ℂ
+@[simp]
+abbrev frameCorrelation (d x y : T.G) : ℂ := ⟪W x, W (d * y)⟫_ℂ
 
-/-- W is a Bessel function of frequency η: bounded, measurable, with W(ux) = ψ(η σ(u))W(x) for u in
-𝖴 = `T.besselU`, where σ(u) = `simpleRootSum u` is the superdiagonal sum of the frame block. -/
+/--
+W is a Bessel function of frequency η: bounded, measurable, with W(ux) = ψ(η σ(u))W(x) for u in
+𝖴 = `T.besselU`, where σ(u) = `simpleRootSum u` is the superdiagonal sum of the frame block.
+-/
 structure Place.IsBessel (η : Aˣ) : Prop extends IsBoundedMeasurable W where
-  /-- Left translation by u in the Bessel unipotent group multiplies W by
-  ψ(η · `simpleRootSum u`). -/
+  /--
+  Left translation by u in the Bessel unipotent group multiplies W by
+  ψ(η · `simpleRootSum u`).
+  -/
   map_unipotent_mul : ∀ u ∈ T.besselU, ∀ x : T.G, W (u * x) = ψ (η * simpleRootSum u) • W x
 
-/-- W is a cut Bessel function for the place datum: Bessel of frequency `F.levelUnit⁻¹`, and zero at
-x unless ux lies in the box `F.boxSet` for some u in 𝖴 = `T.besselU`. -/
+/--
+W is a cut Bessel function for the place datum: Bessel of frequency `F.levelUnit⁻¹`, and zero at
+x unless ux lies in the box `F.boxSet` for some u in 𝖴 = `T.besselU`.
+-/
 structure PlaceData.IsCut : Prop extends P.IsBessel W F.levelUnit⁻¹ where
   /-- W vanishes off the translates of the box `F.boxSet` by the Bessel unipotent group. -/
   exists_mul_mem_box : ∀ {x : T.G}, W x ≠ 0 → ∃ u ∈ T.besselU, u * x ∈ F.boxSet
 
-/-- The squared L² norm of the correlation ⟪W x, W y⟫ for the measure `F.quotientMeasureFrom 0` in
-both variables, which stands for integration over 𝖴∖G. -/
+/--
+The squared L² norm of the correlation ⟪W x, W y⟫ for the measure `F.quotientMeasureFrom 0` in
+both variables, which stands for integration over 𝖴∖G.
+-/
 def PlaceData.pairingNormSq : ℝ≥0∞ :=
   ∫⁻ x : T.G, ∫⁻ y : T.G, ‖⟪W x, W y⟫_ℂ‖ₑ ^ 2 ∂F.quotientMeasureFrom 0 ∂F.quotientMeasureFrom 0
 
-/-- At the position `x`: the correlation from floor `j` on (`F.partialCorrelation j`) of the kernel
+/--
+At the position `x`: the correlation from floor `j` on (`F.partialCorrelation j`) of the kernel
 ⟨W y, W y'⟩ at the points `g`, `g x`, times the conjugate of that of the kernel ⟨W y, W (d y')⟩ at
-`w⁻¹ g`, `w⁻¹ g x`. -/
+`w⁻¹ g`, `w⁻¹ g x`.
+-/
 def PlaceData.partialCorrelationProduct (d w g : T.G) : ℂ :=
-  F.partialCorrelation j (frameCorrelation W 1) g (g * x) *
-    conj (F.partialCorrelation j (frameCorrelation W d) (w⁻¹ * g) (w⁻¹ * g * x))
+  F.partialCorrelation j (frameCorrelation W 1) g (g * x)
+    * conj (F.partialCorrelation j (frameCorrelation W d) (w⁻¹ * g) (w⁻¹ * g * x))
 
-/-- At the position x and the point g, the double integral ∬ ω(στ⁻¹) k(σg, σgx)
+/--
+At the position x and the point g, the double integral ∬ ω(στ⁻¹) k(σg, σgx)
 conj(k'(τw_p⁻¹g, τw_p⁻¹gx)) dθ_j(τ) dθ_j(σ). Here θ_j = `F.floorMeasure j`, w_p = `weylElem j p`,
 and k, k' are the correlations from floor j + 1 on of
-`New.Floors.PlaceData.partialCorrelationProduct` for the twist `weylRatio j p q`. -/
+`New.Floors.PlaceData.partialCorrelationProduct` for the twist `weylRatio j p q`.
+-/
 def PlaceData.formIntegrand (ω : T.G → ℂ) (g : T.G) : ℂ :=
   ∫ σ : T.G, ∫ τ : T.G, ω (σ * τ⁻¹) *
     F.partialCorrelationProduct (j + 1) W x (weylRatio j p q) (σ * weylElem j p * τ⁻¹)
       (σ * g) ∂F.floorMeasure j ∂F.floorMeasure j
 
-/-- The form 𝓘_j(p, q; ω): the density κ_j = `F.headDensity j p q` times the integral of the double
+/--
+The form 𝓘_j(p, q; ω): the density κ_j = `F.headDensity j p q` times the integral of the double
 integral `New.Floors.PlaceData.formIntegrand` over the position against 𝖬 = `F.groupMeasure` and
-over the point against 𝗆_j = `F.partialGroupMeasure 0 j`. -/
+over the point against 𝗆_j = `F.partialGroupMeasure 0 j`.
+-/
 def PlaceData.floorForm (ω : T.G → ℂ) : ℂ :=
-  (F.headDensity j p q).toReal *
-    ∫ z : T.G × T.G, F.formIntegrand j p q W z.1 ω z.2 ∂F.groupMeasure.prod
-      (F.partialGroupMeasure 0 j)
+  (F.headDensity j p q).toReal
+    * ∫ z : T.G × T.G, F.formIntegrand j p q W z.1 ω z.2 ∂F.groupMeasure.prod
+        (F.partialGroupMeasure 0 j)
 
-/-- The number 𝖥_j(x; ω): at the position x, the integral against 𝗆_j = `F.partialGroupMeasure 0 j`
+/--
+The number 𝖥_j(x; ω): at the position x, the integral against 𝗆_j = `F.partialGroupMeasure 0 j`
 of the modulus of the double integral `New.Floors.PlaceData.formIntegrand` that defines
-`F.floorForm`. -/
+`F.floorForm`.
+-/
 def PlaceData.formIntegrandL1Norm (ω : T.G → ℂ) : ℝ≥0∞ :=
   ∫⁻ g : T.G, ‖F.formIntegrand j p q W x ω g‖ₑ ∂F.partialGroupMeasure 0 j
 
-/-- The majorant of the form at the position `x`: the integral against
+/--
+The majorant of the form at the position `x`: the integral against
 𝗆_j = `F.partialGroupMeasure 0 j` of the product of two factors `F.pivotL1Norm j`, one for each
 kernel, each the integral over floor j of the modulus of the partial correlation from floor j + 1
-on. -/
+on.
+-/
 def PlaceData.formMajorant : ℝ≥0∞ :=
   ∫⁻ g : T.G, F.pivotL1Norm j (frameCorrelation W 1) g (g * x) *
     F.pivotL1Norm j (frameCorrelation W (weylRatio j p q)) ((weylElem j p)⁻¹ * g)
       ((weylElem j p)⁻¹ * g * x) ∂F.partialGroupMeasure 0 j
 
-/-- The product of the second moments `F.weightedSquareIntegral` of the two correlations at `x`,
+/--
+The product of the second moments `F.weightedSquareIntegral` of the two correlations at `x`,
 times the constant made of the squared product of `F.floorModulus a (p a)⁻¹` over a < j and of the
 cube of `Γ.floorsConst`. A number has the gain `ς` at `x` if its square is at most `ς ^ 2` times
-this product; the density `F.headDensity` is not included. -/
+this product; the density `F.headDensity` is not included.
+-/
 def Gauge.weightedSquareProduct : ℝ≥0∞ :=
-  (∏ a ∈ .range j, F.floorModulus a (p a)⁻¹) ^ 2 * Γ.floorsConst ^ 3 *
-    F.weightedSquareIntegral 0 (frameCorrelation W 1) x * F.weightedSquareIntegral j
-      (frameCorrelation W (weylRatio j p q)) x
+  (∏ a ∈ .range j, F.floorModulus a (p a)⁻¹) ^ 2 * Γ.floorsConst ^ 3
+    * F.weightedSquareIntegral 0 (frameCorrelation W 1) x
+    * F.weightedSquareIntegral j (frameCorrelation W (weylRatio j p q)) x
 
-/-- At the position `x`, the point `y` is active for the heads `p`, `q`: the correlation of `y` and
-`y x` is not zero, and both points are near at `j` after the Weyl elements are undone. -/
+/--
+At the position `x`, the point `y` is active for the heads `p`, `q`: the correlation of `y` and
+`y x` is not zero, and both points are near at `j` after the Weyl elements are undone.
+-/
 structure PlaceData.IsActive (y : T.G) : Prop where
   /-- The correlation of the two points is not zero. -/
   inner_ne_zero : ⟪W y, W (y * x)⟫_ℂ ≠ 0
@@ -152,8 +182,10 @@ structure PlaceData.IsActive (y : T.G) : Prop where
   /-- The point `w_q⁻¹ y x` is near at `j`. -/
   isNear_right : F.IsNear j ((weylElem j q)⁻¹ * (y * x))
 
-/-- At the position `x`, every active point `y` has a frame vector e_a with `j ≤ a` whose depth
-`F.depth a y x` is at least `D`. -/
+/--
+At the position `x`, every active point `y` has a frame vector e_a with `j ≤ a` whose depth
+`F.depth a y x` is at least `D`.
+-/
 def PlaceData.HasDeepVector (D : ℝ≥0∞) : Prop :=
   ∀ y : T.G, F.IsActive j p q W x y → ∃ a : Fin 𝔰.ϱ, j ≤ a ∧ D ≤ F.depth a y x
 
@@ -168,20 +200,20 @@ lemma PlaceData.hasDeepVector_inv_iff {σ : ℝ≥0∞} : F.HasDeepVector j p q 
   simp only [HasDeepVector, le_depth_iff, inv_inv]
 
 omit [TopologicalSpace A] [MeasureSpace A] [Place A] [IsHermitianUnit T.splitGram] in
-/-- For b ≤ ϱ, let x be in both R^(b+1) = `partialUnitriangularGroup (b + 1)` and G^(b) =
+/--
+For b ≤ ϱ, let x be in both R^(b+1) = `partialUnitriangularGroup (b + 1)` and G^(b) =
 `floorGroup b`, so that x fixes the frame vector f_b. Then multiplying y by x on the left or on the
-right leaves the diagonal entry h(f_b, y f_b) of Z(y) = `T.frameGram y` unchanged. -/
-theorem frameGram_diag_mul {x : T.G} {b : Fin 𝔰.n}
-    (h : x ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) (y : T.G) :
-    T.frameGram (x * y : T.G) b b = T.frameGram y b b ∧
-      T.frameGram (y * x : T.G) b b = T.frameGram y b b := by
+right leaves the diagonal entry h(f_b, y f_b) of Z(y) = `T.frameGram y` unchanged.
+-/
+theorem frameGram_diag_mul
+    {x : T.G} {b : Fin 𝔰.n} (h : x ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) (y : T.G)
+    : T.frameGram (x * y : T.G) b b = T.frameGram y b b
+      ∧ T.frameGram (y * x : T.G) b b = T.frameGram y b b := by
   set f : 𝔰.BesselIndex → A := Pi.single (𝔰.besselFrame b) 1
   let mat (z : T.G) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A := z
-  have h_mul (z z' : T.G) : mat (z * z') *ᵥ f = mat z *ᵥ mat z' *ᵥ f := by
-    simp [mat, mulVec_mulVec]
+  have h_mul (z z' : T.G) : mat (z * z') *ᵥ f = mat z *ᵥ mat z' *ᵥ f := by simp [mat, mulVec_mulVec]
   -- The entry is `h(f, z f)`, and `x` fixes the vector `f`.
-  have h_entry (z : T.G) :
-      T.frameGram z b b = star f ⬝ᵥ T.splitGram *ᵥ mat z *ᵥ f := by
+  have h_entry (z : T.G) : T.frameGram z b b = star f ⬝ᵥ T.splitGram *ᵥ mat z *ᵥ f := by
     simp only [f, mat, Shape.Form.frameGram, ← Pi.single_star, star_one, single_one_dotProduct,
       mulVec_single_one]
     rfl
@@ -190,9 +222,9 @@ theorem frameGram_diag_mul {x : T.G} {b : Fin 𝔰.n}
   have h_fix : mat x *ᵥ f = f :=
     orbitPoint_eq_iff.1 ((mem_partialUnitriangularGroup_succ_iff h_floor).1 h_unitri)
   constructor
-  · calc T.frameGram (x * y : T.G) b b
-        = star (mat x *ᵥ f) ⬝ᵥ T.splitGram *ᵥ mat x *ᵥ mat y *ᵥ f := by
-          rw [h_fix, h_entry, h_mul]
+  · calc
+      T.frameGram (x * y : T.G) b b
+        = star (mat x *ᵥ f) ⬝ᵥ T.splitGram *ᵥ mat x *ᵥ mat y *ᵥ f := by rw [h_fix, h_entry, h_mul]
       _ = T.frameGram y b b := by rw [U.form_mulVec_mulVec, h_entry]
   · rw [h_entry, h_mul, h_fix, h_entry]
 
@@ -200,27 +232,32 @@ end
 
 variable {j p q W x}
 
-/-- The form of floor `j` with the weight `ω` is bounded by its L¹-norm version:
+/--
+The form of floor `j` with the weight `ω` is bounded by its L¹-norm version:
 |𝓘_j(p, q; ω)| ≤ κ_j ∫ 𝖥_j(x; ω) d𝖬(x), where 𝓘_j = `F.floorForm j`, κ_j = `F.headDensity j p q`,
-𝖥_j = `F.formIntegrandL1Norm j` and 𝖬 = `F.groupMeasure`. -/
-theorem PlaceData.enorm_floorForm_le (ω : T.G → ℂ) :
-    ‖F.floorForm j p q W ω‖ₑ ≤
-      F.headDensity j p q * ∫⁻ x : T.G, F.formIntegrandL1Norm j p q W x ω ∂F.groupMeasure := by
+𝖥_j = `F.formIntegrandL1Norm j` and 𝖬 = `F.groupMeasure`.
+-/
+theorem PlaceData.enorm_floorForm_le (ω : T.G → ℂ)
+    : ‖F.floorForm j p q W ω‖ₑ
+      ≤ F.headDensity j p q * ∫⁻ x : T.G, F.formIntegrandL1Norm j p q W x ω ∂F.groupMeasure := by
   have h_density : ‖((F.headDensity j p q).toReal : ℂ)‖ₑ ≤ F.headDensity j p q := by
     rw [← ofReal_norm, Complex.norm_real, Real.norm_of_nonneg toReal_nonneg]
     exact ofReal_toReal_le
-  have h_integral : ‖∫ z : T.G × T.G, F.formIntegrand j p q W z.1 ω z.2
-      ∂F.groupMeasure.prod (F.partialGroupMeasure 0 j)‖ₑ ≤
-      ∫⁻ x : T.G, F.formIntegrandL1Norm j p q W x ω ∂F.groupMeasure :=
+  have h_integral
+      : ‖∫ z : T.G × T.G, F.formIntegrand j p q W z.1 ω z.2
+          ∂F.groupMeasure.prod (F.partialGroupMeasure 0 j)‖ₑ
+        ≤ ∫⁻ x : T.G, F.formIntegrandL1Norm j p q W x ω ∂F.groupMeasure :=
     (eNorm_integral_le_lintegral_eNorm _).trans (lintegral_prod_le _)
   rw [floorForm, eNorm_mul]
   exact mul_le_mul' h_density h_integral
 
-/-- The partial group measure of the last two floors, `ϱ` and `ϱ + 1`, is the convolution of the
+/--
+The partial group measure of the last two floors, `ϱ` and `ϱ + 1`, is the convolution of the
 Haar measure `F.measureH` of the group H = `besselH`, which is the measure of floor `ϱ + 1`, with
-the measure of floor `ϱ`. -/
-theorem PlaceData.partialGroupMeasure_top :
-    F.partialGroupMeasure 𝔰.ϱ 2 = F.measureH ∗ₘ F.floorMeasure 𝔰.ϱ := by
+the measure of floor `ϱ`.
+-/
+theorem PlaceData.partialGroupMeasure_top
+    : F.partialGroupMeasure 𝔰.ϱ 2 = F.measureH ∗ₘ F.floorMeasure 𝔰.ϱ := by
   simp [descConv]
 
 /-- The elements of the unitary group whose matrix entries have size `j` for the gauge `Γ` form a
@@ -229,18 +266,23 @@ lemma Gauge.isCompact_hasMatrixSize {j : ℕ} (Γ : Gauge F) :
     IsCompact {y : T.G | Γ.HasMatrixSize j (y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)} :=
   isClosedEmbedding_unitary_coe.isCompact_preimage (Γ.isCompact_ofSize _).matrix
 
-/-- A cut Bessel function `W` vanishes off the points near at `j`, for every `j`: if `W x ≠ 0`, then
-`u x` lies in the box `F.boxSet` for some `u` in `partialUnitriangularGroup j`. -/
+/--
+A cut Bessel function `W` vanishes off the points near at `j`, for every `j`: if `W x ≠ 0`, then
+`u x` lies in the box `F.boxSet` for some `u` in `partialUnitriangularGroup j`.
+-/
 theorem PlaceData.IsCut.isNear_of_ne_zero (hk : F.IsCut W) (h : W x ≠ 0) : F.IsNear j x := by
   obtain ⟨u, hu, hu_box⟩ : ∃ u ∈ T.besselU, u * x ∈ F.boxSet := hk.exists_mul_mem_box h
   exact ⟨u, mem_partialUnitriangularGroup_of_mem_besselU hu, hu_box⟩
 
-/-- Let W be a cut Bessel function and |ω| ≤ 1 everywhere. For every floor `j : ℕ`, all sequences of
+/--
+Let W be a cut Bessel function and |ω| ≤ 1 everywhere. For every floor `j : ℕ`, all sequences of
 units `p q : ℕ → Aˣ` and every point x of the group, the L¹ norm 𝖥_j(x; ω) of the form integrand at
-x is at most the majorant `F.formMajorant j p q W x`. -/
-theorem PlaceData.IsCut.formIntegrandL1Norm_le_formMajorant {W : T.G → EuclideanSpace ℂ I} {x : T.G}
-    (hW : F.IsCut W) {ω : T.G → ℂ} (hω_le : ∀ y : T.G, ‖ω y‖ ≤ 1) :
-    F.formIntegrandL1Norm j p q W x ω ≤ F.formMajorant j p q W x := by
+x is at most the majorant `F.formMajorant j p q W x`.
+-/
+theorem PlaceData.IsCut.formIntegrandL1Norm_le_formMajorant
+    {W : T.G → EuclideanSpace ℂ I} {x : T.G} (hW : F.IsCut W)
+    {ω : T.G → ℂ} (hω_le : ∀ y : T.G, ‖ω y‖ ≤ 1)
+    : F.formIntegrandL1Norm j p q W x ω ≤ F.formMajorant j p q W x := by
   have hW_meas : StronglyMeasurable W := hW.stronglyMeasurable
   rw [formIntegrandL1Norm, formMajorant]
   refine lintegral_mono fun g : T.G ↦ ?_
@@ -251,17 +293,19 @@ theorem PlaceData.IsCut.formIntegrandL1Norm_le_formMajorant {W : T.G → Euclide
     ‖F.partialCorrelation (j + 1) (frameCorrelation W (weylRatio j p q))
       (τ * ((weylElem j p)⁻¹ * g))
       (τ * ((weylElem j p)⁻¹ * g * x))‖ₑ
-  have h_integrand (σ τ : T.G) :
-      ‖ω (σ * τ⁻¹) * F.partialCorrelationProduct (j + 1) W x (weylRatio j p q)
-        (σ * weylElem j p * τ⁻¹)
-        (σ * g)‖ₑ ≤ plain σ * twisted τ := by
+  have h_integrand (σ τ : T.G)
+      : ‖ω (σ * τ⁻¹) * F.partialCorrelationProduct (j + 1) W x (weylRatio j p q)
+          (σ * weylElem j p * τ⁻¹)
+          (σ * g)‖ₑ
+        ≤ plain σ * twisted τ := by
     have hω : ‖ω (σ * τ⁻¹)‖ₑ ≤ 1 := by
       rw [← ofReal_norm]
       exact ofReal_le_one.2 (hω_le _)
     grw [eNorm_mul, hω, one_mul]
     simp [partialCorrelationProduct, plain, twisted, mul_assoc]
   have h_plain_meas : Measurable plain := by fun_prop [partialCorrelation]
-  calc ‖F.formIntegrand j p q W x ω g‖ₑ
+  calc
+    ‖F.formIntegrand j p q W x ω g‖ₑ
     _ ≤ ∫⁻ σ : T.G, ∫⁻ τ : T.G, plain σ * twisted τ ∂F.floorMeasure j ∂F.floorMeasure j :=
       (eNorm_integral_le_lintegral_eNorm _).trans <| lintegral_mono fun σ ↦
         (eNorm_integral_le_lintegral_eNorm _).trans (lintegral_mono (h_integrand σ))
@@ -269,19 +313,26 @@ theorem PlaceData.IsCut.formIntegrandL1Norm_le_formMajorant {W : T.G → Euclide
       lintegral_congr fun σ ↦ lintegral_const_mul' _ _ eNorm_ne_top
     _ = (∫⁻ σ : T.G, plain σ ∂F.floorMeasure j) * ∫⁻ τ : T.G, twisted τ ∂F.floorMeasure j :=
       lintegral_mul_const _ h_plain_meas
-    _ = F.pivotL1Norm j (frameCorrelation W 1) g (g * x) *
-        F.pivotL1Norm j (frameCorrelation W (weylRatio j p q)) ((weylElem j p)⁻¹ * g)
-          ((weylElem j p)⁻¹ * g * x) := by rw [pivotL1Norm, pivotL1Norm]
+    _ = F.pivotL1Norm j (frameCorrelation W 1) g (g * x)
+        * F.pivotL1Norm j (frameCorrelation W (weylRatio j p q)) ((weylElem j p)⁻¹ * g)
+          ((weylElem j p)⁻¹ * g * x) := by
+      rw [pivotL1Norm, pivotL1Norm]
 
-/-- Compact support of the orbital integrals, with a bound. Let W be a cut Bessel function, p a head
+/--
+Compact support of the orbital integrals, with a bound. Let W be a cut Bessel function, p a head
 of length ϱ for the gauge Γ, with Weyl element w_p = `weylElem 𝔰.ϱ p`, and x in
 G^(ϱ) = `floorGroup 𝔰.ϱ`. If W(y) ≠ 0 and W((w_p x)⁻¹y) ≠ 0, then the entries of y have size 60 n²,
 where n = `𝔰.n` = ϱ + 1: the unipotent factors that move the two points into the box are solved from
-the minors of the head. -/
-theorem Gauge.hasMatrixSize_of_ne_zero {p : ℕ → Aˣ} {W : T.G → EuclideanSpace ℂ I} {x : T.G}
-    (Γ : Gauge F) (hW : F.IsCut W) {y : T.G} (hp : Γ.IsHead 𝔰.ϱ p) (hx_top : x ∈ floorGroup 𝔰.ϱ)
-    (hy : W y ≠ 0) (hy' : W ((weylElem 𝔰.ϱ p * x)⁻¹ * y) ≠ 0) :
-    Γ.HasMatrixSize (60 * 𝔰.n ^ 2) (y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) := by
+the minors of the head.
+-/
+theorem Gauge.hasMatrixSize_of_ne_zero
+    {p : ℕ → Aˣ} {W : T.G → EuclideanSpace ℂ I} {x : T.G}
+    (Γ : Gauge F)
+    (hW : F.IsCut W)
+    {y : T.G}
+    (hp : Γ.IsHead 𝔰.ϱ p) (hx_top : x ∈ floorGroup 𝔰.ϱ) (hy : W y ≠ 0)
+    (hy' : W ((weylElem 𝔰.ϱ p * x)⁻¹ * y) ≠ 0)
+    : Γ.HasMatrixSize (60 * 𝔰.n ^ 2) (y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) := by
   obtain ⟨u, hu, hu_box⟩ : ∃ u ∈ T.besselU, u * y ∈ F.boxSet := hW.exists_mul_mem_box hy
   -- The factor `x⁻¹` lies in `floorGroup 𝔰.ϱ`, so it does not affect nearness at the floor `𝔰.ϱ`.
   have h_near_mul : F.IsNear 𝔰.ϱ (x⁻¹ * ((weylElem 𝔰.ϱ p)⁻¹ * y)) := by
@@ -295,53 +346,60 @@ theorem Gauge.hasMatrixSize_of_ne_zero {p : ℕ → Aˣ} {W : T.G → EuclideanS
     Size.hasMatrixSize_of_isHead Γ.hasMatrixSize_boxSet .refl h_near ⟨hu_unitri, hu_box⟩ hp hu_below
   exact hy_size
 
-/-- The inner product of two orbital integrals as an integral over two copies of the group. Let Γ be
+/--
+The inner product of two orbital integrals as an integral over two copies of the group. Let Γ be
 a gauge for the place datum F and μ a Haar measure. Let W be a continuous cut Bessel function, that
 is a Bessel function that vanishes off the 𝖴-translates of the box of F. Let p and q be heads of
 length ϱ for Γ, with Weyl elements w_p = `weylElem 𝔰.ϱ p` and w_q, and let x be in the subgroup
 G^(ϱ) = `floorGroup 𝔰.ϱ`. Write J(γ) = ∫ W(y) ⊗ W(γ⁻¹y)^* dμ(y) for `besselOrbitalIntegral μ W γ`.
 Then ⟨J(w_p x), J(w_q x)⟩ is the μ×μ-integral over (y, y') of ⟨Wy, Wy'⟩ times the conjugate of
-⟨W((w_p x)⁻¹y), W((w_q x)⁻¹y')⟩. -/
-theorem Gauge.inner_besselOrbitalIntegral {p q : ℕ → Aˣ} {W : T.G → EuclideanSpace ℂ I} {x : T.G}
-    (Γ : Gauge F) (hk : F.IsCut W) {μ : Measure T.G} [IsHaarMeasure μ] (hW : Continuous W)
-    (hp : Γ.IsHead 𝔰.ϱ p) (hq : Γ.IsHead 𝔰.ϱ q) (hx_top : x ∈ floorGroup 𝔰.ϱ) :
-    ⟪besselOrbitalIntegral μ W (weylElem 𝔰.ϱ p * x),
-      besselOrbitalIntegral μ W (weylElem 𝔰.ϱ q * x)⟫_ℂ =
-      ∫ z : T.G × T.G, ⟪W z.1, W z.2⟫_ℂ *
-        conj ⟪W ((weylElem 𝔰.ϱ p * x)⁻¹ * z.1), W ((weylElem 𝔰.ϱ q * x)⁻¹ * z.2)⟫_ℂ ∂μ.prod μ := by
-  -- The coordinate `i` of `besselOrbitalIntegral μ W (weylElem 𝔰.ϱ r * x)` is the integral of
-  -- `f r i`.
-  let f (r : ℕ → Aˣ) (i : I × I) (y : T.G) : ℂ :=
-    W y i.1 * conj (W ((weylElem 𝔰.ϱ r * x)⁻¹ * y) i.2)
-  -- For a head `r`, `f r i` is continuous by `hW` and lives on the compact set of points of size
-  -- 60 n².
-  have h_integrable {r : ℕ → Aˣ} (hr : Γ.IsHead 𝔰.ϱ r) (i : I × I) : Integrable (f r i) μ := by
-    have h_support : HasCompactSupport (f r i) := by
-      refine .intro (Γ.isCompact_hasMatrixSize (j := 60 * 𝔰.n ^ 2)) fun y hy ↦ ?_
-      by_contra h_ne
-      obtain ⟨h_left, h_right⟩ :
-          W y i.1 ≠ 0 ∧ conj (W ((weylElem 𝔰.ϱ r * x)⁻¹ * y) i.2) ≠ 0 := mul_ne_zero_iff.1 h_ne
-      refine hy (Γ.hasMatrixSize_of_ne_zero hk hr hx_top (fun h_zero ↦ ?_) fun h_zero ↦ ?_)
-      · exact h_left (by rw [h_zero, PiLp.zero_apply])
-      · exact h_right (by rw [h_zero, PiLp.zero_apply, map_zero])
-    exact h_support.integrable
-  have h_integrable_prod (i : I × I) :
-      Integrable (fun z : T.G × T.G ↦ conj (f p i z.1) * f q i z.2) (μ.prod μ) :=
-    (Complex.conjCLE.integrable_comp_iff.2 (h_integrable hp i)).mul_prod (h_integrable hq i)
-  calc ⟪besselOrbitalIntegral μ W (weylElem 𝔰.ϱ p * x),
-         besselOrbitalIntegral μ W (weylElem 𝔰.ϱ q * x)⟫_ℂ
-    _ = ∑ i : I × I, conj (∫ y : T.G, f p i y ∂μ) * ∫ y : T.G, f q i y ∂μ := by
-      simp only [PiLp.inner_apply, inner_apply', besselOrbitalIntegral, f]
-    _ = ∑ i : I × I, ∫ z : T.G × T.G, conj (f p i z.1) * f q i z.2 ∂μ.prod μ := by
-      simp only [← integral_conj, ← integral_prod_mul]
-    _ = ∫ z : T.G × T.G, ∑ i : I × I, conj (f p i z.1) * f q i z.2 ∂μ.prod μ :=
-      (integral_finsetSum _ fun i _ ↦ h_integrable_prod i).symm
-    _ = ∫ z : T.G × T.G, ⟪W z.1, W z.2⟫_ℂ * conj ⟪W ((weylElem 𝔰.ϱ p * x)⁻¹ * z.1),
-        W ((weylElem 𝔰.ϱ q * x)⁻¹ * z.2)⟫_ℂ ∂μ.prod μ := by
-      refine integral_congr_ae (.of_forall fun z : T.G × T.G ↦ ?_)
-      simp only [f, PiLp.inner_apply, inner_apply', sum_prod_type, Finset.sum_mul_sum,
-        _root_.map_sum, map_mul, conj_conj]
-      exact sum_congr rfl fun i _ ↦ sum_congr rfl fun i' _ ↦ by ring
+⟨W((w_p x)⁻¹y), W((w_q x)⁻¹y')⟩.
+-/
+theorem Gauge.inner_besselOrbitalIntegral
+    {p q : ℕ → Aˣ} {W : T.G → EuclideanSpace ℂ I} {x : T.G}
+    (Γ : Gauge F)
+    (hk : F.IsCut W)
+    {μ : Measure T.G} [IsHaarMeasure μ]
+    (hW : Continuous W) (hp : Γ.IsHead 𝔰.ϱ p) (hq : Γ.IsHead 𝔰.ϱ q) (hx_top : x ∈ floorGroup 𝔰.ϱ)
+    : ⟪besselOrbitalIntegral μ W (weylElem 𝔰.ϱ p * x),
+        besselOrbitalIntegral μ W (weylElem 𝔰.ϱ q * x)⟫_ℂ
+      = ∫ z : T.G × T.G, ⟪W z.1, W z.2⟫_ℂ *
+          conj ⟪W ((weylElem 𝔰.ϱ p * x)⁻¹ * z.1), W ((weylElem 𝔰.ϱ q * x)⁻¹ * z.2)⟫_ℂ ∂μ.prod μ :=
+  by
+    -- The coordinate `i` of `besselOrbitalIntegral μ W (weylElem 𝔰.ϱ r * x)` is the integral of
+    -- `f r i`.
+    let f (r : ℕ → Aˣ) (i : I × I) (y : T.G) : ℂ :=
+      W y i.1 * conj (W ((weylElem 𝔰.ϱ r * x)⁻¹ * y) i.2)
+    -- For a head `r`, `f r i` is continuous by `hW` and lives on the compact set of points of size
+    -- 60 n².
+    have h_integrable {r : ℕ → Aˣ} (hr : Γ.IsHead 𝔰.ϱ r) (i : I × I) : Integrable (f r i) μ := by
+      have h_support : HasCompactSupport (f r i) := by
+        refine .intro (Γ.isCompact_hasMatrixSize (j := 60 * 𝔰.n ^ 2)) fun y hy ↦ ?_
+        by_contra h_ne
+        obtain ⟨h_left, h_right⟩ : W y i.1 ≠ 0 ∧ conj (W ((weylElem 𝔰.ϱ r * x)⁻¹ * y) i.2) ≠ 0 :=
+          mul_ne_zero_iff.1 h_ne
+        refine hy (Γ.hasMatrixSize_of_ne_zero hk hr hx_top (fun h_zero ↦ ?_) fun h_zero ↦ ?_)
+        · exact h_left (by rw [h_zero, PiLp.zero_apply])
+        · exact h_right (by rw [h_zero, PiLp.zero_apply, map_zero])
+      exact h_support.integrable
+    have h_integrable_prod (i : I × I)
+        : Integrable (fun z : T.G × T.G ↦ conj (f p i z.1) * f q i z.2) (μ.prod μ) :=
+      (Complex.conjCLE.integrable_comp_iff.2 (h_integrable hp i)).mul_prod (h_integrable hq i)
+    calc
+      ⟪besselOrbitalIntegral μ W (weylElem 𝔰.ϱ p * x),
+        besselOrbitalIntegral μ W (weylElem 𝔰.ϱ q * x)⟫_ℂ
+      _ = ∑ i : I × I, conj (∫ y : T.G, f p i y ∂μ) * ∫ y : T.G, f q i y ∂μ := by
+        simp only [PiLp.inner_apply, inner_apply', besselOrbitalIntegral, f]
+      _ = ∑ i : I × I, ∫ z : T.G × T.G, conj (f p i z.1) * f q i z.2 ∂μ.prod μ := by
+        simp only [← integral_conj, ← integral_prod_mul]
+      _ = ∫ z : T.G × T.G, ∑ i : I × I, conj (f p i z.1) * f q i z.2 ∂μ.prod μ :=
+        (integral_finsetSum _ fun i _ ↦ h_integrable_prod i).symm
+      _ = ∫ z : T.G × T.G, ⟪W z.1, W z.2⟫_ℂ * conj ⟪W ((weylElem 𝔰.ϱ p * x)⁻¹ * z.1),
+          W ((weylElem 𝔰.ϱ q * x)⁻¹ * z.2)⟫_ℂ ∂μ.prod μ := by
+        refine integral_congr_ae (.of_forall fun z : T.G × T.G ↦ ?_)
+        simp only [f, PiLp.inner_apply, inner_apply', sum_prod_type, Finset.sum_mul_sum,
+          _root_.map_sum, map_mul, conj_conj]
+        exact sum_congr rfl fun i _ ↦ sum_congr rfl fun i' _ ↦ by ring
 
 /-- Let `W` be a cut Bessel function for the place datum `F`, which has a gauge, and `p`, `q` two
 sequences of units. The kernel `⟪W g, W (w y)⟫`, with `w` = `weylRatio j p q`, satisfies the rules
@@ -424,11 +482,14 @@ lemma Gauge.isPairingKernel_frameCorrelation (Γ : Gauge F) (hW : F.IsCut W) (j 
       exact h_far ((hW.isNear_of_ne_zero hσg).of_floorGroup_mul hσ)
     simp [h_zero]
 
-/-- For a place datum F with a gauge and a cut Bessel function W, the function (x, y) ↦ ⟨W(x), W(y)⟩
+/--
+For a place datum F with a gauge and a cut Bessel function W, the function (x, y) ↦ ⟨W(x), W(y)⟩
 is a kernel in the sense of `New.Floors.PlaceData.IsPairingKernel` at floor j, with twisting element
-1. -/
-theorem Gauge.isPairingKernel_frameCorrelation_one {W : T.G → EuclideanSpace ℂ I} (Γ : Gauge F)
-    (hk : F.IsCut W) (j : ℕ) : F.IsPairingKernel j (frameCorrelation W 1) 1 := by
+1.
+-/
+theorem Gauge.isPairingKernel_frameCorrelation_one
+    {W : T.G → EuclideanSpace ℂ I} (Γ : Gauge F) (hk : F.IsCut W) (j : ℕ)
+    : F.IsPairingKernel j (frameCorrelation W 1) 1 := by
   simpa [weylRatio] using Γ.isPairingKernel_frameCorrelation hk j 1 1
 
 /-- Let the place datum `F` have a gauge and let `W` be a cut Bessel function. For every floor
@@ -452,22 +513,26 @@ lemma PlaceData.partialCorrelationProduct_eq {W : T.G → EuclideanSpace ℂ I} 
   simp [← h_plain, ← h_twisted, integral_conj, partialCorrelationProduct, mul_assoc, formIntegrand,
     integral_const_mul, integral_mul_const]
 
-/-- The mass. For a place datum `F` with a gauge and a cut Bessel function `W`, the form of floor
+/--
+The mass. For a place datum `F` with a gauge and a cut Bessel function `W`, the form of floor
 `0` for the weight `1` is the integral of `|k₀(1, z)|²` in `z` against `F.groupMeasure`. Here
 `k₀ = F.partialCorrelation 0 k` is the correlation from floor `0` on, an integral over all floors,
-of the kernel `k = frameCorrelation W 1`. -/
-theorem PlaceData.floorForm_zero_eq_integral (Γ : Gauge F) (hW : F.IsCut W) (p q : ℕ → Aˣ) :
-    F.floorForm 0 p q W 1 =
-      (∫ z : T.G, ‖F.partialCorrelation 0 (frameCorrelation W 1) 1 z‖ ^ 2 ∂F.groupMeasure : ℝ) := by
+of the kernel `k = frameCorrelation W 1`.
+-/
+theorem PlaceData.floorForm_zero_eq_integral (Γ : Gauge F) (hW : F.IsCut W) (p q : ℕ → Aˣ)
+    : F.floorForm 0 p q W 1
+      = (∫ z : T.G, ‖F.partialCorrelation 0 (frameCorrelation W 1) 1 z‖ ^ 2 ∂F.groupMeasure
+        : ℝ) := by
   -- Below floor `0` there is only the point `1`, and the Weyl elements of length `0` are trivial.
-  have h_point (z : T.G) : F.formIntegrand 0 p q W z 1 1 =
-      (‖F.partialCorrelation 0 (frameCorrelation W 1) 1 z‖ ^ 2 : ℝ) := by
+  have h_point (z : T.G)
+      : F.formIntegrand 0 p q W z 1 1
+        = (‖F.partialCorrelation 0 (frameCorrelation W 1) 1 z‖ ^ 2 : ℝ) := by
     rw [← partialCorrelationProduct_eq Γ hW]
     simp [partialCorrelationProduct, weylRatio, Complex.mul_conj']
   have h_density : F.headDensity 0 p q = 1 := prod_range_zero _
   have h_stack : F.partialGroupMeasure 0 0 = dirac 1 := rfl
-  rw [floorForm, h_density, h_stack, prod_dirac,
-    (measurableEmbedding_prod_mk_right 1).integral_map, ← integral_complex_ofReal]
+  rw [floorForm, h_density, h_stack, prod_dirac, (measurableEmbedding_prod_mk_right 1).integral_map,
+    ← integral_complex_ofReal]
   simp only [h_point, toReal_one, Complex.ofReal_one, one_mul]
 
 /-- The form of floor `b` as an integral of products of correlations from floor `b + 1` on. Let the
@@ -611,28 +676,35 @@ lemma PlaceData.integrable_and_integral_succ_eq_mul_floorForm {W : T.G → Eucli
       _ = t * F.floorForm b p q W χ := by
         simp only [h_fubini, formTerm, floorForm, formIntegrand]
 
-/-- Descent. Let the place datum F have a gauge, let W be a cut Bessel function, `p q : ℕ → Aˣ`
+/--
+Descent. Let the place datum F have a gauge, let W be a cut Bessel function, `p q : ℕ → Aˣ`
 sequences of units and a < ϱ. Let the majorant `F.formMajorant a p q W` have a finite integral
 against 𝖬 = `F.groupMeasure`, and let φ be a measurable function on A with |φ| ≤ 1. Then
 c ↦ φ(c) · t · 𝓘_{a+1}((p, c), (q, c); 1) is integrable, with integral t · 𝓘_a(p, q; φ(Z_{a,a})).
 Here 𝓘_j(p, q; ω) is `F.floorForm j p q W ω`, (p, c) is p with the entry a replaced by c, and
-Z_{a,a}(x) = h(f_a, x f_a) is a diagonal entry of `T.frameGram x`. -/
-theorem Gauge.integral_weight_mul_floorForm_succ {W : T.G → EuclideanSpace ℂ I} (Γ : Gauge F)
-    (hk : F.IsCut W) (a : Fin 𝔰.ϱ) (t : ℂ) {φ : A → ℂ} (hφ : Measurable φ)
-    (hφ_le : ∀ c : A, ‖φ c‖ ≤ 1)
-    (h_fin : ∫⁻ x : T.G, F.formMajorant a p q W x ∂F.groupMeasure ≠ ∞) :
-    let f (c : A) : ℂ :=
-      φ c * (t * F.floorForm (a + 1) (update p a (unitOrOne c)) (update q a (unitOrOne c)) W 1)
-    Integrable f ∧
-    ∫ c : A, f c =
-      t * F.floorForm a p q W fun x : T.G ↦ φ (T.frameGram x a.castSucc a.castSucc) := by
+Z_{a,a}(x) = h(f_a, x f_a) is a diagonal entry of `T.frameGram x`.
+-/
+theorem Gauge.integral_weight_mul_floorForm_succ
+    {W : T.G → EuclideanSpace ℂ I}
+    (Γ : Gauge F) (hk : F.IsCut W)
+    (a : Fin 𝔰.ϱ)
+    (t : ℂ)
+    {φ : A → ℂ} (hφ : Measurable φ) (hφ_le : ∀ c : A, ‖φ c‖ ≤ 1)
+    (h_fin : ∫⁻ x : T.G, F.formMajorant a p q W x ∂F.groupMeasure ≠ ∞)
+    : let f (c : A) : ℂ :=
+        φ c * (t * F.floorForm (a + 1) (update p a (unitOrOne c)) (update q a (unitOrOne c)) W 1)
+      Integrable f
+        ∧ ∫ c : A, f c
+          = t * F.floorForm a p q W fun x : T.G ↦ φ (T.frameGram x a.castSucc a.castSucc) := by
   -- This is `integrable_and_integral_succ_eq_mul_floorForm` for the big cell: `F.floorMeasure a` is
   -- the law of `(floorWeyl a c)⁻¹ * n`, for `c` with the density `ρ` and `n` under
   -- `heisenbergMeasure a`.
-  have h_cell : F.floorMeasure a.castSucc =
-      (volume.withDensity fun c : A ↦ P.modulus c ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1)))).map
-        (fun c : A ↦ (floorWeyl a.castSucc c)⁻¹) ∗ₘ heisenbergMeasure a.castSucc :=
-          ite_eq_left a.isLt
+  have h_cell
+      : F.floorMeasure a.castSucc
+        = (volume.withDensity fun c : A ↦ P.modulus c ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1)))).map
+            (fun c : A ↦ (floorWeyl a.castSucc c)⁻¹)
+          ∗ₘ heisenbergMeasure a.castSucc :=
+    ite_eq_left a.isLt
   refine integrable_and_integral_succ_eq_mul_floorForm Γ hk a.castSucc hφ hφ_le h_fin
     (ae_mem_floorUnipotent.mono fun n hn ↦ ⟨unipotentBelow_le_partialUnitriangularGroup hn.2, hn.1⟩)
     (ae_isUnit.mono ?_) h_cell (ae_isUnit.mono ?_) measurable_floorWeyl
@@ -644,42 +716,53 @@ theorem Gauge.integral_weight_mul_floorForm_succ {W : T.G → EuclideanSpace ℂ
     -- unchanged, `floorWeyl a c` has Gram entry `c`, and the new factor of `headDensity` gives the
     -- density `ρ c`.
     rintro _ ⟨c, rfl⟩
-    have h_density : F.headDensity (a + 1) (update p a c) (update q a c) =
-        F.headDensity a p q * P.modulus (c : A) ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1))) := by
+    have h_density
+        : F.headDensity (a + 1) (update p a c) (update q a c)
+          = F.headDensity a p q * P.modulus (c : A) ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1))) := by
       simp [headDensity, ← sq, LT.lt.ne, ← rpow_two, -rpow_ofNat, field, prod_range,
         Fin.prod_univ_castSucc]
     have h_weyl : (weylElem (a + 1) (update p a c) : T.G) = weylElem a p * floorWeyl a (c : A) := by
       simp [weylElem_succ, (commute_weylElem _).eq]
     have h_ratio : (weylRatio (a + 1) (update p a c) (update q a c) : T.G) = weylRatio a p q := by
       simp [weylRatio, weylElem_succ, mul_assoc]
-    have h_form : F.floorForm (a + 1) (update p a c) (update q a c) W 1 =
-        (F.headDensity (a + 1) (update p a c) (update q a c)).toReal *
-          ∫ z : T.G × T.G, F.partialCorrelationProduct (a + 1) W z.1 (weylRatio a p q)
-            (weylElem a p * floorWeyl a (c : A)) z.2
-            ∂F.groupMeasure.prod (F.partialGroupMeasure 0 (a + 1)) := by
+    have h_form
+        : F.floorForm (a + 1) (update p a c) (update q a c) W 1
+          = (F.headDensity (a + 1) (update p a c) (update q a c)).toReal
+            * ∫ z : T.G × T.G, F.partialCorrelationProduct (a + 1) W z.1 (weylRatio a p q)
+                (weylElem a p * floorWeyl a (c : A)) z.2
+                ∂F.groupMeasure.prod (F.partialGroupMeasure 0 (a + 1)) := by
       simp only [floorForm, ← h_weyl, ← h_ratio, ← partialCorrelationProduct_eq Γ hk]
-    have h_stack : F.partialGroupMeasure 0 (a + 1) =
-        (heisenbergMeasure a ∗ₘ F.floorMeasure a) ∗ₘ F.partialGroupMeasure 0 a := descConv_succ a
+    have h_stack
+        : F.partialGroupMeasure 0 (a + 1)
+          = (heisenbergMeasure a ∗ₘ F.floorMeasure a) ∗ₘ F.partialGroupMeasure 0 a :=
+      descConv_succ a
     simp only [Fin.val_castSucc, unitOrOne_val, h_form, h_density, h_stack, frameGram_floorWeyl,
       Complex.real_smul]
     ring
 
-/-- Descent for a character: the case φ(c) = ψ(ηc) of
+/--
+Descent for a character: the case φ(c) = ψ(ηc) of
 `New.Floors.Gauge.integral_weight_mul_floorForm_succ`, for a cut Bessel function `W` whose majorant
 on floor `a` has a finite integral against `F.groupMeasure`. As a function of the common entry `c`
 of `p` and `q` at `a`, ψ(ηc) times `t` times the form of floor `a + 1` with weight `1` is
 integrable, and its integral is `t` times the form of floor `a` with the weight ψ(η Z(x)), where
-Z(x) is the Gram entry `T.frameGram x a a`. -/
-theorem Gauge.integral_psi_mul_floorForm_succ (Γ : Gauge F) (hW : F.IsCut W) (a : Fin 𝔰.ϱ) (t : ℂ)
-    (η : A) (h_fin : ∫⁻ x : T.G, F.formMajorant a p q W x ∂F.groupMeasure ≠ ∞) :
-    let f (c : A) : ℂ :=
-      ψ (η * c) *
-        (t * F.floorForm (a + 1) (update p a (unitOrOne c)) (update q a (unitOrOne c)) W 1)
-    Integrable f ∧
-    ∫ c : A, f c =
-      t * F.floorForm a p q W fun x : T.G ↦ ψ (η * T.frameGram x a.castSucc a.castSucc) :=
-  Γ.integral_weight_mul_floorForm_succ hW a t (φ := fun c : A ↦ ψ (η * c)) (by fun_prop)
-    (fun c ↦ (P.norm_psi (η * c)).le) h_fin
+Z(x) is the Gram entry `T.frameGram x a a`.
+-/
+theorem Gauge.integral_psi_mul_floorForm_succ
+    (Γ : Gauge F) (hW : F.IsCut W)
+    (a : Fin 𝔰.ϱ)
+    (t : ℂ) (η : A) (h_fin : ∫⁻ x : T.G, F.formMajorant a p q W x ∂F.groupMeasure ≠ ∞)
+    : let f (c : A) : ℂ :=
+        ψ (η * c)
+          * (t * F.floorForm (a + 1) (update p a (unitOrOne c)) (update q a (unitOrOne c)) W 1)
+      Integrable f
+        ∧ ∫ c : A, f c
+          = t * F.floorForm a p q W fun x : T.G ↦ ψ (η * T.frameGram x a.castSucc a.castSucc) :=
+  Γ.integral_weight_mul_floorForm_succ hW a t
+    (φ := fun c : A ↦ ψ (η * c))
+    (by fun_prop)
+    (fun c ↦ (P.norm_psi (η * c)).le)
+    h_fin
 
 end New.Floors
 

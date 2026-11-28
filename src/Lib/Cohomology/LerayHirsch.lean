@@ -45,20 +45,26 @@ namespace New.Variety
 
 open CategoryTheory Function DirectSum TotalH Finsupp H
 
-variable {A C : Type 1} [Category A] [Category C]
-  {Φ : (A ⥤ Ab) ⥤ AbFunctor C} [@IsExactFunctor A C _ _ Φ] {G : A ⥤ Ab} {S S' : AbFunctor A}
-  {n e : ℕ} {F N M : AbFunctor C} {I : Type _} [DecidableEq I] {d : I → ℕ}
-  (θ : ∀ i : I, H (Φ G) F (d i)) {X : ShortComplex (AbFunctor A)} (h : X.ShortExact)
+variable
+  {A C : Type 1} [Category A] [Category C]
+  {Φ : (A ⥤ Ab) ⥤ AbFunctor C} [@IsExactFunctor A C _ _ Φ]
+  {G : A ⥤ Ab} {S S' : AbFunctor A} {n e : ℕ} {F N M : AbFunctor C} {I : Type _} [DecidableEq I]
+  {d : I → ℕ} (θ : ∀ i : I, H (Φ G) F (d i))
+  {X : ShortComplex (AbFunctor A)} (h : X.ShortExact)
 
 /-! ### The map and its naturality -/
 
-/-- For classes θ_i in Ext^{d_i}(ΦG, F), the Leray–Hirsch map w ↦ Σ θ_i∘Φ(w_i) from finitely
-supported families in total Ext(S, G) to total Ext(ΦS, F). -/
+/--
+For classes θ_i in Ext^{d_i}(ΦG, F), the Leray–Hirsch map w ↦ Σ θ_i∘Φ(w_i) from finitely
+supported families in total Ext(S, G) to total Ext(ΦS, F).
+-/
 def lerayHirsch (S : AbFunctor A) : (I →₀ TotalH S G) →ₗ[ℤ] TotalH (Φ S) F :=
   lsum ℤ fun i ↦ (mapThenComp Φ (θ i).toTotalH).toIntLinearMap
 
-/-- The Leray–Hirsch property for S: the Leray–Hirsch map `New.Variety.lerayHirsch` of θ at S is
-bijective. -/
+/--
+The Leray–Hirsch property for S: the Leray–Hirsch map `New.Variety.lerayHirsch` of θ at S is
+bijective.
+-/
 abbrev IsLerayHirschBasis (S : AbFunctor A) : Prop := Bijective (lerayHirsch θ S)
 
 section
@@ -99,9 +105,11 @@ end
 /-! ### Truncation by total degree -/
 
 open scoped Classical in
-/-- The truncation of finitely supported families (w_i) in total Ext(S, G) to total degree below
+/--
+The truncation of finitely supported families (w_i) in total Ext(S, G) to total degree below
 n: in w_i, keep the components of degree e with e + d_i < n. It is a ℤ-linear endomorphism of the
-families `I →₀ TotalH S G`. -/
+families `I →₀ TotalH S G`.
+-/
 @[aesop simp]
 def degreeTrunc (d : I → ℕ) (n : ℕ) :=
   (finsuppLequivDFinsupp (M := TotalH S G) ℤ).symm.conj
@@ -123,14 +131,17 @@ lemma degreeTrunc_comp_lerayHirsch (S : AbFunctor A) (n : ℕ) :
     φ ∘ₗ degreeTrunc d n = degreeTrunc 0 n ∘ₗ φ := by
   aesop (add simp lerayHirsch) (add simp [mapThenComp, lof_eq_of, comp_of])
 
-/-- For a linear map φ from families `I →₀ TotalH S G` to families `J →₀ TotalH N F`, commuting with
+/--
+For a linear map φ from families `I →₀ TotalH S G` to families `J →₀ TotalH N F`, commuting with
 the truncations (below n with shifts d, below m with shifts b) `New.Variety.degreeTrunc`, its
-restriction from families of total degree below n to families of total degree below m. -/
-def truncMap {J b m φ} [DecidableEq J]
-    (h : φ ∘ₗ degreeTrunc (A := A) (G := G) (S := S) (I := I) d n =
-      degreeTrunc (A := C) (G := F) (S := N) (I := J) b m ∘ₗ φ) :
-    (.of (degreeTrunc (A := A) (G := G) (S := S) (I := I) d n).range : Ab) →+
-      (.of (degreeTrunc (A := C) (G := F) (S := N) (I := J) b m).range : Ab) :=
+restriction from families of total degree below n to families of total degree below m.
+-/
+def truncMap
+    {J b m φ} [DecidableEq J]
+    (h : φ ∘ₗ degreeTrunc (A := A) (G := G) (S := S) (I := I) d n
+      = degreeTrunc (A := C) (G := F) (S := N) (I := J) b m ∘ₗ φ)
+    : (.of (degreeTrunc (A := A) (G := G) (S := S) (I := I) d n).range : Ab)
+      →+ (.of (degreeTrunc (A := C) (G := F) (S := N) (I := J) b m).range : Ab) :=
   -- `φ` sends `degreeTrunc d n w` to `degreeTrunc b m (φ w)`
   show (.of (degreeTrunc d n).range : Ab) →+ (.of (degreeTrunc b m).range : Ab) from
     (φ.restrict (by
@@ -200,10 +211,12 @@ lemma truncMap.exact_of_exact {S : AbFunctor C} {n e : ℕ} {F N M : AbFunctor C
   · -- Conversely `ζ` kills what comes from `ξ`, component by component.
     simp [← hy, Finsupp.ext_iff, h_exact.apply_apply_eq_zero]
 
-/-- For a short exact sequence X, the long exact sequence whose n-th terms are the finitely
+/--
+For a short exact sequence X, the long exact sequence whose n-th terms are the finitely
 supported families in total Ext(X₃, G), Ext(X₂, G), Ext(X₁, G) of total degree below n; its maps A
 n → B n → C n → A (n+1) are precomposition with X.g, with X.f, and with the extension class of X
-(degree 1). -/
+(degree 1).
+-/
 def truncMap.longExact : LongExactSeq where
   -- the shifts `+ 0` are the degrees of the classes of `X.g` and `X.f`
   A n := .of (degreeTrunc (S := X.X₃) (G := G) d n).range

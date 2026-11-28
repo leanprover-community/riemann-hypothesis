@@ -157,19 +157,26 @@ lemma gram_linkForm_eq_zero_of_le_link [Fintype τ] [DecidableEq τ] {S : Fillin
   change star (v.col i) ⬝ᵥ S.linkForm *ᵥ u.col j = 0
   exact mem_link_iff_orthogonal.1 huj _ hvi
 
-variable [Fintype τ] [DecidableEq τ] (S : Filling E 𝔰) (c : S.Classes) {c' : S.Classes} {γ : S.G E}
+variable
+  [Fintype τ] [DecidableEq τ]
+  (S : Filling E 𝔰) (c : S.Classes)
+  {c' : S.Classes} {γ : S.G E}
   (t : Matrix 𝔰.BesselIndex σ E) (t' : Matrix 𝔰.BesselIndex τ E)
   (v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E)
 
-/-- The matrix `½·diag(T, T) + N⁻¹·L* L` on two copies of `X₀ ⊕ E z`, where `T = S.ratMiddle E`,
+/--
+The matrix `½·diag(T, T) + N⁻¹·L* L` on two copies of `X₀ ⊕ E z`, where `T = S.ratMiddle E`,
 the two rows `L = zRowBlockDiagonal T` are the `z`-row of `T` in either copy, and `*` is the
-conjugate transpose. -/
+conjugate transpose.
+-/
 def linkMetric : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) E :=
-  (2⁻¹ : E) • (S.ratMiddle E).fromBlocks 0 0 (S.ratMiddle E) +
-    (S.N : E)⁻¹ • ((zRowBlockDiagonal (S.ratMiddle E))ᴴ * zRowBlockDiagonal (S.ratMiddle E))
+  (2⁻¹ : E) • (S.ratMiddle E).fromBlocks 0 0 (S.ratMiddle E)
+    + (S.N : E)⁻¹ • ((zRowBlockDiagonal (S.ratMiddle E))ᴴ * zRowBlockDiagonal (S.ratMiddle E))
 
-/-- The number `|Nm det(vᴴ Q v)| · [det e]²`, with `Nm` the norm to `ℚ`, `[·]` the generalised
-index and `Q = S.linkMetric`: the squared discriminant of the lattice with adelic basis `v e`. -/
+/--
+The number `|Nm det(vᴴ Q v)| · [det e]²`, with `Nm` the norm to `ℚ`, `[·]` the generalised
+index and `Q = S.linkMetric`: the squared discriminant of the lattice with adelic basis `v e`.
+-/
 def linkDiscSq (e : GL τ (𝔸f E)) : ℝ :=
   |↑(Algebra.norm ℚ (vᴴ * S.linkMetric * v).det)| * genIndex e.val.det ^ 2
 
@@ -202,14 +209,16 @@ lemma classCoord_eq_fromBlocks :
   simp [classCoordX₀, classCoord, classBasis, toBesselH, besselLatticeBasis, fromBlocks_multiply,
     fromCols_mul_fromBlocks]
 
-/-- The columns of `m` are the images under `linkMatrix γ` of vectors of the lattice `h_c Λ₀`
+/--
+The columns of `m` are the images under `linkMatrix γ` of vectors of the lattice `h_c Λ₀`
 (the vectors with integral `S.classCoord c`-coordinates) that are adelic combinations of rational
-vectors orthogonal to `A` and `γ A`. -/
+vectors orthogonal to `A` and `γ A`.
+-/
 def HasIntegralLifts (m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ (𝔸f E)) : Prop :=
   ∃ ρ : Type, ∃ (_ : Fintype ρ) (t : Matrix 𝔰.BesselIndex ρ E) (w : Matrix ρ τ (𝔸f E)),
-    (isotropicFramePair γ)ᴴ * S.ratGram * t = 0 ∧
-    IsIntMatrix (Ô E) (S.classCoord c * finAdeleMatrix t * w) ∧
-    finAdeleMatrix (linkMatrix γ * t) * w = m
+    (isotropicFramePair γ)ᴴ * S.ratGram * t = 0
+      ∧ IsIntMatrix (Ô E) (S.classCoord c * finAdeleMatrix t * w)
+      ∧ finAdeleMatrix (linkMatrix γ * t) * w = m
 
 /-! ### Products in the coordinates of the lattice -/
 
@@ -270,12 +279,14 @@ lemma dotProduct_linkMetric_mulVec (p q : 𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex 
   simp [dotProduct_positiveGram_mulVec_eq_sum_add, linkSource, linkTarget]
   ring
 
-/-- For pairs `p`, `q` in the link of `γ`, the form `linkMetric` is the product of their images
-under `linkSource` for the Gram matrix `S.positiveGram = diag(1, N)` on the middle coordinates. -/
-theorem linkMetric_form_of_mem_link {p q : 𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E}
-    (hp : p ∈ link γ) (hq : q ∈ link γ) :
-    star p ⬝ᵥ S.linkMetric *ᵥ q =
-      star (linkSource E 𝔰 p) ⬝ᵥ S.positiveGram *ᵥ linkSource E 𝔰 q := by
+/--
+For pairs `p`, `q` in the link of `γ`, the form `linkMetric` is the product of their images
+under `linkSource` for the Gram matrix `S.positiveGram = diag(1, N)` on the middle coordinates.
+-/
+theorem linkMetric_form_of_mem_link
+    {p q : 𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E} (hp : p ∈ link γ) (hq : q ∈ link γ)
+    : star p ⬝ᵥ S.linkMetric *ᵥ q
+      = star (linkSource E 𝔰 p) ⬝ᵥ S.positiveGram *ᵥ linkSource E 𝔰 q := by
   rw [dotProduct_linkMetric_mulVec, ← form_linkSource_eq_form_linkTarget hp hq]
   ring
 
@@ -360,8 +371,10 @@ variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {𝔰 : Shape}
 
 section
 
-variable (S : Filling E 𝔰) {R : Type*} (j : Fin (𝔰.ϱ + 2)) (c : S.Classes)
-  (Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) R) (k : S.GFin)
+variable
+  (S : Filling E 𝔰)
+  {R : Type*}
+  (j : Fin (𝔰.ϱ + 2)) (c : S.Classes) (Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) R) (k : S.GFin)
 
 /-! ### Rows of the matrix of products -/
 
@@ -373,7 +386,13 @@ abbrev isotropicRows : Matrix (Fin 𝔰.ϱ) (Fin (𝔰.ϱ + 1)) R := Z.submatrix
 
 /-- The first `j` rows of `Z`, completed by rows of the identity matrix. -/
 def paddedLeading [CommRing R] : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) R :=
-  of fun a b ↦ if a.val < ↑j then Z a b else if a = b then 1 else 0
+  of fun a b ↦
+    if a.val < ↑j then
+      Z a b
+    else if a = b then
+      1
+    else
+      0
 
 /-- The matrix `paddedLeading j Z` keeps the first `j` rows of `Z` and completes them by the
 remaining rows of the identity matrix. Its determinant is the leading minor `D_j` of `Z`. -/
@@ -392,78 +411,98 @@ lemma det_paddedLeading [CommRing R] {j : Fin (𝔰.ϱ + 2)}
 /-! ### Discriminants and indices -/
 
 /-- The middle coordinates of the image of the frame under `γ`: those in `X₀` and along `z`. -/
-abbrev frameMiddle (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) :
-    Matrix 𝔰.MiddleIndex (Fin (𝔰.ϱ + 1)) R :=
+abbrev frameMiddle (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R)
+    : Matrix 𝔰.MiddleIndex (Fin (𝔰.ϱ + 1)) R :=
   (frameImage (R := R) (𝔰 := 𝔰) γ).toRows₂.toRows₁
 
-/-- The discriminant (`New.Filling.sublatticeDiscriminant`) of `Λ ∩ V`, for the lattice `Λ` of the
-class `c` and a subspace `V` of `X₀`. -/
+/--
+The discriminant (`New.Filling.sublatticeDiscriminant`) of `Λ ∩ V`, for the lattice `Λ` of the
+class `c` and a subspace `V` of `X₀`.
+-/
 def latticeDisc : Submodule E (𝔰.κ → E) → ℝ := sublatticeDiscriminant (S.gram_classCoordX₀ c)
 
-/-- Among the products of `Λ ∩ A` with the frame of `k`, the index of those that
-come from the vectors `e_a` with `a < j`. -/
+/--
+Among the products of `Λ ∩ A` with the frame of `k`, the index of those that
+come from the vectors `e_a` with `a < j`.
+-/
 def isotropicRowsIndex : ℕ :=
   submoduleIndex
     (colLattice (Ô E)
       (submatrix ((S.latticeMiddle (𝔸f E)).frameGram k) (fun a : IndexBelow j ↦ a.1.castSucc) id)ᴴ)
     (colLattice (Ô E) (isotropicRows ((S.latticeMiddle (𝔸f E)).frameGram k))ᴴ)
 
-/-- The index of `Λ ∩ A + k (Λ ∩ A)` in `Λ ∩ (A + k A)`, for the standard lattice `Λ` and the
-isotropic space `A`. -/
+/--
+The index of `Λ ∩ A + k (Λ ∩ A)` in `Λ ∩ (A + k A)`, for the standard lattice `Λ` and the
+isotropic space `A`.
+-/
 def torsionIndex : ℕ :=
   submoduleIndex (colLattice (Ô E) (isotropicFramePair k))
     (intVectors (Ô E) 𝔰.BesselIndex ⊓ (colSpan (isotropicFramePair k)).restrictScalars (Ô E))
 
-/-- The absolute norm of the leading minor of order `j` of the matrix of products of the frame with
+/--
+The absolute norm of the leading minor of order `j` of the matrix of products of the frame with
 its image under `γ`, divided by `N ^ (2 r)` at the top rank `j = ϱ + 1`, with `r` the number of
-infinite places. -/
+infinite places.
+-/
 def minorNorm (j : Fin (𝔰.ϱ + 2)) (γ : S.G E) : ℝ :=
-  |(Algebra.norm ℚ (leadingMinor (S.frameProducts γ) j) : ℝ)| /
-    S.N ^ (2 * (j - 𝔰.ϱ) * numInfPlaces E)
+  |(Algebra.norm ℚ (leadingMinor (S.frameProducts γ) j) : ℝ)|
+    / S.N ^ (2 * (j - 𝔰.ϱ) * numInfPlaces E)
 
-/-- The indices of the subframe made of the first `j` vectors of the frame `(e₁, …, e_ϱ, z)` and its
-last vector `z`. For `j = ϱ` and `j = ϱ + 1` the subframe is the whole frame. -/
+/--
+The indices of the subframe made of the first `j` vectors of the frame `(e₁, …, e_ϱ, z)` and its
+last vector `z`. For `j = ϱ` and `j = ϱ + 1` the subframe is the whole frame.
+-/
 abbrev subframeIndices (j : Fin (𝔰.ϱ + 2)) : Finset (Fin (𝔰.ϱ + 1)) :=
   {a : Fin (𝔰.ϱ + 1) | a.val < j.val ∨ a = 𝔰.top}
 
-/-- The minor `δ_*(γ)` of `S.frameProducts γ` on the rows and columns `subframeIndices j`: the
+/--
+The minor `δ_*(γ)` of `S.frameProducts γ` on the rows and columns `subframeIndices j`: the
 determinant of the products of the subframe made of the first `j` vectors of the frame
-`(e₁, …, e_ϱ, z)` and its last vector `z` with the image of this subframe under `γ`. -/
+`(e₁, …, e_ϱ, z)` and its last vector `z` with the image of this subframe under `γ`.
+-/
 def subframeMinor (j : Fin (𝔰.ϱ + 2)) (γ : S.G E) : E :=
   ((S.frameProducts γ).submatrix ((↑) : subframeIndices j → Fin (𝔰.ϱ + 1))
     ((↑) : subframeIndices j → Fin (𝔰.ϱ + 1))).det
 
-/-- The gauge `𝗀♯ = Nm δ_*(γ) / (i_γ i'_γ N ^ r)` of the term `γ` from `c'` to `c`. Here `Nm` is the
+/--
+The gauge `𝗀♯ = Nm δ_*(γ) / (i_γ i'_γ N ^ r)` of the term `γ` from `c'` to `c`. Here `Nm` is the
 absolute norm, `δ_*(γ) = S.subframeMinor j γ`, `i_γ` and `i'_γ` are the indices `isotropicRowsIndex`
-at `h_c⁻¹ γ h_c'` and at its inverse, and `r` is the number of infinite places. -/
+at `h_c⁻¹ γ h_c'` and at its inverse, and `r` is the number of infinite places.
+-/
 def minorGauge (j : Fin (𝔰.ϱ + 2)) (c c' : S.Classes) (γ : S.G E) : ℝ :=
-  |(Algebra.norm ℚ (S.subframeMinor j γ) : ℝ)| /
-    (S.isotropicRowsIndex j (S.translateByClassReps c c' γ) * S.isotropicRowsIndex j
-      (S.translateByClassReps c c' γ)⁻¹ *
-      S.N ^ numInfPlaces E)
+  |(Algebra.norm ℚ (S.subframeMinor j γ) : ℝ)|
+    / (S.isotropicRowsIndex j (S.translateByClassReps c c' γ)
+      * S.isotropicRowsIndex j (S.translateByClassReps c c' γ)⁻¹ * S.N ^ numInfPlaces E)
 
-/-- The larger of `𝗀♯ = minorGauge` and `termDiscNorm`, the product of the absolute values of
+/--
+The larger of `𝗀♯ = minorGauge` and `termDiscNorm`, the product of the absolute values of
 `𝗀(γ) = S.termDisc γ` at the infinite places. The gauge `𝗀*` is this number times a power of the
-congruence level `S.M`. -/
+congruence level `S.M`.
+-/
 def maxGauge (j : Fin (𝔰.ϱ + 2)) (c c' : S.Classes) (γ : S.G E) : ℝ :=
   max (S.minorGauge j c c' γ) (S.termDiscNorm γ)
 
-/-- The term `γ` is near, and it is the chosen element of its double coset `U⁰_c γ U⁰_c'`. Near
+/--
+The term `γ` is near, and it is the chosen element of its double coset `U⁰_c γ U⁰_c'`. Near
 means that some archimedean point `y` and `γ⁻¹ y` both lie in `S.boxedPoints`, the reduced points
 of bounded size at every infinite place. The group `U⁰_c = S.classUnipotent₀ c` consists of the
 rational `u` in the unipotent group `besselU` that fix every vector of the frame and have
-`h_c⁻¹ u h_c` in the principal congruence subgroup `S.principalLevel`. -/
+`h_c⁻¹ u h_c` in the principal congruence subgroup `S.principalLevel`.
+-/
 def IsNearRepresentative (c c' : S.Classes) (γ : S.G E) : Prop :=
   S.IsNear γ ∧ (DoubleCoset.mk (S.classUnipotent₀ c) (S.classUnipotent₀ c') γ).out = γ
 
-/-- Let `p = (c', γ)`, and let `B = S.reducedImage besselS` be the image in the finite group
+/--
+Let `p = (c', γ)`, and let `B = S.reducedImage besselS` be the image in the finite group
 `S.ResidueGL` of the integral points of the Bessel subgroup `besselS`. The term `γ` from `c'` to `c`
 is near and chosen (`IsNearRepresentative`) and has a cell rank (`HasCellRank`). Moreover
 `h_c⁻¹ γ h_c'` is integral with reduction `s` (`termsOver`), and `s = r t` for the chosen
-representative `r` of the coset `s B`. -/
+representative `r` of the coset `s B`.
+-/
 def IsNearTermAt (c : S.Classes) (t : S.reducedImage besselS) (p : S.Classes × S.G E) : Prop :=
-  (S.IsNearRepresentative c p.1 p.2 ∧ ∃ j : Fin (𝔰.ϱ + 2), S.HasCellRank j p.2) ∧
-    ∃ s : S.ResidueGL, p.2 ∈ S.termsOver c s p.1 ∧ (Subgroup.groupEquivQuotientProdSubgroup s).2 = t
+  (S.IsNearRepresentative c p.1 p.2 ∧ ∃ j : Fin (𝔰.ϱ + 2), S.HasCellRank j p.2)
+    ∧ ∃ s : S.ResidueGL,
+      p.2 ∈ S.termsOver c s p.1 ∧ (Subgroup.groupEquivQuotientProdSubgroup s).2 = t
 
 omit [HasPrimitiveRoot5040 E] in
 /-- At the top rank `j = ϱ + 1` all isotropic vectors of the frame are counted, so the index

@@ -67,7 +67,8 @@ section Levels
 
 open Module Submodule Ideal IsDiscreteValuationRing
 
-variable {O : Type} [CommRing O] [DVR O]
+variable
+  {O : Type} [CommRing O] [DVR O]
   {E n : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
 
 /-- The Selmer group of locally constant cocycles for `ρ` that are unramified outside `S` and obey
@@ -112,44 +113,58 @@ open scoped NNReal ENNReal NNRat
 
 section Choice
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
   {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)}
 
 namespace SelmerDatum
 
-/-- The Selmer group `Sel_Q(T ψ)` modulo `a` of a Selmer datum `T`, for a character `ψ` with values
+/--
+The Selmer group `Sel_Q(T ψ)` modulo `a` of a Selmer datum `T`, for a character `ψ` with values
 in a ring `O'` over `O` (by the map `e`): the cocycles in `T ψ ⊗ O' / a` that vanish at the element
 `γ_* = T.γ`, are unramified outside `S ∪ Q ∪ Q̄`, where `S = T.places`, and satisfy the
 local conditions of `T`. If `ψ(γ_*) = 1`, each class has exactly one cocycle that vanishes at
-`γ_*`. -/
-def twistedSelmer {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O'] [Fintype n]
-    [DecidableEq n] (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E)) (e : O →+* O')
-    (ψ : Gal(Ω/E) →* O') (a : O') : Submodule O' (Gal(Ω/E) → n → QuotSpan a) :=
+`γ_*`.
+-/
+def twistedSelmer
+    {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O'] [Fintype n] [DecidableEq n]
+    (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E)) (e : O →+* O') (ψ : Gal(Ω/E) →* O')
+    (a : O')
+    : Submodule O' (Gal(Ω/E) → n → QuotSpan a) :=
   selmerModule (twistRep e ψ T.ρ) (unionWithConj T.places Q) (mapRel e '' T.classRelations)
     (QuotSpan a)
 
-/-- The Selmer group `Sel_Q(T ψ)` of a Selmer datum `T` with divisible coefficients, for a character
+/--
+The Selmer group `Sel_Q(T ψ)` of a Selmer datum `T` with divisible coefficients, for a character
 `ψ` with values in a discrete valuation ring `O'` over `O` (by the map `e`): the cocycles in
 `T ψ ⊗ Frac(O') / O'` that vanish at `γ_* = T.γ`, are unramified outside `S ∪ Q ∪ Q̄`,
-where `S = T.places`, and satisfy the local conditions of `T`. -/
-def divisibleSelmer {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O']
-    [Fintype n] [DecidableEq n] (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E))
-    (e : O →+* O') (ψ : Gal(Ω/E) →* O') : Submodule O' (Gal(Ω/E) → n → DivisibleQuot O') :=
+where `S = T.places`, and satisfy the local conditions of `T`.
+-/
+def divisibleSelmer
+    {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O'] [Fintype n] [DecidableEq n]
+    (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E)) (e : O →+* O') (ψ : Gal(Ω/E) →* O')
+    : Submodule O' (Gal(Ω/E) → n → DivisibleQuot O') :=
   selmerModule (twistRep e ψ T.ρ) (unionWithConj T.places Q) (mapRel e '' T.classRelations)
     (DivisibleQuot O')
 
 /-- The length over `O'` of the Selmer group `Sel_Q(T ψ)` with coefficients in `Frac(O') / O'`. -/
-def divisibleLength {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O']
-    [Fintype n] [DecidableEq n] (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E))
-    (e : O →+* O') (ψ : Gal(Ω/E) →* O') : ℕ∞ :=
+def divisibleLength
+    {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O'] [Fintype n] [DecidableEq n]
+    (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E)) (e : O →+* O') (ψ : Gal(Ω/E) →* O')
+    : ℕ∞ :=
   length O' (T.divisibleSelmer Q e ψ)
 
-/-- For all large coefficient rings `O' ⊇ O`, the character `ψ` has values in `O'` and the group
+/--
+For all large coefficient rings `O' ⊇ O`, the character `ψ` has values in `O'` and the group
 `Sel_Q(T ψ)` with coefficients in `Frac(O') / O'` has length at most `b`, normalised by
-`len O' / ℓ = 1`. -/
-def TwistedLengthLe {O : CoeffRing ℓ} {n : Type} [Fintype n] [DecidableEq n]
+`len O' / ℓ = 1`.
+-/
+def TwistedLengthLe
+    {O : CoeffRing ℓ} {n : Type} [Fintype n] [DecidableEq n]
     (T : SelmerDatum ℓ S₀ g₀ O.val n) (Q : Finset (FinPlace E)) (ψ : Gal(Ω/E) →* PadicAlgCl ℓ)
-    (b : ℝ≥0∞) : Prop :=
+    (b : ℝ≥0∞)
+    : Prop :=
   ∀ᶠ O' : CoeffRing ℓ in atTop, ∃ hO : O ≤ O', ∃ ψ' : Gal(Ω/E) →* O'.val,
     (∀ g : Gal(Ω/E), (ψ' g : PadicAlgCl ℓ) = ψ g) ∧
     O'.normLength (T.divisibleLength Q (inclusion hO).toRingHom ψ') ≤ b
@@ -176,14 +191,20 @@ lemma tieRelations_union {O n ι : Type} [CommRing O] [DecidableEq n] {q : ℕ}
   simp only [tieRelations, Set.mem_union, Set.mem_range, Prod.exists, Subtype.exists, mem_union,
     exists_prop, or_and_right, exists_or]
 
-/-- The polynomial `P` bounds the length of `Sel(x)`, the Selmer module modulo `ℓ ^ M` of the twist
+/--
+The polynomial `P` bounds the length of `Sel(x)`, the Selmer module modulo `ℓ ^ M` of the twist
 of `ρ` by `ψ_x(g) = ∏ (1 + x_j) ^ (h_j g)`: we have `len Sel(x) ≤ v(P(x))` at all points `x` over
 all discrete valuation rings of characteristic zero over `O`, not only where `ψ_x` is a
-character. -/
-def BoundsSelmer (ℓ : ℕ) {E : Type} [Field E] [EmbeddedNumberField E]
-    {O n σ : Type} [CommRing O] [Fintype n] [DecidableEq n] [Fintype σ] {q : ℕ} (M : ℕ)
-    (h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)) (ρ : Gal(Ω/E) →* Matrix n n O)
-    (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O)) (P : MvPolynomial σ O) : Prop :=
+character.
+-/
+def BoundsSelmer
+    (ℓ : ℕ)
+    {E : Type} [Field E] [EmbeddedNumberField E]
+    {O n σ : Type} [CommRing O] [Fintype n] [DecidableEq n] [Fintype σ]
+    {q : ℕ}
+    (M : ℕ) (h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)) (ρ : Gal(Ω/E) →* Matrix n n O)
+    (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O)) (P : MvPolynomial σ O)
+    : Prop :=
   ∀ (O' : Type) [CommRing O'] [DVR O'] [CharZero O'] (e : O →+* O') (x : σ → O'),
     length O' (selmerAtPoint ℓ M h ρ S L e x) ≤ addVal O' (P.eval₂ e x)
 
@@ -243,8 +264,10 @@ private lemma length_le_of_relLength_le {A M : Type*} [Ring A] [AddCommGroup M] 
 
 namespace SelmerDatum
 
-variable {ι n : Type} [Fintype n] [DecidableEq n] {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)}
-  {J : Finset (FinPlace E)} {M N s₀ : ℕ} {P₀ : FinPlace E} {r : ℚ≥0}
+variable
+  {ι n : Type} [Fintype n] [DecidableEq n]
+  {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {J : Finset (FinPlace E)} {M N s₀ : ℕ}
+  {P₀ : FinPlace E} {r : ℚ≥0}
 
 /-- The action on the lattice of a Selmer datum `T`, reduced modulo `ℓ ^ M`, is trivial on the
 inertia groups above the places outside `S₀`. -/
@@ -384,7 +407,8 @@ lemma divisibleLength_pointChar_le {O : Type} [CommRing O] [PadicIntegerRing O �
     (h_level.trans_lt h_lt)).trans h_level
 
 open scoped Classical in
-/-- The choice of the polynomial `P` of a Selmer datum `T` over a coefficient ring `O`, the ring of
+/--
+The choice of the polynomial `P` of a Selmer datum `T` over a coefficient ring `O`, the ring of
 integers of a finite Galois extension of `ℚ_ℓ`, included in `ℤ̄_ℓ` by `O.toIntQpBar`. The datum is
 a lattice `O ^ n` with Galois action, unramified outside `T.places ⊆ S₀`, with the relations
 `T.classRelations` (local conditions above `ℓ` and vanishing at `T.γ`); `β_T = T.β` is the sum of a
@@ -398,19 +422,22 @@ tied at the primes of `J` other than `P₀` has length at most `β_T`, then some
 of the Selmer module of these characters at all points (`BoundsSelmer`), and
 `v(P(x₀)) ≤ β_T + s₀ r` at a point `x₀` over `ℤ̄_ℓ` whose coordinates have valuation at least `r`.
 Here `v = ellVal` has `v(ℓ) = 1`, and `normLength` multiplies the length `β_T` by the valuation of a
-uniformiser of `O`. -/
-theorem exists_boundsSelmer_ellVal_eval_le {O : CoeffRing ℓ} (T : SelmerDatum ℓ S₀ g₀ O.val n)
+uniformiser of `O`.
+-/
+theorem exists_boundsSelmer_ellVal_eval_le
+    {O : CoeffRing ℓ} (T : SelmerDatum ℓ S₀ g₀ O.val n)
     {d : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O.val)}
-    (h_primes : IsTiedPrimes ℓ S₀ V W N P₀ J d) (hN₀ : N ≠ 0) (i : ι)
-    (hV : ∀ g : Gal(Ω/E), V i g → reduceModPow ℓ M T.ρ g = 1)
+    (h_primes : IsTiedPrimes ℓ S₀ V W N P₀ J d)
+    (hN₀ : N ≠ 0)
+    (i : ι) (hV : ∀ g : Gal(Ω/E), V i g → reduceModPow ℓ M T.ρ g = 1)
     (h_tied : length O.val (T.tiedSelmer J (J.erase P₀) d i (ℓ ^ M)) ≤ T.β)
-    (hs₀ : 2 * Fintype.card n * #J ≤ s₀) (hr : r ≤ 1) (hN : M ≤ N * r) :
-    ∃ (P : MvPolynomial J O.val) (x₀ : J → intQpBar ℓ),
-      (∀ v : J, (r : ℝ≥0) ≤ ellVal (x₀ v).val) ∧
-      ellVal (MvPolynomial.eval x₀ (P.map O.toIntQpBar)).val ≤
-        O.normLength T.β + s₀ * (r : ℝ≥0) ∧
-      BoundsSelmer ℓ M (fun v : J ↦ (d v).1.character) T.ρ (unionWithConj T.places J)
-        T.classRelations P := by
+    (hs₀ : 2 * Fintype.card n * #J ≤ s₀) (hr : r ≤ 1) (hN : M ≤ N * r)
+    : ∃ (P : MvPolynomial J O.val) (x₀ : J → intQpBar ℓ),
+      (∀ v : J, (r : ℝ≥0) ≤ ellVal (x₀ v).val)
+        ∧ ellVal (MvPolynomial.eval x₀ (P.map O.toIntQpBar)).val ≤ O.normLength T.β + s₀ * (r : ℝ≥0)
+        ∧ BoundsSelmer ℓ M
+          (fun v : J ↦ (d v).1.character)
+          T.ρ (unionWithConj T.places J) T.classRelations P := by
   -- Take `x₀` on the line at a parameter `y` that is generic for `p₀ = P⁰` and `p₁ = P¹`: they
   -- attain their Gauss valuations of radius `r` at `y`. Then `v(P(x₀)) ≤ v_r(P⁰) + v_r(P¹)`.
   obtain ⟨lineBound, h_coeff_zero, h_bound_dvd⟩ :=
@@ -431,12 +458,15 @@ theorem exists_boundsSelmer_ellVal_eval_le {O : CoeffRing ℓ} (T : SelmerDatum 
   let y' : O'.val := ⟨y, hy_mem⟩
   have hy' : O'.toIntQpBar y' = y := rfl
   let x₀ (v : J) : intQpBar ℓ := O.toIntQpBar (lineDirection P₀ J d i v) * y
-  obtain ⟨P, hP, h_dvd⟩ : ∃ P : MvPolynomial J O.val,
-      BoundsSelmer ℓ M (fun v : J ↦ (d v).1.character) T.ρ (unionWithConj T.places J)
-        T.classRelations P ∧
-      MvPolynomial.eval x₀ (P.map O.toIntQpBar) ∣ p₀.eval y * p₁.eval y := by
-    simpa only [CoeffRing.toIntQpBar_comp_inclusion, hy', ← hp₀, ← hp₁] using h_bound_dvd O'.val
-      (inclusion hO).toRingHom O'.toIntQpBar y' O'.dvd_of_toIntQpBar_dvd (by rwa [hy'])
+  obtain ⟨P, hP, h_dvd⟩
+      : ∃ P : MvPolynomial J O.val,
+        BoundsSelmer ℓ M
+            (fun v : J ↦ (d v).1.character)
+            T.ρ (unionWithConj T.places J) T.classRelations P
+          ∧ MvPolynomial.eval x₀ (P.map O.toIntQpBar) ∣ p₀.eval y * p₁.eval y := by
+    simpa only [CoeffRing.toIntQpBar_comp_inclusion, hy', ← hp₀, ← hp₁] using
+      h_bound_dvd O'.val (inclusion hO).toRingHom O'.toIntQpBar y' O'.dvd_of_toIntQpBar_dvd
+        (by rwa [hy'])
   refine ⟨P, x₀, fun v ↦ hy.trans (dvd_iff_ellVal_le.1 (dvd_mul_left y _)), ?_, hP⟩
   calc
     _ ≤ ellVal (p₀.eval y).val + ellVal (p₁.eval y).val := by
@@ -483,7 +513,9 @@ end SelmerDatum
 
 end Choice
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
   {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)}
 
 /-- For `g` near `g₀`, the element `g` (for `b = true`) or its conjugate inverse `g^{-c}` (for
@@ -498,25 +530,33 @@ lemma SelmerDatum.eventually_reduceModPow_idOrConjInv_eq {O n : Type} [CommRing 
     exacts [continuous_conjGal.inv, continuous_id]
   exact ((T.isLocallyConstant M).comp_continuous h_cont).eventually_eq g₀
 
-variable {ι κ : Type} {n : ι → Type} [∀ i : ι, Fintype (n i)] [∀ i : ι, DecidableEq (n i)]
+variable
+  {ι κ : Type} {n : ι → Type} [∀ i : ι, Fintype (n i)] [∀ i : ι, DecidableEq (n i)]
   {O : CoeffRing ℓ}
 
-/-- `ℓ ^ M` is a suitable level of torsion for the Selmer data `T i`: the exponent `M` exceeds the
-normalised numbers `β_T` by more than `1`, and the residue field of `O` is large. -/
+/--
+`ℓ ^ M` is a suitable level of torsion for the Selmer data `T i`: the exponent `M` exceeds the
+normalised numbers `β_T` by more than `1`, and the residue field of `O` is large.
+-/
 structure IsTorsionLevel (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i)) (M : ℕ) : Prop where
   /-- `M > β_T + 1` for each datum, with `β_T` scaled so that `O / ℓ` has length `1`. -/
   β_lt (i : ι) : O.normLength (T i).β + 1 < M
-  /-- The residue field has more than `2 rank(T i) len(O / ℓ ^ M) + 1` elements, which leaves room
-  for the choice of slopes. -/
-  lt_card_residueField (i : ι) :
-    2 * Fintype.card (n i) * IsDiscreteValuationRing.addVal O.val (ℓ ^ M) + 1 <
-      Nat.card (IsLocalRing.ResidueField O.val)
+  /--
+  The residue field has more than `2 rank(T i) len(O / ℓ ^ M) + 1` elements, which leaves room
+  for the choice of slopes.
+  -/
+  lt_card_residueField (i : ι)
+    : 2 * Fintype.card (n i) * IsDiscreteValuationRing.addVal O.val (ℓ ^ M) + 1
+      < Nat.card (IsLocalRing.ResidueField O.val)
 
-/-- Auxiliary primes, homomorphisms to `ℤ / ℓ ^ N`, and polynomials with points for Selmer data
+/--
+Auxiliary primes, homomorphisms to `ℤ / ℓ ^ N`, and polynomials with points for Selmer data
 `T i` and Stickelberger systems `Y k`, for an integer `s₀` and a radius `r`. Valuations are those
-of `ellVal`, with `v(ℓ) = 1`. -/
-structure TwistPolynomials (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i))
-    (Y : κ → StickelbergerSystem ℓ S₀ g₀) (s₀ : ℕ) (r : ℚ≥0) (N : ℕ) where
+of `ellVal`, with `v(ℓ) = 1`.
+-/
+structure TwistPolynomials
+    (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i)) (Y : κ → StickelbergerSystem ℓ S₀ g₀) (s₀ : ℕ)
+    (r : ℚ≥0) (N : ℕ) where
   /-- The set `Q` of primes. -/
   auxPrimes : Finset (FinPlace E)
   /-- `Q` is auxiliary for `S₀`. -/
@@ -525,13 +565,15 @@ structure TwistPolynomials (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i
   two_mul_card_le : 2 * #auxPrimes ≤ s₀
   /-- The homomorphisms `λ_𝔮` to `ℤ / ℓ ^ N`, one for each prime `𝔮` of `Q`. -/
   primeChar : auxPrimes → Gal(Ω/E) →* Multiplicative (ZMod (ℓ ^ N))
-  /-- `λ_𝔮` is continuous and `λ_𝔮(Art y) = η(y / ȳ)` for an idele class character `η` of tame
+  /--
+  `λ_𝔮` is continuous and `λ_𝔮(Art y) = η(y / ȳ)` for an idele class character `η` of tame
   level `𝔮` that is trivial above `ℓ`. So it is anticyclotomic, unramified outside `𝔮` and `𝔮̄`, and
-  zero on the decomposition groups above `ℓ`. -/
+  zero on the decomposition groups above `ℓ`.
+  -/
   isFromU1_primeChar (v : auxPrimes) : IsFromU1 (placesDividing E ℓ) {v.val} (primeChar v)
   /-- `λ_𝔮` is onto on inertia at `𝔮`. -/
-  exists_eq_ofAdd_one (v : auxPrimes) : ∃ g ∈ inertiaAbove {v.val},
-    primeChar v g = Multiplicative.ofAdd 1
+  exists_eq_ofAdd_one (v : auxPrimes)
+    : ∃ g ∈ inertiaAbove {v.val}, primeChar v g = Multiplicative.ofAdd 1
   /-- The polynomials of the data. -/
   datumPoly : ι → MvPolynomial auxPrimes (intQpBar ℓ)
   /-- The polynomials of the systems. -/
@@ -545,25 +587,30 @@ structure TwistPolynomials (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i
   /-- The coordinates of the point of a system have valuation at least `r`. -/
   le_ellVal_systemPoint (k : κ) (v : auxPrimes) : (r : ℝ≥0) ≤ ellVal (systemPoint k v).val
   /-- At the point of a datum, `v(P) ≤ β_T + s₀ r`. -/
-  ellVal_datumPoly_le (i : ι) :
-    ellVal (eval (datumPoint i) (datumPoly i)).val ≤ O.normLength (T i).β + s₀ * (r : ℝ≥0)
+  ellVal_datumPoly_le (i : ι)
+    : ellVal (eval (datumPoint i) (datumPoly i)).val ≤ O.normLength (T i).β + s₀ * (r : ℝ≥0)
   /-- At the point of a system, `v(P) ≤ β + s₀ r`. -/
-  ellVal_systemPoly_le (k : κ) :
-    ellVal (eval (systemPoint k) (systemPoly k)).val ≤ (Y k).β + s₀ * (r : ℝ≥0)
-  /-- For `ℓ ^ N`-th roots of unity `ζ_𝔮`, `ψ = ∏ ζ_𝔮 ^ λ_𝔮` and `x = (ζ_𝔮 - 1)_𝔮`, the value of `ψ`
-  at the element `Θ_Q` of a system is `P(x)`. -/
-  groupRingEval_eq_eval (ζ : auxPrimes → intQpBar ℓ)
-    (hζ : ∀ v : auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1) (k : κ) :
-    groupRingEval (pointChar primeChar (fun v : auxPrimes ↦ (ζ v : PadicAlgCl ℓ)) hζ)
-      ((Y k).element auxPrimes) =
-      (eval (fun v : auxPrimes ↦ ζ v - 1) (systemPoly k) : intQpBar ℓ)
-  /-- For the same `ψ` and `x`, the group `Sel_Q(T ψ)` has length at most `v(P(x))` if
-  `v(P(x)) < β_T + 1`. -/
-  length_le (ζ : auxPrimes → intQpBar ℓ) (hζ : ∀ v : auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1)
+  ellVal_systemPoly_le (k : κ)
+    : ellVal (eval (systemPoint k) (systemPoly k)).val ≤ (Y k).β + s₀ * (r : ℝ≥0)
+  /--
+  For `ℓ ^ N`-th roots of unity `ζ_𝔮`, `ψ = ∏ ζ_𝔮 ^ λ_𝔮` and `x = (ζ_𝔮 - 1)_𝔮`, the value of `ψ`
+  at the element `Θ_Q` of a system is `P(x)`.
+  -/
+  groupRingEval_eq_eval
+    (ζ : auxPrimes → intQpBar ℓ) (hζ : ∀ v : auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1) (k : κ)
+    : groupRingEval (pointChar primeChar (fun v : auxPrimes ↦ (ζ v : PadicAlgCl ℓ)) hζ)
+        ((Y k).element auxPrimes)
+      = (eval (fun v : auxPrimes ↦ ζ v - 1) (systemPoly k) : intQpBar ℓ)
+  /--
+  For the same `ψ` and `x`, the group `Sel_Q(T ψ)` has length at most `v(P(x))` if
+  `v(P(x)) < β_T + 1`.
+  -/
+  length_le
+    (ζ : auxPrimes → intQpBar ℓ) (hζ : ∀ v : auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1)
     (i : ι)
-    (h_lt : ellVal (eval (fun v : auxPrimes ↦ ζ v - 1) (datumPoly i)).val <
-      O.normLength (T i).β + 1) :
-    (T i).TwistedLengthLe auxPrimes
+    (h_lt
+      : ellVal (eval (fun v : auxPrimes ↦ ζ v - 1) (datumPoly i)).val < O.normLength (T i).β + 1)
+    : (T i).TwistedLengthLe auxPrimes
       (pointChar primeChar (fun v : auxPrimes ↦ (ζ v : PadicAlgCl ℓ)) hζ)
       (ellVal (eval (fun v : auxPrimes ↦ ζ v - 1) (datumPoly i)).val)
 
@@ -641,7 +688,8 @@ lemma nonempty_twistPolynomials_of_isTiedPrimes (T : ∀ i : ι, SelmerDatum ℓ
     length_le ζ hζ i h_lt :=
       (T i).twistedLengthLe_pointChar (hP_bound i) ζ hζ (h_lt.trans (hM i)) }⟩
 
-/-- Let finitely many Selmer data `T i` and Stickelberger systems `Y k` be given, and let `g₀` lie
+/--
+Let finitely many Selmer data `T i` and Stickelberger systems `Y k` be given, and let `g₀` lie
 in an inertia group above a place of `S₀` prime to `ℓ`. Let `M > β_T + 1` for all data and let the
 residue field of `O` have more than `2 rank(T i) len(O / ℓ ^ M) + 1` elements (`IsTorsionLevel`).
 There is an integer `s₀ ≥ 1` such that for every rational `r > 0` with `s₀ r < 1` and every large
@@ -657,33 +705,44 @@ groups are scaled so that `O / ℓ` has length `1`.
 
 For `ℓ ^ N`-th roots of unity `ζ_𝔮` put `ψ = ∏ ζ_𝔮 ^ λ_𝔮` and `x = (ζ_𝔮 - 1)_𝔮`. For a system,
 `P(x)` is the value of `ψ` at its element `Θ_Q`. For a datum `T` with `v(P(x)) < β_T + 1`, the
-Selmer group `Sel_Q(T ψ)` with divisible coefficients has length at most `v(P(x))`. -/
-theorem exists_twistPolynomials (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i))
-    (Y : κ → StickelbergerSystem ℓ S₀ g₀) [Finite ι] [Finite κ]
-    (hg₀ : g₀ ∈ inertiaAbove (S₀ \ placesDividing E ℓ)) {M : ℕ} (hM : IsTorsionLevel T M) :
-    ∃ s₀ : ℕ, 1 ≤ s₀ ∧ ∀ r : ℚ≥0, 0 < r → s₀ * r < 1 →
-      ∀ᶠ N : ℕ in atTop, Nonempty (TwistPolynomials T Y s₀ r N) := by
+Selmer group `Sel_Q(T ψ)` with divisible coefficients has length at most `v(P(x))`.
+-/
+theorem exists_twistPolynomials
+    (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i))
+    (Y : κ → StickelbergerSystem ℓ S₀ g₀)
+    [Finite ι] [Finite κ]
+    (hg₀ : g₀ ∈ inertiaAbove (S₀ \ placesDividing E ℓ))
+    {M : ℕ} (hM : IsTorsionLevel T M)
+    : ∃ s₀ : ℕ,
+      1 ≤ s₀
+        ∧ ∀ r : ℚ≥0,
+          0 < r → s₀ * r < 1 → ∀ᶠ N : ℕ in atTop, Nonempty (TwistPolynomials T Y s₀ r N) := by
   -- Descend all data at once, with the Frobenius element of the first prime near `g₀`, and take the
   -- polynomials and points of the resulting set of tied primes.
-  obtain ⟨c, hc, h_rank, h_exps⟩ : ∃ c : ℕ,
-      1 ≤ c ∧ (∀ i : ι, Fintype.card (n i) ≤ c) ∧ ∀ k : κ, (Y k).exponents.length ≤ c :=
+  obtain ⟨c, hc, h_rank, h_exps⟩
+      : ∃ c : ℕ, 1 ≤ c ∧ (∀ i : ι, Fintype.card (n i) ≤ c) ∧ ∀ k : κ, (Y k).exponents.length ≤ c :=
     ((eventually_ge_atTop 1).and <| (eventually_all.2 fun _ ↦ eventually_ge_atTop _).and <|
       eventually_all.2 fun _ ↦ eventually_ge_atTop _).exists
   obtain ⟨M', hM'⟩ : ∃ M' : ℕ, ∀ k : κ, (Y k).β + 1 < M' :=
-    (eventually_all.2 fun k ↦ ENNReal.tendsto_nat_nhds_top.eventually
-      (lt_mem_nhds (by simp [(Y k).β_ne_top.lt_top]))).exists
-  have h_near : ∀ᶠ g : Gal(Ω/E) in nhds g₀,
-      (∀ (i : ι) (b : Bool), reduceModPow ℓ M (T i).ρ (idOrConjInv b g) =
-        reduceModPow ℓ M (T i).ρ (idOrConjInv b g₀)) ∧
-      ∀ k : κ, (M' : ℝ≥0∞) ≤ ellVal ((Y k).twistChar g - (Y k).twistChar g₀ : PadicAlgCl ℓ) :=
+    (eventually_all.2 fun k ↦
+      ENNReal.tendsto_nat_nhds_top.eventually (lt_mem_nhds (by
+        simp [(Y k).β_ne_top.lt_top]))).exists
+  have h_near
+      : ∀ᶠ g : Gal(Ω/E) in nhds g₀,
+        (∀ (i : ι) (b : Bool), reduceModPow ℓ M (T i).ρ (idOrConjInv b g) =
+          reduceModPow ℓ M (T i).ρ (idOrConjInv b g₀)) ∧
+        ∀ k : κ, (M' : ℝ≥0∞) ≤ ellVal ((Y k).twistChar g - (Y k).twistChar g₀ : PadicAlgCl ℓ) :=
     (eventually_all.2 fun i ↦ eventually_all.2 ((T i).eventually_reduceModPow_idOrConjInv_eq M)).and
       (eventually_all.2 fun k ↦ (Y k).eventually_le_ellVal_sub M')
   obtain ⟨W, hW, h_frob⟩ := h_near.exists_mem
-  obtain ⟨s, h_descent⟩ : ∃ s : ℕ, ∀ N > M, ∃ (P₀ : FinPlace E) (J : Finset (FinPlace E))
-      (d : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O.val)),
-      IsTiedPrimes ℓ S₀ (fun i g ↦ reduceModPow ℓ M (T i).ρ g = 1) W N P₀ J d ∧ #J ≤ s ∧
-      ∀ i : ι, length O.val ((T i).tiedSelmer J J d i (ℓ ^ M)) ≤ (T i).globalTerm +
-        (T i).placesTerm :=
+  obtain ⟨s, h_descent⟩
+      : ∃ s : ℕ, ∀ N > M,
+        ∃ (P₀ : FinPlace E) (J : Finset (FinPlace E))
+            (d : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O.val)),
+          IsTiedPrimes ℓ S₀ (fun i g ↦ reduceModPow ℓ M (T i).ρ g = 1) W N P₀ J d ∧ #J ≤ s
+            ∧ ∀ i : ι,
+              length O.val ((T i).tiedSelmer J J d i (ℓ ^ M))
+                ≤ (T i).globalTerm + (T i).placesTerm :=
     exists_isTiedPrimes_card_le_and_length_le T hg₀ M hM.lt_card_residueField hW
   -- The bound `s` includes the first prime; the summand `1` only makes `s₀` positive.
   have hs₀ : 1 ≤ 2 * c * (1 + s) := Nat.succ_le_of_lt (by positivity)

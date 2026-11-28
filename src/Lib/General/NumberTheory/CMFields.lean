@@ -122,10 +122,12 @@ lemma aeval_root_finAdele_map (q : E[X]) :
       (AdjoinRoot.mk P q : 𝔸f (AdjoinRoot P)) := by
   simp [← aeval_eq, aeval_eq_sum_range, smul_def, algebraMap_eq_finAdeleIncl]
 
-/-- For a monic irreducible `P`, the powers of its root below the degree of `P` are a basis of the
-finite adeles of `E[X]/(P)` over those of `E`. -/
-noncomputable def adjoinRootAdelePowerBasis (hP : P.Monic) :
-    PowerBasis (𝔸f E) (𝔸f (AdjoinRoot P)) where
+/--
+For a monic irreducible `P`, the powers of its root below the degree of `P` are a basis of the
+finite adeles of `E[X]/(P)` over those of `E`.
+-/
+noncomputable def adjoinRootAdelePowerBasis (hP : P.Monic)
+    : PowerBasis (𝔸f E) (𝔸f (AdjoinRoot P)) where
   gen := (root P : 𝔸f (AdjoinRoot P))
   dim := (powerBasis' hP).dim
   basis := adeleBasis (powerBasis' hP).basis
@@ -176,21 +178,27 @@ lemma aeval_root_finAdele_map_conj_comp [IsCMField (AdjoinRoot P)] {c : E[X]}
   | add p r hp hr => simp [hp, hr]
   | monomial n a => simp [h_star, h_incl, ← adeleMap_star, starRingEnd_apply]
 
-/-- Let `L = E[X]/(P)` be a CM field. An algebra map `ε` from the polynomials over the finite adeles
+/--
+Let `L = E[X]/(P)` be a CM field. An algebra map `ε` from the polynomials over the finite adeles
 `𝔸f E` to `𝔸f L` presents `𝔸f L` as `(𝔸f E)[X]/(P)`, compatibly with `E[X] → L` and with complex
-conjugation. -/
-structure IsFinAdelePresentation (P : E[X]) [Fact (Irreducible P)] [IsCMField (AdjoinRoot P)]
-    (ε : (𝔸f E)[X] →ₐ[𝔸f E] 𝔸f (AdjoinRoot P)) : Prop where
+conjugation.
+-/
+structure IsFinAdelePresentation
+    (P : E[X]) [Fact (Irreducible P)] [IsCMField (AdjoinRoot P)]
+    (ε : (𝔸f E)[X] →ₐ[𝔸f E] 𝔸f (AdjoinRoot P))
+    : Prop where
   /-- Every finite adele of `L` is a value of `ε`. -/
   surjective : Function.Surjective ε
   /-- The kernel of `ε` consists of the multiples of `P`. -/
   eq_zero_iff (q : (𝔸f E)[X]) : ε q = 0 ↔ P.map (algebraMap E (𝔸f E)) ∣ q
   /-- On polynomials over `E`, the map `ε` agrees with `E[X] → L`. -/
   apply_map (q : E[X]) : ε (q.map (algebraMap E (𝔸f E))) = AdjoinRoot.mk P q
-  /-- If `c` represents the conjugate of the root of `P`, then conjugating the coefficients of `q`
-  and substituting `c` for `X` conjugates `ε q`. -/
-  apply_map_conj_comp {c : E[X]} (hc : AdjoinRoot.mk P c = star (root P)) (q : (𝔸f E)[X]) :
-    ε ((q.map conj).comp (c.map (algebraMap E (𝔸f E)))) = star (ε q)
+  /--
+  If `c` represents the conjugate of the root of `P`, then conjugating the coefficients of `q`
+  and substituting `c` for `X` conjugates `ε q`.
+  -/
+  apply_map_conj_comp {c : E[X]} (hc : AdjoinRoot.mk P c = star (root P)) (q : (𝔸f E)[X])
+    : ε ((q.map conj).comp (c.map (algebraMap E (𝔸f E)))) = star (ε q)
 
 /-- Let `P` be a monic irreducible polynomial over the CM field `E` such that every complex root `r`
 of `P`, under every embedding of `E`, satisfies `r * star r = ν` for a fixed rational `ν`. Then

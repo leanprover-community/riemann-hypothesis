@@ -57,11 +57,13 @@ lemma not_isChosen_of_notMem_badPlaces {v : FinPlace D.E} (hv : v ∉ badPlaces 
   exact ⟨fun h ↦ h_bad (.inl h), fun h ↦ h_bad (.inr h.mem_placesAboveM),
     fun h ↦ h_bad (.inr (star_mem_placesAboveM.1 h.mem_placesAboveM))⟩
 
-/-- A pair `p = (ν, z)` consists of a character `ν` of `U(1)(𝔸)` and an integer `z`. For such a pair
+/--
+A pair `p = (ν, z)` consists of a character `ν` of `U(1)(𝔸)` and an integer `z`. For such a pair
 and a sign `δ` this is `ϑ`: the `ℓ`-adic Galois character (avatar) that class field theory attaches
-to the algebraic Hecke character of `E` given by the base change of `ν ^ (-δ)`. -/
-noncomputable def _root_.New.Data.CriticalPair.stickelbergerChar (p : D.CriticalPair) (δ : ℤˣ) :
-    AbsGal D →* (PadicAlgCl ℓ)ˣ :=
+to the algebraic Hecke character of `E` given by the base change of `ν ^ (-δ)`.
+-/
+noncomputable def _root_.New.Data.CriticalPair.stickelbergerChar (p : D.CriticalPair) (δ : ℤˣ)
+    : AbsGal D →* (PadicAlgCl ℓ)ˣ :=
   ((p.hasWeight.zpow (-δ : ℤˣ)).toAlgebraic 0 0).avatar
 
 omit [PadicIso ℓ] in
@@ -151,11 +153,16 @@ lemma exists_finPart_baseChange_eq (x : unitary (𝔸 D.E)) :
   simpa [field] using h_one
 
 omit [PadicIso ℓ] in
-/-- The power `τ ^ δ` of a tame character `τ`, as a tame character of modulus `I`, where `I` is an
-auxiliary set outside which the residue characters of `τ` are trivial. -/
-noncomputable abbrev _root_.New.Data.TameChar.zpowOfAuxiliary (τ : D.TameChar) (δ : ℤˣ)
-    {I : Finset (FinPlace D.E)} (hI : IsAuxiliary (badPlaces D ℓ) I)
-    (hτ : ∀ v : FinPlace D.E, v ∉ I → τ.tamePart v = 1) : D.TameChar :=
+/--
+The power `τ ^ δ` of a tame character `τ`, as a tame character of modulus `I`, where `I` is an
+auxiliary set outside which the residue characters of `τ` are trivial.
+-/
+noncomputable abbrev _root_.New.Data.TameChar.zpowOfAuxiliary
+    (τ : D.TameChar)
+    (δ : ℤˣ)
+    {I : Finset (FinPlace D.E)}
+    (hI : IsAuxiliary (badPlaces D ℓ) I) (hτ : ∀ v : FinPlace D.E, v ∉ I → τ.tamePart v = 1)
+    : D.TameChar :=
   tameCharOfAuxiliary I hI (⟨(τ.toAutChar, τ.tamePart), τ.hasWeight, hτ⟩ ^ δ.val)
 
 /-- Let `F` be a function on tame characters `τ` that is an integral measure: on each modulus `I` it
@@ -280,7 +287,8 @@ lemma norm_apply_twist {p : D.CriticalPair} {K : Finset ℕ} {m : ℕ} {F : D.Ta
     -Nat.cast_prod,
     -map_div₀]
 
-/-- Let `D` be the data, `ℓ` a prime with an isomorphism `ιℓ` of `ℂ` with `ℚ̄_ℓ` (`PadicIso ℓ`), `δ`
+/--
+Let `D` be the data, `ℓ` a prime with an isomorphism `ιℓ` of `ℂ` with `ℚ̄_ℓ` (`PadicIso ℓ`), `δ`
 a sign, and `p = (ν, z)` a ramified pair: the residue characters of the character `ν` of `U(1)(𝔸)`
 are nontrivial exactly at the chosen places, which divide a fixed integer of norm `p₀ p₁`. Let `w`
 be a chosen place not above `ℓ` and `g₀` its tame generator, an inertia element.
@@ -295,33 +303,41 @@ Let `ξ` be a twist (a weight `0` character of `U(1)(𝔸)` with residue charact
 at a finite set `Q`, its modulus). Suppose that `Q` is auxiliary and that `ψ`, the `ℓ`-adic Galois
 character of `ξ⁻¹`, is a character for `Q`. Let `r = p.ratio ξ δ`, the ratio
 `|L(z, (ν ξ^δ)⁻¹)| / |L(z, ν⁻¹)|` without Euler factors at chosen places and, above, at `Q`. Then
-`‖ψ(Θ_Q)‖ = ‖1(Θ_∅)‖ ‖ιℓ(r)‖ ^ i`, where `i = 2` if `z = 1` and `i = 1` otherwise. -/
-theorem exists_stickelbergerSystem_β_le_and_norm_eq {w : FinPlace D.E} (hw : D.IsChosen w)
-    (hℓ : w ∉ placesDividing D.E ℓ) {p : D.CriticalPair} (hp : p.IsRamified) (δ : ℤˣ) :
-    ∃ Y : StickelbergerSystem ℓ (badPlaces D ℓ) w.isPlaceOver_placeOver.tameGenerator,
-      Y.β ≤ ellVal (groupRingEval (1 : AbsGal D →* PadicAlgCl ℓ) (Y.element ∅)) +
-        4 * ellVal (w.q - 1 : PadicAlgCl ℓ) ∧
-      ∀ ξ : D.Twist, IsAuxiliary (badPlaces D ℓ) ξ.Q →
-        IsFromU1 (placesDividing D.E ℓ) ξ.Q ξ.invAvatar →
-        ‖groupRingEval ξ.invAvatar (Y.element ξ.Q)‖ =
-          ‖groupRingEval (1 : AbsGal D →* PadicAlgCl ℓ) (Y.element ∅)‖ *
-            ‖ιℓ (p.ratio ξ δ)‖ ^ (if p.z = 1 then 2 else 1) := by
+`‖ψ(Θ_Q)‖ = ‖1(Θ_∅)‖ ‖ιℓ(r)‖ ^ i`, where `i = 2` if `z = 1` and `i = 1` otherwise.
+-/
+theorem exists_stickelbergerSystem_β_le_and_norm_eq
+    {w : FinPlace D.E} (hw : D.IsChosen w) (hℓ : w ∉ placesDividing D.E ℓ)
+    {p : D.CriticalPair} (hp : p.IsRamified)
+    (δ : ℤˣ)
+    : ∃ Y : StickelbergerSystem ℓ (badPlaces D ℓ) w.isPlaceOver_placeOver.tameGenerator,
+      Y.β ≤ ellVal (groupRingEval (1 : AbsGal D →* PadicAlgCl ℓ) (Y.element ∅))
+          + 4 * ellVal (w.q - 1 : PadicAlgCl ℓ)
+        ∧ ∀ ξ : D.Twist,
+          IsAuxiliary (badPlaces D ℓ) ξ.Q → IsFromU1 (placesDividing D.E ℓ) ξ.Q ξ.invAvatar
+            → ‖groupRingEval ξ.invAvatar (Y.element ξ.Q)‖
+              = ‖groupRingEval (1 : AbsGal D →* PadicAlgCl ℓ) (Y.element ∅)‖
+                * ‖ιℓ (p.ratio ξ δ)‖ ^ (if p.z = 1 then 2 else 1) := by
   classical
   -- The elements come from an integral measure `F`, the norm relation from its Euler factors and
   -- the norms at twists from its values there.
   set K : Finset ℕ := if p.z = 1 then {0, 1} else {p.z} with hK
   obtain ⟨F, -, hF : p.IsTwistMeasure K (if p.z = 1 then 1 else 0) F⟩ :=
     CriticalPair.exists_isTwistMeasure hp
-  obtain ⟨Θ, hΘ_one, hΘ⟩ := exists_groupRingEval_eq_of_isIntegralMeasure (ℓ := ℓ)
-    hF.isIntegralMeasure δ
-  refine ⟨{
-    twistChar := p.stickelbergerChar δ
-    continuous_twistChar := continuous_avatar _
-    twistChar_apply_ne_one := (stickelbergerChar_tameGenerator_ne_one_and_pow_eq_one hw hℓ hp δ).1
-    exponents := K.toList.map Nat.cast
-    element := Θ
-    one_element_empty_ne_zero := by simpa [hΘ_one] using hF.apply_one_ne_zero
-    element_insert := fun Q v hv hQ_insert ψ hψ A hA φ hφ ↦ ?_ }, ?_, fun ξ hξ hψ ↦ ?_⟩
+  obtain ⟨Θ, hΘ_one, hΘ⟩ :=
+    exists_groupRingEval_eq_of_isIntegralMeasure (ℓ := ℓ) hF.isIntegralMeasure δ
+  refine ⟨
+    {
+      twistChar := p.stickelbergerChar δ
+      continuous_twistChar := continuous_avatar _
+      twistChar_apply_ne_one := (stickelbergerChar_tameGenerator_ne_one_and_pow_eq_one hw hℓ hp δ).1
+      exponents := K.toList.map Nat.cast
+      element := Θ
+      one_element_empty_ne_zero := by simpa [hΘ_one] using hF.apply_one_ne_zero
+      element_insert := fun Q v hv hQ_insert ψ hψ A hA φ hφ ↦ ?_
+    },
+    ?_,
+    fun ξ hξ hψ ↦ ?_
+  ⟩
   · -- The norm relation.
     have hQ : IsAuxiliary (badPlaces D ℓ) Q := hQ_insert.mono (subset_insert v Q)
     obtain ⟨τ, rfl, rfl⟩ := exists_tameChar_invAvatar_eq hQ hψ
@@ -336,13 +352,14 @@ theorem exists_stickelbergerSystem_β_le_and_norm_eq {w : FinPlace D.E} (hw : D.
       · exact card_le_two
       · simp
     refine add_le_add le_rfl ?_
-    calc ((K.toList.map (Nat.cast : ℕ → ℤ)).length : ENNReal) *
-          (2 * ellVal (p.stickelbergerChar δ w.isPlaceOver_placeOver.tameGenerator - 1 :
-            PadicAlgCl ℓ))
-        ≤ 2 * (2 * ellVal (w.q - 1 : PadicAlgCl ℓ)) := by
-          gcongr
-          · simpa using h_card
-          · exact ellVal_stickelbergerChar_tameGenerator_sub_one_le hw hℓ hp δ
+    calc
+      ((K.toList.map (Nat.cast : ℕ → ℤ)).length : ENNReal)
+            * (2 * ellVal
+              (p.stickelbergerChar δ w.isPlaceOver_placeOver.tameGenerator - 1 : PadicAlgCl ℓ))
+          ≤ 2 * (2 * ellVal (w.q - 1 : PadicAlgCl ℓ)) := by
+        gcongr
+        · simpa using h_card
+        · exact ellVal_stickelbergerChar_tameGenerator_sub_one_le hw hℓ hp δ
       _ = 4 * ellVal (w.q - 1 : PadicAlgCl ℓ) := by ring
   · -- The norms at twists.
     simp only [hΘ_one, hΘ ξ.Q hξ ξ ξ.tamePart_eq_one hψ, norm_apply_twist hF δ ξ hξ]

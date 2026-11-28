@@ -42,25 +42,32 @@ open Function MulSemiringAction InfiniteGalois Subgroup Units IntermediateField 
 
 namespace New
 
-/-- `Ω` is an algebraic closure of every field `K` of characteristic zero of which it is an
-algebra. -/
+/--
+`Ω` is an algebraic closure of every field `K` of characteristic zero of which it is an
+algebra.
+-/
 instance {K : Type*} [Field K] [CharZero K] [Algebra K Ω] : IsAlgClosure K Ω where
   isAlgClosed := inferInstance
   isAlgebraic := .tower_top (K := ℚ) K
 
-/-- A chosen embedding of the number field K into the fixed algebraic closure `Ω` of ℚ (the constant
-of the instance above, not the section variable `Ω`). -/
+/--
+A chosen embedding of the number field K into the fixed algebraic closure `Ω` of ℚ (the constant
+of the instance above, not the section variable `Ω`).
+-/
 noncomputable def Ω.fieldEmb (K : Type*) [Field K] [NumberField K] : K →+* Ω := Classical.ofNonempty
 
 section
 
-variable {Γ K Ω : Type*} [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω]
+variable
+  {Γ K Ω : Type*} [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω]
   (H U : Subgroup Γ) [h : IsClosed (X := Γ) H] [Fact (IsOpen (X := Γ) U)]
 
 instance (U : OpenSubgroup Γ) : Fact (IsOpen (X := Γ) U.toSubgroup) := ⟨U.isOpen⟩
 
-/-- The Galois group of a Galois extension `Ω / K`, with its Krull topology, acts on `Ω` as its
-profinite Galois group. -/
+/--
+The Galois group of a Galois extension `Ω / K`, with its Krull topology, acts on `Ω` as its
+profinite Galois group.
+-/
 instance [IsGalois K Ω] : IsProGalois Gal(Ω/K) K Ω := ⟨stabilizer_isOpen_of_isIntegral⟩
 
 /-- An open subgroup `U` of a topological group is closed. -/
@@ -71,11 +78,13 @@ instance [CompactSpace Γ] : CompactSpace H := isCompact_iff_compactSpace.mp h.i
 
 end
 
-variable {Γ K Ω : Type*} [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω]
+variable
+  {Γ K Ω : Type*} [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω]
   [MulSemiringAction Γ Ω] [G : IsProGalois Γ K Ω]
   (H U : Subgroup Γ) [h : IsClosed (X := Γ) H] [Fact (IsOpen (X := Γ) U)]
-  {Γ' L Ω' : Type*} [Group Γ'] [TopologicalSpace Γ'] [Field L] [Field Ω'] [Algebra L Ω']
-  [MulSemiringAction Γ' Ω'] (j : Ω →+* Ω')
+  {Γ' L Ω' : Type*}
+  [Group Γ'] [TopologicalSpace Γ'] [Field L] [Field Ω'] [Algebra L Ω'] [MulSemiringAction Γ' Ω']
+  (j : Ω →+* Ω')
 
 /-- A closed subgroup is the Galois group over its fixed field. -/
 instance : @IsProGalois H (fixedFieldOf H) Ω _ _ _ inferInstance _ _ :=
@@ -168,8 +177,10 @@ lemma exists_galois_restrict [IsProGalois Γ' L Ω']
     G.faithful.eq_of_smul_eq_smul fun x ↦ j.injective (by simp [hf, mul_smul])
   exact ⟨⟨.mk' f h_mul, continuous_of_equivariant_emb j hf⟩, hf⟩
 
-variable {Γ Γ'} [Algebra K L] [Algebra L Ω] [MulSemiringAction Γ' Ω] [IsScalarTower K L Ω]
-  [J : IsProGalois Γ' L Ω] (φ : Γ' →* Γ)
+variable
+  {Γ Γ'} [Algebra K L] [Algebra L Ω] [MulSemiringAction Γ' Ω] [IsScalarTower K L Ω]
+  [J : IsProGalois Γ' L Ω]
+  (φ : Γ' →* Γ)
 
 include J in
 omit [Algebra K L] [IsScalarTower K L Ω] in

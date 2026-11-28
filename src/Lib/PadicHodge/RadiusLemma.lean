@@ -183,8 +183,10 @@ lemma extendedCoord_oneIndex_ev {N : ℕ} (hN : 0 < N) {ev : c.S⟦X⟧ →ₐ[c
   simp [mul_sub, ← map_p_pow_mul, hs, _root_.dvd_sub, extendedCoord_oneIndex_eq_self, pow_mem,
     extendToBPlus_mul]
 
-/-- The vectors `y` over `S` for which `M y` is congruent modulo `E ^ A` to a vector with entries
-in `ℕ`. -/
+/--
+The vectors `y` over `S` for which `M y` is congruent modulo `E ^ A` to a vector with entries
+in `ℕ`.
+-/
 def natCongruentSet (c : Chart) (M : Matrix d d BPlus) (A : ℕ) : Set (d → c.S) :=
   {y : d → c.S |
     ∃ r : d → ℕ, ∀ i : d, ainfToBPlus c.E ^ A ∣ (M *ᵥ fun k : d ↦ ainfToBPlus (y k)) i - r i}
@@ -429,20 +431,23 @@ private lemma exists_mul_eq_one_add_z_smul {Z Z' : Matrix d d BPlus} {h : ℕ}
        · ring_nf) )
       h_proj
 
-/-- The conclusion of the radius lemma for a matrix `Z` over `BPlus`, exponents `l` and `b`, a
-matrix `V` invertible over `Amax` and a matrix `C` over `BPlus`. -/
-structure IsRadiusFactorization (c : Chart) (Z : Matrix d d BPlus) (l b : ℕ)
-    (V : (Matrix d d Amax)ˣ) (C : Matrix d d BPlus) : Prop where
+/--
+The conclusion of the radius lemma for a matrix `Z` over `BPlus`, exponents `l` and `b`, a
+matrix `V` invertible over `Amax` and a matrix `C` over `BPlus`.
+-/
+structure IsRadiusFactorization
+    (c : Chart) (Z : Matrix d d BPlus) (l b : ℕ) (V : (Matrix d d Amax)ˣ) (C : Matrix d d BPlus)
+    : Prop where
   /-- Every `g` in `G_p` that fixes the constants Λ fixes `C`. -/
   smul_C_eq : ∀ g : Gp p, FixesLambda c.f g → g • C = C
   /-- After `l` Frobenius steps, `Z` is `φ ^ l (E) ^ b` times `C * V`. -/
-  map_frobEnd_eq :
-    Z.map frobEnd^[l] = (c.frobE l).val ^ b • (C * V.val.map (algebraMap Amax BPlus))
-  /-- For `e * A ≤ p ^ l * δ`, the `y` with `V y` natural modulo `E ^ A` span at least
-  `p ^ (4 * δ) • S ^ d`. -/
-  pow_smul_mem_span (A δ : ℕ) (h_le : c.e * A ≤ p ^ l * δ) (x : d → c.S) :
-    p ^ (4 * δ) • x ∈
-      Submodule.span c.S (natCongruentSet c (V.val.map (algebraMap Amax BPlus)) A)
+  map_frobEnd_eq : Z.map frobEnd^[l] = (c.frobE l).val ^ b • (C * V.val.map (algebraMap Amax BPlus))
+  /--
+  For `e * A ≤ p ^ l * δ`, the `y` with `V y` natural modulo `E ^ A` span at least
+  `p ^ (4 * δ) • S ^ d`.
+  -/
+  pow_smul_mem_span (A δ : ℕ) (h_le : c.e * A ≤ p ^ l * δ) (x : d → c.S)
+    : p ^ (4 * δ) • x ∈ Submodule.span c.S (natCongruentSet c (V.val.map (algebraMap Amax BPlus)) A)
 
 /-- Radius lemma. Let t fix the image of Λ = W(F_{p^f}) in A_inf and θ(z), with z the chart
 coordinate (`c.FixesThetaZ`), and let tz = [ε]z. Let Z be a matrix over S_B (`c.bicommutant`) with

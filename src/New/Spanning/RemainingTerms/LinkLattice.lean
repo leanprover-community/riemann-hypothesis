@@ -42,8 +42,9 @@ namespace New.Filling
 
 open Matrix Fintype Equiv Fin Algebra Sum Submodule RingHom Pointwise
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {τ : Type}
-  {S : Filling E 𝔰} {c c' : S.Classes} {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
+variable
+  {E : Type} [Field E] [CMType E]
+  {𝔰 : Shape} {τ : Type} {S : Filling E 𝔰} {c c' : S.Classes} {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
 
 /-! ### The discriminant of `L¹` -/
 
@@ -85,15 +86,18 @@ lemma IsOrthogonalLift.exists_basis_orthogonal {v : Matrix (𝔰.MiddleIndex ⊕
 
 section Classes
 
-variable {v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E}
+variable
+  {v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E}
   {u : Matrix 𝔰.BesselIndex (IndexNotBelow j ⊕ τ) E} {μ : Type} [Fintype μ] [DecidableEq μ]
   {a : GL (IndexNotBelow j) (𝔸f E)} {B : Matrix 𝔰.BesselIndex μ (𝔸f E)}
   {q : Matrix μ 𝔰.BesselIndex (𝔸f E)} {ρ ρ' : Type}
   {t : Matrix 𝔰.BesselIndex ρ E} {t' : Matrix 𝔰.BesselIndex ρ' E}
 
 variable (c q) in
-/-- The coordinates of the classes modulo `I` of the rational vectors `t`, where `q` reads the
-coordinates in `(Λ ∩ I^⊥)/(Λ ∩ I)` for the lattice `Λ` of the class `c`. -/
+/--
+The coordinates of the classes modulo `I` of the rational vectors `t`, where `q` reads the
+coordinates in `(Λ ∩ I^⊥)/(Λ ∩ I)` for the lattice `Λ` of the class `c`.
+-/
 noncomputable abbrev classOf (t : Matrix 𝔰.BesselIndex ρ E) : Matrix μ ρ (𝔸f E) :=
   q * (S.classCoord c * finAdeleMatrix t)
 
@@ -496,16 +500,18 @@ lemma maxGauge_pos [HasPrimitiveRoot5040 E] {s : S.ResidueGL} (hγ : γ ∈ S.te
 /-! ### The discriminant of `L⁺_γ` -/
 
 variable (c γ) in
-/-- The columns of `m` lie in the lattice `L⁺_γ`: they have integral lifts
+/--
+The columns of `m` lie in the lattice `L⁺_γ`: they have integral lifts
 (`New.Filling.HasIntegralLifts`) whose parts in the isotropic space `A` are divisible by the level
 `M`. These are the lifts in `M (Λ ∩ A) ⊕ Λ⁺`, where `Λ` is the lattice of `c` and
-`Λ⁺ = Λ ∩ (X₀ ⊕ E z)`, with `X₀ ⊕ E z` the middle space of the frame. -/
+`Λ⁺ = Λ ∩ (X₀ ⊕ E z)`, with `X₀ ⊕ E z` the middle space of the frame.
+-/
 def HasLevelLifts (m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ (𝔸f E)) : Prop :=
   ∃ ρ : Type, ∃ (_ : Fintype ρ) (t : Matrix 𝔰.BesselIndex ρ E) (w : Matrix ρ τ (𝔸f E)),
-    (isotropicFramePair γ)ᴴ * S.ratGram * t = 0 ∧
-    IsIntMatrix (Ô E) (S.classCoord c * finAdeleMatrix t * w) ∧
-    IsIntMatrix (Ô E) (S.ideleM⁻¹ • (S.classCoord c * finAdeleMatrix t * w).toRows₁) ∧
-    finAdeleMatrix (linkMatrix γ * t) * w = m
+    (isotropicFramePair γ)ᴴ * S.ratGram * t = 0
+      ∧ IsIntMatrix (Ô E) (S.classCoord c * finAdeleMatrix t * w)
+      ∧ IsIntMatrix (Ô E) (S.ideleM⁻¹ • (S.classCoord c * finAdeleMatrix t * w).toRows₁)
+      ∧ finAdeleMatrix (linkMatrix γ * t) * w = m
 
 section LevelLifts
 
@@ -781,21 +787,25 @@ lemma exists_basis_mulVec_mem_ideleM_smul {s : S.ResidueGL} (hγ : γ ∈ S.term
   · rw [← submoduleIndex_colLattice_intVectors hB_int, hB]
     exact_mod_cast h_index_le
 
-/-- **The lattice of a link.** Let `E` be a CM field with a primitive root of unity of order `5040`,
+/--
+**The lattice of a link.** Let `E` be a CM field with a primitive root of unity of order `5040`,
 and let `S : Filling E 𝔰` be data of the filling theorem. Let `γ` be a term from `c'` to `c` of cell
 rank `j`, and let the columns of `v` be a basis of its link. For some invertible finite-adelic `e`
 the columns of `v e` lie in the lattice `L⁺_γ`, and the torsion index `S.torsionIndex` times the
 discriminant of their lattice is at most `M ^ (2 i f) 𝗀♯ / N ^ f`. Here `M = S.M` is the level,
 `N = S.N` is minus the norm of the last frame vector, `i = min ϱ j`, `f` is the number of infinite
 places and `𝗀♯ = S.minorGauge j c c' γ` is `Nm (S.subframeMinor j γ) / N ^ f` divided by the two
-indices `isotropicRowsIndex` at `S.translateByClassReps c c' γ` and at its inverse. -/
-theorem exists_hasLevelLifts_linkDiscSq_le {s : S.ResidueGL} (hγ : γ ∈ S.termsOver c s c')
-    (hj : S.HasCellRank j γ) {v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E} (hv : HasLeftInv v)
-    (hL : colSpan v = link γ) :
-    ∃ e : GL τ (𝔸f E), HasLevelLifts c γ (finAdeleMatrix v * e.val) ∧
-      S.torsionIndex (S.translateByClassReps c c' γ) ^ 2 * S.linkDiscSq v e ≤
-        (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
-          S.N ^ numInfPlaces E) ^ 2 := by
+indices `isotropicRowsIndex` at `S.translateByClassReps c c' γ` and at its inverse.
+-/
+theorem exists_hasLevelLifts_linkDiscSq_le
+    {s : S.ResidueGL} (hγ : γ ∈ S.termsOver c s c')
+    (hj : S.HasCellRank j γ)
+    {v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E} (hv : HasLeftInv v) (hL : colSpan v = link γ)
+    : ∃ e : GL τ (𝔸f E),
+      HasLevelLifts c γ (finAdeleMatrix v * e.val)
+        ∧ S.torsionIndex (S.translateByClassReps c c' γ) ^ 2 * S.linkDiscSq v e
+          ≤ (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ / S.N ^ numInfPlaces E)
+            ^ 2 := by
   -- Start from the lattice `v e` with integral lifts `t w`, whose part in `A` is `m`. The vectors
   -- `x` for which `m x` is divisible by `M` modulo `A ∩ γ A` have a basis `B` of index at most
   -- `M ^ (2 i f)`, so the lattice of `v e B` is the one sought.
@@ -831,8 +841,9 @@ theorem exists_hasLevelLifts_linkDiscSq_le {s : S.ResidueGL} (hγ : γ ∈ S.ter
         ring
       _ ≤ G ^ 2 * S.minorNorm j γ ^ 2 / (i₁ * i₂) ^ 2 := by grw [h_disc]
       _ = (G * S.minorGauge j c c' γ / S.N ^ numInfPlaces E) ^ 2 := by
-        have h_gauge : S.minorGauge j c c' γ =
-            (S.N : ℝ) ^ numInfPlaces E * S.minorNorm j γ / (i₁ * i₂) := hj.minorGauge_eq c c'
+        have h_gauge
+            : S.minorGauge j c c' γ = (S.N : ℝ) ^ numInfPlaces E * S.minorNorm j γ / (i₁ * i₂) :=
+          hj.minorGauge_eq c c'
         rw [h_gauge]
         field_simp
 

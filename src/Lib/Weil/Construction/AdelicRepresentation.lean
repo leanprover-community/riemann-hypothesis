@@ -83,8 +83,8 @@ section AdelicSum
 
 open NumberField Matrix WeilData Fock Finset Fintype Prod Complex stdLattice Real
 
-variable (E : Type*) [Field E] [CMType E] [WeilData E]
-  {n : Type*} [Fintype n] [DecidableEq n] (s : n → ℤˣ)
+variable
+  (E : Type*) [Field E] [CMType E] [WeilData E] {n : Type*} [Fintype n] [DecidableEq n] (s : n → ℤˣ)
 
 /-- At an infinite place `w`, the component κ_w of the idele κ = `scaleIdele E` satisfies
 conj κ_w · κ_w · 2π Im(Φ_w ȷ) = 1, where `Φ w` is the embedding of the CM type at `w` and ȷ is the
@@ -94,43 +94,46 @@ lemma WeilData.conj_scaleIdele_mul (w : InfinitePlace E) :
   -- `scaleIdele` is real at `w`, the inverse square root of `2 * π * (Φ w j).im > 0`.
   simpa [val_scaleIdele_fst, field, ← ofReal_pow, pi_pos, im_pos, le_of_lt] using (im_pos w).ne'
 
-/-- The sign function on pairs (infinite place, coordinate) that returns the sign of the
-coordinate, ignoring the place. -/
+/--
+The sign function on pairs (infinite place, coordinate) that returns the sign of the
+coordinate, ignoring the place.
+-/
 abbrev realSigns : InfinitePlace E × n → ℤˣ := fun p ↦ s p.2
 
 open scoped Classical in
-/-- The isomorphism (y,z) ↦ κ·(y,z), κ = `scaleIdele E`, from complex coordinates y (indexed by
+/--
+The isomorphism (y,z) ↦ κ·(y,z), κ = `scaleIdele E`, from complex coordinates y (indexed by
 pairs (infinite place, index)) times finite adelic vectors z onto 𝔸^n. Along it the bicharacter β of
 `adelicHeisenberg E s` and `New.vacuumFn` are the products of the real ones, for the signs
-`realSigns E s`, and the finite ones. -/
-def adelicSum :
-    (adelicHeisenberg E s).OrthogonalSum (realHeisenberg (realSigns E s))
-      (stdLattice.finHeisenberg E n)
-      vacuumFn where
+`realSigns E s`, and the finite ones.
+-/
+def adelicSum
+    : (adelicHeisenberg E s).OrthogonalSum (realHeisenberg (realSigns E s))
+      (stdLattice.finHeisenberg E n) vacuumFn where
   -- Join the archimedean and the finite coordinates into adeles, and scale by `scaleIdele`.
-  equiv.toAddEquiv :=
-    { toFun y i := scaleIdele E * (fun w ↦ y.1 (w, i), y.2 i)
-      invFun x := (fun p ↦ ((scaleIdele E)⁻¹ * x p.2).1 p.1, fun i ↦ ((scaleIdele E)⁻¹ * x i).2)
-      left_inv y := by simp [-fst_mul, -snd_mul]
-      right_inv x := by simp [-fst_mul, -snd_mul]
-      map_add' x y := by simp [funext_iff, ← mul_add, -fst_mul, -snd_mul] }
+  equiv.toAddEquiv := {
+    toFun y i := scaleIdele E * (fun w ↦ y.1 (w, i), y.2 i)
+    invFun x := (fun p ↦ ((scaleIdele E)⁻¹ * x p.2).1 p.1, fun i ↦ ((scaleIdele E)⁻¹ * x i).2)
+    left_inv y := by simp [-fst_mul, -snd_mul]
+    right_inv x := by simp [-fst_mul, -snd_mul]
+    map_add' x y := by simp [funext_iff, ← mul_add, -fst_mul, -snd_mul]
+  }
   beta_equiv x y := by
-    have conj_j (σ : E →+* ℂ) : -σ j = starRingEnd ℂ (σ j) := by
+    have conj_j (σ : E →+* ℂ) : - σ j = starRingEnd ℂ (σ j) := by
       simpa [star_j] using map_star_complex σ j
     -- Both sides are a complex exponential times a value of `ψf`. At an infinite place `w`,
     -- `Φ w j` is purely imaginary, and `conj_scaleIdele_mul` cancels `2π Im (Φ w j)` against
     -- `|scaleIdele|²`.
     simp [adelicHeisenberg, realHeisenberg, stdLattice.finHeisenberg, stdAddChar, fourierChar,
-      stdForm, signMatrix,
-      ← sum_sub_distrib, map_ofNat, ← sum_neg_distrib, re_eq_add_conj, sum_mul, mul_sum, dotProduct,
-      mulVec_diagonal, fst_sum, snd_sum, val_scaleIdele_snd, sum_prod_type, sum_div, half,
-      selfDualAddChar_apply]
+      stdForm, signMatrix, ← sum_sub_distrib, map_ofNat, ← sum_neg_distrib, re_eq_add_conj, sum_mul,
+      mul_sum, dotProduct, mulVec_diagonal, fst_sum, snd_sum, val_scaleIdele_snd, sum_prod_type,
+      sum_div, half, selfDualAddChar_apply]
     grind [conj_scaleIdele_mul, im_eq_sub_conj, I_sq]
   vac_equiv y := by
     -- Both sides vanish unless `y.2` is integral; the Gaussians agree by `conj_scaleIdele_mul`.
     simp [vacuumFn, finVac, realVac, neg_div, mul_pow, ← conj_mul', mem_stdLattice,
-      ↓sum_prod_type_right, val_scaleIdele_snd, mul_sum, dotProduct, sum_div, half,
-        selfDualAddChar_apply]
+      ↓ sum_prod_type_right, val_scaleIdele_snd, mul_sum, dotProduct, sum_div, half,
+      selfDualAddChar_apply]
     grind [conj_scaleIdele_mul, stdLattice.traceOneAdele]
 
 variable {E s}
@@ -161,27 +164,35 @@ section AdelicAction
 
 open Matrix MeasureTheory Measure U NumberField Fock Heisenberg G
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ} (g : G E s)
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} (g : G E s)
 
-/-- The multiplier Δ(g) = Δ_f(g_f) ∏_w conj(det d_w) of an element g of the adelic unitary group
+/--
+The multiplier Δ(g) = Δ_f(g_f) ∏_w conj(det d_w) of an element g of the adelic unitary group
 `G E s`: the product runs over the infinite places w, d_w is the block of g_w on the coordinates of
 sign −1, and Δ_f is `New.finMultiplier`, the multiplier of the action `finAction` on finite adelic
-vectors. -/
+vectors.
+-/
 def weilMultiplier : ℂ := (∏ w : InfinitePlace E, realMultiplier (g.1 w)) * finMultiplier g.2
 
-/-- The Haar measure on 𝔸^n that is the image of the product of `New.Fock.normalizedVolume` and
+/--
+The Haar measure on 𝔸^n that is the image of the product of `New.Fock.normalizedVolume` and
 `New.latticeMeasure` under the isomorphism `New.adelicSum` from real and finite coordinates. The
-isomorphism does not depend on the signs, so the signs `1` are used. -/
+isomorphism does not depend on the signs, so the signs `1` are used.
+-/
 def vacuumMeasure : Measure (n → 𝔸 E) :=
   ((normalizedVolume (InfinitePlace E × n)).prod (latticeMeasure E n)).map (adelicSum E 1).equiv
 
 instance : (vacuumMeasure (E := E) (n := n)).IsAddHaarMeasure :=
   (adelicSum E 1).equiv.isAddHaarMeasure_map _
 
-/-- The function `New.vacuumFn` (Gaussian at infinity times twisted lattice indicator at finite
+/--
+The function `New.vacuumFn` (Gaussian at infinity times twisted lattice indicator at finite
 places) is a vacuum, in the sense of `New.Heisenberg.IsVacuum`, for the bicharacter β of signs s and
-the measure `New.vacuumMeasure`: it is the product of a real and a finite vacuum. -/
+the measure `New.vacuumMeasure`: it is the product of a real and a finite vacuum.
+-/
 instance isVacuum_vacuumFn : (adelicHeisenberg E s).IsVacuum vacuumMeasure vacuumFn :=
   (adelicSum E s).isVacuum
 
@@ -189,9 +200,11 @@ section
 
 variable {E : Type*} [Field E] [NumberField E] [IsCMField E] (g : G E s)
 
-/-- The adelic unitary group `G E s` acts on 𝔸^n by its matrix `G.adeleMatrix`. The action and its
+/--
+The adelic unitary group `G E s` acts on 𝔸^n by its matrix `G.adeleMatrix`. The action and its
 continuity and measurability are declared on `n → 𝔸 E` itself: the coordinatewise instances for
-function types would otherwise be tried first and look for an action of `G E s` on `𝔸 E`. -/
+function types would otherwise be tried first and look for an action of `G E s` on `𝔸 E`.
+-/
 instance : SMul (G E s) (n → 𝔸 E) := ⟨fun g x ↦ g.adeleMatrix *ᵥ x⟩
 
 @[simp]
@@ -217,33 +230,37 @@ instance : MeasurableConstSMul (G E s) (n → 𝔸 E) := ⟨fun g ↦ (continuou
 
 end
 
-/-- The continuous, β- and measure-preserving action of the adelic unitary group on 𝔸^n by matrices.
+/--
+The continuous, β- and measure-preserving action of the adelic unitary group on 𝔸^n by matrices.
 Its multiplier is `New.weilMultiplier`, which satisfies the identity of
-`New.Heisenberg.MultiplierAction` with trivial cocycle. -/
+`New.Heisenberg.MultiplierAction` with trivial cocycle.
+-/
 @[simps Δ]
 def adelicAction : (adelicHeisenberg E s).MultiplierAction vacuumMeasure vacuumFn (G E s) where
   Δ := New.weilMultiplier
-  beta_smul := by simp [adelicHeisenberg, adeleMatrix, ↓form_mulVec_mulVec]
+  beta_smul := by simp [adelicHeisenberg, adeleMatrix, ↓ form_mulVec_mulVec]
   measurePreserving g :=
     -- Along `adelicSum` the action is the product of the real and the finite action.
     MeasurePreserving.of_semiconj ⟨by fun_prop, rfl⟩
       (MeasurePreserving.prod ((realAction (realSigns E s)).measurePreserving (blockU g.1))
         (finAction.measurePreserving g.2))
-      (fun y ↦ (adeleMatrix_mulVec_adelicSum g y).symm) (by fun_prop)
+      (fun y ↦ (adeleMatrix_mulVec_adelicSum g y).symm)
+      (by fun_prop)
   continuous_delta := Continuous.mul (by fun_prop [realMultiplier]) finAction.continuous_delta.snd'
   Δ_one := by simp [New.weilMultiplier, realMultiplier, finMultiplier_eq_one_of_mem]
   Δ_inv := by simp [New.weilMultiplier, realMultiplier, finMultiplier_inv, ← principalMinor_coe_inv]
   cocycle g h := by
     -- Multiply the cocycle identities of the real and of the finite action. Along `adelicSum` the
     -- double integral is the product of the real and the finite one.
-    have h_mul := congr_arg₂ (· * ·)
-      ((realAction (realSigns E s)).cocycle (blockU g.1) (blockU h.1)) (finAction.cocycle g.2 h.2)
+    have h_mul :=
+      congr_arg₂ (· * ·) ((realAction (realSigns E s)).cocycle (blockU g.1) (blockU h.1))
+        (finAction.cocycle g.2 h.2)
     simpa only [New.weilMultiplier, ← realMultiplier_blockU, ← map_mul, ← map_inv,
-      smul_eq_adeleMatrix_mulVec, ← map_add, OrthogonalSum.beta_equiv, realAction,
-      (adelicSum E s).integral_eq_integral_prod, adeleMatrix_mulVec_adelicSum,
-        OrthogonalSum.vac_equiv,
-      ← integral_prod_mul, mul_mul_mul_comm _ _ (_ * _), mul_mul_mul_comm _ (realVac _),
-      mul_mul_mul_comm _ (realMultiplier _)] using! h_mul.trans (one_mul 1)
+        smul_eq_adeleMatrix_mulVec, ← map_add, OrthogonalSum.beta_equiv, realAction,
+        (adelicSum E s).integral_eq_integral_prod, adeleMatrix_mulVec_adelicSum,
+        OrthogonalSum.vac_equiv, ← integral_prod_mul, mul_mul_mul_comm _ _ (_ * _),
+        mul_mul_mul_comm _ (realVac _), mul_mul_mul_comm _ (realMultiplier _)]
+      using! h_mul.trans (one_mul 1)
 
 /-- The multiplier of `g⁻¹` is the complex conjugate of the multiplier of `g`. -/
 lemma weilMultiplier_inv : weilMultiplier g⁻¹ = starRingEnd ℂ (weilMultiplier g) :=
@@ -265,17 +282,20 @@ end New
 
 namespace New
 
-open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle
-  Complex
+open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle Complex
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} (V : Space E n s) (x y : n → 𝔸 E)
+  {s : n → ℤˣ} (V : Space E n s)
+  (x y : n → 𝔸 E)
 
-/-- The Banach space 𝒮(V) of integrable functions c on 𝔸^n with c(x) = ∫ c(y)β(y,x)e(x−y) dy,
-under the L¹ norm; it depends only on the signs of V. -/
+/--
+The Banach space 𝒮(V) of integrable functions c on 𝔸^n with c(x) = ∫ c(y)β(y,x)e(x−y) dy,
+under the L¹ norm; it depends only on the signs of V.
+-/
 def 𝒮 (_ : Space E n s) : Type _ := Model (adelicHeisenberg E s)
-  deriving NormedAddCommGroup, NormedSpace ℂ, CompleteSpace
+deriving NormedAddCommGroup, NormedSpace ℂ, CompleteSpace
 
 namespace Space
 
@@ -285,12 +305,16 @@ def heisenbergRep : (adelicHeisenberg E s).Rep (𝒮 V) := IsVacuum.heisenbergRe
 /-- The Heisenberg operator of an adelic vector `y` on `𝒮 V`. -/
 abbrev ϱ : 𝒮 V →L[ℂ] 𝒮 V := V.heisenbergRep.ρ y
 
-/-- The Weil representation: the homomorphism from the adelic unitary group to the bounded operators
-on 𝒮(V), ω(g)c = Δ(g) ∫ c(y) ϱ(gy) vac dy, where Δ is `New.weilMultiplier`. -/
+/--
+The Weil representation: the homomorphism from the adelic unitary group to the bounded operators
+on 𝒮(V), ω(g)c = Δ(g) ∫ c(y) ϱ(gy) vac dy, where Δ is `New.weilMultiplier`.
+-/
 def ω : G E s →* 𝒮 V →L[ℂ] 𝒮 V := weilRep adelicAction
 
-/-- The bounded sesquilinear form ⟨c, c′⟩ = ∫ c̄ c′ over 𝔸^n on 𝒮(V), on the underlying integrable
-functions, conjugate-linear in the first variable. -/
+/--
+The bounded sesquilinear form ⟨c, c′⟩ = ∫ c̄ c′ over 𝔸^n on 𝒮(V), on the underlying integrable
+functions, conjugate-linear in the first variable.
+-/
 def dataInner : 𝒮 V →L⋆[ℂ] 𝒮 V →L[ℂ] ℂ := modelInner
 
 /-- The vacuum: the function e (Gaussian times twisted lattice indicator) as an element of 𝒮(V). -/
@@ -300,23 +324,31 @@ end Space
 
 /-! ### Real and finite coordinates -/
 
-/-- The additive map from complex vectors indexed by pairs (infinite place τ, coordinate i) to 𝔸^n
+/--
+The additive map from complex vectors indexed by pairs (infinite place τ, coordinate i) to 𝔸^n
 that multiplies the coordinates at τ by (2π Im τ(ȷ))^(−1/2), ȷ being the element `j` of the Weil
-data, and puts zero at the finite places. -/
+data, and puts zero at the finite places.
+-/
 def realVec : (InfinitePlace E × n → ℂ) →+ n → 𝔸 E :=
   AddMonoidHom.mk' (fun y i ↦ ((scaleIdele E).val.1 * fun w ↦ y (w, i), 0)) <| by
     simp [mul_add, funext_iff]
 
-/-- The archimedean part of an adelic vector y in Fock coordinates: the complex numbers (2π Im
-τ(ȷ))^{1/2}·y_{i,τ}, indexed by infinite places τ and coordinates i. -/
+/--
+The archimedean part of an adelic vector y in Fock coordinates: the complex numbers (2π Im
+τ(ȷ))^{1/2}·y_{i,τ}, indexed by infinite places τ and coordinates i.
+-/
 def realCoord (p : InfinitePlace E × n) : ℂ := (y p.2).1 p.1 / (scaleIdele E).val.1 p.1
 
-/-- For an adelic vector y, the finite adelic vector with coordinates α⁻¹ times the finite part
-of y_i, α the finite idele of the Weil data. -/
+/--
+For an adelic vector y, the finite adelic vector with coordinates α⁻¹ times the finite part
+of y_i, α the finite idele of the Weil data.
+-/
 abbrev finCoord (i : n) : 𝔸f E := α⁻¹.val * (y i).2
 
-/-- The adelic vector with finite part αx (α the finite idele of the Weil data) and zero real part,
-for a finite adelic vector x. -/
+/--
+The adelic vector with finite part αx (α the finite idele of the Weil data) and zero real part,
+for a finite adelic vector x.
+-/
 def finVec (x : n → 𝔸f E) (i : n) : (InfinitePlace E → ℂ) × 𝔸f E := ((0, α.val * x i) : 𝔸 E)
 
 omit [Fintype n] [DecidableEq n] in
@@ -366,9 +398,11 @@ namespace New.Space
 
 open Matrix ComplexConjugate Heisenberg.IsVacuum
 
-variable {E : Type _} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type _} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} (V : Space E n s) (g : G E s) (x y : n → 𝔸 E) (f f' : 𝒮 V)
+  {s : n → ℤˣ} (V : Space E n s) (g : G E s)
+  (x y : n → 𝔸 E) (f f' : 𝒮 V)
 
 /-- Superposition: a bounded linear map `T` from `𝒮 V` to a complex Banach space is determined by
 its values on the translates ϱ(y) vac of the vacuum `vacElem`. Specifically, `T f` = ∫ ⟨ϱ(y) vac, f⟩
@@ -485,12 +519,15 @@ namespace New.Space
 
 open Matrix WeilData Function MeasureTheory ComplexConjugate ComplexOrder Heisenberg IsVacuum
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type*} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} (V : Space E n s) (ℓ ℓ' θ : Model (adelicHeisenberg E s) →L[ℂ] ℂ)
 
-/-- The rational points of V: the additive subgroup of 𝔸^n of the vectors x⁻¹y, y in E^n, where x is
-the point `V.x` of V. -/
+/--
+The rational points of V: the additive subgroup of 𝔸^n of the vectors x⁻¹y, y in E^n, where x is
+the point `V.x` of V.
+-/
 noncomputable def ratVectors : AddSubgroup (n → 𝔸 E) := V.vecAtPoint.toAddMonoidHom.range
 
 omit [WeilData E] in
@@ -515,20 +552,25 @@ lemma beta_vecAtPoint_eq_one (x y : n → E) :
 
 /-! ### Invariant functionals and the summation formula -/
 
-/-- A bounded functional ℓ on `Model (adelicHeisenberg E s)` is invariant under the rational
+/--
+A bounded functional ℓ on `Model (adelicHeisenberg E s)` is invariant under the rational
 Heisenberg operators: ℓ(ρ(γ)v) = ℓ(v) for all v and all γ in `V.ratVectors`, where ρ(γ) =
-`heisenbergOp γ` is the Heisenberg operator of γ. -/
+`heisenbergOp γ` is the Heisenberg operator of γ.
+-/
 def IsRatInvariant : Prop :=
   ∀ γ ∈ V.ratVectors, ∀ v : Model (adelicHeisenberg E s), ℓ (heisenbergOp γ v) = ℓ v
 
-/-- A theta functional of V: a bounded functional θ on `Model (adelicHeisenberg E s)` such that
+/--
+A theta functional of V: a bounded functional θ on `Model (adelicHeisenberg E s)` such that
 (1) θ is invariant under the rational Heisenberg operators (`IsRatInvariant`), and
 (2) the mean of |θ(ρ(x) vac)|² over x in 𝔸^n modulo `V.ratVectors` (`quotMean`, for the Haar
-probability measure of the quotient) is 1. -/
+probability measure of the quotient) is 1.
+-/
 def IsThetaFunctional : Prop :=
-  V.IsRatInvariant θ ∧
-  quotMean V.ratVectors (fun x : n → 𝔸 E ↦
-    θ (heisenbergOp x IsVacuum.vacElem) * conj (θ (heisenbergOp x IsVacuum.vacElem))) = 1
+  V.IsRatInvariant θ
+    ∧ quotMean V.ratVectors (fun x : n → 𝔸 E ↦
+        θ (heisenbergOp x IsVacuum.vacElem) * conj (θ (heisenbergOp x IsVacuum.vacElem)))
+      = 1
 
 variable {V ℓ ℓ' θ}
 
@@ -687,10 +729,12 @@ private lemma tendsto_sum_modelInner_heisenbergOp (V : Space E n s)
   refine tendsto_pi_nhds.2 fun f ↦ ?_
   simpa [HasSum] using (summable_modelInner u f).hasSum
 
-/-- For u in the model, the bounded functional `f ↦ ∑' γ, ⟨u, ρ (V.vecAtPoint γ) f⟩`, a sum over the
-rational vectors γ ∈ E^n. -/
-private noncomputable def ratSum (V : Space E n s) (u : Model (adelicHeisenberg E s)) :
-    Model (adelicHeisenberg E s) →L[ℂ] ℂ :=
+/--
+For u in the model, the bounded functional `f ↦ ∑' γ, ⟨u, ρ (V.vecAtPoint γ) f⟩`, a sum over the
+rational vectors γ ∈ E^n.
+-/
+private noncomputable def ratSum (V : Space E n s) (u : Model (adelicHeisenberg E s))
+    : Model (adelicHeisenberg E s) →L[ℂ] ℂ :=
   continuousLinearMapOfTendsto
     (fun S : Finset (n → E) ↦ ∑ γ ∈ S, modelInner u ∘L heisenbergOp (V.vecAtPoint γ))
     (tendsto_sum_modelInner_heisenbergOp V u)
@@ -825,16 +869,19 @@ end New.Space
 
 namespace New
 
-open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle
-  Complex
+open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle Complex
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
-  {n : Type _} [Fintype n] [DecidableEq n] {s : n → ℤˣ} (V : Space E n s)
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n : Type _} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} (V : Space E n s)
 
 /-! ### The theta functional of the standard space -/
 
-/-- For a sign c and an adele a, the number θ(ϱ(a)vac), θ a chosen theta functional of the
-standard line of sign c. -/
+/--
+For a sign c and an adele a, the number θ(ϱ(a)vac), θ a chosen theta functional of the
+standard line of sign c.
+-/
 def lineTheta (c : ℤˣ) (a : 𝔸 E) : ℂ :=
   (signedSpace E fun _ ↦ c).exists_isThetaFunctional.choose
     (heisenbergOp (fun () ↦ a) IsVacuum.vacElem)
@@ -947,19 +994,23 @@ lemma IsThetaFunctional.comp {V₁ : Space E n' s'} {θ : Model (adelicHeisenber
 /-! ### The choice of the theta functional of `V` -/
 
 open scoped Classical in
-/-- The functional θ₀ = θ_s ∘ ω(g) on 𝒮(V), where θ_s is the theta functional of the standard space
+/--
+The functional θ₀ = θ_s ∘ ω(g) on 𝒮(V), where θ_s is the theta functional of the standard space
 of signs s chosen in `New.exists_isThetaFunctional_signedSpace`, and g is a chosen element carrying
 the rational vectors of V to those of the standard space. Such a g exists by Landherr's theorem
-(`New.Space.exists_mapsTo_ratVectors`), so the second branch of the definition does not occur. -/
+(`New.Space.exists_mapsTo_ratVectors`), so the second branch of the definition does not occur.
+-/
 def rawTheta : 𝒮 V →L[ℂ] ℂ :=
   if h : ∃ g : G E s, ∀ γ ∈ V.ratVectors, G.adeleMatrix g *ᵥ γ ∈ (signedSpace E s).ratVectors then
     exists_isThetaFunctional_signedSpace.choose ∘L V.ω h.choose
   else
     V.exists_isThetaFunctional.choose
 
-/-- The theta functional of `V`. It equals `New.Space.rawTheta` (`New.Space.theta_eq_rawTheta`),
+/--
+The theta functional of `V`. It equals `New.Space.rawTheta` (`New.Space.theta_eq_rawTheta`),
 since `ϱ 0` is the identity. The factor `ϱ 0` makes `V.θ f = f 0` hold by definition, where
-`f x = V.rawTheta (ϱ x f)` is the theta function of `f`. -/
+`f x = V.rawTheta (ϱ x f)` is the theta function of `f`.
+-/
 def θ : 𝒮 V →L[ℂ] ℂ := V.rawTheta ∘L V.ϱ 0
 
 lemma theta_eq_rawTheta : V.θ = V.rawTheta := by
@@ -990,24 +1041,32 @@ instance : FunLike (𝒮 V) (n → 𝔸 E) ℂ where
 
 /-! ### Local operators -/
 
-/-- The bounded bilinear map (v, f) ↦ v ⊗ f = ∫ v(y) ϱ(y)f dy, for v in the Fock space, f in
-𝒮(V), y over real vectors in Fock coordinates. -/
+/--
+The bounded bilinear map (v, f) ↦ v ⊗ f = ∫ v(y) ϱ(y)f dy, for v in the Fock space, f in
+𝒮(V), y over real vectors in Fock coordinates.
+-/
 def integrated : Model (realHeisenberg (realSigns E s)) →L[ℂ] 𝒮 V →L[ℂ] 𝒮 V :=
   (V.heisenbergRep.left (adelicSum E s)).integrated
 
-/-- For a finite adelic vector x, the operator ϱ_f(x) = ψ(½c₀ȷαᾱ x*x) ϱ(αx) on 𝒮(V), α the finite
+/--
+For a finite adelic vector x, the operator ϱ_f(x) = ψ(½c₀ȷαᾱ x*x) ϱ(αx) on 𝒮(V), α the finite
 idele of the Weil data, where c₀ = `traceOneAdele` is integral with c₀ + c̄₀ = 1. The scalar is
-`semichar x`; with it these operators represent the lattice Ô^n. -/
+`semichar x`; with it these operators represent the lattice Ô^n.
+-/
 def finHeisenbergOp (x : n → 𝔸f E) : 𝒮 V →L[ℂ] 𝒮 V := stdLattice.semichar x • V.ϱ (finVec x)
 
-/-- For a set S of finite places, the operator P^S on 𝒮(V): the mean over y in Ô^n of
-`New.Space.finHeisenbergOp` at the part of y above S ∪ S̄. -/
+/--
+For a set S of finite places, the operator P^S on 𝒮(V): the mean over y in Ô^n of
+`New.Space.finHeisenbergOp` at the part of y above S ∪ S̄.
+-/
 def projOn (S : Set (FinPlace E)) : 𝒮 V →L[ℂ] 𝒮 V :=
   strongIntegral ((latticeMeasure E n).restrict (stdLattice E n)) fun y ↦
     V.finHeisenbergOp (idem S.conjClosure • y)
 
-/-- The real vacuum projection: the bounded operator f ↦ ∫ exp(−|y|²/2) ϱ(y)f dy on 𝒮(V), y over
-real vectors in Fock coordinates with measure `New.Fock.normalizedVolume`. -/
+/--
+The real vacuum projection: the bounded operator f ↦ ∫ exp(−|y|²/2) ϱ(y)f dy on 𝒮(V), y over
+real vectors in Fock coordinates with measure `New.Fock.normalizedVolume`.
+-/
 abbrev projReal : 𝒮 V →L[ℂ] 𝒮 V := V.integrated Fock.vacVector
 
 /-- For a matrix i over E and spaces V, V' with adelic frames x, x', the adelic matrix x⁻¹ i x'. -/
@@ -1029,9 +1088,11 @@ namespace New.Space
 
 open Matrix ComplexConjugate Heisenberg.IsVacuum
 
-variable {E : Type _} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type _} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} (V : Space E n s) (c : ℂ) (x y : n → 𝔸 E) (f f' : 𝒮 V)
+  {s : n → ℤˣ} (V : Space E n s)
+  (c : ℂ) (x y : n → 𝔸 E) (f f' : 𝒮 V)
 
 /-- The value of `f : 𝒮 V` at an adelic vector `x` is its theta function at `x`: the theta
 functional `V.rawTheta` (see `New.Space.rawTheta`) applied to the Heisenberg translate `V.ϱ x f`. -/
@@ -1078,7 +1139,8 @@ lemma dataInner_eq_quotMean :
   obtain ⟨h_inv, h_mean⟩ := V.isThetaFunctional_rawTheta
   exact ((h_inv.quotMean_eq_mul_modelInner h_inv h_mean f f').trans (one_mul _)).symm
 
-attribute [simp] rho_apply theta_apply add_apply smul_apply zero_apply dataInner_rho dataInner_omega
+attribute [simp]
+  rho_apply theta_apply add_apply smul_apply zero_apply dataInner_rho dataInner_omega
   dataInner_vacElem_vacElem dataInner_vacElem_rho_vacElem dataInner_vacElem_omega_vacElem
 
 /-- For `f : 𝒮 V` and `y : n → 𝔸 E`, the theta functional `V.θ` takes the Heisenberg translate

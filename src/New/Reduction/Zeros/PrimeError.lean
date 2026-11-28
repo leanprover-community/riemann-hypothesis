@@ -49,28 +49,38 @@ variable (d : ℕ) [Fact d.Prime] (q : ℕ)
 
 /-! ### The weights, their partial sums and the error term -/
 
-/-- The weight `λ(n) = Λ(n) (1 - χ_K(n))` for `n ≡ 1` mod `q`, and `0` for other `n`. Here `Λ` is
-the von Mangoldt function and `χ_K = chiK d` is the Legendre symbol `(·/d)`. -/
+/--
+The weight `λ(n) = Λ(n) (1 - χ_K(n))` for `n ≡ 1` mod `q`, and `0` for other `n`. Here `Λ` is
+the von Mangoldt function and `χ_K = chiK d` is the Legendre symbol `(·/d)`.
+-/
 def lambdaKResidueClass (n : ℕ) : ℝ := residueClass (1 : ZMod q) n * (1 - chiK d n)
 
-/-- The sum `y ^ (-r) ∑_{1 ≤ n ≤ y} λ(n) n ^ (r - 1)` with `λ = lambdaKResidueClass d q`, used for
-`r = 0` and `r = 1`. -/
+/--
+The sum `y ^ (-r) ∑_{1 ≤ n ≤ y} λ(n) n ^ (r - 1)` with `λ = lambdaKResidueClass d q`, used for
+`r = 0` and `r = 1`.
+-/
 def lambdaKSum (r : ℕ) (y : ℝ) : ℝ :=
   (∑ n ∈ Icc 1 ⌊y⌋₊, lambdaKResidueClass d q n / n * n ^ r) / y ^ r
 
-/-- The function `G_q` with `φ(q) G_q = (L_q^K)' / L_q^K - L_q' / L_q - 1` away from the zeros of
+/--
+The function `G_q` with `φ(q) G_q = (L_q^K)' / L_q^K - L_q' / L_q - 1` away from the zeros of
 `L_q` and `L_q^K`, which are the products of the `entireL ψ` and of the `entireL (quadTwist ψ d)`
 over all characters `ψ` mod `q`. For odd `d` prime to `q` and `re s > 1` it is
-`∑ λ(n) n ^ (-s) - s / (φ(q) (s - 1))`. -/
+`∑ λ(n) n ^ (-s) - s / (φ(q) (s - 1))`.
+-/
 def logDerivMean [NeZero q] (s : ℂ) : ℂ :=
   (∑ ψ : DirichletCharacter ℂ q,
-    (logDeriv (entireL (quadTwist ψ d)) s - logDeriv (entireL ψ) s) - 1) / φ q
+    (logDeriv (entireL (quadTwist ψ d)) s - logDeriv (entireL ψ) s)
+      - 1)
+    / φ q
 
-/-- The remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`, with
+/--
+The remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`, with
 `λ = lambdaKResidueClass d q` and `c_q = re G_q(1)`, `G_q = logDerivMean d q`; see
 `primeRemainder_eq_sum_posPart`. For odd `d` prime to `q` this is the constant for which
 `R_q(x) → 0` as `x → ∞`, by `eventually_abs_primeRemainder_le` in
-`New.Reduction.Zeros.PrimeNumberTheorem` with `B = 1`. -/
+`New.Reduction.Zeros.PrimeNumberTheorem` with `B = 1`.
+-/
 def primeRemainder [NeZero q] (x : ℝ) : ℝ :=
   lambdaKSum d q 0 x - lambdaKSum d q 1 x - x.log / φ q - re (logDerivMean d q 1)
 
@@ -122,7 +132,6 @@ lemma sum_vonMangoldt_div_le (N : ℕ) : ∑ n ∈ Ioc 0 N, vonMangoldt n / n �
           vonMangoldt_mul_zeta, log_apply]
     _ ≤ 2 * ∑ _n ∈ Ioc 0 N, Real.log N := by gcongr with n hn <;> simp_all [mem_Ioc]
     _ = N * (2 * Real.log N) := by simp [mul_left_comm]
-
 
 /-- Growth of the partial sums. Let `d` be a prime, `q` any natural number, and
 `λ = lambdaKResidueClass d q` the weight `Λ(n) (1 - (n/d))` on `n ≡ 1` mod `q` and `0` elsewhere,

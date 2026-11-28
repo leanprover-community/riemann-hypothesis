@@ -75,8 +75,10 @@ section Definitions
 
 variable {C : Type 1} [Category.{0} C] (k : Type) [CommRing k] (d : outParam ℕ)
 
-/-- A test for Hodge cohomology over k: a commutative k-algebra A and a finite index set ι,
-standing for the pair (A, M) with M = A^ι. -/
+/--
+A test for Hodge cohomology over k: a commutative k-algebra A and a finite index set ι,
+standing for the pair (A, M) with M = A^ι.
+-/
 structure HodgeTest where
   /-- The commutative `k`-algebra `A`. -/
   baseAlg : CommAlg k
@@ -94,11 +96,15 @@ def affineSpace : CommAlg k ⥤ Type 1 where
   obj A := ULift (Fin d → A)
   map f := ↾fun v ↦ ⟨f ∘ v.down⟩
 
-variable {k} {X Y : CommAlg k ⥤ Type 1} (V : Subfunctor X) {A B : CommAlg k}
+variable
+  {k} {X Y : CommAlg k ⥤ Type 1} (V : Subfunctor X)
+  {A B : CommAlg k}
   (P : (K : CommAlg k) → X.obj K → Prop)
 
-/-- The subfunctor of affine d-space of vectors whose entries generate the unit ideal: the
-complement of the origin. -/
+/--
+The subfunctor of affine d-space of vectors whose entries generate the unit ideal: the
+complement of the origin.
+-/
 def unimodular {d : ℕ} : Subfunctor (affineSpace k d) where
   obj _ := {v | span (Set.range v.down) = ⊤}
   map := by
@@ -109,8 +115,10 @@ def unimodular {d : ℕ} : Subfunctor (affineSpace k d) where
 @[simp]
 abbrev structureMap : of k k ⟶ A := ofHom (Algebra.ofId k A)
 
-/-- The subfunctor of points x in X(A) whose image in X(K) satisfies P for every map from A to a
-field K. -/
+/--
+The subfunctor of points x in X(A) whose image in X(K) satisfies P for every map from A to a
+field K.
+-/
 def fieldLocus : Subfunctor X where
   obj _ := {x | ∀ (K : CommAlg k) φ, IsField K.carrier → P K (X.map φ x)}
   map := by
@@ -118,54 +126,75 @@ def fieldLocus : Subfunctor X where
     rw [← X.map_comp_apply]
     exact hx K (f ≫ φ) hK
 
-/-- A point `x` of `X(K)` comes from `s` if it is the image of some `k`-point `z` in `s` under the
-structure map `k → K`. -/
+/--
+A point `x` of `X(K)` comes from `s` if it is the image of some `k`-point `z` in `s` under the
+structure map `k → K`.
+-/
 def ComesFromPoints (s : Set (X.obj (of k k))) (K : CommAlg k) (x : X K) : Prop :=
   ∃ z ∈ s, x = X.map structureMap z
 
-/-- For a set s of k-points of X, the subfunctor of points none of whose values in fields comes
-from s. -/
+/--
+For a set s of k-points of X, the subfunctor of points none of whose values in fields comes
+from s.
+-/
 def offPoints (s : Set (X.obj (of k k))) : Subfunctor X :=
-  fieldLocus (X := X) fun K x ↦ ¬ComesFromPoints s K x
+  fieldLocus (X := X) fun K x ↦ ¬ ComesFromPoints s K x
 
-/-- V is an open subfunctor of X: each x ∈ X(A) has an ideal I of A such that, for φ: A → B,
-φ(x) ∈ V(B) iff φ(I)B = B. -/
+/--
+V is an open subfunctor of X: each x ∈ X(A) has an ideal I of A such that, for φ: A → B,
+φ(x) ∈ V(B) iff φ(I)B = B.
+-/
 def IsOpenSubfunctor : Prop :=
   ∀ (A : CommAlg k) (x : X.obj A), ∃ I : Ideal A, ∀ (B : CommAlg k) (φ : A ⟶ B),
     X.map (X := A) (Y := B) φ x ∈ V B ↔ Ideal.map φ.hom I = ⊤
 
 variable (X) (ι : C ⥤ CommAlg k)
 
-/-- X is separated: for x, y in X(A) there is an ideal J of A such that φ: A → B makes x and y
-equal exactly when φ kills J. -/
+/--
+X is separated: for x, y in X(A) there is an ideal J of A such that φ: A → B makes x and y
+equal exactly when φ kills J.
+-/
 class IsSeparatedFunctor where
-  /-- For two points of `X(A)`, an ideal `J` of `A` such that a map `φ : A → B` makes them equal
-  exactly when `φ` kills `J`. -/
-  exists_ideal (A : CommAlg k) (x y : X.obj A) : ∃ J : Ideal A, ∀ (B : CommAlg k) (φ : A ⟶ B),
-    X.map (X := A) (Y := B) φ x = X.map φ y ↔ J ≤ ker φ.hom
+  /--
+  For two points of `X(A)`, an ideal `J` of `A` such that a map `φ : A → B` makes them equal
+  exactly when `φ` kills `J`.
+  -/
+  exists_ideal (A : CommAlg k) (x y : X.obj A)
+    : ∃ J : Ideal A, ∀ (B : CommAlg k) (φ : A ⟶ B),
+      X.map (X := A) (Y := B) φ x = X.map φ y ↔ J ≤ ker φ.hom
 
-/-- `X` is separated and, after restriction along `ι`, covered by one affine: there are a
+/--
+`X` is separated and, after restriction along `ι`, covered by one affine: there are a
 `k`-algebra `B` and a point `y` of `X(B)` such that, for every object `c`, each point of `X(ι c)` is
-the image of `y` under some map `B → ι c`. -/
+the image of `y` under some map `B → ι c`.
+-/
 def IsAffinelyCovered (X : CommAlg k ⥤ Type 1) : Prop :=
-  IsSeparatedFunctor X ∧
-  ∃ (B : CommAlg k) (y : X.obj B), IsPointwiseSurjective (ι.whiskerLeft (pointMap y))
+  IsSeparatedFunctor X
+    ∧ ∃ (B : CommAlg k) (y : X.obj B), IsPointwiseSurjective (ι.whiskerLeft (pointMap y))
 
-/-- Every k-algebra B with a map to some ι(c) has a map y : B → ι(c'), for some c', such that
+/--
+Every k-algebra B with a map to some ι(c) has a map y : B → ι(c'), for some c', such that
 `pointMap y`, the map from the functor on `C` represented by c' to `ι ⋙ reprBy B`, is surjective on
-points: each map B → ι(c'') is ι(f) ∘ y for some f : c' → c''. -/
+points: each map B → ι(c'') is ι(f) ∘ y for some f : c' → c''.
+-/
 class HasCoveringPoints where
-  /-- Each `k`-algebra with a map to some `ι(c)` has a map to some `ι(c')` through which, followed
-  by some `ι(f)` with `f : c' ⟶ c''`, every map to an `ι(c'')` factors. -/
-  exists_surjective_point (B : CommAlg k) {c : C} (z : (ι ⋙ reprBy B).obj c) :
-      ∃ (c' : C) (y : (ι ⋙ reprBy B).obj c'), IsPointwiseSurjective (pointMap y)
+  /--
+  Each `k`-algebra with a map to some `ι(c)` has a map to some `ι(c')` through which, followed
+  by some `ι(f)` with `f : c' ⟶ c''`, every map to an `ι(c'')` factors.
+  -/
+  exists_surjective_point (B : CommAlg k) {c : C} (z : (ι ⋙ reprBy B).obj c)
+    : ∃ (c' : C) (y : (ι ⋙ reprBy B).obj c'), IsPointwiseSurjective (pointMap y)
 
-/-- The complement of the diagonal in X × X: pairs of points whose values in every field are
-distinct. -/
+/--
+The complement of the diagonal in X × X: pairs of points whose values in every field are
+distinct.
+-/
 def offDiagonal : Subfunctor (X ⊗ X) := fieldLocus fun (_ : CommAlg k) x ↦ x.1 ≠ x.2
 
-/-- A chart of X: a k-algebra R (`coordRing`) with d étale coordinates (`coordinate`) and a point y
-(`point`) in X(R) that embeds Spec R as an open subfunctor. -/
+/--
+A chart of X: a k-algebra R (`coordRing`) with d étale coordinates (`coordinate`) and a point y
+(`point`) in X(R) that embeds Spec R as an open subfunctor.
+-/
 structure EtaleChart where
   /-- The `k`-algebra of functions on the chart. -/
   coordRing : CommAlg k
@@ -185,8 +214,10 @@ variable {X d} (a : EtaleChart d X)
 /-- φ: A → B is a square-zero extension: surjective, with kernel of square zero. -/
 def IsSquareZero {A B : CommAlg k} (φ : A ⟶ B) : Prop := Surjective φ ∧ ker φ.hom ^ 2 = ⊥
 
-/-- For a chart a of X, with ring R = a.coordRing and point y = a.point, the open subfunctor that is
-the image of Spec R → X, φ ↦ φ(y). -/
+/--
+For a chart a of X, with ring R = a.coordRing and point y = a.point, the open subfunctor that is
+the image of Spec R → X, φ ↦ φ(y).
+-/
 abbrev EtaleChart.locus : Subfunctor X := Subfunctor.range (pointMap a.point)
 
 /-- The map `Spec R → X` given by the point of a chart is a monomorphism. -/
@@ -197,8 +228,9 @@ end Definitions
 
 section Properties
 
-variable {k : Type} [CommRing k] {d : ℕ} {X Y : CommAlg k ⥤ Type 1} {V W : Subfunctor X}
-  {A B : CommAlg k} (I : Ideal A)
+variable
+  {k : Type} [CommRing k]
+  {d : ℕ} {X Y : CommAlg k ⥤ Type 1} {V W : Subfunctor X} {A B : CommAlg k} (I : Ideal A)
 
 lemma EtaleChart.mem_locus_iff (a : EtaleChart d X) {x : X.obj B} :
     x ∈ a.locus B ↔ ∃ φ : a.coordRing ⟶ B, X.map φ a.point = x :=
@@ -385,15 +417,18 @@ variable {k : Type} [CommRing k] (d : outParam ℕ) (X : CommAlg k ⥤ Type 1)
 /-- Every field-valued point of X lies in some chart, an affine open with d étale coordinates. -/
 class IsChartCovered where
   /-- Each point of `X` with values in a field lies in the locus of some chart. -/
-  exists_chart (K : CommAlg k) :
-      IsField K.carrier → ∀ x : X.obj K, ∃ a : EtaleChart d X, x ∈ a.locus.obj K
+  exists_chart (K : CommAlg k)
+    : IsField K.carrier → ∀ x : X.obj K, ∃ a : EtaleChart d X, x ∈ a.locus.obj K
 
-/-- X is separated and has finitely many charts, each with exactly d étale coordinates, that
-contain every field-valued point. -/
+/--
+X is separated and has finitely many charts, each with exactly d étale coordinates, that
+contain every field-valued point.
+-/
 class HasAtlas extends IsSeparatedFunctor X where
   /-- Finitely many charts contain every field-valued point of `X`. -/
-  exists_finite_charts : ∃ (n : ℕ) (a : Fin n → EtaleChart d X),
-    ∀ K : CommAlg k, IsField K.carrier → ∀ x : X.obj K, ∃ i : Fin n, x ∈ (a i).locus.obj K
+  exists_finite_charts
+    : ∃ (n : ℕ) (a : Fin n → EtaleChart d X), ∀ K : CommAlg k,
+      IsField K.carrier → ∀ x : X.obj K, ∃ i : Fin n, x ∈ (a i).locus.obj K
 
 end New.Variety
 
@@ -412,7 +447,9 @@ open CategoryTheory MonoidalCategory CartesianMonoidalCategory Algebra TensorPro
   CommAlgCat MvPolynomial Ideal IsLocalization.Away KaehlerDifferential Set Functor Fin Quotient
   AlgHom FormallyUnramified
 
-variable {k : Type} [CommRing k] {X Y : CommAlg k ⥤ Type 1} {A B R : CommAlg k} {d n : ℕ}
+variable
+  {k : Type} [CommRing k]
+  {X Y : CommAlg k ⥤ Type 1} {A B R : CommAlg k} {d n : ℕ}
   (x : Fin d → R) (a : EtaleChart d X) (b : EtaleChart n Y) (u : Y ⟶ X) [Mono u]
 
 /-- The product of two separated functors is separated. -/
@@ -505,8 +542,10 @@ lemma existsUnique_algHom_lift {S T B C : Type*} [CommRing S] [CommRing T] [Comm
 /-- The ring homomorphism k[X_i] → R sending X_i to x_i. -/
 abbrev polyEval : MvPolynomial (Fin d) k →+* R := (aeval (R := k) x).toRingHom
 
-/-- The ring of a chart a as an algebra over the polynomial ring k[X_1, …, X_d], with X_i sent
-to the i-th coordinate of a. -/
+/--
+The ring of a chart a as an algebra over the polynomial ring k[X_1, …, X_d], with X_i sent
+to the i-th coordinate of a.
+-/
 abbrev EtaleChart.polyAlgebra : Algebra (MvPolynomial (Fin d) k) a.coordRing :=
   (polyEval a.coordinate).toAlgebra
 
@@ -613,14 +652,17 @@ lemma EtaleChart.lift_unique (a : EtaleChart d X) {π : B ⟶ A} (hπ : IsSquare
 
 /-! ### Shrinking a chart -/
 
-/-- Over a Noetherian ring k, let a be a chart with ring a.coordRing and point a.point, and φ a map
+/--
+Over a Noetherian ring k, let a be a chart with ring a.coordRing and point a.point, and φ a map
 from a.coordRing to an algebra R of finite type that sends a.point to y. If y embeds Spec R as an
-open subfunctor, this is the chart on R with point y and the images of the coordinates of a. -/
-def EtaleChart.restrict [FiniteType k R] {φ : a.coordRing ⟶ R} {y : X.obj R}
-    (e : X.map φ a.point = y)
+open subfunctor, this is the chart on R with point y and the images of the coordinates of a.
+-/
+def EtaleChart.restrict
+    [FiniteType k R]
+    {φ : a.coordRing ⟶ R} {y : X.obj R} (e : X.map φ a.point = y)
     (i : ∀ A : CommAlg k, Function.Injective (X.map (X := R) (Y := A) · y))
-    (h : IsOpenSubfunctor (Subfunctor.range (pointMap y))) :
-    EtaleChart d X where
+    (h : IsOpenSubfunctor (Subfunctor.range (pointMap y)))
+    : EtaleChart d X where
   coordRing := R
   point := y
   coordinate := φ ∘ a.coordinate
@@ -638,13 +680,17 @@ def EtaleChart.restrict [FiniteType k R] {φ : a.coordRing ⟶ R} {y : X.obj R}
     -- `φ` can be cancelled on the left, so `t` is the unique lift of `ζ`.
     refine ⟨t, ?_⟩
     simp_rw [← (i _).eq_iff, ← map_comp_apply, (a.injective _).eq_iff]
-    exact ⟨⟨(Category.assoc φ t π).symm.trans hs.1, hs.2⟩,
-      fun t' ⟨ht', ht'_coord⟩ ↦ h_unique (φ ≫ t') ⟨(Category.assoc φ t' π).trans ht', ht'_coord⟩⟩
+    exact ⟨
+      ⟨(Category.assoc φ t π).symm.trans hs.1, hs.2⟩,
+      fun t' ⟨ht', ht'_coord⟩ ↦ h_unique (φ ≫ t') ⟨(Category.assoc φ t' π).trans ht', ht'_coord⟩
+    ⟩
   injective := i
   isOpenSubfunctor := h
 
-/-- For k Noetherian, a chart a of X and an element g of its ring R, the chart on R[1/g] with the
-images of the point and coordinates of a. -/
+/--
+For k Noetherian, a chart a of X and an element g of its ring R, the chart on R[1/g] with the
+images of the point and coordinates of a.
+-/
 def EtaleChart.away (g : a.coordRing) : EtaleChart d X :=
   a.restrict (φ := CommAlg.toAway g) rfl
     (i := by
@@ -664,8 +710,7 @@ def EtaleChart.away (g : a.coordRing) : EtaleChart d X :=
         rintro A ⟨z, ⟨ψ : a.coordRing ⟶ A⟩, rfl⟩
         refine ⟨span {ψ g}, fun B φ ↦ ULift.exists.trans ?_⟩
         -- By injectivity of the chart, equal points come from equal maps out of `a.coordRing`.
-        simpa [← (injective ..).eq_iff, map_span]
-          using! CommAlg.exists_toAway_comp_iff g (ψ ≫ φ))
+        simpa [← (injective ..).eq_iff, map_span] using! CommAlg.exists_toAway_comp_iff g (ψ ≫ φ))
 
 /-- Over a Noetherian ring k, the point given by φ: a.coordRing → B lies in the part of the chart a
 where g is inverted iff φ(g) is a unit. -/
@@ -696,12 +741,16 @@ lemma IsOpenSubfunctor.exists_mem_locus_and_point_mem [IsChartCovered d X] {U : 
 
 /-! ### Products and intersections of charts -/
 
-/-- For commutative k-algebras A and B, the k-algebra map A → A ⊗_k B, a ↦ a ⊗ 1, as a morphism in
-`New.Variety.CommAlg` k. -/
+/--
+For commutative k-algebras A and B, the k-algebra map A → A ⊗_k B, a ↦ a ⊗ 1, as a morphism in
+`New.Variety.CommAlg` k.
+-/
 abbrev tensorInl : A ⟶ CommAlgCat.of k (A ⊗[k] B) := ofHom includeLeft
 
-/-- For commutative k-algebras A and B, the k-algebra map B → A ⊗_k B, b ↦ 1 ⊗ b, as a morphism in
-`New.Variety.CommAlg` k. -/
+/--
+For commutative k-algebras A and B, the k-algebra map B → A ⊗_k B, b ↦ 1 ⊗ b, as a morphism in
+`New.Variety.CommAlg` k.
+-/
 abbrev tensorInr : B ⟶ CommAlgCat.of k (A ⊗[k] B) := ofHom includeRight
 
 omit [IsNoetherianRing k] in
@@ -731,8 +780,10 @@ lemma range_pointMap_prod (a : EtaleChart d X) (b : EtaleChart n Y) :
     obtain ⟨χ, rfl, rfl⟩ := (existsUnique_tensor_desc φ ψ).exists
     exact ⟨.up χ, Prod.ext (X.map_comp_apply ..).symm (Y.map_comp_apply ..).symm⟩
 
-/-- For k Noetherian and charts a of X and b of Y, the chart of X×Y on a.coordRing ⊗ b.coordRing,
-with coordinates x_i⊗1 and 1⊗y_j, where x and y are the coordinates of a and b. -/
+/--
+For k Noetherian and charts a of X and b of Y, the chart of X×Y on a.coordRing ⊗ b.coordRing,
+with coordinates x_i⊗1 and 1⊗y_j, where x and y are the coordinates of a and b.
+-/
 def EtaleChart.prod : EtaleChart (d + n) (X ⊗ Y) :=
   -- The point is the pair of the images of `a.point` and `b.point`.
   mk (coordRing := CommAlgCat.of k (a.coordRing ⊗[k] b.coordRing))
@@ -750,18 +801,24 @@ def EtaleChart.prod : EtaleChart (d + n) (X ⊗ Y) :=
       obtain ⟨t, ⟨ht, ht_coord⟩, ht_unique⟩ :=
         etale_polyEval_iff.1 b.etale π hπ (tensorInr ≫ ζ) _ hv_right
       obtain ⟨χ, ⟨rfl, rfl⟩, hχ_unique⟩ := existsUnique_tensor_desc s t
-      refine ⟨χ, ⟨(existsUnique_tensor_desc (tensorInl ≫ ζ) (tensorInr ≫ ζ)).unique ⟨hs, ht⟩
-        ⟨rfl, rfl⟩, hs_coord, ht_coord⟩, ?_⟩
+      refine ⟨
+        χ,
+        ⟨
+          (existsUnique_tensor_desc (tensorInl ≫ ζ) (tensorInr ≫ ζ)).unique ⟨hs, ht⟩ ⟨rfl, rfl⟩,
+          hs_coord,
+          ht_coord
+        ⟩,
+        ?_
+      ⟩
       -- Another lift restricts to lifts on both factors, which are unique.
       rintro χ' ⟨rfl, h_left, h_right⟩
       exact hχ_unique χ' ⟨hs_unique _ ⟨rfl, h_left⟩, ht_unique _ ⟨rfl, h_right⟩⟩)
-    (injective :=
-      fun A φ ψ e ↦ by
-        -- The two components of `e` say that `φ` and `ψ` agree on `a.coordRing` and on
-        -- `b.coordRing`.
-        have h_comp : tensorInl ≫ φ = tensorInl ≫ ψ ∧ tensorInr ≫ φ = tensorInr ≫ ψ := by
-          simpa [← (injective ..).eq_iff] using! Prod.ext_iff.1 e
-        exact (existsUnique_tensor_desc (tensorInl ≫ ψ) (tensorInr ≫ ψ)).unique h_comp ⟨rfl, rfl⟩)
+    (injective := fun A φ ψ e ↦ by
+      -- The two components of `e` say that `φ` and `ψ` agree on `a.coordRing` and on
+      -- `b.coordRing`.
+      have h_comp : tensorInl ≫ φ = tensorInl ≫ ψ ∧ tensorInr ≫ φ = tensorInr ≫ ψ := by
+        simpa [← (injective ..).eq_iff] using! Prod.ext_iff.1 e
+      exact (existsUnique_tensor_desc (tensorInl ≫ ψ) (tensorInr ≫ ψ)).unique h_comp ⟨rfl, rfl⟩)
     -- The image is the intersection of the preimages of `a.locus` and `b.locus`.
     (isOpenSubfunctor := by
       rw [range_pointMap_prod]
@@ -777,17 +834,21 @@ lemma EtaleChart.mem_locus_prod_iff (a : EtaleChart d X) (b : EtaleChart n Y) {x
     range_pointMap_prod a b
   exact h_locus.symm ▸ Iff.rfl
 
-/-- If `X` has an atlas of dimension d, charts of dimension d cover the field-valued points of
-`X`. -/
+/--
+If `X` has an atlas of dimension d, charts of dimension d cover the field-valued points of
+`X`.
+-/
 instance HasAtlas.isChartCovered [h : HasAtlas d X] : IsChartCovered d X := by
   obtain ⟨n, a, h_cover⟩ := h.exists_finite_charts
   exact ⟨fun K hK x ↦ (h_cover K hK x).elim fun i hi ↦ ⟨a i, hi⟩⟩
 
-/-- Let k be Noetherian. If charts of dimension d cover the field-valued points of `X` and charts
+/--
+Let k be Noetherian. If charts of dimension d cover the field-valued points of `X` and charts
 of dimension n cover those of `Y`, then products of such charts, of dimension d + n, cover the
-field-valued points of `X × Y`. -/
-instance IsChartCovered.prod [IsChartCovered d X] [IsChartCovered n Y] :
-    IsChartCovered (d + n) (X ⊗ Y) := by
+field-valued points of `X × Y`.
+-/
+instance IsChartCovered.prod [IsChartCovered d X] [IsChartCovered n Y]
+    : IsChartCovered (d + n) (X ⊗ Y) := by
   -- Take the product of charts around the two components.
   refine ⟨fun K hK ⟨x₁, x₂⟩ ↦ ?_⟩
   obtain ⟨a, ha⟩ := exists_chart (d := d) K hK x₁
@@ -912,10 +973,12 @@ lemma EtaleChart.range_pointMap_eq_preimage_locus {y : Y.obj a.coordRing}
 
 end
 
-/-- For u: Y → X injective on points and a chart a of X whose point is u(y), the chart of Y with the
-same ring and coordinates and the point y. -/
-def EtaleChart.comap (y : Y.obj a.coordRing) (h : u.app a.coordRing y = a.point) :
-    EtaleChart d Y where
+/--
+For u: Y → X injective on points and a chart a of X whose point is u(y), the chart of Y with the
+same ring and coordinates and the point y.
+-/
+def EtaleChart.comap (y : Y.obj a.coordRing) (h : u.app a.coordRing y = a.point)
+    : EtaleChart d Y where
   coordRing := a.coordRing
   point := y
   coordinate := a.coordinate
@@ -937,18 +1000,21 @@ lemma IsChartCovered.comap [IsChartCovered d X] (hu : IsOpenSubfunctor (Subfunct
 
 /-! ### Covering by pieces étale over tori -/
 
-/-- Two properties of a subfunctor `V` of `X`.
+/--
+Two properties of a subfunctor `V` of `X`.
 (a) `V` is locally everything: for each `y ∈ X(A)` and maximal ideal `m` of `A` there is an
 `a ∉ m` such that `y` maps into `V` along every `A → B` that makes `a` a unit.
 (b) `ℤ[V]` lies in every class `P` of functors to abelian groups that satisfies
 `New.Variety.IsClosedClass` and contains `ℤ[Hom(R, -)]` for the ring `R` of each chart of `X` (of
-any dimension) whose coordinates are all units, that is, étale over a torus. -/
+any dimension) whose coordinates are all units, that is, étale over a torus.
+-/
 def IsCharting (V : Subfunctor X) : Prop :=
-  IsZariskiLocallyTop (forget₂ (CommAlg k) CommRingCat) V ∧
-  ∀ P : CommAlg k ⥤ Ab → Prop, IsClosedClass P →
-    (∀ {d : ℕ} (b : EtaleChart d X),
-      (∀ j : Fin d, IsUnit (b.coordinate j)) → P (freeAb (reprBy b.coordRing))) →
-    P (freeAb V.toFunctor)
+  IsZariskiLocallyTop (forget₂ (CommAlg k) CommRingCat) V
+    ∧ ∀ P : CommAlg k ⥤ Ab → Prop,
+      IsClosedClass P
+        → (∀ {d : ℕ} (b : EtaleChart d X),
+          (∀ j : Fin d, IsUnit (b.coordinate j)) → P (freeAb (reprBy b.coordRing)))
+        → P (freeAb V.toFunctor)
 
 open Classical in
 /-- Over a Noetherian ring k, the coordinates of a chart stay étale when those with index in `S` are
@@ -1048,9 +1114,10 @@ open CategoryTheory Functor AlgebraicGeometry
 
 namespace New.Variety
 
-variable {C C' : Type 1} {D : Type*} [Category C] [Category C'] [Category D]
-  {F : AbFunctor C} {F' : AbFunctor C'} (c : Comparison F F') {ψ : C ⥤ D} {ψ' : C' ⥤ D}
-  (η : ψ' ⟶ c.functor ⋙ ψ)
+variable
+  {C C' : Type 1} {D : Type*} [Category C] [Category C'] [Category D]
+  {F : AbFunctor C} {F' : AbFunctor C'} (c : Comparison F F')
+  {ψ : C ⥤ D} {ψ' : C' ⥤ D} (η : ψ' ⟶ c.functor ⋙ ψ)
 
 /-- Let the comparison `c` consist of a functor `c.functor : C' ⥤ C` and a map of coefficients from
 `F` on `C` to `F'` on `C'`. The functors `N : D ⥤ Ab` for which the maps
@@ -1063,15 +1130,19 @@ lemma Comparison.isClosedClass :
   -- use `Comparison.devissage`.
   (c.devissage ((whiskeringLeft C D Ab).obj ψ) ((whiskeringLeft C' D Ab).map η)).isClosedClass
 
-/-- The comparison `c` is bijective on the set-valued functor `P` on `D`: the maps
-`Hⁿ(ψ ⋙ P, F) → Hⁿ(ψ' ⋙ P, F')` induced along `η` are bijective for all `n`. -/
+/--
+The comparison `c` is bijective on the set-valued functor `P` on `D`: the maps
+`Hⁿ(ψ ⋙ P, F) → Hⁿ(ψ' ⋙ P, F')` induced along `η` are bijective for all `n`.
+-/
 abbrev Comparison.IsBijectiveOn (P : D ⥤ Type 1) : Prop :=
   c.IsBijective (freeAbMap (Y := ψ ⋙ P) (whiskerRight η P))
 
-/-- The scheme `Y` over `R` is *charted* over the `R`-algebra `k`: the functor of points of `Y` on
-`k`-algebras has a subfunctor `V` with `New.Variety.IsCharting V`. -/
-class IsCharted {R : CommRingCat} (Y : Over (Spec R)) (k : Type) [CommRing k] [Algebra R k] :
-    Prop where
+/--
+The scheme `Y` over `R` is *charted* over the `R`-algebra `k`: the functor of points of `Y` on
+`k`-algebras has a subfunctor `V` with `New.Variety.IsCharting V`.
+-/
+class IsCharted {R : CommRingCat} (Y : Over (Spec R)) (k : Type) [CommRing k] [Algebra R k]
+    : Prop where
   /-- The functor of points of `Y` has a subfunctor `V` with `New.Variety.IsCharting V`. -/
   exists_isCharting : ∃ V : Subfunctor (algPointsOf k R Y), IsCharting V
 

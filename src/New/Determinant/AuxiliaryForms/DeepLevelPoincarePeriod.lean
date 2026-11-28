@@ -200,18 +200,25 @@ lemma New.Space.hasSum_integral_translates {E n : Type} {s : n → ℤˣ} [Field
 
 section RealSlices
 
-/-- The product over the infinite places `w` of the conjugate of the Flensted-Jensen matrix
-coefficient `(l w).dsCoeff` of the doubled parameter `l w`, evaluated at `(α w)⁻¹ * g w * ω w`. -/
-noncomputable def New.Exchange.translatedCoeff {E : Type*} {n : Type} {s : n → ℤˣ} [Field E]
-    [CMType E] [Fintype n] [DecidableEq n] (l : NumberField.InfinitePlace E → HCParam s)
-    (α ω g : GInf E s) : ℂ :=
+/--
+The product over the infinite places `w` of the conjugate of the Flensted-Jensen matrix
+coefficient `(l w).dsCoeff` of the doubled parameter `l w`, evaluated at `(α w)⁻¹ * g w * ω w`.
+-/
+noncomputable def New.Exchange.translatedCoeff
+    {E : Type*} {n : Type} {s : n → ℤˣ} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+    (l : NumberField.InfinitePlace E → HCParam s) (α ω g : GInf E s)
+    : ℂ :=
   ∏ w : NumberField.InfinitePlace E, conj ((l w).dsCoeff ((α w)⁻¹ * g w * ω w : USign s))
 
-/-- The constant in the decay of the slices of `translatedCoeff l α ω`: the product over the
+/--
+The constant in the decay of the slices of `translatedCoeff l α ω`: the product over the
 infinite places `w` of `(2 (‖α w‖ ‖ω w‖)²) ^ A` and `16 ^ A` times the volume of the unit ball
-around `1` in `U(s)`. -/
-noncomputable def New.Exchange.sliceConst {E : Type*} {n : Type} {s : n → ℤˣ} [Field E]
-    [CMType E] [Fintype n] [DecidableEq n] (A : ℕ) (α ω : GInf E (s ⊕ᵥ (1 : Unit → ℤˣ))) : ℝ :=
+around `1` in `U(s)`.
+-/
+noncomputable def New.Exchange.sliceConst
+    {E : Type*} {n : Type} {s : n → ℤˣ} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+    (A : ℕ) (α ω : GInf E (s ⊕ᵥ (1 : Unit → ℤˣ)))
+    : ℝ :=
   ∏ w : NumberField.InfinitePlace E,
     (2 * (‖(α w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖ *
       ‖(ω w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖) ^ 2) ^ A *
@@ -299,10 +306,13 @@ lemma New.Exchange.integrable_translatedCoeff_and_integral_norm_le {E : Type*} {
 
 end RealSlices
 
-/-- The embedding `h ↦ h ⊕ 1` of the unitary group of signs `s` in that of signs `s ⊕ 1`. Its
-image fixes the last basis vector. -/
-noncomputable def New.G.inlLine (E : Type) {n : Type} (s : n → ℤˣ) [Field E] [CMType E]
-    [Fintype n] [DecidableEq n] : G E s →* G E (s ⊕ᵥ (1 : Unit → ℤˣ)) :=
+/--
+The embedding `h ↦ h ⊕ 1` of the unitary group of signs `s` in that of signs `s ⊕ 1`. Its
+image fixes the last basis vector.
+-/
+noncomputable def New.G.inlLine
+    (E : Type) {n : Type} (s : n → ℤˣ) [Field E] [CMType E] [Fintype n] [DecidableEq n]
+    : G E s →* G E (s ⊕ᵥ (1 : Unit → ℤˣ)) :=
   sum.comp (.inl (G E s) (G E 1))
 
 /-- The block matrix `h ⊕ 1` has principal level `a` if and only if `h` has. -/
@@ -313,15 +323,19 @@ lemma New.G.inlLine_snd_mem_principalLevel_iff {E n : Type} {s : n → ℤˣ} [F
   simp [principalLevel, mem_stdLevel, ← adeleMatrix_snd, inlLine, zero_dvd, Subgroup.copy,
     Matrix.one_apply]
 
-/-- The rational vector `y` of `V ⊕ ⟨1⟩` is the last column of `γ`: in the coordinates at any point
+/--
+The rational vector `y` of `V ⊕ ⟨1⟩` is the last column of `γ`: in the coordinates at any point
 `u` it is the last column of the adelic matrix of `u⁻¹ γ (k ⊕ 1)`, for every `k`. Here `⟨1⟩` is
-the standard line `signedSpace E 1`; it needs a primitive root of unity of order `5040` in `E`. -/
-def New.Space.IsLastColumn {E n : Type} {s : n → ℤˣ} [Field E] [CMType E] [Fintype n]
-    [DecidableEq n] [HasPrimitiveRoot5040 E] (V : Space E n s)
-    (γ : G E (s ⊕ᵥ (1 : Unit → ℤˣ))) (y : n ⊕ Unit → E) : Prop :=
+the standard line `signedSpace E 1`; it needs a primitive root of unity of order `5040` in `E`.
+-/
+def New.Space.IsLastColumn
+    {E n : Type} {s : n → ℤˣ}
+    [Field E] [CMType E] [Fintype n] [DecidableEq n] [HasPrimitiveRoot5040 E]
+    (V : Space E n s) (γ : G E (s ⊕ᵥ (1 : Unit → ℤˣ))) (y : n ⊕ Unit → E)
+    : Prop :=
   ∀ (k : G E s) (u : G E (s ⊕ᵥ (1 : Unit → ℤˣ))),
-    ((V.sum (signedSpace (n := Unit) E 1)).move u).vecAtPoint y =
-      (u⁻¹ * γ * inlLine E s k).adeleMatrix *ᵥ Pi.single (.inr ()) 1
+    ((V.sum (signedSpace (n := Unit) E 1)).move u).vecAtPoint y
+      = (u⁻¹ * γ * inlLine E s k).adeleMatrix *ᵥ Pi.single (.inr ()) 1
 
 /-- If `E` has a primitive root of unity of order `5040`, every rational point `γ` of `V ⊕ ⟨1⟩`
 has a last column: a rational vector whose coordinates are those of the image under `γ` of the
@@ -543,10 +557,14 @@ lemma New.Exchange.integral_mul_indicator_mul_eq_smul_realConv {E n : Type} {s :
     integral_indicator_const _ (isOpen_principalLevel ha).measurableSet, mul_smul_one]
   rfl
 
-/-- The kernel of a Poincaré series: the function `φ` of the real part of `g` times the indicator
-function of the level `K` at its finite part. -/
-noncomputable def New.Exchange.poincareKernel {E n : Type} {s : n → ℤˣ} [Field E] [CMType E]
-    [Fintype n] [DecidableEq n] (φ : GInf E s → ℂ) (K : Subgroup (Gf E n)) (g : G E s) : ℂ :=
+/--
+The kernel of a Poincaré series: the function `φ` of the real part of `g` times the indicator
+function of the level `K` at its finite part.
+-/
+noncomputable def New.Exchange.poincareKernel
+    {E n : Type} {s : n → ℤˣ} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+    (φ : GInf E s → ℂ) (K : Subgroup (Gf E n)) (g : G E s)
+    : ℂ :=
   φ g.1 * indicator K 1 g.2
 
 /-- Let `E` be a CM field and let the finite part of `g` have principal level `a`. Then the kernel

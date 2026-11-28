@@ -71,8 +71,10 @@ variable {d : ℕ} (C : CMLattice d) {z : ℂ}
 
 /-! ### The function θ: multiplier, zeros, parity and square -/
 
-/-- The multiplier χ of a CM lattice satisfies the Appell–Humbert condition for the hermitian form H
-of Λ. -/
+/--
+The multiplier χ of a CM lattice satisfies the Appell–Humbert condition for the hermitian form H
+of Λ.
+-/
 instance isAppellHumbert_multiplier : IsAppellHumbert C.hermitianForm C.multiplier :=
   .mul_riemannPhase _
 
@@ -514,13 +516,16 @@ lemma multiplier_eq_canonicalMultiplier (hz : z ∈ C.Λ) :
     one_mul, one_mul] at h_add
   simpa [ThetaTori.canonicalMultiplier] using h_add
 
-/-- Let d be a prime ≡ 7 mod 8, let Λ be the lattice of `C` (stable under the ring of integers of
+/--
+Let d be a prime ≡ 7 mod 8, let Λ be the lattice of `C` (stable under the ring of integers of
 ℚ(√-d)) with area A, and let l ∈ Λ. Then |l|²√d/(2A) is an integer n. Moreover, the twisted
 translate `C.twistedTranslate 1 l C.θ`, z ↦ exp(−π(z l̄ + |l|²/2)/A)·θ(z + l) with θ = `C.θ`, equals
-(−1)ⁿθ. -/
-theorem exists_int_twistedTranslate_theta_eq_neg_one_zpow {l : ℂ} (hl : l ∈ C.Λ) :
-    ∃ n : ℤ, (n : ℝ) = ‖l‖ ^ 2 * √(d : ℝ) / (2 * C.area) ∧
-      C.twistedTranslate 1 l C.θ = (-1 : ℂ) ^ n • C.θ := by
+(−1)ⁿθ.
+-/
+theorem exists_int_twistedTranslate_theta_eq_neg_one_zpow {l : ℂ} (hl : l ∈ C.Λ)
+    : ∃ n : ℤ,
+      (n : ℝ) = ‖l‖ ^ 2 * √(d : ℝ) / (2 * C.area)
+        ∧ C.twistedTranslate 1 l C.θ = (-1 : ℂ) ^ n • C.θ := by
   -- The multiplier at l is exp(πi E(ω̄l, l)), with ω = (1 + √−d)/2 and E the Riemann form; the
   -- number E(ω̄l, l) = |l|²√d/(2A) is an integer because ω̄l lies in Λ.
   obtain ⟨n, hn⟩ : ∃ n : ℤ, C.hermitianForm.riemannForm (conj (quadGen d) * l) l = n :=
@@ -531,8 +536,9 @@ theorem exists_int_twistedTranslate_theta_eq_neg_one_zpow {l : ℂ} (hl : l ∈ 
       im_mul_ofReal]
     simp [quadGen, field]
   have h_mult : C.multiplier l = (-1 : ℂ) ^ n :=
-    calc _ = cexp (Real.pi * I * C.hermitianForm.riemannForm (conj (quadGen d) * l) l) := by
-          simp [C.multiplier_eq_canonicalMultiplier hl, ThetaTori.canonicalMultiplier]
+    calc
+      _ = cexp (Real.pi * I * C.hermitianForm.riemannForm (conj (quadGen d) * l) l) := by
+        simp [C.multiplier_eq_canonicalMultiplier hl, ThetaTori.canonicalMultiplier]
       _ = (-1 : ℂ) ^ n := by rw [hn, ofReal_intCast, mul_comm, exp_intCast_mul, exp_pi_mul_I]
   exact ⟨n, h_value, by rw [C.twistedTranslate_theta_of_mem hl, h_mult]⟩
 
@@ -625,14 +631,18 @@ lemma deriv_add_of_mem_sections {n : ℕ} {F : ℂ → ℂ} (hF : F ∈ C.sectio
   rw [← deriv_comp_add_const, h_law, deriv_fun_mul (by fun_prop) (F_diff z), hz, mul_zero,
     zero_add]
 
-/-- The degree a + 2b + 3c of a triple of exponents (a, b, c): the degree of the monomial
-`New.CMLattice.monomialSection` of the triple as a section. -/
+/--
+The degree a + 2b + 3c of a triple of exponents (a, b, c): the degree of the monomial
+`New.CMLattice.monomialSection` of the triple as a section.
+-/
 @[simp]
 abbrev monomialDeg (x : ℕ × ℕ × ℕ) : ℕ := x.1 + x.2.1 * 2 + x.2.2 * 3
 
-/-- The monomial θ^a·(σ²)^b·G^c of a triple of exponents (a, b, c).
+/--
+The monomial θ^a·(σ²)^b·G^c of a triple of exponents (a, b, c).
 Here σ is the sigma function of the lattice and G = `New.CMLattice.translatedYThetaCube` is the
-entire function equal to yθ³ off t + Λ. The factors θ, σ², G are sections of degree 1, 2, 3. -/
+entire function equal to yθ³ off t + Λ. The factors θ, σ², G are sections of degree 1, 2, 3.
+-/
 @[local simp]
 noncomputable def monomialSection (x : ℕ × ℕ × ℕ) : ℂ → ℂ :=
   C.θ ^ x.1 * ((C.σ ^ 2) ^ x.2.1 * C.translatedYThetaCube ^ x.2.2)

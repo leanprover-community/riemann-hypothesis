@@ -56,28 +56,39 @@ variable {E : Type} [Field E] [CMType E] {μ : InfinitePlace E → ℤ} (𝔠 : 
 
 /-! ### Products of `L`-values -/
 
-/-- For a set `S` of finite places of `E`, with residue cardinalities `q_w`, and a character `ν` of
+/--
+For a set `S` of finite places of `E`, with residue cardinalities `q_w`, and a character `ν` of
 `[U(1)]`, the product `L_*(e) = ∏_{w ∈ S} q_w ^ (e ^ 2) ∏_{1 ≤ z ≤ e} |L^S(z, ν)| ^ 2`, where
-`L^S(z, ν) = ν.L S z` is the Euler product of the base change of `ν` outside `S ∪ S̄`. -/
+`L^S(z, ν) = ν.L S z` is the Euler product of the base change of `ν` outside `S ∪ S̄`.
+-/
 def lValueProd (S : Set (FinPlace E)) (ν : AutChar E) (e : ℕ) : ℝ :=
   (∏ᶠ w ∈ S, FinPlace.q w : ℕ) ^ e ^ 2 * ∏ z ∈ Finset.Icc 1 e, ‖ν.L S z‖ ^ 2
 
-/-- `L_*(e)` for the character `𝔠.character` and its set `𝔠.ramifiedPlaces` of ramified places,
-extended to every integer `e` by `L_*(-e) = L_*(e)⁻¹`. -/
-def lValueProdInt (e : ℤ) : ℝ := lValueProd 𝔠.ramifiedPlaces 𝔠.character e.toNat / lValueProd
-  𝔠.ramifiedPlaces 𝔠.character (-e).toNat
+/--
+`L_*(e)` for the character `𝔠.character` and its set `𝔠.ramifiedPlaces` of ramified places,
+extended to every integer `e` by `L_*(-e) = L_*(e)⁻¹`.
+-/
+def lValueProdInt (e : ℤ) : ℝ :=
+  lValueProd 𝔠.ramifiedPlaces 𝔠.character e.toNat
+    / lValueProd 𝔠.ramifiedPlaces 𝔠.character (-e).toNat
 
-/-- `L♯(z) = |L^S(z, ν)| ∏_{w ∈ S} q_w ^ (z - 1/2)` for `ν = 𝔠.character` and
+/--
+`L♯(z) = |L^S(z, ν)| ∏_{w ∈ S} q_w ^ (z - 1/2)` for `ν = 𝔠.character` and
 `S = 𝔠.ramifiedPlaces`. It is used only for `z ≥ 1`, as `𝔠.character.L` is an Euler product and not
-its analytic continuation. -/
-def lSharp (z : ℝ) : ℝ := ‖𝔠.character.L 𝔠.ramifiedPlaces z‖ * ∏ w : 𝔠.ramifiedPlaces,
-  (w.val.q : ℝ) ^ (z - 1 / 2)
+its analytic continuation.
+-/
+def lSharp (z : ℝ) : ℝ :=
+  ‖𝔠.character.L 𝔠.ramifiedPlaces z‖
+    * ∏ w : 𝔠.ramifiedPlaces,
+      (w.val.q : ℝ) ^ (z - 1 / 2)
 
 theorem SplitTameChar.weight_ne_zero (𝔠 : SplitTameChar E μ) : μ ≠ 0 := fun h ↦
   (𝔠.weight_pos (Classical.arbitrary _)).ne' (congrFun h _)
 
-/-- The partial `L`-function of a split tame character has no zero on `[1, ∞)`, because the weight
-of the character is not zero. -/
+/--
+The partial `L`-function of a split tame character has no zero on `[1, ∞)`, because the weight
+of the character is not zero.
+-/
 theorem SplitTameChar.L_ne_zero {z : ℝ} (hz : 1 ≤ z) : 𝔠.character.L 𝔠.ramifiedPlaces z ≠ 0 :=
   𝔠.hasWeight.L_ne_zero 𝔠.ramifiedPlaces.finite_toSet 𝔠.weight_ne_zero hz
 
@@ -86,9 +97,9 @@ theorem lSharp_pos {z : ℝ} (hz : 1 ≤ z) : 0 < lSharp 𝔠 z :=
     (Finset.prod_pos fun w _ ↦ rpow_pos_of_pos (by simp [FinPlace.q_bounds]) _)
 
 /-- The recursion `L_*(z + 1) = L♯(z + 1) ^ 2 * L_*(z)` for natural `z`. -/
-theorem lValueProd_succ (z : ℕ) :
-    lValueProd 𝔠.ramifiedPlaces 𝔠.character (z + 1) = lSharp 𝔠 (z + 1) ^ 2 * lValueProd
-      𝔠.ramifiedPlaces 𝔠.character z := by
+theorem lValueProd_succ (z : ℕ)
+    : lValueProd 𝔠.ramifiedPlaces 𝔠.character (z + 1)
+      = lSharp 𝔠 (z + 1) ^ 2 * lValueProd 𝔠.ramifiedPlaces 𝔠.character z := by
   let Q : ℝ := ∏ w : 𝔠.ramifiedPlaces, (w.val.q : ℝ)
   have h_norm : ((∏ᶠ w ∈ (𝔠.ramifiedPlaces : Set (FinPlace E)), FinPlace.q w : ℕ) : ℝ) = Q := by
     rw [finprod_mem_coe_finset, Nat.cast_prod, ← Finset.prod_coe_sort]
@@ -107,44 +118,51 @@ theorem lValueProd_pos (e : ℕ) : 0 < lValueProd 𝔠.ramifiedPlaces 𝔠.chara
 theorem lValueProdInt_pos (e : ℤ) : 0 < lValueProdInt 𝔠 e :=
   div_pos (lValueProd_pos 𝔠 _) (lValueProd_pos 𝔠 _)
 
-theorem lValueProdInt_natCast (z : ℕ) : lValueProdInt 𝔠 z = lValueProd 𝔠.ramifiedPlaces 𝔠.character
-  z := by
+theorem lValueProdInt_natCast (z : ℕ)
+    : lValueProdInt 𝔠 z = lValueProd 𝔠.ramifiedPlaces 𝔠.character z := by
   simp [lValueProdInt, lValueProd]
 
-theorem lValueProdInt_neg_natCast (z : ℕ) :
-    lValueProdInt 𝔠 (-z) = (lValueProd 𝔠.ramifiedPlaces 𝔠.character z)⁻¹ := by
+theorem lValueProdInt_neg_natCast (z : ℕ)
+    : lValueProdInt 𝔠 (-z) = (lValueProd 𝔠.ramifiedPlaces 𝔠.character z)⁻¹ := by
   simp [lValueProdInt, lValueProd]
 
-/-- For a split tame character `𝔠` of `[U(1)]` over the CM field `E`, with character
+/--
+For a split tame character `𝔠` of `[U(1)]` over the CM field `E`, with character
 `ν = 𝔠.character` and ramified set `S = 𝔠.ramifiedPlaces`, this gives a recursion for every natural
 `z`. The value `lValueProdInt 𝔠 (z + 1)`, written `L_*(z + 1)`, equals `L♯(z + 1)² · L_*(z)`. Here
 `L♯(z) = |L^S(z, ν)| ∏_{w ∈ S} q_w ^ (z - 1/2)` is `lSharp 𝔠 z`, and `L_*` is extended to all
-integers by `L_*(-e) = L_*(e)⁻¹`. -/
-theorem lValueProdInt_succ (z : ℕ) :
-    lValueProdInt 𝔠 (z + 1) = lSharp 𝔠 (z + 1) ^ 2 * lValueProdInt 𝔠 z := by
+integers by `L_*(-e) = L_*(e)⁻¹`.
+-/
+theorem lValueProdInt_succ (z : ℕ)
+    : lValueProdInt 𝔠 (z + 1) = lSharp 𝔠 (z + 1) ^ 2 * lValueProdInt 𝔠 z := by
   rw [← Int.natCast_succ, lValueProdInt_natCast, lValueProdInt_natCast, lValueProd_succ]
 
-/-- For natural `z`, `L_*(-z) = L♯(z + 1) ^ 2 * L_*(-z - 1)`, which computes `L_*` at the
+/--
+For natural `z`, `L_*(-z) = L♯(z + 1) ^ 2 * L_*(-z - 1)`, which computes `L_*` at the
 nonpositive integers by downward recursion. Here `L_*` (`lValueProdInt`) is the value for the
 character `𝔠.character` and its set `𝔠.ramifiedPlaces` of ramified places, extended to all integers
-by `L_*(-e) = L_*(e)⁻¹`. Also `L♯(z) = |L^S(z, ν)| ∏_{w ∈ S} q_w ^ (z - 1/2)` (`lSharp`). -/
-theorem lValueProdInt_neg (z : ℕ) :
-    lValueProdInt 𝔠 (-z) = lSharp 𝔠 (z + 1) ^ 2 * lValueProdInt 𝔠 (-(z + 1)) := by
+by `L_*(-e) = L_*(e)⁻¹`. Also `L♯(z) = |L^S(z, ν)| ∏_{w ∈ S} q_w ^ (z - 1/2)` (`lSharp`).
+-/
+theorem lValueProdInt_neg (z : ℕ)
+    : lValueProdInt 𝔠 (-z) = lSharp 𝔠 (z + 1) ^ 2 * lValueProdInt 𝔠 (-(z + 1)) := by
   rw [← Int.natCast_succ, lValueProdInt_neg_natCast, lValueProdInt_neg_natCast, lValueProd_succ,
     mul_inv, mul_inv_cancel_left₀ (pow_pos (lSharp_pos 𝔠 (by simp)) 2).ne']
 
 /-! ### Tate's integral at the finite places -/
 
 open scoped Classical in
-/-- The finite factor of the datum along the line, shifted by `p`. Let `S = 𝔠.ramifiedPlaces` and
+/--
+The finite factor of the datum along the line, shifted by `p`. Let `S = 𝔠.ramifiedPlaces` and
 let `χ = 𝔠.semilocalChar` be the tame character on the completions at `S`. At a finite adele `a`
 that is integral off `S ∪ S̄` the value is `χ⁻¹(a) χ(ā p)`, read as `0` unless `a` and `ā p` are
-units at `S` (the quotient by `0` is `0`). At other adeles it is `0`. -/
+units at `S` (the quotient by `0` is `0`). At other adeles it is `0`.
+-/
 def lineFinFactor (p : LocProd 𝔠.ramifiedPlaces) (a : 𝔸f E) : ℂ :=
   if idem (conjClosure (𝔠.ramifiedPlaces : Set (FinPlace E)))ᶜ * a ∈ Ô E then
-    invOnUnits 𝔠.semilocalChar (evalPlaces 𝔠.ramifiedPlaces a) / invOnUnits 𝔠.semilocalChar
-      (evalPlaces 𝔠.ramifiedPlaces (star a) * p)
-  else 0
+    invOnUnits 𝔠.semilocalChar (evalPlaces 𝔠.ramifiedPlaces a)
+      / invOnUnits 𝔠.semilocalChar (evalPlaces 𝔠.ramifiedPlaces (star a) * p)
+  else
+    0
 
 lemma lineFinFactor_zero (p : LocProd 𝔠.ramifiedPlaces) : lineFinFactor 𝔠 p 0 = 0 := by
   simp [lineFinFactor, invOnUnits, IsIntegralUnit]
@@ -208,8 +226,10 @@ lemma lineFinFactor_congr {a a' : 𝔸f E} (ha : a ∈ Ô E) (ha' : a' ∈ Ô E)
   rw [lineFinFactor, lineFinFactor, ite_eq_left (h_int ha), ite_eq_left (h_int ha'), h_eval,
     h_eval_star]
 
-/-- The integrand of Tate's integral over the finite ideles: the finite factor times the base change
-of `𝔠.character` times the `x`-th power of the module. -/
+/--
+The integrand of Tate's integral over the finite ideles: the finite factor times the base change
+of `𝔠.character` times the `x`-th power of the module.
+-/
 def finTateIntegrand (x : ℝ) (a : (𝔸f E)ˣ) : ℂ :=
   lineFinFactor 𝔠 1 a * 𝔠.character.baseChange.finPart a * (finIdeleAbs a ^ x : ℝ)
 
@@ -245,8 +265,10 @@ lemma continuousOn_L : ContinuousOn (𝔠.character.L 𝔠.ramifiedPlaces) (Ici 
 /-! ### Unfolding over the idele classes -/
 
 variable (E) in
-/-- The variable of Tate's integral on the two sides of Poisson's formula: `a` itself for
-`β = true`, and `ā⁻¹` for `β = false`. -/
+/--
+The variable of Tate's integral on the two sides of Poisson's formula: `a` itself for
+`β = true`, and `ā⁻¹` for `β = false`.
+-/
 def poissonVariable (β : Bool) : (𝔸 E)ˣ ≃ₜ* (𝔸 E)ˣ :=
   cond β (.refl (𝔸 E)ˣ) ⟨.inv (𝔸 E)ˣ * starMulAut, continuous_star.inv, continuous_inv.star⟩
 
@@ -270,8 +292,9 @@ lemma ideleAbs_poissonVariable_false (a : (𝔸 E)ˣ) :
 
 variable (E) in
 /-- The isomorphism that splits an idele into its archimedean and its finite part. -/
-def ideleParts : (𝔸 E)ˣ ≃ₜ* (InfinitePlace E → ℂ)ˣ × (𝔸f E)ˣ :=
-  { MulEquiv.prodUnits, Homeomorph.prodUnits with }
+def ideleParts : (𝔸 E)ˣ ≃ₜ* (InfinitePlace E → ℂ)ˣ × (𝔸f E)ˣ := {
+  MulEquiv.prodUnits, Homeomorph.prodUnits with
+}
 
 lemma realIdele_mul_finIdeleIncl_ideleParts (a : (𝔸 E)ˣ) :
     realIdele (ideleParts E a).1 * finIdeleIncl (ideleParts E a).2 = a :=

@@ -94,42 +94,55 @@ variable {C : Type 1} [Category.{0} C] {N K : AbFunctor C}
 /-- The constant functor on C with value the one-point set. -/
 abbrev onePointFunctor (C : Type*) [Category C] : C ⥤ Type 1 := Functor.const C PUnit.{2}
 
-/-- For `ρ : ℤ[pt] ⟶ K`, that is, a family of elements `ρ [pt]` of the values of `K` compatible
-with the maps of `K`, the map `S ⟶ S ⊗ K`, `x ↦ x ⊗ ρ [pt]`, natural in `S`. -/
-def tensorPoint (ρ : freeAb.obj (onePointFunctor C) ⟶ K) :
-    𝟭 (AbFunctor C) ⟶ abTensor.flip.obj K where
-  app S :=
-    { app c :=
-        ofHom ((TensorProduct.mk ℤ (S.obj c) (K.obj c)).flip
-          (ρ.app c (FreeAddCommGroup.of ⟨⟩))).toAddMonoidHom
-      naturality c c' f := by
-        -- The elements `ρ.app c (.of ⟨⟩)` are compatible with the maps of `K`; so on `x` both
-        -- sides are `S.map f x ⊗ K.map f (ρ [pt])`, by the definition of `abTensor`.
-        rw [show ρ.app c' (.of ⟨⟩) = K.map f (ρ.app c (.of ⟨⟩)) from ρ.naturality_apply f (.of ⟨⟩)]
-        rfl }
+/--
+For `ρ : ℤ[pt] ⟶ K`, that is, a family of elements `ρ [pt]` of the values of `K` compatible
+with the maps of `K`, the map `S ⟶ S ⊗ K`, `x ↦ x ⊗ ρ [pt]`, natural in `S`.
+-/
+def tensorPoint (ρ : freeAb.obj (onePointFunctor C) ⟶ K)
+    : 𝟭 (AbFunctor C) ⟶ abTensor.flip.obj K where
+  app S := {
+    app c :=
+      ofHom ((TensorProduct.mk ℤ (S.obj c) (K.obj c)).flip
+        (ρ.app c (FreeAddCommGroup.of ⟨⟩))).toAddMonoidHom
+    naturality c c' f := by
+      -- The elements `ρ.app c (.of ⟨⟩)` are compatible with the maps of `K`; so on `x` both
+      -- sides are `S.map f x ⊗ K.map f (ρ [pt])`, by the definition of `abTensor`.
+      rw [show ρ.app c' (.of ⟨⟩) = K.map f (ρ.app c (.of ⟨⟩)) from ρ.naturality_apply f (.of ⟨⟩)]
+      rfl
+  }
 
-/-- A family of classes in `Ext² (S ⊗ φ^* N, S ⊗ φ^* K)`, one for every functor `φ : D ⥤ C` and
-every functor `S` from `D` to abelian groups; `φ^* N` is `φ ⋙ N`. -/
+/--
+A family of classes in `Ext² (S ⊗ φ^* N, S ⊗ φ^* K)`, one for every functor `φ : D ⥤ C` and
+every functor `S` from `D` to abelian groups; `φ^* N` is `φ ⋙ N`.
+-/
 abbrev TensorClassFamily (N K : AbFunctor C) : Type 2 :=
   ∀ (D : Type 1) [Category.{0} D] (φ : D ⥤ C) (S : AbFunctor D),
     H ((abTensor.flip.obj (φ ⋙ N)).obj S) ((abTensor.flip.obj (φ ⋙ K)).obj S) 2
 
-/-- The family `h` extends `(φ, S) ↦ S ⊗ φ^* ξ` from flat `S` to all `S`, compatibly with classes
-between the functors `S` and with restriction. The equations are in total cohomology. -/
-structure IsTensorClass [HasFlatValues N] [HasFlatValues K] (ξ : H N K 2)
-    (h : TensorClassFamily N K) : Prop where
-  /-- For a class `y` from `S` to `S'`, `y ⊗ φ^* N` followed by `h D φ S'` is `h D φ S` followed
-  by `y ⊗ φ^* K`. -/
-  comm (D : Type 1) [Category.{0} D] (φ : D ⥤ C) (S S' : AbFunctor D) (y : TotalH S S') :
-    comp (map (abTensor.flip.obj (φ ⋙ N)) y) (h D φ S').toTotalH =
-      comp (h D φ S).toTotalH (map (abTensor.flip.obj (φ ⋙ K)) y)
+/--
+The family `h` extends `(φ, S) ↦ S ⊗ φ^* ξ` from flat `S` to all `S`, compatibly with classes
+between the functors `S` and with restriction. The equations are in total cohomology.
+-/
+structure IsTensorClass
+    [HasFlatValues N] [HasFlatValues K] (ξ : H N K 2) (h : TensorClassFamily N K)
+    : Prop where
+  /--
+  For a class `y` from `S` to `S'`, `y ⊗ φ^* N` followed by `h D φ S'` is `h D φ S` followed
+  by `y ⊗ φ^* K`.
+  -/
+  comm (D : Type 1) [Category.{0} D] (φ : D ⥤ C) (S S' : AbFunctor D) (y : TotalH S S')
+    : comp (map (abTensor.flip.obj (φ ⋙ N)) y) (h D φ S').toTotalH
+      = comp (h D φ S).toTotalH (map (abTensor.flip.obj (φ ⋙ K)) y)
   /-- For flat `S` the class is `ξ`, restricted along `φ` and tensored with `S`. -/
-  eq_of_flat (D : Type 1) [Category.{0} D] (φ : D ⥤ C) (S : AbFunctor D) [HasFlatValues S] :
-    (h D φ S).toTotalH = map (abTensor.obj S) (map (restrictAlong φ) ξ.toTotalH)
+  eq_of_flat (D : Type 1) [Category.{0} D] (φ : D ⥤ C) (S : AbFunctor D) [HasFlatValues S]
+    : (h D φ S).toTotalH = map (abTensor.obj S) (map (restrictAlong φ) ξ.toTotalH)
   /-- The classes are compatible with restriction along a further functor `ψ : E ⥤ D`. -/
-  restrict (D : Type 1) [Category.{0} D] (φ : D ⥤ C) (S : AbFunctor D)
-    (E : Type 1) [Category.{0} E] (ψ : E ⥤ D) :
-    map (restrictAlong ψ) (h D φ S).toTotalH = (h E (ψ ⋙ φ) (ψ ⋙ S)).toTotalH
+  restrict
+    (D : Type 1) [Category.{0} D]
+    (φ : D ⥤ C) (S : AbFunctor D)
+    (E : Type 1) [Category.{0} E]
+    (ψ : E ⥤ D)
+    : map (restrictAlong ψ) (h D φ S).toTotalH = (h E (ψ ⋙ φ) (ψ ⋙ S)).toTotalH
 
 /-- Let `N` and `K` be functors with flat values and `ξ` a class in `Ext² (N, K)`. Then `ξ` can
 be tensored with every functor, flat or not, compatibly: there is a family of classes in
@@ -237,10 +250,11 @@ open CategoryTheory Function QuotientAddGroup AddCommGrpCat ObjectProperty Abeli
 
 export CartesianMonoidalCategory (toUnit)
 
-
-variable {C C' : Type 1} [Category C] [Category C']
-  {F G M N : AbFunctor C} {α : M ⟶ N} {X E : C ⥤ Type 1} (φ : C' ⥤ C) {F' N' : AbFunctor C'}
-  {c : Comparison F F'}
+variable
+  {C C' : Type 1} [Category C] [Category C']
+  {F G M N : AbFunctor C} {α : M ⟶ N} {X E : C ⥤ Type 1}
+  (φ : C' ⥤ C)
+  {F' N' : AbFunctor C'} {c : Comparison F F'}
 
 /-! ### A sieve cut out by a map to an acyclic object -/
 
@@ -348,18 +362,24 @@ lemma surjective_and_map_eq_zero_of_quotient_sieve {A : C'} {R : Subfunctor (rep
 
 /-! ### Slices: the category of elements of a set-valued functor -/
 
-/-- For φ: C' → C and a section q of X∘φ, the functor a ↦ (φ(a), q(a)) from C' to the category
-of elements of X. -/
+/--
+For φ: C' → C and a section q of X∘φ, the functor a ↦ (φ(a), q(a)) from C' to the category
+of elements of X.
+-/
 def sectionLift (q : (φ ⋙ X).sections) : C' ⥤ X.Elements where
   obj c := X.elementsMk (φ.obj c) (q.val c)
   map f := ⟨φ.map f, q.property f⟩
 
-/-- For a section q of a set-valued functor X, the morphism from the constant one-point functor
-to X sending the point at c to q(c). -/
+/--
+For a section q of a set-valued functor X, the morphism from the constant one-point functor
+to X sending the point at c to q(c).
+-/
 def sectionMap (q : X.sections) : onePointFunctor C ⟶ X := X.sectionsEquivHom PUnit.{2} q
 
-/-- For a set-valued functor X on C, the projection (c, x) ↦ c to C from the category of elements of
-X, whose objects are the pairs (c, x) with x ∈ X(c). -/
+/--
+For a set-valued functor X on C, the projection (c, x) ↦ c to C from the category of elements of
+X, whose objects are the pairs (c, x) with x ∈ X(c).
+-/
 abbrev elementsProj (X : C ⥤ Type 1) : X.Elements ⥤ C := Functor.Elements.π X
 
 /-- Universal points pass to categories of elements. Let `u : E' ⟶ c.functor ⋙ E` have universal
@@ -486,51 +506,59 @@ lemma bijective_totalH_iff_isBijective {α : N' ⟶ c.functor ⋙ N} :
 
 alias ⟨_, Comparison.IsBijective.bijective_totalH⟩ := bijective_totalH_iff_isBijective
 
-/-- The additive isomorphism from total Ext(N ⊗ ℤ[X], F) to total Ext between the pull-backs of N
+/--
+The additive isomorphism from total Ext(N ⊗ ℤ[X], F) to total Ext between the pull-backs of N
 and F to the category of elements of X: restrict there, then precompose with
-n ↦ n ⊗ [tautological point]. -/
-def sliceEquiv :
-    TotalH (abTensor N (freeAb X)) F ≃+ TotalH (elementsProj X ⋙ N) (elementsProj X ⋙ F) :=
+n ↦ n ⊗ [tautological point].
+-/
+def sliceEquiv
+    : TotalH (abTensor N (freeAb X)) F ≃+ TotalH (elementsProj X ⋙ N) (elementsProj X ⋙ F) :=
   -- restrict to the points of `X`, then pull back along
   -- `tensorPoint (freeAbMap tautologicalSection)`, the map `n ↦ n ⊗ [tautological point]`
   AddEquiv.ofBijective ((TotalH.comp (.homClass (tensorPoint (freeAbMap tautologicalSection)
-      (elementsProj X ⋙ N)))).comp (TotalH.map (restrictAlong (elementsProj X)))) <| by
-    -- by dévissage it suffices to treat `N = ℤ[Y]`, `Y` a sum of representable functors
-    -- `h_bij`: the comparison is bijective in every degree at `N`
-    have h_bij :=
-      (devissage (.restrict _ F) (abTensor.flip (freeAb X))
+      (elementsProj X ⋙ N)))).comp (TotalH.map (restrictAlong (elementsProj X)))) <|
+    by
+      -- by dévissage it suffices to treat `N = ℤ[Y]`, `Y` a sum of representable functors
+      -- `h_bij`: the comparison is bijective in every degree at `N`
+      have h_bij :=
+        (devissage (.restrict _ F) (abTensor.flip (freeAb X))
           ((restrictAlong _).whiskerLeft
             (tensorPoint (freeAbMap
               tautologicalSection)))).allBijective_of_allBijective_sigma_reprBy (fun ι c ↦ ?_) N
-    · -- bijective in each degree, so bijective on total cohomology
-      -- (`using!`: after `simp` the two sides differ only by unfolding `elementsProj`)
-      simpa [mapThenComp] using! IsBijective.bijective_totalH h_bij
-    · -- the case `N = ℤ[Y]`: `ℤ[Y] ⊗ ℤ[X] = ℤ[Y × X]`, and over the points of `X` the functor `Y`
-      -- is the pull-back of the tautological point along the projection `Y × X → X`
-      refine (IsCohomEquiv.of_isIso (freeAb.prod (sigma fun i ↦ reprBy (c i)) X)).bij.trans
-        (hasUniversalPoints_elements.isBijective_of_isPullback
-          (v := lift (𝟙 (elementsProj X ⋙ sigma fun i ↦ reprBy (c i)))
-            (toUnit (elementsProj X ⋙ sigma fun i ↦ reprBy (c i)) ≫ tautologicalSection))
-          (toUnit (elementsProj X ⋙ sigma fun i ↦ reprBy (c i)))
-          (snd (sigma fun i ↦ reprBy (c i)) X) ?_)
-        (freeAb.hom_ext fun _ _ ↦ rfl)
-      refine isPullback_iff.mpr ⟨fun B z ↦ rfl, fun B w x h_snd ↦ ?_⟩
-      -- the unique point over `x` is its first coordinate
-      refine ⟨x.fst, ⟨rfl, Prod.ext rfl h_snd.symm⟩, ?_⟩
-      rintro z' ⟨_, h_lift⟩
-      exact congrArg Prod.fst h_lift
+      · -- bijective in each degree, so bijective on total cohomology
+        -- (`using!`: after `simp` the two sides differ only by unfolding `elementsProj`)
+        simpa [mapThenComp] using! IsBijective.bijective_totalH h_bij
+      · -- the case `N = ℤ[Y]`: `ℤ[Y] ⊗ ℤ[X] = ℤ[Y × X]`, and over the points of `X` the functor `Y`
+        -- is the pull-back of the tautological point along the projection `Y × X → X`
+        refine (IsCohomEquiv.of_isIso (freeAb.prod (sigma fun i ↦ reprBy (c i)) X)).bij.trans
+          (hasUniversalPoints_elements.isBijective_of_isPullback
+            (v :=
+              lift (𝟙 (elementsProj X ⋙ sigma fun i ↦ reprBy (c i)))
+                (toUnit (elementsProj X ⋙ sigma fun i ↦ reprBy (c i)) ≫ tautologicalSection))
+            (toUnit (elementsProj X ⋙ sigma fun i ↦ reprBy (c i)))
+            (snd (sigma fun i ↦ reprBy (c i)) X) ?_)
+          (freeAb.hom_ext fun _ _ ↦ rfl)
+        refine isPullback_iff.mpr ⟨fun B z ↦ rfl, fun B w x h_snd ↦ ?_⟩
+        -- the unique point over `x` is its first coordinate
+        refine ⟨x.fst, ⟨rfl, Prod.ext rfl h_snd.symm⟩, ?_⟩
+        rintro z' ⟨_, h_lift⟩
+        exact congrArg Prod.fst h_lift
 
-/-- The ring `A` is local and absolutely integrally closed, and the prime `ℓ` is invertible in it.
-Instance search finds `ℓ` from `A`. -/
-class InvertsPrime (A : Type) [CommRing A] (ℓ : outParam ℕ) extends ThePrime ℓ,
-  IsAbsIntegrallyClosedLocal A where
+/--
+The ring `A` is local and absolutely integrally closed, and the prime `ℓ` is invertible in it.
+Instance search finds `ℓ` from `A`.
+-/
+class InvertsPrime (A : Type) [CommRing A] (ℓ : outParam ℕ)
+    extends ThePrime ℓ, IsAbsIntegrallyClosedLocal A where
   /-- The prime `ℓ` is invertible in `A`. -/
   isUnit_prime : IsUnit (ℓ : A)
 
 /-! ### Tests over a ring, coefficients, families of ideals, theories -/
 
-/-- The category of tests over A: the full subcategory of commutative A-algebras whose
-underlying rings are test rings. -/
+/--
+The category of tests over A: the full subcategory of commutative A-algebras whose
+underlying rings are test rings.
+-/
 abbrev TestOver (A : Type) [CommRing A] : Type 1 := FullSubcategory (C := CommAlg A) (IsTest ·)
 
 /-- The functor from tests over A to test rings that forgets the A-algebra structure. -/
@@ -541,17 +569,23 @@ section
 
 variable {A : Type} [CommRing A] {ℓ : ℕ} (g : C ⥤ TestOver A)
 
-/-- For a functor g from C to tests over A, the functor sending c to the commutative ring underlying
-g(c), where `testIncl` is the inclusion of test rings (`TestRing`) into commutative rings. -/
+/--
+For a functor g from C to tests over A, the functor sending c to the commutative ring underlying
+g(c), where `testIncl` is the inclusion of test rings (`TestRing`) into commutative rings.
+-/
 abbrev ringOf : C ⥤ CommRingCat := g ⋙ TestOver.toTest A ⋙ testIncl
 
-/-- For g from C to tests over A, the functor sending c to the abelian group of locally constant
-functions Spec g(c) → ℤ/ℓ. -/
+/--
+For g from C to tests over A, the functor sending c to the abelian group of locally constant
+functions Spec g(c) → ℤ/ℓ.
+-/
 abbrev locConstAlong [InvertsPrime A ℓ] : C ⥤ AddCommGrpCat :=
   g ⋙ TestOver.toTest A ⋙ locConstCoeff ⟨ZMod ℓ⟩
 
-/-- A coefficient along g: a functor F (the field `functor`) to abelian groups, killed by ℓ, that
-satisfies Zariski descent (`New.Variety.HasZariskiDescent`) for the rings g(c). -/
+/--
+A coefficient along g: a functor F (the field `functor`) to abelian groups, killed by ℓ, that
+satisfies Zariski descent (`New.Variety.HasZariskiDescent`) for the rings g(c).
+-/
 structure TorsionCoeff [InvertsPrime A ℓ] where
   /-- The coefficient, a functor from `C` to abelian groups. -/
   functor : AbFunctor C
@@ -562,19 +596,23 @@ structure TorsionCoeff [InvertsPrime A ℓ] where
 
 end
 
-variable {A : Type} [CommRing A] {ℓ : ℕ} [InvertsPrime A ℓ] (g : C ⥤ TestOver A)
-  (ι : C ⥤ CommRingCat.{0})
+variable
+  {A : Type} [CommRing A] {ℓ : ℕ} [InvertsPrime A ℓ] (g : C ⥤ TestOver A) (ι : C ⥤ CommRingCat.{0})
 
-/-- For a functor ι from C to commutative rings, ideals I_c (the field `ideal c`) of ι(c) such that
-I_b is generated by the image of I_a for every morphism a → b. -/
+/--
+For a functor ι from C to commutative rings, ideals I_c (the field `ideal c`) of ι(c) such that
+I_b is generated by the image of I_a for every morphism a → b.
+-/
 structure IdealFamily where
   /-- The ideal `ideal c` (I_c) of the ring `ι.obj c`. -/
   ideal (c : C) : Ideal (ι.obj c)
   /-- For every morphism `f : a ⟶ b`, the image of `ideal a` generates `ideal b`. -/
   map_eq {a b : C} (f : a ⟶ b) : (ideal a).map (ι.map f).hom = ideal b
 
-/-- For an ideal I of ι(c), the subfunctor of Hom(c, −) of the morphisms f: c → d such that ι(f)
-sends I to zero. -/
+/--
+For an ideal I of ι(c), the subfunctor of Hom(c, −) of the morphisms f: c → d such that ι(f)
+sends I to zero.
+-/
 def killingMaps {c : C} (I : Ideal (ι.obj c)) : Subfunctor (reprFunctor.obj ⟨c⟩) where
   obj _ := {f | I.map (ι.map f.down).hom = ⊥}
   map {U V} i := by
@@ -583,35 +621,46 @@ def killingMaps {c : C} (I : Ideal (ι.obj c)) : Subfunctor (reprFunctor.obj ⟨
     change I.map (ι.map f.down).hom = ⊥ at hf
     rw [Functor.map_comp, CommRingCat.hom_comp, ← Ideal.map_map, hf, Ideal.map_bot]
 
-/-- A theory: an `ℓ`-torsion coefficient `F` (the field `functor`) with Zariski descent
+/--
+A theory: an `ℓ`-torsion coefficient `F` (the field `functor`) with Zariski descent
 (`New.Variety.TorsionCoeff`) that behaves well on closed loci. For an ideal `I` of the ring at `c`,
 let `Z ⊆ Hom (c, -)` be the maps that kill `I` (`New.Variety.killingMaps`). Then
 `H^n (Hom (c, -), F) → H^n (Z, F)` is onto, and a section of `F` over `c` that dies along `Z`
-vanishes near every maximal ideal containing `I`. -/
+vanishes near every maximal ideal containing `I`.
+-/
 structure Theory extends TorsionCoeff g where
-  /-- In every degree `n`, restriction of cohomology from all maps out of `c` to the maps that kill
-  the ideal `I` is onto. -/
-  restrict_surjective (c : C) (I : Ideal ((ringOf g).obj c)) (n : ℕ) :
-      Surjective (H.map functor (freeAb.map (killingMaps (ringOf g) I).ι) n)
-  /-- A section `x` of `F` over `c` that dies along every map killing `I` (hypothesis `h_dies`)
+  /--
+  In every degree `n`, restriction of cohomology from all maps out of `c` to the maps that kill
+  the ideal `I` is onto.
+  -/
+  restrict_surjective (c : C) (I : Ideal ((ringOf g).obj c)) (n : ℕ)
+    : Surjective (H.map functor (freeAb.map (killingMaps (ringOf g) I).ι) n)
+  /--
+  A section `x` of `F` over `c` that dies along every map killing `I` (hypothesis `h_dies`)
   vanishes near each maximal ideal `m ⊇ I`: for some `a ∉ m`, it dies along every map `c ⟶ d`
-  that makes `a` invertible. -/
-  dies_near (c : C) (I : Ideal ((ringOf g).obj c)) (x : functor.obj c)
-      (h_dies : ∀ (d : C) (f : c ⟶ d), ⟨f⟩ ∈ (killingMaps (ringOf g) I).obj d → functor.map f x = 0)
-      (m : Ideal ((ringOf g).obj c)) (hm : m.IsMaximal) (hIm : I ≤ m) :
-      ∃ a : (ringOf g).obj c, a ∉ m ∧
-        ∀ (d : C) (f : c ⟶ d), IsUnit ((ringOf g).map f a) → functor.map f x = 0
+  that makes `a` invertible.
+  -/
+  dies_near
+    (c : C) (I : Ideal ((ringOf g).obj c)) (x : functor.obj c)
+    (h_dies : ∀ (d : C) (f : c ⟶ d), ⟨f⟩ ∈ (killingMaps (ringOf g) I).obj d → functor.map f x = 0)
+    (m : Ideal ((ringOf g).obj c)) (hm : m.IsMaximal) (hIm : I ≤ m)
+    : ∃ a : (ringOf g).obj c,
+      a ∉ m ∧ ∀ (d : C) (f : c ⟶ d), IsUnit ((ringOf g).map f a) → functor.map f x = 0
 
 variable {g : C ⥤ TestOver A} {ι : C ⥤ CommRingCat.{0}} (I : IdealFamily ι)
 
-/-- The pull-back of a compatible family of ideals I along a functor φ: C' → C, with ideal
-I_{φ(c')} at the object c'. -/
+/--
+The pull-back of a compatible family of ideals I along a functor φ: C' → C, with ideal
+I_{φ(c')} at the object c'.
+-/
 def IdealFamily.whisker (φ : C' ⥤ C) : IdealFamily (φ ⋙ ι) where
   ideal c := I.ideal (φ.obj c)
   map_eq f := I.map_eq (φ.map f)
 
-/-- For a compatible family of ideals I, the subfunctor of the one-point functor that is
-non-empty exactly at the objects c with I_c = 0. -/
+/--
+For a compatible family of ideals I, the subfunctor of the one-point functor that is
+non-empty exactly at the objects c with I_c = 0.
+-/
 def IdealFamily.botLocus : Subfunctor (onePointFunctor C) where
   obj c := {_x : (onePointFunctor C).obj c | I.ideal c = ⊥}
   map f := by
@@ -619,8 +668,10 @@ def IdealFamily.botLocus : Subfunctor (onePointFunctor C) where
     change I.ideal _ = ⊥ at hx ⊢
     rw [← I.map_eq f, hx, Ideal.map_bot]
 
-/-- For a compatible family of ideals I, the subfunctor of the one-point functor that is
-non-empty exactly at the objects c where I_c is the unit ideal. -/
+/--
+For a compatible family of ideals I, the subfunctor of the one-point functor that is
+non-empty exactly at the objects c where I_c is the unit ideal.
+-/
 def IdealFamily.topLocus : Subfunctor (onePointFunctor C) where
   obj c := {_x : (onePointFunctor C).obj c | I.ideal c = ⊤}
   map f := by
@@ -638,20 +689,27 @@ lemma IdealFamily.exists_notMem_eq_top {c : C} {m : Ideal (ι.obj c)} (h_not_le 
   exact ⟨a, ham, fun d f hf ↦
     eq_top_of_isUnit_mem _ ((I.map_eq f).le (mem_map_of_mem _ haI)) hf⟩
 
-/-- The quotient of G whose value at c is G(c) modulo the sections killed by every map c → d with
-I_d = 0. -/
-def IdealFamily.zerosCoeff (G : AbFunctor C) {ι : C ⥤ CommRingCat.{0}} (I : IdealFamily ι) :
-    AbFunctor C where
-  obj c := .of (G c ⧸ AddSubgroup.ofSub
-      {x : G.obj c | ∀ (d : C) (f : c ⟶ d), I.ideal d = ⊥ → G.map (X := c) (Y := d) f x = 0}
-      ⟨0, by simp⟩ (by simp_all))
-  map f := AddCommGrpCat.ofHom
-    (QuotientAddGroup.map _ _ (G.map f).hom fun x hx d g hd ↦ by simpa using hx d (f ≫ g) hd)
+/--
+The quotient of G whose value at c is G(c) modulo the sections killed by every map c → d with
+I_d = 0.
+-/
+def IdealFamily.zerosCoeff (G : AbFunctor C) {ι : C ⥤ CommRingCat.{0}} (I : IdealFamily ι)
+    : AbFunctor C where
+  obj c :=
+    .of
+      (G c ⧸ AddSubgroup.ofSub
+        {x : G.obj c | ∀ (d : C) (f : c ⟶ d), I.ideal d = ⊥ → G.map (X := c) (Y := d) f x = 0}
+        ⟨0, by simp⟩ (by simp_all))
+  map f :=
+    AddCommGrpCat.ofHom (QuotientAddGroup.map _ _ (G.map f).hom fun x hx d g hd ↦ by
+      simpa using hx d (f ≫ g) hd)
 
-/-- The quotient morphism from G to `New.Variety.IdealFamily.zerosCoeff`, sending each section to
-its class. -/
-def IdealFamily.toZerosCoeff (G : AbFunctor C) {ι : C ⥤ CommRingCat.{0}}
-    (I : IdealFamily ι) : G ⟶ I.zerosCoeff G where
+/--
+The quotient morphism from G to `New.Variety.IdealFamily.zerosCoeff`, sending each section to
+its class.
+-/
+def IdealFamily.toZerosCoeff (G : AbFunctor C) {ι : C ⥤ CommRingCat.{0}} (I : IdealFamily ι)
+    : G ⟶ I.zerosCoeff G where
   app _ := AddCommGrpCat.ofHom (mk' _)
 
 /-- Let `G` be a functor from the category `C` to abelian groups and `I` a family of ideals on `C`.
@@ -735,8 +793,10 @@ lemma exists_locConst_eq_const {c : C} (s : locConstAlong g c)
   -- once `a` is a unit, every prime `Q` at `d` pulls back into `D(a)`, where `s` is constant
   exact h_const (Q.asIdeal.notMem_of_isUnit hf)
 
-/-- The theory (`New.Variety.Theory`) on the category of tests over A whose coefficient sends B to
-the locally constant functions Spec B → ℤ/ℓ. -/
+/--
+The theory (`New.Variety.Theory`) on the category of tests over A whose coefficient sends B to
+the locally constant functions Spec B → ℤ/ℓ.
+-/
 def Theory.locallyConstant : Theory (𝟭 (TestOver A)) where
   functor := locConstAlong (𝟭 (TestOver A))
   -- the values lie in `ZMod ℓ`
@@ -745,19 +805,26 @@ def Theory.locallyConstant : Theory (𝟭 (TestOver A)) where
     -- Any two elements of a test ring are comparable after a partition
     -- (`IsTest.isComparableRing`), so Zariski descent follows from additivity along
     -- idempotents (`HasPartitions`).
-    refine HasPartitions.hasZariskiDescent ⟨fun B e he _ ↦ ?_, fun _ _ ↦ by
-      apply hasPartitions_locConstCoeff.bijective_prod⟩ (𝟙 _) (by simp) fun B ↦ B.2.isComparableRing
+    refine HasPartitions.hasZariskiDescent
+      ⟨fun B e he _ ↦ ?_, fun _ _ ↦ by apply hasPartitions_locConstCoeff.bijective_prod⟩ (𝟙 _)
+      (by simp) fun B ↦ B.2.isComparableRing
     -- The cut along `e` is the quotient by the ideal `(e)`, which is radical.
     obtain ⟨D, π, h_ker, h_surj, h_univ, h_kill⟩ := B.exists_quotient (span {e})
-    have h_map_iff {E : TestOver A} (f : B ⟶ E) :
-        (span {e}).map f.hom.hom'.toRingHom = ⊥ ↔ f.hom.hom' e = 0 := by
+    have h_map_iff {E : TestOver A} (f : B ⟶ E)
+        : (span {e}).map f.hom.hom'.toRingHom = ⊥ ↔ f.hom.hom' e = 0 := by
       let ρ := ((ringOf (𝟭 (TestOver A))).map f).hom
       change (span {e}).map ρ = ⊥ ↔ ρ e = 0
       calc
         _ ↔ span (ρ '' {e}) = ⊥ := (congrArg (· = ⊥) (Ideal.map_span ρ {e})).to_iff
         _ ↔ _ := by rw [Set.image_singleton, Ideal.span_singleton_eq_bot]
-    refine ⟨D, π, (h_map_iff π).mp h_kill, ?_, h_surj,
-      h_ker.le.trans (B.property.isRadical_span_idempotent he)⟩
+    refine ⟨
+      D,
+      π,
+      (h_map_iff π).mp h_kill,
+      ?_,
+      h_surj,
+      h_ker.le.trans (B.property.isRadical_span_idempotent he)
+    ⟩
     intro E f h
     exact h_univ E f ((h_map_iff f).mpr h)
   restrict_surjective B I := by
@@ -784,13 +851,17 @@ def Theory.locallyConstant : Theory (𝟭 (TestOver A)) where
 
 variable (Θ : Theory g) (I : IdealFamily (ringOf g)) (M : TorsionCoeff g)
 
-/-- The morphism from ℤ[pt], the constant functor ℤ, to the locally constant ℤ/ℓ-valued
-functions on Spec g(c), sending the generator to the constant function 1. -/
+/--
+The morphism from ℤ[pt], the constant functor ℤ, to the locally constant ℤ/ℓ-valued
+functions on Spec g(c), sending the generator to the constant function 1.
+-/
 def oneLocConst : freeAb (onePointFunctor C) ⟶ locConstAlong g :=
   freeAb.desc (fun _ _ ↦ ⟨LocallyConstant.const _ 1⟩) (by tauto)
 
-/-- For a coefficient M along g and a set-valued functor X on C, the restriction of M to the
-category of elements of X along the projection (c, x) ↦ c. -/
+/--
+For a coefficient M along g and a set-valued functor X on C, the restriction of M to the
+category of elements of X along the projection (c, x) ↦ c.
+-/
 protected def TorsionCoeff.onElements : TorsionCoeff (elementsProj X ⋙ g) where
   functor := elementsProj X ⋙ M.functor
   prime_smul_eq_zero a := M.prime_smul_eq_zero a.obj
@@ -798,37 +869,48 @@ protected def TorsionCoeff.onElements : TorsionCoeff (elementsProj X ⋙ g) wher
     -- Maps out of the point `a` are maps out of `a.1` (`hasUniversalPoints_reprBy_elements`), so it
     -- suffices to show that the sieve `V` of the `f` out of `a.1` that carry `y` into `U` is dense
     -- for `M.functor`.
-    let V : Subfunctor (reprBy a.obj) :=
-      { obj d := {f | ⟨⟨f.down, rfl⟩⟩ ∈ (U.preimage (pointMap y)).obj ⟨X.map f.down a.val⟩}
-        map g f hf := (U.preimage (pointMap y)).map (Functor.Elements.homMk (x :=
-          ⟨X.map f.down a.val⟩) (y := ⟨X.map (f.down ≫ g) a.val⟩) g (X.map_comp_apply ..).symm) hf }
+    let V : Subfunctor (reprBy a.obj) := {
+      obj d := {f | ⟨⟨f.down, rfl⟩⟩ ∈ (U.preimage (pointMap y)).obj ⟨X.map f.down a.val⟩}
+      map g f hf :=
+        (U.preimage (pointMap y)).map
+          (Functor.Elements.homMk (x := ⟨X.map f.down a.val⟩) (y := ⟨X.map (f.down ≫ g) a.val⟩) g
+            (X.map_comp_apply ..).symm)
+          hf
+    }
     -- `V` is locally everything, because `U` is so at the image of `y` under `f`.
-    have hV : IsZariskiLocallyTop (ringOf g) V :=
-      fun d f m hm ↦ by
-        obtain ⟨r, hr, h_mem⟩ := hU ⟨X.map f.down a.val⟩ (Y.map ⟨f.down, rfl⟩ y) m hm
-        exact ⟨r, hr, fun e k hk ↦ by
+    have hV : IsZariskiLocallyTop (ringOf g) V := fun d f m hm ↦ by
+      obtain ⟨r, hr, h_mem⟩ := hU ⟨X.map f.down a.val⟩ (Y.map ⟨f.down, rfl⟩ y) m hm
+      exact ⟨
+        r,
+        hr,
+        fun e k hk ↦ by
           simpa only [← Y.map_comp_apply] using!
-            h_mem ⟨X.map (f.down ≫ k) a.val⟩ ⟨k, (X.map_comp_apply ..).symm⟩ hk⟩
+            h_mem ⟨X.map (f.down ≫ k) a.val⟩ ⟨k, (X.map_comp_apply ..).symm⟩ hk
+      ⟩
     refine ((hasUniversalPoints_reprBy_elements a).isCohomEquiv_incl_iff V ?_).1
       (M.zariski_descent hV).isCohomEquiv
     -- `V` pulls back to the preimage of `U`.
     ext @⟨d, x⟩ ⟨f : a.obj ⟶ d, rfl : X.map f a.val = x⟩
     rfl
 
-/-- The restriction of a theory Θ on C to the category of elements of a set-valued functor X on
-C, along the projection to C. -/
-def Theory.onElements : Theory (elementsProj X ⋙ g) :=
-  ⟨TorsionCoeff.onElements Θ.toTorsionCoeff,
-    fun a I n ↦ show Surjective (H.map (elementsProj X ⋙ Θ.functor) _ n) from
-      (((hasUniversalPoints_reprBy_elements a).isBijective_subfunctor
-          (killingMaps (ringOf g) I) n).2.comp
-        (Θ.restrict_surjective ((Variety.elementsProj X).obj a) I n)).forall.mpr
-          (⟨Equiv.ofBijective _ ((hasUniversalPoints_reprBy_elements a).isBijective n) ·,
-            map_pull_eq_pull_map (by exact freeAb.hom_ext fun _ _ ↦ rfl) ..⟩),
-    fun a I x h m hm hI ↦ by
-      obtain ⟨b, hb, h_dies⟩ := Θ.dies_near _ I x
-        (fun d f ↦ h (X.elementsMk d (X.map f a.val)) ⟨f, rfl⟩) m hm hI
-      exact ⟨b, hb, fun d f ↦ h_dies d.obj f.hom⟩⟩
+/--
+The restriction of a theory Θ on C to the category of elements of a set-valued functor X on
+C, along the projection to C.
+-/
+def Theory.onElements : Theory (elementsProj X ⋙ g) := ⟨
+  TorsionCoeff.onElements Θ.toTorsionCoeff,
+  fun a I n ↦
+    show Surjective (H.map (elementsProj X ⋙ Θ.functor) _ n) from
+      (((hasUniversalPoints_reprBy_elements a).isBijective_subfunctor (killingMaps (ringOf g) I)
+          n).2.comp (Θ.restrict_surjective ((Variety.elementsProj X).obj a) I n)).forall.mpr (⟨
+        Equiv.ofBijective _ ((hasUniversalPoints_reprBy_elements a).isBijective n) ·,
+        map_pull_eq_pull_map (by exact freeAb.hom_ext fun _ _ ↦ rfl) ..
+      ⟩),
+  fun a I x h m hm hI ↦ by
+    obtain ⟨b, hb, h_dies⟩ :=
+      Θ.dies_near _ I x (fun d f ↦ h (X.elementsMk d (X.map f a.val)) ⟨f, rfl⟩) m hm hI
+    exact ⟨b, hb, fun d f ↦ h_dies d.obj f.hom⟩
+⟩
 
 /-- Zero sections of the kernel of `I.toZerosCoeff Θ.functor`, together with the objects where `I`
 is the unit ideal (the preimage of `I.topLocus` under the map `toUnit _` to the one-point functor),
@@ -900,8 +982,10 @@ lemma Theory.isCohomDense_botLocus : IsCohomDense (I.zerosCoeff Θ.functor) I.bo
       push_bijective_of_points _ (fun d f ↦ I.bijective_toZerosCoeff _ d (Subtype.prop f)) n
     exact (h_push.surjective.comp h_sur).forall.2 fun x ↦ ⟨_, map_push _ _ x⟩
 
-/-- The coefficient obtained from the theory Θ by dividing by the sections at c that are killed
-by every map c → d with I_d = 0 (`New.Variety.IdealFamily.zerosCoeff`). -/
+/--
+The coefficient obtained from the theory Θ by dividing by the sections at c that are killed
+by every map c → d with I_d = 0 (`New.Variety.IdealFamily.zerosCoeff`).
+-/
 def Theory.onZeros : TorsionCoeff g where
   functor := I.zerosCoeff Θ.functor
   prime_smul_eq_zero c := Quot.ind fun x ↦ congrArg _ (Θ.prime_smul_eq_zero c x)
@@ -951,10 +1035,12 @@ lemma TorsionCoeff.pullbackAlong_abCoker_pi_surjective :
   simp_rw [pullbackAlong, TotalH.homClass, ← addEquiv₀_symm_apply, map_nsmul]
   exact M.nsmul_totalH_eq_zero _
 
-/-- The map from (ℤ[pt]/ℤ[O])/ℓ, O the locus where I is the unit ideal, to locally constant
-ℤ/ℓ-valued functions modulo those dying where I = 0, sending the point to 1. -/
-def IdealFamily.constToZeros :
-    abCoker (ℓ • 𝟙 (relFreeAb I.topLocus)) ⟶ I.zerosCoeff (locConstAlong g) :=
+/--
+The map from (ℤ[pt]/ℤ[O])/ℓ, O the locus where I is the unit ideal, to locally constant
+ℤ/ℓ-valued functions modulo those dying where I = 0, sending the point to 1.
+-/
+def IdealFamily.constToZeros
+    : abCoker (ℓ • 𝟙 (relFreeAb I.topLocus)) ⟶ I.zerosCoeff (locConstAlong g) :=
   abCoker.desc
     (abCoker.desc (oneLocConst ≫ I.toZerosCoeff (locConstAlong g)) (by
       -- where `I` is everything, a map that kills `I` goes to the zero ring, which has no prime
@@ -962,10 +1048,11 @@ def IdealFamily.constToZeros :
       have h_triv : (⊥ : Ideal _) = ⊤ := h_bot.symm.trans (I.topLocus.map f u.property)
       exact congr(⟨⟨$(funext fun P ↦ P.isPrime.ne_top'.elim (eq_top_mono bot_le h_triv)), _⟩⟩)))
     -- locally constant functions with values in `ZMod ℓ` are killed by `ℓ`
-    (relFreeAb.hom_ext fun c x ↦ congr(⟦$(by
-      change (oneLocConst.app c).hom' (ℓ • FreeAddCommGroup.of x) = 0
-      exact (map_nsmul (oneLocConst.app c).hom ℓ (FreeAddCommGroup.of x)).trans
-        (Theory.locallyConstant.prime_smul_eq_zero (g.obj c) _))⟧))
+    (relFreeAb.hom_ext fun c x ↦
+      congr(⟦$(by
+        change (oneLocConst.app c).hom' (ℓ • FreeAddCommGroup.of x) = 0
+        exact (map_nsmul (oneLocConst.app c).hom ℓ (FreeAddCommGroup.of x)).trans
+          (Theory.locallyConstant.prime_smul_eq_zero (g.obj c) _))⟧))
 
 omit [NeZero ℓ] in
 /-- The map `New.Variety.IdealFamily.constToZeros` sends the class of `n` times the generator to the

@@ -56,16 +56,20 @@ variable (k : Type) [Field k] (d : ℕ)
 
 /-! ### Points of projective space -/
 
-/-- Projective `d`-space over `k`: the functor sending `A` to the unimodular vectors in
+/--
+Projective `d`-space over `k`: the functor sending `A` to the unimodular vectors in
 `A ^ (d + 1)` modulo units of `A`. These are the points of the scheme `ℙ^d` whose line bundle is
-trivial; no sheafification is made. -/
+trivial; no sheafification is made.
+-/
 def New.Variety.projSpace : CommAlg k ⥤ Type 1 where
   -- Unimodular vectors of length `d + 1`, up to scaling by a unit.
-  obj A := Quot ((MulAction.orbitRel Aˣ (Fin (d + 1) → A)).comap
-    (·.val.down : @unimodular k _ (d + 1) A → Fin (d + 1) → A))
+  obj A :=
+    Quot ((MulAction.orbitRel Aˣ (Fin (d + 1) → A)).comap
+      (·.val.down : @unimodular k _ (d + 1) A → Fin (d + 1) → A))
   -- Vectors that differ by the unit `u` are sent to vectors that differ by the unit `f u`.
-  map f := ↾Quot.map (unimodular.toFunctor.map f) fun _ _ ⟨u, h⟩ ↦ ⟨u.map f.hom.toMonoidHom, by
-    simpa [Units.smul_def, _root_.funext_iff] using! congr(f ∘ $h)⟩
+  map f :=
+    ↾Quot.map (unimodular.toFunctor.map f) fun _ _ ⟨u, h⟩ ↦ ⟨u.map f.hom.toMonoidHom, by
+      simpa [Units.smul_def, _root_.funext_iff] using! congr(f ∘ $h)⟩
   map_id _ := by
     ext ⟨⟩
     rfl
@@ -86,8 +90,10 @@ lemma exists_isUnit_of_span_eq_top [IsLocalRing A] (hv : span (Set.range v) = �
     simpa [span_le, range_subset_iff] using h_none
   exact (maximalIdeal.isMaximal A).ne_top (eq_top_mono h_le hv)
 
-/-- For `v` in `A ^ (d + 1)` whose entries generate the unit ideal (`h`), the point
-`[v 0 : … : v d]` of projective `d`-space. -/
+/--
+For `v` in `A ^ (d + 1)` whose entries generate the unit ideal (`h`), the point
+`[v 0 : … : v d]` of projective `d`-space.
+-/
 def mk (v : Fin (d + 1) → A) (h : span (Set.range v) = ⊤) : projSpace k d A :=
   Quot.mk _ ⟨{ down := v }, h⟩
 
@@ -118,8 +124,10 @@ lemma mk_eq_mk_iff_cross_mul {hv : span (Set.range v) = ⊤} {hw : span (Set.ran
     have hc_unit : IsUnit c := span_singleton_eq_top.mp (eq_top_mono h_le hw)
     exact ⟨hc_unit.unit, funext h_prop⟩
 
-/-- For `v` in `A ^ d`, the point of projective `d`-space with coordinate `1` in place `i` and the
-entries of `v` in the other places. -/
+/--
+For `v` in `A ^ d`, the point of projective `d`-space with coordinate `1` in place `i` and the
+entries of `v` in the other places.
+-/
 abbrev affinePoint (v : Fin d → A) : projSpace k d A :=
   mk (i.insertNth 1 v) (span_eq_top_of_isUnit i (by simp))
 
@@ -205,10 +213,12 @@ lemma exists_eq_map_affinePoint_of_mul_eq_zero [CharZero k] [IsLocalRing A] {u :
 
 variable (k d)
 
-/-- For `i : Fin (d + 1)`, the standard chart of projective `d`-space where the `i`-th coordinate is
+/--
+For `i : Fin (d + 1)`, the standard chart of projective `d`-space where the `i`-th coordinate is
 invertible, on the polynomial ring in `d` variables. The chart point is `affinePoint i X` with
 coordinates `X`. It is injective on points, and its image is open: the locus where the `i`-th
-coordinate is a unit. -/
+coordinate is a unit.
+-/
 def stdChart : EtaleChart d (projSpace k d) where
   coordRing := of k (MvPolynomial (Fin d) k)
   point := affinePoint i X
@@ -223,11 +233,13 @@ def stdChart : EtaleChart d (projSpace k d) where
     rintro ⟨v⟩
     exact ⟨span {v.val.down i}, fun B φ ↦ (mk_mem_stdChart_iff i).trans (by simp [map_span])⟩
 
-/-- Projective `d`-space has an atlas of dimension `d`: finitely many charts whose images contain
+/--
+Projective `d`-space has an atlas of dimension `d`: finitely many charts whose images contain
 every field-valued point, and for any two points an ideal whose vanishing locus is where they agree.
 The standard charts `New.Variety.projSpace.stdChart` contain every field-valued point. Two points
 `[v]` and `[w]` agree exactly where all `v a * w b - w a * v b` vanish, so the space is
-separated. -/
+separated.
+-/
 instance hasAtlas : HasAtlas d (projSpace k d) where
   exists_finite_charts := by
     -- Over a field some coordinate of a unimodular vector is a unit.
@@ -266,31 +278,34 @@ lemma span_range_cons_mul_eq_top [CharZero k] {u : Fin 2 → A} (hv : span (Set.
       (unimodular.map ψ (a := ⟨v⟩) hv) (unimodular.map ψ (a := ⟨u⟩) hu) h_rest
   exact h_unit.ne_zero h_first
 
-/-- In characteristic `0`, the map `ℙ^d × ℙ¹ → ℙ^(d+1)` that sends `([v], [w 0 : w 1])` to the
-point with coordinates `w 0 * ∑ i, v i` and `(w 1 - i * w 0) * v i` for `i = 0, …, d`. -/
+/--
+In characteristic `0`, the map `ℙ^d × ℙ¹ → ℙ^(d+1)` that sends `([v], [w 0 : w 1])` to the
+point with coordinates `w 0 * ∑ i, v i` and `(w 1 - i * w 0) * v i` for `i = 0, …, d`.
+-/
 def lineProductMap [CharZero k] : projSpace k d ⊗ projSpace k 1 ⟶ projSpace k d.succ where
-  app A := ↾fun x ↦ x.1.liftOn₂ x.2
-    (fun ⟨⟨v⟩, hv⟩ ⟨⟨w⟩, hw⟩ ↦
-      mk (cons (w 0 * ∑ i : Fin (d + 1), v i) fun i ↦ (w 1 - i * w 0) * v i)
-        (span_range_cons_mul_eq_top k d hv hw))
-    -- Scaling `w`, or `v`, by a unit scales every coordinate by that unit.
-    (by
-      rintro ⟨⟨v⟩, hv⟩ ⟨⟨w⟩, hw⟩ ⟨⟨w'⟩, hw'⟩ ⟨c, h⟩
-      have hc : ∀ j, (c : A) * w' j = w j := fun j ↦ congrFun h j
-      refine (mk_eq_mk_iff_exists_unit.mpr ⟨c, funext fun j ↦ ?_⟩).symm
-      refine Fin.cases ?_ (fun i ↦ ?_) j
-      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, ← hc, mul_assoc]
-      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_succ, ← hc]
-        ring)
-    (by
-      rintro ⟨⟨v⟩, hv⟩ ⟨⟨v'⟩, hv'⟩ ⟨⟨w⟩, hw⟩ ⟨c, h⟩
-      have hc : ∀ j, (c : A) * v' j = v j := fun j ↦ congrFun h j
-      refine (mk_eq_mk_iff_exists_unit.mpr ⟨c, funext fun j ↦ ?_⟩).symm
-      refine Fin.cases ?_ (fun i ↦ ?_) j
-      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, ← hc,
-          ← Finset.mul_sum, mul_left_comm]
-      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_succ, ← hc]
-        ring)
+  app A :=
+    ↾fun x ↦ x.1.liftOn₂ x.2
+      (fun ⟨⟨v⟩, hv⟩ ⟨⟨w⟩, hw⟩ ↦
+        mk (cons (w 0 * ∑ i : Fin (d + 1), v i) fun i ↦ (w 1 - i * w 0) * v i)
+          (span_range_cons_mul_eq_top k d hv hw))
+      -- Scaling `w`, or `v`, by a unit scales every coordinate by that unit.
+      (by
+        rintro ⟨⟨v⟩, hv⟩ ⟨⟨w⟩, hw⟩ ⟨⟨w'⟩, hw'⟩ ⟨c, h⟩
+        have hc : ∀ j, (c : A) * w' j = w j := fun j ↦ congrFun h j
+        refine (mk_eq_mk_iff_exists_unit.mpr ⟨c, funext fun j ↦ ?_⟩).symm
+        refine Fin.cases ?_ (fun i ↦ ?_) j
+        · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, ← hc, mul_assoc]
+        · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_succ, ← hc]
+          ring)
+      (by
+        rintro ⟨⟨v⟩, hv⟩ ⟨⟨v'⟩, hv'⟩ ⟨⟨w⟩, hw⟩ ⟨c, h⟩
+        have hc : ∀ j, (c : A) * v' j = v j := fun j ↦ congrFun h j
+        refine (mk_eq_mk_iff_exists_unit.mpr ⟨c, funext fun j ↦ ?_⟩).symm
+        refine Fin.cases ?_ (fun i ↦ ?_) j
+        · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, ← hc,
+            ← Finset.mul_sum, mul_left_comm]
+        · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_succ, ← hc]
+          ring)
   naturality A B f := by
     ext ⟨⟨v⟩, ⟨w⟩⟩
     refine mk_eq_mk_iff_exists_unit.mpr ⟨1, funext fun j ↦ ?_⟩
@@ -422,19 +437,22 @@ lemma New.Variety.CutsOutLocus.exists_point_of_isUnit_coord {k ι F : Type} [Fie
   obtain ⟨φ, -, hφ⟩ := h_rep hu h_unit
   exact ⟨y.map φ, hφ⟩
 
-/-- The Galois cover of a Noether normalisation, as a functor on `k`-algebras. A point over `A` is
+/--
+The Galois cover of a Noether normalisation, as a functor on `k`-algebras. A point over `A` is
 a family `y` of points of `Y` indexed by `G` with a map `v : B → A` of `k`-algebras, such that
 `v ∘ b σ` is a coordinate vector of `y σ` with a unit entry for each `σ`, and the values
-`v (f (X j))` generate the unit ideal. -/
-private def New.Variety.CutsOutLocus.galoisCover {k ι G : Type} [Field k] {R : CommRingCat}
-    [Algebra R.carrier k] {Y : Over (AlgebraicGeometry.Spec R)}
-    (L : LineBundle Y.left ι) [Fact (L.IsProjEmbedding Y.hom)] {B : CommAlg k} {d : ℕ}
-    (f : MvPolynomial (Fin (d + 1)) k →ₐ[k] B) (b : G → ι → B) : CommAlg k ⥤ Type 1 :=
+`v (f (X j))` generate the unit ideal.
+-/
+private def New.Variety.CutsOutLocus.galoisCover
+    {k ι G : Type} [Field k]
+    {R : CommRingCat} [Algebra R.carrier k]
+    {Y : Over (AlgebraicGeometry.Spec R)} (L : LineBundle Y.left ι) [Fact (L.IsProjEmbedding Y.hom)]
+    {B : CommAlg k} {d : ℕ} (f : MvPolynomial (Fin (d + 1)) k →ₐ[k] B) (b : G → ι → B)
+    : CommAlg k ⥤ Type 1 :=
   .mk
     (fun A ↦
-      {x : (G → PointsIn Y A) × (B →ₐ[k] A) //
-        (∀ σ : G, IsCoordsWithUnit L (x.fst σ) (x.snd ∘ b σ)) ∧
-          span (Set.range (x.snd ∘ f ∘ X)) = ⊤})
+      {x : (G → PointsIn Y A) × (B →ₐ[k] A) // (∀ σ : G, IsCoordsWithUnit L (x.fst σ) (x.snd ∘ b σ))
+        ∧ span (Set.range (x.snd ∘ f ∘ X)) = ⊤})
     fun φ ↦
       ↾fun x ↦
         ⟨(_, φ.hom.comp x.val.snd), fun σ ↦ (x.property.left σ).comp φ,

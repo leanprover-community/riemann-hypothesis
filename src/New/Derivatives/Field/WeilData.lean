@@ -185,10 +185,12 @@ open Ideal NumberField RingOfIntegers Polynomial IsDedekindDomain.HeightOneSpect
 
 namespace New
 
-/-- The multiplicative map `E → 𝔸f E` that puts `x` at the places of `S` and `1` at the other
-places. With `e` the idempotent of `S` it is `x ↦ e x + (1 - e)`. -/
-noncomputable def diagonalAtPlaces {E : Type*} [Field E] [NumberField E] (S : Set (FinPlace E)) :
-    E →* 𝔸f E where
+/--
+The multiplicative map `E → 𝔸f E` that puts `x` at the places of `S` and `1` at the other
+places. With `e` the idempotent of `S` it is `x ↦ e x + (1 - e)`.
+-/
+noncomputable def diagonalAtPlaces {E : Type*} [Field E] [NumberField E] (S : Set (FinPlace E))
+    : E →* 𝔸f E where
   toFun x := idem S * algebraMap E (𝔸f E) x + (1 - idem S)
   map_one' := by simp
   map_mul' x y := by
@@ -255,9 +257,11 @@ lemma betaKInE_mem_or_star_mem {w : FinPlace (P.E s)} (h_mem : P.relDifferentGen
     exact relDifferentGen_dvd_q₁.trans (cast_dvd_cast h_q₁_dvd)
   exact w.isPrime.mem_or_mem (w.isPrime.mem_of_pow_mem _ (mem_of_dvd _ h_dvd h_mem))
 
-/-- The finite idele `α` of `E`: its component is the inverse of the generator `relDifferentGen` of
+/--
+The finite idele `α` of `E`: its component is the inverse of the generator `relDifferentGen` of
 the different of `E / K` at the places dividing `betaKInE = (1 + √-d) / 2`, and `1` at the other
-places. -/
+places.
+-/
 noncomputable def α (P : Parameters) (s : ℕ) : (𝔸f (P.E s))ˣ :=
   Units.map (diagonalAtPlaces {w : FinPlace (P.E s) | P.betaKInE s ∈ w.asIdeal})
     (Units.mk0 (P.relDifferentGen s).val (P.relDifferentGen_ne_zero s))⁻¹
@@ -421,18 +425,22 @@ lemma v_neg_inv_sqrtNegDInE_mul_alpha_mul_star (w : FinPlace (P.E s)) :
   rw [finAdele_mul_apply, finAdele_mul_apply, map_mul, map_mul, h_sqrt, mul_assoc, h_unit,
     ← mul_inv, mul_comm, h_different, WithZero.exp_neg, inv_inv]
 
-/-- `-1/√(-d)`, the idele `α` and a splitting character `υ` are Weil data for `E`. The character
-`υ` exists because every root of unity is `δ / δ̄` for a unit `δ` of norm `1` over `K`. -/
+/--
+`-1/√(-d)`, the idele `α` and a splitting character `υ` are Weil data for `E`. The character
+`υ` exists because every root of unity is `δ / δ̄` for a unit `δ` of norm `1` over `K`.
+-/
 noncomputable instance instWeilDataE : WeilData (P.E s) :=
   letI : SplittingChar (P.E s) :=
     (nonempty_splittingChar exists_unit_prod_phi_eq_one_and_mul_star_eq).some
-  { j := -(P.sqrtNegDInE s).val⁻¹
+  {
+    j := -(P.sqrtNegDInE s).val⁻¹
     star_j := by simp [← map_star_CM]
     im_pos := by simp [pos]
     α := P.α s
     self_dual := v_neg_inv_sqrtNegDInE_mul_alpha_mul_star
     isIntegral_traceOne := by simp [sqrtNegDInE, map_ofNat, isIntegral_coe]
-    υ_inert := Cohomology.upsilon_atUniformizer_eq_neg_one }
+    υ_inert := Cohomology.upsilon_atUniformizer_eq_neg_one
+  }
 
 /-- The purely imaginary element `ȷ` of the Weil data of `E` is `-1/√(-d)`. -/
 lemma weilData_j_eq : (WeilData.j : P.E s) = -(P.sqrtNegDInE s : P.E s)⁻¹ := rfl
@@ -470,9 +478,11 @@ namespace New.Parameters
 
 open NumberField Finset Circle InfinitePlace
 
-/-- The principal f-th root of the complex number (chiFin α)⁻¹ = υ(α)⁻¹|α|^(1/2), where
+/--
+The principal f-th root of the complex number (chiFin α)⁻¹ = υ(α)⁻¹|α|^(1/2), where
 α = `New.Parameters.α`, υ is the splitting character of the Weil data of E, |α| is the idele norm
-and f is the number of infinite places of E. -/
+and f is the number of infinite places of E.
+-/
 noncomputable def vacuumRoot (P : Parameters) (s : ℕ) : ℂ :=
   (chiFin (α P s))⁻¹ ^ (Core.numInfPlaces (P.E s) : ℂ)⁻¹
 

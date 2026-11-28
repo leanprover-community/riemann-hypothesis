@@ -61,42 +61,53 @@ namespace New.Seesaw
 
 open Prod Matrix TensorProduct Space WeilData Submodule Fintype LinearMap Weil
 
-variable {E ι ι' ι'' : Type} [Field E] [CMType E] [WeilData E] [Fintype ι] [DecidableEq ι]
-  [Fintype ι'] [DecidableEq ι'] [Fintype ι''] [DecidableEq ι'']
+variable
+  {E ι ι' ι'' : Type} [Field E] [CMType E] [WeilData E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+  [DecidableEq ι'] [Fintype ι''] [DecidableEq ι'']
   {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ} {V : Space E ι ε} {V' : Space E ι' ε'}
-  {V'' : Space E ι'' ε''} (f : 𝒮 (V.hom V')) (f' : 𝒮 (V'.hom V'')) (a b : AutChar E) (g : G E ε)
-  (t : (V.hom V').finitePart ⊗[ℂ] (V'.hom V'').finitePart)
+  {V'' : Space E ι'' ε''} (f : 𝒮 (V.hom V')) (f' : 𝒮 (V'.hom V''))
+  (a b : AutChar E) (g : G E ε) (t : (V.hom V').finitePart ⊗[ℂ] (V'.hom V'').finitePart)
 
-/-- For hermitian spaces V and V'', the orthogonal sum V⁻ ⊕ V'' of the opposite space
-V⁻ = `New.Seesaw.flipSpace V` and V''. -/
+/--
+For hermitian spaces V and V'', the orthogonal sum V⁻ ⊕ V'' of the opposite space
+V⁻ = `New.Seesaw.flipSpace V` and V''.
+-/
 abbrev flipSum (V : Space E ι ε) (V'' : Space E ι'' ε'') : Space E (ι ⊕ ι'') (-ε ⊕ᵥ ε'') :=
   (flipSpace V).sum V''
 
-/-- The bounded bilinear map combining data on Hom(V,V') and Hom(V',V'') into one datum on
-Hom(V', V⁻ ⊕ V''), the first being carried to Hom(V', V⁻) by a scaled adjoint. -/
+/--
+The bounded bilinear map combining data on Hom(V,V') and Hom(V',V'') into one datum on
+Hom(V', V⁻ ⊕ V''), the first being carried to Hom(V', V⁻) by a scaled adjoint.
+-/
 def arrowProduct : 𝒮 (V.hom V') →L[ℂ] 𝒮 (V'.hom V'') →L[ℂ] 𝒮 (V'.hom (flipSum V V'')) :=
-  (V'.hom (flipSum V V'')).boxProd (homSigns_sum_target signs_comp_refl) (V₂ := V'.hom V'') ∘L
-    (flipCoords star_normNegOne_mul_self rfl).map (V₁ := V.hom V') (V := V'.hom (flipSpace V))
+  (V'.hom (flipSum V V'')).boxProd (homSigns_sum_target signs_comp_refl) (V₂ := V'.hom V'')
+    ∘L (flipCoords star_normNegOne_mul_self rfl).map (V₁ := V.hom V') (V := V'.hom (flipSpace V))
 
-/-- For g = (g₁,g₂,g₃), the Weil operator of (g₂, g₁ ⊕ g₃) on Hom(V', V⁻ ⊕ V''), times the product
+/--
+For g = (g₁,g₂,g₃), the Weil operator of (g₂, g₁ ⊕ g₃) on Hom(V', V⁻ ⊕ V''), times the product
 of `pairChar` for `rankTwist a` at (g₁,g₂), `pairChar` for `rankTwist b` at (g₂,g₃) and `pairChar`
-for (υ^{rk V'}, υ^{rk V}) at (g₂,g₁). -/
-def tripleWeil (g : G E ε × G E ε' × G E ε'') :
-    𝒮 (V'.hom (flipSum V V'')) →L[ℂ] 𝒮 (V'.hom (flipSum V V'')) :=
-  (pairChar (rankTwist a ι) (rankTwist a ι') (Prod.fst g, g.2.1) *
-      pairChar (rankTwist b ι') (rankTwist b ι'') g.2 *
-      pairChar (upsilonU1 ^ card ι') (upsilonU1 ^ card ι) (g.2.1, g.1)) •
-    (V'.hom (flipSum V V'')).ω (G.onHom (g.2.1, G.sum (g.1.neg, g.2.2)))
+for (υ^{rk V'}, υ^{rk V}) at (g₂,g₁).
+-/
+def tripleWeil (g : G E ε × G E ε' × G E ε'')
+    : 𝒮 (V'.hom (flipSum V V'')) →L[ℂ] 𝒮 (V'.hom (flipSum V V'')) :=
+  (pairChar (rankTwist a ι) (rankTwist a ι') (Prod.fst g, g.2.1)
+      * pairChar (rankTwist b ι') (rankTwist b ι'') g.2
+      * pairChar (upsilonU1 ^ card ι') (upsilonU1 ^ card ι) (g.2.1, g.1))
+    • (V'.hom (flipSum V V'')).ω (G.onHom (g.2.1, G.sum (g.1.neg, g.2.2)))
 
-/-- The linear map induced by `New.Seesaw.arrowProduct` from the tensor product of the finite parts
-𝒮_f of Hom(V,V') and Hom(V',V'') to the data on Hom(V', V⁻ ⊕ V''). -/
-def arrowTensor :
-    (V.hom V').finitePart ⊗[ℂ] (V'.hom V'').finitePart →ₗ[ℂ] 𝒮 (V'.hom (flipSum V V'')) :=
-  TensorProduct.lift arrowProduct.toLinearMap₁₂ ∘ₗ
-    mapIncl (V.hom V').finitePart (V'.hom V'').finitePart
+/--
+The linear map induced by `New.Seesaw.arrowProduct` from the tensor product of the finite parts
+𝒮_f of Hom(V,V') and Hom(V',V'') to the data on Hom(V', V⁻ ⊕ V'').
+-/
+def arrowTensor
+    : (V.hom V').finitePart ⊗[ℂ] (V'.hom V'').finitePart →ₗ[ℂ] 𝒮 (V'.hom (flipSum V V'')) :=
+  TensorProduct.lift arrowProduct.toLinearMap₁₂
+    ∘ₗ mapIncl (V.hom V').finitePart (V'.hom V'').finitePart
 
-/-- The Weil representation of the finite adelic U(V) × U(V') on finite data for Hom(V,V'),
-normalised by the characters `rankTwist a` for the ranks of V and V'. -/
+/--
+The Weil representation of the finite adelic U(V) × U(V') on finite data for Hom(V,V'),
+normalised by the characters `rankTwist a` for the ranks of V and V'.
+-/
 abbrev liftWeilFin : Gf E ι × Gf E ι' →* Module.End ℂ ↥(V.hom V').finitePart :=
   pairWeilFinite V V' (rankTwist a ι) (rankTwist a ι')
 

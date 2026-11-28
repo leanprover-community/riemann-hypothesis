@@ -462,18 +462,22 @@ section
 
 variable [NumberField E'] (μ : (𝔸f E)ˣ →* ℂˣ)
 
-/-- The place `u` of `E'` is unramified for the step `E' / E` and the character `μ`: its inertia
-group is not all of `Gal(E'/E)`, and `μ` kills the norms of the local units at `u`. -/
+/--
+The place `u` of `E'` is unramified for the step `E' / E` and the character `μ`: its inertia
+group is not all of `Gal(E'/E)`, and `μ` kills the norms of the local units at `u`.
+-/
 structure IsStepUnramifiedPlace (u : FinPlace E') : Prop where
   /-- The inertia group of `u` is not all of `Gal(E'/E)`. -/
   exists_notMem_inertia : ∃ τ : Gal(E'/E), τ ∉ u.asIdeal.inertia Gal(E'/E)
   /-- `μ` is trivial on the norms of the local units at `u`. -/
-  apply_localNorm_eq_one (x : (LocField u)ˣ) (hx : v x.val = 1) :
-    μ (locIdele (u.below E) (localNorm E u x)) = 1
+  apply_localNorm_eq_one (x : (LocField u)ˣ) (hx : v x.val = 1)
+    : μ (locIdele (u.below E) (localNorm E u x)) = 1
 
 variable (E') in
-/-- The place `w` of `E` is unramified for the step `E' / E` and the character `μ`: so is every
-place of `E'` above it. -/
+/--
+The place `w` of `E` is unramified for the step `E' / E` and the character `μ`: so is every
+place of `E'` above it.
+-/
 def IsStepUnramifiedAt (w : FinPlace E) : Prop :=
   ∀ u : FinPlace E', u.below E = w → IsStepUnramifiedPlace μ u
 
@@ -481,10 +485,12 @@ end
 
 variable [CMType E'] [Fintype n] [DecidableEq n] (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ)
 
-/-- The subgroup `L` of the finite adelic unitary group over `E'` is a level at which the
+/--
+The subgroup `L` of the finite adelic unitary group over `E'` is a level at which the
 indicator functions match above the set `S` of places of `E` and its conjugates: `L` is open and
 stable under `σ`, its cocycles split above `S`, and the indicator function of `L` matches its
-pull-back to `E`. -/
+pull-back to `E`.
+-/
 structure IsMatchingLevel (S : Set (FinPlace E)) (L : Subgroup (Gf E' n)) : Prop where
   /-- `L` is open. -/
   isOpen : L.IsOpen
@@ -493,32 +499,41 @@ structure IsMatchingLevel (S : Set (FinPlace E)) (L : Subgroup (Gf E' n)) : Prop
   /-- The cocycles in `L` are coboundaries above `S`. -/
   cocyclesSplit : CocyclesSplit (finrank E E') (idem (placesAbove E' S)) L (galoisGf σ)
   /-- The indicator function of `L` and its pull-back to `E` form a matching pair above `S`. -/
-  isMatchingPairAbove_indicator :
-    IsMatchingPairAbove σ μ S L (indicator L 1 ∘ baseChangeGf (E' := E')) (indicator L 1)
+  isMatchingPairAbove_indicator
+    : IsMatchingPairAbove σ μ S L (indicator L 1 ∘ baseChangeGf (E' := E')) (indicator L 1)
 
-/-- The local levels `K u` over `E'` form a base change level below the subgroup `H` of the finite
-adelic unitary group over `E`. -/
-structure IsBaseChangeLevel (H : Subgroup (Gf E n))
-    (K : (u : FinPlace E') → Subgroup (GL n (LocField u))) : Prop where
+/--
+The local levels `K u` over `E'` form a base change level below the subgroup `H` of the finite
+adelic unitary group over `E`.
+-/
+structure IsBaseChangeLevel
+    (H : Subgroup (Gf E n)) (K : (u : FinPlace E') → Subgroup (GL n (LocField u)))
+    : Prop where
   /-- Each `K u` lies in `GL_n(O_u)`. -/
   le_localIntGL (u : FinPlace E') : K u ≤ localIntGL n u
   /-- The group cut out by `K` above any set `S` and its conjugates is a matching level. -/
-  isMatchingLevel (S : Set (FinPlace E)) :
-    IsMatchingLevel σ μ S (localLevel n (placesAbove E' S) K)
+  isMatchingLevel (S : Set (FinPlace E)) : IsMatchingLevel σ μ S (localLevel n (placesAbove E' S) K)
   /-- The elements over `E` that lie in `K u` at every `u` lie in `H`. -/
   comap_le : (localLevel n univ K).comap baseChangeGf ≤ H
-  /-- `K u = GL_n(O_u)` at the places `u` above an unramified place `w` and its conjugate, when
-  `H` contains the integral points supported at `w` and its conjugate (`maxCompactAt n w`). -/
-  eq_localIntGL (w : FinPlace E) (hw : IsStepUnramifiedAt E' μ w) (hH : maxCompactAt n w ≤ H)
-    (u : FinPlace E') (hu : u ∈ placesAbove E' {w}) : K u = localIntGL n u
+  /--
+  `K u = GL_n(O_u)` at the places `u` above an unramified place `w` and its conjugate, when
+  `H` contains the integral points supported at `w` and its conjugate (`maxCompactAt n w`).
+  -/
+  eq_localIntGL
+    (w : FinPlace E) (hw : IsStepUnramifiedAt E' μ w) (hH : maxCompactAt n w ≤ H)
+    (u : FinPlace E') (hu : u ∈ placesAbove E' {w})
+    : K u = localIntGL n u
 
 end New
 
 namespace New
 
-variable {E E' n : Type} [Field E] [CMType E] [Field E'] [CMType E'] [Algebra E E']
-  [Fintype n] [DecidableEq n] {σ : Gal(E'/E)} (hσ : σ ≠ 1)
-  {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : IsStep (E := E) E' μ] {f : E →+* E}
+variable
+  {E E' n : Type}
+  [Field E] [CMType E] [Field E'] [CMType E'] [Algebra E E'] [Fintype n] [DecidableEq n]
+  {σ : Gal(E'/E)} (hσ : σ ≠ 1)
+  {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : IsStep (E := E) E' μ]
+  {f : E →+* E}
 
 /-- If the conjugate place `star u` is unramified for the step, so is `u`. -/
 lemma IsStepUnramifiedPlace.of_star {u : FinPlace E'}
@@ -544,8 +559,8 @@ lemma IsStepUnramifiedPlace.of_star {u : FinPlace E'}
     rwa [map_mul, h_star, mul_one, h_norm] at h_sign
 
 /-- The finite adele that is `1` at the places of `A` and `x` at the others. -/
-noncomputable def adeleOneOn {F : Type} [Field F] [NumberField F] (A : Set (FinPlace F))
-    (x : 𝔸f F) : 𝔸f F :=
+noncomputable def adeleOneOn {F : Type} [Field F] [NumberField F] (A : Set (FinPlace F)) (x : 𝔸f F)
+    : 𝔸f F :=
   x + idem A * (1 - x)
 
 /-- The adele `adeleOneOn A x`, which is `1` on `A` and `x` off `A`, is continuous in `x`. -/
@@ -632,11 +647,15 @@ lemma eventually_mem_of_baseChangeGf_congr {H : Subgroup (Gf E n)} (hH : H.IsOpe
     by_contra h_notMem
     exact hx (Y, g) ⟨hY, hg, h_notMem⟩ h_eq
 
-/-- The elements `g` of `GL_n(O_u)` with `k * (g - 1)` integral at `u`. For `k` the inverse of an
-integral adele `m`, this is the principal congruence subgroup of level `m` at `u`. -/
-noncomputable def congruenceLevel {F : Type} [Field F] [NumberField F] (n : Type) [Fintype n]
-    [DecidableEq n] (k : 𝔸f F) (u : FinPlace F) :
-    Subgroup (GL n (LocField u)) :=
+/--
+The elements `g` of `GL_n(O_u)` with `k * (g - 1)` integral at `u`. For `k` the inverse of an
+integral adele `m`, this is the principal congruence subgroup of level `m` at `u`.
+-/
+noncomputable def congruenceLevel
+    {F : Type} [Field F] [NumberField F]
+    (n : Type) [Fintype n] [DecidableEq n]
+    (k : 𝔸f F) (u : FinPlace F)
+    : Subgroup (GL n (LocField u)) :=
   congruenceGL ((v.leSubmodule 1).comap (.mulLeft v.integer (k u))) id
 
 /-- An element `g` of `GL_n` of the completion at `u` lies in `congruenceLevel n k u` exactly when
@@ -680,8 +699,10 @@ lemma isIntegrallyClosedIn_Ô : IsIntegrallyClosedIn (Ô E') (𝔸f E') := by
   exact (Valuation.integer.integers (v.comap (evalAt u))).mem_of_integral
     (hx.map_of_comp_eq (Subring.inclusion fun _ hy ↦ mem_Ô.1 hy u) 1 rfl)
 
-/-- The ring homomorphism from the integral finite adeles of `E` to those of `F` induced by an
-embedding `f : E → F`. -/
+/--
+The ring homomorphism from the integral finite adeles of `E` to those of `F` induced by an
+embedding `f : E → F`.
+-/
 noncomputable def intAdeleMap {F : Type} [Field F] [NumberField F] (f : E →+* F) : Ô E →+* Ô F :=
   (adeleMap f).restrict (Ô E) (Ô F) fun _ ↦ (adeleMap_mem_Ô f).mpr
 

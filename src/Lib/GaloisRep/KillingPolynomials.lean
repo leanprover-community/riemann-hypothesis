@@ -61,13 +61,17 @@ namespace New
 open Matrix MvPolynomial Polynomial Finset Algebra Fintype Submodule Function ConjAct
   LaurentPolynomial Fin Filter
 
-variable {k K N R S A : Type} [NormedField k] [Fintype N] [DecidableEq N] [CommRing R] [CommRing S]
+variable
+  {k K N R S A : Type} [NormedField k] [Fintype N] [DecidableEq N] [CommRing R] [CommRing S]
   {m n : ℕ} {e : Fin n → ℤ}
-  (y : Matrix N N R) [NormedField K] [NormedAlgebra K k] [CommRing A] [Algebra A R] [Algebra A S]
+  (y : Matrix N N R)
+  [NormedField K] [NormedAlgebra K k] [CommRing A] [Algebra A R] [Algebra A S]
 
-/-- The minor of order `m`, at the rows `a 0, …, a (m - 1)`, of the matrix with rows indexed by
+/--
+The minor of order `m`, at the rows `a 0, …, a (m - 1)`, of the matrix with rows indexed by
 `N × N` whose column `j < m` lists the entries of the square matrix `y ^ j`: its entry at `(i, j)`
-is the entry of `y ^ j` at the place `a i`. -/
+is the entry of `y ^ j` at the place `a i`.
+-/
 noncomputable abbrev powMinor (m : ℕ) (a : Fin m → N × N) : R :=
   (of (flip (fun j : Fin m ↦ uncurry (y ^ j.val)) ∘ a)).det
 

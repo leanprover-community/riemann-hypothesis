@@ -220,8 +220,10 @@ lemma exists_idempotent_mod (P : F[X]) :
 /-- A fixed choice of the idempotent modulo `P` of `exists_idempotent_mod`. -/
 def splittingPoly (P : F[X]) : F[X] := (exists_idempotent_mod P).choose
 
-/-- The idempotent `p(g)`, where `p` is the chosen idempotent modulo the characteristic polynomial
-of `g`. -/
+/--
+The idempotent `p(g)`, where `p` is the chosen idempotent modulo the characteristic polynomial
+of `g`.
+-/
 def splittingIdempotent (g : GL n F) : Matrix n n F := aeval g.val (splittingPoly g.val.charpoly)
 
 /-- The matrix `splittingIdempotent g = p(g)` is idempotent, by the Cayley-Hamilton theorem. -/
@@ -254,8 +256,10 @@ lemma splittingIdempotent_conj (b g : GL n F) :
   rw [splittingIdempotent, aeval_units_conj, Units.val_mul, Units.val_mul, coe_units_inv,
     charpoly_units_conj', splittingIdempotent]
 
-/-- The parametrisation `Y ↦ 1 + e Y (1 - e)` of the unipotent radical attached to the idempotent
-`e = splittingIdempotent g`. Its range is called the radical of `g`. -/
+/--
+The parametrisation `Y ↦ 1 + e Y (1 - e)` of the unipotent radical attached to the idempotent
+`e = splittingIdempotent g`. Its range is called the radical of `g`.
+-/
 def splittingRadical (g : GL n F) : Multiplicative (Matrix n n F) →* GL n F :=
   radicalHom (isIdempotentElem_splittingIdempotent g)
 
@@ -334,7 +338,9 @@ lemma IsCuspidalType.exists_mem_range_splittingRadical {F : Type*} {n : Type} [F
 
 section Blocks
 
-variable {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n] {K : Subgroup (GL n (𝔸f E))}
+variable
+  {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n]
+  {K : Subgroup (GL n (𝔸f E))}
   (w₀ : SplitFinPlace E)
 
 variable (K) in
@@ -364,8 +370,10 @@ lemma invAutInFrame_conj (z y : GL n E) (x : GL n (𝔸f E)) :
     invAutInFrame (z * y * z⁻¹) (toFinGL z * x) = invAutInFrame y x := by
   simp [invAutInFrame, mul_assoc]
 
-/-- The automorphism `y` in the frame `x` at the split place `w₀`: the inverse transpose of the
-component of `x⁻¹ y⁻¹ x` at `w₀`. -/
+/--
+The automorphism `y` in the frame `x` at the split place `w₀`: the inverse transpose of the
+component of `x⁻¹ y⁻¹ x` at `w₀`.
+-/
 def localAut (y : GL n E) (x : GL n (𝔸f E)) : GL n (LocField w₀.val) :=
   dualComponent w₀ (invAutInFrame y x)
 
@@ -398,8 +406,10 @@ lemma charpoly_localAut (y : GL n E) (x : GL n (𝔸f E)) :
     Polynomial.map_map]
 
 variable (K) in
-/-- The block of `(xK, y, μ)`: the triples `(x a K, y, μ)`, where `a` runs over the radical of
-`localAut w₀ y x`, placed at `w₀`. -/
+/--
+The block of `(xK, y, μ)`: the triples `(x a K, y, μ)`, where `a` runs over the radical of
+`localAut w₀ y x`, placed at `w₀`.
+-/
 def tripleBlock (x : GL n (𝔸f E)) (y : GL n E) (μ : n) : Set (MarkedTriple K n) :=
   range fun Y : Multiplicative (Matrix n n (LocField w₀.val)) ↦
     markedTriple K (x * conjAtSplit w₀ (splittingRadical (localAut w₀ y x) Y)) y μ
@@ -455,8 +465,7 @@ lemma smul_tripleBlock (z : GL n E) (x : GL n (𝔸f E)) (y : GL n E) (μ : n) :
     mul_assoc (toFinGL z)]
 
 /-- The block of a triple `p = (q, y, μ)`, read at the chosen representative of the coset `q`. -/
-def blockOf (p : MarkedTriple K n) : Set (MarkedTriple K n) :=
-  tripleBlock K w₀ p.1.out p.2.1 p.2.2
+def blockOf (p : MarkedTriple K n) : Set (MarkedTriple K n) := tripleBlock K w₀ p.1.out p.2.1 p.2.2
 
 /-- If `K` consists of unitary similitudes, the block of `(xK, y, μ)` can be read at `x`. -/
 lemma blockOf_markedTriple (hK : K ≤ GU E n) (x : GL n (𝔸f E)) (y : GL n E) (μ : n) :
@@ -482,9 +491,10 @@ end Blocks
 
 section Reducible
 
-variable {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n] {𝔑 : 𝓞 E}
-  {f : heckeAlgebra n ℂ 𝔑} {w₀ : SplitFinPlace E} {ε : Prop} {u : E[X] → n → ℂ} {x : GL n (𝔸f E)}
-  {y : GL n E} {μ : n}
+variable
+  {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n]
+  {𝔑 : 𝓞 E} {f : heckeAlgebra n ℂ 𝔑} {w₀ : SplitFinPlace E} {ε : Prop} {u : E[X] → n → ℂ}
+  {x : GL n (𝔸f E)} {y : GL n E} {μ : n}
 
 /-- If the level `𝔑` is neat (it is non-zero, and an automorphism of a signed frame that lies in the
 level is trivial), a triple `(xK, y, μ)` with `K = levelGU n 𝔑` whose frame `x` satisfies the sign
@@ -548,10 +558,12 @@ lemma invAutInFrame_mul_conjAtSplit (h_mem : invAutInFrame y x ∈ GU E n)
   simp only [map_mul, map_inv, mul_assoc]
 
 variable (𝔑 w₀ x y μ) in
-/-- The point of the block of `(xK, y, μ)` with parameter `Y`, for the principal level
-`K = levelGU n 𝔑`. -/
-abbrev blockPoint (Y : Multiplicative (Matrix n n (LocField w₀.val))) :
-    MarkedTriple (levelGU n 𝔑) n :=
+/--
+The point of the block of `(xK, y, μ)` with parameter `Y`, for the principal level
+`K = levelGU n 𝔑`.
+-/
+abbrev blockPoint (Y : Multiplicative (Matrix n n (LocField w₀.val)))
+    : MarkedTriple (levelGU n 𝔑) n :=
   markedTriple (levelGU n 𝔑) (x * conjAtSplit w₀ (splittingRadical (localAut w₀ y x) Y)) y μ
 
 lemma tripleBlock_eq_range_blockPoint :
@@ -672,8 +684,10 @@ section Irreducible
 variable {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n] {𝔑 : 𝓞 E}
 
 open Classical in
-/-- The signs of `eigenReflection ε y μ` at the roots of `y`, place by place: `-1` at the place
-`v₀` and the roots other than `μ` if `ε` holds, and `1` in all other cases. -/
+/--
+The signs of `eigenReflection ε y μ` at the roots of `y`, place by place: `-1` at the place
+`v₀` and the roots other than `μ` if `ε` holds, and `1` in all other cases.
+-/
 def reflectionSigns (ε : Prop) (μ : n) (v : InfinitePlace E) (i : n) : ℤˣ :=
   if v = v₀ ∧ ε ∧ i ≠ μ then -1 else 1
 
@@ -737,16 +751,20 @@ lemma isSignedFrame_iff_hasSignType {x : GL n (𝔸f E)} {y : GL n E} {ν : ℚ}
   · rintro ⟨β, -, h_frame, h_pos⟩
     exact ⟨β, h_frame, by simpa only [ite_eigenReflection_eq] using h_pos⟩
 
-/-- The term of the marked count: `countTerm` with the sign condition on the class of
-`(xK, y, μ)` taken for the reflection attached to the marked root `μ` of `y`. -/
-abbrev markedTerm (f : heckeAlgebra n ℂ 𝔑) (w : E[X] → n → ℂ) :
-    orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n) → ℂ :=
+/--
+The term of the marked count: `countTerm` with the sign condition on the class of
+`(xK, y, μ)` taken for the reflection attached to the marked root `μ` of `y`.
+-/
+abbrev markedTerm (f : heckeAlgebra n ℂ 𝔑) (w : E[X] → n → ℂ)
+    : orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n) → ℂ :=
   countTerm True f w
 
-/-- The term of the definite count: `countTerm` with the sign condition on the class of
-`(xK, y, μ)` taken with all signs `+1`. -/
-abbrev definiteTerm (f : heckeAlgebra n ℂ 𝔑) (w : E[X] → n → ℂ) :
-    orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n) → ℂ :=
+/--
+The term of the definite count: `countTerm` with the sign condition on the class of
+`(xK, y, μ)` taken with all signs `+1`.
+-/
+abbrev definiteTerm (f : heckeAlgebra n ℂ 𝔑) (w : E[X] → n → ℂ)
+    : orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n) → ℂ :=
   countTerm False f w
 
 /-- Let the rank be odd and let `f` be a Hecke function of level `𝔑`. If the weight `u` vanishes on

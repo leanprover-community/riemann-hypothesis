@@ -52,9 +52,11 @@ section Frame
 
 variable (γ : 𝔰.G₁)
 
-/-- The volume, up to a constant factor, of the projection of the frame to the negative space
+/--
+The volume, up to a constant factor, of the projection of the frame to the negative space
 `γ V₋`, where `V₋` is the `-1` eigenspace of `J₁`: the modulus of the determinant of the products
-of the frame with the basis `γ (1 - J₁) frameCols` of `γ V₋`. -/
+of the frame with the basis `γ (1 - J₁) frameCols` of `γ V₋`.
+-/
 def frameVolume : ℝ := ‖(((1 - 𝔰.J₁) * 𝔰.frameCols)ᴴ * γ⁻¹.val.val * 𝔰.frameCols).det‖
 
 /-- The coordinates in `X₀` of the vectors of the frame moved by `γ`, as columns. -/
@@ -108,9 +110,11 @@ lemma frameVolume_mul_left (hγ : γ ∈ besselU0) (y : 𝔰.G₁) :
 @[fun_prop]
 lemma continuous_frameVolume : Continuous (frameVolume : 𝔰.G₁ → ℝ) := by fun_prop [frameVolume]
 
-/-- The ratio `ν(y)` of the volumes of the projections of the frame of `γ` and of the standard
+/--
+The ratio `ν(y)` of the volumes of the projections of the frame of `γ` and of the standard
 frame to the negative space `y V₋`. Vectors shared by the two flags cancel in it
-(`New.RealPlace.IsNegativeBasis.volumeRatio_eq`). -/
+(`New.RealPlace.IsNegativeBasis.volumeRatio_eq`).
+-/
 def volumeRatio (y : 𝔰.G₁) : ℝ := frameVolume (γ⁻¹ * y) / frameVolume y
 
 lemma volumeRatio_pos (y : 𝔰.G₁) : 0 < volumeRatio γ y :=
@@ -158,11 +162,13 @@ lemma RealPlace.gram_definiteCols_mul_eq {m : Type} {Y : Matrix 𝔰.BesselIndex
   simp [← Matrix.ext_iff, inclMatrix, splitGram, middleGram, Matrix.mul_apply, Matrix.one_apply,
     h_eStar, h_z]
 
-/-- The left inverse of `frameCols` that vanishes on the orthogonal complement of the negative
-space `y V₋`. It gives the coordinates of the projection to `y V₋` in the projected frame. -/
+/--
+The left inverse of `frameCols` that vanishes on the orthogonal complement of the negative
+space `y V₋`. It gives the coordinates of the projection to `y V₋` in the projected frame.
+-/
 def RealPlace.frameLeftInverse (y : 𝔰.G₁) : Matrix (Fin 𝔰.n) 𝔰.BesselIndex ℂ :=
-  (((1 - 𝔰.J₁) * 𝔰.frameCols)ᴴ * y⁻¹.val.val * 𝔰.frameCols)⁻¹ *
-    (((1 - 𝔰.J₁) * 𝔰.frameCols)ᴴ * y⁻¹.val.val)
+  (((1 - 𝔰.J₁) * 𝔰.frameCols)ᴴ * y⁻¹.val.val * 𝔰.frameCols)⁻¹
+    * (((1 - 𝔰.J₁) * 𝔰.frameCols)ᴴ * y⁻¹.val.val)
 
 lemma RealPlace.frameLeftInverse_mul_frameCols (y : 𝔰.G₁) :
     frameLeftInverse y * 𝔰.frameCols = 1 := by
@@ -345,44 +351,53 @@ lemma RealPlace.le_and_ne_top_of_notMem_range {b : Fin (𝔰.ϱ + 1)}
 abbrev RealPlace.subframeCols : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ :=
   𝔰.frameCols * inclMatrix ℂ (subframeIndex hi)
 
-/-- The matrix of the products of the subframe `e₁, …, e_i, z` with its image, cut out of the
-matrix `Z` of the products of the frames. -/
+/--
+The matrix of the products of the subframe `e₁, …, e_i, z` with its image, cut out of the
+matrix `Z` of the products of the frames.
+-/
 abbrev RealPlace.subframeBlock (Z : 𝔰.FrameMatrix) : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ :=
   Z.submatrix (subframeIndex hi) (subframeIndex hi)
 
-/-- The columns of `ω` lie in the negative space at `y`, are orthogonal to `I = A ∩ γ A`, where `A`
+/--
+The columns of `ω` lie in the negative space at `y`, are orthogonal to `I = A ∩ γ A`, where `A`
 is the isotropic space, and pair perfectly with the subframe. For `γ` with norm-one pairs occurring
-from level `j` with `i = min ϱ j` they are a basis of `y V₋ ∩ I^⊥`. -/
-structure RealPlace.IsNegativeBasis (γ y : 𝔰.G₁) (ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ) :
-    Prop where
+from level `j` with `i = min ϱ j` they are a basis of `y V₋ ∩ I^⊥`.
+-/
+structure RealPlace.IsNegativeBasis (γ y : 𝔰.G₁) (ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ)
+    : Prop where
   /-- The columns of `y⁻¹ ω` lie in `V₋`. -/
   J₁_mul : 𝔰.J₁ * (y⁻¹.val.val * ω) = -(y⁻¹.val.val * ω)
   /-- The columns of `ω` are orthogonal to every vector `f x = γ f x'` that lies in `A`. -/
-  orthogonal : ∀ x x' : Fin (𝔰.ϱ + 1) → ℂ,
-    γ.val.val *ᵥ 𝔰.frameCols *ᵥ x' = 𝔰.frameCols *ᵥ x →
-    x 𝔰.top = 0 → (𝔰.frameColsᴴ * 𝔰.J₁ * ω)ᴴ *ᵥ x = 0
+  orthogonal
+    : ∀ x x' : Fin (𝔰.ϱ + 1) → ℂ,
+      γ.val.val *ᵥ 𝔰.frameCols *ᵥ x' = 𝔰.frameCols *ᵥ x → x 𝔰.top = 0
+        → (𝔰.frameColsᴴ * 𝔰.J₁ * ω)ᴴ *ᵥ x = 0
   /-- The products of the subframe with the columns of `ω` form an invertible matrix. -/
   det_ne_zero : ((subframeCols hi)ᴴ * 𝔰.J₁ * ω).det ≠ 0
 
-/-- **The weight modulo `I`.** Let `γ, y ∈ G₁`, let `f = (e₁, …, e_ϱ, z)` be the frame, `A` the span
+/--
+**The weight modulo `I`.** Let `γ, y ∈ G₁`, let `f = (e₁, …, e_ϱ, z)` be the frame, `A` the span
 of the `e_a`, `I = A ∩ γ A` and `V₋` the `-1` eigenspace of `J₁`. Let `NormOnePairOccursFrom j γ`
 hold, with `i = min ϱ j`; `subframeCols` has the vectors `e₁, …, e_i, z` of the subframe as columns.
 Let `ω` be a negative basis (`IsNegativeBasis`): its `i + 1` columns lie in `y V₋`, are orthogonal
 to `I` for `J₁`, and their `J₁`-products with the subframe form an invertible matrix. Then
 `volumeRatio γ y`, the ratio `ν(y)` of the volumes of the projections of `γ f` and `f` to `y V₋`, is
 the modulus of the determinant of the products of `ω` with `γ e₁, …, γ e_i, γ z`, divided by that of
-the products of `ω` with `e₁, …, e_i, z`. -/
-theorem RealPlace.IsNegativeBasis.volumeRatio_eq (hi_le : i ≤ 𝔰.ϱ)
+the products of `ω` with `e₁, …, e_i, z`.
+-/
+theorem RealPlace.IsNegativeBasis.volumeRatio_eq
+    (hi_le : i ≤ 𝔰.ϱ)
     {ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ} (hω : IsNegativeBasis hi_le γ y ω)
-    (hγ : NormOnePairOccursFrom j γ) (hij : i = min 𝔰.ϱ j) :
-    volumeRatio γ y =
-      ‖(((γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) * subframeCols hi_le)ᴴ * 𝔰.J₁ * ω).det‖ /
-        ‖((subframeCols hi_le)ᴴ * 𝔰.J₁ * ω).det‖ := by
+    (hγ : NormOnePairOccursFrom j γ) (hij : i = min 𝔰.ϱ j)
+    : volumeRatio γ y
+      = ‖(((γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) * subframeCols hi_le)ᴴ * 𝔰.J₁ * ω).det‖
+        / ‖((subframeCols hi_le)ᴴ * 𝔰.J₁ * ω).det‖ := by
   -- `N` is the matrix of the projection of `γ f` in the basis given by the projection of `f`.
   -- `P` holds the products of the frame with `ω`, and `P * (inclᴴ * P)⁻¹` those with the basis
   -- dual to the subframe. The shared vectors reduce `det N` to a determinant on the subframe.
-  obtain ⟨ζ, hζ, h_flag⟩ : ∃ ζ : ℂ, ζ * star ζ = 1 ∧
-      ∀ b : Fin (𝔰.ϱ + 1), j ≤ b.val → PairOccursAt γ ζ 1 b := hγ
+  obtain ⟨ζ, hζ, h_flag⟩
+      : ∃ ζ : ℂ, ζ * star ζ = 1 ∧ ∀ b : Fin (𝔰.ϱ + 1), j ≤ b.val → PairOccursAt γ ζ 1 b :=
+    hγ
   have hζ_norm : ‖ζ‖ = 1 :=
     (pow_eq_one_iff_of_nonneg (norm_nonneg ζ) two_ne_zero).1 (by simpa [sq] using congrArg norm hζ)
   let incl : Matrix (Fin 𝔰.n) (Fin (i + 1)) ℂ := inclMatrix ℂ (subframeIndex hi_le)
@@ -401,8 +416,7 @@ theorem RealPlace.IsNegativeBasis.volumeRatio_eq (hi_le : i ≤ 𝔰.ϱ)
     refine norm_det_eq_norm_det_mul_inclMatrix h_left_inv fun b hb ↦ ?_
     obtain ⟨h_le, h_ne⟩ : i ≤ b ∧ b ≠ 𝔰.top := le_and_ne_top_of_notMem_range hi_le hb
     have h_level : j ≤ b.val := by grind
-    obtain ⟨x, x', h_shared, hx_lead, h_lead, h_above⟩ : PairOccursAt γ ζ 1 b :=
-      h_flag b h_level
+    obtain ⟨x, x', h_shared, hx_lead, h_lead, h_above⟩ : PairOccursAt γ ζ 1 b := h_flag b h_level
     have h_frames : γ.val.val *ᵥ 𝔰.frameCols *ᵥ x' = 𝔰.frameCols *ᵥ x := by
       rw [mulVec_mulVec, mul_inclMatrix]
       exact h_shared.symm
@@ -411,15 +425,17 @@ theorem RealPlace.IsNegativeBasis.volumeRatio_eq (hi_le : i ≤ 𝔰.ϱ)
     · simp [N, ← mulVec_mulVec, h_frames, mulVec_mulVec x, frameLeftInverse_mul_frameCols]
     · rw [conjTranspose_mul, ← mulVec_mulVec, hω.orthogonal x x' h_frames hx_top, mulVec_zero]
   calc
-    volumeRatio γ y = ‖((P * (inclᴴ * P)⁻¹)ᴴ * (N * incl)).det‖ :=
-      (volumeRatio_eq_norm_det γ y).trans h_reduce
+    volumeRatio γ y
+      = ‖((P * (inclᴴ * P)⁻¹)ᴴ * (N * incl)).det‖ := (volumeRatio_eq_norm_det γ y).trans h_reduce
     _ = ‖((N * incl)ᴴ * P).det‖ / ‖(inclᴴ * P).det‖ := by
       rw [← norm_star, ← det_conjTranspose]
       simp [← Matrix.mul_assoc, det_mul _ (inclᴴ * P)⁻¹, div_eq_mul_inv]
     _ = _ := by rw [h_image, h_subframe_products]
 
-/-- The products of the frame with the basis of the span of `γ e₁, …, γ e_i, γ z` that is dual to
-the subframe `e₁, …, e_i, z`, in terms of the matrix `Z` of the products of the two frames. -/
+/--
+The products of the frame with the basis of the span of `γ e₁, …, γ e_i, γ z` that is dual to
+the subframe `e₁, …, e_i, z`, in terms of the matrix `Z` of the products of the two frames.
+-/
 def RealPlace.dualProducts (Z : 𝔰.FrameMatrix) : Matrix (Fin 𝔰.n) (Fin (i + 1)) ℂ :=
   Z * inclMatrix ℂ (subframeIndex hi) * (subframeBlock hi Z)⁻¹
 
@@ -439,19 +455,24 @@ lemma RealPlace.frameCols_mul_mul_subframeCols (hZ : realFrameGram γ = Z) :
     𝔰.frameColsᴴ * 𝔰.J₁ * (γ.val.val * subframeCols hi) = Z * inclMatrix ℂ (subframeIndex hi) := by
   rw [← Matrix.mul_assoc γ.val.val, ← Matrix.mul_assoc, ← hZ, realFrameGram_eq_conjTranspose_mul]
 
-/-- The columns of `ω` are a basis with Gram matrix `-1` of a subspace of the negative space at `y`.
+/--
+The columns of `ω` are a basis with Gram matrix `-1` of a subspace of the negative space at `y`.
 Their products with the subframe `e₁, …, e_i, z` form the lower triangular matrix `L`, and those
 with the whole frame are the ones that orthogonality to `I = A ∩ γ A` dictates when the frames `f`
-and `γ f` have the products `Z`. -/
-structure RealPlace.IsTriangularBasis (y : 𝔰.G₁) (Z : 𝔰.FrameMatrix)
-    (ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ) (L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ) :
-    Prop where
+and `γ f` have the products `Z`.
+-/
+structure RealPlace.IsTriangularBasis
+    (y : 𝔰.G₁) (Z : 𝔰.FrameMatrix) (ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ)
+    (L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ)
+    : Prop where
   /-- The columns of `y⁻¹ ω` lie in `V₋`. -/
   J₁_mul : 𝔰.J₁ * (y⁻¹.val.val * ω) = -(y⁻¹.val.val * ω)
   /-- The Gram matrix of `ω` is `-1`. -/
   gram_eq_neg_one : ωᴴ * 𝔰.J₁ * ω = -1
-  /-- The products of the frame with `ω` are those with the basis of the span of the image of the
-  subframe whose products with the subframe form `L`. -/
+  /--
+  The products of the frame with `ω` are those with the basis of the span of the image of the
+  subframe whose products with the subframe form `L`.
+  -/
   products_eq : 𝔰.frameColsᴴ * 𝔰.J₁ * ω = dualProducts hi Z * L
   /-- `L` is lower triangular. -/
   triangular : ∀ a b : Fin (i + 1), a < b → L a b = 0
@@ -507,8 +528,10 @@ lemma RealPlace.exists_isTriangularBasis {i : ℕ} {Z : 𝔰.FrameMatrix} (hi_le
 
 section TriangularBasis
 
-variable {γ : 𝔰.G₁} {i j : ℕ} (hi : i ≤ 𝔰.ϱ) {y : 𝔰.G₁} {Z : 𝔰.FrameMatrix}
-  {ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ} {L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ}
+variable
+  {γ : 𝔰.G₁} {i j : ℕ} (hi : i ≤ 𝔰.ϱ)
+  {y : 𝔰.G₁} {Z : 𝔰.FrameMatrix} {ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ}
+  {L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ}
 
 namespace RealPlace.IsTriangularBasis
 
@@ -598,17 +621,23 @@ lemma norm_det_eq_mul_norm_last (h : IsTriangularBasis hi y Z ω L) :
 
 end RealPlace.IsTriangularBasis
 
-/-- If `Z` is the matrix of products of the frames `f` and `γ f`, with invertible block at the
+/--
+If `Z` is the matrix of products of the frames `f` and `γ f`, with invertible block at the
 subframe `e₁, …, e_i, z`, and `L` is invertible: the basis of the span of `γ e₁, …, γ e_i, γ z`
-whose products with the subframe form `L`. -/
-def RealPlace.imageBasis (γ : 𝔰.G₁) (Z : 𝔰.FrameMatrix) (L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ) :
-    Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ :=
+whose products with the subframe form `L`.
+-/
+def RealPlace.imageBasis (γ : 𝔰.G₁) (Z : 𝔰.FrameMatrix) (L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ)
+    : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ :=
   (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) * subframeCols hi * (subframeBlock hi Z)⁻¹ * L
 
-/-- The classes `v_l` in `X₀`, that is the coordinates in `X₀`, of the differences between
-`imageBasis` and `ω`. -/
-def RealPlace.differenceX₀ (γ : 𝔰.G₁) (Z : 𝔰.FrameMatrix) (ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ)
-    (L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ) : Matrix 𝔰.κ (Fin (i + 1)) ℂ :=
+/--
+The classes `v_l` in `X₀`, that is the coordinates in `X₀`, of the differences between
+`imageBasis` and `ω`.
+-/
+def RealPlace.differenceX₀
+    (γ : 𝔰.G₁) (Z : 𝔰.FrameMatrix) (ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ)
+    (L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ)
+    : Matrix 𝔰.κ (Fin (i + 1)) ℂ :=
   𝔰.definiteColsᴴ * (imageBasis hi γ Z L - ω)
 
 namespace RealPlace.IsTriangularBasis
@@ -790,7 +819,8 @@ lemma RealPlace.norm_det_subframeBlock {γ : 𝔰.G₁} {i j : ℕ} {Z : 𝔰.Fr
 
 section LastColumn
 
-variable {γ : 𝔰.G₁} {i j : ℕ} {hi : i ≤ 𝔰.ϱ} {y : 𝔰.G₁} {Z : 𝔰.FrameMatrix}
+variable
+  {γ : 𝔰.G₁} {i j : ℕ} {hi : i ≤ 𝔰.ϱ} {y : 𝔰.G₁} {Z : 𝔰.FrameMatrix}
   {ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ} {L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ}
 
 namespace RealPlace.IsTriangularBasis
@@ -913,31 +943,38 @@ lemma norm_last_sq_le (h : IsTriangularBasis hi y Z ω L) (hZ : realFrameGram γ
 
 end RealPlace.IsTriangularBasis
 
-/-- **One real place.** Let `y ∈ G₁`, let the vectors `y⁻¹ f_a` have length at most `ρ`, let `y`
+/--
+**One real place.** Let `y ∈ G₁`, let the vectors `y⁻¹ f_a` have length at most `ρ`, let `y`
 have length (`besselLength`) at most `θ`, and let `k = dim X₀ ≥ 7`. Let norm-one pairs occur for
 `γ₀ ∈ G₁` from level `j ≤ ϱ + 1`, with `i = min ϱ j`. Let `Z` be the matrix of products of the
 frames `f` and `γ₀ f`, and let the determinant `δ` of its block of the subframe `e₁, …, e_i, z` be
 nonzero. There is a measurable `φ` on `X₀ ^ i` with integral at most `(2 ρ²) ^ ((i + 1) i) (2 ^
 (i + 1) θ ^ (2 (j - i))) ^ k / |δ| ^ (k + i)` such that `ν ^ (-(k + i)) ≤ φ A` whenever norm-one
 pairs occur for `γ` from level `j` with the same products `Z` and the parts in `X₀` of the images of
-the subframe under `γ` and `γ₀` differ by `Aᴴ` times the first `i` rows of the block. -/
-theorem RealPlace.exists_majorant_volumeRatio_inv_pow (hi_le : i ≤ 𝔰.ϱ) {ρ θ : ℝ}
-    (hρ : y ∈ frameBox ρ) (hθ : besselLength y ≤ θ) (hj : j ≤ 𝔰.n) (hij : i = min 𝔰.ϱ j)
-    (hk : 7 ≤ 𝔰.k) {γ₀ : 𝔰.G₁} (hZ₀ : realFrameGram γ₀ = Z) (hγ₀ : NormOnePairOccursFrom j γ₀)
-    (hδ : (subframeBlock hi_le Z).det ≠ 0) :
-    ∃ φ : (Fin i → 𝔰.κ → ℂ) → ENNReal,
-      Measurable φ ∧
-      ∫⁻ A : Fin i → 𝔰.κ → ℂ, φ A ≤ ENNReal.ofReal ((2 * ρ ^ 2) ^ ((i + 1) * i) *
-        (2 ^ (i + 1) * θ ^ (2 * (j - i))) ^ 𝔰.k / ‖(subframeBlock hi_le Z).det‖ ^ (𝔰.k + i)) ∧
-      ∀ (γ : 𝔰.G₁) (A : Fin i → 𝔰.κ → ℂ), realFrameGram γ = Z → NormOnePairOccursFrom j γ →
-        frameX₀Part γ * inclMatrix ℂ (subframeIndex hi_le) =
-          frameX₀Part γ₀ * inclMatrix ℂ (subframeIndex hi_le) +
-            (of A)ᴴ * (subframeBlock hi_le Z).submatrix castSucc id →
-        ENNReal.ofReal ((volumeRatio γ y)⁻¹ ^ (𝔰.k + i)) ≤ φ A := by
+the subframe under `γ` and `γ₀` differ by `Aᴴ` times the first `i` rows of the block.
+-/
+theorem RealPlace.exists_majorant_volumeRatio_inv_pow
+    (hi_le : i ≤ 𝔰.ϱ)
+    {ρ θ : ℝ} (hρ : y ∈ frameBox ρ) (hθ : besselLength y ≤ θ)
+    (hj : j ≤ 𝔰.n) (hij : i = min 𝔰.ϱ j) (hk : 7 ≤ 𝔰.k)
+    {γ₀ : 𝔰.G₁} (hZ₀ : realFrameGram γ₀ = Z) (hγ₀ : NormOnePairOccursFrom j γ₀)
+    (hδ : (subframeBlock hi_le Z).det ≠ 0)
+    : ∃ φ : (Fin i → 𝔰.κ → ℂ) → ENNReal,
+      Measurable φ
+        ∧ ∫⁻ A : Fin i → 𝔰.κ → ℂ, φ A
+          ≤ ENNReal.ofReal
+            ((2 * ρ ^ 2) ^ ((i + 1) * i) * (2 ^ (i + 1) * θ ^ (2 * (j - i))) ^ 𝔰.k
+              / ‖(subframeBlock hi_le Z).det‖ ^ (𝔰.k + i))
+        ∧ ∀ (γ : 𝔰.G₁) (A : Fin i → 𝔰.κ → ℂ),
+          realFrameGram γ = Z → NormOnePairOccursFrom j γ
+            → frameX₀Part γ * inclMatrix ℂ (subframeIndex hi_le)
+              = frameX₀Part γ₀ * inclMatrix ℂ (subframeIndex hi_le)
+                + (of A)ᴴ * (subframeBlock hi_le Z).submatrix castSucc id
+            → ENNReal.ofReal ((volumeRatio γ y)⁻¹ ^ (𝔰.k + i)) ≤ φ A := by
   -- `φ A` is the bound that the lower bound for `ν(y)` gives. The last column of `v` does not
   -- depend on `A`, and the other columns are an affine function of `A`.
-  obtain ⟨ω, L, h⟩ :
-      ∃ (ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ) (L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ),
+  obtain ⟨ω, L, h⟩
+      : ∃ (ω : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ) (L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ),
         IsTriangularBasis hi_le y Z ω L :=
     exists_isTriangularBasis hi_le y hδ
   let v₀ : Matrix 𝔰.κ (Fin (i + 1)) ℂ := differenceX₀ hi_le γ₀ Z ω L
@@ -959,42 +996,44 @@ theorem RealPlace.exists_majorant_volumeRatio_inv_pow (hi_le : i ≤ 𝔰.ϱ) {�
     have h_last_ratio : ‖L (last i) (last i)‖ ^ 2 / ‖G.det‖ ≤ θ ^ (2 * (j - i)) :=
       div_le_of_le_mul₀ (norm_nonneg _) ((even_two_mul _).pow_nonneg θ)
         (h.norm_last_sq_le hZ₀ hγ₀ hj hij hδ hθ)
-    have h_hua : ∫⁻ A, φ A ≤
-        ENNReal.ofReal (C * (‖L₁.det‖⁻¹ ^ (2 * 𝔰.k) * ‖G.det‖⁻¹ ^ 𝔰.k)) := by
+    have h_hua : ∫⁻ A, φ A ≤ ENNReal.ofReal (C * (‖L₁.det‖⁻¹ ^ (2 * 𝔰.k) * ‖G.det‖⁻¹ ^ 𝔰.k)) := by
       have hC : 0 ≤ C := by positivity
       have hL₁_star : L₁ᴴ.det ≠ 0 := by simpa using hL₁
       simpa [φ] using lintegral_norm_det_add_inv_pow_le hL₁_star c hG hC (by simpa using hk)
     refine h_hua.trans (ENNReal.ofReal_le_ofReal ?_)
     calc
-      _ = (2 ^ (i + 1) * ‖L.det‖ ^ 2) ^ i *
-          (2 ^ (i + 1) * (‖L (last i) (last i)‖ ^ 2 / ‖G.det‖)) ^ 𝔰.k /
-          ‖(subframeBlock hi_le Z).det‖ ^ (𝔰.k + i) := by
+      _ = (2 ^ (i + 1) * ‖L.det‖ ^ 2) ^ i
+          * (2 ^ (i + 1) * (‖L (last i) (last i)‖ ^ 2 / ‖G.det‖)) ^ 𝔰.k
+          / ‖(subframeBlock hi_le Z).det‖ ^ (𝔰.k + i) := by
         simp only [C, h_det, div_pow, inv_pow, mul_pow]
         field_simp
         ring
-      _ ≤ (2 ^ (i + 1) * (ρ ^ (i + 1)) ^ 2) ^ i * (2 ^ (i + 1) * θ ^ (2 * (j - i))) ^ 𝔰.k /
-          ‖(subframeBlock hi_le Z).det‖ ^ (𝔰.k + i) := by
+      _ ≤ (2 ^ (i + 1) * (ρ ^ (i + 1)) ^ 2) ^ i * (2 ^ (i + 1) * θ ^ (2 * (j - i))) ^ 𝔰.k
+          / ‖(subframeBlock hi_le Z).det‖ ^ (𝔰.k + i) := by
         gcongr
         exact h.norm_det_le hδ hρ
       _ = _ := by ring
   · -- At a translate, `1 + v vᴴ` splits off the last column.
-    have h_lower : ‖(subframeBlock hi_le Z).det‖ *
-        ‖(1 + differenceX₀ hi_le γ Z ω L * (differenceX₀ hi_le γ Z ω L)ᴴ).det‖ ≤
-          2 ^ (i + 1) * ‖L.det‖ ^ 2 * volumeRatio γ y :=
+    have h_lower
+        : ‖(subframeBlock hi_le Z).det‖
+            * ‖(1 + differenceX₀ hi_le γ Z ω L * (differenceX₀ hi_le γ Z ω L)ᴴ).det‖
+          ≤ 2 ^ (i + 1) * ‖L.det‖ ^ 2 * volumeRatio γ y :=
       h.norm_det_mul_le_volumeRatio hZ hγ hij hδ
-    have h_split : 1 + differenceX₀ hi_le γ Z ω L * (differenceX₀ hi_le γ Z ω L)ᴴ =
-        G + (L₁ᴴ * of A + c)ᴴ * (L₁ᴴ * of A + c) := by
+    have h_split
+        : 1 + differenceX₀ hi_le γ Z ω L * (differenceX₀ hi_le γ Z ω L)ᴴ
+          = G + (L₁ᴴ * of A + c)ᴴ * (L₁ᴴ * of A + c) := by
       rw [differenceX₀_eq_add hi_le hδ h_shift]
       ext a b
       simp [G, c, L₁, v₀, Matrix.mul_apply, vecMulVec_apply, sum_univ_castSucc, h_zero, add_comm,
         add_assoc]
     rw [h_split] at h_lower
-    have h_pos : 0 < ‖(G + (L₁ᴴ * of A + c)ᴴ * (L₁ᴴ * of A + c)).det‖ := norm_pos_iff.2
-      (hG.add_posSemidef (posSemidef_conjTranspose_mul_self _)).det_pos.ne'
+    have h_pos : 0 < ‖(G + (L₁ᴴ * of A + c)ᴴ * (L₁ᴴ * of A + c)).det‖ :=
+      norm_pos_iff.2 (hG.add_posSemidef (posSemidef_conjTranspose_mul_self _)).det_pos.ne'
     have h_ratio : 0 < volumeRatio γ y := volumeRatio_pos γ y
-    have h_inv_le : (volumeRatio γ y)⁻¹ ≤
-        2 ^ (i + 1) * ‖L.det‖ ^ 2 / ‖(subframeBlock hi_le Z).det‖ *
-          ‖(G + (L₁ᴴ * of A + c)ᴴ * (L₁ᴴ * of A + c)).det‖⁻¹ := by
+    have h_inv_le
+        : (volumeRatio γ y)⁻¹
+          ≤ 2 ^ (i + 1) * ‖L.det‖ ^ 2 / ‖(subframeBlock hi_le Z).det‖
+            * ‖(G + (L₁ᴴ * of A + c)ᴴ * (L₁ᴴ * of A + c)).det‖⁻¹ := by
       rwa [← div_eq_mul_inv, div_div, inv_eq_one_div, div_le_div_iff₀ h_ratio (by positivity),
         one_mul]
     rw [← mul_pow]

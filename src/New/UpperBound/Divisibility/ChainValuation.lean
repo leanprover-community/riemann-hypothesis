@@ -151,21 +151,25 @@ lemma exists_supported_translateDatum_eq {q : ℕ} {x : D.Translations}
 
 variable {D} {ϑ : D.Twist} {Ψ : D.Translations →₀ ℂ}
 
-/-- **A chain of lifts is a plain sum.** Let `D.liftKernel ϑ j` be the theta kernel from forms on
+/--
+**A chain of lifts is a plain sum.** Let `D.liftKernel ϑ j` be the theta kernel from forms on
 `X_j` to forms on `X_{j+1}` for the twist `ϑ`, and let the tensor `∑ x, Ψ x • ⊗ⱼ Φ x j` of data be
 jointly invariant under the levels `D.levelX j`, `j < D.m`. Let `φ` be a source form, a form on
 `X_0` fixed by its level. The form `chainCombination ϑ Ψ Φ D.m φ` is the sum over `x` of `Ψ x` times
 the result of `D.m` successive lifts of `φ` with data `Φ x`. Its value at `g D.m` is the sum, over
 tuples `c` of classes for these levels and over `x` in the support of `Ψ`, of `Ψ x` times
 `kernelProduct`: the kernels at the points `classPoints c g`, applied in turn to the value of `φ` at
-the first point. -/
-theorem chainCombination_eq_sum {Φ : D.Translations → ∀ j : ℕ, (D.homX j).finitePart}
+the first point.
+-/
+theorem chainCombination_eq_sum
+    {Φ : D.Translations → ∀ j : ℕ, (D.homX j).finitePart}
     (h_inv : IsJointlyInvariant (D.liftKernel ϑ) D.m Ψ.support
-      (fun x : D.Translations ↦ Ψ x • LinearMap.id) Φ)
-    (φ : D.SourceForm) (g : ∀ j : ℕ, Gf D.E (D.X j)) :
-    (chainCombination ϑ Ψ Φ D.m φ).val (g D.m) =
-      ∑ c : ∀ j : Fin D.m, StdClasses (D.levelX j), ∑ x ∈ Ψ.support,
-        Ψ x • kernelProduct (D.liftKernel ϑ) (Φ x) φ (classPoints c g) D.m := by
+      (fun x : D.Translations ↦ Ψ x • LinearMap.id)
+      Φ)
+    (φ : D.SourceForm) (g : ∀ j : ℕ, Gf D.E (D.X j))
+    : (chainCombination ϑ Ψ Φ D.m φ).val (g D.m)
+      = ∑ c : ∀ j : Fin D.m, StdClasses (D.levelX j), ∑ x ∈ Ψ.support,
+          Ψ x • kernelProduct (D.liftKernel ϑ) (Φ x) φ (classPoints c g) D.m := by
   -- The classes for the levels below `D.m` have trivial automorphism groups.
   have free (j : ℕ) (hj : j < D.m) : ∀ g, classAut stdRatPoints (D.levelX j) g = ⊥ :=
     D.classAut_eq_bot_of_le_chosenLevel inf_le_left (by grind [card_X, D.n_mono hj.le])
@@ -207,8 +211,8 @@ section ChainValuation
 
 open Finset Real
 
-variable {P : Parameters} {D : Data P}
-  {p : ℕ} [Fact p.Prime] [PadicPlace p]
+variable
+  {P : Parameters} {D : Data P} {p : ℕ} [Fact p.Prime] [PadicPlace p]
   {ϑ : D.Twist} {Ψ : D.Translations →₀ ℂ}
 
 /-- Let the tensor of data `∑ x, Ψ x • ⊗ⱼ Φ x j` be jointly invariant: it is unchanged when `Φ x j`

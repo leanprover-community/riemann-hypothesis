@@ -36,8 +36,9 @@ open Algebra Polynomial AlgebraicGeometry CategoryTheory Fintype IsAlgClosed Lin
   specOver Module Submodule RingHom TrivSqZeroExt Ideal Quotient FiniteField IsLocalRing
   CartesianMonoidalCategory
 
-variable {E : Type} [Field E] [CMBase E] {D : PEL E}
-  {k : Type} [Field k]
+variable
+  {E : Type} [Field E] [CMBase E]
+  {D : PEL E} {k : Type} [Field k]
   {Z : Scheme} {σ : Z ⟶ Spec (CommRingCat.of (NumberField.RingOfIntegers E))}
   {Y : ThetaFamily D Z σ} {x : ThetaObject Y (Spec ⟨k⟩)}
 
@@ -157,24 +158,32 @@ lemma adjoin_eq_top_and_exists_algHom_eq_smul {B : Type*} [CommRing B] [Algebra 
   exact ⟨h_top, fun a ↦ ⟨pb.lift (a • τ) (aeval_eq_zero_of_dvd_aeval_eq_zero hm.dvd' <| by
     simp [_root_.smul_pow, (by simpa [dvd_iff] using hm.dvd : τ ^ m = 0)]), pb.lift_gen _ _⟩⟩
 
-/-- Facts on a `k`-algebra `B` with a point `u` of `placeTorsion x`, a map `s : B → k[ε]` and
+/--
+Facts on a `k`-algebra `B` with a point `u` of `placeTorsion x`, a map `s : B → k[ε]` and
 an element `τ`, relative to a line `L` of tangent vectors of `x.groupScheme` at `0`: `u` is
 universal (as in `exists_local_universal_point`), `s` sends `u` to `L 1`, and `τ` is a nilpotent
-local parameter of `B` that `s` sends to a nonzero multiple of `ε`. -/
-structure IsLocalParameter (L : k →+ (specOver k (DualNumber k) ⟶ x.groupScheme)) (N : ℕ)
-    {B : Type} [CommRing B] [Algebra k B] (u : placeTorsion x B) (s : B →ₐ[k] TrivSqZeroExt k k)
-    (τ : B) : Prop where
+local parameter of `B` that `s` sends to a nonzero multiple of `ε`.
+-/
+structure IsLocalParameter
+    (L : k →+ (specOver k (DualNumber k) ⟶ x.groupScheme)) (N : ℕ)
+    {B : Type} [CommRing B] [Algebra k B]
+    (u : placeTorsion x B) (s : B →ₐ[k] TrivSqZeroExt k k) (τ : B)
+    : Prop where
   /-- A homomorphism out of `B` is determined by the image of `u`. -/
-  injective : ∀ {C : Type} [CommRing C] [Algebra k C],
-    Function.Injective fun ψ : B →ₐ[k] C ↦ placeTorsionMap ψ u
+  injective
+    : ∀ {C : Type} [CommRing C] [Algebra k C],
+      Function.Injective fun ψ : B →ₐ[k] C ↦ placeTorsionMap ψ u
   /-- A point over a local `C` that reduces to `0` along `π : C → k` is an image of `u`. -/
-  exists_map_eq : ∀ {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C] (π : C →ₐ[k] k)
-    (y : placeTorsion x C), placeTorsionMap π y = 0 → ∃ ψ : B →ₐ[k] C, placeTorsionMap ψ u = y
+  exists_map_eq
+    : ∀ {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C] (π : C →ₐ[k] k)
+        (y : placeTorsion x C),
+      placeTorsionMap π y = 0 → ∃ ψ : B →ₐ[k] C, placeTorsionMap ψ u = y
   /-- `s` sends `u` to the tangent vector `L 1`. -/
   val_eq : (placeTorsionMap s u).val = L 1
   /-- Scaling `ε` by `a` then sends `u` to `L a`. -/
-  val_map_eq : ∀ a : k,
-    (placeTorsionMap (TrivSqZeroExt.map (a • LinearMap.id)) (placeTorsionMap s u)).val = L a
+  val_map_eq
+    : ∀ a : k,
+      (placeTorsionMap (TrivSqZeroExt.map (a • LinearMap.id)) (placeTorsionMap s u)).val = L a
   /-- `s τ` has no constant term. -/
   fst_eq_zero : (s τ).fst = 0
   /-- `s τ` has a nonzero `ε`-term. -/

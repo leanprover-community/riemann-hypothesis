@@ -54,12 +54,14 @@ Notions from other files:
 
 namespace New.Filling
 
-open MeasureTheory Matrix Fintype RealPlace ENNReal Real Pointwise Fin
-  DoubleCoset AddSubgroup Finset LinearMap
+open MeasureTheory Matrix Fintype RealPlace ENNReal Real Pointwise Fin DoubleCoset AddSubgroup
+  Finset LinearMap
 open NumberField (InfinitePlace)
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
-  [S.IsAdmissible] {j : Fin (𝔰.ϱ + 2)} {c c' : S.Classes} {s : S.ResidueGL} {γ : S.G E}
+variable
+  {E : Type} [Field E] [CMType E]
+  {𝔰 : Shape} {S : Filling E 𝔰} [S.IsAdmissible]
+  {j : Fin (𝔰.ϱ + 2)} {c c' : S.Classes} {s : S.ResidueGL} {γ : S.G E}
 
 omit [S.IsAdmissible] in
 /-- The terms of an orbit have the same cell rank: if `δ` lies in the double coset of `γ` under the
@@ -203,41 +205,52 @@ variable (S j)
 /-- The first `min ϱ j` indices of the isotropic vectors of the frame. -/
 abbrev initialIsotropicIndex : Fin (min 𝔰.ϱ j) ↪ Fin 𝔰.ϱ := castLEEmb (min_le_left 𝔰.ϱ j)
 
-/-- The diagonal matrix with entries `S.M / basisScale v (e_l)`, `l < min ϱ j`. It converts the
-parameters of a shift, given in the rational frame, to the unit frame at the place `v`. -/
-noncomputable def shiftScaling (v : InfinitePlace E) :
-    Matrix (Fin (min 𝔰.ϱ j)) (Fin (min 𝔰.ϱ j)) ℂ :=
+/--
+The diagonal matrix with entries `S.M / basisScale v (e_l)`, `l < min ϱ j`. It converts the
+parameters of a shift, given in the rational frame, to the unit frame at the place `v`.
+-/
+noncomputable def shiftScaling (v : InfinitePlace E)
+    : Matrix (Fin (min 𝔰.ϱ j)) (Fin (min 𝔰.ϱ j)) ℂ :=
   diagonal fun l ↦ S.M / S.basisScale v (.inl (initialIsotropicIndex j l))
 
-/-- The shift with parameter `x`: at each infinite place, the unipotent element with central
+/--
+The shift with parameter `x`: at each infinite place, the unipotent element with central
 parameter `0` that acts on `X₀` as the product of the Eichler maps along `e₁, …, e_i`,
 `i = min ϱ j`, with the parameters given by the rows of `(shiftScaling j v)ᴴ * x v`: the vectors
-`x_l` multiplied by the conjugates of `S.M / basisScale v (e_l)`. -/
-noncomputable def eichlerShift (x : InfinitePlace E → Fin (min 𝔰.ϱ j) → 𝔰.κ → ℂ)
-    (v : InfinitePlace E) : 𝔰.G₁ :=
+`x_l` multiplied by the conjugates of `S.M / basisScale v (e_l)`.
+-/
+noncomputable def eichlerShift
+    (x : InfinitePlace E → Fin (min 𝔰.ϱ j) → 𝔰.κ → ℂ) (v : InfinitePlace E)
+    : 𝔰.G₁ :=
   unipotentOf (inclMatrix ℂ (initialIsotropicIndex j) * ((S.shiftScaling j v)ᴴ * of (x v)), 0)
 
-/-- The bound of `RealPlace.exists_majorant_volumeRatio_inv_pow` for the integral of the kernel at
-the place `v`, times the Jacobian of the passage to the parameters of `eichlerShift`. -/
+/--
+The bound of `RealPlace.exists_majorant_volumeRatio_inv_pow` for the integral of the kernel at
+the place `v`, times the Jacobian of the passage to the parameters of `eichlerShift`.
+-/
 noncomputable def kernelBound (γ : S.G E) (v : InfinitePlace E) : ℝ :=
-  ‖(S.shiftScaling j v).det‖⁻¹ ^ (2 * 𝔰.k) *
-    ((2 * S.frameBoxRadius ^ 2) ^ ((min 𝔰.ϱ j + 1) * min 𝔰.ϱ j) *
-      (2 ^ (min 𝔰.ϱ j + 1) * (S.b ^ (6 * 𝔰.n + 2)) ^ (2 * (j - min 𝔰.ϱ j))) ^ 𝔰.k /
-      ‖(subframeBlock (min_le_left 𝔰.ϱ j) (realFrameGram (S.ratToInf γ v))).det‖ ^
-        (𝔰.k + min 𝔰.ϱ j))
+  ‖(S.shiftScaling j v).det‖⁻¹ ^ (2 * 𝔰.k)
+    * ((2 * S.frameBoxRadius ^ 2) ^ ((min 𝔰.ϱ j + 1) * min 𝔰.ϱ j)
+      * (2 ^ (min 𝔰.ϱ j + 1) * (S.b ^ (6 * 𝔰.n + 2)) ^ (2 * (j - min 𝔰.ϱ j))) ^ 𝔰.k
+      / ‖(subframeBlock (min_le_left 𝔰.ϱ j) (realFrameGram (S.ratToInf γ v))).det‖
+        ^ (𝔰.k + min 𝔰.ϱ j))
 
 variable {S j}
 
-/-- The columns of `l` lie in `Λ ∩ X₀`, where `Λ` is the lattice of the class `c`, and modulo the
+/--
+The columns of `l` lie in `Λ ∩ X₀`, where `Λ` is the lattice of the class `c`, and modulo the
 isotropic space the frame of `p` is that of `p₀` moved in `X₀` by `S.M • l` times the first
-`min ϱ j` rows of the matrix of products of `γ`. -/
-def IsLatticeTranslate (c : S.Classes) (γ p₀ p : S.G E) (l : Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E) :
-    Prop :=
-  IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix l) ∧
-    (frameImage (p : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)).toRows₂ =
-      (frameImage (p₀ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)).toRows₂ +
-        fromRows (fromRows (S.M • (l * (isotropicRows (S.frameProducts γ)).submatrix
-          (initialIsotropicIndex j) id)) 0) 0
+`min ϱ j` rows of the matrix of products of `γ`.
+-/
+def IsLatticeTranslate (c : S.Classes) (γ p₀ p : S.G E) (l : Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E)
+    : Prop :=
+  IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix l)
+    ∧ (frameImage (p : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)).toRows₂
+      = (frameImage (p₀ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)).toRows₂ + fromRows
+        (fromRows
+          (S.M • (l * (isotropicRows (S.frameProducts γ)).submatrix (initialIsotropicIndex j) id))
+          0)
+        0
 
 @[fun_prop]
 lemma measurable_eichlerShift : Measurable (S.eichlerShift j) := by
@@ -863,7 +876,8 @@ lemma tsum_schurIntegral_le (h_over : γ ∈ S.termsOver c s c') (h_rank : S.Has
       congr 1
       field_simp
 
-/-- **Schur's test.** Let `S` be admissible data over a CM field `E` with a primitive 5040th root of
+/--
+**Schur's test.** Let `S` be admissible data over a CM field `E` with a primitive 5040th root of
 unity, with size parameter `b`, `M = p₀ p₁` and `k = dim X₀`. Let `γ` have cell rank `j ≥ 1` and lie
 over the block `(c, s, c')`. The square of the sum over its orbit of the absolute amplitudes, taken
 with the cut Bessel functions `W♭` (`.cut`), is at most
@@ -871,39 +885,46 @@ with the cut Bessel functions `W♭` (`.cut`), is at most
 Here `i = min ϱ j`, `V` is `unipotentCovolume`, the common covolume of the
 unipotent groups of the classes, `d` is the number of Bessel coordinates, `τ = tailScale`, `f` is
 the number of infinite places, and the gauge `minorGauge` is `N ^ f * minorNorm` divided by the two
-indices `isotropicRowsIndex` of the term. -/
-theorem sq_tsum_amplitudeMajorant_doubleCoset_le (h_over : γ ∈ S.termsOver c s c')
-    (h_rank : S.HasCellRank j γ) (hj : j ≠ 0) :
-    (∑' δ : doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c'),
-      S.amplitudeMajorant .cut c c' δ) ^ 2 ≤
-      .ofReal ((S.unipotentCovolume * card S.BesselCoord * S.tailScale ^ 2 *
-          (S.b ^ 13 / S.M ^ 2) ^ (min 𝔰.ϱ j * 𝔰.k * numInfPlaces E)) ^ 2 *
-        (S.N ^ numInfPlaces E / S.minorGauge j c c' γ) ^ 𝔰.k) := by
+indices `isotropicRowsIndex` of the term.
+-/
+theorem sq_tsum_amplitudeMajorant_doubleCoset_le
+    (h_over : γ ∈ S.termsOver c s c') (h_rank : S.HasCellRank j γ) (hj : j ≠ 0)
+    : (∑' δ : doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c'),
+        S.amplitudeMajorant .cut c c' δ)
+        ^ 2
+      ≤ .ofReal
+        ((S.unipotentCovolume * card S.BesselCoord * S.tailScale ^ 2
+              * (S.b ^ 13 / S.M ^ 2) ^ (min 𝔰.ϱ j * 𝔰.k * numInfPlaces E))
+            ^ 2
+          * (S.N ^ numInfPlaces E / S.minorGauge j c c' γ) ^ 𝔰.k) := by
   -- By Cauchy–Schwarz the square is at most the product of the sums of the two factors, for `γ`
   -- and for `γ⁻¹`.
   have hN : 0 < S.N := S.N_prime.pos
   have hV : 0 < S.unipotentCovolume := S.unipotentCovolume_pos
   have hb : 0 < S.b := b_pos
   set orbit : Set (S.G E) := doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c') with h_orbit
-  have h_schur : (∑' δ : orbit, S.amplitudeMajorant .cut c c' δ) ^ 2 ≤
-      (∑' δ : orbit, S.schurIntegral c c' δ (min 𝔰.ϱ j)) *
-        ∑' δ : orbit, S.schurIntegral c' c δ.val⁻¹ (min 𝔰.ϱ j) := by
+  have h_schur
+      : (∑' δ : orbit, S.amplitudeMajorant .cut c c' δ) ^ 2
+        ≤ (∑' δ : orbit, S.schurIntegral c c' δ (min 𝔰.ϱ j))
+          * ∑' δ : orbit, S.schurIntegral c' c δ.val⁻¹ (min 𝔰.ϱ j) := by
     -- With every set measurable, a sum over the orbit is an integral for the counting measure.
     let : MeasurableSpace (S.G E) := ⊤
     simp only [← lintegral_count]
     exact sq_lintegral_le .of_discrete .of_discrete fun δ ↦ amplitudeMajorant_sq_le _
   -- Inversion maps the orbit of `γ` into that of `γ⁻¹`, which has the same cell rank and minor.
-  have h_inverse : ∑' δ : orbit, S.schurIntegral c' c δ.val⁻¹ (min 𝔰.ϱ j) ≤
-      ∑' δ : doubleCoset γ⁻¹ (S.classUnipotent₀ c') (S.classUnipotent₀ c),
-        S.schurIntegral c' c δ (min 𝔰.ϱ j) := by
+  have h_inverse
+      : ∑' δ : orbit, S.schurIntegral c' c δ.val⁻¹ (min 𝔰.ϱ j)
+        ≤ ∑' δ : doubleCoset γ⁻¹ (S.classUnipotent₀ c') (S.classUnipotent₀ c),
+            S.schurIntegral c' c δ (min 𝔰.ϱ j) := by
     rw [← tsum_image (S.schurIntegral c' c · (min 𝔰.ϱ j)) inv_injective.injOn]
     refine tsum_mono_subtype (S.schurIntegral c' c · (min 𝔰.ϱ j)) ?_
     simp [h_orbit, doubleCoset, mul_assoc, -Set.mul_singleton, -Set.singleton_mul]
   have h_translate_inv : S.translateByClassReps c' c γ⁻¹ = (S.translateByClassReps c c' γ)⁻¹ := by
     simp [translateByClassReps, mul_assoc]
-  have h_ratio : S.N ^ numInfPlaces E / S.minorGauge j c c' γ =
-      S.isotropicRowsIndex j (S.translateByClassReps c c' γ) / √(S.minorNorm j γ) *
-        (S.isotropicRowsIndex j (S.translateByClassReps c c' γ)⁻¹ / √(S.minorNorm j γ)) := by
+  have h_ratio
+      : S.N ^ numInfPlaces E / S.minorGauge j c c' γ
+        = S.isotropicRowsIndex j (S.translateByClassReps c c' γ) / √(S.minorNorm j γ)
+          * (S.isotropicRowsIndex j (S.translateByClassReps c c' γ)⁻¹ / √(S.minorNorm j γ)) := by
     rw [h_rank.minorGauge_eq, div_mul_div_comm, mul_self_sqrt h_rank.minorNorm_pos.le,
       div_div_eq_mul_div, mul_div_mul_left _ _ (by positivity)]
   grw [h_schur, h_inverse, tsum_schurIntegral_le h_over h_rank hj,

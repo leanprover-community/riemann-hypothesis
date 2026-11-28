@@ -67,23 +67,29 @@ lemma Rows.prod_places_le_iff {w : FinPlace E} :
 
 variable [IsCMField E] (S : LevelPlaces E)
 
-/-- The modulus M^c·Q if b is true and M^c otherwise, with M and Q the products of the places
-`New.LevelPlaces.chosenPlace` and `New.LevelPlaces.twistPlace` of S. -/
+/--
+The modulus M^c·Q if b is true and M^c otherwise, with M and Q the products of the places
+`New.LevelPlaces.chosenPlace` and `New.LevelPlaces.twistPlace` of S.
+-/
 noncomputable def LevelPlaces.levelModulus (c : ℕ) (b := true) : Modulus E where
   ideal :=
-    (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c *
-      if b then ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal else 1
+    (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c
+      * if b then ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal else 1
   ne_bot := by simp [← absNorm_eq_zero_iff, prod_eq_zero_iff, ite_eq_iff]
   not_le_star := by
     -- A place that divides the modulus is a chosen place or a twist place, and none of these is
     -- conjugate to itself or to another.
     obtain ⟨-, h_conj⟩ := S.apart
-    have h_place : ∀ w : FinPlace E,
-        (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c *
-          (if b then ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal else 1) ≤ w.asIdeal →
-          ∃ i : S.ChosenIndex ⊕ S.TwistIndex, (S.chosenPlace ⊕ᵥ S.twistPlace) i = w := fun w hw ↦ by
+    have h_place
+        : ∀ w : FinPlace E,
+          (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c
+                * (if b then ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal else 1)
+              ≤ w.asIdeal
+            → ∃ i : S.ChosenIndex ⊕ S.TwistIndex,
+              (S.chosenPlace ⊕ᵥ S.twistPlace) i = w := fun w hw ↦ by
       rw [Sum.exists]
-      exact (w.isPrime.mul_le.1 hw).imp (fun h ↦ prod_places_le_iff.1 (w.isPrime.le_of_pow_le h))
+      exact (w.isPrime.mul_le.1 hw).imp
+        (fun h ↦ prod_places_le_iff.1 (w.isPrime.le_of_pow_le h))
         fun h ↦ prod_places_le_iff.1 (by cases b <;> simp_all [w.isPrime.ne_top])
     intro w hw hw'
     obtain ⟨⟨i, hi⟩, ⟨j, hj⟩⟩ := And.intro (h_place w hw) (h_place (star w) hw')
@@ -114,10 +120,12 @@ lemma Rows.places_levelModulus {c : ℕ} [NeZero c] :
   rw [w.isPrime.mul_le, pow_le_iff (NeZero.ne c), prod_places_le_iff, prod_places_le_iff]
   simp
 
-/-- For c ≠ 0 and a place dividing M or Q, the reduction from the residue ring modulo M^c·Q to the
-residue field at that place. -/
-noncomputable abbrev Rows.levelResidueAt {c : ℕ} [NeZero c] (i : S.ChosenIndex ⊕ S.TwistIndex) :
-    (S.levelModulus c).ResidueRing →+* ResField ((S.chosenPlace ⊕ᵥ S.twistPlace) i) :=
+/--
+For c ≠ 0 and a place dividing M or Q, the reduction from the residue ring modulo M^c·Q to the
+residue field at that place.
+-/
+noncomputable abbrev Rows.levelResidueAt {c : ℕ} [NeZero c] (i : S.ChosenIndex ⊕ S.TwistIndex)
+    : (S.levelModulus c).ResidueRing →+* ResField ((S.chosenPlace ⊕ᵥ S.twistPlace) i) :=
   modulusResidue (S.levelModulus c) (places_levelModulus.ge ⟨i, rfl⟩)
 
 /-- If the ideal of 𝔪 is the product of the primes u i, then every u i divides 𝔪. -/
@@ -156,10 +164,12 @@ open Matrix Set Valued Rows Modulus NumberField
 
 section
 
-variable {n n' E : Type} [Field E] [NumberField E] [IsCMField E]
-  {ι : Type*} [Fintype ι] {w : ι → FinPlace E}
-  (f : ((i : ι) → Matrix n' n (ResField (w i))) → ℂ) [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {x : n' × n → 𝔸f E} {𝔪 : Modulus E}
+variable
+  {n n' E : Type} [Field E] [NumberField E] [IsCMField E]
+  {ι : Type*} [Fintype ι]
+  {w : ι → FinPlace E} (f : ((i : ι) → Matrix n' n (ResField (w i))) → ℂ)
+  [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {x : n' × n → 𝔸f E} {𝔪 : Modulus E}
 
 /-- For a place `w` dividing the modulus `𝔪` and an element `k` of the integral finite adelic
 unitary group `stdLevel E n`, reducing `k` modulo `𝔪` (`reductionGL`) and then modulo `w`
@@ -220,10 +230,13 @@ end
 
 open Space stdLattice Ideal
 
-variable {n n' E : Type} [Field E] [CMType E] {ι : Type*} [Fintype ι] {w : ι → FinPlace E}
-  (f : ((i : ι) → Matrix n' n (ResField (w i))) → ℂ) [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {x : n' × n → 𝔸f E} {𝔪 : Modulus E} [WeilData E] {s : n → ℤˣ} {s' : n' → ℤˣ}
-  (V : Space E n s) (V' : Space E n' s')
+variable
+  {n n' E : Type} [Field E] [CMType E]
+  {ι : Type*} [Fintype ι]
+  {w : ι → FinPlace E} (f : ((i : ι) → Matrix n' n (ResField (w i))) → ℂ)
+  [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {x : n' × n → 𝔸f E} {𝔪 : Modulus E} [WeilData E]
+  {s : n → ℤˣ} {s' : n' → ℤˣ} (V : Space E n s) (V' : Space E n' s')
 
 omit [WeilData E] in
 /-- If no `w i` is conjugate to a `w j`, then `New.residueDatum w f` (`f` of the reductions at the

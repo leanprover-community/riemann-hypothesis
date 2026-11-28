@@ -68,19 +68,22 @@ section DataProduct
 
 open NumberField Matrix Fock Function Heisenberg Rep Sum OrthogonalSum G
 
-variable {E : Type*} [Field E] [CMType E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  {n₂ : Type*} [Fintype n₂] [DecidableEq n₂] {s₂ : n₂ → ℤˣ}
-  {n₁ : Type*} [Fintype n₁] [DecidableEq n₁] {s₁ : n₁ → ℤˣ}
-  {e : n₁ ⊕ n₂ ≃ n} (hs : s ∘ e = s₁ ⊕ᵥ s₂) {V : Space E n s} {V₁ : Space E n₁ s₁}
-  {V₂ : Space E n₂ s₂}
+variable
+  {E : Type*} [Field E] [CMType E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {n₂ : Type*} [Fintype n₂] [DecidableEq n₂]
+  {s₂ : n₂ → ℤˣ} {n₁ : Type*} [Fintype n₁] [DecidableEq n₁]
+  {s₁ : n₁ → ℤˣ} {e : n₁ ⊕ n₂ ≃ n} (hs : s ∘ e = s₁ ⊕ᵥ s₂)
+  {V : Space E n s} {V₁ : Space E n₁ s₁} {V₂ : Space E n₂ s₂}
 
 /-! ### Block diagonal elements -/
 
-/-- The homomorphism sending a pair of elements of the adelic unitary groups of signs s₁, s₂ to
-their block-diagonal matrix, reindexed into the unitary group of signs s. -/
-def G.blockEmb {E : Type*} [Field E] [NumberField E] [IsCMField E] (hs : s ∘ e = s₁ ⊕ᵥ s₂) :
-    G E s₁ × G E s₂ →* G E s :=
+/--
+The homomorphism sending a pair of elements of the adelic unitary groups of signs s₁, s₂ to
+their block-diagonal matrix, reindexed into the unitary group of signs s.
+-/
+def G.blockEmb {E : Type*} [Field E] [NumberField E] [IsCMField E] (hs : s ∘ e = s₁ ⊕ᵥ s₂)
+    : G E s₁ × G E s₂ →* G E s :=
   (reindex e (by simp [← hs, comp_assoc])).toMonoidHom.comp sum
 
 /-- For the definite spaces `stdSpace` (all signs `1`; `hs` records that `e` keeps these signs), the
@@ -126,32 +129,36 @@ lemma realSigns_comp_split :
 
 namespace Space
 
-/-- For a sign-compatible splitting of the coordinates, the bounded bilinear map 𝒮(V₁) × 𝒮(V₂) →
+/--
+For a sign-compatible splitting of the coordinates, the bounded bilinear map 𝒮(V₁) × 𝒮(V₂) →
 𝒮(V), c₁ ⊠ c₂ = ∬ c₁(y₁)c₂(y₂) ϱ(y₁,0)ϱ(0,y₂)vac dy₁dy₂, where ϱ(y)c(x) = β(y,x)c(x−y). It is the
-product of the underlying functions, see `New.Space.boxProd_val`. -/
+product of the underlying functions, see `New.Space.boxProd_val`.
+-/
 def boxProd : 𝒮 V₁ →L[ℂ] 𝒮 V₂ →L[ℂ] 𝒮 V :=
-  tmul
-    { -- Join two vectors into one on `n₁ ⊕ n₂`, then relabel the coordinates along `e`.
-      equiv :=
-        ContinuousAddEquiv.trans
-          (ContinuousAddEquiv.symm
-            (ContinuousAddEquiv.mk' Homeomorph.sumArrowHomeomorphProdArrow (by simp [funext_iff])))
-          { toFun x := x ∘ e.symm
-            invFun x := x ∘ e
-            left_inv := by cat_disch
-            right_inv := by cat_disch
-            map_add' := by cat_disch }
-      -- Both `β` and the vacuum are products over the coordinates.
-      beta_equiv := by
-        simp +singlePass [adelicHeisenberg_beta_eq_prod]
-        simp_all [funext_iff, reindex_equiv e]
-        -- What is left differs only by unfolding the joining of two vectors.
-        exact fun _ _ _ _ ↦ rfl
-      vac_equiv := by
-        simp +singlePass [vacuumFn_eq_prod]
-        simp_all [funext_iff, reindex_equiv e]
-        -- As for `beta_equiv`.
-        exact fun _ _ ↦ rfl }
+  tmul { -- Join two vectors into one on `n₁ ⊕ n₂`, then relabel the coordinates along `e`.
+    equiv :=
+      ContinuousAddEquiv.trans
+        (ContinuousAddEquiv.symm (ContinuousAddEquiv.mk' Homeomorph.sumArrowHomeomorphProdArrow
+          (by simp [funext_iff])))
+        {
+          toFun x := x ∘ e.symm
+          invFun x := x ∘ e
+          left_inv := by cat_disch
+          right_inv := by cat_disch
+          map_add' := by cat_disch
+        }
+    -- Both `β` and the vacuum are products over the coordinates.
+    beta_equiv := by
+      simp +singlePass [adelicHeisenberg_beta_eq_prod]
+      simp_all [funext_iff, reindex_equiv e]
+      -- What is left differs only by unfolding the joining of two vectors.
+      exact fun _ _ _ _ ↦ rfl
+    vac_equiv := by
+      simp +singlePass [vacuumFn_eq_prod]
+      simp_all [funext_iff, reindex_equiv e]
+      -- As for `beta_equiv`.
+      exact fun _ _ ↦ rfl
+  }
 
 /-- On the underlying integrable functions, (f₁ ⊠ f₂)(x) = f₁(x₁) f₂(x₂), where x₁ and x₂ are the
 two parts of the vector x. -/
@@ -283,13 +290,16 @@ section CoordChange
 
 open Matrix Heisenberg Rep stdLattice Complex Fock IsVacuum
 
-variable (E : Type*) [Field E] [CMType E] [WeilData E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  {n₁ : Type*} [Fintype n₁] [DecidableEq n₁]
+variable
+  (E : Type*) [Field E] [CMType E] [WeilData E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {n₁ : Type*} [Fintype n₁] [DecidableEq n₁]
 
-/-- For signs `s` on `n` and `s₁` on `n₁` and a ring endomorphism `σ` of ℂ, a change of adelic
+/--
+For signs `s` on `n` and `s₁` on `n₁` and a ring endomorphism `σ` of ℂ, a change of adelic
 coordinates φ = A × B keeping the adelic bicharacter β of the Heisenberg group up to σ, where the
-real part A keeps the Gaussian and the finite part B keeps Ô^n and turns x*x into −x*x. -/
+real part A keeps the Gaussian and the finite part B keeps Ô^n and turns x*x into −x*x.
+-/
 structure CoordChange (σ : ℂ →+* ℂ) (s₁ : n₁ → ℤˣ) (s : n → ℤˣ) where
   /-- The change of coordinates: a bicontinuous additive bijection of adelic vectors. -/
   φ : (n → 𝔸 E) ≃ₜ+ (n₁ → 𝔸 E)
@@ -298,20 +308,20 @@ structure CoordChange (σ : ℂ →+* ℂ) (s₁ : n₁ → ℤˣ) (s : n → �
   /-- The finite part `B`, acting on finite adelic vectors. -/
   finEquiv : (n → 𝔸f E) ≃ₜ+ (n₁ → 𝔸f E)
   /-- In the coordinates `adelicSum`, the map `φ` is the product `A × B`. -/
-  apply_adelicSum (y : (NumberField.InfinitePlace E × n → ℂ) × (n → 𝔸f E)) :
-      φ ((adelicSum E s).equiv y) = (adelicSum E s₁).equiv (realEquiv y.fst, finEquiv y.snd)
+  apply_adelicSum (y : (NumberField.InfinitePlace E × n → ℂ) × (n → 𝔸f E))
+    : φ ((adelicSum E s).equiv y) = (adelicSum E s₁).equiv (realEquiv y.fst, finEquiv y.snd)
   /-- `A` carries the real bicharacter of signs `s` to `σ` of that of signs `s₁`. -/
-  beta_realEquiv (x y : NumberField.InfinitePlace E × n → ℂ) :
-      σ ((realHeisenberg (realSigns E s₁)).β (realEquiv x) (realEquiv y)) =
-        (realHeisenberg (realSigns E s)).β x y
+  beta_realEquiv (x y : NumberField.InfinitePlace E × n → ℂ)
+    : σ ((realHeisenberg (realSigns E s₁)).β (realEquiv x) (realEquiv y))
+      = (realHeisenberg (realSigns E s)).β x y
   /-- `A` keeps the Gaussian exp(−|x|²/2). -/
   vac_realEquiv (x : NumberField.InfinitePlace E × n → ℂ) : realVac (realEquiv x) = realVac x
   /-- `B` keeps the finite bicharacter, `selfDualAddChar E` of ½ y*x, up to `σ`. -/
-  selfDualAddChar_finEquiv (x y : n → 𝔸f E) :
-      σ (selfDualAddChar E (half * Star.star (finEquiv y) ⬝ᵥ finEquiv x)) =
-        selfDualAddChar E (half * Star.star y ⬝ᵥ x)
+  selfDualAddChar_finEquiv (x y : n → 𝔸f E)
+    : σ (selfDualAddChar E (half * Star.star (finEquiv y) ⬝ᵥ finEquiv x))
+      = selfDualAddChar E (half * Star.star y ⬝ᵥ x)
   /-- `B` turns x*x into −x*x. -/
-  dot_finEquiv (x : n → 𝔸f E) : Star.star (finEquiv x) ⬝ᵥ finEquiv x = -Star.star x ⬝ᵥ x
+  dot_finEquiv (x : n → 𝔸f E) : Star.star (finEquiv x) ⬝ᵥ finEquiv x = - Star.star x ⬝ᵥ x
   /-- `B` maps the standard lattice Ô^n onto the standard lattice Ô^{n₁}. -/
   finEquiv_mem (x : n → 𝔸f E) : finEquiv x ∈ stdLattice E n₁ ↔ x ∈ stdLattice E n
 
@@ -321,11 +331,13 @@ namespace CoordChange
 
 open Matrix Heisenberg Rep stdLattice Complex Fock IsVacuum
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  {n₁ : Type*} [Fintype n₁] [DecidableEq n₁] {s₁ : n₁ → ℤˣ}
-  {σ : ℂ →+* ℂ} [RingHomIsometric σ]
-  (D : CoordChange E σ s₁ s) {V : Space E n s} {V₁ : Space E n₁ s₁}
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {n₁ : Type*} [Fintype n₁] [DecidableEq n₁]
+  {s₁ : n₁ → ℤˣ} {σ : ℂ →+* ℂ} [RingHomIsometric σ]
+  (D : CoordChange E σ s₁ s)
+  {V : Space E n s} {V₁ : Space E n₁ s₁}
 
 omit [RingHomIsometric σ] in
 /-- A change of coordinates φ with twist σ keeps the adelic bicharacter up to σ: σ(β₁(φx,
@@ -362,8 +374,10 @@ lemma apply_finVec (x : n → 𝔸f E) : D.φ (finVec x) = finVec (D.finEquiv x)
 
 /-! ### Transport of data -/
 
-/-- For a change of coordinates φ with twist σ, the continuous σ-semilinear map from 𝒮(V₁) to
-𝒮(V) sending the coefficient function c to σ∘c∘φ. -/
+/--
+For a change of coordinates φ with twist σ, the continuous σ-semilinear map from 𝒮(V₁) to
+𝒮(V) sending the coefficient function c to σ∘c∘φ.
+-/
 def map : 𝒮 V₁ →SL[σ] 𝒮 V := IsVacuum.transport D.beta_phi D.vacuumFn_apply
 
 omit [RingHomIsometric σ] in
@@ -438,10 +452,12 @@ lemma map_omega {g : G E s} {g₁ : G E s₁}
     smul_eq_adeleMatrix_mulVec, smul_eq_adeleMatrix_mulVec, map_mul, map_mul, h_val,
     ← h_phi_mulVec y, D.beta_phi, ← D.phi_sub, h_vac]
 
-/-- For a change of coordinates with archimedean part A and twist σ, the continuous σ-semilinear
-map from the Fock space of signs s₁ to that of signs s sending v to σ∘v∘A. -/
-def realMap :
-    Model (realHeisenberg (realSigns E s₁)) →SL[σ] Model (realHeisenberg (realSigns E s)) :=
+/--
+For a change of coordinates with archimedean part A and twist σ, the continuous σ-semilinear
+map from the Fock space of signs s₁ to that of signs s sending v to σ∘v∘A.
+-/
+def realMap
+    : Model (realHeisenberg (realSigns E s₁)) →SL[σ] Model (realHeisenberg (realSigns E s)) :=
   IsVacuum.transport D.beta_realEquiv D.vac_realEquiv
 
 /-- Transport respects the insertion of a real vector: the transport of v ⊗ f is the transported
@@ -481,11 +497,14 @@ lemma map_integrated (v : Model (realHeisenberg (realSigns E s₁))) (f : 𝒮 V
     σ (v (D.realEquiv y)) * (V.ϱ _ (D.map f)).val x
   rw [h_rho]
 
-/-- For a bijection e, units u_i of a topological ring R and a continuous involution `star`,
-the topological additive isomorphism sending x to (u_i · star x_{e(i)})_i. -/
-def starCoordEquiv {ι κ R : Type*} [Ring R] [TopologicalSpace R] [ContinuousMul R] [StarRing R]
-    [ContinuousStar R] (e : κ ≃ ι) (u : κ → Rˣ) :
-    (ι → R) ≃ₜ+ (κ → R) where
+/--
+For a bijection e, units u_i of a topological ring R and a continuous involution `star`,
+the topological additive isomorphism sending x to (u_i · star x_{e(i)})_i.
+-/
+def starCoordEquiv
+    {ι κ R : Type*} [Ring R] [TopologicalSpace R] [ContinuousMul R] [StarRing R] [ContinuousStar R]
+    (e : κ ≃ ι) (u : κ → Rˣ)
+    : (ι → R) ≃ₜ+ (κ → R) where
   toFun x i := u i * Star.star x (e i)
   invFun x := Star.star (fun i ↦ (u i)⁻¹ * x i) ∘ e.symm
   left_inv x := by aesop

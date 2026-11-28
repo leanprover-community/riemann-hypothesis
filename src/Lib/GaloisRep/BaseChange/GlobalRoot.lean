@@ -270,8 +270,8 @@ namespace New
 
 open Matrix Polynomial U
 
-variable {R : Type*} {S : Type*}
-  {n : Type*} [CommRing R] [StarRing R] [Fintype n] [DecidableEq n]
+variable
+  {R : Type*} {S : Type*} {n : Type*} [CommRing R] [StarRing R] [Fintype n] [DecidableEq n]
   {γ γ' a c : U (1 : Matrix n n R)} {σ : R →+* R} {z w : R[X]} {p : ℕ} {u v : R} {D : Subgroup Rˣ}
   {x y : Matrix n n R} [CommRing S] [StarRing S]
   {hσ : ∀ (x : R), σ (star x) = star (σ x)}
@@ -750,15 +750,19 @@ lemma New.IsNormRoot.dvd_pow_of_charpoly_eq {R n : Type} [CommRing R] [StarRing 
   rw [← hγ]
   exact IsRootQuotient.charpoly_dvd_pow v_inv h_quot_γ
 
-/-- Let `A` be a finite free algebra over `R` and `D` a subgroup of `Rˣ`. If `det z(M)` lies in `D`
+/--
+Let `A` be a finite free algebra over `R` and `D` a subgroup of `Rˣ`. If `det z(M)` lies in `D`
 for every square matrix `M` over `R` with `P(M) = 0`, then the norm of `z(a)` from `A` to `R` lies
-in `D` for every `a` in `A` with `P(a) = 0`. -/
-theorem exists_mem_coe_eq_norm_aeval_of_forall_det_aeval_mem {R A : Type*} [CommRing R]
-    [Nontrivial R] [CommRing A] [Algebra R A] [Module.Free R A] [Module.Finite R A] {P z : R[X]}
-    {D : Subgroup Rˣ}
-    (hz : ∀ (m : ℕ) (M : Matrix (Fin m) (Fin m) R), aeval M P = 0 →
-      (aeval M z).det ∈ D.toSubmonoid.map (Units.coeHom R))
-    {a : A} (ha : aeval a P = 0) : ∃ d ∈ D, (d : R) = Algebra.norm R (aeval a z) := by
+in `D` for every `a` in `A` with `P(a) = 0`.
+-/
+theorem exists_mem_coe_eq_norm_aeval_of_forall_det_aeval_mem
+    {R A : Type*}
+    [CommRing R] [Nontrivial R] [CommRing A] [Algebra R A] [Module.Free R A] [Module.Finite R A]
+    {P z : R[X]} {D : Subgroup Rˣ}
+    (hz : ∀ (m : ℕ) (M : Matrix (Fin m) (Fin m) R),
+      aeval M P = 0 → (aeval M z).det ∈ D.toSubmonoid.map (Units.coeHom R))
+    {a : A} (ha : aeval a P = 0)
+    : ∃ d ∈ D, (d : R) = Algebra.norm R (aeval a z) := by
   -- apply the hypothesis to the matrix of multiplication by `a` in a basis of `A`
   let b : Module.Basis (Fin (Module.finrank R A)) R A := Module.finBasis R A
   have h_P : aeval (leftMulMatrix b a) P = 0 := by rw [aeval_algHom_apply, ha, map_zero]

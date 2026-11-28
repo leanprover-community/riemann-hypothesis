@@ -71,28 +71,36 @@ namespace New.Rows
 
 open Matrix NumberField ComplexConjugate
 
-variable {E r n : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r]
-  [Fintype n] [DecidableEq n] {O : DescentPair E r n}
+variable
+  {E r n : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+  {O : DescentPair E r n}
 
-/-- The element `k` of the integral level `New.stdLevel` has component 1 at every finite place
+/--
+The element `k` of the integral level `New.stdLevel` has component 1 at every finite place
 other than those of M and Q (the set `O.places`) and their conjugates, its reductions at the chosen
 places `O.placeAt (Sum.inl i)` have the columns `Y i` at the indices `O.incl`, and its reductions at
 the places `O.placeAt (Sum.inr i)` of the twist have unit vectors in the rows `e`. Columns are
-selected by `inclMatrix R u`, the matrix whose columns are the unit vectors at the indices `u`. -/
-structure IsPointLift (Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.placeAt (Sum.inl i))))
-    (e : r ↪ n) (k : stdLevel E n) : Prop where
+selected by `inclMatrix R u`, the matrix whose columns are the unit vectors at the indices `u`.
+-/
+structure IsPointLift
+    (Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.placeAt (Sum.inl i)))) (e : r ↪ n)
+    (k : stdLevel E n)
+    : Prop where
   /-- `k` is supported on the places of `O` and their conjugates. -/
   mem_supportedOn : (k : Gf E n) ∈ Gf.supportedOn n O.places
   /-- At a place of `O.ChosenIndex` the columns `O.incl` of the reduction of `k` form `Y i`. -/
-  columns_eq (i : O.ChosenIndex) :
-    (stdLevel.reduceAt (O.placeAt (Sum.inl i)) k).val *
-      inclMatrix (ResField (O.placeAt (Sum.inl i))) O.incl = Y i
-  /-- At a place of `O.TwistIndex` the row `e j` of the reduction of `k` is the unit vector
-  `O.incl j`. -/
-  rows_eq (i : O.TwistIndex) :
-    (stdLevel.reduceAt (O.placeAt (Sum.inr i)) k).valᵀ * inclMatrix
-      (ResField (O.placeAt (Sum.inr i))) e =
-      inclMatrix (ResField (O.placeAt (Sum.inr i))) O.incl
+  columns_eq (i : O.ChosenIndex)
+    : (stdLevel.reduceAt (O.placeAt (Sum.inl i)) k).val
+        * inclMatrix (ResField (O.placeAt (Sum.inl i))) O.incl
+      = Y i
+  /--
+  At a place of `O.TwistIndex` the row `e j` of the reduction of `k` is the unit vector
+  `O.incl j`.
+  -/
+  rows_eq (i : O.TwistIndex)
+    : (stdLevel.reduceAt (O.placeAt (Sum.inr i)) k).valᵀ
+        * inclMatrix (ResField (O.placeAt (Sum.inr i))) e
+      = inclMatrix (ResField (O.placeAt (Sum.inr i))) O.incl
 
 /-- Given matrices `Y i` of full column rank over the residue fields at the places of
 `O.ChosenIndex` and `r` distinct rows `e`, there is an element `k` of the integral level
@@ -123,12 +131,14 @@ lemma exists_isPointLift {Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.pla
     exact hB i
 
 variable (O) in
-/-- The map sending `v` to the form `δ_h (v)` on `V = I_n` (`New.deltaForm`), supported on the class
+/--
+The map sending `v` to the form `δ_h (v)` on `V = I_n` (`New.deltaForm`), supported on the class
 of the point `h` of the finite unitary group `Gf E n`: its value at `y` is the sum of
 `O.levelChar (h⁻¹ γ y) • ρ γ⁻¹ v` over the rational `γ` (embedded by `embFin`) with `h⁻¹ γ y` in the
 level group of `O`. Here `ρ` is the representation whose highest weight is given by `O.columnCount`
 and the determinant exponents `O.detExp`, and `WeylIndex n O.columnCount` indexes the coordinates of
-its vectors. -/
+its vectors.
+-/
 noncomputable def classForm (h : Gf E n) : (WeylIndex n O.columnCount → ℂ) →ₗ[ℂ] O.FormV :=
   deltaForm (stdSpace E n).embFin ((stdSpace E n).weightRep O.columnCount O.detExp) O.levelChar h
 
@@ -188,12 +198,16 @@ lemma normalizedDescent_classForm [WeilData E] (h : Gf E n) (v : WeylIndex n O.c
   exact classSum_deltaForm (fun x : Gf E n ↦ (O.conjKernel g x).toAddMonoidHom)
     fun γ k ↦ O.conjKernel_equivariant γ k v g h
 
-/-- For matrices `Y i` of full column rank and `r` distinct rows `e`, a chosen element of the
+/--
+For matrices `Y i` of full column rank and `r` distinct rows `e`, a chosen element of the
 integral level `New.stdLevel` as in `exists_isPointLift`. Its properties are stated in
-`isPointLift_pointLift`. -/
+`isPointLift_pointLift`.
+-/
 noncomputable def pointLift
     {Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.placeAt (Sum.inl i)))}
-    (hY : ∀ i : O.ChosenIndex, (Y i).mulVec.Injective) (e : r ↪ n) : stdLevel E n :=
+    (hY : ∀ i : O.ChosenIndex, (Y i).mulVec.Injective)
+    (e : r ↪ n)
+    : stdLevel E n :=
   (exists_isPointLift hY e).choose
 
 lemma isPointLift_pointLift
@@ -202,14 +216,18 @@ lemma isPointLift_pointLift
     IsPointLift Y e (pointLift hY e) :=
   (exists_isPointLift hY e).choose_spec
 
-/-- The point form: the map sending `v` to the form `δ_{h A} (v)`, supported on the class of `h A`,
+/--
+The point form: the map sending `v` to the form `δ_{h A} (v)`, supported on the class of `h A`,
 where `A = pointLift hY e`. The finite datum of its descent is `1[T = Y i]` at `O.ChosenIndex` and
 `ψ (det T_e)` at `O.TwistIndex`, with `T_e` the rows `e` of `T` (`pointFormDatum`,
-`normalizedDescent_pointForm`). -/
-noncomputable def pointForm (h : Gf E n)
+`normalizedDescent_pointForm`).
+-/
+noncomputable def pointForm
+    (h : Gf E n)
     {Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.placeAt (Sum.inl i)))}
-    (hY : ∀ i : O.ChosenIndex, (Y i).mulVec.Injective) (e : r ↪ n) :
-    (WeylIndex n O.columnCount → ℂ) →ₗ[ℂ] O.FormV :=
+    (hY : ∀ i : O.ChosenIndex, (Y i).mulVec.Injective)
+    (e : r ↪ n)
+    : (WeylIndex n O.columnCount → ℂ) →ₗ[ℂ] O.FormV :=
   classForm O (h * pointLift hY e)
 
 /-- The inner product of the point form made from `v` with a form `φ` is the Gram pairing `gramForm`
@@ -222,14 +240,17 @@ lemma inner_pointForm (h : Gf E n)
   inner_classForm (h * (pointLift hY e : Gf E n)) φ v
 
 open scoped Classical in
-/-- The finite datum of the descent of a point form, as a function of families `X` of matrices over
+/--
+The finite datum of the descent of a point form, as a function of families `X` of matrices over
 the residue fields at the places of `O`. If `X` equals `Y` at every place of `O.ChosenIndex`, it is
 the product over the places `w` of `O.TwistIndex` of `O.tamePart w` of the determinant of the rows
 `e` of `X` at `w`; otherwise it is `0`. Here `O.tamePart w` is the character of the residue field at
-`w` given by `O`. -/
+`w` given by `O`.
+-/
 noncomputable def pointFormDatum
     (Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.placeAt (Sum.inl i)))) (e : r ↪ n)
-    (X : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i))) : ℂ :=
+    (X : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i)))
+    : ℂ :=
   if ∀ i : O.ChosenIndex, X (Sum.inl i) = Y i then
     ∏ i : O.TwistIndex, O.tamePart (O.placeAt (Sum.inr i)) ((X (Sum.inr i)).submatrix e id).det
   else
@@ -366,45 +387,56 @@ namespace DescentPair
 
 open LinearMap Complex LevelPlaces.LevelForm Submodule IsSymmetric MonoidHom Module Matrix
 
-variable {E r n : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n]
-  [DecidableEq n] (O : DescentPair E r n)
+variable
+  {E r n : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+  (O : DescentPair E r n)
 
-/-- The operator by which e₀, in the group algebra of ∏_{w ∈ M} GL_r(k_w), acts on forms on V
-through the representation `New.DescentPair.formAction`. -/
+/--
+The operator by which e₀, in the group algebra of ∏_{w ∈ M} GL_r(k_w), acts on forms on V
+through the representation `New.DescentPair.formAction`.
+-/
 noncomputable abbrev groupAlgAction (e₀ : MonoidAlgebra ℂ (O.ChosenGL r)) : End ℂ O.FormV :=
   O.formAction.asAlgebraHom e₀
 
-/-- The false lifts for a split place `w` off the level: the forms in the image of `e₀` that are
+/--
+The false lifts for a split place `w` off the level: the forms in the image of `e₀` that are
 killed by the Hecke polynomial operator `H_w`, at the value `O.liftHeckeRoot w`, and lie in `Z`. In
 use `Z` is the orthogonal complement of a space of lifts, or the kernel of the descent
-`O.normalizedDescent`. -/
-noncomputable abbrev falseLiftsAt {w : FinPlace E} (hw : star w ≠ w)
-    (hS : w ∉ O.places.conjClosure) (e₀ : MonoidAlgebra ℂ (O.ChosenGL r))
-    (Z : Submodule ℂ O.FormV) : Submodule ℂ O.FormV :=
+`O.normalizedDescent`.
+-/
+noncomputable abbrev falseLiftsAt
+    {w : FinPlace E} (hw : star w ≠ w) (hS : w ∉ O.places.conjClosure)
+    (e₀ : MonoidAlgebra ℂ (O.ChosenGL r)) (Z : Submodule ℂ O.FormV)
+    : Submodule ℂ O.FormV :=
   (O.groupAlgAction e₀).range ⊓ (O.heckePolyOnForms hw hS (O.liftHeckeRoot w)).ker ⊓ Z
 
-/-- The form `y` on `V` is orthogonal to the false lifts `O.falseLiftsAt hw hS e₀ Z` for every split
-place `w` off the level. -/
-def IsOrthogonalToFalseLifts (e₀ : MonoidAlgebra ℂ (O.ChosenGL r)) (Z : Submodule ℂ O.FormV)
-    (y : O.FormV) : Prop :=
+/--
+The form `y` on `V` is orthogonal to the false lifts `O.falseLiftsAt hw hS e₀ Z` for every split
+place `w` off the level.
+-/
+def IsOrthogonalToFalseLifts
+    (e₀ : MonoidAlgebra ℂ (O.ChosenGL r)) (Z : Submodule ℂ O.FormV) (y : O.FormV)
+    : Prop :=
   ∀ (w : FinPlace E) (hw : star w ≠ w) (hS : w ∉ O.places.conjClosure),
     y ∈ (O.falseLiftsAt hw hS e₀ Z)ᗮ
 
 open scoped Classical in
-/-- The form Ξ is integral above l (at every embedding ℂ → ℂ_l, all values of Ξ have gauge at
+/--
+The form Ξ is integral above l (at every embedding ℂ → ℂ_l, all values of Ξ have gauge at
 most 1: `integralForms`) and orthogonal to the false lifts
 (`New.DescentPair.IsOrthogonalToFalseLifts`) for e₀ and Z. Here e₀ is `tupleIdem` at X − 1, that is,
 the tensor product over w ∈ M of the idempotents `labelIdem` of GL_r(k_w) attached to the polynomial
 X − 1; for W of rank one it is the mean over ∏_{w ∈ M} GL_1(k_w). The space Z is the kernel of the
-descent `O.normalizedDescent`, the adjoint of the lift from W. -/
+descent `O.normalizedDescent`, the adjoint of the lift from W.
+-/
 def IsTestForm (l : ℕ) [Fact l.Prime] (Ξ : O.FormV) : Prop :=
-  (∀ j : PadicPlace l, Ξ ∈ integralForms j) ∧
-  O.IsOrthogonalToFalseLifts (tupleIdem r fun _ : O.ChosenIndex ↦ Polynomial.X - 1)
-    O.normalizedDescent.ker Ξ
+  (∀ j : PadicPlace l, Ξ ∈ integralForms j) ∧ O.IsOrthogonalToFalseLifts
+    (tupleIdem r fun _ : O.ChosenIndex ↦ Polynomial.X - 1) O.normalizedDescent.ker Ξ
 
 /-- The `ℓ`-adic place of `ℂ` given by an isomorphism `ι : ℂ ≃ ℚ̄_ℓ`, followed by `ℚ̄_ℓ ⊆ ℂ_ℓ`. -/
-noncomputable abbrev _root_.New.PadicPlace.ofIso {ℓ : ℕ} [Fact ℓ.Prime] (ι : ℂ ≃+* PadicAlgCl ℓ) :
-    PadicPlace ℓ :=
+noncomputable abbrev _root_.New.PadicPlace.ofIso {ℓ : ℕ} [Fact ℓ.Prime] (ι : ℂ ≃+* PadicAlgCl ℓ)
+    : PadicPlace ℓ :=
   ⟨(algebraMap (PadicAlgCl ℓ) ℂ_[ℓ]).comp ι.toRingHom⟩
 
 /-- The place `PadicPlace.ofIso ι` is `ι` followed by `ℚ̄_ℓ ⊆ ℂ_ℓ`. -/
@@ -412,21 +444,28 @@ lemma _root_.New.PadicPlace.ιₚ_ofIso {ℓ : ℕ} [Fact ℓ.Prime] (ι : ℂ �
     (PadicPlace.ofIso ι).ιₚ z = algebraMap (PadicAlgCl ℓ) ℂ_[ℓ] (ι z) :=
   rfl
 
-/-- The projection `pr` to `Z` has denominator at most `exp β` per dimension and row at `ι`: there
+/--
+The projection `pr` to `Z` has denominator at most `exp β` per dimension and row at `ι`: there
 is an operator `Λ` on `Z` with `log |ι (det Λ)| ≥ -dim Z * #r * β` such that, for every form `y`
 that is integral at `ι` and has `O.IsOrthogonalToFalseLifts e₀ Zᗮ y`, the form `Λ (pr y)` is
 integral at `ι`, and its inner product with every form that is integral at every embedding `ℂ → ℂ_ℓ`
 has absolute value at most 1 at `ι`. A form is integral (`integralForms`) at an embedding if all its
-values have gauge at most 1 there. -/
-def _root_.New.Selmer.DenominatorLe {ℓ : ℕ} [Fact ℓ.Prime] (ι : ℂ ≃+* PadicAlgCl ℓ)
+values have gauge at most 1 there.
+-/
+def _root_.New.Selmer.DenominatorLe
+    {ℓ : ℕ} [Fact ℓ.Prime]
+    (ι : ℂ ≃+* PadicAlgCl ℓ)
     (O : DescentPair E r n) (e₀ : MonoidAlgebra ℂ (O.ChosenGL r)) (Z : Submodule ℂ O.FormV)
-    (β : ℝ) : Prop :=
-  ∃ Λ : Module.End ℂ Z, Real.exp (-(finrank ℂ Z * (Fintype.card r * β))) ≤ ‖ι Λ.det‖ ∧
-    ∀ y ∈ integralForms (PadicPlace.ofIso ι),
-      O.IsOrthogonalToFalseLifts e₀ Zᗮ y →
-        (Λ (Z.orthogonalProjectionOnto y) : O.FormV) ∈ integralForms (PadicPlace.ofIso ι) ∧
-        ∀ y' : O.FormV, (∀ j : PadicPlace ℓ, y' ∈ integralForms j) →
-          ‖ι (inner ℂ y' (Λ (Z.orthogonalProjectionOnto y) : O.FormV))‖ ≤ 1
+    (β : ℝ)
+    : Prop :=
+  ∃ Λ : Module.End ℂ Z,
+    Real.exp (-(finrank ℂ Z * (Fintype.card r * β))) ≤ ‖ι Λ.det‖
+      ∧ ∀ y ∈ integralForms (PadicPlace.ofIso ι),
+        O.IsOrthogonalToFalseLifts e₀ Zᗮ y
+          → (Λ (Z.orthogonalProjectionOnto y) : O.FormV) ∈ integralForms (PadicPlace.ofIso ι)
+            ∧ ∀ y' : O.FormV,
+              (∀ j : PadicPlace ℓ, y' ∈ integralForms j)
+                → ‖ι (inner ℂ y' (Λ (Z.orthogonalProjectionOnto y) : O.FormV))‖ ≤ 1
 
 omit [WeilData E] [DecidableEq n] in
 /-- For g in ∏_{w ∈ M} GL_r(k_w), the number ∏_w χ_w(det g_w) is a root of unity, where

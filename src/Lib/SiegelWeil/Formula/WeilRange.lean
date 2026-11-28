@@ -77,11 +77,12 @@ section SiegelSets
 
 namespace New.SiegelWeil
 
-open ENNReal Matrix Space _root_.New.Core Splitting Finset Fintype Set MonoidHom Int G
-  Subsingleton Lagrangian
-variable {E n m p : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
-  [DecidableEq m] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s}
-  (T : Space E m t) (P : CompleteSplitting S p)
+open ENNReal Matrix Space _root_.New.Core Splitting Finset Fintype Set MonoidHom Int G Subsingleton
+  Lagrangian
+variable
+  {E n m p : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
+  [DecidableEq m] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s} (T : Space E m t) (P : CompleteSplitting S p)
 
 /-- Conjugation by the Levi element of the invertible adelic matrix `a` sends the element
 `n(b) = P.radicalElement 0 b` of the unipotent radical to `n(a b a*)`. -/
@@ -427,9 +428,11 @@ section SiegelWeilFormula
 open Set Matrix MeasureTheory Filter Fintype New Core Space Splitting SiegelWeil.Lagrangian Metric
   Subsingleton
 
-variable {E n m p : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
-  [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {t : m → ℤˣ}
-  {S : Space E n s} (T : Space E m t) (P : SiegelWeil.CompleteSplitting S p)
+variable
+  {E n m p : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
+  [DecidableEq m] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s}
+  (T : Space E m t) (P : SiegelWeil.CompleteSplitting S p)
 
 omit [WeilData E] in
 /-- Let `P` be a complete splitting of `S` with frame `k` and let `D₁` split off the line spanned by
@@ -759,7 +762,8 @@ lemma New.SiegelWeil.integrable_theta_splitWeil (P : SiegelWeil.CompleteSplittin
       lintegral_mono fun h ↦ by simpa [normalisedTorus_zero, -theta_apply] using h_theta h 0 f
     _ < ⊤ := (lintegral_mul_const _ mN).trans_lt (by finiteness)
 
-/-- The Siegel–Weil formula in Weil's range. Let `S` be split into `p` hyperbolic planes and let `T`
+/--
+The Siegel–Weil formula in Weil's range. Let `S` be split into `p` hyperbolic planes and let `T`
 have rank greater than `2 p`. Then the operator norms of the zero terms along the Lagrangians `L` of
 `S` are summable. Moreover, for every `f` the function `h ↦ θ (ω(1, h) f)` is integrable for the
 measure `T.quotMeasure` of the quotient `[U(T)]`, and its mean (integral divided by total mass)
@@ -770,74 +774,85 @@ whose isotropic frame spans `L`. An integrable majorant of theta that is uniform
 `New.SiegelWeil.theta_normalisedTorus_le`.
 
 The pairs are unimodular over a CM field with `WeilData`, and the test functions are taken in `𝒮`
-rather than among Schwartz–Bruhat functions. -/
-theorem New.SiegelWeil.siegel_weil (P : SiegelWeil.CompleteSplitting S p)
-    (hm : 2 * card p < card m) :
-    (Summable fun L : Lagrangian S ↦ ‖Lagrangian.zeroTerm T L‖) ∧
-    ∀ f : 𝒮 (S.hom T),
-      Integrable (fun h : G E t ↦ θ (S.hom T) (splitWeil S T (1, h) f)) T.quotMeasure ∧
-      ∫ h : G E t, θ (S.hom T) (splitWeil S T (1, h) f) ∂T.quotMeasure =
-        T.quotMeasure.real univ * ∑' L : Lagrangian S, Lagrangian.zeroTerm T L f := by
+rather than among Schwartz–Bruhat functions.
+-/
+theorem New.SiegelWeil.siegel_weil (P : SiegelWeil.CompleteSplitting S p) (hm : 2 * card p < card m)
+    : (Summable fun L : Lagrangian S ↦ ‖Lagrangian.zeroTerm T L‖)
+      ∧ ∀ f : 𝒮 (S.hom T),
+        Integrable (fun h : G E t ↦ θ (S.hom T) (splitWeil S T (1, h) f)) T.quotMeasure
+          ∧ ∫ h : G E t, θ (S.hom T) (splitWeil S T (1, h) f) ∂T.quotMeasure
+            = T.quotMeasure.real univ * ∑' L : Lagrangian S, Lagrangian.zeroTerm T L f := by
   classical
   -- Let `ℓ` be the volume times the sum of the zero terms minus the integral of theta. By
   -- induction on `card n`, `ℓ` tends to `0` along the torus, so it is small in the cusp and
   -- `eq_zero_of_le_tsum_zeroTerm` gives `ℓ = 0`.
-  induction h_card : card n using Nat.strongRec generalizing n p with | _ d IH =>
-  -- The zero terms of `normalisedTorus T P x` have norm at most `b L` with `b` summable; at
-  -- `x = 0` this gives summability.
-  obtain ⟨b, hb, h_term⟩ := exists_summable_zeroTerm_bound T P hm
-  have h_int := integrable_theta_splitWeil T P hm
-  have hs : Summable fun L : Lagrangian S ↦ ‖Lagrangian.zeroTerm T L‖ :=
-    hb.of_nonneg_of_le (fun L ↦ norm_nonneg _) fun L ↦ by
-      simpa [ContinuousLinearMap.one_def] using h_term 0 L
-  have h_sum (f : 𝒮 (S.hom T)) : HasSum (fun L : Lagrangian S ↦ Lagrangian.zeroTerm T L f)
-      ((∑' L : Lagrangian S, Lagrangian.zeroTerm T L) f) := hs.of_norm.hasSum.mapL (.apply ℂ _ f)
-  let ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ :=
-    T.quotMeasure.real univ • ∑' L : Lagrangian S,
-      Lagrangian.zeroTerm T L - strongIntegral T.quotMeasure fun h ↦ θ _ ∘L splitWeil S T (1, h)
-  have hℓ (f : 𝒮 (S.hom T)) :
-      ℓ f = T.quotMeasure.real univ * ∑' L : Lagrangian S, Lagrangian.zeroTerm T L f -
-        ∫ h : G E t, θ _ (splitWeil S T (1, h) f) ∂T.quotMeasure := by
-    rw [(h_sum f).tsum_eq]
-    simp [ℓ, strongIntegral_apply T.quotMeasure (fun h ↦ θ _ ∘L splitWeil S T (1, h)) h_int,
-      -theta_apply]
-  refine ⟨hs, fun f ↦ ⟨h_int f, ?_⟩⟩
-  cases isEmpty_or_nonempty n
-  · -- For `S = 0` there is one Lagrangian, and theta is its zero term.
-    simp [Lagrangian.zeroTerm, mixedValue, Splitting.zeroTerm_apply, pairWeil, eq_one (G.onHom _),
-      eq_zero (_ + _), sum_subsingleton _ P.lagrangian]
-  have h_lim (C : Set (𝒮 (S.hom T))) (hC : IsCompact C) (ι : p) :
-      Tendsto (fun z : (p → ℕ) × C ↦ ℓ (normalisedTorus T P z.1 z.2))
+  induction h_card : card n using Nat.strongRec generalizing n p with
+  | _ d IH =>
+    -- The zero terms of `normalisedTorus T P x` have norm at most `b L` with `b` summable; at
+    -- `x = 0` this gives summability.
+    obtain ⟨b, hb, h_term⟩ := exists_summable_zeroTerm_bound T P hm
+    have h_int := integrable_theta_splitWeil T P hm
+    have hs : Summable fun L : Lagrangian S ↦ ‖Lagrangian.zeroTerm T L‖ :=
+      hb.of_nonneg_of_le
+        (fun L ↦ norm_nonneg _)
+        fun L ↦ by simpa [ContinuousLinearMap.one_def] using h_term 0 L
+    have h_sum (f : 𝒮 (S.hom T)) : HasSum
+        (fun L : Lagrangian S ↦ Lagrangian.zeroTerm T L f)
+        ((∑' L : Lagrangian S, Lagrangian.zeroTerm T L) f) :=
+      hs.of_norm.hasSum.mapL (.apply ℂ _ f)
+    let ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ :=
+      T.quotMeasure.real univ
+          • ∑' L : Lagrangian S,
+            Lagrangian.zeroTerm T L
+        - strongIntegral T.quotMeasure fun h ↦ θ _ ∘L splitWeil S T (1, h)
+    have hℓ (f : 𝒮 (S.hom T))
+        : ℓ f
+          = T.quotMeasure.real univ * ∑' L : Lagrangian S, Lagrangian.zeroTerm T L f
+            - ∫ h : G E t, θ _ (splitWeil S T (1, h) f) ∂T.quotMeasure := by
+      rw [(h_sum f).tsum_eq]
+      simp [ℓ, strongIntegral_apply T.quotMeasure (fun h ↦ θ _ ∘L splitWeil S T (1, h)) h_int,
+        -theta_apply]
+    refine ⟨hs, fun f ↦ ⟨h_int f, ?_⟩⟩
+    cases isEmpty_or_nonempty n
+    · -- For `S = 0` there is one Lagrangian, and theta is its zero term.
+      simp [Lagrangian.zeroTerm, mixedValue, Splitting.zeroTerm_apply, pairWeil, eq_one (G.onHom _),
+        eq_zero (_ + _), sum_subsingleton _ P.lagrangian]
+    have h_lim (C : Set (𝒮 (S.hom T))) (hC : IsCompact C) (ι : p) : Tendsto
+        (fun z : (p → ℕ) × C ↦ ℓ (normalisedTorus T P z.1 z.2))
         (atTop.comap fun z : (p → ℕ) × C ↦ z.1 ι) (nhds 0) := by
-    -- Split off the line spanned by the column `ι`. Its complement `S₁` has a Lagrangian, hence a
-    -- complete splitting, and the formula holds for it by induction.
-    let k : Matrix n Unit E := replicateCol Unit fun i : n ↦ P.k i ι
-    have hk_ne : (fun i : n ↦ P.k i ι) ≠ 0 := fun h_zero ↦ by
-      simpa [funext_iff.mp h_zero] using exists_mul_k_apply_ne_zero P 1 ι
-    have hk_isotropic : kᴴ * S.J * k = 0 :=
-      congrArg (fun M : Matrix p p E ↦ M.submatrix (fun _ : Unit ↦ ι) fun _ : Unit ↦ ι) P.gram_kk
-    obtain ⟨n₁, s₁, S₁, D₁, hk⟩ := S.exists_splitting (HasLeftInv.of_ne_zero hk_ne) hk_isotropic
-    obtain ⟨σ, -⟩ := exists_lagrangian_equiv_col_mem T P D₁ hk
-    let L₁ := σ.symm ⟨P.lagrangian, Pi.single ι 1, mulVec_single_one P.k ι⟩
-    let P₁ : CompleteSplitting S₁ (Fin L₁.numPlanes) := L₁.chosenSplitting
-    obtain ⟨-, ih⟩ := IH _ (by simp [← h_card, D₁.card_eq]) P₁
-      (by linarith [P.card_eq, P₁.card_eq, D₁.card_eq]) rfl
-    simpa only [hℓ] using tendsto_tsum_zeroTerm_sub_integral_theta T P hm
-      (fun g ↦ (h_sum g).summable) h_int D₁ hk ih hC
-  -- `ℓ` is invariant under `U(T)(𝔸)` and under the rational points of `S`.
-  have h_invT (h : G E t) (g : 𝒮 (S.hom T)) : ℓ (splitWeil S T (1, h) g) = ℓ g := by
-    simpa [hℓ, Lagrangian.zeroTerm, mixedValue_splitWeil] using!
-      Exchange.thetaIntegral_pairWeil (S := S) (T := T) (1, h) 1
-  have h_invS (γ : U S.J) (g : 𝒮 (S.hom T)) :
-      ℓ (splitWeil S T (S.ratEmbed γ, 1) g) = ℓ g := by
-    obtain ⟨σ, hσ⟩ := exists_lagrangian_equiv_containing T (isometrySplitting γ)
-    have h_aut (h : G E t) :
-        θ _ (splitWeil S T (S.ratEmbed γ, h) g) = θ _ (splitWeil S T (1, h) g) := by
-      simpa only [mul_one] using (pairThetaKer ..).theta_rat_mul _ ⟨γ, rfl⟩ 1
-    rw [hℓ, ← (σ.trans (.subtypeUnivEquiv (by simp [isometrySplitting, colSpan]))).tsum_eq]
-    simp [hℓ, hσ, zeroTerm_isometrySplitting, rep_apply_apply, h_aut, -theta_apply, Prod.mk_one_one]
-  rw [eq_comm, ← sub_eq_zero, ← hℓ]
-  exact eq_zero_of_le_tsum_zeroTerm (by simp [P.card_eq]) hm h_invT (fun g ↦ (h_sum g).summable)
-    (bddAbove_norm_sub_tsum_norm_zeroTerm T P h_invS h_lim fun g ↦ (h_sum g).summable.norm)
+      -- Split off the line spanned by the column `ι`. Its complement `S₁` has a Lagrangian, hence a
+      -- complete splitting, and the formula holds for it by induction.
+      let k : Matrix n Unit E := replicateCol Unit fun i : n ↦ P.k i ι
+      have hk_ne : (fun i : n ↦ P.k i ι) ≠ 0 := fun h_zero ↦ by
+        simpa [funext_iff.mp h_zero] using exists_mul_k_apply_ne_zero P 1 ι
+      have hk_isotropic : kᴴ * S.J * k = 0 :=
+        congrArg (fun M : Matrix p p E ↦ M.submatrix (fun _ : Unit ↦ ι) fun _ : Unit ↦ ι) P.gram_kk
+      obtain ⟨n₁, s₁, S₁, D₁, hk⟩ := S.exists_splitting (HasLeftInv.of_ne_zero hk_ne) hk_isotropic
+      obtain ⟨σ, -⟩ := exists_lagrangian_equiv_col_mem T P D₁ hk
+      let L₁ := σ.symm ⟨P.lagrangian, Pi.single ι 1, mulVec_single_one P.k ι⟩
+      let P₁ : CompleteSplitting S₁ (Fin L₁.numPlanes) := L₁.chosenSplitting
+      obtain ⟨-, ih⟩ :=
+        IH _ (by simp [← h_card, D₁.card_eq]) P₁ (by linarith [P.card_eq, P₁.card_eq, D₁.card_eq])
+          rfl
+      simpa only [hℓ] using
+        tendsto_tsum_zeroTerm_sub_integral_theta T P hm
+          (fun g ↦ (h_sum g).summable)
+          h_int D₁ hk ih hC
+    -- `ℓ` is invariant under `U(T)(𝔸)` and under the rational points of `S`.
+    have h_invT (h : G E t) (g : 𝒮 (S.hom T)) : ℓ (splitWeil S T (1, h) g) = ℓ g := by
+      simpa [hℓ, Lagrangian.zeroTerm, mixedValue_splitWeil] using!
+        Exchange.thetaIntegral_pairWeil (S := S) (T := T) (1, h) 1
+    have h_invS (γ : U S.J) (g : 𝒮 (S.hom T)) : ℓ (splitWeil S T (S.ratEmbed γ, 1) g) = ℓ g := by
+      obtain ⟨σ, hσ⟩ := exists_lagrangian_equiv_containing T (isometrySplitting γ)
+      have h_aut (h : G E t)
+          : θ _ (splitWeil S T (S.ratEmbed γ, h) g) = θ _ (splitWeil S T (1, h) g) := by
+        simpa only [mul_one] using (pairThetaKer ..).theta_rat_mul _ ⟨γ, rfl⟩ 1
+      rw [hℓ, ← (σ.trans (.subtypeUnivEquiv (by simp [isometrySplitting, colSpan]))).tsum_eq]
+      simp [hℓ, hσ, zeroTerm_isometrySplitting, rep_apply_apply, h_aut, -theta_apply,
+        Prod.mk_one_one]
+    rw [eq_comm, ← sub_eq_zero, ← hℓ]
+    exact eq_zero_of_le_tsum_zeroTerm (by simp [P.card_eq]) hm h_invT
+      (fun g ↦ (h_sum g).summable)
+      (bddAbove_norm_sub_tsum_norm_zeroTerm T P h_invS h_lim fun g ↦ (h_sum g).summable.norm)
 
 end SiegelWeilFormula

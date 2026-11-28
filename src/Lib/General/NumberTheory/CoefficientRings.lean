@@ -37,8 +37,9 @@ Three imported notions occur in the statements:
 
 -- These instances on subalgebras get priority 10, so that other instances are tried first.
 open Subalgebra in
-attribute [instance 10] instSMulSubtypeMem instMulActionSubtypeMem moduleLeft
-  instDistribMulActionSubtypeMem instSMulWithZeroSubtypeMem instMulActionWithZeroSubtypeMem
+attribute [instance 10]
+  instSMulSubtypeMem instMulActionSubtypeMem moduleLeft instDistribMulActionSubtypeMem
+  instSMulWithZeroSubtypeMem instMulActionWithZeroSubtypeMem
 
 namespace New
 
@@ -99,13 +100,16 @@ lemma length_le_of_card_dvd_or_le [PadicIntegerRing R ℓ] [AddCommGroup X] [Mod
     length R X ≤ length R Y :=
   h_card.elim (length_le_of_card_dvd ℓ) fun ⟨h_le, _⟩ ↦ length_le_of_card_le ℓ h_le
 
-/-- The coefficient rings at ℓ: the ℤ_ℓ-subalgebras of ℚ̄_ℓ that are the ring of integers of some
-finite Galois extension K of ℚ_ℓ inside ℚ̄_ℓ, that is, the elements of K of norm at most 1. -/
+/--
+The coefficient rings at ℓ: the ℤ_ℓ-subalgebras of ℚ̄_ℓ that are the ring of integers of some
+finite Galois extension K of ℚ_ℓ inside ℚ̄_ℓ, that is, the elements of K of norm at most 1.
+-/
 abbrev CoeffRing : Type :=
   Set.range fun K : FiniteGaloisIntermediateField ℚ_[ℓ] (PadicAlgCl ℓ) ↦
-    ⟨NormedField.valuation.integer.toSubsemiring, fun r : ℤ_[ℓ] ↦
-        (norm_algebraMap' (PadicAlgCl ℓ) (r : ℚ_[ℓ])).trans_le r.property⟩ ⊓
-      K.toSubalgebra.restrictScalars ℤ_[ℓ]
+    ⟨
+      NormedField.valuation.integer.toSubsemiring,
+      fun r : ℤ_[ℓ] ↦ (norm_algebraMap' (PadicAlgCl ℓ) (r : ℚ_[ℓ])).trans_le r.property
+    ⟩ ⊓ K.toSubalgebra.restrictScalars ℤ_[ℓ]
 
 variable {ℓ : ℕ} [ThePrime ℓ] {O : CoeffRing ℓ}
 
@@ -138,8 +142,10 @@ lemma isIntegral_padicInt_of_norm_le_one {x : PadicAlgCl ℓ} (hx : ‖x‖ ≤ 
     (Polynomial.int_eval₂_eq (subring ℓ) _ h_coeff x).trans (minpoly.aeval ℚ_[ℓ] x)
   exact ⟨p, (Polynomial.int_monic_iff _ _ h_coeff).mpr h_monic, hp_root⟩
 
-/-- A coefficient ring O, the ring of integers of a finite Galois extension of ℚ_ℓ inside ℚ̄_ℓ, is
-a finite ℤ_ℓ-module. -/
+/--
+A coefficient ring O, the ring of integers of a finite Galois extension of ℚ_ℓ inside ℚ̄_ℓ, is
+a finite ℤ_ℓ-module.
+-/
 instance : Module.Finite ℤ_[ℓ] O := by
   -- `O` lies in the image of the integral closure of `ℤ_[ℓ]` in `K`, which is a finite module
   obtain ⟨K, hK⟩ := CoeffRing.exists_mem_iff O
@@ -149,8 +155,8 @@ instance : Module.Finite ℤ_[ℓ] O := by
     (K.val.restrictScalars ℤ_[ℓ]).comp (integralClosure ℤ_[ℓ] K).val
   refine .of_fg ((h_fin.fg_top.map incl.toLinearMap).of_le (S := O.val.toSubmodule) fun x hx ↦ ?_)
   obtain ⟨h_norm, h_mem⟩ := (hK x).mp hx
-  exact ⟨⟨⟨x, h_mem⟩, coe_isIntegral_iff.mp (isIntegral_padicInt_of_norm_le_one h_norm)⟩,
-    trivial, rfl⟩
+  exact
+    ⟨⟨⟨x, h_mem⟩, coe_isIntegral_iff.mp (isIntegral_padicInt_of_norm_le_one h_norm)⟩, trivial, rfl⟩
 
 /-- In a coefficient ring, x divides y exactly when the norm of y is at most the norm of x. -/
 lemma CoeffRing.dvd_iff_norm_le (x y : ↑O) : x ∣ y ↔ ‖y.val‖ ≤ ‖x.val‖ := by
@@ -165,8 +171,10 @@ lemma CoeffRing.dvd_iff_norm_le (x y : ↑O) : x ∣ y ↔ ‖y.val‖ ≤ ‖x.
     have h_zero (hx : x.val = 0) : y.val = 0 := by simpa [hx] using h_le
     exact ⟨⟨y.val / x.val, h_quot⟩, Subtype.ext (mul_div_cancel_of_imp' h_zero).symm⟩
 
-/-- A coefficient ring O is a discrete valuation ring (`New.DVR O`: a domain and a DVR): it is a
-Noetherian valuation ring, and it is not a field. -/
+/--
+A coefficient ring O is a discrete valuation ring (`New.DVR O`: a domain and a DVR): it is a
+Noetherian valuation ring, and it is not a field.
+-/
 instance : DVR O :=
   have : IsNoetherianRing O := .of_finite ℤ_[ℓ] O
   have h_total (x y : ↑O) : x ∣ y ∨ y ∣ x := by simp [CoeffRing.dvd_iff_norm_le, le_total]
@@ -191,7 +199,8 @@ instance : CompactSpace O := compactSpace ℤ_[ℓ] O
 instance : IsDirectedOrder (CoeffRing ℓ) :=
   -- `CoeffRing ℓ` is the range of a monotone map on the lattice of finite Galois extensions
   have h_mono : Monotone fun K : FiniteGaloisIntermediateField ℚ_[ℓ] (PadicAlgCl ℓ) ↦
-      K.toSubalgebra.restrictScalars ℤ_[ℓ] := fun _ _ h_le ↦ h_le
+      K.toSubalgebra.restrictScalars ℤ_[ℓ] := fun _ _ h_le ↦
+    h_le
   (monotone_const.inf h_mono).directed_le.directedOn_range.isDirectedOrder
 
 /-- An element of ℚ̄_ℓ of norm at most 1 lies in all sufficiently large coefficient rings: the

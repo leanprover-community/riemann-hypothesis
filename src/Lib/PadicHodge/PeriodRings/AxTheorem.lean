@@ -69,16 +69,19 @@ open Ideal WittVector Metric Perfection PadicComplex RingHom Valuation Valued Va
 
 namespace New.Variety
 
-variable {p : ℕ} [Fact p.Prime]
-  {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] [Fact ¬IsUnit (p : R)]
-  [Fact ¬IsUnit (p : R')] [Fact ¬IsUnit (p : R'')]
+variable
+  {p : ℕ} [Fact p.Prime]
+  {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] [Fact ¬ IsUnit (p : R)]
+  [Fact ¬ IsUnit (p : R')] [Fact ¬ IsUnit (p : R'')]
   (f : R →+* R') (g : R' →+* R'') (x : PreTilt R p)
 
 /-! ### Functoriality of the tilt and of `θ` -/
 
-/-- The tilt `PreTilt R p` is the inverse limit of `R / p` along `x ↦ x ^ p`. A ring homomorphism
+/--
+The tilt `PreTilt R p` is the inverse limit of `R / p` along `x ↦ x ^ p`. A ring homomorphism
 `f : R → R'` induces the ring homomorphism `tiltMap f` between the tilts, which applies `f` modulo
-`p` to each component. -/
+`p` to each component.
+-/
 def tiltMap : PreTilt R p →+* PreTilt R' p := map p (quotientMap _ f (by simp))
 
 /-- If `y ∈ R` lifts the `n`-th component of `x` in `R / p`, then `f y` lifts the `n`-th component
@@ -230,8 +233,10 @@ end Variety
 /-- The absolute Galois group G_p = Gal(Q̄_p over Q_p). -/
 abbrev Gp (p : ℕ) [Fact p.Prime] : Type := Gal(PadicAlgCl p/ℚ_[p])
 
-/-- The ring of integers `valRingCp p` of `ℂ_p` (its elements of norm at most `1`) as a type, for
-the prime `p` fixed by the class `ThePrime p`. -/
+/--
+The ring of integers `valRingCp p` of `ℂ_p` (its elements of norm at most `1`) as a type, for
+the prime `p` fixed by the class `ThePrime p`.
+-/
 abbrev OC {p : ℕ} [ThePrime p] : Type := ↥(valRingCp p)
 
 /-- The valuation ring of ℚ̄_p. -/
@@ -264,12 +269,14 @@ instance : MulSemiringAction (Gp p) OC := (IsInvariantSubring.mk (by simp)).toMu
 @[simp]
 lemma OC.coe_smul : (g • x).val = g • x := rfl
 
-/-- The p-adic cyclotomic character of the absolute Galois group of Q_p, obtained from its
-action on the algebraic closure of Q_p. -/
+/--
+The p-adic cyclotomic character of the absolute Galois group of Q_p, obtained from its
+action on the algebraic closure of Q_p.
+-/
 abbrev cyclotomicGp : Gp p →* ℤ_[p]ˣ := cyclotomicChar (Γ := Gp p) (PadicAlgCl p) p
 
 /-- `p` is not a unit in `O_C`, as `‖p‖ < 1`. -/
-instance : Fact ¬IsUnit (p : OC) :=
+instance : Fact ¬ IsUnit (p : OC) :=
   ⟨by simpa [isUnit_iff_dvd_one, valRingCp.dvd_iff_norm_le] using PadicComplex.norm_p_lt_one p⟩
 
 /-- In `O_C`, a nonzero element `t` divides some power of any non-unit `s`. -/
@@ -287,13 +294,16 @@ instance : Away (p : OC) ℂ_[p] := by
   -- if `‖z‖ < p ^ n` then `z * p ^ n` has norm at most `1`, because `‖p‖ = p⁻¹`
   have hp_one_lt : 1 < (p : ℝ) := by simp [Fact.out]
   refine .mk _ (by simp [NeZero.ne])
-    (fun z ↦ (pow_unbounded_of_one_lt ‖z‖ hp_one_lt).imp fun n hz_lt ↦ ?_) (by simp)
+    (fun z ↦ (pow_unbounded_of_one_lt ‖z‖ hp_one_lt).imp fun n hz_lt ↦ ?_)
+    (by simp)
   have h_norm_le : ‖z‖ * ((p : ℝ) ^ n)⁻¹ ≤ 1 :=
     (div_le_one (pow_pos (zero_lt_one.trans hp_one_lt) n)).mpr hz_lt.le
   simpa [norm_p_eq_inv] using h_norm_le
 
-/-- `O_C` is absolutely integrally closed: every monic polynomial of positive degree over `O_C`
-has a root in `O_C`. -/
+/--
+`O_C` is absolutely integrally closed: every monic polynomial of positive degree over `O_C`
+has a root in `O_C`.
+-/
 instance : IsAbsIntegrallyClosed OC := .of_isIntegrallyClosedIn ℂ_[p]
 
 end New
@@ -314,8 +324,7 @@ open Polynomial Finset IsAlgClosed IsPrimitiveRoot IsUltrametricDist Multiset Na
 
 namespace New.Period
 
-variable {p : ℕ} [Fact p.Prime]
-  {F : Type*} [NormedField F] [IsUltrametricDist F] {ζ : F}
+variable {p : ℕ} [Fact p.Prime] {F : Type*} [NormedField F] [IsUltrametricDist F] {ζ : F}
 
 /-- If `ζ` is a primitive `p ^ (m + 1)`-th root of unity in an ultrametric normed field `F`, then
 `‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖p‖`, where `φ (p ^ (m + 1)) = p ^ m (p - 1)`. -/

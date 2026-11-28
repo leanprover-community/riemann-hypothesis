@@ -44,11 +44,14 @@ section FiniteField
 
 variable {n k : Type} [Fintype n] [DecidableEq n] [Field k] [Finite k]
 
-/-- For a set `T` of coordinates, the block of a matrix with rows in `T` and columns outside `T`,
-as a linear map. -/
-noncomputable def upperRightBlock (T : Finset n) :
-    Matrix n n k →+ (({i // i ∉ T} → k) →ₗ[k] ({i // ¬i ∉ T} → k)) :=
-  AddMonoidHom.mk' (fun Z : Matrix n n k ↦ toLin' (Z.submatrix Subtype.val Subtype.val))
+/--
+For a set `T` of coordinates, the block of a matrix with rows in `T` and columns outside `T`,
+as a linear map.
+-/
+noncomputable def upperRightBlock (T : Finset n)
+    : Matrix n n k →+ (({i // i ∉ T} → k) →ₗ[k] ({i // ¬i ∉ T} → k)) :=
+  AddMonoidHom.mk'
+    (fun Z : Matrix n n k ↦ toLin' (Z.submatrix Subtype.val Subtype.val))
     fun Y Z : Matrix n n k ↦ by simp [submatrix_add]
 
 omit [Finite k] in
@@ -161,7 +164,8 @@ lemma sum_coeff_labelIdem_radicalHom {c : k[X]} (hc : IsLabel (Fintype.card n) c
 
 end FiniteField
 
-variable {E n ι : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
+variable
+  {E n ι : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
   {w : ι → FinPlace E} [Fintype ι]
 
 omit [Fintype ι] in
@@ -235,20 +239,26 @@ lemma sum_coeff_tupleIdem_radicalHom {k : ι → Type} [∀ i : ι, Field (k i)]
   simp only [h_coeff]
   rw [← finsum_mul, sum_coeff_labelIdem_radicalHom hc hc_irr hT_empty hT_univ, zero_mul]
 
-/-- Let `w` be a family of places, none conjugate to another or to itself, and `c` a tuple of
+/--
+Let `w` be a family of places, none conjugate to another or to itself, and `c` a tuple of
 polynomials over their residue fields whose member at `x` is an irreducible label of degree
 `card n`. Then for every element `b` of the group algebra of the finite adelic unitary group, the
 product of `b` with the lift of `tupleIdem n c` by `liftResidue`, convolved with the indicator of
 the kernel `levelOf w ⊥` of reduction, gives a test function that is cuspidal at the split place
-`w x` (`IsCuspidalAt`: the translates have sum zero over each coset of each proper radical). -/
-theorem isCuspidalAt_convIndicator_tupleIdem [hw : IsConjApart w]
+`w x` (`IsCuspidalAt`: the translates have sum zero over each coset of each proper radical).
+-/
+theorem isCuspidalAt_convIndicator_tupleIdem
+    [hw : IsConjApart w]
     {hK_open : IsOpen (levelOf (n := n) w ⊥ : Set (Gf E n))}
     {hK_compact : IsCompact (levelOf (n := n) w ⊥ : Set (Gf E n))}
     {c : ∀ i : ι, (ResField (w i))[X]} {x : ι}
-    (hc : IsLabel (Fintype.card n) (c x)) (hc_irr : Irreducible (c x)) (b : ℂ[Gf E n]) :
-    IsCuspidalAt (hw.star_ne x x) (convIndicator hK_open hK_compact
-      (b * mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).val)
-        (tupleIdem n c))) := by
+    (hc : IsLabel (Fintype.card n) (c x)) (hc_irr : Irreducible (c x))
+    (b : ℂ[Gf E n])
+    : IsCuspidalAt (hw.star_ne x x)
+      (convIndicator hK_open hK_compact
+        (b * mapDomain
+          (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).val)
+          (tupleIdem n c))) := by
   -- Left convolution by `b` preserves cuspidality, so it suffices to treat the lifted idempotent.
   refine IsCuspidalAt.convIndicator_mul ?_ b
   intro T hT_empty hT_univ t lift h_lift g
@@ -257,19 +267,22 @@ theorem isCuspidalAt_convIndicator_tupleIdem [hw : IsConjApart w]
   by_cases hg : g ∈ stdLevel E n
   · -- On the maximal compact subgroup the sum is that of the coefficients of the idempotent.
     lift g to stdLevel E n using hg
-    have h_red (Z : Matrix n n (ResField (w x))) : stdLevel.reduceFamily w (g * u Z) =
-        stdLevel.reduceFamily w g *
-          Pi.mulSingle x (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z) * t) := by
+    have h_red (Z : Matrix n n (ResField (w x)))
+        : stdLevel.reduceFamily w (g * u Z)
+          = stdLevel.reduceFamily w g
+            * Pi.mulSingle x (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z) * t) := by
       rw [map_mul, ← h_lift, ← reduceFamily_ofSplitPlace x (lift Z)]
-    calc ∑ᶠ Z : Matrix n n (ResField (w x)), (convIndicator hK_open hK_compact
-            (mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).val)
-              (tupleIdem n c))).val (g * u Z : stdLevel E n)
-        = ∑ᶠ Z : Matrix n n (ResField (w x)), (tupleIdem n c).coeff (stdLevel.reduceFamily w g *
-            Pi.mulSingle x (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z) * t)) :=
-          finsum_congr fun Z ↦ by rw [convIndicator_mapDomain_liftResidue, h_red]
-      _ = 0 := sum_coeff_tupleIdem_radicalHom hc hc_irr hT_empty hT_univ (stdLevel.reduceFamily w g)
-        t
-  · exact finsum_eq_zero_of_forall_eq_zero fun Z ↦ convIndicator_mapDomain_liftResidue_of_notMem _
-      fun h_mem ↦ hg (((stdLevel E n).mul_mem_cancel_right (u Z).property).1 h_mem)
+    calc
+      ∑ᶠ Z : Matrix n n (ResField (w x)), (convIndicator hK_open hK_compact
+         (mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).val)
+           (tupleIdem n c))).val (g * u Z : stdLevel E n)
+          = ∑ᶠ Z : Matrix n n (ResField (w x)), (tupleIdem n c).coeff (stdLevel.reduceFamily w g *
+              Pi.mulSingle x (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z) * t)) :=
+        finsum_congr fun Z ↦ by rw [convIndicator_mapDomain_liftResidue, h_red]
+      _ = 0 :=
+        sum_coeff_tupleIdem_radicalHom hc hc_irr hT_empty hT_univ (stdLevel.reduceFamily w g) t
+  · exact finsum_eq_zero_of_forall_eq_zero fun Z ↦
+      convIndicator_mapDomain_liftResidue_of_notMem _ fun h_mem ↦
+        hg (((stdLevel E n).mul_mem_cancel_right (u Z).property).1 h_mem)
 
 end New

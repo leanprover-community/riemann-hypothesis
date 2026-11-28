@@ -114,20 +114,24 @@ section AdmissibleEvaluation
 open Matrix Space WeilData Kronecker Exchange Finset Weil Valued Prod Grading Splitting stdLattice
   DoubleLiftData TensorProduct PairIndex
 
-variable {E X X' X'' : Type} [Field E] [CMType E] [WeilData E] [Fintype X] [DecidableEq X]
-  [Fintype X'] [DecidableEq X'] [Fintype X''] [DecidableEq X'']
+variable
+  {E X X' X'' : Type} [Field E] [CMType E] [WeilData E] [Fintype X] [DecidableEq X] [Fintype X']
+  [DecidableEq X'] [Fintype X''] [DecidableEq X'']
 
 section Lift
 
-variable {ι ι' ι'' μ q : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
-  [Fintype ι''] [DecidableEq ι''] [Fintype μ] [DecidableEq μ] [Fintype q] [DecidableEq q]
-  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ} {V : Space E ι ε} {V' : Space E ι' ε'}
-  {V'' : Space E ι'' ε''} {N m m' m'' : ℕ} {Y : Grading V N (X ⊕ Unit) m}
-  {Y' : Grading V' N (X' ⊕ Unit) m'}
+variable
+  {ι ι' ι'' μ q : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] [Fintype ι'']
+  [DecidableEq ι''] [Fintype μ] [DecidableEq μ] [Fintype q] [DecidableEq q]
+  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ}
+  {V : Space E ι ε} {V' : Space E ι' ε'} {V'' : Space E ι'' ε''} {N m m' m'' : ℕ}
+  {Y : Grading V N (X ⊕ Unit) m} {Y' : Grading V' N (X' ⊕ Unit) m'}
 
 variable (E) in
-/-- The finite idele by which negating the form of a space scales its point: the finite part of
-the conjugate of `flipIdele` for `η = normNegOne`, a unit of `Ô E` with `η̄ η = -1`. -/
+/--
+The finite idele by which negating the form of a space scales its point: the finite part of
+the conjugate of `flipIdele` for `η = normNegOne`, a unit of `Ô E` with `η̄ η = -1`.
+-/
 def flipScale : (𝔸f E)ˣ :=
   Units.map (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)).toMonoidHom
     (star (flipIdele normNegOne 1))
@@ -159,8 +163,8 @@ lemma inv_xFin_flipSum_mulVec_mem_iff (y : ι ⊕ ι'' → 𝔸f E) :
     Sum.elim_inr, zero_mulVec, add_zero, zero_add, smul_mulVec, mulVec_smul]
 
 /-- The rows of the finite part of the point of `V'` at the basis vectors of `X' ⊕ Unit`. -/
-def _root_.New.Grading.gradeZeroRows (Y' : Grading V' N (X' ⊕ Unit) m') :
-    Matrix (X' ⊕ Unit) ι' (𝔸f E) :=
+def _root_.New.Grading.gradeZeroRows (Y' : Grading V' N (X' ⊕ Unit) m')
+    : Matrix (X' ⊕ Unit) ι' (𝔸f E) :=
   (inclMatrix (𝔸f E) (Y'.indexEquiv ∘ Sum.inl))ᵀ * V'.xFin.val
 
 omit [WeilData E] [Fintype X'] in
@@ -197,34 +201,46 @@ namespace DoubleLiftData
 
 -- `D` is a pair of edges `Y → Y' → Y''` between the graded spaces `V`, `V'`, `V''`, where `q`
 -- indexes the hyperbolic planes in grade zero.
-variable {Y'' : Grading V'' N μ m''} (D : DoubleLiftData (X'' ⊕ Unit) q Y Y' Y'')
+variable
+  {Y'' : Grading V'' N μ m''} (D : DoubleLiftData (X'' ⊕ Unit) q Y Y' Y'')
   (P : Finset (FinPlace E)) (π : (𝔸f E)ˣ) (u : unitary (𝔸f E)) (κ : PairIndex X X'' → 𝔸f E)
 
-/-- The vector of grade zero in `V⁻ ⊕ V''`, in rational coordinates, with the component `κ x` in
+/--
+The vector of grade zero in `V⁻ ⊕ V''`, in rational coordinates, with the component `κ x` in
 `X⁻ ⊕ X''` and the coefficient `u c` at the second basis vector of each plane; this coefficient
-and the component in `X⁻` are multiplied by `flipScale E`. -/
+and the component in `X⁻` are multiplied by `flipScale E`.
+-/
 def liftVector (c : 𝔸f E) (x : PairIndex X X'' → 𝔸f E) : ι ⊕ ι'' → 𝔸f E :=
-  D.zeroPart.incl.map (algebraMap E (𝔸f E)) *ᵥ
-    ((0 ⊕ᵥ fun _ ↦ flipScale E * u * c) ⊕ᵥ
-      ((fun _ : X ⊕ Unit ↦ (flipScale E : 𝔸f E)) ⊕ᵥ (1 : X'' ⊕ Unit → 𝔸f E)) * κ * x)
+  D.zeroPart.incl.map (algebraMap E (𝔸f E))
+    *ᵥ ((0 ⊕ᵥ fun _ ↦ flipScale E * u * c)
+      ⊕ᵥ ((fun _ : X ⊕ Unit ↦ (flipScale E : 𝔸f E)) ⊕ᵥ (1 : X'' ⊕ Unit → 𝔸f E)) * κ * x)
 
-/-- Every neighbour vector `(c, x)`, that is, every solution of the gluing congruences
-`IsNeighbourVector π δ c x`, has its lift `liftVector` in the lattice of `V⁻ ⊕ V''`. -/
+/--
+Every neighbour vector `(c, x)`, that is, every solution of the gluing congruences
+`IsNeighbourVector π δ c x`, has its lift `liftVector` in the lattice of `V⁻ ⊕ V''`.
+-/
 def LiftsNeighbours (δ : 𝔸f E) : Prop :=
-  ∀ (c : 𝔸f E) (x : PairIndex X X'' → 𝔸f E), IsNeighbourVector π δ c x →
-    (flipSum V V'').xFin⁻¹.val *ᵥ D.liftVector u κ c x ∈ stdLattice E (ι ⊕ ι'')
+  ∀ (c : 𝔸f E) (x : PairIndex X X'' → 𝔸f E),
+    IsNeighbourVector π δ c x
+      → (flipSum V V'').xFin⁻¹.val *ᵥ D.liftVector u κ c x ∈ stdLattice E (ι ⊕ ι'')
 
-/-- Where the inclusion of `X⁻ ⊕ X''` joins an index `b` to an index `i` of `V⁻ ⊕ V''`, the
-denominator allowed at `i` has the valuations of the denominator allowed at `b` times `κ b`. -/
+/--
+Where the inclusion of `X⁻ ⊕ X''` joins an index `b` to an index `i` of `V⁻ ⊕ V''`, the
+denominator allowed at `i` has the valuations of the denominator allowed at `b` times `κ b`.
+-/
 def MatchesDenominators (β : Ô E) : Prop :=
-  ∀ (i : ι ⊕ ι'') (b : PairIndex X X''), D.zeroPart.incl i (Sum.inr b) ≠ 0 →
-    ∀ w : FinPlace E, v (selfOrConj β i w) = v ((selfOrConj β b * κ b) w)
+  ∀ (i : ι ⊕ ι'') (b : PairIndex X X''),
+    D.zeroPart.incl i (Sum.inr b) ≠ 0
+      → ∀ w : FinPlace E, v (selfOrConj β i w) = v ((selfOrConj β b * κ b) w)
 
-/-- The matrix whose columns are the lifts of the columns of `neighbourMatrix`, in the coordinates
-of the lattice of `V⁻ ⊕ V''`. -/
+/--
+The matrix whose columns are the lifts of the columns of `neighbourMatrix`, in the coordinates
+of the lattice of `V⁻ ⊕ V''`.
+-/
 def neighbourLift : Matrix (ι ⊕ ι'') (PairIndex X X'') (𝔸f E) :=
-  (of fun j ↦ (flipSum V V'').xFin⁻¹.val *ᵥ
-    D.liftVector u κ (neighbourCoeff X X'' P π j) ((neighbourMatrix X X'' P π).col j))ᵀ
+  (of fun j ↦
+    (flipSum V V'').xFin⁻¹.val
+      *ᵥ D.liftVector u κ (neighbourCoeff X X'' P π j) ((neighbourMatrix X X'' P π).col j))ᵀ
 
 variable (q) in
 /-- The coefficients of the lifted columns at the second basis vectors of the planes. -/
@@ -232,17 +248,23 @@ def planeCoeff : Matrix q (PairIndex X X'') (𝔸f E) :=
   of fun _ j ↦ flipScale E * u * neighbourCoeff X X'' P π j
 
 variable (q Y Y' Y'') in
-/-- The coordinates, in the isotropic frame of the splitting of `Hom (V', V⁻ ⊕ V'')`, of the
+/--
+The coordinates, in the isotropic frame of the splitting of `Hom (V', V⁻ ⊕ V'')`, of the
 isotropic part of the columns of `latticeLift` (see `latticeLift_eq_latticeUnitary_add_isotropic`):
-zero at the indices of positive grade and `planeCoeff ⊗ 1` at the planes. -/
-def isotropicCoeff :
-    Matrix ({r : (ι ⊕ ι'') × ι' // 0 < (Y.gradeOf ⊕ᵥ Y''.gradeOf) r.1 - Y'.gradeOf r.2} ⊕
-      q × (X' ⊕ Unit)) (PairIndex X X'' × (X' ⊕ Unit)) (𝔸f E) :=
+zero at the indices of positive grade and `planeCoeff ⊗ 1` at the planes.
+-/
+def isotropicCoeff
+    : Matrix
+      ({r : (ι ⊕ ι'') × ι' // 0 < (Y.gradeOf ⊕ᵥ Y''.gradeOf) r.1 - Y'.gradeOf r.2}
+        ⊕ q × (X' ⊕ Unit))
+      (PairIndex X X'' × (X' ⊕ Unit)) (𝔸f E) :=
   fromRows 0 (planeCoeff q P π u ⊗ₖ 1)
 
-/-- The matrix `B` of the map `x ↦ A x R` from `Hom (X' ⊕ Unit, X⁻ ⊕ X'')` to
+/--
+The matrix `B` of the map `x ↦ A x R` from `Hom (X' ⊕ Unit, X⁻ ⊕ X'')` to
 `Hom (V', V⁻ ⊕ V'')`, in the coordinates of the lattices, with `A = neighbourLift` and
-`R = gradeZeroRows`. -/
+`R = gradeZeroRows`.
+-/
 def latticeLift : Matrix ((ι ⊕ ι'') × ι') (PairIndex X X'' × (X' ⊕ Unit)) (𝔸f E) :=
   D.neighbourLift P π u κ ⊗ₖ Y'.gradeZeroRowsᵀ
 
@@ -593,7 +615,8 @@ lemma exists_zeroTermFin_splitting_vacElem_eq_sum (hP : IsSplitLevel P N)
 
 end DoubleLiftData
 
-/-- Let `P` contain one place of each conjugate pair above the prime `N` (`hP`), let `N = π π̄`
+/--
+Let `P` contain one place of each conjugate pair above the prime `N` (`hP`), let `N = π π̄`
 with `π` a uniformiser at the places of `P` and a unit elsewhere (`hπ`), and let `κ` be scaling
 factors with values `1` or `δ`, trivial above `N`, with denominators bounded by the integral adele
 `β` and its conjugate (`hκ`).
@@ -608,15 +631,17 @@ constant `C` such that, for `n` prime to `N` and `y` with denominators `β` on `
 `C • gluedTranslate N P (t₁, t₂)` (the gluing of the tensor of the vacua translated by `t₁`, `t₂`)
 with `β̄ t₁`, `β̄ t₂` integral away from `n`. The coefficients have a denominator away from `n`
 that depends only on `β` and the index types, and absolute sum at most `1` under every automorphism
-of `ℂ` (`IsAdmissibleEval`). -/
-theorem isAdmissibleEval_finEval {Y'' : Grading V'' N μ m''} [Fact N.Prime]
+of `ℂ` (`IsAdmissibleEval`).
+-/
+theorem isAdmissibleEval_finEval
+    {Y'' : Grading V'' N μ m''} [Fact N.Prime]
     {P : Finset (FinPlace E)} {a π : (𝔸f E)ˣ} {u u' : unitary (𝔸f E)} {β : Ô E} {δ : 𝔸f E}
     {κ : PairIndex X X'' → 𝔸f E}
-    (D : DoubleLiftData (X'' ⊕ Unit) q Y Y' Y'') (hP : IsSplitLevel P N)
-    (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
+    (D : DoubleLiftData (X'' ⊕ Unit) q Y Y' Y'')
+    (hP : IsSplitLevel P N) (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
     (hL : Y'.SpansLattice a π u') (h_lift : D.LiftsNeighbours π u κ δ)
-    (h_match : D.MatchesDenominators κ β) :
-    IsAdmissibleEval N P β D.finEval (selfOrConj β) := by
+    (h_match : D.MatchesDenominators κ β)
+    : IsAdmissibleEval N P β D.finEval (selfOrConj β) := by
   -- Replace `y` by its part `y'` away from `N`. The evaluation is `0` or a root of unity times the
   -- translate by the projection of `y'` of the zero term of the vacuum, which is `c` times the sum
   -- over the representatives `neighbourCosetRep r` of `neighbourLattice` modulo integral points.
@@ -625,23 +650,32 @@ theorem isAdmissibleEval_finEval {Y'' : Grading V'' N μ m''} [Fact N.Prime]
   classical
   let W := V'.hom (flipSum V V'')
   let Z := stdPairSpace E X (X' ⊕ Unit) X''
-  obtain ⟨c, -, hc⟩ : ∃ c ≠ (0 : ℂ), zeroTermFin D.splitting W.vacElem =
-      c • ∑ r : (X' ⊕ Unit → P → ZMod N) × AwayLatticeQuotient (X' ⊕ Unit) hπ hκ,
-        Z.finHeisenbergOp (neighbourCosetRep r) Z.vacElem :=
+  obtain ⟨c, -, hc⟩
+      : ∃ c ≠ (0 : ℂ),
+        zeroTermFin D.splitting W.vacElem
+          = c
+            • ∑ r : (X' ⊕ Unit → P → ZMod N) × AwayLatticeQuotient (X' ⊕ Unit) hπ hκ,
+              Z.finHeisenbergOp (neighbourCosetRep r) Z.vacElem :=
     D.exists_zeroTermFin_splitting_vacElem_eq_sum hP hπ hκ hL h_lift
   refine ⟨c * Fintype.card (AwayLatticeQuotient (X' ⊕ Unit) hπ hκ), fun n p hn y hy ↦ ?_⟩
-  obtain ⟨ξ, hξ, y', hy', hy'_vanish, h_away⟩ : ∃ ξ : ℂ, IsOfFinOrder ξ ∧
-      ∃ y' ∈ weightedTranslations n fun i : (ι ⊕ ι'') × ι' ↦ selfOrConj β i.1,
-        y' ∈ vanishingAbove ((ι ⊕ ι'') × ι') P ∧
-          W.finHeisenbergOp y W.vacElem = ξ • W.finHeisenbergOp y' W.vacElem :=
+  obtain ⟨ξ, hξ, y', hy', hy'_vanish, h_away⟩
+      : ∃ ξ : ℂ,
+        IsOfFinOrder ξ
+          ∧ ∃ y' ∈ weightedTranslations n fun i : (ι ⊕ ι'') × ι' ↦ selfOrConj β i.1,
+            y' ∈ vanishingAbove ((ι ⊕ ι'') × ι') P
+              ∧ W.finHeisenbergOp y W.vacElem = ξ • W.finHeisenbergOp y' W.vacElem :=
     exists_finHeisenbergOp_vacElem_eq_of_coprime hP hκ W hn hy
-  obtain ⟨ζ, hζ, h_value⟩ : ∃ ζ : ℂ, (ζ = 0 ∨ IsOfFinOrder ζ) ∧
-      D.finEval (W.finHeisenbergOp y' W.vacElem) = ζ • arrowTensor.leftInverse
-        (Z.finHeisenbergOp (D.splitting.iFinᴴ *ᵥ y') (zeroTermFin D.splitting W.vacElem)) :=
+  obtain ⟨ζ, hζ, h_value⟩
+      : ∃ ζ : ℂ,
+        (ζ = 0 ∨ IsOfFinOrder ζ)
+          ∧ D.finEval (W.finHeisenbergOp y' W.vacElem)
+            = ζ • arrowTensor.leftInverse (Z.finHeisenbergOp (D.splitting.iFinᴴ *ᵥ y')
+              (zeroTermFin D.splitting W.vacElem)) :=
     D.exists_finEval_finHeisenbergOp_vacElem hP hπ hκ h_int hy'_vanish
   -- The projection of `y'` has the same denominators as `y'`.
-  have h_den : D.splitting.iFinᴴ *ᵥ y' ∈ weightedTranslations n
-      fun j : PairIndex X X'' × (X' ⊕ Unit) ↦ selfOrConj β j.1 :=
+  have h_den
+      : D.splitting.iFinᴴ *ᵥ y'
+        ∈ weightedTranslations n fun j : PairIndex X X'' × (X' ⊕ Unit) ↦ selfOrConj β j.1 :=
     D.conjTranspose_iFin_mulVec_mem hP hπ hκ h_match h_int hy' hy'_vanish
   rw [h_away, map_smul, h_value, hc, map_smul, map_smul]
   simp only [mul_smul]
@@ -655,8 +689,10 @@ end Lift
 
 section Pairs
 
-variable {ι ι' ι'' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
-  [Fintype ι''] [DecidableEq ι''] {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ}
+variable
+  {ι ι' ι'' : Type}
+  [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] [Fintype ι''] [DecidableEq ι'']
+  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ}
 
 /-- Let `Y`, `Y'`, `Y''` present the hermitian spaces `V`, `V'`, `V''` as orthonormal vectors
 `X ⊕ Unit`, `X' ⊕ Unit`, `X'' ⊕ Unit` plus strings of `m`, `m - 1`, `m - 2` further basis vectors,
@@ -725,8 +761,10 @@ lemma matchesDenominators_middleDoubleLift {V : Space E ι ε} {V' : Space E ι'
     simp_all [middleDoubleLift, selfOrConj, inclMatrix, Matrix.one_apply]
 
 variable (X X'') in
-/-- The scaling of the last pair: `δ` at the last basis vector of `X'' ⊕ Unit` and `1`
-elsewhere. -/
+/--
+The scaling of the last pair: `δ` at the last basis vector of `X'' ⊕ Unit` and `1`
+elsewhere.
+-/
 def lastScaling (δ : 𝔸f E) : PairIndex X X'' → 𝔸f E := 1 ⊕ᵥ (1 ⊕ᵥ fun _ ↦ δ)
 
 /-- Let `Y`, `Y'`, `Y''` present the hermitian spaces `V`, `V'`, `V''` as orthonormal vectors

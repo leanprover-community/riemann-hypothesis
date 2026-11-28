@@ -132,41 +132,46 @@ open ComplexInnerProductSpace Finset Module ComplexConjugate
 
 namespace New.Exchange
 
-variable {I V : Type}
-  {F : ℕ → ℕ → Type} [∀ i n : ℕ, NormedAddCommGroup (F i n)]
-  [∀ i n : ℕ, InnerProductSpace ℂ (F i n)]
-  [NormedAddCommGroup V] [InnerProductSpace ℂ V]
+variable
+  {I V : Type} {F : ℕ → ℕ → Type} [∀ i n : ℕ, NormedAddCommGroup (F i n)]
+  [∀ i n : ℕ, InnerProductSpace ℂ (F i n)] [NormedAddCommGroup V] [InnerProductSpace ℂ V]
   (m : ℕ) (w : I → ℕ → ℕ) (M : (I → ℂ) → (I → ℝ) → Prop) (L : ℕ → ℕ → I → ℝ)
-  (a : I → ∀ i n : ℕ, F i n →ₗ[ℂ] F i (n + 1))
-  (d : I → ∀ i n : ℕ, F i (n + 1) →ₗ[ℂ] F (i + 1) n) (j : ∀ i : ℕ, V →ₗᵢ[ℂ] F i 0)
+  (a : I → ∀ i n : ℕ, F i n →ₗ[ℂ] F i (n + 1)) (d : I → ∀ i n : ℕ, F i (n + 1) →ₗ[ℂ] F (i + 1) n)
+  (j : ∀ i : ℕ, V →ₗᵢ[ℂ] F i 0)
 
-/-- The square at `(i, n)` commutes up to `β`: on `F i (n + 1)`, `w t n` times `a ∘ d` equals
-`w t (n + 2) / conj (β t)` times `d ∘ a`. Where `β t = 0` the second scalar is `0`. -/
+/--
+The square at `(i, n)` commutes up to `β`: on `F i (n + 1)`, `w t n` times `a ∘ d` equals
+`w t (n + 2) / conj (β t)` times `d ∘ a`. Where `β t = 0` the second scalar is `0`.
+-/
 def SquareCommutes (i n : ℕ) (β : I → ℂ) : Prop :=
   ∀ (t : I) (y : F i (n + 1)),
-    (w t n : ℂ) • a t (i + 1) n (d t i n y) =
-      (w t (n + 2) / conj (β t) : ℂ) • d t i (n + 1) (a t i (n + 1) y)
+    (w t n : ℂ) • a t (i + 1) n (d t i n y)
+      = (w t (n + 2) / conj (β t) : ℂ) • d t i (n + 1) (a t i (n + 1) y)
 
-/-- The adjoint law of the square at `(i, n)` with constant `κ`: every `z` in `F i (n + 2)` has an
-adjoint vector `x` for `a`, and `⟪d x, y⟫ = κ t * ⟪d z, a y⟫` for all `y`. -/
+/--
+The adjoint law of the square at `(i, n)` with constant `κ`: every `z` in `F i (n + 2)` has an
+adjoint vector `x` for `a`, and `⟪d x, y⟫ = κ t * ⟪d z, a y⟫` for all `y`.
+-/
 def SquareAdjoint (i n : ℕ) (κ : I → ℂ) : Prop :=
   ∀ (t : I) (z : F i (n + 1 + 1)), ∃ x : F i (n + 1),
-    (∀ y : F i (n + 1), ⟪a t i (n + 1) y, z⟫ = ⟪y, x⟫) ∧
-    ∀ y : F (i + 1) n, ⟪d t i n x, y⟫ = κ t * ⟪d t i (n + 1) z, a t (i + 1) n y⟫
+    (∀ y : F i (n + 1), ⟪a t i (n + 1) y, z⟫ = ⟪y, x⟫)
+      ∧ ∀ y : F (i + 1) n, ⟪d t i n x, y⟫ = κ t * ⟪d t i (n + 1) z, a t (i + 1) n y⟫
 
-/-- A triangle of size `m` of inner product spaces `F i n` with arrows
+/--
+A triangle of size `m` of inner product spaces `F i n` with arrows
 `a t i n : F i n → F i (n + 1)` and `d t i n : F i (n + 1) → F (i + 1) n`, weights `w t n` and
 isometries `j i : V → F i 0`. The squares commute up to scalars. On the copies of `V`, `a` is
-adjoint to `d`, and `d ∘ a` maps each copy injectively to the next. -/
+adjoint to `d`, and `d ∘ a` maps each copy injectively to the next.
+-/
 structure IsTriangle : Prop where
   /-- Each square, for `i + n + 2 ≤ m`, commutes up to a scalar function. -/
   square_commutes (i n : ℕ) (h : i + (n + 1) < m) : ∃ β : I → ℂ, SquareCommutes w a d i n β
   /-- On the copies of `V`, the first arrow `a` of row `i` is adjoint to `d`. -/
-  first_adjoint (i : ℕ) (hi : i < m) (t : I) (y : V) (z : F i (0 + 1)) :
-    ⟪z, a t i 0 (j i y)⟫ = ⟪d t i 0 z, j (i + 1) y⟫
+  first_adjoint (i : ℕ) (hi : i < m) (t : I) (y : V) (z : F i (0 + 1))
+    : ⟪z, a t i 0 (j i y)⟫ = ⟪d t i 0 z, j (i + 1) y⟫
   /-- `d ∘ a` maps the copy of `V` in row `i` to the copy of `V` in row `i + 1`. -/
-  comp_mem_range (i : ℕ) (hi : i < m) (t : I) (y : V) :
-    d t i 0 (a t i 0 (j i y)) ∈ Set.range (j (i + 1))
+  comp_mem_range (i : ℕ) (hi : i < m) (t : I) (y : V)
+    : d t i 0 (a t i 0 (j i y)) ∈ Set.range (j (i + 1))
   /-- `d ∘ a` has trivial kernel on the copy of `V` in row `i`. -/
   eq_zero_of_first (i : ℕ) (hi : i < m) (t : I) (y : V) (hy : d t i 0 (a t i 0 (j i y)) = 0) : y = 0
 
@@ -176,15 +181,19 @@ structure HasSquareModuli : Prop where
   modulus_one : M 1 1
   /-- Moduli multiply. -/
   modulus_mul {c c' : I → ℂ} {f f' : I → ℝ} (hc : M c f) (hc' : M c' f') : M (c * c') (f * f')
-  /-- The square at `(i, n)`, for `i + n + 2 ≤ m`, commutes up to a scalar function of modulus
-  `L (i + 1) (i + 1 + n + 1)`. -/
-  exists_modulus_commutes (i n : ℕ) (h : i + (n + 1) < m) :
-    ∃ β : I → ℂ, M β (L (i + 1) (i + 1 + n + 1)) ∧ SquareCommutes w a d i n β
+  /--
+  The square at `(i, n)`, for `i + n + 2 ≤ m`, commutes up to a scalar function of modulus
+  `L (i + 1) (i + 1 + n + 1)`.
+  -/
+  exists_modulus_commutes (i n : ℕ) (h : i + (n + 1) < m)
+    : ∃ β : I → ℂ, M β (L (i + 1) (i + 1 + n + 1)) ∧ SquareCommutes w a d i n β
   /-- Each square, for `i + n + 2 ≤ m`, obeys the adjoint law with a constant of modulus `1`. -/
   square_adjoint (i n : ℕ) (h : i + (n + 1) < m) : ∃ κ : I → ℂ, M κ 1 ∧ SquareAdjoint a d i n κ
 
-/-- The composite `F i 0 → F i n` of the first `n` arrows `a t i k` (`k < n`) of row `i`, each
-multiplied by its weight `w t k`. -/
+/--
+The composite `F i 0 → F i n` of the first `n` arrows `a t i k` (`k < n`) of row `i`, each
+multiplied by its weight `w t k`.
+-/
 noncomputable abbrev weightedChain (t : I) (i : ℕ) : ∀ n : ℕ, F i 0 →ₗ[ℂ] F i n :=
   compUpTo fun k : ℕ ↦ (w t k : ℂ) • a t i k
 
@@ -195,21 +204,25 @@ lemma weightedChain_succ_apply (t : I) (i n : ℕ) (y : F i 0) :
     weightedChain w a t i (n + 1) y = (w t n : ℂ) • a t i n (weightedChain w a t i n y) :=
   rfl
 
-/-- `d` moves past the `n`-chain (the weighted composite of the first `n` arrows `a` of a row) up to
+/--
+`d` moves past the `n`-chain (the weighted composite of the first `n` arrows `a` of a row) up to
 `β`: the `n`-chain of row `i + 1` after `d ∘ a` is `w t (n + 1) / (w t 1 * w t 0 * conj (β t))`
-times `d` after the `(n + 1)`-chain of row `i`. Where `β t = 0` this scalar is `0`. -/
+times `d` after the `(n + 1)`-chain of row `i`. Where `β t = 0` this scalar is `0`.
+-/
 def ChainCommutes (i n : ℕ) (β : I → ℂ) : Prop :=
   ∀ (t : I) (y : F i 0),
-    weightedChain w a t (i + 1) n (d t i 0 (a t i 0 y)) =
-      (w t (n + 1) / (w t 1 * w t 0 * conj (β t)) : ℂ) • d t i n (weightedChain w a t i (n + 1) y)
+    weightedChain w a t (i + 1) n (d t i 0 (a t i 0 y))
+      = (w t (n + 1) / (w t 1 * w t 0 * conj (β t)) : ℂ) • d t i n (weightedChain w a t i (n + 1) y)
 
-/-- The arrow `a t i n` that follows the `n`-chain is adjoint to `d` on chains, up to `κ`:
+/--
+The arrow `a t i n` that follows the `n`-chain is adjoint to `d` on chains, up to `κ`:
 `⟪z, a X⟫ = κ * ⟪d z, Y⟫` for all `z` and all `y` in `V`. Here `X` is the `n`-chain of row `i` at
-`j i y`, and `Y` is the `n`-chain of row `i + 1` at `j (i + 1) y`. -/
+`j i y`, and `Y` is the `n`-chain of row `i + 1` at `j (i + 1) y`.
+-/
 def ChainAdjoint (i n : ℕ) (κ : I → ℂ) : Prop :=
   ∀ (t : I) (y : V) (z : F i (n + 1)),
-    ⟪z, a t i n (weightedChain w a t i n (j i y))⟫ =
-      κ t * ⟪d t i n z, weightedChain w a t (i + 1) n (j (i + 1) y)⟫
+    ⟪z, a t i n (weightedChain w a t i n (j i y))⟫
+      = κ t * ⟪d t i n z, weightedChain w a t (i + 1) n (j (i + 1) y)⟫
 
 variable {m w M L a d j}
 

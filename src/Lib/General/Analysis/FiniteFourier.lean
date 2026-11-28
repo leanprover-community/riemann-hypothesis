@@ -72,16 +72,20 @@ variable [Fintype R] [DecidableEq R] [Fintype a] [DecidableEq a] [Fintype N] [De
 
 /-! ### The Fourier transform on matrices -/
 
-/-- The Fourier transform of a function `f` on `N × a` matrices, a function on `a × N` matrices:
-`ρ ↦ ∑ v, f v * ψ (tr (ρ v))`, with no normalising factor. -/
-noncomputable def Exchange.matrixFourier (ψ : AddChar R ℂ) (f : Matrix N a R → ℂ)
-    (ρ : Matrix a N R) : ℂ :=
+/--
+The Fourier transform of a function `f` on `N × a` matrices, a function on `a × N` matrices:
+`ρ ↦ ∑ v, f v * ψ (tr (ρ v))`, with no normalising factor.
+-/
+noncomputable def Exchange.matrixFourier (ψ : AddChar R ℂ) (f : Matrix N a R → ℂ) (ρ : Matrix a N R)
+    : ℂ :=
   ∑ v : Matrix N a R, f v * ψ (ρ * v).trace
 
 variable (χ : MulChar R ℂ) in
-/-- The multiplicative character `χ` of the finite ring `R` is primitive: for every `a ≠ 0` some
+/--
+The multiplicative character `χ` of the finite ring `R` is primitive: for every `a ≠ 0` some
 element `1 + c * a` has `χ`-value different from `0` (so it is a unit) and from `1`. That is,
-for no nonzero `a` is `χ` trivial on the units congruent to `1` modulo `a`. -/
+for no nonzero `a` is `χ` trivial on the units congruent to `1` modulo `a`.
+-/
 def Exchange.IsPrimitiveMulChar : Prop :=
   ∀ a ≠ (0 : R), ∃ c : R, χ (1 + c * a) ≠ 0 ∧ χ (1 + c * a) ≠ 1
 

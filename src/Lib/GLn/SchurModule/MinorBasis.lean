@@ -72,8 +72,10 @@ variable {Φ J m R : Type} [DecidableEq m] [CommRing R] {γ : ℕ →₀ ℕ}
 
 /-! ### Leading terms -/
 
-/-- The lexicographic monomial order on variables indexed by ℕ that compares exponents at the
-highest index first, so that x₀ ≺ x₁ ≺ …. -/
+/--
+The lexicographic monomial order on variables indexed by ℕ that compares exponents at the
+highest index first, so that x₀ ≺ x₁ ≺ ….
+-/
 def columnOrder : MonomialOrder ℕ := lex (σ := ℕᵒᵈ)
 
 /-- If the exponents `γ` and `δ` agree in the columns beyond `i` and `γ i < δ i`, then `γ` is
@@ -99,22 +101,28 @@ variable [Fintype J] {c : m → Φ} {τ : J → Φ} {h : J → ℕ} {x : m} (l :
 
 /-! ### Columns, fillings and products of minors -/
 
-/-- For a row x, the R-algebra isomorphism writing a polynomial in the y_{a,i} as a polynomial
-in the y_{x,i}, i ∈ ℕ, over the polynomials in the other rows. -/
+/--
+For a row x, the R-algebra isomorphism writing a polynomial in the y_{a,i} as a polynomial
+in the y_{x,i}, i ∈ ℕ, over the polynomials in the other rows.
+-/
 def rowExpansion (x : m) : MatrixPoly m R ≃ₐ[R] MvPolynomial ℕ (MatrixPoly {a // a ≠ x} R) :=
   -- split the variables into those of row `x` and the others
   (renameEquiv R (((Equiv.optionSubtypeNe x).symm.prodCongr 1).trans optionProdEquiv)).trans
     (sumAlgEquiv R ℕ ({a // a ≠ x} × ℕ))
 
-/-- The finite set of the `γ` with `γ i ≤ l i - l (i + 1)` (truncated subtraction) for all `i`. For
-antitone `l` these are the `γ ≤ l` such that `μ = l - γ` interlaces `l`: `l (i + 1) ≤ μ i ≤ l i`. -/
+/--
+The finite set of the `γ` with `γ i ≤ l i - l (i + 1)` (truncated subtraction) for all `i`. For
+antitone `l` these are the `γ ≤ l` such that `μ = l - γ` interlaces `l`: `l (i + 1) ≤ μ i ≤ l i`.
+-/
 def interlacing : Finset (ℕ →₀ ℕ) := Icc 0 (l - l.comapDomain Nat.succ (by simp))
 
 lemma mem_interlacing_iff {γ : ℕ →₀ ℕ} : γ ∈ interlacing l ↔ ∀ i : ℕ, γ i ≤ l i - l (i + 1) := by
   simp [interlacing, Finsupp.le_def]
 
-/-- For finitely many columns j with colour τ_j and height h_j, the weight whose value at (τ,i)
-counts the columns of colour τ with height exceeding i. -/
+/--
+For finitely many columns j with colour τ_j and height h_j, the weight whose value at (τ,i)
+counts the columns of colour τ with height exceeding i.
+-/
 def columnWeight (τ : J → Φ) (h : J → ℕ) : Φ × ℕ →₀ ℕ :=
   ∑ j : J, ∑ i ∈ range (h j), Finsupp.single ((τ j : Φ), i) 1
 
@@ -124,8 +132,10 @@ abbrev ColoredTableau (c : m → Φ) (τ : J → Φ) (h : J → ℕ) : Type :=
 
 variable (S : Type) [CommRing S] (I : ColoredTableau c τ h)
 
-/-- For a coloured column filling I, the polynomial over S that is the product over columns j of
-the minor with rows I_j on the first h_j columns. -/
+/--
+For a coloured column filling I, the polynomial over S that is the product over columns j of
+the minor with rows I_j on the first h_j columns.
+-/
 def minorProduct : MatrixPoly m S := ∏ j : J, minor S fun s ↦ (I j s).val
 
 /-- The weight `New.diagramWeight N κ` equals the weight `New.GL.columnWeight` of the family having
@@ -358,7 +368,9 @@ private lemma columnOrder_lt_of_forall_add_ite_eq {γ n : ℕ →₀ ℕ} {i : �
   have h_lt_succ : γ (i + 1) < n (i + 1) := by lia
   exact columnOrder_lt_of_eq_above (i + 1) n (fun a ha ↦ (h_off a (by lia) (by lia)).symm) h_lt_succ
 
-variable {Φ m : Type} [DecidableEq m] {R : Type} [CommRing R]
+variable
+  {Φ m : Type} [DecidableEq m]
+  {R : Type} [CommRing R]
   {c : m → Φ} {x : m} {l : Φ × ℕ →₀ ℕ} {f : MatrixPoly m R}
 
 /-- Let `f` be a Borel semi-invariant of weight `l` for the row colouring `c` (`f ∈ nabla R c l`),
@@ -597,25 +609,32 @@ open MvPolynomial Finset MonomialOrder Submodule Finsupp Nat
 
 namespace New.GL
 
-/-- A standard family of fillings `I` for rows coloured by `c` and columns `j` of colour `τ j` and
+/--
+A standard family of fillings `I` for rows coloured by `c` and columns `j` of colour `τ j` and
 height `h j`: each `I i` (a `ColoredTableau`) gives column `j` an `h j`-tuple of rows of colour
 `τ j`; `minorProduct R (I i)` is the product of the minors on these rows and the first `h j`
-columns. -/
-structure IsStdMinorFamily {Φ J m ι : Type} [Fintype m] [Fintype J] [Fintype ι]
-    {c : m → Φ} {τ : J → Φ} {h : J → ℕ} (I : ι → ColoredTableau c τ h) : Prop where
+columns.
+-/
+structure IsStdMinorFamily
+    {Φ J m ι : Type} [Fintype m] [Fintype J] [Fintype ι]
+    {c : m → Φ} {τ : J → Φ} {h : J → ℕ} (I : ι → ColoredTableau c τ h)
+    : Prop where
   /-- Over every commutative ring the products of minors are linearly independent. -/
-  linearIndependent (R : Type) [CommRing R] :
-    LinearIndependent R fun i : ι ↦ minorProduct R (I i)
-  /-- Over every commutative ring the span of the products of minors contains the
-  semi-invariants of weight `columnWeight τ h`. -/
-  nabla_le_span (R : Type) [CommRing R] :
-    nabla R c (columnWeight τ h) ≤ span R (Set.range fun i : ι ↦ minorProduct R (I i))
-  /-- If `t` is the only colour and `e` enumerates the rows, then the sum over the fillings of the
+  linearIndependent (R : Type) [CommRing R] : LinearIndependent R fun i : ι ↦ minorProduct R (I i)
+  /--
+  Over every commutative ring the span of the products of minors contains the
+  semi-invariants of weight `columnWeight τ h`.
+  -/
+  nabla_le_span (R : Type) [CommRing R]
+    : nabla R c (columnWeight τ h) ≤ span R (Set.range fun i : ι ↦ minorProduct R (I i))
+  /--
+  If `t` is the only colour and `e` enumerates the rows, then the sum over the fillings of the
   products of the `x a` over their entries `a`, times the alternant of the zero weight, is the
-  alternant of the weight `columnWeight τ h (t, ·)`. -/
-  character [Subsingleton Φ] (t : Φ) (N : ℕ) (e : Fin N ≃ m) (x : m → ℂ) :
-    (∑ i : ι, ∏ j : J, ∏ s : Fin (h j), x (I i j s)) * alternant (x ∘ e) 0 =
-      alternant (x ∘ e) fun k : ℕ ↦ columnWeight τ h (t, k)
+  alternant of the weight `columnWeight τ h (t, ·)`.
+  -/
+  character [Subsingleton Φ] (t : Φ) (N : ℕ) (e : Fin N ≃ m) (x : m → ℂ)
+    : (∑ i : ι, ∏ j : J, ∏ s : Fin (h j), x (I i j s)) * alternant (x ∘ e) 0
+      = alternant (x ∘ e) fun k : ℕ ↦ columnWeight τ h (t, k)
 
 section LeadingTerms
 

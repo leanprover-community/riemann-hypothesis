@@ -165,44 +165,60 @@ lemma exists_cyclotomicChar_pow_sub_one_dvd {P : Parameters} (D : Data P) (ℓ :
     exact ⟨padicValNat ℓ D.chosenGroupOrder, le_rfl, .inl hℓ, g₀, hg₀,
       fun a ha ↦ (h_gen a φ).trans (hφ a ha)⟩
 
-/-- The system `x` (an isotypic space of forms for the descent pair `O`) is a weak lift: at every
-Galois element the characteristic polynomial of its normalised representation has the root `1`. -/
-def IsWeakLift {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {r n : Type}
-    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] (O : DescentPair D.E r n)
-    (x : Isotypic (stdSpace D.E n) (O.columnCount, O.detExp)) : Prop :=
+/--
+The system `x` (an isotypic space of forms for the descent pair `O`) is a weak lift: at every
+Galois element the characteristic polynomial of its normalised representation has the root `1`.
+-/
+def IsWeakLift
+    {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+    (O : DescentPair D.E r n) (x : Isotypic (stdSpace D.E n) (O.columnCount, O.detExp))
+    : Prop :=
   ∀ g : AbsGal D, (normalizedRep O x.galRep g).val.charpoly.IsRoot 1
 
 /-- The form `v` of the descent pair `O` is a nonzero form of the isotypic space `x`. -/
-structure IsNonzeroIn {P : Parameters} {D : Data P} {r n : Type} [Fintype r] [DecidableEq r]
-    [Fintype n] [DecidableEq n] {O : DescentPair D.E r n} (v : O.FormV)
-    (x : Isotypic (stdSpace D.E n) (O.columnCount, O.detExp)) : Prop where
+structure IsNonzeroIn
+    {P : Parameters} {D : Data P} {r n : Type}
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+    {O : DescentPair D.E r n}
+    (v : O.FormV) (x : Isotypic (stdSpace D.E n) (O.columnCount, O.detExp))
+    : Prop where
   /-- The algebraic form `v.toSmoothForm` of `v` lies in `x`. -/
   mem : v.toSmoothForm ∈ x.val
   /-- The algebraic form `v.toSmoothForm` of `v` is not zero. -/
   ne_zero : v.toSmoothForm ≠ 0
-/-- The system `x` lifts a row `R` (`IsMainSummandLike`: a representation of rank `r` with the
+/--
+The system `x` lifts a row `R` (`IsMainSummandLike`: a representation of rank `r` with the
 properties of a main summand): the trace of its normalised representation is that of `R` twisted
 by `ϑ.invAvatar` plus the powers `e < O.rankDiff` of the inverse cyclotomic character. The twist
 has a lattice on which some `γ` acts by a scalar `y` and, if `x = x₀`, its Selmer group with
-divisible coefficients has length at most `sel`. -/
-abbrev IsLiftWithTwistedLattice {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
-    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] (O : DescentPair D.E r n)
-    (ϑ : D.Twist) (sel : ENNReal)
-    (x₀ x : Isotypic (stdSpace D.E n) (O.columnCount, O.detExp)) : Prop :=
+divisible coefficients has length at most `sel`.
+-/
+abbrev IsLiftWithTwistedLattice
+    {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+    (O : DescentPair D.E r n)
+    (ϑ : D.Twist) (sel : ENNReal) (x₀ x : Isotypic (stdSpace D.E n) (O.columnCount, O.detExp))
+    : Prop :=
   ∃ (wt : (D.E →+* ℂ) → Multiset ℤ) (R : GalRep ℓ D.E r),
-    IsMainSummandLike (n := r) D O.rankDiff wt R ∧
-    HasLiftTrace ϑ.invAvatar R O.rankDiff (normalizedRep O x.galRep) ∧
-    ∃ γ : Gal(Ω/D.E), HasTwistedLattice ϑ.invAvatar R γ ∧
-      (x = x₀ → HasDivisibleSelmerLengthLe ϑ.invAvatar R ϑ.Q γ sel)
+    IsMainSummandLike (n := r) D O.rankDiff wt R
+      ∧ HasLiftTrace ϑ.invAvatar R O.rankDiff (normalizedRep O x.galRep)
+      ∧ ∃ γ : Gal(Ω/D.E),
+        HasTwistedLattice ϑ.invAvatar R γ
+          ∧ (x = x₀ → HasDivisibleSelmerLengthLe ϑ.invAvatar R ϑ.Q γ sel)
 
-
-/-- The bound `sel + 2 t′ ram + r′ loc + err` for the valuations of the eigenvalues of the operator
+/--
+The bound `sel + 2 t′ ram + r′ loc + err` for the valuations of the eigenvalues of the operator
 that clears denominators. Here `r′ = card r`, `t′ = O.rankDiff`, `loc = localDefectBound D ℓ` and
 `err = denominatorError D ℓ`; `ram` bounds the ramification of the twist and `sel` the lengths of
-the Selmer groups. -/
-noncomputable def liftValuationBound {P : Parameters} {D : Data P} (ℓ : ℕ)
-    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] (O : DescentPair D.E r n)
-    (ram sel : ENNReal) : ENNReal :=
+the Selmer groups.
+-/
+noncomputable def liftValuationBound
+    {P : Parameters} {D : Data P}
+    (ℓ : ℕ)
+    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n]
+    (O : DescentPair D.E r n) (ram sel : ENNReal)
+    : ENNReal :=
   sel + 2 * O.rankDiff * ram + card r * localDefectBound D ℓ + denominatorError D ℓ
 
 /-- Let `ϑ` be an auxiliary twist of the data `D`, with ramification at most `ram` (`IsAuxTwist`):
@@ -752,27 +768,39 @@ lemma typeProjection_sub_starProjection_mem {P : Parameters} {D : Data P} {r n :
   have hu_false : u ∈ O.falseLiftsAt hw hS E Zᗮ := ⟨⟨h_le hu_range, hu_ker⟩, hu_orth⟩
   rw [← isSymmetric_typeProjection, typeProjection_eq_self_of_mem_range hu_range, h_test u hu_false]
 
-/-- A lift generator of `Z`: a form in `Z`, in the range of an apt projection inside the image of
+/--
+A lift generator of `Z`: a form in `Z`, in the range of an apt projection inside the image of
 `E`, that lifts a system with a main summand whose twist by `ϑ.invAvatar` has a Selmer group with
-divisible coefficients of length at most `sel` (`HasDivisibleSelmerLengthLe`). -/
-structure IsLiftGenerator {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
-    (ϑ : D.Twist) {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+divisible coefficients of length at most `sel` (`HasDivisibleSelmerLengthLe`).
+-/
+structure IsLiftGenerator
+    {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    (ϑ : D.Twist)
+    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
     (O : DescentPair D.E r n) (E : MonoidAlgebra ℂ (O.ChosenGL r)) (Z : Submodule ℂ O.FormV)
-    (sel : ENNReal) (y : O.FormV) : Prop where
+    (sel : ENNReal) (y : O.FormV)
+    : Prop where
   /-- The form lies in `Z`. -/
   mem : y ∈ Z
-  /-- The form is in the range of `typeProjection O c` for a type `c` in lift setting, inside the
-  image of `E`. -/
-  exists_type : ∃ c : ∀ i : O.ChosenIndex, (ResField (O.chosenPlace i))[X],
-    y ∈ (typeProjection O c).range ∧ IsLiftSetting O c ϑ ∧
-    (typeProjection O c).range ≤ (O.groupAlgAction E).range
-  /-- The form lifts a system with a main summand `R` for a pair `V` with
+  /--
+  The form is in the range of `typeProjection O c` for a type `c` in lift setting, inside the
+  image of `E`.
+  -/
+  exists_type
+    : ∃ c : ∀ i : O.ChosenIndex, (ResField (O.chosenPlace i))[X],
+      y ∈ (typeProjection O c).range ∧ IsLiftSetting O c ϑ
+        ∧ (typeProjection O c).range ≤ (O.groupAlgAction E).range
+  /--
+  The form lifts a system with a main summand `R` for a pair `V` with
   `O.u1Char = V.u1Char * ϑ.toAutChar`, and the Selmer group with divisible coefficients of the
-  twisted main summand has length at most `sel`. -/
-  exists_hasLiftHeckePolynomial : ∃ z : FinPlace D.E → ℕ → ℂ, O.HasLiftHeckePolynomial y z ∧
-    ∃ (R : GalRep ℓ D.E r) (V : DescentPair D.E r n),
-      IsMainSummand V z R ∧ O.u1Char = V.u1Char * ϑ.toAutChar ∧
-      ∃ γ : AbsGal D, HasDivisibleSelmerLengthLe ϑ.invAvatar R ϑ.Q γ sel
+  twisted main summand has length at most `sel`.
+  -/
+  exists_hasLiftHeckePolynomial
+    : ∃ z : FinPlace D.E → ℕ → ℂ,
+      O.HasLiftHeckePolynomial y z
+        ∧ ∃ (R : GalRep ℓ D.E r) (V : DescentPair D.E r n),
+          IsMainSummand V z R ∧ O.u1Char = V.u1Char * ϑ.toAutChar
+            ∧ ∃ γ : AbsGal D, HasDivisibleSelmerLengthLe ϑ.invAvatar R ϑ.Q γ sel
 
 /-- A lift generator for the bound `sel` on the length of its Selmer group is one for every larger
 bound. -/
@@ -1125,7 +1153,8 @@ lemma exists_linearMap_eq_smul_mem_integralForms {P : Parameters} {D : Data P} {
   rw [mem_integralForms_ofIso_iff, hw_eq]
   simpa [sq, mul_smul, Nat.cast_smul_eq_nsmul ℂ] using h_ell
 
-/-- Bound for denominators. Let the twist `ϑ` have ramification at most `ram` (`IsAuxTwist`), let
+/--
+Bound for denominators. Let the twist `ϑ` have ramification at most `ram` (`IsAuxTwist`), let
 `sel` be finite, and let `Z` be spanned by lift generators: forms in `Z`, of a type compatible with
 `ϑ` (a lift setting) inside the image of the group-algebra element `E`, that lift Hecke eigenvalues
 with main summands whose twisted Selmer groups with divisible coefficients have length at most
@@ -1134,25 +1163,31 @@ with main summands whose twisted Selmer groups with divisible coefficients have 
 ℓ + denominatorError D ℓ`, and takes to forms integral at `ιℓ` the projections to `Z` of forms
 integral at `ιℓ` and orthogonal to the false lifts, which are the forms in `Zᗮ` and the image of `E`
 that, at some split place, the Hecke polynomial at `O.liftHeckeRoot`, the value expected of a lift,
-kills. Here `ιℓ` is the fixed isomorphism from `ℂ` to the algebraic closure of `ℚ_ℓ`. -/
-theorem exists_operator_ellVal_le_liftValuationBound {P : Parameters} {D : Data P} {ℓ : ℕ}
-    [ThePrime ℓ] [PadicIso ℓ] (ϑ : D.Twist) {ram sel : ENNReal}
+kills. Here `ιℓ` is the fixed isomorphism from `ℂ` to the algebraic closure of `ℚ_ℓ`.
+-/
+theorem exists_operator_ellVal_le_liftValuationBound
+    {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    (ϑ : D.Twist)
+    {ram sel : ENNReal}
     (hϑ : IsAuxTwist (badPlaces D ℓ) ϑ.Q ϑ.invAvatar ram) (h_sel_ne_top : sel ≠ ⊤)
-    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair D.E r n}
-    {E : MonoidAlgebra ℂ (O.ChosenGL r)} {Z : Submodule ℂ O.FormV}
-    (h_span : Z ≤ span ℂ {y : O.FormV | IsLiftGenerator ϑ O E Z sel y}) :
-    ∃ Λ : Module.End ℂ Z,
-      (∀ μ : ℂ, Λ.HasEigenvalue μ → ellVal (ℓ := ℓ) (ιℓ μ) ≤ liftValuationBound ℓ O ram sel) ∧
-      ∀ y : O.FormV, y ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y →
-        (Λ (Z.orthogonalProjectionOnto y) : O.FormV) ∈ integralForms (PadicPlace.ofIso ιℓ) := by
+    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+    {O : DescentPair D.E r n} {E : MonoidAlgebra ℂ (O.ChosenGL r)} {Z : Submodule ℂ O.FormV}
+    (h_span : Z ≤ span ℂ {y : O.FormV | IsLiftGenerator ϑ O E Z sel y})
+    : ∃ Λ : Module.End ℂ Z,
+      (∀ μ : ℂ, Λ.HasEigenvalue μ → ellVal (ℓ := ℓ) (ιℓ μ) ≤ liftValuationBound ℓ O ram sel)
+        ∧ ∀ y : O.FormV,
+          y ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y
+            → (Λ (Z.orthogonalProjectionOnto y) : O.FormV)
+              ∈ integralForms (PadicPlace.ofIso ιℓ) := by
   -- Choose a basis `b` of `Z` among the lift generators. The operators of
   -- `exists_linearMap_eq_smul_mem_integralForms` for the basis vectors, moved to `Z`, are diagonal
   -- in `b`, and one integral combination of them serves all basis vectors at once
   -- (`exists_diagonal_mem_norm_ge`).
   set A : Set O.FormV := {y : O.FormV | IsLiftGenerator ϑ O E Z sel y}
   let ι : Type := Fin (finrank ℂ (span ℂ A))
-  obtain ⟨ω, hωA, hω_span, h_indep⟩ : ∃ ω : ι → O.FormV, (∀ k : ι, ω k ∈ A) ∧
-      span ℂ (Set.range ω) = span ℂ A ∧ LinearIndependent ℂ ω :=
+  obtain ⟨ω, hωA, hω_span, h_indep⟩
+      : ∃ ω : ι → O.FormV,
+        (∀ k : ι, ω k ∈ A) ∧ span ℂ (Set.range ω) = span ℂ A ∧ LinearIndependent ℂ ω :=
     exists_fun_fin_finrank_span_eq ℂ A
   have h_eq : span ℂ (Set.range ω) = Z :=
     hω_span.trans (span_eq_of_le _ (fun y hy ↦ IsLiftGenerator.mem hy) h_span)
@@ -1166,30 +1201,38 @@ theorem exists_operator_ellVal_le_liftValuationBound {P : Parameters} {D : Data 
   have h_eigenvalue (k p : ι) : ∃ μ : ℂ, G k (ω p) = μ • (ω p).toSmoothForm :=
     hG_eig k (ω p) (IsLiftGenerator.mono (hωA p) le_top)
   choose eig h_eig using h_eigenvalue
-  let Good : Set (Module.End ℂ Z) := {Λ | ∀ y : O.FormV,
-    y ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y →
-      (Λ (Z.orthogonalProjectionOnto y) : O.FormV) ∈ integralForms (PadicPlace.ofIso ιℓ)}
+  let Good : Set (Module.End ℂ Z) :=
+    {Λ | ∀ y : O.FormV,
+      y ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y →
+        (Λ (Z.orthogonalProjectionOnto y) : O.FormV) ∈ integralForms (PadicPlace.ofIso ιℓ)}
   have h_good (k : ι) : Matrix.toLin b b (Matrix.diagonal (eig k)) ∈ Good := by
     intro y hy_int hy
     -- both sides are linear in the vector of `Z` and agree on the basis `b`
-    have h_lin : (toSmoothForm : O.FormV →ₗ[ℂ] (stdSpace D.E n).forms (O.columnCount, O.detExp)) ∘ₗ
-        Z.subtype ∘ₗ Matrix.toLin b b (Matrix.diagonal (eig k)) = G k ∘ₗ Z.subtype :=
+    have h_lin
+        : (toSmoothForm : O.FormV →ₗ[ℂ] (stdSpace D.E n).forms (O.columnCount, O.detExp))
+            ∘ₗ Z.subtype ∘ₗ Matrix.toLin b b (Matrix.diagonal (eig k))
+          = G k ∘ₗ Z.subtype :=
       b.ext fun p ↦ by simp [Matrix.diagonal, hb, h_eig]
     exact hG_int k y hy_int hy _ (LinearMap.congr_fun h_lin (Z.orthogonalProjectionOnto y))
-  have h_comb (G' : ι → Module.End ℂ Z) (d : ι → PadicAlgCl ℓ) (hG' : ∀ p : ι, G' p ∈ Good)
-      (hd : ∀ p : ι, ‖d p‖ ≤ 1) : ∑ p : ι, ιℓ.symm (d p) • G' p ∈ Good := by
+  have h_comb
+      (G' : ι → Module.End ℂ Z) (d : ι → PadicAlgCl ℓ)
+      (hG' : ∀ p : ι, G' p ∈ Good) (hd : ∀ p : ι, ‖d p‖ ≤ 1)
+      : ∑ p : ι, ιℓ.symm (d p) • G' p ∈ Good := by
     intro y hy_int hy
     simp only [LinearMap.sum_apply, LinearMap.smul_apply, Submodule.coe_sum, Submodule.coe_smul]
     have h_nnnorm (p : ι) : ‖d p‖₊ ≤ 1 := hd p
     exact sum_mem fun p _ ↦
       (integralForms _).smul_mem ⟨ιℓ.symm (d p), by simpa [PadicPlace.ιₚ_ofIso] using h_nnnorm p⟩
         (hG' p y hy_int hy)
-  obtain ⟨μ, hμ_good, hμ_ge⟩ : ∃ μ : ι → ℂ, Matrix.toLin b b (Matrix.diagonal μ) ∈ Good ∧
-      ∀ k : ι, ‖ιℓ (eig k k)‖ ≤ ‖ιℓ (μ k)‖ :=
+  obtain ⟨μ, hμ_good, hμ_ge⟩
+      : ∃ μ : ι → ℂ,
+        Matrix.toLin b b (Matrix.diagonal μ) ∈ Good ∧ ∀ k : ι, ‖ιℓ (eig k k)‖ ≤ ‖ιℓ (μ k)‖ :=
     exists_diagonal_mem_norm_ge b h_comb eig h_good
   refine ⟨Matrix.toLin b b (Matrix.diagonal μ), fun ν hν ↦ ?_, hμ_good⟩
   obtain ⟨k, rfl⟩ : ∃ k : ι, μ k = ν := (hasEigenvalue_toLin_diagonal_iff μ b).1 hν
-  calc ellVal (ιℓ (μ k)) ≤ ellVal (ιℓ (eig k k)) := ellVal_le_ellVal (hμ_ge k)
+  calc
+    ellVal (ιℓ (μ k))
+      ≤ ellVal (ιℓ (eig k k)) := ellVal_le_ellVal (hμ_ge k)
     _ ≤ liftValuationBound ℓ O ram sel := hG_bound k (eig k k) (h_eig k k)
 
 /-- If `N * ιℓ μ` has `ℓ`-adic valuation at most `B` for every eigenvalue `μ` of `Λ`, then the
@@ -1211,7 +1254,8 @@ lemma exp_le_norm_det_smul_of_ellVal_le {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ
   rw [h_pow, LinearMap.det_smul, map_mul, map_pow, map_natCast]
   exact_mod_cast pow_finrank_le_nnnorm_det Λ _ h_eig'
 
-/-- The operator form of the bound for denominators with the clearing bound. Let the twist `ϑ` have
+/--
+The operator form of the bound for denominators with the clearing bound. Let the twist `ϑ` have
 ramification at most `twistError ℓ D`, the small number `(4 f + 3) r v_ℓ(N) + 2 ^ (-ℓ)` with
 `N = D.chosenGroupOrder`, with respect to the places above `ℓ` and the level (`badPlaces D ℓ`), and
 let `Z` be spanned by lift generators (`IsLiftGenerator`): forms in `Z` of suitable type that lift
@@ -1221,21 +1265,23 @@ Hecke eigenvalues with main summands whose twisted Selmer groups have length at 
 losses, error terms and `v_ℓ(N)`. It takes the projection to `Z` of every form `y'` integral at `ιℓ`
 and orthogonal to the false lifts to a form integral at `ιℓ`. Its pairings with test forms integral
 at the conjugate place `ιℓ ∘ conj` are integral at `ιℓ`: the first variable of the inner product is
-conjugate-linear. -/
-theorem exists_operator_det_clearingBound {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ]
-    [PadicIso ℓ] (ϑ : D.Twist) (hϑ : IsAuxTwist (badPlaces D ℓ) ϑ.Q ϑ.invAvatar (twistError ℓ D))
-    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair D.E r n}
-    {E : MonoidAlgebra ℂ (O.ChosenGL r)} {Z : Submodule ℂ O.FormV}
-    (h_span : Z ≤ span ℂ {y : O.FormV | IsLiftGenerator ϑ O E Z (twistError ℓ D) y}) :
-    ∃ Λ : Module.End ℂ Z,
-      exp (-(finrank ℂ Z * (card r * (clearingBound D ℓ * log ℓ)))) ≤ ‖ιℓ (LinearMap.det Λ)‖ ∧
-      (∀ y' : O.FormV, y' ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y'
-        →
-        (Λ (Z.orthogonalProjectionOnto y') : O.FormV) ∈ integralForms (PadicPlace.ofIso ιℓ)) ∧
-      ∀ y y' : O.FormV,
-        y ∈ integralForms ({ ιₚ := (PadicPlace.ofIso ιℓ).ιₚ.comp (starRingEnd ℂ) } : PadicPlace ℓ) →
-        y' ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y' →
-        ‖ιℓ (inner ℂ y (Λ (Z.orthogonalProjectionOnto y') : O.FormV))‖ ≤ 1 := by
+conjugate-linear.
+-/
+theorem exists_operator_det_clearingBound
+    {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    (ϑ : D.Twist) (hϑ : IsAuxTwist (badPlaces D ℓ) ϑ.Q ϑ.invAvatar (twistError ℓ D))
+    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+    {O : DescentPair D.E r n} {E : MonoidAlgebra ℂ (O.ChosenGL r)} {Z : Submodule ℂ O.FormV}
+    (h_span : Z ≤ span ℂ {y : O.FormV | IsLiftGenerator ϑ O E Z (twistError ℓ D) y})
+    : ∃ Λ : Module.End ℂ Z,
+      exp (-(finrank ℂ Z * (card r * (clearingBound D ℓ * log ℓ)))) ≤ ‖ιℓ (LinearMap.det Λ)‖
+        ∧ (∀ y' : O.FormV,
+          y' ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y'
+            → (Λ (Z.orthogonalProjectionOnto y') : O.FormV) ∈ integralForms (PadicPlace.ofIso ιℓ))
+        ∧ ∀ y y' : O.FormV,
+          y ∈ integralForms ({ ιₚ := (PadicPlace.ofIso ιℓ).ιₚ.comp (starRingEnd ℂ) } : PadicPlace ℓ)
+            → y' ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y'
+            → ‖ιℓ (inner ℂ y (Λ (Z.orthogonalProjectionOnto y') : O.FormV))‖ ≤ 1 := by
   -- If no generator is nonzero, then `Z = ⊥` and the identity serves. Otherwise some generator
   -- exists; its lift-setting type bounds the rank and the automorphism groups, and
   -- `D.chosenGroupOrder • Λ` serves, with `Λ` of `exists_operator_ellVal_le_liftValuationBound`.
@@ -1249,32 +1295,36 @@ theorem exists_operator_det_clearingBound {P : Parameters} {D : Data P} {ℓ : �
   obtain ⟨c, -, hc, -⟩ := IsLiftGenerator.exists_type hv
   have h_rank_pos : 1 ≤ card r := hc.odd.1.pos
   obtain ⟨h_r_le, h_rankDiff_le⟩ := hc.rank_le
-  have h_budget : liftValuationBound ℓ O (twistError ℓ D) (twistError ℓ D) +
-      padicValNat ℓ D.chosenGroupOrder ≤ card r * clearingBound D ℓ :=
+  have h_budget
+      : liftValuationBound ℓ O (twistError ℓ D) (twistError ℓ D) + padicValNat ℓ D.chosenGroupOrder
+        ≤ card r * clearingBound D ℓ :=
     add_denominatorError_le_mul_clearingBound ⟨h_rank_pos, h_r_le⟩ h_rankDiff_le le_rfl le_rfl
   obtain ⟨Λ, h_eig, h_int⟩ :=
     exists_operator_ellVal_le_liftValuationBound ϑ hϑ ENNReal.coe_ne_top h_span
   refine ⟨(D.chosenGroupOrder : ℂ) • Λ, ?_, fun y' hy' hy'_test ↦ ?_, fun y y' hy hy' hy'_test ↦ ?_⟩
   · -- the determinant is the product of the eigenvalues, each of valuation at most
     -- `card r * clearingBound D ℓ`
-    have h_val (μ : ℂ) (hμ : Λ.HasEigenvalue μ) :
-        ellVal ((D.chosenGroupOrder : PadicAlgCl ℓ) * ιℓ μ) ≤ card r * clearingBound D ℓ := by
+    have h_val (μ : ℂ) (hμ : Λ.HasEigenvalue μ)
+        : ellVal ((D.chosenGroupOrder : PadicAlgCl ℓ) * ιℓ μ) ≤ card r * clearingBound D ℓ := by
       grw [ellVal_mul_le, ellVal_natCast (NeZero.ne _), h_eig μ hμ, add_comm]
       exact h_budget
-    calc exp (-(finrank ℂ Z * (card r * (clearingBound D ℓ * log ℓ))))
-        = exp (-(finrank ℂ Z * (((card r * clearingBound D ℓ : NNReal) : ℝ) * log ℓ))) := by
-          push_cast
-          ring_nf
+    calc
+      exp (-(finrank ℂ Z * (card r * (clearingBound D ℓ * log ℓ))))
+          = exp (-(finrank ℂ Z * (((card r * clearingBound D ℓ : NNReal) : ℝ) * log ℓ))) := by
+        push_cast
+        ring_nf
       _ ≤ ‖ιℓ (LinearMap.det ((D.chosenGroupOrder : ℂ) • Λ))‖ :=
-          exp_le_norm_det_smul_of_ellVal_le _ Λ _ h_val
+        exp_le_norm_det_smul_of_ellVal_le _ Λ _ h_val
   · -- an integer multiple of an integral form is integral
     rw [LinearMap.smul_apply, Submodule.coe_smul, Nat.cast_smul_eq_nsmul ℂ]
     exact nsmul_mem (h_int y' hy' hy'_test) _
   · -- Projection integrality alone need not give an integral pairing: the class stabilizer
     -- orders divide `D.chosenGroupOrder`, which clears their denominators. The first variable
     -- is integral at the conjugate place, as required by the Hermitian pairing.
-    have h_pair : ‖(PadicPlace.ofIso ιℓ).ιₚ
-        (D.chosenGroupOrder • inner ℂ y (Λ (Z.orthogonalProjectionOnto y') : O.FormV))‖ ≤ 1 :=
+    have h_pair
+        : ‖(PadicPlace.ofIso ιℓ).ιₚ
+            (D.chosenGroupOrder • inner ℂ y (Λ (Z.orthogonalProjectionOnto y') : O.FormV))‖
+          ≤ 1 :=
       y.norm_nsmul_inner_le_one _ (PadicPlace.ofIso ιℓ)
         (D.card_classAut_dvd_chosenGroupOrder hc.card_le levelOf_le_stdLevel) hy
         (h_int y' hy' hy'_test)
@@ -1282,7 +1332,8 @@ theorem exists_operator_det_clearingBound {P : Parameters} {D : Data P} {ℓ : �
       Nat.cast_smul_eq_nsmul ℂ]
     simpa [PadicPlace.ιₚ_ofIso, ← PadicComplex.norm_extends ℓ D.chosenGroupOrder] using h_pair
 
-/-- Denominators for a good twist. Let `ι.ιℓ` be the isomorphism from `ℂ` to the algebraic closure
+/--
+Denominators for a good twist. Let `ι.ιℓ` be the isomorphism from `ℂ` to the algebraic closure
 of `ℚ_ℓ` that `ι` chooses, and `ψ = ϑ.invAvatar` the `ℓ`-adic avatar of `ϑ⁻¹` for it. Let
 `β = clearingBound D ℓ`, the sum of the local losses, the error terms and the valuation of
 `D.chosenGroupOrder`; the small number `twistError ℓ D` is one of these terms. Assume: (i) the set
@@ -1295,14 +1346,16 @@ length at most `twistError ℓ D`. Then `DenominatorLe` holds for `E` and `Z` wi
 some operator on `Z` with determinant of `ℓ`-adic norm at least
 `exp (-(finrank ℂ Z * (card r * (β * log ℓ))))` takes the projection to `Z` of each form integral at
 `ι.ιℓ` and orthogonal to the false lifts to a form that is integral at `ι.ιℓ` and has integral
-pairings with the forms integral at all places above `ℓ`. -/
-theorem denominatorLe_clearingBound {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ]
-    (ι : PadicIso ℓ) (ϑ : D.Twist)
-    (hϑ : IsAuxTwist (badPlaces D ℓ) ϑ.Q ϑ.invAvatar (twistError ℓ D))
-    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair D.E r n}
-    {E : MonoidAlgebra ℂ (O.ChosenGL r)} {Z : Submodule ℂ O.FormV}
-    (h_span : Z ≤ span ℂ {y : O.FormV | IsLiftGenerator ϑ O E Z (twistError ℓ D) y}) :
-    DenominatorLe ι.ιℓ O E Z (clearingBound D ℓ * log ℓ) := by
+pairings with the forms integral at all places above `ℓ`.
+-/
+theorem denominatorLe_clearingBound
+    {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ]
+    (ι : PadicIso ℓ)
+    (ϑ : D.Twist) (hϑ : IsAuxTwist (badPlaces D ℓ) ϑ.Q ϑ.invAvatar (twistError ℓ D))
+    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+    {O : DescentPair D.E r n} {E : MonoidAlgebra ℂ (O.ChosenGL r)} {Z : Submodule ℂ O.FormV}
+    (h_span : Z ≤ span ℂ {y : O.FormV | IsLiftGenerator ϑ O E Z (twistError ℓ D) y})
+    : DenominatorLe ι.ιℓ O E Z (clearingBound D ℓ * log ℓ) := by
   obtain ⟨Λ, h_det, h_int, h_pair⟩ := exists_operator_det_clearingBound ϑ hϑ h_span
   refine ⟨Λ, h_det, fun y hy hy_test ↦ ⟨?_, fun y' hy' ↦ ?_⟩⟩
   · exact h_int y hy hy_test

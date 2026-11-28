@@ -60,8 +60,10 @@ open PowerSeries Finset
 
 namespace New
 
-/-- The least positive degree `i₀ ≡ p + 1` mod `q_p - 1` at a non-split prime: `2` if `p = d`, and
-`p + 1` if `p` is inert. -/
+/--
+The least positive degree `i₀ ≡ p + 1` mod `q_p - 1` at a non-split prime: `2` if `p = d`, and
+`p + 1` if `p` is inert.
+-/
 def leastFlatDegree (d p : ℕ) : ℕ := if p = d then 2 else p + 1
 
 lemma leastFlatDegree_pos (d p : ℕ) : 0 < leastFlatDegree d p := by
@@ -199,14 +201,18 @@ variable {p : ℕ} [Fact p.Prime] {d : ℕ} [PrimeSevenModEight d] (C : CMLattic
 
 /-! ## Step 1: averaging -/
 
-/-- The series `g^♭`: the part of `g = -log θ` (`C.negLogTheta`) in the degrees `≡ p + 1` mod
+/--
+The series `g^♭`: the part of `g = -log θ` (`C.negLogTheta`) in the degrees `≡ p + 1` mod
 `q_p - 1`, where `q_p = primeNorm d p` and `θ` is the theta function of `C`, a lattice with complex
-multiplication by the ring of integers of `ℚ(√-d)`. -/
+multiplication by the ring of integers of `ℚ(√-d)`.
+-/
 noncomputable def negLogThetaPart : ℂ_[p]⟦X⟧ :=
   congruencePart (primeNorm d p - 1) (p + 1) C.negLogTheta
 
-/-- The exponent `Ξ₁ = -g^♭(ϖ z) / c_ϖ`, where `g^♭ = C.negLogThetaPart` and
-`c_ϖ = ϖ ^ (p + 1) / p`. -/
+/--
+The exponent `Ξ₁ = -g^♭(ϖ z) / c_ϖ`, where `g^♭ = C.negLogThetaPart` and
+`c_ϖ = ϖ ^ (p + 1) / p`.
+-/
 noncomputable def exponentSeries (ϖ : ℂ_[p]) : ℂ_[p]⟦X⟧ :=
   -(ϖ ^ (p + 1) / p)⁻¹ • rescale ϖ C.negLogThetaPart
 
@@ -430,8 +436,8 @@ section Reduction
 variable {p : ℕ} [Fact p.Prime] {d : ℕ} [PrimeSevenModEight d] [PadicPlace p]
 
 /-- The reduction map `𝒪 → 𝒪 / π_p`, where `𝒪 = valRingCp p` and `π_p = piPrimeInt d`. -/
-noncomputable abbrev reducePiPrime (d : ℕ) [PrimeSevenModEight d] :
-    valRingCp p →+* valRingCp p ⧸ Ideal.span {piPrimeInt d} :=
+noncomputable abbrev reducePiPrime (d : ℕ) [PrimeSevenModEight d]
+    : valRingCp p →+* valRingCp p ⧸ Ideal.span {piPrimeInt d} :=
   Ideal.Quotient.mk (Ideal.span {piPrimeInt d})
 
 lemma reducePiPrime_eq_iff {a b : valRingCp p} :
@@ -633,7 +639,8 @@ lemma CMLattice.exists_exponentSeries_tsum_of_ramified {ϖ : ℂ_[p]} {Y : (valR
   rw [(hasSum_primePowerSeries_univ_sq_sub hp_ne_two h_half l).tsum_eq]
   exact dvd_sub_smul_of_dvd_sub hΞ_congr (by rwa [sub_sub_sub_cancel_right])
 
-/-- Let `d ≡ 7` mod `8` be a prime, `C` a lattice with complex multiplication by the ring of
+/--
+Let `d ≡ 7` mod `8` be a prime, `C` a lattice with complex multiplication by the ring of
 integers of `ℚ(√-d)`, and `p` a prime that does not split there. There are `ϖ ∈ ℂ_p` with
 `‖ϖ‖ = p ^ (-ρ_p)` (where `‖p‖ = p⁻¹`), series `Ξ`, `W` over the ring `𝒪 = valRingCp p` of integers
 of `ℂ_p` with `Ξ(0) = 0`, and numbers `λ_{e j} ∈ 𝒪` such that `θ(ϖ z) = W exp (c_ϖ Ξ)` and
@@ -641,20 +648,22 @@ of `ℂ_p` with `Ξ(0) = 0`, and numbers `λ_{e j} ∈ 𝒪` such that `θ(ϖ z)
 function of `C`, read in `ℂ_p` by the embedding `ιₚ` that `PadicPlace p` fixes,
 `c_ϖ = ϖ ^ (p + 1) / p`, `exp a` is written `expSubst a`, and `e` runs over
 `I_p° = partnerExponents d p`: the odd numbers, or all if `p = d`. If `p` is inert, the `λ_{e 0}`
-with `e` odd are units. -/
-theorem CMLattice.exists_exponent_tsum (hp : chiK d p ≠ 1) :
-    ∃ (ϖ : ℂ_[p]) (Ξ W : (valRingCp p)⟦X⟧) (l : ℕ → ℕ → valRingCp p),
-      ‖ϖ‖ = p ^ (-varpiValuation d p) ∧
-      constantCoeff Ξ = 0 ∧
-      rescale ϖ (taylorVia ιₚ C.θ) = seriesToCp W * expSubst ((ϖ ^ (p + 1) / p) • seriesToCp Ξ) ∧
-      PowerSeries.C (piPrimeInt d) ∣ Ξ - ∑' x : partnerExponents d p × ℕ,
-        l x.1 x.2 • (X ^ p ^ (x.1 : ℕ) * X) ^ p ^ x.2 ∧
-      (chiK d p = -1 → ∀ e : ℕ, Odd e → IsUnit (l e 0)) := by
+with `e` odd are units.
+-/
+theorem CMLattice.exists_exponent_tsum (hp : chiK d p ≠ 1)
+    : ∃ (ϖ : ℂ_[p]) (Ξ W : (valRingCp p)⟦X⟧) (l : ℕ → ℕ → valRingCp p),
+      ‖ϖ‖ = p ^ (- varpiValuation d p) ∧ constantCoeff Ξ = 0
+        ∧ rescale ϖ (taylorVia ιₚ C.θ) = seriesToCp W * expSubst ((ϖ ^ (p + 1) / p) • seriesToCp Ξ)
+        ∧ PowerSeries.C (piPrimeInt d)
+          ∣ Ξ
+            - ∑' x : partnerExponents d p × ℕ,
+              l x.1 x.2 • (X ^ p ^ (x.1 : ℕ) * X) ^ p ^ x.2
+        ∧ (chiK d p = -1 → ∀ e : ℕ, Odd e → IsUnit (l e 0)) := by
   -- Scale by `ϖ` so that `Y = T(ϖ z) / ϖ` is integral, and split `exp (c_ϖ Ξ₁)` off `θ(ϖ z)`.
   obtain ⟨ϖ, Y, hϖ, hTY, -, hY⟩ := C.exists_scaled_formalParam (p := p)
   obtain ⟨W, hW⟩ := C.exists_rescale_theta_eq_mul_expSubst (ne_zero_of_norm_eq_rpow hϖ) hϖ.le
-  have h_zero {Ξ : (valRingCp p)⟦X⟧} (hΞ : seriesToCp Ξ = C.exponentSeries ϖ) :
-      constantCoeff Ξ = 0 := by
+  have h_zero {Ξ : (valRingCp p)⟦X⟧} (hΞ : seriesToCp Ξ = C.exponentSeries ϖ)
+      : constantCoeff Ξ = 0 := by
     rw [← coeff_zero_eq_constantCoeff_apply, ← ZeroMemClass.coe_eq_zero, ← coeff_seriesToCp, hΞ,
       C.coeff_exponentSeries_eq_zero_of_lt hp (leastFlatDegree_pos d p)]
   rcases ramified_or_inert hp with ⟨hd, -⟩ | ⟨-, h_inert, -⟩

@@ -66,8 +66,10 @@ section ChangeOfSpace
 
 open Matrix MeasureTheory Space G
 
-variable {E : Type} [Field E] [CMType E] {n a : Type} [Fintype n] [DecidableEq n]
-  [Fintype a] [DecidableEq a] {s : n → ℤˣ} {t : a → ℤˣ}
+variable
+  {E : Type} [Field E] [CMType E]
+  {n a : Type} [Fintype n] [DecidableEq n] [Fintype a] [DecidableEq a]
+  {s : n → ℤˣ} {t : a → ℤˣ}
 
 attribute [mk_iff] IsForm Space.IsAutomorphic
 
@@ -209,28 +211,32 @@ lemma exists_thetaLarge_eq_mul_thetaLarge (W W₁ : Space E n s) (V V₁ : Space
   exists_circle_thetaIntegral_localDatum_eq_mul W W₁ V V₁ c k hk (rankTwist 𝔠.character⁻¹ n)
     (rankTwist 𝔠.character⁻¹ n) 𝔠.readsAt
 
-/-- Let `W, W₁`, `V, V₁` and `V', V'₁` be pairs of Hermitian spaces with the same signs. For a split
+/--
+Let `W, W₁`, `V, V₁` and `V', V'₁` be pairs of Hermitian spaces with the same signs. For a split
 tame character `𝔠` there are two theta integrals on the adelic unitary group `G E s` of `W`, of data
 with real part a vector of the Fock space `PairFock`, a given function at `𝔠.ramifiedPlaces` and the
 vacuum at other places. There is a point `γ` of `G E s`, depending on the spaces only, such that for
 every `𝔠` the integrals `thetaLarge` for `(W₁, V₁)` and `thetaSmall` for `(W₁, V'₁)` at `g` are, up
-to numbers of modulus one, those for `(W, V)` and `(W, V')` at `γ * g`. -/
-theorem exists_thetaLarge_thetaSmall_eq_circle_mul (W W₁ : Space E n s) (V V₁ : Space E a t)
-    {b : Type} [Fintype b] [DecidableEq b] {t' : b → ℤˣ} (V' V'₁ : Space E b t') :
-    ∃ γ : G E s, ∀ {μ : NumberField.InfinitePlace E → ℤ} (𝔠 : SplitTameChar E μ),
-      (∃ u : Circle, ∀ (v : PairFock E s t) (Φ : Matrix a n (LocProd 𝔠.ramifiedPlaces) → ℂ)
-        (g : G E s),
-        thetaLarge W₁ V₁ 𝔠 v Φ g = u * thetaLarge W V 𝔠 v Φ (γ * g)) ∧
-      ∃ u' : Circle, ∀ (v' : PairFock E s t') (Ψ : Matrix n b (LocProd 𝔠.ramifiedPlaces) → ℂ)
-        (g : G E s),
-        thetaSmall W₁ V'₁ 𝔠 v' Ψ g = u' * thetaSmall W V' 𝔠 v' Ψ (γ * g) := by
+to numbers of modulus one, those for `(W, V)` and `(W, V')` at `γ * g`.
+-/
+theorem exists_thetaLarge_thetaSmall_eq_circle_mul
+    (W W₁ : Space E n s) (V V₁ : Space E a t)
+    {b : Type} [Fintype b] [DecidableEq b]
+    {t' : b → ℤˣ} (V' V'₁ : Space E b t')
+    : ∃ γ : G E s, ∀ {μ : NumberField.InfinitePlace E → ℤ} (𝔠 : SplitTameChar E μ),
+      (∃ u : Circle,
+          ∀ (v : PairFock E s t) (Φ : Matrix a n (LocProd 𝔠.ramifiedPlaces) → ℂ) (g : G E s),
+            thetaLarge W₁ V₁ 𝔠 v Φ g = u * thetaLarge W V 𝔠 v Φ (γ * g))
+        ∧ ∃ u' : Circle,
+          ∀ (v' : PairFock E s t') (Ψ : Matrix n b (LocProd 𝔠.ramifiedPlaces) → ℂ) (g : G E s),
+            thetaSmall W₁ V'₁ 𝔠 v' Ψ g = u' * thetaSmall W V' 𝔠 v' Ψ (γ * g) := by
   -- Landherr's theorem moves the point of `W` to that of `W₁`; then both integrals are cases of
   -- `exists_circle_thetaIntegral_localDatum_eq_mul`.
   obtain ⟨c, γ, -, hγ, -⟩ := W.exists_x_eq_and_ratEmbed_conj_eq W₁
   refine ⟨γ, fun 𝔠 ↦ ⟨exists_thetaLarge_eq_mul_thetaLarge W₁ W V₁ V c γ hγ 𝔠, ?_⟩⟩
   exact (exists_circle_thetaIntegral_localDatum_eq_mul W₁ W V'₁ V' c γ hγ (rankTwist 𝔠.character n)
-    (WeilData.upsilonU1 ^ Fintype.card b) 𝔠.readsAt.star).imp
-      fun u' h_move v' Ψ g ↦ h_move v' (fun y ↦ Ψ yᵀ) g
+      (WeilData.upsilonU1 ^ Fintype.card b) 𝔠.readsAt.star).imp fun u' h_move v' Ψ g ↦
+    h_move v' (fun y ↦ Ψ yᵀ) g
 
 end ChangeOfSpace
 
@@ -248,10 +254,13 @@ section RemovingPlanes
 
 open Matrix Fintype Space Splitting Fock MeasureTheory MixedModel
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' p b : Type} [Fintype n]
-  [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r']
-  [DecidableEq r'] [Fintype p] [DecidableEq p] [Fintype b] [DecidableEq b] {s : n → ℤˣ}
-  {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {u : b → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n n' r r' p b : Type}
+  [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r']
+  [DecidableEq r'] [Fintype p] [DecidableEq p] [Fintype b] [DecidableEq b]
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {u : b → ℤˣ}
+  {W : Space E n s} {W' : Space E n' s'}
 
 /-- Adding hyperbolic planes contributes one negative sign per plane. -/
 lemma negCount_sumElim_hyperbolicSigns {ι m : Type} [Fintype ι] [Fintype m]
@@ -576,58 +585,83 @@ lemma RowColExchangeIdentity.of_planeConstantTerm_eq (U : Space E b u) {V' : Spa
         field
 
 -- Both sides of Poisson's formula descend by the same constant-term argument.
-private theorem RowColExchangeIdentity.descendCone (U : Space E b u) {V' : Space E r' t'}
-    (A : W'.Splitting W Unit) [IsBaseAdapted A] {μ : NumberField.InfinitePlace E → ℤ}
-    {ℓ : SplitTameChar E μ → ℝ} {V : Space E r t} (X : V'.Splitting V Unit) [IsBaseAdapted X]
-    (σ : b ⊕ r ≃ n) {σ' : b ⊕ r' ≃ n'} (hn : 2 ∣ card n) (β : Bool) {z : ℕ}
-    (hz : (card r - card n / 2 : ℤ) = cond β (z : ℤ) (-(z + 1)))
-    {x : PairFock E s' t'} {y : PairFock E s' u} (h : RowColExchangeIdentity W' V' U μ σ' x y ℓ) :
-    RowColExchangeIdentity W V U μ σ
+private theorem RowColExchangeIdentity.descendCone
+    (U : Space E b u)
+    {V' : Space E r' t'}
+    (A : W'.Splitting W Unit) [IsBaseAdapted A]
+    {μ : NumberField.InfinitePlace E → ℤ} {ℓ : SplitTameChar E μ → ℝ} {V : Space E r t}
+    (X : V'.Splitting V Unit) [IsBaseAdapted X]
+    (σ : b ⊕ r ≃ n)
+    {σ' : b ⊕ r' ≃ n'}
+    (hn : 2 ∣ card n)
+    (β : Bool)
+    {z : ℕ} (hz : (card r - card n / 2 : ℤ) = cond β (z : ℤ) (-(z + 1)))
+    {x : PairFock E s' t'} {y : PairFock E s' u} (h : RowColExchangeIdentity W' V' U μ σ' x y ℓ)
+    : RowColExchangeIdentity W V U μ σ
       (∫ q : maxCompact E t' × (NumberField.InfinitePlace E → ℂ)ˣ,
-        coneIntegrand A X μ β (z + 1) x q ∂.prod .haar .haar) (realSlice A U 0 y) ℓ := by
-  have h_scale (𝔠 : SplitTameChar E μ) (C : ℝ) :
-      (C * lSharp 𝔠 (z + 1)) ^ 2 * lValueProdInt 𝔠 (card r - card n / 2) =
-        C ^ 2 * lValueProdInt 𝔠 (card r - card n / 2 + 1) := by
+        coneIntegrand A X μ β (z + 1) x q ∂.prod .haar .haar)
+      (realSlice A U 0 y) ℓ := by
+  have h_scale (𝔠 : SplitTameChar E μ) (C : ℝ)
+      : (C * lSharp 𝔠 (z + 1)) ^ 2 * lValueProdInt 𝔠 (card r - card n / 2)
+        = C ^ 2 * lValueProdInt 𝔠 (card r - card n / 2 + 1) := by
     rw [hz]
     cases β <;> simp only [Bool.cond_true, Bool.cond_false]
     · rw [show -(↑z + 1 : ℤ) + 1 = -z by ring, lValueProdInt_neg]
       ring
     · rw [lValueProdInt_succ]
       ring
-  obtain ⟨C, hC, h_plane⟩ := exists_planeConstantTerm_eq_thetaLarge A X σ' σ hn μ β (z := z)
-    (by rw [hz]; cases β <;> simp)
+  obtain ⟨C, hC, h_plane⟩ :=
+    exists_planeConstantTerm_eq_thetaLarge A X σ' σ hn μ β (z := z) (by rw [hz]; cases β <;> simp)
   refine h.of_planeConstantTerm_eq U A X σ (by positivity) (C := C ^ 2) fun 𝔠 ↦ ?_
   obtain ⟨γ, hγ, h_term⟩ := h_plane 𝔠
   have hγ_pos : 0 < ‖γ‖ := (mul_pos hC (lSharp_pos 𝔠 (by simp))).trans_eq hγ.symm
-  exact ⟨γ, norm_pos_iff.1 hγ_pos, hγ.symm ▸ h_scale 𝔠 C,
-    fun w hw g ↦ h_term x h.left w hw 1 g (.inl rfl)⟩
+  exact ⟨
+    γ,
+    norm_pos_iff.1 hγ_pos,
+    hγ.symm ▸ h_scale 𝔠 C,
+    fun w hw g ↦ h_term x h.left w hw 1 g (.inl rfl)
+  ⟩
 
-/-- Removing a plane by the cone integral. Let `W` have even rank, let `A` and `X` be splittings
+/--
+Removing a plane by the cone integral. Let `W` have even rank, let `A` and `X` be splittings
 `W' = W ⊕ H` and `V' = V ⊕ H` with a hyperbolic plane `H`, both adapted, and let
 `rk V - rk W / 2 = z` be a natural number. The identity for `(W', V', U)` at `x`, `y` gives the
 identity for `(W, V, U)`, with the same `ℓ`, at the cone integral of `x` with exponent `z + 1` and
-the zero term of `y`, its value at `0` in the mixed model of `A`. -/
-theorem RowColExchangeIdentity.cone (U : Space E b u) {V' : Space E r' t'} (A : W'.Splitting W Unit)
-    [IsBaseAdapted A] {μ : NumberField.InfinitePlace E → ℤ} {ℓ : SplitTameChar E μ → ℝ}
-    {V : Space E r t} (X : V'.Splitting V Unit) [IsBaseAdapted X] (σ : b ⊕ r ≃ n)
-    {σ' : b ⊕ r' ≃ n'} (hn_even : 2 ∣ card n) {z : ℕ} (h_rank : (card r - card n / 2 : ℤ) = z)
-    {x : PairFock E s' t'} {y : PairFock E s' u}
-    (h_rel : RowColExchangeIdentity W' V' U μ σ' x y ℓ) :
-    RowColExchangeIdentity W V U μ σ (cone A X μ (z + 1) x) (realSlice A U 0 y) ℓ :=
+the zero term of `y`, its value at `0` in the mixed model of `A`.
+-/
+theorem RowColExchangeIdentity.cone
+    (U : Space E b u)
+    {V' : Space E r' t'}
+    (A : W'.Splitting W Unit) [IsBaseAdapted A]
+    {μ : NumberField.InfinitePlace E → ℤ} {ℓ : SplitTameChar E μ → ℝ} {V : Space E r t}
+    (X : V'.Splitting V Unit) [IsBaseAdapted X]
+    (σ : b ⊕ r ≃ n)
+    {σ' : b ⊕ r' ≃ n'}
+    (hn_even : 2 ∣ card n)
+    {z : ℕ} (h_rank : (card r - card n / 2 : ℤ) = z)
+    {x : PairFock E s' t'} {y : PairFock E s' u} (h_rel : RowColExchangeIdentity W' V' U μ σ' x y ℓ)
+    : RowColExchangeIdentity W V U μ σ (cone A X μ (z + 1) x) (realSlice A U 0 y) ℓ :=
   h_rel.descendCone U A X σ hn_even true h_rank
 
-/-- Removing a plane by the cone integral on the other side of Poisson's formula. Let `W` have even
+/--
+Removing a plane by the cone integral on the other side of Poisson's formula. Let `W` have even
 rank, let `A`, `X` be splittings `W' = W ⊕ H`, `V' = V ⊕ H` with a hyperbolic plane `H`, both
 adapted, and let `rk V - rk W / 2 = -z - 1 < 0`. The identity for `(W', V', U)` at `x`, `y` gives
 the identity for `(W, V, U)`, with the same `ℓ`, at `dualCone A X μ (z + 1) x` and the zero term
-`realSlice A U 0 y` of `y`, its value at `0` in the mixed model of `A`. -/
-theorem RowColExchangeIdentity.dualCone (U : Space E b u) {V' : Space E r' t'}
-    (A : W'.Splitting W Unit) [IsBaseAdapted A] {μ : NumberField.InfinitePlace E → ℤ}
-    {ℓ : SplitTameChar E μ → ℝ} {V : Space E r t} (X : V'.Splitting V Unit) [IsBaseAdapted X]
-    (σ : b ⊕ r ≃ n) {σ' : b ⊕ r' ≃ n'} (hn_even : 2 ∣ card n) {z : ℕ}
-    (h_rank : (card r - card n / 2 : ℤ) = -(z + 1)) {x : PairFock E s' t'} {y : PairFock E s' u}
-    (h_rel : RowColExchangeIdentity W' V' U μ σ' x y ℓ) :
-    RowColExchangeIdentity W V U μ σ (dualCone A X μ (z + 1) x) (realSlice A U 0 y) ℓ :=
+`realSlice A U 0 y` of `y`, its value at `0` in the mixed model of `A`.
+-/
+theorem RowColExchangeIdentity.dualCone
+    (U : Space E b u)
+    {V' : Space E r' t'}
+    (A : W'.Splitting W Unit) [IsBaseAdapted A]
+    {μ : NumberField.InfinitePlace E → ℤ} {ℓ : SplitTameChar E μ → ℝ} {V : Space E r t}
+    (X : V'.Splitting V Unit) [IsBaseAdapted X]
+    (σ : b ⊕ r ≃ n)
+    {σ' : b ⊕ r' ≃ n'}
+    (hn_even : 2 ∣ card n)
+    {z : ℕ} (h_rank : (card r - card n / 2 : ℤ) = -(z + 1))
+    {x : PairFock E s' t'} {y : PairFock E s' u} (h_rel : RowColExchangeIdentity W' V' U μ σ' x y ℓ)
+    : RowColExchangeIdentity W V U μ σ (dualCone A X μ (z + 1) x) (realSlice A U 0 y) ℓ :=
   h_rel.descendCone U A X σ hn_even false h_rank
 
 /-- Removing a plane. Let `W` have even rank, let `A` be a splitting `W' = W ⊕ H` with a hyperbolic

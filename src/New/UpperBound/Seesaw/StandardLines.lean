@@ -54,20 +54,31 @@ namespace New
 
 open Seesaw
 
-variable {E X X' ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+variable
+  {E X X' ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
   [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X']
   {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
   {Y : Grading V N (X ⊕ Unit) s} {Y' : Grading V' N (X' ⊕ Unit) (s - 1)} {a π : (𝔸f E)ˣ}
   {u : unitary (𝔸f E)} {P : Finset (FinPlace E)}
 
-/-- The diagonal entry of `New.gradedLatticeBasis` at the string vector `b`, as an idele: `u` for
+/--
+The diagonal entry of `New.gradedLatticeBasis` at the string vector `b`, as an idele: `u` for
 odd `s`; for even `s` it is `u a⁻¹` on the first half of the string and `u ā` on the second half.
-It generates the part of `Λ⁻` on the line of this vector. -/
+It generates the part of `Λ⁻` on the line of this vector.
+-/
 def lineIdele (a : (𝔸f E)ˣ) (u : unitary (𝔸f E)) (b : Fin s) : (𝔸f E)ˣ :=
-  Unitary.toUnits u * if Odd s then 1 else if 2 * b.val < s then a⁻¹ else star a
+  Unitary.toUnits u
+    * if Odd s then
+        1
+      else if 2 * b.val < s then
+        a⁻¹
+      else
+        star a
 
-/-- The idele `a ^ (s - i) ā ^ (-1 - i)`. The docstrings of the membership criteria below write
-`𝔩_i` for the fractional ideal that it generates. -/
+/--
+The idele `a ^ (s - i) ā ^ (-1 - i)`. The docstrings of the membership criteria below write
+`𝔩_i` for the fractional ideal that it generates.
+-/
 def powerIdele (a : (𝔸f E)ˣ) (s i : ℕ) : (𝔸f E)ˣ := a ^ (s - i : ℤ) * star a ^ (-1 - i : ℤ)
 
 lemma powerIdele_eq_mul (hs : 0 < s) (i : ℕ) : powerIdele a s i = a * powerIdele a (s - 1) i := by

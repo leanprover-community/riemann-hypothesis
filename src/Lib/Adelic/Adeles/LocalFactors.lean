@@ -227,10 +227,13 @@ The instance `New.isAdelic_Ô` lets the local results, proved for an abstract pa
 `New.HasPrimitiveRoot5040 E`.
 -/
 
-/-- The integral finite adeles of a CM field `E` with `HasPrimitiveRoot5040 E` have the properties
-collected in `IsAdelic`. -/
-instance New.isAdelic_Ô {E : Type*} [Field E] [NumberField E] [NumberField.IsCMField E]
-    [HasPrimitiveRoot5040 E] : IsAdelic (Ô E) where
+/--
+The integral finite adeles of a CM field `E` with `HasPrimitiveRoot5040 E` have the properties
+collected in `IsAdelic`.
+-/
+instance New.isAdelic_Ô
+    {E : Type*} [Field E] [NumberField E] [NumberField.IsCMField E] [HasPrimitiveRoot5040 E]
+    : IsAdelic (Ô E) where
   isOpen_isCompact := ⟨isOpen_Ô, isCompact_Ô⟩
   isValuationPair := isValuationPair_Ô
   exists_skew_unit := by
@@ -256,20 +259,27 @@ open MeasureTheory
 
 namespace New
 
-variable {X : Type*} [TopologicalSpace X] {s : Set X} {φ : X → ℂ} {Γ Y Z : Type*}
-  [TopologicalSpace Γ] [TopologicalSpace Y]
+variable
+  {X : Type*} [TopologicalSpace X]
+  {s : Set X} {φ : X → ℂ} {Γ Y Z : Type*} [TopologicalSpace Γ] [TopologicalSpace Y]
 
 /-! ### Locally constant functions with compact support -/
 
-/-- The space of locally constant, compactly supported complex functions on X that vanish
-outside s. -/
+/--
+The space of locally constant, compactly supported complex functions on X that vanish
+outside s.
+-/
 def schwartzBruhat (s : Set X) : Submodule ℂ (X → ℂ) :=
   Submodule.ofLinearComb {f : X → ℂ | IsLocallyConstant f ∧ HasCompactSupport f ∧ f.support ⊆ s}
-      ⟨0, IsLocallyConstant.zero, HasCompactSupport.zero, nofun⟩ <| by
-    intro f ⟨f_const, f_compact, f_supp⟩ g ⟨g_const, g_compact, g_supp⟩ a b
-    rw [Function.support_subset_iff'] at f_supp g_supp
-    exact ⟨f_const.comp₂ g_const fun x y ↦ a * x + b * y, f_compact.mul_left.add g_compact.mul_left,
-      Function.support_subset_iff'.2 fun x hx ↦ by simp [f_supp x hx, g_supp x hx]⟩
+      ⟨0, IsLocallyConstant.zero, HasCompactSupport.zero, nofun⟩ <|
+    by
+      intro f ⟨f_const, f_compact, f_supp⟩ g ⟨g_const, g_compact, g_supp⟩ a b
+      rw [Function.support_subset_iff'] at f_supp g_supp
+      exact ⟨
+        f_const.comp₂ g_const fun x y ↦ a * x + b * y,
+        f_compact.mul_left.add g_compact.mul_left,
+        Function.support_subset_iff'.2 fun x hx ↦ by simp [f_supp x hx, g_supp x hx]
+      ⟩
 
 /-- Let `f : Y → X` be continuous with a continuous left inverse `g` that maps `s` into `t`. If
 `φ` is locally constant, compactly supported and zero outside `s`, then `φ ∘ f` is locally
@@ -345,16 +355,20 @@ lemma integral_mem_of_isLocallyConstant [MeasurableSpace Y] [BorelSpace Y] [Comp
 
 /-! ### Semilocal fields and their characters -/
 
-/-- Conditions met by a finite product of non-archimedean local fields: a locally compact ring with
+/--
+Conditions met by a finite product of non-archimedean local fields: a locally compact ring with
 Haar measure, compact open subring O of volume one, an element ϖ of O that is invertible in F and
-topologically nilpotent, and `New.IsValuationPair O`. -/
-class SemilocalField (F : Type*) extends CommRing F, TopologicalSpace F, MeasureSpace F,
-  IsTopologicalRing F, PolishSpace F, LocallyCompactSpace F, BorelSpace F,
-  volume.IsAddHaarMeasure where
+topologically nilpotent, and `New.IsValuationPair O`.
+-/
+class SemilocalField (F : Type*)
+    extends CommRing F, TopologicalSpace F, MeasureSpace F, IsTopologicalRing F, PolishSpace F,
+      LocallyCompactSpace F, BorelSpace F, volume.IsAddHaarMeasure where
   /-- The ring of integers. -/
   O : Subring F
-  /-- The element called the uniformiser: a unit of `F`, only required to be integral and
-  topologically nilpotent. -/
+  /--
+  The element called the uniformiser: a unit of `F`, only required to be integral and
+  topologically nilpotent.
+  -/
   ϖ : Fˣ
   /-- The uniformiser is integral. -/
   ϖ_mem : ↑ϖ ∈ O
@@ -366,8 +380,10 @@ class SemilocalField (F : Type*) extends CommRing F, TopologicalSpace F, Measure
   isOpen_O : _root_.IsOpen O.carrier
   /-- The powers of the uniformiser tend to zero. -/
   isTopologicallyNilpotent_ϖ : IsTopologicallyNilpotent ϖ.val
-  /-- As in a product of valuation rings, for `a, b` in `F` there is an idempotent `e` of `O` such
-  that `a` and `b` are `O`-multiples of `(1 - e) a + e b`. -/
+  /--
+  As in a product of valuation rings, for `a, b` in `F` there is an idempotent `e` of `O` such
+  that `a` and `b` are `O`-multiples of `(1 - e) a + e b`.
+  -/
   isValuationPair : IsValuationPair O
 
 variable {F : Type} [V : SemilocalField F] (χ : MulChar F ℂ)
@@ -382,9 +398,11 @@ open scoped Classical in
 /-- `χ⁻¹` on the units of `O`, zero elsewhere. -/
 def invOnUnits (x : F) : ℂ := if IsIntegralUnit x then (χ x)⁻¹ else 0
 
-/-- A finite residue ring O/ϖO with the reduction π from O onto it, and a primitive character η
+/--
+A finite residue ring O/ϖO with the reduction π from O onto it, and a primitive character η
 (`New.Exchange.IsPrimitiveMulChar`) of it such that η ∘ π is χ⁻¹ on the units of O and 0 on the rest
-of O. -/
+of O.
+-/
 class TameLocalChar where
   /-- The residue ring `O / ϖ`. -/
   ResidueRing : Type
@@ -397,11 +415,11 @@ class TameLocalChar where
   /-- The character `η` of the residue ring through which `χ⁻¹` factors on the units of `O`. -/
   resChar : MulChar ResidueRing ℂ
   /-- The reduction is surjective with kernel `ϖ O`. -/
-  reduction_surjective_and_eq_zero_iff : Function.Surjective reduction ∧ ∀ x : O,
-    reduction x = 0 ↔ ϖ⁻¹.val * x.val ∈ O
+  reduction_surjective_and_eq_zero_iff
+    : Function.Surjective reduction ∧ ∀ x : O, reduction x = 0 ↔ ϖ⁻¹.val * x.val ∈ O
   /-- `η` is primitive, and `η ∘ π` is `χ⁻¹` on the units of `O` and zero on the rest of `O`. -/
-  isPrimitive_resChar_and_invOnUnits_eq :
-      Exchange.IsPrimitiveMulChar resChar ∧ ∀ x : O, invOnUnits χ x.val = resChar (reduction x)
+  isPrimitive_resChar_and_invOnUnits_eq
+    : Exchange.IsPrimitiveMulChar resChar ∧ ∀ x : O, invOnUnits χ x.val = resChar (reduction x)
 
 attribute [instance_reducible, instance] TameLocalChar.commRing
 attribute [instance] TameLocalChar.finite
@@ -409,8 +427,10 @@ attribute [instance] TameLocalChar.finite
 lemma isIntegralUnit_iff_isUnit {u : V.O} : IsIntegralUnit u.val ↔ IsUnit u := by
   simp [isUnit_iff_exists_inv', Subtype.ext_iff]
 
-/-- The additive character ψ is continuous and has conductor O: ψ is trivial on tO exactly when t
-lies in O. -/
+/--
+The additive character ψ is continuous and has conductor O: ψ is trivial on tO exactly when t
+lies in O.
+-/
 def HasIntegralConductor (ψ : AddChar F ℂ) : Prop :=
   Continuous ψ ∧ ∀ t : F, (∀ s ∈ O, ψ (t * s) = 1) ↔ t ∈ O
 
@@ -436,13 +456,17 @@ abbrev LocProd : Type := ∀ w : P, LocField w.val
 
 variable {P}
 
-/-- The product of the completions at the places in `P` is a semilocal field: `O` is the product of
-the local rings of integers and `ϖ` is the family of the chosen uniformisers. -/
+/--
+The product of the completions at the places in `P` is a semilocal field: `O` is the product of
+the local rings of integers and `ϖ` is the family of the chosen uniformisers.
+-/
 noncomputable instance : SemilocalField (LocProd P) where
-  O := .copy (⨅ i : P, v.integer.comap (Pi.evalRingHom (fun w : P ↦ LocField w.val) i))
-    (Set.univ.pi fun i : P ↦ (LocInt i.val : Set (LocField i.val))) <| by
-      ext x
-      simp [v.mem_integer_iff, mem_LocInt]
+  O :=
+    .copy (⨅ i : P, v.integer.comap (Pi.evalRingHom (fun w : P ↦ LocField w.val) i))
+        (Set.univ.pi fun i : P ↦ (LocInt i.val : Set (LocField i.val))) <|
+      by
+        ext x
+        simp [v.mem_integer_iff, mem_LocInt]
   ϖ := MulEquiv.piUnits.symm fun i : P ↦ uniformizer i.val
   ϖ_mem i _ := by simp +decide [mem_LocInt]
   isCompact_O := isCompact_univ_pi fun i : P ↦ isCompact_LocInt i.val
@@ -452,8 +476,9 @@ noncomputable instance : SemilocalField (LocProd P) where
     tendsto_pi_nhds.mpr fun i ↦ tendsto_zero_pow_of_v_lt_one (by simp +decide)
   isValuationPair a b := by
     -- the idempotent `e` and the two multipliers `y` and `z` are chosen componentwise
-    have h_local (i : P) : ∃ e ∈ LocInt i.val, ∃ y ∈ LocInt i.val, ∃ z ∈ LocInt i.val,
-        e * e = e ∧ y * (a i - e * (a i - b i)) = a i ∧ z * (a i - e * (a i - b i)) = b i := by
+    have h_local (i : P)
+        : ∃ e ∈ LocInt i.val, ∃ y ∈ LocInt i.val, ∃ z ∈ LocInt i.val,
+          e * e = e ∧ y * (a i - e * (a i - b i)) = a i ∧ z * (a i - e * (a i - b i)) = b i := by
       obtain ⟨e, he_idem, he_le⟩ := isValuationPair_valuationSubring (LocInt i.val) (a i) (b i)
       simp only [sup_le_iff, Submodule.span_singleton_le_iff_mem, Submodule.mem_span_singleton]
         at he_le

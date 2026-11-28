@@ -82,8 +82,10 @@ namespace Space
 
 variable {ε : ι → ℤˣ} (V : Space E ι ε)
 
-/-- The lattice of a finite point `x`, in rational coordinates: the vectors whose coordinates in
-the frame `V.xFin * x` are integral. -/
+/--
+The lattice of a finite point `x`, in rational coordinates: the vectors whose coordinates in
+the frame `V.xFin * x` are integral.
+-/
 def lattice (x : Gf E ι) : Submodule (Ô E) (ι → 𝔸f E) :=
   preimageLattice (Ô E) (V.xFin * x.val)⁻¹.val
 
@@ -187,12 +189,15 @@ end
 
 namespace Grading
 
-variable {E X ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι]
-  [DecidableEq X] {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
+variable
+  {E X ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [DecidableEq X]
+  {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
 
-/-- The projection to the span of the basis vectors `i` of grade `d`, that is, with
+/--
+The projection to the span of the basis vectors `i` of grade `d`, that is, with
 `Y.gradeOf i = d`, where `Y.gradeOf` is the integer grade that the grading attaches to each
-index. -/
+index.
+-/
 def gradeProj (d : ℤ) : (ι → 𝔸f E) →ₗ[𝔸f E] ι → 𝔸f E :=
   (diagonal fun i : ι ↦ if Y.gradeOf i = d then 1 else 0).mulVecLin
 
@@ -200,8 +205,10 @@ def gradeProj (d : ℤ) : (ι → 𝔸f E) →ₗ[𝔸f E] ι → 𝔸f E :=
 def stringProj : (ι → 𝔸f E) →ₗ[𝔸f E] ι → 𝔸f E :=
   (diagonal fun i : ι ↦ if (Y.indexEquiv.symm i).isRight then 1 else 0).mulVecLin
 
-/-- A lattice is graded if it contains, for each integer `d`, the part `Y.gradeProj d y` of grade
-`d` of each of its vectors `y`. -/
+/--
+A lattice is graded if it contains, for each integer `d`, the part `Y.gradeProj d y` of grade
+`d` of each of its vectors `y`.
+-/
 def IsGraded (L : Submodule (Ô E) (ι → 𝔸f E)) : Prop := ∀ d : ℤ, ∀ y ∈ L, Y.gradeProj d y ∈ L
 
 /-- The intersection `Λ'⁻` of the lattice of `x` with `X^⊥`. -/
@@ -212,24 +219,32 @@ def latticeMinus (x : Gf E ι) : Submodule (Ô E) (ι → 𝔸f E) :=
 def latticePlus (x : Gf E ι) : Submodule (Ô E) (ι → 𝔸f E) :=
   (V.lattice x).map (Y.stringProj.restrictScalars (Ô E))
 
-/-- The bounds `q̄ ^ k Λ⁻ ⊆ Λ'⁻` and `q ^ k Λ'⁻ ⊆ Λ⁻`, where `Λ'⁻` and `Λ⁻` are the intersections
-with `X^⊥` of the lattices of `x` and of `1`. -/
+/--
+The bounds `q̄ ^ k Λ⁻ ⊆ Λ'⁻` and `q ^ k Λ'⁻ ⊆ Λ⁻`, where `Λ'⁻` and `Λ⁻` are the intersections
+with `X^⊥` of the lattices of `x` and of `1`.
+-/
 structure HasLatticeBounds (q : 𝔸f E) (k : ℕ) (x : Gf E ι) : Prop where
   /-- `q̄ ^ k Λ⁻ ⊆ Λ'⁻`. -/
   lower : star q ^ k • Y.latticeMinus 1 ≤ Y.latticeMinus x
   /-- `q ^ k Λ'⁻ ⊆ Λ⁻`. -/
   upper : q ^ k • Y.latticeMinus x ≤ Y.latticeMinus 1
 
-/-- The orbit of `x` under the finite Bessel subgroup has a point whose lattice is graded and
-satisfies the bounds `New.Grading.HasLatticeBounds`. -/
+/--
+The orbit of `x` under the finite Bessel subgroup has a point whose lattice is graded and
+satisfies the bounds `New.Grading.HasLatticeBounds`.
+-/
 def HasBoundedOrbit (q : 𝔸f E) (k : ℕ) (x : Gf E ι) : Prop :=
   ∃ r ∈ Y.besselFin, Y.IsGraded (V.lattice (r * x)) ∧ Y.HasLatticeBounds q k (r * x)
 
-/-- The finite part of the matrix `Y.stringMap Y'` (the second component of each of its entries),
+/--
+The finite part of the matrix `Y.stringMap Y'` (the second component of each of its entries),
 acting on vectors: the map between two graded spaces that kills `X` and sends each string vector to
-a multiple of the string vector with the same number. -/
-def stringMapFin {X' ι' : Type} [Fintype ι'] [DecidableEq ι'] [DecidableEq X'] {ε' : ι' → ℤˣ}
-    {s' : ℕ} {V' : Space E ι' ε'} (Y' : Grading V' N X' s') : (ι → 𝔸f E) →ₗ[𝔸f E] ι' → 𝔸f E :=
+a multiple of the string vector with the same number.
+-/
+def stringMapFin
+    {X' ι' : Type} [Fintype ι'] [DecidableEq ι'] [DecidableEq X']
+    {ε' : ι' → ℤˣ} {s' : ℕ} {V' : Space E ι' ε'} (Y' : Grading V' N X' s')
+    : (ι → 𝔸f E) →ₗ[𝔸f E] ι' → 𝔸f E :=
   ((Y.stringMap Y').map Prod.snd).mulVecLin
 
 variable {Y} {x x' : Gf E ι} {y z : ι → 𝔸f E} {c : 𝔸f E}

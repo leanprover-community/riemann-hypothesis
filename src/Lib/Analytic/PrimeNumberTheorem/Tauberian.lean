@@ -319,20 +319,25 @@ lemma norm_taylorCoeff_dslope_le_inv_pow {u l H : ℝ} {A B k : ℕ} (hu : 0 < u
         grw [h_pow, hH_le, ← h_gain, ← h_exp]
     _ = 1 / u ^ (B + 1) := by field
 
-/-- **Tauberian theorem.** Let `R` be measurable and Lipschitz on `v ≥ 0` (it suffices to test steps
+/--
+**Tauberian theorem.** Let `R` be measurable and Lipschitz on `v ≥ 0` (it suffices to test steps
 of length at most `1`), with transform `∫₀^∞ R(v) e^{(1 - s) v} dv = (F s - F 1) / (s - 1)` in
 `re s > 2`. Suppose that for all large `l` the function `F` is holomorphic and at most `l ^ A` on
-`re s ≥ 1 - l ^ (-A)`, `|s| ≤ e ^ l`. Then `|R(u)| ≤ u ^ (-B)` for every `B` and all large `u`. -/
-theorem eventually_abs_le_inv_pow_of_transform (hR : Measurable R)
-    (h_lip : ∀ u v : ℝ, 0 ≤ u → u ≤ v → v ≤ u + 1 → |R v - R u| ≤ L * (v - u))
-    (h_transform : ∀ s : ℂ, 2 < s.re →
-      (F s - F 1) / (s - 1) = ∫ v in Ioi (0 : ℝ), R v * cexp ((1 - s) * v)) {A : ℕ}
-    (hF : ∀ᶠ l : ℝ in atTop, ∀ s : ℂ, 1 - 1 / l ^ A ≤ s.re → ‖s‖ ≤ rexp l →
-      DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ l ^ A) (B : ℕ) :
-    ∀ᶠ u : ℝ in atTop, |R u| ≤ 1 / u ^ B := by
+`re s ≥ 1 - l ^ (-A)`, `|s| ≤ e ^ l`. Then `|R(u)| ≤ u ^ (-B)` for every `B` and all large `u`.
+-/
+theorem eventually_abs_le_inv_pow_of_transform
+    (hR : Measurable R) (h_lip : ∀ u v : ℝ, 0 ≤ u → u ≤ v → v ≤ u + 1 → |R v - R u| ≤ L * (v - u))
+    (h_transform
+      : ∀ s : ℂ, 2 < s.re → (F s - F 1) / (s - 1) = ∫ v in Ioi (0 : ℝ), R v * cexp ((1 - s) * v))
+    {A : ℕ}
+    (hF
+      : ∀ᶠ l : ℝ in atTop, ∀ s : ℂ, 1 - 1 / l ^ A ≤ s.re → ‖s‖ ≤ rexp l →
+        DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ l ^ A)
+    (B : ℕ)
+    : ∀ᶠ u : ℝ in atTop, |R u| ≤ 1 / u ^ B := by
   have hL : 0 ≤ L := by simpa using (abs_nonneg _).trans (h_lip 0 1 le_rfl zero_le_one (by simp))
-  have Φ_eq (s : ℂ) (hs : 2 < s.re) :
-      dslope F 1 s = ∫ v in Ioi (0 : ℝ), R v * cexp ((1 - s) * v) := by
+  have Φ_eq (s : ℂ) (hs : 2 < s.re)
+      : dslope F 1 s = ∫ v in Ioi (0 : ℝ), R v * cexp ((1 - s) * v) := by
     have hs_ne : s ≠ 1 := fun h ↦ by norm_num [h] at hs
     rw [← h_transform s hs, dslope_of_ne _ hs_ne, slope_def_field]
   have h_log : Tendsto (fun u : ℝ ↦ (2 * B + 5 : ℕ) * u.log) atTop atTop :=
@@ -362,14 +367,15 @@ theorem eventually_abs_le_inv_pow_of_transform (hR : Measurable R)
   -- As `u ≥ 8`, the factor `u` absorbs the numerical constants below.
   have h_const_mul_le : 8 * u ^ (2 * B + 4) ≤ u * u ^ (2 * B + 4) := by nlinarith
   have h_close : ‖coeff - R u‖ ≤ 2 * L / u ^ (B + 1) :=
-    calc ‖coeff - R u‖ ≤ L * (1 / u ^ (B + 1) + u ^ 2 / (k + 1) / (1 / u ^ (B + 1))) :=
-          norm_taylorCoeff_transform_sub_le_of_lipschitz hR
-            (fun x hx y hy ↦ abs_sub_le_of_unit_steps h_lip hx hy) Φ_eq hu_pos (by positivity)
-            rfl hH_gt
+    calc
+      ‖coeff - R u‖ ≤ L * (1 / u ^ (B + 1) + u ^ 2 / (k + 1) / (1 / u ^ (B + 1))) :=
+        norm_taylorCoeff_transform_sub_le_of_lipschitz hR
+          (fun x hx y hy ↦ abs_sub_le_of_unit_steps h_lip hx hy)
+          Φ_eq hu_pos (by positivity) rfl hH_gt
       _ ≤ L * (1 / u ^ (B + 1) + u ^ 2 / u ^ (2 * B + 4) / (1 / u ^ (B + 1))) := by gcongr
       _ = 2 * L / u ^ (B + 1) := by field
-  have h_disc (s : ℂ) (hs : s ∈ closedBall (1 + H : ℂ) (H + η)) :
-      DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ l ^ A := by
+  have h_disc (s : ℂ) (hs : s ∈ closedBall (1 + H : ℂ) (H + η))
+      : DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ l ^ A := by
     obtain ⟨h_re, h_norm⟩ := one_sub_le_re_and_norm_le_of_mem_closedBall (by positivity) hs
     refine hF_region s h_re (h_norm.trans ?_)
     rw [l_def, Real.exp_natCast_mul, Real.exp_log hu_pos, pow_succ']
@@ -377,7 +383,9 @@ theorem eventually_abs_le_inv_pow_of_transform (hR : Measurable R)
   have h_small : ‖coeff‖ ≤ 1 / u ^ (B + 1) :=
     norm_taylorCoeff_dslope_le_inv_pow hu_pos hl_one rfl hH_gt (by linarith) h_log_pow_le
       h_pow_le_exp h_disc
-  calc |R u| = ‖coeff - (coeff - R u)‖ := by simp
+  calc
+    |R u|
+      = ‖coeff - (coeff - R u)‖ := by simp
     _ ≤ 1 / u ^ (B + 1) + 2 * L / u ^ (B + 1) := norm_sub_le_of_le h_small h_close
     _ = (1 + 2 * L) / u / u ^ B := by field
     _ ≤ 1 / u ^ B := by grw [(div_le_one hu_pos).2 (by linarith : 1 + 2 * L ≤ u)]

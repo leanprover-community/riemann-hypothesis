@@ -69,8 +69,10 @@ open Matrix NumberField Ideal Modulus Set Gf Sum LevelPlaces Quotient
 
 section
 
-variable {E r n N m a : Type} [Field E] [NumberField E] [IsCMField E] [Fintype r] [DecidableEq r]
-  [Fintype n] [DecidableEq n] [Fintype N] [Fintype m] {S : LevelPlaces E}
+variable
+  {E r n N m a : Type} [Field E] [NumberField E] [IsCMField E] [Fintype r] [DecidableEq r]
+  [Fintype n] [DecidableEq n] [Fintype N] [Fintype m]
+  {S : LevelPlaces E}
 
 /-- The modulus `ϖ²`, the square of the product of the chosen places of `S`. -/
 abbrev _root_.New.LevelPlaces.chosenModulusSq (S : LevelPlaces E) : Modulus E :=
@@ -112,8 +114,11 @@ lemma liftMod_mem_supportedOn (B : GL n S.chosenModulusSq.ResidueRing) :
 
 end
 
-variable {E r n : Type} (N m a : Type) [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n]
-  [Fintype N] [Fintype m] {S : LevelPlaces E} (O : DescentPair E r n)
+variable
+  {E r n : Type} (N m a : Type)
+  [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [Fintype N] [Fintype m]
+  {S : LevelPlaces E}
+  (O : DescentPair E r n)
 
 /-- A point `k` of G_f supported at the chosen places of `S` is `1` at every twist place of `S`. -/
 lemma atPlace_twistPlace_eq_one [DecidableEq n]
@@ -129,24 +134,32 @@ lemma atPlace_twistPlace_eq_one [DecidableEq n]
 
 /-! ### The splitting and the generator `ϖ` -/
 
-/-- A splitting `N ⊕ m ≃ n` of the indices of `V = V″ ⊕ V°` with embeddings of `r` and of `a` in
+/--
+A splitting `N ⊕ m ≃ n` of the indices of `V = V″ ⊕ V°` with embeddings of `r` and of `a` in
 `N`, with `O.incl` landing in `N` through the embedding of `r`. The diagram `O.colsPlus` for `V″`
 and the diagram `O.colsMinus` for `V°` satisfy `New.Rows.HasColumnsBelow`: each column of height
-below the rank of `V` has height below the rank of the summand. -/
+below the rank of `V` has height below the rank of the summand.
+-/
 structure DividedSplitting (z : r ↪ m) extends ε : N ⊕ m ≃ n where
   /-- The `r` indices of `V″` that form the top block of a datum. -/
   fixedEmb : r ↪ N
   /-- The embedding `O.incl` lands in `V″`, where it is given by `fixedEmb`. -/
   equiv_inl_fixedEmb (i : r) : ε (inl (fixedEmb i)) = O.incl i
-  /-- As many indices of `V″` as `a` has elements. After a change of basis these are the directions
-  in which the lattice of `V″` is made smaller. -/
+  /--
+  As many indices of `V″` as `a` has elements. After a change of basis these are the directions
+  in which the lattice of `V″` is made smaller.
+  -/
   dividedEmb : a ↪ N
-  /-- The diagram `O.colsPlus` has no column of a height `h` with `#N ≤ h < #n`, and `O.colsMinus`
-  none with `#m ≤ h < #n`. -/
+  /--
+  The diagram `O.colsPlus` has no column of a height `h` with `#N ≤ h < #n`, and `O.colsMinus`
+  none with `#m ≤ h < #n`.
+  -/
   hasColumnsBelow : HasColumnsBelow n N O.colsPlus ∧ HasColumnsBelow n m O.colsMinus
 
-/-- The integral idele `ϖ` that generates the product of the chosen places of `O`. It equals `1` at
-all other places. -/
+/--
+The integral idele `ϖ` that generates the product of the chosen places of `O`. It equals `1` at
+all other places.
+-/
 def _root_.New.DescentPair.genIdele : (𝔸f E)ˣ := (O.levelModulus 1 false).generator
 
 /-- The idele `ϖ = O.genIdele` as an element of the ring `Ô E` of integral finite adeles. -/
@@ -178,8 +191,10 @@ lemma reduction_levelModulus_eq_zero_iff {c : ℕ} {x : Ô E} :
 
 namespace DividedSplitting
 
-/-- The class modulo `ϖ²` of the idele `ϖ = O.genIdele`, which generates the product of the places
-`O.chosenPlace i`. It depends on `O` only. The argument allows the notation `V.genResidue`. -/
+/--
+The class modulo `ϖ²` of the idele `ϖ = O.genIdele`, which generates the product of the places
+`O.chosenPlace i`. It depends on `O` only. The argument allows the notation `V.genResidue`.
+-/
 abbrev genResidue (_ : DividedSplitting N m a O z) : O.chosenModulusSq.ResidueRing :=
   O.chosenModulusSq.reduction O.genIntAdele
 
@@ -244,36 +259,48 @@ basis vectors of `O.W` of a given sign and number.
 
 section MemberKernels
 
-variable {E r n m : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [Fintype m]
-  [DecidableEq m] [WeilData E] (O : DescentPair E r n) (b : AutChar E)
+variable
+  {E r n m : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [Fintype m]
+  [DecidableEq m] [WeilData E]
+  (O : DescentPair E r n) (b : AutChar E)
 
-/-- The vector whose i-th coordinate is the conjugate theta kernel of (W, I_m) at (g, h), with
+/--
+The vector whose i-th coordinate is the conjugate theta kernel of (W, I_m) at (g, h), with
 datum Ψ modulo 𝔪 and the basis polynomial `nablaBasis ℂ _ κ i` of weight κ put into the columns of
 sign `-1`. The characters `O.charW` and `b` of U(1)(𝔸) are those that the kernel takes for W and for
-I_m. -/
-def kernelVector (𝔪 : Modulus E) (Ψ : Matrix m r 𝔪.ResidueRing → ℂ)
-    (κ : NumberField.InfinitePlace E → ℕ → ℕ) (g : G E O.signs) (h : Gf E m)
-    (i : WeylIndex m κ) : ℂ :=
+I_m.
+-/
+def kernelVector
+    (𝔪 : Modulus E) (Ψ : Matrix m r 𝔪.ResidueRing → ℂ)
+    (κ : NumberField.InfinitePlace E → ℕ → ℕ)
+    (g : G E O.signs) (h : Gf E m) (i : WeylIndex m κ)
+    : ℂ :=
   star (modKernelStdSpace O.W O.charW b 𝔪 Ψ
-    (fockLetters O.signs O.numbering (-1) (nablaBasis ℂ _ κ i))
-    g h)
+    (fockLetters O.signs O.numbering (-1) (nablaBasis ℂ _ κ i)) g h)
 
-/-- The level that fixes the rows `w`: the integral points (elements of `stdLevel E m`) whose
+/--
+The level that fixes the rows `w`: the integral points (elements of `stdLevel E m`) whose
 reduction modulo `ϖ² Q` has the columns of the identity matrix off `e`, and whose reduction `A`
 modulo `ϖ²` satisfies `w A = w`. Here `ϖ` generates the product of the chosen places of `S`, and `Q`
-is the product of its twist places. -/
-abbrev rowFixingLevel {c : Type} (S : LevelPlaces E) (w : Matrix c m S.chosenModulusSq.ResidueRing)
-    (e : r ↪ m) : Subgroup (Gf E m) :=
+is the product of its twist places.
+-/
+abbrev rowFixingLevel
+    {c : Type} (S : LevelPlaces E) (w : Matrix c m S.chosenModulusSq.ResidueRing) (e : r ↪ m)
+    : Subgroup (Gf E m) :=
   (S.levelModulus 2).levelOfSubgroup (rowStabilizer reduceToChosenModulusSq w e)
 
-/-- The sum, over the classes h of level `New.Rows.rowFixingLevel` for `w` and `e`, of the theta
+/--
+The sum, over the classes h of level `New.Rows.rowFixingLevel` for `w` and `e`, of the theta
 kernel of (W, I_m) at (g, h), with the characters `O.charW` of W and `b` of I_m. The polynomial is
 that of y(h) in the columns of sign `1`. The datum `columnDatum` at `σ` modulo `ϖ² Q` is
 `χ (det of the rows e of σ)` if `w σ ≡ w (1; 0)` modulo `ϖ²` and `0` otherwise, where `χ`, the
 `charOfTamePart`, is the product of the characters `O.tamePart w` of the residue fields at the
-places. -/
-def kernelClassSum {c : Type} (w : Matrix c m O.chosenModulusSq.ResidueRing) (e : r ↪ m)
-    (y : Gf E m → WeylIndex m O.colsPlus → ℂ) (g : G E O.signs) : ℂ :=
+places.
+-/
+def kernelClassSum
+    {c : Type} (w : Matrix c m O.chosenModulusSq.ResidueRing)
+    (e : r ↪ m) (y : Gf E m → WeylIndex m O.colsPlus → ℂ) (g : G E O.signs)
+    : ℂ :=
   stdClassSum (rowFixingLevel O.toLevelPlaces w e) fun h ↦
     modKernelStdSpace O.W O.charW b (O.levelModulus 2)
       (columnDatum (Modulus.charOfTamePart (O.levelModulus 2) O.tamePart) reduceToChosenModulusSq w
@@ -288,14 +315,17 @@ section GluedForms
 
 open Matrix Sum Set Finset Gf Units Modulus
 
-variable {E r n N m a : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n]
-  [DecidableEq n] [Fintype N] [DecidableEq N] [Fintype m] [DecidableEq m] [Fintype a]
+variable
+  {E r n N m a : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+  [Fintype N] [DecidableEq N] [Fintype m] [DecidableEq m] [Fintype a]
   {O : DescentPair E r n} {z : r ↪ m}
 
 variable (O) in
-/-- A lattice `γ 𝒪ⁿ`, where `γ` is the field `point`, with `ϖ 𝒪ⁿ ⊆ γ 𝒪ⁿ ⊆ 𝒪ⁿ` at the chosen places,
+/--
+A lattice `γ 𝒪ⁿ`, where `γ` is the field `point`, with `ϖ 𝒪ⁿ ⊆ γ 𝒪ⁿ ⊆ 𝒪ⁿ` at the chosen places,
 where `ϖ = O.genIdele`. The one condition, that `ϖ γ⁻¹` is integral, gives the first inclusion; read
-at the conjugate places, it gives the second by unitarity. -/
+at the conjugate places, it gives the second by unitarity.
+-/
 structure DividedLattice where
   /-- The point of G_f. -/
   point : Gf E n
@@ -305,14 +335,16 @@ structure DividedLattice where
   mul_inv_mem (a b : n) : O.genIdele * point⁻¹.val.val a b ∈ Ô E
 
 /-- The reduction modulo `ϖ²` of the integral matrix `ϖ γ⁻¹`. -/
-def DividedLattice.reducedInverse (L : DividedLattice O) :
-    Matrix n n O.chosenModulusSq.ResidueRing :=
-  of fun a b : n ↦ O.chosenModulusSq.reduction
-    ⟨O.genIdele * L.point⁻¹.val.val a b, L.mul_inv_mem a b⟩
+def DividedLattice.reducedInverse (L : DividedLattice O)
+    : Matrix n n O.chosenModulusSq.ResidueRing :=
+  of fun a b : n ↦
+    O.chosenModulusSq.reduction ⟨O.genIdele * L.point⁻¹.val.val a b, L.mul_inv_mem a b⟩
 
-/-- The scalar `c_γ = χ(δ) / √|δ| ^ r` by which the matrix `γ` of the lattice multiplies the finite
+/--
+The scalar `c_γ = χ(δ) / √|δ| ^ r` by which the matrix `γ` of the lattice multiplies the finite
 datum. Here `δ` is the determinant of `γ` at the chosen places, `χ` the character that `O.charW`
-attaches to a space of rank `r`, and `r` the rank of `O.W`. -/
+attaches to a space of rank `r`, and `r` the rank of `O.W`.
+-/
 def DividedLattice.weilScalar [WeilData E] (L : DividedLattice O) : ℂ :=
   let δ : (𝔸 E)ˣ := detOn (Set.range O.chosenPlace) L.point.val
   (O.charW.spaceChar (Fintype.card r)).val δ / √(ideleAbs δ) ^ Fintype.card r
@@ -419,12 +451,14 @@ lemma DividedLattice.exists_reducedInverse_eq (C G : Matrix n n (Ô E))
   rw [h_entry]
   split_ifs <;> simp [h_star, e, hw, -finAdele_star_apply]
 
-/-- The rows of `s`, indexed by `a`, stacked above the rows of `ϖ • 1`, indexed by `N`. With this
+/--
+The rows of `s`, indexed by `a`, stacked above the rows of `ϖ • 1`, indexed by `N`. With this
 matrix `w`, the one equation `w x = w x'` modulo `ϖ²` says that `s x ≡ s x'` modulo `ϖ²` and
-`x ≡ x'` modulo `ϖ`. -/
-def DividedSplitting.stackOverGenScalar (V : DividedSplitting N m a O z)
-    (s : Matrix a N O.chosenModulusSq.ResidueRing) :
-    Matrix (a ⊕ N) N O.chosenModulusSq.ResidueRing :=
+`x ≡ x'` modulo `ϖ`.
+-/
+def DividedSplitting.stackOverGenScalar
+    (V : DividedSplitting N m a O z) (s : Matrix a N O.chosenModulusSq.ResidueRing)
+    : Matrix (a ⊕ N) N O.chosenModulusSq.ResidueRing :=
   fromRows s (V.genResidue • 1 : Matrix N N O.chosenModulusSq.ResidueRing)
 
 omit [DecidableEq m] [Fintype a] [DecidableEq n] in
@@ -454,10 +488,12 @@ end
 
 namespace DividedSplitting
 
-/-- The subgroup Γ of GL_r(`O.chosenModulusSq.ResidueRing`) of matrices that are 1 modulo ϖ. It is
-defined as the stabiliser of the scalar matrix `V.genResidue • 1` under multiplication. -/
-def congruenceGroup (V : DividedSplitting N m a O z) :
-    Subgroup (GL r O.chosenModulusSq.ResidueRing) :=
+/--
+The subgroup Γ of GL_r(`O.chosenModulusSq.ResidueRing`) of matrices that are 1 modulo ϖ. It is
+defined as the stabiliser of the scalar matrix `V.genResidue • 1` under multiplication.
+-/
+def congruenceGroup (V : DividedSplitting N m a O z)
+    : Subgroup (GL r O.chosenModulusSq.ResidueRing) :=
   MulAction.stabilizer (GL r O.chosenModulusSq.ResidueRing)
     (V.genResidue • 1 : Matrix r r O.chosenModulusSq.ResidueRing)
 
@@ -486,41 +522,55 @@ lemma reduceAt_liftMod_congruenceGroup (V : DividedSplitting N m a O z) (Y : V.c
   exact ext ((reductionGL_map_modulusResidue ..).symm.trans
     ((V.genResidue_smul_eq_inclMatrix_iff _ id).1 hY i))
 
-/-- The two conditions on the blocks of a matrix `x`: its block on `V°` is `(1; 0)` modulo `ϖ²`, and
+/--
+The two conditions on the blocks of a matrix `x`: its block on `V°` is `(1; 0)` modulo `ϖ²`, and
 its block on `V″` lies in `(1; 0) + ϖ L″_s`, where `L″_s` consists of the `u` with `s u ≡ 0` modulo
 `ϖ`. Here the `1` of `(1; 0)` stands in the rows `z` of `V°` and in the rows `V.fixedEmb` of `V″`,
-which are the rows `O.incl` of `V`. -/
-def IsBlockNormalized (V : DividedSplitting N m a O z)
-    (s : Matrix a N O.chosenModulusSq.ResidueRing)
-    (x : Matrix n r O.chosenModulusSq.ResidueRing) : Prop :=
-  x.submatrix (V.ε ∘ inr) id = inclMatrix O.chosenModulusSq.ResidueRing z ∧
-    V.stackOverGenScalar s * x.submatrix (V.ε ∘ inl) id =
-      V.stackOverGenScalar s * inclMatrix O.chosenModulusSq.ResidueRing V.fixedEmb
+which are the rows `O.incl` of `V`.
+-/
+def IsBlockNormalized
+    (V : DividedSplitting N m a O z) (s : Matrix a N O.chosenModulusSq.ResidueRing)
+    (x : Matrix n r O.chosenModulusSq.ResidueRing)
+    : Prop :=
+  x.submatrix (V.ε ∘ inr) id = inclMatrix O.chosenModulusSq.ResidueRing z
+    ∧ V.stackOverGenScalar s * x.submatrix (V.ε ∘ inl) id
+      = V.stackOverGenScalar s * inclMatrix O.chosenModulusSq.ResidueRing V.fixedEmb
 
-/-- `L` is glued for `s`. With `γ = L.point`, the congruence `γ⁻¹ x ≡ (1; 0)` modulo `ϖ`, written as
+/--
+`L` is glued for `s`. With `γ = L.point`, the congruence `γ⁻¹ x ≡ (1; 0)` modulo `ϖ`, written as
 `(ϖ γ⁻¹) x ≡ ϖ (1; 0)` modulo `ϖ²`, holds exactly when `x Y` satisfies the conditions on the two
 blocks (`IsBlockNormalized`) for some `Y` in the congruence group, and this `Y` is then unique.
 Moreover `γ⁻¹` is integral at the chosen places on all vectors of a suitable basis of `V″`, apart
 from those indexed by `V.dividedEmb`, the chosen copy of the index set `a` of the rows of `s` in the
-index set `N` of `V″`. -/
-structure IsGlued (V : DividedSplitting N m a O z)
-    (s : Matrix a N O.chosenModulusSq.ResidueRing) (L : DividedLattice O) : Prop where
-  /-- If `γ⁻¹ x ≡ (1; 0)` modulo `ϖ`, then for exactly one `Y` that is `1` modulo `ϖ` the translate
-  `x Y` satisfies the conditions on the two blocks. -/
-  existsUnique (x : Matrix n r O.chosenModulusSq.ResidueRing)
-    (hx : L.reducedInverse * x = V.genResidue • inclMatrix O.chosenModulusSq.ResidueRing O.incl) :
-    ∃! Y : V.congruenceGroup, V.IsBlockNormalized s
-      (x * ((Y : GL r O.chosenModulusSq.ResidueRing) : Matrix r r O.chosenModulusSq.ResidueRing))
+index set `N` of `V″`.
+-/
+structure IsGlued
+    (V : DividedSplitting N m a O z) (s : Matrix a N O.chosenModulusSq.ResidueRing)
+    (L : DividedLattice O)
+    : Prop where
+  /--
+  If `γ⁻¹ x ≡ (1; 0)` modulo `ϖ`, then for exactly one `Y` that is `1` modulo `ϖ` the translate
+  `x Y` satisfies the conditions on the two blocks.
+  -/
+  existsUnique
+    (x : Matrix n r O.chosenModulusSq.ResidueRing)
+    (hx : L.reducedInverse * x = V.genResidue • inclMatrix O.chosenModulusSq.ResidueRing O.incl)
+    : ∃! Y : V.congruenceGroup, V.IsBlockNormalized s
+        (x * ((Y : GL r O.chosenModulusSq.ResidueRing) : Matrix r r O.chosenModulusSq.ResidueRing))
   /-- Conversely, a matrix with such a translate satisfies the congruence. -/
-  mul_eq_of_isBlockNormalized (x : Matrix n r O.chosenModulusSq.ResidueRing) (Y : V.congruenceGroup)
+  mul_eq_of_isBlockNormalized
+    (x : Matrix n r O.chosenModulusSq.ResidueRing) (Y : V.congruenceGroup)
     (hY : V.IsBlockNormalized s
-      (x * ((Y : GL r O.chosenModulusSq.ResidueRing) : Matrix r r O.chosenModulusSq.ResidueRing))) :
-    L.reducedInverse * x = V.genResidue • inclMatrix O.chosenModulusSq.ResidueRing O.incl
-  /-- After a column operation, the columns of `ϖ γ⁻¹` in `V″` vanish modulo `ϖ` outside
-  `V.dividedEmb`. -/
-  exists_cols_eq_zero : ∃ K : GL N O.chosenModulusSq.ResidueRing, ∀ x : n,
-    ∀ y : N, y ∉ univ.map V.dividedEmb →
-    V.genResidue * (L.reducedInverse.submatrix id (V.ε ∘ inl) * K.val) x y = 0
+      (x * ((Y : GL r O.chosenModulusSq.ResidueRing) : Matrix r r O.chosenModulusSq.ResidueRing)))
+    : L.reducedInverse * x = V.genResidue • inclMatrix O.chosenModulusSq.ResidueRing O.incl
+  /--
+  After a column operation, the columns of `ϖ γ⁻¹` in `V″` vanish modulo `ϖ` outside
+  `V.dividedEmb`.
+  -/
+  exists_cols_eq_zero
+    : ∃ K : GL N O.chosenModulusSq.ResidueRing, ∀ x : n, ∀ y : N,
+      y ∉ univ.map V.dividedEmb
+        → V.genResidue * (L.reducedInverse.submatrix id (V.ε ∘ inl) * K.val) x y = 0
 
 open scoped Classical in
 /-- As `L` is glued for `s` (`IsGlued`), the congruence `(ϖ γ⁻¹) x ≡ ϖ • inclMatrix _ O.incl` modulo
@@ -545,14 +595,17 @@ lemma IsGlued.indicator_eq_sum {V : DividedSplitting N m a O z}
 
 /-! ### Product forms and the construction of glued lattices -/
 
-/-- For a pair `h = (h.1, h.2)` of points on `V″` and `V°` and a vector `y` of weight `O.colsPlus`
+/--
+For a pair `h = (h.1, h.2)` of points on `V″` and `V°` and a vector `y` of weight `O.colsPlus`
 on `V″`, the linear map sending a vector `η` of weight `O.colsMinus` on `V°` to the form on `V` that
 is supported on the class of `U.block V.ε h * γ`, the block diagonal point of `h` times the matrix
 of the lattice `L`. Its value there (`classForm`) is the product `cartanProduct V.ε 1 y η` of `y`
-and `η`, moved by the identity. -/
-def productForm (V : DividedSplitting N m a O z) (L : DividedLattice O) (h : Gf E N × Gf E m)
-    (y : WeylIndex N O.colsPlus → ℂ) :
-    (WeylIndex m O.colsMinus → ℂ) →ₗ[ℂ] O.FormV :=
+and `η`, moved by the identity.
+-/
+def productForm
+    (V : DividedSplitting N m a O z) (L : DividedLattice O) (h : Gf E N × Gf E m)
+    (y : WeylIndex N O.colsPlus → ℂ)
+    : (WeylIndex m O.colsMinus → ℂ) →ₗ[ℂ] O.FormV :=
   classForm O (U.block V.ε h * L.point) ∘ₗ cartanProduct V.ε 1 y
 
 omit [DecidableEq n] [DecidableEq N] [DecidableEq m] [Fintype a] in
@@ -580,12 +633,14 @@ lemma exists_congruenceGroup_inv_eq_one_sub (V : DividedSplitting N m a O z)
   exact ⟨⟨A, by simp [V.mem_congruenceGroup_iff, hA, hY, smul_sub]⟩⁻¹, by simp [hA]⟩
 
 variable (O z) in
-/-- The matrix with the blocks `D`, `-D ι_e ι_zᵀ`, `0` and the diagonal matrix that is `ϖ` on the
+/--
+The matrix with the blocks `D`, `-D ι_e ι_zᵀ`, `0` and the diagonal matrix that is `ϖ` on the
 range of `z` and `1` elsewhere, where `ι_e` and `ι_z` are the inclusion matrices (`inclMatrix`) of
 `e` and `z`. For suitable `D` and `e` it is `ϖ γ⁻¹` at the chosen places, up to the order of the
-rows, for the lattice of `exists_isGlued`. -/
+rows, for the lattice of `exists_isGlued`.
+-/
 def glueMatrix (e : r ↪ N) (D : Matrix N N (Ô E)) : Matrix (N ⊕ m) (N ⊕ m) (Ô E) :=
-  fromBlocks D (-D.submatrix id e * (inclMatrix (Ô E) z)ᵀ) 0
+  fromBlocks D (- D.submatrix id e * (inclMatrix (Ô E) z)ᵀ) 0
     (.diagonal fun i ↦ if i ∈ range z then O.genIntAdele else 1)
 
 omit [DecidableEq n] [Fintype a] in

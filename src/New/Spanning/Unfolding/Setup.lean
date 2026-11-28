@@ -58,7 +58,8 @@ open Finset Set NumberField MeasureTheory Matrix Real Fintype Fin Complex Valued
 
 namespace New
 
-/-- The data of the filling theorem over the CM field `E`, for `ϱ` hyperbolic planes and a definite
+/--
+The data of the filling theorem over the CM field `E`, for `ϱ` hyperbolic planes and a definite
 space `X₀` with basis `κ`: a prime `N = π π̄`, given by the finite idele `piN = π`; two primes p₀,
 p₁ (`levelPrime`) different from `N`, with finite sets `chosenPlaces i` of places of norm p_i; a
 purely imaginary generator ϖ = `deltaE` of the different; a free level `sourceLevel` in `U(X₀)`; and
@@ -67,7 +68,8 @@ conjugate of a chosen place; M = p₀ p₁ is the product of the chosen places a
 the sense of `M_dvd_iff`.
 
 The remaining fields are size conditions on ϱ, k = |κ|, the degree, the root discriminant and the
-primes, many of them in terms of the real parameter `b`. They also require 5 ≤ N. -/
+primes, many of them in terms of the real parameter `b`. They also require 5 ≤ N.
+-/
 structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   /-- The rational prime N = π π̄. -/
   N : ℕ
@@ -110,12 +112,15 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   /-- No place is chosen for both indices. -/
   chosenPlaces_injective : (·.2.val : (Σ i : Fin 2, chosenPlaces i) → FinPlace E).Injective
   /-- The conjugate of a chosen place is not chosen. -/
-  star_notMem_chosenPlaces {i j : Fin 2} {w : FinPlace E} :
-      w ∈ chosenPlaces i → star w ∉ chosenPlaces j
-  /-- An integral finite adele r is divisible by M = p₀ p₁ if and only if r and r̄ vanish modulo
-  every chosen place. -/
-  M_dvd_iff (r : Ô E) : ↑(levelPrime 0 * levelPrime 1) ∣ r ↔
-      ∀ p : Σ i : Fin 2, chosenPlaces i, reduceAt p.2 r = 0 ∧ reduceAt p.2.val (star r) = 0
+  star_notMem_chosenPlaces {i j : Fin 2} {w : FinPlace E}
+    : w ∈ chosenPlaces i → star w ∉ chosenPlaces j
+  /--
+  An integral finite adele r is divisible by M = p₀ p₁ if and only if r and r̄ vanish modulo
+  every chosen place.
+  -/
+  M_dvd_iff (r : Ô E)
+    : ↑(levelPrime 0 * levelPrime 1) ∣ r
+      ↔ ∀ p : Σ i : Fin 2, chosenPlaces i, reduceAt p.2 r = 0 ∧ reduceAt p.2.val (star r) = 0
   /-- For each p_i there are as many chosen places as E has infinite places. -/
   card_chosenPlaces (i : Fin 2) : Fintype.card (chosenPlaces i) = Core.numInfPlaces E
   /-- ϖ is purely imaginary. -/
@@ -132,8 +137,10 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   pow_le_k : 1000 * (2 * 𝔰.ϱ + 2) ^ 9 ≤ 𝔰.k
   /-- k is at most the number f of infinite places of E. -/
   k_le_f : 𝔰.k ≤ Core.numInfPlaces E
-  /-- (200 f k rd)¹⁰⁰⁰ ≤ b, with f the number of infinite places and rd the root discriminant of
-  E. -/
+  /--
+  (200 f k rd)¹⁰⁰⁰ ≤ b, with f the number of infinite places and rd the root discriminant of
+  E.
+  -/
   mul_rootDiscr_pow_le : (200 * (Core.numInfPlaces E * 𝔰.k) * rootDiscr E) ^ 1000 ≤ b
   /-- f ≤ b / 1000, with f the number of infinite places of E. -/
   numInfPlaces_le_div : Core.numInfPlaces E ≤ b / 1000
@@ -189,74 +196,103 @@ lemma pow_chain (S : Filling E 𝔰) :
 /-- The natural number M = p₀p₁, the product of the two primes of the data. -/
 abbrev M : ℕ := S.levelPrime 0 * S.levelPrime 1
 
-/-- For a commutative ring R, the diagonal Gram matrix over R of X₀ ⊕ Ez in the standard basis:
-1 on κ and −N at z. -/
+/--
+For a commutative ring R, the diagonal Gram matrix over R of X₀ ⊕ Ez in the standard basis:
+1 on κ and −N at z.
+-/
 abbrev ratMiddle (R : Type) [CommRing R] : 𝔰.Form R := 𝔰.middleGram (S.N : R)
 
-/-- For a commutative ring R, the Gram matrix over R of X₀ ⊕ Ez in the lattice basis, where
-e_{k₀} is replaced by e_{k₀}/π̄ + z/N, with π = `piN`. -/
+/--
+For a commutative ring R, the Gram matrix over R of X₀ ⊕ Ez in the lattice basis, where
+e_{k₀} is replaced by e_{k₀}/π̄ + z/N, with π = `piN`.
+-/
 abbrev latticeMiddle (R : Type) [CommRing R] : 𝔰.Form R := latticeMiddleGram 𝔰 (S.N : R)
 
-/-- For a commutative ring R with involution, the unitary group over R of the form made of ϱ
-hyperbolic pairs and the middle Gram matrix `New.Filling.ratMiddle` (standard basis). -/
+/--
+For a commutative ring R with involution, the unitary group over R of the form made of ϱ
+hyperbolic pairs and the middle Gram matrix `New.Filling.ratMiddle` (standard basis).
+-/
 abbrev G (R : Type) [CommRing R] [StarRing R] : Subgroup (GL 𝔰.BesselIndex R) := (S.ratMiddle R).G
 
-/-- The unitary group over the finite adeles of E of the form made of ϱ hyperbolic pairs and the
-middle Gram matrix `New.Filling.latticeMiddle` (lattice basis). -/
+/--
+The unitary group over the finite adeles of E of the form made of ϱ hyperbolic pairs and the
+middle Gram matrix `New.Filling.latticeMiddle` (lattice basis).
+-/
 abbrev GFin : Subgroup (GL 𝔰.BesselIndex (𝔸f E)) := (S.latticeMiddle (𝔸f E)).G
 
-/-- The product, over i = 0, 1 and the chosen places w above p_i, of the groups of invertible
-matrices of size dim V over the residue fields at w. -/
+/--
+The product, over i = 0, 1 and the chosen places w above p_i, of the groups of invertible
+matrices of size dim V over the residue fields at w.
+-/
 abbrev ResidueGL : Type := ∀ (i : Fin 2) (w : S.chosenPlaces i), GL 𝔰.BesselIndex (ResField w.val)
 
-/-- The set of tuples choosing, for each infinite place v, one coordinate index of the Bessel
-system at v. -/
+/--
+The set of tuples choosing, for each infinite place v, one coordinate index of the Bessel
+system at v.
+-/
 abbrev BesselCoord : Type := ∀ v : InfinitePlace E, (S.besselSystem v).Index
 
-/-- The set of double cosets U(X₀)(E⁺) \ U(X₀)(𝔸_f) / `sourceLevel`, for the unitary group of the
-standard form on κ. -/
+/--
+The set of double cosets U(X₀)(E⁺) \ U(X₀)(𝔸_f) / `sourceLevel`, for the unitary group of the
+standard form on κ.
+-/
 def Classes : Type := DoubleCosets (stdSpace E 𝔰.κ).Γf S.sourceLevel
-  deriving Nonempty
+deriving Nonempty
 
 variable (side : FullOrCut)
 
-/-- For a rational element γ of the unitary group, the matrix Z(γ) = (h(f_j, γf_l)) of products
-between the frame and its image under γ. -/
+/--
+For a rational element γ of the unitary group, the matrix Z(γ) = (h(f_j, γf_l)) of products
+between the frame and its image under γ.
+-/
 abbrev frameProducts (γ : S.G E) : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E :=
   (S.ratMiddle E).frameGram γ
 
-/-- The subgroup K of the finite adelic unitary group (lattice basis) of elements that are
-invertible matrices over the integral finite adeles `Ô E`. -/
+/--
+The subgroup K of the finite adelic unitary group (lattice basis) of elements that are
+invertible matrices over the integral finite adeles `Ô E`.
+-/
 def latticeStabilizer : Subgroup S.GFin := (intGL 𝔰.BesselIndex (Ô E)).subgroupOf S.GFin
 
-/-- The homomorphism from the integral subgroup K to the finite group `ResidueGL` reducing matrix
-entries modulo each chosen place above p₀ and p₁. -/
+/--
+The homomorphism from the integral subgroup K to the finite group `ResidueGL` reducing matrix
+entries modulo each chosen place above p₀ and p₁.
+-/
 protected def reduction : S.latticeStabilizer →* S.ResidueGL :=
-  MonoidHom.pi fun _ ↦ MonoidHom.pi fun v ↦
-    (intGL.map (reduceAt v.val)).comp (S.GFin.subtype.subgroupComap (intGL 𝔰.BesselIndex (Ô E)))
+  MonoidHom.pi fun _ ↦
+    MonoidHom.pi fun v ↦
+      (intGL.map (reduceAt v.val)).comp (S.GFin.subtype.subgroupComap (intGL 𝔰.BesselIndex (Ô E)))
 
-/-- The principal congruence subgroup K(M): the kernel of the reduction from K to `ResidueGL`, as a
-subgroup of the finite adelic unitary group. -/
+/--
+The principal congruence subgroup K(M): the kernel of the reduction from K to `ResidueGL`, as a
+subgroup of the finite adelic unitary group.
+-/
 def principalLevel : Subgroup S.GFin := S.reduction.ker.map S.latticeStabilizer.subtype
 
-/-- For a subgroup A of the finite adelic unitary group, the image of A ∩ K in the finite group
-`ResidueGL` under reduction. -/
+/--
+For a subgroup A of the finite adelic unitary group, the image of A ∩ K in the finite group
+`ResidueGL` under reduction.
+-/
 def reducedImage (A : Subgroup S.GFin) : Subgroup S.ResidueGL :=
   (A.subgroupOf S.latticeStabilizer).map S.reduction
 
 /-! ### Scales at the infinite places, and constants -/
 
-/-- The real number κ_v (no relation to the index set κ), the real part of M·v(ϖ)/(2πi), where
+/--
+The real number κ_v (no relation to the index set κ), the real part of M·v(ϖ)/(2πi), where
 v(ϖ) is the image of ϖ = `deltaE` under the chosen embedding `Φ v`. By `coe_realM` the quotient is
-real. -/
+real.
+-/
 def realM (v : InfinitePlace E) : ℝ := (S.M * Φ v S.deltaE.val / (2 * π * Complex.I)).re
 
-/-- The scales of the normalised basis at v: κ_v^(ϱ−a+1)/√N on e_a (a = 1, …, ϱ), 1 on κ, 1/√N on z,
-and the inverse of the scale of e_a on e*_a. -/
+/--
+The scales of the normalised basis at v: κ_v^(ϱ−a+1)/√N on e_a (a = 1, …, ϱ), 1 on κ, 1/√N on z,
+and the inverse of the scale of e_a on e*_a.
+-/
 def basisScale (v : InfinitePlace E) : 𝔰.BesselIndex → ℂ :=
   let s (a : ℕ) : ℝ := S.realM v ^ (𝔰.ϱ - a) / √S.N
-  (fun a : Fin 𝔰.ϱ ↦ (s a : ℂ)) ⊕ᵥ
-    ((1 ⊕ᵥ fun _ : Unit ↦ (s 𝔰.ϱ : ℂ)) ⊕ᵥ (fun a : Fin 𝔰.ϱ ↦ (s a : ℂ))⁻¹)
+  (fun a : Fin 𝔰.ϱ ↦ (s a : ℂ))
+    ⊕ᵥ ((1 ⊕ᵥ fun _ : Unit ↦ (s 𝔰.ϱ : ℂ)) ⊕ᵥ (fun a : Fin 𝔰.ϱ ↦ (s a : ℂ))⁻¹)
 
 /-- A ring homomorphism R → R' maps the Gram matrix of V over R in the standard basis, with middle
 block `ratMiddle`, to the same matrix over R'. -/
@@ -266,10 +302,12 @@ lemma map_splitGram_ratMiddle (R : Type) [CommRing R] {R' : Type} [CommRing R'] 
   simp [splitGram, Floors.hyperbolicGram, middleGram, fromBlocks_map, fromCols_map, fromRows_map,
     ← Matrix.ext_iff]
 
-/-- The additive character x ↦ ψ_f(−x/ϖ) of the finite adeles of E, with values in ℂ. As ϖ
-generates the different of E, the ring Ô is its own dual for this character. -/
-def selfDualChar : AddChar (𝔸f E) ℂ := (Circle.coeHom.compAddChar (ψf E)).mulShift
-  ↑(-S.deltaE.val⁻¹)
+/--
+The additive character x ↦ ψ_f(−x/ϖ) of the finite adeles of E, with values in ℂ. As ϖ
+generates the different of E, the ring Ô is its own dual for this character.
+-/
+def selfDualChar : AddChar (𝔸f E) ℂ :=
+  (Circle.coeHom.compAddChar (ψf E)).mulShift ↑(-S.deltaE.val⁻¹)
 
 /-- The generator ϖ = `S.deltaE` of the different of `E` is nonzero. -/
 @[simp high]
@@ -278,29 +316,37 @@ lemma deltaE_ne_zero : S.deltaE.val ≠ 0 := mod_cast ne_zero_of_differentIdeal_
 /-- The number κ_v^(2(ϱ−a))/N, the square of the scale of the frame vector of index a at v. -/
 def frameScaleSq (v : InfinitePlace E) (a : ℕ) : ℝ := S.realM v ^ (2 * (𝔰.ϱ - a)) / S.N
 
-/-- The product Λ over infinite places v and a = 0,…,ϱ of (κ_v^(2(ϱ−a))/N)^(k+2(ϱ−a)), where k
-is the size of κ. -/
+/--
+The product Λ over infinite places v and a = 0,…,ϱ of (κ_v^(2(ϱ−a))/N)^(k+2(ϱ−a)), where k
+is the size of κ.
+-/
 def frameScaleProd : ℝ :=
   ∏ v : InfinitePlace E, ∏ a : Fin (𝔰.ϱ + 1), S.frameScaleSq v a ^ (𝔰.k + 2 * (𝔰.ϱ - a))
 
-/-- The number (M^(ϱ(2(ϱ+k)+1))/N^k)^f · vol(Ô)^(−ϱ(ϱ+k)) · |D_E|^(ϱ/4) / Λ, k = |κ|, f the number
+/--
+The number (M^(ϱ(2(ϱ+k)+1))/N^k)^f · vol(Ô)^(−ϱ(ϱ+k)) · |D_E|^(ϱ/4) / Λ, k = |κ|, f the number
 of infinite places; for every class c it serves as the covolume of 𝖴_c(M) (`classUnipotent c`) in
-𝖴_∞. -/
+𝖴_∞.
+-/
 def unipotentCovolume : ℝ :=
   let d : ℕ := ∑ a ∈ Finset.range 𝔰.ϱ, (a + (𝔰.k + 1) + a)
-  (S.M ^ (2 * d + 𝔰.ϱ) / S.N ^ 𝔰.k) ^ numInfPlaces E / volÔ E ^ d * √√|NumberField.discr E| ^ 𝔰.ϱ /
-    S.frameScaleProd
+  (S.M ^ (2 * d + 𝔰.ϱ) / S.N ^ 𝔰.k) ^ numInfPlaces E / volÔ E ^ d * √ √ |NumberField.discr E| ^ 𝔰.ϱ
+    / S.frameScaleProd
 
-/-- The constant `c_S = (π^k / ((k - 1)! N^k))^f · |disc E|^(1/4) · vol(Ô)^k`, where `k = |κ|`,
+/--
+The constant `c_S = (π^k / ((k - 1)! N^k))^f · |disc E|^(1/4) · vol(Ô)^k`, where `k = |κ|`,
 `f` is the number of infinite places and `vol(Ô) = New.volÔ E`. With the root discriminant
 `rd` one has `|disc E| = rd^(2f)` and `vol(Ô) = (2 / rd)^f` (`New.volÔ_eq`), so that
-`c_S = ((2π)^k rd^(1/2 - k) / ((k - 1)! N^k))^f`. -/
+`c_S = ((2π)^k rd^(1/2 - k) / ((k - 1)! N^k))^f`.
+-/
 def siegelConst : ℝ :=
-  (π ^ 𝔰.k / (𝔰.k - 1).factorial / S.N ^ 𝔰.k) ^ numInfPlaces E * √√|NumberField.discr E| *
-    volÔ E ^ 𝔰.k
+  (π ^ 𝔰.k / (𝔰.k - 1).factorial / S.N ^ 𝔰.k) ^ numInfPlaces E * √ √ |NumberField.discr E|
+    * volÔ E ^ 𝔰.k
 
-/-- For a rational γ, the element |D_{ϱ+1}|² − N²|D_ϱ|² of E formed from the last two leading
-minors of Z(γ). -/
+/--
+For a rational γ, the element |D_{ϱ+1}|² − N²|D_ϱ|² of E formed from the last two leading
+minors of Z(γ).
+-/
 abbrev termDisc (γ : S.G E) : E := frameDisc ↑S.N (S.frameProducts γ)
 
 /-- On the frame vector `besselFrame a`, a = 0, …, ϱ, the scale at v is κ_v^(ϱ − a)/√N, with
@@ -336,8 +382,10 @@ lemma frameScaleProd_pos : 0 < S.frameScaleProd :=
 lemma basisScale_ne_zero (v : InfinitePlace E) : ∀ i : 𝔰.BesselIndex, S.basisScale v i ≠ 0 := by
   simp [basisScale, Nat.Prime.ne_zero]
 
-/-- The invertible diagonal complex matrix whose entries are the scales `New.Filling.basisScale` of
-the normalised basis at v. -/
+/--
+The invertible diagonal complex matrix whose entries are the scales `New.Filling.basisScale` of
+the normalised basis at v.
+-/
 def basisScaleGL (v : InfinitePlace E) : GL 𝔰.BesselIndex ℂ :=
   diagGL fun i : 𝔰.BesselIndex ↦ Units.mk0 (S.basisScale v i) (S.basisScale_ne_zero v i)
 
@@ -353,42 +401,60 @@ lemma conjTranspose_basisScaleGL_mul_splitGram_mul (v : InfinitePlace E) :
 
 /-! ### The maps between the groups, and terms -/
 
-/-- The invertible matrix over the finite adeles whose columns are the lattice basis of V
-(e_{k₀} replaced by e_{k₀}/π̄ + z/(π π̄), with π = `piN`) in the standard basis. -/
+/--
+The invertible matrix over the finite adeles whose columns are the lattice basis of V
+(e_{k₀} replaced by e_{k₀}/π̄ + z/(π π̄), with π = `piN`) in the standard basis.
+-/
 abbrev latticeBasis : GL 𝔰.BesselIndex (𝔸f E) := besselLatticeBasis 𝔰 S.piN
 
-/-- The isomorphism from the finite adelic unitary group in the standard basis to that in the
-lattice basis, given by conjugation with the change of basis matrix. -/
+/--
+The isomorphism from the finite adelic unitary group in the standard basis to that in the
+lattice basis, given by conjugation with the change of basis matrix.
+-/
 def toLatticeBasis : S.G (𝔸f E) ≃* S.GFin :=
   (U.conj (besselLatticeBasis 𝔰 S.piN) (gram_besselLatticeBasis S.piN S.N S.piN_mul_star)).symm
 
-/-- The homomorphism from the rational unitary group to the adelic unitary group induced
-entrywise by the diagonal map from E to its adeles. -/
+/--
+The homomorphism from the rational unitary group to the adelic unitary group induced
+entrywise by the diagonal map from E to its adeles.
+-/
 def ratToAdelic : S.G E →* S.G (𝔸 E) := U.map toAdele (h := map_splitGram_ratMiddle S E toAdele)
 
-/-- The homomorphism from the adelic unitary group to the product of copies of G₁, taking each
-infinite component and conjugating by the diagonal rescaling matrix there. -/
+/--
+The homomorphism from the adelic unitary group to the product of copies of G₁, taking each
+infinite component and conjugating by the diagonal rescaling matrix there.
+-/
 def adelicToInf : S.G (𝔸 E) →* (InfinitePlace E → 𝔰.G₁) :=
-  MonoidHom.pi fun v ↦ MonoidHom.comp (U.conj (S.basisScaleGL v)
-    (S.conjTranspose_basisScaleGL_mul_splitGram_mul v)).symm
-    (U.map (evalInf v) (h := map_splitGram_ratMiddle S (𝔸 E) (evalInf v)))
+  MonoidHom.pi fun v ↦
+    MonoidHom.comp
+      (U.conj (S.basisScaleGL v) (S.conjTranspose_basisScaleGL_mul_splitGram_mul v)).symm
+      (U.map (evalInf v) (h := map_splitGram_ratMiddle S (𝔸 E) (evalInf v)))
 
-/-- The homomorphism from the adelic unitary group to the finite adelic unitary group in the
-lattice basis: take the finite part, then change basis. -/
+/--
+The homomorphism from the adelic unitary group to the finite adelic unitary group in the
+lattice basis: take the finite part, then change basis.
+-/
 def adelicToFin : S.G (𝔸 E) →* S.GFin :=
-  MonoidHom.comp S.toLatticeBasis (U.map (RingHom.snd (InfinitePlace E → ℂ) (𝔸f E))
-    (h := map_splitGram_ratMiddle S (𝔸 E) (RingHom.snd (InfinitePlace E → ℂ) (𝔸f E))))
+  MonoidHom.comp S.toLatticeBasis
+    (U.map (RingHom.snd (InfinitePlace E → ℂ) (𝔸f E))
+      (h := map_splitGram_ratMiddle S (𝔸 E) (RingHom.snd (InfinitePlace E → ℂ) (𝔸f E))))
 
-/-- The homomorphism sending a rational element of the unitary group to its tuple of rescaled
-images in G₁ at all infinite places. -/
+/--
+The homomorphism sending a rational element of the unitary group to its tuple of rescaled
+images in G₁ at all infinite places.
+-/
 def ratToInf : S.G E →* InfinitePlace E → 𝔰.G₁ := S.adelicToInf.comp S.ratToAdelic
 
-/-- The homomorphism sending a rational element of the unitary group to its image in the finite
-adelic unitary group, written in the lattice basis. -/
+/--
+The homomorphism sending a rational element of the unitary group to its image in the finite
+adelic unitary group, written in the lattice basis.
+-/
 def ratToFin : S.G E →* S.GFin := S.adelicToFin.comp S.ratToAdelic
 
-/-- The homomorphism including the finite adelic points of U(X₀) in the finite adelic unitary
-group of V, written in the lattice basis. -/
+/--
+The homomorphism including the finite adelic points of U(X₀) in the finite adelic unitary
+group of V, written in the lattice basis.
+-/
 def inclHFin : U (1 : Matrix 𝔰.κ 𝔰.κ (𝔸f E)) →* S.GFin :=
   S.toLatticeBasis.toMonoidHom.comp (toBesselH 𝔰 (S.N : 𝔸f E))
 
@@ -397,17 +463,23 @@ instance : Fintype S.Classes :=
   haveI : Finite S.Classes := HasFiniteType.finite_classes
   ofFinite S.Classes
 
-/-- For a double coset class c, the image h_c in the finite adelic unitary group of V of a
-chosen representative of c. -/
+/--
+For a double coset class c, the image h_c in the finite adelic unitary group of V of a
+chosen representative of c.
+-/
 abbrev classRep (c : S.Classes) : S.GFin := S.inclHFin c.out
 
-/-- The element h_c⁻¹ γ h_c' of the finite adelic unitary group, for classes c, c' and a
-rational element γ. -/
+/--
+The element h_c⁻¹ γ h_c' of the finite adelic unitary group, for classes c, c' and a
+rational element γ.
+-/
 def translateByClassReps (c c' : S.Classes) (γ : S.G E) : S.GFin :=
   (S.classRep c)⁻¹ * S.ratToFin γ * S.classRep c'
 
-/-- The set of terms over (c, s, c'): rational γ such that h_c⁻¹ γ h_c' lies in K and has
-reduction s. -/
+/--
+The set of terms over (c, s, c'): rational γ such that h_c⁻¹ γ h_c' lies in K and has
+reduction s.
+-/
 def termsOver (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes) : Set (S.G E) :=
   {γ : S.G E | ∃ k : S.latticeStabilizer, S.reduction k = s ∧ k.val = S.translateByClassReps c c' γ}
 
@@ -420,18 +492,25 @@ def classUnipotent₀ (c : S.Classes) : Subgroup (S.G E) := S.classUnipotent c �
 
 /-! ### Boxes, Bessel kernels, dimensions and second moments -/
 
-/-- The number `b ^ (37 n)`, the radius of the boxes `frameBox` in which the terms near the frame
-are counted. -/
+/--
+The number `b ^ (37 n)`, the radius of the boxes `frameBox` in which the terms near the frame
+are counted.
+-/
 def frameBoxRadius : ℝ := S.b ^ (37 * 𝔰.n)
 
-/-- The multiples `M x` of the level, for integers `x` of `E`, as tuples over the infinite
-places. -/
+/--
+The multiples `M x` of the level, for integers `x` of `E`, as tuples over the infinite
+places.
+-/
 def levelMultiples : AddSubgroup (InfinitePlace E → ℂ) :=
-  (AddMonoidHom.mk' (fun (x : 𝓞 E) (v : InfinitePlace E) ↦ Φ v (S.M * (x : E)))
+  (AddMonoidHom.mk'
+    (fun (x : 𝓞 E) (v : InfinitePlace E) ↦ Φ v (S.M * (x : E)))
     fun x y ↦ by simp [funext_iff, mul_add]).range
 
-/-- The set `D` is a measurable set of representatives for the tuples of complex numbers, one for
-each infinite place, modulo `M 𝓞_E`, and its points have modulus at most `b ^ 26` at all places. -/
+/--
+The set `D` is a measurable set of representatives for the tuples of complex numbers, one for
+each infinite place, modulo `M 𝓞_E`, and its points have modulus at most `b ^ 26` at all places.
+-/
 structure IsResidueDomain (D : Set (InfinitePlace E → ℂ)) : Prop where
   /-- `D` is measurable. -/
   measurableSet : MeasurableSet D
@@ -440,59 +519,79 @@ structure IsResidueDomain (D : Set (InfinitePlace E → ℂ)) : Prop where
   /-- Every tuple has exactly one translate by `M 𝓞_E` in `D`. -/
   existsUnique_add_mem (w : InfinitePlace E → ℂ) : ∃! l : S.levelMultiples, l.val + w ∈ D
 
-/-- The entry `(a, b)` of the triangular matrices `New.gramSchmidtMatrix (y v)`, read in the
-rational frame in place of the normalised one, as a tuple over the infinite places. -/
+/--
+The entry `(a, b)` of the triangular matrices `New.gramSchmidtMatrix (y v)`, read in the
+rational frame in place of the normalised one, as a tuple over the infinite places.
+-/
 def ratTriangle (y : InfinitePlace E → 𝔰.G₁) (a b : Fin (𝔰.ϱ + 1)) (v : InfinitePlace E) : ℂ :=
-  gramSchmidtMatrix (y v) a b * (S.basisScale v (𝔰.besselFrame a) / S.basisScale v
-    (𝔰.besselFrame b))
+  gramSchmidtMatrix (y v) a b
+    * (S.basisScale v (𝔰.besselFrame a) / S.basisScale v (𝔰.besselFrame b))
 
-/-- The points `y` for which all entries of `New.Filling.ratTriangle y` above the diagonal lie in
-`D`. -/
+/--
+The points `y` for which all entries of `New.Filling.ratTriangle y` above the diagonal lie in
+`D`.
+-/
 def reducedPoints (D : Set (InfinitePlace E → ℂ)) : Set (InfinitePlace E → 𝔰.G₁) :=
   {y : InfinitePlace E → 𝔰.G₁ | ∀ a b : Fin (𝔰.ϱ + 1), a < b → S.ratTriangle y a b ∈ D}
 
-/-- The indicator of the reduced points for a chosen set of representatives satisfying
-`New.Filling.IsResidueDomain` (arbitrary if there is none). -/
+/--
+The indicator of the reduced points for a chosen set of representatives satisfying
+`New.Filling.IsResidueDomain` (arbitrary if there is none).
+-/
 def reducedIndicator : (InfinitePlace E → 𝔰.G₁) → ENNReal :=
   (S.reducedPoints (Classical.epsilon S.IsResidueDomain)).indicator 1
 
-/-- A partition of unity `ω` on G_∞ in boxes, for the group 𝖴_c(M) = `classUnipotent c` modulo its
+/--
+A partition of unity `ω` on G_∞ in boxes, for the group 𝖴_c(M) = `classUnipotent c` modulo its
 subgroup 𝖴⁰_c(M) = `classUnipotent₀ c` fixing the frame: `ω` is measurable, at most one and left
 invariant under the fixer of the frame, it vanishes outside boxes for the frame vectors, and its
-translates add up to one. -/
-structure IsBoxPartitionOfUnity (c : S.Classes) (ω : (InfinitePlace E → 𝔰.G₁) → ENNReal) :
-  Prop where
+translates add up to one.
+-/
+structure IsBoxPartitionOfUnity (c : S.Classes) (ω : (InfinitePlace E → 𝔰.G₁) → ENNReal)
+    : Prop where
   /-- `ω` is measurable. -/
   measurable : Measurable ω
-  /-- If `ω y ≠ 0`, every component `y v` lies in the box `frameBox (b ^ 27 * besselLength (y v))`:
-  its frame vectors have norm at most `b ^ 27` times `besselLength (y v)`. -/
-  mem_frameBox_besselLength (y : InfinitePlace E → 𝔰.G₁) (v : InfinitePlace E) :
-    ω y ≠ 0 → y v ∈ frameBox (S.b ^ 27 * besselLength (y v))
-  /-- The translates of `ω` add up to one against every weight `a` on `classUnipotent c` whose sum
-  over each right coset of `classUnipotent₀ c` is one. -/
-  tsum_mul_eq_one (y : InfinitePlace E → 𝔰.G₁) (a : S.classUnipotent c → ENNReal) :
-    (∀ γ : S.classUnipotent c, ∑' u : (S.classUnipotent₀ c).subgroupOf (S.classUnipotent c),
-      a (u.val * γ) = 1) →
-      ∑' γ : S.classUnipotent c, a γ * ω (S.ratToInf γ * y) = 1
+  /--
+  If `ω y ≠ 0`, every component `y v` lies in the box `frameBox (b ^ 27 * besselLength (y v))`:
+  its frame vectors have norm at most `b ^ 27` times `besselLength (y v)`.
+  -/
+  mem_frameBox_besselLength (y : InfinitePlace E → 𝔰.G₁) (v : InfinitePlace E)
+    : ω y ≠ 0 → y v ∈ frameBox (S.b ^ 27 * besselLength (y v))
+  /--
+  The translates of `ω` add up to one against every weight `a` on `classUnipotent c` whose sum
+  over each right coset of `classUnipotent₀ c` is one.
+  -/
+  tsum_mul_eq_one (y : InfinitePlace E → 𝔰.G₁) (a : S.classUnipotent c → ENNReal)
+    : (∀ γ : S.classUnipotent c,
+        ∑' u : (S.classUnipotent₀ c).subgroupOf (S.classUnipotent c),
+            a (u.val * γ)
+          = 1)
+      → ∑' γ : S.classUnipotent c, a γ * ω (S.ratToInf γ * y) = 1
   /-- `ω` is at most one. -/
   le_one (y : InfinitePlace E → 𝔰.G₁) : ω y ≤ 1
   /-- `ω` is left invariant under the fixer of the frame at each place. -/
-  besselFixer_invariant (s y : InfinitePlace E → 𝔰.G₁) :
-    (∀ v : InfinitePlace E, s v ∈ besselFixer) → ω (s * y) = ω y
+  besselFixer_invariant (s y : InfinitePlace E → 𝔰.G₁)
+    : (∀ v : InfinitePlace E, s v ∈ besselFixer) → ω (s * y) = ω y
 
-/-- For y in G_∞ and a tuple i of indices, the product over infinite places v of the i_v-th
-coordinate of the local Bessel function (full or cut, according to `side`) at y_v. -/
+/--
+For y in G_∞ and a tuple i of indices, the product over infinite places v of the i_v-th
+coordinate of the local Bessel function (full or cut, according to `side`) at y_v.
+-/
 def besselFn (y : InfinitePlace E → 𝔰.G₁) (i : S.BesselCoord) : ℂ :=
   ∏ v : InfinitePlace E, (S.besselSystem v).besselFn side (y v) (i v)
 
-/-- For a side, rational γ and y in G_∞, the tensor W(y) ⊗ W(γ⁻¹y)^*, with coordinates W_i(y)
-conj(W_j(γ⁻¹y)). Here W is the Bessel vector `New.Filling.besselFn` of that side. -/
-def besselKernel (γ : S.G E) (y : InfinitePlace E → 𝔰.G₁) :
-    EuclideanSpace ℂ (S.BesselCoord × S.BesselCoord) :=
+/--
+For a side, rational γ and y in G_∞, the tensor W(y) ⊗ W(γ⁻¹y)^*, with coordinates W_i(y)
+conj(W_j(γ⁻¹y)). Here W is the Bessel vector `New.Filling.besselFn` of that side.
+-/
+def besselKernel (γ : S.G E) (y : InfinitePlace E → 𝔰.G₁)
+    : EuclideanSpace ℂ (S.BesselCoord × S.BesselCoord) :=
   WithLp.toLp 2 fun i ↦ S.besselFn side y i.1 * star (S.besselFn side ((S.ratToInf γ)⁻¹ * y) i.2)
 
-/-- The number of classes times the number of index tuples of the Bessel systems: the dimension of
-the space of source forms. -/
+/--
+The number of classes times the number of index tuples of the Bessel systems: the dimension of
+the space of source forms.
+-/
 def sourceDim : ℕ := Fintype.card S.Classes * Fintype.card S.BesselCoord
 
 /-- The product over infinite places of the constants deg of the local Bessel systems. -/
@@ -501,22 +600,30 @@ def besselDegree : ℝ := ∏ v : InfinitePlace E, (S.besselSystem v).deg
 /-- The product `besselDegree` of the degrees of the local Bessel systems is positive. -/
 lemma besselDegree_pos : 0 < S.besselDegree := prod_pos fun v _ ↦ (S.besselSystem v).deg_pos
 
-/-- The real number `sourceDim`² / (`besselDegree` · mass), with the mass `New.mass` of the genus of
-the standard lattice of rank dim V. -/
+/--
+The real number `sourceDim`² / (`besselDegree` · mass), with the mass `New.mass` of the genus of
+the standard lattice of rank dim V.
+-/
 def mainSecondMoment : ℝ := S.sourceDim ^ 2 / (S.besselDegree * mass E 𝔰.r)
 
-/-- The number M^(fϱ(2k + 2ϱ + 1)), with k = |κ| and f the number of infinite places of E: the order
-of the reduction of the integral points of 𝖴. -/
+/--
+The number M^(fϱ(2k + 2ϱ + 1)), with k = |κ| and f the number of infinite places of E: the order
+of the reduction of the integral points of 𝖴.
+-/
 abbrev unipotentOrder : ℕ := S.M ^ (numInfPlaces E * (𝔰.ϱ * (2 * 𝔰.k + 2 * 𝔰.ϱ + 1)))
 
-/-- The constant a_* = |R̄₀| · M^(fϱ(2k + 2ϱ + 1)) · (number of classes) · c_S, with R̄₀ the image
+/--
+The constant a_* = |R̄₀| · M^(fϱ(2k + 2ϱ + 1)) · (number of classes) · c_S, with R̄₀ the image
 in `ResidueGL` of the Bessel subgroup, c_S = `siegelConst`, k = |κ|, f the number of infinite
-places. -/
+places.
+-/
 def scaledSiegelConst : ℝ :=
   Nat.card (S.reducedImage besselS) * S.unipotentOrder * Fintype.card S.Classes * S.siegelConst
 
-/-- The real number |R̄₀| · `sourceDim`, where R̄₀ is the image of the Bessel subgroup in
-`ResidueGL`. -/
+/--
+The real number |R̄₀| · `sourceDim`, where R̄₀ is the image of the Bessel subgroup in
+`ResidueGL`.
+-/
 def identitySecondMoment : ℝ := Nat.card (S.reducedImage besselS) * S.sourceDim
 
 /-- The real number τ = b^{kf/4}, with k = |κ| and f the number of infinite places of E. -/
@@ -524,9 +631,11 @@ def tailScale : ℝ := S.b ^ (𝔰.k * numInfPlaces E / 4 : ℝ)
 
 /-! ### The standing hypotheses -/
 
-/-- The standing hypotheses: `sourceLevel` is the preimage of K(M), `reduction` is onto, and size
+/--
+The standing hypotheses: `sourceLevel` is the preimage of K(M), `reduction` is onto, and size
 inequalities hold between b, M and ϖ, κ_v, N, the constant `scaledSiegelConst`, the second moments,
-the number of Bessel coordinates and an index. -/
+the number of Bessel coordinates and an index.
+-/
 class IsAdmissible : Prop where
   /-- The level is the preimage in U(X₀) of the principal congruence subgroup K(M). -/
   sourceLevel_eq : S.sourceLevel = S.principalLevel.comap S.inclHFin
@@ -541,26 +650,30 @@ class IsAdmissible : Prop where
   /-- N ≤ b^(60(ϱ + 1)). -/
   N_le : S.N ≤ S.b ^ (60 * 𝔰.n)
   /-- The ratio of `mainSecondMoment` to `identitySecondMoment` is at least b^(11 k f). -/
-  mul_identitySecondMoment_le : S.b ^ (11 * (𝔰.k * numInfPlaces E)) * S.identitySecondMoment ≤
-    S.mainSecondMoment
+  mul_identitySecondMoment_le
+    : S.b ^ (11 * (𝔰.k * numInfPlaces E)) * S.identitySecondMoment ≤ S.mainSecondMoment
   /-- The ratio of `mainSecondMoment` to `identitySecondMoment` is at most (M / b⁶)^(k f). -/
-  mainSecondMoment_le : S.mainSecondMoment ≤ (S.M / S.b ^ 6) ^ (𝔰.k * numInfPlaces E) *
-    S.identitySecondMoment
+  mainSecondMoment_le
+    : S.mainSecondMoment ≤ (S.M / S.b ^ 6) ^ (𝔰.k * numInfPlaces E) * S.identitySecondMoment
   /-- The tensor product of the Bessel systems has at most b^(2 k f) coordinates. -/
   card_besselCoord_le : Fintype.card S.BesselCoord ≤ S.b ^ (2 * 𝔰.k * numInfPlaces E)
-  /-- In the stabiliser `stdLevel E κ` of the standard lattice of X₀, the elements that `inclHFin`
+  /--
+  In the stabiliser `stdLevel E κ` of the standard lattice of X₀, the elements that `inclHFin`
   maps into `latticeStabilizer` form a subgroup whose index (0 if infinite) is at least (N^k /
-  b)^f. -/
-  le_relIndex :
-      (S.N ^ 𝔰.k / S.b) ^ numInfPlaces E ≤ (S.latticeStabilizer.comap S.inclHFin).relIndex
-        (stdLevel E 𝔰.κ)
-  /-- `scaledSiegelConst` is at most (1 + b⁻⁹) times the product of `mainSecondMoment`,
+  b)^f.
+  -/
+  le_relIndex
+    : (S.N ^ 𝔰.k / S.b) ^ numInfPlaces E
+      ≤ (S.latticeStabilizer.comap S.inclHFin).relIndex (stdLevel E 𝔰.κ)
+  /--
+  `scaledSiegelConst` is at most (1 + b⁻⁹) times the product of `mainSecondMoment`,
   `besselDegree`, the f-th power of `openCellConst`, vol(Ô)^(−(ϱ+1)) and the square of the quotient
-  of `unipotentCovolume` · Λ by the number of Bessel coordinates. -/
-  scaledSiegelConst_le :
-      S.scaledSiegelConst ≤
-        (1 + S.b⁻¹ ^ 9) * S.mainSecondMoment * S.besselDegree * 𝔰.openCellConst ^ numInfPlaces E /
-          volÔ E ^ 𝔰.n * (S.unipotentCovolume * S.frameScaleProd / Fintype.card S.BesselCoord) ^ 2
+  of `unipotentCovolume` · Λ by the number of Bessel coordinates.
+  -/
+  scaledSiegelConst_le
+    : S.scaledSiegelConst
+      ≤ (1 + S.b⁻¹ ^ 9) * S.mainSecondMoment * S.besselDegree * 𝔰.openCellConst ^ numInfPlaces E
+        / volÔ E ^ 𝔰.n * (S.unipotentCovolume * S.frameScaleProd / Fintype.card S.BesselCoord) ^ 2
 
 /-! ### Discreteness, cutoffs and amplitudes -/
 
@@ -670,13 +783,15 @@ lemma exists_cutoff_classUnipotent {c : S.Classes} (K : Subgroup (S.classUnipote
     _ = ∫⁻ γ : Γ, β (γ • y) ∂Measure.count := (lintegral_count _).symm
     _ = 1 := hβ_int y
 
-/-- The function β_c at the infinite places: a chosen cutoff for 𝖴⁰_c(M) times the indicator
+/--
+The function β_c at the infinite places: a chosen cutoff for 𝖴⁰_c(M) times the indicator
 `New.Filling.reducedIndicator` of the reduced points. The properties of the first factor are
-stated in `exists_classCutoff_eq_mul`. -/
+stated in `exists_classCutoff_eq_mul`.
+-/
 @[irreducible]
 def classCutoff (c : S.Classes) : (InfinitePlace E → 𝔰.G₁) → ENNReal :=
-  (S.exists_cutoff_classUnipotent ((S.classUnipotent₀ c).subgroupOf (S.classUnipotent c))).choose *
-    S.reducedIndicator
+  (S.exists_cutoff_classUnipotent ((S.classUnipotent₀ c).subgroupOf (S.classUnipotent c))).choose
+    * S.reducedIndicator
 
 /-- For each class `c` there is a measurable β on tuples y : `InfinitePlace E → G₁` with
 `classCutoff c` = β · `reducedIndicator`, and with ∑ β(`ratToInf u` · y) = 1 for all y, the sum over
@@ -693,21 +808,25 @@ lemma exists_classCutoff_eq_mul (c : S.Classes) :
     ((S.classUnipotent₀ c).subgroupOf (S.classUnipotent c))).choose_spec
   exact ⟨_, by rw [classCutoff], hβ_meas, hβ_sum⟩
 
-/-- The amplitude of γ over the classes c, c': the integral over G_∞ of β_c(y) β_c'(γ⁻¹y) W(y) ⊗
-W(γ⁻¹y)^*, with β_c = `classCutoff c` and the tensor of Bessel functions `besselKernel`. -/
+/--
+The amplitude of γ over the classes c, c': the integral over G_∞ of β_c(y) β_c'(γ⁻¹y) W(y) ⊗
+W(γ⁻¹y)^*, with β_c = `classCutoff c` and the tensor of Bessel functions `besselKernel`.
+-/
 def amplitude (c c' : S.Classes) (γ : S.G E) : EuclideanSpace ℂ (S.BesselCoord × S.BesselCoord) :=
   ∫ y : InfinitePlace E → 𝔰.G₁,
     (S.classCutoff c y * S.classCutoff c' ((S.ratToInf γ)⁻¹ * y)).toReal • S.besselKernel side γ y
 
-/-- The integral over G_∞ of β_c(y) β_c'(γ⁻¹y) ‖W(y) ⊗ W(γ⁻¹y)^*‖, with values in [0, ∞], for
-β_c = `classCutoff c` and the tensor of Bessel functions `besselKernel`. -/
+/--
+The integral over G_∞ of β_c(y) β_c'(γ⁻¹y) ‖W(y) ⊗ W(γ⁻¹y)^*‖, with values in [0, ∞], for
+β_c = `classCutoff c` and the tensor of Bessel functions `besselKernel`.
+-/
 def amplitudeMajorant (c c' : S.Classes) (γ : S.G E) : ENNReal :=
   ∫⁻ y : InfinitePlace E → 𝔰.G₁,
     S.classCutoff c y * S.classCutoff c' ((S.ratToInf γ)⁻¹ * y) * ‖S.besselKernel side γ y‖ₑ
 
 /-- The sum A_T(c, s, c') of the amplitudes of the elements of T that are terms over (c, s, c'). -/
-def amplitudeSum (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes) :
-    EuclideanSpace ℂ (S.BesselCoord × S.BesselCoord) :=
+def amplitudeSum (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes)
+    : EuclideanSpace ℂ (S.BesselCoord × S.BesselCoord) :=
   ∑' γ : ↥(T ∩ S.termsOver c s c'), S.amplitude side c c' γ
 
 /-! ### Scales, Gram matrices and the covolume -/
@@ -761,23 +880,32 @@ lemma unipotentCovolume_pos : 0 < S.unipotentCovolume := by
 def ideleM : (𝔸f E)ˣ :=
   Units.map (algebraMap E (𝔸f E)).toMonoidHom (Units.mk0 S.M (by simp [Nat.Prime.ne_zero]))
 
-/-- For u in the finite adelic unitary group, the number ψ_f(−σ(u)/(Mϖ)), where σ(u) sums the
-entries just above the diagonal in the frame block of u. -/
+/--
+For u in the finite adelic unitary group, the number ψ_f(−σ(u)/(Mϖ)), where σ(u) sums the
+entries just above the diagonal in the frame block of u.
+-/
 def unipotentChar (u : S.GFin) : ℂ := S.selfDualChar (S.ideleM⁻¹.val * simpleRootSum u)
 
-/-- The element s of `ResidueGL` agrees: integral u, u' ∈ 𝖴 whose reductions satisfy ū s = s ū' have
-the same value of `New.Filling.unipotentChar`. -/
+/--
+The element s of `ResidueGL` agrees: integral u, u' ∈ 𝖴 whose reductions satisfy ū s = s ū' have
+the same value of `New.Filling.unipotentChar`.
+-/
 def Agrees (s : S.ResidueGL) : Prop :=
-  ∀ u u' : S.latticeStabilizer, u.val ∈ besselU → u'.val ∈ besselU →
-    S.reduction u * s = s * S.reduction u' → S.unipotentChar u = S.unipotentChar u'
+  ∀ u u' : S.latticeStabilizer,
+    u.val ∈ besselU → u'.val ∈ besselU → S.reduction u * s = s * S.reduction u'
+      → S.unipotentChar u = S.unipotentChar u'
 
-/-- A set T of rational elements is stable if, for all rational points u, u' of 𝖴 and every γ,
-u⁻¹γu' lies in T if and only if γ does. -/
+/--
+A set T of rational elements is stable if, for all rational points u, u' of 𝖴 and every γ,
+u⁻¹γu' lies in T if and only if γ does.
+-/
 def IsStable (T : Set (S.G E)) : Prop :=
   ∀ u ∈ besselU, ∀ u' ∈ besselU, ∀ γ : S.G E, u⁻¹ * γ * u' ∈ T ↔ γ ∈ T
 
-/-- The set of rational elements γ of the unitary group with `termDisc γ ≠ 0` whose link
-(`New.link`) is the given submodule `Λ`. -/
+/--
+The set of rational elements γ of the unitary group with `termDisc γ ≠ 0` whose link
+(`New.link`) is the given submodule `Λ`.
+-/
 def termsOfLink (Λ : Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E)) : Set (S.G E) :=
   {γ : S.G E | S.termDisc γ ≠ 0 ∧ link γ = Λ}
 

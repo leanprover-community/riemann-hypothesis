@@ -71,16 +71,17 @@ still compile, more slowly.
 -- grade-zero part `A 0` of a graded ring its algebraic structure, and unifying `A 0` with an
 -- arbitrary subtype is expensive. Without them `New.Derivatives.Divisibility.NormalForm` times out
 -- and `Lib.GaloisRep.Hilbert90.UnitaryGroups` fails.
-attribute [instance 20] SetLike.GradeZero.instMonoid SetLike.GradeZero.instCommMonoid
-  SetLike.GradeZero.instSemiring SetLike.GradeZero.instCommSemiring SetLike.GradeZero.instRing
-  SetLike.GradeZero.instCommRing
+attribute [instance 20]
+  SetLike.GradeZero.instMonoid SetLike.GradeZero.instCommMonoid SetLike.GradeZero.instSemiring
+  SetLike.GradeZero.instCommSemiring SetLike.GradeZero.instRing SetLike.GradeZero.instCommRing
 
 -- These lemmas leave the default `simp` set of every importing file. They match very many terms
 -- and then fail on a side condition. Tagging a lemma in both directions erases both, and, unlike
 -- `attribute [-simp]`, the effect passes to importers. The reversed tags last one command only,
 -- so the warning about their head symbols does not apply.
 set_option warning.simp.varHead false in
-attribute [simp ←, simp] Matrix.conjTranspose_eq_transpose_of_trivial MonoidHom.CompTriple.comp_eq
+attribute [simp ←, simp]
+  Matrix.conjTranspose_eq_transpose_of_trivial MonoidHom.CompTriple.comp_eq
   LinearMap.identityMapOfZeroModuleIsZero smul_left_cancel_iff mul_cancel_left_mem_nonZeroDivisors
   IsAddKleinFour.card_four' MeasureTheory.lintegral_of_isEmpty Nat.card_eq_zero_of_infinite
   IsRegular.smul_eq_zero_iff_right Unitary.star_mul_self_of_mem inv_mul_cancel_of_invertible

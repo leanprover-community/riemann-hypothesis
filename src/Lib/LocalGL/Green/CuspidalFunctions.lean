@@ -102,8 +102,12 @@ lemma crapo_complementation {L : Type*} [Lattice L] [BoundedOrder L] [IsModularL
   · -- `U` itself lies in the difference, as `¬U ≤ W ⊔ C`
     grind [le_inf_iff]
 
-variable {k V K : Type*} [Field k] [Finite k] [AddCommGroup V] [Module k V] [Module.Finite k V]
-  {g : End k V} {o : SimClass k} (B : Hall k) [Field K] [Algebra k K] (η : K → ℂ)
+variable
+  {k V K : Type*} [Field k] [Finite k] [AddCommGroup V] [Module k V] [Module.Finite k V]
+  {g : End k V} {o : SimClass k}
+  (B : Hall k)
+  [Field K] [Algebra k K]
+  (η : K → ℂ)
 
 /-! ### The inverse of the constant function -/
 
@@ -270,8 +274,11 @@ section CuspidalSupport
 
 open Polynomial Hall LinearMap Module Multiset Submodule StableSubspace
 
-variable {k K V : Type*} [Field k] [Finite k] [Field K] [Algebra k K]
-  (η η' : K → ℂ) [AddCommGroup V] [Module k V] [Module.Finite k V] {g : End k V}
+variable
+  {k K V : Type*} [Field k] [Finite k] [Field K] [Algebra k K]
+  (η η' : K → ℂ)
+  [AddCommGroup V] [Module k V] [Module.Finite k V]
+  {g : End k V}
 
 omit [Finite k] in
 /-- If `P(g)` is nilpotent, with `P` monic irreducible, the characteristic polynomial of `g` is a
@@ -404,10 +411,11 @@ open Module Matrix Finset Hall Polynomial Fintype Algebra minpoly Lagrange Submo
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {k K F V : Type*} [Field k] [Finite k] [Field K] [Algebra k K] [Field F] [Finite F]
-  [Algebra k F]
-  (z : PowerBasis k F) [AddCommGroup V] [Module k V] [Module F V] [IsScalarTower k F V]
-  [Module.Finite k V] [Module.Finite F V]
+variable
+  {k K F V : Type*} [Field k] [Finite k] [Field K] [Algebra k K] [Field F] [Finite F] [Algebra k F]
+  (z : PowerBasis k F)
+  [AddCommGroup V] [Module k V] [Module F V] [IsScalarTower k F V] [Module.Finite k V]
+  [Module.Finite F V]
 
 /-- The order of GL_n(k), for a finite field k with q elements, is the product of q^i (q^{i+1} − 1)
 over 0 ≤ i < n, as an identity in any field. -/
@@ -603,8 +611,8 @@ Let η be a function K → ℂ.
 
 section CuspidalInnerProduct
 
-open Polynomial Finset Hall Module LinearMap minpoly IntermediateField
-  GeneralLinearGroup IsGalois LinearEquiv FiniteField ComplexConjugate Fintype IsTorsionBySet
+open Polynomial Finset Hall Module LinearMap minpoly IntermediateField GeneralLinearGroup IsGalois
+  LinearEquiv FiniteField ComplexConjugate Fintype IsTorsionBySet
 
 attribute [local instance low] Fintype.ofFinite
 

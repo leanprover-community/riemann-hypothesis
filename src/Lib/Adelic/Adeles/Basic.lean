@@ -71,8 +71,8 @@ noncomputable section
 
 section AdeleDefs
 
-open NumberField Ideal IsDedekindDomain Filter Valued IsCMField RestrictedProduct Set
-  IsLocalRing HeightOneSpectrum WithZeroTopology WithZero adicCompletion UniformSpace.Completion
+open NumberField Ideal IsDedekindDomain Filter Valued IsCMField RestrictedProduct Set IsLocalRing
+  HeightOneSpectrum WithZeroTopology WithZero adicCompletion UniformSpace.Completion
 open scoped Classical
 
 namespace New
@@ -94,15 +94,19 @@ instance (priority := low) : PlaceEmbedding E where
   Φ := InfinitePlace.embedding
   mk_Φ := InfinitePlace.mk_embedding
 
-/-- A CM number field E together with a choice, for each infinite place w of E, of a complex
+/--
+A CM number field E together with a choice, for each infinite place w of E, of a complex
 embedding of E that induces w.
-So `[CMType E]` includes the hypothesis that E is a CM number field. -/
+So `[CMType E]` includes the hypothesis that E is a CM number field.
+-/
 class CMType extends NumberField E, IsCMField E, PlaceEmbedding E
 
 variable [NumberField E]
 
-/-- A number field is integral over `ℚ`. The instance `Star E` on a CM field needs this fact, and
-instance search is too slow to find it. -/
+/--
+A number field is integral over `ℚ`. The instance `Star E` on a CM field needs this fact, and
+instance search is too slow to find it.
+-/
 instance isIntegral_rat : Algebra.IsIntegral ℚ E := .of_finite ℚ E
 
 /-- The set of finite places of E, that is, nonzero prime ideals of its ring of integers. -/
@@ -113,14 +117,18 @@ abbrev 𝔸f : Type _ := FiniteAdeleRing (𝓞 E) E
 
 instance : DecidableEq (InfinitePlace E) := Classical.decEq _
 
-/-- The product of one copy of ℂ for each infinite place of E with the finite adeles of E. It is the
-adele ring of E when E is totally complex. -/
+/--
+The product of one copy of ℂ for each infinite place of E with the finite adeles of E. It is the
+adele ring of E when E is totally complex.
+-/
 abbrev 𝔸 : Type _ := (InfinitePlace E → ℂ) × 𝔸f E
 
 variable {E} (w : FinPlace E)
 
-/-- The diagonal embedding of E in its adeles, given at the infinite places by the embeddings chosen
-in `New.PlaceEmbedding`. -/
+/--
+The diagonal embedding of E in its adeles, given at the infinite places by the embeddings chosen
+in `New.PlaceEmbedding`.
+-/
 @[simps! apply_fst apply_snd]
 def toAdele [PlaceEmbedding E] : E →+* 𝔸 E := RingHom.prod (RingHom.pi Φ) (algebraMap E (𝔸f E))
 
@@ -140,7 +148,7 @@ instance : CommSemiring (LocInt w) := CommRing.toCommSemiring
 /-- The residue field of the completion E_w of E at the finite place w. -/
 @[instance_reducible]
 def ResField : Type _ := IsLocalRing.ResidueField (LocInt w)
-  deriving Field, Algebra (𝓞 E)
+deriving Field, Algebra (𝓞 E)
 
 /-- The absolute norm of the prime ideal w, that is, the order of its residue field. -/
 abbrev FinPlace.q : ℕ := w.asIdeal.absNorm
@@ -175,8 +183,10 @@ def evalAt : 𝔸f E →+* LocField w := evalRingHom (fun v ↦ LocField v) w
 @[simp] lemma evalAt_apply (x : 𝔸f E) : evalAt w x = x w := rfl
 
 set_option synthInstance.maxHeartbeats 200000 in
-/-- The map sending a in E_w to the finite adele with component a at w and 0 elsewhere, a ring
-homomorphism that does not preserve 1. -/
+/--
+The map sending a in E_w to the finite adele with component a at w and 0 elsewhere, a ring
+homomorphism that does not preserve 1.
+-/
 def singleAdele : LocField w →ₙ+* 𝔸f E where
   toFun := RestrictedProduct.single LocInt w
   map_mul' x y := Subtype.ext (Pi.single_mul w x y)
@@ -190,16 +200,20 @@ lemma singleAdele_of_ne {v w : FinPlace E} (hv : v ≠ w) (x : LocField w) : sin
   dite_eq_right hv
 
 variable (E) in
-/-- The subring Ô of finite adeles of E that are integral at every finite place: Tau Ceti's
-integral adeles `FiniteAdeleRing.integralAdeles`, as a subring. -/
+/--
+The subring Ô of finite adeles of E that are integral at every finite place: Tau Ceti's
+integral adeles `FiniteAdeleRing.integralAdeles`, as a subring.
+-/
 def Ô : Subring (𝔸f E) := (FiniteAdeleRing.integralAdeles (𝓞 E) E).toSubring
 
 /-- A finite adele x is integral if and only if each of its components has valuation at most 1. -/
 lemma mem_Ô {x : 𝔸f E} : x ∈ Ô E ↔ ∀ w : HeightOneSpectrum (𝓞 E), v (x w) ≤ 1 :=
   FiniteAdeleRing.mem_integralAdeles.trans (forall_congr' fun _ ↦ mem_adicCompletionIntegers ..)
 
-/-- Reduction modulo w: the ring homomorphism from the integral finite adeles to the residue
-field at w. -/
+/--
+Reduction modulo w: the ring homomorphism from the integral finite adeles to the residue
+field at w.
+-/
 def reduceAt : Ô E →+* ResField w :=
   (residue (LocInt w)).comp
     (((evalAt w).domRestrict (Ô E)).codRestrict (LocInt w) fun x ↦ mem_Ô.1 x.property w)
@@ -212,25 +226,33 @@ instance : BorelSpace (LocField w) := ⟨rfl⟩
 -- structure (`FiniteAdeleRing.instMeasurableSpace`, `instBorelSpace`, `instLocallyCompactSpace`,
 -- `instPolishSpace`); the last two use the instance `finite_quotient_asIdeal`.
 
-/-- Tau Ceti's Polish structure, as a shortcut: found through `instPolishSpace` inside products
+/--
+Tau Ceti's Polish structure, as a shortcut: found through `instPolishSpace` inside products
 such as `(n → InfinitePlace E → ℂ) × (n → 𝔸f E)`, the instance term exceeds
-`synthInstance.maxSize`. -/
+`synthInstance.maxSize`.
+-/
 instance : PolishSpace (𝔸f E) := inferInstance
 
 /-- Tau Ceti's second countability, as a shortcut, for the same reason. -/
 instance : SecondCountableTopology (𝔸f E) := inferInstance
 
-/-- The structure of ring with involution on a commutative ring R given by a ring endomorphism
-whose square is the identity. -/
-abbrev starRingOfInvolution {R : Type*} [CommRing R] (star : R →+* R)
-    (star_involutive : Function.Involutive star) : StarRing R where
+/--
+The structure of ring with involution on a commutative ring R given by a ring endomorphism
+whose square is the identity.
+-/
+abbrev starRingOfInvolution
+    {R : Type*} [CommRing R] (star : R →+* R) (star_involutive : Function.Involutive star)
+    : StarRing R where
   star := star
   star_involutive := star_involutive
   star_mul := by grind
   star_add := by grind
 
-variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] (f : K →+* L)
-  {w : FinPlace K} (x : 𝓞 K)
+variable
+  {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L]
+  (f : K →+* L)
+  {w : FinPlace K}
+  (x : 𝓞 K)
 
 /-! ### Valuations on the completions -/
 
@@ -259,8 +281,10 @@ lemma finite_natCast_mem (n : ℕ) [NeZero n] : {v : FinPlace K | (n : 𝓞 K) �
 
 /-! ### Functoriality in the number field -/
 
-/-- For f: K → L and a finite place w of L, the finite place of K below w: the preimage under f
-of the prime ideal w. -/
+/--
+For f: K → L and a finite place w of L, the finite place of K below w: the preimage under f
+of the prime ideal w.
+-/
 def FinPlace.comap (w : FinPlace L) : FinPlace K :=
   let := f.toAlgebra
   w.under (𝓞 K)
@@ -281,8 +305,10 @@ lemma _root_.DenseRange.eq {X Y ι : Type*} [TopologicalSpace X] [TopologicalSpa
 
 variable {u : FinPlace K} {w : FinPlace L}
 
-/-- For a finite place w of L above the finite place u of K, the continuous extension of
-`f : K → L` to a homomorphism of the completions at u and at w. -/
+/--
+For a finite place w of L above the finite place u of K, the continuous extension of
+`f : K → L` to a homomorphism of the completions at u and at w.
+-/
 def locMap (h : w.comap f = u) : adicCompletion K u →+* adicCompletion L w :=
   let := f.toAlgebra
   have : w.asIdeal.LiesOver u.asIdeal := .mk (congrArg HeightOneSpectrum.asIdeal h).symm
@@ -368,15 +394,20 @@ lemma tendsto_place_comap_cofinite : Tendsto (FinPlace.comap f) cofinite cofinit
   change w.asIdeal ∣ (w.asIdeal.comap (algebraMap (𝓞 K) (𝓞 L))).map (algebraMap (𝓞 K) (𝓞 L))
   exact dvd_iff_le.2 map_comap_le
 
-/-- For an embedding f: K → L of number fields, the induced ring homomorphism from the finite
-adeles of K to those of L; it gives base change and the Galois action. -/
+/--
+For an embedding f: K → L of number fields, the induced ring homomorphism from the finite
+adeles of K to those of L; it gives base change and the Galois action.
+-/
 def adeleMap : 𝔸f K →+* 𝔸f L :=
   mapAlongRingHom LocField LocField (FinPlace.comap f) (tendsto_place_comap_cofinite f)
-    (fun _ ↦ locMap f rfl) (by simp [MapsTo, mem_LocInt])
+    (fun _ ↦ locMap f rfl)
+    (by simp [MapsTo, mem_LocInt])
 
 variable (K L) in
-/-- For an extension of number fields L over K, the inclusion of the finite adeles of K in those
-of L. -/
+/--
+For an extension of number fields L over K, the inclusion of the finite adeles of K in those
+of L.
+-/
 abbrev finAdeleIncl [Algebra K L] : 𝔸f K →+* 𝔸f L := adeleMap (algebraMap K L)
 
 /-- The component at w of the image of a finite adele x is the image of the component of x at the
@@ -418,8 +449,10 @@ instance : InvolutiveStar (FinPlace E) where
   star := comap (starRingEnd (𝓞 E)) star_involutive.surjective
   star_involutive w := by aesop
 
-/-- The finite place w of the CM field E is split over the maximal real subfield: it differs
-from its complex conjugate. -/
+/--
+The finite place w of the CM field E is split over the maximal real subfield: it differs
+from its complex conjugate.
+-/
 abbrev FinPlace.IsSplit (w : FinPlace E) : Prop := star w ≠ w
 
 @[simp]
@@ -428,14 +461,16 @@ lemma mem_star_place {w : FinPlace E} {x : 𝓞 E} : x ∈ (star w).asIdeal ↔ 
 variable {u w : FinPlace E} (h : star u = w)
 
 variable (E) in
-/-- The CM field `E` contains a primitive root of unity of order `7! = 5040`. Then the integers of
+/--
+The CM field `E` contains a primitive root of unity of order `7! = 5040`. Then the integers of
 `E` contain an element `i` with `i² = -1` and `ī = -i`
 (`New.HasPrimitiveRoot5040.exists_mul_self_eq_neg_one`), and an element `ω` with `ω + ω̄ = 1` and
 `ω ω̄ = 2` (`New.HasPrimitiveRoot5040.exists_add_star_eq_one_mul_star_eq_two`).
 So `y = i ω` has `y - ȳ = i`, a unit
 (`New.HasPrimitiveRoot5040.exists_isUnit_sub_star`), and `E` is unramified at the finite places
 over its maximal real subfield `E⁺`. In the comments such a field `E` is called stably unramified.
-A place over `2` divides exactly one of `ω`, `ω̄`, so it is not fixed by conjugation. -/
+A place over `2` divides exactly one of `ω`, `ω̄`, so it is not fixed by conjugation.
+-/
 class HasPrimitiveRoot5040 [IsCMField E] : Prop where
   /-- `E` contains a primitive root of unity of order `7! = 5040`. -/
   exists_primitive_root : ∃ ζ : E, IsPrimitiveRoot ζ 5040
@@ -507,8 +542,10 @@ lemma HasPrimitiveRoot5040.exists_isUnit_sub_star [HasPrimitiveRoot5040 E] :
     linear_combination i * hω_trace
   exact ⟨i * ω, .of_mul_eq_one (-i) (by rw [h_sub, mul_neg, hi_sq, neg_neg])⟩
 
-/-- For finite places u, w with ū = w, the homomorphism E_u → E_w of completions induced by
-complex conjugation. -/
+/--
+For finite places u, w with ū = w, the homomorphism E_u → E_w of completions induced by
+complex conjugation.
+-/
 def conjLoc : adicCompletion E u →+* adicCompletion E w :=
   locMap (starRingEnd E) (star_eq_iff_star_eq.mp h)
 
@@ -945,8 +982,9 @@ open NumberField
 
 namespace New
 
-variable {K L M : Type*} [Field K] [NumberField K] [Field L] [Field M]
-  [NumberField M] (g : L →+* M) (f : K →+* L)
+variable
+  {K L M : Type*} [Field K] [NumberField K] [Field L] [Field M] [NumberField M]
+  (g : L →+* M) (f : K →+* L)
 
 omit [NumberField K] in
 /-- An integer of `K` lies in the place below `w` if and only if its image lies in `w`. -/
@@ -1050,11 +1088,13 @@ instance (priority := low) adeleAlgebra : Algebra (𝔸f K) (𝔸f L) := (finAde
 @[local simp]
 lemma algebraMap_eq_finAdeleIncl : algebraMap (𝔸f K) (𝔸f L) = finAdeleIncl K L := rfl
 
-attribute [local instance] rightUniformSpace isUniformAddGroup_of_addCommGroup
-  completeSpace_of_weaklyLocallyCompactSpace
+attribute [local instance]
+  rightUniformSpace isUniformAddGroup_of_addCommGroup completeSpace_of_weaklyLocallyCompactSpace
 
-/-- For a finite basis b of L over K, the linear map sending a family (a_i) of finite adeles of
-K to the finite adele ∑ a_i b_i of L. -/
+/--
+For a finite basis b of L over K, the linear map sending a family (a_i) of finite adeles of
+K to the finite adele ∑ a_i b_i of L.
+-/
 abbrev adeleCombination : (ι → 𝔸f K) →ₗ[𝔸f K] 𝔸f L :=
   Fintype.linearCombination (𝔸f K) ((↑) ∘ b : ι → 𝔸f L)
 
@@ -1123,11 +1163,13 @@ lemma isHomeomorph_adeleCombination : IsHomeomorph (adeleCombination b) := by
     isClosed_property denseRange_algebraMap_finAdele h_closed fun x ↦ ⟨_, adeleCombination_repr b x⟩
   exact isHomeomorph_iff_isEmbedding_surjective.2 ⟨h_ind.isEmbedding, h_surj⟩
 
-/-- A finite basis of L over K, viewed as a basis of the finite adeles of L over the finite
-adeles of K. -/
+/--
+A finite basis of L over K, viewed as a basis of the finite adeles of L over the finite
+adeles of K.
+-/
 def adeleBasis : Basis ι (𝔸f K) (𝔸f L) :=
-  ofEquivFun
-    (LinearEquiv.ofBijective (adeleCombination b) (isHomeomorph_adeleCombination b).bijective).symm
+  ofEquivFun (LinearEquiv.ofBijective (adeleCombination b)
+    (isHomeomorph_adeleCombination b).bijective).symm
 
 /-- For `L / K` Galois, a finite adele of `L` comes from one of `K` if and only if it is fixed by
 the action of the Galois group on finite adeles. -/

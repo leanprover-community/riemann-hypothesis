@@ -89,48 +89,68 @@ lemma liftKernel_omega_scaling {z : unitary (𝔸f D.E)} (hz : D.IsScalingAt w z
       (D.scalarFin_mem_maxCompactAt_of_isScalingAt w m hz)
   simp [liftKernel_ω, Seesaw.pairWeilFinite_scalarFin, Prod.mk_one_one, h_det]
 
-/-- Let `t` be a tensor of data of the first `m` lifts, so that `TensorChain.lift` is the composite
+/--
+Let `t` be a tensor of data of the first `m` lifts, so that `TensorChain.lift` is the composite
 of these lifts, extended linearly in `t`. Let `z` be a scaling at a prime `w` dividing `π = D.piN`,
 the integer of `E` with `π π̄ = N` for the level `N = D.N`, and let `j < m`. If `ω(1, z)`, acting on
 factor `j` alone, fixes `t`, then the chain with data `t` sends `ψ - z ψ` to `0` for every algebraic
-form `ψ` on `X_0`. -/
-theorem tensorChainLift_sub_scaling_eq_zero {m j : ℕ} (hj : j < m)
-    (t : TensorChain (fun i : ℕ ↦ (D.homX i).finitePart) m) {z : unitary (𝔸f D.E)}
-    (hz : D.IsScalingAt w z)
-    (h_fix : TensorChain.map (fun i : ℕ ↦
-      if i = j then (D.liftKernel ϑ i).ω (1, scalarFin (D.X (i + 1)) z) else 1) m t = t)
-    (ψ : D.FormX 0) :
-    TensorChain.lift (fun i : ℕ ↦ (D.liftKernel ϑ i).lift)
-      (ψ - algFormRep D.columnCount (D.lastEntry 0) (scalarFin (D.X 0) z) ψ) m t = 0 := by
+form `ψ` on `X_0`.
+-/
+theorem tensorChainLift_sub_scaling_eq_zero
+    {m j : ℕ} (hj : j < m) (t : TensorChain (fun i : ℕ ↦ (D.homX i).finitePart) m)
+    {z : unitary (𝔸f D.E)} (hz : D.IsScalingAt w z)
+    (h_fix : TensorChain.map
+        (fun i : ℕ ↦ if i = j then (D.liftKernel ϑ i).ω (1, scalarFin (D.X (i + 1)) z) else 1)
+        m t
+      = t)
+    (ψ : D.FormX 0)
+    : TensorChain.lift
+        (fun i : ℕ ↦ (D.liftKernel ϑ i).lift)
+        (ψ - algFormRep D.columnCount (D.lastEntry 0) (scalarFin (D.X 0) z) ψ) m t
+      = 0 := by
   -- `ω(1, z)` on factor `j` inserts `z` after lift `j`; move it to the source.
-  have h_moved : TensorChain.lift (fun i : ℕ ↦ (D.liftKernel ϑ i).lift)
-        (algFormRep D.columnCount (D.lastEntry 0) (scalarFin (D.X 0) z) ψ) m t =
-      TensorChain.lift (fun i : ℕ ↦ (D.liftKernel ϑ i).lift) ψ m t :=
+  have h_moved
+      : TensorChain.lift
+          (fun i : ℕ ↦ (D.liftKernel ϑ i).lift)
+          (algFormRep D.columnCount (D.lastEntry 0) (scalarFin (D.X 0) z) ψ) m t
+        = TensorChain.lift (fun i : ℕ ↦ (D.liftKernel ϑ i).lift) ψ m t :=
     TensorChain.lift_algFormRep_of_map_eq (D.liftKernel ϑ)
-      (z := fun i : ℕ ↦ scalarFin (D.X i) z) (fun i ↦ D.liftKernel_omega_scaling ϑ i w hz) hj h_fix
-        ψ
+      (z := fun i : ℕ ↦ scalarFin (D.X i) z)
+      (fun i ↦ D.liftKernel_omega_scaling ϑ i w hz)
+      hj h_fix ψ
   rw [TensorChain.lift_sub, h_moved, sub_self]
 
-/-- Let `w` be a prime dividing `π = D.piN`, the integer of `E` with `π π̄ = N` for the level
+/--
+Let `w` be a prime dividing `π = D.piN`, the integer of `E` with `π π̄ = N` for the level
 `N = D.N`, let `t` be a tensor of data of the first `m` lifts, and let `j < m`. If `ω(1, z_w)`,
 acting on factor `j` alone, fixes `t`, then the chain of lifts with data `t` annihilates the
 ramified source forms: the forms on `X_0` of level `D.levelX 0` whose translates by `z_v ^ k`,
 `0 ≤ k < N - 1`, have sum `0` for each prime `v` dividing `π`, where `z_v = D.scalingGenerator v` is
-the chosen scaling at `v` (integral, `1` off `v` and `v̄`, of order `N - 1` modulo `v`). -/
-theorem tensorChainLift_eq_zero_of_ramified {m j : ℕ} (hj : j < m)
-    (t : TensorChain (fun i : ℕ ↦ (D.homX i).finitePart) m)
-    (h_fix : TensorChain.map (fun i : ℕ ↦ if i = j then
-      (D.liftKernel ϑ i).ω (1, scalarFin (D.X (i + 1)) (D.scalingGenerator w)) else 1) m t = t)
-    {φ : D.SourceForm} (hφ : φ ∈ D.ramifiedSourceForms) :
-    TensorChain.lift (fun i : ℕ ↦ (D.liftKernel ϑ i).lift) φ.val m t = 0 := by
-  obtain ⟨ψ, hψ⟩ : ∃ ψ : D.SourceForm, φ.val =
-      ψ.val - algFormRep D.columnCount (D.lastEntry 0) (scalarFin (D.X 0) (D.scalingGenerator w))
-        ψ.val :=
+the chosen scaling at `v` (integral, `1` off `v` and `v̄`, of order `N - 1` modulo `v`).
+-/
+theorem tensorChainLift_eq_zero_of_ramified
+    {m j : ℕ} (hj : j < m) (t : TensorChain (fun i : ℕ ↦ (D.homX i).finitePart) m)
+    (h_fix : TensorChain.map
+        (fun i : ℕ ↦
+          if i = j then
+            (D.liftKernel ϑ i).ω (1, scalarFin (D.X (i + 1)) (D.scalingGenerator w))
+          else
+            1)
+        m t
+      = t)
+    {φ : D.SourceForm} (hφ : φ ∈ D.ramifiedSourceForms)
+    : TensorChain.lift (fun i : ℕ ↦ (D.liftKernel ϑ i).lift) φ.val m t = 0 := by
+  obtain ⟨ψ, hψ⟩
+      : ∃ ψ : D.SourceForm,
+        φ.val
+          = ψ.val - algFormRep D.columnCount (D.lastEntry 0)
+            (scalarFin (D.X 0) (D.scalingGenerator w)) ψ.val :=
     D.exists_eq_sub_scalingGenerator w hφ
   rw [hψ]
   exact D.tensorChainLift_sub_scaling_eq_zero ϑ w hj t (D.isScalingAt_scalingGenerator w) h_fix ψ
 
-/-- For each `l`, the finite adelic unitary groups of the definite spaces `X_l` and `X_{l+1}` act
+/--
+For each `l`, the finite adelic unitary groups of the definite spaces `X_l` and `X_{l+1}` act
 by the twisted Weil action `ω` on the data (Schwartz functions in `(D.homX l).finitePart`) of the
 theta lift `D.liftKernel ϑ l` from forms on `X_l` to forms on `X_{l+1}`, twisted by the tame
 character `ϑ`.
@@ -141,18 +161,27 @@ the level `N = D.N`. If for some `i < p` the operator `ω(1, z_w)` on the second
 `τ i`, then the composite annihilates the ramified source forms: the forms on `X_0` of level
 `D.levelX 0` whose translates by `z_v ^ k`, `0 ≤ k < N - 1`, have sum `0` for each prime `v`
 dividing `π`, where `z_v = D.scalingGenerator v` is the chosen scaling at `v` (integral, `1` off
-`v` and `v̄`, of order `N - 1` modulo `v`). -/
+`v` and `v̄`, of order `N - 1` modulo `v`).
+-/
 theorem doubleLiftChain_eq_zero_of_ramified
     {τ : ∀ i : ℕ, (D.homX (2 * i)).finitePart ⊗[ℂ] (D.homX (2 * i + 1)).finitePart} {i p : ℕ}
     (hi : i < p)
-    (h_fix : map LinearMap.id ((D.liftKernel ϑ (2 * i + 1)).ω
-      (1, scalarFin (D.X (2 * i + 1 + 1)) (D.scalingGenerator w))) (τ i) = τ i)
-    {φ : D.SourceForm} (hφ : φ ∈ D.ramifiedSourceForms) :
-    doubleLiftChain (D.liftKernel ϑ) τ p φ.val = 0 := by
+    (h_fix : map LinearMap.id
+        ((D.liftKernel ϑ (2 * i + 1)).ω (1, scalarFin (D.X (2 * i + 1 + 1)) (D.scalingGenerator w)))
+        (τ i)
+      = τ i)
+    {φ : D.SourceForm} (hφ : φ ∈ D.ramifiedSourceForms)
+    : doubleLiftChain (D.liftKernel ϑ) τ p φ.val = 0 := by
   -- Regroup the data into `2 * p` single factors; `ω(1, z_w)` on factor `2 * i + 1` fixes them.
-  have h_regrouped : TensorChain.map (fun l : ℕ ↦ if l = 2 * i + 1 then
-        (D.liftKernel ϑ l).ω (1, scalarFin (D.X (l + 1)) (D.scalingGenerator w)) else 1) (2 * p)
-      (TensorChain.ofPairs τ p) = TensorChain.ofPairs τ p := by
+  have h_regrouped
+      : TensorChain.map
+          (fun l : ℕ ↦
+            if l = 2 * i + 1 then
+              (D.liftKernel ϑ l).ω (1, scalarFin (D.X (l + 1)) (D.scalingGenerator w))
+            else
+              1)
+          (2 * p) (TensorChain.ofPairs τ p)
+        = TensorChain.ofPairs τ p := by
     rw [TensorChain.map_ofPairs]
     congr! with l
     obtain rfl | h_ne := eq_or_ne l i

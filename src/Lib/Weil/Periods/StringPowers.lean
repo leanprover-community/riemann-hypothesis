@@ -34,19 +34,26 @@ noncomputable section
 
 namespace New.Grading
 
-variable {E X X' ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+variable
+  {E X X' ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
   [DecidableEq ι'] [DecidableEq X] [DecidableEq X']
   {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
   (Y : Grading V N X s)
 
-/-- The coefficient of `𝔢 ^ i` at the string vector `i`: a power of the constant `c` of the grading,
-times `-N` if that vector has negative grade, that is if `s ≤ 2 * i`. -/
+/--
+The coefficient of `𝔢 ^ i` at the string vector `i`: a power of the constant `c` of the grading,
+times `-N` if that vector has negative grade, that is if `s ≤ 2 * i`.
+-/
 def powerCoeff (i : ℕ) : E :=
-  if 2 * i < s then Y.genericConst.val ^ (i - s / 2 : ℤ) else -N * Y.genericConst.val ^
-    (i - (s - 1) / 2 : ℤ)
+  if 2 * i < s then
+    Y.genericConst.val ^ (i - s / 2 : ℤ)
+  else
+    -N * Y.genericConst.val ^ (i - (s - 1) / 2 : ℤ)
 
-/-- The vector `𝔢 ^ i` of the complement `E[𝔢] / (𝔢 ^ s)` of `X`: the multiple `Y.powerCoeff i` of
-the string vector `i`, and `0` for `s ≤ i`. -/
+/--
+The vector `𝔢 ^ i` of the complement `E[𝔢] / (𝔢 ^ s)` of `X`: the multiple `Y.powerCoeff i` of
+the string vector `i`, and `0` for `s ≤ i`.
+-/
 def stringPower (i : ℕ) (k : ι) : E :=
   (Y.indexEquiv.symm k).elim 0 fun b : Fin s ↦ if b.val = i then Y.powerCoeff i else 0
 

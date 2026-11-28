@@ -262,27 +262,35 @@ lemma _root_.New.IsValuationPair.isBezout (hR : IsValuationPair R) : IsBezout R 
 
 end Columns
 
-variable {E κ P : Type} [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E] [Fintype κ]
-  [Fintype P] {r : ℕ}
+variable
+  {E κ P : Type}
+  [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E] [Fintype κ] [Fintype P]
+  {r : ℕ}
 
-/-- Let `𝔸f E` be the finite adeles of the number field `E` and `Ô E` the integral ones. An
+/--
+Let `𝔸f E` be the finite adeles of the number field `E` and `Ô E` the integral ones. An
 `Ô E`-submodule `L` of `(𝔸f E) ^ κ` is a lattice of rank `r` if it is spanned over `Ô E` by the
 columns of `x a`, where the `r` columns of `x` are independent vectors in `E ^ κ` and `a` is an
-invertible `r × r` matrix over `𝔸f E`. -/
+invertible `r × r` matrix over `𝔸f E`.
+-/
 def IsLatticeOfRank (r : ℕ) (L : Submodule (Ô E) (κ → 𝔸f E)) : Prop :=
   ∃ (x : Matrix κ (Fin r) E) (a : GL (Fin r) (𝔸f E)),
     HasLeftInv x ∧ colLattice (Ô E) (finAdeleMatrix x * a.val) = L
 
 open scoped Classical in
-/-- The discriminant of a lattice `L` of rank `r`: the square root of `genIndex (det (Bᴴ * B))` for
+/--
+The discriminant of a lattice `L` of rank `r`: the square root of `genIndex (det (Bᴴ * B))` for
 some chosen basis `B = x a`. Here `ᴴ` is the conjugate transpose and `genIndex u` is the inverse of
 the factor by which a unit `u` scales Haar measure on the finite adeles (`0` for a non-unit). The
-value is `0` if `L` is not a lattice of rank `r`. -/
+value is `0` if `L` is not a lattice of rank `r`.
+-/
 def discriminant (r : ℕ) (L : Submodule (Ô E) (κ → 𝔸f E)) : ℝ :=
   if h : IsLatticeOfRank r L then
-    √(genIndex ((finAdeleMatrix h.choose * h.choose_spec.choose.val)ᴴ *
-      (finAdeleMatrix h.choose * h.choose_spec.choose.val)).det)
-  else 0
+    √(genIndex
+      ((finAdeleMatrix h.choose * h.choose_spec.choose.val)ᴴ
+        * (finAdeleMatrix h.choose * h.choose_spec.choose.val)).det)
+  else
+    0
 
 omit [IsCMField E] [HasPrimitiveRoot5040 E] in
 /-- If `x` has a left inverse over `E` and `a` is an invertible matrix over the finite adeles
@@ -574,9 +582,11 @@ section Saturated
 
 variable {H' : Matrix κ P (𝔸f E)} {H : Matrix P κ (𝔸f E)}
 
-/-- The saturated lattice of a subspace `V` of `E ^ κ` for a matrix `H` with left inverse `H'`: the
+/--
+The saturated lattice of a subspace `V` of `E ^ κ` for a matrix `H` with left inverse `H'`: the
 `Ô`-span of the chosen basis `sublatticeBasis u V`, where `u` is the identity `H' * H = 1`. Its
-columns are adelic points of `V`, and their image under `H` is a primitive integral matrix. -/
+columns are adelic points of `V`, and their image under `H` is a primitive integral matrix.
+-/
 def saturatedLattice (u : H' * H = 1) (V : Submodule E (κ → E)) : Submodule (Ô E) (κ → 𝔸f E) :=
   colLattice (Ô E) (sublatticeBasis u V).val
 
@@ -691,15 +701,18 @@ lemma tsum_submoduleIndex_colLattice_inv_pow_le (B : Matrix κ (Fin r) (𝔸f E)
     (submoduleZeta_pi_le isPrincipal_of_cardQuot_ne_zero r μ)
 
 omit [DecidableEq κ] in
-/-- For a lattice `L` of rank `r`, the sum of `[L : M] ^ (-(r + μ))` over the sublattices `M` of
+/--
+For a lattice `L` of rank `r`, the sum of `[L : M] ^ (-(r + μ))` over the sublattices `M` of
 finite index is at most `ζ(μ) ^ r`, where `ζ(μ) = idealZeta (Ô E) μ` is the sum of
 `[Ô : I] ^ (-μ)` over the ideals `I` of finite index in `Ô`. (Hey's formula would give the sum
 exactly, as a product of zeta values; only this bound is used, and it is proved without the
-formula.) -/
-theorem IsLatticeOfRank.tsum_submoduleIndex_inv_pow_le {L : Submodule (Ô E) (κ → 𝔸f E)}
-    (hL : IsLatticeOfRank r L) (μ : ℕ) :
-    ∑' M : {M : Submodule (Ô E) (κ → 𝔸f E) // M ≤ L ∧ submoduleIndex M L ≠ 0},
-      (submoduleIndex M.val L : ℝ≥0∞)⁻¹ ^ (r + μ) ≤ idealZeta (Ô E) μ ^ r := by
+formula.)
+-/
+theorem IsLatticeOfRank.tsum_submoduleIndex_inv_pow_le
+    {L : Submodule (Ô E) (κ → 𝔸f E)} (hL : IsLatticeOfRank r L) (μ : ℕ)
+    : ∑' M : {M : Submodule (Ô E) (κ → 𝔸f E) // M ≤ L ∧ submoduleIndex M L ≠ 0},
+        (submoduleIndex M.val L : ℝ≥0∞)⁻¹ ^ (r + μ)
+      ≤ idealZeta (Ô E) μ ^ r := by
   obtain ⟨x, a, -, rfl⟩ := hL
   exact tsum_submoduleIndex_colLattice_inv_pow_le _ μ
 

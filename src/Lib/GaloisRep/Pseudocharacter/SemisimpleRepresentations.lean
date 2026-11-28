@@ -73,26 +73,31 @@ open Matrix Submodule Fintype ConjAct IsArtinianRing Set Algebra Pi Units Linear
 
 namespace New
 
-variable {k G H n N B : Type} [Field k] [Group G] [Fintype n] [DecidableEq n] [Fintype N]
-  [DecidableEq N] {m : ℕ} {d : Fin m → ℕ}
-  {r : G →* GL n k} [∀ i, NeZero (d i)]
+variable
+  {k G H n N B : Type} [Field k] [Group G] [Fintype n] [DecidableEq n] [Fintype N] [DecidableEq N]
+  {m : ℕ} {d : Fin m → ℕ} {r : G →* GL n k} [∀ i, NeZero (d i)]
 
 /-! ### Products of matrix algebras and idempotents -/
 
 /-- The product over i of the matrix algebras M_{d_i}(k). -/
-abbrev PiMatrix (k : Type*) (d : Fin m → ℕ) : Type _ := ∀ i : Fin m,
-  Matrix (Fin (d i)) (Fin (d i)) k
+abbrev PiMatrix (k : Type*) (d : Fin m → ℕ) : Type _ :=
+  ∀ i : Fin m, Matrix (Fin (d i)) (Fin (d i)) k
 
-/-- The R-algebra homomorphism from ∏_i M_{m_i}(R) to matrices indexed by the disjoint union of
-the m_i, sending a family of square matrices to the block diagonal matrix. -/
+/--
+The R-algebra homomorphism from ∏_i M_{m_i}(R) to matrices indexed by the disjoint union of
+the m_i, sending a family of square matrices to the block diagonal matrix.
+-/
 @[simps!]
-def blockDiagonalAlgHom {R o : Type*} {m : o → Type} [CommRing R] [DecidableEq o] [Fintype o]
-    [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)] :
-    (∀ i : o, Matrix (m i) (m i) R) →ₐ[R] Matrix (Σ i : o, m i) (Σ i : o, m i) R :=
+def blockDiagonalAlgHom
+    {R o : Type*} {m : o → Type}
+    [CommRing R] [DecidableEq o] [Fintype o] [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)]
+    : (∀ i : o, Matrix (m i) (m i) R) →ₐ[R] Matrix (Σ i : o, m i) (Σ i : o, m i) R :=
   AlgHom.mk' (blockDiagonal'RingHom m R) (by simp)
 
-/-- The element of the product of matrix algebras M_{d_i}(k) that is the matrix unit E_ab in
-factor i and zero elsewhere; a, b default to 0. -/
+/--
+The element of the product of matrix algebras M_{d_i}(k) that is the matrix unit E_ab in
+factor i and zero elsewhere; a, b default to 0.
+-/
 abbrev piMatrixUnit (i : Fin m) (a b : Fin (d i) := 0) : PiMatrix k d :=
   Pi.single i (Matrix.single a b 1)
 
@@ -122,8 +127,10 @@ lemma exists_mul_mul_eq_of_rank_le {A : Matrix N N k} {A' : Matrix n n k} (h : A
     ext_iff_mulVec.2 fun x ↦ ?_⟩
   simp [← mulVec_mulVec, left_inv]
 
-variable {p : Matrix n n k} (f : PiMatrix k d →ₐ[k] Matrix N N k)
-  (f' : PiMatrix k d →ₐ[k] Matrix n n k) [Ring B] [Group H] [Algebra k B] [Module.Finite k B]
+variable
+  {p : Matrix n n k}
+  (f : PiMatrix k d →ₐ[k] Matrix N N k) (f' : PiMatrix k d →ₐ[k] Matrix n n k)
+  [Ring B] [Group H] [Algebra k B] [Module.Finite k B]
   (ρ : G →* B)
 
 omit [DecidableEq n] in
@@ -210,8 +217,10 @@ lemma exists_rep_of_trace [CharZero k]
 
 /-! ### Intertwiners between algebra maps -/
 
-/-- Given algebra maps f, f' from the product of the M_{d_i}(k) to matrix algebras and matrices U_i,
-this is the matrix Σ_i Σ_a f(E^i_{a0}) U_i f'(E^i_{0a}). -/
+/--
+Given algebra maps f, f' from the product of the M_{d_i}(k) to matrix algebras and matrices U_i,
+this is the matrix Σ_i Σ_a f(E^i_{a0}) U_i f'(E^i_{0a}).
+-/
 def intertwiner (U : Fin m → Matrix N n k) : Matrix N n k :=
   ∑ i : Fin m, ∑ a : Fin (d i), f (piMatrixUnit i a) * U i * f' (piMatrixUnit i 0 a)
 
@@ -433,11 +442,14 @@ section CharacterCancellation
 
 open Matrix Submodule Pi Fintype Function
 
-variable {k G m n t : Type} [Field k] [Group G] [Fintype m] [DecidableEq m] [Fintype n] [Fintype t]
+variable
+  {k G m n t : Type} [Field k] [Group G] [Fintype m] [DecidableEq m] [Fintype n] [Fintype t]
   (μ : G →* kˣ) (R : G →* GL m k)
 
-/-- For a character μ of G and a matrix representation R over k, the representation g ↦
-μ(g)R(g). -/
+/--
+For a character μ of G and a matrix representation R over k, the representation g ↦
+μ(g)R(g).
+-/
 noncomputable abbrev New.twistByChar : G →* GL m k :=
   MonoidHom.mk' (fun g ↦ μ g • R g) (by aesop (add simp smul_mul_smul))
 
@@ -540,12 +552,14 @@ namespace New
 
 open Matrix Filter Set Prod IntermediateField InfiniteGalois Units CoeffRing
 
-variable {ℓ : ℕ} [ThePrime ℓ]
-  {n : Type} [Fintype n] [DecidableEq n] {G : Type} [Group G] {O : CoeffRing ℓ}
+variable
+  {ℓ : ℕ} [ThePrime ℓ] {n : Type} [Fintype n] [DecidableEq n] {G : Type} [Group G] {O : CoeffRing ℓ}
 
-/-- The `O`-valued representation `u` is a lattice in `r`: there is one `P` in `GL n ℚ̄_ℓ` with
+/--
+The `O`-valued representation `u` is a lattice in `r`: there is one `P` in `GL n ℚ̄_ℓ` with
 `P⁻¹ * r g * P = u g` for all `g` in `G`, where `u g` is read in `ℚ̄_ℓ` through the inclusion
-`O.val.val` of `O` into `ℚ̄_ℓ`. -/
+`O.val.val` of `O` into `ℚ̄_ℓ`.
+-/
 def Selmer.IsLatticeIn (r : G →* GL n (PadicAlgCl ℓ)) (u : G →* Matrix n n O) : Prop :=
   ∃ P : GL n (PadicAlgCl ℓ), ∀ g : G, ↑(P⁻¹ * r g * P) = (u g).map O.val.val
 

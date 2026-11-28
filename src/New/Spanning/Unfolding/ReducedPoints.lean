@@ -528,8 +528,8 @@ lemma existsUnique_mul_unitriangular_mem {R : Type*} [CommRing R] {n : ℕ}
       (fun γ p _ ↦ h_mem γ p.val.1 p.val.2 p.property) h_transl x
   exact (existsUnique_congr h_box).1 h_unique
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
-  {D : Set (InfinitePlace E → ℂ)}
+variable
+  {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} {D : Set (InfinitePlace E → ℂ)}
 
 /-- Let `u` in the rational unitary group `S.G E` of the filling-theorem data `S` lie in `besselU`,
 the block upper unitriangular isometries. `S.ratTriangle y a b v` is entry `(a, b)` of the
@@ -554,55 +554,63 @@ lemma ratTriangle_eq_sum {u : S.G E} (hu : u ∈ besselU) (y : InfinitePlace E �
   rw [ratTriangle, h_entry, Pi.mul_apply]
   field
 
-/-- Let `S` be filling data over `E`, where `E` contains a primitive 5040th root of unity, and let
+/--
+Let `S` be filling data over `E`, where `E` contains a primitive 5040th root of unity, and let
 `D` be a set of representatives modulo `S.M 𝓞_E` as in `New.Filling.IsResidueDomain`. For each class
 `c` in `S.Classes` and each point `y`, the `u` in `S.classUnipotent c` with `S.ratToInf u * y`
-reduced for `D` form exactly one right coset of `S.classUnipotent₀ c`. -/
-theorem IsResidueDomain.exists_mul_mem_reducedPoints_iff_rightCoset [HasPrimitiveRoot5040 E]
-    (hD : S.IsResidueDomain D) (c : S.Classes) (y : InfinitePlace E → 𝔰.G₁) :
-    ∃ u₀ : S.classUnipotent c, ∀ u : S.classUnipotent c,
+reduced for `D` form exactly one right coset of `S.classUnipotent₀ c`.
+-/
+theorem IsResidueDomain.exists_mul_mem_reducedPoints_iff_rightCoset
+    [HasPrimitiveRoot5040 E] (hD : S.IsResidueDomain D) (c : S.Classes) (y : InfinitePlace E → 𝔰.G₁)
+    : ∃ u₀ : S.classUnipotent c, ∀ u : S.classUnipotent c,
       S.ratToInf u * y ∈ S.reducedPoints D ↔ (u * u₀⁻¹).val ∈ S.classUnipotent₀ c := by
   -- Work in the group `G` of unitriangular matrices over the ring of tuples. It contains the
   -- triangular matrices `triangle z` and the action `θ u` of `u` on the frame, and
   -- `triangle (u y) = triangle y * θ u⁻¹`.
   let φ : E →+* (InfinitePlace E → ℂ) := RingHom.pi Φ
   let G : Subgroup (GL (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)) := unitriangular id _
-  let frameHom :
-      S.classUnipotent c →* Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ) :=
-    { toFun u := (frameMatrix u.val).map φ
-      map_one' := by simp [frameMatrix, submatrix_one, besselFrame_injective]
-      map_mul' u u' := by rw [Subgroup.coe_mul, frameMatrix_mul u'.property.left, Matrix.map_mul] }
-  let θ : S.classUnipotent c →* G := frameHom.toHomUnits.codRestrict G fun u a b hba ↦ by
-    simp [frameHom, frameMatrix_unitriangular u.property.left a b hba, Matrix.one_apply,
-      apply_ite φ]
+  let frameHom
+      : S.classUnipotent c →* Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ) := {
+    toFun u := (frameMatrix u.val).map φ
+    map_one' := by simp [frameMatrix, submatrix_one, besselFrame_injective]
+    map_mul' u u' := by rw [Subgroup.coe_mul, frameMatrix_mul u'.property.left, Matrix.map_mul]
+  }
+  let θ : S.classUnipotent c →* G :=
+    frameHom.toHomUnits.codRestrict G fun u a b hba ↦ by
+      simp [frameHom, frameMatrix_unitriangular u.property.left a b hba, Matrix.one_apply,
+        apply_ite φ]
   have hθ (u : S.classUnipotent c) : (θ u).val.val = (frameMatrix u.val).map φ := rfl
   -- The kernel of `θ` is the fixer of the frame.
   have h_ker (u : S.classUnipotent c) : θ u = 1 ↔ u.val ∈ S.classUnipotent₀ c := by
-    have h_frame : u.val ∈ S.classUnipotent₀ c ↔ frameMatrix u.val = 1 :=
-      ⟨fun h ↦ (mem_besselU0_iff.1 h.right).right,
-        fun h ↦ ⟨u.property, mem_besselU0_iff.2 ⟨u.property.left, h⟩⟩⟩
+    have h_frame : u.val ∈ S.classUnipotent₀ c ↔ frameMatrix u.val = 1 := ⟨
+      fun h ↦ (mem_besselU0_iff.1 h.right).right,
+      fun h ↦ ⟨u.property, mem_besselU0_iff.2 ⟨u.property.left, h⟩⟩
+    ⟩
     rw [h_frame, Subtype.ext_iff, Units.ext_iff, hθ, ← (map_injective φ.injective).eq_iff]
     simp
-  have h_triangle (z : InfinitePlace E → 𝔰.G₁) (a b : Fin (𝔰.ϱ + 1)) (hba : b ≤ a) :
-      of (S.ratTriangle z) a b =
-        (1 : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)) a b := by
+  have h_triangle (z : InfinitePlace E → 𝔰.G₁) (a b : Fin (𝔰.ϱ + 1)) (hba : b ≤ a)
+      : of (S.ratTriangle z) a b
+        = (1 : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)) a b := by
     ext v
     simp [ratTriangle_eq_one_apply_of_le z hba v, Matrix.one_apply, ite_apply]
   have h_det (z : InfinitePlace E → 𝔰.G₁) : (of (S.ratTriangle z)).det = 1 :=
     det_eq_one_of_unitriangular (lev := id) (h_triangle z)
   let triangle (z : InfinitePlace E → 𝔰.G₁) : G :=
     ⟨.mk'' (of (S.ratTriangle z)) (by simp [h_det z]), h_triangle z⟩
-  have h_move (u : S.classUnipotent c) : triangle y * θ u⁻¹ =
-      triangle (S.ratToInf u * y) := by
-    have h_sum : of (S.ratTriangle y) =
-        of (S.ratTriangle (S.ratToInf u * y)) * (frameMatrix u.val).map φ := by
+  have h_move (u : S.classUnipotent c) : triangle y * θ u⁻¹ = triangle (S.ratToInf u * y) := by
+    have h_sum
+        : of (S.ratTriangle y)
+          = of (S.ratTriangle (S.ratToInf u * y)) * (frameMatrix u.val).map φ := by
       ext a b v
       simpa [φ, Matrix.mul_apply] using ratTriangle_eq_sum u.property.left y a b v
     rw [map_inv, mul_inv_eq_iff_eq_mul]
     exact Subtype.ext (Units.ext h_sum)
   have hφ (x : 𝓞 E) : φ (S.M * (x : E)) = fun v : InfinitePlace E ↦ Φ v (S.M * (x : E)) := rfl
-  have h_elementary : ∀ a b : Fin (𝔰.ϱ + 1), a < b → ∀ l ∈ S.levelMultiples,
-      ∃ γ : θ.range, (γ : GL (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)).val = 1 + single a b l := by
+  have h_elementary
+      : ∀ a b : Fin (𝔰.ϱ + 1),
+        a < b
+          → ∀ l ∈ S.levelMultiples, ∃ γ : θ.range,
+            (γ : GL (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)).val = 1 + single a b l := by
     intro a b hab l hl
     obtain ⟨x, rfl⟩ : ∃ x : 𝓞 E, (fun v : InfinitePlace E ↦ Φ v (S.M * (x : E))) = l :=
       mem_levelMultiples.1 hl
@@ -611,21 +619,23 @@ theorem IsResidueDomain.exists_mul_mem_reducedPoints_iff_rightCoset [HasPrimitiv
     refine ⟨⟨θ u, u, rfl⟩, ?_⟩
     rw [hθ, hu, ← hφ, Matrix.map_add φ φ.map_add, Matrix.map_one φ φ.map_zero φ.map_one,
       map_single a b (S.M * (x : E)) φ]
-  have h_level : ∀ (γ : θ.range) (a b : Fin (𝔰.ϱ + 1)), a < b →
-      (γ : GL (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)) a b ∈ S.levelMultiples := by
+  have h_level
+      : ∀ (γ : θ.range) (a b : Fin (𝔰.ϱ + 1)),
+        a < b → (γ : GL (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)) a b ∈ S.levelMultiples := by
     rintro ⟨_, u, rfl⟩ a b hab
     obtain ⟨x, hx⟩ : ∃ x : 𝓞 E, frameMatrix u.val a b = S.M * (x : E) :=
       exists_frameMatrix_classUnipotent_eq_mul c u hab
     rw [hθ, map_apply, hx, hφ]
     exact mem_levelMultiples.2 ⟨x, rfl⟩
-  obtain ⟨⟨_, u₀, rfl⟩, h_mem, h_only⟩ :
-      ∃! γ : θ.range, ∀ a b : Fin (𝔰.ϱ + 1), a < b →
-        (triangle y * γ : GL (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)) a b ∈ D :=
+  obtain ⟨⟨_, u₀, rfl⟩, h_mem, h_only⟩
+      : ∃! γ : θ.range, ∀ a b : Fin (𝔰.ϱ + 1), a < b →
+          (triangle y * γ : GL (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)) a b ∈ D :=
     existsUnique_mul_unitriangular_mem θ.range S.levelMultiples.toAddSubmonoid
       hD.existsUnique_add_mem h_elementary h_level (triangle y)
   refine ⟨u₀⁻¹, fun u ↦ ?_⟩
-  have h_iff : S.ratToInf u * y ∈ S.reducedPoints D ↔
-      ∀ a b : Fin (𝔰.ϱ + 1), a < b → (triangle y * θ u⁻¹).val.val a b ∈ D := by
+  have h_iff
+      : S.ratToInf u * y ∈ S.reducedPoints D
+        ↔ ∀ a b : Fin (𝔰.ϱ + 1), a < b → (triangle y * θ u⁻¹).val.val a b ∈ D := by
     rw [h_move, reducedPoints, mem_ofPred_eq]
     rfl -- the entries of `triangle z` are those of `S.ratTriangle z`
   rw [h_iff, ← h_ker, inv_inv, map_mul, mul_eq_one_iff_inv_eq, ← map_inv]
@@ -634,26 +644,31 @@ theorem IsResidueDomain.exists_mul_mem_reducedPoints_iff_rightCoset [HasPrimitiv
   · rw [h]
     exact h_mem
 
-/-- Let `S` satisfy the standing hypotheses `New.Filling.IsAdmissible`, let `E` contain a primitive
+/--
+Let `S` satisfy the standing hypotheses `New.Filling.IsAdmissible`, let `E` contain a primitive
 5040th root of unity, and let `D` be a set of representatives modulo `S.M 𝓞_E` as in
 `New.Filling.IsResidueDomain`. For every class `c`, the indicator `ω` of the points reduced for `D`
-is a partition of unity in boxes. -/
-theorem IsResidueDomain.isBoxPartitionOfUnity [S.IsAdmissible] [HasPrimitiveRoot5040 E]
-    (hD : S.IsResidueDomain D) (c : S.Classes) :
-    S.IsBoxPartitionOfUnity c ((S.reducedPoints D).indicator 1) where
+is a partition of unity in boxes.
+-/
+theorem IsResidueDomain.isBoxPartitionOfUnity
+    [S.IsAdmissible] [HasPrimitiveRoot5040 E] (hD : S.IsResidueDomain D) (c : S.Classes)
+    : S.IsBoxPartitionOfUnity c ((S.reducedPoints D).indicator 1) where
   measurable := measurable_one.indicator hD.measurableSet_reducedPoints
   mem_frameBox_besselLength y v h_ne := hD.mem_frameBox (mem_of_indicator_ne_zero h_ne) v
   tsum_mul_eq_one y a ha := by
     -- The `γ` that make `γ y` reduced form one coset of `S.classUnipotent₀ c`, on which `a` has sum
     -- one.
-    obtain ⟨γ₀, hγ₀⟩ : ∃ γ₀ : S.classUnipotent c, ∀ γ : S.classUnipotent c,
-        S.ratToInf γ * y ∈ S.reducedPoints D ↔ (γ * γ₀⁻¹).val ∈ S.classUnipotent₀ c :=
+    obtain ⟨γ₀, hγ₀⟩
+        : ∃ γ₀ : S.classUnipotent c, ∀ γ : S.classUnipotent c,
+          S.ratToInf γ * y ∈ S.reducedPoints D ↔ (γ * γ₀⁻¹).val ∈ S.classUnipotent₀ c :=
       hD.exists_mul_mem_reducedPoints_iff_rightCoset c y
     let f (u : (S.classUnipotent₀ c).subgroupOf (S.classUnipotent c)) : S.classUnipotent c :=
       u.val * γ₀
     have f_injective : f.Injective := (mul_left_injective γ₀).comp Subtype.val_injective
-    have h_support : (Function.support fun γ : S.classUnipotent c ↦
-        a γ * (S.reducedPoints D).indicator 1 (S.ratToInf γ * y)) ⊆ range f := by
+    have h_support
+        : (Function.support fun γ : S.classUnipotent c ↦
+            a γ * (S.reducedPoints D).indicator 1 (S.ratToInf γ * y))
+          ⊆ range f := by
       intro γ hγ
       have h_reduced : S.ratToInf γ * y ∈ S.reducedPoints D :=
         mem_of_indicator_ne_zero (right_ne_zero_of_mul hγ)

@@ -67,20 +67,25 @@ namespace New.Space
 
 open NumberField MeasureTheory stdLattice Finset Complex AddChar Matrix IsSchwartzBruhat
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type*} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} {S : Set (FinPlace E)} (hS : S.IsConjDisjoint) (V : Space E n s)
   {Ψ Ψ' : (n → 𝔸f E) → ℂ}
 
-/-- The linear map sending finitely supported coefficients c_y to the operator ∑ c_y ϱ(αy₊) P^S
-on 𝒮(V), y₊ the part of y above S ∪ S̄. -/
+/--
+The linear map sending finitely supported coefficients c_y to the operator ∑ c_y ϱ(αy₊) P^S
+on 𝒮(V), y₊ the part of y above S ∪ S̄.
+-/
 def heisenbergCombination (S : Set (FinPlace E)) : ((n → 𝔸f E) →₀ ℂ) →ₗ[ℂ] 𝒮 V →L[ℂ] 𝒮 V :=
   Finsupp.lift (𝒮 V →L[ℂ] 𝒮 V) ℂ (n → 𝔸f E) fun y ↦
     V.ϱ (finVec (idem S.conjClosure • y)) ∘L V.projOn S
 
-/-- The linear map Ψ ↦ Ψ⊗ from functions on finite adelic vectors to operators on 𝒮(V):
+/--
+The linear map Ψ ↦ Ψ⊗ from functions on finite adelic vectors to operators on 𝒮(V):
 `New.Space.heisenbergCombination` of chosen coefficients c, with `New.schrodingerCombination` c = Ψ
-when such exist. -/
+when such exist.
+-/
 def schrodingerOp (S : Set (FinPlace E)) : ((n → 𝔸f E) → ℂ) →ₗ[ℂ] 𝒮 V →L[ℂ] 𝒮 V :=
   V.heisenbergCombination S ∘ₗ (exists_generalized_inverse (schrodingerCombination S)).choose
 
@@ -334,12 +339,13 @@ namespace New
 
 open NumberField Matrix Finset Submodule Space Heisenberg
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  {n₁ n₂ : Type*} [Fintype n₁] [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {n₁ n₂ : Type*} [Fintype n₁] [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂]
   {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ} {V : Space E n s} {V₁ : Space E n₁ s₁} {V₂ : Space E n₂ s₂}
-  {S : Set (FinPlace E)} {Ψ : (n₁ → 𝔸f E) → ℂ} {Ψ' : (n₂ → 𝔸f E) → ℂ}
-  {e : n₁ ⊕ n₂ ≃ n} (hs : s ∘ e = s₁ ⊕ᵥ s₂)
+  {S : Set (FinPlace E)} {Ψ : (n₁ → 𝔸f E) → ℂ} {Ψ' : (n₂ → 𝔸f E) → ℂ} {e : n₁ ⊕ n₂ ≃ n}
+  (hs : s ∘ e = s₁ ⊕ᵥ s₂)
 
 omit [Fintype n] [DecidableEq n] in
 @[simp]
@@ -440,7 +446,8 @@ namespace New.Space
 
 open Matrix Gf stdLattice Finset
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type*} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} {S : Set (FinPlace E)} (hS : S.IsConjDisjoint) (V : Space E n s)
   {Ψ : (n → 𝔸f E) → ℂ} [hΨ : IsSchwartzBruhat (n := n) S Ψ]

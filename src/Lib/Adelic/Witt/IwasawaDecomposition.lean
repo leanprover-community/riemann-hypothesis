@@ -73,11 +73,15 @@ over the finite adeles.
 
 section MaximalCompact
 
-variable (E : Type*) {n : Type} [Field E] [NumberField E] [NumberField.IsCMField E] [Fintype n]
-  [DecidableEq n] (s : n → ℤˣ)
+variable
+  (E : Type*)
+  {n : Type} [Field E] [NumberField E] [NumberField.IsCMField E] [Fintype n] [DecidableEq n]
+  (s : n → ℤˣ)
 
-/-- The subgroup K_∞K₀ of G: elements that are unitary matrices at each infinite place and lie
-in GL_n(Ô) at the finite places. -/
+/--
+The subgroup K_∞K₀ of G: elements that are unitary matrices at each infinite place and lie
+in GL_n(Ô) at the finite places.
+-/
 noncomputable def New.maxCompact : Subgroup (G E s) :=
   Subgroup.prod (Subgroup.pi Set.univ fun _ : NumberField.InfinitePlace E ↦ maxCompactU s)
     (stdLevel E n)
@@ -197,8 +201,11 @@ lemma New.Space.exists_splitting {E : Type} [Field E] [CMType E] [WeilData E] {n
   change (g.val.val * M).toCols₁.toCols₂ = k
   simpa [M, mul_fromCols] using hg
 
-variable {E : Type*} [Field E] [CMType E] {n n₀ p : Type*} [Fintype n] [DecidableEq n]
-  [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₀ : n₀ → ℤˣ}
+variable
+  {E : Type*} [Field E] [CMType E]
+  {n n₀ p : Type*}
+  [Fintype n] [DecidableEq n] [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s₀ : n₀ → ℤˣ}
 
 end SplittingExists
 
@@ -215,10 +222,11 @@ namespace New.Space.Splitting
 
 open Matrix WeilData ComplexOrder G
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
-  {n n₀ p : Type _} [Fintype n] [DecidableEq n] [Fintype n₀] [DecidableEq n₀] [Fintype p]
-  [DecidableEq p] {s : n → ℤˣ} {s₀ : n₀ → ℤˣ} {W : Space E n s} {W₀ : Space E n₀ s₀}
-  (H : W.Splitting W₀ p)
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n n₀ p : Type _}
+  [Fintype n] [DecidableEq n] [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s₀ : n₀ → ℤˣ} {W : Space E n s} {W₀ : Space E n₀ s₀} (H : W.Splitting W₀ p)
 
 /-! ### Adapted elements -/
 
@@ -237,10 +245,12 @@ lemma IsAdapted.mul_of_mem_maxCompact {h κ : G E s} {γ : GL p (𝔸 E)} (h_ada
 
 /-! ### The centre of the radical -/
 
-/-- For an adelic p×p matrix M, the element 1 + k(M − M*)k*ε (k*ε is `H.lCoord`) of the centre of
-the unipotent radical of the stabiliser of the span of the isotropic frame k. -/
+/--
+For an adelic p×p matrix M, the element 1 + k(M − M*)k*ε (k*ε is `H.lCoord`) of the centre of
+the unipotent radical of the stabiliser of the span of the isotropic frame k.
+-/
 def radicalCenter : AddChar (Matrix p p (𝔸 E)) (G E s) where
-  toFun M := H.radicalElement 0 (-toAdele (j * 2 : E) • M)
+  toFun M := H.radicalElement 0 (- toAdele (j * 2 : E) • M)
   map_zero_eq_one' := ext_adeleMatrix (by simp [radicalElement])
   map_add_eq_mul' := by simp [radicalElement_mul]
 
@@ -284,8 +294,10 @@ lemma continuous_radicalCenter : Continuous H.radicalCenter := by
   change Continuous fun M : Matrix p p (𝔸 E) ↦ H.radicalElement 0 (-toAdele (j * 2 : E) • M)
   fun_prop
 
-/-- The Fourier coefficient at T of a function D at g: the mean of ψ(tr TM)·D(z(M)g) over adelic
-matrices M modulo rational ones, z = `New.Space.Splitting.radicalCenter`. -/
+/--
+The Fourier coefficient at T of a function D at g: the mean of ψ(tr TM)·D(z(M)g) over adelic
+matrices M modulo rational ones, z = `New.Space.Splitting.radicalCenter`.
+-/
 def centerCoeff (T : Matrix p p E) (D : G E s → ℂ) (g : G E s) : ℂ :=
   quotMean (ratMatrices E p p) fun M : Matrix p p (𝔸 E) ↦
     stdAddChar E (T.map toAdele * M).trace * D (H.radicalCenter M * g)

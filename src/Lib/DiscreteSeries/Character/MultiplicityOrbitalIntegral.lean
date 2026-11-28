@@ -370,14 +370,15 @@ open Matrix MeasureTheory Finset AddMonoidAlgebra Equiv ConjAct InnerProductSpac
 
 variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} (l : New.HCParam ε)
 
-/-- `P` is `D` times a formal series `t` with `t a = 1`, each of whose exponents occurs in the
+/--
+`P` is `D` times a formal series `t` with `t a = 1`, each of whose exponents occurs in the
 alternant `New.Orbital.alternant ε μ` for some `μ` such that `μ - a` lies in the cone of positive
-roots `New.HCParam.rootCone l`. -/
+roots `New.HCParam.rootCone l`.
+-/
 def New.Orbital.IsConeSeriesMultiple (a : n → ℤ) (D P : ℂ[n → ℤ]) : Prop :=
   ∃ t : (n → ℤ) → ℂ,
-    (∀ γ : n → ℤ, P.coeff γ = D.coeff.sum fun (β : n → ℤ) (c : ℂ) ↦ c * t (-β + γ)) ∧
-    t a = 1 ∧
-    ∀ γ : n → ℤ, t γ ≠ 0 → ∃ μ : n → ℤ, (alternant ε μ).coeff γ ≠ 0 ∧ μ - a ∈ l.rootCone
+    (∀ γ : n → ℤ, P.coeff γ = D.coeff.sum fun (β : n → ℤ) (c : ℂ) ↦ c * t (-β + γ)) ∧ t a = 1
+      ∧ ∀ γ : n → ℤ, t γ ≠ 0 → ∃ μ : n → ℤ, (alternant ε μ).coeff γ ≠ 0 ∧ μ - a ∈ l.rootCone
 
 /-- Let `n` be nonempty, `u` in `U(diag ε)` and `t` a point of the torus, and put `g = u⁻¹ t u`.
 For the operator norms `(‖u‖ / 2)² |∏ (t_a - t_b)| ≤ (2 ‖g‖)^m`, the product being over the
@@ -527,14 +528,16 @@ lemma New.Orbital.mem_closure_of_conj_eq {h : C(maxCompactU ε, ℂ)} {S : Set C
   rw [hf, h_class, dist_comm]
   exact (convex_ball _ r).sum_mem (by simp) (by simp) fun w _ ↦ h_close w
 
-/-- Weyl's formula for a family of class functions: `X γ` is a class function on K that equals the
+/--
+Weyl's formula for a family of class functions: `X γ` is a class function on K that equals the
 Laurent polynomial `Y γ` on the torus, and the Weyl denominator `l.rootProd Eq` times `Y γ` is
-the alternant of γ. -/
-structure New.Orbital.IsWeylFamily (X : (n → ℤ) → C(maxCompactU ε, ℂ))
-    (Y : (n → ℤ) → ℂ[n → ℤ]) : Prop where
+the alternant of γ.
+-/
+structure New.Orbital.IsWeylFamily (X : (n → ℤ) → C(maxCompactU ε, ℂ)) (Y : (n → ℤ) → ℂ[n → ℤ])
+    : Prop where
   /-- `X γ` is a class function with restriction `Y γ` to the torus. -/
-  apply_conj (γ : n → ℤ) (y : maxCompactU ε) (x : n → Circle) :
-    X γ (y * diagTorusK x * y⁻¹) = torusEval x (Y γ)
+  apply_conj (γ : n → ℤ) (y : maxCompactU ε) (x : n → Circle)
+    : X γ (y * diagTorusK x * y⁻¹) = torusEval x (Y γ)
   /-- The alternant of γ is the Weyl denominator times `Y γ`. -/
   alternant_eq (γ : n → ℤ) : alternant ε γ = l.rootProd Eq * Y γ
 
@@ -688,19 +691,24 @@ lemma torusEval_linearCombination_alternant (hXY : IsWeylFamily l X Y) {ι : Typ
 
 end New.Orbital.IsWeylFamily
 
-/-- Straightening of exponents: every function `t` antisymmetric under the Weyl group of K has
-`t γ = s γ * t (ν γ + δ)` with `ν γ` dominant, where δ = `l.lowerCount Eq`. -/
+/--
+Straightening of exponents: every function `t` antisymmetric under the Weyl group of K has
+`t γ = s γ * t (ν γ + δ)` with `ν γ` dominant, where δ = `l.lowerCount Eq`.
+-/
 structure New.Orbital.IsStraightening (s : (n → ℤ) → ℤ) (ν : (n → ℤ) → n → ℤ) : Prop where
   /-- `ν γ` is dominant for K, so it is the highest weight of a K-type. -/
   isKDominant (γ : n → ℤ) : IsKDominant ε (-l) (ν γ)
   /-- The value of an antisymmetric function at γ is `s γ` times its value at `ν γ + δ`. -/
-  apply_eq (γ : n → ℤ) (t : (n → ℤ) → ℂ) (ht : IsWeylAntisymm ε t) :
-    t γ = s γ * t (ν γ + l.lowerCount Eq)
+  apply_eq (γ : n → ℤ) (t : (n → ℤ) → ℂ) (ht : IsWeylAntisymm ε t)
+    : t γ = s γ * t (ν γ + l.lowerCount Eq)
 
-/-- The virtual character of K attached to the exponent γ: `s γ` times `kTypeChar (ν γ)`, which
-is the character of the K-type with highest weight `ν γ` when this weight is dominant. -/
-noncomputable def New.Orbital.virtualChar (ε : n → ℤˣ) (s : (n → ℤ) → ℤ) (ν : (n → ℤ) → n → ℤ)
-    (γ : n → ℤ) : C(maxCompactU ε, ℂ) :=
+/--
+The virtual character of K attached to the exponent γ: `s γ` times `kTypeChar (ν γ)`, which
+is the character of the K-type with highest weight `ν γ` when this weight is dominant.
+-/
+noncomputable def New.Orbital.virtualChar
+    (ε : n → ℤˣ) (s : (n → ℤ) → ℤ) (ν : (n → ℤ) → n → ℤ) (γ : n → ℤ)
+    : C(maxCompactU ε, ℂ) :=
   (s γ : ℂ) • (toHCParam ε (ν γ)).kTypeChar
 
 namespace New.Orbital.IsStraightening
@@ -836,17 +844,23 @@ lemma New.Orbital.exists_int_rootProd_pow (r : ℤˣ → ℤˣ → Prop) [Decida
     (AddMonoidAlgebra.single (Pi.single a 1) 1 - AddMonoidAlgebra.single (Pi.single b 1) 1)) ^ N,
     by simp [HCParam.rootProd]⟩
 
-/-- The Laurent polynomial `P` is `Vc D Θ`. Here Θ(x) = deg ∫ ψ(g⁻¹ x g) dg is the normalised
+/--
+The Laurent polynomial `P` is `Vc D Θ`. Here Θ(x) = deg ∫ ψ(g⁻¹ x g) dg is the normalised
 orbital integral of ψ = `l.dsCoeff` on the diagonal torus, `Vc = l.rootProd Eq` is the Weyl
-denominator of K, Λ = `l.lowestKType` and δ = `l.lowerCount Eq`. -/
+denominator of K, Λ = `l.lowestKType` and δ = `l.lowerCount Eq`.
+-/
 structure New.Orbital.IsOrbitalLaurent (D P : ℂ[n → ℤ]) : Prop where
   /-- `P` is antisymmetric under the Weyl group of K. -/
   antisymm : IsWeylAntisymm ε P.coeff
   /-- On the torus, `P = Vc D Θ`. -/
-  torusEval_eq (x : n → Circle) : torusEval x P = torusEval x (l.rootProd Eq * D) *
-    (l.formalDegree * ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε x * g :))
-  /-- `P` is `D` times a series with coefficient `1` at Λ + δ that lives in the Weyl translates
-  of Λ + δ + `l.rootCone`. -/
+  torusEval_eq (x : n → Circle)
+    : torusEval x P
+      = torusEval x (l.rootProd Eq * D)
+        * (l.formalDegree * ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε x * g :))
+  /--
+  `P` is `D` times a series with coefficient `1` at Λ + δ that lives in the Weyl translates
+  of Λ + δ + `l.rootCone`.
+  -/
   isConeSeriesMultiple : IsConeSeriesMultiple l (l.lowestKType + l.lowerCount Eq) D P
 
 /-- Let `l` have a large gap and let the virtual characters of a straightening `s`, `ν` satisfy

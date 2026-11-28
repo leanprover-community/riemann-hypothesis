@@ -58,8 +58,11 @@ section CrystallineTests
 
 open CategoryTheory ObjectProperty Ideal Nat Finset Adic
 
-variable {p : ℕ} [ThePrime p] (S : Type) [CommRing.{0} S]
-  {B k : Type} [CommRing B] [CommRing k] (f : B →+* k)
+variable
+  {p : ℕ} [ThePrime p]
+  (S : Type) [CommRing.{0} S]
+  {B k : Type} [CommRing B] [CommRing k]
+  (f : B →+* k)
 
 /-- The ideal 𝔡(S) of the elements x of S such that n! divides x^n for every n. -/
 def pdIdeal : Ideal S where
@@ -74,20 +77,23 @@ def pdIdeal : Ideal S where
     rw [h_fact]
     exact mul_dvd_mul_right (mul_dvd_mul (hx j) (hy (n - j))) _
   zero_mem' n := by cases n <;> simp
-  smul_mem' (c : S) {x : S} hx n := by
-    simpa [mul_pow] using dvd_mul_of_dvd_right (hx n) (c ^ n)
+  smul_mem' (c : S) {x : S} hx n := by simpa [mul_pow] using dvd_mul_of_dvd_right (hx n) (c ^ n)
 
 /-- A ring map `f : B → k` sends the ideal `pdIdeal B` of the `x` with `n! ∣ x ^ n` for all `n`
 into `pdIdeal k`. -/
 lemma pdIdeal_le_comap : pdIdeal B ≤ comap f (pdIdeal k) :=
   fun x hx n ↦ by simpa using map_dvd f (hx n)
 
-/-- The quotient map S → S/𝔡(S), where 𝔡(S) = `New.Variety.pdIdeal` S is the ideal of the x with n!
-dividing x^n for all n. -/
+/--
+The quotient map S → S/𝔡(S), where 𝔡(S) = `New.Variety.pdIdeal` S is the ideal of the x with n!
+dividing x^n for all n.
+-/
 abbrev pdQuotientMk : S →+* S ⧸ pdIdeal S := Ideal.Quotient.mk (pdIdeal S)
 
-/-- For a ring homomorphism f: B → k, the induced homomorphism B/𝔡(B) → k/𝔡(k), where 𝔡 is the ideal
-`New.Variety.pdIdeal`. -/
+/--
+For a ring homomorphism f: B → k, the induced homomorphism B/𝔡(B) → k/𝔡(k), where 𝔡 is the ideal
+`New.Variety.pdIdeal`.
+-/
 abbrev pdQuotientMap : B ⧸ pdIdeal B →+* k ⧸ pdIdeal k :=
   quotientMap (pdIdeal k) f (pdIdeal_le_comap f)
 
@@ -98,32 +104,42 @@ structure IsCompleteTorsionFree [ThePrime p] where
   /-- `S` is `p`-adically complete. -/
   complete : IsAdicComplete (span {(p : S)}) S
 
-/-- The full subcategory of commutative S-algebras that are p-torsion-free and p-adically
-complete. -/
+/--
+The full subcategory of commutative S-algebras that are p-torsion-free and p-adically
+complete.
+-/
 abbrev CrysTest : Type 1 := FullSubcategory fun A : CommAlg S ↦ IsCompleteTorsionFree A
 
-/-- For a ring map r: k → B/𝔡(B), the functor A ↦ A/𝔡(A) from p-torsion-free p-complete B-algebras
-to k-algebras, with 𝔡 the ideal `New.Variety.pdIdeal`. -/
+/--
+For a ring map r: k → B/𝔡(B), the functor A ↦ A/𝔡(A) from p-torsion-free p-complete B-algebras
+to k-algebras, with 𝔡 the ideal `New.Variety.pdIdeal`.
+-/
 def pdReduction (r : k →+* B ⧸ pdIdeal B) : CrysTest B ⥤ CommAlg k := by
   -- `A ⧸ pdIdeal A` is a `k`-algebra through `k → B ⧸ pdIdeal B → A ⧸ pdIdeal A`.
   let (A : CrysTest B) := ((pdQuotientMap (algebraMap B A.obj)).comp r).toAlgebra
-  refine
-    { obj A := .of k (A.obj.carrier ⧸ pdIdeal A.obj.carrier)
-      map f :=
-        ConcreteCategory.ofHom ⟨pdQuotientMap f.hom.hom'.toRingHom, fun a ↦ by
+  refine {
+    obj A := .of k (A.obj.carrier ⧸ pdIdeal A.obj.carrier)
+    map f :=
+      ConcreteCategory.ofHom ⟨
+        pdQuotientMap f.hom.hom'.toRingHom,
+        fun a ↦ by
           -- On a representative `b : B` of `r a` this says that `f` is a `B`-algebra map.
           change pdQuotientMap _ (pdQuotientMap _ (r a)) = pdQuotientMap _ (r a)
           obtain ⟨b⟩ := r a
-          exact congrArg (pdQuotientMk _) (f.hom.hom'.commutes' b)⟩
-      map_id _ := ?_
-      map_comp _ _ := ?_ }
+          exact congrArg (pdQuotientMk _) (f.hom.hom'.commutes' b)
+      ⟩
+    map_id _ := ?_
+    map_comp _ _ := ?_
+  }
   -- Both functor laws hold on representatives.
   all_goals
     ext ⟨⟩
     rfl
 
-/-- Restriction of scalars along S → B, from p-torsion-free p-complete B-algebras to p-torsion-free
-p-complete S-algebras. -/
+/--
+Restriction of scalars along S → B, from p-torsion-free p-complete B-algebras to p-torsion-free
+p-complete S-algebras.
+-/
 def CrysTest.restrictScalars [Algebra S B] : CrysTest B ⥤ CrysTest S :=
   lift _ (ι _ ⋙ restrictAlg S B) fun A ↦ A.property
 
@@ -149,9 +165,13 @@ section PadicTests
 open CategoryTheory Functor CommAlgCat TensorProduct Ideal AdicCompletion Period WittVector
   ModuleCat H
 
-variable {C C' : Type 1} [Category C] [Category C'] {S : Type} [CommRing S] (p : ℕ) [ThePrime p]
-  (T M : Type) [CommRing T] [Algebra S T] [AddCommGroup M] [Module S M] [Module T M]
-  [IsScalarTower S T M] (m : M) (φ : C' ⥤ C) (N : AbFunctor C) (Φ : C ⥤ ModuleCat S)
+variable
+  {C C' : Type 1} [Category C] [Category C']
+  {S : Type} [CommRing S]
+  (p : ℕ) [ThePrime p]
+  (T M : Type)
+  [CommRing T] [Algebra S T] [AddCommGroup M] [Module S M] [Module T M] [IsScalarTower S T M]
+  (m : M) (φ : C' ⥤ C) (N : AbFunctor C) (Φ : C ⥤ ModuleCat S)
 
 /-! ### Tensor products of coefficients -/
 
@@ -169,10 +189,12 @@ instance : (tensorWith (S := S) T M).Additive where
     Hom.ext (map_add (AlgebraTensorModule.lTensor T M) f.hom g.hom)
 
 variable {M} in
-/-- For m in M and a functor Φ to S-modules, the natural map of abelian-group-valued coefficient
-functors Φ → M ⊗_S Φ sending x to m ⊗ x. -/
+/--
+For m in M and a functor Φ to S-modules, the natural map of abelian-group-valued coefficient
+functors Φ → M ⊗_S Φ sending x to m ⊗ x.
+-/
 def tensorWith.mk : moduleCoeff Φ ⟶ moduleCoeff (Φ ⋙ tensorWith T M) :=
-  whiskerRight {app A := AddCommGrpCat.ofHom (TensorProduct.mk S M (Φ A) m).toAddMonoidHom}
+  whiskerRight { app A := AddCommGrpCat.ofHom (TensorProduct.mk S M (Φ A) m).toAddMonoidHom }
     AddCommGrpCat.uliftFunctor
 
 variable {M} in
@@ -190,12 +212,14 @@ lemma tensorWith.mk_smul (s : S) :
   ext
   exact ULift.down_injective (smul_tmul ..)
 
-/-- The canonical T-linear map M ⊗_S H^n(N, Φ) → H^n(N, M ⊗_S Φ), sending m ⊗ z to the image of
-z under x ↦ m ⊗ x. -/
-def baseChangeMap (n : ℕ) :
-    M ⊗[S] H N (moduleCoeff Φ) n →ₗ[T] H N (moduleCoeff (Φ ⋙ tensorWith T M)) n where
-  toAddHom := AddMonoidHom.toAddHom <|
-    liftAddHom
+/--
+The canonical T-linear map M ⊗_S H^n(N, Φ) → H^n(N, M ⊗_S Φ), sending m ⊗ z to the image of
+z under x ↦ m ⊗ x.
+-/
+def baseChangeMap (n : ℕ)
+    : M ⊗[S] H N (moduleCoeff Φ) n →ₗ[T] H N (moduleCoeff (Φ ⋙ tensorWith T M)) n where
+  toAddHom :=
+    AddMonoidHom.toAddHom <| liftAddHom
       ((pushHom N (moduleCoeff Φ) (moduleCoeff (Φ ⋙ tensorWith T M)) n).comp
         (AddMonoidHom.mk' (tensorWith.mk T · Φ) (tensorWith.mk_add T Φ)))
       fun (s : S) m x ↦ by
@@ -209,8 +233,10 @@ def baseChangeMap (n : ℕ) :
       -- By `push_comp`, as `tensorWith.mk T (t • m) Φ` is `tensorWith.mk T m Φ` followed by `t`.
       exact .symm (push_comp ..).symm
 
-/-- The abelian-group-valued functor N : `New.Variety.AbFunctor` C on C has flat base change: M ⊗_S
-H^n(N, Φ) → H^n(N, M ⊗_S Φ) is bijective for all n, all functors Φ to S-modules and all S-flat M. -/
+/--
+The abelian-group-valued functor N : `New.Variety.AbFunctor` C on C has flat base change: M ⊗_S
+H^n(N, Φ) → H^n(N, M ⊗_S Φ) is bijective for all n, all functors Φ to S-modules and all S-flat M.
+-/
 def HasFlatBaseChange : Prop :=
   ∀ (S T M : Type) [CommRing S] [CommRing T] [Algebra S T] [AddCommGroup M] [Module S M]
       [Module T M] [IsScalarTower S T M] [Module.Flat S M] (Φ : C ⥤ ModuleCat S) (n : ℕ),
@@ -218,29 +244,37 @@ def HasFlatBaseChange : Prop :=
 
 variable {Φ}
 
-/-- For a natural map β: Φ → Ψ of functors to S-modules, the induced map of abelian-group-valued
-coefficient functors. -/
+/--
+For a natural map β: Φ → Ψ of functors to S-modules, the induced map of abelian-group-valued
+coefficient functors.
+-/
 def coeffMap {Ψ : C ⥤ ModuleCat S} (β : Φ ⟶ Ψ) : moduleCoeff Φ ⟶ moduleCoeff Ψ :=
   whiskerRight (whiskerRight β (forget₂ (ModuleCat S) Ab)) AddCommGrpCat.uliftFunctor
 
-/-- The cohomological comparison datum along a functor φ: C' → C whose coefficient map comes
-from a natural transformation Φ∘φ → Φ' of module-valued functors. -/
-abbrev Comparison.ofModuleHom {Φ' : C' ⥤ ModuleCat S} (β : φ ⋙ Φ ⟶ Φ') :
-    Comparison (moduleCoeff Φ) (moduleCoeff Φ') :=
+/--
+The cohomological comparison datum along a functor φ: C' → C whose coefficient map comes
+from a natural transformation Φ∘φ → Φ' of module-valued functors.
+-/
+abbrev Comparison.ofModuleHom {Φ' : C' ⥤ ModuleCat S} (β : φ ⋙ Φ ⟶ Φ')
+    : Comparison (moduleCoeff Φ) (moduleCoeff Φ') :=
   of (F := moduleCoeff Φ) φ (coeffMap β)
 
-/-- The cohomological comparison datum along a functor φ: C' → C from an abelian-group-valued
-functor N to N∘φ, with identity coefficient map. -/
+/--
+The cohomological comparison datum along a functor φ: C' → C from an abelian-group-valued
+functor N to N∘φ, with identity coefficient map.
+-/
 abbrev Comparison.restrict : Comparison N (φ ⋙ N) := of φ (𝟙 (φ ⋙ N))
 
-/-- Base change along S → T: the functor B ↦ T ⊗_S B from commutative S-algebras to commutative
-T-algebras. -/
+/--
+Base change along S → T: the functor B ↦ T ⊗_S B from commutative S-algebras to commutative
+T-algebras.
+-/
 def algBaseChange : CommAlg S ⥤ CommAlg T where
   obj A := CommAlgCat.of T (T ⊗[S] A)
   map f := CommAlgCat.ofHom (Algebra.TensorProduct.lTensor T f.hom')
 
 /-- In a nontrivial ring that is `p`-adically complete, `p` is not a unit. -/
-instance not_isUnit_p [Nontrivial S] [IsAdicComplete (span {(p : S)}) S] : Fact ¬IsUnit (p : S) :=
+instance not_isUnit_p [Nontrivial S] [IsAdicComplete (span {(p : S)}) S] : Fact ¬ IsUnit (p : S) :=
   -- if `p` is a unit, all its powers divide `0 - 1`, so `0 = 1` by separatedness
   ⟨fun h ↦ zero_ne_one (eq_of_forall_pow_dvd_sub (p : S) fun n ↦ (h.pow n).dvd)⟩
 
@@ -248,15 +282,20 @@ variable (S) [Algebra Ainf T]
 
 /-! ### Cells and p-adic tests -/
 
-/-- A cell: a p-adically complete, absolutely integrally closed valuation ring T (a domain) in which
-p is not zero. By `New.Variety.not_isUnit_p`, p is then not a unit in T. -/
-class IsCell extends IsDomain T, ValuationRing T, IsAdicComplete (span {(p : T)}) T,
-  IsAbsIntegrallyClosed T where
+/--
+A cell: a p-adically complete, absolutely integrally closed valuation ring T (a domain) in which
+p is not zero. By `New.Variety.not_isUnit_p`, p is then not a unit in T.
+-/
+class IsCell
+    extends IsDomain T, ValuationRing T, IsAdicComplete (span {(p : T)}) T,
+      IsAbsIntegrallyClosed T where
   /-- `p` is not zero in `T`. -/
   p_ne_zero : (p : T) ≠ 0
 
-/-- A p-adic test: a non-empty family of cells (`New.Variety.IsCell`) with a ring map from O_C to
-their product. -/
+/--
+A p-adic test: a non-empty family of cells (`New.Variety.IsCell`) with a ring map from O_C to
+their product.
+-/
 structure PadicTest {p : ℕ} [ThePrime p] where
   /-- The index set of the product. -/
   Index : Type
@@ -282,23 +321,27 @@ abbrev ProdRing : Type := ∀ i : c.Index, c.Cell i
 
 instance : Algebra OC c.ProdRing := c.structureMap.toAlgebra
 
-instance : Category PadicTest :=
-  {Hom := (·.ProdRing →ₐ[OC] ·.ProdRing), id c := .id .., comp f := (·.comp f)}
+instance : Category PadicTest := {
+  Hom := (·.ProdRing →ₐ[OC] ·.ProdRing)
+  id c := .id ..
+  comp f := (·.comp f)
+}
 
 instance : Nontrivial c.ProdRing := Pi.nontrivial_at c.nonempty.some
 
 /-- The ring S of a p-adic test is p-adically complete, since each of its factors is. -/
 instance isAdicComplete_prodRing : IsAdicComplete (span {(p : c.ProdRing)}) c.ProdRing := by
   -- Congruence modulo `p ^ n` in the product is congruence modulo `p ^ n` in each factor.
-  have h_smodEq (x y : c.ProdRing) (n : ℕ) :
-      x ≡ y [SMOD (span {(p : c.ProdRing)} ^ n • ⊤ : Ideal c.ProdRing)] ↔
-        ∀ i : c.Index, x i ≡ y i [SMOD (span {(p : c.Cell i)} ^ n • ⊤ : Ideal (c.Cell i))] := by
+  have h_smodEq (x y : c.ProdRing) (n : ℕ)
+      : x ≡ y [SMOD (span {(p : c.ProdRing)} ^ n • ⊤ : Ideal c.ProdRing)]
+        ↔ ∀ i : c.Index, x i ≡ y i [SMOD (span {(p : c.Cell i)} ^ n • ⊤ : Ideal (c.Cell i))] := by
     simp only [TauCeti.sModEq_span_singleton_pow_iff, pi_dvd_iff, Pi.pow_apply, Pi.natCast_apply,
       Pi.sub_apply]
   refine { haus' := fun x hx ↦ funext fun i ↦ ?_, prec' := fun f hf ↦ ?_ }
   · exact (c.isCell i).haus (x i) fun n ↦ (h_smodEq x 0 n).mp (hx n) i
-  · have h_lim (i : c.Index) : ∃ L : c.Cell i, ∀ n : ℕ,
-        f n i ≡ L [SMOD (span {(p : c.Cell i)} ^ n • ⊤ : Ideal (c.Cell i))] :=
+  · have h_lim (i : c.Index)
+        : ∃ L : c.Cell i, ∀ n : ℕ,
+          f n i ≡ L [SMOD (span {(p : c.Cell i)} ^ n • ⊤ : Ideal (c.Cell i))] :=
       (c.isCell i).prec' (fun n ↦ f n i) fun {m n} h_le ↦ (h_smodEq (f m) (f n) m).mp (hf h_le) i
     choose L hL using h_lim
     exact ⟨L, fun n ↦ (h_smodEq (f n) L n).mpr fun i ↦ hL i n⟩
@@ -308,32 +351,39 @@ abbrev TiltRing : Type := PreTilt c.ProdRing p
 
 instance : Algebra OFlat c.TiltRing := (tiltMap c.structureMap).toAlgebra
 
-/-- For g in the Galois group `New.Gp` p, which acts on O_C by ring automorphisms, the endofunctor
+/--
+For g in the Galois group `New.Gp` p, which acts on O_C by ring automorphisms, the endofunctor
 of p-adic tests that keeps the ring S and precomposes its structure map O_C → S with the action of
-g. -/
+g.
+-/
 def twist (g : Gp p) : PadicTest ⥤ PadicTest where
   obj c := ⟨c.Index, c.Cell, c.structureMap.comp (MulSemiringAction.toRingHom (Gp p) OC g)⟩
   map f := ⟨f.toRingHom, fun x ↦ f.commutes' (g • x)⟩
 
-/-- The functor from p-adic tests to commutative O_C-algebras sending a test to its product ring
-S with its structure map. -/
+/--
+The functor from p-adic tests to commutative O_C-algebras sending a test to its product ring
+S with its structure map.
+-/
 def algFunctor : PadicTest ⥤ CommAlg OC where
   obj c := CommAlgCat.of OC c.ProdRing
   map := CommAlgCat.ofHom
 
-/-- The functor from p-adic tests to commutative rings sending a test to its underlying product
-ring S. -/
+/--
+The functor from p-adic tests to commutative rings sending a test to its underlying product
+ring S.
+-/
 abbrev ringFunctor : PadicTest ⥤ CommRingCat := algFunctor ⋙ forget₂ (CommAlg OC) CommRingCat
 
 /-- The functor from p-adic tests to commutative O^♭-algebras sending a test S to its tilt S^♭. -/
 def tilt : PadicTest ⥤ CommAlg OFlat where
   obj c := CommAlgCat.of OFlat c.TiltRing
   map {c c'} f :=
-    CommAlgCat.ofHom ⟨tiltMap (RingHomClass.toRingHom (F := c.ProdRing →ₐ[OC] c'.ProdRing) f),
+    CommAlgCat.ofHom ⟨
+      tiltMap (RingHomClass.toRingHom (F := c.ProdRing →ₐ[OC] c'.ProdRing) f),
       fun a ↦ by
         have h_comp : f.toRingHom.comp c.structureMap = c'.structureMap := f.comp_algebraMap
-        exact (tiltMap_comp c.structureMap _ a).symm.trans
-          (congrArg (fun g ↦ tiltMap g a) h_comp)⟩
+        exact (tiltMap_comp c.structureMap _ a).symm.trans (congrArg (fun g ↦ tiltMap g a) h_comp)
+    ⟩
   map_id _ := CommAlgCat.hom_ext (AlgHom.ext fun a ↦ tiltMap_id a)
   map_comp _ _ := CommAlgCat.hom_ext (AlgHom.ext fun a ↦ tiltMap_comp _ _ a)
 
@@ -347,8 +397,10 @@ open PadicTest Int
 def algCompletion : CommAlg S ⥤ CommAlg S where
   obj A := CommAlgCat.of S (AdicCompletion (span {(p : A)}) A)
   map {A B} f :=
-    CommAlgCat.ofHom ⟨adicMap (I := span {(p : A)}) (J := span {(p : B)}) f.hom.toRingHom
-      (by simp), fun s ↦ ext_evalₐ (by simp [evalₐ_adicMap])⟩
+    CommAlgCat.ofHom ⟨
+      adicMap (I := span {(p : A)}) (J := span {(p : B)}) f.hom.toRingHom (by simp),
+      fun s ↦ ext_evalₐ (by simp [evalₐ_adicMap])
+    ⟩
   -- The functor laws are checked in each quotient by a power of `p`.
   map_id _ := by
     ext x : 2
@@ -367,26 +419,34 @@ instance : Algebra Ainf OFlat := constantCoeff.toAlgebra
 
 instance : Algebra Ainf OC := (fontaineTheta ..).toAlgebra
 
-/-- For a ring S with a map to W(k), by default S = W(k), the functor sending a k-algebra b to
-its p-typical Witt vectors W(b), as an S-algebra. -/
-def wittFunctor {k : Type} [CommRing k] (S : Type := WittVector p k) [CommRing S]
-    [Algebra S (WittVector p k)] : CommAlg k ⥤ CommAlg S where
+/--
+For a ring S with a map to W(k), by default S = W(k), the functor sending a k-algebra b to
+its p-typical Witt vectors W(b), as an S-algebra.
+-/
+def wittFunctor
+    {k : Type} [CommRing k] (S : Type := WittVector p k) [CommRing S] [Algebra S (WittVector p k)]
+    : CommAlg k ⥤ CommAlg S where
   -- `W(b)` is an `S`-algebra through `S → W(k) → W(b)`.
-  obj b := @CommAlgCat.of S _ (WittVector p b) _
-    ((WittVector.map (algebraMap k b)).comp (algebraMap S (WittVector p k))).toAlgebra
+  obj b :=
+    @CommAlgCat.of S _ (WittVector p b) _
+      ((WittVector.map (algebraMap k b)).comp (algebraMap S (WittVector p k))).toAlgebra
   map f := by
     use map f.hom
     exact fun s ↦ WittVector.ext fun n ↦ f.hom.commutes' _
 
-/-- For an A_inf-algebra T, the functor sending an O^♭-algebra b to the p-adic completion of T
-⊗_{A_inf} W(b). -/
+/--
+For an A_inf-algebra T, the functor sending an O^♭-algebra b to the p-adic completion of T
+⊗_{A_inf} W(b).
+-/
 abbrev periodAlg : CommAlg OFlat ⥤ CommAlg T :=
   wittFunctor (k := OFlat) ⋙ algBaseChange T ⋙ algCompletion T p
 
-/-- For R → O_C, the functor sending an R-scheme X to the functor S ↦ X(S) of its points over R
-in p-adic tests. -/
-def testPoints {R : CommRingCat} [Algebra R OC] :
-    Over (AlgebraicGeometry.Spec R) ⥤ PadicTest ⥤ Type 1 :=
+/--
+For R → O_C, the functor sending an R-scheme X to the functor S ↦ X(S) of its points over R
+in p-adic tests.
+-/
+def testPoints {R : CommRingCat} [Algebra R OC]
+    : Over (AlgebraicGeometry.Spec R) ⥤ PadicTest ⥤ Type 1 :=
   algPoints R R ⋙ restrictAlong (algFunctor ⋙ restrictAlg R OC)
 
 /-- If S is absolutely integrally closed, then for every unit x of S there is a homomorphism χ from
@@ -420,8 +480,10 @@ open PrimeSpectrum CategoryTheory TensorProduct Period Ideal Function Module Lin
   Flat Ainf AlgebraTensorModule LocallyConstant Nat ZMod IsSMulRegular
   AlgebraicGeometry.StructureSheaf
 
-variable (M S : Type _) {S' Λ : Type*} [CommRing M] [CommRing S] [CommRing S'] [Algebra M S]
-  [AddCommGroup Λ] {f : S →+* S'} {p : ℕ} [ThePrime p]
+variable
+  (M S : Type _)
+  {S' Λ : Type*} [CommRing M] [CommRing S] [CommRing S'] [Algebra M S] [AddCommGroup Λ]
+  {f : S →+* S'} {p : ℕ} [ThePrime p]
 
 /-! ### Locally constant functions on the prime spectrum -/
 
@@ -469,8 +531,10 @@ lemma comapAddMonoidHom_surjective_of_isComparableRing (h_comparable : IsCompara
   obtain rfl : f e = y := by linear_combination h_fe_mul - h_mul_y
   exact ⟨indicator (LocallyConstant.const _ a) (isClopen_iff.2 ⟨e, he, rfl⟩), rfl⟩
 
-/-- The functor sending a commutative ring S to the ℤ/p-algebra of locally constant functions Spec
-S → ℤ/p. -/
+/--
+The functor sending a commutative ring S to the ℤ/p-algebra of locally constant functions Spec
+S → ℤ/p.
+-/
 def locConstAlg : CommRingCat ⥤ CommAlg (ZMod p) where
   obj A := CommAlgCat.of (ZMod p) (LocallyConstant (PrimeSpectrum A) (ZMod p))
   map f := CommAlgCat.ofHom (comapₐ (ZMod p) ⟨_, continuous_comap f.hom⟩)
@@ -479,12 +543,13 @@ instance : Algebra (ZMod p) OFlat := algebra ..
 
 deriving instance Algebra (ZMod p), IsScalarTower (ZMod p) OFlat for @CFlat p _
 
-/-- For every commutative ring A, the algebra of locally constant functions Spec A → ℤ/p
-(`New.Variety.locConstAlg`) is perfect. -/
+/--
+For every commutative ring A, the algebra of locally constant functions Spec A → ℤ/p
+(`New.Variety.locConstAlg`) is perfect.
+-/
 instance perfectRing_locConstAlg (A : CommRingCat) : PerfectRing (locConstAlg A) p := by
   -- Frobenius is the identity, by Fermat's little theorem at each point.
-  have h_frob : (fun x : locConstAlg A ↦ x ^ p) = _root_.id :=
-    funext fun x ↦ ext fun _ ↦ pow_card _
+  have h_frob : (fun x : locConstAlg A ↦ x ^ p) = _root_.id := funext fun x ↦ ext fun _ ↦ pow_card _
   exact ⟨by simpa only [h_frob] using bijective_id⟩
 
 /-! ### The element p♭ -/
@@ -570,8 +635,11 @@ lemma isReductionMod_constantCoeff_and_isCompleteTorsionFree [IsDomain M] [CharP
   ⟨isReductionMod_constantCoeff M S, isCompleteTorsionFree_wittVector M S,
     ker_constantCoeff_eq_span_p M S, coeff_lt_eq_zero_iff_exists_p_pow_smul_eq M S⟩
 
-variable {S M M' L : Type} [CommRing S] [AddCommGroup M] [Module S M] [AddCommGroup M']
-  [Module S M'] [AddCommGroup L] [Module S L] (f : M →ₗ[S] M') {m : ℕ}
+variable
+  {S M M' L : Type} [CommRing S] [AddCommGroup M] [Module S M] [AddCommGroup M'] [Module S M']
+  [AddCommGroup L] [Module S L]
+  (f : M →ₗ[S] M')
+  {m : ℕ}
 
 /-- The element `p♭ = ξ mod p` of `O^♭` is nonzero, since `p` does not divide `ξ` in `A_inf`. -/
 lemma pFlat_ne_zero : pFlat ≠ 0 := not_p_dvd_xi ∘ Witt.p_dvd_iff.mpr

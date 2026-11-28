@@ -75,17 +75,22 @@ section AdaptedMixedModel
 
 open Matrix NumberField WeilData Fock Space Splitting Prod Heisenberg IsVacuum
 
-variable {E : Type _} [Field E] [CMType E] [WeilData E] {n n₀ p : Type} [Fintype n] [DecidableEq n]
-  [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₀ : n₀ → ℤˣ}
-  {V : Space E n s} {V₀ : Space E n₀ s₀} {D : V.Splitting V₀ p} {t : GL p (𝔸 E)}
+variable
+  {E : Type _} [Field E] [CMType E] [WeilData E]
+  {n n₀ p : Type}
+  [Fintype n] [DecidableEq n] [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀}
+  {D : V.Splitting V₀ p} {t : GL p (𝔸 E)}
 
 @[simp]
 lemma scaleIdele_fst_apply_ne_zero (v : InfinitePlace E) : (scaleIdele E).val.1 v ≠ 0 :=
   Units.ne_zero _
 
-/-- For a splitting adapted at `1`, the nonzero constant `c` such that the mixed term `D.slice x` at
+/--
+For a splitting adapted at `1`, the nonzero constant `c` such that the mixed term `D.slice x` at
 `x` of the vacuum of `V` is `c * ‖vacuumFn (tᴴ x)‖ ^ 2` times the vacuum of `V₀`
-(`slice_vacElem_eq_vacuumFactor_smul`). It is chosen from `IsAdapted.slice_omega_vacElem`. -/
+(`slice_vacElem_eq_vacuumFactor_smul`). It is chosen from `IsAdapted.slice_omega_vacElem`.
+-/
 noncomputable def vacuumFactor (h : D.IsAdapted 1 t) : ℂˣ :=
   Units.mk0 h.slice_omega_vacElem.choose h.slice_omega_vacElem.choose_spec.1
 
@@ -115,13 +120,15 @@ lemma eq_of_integrated_zeroTerm_eq (hD : D.IsAdapted 1 t) {v u : fockSpace (real
   simpa [h_kill, -map_sub] using
     (V₀.dataInner_integrated (v - u) (v - u) V₀.vacElem V₀.vacElem).symm
 
-/-- The mixed Schrödinger–Fock model at the infinite places of a splitting `D` adapted at `1` in
+/--
+The mixed Schrödinger–Fock model at the infinite places of a splitting `D` adapted at `1` in
 the basis `t`. Its three blocks of directions are the real parts of `l tᴴ⁻¹`, `ι` and `k t`. The
 slice at `a` is the translation by `l tᴴ⁻¹ a` followed by the map of Fock spaces that the zero term
-induces (`New.Space.Splitting.IsAdapted.exists_apply_zero_omega_integrated_eq`). -/
+induces (`New.Space.Splitting.IsAdapted.exists_apply_zero_omega_integrated_eq`).
+-/
 @[local simp]
-noncomputable def _root_.New.Space.Splitting.IsAdapted.mixedModel (h : D.IsAdapted 1 t) :
-    MixedModel (realSigns E s) (realSigns E s₀) (InfinitePlace E × p) := by
+noncomputable def _root_.New.Space.Splitting.IsAdapted.mixedModel (h : D.IsAdapted 1 t)
+    : MixedModel (realSigns E s) (realSigns E s₀) (InfinitePlace E × p) := by
   -- `T` is the map of Fock spaces with `D.zeroTerm (V.integrated v f) = V₀.integrated (T v)
   -- (D.zeroTerm (V.projReal f))` (`hT`). The two laws of `slice` are tested against such vectors by
   -- `eq_of_integrated_zeroTerm_eq`.
@@ -130,35 +137,41 @@ noncomputable def _root_.New.Space.Splitting.IsAdapted.mixedModel (h : D.IsAdapt
         ∀ (v : fockSpace (realSigns E s)) (f : 𝒮 V),
           D.zeroTerm (V.integrated v f) = V₀.integrated (T v) (D.zeroTerm (V.projReal f)) by
       simpa [↓ Splitting.slice] using h.exists_apply_zero_omega_integrated_eq isMixedLaw_slice
-  refine
-    { L := realMatrix (D.lAdelic * t⁻¹.valᴴ)
-      K := realMatrix (D.kAdelic * t.val)
-      I := realMatrix D.iAdelic
-      slice a := T.comp (realHeisenbergOp (realMatrix (D.lAdelic * t⁻¹.valᴴ) *ᵥ a))
-      exists_decomp :=
-        ⟨realMatrix (t.valᴴ * D.lCoord), realMatrix D.iCoord, realMatrix (t⁻¹.val * D.kCoord),
-          fun y ↦ ?_⟩
-      slice_realHeisenbergOp a a' w b v := eq_of_integrated_zeroTerm_eq h fun f ↦ ?_
-      slice_vac a := eq_of_integrated_zeroTerm_eq h ?_ }
+  refine {
+    L := realMatrix (D.lAdelic * t⁻¹.valᴴ)
+    K := realMatrix (D.kAdelic * t.val)
+    I := realMatrix D.iAdelic
+    slice a := T.comp (realHeisenbergOp (realMatrix (D.lAdelic * t⁻¹.valᴴ) *ᵥ a))
+    exists_decomp := ⟨
+      realMatrix (t.valᴴ * D.lCoord),
+      realMatrix D.iCoord,
+      realMatrix (t⁻¹.val * D.kCoord),
+      fun y ↦ ?_
+    ⟩
+    slice_realHeisenbergOp a a' w b v := eq_of_integrated_zeroTerm_eq h fun f ↦ ?_
+    slice_vac a := eq_of_integrated_zeroTerm_eq h ?_
+  }
   · -- The real part of the adelic decomposition of the identity, read through the injective
     -- `realVec`.
     apply (injective_iff_map_eq_zero (realVec (E := E))).2 (by simp_all [realVec, funext_iff])
-    have h_vec : (D.lAdelic * D.lCoord + D.iAdelic * D.iCoord + D.kAdelic * D.kCoord) *ᵥ realVec y =
-        realVec y := by
+    have h_vec
+        : (D.lAdelic * D.lCoord + D.iAdelic * D.iCoord + D.kAdelic * D.kCoord) *ᵥ realVec y
+          = realVec y := by
       rw [add_rotate, add_comm (D.iAdelic * _), D.sum_frame_mul_coord_eq_one, one_mulVec]
-    simpa [↓map_add, ↓ realVec_realMatrix_mulVec, ↓ conjTranspose_nonsing_inv, Matrix.mul_assoc,
-      add_mulVec] using h_vec
+    simpa [↓ map_add, ↓ realVec_realMatrix_mulVec, ↓ conjTranspose_nonsing_inv, Matrix.mul_assoc,
+        add_mulVec]
+      using h_vec
   · -- Write the real bicharacter as the adelic one; then the claim is the adelic law
     -- `isMixedLaw_slice` at real vectors.
-    have h_β (x y : InfinitePlace E × p → ℂ) :
-        (stdAddChar E (toAdele (j / 2) * Star.star (realVec y) ⬝ᵥ realVec x) : ℂ) =
-          (realHeisenberg 1).β x y := by
+    have h_β (x y : InfinitePlace E × p → ℂ)
+        : (stdAddChar E (toAdele (j / 2) * Star.star (realVec y) ⬝ᵥ realVec x) : ℂ)
+          = (realHeisenberg 1).β x y := by
       simpa [↓ adelicHeisenberg] using! (adelicSum E (n := p) 1).beta_equiv (x, 0) (y, 0)
     rw [two_nsmul a, add_assoc a a a', ← h_β]
     simpa [← hT, ↓ conjTranspose_nonsing_inv, ↓ integrated_realHeisenbergOp,
-      ↓ realVec_realMatrix_mulVec, mulVec_add, ↓ Splitting.slice, ↓ adelicHeisenberg,
-      ↓ star_mulVec_dotProduct] using
-      D.isMixedLaw_slice (t⁻¹.valᴴ *ᵥ _)
+        ↓ realVec_realMatrix_mulVec, mulVec_add, ↓ Splitting.slice, ↓ adelicHeisenberg,
+        ↓ star_mulVec_dotProduct]
+      using D.isMixedLaw_slice (t⁻¹.valᴴ *ᵥ _)
         (D.lAdelic *ᵥ t⁻¹.valᴴ *ᵥ _ + D.iAdelic *ᵥ _ + D.kAdelic *ᵥ t.val *ᵥ _) _
   · -- The vacuum becomes the Gaussian.
     simpa [← hT, ↓ integrated_realHeisenbergOp, ↓ realVec_realMatrix_mulVec, ↓ Splitting.slice]
@@ -219,25 +232,31 @@ section TwoLineRealPart
 
 open NumberField
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} [Fintype n] [DecidableEq n]
-  [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r']
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n n' r r' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r]
+  [DecidableEq r] [Fintype r'] [DecidableEq r']
   {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
   {V : Space E r t} {V' : Space E r' t'} (A : W'.Splitting W Unit) (X : V'.Splitting V Unit)
   [IsBaseAdapted A] [IsBaseAdapted X]
 
-/-- For a source space with finite basis `n` and a character of weight `μ`, the weight
-`⌊#n / 2⌋ - μ w` in which the real points of the target group act at the infinite place `w`. -/
+/--
+For a source space with finite basis `n` and a character of weight `μ`, the weight
+`⌊#n / 2⌋ - μ w` in which the real points of the target group act at the infinite place `w`.
+-/
 abbrev targetWeight (n : Type) [Fintype n] (μ : InfinitePlace E → ℤ) (w : InfinitePlace E) : ℤ :=
   (Fintype.card n / 2 : ℕ) + (-μ) w
 
-/-- For base-adapted splittings `A` of `W'` over `W` and `X` of `V'` over `V` along lines, the real
+/--
+For base-adapted splittings `A` of `W'` over `W` and `X` of `V'` over `V` along lines, the real
 part of the operator `lineTerm A X β a` (`β` selects one of its two models): the slice, in the real
 mixed model of the splitting `lineTermSplitting A X β` of `Hom(W', V')` over `Hom(W, V)`, at the
-point with coordinates `a` on the last coordinate (the line) and `0` elsewhere. -/
+point with coordinates `a` on the last coordinate (the line) and `0` elsewhere.
+-/
 @[irreducible]
-noncomputable def lineTermReal (β : Bool) (a : InfinitePlace E → ℂ) :
-    Fock.fockSpace (realSigns E (homSigns s' t')) →L[ℂ]
-      Fock.fockSpace (realSigns E (homSigns s t)) :=
+noncomputable def lineTermReal (β : Bool) (a : InfinitePlace E → ℂ)
+    : Fock.fockSpace (realSigns E (homSigns s' t')) →L[ℂ]
+        Fock.fockSpace (realSigns E (homSigns s t)) :=
   (isAdapted_lineTermSplitting A X β).mixedModel.slice fun p ↦ a p.1 * p.2.isRight.toNat
 
 end TwoLineRealPart
@@ -252,14 +271,19 @@ For an adapted splitting `D` of `X` into a hyperbolic part and `W₁` (`New.Spac
 read in the mixed model as a function of a matrix `x` with values in the Fock space of `(W₁, V)`.
 -/
 
-/-- The slice of a real datum for (X, V) at the real part of the adelic matrix x: its value in the
+/--
+The slice of a real datum for (X, V) at the real part of the adelic matrix x: its value in the
 mixed model attached to the splitting of Hom(X, V) induced by the base-adapted splitting D of X
-over W₁, a real datum for (W₁, V). -/
-noncomputable def New.Exchange.realSlice {E : Type} [Field E] [CMType E] [WeilData E]
+over W₁, a real datum for (W₁, V).
+-/
+noncomputable def New.Exchange.realSlice
+    {E : Type} [Field E] [CMType E] [WeilData E]
     {n a b m : Type} [Fintype n] [DecidableEq n] [Fintype a] [DecidableEq a] [Fintype b]
-    [DecidableEq b] [Fintype m] [DecidableEq m] {s : n → ℤˣ} {t : a → ℤˣ} {r : m → ℤˣ}
-    {X : Space E m r} {W₁ : Space E n s} (D : X.Splitting W₁ b) (V : Space E a t) [IsBaseAdapted D]
-    (x : Matrix a b (𝔸 E)) : PairFock E r t →L[ℂ] PairFock E s t :=
+    [DecidableEq b] [Fintype m] [DecidableEq m]
+    {s : n → ℤˣ} {t : a → ℤˣ} {r : m → ℤˣ} {X : Space E m r} {W₁ : Space E n s}
+    (D : X.Splitting W₁ b) (V : Space E a t) [IsBaseAdapted D]
+    (x : Matrix a b (𝔸 E))
+    : PairFock E r t →L[ℂ] PairFock E s t :=
   (isAdapted_homSource D V).mixedModel.slice fun p ↦ (matrixToVec x p.2).1 p.1
 
 namespace New.Exchange
@@ -277,15 +301,19 @@ section NamedSlices
 
 open Matrix MeasureTheory SemilocalField Space Splitting WeilData stdLattice
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} {p : Type _} [Fintype n]
-  [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r']
-  [DecidableEq r'] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ}
-  {t' : r' → ℤˣ} {W : Space E n s} {W' : Space E n' s'} {T : Space E r t} {T' : Space E r' t'}
-  {F : Type} [V : SemilocalField F] {S : Set (FinPlace E)} {π : 𝔸f E →+* F}
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n n' r r' : Type} {p : Type _} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r'] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
+  {T : Space E r t} {T' : Space E r' t'} {F : Type} [V : SemilocalField F]
+  {S : Set (FinPlace E)} {π : 𝔸f E →+* F}
 
-/-- A chosen continuous additive section of `π` that takes `π x` to `idem S * x`, where `idem S` is
+/--
+A chosen continuous additive section of `π` that takes `π x` to `idem S * x`, where `idem S` is
 the idempotent of `𝔸f E` that is 1 at the places of `S` and 0 elsewhere
-(`ReadsAt.continuous_lift_and_apply_lift`). -/
+(`ReadsAt.continuous_lift_and_apply_lift`).
+-/
 def ReadsAt.lift (h : ReadsAt S π) : F →+ 𝔸f E := h.exists_section.2.choose
 
 omit [WeilData E] in
@@ -307,9 +335,11 @@ lemma ReadsAt.lift_apply (h : ReadsAt S π) (x : 𝔸f E) : h.lift (π x) = idem
   obtain ⟨-, -, h_idem⟩ := h.continuous_lift_and_apply_lift
   exact h_idem x
 
-/-- The additive character `y ↦ selfDualAddChar E (σ y)` of `F` (`selfDualAddChar E` is the
+/--
+The additive character `y ↦ selfDualAddChar E (σ y)` of `F` (`selfDualAddChar E` is the
 character of `𝔸f E` for which `Ô E` is self-dual), where `σ = h.lift` is a chosen section of `π`
-with `σ (π x) = idem S * x`. -/
+with `σ (π x) = idem S * x`.
+-/
 def ReadsAt.ψ (h : ReadsAt S π) : AddChar F ℂ := (selfDualAddChar E).compAddMonoidHom h.lift
 
 lemma ReadsAt.psi_apply (h : ReadsAt S π) (z : 𝔸f E) : h.ψ (π z) = selfDualAddChar E (idem S * z) :=
@@ -453,12 +483,15 @@ lemma slice_localDatum (h : ReadsAt S π) {D : (W'.hom T').Splitting (W.hom T) p
     h_fin,
     mul_comm, mul_smul, ← map_smul, ← map_smul, h_name]
 
-/-- For a base-adapted splitting `A`, the images under `π` of the finite parts of the adelic frame
-`(k, ι, l)` and of its dual frame, as mutually inverse integral matrices over `F`. -/
-def adaptedFrame (h : ReadsAt S π) (A : W'.Splitting W p) [k : IsBaseAdapted A] :
-    IntegralFrame F n' n p :=
+/--
+For a base-adapted splitting `A`, the images under `π` of the finite parts of the adelic frame
+`(k, ι, l)` and of its dual frame, as mutually inverse integral matrices over `F`.
+-/
+def adaptedFrame (h : ReadsAt S π) (A : W'.Splitting W p) [k : IsBaseAdapted A]
+    : IntegralFrame F n' n p :=
   let read := π.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E))
-  { K := A.kAdelic.map read
+  {
+    K := A.kAdelic.map read
     L := A.lAdelic.map read
     I := A.iAdelic.map read
     dualK := A.kCoord.map read
@@ -466,16 +499,15 @@ def adaptedFrame (h : ReadsAt S π) (A : W'.Splitting W p) [k : IsBaseAdapted A]
     dualI := A.iCoord.map read
     isIntMatrix_and_mul_eq_one := by
       -- The matrices are square by `A.card_eq`, so one of the two products suffices.
-      simp +arith [↓mul_eq_one_comm_of_card_eq _ n', A.card_eq, ← add_assoc,
-        fromCols_mul_fromRows]
+      simp +arith [↓ mul_eq_one_comm_of_card_eq _ n', A.card_eq, ← add_assoc, fromCols_mul_fromRows]
       obtain ⟨-, h_int⟩ := k.isOrthoIntegral
       refine ⟨?_, ?_, ?_⟩
       · simp_all [IsIntMatrix, h.mem_iff, mul_mem, read]
-      · simp_all [IsIntMatrix, h.mem_iff, mul_mem, kCoord, iCoord, lCoord,
-          star_mem_Ô, stdForm, read]
+      · simp_all [IsIntMatrix, h.mem_iff, mul_mem, kCoord, iCoord, lCoord, star_mem_Ô, stdForm,
+          read]
       · simpa [map_add, -RingHom.coe_comp] using!
-          congrArg read.mapMatrix A.sum_frame_mul_coord_eq_one }
-
+          congrArg read.mapMatrix A.sum_frame_mul_coord_eq_one
+  }
 
 end NamedSlices
 
@@ -493,10 +525,13 @@ section FiniteSlices
 
 open Matrix MeasureTheory SemilocalField Fintype WeilData IntegralFrame
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n : Type} {a : Type _} {b m : Type}
-  [Fintype n] [DecidableEq n] [Fintype b] [DecidableEq b] [Fintype m]
-  [DecidableEq m] {s : n → ℤˣ} {t : a → ℤˣ} {r : m → ℤˣ} {X : Space E m r} {W₁ : Space E n s}
-  {F : Type} [SemilocalField F] {S : Set (FinPlace E)} {π : 𝔸f E →+* F}
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n : Type} {a : Type _} {b m : Type}
+  [Fintype n] [DecidableEq n] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {t : a → ℤˣ} {r : m → ℤˣ} {X : Space E m r} {W₁ : Space E n s} {F : Type}
+  [SemilocalField F]
+  {S : Set (FinPlace E)} {π : 𝔸f E →+* F}
 
 /-- A matrix has entries in `O` exactly when its three blocks of coordinates in an integral frame
 do. -/

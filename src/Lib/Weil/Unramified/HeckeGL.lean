@@ -74,9 +74,11 @@ namespace New
 
 section
 
-variable (n : Type*)
+variable
+  (n : Type*)
   {A W E : Type*} [Fintype n] [DecidableEq n] [Field E] [NumberField E]
-  (w : FinPlace E) [CommRing A] [AddCommGroup W] [Module A W]
+  (w : FinPlace E)
+  [CommRing A] [AddCommGroup W] [Module A W]
 
 /-- The ring of integers O_w of the local field E_w is compact. -/
 instance : CompactSpace 𝒪[LocField w] := compactSpace_LocInt w
@@ -86,14 +88,17 @@ instance : CompactSpace (localIntGL n w) := isCompact_iff_compactSpace.mp (isCom
 
 /-! ### Congruence subgroups of GL_n(O_w) -/
 
-/-- The subgroup of GL_n(O_w) of matrices congruent to 1 modulo 𝔭^(m+1), 𝔭 the maximal ideal of
-O_w. -/
+/--
+The subgroup of GL_n(O_w) of matrices congruent to 1 modulo 𝔭^(m+1), 𝔭 the maximal ideal of
+O_w.
+-/
 def localCongruence (m : ℕ) : Subgroup (GL n (LocField w)) :=
   congruenceGL (v.leSubmodule (exp (-m.succ))) id
 
 end
 
-variable {n : Type*} {A W E : Type*} [Fintype n] [DecidableEq n] [Field E] [NumberField E]
+variable
+  {n : Type*} {A W E : Type*} [Fintype n] [DecidableEq n] [Field E] [NumberField E]
   {w : FinPlace E} [CommRing A] [AddCommGroup W] [Module A W]
   {π : Representation A (GL n (LocField w)) W} {j : ℕ} {g : GL n (LocField w)} {i : ℕ}
   {g' : GL n (LocField w)} {m : Type*} {ϖ : (LocField w)ˣ} {z : Matrix m n (LocField w)}
@@ -179,18 +184,24 @@ lemma pow_pow_mem_localCongruence {q : ℕ} (hq : (q : NumberField.RingOfInteger
 
 /-! ### Reduction of matrices and the kernel of the reduction -/
 
-/-- The map from E_w to the residue field at w that reduces integral elements and sends all
-others to 0. -/
+/--
+The map from E_w to the residue field at w that reduces integral elements and sends all
+others to 0.
+-/
 def residueOrZero (x : LocField w) : ResField w :=
   if h : v x ≤ 1 then residue (LocInt w) ⟨x, h⟩ else 0
 
-/-- The matrix `g` has entries in `O_w`, and `0` is a simple root of its characteristic polynomial
-modulo `w`. -/
+/--
+The matrix `g` has entries in `O_w`, and `0` is a simple root of its characteristic polynomial
+modulo `w`.
+-/
 def HasSimpleZero (g : GL n (LocField w)) : Prop :=
   (∀ i j : n, Valued.v (g i j) ≤ 1) ∧ (g.val.map residueOrZero).charpoly.rootMultiplicity 0 = 1
 
-/-- The kernel, in column vectors over the residue field at w, of the entrywise reduction
-`New.residueOrZero` of the matrix z. -/
+/--
+The kernel, in column vectors over the residue field at w, of the entrywise reduction
+`New.residueOrZero` of the matrix z.
+-/
 abbrev residueKer (z : Matrix m n (LocField w)) : Submodule (ResField w) (n → ResField w) :=
   (z.map residueOrZero).mulVecLin.ker
 
@@ -366,12 +377,13 @@ lemma exists_mem_basicDoubleCoset_residueKer_eq :
     exists_residueKer_eq_and_inv_mul_mem_localIntGL U hd_mem hd_finrank
   exact ⟨k, hk_mem, hk_ker⟩
 
-/-- For a subspace U of k_w^n (k_w the residue field at w), a chosen element of the double coset
+/--
+For a subspace U of k_w^n (k_w the residue field at w), a chosen element of the double coset
 `New.basicDoubleCoset` n w j of diag(ϖ 1_j, 1), j = dim U, whose reduction modulo w has kernel U.
 As U runs over the subspaces of dimension j, these elements represent the cosets K g in that
-double coset, K = GL_n(O_w). -/
-def basicCosetRep : GL n (LocField w) :=
-  (exists_mem_basicDoubleCoset_residueKer_eq U).choose
+double coset, K = GL_n(O_w).
+-/
+def basicCosetRep : GL n (LocField w) := (exists_mem_basicDoubleCoset_residueKer_eq U).choose
 
 lemma basicCosetRep_mem_basicDoubleCoset :
     basicCosetRep U ∈ basicDoubleCoset n w (finrank (ResField w) U) :=
@@ -583,8 +595,9 @@ open NumberField Matrix Valued
 
 namespace New
 
-variable {E n n' : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
-  [Fintype n'] {a : 𝓞 E}
+variable
+  {E n n' : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n] [Fintype n']
+  {a : 𝓞 E}
 
 /-- Let `g` be in `New.stdLevel E n`. The `(i, j)` entry of `g - 1` lies in the `Ô`-ideal generated
 by `a` if and only if a local condition holds at every finite place `u` with `a ∈ u`. The condition

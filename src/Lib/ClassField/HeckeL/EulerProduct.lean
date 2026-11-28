@@ -57,49 +57,61 @@ open NumberField IsDedekindDomain.HeightOneSpectrum Filter Topology Complex Fins
 
 namespace New
 
-variable {K : Type*} [Field K] [NumberField K]
-  (ψ : (𝔸f K)ˣ →* ℂˣ) (n : InfinitePlace K → ℤ) (a b : FinPlace K → ℂ) {s : ℝ}
+variable
+  {K : Type*} [Field K] [NumberField K]
+  (ψ : (𝔸f K)ˣ →* ℂˣ) (n : InfinitePlace K → ℤ) (a b : FinPlace K → ℂ)
+  {s : ℝ}
 
-/-- The character `ψ` of the finite ideles is the finite part of a Hecke character of type `n`,
+/--
+The character `ψ` of the finite ideles is the finite part of a Hecke character of type `n`,
 where `n` gives an integer exponent `n w` to each infinite place `w`: the kernel of `ψ` is open,
 and `ψ x * ∏ w, (Φ w x / ‖Φ w x‖) ^ n w = 1` for `x ∈ Kˣ`, with `Φ w` the chosen complex embedding
-inducing `w` and `x` read as a finite idele by the diagonal embedding. -/
+inducing `w` and `x` read as a finite idele by the diagonal embedding.
+-/
 def IsHeckeOfType [PlaceEmbedding K] : Prop :=
-  ψ.ker.IsOpen ∧
-  ∀ x : Kˣ, ψ (principalIdele x) * ∏ w : InfinitePlace K, (Φ w x.val / ‖Φ w x‖) ^ n w = 1
+  ψ.ker.IsOpen
+    ∧ ∀ x : Kˣ, ψ (principalIdele x) * ∏ w : InfinitePlace K, (Φ w x.val / ‖Φ w x‖) ^ n w = 1
 
-/-- `ψ` is unramified at the finite place `v`: it is `1` on the units of the completion `K_v` of
-valuation `1`, read as finite ideles by `New.locIdele v`. -/
+/--
+`ψ` is unramified at the finite place `v`: it is `1` on the units of the completion `K_v` of
+valuation `1`, read as finite ideles by `New.locIdele v`.
+-/
 def CharUnramifiedAt (v : FinPlace K) : Prop :=
   ∀ u : (LocField v)ˣ, Valued.v u.val = 1 → ψ (locIdele v u) = 1
 
-/-- The function on finite places sending `v ∉ S` to the value of `ψ` at the local idele of the
-chosen uniformiser `uniformizer v` of `K_v`, and `v ∈ S` to `0`. -/
+/--
+The function on finite places sending `v ∉ S` to the value of `ψ` at the local idele of the
+chosen uniformiser `uniformizer v` of `K_v`, and `v ∈ S` to `0`.
+-/
 def heckeCoeff (S : Set (FinPlace K)) : FinPlace K → ℂ :=
   indicator Sᶜ fun v : FinPlace K ↦ (ψ (locIdele v (uniformizer v))).val
 
-/-- The Euler product `∏ (1 - a v * q ^ (-s))⁻¹` over the primes `v` of `K`, with `q = v.q` the norm
+/--
+The Euler product `∏ (1 - a v * q ^ (-s))⁻¹` over the primes `v` of `K`, with `q = v.q` the norm
 of `v`, as a function of real `s`. It is written `exp (-∑' v, log (1 + -(a v * q ^ (-s))))`, in the
 form `log (1 + w)` of Mathlib's bounds for the logarithm. The value at `s` is the limit of this
 expression at `s` within `(1, ∞)`: for `‖a v‖ ≤ 1` and `s > 1` it is the expression itself
 (`New.eulerProd_eq_exp`, `New.hasProd_eulerProd`), at `s = 1` it is the limit from the right if that
 exists, and for `s < 1` it has no meaning. With `a = heckeCoeff ψ S` and `ψ` unramified at every
-`v ∉ S` it is the Euler product of the Hecke `L`-function of `ψ` without the factors at `S`. -/
+`v ∉ S` it is the Euler product of the Hecke `L`-function of `ψ` without the factors at `S`.
+-/
 def eulerProd : ℝ → ℂ :=
   extendFrom (Set.Ioi 1) fun s : ℝ ↦
-    exp (-∑' v : FinPlace K, Complex.log (1 + -(a v * v.q ^ (-s : ℂ))))
+    exp (- ∑' v : FinPlace K, Complex.log (1 + -(a v * v.q ^ (-s : ℂ))))
 
-/-- The Dirichlet mean of `a` over the primes of degree one (those of prime norm `q`) is `l`, with
+/--
+The Dirichlet mean of `a` over the primes of degree one (those of prime norm `q`) is `l`, with
 a bounded error: for `s > 1` near `1` the series `∑ a v * q ^ (-s)` over these primes converges,
-and its sum is `l * log (1 / (s - 1)) + x s` with `x` bounded as `s → 1⁺`. -/
+and its sum is `l * log (1 / (s - 1)) + x s` with `x` bounded as `s → 1⁺`.
+-/
 def HasPrimeDensity (l : ℂ) : Prop :=
   ∃ x : ℝ → ℂ,
     -- `∑ a v * q ^ (-s) = -l * log (s - 1) + O(1)` as `s → 1⁺`, over the `v` whose norm `q` is
     -- prime
-    x =O[𝓝[>] 1] (1 : ℝ → ℝ) ∧
-    ∀ᶠ s : ℝ in 𝓝[>] 1,
-      HasSum (fun v : FinPlace K ↦ ite v.q.Prime (a v) 0 * v.q ^ (-s : ℂ))
-        (x s - l * Real.log (s - 1))
+    x =O[𝓝[>] 1] (1 : ℝ → ℝ)
+      ∧ ∀ᶠ s : ℝ in 𝓝[>] 1,
+          HasSum (fun v : FinPlace K ↦ ite v.q.Prime (a v) 0 * v.q ^ (-s : ℂ))
+            (x s - l * Real.log (s - 1))
 
 /-- For a finite set `u` of primes of `K`, the sum over `v ∈ u` of `1 / p ^ 2`, with `p` the least
 prime factor of the norm `v.q`, is at most the degree `[K : ℚ]`. -/

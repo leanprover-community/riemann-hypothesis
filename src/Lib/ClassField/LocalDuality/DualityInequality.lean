@@ -48,9 +48,12 @@ namespace New
 open DiscreteUnits Cohomology DFunLike DiscreteModule QZChar NeZero QZ Ideal AddSubgroup
   IsLocalGalois Nat Function
 
-variable {Γ k Ω : Type} [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω]
-  [MulSemiringAction Γ Ω] {A : ValuationSubring Ω} [J : IsLocalGalois Γ k A]
-  {l r : ℕ} [Fact l.Prime] {R S : Type} [CommRing R] [CommRing S]
+variable
+  {Γ k Ω : Type}
+  [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω] [MulSemiringAction Γ Ω]
+  {A : ValuationSubring Ω} [J : IsLocalGalois Γ k A]
+  {l r : ℕ} [Fact l.Prime]
+  {R S : Type} [CommRing R] [CommRing S]
   {M : DiscreteModule R Γ} {N : DiscreteModule S Γ}
 
 /-- Over a local field `k`, a continuous character `χ : Γ → ℚ/ℤ` whose cyclic class `δχ ∪ w` in

@@ -78,11 +78,13 @@ namespace New.Seesaw
 open Matrix MeasureTheory Space Subtype Fintype Exchange Splitting Grading LinearMap MvPolynomial
   Subgroup Fock CoordChange Finset
 
-variable {E ι ι' ι'' X X' X'' X₀ q : Type} [Field E] [CMType E] [WeilData E] [Fintype ι]
-  [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] [Fintype ι''] [DecidableEq ι''] [Fintype X]
-  [DecidableEq X] [Fintype X'] [DecidableEq X'] [Fintype X''] [DecidableEq X''] [Fintype X₀]
-  [DecidableEq X₀] [Fintype q] [DecidableEq q] {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ} {N : E}
-  {s s' s'' : ℕ} {V : Space E ι ε} {V' : Space E ι' ε'} {V'' : Space E ι'' ε''}
+variable
+  {E ι ι' ι'' X X' X'' X₀ q : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
+  [Fintype ι''] [DecidableEq ι''] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X']
+  [Fintype X''] [DecidableEq X''] [Fintype X₀] [DecidableEq X₀] [Fintype q] [DecidableEq q]
+  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ} {N : E} {s s' s'' : ℕ}
+  {V : Space E ι ε} {V' : Space E ι' ε'} {V'' : Space E ι'' ε''}
   {Y : Grading V N X s} {Y' : Grading V' N X' s'} {Y'' : Grading V'' N X₀ s''}
 
 omit [WeilData E] in
@@ -647,7 +649,8 @@ variable {P : Parameters} {D : Data P}
 
 section Stages
 
-variable (ϑ : D.TameChar) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) (φ : D.SourceForm)
+variable
+  (ϑ : D.TameChar) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) (φ : D.SourceForm)
   (ξ : ∀ k : ℕ, GInf D.E (D.signsY k)) (y : ∀ k : ℕ, Gf D.E (D.Y k))
 
 /-- The embedding `inclXFin` of the finite points of `U(X_k)` in those of `U(Y_k)` maps the level
@@ -665,8 +668,10 @@ lemma inclXFin_mem_chosenLevel {k : ℕ} {hk : k ≤ 2 * D.ϱ + 1} {a : Gf D.E (
     (fun i hi ↦ (not_chosen hi).1 (is_chosen i))
     (fun i hi ↦ (not_chosen hi).2 (by simpa using is_chosen i)) ha.1
 
-/-- The datum of lift `k + 1` (`New.Data.datumY`) moved by the outer variable `g_k = (ξ k, y k)`,
-which acts on `Y_k`. -/
+/--
+The datum of lift `k + 1` (`New.Data.datumY`) moved by the outer variable `g_k = (ξ k, y k)`,
+which acts on `Y_k`.
+-/
 noncomputable def movedDatum (k : ℕ) : 𝒮 ((D.spaceY k).hom (D.spaceY (k + 1))) :=
   twistedPairWeil (rankTwist (D.chainChar ϑ (k + 1))) ((ξ k, y k), 1) (datumY ϑ k)
 
@@ -691,21 +696,25 @@ lemma constTermAtStringMap_movedDatum {k : ℕ} {hk : k ≤ 2 * D.ϱ + 1} {X : T
         g g' := by
   simp only [constTermAtStringMap, twistedPairWeil_movedDatum, rep_apply_apply, mk_mul_mk]
 
-/-- The function on `R_k` that enters step `k + 1` of the unfolding: `𝒲_φ` for `k = 0`, and
-`γ ↦ 𝒲_k (γ g_k)` with `g_k = (ξ k, y k)` for `k > 0`. -/
-noncomputable def unfoldStageOn :
-    ∀ (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1), (D.gradingY k hk).besselGroup → ℂ
+/--
+The function on `R_k` that enters step `k + 1` of the unfolding: `𝒲_φ` for `k = 0`, and
+`γ ↦ 𝒲_k (γ g_k)` with `g_k = (ξ k, y k)` for `k > 0`.
+-/
+noncomputable def unfoldStageOn
+    : ∀ (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1), (D.gradingY k hk).besselGroup → ℂ
   | 0, _ => (D.gradingY 0).sourceFn t φ.val
   | k + 1, hk => fun γ ↦
     (D.gradingY k).unfoldStep (D.gradingY (k + 1) hk) (rankTwist (D.chainChar ϑ (k + 1)))
       (movedDatum ϑ ξ y k) (unfoldStageOn k (by omega)) (γ.val * (ξ (k + 1), y (k + 1)))
 
 /-- The function `𝒲_{k+1}` on `U(Y_{k+1})` that the first `k + 1` unfolding steps leave. -/
-noncomputable def unfoldStage (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1) {X : Type} {s : ℕ}
-    [DecidableEq X] (Y' : Grading (D.spaceY (k + 1)) D.N X s) : New.G D.E (D.signsY (k + 1)) → ℂ :=
+noncomputable def unfoldStage
+    (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1)
+    {X : Type} {s : ℕ} [DecidableEq X]
+    (Y' : Grading (D.spaceY (k + 1)) D.N X s)
+    : New.G D.E (D.signsY (k + 1)) → ℂ :=
   (D.gradingY k hk).unfoldStep Y' (rankTwist (D.chainChar ϑ (k + 1))) (movedDatum ϑ ξ y k)
     (unfoldStageOn ϑ t φ ξ y k hk)
-
 
 /-- On `R_{k+1}`, the Bessel group of `D.gradingY (k + 1) hk`, the function `unfoldStageOn` of the
 unfolding is `γ ↦ 𝒲_{k+1} (γ g_{k+1})`, where `𝒲_{k+1}` is `unfoldStage` at `k` and
@@ -746,7 +755,9 @@ lemma isEquivariant_unfoldStageOn (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1) :
 
 section
 
-variable (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1) {X : Type} [Fintype X] [DecidableEq X]
+variable
+  (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1)
+  {X : Type} [Fintype X] [DecidableEq X]
   (Y' : Grading (D.spaceY (k + 1)) D.N X (2 * D.ϱ + 1 - (k + 1)))
 
 lemma continuous_unfoldStage : Continuous (unfoldStage ϑ t φ ξ y k hk Y') :=
@@ -786,15 +797,20 @@ lemma integral_unfoldStageOn (ϑ : D.TameChar)
     using integral_besselGroup_unfold Y' (rankTwist (D.chainChar ϑ (k + 1))) (movedDatum ϑ ξ y k)
       (isEquivariant_unfoldStageOn ϑ t φ ξ y k hk) hz_aut hz_rapid
 
-/-- Decidable equality on the sum of `q × X_{2i+1}` and the type of pairs `(a, b)` of an index `a`
+/--
+Decidable equality on the sum of `q × X_{2i+1}` and the type of pairs `(a, b)` of an index `a`
 of `Y_{2i} ⊕ Y_{2i+2}` and an index `b` of `Y_{2i+1}` whose grades have positive difference, built
-from the instances for sums, products and subtypes. -/
-noncomputable local instance instDecidableEqDoubleLiftSplitting (i : ℕ) (hi : 2 * i < 2 * D.ϱ + 1)
+from the instances for sums, products and subtypes.
+-/
+noncomputable local instance instDecidableEqDoubleLiftSplitting
+    (i : ℕ) (hi : 2 * i < 2 * D.ϱ + 1)
     {X q : Type} {s : ℕ} [Fintype X] [DecidableEq X] [Fintype q] [DecidableEq q]
-    {Y : Grading (D.spaceY (2 * i + 2)) D.N X s} :
-    DecidableEq ({ i_1 : (D.Y (2 * i) ⊕ D.Y (2 * i + 2)) × D.Y (2 * i + 1) //
-        0 < Sum.elim (D.gradingY (2 * i) hi.le).gradeOf Y.gradeOf i_1.1 -
-          (D.gradingY (2 * i + 1) hi).gradeOf i_1.2 } ⊕ q × D.X (2 * i + 1)) :=
+    {Y : Grading (D.spaceY (2 * i + 2)) D.N X s}
+    : DecidableEq
+      ({i_1 : (D.Y (2 * i) ⊕ D.Y (2 * i + 2)) × D.Y (2 * i + 1) // 0
+          < Sum.elim (D.gradingY (2 * i) hi.le).gradeOf Y.gradeOf i_1.1
+            - (D.gradingY (2 * i + 1) hi).gradeOf i_1.2}
+        ⊕ q × D.X (2 * i + 1)) :=
   @instDecidableEqSum _ _ Subtype.instDecidableEq instDecidableEqProd
 
 /-- Let `R` be data for the two lifts `Y_{2i} → Y_{2i+1} → Y_{2i+2}`, the last space with the

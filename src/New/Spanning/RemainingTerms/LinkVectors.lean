@@ -35,11 +35,13 @@ open Matrix Sum NumberField
 
 namespace New.Filling
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} {γ : S.G E}
-  {j : Fin (𝔰.ϱ + 2)}
+variable
+  {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} {γ : S.G E} {j : Fin (𝔰.ϱ + 2)}
 
-/-- The two vectors `z⁺` and `Υ_γ⁻¹ z⁺` of the positive space `X₀ ⊥ E z⁺`, as columns. Here
-`Υ_γ = linkIsometry γ` is the link isometry of `γ`, and `inr ()` is the index of `z⁺`. -/
+/--
+The two vectors `z⁺` and `Υ_γ⁻¹ z⁺` of the positive space `X₀ ⊥ E z⁺`, as columns. Here
+`Υ_γ = linkIsometry γ` is the link isometry of `γ`, and `inr ()` is the index of `z⁺`.
+-/
 def linkVectors (γ : S.G E) : Matrix 𝔰.MiddleIndex (Fin 2) E :=
   (of ![Pi.single (inr ()) 1, (linkIsometry γ).symm (Pi.single (inr ()) 1)])ᵀ
 
@@ -61,11 +63,13 @@ lemma linkVectors_mulVec (γ : S.G E) (a : 𝔰.MiddleIndex → E) :
       S.N * linkIsometry γ a (inr ())
     rw [← dotProduct_positiveGram_mulVec_linkIsometry γ, LinearEquiv.apply_symm_apply, h_single]
 
-/-- Vectors in the image under `inclPositive E 𝔰` of `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀` (`linkedX₀ γ`) are
-orthogonal, for `S.positiveGram`, to `z⁺` and `Υ_γ⁻¹ z⁺` in `X₀ ⊥ E z⁺`. -/
-theorem linkVectors_mulVec_eq_zero_of_mem_map (γ : S.G E) {a : 𝔰.MiddleIndex → E}
-    (ha : a ∈ (linkedX₀ γ).map (inclPositive E 𝔰)) :
-    ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ a = 0 := by
+/--
+Vectors in the image under `inclPositive E 𝔰` of `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀` (`linkedX₀ γ`) are
+orthogonal, for `S.positiveGram`, to `z⁺` and `Υ_γ⁻¹ z⁺` in `X₀ ⊥ E z⁺`.
+-/
+theorem linkVectors_mulVec_eq_zero_of_mem_map
+    (γ : S.G E) {a : 𝔰.MiddleIndex → E} (ha : a ∈ (linkedX₀ γ).map (inclPositive E 𝔰))
+    : ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ a = 0 := by
   obtain ⟨v, hv, rfl⟩ := ha
   simp [linkVectors_mulVec, S.N_prime.ne_zero]
   exact ⟨by simp [inclPositive], mem_linkedX₀.1 hv⟩
@@ -92,14 +96,16 @@ lemma frameImage_conjTranspose_mulVec_eq_zero_iff (γ : S.G E) (y : 𝔰.BesselI
   simp only [Function.comp_apply, h_dual, h_z]
   simp [S.N_prime.ne_zero]
 
-/-- Let `γ` have a cell rank `j` (`HasCellRank`): it is in the normal form
+/--
+Let `γ` have a cell rank `j` (`HasCellRank`): it is in the normal form
 `NormOnePairOccursFrom j γ`, the leading minor of order `j` of the products of the frame with its
 image under `γ` is not zero, and `j` is the top index `ϱ + 1` exactly if the discriminant
 `𝗀 = S.termDisc γ` of these two frames is not zero. If `𝗀 = 0`, then `Υ_γ⁻¹ z⁺` is a multiple of
-`z⁺`. -/
-theorem HasCellRank.exists_linkIsometry_symm_eq_smul (hγ : S.HasCellRank j γ)
-    (h_disc : S.termDisc γ = 0) :
-    ∃ μ : E, (linkIsometry γ).symm (Pi.single (inr ()) 1) = μ • Pi.single (inr ()) 1 := by
+`z⁺`.
+-/
+theorem HasCellRank.exists_linkIsometry_symm_eq_smul
+    (hγ : S.HasCellRank j γ) (h_disc : S.termDisc γ = 0)
+    : ∃ μ : E, (linkIsometry γ).symm (Pi.single (inr ()) 1) = μ • Pi.single (inr ()) 1 := by
   -- Here `X₀^γ = X₀`, so the vector is orthogonal to `X₀`.
   set w : 𝔰.MiddleIndex → E := (linkIsometry γ).symm (Pi.single (inr ()) 1)
   have h_orth (v : 𝔰.κ → E) : star w ⬝ᵥ S.positiveGram *ᵥ (v ⊕ᵥ 0) = 0 := by
@@ -205,18 +211,21 @@ lemma HasCellRank.norm_det_gram_linkVectors (hγ : S.HasCellRank j γ) (v : Infi
 
 /-! ### The two vectors as pairs in the link -/
 
-/-- The index in `linkVectors γ = (z⁺, Υ_γ⁻¹ z⁺)` of the vector that represents the product with
+/--
+The index in `linkVectors γ = (z⁺, Υ_γ⁻¹ z⁺)` of the vector that represents the product with
 `z` on each half of a pair: `Υ_γ⁻¹ z⁺` for the first half and `z⁺` for the second half, on which
-this is the product with `γ z` before the pair is formed. -/
+this is the product with `γ z` before the pair is formed.
+-/
 def zFormIndex : Unit ⊕ Unit → Fin 2 := Sum.elim (fun _ ↦ 1) fun _ ↦ 0
 
 lemma zFormIndex_injective : zFormIndex.Injective := by decide
 
-/-- The two pairs in the link of `γ` (the graph of `Υ_γ`) with the sources `-Υ_γ⁻¹ z⁺` (column
-`inl ()`) and `-z⁺` (column `inr ()`). -/
+/--
+The two pairs in the link of `γ` (the graph of `Υ_γ`) with the sources `-Υ_γ⁻¹ z⁺` (column
+`inl ()`) and `-z⁺` (column `inr ()`).
+-/
 def linkVectorPairs (γ : S.G E) : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Unit ⊕ Unit) E :=
-  (of fun a : Unit ⊕ Unit ↦
-    ((linkSourceEquiv γ).symm (-(linkVectors γ).col (zFormIndex a))).val)ᵀ
+  (of fun a : Unit ⊕ Unit ↦ ((linkSourceEquiv γ).symm (- (linkVectors γ).col (zFormIndex a))).val)ᵀ
 
 lemma col_linkVectorPairs_mem (γ : S.G E) (a : Unit ⊕ Unit) : (linkVectorPairs γ).col a ∈ link γ :=
   ((linkSourceEquiv γ).symm (-(linkVectors γ).col (zFormIndex a))).prop

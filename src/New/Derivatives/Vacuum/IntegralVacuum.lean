@@ -109,10 +109,12 @@ lemma exists_smul_vac_eq_sum {E n : Type} [Field E] [CMType E] [WeilData E] [Fin
     simpa [h_zero, hθ, hN_ne] using (congrArg V.θ h_inversion).symm
   exact ⟨c i, hi, Γ, inferInstance, _, _, h_card, h_average i⟩
 
-/-- The coordinate `-u† y ∈ K` of `y ∈ E` along the vector `u = ζᵏ / q₁` of the frame of powers of
-`ζ`, that is minus the trace from `E` to `K` of `y * star ζᵏ`, divided by `q₁`. -/
+/--
+The coordinate `-u† y ∈ K` of `y ∈ E` along the vector `u = ζᵏ / q₁` of the frame of powers of
+`ζ`, that is minus the trace from `E` to `K` of `y * star ζᵏ`, divided by `q₁`.
+-/
 noncomputable def zetaCoord (P : Parameters) (s : ℕ) (k : Fin (P.q₁ s)) (y : P.E s) : K P :=
-  -Algebra.trace P.K (P.E s) (y * star (P.ζ s ^ k.val)) / P.q₁ s
+  - Algebra.trace P.K (P.E s) (y * star (P.ζ s ^ k.val)) / P.q₁ s
 
 /-- The coordinate along a vector of the frame commutes with multiplication by elements of `K`. -/
 lemma zetaCoord_smul {P : Parameters} {s : ℕ} (k : Fin (P.q₁ s)) (a : K P) (y : P.E s) :
@@ -123,47 +125,67 @@ section ThetaProduct
 
 variable {P : Parameters} {s : ℕ} {n : Type} [Fintype n] {ε : n → ℤˣ}
 
-/-- The twisted translate of the theta function of the CM lattice `C` by `Ω` times the coordinate
-of `y ∈ E` along the vector `ζᵏ / q₁` of the frame of powers of `ζ`. -/
+/--
+The twisted translate of the theta function of the CM lattice `C` by `Ω` times the coordinate
+of `y ∈ E` along the vector `ζᵏ / q₁` of the frame of powers of `ζ`.
+-/
 def zetaCoordThetaTranslate (C : CMLattice P.d) (Ω : ℂˣ) (k : Fin (P.q₁ s)) (y : P.E s) : ℂ → ℂ :=
   C.twistedTranslate 1 (P.zetaCoord s k y * Ω) C.θ
 
-/-- The linear form along the frame vector `ζᵏ / q₁` in the coordinate `j`, for the period `Ω` and
+/--
+The linear form along the frame vector `ζᵏ / q₁` in the coordinate `j`, for the period `Ω` and
 the scale `c`: the power series `Ω / q₁ / areaScale * c * ∑ w, conj (Φ w ζᵏ) * z (w, j)` in
 variables `z` indexed by infinite places of `E` and coordinates. Here `areaScale = √(2π / √d)`,
-`Φ w` is the complex embedding chosen at the place `w`, and `linearSeries a` is `∑ y, a y * z y`. -/
-def zetaLinearSeries [DecidableEq n] (Ω : ℂˣ) (c : ℂ) (k : Fin (P.q₁ s)) (j : n) :
-    MvPowerSeries (NumberField.InfinitePlace (P.E s) × n) ℂ :=
-  linearSeries fun y : NumberField.InfinitePlace (P.E s) × n ↦ if y.2 = j then
-    Ω.val / P.q₁ s / P.areaScale * c * starRingEnd ℂ (Φ y.1 (P.ζ s ^ k.val)) else 0
+`Φ w` is the complex embedding chosen at the place `w`, and `linearSeries a` is `∑ y, a y * z y`.
+-/
+def zetaLinearSeries [DecidableEq n] (Ω : ℂˣ) (c : ℂ) (k : Fin (P.q₁ s)) (j : n)
+    : MvPowerSeries (NumberField.InfinitePlace (P.E s) × n) ℂ :=
+  linearSeries fun y : NumberField.InfinitePlace (P.E s) × n ↦
+    if y.2 = j then
+      Ω.val / P.q₁ s / P.areaScale * c * starRingEnd ℂ (Φ y.1 (P.ζ s ^ k.val))
+    else
+      0
 
-/-- The vector `F` is the product of copies of the theta function of `C` along the frame of the
+/--
+The vector `F` is the product of copies of the theta function of `C` along the frame of the
 `ζᵏ / q₁`, each taken `q₁` times, in every coordinate. The period `Ω` scales the coordinates along
 the frame to complex numbers, and the level `e` gives the lattice `q₁ e 𝔞₀ⁿ` of periods, where
 `𝔞₀ⁿ = idealLattice E n` consists of the rational vectors `γ` with `α⁻¹ γ` integral, `α` being the
-idele of the Weil data and `q₁` the order of `ζ`. -/
-structure IsThetaProduct [DecidableEq n] (V : Space (P.E s) n ε) (C : CMLattice P.d) (Ω : ℂˣ)
-    (e : ℕ+) (F : 𝒮 V) : Prop where
-  /-- The vector lies in the finite part, the span of the translates of the vacuum by the operators
-  `finHeisenbergOp`. -/
+idele of the Weil data and `q₁` the order of `ζ`.
+-/
+structure IsThetaProduct
+    [DecidableEq n] (V : Space (P.E s) n ε) (C : CMLattice P.d) (Ω : ℂˣ) (e : ℕ+) (F : 𝒮 V)
+    : Prop where
+  /--
+  The vector lies in the finite part, the span of the translates of the vacuum by the operators
+  `finHeisenbergOp`.
+  -/
   mem_finitePart : F ∈ V.finitePart
-  /-- The theta value of the translate by a rational vector `γ` is a product of values at `0` of
+  /--
+  The theta value of the translate by a rational vector `γ` is a product of values at `0` of
   twisted translates of the theta function of `C`. Here `finiteImage γ` is the finite adelic vector
-  `α⁻¹ γ`, with `α` the idele of the Weil data. -/
-  theta_translate (γ : n → P.E s) : V.θ (V.ϱ (finVec (finiteImage γ)) F) =
-    ∏ k : Fin (P.q₁ s), ∏ j : n, zetaCoordThetaTranslate C Ω k (γ j) 0 ^ P.q₁ s
-  /-- The series of jets `jetSeries c` of that translate (for a standard space, the Taylor series at
+  `α⁻¹ γ`, with `α` the idele of the Weil data.
+  -/
+  theta_translate (γ : n → P.E s)
+    : V.θ (V.ϱ (finVec (finiteImage γ)) F)
+      = ∏ k : Fin (P.q₁ s), ∏ j : n, zetaCoordThetaTranslate C Ω k (γ j) 0 ^ P.q₁ s
+  /--
+  The series of jets `jetSeries c` of that translate (for a standard space, the Taylor series at
   `0` of its theta function at the scale `c`) is a product of Taylor series `taylorAtZero` at `0` of
-  functions of one variable, each composed with a linear form. -/
-  jetSeries_translate (γ : n → P.E s) (c : ℂ) :
-    V.jetSeries c (V.ϱ (finVec (finiteImage γ)) F) = ∏ k : Fin (P.q₁ s), ∏ j : n,
-      (taylorAtZero (zetaCoordThetaTranslate C Ω k (γ j))).subst (zetaLinearSeries Ω c k j) ^ P.q₁ s
-  /-- The values at finite points are integral at every prime `p`, for every `p`-adic place of `ℂ`
-  (a ring homomorphism `ιₚ` from `ℂ` to `ℂ_[p]`). -/
+  functions of one variable, each composed with a linear form.
+  -/
+  jetSeries_translate (γ : n → P.E s) (c : ℂ)
+    : V.jetSeries c (V.ϱ (finVec (finiteImage γ)) F)
+      = ∏ k : Fin (P.q₁ s), ∏ j : n,
+        (taylorAtZero (zetaCoordThetaTranslate C Ω k (γ j))).subst (zetaLinearSeries Ω c k j) ^ P.q₁ s
+  /--
+  The values at finite points are integral at every prime `p`, for every `p`-adic place of `ℂ`
+  (a ring homomorphism `ιₚ` from `ℂ` to `ℂ_[p]`).
+  -/
   norm_le_one (p : ℕ) [Fact p.Prime] [PadicPlace p] (x : n → 𝔸f (P.E s)) : ‖ιₚ (F (finVec x))‖ ≤ 1
   /-- The theta function of the vector is a theta function for `q₁ e 𝔞₀ⁿ`. -/
-  isThetaFunction :
-    IsThetaFunction (star (P.q₁ s * e : P.E s) • idealLattice (P.E s) n) (entireTheta F)
+  isThetaFunction
+    : IsThetaFunction (star (P.q₁ s * e : P.E s) • idealLattice (P.E s) n) (entireTheta F)
 
 /-- The theta functional takes the value `1` at a theta product. -/
 lemma IsThetaProduct.theta_eq_one [DecidableEq n] {V : Space (P.E s) n ε} {C : CMLattice P.d}
@@ -344,8 +366,10 @@ lemma exists_mul_vacElem_integral_bounded (P : Parameters) : ∃ C : ℕ, ∀ s 
         rw [← exp_natCast_mul, ← exp_natCast_mul, ← exp_add]
         exact congrArg rexp (by push_cast; ring)
 
-/-- The constant `C` in the bound `exp (C q₁²)` for the conjugates of the values of the integral
-vacuum of rank one, chosen from `exists_mul_vacElem_integral_bounded`; see `IsVacuumScale`. -/
+/--
+The constant `C` in the bound `exp (C q₁²)` for the conjugates of the values of the integral
+vacuum of rank one, chosen from `exists_mul_vacElem_integral_bounded`; see `IsVacuumScale`.
+-/
 def vacuumBoundConst (P : Parameters) : ℕ := P.exists_mul_vacElem_integral_bounded.choose
 
 end RankOne
@@ -361,42 +385,52 @@ section StandardDataDefs
 
 open NumberField Valued Submodule Fintype
 
-/-- The scalar `c` normalises the vacuum of the standard space of rank one: it is nonzero, and the
-values of `c • vacElem` at finite points are integral with bounded conjugates. -/
+/--
+The scalar `c` normalises the vacuum of the standard space of rank one: it is nonzero, and the
+values of `c • vacElem` at finite points are integral with bounded conjugates.
+-/
 structure IsVacuumScale (P : Parameters) (s : ℕ) (c : ℂ) : Prop where
   /-- The scalar is nonzero. -/
   ne_zero : c ≠ 0
   /-- The values of `c • vacElem` are integral at every prime. -/
-  norm_le_one (p : ℕ) [Fact p.Prime] [PadicPlace p] (x : Unit → 𝔸f (P.E s)) :
-    ‖ιₚ (c * (stdSpace (P.E s) Unit).vacElem (finVec x))‖ ≤ 1
-  /-- Their conjugates over `K` have norm at most `exp (C * q₁ ^ 2)`, where `C` is
-  `vacuumBoundConst`. -/
-  norm_gal_le (σ : Gal(ℂ/P.K)) (x : Unit → 𝔸f (P.E s)) :
-    ‖σ (c * (stdSpace (P.E s) Unit).vacElem (finVec x))‖ ≤
-      Real.exp (P.vacuumBoundConst * P.q₁ s ^ 2)
+  norm_le_one (p : ℕ) [Fact p.Prime] [PadicPlace p] (x : Unit → 𝔸f (P.E s))
+    : ‖ιₚ (c * (stdSpace (P.E s) Unit).vacElem (finVec x))‖ ≤ 1
+  /--
+  Their conjugates over `K` have norm at most `exp (C * q₁ ^ 2)`, where `C` is
+  `vacuumBoundConst`.
+  -/
+  norm_gal_le (σ : Gal(ℂ/P.K)) (x : Unit → 𝔸f (P.E s))
+    : ‖σ (c * (stdSpace (P.E s) Unit).vacElem (finVec x))‖
+      ≤ Real.exp (P.vacuumBoundConst * P.q₁ s ^ 2)
 
-/-- The nonzero number by which the vacuum of rank one is multiplied to have integral values with
-bounded conjugates, chosen from `exists_mul_vacElem_integral_bounded`. -/
+/--
+The nonzero number by which the vacuum of rank one is multiplied to have integral values with
+bounded conjugates, chosen from `exists_mul_vacElem_integral_bounded`.
+-/
 def vacuumScale (P : Parameters) (s : ℕ) : ℂ :=
   (P.exists_mul_vacElem_integral_bounded.choose_spec s).choose
 
-theorem isVacuumScale_vacuumScale (P : Parameters) (s : ℕ) :
-    P.IsVacuumScale s (P.vacuumScale s) := by
+theorem isVacuumScale_vacuumScale (P : Parameters) (s : ℕ)
+    : P.IsVacuumScale s (P.vacuumScale s) := by
   obtain ⟨h_ne, h_int, h_conj⟩ := (P.exists_mul_vacElem_integral_bounded.choose_spec s).choose_spec
   exact ⟨h_ne, h_int, h_conj⟩
 
-variable {P : Parameters} {s : ℕ} {n : Type*} [Fintype n] [DecidableEq n] {ε : n → ℤˣ}
-  (V : Space (P.E s) n ε)
+variable
+  {P : Parameters} {s : ℕ} {n : Type*} [Fintype n] [DecidableEq n]
+  {ε : n → ℤˣ} (V : Space (P.E s) n ε)
 
 /-- The integral vacuum: the vacuum of a space of rank `n` times `vacuumScale ^ n`. -/
 def intVacuum : 𝒮 V := P.vacuumScale s ^ card n • V.vacElem
 
-/-- The additive subgroup of vectors `x` of finite adeles that are integral after multiplication by
+/--
+The additive subgroup of vectors `x` of finite adeles that are integral after multiplication by
 `δ`: all coordinates of `δ x` are integral at the places of `E` in `S`. Here `evalAt w` is the
-component at the place `w`, and `v` is the valuation of the completion at `w`. -/
+component at the place `w`, and `v` is the valuation of the completion at `w`.
+-/
 def integralAfter (δ : 𝓞 P.K) (S : FinPlace (P.E s) → Prop) : AddSubgroup (n → 𝔸f (P.E s)) where
-  carrier := {x : n → 𝔸f (P.E s) | ∀ (i : n) (w : FinPlace (P.E s)), S w →
-    v (evalAt w (algebraMap P.K (P.E s) δ * x i)) ≤ 1}
+  carrier :=
+    {x : n → 𝔸f (P.E s) | ∀ (i : n) (w : FinPlace (P.E s)), S w →
+      v (evalAt w (algebraMap P.K (P.E s) δ * x i)) ≤ 1}
   zero_mem' i w _ := by
     rw [Pi.zero_apply, mul_zero, (evalAt w).map_zero, v.map_zero]
     exact zero_le
@@ -407,9 +441,11 @@ def integralAfter (δ : 𝓞 P.K) (S : FinPlace (P.E s) → Prop) : AddSubgroup 
     rw [Pi.neg_apply, mul_neg, (evalAt w).map_neg, Valuation.map_neg]
     exact hx i w hw
 
-/-- Standard data at `p`: the span over the ring `embValRing` (the complex numbers that the
+/--
+Standard data at `p`: the span over the ring `embValRing` (the complex numbers that the
 `p`-adic place sends to integers) of the translates of the integral vacuum by the points that `δ`
-makes integral above `p`. -/
+makes integral above `p`.
+-/
 def standardData {p : ℕ} [Fact p.Prime] [PadicPlace p] (δ : 𝓞 P.K) : Submodule embValRing (𝒮 V) :=
   span embValRing {V.finHeisenbergOp x (intVacuum V) | x ∈ integralAfter δ fun w ↦ ↑p ∈ w.asIdeal}
 
@@ -430,8 +466,9 @@ open Fintype Space
 @[simp] lemma vacuumScale_ne_zero (P : Parameters) (s : ℕ) : vacuumScale P s ≠ 0 :=
   (P.isVacuumScale_vacuumScale s).ne_zero
 
-variable {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ}
-  {V : Space (P.E s) n ε} [V.IsStd]
+variable
+  {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n]
+  {ε : n → ℤˣ} {V : Space (P.E s) n ε} [V.IsStd]
 
 /-- At a finite point `finVec x`, the integral vacuum of a standard space is the product over the
 coordinates `x i` of the values of the scaled vacuum of rank one. -/

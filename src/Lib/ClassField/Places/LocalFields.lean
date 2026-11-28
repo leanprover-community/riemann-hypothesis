@@ -199,8 +199,10 @@ lemma New.IsLocalGalois.frobenius_spec {Γ K Ω : Type*} [Group Γ] [Topological
     simpa using map_mem_closure (continuous_mul_const ((s : Γ)⁻¹ * g)) hs_mem
       (Set.forall_mem_range.mpr fun n ↦ Set.mem_range_self (n, i))
 
-variable {Γ K Ω : Type*} [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω]
-  [MulSemiringAction Γ Ω] {A : ValuationSubring Ω}
+variable
+  {Γ K Ω : Type*}
+  [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω] [MulSemiringAction Γ Ω]
+  {A : ValuationSubring Ω}
 
 lemma New.IsLocalGalois.exists_isFrob [L : IsLocalGalois Γ K A] :
     ∃ φ : Γ, IsFrob A (residueCard K A) φ :=
@@ -235,8 +237,10 @@ section LocalValuation
 
 open IsDiscreteValuationRing Subgroup MulAction Ideal Cohomology Finset Valuation
 
-variable {Γ k Ω : Type*} [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω]
-  [MulSemiringAction Γ Ω] {A : ValuationSubring Ω}
+variable
+  {Γ k Ω : Type*}
+  [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω] [MulSemiringAction Γ Ω]
+  {A : ValuationSubring Ω}
 
 /-- A uniformiser `π` of `k` lies in the maximal ideal of `A`: its valuation is below `1`. -/
 lemma IsUniformizer.valuationVia_lt_one {π : k} (h : IsUniformizer A π) : valuationVia k A π < 1 :=
@@ -416,8 +420,10 @@ open Nat IsLocalRing Module Algebra.TensorProduct Ideal Subtype Rat IsIntegralCl
 
 universe w
 
-variable {Γ k : Type*} {Ω : Type w} [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω]
-  [Algebra k Ω] [MulSemiringAction Γ Ω] {A : ValuationSubring Ω} [G : IsLocalGalois Γ k A]
+variable
+  {Γ k : Type*} {Ω : Type w}
+  [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω] [MulSemiringAction Γ Ω]
+  {A : ValuationSubring Ω} [G : IsLocalGalois Γ k A]
 
 /-- The order `q = residueCard k A` of the residue field of `O = A ∩ k` lies in the maximal ideal
 of `A`: its valuation `A q` is less than `1`. -/
@@ -430,8 +436,10 @@ lemma valuation_residueCard_lt_one : A (residueCard k A) < 1 := by
   simpa using (Valuation.mem_maximalIdeal_iff k (A.valuation.comap (algebraMap k Ω))).mp h_mem
 
 variable (k A) in
-/-- For fields `k` and `k'` inside `Ω`, at the valuation subring `A`: the number `e` is the
-ramification index and `f` the residue degree of `k'` over `k`, and their product is `n`. -/
+/--
+For fields `k` and `k'` inside `Ω`, at the valuation subring `A`: the number `e` is the
+ramification index and `f` the residue degree of `k'` over `k`, and their product is `n`.
+-/
 structure IsRamificationData (k' : Type*) [Field k'] [Algebra k' Ω] (n e f : ℕ) : Prop where
   /-- The product of `e` and `f` is `n`. -/
   mul_eq : e * f = n
@@ -441,18 +449,20 @@ structure IsRamificationData (k' : Type*) [Field k'] [Algebra k' Ω] (n e f : �
   ordRat_eq : ordRat k' A = e • ordRat k A
 
 variable (k A) in
-/-- The field `k'` inside `Ω` is local with group `V ≤ Γ`, and its ramification index, residue
-degree and valuation ring are those of an extension of `k` of degree `V.index`. -/
+/--
+The field `k'` inside `Ω` is local with group `V ≤ Γ`, and its ramification index, residue
+degree and valuation ring are those of an extension of `k` of degree `V.index`.
+-/
 structure IsLocalExtension (V : Subgroup Γ) (k' : Type*) [Field k'] [Algebra k' Ω] : Prop where
   /-- The field `k'` is local with group `V`. -/
   isLocalGalois : IsLocalGalois V k' A
   /-- There are `e` and `f` with `e * f = V.index`, and `e = 1` if `V` contains inertia. -/
-  exists_isRamificationData :
-    ∃ e f : ℕ, IsRamificationData k A k' V.index e f ∧ (inertiaGroup Γ A ≤ V → e = 1)
+  exists_isRamificationData
+    : ∃ e f : ℕ, IsRamificationData k A k' V.index e f ∧ (inertiaGroup Γ A ≤ V → e = 1)
   /-- For the valuation rings, `#(O' / n) = #(O / n) ^ V.index`; an infinite order is `0`. -/
-  card_quotient (n : ℕ) :
-    Nat.card (valRingBelow k' A ⧸ span {(n : valRingBelow k' A)}) =
-      Nat.card (valRingBelow k A ⧸ span {(n : valRingBelow k A)}) ^ V.index
+  card_quotient (n : ℕ)
+    : Nat.card (valRingBelow k' A ⧸ span {(n : valRingBelow k' A)})
+      = Nat.card (valRingBelow k A ⧸ span {(n : valRingBelow k A)}) ^ V.index
 
 /-- Let `k` be local (the instance `G`) and `k'` local with group `V`, over `k` inside `Ω`, with
 uniformisers `π` of `k` and `π'` of `k'`. If `π` has the valuation of `π' ^ e`, then the orders
@@ -623,8 +633,10 @@ end LocalExtension
 
 section UnramifiedCharacters
 
-variable {Γ Ω k : Type*} [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω]
-  [MulSemiringAction Γ Ω] {A : ValuationSubring Ω} [L : IsLocalGalois Γ k A]
+variable
+  {Γ Ω k : Type*}
+  [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω] [MulSemiringAction Γ Ω]
+  {A : ValuationSubring Ω} [L : IsLocalGalois Γ k A]
 
 /-- For the Galois group `Γ` of `Ω` over `k` (`New.IsProGalois`), a compact space `Y`, a discrete
 space `X` and a continuous `f : Γ × Y → X`, there is an open normal subgroup `U` of `Γ` with

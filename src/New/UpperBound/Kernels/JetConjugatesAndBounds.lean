@@ -80,24 +80,33 @@ section ConjugatesOfJets
 open Real Fintype MvPowerSeries New.Space New.stdLattice LinearMap Function Subtype NeZero
   New.WeilData
 
-/-- `L` conjugates jets by `σ`, an automorphism of `ℂ` over `K`, at a scale `t` with `|t|² = 1/Ω`:
+/--
+`L` conjugates jets by `σ`, an automorphism of `ℂ` over `K`, at a scale `t` with `|t|² = 1/Ω`:
 it is a `σ`-semilinear map on `𝒮 V` that on the finite part scales finite translations by the
 finite adele `b`, `σ` acts on the character `selfDualAddChar` as multiplication by `b b̄` does, and
 for `f` in the finite part the jets of `L f` at the scale `t` are the conjugates of the jets of `f`.
 Here `V` is a space over `E P s = K(ζ)`, with `ζ` a root of unity of order `P.q₁ s`; `𝒮 V` is the
 Banach space of functions on adelic vectors on which the Heisenberg and Weil representations act;
 and `placePerm s σ` is the permutation of the infinite places of `E P s` induced by `σ`.
-The law for the Weil operators is `New.Space.ScalesTranslations.map_omega`. -/
-structure New.Parameters.IsJetConjugation {P : Parameters} {s : ℕ} {n : Type} [Fintype n]
-    [DecidableEq n] {ε : n → ℤˣ} (V : Space (E P s) n ε) (σ : Gal(ℂ/K P))
-    (t : ℂ) (b : 𝔸f (E P s)) (L : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] 𝒮 V) : Prop where
+The law for the Weil operators is `New.Space.ScalesTranslations.map_omega`.
+-/
+structure New.Parameters.IsJetConjugation
+    {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n]
+    {ε : n → ℤˣ} (V : Space (E P s) n ε)
+    (σ : Gal(ℂ/K P))
+    (t : ℂ) (b : 𝔸f (E P s)) (L : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] 𝒮 V)
+    : Prop where
   /-- The scale `t` has `|t|² = 1/Ω`. -/
   norm_scale_sq : ‖t‖ ^ 2 = (P.bigOmega s)⁻¹
-  /-- `L` keeps `V.finitePart` and turns the translation by a finite `x` into that by `b x` there,
-  and `σ (selfDualAddChar z) = selfDualAddChar (b b̄ z)`. -/
+  /--
+  `L` keeps `V.finitePart` and turns the translation by a finite `x` into that by `b x` there,
+  and `σ (selfDualAddChar z) = selfDualAddChar (b b̄ z)`.
+  -/
   scalesTranslations : V.ScalesTranslations σ b L
-  /-- For `f ∈ V.finitePart`, the jets of `L f` at scale `t` are the conjugates by `σ` of the
-  jets of `f` at scale `P.jetScale s`. -/
+  /--
+  For `f ∈ V.finitePart`, the jets of `L f` at scale `t` are the conjugates by `σ` of the
+  jets of `f` at scale `P.jetScale s`.
+  -/
   isJetConjugate : ∀ f ∈ V.finitePart, IsJetConjugate σ (placePerm s σ) (P.jetScale s) t f (L f)
 
 /-- The Galois law of the additive character `selfDualAddChar` of the finite adeles, from the
@@ -148,7 +157,8 @@ lemma New.Space.map_selfDualAddChar_of_isJetConjugate {E : Type} [Field E] [CMTy
     linear_combination b * star b * ((N : 𝔸f E) * x) * two_mul_half (E := E)
   rwa [h_left, h_right] at h_cmp
 
-/-- Galois conjugates of jets. Let `V` be a hermitian space over `E P s` that is standard: its signs
+/--
+Galois conjugates of jets. Let `V` be a hermitian space over `E P s` that is standard: its signs
 `ε` at the infinite places are `+1` and its point, an adelic basis that diagonalizes the form, is
 the identity matrix.
 
@@ -158,11 +168,13 @@ Let `σ` be an automorphism of `ℂ` over `K`. Then there are a scale `t`, a fin
 quadratic character of `K` and `rd_E` the root discriminant of `E`. Next, `L` keeps the span
 `V.finitePart` of the finite translates of the vacuum; there it takes translation by `x` to
 translation by `b x`, and the jets of `L f` at scale `t` are the `σ`-conjugates of those of `f` at
-scale `P.jetScale s`. Finally `σ (selfDualAddChar z) = selfDualAddChar (b b̄ z)`. -/
-theorem New.Parameters.exists_isJetConjugation {P : Parameters} {s : ℕ} {n : Type}
-    [Fintype n] [DecidableEq n] {ε : n → ℤˣ} (V : Space (E P s) n ε) [hV : V.IsStd]
-    (σ : Gal(ℂ/K P)) :
-    ∃ (t : ℂ) (b : 𝔸f (E P s)) (L : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] 𝒮 V), IsJetConjugation V σ t b L := by
+scale `P.jetScale s`. Finally `σ (selfDualAddChar z) = selfDualAddChar (b b̄ z)`.
+-/
+theorem New.Parameters.exists_isJetConjugation
+    {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n]
+    {ε : n → ℤˣ} (V : Space (E P s) n ε) [hV : V.IsStd]
+    (σ : Gal(ℂ/K P))
+    : ∃ (t : ℂ) (b : 𝔸f (E P s)) (L : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] 𝒮 V), IsJetConjugation V σ t b L := by
   obtain rfl : ε = 1 := hV.signs_eq_one
   -- `exists_isJetConjugate_translates` gives `F`, whose translates span `V.finitePart`, an adele
   -- `B σ` and `F'` such that `ϱ x F` and `ϱ (B σ • x) F'` have conjugate jets. The map `L` sends
@@ -170,29 +182,40 @@ theorem New.Parameters.exists_isJetConjugation {P : Parameters} {s : ℕ} {n : T
   obtain ⟨B, hB⟩ := P.exists_isJetConjugate_translates s
   obtain ⟨F, -, -, h_span, hσ⟩ := hB V
   obtain ⟨t, F', hF', ht, hJ⟩ := hσ σ
-  let renamedJet : V.finitePart →ₗ[ℂ] MvPowerSeries (P.Φ s × n) ℂ := domRestrict
-    ((rename ((placePerm s σ).symm.prodCongr (.refl n))).toLinearMap ∘ₗ V.jetSeries t) V.finitePart
-  let conjJet : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] MvPowerSeries (P.Φ s × n) ℂ :=
-    { toFun := fun f ↦ MvPowerSeries.map σ (V.jetSeries (P.jetScale s) f)
-      map_add' := by simp, map_smul' := by simp [smul_eq_C_mul] }
+  let renamedJet : V.finitePart →ₗ[ℂ] MvPowerSeries (P.Φ s × n) ℂ :=
+    domRestrict ((rename ((placePerm s σ).symm.prodCongr (.refl n))).toLinearMap ∘ₗ V.jetSeries t)
+      V.finitePart
+  let conjJet : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] MvPowerSeries (P.Φ s × n) ℂ := {
+    toFun := fun f ↦ MvPowerSeries.map σ (V.jetSeries (P.jetScale s) f)
+    map_add' := by simp
+    map_smul' := by simp [smul_eq_C_mul]
+  }
   let L : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] V.finitePart := renamedJet.leftInverse ∘ₛₗ conjJet
   -- A vector of `V.finitePart` is determined by its jets, since `t ≠ 0`.
-  have h_inj : ker renamedJet = ⊥ := ker_eq_bot'.2 fun f hf ↦ Subtype.ext <|
-    eq_zero_of_jetSeries_eq_zero f.property (fun h ↦ by simpa [h, bigOmega_pos.ne'] using ht.symm)
-      ((renameEquiv ..).map_eq_zero_iff.1 hf)
+  have h_inj : ker renamedJet = ⊥ :=
+    ker_eq_bot'.2 fun f hf ↦
+      Subtype.ext <| eq_zero_of_jetSeries_eq_zero f.property
+        (fun h ↦ by simpa [h, bigOmega_pos.ne'] using ht.symm)
+        ((renameEquiv ..).map_eq_zero_iff.1 hf)
   have hL (x : n → 𝔸f (E P s)) : L (V.ϱ (finVec x) F) = V.ϱ (finVec (B σ • x)) F' := by
-    have h_jet : conjJet (V.ϱ (finVec x) F) =
-        renamedJet ⟨_, rho_finVec_mem_finitePart (B σ • x) hF'⟩ := by
+    have h_jet
+        : conjJet (V.ϱ (finVec x) F) = renamedJet ⟨_, rho_finVec_mem_finitePart (B σ • x) hF'⟩ := by
       simpa [conjJet, renamedJet, IsJetConjugate] using hJ x
     simp [L, h_jet, leftInverse_apply_of_inj h_inj]
   -- The law for `selfDualAddChar` comes from the generator in rank one.
   obtain ⟨F₁, hF₁, hθ, -, hσ₁⟩ := hB (stdSpace _ Unit)
   obtain ⟨_, _, hF₁', -, hJ₁⟩ := hσ₁ σ
-  have hχ := map_selfDualAddChar_of_isJetConjugate hF₁ hF₁' (fun h ↦ by simp [h] at hθ)
-    jetScale_ne_zero hJ₁
+  have hχ :=
+    map_selfDualAddChar_of_isJetConjugate hF₁ hF₁' (fun h ↦ by simp [h] at hθ) jetScale_ne_zero hJ₁
   -- The next two laws hold on translates of `F`, hence on their span.
-  refine ⟨t, B σ, V.finitePart.subtype ∘ₛₗ L, ht,
-    { map_selfDualAddChar := hχ, map_mem := fun _ ↦ (L _).property, map_rho := ?_ }, ?_⟩
+  refine ⟨
+    t,
+    B σ,
+    V.finitePart.subtype ∘ₛₗ L,
+    ht,
+    { map_selfDualAddChar := hχ, map_mem := fun _ ↦ (L _).property, map_rho := ?_ },
+    ?_
+  ⟩
   · intro f hf
     refine Submodule.span_induction ?_ (by simp) (by simp +contextual) (by simp +contextual)
       (h_span hf)
@@ -200,8 +223,8 @@ theorem New.Parameters.exists_isJetConjugation {P : Parameters} {s : ℕ} {n : T
     simp [hL, hχ, rho_finVec_rho_finVec, mul_left_comm stdLattice.half, mul_assoc]
   · intro f hf
     refine Submodule.span_induction ?_ (by simp [IsJetConjugate])
-      (by simp +contextual [IsJetConjugate])
-      (by simp +contextual [IsJetConjugate, smul_eq_C_mul]) (h_span hf)
+      (by simp +contextual [IsJetConjugate]) (by simp +contextual [IsJetConjugate, smul_eq_C_mul])
+      (h_span hf)
     rintro _ ⟨w, rfl⟩
     simpa [hL] using hJ w
 
@@ -248,23 +271,27 @@ lemma map_apply_finVec {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [Decida
   simpa [constantCoeff_jetSeries, rho_finVec_mem_finitePart, hf,
     hL.scalesTranslations.map_mem hf] using congrArg constantCoeff h_jet
 
-/-- Let `V` be a standard hermitian space over `E P s`, a cyclotomic extension of `K P = ℚ(√-d)`.
+/--
+Let `V` be a standard hermitian space over `E P s`, a cyclotomic extension of `K P = ℚ(√-d)`.
 Let the `σ`-semilinear map `L` conjugate jets on the space `𝒮 V` of the Weil representation `V.ω`,
 and let `R` be a set of finite places (`FinPlace`) of `E P s` disjoint from its complex conjugate.
 There are a number `c ≠ 0` and a finite adele `u` with `u ū = 1` such that
 `L vacElem = c ω(u) vacElem` and `L (Ψ ⊗ vacElem) = c ω(u) ((σ ∘ Ψ) ⊗ vacElem)` for all `Ψ`
 Schwartz–Bruhat above `R`. Here `ω(u)` is `V.ω` at the point with archimedean part `1` and finite
 part the scalar matrix `scalarFin n u`, `vacElem` is the vacuum, and `Ψ ⊗` is `V.schrodingerOp R Ψ`,
-the combination of finite translations attached to `Ψ`. -/
-theorem exists_map_schrodingerOp {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n]
+the combination of finite translations attached to `Ψ`.
+-/
+theorem exists_map_schrodingerOp
+    {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n]
     {ε : n → ℤˣ} {V : Space (E P s) n ε} {σ : Gal(ℂ/K P)} {t : ℂ} {b : 𝔸f (E P s)}
     {L : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] 𝒮 V} (hL : IsJetConjugation V σ t b L) [V.IsStd]
-    {R : Set (FinPlace (E P s))} (hR : R.IsConjDisjoint) :
-    ∃ c ≠ (0 : ℂ), ∃ u : unitary (𝔸f (E P s)),
-      L V.vacElem = c • V.ω (1, scalarFin n u) V.vacElem ∧
-      ∀ Ψ : (n → 𝔸f (E P s)) → ℂ, IsSchwartzBruhat R Ψ →
-        L (V.schrodingerOp R Ψ V.vacElem) = c • V.ω (1, scalarFin n u)
-          (V.schrodingerOp R (σ ∘ Ψ) V.vacElem) := by
+    {R : Set (FinPlace (E P s))} (hR : R.IsConjDisjoint)
+    : ∃ c ≠ (0 : ℂ), ∃ u : unitary (𝔸f (E P s)),
+      L V.vacElem = c • V.ω (1, scalarFin n u) V.vacElem
+        ∧ ∀ Ψ : (n → 𝔸f (E P s)) → ℂ,
+          IsSchwartzBruhat R Ψ
+            → L (V.schrodingerOp R Ψ V.vacElem)
+              = c • V.ω (1, scalarFin n u) (V.schrodingerOp R (σ ∘ Ψ) V.vacElem) := by
   obtain ⟨c, u, h_vac, h_schrodinger⟩ := hL.scalesTranslations.exists_map_schrodingerOp hR
   refine ⟨c, fun hc ↦ ?_, u, h_vac, h_schrodinger⟩
   -- `L` is injective on the finite part, and the vacuum is a unit vector.
@@ -428,25 +455,28 @@ lemma New.Parameters.norm_omega_vac_le {P : Parameters} {s : ℕ} {n : Type} [Fi
 
 namespace New.Parameters.IsJetConjugation
 
-/-- Let `V` be a standard space of rank `n` (all signs `+1`, the point the identity matrix), and
+/--
+Let `V` be a standard space of rank `n` (all signs `+1`, the point the identity matrix), and
 let the `σ`-semilinear map `L` conjugate jets by `σ` at the scale `t`, scaling finite translations
 by `b`. Then every value of `L ϱ(x) ω(g) (intVacuum V)`, for finite `x` and `g`, has norm at most
 `exp (c (q₁ n + 1)²)`. Here `intVacuum V` is the integral multiple of the vacuum and `q₁ = P.q₁ s`
 is the order of the root of unity that generates `E P s` over `K = ℚ(√-d)`. The real number
 `c = P.constantBound` depends only on `P`: it is the sum of `P.vacuumBoundConst` (the constant in
 the bound for the conjugates of the values of the integral vacuum), `2 d + 6` and a nonnegative
-term. -/
-theorem norm_map_intVacuum_le {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n]
-    {ε : n → ℤˣ} {V : Space (E P s) n ε} {σ : Gal(ℂ/K P)} {t : ℂ}
-    {b : 𝔸f (E P s)} {L : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] 𝒮 V}
-    (hL : IsJetConjugation V σ t b L) [hV : V.IsStd]
-    (x : n → 𝔸f (E P s)) (g : Gf (E P s) n) (y : n → 𝔸 (E P s)) :
-    ‖L (V.ϱ (finVec x) (V.ω (1, g) (intVacuum V))) y‖ ≤
-      exp (P.constantBound * (P.q₁ s * card n + 1) ^ 2) := by
+term.
+-/
+theorem norm_map_intVacuum_le
+    {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n]
+    {ε : n → ℤˣ} {V : Space (E P s) n ε} {σ : Gal(ℂ/K P)} {t : ℂ} {b : 𝔸f (E P s)}
+    {L : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] 𝒮 V} (hL : IsJetConjugation V σ t b L) [hV : V.IsStd]
+    (x : n → 𝔸f (E P s)) (g : Gf (E P s) n) (y : n → 𝔸 (E P s))
+    : ‖L (V.ϱ (finVec x) (V.ω (1, g) (intVacuum V))) y‖
+      ≤ exp (P.constantBound * (P.q₁ s * card n + 1) ^ 2) := by
   -- `L (intVacuum V)` is `a` times a unit vacuum. So `‖a‖²` is its squared norm, which its values
   -- at finite points bound, and the values of unit vacua are bounded by `norm_omega_vac_le`.
-  obtain ⟨c, u, h_vac⟩ : ∃ (c : ℂ) (u : unitary (𝔸f (E P s))),
-      L V.vacElem = c • V.ω (1, scalarFin n u) V.vacElem := by
+  obtain ⟨c, u, h_vac⟩
+      : ∃ (c : ℂ) (u : unitary (𝔸f (E P s))),
+        L V.vacElem = c • V.ω (1, scalarFin n u) V.vacElem := by
     obtain ⟨c, -, u, h_vac, -⟩ := hL.exists_map_schrodingerOp (R := ∅) disjoint_bot_left
     exact ⟨c, u, h_vac⟩
   obtain rfl : ε = 1 := hV.signs_eq_one
@@ -456,30 +486,34 @@ theorem norm_map_intVacuum_le {P : Parameters} {s : ℕ} {n : Type} [Fintype n] 
   have h_mem : intVacuum V ∈ V.finitePart := V.finitePart.smul_mem _ V.vacElem_mem_finitePart
   have h_image : L (intVacuum V) = a • V.ω (1, scalarFin n u) V.vacElem := by
     simp [a, intVacuum, h_vac, smul_smul]
-  have h_value (w : n → 𝔸f (E P s)) :
-      ‖L (intVacuum V) (finVec w)‖ ≤ exp (C * P.q₁ s ^ 2) ^ card n := by
+  have h_value (w : n → 𝔸f (E P s))
+      : ‖L (intVacuum V) (finVec w)‖ ≤ exp (C * P.q₁ s ^ 2) ^ card n := by
     obtain ⟨w', rfl⟩ := hL.scalesTranslations.isUnit.smul_bijective.surjective w
     simpa only [← hL.map_apply_finVec h_mem] using norm_gal_intVacuum_le σ
   have ha : ‖a‖ ≤ exp (C * P.q₁ s ^ 2) ^ card n := by
-    have h_norm : ‖V.dataInner (L (intVacuum V)) (L (intVacuum V))‖ ≤
-        (exp (C * P.q₁ s ^ 2) ^ card n) ^ 2 := norm_dataInner_self_le h_value
+    have h_norm
+        : ‖V.dataInner (L (intVacuum V)) (L (intVacuum V))‖ ≤ (exp (C * P.q₁ s ^ 2) ^ card n) ^ 2 :=
+      norm_dataInner_self_le h_value
     exact (sq_le_sq₀ (norm_nonneg a) (by positivity)).1 (by simpa [h_image, sq] using h_norm)
   have h_rank : (card n * P.q₁ s ^ 2 : ℝ) ≤ (P.q₁ s * card n + 1) ^ 2 := by
     have h_sq : (card n : ℝ) ≤ card n ^ 2 := mod_cast Nat.le_self_pow two_ne_zero _
-    calc (card n * P.q₁ s ^ 2 : ℝ) ≤ (P.q₁ s * card n) ^ 2 := by grw [mul_pow, ← h_sq, mul_comm]
+    calc
+      (card n * P.q₁ s ^ 2 : ℝ)
+        ≤ (P.q₁ s * card n) ^ 2 := by grw [mul_pow, ← h_sq, mul_comm]
       _ ≤ (P.q₁ s * card n + 1) ^ 2 := by grw [← le_add_of_nonneg_right zero_le_one]
-  calc _ = ‖a‖ * ‖V.ω (1, g * scalarFin n u) V.vacElem (y + finVec (b • x))‖ := by
-        rw [hL.scalesTranslations.map_rho (omega_mem_finitePart g h_mem),
-          hL.scalesTranslations.map_omega g h_mem, h_image]
-        simp [norm_multiplierRatio, rep_apply_apply, Heisenberg.norm_eq_one]
+  calc
+    _ = ‖a‖ * ‖V.ω (1, g * scalarFin n u) V.vacElem (y + finVec (b • x))‖ := by
+      rw [hL.scalesTranslations.map_rho (omega_mem_finitePart g h_mem),
+        hL.scalesTranslations.map_omega g h_mem, h_image]
+      simp [norm_multiplierRatio, rep_apply_apply, Heisenberg.norm_eq_one]
     _ ≤ exp (C * P.q₁ s ^ 2) ^ card n * exp ((2 * P.d + 6) * (P.q₁ s * card n + 1) ^ 2) := by
-        grw [ha, norm_omega_vac_le]
+      grw [ha, norm_omega_vac_le]
     _ ≤ exp ((C + (2 * P.d + 6)) * (P.q₁ s * card n + 1) ^ 2) := by
-        grw [← exp_natCast_mul, ← exp_add, add_mul (C : ℝ), mul_left_comm, h_rank]
+      grw [← exp_natCast_mul, ← exp_add, add_mul (C : ℝ), mul_left_comm, h_rank]
     _ ≤ exp (P.constantBound * (P.q₁ s * card n + 1) ^ 2) := by
-        gcongr
-        -- the remaining summand of `P.constantBound` is nonnegative
-        exact le_add_of_nonneg_right (by positivity)
+      gcongr
+      -- the remaining summand of `P.constantBound` is nonnegative
+      exact le_add_of_nonneg_right (by positivity)
 
 end New.Parameters.IsJetConjugation
 
@@ -517,15 +551,18 @@ lemma FitsRanks.sum_diagramWeight_eq_boxes {n n' Φ : Type} [Fintype n] [Fintype
         have h_height : k ≤ card n ∨ κ τ k = 0 := by grind [FitsRanks]
         simpa [Fin.card_filter_val_lt] using h_height
 
-variable (P : Parameters) {s : ℕ} {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n']
+variable
+  (P : Parameters) {s : ℕ} {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
 
-/-- `HasConjugateGrowth σ Q T L w A` says that the values of `Q`, conjugated by `σ`, grow at most
+/--
+`HasConjugateGrowth σ Q T L w A` says that the values of `Q`, conjugated by `σ`, grow at most
 exponentially: `‖σ Q(z)‖ ≤ A * exp (w + L R)` whenever `∑ ‖σ z_i‖ ^ 2 ≤ T (2 L + 2) R`. For an
 automorphism `σ`, `Q` homogeneous of degree `L`, `T > 0` and `A ≥ 0` it says that `A * exp w` bounds
-`T ^ (L / 2) * ‖(σ Q)(y)‖ * exp (-L |y|² / (2 L + 2))` for all `y`: put `σ z = √T y`. -/
-def HasConjugateGrowth {ι : Type*} [Fintype ι] (σ : ℂ → ℂ) (Q : MvPolynomial ι ℂ) (T : ℝ) (L : ℕ)
-    (w A : ℝ) : Prop :=
+`T ^ (L / 2) * ‖(σ Q)(y)‖ * exp (-L |y|² / (2 L + 2))` for all `y`: put `σ z = √T y`.
+-/
+def HasConjugateGrowth
+    {ι : Type*} [Fintype ι] (σ : ℂ → ℂ) (Q : MvPolynomial ι ℂ) (T : ℝ) (L : ℕ) (w A : ℝ)
+    : Prop :=
   ∀ (z : ι → ℂ) (R : ℝ),
     ∑ i : ι, ‖σ (z i)‖ ^ 2 ≤ T * (2 * L + 2) * R → ‖σ (eval z Q)‖ ≤ A * exp (w + L * R)
 
@@ -654,14 +691,18 @@ lemma Parameters.norm_jet_translate_le (V : Space (P.E s) (n' × n) (homSigns 1 
         norm_integral_normalizedVolume_le (by positivity) h_integrand
     _ = exp (M + w) * (2 * L + 2) ^ card (P.Φ s × n' × n) * A := by ring
 
-/-- `P.IsVacuumCombination V B f` says that `f = ∑ r x • V.finHeisenbergOp x (intVacuum V)` is a
+/--
+`P.IsVacuumCombination V B f` says that `f = ∑ r x • V.finHeisenbergOp x (intVacuum V)` is a
 finite combination of Heisenberg translates of the integral vacuum by finite adelic vectors `x`,
 with `∑ ‖σ (r x)‖ ≤ B` for every field automorphism `σ` of `ℂ`. The operator
-`V.finHeisenbergOp x` is `V.ϱ (finVec x)` times the root of unity `stdLattice.semichar x`. -/
-def Parameters.IsVacuumCombination {n : Type*} [Fintype n] [DecidableEq n] {ε : n → ℤˣ}
-    (V : Space (P.E s) n ε) (B : ℝ) (f : 𝒮 V) : Prop :=
-  ∃ r : (n → 𝔸f (P.E s)) →₀ ℂ, (∀ σ : ℂ ≃+* ℂ, ∑ x ∈ r.support, ‖σ (r x)‖ ≤ B) ∧
-    f = ∑ x ∈ r.support, r x • V.finHeisenbergOp x (intVacuum V)
+`V.finHeisenbergOp x` is `V.ϱ (finVec x)` times the root of unity `stdLattice.semichar x`.
+-/
+def Parameters.IsVacuumCombination
+    {n : Type*} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} (V : Space (P.E s) n ε) (B : ℝ) (f : 𝒮 V)
+    : Prop :=
+  ∃ r : (n → 𝔸f (P.E s)) →₀ ℂ,
+    (∀ σ : ℂ ≃+* ℂ, ∑ x ∈ r.support, ‖σ (r x)‖ ≤ B)
+      ∧ f = ∑ x ∈ r.support, r x • V.finHeisenbergOp x (intVacuum V)
 
 /-- An admissible combination `f = ∑ r x • V.finHeisenbergOp x (intVacuum V)` of size `B` is a
 vacuum combination of size `B`. Admissible means that `r` has support in `A`, that each `d * r x` is
@@ -683,14 +724,18 @@ lemma Parameters.isVacuumCombination_finHeisenbergOp {n : Type*} [Fintype n] [De
     P.IsVacuumCombination V 1 (V.finHeisenbergOp x (intVacuum V)) :=
   ⟨.single x 1, by simp, by simp⟩
 
-/-- The factor in the size bounds for the jets of a combination of translates of the integral vacuum
+/--
+The factor in the size bounds for the jets of a combination of translates of the integral vacuum
 whose coefficients have total size `B`, for a growth rate `L` and an extra exponent `w`. It equals
 `B * exp (P.constantBound * (P.q₁ s * card (n' × n) + 1) ^ 2) * exp w` times
-`(2 L + 2) ^ card (P.Φ s × n' × n)`. -/
-noncomputable def Parameters.jetSizeBound (s : ℕ) (n n' : Type*) [Fintype n] [Fintype n'] (B : ℝ)
-    (L : ℕ) (w : ℝ) : ℝ :=
-  B * exp (P.constantBound * (P.q₁ s * card (n' × n) + 1) ^ 2 +
-    card (P.Φ s × n' × n) * log (2 * L + 2) + w)
+`(2 L + 2) ^ card (P.Φ s × n' × n)`.
+-/
+noncomputable def Parameters.jetSizeBound
+    (s : ℕ) (n n' : Type*) [Fintype n] [Fintype n'] (B : ℝ) (L : ℕ) (w : ℝ)
+    : ℝ :=
+  B * exp
+    (P.constantBound * (P.q₁ s * card (n' × n) + 1) ^ 2 + card (P.Φ s × n' × n) * log (2 * L + 2)
+      + w)
 
 omit [DecidableEq n] [DecidableEq n'] in
 /-- The factor `P.jetSizeBound s n n' B L w` in closed form: it is `B * (exp (P.constantBound *
@@ -799,17 +844,21 @@ lemma sqrt_prod_pow_le_exp {Φ : Type*} [Fintype Φ] (I : Finset ℕ) (ρ : Φ �
           ring
   grw [h_prod, h_tail, ← exp_half, add_div, mul_div_cancel_left₀ _ two_ne_zero]
 
-/-- The exponent `∑ (l / L + log l! + l * u) / 2` in the growth bound for Schur matrices. Here
+/--
+The exponent `∑ (l / L + log l! + l * u) / 2` in the growth bound for Schur matrices. Here
 `κ τ h` counts the columns of height `h` at the place `τ`, and `l` runs over the lengths of the
 first `card n` rows, at all places, of the diagram formed by the columns of height below
 `card n'`. The bound `rankAt (fun _ ↦ n')` is `card n'` at every place, so the length of row `i` at
-`τ`, a value of `diagramWeight`, is the sum of `κ τ h` over `i < h < card n'`. -/
-noncomputable def schurGrowthExponent (n n' : Type) [Fintype n] [Fintype n'] {Φ : Type} [Fintype Φ]
-    (κ : Φ → ℕ → ℕ) (L : ℕ) (u : ℝ) : ℝ :=
+`τ`, a value of `diagramWeight`, is the sum of `κ τ h` over `i < h < card n'`.
+-/
+noncomputable def schurGrowthExponent
+    (n n' : Type) [Fintype n] [Fintype n'] {Φ : Type} [Fintype Φ] (κ : Φ → ℕ → ℕ) (L : ℕ) (u : ℝ)
+    : ℝ :=
   (∑ τ : Φ, ∑ i ∈ range (card n),
     (diagramWeight (rankAt fun _ : Φ ↦ n') κ (τ, i) / L +
       log (diagramWeight (rankAt fun _ : Φ ↦ n') κ (τ, i)).factorial +
-      diagramWeight (rankAt fun _ : Φ ↦ n') κ (τ, i) * u)) / 2
+      diagramWeight (rankAt fun _ : Φ ↦ n') κ (τ, i) * u))
+    / 2
 
 /-- Growth of the matrix coefficients `z ↦ y ⬝ᵥ schur κ z *ᵥ ξ` of the Schur matrix of a lift weight
 `κ`. If the conjugate by `σ` of the covector `y` has dual norm at most one for the Gram norm

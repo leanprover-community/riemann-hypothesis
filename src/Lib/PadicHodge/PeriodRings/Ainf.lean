@@ -96,22 +96,28 @@ lemma _root_.New.valRingCp.isRingOfIntegralElements : IsRingOfIntegralElements (
   have h_eq : powerBoundedSubring ℂ_[p] = valRingCp p := powerBoundedSubring_eq_integer
   exact h_eq ▸ isRingOfIntegralElements_powerBoundedSubring ℂ_[p]
 
-/-- `O_C` is an integral perfectoid ring; in particular it is `p`-adically complete
-(`TauCeti.Perfectoid.IsIntegralPerfectoid.isAdicComplete_span_natCast`). -/
+/--
+`O_C` is an integral perfectoid ring; in particular it is `p`-adically complete
+(`TauCeti.Perfectoid.IsIntegralPerfectoid.isAdicComplete_span_natCast`).
+-/
 instance : TauCeti.Perfectoid.IsIntegralPerfectoid p OC :=
   valRingCp.isRingOfIntegralElements.isIntegralPerfectoid
 
 /-! ### The rings -/
 
-/-- The monoid ℕ × G_p, with G_p the absolute Galois group of Q_p; on the period rings with a
-Frobenius φ, the pair (n, g) acts as φ^n g. -/
+/--
+The monoid ℕ × G_p, with G_p the absolute Galois group of Q_p; on the period rings with a
+Frobenius φ, the pair (n, g) acts as φ^n g.
+-/
 abbrev FrobGal : Type := Multiplicative ℕ × Gp p
 
-/-- The ring O^♭, the inverse limit of O_C/p along x ↦ x^p, where O_C is the ring of integers of
-C_p. -/
+/--
+The ring O^♭, the inverse limit of O_C/p along x ↦ x^p, where O_C is the ring of integers of
+C_p.
+-/
 @[instance_reducible]
 def OFlat : Type := PreTilt OC p
-  deriving CommRing, CharP _ p, PerfectRing _ p, IsDomain, ValuationRing
+deriving CommRing, CharP _ p, PerfectRing _ p, IsDomain, ValuationRing
 
 /-- The ring A_inf of p-typical Witt vectors over the tilt O^♭ of the ring of integers of C_p. -/
 abbrev Ainf : Type := WittVector p OFlat
@@ -119,23 +125,27 @@ abbrev Ainf : Type := WittVector p OFlat
 /-- The fraction field C^♭ of the tilt O^♭ of the ring of integers of C_p. -/
 @[instance_reducible]
 def CFlat : Type := FractionRing OFlat
-  deriving Field, Algebra OFlat, IsFractionRing OFlat, FaithfulSMul OFlat, CharP _ p
+deriving Field, Algebra OFlat, IsFractionRing OFlat, FaithfulSMul OFlat, CharP _ p
 
 /-- The ring W(C^♭) of p-typical Witt vectors over the fraction field C^♭ of O^♭. -/
 @[instance_reducible]
 def WittCFlat : Type := WittVector p CFlat
-  deriving CommRing, IsDomain
+deriving CommRing, IsDomain
 
-/-- Fontaine's ring homomorphism θ from A_inf to the ring of integers of C_p, sending the
-Teichmüller lift [x] to x^♯. -/
+/--
+Fontaine's ring homomorphism θ from A_inf to the ring of integers of C_p, sending the
+Teichmüller lift [x] to x^♯.
+-/
 abbrev theta : Ainf →+* OC := fontaineTheta OC p
 
 @[simp]
 lemma theta_teichmuller (x : OFlat) : theta (WittVector.teichmuller p x) = x.untilt :=
   fontaineTheta_teichmuller x
 
-/-- For a ℚ≥0-module G, the monoid Multiplicative G is perfect: its p-th power map is multiplication
-by p on G, which is bijective. -/
+/--
+For a ℚ≥0-module G, the monoid Multiplicative G is perfect: its p-th power map is multiplication
+by p on G, which is bijective.
+-/
 instance {G : Type*} [AddCommMonoid G] [Module ℚ≥0 G] : PerfectRing (Multiplicative G) p where
   bijective_frobenius := mod_cast MulAction.bijective₀ (G₀ := ℚ≥0) (α := G) (a := p) out
 
@@ -167,19 +177,22 @@ lemma exists_tilt_lift_of_character (a : Multiplicative ℚ →* ℂ_[p])
   exact (congrArg _ (teichmuller₀_mapMonoidHom_idealQuotientMk (x := roots s))).trans
     (by simp [roots])
 
-/-- The map s ↦ ε^s: a chosen homomorphism from ℚ to the multiplicative monoid of O^♭ with
-(ε^s)^♯ a primitive root of unity of order the denominator of s. -/
+/--
+The map s ↦ ε^s: a chosen homomorphism from ℚ to the multiplicative monoid of O^♭ with
+(ε^s)^♯ a primitive root of unity of order the denominator of s.
+-/
 def epsPow : Multiplicative ℚ →* OFlat :=
   -- `ℂ` and `PadicAlgCl p` are uncountable algebraically closed fields of characteristic zero and
   -- of the same cardinality, so they are isomorphic
   (exists_tilt_lift_of_character
-    { toFun s :=
-        algebraMap (PadicAlgCl p) ℂ_[p] <|
-          (IsAlgClosed.ringEquiv_of_equiv_of_charZero (mk_complex ▸ cantor ℵ₀)
-              (Quotient.exact (mk_complex_eq_mk_padicAlgCl (p := p)))).some
-            (exp (2 * Real.pi * I * s.toAdd))
+    {
+      toFun s :=
+        algebraMap (PadicAlgCl p) ℂ_[p] <| (IsAlgClosed.ringEquiv_of_equiv_of_charZero
+            (mk_complex ▸ cantor ℵ₀) (Quotient.exact (mk_complex_eq_mk_padicAlgCl (p := p)))).some
+          (exp (2 * Real.pi * I * s.toAdd))
       map_one' := by simp
-      map_mul' := by simp [mul_add, exp_add] }
+      map_mul' := by simp [mul_add, exp_add]
+    }
     (by simp)).choose
 
 lemma isPrimitiveRoot_untilt_epsPow (s : Multiplicative ℚ) :
@@ -189,12 +202,16 @@ lemma isPrimitiveRoot_untilt_epsPow (s : Multiplicative ℚ) :
   · simp [map_of_injective, RingHom.injective, EquivLike.injective, isPrimitiveRoot_exp_rat]
   · simp
 
-/-- The element ε^{1/p} of O^♭, for the compatible system ε = (1, ζ_p, ζ_{p²}, …) of
-`New.Period.epsPow`. -/
+/--
+The element ε^{1/p} of O^♭, for the compatible system ε = (1, ζ_p, ζ_{p²}, …) of
+`New.Period.epsPow`.
+-/
 def epsRoot : OFlat := epsPow (Multiplicative.ofAdd p⁻¹)
 
-/-- The element ε = (1, ζ_p, ζ_{p²}, …) of O^♭, defined as the p-th power of the chosen element
-ε^{1/p}. -/
+/--
+The element ε = (1, ζ_p, ζ_{p²}, …) of O^♭, defined as the p-th power of the chosen element
+ε^{1/p}.
+-/
 def epsTilt : OFlat := epsRoot ^ p
 
 @[simp]
@@ -211,12 +228,16 @@ lemma untilt_epsTilt : epsTilt.untilt = 1 := by simpa using isPrimitiveRoot_unti
 /-- The element τ = [ε^{1/p}] − 1 of A_inf, where the brackets denote the Teichmüller lift. -/
 def tau : Ainf := WittVector.teichmuller p epsRoot - 1
 
-/-- The element μ = [ε] − 1 of A_inf, where the brackets denote the Teichmüller lift: Tau Ceti's
-cyclotomic period element `cyclotomicMu p ε`. -/
+/--
+The element μ = [ε] − 1 of A_inf, where the brackets denote the Teichmüller lift: Tau Ceti's
+cyclotomic period element `cyclotomicMu p ε`.
+-/
 def mu : Ainf := TauCeti.WittVector.cyclotomicMu p epsTilt
 
-/-- The element ξ of A_inf equal to the sum of [ε^{1/p}]^i for 0 ≤ i < p, so that ξτ = μ: Tau Ceti's
-cyclotomic period element `cyclotomicXi p ε`. -/
+/--
+The element ξ of A_inf equal to the sum of [ε^{1/p}]^i for 0 ≤ i < p, so that ξτ = μ: Tau Ceti's
+cyclotomic period element `cyclotomicXi p ε`.
+-/
 def xi : Ainf := TauCeti.WittVector.cyclotomicXi p epsTilt
 
 lemma mu_eq : mu = WittVector.teichmuller p epsTilt - 1 := TauCeti.WittVector.cyclotomicMu_def ..
@@ -269,8 +290,10 @@ lemma OFlat.exists_coeff_root_near (n : ℕ) (w : OFlat) {d : ℕ} (b : OFlat) {
     · exact ⟨b, .inr (by simp), by grw [h_eval, h_near, pow_succ']⟩
     · exact ⟨a, .inr h_root_a, by grw [h_eval, h_near, pow_succ']⟩
 
-/-- The sequence `s` with `s 0 = 0` and `s (m + 1) = a m (s m)`, for a family of maps `a m` of
-`O^♭`. -/
+/--
+The sequence `s` with `s 0 = 0` and `s (m + 1) = a m (s m)`, for a family of maps `a m` of
+`O^♭`.
+-/
 private def OFlat.iterateSeq (a : ℕ → OFlat → OFlat) : ℕ → OFlat
   | 0 => 0
   | m + 1 => a m (OFlat.iterateSeq a m)
@@ -317,21 +340,28 @@ lemma OFlat.isAbsIntegrallyClosed : IsAbsIntegrallyClosed OFlat := by
     _ = (f.eval (s (n + d + 1))).coeff (n + d) ^ p ^ d := (coeff_add_pow_pow _ n d).symm
     _ = (0 : OFlat).coeff n := by simp [h_root_s, NeZero.ne p]
 
-variable {A R N S : Type*} [CommRing A] [MulSemiringAction FrobGal A] [SMul N A] [CommRing R]
-  [CharP R p] [CommRing S] {M : Type*} [Monoid M] (n : ℕ) (g : Gp p) (x : OFlat)
+variable
+  {A R N S : Type*}
+  [CommRing A] [MulSemiringAction FrobGal A] [SMul N A] [CommRing R] [CharP R p] [CommRing S]
+  {M : Type*} [Monoid M]
+  (n : ℕ) (g : Gp p) (x : OFlat)
 
 /-! ### Frobenius, the Galois action and the ℤ_p-algebra structures -/
 
-/-- For a ring A with an action of ℕ × G_p, the ring endomorphism given by the generator of ℕ
-paired with the identity of G_p, the Frobenius φ. -/
+/--
+For a ring A with an action of ℕ × G_p, the ring endomorphism given by the generator of ℕ
+paired with the identity of G_p, the Frobenius φ.
+-/
 def frobEnd : A →+* A := toRingHom FrobGal A (Multiplicative.ofAdd 1, 1)
 
 /-- `W(R)` is a `ℤ_p = W(𝔽_p)`-algebra for every ring `R` of characteristic `p`. -/
 instance : Algebra ℤ_[p] (WittVector p R) :=
   ((WittVector.map (castHom dvd_rfl R)).comp (equiv p).symm).toAlgebra
 
-/-- For an `A`-algebra `S`, the Witt vectors `W(S)` are a `W(A)`-algebra through `W` of the
-structure map. -/
+/--
+For an `A`-algebra `S`, the Witt vectors `W(S)` are a `W(A)`-algebra through `W` of the
+structure map.
+-/
 instance (priority := low) [Algebra A S] : Algebra (WittVector p A) (WittVector p S) :=
   (WittVector.map (algebraMap ..)).toAlgebra
 
@@ -340,13 +370,15 @@ instance actOFlat : MulSemiringAction FrobGal OFlat := by
   -- `(n, g)` acts by the map induced by `g` on the tilt, followed by `x ↦ x ^ p ^ n`
   apply actionOfHoms _ fun m ↦ (iterateFrobenius _ p m.1.toAdd).comp (tiltMap (toRingHom _ _ m.2))
   · simp [show toRingHom (Gp p) OC 1 = RingHom.id OC by aesop, tiltMap_id, RingHom.ext_iff]
-  · have hab (a b : Gp p) :
-        toRingHom (Gp p) OC (a * b) = (toRingHom (Gp p) OC a).comp (toRingHom (Gp p) OC b) := by
+  · have hab (a b : Gp p)
+        : toRingHom (Gp p) OC (a * b) = (toRingHom (Gp p) OC a).comp (toRingHom (Gp p) OC b) := by
       aesop (add simp mul_smul)
     simp [iterateFrobenius_def, hab, tiltMap_comp, pow_add, pow_mul', RingHom.ext_iff]
 
-/-- An action of `FrobGal` on `A` induces a `MulSemiringAction` of `Gp p` on `A`. It is obtained by
-composing with the right inclusion of `Gp p` into `FrobGal`. -/
+/--
+An action of `FrobGal` on `A` induces a `MulSemiringAction` of `Gp p` on `A`. It is obtained by
+composing with the right inclusion of `Gp p` into `FrobGal`.
+-/
 instance (priority := 100) FrobGal.galAct : MulSemiringAction (Gp p) A :=
   compHom (M := FrobGal) _ (.inr ..)
 
@@ -398,9 +430,10 @@ lemma wittVector_map_algebraMap [CharP S p] (f : R →+* S) (a : ℤ_[p]) :
 instance [MulSemiringAction M R] : SMulCommClass M ℤ_[p] (WittVector p R) :=
   ⟨fun _ ↦ map_smul (AlgHom.mk _ (wittVector_map_algebraMap _))⟩
 
-instance [MulSemiringAction M Ainf] [MulSemiringAction M S] [Algebra ℤ_[p] S] [Algebra Ainf S]
-    [IsScalarTower ℤ_[p] Ainf S] [SMulCommClass M ℤ_[p] Ainf] [SMulDistribClass M Ainf S] :
-    SMulCommClass M ℤ_[p] S where
+instance
+    [MulSemiringAction M Ainf] [MulSemiringAction M S] [Algebra ℤ_[p] S] [Algebra Ainf S]
+    [IsScalarTower ℤ_[p] Ainf S] [SMulCommClass M ℤ_[p] Ainf] [SMulDistribClass M Ainf S]
+    : SMulCommClass M ℤ_[p] S where
   smul_comm := by simp [← algebraMap_smul Ainf, smul_distrib_smul]
 
 instance [CharP S p] [Algebra R S] : IsScalarTower ℤ_[p] (WittVector p R) (WittVector p S) :=
@@ -423,7 +456,8 @@ lemma frobEnd_algebraMap [Algebra S A] [SMulDistribClass FrobGal S A] (x : S) :
 instance : MulSemiringAction G CFlat := IsFractionRing.mulSemiringAction _ OFlat _
 
 deriving instance Algebra ℤ_[p], Algebra Ainf, IsScalarTower ℤ_[p] Ainf, MulSemiringAction G,
-  SMulCommClass G ℤ_[p] for @WittCFlat p _
+    SMulCommClass G ℤ_[p]
+  for @WittCFlat p _
 
 instance : SMulDistribClass G Ainf WittCFlat :=
   smulDistribClass_of_tower fun _ : Ainf ↦ ext fun _ ↦ smul_algebraMap_eq_algebraMap_smul ..
@@ -447,8 +481,10 @@ open WittVector IsLocalRing MulSemiringAction Variety ZMod Set
 
 variable {p : ℕ} [ThePrime p]
 
-/-- The ℤ_p-algebra homomorphism A_inf = W(O^♭) → W(k), for k the residue field of O^♭, that
-applies the residue map O^♭ → k to each Witt coordinate. -/
+/--
+The ℤ_p-algebra homomorphism A_inf = W(O^♭) → W(k), for k the residue field of O^♭, that
+applies the residue map O^♭ → k to each Witt coordinate.
+-/
 noncomputable def toWittResidue : Ainf →ₐ[ℤ_[p]] WittVector p (ResidueField OFlat) :=
   ⟨map (residue OFlat), wittVector_map_algebraMap (residue OFlat)⟩
 

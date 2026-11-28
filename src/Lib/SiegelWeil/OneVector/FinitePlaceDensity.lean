@@ -68,13 +68,15 @@ section Local
 
 variable (A : Type) [SemilocalField A] [StarRing A]
 
-/-- A finite place: a place `A` with its ring of integers `integers`, the subring `O` of the
+/--
+A finite place: a place `A` with its ring of integers `integers`, the subring `O` of the
 semilocal field `A`. The subring `integers` is open and compact of volume `1`, is stable under
 conjugation and locally a valuation ring (`New.IsAdelic`), and is self-dual for the character `ψ`.
 The data of the place are normalised to `integers`: the element `element` of trace `1` is integral,
 `skewUnit` is a unit of `integers`, the Plancherel constant `kernelBound` is `1`, and the skew
 elements of `integers` have `skewMeasure` `1`. The modulus `modulus x` is the inverse of the
-generalised index of `x integers` in `integers`. -/
+generalised index of `x integers` in `integers`.
+-/
 class IntegralPlace extends Place A, isAdelic : IsAdelic (A := A) O where
   /-- The element `element` of trace `1` is integral. -/
   element_mem : element ∈ O
@@ -86,11 +88,15 @@ class IntegralPlace extends Place A, isAdelic : IsAdelic (A := A) O where
   kernelBound_eq_one : kernelBound = 1
   /-- The integral skew elements have measure `1`. -/
   skewMeasure_setOf_mem : skewMeasure {b : skewAdjoint A | b.val ∈ O} = 1
-  /-- The ring of integers `R = O` is self-dual for `ψ`: the character `r ↦ ψ (r * a)` is trivial on
-  `R` if and only if `a ∈ R`. -/
+  /--
+  The ring of integers `R = O` is self-dual for `ψ`: the character `r ↦ ψ (r * a)` is trivial on
+  `R` if and only if `a ∈ R`.
+  -/
   self_dual (a : A) : (∀ r ∈ O, ψ (r * a) = 1) ↔ a ∈ O
-  /-- The modulus `modulus x` is the inverse of the generalised index of `x integers` in
-  `integers`. -/
+  /--
+  The modulus `modulus x` is the inverse of the generalised index of `x integers` in
+  `integers`.
+  -/
   modulus_eq_inv_genIndex (x : A) : modulus x = (ENNReal.ofReal (genIndex x))⁻¹
 
 variable {A}
@@ -102,38 +108,40 @@ abbrev integers [IntegralPlace A] : Subring A := O
 
 variable [P : IntegralPlace A]
 
-/-- The data of a finite place are normalised to its ring of integers: `element`, `skewUnit` and its
-inverse are integral, `kernelBound` is `1`, and the integral skew elements have measure `1`. -/
-theorem data_normalised :
-    P.element ∈ O ∧
-    P.skewUnit.val ∈ O ∧
-    P.skewUnit⁻¹.val ∈ O ∧
-    P.kernelBound = 1 ∧
-    P.skewMeasure {b : skewAdjoint A | b.val ∈ O} = 1 :=
+/--
+The data of a finite place are normalised to its ring of integers: `element`, `skewUnit` and its
+inverse are integral, `kernelBound` is `1`, and the integral skew elements have measure `1`.
+-/
+theorem data_normalised
+    : P.element ∈ O ∧ P.skewUnit.val ∈ O ∧ P.skewUnit⁻¹.val ∈ O ∧ P.kernelBound = 1
+      ∧ P.skewMeasure {b : skewAdjoint A | b.val ∈ O} = 1 :=
   ⟨element_mem, skewUnit_mem, skewUnit_inv_mem, kernelBound_eq_one, skewMeasure_setOf_mem⟩
 
 /-! ### Volumes of fractional ideals and lattices -/
 
-/-- For a unit `u` of `A`, the set `u⁻¹ R` has volume `(modulus u)⁻¹`, where `R` is the ring of
-integers (the subring `O`) and `modulus` the modulus of the place `P`. -/
+/--
+For a unit `u` of `A`, the set `u⁻¹ R` has volume `(modulus u)⁻¹`, where `R` is the ring of
+integers (the subring `O`) and `modulus` the modulus of the place `P`.
+-/
 @[simp]
-theorem volume_setOf_mul_mem (u : Aˣ) : volume {x : A | u.val * x ∈ integers} =
-  (P.modulus u)⁻¹ := by
-  calc volume {x : A | u.val * x ∈ integers} = Measure.map (u.val * ·) volume
-         (P.integers : Set A) :=
-        (map_apply (measurable_const_mul u.val) isCompact_O.measurableSet).symm
+theorem volume_setOf_mul_mem (u : Aˣ)
+    : volume {x : A | u.val * x ∈ integers} = (P.modulus u)⁻¹ := by
+  calc
+    volume {x : A | u.val * x ∈ integers} = Measure.map (u.val * ·) volume (P.integers : Set A) :=
+      (map_apply (measurable_const_mul u.val) isCompact_O.measurableSet).symm
     _ = (P.modulus u)⁻¹ := by simp [P.map_mul_volume, volume_O]
 
-/-- For a unit `c` of `A` that lies in `R`, the set `c R` is an ideal of `R` of finite index
-`(modulus c)⁻¹`. -/
-theorem exists_ideal_cardQuot_eq (c : Aˣ) (hc_mem : ↑c ∈ P.integers) :
-    ∃ I : Ideal P.integers,
-      I.cardQuot ≠ 0 ∧
-      integers.subtype '' I = {x : A | c⁻¹.val * x ∈ integers} ∧
-      I.cardQuot = (P.modulus c)⁻¹ := by
+/--
+For a unit `c` of `A` that lies in `R`, the set `c R` is an ideal of `R` of finite index
+`(modulus c)⁻¹`.
+-/
+theorem exists_ideal_cardQuot_eq (c : Aˣ) (hc_mem : ↑c ∈ P.integers)
+    : ∃ I : Ideal P.integers,
+      I.cardQuot ≠ 0 ∧ integers.subtype '' I = {x : A | c⁻¹.val * x ∈ integers}
+        ∧ I.cardQuot = (P.modulus c)⁻¹ := by
   -- Take `I = c R`. Its index is `genIndex c`, which is not zero and equals `(P.modulus c)⁻¹`.
-  have h_index : (Submodule.cardQuot (Ideal.span {(⟨c, hc_mem⟩ : P.integers)}) : ℝ) = genIndex
-    c.val := by
+  have h_index
+      : (Submodule.cardQuot (Ideal.span {(⟨c, hc_mem⟩ : P.integers)}) : ℝ) = genIndex c.val := by
     simp [genIndex_eq_card isOpen_O, Submodule.cardQuot_apply, hc_mem, isCompact_O]
   refine ⟨.span {⟨c, hc_mem⟩}, mod_cast h_index.trans_ne (genIndex_pos c).ne', ?_, ?_⟩
   · simp [Set.ext_iff, ← range_comp, Submodule.span_singleton_eq_range, ← c.eq_mul_inv_iff_mul_eq,
@@ -161,31 +169,35 @@ variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ]
 
 omit [DecidableEq ι] in
 /-- The lattice of integral vectors is open and compact, of volume `1`. -/
-theorem isOpen_isCompact_volume_intVectors :
-    let L : Set (ι → A) := intVectors P.integers ι
-    IsOpen L ∧ IsCompact L ∧ volume L = 1 := by
-  have h_eq : (intVectors P.integers ι : Set (ι → A)) = univ.pi fun _ : ι ↦
-    (P.integers : Set A) := by
+theorem isOpen_isCompact_volume_intVectors
+    : let L : Set (ι → A) := intVectors P.integers ι
+      IsOpen L ∧ IsCompact L ∧ volume L = 1 := by
+  have h_eq
+      : (intVectors P.integers ι : Set (ι → A)) = univ.pi fun _ : ι ↦ (P.integers : Set A) := by
     simp [Set.ext_iff, intVectors]
   refine ⟨isOpen_intVectors isOpen_O, ?_, by simp [h_eq, volume_pi_pi, volume_O]⟩
   simpa [h_eq] using isCompact_univ_pi fun _ : ι ↦ isCompact_O
 
 /-- A set that contains `u R` has volume at least `modulus u`. -/
-theorem modulus_le_volume {u : Aˣ} {S : Set A} (h_mul_mem : ∀ r ∈ P.integers, u * r ∈ S) :
-    P.modulus u ≤ volume S := by
-  calc P.modulus u = volume {x | u⁻¹.val * x ∈ P.integers} := by simp [modulus_inv]
+theorem modulus_le_volume {u : Aˣ} {S : Set A} (h_mul_mem : ∀ r ∈ P.integers, u * r ∈ S)
+    : P.modulus u ≤ volume S := by
+  calc
+    P.modulus u
+      = volume {x | u⁻¹.val * x ∈ P.integers} := by simp [modulus_inv]
     _ ≤ volume S := measure_mono fun x hx ↦ by simpa using h_mul_mem _ hx
 
 /-- A unit of `A` that lies in `R` has modulus at most `1`. -/
 theorem modulus_le_one (u : Aˣ) (hu_mem : u.val ∈ integers) : P.modulus u ≤ 1 := by
   simp [modulus_eq_inv_genIndex, one_le_genIndex hu_mem]
 
-/-- The principal congruence subgroups `unitaryLevel integers g J` (the `k` with `k`, `k⁻¹` and
+/--
+The principal congruence subgroups `unitaryLevel integers g J` (the `k` with `k`, `k⁻¹` and
 `g⁻¹ (k - 1)` integral) of the unitary group `U J` of the matrix `J` are open for every unit `g`,
-and the one of level `1` is compact. -/
-theorem unitaryLevel_open_compact {J : Matrix ι ι A} :
-    (∀ {g : Aˣ}, (unitaryLevel integers g J).IsOpen) ∧ IsCompact
-      (unitaryLevel integers 1 J : Set (U J)) := by
+and the one of level `1` is compact.
+-/
+theorem unitaryLevel_open_compact {J : Matrix ι ι A}
+    : (∀ {g : Aˣ}, (unitaryLevel integers g J).IsOpen)
+      ∧ IsCompact (unitaryLevel integers 1 J : Set (U J)) := by
   -- Both conditions, `k ∈ GL(integers)` and `g⁻¹ • (k - 1)` integral, are open because `integers`
   -- is.
   refine ⟨(isOpen_intGL isOpen_O).preimage_val.and isOpen_O.matrix.preimage_of_continuous, ?_⟩
@@ -199,16 +211,23 @@ theorem modulus_det_eq_one {V : GL ι A} (hV : V ∈ intGL ι P.integers) : modu
 
 /-! ### The content of a vector -/
 
-/-- Content: if some entry of `p` is a unit of `A`, there are a unit `t` of `A` and a row `r` over
-`integers` with `r ⬝ᵥ p = t` such that `c • p` is integral exactly when `t * c ∈ integers`. -/
-theorem exists_content {p : ι → A} {i : ι} (h_unit : IsUnit (p i)) :
-    ∃ t : Aˣ, ∃ r ∈ intVectors integers ι,
-      r ⬝ᵥ p = t ∧
-      ∀ c : A, (∀ j : ι, c * p j ∈ integers) ↔ t * c ∈ integers := by
+/--
+Content: if some entry of `p` is a unit of `A`, there are a unit `t` of `A` and a row `r` over
+`integers` with `r ⬝ᵥ p = t` such that `c • p` is integral exactly when `t * c ∈ integers`.
+-/
+theorem exists_content {p : ι → A} {i : ι} (h_unit : IsUnit (p i))
+    : ∃ t : Aˣ, ∃ r ∈ intVectors integers ι,
+      r ⬝ᵥ p = t ∧ ∀ c : A, (∀ j : ι, c * p j ∈ integers) ↔ t * c ∈ integers := by
   -- Hermite form of the column `p`: there is `V` in `GL(O)` such that `p` is a scalar times column
   -- `i` of `V`, the scalar being the product of row `i` of `V⁻¹` with `p`.
-  obtain ⟨V, (hV : V ∈ intGL ι P.integers), _, -,
-      (h_column : replicateCol Unit p = V.val.submatrix id (Embedding.punit i) * _), rfl⟩ :=
+  obtain ⟨
+      V,
+      (hV : V ∈ intGL ι P.integers),
+      _,
+      -,
+      (h_column : replicateCol Unit p = V.val.submatrix id (Embedding.punit i) * _),
+      rfl
+    ⟩ :=
     P.isAdelic.isValuationPair.hermite (.punit i) (replicateCol Unit p)
   have h_col (j : ι) : p j = V.val j i * V⁻¹.val i ⬝ᵥ p := by
     simpa [Matrix.mul_apply, dotProduct, Embedding.punit, -coe_units_inv] using
@@ -217,15 +236,16 @@ theorem exists_content {p : ι → A} {i : ι} (h_unit : IsUnit (p i)) :
   have h_prod_unit : IsUnit (V.val i i * V⁻¹.val i ⬝ᵥ p) := by rwa [← h_col i]
   obtain ⟨t, ht⟩ : IsUnit (V⁻¹.val i ⬝ᵥ p) := isUnit_of_mul_isUnit_right h_prod_unit
   refine ⟨t, V⁻¹.val i, hV.isIntMatrix_inv i, ht.symm, fun c ↦ ⟨fun hc ↦ ?_, fun hc j ↦ ?_⟩⟩
-  · have h_apply : (V⁻¹.val *ᵥ c • p) i = t * c := by
-      simp [mulVec, ht, mul_comm c, -coe_units_inv]
+  · have h_apply : (V⁻¹.val *ᵥ c • p) i = t * c := by simp [mulVec, ht, mul_comm c, -coe_units_inv]
     rw [← h_apply]
     exact hV.isIntMatrix_inv.mulVec (v := c • p) hc i
   · have h_int : V.val j i * (t * c) ∈ integers := mul_mem (hV.isIntMatrix j i) hc
     simpa [h_col j, ht, mul_comm c, mul_assoc] using h_int
 
-/-- The volume of the set of c in A with cp integral if the entry p_i is a unit of A, and ∞
-otherwise. -/
+/--
+The volume of the set of c in A with cp integral if the entry p_i is a unit of A, and ∞
+otherwise.
+-/
 noncomputable def contentIndex (i : ι) (p : ι → A) : ℝ≥0∞ :=
   ⨅ _ : IsUnit (p i), volume {c : A | ∀ j : ι, c * p j ∈ integers}
 
@@ -244,17 +264,22 @@ theorem measurable_contentIndex {i : ι} : Measurable (P.contentIndex i) := by
     measurable_smul isOpen_isCompact_volume_intVectors.1.measurableSet
   exact .ite h_units (measurable_measure_prodMk_right h_integral) measurable_const
 
-/-- Let ζ_O(μ) ≤ 2, V ∈ GL_ι(O), β a unit, and single out the coordinates indexed by κ of Vᴴw,
+/--
+Let ζ_O(μ) ≤ 2, V ∈ GL_ι(O), β a unit, and single out the coordinates indexed by κ of Vᴴw,
 through σ. Suppose |κ| = s + k with k ≥ μ, and put d = |n| + k, so that d = |ι| − s. The integral of
 the s-th power of the content index (`New.Floors.IntegralPlace.contentIndex`) of these coordinates
 over the w with βw integral is at most ζ_O(μ)·md(β)^(−d), where md is the modulus, O is the ring of
-integers, GL_ι(O) is `intGL ι integers` and ζ_O is `New.idealZeta integers`. -/
-theorem lintegral_contentIndex_pow_le {s μ : ℕ} (hμ : idealZeta P.integers μ ≤ 2) {n : Type*}
-    {k d : ℕ} [Fintype n] (σ : n ⊕ κ ≃ ι) (i : κ) {V : GL ι A} (β : Aˣ) (hV : V ∈ intGL ι integers)
-    (hd : card n + k = d ∧ card κ = s + k ∧ μ ≤ k) :
-    ∫⁻ w : ι → A in {w : ι → A | ∀ j : ι, β.val * w j ∈ integers},
-        contentIndex i (fun j : κ ↦ (V.valᴴ *ᵥ w) (σ (inr j))) ^ s ≤
-      idealZeta P.integers μ * (P.modulus β)⁻¹ ^ d := by
+integers, GL_ι(O) is `intGL ι integers` and ζ_O is `New.idealZeta integers`.
+-/
+theorem lintegral_contentIndex_pow_le
+    {s μ : ℕ} (hμ : idealZeta P.integers μ ≤ 2)
+    {n : Type*} {k d : ℕ} [Fintype n]
+    (σ : n ⊕ κ ≃ ι) (i : κ)
+    {V : GL ι A}
+    (β : Aˣ) (hV : V ∈ intGL ι integers) (hd : card n + k = d ∧ card κ = s + k ∧ μ ≤ k)
+    : ∫⁻ w : ι → A in {w : ι → A | ∀ j : ι, β.val * w j ∈ integers},
+          contentIndex i (fun j : κ ↦ (V.valᴴ *ᵥ w) (σ (inr j))) ^ s
+      ≤ idealZeta P.integers μ * (P.modulus β)⁻¹ ^ d := by
   classical
   -- Put `y = Vᴴ w`, a change of variables that keeps the volume. If the singled out coordinates of
   -- `y` have content `t`, those of `β y` lie in the ideal `I = t β O`. Sum over `I`: by
@@ -268,14 +293,22 @@ theorem lintegral_contentIndex_pow_le {s μ : ℕ} (hμ : idealZeta P.integers �
   refine lintegral_le_idealZeta_mul hμ (fun I ↦ V.valᴴ.mulVec ⁻¹' box I) ?_
   filter_upwards [h_vol.quasiMeasurePreserving.ae (tendsto_eval_ae_ae.eventually ae_isUnit)]
     with w (hw_unit : IsUnit ((V.valᴴ *ᵥ w) (σ (inr i)))) hw_int
-  obtain ⟨t, -, -, -, (ht : ∀ c : A, (∀ j : κ, c * (V.valᴴ *ᵥ w) (σ (inr j)) ∈ integers) ↔ t * c ∈
-    integers)⟩ :=
+  obtain ⟨
+      t,
+      -,
+      -,
+      -,
+      (ht : ∀ c : A, (∀ j : κ, c * (V.valᴴ *ᵥ w) (σ (inr j)) ∈ integers) ↔ t * c ∈ integers)
+    ⟩ :=
     exists_content (p := fun j ↦ (V.valᴴ *ᵥ w) (σ (inr j))) hw_unit
   have hy_int (j : ι) : β.val * (V.valᴴ *ᵥ w) j ∈ P.integers := by
     simpa [mulVec_smul] using hV.isIntMatrix.conjTranspose.mulVec (v := β.val • w) hw_int j
   obtain ⟨I, hI_ne, hI_eq, hI_card⟩ := exists_ideal_cardQuot_eq (t * β) (by simp [← ht, hy_int])
-  have h_box_eq : box I = univ.pi fun j : ι ↦
-      (β.val * ·) ⁻¹' ite (σ.symm j).isLeft ↑P.integers {x : A | (t * β)⁻¹.val * x ∈ integers} := by
+  have h_box_eq
+      : box I
+        = univ.pi fun j : ι ↦
+          (β.val * ·)
+            ⁻¹' ite (σ.symm j).isLeft ↑P.integers {x : A | (t * β)⁻¹.val * x ∈ integers} := by
     simp only [box, hI_eq]
   refine ⟨I, hI_ne, by simp [h_box_eq, reindex_equiv σ, mul_mul_mul_comm, hy_int, ht], ?_⟩
   have h_index : contentIndex i (fun j ↦ (V.valᴴ *ᵥ w) (σ (inr j))) = (P.modulus t)⁻¹ := by
@@ -286,8 +319,8 @@ theorem lintegral_contentIndex_pow_le {s μ : ℕ} (hμ : idealZeta P.integers �
   -- of `modulus t` cancel.
   grw [hμ_le, hI_card, h_vol.measure_preimage_le, h_box, h_index]
   · calc
-      _ = ((P.modulus t)⁻¹ * (P.modulus β)⁻¹) ^ k *
-          ((P.modulus t)⁻¹ ^ s * ((P.modulus β)⁻¹ ^ card n * P.modulus t ^ (s + k))) := by
+      _ = ((P.modulus t)⁻¹ * (P.modulus β)⁻¹) ^ k
+          * ((P.modulus t)⁻¹ ^ s * ((P.modulus β)⁻¹ ^ card n * P.modulus t ^ (s + k))) := by
         simp [ENNReal.mul_inv]
       _ = (P.modulus β)⁻¹ ^ (card n + k) * (P.modulus t * (P.modulus t)⁻¹) ^ (s + k) := by ring
       _ ≤ (P.modulus β)⁻¹ ^ (card n + k) := by grw [(P.modulus t).mul_inv_le_one, one_pow, mul_one]
@@ -302,17 +335,20 @@ namespace IntegralPlace
 variable {A : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A] {𝔰 : Shape}
 
 /-! ### Eichler maps to the last frame vector -/
-/-- Let `z` be the last frame vector, `l` its index, `h` the form and `v = e - z`. This is the
+/--
+Let `z` be the last frame vector, `l` its index, `h` the form and `v = e - z`. This is the
 matrix of the scaled Eichler map `1 + u h(v, ·) - (e l)⁻¹ (v + s u) h(u, ·)` along `u`, where
 `s = h(v, e) - τ (h(e, e) - h(z, z))` and `τ = P.element`. It is the identity if `e l` is not a
-unit. -/
-noncomputable def topEichlerMatrix (T : 𝔰.Form A) (u e : 𝔰.BesselIndex → A) :
-    Matrix 𝔰.BesselIndex 𝔰.BesselIndex A :=
+unit.
+-/
+noncomputable def topEichlerMatrix (T : 𝔰.Form A) (u e : 𝔰.BesselIndex → A)
+    : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A :=
   let l : 𝔰.BesselIndex := 𝔰.besselFrame 𝔰.top
   let z : 𝔰.BesselIndex → A := Pi.single l 1
   let h (x y : 𝔰.BesselIndex → A) : A := star x ⬝ᵥ T.splitGram *ᵥ y
-  1 + inverse (e l) • (vecMulVec (e l • u) (star (e - z) ᵥ* T.splitGram) -
-    vecMulVec (e - z + (h (e - z) e - P.element * (h e e - h z z)) • u) (star u ᵥ* T.splitGram))
+  1 + inverse (e l)
+    • (vecMulVec (e l • u) (star (e - z) ᵥ* T.splitGram)
+      - vecMulVec (e - z + (h (e - z) e - P.element * (h e e - h z z)) • u) (star u ᵥ* T.splitGram))
 
 variable {T : 𝔰.Form A} {e : 𝔰.BesselIndex → A} [IsHermitianUnit T.splitGram]
 
@@ -347,8 +383,8 @@ lemma gram_topEichlerMatrix {u : 𝔰.BesselIndex → A}
 
 section Eichler
 
-variable {u : 𝔰.BesselIndex → A}
-  (hu_dual : star u ᵥ* T.splitGram = Pi.single (𝔰.besselFrame 𝔰.top) 1)
+variable
+  {u : 𝔰.BesselIndex → A} (hu_dual : star u ᵥ* T.splitGram = Pi.single (𝔰.besselFrame 𝔰.top) 1)
   (hu_last : u (𝔰.besselFrame 𝔰.top) = 0)
 
 include hu_dual hu_last
@@ -429,15 +465,17 @@ lemma measurableSet_exists_mul_mem_level {g : Aˣ} {c : T.G} {S : Subgroup T.G} 
   exact (isOpen_iUnion fun _ ↦
     .and (by simp) unitaryLevel_open_compact.1.preimage_of_continuous).measurableSet
 
-/-- Unfolding at a finite place: let η be the ascending convolution `ascConv heisenbergMeasure j` of
+/--
+Unfolding at a finite place: let η be the ascending convolution `ascConv heisenbergMeasure j` of
 the measures on the first `j` Heisenberg groups, K the congruence subgroup of level `g`, θ an
 s-finite measure and c an element of the unitary group. Then (η∗θ)(K c⁻¹) = η(K)·θ(N K c⁻¹), with
-N = `unipotentBelow j` the unipotent group on the floors below `j`. -/
-theorem ascConv_mconv_unfolding {g : Aˣ} {c : T.G} {θ : Measure T.G} [SFinite θ] {j : ℕ} :
-    (ascConv heisenbergMeasure j ∗ₘ θ) {y : T.G | y * c ∈ unitaryLevel integers g T.splitGram} =
-      ascConv heisenbergMeasure j (SetLike.coe (unitaryLevel integers g T.splitGram)) *
-        θ {y : T.G | ∃ u ∈ unipotentBelow j, u * (y *
-          c) ∈ unitaryLevel integers g T.splitGram} := by
+N = `unipotentBelow j` the unipotent group on the floors below `j`.
+-/
+theorem ascConv_mconv_unfolding {g : Aˣ} {c : T.G} {θ : Measure T.G} [SFinite θ] {j : ℕ}
+    : (ascConv heisenbergMeasure j ∗ₘ θ) {y : T.G | y * c ∈ unitaryLevel integers g T.splitGram}
+      = ascConv heisenbergMeasure j (SetLike.coe (unitaryLevel integers g T.splitGram)) * θ
+        {y : T.G | ∃ u ∈ unipotentBelow j, u * (y *
+        c) ∈ unitaryLevel integers g T.splitGram} := by
   -- Write both sides as integrals over `y` against `θ` and compare the integrands.
   have h_level : MeasurableSet {y : T.G | y * c ∈ unitaryLevel integers g T.splitGram} :=
     measurable_mul_const c measurableSet_unitaryLevel
@@ -465,7 +503,8 @@ end IntegralPlace
 section Inversion
 
 open Filter Topology NNReal
-variable {A κ : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A] [Fintype κ]
+variable
+  {A κ : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A] [Fintype κ]
   {J : Matrix κ κ A} {l : skewAdjoint A → Measure (κ → A)}
 
 /-- Duality on the skew elements. Let `u` be a hermitian unit, `y` hermitian, and `ψ` trivial on
@@ -637,45 +676,59 @@ lemma IntegralPlace.tendsto_average_skew {g : skewAdjoint A → ℝ≥0∞} (hg 
     rw [← mean_const y a']
     exact mul_le_mul_right (setLIntegral_mono' (ball_meas y) fun b hb ↦ (hy b hb).le) _
 
-/-- Fourier inversion for local densities. Let the measures `l b`, indexed by skew `b`, disintegrate
+/--
+Fourier inversion for local densities. Let the measures `l b`, indexed by skew `b`, disintegrate
 Haar measure along `x ↦ x* J x` for a hermitian `J`, let `ψ` be trivial on traces, and let `f ≥ 0`
 be continuous of compact support. Put `δ = P.skewUnit` and let `t` be skew. If the function
 `b ↦ ∫ f(x) ψ(e b (x* J x - δ⁻¹ t)) dx` is integrable on the skew elements, its integral, the
 density of `f` at `δ⁻¹ t`, is the integral of `f` against `l t`. Here `e = P.element` and
-`e + ē = 1`. -/
-theorem IntegralPlace.integral_skewMeasure_eq_toReal_lintegral (h : P.IsDisintegration volume J l)
-    (hJ : Jᴴ = J) (hψ : ∀ x : A, P.ψ (x + star x) = 1) {f : (κ → A) → ℝ≥0} (hf : Continuous f)
-    (h_supp : HasCompactSupport f) (t : skewAdjoint A)
-    (h_int : Integrable (fun b : skewAdjoint A ↦ ∫ x : κ → A,
-      f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))) P.skewMeasure) :
-    ∫ b : skewAdjoint A, ∫ x : κ → A,
-      f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))
-      ∂volume ∂P.skewMeasure = (∫⁻ x : κ → A, f x ∂l t).toReal := by
+`e + ē = 1`.
+-/
+theorem IntegralPlace.integral_skewMeasure_eq_toReal_lintegral
+    (h : P.IsDisintegration volume J l) (hJ : Jᴴ = J) (hψ : ∀ x : A, P.ψ (x + star x) = 1)
+    {f : (κ → A) → ℝ≥0} (hf : Continuous f) (h_supp : HasCompactSupport f)
+    (t : skewAdjoint A)
+    (h_int : Integrable
+      (fun b : skewAdjoint A ↦
+        ∫ x : κ → A,
+          f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t)))
+      P.skewMeasure)
+    : ∫ b : skewAdjoint A, ∫ x : κ → A,
+        f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))
+        ∂volume ∂P.skewMeasure
+      = (∫⁻ x : κ → A, f x ∂l t).toReal := by
   -- Cut the frequency to `y ȳ b ∈ O`. The cut integral is the mean of the masses of the quadrics
   -- with index in `t + y ȳ O`. Let the unit `y` tend to zero.
-  obtain ⟨(mass_cont : Continuous fun b : skewAdjoint A ↦ ∫⁻ x, f x ∂l b),
-      (mass_fin : ∀ b : skewAdjoint A, ∫⁻ x, f x ∂l b < ∞)⟩ := h.continuous_and_lt_top hf h_supp
+  obtain ⟨
+      (mass_cont : Continuous fun b : skewAdjoint A ↦ ∫⁻ x, f x ∂l b),
+      (mass_fin : ∀ b : skewAdjoint A, ∫⁻ x, f x ∂l b < ∞)
+    ⟩ :=
+    h.continuous_and_lt_top hf h_supp
   -- Units are dense, so they can tend to zero.
-  have units_neBot : (comap Units.val (𝓝 (0 : A))).NeBot := comap_neBot fun s hs ↦ by
-    simpa [Set.Nonempty, IsUnit, and_comm] using
-      (dense_of_ae P.ae_isUnit).inter_nhds_nonempty hs
+  have units_neBot : (comap Units.val (𝓝 (0 : A))).NeBot :=
+    comap_neBot fun s hs ↦ by
+      simpa [Set.Nonempty, IsUnit, and_comm] using (dense_of_ae P.ae_isUnit).inter_nhds_nonempty hs
   let cut (y : Aˣ) : Set (skewAdjoint A) := {b | (y * star y).val * b.val ∈ O}
   have cover : AECover P.skewMeasure (comap Units.val (𝓝 0)) cut := by
     refine ⟨.of_forall fun b ↦ ?_, fun _ ↦ isOpen_O.measurableSet.preimage (by fun_prop)⟩
     have h_small : Tendsto (fun y : A ↦ y * star y * b.val) (𝓝 0) (𝓝 0) :=
       Continuous.tendsto' (by fun_prop) 0 0 (by simp)
     exact tendsto_comap.eventually (h_small.eventually (isOpen_O.mem_nhds (zero_mem O)))
-  have h_cut (y : Aˣ) :
-      ∫ b in cut y, ∫ x, f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))
-          ∂volume ∂P.skewMeasure =
-        (P.skewMeasure (cut y) * ∫⁻ b in {b : skewAdjoint A | (y * star y)⁻¹.val * b.val ∈ O},
-          ∫⁻ x, f x ∂l (b + t) ∂P.skewMeasure).toReal := by
+  have h_cut (y : Aˣ)
+      : ∫ b in cut y, ∫ x, f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))
+            ∂volume ∂P.skewMeasure
+        = (P.skewMeasure (cut y)
+          * ∫⁻ b in {b : skewAdjoint A | (y * star y)⁻¹.val * b.val ∈ O},
+            ∫⁻ x, f x ∂l (b + t) ∂P.skewMeasure).toReal := by
     rw [← h.setLIntegral_slab hf]
     exact setIntegral_eq_slab hJ hψ hf h_supp (by simp [mul_comm])
       (by simp [skewAdjoint.star_val_eq])
-  have h_mean : Tendsto (fun y : Aˣ ↦ (P.skewMeasure (cut y) *
-      ∫⁻ b in {b : skewAdjoint A | (y * star y)⁻¹.val * b.val ∈ O}, ∫⁻ x, f x ∂l (b + t)
-        ∂P.skewMeasure).toReal) (comap Units.val (𝓝 0)) (𝓝 (∫⁻ x, f x ∂l t).toReal) :=
+  have h_mean : Tendsto
+      (fun y : Aˣ ↦
+        (P.skewMeasure (cut y)
+          * ∫⁻ b in {b : skewAdjoint A | (y * star y)⁻¹.val * b.val ∈ O}, ∫⁻ x, f x ∂l (b + t)
+              ∂P.skewMeasure).toReal)
+      (comap Units.val (𝓝 0)) (𝓝 (∫⁻ x, f x ∂l t).toReal) :=
     (tendsto_toReal (mass_fin t).ne).comp (tendsto_average_skew mass_cont t)
   -- The cut integrals tend both to the full integral and to the mass of the quadric.
   refine tendsto_nhds_unique (cover.integral_tendsto_of_countably_generated h_int) ?_

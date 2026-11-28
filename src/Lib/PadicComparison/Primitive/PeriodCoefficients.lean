@@ -75,12 +75,16 @@ section PeriodPairs
 
 open CategoryTheory Algebra TensorProduct Period PadicTest Equiv
 
-variable (p : ℕ) (S : Type) [CommRing S]
+variable
+  (p : ℕ)
+  (S : Type) [CommRing S]
   (K : Type _) [CommRing K] [Algebra S K] [ThePrime p] [Algebra Ainf S]
   {Ψ : PadicTest ⥤ ModuleCat K}
 
-/-- The `A_inf`-algebra `S` is `p`-torsion-free and `p`-adically complete, `p` divides the image of
-`ξ` in `S`, and the image of `τ` in the `S`-algebra `K` is a unit. -/
+/--
+The `A_inf`-algebra `S` is `p`-torsion-free and `p`-adically complete, `p` divides the image of
+`ξ` in `S`, and the image of `τ` in the `S`-algebra `K` is a unit.
+-/
 structure IsPeriodRingPair extends isCompleteTorsionFree : IsCompleteTorsionFree S where
   /-- The prime `p` divides the image of `ξ` in `S`. -/
   dvd_xi : (p : S) ∣ algebraMap Ainf S xi
@@ -395,18 +399,22 @@ section TiltedTheoryA
 open CategoryTheory TensorProduct PrimeSpectrum Functor CommRingCat Ideal PadicTest MonoidalCategory
   Quotient RingHom LocallyConstant Submodule CommAlgCat ZMod
 
-variable {p : ℕ} [ThePrime p] (c : PadicTest) (I : Ideal c.GenericRing)
+variable
+  {p : ℕ} [ThePrime p]
+  (c : PadicTest) (I : Ideal c.GenericRing)
   {S X : Type _} [CommRing S] [AddCommMonoid X]
 
 /-- For an additive functor `F` of modules, `moduleCoeff F` is additive. -/
 instance (F : ModuleCat S ⥤ ModuleCat S) [F.Additive] : (moduleCoeff F).Additive :=
   instAdditiveComp ..
 
-/-- Near-zero elements. Let `κ f` be submodules of `X` indexed by maps of tests `f : c ⟶ d`, and
+/--
+Near-zero elements. Let `κ f` be submodules of `X` indexed by maps of tests `f : c ⟶ d`, and
 let `I` be an ideal of `R[1/p] = c.GenericRing`. This is the submodule of the `y` for which some
-`a ∈ I` has `y ∈ κ f` whenever `f` makes `1 - a` a unit. -/
-def PadicTest.nearZeros [Module S X] (κ : ∀ {d : PadicTest}, (c ⟶ d) → Submodule S X) :
-    Submodule S X where
+`a ∈ I` has `y ∈ κ f` whenever `f` makes `1 - a` a unit.
+-/
+def PadicTest.nearZeros [Module S X] (κ : ∀ {d : PadicTest}, (c ⟶ d) → Submodule S X)
+    : Submodule S X where
   carrier :=
     {y : X | ∃ a ∈ I, ∀ (d : PadicTest) (f : c ⟶ d), IsUnit (mapGeneric f (1 - a)) → y ∈ κ f}
   zero_mem' := ⟨0, by simp⟩
@@ -432,8 +440,10 @@ lemma PadicTest.bijective_locConstAlg_map_algebraMap :
     (c.isTest.isComparableRing_of_associated exists_associated_localization)⟩
   exact h_dense.equalizer x.continuous y.continuous (coe_inj.mpr hxy)
 
-/-- The functor sending a `p`-adic test with ring `R` to `R[1/p]`, a test over `Ω` with algebra
-structure through `Ω → ℂ_p`. -/
+/--
+The functor sending a `p`-adic test with ring `R` to `R[1/p]`, a test over `Ω` with algebra
+structure through `Ω → ℂ_p`.
+-/
 def genericTestOver : PadicTest ⥤ TestOver Ω :=
   ObjectProperty.lift _ (genericAlg ⋙ restrictAlg Ω (ℂ_[p])) (·.isTest.localization)
 
@@ -456,17 +466,20 @@ section
 
 variable {p : ℕ} [ThePrime p] (c : PadicTest) (I : Ideal c.GenericRing)
 
-/-- The ideal of the tilt `R♭` of `c` of the elements `y` for which some `a ∈ I` has `g♭ y = 0`
+/--
+The ideal of the tilt `R♭` of `c` of the elements `y` for which some `a ∈ I` has `g♭ y = 0`
 for every map of tests `g` that makes `1 - a` a unit, `g♭` the map of tilts: the near-zero
-elements (`PadicTest.nearZeros`) for the kernels of the maps of tilts. -/
-def PadicTest.tiltNearZeros : Ideal (TiltRing c) :=
-  c.nearZeros I fun g ↦ ker (tilt.map g).hom
+elements (`PadicTest.nearZeros`) for the kernels of the maps of tilts.
+-/
+def PadicTest.tiltNearZeros : Ideal (TiltRing c) := c.nearZeros I fun g ↦ ker (tilt.map g).hom
 
-/-- For a `p`-adic test `c` with ring `R = c.ProdRing`, the natural map of `𝔽_p`-algebras from the
+/--
+For a `p`-adic test `c` with ring `R = c.ProdRing`, the natural map of `𝔽_p`-algebras from the
 locally constant functions `Spec R[1/p] → 𝔽_p` to the tilt `R♭`. A function is extended to
 `Spec R`, restricted to `Spec (R/p)` and read as the element `x` of `R/p` whose germ at each prime
 is the value there. It goes to the constant sequence `(x, x, …)`, which lies in `R♭` because
-`t ^ p = t` in `𝔽_p`. -/
+`t ^ p = t` in `𝔽_p`.
+-/
 def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restrictAlg (ZMod p) OFlat := by
   let (c : PadicTest) : Algebra (ZMod p) (ModP c.ProdRing p) := algebra ..
   -- `φ c` reads a locally constant function `x` on `Spec (R/p)` as the element of `R/p` whose germ
@@ -478,14 +491,18 @@ def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restr
   -- and take the constant sequence.
   refine (NatIso.ofComponents (F := ringFunctor ⋙ locConstAlg)
       (G := genericTest ⋙ testIncl ⋙ locConstAlg)
-      (fun c ↦ isoMk (.ofBijective
-        (locConstAlg.map (ofHom (algebraMap c.ProdRing c.GenericRing))).hom'
-        c.bijective_locConstAlg_map_algebraMap))
-      fun _ ↦ ?restrict).inv ≫
-    { app c := ConcreteCategory.ofHom (.mk'
-        (.codRestrict (.pi fun _ ↦ (φ c).comp (locConstAlg.map (ofHom (mk _))).1.1) (subring ..)
-          fun x n ↦ ?root) (map_smul _))
-      naturality c d f := ?natural }
+      (fun c ↦
+        isoMk (.ofBijective (locConstAlg.map (ofHom (algebraMap c.ProdRing c.GenericRing))).hom'
+          c.bijective_locConstAlg_map_algebraMap))
+      fun _ ↦ ?restrict).inv
+    ≫ {
+      app c :=
+        ConcreteCategory.ofHom (.mk'
+          (.codRestrict (.pi fun _ ↦ (φ c).comp (locConstAlg.map (ofHom (mk _))).1.1) (subring ..)
+            fun x n ↦ ?root)
+          (map_smul _))
+      naturality c d f := ?natural
+    }
   case restrict => exact (locConstAlg.map_commSq ⟨hom_ext (ext (mapGeneric_algebraMap _))⟩).w.symm
   -- The constant sequence lies in the tilt, because `t ^ p = t` in `ZMod p`.
   case root => exact (map_pow (φ c) ..).symm.trans (congrArg _ (ext fun _ ↦ ZMod.pow_card _))
@@ -493,28 +510,38 @@ def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restr
     -- Compare the images in the localisation of `d.ProdRing/p` at each prime `q`; by `hφ` both are
     -- the value of the function at the image of `q`.
     ext x
-    refine Perfection.ext fun n ↦ toPiLocalization_injective _ (funext fun q ↦ .trans ?_
-      (Localization.localRingHom_to_map _ _ (quotientMap _ f.1 (by simp)) (comap_asIdeal ..) _))
-    let ρ := quotientMap (I := Ideal.span {(p : c.ProdRing)})
-      (Ideal.span {(p : d.ProdRing)}) f.toRingHom (by simp)
+    refine Perfection.ext fun n ↦
+      toPiLocalization_injective _
+        (funext fun q ↦
+          .trans ?_
+            (Localization.localRingHom_to_map _ _ (quotientMap _ f.1 (by simp)) (comap_asIdeal ..)
+              _))
+    let ρ :=
+      quotientMap (I := Ideal.span {(p : c.ProdRing)}) (Ideal.span {(p : d.ProdRing)}) f.toRingHom
+        (by simp)
     let r := PrimeSpectrum.comap ρ q
     let L := Localization.localRingHom r.asIdeal q.asIdeal ρ (comap_asIdeal ..)
-    let restrict (a : PadicTest) := locConstAlg.map (CommRingCat.ofHom (Ideal.Quotient.mk
-      (Ideal.span ({(p : a.ProdRing)} : Set a.ProdRing))))
+    let restrict (a : PadicTest) :=
+      locConstAlg.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span
+        ({(p : a.ProdRing)} : Set a.ProdRing))))
     change algebraMap _ (Localization.AtPrime q.asIdeal)
-        (φ d (restrict d ((ringFunctor ⋙ locConstAlg).map f x))) =
-      L (algebraMap _ (Localization.AtPrime r.asIdeal) (φ c (restrict c x)))
+        (φ d (restrict d ((ringFunctor ⋙ locConstAlg).map f x)))
+      = L (algebraMap _ (Localization.AtPrime r.asIdeal) (φ c (restrict c x)))
     refine (hφ d _ q).trans (.trans ?_ (congrArg L (hφ c _ r).symm))
     let α := (L.comp (algebraMap (ZMod p) (Localization.AtPrime r.asIdeal)))
     exact (DFunLike.congr_fun (ext_zmod α (algebraMap _ _)) _).symm
 
-/-- The functor from test rings to `O♭`-algebras sending `A` to `O♭ ⊗_{𝔽_p} LC(A)`, where `LC(A)` is
-the ring of locally constant functions `Spec A → 𝔽_p`. -/
+/--
+The functor from test rings to `O♭`-algebras sending `A` to `O♭ ⊗_{𝔽_p} LC(A)`, where `LC(A)` is
+the ring of locally constant functions `Spec A → 𝔽_p`.
+-/
 abbrev oFlatLocConst : TestRing ⥤ CommAlg OFlat := (testIncl ⋙ locConstAlg) ⋙ algBaseChange OFlat
 
-/-- The natural map of `O♭`-algebras `O♭ ⊗_{𝔽_p} LC(Spec R[1/p]) → R♭` for `p`-adic tests with
+/--
+The natural map of `O♭`-algebras `O♭ ⊗_{𝔽_p} LC(Spec R[1/p]) → R♭` for `p`-adic tests with
 ring `R`, where `LC` denotes the locally constant `𝔽_p`-valued functions. It is the extension of
-`locConstToTilt` to `O♭`-algebras, its transpose under base change to `O♭`. -/
+`locConstToTilt` to `O♭`-algebras, its transpose under base change to `O♭`.
+-/
 def primitiveMap : genericTest ⋙ oFlatLocConst ⟶ tilt :=
   (baseChangeTranspose (genericTest ⋙ testIncl ⋙ locConstAlg) tilt).invFun locConstToTilt
 
@@ -634,7 +661,8 @@ lemma tiltTheory_supp {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p]
         (mk_ker.ge.trans (ker_le_comap (K := ker g.hom) _) hy))
     (@ac (CommAlgCat.of OFlat (c.TiltRing ⧸ J)) (c.perfectRing_quotient_tiltNearZeros I))
 
-/-- The theory (`New.Variety.Theory`, for the prime `ℓ = p`) on `p`-adic tests along `R ↦ R[1/p]`
+/--
+The theory (`New.Variety.Theory`, for the prime `ℓ = p`) on `p`-adic tests along `R ↦ R[1/p]`
 (`New.Variety.genericTestOver`), with coefficients `R ↦ R♭ ⊗_{O♭} M`. It needs `p` invertible in
 `Ω`, and every perfect `O♭`-algebra acyclic for these coefficients (`ac`,
 `New.Variety.IsAcyclicOnPerfect`). For an ideal `I` of `R[1/p]`, the maps of tests that kill `I` are
@@ -642,21 +670,28 @@ those whose tilt factors, uniquely, through the perfect quotient `R♭ ⧸ J`, w
 `J = PadicTest.tiltNearZeros c I`. Besides `p` killing the coefficients and Zariski descent (tilting
 and `· ⊗ M` keep products), this gives the two other properties of a theory: restriction of
 cohomology to these maps is onto, and a section that dies along them vanishes near every maximal
-ideal containing `I`. -/
-def tiltTheory {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p] [Algebra Ω ℂ_[p]]
-    (M : ModuleCat OFlat) (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M))) :
-    Theory (genericTestOver Ω) :=
+ideal containing `I`.
+-/
+def tiltTheory
+    {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p] [Algebra Ω ℂ_[p]]
+    (M : ModuleCat OFlat) (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M)))
+    : Theory (genericTestOver Ω) :=
   have h_supp := tiltTheory_supp Ω M ac
-  { functor := tilt ⋙ moduleCoeff (tensorCoeff M)
-    prime_smul_eq_zero c x := ULift.down_injective (show p • x.down = 0 by
-      simp [natCast_eq_zero_of_algebra_oFlat, ← Nat.cast_smul_eq_nsmul OFlat])
+  {
+    functor := tilt ⋙ moduleCoeff (tensorCoeff M)
+    prime_smul_eq_zero c x :=
+      ULift.down_injective (show p • x.down = 0 by
+        simp [natCast_eq_zero_of_algebra_oFlat, ← Nat.cast_smul_eq_nsmul OFlat])
     -- Zariski descent: tilting and `· ⊗ M` keep the product of two tests. The rings `R[1/p]` do
     -- not depend on the ground field in `hasZariskiDescent_genericOver`, so `ℚ` will do.
     zariski_descent :=
       letI : EmbeddedInQpBar p ℚ := {}
-      hasZariskiDescent_genericOver (k := ℚ) (𝟭 PadicTest)
-        ⟨exists_isQuotientByElem, fun f g hfg ↦ (bijective_prod_tilt f g hfg).map_prod
-          (moduleCoeff (MonoidalCategory.tensorRight M) ⋙ forget AddCommGrpCat)⟩
+      hasZariskiDescent_genericOver (k := ℚ) (𝟭 PadicTest) ⟨
+        exists_isQuotientByElem,
+        fun f g hfg ↦
+          (bijective_prod_tilt f g hfg).map_prod
+            (moduleCoeff (MonoidalCategory.tensorRight M) ⋙ forget AddCommGrpCat)
+      ⟩
     -- By `h_supp` it is enough that `R♭ ⊗ M → (R♭ ⧸ J) ⊗ M` is onto.
     restrict_surjective c I :=
       (h_supp c I).1 (ULift.map_surjective.2 (LinearMap.rTensor_surjective M Quot.exists_rep))
@@ -665,8 +700,12 @@ def tiltTheory {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p] [Algebra 
       obtain ⟨a, ha, h_dies⟩ :=
         c.mem_nearZeros_of_rTensor_eq_zero I M x.down (congrArg ULift.down ((h_supp c I).2 x hx))
       -- `1 - a ∉ n`, since `a ∈ I ≤ n` and `1 ∉ n`.
-      exact ⟨(1 - a : c.GenericRing), (n.sub_mem_iff_left (hI ha)).1.mt n.one_notMem, fun d f hf ↦
-        congrArg _ (h_dies d f hf)⟩ }
+      exact ⟨
+        (1 - a : c.GenericRing),
+        (n.sub_mem_iff_left (hI ha)).1.mt n.one_notMem,
+        fun d f hf ↦ congrArg _ (h_dies d f hf)
+      ⟩
+  }
 
 end TiltedTheory
 

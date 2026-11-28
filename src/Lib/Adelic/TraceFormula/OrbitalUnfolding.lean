@@ -58,15 +58,20 @@ noncomputable section
 
 open MeasureTheory Fintype
 
-/-- Let `e` be a cusp kernel of order `B > 8 n ^ 2` on the real group of a space `V` and `K` a
+/--
+Let `e` be a cusp kernel of order `B > 8 n ^ 2` on the real group of a space `V` and `K` a
 level, that is, an open subgroup of the standard compact subgroup of `G_f`. For fixed `x` there is a
 form of type `e` (a bounded automorphic function fixed by `e`) of level `K` whose conjugate is the
-kernel `g ↦ ∑_γ (e ⊗ 1_K)(x γ g)`, the sum over the rational points. -/
-theorem New.Space.exists_kernel_form {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-    [Nonempty n] {s : n → ℤˣ} (V : Space E n s) {e : GInf E s → ℂ} {B : ℕ} (hB : 8 * card n ^ 2 < B)
-    (he : IsCuspKernel B e) (x : G E s) (K : Subgroup (Gf E n)) [hK : IsLevel K] :
-    ∃ k : levelSpace (V.formRep e) K, ∀ g : G E s, starRingEnd ℂ (k.val g) =
-      ∑' γ : V.Γ, e (x * γ * g).1 * Set.indicator K 1 (x * γ * g).2 := by
+kernel `g ↦ ∑_γ (e ⊗ 1_K)(x γ g)`, the sum over the rational points.
+-/
+theorem New.Space.exists_kernel_form
+    {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Nonempty n]
+    {s : n → ℤˣ} (V : Space E n s)
+    {e : GInf E s → ℂ} {B : ℕ} (hB : 8 * card n ^ 2 < B) (he : IsCuspKernel B e)
+    (x : G E s)
+    (K : Subgroup (Gf E n)) [hK : IsLevel K]
+    : ∃ k : levelSpace (V.formRep e) K, ∀ g : G E s,
+      starRingEnd ℂ (k.val g) = ∑' γ : V.Γ, e (x * γ * g).1 * Set.indicator K 1 (x * γ * g).2 := by
   classical
   -- The conjugate is `F g = ∑_γ (e ⊗ 1_K)(g⁻¹ γ x⁻¹)`. The moduli of its terms have a bounded sum,
   -- each term is fixed by `e`, and `F` is left invariant under `V.Γ` and of level `K`.
@@ -75,36 +80,42 @@ theorem New.Space.exists_kernel_form {E n : Type} [Field E] [CMType E] [Fintype 
   obtain ⟨C, hC, h_bound⟩ := V.exists_tsum_enorm_kernelTerm_le_height hB φ he.decay
   have h_height : 0 < V.height x⁻¹ := V.height_pos x⁻¹
   have he_meas : Measurable e := he.continuous.measurable
-  have hF_bdd : IsBoundedMeasurable F :=
-    ⟨Measurable.stronglyMeasurable (by fun_prop [partialKernel]), _, fun g ↦
-      norm_tsum_le_of_tsum_enorm_le (by positivity) (h_bound .univ g x⁻¹)⟩
+  have hF_bdd : IsBoundedMeasurable F := ⟨
+    Measurable.stronglyMeasurable (by fun_prop [partialKernel]),
+    _,
+    fun g ↦ norm_tsum_le_of_tsum_enorm_le (by positivity) (h_bound .univ g x⁻¹)
+  ⟩
   have hF_fix : realConv e F = F :=
     V.realConv_partialKernel φ he.toIsIdempotentKernel fun g ↦ h_bound .univ g x⁻¹
   have hF_rat : V.Γ.FixesLeft F := by
     rintro _ ⟨ν, rfl⟩ g
     exact V.partialKernel_ratEmbed_mul φ (fun _ ↦ .rfl) g x⁻¹
-  have hF_level : HasLevel F K := V.hasLevel_partialKernel
-    (fun u hu y ↦ by simp [φ, TestFunction.indicator, Set.indicator,
-      K.mul_mem_cancel_left (inv_mem hu)]) .univ x⁻¹
+  have hF_level : HasLevel F K :=
+    V.hasLevel_partialKernel
+      (fun u hu y ↦ by
+        simp [φ, TestFunction.indicator, Set.indicator, K.mul_mem_cancel_left (inv_mem hu)])
+      .univ x⁻¹
   obtain ⟨k, hk⟩ : ∃ k : levelSpace (V.formRep e) K, k.val.val = realConv e F :=
     exists_form_eq_realConv ⟨K, hK.isOpen⟩ hF_bdd hF_rat hF_level he.toIsIdempotentKernel
   refine ⟨k, fun g ↦ ?_⟩
   -- Conjugate term by term and replace `γ` by `γ⁻¹`, using `e y⁻¹ = conj (e y)`.
   have hφ_inv (y : Gf E n) : starRingEnd ℂ (φ.val y⁻¹) = Set.indicator K 1 y := by
     simp [φ, TestFunction.indicator, Set.indicator]
-  have h_term (γ : U V.J) :
-      starRingEnd ℂ (V.kernelTerm e φ (Set.univ.indicator 1) g γ⁻¹ x⁻¹) =
-        e (x * V.ratEmbed γ * g).1 * Set.indicator K 1 (x * V.ratEmbed γ * g).2 := by
+  have h_term (γ : U V.J)
+      : starRingEnd ℂ (V.kernelTerm e φ (Set.univ.indicator 1) g γ⁻¹ x⁻¹)
+        = e (x * V.ratEmbed γ * g).1 * Set.indicator K 1 (x * V.ratEmbed γ * g).2 := by
     rw [kernelTerm, show g⁻¹ * V.ratEmbed γ⁻¹ * x⁻¹ = (x * V.ratEmbed γ * g)⁻¹ by simp [mul_assoc],
       Prod.fst_inv, Prod.snd_inv, he.apply_inv, map_mul, map_mul, hφ_inv, Complex.conj_conj,
       Set.indicator_univ, Pi.one_apply, map_one, one_mul]
   let i : U V.J ≃ V.Γ := (MonoidHom.ofInjective V.ratEmbed_injective).toEquiv
-  calc starRingEnd ℂ (k.val g) = starRingEnd ℂ (F g) := by rw [← hF_fix, ← hk]
+  calc
+    starRingEnd ℂ (k.val g)
+      = starRingEnd ℂ (F g) := by rw [← hF_fix, ← hk]
     _ = starRingEnd ℂ (∑' γ : U V.J, V.kernelTerm e φ (Set.univ.indicator 1) g γ⁻¹ x⁻¹) :=
-        congrArg _ ((Equiv.inv (U V.J)).tsum_eq fun γ ↦ V.kernelTerm e φ _ g γ x⁻¹).symm
+      congrArg _ ((Equiv.inv (U V.J)).tsum_eq fun γ ↦ V.kernelTerm e φ _ g γ x⁻¹).symm
     _ = ∑' γ : V.Γ, e (x * γ * g).1 * Set.indicator K 1 (x * γ * g).2 := by
-        rw [Complex.conj_tsum, ← i.tsum_eq]
-        exact tsum_congr h_term
+      rw [Complex.conj_tsum, ← i.tsum_eq]
+      exact tsum_congr h_term
 
 /-! ## Orbital integrals and the comparison of traces -/
 
@@ -116,11 +127,13 @@ namespace New
 
 variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
 
-/-- Classes of pairs `(x, y)` of a finite adelic frame `x`, up to the unitary group on the right,
+/--
+Classes of pairs `(x, y)` of a finite adelic frame `x`, up to the unitary group on the right,
 and an invertible rational matrix `y`, under `z • (x, y) = (z x, z y z⁻¹)` for rational `z`. For a
 space `V` the class of `(V.xFin, γ)` records the conjugacy class of the rational isometry `γ`, so
 that the conjugacy classes of different spaces can be compared. A pair is stored as a marked triple
-with the trivial mark. -/
+with the trivial mark.
+-/
 abbrev FrameClass (E n : Type) [Field E] [CMType E] [Fintype n] [DecidableEq n] : Type :=
   orbitRel.Quotient (GL n E) (MarkedTriple (U (1 : Matrix n n (𝔸f E))) Unit)
 
@@ -141,9 +154,11 @@ lemma frameClass_eq_iff {x x' : GL n (𝔸f E)} {y y' : GL n E} :
   rw [Prod.mk.injEq, Prod.mk.injEq, eq_comm]
   simp [← QuotientGroup.eq, mul_assoc]
 
-/-- The classes of the pairs `(x, y)` in which `y` has the characteristic polynomial `R` and is an
+/--
+The classes of the pairs `(x, y)` in which `y` has the characteristic polynomial `R` and is an
 elliptic isometry, with the signs `ε` on its eigenlines, of a form for which `x` is an orthonormal
-frame. -/
+frame.
+-/
 def signedClasses (R : E[X]) (ε : InfinitePlace E → n → ℤˣ) : Set (FrameClass E n) :=
   {c : FrameClass E n | ∃ (x : GL n (𝔸f E)) (y : GL n E),
     y.val.charpoly = R ∧ HasSignType ε 1 y {1} x ∧ frameClass (x, y) = c}
@@ -156,14 +171,18 @@ variable {s : n → ℤˣ} (V : Space E n s) {B : ℕ} {k e : GInf E s → ℂ}
 def orbitalIntegrand (k : GInf E s → ℂ) (φ : Gf E n → ℂ) (γ : U V.J) (x : G E s) : ℂ :=
   k (x⁻¹ * V.ratEmbed γ * x).1 * φ (x⁻¹ * V.ratEmbed γ * x).2
 
-/-- The orbital integral `I_γ`: the integral of the term of `γ` over `G` modulo the rational
-centraliser of `γ`. -/
+/--
+The orbital integral `I_γ`: the integral of the term of `γ` over `G` modulo the rational
+centraliser of `γ`.
+-/
 def orbitalIntegral (k : GInf E s → ℂ) (φ : Gf E n → ℂ) (γ : U V.J) : ℂ :=
   ∫ x : G E s, V.orbitalIntegrand k φ γ x ∂((centralizer {γ}).map V.ratEmbed).quotMeasure
 
-/-- For a function `k` on the real group and `φ` on the finite adelic one, the contribution of the
+/--
+For a function `k` on the real group and `φ` on the finite adelic one, the contribution of the
 class `c` to the integral of the terms with polynomial `R`: the sum of their integrals against
-`V.quotMeasure` for the rational points `γ` such that `(V.xFin, γ)` lies in `c`. -/
+`V.quotMeasure` for the rational points `γ` such that `(V.xFin, γ)` lies in `c`.
+-/
 def classIntegral (k : GInf E s → ℂ) (φ : Gf E n → ℂ) (R : E[X]) (c : FrameClass E n) : ℂ :=
   ∑' γ : (fun γ : U V.J ↦ frameClass (V.xFin, (γ : GL n E))) ⁻¹' {c},
     ∫ x : G E s, V.polyTerm k φ {R} γ x ∂V.quotMeasure
@@ -287,40 +306,55 @@ lemma inner_kernel_form {K : Subgroup (Gf E n)} [hK : IsLevel K] (he : IsCuspKer
     _ = volume.real (K : Set (Gf E n)) * v.val.val g := by
         rw [v.val.property.realConv_eq he.integrable, hχ, mul_comm]
 
-/-- The kernel for the characteristic function of the level: if `e` is a cusp kernel of order
+/--
+The kernel for the characteristic function of the level: if `e` is a cusp kernel of order
 `B ≥ 13 n ^ 3`, `K` a level and `b` an orthonormal basis of the forms of type `e` and level `K`,
-then `∑_γ (e ⊗ 1_K)(g⁻¹ γ g') = vol K ∑_i b_i(g) conj(b_i(g'))`. -/
-theorem tsum_kernel_eq_sum {K : Subgroup (Gf E n)} [hK : IsLevel K] [Nonempty n]
-    (hB : 13 * card n ^ 3 ≤ B) (he : IsCuspKernel B e) {ι : Type*} [Fintype ι]
-    (b : OrthonormalBasis ι ℂ (levelSpace (V.formRep e) K)) (g g' : G E s) :
-    ∑' γ : V.Γ, e (g⁻¹ * γ * g').1 * Set.indicator K 1 (g⁻¹ * γ * g').2 =
-      volume.real (K : Set (Gf E n)) *
-        ∑ i : ι, (b i : V.Form e).val g * starRingEnd ℂ ((b i : V.Form e).val g') := by
+then `∑_γ (e ⊗ 1_K)(g⁻¹ γ g') = vol K ∑_i b_i(g) conj(b_i(g'))`.
+-/
+theorem tsum_kernel_eq_sum
+    {K : Subgroup (Gf E n)} [hK : IsLevel K] [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (he : IsCuspKernel B e)
+    {ι : Type*} [Fintype ι]
+    (b : OrthonormalBasis ι ℂ (levelSpace (V.formRep e) K)) (g g' : G E s)
+    : ∑' γ : V.Γ, e (g⁻¹ * γ * g').1 * Set.indicator K 1 (g⁻¹ * γ * g').2
+      = volume.real (K : Set (Gf E n))
+        * ∑ i : ι, (b i : V.Form e).val g * starRingEnd ℂ ((b i : V.Form e).val g') := by
   -- The conjugate of the left side is a form `F` in `g'`; expand it in the basis.
-  obtain ⟨F, hF⟩ : ∃ F : levelSpace (V.formRep e) K, ∀ g' : G E s, starRingEnd ℂ (F.val.val g') =
-      ∑' γ : V.Γ, e (g⁻¹ * γ * g').1 * Set.indicator K 1 (g⁻¹ * γ * g').2 :=
+  obtain ⟨F, hF⟩
+      : ∃ F : levelSpace (V.formRep e) K, ∀ g' : G E s,
+        starRingEnd ℂ (F.val.val g')
+          = ∑' γ : V.Γ, e (g⁻¹ * γ * g').1 * Set.indicator K 1 (g⁻¹ * γ * g').2 :=
     V.exists_kernel_form (eight_mul_sq_lt_of_thirteen_mul_cube_le card_pos hB) he g⁻¹ K
-  let ev : levelSpace (V.formRep e) K →ₗ[ℂ] ℂ :=
-    { toFun v := v.val.val g', map_add' _ _ := rfl, map_smul' _ _ := rfl }
+  let ev : levelSpace (V.formRep e) K →ₗ[ℂ] ℂ := {
+    toFun v := v.val.val g'
+    map_add' _ _ := rfl
+    map_smul' _ _ := rfl
+  }
   have h_expand : ev F = ∑ i : ι, ⟪b i, F⟫_ℂ * ev (b i) := by
     simpa only [_root_.map_sum, map_smul, smul_eq_mul] using congrArg ev (b.sum_repr' F).symm
-  calc _ = starRingEnd ℂ (ev F) := (hF g').symm
+  calc
+    _ = starRingEnd ℂ (ev F) := (hF g').symm
     _ = ∑ i : ι, ⟪F, b i⟫_ℂ * starRingEnd ℂ (ev (b i)) := by
-        simp only [h_expand, _root_.map_sum, map_mul, inner_conj_symm]
+      simp only [h_expand, _root_.map_sum, map_mul, inner_conj_symm]
     _ = volume.real (K : Set (Gf E n)) * ∑ i : ι, (b i).val.val g * starRingEnd ℂ (ev (b i)) := by
-        simp only [V.inner_kernel_form he hF, Finset.mul_sum, mul_assoc]
+      simp only [V.inner_kernel_form he hF, Finset.mul_sum, mul_assoc]
 
-/-- The kernel: let `e` be a cusp kernel of order `B ≥ 13 n ^ 3`, `K` a level, `b` an orthonormal
+/--
+The kernel: let `e` be a cusp kernel of order `B ≥ 13 n ^ 3`, `K` a level, `b` an orthonormal
 basis of the forms of type `e` and level `K`, and `a` an element of the group algebra of `G_f`. Then
 the kernel `∑_γ (e ⊗ (a ⋆ 1_K))(g⁻¹ γ g')`, the sum over all rational points, is
-`vol K ∑_i (a b_i)(g) conj(b_i(g'))`. Here `convIndicator` forms `a ⋆ 1_K`. -/
-theorem partialKernel_convIndicator_eq_sum {K : Subgroup (Gf E n)} [hK : IsLevel K] [Nonempty n]
-    (hB : 13 * card n ^ 3 ≤ B) (he : IsCuspKernel B e) {ι : Type*} [Fintype ι]
+`vol K ∑_i (a b_i)(g) conj(b_i(g'))`. Here `convIndicator` forms `a ⋆ 1_K`.
+-/
+theorem partialKernel_convIndicator_eq_sum
+    {K : Subgroup (Gf E n)} [hK : IsLevel K] [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (he : IsCuspKernel B e)
+    {ι : Type*} [Fintype ι]
     (b : OrthonormalBasis ι ℂ (levelSpace (V.formRep e) K)) (a : MonoidAlgebra ℂ (Gf E n))
-    (g g' : G E s) :
-    V.partialKernel e (convIndicator hK.isOpen hK.isCompact a) .univ g g' =
-      volume.real (K : Set (Gf E n)) * ∑ i : ι,
-        ((V.formRep e).asAlgebraHom a (b i)).val g * starRingEnd ℂ ((b i : V.Form e).val g') := by
+    (g g' : G E s)
+    : V.partialKernel e (convIndicator hK.isOpen hK.isCompact a) .univ g g'
+      = volume.real (K : Set (Gf E n))
+        * ∑ i : ι,
+          ((V.formRep e).asAlgebraHom a (b i)).val g * starRingEnd ℂ ((b i : V.Form e).val g') := by
   classical
   -- Both sides are linear in `a`, and for a group element `h` this is the case of `1_K` at `g h`.
   have h_add (y y' : V.Form e) : (y + y').val g = y.val g + y'.val g := rfl
@@ -345,25 +379,28 @@ theorem partialKernel_convIndicator_eq_sum {K : Subgroup (Gf E n)} [hK : IsLevel
     rw [mul_left_comm, ← ha, partialKernel, partialKernel, ← tsum_mul_left]
     simp [kernelTerm, mul_left_comm _ c]
 
-/-- Let `e` be a cusp kernel of order `B ≥ 13 n ^ 3`, `K` a level, and `T` an operator that acts as
+/--
+Let `e` be a cusp kernel of order `B ≥ 13 n ^ 3`, `K` a level, and `T` an operator that acts as
 the element `a` of the group algebra on the forms of type `e` and level `K`. Then `vol K` times the
 trace of `T` is `V.geometricSide` of all polynomials at `a ⋆ 1_K`, that is, the integral over `[G]`
-of the kernel of `e ⊗ (a ⋆ 1_K)` on the diagonal. -/
-theorem volume_mul_trace_eq {K : Subgroup (Gf E n)} [hK : IsLevel K] [Nonempty n]
-    (hB : 13 * card n ^ 3 ≤ B) (he : IsCuspKernel B e) {a : MonoidAlgebra ℂ (Gf E n)}
-    {T : End ℂ (levelSpace (V.formRep e) K)}
-    (hT : ∀ y : levelSpace (V.formRep e) K, (T y : V.Form e) = (V.formRep e).asAlgebraHom a y) :
-    volume.real (K : Set (Gf E n)) * LinearMap.trace ℂ (levelSpace (V.formRep e) K) T =
-      V.geometricSide hB he .univ (convIndicator hK.isOpen hK.isCompact a) := by
+of the kernel of `e ⊗ (a ⋆ 1_K)` on the diagonal.
+-/
+theorem volume_mul_trace_eq
+    {K : Subgroup (Gf E n)} [hK : IsLevel K] [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (he : IsCuspKernel B e)
+    {a : MonoidAlgebra ℂ (Gf E n)} {T : End ℂ (levelSpace (V.formRep e) K)}
+    (hT : ∀ y : levelSpace (V.formRep e) K, (T y : V.Form e) = (V.formRep e).asAlgebraHom a y)
+    : volume.real (K : Set (Gf E n)) * LinearMap.trace ℂ (levelSpace (V.formRep e) K) T
+      = V.geometricSide hB he .univ (convIndicator hK.isOpen hK.isCompact a) := by
   have : Module.Finite ℂ (levelSpace (V.formRep e) K) := V.finite_levelSpace he ⟨K, hK.isOpen⟩
   let b := stdOrthonormalBasis ℂ (levelSpace (V.formRep e) K)
   -- Put `g' = g` in the expansion of the kernel and integrate.
-  have h_diag (x : G E s) :
-      ∑' γ : U V.J, V.polyTerm e (convIndicator hK.isOpen hK.isCompact a) .univ γ x =
-        volume.real (K : Set (Gf E n)) * ∑ i, (T (b i)).1.1 x * starRingEnd ℂ ((b i).1.1 x) := by
+  have h_diag (x : G E s)
+      : ∑' γ : U V.J, V.polyTerm e (convIndicator hK.isOpen hK.isCompact a) .univ γ x
+        = volume.real (K : Set (Gf E n)) * ∑ i, (T (b i)).1.1 x * starRingEnd ℂ ((b i).1.1 x) := by
     simp [hT, ← V.partialKernel_convIndicator_eq_sum hB he b a x x, partialKernel, kernelTerm]
-  have h_int (v : levelSpace (V.formRep e) K) :
-      Integrable (fun x ↦ (T v).val.val x * starRingEnd ℂ (v.val.val x)) V.quotMeasure :=
+  have h_int (v : levelSpace (V.formRep e) K)
+      : Integrable (fun x ↦ (T v).val.val x * starRingEnd ℂ (v.val.val x)) V.quotMeasure :=
     (T v).val.property.memLp.integrable_mul v.val.property.memLp.star
   simp only [geometricSide_apply, h_diag]
   rw [integral_const_mul, integral_finsetSum _ fun i _ ↦ h_int (b i),
@@ -392,48 +429,57 @@ lemma lintegral_tsum_polyTerm_lt_top [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
         lintegral_mono fun x ↦ (tsum_le_tsum fun γ ↦ h_le γ x).trans (hC x)
     _ < ∞ := lintegral_const_lt_top ofReal_ne_top
 
-/-- Let `φ` be a test function on `G_f`, let `k` be measurable on `G_∞` with
+/--
+Let `φ` be a test function on `G_f`, let `k` be measurable on `G_∞` with
 `‖k g‖ (∏_w ‖g_w‖) ^ B` bounded, where `B ≥ 13 n ^ 3`, and let `R` be irreducible. The integral over
 `[G]` of the sum of the terms `(k ⊗ φ)(x⁻¹ γ x)`, over the rational points `γ` with characteristic
-polynomial `R`, is the sum over all classes `c` of their contributions `V.classIntegral k φ R c`. -/
-theorem hasSum_classIntegral [Nonempty n] (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n))
-    (hk : ∃ C : ℝ, ∀ g : GInf E s,
-      ‖k g‖ * (∏ w : InfinitePlace E, ‖(g w : Matrix n n ℂ)‖) ^ B ≤ C)
-    (hk_meas : Measurable k) {R : E[X]} (hR : Irreducible R) :
-    HasSum (V.classIntegral k φ R)
+polynomial `R`, is the sum over all classes `c` of their contributions `V.classIntegral k φ R c`.
+-/
+theorem hasSum_classIntegral
+    [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n))
+    (hk : ∃ C : ℝ, ∀ g : GInf E s, ‖k g‖ * (∏ w : InfinitePlace E, ‖(g w : Matrix n n ℂ)‖) ^ B ≤ C)
+    (hk_meas : Measurable k)
+    {R : E[X]} (hR : Irreducible R)
+    : HasSum (V.classIntegral k φ R)
       (∫ x : G E s, ∑' γ : U V.J, V.polyTerm k φ {R} γ x ∂V.quotMeasure) := by
   -- Integrate term by term, and group the terms by the class of the rational point.
-  have h_terms : HasSum (fun γ : U V.J ↦ ∫ x : G E s, V.polyTerm k φ {R} γ x ∂V.quotMeasure)
+  have h_terms : HasSum
+      (fun γ : U V.J ↦ ∫ x : G E s, V.polyTerm k φ {R} γ x ∂V.quotMeasure)
       (∫ x : G E s, ∑' γ : U V.J, V.polyTerm k φ {R} γ x ∂V.quotMeasure) :=
-    hasSum_integral_of_lintegral_tsum_lt_top (V.lintegral_tsum_polyTerm_lt_top hB φ hk hR)
-      fun γ ↦ Measurable.aestronglyMeasurable (by fun_prop)
+    hasSum_integral_of_lintegral_tsum_lt_top (V.lintegral_tsum_polyTerm_lt_top hB φ hk hR) fun γ ↦
+      Measurable.aestronglyMeasurable (by fun_prop)
   exact h_terms.tsum_fiberwise fun γ : U V.J ↦ frameClass (V.xFin, (γ : GL n E))
 
-/-- Unfolding: let `φ` be a test function on `G_f` and `k` a measurable function on the real group
+/--
+Unfolding: let `φ` be a test function on `G_f` and `k` a measurable function on the real group
 with `‖k g‖ (∏_w ‖g_w‖) ^ B` bounded, where `B ≥ 13 n ^ 3`. If the rational isometry `γ` has an
 irreducible characteristic polynomial, then its term `(k ⊗ φ)(x⁻¹ γ x)` is integrable over `G`
 modulo the rational centraliser. Moreover, its orbital integral equals the sum of the integrals over
 `Γ \ G` of the terms of the rational points `γ'` whose pair `(V.xFin, γ')` lies in the class of
-`(V.xFin, γ)`. Here `V.xFin` is the finite part of the frame of `V`. -/
-theorem orbitalIntegral_unfold [Nonempty n] (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n))
-    (hk : ∃ C : ℝ, ∀ g : GInf E s,
-      ‖k g‖ * (∏ w : InfinitePlace E, ‖(g w : Matrix n n ℂ)‖) ^ B ≤ C)
-    (hk_meas : Measurable k) {γ : U V.J} (hγ : Irreducible (γ : Matrix n n E).charpoly) :
-    Integrable (V.orbitalIntegrand k φ γ) ((centralizer {γ}).map V.ratEmbed).quotMeasure ∧
-    V.classIntegral k φ (γ : Matrix n n E).charpoly (frameClass (V.xFin, (γ : GL n E))) =
-      V.orbitalIntegral k φ γ := by
+`(V.xFin, γ)`. Here `V.xFin` is the finite part of the frame of `V`.
+-/
+theorem orbitalIntegral_unfold
+    [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n))
+    (hk : ∃ C : ℝ, ∀ g : GInf E s, ‖k g‖ * (∏ w : InfinitePlace E, ‖(g w : Matrix n n ℂ)‖) ^ B ≤ C)
+    (hk_meas : Measurable k)
+    {γ : U V.J} (hγ : Irreducible (γ : Matrix n n E).charpoly)
+    : Integrable (V.orbitalIntegrand k φ γ) ((centralizer {γ}).map V.ratEmbed).quotMeasure
+      ∧ V.classIntegral k φ (γ : Matrix n n E).charpoly (frameClass (V.xFin, (γ : GL n E)))
+        = V.orbitalIntegral k φ γ := by
   -- The fibre of `frameClass` through `γ` is its conjugacy class, an orbit of `ConjAct`.
-  have h_equivariant (t : ConjAct (U V.J)) (δ : U V.J) (x : G E s) :
-      V.polyTerm k φ {γ.val.val.charpoly} (t • δ) (V.ratEmbed (ofConjAct t) * x) =
-        V.polyTerm k φ {γ.val.val.charpoly} δ x := by
+  have h_equivariant (t : ConjAct (U V.J)) (δ : U V.J) (x : G E s)
+      : V.polyTerm k φ {γ.val.val.charpoly} (t • δ) (V.ratEmbed (ofConjAct t) * x)
+        = V.polyTerm k φ {γ.val.val.charpoly} δ x := by
     simp [kernelTerm, ConjAct.smul_def, mul_assoc, charpoly_mul_comm _ (_ * _⁻¹)]
-  obtain ⟨h_int, -, h_sum⟩ := integral_tsum_orbit_of_lt_top_or_integrable
-    (i := V.ratEmbed.comp ofConjAct.toMonoidHom)
-    (Γ := V.Γ) (μ := volume) (S := (centralizer {γ}).map V.ratEmbed)
-    (D := {δ : U V.J | frameClass (V.xFin, δ.val) = frameClass (V.xFin, γ.val)})
-    (k := V.polyTerm k φ {γ.val.val.charpoly}) V.ratEmbed_injective rfl (by fun_prop) h_equivariant
-    (congrArg _ (stabilizer_eq_centralizer γ)) (V.frameClass_eq_iff_mem_orbit γ)
-    (.inl (V.lintegral_tsum_polyTerm_lt_top hB φ hk hγ))
+  obtain ⟨h_int, -, h_sum⟩ :=
+    integral_tsum_orbit_of_lt_top_or_integrable (i := V.ratEmbed.comp ofConjAct.toMonoidHom)
+      (Γ := V.Γ) (μ := volume) (S := (centralizer {γ}).map V.ratEmbed)
+      (D := {δ : U V.J | frameClass (V.xFin, δ.val) = frameClass (V.xFin, γ.val)})
+      (k := V.polyTerm k φ {γ.val.val.charpoly}) V.ratEmbed_injective rfl (by fun_prop)
+      h_equivariant (congrArg _ (stabilizer_eq_centralizer γ)) (V.frameClass_eq_iff_mem_orbit γ)
+      (.inl (V.lintegral_tsum_polyTerm_lt_top hB φ hk hγ))
   rw [polyTerm_charpoly] at h_int
   refine ⟨h_int, ?_⟩
   rw [classIntegral, orbitalIntegral, ← polyTerm_charpoly]
@@ -487,21 +533,27 @@ lemma abs_log_norm_mul_sub_le {Q : Matrix n n ℂ} (hQ : Q ≠ 0) (w : InfiniteP
   refine abs_sub_le_iff.2 ⟨h_le a b, .trans_eq ?_ (U.norm_inv (b w))⟩
   simpa using h_le (a * b) b⁻¹
 
-/-- The measure on triples `(x, y, u)`, with `x` in `G` modulo the rational centraliser of `γ` and
-`y`, `u` in the real group. -/
+/--
+The measure on triples `(x, y, u)`, with `x` in `G` modulo the rational centraliser of `γ` and
+`y`, `u` in the real group.
+-/
 abbrev tripleMeasure (γ : U V.J) : Measure (G E s × GInf E s × GInf E s) :=
   ((centralizer {γ}).map V.ratEmbed).quotMeasure.prod (volume.prod volume)
 
-/-- The integrand of `I_γ` with `e` written as a triple convolution, at a triple `(x, y, u)` with
+/--
+The integrand of `I_γ` with `e` written as a triple convolution, at a triple `(x, y, u)` with
 `x` in `G` and `y`, `u` in the real group. For the kernel `p(a, b) = e(a⁻¹ b)` on the real group
-its factor at infinity is `p(x, x y) p(x y, x y u) p(x y u, γ x)`. -/
-def tripleKernel (e : GInf E s → ℂ) (φ : Gf E n → ℂ) (γ : U V.J)
-    (p : G E s × GInf E s × GInf E s) : ℂ :=
-  e p.2.1 * (e p.2.2 * e (p.2.2⁻¹ * (p.2.1⁻¹ * (p.1⁻¹ * V.ratEmbed γ * p.1).1))) *
-    φ (p.1⁻¹ * V.ratEmbed γ * p.1).2
+its factor at infinity is `p(x, x y) p(x y, x y u) p(x y u, γ x)`.
+-/
+def tripleKernel (e : GInf E s → ℂ) (φ : Gf E n → ℂ) (γ : U V.J) (p : G E s × GInf E s × GInf E s)
+    : ℂ :=
+  e p.2.1 * (e p.2.2 * e (p.2.2⁻¹ * (p.2.1⁻¹ * (p.1⁻¹ * V.ratEmbed γ * p.1).1)))
+    * φ (p.1⁻¹ * V.ratEmbed γ * p.1).2
 
-/-- The map of triples `(x, y, u)` that replaces the points `x, x y, x y u` by
-`x y, x y u, x ((x⁻¹ γ x)_∞, 1)`. -/
+/--
+The map of triples `(x, y, u)` that replaces the points `x, x y, x y u` by
+`x y, x y u, x ((x⁻¹ γ x)_∞, 1)`.
+-/
 def tripleRotate (γ : U V.J) (p : G E s × GInf E s × GInf E s) : G E s × GInf E s × GInf E s :=
   (p.1 * (p.2.1, 1), p.2.2, p.2.2⁻¹ * (p.2.1⁻¹ * (p.1⁻¹ * V.ratEmbed γ * p.1).1))
 

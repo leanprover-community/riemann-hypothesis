@@ -29,16 +29,20 @@ open Polynomial
 
 namespace New.Variety
 
-/-- The ring endomorphism `x ↦ x ^ p ^ f` of a commutative ring `B` in which the prime `p` is
-zero. -/
+/--
+The ring endomorphism `x ↦ x ^ p ^ f` of a commutative ring `B` in which the prime `p` is
+zero.
+-/
 @[simps! -fullyApplied]
-def frobPow {p : ℕ} {B : Type*} [Fact (Nat.Prime p)] [CommRing B] (h : (p : B) = 0) (f : ℕ) :
-    B →+* B :=
+def frobPow {p : ℕ} {B : Type*} [Fact (Nat.Prime p)] [CommRing B] (h : (p : B) = 0) (f : ℕ)
+    : B →+* B :=
   -- The map is additive because the mixed terms of the binomial expansion are multiples of `p`.
   RingHom.mk' (powMonoidHom (p ^ f)) (by simp [add_pow_prime_pow_eq Fact.out, h])
 
-/-- `A` is absolutely integrally closed: every monic polynomial over `A` of positive degree has a
-root in `A`. -/
+/--
+`A` is absolutely integrally closed: every monic polynomial over `A` of positive degree has a
+root in `A`.
+-/
 @[stacks 0DCL "in the equivalent form of 0DCM (2)"]
 class IsAbsIntegrallyClosed (A : Type*) [CommRing A] : Prop where
   /-- Every monic polynomial over `A` of positive degree has a root in `A`. -/
@@ -46,8 +50,8 @@ class IsAbsIntegrallyClosed (A : Type*) [CommRing A] : Prop where
 
 variable {A B K : Type*} [CommRing A] [CommRing B] [Field K]
 
-private theorem isAbsIntegrallyClosed_iff_tauCeti :
-    IsAbsIntegrallyClosed A ↔ TauCeti.IsAbsolutelyIntegrallyClosed A :=
+private theorem isAbsIntegrallyClosed_iff_tauCeti
+    : IsAbsIntegrallyClosed A ↔ TauCeti.IsAbsolutelyIntegrallyClosed A :=
   ⟨fun h ↦ ⟨h.exists_root⟩, fun h ↦ ⟨h.exists_root⟩⟩
 
 /-- An algebraically closed field is absolutely integrally closed. -/

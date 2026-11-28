@@ -124,12 +124,14 @@ lemma dvd_map_of_forall_monomial {m : Dual R (MvPolynomial σ R)} {ψ : MvPolyno
   · rw [h_all α h_dvd, mul_zero]
     exact dvd_zero z
 
-/-- The tensor product of linear forms `l j` on polynomials in disjoint blocks of variables: the
-product of the forms on `⨂_ι R[X_σ]`, pulled back along `R[X_{ι × σ}] → ⨂_ι R[X_σ]`. -/
+/--
+The tensor product of linear forms `l j` on polynomials in disjoint blocks of variables: the
+product of the forms on `⨂_ι R[X_σ]`, pulled back along `R[X_{ι × σ}] → ⨂_ι R[X_σ]`.
+-/
 def tensorDual (l : ι → Dual R (MvPolynomial σ R)) : Dual R (MvPolynomial (ι × σ) R) :=
-  dualDistrib (tprod R l) ∘ₗ
-    (aeval fun v : ι × σ ↦ singleAlgHom v.1 (X v.2) :
-      MvPolynomial (ι × σ) R →ₐ[R] PiTensorProduct R fun _ : ι ↦ MvPolynomial σ R).toLinearMap
+  dualDistrib (tprod R l)
+    ∘ₗ (aeval fun v : ι × σ ↦ singleAlgHom v.1 (X v.2)
+      : MvPolynomial (ι × σ) R →ₐ[R] PiTensorProduct R fun _ : ι ↦ MvPolynomial σ R).toLinearMap
 
 /-- On a product of polynomials `f j`, one in each block, the tensor product of the forms `l j` is
 the product of the values `l j (f j)`. -/
@@ -186,11 +188,13 @@ lemma tensorDual_evalAtOne {k : ℕ} {A : Type} [CommRing A] (z : A)
   rw [Finset.prod_congr rfl fun j _ ↦ h_term j, prod_mul_distrib, prod_const, card_univ,
     prod_prod_type, mul_left_comm]
 
-/-- Apply the forms `l i` in all blocks `i ≠ j` of variables; a polynomial in the block `j`
+/--
+Apply the forms `l i` in all blocks `i ≠ j` of variables; a polynomial in the block `j`
 remains. A monomial of exponent `ν` gives the product of the values of the `l i` at its parts
-`ν.curry i`, times the monomial of exponent `ν.curry j`. -/
-def tensorDualExcept (l : ι → Dual R (MvPolynomial σ R)) (j : ι) (f : MvPolynomial (ι × σ) R) :
-    MvPolynomial σ R :=
+`ν.curry i`, times the monomial of exponent `ν.curry j`.
+-/
+def tensorDualExcept (l : ι → Dual R (MvPolynomial σ R)) (j : ι) (f : MvPolynomial (ι × σ) R)
+    : MvPolynomial σ R :=
   ∑ ν ∈ f.support,
     (f.coeff ν * ∏ i ∈ univ.erase j, l i (monomial (ν.curry i) 1)) • monomial (ν.curry j) 1
 
@@ -245,17 +249,20 @@ end TensorDual
 
 namespace FrobeniusCycle
 
-variable {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
+variable
+  {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
   (T : FrobeniusCycle N W O)
 
 /-! ### Linear forms applied to the substitution -/
 
-/-- The entries of `T.substitutionOperator r ℓ n T.frobGenericMatrix` are polynomials in `N` generic
+/--
+The entries of `T.substitutionOperator r ℓ n T.frobGenericMatrix` are polynomials in `N` generic
 `k × k` matrices, the copies, one for each letter `j ∈ ℤ/N`. This is the matrix over `O` obtained by
 applying to each entry the tensor product of linear forms `l j`, one for each copy. Its rows and
-columns are indexed by the monomials of degree `n` in each of `N` groups of `k` variables. -/
-def frobContraction (n r ℓ : ℕ) (l : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O)) :
-    Matrix (Exponents N k n) (Exponents N k n) O :=
+columns are indexed by the monomials of degree `n` in each of `N` groups of `k` variables.
+-/
+def frobContraction (n r ℓ : ℕ) (l : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O))
+    : Matrix (Exponents N k n) (Exponents N k n) O :=
   (T.substitutionOperator r ℓ n T.frobGenericMatrix).map (tensorDual l)
 
 /-- The matrix `T.frobContraction n r ℓ l`, indexed by the monomials of degree `n` in each of `N`
@@ -368,14 +375,17 @@ lemma letterRep_mul_frobContraction {r ℓ : ℕ} {g : GL (Fin k) W} (hg : g ∈
 
 /-! ### One copy at a time -/
 
-/-- The substitution in the frame `g`, that is `T.substitutionOperator` at the factors
+/--
+The substitution in the frame `g`, that is `T.substitutionOperator` at the factors
 `T.conjFrobGenericMatrix g`, is a matrix of polynomials in `N` generic matrices, the copies. It is
 applied to the translate `T.letterRep n g *ᵥ h`, and the linear forms `l i` are applied in all
 copies `i ≠ j`. The result is a vector, indexed by `β`, of polynomials in the entries of the copy
-`j`. -/
-def contractOtherCopies (r ℓ : ℕ) (l : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O))
-    (j : ZMod N) (g : GL (Fin k) W) (h : Exponents N k n → O) (β : Exponents N k n) :
-    MvPolynomial (Fin k × Fin k) O :=
+`j`.
+-/
+def contractOtherCopies
+    (r ℓ : ℕ) (l : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O)) (j : ZMod N) (g : GL (Fin k) W)
+    (h : Exponents N k n → O) (β : Exponents N k n)
+    : MvPolynomial (Fin k × Fin k) O :=
   ∑ γ : Exponents N k n, (T.letterRep n g *ᵥ h) γ •
     tensorDualExcept l j (T.substitutionOperator r ℓ n (T.conjFrobGenericMatrix g) β γ)
 
@@ -551,12 +561,15 @@ lemma lt_weight_and_lt_defect_of_not_dvd_coeff_contractOtherCopies [IsDomain O] 
 
 /-! ### The averaging map -/
 
-/-- The map `Av_J`: the substitution `T.substitutionOperator` at generic matrices, one for each
+/--
+The map `Av_J`: the substitution `T.substitutionOperator` at generic matrices, one for each
 letter, is applied, then the forms `I j` (averages, in the applications) in the copies `j ∈ J` and
 `p ^ c₀` times the evaluation at the identity matrix in the other copies,
-`c₀ = T.multinomialExponent k`. -/
-def partialAverage (n r ℓ : ℕ) (I : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O))
-    (J : Finset (ZMod N)) : Matrix (Exponents N k n) (Exponents N k n) O :=
+`c₀ = T.multinomialExponent k`.
+-/
+def partialAverage
+    (n r ℓ : ℕ) (I : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O)) (J : Finset (ZMod N))
+    : Matrix (Exponents N k n) (Exponents N k n) O :=
   T.frobContraction n r ℓ
     (J.piecewise I fun _ : ZMod N ↦ evalAtOne ((T.p : O) ^ T.multinomialExponent k))
 
@@ -681,7 +694,8 @@ lemma pow_dvd_pairing_partialAverage_insert_sub [IsDomain O] [CharZero O] {a r :
     have h_lt : a < r := Fin.lt_def.2 (ha ▸ Nat.lt_succ_self a.val)
     exact (hb.pow_dvd_pairing_letterRep T h_lt hh' (inv_mem hg) h_defect).mul_left _
 
-/-- The averaging map. Let `T` be a Frobenius cycle (`P = T.P`, `w = T.sqrtPrime`, `w ^ 2 = p`)
+/--
+The averaging map. Let `T` be a Frobenius cycle (`P = T.P`, `w = T.sqrtPrime`, `w ^ 2 = p`)
 over a valuation domain `O` of characteristic
 `0` in which `p` is not a unit. Vectors are coefficient vectors of polynomials of degree `n` in each
 of `N` groups of `k` variables, on which `GL_k(W)` acts by `T.letterRep n`. Let `r = a + 1`,
@@ -693,17 +707,21 @@ of `N` groups of `k` variables, on which `GL_k(W)` acts by `T.letterRep n`. Let 
   divides the coefficient in `g Av h` of each monomial with defect above `3 c*` at some letter `i`;
   the defect is the weighted degree for the weights `T.defectWeight i a r`.
 * `⟨Av h, h'⟩ ≡ p ^ (N c₀) ⟨h, h'⟩` modulo `w ^ c` for all `h` and all
-  `h' ∈ T.allEdgesForms k n r`. -/
-theorem exists_average_mem_defectConditions_and_dvd_sub [IsDomain O] [CharZero O] {a r : Fin k}
-    [ValuationRing O] (hp : ¬IsUnit (T.p : O)) (ha : a + 1 = r.val) {ℓ : ℕ}
-    (hℓ : ℓ + ℓ = N) (h_size : N * k * (ℓ + 2) * n + n + k < T.P ^ ℓ)
-    {b b' : Exponents N k n → O} (hb : T.IsEdgePairing b b') (c : ℕ) :
-    ∃ Av : Matrix (Exponents N k n) (Exponents N k n) O,
+  `h' ∈ T.allEdgesForms k n r`.
+-/
+theorem exists_average_mem_defectConditions_and_dvd_sub
+    [IsDomain O] [CharZero O]
+    {a r : Fin k} [ValuationRing O]
+    (hp : ¬ IsUnit (T.p : O)) (ha : a + 1 = r.val)
+    {ℓ : ℕ} (hℓ : ℓ + ℓ = N) (h_size : N * k * (ℓ + 2) * n + n + k < T.P ^ ℓ)
+    {b b' : Exponents N k n → O} (hb : T.IsEdgePairing b b')
+    (c : ℕ)
+    : ∃ Av : Matrix (Exponents N k n) (Exponents N k n) O,
       (∀ h : Exponents N k n → O,
-        Av *ᵥ h ∈ T.defectConditions n a r (span {T.sqrtPrime ^ c}) (3 * defectThreshold k c)) ∧
-      ∀ (h : Exponents N k n → O), ∀ h' ∈ T.allEdgesForms k n r,
-        T.sqrtPrime ^ c ∣ h' ⬝ᵥ (b * Av *ᵥ h) -
-          (T.p : O) ^ (N * T.multinomialExponent k) * h' ⬝ᵥ (b * h) := by
+          Av *ᵥ h ∈ T.defectConditions n a r (span {T.sqrtPrime ^ c}) (3 * defectThreshold k c))
+        ∧ ∀ (h : Exponents N k n → O), ∀ h' ∈ T.allEdgesForms k n r,
+          T.sqrtPrime ^ c
+            ∣ h' ⬝ᵥ (b * Av *ᵥ h) - (T.p : O) ^ (N * T.multinomialExponent k) * h' ⬝ᵥ (b * h) := by
   have h_eq : N * n * k * (ℓ + 2) = N * k * (ℓ + 2) * n := by
     rw [mul_right_comm N n k, mul_right_comm (N * k) n (ℓ + 2)]
   have h_small : N * n * k * (ℓ + 2) ≤ T.P ^ ℓ := by
@@ -717,33 +735,38 @@ theorem exists_average_mem_defectConditions_and_dvd_sub [IsDomain O] [CharZero O
       rw [add_mul, one_mul, ← h_eq]
       exact Nat.add_lt_add_left ((Nat.le_add_left k _).trans_lt h_size) D
     have h2 : (N * k * (ℓ + 2) * n + 1) * T.P ^ ℓ ≤ T.P ^ N :=
-      (Nat.mul_le_mul_right _ (Nat.succ_le_of_lt
-        (((Nat.le_add_right _ n).trans (Nat.le_add_right _ k)).trans_lt h_size))).trans_eq
-        (by rw [← pow_add, hℓ])
+      (Nat.mul_le_mul_right _
+        (Nat.succ_le_of_lt (((Nat.le_add_right _ n).trans (Nat.le_add_right _ k)).trans_lt
+          h_size))).trans_eq (by rw [← pow_add, hℓ])
     exact h1.trans_le h2
   have hD_pow : D < T.p ^ (T.frobExp * N) := by
     rw [pow_mul]
     exact (Nat.le_add_right D k).trans_lt hD
-  have h_exists (j : ZMod N) : ∃ I : Dual O (MvPolynomial (Fin k × Fin k) O),
-      IsAverage (twoBlock k r) (T.embedding j) (rootVector a r) (2 * defectThreshold k c * T.P ^ ℓ)
-        ((T.p : O) ^ T.multinomialExponent k) D I :=
+  have h_exists (j : ZMod N)
+      : ∃ I : Dual O (MvPolynomial (Fin k × Fin k) O),
+        IsAverage (twoBlock k r) (T.embedding j) (rootVector a r)
+          (2 * defectThreshold k c * T.P ^ ℓ) ((T.p : O) ^ T.multinomialExponent k) D I :=
     exists_isAverage (twoBlock k r) (T.embedding j) T.prime hp (T.frobExp * N) hD_pow
       (hD.le.trans_eq T.card_residueField.symm) _ _
   choose I hI using h_exists
-  refine ⟨T.partialAverage n r ℓ I univ,
-    T.partialAverage_univ_mulVec_mem_defectConditions hp ha h_small hℓ_le hI, fun h h' hh' ↦ ?_⟩
+  refine ⟨
+    T.partialAverage n r ℓ I univ,
+    T.partialAverage_univ_mulVec_mem_defectConditions hp ha h_small hℓ_le hI,
+    fun h h' hh' ↦ ?_
+  ⟩
   -- Add the differences along a chain of subsets that starts at `∅`.
-  have h_chain (J : Finset (ZMod N)) :
-      T.sqrtPrime ^ c ∣ h' ⬝ᵥ (b * T.partialAverage n r ℓ I J *ᵥ h) -
-        (T.p : O) ^ (N * T.multinomialExponent k) * h' ⬝ᵥ (b * h) := by
+  have h_chain (J : Finset (ZMod N))
+      : T.sqrtPrime ^ c
+        ∣ h' ⬝ᵥ (b * T.partialAverage n r ℓ I J *ᵥ h)
+          - (T.p : O) ^ (N * T.multinomialExponent k) * h' ⬝ᵥ (b * h) := by
     induction J using Finset.induction_on with
     | empty =>
       rw [partialAverage_empty, smul_mulVec, one_mulVec, mul_smul_comm, dotProduct_smul,
         smul_eq_mul, sub_self]
       exact dvd_zero _
     | insert j J hj ih =>
-      have h_add := dvd_add
-        (T.pow_dvd_pairing_partialAverage_insert_sub hp ha h_small hℓ_le hI hb hj h hh') ih
+      have h_add :=
+        dvd_add (T.pow_dvd_pairing_partialAverage_insert_sub hp ha h_small hℓ_le hI hb hj h hh') ih
       rwa [sub_add_sub_cancel] at h_add
   exact h_chain univ
 

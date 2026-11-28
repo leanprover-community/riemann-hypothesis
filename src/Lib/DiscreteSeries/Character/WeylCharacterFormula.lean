@@ -85,13 +85,16 @@ open Matrix Finset Int AddMonoidAlgebra UnitAddTorus AddCircle Equiv Function HC
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
-/-- For a tuple `x` of unit complex numbers, the algebra homomorphism from Laurent polynomials to
-`ℂ` sending the monomial of exponent `γ` to `∏ x_a ^ γ_a`. -/
+/--
+For a tuple `x` of unit complex numbers, the algebra homomorphism from Laurent polynomials to
+`ℂ` sending the monomial of exponent `γ` to `∏ x_a ^ γ_a`.
+-/
 def torusEval (x : n → Circle) : ℂ[n → ℤ] →ₐ[ℂ] ℂ :=
-  lift ℂ ℂ (n → ℤ)
-    { toFun (γ : Multiplicative (n → ℤ)) := ∏ a : n, (x a : ℂ) ^ γ.toAdd a
-      map_one' := by simp
-      map_mul' := by simp [zpow_add₀, prod_mul_distrib] }
+  lift ℂ ℂ (n → ℤ) {
+    toFun (γ : Multiplicative (n → ℤ)) := ∏ a : n, (x a : ℂ) ^ γ.toAdd a
+    map_one' := by simp
+    map_mul' := by simp [zpow_add₀, prod_mul_distrib]
+  }
 
 omit [DecidableEq n] in
 /-- The value of a Laurent polynomial `P` at `x` is the sum over the exponents `γ` of the
@@ -101,27 +104,32 @@ lemma torusEval_eq_sum (x : n → Circle) (P : ℂ[n → ℤ]) :
   simp [torusEval, lift_apply']
 
 /-- The finite set of pairs of indices `(a, b)` with `ε a = 1` and `ε b = -1`. -/
-def oppositePairs (ε : n → ℤˣ) : Finset (n × n) :=
-  univ.filter (ε · = 1) ×ˢ univ.filter (ε · ≠ 1)
+def oppositePairs (ε : n → ℤˣ) : Finset (n × n) := univ.filter (ε · = 1) ×ˢ univ.filter (ε · ≠ 1)
 
 omit [DecidableEq n] in
 lemma mem_oppositePairs {ε : n → ℤˣ} {p : n × n} :
     p ∈ oppositePairs ε ↔ ε p.1 = 1 ∧ ε p.2 ≠ 1 := by
   simp [oppositePairs]
 
-/-- The Laurent polynomial `∑ sgn(w) x ^ (l ∘ w)`, summed over the permutations `w` that preserve
-the signs `ε` (the Weyl group of `K`). -/
+/--
+The Laurent polynomial `∑ sgn(w) x ^ (l ∘ w)`, summed over the permutations `w` that preserve
+the signs `ε` (the Weyl group of `K`).
+-/
 def alternant (ε : n → ℤˣ) (l : n → ℤ) : ℂ[n → ℤ] :=
   ∑ w : Perm n, if ε ∘ w = ε then AddMonoidAlgebra.single (l ∘ w) w.sign else 0
 
-/-- The function `t` on `ℤⁿ` is antisymmetric under the Weyl group of `K`:
-`t (γ ∘ w) = sgn(w) t γ` for the permutations `w` preserving the signs `ε`. -/
+/--
+The function `t` on `ℤⁿ` is antisymmetric under the Weyl group of `K`:
+`t (γ ∘ w) = sgn(w) t γ` for the permutations `w` preserving the signs `ε`.
+-/
 def IsWeylAntisymm (ε : n → ℤˣ) (t : (n → ℤ) → ℂ) : Prop :=
   ∀ w : Perm n, ε ∘ w = ε → ∀ γ : n → ℤ, t (γ ∘ w) = w.sign * t γ
 
-/-- The monoid of pairs `(a, P)`, where `P` is a Laurent polynomial with coefficient `1` at `x ^ a`,
+/--
+The monoid of pairs `(a, P)`, where `P` is a Laurent polynomial with coefficient `1` at `x ^ a`,
 all exponents `γ` of `P` are nonnegative, and every `γ` other than `a` has a lower level:
-`l ⬝ᵥ γ < l ⬝ᵥ a`. -/
+`l ⬝ᵥ γ < l ⬝ᵥ a`.
+-/
 def leadingMonomials (l : n → ℤ) : Submonoid (Multiplicative (n → ℤ) × ℂ[n → ℤ]) where
   carrier :=
     {p : Multiplicative (n → ℤ) × ℂ[n → ℤ] |
@@ -130,8 +138,8 @@ def leadingMonomials (l : n → ℤ) : Submonoid (Multiplicative (n → ℤ) × 
   mul_mem' {a b} := by
     -- An exponent of the product is a sum of exponents of the factors. Levels add, so the sum of
     -- the two top exponents arises in one way only and every other sum has a lower level.
-    have h_supp (γ : n → ℤ) (hγ : (a.2 * b.2).coeff γ ≠ 0) :
-        ∃ y : n → ℤ, a.2.coeff y ≠ 0 ∧ ∃ z : n → ℤ, b.2.coeff z ≠ 0 ∧ y + z = γ := by
+    have h_supp (γ : n → ℤ) (hγ : (a.2 * b.2).coeff γ ≠ 0)
+        : ∃ y : n → ℤ, a.2.coeff y ≠ 0 ∧ ∃ z : n → ℤ, b.2.coeff z ≠ 0 ∧ y + z = γ := by
       simpa [mem_add] using a.2.support_coeff_mul_subset b.2 (Finsupp.mem_support_iff.2 hγ)
     simp
     grind [UniqueAdd, add_nonneg, coeff_mul_add_of_uniqueAdd, dotProduct_add,
@@ -158,18 +166,25 @@ lemma single_sub_single_mem_leadingMonomials (l : n → ℤ) {a b : n} (h_lt : l
   · exact ⟨Pi.single_nonneg.2 zero_le_one, .inl rfl⟩
   · exact ⟨Pi.single_nonneg.2 zero_le_one, .inr h_level⟩
 
-variable {ε : n → ℤˣ} (l : HCParam ε) (r : ℤˣ → ℤˣ → Prop) [DecidableRel r]
-  {ν : n → ℤ} {P Q : ℂ[n → ℤ]} (w : Perm n)
+variable
+  {ε : n → ℤˣ} (l : HCParam ε)
+  (r : ℤˣ → ℤˣ → Prop) [DecidableRel r]
+  {ν : n → ℤ} {P Q : ℂ[n → ℤ]}
+  (w : Perm n)
 
-/-- The Laurent polynomial `∏ (x_a - x_b)` over the pairs `(a, b)` with `r (ε a) (ε b)` and
-`l b < l a`. It is a partial Weyl denominator (Vandermonde product) for the order given by `l`. -/
+/--
+The Laurent polynomial `∏ (x_a - x_b)` over the pairs `(a, b)` with `r (ε a) (ε b)` and
+`l b < l a`. It is a partial Weyl denominator (Vandermonde product) for the order given by `l`.
+-/
 def _root_.New.HCParam.rootProd : ℂ[n → ℤ] :=
   ∏ a : n, ∏ b : n with r (ε a) (ε b) ∧ l b < l a,
     (.single (Pi.single a 1) 1 - .single (Pi.single b 1) 1)
 
-/-- The number of `b` with `r (ε a) (ε b)` and `l b < l a`. As a function of `a`, it is the exponent
-of the product of the first terms `x_a` of the factors of `New.HCParam.rootProd l r`. -/
-def _root_.New.HCParam.lowerCount (a : n) : ℤ := (#{b : n | r (ε a) (ε b) ∧ l b < l a} : ℤ)
+/--
+The number of `b` with `r (ε a) (ε b)` and `l b < l a`. As a function of `a`, it is the exponent
+of the product of the first terms `x_a` of the factors of `New.HCParam.rootProd l r`.
+-/
+def _root_.New.HCParam.lowerCount (a : n) : ℤ := (# {b : n | r (ε a) (ε b) ∧ l b < l a} : ℤ)
 
 omit [DecidableEq n] in
 lemma _root_.New.HCParam.lowerCount_nonneg (a : n) : 0 ≤ l.lowerCount r a :=
@@ -468,18 +483,22 @@ open Matrix Finset Complex DiscreteSeries Equiv HCParam BlockTriangular
 
 variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {l ν : HCParam (n := n) ε}
 
-/-- The continuous function `g ↦ (∫ y, New.weightMinors ν (y⁻¹ g y)) / ∫ k, |New.weightMinors ν k|²`
+/--
+The continuous function `g ↦ (∫ y, New.weightMinors ν (y⁻¹ g y)) / ∫ k, |New.weightMinors ν k|²`
 on `K`, for Haar measure of mass one. It is defined for every `ν`. If `l` is injective and `ν` is
 dominant for the order of `l`, it is the character of highest weight `ν` on the torus (see
-`New.Orbital.weyl_character_kTypeChar`). -/
+`New.Orbital.weyl_character_kTypeChar`).
+-/
 noncomputable def _root_.New.HCParam.kTypeChar (ν : HCParam ε) : C(maxCompactU ε, ℂ) where
   toFun g := (∫ y : maxCompactU ε, weightMinors ν (y⁻¹ * g * y).val ∂haarK ε) / ν.kTypeNormSq
   continuous_toFun := by
     -- an integral over the compact group `maxCompactU ε` depends continuously on the parameter `g`
     rw [← (haarK ε).restrict_univ]
-    exact (continuous_parametric_integral_of_continuous (by fun_prop (disch :=
-      simp [GeneralLinearGroup.det_ne_zero]))
-        isCompact_univ).div_const _
+    exact (continuous_parametric_integral_of_continuous
+      (by
+        fun_prop (disch :=
+          simp [GeneralLinearGroup.det_ne_zero]))
+      isCompact_univ).div_const _
 
 /-- Given unitary matrices `g τ` on the blocks `{i | ε i = τ}`, there is an element `y` of `K` whose
 matrix is the block diagonal matrix of the `g τ`, reindexed by `n`. Its diagonal blocks are the

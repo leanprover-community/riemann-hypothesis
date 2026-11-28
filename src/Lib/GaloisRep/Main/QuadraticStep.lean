@@ -43,8 +43,8 @@ section SplitPlaceCount
 
 open NumberField Filter Ideal IsCyclotomicExtension.Rat Set Finset
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {d : ℕ} [HasQuadSubfield d E]
-  {w : FinPlace E}
+variable
+  {E : Type} [Field E] [NumberField E] [IsCMField E] {d : ℕ} [HasQuadSubfield d E] {w : FinPlace E}
 
 /-- A place `w` of `E` above a split place of `ℚ(√−d)` prime to `d`
 (`New.GaloisRep.IsSplitPrimeToDisc`) is split: it differs from its complex conjugate. -/
@@ -131,8 +131,8 @@ end SplitPlaceCount
 
 section QuadraticStep
 
-open NumberField IsDedekindDomain HeightOneSpectrum Ideal Nat ZMod decompGroup QZChar
-  Cohomology QuadField algebraMap
+open NumberField IsDedekindDomain HeightOneSpectrum Ideal Nat ZMod decompGroup QZChar Cohomology
+  QuadField algebraMap
 
 /-- For `R ≠ 0` divisible by `4` and `n ≠ 0` there is `D ≡ -1 (mod R)` that is a norm `α * star α`
 from `𝓞 E` and such that `-D` is a uniformiser at some place `P` prime to `n`. -/
@@ -189,19 +189,21 @@ open scoped Classical
 variable {E : Type} [Field E] [EmbeddedNumberField E] {b c : Ω} {x : E}
 
 /-- The Kummer sign homomorphism `Gal(Ω/E) →* ℤˣ` (`{±1}`) sending `g` to `g c / c`. -/
-private noncomputable def sqrtSign (hc : c ^ 2 = algebraMap E Ω x) (hc_ne : c ≠ 0) :
-    Gal(Ω/E) →* ℤˣ :=
+private noncomputable def sqrtSign (hc : c ^ 2 = algebraMap E Ω x) (hc_ne : c ≠ 0)
+    : Gal(Ω/E) →* ℤˣ :=
   let ε (g : Gal(Ω/E)) : ℤˣ := if g c = c then 1 else -1
   have hε (g : Gal(Ω/E)) : ((ε g : ℤ) : Ω) * c = g c := by
     by_cases h : g c = c
     · simp [ε, h]
     · dsimp only [ε]; rw [ite_eq_right h]; simp [(apply_sqrt_eq_or_eq_neg g hc).resolve_left h]
   MonoidHom.mk' ε fun g h ↦
-      Units.ext <| Int.cast_injective (α := Ω) <| mul_right_cancel₀ hc_ne <| by
-    calc ((ε (g * h) : ℤ) : Ω) * c = g (h c) := hε (g * h)
-      _ = g (((ε h : ℤ) : Ω) * c) := by rw [hε h]
-      _ = ((ε h : ℤ) : Ω) * (((ε g : ℤ) : Ω) * c) := by simp [hε g]
-      _ = ((↑(ε g * ε h) : ℤ) : Ω) * c := by push_cast; ring
+    Units.ext <| Int.cast_injective (α := Ω) <| mul_right_cancel₀ hc_ne <| by
+      calc
+        ((ε (g * h) : ℤ) : Ω) * c
+          = g (h c) := hε (g * h)
+        _ = g (((ε h : ℤ) : Ω) * c) := by rw [hε h]
+        _ = ((ε h : ℤ) : Ω) * (((ε g : ℤ) : Ω) * c) := by simp [hε g]
+        _ = ((↑(ε g * ε h) : ℤ) : Ω) * c := by push_cast; ring
 
 private lemma sqrtSign_mul_self (hc : c ^ 2 = algebraMap E Ω x) (hc_ne : c ≠ 0) (g : Gal(Ω/E)) :
     ((sqrtSign hc hc_ne g : ℤ) : Ω) * c = g c := by
@@ -221,12 +223,13 @@ private lemma sqrtSign_conjGal [IsCMField E] (hb : b ^ 2 = algebraMap E Ω x)
       _ = _ := by simp
 
 private noncomputable def signToQZ : ℤˣ →* Multiplicative QZ :=
-  (QZ.ofZMod 2).toMultiplicative.comp <|
-    MonoidHom.mk' (fun u : ℤˣ ↦ Multiplicative.ofAdd (if u = 1 then 0 else 1)) fun u v ↦ by
+  (QZ.ofZMod 2).toMultiplicative.comp <| MonoidHom.mk'
+    (fun u : ℤˣ ↦ Multiplicative.ofAdd (if u = 1 then 0 else 1))
+    fun u v ↦ by
       rcases Int.units_eq_one_or u with rfl | rfl
       · simp
-      · rcases Int.units_eq_one_or v with rfl | rfl <;>
-          simp [← ofAdd_add, show (1 : ZMod 2) + 1 = 0 from rfl]
+      · rcases Int.units_eq_one_or v with rfl | rfl
+          <;> simp [← ofAdd_add, show (1 : ZMod 2) + 1 = 0 from rfl]
 
 private lemma signToQZ_eq_one_iff (u : ℤˣ) : signToQZ u = 1 ↔ u = 1 := by
   rcases Int.units_eq_one_or u with rfl | rfl
@@ -234,12 +237,13 @@ private lemma signToQZ_eq_one_iff (u : ℤˣ) : signToQZ u = 1 ↔ u = 1 := by
   · simpa [signToQZ] using (QZ.ofZMod_injective (n := 2)).ne (by decide : (1 : ZMod 2) ≠ 0)
 
 /-- The quadratic character `Gal(Ω/E) → ℚ/ℤ` of `E(b)`, composing `sqrtSign` with `ℤˣ ↪ ℚ/ℤ`. -/
-private noncomputable def sqrtChar (hb : b ^ 2 = algebraMap E Ω x) (hb_ne : b ≠ 0) :
-    QZChar Gal(Ω/E) :=
-  ⟨fun g ↦ Multiplicative.toAdd (signToQZ (sqrtSign hb hb_ne g)),
-    ((isLocallyConstant_smul b).comp fun c ↦
-      Multiplicative.toAdd (signToQZ (if c = b then 1 else -1))).continuous,
-    fun g h ↦ by simp⟩
+private noncomputable def sqrtChar (hb : b ^ 2 = algebraMap E Ω x) (hb_ne : b ≠ 0)
+    : QZChar Gal(Ω/E) := ⟨
+  fun g ↦ Multiplicative.toAdd (signToQZ (sqrtSign hb hb_ne g)),
+  ((isLocallyConstant_smul b).comp fun c ↦
+    Multiplicative.toAdd (signToQZ (if c = b then 1 else -1))).continuous,
+  fun g h ↦ by simp
+⟩
 
 private lemma two_nsmul_sqrtChar (hb : b ^ 2 = algebraMap E Ω x) (hb_ne : b ≠ 0) :
     2 • sqrtChar hb hb_ne = 0 := by
@@ -399,31 +403,42 @@ lemma IsSplitPrimeToDisc.of_mem {D : ℕ} [Fact (D % 4 = 3)] {v : FinPlace (Quad
   · exact ⟨0, by simpa using hc, 1, 1, by simp⟩
   · exact ⟨1, by simpa using neg_mem hc, -1, -1, by simp⟩
 
-/-- A `ℚ/ℤ`-valued character `χ` of `Gal(Ω/E)` and a natural number `D` form a quadratic step over
+/--
+A `ℚ/ℤ`-valued character `χ` of `Gal(Ω/E)` and a natural number `D` form a quadratic step over
 `E` for the integer `n`. Here `symmetrize χ` is `g ↦ χ g + χ gᶜ`, with `gᶜ` the conjugate of `g` by
-complex conjugation, and `stepField χ`, the fixed field of its kernel, contains `ℚ(√-D)`. -/
-structure IsQuadraticStep (E : Type) [Field E] [EmbeddedNumberField E] [IsCMField E]
-    [HasPrimitiveRoot5040 E] (n : ℕ) (χ : QZChar Gal(Ω/E)) (D : ℕ)
-    [HasQuadSubfield D (stepField χ)] : Prop where
+complex conjugation, and `stepField χ`, the fixed field of its kernel, contains `ℚ(√-D)`.
+-/
+structure IsQuadraticStep
+    (E : Type) [Field E] [EmbeddedNumberField E] [IsCMField E] [HasPrimitiveRoot5040 E]
+    (n : ℕ)
+    (χ : QZChar Gal(Ω/E)) (D : ℕ) [HasQuadSubfield D (stepField χ)]
+    : Prop where
   /-- `stepField χ`, with the idele character of `χ`, is a step over `E`. -/
   isStep : IsStep (stepField χ) (ideleChar χ)
-  /-- For some `m`, every subgroup that contains the inertia groups at the places prime to `n` of
-  norm at most `m` generates `Gal(Ω/E)` together with `ker (symmetrize χ) ⊓ ker χ`. -/
-  exists_mul_mem_of_inertiaAbove_subset : ∃ m : ℕ, ∀ H : Subgroup Gal(Ω/E),
-    inertiaAbove {x : FinPlace E | ↑n ∉ x.asIdeal ∧ x.q ≤ m} ⊆ H →
-    ∀ g : Gal(Ω/E), ∃ h ∈ H, g * h ∈ ker (symmetrize χ) ⊓ ker χ
+  /--
+  For some `m`, every subgroup that contains the inertia groups at the places prime to `n` of
+  norm at most `m` generates `Gal(Ω/E)` together with `ker (symmetrize χ) ⊓ ker χ`.
+  -/
+  exists_mul_mem_of_inertiaAbove_subset
+    : ∃ m : ℕ, ∀ H : Subgroup Gal(Ω/E),
+      inertiaAbove {x : FinPlace E | ↑n ∉ x.asIdeal ∧ x.q ≤ m} ⊆ H
+        → ∀ g : Gal(Ω/E), ∃ h ∈ H, g * h ∈ ker (symmetrize χ) ⊓ ker χ
   /-- The places of `stepField χ` over `n` lie over split places of `QuadField D` prime to `D`. -/
-  isSplitPrimeToDisc_below : ∀ u : FinPlace (stepField χ), ↑n ∈ u.asIdeal →
-    IsSplitPrimeToDisc (u.below (QuadField D))
+  isSplitPrimeToDisc_below
+    : ∀ u : FinPlace (stepField χ), ↑n ∈ u.asIdeal → IsSplitPrimeToDisc (u.below (QuadField D))
   /-- At a place over `n`, the decomposition group fixes `stepField χ`. -/
-  decompGroup_le_ker_symmetrise : ∀ {A : ClosurePlace} {w : FinPlace E}, IsPlaceOver A w →
-    ↑n ∈ w.asIdeal → decompGroup Gal(Ω/E) A ≤ ker (symmetrize χ)
+  decompGroup_le_ker_symmetrise
+    : ∀ {A : ClosurePlace} {w : FinPlace E},
+      IsPlaceOver A w → ↑n ∈ w.asIdeal → decompGroup Gal(Ω/E) A ≤ ker (symmetrize χ)
   /-- At a place over `n`, the inertia group fixes `stepField χ`, and `χ` vanishes on it. -/
-  inertiaGroup_le_ker_inf : ∀ {A : ClosurePlace} {w : FinPlace E}, IsPlaceOver A w →
-    ↑n ∈ w.asIdeal → inertiaGroup Gal(Ω/E) A ≤ ker (symmetrize χ) ⊓ ker χ
+  inertiaGroup_le_ker_inf
+    : ∀ {A : ClosurePlace} {w : FinPlace E},
+      IsPlaceOver A w → ↑n ∈ w.asIdeal → inertiaGroup Gal(Ω/E) A ≤ ker (symmetrize χ) ⊓ ker χ
   /-- At a split place over `n`, the same holds for the whole decomposition group. -/
-  decompGroup_le_ker_inf_of_isSplit : ∀ {A : ClosurePlace} {w : FinPlace E}, IsPlaceOver A w →
-    ↑n ∈ w.asIdeal → w.IsSplit → decompGroup Gal(Ω/E) A ≤ ker (symmetrize χ) ⊓ ker χ
+  decompGroup_le_ker_inf_of_isSplit
+    : ∀ {A : ClosurePlace} {w : FinPlace E},
+      IsPlaceOver A w → ↑n ∈ w.asIdeal → w.IsSplit
+        → decompGroup Gal(Ω/E) A ≤ ker (symmetrize χ) ⊓ ker χ
 
 /-- For `E` a CM field containing a primitive 5040th root of unity (`HasPrimitiveRoot5040 E`) and
 `n ≠ 0`, there are a `ℚ/ℤ`-valued character `χ` of `Gal(Ω/E)` and `D ≡ 3 (mod 4)` forming a

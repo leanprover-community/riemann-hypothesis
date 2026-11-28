@@ -67,8 +67,9 @@ lemma mem_colSpan_submatrix {F m n n' : Type} [Field F] [Fintype n] [Fintype n']
 
 namespace Filling
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} {γ γ' : S.G E}
-  {y : 𝔰.BesselIndex → E} {v : 𝔰.κ → E}
+variable
+  {E : Type} [Field E] [CMType E]
+  {𝔰 : Shape} {S : Filling E 𝔰} {γ γ' : S.G E} {y : 𝔰.BesselIndex → E} {v : 𝔰.κ → E}
 
 /-! ### The sum of the two frames and its orthogonal complement -/
 
@@ -218,10 +219,12 @@ lemma exists_mem_isotropicPerp_comp_eq (γ : S.G E) (v : 𝔰.κ → E) :
   refine ⟨y, hy, funext fun i ↦ congrFun h_source (inl i), congrFun h_source (inr ()), ?_⟩
   rw [h_link, linkTarget_linkMatrix_mulVec, elim_inr]
 
-/-- The image of the map `framePerpToX₀ γ` (`y ↦ y₀`, taking the coordinates in `X₀`) is
+/--
+The image of the map `framePerpToX₀ γ` (`y ↦ y₀`, taking the coordinates in `X₀`) is
 `linkedX₀ γ`. The map is defined on `(A⁺_γ)^⊥`, the vectors orthogonal for `S.ratGram` to the frame
 `e_1, …, e_ϱ, z_N` and to its image under `γ`. The space `linkedX₀ γ` = `X₀^γ` consists of the
-vectors of `X₀` that the link isometry maps into `X₀`. -/
+vectors of `X₀` that the link isometry maps into `X₀`.
+-/
 theorem range_framePerpToX₀ (γ : S.G E) : (framePerpToX₀ γ).range = linkedX₀ γ := by
   ext v
   rw [mem_linkedX₀]
@@ -238,15 +241,18 @@ lemma commonIsotropic_le_framePerp (γ : S.G E) : commonIsotropic γ ≤ framePe
   simp only [linkMatrix_mulVec, funext_iff] at h_zero
   exact mem_framePerp.2 ⟨hy_perp, h_zero (inl (inr ())), h_zero (inr (inr ()))⟩
 
-/-- For `γ` in the group `S.G E`, the kernel of `framePerpToX₀ γ` is `commonIsotropic γ = A ∩ γ A`,
-seen inside `framePerp γ`. -/
-theorem ker_framePerpToX₀ (γ : S.G E) :
-    (framePerpToX₀ γ).ker = (commonIsotropic γ).submoduleOf (framePerp γ) := by
+/--
+For `γ` in the group `S.G E`, the kernel of `framePerpToX₀ γ` is `commonIsotropic γ = A ∩ γ A`,
+seen inside `framePerp γ`.
+-/
+theorem ker_framePerpToX₀ (γ : S.G E)
+    : (framePerpToX₀ γ).ker = (commonIsotropic γ).submoduleOf (framePerp γ) := by
   ext ⟨y, hy⟩
   obtain ⟨hy_perp, -, hγy_z⟩ := mem_framePerp.1 hy
   obtain ⟨-, h_ker, -⟩ := ker_perpToPositive_and_surjective γ
   -- As `λ = 0`, the image `y₀ + λ z⁺` of `y` vanishes if and only if `y₀` does.
-  calc (⟨y, hy⟩ : framePerp γ) ∈ (framePerpToX₀ γ).ker
+  calc
+    (⟨y, hy⟩ : framePerp γ) ∈ (framePerpToX₀ γ).ker
     _ ↔ (⟨y, hy_perp⟩ : isotropicPerp γ) ∈ (perpToPositive γ).ker := by
       rw [LinearMap.mem_ker, LinearMap.mem_ker, framePerpToX₀_apply, perpToPositive_apply,
         linkSource_linkMatrix_mulVec, hγy_z]
@@ -278,13 +284,16 @@ lemma mem_ker_zRowBlockDiagonal {p : 𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E
       p (inl (inr ())) = 0 ∧ p (inr (inr ())) = 0 := by
   simp [funext_iff, Shape.middleGram, mulVec, dotProduct, S.N_prime.ne_zero]
 
-/-- For `γ`, `γ'` in the rational unitary group `S.G E` and a vector `v` of the definite space `X₀`,
+/--
+For `γ`, `γ'` in the rational unitary group `S.G E` and a vector `v` of the definite space `X₀`,
 `v` lies in `commonLink γ γ'` if and only if two conditions hold. The first condition is that `v`
 lies in `linkedX₀ γ`, the vectors of `X₀` that `linkIsometry γ` maps into `X₀`. The second is that
 the isometries `linkIsometry γ` and `linkIsometry γ'` of `X₀ ⊥ E z⁺` agree at `v ⊕ᵥ 0`, the vector
-with `X₀`-part `v` and zero `z⁺`-coordinate. -/
-theorem mem_commonLink : v ∈ commonLink γ γ' ↔
-    v ∈ linkedX₀ γ ∧ linkIsometry γ (v ⊕ᵥ 0) = linkIsometry γ' (v ⊕ᵥ 0) := by
+with `X₀`-part `v` and zero `z⁺`-coordinate.
+-/
+theorem mem_commonLink
+    : v ∈ commonLink γ γ'
+      ↔ v ∈ linkedX₀ γ ∧ linkIsometry γ (v ⊕ᵥ 0) = linkIsometry γ' (v ⊕ᵥ 0) := by
   -- A pair orthogonal to `z_N` in both links is determined by its image `v` under `linkSource`.
   rw [mem_linkedX₀]
   constructor
@@ -300,9 +309,15 @@ theorem mem_commonLink : v ∈ commonLink γ γ' ↔
     have h_target : linkIsometry γ (v ⊕ᵥ 0) = linkTarget E 𝔰 p := by
       rw [← h_source, linkIsometry_linkSource hp]
     have hp' : p ∈ link γ' := by rw [mem_link_iff_linkIsometry, h_source, ← h_eq, h_target]
-    exact ⟨p, ⟨⟨hp, hp'⟩, mem_ker_zRowBlockDiagonal.2
-      ⟨(congrFun h_target (inr ())).symm.trans hv, congrFun h_source (inr ())⟩⟩,
-      funext fun i ↦ congrFun h_source (inl i)⟩
+    exact ⟨
+      p,
+      ⟨
+        ⟨hp, hp'⟩,
+        mem_ker_zRowBlockDiagonal.2
+          ⟨(congrFun h_target (inr ())).symm.trans hv, congrFun h_source (inr ())⟩
+      ⟩,
+      funext fun i ↦ congrFun h_source (inl i)
+    ⟩
 
 /-- For `γ' = γ` the condition `Υ_γ v = Υ_γ' v` always holds, so `commonLink γ γ` is `X₀^γ`. -/
 theorem commonLink_self (γ : S.G E) : commonLink γ γ = linkedX₀ γ :=
@@ -374,10 +389,12 @@ lemma HasCellRank.linkedX₀_eq_top {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellR
   rw [mem_linkedX₀, h_link]
   exact (mul_eq_zero_iff_left (right_ne_zero_of_mul_eq_one hζ)).1 hγy_z
 
-/-- If `gr(γ) = S.termDisc γ` is not zero, then the span `A⁺` of the frame `e_1, …, e_ϱ, z_N` and
-the span `γ A⁺` of its image have the intersection `0`. -/
-theorem disjoint_colSpan_frameImage (h_disc : S.termDisc γ ≠ 0) :
-    Disjoint (colSpan (frameImage 1))
+/--
+If `gr(γ) = S.termDisc γ` is not zero, then the span `A⁺` of the frame `e_1, …, e_ϱ, z_N` and
+the span `γ A⁺` of its image have the intersection `0`.
+-/
+theorem disjoint_colSpan_frameImage (h_disc : S.termDisc γ ≠ 0)
+    : Disjoint (colSpan (frameImage 1))
       (colSpan (frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E))) :=
   disjoint_iff.2 <| by_contra fun h_ne ↦ h_disc (termDisc_eq_zero_of_inf_ne_bot h_ne)
 
@@ -422,11 +439,13 @@ lemma finrank_frameSum_of_termDisc_ne_zero (h_disc : S.termDisc γ ≠ 0) :
     ← (disjoint_colSpan_frameImage h_disc).eq_bot, Submodule.finrank_sup_add_finrank_inf_eq, h_one,
     finrank_colSpan_frameImage]
 
-/-- If `gr(γ) = S.termDisc γ` is not zero, then the space `X₀^γ` of the vectors of
+/--
+If `gr(γ) = S.termDisc γ` is not zero, then the space `X₀^γ` of the vectors of
 `X₀ = 𝔰.κ → E` that the link `linkIsometry γ` (an isometry of `X₀ ⊥ E z⁺`) maps into `X₀` is a
-hyperplane of `X₀`: its rank is `r - 2 n = k - 1`. -/
-theorem finrank_linkedX₀_add_one (h_disc : S.termDisc γ ≠ 0) :
-    finrank E (linkedX₀ γ) + 1 = 𝔰.k := by
+hyperplane of `X₀`: its rank is `r - 2 n = k - 1`.
+-/
+theorem finrank_linkedX₀_add_one (h_disc : S.termDisc γ ≠ 0)
+    : finrank E (linkedX₀ γ) + 1 = 𝔰.k := by
   have h_quot : finrank E (linkedX₀ γ) = finrank E (framePerp γ) := by
     rw [← finrank_linkedX₀_add_finrank_commonIsotropic, commonIsotropic_eq_bot h_disc, finrank_bot,
       add_zero]
@@ -448,10 +467,12 @@ lemma HasCellRank.finrank_linkedX₀_add_sub {j : Fin (𝔰.ϱ + 2)} (h_rank : S
 
 /-! ### The flags of the two frames and the cell rank -/
 
-/-- The space `M A_{≤j}` spanned by the images under `M` of the first `j` vectors of the frame
-`e_1, …, e_ϱ, z_N`. -/
-def flagSpan (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) (j : Fin (𝔰.ϱ + 2)) :
-    Submodule E (𝔰.BesselIndex → E) :=
+/--
+The space `M A_{≤j}` spanned by the images under `M` of the first `j` vectors of the frame
+`e_1, …, e_ϱ, z_N`.
+-/
+def flagSpan (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) (j : Fin (𝔰.ϱ + 2))
+    : Submodule E (𝔰.BesselIndex → E) :=
   colSpan ((frameImage M).submatrix id (castLE j.is_le))
 
 omit [CMType E] in
@@ -561,30 +582,38 @@ lemma CharsAgree.disjoint_flagSpan_coe {j : Fin (𝔰.ϱ + 2)}
     hx_ne
   exact hx'l (hx' l hl)
 
-/-- Let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
-`γ A = γ A_{≤j} + I_γ`, where `A = ⟨e_1, …, e_ϱ⟩`, `A_{≤j} = ⟨e_1, …, e_j⟩` and `I_γ = A ∩ γ A`. -/
-theorem HasCellRank.flagSpan_coe_sup_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
-    (h_rank : S.HasCellRank j γ) (h_disc : S.termDisc γ = 0) :
-    flagSpan γ j ⊔ commonIsotropic γ = isotropicSpan γ :=
-  h_rank.normOnePairOccursFrom.flagSpan_coe_sup_commonIsotropic
-    (h_rank.le_of_termDisc_eq_zero h_disc)
+/--
+Let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
+`γ A = γ A_{≤j} + I_γ`, where `A = ⟨e_1, …, e_ϱ⟩`, `A_{≤j} = ⟨e_1, …, e_j⟩` and `I_γ = A ∩ γ A`.
+-/
+theorem HasCellRank.flagSpan_coe_sup_commonIsotropic
+    {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellRank j γ) (h_disc : S.termDisc γ = 0)
+    : flagSpan γ j ⊔ commonIsotropic γ = isotropicSpan γ :=
+  h_rank.normOnePairOccursFrom.flagSpan_coe_sup_commonIsotropic (h_rank.le_of_termDisc_eq_zero
+    h_disc)
 
-/-- Let `γ` agree, let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
-`γ A_{≤j} = ⟨γ e_1, …, γ e_j⟩` meets `I_γ = A ∩ γ A` only in `0`. -/
-theorem CharsAgree.disjoint_flagSpan_coe_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
-    (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0)
-    (h_rank : S.HasCellRank j γ) : Disjoint (flagSpan γ j) (commonIsotropic γ) :=
+/--
+Let `γ` agree, let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
+`γ A_{≤j} = ⟨γ e_1, …, γ e_j⟩` meets `I_γ = A ∩ γ A` only in `0`.
+-/
+theorem CharsAgree.disjoint_flagSpan_coe_commonIsotropic
+    {j : Fin (𝔰.ϱ + 2)}
+    (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0) (h_rank : S.HasCellRank j γ)
+    : Disjoint (flagSpan γ j) (commonIsotropic γ) :=
   (h_agree.disjoint_flagSpan_coe (h_rank.isLeast_normOnePairOccursFrom h_disc)).mono_right
     (commonIsotropic_le_colSpan_frameImage_one γ)
 
-/-- Let `E` contain a primitive root of unity of order `5040`. Let `S.CharsAgree γ` hold:
+/--
+Let `E` contain a primitive root of unity of order `5040`. Let `S.CharsAgree γ` hold:
 `unipotentChar` takes the same value at `u` and at `γ⁻¹uγ` for every rational `u` in `U₀ ∩ γU₀γ⁻¹`.
 Let `S.termDisc γ = |δ_{ϱ+1}|² - N² |δ_ϱ|²` vanish. Let `γ` have the cell rank `j`:
 `NormOnePairOccursFrom j γ` holds, `δ_j ≠ 0`, and `j = ϱ + 1` exactly when `S.termDisc γ ≠ 0`. Then
-`j + finrank E (commonIsotropic γ) = ϱ`. -/
-theorem CharsAgree.add_finrank_commonIsotropic_eq {j : Fin (𝔰.ϱ + 2)}
-    (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0) (h_rank : S.HasCellRank j γ) :
-    j.val + finrank E (commonIsotropic γ) = 𝔰.ϱ := by
+`j + finrank E (commonIsotropic γ) = ϱ`.
+-/
+theorem CharsAgree.add_finrank_commonIsotropic_eq
+    {j : Fin (𝔰.ϱ + 2)}
+    (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0) (h_rank : S.HasCellRank j γ)
+    : j.val + finrank E (commonIsotropic γ) = 𝔰.ϱ := by
   have h_sup : flagSpan γ j ⊔ commonIsotropic γ = isotropicSpan γ :=
     h_rank.flagSpan_coe_sup_commonIsotropic h_disc
   have h_inf : flagSpan γ j ⊓ commonIsotropic γ = ⊥ :=
@@ -592,13 +621,17 @@ theorem CharsAgree.add_finrank_commonIsotropic_eq {j : Fin (𝔰.ϱ + 2)}
   rw [← finrank_flagSpan_coe γ j, ← Submodule.finrank_sup_add_finrank_inf_eq, h_sup, h_inf,
     finrank_bot, add_zero, finrank_isotropicSpan_coe]
 
-/-- Let `E` contain a primitive root of unity of order `5040`, let `γ` agree, let
+/--
+Let `E` contain a primitive root of unity of order `5040`, let `γ` agree, let
 `gr(γ) = S.termDisc γ` vanish, and let `j + rk I_γ = ϱ` for `I_γ = A ∩ γ A` and `A = ⟨e_1, …, e_ϱ⟩`.
 Then `γ` has the cell rank `j`: a norm-one pair occurs for it from the index `j` on, and the leading
-minor `δ_j` of the products of the frame with its image is not zero. -/
-theorem CharsAgree.hasCellRank_of_add_finrank_eq {j : Fin (𝔰.ϱ + 2)}
+minor `δ_j` of the products of the frame with its image is not zero.
+-/
+theorem CharsAgree.hasCellRank_of_add_finrank_eq
+    {j : Fin (𝔰.ϱ + 2)}
     (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0)
-    (hj : j.val + finrank E (commonIsotropic γ) = 𝔰.ϱ) : S.HasCellRank j γ := by
+    (hj : j.val + finrank E (commonIsotropic γ) = 𝔰.ϱ)
+    : S.HasCellRank j γ := by
   obtain ⟨i, h_rank⟩ := h_agree.exists_hasCellRank h_disc
   have hi : i.val + finrank E (commonIsotropic γ) = 𝔰.ϱ :=
     h_agree.add_finrank_commonIsotropic_eq h_disc h_rank
@@ -620,15 +653,16 @@ lemma mulVec_mem_isotropicSpan_one_iff {u : S.G E} (hu : u ∈ besselU) :
   ⟨fun h ↦ by simpa using mulVec_mem_isotropicSpan_one (inv_mem hu) h,
     mulVec_mem_isotropicSpan_one hu⟩
 
-/-- For `u`, `u'` in the Bessel unipotent group `besselU` we have `I_{u γ u'} = u I_γ`, where
-`I_γ = commonIsotropic γ = A ∩ γ A` and `A = ⟨e_1, …, e_ϱ⟩`. -/
-theorem commonIsotropic_besselU_mul {u u' : S.G E} (hu : u ∈ besselU) (hu' : u' ∈ besselU) :
-    commonIsotropic (u * γ * u') =
-      (commonIsotropic γ).map (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E).mulVecLin := by
+/--
+For `u`, `u'` in the Bessel unipotent group `besselU` we have `I_{u γ u'} = u I_γ`, where
+`I_γ = commonIsotropic γ = A ∩ γ A` and `A = ⟨e_1, …, e_ϱ⟩`.
+-/
+theorem commonIsotropic_besselU_mul {u u' : S.G E} (hu : u ∈ besselU) (hu' : u' ∈ besselU)
+    : commonIsotropic (u * γ * u')
+      = (commonIsotropic γ).map (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E).mulVecLin := by
   let mat (g : S.G E) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E := g
   ext y
-  have h_inv : mat (u * γ * u')⁻¹ *ᵥ y = mat u'⁻¹ *ᵥ mat γ⁻¹ *ᵥ mat u⁻¹ *ᵥ y := by
-    simp [mat]
+  have h_inv : mat (u * γ * u')⁻¹ *ᵥ y = mat u'⁻¹ *ᵥ mat γ⁻¹ *ᵥ mat u⁻¹ *ᵥ y := by simp [mat]
   have h_mem : y ∈ commonIsotropic (u * γ * u') ↔ mat u⁻¹ *ᵥ y ∈ commonIsotropic γ := by
     rw [mem_commonIsotropic_iff, mem_commonIsotropic_iff, mem_isotropicSpan_coe,
       mem_isotropicSpan_coe, h_inv, mulVec_mem_isotropicSpan_one_iff (inv_mem hu),
@@ -637,10 +671,12 @@ theorem commonIsotropic_besselU_mul {u u' : S.G E} (hu : u ∈ besselU) (hu' : u
   rintro ⟨t, ht, rfl⟩
   simpa [mat] using ht
 
-/-- The rank of `I_γ = A ∩ γ A`, where `A = ⟨e_1, …, e_ϱ⟩`, does not change when `γ` is multiplied
-on either side by elements of the unipotent group `U₀`. -/
-theorem finrank_commonIsotropic_besselU_mul {u u' : S.G E} (hu : u ∈ besselU) (hu' : u' ∈ besselU) :
-    finrank E (commonIsotropic (u * γ * u')) = finrank E (commonIsotropic γ) := by
+/--
+The rank of `I_γ = A ∩ γ A`, where `A = ⟨e_1, …, e_ϱ⟩`, does not change when `γ` is multiplied
+on either side by elements of the unipotent group `U₀`.
+-/
+theorem finrank_commonIsotropic_besselU_mul {u u' : S.G E} (hu : u ∈ besselU) (hu' : u' ∈ besselU)
+    : finrank E (commonIsotropic (u * γ * u')) = finrank E (commonIsotropic γ) := by
   rw [commonIsotropic_besselU_mul hu hu']
   exact (Submodule.equivMapOfInjective _
     (mulVec_injective_of_isUnit (u : GL 𝔰.BesselIndex E).isUnit) _).finrank_eq.symm
@@ -667,21 +703,24 @@ lemma unipotentChar_ratToFin_conj {u u' : S.G E} (hu : u ∈ besselU) (hu' : u' 
     mul_inv_cancel_left, unipotentChar_ratToFin_mul hu' hu, mul_comm]
 
 /-- For `u`, `u'` in `besselU`, the element `u γ u'` agrees if and only if `γ` does. -/
-theorem charsAgree_mul_mul_iff_of_mem_besselU {u u' : S.G E} (hu : u ∈ besselU)
-    (hu' : u' ∈ besselU) :
-    S.CharsAgree (u * γ * u') ↔ S.CharsAgree γ := by
-  have h_map {a a' δ : S.G E} (ha : a ∈ besselU) (ha' : a' ∈ besselU) (hδ : S.CharsAgree δ) :
-      S.CharsAgree (a * δ * a'⁻¹) := by
+theorem charsAgree_mul_mul_iff_of_mem_besselU {u u' : S.G E} (hu : u ∈ besselU) (hu' : u' ∈ besselU)
+    : S.CharsAgree (u * γ * u') ↔ S.CharsAgree γ := by
+  have h_map {a a' δ : S.G E} (ha : a ∈ besselU) (ha' : a' ∈ besselU) (hδ : S.CharsAgree δ)
+      : S.CharsAgree (a * δ * a'⁻¹) := by
     intro w hw w' hw' h_comm
     have h_conj : a⁻¹ * w * a * δ = δ * (a'⁻¹ * w' * a') :=
-      calc a⁻¹ * w * a * δ = a⁻¹ * (w * (a * δ * a'⁻¹)) * a' := by group
+      calc
+        a⁻¹ * w * a * δ
+          = a⁻¹ * (w * (a * δ * a'⁻¹)) * a' := by group
         _ = a⁻¹ * (a * δ * a'⁻¹ * w') * a' := by rw [h_comm]
         _ = δ * (a'⁻¹ * w' * a') := by group
     rw [← unipotentChar_ratToFin_conj ha hw, ← unipotentChar_ratToFin_conj ha' hw']
     exact hδ _ (mul_mem (mul_mem (inv_mem ha) hw) ha) _ (mul_mem (mul_mem (inv_mem ha') hw') ha')
       h_conj
-  exact ⟨fun h ↦ by simpa [mul_assoc] using h_map (inv_mem hu) hu' h,
-    fun h ↦ by simpa using h_map hu (inv_mem hu') h⟩
+  exact ⟨
+    fun h ↦ by simpa [mul_assoc] using h_map (inv_mem hu) hu' h,
+    fun h ↦ by simpa using h_map hu (inv_mem hu') h
+  ⟩
 
 /-! ### The terms that remain -/
 
@@ -700,8 +739,10 @@ lemma isotropicSpan_eq_iff_finrank :
   exact h_eq_one.symm.trans h_eq_coe
 
 variable (S) in
-/-- The set `Γ*` of the rational elements `γ` that have `gr(γ) = S.termDisc γ ≠ 0`, or agree and
-have `gr(γ) = 0` and `A ≠ γ A`, where `A = ⟨e_1, …, e_ϱ⟩`. -/
+/--
+The set `Γ*` of the rational elements `γ` that have `gr(γ) = S.termDisc γ ≠ 0`, or agree and
+have `gr(γ) = 0` and `A ≠ γ A`, where `A = ⟨e_1, …, e_ϱ⟩`.
+-/
 def remainingTerms : Set (S.G E) :=
   {γ : S.G E | S.termDisc γ ≠ 0 ∨
     S.CharsAgree γ ∧ S.termDisc γ = 0 ∧ isotropicSpan 1 ≠ isotropicSpan γ.val.val}

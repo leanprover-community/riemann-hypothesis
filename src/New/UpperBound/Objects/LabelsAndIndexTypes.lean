@@ -51,12 +51,14 @@ open Polynomial Finset Nat
 
 variable {k : Type*} [Field k] [Finite k] {c : k[X]} {r : ℕ}
 
-/-- The polynomial `c` is a primitive polynomial: an irreducible label of degree `r` over `k` with a
+/--
+The polynomial `c` is a primitive polynomial: an irreducible label of degree `r` over `k` with a
 root of order `|k| ^ r - 1`, that is, a root that generates the units of the field with `|k| ^ r`
-elements. -/
+elements.
+-/
 def IsPrimitivePolynomial (r : ℕ) (c : k[X]) : Prop :=
-  IsLabel r c ∧ Irreducible c ∧
-    ∃ ξ : AlgebraicClosure k, c.aeval ξ = 0 ∧ IsPrimitiveRoot ξ (Nat.card k ^ r - 1)
+  IsLabel r c ∧ Irreducible c
+    ∧ ∃ ξ : AlgebraicClosure k, c.aeval ξ = 0 ∧ IsPrimitiveRoot ξ (Nat.card k ^ r - 1)
 
 /-- If there is a primitive polynomial of degree `r` over `k`, then `|k| ^ r ≥ 2`. -/
 lemma IsPrimitivePolynomial.two_le_card_pow (hc : IsPrimitivePolynomial r c) :
@@ -120,10 +122,12 @@ lemma IsPrimitivePolynomial.isPrimitiveRoot_prod_aroots_and_exists_pow_eq
   ⟨hc.isPrimitiveRoot_prod_aroots, ∑ i ∈ range r, Nat.card k ^ i,
     fun _ hξ ↦ hc.pow_geom_sum_eq_prod_aroots (mem_aroots.1 hξ).2⟩
 
-/-- The polynomial `c` is an allowed polynomial: a label of degree `r` over `k` that has no root `x`
-in `k` with `x ^ M = 1`. -/
+/--
+The polynomial `c` is an allowed polynomial: a label of degree `r` over `k` that has no root `x`
+in `k` with `x ^ M = 1`.
+-/
 def IsAllowedPolynomial (M r : ℕ) (c : k[X]) : Prop :=
-  IsLabel r c ∧ ∀ x : k, x ^ M = 1 → ¬c.IsRoot x
+  IsLabel r c ∧ ∀ x : k, x ^ M = 1 → ¬ c.IsRoot x
 
 omit [Finite k] in
 lemma IsAllowedPolynomial.isLabel {M : ℕ} (hc : IsAllowedPolynomial M r c) : IsLabel r c := hc.1
@@ -136,13 +140,15 @@ lemma IsAllowedPolynomial.not_isRoot {M : ℕ} (hc : IsAllowedPolynomial M r c) 
 
 section
 
-variable {ι : Type*} [Fintype ι] [DecidableEq ι] {k : ι → Type*} [∀ w, Field (k w)]
-  [∀ w, Finite (k w)]
+variable
+  {ι : Type*} [Fintype ι] [DecidableEq ι] {k : ι → Type*} [∀ w, Field (k w)] [∀ w, Finite (k w)]
 
 open scoped Classical in
-/-- The good tuples of labels of degree `r`, one label over each field `k w`: every label is
+/--
+The good tuples of labels of degree `r`, one label over each field `k w`: every label is
 allowed (no root of it in its base field is an `M`-th root of unity), and at least one is
-primitive. -/
+primitive.
+-/
 noncomputable def goodTuples (M r : ℕ) : Finset (∀ w : ι, (k w)[X]) :=
   {c ∈ Fintype.piFinset fun w ↦ monicsOfDegree (k w) r |
     (∀ w : ι, IsAllowedPolynomial M r (c w)) ∧ ∃ w : ι, IsPrimitivePolynomial r (c w)}
@@ -207,10 +213,12 @@ lemma BlockIndex.nonempty_equiv_sum {S T α : Type} (ν : S ≃ α) (j : ℕ) :
       _ ≃ α ⊕ (Fin j × T) ⊕ T := Equiv.sumAssoc α (Fin j × T) T
       _ ≃ α ⊕ Fin (j + 1) × T := Equiv.sumCongr (.refl α) split_last⟩
 
-/-- A bijection from `BlockIndex S T j`, the union of `S` and `j` copies of `T`, to
+/--
+A bijection from `BlockIndex S T j`, the union of `S` and `j` copies of `T`, to
 `α ⊕ Fin j × T`, for a bijection `ν : S ≃ α`. For `j = 0` it is given by `ν`;
 for `j > 0` it is an arbitrary such bijection, chosen from
-`New.BlockIndex.nonempty_equiv_sum`, and need not respect the blocks. -/
+`New.BlockIndex.nonempty_equiv_sum`, and need not respect the blocks.
+-/
 def BlockIndex.equivSum (ν : S ≃ α) : (j : ℕ) → BlockIndex S T j ≃ α ⊕ Fin j × T
   | 0 => ν.trans (Equiv.sumEmpty α (Fin 0 × T)).symm
   | j + 1 => (nonempty_equiv_sum ν (j + 1)).some
@@ -223,8 +231,7 @@ instance instFintypeBlockIndex : ∀ j : ℕ, Fintype (BlockIndex S T j)
   | j + 1 => @instFintypeSum (BlockIndex S T j) T (instFintypeBlockIndex j) ‹Fintype T›
 
 /-- Equality in `BlockIndex S T j` is decidable if it is in `S` and `T`, by recursion on `j`. -/
-instance decEqBlockIndex [DecidableEq S] [DecidableEq T] :
-    ∀ j : ℕ, DecidableEq (BlockIndex S T j)
+instance decEqBlockIndex [DecidableEq S] [DecidableEq T] : ∀ j : ℕ, DecidableEq (BlockIndex S T j)
   | 0 => ‹DecidableEq S›
   | j + 1 => @instDecidableEqSum (BlockIndex S T j) T (decEqBlockIndex j) ‹DecidableEq T›
 
@@ -246,22 +253,28 @@ def ϱ : ℕ := D.m / 2 - 1
 /-- The basis indices of X_j other than the last: a set with n_j − 1 elements. -/
 abbrev InitIndex : Type := Fin (D.n j - 1)
 
-/-- The basis index set of X_j: n_j − 1 indices together with one extra point for the last basis
-vector. -/
+/--
+The basis index set of X_j: n_j − 1 indices together with one extra point for the last basis
+vector.
+-/
 abbrev X : Type := D.InitIndex j ⊕ Unit
 
-/-- The shape of Y₀: ϱ = `New.Data.ϱ` hyperbolic planes, the basis indices of X₀, and the last
-of them as distinguished index. -/
+/--
+The shape of Y₀: ϱ = `New.Data.ϱ` hyperbolic planes, the basis indices of X₀, and the last
+of them as distinguished index.
+-/
 abbrev shape : Shape where
   ϱ := D.ϱ
   κ := D.X 0
   k₀ := Sum.inr ()
 
-/-- The basis index set of Y₀: e₁, …, e_ϱ, the indices of X₀, the middle vector z, and e*₁, …,
-e*_ϱ. -/
+/--
+The basis index set of Y₀: e₁, …, e_ϱ, the indices of X₀, the middle vector z, and e*₁, …,
+e*_ϱ.
+-/
 @[reducible]
 def RowIndex : Type := D.shape.BesselIndex
-  deriving DecidableEq, Fintype
+deriving DecidableEq, Fintype
 
 /-- The basis index set of Y_j: `New.Data.RowIndex` followed by j blocks of t indices each. -/
 abbrev Y : Type := BlockIndex D.RowIndex (Fin D.t) j
@@ -275,32 +288,40 @@ lemma card_rowIndex : card D.RowIndex = D.r := by
   -- Here ϱ = m/2 - 1 for an even m ≥ 2, and n₀ = k > 0.
   grind [ϱ, n, D.m_even, D.k_pos]
 
-/-- A logarithmic bound on the rank `r` (`New.Data.HasLogBound`: `r ≤ exp l` if `u` is `true`,
-`exp l ≤ r` if `u` is `false`) also holds for the number of basis indices of Y₀, which is `r`. -/
+/--
+A logarithmic bound on the rank `r` (`New.Data.HasLogBound`: `r ≤ exp l` if `u` is `true`,
+`exp l ≤ r` if `u` is `false`) also holds for the number of basis indices of Y₀, which is `r`.
+-/
 instance {u : Bool} {l : ℝ} [D.HasLogBound u D.r l] : D.HasLogBound u (card D.RowIndex) l := by
   rwa [D.card_rowIndex]
 
 /-! ### Parameters and signs -/
 
-/-- A chosen numbering of the basis indices of Y₀: a bijection from `New.Data.RowIndex` to
-{0, …, r − 1}. -/
+/--
+A chosen numbering of the basis indices of Y₀: a bijection from `New.Data.RowIndex` to
+{0, …, r − 1}.
+-/
 def basisNumber : D.RowIndex ≃ Fin D.r := equivFinOfCardEq D.card_rowIndex
 
-/-- Twice the entry numbered `D.basisNumber i` of the target parameter `New.Data.targetParameter` at
+/--
+Twice the entry numbered `D.basisNumber i` of the target parameter `New.Data.targetParameter` at
 the place τ: the doubled parameter on W_j and on Y₀. The entries of the target parameter at τ are
 k/2 − 1, k/2 − 2, … (k − 1 of them), then h₂ − w₁(τ), …, h₂ − w_m(τ), with
 w_a = `New.Data.liftWeight` a the weights of the lifts and h₂ = `D.halfGap` half the gap between
-consecutive weights. -/
+consecutive weights.
+-/
 def paramW (i : D.RowIndex) : ℤ := 2 * D.targetParameter τ (D.basisNumber i)
 
-/-- The sign `(-1) ^ (o + a + min (a - o) j)`, with the subtraction truncated at zero
+/--
+The sign `(-1) ^ (o + a + min (a - o) j)`, with the subtraction truncated at zero
 (`New.Data.entrySign_eq_neg_one_pow`). In `New.Data.gridSigns` it is the sign, at the node `(i, j)`
 with offset `o`, of the base index with number `n`, where `a = n + 1 - k` (truncated at zero) and
 `k` is the rank `D.k`. The first branch, for `j = 0` and positive `o`, agrees with the formula. It
 makes the signs for `o + 1` the negatives of those for `o` by definition, as the passage to the
-opposite space in `New.Data.gridSpace` requires. -/
+opposite space in `New.Data.gridSpace` requires.
+-/
 def entrySign : (o j a : ℕ) → ℤˣ
-  | o + 1, 0, a => -entrySign o 0 a
+  | o + 1, 0, a => - entrySign o 0 a
   | o, j, a => (-1) ^ (o + a + min (a - o) j)
 
 /-- Closed form of `entrySign`, the sign `±1` of a basis vector of the hermitian space at a node
@@ -320,35 +341,43 @@ lemma entrySign_eq_neg_one_pow (offset j excess : ℕ) :
         _ = (-1) ^ (offset + 1 + excess + min (excess - (offset + 1)) 0) := by
           simp [ih, add_right_comm offset 1, pow_succ]
 
-/-- The signs ±1 of W_j on the indices i in `New.Data.RowIndex`: −1 when the number
-`D.basisNumber i` in {0, …, r − 1} is at least `D.posRank j` = k + j − 1, and +1 otherwise. -/
+/--
+The signs ±1 of W_j on the indices i in `New.Data.RowIndex`: −1 when the number
+`D.basisNumber i` in {0, …, r − 1} is at least `D.posRank j` = k + j − 1, and +1 otherwise.
+-/
 def signsW (i : D.RowIndex) : ℤˣ := if D.posRank j ≤ D.basisNumber i then (-1 : ℤˣ) else 1
 
-/-- The map sending a pair (i, w), with w a chosen place above the prime p_i = `D.levelPrime i`, to
+/--
+The map sending a pair (i, w), with w a chosen place above the prime p_i = `D.levelPrime i`, to
 the underlying finite place w of E. The chosen places above p_i (`New.Data.ChosenPlace`) are the
 finite places of E that divide both p_i and `D.piM`, the complex conjugate of the integer
-`D.piMBar` of K of norm p₀p₁. -/
+`D.piMBar` of K of norm p₀p₁.
+-/
 def chosenPlace (x : Σ i : Fin 2, D.ChosenPlace i) : New.FinPlace D.E := x.2.val
 
 /-! ### The finite group and the good idempotent -/
 
-/-- The finite group 𝖦 = ∏ GL_r(𝔽_w), over the chosen places w (`New.Data.ChosenPlace`) above the
+/--
+The finite group 𝖦 = ∏ GL_r(𝔽_w), over the chosen places w (`New.Data.ChosenPlace`) above the
 two level primes p₀ and p₁ (`D.levelPrime`), where 𝔽_w is the residue field at w and the r rows are
-indexed by `New.Data.RowIndex`. -/
-abbrev chosenGL : Type := ∀ x : (i : Fin 2) × D.ChosenPlace i,
-  GL D.RowIndex (ResField (D.chosenPlace x))
+indexed by `New.Data.RowIndex`.
+-/
+abbrev chosenGL : Type :=
+  ∀ x : (i : Fin 2) × D.ChosenPlace i, GL D.RowIndex (ResField (D.chosenPlace x))
 
 /-- There are only finitely many chosen places above the prime p_i = `D.levelPrime i`. -/
 instance : Fintype (D.ChosenPlace i) := (D.finite_isChosen.sep _).fintype
 
 open scoped Classical in
-/-- The finite set of families (c_w) of polynomials over the residue fields at the chosen places w
+/--
+The finite set of families (c_w) of polynomials over the residue fields at the chosen places w
 above p₀, p₁. For each p_i, the tuple of the c_w with w above p_i lies in `New.goodTuples` for the
-integer `New.Parameters.q₂` at s and the rank r. -/
-def goodTupleFamilies :
-    Finset
-      ((x : (i : Fin 2) × D.ChosenPlace i) → Polynomial
-        (ResField (D.chosenPlace ⟨x.fst, x.snd⟩))) :=
+integer `New.Parameters.q₂` at s and the rank r.
+-/
+def goodTupleFamilies
+    : Finset
+      ((x : (i : Fin 2) × D.ChosenPlace i)
+        → Polynomial (ResField (D.chosenPlace ⟨x.fst, x.snd⟩))) :=
   (piFinset fun _ ↦ goodTuples (P.q₂ D.towerExp) (card D.RowIndex)).map
     (Equiv.piCurry fun i w ↦ Polynomial (ResField (D.chosenPlace ⟨i, w⟩))).symm.toEmbedding
 
@@ -368,11 +397,14 @@ lemma mem_goodTupleFamilies
   rfl
 
 open scoped Classical in
-/-- The element e₀ of ℂ[𝖦]: the sum of the idempotents `New.tupleIdem` over the families in
-`New.Data.goodTupleFamilies`. -/
-def e₀ :
-    MonoidAlgebra ℂ ((i : (i : Fin 2) × D.ChosenPlace i) →
-      GL D.RowIndex (ResField (D.chosenPlace ⟨i.fst, i.snd⟩))) :=
+/--
+The element e₀ of ℂ[𝖦]: the sum of the idempotents `New.tupleIdem` over the families in
+`New.Data.goodTupleFamilies`.
+-/
+def e₀
+    : MonoidAlgebra ℂ
+      ((i : (i : Fin 2) × D.ChosenPlace i)
+        → GL D.RowIndex (ResField (D.chosenPlace ⟨i.fst, i.snd⟩))) :=
   ∑ c ∈ D.goodTupleFamilies, tupleIdem D.RowIndex c
 
 end Data

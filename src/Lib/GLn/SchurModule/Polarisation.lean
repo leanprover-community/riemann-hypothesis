@@ -174,18 +174,21 @@ lemma rowSubst_pairedDetProd_X (z : Φ → Matrix n n ℂ) (η : (τ : Φ) → �
   simp [rowSubst, Matrix.mul_apply, smul_eq_C_mul]
 
 omit [DecidableEq Φ] in
-/-- Polarisation. Let `card p < card n`, and let `η₀` be the `p × n` matrix whose row `k` is the
+/--
+Polarisation. Let `card p < card n`, and let `η₀` be the `p × n` matrix whose row `k` is the
 standard basis vector at `r k`, for an injective `r`. For all complex `p × n` matrices `η τ k`, the
 product `pairedDetProd Y η` of the `det (η τ k * Y τ)` is a finite combination of the products
 `∏ τ, det (η₀ * (u τ)ᵀ * Y τ) ^ card (ι τ)` with `u τ` unitary (`USign 1` is U(n)). The
-coefficients do not depend on the matrices `Y τ` or on the algebra `S` that holds their entries. -/
-theorem exists_pairedDetProd_eq_sum_unitary (hp : card p < card n) {r : p → n}
-    (hr : r.Injective) (η : (τ : Φ) → ι τ → Matrix p n ℂ) :
-    ∃ c : (Φ → USign (1 : n → ℤˣ)) →₀ ℂ,
+coefficients do not depend on the matrices `Y τ` or on the algebra `S` that holds their entries.
+-/
+theorem exists_pairedDetProd_eq_sum_unitary
+    (hp : card p < card n) {r : p → n} (hr : r.Injective) (η : (τ : Φ) → ι τ → Matrix p n ℂ)
+    : ∃ c : (Φ → USign (1 : n → ℤˣ)) →₀ ℂ,
       ∀ (S : Type) [CommRing S] [Algebra ℂ S] (Y : Φ → n → p → S),
-        pairedDetProd Y η =
-          c.sum fun (u : Φ → USign (1 : n → ℤˣ)) (z : ℂ) ↦ z • pairedDetProd Y
-            fun (τ : Φ) (_ : ι τ) ↦ (1 : Matrix n n ℂ).submatrix r id * (u τ).val.valᵀ := by
+        pairedDetProd Y η
+          = c.sum fun (u : Φ → USign (1 : n → ℤˣ)) (z : ℂ) ↦
+            z • pairedDetProd Y fun (τ : Φ) (_ : ι τ) ↦
+              (1 : Matrix n n ℂ).submatrix r id * (u τ).val.valᵀ := by
   classical
   -- Prove the identity for matrices of variables, in the irreducible module `nablaFamily`; then put
   -- `Y` in for the variables.
@@ -193,26 +196,28 @@ theorem exists_pairedDetProd_eq_sum_unitary (hp : card p < card n) {r : p → n}
     pairedDetProd (fun (τ : Φ) (i : n) (k : p) ↦ X (⟨τ, i⟩, (equivFin p k : ℕ))) ξ
   let η₀ (τ : Φ) (_ : ι τ) : Matrix p n ℂ := (1 : Matrix n n ℂ).submatrix r id
   -- Substituting `Y τ` for the first `card p` columns of variables gives `P ξ ↦ pairedDetProd Y ξ`.
-  have h_eval {S : Type} [CommRing S] [Algebra ℂ S] (Y : Φ → n → p → S) :
-      ∃ φ : MatrixPoly (Σ _ : Φ, n) ℂ →ₐ[ℂ] S,
-        ∀ ξ : (τ : Φ) → ι τ → Matrix p n ℂ, φ (P ξ) = pairedDetProd Y ξ := by
+  have h_eval {S : Type} [CommRing S] [Algebra ℂ S] (Y : Φ → n → p → S)
+      : ∃ φ : MatrixPoly (Σ _ : Φ, n) ℂ →ₐ[ℂ] S, ∀ ξ : (τ : Φ) → ι τ → Matrix p n ℂ,
+        φ (P ξ) = pairedDetProd Y ξ := by
     let value : (Σ _ : Φ, n) × ℕ → S := fun (⟨τ, i⟩, t) ↦
       if ht : t < card p then Y τ i ((equivFin p).symm ⟨t, ht⟩) else 0
     exact ⟨aeval value, fun ξ ↦ by simp [P, value, map_pairedDetProd]⟩
   -- `P η₀` is not zero: its value at `η₀ᵀ` is `1`.
   have h_ne : P η₀ ≠ 0 := by
     obtain ⟨φ, hφ⟩ := h_eval fun (_ : Φ) (i : n) (k : p) ↦ (1 : Matrix n n ℂ) i (r k)
-    have h_frame : (1 : Matrix n n ℂ).submatrix r id *
-        (of fun (i : n) (k : p) ↦ (1 : Matrix n n ℂ) i (r k)) = 1 := by
+    have h_frame
+        : (1 : Matrix n n ℂ).submatrix r id * (of fun (i : n) (k : p) ↦ (1 : Matrix n n ℂ) i (r k))
+          = 1 := by
       ext
       simp [Matrix.mul_apply, Matrix.one_apply, hr.eq_iff]
     have h_one : φ (P η₀) = 1 := by simp [hφ, pairedDetProd, η₀, h_frame]
     exact ne_zero_of_map (f := φ) (by simp [h_one])
-  have h_subst (u : Φ → USign (1 : n → ℤˣ)) :
-      rowSubst (fun τ ↦ (u τ).val.valᵀ) (P η₀) = P fun τ k ↦ η₀ τ k * (u τ).val.valᵀ :=
+  have h_subst (u : Φ → USign (1 : n → ℤˣ))
+      : rowSubst (fun τ ↦ (u τ).val.valᵀ) (P η₀) = P fun τ k ↦ η₀ τ k * (u τ).val.valᵀ :=
     rowSubst_pairedDetProd_X _ η₀
-  have h_span : P η ∈ span ℂ (Set.range fun u : Φ → USign (1 : n → ℤˣ) ↦
-      rowSubst (fun τ ↦ (u τ).val.valᵀ) (P η₀)) :=
+  have h_span
+      : P η ∈ span ℂ
+        (Set.range fun u : Φ → USign (1 : n → ℤˣ) ↦ rowSubst (fun τ ↦ (u τ).val.valᵀ) (P η₀)) :=
     mem_span_rowSubst_unitary (pairedDetProd_mem_nablaFamily hp η₀) h_ne
       (pairedDetProd_mem_nablaFamily hp η)
   obtain ⟨c, hc⟩ := Finsupp.mem_span_range_iff_exists_finsupp.1 h_span

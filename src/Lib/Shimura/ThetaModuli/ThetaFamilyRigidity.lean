@@ -59,13 +59,15 @@ open CategoryTheory AlgebraicGeometry MonoidalCategory NumberField Variety Over 
 
 variable {E : Type} [Field E] [CMBase E] (D : PEL E)
 
-/-- A family for the PEL data `D`: an abelian scheme `total` with `𝓞 E`-action over an
+/--
+A family for the PEL data `D`: an abelian scheme `total` with `𝓞 E`-action over an
 `𝓞 E`-scheme `S`, of relative dimension `New.Variety.abelianDim E D.Index`, with a line bundle
 `lineBundle` whose coordinates separate points and with level points `levelPoints`. Over local
 rings the coordinates are theta coordinates (`theta_law`), and the action on the Lie algebra
 satisfies a rank one condition (`signature`). An affine point of `S` over `𝓞 E` is determined by
 the coordinates of its level points (`eq_of_level_coords_eq`). No universal property is asked
-for. -/
+for.
+-/
 structure ThetaFamily (S : Scheme) (τ : S ⟶ Spec ⟨𝓞 E⟩) where
   /-- The total space `A`, a scheme over `S`. -/
   total : Over S
@@ -75,45 +77,57 @@ structure ThetaFamily (S : Scheme) (τ : S ⟶ Spec ⟨𝓞 E⟩) where
   [moduleObj : ModuleObj (𝓞 E) total]
   /-- The line bundle 𝒩 on `total`, with cover and coordinates indexed by `D.dualTorsion`. -/
   lineBundle : LineBundle total.left D.dualTorsion
-  /-- `total` is proper over `S`, and `lineBundle` is a linear system whose coordinates separate
-  the points of `total` over `S`. -/
+  /--
+  `total` is proper over `S`, and `lineBundle` is a linear system whose coordinates separate
+  the points of `total` over `S`.
+  -/
   embeds : lineBundle.IsProjEmbedding total.hom
   /-- The level points: an `𝓞 E`-linear map from the 𝔑-torsion to the sections of `total`. -/
   levelPoints : D.levelTorsion →ₗ[𝓞 E] 𝟙_ (Over S) ⟶ total
-  /-- The theta law: take any base change to a local ring. Restrict the pulled-back level points to
+  /--
+  The theta law: take any base change to a local ring. Restrict the pulled-back level points to
   `D.dualTorsion`. Then the coordinates of `lineBundle` are theta coordinates for the Lagrangian
-  `D.lagrangian` and some bicharacter `c`. -/
-  theta_law {B : Type} [CommRing B] [IsLocalRing B] (t : Spec ⟨B⟩ ⟶ S) {T : Over (Spec ⟨B⟩)}
-      [AddObj T] [ModuleObj (𝓞 E) T] {q : (Over.map t).obj T ⟶ total}
-      (h : IsGroupBaseChange t (B := T) q) : ∃ c : D.dualTorsion → AddChar D.dualTorsion B,
-    IsThetaStructure (D.lagrangian.addSubgroupOf D.dualTorsion)
-      (AddMonoidHom.comp (h.pullSection ∘ₗ levelPoints)
-        (AddSubgroup.inclusion D.dualTorsion_le_levelTorsion))
-      (embeds.isLinearSystem.pull q.left) c
+  `D.lagrangian` and some bicharacter `c`.
+  -/
+  theta_law
+    {B : Type} [CommRing B] [IsLocalRing B]
+    (t : Spec ⟨B⟩ ⟶ S)
+    {T : Over (Spec ⟨B⟩)} [AddObj T] [ModuleObj (𝓞 E) T]
+    {q : (Over.map t).obj T ⟶ total} (h : IsGroupBaseChange t (B := T) q)
+    : ∃ c : D.dualTorsion → AddChar D.dualTorsion B,
+      IsThetaStructure (D.lagrangian.addSubgroupOf D.dualTorsion)
+        (AddMonoidHom.comp (h.pullSection ∘ₗ levelPoints)
+          (AddSubgroup.inclusion D.dualTorsion_le_levelTorsion))
+        (embeds.isLinearSystem.pull q.left) c
   /-- The class of `lineBundle` satisfies the three identities of `PEL.HasClassLaws`. -/
   class_laws : D.HasClassLaws lineBundle.picClass
-  /-- The signature condition: over a local ring there are coordinates at `0` in which `c` acts on
+  /--
+  The signature condition: over a local ring there are coordinates at `0` in which `c` acts on
   the Lie algebra by a matrix `m c`, and `m (β̄ - b) - (β - b)` has its image on a line on which
-  `𝓞 E` acts by scalars, through the structure map. -/
-  signature (b : ℤ) {B : CommRingCat} (t : Spec B ⟶ S) [IsLocalRing B] :
-      ∃ (V : total.left.Opens) (z : Fin (abelianDim E D.Index) → Γ(total.left, V))
-          (m : 𝓞 E → Matrix (Fin (abelianDim E D.Index)) (Fin (abelianDim E D.Index)) B),
-        IsLieChart total (ι := Fin (abelianDim E D.Index)) t V z m ∧
-        HasSignature (preimage (t ≫ τ)).hom (Star.star D.β - b) (D.β - b) m
+  `𝓞 E` acts by scalars, through the structure map.
+  -/
+  signature (b : ℤ) {B : CommRingCat} (t : Spec B ⟶ S) [IsLocalRing B]
+    : ∃ (V : total.left.Opens) (z : Fin (abelianDim E D.Index) → Γ(total.left, V))
+        (m : 𝓞 E → Matrix (Fin (abelianDim E D.Index)) (Fin (abelianDim E D.Index)) B),
+      IsLieChart total (ι := Fin (abelianDim E D.Index)) t V z m
+        ∧ HasSignature (preimage (t ≫ τ)).hom (Star.star D.β - b) (D.β - b) m
   /-- `total` is smooth over `S` of relative dimension `abelianDim E D.Index`. -/
   relative_dim : SmoothOfRelativeDimension (abelianDim E D.Index) total.hom
-  /-- A point of `S` over `𝓞 E` with affine source is determined by its list, the coordinates of the
-  level points. -/
-  eq_of_level_coords_eq {B : CommRingCat} (t t' : Spec B ⟶ S) :
-      t ≫ τ = t' ≫ τ →
-      (∀ l : D.levelTorsion, lineBundle.pull (t ≫ (levelPoints l).left) = lineBundle.pull
-        (t' ≫ (levelPoints l).left)) →
-      t = t'
+  /--
+  A point of `S` over `𝓞 E` with affine source is determined by its list, the coordinates of the
+  level points.
+  -/
+  eq_of_level_coords_eq {B : CommRingCat} (t t' : Spec B ⟶ S)
+    : t ≫ τ = t' ≫ τ
+      → (∀ l : D.levelTorsion,
+        lineBundle.pull (t ≫ (levelPoints l).left) = lineBundle.pull (t' ≫ (levelPoints l).left))
+      → t = t'
 
 attribute [instance] ThetaFamily.moduleObj ThetaFamily.isAbelianScheme ThetaFamily.relative_dim
 
-variable {D} {S S' Z : Scheme} (b : S' ⟶ S) {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))}
-  {X : ThetaFamily D Z τ} {R : Type} {K : Type} [CommRing R]
+variable
+  {D} {S S' Z : Scheme} (b : S' ⟶ S)
+  {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ} {R : Type} {K : Type} [CommRing R]
 
 /-! ### Objects and their data -/
 
@@ -124,39 +138,49 @@ variable (x : ThetaObject X S) (y : ThetaObject X (Spec ⟨R⟩))
 
 namespace ThetaObject
 
-/-- The group scheme with O_E-action of an object x over S: the pull-back of the abelian scheme
-of the family along x : S → base. -/
+/--
+The group scheme with O_E-action of an object x over S: the pull-back of the abelian scheme
+of the family along x : S → base.
+-/
 def groupScheme : Over S := pullback x X.total
-  deriving AddObj, ModuleObj (𝓞 E), IsAbelianScheme
+deriving AddObj, ModuleObj (𝓞 E), IsAbelianScheme
 
-/-- The projection from the abelian scheme of an object x to that of the family X, as a morphism
-over the base of X. -/
+/--
+The projection from the abelian scheme of an object x to that of the family X, as a morphism
+over the base of X.
+-/
 def toFamily : Over.map x x.groupScheme ⟶ X.total := (mapPullbackAdj x).counit X.total
 
 /-- The projection `x.toFamily` is a base change of the abelian scheme of the family along `x` that
 respects the group law and the `𝓞 E`-action. -/
 lemma isGroupBaseChange : IsGroupBaseChange x x.toFamily := isGroupBaseChange_counit _
 
-/-- The abelian scheme of an object is smooth of relative dimension
-`New.Variety.abelianDim E D.Index`. -/
-instance smoothOfRelativeDimension :
-    SmoothOfRelativeDimension (abelianDim E D.Index) x.groupScheme.hom := by
+/--
+The abelian scheme of an object is smooth of relative dimension
+`New.Variety.abelianDim E D.Index`.
+-/
+instance smoothOfRelativeDimension
+    : SmoothOfRelativeDimension (abelianDim E D.Index) x.groupScheme.hom := by
   -- `simp` writes the structure map of the pull-back as `pullback.snd`, which has the instance
   simp only [groupScheme, pullback_obj_left, pullback_obj_hom]
   infer_instance
 
 attribute [irreducible] groupScheme toFamily
 
-/-- The line bundle, with its coordinates, on the abelian scheme of an object: the pull-back of the
-bundle `X.lineBundle` of the family along the projection. -/
+/--
+The line bundle, with its coordinates, on the abelian scheme of an object: the pull-back of the
+bundle `X.lineBundle` of the family along the projection.
+-/
 def lineBundle : LineBundle x.groupScheme.left D.dualTorsion := X.lineBundle.pull x.toFamily.left
 
 /-- The line bundle of an object is a linear system whose coordinates separate points over `S`. -/
 lemma isProjEmbedding : x.lineBundle.IsProjEmbedding x.groupScheme.hom :=
   X.embeds.of_isPullback x.isGroupBaseChange.isPullback
 
-/-- The level points of an object: the O_E-linear map from the 𝔑-torsion of (𝔸_f / Ô)ⁿ to
-sections of its abelian scheme, pulled back from those of the family. -/
+/--
+The level points of an object: the O_E-linear map from the 𝔑-torsion of (𝔸_f / Ô)ⁿ to
+sections of its abelian scheme, pulled back from those of the family.
+-/
 def levelPoints : D.levelTorsion →ₗ[𝓞 E] 𝟙_ (Over S) ⟶ x.groupScheme :=
   x.isGroupBaseChange.pullSection ∘ₗ X.levelPoints
 
@@ -247,8 +271,10 @@ namespace IsPullbackAlong
 
 variable {b x} {x' : ThetaObject X S'} (h : IsPullbackAlong b x' x)
 
-/-- For x' the pull-back of x along b, the S-morphism from the abelian scheme of x' to that of x
-that commutes with the projections to the family. -/
+/--
+For x' the pull-back of x along b, the S-morphism from the abelian scheme of x' to that of x
+that commutes with the projections to the family.
+-/
 def schemeMap : Over.map b x'.groupScheme ⟶ x.groupScheme :=
   x.isGroupBaseChange.pointEquiv.symm (homMk x'.toFamily.left (by simp [h]))
 
@@ -296,15 +322,19 @@ lemma exists_isPullbackAlong : ∃ x' : ThetaObject X S', IsPullbackAlong b x' x
 
 /-! ### Objects over a ring: full structures and logarithms on infinitesimal points -/
 
-/-- For an object y over Spec R, the ring homomorphism O_E → R induced by y and the structure
-morphism of the base of the family to Spec O_E. -/
+/--
+For an object y over Spec R, the ring homomorphism O_E → R induced by y and the structure
+morphism of the base of the family to Spec O_E.
+-/
 def baseHom : 𝓞 E →+* R := (preimage (y ≫ τ)).hom
 
-/-- A full structure on an object `y` over `R`: an injective `𝓞 E`-linear map from `(𝔸_f / Ô)ⁿ` to
+/--
+A full structure on an object `y` over `R`: an injective `𝓞 E`-linear map from `(𝔸_f / Ô)ⁿ` to
 the sections of `y.groupScheme` that extends the level points. The field `weil_pairing` prescribes
 the commutator pairing: for each `ι : R → ℂ` there is a unit `ε` of `Ẑ` such that, for `m`-torsion
 points `x`, `z`, lifts of the two translations to `y.lineBundle.pow m` commute on coordinates up to
-a scalar `c` with `ι c = ψ_f (ε m ξ zᴴ x)`. -/
+a scalar `c` with `ι c = ψ_f (ε m ξ zᴴ x)`.
+-/
 structure FullLevelStructure where
   /-- The `𝓞 E`-linear map from all torsion, `(𝔸f E / Ô E)ⁿ`, to the sections of `y.groupScheme`. -/
   torsionPoint : AdelicTorsion E D.Index →ₗ[𝓞 E] 𝟙_ (Over (Spec ⟨R⟩)) ⟶ y.groupScheme
@@ -312,17 +342,21 @@ structure FullLevelStructure where
   injective : (⇑torsionPoint).Injective
   /-- The map `torsionPoint` extends the level points of `y`. -/
   levelPoints_eq (l : D.levelTorsion) : y.levelPoints l = torsionPoint l
-  /-- For each `ι` there is a unit `ε` of Ẑ with this property: for `m`-torsion points `x`, `z`,
+  /--
+  For each `ι` there is a unit `ε` of Ẑ with this property: for `m`-torsion points `x`, `z`,
   lifts of the two translations to `y.lineBundle.pow m` commute on coordinate sections up to a
-  scalar `c`, where `ι c = ψf (ε * m * xiForm D.ξ x z)`. -/
-  weil_pairing (ι : R →+* ℂ) : ∃ ε : (Ô ℚ)ˣ, ∀ (m : ℕ) (x z : D.Index → 𝔸f E),
-    m • torsionClass x = 0 → m • torsionClass z = 0 → ∃ c : R,
-    ι c = ψf E (finAdeleIncl ℚ E ε * (m * xiForm D.ξ x z)) ∧
-    ∀ Φ Ψ : Module.End R ((y.lineBundle.pow m).H0 R),
-      IsTranslationLift (y.lineBundle.pow m) (torsionPoint (torsionClass x)) Φ →
-      IsTranslationLift (y.lineBundle.pow m) (torsionPoint (torsionClass z)) Ψ →
-      ∀ (h : (y.lineBundle.pow m).IsLinearSystem) (i : Fin m → D.dualTorsion),
-        Φ (Ψ (coordSection h i)) = c • Ψ (Φ (coordSection h i))
+  scalar `c`, where `ι c = ψf (ε * m * xiForm D.ξ x z)`.
+  -/
+  weil_pairing (ι : R →+* ℂ)
+    : ∃ ε : (Ô ℚ)ˣ, ∀ (m : ℕ) (x z : D.Index → 𝔸f E),
+      m • torsionClass x = 0 → m • torsionClass z = 0
+        → ∃ c : R,
+          ι c = ψf E (finAdeleIncl ℚ E ε * (m * xiForm D.ξ x z))
+            ∧ ∀ Φ Ψ : Module.End R ((y.lineBundle.pow m).H0 R),
+              IsTranslationLift (y.lineBundle.pow m) (torsionPoint (torsionClass x)) Φ
+                → IsTranslationLift (y.lineBundle.pow m) (torsionPoint (torsionClass z)) Ψ
+                → ∀ (h : (y.lineBundle.pow m).IsLinearSystem) (i : Fin m → D.dualTorsion),
+                  Φ (Ψ (coordSection h i)) = c • Ψ (Φ (coordSection h i))
 
 /-- If `y` over `K` is the pull-back of `x` over `R` along `φ : R → K`, then the homomorphism from
 `𝓞 E` given by `y` is that given by `x` followed by `φ`. -/
@@ -332,14 +366,17 @@ lemma IsPullbackAlong.baseHom_eq_comp [CommRing K] {φ : R →+* K}
     y.baseHom = φ.comp x.baseHom := by
   simp [ThetaObject.baseHom, ← h_pb]
 
-/-- The properties of a logarithm at one point. Here `ω` maps the `C`-points of `y.groupScheme` to
+/--
+The properties of a logarithm at one point. Here `ω` maps the `C`-points of `y.groupScheme` to
 `C` for all rings `C`, `x` is a `C`-point, `ψ : C → C'` is a ring map and `b` is an integer.
 `New.ThetaObject.IsTangentLog` asks these properties when `ψ` is onto with square-zero kernel and
-`x` vanishes modulo that kernel. -/
-structure IsTangentLogAt (b : ℤ)
-    (ω : ∀ ⦃C : CommRingCat⦄ ⦃t : Spec C ⟶ Spec ⟨R⟩⦄, (Over.mk t ⟶ y.groupScheme) → C)
-    {C C' : CommRingCat} (ψ : C ⟶ C') {t : Spec C ⟶ Spec ⟨R⟩} (x : Over.mk t ⟶ y.groupScheme) :
-    Prop where
+`x` vanishes modulo that kernel.
+-/
+structure IsTangentLogAt
+    (b : ℤ) (ω : ∀ ⦃C : CommRingCat⦄ ⦃t : Spec C ⟶ Spec ⟨R⟩⦄, (Over.mk t ⟶ y.groupScheme) → C)
+    {C C' : CommRingCat} (ψ : C ⟶ C')
+    {t : Spec C ⟶ Spec ⟨R⟩} (x : Over.mk t ⟶ y.groupScheme)
+    : Prop where
   /-- `ω` turns `c •` into multiplication by `y.baseHom c`. -/
   map_smul (c : 𝓞 E) : ω (c • x) = preimage t (y.baseHom c) * ω x
   /-- A zero of `ω` is killed by `star β - b`. -/
@@ -349,15 +386,19 @@ structure IsTangentLogAt (b : ℤ)
   /-- The value of `ω` lies in the kernel of `ψ`. -/
   infinitesimal : ψ (ω x) = 0
   /-- `ω` commutes with a change of rings `χ : C → C₁`. -/
-  naturality ⦃C₁ : CommRingCat⦄ ⦃χ : C ⟶ C₁⦄ ⦃t₁ : Spec C₁ ⟶ Spec ⟨R⟩⦄
-    (a : Over.mk t₁ ⟶ Over.mk t) : a.left = Spec.map χ → ω (a ≫ x) = χ (ω x)
+  naturality ⦃C₁ : CommRingCat⦄ ⦃χ : C ⟶ C₁⦄ ⦃t₁ : Spec C₁ ⟶ Spec ⟨R⟩⦄ (a : Over.mk t₁ ⟶ Over.mk t)
+    : a.left = Spec.map χ → ω (a ≫ x) = χ (ω x)
 
-/-- `ω` is a logarithm of `y` along the line of the signature for `b`: it satisfies
-`New.ThetaObject.IsTangentLogAt` at every point that vanishes modulo a square-zero kernel. -/
-def IsTangentLog (b : ℤ)
-    (ω : ∀ ⦃C : CommRingCat⦄ ⦃t : Spec C ⟶ Spec ⟨R⟩⦄, (Over.mk t ⟶ y.groupScheme) → C) : Prop :=
+/--
+`ω` is a logarithm of `y` along the line of the signature for `b`: it satisfies
+`New.ThetaObject.IsTangentLogAt` at every point that vanishes modulo a square-zero kernel.
+-/
+def IsTangentLog
+    (b : ℤ) (ω : ∀ ⦃C : CommRingCat⦄ ⦃t : Spec C ⟶ Spec ⟨R⟩⦄, (Over.mk t ⟶ y.groupScheme) → C)
+    : Prop :=
   ∀ ⦃C C' : CommRingCat⦄ ⦃ψ : C ⟶ C'⦄ [IsSqZeroExt ψ] ⦃t : Spec C ⟶ Spec ⟨R⟩⦄
-    ⦃x : Over.mk t ⟶ y.groupScheme⦄, IsInfinitesimal ψ x → y.IsTangentLogAt b ω ψ x
+      ⦃x : Over.mk t ⟶ y.groupScheme⦄,
+    IsInfinitesimal ψ x → y.IsTangentLogAt b ω ψ x
 
 variable [IsLocalRing R] {y}
 
@@ -524,22 +565,28 @@ namespace New.ThetaObject
 
 open AlgebraicGeometry Variety
 
-variable {E : Type} [Field E] [CMBase E]
+variable
+  {E : Type} [Field E] [CMBase E]
   {D : PEL E} {Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (NumberField.RingOfIntegers E))}
-  {X : ThetaFamily D Z τ} {R : Type} [CommRing R] (x : ThetaObject X (Spec ⟨R⟩))
+  {X : ThetaFamily D Z τ} {R : Type} [CommRing R]
+  (x : ThetaObject X (Spec ⟨R⟩))
 
-/-- On every pull-back of x to a noetherian local ring B, global functions on the abelian scheme are
+/--
+On every pull-back of x to a noetherian local ring B, global functions on the abelian scheme are
 constant and the coordinate sections of `y.lineBundle` span its H⁰ over B. Such an object is called
-rigid. -/
+rigid.
+-/
 def HasSpanningCoords : Prop :=
   ∀ ⦃B : Type⦄ [CommRing B] [IsLocalRing B] [IsNoetherianRing B] ⦃y : ThetaObject X (Spec ⟨B⟩)⦄
-    ⦃b : Spec (CommRingCat.of B) ⟶ Spec (CommRingCat.of R)⦄,
-    y.IsPullbackAlong b x →
-    HasConstFunctions y.groupScheme.hom ∧
-    Submodule.span B (Set.range (coordSection y.isProjEmbedding.isLinearSystem)) = ⊤
+      ⦃b : Spec (CommRingCat.of B) ⟶ Spec (CommRingCat.of R)⦄,
+    y.IsPullbackAlong b x
+      → HasConstFunctions y.groupScheme.hom
+        ∧ Submodule.span B (Set.range (coordSection y.isProjEmbedding.isLinearSystem)) = ⊤
 
-/-- The constants of the theta structure of an object `x` over a local ring: the family of
-characters `c s` chosen by the field `theta_law` of the family for `x`. -/
+/--
+The constants of the theta structure of an object `x` over a local ring: the family of
+characters `c s` chosen by the field `theta_law` of the family for `x`.
+-/
 noncomputable def thetaConstants [IsLocalRing R] : D.dualTorsion → AddChar D.dualTorsion R :=
   (X.theta_law x x.isGroupBaseChange).choose
 
@@ -567,7 +614,9 @@ namespace New.ThetaObject.HasSpanningCoords
 
 open CategoryTheory AlgebraicGeometry Variety Over Category
 
-variable {E k : Type} {B : Type} [Field E] [CMBase E] {D : PEL E} [Field k]
+variable
+  {E k : Type} {B : Type} [Field E] [CMBase E]
+  {D : PEL E} [Field k]
   {Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (NumberField.RingOfIntegers E))}
   {X : ThetaFamily D Z τ} {x : ThetaObject X (Spec ⟨k⟩)}
   [CommRing B] [IsLocalRing B] [IsNoetherianRing B]

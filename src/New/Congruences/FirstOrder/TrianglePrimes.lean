@@ -347,11 +347,13 @@ lemma New.Selmer.exists_forall_of_wellFoundedLT {J X : Type} [Preorder J] [WellF
     rw [show f j = Classical.epsilon (P j fun i : Set.Iio j ↦ f i) from fix_eq _ j]
     exact Classical.epsilon_spec (h_step f j ih)
 
-/-- What is chosen at one index of the triangle: a split place of `E`, a map from `Gal(Ω/E)` to
+/--
+What is chosen at one index of the triangle: a split place of `E`, a map from `Gal(Ω/E)` to
 `ℤ/ℓ^ν` (`Ω` is the algebraic closure of `ℚ`), and a finite set of primes of the real subfield that
-this place and the later ones have to avoid. -/
-structure New.Selmer.TriangleEntry (ℓ : ℕ) (E : Type) [ThePrime ℓ] [Field E] [CMFieldWithRoot5040 E]
-    (ν : ℕ) where
+this place and the later ones have to avoid.
+-/
+structure New.Selmer.TriangleEntry
+    (ℓ : ℕ) (E : Type) [ThePrime ℓ] [Field E] [CMFieldWithRoot5040 E] (ν : ℕ) where
   /-- The place with its Frobenius element. -/
   frobeniusDatum : FrobeniusDatum E
   /-- The place is not above `ℓ` and its Frobenius element fixes the `ℓ^ν`-th roots of unity. -/
@@ -361,39 +363,51 @@ structure New.Selmer.TriangleEntry (ℓ : ℕ) (E : Type) [ThePrime ℓ] [Field 
   /-- The map, a Kummer map once the entry follows earlier ones. -/
   kummerCandidate : Gal(Ω/E) → ZMod (ℓ ^ ν)
 
-/-- The entry `q` of exponent `e` may follow the entries `f i` of exponents `ty i`: its map is a
+/--
+The entry `q` of exponent `e` may follow the entries `f i` of exponents `ty i`: its map is a
 Kummer map for the earlier places of exponent `e` and new modulo `ℓ`, and its place is a new one in
 `W`, at whose Frobenius element the earlier maps vanish, twice the value of the new map divides the
 loss `n`, and the even classes of exponent `e` unramified off `ℓ` take twice their value at the test
-element `g`. -/
-structure New.Selmer.TriangleEntry.MayFollow {ℓ : ℕ} {E : Type} [ThePrime ℓ] [Field E]
-    [CMFieldWithRoot5040 E] {ν t : ℕ} {K : Type} [Finite K] (ty : K → Fin t)
-    (f : K → TriangleEntry ℓ E ν) (e : Fin t) (g : Gal(Ω/E)) (n : ℕ) (W : Set (FrobeniusDatum E))
-    (q : TriangleEntry ℓ E ν) : Prop where
-  /-- The new map is a Kummer map of exponent `e` off `q.avoidedPrimes`: the restriction of a
+element `g`.
+-/
+structure New.Selmer.TriangleEntry.MayFollow
+    {ℓ : ℕ} {E : Type} [ThePrime ℓ] [Field E] [CMFieldWithRoot5040 E]
+    {ν t : ℕ} {K : Type} [Finite K]
+    (ty : K → Fin t) (f : K → TriangleEntry ℓ E ν) (e : Fin t) (g : Gal(Ω/E)) (n : ℕ)
+    (W : Set (FrobeniusDatum E)) (q : TriangleEntry ℓ E ν)
+    : Prop where
+  /--
+  The new map is a Kummer map of exponent `e` off `q.avoidedPrimes`: the restriction of a
   relation over the real subfield that is unramified off `q.avoidedPrimes` and whose reciprocity law
   holds at split primes off `q.avoidedPrimes`, for cocycles with local conditions above `ℓ` and
-  below the earlier places of exponent `e`. -/
-  isKummerMap : IsKummerMap e (fun i : {i : K | ty i = e} ↦ (f i).isNuSplitPlace) q.avoidedPrimes
-    q.kummerCandidate
-  /-- The primes to avoid include the primes of the real subfield above `ℓ` or below an earlier
-  place of exponent `e`. -/
-  familyPrimes_subset : familyPrimes ℓ (fun i : {i : K | ty i = e} ↦ (f i).frobeniusDatum) ⊆
-    q.avoidedPrimes
+  below the earlier places of exponent `e`.
+  -/
+  isKummerMap
+    : IsKummerMap e
+      (fun i : {i : K | ty i = e} ↦ (f i).isNuSplitPlace)
+      q.avoidedPrimes q.kummerCandidate
+  /--
+  The primes to avoid include the primes of the real subfield above `ℓ` or below an earlier
+  place of exponent `e`.
+  -/
+  familyPrimes_subset
+    : familyPrimes ℓ (fun i : {i : K | ty i = e} ↦ (f i).frobeniusDatum) ⊆ q.avoidedPrimes
   /-- Modulo `ℓ` the new map is independent of the earlier maps of exponent `e`. -/
-  notMem_span : reductionModL q.kummerCandidate ∉
-    Submodule.span (ZMod ℓ) (Set.range fun i : {i : K | ty i = e} ↦
-      reductionModL (f i).kummerCandidate)
+  notMem_span
+    : reductionModL q.kummerCandidate ∉ Submodule.span (ZMod ℓ)
+      (Set.range fun i : {i : K | ty i = e} ↦ reductionModL (f i).kummerCandidate)
   /-- At the new Frobenius element the new map is nearly a unit: twice its value divides `n`. -/
   two_mul_dvd : 2 * q.kummerCandidate q.frobeniusDatum.frob ∣ n
   /-- At the new Frobenius element the earlier maps vanish. -/
   apply_eq_zero (i : K) : (f i).kummerCandidate q.frobeniusDatum.frob = 0
-  /-- At the new Frobenius element the even classes of exponent `e` unramified off `ℓ` take twice
-  their value at `g`. -/
+  /--
+  At the new Frobenius element the even classes of exponent `e` unramified off `ℓ` take twice
+  their value at `g`.
+  -/
   even_apply (O : CoeffRing ℓ) : ∀ z ∈ evenClasses O ∅ ν e, z q.frobeniusDatum.frob = 2 • z g
   /-- The new place lies above a new prime of the real subfield. -/
-  primeBelowPlus_ne (i : K) : primeBelowPlus (f i).frobeniusDatum.place ≠ primeBelowPlus
-    q.frobeniusDatum.place
+  primeBelowPlus_ne (i : K)
+    : primeBelowPlus (f i).frobeniusDatum.place ≠ primeBelowPlus q.frobeniusDatum.place
   /-- It avoids the primes excluded by the earlier maps. -/
   notMem_earlier (i : K) : primeBelowPlus q.frobeniusDatum.place ∉ (f i).avoidedPrimes
   /-- It avoids the primes excluded by the new map. -/
@@ -482,13 +496,17 @@ lemma New.Selmer.TriangleEntry.exists_mayFollow {ℓ : ℕ} {E : Type} [ThePrime
       notMem := h_notMem₀, mem := hW₀ }⟩
 
 /-- Some entry exists: at a split place, with the zero map and no primes to avoid. -/
-instance New.Selmer.TriangleEntry.nonempty {ℓ : ℕ} {E : Type} [ThePrime ℓ] [Field E]
-    [CMFieldWithRoot5040 E] {ν : ℕ} : Nonempty (TriangleEntry ℓ E ν) := by
+instance New.Selmer.TriangleEntry.nonempty
+    {ℓ : ℕ} {E : Type} [ThePrime ℓ] [Field E] [CMFieldWithRoot5040 E] {ν : ℕ}
+    : Nonempty (TriangleEntry ℓ E ν) := by
   have h_near : ∀ᶠ s : Gal(Ω/E) in nhds 1, cyclotomicCharMod Ω (ℓ ^ ν) s = 1 :=
     isOpen_ker_cyclotomicCharMod.out.mem_nhds (map_one _)
-  obtain ⟨x, ⟨h_off, -⟩, h_cyc⟩ := nonempty_of_mem (f := mostFrobeniiAt E 1) (inter_mem_inf
-    (eventually_mostFrobenii (eventually_primeBelowPlus_notMem (ℓ := ℓ) Set.finite_empty)
-      fun _ ↦ id) (preimage_mem_comap h_near))
+  obtain ⟨x, ⟨h_off, -⟩, h_cyc⟩ :=
+    nonempty_of_mem (f := mostFrobeniiAt E 1)
+      (inter_mem_inf
+        (eventually_mostFrobenii (eventually_primeBelowPlus_notMem (ℓ := ℓ) Set.finite_empty)
+          fun _ ↦ id)
+        (preimage_mem_comap h_near))
   exact ⟨x, ⟨h_off, h_cyc⟩, ∅, 0⟩
 
 /-- Let `ℓ` be a prime, `E` a CM field with a primitive `5040`-th root of unity and at least four

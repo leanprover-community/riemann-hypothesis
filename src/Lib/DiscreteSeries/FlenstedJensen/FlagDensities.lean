@@ -69,18 +69,22 @@ open Matrix MeasureTheory Complex ComplexOrder Norms.L2Operator LinearMap Finset
 
 variable {n : Type} [Fintype n] [DecidableEq n] {o : n → ℤ} {b c : Matrix n n ℂ}
 
-/-- The set `G B` of matrices `g * b` with `g` in `U(diag ε)` and `b` invertible and upper
-triangular for the order `o`: the preimage of an open orbit of `G` on flags. -/
+/--
+The set `G B` of matrices `g * b` with `g` in `U(diag ε)` and `b` invertible and upper
+triangular for the order `o`: the preimage of an open orbit of `G` on flags.
+-/
 def openOrbit (ε : n → ℤˣ) (o : n → ℤ) : Set (Matrix n n ℂ) :=
   {y : Matrix n n ℂ | ∃ g : USign ε, ∃ b : Matrix n n ℂ, IsBorelMatrix o b ∧ y = g * b}
 
-/-- The function `F` on matrices is a density on the flags of the order `o`:
+/--
+The function `F` on matrices is a density on the flags of the order `o`:
 `F (y * b) = |∏ i, b i i ^ (2ρ) i| ^ 2 • F y` for `y` invertible and `b` invertible and upper
 triangular for `o`, where `2ρ = twoRho o ⊤`. The matrices `b` are upper triangular in the order of
-increasing `o`, so this `2ρ` is minus the sum of the roots of the triangular group. -/
+increasing `o`, so this `2ρ` is minus the sum of the roots of the triangular group.
+-/
 def IsFlagDensity {E : Type*} [SMul ℝ E] (o : n → ℤ) (F : Matrix n n ℂ → E) : Prop :=
-  ∀ (y : GL n ℂ) (b : Matrix n n ℂ), IsBorelMatrix o b →
-    F (y * b) = ‖diagChar (twoRho o ⊤) b‖ ^ 2 • F y
+  ∀ (y : GL n ℂ) (b : Matrix n n ℂ),
+    IsBorelMatrix o b → F (y * b) = ‖diagChar (twoRho o ⊤) b‖ ^ 2 • F y
 
 /-- Uniqueness of the factorisation. Let `o` be injective. If `g * b = g' * c` with `g`, `g'` in
 `U(diag ε)`, `b`, `c` triangular and all ratios `c i i / b i i` positive reals, then `g = g'`. -/
@@ -579,12 +583,15 @@ variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ}
 abbrev PosIndex (ε : n → ℤˣ) : Type := {i : n // ε i = 1}
 
 /-- The indices `i` of sign `ε i ≠ 1`, that is `ε i = -1`. -/
-abbrev NegIndex (ε : n → ℤˣ) : Type := {i : n // ¬ε i = 1}
+abbrev NegIndex (ε : n → ℤˣ) : Type := {i : n // ¬ ε i = 1}
 
-/-- The block diagonal matrix with the block `a` on the indices of sign `1` and the block `b` on
-the others. -/
-noncomputable def signBlocks (ε : n → ℤˣ) (a : Matrix (PosIndex ε) (PosIndex ε) ℂ)
-    (b : Matrix (NegIndex ε) (NegIndex ε) ℂ) : Matrix n n ℂ :=
+/--
+The block diagonal matrix with the block `a` on the indices of sign `1` and the block `b` on
+the others.
+-/
+noncomputable def signBlocks
+    (ε : n → ℤˣ) (a : Matrix (PosIndex ε) (PosIndex ε) ℂ) (b : Matrix (NegIndex ε) (NegIndex ε) ℂ)
+    : Matrix n n ℂ :=
   reindex (Equiv.sumCompl (ε · = 1)) (Equiv.sumCompl (ε · = 1)) (fromBlocks a 0 0 b)
 
 section
@@ -592,8 +599,8 @@ section
 variable {a a' : Matrix (PosIndex ε) (PosIndex ε) ℂ} {b b' : Matrix (NegIndex ε) (NegIndex ε) ℂ}
 
 omit [DecidableEq n] in
-theorem signBlocks_mul :
-    signBlocks ε a b * signBlocks ε a' b' = signBlocks ε (a * a') (b * b') := by
+theorem signBlocks_mul
+    : signBlocks ε a b * signBlocks ε a' b' = signBlocks ε (a * a') (b * b') := by
   simp [signBlocks, fromBlocks_multiply]
 
 theorem det_signBlocks : (signBlocks ε a b).det = a.det * b.det := by simp [signBlocks]
@@ -610,15 +617,22 @@ theorem conjTranspose_signBlocks : (signBlocks ε a b)ᴴ = signBlocks ε aᴴ b
 
 omit [DecidableEq n] in
 /-- The entries of `signBlocks ε a b`: those of `a` or `b` at indices of equal sign, else zero. -/
-theorem signBlocks_apply (i j : n) : signBlocks ε a b i j =
-    if hi : ε i = 1 then if hj : ε j = 1 then a ⟨i, hi⟩ ⟨j, hj⟩ else 0
-    else if hj : ε j = 1 then 0 else b ⟨i, hi⟩ ⟨j, hj⟩ := by
+theorem signBlocks_apply (i j : n)
+    : signBlocks ε a b i j
+      = if hi : ε i = 1 then
+          if hj : ε j = 1 then a ⟨i, hi⟩ ⟨j, hj⟩ else 0
+        else if hj : ε j = 1 then
+          0
+        else
+          b ⟨i, hi⟩ ⟨j, hj⟩ := by
   by_cases hi : ε i = 1 <;> by_cases hj : ε j = 1 <;> simp [signBlocks, hi, hj]
 
 end
 
-/-- The matrix `signBlocks ε a b` lies in `blockDiagAlg ε`: its entries vanish at indices of
-different sign. -/
+/--
+The matrix `signBlocks ε a b` lies in `blockDiagAlg ε`: its entries vanish at indices of
+different sign.
+-/
 theorem signBlocks_mem_blockDiagAlg : signBlocks ε a b ∈ blockDiagAlg ε :=
   mem_blockDiagAlg.2 fun i j h_ne ↦ by
     grind [signBlocks_apply, Int.units_eq_one_or (ε i), Int.units_eq_one_or (ε j)]
@@ -629,15 +643,16 @@ theorem signBlocks_eq_one_iff : signBlocks ε a b = 1 ↔ a = 1 ∧ b = 1 := by
   simp
 
 /-- A block diagonal matrix with unitary blocks preserves the form `signMatrix ε = diag ε`. -/
-theorem signBlocks_preserves_form (ha : aᴴ * a = 1) (hb : bᴴ * b = 1) :
-    (signBlocks ε a b)ᴴ * signMatrix ε * signBlocks ε a b = signMatrix ε := by
+theorem signBlocks_preserves_form (ha : aᴴ * a = 1) (hb : bᴴ * b = 1)
+    : (signBlocks ε a b)ᴴ * signMatrix ε * signBlocks ε a b = signMatrix ε := by
   rw [mul_assoc, DiscreteSeries.mem_blockDiagAlg_iff_commute.1 signBlocks_mem_blockDiagAlg,
-    ← mul_assoc,
-    conjTranspose_signBlocks, signBlocks_mul, ha, hb, signBlocks_one, one_mul]
+    ← mul_assoc, conjTranspose_signBlocks, signBlocks_mul, ha, hb, signBlocks_one, one_mul]
 
 /-- A block diagonal matrix is invertible and triangular for the order `o` if both blocks are. -/
-theorem isBorelMatrix_signBlocks {o : n → ℤ} (ha : IsBorelMatrix (fun i : PosIndex ε ↦ o i) a)
-    (hb : IsBorelMatrix (fun i : NegIndex ε ↦ o i) b) : IsBorelMatrix o (signBlocks ε a b) := by
+theorem isBorelMatrix_signBlocks
+    {o : n → ℤ} (ha : IsBorelMatrix (fun i : PosIndex ε ↦ o i) a)
+    (hb : IsBorelMatrix (fun i : NegIndex ε ↦ o i) b)
+    : IsBorelMatrix o (signBlocks ε a b) := by
   obtain ⟨ha_tri, ha_det⟩ := ha
   obtain ⟨hb_tri, hb_det⟩ := hb
   refine ⟨fun i j h_lt ↦ ?_, by simp [det_signBlocks, ha_det, hb_det]⟩
@@ -646,44 +661,57 @@ theorem isBorelMatrix_signBlocks {o : n → ℤ} (ha : IsBorelMatrix (fun i : Po
   exacts [ha_tri h_lt, rfl, rfl, hb_tri h_lt]
 
 omit [DecidableEq n] in
-/-- The product `diagChar w m = ∏ i, m i i ^ w i` of a block diagonal matrix splits over the two
-blocks. -/
-theorem diagChar_signBlocks (w : n → ℤ) : diagChar w (signBlocks ε a b) =
-    diagChar (fun i : PosIndex ε ↦ w i) a * diagChar (fun i : NegIndex ε ↦ w i) b := by
+/--
+The product `diagChar w m = ∏ i, m i i ^ w i` of a block diagonal matrix splits over the two
+blocks.
+-/
+theorem diagChar_signBlocks (w : n → ℤ)
+    : diagChar w (signBlocks ε a b)
+      = diagChar (fun i : PosIndex ε ↦ w i) a * diagChar (fun i : NegIndex ε ↦ w i) b := by
   simp [diagChar, ← (Equiv.sumCompl fun i : n ↦ ε i = 1).prod_comp, signBlocks]
 
 end
 
-/-- Every matrix in `blockDiagAlg ε` (entries vanish at indices of different sign) has the form
-`signBlocks ε a b`. -/
-theorem exists_eq_signBlocks {y : Matrix n n ℂ} (hy : y ∈ blockDiagAlg ε) :
-    ∃ (a : Matrix (PosIndex ε) (PosIndex ε) ℂ) (b : Matrix (NegIndex ε) (NegIndex ε) ℂ),
+/--
+Every matrix in `blockDiagAlg ε` (entries vanish at indices of different sign) has the form
+`signBlocks ε a b`.
+-/
+theorem exists_eq_signBlocks {y : Matrix n n ℂ} (hy : y ∈ blockDiagAlg ε)
+    : ∃ (a : Matrix (PosIndex ε) (PosIndex ε) ℂ) (b : Matrix (NegIndex ε) (NegIndex ε) ℂ),
       y = signBlocks ε a b := by
-  refine ⟨y.toBlock (ε · = 1) (ε · = 1), y.toBlock (¬ε · = 1) (¬ε · = 1), ext fun i j ↦ ?_⟩
+  refine ⟨y.toBlock (ε · = 1) (ε · = 1), y.toBlock (¬ ε · = 1) (¬ ε · = 1), ext fun i j ↦ ?_⟩
   grind [signBlocks_apply, toBlock_apply, mem_blockDiagAlg.1 hy i j]
 
 omit [Fintype n] [DecidableEq n] in
 /-- A block diagonal matrix depends continuously on its two blocks. -/
-@[fun_prop] theorem continuous_signBlocks {X : Type*} [TopologicalSpace X]
+@[fun_prop]
+theorem continuous_signBlocks
+    {X : Type*} [TopologicalSpace X]
     {a : X → Matrix (PosIndex ε) (PosIndex ε) ℂ} {b : X → Matrix (NegIndex ε) (NegIndex ε) ℂ}
-    (ha : Continuous a) (hb : Continuous b) : Continuous fun x : X ↦ signBlocks ε (a x) (b x) := by
+    (ha : Continuous a) (hb : Continuous b)
+    : Continuous fun x : X ↦ signBlocks ε (a x) (b x) := by
   unfold signBlocks
   fun_prop
 
-/-- The homomorphism `U(p) × U(q) → K = maxCompactU ε` that puts two unitary matrices on the
-diagonal; `p` and `q` count the indices of sign `1` and `-1`. -/
-noncomputable def signBlocksHom (ε : n → ℤˣ) :
-    USign (1 : PosIndex ε → ℤˣ) × USign (1 : NegIndex ε → ℤˣ) →* maxCompactU ε :=
+/--
+The homomorphism `U(p) × U(q) → K = maxCompactU ε` that puts two unitary matrices on the
+diagonal; `p` and `q` count the indices of sign `1` and `-1`.
+-/
+noncomputable def signBlocksHom (ε : n → ℤˣ)
+    : USign (1 : PosIndex ε → ℤˣ) × USign (1 : NegIndex ε → ℤˣ) →* maxCompactU ε :=
   MonoidHom.mk'
-    (fun u ↦ ⟨U.of IsHermitianInvolution.isUnit (signBlocks ε u.1 u.2)
+    (fun u ↦ ⟨
+      U.of IsHermitianInvolution.isUnit (signBlocks ε u.1 u.2)
         (signBlocks_preserves_form
           (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u.1.property)
           (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u.2.property)),
-      mem_maxCompactU.2 signBlocks_mem_blockDiagAlg⟩)
+      mem_maxCompactU.2 signBlocks_mem_blockDiagAlg
+    ⟩)
     fun u v ↦ Subtype.ext <| Subtype.ext <| Units.ext (by simp [signBlocks_mul])
 
-theorem coe_signBlocksHom (u : USign (1 : PosIndex ε → ℤˣ)) (v : USign (1 : NegIndex ε → ℤˣ)) :
-    (signBlocksHom ε (u, v) : Matrix n n ℂ) = signBlocks ε u v := rfl
+theorem coe_signBlocksHom (u : USign (1 : PosIndex ε → ℤˣ)) (v : USign (1 : NegIndex ε → ℤˣ))
+    : (signBlocksHom ε (u, v) : Matrix n n ℂ) = signBlocks ε u v :=
+  rfl
 
 theorem continuous_signBlocksHom : Continuous (signBlocksHom ε) := by
   rw [continuous_induced_rng, continuous_U_iff_matrix]
@@ -698,41 +726,54 @@ theorem signBlocksHom_surjective : Function.Surjective (signBlocksHom ε) := by
     rw [← signBlocks_mul, ← conjTranspose_signBlocks, ← hk, ← maxCompactU.coe_inv,
       nonsing_inv_mul _ (by simp [GeneralLinearGroup.det_ne_zero])]
   obtain ⟨ha, hb⟩ := signBlocks_eq_one_iff.1 h_unitary
-  refine ⟨(U.of IsHermitianInvolution.isUnit a (by simpa using ha),
-    U.of IsHermitianInvolution.isUnit b (by simpa using hb)), ?_⟩
+  refine ⟨
+    (
+      U.of IsHermitianInvolution.isUnit a (by simpa using ha),
+      U.of IsHermitianInvolution.isUnit b (by simpa using hb)
+    ),
+    ?_
+  ⟩
   ext : 3
   simp [coe_signBlocksHom, hk]
 
-/-- The map `U(p) × U(q) → K = maxCompactU ε`, `(a, b) ↦ signBlocks ε a b`, carries the product of
-the Haar measures of mass one to the Haar measure `haarK ε` of mass one. -/
-theorem measurePreserving_signBlocksHom :
-    MeasurePreserving (signBlocksHom ε) (volume.prod volume) (haarK ε) :=
+/--
+The map `U(p) × U(q) → K = maxCompactU ε`, `(a, b) ↦ signBlocks ε a b`, carries the product of
+the Haar measures of mass one to the Haar measure `haarK ε` of mass one.
+-/
+theorem measurePreserving_signBlocksHom
+    : MeasurePreserving (signBlocksHom ε) (volume.prod volume) (haarK ε) :=
   MonoidHom.measurePreserving continuous_signBlocksHom signBlocksHom_surjective (by simp)
 
-/-- Fubini's theorem on `K = maxCompactU ε ≃ U(p) × U(q)`: the integral of a continuous function
-over `K` is the double integral over the unitary blocks. -/
-theorem integral_haarK_eq_integral_signBlocksHom {φ : maxCompactU ε → ℂ} (hφ : Continuous φ) :
-    ∫ k : maxCompactU ε, φ k ∂haarK ε = ∫ u : USign (1 : PosIndex ε → ℤˣ),
-      ∫ v : USign (1 : NegIndex ε → ℤˣ), φ (signBlocksHom ε (u, v)) :=
+/--
+Fubini's theorem on `K = maxCompactU ε ≃ U(p) × U(q)`: the integral of a continuous function
+over `K` is the double integral over the unitary blocks.
+-/
+theorem integral_haarK_eq_integral_signBlocksHom {φ : maxCompactU ε → ℂ} (hφ : Continuous φ)
+    : ∫ k : maxCompactU ε, φ k ∂haarK ε
+      = ∫ u : USign (1 : PosIndex ε → ℤˣ),
+        ∫ v : USign (1 : NegIndex ε → ℤˣ), φ (signBlocksHom ε (u, v)) :=
   (measurePreserving_signBlocksHom.fubini (DiscreteSeries.integrable_of_compactSpace hφ)).right.symm
 
 omit [DecidableEq n] in
-/-- Let `p` select the indices of one sign. On these indices `-2 ρ_c`, minus the sum of the compact
+/--
+Let `p` select the indices of one sign. On these indices `-2 ρ_c`, minus the sum of the compact
 roots (those `e i - e j` with `ε i = ε j`) positive for `l`, is the sum `2 ρ` of all roots of the
-block positive for `-l`. -/
-theorem twoRho_subtype (l : n → ℤ) {p : n → Prop} [DecidablePred p]
-    (hp : ∀ i j : n, p i → (p j ↔ ε i = ε j)) :
-    twoRho (fun i : {i : n // p i} ↦ (-l) i) ⊤ =
-      fun i : {i : n // p i} ↦ (-twoRho l fun i j : n ↦ ε i = ε j) i := by
+block positive for `-l`.
+-/
+theorem twoRho_subtype
+    (l : n → ℤ) {p : n → Prop} [DecidablePred p] (hp : ∀ i j : n, p i → (p j ↔ ε i = ε j))
+    : twoRho (fun i : {i : n // p i} ↦ (-l) i) ⊤
+      = fun i : {i : n // p i} ↦ (- twoRho l fun i j : n ↦ ε i = ε j) i := by
   ext i
   have h_class (j : n) : ε i = ε j ↔ p j := (hp i j i.prop).symm
-  have h_card (q : n → Prop) [DecidablePred q] :
-      #{j : {i : n // p i} | q j} = #{j : n | ε i = ε j ∧ q j} :=
-    card_bij (fun j _ ↦ (j : n)) (by simp +contextual [h_class, Subtype.property]) (by simp)
-      (by simp +contextual [h_class])
+  have h_card (q : n → Prop) [DecidablePred q]
+      : # {j : {i : n // p i} | q j} = # {j : n | ε i = ε j ∧ q j} :=
+    card_bij (fun j _ ↦ (j : n)) (by simp +contextual [h_class, Subtype.property]) (by simp) (by
+      simp +contextual [h_class])
   simp [twoRho, ← h_card]
 
-/-- Let `K_ℂ` be the group of invertible matrices in `blockDiagAlg ε` (entries vanish at indices of
+/--
+Let `K_ℂ` be the group of invertible matrices in `blockDiagAlg ε` (entries vanish at indices of
 different sign), let `K = maxCompactU ε` be its unitary subgroup with Haar measure `haarK ε`, and
 let `l` have distinct entries. Let `B_K` be the subgroup of `K_ℂ` of matrices upper triangular in
 the order of decreasing `l`, and let `2 ρ_c` be the sum of the compact roots (those `e i - e j` with
@@ -742,13 +783,19 @@ integral of `F (x * k)` over `K` equals that of `F k`, for all `x` in `K_ℂ`.
 
 Classically this invariance follows from the Iwasawa decomposition `K_ℂ = K B_K` and the form
 `dk d_r b` of the Haar measure of `K_ℂ`; here the invariance is proved block by block, by Fubini's
-theorem and `integral_unitary_mul_left_of_density`, without using the Haar measure of `K_ℂ`. -/
-theorem integral_haarK_mul_left_of_density {l : n → ℤ} (hl : l.Injective) {F : Matrix n n ℂ → ℂ}
+theorem and `integral_unitary_mul_left_of_density`, without using the Haar measure of `K_ℂ`.
+-/
+theorem integral_haarK_mul_left_of_density
+    {l : n → ℤ} (hl : l.Injective)
+    {F : Matrix n n ℂ → ℂ}
     (hF_cont : ContinuousOn F {y : Matrix n n ℂ | y ∈ blockDiagAlg ε ∧ y.det ≠ 0})
-    (hF_borel : ∀ y ∈ blockDiagAlg ε, y.det ≠ 0 → ∀ b ∈ blockDiagAlg ε, IsBorelMatrix (-l) b →
-      F (y * b) = ‖diagChar (-twoRho l fun i j : n ↦ ε i = ε j) b‖ ^ 2 * F y)
-    {x : Matrix n n ℂ} (hx_mem : x ∈ blockDiagAlg ε) (hx_det : x.det ≠ 0) :
-    ∫ k : maxCompactU ε, F (x * k) ∂haarK ε = ∫ k : maxCompactU ε, F k ∂haarK ε := by
+    (hF_borel : ∀ y ∈ blockDiagAlg ε,
+      y.det ≠ 0
+        → ∀ b ∈ blockDiagAlg ε,
+          IsBorelMatrix (-l) b
+            → F (y * b) = ‖diagChar (-twoRho l fun i j : n ↦ ε i = ε j) b‖ ^ 2 * F y)
+    {x : Matrix n n ℂ} (hx_mem : x ∈ blockDiagAlg ε) (hx_det : x.det ≠ 0)
+    : ∫ k : maxCompactU ε, F (x * k) ∂haarK ε = ∫ k : maxCompactU ε, F k ∂haarK ε := by
   -- Let `f y z` be `F` at the matrix with blocks `y`, `z`. It is a density in each variable (for
   -- the orders `op`, `oq` that `-l` induces on the blocks), and the integral over `K` is the double
   -- integral over the unitary groups `Up`, `Uq` of the blocks.
@@ -762,47 +809,49 @@ theorem integral_haarK_mul_left_of_density {l : n → ℤ} (hl : l.Injective) {F
   have hf_cont : Continuous f.uncurry :=
     hF_cont.comp_continuous (by fun_prop) fun (y, z) ↦ ⟨signBlocks_mem_blockDiagAlg, h_det y z⟩
   have sign_pos (i j : n) (hi : ε i = 1) : ε j = 1 ↔ ε i = ε j := by grind
-  have sign_neg (i j : n) (hi : ¬ε i = 1) : ¬ε j = 1 ↔ ε i = ε j := by
+  have sign_neg (i j : n) (hi : ¬ ε i = 1) : ¬ ε j = 1 ↔ ε i = ε j := by
     grind [Int.units_eq_one_or (ε i), Int.units_eq_one_or (ε j)]
   have h_inj : (-l).Injective := neg_injective.comp hl
   -- The rule for `F` on block matrices; on each block `-2 ρ_c` is the `2 ρ` of the block.
-  have h_rule (y : GL (PosIndex ε) ℂ) (z : GL (NegIndex ε) ℂ)
+  have h_rule
+      (y : GL (PosIndex ε) ℂ) (z : GL (NegIndex ε) ℂ)
       {s : Matrix (PosIndex ε) (PosIndex ε) ℂ} {t : Matrix (NegIndex ε) (NegIndex ε) ℂ}
-      (hs : IsBorelMatrix op s) (ht : IsBorelMatrix oq t) :
-      F (signBlocks ε (y * s) (z * t)) =
-        ‖diagChar (twoRho op ⊤) s * diagChar (twoRho oq ⊤) t‖ ^ 2 * f y z := by
+      (hs : IsBorelMatrix op s) (ht : IsBorelMatrix oq t)
+      : F (signBlocks ε (y * s) (z * t))
+        = ‖diagChar (twoRho op ⊤) s * diagChar (twoRho oq ⊤) t‖ ^ 2 * f y z := by
     rw [twoRho_subtype l sign_pos, twoRho_subtype l sign_neg, ← signBlocks_mul,
       ← diagChar_signBlocks]
     exact hF_borel _ signBlocks_mem_blockDiagAlg (h_det y z) _ signBlocks_mem_blockDiagAlg
       (isBorelMatrix_signBlocks hs ht)
-  have h_pos (y : GL (PosIndex ε) ℂ) (z : GL (NegIndex ε) ℂ) :
-      ∫ u : Up, f (y * u) z = ∫ u : Up, f u z := by
+  have h_pos (y : GL (PosIndex ε) ℂ) (z : GL (NegIndex ε) ℂ)
+      : ∫ u : Up, f (y * u) z = ∫ u : Up, f u z := by
     have density : IsFlagDensity op fun s ↦ F (signBlocks ε s z) := fun y' s hs ↦ by
       simpa [diagChar] using h_rule y' z hs ⟨blockTriangular_one, by simp⟩
     exact integral_unitary_mul_left_of_density (h_inj.comp Subtype.val_injective) density
       (hf_cont.uncurry_right z) y
-  have h_neg (y : GL (PosIndex ε) ℂ) (z : GL (NegIndex ε) ℂ) :
-      ∫ v : Uq, f y (z * v) = ∫ v : Uq, f y v := by
+  have h_neg (y : GL (PosIndex ε) ℂ) (z : GL (NegIndex ε) ℂ)
+      : ∫ v : Uq, f y (z * v) = ∫ v : Uq, f y v := by
     have density : IsFlagDensity oq fun t ↦ F (signBlocks ε y t) := fun z' t ht ↦ by
       simpa [diagChar] using h_rule y z' ⟨blockTriangular_one, by simp⟩ ht
     exact integral_unitary_mul_left_of_density (h_inj.comp Subtype.val_injective) density
       (hf_cont.uncurry_left y) z
-  have h_fubini (y : GL (PosIndex ε) ℂ) (z : GL (NegIndex ε) ℂ) :
-      ∫ k : maxCompactU ε, F (signBlocks ε y z * k) ∂haarK ε =
-        ∫ u : Up, ∫ v : Uq, f (y * u) (z * v) := by
+  have h_fubini (y : GL (PosIndex ε) ℂ) (z : GL (NegIndex ε) ℂ)
+      : ∫ k : maxCompactU ε, F (signBlocks ε y z * k) ∂haarK ε
+        = ∫ u : Up, ∫ v : Uq, f (y * u) (z * v) := by
     have h_cont : Continuous fun k : maxCompactU ε ↦ F (signBlocks ε y z * k) := by
       refine hF_cont.comp_continuous (by fun_prop) fun k ↦ ⟨?_, ?_⟩
       · exact mul_mem signBlocks_mem_blockDiagAlg (mem_maxCompactU.1 k.prop)
       · simp [h_det, GeneralLinearGroup.det_ne_zero]
     simp [integral_haarK_eq_integral_signBlocksHom h_cont, coe_signBlocksHom, signBlocks_mul, f, Up,
       Uq]
-  have h_swap (y : GL (PosIndex ε) ℂ) :
-      ∫ u : Up, ∫ v : Uq, f (y * u) v = ∫ v : Uq, ∫ u : Up, f (y * u) v :=
+  have h_swap (y : GL (PosIndex ε) ℂ)
+      : ∫ u : Up, ∫ v : Uq, f (y * u) v = ∫ v : Uq, ∫ u : Up, f (y * u) v :=
     integral_integral_swap (DiscreteSeries.integrable_of_compactSpace (by fun_prop))
   obtain ⟨a, b, rfl⟩ := exists_eq_signBlocks hx_mem
   obtain ⟨⟨y, rfl⟩, ⟨z, rfl⟩⟩ : IsUnit a ∧ IsUnit b := by
     simpa [det_signBlocks, isUnit_iff_isUnit_det] using hx_det
-  calc _ = ∫ u : Up, ∫ v : Uq, f (y * u) (z * v) := h_fubini y z
+  calc
+    _ = ∫ u : Up, ∫ v : Uq, f (y * u) (z * v) := h_fubini y z
     _ = ∫ u : Up, ∫ v : Uq, f (1 * u) v := by simp only [h_neg, h_swap, h_pos]
     _ = ∫ k : maxCompactU ε, F k ∂haarK ε := by simpa [signBlocks_one] using (h_fubini 1 1).symm
 

@@ -47,8 +47,9 @@ open Finset Matrix MeasureTheory ComplexConjugate Norms.L2Operator
 
 namespace New.DiscreteSeries
 
-variable {n m X : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] {ε : n → ℤˣ}
-  {η : m → ℤˣ} {d : ℕ} {v : Matrix n (Fin (d + 1)) ℂ} {i₀ : Matrix n m ℂ}
+variable
+  {n m X : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {ε : n → ℤˣ} {η : m → ℤˣ} {d : ℕ} {v : Matrix n (Fin (d + 1)) ℂ} {i₀ : Matrix n m ℂ}
 
 omit [DecidableEq n] in
 /-- Multiplying on the left commutes with taking the first `d` columns. -/
@@ -99,19 +100,22 @@ lemma LowersFlag.inv {g : (Matrix n n ℂ)ˣ} {σ : ℂ}
           rw [hN, ← Matrix.mul_assoc, hg_inv, Matrix.mul_assoc, Matrix.mul_neg]
   exact ⟨_, -(T⁻¹ * N), h_tri, h_mul, rfl⟩
 
-/-- The group `R` of the `g` in `U(ε)` with `(g - 1) A_{≤ j} ⊆ A_{≤ j - 1}` for `j ≤ j₀ = d + 1`,
-where `A_{≤ j}` is the span of the first `j` columns of `v`. -/
+/--
+The group `R` of the `g` in `U(ε)` with `(g - 1) A_{≤ j} ⊆ A_{≤ j - 1}` for `j ≤ j₀ = d + 1`,
+where `A_{≤ j}` is the span of the first `j` columns of `v`.
+-/
 def positionGroup (ε : n → ℤˣ) (v : Matrix n (Fin (d + 1)) ℂ) : Subgroup (USign ε) where
   carrier := {g : USign ε | ∃ σ : ℂ, LowersFlag d v (g.val.val - 1) σ}
   one_mem' := ⟨0, 0, by simp, by simp, by simp⟩
   mul_mem' := fun ⟨σ₁, h₁⟩ ⟨σ₂, h₂⟩ ↦ ⟨σ₁ + σ₂, h₁.mul h₂⟩
   inv_mem' := fun ⟨_, h⟩ ↦ h.inv
 
-/-- The sum of the coefficients of `v_j` in `g v_{j + 1}` over `j ≤ d`, where `v_j` are the columns
+/--
+The sum of the coefficients of `v_j` in `g v_{j + 1}` over `j ≤ d`, where `v_j` are the columns
 of `v` and `g` lies in the group `R = positionGroup ε v`. The choice is unique if the `v_j` are
-independent, see `IsPosition.lowersFlag_unique`. -/
-def positionSum (g : positionGroup ε v) : ℂ :=
-  Exists.choose g.prop
+independent, see `IsPosition.lowersFlag_unique`.
+-/
+def positionSum (g : positionGroup ε v) : ℂ := Exists.choose g.prop
 
 /-- The matrix `g - 1` lowers the flag of the columns of `v`, with coefficient sum
 `positionSum g`. -/
@@ -238,12 +242,15 @@ lemma isometry_formAdjoint_conj (hP : IsPosition ε η d v i₀) (g : positionGr
     simp [formAdjoint_mul (η := ε), formAdjoint_formAdjoint, formAdjoint_val, Matrix.mul_assoc]
   simpa [h_adj, hP.formAdjoint_mul_self] using (hP.formAdjoint_conj_mul g⁻¹ g).symm
 
-/-- The map `g ↦ g' = i₀† g i₀` from the group `positionGroup ε v` of a position `(v, i₀)` to
-`U(η)`, where `i₀† = formAdjoint ε η i₀`. -/
+/--
+The map `g ↦ g' = i₀† g i₀` from the group `positionGroup ε v` of a position `(v, i₀)` to
+`U(η)`, where `i₀† = formAdjoint ε η i₀`.
+-/
 def inducedHom (hP : IsPosition ε η d v i₀) : positionGroup ε v →* USign η :=
   MonoidHom.mk'
-    (fun g ↦ U.of IsHermitianInvolution.isUnit (formAdjoint ε η i₀ * g.val.val.val * i₀)
-      (hP.isometry_formAdjoint_conj g))
+    (fun g ↦
+      U.of IsHermitianInvolution.isUnit (formAdjoint ε η i₀ * g.val.val.val * i₀)
+        (hP.isometry_formAdjoint_conj g))
     fun g₁ g₂ ↦ Subtype.ext (Units.ext (hP.formAdjoint_conj_mul g₁ g₂))
 
 lemma inducedHom_val (hP : IsPosition ε η d v i₀) (g : positionGroup ε v) :
@@ -262,15 +269,18 @@ lemma inducedHom_eq (hP : IsPosition ε η d v i₀) {g : positionGroup ε v} {y
   simpa [inducedHom_val, Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc, hP.formAdjoint_mul_self]
     using h_adj
 
-/-- The function `θ g = c_l g * conj (c_k g') * exp (conj (σ g) - σ g)` on the group of a position
+/--
+The function `θ g = c_l g * conj (c_k g') * exp (conj (σ g) - σ g)` on the group of a position
 `(v, i₀)`. Here `l` and `k` are integer vectors, doubled Harish-Chandra parameters for `U(ε)` and
 `U(η)`; `c_l`, `c_k` are their discrete series coefficients `HCParam.dsCoeff`, given by
 Flensted-Jensen's normalised integral over the maximal compact subgroup (`HCParam.flenstedJensen`);
-`g' = inducedHom g = i₀† g i₀`; and `σ` is the sum `positionSum`. -/
-def periodIntegrand (hP : IsPosition ε η d v i₀) (l : HCParam ε) (k : HCParam η)
-    (g : positionGroup ε v) : ℂ :=
-  l.dsCoeff (g : Matrix n n ℂ) * conj (k.dsCoeff (hP.inducedHom g : Matrix m m ℂ)) *
-    Complex.exp (conj (positionSum g) - positionSum g)
+`g' = inducedHom g = i₀† g i₀`; and `σ` is the sum `positionSum`.
+-/
+def periodIntegrand
+    (hP : IsPosition ε η d v i₀) (l : HCParam ε) (k : HCParam η) (g : positionGroup ε v)
+    : ℂ :=
+  l.dsCoeff (g : Matrix n n ℂ) * conj (k.dsCoeff (hP.inducedHom g : Matrix m m ℂ))
+    * Complex.exp (conj (positionSum g) - positionSum g)
 
 /-- Let `(v, i₀)` be a position: the `d + 1` columns of `v` are independent, their products for the
 form of signs `ε` vanish except that the last has norm `±1`, `i₀` is an isometry of `(ℂ^m, η)` into
@@ -305,7 +315,8 @@ lemma exists_inducedHom_eq (hP : IsPosition ε η d v i₀) (y : USign η) :
 
 end IsPosition
 
-/-- Let `(v, i₀)` be a stationary position for the parameters `l` and `k`, where `e` and `e'` place
+/--
+Let `(v, i₀)` be a stationary position for the parameters `l` and `k`, where `e` and `e'` place
 the common coordinates `X` in `n` and `m`, and let `l` be steep: on `X` its sign is `+1` and its
 weight is `0`, and on the other coordinates the signs alternate and the weight decreases strictly in
 `[-3 B, -B]`. On `X` let `η = 1` and the weight of the lowest `K`-type of `k` vanish; let this
@@ -316,54 +327,60 @@ For `g` in the group `positionGroup ε v` let `g' = inducedHom g = i₀† g i�
 `g ↦ (g, g')` and `φ = σ - conj σ` satisfy the hypotheses `IsLaplaceDatum` of Laplace's method:
 `φ` is additive and imaginary and is the difference of the phases at `(g - 1, g' - 1)`, the traces
 of `g - 1` and `g' - 1` agree, the conditions above on the weights hold, and the image of the map
-contains `U(X)`, embedded diagonally. -/
-theorem IsStationary.isLaplaceDatum [Fintype X] [DecidableEq X] {l : HCParam ε} {k : HCParam η}
-    {M M' : ℕ} {e : X ⊕ Fin M ≃ n} {e' : X ⊕ Fin M' ≃ m} {B : ℝ}
+contains `U(X)`, embedded diagonally.
+-/
+theorem IsStationary.isLaplaceDatum
+    [Fintype X] [DecidableEq X]
+    {l : HCParam ε} {k : HCParam η} {M M' : ℕ} {e : X ⊕ Fin M ≃ n} {e' : X ⊕ Fin M' ≃ m} {B : ℝ}
     (hP : IsStationary l k e e' d v i₀) (h_steep : IsSteep l B e)
     (h_sign_inl : ∀ x : X, η (e' (Sum.inl x)) = 1)
     (h_weight_inl : ∀ x : X, k.lowestKType (e' (Sum.inl x)) = 0)
     (h_weight_nonneg : ∀ i : m, 0 ≤ k.lowestKType i)
-    (h_weight_le : ∀ i i' : m, η i ≠ η i' → k.lowestKType i ≤ 3 * B) :
-    IsLaplaceDatum l k ((positionGroup ε v).subtype.prod hP.inducedHom) (e' ∘ Sum.inl) B e
+    (h_weight_le : ∀ i i' : m, η i ≠ η i' → k.lowestKType i ≤ 3 * B)
+    : IsLaplaceDatum l k ((positionGroup ε v).subtype.prod hP.inducedHom) (e' ∘ Sum.inl) B e
       fun g : positionGroup ε v ↦ positionSum g - conj (positionSum g) := by
   -- The sum is a homomorphism to the additive group of `ℂ`, so it sends inverses to negatives.
-  have h_inv (g : positionGroup ε v) : positionSum g⁻¹ = -positionSum g :=
+  have h_inv (g : positionGroup ε v) : positionSum g⁻¹ = - positionSum g :=
     (MonoidHom.mk' (Multiplicative.ofAdd ∘ positionSum) hP.positionSum_mul).map_inv g
   -- The adjoint of `g - 1` is `g⁻¹ - 1`, which lowers the flag with the opposite sum.
-  have h_adj (g : positionGroup ε v) :
-      LowersFlag d v (formAdjoint ε ε ((g : Matrix n n ℂ) - 1)) (-positionSum g) := by
+  have h_adj (g : positionGroup ε v)
+      : LowersFlag d v (formAdjoint ε ε ((g : Matrix n n ℂ) - 1)) (- positionSum g) := by
     simpa [formAdjoint_sub_one, ← h_inv] using lowersFlag_positionSum g⁻¹
-  refine
-    { toIsSteep := h_steep
-      phase_eq := fun g ↦ by
-        rw [sub_eq_add_neg (positionSum g), ← map_neg]
-        exact hP.phase_eq (lowersFlag_positionSum g) (hP.inducesOn g) (h_adj g)
-      trace_eq := fun g ↦ hP.trace_eq (lowersFlag_positionSum g) (hP.inducesOn g) (h_adj g)
-      phase_mul := fun g₁ g₂ ↦ by rw [hP.positionSum_mul, map_add, add_sub_add_comm]
-      re_phase_eq_zero := fun g ↦ by simp
-      sign_weight_right := fun x ↦ ⟨h_sign_inl x, h_weight_inl x⟩
-      weight_nonneg_and_le := fun i i' ↦ ⟨h_weight_nonneg i, h_weight_le i i'⟩
-      exists_diagonal := fun u hu ↦ ?_ }
+  refine {
+    toIsSteep := h_steep
+    phase_eq := fun g ↦ by
+      rw [sub_eq_add_neg (positionSum g), ← map_neg]
+      exact hP.phase_eq (lowersFlag_positionSum g) (hP.inducesOn g) (h_adj g)
+    trace_eq := fun g ↦ hP.trace_eq (lowersFlag_positionSum g) (hP.inducesOn g) (h_adj g)
+    phase_mul := fun g₁ g₂ ↦ by rw [hP.positionSum_mul, map_add, add_sub_add_comm]
+    re_phase_eq_zero := fun g ↦ by simp
+    sign_weight_right := fun x ↦ ⟨h_sign_inl x, h_weight_inl x⟩
+    weight_nonneg_and_le := fun i i' ↦ ⟨h_weight_nonneg i, h_weight_le i i'⟩
+    exists_diagonal := fun u hu ↦ ?_
+  }
   -- As `i₀ = 1` on `ℂ^X`, the copy of `U(η)` contains `U(X)`, embedded diagonally.
-  obtain ⟨y, hy⟩ : ∃ y : USign η, (y : Matrix m m ℂ) - 1 =
-      inclMatrix ℂ (e' ∘ Sum.inl) * (u - 1) * (inclMatrix ℂ (e' ∘ Sum.inl))ᴴ :=
+  obtain ⟨y, hy⟩
+      : ∃ y : USign η,
+        (y : Matrix m m ℂ) - 1
+          = inclMatrix ℂ (e' ∘ Sum.inl) * (u - 1) * (inclMatrix ℂ (e' ∘ Sum.inl))ᴴ :=
     exists_unitary_sub_one_eq_inclMatrix e' h_sign_inl (mem_unitaryGroup_iff'.1 hu)
   obtain ⟨g, rfl, hg⟩ := hP.exists_inducedHom_eq y
   have h_inc : i₀ * inclMatrix ℂ (e' ∘ Sum.inl) = inclMatrix ℂ (e ∘ Sum.inl) := by
     rw [mul_inclMatrix]
     ext i x
     simp [inclMatrix, hP.apply_inl, Matrix.one_apply]
-  have h_inc_adj : (inclMatrix ℂ (e' ∘ Sum.inl))ᴴ * formAdjoint ε η i₀ =
-      (inclMatrix ℂ (e ∘ Sum.inl))ᴴ := by
+  have h_inc_adj
+      : (inclMatrix ℂ (e' ∘ Sum.inl))ᴴ * formAdjoint ε η i₀ = (inclMatrix ℂ (e ∘ Sum.inl))ᴴ := by
     rw [← formAdjoint_inclMatrix (τ := e' ∘ Sum.inl) h_sign_inl, ← formAdjoint_mul, h_inc,
       formAdjoint_inclMatrix (τ := e ∘ Sum.inl) h_steep.sign_inl]
   refine ⟨g, Prod.ext ?_ hy⟩
-  change (g : Matrix n n ℂ) - 1 =
-    inclMatrix ℂ (e ∘ Sum.inl) * (u - 1) * (inclMatrix ℂ (e ∘ Sum.inl))ᴴ
+  change (g : Matrix n n ℂ) - 1
+    = inclMatrix ℂ (e ∘ Sum.inl) * (u - 1) * (inclMatrix ℂ (e ∘ Sum.inl))ᴴ
   rw [hg, hy, Matrix.mul_assoc, Matrix.mul_assoc, h_inc_adj, ← Matrix.mul_assoc, ← Matrix.mul_assoc,
     h_inc]
 
-/-- **Lower bound for the period over the group of a position.** Let the integer vectors `l = 2 λ`
+/--
+**Lower bound for the period over the group of a position.** Let the integer vectors `l = 2 λ`
 and `k = 2 λ'` be doubled Harish-Chandra parameters for `U(ε)` and `U(η)`. The weight of `l` is
 `l.lowestKType = λ + ρ - 2 ρ_c`, the highest weight of the lowest `K`-type, and likewise for `k`.
 Take a stationary position `(v, i₀)` of `U(η)` in `U(ε)`: the weight `μ` of `l`, as a diagonal
@@ -380,39 +397,45 @@ with operator norms `‖g‖, ‖i₀† g i₀‖ ≤ β + 1` is at most `β ^ 
 integral.
 
 Here `positionGroup ε v` is the group of the `g` in `U(ε)` such that, for `j ≤ d + 1`, `g - 1` maps
-the span of `v_1, …, v_j` into that of `v_1, …, v_{j - 1}`. -/
-theorem IsStationary.integrable_periodIntegrand_and_measure_le [Fintype X] [DecidableEq X]
-    [Nonempty n] [Nonempty m] {l : HCParam ε} {k : HCParam η} {M M' L h : ℕ} {e : X ⊕ Fin M ≃ n}
-    {e' : X ⊕ Fin M' ≃ m} {B β : ℝ}
-    (hP : IsStationary l k e e' d v i₀) (h_steep : IsSteep l B e) (hB : 1 ≤ B)
+the span of `v_1, …, v_j` into that of `v_1, …, v_{j - 1}`.
+-/
+theorem IsStationary.integrable_periodIntegrand_and_measure_le
+    [Fintype X] [DecidableEq X] [Nonempty n] [Nonempty m]
+    {l : HCParam ε} {k : HCParam η} {M M' L h : ℕ} {e : X ⊕ Fin M ≃ n} {e' : X ⊕ Fin M' ≃ m}
+    {B β : ℝ} (hP : IsStationary l k e e' d v i₀) (h_steep : IsSteep l B e) (hB : 1 ≤ B)
     (h_sign_inl : ∀ x : X, η (e' (Sum.inl x)) = 1)
     (h_weight_inl : ∀ x : X, k.lowestKType (e' (Sum.inl x)) = 0)
     (h_weight_nonneg : ∀ i : m, 0 ≤ k.lowestKType i)
-    (h_weight_le : ∀ i i' : m, η i ≠ η i' → k.lowestKType i ≤ 3 * B)
-    (hl_gap : l.HasLargeGap h) (hk_gap : k.HasLargeGap h)
-    (hl_le : ∀ a : n, |l a| ≤ L) (hk_le : ∀ a : m, |k a| ≤ L)
+    (h_weight_le : ∀ i i' : m, η i ≠ η i' → k.lowestKType i ≤ 3 * B) (hl_gap : l.HasLargeGap h)
+    (hk_gap : k.HasLargeGap h) (hl_le : ∀ a : n, |l a| ≤ L) (hk_le : ∀ a : m, |k a| ≤ L)
     (hβ : 10 ^ 12 ≤ β) (h_card : Fintype.card n + Fintype.card m + L ≤ β)
     (hh : 10 ^ 30 * ((Fintype.card n + Fintype.card m) ^ 2 * β.log) ^ 3 ≤ h)
-    (ν : Measure (positionGroup ε v)) [ν.IsMulRightInvariant] [IsFiniteMeasureOnCompacts ν] :
-    Integrable (hP.periodIntegrand l k) ν ∧
-    ν {g : positionGroup ε v |
-        ‖(g : Matrix n n ℂ)‖ ≤ β + 1 ∧ ‖(hP.inducedHom g : Matrix m m ℂ)‖ ≤ β + 1} ≤
-      ENNReal.ofReal (β ^ (20 * (Fintype.card n + Fintype.card m) ^ 2) *
-        ‖∫ g : positionGroup ε v, hP.periodIntegrand l k g ∂ν‖) := by
+    (ν : Measure (positionGroup ε v)) [ν.IsMulRightInvariant] [IsFiniteMeasureOnCompacts ν]
+    : Integrable (hP.periodIntegrand l k) ν
+      ∧ ν
+          {g : positionGroup ε v |
+            ‖(g : Matrix n n ℂ)‖ ≤ β + 1 ∧ ‖(hP.inducedHom g : Matrix m m ℂ)‖ ≤ β + 1}
+        ≤ ENNReal.ofReal
+          (β ^ (20 * (Fintype.card n + Fintype.card m) ^ 2)
+            * ‖∫ g : positionGroup ε v, hP.periodIntegrand l k g ∂ν‖) := by
   let j : positionGroup ε v →* USign ε × USign η := (positionGroup ε v).subtype.prod hP.inducedHom
-  have h_integrand_eq : hP.periodIntegrand l k = l.laplaceIntegrand k j
-      fun g : positionGroup ε v ↦ positionSum g - conj (positionSum g) := by
+  have h_integrand_eq
+      : hP.periodIntegrand l k
+        = l.laplaceIntegrand k j fun g : positionGroup ε v ↦
+          positionSum g - conj (positionSum g) := by
     ext g
     simp [IsPosition.periodIntegrand, HCParam.laplaceIntegrand, j]
   have h_cont : Continuous fun g : positionGroup ε v ↦ (j g).2 := by
     simp only [continuous_U_iff_matrix, j, MonoidHom.prod_apply, IsPosition.inducedHom_val]
     fun_prop
   rw [h_integrand_eq]
-  exact (hP.isLaplaceDatum h_steep h_sign_inl h_weight_inl h_weight_nonneg
-    h_weight_le).laplace_method ν hP.isClosed_positionGroup.isProperMap_subtypeVal h_cont hl_gap
-    hk_gap hB hl_le hk_le hβ h_card hh
+  exact
+    (hP.isLaplaceDatum h_steep h_sign_inl h_weight_inl h_weight_nonneg h_weight_le).laplace_method ν
+      hP.isClosed_positionGroup.isProperMap_subtypeVal h_cont hl_gap hk_gap hB hl_le hk_le hβ h_card
+      hh
 
-/-- **The period over a group that maps onto the group of a position.** Let `(v, i₀)` be a
+/--
+**The period over a group that maps onto the group of a position.** Let `(v, i₀)` be a
 stationary position of `U(η)` in `U(ε)` for the parameters `l = 2 λ` and `k = 2 λ'`: the columns
 `v₁, …, v_{d + 1}` of `v` are independent, their products vanish except that the last has norm
 `±1`, `i₀` is an isometry into their orthogonal complement and the identity on the common
@@ -433,17 +456,17 @@ the earlier ones, with `σ s` the sum of the coefficients of `v_j` in `(g - 1) v
 that is finite on compact sets, the volume of the set where `‖g‖, ‖g'‖ ≤ β + 1` is at most
 `β ^ (20 N²)` times the norm of the integral of
 `laplaceIntegrand = c_l g * conj (c_k g') * exp (conj (σ s) - σ s)`, with the discrete series
-coefficients `c_l`, `c_k`. -/
-theorem IsStationary.period_lower_bound_of_surjective [Fintype X] [DecidableEq X] [Nonempty n]
-    [Nonempty m] {l : HCParam ε} {k : HCParam η} {M M' L h : ℕ} {e : X ⊕ Fin M ≃ n}
-    {e' : X ⊕ Fin M' ≃ m} {B β : ℝ}
-    (hP : IsStationary l k e e' d v i₀) (h_steep : IsSteep l B e) (hB : 1 ≤ B)
+coefficients `c_l`, `c_k`.
+-/
+theorem IsStationary.period_lower_bound_of_surjective
+    [Fintype X] [DecidableEq X] [Nonempty n] [Nonempty m]
+    {l : HCParam ε} {k : HCParam η} {M M' L h : ℕ} {e : X ⊕ Fin M ≃ n} {e' : X ⊕ Fin M' ≃ m}
+    {B β : ℝ} (hP : IsStationary l k e e' d v i₀) (h_steep : IsSteep l B e) (hB : 1 ≤ B)
     (h_sign_inl : ∀ x : X, η (e' (Sum.inl x)) = 1)
     (h_weight_inl : ∀ x : X, k.lowestKType (e' (Sum.inl x)) = 0)
     (h_weight_nonneg : ∀ i : m, 0 ≤ k.lowestKType i)
-    (h_weight_le : ∀ i i' : m, η i ≠ η i' → k.lowestKType i ≤ 3 * B)
-    (hl_gap : l.HasLargeGap h) (hk_gap : k.HasLargeGap h)
-    (hl_le : ∀ a : n, |l a| ≤ L) (hk_le : ∀ a : m, |k a| ≤ L)
+    (h_weight_le : ∀ i i' : m, η i ≠ η i' → k.lowestKType i ≤ 3 * B) (hl_gap : l.HasLargeGap h)
+    (hk_gap : k.HasLargeGap h) (hl_le : ∀ a : n, |l a| ≤ L) (hk_le : ∀ a : m, |k a| ≤ L)
     (hβ : 10 ^ 12 ≤ β) (h_card : Fintype.card n + Fintype.card m + L ≤ β)
     (hh : 10 ^ 30 * ((Fintype.card n + Fintype.card m) ^ 2 * β.log) ^ 3 ≤ h)
     {S : Type} [Group S] [TopologicalSpace S] [MeasurableSpace S] [MeasurableMul S] [BorelSpace S]
@@ -451,32 +474,35 @@ theorem IsStationary.period_lower_bound_of_surjective [Fintype X] [DecidableEq X
     {j : S →* USign ε × USign η} {σ : S → ℂ} (h_proper : IsProperMap fun s : S ↦ (j s).1)
     (h_onto : ∀ g ∈ positionGroup ε v, ∃ s : S, (j s).1 = g)
     (h_lowers : ∀ s : S, LowersFlag d v (((j s).1 : Matrix n n ℂ) - 1) (σ s))
-    (h_induces : ∀ s : S,
-      InducesOn d v i₀ (((j s).1 : Matrix n n ℂ) - 1) (((j s).2 : Matrix m m ℂ) - 1)) :
-    ν {s : S | ‖((j s).1 : Matrix n n ℂ)‖ ≤ β + 1 ∧ ‖((j s).2 : Matrix m m ℂ)‖ ≤ β + 1} ≤
-      ENNReal.ofReal (β ^ (20 * (Fintype.card n + Fintype.card m) ^ 2) *
-        ‖∫ s : S, l.laplaceIntegrand k j (fun s : S ↦ σ s - conj (σ s)) s ∂ν‖) := by
+    (h_induces
+      : ∀ s : S, InducesOn d v i₀ (((j s).1 : Matrix n n ℂ) - 1) (((j s).2 : Matrix m m ℂ) - 1))
+    : ν {s : S | ‖((j s).1 : Matrix n n ℂ)‖ ≤ β + 1 ∧ ‖((j s).2 : Matrix m m ℂ)‖ ≤ β + 1}
+      ≤ ENNReal.ofReal
+        (β ^ (20 * (Fintype.card n + Fintype.card m) ^ 2)
+          * ‖∫ s : S, l.laplaceIntegrand k j (fun s : S ↦ σ s - conj (σ s)) s ∂ν‖) := by
   -- Apply the bound for `R = positionGroup ε v` to the image of `ν` under `f : s ↦ g`.
   let f : S →* positionGroup ε v :=
     ((MonoidHom.fst (USign ε) (USign η)).comp j).codRestrict _ fun s ↦ ⟨σ s, h_lowers s⟩
   have hf_val (s : S) : (f s : USign ε) = (j s).1 := rfl
   have hf : Measurable f := (h_proper.continuous.subtype_mk _).measurable
-  have : (ν.map f).IsMulRightInvariant := ⟨fun g ↦ by
-    obtain ⟨t, rfl⟩ : ∃ t : S, f t = g := (h_onto g g.prop).imp fun _ ↦ Subtype.ext
-    conv_rhs => rw [← map_mul_right_eq_self ν t]
-    simp (disch := fun_prop) only [Measure.map_map, Function.comp_def, map_mul]⟩
-  have : IsFiniteMeasureOnCompacts (ν.map f) := ⟨fun K hK ↦ by
-    rw [Measure.map_apply hf hK.measurableSet, ← Set.preimage_image_eq K Subtype.val_injective]
-    exact (h_proper.isCompact_preimage (hK.image continuous_subtypeVal)).measure_lt_top⟩
-  obtain ⟨h_int, h_vol⟩ := hP.integrable_periodIntegrand_and_measure_le h_steep hB h_sign_inl
-    h_weight_inl
-    h_weight_nonneg h_weight_le hl_gap hk_gap hl_le hk_le hβ h_card hh (ν.map f)
+  have : (ν.map f).IsMulRightInvariant :=
+    ⟨fun g ↦ by
+      obtain ⟨t, rfl⟩ : ∃ t : S, f t = g := (h_onto g g.prop).imp fun _ ↦ Subtype.ext
+      conv_rhs => rw [← map_mul_right_eq_self ν t]
+      simp (disch := fun_prop) only [Measure.map_map, Function.comp_def, map_mul]⟩
+  have : IsFiniteMeasureOnCompacts (ν.map f) :=
+    ⟨fun K hK ↦ by
+      rw [Measure.map_apply hf hK.measurableSet, ← Set.preimage_image_eq K Subtype.val_injective]
+      exact (h_proper.isCompact_preimage (hK.image continuous_subtypeVal)).measure_lt_top⟩
+  obtain ⟨h_int, h_vol⟩ :=
+    hP.integrable_periodIntegrand_and_measure_le h_steep hB h_sign_inl h_weight_inl h_weight_nonneg
+      h_weight_le hl_gap hk_gap hl_le hk_le hβ h_card hh (ν.map f)
   -- The image `g'` in `U(η)` and the sum `σ` are determined by `g`.
   have h_snd (s : S) : hP.inducedHom (f s) = (j s).2 := hP.inducedHom_eq (h_induces s)
   have h_sum (s : S) : positionSum (f s) = σ s :=
     hP.lowersFlag_unique (lowersFlag_positionSum (f s)) (h_lowers s)
-  have h_integrand (s : S) : hP.periodIntegrand l k (f s) =
-      l.laplaceIntegrand k j (fun s : S ↦ σ s - conj (σ s)) s := by
+  have h_integrand (s : S)
+      : hP.periodIntegrand l k (f s) = l.laplaceIntegrand k j (fun s : S ↦ σ s - conj (σ s)) s := by
     simp [IsPosition.periodIntegrand, HCParam.laplaceIntegrand, hf_val, h_snd, h_sum]
   rw [integral_map hf.aemeasurable h_int.aestronglyMeasurable] at h_vol
   simpa only [Set.preimage_ofPred_eq, hf_val, h_snd, h_integrand] using
@@ -663,7 +689,8 @@ lemma IsSteep.exists_isStationary_conjTranspose_mul_mul_eq_one {B : ℝ} {l : HC
   -- The form takes the value `(-1) ^ M` at `v`, and `M` is even.
   exact ⟨v, i₀, hP, h_norm.trans hM.neg_one_pow, h_vec_le, h_isometry_le⟩
 
-/-- **Restriction.** Let the parameter `l = 2 λ` of `U(ε)` be steep for `(X, M, B)` with `M` even
+/--
+**Restriction.** Let the parameter `l = 2 λ` of `U(ε)` be steep for `(X, M, B)` with `M` even
 and `B ≥ 1`, and let `l' = 2 λ'` be a parameter of `U(ε ⊕ 1)` with `-l'` steep for `(X, M + 1, B)`.
 With `n = card n`, let `HasLargeGap h` hold for both: the entries of `l` (resp. `l'`) are distinct
 and of the parity of `n - 1` (resp. `n`), and two entries of `λ` (resp. `λ'`) at coordinates of
@@ -676,22 +703,23 @@ integral over the maximal compact subgroup, divided by the squared norm of the l
 measure `volume` on `U(ε)` is the Haar measure `haarU` made from Lebesgue measure by a Cayley chart,
 with the compact dual normalisation. Then some `y` in `U(ε ⊕ 1)` with `‖y‖² ≤ β` has:
 `β ^ (20 (2 n + 1)²)` times the modulus of the integral over `U(ε)` of
-`c_l g * conj (c_l' (y⁻¹ (g ⊕ 1) y))` is at least the volume of `{g | ‖g - 1‖ ≤ 1}`. -/
-theorem IsSteep.exists_volume_le_mul_norm_integral_dsCoeff [Nonempty n] {B β : ℝ} {l : HCParam ε}
-    {l' : HCParam (Sum.elim ε (1 : Unit → ℤˣ))} {M L h : ℕ} {e : X ⊕ Fin M ≃ n}
-    {e' : X ⊕ Fin (M + 1) ≃ n ⊕ Unit} (hM : Even M)
-    (h_steep : IsSteep l B e) (h_steep' : IsSteep (-l') B e') (hB : 1 ≤ B)
-    (hl : l.HasLargeGap h) (hl' : l'.HasLargeGap h)
-    (hL : ∀ a : n, |l a| ≤ L) (hL' : ∀ a : n ⊕ Unit, |l' a| ≤ L) (hβ : 10 ^ 12 ≤ β)
-    (hn : card (n ⊕ Unit) + card n + L ≤ β)
+`c_l g * conj (c_l' (y⁻¹ (g ⊕ 1) y))` is at least the volume of `{g | ‖g - 1‖ ≤ 1}`.
+-/
+theorem IsSteep.exists_volume_le_mul_norm_integral_dsCoeff
+    [Nonempty n]
+    {B β : ℝ} {l : HCParam ε} {l' : HCParam (Sum.elim ε (1 : Unit → ℤˣ))} {M L h : ℕ}
+    {e : X ⊕ Fin M ≃ n} {e' : X ⊕ Fin (M + 1) ≃ n ⊕ Unit}
+    (hM : Even M) (h_steep : IsSteep l B e) (h_steep' : IsSteep (-l') B e') (hB : 1 ≤ B)
+    (hl : l.HasLargeGap h) (hl' : l'.HasLargeGap h) (hL : ∀ a : n, |l a| ≤ L)
+    (hL' : ∀ a : n ⊕ Unit, |l' a| ≤ L) (hβ : 10 ^ 12 ≤ β) (hn : card (n ⊕ Unit) + card n + L ≤ β)
     (h_size : card (n ⊕ Unit) ^ 4 * (6 * B) ^ (2 * M + 2) ≤ β)
-    (hh : 10 ^ 30 * ((card (n ⊕ Unit) + card n) ^ 2 * β.log) ^ 3 ≤ h) :
-    ∃ y : USign (Sum.elim ε (1 : Unit → ℤˣ)),
-      ‖(y : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖ ^ 2 ≤ β ∧
-      volume.real {g : USign ε | ‖(g : Matrix n n ℂ) - 1‖ ≤ 1} ≤
-        β ^ (20 * (card (n ⊕ Unit) + card n) ^ 2) *
-          ‖∫ g : USign ε, l.dsCoeff g *
-            conj (l'.dsCoeff (y⁻¹ * U.inl ε 1 g * y : USign (Sum.elim ε 1)))‖ := by
+    (hh : 10 ^ 30 * ((card (n ⊕ Unit) + card n) ^ 2 * β.log) ^ 3 ≤ h)
+    : ∃ y : USign (Sum.elim ε (1 : Unit → ℤˣ)),
+      ‖(y : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖ ^ 2 ≤ β
+        ∧ volume.real {g : USign ε | ‖(g : Matrix n n ℂ) - 1‖ ≤ 1}
+          ≤ β ^ (20 * (card (n ⊕ Unit) + card n) ^ 2)
+            * ‖∫ g : USign ε, l.dsCoeff g *
+                conj (l'.dsCoeff (y⁻¹ * U.inl ε 1 g * y : USign (Sum.elim ε 1)))‖ := by
   -- Take a stationary position `(v, i₀)` of `U(ε)` in `U(ε ⊕ 1)` for the parameters `-l'`, `-l`,
   -- put `w = (i₀, v)` and `y = w⁻¹`, and bound the period over its group `w U(ε) w⁻¹` from below.
   classical
@@ -702,11 +730,11 @@ theorem IsSteep.exists_volume_le_mul_norm_integral_dsCoeff [Nonempty n] {B β : 
   let w : USign (Sum.elim ε (1 : Unit → ℤˣ)) :=
     U.of IsHermitianInvolution.isUnit (fromCols i₀ (replicateCol Unit (v.col 0)))
       (hP.gram_fromCols h_norm)
-  have hw : (w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) = fromCols i₀ (replicateCol Unit (v.col 0)) :=
-    rfl
+  have hw : (w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) = fromCols i₀ (replicateCol Unit (v.col 0)) := rfl
   have hw_norm : ‖(w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖ ^ 2 ≤ β :=
-    calc _ ≤ card (n ⊕ Unit) ^ 4 * ((6 * B) ^ (M + 1)) ^ 2 :=
-          sq_norm_fromCols_le h_vec_le h_isometry_le
+    calc
+      _ ≤ card (n ⊕ Unit) ^ 4 * ((6 * B) ^ (M + 1)) ^ 2 :=
+        sq_norm_fromCols_le h_vec_le h_isometry_le
       _ ≤ β := le_of_eq_of_le (by ring) h_size
   -- The first component of `j g = (w (g ⊕ 1) w⁻¹, g)` maps `U(ε)` onto the group of the position.
   let j : USign ε →* USign (Sum.elim ε (1 : Unit → ℤˣ)) × USign ε :=
@@ -714,33 +742,40 @@ theorem IsSteep.exists_volume_le_mul_norm_integral_dsCoeff [Nonempty n] {B β : 
   have h_proper : IsProperMap fun g : USign ε ↦ (j g).1 :=
     (Homeomorph.smul (ConjAct.toConjAct w)).isProperMap.comp isProperMap_inl
   have h_zero (x : X) : (-l).lowestKType (e (Sum.inl x)) = 0 := by simp [h_steep.weight_eq_zero]
-  have h_lowers (g : USign ε) :
-      LowersFlag 0 v (((j g).1 : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1) 0 :=
+  have h_lowers (g : USign ε) : LowersFlag 0 v (((j g).1 : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1) 0 :=
     lowersFlag_conj_inl_sub_one hw g
-  have h_induces (g : USign ε) : InducesOn 0 v i₀
-      (((j g).1 : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1) (((j g).2 : Matrix n n ℂ) - 1) :=
+  have h_induces (g : USign ε) : InducesOn 0 v i₀ (((j g).1 : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1)
+      (((j g).2 : Matrix n n ℂ) - 1) :=
     inducesOn_conj_inl_sub_one hw g
-  let Large : Set (USign ε) := {g : USign ε |
-    ‖((j g).1 : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖ ≤ β + 1 ∧ ‖((j g).2 : Matrix n n ℂ)‖ ≤ β + 1}
-  have h_period : volume Large ≤ ENNReal.ofReal (β ^ (20 * (card (n ⊕ Unit) + card n) ^ 2) *
-      ‖∫ g : USign ε, (-l').laplaceIntegrand (-l) j (fun _ ↦ 0 - conj 0) g‖) :=
+  let Large : Set (USign ε) :=
+    {g : USign ε |
+      ‖((j g).1 : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖ ≤ β + 1 ∧ ‖((j g).2 : Matrix n n ℂ)‖ ≤ β + 1}
+  have h_period
+      : volume Large
+        ≤ ENNReal.ofReal
+          (β ^ (20 * (card (n ⊕ Unit) + card n) ^ 2)
+            * ‖∫ g : USign ε, (-l').laplaceIntegrand (-l) j (fun _ ↦ 0 - conj 0) g‖) :=
     hP.period_lower_bound_of_surjective h_steep' hB h_steep.sign_inl h_zero
-      (fun i ↦ mod_cast (h_mem i).left) (fun i _ _ ↦ (h_mem i).right) hl'.neg hl.neg
-      (by simpa using hL') (by simpa using hL) hβ hn hh volume h_proper
-      (fun _ ↦ hP.exists_conj_inl_eq hw) h_lowers h_induces
+      (fun i ↦ mod_cast (h_mem i).left)
+      (fun i _ _ ↦ (h_mem i).right)
+      hl'.neg hl.neg (by simpa using hL') (by simpa using hL) hβ hn hh volume h_proper
+      (fun _ ↦ hP.exists_conj_inl_eq hw)
+      h_lowers h_induces
   -- The function `laplaceIntegrand` is the integrand of the pairing, and the ball `‖g - 1‖ ≤ 1`
   -- lies in the set whose volume `h_period` bounds.
-  have h_integrand (g : USign ε) : (-l').laplaceIntegrand (-l) j (fun _ ↦ 0 - conj 0) g =
-      l.dsCoeff g * conj (l'.dsCoeff (w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1))) := by
+  have h_integrand (g : USign ε)
+      : (-l').laplaceIntegrand (-l) j (fun _ ↦ 0 - conj 0) g
+        = l.dsCoeff g * conj (l'.dsCoeff (w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1))) := by
     rw [HCParam.laplaceIntegrand, dsCoeff_neg hl, dsCoeff_neg hl']
     simp [j, mul_comm]
-  have h_ball : {g : USign ε | ‖(g : Matrix n n ℂ) - 1‖ ≤ 1} ⊆ Large := fun g hg ↦
-    ⟨(norm_conj_inl_le w hg).trans (by linarith),
-      by
-        change ‖(g : Matrix n n ℂ)‖ ≤ β + 1
-        refine (norm_le_norm_add_norm_sub' _ 1).trans ?_
-        rw [norm_one]
-        exact add_le_add (by linarith) hg⟩
+  have h_ball : {g : USign ε | ‖(g : Matrix n n ℂ) - 1‖ ≤ 1} ⊆ Large := fun g hg ↦ ⟨
+    (norm_conj_inl_le w hg).trans (by linarith),
+    by
+      change ‖(g : Matrix n n ℂ)‖ ≤ β + 1
+      refine (norm_le_norm_add_norm_sub' _ 1).trans ?_
+      rw [norm_one]
+      exact add_le_add (by linarith) hg
+  ⟩
   refine ⟨w⁻¹, by rwa [U.norm_inv], ENNReal.toReal_le_of_le_ofReal (by positivity) ?_⟩
   simpa only [h_integrand, inv_inv] using (measure_mono h_ball).trans h_period
 

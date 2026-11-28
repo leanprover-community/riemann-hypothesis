@@ -73,10 +73,13 @@ structure LongExactSeq.{u} where
   /-- Exactness at A (n + 1). -/
   exact_delta_f (n : ℕ) : Exact (δ n) (f (n + 1))
 
-/-- Given additive maps a n, b n, c n on the terms of long exact sequences L and L', the statement
-that they form a morphism L → L', that is commute with the maps f, g and the connecting maps δ. -/
-structure LongExactSeq.Hom (L L' : LongExactSeq) (a : ∀ n : ℕ, L.A n →+ L'.A n)
-    (b : ∀ n : ℕ, L.B n →+ L'.B n) (c : ∀ n : ℕ, L.C n →+ L'.C n) where
+/--
+Given additive maps a n, b n, c n on the terms of long exact sequences L and L', the statement
+that they form a morphism L → L', that is commute with the maps f, g and the connecting maps δ.
+-/
+structure LongExactSeq.Hom
+    (L L' : LongExactSeq) (a : ∀ n : ℕ, L.A n →+ L'.A n) (b : ∀ n : ℕ, L.B n →+ L'.B n)
+    (c : ∀ n : ℕ, L.C n →+ L'.C n) where
   /-- The square formed by a n, b n and the maps A n → B n commutes. -/
   comm_f (n : ℕ) (x : L.A n) : b n (L.f n x) = L'.f n (a n x)
   /-- The square formed by b n, c n and the maps B n → C n commutes. -/
@@ -84,8 +87,10 @@ structure LongExactSeq.Hom (L L' : LongExactSeq) (a : ∀ n : ℕ, L.A n →+ L'
   /-- The square formed by c n, a (n + 1) and the connecting maps C n → A (n + 1) commutes. -/
   comm_delta (n : ℕ) (x : L.C n) : a (n + 1) (L.δ n x) = L'.δ n (c n x)
 
-/-- The sequence L moved by one place, 0 → 0 → A⁰ → B⁰ → C⁰ → ⋯: its terms in degree n are
-C^(n-1), Aⁿ, Bⁿ, with C^(-1) = 0. -/
+/--
+The sequence L moved by one place, 0 → 0 → A⁰ → B⁰ → C⁰ → ⋯: its terms in degree n are
+C^(n-1), Aⁿ, Bⁿ, with C^(-1) = 0.
+-/
 abbrev LongExactSeq.rotate (L : LongExactSeq) : LongExactSeq where
   A
     | 0 => AddCommGrpCat.of PUnit
@@ -105,10 +110,12 @@ abbrev LongExactSeq.rotate (L : LongExactSeq) : LongExactSeq where
   exact_g_delta := L.exact_f_g
   exact_delta_f := L.exact_g_delta
 
-/-- Maps cₙ : Cⁿ → C'ⁿ between the third terms of L and L' give maps between the first terms of the
-rotated sequences: the zero map in degree 0 and cₙ in degree n + 1. -/
-def LongExactSeq.rotateMap {L L' : LongExactSeq} (c : (n : ℕ) → L.C n →+ L'.C n) :
-    (n : ℕ) → L.rotate.A n →+ L'.rotate.A n
+/--
+Maps cₙ : Cⁿ → C'ⁿ between the third terms of L and L' give maps between the first terms of the
+rotated sequences: the zero map in degree 0 and cₙ in degree n + 1.
+-/
+def LongExactSeq.rotateMap {L L' : LongExactSeq} (c : (n : ℕ) → L.C n →+ L'.C n)
+    : (n : ℕ) → L.rotate.A n →+ L'.rotate.A n
   | 0 => 0
   | n + 1 => c n
 
@@ -135,16 +142,19 @@ namespace New.Variety
 
 open CategoryTheory Abelian.Ext Function LongExactSeq H ShortComplex
 
-variable {A B A' B' : ℕ → Type*} (f : ∀ n : ℕ, A n → B n) {r : ℕ}
-  {C C' : Type 1} [Category C] [Category C']
+variable
+  {A B A' B' : ℕ → Type*} (f : ∀ n : ℕ, A n → B n)
+  {r : ℕ} {C C' : Type 1} [Category C] [Category C']
   {F N : AbFunctor C} {F' : AbFunctor C'} {n : ℕ} {N' : AbFunctor C'} {L : LongExactSeq}
   {L' : LongExactSeq} {S : ShortComplex (AbFunctor C)} {S' : ShortComplex (AbFunctor C')}
   {a : (n : ℕ) → L.A n →+ L'.A n} {b : (n : ℕ) → L.B n →+ L'.B n} {c : (n : ℕ) → L.C n →+ L'.C n}
 
 /-! ### Bijectivity up to a given place and bijective sides of a square -/
 
-/-- For maps f_n: A_n → B_n, the first r of the conditions: f₀ injective, f₀ surjective, f₁
-injective, f₁ surjective, and so on. -/
+/--
+For maps f_n: A_n → B_n, the first r of the conditions: f₀ injective, f₀ surjective, f₁
+injective, f₁ surjective, and so on.
+-/
 def BijectiveUpTo (r : ℕ) : Prop :=
   ∀ n : ℕ, (2 * n < r → Function.Injective (f n)) ∧ (2 * n + 1 < r → Surjective (f n))
 
@@ -187,30 +197,37 @@ namespace LongExactSeq
 lemma exact_of_shortComplex_exact {S : ShortComplex Ab} (hS : S.Exact) : Function.Exact S.f S.g :=
   S.ab_exact_iff_function_exact.1 hS
 
-/-- For 0 → S₁ → S₂ → S₃ → 0 short exact, the long exact sequence Ext^n(S₃,F) → Ext^n(S₂,F) →
-Ext^n(S₁,F) → Ext^{n+1}(S₃,F) of abelian groups. -/
+/--
+For 0 → S₁ → S₂ → S₃ → 0 short exact, the long exact sequence Ext^n(S₃,F) → Ext^n(S₂,F) →
+Ext^n(S₁,F) → Ext^{n+1}(S₃,F) of abelian groups.
+-/
 noncomputable def contravariant (hS : S.ShortExact) (F : AbFunctor C) : LongExactSeq :=
   -- The groups `H S.X₃ F n`, `H S.X₂ F n`, `H S.X₁ F n` and the connecting map, composition with
   -- `hS.extClass`, are read off the exactness statements; `f` and `g` are then named as pull-backs.
-  { mk _ _ _
-    (injective_f := fun _ _ h ↦ by exact precomp_mk₀_injective_of_epi F S.g (hg := hS.epi_g) h)
-    (exact_f_g := fun n ↦ exact_of_shortComplex_exact (contravariant_sequence_exact₂' hS F n))
-    (exact_g_delta :=
-      fun n ↦ exact_of_shortComplex_exact (contravariant_sequence_exact₁' hS F n (n + 1) (by lia)))
-    (exact_delta_f := fun _ ↦ exact_of_shortComplex_exact (contravariant_sequence_exact₃' ..)) with
+  {
+    mk _ _ _
+      (injective_f := fun _ _ h ↦ by exact precomp_mk₀_injective_of_epi F S.g (hg := hS.epi_g) h)
+      (exact_f_g := fun n ↦ exact_of_shortComplex_exact (contravariant_sequence_exact₂' hS F n))
+      (exact_g_delta := fun n ↦
+        exact_of_shortComplex_exact (contravariant_sequence_exact₁' hS F n (n + 1) (by lia)))
+      (exact_delta_f := fun _ ↦
+        exact_of_shortComplex_exact (contravariant_sequence_exact₃' ..)) with
     f := H.map F S.g
-    g := H.map F S.f }
+    g := H.map F S.f
+  }
 
-/-- For 0 → S₁ → S₂ → S₃ → 0 short exact, the long exact sequence Ext^n(N,S₁) → Ext^n(N,S₂) →
-Ext^n(N,S₃) → Ext^{n+1}(N,S₁) of abelian groups. -/
+/--
+For 0 → S₁ → S₂ → S₃ → 0 short exact, the long exact sequence Ext^n(N,S₁) → Ext^n(N,S₂) →
+Ext^n(N,S₃) → Ext^{n+1}(N,S₁) of abelian groups.
+-/
 noncomputable def covariant (hS : S.ShortExact) (N : AbFunctor C) : LongExactSeq :=
   -- The groups `H N S.X₁ n`, `H N S.X₂ n`, `H N S.X₃ n` and the maps, composition with `S.f`, `S.g`
   -- and `hS.extClass`, are read off the exactness statements.
   mk _ _ _
     (injective_f := fun _ _ h ↦ by exact postcomp_mk₀_injective_of_mono N S.f (hf := hS.mono_f) h)
     (exact_f_g := fun n ↦ exact_of_shortComplex_exact (covariant_sequence_exact₂' N hS n))
-    (exact_g_delta :=
-      fun n ↦ exact_of_shortComplex_exact (covariant_sequence_exact₃' N hS n (n + 1) rfl))
+    (exact_g_delta := fun n ↦
+      exact_of_shortComplex_exact (covariant_sequence_exact₃' N hS n (n + 1) rfl))
     (exact_delta_f := fun _ ↦ exact_of_shortComplex_exact (covariant_sequence_exact₁' ..))
 
 namespace Hom
@@ -490,15 +507,19 @@ namespace New.Variety
 
 open CategoryTheory Abelian.Ext Comparison piAbFunctor LongExactSeq Function AddCommGrpCat
 
-variable {C : Type 1} [Category C]
+variable
+  {C : Type 1} [Category C]
   {N : AbFunctor C} {I : Type} {F : I → AbFunctor C} {M G : AbFunctor C} (β : M ⟶ G)
 
-/-- For a morphism β: M → G of abelian-group-valued functors, the three-term complex ker β → M →
-G, with the kernel taken objectwise and included into M. -/
+/--
+For a morphism β: M → G of abelian-group-valued functors, the three-term complex ker β → M →
+G, with the kernel taken objectwise and included into M.
+-/
 def kerComplex : ShortComplex (AbFunctor C) where
-  X₁ :=
-    { obj A := AddCommGrpCat.of (β.app A).hom.ker
-      map f := ofHom (((M.map f).hom.domRestrict _).codRestrict _ (by simp_all)) }
+  X₁ := {
+    obj A := AddCommGrpCat.of (β.app A).hom.ker
+    map f := ofHom (((M.map f).hom.domRestrict _).codRestrict _ (by simp_all))
+  }
   X₂ := M
   X₃ := G
   f := { app _ := ofHom (AddSubgroup.subtype _) }
@@ -530,8 +551,10 @@ lemma exists_acyclic_cover (M : C ⥤ Ab) :
       funext fun _ ↦ (eq_zero_of_projective _).trans (eq_zero_of_projective _).symm)
       (add_comm 1 n)⟩
 
-/-- Given natural transformations N→F_i for each index i, the natural transformation from N to
-the pointwise product of the functors F_i having these as components. -/
+/--
+Given natural transformations N→F_i for each index i, the natural transformation from N to
+the pointwise product of the functors F_i having these as components.
+-/
 def piAbFunctor.lift (f : ∀ i : I, N ⟶ F i) : N ⟶ piAbFunctor F where
   app A := ofHom (AddMonoidHom.pi fun i ↦ ((f i).app A).hom)
   naturality A B φ := by

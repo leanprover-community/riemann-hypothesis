@@ -82,7 +82,9 @@ namespace New
 open Polynomial Valued Subgroup WithZero QuotientGroup Period Patching Fintype ComplexOrder Ideal
   MonoidHom Set Finite Algebra QZChar Int
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E n : Type} [Field E] [CMType E]
+variable
+  {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+  {E n : Type} [Field E] [CMType E]
   {w : FinPlace E} [Fintype n] [DecidableEq n]
   {κ : Weight E} {P : FinPlace E → ℂ[X]} {ξ : Fin (card n) → (LocField w)ˣ →* ℂˣ}
   {hw : Star.star w ≠ w} {f : (stdSpace E n).forms κ}
@@ -516,31 +518,39 @@ open NumberField Matrix Polynomial Finset Valued Pi Nat Algebra Fintype
 
 namespace New.Patching
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+variable
+  {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
   {E n : Type} [Field E] [CMType E] [Algebra E Ω] [Fintype n] [DecidableEq n] [Nonempty n]
   {V : Space E n 1} {κ : Weight E} [V.IsStd] [WeilData E]
   {w : FinPlace E} {hw : star w ≠ w} {A : ClosurePlace}
   {ϖ u : (LocField w)ˣ} {s τ : decompGroup Gal(Ω/E) A} {x : Isotypic V κ} {y : V.forms κ}
 
-/-- `IsParahoricCompatible ρ z ϖ d F T` says that the matrices `F`, `T` behave as those of a
+/--
+`IsParahoricCompatible ρ z ϖ d F T` says that the matrices `F`, `T` behave as those of a
 geometric Frobenius that comes from `ϖ` and of an inertia element, as seen by the vector `z` of `ρ`:
 they commute, `T` is killed by every polynomial that vanishes at all `ιℓ (d i)`, and there are
 characters `θ i`, with an exponent functional that is not zero on `z`, such that
-`∏ i, (X - ιℓ (θ i ϖ * d i ^ b))` kills `F * T ^ b` for every natural number `b`. -/
-structure IsParahoricCompatible {E : Type} [Field E] [NumberField E] {w : FinPlace E}
-    {N : ℕ} (ρ : Rep ℂ (GL (Fin N) (LocField w))) [IsSmoothRep ρ.ρ]
-    (z : ρ) (ϖ : (LocField w)ˣ) (d : Fin N → ℂ) (F T : Matrix n n (PadicAlgCl ℓ)) : Prop where
+`∏ i, (X - ιℓ (θ i ϖ * d i ^ b))` kills `F * T ^ b` for every natural number `b`.
+-/
+structure IsParahoricCompatible
+    {E : Type} [Field E] [NumberField E]
+    {w : FinPlace E} {N : ℕ} (ρ : Rep ℂ (GL (Fin N) (LocField w))) [IsSmoothRep ρ.ρ]
+    (z : ρ) (ϖ : (LocField w)ˣ) (d : Fin N → ℂ) (F T : Matrix n n (PadicAlgCl ℓ))
+    : Prop where
   /-- Every polynomial that vanishes at all `ιℓ (d i)` kills `T`. -/
-  aeval_inertia_eq_zero :
-    ∀ p : (PadicAlgCl ℓ)[X], (∀ i : Fin N, p.IsRoot (ιℓ (d i))) → aeval T p = 0
+  aeval_inertia_eq_zero
+    : ∀ p : (PadicAlgCl ℓ)[X], (∀ i : Fin N, p.IsRoot (ιℓ (d i))) → aeval T p = 0
   /-- `F` and `T` commute. -/
   commute : Commute F T
-  /-- There are characters `θ i` such that some exponent `l` for the torus character of `θ`
+  /--
+  There are characters `θ i` such that some exponent `l` for the torus character of `θ`
   (`New.IsExponent`) is not zero on `z`, and `∏ i, (X - ιℓ (θ i ϖ * d i ^ b))` kills `F * T ^ b`
-  for all `b`. -/
-  exists_characters : ∃ θ : Fin N → (LocField w)ˣ →* ℂˣ,
-    (∃ l : ρ →ₗ[ℂ] ℂ, IsExponent ρ (torusChar θ) l ∧ l z ≠ 0) ∧
-    ∀ b : ℕ, aeval (F * T ^ b) (∏ i : Fin N, (X - C (ιℓ (θ i ϖ * d i ^ b)))) = 0
+  for all `b`.
+  -/
+  exists_characters
+    : ∃ θ : Fin N → (LocField w)ˣ →* ℂˣ,
+      (∃ l : ρ →ₗ[ℂ] ℂ, IsExponent ρ (torusChar θ) l ∧ l z ≠ 0)
+        ∧ ∀ b : ℕ, aeval (F * T ^ b) (∏ i : Fin N, (X - C (ιℓ (θ i ϖ * d i ^ b)))) = 0
 
 /-- Let `A` lie above `w ∤ ℓ`. Let the local Artin map send the uniformiser `ϖ` to `s`, the inverse
 of a Frobenius element, and the unit `u` to the inertia element `τ`. Let `y ≠ 0` in the isotypic

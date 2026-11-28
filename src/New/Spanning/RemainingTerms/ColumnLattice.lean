@@ -45,8 +45,10 @@ section Columns
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {ι : Type}
 
 variable (E 𝔰 ι) in
-/-- The point of the product of the complex places given by a matrix over `E` whose columns are
-`ι` vectors of `X₀`: at the place `v`, the entry `q a l` goes to the conjugate of `Φ v (q a l)`. -/
+/--
+The point of the product of the complex places given by a matrix over `E` whose columns are
+`ι` vectors of `X₀`: at the place `v`, the entry `q a l` goes to the conjugate of `Φ v (q a l)`.
+-/
 def conjColumnsAtInfinity : Matrix 𝔰.κ ι E →+ (InfinitePlace E → ι → 𝔰.κ → ℂ) where
   toFun q v l a := star (Φ v (q a l))
   map_zero' := by simp [funext_iff]
@@ -79,8 +81,10 @@ lemma denseRange_conjColumnsAtInfinity : DenseRange (conjColumnsAtInfinity E �
   exact h_surjective.denseRange.comp h_dense (by fun_prop)
 
 variable (ι) in
-/-- The tuples of vectors of `Λ ∩ X₀`, for the lattice `Λ` of the class `c`, as the columns of a
-matrix. -/
+/--
+The tuples of vectors of `Λ ∩ X₀`, for the lattice `Λ` of the class `c`, as the columns of a
+matrix.
+-/
 def integralColumns (S : Filling E 𝔰) (c : S.Classes) : AddSubgroup (Matrix 𝔰.κ ι E) where
   carrier := {q : Matrix 𝔰.κ ι E | IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix q)}
   zero_mem' := by simp [IsIntMatrix]
@@ -89,8 +93,7 @@ def integralColumns (S : Filling E 𝔰) (c : S.Classes) : AddSubgroup (Matrix �
 
 variable (ι) in
 /-- The image of the tuples of vectors of `Λ ∩ X₀` in the product of the complex places. -/
-def columnLattice (S : Filling E 𝔰) (c : S.Classes) :
-    AddSubgroup (InfinitePlace E → ι → 𝔰.κ → ℂ) :=
+def columnLattice (S : Filling E 𝔰) (c : S.Classes) : AddSubgroup (InfinitePlace E → ι → 𝔰.κ → ℂ) :=
   (S.integralColumns ι c).map (conjColumnsAtInfinity E 𝔰 ι)
 
 /-- A point is in the lattice of columns if and only if it is the image under
@@ -125,16 +128,18 @@ lemma isIntegral_conjTranspose_mul {S : Filling E 𝔰} {c : S.Classes}
   rw [h_gram] at h_int
   exact algebraMap_mem_Ô.1 h_int
 
-/-- A nonzero vector of `Λ ∩ X₀`, for the lattice `Λ` of the class `c`, has length at least `1` at
-some place, so the lattice of columns is discrete. -/
-instance {S : Filling E 𝔰} {c : S.Classes} :
-    DiscreteTopology (S.columnLattice ι c) := by
+/--
+A nonzero vector of `Λ ∩ X₀`, for the lattice `Λ` of the class `c`, has length at least `1` at
+some place, so the lattice of columns is discrete.
+-/
+instance {S : Filling E 𝔰} {c : S.Classes} : DiscreteTopology (S.columnLattice ι c) := by
   refine discreteTopology_of_isOpen_singleton_zero ?_
   -- The tuples all of whose vectors are short at every place form a neighbourhood of zero.
   let U : Set (InfinitePlace E → ι → 𝔰.κ → ℂ) :=
     ⋂ (v : InfinitePlace E) (l : ι), {x | ∑ a : 𝔰.κ, ‖x v l a‖ ^ 2 < 1}
-  have hU : IsOpen U := isOpen_iInter_of_finite fun v ↦ isOpen_iInter_of_finite fun l ↦
-    isOpen_lt (by fun_prop) continuous_const
+  have hU : IsOpen U :=
+    isOpen_iInter_of_finite fun v ↦
+      isOpen_iInter_of_finite fun l ↦ isOpen_lt (by fun_prop) continuous_const
   suffices h_zero : ({0} : Set (S.columnLattice ι c)) = Subtype.val ⁻¹' U by
     rw [h_zero]
     exact hU.preimage continuous_subtypeVal
@@ -145,8 +150,8 @@ instance {S : Filling E 𝔰} {c : S.Classes} :
     change conjColumnsAtInfinity E 𝔰 ι q ∈ U
     rw [h_point]
     simp [U]
-  · have h_col (l : ι) : q.col l = 0 := col_eq_zero_of_norm_lt_one hq fun v ↦ by
-      simpa using Set.mem_iInter₂.1 h_short v l
+  · have h_col (l : ι) : q.col l = 0 :=
+      col_eq_zero_of_norm_lt_one hq fun v ↦ by simpa using Set.mem_iInter₂.1 h_short v l
     have hq_zero : q = 0 := ext fun a l ↦ congrFun (h_col l) a
     simp [hq_zero]
 
@@ -243,18 +248,21 @@ lemma exists_int_eq_sum_re {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040
   push_cast at hp
   exact ⟨n, by linarith⟩
 
-/-- Let `E` be a CM field containing a primitive root of unity of order `5040`, and let `S`
+/--
+Let `E` be a CM field containing a primitive root of unity of order `5040`, and let `S`
 be filling data over `E`. The subgroup `S.columnLattice ι c` is the image of the `ι`-tuples of
 vectors of `Λ ∩ X₀` under the conjugates of the chosen complex embeddings, one for each infinite
-place. It has a measurable fundamental domain whose Lebesgue measure is finite and at least `1`. -/
-theorem exists_isAddFundamentalDomain_columnLattice {E : Type} [Field E] [CMType E] {𝔰 : Shape}
-    (ι : Type) [Fintype ι] (S : Filling E 𝔰) (c : S.Classes)
-    [HasPrimitiveRoot5040 E] :
-    ∃ D : Set (InfinitePlace E → ι → 𝔰.κ → ℂ),
-      MeasurableSet D ∧
-      IsAddFundamentalDomain (S.columnLattice ι c) D volume ∧
-      1 ≤ volume D ∧
-      volume D ≠ ⊤ := by
+place. It has a measurable fundamental domain whose Lebesgue measure is finite and at least `1`.
+-/
+theorem exists_isAddFundamentalDomain_columnLattice
+    {E : Type} [Field E] [CMType E]
+    {𝔰 : Shape}
+    (ι : Type) [Fintype ι]
+    (S : Filling E 𝔰) (c : S.Classes)
+    [HasPrimitiveRoot5040 E]
+    : ∃ D : Set (InfinitePlace E → ι → 𝔰.κ → ℂ),
+      MeasurableSet D ∧ IsAddFundamentalDomain (S.columnLattice ι c) D volume ∧ 1 ≤ volume D
+        ∧ volume D ≠ ⊤ := by
   -- In the coordinates of the standard real basis `e`, the euclidean product of two lattice points
   -- is half the trace of an algebraic integer of `E`, hence an integer.
   let L : Submodule ℤ (InfinitePlace E → ι → 𝔰.κ → ℂ) := (S.columnLattice ι c).toIntSubmodule
@@ -264,8 +272,9 @@ theorem exists_isAddFundamentalDomain_columnLattice {E : Type} [Field E] [CMType
       (InfinitePlace E → ι → 𝔰.κ → ℂ) :=
     Pi.basis fun _ ↦ Pi.basis fun _ ↦ Pi.basis fun _ ↦ Complex.basisOneI
   have h_volume : volume (ZSpan.fundamentalDomain e) = 1 :=
-    volume_fundamentalDomain_pi_basis _ fun _ ↦ volume_fundamentalDomain_pi_basis _ fun _ ↦
-      volume_fundamentalDomain_pi_basis _ fun _ ↦ volume_fundamentalDomain_basisOneI
+    volume_fundamentalDomain_pi_basis _ fun _ ↦
+      volume_fundamentalDomain_pi_basis _ fun _ ↦
+        volume_fundamentalDomain_pi_basis _ fun _ ↦ volume_fundamentalDomain_basisOneI
   refine exists_isAddFundamentalDomain_of_integral volume e h_volume L ?_
   intro x hx y hy
   obtain ⟨q, hq, rfl⟩ := mem_columnLattice.1 hx

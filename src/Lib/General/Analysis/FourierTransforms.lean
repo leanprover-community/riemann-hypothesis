@@ -56,11 +56,14 @@ namespace New
 
 variable {B : Type*} [AddCommGroup B] [TopologicalSpace B]
 
-/-- `IsDualFamily B₀ χ` says that `i ↦ χ i` is an injective homomorphism from `I` to the group of
+/--
+`IsDualFamily B₀ χ` says that `i ↦ χ i` is an injective homomorphism from `I` to the group of
 continuous unitary characters of `B` that are trivial on `B₀`, and that the common kernel of the
-`χ i` lies in `B₀`. -/
-class IsDualFamily {I : outParam Type*} [AddCommGroup I] (B₀ : AddSubgroup B)
-    (χ : outParam (I → B → ℂ)) : Prop where
+`χ i` lies in `B₀`.
+-/
+class IsDualFamily
+    {I : outParam Type*} [AddCommGroup I] (B₀ : AddSubgroup B) (χ : outParam (I → B → ℂ))
+    : Prop where
   /-- Each `χ i` is continuous and periodic under `B₀`. -/
   periodic (i : I) : IsContPeriodic B₀ (χ i)
   /-- `χ i x` is multiplicative in the index `i`. -/
@@ -74,8 +77,10 @@ class IsDualFamily {I : outParam Type*} [AddCommGroup I] (B₀ : AddSubgroup B)
   /-- Only the index `0` can give the trivial character. -/
   eq_zero_of_forall_eq_one (i : I) : (∀ x : B, χ i x = 1) → i = 0
 
-/-- A quasi-period of `F` is a pair `(a, c)` such that `c * F (x + a) = F x` for all `x`.
-`RespectsQuasiPeriods ψ F` says that `ψ a = c` for every quasi-period `(a, c)` of `F`. -/
+/--
+A quasi-period of `F` is a pair `(a, c)` such that `c * F (x + a) = F x` for all `x`.
+`RespectsQuasiPeriods ψ F` says that `ψ a = c` for every quasi-period `(a, c)` of `F`.
+-/
 def RespectsQuasiPeriods (ψ F : B → ℂ) : Prop :=
   ∀ (a : B) (c : ℂ), (∀ x : B, c * F (x + a) = F x) → ψ a = c
 

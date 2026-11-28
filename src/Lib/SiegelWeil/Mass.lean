@@ -111,8 +111,10 @@ of rank `l`, where `Γ` is the image of `U_l(E)` and `K₀` the stabiliser of `�
 lemma mass_pos (l : ℕ) : 0 < mass E l := classSum_one_pos
 
 variable {E κ}
-/-- The vectors of norm `1` in the lattice of `g`: the `y` in `E^κ` with `star y ⬝ᵥ y = 1` that
-`g⁻¹` maps into the integral lattice `Ô^κ`, for a finite adelic unitary matrix `g`. -/
+/--
+The vectors of norm `1` in the lattice of `g`: the `y` in `E^κ` with `star y ⬝ᵥ y = 1` that
+`g⁻¹` maps into the integral lattice `Ô^κ`, for a finite adelic unitary matrix `g`.
+-/
 def normOneLatticeVectors (g : Gf E κ) : Set (κ → E) :=
   {y : κ → E | star y ⬝ᵥ y = 1 ∧ ∀ i : κ, (g⁻¹.val.val *ᵥ algebraMap E (𝔸f E) ∘ y) i ∈ Ô E}
 
@@ -235,8 +237,10 @@ open MeasureTheory Measure ENNReal Fintype AddSubgroup Set NumberField AddChar C
 
 variable {A n : Type} [CommRing A] {R : Subring A} {μ e : ℕ} {E : Type _} [Field E] [NumberField E]
 
-/-- The ideal zeta sum ∑ [R : I]^(−s) over the ideals I of finite index in R, for a natural
-number s, with values in [0, ∞]. -/
+/--
+The ideal zeta sum ∑ [R : I]^(−s) over the ideals I of finite index in R, for a natural
+number s, with values in [0, ∞].
+-/
 noncomputable def idealZeta (R : Subring A) (s : ℕ) : ℝ≥0∞ :=
   ∑' I : {I : Ideal R // I.cardQuot ≠ 0}, (I.val.cardQuot : ℝ≥0∞)⁻¹ ^ s
 
@@ -282,8 +286,8 @@ section GaussSums
 variable {E : Type _} [Field E] [CMType E]
 
 /-- The group of finite adeles `r` such that the character `v ↦ ψ_f(b r v)` of `Ô` is trivial. -/
-noncomputable def characterKernel {E : Type*} [Field E] [NumberField E] (b : 𝔸f E) :
-    AddSubgroup (𝔸f E) where
+noncomputable def characterKernel {E : Type*} [Field E] [NumberField E] (b : 𝔸f E)
+    : AddSubgroup (𝔸f E) where
   carrier := {r : 𝔸f E | ∀ v : Ô E, ψf E (b * r * v) = 1}
   zero_mem' := by simp
   add_mem' := by simp +contextual [mul_add, add_mul, map_add_eq_mul]
@@ -297,8 +301,8 @@ lemma isOpen_characterKernel (b : 𝔸f E) : IsOpen (characterKernel b : Set (�
     fun _ hr v ↦ ψf_eq_one_of_mem (mul_mem hr v.property)
 
 /-- The largest ideal of `Ô` on which the character `v ↦ ψ_f(b v)` is trivial. -/
-noncomputable def conductorIdeal {E : Type*} [Field E] [NumberField E] (b : 𝔸f E) :
-    Ideal (Ô E) where
+noncomputable def conductorIdeal {E : Type*} [Field E] [NumberField E] (b : 𝔸f E)
+    : Ideal (Ô E) where
   toAddSubmonoid := ((characterKernel b).addSubgroupOf (Ô E).toAddSubgroup).toAddSubmonoid
   smul_mem' c r hr v := by simpa [mul_assoc, mul_left_comm] using hr (c * v)
 

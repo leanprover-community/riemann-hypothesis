@@ -47,9 +47,10 @@ Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts` for sources.
 
 namespace New.selmerZ1
 
-open NumberField Function Finset QuotientGroup InfinitePlace DiscreteModule Fintype
-  IsLargeLevel Submodule Filter Set Pi NeZero
-variable {K R : Type} [Field K] [EmbeddedNumberField K] [CommRing R]
+open NumberField Function Finset QuotientGroup InfinitePlace DiscreteModule Fintype IsLargeLevel
+  Submodule Filter Set Pi NeZero
+variable
+  {K R : Type} [Field K] [EmbeddedNumberField K] [CommRing R]
   {M : DiscreteModule R Gal(Ω/K)} {S : Finset (FinPlace K)} {A : FinPlace K → ClosurePlace}
 
 /-- Let `N` lie in every prime of `S`, let `A v` lie over `v`, let complex conjugations act
@@ -85,7 +86,8 @@ lemma exists_trivialization_of_mem (hA : ∀ v : FinPlace K, IsPlaceOver (A v) v
   · have h_conj : y g = 0 := h_real g hc
     simp [h_conj, hcM hc]
 
-/-- Selmer cocycles against trivialised cocycles. Let the discrete module `M` be unramified outside
+/--
+Selmer cocycles against trivialised cocycles. Let the discrete module `M` be unramified outside
 `S`, let complex conjugations act trivially on it, let `A v` lie over `v`, and let `L v` contain
 the local coboundaries for `v ∈ S`. If `N` lies in every prime of `S` and there are at most `#M ^ k`
 cocycles that vanish on `I` and are trivialised above `N` and infinity, then the number of Selmer
@@ -95,18 +97,21 @@ is at most `#M ^ k * ∏ v ∈ S, #Z_v`. Here `M` is finite, `Z_v` is the group 
 conjugations and on inertia outside `S` and the split primes.
 
 It replaces part of the Greenberg–Wiles formula: an upper bound on Selmer cocycles only, with no
-dual Selmer group. -/
-theorem card_mul_pow_le (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, M.ρ g = 1)
+dual Selmer group.
+-/
+theorem card_mul_pow_le
+    (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, M.ρ g = 1)
     (hA : ∀ v : FinPlace K, IsPlaceOver (A v) v)
     (L : ∀ v : FinPlace K, Submodule R (decompGroup Gal(Ω/K) (A v) → M))
     (hL : ∀ v ∈ S, (coboundaryMap (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ).range ≤ L v)
-    (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) {m : ℕ} [NeZero m] [Finite M]
-    {k N : ℕ} {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
-    {ι : Type} [NeZero N] (s : SplitPlaces m N I U ι)
-    (hk : M.HasFewCocycles (PlaceAboveLevel N) I k) (hT : ∀ v ∈ S, ↑N ∈ v.asIdeal) :
-    Nat.card (selmerZ1 M S A L (range s.v)) * Nat.card M ^ (#S + card (InfinitePlace K)) ≤
-      Nat.card M ^ k *
-        ∏ v ∈ S, Nat.card ↥(L v ⊓ Z1 (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ) := by
+    (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1)
+    {m : ℕ} [NeZero m] [Finite M]
+    {k N : ℕ} {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)} {ι : Type} [NeZero N]
+    (s : SplitPlaces m N I U ι) (hk : M.HasFewCocycles (PlaceAboveLevel N) I k)
+    (hT : ∀ v ∈ S, ↑N ∈ v.asIdeal)
+    : Nat.card (selmerZ1 M S A L (range s.v)) * Nat.card M ^ (#S + card (InfinitePlace K))
+      ≤ Nat.card M ^ k
+        * ∏ v ∈ S, Nat.card ↥(L v ⊓ Z1 (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ) := by
   -- Let `T` be the primes dividing `N`. A Selmer cocycle `y` with a vector `a w` for each place `w`
   -- in `T` or at infinity is sent by `F` to local data of `y - coboundaryMap M.ρ (a v)`, `v ∈ T`.
   -- The kernel of `F` embeds in the trivialised cocycles, and the quotient by it in the target of
@@ -120,23 +125,27 @@ theorem card_mul_pow_le (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
   have : Finite (M.trivializedCocycles (PlaceAboveLevel N) I) := (Nat.card_pos_iff.1 h_pos).2
   choose frob h_frob using fun v : FinPlace K ↦ (hA v).exists_isFrob Gal(Ω/K)
   have h_coc (y : Y) : y.val ∈ Z1 M.ρ := y.property.1.1
-  have h_loc (y : Y) (v : FinPlace K) (hv : v ∈ S) :
-      (fun g : decompGroup Gal(Ω/K) (A v) ↦ y.val g) ∈ J v :=
+  have h_loc (y : Y) (v : FinPlace K) (hv : v ∈ S)
+      : (fun g : decompGroup Gal(Ω/K) (A v) ↦ y.val g) ∈ J v :=
     ⟨y.property.2.1 v hv, (h_coc y).1.comp continuous_subtypeVal, fun g h ↦ (h_coc y).2 g h⟩
-  have h_cob (v : FinPlace K) (hv : v ∈ S) (a : M) :
-      coboundaryMap (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ a ∈ J v :=
+  have h_cob (v : FinPlace K) (hv : v ∈ S) (a : M)
+      : coboundaryMap (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ a ∈ J v :=
     ⟨hL v hv ⟨a, rfl⟩, ((M.restrictTo _).coboundary a).property⟩
   have h_unr (y : Y) : ∀ g ∈ inertiaAbove (S ∪ range s.v)ᶜ, y.val g = 0 := y.property.1.2
   -- The local data: the restriction in `J v` for `v ∈ S`, the value at a Frobenius for `v ∈ T \ S`.
   let F : Y × (T ⊕ InfinitePlace K → M) →+ (∀ v : S, J v) × (↥(T \ S) → M) :=
-    .mk' (fun (y, a) ↦
-      (fun ⟨v, hv⟩ ↦ ⟨_, sub_mem (h_loc y v hv) (h_cob v hv (a (.inl ⟨v, hT v hv⟩)))⟩,
-        fun v ↦ (y - coboundaryMap M.ρ (a (.inl ⟨v, v.property.1⟩))) (frob v)))
+    .mk'
+      (fun (y, a) ↦ (
+        fun ⟨v, hv⟩ ↦ ⟨_, sub_mem (h_loc y v hv) (h_cob v hv (a (.inl ⟨v, hT v hv⟩)))⟩,
+        fun v ↦ (y - coboundaryMap M.ρ (a (.inl ⟨v, v.property.1⟩))) (frob v)
+      ))
       fun p p' ↦ by ext <;> simp [add_sub_add_comm]
   -- In the kernel, `y` is the coboundary of `a v` on the decomposition group at each `v ∈ T`.
-  have h_dec (y : Y) (a : T ⊕ InfinitePlace K → M) (h : F (y, a) = 0) (v : FinPlace K)
-      (hv : v ∈ T) (g : Gal(Ω/K)) (hg : g ∈ decompGroup Gal(Ω/K) (A v)) :
-      y.val g = M.ρ g (a (.inl ⟨v, hv⟩)) - a (.inl ⟨v, hv⟩) := by
+  have h_dec
+      (y : Y) (a : T ⊕ InfinitePlace K → M) (h : F (y, a) = 0)
+      (v : FinPlace K) (hv : v ∈ T)
+      (g : Gal(Ω/K)) (hg : g ∈ decompGroup Gal(Ω/K) (A v))
+      : y.val g = M.ρ g (a (.inl ⟨v, hv⟩)) - a (.inl ⟨v, hv⟩) := by
     rw [← sub_eq_zero]
     by_cases hS : v ∈ S
     · exact congrFun (congrArg Subtype.val (congrFun (congrArg Prod.fst h) ⟨v, hS⟩)) ⟨g, hg⟩
@@ -163,12 +172,13 @@ theorem card_mul_pow_le (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
   have h_ker : Nat.card F.ker ≤ Nat.card M ^ k :=
     (Nat.card_le_card_of_injective _ h_inj).trans h_few
   have : ∀ v : FinPlace K, Finite (J v) := fun v ↦
-    .inter_of_right (((hA v).isLocalGalois_and_residueCard_eq_and_isUniformizer _).1.finite_Z1
-      (M.restrictTo _)) _
+    .inter_of_right
+      (((hA v).isLocalGalois_and_residueCard_eq_and_isUniformizer _).1.finite_Z1 (M.restrictTo _)) _
   have h_index : F.ker.index ≤ Nat.card ((∀ v : S, J v) × (↥(T \ S) → M)) :=
     (AddSubgroup.index_ker F).trans_le F.range.card_le_card_addGroup
-  have h_count : Nat.card (Y × (T ⊕ InfinitePlace K → M)) ≤
-      Nat.card M ^ k * Nat.card ((∀ v : S, J v) × (↥(T \ S) → M)) :=
+  have h_count
+      : Nat.card (Y × (T ⊕ InfinitePlace K → M))
+        ≤ Nat.card M ^ k * Nat.card ((∀ v : S, J v) × (↥(T \ S) → M)) :=
     F.ker.card_mul_index.ge.trans (mul_le_mul' h_ker h_index)
   -- As `#T = #(T \ S) + #S`, the factor `#M ^ #(T \ S)` cancels from both sides.
   have h_split : (T \ ↑S).ncard + #S = T.ncard := by

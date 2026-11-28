@@ -89,19 +89,27 @@ namespace New.Grading
 open Subgroup MeasureTheory Set MulAction ProbabilityTheory Space QuotientAddGroup Subtype ENNReal
   ContinuousLinearMap
 
-variable {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+variable
+  {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
   [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X']
   {s : ℕ} {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
-  {Y : Grading V N X s} (Y' : Grading V' N X' (s - 1)) [WeilData E]
-  (α : ∀ (n : Type) [Fintype n], AutChar E) (Φ : 𝒮 (V.hom V')) {W : Y.besselGroup → ℂ} {d : ι' → ℤ}
+  {Y : Grading V N X s} (Y' : Grading V' N X' (s - 1))
+  [WeilData E]
+  (α : ∀ (n : Type) [Fintype n], AutChar E) (Φ : 𝒮 (V.hom V'))
+  {W : Y.besselGroup → ℂ} {d : ι' → ℤ}
 
-/-- For a pair `p = (γ, δ)` of rational points, the substitution `w ↦ δ w γ⁻¹` on rational maps
-`V → V'`, with `γ` and `δ` in rational coordinates. -/
-noncomputable def ratSubst (p : Y.ratBessel × V'.ratParabolic d) :
-    ratMatrices E ι' ι →+ ratMatrices E ι' ι :=
-  .mk' (fun w ↦ ⟨V'.ratCoordMatrix p.2 * (w.val * V.ratCoordMatrix p⁻¹.1),
-    mul_mem_ratMatrices p⁻¹.1.property.1 p.2.property.1 w.property⟩) (by simp [Matrix.add_mul,
-      Matrix.mul_add])
+/--
+For a pair `p = (γ, δ)` of rational points, the substitution `w ↦ δ w γ⁻¹` on rational maps
+`V → V'`, with `γ` and `δ` in rational coordinates.
+-/
+noncomputable def ratSubst (p : Y.ratBessel × V'.ratParabolic d)
+    : ratMatrices E ι' ι →+ ratMatrices E ι' ι :=
+  .mk'
+    (fun w ↦ ⟨
+      V'.ratCoordMatrix p.2 * (w.val * V.ratCoordMatrix p⁻¹.1),
+      mul_mem_ratMatrices p⁻¹.1.property.1 p.2.property.1 w.property
+    ⟩)
+    (by simp [Matrix.add_mul, Matrix.mul_add])
 
 section
 
@@ -118,8 +126,8 @@ lemma nonnegMaps_le_comap_ratSubst (p : Y.ratBessel × V'.ratParabolic d) :
   exact h_left.mul (HasDegreeGe.mul hw h_right le_rfl) le_rfl
 
 /-- A pair `(γ, δ)` acts on the classes of rational maps by `w ↦ δ w γ⁻¹`. -/
-noncomputable instance :
-    MulAction (Y.ratBessel × V'.ratParabolic d) (ratMatrices E ι' ι ⧸ Y.nonnegMaps d) where
+noncomputable instance
+    : MulAction (Y.ratBessel × V'.ratParabolic d) (ratMatrices E ι' ι ⧸ Y.nonnegMaps d) where
   smul p := map _ _ (ratSubst p) (nonnegMaps_le_comap_ratSubst p)
   one_smul := by simp [forall_mk, HSMul.hSMul, ratSubst]
   mul_smul := by simp [forall_mk, HSMul.hSMul, ratSubst, Matrix.mul_assoc]
@@ -142,11 +150,14 @@ lemma agreesWithStringMap_out_smul (hd_le : d ≤ Y'.gradeOf ⊔ 0)
 end
 
 variable (W) in
-/-- The term of the class `w`: the value `W r` times the constant term, at the chosen
+/--
+The term of the class `w`: the value `W r` times the constant term, at the chosen
 representative of `w`, of the twisted Weil translate of `Φ` by `(r, h)`. For weights `d` odd under
-`Y'.stringReversal` any representative gives the same value (`constTerm_out`). -/
-noncomputable def classTerm (w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) (h : G E ε')
-    (r : Y.besselGroup) : ℂ :=
+`Y'.stringReversal` any representative gives the same value (`constTerm_out`).
+-/
+noncomputable def classTerm
+    (w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) (h : G E ε') (r : Y.besselGroup)
+    : ℂ :=
   W r * Y.constTerm d (twistedPairWeil α (r.val, h) Φ) w.out
 
 /-- For `W` equivariant and `d` odd, the term of a class is jointly continuous in `(h, r)`. -/
@@ -331,8 +342,10 @@ lemma tsum_integral_eq_of_not_survives (hW : Y.IsEquivariant W)
   exact (termwise A).tsum_eq.trans (split.unique (termwise B))
 
 variable (Y) in
-/-- For the weights `d = 0`, the union of the translates of `𝒞` by the rational points of `U(V')`:
-the classes that some rational `δ` moves into `𝒞`. -/
+/--
+For the weights `d = 0`, the union of the translates of `𝒞` by the rational points of `U(V')`:
+the classes that some rational `δ` moves into `𝒞`.
+-/
 def agreeingTranslates : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps 0) :=
   {w : ratMatrices E ι' ι ⧸ Y.nonnegMaps 0 |
     ∃ δ : V'.ratParabolic 0, ((1 : Y.ratBessel), δ) • w ∈ Y.agreeingClasses Y' 0}

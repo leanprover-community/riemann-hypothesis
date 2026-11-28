@@ -27,8 +27,8 @@ namespace New
 
 open MonoidAlgebra
 
-variable {G M : Type*} [Group G] [AddCommGroup M] [Module ℂ M]
-  (ρ : Representation ℂ G M) (K : Subgroup G)
+variable
+  {G M : Type*} [Group G] [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ G M) (K : Subgroup G)
 
 /-- Pushing an element of `H`'s group algebra forward along `f : H →* G` and letting it act by `ρ`
 is letting it act by the restricted representation `ρ ∘ f`. -/
@@ -42,12 +42,9 @@ lemma asAlgebraHom_mapDomain {H : Type*} [Group H] (f : H →* G) (a : ℂ[H]) :
 /-- The elements of the group algebra that map `K`-fixed vectors of `ρ` to `K`-fixed vectors. -/
 def levelAlgebra : Subalgebra ℂ ℂ[G] where
   carrier := {a : ℂ[G] | ∀ y ∈ levelSpace ρ K, ρ.asAlgebraHom a y ∈ levelSpace ρ K}
-  mul_mem' {a b} ha hb y hy := by
-    simpa using ha _ (hb y hy)
-  add_mem' {a b} ha hb y hy := by
-    simpa using add_mem (ha y hy) (hb y hy)
-  algebraMap_mem' c y hy := by
-    simpa using Submodule.smul_mem (levelSpace ρ K) c hy
+  mul_mem' {a b} ha hb y hy := by simpa using ha _ (hb y hy)
+  add_mem' {a b} ha hb y hy := by simpa using add_mem (ha y hy) (hb y hy)
+  algebraMap_mem' c y hy := by simpa using Submodule.smul_mem (levelSpace ρ K) c hy
 
 variable {ρ K} in
 lemma mem_levelAlgebra {a : ℂ[G]} :
@@ -69,8 +66,10 @@ def levelAction : levelAlgebra ρ K →ₐ[ℂ] Module.End ℂ (levelSpace ρ K)
     ext y
     simp
 
-/-- The elements of the group algebra that keep the `K`-fixed vectors in every representation of
-`G` on a complex vector space in `Type`. -/
+/--
+The elements of the group algebra that keep the `K`-fixed vectors in every representation of
+`G` on a complex vector space in `Type`.
+-/
 def universalLevelAlgebra : Subalgebra ℂ ℂ[G] :=
   ⨅ (M : Type) (_ : AddCommGroup M) (_ : Module ℂ M) (ρ : Representation ℂ G M), levelAlgebra ρ K
 

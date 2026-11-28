@@ -54,16 +54,18 @@ Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts` and
 
 namespace New
 
-variable {l : ℕ}
-  {A B C : Type} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C]
+variable
+  {l : ℕ} {A B C : Type} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C]
   (f : A →ₗ[ℤ] B) (g : B →ₗ[ℤ] C)
 
 open Nat Function LinearMap Submodule Module Matrix AddSubgroup Representation MonoidAlgebra
 
 attribute [local instance low] Fintype.ofFinite
 
-/-- For a linear map f : A → B, the rational number #coker f / #ker f; it is 0 if either group
-is infinite. -/
+/--
+For a linear map f : A → B, the rational number #coker f / #ker f; it is 0 if either group
+is infinite.
+-/
 noncomputable def cokerKerIndex : ℚ := Nat.card (B ⧸ f.range) / Nat.card f.ker
 
 /-- (a) The index of `g ∘ f` is `#coker g * ([B : I ⊔ N] / #(I ⊓ N)) / #ker f`, where
@@ -186,7 +188,8 @@ lemma cokerKerIndex_eq_pow_finrank :
     cokerKerIndex (l : End ℤ A) ≠ 0 ∧ cokerKerIndex (l : End ℤ A) = l ^ finrank ℤ A :=
   ⟨cokerKerIndex_natCast_ne_zero, cokerKerIndex_natCast_eq_pow_finrank⟩
 
-variable (l)
+variable
+  (l)
   {Δ V Z : Type} [Group Δ] [Fintype Δ] [AddCommGroup V] [MulAction Δ Z] [Fact l.Prime]
   {σ : Representation ℤ Δ V} {τ : V →+ V}
 

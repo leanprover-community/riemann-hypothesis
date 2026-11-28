@@ -80,10 +80,14 @@ lemma inv_pow_le_norm_of_dvd {x : ι.integers} {j : ℕ} (hx : x ∣ ((ι.prime 
   simpa [norm_p_eq_inv, ← NNReal.coe_le_coe] using
     (Valuation.valuationSubring.integers _).le_of_dvd hx
 
-/-- The square matrix `u` over `𝒪_ι` carries the family `y` into `M` with loss `a`: the combinations
-`∑ u_ik y_k` lie in `M`, and the valuation of `det u` at `ι` is at most `a`. -/
-structure Carries {S W : Type} [Fintype S] [DecidableEq S] [AddCommGroup W] [Module ι.integers W]
-    (u : Matrix S S ι.integers) (y : S → W) (M : Submodule ι.integers W) (a : ℝ) : Prop where
+/--
+The square matrix `u` over `𝒪_ι` carries the family `y` into `M` with loss `a`: the combinations
+`∑ u_ik y_k` lie in `M`, and the valuation of `det u` at `ι` is at most `a`.
+-/
+structure Carries
+    {S W : Type} [Fintype S] [DecidableEq S] [AddCommGroup W] [Module ι.integers W]
+    (u : Matrix S S ι.integers) (y : S → W) (M : Submodule ι.integers W) (a : ℝ)
+    : Prop where
   /-- `‖ι (det u)‖ ≥ l ^ (-a)`: the valuation of `det u` at `ι ∣ l` is at most `a`. -/
   le_norm_det : ((ι.prime : ℕ) : ℝ) ^ (-a) ≤ ‖ι.iso (u.det : ℂ)‖
   /-- The combinations `∑ u_ik y_k` lie in `M`. -/
@@ -112,10 +116,12 @@ end PrimePadicIso
 /-- The automorphism `σ'` of `ℂ`, with `σ' z = conj (σ (conj z))`. -/
 abbrev conjAut (σ : ℂ ≃+* ℂ) : ℂ ≃+* ℂ := (starRingAut.trans σ).trans starRingAut
 
-/-- A twisted lattice on `V`, with twists `ξ : T` and trivial twist `1`: linear maps `Θ_ξ` to inner
+/--
+A twisted lattice on `V`, with twists `ξ : T` and trivial twist `1`: linear maps `Θ_ξ` to inner
 product spaces, in each of them a module of vectors integral at `ι`, such that, if `ξ` is allowed at
 the prime of `ι`, products of vectors integral at `ῑ` with vectors integral at `ι` are integral at
-`ι`, and coordinates for the trivial twist in which the inner product has a rational matrix. -/
+`ι`, and coordinates for the trivial twist in which the inner product has a rational matrix.
+-/
 structure TwistedLattice (V T : Type) [AddCommGroup V] [Module ℂ V] [One T] where
   /-- The inner product space for the twist `ξ`. -/
   Space : T → Type
@@ -127,10 +133,12 @@ structure TwistedLattice (V T : Type) [AddCommGroup V] [Module ℂ V] [One T] wh
   IsAllowed : ℕ → T → Prop
   /-- The vectors for the twist `ξ` that are integral at `ι`. -/
   lattice (ξ : T) (ι : PrimePadicIso) : Submodule ι.integers (Space ξ)
-  /-- For `ξ` allowed at the prime of `ι`, the product of a vector integral at `ῑ` and a vector
-  integral at `ι` is integral at `ι`. -/
-  norm_inner_le_one {ξ : T} (ι : PrimePadicIso) (hξ : IsAllowed ι.prime ξ) :
-    ∀ φ ∈ lattice ξ ι.conj, ∀ φ' ∈ lattice ξ ι, ‖ι.iso ⟪φ, φ'⟫_ℂ‖ ≤ 1
+  /--
+  For `ξ` allowed at the prime of `ι`, the product of a vector integral at `ῑ` and a vector
+  integral at `ι` is integral at `ι`.
+  -/
+  norm_inner_le_one {ξ : T} (ι : PrimePadicIso) (hξ : IsAllowed ι.prime ξ)
+    : ∀ φ ∈ lattice ξ ι.conj, ∀ φ' ∈ lattice ξ ι, ‖ι.iso ⟪φ, φ'⟫_ℂ‖ ≤ 1
   /-- The set of coordinates on the space for the trivial twist. -/
   Coord : Type
   [fintypeCoord : Fintype Coord]
@@ -151,8 +159,10 @@ section Index
 
 variable {V T : Type} [AddCommGroup V] [Module ℂ V] [One T] (L : TwistedLattice V T)
 
-/-- The vectors of `V` that are integral at `ι ∣ l`: those `y` for which `Θ_ξ y` is integral at `ι`
-for every twist `ξ` allowed at `l`. -/
+/--
+The vectors of `V` that are integral at `ι ∣ l`: those `y` for which `Θ_ξ y` is integral at `ι`
+for every twist `ξ` allowed at `l`.
+-/
 def integralVectors (ι : PrimePadicIso) : Submodule ι.integers V :=
   ⨅ (ξ : T) (_ : L.IsAllowed ι.prime ξ),
     (L.lattice ξ ι).comap ((L.lift ξ).restrictScalars ι.integers)
@@ -163,15 +173,16 @@ lemma mem_integralVectors {L : TwistedLattice V T} {ι : PrimePadicIso} {y : V} 
 
 variable {S S' : Type} [Fintype S] [Fintype S'] [DecidableEq S] [DecidableEq S']
 
-/-- The family `y` has index at most `δ`: there are numbers `δ_l = e l ≥ 0` with `∑ δ_l log l ≤ δ`,
+/--
+The family `y` has index at most `δ`: there are numbers `δ_l = e l ≥ 0` with `∑ δ_l log l ≤ δ`,
 the sum taken over primes, such that for every `ι ∣ l` some matrix over `𝒪_ι` carries the family
-into the vectors integral at `ι` with loss `δ_l`. The matrix does not depend on the twist. -/
+into the vectors integral at `ι` with loss `δ_l`. The matrix does not depend on the twist.
+-/
 def IndexLe (y : S → V) (δ : ℝ) : Prop :=
   ∃ e : ℕ → ℝ,
-    (∀ l : ℕ, 0 ≤ e l) ∧
-    (∀ U : Finset ℕ, (∀ l ∈ U, l.Prime) → ∑ l ∈ U, e l * log l ≤ δ) ∧
-    ∀ ι : PrimePadicIso, ∃ u : Matrix S S ι.integers,
-      ι.Carries u y (L.integralVectors ι) (e ι.prime)
+    (∀ l : ℕ, 0 ≤ e l) ∧ (∀ U : Finset ℕ, (∀ l ∈ U, l.Prime) → ∑ l ∈ U, e l * log l ≤ δ)
+      ∧ ∀ ι : PrimePadicIso, ∃ u : Matrix S S ι.integers,
+        ι.Carries u y (L.integralVectors ι) (e ι.prime)
 
 variable {L}
 
@@ -254,20 +265,26 @@ end Index
 
 section Covolume
 
-variable {V T S : Type} [AddCommGroup V] [Module ℂ V] [One T] (L : TwistedLattice V T)
+variable
+  {V T S : Type} [AddCommGroup V] [Module ℂ V] [One T]
+  (L : TwistedLattice V T)
   [Fintype S] [DecidableEq S]
 
 /-- The coordinates of `σ Θ₁ y`: those of `Θ₁ y`, with `σ` applied to each of them. -/
 def conjCoord (σ : ℂ ≃+* ℂ) (y : V) : L.Coord → ℂ := σ ∘ L.coord (L.lift 1 y)
 
-/-- The number `‖Θ₁ y‖_σ² = ⟨σ Θ₁ y, σ Θ₁ y⟩`, with the product given by the rational matrix
-`L.gramMatrix` on coordinate vectors. -/
+/--
+The number `‖Θ₁ y‖_σ² = ⟨σ Θ₁ y, σ Θ₁ y⟩`, with the product given by the rational matrix
+`L.gramMatrix` on coordinate vectors.
+-/
 def normSqAt (y : V) (σ : ℂ ≃+* ℂ) : ℝ :=
   (star (L.conjCoord σ y) ⬝ᵥ L.gramMatrix.map (↑) *ᵥ L.conjCoord σ y).re
 
-/-- The family `y` has covolume at most `c`: for every automorphism `σ` of `ℂ` the determinant of
+/--
+The family `y` has covolume at most `c`: for every automorphism `σ` of `ℂ` the determinant of
 the products `⟨σ Θ₁ y_i, σ Θ₁ y_k⟩`, taken by the rational Gram matrix on the coordinate vectors
-`L.conjCoord σ (y i)`, has absolute value at most `exp c`. -/
+`L.conjCoord σ (y i)`, has absolute value at most `exp c`.
+-/
 def CovolumeLe (y : S → V) (c : ℝ) : Prop :=
   ∀ σ : ℂ ≃+* ℂ, ‖(formGram (L.gramMatrix.map (↑)) (L.conjCoord σ ∘ y)).det‖ ≤ exp c
 
@@ -334,11 +351,14 @@ end Covolume
 
 section Twist
 
-variable {V T : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [Module.Finite ℂ V] [One T]
+variable
+  {V T : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [Module.Finite ℂ V] [One T]
   (L : TwistedLattice V T)
 
-/-- The number `Z(ξ) = det (Θ_ξ* Θ_ξ)`, the Gram determinant of the images of an orthonormal basis
-of `V`. -/
+/--
+The number `Z(ξ) = det (Θ_ξ* Θ_ξ)`, the Gram determinant of the images of an orthonormal basis
+of `V`.
+-/
 def volume (ξ : T) : ℂ := (L.lift ξ).normDet ^ 2
 
 variable {L}
@@ -478,7 +498,8 @@ lemma heightLe_volume_div {n n' : ℕ} {y : Fin n → V} {z : Fin n' → V}
   simp [hG, field]
   exact (mul_div_mul_right _ _ (det_gram_ne_zero_iff_linearIndependent.2 h_indep)).symm
 
-/-- **A twist for each prime.** Let `L` be a twisted lattice on `V` with maps `Θ_ξ = L.lift ξ`.
+/--
+**A twist for each prime.** Let `L` be a twisted lattice on `V` with maps `Θ_ξ = L.lift ξ`.
 Let `y_1, …, y_n, z_1, …, z_n'` be a basis of `V`, and let `ξ_ι = θ ι` be allowed at the prime of
 `ι`. Only the untwisted map must be injective, and only the selected volumes `Z(ξ_ι)` must be
 nonzero. Write `ῑ = ι.conj`. Suppose that
@@ -488,23 +509,26 @@ nonzero. Write `ῑ = ι.conj`. Suppose that
 * the families `|γ_ι| ^ (-2)` and `Z(1) / Z(ξ_ι)` have height at most `b_denom` and `b_volume`
   respectively.
 
-Then `c + 2 δ + n' (b_short + b_denom) + b_volume ≥ 0`. -/
-theorem covolume_add_index_nonneg {n n' : ℕ} {y : Fin n → V} {z : Fin n' → V}
-    (h_inj : Function.Injective (L.lift 1))
-    (h_indep : LinearIndependent ℂ (Sum.elim y z)) (h_card : finrank ℂ V = n + n')
+Then `c + 2 δ + n' (b_short + b_denom) + b_volume ≥ 0`.
+-/
+theorem covolume_add_index_nonneg
+    {n n' : ℕ} {y : Fin n → V} {z : Fin n' → V}
+    (h_inj : Function.Injective (L.lift 1)) (h_indep : LinearIndependent ℂ (Sum.elim y z))
+    (h_card : finrank ℂ V = n + n')
     {θ : PrimePadicIso → T} (hθ : ∀ ι : PrimePadicIso, L.IsAllowed ι.prime (θ ι))
     (h_volume_ne : ∀ ι : PrimePadicIso, L.volume (θ ι) ≠ 0)
     {c δ b_volume b_short b_denom : ℝ} (hc : L.CovolumeLe y c) (hδ : L.IndexLe y δ)
     {γ : PrimePadicIso → ℂ} (hγ_ne : ∀ ι, γ ι ≠ 0)
     (hz_int : ∀ (ι : PrimePadicIso) (i : Fin n'), γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι)
-    (hz_conj : ∀ (ι : PrimePadicIso) (i : Fin n'),
-      γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι.conj)
+    (hz_conj
+      : ∀ (ι : PrimePadicIso) (i : Fin n'), γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι.conj)
     (hz_short : ∀ (i : Fin n') (σ : ℂ ≃+* ℂ), L.normSqAt (z i) σ ≤ exp b_short)
     (hγ : HeightLe b_denom fun ι : PrimePadicIso ↦ ((‖γ ι‖ : ℂ) ^ 2)⁻¹)
-    (hZ : HeightLe b_volume fun ι : PrimePadicIso ↦ L.volume 1 / L.volume (θ ι)) :
-    0 ≤ c + 2 * δ + n' * (b_short + b_denom) + b_volume := by
-  have h_forward := heightLe_volume_div h_inj h_indep h_card hθ
-    (hc.sumElim (covolumeLe_of_normSqAt_le hz_short)) hδ hγ_ne hz_int hz_conj hγ
+    (hZ : HeightLe b_volume fun ι : PrimePadicIso ↦ L.volume 1 / L.volume (θ ι))
+    : 0 ≤ c + 2 * δ + n' * (b_short + b_denom) + b_volume := by
+  have h_forward :=
+    heightLe_volume_div h_inj h_indep h_card hθ (hc.sumElim (covolumeLe_of_normSqAt_le hz_short)) hδ
+      hγ_ne hz_int hz_conj hγ
   -- The forward and inverse ratios use the same twist at each place, so their product is one.
   have h_one : HeightLe ((c + n' * b_short) + (2 * δ + n' * b_denom) + b_volume) 1 := by
     convert h_forward.mul hZ using 1

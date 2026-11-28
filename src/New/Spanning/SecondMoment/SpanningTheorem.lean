@@ -97,15 +97,17 @@ lemma finrank_principalForms_spaceW :
       rw [finrank_levelSpace_smoothFormRep h_free, Nat.cast_mul, card_classes_eq_classSum h_free,
         h_classes, Module.finrank_pi, ← h_wt.prod_formalDegree, h_deg, mul_right_comm]
 
-/-- **Dimension of the target.** For admissible data `D`, the dimension `D.targetDim` of the space
-of good forms on `Y₀` is at most `#Ḡ · deg · mass_r`. -/
-theorem targetDim_le_card_mul_besselDegree_mul_mass :
-    D.targetDim ≤ Nat.card D.chosenGL * D.filling.besselDegree * mass D.E D.r := by
+/--
+**Dimension of the target.** For admissible data `D`, the dimension `D.targetDim` of the space
+of good forms on `Y₀` is at most `#Ḡ · deg · mass_r`.
+-/
+theorem targetDim_le_card_mul_besselDegree_mul_mass
+    : D.targetDim ≤ Nat.card D.chosenGL * D.filling.besselDegree * mass D.E D.r := by
   -- The target has the dimension of the good forms on `D.spaceW D.m`, which are among the forms
   -- of principal level there.
-  calc (D.targetDim : ℝ)
-      = Module.finrank ℂ (D.goodForms (D.spaceW D.m)) :=
-        mod_cast D.targetDim_eq_finrank_goodForms_spaceW ⟨D.m, D.nat_le_of_hasLogBound, le_rfl⟩
+  calc
+    (D.targetDim : ℝ) = Module.finrank ℂ (D.goodForms (D.spaceW D.m)) :=
+      mod_cast D.targetDim_eq_finrank_goodForms_spaceW ⟨D.m, D.nat_le_of_hasLogBound, le_rfl⟩
     _ ≤ Module.finrank ℂ (D.principalForms (D.spaceW D.m)) := mod_cast Submodule.finrank_le _
     _ = Nat.card D.chosenGL * D.filling.besselDegree * mass D.E D.r :=
       D.finrank_principalForms_spaceW
@@ -118,16 +120,20 @@ section Spreading
 
 open Module Submodule Filling Fintype
 
-/-- The map `#Ḡ · e₀ s P` from all source forms to the target forms. Here `Ḡ = D.chosenGL`, the map
+/--
+The map `#Ḡ · e₀ s P` from all source forms to the target forms. Here `Ḡ = D.chosenGL`, the map
 `P = D.poincare` is the unscaled Poincaré map and `e₀ = D.e₀` projects onto the good forms. As `e₀`
-is central, it is the translate by `s` of `#Ḡ · e₀ P`. -/
+is central, it is the translate by `s` of `#Ḡ · e₀ P`.
+-/
 noncomputable def goodPoincare (s : D.chosenGL) : D.SourceForm →ₗ[ℂ] D.targetForms :=
   D.goodProjTranslate s ∘ₗ D.poincare
 
-/-- The action of the finite group `Ḡ` on the forms of principal level, with the chosen places
-sorted by the level prime below them. -/
-noncomputable def levelRepresentation :
-    Representation ℂ D.filling.ResidueGL (D.principalForms (D.spaceY 0)) :=
+/--
+The action of the finite group `Ḡ` on the forms of principal level, with the chosen places
+sorted by the level prime below them.
+-/
+noncomputable def levelRepresentation
+    : Representation ℂ D.filling.ResidueGL (D.principalForms (D.spaceY 0)) :=
   .comp (D.principalRep (D.spaceY 0)) (.mk' Sigma.uncurry fun _ _ ↦ rfl)
 
 /-- The representation `D.levelRepresentation` sends an element `s` of `D.filling.ResidueGL`, the
@@ -142,8 +148,10 @@ lemma inner_levelRepresentation (s : D.filling.ResidueGL) (x y : D.principalForm
     inner ℂ (D.levelRepresentation s x) (D.levelRepresentation s y) = inner ℂ x y :=
   Space.inner_formRep ..
 
-/-- The factor `(vol J · ν) ^ (-1/2)` that makes the Poincaré map almost an isometry. Here `J` is
-the principal level and `ν` the covolume of its unipotent points. -/
+/--
+The factor `(vol J · ν) ^ (-1/2)` that makes the Poincaré map almost an isometry. Here `J` is
+the principal level and `ν` the covolume of its unipotent points.
+-/
 noncomputable def poincareScale : ℝ :=
   √(MeasureTheory.volume.real D.filling.stdPrincipalLevel.carrier * D.filling.unipotentCovolume)⁻¹
 
@@ -152,14 +160,17 @@ lemma poincareScale_pos : 0 < D.poincareScale :=
   Real.sqrt_pos.2 (inv_pos.2
     (mul_pos (measureReal_pos_of_isLevel (K := D.chosenLevel)) D.filling.unipotentCovolume_pos))
 
-/-- The Poincaré map times `D.poincareScale`, in the coordinates `D.sourceFormCoords` of the source
-forms, whose standard inner product serves as the inner product of the source. -/
-noncomputable def scaledPoincare :
-    EuclideanSpace ℂ (D.filling.Classes × D.filling.BesselCoord) →ₗ[ℂ]
-      D.principalForms (D.spaceY 0) :=
+/--
+The Poincaré map times `D.poincareScale`, in the coordinates `D.sourceFormCoords` of the source
+forms, whose standard inner product serves as the inner product of the source.
+-/
+noncomputable def scaledPoincare
+    : EuclideanSpace ℂ (D.filling.Classes × D.filling.BesselCoord) →ₗ[ℂ]
+        D.principalForms (D.spaceY 0) :=
   (D.poincareScale : ℂ) • D.poincare ∘ₗ D.sourceFormCoords.symm.toLinearMap
 
-/-- **Unfolding.** Let `S = D.filling` and let `P = D.scaledPoincare` be the scaled Poincaré map.
+/--
+**Unfolding.** Let `S = D.filling` and let `P = D.scaledPoincare` be the scaled Poincaré map.
 Let `s` lie in `S.ResidueGL`, the product of the general linear groups over the residue fields at
 the chosen places above each of the two level primes. For classes `c, c'` and Bessel coordinates
 `i, j`, with basis vectors `e` of the source, `⟪s P e_(c', j), P e_(c, i)⟫ = ν⁻¹ ∑_γ A_γ(i, j)`. The
@@ -168,25 +179,28 @@ where `h_c = S.classRep c`). The amplitude `A_γ = S.amplitude .full c c' γ` is
 infinite places of `W(y) ⊗ W(γ⁻¹ y)^*` against cutoffs, where `.full` selects the Bessel function
 `W` itself and not its cut. The explicit number `ν = S.unipotentCovolume` is the covolume, the same
 for all `c`, of the group `S.classUnipotent c` of rational unipotent points in the real unipotent
-group. -/
-theorem hasAmplitudeBlocks_scaledPoincare :
-    D.filling.HasAmplitudeBlocks D.levelRepresentation D.scaledPoincare := by
-  have h_series :
-      D.poincare ∘ₗ D.sourceFormCoords.symm.toLinearMap = D.filling_fits.poincareMap := by
+group.
+-/
+theorem hasAmplitudeBlocks_scaledPoincare
+    : D.filling.HasAmplitudeBlocks D.levelRepresentation D.scaledPoincare := by
+  have h_series
+      : D.poincare ∘ₗ D.sourceFormCoords.symm.toLinearMap = D.filling_fits.poincareMap := by
     rw [D.poincare_eq_poincareMap_comp]
     exact LinearMap.ext fun φ ↦
       congrArg D.filling_fits.poincareMap (D.sourceFormCoords.apply_symm_apply φ)
   rw [scaledPoincare, h_series]
   exact hasAmplitudeBlocks_smul_of_inner_eq (measureReal_pos_of_isLevel (K := D.chosenLevel))
-    fun _ ⟨c, i⟩ ⟨c', i'⟩ ↦ D.filling_fits.petersson_poincare c c' i i'
-      (reduceFamily_liftResidue (w := D.chosenPlace) _)
+    fun _ ⟨c, i⟩ ⟨c', i'⟩ ↦
+      D.filling_fits.petersson_poincare c c' i i' (reduceFamily_liftResidue (w := D.chosenPlace) _)
 
 open scoped Classical in
-/-- The idempotent `e_{p_i}` for the level prime `p_i = D.levelPrime i`: the sum of the
+/--
+The idempotent `e_{p_i}` for the level prime `p_i = D.levelPrime i`: the sum of the
 `⊗_w e_{c_w}` over the tuples `c` of allowed polynomials of degree `r` at the chosen places above
-`p_i` that have a primitive member. -/
-noncomputable def goodIdempotentAbove (i : Fin 2) :
-    MonoidAlgebra ℂ (∀ w : D.filling.chosenPlaces i, GL D.RowIndex (ResField w.val)) :=
+`p_i` that have a primitive member.
+-/
+noncomputable def goodIdempotentAbove (i : Fin 2)
+    : MonoidAlgebra ℂ (∀ w : D.filling.chosenPlaces i, GL D.RowIndex (ResField w.val)) :=
   ∑ c ∈ goodTuples (P.q₂ D.towerExp) (card D.RowIndex),
     tupleIdem (k := fun w : D.filling.chosenPlaces i ↦ ResField w.val) D.RowIndex c
 
@@ -240,42 +254,49 @@ lemma re_coeff_one_sub_goodIdempotentAbove_le (i : Fin 2) :
     (card_chosenPlaces _ i) h_one_lt_card h_card_lt_prime h_ratio_le_one le_rfl h_le_f).trans
     h_small
 
-/-- **Bad types are rare.** The two elements `e_{p_i} = D.goodIdempotentAbove i` of the group
+/--
+**Bad types are rare.** The two elements `e_{p_i} = D.goodIdempotentAbove i` of the group
 algebras at the level primes `p_i` are central idempotents. Their tensor product
 `piTensorElem D.goodIdempotentAbove` acts through `D.levelRepresentation` as the projector `D.e₀`
 onto the good forms. The share of the bad types, those that `e_{p_i}` kills, is small: the
-coefficient of `1 - e_{p_i}` at the identity has real part at most `b⁻⁸ / 2`, where `b = D.b`. -/
-theorem bad_types_rare :
-    (∀ i : Fin 2, IsCentralProj (D.goodIdempotentAbove i)) ∧
-    D.levelRepresentation.asAlgebraHom (piTensorElem D.goodIdempotentAbove) =
-      (D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀ ∧
-    ∀ i : Fin 2, ((1 - D.goodIdempotentAbove i).coeff 1).re ≤ (D.b ^ 8)⁻¹ / 2 :=
-  ⟨D.isCentralProj_goodIdempotentAbove, D.levelRepresentation_goodIdempotentAbove_eq,
-    D.re_coeff_one_sub_goodIdempotentAbove_le⟩
+coefficient of `1 - e_{p_i}` at the identity has real part at most `b⁻⁸ / 2`, where `b = D.b`.
+-/
+theorem bad_types_rare
+    : (∀ i : Fin 2, IsCentralProj (D.goodIdempotentAbove i))
+      ∧ D.levelRepresentation.asAlgebraHom (piTensorElem D.goodIdempotentAbove)
+        = (D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀
+      ∧ ∀ i : Fin 2, ((1 - D.goodIdempotentAbove i).coeff 1).re ≤ (D.b ^ 8)⁻¹ / 2 := ⟨
+  D.isCentralProj_goodIdempotentAbove,
+  D.levelRepresentation_goodIdempotentAbove_eq,
+  D.re_coeff_one_sub_goodIdempotentAbove_le
+⟩
 
-/-- **Good forms.** The composite `e₀ P` of the scaled Poincaré map `P = D.scaledPoincare` with the
+/--
+**Good forms.** The composite `e₀ P` of the scaled Poincaré map `P = D.scaledPoincare` with the
 projector `e₀ = D.e₀` onto the good forms on `Y₀` is almost an isometry in mean square
 (`IsNearIsometry`): `‖e₀ P pr_U‖² ≥ dim U - 5 b⁻⁴ D_X` for every subspace `U` of the source. Here
 `‖·‖` is the Hilbert–Schmidt norm, `pr_U` the orthogonal projection onto `U`, `b = D.b`, and `D_X`
-is the dimension of the source. -/
-theorem isNearIsometry_e₀_comp_scaledPoincare :
-    IsNearIsometry ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀ ∘ₗ D.scaledPoincare)
+is the dimension of the source.
+-/
+theorem isNearIsometry_e₀_comp_scaledPoincare
+    : IsNearIsometry ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀ ∘ₗ D.scaledPoincare)
       (5 * (D.b ^ 4)⁻¹) := by
   obtain ⟨h_central, h_proj_eq, h_bad⟩ := D.bad_types_rare
   rw [← h_proj_eq]
   exact D.hasAmplitudeBlocks_scaledPoincare.isNearIsometry_piTensorElem_comp
-    D.inner_levelRepresentation
-    h_central h_bad
+    D.inner_levelRepresentation h_central h_bad
 
-/-- **Second moment.** For the scaled Poincaré map `P = D.scaledPoincare`, the sum over `s` in
+/--
+**Second moment.** For the scaled Poincaré map `P = D.scaledPoincare`, the sum over `s` in
 `Ḡ = D.chosenGL` of the squared Hilbert–Schmidt norm `hilbertSchmidtNorm` of `P* s P` is at most
 `1 + 9 b⁻⁴` times `D.filling.mainSecondMoment = D_X² / (deg · mass_r)`, where `D_X` is the dimension
-of the source. -/
-theorem sum_hilbertSchmidtNorm_scaledPoincare_sq_le [Fintype D.chosenGL] :
-    ∑ s : D.chosenGL,
-        hilbertSchmidtNorm (D.scaledPoincare.adjoint ∘ₗ D.principalRep (D.spaceY 0) s ∘ₗ
-          D.scaledPoincare) ^ 2 ≤
-      (1 + 9 / D.b ^ 4) * D.filling.mainSecondMoment := by
+of the source.
+-/
+theorem sum_hilbertSchmidtNorm_scaledPoincare_sq_le [Fintype D.chosenGL]
+    : ∑ s : D.chosenGL,
+          hilbertSchmidtNorm (D.scaledPoincare.adjoint ∘ₗ D.principalRep (D.spaceY 0) s ∘ₗ
+            D.scaledPoincare) ^ 2
+      ≤ (1 + 9 / D.b ^ 4) * D.filling.mainSecondMoment := by
   -- The bound holds for the group with the chosen places sorted by primes; uncurry the index.
   refine le_of_eq_of_le (Eq.symm ?_)
     (D.hasAmplitudeBlocks_scaledPoincare.sum_hilbertSchmidtNorm_sq_le D.inner_levelRepresentation)
@@ -333,41 +354,47 @@ lemma comap_scaledPoincare_eq_comap_goodPoincare (s : D.chosenGL) (F : Submodule
   change _ ∈ F ↔ (Nat.card D.chosenGL : ℂ) • y ∈ F
   rw [h_scaled, F.smul_mem_iff h_scale, F.smul_mem_iff h_card]
 
-/-- **One translate.** For `s` in the finite group `Ḡ = D.chosenGL`, the map `D.goodPoincare s` is
+/--
+**One translate.** For `s` in the finite group `Ḡ = D.chosenGL`, the map `D.goodPoincare s` is
 `#Ḡ · e₀ s Π`: the unscaled Poincaré map `Π = D.poincare` from the source forms `D.SourceForm` to
 the forms on `Y₀`, then the translation by `s`, then the projector `e₀ = D.e₀` onto the target
 forms. These maps spread (`IsSpread`): for every space `F` of target forms, with share `α` of the
 dimension of the target, the preimage of `F` under one of them has dimension at most
 `(1 + α + 3 ε₀) / 2 · D_X`, where `ε₀ = b⁻² / 8`. Here `b = D.b` is the weight at the places
-`D.bPlaces`, and `D_X` is the dimension of `D.SourceForm`. -/
+`D.bPlaces`, and `D_X` is the dimension of `D.SourceForm`.
+-/
 theorem isSpread_goodPoincare : IsSpread D.goodPoincare (3 / 2 * (8 * D.b ^ 2)⁻¹) := by
   let : Fintype D.chosenGL := .ofFinite D.chosenGL
   let ρ : Representation ℂ D.chosenGL (D.principalForms (D.spaceY 0)) := D.principalRep (D.spaceY 0)
-  have h_unitary (s : D.chosenGL) (x y : D.principalForms (D.spaceY 0)) :
-      inner ℂ (ρ s x) (ρ s y) = inner ℂ x y := Space.inner_formRep ..
+  have h_unitary (s : D.chosenGL) (x y : D.principalForms (D.spaceY 0))
+      : inner ℂ (ρ s x) (ρ s y) = inner ℂ x y :=
+    Space.inner_formRep ..
   have h_comm (s : D.chosenGL) : Commute (ρ.asAlgebraHom D.e₀) (ρ s) := by
     simpa using ((D.isCentralProj_e₀.2.commute (.single s 1)).map ρ.asAlgebraHom).symm
   -- Relax the two different error bounds to the common tolerance `ε₀ = b⁻² / 8`.
   -- Near-isometry controls the preimage dimension; the second moment controls the mean.
   have h_isom : IsNearIsometry (ρ.asAlgebraHom D.e₀ ∘ₗ D.scaledPoincare) (8 * D.b ^ 2)⁻¹ :=
     D.isNearIsometry_e₀_comp_scaledPoincare.mono D.le_of_hasLogBound
-  have h_moment : finrank ℂ (ρ.asAlgebraHom D.e₀).range *
-      ∑ s : D.chosenGL,
-        hilbertSchmidtNorm (D.scaledPoincare.adjoint ∘ₗ ρ s ∘ₗ D.scaledPoincare) ^ 2 ≤
-      card D.chosenGL * ((1 + (8 * D.b ^ 2)⁻¹) *
-        finrank ℂ (EuclideanSpace ℂ (D.filling.Classes × D.filling.BesselCoord)) ^ 2) := by
+  have h_moment
+      : finrank ℂ (ρ.asAlgebraHom D.e₀).range
+          * ∑ s : D.chosenGL,
+              hilbertSchmidtNorm (D.scaledPoincare.adjoint ∘ₗ ρ s ∘ₗ D.scaledPoincare) ^ 2
+        ≤ card D.chosenGL
+          * ((1 + (8 * D.b ^ 2)⁻¹)
+            * finrank ℂ (EuclideanSpace ℂ (D.filling.Classes × D.filling.BesselCoord)) ^ 2) := by
     have h_error : 9 / D.b ^ 4 ≤ (8 * D.b ^ 2)⁻¹ := D.le_of_hasLogBound
     grw [finrank_source_eq_sourceDim, ← h_error]
     exact D.targetDim_mul_sum_hilbertSchmidtNorm_sq_le
   -- Apply the abstract spreading theorem to the scaled map, then transport its conclusion.
   -- Neither the coordinates nor the nonzero factors change the dimension of a preimage.
   intro F α
-  obtain ⟨s, hs⟩ := isSpread_of_second_moment h_unitary
-    (D.isCentralProj_e₀.isSymmetricProjection h_unitary) h_comm (by positivity) h_isom h_moment F
+  obtain ⟨s, hs⟩ :=
+    isSpread_of_second_moment h_unitary (D.isCentralProj_e₀.isSymmetricProjection h_unitary) h_comm
+      (by positivity) h_isom h_moment F
   refine ⟨s, ?_⟩
   rwa [D.comap_scaledPoincare_eq_comap_goodPoincare s F,
-    (D.sourceFormCoords.symm.ofSubmodule' _).finrank_eq,
-    ← D.sourceFormCoords.finrank_eq] at hs
+      (D.sourceFormCoords.symm.ofSubmodule' _).finrank_eq, ← D.sourceFormCoords.finrank_eq]
+    at hs
 
 end Spreading
 

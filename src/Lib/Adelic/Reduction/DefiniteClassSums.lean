@@ -71,8 +71,10 @@ open scoped Pointwise
 
 namespace New.Space
 
-variable {E : Type*} [Field E] [CMType E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ} (V : Space E n s)
+variable
+  {E : Type*} [Field E] [CMType E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} (V : Space E n s)
 
 /-- For a hermitian space `V` with a point, there is a constant `c` such that for every `g` in
 `G E s` some basis of `Eⁿ`, the columns of `Y`, lies in `(V.move g).latticeBall (c * V.height g)`.
@@ -185,19 +187,22 @@ lemma isCocompact_finitePart : V.Γf.IsCocompact := by
   obtain ⟨-, ⟨(γ : U V.J), rfl⟩, hγ⟩ := h_cover (1, g)
   exact ⟨V.embFin γ, ⟨γ, rfl⟩, V.ratEmbed γ * (1, g), hγ, rfl⟩
 
-/-- For a space with all signs `1` and a level `K` (an open subgroup of `stdLevel E n`), the pair
+/--
+For a space with all signs `1` and a level `K` (an open subgroup of `stdLevel E n`), the pair
 `(Γf, K)` has finite type (`HasFiniteType`): there are finitely many double cosets `Γf \ Gf / K`,
 the stabilisers `Γf ∩ g K g⁻¹` are finite, and `K` is open and compact.
 
 A special case of Borel's finiteness of class numbers. Only forms with an adelic orthonormal frame
-are covered, at open subgroups of the standard level. -/
-instance hasFiniteType_of_isLevel {K : Subgroup (Gf E n)} [hK : IsLevel K] :
-    HasFiniteType V.Γf K := by
+are covered, at open subgroups of the standard level.
+-/
+instance hasFiniteType_of_isLevel {K : Subgroup (Gf E n)} [hK : IsLevel K]
+    : HasFiniteType V.Γf K := by
   refine ⟨?_, fun g ↦ ?_, hK.isOpen, hK.isCompact⟩
   · -- A compact set `C` with `Γf C = Gf` meets finitely many cosets of the open group `K`.
     obtain ⟨C, hC, hcover⟩ := V.isCocompact_finitePart
     refine (finite_quotient_image_of_isCompact hK.isOpen hC).of_surjective
-      (fun c ↦ ⟦c.val.out⟧) (Quot.ind fun g ↦ ?_)
+      (fun c ↦ ⟦c.val.out⟧)
+      (Quot.ind fun g ↦ ?_)
     -- the class of `g` comes from the coset of `γ * g ∈ C`
     obtain ⟨γ, hγ, (hγg : γ * g ∈ C)⟩ := hcover g
     obtain ⟨k, hk⟩ := mk_out_eq_mul K (γ * g)
@@ -206,8 +211,8 @@ instance hasFiniteType_of_isLevel {K : Subgroup (Gf E n)} [hK : IsLevel K] :
     exact ⟨⟨γ * g, γ * g, hγg, rfl⟩, h_class.symm⟩
   · -- The discrete closed group `Γf` meets the compact set `g K g⁻¹` in a finite set.
     exact ((hK.isCompact.preimage_smul (toConjAct g⁻¹)).inter_left
-      V.Γf.isClosed_of_discreteTopology).finite (IsDiscrete.mono ⟨mod_cast inferInstance⟩
-        inf_le_left)
+        V.Γf.isClosed_of_discreteTopology).finite
+      (IsDiscrete.mono ⟨mod_cast inferInstance⟩ inf_le_left)
 
 end New.Space
 
@@ -227,12 +232,15 @@ section StandardClasses
 
 variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
 
-/-- The set of classes of the standard space I_n for a subgroup K: double cosets of the finite
-adelic unitary group by its rational points on the left and K on the right. -/
+/--
+The set of classes of the standard space I_n for a subgroup K: double cosets of the finite
+adelic unitary group by its rational points on the left and K on the right.
+-/
 abbrev StdClasses (K : Subgroup (Gf E n)) : Type := DoubleCosets (stdSpace E n).Γf K
 
-noncomputable instance {K : Subgroup (Gf E n)} [HasFiniteType stdRatPoints K] :
-    Fintype (StdClasses K) := @.ofFinite _ HasFiniteType.finite_classes
+noncomputable instance {K : Subgroup (Gf E n)} [HasFiniteType stdRatPoints K]
+    : Fintype (StdClasses K) :=
+  @.ofFinite _ HasFiniteType.finite_classes
 
 end StandardClasses
 
@@ -242,8 +250,8 @@ variable {E n : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n]
 
 /-- `Gf E n` is unimodular: the rational points of the standard space are a lattice in it. -/
 instance : (volume : Measure (Gf E n)).IsMulRightInvariant :=
-  isMulRightInvariant_of_finite_covolume
-    (isFiniteMeasure_quotMeasure_of_cocompact _ (stdSpace E n).isCocompact_finitePart)
+  isMulRightInvariant_of_finite_covolume (isFiniteMeasure_quotMeasure_of_cocompact _
+    (stdSpace E n).isCocompact_finitePart)
 
 /-- A level `K` (an open subgroup of `stdLevel E n`) has volume `1 / [stdLevel E n : K]`, as
 `vol (stdLevel E n) = 1`. -/
@@ -264,8 +272,8 @@ instance : IsMulCommutative (Gf E Unit) where
 
 end FinitePart
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  {W : Type*} [RCLike W]
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ} {W : Type*} [RCLike W]
 
 /-- `G` is unimodular, as a product of unimodular groups. -/
 instance : (volume : Measure (G E s)).IsMulRightInvariant := by
@@ -385,28 +393,34 @@ lemma integral_quotMeasure_eq_classSum {V : Space E n 1} {F : G E (1 : n → ℤ
         rw [classSum, finsum_eq_sum_of_fintype, Finset.mul_sum]
         exact Finset.sum_congr rfl fun c _ ↦ by rw [mul_smul_comm, inv_natCast_smul_eq ℝ ℚ]
 
-/-- Let `V` be a space with all signs `1`. Write `V.Γ` for its rational points `x⁻¹γx`
+/--
+Let `V` be a space with all signs `1`. Write `V.Γ` for its rational points `x⁻¹γx`
 (`γ ∈ U(J)(E)`) in `G = G_∞ × G_f` and `V.Γf` for their finite parts, and let `K` be a level, an
 open subgroup of `K₀ = stdLevel E n = G_f ∩ GL_n(Ô)`. Let `y` on `G_f` be left `V.Γf`-invariant with
 open right stabiliser. Then `classIntegral V.Γf K y` equals `[K₀ : K]` times the integral of
 `g ↦ y g_fin` over `V.Γ \ G` against `V.quotMeasure` (with `vol G_∞ = vol K₀ = 1`), where
 `classIntegral V.Γf K y` is the sum over the double cosets `V.Γf g K'` of
-`y g / #(V.Γf ∩ g K' g⁻¹)`, with `K' = rightStabilizer y ⊓ K`, divided by `[K : K']`. -/
-theorem classIntegral_eq_integral {V : Space E n 1} {y : Gf E n → W}
-    (hy : y ∈ smoothInvariants V.Γf) (K : Subgroup (Gf E n)) [hK : IsLevel K] :
-    classIntegral V.Γf K y =
-      (stdLevelIndex K : W) * ∫ g : G E (1 : n → ℤˣ), y g.2 ∂V.quotMeasure := by
+`y g / #(V.Γf ∩ g K' g⁻¹)`, with `K' = rightStabilizer y ⊓ K`, divided by `[K : K']`.
+-/
+theorem classIntegral_eq_integral
+    {V : Space E n 1} {y : Gf E n → W} (hy : y ∈ smoothInvariants V.Γf)
+    (K : Subgroup (Gf E n)) [hK : IsLevel K]
+    : classIntegral V.Γf K y
+      = (stdLevelIndex K : W) * ∫ g : G E (1 : n → ℤˣ), y g.2 ∂V.quotMeasure := by
   -- The integral is `[stdLevel : S]⁻¹` times the class sum at the level `S = Stab y ∩ K`.
   obtain ⟨(hy_left : V.Γf.FixesLeft y), (hy_open : IsOpen (rightStabilizer y : Set (Gf E n)))⟩ := hy
   have hS : IsLevel (rightStabilizer y ⊓ K) := ⟨inf_le_of_right_le hK.le, hy_open.inter hK.isOpen⟩
-  have h_left : V.Γ.FixesLeft fun g ↦ y g.2 :=
-    forall_mem_range.2 fun γ g ↦ hy_left _ ⟨γ, rfl⟩ g.2
-  have h_index : (stdLevelIndex (rightStabilizer y ⊓ K) : W) =
-      (rightStabilizer y).relIndex K * stdLevelIndex K := by
+  have h_left : V.Γ.FixesLeft fun g ↦ y g.2 := forall_mem_range.2 fun γ g ↦ hy_left _ ⟨γ, rfl⟩ g.2
+  have h_index
+      : (stdLevelIndex (rightStabilizer y ⊓ K) : W)
+        = (rightStabilizer y).relIndex K * stdLevelIndex K := by
     rw [← inf_relIndex_right, ← Nat.cast_mul, relIndex_mul_relIndex _ _ _ inf_le_right hK.le]
-  have h_integral : ∫ g : G E (1 : n → ℤˣ), y g.2 ∂V.quotMeasure =
-      (stdLevelIndex (rightStabilizer y ⊓ K) : W)⁻¹ * classSum V.Γf (rightStabilizer y ⊓ K) y :=
-    integral_quotMeasure_eq_classSum h_left (fun g ↦ by simp) _ inf_le_left
+  have h_integral
+      : ∫ g : G E (1 : n → ℤˣ), y g.2 ∂V.quotMeasure
+        = (stdLevelIndex (rightStabilizer y ⊓ K) : W)⁻¹ * classSum V.Γf (rightStabilizer y ⊓ K) y :=
+    integral_quotMeasure_eq_classSum h_left
+      (fun g ↦ by simp)
+      _ inf_le_left
       (isLocallyConstant_of_eventually_mul <| hy_open.mem_nhds (one_mem _)).continuous.snd'
   rw [h_integral, h_index, mul_inv_rev, mul_assoc,
     mul_inv_cancel_left₀ (Nat.cast_ne_zero.2 (isCompact_stdLevel.relIndex_ne_zero hK.isOpen)),

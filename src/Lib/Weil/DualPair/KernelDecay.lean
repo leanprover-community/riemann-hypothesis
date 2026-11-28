@@ -62,11 +62,12 @@ namespace New
 
 section KernelDecay
 
-open MeasureTheory Matrix Kronecker
-  Fock WeilData Space Prod G IsDualFamily Heisenberg ENNReal
+open MeasureTheory Matrix Kronecker Fock WeilData Space Prod G IsDualFamily Heisenberg ENNReal
 
-variable {E : Type} [Field E] [CMType E] {n n' p q : Type} [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
+variable
+  {E : Type} [Field E] [CMType E]
+  {n n' p q : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
   (a b : AutChar E) (g : G E s) (c : Matrix n q E)
 
 variable {g c} {R : Type*} [CommRing R] [Nontrivial R] {φ : 𝔸f E →+* R} [Fintype p] [DecidableEq p]
@@ -75,19 +76,25 @@ variable [WeilData E] [Fintype q] {S T}
 
 /-! ### Short pairs -/
 
-/-- The matrix of the map `z ↦ d z cᴴ S.J` on matrices written as vectors. Its columns are the
+/--
+The matrix of the map `z ↦ d z cᴴ S.J` on matrices written as vectors. Its columns are the
 rational maps `dᵢ ⟨cⱼ, ·⟩`, where `dᵢ` and `cⱼ` are the columns of `d` and `c` and `⟨·, ·⟩` is the
-form of `S`. -/
-noncomputable abbrev Space.rankOneMaps (S : Space E n s) (d : Matrix n' p E) (c : Matrix n q E) :
-    Matrix (n' × n) (p × q) E :=
+form of `S`.
+-/
+noncomputable abbrev Space.rankOneMaps (S : Space E n s) (d : Matrix n' p E) (c : Matrix n q E)
+    : Matrix (n' × n) (p × q) E :=
   d ⊗ₖ (cᴴ * S.J)ᵀ
 
-/-- The conditions of the decay estimate at a point `(g, h)`, with `g` in the group of
+/--
+The conditions of the decay estimate at a point `(g, h)`, with `g` in the group of
 `S : Space E n s` and `h` in that of `T : Space E n' s'`, on rational matrices `d` for `T` and `c`
 for `S`, for a functional `ℓ` and a function `Ψ` on finite adelic maps. Below `d'` and `c'` are the
-coordinates `Space.coordMatrix` of `d` at `h` and of `c` at `g`. -/
-structure IsShortPair (g : G E s) (h : G E s') (ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ)
-    (Ψ : (n' × n → 𝔸f E) → ℂ) (d : Matrix n' p E) (c : Matrix n q E) (x y t : ℝ) : Prop where
+coordinates `Space.coordMatrix` of `d` at `h` and of `c` at `g`.
+-/
+structure IsShortPair
+    (g : G E s) (h : G E s') (ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ) (Ψ : (n' × n → 𝔸f E) → ℂ) (d : Matrix n' p E)
+    (c : Matrix n q E) (x y t : ℝ)
+    : Prop where
   /-- The columns of `d` are vectors of length at most `x` in the lattice at `h`. -/
   short_target : ∀ i : p, d.col i ∈ (T.move h).latticeBall x
   /-- The columns of `c` are vectors of length at most `y` in the lattice at `g`. -/
@@ -97,24 +104,32 @@ structure IsShortPair (g : G E s) (h : G E s') (ℓ : 𝒮 (S.hom T) →L[ℂ] �
   /-- The columns of `d`, or those of `c`, span an isotropic subspace. -/
   isotropic : dᴴ * T.J * d = 0 ∨ cᴴ * S.J * c = 0
   /-- `ℓ` is invariant under the Heisenberg operators of the rational maps `z cᴴ S.J`. -/
-  invariant : ∀ (z : Matrix n' q E) (f : 𝒮 (S.hom T)),
-    ℓ (ϱ (S.hom T) (matrixToVec (T.ratMap S (z * cᴴ * S.J))) f) = ℓ f
-  /-- Either the finite part of `d'ᴴ u c'` is not zero whenever `Ψ u ≠ 0`, or the mean of `ℓ ∘ ϱ u`
-  over the adelic points `u` of the span of the maps `dᵢ ⟨cⱼ, ·⟩` is zero. -/
-  ne_zero_or_mean_eq_zero :
-    (∀ u : n' × n → 𝔸f E, Ψ u ≠ 0 →
-      ((T.coordMatrix h d).map snd)ᴴ * (vecToMatrix u * (S.coordMatrix g c).map snd) ≠ 0) ∨
-    ∀ f : 𝒮 (S.hom T),
-      (S.hom T).subspaceMean (Submodule.span E (Set.range (S.rankOneMaps d c).col))
-        (fun u : n' × n → 𝔸 E ↦ ℓ (ϱ (S.hom T) u f)) = 0
+  invariant
+    : ∀ (z : Matrix n' q E) (f : 𝒮 (S.hom T)),
+      ℓ (ϱ (S.hom T) (matrixToVec (T.ratMap S (z * cᴴ * S.J))) f) = ℓ f
+  /--
+  Either the finite part of `d'ᴴ u c'` is not zero whenever `Ψ u ≠ 0`, or the mean of `ℓ ∘ ϱ u`
+  over the adelic points `u` of the span of the maps `dᵢ ⟨cⱼ, ·⟩` is zero.
+  -/
+  ne_zero_or_mean_eq_zero
+    : (∀ u : n' × n → 𝔸f E,
+        Ψ u ≠ 0
+          → ((T.coordMatrix h d).map snd)ᴴ * (vecToMatrix u * (S.coordMatrix g c).map snd) ≠ 0)
+      ∨ ∀ f : 𝒮 (S.hom T),
+        (S.hom T).subspaceMean (Submodule.span E (Set.range (S.rankOneMaps d c).col))
+            (fun u : n' × n → 𝔸 E ↦ ℓ (ϱ (S.hom T) u f))
+          = 0
 
-variable {E : Type} [Field E] [CMType E] {n n' p q : Type} [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} {R : Type*} [CommRing R] [Nontrivial R]
-  [Fintype p] [WeilData E] [Fintype q]
+variable
+  {E : Type} [Field E] [CMType E]
+  {n n' p q : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {R : Type*}
+  [CommRing R] [Nontrivial R] [Fintype p] [WeilData E] [Fintype q]
 
 section ShortPair
 
-variable {S : Space E n s} {T : Space E n' s'} {g : G E s} {h : G E s'} {d : Matrix n' p E}
+variable
+  {S : Space E n s} {T : Space E n' s'} {g : G E s} {h : G E s'} {d : Matrix n' p E}
   {c : Matrix n q E}
 
 omit [WeilData E] [Fintype q] in
@@ -364,8 +379,9 @@ lemma exists_norm_pairWeil_schrodingerOp_mul_pow_le {S : Space E n s} {T : Space
       simp [mul_pow, div_pow, pow_add, two_mul, field]
 
 /-- The adelic coordinate matrix of a rational basis at `g`, as an invertible matrix. -/
-private noncomputable def basisCoordMatrix (S : Space E n s) (g : G E s) (c : GL n E) :
-    GL n (𝔸 E) := g⁻¹.toUnitary.val * (S.x⁻¹ * c.map toAdele)
+private noncomputable def basisCoordMatrix (S : Space E n s) (g : G E s) (c : GL n E)
+    : GL n (𝔸 E) :=
+  g⁻¹.toUnitary.val * (S.x⁻¹ * c.map toAdele)
 
 /-- Data on surjective maps decay rapidly on the target group. Let `Ψ` be Schwartz–Bruhat above a
 set `P` of finite places disjoint from its conjugate. Suppose that every map `y` with `Ψ y ≠ 0` has
@@ -464,8 +480,8 @@ section
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] (𝔪 : Modulus E)
 
 /-- For a place w dividing 𝔪, the reduction map from O_E/𝔪 to the residue field at w. -/
-noncomputable def Rows.modulusResidue {w : FinPlace E} (h : w ∈ 𝔪.places) :
-    𝔪.ResidueRing →+* ResField w :=
+noncomputable def Rows.modulusResidue {w : FinPlace E} (h : w ∈ 𝔪.places)
+    : 𝔪.ResidueRing →+* ResField w :=
   Ideal.Quotient.lift 𝔪.ideal (algebraMap (𝓞 E) (ResField w)) fun _ hx ↦
     algebraMap_ResField_eq_zero.2 (h hx)
 
@@ -476,8 +492,10 @@ lemma Rows.modulusResidue_reduction {w : FinPlace E} (h : w ∈ 𝔪.places) (x 
 
 end
 
-variable {E n n' : Type} [Field E] [CMType E] {𝔪 : Modulus E} [Fintype n] [DecidableEq n]
-  [Fintype n'] [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
+variable
+  {E n n' : Type} [Field E] [CMType E]
+  {𝔪 : Modulus E} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
 
 omit [DecidableEq n'] in
 /-- Suppose Ψ(y) ≠ 0 forces the matrix of entries of y arranged by e to have a left inverse

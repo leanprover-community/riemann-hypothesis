@@ -71,11 +71,15 @@ Smooth forms for a group `G` with rational points `e : Γ →* G` and a represen
 
 section SmoothForms
 
-variable {G Γ V : Type*} [Group G] [Group Γ] [AddCommGroup V] [Module ℂ V] [TopologicalSpace G]
-  [IsTopologicalGroup G] (e : Γ →* G) (ρ : Representation ℂ Γ V)
+variable
+  {G Γ V : Type*}
+  [Group G] [Group Γ] [AddCommGroup V] [Module ℂ V] [TopologicalSpace G] [IsTopologicalGroup G]
+  (e : Γ →* G) (ρ : Representation ℂ Γ V)
 
-/-- Smooth forms: functions φ : G → V with φ(e(γ)g) = ρ(γ)φ(g) whose stabiliser under right
-translation is open. -/
+/--
+Smooth forms: functions φ : G → V with φ(e(γ)g) = ρ(γ)φ(g) whose stabiliser under right
+translation is open.
+-/
 def SmoothForm : Submodule ℂ (G → V) := (smoothFunctions ℂ).toSubmodule ⊓ ρ.coindV e
 
 /-- The representation of G on smooth forms by right translation. -/
@@ -104,45 +108,59 @@ section AlgFormDefs
 
 open NumberField Matrix Space
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  (κ : InfinitePlace E → ℕ → ℕ) (e : InfinitePlace E → ℤ) {s : n → ℤˣ}
-  {p : ℕ} [Fact p.Prime] [ι : PadicPlace p]
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  (κ : InfinitePlace E → ℕ → ℕ) (e : InfinitePlace E → ℤ)
+  {s : n → ℤˣ} {p : ℕ} [Fact p.Prime] [ι : PadicPlace p]
 
-/-- The representation of the rational unitary group U(J)(E) on coordinate vectors of weight
+/--
+The representation of the rational unitary group U(J)(E) on coordinate vectors of weight
 (κ, e), through its components at the infinite places and `New.conjWeylRep`. A component acts
-through its entrywise conjugate, which for signs all 1 is its inverse transpose. -/
+through its entrywise conjugate, which for signs all 1 is its inverse transpose.
+-/
 @[simps! -isSimp apply]
 def Space.weightRep (V : Space E n s) : Representation ℂ (U V.J) (WeylIndex n κ → ℂ) :=
   (conjWeylRep κ e).comp ((MonoidHom.fst (InfinitePlace E → USign s) (Gf E n)).comp V.ratEmbed)
 
 variable (n) in
-/-- Smooth algebraic forms of weight (κ, e) on the standard space `New.stdSpace E n`: functions φ on
+/--
+Smooth algebraic forms of weight (κ, e) on the standard space `New.stdSpace E n`: functions φ on
 the finite adelic unitary group with φ(γg) = ρ(γ)φ(g) for rational γ whose stabiliser under right
-translation is open. -/
+translation is open.
+-/
 abbrev AlgForm : Submodule ℂ (Gf E n → WeylIndex n κ → ℂ) :=
   SmoothForm (stdSpace E n).embFin (weightRep κ e (stdSpace E n))
 
-/-- The representation of the finite adelic unitary group on the space of algebraic forms of
-weight (κ,e), by right translation. -/
-abbrev algFormRep :
-    Representation ℂ (Gf E n) (SmoothForm (stdSpace E n).embFin (weightRep κ e (stdSpace E n))) :=
+/--
+The representation of the finite adelic unitary group on the space of algebraic forms of
+weight (κ,e), by right translation.
+-/
+abbrev algFormRep
+    : Representation ℂ (Gf E n) (SmoothForm (stdSpace E n).embFin (weightRep κ e (stdSpace E n))) :=
   smoothFormRep (stdSpace E n).embFin (weightRep κ e (stdSpace E n))
 
-/-- The gauge of ξ at g: the largest p-adic absolute value of a coordinate of g⁻¹·ι(ξ), where
+/--
+The gauge of ξ at g: the largest p-adic absolute value of a coordinate of g⁻¹·ι(ξ), where
 ι = `ιₚ` maps ℂ to the p-adic field and g⁻¹ acts in weight (κ, e), at τ through the p-adic
 component given by the embedding `weightEmbedding ιₚ τ`, x ↦ ι(Φ_τ(x̄)). So g acts through its
 conjugate, the inverse transpose of g, and the gauge is the multiplicative form of the least
-valuation of a coordinate. -/
+valuation of a coordinate.
+-/
 def weylGauge (g : Gf E n) (ξ : WeylIndexFamily (fun _ : InfinitePlace E ↦ n) κ → ℂ) : ℝ :=
   ‖weylRep κ e (fun τ ↦
     GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) g⁻¹.val) *ᵥ ιₚ ∘ ξ‖
 
 variable (n p)
 
-/-- The subgroup of finite adelic unitary points whose components at all primes above p are
-integral invertible matrices. -/
-abbrev integralAbove {E : Type} (n : Type) [Field E] [NumberField E] [IsCMField E] [Fintype n]
-    [DecidableEq n] (p : ℕ) : Subgroup (Gf E n) := localLevel n {w : FinPlace E | ↑p ∈ w.asIdeal}
+/--
+The subgroup of finite adelic unitary points whose components at all primes above p are
+integral invertible matrices.
+-/
+abbrev integralAbove
+    {E : Type} (n : Type) [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
+    (p : ℕ)
+    : Subgroup (Gf E n) :=
+  localLevel n {w : FinPlace E | ↑p ∈ w.asIdeal}
 
 end AlgFormDefs
 
@@ -156,20 +174,26 @@ section AlgebraicFormDefs
 
 open NumberField
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  (l : InfinitePlace E → n → ℤ) {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ}
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  (l : InfinitePlace E → n → ℤ)
+  {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ}
 
-/-- For a linear functional L on vectors of weight (κ, e), the linear map sending an algebraic form
-φ to the function g ↦ L(ρ(g_∞⁻¹) φ(g_f)) on G, with ρ = `New.conjWeylRep`. -/
+/--
+For a linear functional L on vectors of weight (κ, e), the linear map sending an algebraic form
+φ to the function g ↦ L(ρ(g_∞⁻¹) φ(g_f)) on G, with ρ = `New.conjWeylRep`.
+-/
 @[simps! -isSimp apply]
-noncomputable def algFormCoeff (s : n → ℤˣ) (L : (WeylIndex n κ → ℂ) →ₗ[ℂ] ℂ) :
-    AlgForm (E := E) n κ e →ₗ[ℂ] G E s → ℂ :=
-  LinearMap.pi fun g ↦ L ∘ₗ conjWeylRep κ e g.1⁻¹ ∘ₗ
-    LinearMap.domRestrict (LinearMap.proj g.2) (AlgForm n κ e)
+noncomputable def algFormCoeff (s : n → ℤˣ) (L : (WeylIndex n κ → ℂ) →ₗ[ℂ] ℂ)
+    : AlgForm (E := E) n κ e →ₗ[ℂ] G E s → ℂ :=
+  LinearMap.pi fun g ↦
+    L ∘ₗ conjWeylRep κ e g.1⁻¹ ∘ₗ LinearMap.domRestrict (LinearMap.proj g.2) (AlgForm n κ e)
 
-/-- The linear map φ ↦ F_φ from algebraic forms of weight (κ, e) to functions on G, F_φ(g) = ⟨v⁺,
+/--
+The linear map φ ↦ F_φ from algebraic forms of weight (κ, e) to functions on G, F_φ(g) = ⟨v⁺,
 ρ(g_∞⁻¹) φ(g_f)⟩, with v⁺ = `New.highestVector` for l, a vector built from the decreasing order of
-the entries of l (a unit vector for ⟨·,·⟩ = `New.gramForm` when each l w is injective). -/
+the entries of l (a unit vector for ⟨·,·⟩ = `New.gramForm` when each l w is injective).
+-/
 noncomputable abbrev ofAlgForm (s : n → ℤˣ) : ↥(AlgForm n κ e) →ₗ[ℂ] G E s → ℂ :=
   algFormCoeff (E := E) (e := e) s (gramForm (n := n) (highestVector κ l))
 
@@ -204,16 +228,21 @@ rational unitary group in G_f under `New.Space.embFin`. A weight κ of type `New
 
 section SmoothFormPairing
 
-variable {E : Type} {n : Type} [Field E] [CMType E] [Fintype n]
-  [DecidableEq n] (V : Space E n 1) (κ : Weight E)
+variable
+  {E : Type} {n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  (V : Space E n 1) (κ : Weight E)
 
-/-- Algebraic modular forms of weight κ on a definite space V: functions f on G_f with open
-right stabiliser and f(γg) = ρ_κ(γ)f(g) for rational γ, ρ_κ = `New.Space.weightRep`. -/
+/--
+Algebraic modular forms of weight κ on a definite space V: functions f on G_f with open
+right stabiliser and f(γg) = ρ_κ(γ)f(g) for rational γ, ρ_κ = `New.Space.weightRep`.
+-/
 def Space.forms : Submodule ℂ (Gf E n → WeylIndex n κ.1 → ℂ) :=
   SmoothForm V.embFin (V.weightRep κ.1 κ.2)
 
-/-- The representation of the finite adelic unitary group on forms of weight κ on V by right
-translation. -/
+/--
+The representation of the finite adelic unitary group on forms of weight κ on V by right
+translation.
+-/
 @[simps! -fullyApplied apply_apply_coe]
 def Space.formTranslation : Representation ℂ (Gf E n) (V.forms κ) :=
   (rightRegular ℂ (Gf E n) (WeylIndex n κ.1 → ℂ)).subrepresentation (V.forms κ) fun a φ hφ ↦
@@ -242,12 +271,14 @@ lemma pairing_mem_smoothInvariants
     exact Subgroup.isOpen_mono (fun k hk g ↦ by simp only [hk.1 g, hk.2 g]) h_open
 
 variable (B) in
-/-- For a σ-sesquilinear B invariant under the weight κ action of U(J)(E), this is the pairing (φ,
-φ') ↦ ∫ B(φ(g), φ'(g)) dg of forms on the definite space V, over Γ\G_f with vol K₀ = 1. -/
+/--
+For a σ-sesquilinear B invariant under the weight κ action of U(J)(E), this is the pairing (φ,
+φ') ↦ ∫ B(φ(g), φ'(g)) dg of forms on the definite space V, over Γ\G_f with vol K₀ = 1.
+-/
 def smoothPairing
     (hB : ∀ (γ : U V.J) (v v' : WeylIndex n κ.1 → ℂ),
-      B (V.weightRep κ.1 κ.2 γ v) (V.weightRep κ.1 κ.2 γ v') = B v v') :
-    V.forms κ →ₛₗ[σ] V.forms κ →ₗ[ℂ] ℂ :=
+      B (V.weightRep κ.1 κ.2 γ v) (V.weightRep κ.1 κ.2 γ v') = B v v')
+    : V.forms κ →ₛₗ[σ] V.forms κ →ₗ[ℂ] ℂ :=
   LinearMap.mk₂'ₛₗ σ (RingHom.id ℂ)
     (fun φ φ' ↦ classIntegral V.Γf (stdLevel E n) fun g ↦ B (φ.val g) (φ'.val g))
     -- The integral is additive on smooth invariant functions, so this is σ-sesquilinear.
@@ -297,7 +328,8 @@ open MeasureTheory Complex ComplexConjugate Finset Fintype
 
 namespace New
 
-variable {Φ n : Type} [Fintype Φ] [Fintype n]
+variable
+  {Φ n : Type} [Fintype Φ] [Fintype n]
   {κ : Φ → ℕ → ℕ} {e : Φ → ℤ} {N : ℕ} {l : Φ → HCParam (n := n) 1}
 
 /-! ### Existence of parameters, and cyclicity of the highest vector -/

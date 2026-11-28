@@ -85,19 +85,23 @@ namespace New
 
 open Real Finset Data Module Submodule
 
-/-- **Main inequality.** For the data `D` we have `m rem ≤ f a log⁵ b`.
+/--
+**Main inequality.** For the data `D` we have `m rem ≤ f a log⁵ b`.
 
 The parameters `P` are a multiple `q₀` of `18480` and a prime `d ≡ q₀/2 - 1 mod q₀`. The scales are
 integers with `(log b) ^ 100 ≤ x`, `x ^ 10⁶ ≤ x₁`, `x₁ ^ 10⁶ ≤ b` and
-`log log b ≥ 10¹² P.constantBound`. -/
-theorem star_inequality {P : Parameters} (D : Data P) :
-    D.m * D.totalRemainder ≤ D.f * D.a * D.logB ^ 5 := by
+`log log b ≥ 10¹² P.constantBound`.
+-/
+theorem star_inequality {P : Parameters} (D : Data P)
+    : D.m * D.totalRemainder ≤ D.f * D.a * D.logB ^ 5 := by
   -- Choose many independent images of short integral forms, bound their covolume and index from
   -- above, and compare with the lower bound `integral_forms_long`.
-  obtain ⟨h_dim_pos, t, h_translate_budget, h_span_dimension⟩ :
-      0 < D.targetDim ∧ ∃ t : Finset D.chosenGL,
-      #t * finrank ℂ D.ramifiedSourceForms ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2) ∧
-      (1 - 4 / D.b ^ 2) * D.targetDim ≤ finrank ℂ ↥(⨆ g ∈ t, (D.normalizedPoincare g).range) :=
+  obtain ⟨h_dim_pos, t, h_translate_budget, h_span_dimension⟩
+      : 0 < D.targetDim
+        ∧ ∃ t : Finset D.chosenGL,
+          #t * finrank ℂ D.ramifiedSourceForms ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2)
+            ∧ (1 - 4 / D.b ^ 2) * D.targetDim
+              ≤ finrank ℂ ↥(⨆ g ∈ t, (D.normalizedPoincare g).range) :=
     D.enough_forms
   let sizeError : ℝ := D.f * D.a * D.logB ^ 4
   let logNormBound : ℝ := D.mainAmount - D.m * D.totalRemainder + sizeError
@@ -107,9 +111,10 @@ theorem star_inequality {P : Parameters} (D : Data P) :
       (D.Θ 1 (D.normalizedPoincare g φ)).normSqAt σ ≤ exp logNormBound}
   have h_short_span : span ℂ short = ⊤ := D.span_short_integralRamified_eq_top
   -- A + B: take a basis from the images of short source forms under the chosen translates.
-  obtain ⟨n, y, h_indep, h_near_full_rank, h_image_short⟩ : ∃ (n : ℕ) (y : Fin n → D.targetForms),
-      LinearIndependent ℂ y ∧ (1 - 4 / D.b ^ 2) * D.targetDim ≤ n ∧
-      ∀ i : Fin n, ∃ g ∈ t, y i ∈ D.normalizedPoincare g '' short := by
+  obtain ⟨n, y, h_indep, h_near_full_rank, h_image_short⟩
+      : ∃ (n : ℕ) (y : Fin n → D.targetForms),
+        LinearIndependent ℂ y ∧ (1 - 4 / D.b ^ 2) * D.targetDim ≤ n
+          ∧ ∀ i : Fin n, ∃ g ∈ t, y i ∈ D.normalizedPoincare g '' short := by
     let images : Set D.targetForms := ⋃ g ∈ t, D.normalizedPoincare g '' short
     have span_eq : span ℂ images = ⨆ g ∈ t, (D.normalizedPoincare g).range := by
       simp only [images, span_iUnion₂, span_image, h_short_span, Submodule.map_top]
@@ -130,18 +135,19 @@ theorem star_inequality {P : Parameters} (D : Data P) :
       obtain ⟨g, hg, φ, ⟨hφ_int, -⟩, hφ_eq⟩ := h_image_short i
       exact ⟨g, hg, φ, hφ_int, hφ_eq⟩
     refine (D.indexLe_normalizedPoincare t hy_int).mono ?_
-    calc #t * finrank ℂ D.ramifiedSourceForms * (2 * D.errorUnit)
+    calc
+      #t * finrank ℂ D.ramifiedSourceForms * (2 * D.errorUnit)
         ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2) * (2 * D.errorUnit) := by grw [h_translate_budget]
       _ = D.targetDim * indexBudgetPerDim := by ring
   -- C: apply the lower bound to the same family. The index is counted twice (the two Gram
   -- variables); the nonnegative main amount cancels using `n ≤ targetDim`.
-  have h_volume_index_lower :
-      D.targetDim * (D.mainAmount - 3 * sizeError) ≤
-        n * logNormBound + 2 * (D.targetDim * indexBudgetPerDim) :=
+  have h_volume_index_lower
+      : D.targetDim * (D.mainAmount - 3 * sizeError)
+        ≤ n * logNormBound + 2 * (D.targetDim * indexBudgetPerDim) :=
     integral_forms_long h_indep h_near_full_rank h_index_upper h_covolume_upper
   have h_loss_pos : 0 < sizeError := HasLogBound.pos D
-  have h_main_comparison :
-      n * (D.mainAmount + sizeError) ≤ D.targetDim * (D.mainAmount + sizeError) :=
+  have h_main_comparison
+      : n * (D.mainAmount + sizeError) ≤ D.targetDim * (D.mainAmount + sizeError) :=
     mul_le_mul_of_nonneg_right hn_le (add_nonneg D.mainAmount_nonneg h_loss_pos.le)
   let totalErrorPerDim : ℝ := 4 * sizeError + 2 * indexBudgetPerDim
   have h_main_cancelled : n * (D.m * D.totalRemainder) ≤ D.targetDim * totalErrorPerDim := by
@@ -150,7 +156,9 @@ theorem star_inequality {P : Parameters} (D : Data P) :
   -- Divide by `n ≥ targetDim / 2 > 0`.
   have h_half_dimension : (D.targetDim : ℝ) ≤ n * 2 := by
     have h_share : 4 / D.b ^ 2 ≤ 2⁻¹ := D.le_of_hasLogBound
-    calc (D.targetDim : ℝ) = (1 - 2⁻¹) * D.targetDim * 2 := by ring
+    calc
+      (D.targetDim : ℝ)
+        = (1 - 2⁻¹) * D.targetDim * 2 := by ring
       _ ≤ (1 - 4 / D.b ^ 2) * D.targetDim * 2 := by grw [h_share]
       _ ≤ n * 2 := by grw [h_near_full_rank]
   have hn_pos : (0 : ℝ) < n :=
@@ -158,8 +166,9 @@ theorem star_inequality {P : Parameters} (D : Data P) :
   -- The errors are of smaller order than `f a log⁵ b`.
   have h_error_budget : |2 * totalErrorPerDim| ≤ D.f * D.a * D.logB ^ 5 := D.le_of_hasLogBound
   refine le_of_mul_le_mul_left ?_ hn_pos
-  calc n * (D.m * D.totalRemainder) ≤ D.targetDim * |totalErrorPerDim| := by
-        grw [h_main_cancelled, ← le_abs_self]
+  calc
+    n * (D.m * D.totalRemainder)
+      ≤ D.targetDim * |totalErrorPerDim| := by grw [h_main_cancelled, ← le_abs_self]
     _ ≤ n * 2 * |totalErrorPerDim| := by grw [h_half_dimension]
     _ = n * |2 * totalErrorPerDim| := by rw [abs_mul, Nat.abs_ofNat, mul_assoc]
     _ ≤ n * (D.f * D.a * D.logB ^ 5) := by grw [h_error_budget]

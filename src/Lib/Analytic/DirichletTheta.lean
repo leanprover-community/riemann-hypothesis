@@ -42,8 +42,7 @@ namespace New
 def gaussianMonomial (j : Fin 2) (z : ℝ) : ℝ := z ^ j.val * rexp (-π * z ^ 2)
 
 /-- The series `∑_{n ≥ 1} c(n) w(n u)`. -/
-def gaussianTheta (j : Fin 2) (c : ℕ → ℂ) (u : ℝ) : ℂ :=
-  ∑' n : ℕ+, c n * gaussianMonomial j (n * u)
+def gaussianTheta (j : Fin 2) (c : ℕ → ℂ) (u : ℝ) : ℂ := ∑' n : ℕ+, c n * gaussianMonomial j (n * u)
 
 /-- The theta series `θ(u) = u ^ (1/2) ∑_{n ≥ 1} c(n) w(n u)`. -/
 def thetaSeries (j : Fin 2) (c : ℕ → ℂ) (u : ℝ) : ℂ := √u * gaussianTheta j c u
@@ -407,22 +406,25 @@ lemma gaussianTheta_poisson_summation (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) 
   rw [h_eq]
   simp [abs_of_pos ht]
 
-/-- **Symmetry.** For primitive `χ ≠ 1` of conductor `q` with `χ(-1) = (-1) ^ j` and `t > 0` we have
+/--
+**Symmetry.** For primitive `χ ≠ 1` of conductor `q` with `χ(-1) = (-1) ^ j` and `t > 0` we have
 `|θ_χ(t)| = |θ_χ(1 / (q t))|`, where `θ_χ(u) = u ^ (1/2) ∑_{n ≥ 1} χ(n) (n u) ^ j e^(-π n² u²)` is
 `thetaSeries`. This is the functional equation of the theta series of a primitive character, in
-absolute value. -/
-theorem norm_thetaSeries_inv (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) = (-1) ^ j.val)
-    (hχ : χ.IsPrimitive) (ht : 0 < t) :
-    ‖thetaSeries j (fun n : ℕ ↦ χ n) (q * t)⁻¹‖ = ‖thetaSeries j (fun n : ℕ ↦ χ n) t‖ := by
+absolute value.
+-/
+theorem norm_thetaSeries_inv
+    (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) = (-1) ^ j.val) (hχ : χ.IsPrimitive) (ht : 0 < t)
+    : ‖thetaSeries j (fun n : ℕ ↦ χ n) (q * t)⁻¹‖ = ‖thetaSeries j (fun n : ℕ ↦ χ n) t‖ := by
   have hq : (0 : ℝ) < q := Nat.cast_pos.2 (NeZero.pos q)
   -- `q 𝓕⁻ χ` is a Gauss sum, of modulus `√q`, times the conjugate of `χ`, and `w` is real.
-  have h_dual (u : ℝ) : √q * ‖gaussianTheta j (fun n : ℕ ↦ 𝓕⁻ χ n) u‖ =
-      ‖gaussianTheta j (fun n : ℕ ↦ χ n) u‖ := by
+  have h_dual (u : ℝ)
+      : √q * ‖gaussianTheta j (fun n : ℕ ↦ 𝓕⁻ χ n) u‖ = ‖gaussianTheta j (fun n : ℕ ↦ χ n) u‖ := by
     have h_coeff (n : ZMod q) : 𝓕⁻ χ n = (q : ℂ)⁻¹ * gaussSum χ stdAddChar * star (χ n) := by
       rw [invDFT_apply', hχ.fourierTransform_eq_inv_mul_gaussSum, neg_neg, smul_eq_mul,
         χ.star_apply', mul_comm (χ⁻¹ n), mul_assoc]
-    have h_theta : gaussianTheta j (fun n : ℕ ↦ 𝓕⁻ χ n) u =
-        (q : ℂ)⁻¹ * gaussSum χ stdAddChar * star (gaussianTheta j (fun n : ℕ ↦ χ n) u) := by
+    have h_theta
+        : gaussianTheta j (fun n : ℕ ↦ 𝓕⁻ χ n) u
+          = (q : ℂ)⁻¹ * gaussSum χ stdAddChar * star (gaussianTheta j (fun n : ℕ ↦ χ n) u) := by
       simp [gaussianTheta, tsum_star, h_coeff, mul_assoc, ← tsum_mul_left]
     simp [h_theta, DirichletCharacter.norm_gaussSum_stdAddChar hχ, field]
   rw [norm_thetaSeries, norm_thetaSeries, ← h_dual,
@@ -474,16 +476,18 @@ lemma mellin_gaussianTheta_char (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) = (-1)
     (hg.analyticOnNhd (isOpen_re_gt 0)) (convex_halfSpace_re_gt 0).isPreconnected
     (by simp) h_near_two hs
 
-/-- **Riemann's formula.** For `χ ≠ 1` with `χ(-1) = (-1) ^ j` and `re s > 0` the
+/--
+**Riemann's formula.** For `χ ≠ 1` with `χ(-1) = (-1) ^ j` and `re s > 0` the
 identity `∫_0^∞ θ_χ(u) u ^ (s - 1/2) du / u = Γ_j(s) L(s, χ)` holds with absolute convergence
 (`HasMellin`), where `θ_χ` is `thetaSeries` and `Γ_j` the Mellin transform of
-`z ^ j e^(-π z²)`. -/
-theorem hasMellin_thetaSeries_char (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) = (-1) ^ j.val)
-    (hs : 0 < s.re) :
-    HasMellin (thetaSeries j fun n : ℕ ↦ χ n) (s - 2⁻¹)
-      (gaussianMellin j s * χ.LFunction s) := by
+`z ^ j e^(-π z²)`.
+-/
+theorem hasMellin_thetaSeries_char
+    (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) = (-1) ^ j.val) (hs : 0 < s.re)
+    : HasMellin (thetaSeries j fun n : ℕ ↦ χ n) (s - 2⁻¹) (gaussianMellin j s * χ.LFunction s) := by
   have h_conv : MellinConvergent (gaussianTheta j fun n : ℕ ↦ χ n) s :=
-    (mellinConvergent_and_differentiableAt (fun _ ↦ norm_gaussianTheta_char_le hχ_ne hχ_parity)
+    (mellinConvergent_and_differentiableAt
+      (fun _ ↦ norm_gaussianTheta_char_le hχ_ne hχ_parity)
       measurable_gaussianTheta hs).1
   refine ⟨h_conv.congr_fun (fun _ ht ↦ (cpow_smul_thetaSeries s ht).symm) measurableSet_Ioi, ?_⟩
   rw [mellin_thetaSeries_sub_half, mellin_gaussianTheta_char hχ_ne hχ_parity hs]

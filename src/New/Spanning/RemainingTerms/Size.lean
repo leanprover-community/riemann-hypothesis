@@ -78,21 +78,25 @@ open MeasureTheory ENNReal Finset
 
 namespace New.Filling
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {V : Type*}
-  {S : Filling E 𝔰} [NormedAddCommGroup V]
+variable
+  {E : Type} [Field E] [CMType E] {𝔰 : Shape} {V : Type*} {S : Filling E 𝔰} [NormedAddCommGroup V]
 
 open scoped Classical in
-/-- The second moment 𝖤(A, Ω) of a family of blocks `A c s c'` in a normed group: ν⁻² times the sum
-over classes c, c' and s ∈ Ω of the squared norm of `A c s c'`, with ν = `S.unipotentCovolume`. -/
-noncomputable def secondMoment (A : S.Classes → S.ResidueGL → S.Classes → V) (Ω : Set S.ResidueGL) :
-    ℝ :=
+/--
+The second moment 𝖤(A, Ω) of a family of blocks `A c s c'` in a normed group: ν⁻² times the sum
+over classes c, c' and s ∈ Ω of the squared norm of `A c s c'`, with ν = `S.unipotentCovolume`.
+-/
+noncomputable def secondMoment (A : S.Classes → S.ResidueGL → S.Classes → V) (Ω : Set S.ResidueGL)
+    : ℝ :=
   ∑ c : S.Classes, ∑ c' : S.Classes, ∑ s : S.ResidueGL with s ∈ Ω,
     ‖A c s c'‖ ^ 2 / S.unipotentCovolume ^ 2
 
-/-- The sum, over classes `c`, `c'`, reductions `s ∈ Ω` and submodules `Λ`, of the squared norm of
+/--
+The sum, over classes `c`, `c'`, reductions `s ∈ Ω` and submodules `Λ`, of the squared norm of
 the block over `(c, s, c')` of the terms `γ` of `T` with `New.link γ = Λ`, for the cut Bessel
 function. It takes values in `ℝ≥0∞` and, unlike `New.Filling.secondMoment`, is not divided by
-`ν²`. -/
+`ν²`.
+-/
 noncomputable def linkSecondMoment (T : Set (S.G E)) (Ω : Set S.ResidueGL) : ℝ≥0∞ :=
   ∑' (c : S.Classes) (c' : S.Classes) (s : Ω)
     (Λ : Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E)),
@@ -312,7 +316,8 @@ lemma tsum_ite_representative_eq_one {c c' : S.Classes}
 
 variable [S.IsAdmissible]
 
-/-- **Open cell.** Let `W` be the cut Bessel vector on the archimedean points, so that the kernel
+/--
+**Open cell.** Let `W` be the cut Bessel vector on the archimedean points, so that the kernel
 `S.besselKernel .cut γ y` is the tensor `W(y) ⊗ W(γ⁻¹ y)^*`; with `.full` the uncut vector is meant.
 A point `y` lies in the cut at the place `v` (`InCut`) if its size `besselLength` is at most
 `b ^ (6 n + 2)`, where `b = S.b` is the size parameter and `n = ϱ + 1`. It lies in the box
@@ -324,30 +329,34 @@ the box. Let `ε²` bound the product over `v` of the numbers `pairingBoundSq`: 
 the squared local pairing, in terms of the local value of `𝗀`, the radius `ρ`, and the degree and
 the dimension of the Bessel system `S.besselSystem v`. Then the integral of `ω` times the cut kernel
 has norm at most `ε` plus the integral of `ω` times the norm of the difference of the full and the
-cut kernel. -/
-theorem enorm_integral_besselKernel_le {γ : S.G E} (h_near : S.IsNear γ)
-    (h_disc : S.termDisc γ ≠ 0) {ω : (NumberField.InfinitePlace E → 𝔰.G₁) → ℝ≥0∞}
+cut kernel.
+-/
+theorem enorm_integral_besselKernel_le
+    {γ : S.G E} (h_near : S.IsNear γ) (h_disc : S.termDisc γ ≠ 0)
+    {ω : (NumberField.InfinitePlace E → 𝔰.G₁) → ℝ≥0∞}
     (ω_meas : Measurable ω) (ω_le : ∀ y : NumberField.InfinitePlace E → 𝔰.G₁, ω y ≤ 1)
     (ω_inv : ∀ t y : NumberField.InfinitePlace E → 𝔰.G₁,
       (∀ v : NumberField.InfinitePlace E, t v ∈ besselFixer) → ω (t * y) = ω y)
     (ω_box : ∀ (y : NumberField.InfinitePlace E → 𝔰.G₁) (v : NumberField.InfinitePlace E),
       ω y ≠ 0 → InCut (y v) S.b → y v ∈ frameBox S.frameBoxRadius)
     {ε : ℝ} (hε : 0 ≤ ε)
-    (h_pairingBound : ∏ v : NumberField.InfinitePlace E,
-      pairingBoundSq (S.ratToInf γ v) (S.besselSystem v).deg
-      S.frameBoxRadius (Fintype.card (S.besselSystem v).Index) ≤ ε ^ 2) :
-    ‖∫ y : NumberField.InfinitePlace E → 𝔰.G₁, (ω y).toReal • S.besselKernel .cut γ y‖ₑ ≤
-      .ofReal ε +
-      ∫⁻ y : NumberField.InfinitePlace E → 𝔰.G₁,
-        ω y * ‖S.besselKernel .full γ y - S.besselKernel .cut γ y‖ₑ := by
-  obtain ⟨y₀, y₀_boxed, γy₀_boxed⟩ :
-      ∃ y₀ ∈ S.boxedPoints, (S.ratToInf γ)⁻¹ * y₀ ∈ S.boxedPoints := h_near
-  have h_kernel (σ : FullOrCut) (y : NumberField.InfinitePlace E → 𝔰.G₁) :
-      S.besselKernel σ γ y = BesselSystem.pairKernel S.besselSystem σ (S.ratToInf γ) y := by
+    (h_pairingBound
+      : ∏ v : NumberField.InfinitePlace E,
+          pairingBoundSq (S.ratToInf γ v) (S.besselSystem v).deg
+          S.frameBoxRadius (Fintype.card (S.besselSystem v).Index)
+        ≤ ε ^ 2)
+    : ‖∫ y : NumberField.InfinitePlace E → 𝔰.G₁, (ω y).toReal • S.besselKernel .cut γ y‖ₑ
+      ≤ .ofReal ε
+        + ∫⁻ y : NumberField.InfinitePlace E → 𝔰.G₁,
+            ω y * ‖S.besselKernel .full γ y - S.besselKernel .cut γ y‖ₑ := by
+  obtain ⟨y₀, y₀_boxed, γy₀_boxed⟩ : ∃ y₀ ∈ S.boxedPoints, (S.ratToInf γ)⁻¹ * y₀ ∈ S.boxedPoints :=
+    h_near
+  have h_kernel (σ : FullOrCut) (y : NumberField.InfinitePlace E → 𝔰.G₁)
+      : S.besselKernel σ γ y = BesselSystem.pairKernel S.besselSystem σ (S.ratToInf γ) y := by
     ext
     simp [besselKernel, besselFn, BesselSystem.pairKernel, prod_mul_distrib]
-  have h_pos (v : NumberField.InfinitePlace E) :
-      0 < RealPlace.gramDiscReal (realFrameGram (S.ratToInf γ v)) := by
+  have h_pos (v : NumberField.InfinitePlace E)
+      : 0 < RealPlace.gramDiscReal (realFrameGram (S.ratToInf γ v)) := by
     simp [gramDiscReal_realFrameGram_ratToInf, prod_pos, h_disc]
   have h_radius (_ : NumberField.InfinitePlace E) : S.b ^ (6 * 𝔰.n + 2) ≤ S.frameBoxRadius :=
     pow_right_mono₀ S.one_le_b (by nlinarith [S.ten_pow_five_le_varrho])
@@ -358,24 +367,31 @@ theorem enorm_integral_besselKernel_le {γ : S.G E} (h_near : S.IsNear γ)
     simp [φ, toReal_le_of_le_ofReal, ω_le]
   have φ_enorm_le (z : NumberField.InfinitePlace E → 𝔰.G₁) : ‖φ z‖ₑ ≤ ω z := by
     simpa [φ, ← ofReal_norm] using ofReal_toReal_le
-  have φ_inv (t z : NumberField.InfinitePlace E → 𝔰.G₁)
-      (ht : ∀ v : NumberField.InfinitePlace E, t v ∈ besselFixer) : φ (t * z) = φ z := by
+  have φ_inv
+      (t z : NumberField.InfinitePlace E → 𝔰.G₁)
+      (ht : ∀ v : NumberField.InfinitePlace E, t v ∈ besselFixer)
+      : φ (t * z) = φ z := by
     simp only [φ, ω_inv t z ht]
-  have φ_box (z : NumberField.InfinitePlace E → 𝔰.G₁)
+  have φ_box
+      (z : NumberField.InfinitePlace E → 𝔰.G₁)
       (hz : φ z • BesselSystem.pairKernel S.besselSystem .cut (S.ratToInf γ) z ≠ 0)
-      (v : NumberField.InfinitePlace E) : z v ∈ frameBox S.frameBoxRadius := by
+      (v : NumberField.InfinitePlace E)
+      : z v ∈ frameBox S.frameBoxRadius := by
     have hω_ne : ω z ≠ 0 := fun h_zero ↦ hz (by simp [φ, h_zero])
     have h_kernel_ne : S.besselKernel .cut γ z ≠ 0 := by
       rw [h_kernel]
       exact right_ne_zero_of_smul hz
     obtain ⟨h_cut, -⟩ := inCut_of_besselKernel_ne_zero h_kernel_ne v
     exact ω_box z v hω_ne h_cut
-  obtain ⟨-, h_integral_le⟩ := BesselSystem.enorm_integral_pairKernel_cut_le S.besselSystem h_pos
-    (mem_frameBox_of_mem_boxedPoints y₀_boxed) (mem_frameBox_of_mem_boxedPoints γy₀_boxed)
-    h_radius φ_meas φ_le φ_inv φ_box
-  have h_sqrt_le : √(∏ v : NumberField.InfinitePlace E,
-      pairingBoundSq (S.ratToInf γ v) (S.besselSystem v).deg
-        S.frameBoxRadius (Fintype.card (S.besselSystem v).Index)) ≤ ε :=
+  obtain ⟨-, h_integral_le⟩ :=
+    BesselSystem.enorm_integral_pairKernel_cut_le S.besselSystem h_pos
+      (mem_frameBox_of_mem_boxedPoints y₀_boxed) (mem_frameBox_of_mem_boxedPoints γy₀_boxed)
+      h_radius φ_meas φ_le φ_inv φ_box
+  have h_sqrt_le
+      : √(∏ v : NumberField.InfinitePlace E,
+           pairingBoundSq (S.ratToInf γ v) (S.besselSystem v).deg
+             S.frameBoxRadius (Fintype.card (S.besselSystem v).Index))
+        ≤ ε :=
     Real.sqrt_le_iff.2 ⟨hε, h_pairingBound⟩
   simp only [h_kernel, ← Complex.coe_smul]
   refine h_integral_le.trans ?_
@@ -740,7 +756,8 @@ lemma hasCellRank_cellRank_of_mem {γ : S.G E} (hγ : γ ∈ S.remainingTerms) :
   · obtain ⟨j, hj⟩ := h_agree.exists_hasCellRank h_disc
     exact hj.hasCellRank_cellRank
 
-/-- **Size.** Let `S` be admissible filling data of shape `𝔰` over a CM field `E` with a primitive
+/--
+**Size.** Let `S` be admissible filling data of shape `𝔰` over a CM field `E` with a primitive
 root of unity of order 5040. The set `Γ* = S.remainingTerms` consists of the rational `γ` with
 `𝗀(γ) = S.termDisc γ ≠ 0`, and of those with `𝗀(γ) = 0` that move the isotropic space `⟨e₁, …, e_ϱ⟩`
 and for which the unipotent character takes the same value at unipotent `u`, `u'` with `u γ = γ u'`.
@@ -748,12 +765,14 @@ Let `T ⊆ Γ*` be stable under the rational unipotent group on both sides, and 
 and a reduction `s`. The norm of the cut block is at most the covolume `unipotentCovolume` times the
 sum of the sizes of the near representatives. These are the terms of `T` over the block that are
 near, are the chosen element of their orbit `U⁰_c γ U⁰_c'` and have a cell rank `j ≤ ϱ + 1`,
-provided `s` agrees; otherwise there are none. -/
-theorem enorm_amplitudeSum_le_tsum_termSize (hT : S.IsStable T) (h_sub : T ⊆ S.remainingTerms)
-    (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes) :
-    ‖S.amplitudeSum .cut T c s c'‖ₑ ≤
-      ∑' γ : S.nearRepresentativesOver T c s c',
-        .ofReal (S.unipotentCovolume * S.termSize c c' γ) := by
+provided `s` agrees; otherwise there are none.
+-/
+theorem enorm_amplitudeSum_le_tsum_termSize
+    (hT : S.IsStable T) (h_sub : T ⊆ S.remainingTerms) (c : S.Classes) (s : S.ResidueGL)
+    (c' : S.Classes)
+    : ‖S.amplitudeSum .cut T c s c'‖ₑ
+      ≤ ∑' γ : S.nearRepresentativesOver T c s c',
+          .ofReal (S.unipotentCovolume * S.termSize c c' γ) := by
   -- Sort the terms by their cell rank and bound each part.
   let size (γ : S.G E) : ℝ≥0∞ := .ofReal (S.unipotentCovolume * S.termSize c c' γ)
   grw [enorm_amplitudeSum_le_tsum_fibre S.cellRank c s c', ← tsum_fiberwise _
@@ -764,13 +783,12 @@ theorem enorm_amplitudeSum_le_tsum_termSize (hT : S.IsStable T) (h_sub : T ⊆ S
     intro u hu u' hu' γ
     have h_iff (i : Fin (𝔰.ϱ + 2)) : S.HasCellRank i (u⁻¹ * γ * u') ↔ S.HasCellRank i γ :=
       S.isStable_hasCellRank i u hu u' hu' γ
-    have cellRank_eq : S.cellRank (u⁻¹ * γ * u') = S.cellRank γ := by
-      simp only [cellRank, h_iff]
+    have cellRank_eq : S.cellRank (u⁻¹ * γ * u') = S.cellRank γ := by simp only [cellRank, h_iff]
     simp [part, cellRank_eq, hT u hu u' hu' γ]
   have h_cell : ∀ γ ∈ part, S.HasCellRank j γ := by
     rintro γ ⟨hγT, rfl : S.cellRank γ = j⟩
     exact hasCellRank_cellRank_of_mem (h_sub hγT)
-  have h_not_rank_zero : ∀ γ ∈ part ∩ S.termsOver c s c', ¬S.HasCellRank 0 γ := by
+  have h_not_rank_zero : ∀ γ ∈ part ∩ S.termsOver c s c', ¬ S.HasCellRank 0 γ := by
     rintro γ ⟨⟨hγT, -⟩, -⟩ h_zero
     exact h_zero.normOnePairOccursFrom.notMem_remainingTerms (h_sub hγT)
   grw [enorm_amplitudeSum_le_orbitBound h_stable h_cell h_not_rank_zero]

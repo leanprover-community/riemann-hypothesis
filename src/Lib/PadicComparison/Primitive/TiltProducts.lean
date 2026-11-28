@@ -81,7 +81,9 @@ section PeriodPairs
 
 open CategoryTheory Algebra TensorProduct Period PadicTest Equiv
 
-variable (p : ℕ) (S : Type) [CommRing S]
+variable
+  (p : ℕ)
+  (S : Type) [CommRing S]
   (K : Type _) [CommRing K] [Algebra S K] [ThePrime p] [Algebra Ainf S]
   {Ψ : PadicTest ⥤ ModuleCat K}
 

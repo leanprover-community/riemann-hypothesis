@@ -61,8 +61,10 @@ section SemiInvariantNorm
 
 variable {Φ n : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
 
-/-- `F` is the polynomial (`toPoly`) of a coordinate vector `ξ` of weight `κ` whose squared norm for
-the Gram matrix of `κ` (`weylNormSq`) is at most `b`. -/
+/--
+`F` is the polynomial (`toPoly`) of a coordinate vector `ξ` of weight `κ` whose squared norm for
+the Gram matrix of `κ` (`weylNormSq`) is at most `b`.
+-/
 def New.HasWeightNormSqLe (κ : Φ → ℕ → ℕ) (F : MatrixPoly (Σ _ : Φ, n) ℂ) (b : ℝ) : Prop :=
   ∃ ξ : WeylIndex n κ → ℂ, toPoly (fun _ : Φ ↦ n) κ ξ = F ∧ weylNormSq ξ ≤ b
 
@@ -107,10 +109,12 @@ lemma New.HasWeightNormSqLe.prod {ι : Type*} {s : Finset ι} {κ : ι → Φ �
   | empty => simpa using HasWeightNormSqLe.one
   | cons i s hi ih => simpa using (hF i (by simp)).mul (ih fun j hj ↦ hF j (by simp [hj]))
 
-/-- `F` is the polynomial of a coordinate vector `ξ` of weight `κ`, and if the condition `p` holds,
-the squared norm of `ξ` is at most `b`. -/
-def New.HasWeightNormSqLeIf (p : Prop) (κ : Φ → ℕ → ℕ) (F : MatrixPoly (Σ _ : Φ, n) ℂ) (b : ℝ) :
-    Prop :=
+/--
+`F` is the polynomial of a coordinate vector `ξ` of weight `κ`, and if the condition `p` holds,
+the squared norm of `ξ` is at most `b`.
+-/
+def New.HasWeightNormSqLeIf (p : Prop) (κ : Φ → ℕ → ℕ) (F : MatrixPoly (Σ _ : Φ, n) ℂ) (b : ℝ)
+    : Prop :=
   ∃ ξ : WeylIndex n κ → ℂ, toPoly (fun _ : Φ ↦ n) κ ξ = F ∧ (p → weylNormSq ξ ≤ b)
 
 /-- `F` has weight `κ` and, under `p`, squared norm at most `b` exactly when it has weight `κ` and
@@ -255,12 +259,14 @@ variable {P : Parameters} {D : Data P} (ϑ : D.TameChar) (j : D.LiftIndex)
 abbrev RowChoice.classRep (i : D.RowChoice) : Gf D.E D.FlatIndex := i.1.out
 
 /-- The row indices chosen in `i`: `i.rows τ k` is the k-th list of 2m rows at the place τ. -/
-abbrev RowChoice.rows (i : D.RowChoice) :
-    D.Φ → Fin D.reducedHalfGap → Fin (2 * D.m) → D.FlatIndex := i.2
+abbrev RowChoice.rows (i : D.RowChoice)
+    : D.Φ → Fin D.reducedHalfGap → Fin (2 * D.m) → D.FlatIndex :=
+  i.2
 
 /-- The matrix Λ modulo ϖ² of the choice `i`. -/
-abbrev ChoiceIndex.matrix {j : D.LiftIndex} (i : ChoiceIndex j) :
-    Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing := i.1
+abbrev ChoiceIndex.matrix {j : D.LiftIndex} (i : ChoiceIndex j)
+    : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing :=
+  i.1
 
 /-- The class h♭ and the rows of the choice `i`. -/
 abbrev ChoiceIndex.rowChoice {j : D.LiftIndex} (i : ChoiceIndex j) : D.RowChoice := i.2
@@ -268,68 +274,88 @@ abbrev ChoiceIndex.rowChoice {j : D.LiftIndex} (i : ChoiceIndex j) : D.RowChoice
 /-- The index set of the definite space W^add = E^{3m−j} ⊕ W♭ ⊕ E^{3m}, with W♭ = E^{6m+1}. -/
 abbrev AddedIndex : Type := Fin (2 * D.m + (D.m - j)) ⊕ D.FlatIndex ⊕ D.CarrierIndex
 
-/-- The two groupings of the summands of W: as W_j ⊕ (E^j)⁻ ⊕ W^add, and as E^{3m} ⊕ W′, where
-E^{3m} is on `D.CarrierIndex` and W′ = W_j ⊕ (E^j)⁻ ⊕ E^{3m−j} ⊕ W♭ is on `D.FirstFactorIndex j`. -/
+/--
+The two groupings of the summands of W: as W_j ⊕ (E^j)⁻ ⊕ W^add, and as E^{3m} ⊕ W′, where
+E^{3m} is on `D.CarrierIndex` and W′ = W_j ⊕ (E^j)⁻ ⊕ E^{3m−j} ⊕ W♭ is on `D.FirstFactorIndex j`.
+-/
 def regroupEquiv : D.RowIndex ⊕ Fin j ⊕ AddedIndex j ≃ D.CarrierIndex ⊕ FirstFactorIndex j :=
   -- the inverse moves `D.CarrierIndex` to the end and reassociates
-  ((sumComm ..).trans ((sumAssoc ..).trans
-    ((sumAssoc ..).trans (sumCongr (Equiv.refl D.RowIndex) (sumAssoc ..))))).symm
+  ((sumComm ..).trans
+    ((sumAssoc ..).trans
+      ((sumAssoc ..).trans (sumCongr (Equiv.refl D.RowIndex) (sumAssoc ..))))).symm
 
-/-- A bijection, chosen from equality of cardinalities, from 2m indices together with those of V″
-to `D.posRank j = k + j − 1` indices together with those of W^add. -/
+/--
+A bijection, chosen from equality of cardinalities, from 2m indices together with those of V″
+to `D.posRank j = k + j − 1` indices together with those of W^add.
+-/
 def posEquiv : Fin (2 * D.m) ⊕ FirstFactorIndex j ≃ Fin (D.posRank j) ⊕ AddedIndex j :=
   equivOfCardEq <| by
     -- `↓` counts `D.RowIndex` as a whole; what is left is `D.r + j = D.posRank j + D.m`
-    simp [↓card_rowIndex]
+    simp [↓ card_rowIndex]
     grind
 
-/-- The constant rows: a matrix 𝖼 with 2m rows for each column of μ⁺ at the place τ
+/--
+The constant rows: a matrix 𝖼 with 2m rows for each column of μ⁺ at the place τ
 (`DetIndex j τ`). Its columns are the r₊ = `D.posRank j` positive indices of W_j and the indices of
 W^add. For a column of height h < r₊, row a is the basis vector of W_j at the positive index h + a
 if h + a < r₊, and the basis vector number a of E^{3m−j} otherwise. For the l-th column of height
-r₊, the rows are the rows `i.rows τ l` of τ(Y), placed in the columns of W♭. -/
-def constantRows (i : D.RowChoice) (Y : Matrix D.FlatIndex D.FlatIndex D.E)
-    (τ : NumberField.InfinitePlace D.E) :
-    DetIndex j τ → Matrix (Fin (2 * D.m)) (Fin (D.posRank j) ⊕ AddedIndex j) ℂ :=
-  (fun h ↦ (inclMatrix ℂ fun a : Fin (2 * D.m) ↦
-      if ha : (h.1 + a : ℕ) < D.posRank j then Sum.inl ⟨h.1 + a, ha⟩
-      else inr (Sum.inl (a.castAdd (D.m - j))))ᵀ) ⊕ᵥ
-    fun k : Fin D.reducedHalfGap ↦
+r₊, the rows are the rows `i.rows τ l` of τ(Y), placed in the columns of W♭.
+-/
+def constantRows
+    (i : D.RowChoice) (Y : Matrix D.FlatIndex D.FlatIndex D.E) (τ : NumberField.InfinitePlace D.E)
+    : DetIndex j τ → Matrix (Fin (2 * D.m)) (Fin (D.posRank j) ⊕ AddedIndex j) ℂ :=
+  (fun h ↦
+      (inclMatrix ℂ fun a : Fin (2 * D.m) ↦
+        if ha : (h.1 + a : ℕ) < D.posRank j then
+          Sum.inl ⟨h.1 + a, ha⟩
+        else
+          inr (Sum.inl (a.castAdd (D.m - j))))ᵀ)
+    ⊕ᵥ fun k : Fin D.reducedHalfGap ↦
       fromCols 0 (fromCols 0 (fromCols ((Y.map (Φ τ)).submatrix (i.rows τ k) id) 0))
 
-/-- The polynomial map ζ: the coordinates, in the columns X at the positive indices of W_j
+/--
+The polynomial map ζ: the coordinates, in the columns X at the positive indices of W_j
 (`firstColsCoord`), of the product P_V of the determinants det(𝖼; X z), with 𝖼 from
 `constantRows j i Y` and the rows of variables indexed by V″. Here `firstColsCoord` reads P_V as a
 polynomial in X with coefficients in z (`inFirstCols`) and takes its coordinate at a basis index of
 weight μ⁺ (`WeylIndexFamily`). So each coordinate is a polynomial in the variables z in the columns
-of W^add. -/
-abbrev stackedDetProdCoords (i : D.RowChoice) (Y : Matrix D.FlatIndex D.FlatIndex D.E) :
-    WeylIndexFamily (fun _ : NumberField.InfinitePlace D.E ↦ FirstFactorIndex j)
-      (untwistedDescentPair j).colsPlus →
-      MvPolynomial (NumberField.InfinitePlace D.E × FirstFactorIndex j × AddedIndex j) ℂ :=
+of W^add.
+-/
+abbrev stackedDetProdCoords (i : D.RowChoice) (Y : Matrix D.FlatIndex D.FlatIndex D.E)
+    : WeylIndexFamily
+        (fun _ : NumberField.InfinitePlace D.E ↦ FirstFactorIndex j)
+        (untwistedDescentPair j).colsPlus
+      → MvPolynomial (NumberField.InfinitePlace D.E × FirstFactorIndex j × AddedIndex j) ℂ :=
   firstColsCoord (untwistedDescentPair j).colsPlus
     (stackedDetProd (posEquiv j) (constantRows j i Y))
 
-/-- The reduction homomorphism O_E/ϖ²Q → O_E/ϖ², where ϖ is the product of the chosen places and Q
-the product of the places in `ϑ.Q`. -/
+/--
+The reduction homomorphism O_E/ϖ²Q → O_E/ϖ², where ϖ is the product of the chosen places and Q
+the product of the places in `ϑ.Q`.
+-/
 abbrev forgetTwist : (D.twistModulus ϑ 2).ResidueRing →+* (D.untwistedModulus 2).ResidueRing :=
   reduceToChosenModulusSq
 
-/-- The datum Ψ^add on matrices `z` modulo ϖ²Q with columns in W^add, for the matrix Λ = `u` modulo
+/--
+The datum Ψ^add on matrices `z` modulo ϖ²Q with columns in W^add, for the matrix Λ = `u` modulo
 ϖ² (`D.untwistedModulus 2`, ϖ the product of the chosen places). It is `0` unless
 the columns on E^{3m−j} and W♭ are those of the identity matrix on `FirstFactorIndex j`. In that
 case it is ψ_Λ^inv(z′), the sum over `g` in GL_{3m}(O_E/ϖ²) of ψ_Λ (`New.Rows.traceChar u`,
 y ↦ ψ(tr(y Λ)) for a primitive additive character ψ) at z′ g, where z′ consists of the columns on
-E^{3m} modulo ϖ². -/
-def addedDatum (u : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
-    (z : Matrix (FirstFactorIndex j) (AddedIndex j) (D.twistModulus ϑ 2).ResidueRing) : ℂ :=
-  if z.submatrix id (Sum.map id Sum.inl) = inclMatrix (D.twistModulus ϑ 2).ResidueRing
-    (.map (inr ∘ inr) id)
-    then
+E^{3m} modulo ϖ².
+-/
+def addedDatum
+    (u : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+    (z : Matrix (FirstFactorIndex j) (AddedIndex j) (D.twistModulus ϑ 2).ResidueRing)
+    : ℂ :=
+  if z.submatrix id (Sum.map id Sum.inl)
+      = inclMatrix (D.twistModulus ϑ 2).ResidueRing (.map (inr ∘ inr) id) then
     ∑ g : GL D.CarrierIndex _, traceChar u (z.toCols₂.toCols₂.map (forgetTwist ϑ) * g.val)
-  else 0
+  else
+    0
 
-/-- The coordinate l of the series Υ at h, for the choice `i`: the kernel of ((E^j)⁻, V″)
+/--
+The coordinate l of the series Υ at h, for the choice `i`: the kernel of ((E^j)⁻, V″)
 at (1, h), whose datum is the indicator of the columns of the identity matrix, times the class sum
 over h′ in U(E^{3m}) of 𝖺(h′) χ′(h′) 𝖪[ζ_l]((1, h♭, h′), h). Here 𝖺χ′ is `New.Rows.carrierCoeff` at
 the character χ′ = χ^j ϑ (`twistedChiMPow`), a class sum of theta kernels of (E^m, E^{3m}). 𝖪 is the
@@ -337,19 +363,22 @@ kernel of (W^add, V″) with both characters ν″ = `firstFactorChar` and the d
 `New.Data.addedDatum` for the matrix Λ of `i`, and ζ = `New.Data.stackedDetProdCoords` is formed
 with the short basis `D.shortRows` at the class h♭ of `i`. The first kernel has characters
 `upsilonU1 ^ j` (υ on the norm-one ideles) and ν″, and `blockSumOne` forms the block diagonal point
-(1, h♭, h′). -/
-def leftSideSeries (i : ChoiceIndex j) (h : Gf D.E (FirstFactorIndex j))
-    (l : WeylIndexFamily (fun _ : NumberField.InfinitePlace D.E ↦ FirstFactorIndex j)
-      (untwistedDescentPair j).colsPlus) : ℂ :=
+(1, h♭, h′).
+-/
+def leftSideSeries
+    (i : ChoiceIndex j) (h : Gf D.E (FirstFactorIndex j))
+    (l : WeylIndexFamily
+      (fun _ : NumberField.InfinitePlace D.E ↦ FirstFactorIndex j)
+      (untwistedDescentPair j).colsPlus)
+    : ℂ :=
   modKernelStdSpace (stdSpace D.E (Fin j)).neg (upsilonU1 ^ j.val) (firstFactorChar ϑ j)
-    (D.twistModulus ϑ 2)
-      (Pi.single (inclMatrix (D.twistModulus ϑ 2).ResidueRing (Sum.inl ∘ inr ∘ Sum.inl)) 1) 1 1 h *
-    stdClassSum (stdLevel D.E D.CarrierIndex) fun c : Gf D.E D.CarrierIndex ↦
-      carrierCoeff D.m (twistedChiMPow ϑ j) c *
-        modKernelStdSpace (stdSpace D.E (AddedIndex j)) (firstFactorChar ϑ j) (firstFactorChar ϑ j)
-          (D.twistModulus ϑ 2)
-          (addedDatum ϑ j i.matrix) (stackedDetProdCoords j i.rowChoice (D.shortRows i.rowChoice) l)
-          (1, blockSumOne (1, blockSumOne (i.rowChoice.classRep, c))) h
+      (D.twistModulus ϑ 2)
+      (Pi.single (inclMatrix (D.twistModulus ϑ 2).ResidueRing (Sum.inl ∘ inr ∘ Sum.inl)) 1) 1 1 h
+    * stdClassSum (stdLevel D.E D.CarrierIndex) fun c : Gf D.E D.CarrierIndex ↦
+      carrierCoeff D.m (twistedChiMPow ϑ j) c * modKernelStdSpace (stdSpace D.E (AddedIndex j))
+        (firstFactorChar ϑ j) (firstFactorChar ϑ j) (D.twistModulus ϑ 2) (addedDatum ϑ j i.matrix)
+        (stackedDetProdCoords j i.rowChoice (D.shortRows i.rowChoice) l)
+        (1, blockSumOne (1, blockSumOne (i.rowChoice.classRep, c))) h
 
 end LineDefs
 
@@ -427,10 +456,15 @@ lemma prod_sum_norm_sq_le_M_pow (j : D.LiftIndex) {h : ℕ} (h_rest : D.posRank 
   refine (prod_le_prod₀ (fun b _ ↦ by positivity) fun b _ ↦ h_col b).trans ?_
   simpa using pow_le_pow_right₀ (D.le_of_hasLogBound : (1 : ℝ) ≤ D.M ^ 9) h_cols
 
-/-- The entries that a specialisation by `z` and `φ` puts into the determinants have norm at most
-`M ^ 4`, where `M = D.M`. -/
-structure IsSmallSpecialization (j : D.LiftIndex) (Y : Matrix D.FlatIndex D.FlatIndex D.E)
-    (φ : ℂ →+* ℂ) (z : D.Φ × FirstFactorIndex j × AddedIndex j → ℂ) : Prop where
+/--
+The entries that a specialisation by `z` and `φ` puts into the determinants have norm at most
+`M ^ 4`, where `M = D.M`.
+-/
+structure IsSmallSpecialization
+    (j : D.LiftIndex)
+    (Y : Matrix D.FlatIndex D.FlatIndex D.E) (φ : ℂ →+* ℂ)
+    (z : D.Φ × FirstFactorIndex j × AddedIndex j → ℂ)
+    : Prop where
   /-- `φ` of every conjugate of an entry of `Y` has norm at most `M ^ 4`. -/
   norm_entry_le (τ : D.Φ) (a b : D.FlatIndex) : ‖φ (Φ τ (Y a b))‖ ≤ D.M ^ 4
   /-- `φ` of every value of `z` has norm at most `M ^ 4`. -/
@@ -670,16 +704,21 @@ lemma inFirstCols_stackedDetProd_mem_range (j : D.LiftIndex) (i : D.RowChoice)
     · exact ⟨MvPolynomial.X (⟨τ, a⟩, b.val), by simp [inFirstCols]⟩
     · exact ⟨C (MvPolynomial.X (τ, a, b)), by simp [inFirstCols]⟩
 
-/-- The polynomial `Q` in the variables of the columns of W^add is homogeneous of degree `d`, and
-its coefficients lie in the ring generated by the conjugates of the entries of `Y`. -/
-structure IsHomogeneousOverEntries (j : D.LiftIndex) (Y : Matrix D.FlatIndex D.FlatIndex D.E)
-    (d : ℕ) (Q : MvPolynomial (D.Φ × FirstFactorIndex j × AddedIndex j) ℂ) : Prop where
+/--
+The polynomial `Q` in the variables of the columns of W^add is homogeneous of degree `d`, and
+its coefficients lie in the ring generated by the conjugates of the entries of `Y`.
+-/
+structure IsHomogeneousOverEntries
+    (j : D.LiftIndex)
+    (Y : Matrix D.FlatIndex D.FlatIndex D.E) (d : ℕ)
+    (Q : MvPolynomial (D.Φ × FirstFactorIndex j × AddedIndex j) ℂ)
+    : Prop where
   /-- `Q` is multiplied by `c ^ d` when the variables are multiplied by `c ≠ 0`. -/
-  aeval_smul_X (c : ℂ) (hc : c ≠ 0) :
-    aeval (fun x : D.Φ × FirstFactorIndex j × AddedIndex j ↦ c • MvPolynomial.X x) Q = c ^ d • Q
+  aeval_smul_X (c : ℂ) (hc : c ≠ 0)
+    : aeval (fun x : D.Φ × FirstFactorIndex j × AddedIndex j ↦ c • MvPolynomial.X x) Q = c ^ d • Q
   /-- `Q` has its coefficients in every subring of `ℂ` that contains all the `Φ τ (Y a b)`. -/
-  mem_range (A : Subring ℂ) (hA : ∀ (τ : D.Φ) (a b : D.FlatIndex), Φ τ (Y a b) ∈ A) :
-    Q ∈ (MvPolynomial.map A.subtype).range
+  mem_range (A : Subring ℂ) (hA : ∀ (τ : D.Φ) (a b : D.FlatIndex), Φ τ (Y a b) ∈ A)
+    : Q ∈ (MvPolynomial.map A.subtype).range
 
 /-- There are a degree `d`, at most `10 m + 1` times the number of determinants over the infinite
 places `D.Φ` of the CM field `D.E`, and an integer `0 < H ≤ (d ^ d) ^ 3`, both independent of `i`

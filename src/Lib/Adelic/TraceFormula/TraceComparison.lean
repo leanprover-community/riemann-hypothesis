@@ -188,15 +188,18 @@ lemma mul_orbitalIntegral_eq_zero [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
         simp only [← h_orb, ← integral_const_mul, h_sum]
     _ = 0 := by rw [integral_add h₁₂ h₃, integral_add h₁ h₂, h₃₂, ← h₂₁, h_zero, add_zero, add_zero]
 
-/-- The Selberg principle: let `e` be a cusp kernel of order `B ≥ 13 n ^ 3`. If the characteristic
+/--
+The Selberg principle: let `e` be a cusp kernel of order `B ≥ 13 n ^ 3`. If the characteristic
 polynomial of the rational point `γ` is irreducible and its `i`-th complex root (`numberedRoots`)
 under the embedding `Φ w` at the infinite place `w` lies off the unit circle, then the orbital
-integral of `e ⊗ φ` at `γ` is zero. -/
-theorem orbitalIntegral_eq_zero [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
-    (φ : TestFunction (Gf E n)) (he : IsCuspKernel B e) {γ : U V.J}
-    (hγ : Irreducible (γ : GL n E).val.charpoly) {w : InfinitePlace E} {i : n}
-    (h_root : ‖numberedRoots (Φ w) (γ : GL n E).val.charpoly i‖ ≠ 1) :
-    V.orbitalIntegral e φ γ = 0 := by
+integral of `e ⊗ φ` at `γ` is zero.
+-/
+theorem orbitalIntegral_eq_zero
+    [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n)) (he : IsCuspKernel B e)
+    {γ : U V.J} (hγ : Irreducible (γ : GL n E).val.charpoly)
+    {w : InfinitePlace E} {i : n} (h_root : ‖numberedRoots (Φ w) (γ : GL n E).val.charpoly i‖ ≠ 1)
+    : V.orbitalIntegral e φ γ = 0 := by
   -- Let `ℓ ≠ 0` be the logarithm of the modulus of the root, and `H y` the logarithm of the norm
   -- of the `i`-th row of `k y`, with `k` diagonalising `γ` at `w`. Then `H (γ y) = ℓ + H y`.
   let A : Matrix n n ℂ := ((V.ratEmbed γ).1 w).val.val
@@ -212,10 +215,10 @@ theorem orbitalIntegral_eq_zero [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
   let H (y : GInf E s) : ℝ := ‖Q * (y w).val.val‖.log
   have hQ_mul (y : GInf E s) : Q * (y w).val.val ≠ 0 := (y w).val.isUnit.mul_left_eq_zero.ne.2 hQ_ne
   -- An element that multiplies `Q` by a scalar `m` shifts `H` by `log ‖m‖`.
-  have h_ne {t : GInf E s} {m : ℂ} (ht : Q * (t w).val.val = m • Q) : m ≠ 0 :=
-    fun h ↦ hQ_mul t (by rw [ht, h, zero_smul])
-  have hH {t : GInf E s} {m : ℂ} (ht : Q * (t w).val.val = m • Q) (y : GInf E s) :
-      H (t * y) = ‖m‖.log + H y := by
+  have h_ne {t : GInf E s} {m : ℂ} (ht : Q * (t w).val.val = m • Q) : m ≠ 0 := fun h ↦
+    hQ_mul t (by rw [ht, h, zero_smul])
+  have hH {t : GInf E s} {m : ℂ} (ht : Q * (t w).val.val = m • Q) (y : GInf E s)
+      : H (t * y) = ‖m‖.log + H y := by
     have h_mul : Q * ((t * y) w).val.val = m • (Q * (y w).val.val) := by
       simp [← smul_mul_assoc, ← ht, mul_assoc]
     simp only [H, h_mul, norm_smul]
@@ -227,8 +230,8 @@ theorem orbitalIntegral_eq_zero [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
     ofReal_ne_zero.2 (Real.log_ne_zero_of_pos_of_ne_one (norm_pos_iff.2 (h_ne hQA)) h_root)
   have h_lip (a b : GInf E s) : |H (a * b) - H a| ≤ ∏ v, ‖(b v).val.val‖ :=
     (abs_log_norm_mul_sub_le hQ_ne w a b).trans ((le_prod_opNorm b).2 w)
-  have h_cent (t : U V.J) (ht : Commute γ t) :
-      ∃ r : ℝ, ∀ y, H ((V.ratEmbed t).1 * y) = r + H y := by
+  have h_cent (t : U V.J) (ht : Commute γ t)
+      : ∃ r : ℝ, ∀ y, H ((V.ratEmbed t).1 * y) = r + H y := by
     have h_comm : Commute ((V.ratEmbed t).1 w).val.val A :=
       congrArg (fun g : G E s ↦ (g.1 w).val.val) (ht.map V.ratEmbed).symm.eq
     exact ⟨_, hH (hQ h_comm)⟩
@@ -236,14 +239,18 @@ theorem orbitalIntegral_eq_zero [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
     V.mul_orbitalIntegral_eq_zero hB φ he hγ (by fun_prop) h_lip (hH hQA) h_cent
   exact (mul_eq_zero.1 h_mul_zero).resolve_left hℓ
 
-/-- An irreducible polynomial `R` whose `i`-th complex root at the infinite place `w` lies off the
+/--
+An irreducible polynomial `R` whose `i`-th complex root at the infinite place `w` lies off the
 unit circle does not contribute to the geometric side for `e ⊗ φ` (the integral over `Γ \ G` of the
 terms of the rational points with characteristic polynomial `R` is zero). Here `e` is a cusp kernel
-of order `B ≥ 13 n ^ 3`. -/
-theorem geometricSide_singleton_eq_zero_of_norm_ne_one [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
-    (φ : TestFunction (Gf E n)) (he : IsCuspKernel B e) {R : E[X]} (hR : Irreducible R)
-    {w : InfinitePlace E} {i : n} (h_root : ‖numberedRoots (Φ w) R i‖ ≠ 1) :
-    V.geometricSide hB he {R} φ = 0 := by
+of order `B ≥ 13 n ^ 3`.
+-/
+theorem geometricSide_singleton_eq_zero_of_norm_ne_one
+    [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n)) (he : IsCuspKernel B e)
+    {R : E[X]} (hR : Irreducible R)
+    {w : InfinitePlace E} {i : n} (h_root : ‖numberedRoots (Φ w) R i‖ ≠ 1)
+    : V.geometricSide hB he {R} φ = 0 := by
   have h_class (c : FrameClass E n) : V.classIntegral e φ R c = 0 := by
     by_contra hc
     obtain ⟨γ, rfl, rfl⟩ := V.exists_frameClass_eq_of_classIntegral_ne_zero hc
@@ -267,23 +274,28 @@ lemma isEllipticSimilitude_of_norm_eq_one {γ : U V.J} (hγ : Irreducible (γ : 
   obtain ⟨i, -, rfl⟩ := Multiset.mem_map.1 hr
   simp [mul_conj', h_norm]
 
-/-- Splitting of an orbital integral into real and finite factors, for the product
+/--
+Splitting of an orbital integral into real and finite factors, for the product
 `typeKernel l s` of the discrete series kernels of parameters `l w`. Let the rational point `γ` be
 conjugate by `g` to `(t, y)`, and let `β` be a function on `G_f` such that `x ↦ β (g⁻¹ x)_f` is a
 cutoff (a weight of sum one on each orbit) for the rational centraliser of `γ`. Then `I_γ` is the
 product of the real orbital integrals at the `t w` and the finite orbital integral at `y`, which is
-written with `β`. -/
-theorem orbitalIntegral_eq_prod_mul (φ : TestFunction (Gf E n)) {l : InfinitePlace E → n → ℤ}
-    (hl : Measurable (typeKernel l s)) {γ : U V.J} {g : G E s} {t : GInf E s} {y : Gf E n}
-    (hγ : V.ratEmbed γ = g * (t, y) * g⁻¹) {β : Gf E n → ℝ≥0∞}
-    (hβ : IsCutoff (Measure.count : Measure ((centralizer {γ}).map V.ratEmbed))
-      fun x : G E s ↦ β (g⁻¹ * x).2) :
-    V.orbitalIntegral (typeKernel l s) φ γ =
-      (∏ w : InfinitePlace E, ∫ h : USign s, (toHCParam s (l w)).dsKernel (h⁻¹ * t w * h)) *
-        ∫ v : Gf E n, (β v).toReal • (φ : Gf E n → ℂ) (v⁻¹ * y * v) := by
+written with `β`.
+-/
+theorem orbitalIntegral_eq_prod_mul
+    (φ : TestFunction (Gf E n))
+    {l : InfinitePlace E → n → ℤ} (hl : Measurable (typeKernel l s))
+    {γ : U V.J} {g : G E s} {t : GInf E s} {y : Gf E n} (hγ : V.ratEmbed γ = g * (t, y) * g⁻¹)
+    {β : Gf E n → ℝ≥0∞}
+    (hβ : IsCutoff (Measure.count : Measure ((centralizer {γ}).map V.ratEmbed)) fun x : G E s ↦
+      β (g⁻¹ * x).2)
+    : V.orbitalIntegral (typeKernel l s) φ γ
+      = (∏ w : InfinitePlace E, ∫ h : USign s, (toHCParam s (l w)).dsKernel (h⁻¹ * t w * h))
+        * ∫ v : Gf E n, (β v).toReal • (φ : Gf E n → ℂ) (v⁻¹ * y * v) := by
   -- Insert the cutoff, translate by `g`, and split `G` into its real and finite parts.
   rw [orbitalIntegral,
-    hβ.integral_orbitMeasure (fun u ↦ V.fixesLeft_orbitalIntegrand (typeKernel l s) φ γ _ u.2)
+    hβ.integral_orbitMeasure
+      (fun u ↦ V.fixesLeft_orbitalIntegrand (typeKernel l s) φ γ _ u.2)
       (V.measurable_orbitalIntegrand hl φ γ),
     ← integral_fintype_prod_eq_prod, ← integral_prod_mul, ← integral_mul_left_eq_self _ g]
   refine integral_congr_ae (.of_forall fun x ↦ ?_)
@@ -362,7 +374,8 @@ lemma map_symm_centralizer_singleton {M N : Type*} [Group M] [Group N] (f : M �
   rw [Subgroup.mem_map_equiv, mem_centralizer_singleton_iff, mem_centralizer_singleton_iff,
     MulEquiv.symm_symm, commute_map_iff f.injective]
 
-/-- Let `E` contain the 5040th roots of unity. Let `y` be an elliptic isometry of a positive form
+/--
+Let `E` contain the 5040th roots of unity. Let `y` be an elliptic isometry of a positive form
 with orthonormal finite frame `u` (`HasSignType 1 1 y {1} u`), and let `z w` list the roots of its
 characteristic polynomial at the place `w`. There is a number `c`, the finite orbital integral of
 `φ`, with the following property. Suppose `typeKernel l s`, the product over `w` of the discrete
@@ -371,26 +384,34 @@ Suppose `y` is an elliptic isometry of a form with orthonormal finite frame `x` 
 roots in the order `σ`. Suppose also that `x` conjugates the rational centraliser of `y` as `u`
 does. Then on a space `V` of signs `s`, `V.classIntegral` of the class of `(x, y)` is `c` times the
 product over `w` of the integrals over `U(diag s)` of `dsKernel` at conjugates of
-`diag(z w ∘ σ w)`. -/
-theorem exists_classIntegral_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
-    (φ : TestFunction (Gf E n)) [HasPrimitiveRoot5040 E] {u : GL n (𝔸f E)} {y : GL n E}
-    (hu : HasSignType 1 1 y {1} u) {z : InfinitePlace E → n ↪ Circle}
-    (hz : ∀ (w : InfinitePlace E) (i : n), (z w i : ℂ) = numberedRoots (Φ w) y.val.charpoly i) :
-    ∃ c : ℂ, ∀ {s : n → ℤˣ} (V : Space E n s) {l : InfinitePlace E → n → ℤ}
-      {σ : InfinitePlace E → Perm n} {x : GL n (𝔸f E)}, IsCuspKernel B (typeKernel l s) →
-      HasSignType (fun w : InfinitePlace E ↦ s ∘ (σ w).symm) 1 y {1} x →
-      (∀ a : GL n E, Commute y a → u⁻¹ * toFinGL a * u = x⁻¹ * toFinGL a * x) →
-      V.classIntegral (typeKernel l s) φ y.val.charpoly (frameClass (x, y)) =
-        (∏ w : InfinitePlace E, ∫ h : USign s,
-          (toHCParam s (l w)).dsKernel (h⁻¹ * diagTorus s (z w ∘ σ w) * h)) * c := by
+`diag(z w ∘ σ w)`.
+-/
+theorem exists_classIntegral_eq
+    [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n))
+    [HasPrimitiveRoot5040 E]
+    {u : GL n (𝔸f E)} {y : GL n E} (hu : HasSignType 1 1 y {1} u)
+    {z : InfinitePlace E → n ↪ Circle}
+    (hz : ∀ (w : InfinitePlace E) (i : n), (z w i : ℂ) = numberedRoots (Φ w) y.val.charpoly i)
+    : ∃ c : ℂ,
+      ∀ {s : n → ℤˣ} (V : Space E n s) {l : InfinitePlace E → n → ℤ} {σ : InfinitePlace E → Perm n}
+          {x : GL n (𝔸f E)},
+        IsCuspKernel B (typeKernel l s)
+          → HasSignType (fun w : InfinitePlace E ↦ s ∘ (σ w).symm) 1 y {1} x
+          → (∀ a : GL n E, Commute y a → u⁻¹ * toFinGL a * u = x⁻¹ * toFinGL a * x)
+          → V.classIntegral (typeKernel l s) φ y.val.charpoly (frameClass (x, y))
+            = (∏ w : InfinitePlace E, ∫ h : USign s,
+                (toHCParam s (l w)).dsKernel (h⁻¹ * diagTorus s (z w ∘ σ w) * h))
+              * c := by
   -- The constant is the finite orbital integral in the definite space `W₀` with frame `u`.
   obtain ⟨W₀, rfl, hy₀, -⟩ := exists_ratEmbed_eq_diagTorus (s := 1) (σ := 1) hu hz
   -- The centraliser is cut with `W₀.Γf`, which contains it, so that it is seen to be discrete.
-  obtain ⟨β, hβ_meas, hβ⟩ : ∃ β : Gf E n → ℝ≥0∞, IsCutoff
-      (Measure.count : Measure ↥(W₀.Γf ⊓ (centralizer {⟨y, hy₀⟩}).map W₀.embFin)) β :=
+  obtain ⟨β, hβ_meas, hβ⟩
+      : ∃ β : Gf E n → ℝ≥0∞,
+        IsCutoff (Measure.count : Measure ↥(W₀.Γf ⊓ (centralizer {⟨y, hy₀⟩}).map W₀.embFin)) β :=
     (hasCutoff_count _).out
-  refine ⟨∫ v, (β v).toReal • φ.val (v⁻¹ * W₀.embFin ⟨y, hy₀⟩ * v),
-    fun {s} V l σ x he hx same_conj ↦ ?_⟩
+  refine
+    ⟨∫ v, (β v).toReal • φ.val (v⁻¹ * W₀.embFin ⟨y, hy₀⟩ * v), fun {s} V l σ x he hx same_conj ↦ ?_⟩
   -- `W` is a space of signs `s` with frame `x` in which `y` is diagonal at infinity.
   obtain ⟨W, rfl, hy, h_diag⟩ := exists_ratEmbed_eq_diagTorus hx hz
   -- Landherr: `b` is a rational isometry from `W.J` to `V.J`, and conjugation by `b` becomes
@@ -403,8 +424,9 @@ theorem exists_classIntegral_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
   -- By `same_conj`, `y` and its centraliser have the same finite images for `W₀` and for `W`.
   have embf_eq : W₀.embFin ⟨y, hy₀⟩ = W.embFin ⟨y, hy⟩ := by
     simp [Gf.val_ext_iff, coe_embFin, same_conj]
-  have centralizer_eq : W₀.Γf ⊓ (centralizer {⟨y, hy₀⟩}).map W₀.embFin =
-      (centralizer {γ}).map (W.embFin.comp conj.symm) := by
+  have centralizer_eq
+      : W₀.Γf ⊓ (centralizer {⟨y, hy₀⟩}).map W₀.embFin
+        = (centralizer {γ}).map (W.embFin.comp conj.symm) := by
     rw [inf_eq_right.2 (map_le_range _ _), W₀.map_embFin_centralizer_eq W hy₀ hy same_conj,
       ← map_symm_centralizer_singleton conj, Subgroup.map_map]
     rfl
@@ -415,56 +437,67 @@ theorem exists_classIntegral_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
     have emb_eq (a : U V.J) : V.ratEmbed a = g * W.ratEmbed (conj.symm a) * g⁻¹ := by
       rw [← emb_conj, MulEquiv.apply_symm_apply]
     rw [← hβ (g⁻¹ * x).2, centralizer_eq, lintegral_count, lintegral_count]
-    calc _ = ∑' a : centralizer {γ}, β (g⁻¹ * (V.ratEmbed a * x)).2 :=
-          tsum_image (fun t : G E s ↦ β (g⁻¹ * (t * x)).2) V.ratEmbed_injective.injOn
+    calc
+      _ = ∑' a : centralizer {γ}, β (g⁻¹ * (V.ratEmbed a * x)).2 :=
+        tsum_image (fun t : G E s ↦ β (g⁻¹ * (t * x)).2) V.ratEmbed_injective.injOn
       _ = ∑' a : centralizer {γ}, β (W.embFin (conj.symm a) * (g⁻¹ * x).2) := by
-          simp [embFin, mul_assoc, emb_eq]
+        simp [embFin, mul_assoc, emb_eq]
       _ = ∑' t : (centralizer {γ}).map (W.embFin.comp conj.symm), β (t • (g⁻¹ * x).2) :=
-          (tsum_image (fun t : Gf E n ↦ β (t * (g⁻¹ * x).2))
-            (W.fact_embFin_injective.out.comp conj.symm.injective).injOn).symm
+        (tsum_image
+          (fun t : Gf E n ↦ β (t * (g⁻¹ * x).2))
+          (W.fact_embFin_injective.out.comp conj.symm.injective).injOn).symm
   have h_poly : γ.val.val.charpoly = y.val.charpoly := by simp [γ, conj]
   have h_irr : Irreducible γ.val.val.charpoly := by
     obtain ⟨_, h_ell, -⟩ := hu
     simpa only [h_poly] using h_ell.irreducible_charpoly
-  have h_embed : V.ratEmbed γ =
-      g * (fun w ↦ diagTorus s (z w ∘ σ w), W₀.embFin ⟨y, hy₀⟩) * g⁻¹ := by
+  have h_embed
+      : V.ratEmbed γ = g * (fun w ↦ diagTorus s (z w ∘ σ w), W₀.embFin ⟨y, hy₀⟩) * g⁻¹ := by
     rw [emb_conj, embf_eq, ← _root_.funext h_diag]
     rfl
-  have h_unfold : V.classIntegral (typeKernel l s) φ (γ : Matrix n n E).charpoly
-      (frameClass (V.xFin, (γ : GL n E))) = V.orbitalIntegral (typeKernel l s) φ γ :=
+  have h_unfold
+      : V.classIntegral (typeKernel l s) φ (γ : Matrix n n E).charpoly
+          (frameClass (V.xFin, (γ : GL n E)))
+        = V.orbitalIntegral (typeKernel l s) φ γ :=
     (V.orbitalIntegral_unfold hB φ he.decay he.continuous.measurable h_irr).2
   rw [← class_eq, ← h_poly, h_unfold,
     V.orbitalIntegral_eq_prod_mul φ he.continuous.measurable h_embed cutoff]
 
-/-- Matching the classes. Let `E` contain the 5040th roots of unity, and let `ε`, `ε'` be families
+/--
+Matching the classes. Let `E` contain the 5040th roots of unity, and let `ε`, `ε'` be families
 of signs, each with product `1`. There is a permutation `f` of the classes of pairs (finite frame,
 rational matrix) that carries those with polynomial `R` and signs `ε` onto those with polynomial
 `R` and signs `ε'`. If `(u, y)` has the signs `ε` (`y` is an elliptic isometry, with the signs `ε`
 on its eigenlines, of a form with orthonormal frame `u`), then `f` sends its class to the class of
 a pair `(x, y)` with signs `ε'` such that `u` and `x` conjugate the rational centraliser of `y` in
-the same way. -/
-theorem exists_perm_signedClasses {ε ε' : InfinitePlace E → n → ℤˣ}
-    (hε : ∏ w : InfinitePlace E, ∏ i : n, ε w i = 1)
-    (hε' : ∏ w : InfinitePlace E, ∏ i : n, ε' w i = 1) (R : E[X]) :
-    ∃ f : Perm (FrameClass E n), f '' signedClasses R ε = signedClasses R ε' ∧
-      ∀ (u : GL n (𝔸f E)) (y : GL n E) (_hu : HasSignType ε 1 y {1} u),
-        ∃ x : GL n (𝔸f E), HasSignType ε' 1 y {1} x ∧
-          f (frameClass (u, y)) = frameClass (x, y) ∧
-          ∀ a : GL n E, Commute y a → u⁻¹ * toFinGL a * u = x⁻¹ * toFinGL a * x := by
+the same way.
+-/
+theorem exists_perm_signedClasses
+    {ε ε' : InfinitePlace E → n → ℤˣ} (hε : ∏ w : InfinitePlace E, ∏ i : n, ε w i = 1)
+    (hε' : ∏ w : InfinitePlace E, ∏ i : n, ε' w i = 1)
+    (R : E[X])
+    : ∃ f : Perm (FrameClass E n),
+      f '' signedClasses R ε = signedClasses R ε'
+        ∧ ∀ (u : GL n (𝔸f E)) (y : GL n E) (_hu : HasSignType ε 1 y {1} u), ∃ x : GL n (𝔸f E),
+          HasSignType ε' 1 y {1} x ∧ f (frameClass (u, y)) = frameClass (x, y)
+            ∧ ∀ a : GL n E, Commute y a → u⁻¹ * toFinGL a * u = x⁻¹ * toFinGL a * x := by
   -- The frame is moved by an adelic matrix `Z y` that commutes with the centraliser of `y` and
   -- changes the signs by `ε / ε'`.
   have h_prod : ∏ w, ∏ i, (ε'⁻¹ * ε) w i = 1 := by simp [prod_mul_distrib, hε, hε']
   obtain ⟨f, hf⟩ := exists_hasSignType_mul_iff (fun _ : Unit ↦ ε'⁻¹ * ε) (fun _ ↦ h_prod) (U 1)
-  have h_move (y : GL n E) : ∃ Z : GL n (𝔸f E),
-      (∀ u, HasSignType ε 1 y {1} u ↔ HasSignType ε' 1 y {1} (Z * u)) ∧
-      (∀ a, Commute y a → Commute (toFinGL a) Z) ∧
-      ∀ u, f (frameClass (u, y)) = frameClass (Z * u, y) := by
+  have h_move (y : GL n E)
+      : ∃ Z : GL n (𝔸f E),
+        (∀ u, HasSignType ε 1 y {1} u ↔ HasSignType ε' 1 y {1} (Z * u))
+          ∧ (∀ a, Commute y a → Commute (toFinGL a) Z)
+          ∧ ∀ u, f (frameClass (u, y)) = frameClass (Z * u, y) := by
     obtain ⟨Z, h_sign, h_comm, h_map⟩ := hf y ()
     refine ⟨Z, fun u ↦ ?_, h_comm, fun u ↦ h_map ⟦u⟧⟩
     simpa using h_sign 1 ε' {1} u
   choose Z h_iff h_comm h_class using h_move
-  refine ⟨f, Set.Subset.antisymm ?_ ?_, fun u y hu ↦
-    ⟨Z y * u, (h_iff y u).1 hu, h_class y u, fun a ha ↦ ?_⟩⟩
+  refine ⟨
+    f,
+    Set.Subset.antisymm ?_ ?_,
+    fun u y hu ↦ ⟨Z y * u, (h_iff y u).1 hu, h_class y u, fun a ha ↦ ?_⟩
+  ⟩
   · rintro _ ⟨_, ⟨u, y, hy, hu, rfl⟩, rfl⟩
     exact ⟨Z y * u, y, hy, (h_iff y u).1 hu, (h_class y u).symm⟩
   · rintro _ ⟨x, y, hy, hx, rfl⟩
@@ -481,27 +514,36 @@ lemma prod_prod_comp_symm_eq_one (hE : Even (Core.numInfPlaces E)) (s : n → �
   have h_place (w : InfinitePlace E) : ∏ i, (s ∘ (σ w).symm) i = ∏ i, s i := (σ w).symm.prod_comp s
   simp only [h_place, prod_const, card_univ, hm, pow_add, Int.units_mul_self]
 
-/-- Let `E` contain the 5040th roots of unity and have an even number of infinite places, and let
+/--
+Let `E` contain the 5040th roots of unity and have an even number of infinite places, and let
 `z` be the numbered roots of `R`, on the unit circle. There is a number `c` with the following
 property. On every space, suppose the product `typeKernel l s` of the discrete series kernels is a
 cusp kernel of order `B ≥ 13 n ^ 3`. Then the contributions of the classes with polynomial `R` and
 signs `s` in the order `σ` of the roots add up to the product of the real orbital integrals times
 `c`. These classes are `signedClasses`: classes of pairs `(x, y)` with `y` an elliptic isometry of
 characteristic polynomial `R`, with those signs on its eigenlines, of a form for which `x` is an
-orthonormal frame. -/
-theorem exists_tsum_signedClasses_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
-    (φ : TestFunction (Gf E n)) [HasPrimitiveRoot5040 E] (hE : Even (Core.numInfPlaces E))
+orthonormal frame.
+-/
+theorem exists_tsum_signedClasses_eq
+    [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n))
+    [HasPrimitiveRoot5040 E]
+    (hE : Even (Core.numInfPlaces E))
     {R : E[X]} {z : InfinitePlace E → n ↪ Circle}
-    (hz : ∀ (w : InfinitePlace E) (i : n), (z w i : ℂ) = numberedRoots (Φ w) R i) :
-    ∃ c : ℂ, ∀ {s : n → ℤˣ} (V : Space E n s) {l : InfinitePlace E → n → ℤ},
-      IsCuspKernel B (typeKernel l s) → ∀ σ : InfinitePlace E → Perm n,
-      ∑' a : signedClasses R fun w : InfinitePlace E ↦ s ∘ (σ w).symm,
-          V.classIntegral (typeKernel l s) φ R a =
-        (∏ w : InfinitePlace E, ∫ h : USign s,
-          (toHCParam s (l w)).dsKernel (h⁻¹ * diagTorus s (z w ∘ σ w) * h)) * c := by
+    (hz : ∀ (w : InfinitePlace E) (i : n), (z w i : ℂ) = numberedRoots (Φ w) R i)
+    : ∃ c : ℂ, ∀ {s : n → ℤˣ} (V : Space E n s) {l : InfinitePlace E → n → ℤ},
+      IsCuspKernel B (typeKernel l s)
+        → ∀ σ : InfinitePlace E → Perm n,
+          ∑' a : signedClasses R fun w : InfinitePlace E ↦ s ∘ (σ w).symm,
+              V.classIntegral (typeKernel l s) φ R a
+            = (∏ w : InfinitePlace E, ∫ h : USign s,
+                (toHCParam s (l w)).dsKernel (h⁻¹ * diagTorus s (z w ∘ σ w) * h))
+              * c := by
   -- Match the classes with those of signs `1`, and add up their finite orbital integrals `C a`.
-  have h_repr (a : signedClasses (n := n) R 1) : ∃ (u : GL n (𝔸f E)) (y : GL n E),
-      y.val.charpoly = R ∧ HasSignType 1 1 y {1} u ∧ frameClass (u, y) = a := a.property
+  have h_repr (a : signedClasses (n := n) R 1)
+      : ∃ (u : GL n (𝔸f E)) (y : GL n E),
+        y.val.charpoly = R ∧ HasSignType 1 1 y {1} u ∧ frameClass (u, y) = a :=
+    a.property
   choose u y h_poly h_sign h_rep using h_repr
   choose C hC using fun a ↦
     exists_classIntegral_eq hB φ (h_sign a) (z := z) (by simpa only [h_poly] using hz)
@@ -621,22 +663,30 @@ lemma sum_prod_integral_dsKernel [Nonempty n] (hE : Even (Core.numInfPlaces E))
     _ = ∏ w, ε * ∑ σ, I w σ := by rw [prod_mul_distrib, h_sign, one_mul]
     _ = _ := by simp only [h_place, prod_mul_distrib, Nat.cast_prod]
 
-/-- Elliptic terms. Let `E` contain the 5040th roots of unity and have an even number of infinite
+/--
+Elliptic terms. Let `E` contain the 5040th roots of unity and have an even number of infinite
 places, and let `R` be irreducible with all roots `z w i` on the unit circle. There is a number `c`,
 independent of the space, its signs and `l`, such that for all parameters `l` with gap at least
 `500 n³ + 10 n⁵` whose kernel is a cusp kernel of order `B ≥ 13 n ^ 3`, the integral over `Γ \ G` of
 the terms with characteristic polynomial `R` is `c` times the product of the conjugate characters
-of the compact group `U(n)`. -/
-theorem exists_geometricSide_singleton_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
-    (φ : TestFunction (Gf E n)) [HasPrimitiveRoot5040 E] (hE : Even (Core.numInfPlaces E))
-    {R : E[X]} (hR : Irreducible R) {z : InfinitePlace E → n ↪ Circle}
-    (hz : ∀ (w : InfinitePlace E) (i : n), (z w i : ℂ) = numberedRoots (Φ w) R i) :
-    ∃ c : ℂ, ∀ {s : n → ℤˣ} (V : Space E n s) {l : InfinitePlace E → n → ℤ}
-      (he : IsCuspKernel B (typeKernel l s)),
-      ∀ (_h_gap : ∀ w : InfinitePlace E, (toHCParam s (l w)).HasLargeGap (10 * card n ^ 5)),
-      V.geometricSide hB he {R} φ =
-        c * ∏ w : InfinitePlace E,
-          star ((toHCParam 1 (l w)).lowestKType.kTypeChar (diagTorusK (z w))) := by
+of the compact group `U(n)`.
+-/
+theorem exists_geometricSide_singleton_eq
+    [Nonempty n]
+    (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n))
+    [HasPrimitiveRoot5040 E]
+    (hE : Even (Core.numInfPlaces E))
+    {R : E[X]} (hR : Irreducible R)
+    {z : InfinitePlace E → n ↪ Circle}
+    (hz : ∀ (w : InfinitePlace E) (i : n), (z w i : ℂ) = numberedRoots (Φ w) R i)
+    : ∃ c : ℂ,
+      ∀ {s : n → ℤˣ} (V : Space E n s) {l : InfinitePlace E → n → ℤ}
+          (he : IsCuspKernel B (typeKernel l s)),
+        ∀ (_h_gap : ∀ w : InfinitePlace E, (toHCParam s (l w)).HasLargeGap (10 * card n ^ 5)),
+          V.geometricSide hB he {R} φ
+            = c
+              * ∏ w : InfinitePlace E,
+                star ((toHCParam 1 (l w)).lowestKType.kTypeChar (diagTorusK (z w))) := by
   classical
   obtain ⟨c, hc⟩ := exists_tsum_signedClasses_eq hB φ hE hz
   refine ⟨c, fun {s} V l he h_gap ↦ ?_⟩
@@ -655,50 +705,57 @@ theorem exists_geometricSide_singleton_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤
     obtain ⟨γ, rfl, rfl⟩ := V.exists_frameClass_eq_of_classIntegral_ne_zero ha
     have h_ell : IsEllipticSimilitude 1 γ V.J :=
       V.isEllipticSimilitude_of_norm_eq_one hR fun w i ↦ by rw [← hz, Circle.norm_coe]
-    have h_card : #{σ | frameClass (V.xFin, γ.val) ∈ S σ} = N := by
+    have h_card : # {σ | frameClass (V.xFin, γ.val) ∈ S σ} = N := by
       rw [← Fintype.card_subtype, ← Nat.card_eq_fintype_card]
       exact V.card_mem_signedClasses h_ell
     simp only [Set.indicator, ← sum_filter, sum_const, nsmul_eq_mul, h_card]
   have h_parts : HasSum (fun a ↦ ∑ σ, (S σ).indicator I a) (∑ σ, ∑' a : S σ, I a) :=
     hasSum_sum fun σ _ ↦ hasSum_subtype_iff_indicator.1 (h_sum.summable.subtype (· ∈ S σ)).hasSum
   refine mul_left_cancel₀ hN ?_
-  calc N * V.geometricSide hB he {R} φ
+  calc
+    N * V.geometricSide hB he {R} φ
       = ∑ σ, ∑' a : S σ, I a := (h_sum.mul_left _).unique (by simpa only [h_count] using h_parts)
     _ = (∑ σ : InfinitePlace E → Perm n, ∏ w, ∫ h : USign s,
-          (toHCParam s (l w)).dsKernel (h⁻¹ * diagTorus s (z w ∘ σ w) * h)) * c := by
-        rw [sum_mul]
-        exact sum_congr rfl fun σ _ ↦ hc V he σ
+          (toHCParam s (l w)).dsKernel (h⁻¹ * diagTorus s (z w ∘ σ w) * h))
+        * c := by
+      rw [sum_mul]
+      exact sum_congr rfl fun σ _ ↦ hc V he σ
     _ = N * (c * ∏ w, star ((toHCParam 1 (l w)).lowestKType.kTypeChar (diagTorusK (z w)))) := by
-        rw [sum_prod_integral_dsKernel hE h_gap z]
-        ring
+      rw [sum_prod_integral_dsKernel hE h_gap z]
+      ring
 
 end Space
 
-/-- Comparison of traces. Let the CM field `E` contain the 5040th roots of unity and have an even
+/--
+Comparison of traces. Let the CM field `E` contain the 5040th roots of unity and have an even
 number of infinite places, let `V`, `V'` be spaces of rank `n ≥ 2` over `E`, and let `l` be a family
 of doubled Harish-Chandra parameters with gap at least `500 n³ + 10 n⁵` for the signs of both;
 `typeKernel l s` is the product of their discrete series kernels. Let `K` be a level and `a` an
 element of the group algebra of the finite adelic group. Suppose that the test function `a ⋆ 1_K`
 is cuspidal at a split place `w`, and that the elements of its support are integral at `w'` with
 `0` a simple root of the characteristic polynomial modulo `w'`. Then operators that act as `a` on
-the forms of parameter `l` and level `K` on `V` and on `V'` have the same trace. -/
-theorem trace_comparison [Nonempty n] [HasPrimitiveRoot5040 E] (hE : Even (Core.numInfPlaces E))
-    (hn : 2 ≤ card n) {s s' : n → ℤˣ} (V : Space E n s) (V' : Space E n s')
+the forms of parameter `l` and level `K` on `V` and on `V'` have the same trace.
+-/
+theorem trace_comparison
+    [Nonempty n] [HasPrimitiveRoot5040 E]
+    (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ card n)
+    {s s' : n → ℤˣ} (V : Space E n s) (V' : Space E n s')
     {l : InfinitePlace E → n → ℤ}
     (h_gap : ∀ v : InfinitePlace E, (toHCParam s (l v)).HasLargeGap (10 * card n ^ 5))
     (h_gap' : ∀ v : InfinitePlace E, (toHCParam s' (l v)).HasLargeGap (10 * card n ^ 5))
-    {K : Subgroup (Gf E n)} [hK : IsLevel K] {a : MonoidAlgebra ℂ (Gf E n)} {w w' : FinPlace E}
+    {K : Subgroup (Gf E n)} [hK : IsLevel K]
+    {a : MonoidAlgebra ℂ (Gf E n)} {w w' : FinPlace E}
     (hw : w.IsSplit) (h_cusp : IsCuspidalAt hw (convIndicator hK.isOpen hK.isCompact a))
-    (h_simple : ∀ g : Gf E n, (convIndicator hK.isOpen hK.isCompact a : Gf E n → ℂ) g ≠ 0 →
-      HasSimpleZero (g.atPlace w'))
+    (h_simple : ∀ g : Gf E n,
+      (convIndicator hK.isOpen hK.isCompact a : Gf E n → ℂ) g ≠ 0 → HasSimpleZero (g.atPlace w'))
     {T : End ℂ (levelSpace (V.formRep (typeKernel l s)) K)}
     (hT : ∀ y : levelSpace (V.formRep (typeKernel l s)) K,
       (T y).val = (V.formRep (typeKernel l s)).asAlgebraHom a y.val)
     {T' : End ℂ (levelSpace (V'.formRep (typeKernel l s')) K)}
     (hT' : ∀ y : levelSpace (V'.formRep (typeKernel l s')) K,
-      (T' y).val = (V'.formRep (typeKernel l s')).asAlgebraHom a y.val) :
-    LinearMap.trace ℂ (levelSpace (V.formRep (typeKernel l s)) K) T =
-      LinearMap.trace ℂ (levelSpace (V'.formRep (typeKernel l s')) K) T' := by
+      (T' y).val = (V'.formRep (typeKernel l s')).asAlgebraHom a y.val)
+    : LinearMap.trace ℂ (levelSpace (V.formRep (typeKernel l s)) K) T
+      = LinearMap.trace ℂ (levelSpace (V'.formRep (typeKernel l s')) K) T' := by
   -- Up to `vol K` each trace is the geometric side, a sum over characteristic polynomials `R`.
   let φ : TestFunction (Gf E n) := convIndicator hK.isOpen hK.isCompact a
   have hB : 13 * card n ^ 3 ≤ 10 * card n ^ 5 := by
@@ -719,13 +776,14 @@ theorem trace_comparison [Nonempty n] [HasPrimitiveRoot5040 E] (hE : Even (Core.
     · rw [V.geometricSide_singleton_eq_zero hB he h_cusp h_simple hR,
         V'.geometricSide_singleton_eq_zero hB he' h_cusp h_simple hR]
   refine mul_left_cancel₀ (ofReal_ne_zero.2 (measureReal_pos_of_isLevel K).ne') ?_
-  calc volume.real (K : Set (Gf E n)) * LinearMap.trace ℂ _ T
+  calc
+    volume.real (K : Set (Gf E n)) * LinearMap.trace ℂ _ T
       = V.geometricSide hB he .univ φ := V.volume_mul_trace_eq hB he hT
     _ = ∑' R : E[X], V.geometricSide hB he {R} φ := (V.hasSum_geometricSide hB he φ).tsum_eq.symm
     _ = ∑' R : E[X], V'.geometricSide hB he' {R} φ := tsum_congr h_term
     _ = V'.geometricSide hB he' .univ φ := (V'.hasSum_geometricSide hB he' φ).tsum_eq
     _ = volume.real (K : Set (Gf E n)) * LinearMap.trace ℂ _ T' :=
-        (V'.volume_mul_trace_eq hB he' hT').symm
+      (V'.volume_mul_trace_eq hB he' hT').symm
 
 end New
 

@@ -92,22 +92,30 @@ private lemma iterate_mk_eq_mk_map_pow {Q : O[X]} {θ : AdjoinRoot Q →+* Adjoi
   | succ i ih => simp [hθ, ih, Polynomial.map_map, pow_succ, RingHom.mul_def]
 
 universe w in
-/-- The polynomials `y`, `z`, `z'` over `O` solve the norm equations of
+/--
+The polynomials `y`, `z`, `z'` over `O` solve the norm equations of
 `New.exists_isTwistedRoot_of_charpoly_eq` at an element `B` of an `O`-algebra `A` with `star`. Write
-`T` for the value of `1 + m X ^ (1 - k) y` at `B`. -/
-structure IsTwistedRoot (τ : O →+* O) (p : ℕ) (m : O) (k : ℕ) {A : Type w} [Ring A] [StarRing A]
-    [Algebra O A] (B : A) (y z z' : O[X]) : Prop where
+`T` for the value of `1 + m X ^ (1 - k) y` at `B`.
+-/
+structure IsTwistedRoot
+    (τ : O →+* O) (p : ℕ) (m : O) (k : ℕ)
+    {A : Type w} [Ring A] [StarRing A] [Algebra O A]
+    (B : A) (y z z' : O[X])
+    : Prop where
   /-- `y` and `τ y` have the same value at `B`. -/
   aeval_map_eq : (y.map τ).aeval B = y.aeval B
   /-- If `τ` is tame at level `m`, then `1 + m z'` is a left inverse of `1 + m z` at `B`. -/
   aeval_mul_eq_one : IsTameAtLevel τ p m → aeval B ((1 + m • z') * (1 + m • z)) = 1
   /-- If `τ` is tame at level `m`, then `T` is the value of the twisted norm of `1 + m z`. -/
-  aeval_twistedNorm_eq : IsTameAtLevel τ p m →
-    aeval B (twistedNorm (Polynomial.map τ) p (1 + m • z)) = aeval B (1 + m • (X ^ (1 - k) * y))
+  aeval_twistedNorm_eq
+    : IsTameAtLevel τ p m
+      → aeval B (twistedNorm (Polynomial.map τ) p (1 + m • z)) = aeval B (1 + m • (X ^ (1 - k) * y))
   /-- If `B⋆ (1 + m B) ^ k = (-1) ^ k B`, then `T ^ (1 - k) (1 + m B) T⋆ = T ^ k`. -/
-  pow_mul_star_eq_pow : star B * (1 + m • B) ^ k = (-1) ^ k * B →
-    aeval B (1 + m • (X ^ (1 - k) * y)) ^ (1 - k) * (1 + m • B) *
-      star (aeval B (1 + m • (X ^ (1 - k) * y))) = aeval B (1 + m • (X ^ (1 - k) * y)) ^ k
+  pow_mul_star_eq_pow
+    : star B * (1 + m • B) ^ k = (-1) ^ k * B
+      → aeval B (1 + m • (X ^ (1 - k) * y)) ^ (1 - k) * (1 + m • B)
+          * star (aeval B (1 + m • (X ^ (1 - k) * y)))
+        = aeval B (1 + m • (X ^ (1 - k) * y)) ^ k
 
 universe w in
 /-- Roots in `O[X]/Q`. Let `O` be profinite, let `τ` be tame at level `0` (`τ ^ p = 1`, `0 < p`,

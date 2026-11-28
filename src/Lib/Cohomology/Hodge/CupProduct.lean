@@ -44,9 +44,12 @@ namespace New.Variety
 
 open CategoryTheory Abelian Ext TensorProduct Functor DirectSum Function H LongExactSeq
 
-variable {C C' : Type 1} [Category C] [Category C'] {M N N' F F' G G' : AbFunctor C} {a b e n : ℕ}
-  {A : Type _} [Category A] (Φ Ψ : AbFunctor C ⥤ AbFunctor C') [IsExactFunctor Φ] [IsExactFunctor Ψ]
-  {f : N ⟶ F} {R : Type*} [Ring R] [CoeffAction R F] {S : ShortComplex (AbFunctor C)}
+variable
+  {C C' : Type 1} [Category C] [Category C']
+  {M N N' F F' G G' : AbFunctor C} {a b e n : ℕ} {A : Type _} [Category A]
+  (Φ Ψ : AbFunctor C ⥤ AbFunctor C') [IsExactFunctor Φ] [IsExactFunctor Ψ]
+  {f : N ⟶ F} {R : Type*} [Ring R] [CoeffAction R F]
+  {S : ShortComplex (AbFunctor C)}
 
 /-! ### The pointwise tensor product and flat functors -/
 
@@ -56,26 +59,32 @@ lemma addCommGrp_tensor_hom_ext {A B X : Ab} {f g : .of (A ⊗[ℤ] B) ⟶ X}
     f = g :=
   AddCommGrpCat.hom_ext (AddMonoidHom.toIntLinearMap_injective (ext' h))
 
-/-- For homomorphisms f: A → A' and g: B → B' of abelian groups, the homomorphism f ⊗ g: A ⊗ B →
-A' ⊗ B' of tensor products over ℤ. -/
-abbrev abTensorMap {A B A' B' : Ab} (f : A ⟶ A') (g : B ⟶ B') :
-    AddCommGrpCat.of (A ⊗[ℤ] B) ⟶ AddCommGrpCat.of (A' ⊗[ℤ] B') :=
+/--
+For homomorphisms f: A → A' and g: B → B' of abelian groups, the homomorphism f ⊗ g: A ⊗ B →
+A' ⊗ B' of tensor products over ℤ.
+-/
+abbrev abTensorMap {A B A' B' : Ab} (f : A ⟶ A') (g : B ⟶ B')
+    : AddCommGrpCat.of (A ⊗[ℤ] B) ⟶ AddCommGrpCat.of (A' ⊗[ℤ] B') :=
   AddCommGrpCat.ofHom (TensorProduct.map f.hom.toIntLinearMap g.hom.toIntLinearMap).toAddMonoidHom
 
-/-- The pointwise tensor product over ℤ of two functors from C to abelian groups, as a
-bifunctor. -/
+/--
+The pointwise tensor product over ℤ of two functors from C to abelian groups, as a
+bifunctor.
+-/
 def abTensor : AbFunctor C ⥤ AbFunctor C ⥤ AbFunctor C :=
-  curryObj
-    { obj p :=
-        { obj c := AddCommGrpCat.of (p.1.obj c ⊗[ℤ] p.2.obj c)
-          map f := abTensorMap (p.1.map f) (p.2.map f) }
-      map f := { app c := abTensorMap (f.1.app c) (f.2.app c) }
-      map_id _ := by
-        ext
-        rfl
-      map_comp _ _ := by
-        ext
-        rfl }
+  curryObj {
+    obj p := {
+      obj c := AddCommGrpCat.of (p.1.obj c ⊗[ℤ] p.2.obj c)
+      map f := abTensorMap (p.1.map f) (p.2.map f)
+    }
+    map f := { app c := abTensorMap (f.1.app c) (f.2.app c) }
+    map_id _ := by
+      ext
+      rfl
+    map_comp _ _ := by
+      ext
+      rfl
+  }
 
 /-- Two maps out of a pointwise tensor product `F ⊗ G` are equal if at each object `c` they agree
 on the pure tensors `a ⊗ b`. -/
@@ -98,37 +107,45 @@ instance : (abTensor.flip F).Additive := ⟨abTensor_hom_ext fun _ _ _ ↦ add_t
 instance [HasFlatValues F] : IsExactFunctor (abTensor F) := by
   -- Exactness is tested object by object, where it is the flatness of `F.obj c`.
   have h_exact (S : ShortComplex (AbFunctor C)) (hS : S.Exact) : (S.map (abTensor F)).Exact :=
-    (exact_of_app fun c ↦ (HasFlatValues.flat c).lTensor_exact _
-      (exact_of_shortComplex_exact (hS.map ((evaluation ..).obj c)))).2
+    (exact_of_app fun c ↦
+      (HasFlatValues.flat c).lTensor_exact _
+        (exact_of_shortComplex_exact (hS.map ((evaluation ..).obj c)))).2
   obtain ⟨_, _⟩ := ((abTensor F).exact_tfae.out 2 4 :).mp h_exact
   exact ⟨⟩
 
 instance [HasFlatValues F] : IsExactFunctor (abTensor.flip F) := by
   -- The same argument, with the flat factor on the right.
   have h_exact (S : ShortComplex (AbFunctor C)) (hS : S.Exact) : (S.map (abTensor.flip F)).Exact :=
-    (exact_of_app fun c ↦ (HasFlatValues.flat c).rTensor_exact _
-      (exact_of_shortComplex_exact (hS.map ((evaluation ..).obj c)))).2
+    (exact_of_app fun c ↦
+      (HasFlatValues.flat c).rTensor_exact _
+        (exact_of_shortComplex_exact (hS.map ((evaluation ..).obj c)))).2
   obtain ⟨_, _⟩ := ((abTensor.flip F).exact_tfae.out 2 4 :).mp h_exact
   exact ⟨⟩
 
 /-! ### Total cohomology and the Yoneda product -/
 
-/-- The sum `x + y` of two classes in `Ext^a(N, F)`, as a named constant for
-`New.Variety.addCommGroupH`. -/
+/--
+The sum `x + y` of two classes in `Ext^a(N, F)`, as a named constant for
+`New.Variety.addCommGroupH`.
+-/
 @[reducible]
 def H.add (x y : H N F a) : H N F a := x + y
 
-/-- The abelian group structure of `Ext^a(N, F)`, equal to Mathlib's by definition. The addition is
+/--
+The abelian group structure of `Ext^a(N, F)`, equal to Mathlib's by definition. The addition is
 written through `New.Variety.H.add` for elaboration only: without the named constant,
-definitional equality checks on sums of classes time out in later files. -/
+definitional equality checks on sums of classes time out in later files.
+-/
 instance addCommGroupH : AddCommGroup (H N F a) := { Ext.instAddCommGroup with add := .add }
 
 /-- The total Ext group, the direct sum of the Ext^n(N,F) over all n ≥ 0. -/
 abbrev TotalH (N F : AbFunctor C) : Type 2 := DirectSum ℕ (H (C := C) N F)
 
-/-- The biadditive map from total `Ext(M, N)` and total `Ext(N, F)` to total `Ext(M, F)` that
+/--
+The biadditive map from total `Ext(M, N)` and total `Ext(N, F)` to total `Ext(M, F)` that
 extends the Yoneda composition of homogeneous classes. The `choose` makes no real choice: it only
-keeps the formula from unfolding. See `TotalH.comp_def` and `TotalH.comp_of`. -/
+keeps the formula from unfolding. See `TotalH.comp_def` and `TotalH.comp_of`.
+-/
 @[irreducible]
 def TotalH.comp : TotalH M N →+ TotalH N F →+ TotalH M F :=
   (@exists_eq (TotalH M N →+ TotalH N F →+ TotalH M F)
@@ -155,15 +172,19 @@ lemma TotalH.comp_of (x : H M N a) (y : H N F b) (h : a + b = n) :
   subst h
   simp [comp_def]
 
-/-- A class x in Ext^n(N,F), as the element of the total group ⊕_m Ext^m(N,F) concentrated in
-degree n. -/
+/--
+A class x in Ext^n(N,F), as the element of the total group ⊕_m Ext^m(N,F) concentrated in
+degree n.
+-/
 abbrev _root_.CategoryTheory.Abelian.Ext.toTotalH (x : H N F n) : TotalH N F :=
   DirectSum.of (H N F) n x
 
 namespace TotalH
 
-/-- For an exact functor `Φ`, the additive map from total `Ext(N, F)` to total `Ext(Φ N, Φ F)`
-obtained by applying `Φ` in each degree. See `TotalH.map_def` and `TotalH.map_of`. -/
+/--
+For an exact functor `Φ`, the additive map from total `Ext(N, F)` to total `Ext(Φ N, Φ F)`
+obtained by applying `Φ` in each degree. See `TotalH.map_def` and `TotalH.map_of`.
+-/
 @[irreducible]
 def map : TotalH N F →+ TotalH (Φ.obj N) (Φ.obj F) :=
   (@exists_eq (TotalH N F →+ TotalH (Φ N) (Φ F)) (DirectSum.map (Φ.mapExtAddHom N F))).choose
@@ -179,8 +200,10 @@ lemma map_def :
 lemma map_map (Θ : (C' ⥤ Ab) ⥤ AbFunctor A) [IsExactFunctor (C' := A) Θ] (x : TotalH N F) :
     map Θ (map Φ x) = map (Φ ⋙ Θ) x := by aesop (add simp mapExactFunctor_mapExactFunctor)
 
-/-- For an exact functor Φ and u in total Ext(ΦF,K), the additive map x ↦ Φx·u (Yoneda product)
-from total Ext(N,F) to total Ext(ΦN,K). -/
+/--
+For an exact functor Φ and u in total Ext(ΦF,K), the additive map x ↦ Φx·u (Yoneda product)
+from total Ext(N,F) to total Ext(ΦN,K).
+-/
 def mapThenComp {K : AbFunctor C'} (u : TotalH (Φ F) K) : TotalH N F →+ TotalH (Φ.obj N) K :=
   (comp.flip u).comp (map (N := N) Φ)
 
@@ -204,8 +227,10 @@ lemma comp_assoc (y : TotalH N F) (z : TotalH F G) : comp (comp x y) z = comp x 
 /-- A morphism f: N → F as a degree-zero element of total Ext(N,F). -/
 abbrev homClass (f : N ⟶ F) : TotalH N F := DirectSum.of (H N F) 0 (mk₀ f)
 
-/-- For f: N → F, the additive map from total Ext(F,G) to total Ext(N,G) given by precomposition
-with f. -/
+/--
+For f: N → F, the additive map from total Ext(F,G) to total Ext(N,G) given by precomposition
+with f.
+-/
 abbrev pullbackAlong (f : N ⟶ F) : TotalH F G →+ TotalH N G := comp (homClass f)
 
 /-- On a homogeneous class `map Φ` is the image of the class under `Φ`. -/
@@ -406,8 +431,10 @@ lemma bijective_directSum_of_zero_reprBy (G : AbFunctor C) (c : C) :
     | 0 => rfl
     | _ + 1 => by subsingleton⟩⟩
 
-/-- The Yoneda isomorphism from G(c) to the total Ext(ℤ[h_c], G), which is concentrated in
-degree 0; here h_c = Hom(c, −). -/
+/--
+The Yoneda isomorphism from G(c) to the total Ext(ℤ[h_c], G), which is concentrated in
+degree 0; here h_c = Hom(c, −).
+-/
 def sectionEquiv (G : AbFunctor C) (c : C) : G c ≃+ TotalH (freeAb (reprBy c)) G :=
   -- Yoneda identifies the sections with the classes of degree zero, and these are all classes.
   (homReprEquiv c G).symm.trans
@@ -427,8 +454,10 @@ variable [HasFlatValues M] [HasFlatValues G] (x : TotalH M F) (y : TotalH N G) [
 
 /-! ### External products -/
 
-/-- For x in total Ext(M,F), y in total Ext(N,G), with M, G of flat values, the Yoneda composite
-of M ⊗ y and x ⊗ G in total Ext(M ⊗ N, F ⊗ G). -/
+/--
+For x in total Ext(M,F), y in total Ext(N,G), with M, G of flat values, the Yoneda composite
+of M ⊗ y and x ⊗ G in total Ext(M ⊗ N, F ⊗ G).
+-/
 def TotalH.cup : TotalH ((abTensor.obj M).obj N) ((abTensor.obj F).obj G) :=
   (y.map (abTensor M)).comp (F := abTensor F G) (x.map (abTensor.flip G))
 
@@ -447,8 +476,10 @@ lemma TotalH.cup_comp_homClass_right (γ : G ⟶ G') :
 
 variable {K : AbFunctor C} (μ : abTensor F G ⟶ K) (x : H M F a) (y : H N G b)
 
-/-- For x in Ext^a(M,F), y in Ext^b(N,G), M and G of flat values, the product in Ext^{a+b}(M ⊗
-N, K): their external product pushed along μ: F ⊗ G → K. -/
+/--
+For x in Ext^a(M,F), y in Ext^b(N,G), M and G of flat values, the product in Ext^{a+b}(M ⊗
+N, K): their external product pushed along μ: F ⊗ G → K.
+-/
 def cup {n : ℕ} (h : b + a = n) : H ((abTensor.obj M).obj N) K n :=
   push ((abTensor.obj M).obj N) μ n
     ((y.mapExactFunctor (abTensor M)).comp (x.mapExactFunctor (abTensor.flip G)) h)

@@ -44,14 +44,16 @@ lemma spaceChar_add_two_mul : (ν * upsilonU1 ^ l).spaceChar (k + 2 * l) = ν.sp
   simp only [spaceChar, map_mul, map_pow, baseChange_upsilonU1]
   group
 
-/-- Let `E` be a CM field with Weil data, whose splitting character is `υ`. For a character `ν` of
+/--
+Let `E` be a CM field with Weil data, whose splitting character is `υ`. For a character `ν` of
 `[U(1)]` and a finite type `n`, let `rankTwist ν n = ν · υ^⌊card n / 2⌋` (with `υ` restricted to
 norm-one ideles). Its space character at rank `card n`, the Hecke character
 `x ↦ (rankTwist ν n)(x / x̄) · υ(x)^(-card n)`, equals `ν.baseChange` if `card n` is even and
-`ν.baseChange * υ⁻¹` if `card n` is odd. -/
-theorem spaceChar_rankTwist_eq_ite (ν : AutChar E) (n : Type*) [Fintype n] :
-    (rankTwist ν n).spaceChar (card n) =
-      if Even (card n) then ν.baseChange else ν.baseChange * υ⁻¹ := by
+`ν.baseChange * υ⁻¹` if `card n` is odd.
+-/
+theorem spaceChar_rankTwist_eq_ite (ν : AutChar E) (n : Type*) [Fintype n]
+    : (rankTwist ν n).spaceChar (card n)
+      = if Even (card n) then ν.baseChange else ν.baseChange * υ⁻¹ := by
   -- `rankTwist` adds `card n / 2` hyperbolic planes to a space of rank `card n % 2`.
   have h_mod_two : (rankTwist ν n).spaceChar (card n) = ν.spaceChar (card n % 2) := by
     rw [rankTwist, ← spaceChar_add_two_mul (ν := ν), Nat.mod_add_div]

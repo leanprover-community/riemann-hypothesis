@@ -52,25 +52,30 @@ open NumberField ComplexConjugate IsDedekindDomain
 namespace New
 variable {E n J : Type} [DecidableEq n] [Field E] [CMType E] [Fintype J]
 
-/-- The coefficient at the coordinate `x = (w, c)` of the linear form
+/--
+The coefficient at the coordinate `x = (w, c)` of the linear form
 `y† z = ∑ conj (Φ w (y c)) z (w, c)`, where `Φ w` is the embedding of the CM type at the infinite
-place `w` and the sum is over all pairs `(w, c)`. -/
+place `w` and the sum is over all pairs `(w, c)`.
+-/
 def dagger (y : n → E) (x : InfinitePlace E × n) : ℂ := conj (Φ x.1 (y x.2))
 
-/-- The vectors `u j` of `Eⁿ`, taken `m j` times, are a resolution of the identity:
+/--
+The vectors `u j` of `Eⁿ`, taken `m j` times, are a resolution of the identity:
 `z = ∑ m j (u j† z) u j` for all complex vectors `z` indexed by the pairs `(w, c)`, written in
 coordinates. Here `u j` is read as the vector with coordinates `Φ w (u j c)`, where `Φ w` is the
 embedding of the CM type at the infinite place `w`, and `dagger (u j)` gives the coefficients of
-the linear form `u j† z`. -/
+the linear form `u j† z`.
+-/
 def IsResolution (u : J → n → E) (m : J → ℕ) : Prop :=
   ∀ x y : InfinitePlace E × n,
     ∑ j : J, m j * (Φ x.1 (u j x.2) * dagger (u j) y) = if x = y then 1 else 0
 
-/-- The element `y` of the number field `E` is integral at all places above `p`. A finite place
+/--
+The element `y` of the number field `E` is integral at all places above `p`. A finite place
 `w : FinPlace E` is a nonzero prime of `𝓞 E` (a point of `HeightOneSpectrum (𝓞 E)`), `w.asIdeal` is
-its underlying ideal and `w.valuation E` is its adic valuation on `E`. -/
-def IsIntegralAbove (p : ℕ) (y : E) : Prop :=
-  ∀ w : FinPlace E, ↑p ∈ w.asIdeal → w.valuation E y ≤ 1
+its underlying ideal and `w.valuation E` is its adic valuation on `E`.
+-/
+def IsIntegralAbove (p : ℕ) (y : E) : Prop := ∀ w : FinPlace E, ↑p ∈ w.asIdeal → w.valuation E y ≤ 1
 
 variable {p : ℕ} [Fact p.Prime]
 
@@ -113,8 +118,8 @@ lemma IsIntegralAbove.norm_conj_le_one [PadicPlace p] {y : E} (hy : IsIntegralAb
   hy.norm_le_one (ιₚ.comp ((starRingEnd ℂ).comp τ))
 
 /-- The coefficients of the linear forms `u_j† z` of a family of vectors, read in `ℂ_p` by `ιₚ`. -/
-noncomputable def daggerForms [PadicPlace p] (u : J → n → E) (j : J) (x : InfinitePlace E × n) :
-    ℂ_[p] :=
+noncomputable def daggerForms [PadicPlace p] (u : J → n → E) (j : J) (x : InfinitePlace E × n)
+    : ℂ_[p] :=
   ιₚ (dagger (u j) x)
 
 /-- Let `∑ m_j u_j u_j† = 1` (`IsResolution u m`), where `u j` in `Eⁿ` is read as the complex vector
@@ -134,14 +139,17 @@ lemma IsResolution.sum_smul_linearSeries [PadicPlace p] [Fintype n] {u : J → n
   simp [linearSeries, Finset.smul_sum, smul_smul, Finset.sum_comm (γ := J), ← Finset.sum_smul,
     h_entry]
 
-/-- The product `∏ θ(μ_j z) ^ m j` of copies of the theta function `C.θ` along linear forms `μ_j`,
+/--
+The product `∏ θ(μ_j z) ^ m j` of copies of the theta function `C.θ` along linear forms `μ_j`,
 as a power series with coefficients in `ℂ_p`. Here `C` is a lattice in `ℂ` with a point `t` of
 order two, stable under the ring of integers of `ℚ(√-d)` if `d ≠ 0`; `C.θ` is the twisted
 translate by `t` of its sigma function, normalized by `θ(0) = 1`; `taylorVia ιₚ f` is the Taylor
 series of `f` at `0`, its coefficients read in `ℂ_p` by the embedding `ιₚ` of `ℂ`; and
-`linearSeries (μ j)` is the linear form `μ_j z = ∑ μ j x * z x`. -/
-noncomputable def CMLattice.thetaProd [PadicPlace p] {d : ℕ} (C : CMLattice d) {X : Type}
-    [Fintype X] (μ : J → X → ℂ_[p]) (m : J → ℕ) : MvPowerSeries X ℂ_[p] :=
+`linearSeries (μ j)` is the linear form `μ_j z = ∑ μ j x * z x`.
+-/
+noncomputable def CMLattice.thetaProd
+    [PadicPlace p] {d : ℕ} (C : CMLattice d) {X : Type} [Fintype X] (μ : J → X → ℂ_[p]) (m : J → ℕ)
+    : MvPowerSeries X ℂ_[p] :=
   ∏ j : J, (taylorVia ιₚ C.θ).subst (linearSeries (μ j)) ^ m j
 
 end New
@@ -195,7 +203,9 @@ lemma rescale_thetaProd {d : ℕ} (C : CMLattice d) {p : ℕ} [Fact p.Prime] [Pa
     rescale (fun _ : X ↦ a) (C.thetaProd μ m) = C.thetaProd (a • μ) m := by
   simp only [thetaProd, map_prod, map_pow, rescale_subst_linearSeries_eq_subst_smul, Pi.smul_apply]
 
-variable {d : ℕ} (C : CMLattice d) {p : ℕ} [Fact p.Prime] [PadicPlace p]
+variable
+  {d : ℕ} (C : CMLattice d)
+  {p : ℕ} [Fact p.Prime] [PadicPlace p]
   {I X : Type} [Fintype I] [Fintype X]
 
 /-- Let `d` be any natural number and `C` a lattice in `ℂ` that is stable under the ring of integers

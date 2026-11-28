@@ -55,15 +55,18 @@ Notions from other files:
 
 section NonUnitalUnits
 
-/-- For a ring homomorphism `f : K → R` that need not preserve `1`, the homomorphism of unit groups
-`x ↦ 1 + f (x - 1)`. -/
+/--
+For a ring homomorphism `f : K → R` that need not preserve `1`, the homomorphism of unit groups
+`x ↦ 1 + f (x - 1)`.
+-/
 @[simps! apply_val]
 def New.unitsMapNonUnital {K R : Type*} [Ring K] [Ring R] (f : K →ₙ+* R) : Kˣ →* Rˣ :=
-  Units.map
-    { toFun (x : K) := 1 + f (x - 1)
-      map_one' := by simp
-      -- with `a = x - 1` and `b = y - 1`: `(1 + f a) (1 + f b) = 1 + f (a + b + a b)`
-      map_mul' := by noncomm_ring [← map_mul, ← map_add, implies_true] }
+  Units.map {
+    toFun (x : K) := 1 + f (x - 1)
+    map_one' := by simp
+    -- with `a = x - 1` and `b = y - 1`: `(1 + f a) (1 + f b) = 1 + f (a + b + a b)`
+    map_mul' := by noncomm_ring [← map_mul, ← map_add, implies_true]
+  }
 
 open Matrix Module Basis Submodule
 
@@ -106,8 +109,10 @@ lemma measure_le_of_div_mem {ζ : Measure Z} [IsMulRightInvariant ζ] {E K : Set
 
 variable [Group G] [MeasurableSpace G] [MeasurableMul₂ G]
 
-/-- Every `h : G` has a preimage `g` under `π` whose left and right translations preserve the
-set `O`. -/
+/--
+Every `h : G` has a preimage `g` under `π` whose left and right translations preserve the
+set `O`.
+-/
 @[to_additive HasAddStableLifts /-- Every `h : G` has a preimage `g` under `π` whose left and right
 translations preserve the set `O`. -/]
 def HasStableLifts (π : Z →* G) (O : Set Z) : Prop :=
@@ -181,7 +186,8 @@ end Invariant
 
 section ScalingFactor
 
-variable {A B G : Type _} [Group G] [AddCommGroup A] [TopologicalSpace A] [IsTopologicalAddGroup A]
+variable
+  {A B G : Type _} [Group G] [AddCommGroup A] [TopologicalSpace A] [IsTopologicalAddGroup A]
   [LocallyCompactSpace A] [AddGroup B] [TopologicalSpace B] [IsTopologicalAddGroup B]
   [DistribMulAction G A] [ContinuousConstSMul G A] [PolishSpace A]
 
@@ -238,8 +244,9 @@ lemma map_smul_eq_inv_distribHaarChar_smul {ν : Measure A} [ν.IsAddHaarMeasure
 
 end ScalingFactor
 
-variable {n R : Type _} [Fintype n] [DecidableEq n] [CommRing R] [TopologicalSpace R]
-  [IsTopologicalRing R] [LocallyCompactSpace R]
+variable
+  {n R : Type _} [Fintype n] [DecidableEq n] [CommRing R] [TopologicalSpace R] [IsTopologicalRing R]
+  [LocallyCompactSpace R]
 
 /-- The action of invertible matrices on vectors is jointly continuous. -/
 instance : ContinuousSMul (GL n R) (n → R) where
@@ -251,8 +258,10 @@ instance : ContinuousSMul (GL n R) (n → R) where
 /-- Each invertible matrix acts continuously on vectors. -/
 instance : ContinuousConstSMul (GL n R) (n → R) := inferInstance
 
-/-- The generalised index of `a : R`, as a real number. For a unit `a` it is the inverse of the
-factor by which multiplication by `a` scales Haar measure on `R`; for a non-unit it is `0`. -/
+/--
+The generalised index of `a : R`, as a real number. For a unit `a` it is the inverse of the
+factor by which multiplication by `a` scales Haar measure on `R`; for a non-unit it is `0`.
+-/
 noncomputable def genIndex : MulChar R ℝ :=
   MulChar.ofUnitHom (NNReal.toRealHom.toMonoidHom.comp (distribHaarChar R)).toHomUnits⁻¹
 
@@ -401,8 +410,8 @@ lemma IsIntMatrix.adjugate {M : Matrix n n A} (hM : IsIntMatrix R M) :
 
 /-! ### The generalised index for an adelic pair -/
 
-variable [StarRing A] [TopologicalSpace A] [IsTopologicalRing A] [LocallyCompactSpace A]
-  [PolishSpace A]
+variable
+  [StarRing A] [TopologicalSpace A] [IsTopologicalRing A] [LocallyCompactSpace A] [PolishSpace A]
 
 /-- Let `R ⊆ A` satisfy `New.IsAdelic`, so that `R` is compact and open. The generalised index
 `genIndex u` (the inverse of the factor by which `u` scales Haar measure on `A`) is at least `1` if

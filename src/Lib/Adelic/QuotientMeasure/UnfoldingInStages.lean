@@ -46,11 +46,12 @@ section UnfoldingInStages
 
 open MeasureTheory Measure Topology MulAction Function ProbabilityTheory
 
-variable {G H V : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-  [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
-  [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [LocallyCompactSpace H]
-  [SecondCountableTopology H] [MeasurableSpace H] [BorelSpace H] [NormedAddCommGroup V]
-  [NormedSpace ℝ V] [MeasurableSpace V] [BorelSpace V]
+variable
+  {G H V : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
+  [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] [Group H]
+  [TopologicalSpace H] [IsTopologicalGroup H] [LocallyCompactSpace H] [SecondCountableTopology H]
+  [MeasurableSpace H] [BorelSpace H] [NormedAddCommGroup V] [NormedSpace ℝ V] [MeasurableSpace V]
+  [BorelSpace V]
   {Γ : Subgroup G} [DiscreteTopology Γ]
   (Λ : Subgroup H) [DiscreteTopology Λ]
   (μ : Measure G) [IsHaarMeasure μ]
@@ -117,9 +118,11 @@ lemma New.integral_quotMeasure_stages [T2Space H] {Z : Type*} [MeasurableSpace Z
   have h_int := h_dist.integrable_snd hF_int
   exact ⟨h_int.integral_prod_left, h_dist.integral_eq.trans (integral_prod _ h_int)⟩
 
-/-- The quotient measure on `i(H) \ G`, carried by `G`, of the Haar measures `μ` on `G` and `ν` on
+/--
+The quotient measure on `i(H) \ G`, carried by `G`, of the Haar measures `μ` on `G` and `ν` on
 `H`, for `H` acting on `G` by left translation through `i`; it is used for closed embeddings
-`i : H → G`. -/
+`i : H → G`.
+-/
 noncomputable def New.cosetMeasure (i : H →* G) : Measure G :=
   letI := compHom G i
   orbitMeasure ν μ
@@ -309,11 +312,13 @@ section QuotientVanishing
 
 open MeasureTheory Measure MulAction ProbabilityTheory Subgroup
 
-variable {G V : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-  [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
-  [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V]
+variable
+  {G V : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
+  [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] [NormedAddCommGroup V]
+  [NormedSpace ℂ V] [CompleteSpace V]
   (μ : Measure G) [IsHaarMeasure μ]
-  {Γ : Subgroup G} [DiscreteTopology Γ] {F : G → V}
+  {Γ : Subgroup G} [DiscreteTopology Γ]
+  {F : G → V}
 
 /-- Let `Γ ≤ H ≤ G` with `Γ` discrete and `H` closed, and let `F` be continuous and left
 `Γ`-invariant. Let `κ` be a probability measure and `translator x b` elements of `H`, measurable in

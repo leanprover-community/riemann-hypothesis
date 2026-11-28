@@ -77,15 +77,19 @@ section Model
 
 open NumberField CategoryTheory AlgebraicGeometry Fintype Module
 
-/-- The tower of Kuga–Sato varieties over `R`, given by a list of properties. A level `i` is a
+/--
+The tower of Kuga–Sato varieties over `R`, given by a list of properties. A level `i` is a
 finite set of pairs (non-zero integer of `E`, element of `New.Variety.GUPlus`), ordered by
 inclusion. The data are a base Z = `base`, schemes W_i = `cover i` with legs p_g = `leg i g` from
 W_i to Z (π = p_1), sets s_i = `legIndices i`, finite groups Δ_i = `deckGroup i` acting through
 `deck i`, maps m_α = `mulMap α` of Z, complex points `point i` and the relative dimension
-`dimension` of Z; the other fields are properties of these. -/
-structure New.Variety.Model {E : Type} [Field E] [CMBase E] (n : Type)
-    [Fintype n] [DecidableEq n] (d₀ : ℕ) [HasQuadSubfield d₀ E] (𝔑 : 𝓞 E) (ν : ℕ)
-    (R : Subalgebra (𝓞 E) E) where
+`dimension` of Z; the other fields are properties of these.
+-/
+structure New.Variety.Model
+    {E : Type} [Field E] [CMBase E]
+    (n : Type) [Fintype n] [DecidableEq n]
+    (d₀ : ℕ) [HasQuadSubfield d₀ E]
+    (𝔑 : 𝓞 E) (ν : ℕ) (R : Subalgebra (𝓞 E) E) where
   /-- The base scheme Z over `Spec R`. -/
   base : Over (Spec ⟨R⟩)
   /-- The scheme W_i over `Spec R` at level `i`. -/
@@ -93,38 +97,39 @@ structure New.Variety.Model {E : Type} [Field E] [CMBase E] (n : Type)
   /-- The set s_i of adelic matrices whose legs the fields at level `i` speak about. -/
   legIndices (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) : Set (GL n (𝔸f E))
   /-- The legs p_g : W_i → Z, one for each coset gK(𝔑); the leg of `1` is called π. -/
-  leg (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) :
-    GL n (𝔸f E) ⧸ levelGU n 𝔑 → (cover i ⟶ base)
+  leg (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n))
+    : GL n (𝔸f E) ⧸ levelGU n 𝔑 → (cover i ⟶ base)
   /-- The identity lies in every s_i. -/
   one_mem (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) : 1 ∈ legIndices i
-  /-- For `g` in `GUPlus E n` and any level `j`, all large levels `i` have g ∈ s_i and a map
-  f : W_i → W_j with p_q ∘ f = p_{gq} for all q ∈ s_j. -/
-  eventually_translate {g : GL n (𝔸f E)} (j : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) :
-    g ∈ GUPlus E n →
-      ∀ᶠ i in Filter.atTop, g ∈ legIndices i ∧ ∃ f, ∀ q ∈ legIndices j, f ≫ leg j q = leg i (g * q)
+  /--
+  For `g` in `GUPlus E n` and any level `j`, all large levels `i` have g ∈ s_i and a map
+  f : W_i → W_j with p_q ∘ f = p_{gq} for all q ∈ s_j.
+  -/
+  eventually_translate {g : GL n (𝔸f E)} (j : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n))
+    : g ∈ GUPlus E n
+      → ∀ᶠ i in Filter.atTop, g ∈ legIndices i ∧ ∃ f, ∀ q ∈ legIndices j, f ≫ leg j q = leg i (g * q)
   /-- The finite group Δ_i at level `i`. -/
   deckGroup (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) : FiniteGrp
   /-- The action of Δ_i on W_i. -/
-  deck (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) :
-    deckGroup i →* CategoryTheory.End (cover i)
+  deck (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n))
+    : deckGroup i →* CategoryTheory.End (cover i)
   /-- For each δ ∈ Δ_i there is κ ∈ K(𝔑) with p_q ∘ δ = p_{κq} for all q ∈ s_i. -/
-  deck_comp_leg (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) (δ : (deckGroup i).toGrp) :
-    ∃ κ : levelGU n 𝔑, ∀ q ∈ legIndices i, (deck i δ).asHom ≫ leg i q = leg i (κ.val * q)
+  deck_comp_leg (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) (δ : (deckGroup i).toGrp)
+    : ∃ κ : levelGU n 𝔑, ∀ q ∈ legIndices i, (deck i δ).asHom ≫ leg i q = leg i (κ.val * q)
   /-- The maps m_α : Z → Z, one for each family `α` of `ν` integers of `E`. -/
   mulMap (α : Fin ν → 𝓞 E) : base ⟶ base
   /-- The complex point [a]_i of W_i attached to `a`. -/
-  point (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) :
-    ModuliPoint E n ν → (specOver R ℂ ⟶ cover i)
+  point (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n))
+    : ModuliPoint E n ν → (specOver R ℂ ⟶ cover i)
   /-- Every complex point of W_i is some [a]_i. -/
   point_surjective (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) : (point i).Surjective
   /-- π[a]_i = π[b]_i exactly when `a` and `b` are isomorphic at level K(𝔑). -/
-  point_eq_iff (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) (a b : ModuliPoint E n ν) :
-    point i a ≫ leg i ⟦1⟧ = point i b ≫ leg i ⟦1⟧ ↔
-      ∃ z : GL n E, a.IsLevelIso (levelGU n 𝔑) z b
+  point_eq_iff (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) (a b : ModuliPoint E n ν)
+    : point i a ≫ leg i ⟦1⟧ = point i b ≫ leg i ⟦1⟧ ↔ ∃ z : GL n E, a.IsLevelIso (levelGU n 𝔑) z b
   /-- For `g` in `GUPlus E n` with g ∈ s_i, m_α p_g [a]_i = π[a·(g, α)]_i. -/
-  point_leg {i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)} g (α : Fin ν → 𝓞 E)
-    (a : ModuliPoint E n ν) : ↑g ∈ legIndices i →
-    point i a ≫ leg i g.val ≫ mulMap α = point i (a.act g α) ≫ leg i ⟦1⟧
+  point_leg
+    {i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)} g (α : Fin ν → 𝓞 E) (a : ModuliPoint E n ν)
+    : ↑g ∈ legIndices i → point i a ≫ leg i g.val ≫ mulMap α = point i (a.act g α) ≫ leg i ⟦1⟧
   /-- The relative dimension of Z over `Spec R`. -/
   dimension : ℕ
   /-- Z is smooth over `Spec R` of relative dimension `dimension`. -/
@@ -134,34 +139,43 @@ structure New.Variety.Model {E : Type} [Field E] [CMBase E] (n : Type)
   /-- W_i is a closed subscheme of a projective space over `Spec R`. -/
   [projective (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) : HasProjEmbedding (cover i).hom]
   /-- W_i is reduced. -/
-  [isReduced (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) :
-      AlgebraicGeometry.IsReduced (cover i).left]
+  [isReduced (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n))
+    : AlgebraicGeometry.IsReduced (cover i).left]
   /-- π is onto, and its fibres in characteristic `0` are torsors under Δ_i. -/
   covering (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) : IsGaloisCovering (leg i ⟦1⟧) (deck i)
-  /-- Let g ∈ s_i and let z : a·(g, α) ≅ a at level K(𝔑) have separable characteristic polynomial,
+  /--
+  Let g ∈ s_i and let z : a·(g, α) ≅ a at level K(𝔑) have separable characteristic polynomial,
   with `a.reflection` the involution `markedReflection` of `z` at its `μ`-th listed root. Then at
   [a]_i the polynomial `localTerm` is a constant times det(1 - X (dπ)⁻¹ d(m_α p_g)), in the sense
-  of `IsTangentPoly`. -/
-  tangent (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) (g : GUPlus E n) (α : Fin ν → 𝓞 E)
-    (a : ModuliPoint E n ν) (z : GL n E) (μ : n) :
-    g.val ∈ legIndices i → z.val.charpoly.Separable → a.reflection = markedReflection z μ →
-      (a.act g α).IsLevelIso (levelGU n 𝔑) z a →
-      IsTangentPoly dimension ((algPoints (ℂ) (CommRingCat.of R)).map (leg i ⟦1⟧))
-        ((algPoints (ℂ) (CommRingCat.of R)).map (leg i g.val ≫ mulMap α))
-        ⟨point i a⟩ (localTerm α z.val.charpoly μ)
-  /-- The congruence relation at a split place `w` satisfying `IsSafe`, with residue field k_w of
+  of `IsTangentPoly`.
+  -/
+  tangent
+    (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) (g : GUPlus E n) (α : Fin ν → 𝓞 E)
+    (a : ModuliPoint E n ν) (z : GL n E) (μ : n)
+    : g.val ∈ legIndices i → z.val.charpoly.Separable → a.reflection = markedReflection z μ
+      → (a.act g α).IsLevelIso (levelGU n 𝔑) z a
+      → IsTangentPoly dimension ((algPoints (ℂ) (CommRingCat.of R)).map (leg i ⟦1⟧))
+        ((algPoints (ℂ) (CommRingCat.of R)).map (leg i g.val ≫ mulMap α)) ⟨point i a⟩
+        (localTerm α z.val.charpoly μ)
+  /--
+  The congruence relation at a split place `w` satisfying `IsSafe`, with residue field k_w of
   order q = p^f: if `𝔭` contains the image of `w` and all g_A = `invHeckeIsogeny w A` lie in s_i, A
   a subspace of k_wⁿ of dimension r, then ∑_A (-1)^r q^{r(r-1)/2} [Frob_p^{(n-r)f} p_{g_A}(x)] = 0
-  in the sense of `CongruenceRelation`. -/
-  congruence (w : SplitFinPlace E) : IsSafe 𝔑 w.val →
-    ∀ i (𝔭 : Set R), (∀ c ∈ w.val.asIdeal, algebraMap (𝓞 E) R c ∈ 𝔭) →
-      (∀ A, invHeckeIsogeny w A ∈ legIndices i) →
-      let r (A : Submodule (ResField (w : FinPlace E)) (n → ResField (w : FinPlace E))) :=
-        finrank (ResField w.val) A
-      ∀ ⦃p f : ℕ⦄ [Fact p.Prime], w.val.q = p ^ f →
-        CongruenceRelation (fun A ↦ (-1) ^ r A * w.val.q ^ (r A).choose 2) 𝔭 p
-          (fun A ↦ (card n - r A) * f)
-          (leg i <| invHeckeIsogeny w ·)
+  in the sense of `CongruenceRelation`.
+  -/
+  congruence (w : SplitFinPlace E)
+    : IsSafe 𝔑 w.val
+      → ∀ i (𝔭 : Set R),
+        (∀ c ∈ w.val.asIdeal, algebraMap (𝓞 E) R c ∈ 𝔭) → (∀ A, invHeckeIsogeny w A ∈ legIndices i)
+          → let r (A : Submodule (ResField (w : FinPlace E)) (n → ResField (w : FinPlace E))) :=
+              finrank (ResField w.val) A
+            ∀ ⦃p f : ℕ⦄ [Fact p.Prime],
+              w.val.q = p ^ f
+                → CongruenceRelation
+                  (fun A ↦ (-1) ^ r A * w.val.q ^ (r A).choose 2)
+                  𝔭 p
+                  (fun A ↦ (card n - r A) * f)
+                  (leg i <| invHeckeIsogeny w ·)
 
 end Model
 
@@ -182,17 +196,21 @@ namespace New.Variety
 
 section
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+variable
+  {E : Type} [Field E] [NumberField E] [IsCMField E]
   {n : Type} [Fintype n] [DecidableEq n]
   {𝔑 : 𝓞 E} {d₀ : ℕ} [HasQuadSubfield d₀ E]
   {k W : Type} [CommRing k] [AddCommGroup W] [Module k W]
   {π : Representation k (GL n (𝔸f E)) W} {w : SplitFinPlace E} (g : GL n (LocField w.val))
-  (s s' : SafePlace 𝔑 × ℕ) {x : W}
+  (s s' : SafePlace 𝔑 × ℕ)
+  {x : W}
 
-/-- The endomorphism of the unitary group {g : gᴴg = 1} of matrices over R indexed by `n` that
-applies the involution of R to each entry. -/
-def entryConj {R : Type*} [CommRing R] [StarRing R] :
-    U (1 : Matrix n n R) →* U (1 : Matrix n n R) :=
+/--
+The endomorphism of the unitary group {g : gᴴg = 1} of matrices over R indexed by `n` that
+applies the involution of R to each entry.
+-/
+def entryConj {R : Type*} [CommRing R] [StarRing R]
+    : U (1 : Matrix n n R) →* U (1 : Matrix n n R) :=
   (invTransposeGL.toMonoidHom.comp (U 1).subtype).codRestrict (U (1 : Matrix n n R)) fun g ↦
     -- transpose the equation that makes `g⁻¹` unitary
     mem_unitaryGroupOf_iff.2 <| mul_eq_one_comm.1 (by
@@ -526,9 +544,11 @@ lemma heckeSum_mem_heckeAlgebra : heckeSum n k s.1 s.2 ∈ heckeAlgebra n k 𝔑
       (fun _ ↦ by simp [commute_scalar_GL, Commute.map])
       ⟨a, conjAtSplit_mem_intGL_iff.mp a.prop.2.1⟩
 
-/-- For s = (w, j), with w a safe split place and j a natural number, the element τ_{w,j} as a
+/--
+For s = (w, j), with w a safe split place and j a natural number, the element τ_{w,j} as a
 member of the Hecke algebra of level K(𝔑) over k. The pair is one argument so that words in
-these elements are lists. -/
+these elements are lists.
+-/
 def tauHecke : heckeAlgebra n k 𝔑 := ⟨heckeSum n k s.1 s.2, heckeSum_mem_heckeAlgebra s⟩
 
 /-- The element τ_{w,j} of the Hecke algebra keeps the vectors fixed by K(𝔑). -/
@@ -577,40 +597,55 @@ end
 
 open LinearMap Submodule
 
-variable {E : Type} [Field E] [CMBase E] {n : Type} [Fintype n] [DecidableEq n] {𝔑 : 𝓞 E} {d₀ : ℕ}
-  [HasQuadSubfield d₀ E] {k : Type} [CommRing k] {ν : ℕ} {R : Subalgebra (𝓞 E) E}
-  (T : Model n d₀ 𝔑 ν R)
+variable
+  {E : Type} [Field E] [CMBase E]
+  {n : Type} [Fintype n] [DecidableEq n]
+  {𝔑 : 𝓞 E} {d₀ : ℕ} [HasQuadSubfield d₀ E]
+  {k : Type} [CommRing k]
+  {ν : ℕ} {R : Subalgebra (𝓞 E) E} (T : Model n d₀ 𝔑 ν R)
   (F : (Over (AlgebraicGeometry.Spec (CommRingCat.of R)))ᵒᵖ ⥤ ModuleCat.{2} k)
 
-/-- For a contravariant functor F to k-modules, the pull-back F(Z) → F(W_i) along the leg of level
-`i` at the coset `q`. -/
-def Model.legPullback (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n))
-    (q : GL n (𝔸f E) ⧸ levelGU n 𝔑) : F.obj (Opposite.op T.base) →ₗ[k] F.obj
+/--
+For a contravariant functor F to k-modules, the pull-back F(Z) → F(W_i) along the leg of level
+`i` at the coset `q`.
+-/
+def Model.legPullback
+    (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) (q : GL n (𝔸f E) ⧸ levelGU n 𝔑)
+    : F.obj (Opposite.op T.base) →ₗ[k] F.obj
       (Opposite.op (T.cover i)) :=
   (F.map (T.leg i q).op).hom
 
-/-- The operators t(w, j) on F(Z), indexed by a safe place w and a natural number j, are the action
-of the Hecke elements τ_{w,j}, read on the level `I w`. -/
-structure Model.IsHeckeAction (I : SafePlace 𝔑 → Finset (nonZeroDivisors (𝓞 E) × GUPlus E n))
-    (t : SafePlace 𝔑 × ℕ → Module.End k (F.obj (Opposite.op T.base))) : Prop where
+/--
+The operators t(w, j) on F(Z), indexed by a safe place w and a natural number j, are the action
+of the Hecke elements τ_{w,j}, read on the level `I w`.
+-/
+structure Model.IsHeckeAction
+    (I : SafePlace 𝔑 → Finset (nonZeroDivisors (𝓞 E) × GUPlus E n))
+    (t : SafePlace 𝔑 × ℕ → Module.End k (F.obj (Opposite.op T.base)))
+    : Prop where
   /-- The operators commute. -/
   commute (s s' : SafePlace 𝔑 × ℕ) : Commute (t s) (t s')
   /-- Pulled back to the level `I w`, t(w, j) is the sum of the legs over τ_{w,j}. -/
-  legPullback_comp (w : SafePlace 𝔑) (j : ℕ) :
-    T.legPullback F (I w) ⟦1⟧ ∘ₗ t (w, j) = cosetSum (T.legPullback F (I w)) (heckeSum n k w j)
-  /-- On deep levels, a word L in the Hecke elements acts as the same word in the operators: for a
+  legPullback_comp (w : SafePlace 𝔑) (j : ℕ)
+    : T.legPullback F (I w) ⟦1⟧ ∘ₗ t (w, j) = cosetSum (T.legPullback F (I w)) (heckeSum n k w j)
+  /--
+  On deep levels, a word L in the Hecke elements acts as the same word in the operators: for a
   ring k', b ∈ k'[G] supported on `GUPlus E n` and Ψ additive, the sum of Ψ of the legs over
-  b · L(τ) is the sum over b of Ψ of the legs composed with L(t). -/
-  eventually_cosetSum_mul_prod (k' : Type) [CommRing k'] (L : List (SafePlace 𝔑 × ℕ))
-      {b : MonoidAlgebra k' (GL n (𝔸f E))} (hb : b ∈ spanOn k' (GUPlus E n)) :
-    ∀ᶠ i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n) in Filter.atTop,
-      ∀ {N : Type 2} [AddCommGroup N] [Module k' N]
-      (Ψ : (F.obj (Opposite.op T.base) →ₗ[k] F.obj (Opposite.op (T.cover i))) →+ N),
-      cosetSum (fun q : GL n (𝔸f E) ⧸ levelGU n 𝔑 ↦ Ψ (T.legPullback F i q))
-        (b * (L.map tauHecke).prod.val) =
-        cosetSum (fun q : GL n (𝔸f E) ⧸ levelGU n 𝔑 ↦ Ψ (T.legPullback F i q ∘ₗ (L.map t).prod)) b
+  b · L(τ) is the sum over b of Ψ of the legs composed with L(t).
+  -/
+  eventually_cosetSum_mul_prod
+    (k' : Type) [CommRing k']
+    (L : List (SafePlace 𝔑 × ℕ))
+    {b : MonoidAlgebra k' (GL n (𝔸f E))} (hb : b ∈ spanOn k' (GUPlus E n))
+    : ∀ᶠ i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n) in Filter.atTop,
+        ∀ {N : Type 2} [AddCommGroup N] [Module k' N]
+        (Ψ : (F.obj (Opposite.op T.base) →ₗ[k] F.obj (Opposite.op (T.cover i))) →+ N),
+        cosetSum (fun q : GL n (𝔸f E) ⧸ levelGU n 𝔑 ↦ Ψ (T.legPullback F i q))
+          (b * (L.map tauHecke).prod.val) =
+          cosetSum (fun q : GL n (𝔸f E) ⧸ levelGU n 𝔑 ↦ Ψ (T.legPullback F i q ∘ₗ (L.map t).prod)) b
 
-variable {T : Model n d₀ 𝔑 ν R}
+variable
+  {T : Model n d₀ 𝔑 ν R}
   {F : (Over (AlgebraicGeometry.Spec (CommRingCat.of R)))ᵒᵖ ⥤ ModuleCat.{2} k}
 
 /-- Suppose the level `I w` has legs for all `invHeckeIsogeny w U`, and each t(w, j), pulled back to
@@ -788,9 +823,11 @@ lemma card_torsionBySet_adelicTorsion {I : Ideal (𝓞 E)} (hI : I ≠ ⊥) :
 
 end
 
-variable {E : Type} [Field E] [CMBase E] {D : PEL E} {R : CommRingCat} {Z : Scheme}
-  {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ} (y : ThetaObject X (Spec R))
-  [IsLocalRing R] (x : ThetaObject X (Spec ⟨ℂ⟩))
+variable
+  {E : Type} [Field E] [CMBase E]
+  {D : PEL E} {R : CommRingCat} {Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))}
+  {X : ThetaFamily D Z τ} (y : ThetaObject X (Spec R)) [IsLocalRing R]
+  (x : ThetaObject X (Spec ⟨ℂ⟩))
 
 /-- On the abelian scheme of an object y over a local ring, multiplication by a non-zero element
 a of O_E is finite, flat and surjective. -/
@@ -843,7 +880,9 @@ open NumberField Subgroup Submodule nonZeroDivisors
 
 namespace New.Variety
 
-variable {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n] {𝔑 : 𝓞 E}
+variable
+  {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
+  {𝔑 : 𝓞 E}
   (𝔪 : (𝓞 E)⁰)
 
 @[simp]
@@ -871,8 +910,10 @@ lemma exists_level_conj_mem (h𝔑 : 𝔑 ≠ 0) (s : Finset ((𝓞 E)⁰ × GUP
   · exact and_and_left.mp ⟨(GU E n).mul_mem (mul_mem (inv_mem x.2.property.1) hk.1) x.2.property.1,
       hL k (by simpa using hk.2) x hx⟩
 
-/-- For a non-zero element 𝔪 of O_E, the set of non-zero elements of (𝔸_f / Ô)ⁿ ≅ (E / O_E)ⁿ
-killed by 𝔪. -/
+/--
+For a non-zero element 𝔪 of O_E, the set of non-zero elements of (𝔸_f / Ô)ⁿ ≅ (E / O_E)ⁿ
+killed by 𝔪.
+-/
 abbrev NonzeroTorsion (n : Type) : Type := {s : torsionBy (𝓞 E) (AdelicTorsion E n) 𝔪.val // s ≠ 0}
 
 /-- For a non-zero element 𝔪 of O_E, the 𝔪-torsion of (𝔸_f / Ô)ⁿ is finite. -/

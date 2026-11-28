@@ -72,12 +72,15 @@ namespace New
 
 variable {E : Type*} [Field E] [NumberField E] {x : (𝔸 E)ˣ}
 
-/-- The module `|x|` of an element of `(𝔸 E)ˣ`, as a homomorphism to `ℝ`: the product of the
+/--
+The module `|x|` of an element of `(𝔸 E)ˣ`, as a homomorphism to `ℝ`: the product of the
 squared norms of the components at the infinite places (each a copy of `ℂ`) and of the norms at the
-finite places. For a totally complex `E` this is the idelic module. -/
+finite places. For a totally complex `E` this is the idelic module.
+-/
 noncomputable def ideleAbs : (𝔸 E)ˣ →* ℝ where
-  toFun x := (∏ w : InfinitePlace E, ‖(x : 𝔸 E).1 w‖ ^ 2) *
-    ∏ᶠ w : IsDedekindDomain.HeightOneSpectrum (𝓞 E), ‖(x : 𝔸 E).2 w‖
+  toFun x :=
+    (∏ w : InfinitePlace E, ‖(x : 𝔸 E).1 w‖ ^ 2)
+      * ∏ᶠ w : IsDedekindDomain.HeightOneSpectrum (𝓞 E), ‖(x : 𝔸 E).2 w‖
   map_one' := by simp
   map_mul' x y := by
     -- an idele is a unit at almost all finite places, so the infinite product splits
@@ -227,8 +230,10 @@ instance [IsCMField E] : IsStarStable (Ô E) := ⟨star_mem_Ô⟩
 
 /-! ### The module of a finite idele -/
 
-/-- The module `|x|` of a finite idele `x`: the module `New.ideleAbs` of the idele with finite part
-`x` and component `1` at the infinite places. -/
+/--
+The module `|x|` of a finite idele `x`: the module `New.ideleAbs` of the idele with finite part
+`x` and component `1` at the infinite places.
+-/
 noncomputable def finIdeleAbs : (𝔸f E)ˣ →* ℝ := ideleAbs.comp finIdeleIncl
 
 lemma finIdeleAbs_apply (x : (𝔸f E)ˣ) : finIdeleAbs x = ∏ᶠ w : FinPlace E, ‖x.val w‖ := by
@@ -447,8 +452,10 @@ instance : Free (𝔸f K) (𝔸f L) := .of_basis (adeleBasis (finBasis K L))
 
 instance : Module.Finite (𝔸f K) (𝔸f L) := .of_basis (adeleBasis (finBasis K L))
 
-/-- For an extension L/K of number fields, the algebra norm from the finite adeles of L to the
-finite adeles of K, as a multiplicative map. -/
+/--
+For an extension L/K of number fields, the algebra norm from the finite adeles of L to the
+finite adeles of K, as a multiplicative map.
+-/
 noncomputable abbrev adeleNorm : 𝔸f L →* 𝔸f K := Algebra.norm (S := 𝔸f L) (𝔸f K)
 
 /-- The norm map from the finite adeles of `L` to those of `K` is continuous. -/
@@ -493,8 +500,10 @@ lemma finAdeleIncl_adeleNorm [IsGalois K L] :
   denseRange_algebraMap_finAdele.eq (by simp [norm_eq_prod_automorphisms])
 
 variable {L} in
-/-- For an extension L/K, a finite place w of L and v = `FinPlace.below K w` the place of K below w,
-the local norm L_w^× → K_v^×: the v-component of the adelic norm of the idele supported at w. -/
+/--
+For an extension L/K, a finite place w of L and v = `FinPlace.below K w` the place of K below w,
+the local norm L_w^× → K_v^×: the v-component of the adelic norm of the idele supported at w.
+-/
 noncomputable def localNorm (w : FinPlace L) : (LocField w)ˣ →* (LocField (FinPlace.below K w))ˣ :=
   ((ideleAt (w.below K)).comp (map (adeleNorm K L))).comp (locIdele w)
 
@@ -567,8 +576,8 @@ open NumberField WithZeroMulInt FinitePlace Algebra Valued HeightOneSpectrum
 
 namespace New
 
-variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
-  {w : FinPlace L}
+variable
+  {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] {w : FinPlace L}
 
 /-- The norm from `L` to `K` keeps the module `New.finIdeleAbs`, the product of the normalised
 absolute values of the components, of a finite idele. -/

@@ -212,10 +212,11 @@ lemma New.exists_mul_prod_eq_one {G ι : Type*} [Monoid G] [Fintype ι] (ψ : G 
     simpa [Finsupp.single_apply, hne] using DFunLike.congr_fun h_coeffs 1
   exact h_prod_ne_one prod_empty
 
-variable {K : Type*}
-  (L : Type*) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] [IsGalois K L]
-  {W : Subgroup (𝔸f K)ˣ} (hW_open : W.IsOpen)
-  (hW_pos : ∀ x : Kˣ, IsTotallyPositive x.val → principalIdele (x : Kˣ) ∈ W)
+variable
+  {K : Type*} (L : Type*)
+  [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] [IsGalois K L]
+  {W : Subgroup (𝔸f K)ˣ}
+  (hW_open : W.IsOpen) (hW_pos : ∀ x : Kˣ, IsTotallyPositive x.val → principalIdele (x : Kˣ) ∈ W)
 
 include hW_open hW_pos
 
@@ -377,8 +378,9 @@ namespace New
 
 open Ideal NumberField Cohomology Units NeZero Algebra QZChar
 
-variable {Γ K L : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K] [Field L]
-  [NumberField L] [Algebra K L]
+variable
+  {Γ K L : Type}
+  [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
 
 /-- The adelic norm `New.adeleNorm K L` takes the principal idele of `x` in `Lˣ` to the principal
 idele of the norm of `x`. -/
@@ -400,8 +402,9 @@ lemma adeleNorm_mem_closure {y : 𝔸f L} {v : IsDedekindDomain.HeightOneSpectru
   exact map_mem_closure h_cont (denseRange_algebraMap_finAdele y)
     (Set.mapsTo_range_iff.mpr fun x ↦ ⟨x, (h_on_L x).symm⟩)
 
-variable [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω] [Algebra L Ω]
-  [IsScalarTower K L Ω] {χ : QZChar Γ} [IsProGalois (ker χ) L Ω]
+variable
+  [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω] [Algebra L Ω] [IsScalarTower K L Ω]
+  {χ : QZChar Γ} [IsProGalois (ker χ) L Ω]
 
 /-- Let the continuous character χ : Γ → ℚ/ℤ cut out the finite extension L of K, and let K_v be the
 completion of K at the finite place v. If a unit u of K_v is a limit in K_v of norms from L to K,
@@ -573,11 +576,13 @@ lemma card_range_abelianLift_comp_artinAt [IsGalois K L] {l : ℕ} (hl : l.Prime
   · -- One place lies above `v`, and the local symbol takes `l` values.
     simp [← h_mul, h_one_place, h_range_prime.pos]
 
-/-- The tuple of the local symbols `χ ∘ artinAt Γ v` at the places `v` of a finite set `S` of
+/--
+The tuple of the local symbols `χ ∘ artinAt Γ v` at the places `v` of a finite set `S` of
 finite places of `K`, as a homomorphism on the finite ideles of `K`; each symbol takes its values in
-its range. -/
-private noncomputable def localSymbols (χ : QZChar Γ) (S : Finset (FinPlace K)) :
-    (𝔸f K)ˣ →* (i : S) → ((abelianLift χ).comp (artinAt Γ i)).range :=
+its range.
+-/
+private noncomputable def localSymbols (χ : QZChar Γ) (S : Finset (FinPlace K))
+    : (𝔸f K)ˣ →* (i : S) → ((abelianLift χ).comp (artinAt Γ i)).range :=
   MonoidHom.pi fun v : SetLike.coe S ↦
     ((abelianLift χ).comp (artinAt Γ v.val)).rangeRestrict.comp (ideleAt v.val)
 

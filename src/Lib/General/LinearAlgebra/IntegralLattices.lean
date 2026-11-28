@@ -114,8 +114,10 @@ namespace New
 
 variable {A : Type*} [CommRing A] (R : Subring A) {n : Type*} [Fintype n] [DecidableEq n] {e : A}
 
-/-- For all `a b : A` there is an idempotent `e` of `R` such that `a` and `b` are `R`-multiples of
-`(1 - e) a + e b`. For a valuation ring take `e = 0` or `e = 1`. -/
+/--
+For all `a b : A` there is an idempotent `e` of `R` such that `a` and `b` are `R`-multiples of
+`(1 - e) a + e b`. For a valuation ring take `e = 0` or `e = 1`.
+-/
 abbrev IsValuationPair : Prop :=
   ∀ a b : A, ∃ e : R, e.val * e = e ∧ R ∙ a ⊔ R ∙ b ≤ R ∙ (a - e * (a - b))
 
@@ -139,10 +141,11 @@ lemma IsValuationPair.top : IsValuationPair R → IsValuationPair (⊤ : Subring
 
 /-- For an idempotent e of the commutative ring A, the endomorphism g ↦ e·g + (1−e)·1 of GL_n(A). -/
 def cutGL (he : IsIdempotentElem e) : GL n A →* GL n A :=
-  Units.map
-    { toFun g := e • g + (1 - e) • 1
-      map_one' := by simp
-      map_mul' := by simp [he.eq, mul_add, add_mul, smul_smul, mul_sub, sub_mul] }
+  Units.map {
+    toFun g := e • g + (1 - e) • 1
+    map_one' := by simp
+    map_mul' := by simp [he.eq, mul_add, add_mul, smul_smul, mul_sub, sub_mul]
+  }
 
 /-- Cutting patches two invertible matrices `c` and `d` to the invertible matrix
 `e • d + (1 - e) • c`. -/
@@ -152,13 +155,15 @@ lemma val_mul_cutGL_inv_mul (he : IsIdempotentElem e) (c d : GL n A) :
   rw [Units.val_mul, cut_val]
   simp [mul_add, -Matrix.coe_units_inv]
 
-/-- For a self-adjoint idempotent e of A, the endomorphism g ↦ e·g + (1−e)·1 of the unitary group of
-the identity form, the g in GL_n(A) with gᴴg = 1. -/
-def U.cutAt (he : IsIdempotentElem e) [StarRing A] (hs : star e = e) :
-    U (1 : Matrix n n A) →* U (1 : Matrix n n A) :=
+/--
+For a self-adjoint idempotent e of A, the endomorphism g ↦ e·g + (1−e)·1 of the unitary group of
+the identity form, the g in GL_n(A) with gᴴg = 1.
+-/
+def U.cutAt (he : IsIdempotentElem e) [StarRing A] (hs : star e = e)
+    : U (1 : Matrix n n A) →* U (1 : Matrix n n A) :=
   ((cutGL he).comp (U 1).subtype).codRestrict (U 1) <| by
-    simp_all [Matrix.mem_unitaryGroupOf_iff, Matrix.star_eq_conjTranspose,
-      cutGL, he.eq, mul_add, add_mul, smul_smul, mul_sub]
+    simp_all [Matrix.mem_unitaryGroupOf_iff, Matrix.star_eq_conjTranspose, cutGL, he.eq, mul_add,
+      add_mul, smul_smul, mul_sub]
 
 end New
 
@@ -324,8 +329,9 @@ lemma exists_invTransposeGL_inv_eq (hO : IsValuationPair O) (g : GL n R) :
     Units.ext ?_⟩
   simp [invTransposeGL, transposeGL, h_smith, mul_assoc, -coe_units_inv]
 
-variable {A W W' F : Type*} [CommSemiring A] [AddCommMonoid W] [Module A W] [AddCommMonoid W']
-  [Module A W'] [Field F]
+variable
+  {A W W' F : Type*}
+  [CommSemiring A] [AddCommMonoid W] [Module A W] [AddCommMonoid W'] [Module A W'] [Field F]
   {O : ValuationSubring F} {π : Representation A (GL n F) W} {π' : Representation A (GL n F) W'}
   {f f' : GL n F → A} {v : W}
 
@@ -510,22 +516,28 @@ class IsStarStable : Prop where
 
 /-! ### Adelic pairs, indices, lattices and levels -/
 
-/-- The properties of the pair Ô ⊂ 𝔸_f abstracted to R ⊂ A: R is open, compact and stable under
+/--
+The properties of the pair Ô ⊂ 𝔸_f abstracted to R ⊂ A: R is open, compact and stable under
 conjugation, locally a valuation ring, contains a skew element i with −i·i = 1 and an element of
-trace 1, and −1 is a norm from R. -/
+trace 1, and −1 is a norm from R.
+-/
 class IsAdelic (R : outParam (Subring A)) : Prop extends IsStarStable R where
   /-- `R` is open and compact in `A`. -/
   isOpen_isCompact : IsOpen (R : Set A) ∧ IsCompact (R : Set A)
-  /-- Any two elements `a`, `b` of `A` are `R`-multiples of `(1 - e) * a + e * b` for some
-  idempotent `e` of `R`, as in a product of valuation rings. -/
+  /--
+  Any two elements `a`, `b` of `A` are `R`-multiples of `(1 - e) * a + e * b` for some
+  idempotent `e` of `R`, as in a product of valuation rings.
+  -/
   isValuationPair : IsValuationPair R
   /-- Some `i ∈ R` has `-i * i = 1` and `star i = -i`, and some `τ ∈ R` has `τ + star τ = 1`. -/
   exists_skew_unit : ∃ i ∈ R, ∃ τ ∈ R, -i * i = 1 ∧ star i = -i ∧ τ + star τ = 1
   /-- `-1` is the norm `star c * c` of some `c ∈ R`. -/
   exists_norm_neg_one : ∃ c ∈ R, star c * c = -1
 
-/-- The denominator of a: the index in R of the additive subgroup of the r ∈ R with ar ∈ R
-(0 if infinite). -/
+/--
+The denominator of a: the index in R of the additive subgroup of the r ∈ R with ar ∈ R
+(0 if infinite).
+-/
 def denomIndex (a : A) : ℕ :=
   (R.toAddSubgroup.comap (AddMonoidHom.mulLeft a)).relIndex R.toAddSubgroup
 
@@ -535,16 +547,19 @@ def colLattice : Submodule R (m → A) := (intVectors R n).map (M.mulVecLin.rest
 /-- The R-module of vectors v over A such that Mv has entries in R. -/
 def preimageLattice : Submodule R (n → A) := (intVectors R m).comap (M.mulVecLin.restrictScalars R)
 
-/-- The subgroup of the unitary group U(J) over A of elements lying in GL_n(R) and congruent to
-1 modulo the unit g of A, that is, with g⁻¹(k − 1) integral. -/
+/--
+The subgroup of the unitary group U(J) over A of elements lying in GL_n(R) and congruent to
+1 modulo the unit g of A, that is, with g⁻¹(k − 1) integral.
+-/
 def unitaryLevel (J : Matrix n n A) : Subgroup (U J) :=
   ((congruenceGL (R ∙ (g : A)) id).subgroupOf (U J)).copy
-      {k : U J | k.val ∈ intGL n R ∧ IsIntMatrix R (g⁻¹ • ((k.val : Matrix n n A) - 1))} <| by
-    ext k
-    change k.val ∈ intGL n R ∧ (∀ i j : n, (g⁻¹ • ((k.val : Matrix n n A) - 1)) i j ∈ R) ↔
-      k.val ∈ intGL n R ∧ ∀ i j : n, ((k.val : Matrix n n A) - 1) i j ∈ R ∙ (g : A)
-    -- An entry `a` lies in `R ∙ g` if and only if `g⁻¹ * a ∈ R`.
-    simp only [Filling.mem_span_unit_iff, Matrix.smul_apply, Units.smul_def, smul_eq_mul]
+      {k : U J | k.val ∈ intGL n R ∧ IsIntMatrix R (g⁻¹ • ((k.val : Matrix n n A) - 1))} <|
+    by
+      ext k
+      change k.val ∈ intGL n R ∧ (∀ i j : n, (g⁻¹ • ((k.val : Matrix n n A) - 1)) i j ∈ R)
+        ↔ k.val ∈ intGL n R ∧ ∀ i j : n, ((k.val : Matrix n n A) - 1) i j ∈ R ∙ (g : A)
+      -- An entry `a` lies in `R ∙ g` if and only if `g⁻¹ * a ∈ R`.
+      simp only [Filling.mem_span_unit_iff, Matrix.smul_apply, Units.smul_def, smul_eq_mul]
 
 /-- The property of a square matrix T over A that it is hermitian and lies in GL_n(R). -/
 def IsUnimodular (T : Matrix n n A) : Prop := Tᴴ = T ∧ ∃ u ∈ intGL n R, u.val = T
@@ -568,8 +583,7 @@ open Matrix
 
 namespace New
 
-variable {R n k : Type*} [DecidableEq k] [CommRing R] [Fintype n]
-  (O : Subring R) (X : Matrix n k R)
+variable {R n k : Type*} [DecidableEq k] [CommRing R] [Fintype n] (O : Subring R) (X : Matrix n k R)
 
 /-- The n × k matrix X over R has a left inverse over R. -/
 abbrev HasLeftInv : Prop := ∃ L : Matrix k n R, L * X = 1
@@ -608,8 +622,10 @@ section UnimodularForms
 
 open Matrix BesselIndex
 
-variable {A l n μ : Type*} [CommRing A] {R : Subring A} {M : Matrix l μ A}
-  [Fintype n] [DecidableEq n] {𝔰 : Shape} {k : GL n A}
+variable
+  {A l n μ : Type*} [CommRing A]
+  {R : Subring A} {M : Matrix l μ A} [Fintype n] [DecidableEq n]
+  {𝔰 : Shape} {k : GL n A}
 
 lemma _root_.Membership.mem.isIntMatrix (hk : k ∈ intGL n R) : IsIntMatrix R k.val :=
   (mem_intGL.1 hk).1
@@ -751,10 +767,12 @@ open Matrix
 variable {A : Type*} [CommRing A] {R : Subring A} {m n : Type*} [Fintype n] {M : Matrix m n A}
 
 open scoped Classical in
-/-- For π : R → B, the ℂ-linear map sending a function f on matrices over B to the function on
-matrices S over A that is f(πS) for S integral, else 0. -/
-noncomputable def liftIntegralFn {B : Type*} (π : R → B) [Fintype m] :
-    (Matrix m n B → ℂ) →ₗ[ℂ] Matrix m n A → ℂ :=
+/--
+For π : R → B, the ℂ-linear map sending a function f on matrices over B to the function on
+matrices S over A that is f(πS) for S integral, else 0.
+-/
+noncomputable def liftIntegralFn {B : Type*} (π : R → B) [Fintype m]
+    : (Matrix m n B → ℂ) →ₗ[ℂ] Matrix m n A → ℂ :=
   IsLinearMap.mk'
     (fun (f : Matrix m n B → ℂ) (S : Matrix m n A) ↦
       if h : ∀ (i : m) (j : n), S i j ∈ R then f (of fun i j ↦ π ⟨S i j, h i j⟩) else 0)

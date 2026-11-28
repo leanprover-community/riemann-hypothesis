@@ -43,13 +43,15 @@ lemma eval_derivative_nodal (x : ι → ℝ) (i : ι) :
     (derivative (nodal univ x)).eval (x i) = ∏ j ∈ univ.erase i, (x i - x j) := by
   rw [eval_nodal_derivative_eval_node_eq (mem_univ i), eval_nodal]
 
-/-- Let `p = nodal univ x` be the monic polynomial with the distinct roots `x i` and let `F` be
+/--
+Let `p = nodal univ x` be the monic polynomial with the distinct roots `x i` and let `F` be
 monic of smaller degree. The residues `F (x i) / p' (x i)` of `F / p` add up to `1` if
-`deg F + 1 = deg p` and to `0` otherwise. -/
-theorem sum_eval_div_eval_derivative_nodal (hx : Function.Injective x) (hF : F.Monic)
-    (h_degree : F.natDegree < Fintype.card ι) :
-    ∑ i : ι, F.eval (x i) / (derivative (nodal univ x)).eval (x i) =
-      if F.natDegree + 1 = Fintype.card ι then 1 else 0 := by
+`deg F + 1 = deg p` and to `0` otherwise.
+-/
+theorem sum_eval_div_eval_derivative_nodal
+    (hx : Function.Injective x) (hF : F.Monic) (h_degree : F.natDegree < Fintype.card ι)
+    : ∑ i : ι, F.eval (x i) / (derivative (nodal univ x)).eval (x i)
+      = if F.natDegree + 1 = Fintype.card ι then 1 else 0 := by
   -- By Lagrange's formula the sum is the coefficient of `F` in degree `deg p - 1`.
   simp_rw [eval_derivative_nodal]
   rw [← coeff_eq_sum hx.injOn (degree_le_natDegree.trans_lt (Nat.cast_lt.2 h_degree)), card_univ]
@@ -57,16 +59,21 @@ theorem sum_eval_div_eval_derivative_nodal (hx : Function.Injective x) (hF : F.M
   · rw [← h_top, Nat.add_sub_cancel, hF.coeff_natDegree]
   · exact coeff_eq_zero_of_natDegree_lt (by lia)
 
-/-- Let `p = nodal univ x` have the distinct roots `x i`, let `deg F < deg p` and let `c` not be a
+/--
+Let `p = nodal univ x` have the distinct roots `x i`, let `deg F < deg p` and let `c` not be a
 root. The residues of `F / ((t - c) p)` at the roots of `p` add up to minus the residue
-`F (c) / p (c)` at the only other pole. -/
-theorem sum_eval_div_sub_mul_eval_derivative_nodal (hx : Function.Injective x) {c : ℝ}
-    (hc : ∀ i : ι, c ≠ x i) (h_degree : F.natDegree < Fintype.card ι) :
-    ∑ i : ι, F.eval (x i) / ((x i - c) * (derivative (nodal univ x)).eval (x i)) =
-      -(F.eval c / (nodal univ x).eval c) := by
+`F (c) / p (c)` at the only other pole.
+-/
+theorem sum_eval_div_sub_mul_eval_derivative_nodal
+    (hx : Function.Injective x)
+    {c : ℝ} (hc : ∀ i : ι, c ≠ x i)
+    (h_degree : F.natDegree < Fintype.card ι)
+    : ∑ i : ι, F.eval (x i) / ((x i - c) * (derivative (nodal univ x)).eval (x i))
+      = -(F.eval c / (nodal univ x).eval c) := by
   -- This is the barycentric form of Lagrange's formula for `F (c)`.
-  have h_value : F.eval c = (nodal univ x).eval c *
-      ∑ i : ι, nodalWeight univ x i * (c - x i)⁻¹ * F.eval (x i) := by
+  have h_value
+      : F.eval c
+        = (nodal univ x).eval c * ∑ i : ι, nodalWeight univ x i * (c - x i)⁻¹ * F.eval (x i) := by
     rw [← eval_interpolate_not_at_node _ fun i _ ↦ hc i,
       ← eq_interpolate hx.injOn (degree_le_natDegree.trans_lt (Nat.cast_lt.2 h_degree))]
   rw [h_value, mul_div_cancel_left₀ _ (eval_nodal_not_at_node fun i _ ↦ hc i), ← sum_neg_distrib]

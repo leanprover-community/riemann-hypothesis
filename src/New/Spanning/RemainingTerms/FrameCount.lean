@@ -59,8 +59,9 @@ open Matrix Finset Pointwise Fin
 
 namespace New.Filling
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
-  {c : S.Classes} {γ : S.G E} {j : Fin (𝔰.ϱ + 2)}
+variable
+  {E : Type} [Field E] [CMType E]
+  {𝔰 : Shape} {S : Filling E 𝔰} {c : S.Classes} {γ : S.G E} {j : Fin (𝔰.ϱ + 2)}
 
 /-- Let `γ` have cell rank `j` (`HasCellRank`), let `Z = S.frameProducts γ` be the matrix of
 products of the frame `f` with `γ f`, and let `k` be the last index or `j ≤ k`. The combination `y`
@@ -331,17 +332,20 @@ lemma IsNear.norm_adjugate_paddedLeading_le [S.IsAdmissible] {γ : S.G E} (h_nea
   have h_adj := norm_adjugate_le_pow h_entry k l
   rwa [← RingHom.map_adjugate] at h_adj
 
-/-- The coordinates in the isotropic space `A` spanned by `e₁, …, e_ϱ` of the columns `k ≥ j` of
+/--
+The coordinates in the isotropic space `A` spanned by `e₁, …, e_ϱ` of the columns `k ≥ j` of
 `γ f · adj Y`, where `f` is the frame, `γ f = frameImage γ`, and `Y` consists of the first `j` rows
 of the matrix of products completed by rows of `1`; the columns `k < j` are set to `0`. For `γ` of
 cell rank `j` these columns lie both in the span of `f` and in the span of `γ f`. There are none
-when `j = ϱ + 1`. -/
-noncomputable def sharedVectors (S : Filling E 𝔰) (j : Fin (𝔰.ϱ + 2)) (γ : S.G E) :
-    Matrix (Fin 𝔰.ϱ) (Fin (𝔰.ϱ + 1)) E :=
+when `j = ϱ + 1`.
+-/
+noncomputable def sharedVectors (S : Filling E 𝔰) (j : Fin (𝔰.ϱ + 2)) (γ : S.G E)
+    : Matrix (Fin 𝔰.ϱ) (Fin (𝔰.ϱ + 1)) E :=
   of fun (a : Fin 𝔰.ϱ) (k : Fin (𝔰.ϱ + 1)) ↦
     if j.val ≤ k.val then
       (frameImage γ.val.val * (paddedLeading j (S.frameProducts γ)).adjugate) (.inl a) k
-    else 0
+    else
+      0
 
 /-- Let `γ` have cell rank `j` (`S.HasCellRank j γ`). Let `k ≥ j`. Then column `k` of `γ f · adj Y`
 lies in the span of the frame `f = frameImage 1`. Here `γ f = frameImage γ`, and `Y` is the first
@@ -472,10 +476,12 @@ section Skew
 
 variable {R m n : Type} [CommRing R] [StarRing R] [Fintype m] [Fintype n]
 
-/-- The matrix `σ = δ̄ μ α - δ (μ α)ᴴ - αᴴ Pᴴ μ α`, a skew-hermitian solution of `σ P = δ δ̄ μ` when
+/--
+The matrix `σ = δ̄ μ α - δ (μ α)ᴴ - αᴴ Pᴴ μ α`, a skew-hermitian solution of `σ P = δ δ̄ μ` when
 `Pᴴ μ` is skew-hermitian and `μ α P = δ μ`. Under these hypotheses, if `δ` is invertible and
 `δ⁻¹ μ α`, `δ⁻¹ P α` have the blocks `(μ₁, 0; μ₂, 0)`, `(1, 0; θ, 0)`, then `σ` is `δ δ̄` times the
-block matrix `(μ₁ + μ₂ᴴ θ, -μ₂ᴴ; μ₂, 0)`. -/
+block matrix `(μ₁ + μ₂ᴴ θ, -μ₂ᴴ; μ₂, 0)`.
+-/
 def skewSolution (P μ : Matrix m n R) (α : Matrix n m R) (δ : R) : Matrix m m R :=
   star δ • (μ * α) - δ • (μ * α)ᴴ - αᴴ * (Pᴴ * μ) * α
 
@@ -514,10 +520,13 @@ end Skew
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape}
 
-/-- The modulus `M * det (Y * Yᴴ)` for frames with the products `Z`, where `M = S.M` is the product
-of the two level primes and `Y` consists of the first `j` rows of `Z` completed by rows of `1`. -/
-noncomputable def frameModulus (S : Filling E 𝔰) (j : Fin (𝔰.ϱ + 2))
-    (Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E) : E :=
+/--
+The modulus `M * det (Y * Yᴴ)` for frames with the products `Z`, where `M = S.M` is the product
+of the two level primes and `Y` consists of the first `j` rows of `Z` completed by rows of `1`.
+-/
+noncomputable def frameModulus
+    (S : Filling E 𝔰) (j : Fin (𝔰.ϱ + 2)) (Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E)
+    : E :=
   S.M • (paddedLeading j Z * (paddedLeading j Z)ᴴ).det
 
 variable {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E}

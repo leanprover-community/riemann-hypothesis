@@ -130,7 +130,6 @@ open PowerSeries IsUltrametricDist
 namespace New
 variable {p : ℕ} [Fact p.Prime]
 
-
 /-- If `g(0) = 0`, then `s g(X) - g(δ X)` has constant term `0`. -/
 lemma constantCoeff_smul_sub_rescale {g : ℂ_[p]⟦X⟧} (hg_zero : constantCoeff g = 0)
     (s δ : ℂ_[p]) : constantCoeff (s • g - rescale δ g) = 0 := by

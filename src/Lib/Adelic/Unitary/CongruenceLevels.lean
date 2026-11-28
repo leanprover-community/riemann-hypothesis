@@ -88,7 +88,6 @@ namespace New
 place w ≠ `star w`, with component 1 away from w and `star w`.
 -/
 
-
 namespace Filling
 
 open Matrix Valued
@@ -139,8 +138,10 @@ section Levels
 
 open Function Matrix NumberField IsLocalRing Subgroup stdLevel Gf Ideal Valued algebraMap
 
-variable {n ι R S E : Type*} [Fintype n] [DecidableEq n] [CommRing R] [CommRing S] [Field E]
-  [NumberField E] {w : FinPlace E} {a b : 𝓞 E}
+variable
+  {n ι R S E : Type*}
+  [Fintype n] [DecidableEq n] [CommRing R] [CommRing S] [Field E] [NumberField E]
+  {w : FinPlace E} {a b : 𝓞 E}
 
 /-! ### Reduction of GL_n and divisibility in the integral finite adeles -/
 
@@ -190,11 +191,13 @@ lemma stdLevel.map_eq_one {g : stdLevel E n} :
 
 /-! ### Principal levels -/
 
-/-- The principal level K(a) for an integer a of E is the subgroup of g in K₀ = `New.stdLevel` such
+/--
+The principal level K(a) for an integer a of E is the subgroup of g in K₀ = `New.stdLevel` such
 that every entry of g - 1 is a·y for some y in Ô. It is the principal congruence subgroup
 `New.congruenceGL` of level aÔ intersected with G_f, here the unitary group `U 1` of the identity
 form, a subgroup of GL_n of the finite adeles; `Subgroup.copy` only restates the carrier so that
-membership unfolds to the displayed condition. -/
+membership unfolds to the displayed condition.
+-/
 def principalLevel : Subgroup (Gf E n) :=
   Subgroup.copy ((congruenceGL (Ô E ∙ algebraMap (𝓞 E) (𝔸f E) a) id).subgroupOf (U 1))
     {g ∈ stdLevel E n | ∀ i j : n, ∃ y ∈ Ô E,
@@ -287,27 +290,33 @@ section LevelsAtPlaces
 
 open Function NumberField IsLocalRing Subgroup stdLevel Gf Ideal algebraMap
 
-variable {n ι R S E : Type*} [Fintype n] [DecidableEq n] [Field E] [NumberField E] {a : 𝓞 E}
-  [IsCMField E]
+variable
+  {n ι R S E : Type*} [Fintype n] [DecidableEq n] [Field E] [NumberField E] {a : 𝓞 E} [IsCMField E]
 variable {w : ι → FinPlace E} {H : Subgroup (∀ i : ι, GL n (ResField (w i)))}
 
-/-- The family w of finite places of the CM field E is injective and no w j is the conjugate of
-any w i; in particular no w i is its own conjugate. -/
+/--
+The family w of finite places of the CM field E is injective and no w j is the conjugate of
+any w i; in particular no w i is its own conjugate.
+-/
 class IsConjApart (w : ι → FinPlace E) : Prop where
   /-- The places of the family are pairwise distinct. -/
   injective : w.Injective
   /-- The conjugate of a place of the family is never a place of the family. -/
   star_ne (i j : ι) : star (w i) ≠ w j
 
-/-- The homomorphism from K₀ to ∏_i GL_n(k_{w_i}) given by reduction modulo each place of the
-family w_i. -/
+/--
+The homomorphism from K₀ to ∏_i GL_n(k_{w_i}) given by reduction modulo each place of the
+family w_i.
+-/
 def stdLevel.reduceFamily (w : ι → FinPlace E) : stdLevel E n →* ∀ i : ι, GL n (ResField (w i)) :=
   MonoidHom.pi fun i ↦ reduceAt (w i)
 
-/-- The subgroup of G_f of elements of K₀ whose reductions modulo the places w_i form an element
-of the subgroup H of ∏_i GL_n(k_{w_i}). -/
-def levelOf (w : ι → FinPlace E) (H : Subgroup (∀ i : ι, GL n (ResField (w i)))) :
-    Subgroup (Gf E n) :=
+/--
+The subgroup of G_f of elements of K₀ whose reductions modulo the places w_i form an element
+of the subgroup H of ∏_i GL_n(k_{w_i}).
+-/
+def levelOf (w : ι → FinPlace E) (H : Subgroup (∀ i : ι, GL n (ResField (w i))))
+    : Subgroup (Gf E n) :=
   (H.comap (reduceFamily w)).map (stdLevel E n).subtype
 
 lemma levelOf_le_stdLevel : levelOf w H ≤ stdLevel E n := map_subtype_le _
@@ -318,10 +327,12 @@ lemma mem_levelOf {g : Gf E n} :
     g ∈ levelOf w H ↔ ∃ h : g ∈ stdLevel E n, reduceFamily w ⟨g, h⟩ ∈ H := by
   simp [levelOf]
 
-/-- The homomorphism from the level `New.levelOf` w H to H given by reduction modulo the places
-w_i. -/
-def levelOf.reduction (w : ι → FinPlace E) (H : Subgroup (∀ i : ι, GL n (ResField (w i)))) :
-    levelOf w H →* H :=
+/--
+The homomorphism from the level `New.levelOf` w H to H given by reduction modulo the places
+w_i.
+-/
+def levelOf.reduction (w : ι → FinPlace E) (H : Subgroup (∀ i : ι, GL n (ResField (w i))))
+    : levelOf w H →* H :=
   ((reduceFamily w).comp (inclusion levelOf_le_stdLevel)).codRestrict H fun g ↦
     (mem_levelOf.1 g.property).2
 
@@ -348,8 +359,10 @@ lemma isOpen_levelOf [Finite ι] : (levelOf w H).IsOpen := by
   exact isOpen_mono (principalLevel_le_levelOf (mem_iInf.1 (absNorm_mem I)))
     (isOpen_principalLevel h_ne)
 
-/-- For finite `ι`, `levelOf w H` is a level (an instance of `IsLevel`): it is open and contained in
-the standard level. -/
+/--
+For finite `ι`, `levelOf w H` is a level (an instance of `IsLevel`): it is open and contained in
+the standard level.
+-/
 instance instIsLevelLevelOf [Finite ι] : IsLevel (levelOf w H) where
   le := levelOf_le_stdLevel
   isOpen := isOpen_levelOf
@@ -420,8 +433,11 @@ section CongruenceLevel
 
 open Nat Circle NumberField Ideal Quotient RingOfIntegers Subgroup stdLevel algebraMap
 
-variable {E : Type*} [Field E] [NumberField E] {n : Type*} [Fintype n] [DecidableEq n]
-  {a b : 𝓞 E} {ι : Type*} [Fintype ι] {w : ι → FinPlace E}
+variable
+  {E : Type*} [Field E] [NumberField E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {a b : 𝓞 E} {ι : Type*} [Fintype ι]
+  {w : ι → FinPlace E}
 
 /-- A continuous character χ : G → S¹ of a nonarchimedean topological group G is trivial on a
 neighbourhood of 1. -/
@@ -539,8 +555,10 @@ end CongruenceLevel
 
 section FiniteGroupAction
 
-variable {n ι A W E : Type*} [Fintype n] [DecidableEq n] [Field E] [NumberField E]
-  [NumberField.IsCMField E] {w : ι → FinPlace E} [CommRing A] [AddCommGroup W] [Module A W]
+variable
+  {n ι A W E : Type*}
+  [Fintype n] [DecidableEq n] [Field E] [NumberField E] [NumberField.IsCMField E]
+  {w : ι → FinPlace E} [CommRing A] [AddCommGroup W] [Module A W]
   {π : Representation A (Gf E n) W} {H : Subgroup (∀ i : ι, GL n (ResField (w i)))} {χ : H →* A}
 
 /-- An element `k` of `New.stdLevel E n` with reduction `x ∈ H` acts on vectors of level
@@ -555,8 +573,10 @@ lemma levelSpace_levelOf_apply {v : W}
 
 variable [Finite ι] [IsConjApart w] (s : ∀ i : ι, GL n (ResField (w i)))
 
-/-- For finitely many distinct places w_i, none conjugate to another or itself, a chosen element
-of K₀ supported at the w_i and their conjugates whose reductions modulo the w_i are s. -/
+/--
+For finitely many distinct places w_i, none conjugate to another or itself, a chosen element
+of K₀ supported at the w_i and their conjugates whose reductions modulo the w_i are s.
+-/
 @[local grind]
 noncomputable def liftResidue : stdLevel E n := (exists_reduceFamily_eq s).choose
 
@@ -600,22 +620,25 @@ lemma map_liftResidue_mem_levelSpace {s : ∀ i : ι, GL n (ResField (w i))}
     _ = χ x • π l.val v := by rw [h_conj, hχ, map_smul]
 
 variable (π χ) in
-/-- For finitely many distinct places w_i, none conjugate to a w_j, and φ : S → ∏ GL_n(k_{w_i})
+/--
+For finitely many distinct places w_i, none conjugate to a w_j, and φ : S → ∏ GL_n(k_{w_i})
 normalising H and fixing χ, the representation s ↦ π(`New.liftResidue` φ(s)) of S on vectors of
-level `New.levelOf` w H and character χ. -/
-noncomputable def levelRep {S : Type*} [Group S] (φ : S →* (i : ι) → GL n (ResField (w i)))
-    (h : ∀ (s : S) (x : H), ∃ hx : (φ s)⁻¹ * x * φ s ∈ H, χ ⟨(φ s)⁻¹ * x * φ s, hx⟩ = χ x) :
-    Representation A S (levelSpace π (levelOf w H) (χ.comp (levelOf.reduction w H))) where
-  toFun s :=
-    (π (liftResidue (φ s))).restrict fun _ hv ↦ map_liftResidue_mem_levelSpace (h s) hv
+level `New.levelOf` w H and character χ.
+-/
+noncomputable def levelRep
+    {S : Type*} [Group S]
+    (φ : S →* (i : ι) → GL n (ResField (w i)))
+    (h : ∀ (s : S) (x : H), ∃ hx : (φ s)⁻¹ * x * φ s ∈ H, χ ⟨(φ s)⁻¹ * x * φ s, hx⟩ = χ x)
+    : Representation A S (levelSpace π (levelOf w H) (χ.comp (levelOf.reduction w H))) where
+  toFun s := (π (liftResidue (φ s))).restrict fun _ hv ↦ map_liftResidue_mem_levelSpace (h s) hv
   map_one' := by
     ext
     simp [apply_liftResidue_eq _ 1]
   map_mul' s t := by
     -- The lift of `φ (s * t)` and the product of the lifts have the same reduction.
     ext v
-    change π (liftResidue (φ (s * t))).val v.val =
-      π (liftResidue (φ s)).val (π (liftResidue (φ t)).val v.val)
+    change π (liftResidue (φ (s * t))).val v.val
+      = π (liftResidue (φ s)).val (π (liftResidue (φ t)).val v.val)
     simp [apply_liftResidue_eq v (liftResidue (φ s) * liftResidue (φ t))]
 
 end FiniteGroupAction

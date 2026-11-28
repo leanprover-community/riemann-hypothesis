@@ -44,7 +44,8 @@ namespace New.SiegelWeil
 
 open Matrix MeasureTheory Fintype Space Gf G WeilData NumberField Rows
 
-variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
+variable
+  {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
   {s : n → ℤˣ} {b : AutChar E} {A : Set (FinPlace E)} {y : G E s → ℂ}
 
 /-! ### Vacuum coefficients and coset representatives -/
@@ -64,15 +65,19 @@ lemma finMultiplier_mul_of_forall_atPlace_eq_one_or {g g' : Gf E n}
     finMultiplier (g * g') = finMultiplier g * finMultiplier g' :=
   glMultiplier_mul_of_map_evalAt_eq_one h_atPlace
 
-/-- The number `(b(det g) * finMultiplier g ^ M)⁻¹` for a finite point `g`. For `M` the rank of
+/--
+The number `(b(det g) * finMultiplier g ^ M)⁻¹` for a finite point `g`. For `M` the rank of
 the second hermitian space of a pair it is the factor by which `g` changes the matrix coefficient
-of a vacuum (`New.SiegelWeil.weilMatrixCoeff_mul`). -/
+of a vacuum (`New.SiegelWeil.weilMatrixCoeff_mul`).
+-/
 def vacuumCoeff (M : ℕ) (b : AutChar E) (g : Gf E n) : ℂ :=
   (b.val (detFin 1 g) * finMultiplier g ^ M)⁻¹
 
-/-- For a coset `γ` of `localLevel n A`, the finite points integral at `A`, the component above
+/--
+For a coset `γ` of `localLevel n A`, the finite points integral at `A`, the component above
 `A` and its conjugate of a chosen element of `γ`. It represents `γ` (`mk_cosetRep`) and is
-supported on `A` and its conjugate. -/
+supported on `A` and its conjugate.
+-/
 def cosetRep (γ : Gf E n ⧸ localLevel n A) : supportedOn n A :=
   ⟨componentOn n A γ.out, componentOn_mem_supportedOn⟩
 
@@ -93,10 +98,12 @@ lemma countable_quotient_localLevel (A : Set (FinPlace E)) :
   have := QuotientGroup.discreteTopology (isOpen_coe_localLevel (n := n) A)
   exact TopologicalSpace.separableSpace_iff_countable.1 inferInstance
 
-/-- The character `b ∘ det` is trivial on `stdLevel E n ⊓ supportedOn n A`, the integral finite
-points whose component is `1` at every place outside `A` and its conjugate. -/
-def IsUnramifiedOn (b : AutChar E) (n : Type) [Fintype n] [DecidableEq n]
-    (A : Set (FinPlace E)) : Prop :=
+/--
+The character `b ∘ det` is trivial on `stdLevel E n ⊓ supportedOn n A`, the integral finite
+points whose component is `1` at every place outside `A` and its conjugate.
+-/
+def IsUnramifiedOn (b : AutChar E) (n : Type) [Fintype n] [DecidableEq n] (A : Set (FinPlace E))
+    : Prop :=
   ∀ k ∈ stdLevel E n ⊓ supportedOn n A, b.val (detFin 1 k) = 1
 
 omit [WeilData E] in
@@ -136,13 +143,15 @@ lemma vacuumCoeff_mul_of_atPlace (M : ℕ) (b : AutChar E) {g g' : Gf E n}
     map_mul, Circle.coe_mul]
   ring
 
-/-- The series `∑ mc(q) R(q) y` of right translates of a function `y` on the adelic points. The sum
+/--
+The series `∑ mc(q) R(q) y` of right translates of a function `y` on the adelic points. The sum
 is over the cosets `q`, in the finite points, of the subgroup of the points integral at `A`. The
 coefficient of the vacuum `mc = vacuumCoeff M b` and the right translation `R` are taken at the
 representative `cosetRep q`, which is supported on `A` and its conjugate; see
 `mk_eq_mk_iff_of_supportedOn` for the cosets among such points and
 `vacuumCoeff_mul_apply_cosetRep` for conditions under which the choice does not matter. The value
-is `0` where the terms are not summable. -/
+is `0` where the terms are not summable.
+-/
 def rallisSeries (M : ℕ) (b : AutChar E) (A : Set (FinPlace E)) (y : G E s → ℂ) (g : G E s) : ℂ :=
   ∑' q : Gf E n ⧸ localLevel n A, vacuumCoeff M b (cosetRep q).val * y (g * (1, (cosetRep q).val))
 

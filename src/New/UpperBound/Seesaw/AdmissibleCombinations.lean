@@ -74,33 +74,47 @@ open Matrix Valued
 
 namespace New
 
-variable {E R X' ι : Type*} [DecidableEq X'] [Field E] [CMType E] [Fintype ι]
-  [DecidableEq ι] {ε : ι → ℤˣ} {s : ℕ} {N : E} [CommRing R] [StarRing R] {V : Space E ι ε}
+variable
+  {E R X' ι : Type*} [DecidableEq X'] [Field E] [CMType E] [Fintype ι] [DecidableEq ι]
+  {ε : ι → ℤˣ} {s : ℕ} {N : E} [CommRing R] [StarRing R]
+  {V : Space E ι ε}
 
-/-- A basis matrix (the basis vectors are its columns), for `X = X' ⊕ Unit` and a string of `s`
+/--
+A basis matrix (the basis vectors are its columns), for `X = X' ⊕ Unit` and a string of `s`
 vectors, indexed by `ι` through `e`; write `π̄ = star π` and `ā = star a`. For odd `s`: the vectors
 of `X'` are unchanged, the last vector `y` of `X` is replaced by `y / π̄ + u z / (π π̄)` with `z`
 the middle vector of the string, and each string vector is multiplied by `u`. For even `s`:
-diagonal, `1` on `X`, `u a⁻¹` on the first half of the string and `u ā` on the second half. -/
+diagonal, `1` on `X`, `u a⁻¹` on the first half of the string and `u ā` on the second half.
+-/
 def gradedLatticeBasis (e : (X' ⊕ Unit) ⊕ Fin s ≃ ι) (a π : Rˣ) (u : unitary R) : Matrix ι ι R :=
   reindex e e
     (fromBlocks (if Odd s then diagonal (1 ⊕ᵥ fun _ : Unit ↦ ((star π)⁻¹ : Rˣ).val) else 1) 0
       (of fun b : Fin s ↦
         0 ⊕ᵥ fun _ : Unit ↦ if b = b.rev then (u : R) * ((star π * π)⁻¹ : Rˣ).val else 0)
       (diagonal fun b : Fin s ↦
-        (u : R) * if Odd s then 1 else if 2 * (b : ℕ) < s then (a⁻¹ : Rˣ).val else star (a : R)))
+        (u : R)
+          * if Odd s then
+              1
+            else if 2 * (b : ℕ) < s then
+              (a⁻¹ : Rˣ).val
+            else
+              star (a : R)))
 
-/-- Let `Y` present the hermitian space `V` as `X' ⊕ Unit` plus a string of `s` vectors. The
+/--
+Let `Y` present the hermitian space `V` as `X' ⊕ Unit` plus a string of `s` vectors. The
 condition says that the finite frame `V.xFin` spans the same `Ô`-lattice as the basis
-`New.gradedLatticeBasis Y.indexEquiv a π u`: the two differ by some `k` in `GL(Ô)`. -/
-def Grading.SpansLattice (Y : Grading V N (X' ⊕ Unit) s) (a π : (𝔸f E)ˣ) (u : unitary (𝔸f E)) :
-    Prop :=
+`New.gradedLatticeBasis Y.indexEquiv a π u`: the two differ by some `k` in `GL(Ô)`.
+-/
+def Grading.SpansLattice (Y : Grading V N (X' ⊕ Unit) s) (a π : (𝔸f E)ˣ) (u : unitary (𝔸f E))
+    : Prop :=
   ∃ k ∈ intGL ι (Ô E), V.xFin.val = gradedLatticeBasis Y.indexEquiv a π u * k.val
 
 namespace Seesaw
 
-/-- The subring of complex numbers whose image under every ring homomorphism `ℂ → ℂ_l` is
-integral (has norm at most `1`), for every prime `l` coprime to `n`. -/
+/--
+The subring of complex numbers whose image under every ring homomorphism `ℂ → ℂ_l` is
+integral (has norm at most `1`), for every prime `l` coprime to `n`.
+-/
 def integralAway (n : ℕ) : Subring ℂ where
   carrier := {z : ℂ | ∀ (l : ℕ) [Fact l.Prime], l.Coprime n → ∀ ι : ℂ →+* ℂ_[l], ‖ι z‖ ≤ 1}
   mul_mem' hx hy l _ hl ι := by
@@ -109,52 +123,62 @@ def integralAway (n : ℕ) : Subring ℂ where
   one_mem' := by simp only [Set.mem_ofPred_eq, map_one, norm_one, le_refl, implies_true]
   add_mem' hx hy l _ hl ι := by
     grw [map_add, IsUltrametricDist.norm_add_le_max, hx l hl ι, hy l hl ι, max_self]
-  zero_mem' := by
-    simp only [Set.mem_ofPred_eq, map_zero, norm_zero, zero_le_one, implies_true]
+  zero_mem' := by simp only [Set.mem_ofPred_eq, map_zero, norm_zero, zero_le_one, implies_true]
   neg_mem' := by simp only [Set.mem_ofPred_eq, map_neg, norm_neg, imp_self, implies_true]
 
-/-- The conditions on finitely supported coefficients `r`: the support lies in `A`, each `d * r x`
+/--
+The conditions on finitely supported coefficients `r`: the support lies in `A`, each `d * r x`
 is integral away from `n` (`New.Seesaw.integralAway`) and, if `p` holds, `∑ ‖σ (r x)‖ ≤ B` for
-all automorphisms `σ` of `ℂ`. -/
-structure IsAdmissibleCoeffs {X : Type*} (A : Set X) (n d : ℕ) (p : Prop) (B : ℝ) (r : X →₀ ℂ) :
-    Prop where
+all automorphisms `σ` of `ℂ`.
+-/
+structure IsAdmissibleCoeffs {X : Type*} (A : Set X) (n d : ℕ) (p : Prop) (B : ℝ) (r : X →₀ ℂ)
+    : Prop where
   /-- The points with a nonzero coefficient lie in `A`. -/
   support_subset : ∀ x ∈ r.support, x ∈ A
   /-- Every coefficient, multiplied by `d`, is integral away from `n`. -/
   integral (x : X) : d * r x ∈ integralAway n
-  /-- If `p` holds, then for every field automorphism `σ` of `ℂ` the sum of the absolute values of
-  the `σ`-conjugates of the coefficients is at most `B`. -/
+  /--
+  If `p` holds, then for every field automorphism `σ` of `ℂ` the sum of the absolute values of
+  the `σ`-conjugates of the coefficients is at most `B`.
+  -/
   sum_norm_le : p → ∀ σ : ℂ ≃+* ℂ, r.sum (fun (_ : X) (c : ℂ) ↦ ‖σ c‖) ≤ B
 
 section
 
 variable {E : Type*} [Field E] [NumberField E]
 
-/-- The group of finite adelic vectors `x` such that `d i * x i` is integral at every place `w` not
-dividing `q`, for every index `i`. There is no condition at the places dividing `q`. -/
+/--
+The group of finite adelic vectors `x` such that `d i * x i` is integral at every place `w` not
+dividing `q`, for every index `i`. There is no condition at the places dividing `q`.
+-/
 def weightedTranslations (q : ℕ) (d : ι → 𝔸f E) : AddSubgroup (ι → 𝔸f E) where
   carrier := {x : ι → 𝔸f E | ∀ (i : ι) (w : FinPlace E), ↑q ∉ w.asIdeal → v ((d i * x i) w) ≤ 1}
   add_mem' {x y} hx hy i w hw := by
     simpa only [Pi.add_apply, mul_add, IsDedekindDomain.FiniteAdeleRing.add_apply,
-      IsDedekindDomain.FiniteAdeleRing.mul_apply] using v.map_add_le (hx i w hw) (hy i w hw)
+        IsDedekindDomain.FiniteAdeleRing.mul_apply]
+      using v.map_add_le (hx i w hw) (hy i w hw)
   zero_mem' := by
     simp only [IsDedekindDomain.FiniteAdeleRing.mul_apply, map_mul, Set.mem_ofPred_eq,
       Pi.zero_apply, IsDedekindDomain.FiniteAdeleRing.zero_apply, map_zero, mul_zero, zero_le,
       implies_true]
   neg_mem' := by
-    simp only [IsDedekindDomain.FiniteAdeleRing.mul_apply, map_mul, Set.mem_ofPred_eq,
-      Pi.neg_apply, finAdele_neg_apply, Valuation.map_neg, imp_self, implies_true]
+    simp only [IsDedekindDomain.FiniteAdeleRing.mul_apply, map_mul, Set.mem_ofPred_eq, Pi.neg_apply,
+      finAdele_neg_apply, Valuation.map_neg, imp_self, implies_true]
 
-/-- The group of finite adelic vectors `x` indexed by `ι` such that `d * x i` is integral at every
-place `w` not dividing `q`, for every index `i`. -/
+/--
+The group of finite adelic vectors `x` indexed by `ι` such that `d * x i` is integral at every
+place `w` not dividing `q`, for every index `i`.
+-/
 abbrev translations (ι : Type*) (q : ℕ) (d : 𝔸f E) : AddSubgroup (ι → 𝔸f E) :=
   weightedTranslations (E := E) q fun _ : ι ↦ d
 
 end
 
 open scoped Classical in
-/-- The element `N` of `E` factors as `π π̄` for the finite idele `π`, which is a uniformiser at the
-places of `P` and a unit at all other places, and no place of `P` has its conjugate in `P`. -/
+/--
+The element `N` of `E` factors as `π π̄` for the finite idele `π`, which is a uniformiser at the
+places of `P` and a unit at all other places, and no place of `P` has its conjugate in `P`.
+-/
 structure IsSplitSquarefree (P : Finset (FinPlace E)) (N : E) (π : (𝔸f E)ˣ) : Prop where
   /-- In the finite adeles `N = π π̄`. -/
   algebraMap_eq_mul_star : algebraMap E (𝔸f E) N = π * star (π : 𝔸f E)
@@ -183,12 +207,14 @@ open Matrix Fintype Exchange
 
 variable {R X ι : Type _} [DecidableEq X] {s N : ℕ} [CommRing R]
 
-/-- A form on `X ⊕ Unit` plus a string of `s` vectors, by blocks: identity on `X`; string vectors
+/--
+A form on `X ⊕ Unit` plus a string of `s` vectors, by blocks: identity on `X`; string vectors
 paired antidiagonally to `1`, with `-p` in the middle; for odd `s` the vector of `Unit` has norm
 `q` and pairs to `-1` with the middle vector (for even `s` it is a unit vector orthogonal to the
-string). -/
-def gluedGram {K : Type*} [CommRing K] (p q : K) :
-    Matrix ((X ⊕ Unit) ⊕ Fin s) ((X ⊕ Unit) ⊕ Fin s) K :=
+string).
+-/
+def gluedGram {K : Type*} [CommRing K] (p q : K)
+    : Matrix ((X ⊕ Unit) ⊕ Fin s) ((X ⊕ Unit) ⊕ Fin s) K :=
   let C : Matrix (X ⊕ Unit) (Fin s) K := of (0 ⊕ᵥ fun _ b ↦ if b = b.rev then -1 else 0)
   fromBlocks (diagonal (1 ⊕ᵥ fun _ : Unit ↦ if Odd s then q else 1)) C Cᵀ
     (of fun b c ↦ if b = c.rev then (if b = c then -p else 1) else 0)
@@ -480,8 +506,10 @@ lemma isUnimodular_gradedLatticeBasis_gram
   let w : GL ι O := .mkOfMulEqOne (H N 0) (H 0 N) h_inv
   exact ⟨h_hermitian, GeneralLinearGroup.map O.subtype w, ⟨w, rfl⟩, h_gram⟩
 
-/-- The signs on a string of `s` vectors: `-1` at the first `⌊(s + 1) / 2⌋` indices and `1` at
-the others. -/
+/--
+The signs on a string of `s` vectors: `-1` at the first `⌊(s + 1) / 2⌋` indices and `1` at
+the others.
+-/
 def stringSign (s : ℕ) (b : Fin s) : ℤˣ := if (b : ℕ) < (s + 1) / 2 then -1 else 1
 
 private lemma stringSign_mid {s : ℕ} (a : Fin s) (ha : a = a.rev) :
@@ -497,13 +525,15 @@ private lemma rev_lt_half_iff {s : ℕ} (a : Fin s) (ha : a ≠ a.rev) :
   rw [Fin.val_rev]
   omega
 
-/-- A complex frame for a string of `s` vectors `e_b`, with `σ = stringSign s`. Column `b` is
+/--
+A complex frame for a string of `s` vectors `e_b`, with `σ = stringSign s`. Column `b` is
 `(σ b • e_b + e_{s - 1 - b}) / √2`. At the middle index `b = s - 1 - b` these two terms cancel,
-as `σ b = -1`, and `e_b / √N` is added. -/
+as `σ b = -1`, and `e_b / √N` is added.
+-/
 def stringFrame (s N : ℕ) : Matrix (Fin s) (Fin s) ℂ :=
   of fun a b : Fin s ↦
-    (if a = b then ((stringSign s b / √2 : ℝ) : ℂ) else 0) +
-      if a = b.rev then ((√2⁻¹ + if a = b then √N⁻¹ else 0 : ℝ) : ℂ) else 0
+    (if a = b then ((stringSign s b / √2 : ℝ) : ℂ) else 0)
+      + if a = b.rev then ((√2⁻¹ + if a = b then √N⁻¹ else 0 : ℝ) : ℂ) else 0
 
 /-- On a string of `s` vectors `e_b`, take the form that pairs `e_b` and `e_{s - 1 - b}` to `1`, or
 to `-N` if they are equal, with `N` a positive integer. Let `σ = stringSign s` be `-1` at the first
@@ -707,8 +737,9 @@ end New.Seesaw
 
 namespace New
 
-variable {E : Type} [Field E] [CMType E] {q l c d k : ℕ} {n : Type} [Fintype n] [DecidableEq n]
-  [Fact l.Prime]
+variable
+  {E : Type} [Field E] [CMType E]
+  {q l c d k : ℕ} {n : Type} [Fintype n] [DecidableEq n] [Fact l.Prime]
 
 /-- For natural numbers `c`, `d`, `q` and `k`: if `c` divides `d * q ^ k`, then the complex number
 `d / c` lies in `integralAway q`. -/
@@ -787,12 +818,14 @@ section AdmissibleComb
 
 open Finsupp Function
 
-variable {α α' Z Z' : Type*} [AddCommGroup Z] [Module ℂ Z] [AddCommGroup Z'] [Module ℂ Z']
-  (v : α → Z)
+variable
+  {α α' Z Z' : Type*} [AddCommGroup Z] [Module ℂ Z] [AddCommGroup Z'] [Module ℂ Z'] (v : α → Z)
 
-/-- The statement that `z = ∑ r x • v x` for some finitely supported `r` with support in `A`,
+/--
+The statement that `z = ∑ r x • v x` for some finitely supported `r` with support in `A`,
 denominator `d` away from `n` and, if `p` holds, size at most `B`
-(`New.Seesaw.IsAdmissibleCoeffs`). -/
+(`New.Seesaw.IsAdmissibleCoeffs`).
+-/
 def New.Seesaw.IsAdmissibleCombination (A : Set α) (n d : ℕ) (p : Prop) (B : ℝ) (z : Z) : Prop :=
   ∃ r : α →₀ ℂ, IsAdmissibleCoeffs A n d p B r ∧ z = r.sum fun (x : α) (c : ℂ) ↦ c • v x
 

@@ -46,8 +46,10 @@ section PadicSeriesDefs
 
 variable {p : ℕ} [Fact p.Prime] {σ : Type}
 
-/-- The inclusion of power series over the integers `valRingCp p` into power series over `ℂ_[p]`, as
-a ring homomorphism. -/
+/--
+The inclusion of power series over the integers `valRingCp p` into power series over `ℂ_[p]`, as
+a ring homomorphism.
+-/
 noncomputable abbrev New.seriesToCp : MvPowerSeries σ (valRingCp p) →+* MvPowerSeries σ ℂ_[p] :=
   MvPowerSeries.map (σ := σ) (valRingCp p).subtype
 
@@ -67,8 +69,8 @@ open MvPowerSeries PowerSeries
 namespace New
 
 /-- The linear form ∑ c_i z_i, as a power series in the variables z_i. -/
-noncomputable def linearSeries {ι R : Type*} [Fintype ι] [CommSemiring R] (c : ι → R) :
-    MvPowerSeries ι R :=
+noncomputable def linearSeries {ι R : Type*} [Fintype ι] [CommSemiring R] (c : ι → R)
+    : MvPowerSeries ι R :=
   ∑ i : ι, c i • MvPowerSeries.X i
 
 variable {σ : Type*} {R S : Type*} [CommRing R] [CommRing S] {p : ℕ} [Fact p.Prime]
@@ -109,7 +111,6 @@ end IntegralSeries
 section JetChainRule
 
 open MvPowerSeries Finset WithPiTopology
-
 
 /-- Jets of a linear substitution. Let `M` be a matrix and substitute the linear forms
 `(M z)_i = ∑_k M_(i k) z_k` into the series `F`. The jet `P(∂) F(M z) (0)` equals the jet of `F`
@@ -155,8 +156,10 @@ namespace New
 
 variable {p : ℕ} [hp : Fact p.Prime] {σ : Type*}
 
-/-- The series `exp a`, obtained by substituting `a` into the exponential series over `ℂ_[p]`. It is
-meaningful when `a` has no constant term. -/
+/--
+The series `exp a`, obtained by substituting `a` into the exponential series over `ℂ_[p]`. It is
+meaningful when `a` has no constant term.
+-/
 noncomputable abbrev expSubst (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
   (exp ℂ_[p]).subst a
 

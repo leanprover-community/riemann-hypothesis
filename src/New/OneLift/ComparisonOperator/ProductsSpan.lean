@@ -91,17 +91,19 @@ open NumberField Matrix MvPolynomial Finset Norms.L2Operator Rows Fock WeilData 
 
 variable {P : Parameters} {D : Data P} (j : D.LiftIndex)
 
-/-- Let `1 ≤ j ≤ m`, let `W_j` be the diagonal hermitian space of rank `r` with signs `D.signsW j`,
+/--
+Let `1 ≤ j ≤ m`, let `W_j` be the diagonal hermitian space of rank `r` with signs `D.signsW j`,
 and pad it with `j` signs `-1` and `3 m - j` signs `1` to the space `W̃` with signs `padSigns j`.
 The polynomial `paddedMinorProd j` is a product of minors whose rows are indices of `W̃`: one minor
 has the `m` rows `negIndex j a`, and for each column height `h` one has the `2 m` rows
 `posRowIndex j h a`, which start at the basis vector of number `h` of `W_j`. Each of these families
 of rows is injective; the rows `negIndex j a` have sign `-1` and the rows `posRowIndex j h a` have
-sign `1`. -/
-theorem negIndex_posRowIndex_injective_and_padSigns :
-    ((negIndex j).Injective ∧ ∀ h : ℕ, (posRowIndex j h).Injective) ∧
-    (∀ a : Fin D.m, padSigns j (negIndex j a) = -1) ∧
-    ∀ (h : ℕ) (a : Fin (2 * D.m)), padSigns j (posRowIndex j h a) = 1 := by
+sign `1`.
+-/
+theorem negIndex_posRowIndex_injective_and_padSigns
+    : ((negIndex j).Injective ∧ ∀ h : ℕ, (posRowIndex j h).Injective)
+      ∧ (∀ a : Fin D.m, padSigns j (negIndex j a) = -1)
+      ∧ ∀ (h : ℕ) (a : Fin (2 * D.m)), padSigns j (posRowIndex j h a) = 1 := by
   -- Each value of these maps is either the index `D.rowIndexOfNumber i` of number `i` in `W_j` or
   -- a padding index, so the claims become inequalities between natural numbers.
   unfold Function.Injective negIndex posRowIndex
@@ -110,7 +112,8 @@ theorem negIndex_posRowIndex_injective_and_padSigns :
   all_goals simp [signsW, rowIndexOfNumber]
   all_goals grind
 
-/-- Sparse sums. The data `D` give the CM field `E` with its `f` infinite places `D.Φ`, a large real
+/--
+Sparse sums. The data `D` give the CM field `E` with its `f` infinite places `D.Φ`, a large real
 scale `b = D.b`, the numbers `t = D.t` and `n_* = nStar D = 2 f t ^ 3`, and the modulus
 `untwistedModulus 2 = ϖ²`. Let `V`, `V'` be hermitian spaces of ranks at most `t`, let the
 characters `χ`, `χ'` of `U(1)` have weights `γ`, `e` at the infinite places and residue characters
@@ -120,46 +123,56 @@ the operator norm `maxOpNorm h`, and `c_Q = polyMatrixCoeff s s' γ e Q` for the
 of the real Weil representation at the Fock vector of `Q`. If `λ₁(g) λ₁(g') ≥ b ^ (-13)`, then for
 some function `Ψ` on matrices modulo `ϖ²` the theta kernel `modKernel` with data `Ψ`, `Q` at
 `(g h, g' h')` differs from `c_Q(h, h')` by at most
-`b ^ (-20 n_*) (|h| |h'|) ^ (6 n_*) |c_Q(1, 1)|`, for all real points `h`, `h'`. -/
-theorem exists_datum_norm_modKernel_sub_polyMatrixCoeff_le {n n' : Type} [Fintype n] [DecidableEq n]
-    [Fintype n'] [DecidableEq n'] [Nonempty n] [Nonempty n'] {s : n → ℤˣ} {s' : n' → ℤˣ}
-    (V : Space D.E n s) (V' : Space D.E n' s') (h_rank : card n ≤ D.t) (h_rank' : card n' ≤ D.t)
+`b ^ (-20 n_*) (|h| |h'|) ^ (6 n_*) |c_Q(1, 1)|`, for all real points `h`, `h'`.
+-/
+theorem exists_datum_norm_modKernel_sub_polyMatrixCoeff_le
+    {n n' : Type}
+    [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Nonempty n] [Nonempty n']
+    {s : n → ℤˣ} {s' : n' → ℤˣ} (V : Space D.E n s) (V' : Space D.E n' s')
+    (h_rank : card n ≤ D.t) (h_rank' : card n' ≤ D.t)
     {χ χ' : AutChar D.E} {γ e : D.Φ → ℤ} {ψ ψ' : (w : FinPlace D.E) → MulChar (ResField w) ℂ}
-    (hχ : χ.HasWeight γ ψ) (hχ' : χ'.HasWeight e ψ') {Q : MvPolynomial (D.Φ × n' × n) ℂ} {d : ℕ}
-    (hQ : ∀ (r : ℝ) (y : D.Φ × n' × n → ℂ), Q.eval (r • y) = r ^ d * Q.eval y)
-    (hd : d ≤ D.b * √D.b) {g : New.G D.E s} {g' : New.G D.E s'}
-    (h_min : (D.b ^ 13)⁻¹ ≤ (V.move g).firstMinimum * (V'.move g').firstMinimum) :
-    ∃ Ψ : Matrix n' n (D.untwistedModulus 2).ResidueRing → ℂ, ∀ (h : GInf D.E s) (h' : GInf D.E s'),
-      ‖modKernel V V' χ χ' (D.untwistedModulus 2) Ψ Q (g * (h, 1)) (g' * (h', 1)) -
-          polyMatrixCoeff s s' γ e Q h h'‖ ≤
-        (D.b ^ (20 * nStar D))⁻¹ * (maxOpNorm h * maxOpNorm h') ^ (6 * nStar D) *
-          ‖polyMatrixCoeff s s' γ e Q 1 1‖ := by
+    (hχ : χ.HasWeight γ ψ) (hχ' : χ'.HasWeight e ψ')
+    {Q : MvPolynomial (D.Φ × n' × n) ℂ} {d : ℕ}
+    (hQ : ∀ (r : ℝ) (y : D.Φ × n' × n → ℂ), Q.eval (r • y) = r ^ d * Q.eval y) (hd : d ≤ D.b * √D.b)
+    {g : New.G D.E s} {g' : New.G D.E s'}
+    (h_min : (D.b ^ 13)⁻¹ ≤ (V.move g).firstMinimum * (V'.move g').firstMinimum)
+    : ∃ Ψ : Matrix n' n (D.untwistedModulus 2).ResidueRing → ℂ,
+      ∀ (h : GInf D.E s) (h' : GInf D.E s'),
+        ‖modKernel V V' χ χ' (D.untwistedModulus 2) Ψ Q (g * (h, 1)) (g' * (h', 1)) -
+            polyMatrixCoeff s s' γ e Q h h'‖
+          ≤ (D.b ^ (20 * nStar D))⁻¹ * (maxOpNorm h * maxOpNorm h') ^ (6 * nStar D)
+            * ‖polyMatrixCoeff s s' γ e Q 1 1‖ := by
   -- The scale `c = q₁ / piM ^ 2` clears the denominators of `α` times the ideal of the modulus.
   let c : D.E := D.q₁ / algebraMap (𝓞 D.E) D.E (D.piM ^ 2)
   have piM_sq_ne_zero : algebraMap (𝓞 D.E) D.E (D.piM ^ 2) ≠ 0 := by simp
-  have h_int : ∀ z : Ô D.E, (D.untwistedModulus 2).reduction z = 0 →
-      algebraMap D.E (𝔸f D.E) c * (α.val * z.val) ∈ Ô D.E := by
+  have h_int
+      : ∀ z : Ô D.E,
+        (D.untwistedModulus 2).reduction z = 0
+          → algebraMap D.E (𝔸f D.E) c * (α.val * z.val) ∈ Ô D.E := by
     intro z hz
     rw [Modulus.reduction_eq_zero_iff, ideal_untwistedModulus_eq_span, Ideal.map_span,
-      Set.image_singleton, Ideal.mem_span_singleton] at hz
+        Set.image_singleton, Ideal.mem_span_singleton]
+      at hz
     obtain ⟨y, rfl⟩ := hz
-    have h_cancel : algebraMap D.E (𝔸f D.E) c *
-        (algebraMap (𝓞 D.E) (Ô D.E) (D.piM ^ 2) : Ô D.E) = D.q₁ := by
+    have h_cancel
+        : algebraMap D.E (𝔸f D.E) c * (algebraMap (𝓞 D.E) (Ô D.E) (D.piM ^ 2) : Ô D.E) = D.q₁ := by
       change _ * algebraMap D.E (𝔸f D.E) (algebraMap (𝓞 D.E) D.E (D.piM ^ 2)) = _
       rw [← map_mul, div_mul_cancel₀ _ piM_sq_ne_zero, map_natCast]
     rw [MulMemClass.coe_mul, mul_left_comm α.val, ← mul_assoc, h_cancel, ← mul_assoc]
     exact mul_mem P.q₁_mul_alpha_mem y.prop
   -- The points of the sparse lattice are `b ^ 6`-separated: the first minimum of the lattice of
   -- homomorphisms is at least `λ₁(g) λ₁(g')` over a constant, and `|Φ w c| = q₁ / M` is small.
-  have h_sep (w : D.Φ) : D.b ^ 6 * ‖Φ w c‖ ≤
-      √(2 * .pi * (Φ w WeilData.j).im) * ((V.move g).hom (V'.move g')).firstMinimum := by
+  have h_sep (w : D.Φ)
+      : D.b ^ 6 * ‖Φ w c‖
+        ≤ √(2 * .pi * (Φ w WeilData.j).im) * ((V.move g).hom (V'.move g')).firstMinimum := by
     have h_norm : ‖Φ w c‖ = (D.q₁ : ℝ) / D.M := by
       simpa [c, sq, -Nat.cast_mul] using
         congrArg (fun x : 𝓞 D.E ↦ (D.q₁ : ℝ) / ‖Φ w (x : D.E)‖) D.piM_mul_star
     have h_cond : D.cyclotomicConductor ≠ 0 := NeZero.ne _
     have ht_pos : 0 < D.t := D.t_odd.pos
-    have h_hom : (D.b ^ 13)⁻¹ / (6 * D.cyclotomicConductor * (D.f * D.t : ℝ) ^ 2 * D.t * D.t) ≤
-        ((V.move g).hom (V'.move g')).firstMinimum := by
+    have h_hom
+        : (D.b ^ 13)⁻¹ / (6 * D.cyclotomicConductor * (D.f * D.t : ℝ) ^ 2 * D.t * D.t)
+          ≤ ((V.move g).hom (V'.move g')).firstMinimum := by
       grw [← firstMinimum_mul_le_hom _ P.conductor_mem_differentIdeal, Space.shortBasisConst,
         ← h_min, h_rank, h_rank', h_rank]
       simp [Data.f]
@@ -172,9 +185,10 @@ theorem exists_datum_norm_modKernel_sub_polyMatrixCoeff_le {n n' : Type} [Fintyp
   have h_ratio : 100 * (d + 2 * (2 * nStar D : ℕ)) / (D.b ^ 6) ^ 2 ≤ (D.b ^ 10)⁻¹ := by
     grw [hd]
     exact D.le_of_hasLogBound
-  obtain ⟨Ψ, hΨ⟩ := exists_norm_modKernel_sub_fockInner_le (g := g) V' hχ hχ'
-    (div_ne_zero (NeZero.ne (D.q₁ : D.E)) piM_sq_ne_zero) h_int g' (D.b ^ 6) (2 * nStar D)
-    (by positivity) h_sep h_dim Q rfl d hQ
+  obtain ⟨Ψ, hΨ⟩ :=
+    exists_norm_modKernel_sub_fockInner_le (g := g) V' hχ hχ'
+      (div_ne_zero (NeZero.ne (D.q₁ : D.E)) piM_sq_ne_zero) h_int g' (D.b ^ 6) (2 * nStar D)
+      (by positivity) h_sep h_dim Q rfl d hQ
   refine ⟨Ψ, fun h h' ↦ (hΨ h h').trans ?_⟩
   grw [h_ratio]
   simp only [polyMatrixCoeff, Prod.mk_one_one, map_one, one_apply_eq_self]
@@ -259,27 +273,33 @@ lemma exists_eval_smul_paddedMinorProd : ∃ d : ℕ, d ≤ D.b * √D.b ∧
     ring
 
 variable (D) in
-/-- The weight `u₁ = (-Δ'; 6 m + 1)` of the kernels on `(S, W♭)`, the same at every place. Here
+/--
+The weight `u₁ = (-Δ'; 6 m + 1)` of the kernels on `(S, W♭)`, the same at every place. Here
 `Δ' = reducedHalfGap` is `Δ / 2 - (t + 1) / 2`, where the gap `Δ = 2 r ^ 8` is the difference of the
 weights of consecutive lifts, and `6 m + 1` is the rank of `W♭`. Here and below `(a; b)` has the
-entry `a` at the signs `+1` and `b` at the signs `-1` of `S`. -/
+entry `a` at the signs `+1` and `b` at the signs `-1` of `S`.
+-/
 def flatKernelWeight (_ : D.Φ) : D.CarrierIndex → ℤ :=
   (fun _ ↦ -D.reducedHalfGap) ⊕ᵥ fun _ ↦ 6 * D.m + 1
 
-/-- The weight `(Δ'; μ₁⁺ + r + 2 m)` of the holomorphic factor in the coefficient of
+/--
+The weight `(Δ'; μ₁⁺ + r + 2 m)` of the holomorphic factor in the coefficient of
 `paddedMinorProd`. Here `Δ' = reducedHalfGap` is `Δ / 2 - (t + 1) / 2` for the gap `Δ`, and
 `μ₁⁺ = #(DetIndex j w)` is the number of columns of the diagram `μ⁺` at the place `w`: the sum of
 the column counts `colsPlus` of `untwistedDescentPair j`, plus `Δ'`. The weight is `u₂ + μ₁⁺`, where
 `u₂ = (Δ' - μ₁⁺; r + 2 m)` is the weight for the standard character `υ ^ m`. The shift by `μ₁⁺` in
 every entry arises because the character `carrierChar j` of the kernel has weight `m - μ₁⁺` instead
-of `m`. -/
+of `m`.
+-/
 noncomputable def holomorphicWeight (w : D.Φ) : D.CarrierIndex → ℤ :=
   (fun _ ↦ D.reducedHalfGap) ⊕ᵥ fun _ ↦ card (DetIndex j w) + D.r + 2 * D.m
 
-/-- The weight `u₃ = (0; μ₁⁺ + n'' + 2 m)` of the antiholomorphic factor in the coefficient of
+/--
+The weight `u₃ = (0; μ₁⁺ + n'' + 2 m)` of the antiholomorphic factor in the coefficient of
 `paddedMinorProd`. Here `μ₁⁺ = #(DetIndex j w)` is the number of columns of the diagram `μ⁺` at the
 place `w` (the sum of the column counts `colsPlus` of `untwistedDescentPair j`, plus
-`reducedHalfGap`), and `n'' = #(FirstFactorIndex j) = r + 9 m + 1` is the rank of `W̃ ⊕ W♭`. -/
+`reducedHalfGap`), and `n'' = #(FirstFactorIndex j) = r + 9 m + 1` is the rank of `W̃ ⊕ W♭`.
+-/
 noncomputable def antiholomorphicWeight (w : D.Φ) : D.CarrierIndex → ℤ :=
   (fun _ ↦ 0) ⊕ᵥ fun _ ↦ card (DetIndex j w) + card (FirstFactorIndex j) + 2 * D.m
 
@@ -601,19 +621,22 @@ lemma integral_mul_polyMatrixCoeff_paddedMinorProd {o : D.CarrierIndex → ℤ}
   simp only [h_integrand] at h_int ⊢
   simpa [m₁, m₂, m₃] using h_hol.integral_mul_conj_holMinorsPi ho h_dom₃ h_int
 
-/-- There is a bounded function `F₀` on the real group of `W_j` with `F₀ 1 ≠ 0` such that, at every
+/--
+There is a bounded function `F₀` on the real group of `W_j` with `F₀ 1 ≠ 0` such that, at every
 adelic `g` off the cusps, in the sense that the lattice of `W_j` moved by `g` has first minimum at
 least `(5 b ^ 24) ^ (-1 / 2)`, some combination `F` of the `choiceFn j i` has `|F (g h) - F₀ h| ≤ 2
 b ^ (-19 n_*) |F₀ 1| |h| ^ (6 n_*)` for all real `h`. Here `|h| = maxOpNorm h`, `b = D.b` is the
 large scale of the data, and `n_* = nStar D = 2 f t ^ 3`, with `f` the number of infinite places and
-`t = 5 r`. -/
-theorem exists_choiceFn_approx : ∃ (F₀ : GInf D.E (D.signsW j) → ℂ) (C : ℝ),
-    F₀ 1 ≠ 0 ∧
-    (∀ h : GInf D.E (D.signsW j), ‖F₀ h‖ ≤ C) ∧
-    ∀ g : New.G D.E (D.signsW j), (√(5 * D.b * D.b ^ 23))⁻¹ ≤ ((D.spaceW j).move g).firstMinimum →
-      ∃ c : ChoiceIndex j → ℂ, ∀ h : GInf D.E (D.signsW j),
-        ‖∑ i : ChoiceIndex j, c i * choiceFn j i (g * (h, 1)) - F₀ h‖ ≤
-          2 * (D.b ^ (19 * nStar D))⁻¹ * ‖F₀ 1‖ * maxOpNorm h ^ (6 * nStar D) := by
+`t = 5 r`.
+-/
+theorem exists_choiceFn_approx
+    : ∃ (F₀ : GInf D.E (D.signsW j) → ℂ) (C : ℝ),
+      F₀ 1 ≠ 0 ∧ (∀ h : GInf D.E (D.signsW j), ‖F₀ h‖ ≤ C)
+        ∧ ∀ g : New.G D.E (D.signsW j),
+          (√(5 * D.b * D.b ^ 23))⁻¹ ≤ ((D.spaceW j).move g).firstMinimum
+            → ∃ c : ChoiceIndex j → ℂ, ∀ h : GInf D.E (D.signsW j),
+              ‖∑ i : ChoiceIndex j, c i * choiceFn j i (g * (h, 1)) - F₀ h‖
+                ≤ 2 * (D.b ^ (19 * nStar D))⁻¹ * ‖F₀ 1‖ * maxOpNorm h ^ (6 * nStar D) := by
   -- With a peak `g₁` of `φ°` put `F₀ h = ∫ φ°(g₁ h') c_P(h', h) m_u₁(h') dh'`. Its value at `1` is
   -- `c_P(1, 1) φ°(g₁) J` with `J = ∫ |m_u₃|²`. Away from the cusps a theta kernel is close to `c_P`
   -- (`exists_datum_norm_modKernel_sub_polyMatrixCoeff_le`), and the same integral with the kernel
@@ -621,14 +644,18 @@ theorem exists_choiceFn_approx : ∃ (F₀ : GInf D.E (D.signsW j) → ℂ) (C :
   -- of the difference has the same factors `|φ°(g₁)|` and `J`, so it is small against `|F₀ 1|`.
   let φ := carrierForm D.E D.m
   let S := signedSpace D.E (1 ⊕ᵥ -1 : D.CarrierIndex → ℤˣ)
-  obtain ⟨φ_level, o, ho, φ_hol⟩ : (∀ N, φ ∈ rapidOfLevel S N) ∧
-      ∃ o, IsPosFirstOrder (1 ⊕ᵥ -1) o ∧ IsAdelicHol o (fun _ ↦ 0 ⊕ᵥ 3 * D.m) φ :=
+  obtain ⟨φ_level, o, ho, φ_hol⟩
+      : (∀ N, φ ∈ rapidOfLevel S N)
+        ∧ ∃ o, IsPosFirstOrder (1 ⊕ᵥ -1) o ∧ IsAdelicHol o (fun _ ↦ 0 ⊕ᵥ 3 * D.m) φ :=
     carrierForm_mem_rapidOfLevel_and_isAdelicHol D.m_even (isTameFor_twistedChiMPow (c := 2) j 1)
-  obtain ⟨g₁, g₁_peak, g₁_min⟩ :
-      ∃ g₁, IsPeak φ g₁ ∧ (√(5 * D.b * √D.b))⁻¹ ≤ (S.move g₁).firstMinimum :=
+  obtain ⟨g₁, g₁_peak, g₁_min⟩
+      : ∃ g₁, IsPeak φ g₁ ∧ (√(5 * D.b * √D.b))⁻¹ ≤ (S.move g₁).firstMinimum :=
     exists_isPeak_carrierForm D ho φ_level φ_hol
-  let cP := polyMatrixCoeff (1 ⊕ᵥ -1) (padSigns j) (fun _ ↦ D.m) (fun w ↦ D.m - card (DetIndex j w))
-    (paddedMinorProd j)
+  let cP :=
+    polyMatrixCoeff (1 ⊕ᵥ -1) (padSigns j)
+      (fun _ ↦ D.m)
+      (fun w ↦ D.m - card (DetIndex j w))
+      (paddedMinorProd j)
   obtain ⟨cP_ne, B, cP_le⟩ : cP 1 1 ≠ 0 ∧ ∃ B : ℝ, ∀ h h', ‖cP h h'‖ ≤ B :=
     polyMatrixCoeff_paddedMinorProd_ne_zero_and_bounded j _ _
   let m₁ := holMinorsPi (1 ⊕ᵥ -1) (flatKernelWeight D)
@@ -640,62 +667,73 @@ theorem exists_choiceFn_approx : ∃ (F₀ : GInf D.E (D.signsW j) → ℂ) (C :
   obtain ⟨u₁_dom, u₁_gap, u₃_dom, u₃_gap, u₃_le⟩ :=
     flatKernelWeight_antiholomorphicWeight_bounds j o
   have J_pos : 0 < J := integral_norm_holMinorsPi_sq_pos h_rank ho u₃_dom u₃_gap
-  have h_bound {A : GInf D.E (1 ⊕ᵥ -1) → ℂ} {c : ℝ} (hA : Continuous A)
-      (hA_le : ∀ h', ‖A h'‖ ≤ c * maxOpNorm h' ^ (6 * nStar D)) :
-      MeasureTheory.Integrable (fun h' ↦ φ (g₁ * (h', 1)) * A h' * m₁ h') ∧
-      ‖∫ h', φ (g₁ * (h', 1)) * A h' * m₁ h'‖ ≤ 2 * ‖φ g₁‖ * c * D.b ^ nStar D * J := by
-    have prod_le (h' : GInf D.E (1 ⊕ᵥ -1)) :
-        ‖φ (g₁ * (h', 1)) * A h'‖ ≤ 2 * ‖φ g₁‖ * c * maxOpNorm h' ^ (6 * nStar D) := by
+  have h_bound
+      {A : GInf D.E (1 ⊕ᵥ -1) → ℂ} {c : ℝ}
+      (hA : Continuous A) (hA_le : ∀ h', ‖A h'‖ ≤ c * maxOpNorm h' ^ (6 * nStar D))
+      : MeasureTheory.Integrable (fun h' ↦ φ (g₁ * (h', 1)) * A h' * m₁ h')
+        ∧ ‖∫ h', φ (g₁ * (h', 1)) * A h' * m₁ h'‖ ≤ 2 * ‖φ g₁‖ * c * D.b ^ nStar D * J := by
+    have prod_le (h' : GInf D.E (1 ⊕ᵥ -1))
+        : ‖φ (g₁ * (h', 1)) * A h'‖ ≤ 2 * ‖φ g₁‖ * c * maxOpNorm h' ^ (6 * nStar D) := by
       grw [norm_mul, g₁_peak.norm_le, hA_le, ← mul_assoc]
     exact integrable_mul_holMinorsPi h_rank ho u₃_dom u₁_dom u₃_gap u₁_gap u₃_le
       ((φ_hol g₁).continuous.fun_mul hA) prod_le
-  have F₀_bound (h : GInf D.E (padSigns j)) :
-      MeasureTheory.Integrable (fun h' ↦ φ (g₁ * (h', 1)) * cP h' h * m₁ h') ∧
-      ‖∫ h', φ (g₁ * (h', 1)) * cP h' h * m₁ h'‖ ≤ 2 * ‖φ g₁‖ * B * D.b ^ nStar D * J :=
-    h_bound (by fun_prop [polyMatrixCoeff]) fun h' ↦ (cP_le h' h).trans
-      (le_mul_of_one_le_right ((norm_nonneg _).trans (cP_le 1 1))
-        (one_le_pow₀ (one_le_maxOpNorm h')))
+  have F₀_bound (h : GInf D.E (padSigns j))
+      : MeasureTheory.Integrable (fun h' ↦ φ (g₁ * (h', 1)) * cP h' h * m₁ h')
+        ∧ ‖∫ h', φ (g₁ * (h', 1)) * cP h' h * m₁ h'‖ ≤ 2 * ‖φ g₁‖ * B * D.b ^ nStar D * J :=
+    h_bound (by fun_prop [polyMatrixCoeff]) fun h' ↦
+      (cP_le h' h).trans
+        (le_mul_of_one_le_right ((norm_nonneg _).trans (cP_le 1 1))
+          (one_le_pow₀ (one_le_maxOpNorm h')))
   have F₀_one : F₀ 1 = J * (φ g₁ * cP 1 1) := by
     simpa [F₀, ι, J, cP, m₁, φ, mk_one_one] using
       integral_mul_polyMatrixCoeff_paddedMinorProd j ho (φ_hol g₁) (fun _ ↦ D.m) (F₀_bound 1).1
-  refine ⟨F₀, 2 * ‖φ g₁‖ * B * D.b ^ nStar D * J,
-    by simp [F₀_one, J_pos.ne', g₁_peak.ne_zero, cP_ne, φ], fun h ↦ (F₀_bound (ι h)).2,
-    fun g hg ↦ ?_⟩
+  refine ⟨
+    F₀,
+    2 * ‖φ g₁‖ * B * D.b ^ nStar D * J,
+    by simp [F₀_one, J_pos.ne', g₁_peak.ne_zero, cP_ne, φ],
+    fun h ↦ (F₀_bound (ι h)).2,
+    fun g hg ↦ ?_
+  ⟩
   -- Away from the cusps the kernel `θ Ψ` of some datum `Ψ` is close to `c_P`.
-  let θ (Ψ : Matrix (D.RowIndex ⊕ PadIndex j) D.CarrierIndex (D.untwistedModulus 2).ResidueRing →
-    ℂ) :=
+  let θ
+      (Ψ
+        : Matrix (D.RowIndex ⊕ PadIndex j) D.CarrierIndex (D.untwistedModulus 2).ResidueRing → ℂ) :=
     modKernel S (paddedSpace j) (upsilonU1 ^ D.m) (carrierChar j) (D.untwistedModulus 2) Ψ
       (paddedMinorProd j)
   obtain ⟨d, hd, h_homog⟩ := exists_eval_smul_paddedMinorProd j
-  obtain ⟨Ψ, θ_near⟩ : ∃ Ψ, ∀ h' h, ‖θ Ψ (g₁ * (h', 1)) (G.sum (g, 1) * (h, 1)) - cP h' h‖ ≤
-      (D.b ^ (20 * nStar D))⁻¹ * (maxOpNorm h' * maxOpNorm h) ^ (6 * nStar D) * ‖cP 1 1‖ :=
+  obtain ⟨Ψ, θ_near⟩
+      : ∃ Ψ, ∀ h' h,
+        ‖θ Ψ (g₁ * (h', 1)) (G.sum (g, 1) * (h, 1)) - cP h' h‖
+          ≤ (D.b ^ (20 * nStar D))⁻¹ * (maxOpNorm h' * maxOpNorm h) ^ (6 * nStar D) * ‖cP 1 1‖ :=
     exists_datum_norm_modKernel_sub_polyMatrixCoeff_le S (paddedSpace j) h_rank h_rank'
       (hasWeight_upsilonU1_pow D.m) (carrierChar_hasWeight_sub_card j) h_homog hd
       (inv_pow_le_firstMinimum_mul j g₁_min hg)
-  obtain ⟨c, sum_eq⟩ : ∃ c : ChoiceIndex j → ℂ, ∀ x, ∑ i, c i * choiceFn j i x =
-      ∫ h', φ (g₁ * (h', 1)) * θ Ψ (g₁ * (h', 1)) (G.sum (x, 1)) * m₁ h' :=
-    exists_sum_choiceFn_eq_integral j ho φ_level
-      (integrable_holMinorsPi h_rank ho u₁_dom u₁_gap) g₁ Ψ
+  obtain ⟨c, sum_eq⟩
+      : ∃ c : ChoiceIndex j → ℂ, ∀ x,
+        ∑ i, c i * choiceFn j i x
+          = ∫ h', φ (g₁ * (h', 1)) * θ Ψ (g₁ * (h', 1)) (G.sum (x, 1)) * m₁ h' :=
+    exists_sum_choiceFn_eq_integral j ho φ_level (integrable_holMinorsPi h_rank ho u₁_dom u₁_gap) g₁
+      Ψ
   refine ⟨c, fun h ↦ ?_⟩
   -- The difference is the integral of `φ° (θ Ψ - c_P) m_u₁`, to which `h_bound` applies.
-  let A (h' : GInf D.E (1 ⊕ᵥ -1)) : ℂ :=
-    θ Ψ (g₁ * (h', 1)) (G.sum (g, 1) * (ι h, 1)) - cP h' (ι h)
+  let A (h' : GInf D.E (1 ⊕ᵥ -1)) : ℂ := θ Ψ (g₁ * (h', 1)) (G.sum (g, 1) * (ι h, 1)) - cP h' (ι h)
   let ε : ℝ := (D.b ^ (20 * nStar D))⁻¹ * maxOpNorm (ι h) ^ (6 * nStar D) * ‖cP 1 1‖
   have A_le (h' : GInf D.E (1 ⊕ᵥ -1)) : ‖A h'‖ ≤ ε * maxOpNorm h' ^ (6 * nStar D) :=
     (θ_near h' (ι h)).trans_eq (by ring)
   obtain ⟨diff_int, diff_le⟩ := h_bound (by fun_prop [polyMatrixCoeff, modKernel]) A_le
-  have h_diff : ∑ i, c i * choiceFn j i (g * (h, 1)) - F₀ h =
-      ∫ h', φ (g₁ * (h', 1)) * A h' * m₁ h' := by
+  have h_diff
+      : ∑ i, c i * choiceFn j i (g * (h, 1)) - F₀ h = ∫ h', φ (g₁ * (h', 1)) * A h' * m₁ h' := by
     have h_point : G.sum (g * (h, 1), 1) = G.sum (g, 1) * (ι h, 1) := by
       simp [ι, G.sum, Pi.mul_def, ← map_mul]
     rw [sum_eq, h_point, sub_eq_iff_eq_add,
       ← MeasureTheory.integral_add diff_int (F₀_bound (ι h)).1]
     simp [A, ← add_mul, ← mul_add]
   have norm_one : ‖F₀ 1‖ = J * (‖φ g₁‖ * ‖cP 1 1‖) := by simp [F₀_one, abs_of_pos J_pos]
-  calc ‖∑ i, c i * choiceFn j i (g * (h, 1)) - F₀ h‖
+  calc
+    ‖∑ i, c i * choiceFn j i (g * (h, 1)) - F₀ h‖
     _ ≤ 2 * ‖φ g₁‖ * ε * D.b ^ nStar D * J := by rwa [h_diff]
-    _ ≤ 2 * ‖φ g₁‖ * ((D.b ^ (20 * nStar D))⁻¹ * maxOpNorm h ^ (6 * nStar D) * ‖cP 1 1‖) *
-        D.b ^ nStar D * J := by
+    _ ≤ 2 * ‖φ g₁‖ * ((D.b ^ (20 * nStar D))⁻¹ * maxOpNorm h ^ (6 * nStar D) * ‖cP 1 1‖)
+        * D.b ^ nStar D * J := by
       unfold ε
       grw [maxOpNorm_sum_one_le j h]
     _ = 2 * (D.b ^ (19 * nStar D))⁻¹ * ‖F₀ 1‖ * maxOpNorm h ^ (6 * nStar D) := by
@@ -717,17 +755,22 @@ open ComplexConjugate Parameters Rows Submodule WeilData Finset Fintype Fock Des
 
 variable {P : Parameters} {D : Data P} (j : D.LiftIndex)
 
-/-- The pairing `⟨ζ, θ°(g, ·)⟩` of a form `ζ` on the definite space `V°` with the theta kernel `θ°`
+/--
+The pairing `⟨ζ, θ°(g, ·)⟩` of a form `ζ` on the definite space `V°` with the theta kernel `θ°`
 of `(W_j, V°)`; it is conjugate-linear in `ζ`. The form is given by its values at the classes
 `SecondFactorClasses` of `U(V°)` at principal level `ϖ²`, where `untwistedModulus 2` is the modulus
 `ϖ²`. The values lie in the Weyl module, written in the basis `WeylIndexFamily`, of the diagrams
 `μ⁻` with the column counts `colsMinus` of `untwistedDescentPair j`, the `j`-th descent pair at the
 trivial twist. The term of a class `c` is the kernel `modKernelStdSpace` at `(g, c)` whose datum is
 the indicator of the inclusion matrix of `W_j` in `V°` modulo `ϖ²` and whose polynomial is that of
-the conjugate of `ζ c` in the variables of the negative basis vectors of `W_j` (`letterPoly`). -/
-noncomputable def thetaKernelPairing (ζ : D.SecondFactorClasses →
-      WeylIndexFamily (fun _ ↦ D.SecondFactorIndex) (untwistedDescentPair j).colsMinus → ℂ)
-    (g : New.G D.E (D.signsW j)) : ℂ :=
+the conjugate of `ζ c` in the variables of the negative basis vectors of `W_j` (`letterPoly`).
+-/
+noncomputable def thetaKernelPairing
+    (ζ : D.SecondFactorClasses
+      → WeylIndexFamily (fun _ ↦ D.SecondFactorIndex) (untwistedDescentPair j).colsMinus
+      → ℂ)
+    (g : New.G D.E (D.signsW j))
+    : ℂ :=
   ∑ c : D.SecondFactorClasses,
     modKernelStdSpace (D.spaceW j) (untwistedDescentPair j).charW (upsilonU1 ^ (D.m / 2 - j : ℤ))
     (D.untwistedModulus 2) (Pi.single (inclMatrix (D.untwistedModulus 2).ResidueRing .inl) 1)
@@ -852,7 +895,8 @@ lemma integral_mul_sum_choiceFn_eq_zero (F : D.goodForms (D.spaceW j))
         (prod_level i) ..
     _ = 0 := by simp only [h_pair, mul_zero, sum_const_zero]
 
-/-- Products span. For admissible data `D` and `1 ≤ j ≤ m`, let `W_j = D.spaceW j` be the diagonal
+/--
+Products span. For admissible data `D` and `1 ≤ j ≤ m`, let `W_j = D.spaceW j` be the diagonal
 hermitian space with signs `D.signsW j` and let `V°` be the definite space with index set
 `D.SecondFactorIndex`. Let `F` be a good form on `W_j`: a form of principal level at the chosen
 places in the image of the idempotent `e₀` of the group algebra of the finite groups at these
@@ -862,13 +906,18 @@ choices `i` of kernel data; the integral is over the adelic group modulo its rat
 (`quotMeasure`); and `thetaKernelPairing j ζ g` is the pairing of the theta kernel `θ°(g, ·)` of
 `(W_j, V°)` with a form `ζ` on `V°`. Such a form assigns to each class at level `ϖ²` a vector of the
 Weyl module, in the basis `WeylIndexFamily` indexed by the infinite places `D.Φ`, of the diagrams
-whose column counts `colsMinus` belong to the data `untwistedDescentPair j` of the `j`-th lift. -/
-theorem eq_zero_of_integral_choiceFn_thetaKernelPairing (F : D.goodForms (D.spaceW j))
-    (h_orth : ∀ (i : ChoiceIndex j) (ζ : D.SecondFactorClasses →
-        WeylIndexFamily (fun _ : D.Φ ↦ D.SecondFactorIndex) (untwistedDescentPair j).colsMinus → ℂ),
+whose column counts `colsMinus` belong to the data `untwistedDescentPair j` of the `j`-th lift.
+-/
+theorem eq_zero_of_integral_choiceFn_thetaKernelPairing
+    (F : D.goodForms (D.spaceW j))
+    (h_orth : ∀ (i : ChoiceIndex j)
+        (ζ : D.SecondFactorClasses
+          → WeylIndexFamily (fun _ : D.Φ ↦ D.SecondFactorIndex) (untwistedDescentPair j).colsMinus
+          → ℂ),
       ∫ g : New.G D.E (D.signsW j), (F : New.G D.E (D.signsW j) → ℂ) g * choiceFn j i g *
-        thetaKernelPairing j ζ g ∂(D.spaceW j).quotMeasure = 0) :
-    F = 0 := by
+        thetaKernelPairing j ζ g ∂(D.spaceW j).quotMeasure
+        = 0)
+    : F = 0 := by
   -- Suppose `F ≠ 0`. The peaks of `conj F` lie away from the cusp, where a combination of the
   -- `F_i` is close to a fixed `F₀`. Then `norm_apply_one_le_of_forall_isPeak` makes `F₀ 1` too
   -- small.
@@ -878,42 +927,48 @@ theorem eq_zero_of_integral_choiceFn_thetaKernelPairing (F : D.goodForms (D.spac
     Subtype.ext (Subtype.ext (Subtype.ext (star_eq_zero.1 h_star)))
   by_contra F_ne
   -- `conj F` has level `M √(-d)`, so its peaks are not deep in a cusp.
-  have F_level : star (F : New.G D.E (D.signsW j) → ℂ) ∈
-      rapidOfLevel (D.spaceW j) (D.M * sqrtNegDInE P D.towerExp) :=
-    star_mem_rapidOfLevel
-      (goodForms_mem_rapidOfLevel F (.mul_right ⟨_, D.piM_mul_star.symm⟩ _))
-  have gap_one (τ : D.Φ) : HasHolGap (D.signsW j) (conjHolomorphicWeight j τ) 1 := fun a b ha hb ↦
-    by
+  have F_level
+      : star (F : New.G D.E (D.signsW j) → ℂ)
+        ∈ rapidOfLevel (D.spaceW j) (D.M * sqrtNegDInE P D.towerExp) :=
+    star_mem_rapidOfLevel (goodForms_mem_rapidOfLevel F (.mul_right ⟨_, D.piM_mul_star.symm⟩ _))
+  have gap_one (τ : D.Φ)
+      : HasHolGap (D.signsW j) (conjHolomorphicWeight j τ) 1 := fun a b ha hb ↦ by
     have h_one : 1 ≤ 300 * nStar D := by linarith [D.nStar_pos]
     exact le_trans (by gcongr) (hasHolGap_conjHolomorphicWeight j τ a b ha hb)
-  have peak_min {g : New.G D.E (D.signsW j)} (hg : IsPeak (fun g ↦ star (F.val.val g)) g) :
-      (√(5 * D.b * D.b ^ 23))⁻¹ ≤ ((D.spaceW j).move g).firstMinimum :=
+  have peak_min {g : New.G D.E (D.signsW j)} (hg : IsPeak (fun g ↦ star (F.val.val g)) g)
+      : (√(5 * D.b * D.b ^ 23))⁻¹ ≤ ((D.spaceW j).move g).firstMinimum :=
     hg.le_firstMinimum _ _ isPosFirstOrder_orderW gap_one (abs_conjHolomorphicWeight_le j)
       D.le_of_hasLogBound D.le_of_hasLogBound (by simp [star_sqrtNegDInE])
       (by simpa [NeZero.pos] using D.le_of_hasLogBound) F_level.1.1.rat_mul
       (apply_mul_of_mem_rapidOfLevel F_level) (isAdelicHol_star_goodForms F)
   obtain ⟨g, g_peak⟩ := exists_isPeak_of_mem_rapidOfLevel F_level F_ne
-  have F₀_small : ‖F₀ 1‖ ≤
-      (4 * D.b ^ nStar D + 1) * (2 * (D.b ^ (19 * nStar D))⁻¹ * ‖F₀ 1‖) := by
+  have F₀_small : ‖F₀ 1‖ ≤ (4 * D.b ^ nStar D + 1) * (2 * (D.b ^ (19 * nStar D))⁻¹ * ‖F₀ 1‖) := by
     refine norm_apply_one_le_of_forall_isPeak h_rank isPosFirstOrder_orderW
-      (isKDominant_conjHolomorphicWeight j)
-      (isKDominant_kernelWeight j) (hasHolGap_conjHolomorphicWeight j) (hasHolGap_kernelWeight j)
+      (isKDominant_conjHolomorphicWeight j) (isKDominant_kernelWeight j)
+      (hasHolGap_conjHolomorphicWeight j) (hasHolGap_kernelWeight j)
       (abs_conjHolomorphicWeight_le j) F.1.1.2.continuous.star (isAdelicHol_star_goodForms F) g_peak
-        F₀_le
-      fun x hx ↦ ?_
+      F₀_le fun x hx ↦ ?_
     obtain ⟨c, close⟩ := near x (peak_min hx)
-    refine ⟨fun h ↦ ∑ i, c i * choiceFn j i (x * (h, 1)),
-      .sum _ fun i ↦ isAdelicHol_choiceFn i x, close, ?_⟩
-    simpa only [Pi.star_apply, star_star] using integral_mul_sum_choiceFn_eq_zero F h_orth
-      (integrable_holMinorsPi h_rank isPosFirstOrder_orderW (isKDominant_kernelWeight j)
-        (hasHolGap_kernelWeight j)) c x
+    refine ⟨
+      fun h ↦ ∑ i, c i * choiceFn j i (x * (h, 1)),
+      .sum _ fun i ↦ isAdelicHol_choiceFn i x,
+      close,
+      ?_
+    ⟩
+    simpa only [Pi.star_apply, star_star] using
+      integral_mul_sum_choiceFn_eq_zero F h_orth
+        (integrable_holMinorsPi h_rank isPosFirstOrder_orderW (isKDominant_kernelWeight j)
+          (hasHolGap_kernelWeight j))
+        c x
   -- This is absurd: with `B = b ^ n_* > 10` we have `(4 B + 1) 2 < B ^ 2 ≤ B ^ 19`.
   have h_pow : 10 < D.b ^ nStar D :=
     have hb : 10 < D.b := D.lt_of_hasLogBound
     hb.trans_le (le_self_pow₀ (by linarith) D.nStar_pos.ne')
   have h_lt : (4 * D.b ^ nStar D + 1) * (2 * (D.b ^ (19 * nStar D))⁻¹) < 1 := by
     rw [← mul_assoc, mul_inv_lt_iff₀ (by positivity), one_mul, mul_comm 19, pow_mul D.b (nStar D)]
-    calc (4 * D.b ^ nStar D + 1) * 2 < (D.b ^ nStar D) ^ 2 := by nlinarith
+    calc
+      (4 * D.b ^ nStar D + 1) * 2
+        < (D.b ^ nStar D) ^ 2 := by nlinarith
       _ ≤ (D.b ^ nStar D) ^ 19 := pow_le_pow_right₀ (by linarith) (by norm_num)
   nlinarith [norm_pos_iff.2 F₀_ne]
 

@@ -144,13 +144,15 @@ lemma one_add_pow_six_mul_add_pow_ten_le_one_add_pow_four {u : ℝ} (hu : 0 ≤ 
     _ ≤ 1 + s * (5 + 7 * 1 + 4 * 1 ^ 2 + 1 ^ 3) := by gcongr
     _ ≤ 1 + u ^ 4 := by linarith
 
-/-- The normalising constant `r` of the main term, used with `k = 𝔰.k - 1`: the product over the
+/--
+The normalising constant `r` of the main term, used with `k = 𝔰.k - 1`: the product over the
 infinite places of √`openCellConst` and powers of the squared scales `frameScaleSq` of the frame
-vectors, divided by the number of Bessel coordinates. -/
+vectors, divided by the number of Bessel coordinates.
+-/
 noncomputable abbrev normalizingConst (S : Filling E 𝔰) (k : ℕ) : ℝ :=
   (∏ v : NumberField.InfinitePlace E,
-    √𝔰.openCellConst * ∏ a : Fin 𝔰.n, S.frameScaleSq v a ^ (k + 2 * a.rev)) /
-      Fintype.card S.BesselCoord
+    √𝔰.openCellConst * ∏ a : Fin 𝔰.n, S.frameScaleSq v a ^ (k + 2 * a.rev))
+    / Fintype.card S.BesselCoord
 
 /-- Assume `𝔰.k = kPred + 1`. The product of the Poisson summation constants
 `S.poissonConst i` over `i < 𝔰.n` is `S.normalizingConst kPred ^ 2` times
@@ -621,7 +623,8 @@ lemma sum_norm_sum_cosetAmplitude_sq_le [S.IsAdmissible] (Sg : Finset (S.chosenP
   refine le_of_mul_le_mul_left (h_siegel.trans ?_) (normalizingConst_sq_pos kPred)
   exact (mul_le_mul_of_nonneg_left h_sieve h_coeff).trans (sieve_constant_le hk hSg)
 
-/-- Let `S` be an admissible filling of shape `𝔰` over a CM field `E` with Weil data, `Sg` a set of
+/--
+Let `S` be an admissible filling of shape `𝔰` over a CM field `E` with Weil data, `Sg` a set of
 chosen places above the first level prime p₀, and `D w` a nonzero vector of the span of the frame
 modulo `w` or modulo its conjugate. On the left, `linkSecondMoment` sums the squared norms of the
 class sums of the cut function over all links, pairs of classes, and reductions `s` that are open
@@ -634,13 +637,15 @@ size ϱ of the frame products of `γ`. The bound is `(1 + b⁻⁴) b^(-6 𝔰.k 
 size parameter of `S`, `𝔰.k` is the rank of X₀, `mass` is the mass of the genus of the standard
 Hermitian lattice of rank `𝔰.r`, and `unipotentCovolume` is an explicit number which, if `E`
 contains a primitive 5040th root of unity, is the integral of the cutoff `S.classCutoff c` over the
-real unipotent group, for every class `c` (`lintegral_classCutoff_eq_unipotentCovolume`). -/
-theorem linkSecondMoment_isOpenElement_le [S.IsAdmissible] (Sg : Finset (S.chosenPlaces 0))
-    (D : ∀ w : S.chosenPlaces 0, S.FrameVector w) :
-    linkSecondMoment {γ : S.G E | S.termDisc γ ≠ 0}
-      {s : S.ResidueGL | s ∈ S.fixer Sg D ∧ S.IsOpenElement s} ≤
-      .ofReal ((1 + (S.b ^ 4)⁻¹) * (S.b ^ (6 * 𝔰.k))⁻¹ ^ #Sg * S.mainSecondMoment *
-        S.unipotentCovolume ^ 2) := by
+real unipotent group, for every class `c` (`lintegral_classCutoff_eq_unipotentCovolume`).
+-/
+theorem linkSecondMoment_isOpenElement_le
+    [S.IsAdmissible] (Sg : Finset (S.chosenPlaces 0)) (D : ∀ w : S.chosenPlaces 0, S.FrameVector w)
+    : linkSecondMoment {γ : S.G E | S.termDisc γ ≠ 0}
+        {s : S.ResidueGL | s ∈ S.fixer Sg D ∧ S.IsOpenElement s}
+      ≤ .ofReal
+        ((1 + (S.b ^ 4)⁻¹) * (S.b ^ (6 * 𝔰.k))⁻¹ ^ #Sg * S.mainSecondMoment
+          * S.unipotentCovolume ^ 2) := by
   -- The left side is a sum of squared norms of blocks. It suffices to bound finite sums `F` of
   -- nonzero blocks; each is a finite sum of double coset sums over the tuples `p` of entries in
   -- `S.entrySet`. These entries are units off the set `T` of places, and the inverses of the level
@@ -649,8 +654,10 @@ theorem linkSecondMoment_isOpenElement_le [S.IsAdmissible] (Sg : Finset (S.chose
   simp_rw [linkSecondMoment, ← tsum_prod]
   refine (tsum_subtype_support _).ge.trans (CompleteLattice.summable.tsum_le_of_sum_le fun F ↦ ?_)
   -- a block `j` has two classes, a reduction and a link
-  let block (j : F) : S.Classes × S.Classes × {s | s ∈ S.fixer Sg D ∧ S.IsOpenElement s} ×
-      Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E) := j.val.val
+  let block (j : F)
+      : S.Classes × S.Classes × {s | s ∈ S.fixer Sg D ∧ S.IsOpenElement s}
+        × Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E) :=
+    j.val.val
   let c (j : F) : S.Classes := (block j).fst
   let c' (j : F) : S.Classes := (block j).snd.fst
   let s (j : F) : S.ResidueGL := (block j).snd.snd.fst
@@ -659,12 +666,13 @@ theorem linkSecondMoment_isOpenElement_le [S.IsAdmissible] (Sg : Finset (S.chose
     S.amplitudeSum .cut (S.termsOfLink (Λ j)) (c j) (s j) (c' j)
   have hs (j : F) : s j ∈ S.fixer Sg D ∧ S.IsOpenElement (s j) := (block j).snd.snd.fst.prop
   have h_ne (j : F) : classSum j ≠ 0 := by simpa using show ‖classSum j‖ₑ ^ 2 ≠ 0 from j.val.prop
-  have h_class (j : F) : ∃ (t : Eˣ) (σ : S.G E) (n : S.latticeStabilizer),
-      S.NamesLink T (c j) (s j) (c' j) (Λ j) t σ n ∧
-      classSum j = ∑ p : Fin 𝔰.ϱ → S.entrySet, S.cosetAmplitude .cut (c j) (s j) (c' j)
-        (Floors.FloorGroups.weylElem 𝔰.ϱ (padTuple (fun a ↦ (p a).val) t) * σ) :=
-    exists_amplitudeSum_eq_sum_cosetAmplitude hT₀ (h_ne j)
-      fun _ ↦ (hs j).right.leadingMinor_ne_zero
+  have h_class (j : F)
+      : ∃ (t : Eˣ) (σ : S.G E) (n : S.latticeStabilizer),
+        S.NamesLink T (c j) (s j) (c' j) (Λ j) t σ n
+          ∧ classSum j
+            = ∑ p : Fin 𝔰.ϱ → S.entrySet, S.cosetAmplitude .cut (c j) (s j) (c' j)
+              (Floors.FloorGroups.weylElem 𝔰.ϱ (padTuple (fun a ↦ (p a).val) t) * σ) :=
+    exists_amplitudeSum_eq_sum_cosetAmplitude hT₀ (h_ne j) fun _ ↦ (hs j).right.leadingMinor_ne_zero
   choose t σ n h_names h_sum using h_class
   have h_red (j : F) : S.reduction (n j) = s j := (h_names j).reduction_eq
   -- distinct blocks give distinct tuples `(c j, c' j, S.reduction (n j), σ j)`: `S.reduction (n j)`
@@ -675,14 +683,19 @@ theorem linkSecondMoment_isOpenElement_le [S.IsAdmissible] (Sg : Finset (S.chose
       simpa [h_red] using h
     have hΛ : Λ i = Λ j := by rw [(h_names i).link_eq, (h_names j).link_eq, h_eq]
     exact Subtype.ext (Subtype.ext (Prod.ext hc (Prod.ext hc' (Prod.ext (Subtype.ext h_s) hΛ))))
-  have h_bound : ∑ j : F, ‖classSum j‖ ^ 2 ≤
-      (1 + (S.b ^ 4)⁻¹) * (S.b ^ (6 * 𝔰.k))⁻¹ ^ #Sg * S.mainSecondMoment *
-        S.unipotentCovolume ^ 2 := by
-    simpa only [h_sum, ← h_red] using sum_norm_sum_cosetAmplitude_sq_le Sg D h_inj
-      (fun j ↦ (h_names j).mem_floorGroup)
-      (fun j ↦ (h_names j).frameProducts_top_top) (fun j ↦ (h_names j).sq_lt_norm_sq)
-      (by simpa only [h_red] using fun j ↦ (hs j).left)
-      (fun j ↦ (h_names j).mem_entrySet) hT₀ hT_basis hT_N fun j ↦ (h_names j).isIntegralOff
+  have h_bound
+      : ∑ j : F, ‖classSum j‖ ^ 2
+        ≤ (1 + (S.b ^ 4)⁻¹) * (S.b ^ (6 * 𝔰.k))⁻¹ ^ #Sg * S.mainSecondMoment
+          * S.unipotentCovolume ^ 2 := by
+    simpa only [h_sum, ← h_red] using
+      sum_norm_sum_cosetAmplitude_sq_le Sg D h_inj
+        (fun j ↦ (h_names j).mem_floorGroup)
+        (fun j ↦ (h_names j).frameProducts_top_top)
+        (fun j ↦ (h_names j).sq_lt_norm_sq)
+        (by simpa only [h_red] using fun j ↦ (hs j).left)
+        (fun j ↦ (h_names j).mem_entrySet)
+        hT₀ hT_basis hT_N
+        fun j ↦ (h_names j).isIntegralOff
   refine le_of_eq_of_le ?_ (ENNReal.ofReal_le_ofReal h_bound)
   simp only [ENNReal.ofReal_sum_of_nonneg fun j _ ↦ sq_nonneg ‖classSum j‖,
     ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm]

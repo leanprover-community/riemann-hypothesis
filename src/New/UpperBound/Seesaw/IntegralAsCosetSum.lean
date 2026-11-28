@@ -55,9 +55,11 @@ section Group
 variable {H : Type*} [Group H] {S A J : Subgroup H} (T : Finset (H ⧸ J))
 
 variable (S A) in
-/-- The multiplicity with which the translates of `T` under `S`, counted modulo `S ⊓ A`, cover `t`:
+/--
+The multiplicity with which the translates of `T` under `S`, counted modulo `S ⊓ A`, cover `t`:
 the number of classes in `S ⧸ (S ⊓ A)` that have a representative `r` with `r⁻¹ • t ∈ T`, and zero
-if there are infinitely many. -/
+if there are infinitely many.
+-/
 noncomputable def coverMultiplicity (t : H ⧸ J) : ℕ :=
   (QuotientGroup.mk (s := A.subgroupOf S) '' {r : S | r⁻¹ • t ∈ T}).ncard
 
@@ -324,8 +326,9 @@ end Levels
 
 section Bessel
 
-variable {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X]
-  [DecidableEq X] {s : ℕ} {ε : ι → ℤˣ} {N : E} {V : Space E ι ε} {Y : Grading V N X s}
+variable
+  {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
+  {s : ℕ} {ε : ι → ℤˣ} {N : E} {V : Space E ι ε} {Y : Grading V N X s}
 
 omit [Fintype X] in
 /-- Let `Y` be a grading of the hermitian space `V`, `Y.besselGroup` its Bessel subgroup of `G E ε`

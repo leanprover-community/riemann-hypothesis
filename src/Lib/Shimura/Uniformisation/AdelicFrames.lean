@@ -65,9 +65,11 @@ open NumberField ConjAct Matrix GeneralLinearGroup ComplexOrder Pointwise
 
 namespace New
 
-/-- A choice of one complex embedding Φ_v for each infinite place v of E, together with a base
+/--
+A choice of one complex embedding Φ_v for each infinite place v of E, together with a base
 place v₀; E has at least two infinite places.
-It extends `CMType E`, so E is a CM number field. -/
+It extends `CMType E`, so E is a CM number field.
+-/
 class CMBase (E : Type*) [Field E] extends CMType E, Nontrivial (InfinitePlace E) where
   /-- The base infinite place of `E`. -/
   v₀ : InfinitePlace E
@@ -76,13 +78,15 @@ export CMBase (v₀)
 
 variable (E : Type) [Field E] [NumberField E] (n : Type) [Fintype n] [IsCMField E]
 
-/-- The torsion `𝓞 E`-module `(𝔸f E / Ô E)ⁿ`: `n`-tuples of finite adeles of `E` modulo integral
-ones, an adelic model of `(E / 𝓞 E)ⁿ`. -/
+/--
+The torsion `𝓞 E`-module `(𝔸f E / Ô E)ⁿ`: `n`-tuples of finite adeles of `E` modulo integral
+ones, an adelic model of `(E / 𝓞 E)ⁿ`.
+-/
 def AdelicTorsion : Type :=
   (n → 𝔸f E) ⧸ Submodule.pi Set.univ fun _ : n ↦
       -- `Ô E` as an `𝓞 E`-subalgebra, then as a submodule
       Subalgebra.toSubmodule (R := 𝓞 E) ⟨(Ô E).toSubsemiring, (algebraMap_mem_Ô.2 ·.property)⟩
-  deriving AddCommGroup, Module (𝓞 E)
+deriving AddCommGroup, Module (𝓞 E)
 
 namespace Variety
 
@@ -90,13 +94,17 @@ variable {E n} [DecidableEq n] (β : Matrix n n E) (x : GL n (𝔸f E))
 
 /-! ### Frames and similitudes -/
 
-/-- `x` is a frame for the form `β`: `xᴴ β x = ε • 1` (`ᴴ` is the conjugate transpose for the star
-of `𝔸f E`) for a unit `ε` of `Ẑ = Ô ℚ`. -/
+/--
+`x` is a frame for the form `β`: `xᴴ β x = ε • 1` (`ᴴ` is the conjugate transpose for the star
+of `𝔸f E`) for a unit `ε` of `Ẑ = Ô ℚ`.
+-/
 def IsFrameFor : Prop :=
   ∃ ε : (Ô ℚ)ˣ, xᴴ * β.map (algebraMap E (𝔸f E)) * x.val = finAdeleIncl ℚ E ε • 1
 
-/-- The rational number c is positive and x is a frame for the scalar matrix c·1: c·xᴴx = ε·1
-for some unit ε of Ẑ. -/
+/--
+The rational number c is positive and x is a frame for the scalar matrix c·1: c·xᴴx = ε·1
+for some unit ε of Ẑ.
+-/
 @[simp]
 abbrev IsScalarFrame (c : ℚ) : Prop := 0 < c ∧ IsFrameFor ((c : E) • 1) x
 
@@ -116,13 +124,17 @@ lemma IsFrameFor.mul_iff {c : E} {g : GL n (𝔸f E)} (hx : IsFrameFor β x) :
 
 variable (E n)
 
-/-- The number |n| times the number of infinite places of E; for a CM field E this is
-|n|·[E⁺:ℚ], with E⁺ the maximal real subfield. -/
+/--
+The number |n| times the number of infinite places of E; for a CM field E this is
+|n|·[E⁺:ℚ], with E⁺ the maximal real subfield.
+-/
 def abelianDim : ℕ := Fintype.card n * Fintype.card (InfinitePlace E)
 
-/-- The unitary similitudes: the `g ∈ GL_n(𝔸f E)` with `c • gᴴ g = ε • 1` for some rational
+/--
+The unitary similitudes: the `g ∈ GL_n(𝔸f E)` with `c • gᴴ g = ε • 1` for some rational
 `c > 0` and unit `ε` of `Ẑ`, that is, the frames of the scalar forms `c • 1`. Every finite
-idele of `ℚ` has the form `ε / c`, so this says that `gᴴ g` is a scalar finite idele of `ℚ`. -/
+idele of `ℚ` has the form `ε / c`, so this says that `gᴴ g` is a scalar finite idele of `ℚ`.
+-/
 def GU : Subgroup (GL n (𝔸f E)) :=
   Subgroup.ofDiv {g : GL n (𝔸f E) | ∃ c : ℚ, IsScalarFrame g c} ⟨1, 1, rfl, 1, by simp⟩ <| by
     rintro g ⟨c, hc, hg⟩ g' ⟨c', hc', hg'⟩
@@ -131,9 +143,11 @@ def GU : Subgroup (GL n (𝔸f E)) :=
     refine ⟨c'⁻¹ * c, by bound, ?_⟩
     simpa [mul_smul, hg.mul_iff, ← hg'.mul_iff, hc'.ne'] using ⟨1, by simp⟩
 
-/-- The monoid of similitudes `g` whose inverse has integral entries, that is, which enlarge the
+/--
+The monoid of similitudes `g` whose inverse has integral entries, that is, which enlarge the
 standard lattice. It is the intersection of `GU` with the inverse of the monoid of integral
-matrices, with the carrier written out. -/
+matrices, with the carrier written out.
+-/
 def GUPlus : Submonoid (GL n (𝔸f E)) :=
   Submonoid.copy (M := GL n (𝔸f E))
     ((GU E n).toSubmonoid ⊓ ((Ô E).matrix.toSubmonoid.comap (Units.coeHom (Matrix n n (𝔸f E))))⁻¹)
@@ -145,8 +159,11 @@ end New
 
 namespace New.Variety
 
-variable {E : Type} [Field E] [CMBase E] {n : Type} [Fintype n] [DecidableEq n]
-  {β : Matrix n n E} (x : GL n (𝔸f E)) (z : GL n E) (J : Matrix n n ℂ)
+variable
+  {E : Type} [Field E] [CMBase E]
+  {n : Type} [Fintype n] [DecidableEq n]
+  {β : Matrix n n E}
+  (x : GL n (𝔸f E)) (z : GL n E) (J : Matrix n n ℂ)
 
 lemma mem_GUPlus_iff {g : GL n (𝔸f E)} :
     g ∈ GUPlus E n ↔ g ∈ GU E n ∧ ∀ i j : n, (g⁻¹ : GL n (𝔸f E)) i j ∈ Ô E :=
@@ -165,21 +182,29 @@ instance : Algebra E ℂ := (Φ v₀).toAlgebra
 abbrev toFinGL {E : Type} [Field E] [NumberField E] : GL n E →* GL n (𝔸f E) :=
   GeneralLinearGroup.map (algebraMap E (𝔸f E))
 
-/-- A reflection: `J = u wᵀ - 1` with `w ⬝ᵥ u = 2`, so `J` is `1` on the line of `u` and `-1` on
-the kernel of `w`. -/
+/--
+A reflection: `J = u wᵀ - 1` with `w ⬝ᵥ u = 2`, so `J` is `1` on the line of `u` and `-1` on
+the kernel of `w`.
+-/
 def IsReflection : Prop := ∃ u w : n → ℂ, w ⬝ᵥ u = 2 ∧ J = vecMulVec u w - 1
 
-/-- `x` is a frame for `β`, the matrix `β.map (Φ w)` is positive definite for every infinite place
-`w ≠ v₀`, and `β.map (Φ v₀) * J` is positive definite (the `ite` joins the two cases). -/
+/--
+`x` is a frame for `β`, the matrix `β.map (Φ w)` is positive definite for every infinite place
+`w ≠ v₀`, and `β.map (Φ v₀) * J` is positive definite (the `ite` joins the two cases).
+-/
 abbrev IsSignedFrameFor (β : Matrix n n E) : Prop :=
   IsFrameFor β x ∧ ∀ w : InfinitePlace E, (β.map (Φ w) * if w = v₀ then J else 1).PosDef
 
-/-- `x` is a frame for some form `β` over `E` with the positivity conditions of
-`IsSignedFrameFor`. -/
+/--
+`x` is a frame for some form `β` over `E` with the positivity conditions of
+`IsSignedFrameFor`.
+-/
 def IsSignedFrame : Prop := ∃ β : Matrix n n E, IsSignedFrameFor x J β
 
-/-- The conjugate `Φ v₀ (z) * J * Φ v₀ (z)⁻¹` of the complex matrix `J` by `z` in `GL n E`, taken
-through the embedding `Φ v₀`. -/
+/--
+The conjugate `Φ v₀ (z) * J * Φ v₀ (z)⁻¹` of the complex matrix `J` by `z` in `GL n E`, taken
+through the embedding `Φ v₀`.
+-/
 def ratConj : Matrix n n ℂ := toConjAct (z.map (Φ v₀)) • J
 
 /-- Every conjugate of a reflection is a reflection. -/
@@ -287,14 +312,18 @@ variable (E n : Type) [Field E] [CMBase E] [Fintype n] [DecidableEq n]
 
 /-! ### The real space and points at infinite level -/
 
-/-- The space `(E ⊗ ℝ)ⁿ`, written as `n`-tuples of elements of the product of copies of `ℂ` over
-the infinite places of `E`. -/
+/--
+The space `(E ⊗ ℝ)ⁿ`, written as `n`-tuples of elements of the product of copies of `ℂ` over
+the infinite places of `E`.
+-/
 abbrev RealVectors : Type := n → InfinitePlace E → ℂ
 
-/-- A complex point at infinite level: a finite adelic matrix `frame` (written `x` in the comments),
+/--
+A complex point at infinite level: a finite adelic matrix `frame` (written `x` in the comments),
 a complex matrix `reflection` (written `J` in the comments) that satisfies the signature condition
 `New.Variety.IsSignedFrame` at `v₀` together with `x`, and marked vectors `markedPoint i` (written
-`P i` in the comments) in `(E ⊗ ℝ)ⁿ`. -/
+`P i` in the comments) in `(E ⊗ ℝ)ⁿ`.
+-/
 structure ModuliPoint (ν : ℕ) where
   /-- The finite adelic matrix `x`, which gives the lattice `Eⁿ ∩ x Ôⁿ`. -/
   frame : GL n (𝔸f E)
@@ -302,30 +331,37 @@ structure ModuliPoint (ν : ℕ) where
   reflection : Matrix n n ℂ
   /-- The marked points, given by representatives in `(E ⊗ ℝ)ⁿ`. -/
   markedPoint : Fin ν → RealVectors E n
-  /-- `(x, J)` is a signed frame: `x` is a frame for some matrix `β` over `E` with `Φ_{v₀}(β) J` and
-  all `Φ_v(β)`, `v ≠ v₀`, positive definite. -/
+  /--
+  `(x, J)` is a signed frame: `x` is a frame for some matrix `β` over `E` with `Φ_{v₀}(β) J` and
+  all `Φ_v(β)`, `v ≠ v₀`, positive definite.
+  -/
   isSignedFrame : IsSignedFrame frame reflection
   /-- `J` is a reflection: `1` on a line and `-1` on a complement. -/
   isReflection : IsReflection reflection
 
-variable {E n} {V : Type} [FinComplexSpace.{0} V] (ℓ : Matrix n n ℂ)
-  (Q : RealVectors E n ≃L[ℝ] V) {ν : ℕ} (K : Subgroup (GL n (𝔸f E))) (z : GL n E)
-  (a b : ModuliPoint E n ν)
+variable
+  {E n} {V : Type} [FinComplexSpace.{0} V]
+  (ℓ : Matrix n n ℂ) (Q : RealVectors E n ≃L[ℝ] V)
+  {ν : ℕ}
+  (K : Subgroup (GL n (𝔸f E))) (z : GL n E) (a b : ModuliPoint E n ν)
 
 /-! ### Rational vectors, frames and lattices -/
 
-/-- The ring homomorphism `x ↦ (Φ_v(x))_v` from `E` to the product of copies of `ℂ` over the
-infinite places `v`, given by the CM type `Φ`. -/
+/--
+The ring homomorphism `x ↦ (Φ_v(x))_v` from `E` to the product of copies of `ℂ` over the
+infinite places `v`, given by the CM type `Φ`.
+-/
 abbrev cmEmbedding {E : Type} [Field E] [CMType E] : E →+* InfinitePlace E → ℂ := RingHom.pi Φ
 
 variable {E : Type} [Field E] [CMType E] (β : Matrix n n E) in
 /-- The action of a matrix `β` over `E` on `(E ⊗ ℝ)ⁿ`: `Φ_v(β)` at the infinite place `v`. -/
-abbrev realVecAction :
-    (n → InfinitePlace E → ℂ) →ₗ[InfinitePlace E → ℂ] n → InfinitePlace E → ℂ :=
+abbrev realVecAction : (n → InfinitePlace E → ℂ) →ₗ[InfinitePlace E → ℂ] n → InfinitePlace E → ℂ :=
   (β.map cmEmbedding).mulVecLin
 
-/-- The additive map `Eⁿ → (∏_v ℂ)ⁿ` applying the CM embedding `x ↦ (Φ_v(x))_v` to each
-coordinate. -/
+/--
+The additive map `Eⁿ → (∏_v ℂ)ⁿ` applying the CM embedding `x ↦ (Φ_v(x))_v` to each
+coordinate.
+-/
 @[simps!]
 def toRealVectors {E : Type} [Field E] [CMType E] : (n → E) →+ n → InfinitePlace E → ℂ :=
   (cmEmbedding (E := E)).toAddMonoidHom.compLeft n
@@ -334,23 +370,30 @@ section
 
 variable {E : Type} [Field E] [NumberField E] (g : GL n (𝔸f E))
 
-/-- The coordinates of a rational vector in the adelic frame `g`: the `E`-linear map `y ↦ g⁻¹ y`
-from `Eⁿ` to `n`-tuples of finite adeles. -/
+/--
+The coordinates of a rational vector in the adelic frame `g`: the `E`-linear map `y ↦ g⁻¹ y`
+from `Eⁿ` to `n`-tuples of finite adeles.
+-/
 def frameCoords : (n → E) →ₗ[E] n → 𝔸f E :=
   g⁻¹.val.mulVecLin.restrictScalars E ∘ₗ (Algebra.linearMap E (𝔸f E)).compLeft n
 
-/-- The `𝓞 E`-linear map sending `y` in `Eⁿ` to the class of the adelic vector `g⁻¹ y` in the
-torsion module `(𝔸f / Ô)ⁿ`. -/
+/--
+The `𝓞 E`-linear map sending `y` in `Eⁿ` to the class of the adelic vector `g⁻¹ y` in the
+torsion module `(𝔸f / Ô)ⁿ`.
+-/
 @[simps! -isSimp apply]
 def frameTorsionClass : (n → E) →ₗ[𝓞 E] AdelicTorsion E n :=
   torsionClass ∘ₗ (frameCoords g).restrictScalars (𝓞 E)
 
 end
 
-variable {E : Type} [Field E] [CMType E] (g : GL n (𝔸f E)) (S : AddSubgroup (AdelicTorsion E n))
-  (Q : RealVectors E n ≃L[ℝ] V) in
-/-- The image in `V`, under the CM embedding followed by `Q`, of the group of `y` in `Eⁿ` such that
-the class of `g⁻¹ y` in `(𝔸f / Ô)ⁿ` lies in `S`. -/
+variable
+  {E : Type} [Field E] [CMType E]
+  (g : GL n (𝔸f E)) (S : AddSubgroup (AdelicTorsion E n)) (Q : RealVectors E n ≃L[ℝ] V) in
+/--
+The image in `V`, under the CM embedding followed by `Q`, of the group of `y` in `Eⁿ` such that
+the class of `g⁻¹ y` in `(𝔸f / Ô)ⁿ` lies in `S`.
+-/
 def classLattice : Submodule ℤ V :=
   ((S.comap (frameTorsionClass g)).map
     ((Q : RealVectors E n →+ V).comp toRealVectors)).toIntSubmodule
@@ -360,19 +403,24 @@ variable {E : Type} [Field E] [CMType E] (g : GL n (𝔸f E)) in
 def frameLattice : AddSubgroup (RealVectors E n) :=
   (classLattice g ⊥ (ContinuousLinearEquiv.refl ℝ (RealVectors E n))).toAddSubgroup
 
-/-- `Q` is a period map for the complex matrix `ℓ`: it carries the real endomorphism of
+/--
+`Q` is a period map for the complex matrix `ℓ`: it carries the real endomorphism of
 `(E ⊗ ℝ)ⁿ` given by `i ℓ` at the place `v₀` and by `i` at the other infinite places to
-multiplication by `i` on `V`. -/
+multiplication by `i` on `V`.
+-/
 def IsPeriodMap : Prop :=
   ∀ w : RealVectors E n,
-    Q (Complex.I • fun (i : n) (v : InfinitePlace E) ↦
-        ((if v = v₀ then ℓ else 1) *ᵥ fun j : n ↦ w j v) i) =
-      Complex.I • Q w
+    Q
+        (Complex.I
+          • fun (i : n) (v : InfinitePlace E) ↦ ((if v = v₀ then ℓ else 1) *ᵥ fun j : n ↦ w j v) i)
+      = Complex.I • Q w
 
 /-! ### The action on points and isomorphisms at a level -/
 
-/-- The action on a point `a = (x, J, P)` of an adelic similitude `g` and of integers `α i` of
-`E`: the result is `(x g, J, α i • P i)`, where `α i` acts on `(E ⊗ ℝ)ⁿ` through the CM type. -/
+/--
+The action on a point `a = (x, J, P)` of an adelic similitude `g` and of integers `α i` of
+`E`: the result is `(x g, J, α i • P i)`, where `α i` acts on `(E ⊗ ℝ)ⁿ` through the CM type.
+-/
 def ModuliPoint.act (g : GUPlus E n) (α : Fin ν → 𝓞 E := 1) : ModuliPoint E n ν where
   frame := a.frame * g
   reflection := a.reflection
@@ -383,9 +431,11 @@ def ModuliPoint.act (g : GUPlus E n) (α : Fin ν → 𝓞 E := 1) : ModuliPoint
     simpa [ratConj] using a.isSignedFrame.mul 1 hg_GU
   isReflection := a.isReflection
 
-/-- The matrix `z` in `GL n E` is an isomorphism from `a = (x, J, P)` to `b = (x', J', P')` at
+/--
+The matrix `z` in `GL n E` is an isomorphism from `a = (x, J, P)` to `b = (x', J', P')` at
 level `K`: `x'⁻¹ z x` lies in `K`, `z J z⁻¹ = J'` through `Φ v₀`, and `z (P i) - P' i` lies in
-the lattice of `x'`. -/
+the lattice of `x'`.
+-/
 @[mk_iff]
 structure ModuliPoint.IsLevelIso where
   /-- With `x`, `x'` the adelic matrices of `a` and `b`, the matrix `x'⁻¹ z x` lies in `K`. -/
@@ -393,8 +443,8 @@ structure ModuliPoint.IsLevelIso where
   /-- `z` conjugates the reflection of `a` to that of `b`: `z J z⁻¹ = J'`, through `Φ v₀`. -/
   reflection_eq : ratConj z a.reflection = b.reflection
   /-- `z` carries each marked point of `a` to that of `b`, modulo the lattice of `x'`. -/
-  sub_mem_lattice (i : Fin ν) : realVecAction z (a.markedPoint i) - b.markedPoint i ∈ frameLattice
-    b.frame
+  sub_mem_lattice (i : Fin ν)
+    : realVecAction z (a.markedPoint i) - b.markedPoint i ∈ frameLattice b.frame
 
 end New.Variety
 
@@ -440,9 +490,11 @@ lemma frameTorsionClass_surjective : Surjective (frameTorsionClass g) := fun t �
 
 end
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {g g' : GL n (𝔸f E)}
-  {V : Type} {S : AddSubgroup (AdelicTorsion E n)} {A : Matrix n n E} {y : n → E}
-  [FinComplexSpace V] {Q : RealVectors E n ≃L[ℝ] V}
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {g g' : GL n (𝔸f E)} {V : Type} {S : AddSubgroup (AdelicTorsion E n)} {A : Matrix n n E}
+  {y : n → E} [FinComplexSpace V]
+  {Q : RealVectors E n ≃L[ℝ] V}
 
 /-! ### The embedding by the CM type and the lattices -/
 
@@ -494,8 +546,10 @@ omit [Fintype n] [DecidableEq n] in
 lemma denseRange_toRealVectors : DenseRange (toRealVectors (E := E) (n := n)) :=
   .piMap fun _ ↦ denseRange_Φ
 
-/-- The lattice `classLattice g ⊥ Q` of rational vectors `y` with `g⁻¹ y` integral is discrete in
-`V`. -/
+/--
+The lattice `classLattice g ⊥ Q` of rational vectors `y` with `g⁻¹ y` integral is discrete in
+`V`.
+-/
 instance : DiscreteTopology (classLattice g ⊥ Q) := by
   -- A compact set `K` holds finitely many lattice points: they come from rational vectors in the
   -- compact adelic set `Q⁻¹ K × g Ô ^ n`, and the rational vectors form a lattice
@@ -507,30 +561,38 @@ instance : DiscreteTopology (classLattice g ⊥ Q) := by
   have h_compact : IsCompact (f '' K ×ˢ {x : n → 𝔸f E | ∀ i : n, x i ∈ Ô E}) :=
     (hK.prod (isCompact_pi_infinite fun _ : n ↦ isCompact_Ô)).image_of_continuous _
   refine isCovolOneLattice_ratVectors.finite_preimage h_compact
-    |>.image (fun y : n → E ↦ Q (toRealVectors y)) |>.preimage injOn_subtypeVal |>.subset ?_
+    |>.image (fun y : n → E ↦ Q (toRealVectors y))
+    |>.preimage injOn_subtypeVal
+    |>.subset ?_
   rintro ⟨_, y, hy, rfl⟩ hy_mem
   -- `y` comes from the pair `(Q y, g⁻¹ y)` of the compact set, since `g⁻¹ y` is integral.
-  have h_image : f (Q (toRealVectors y), frameCoords g y) =
-      (toAdele (E := E)).toAddMonoidHom.compLeft n y := by
+  have h_image
+      : f (Q (toRealVectors y), frameCoords g y)
+        = (toAdele (E := E)).toAddMonoidHom.compLeft n y := by
     aesop (add simp frameCoords)
-  exact ⟨y, ⟨(Q (toRealVectors y), frameCoords g y), ⟨hy_mem, torsionClass_eq_zero.mp hy⟩, h_image⟩,
-    rfl⟩
+  exact ⟨
+    y,
+    ⟨(Q (toRealVectors y), frameCoords g y), ⟨hy_mem, torsionClass_eq_zero.mp hy⟩, h_image⟩,
+    rfl
+  ⟩
 
 /-- A discrete `classLattice g S Q` is a full lattice in `V`: it spans `V` over `ℝ`. -/
 instance [DiscreteTopology (classLattice g S Q)] : IsZLattice ℝ (classLattice g S Q) := by
   -- The real span is closed, so it is enough to reach the dense set of rational points; each has
   -- a nonzero multiple in the lattice, since its class is torsion. The `w` with `Q w` in the
   -- real span form the preimage of a finite-dimensional subspace, hence a closed set.
-  have h_closed : IsClosed ((span ℝ (classLattice g S Q : Set V)).comap
-      (Q : RealVectors E n →ₗ[ℝ] V) : Set (RealVectors E n)) :=
+  have h_closed : IsClosed
+      ((span ℝ (classLattice g S Q : Set V)).comap (Q : RealVectors E n →ₗ[ℝ] V)
+        : Set (RealVectors E n)) :=
     Submodule.isClosed_of_finiteDimensional _
-  refine ⟨eq_top_iff'.mpr (Q.surjective.forall.mpr
-    (isClosed_property denseRange_toRealVectors h_closed fun y ↦ ?_))⟩
+  refine ⟨eq_top_iff'.mpr (Q.surjective.forall.mpr (isClosed_property denseRange_toRealVectors
+    h_closed fun y ↦ ?_))⟩
   obtain ⟨m, hm, hy⟩ := exists_nsmul_adelicTorsion_eq_zero (frameTorsionClass g y)
   -- `m y` is a lattice vector, and `Q (m y) = m Q y`
   have h_class : frameTorsionClass g (m • y) ∈ S := by simp only [map_nsmul, hy, zero_mem]
-  have h_image : ((Q : RealVectors E n →+ V).comp toRealVectors) (m • y) =
-      (m : ℝ) • Q (toRealVectors y) := by
+  have h_image
+      : ((Q : RealVectors E n →+ V).comp toRealVectors) (m • y)
+        = (m : ℝ) • Q (toRealVectors y) := by
     simp [map_nsmul, Nat.cast_smul_eq_nsmul, -nsmul_eq_mul]
   exact (smul_mem_iff (span ℝ (classLattice g S Q : Set V)) (Nat.cast_ne_zero.mpr hm)).mp
     (subset_span ⟨m • y, h_class, h_image⟩)
@@ -557,15 +619,21 @@ namespace New.Variety
 
 variable (E : Type _) (n : Type) [Field E] [CMBase E] [Fintype n]
 
-/-- The complex vector space `ℂ ^ (n − 1)` (`n` the number of indices), which contains the parameter
-domains of the families of periods. -/
+/--
+The complex vector space `ℂ ^ (n − 1)` (`n` the number of indices), which contains the parameter
+domains of the families of periods.
+-/
 abbrev BallBase : Type := Fin (card n - 1) → ℂ
 
-/-- The complex vector space `ℂ × ℂ ^ (n − 1) × ∏_v ℂ ^ n`, the product over the infinite places
-`v` of `E` other than `v₀`. -/
+/--
+The complex vector space `ℂ × ℂ ^ (n − 1) × ∏_v ℂ ^ n`, the product over the infinite places
+`v` of `E` other than `v₀`.
+-/
 abbrev BallFibre : Type _ := (ℂ × BallBase n) × ({v : InfinitePlace E // v ≠ v₀} → n → ℂ)
 
-variable {E n} [DecidableEq n] {V V' : Type} [FinComplexSpace V] [FinComplexSpace V']
+variable
+  {E n} [DecidableEq n]
+  {V V' : Type} [FinComplexSpace V] [FinComplexSpace V']
   {ℓ : Matrix n n ℂ} {Q : RealVectors E n ≃L[ℝ] V}
 
 lemma smul_eq_re_smul_add_im_smul (a : ℂ) (z : V) : a • z = a.re • z + a.im • Complex.I • z := by
@@ -597,19 +665,21 @@ lemma IsPeriodMap.ratConj_eq (hQ : IsPeriodMap ℓ Q) {J : Matrix n n ℂ}
   have h_period := congrArg (fun (y : V) (i : n) ↦ R.symm (F y) i v₀) (hQ fun k : n ↦ u k • 1)
   simpa [hF, ← hR _, funext_iff] using h_period
 
-/-- Multiplication by `c ∈ E ⊗ ℝ` (a complex number `c v` at each infinite place `v`), carried to
-`V` by the period map `Q`, as a complex linear map; this is a ring homomorphism in `c`. -/
+/--
+Multiplication by `c ∈ E ⊗ ℝ` (a complex number `c v` at each infinite place `v`), carried to
+`V` by the period map `Q`, as a complex linear map; this is a ring homomorphism in `c`.
+-/
 @[simps! apply_apply]
-noncomputable def IsPeriodMap.complexMul (h : IsPeriodMap ℓ Q) :
-    (InfinitePlace E → ℂ) →+* V →L[ℂ] V where
-  toFun c :=
-    { Q.arrowCongr Q (c • 1) with
-      map_smul' a := by
-        -- The map is real linear. By `h`, `I` corresponds under `Q` to matrices acting place by
-        -- place, and these commute with the scalars `c v`.
-        simp [Q.surjective.forall, ← h _, ← Q.symm.injective.eq_iff, smul_eq_re_smul_add_im_smul a,
-          funext_iff,
-          mulVec_apply_eq_sum, Finset.mul_sum, mul_left_comm] }
+noncomputable def IsPeriodMap.complexMul (h : IsPeriodMap ℓ Q)
+    : (InfinitePlace E → ℂ) →+* V →L[ℂ] V where
+  toFun c := {
+    Q.arrowCongr Q (c • 1) with
+    map_smul' a := by
+      -- The map is real linear. By `h`, `I` corresponds under `Q` to matrices acting place by
+      -- place, and these commute with the scalars `c v`.
+      simp [Q.surjective.forall, ← h _, ← Q.symm.injective.eq_iff, smul_eq_re_smul_add_im_smul a,
+        funext_iff, mulVec_apply_eq_sum, Finset.mul_sum, mul_left_comm]
+  }
   map_one' := by simp [DFunLike.ext_iff]
   map_mul' := by simp [mul_smul, DFunLike.ext_iff]
   map_zero' := by simp [DFunLike.ext_iff]

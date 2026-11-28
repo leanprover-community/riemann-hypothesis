@@ -43,18 +43,20 @@ Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 
 namespace New
 
-open NumberField Representation Function ComplexConjugate FiniteField Module
-  SemidirectProduct algebraMap
+open NumberField Representation Function ComplexConjugate FiniteField Module SemidirectProduct
+  algebraMap
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {E E' n : Type} [Field E] [CMType E] [Field E'] [Fintype n] [DecidableEq n]
-  {w : FinPlace E}
+variable
+  {E E' n : Type} [Field E] [CMType E] [Field E'] [Fintype n] [DecidableEq n] {w : FinPlace E}
 
 open scoped Classical in
-/-- The inflation of `χ`, conjugated: the function on `GL n (LocField w)` that sends `g` in
+/--
+The inflation of `χ`, conjugated: the function on `GL n (LocField w)` that sends `g` in
 `GL n 𝒪_w` (`intGL n Valued.v.integer`) to `conj (χ (reduceGL g))`, the complex conjugate of `χ`
-at the reduction of `g` modulo `w`, and is `0` outside `GL n 𝒪_w`. -/
+at the reduction of `g` modulo `w`, and is `0` outside `GL n 𝒪_w`.
+-/
 noncomputable def inflateConj (χ : GL n (ResField w) → ℂ) (g : GL n (LocField w)) : ℂ :=
   if h : g ∈ intGL n Valued.v.integer then conj (χ (reduceGL ⟨g, h⟩)) else 0
 
@@ -152,13 +154,16 @@ lemma reduceGL_map_locMap [CMType E'] {u : FinPlace E'} {ι : E →+* E'} (he : 
   apply residue_eq_iff_valuation_sub_lt_one.mpr
   simpa using! ((isEquiv_comap_locMap ι he).lt_one_iff_lt_one (x := (x : E) - _)).2 h_val
 
-variable [Algebra E E'] [CMTypeOver E E'] {u : FinPlace E'}
-  {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : IsStep E' μ]
+variable
+  [Algebra E E'] [CMTypeOver E E']
+  {u : FinPlace E'} {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : IsStep E' μ]
   (hw : star w ≠ w) (hu : star u ≠ u)
   (h_unique : ∀ u' : FinPlace E', FinPlace.below E u' = w ↔ u' = u)
-  (hμ_trivial : ∀ x : (LocField w)ˣ, μ (locIdele w x) = 1) [Algebra (ResField w) (ResField u)]
+  (hμ_trivial : ∀ x : (LocField w)ˣ, μ (locIdele w x) = 1)
+  [Algebra (ResField w) (ResField u)]
   (h_residue : ∀ x : 𝓞 E, ((x : ResField w) : ResField u) = (x : 𝓞 E'))
-  (h_degree : finrank (ResField w) (ResField u) = finrank E E') {Ξ : Hall (ResField w)}
+  (h_degree : finrank (ResField w) (ResField u) = finrank E E')
+  {Ξ : Hall (ResField w)}
 
 include h_unique hμ_trivial h_residue h_degree
 

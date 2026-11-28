@@ -153,9 +153,11 @@ lemma eighteen_mul_le_of_mul_pow_three_le {N h : ℕ} {t : ℝ} (hN : 1 ≤ N) (
 
 section Modulus
 
-variable {n m X S : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X]
-  [DecidableEq X] [Group S] {ε : n → ℤˣ} {η : m → ℤˣ} {l : HCParam ε} {k : HCParam η} {τ : X → m}
-  {B T ρ : ℝ} {M h : ℕ} {e : X ⊕ Fin M ≃ n} {j : S →* USign ε × USign η} {φ : S → ℂ}
+variable
+  {n m X S : Type}
+  [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X] [DecidableEq X] [Group S]
+  {ε : n → ℤˣ} {η : m → ℤˣ} {l : HCParam ε} {k : HCParam η} {τ : X → m} {B T ρ : ℝ} {M h : ℕ}
+  {e : X ⊕ Fin M ≃ n} {j : S →* USign ε × USign η} {φ : S → ℂ}
 
 /-- Under `IsLaplaceDatum` the phase `φ` is imaginary, so the factor `exp (-φ s)` of
 `laplaceIntegrand` has modulus one, and the modulus at `s` is the product of the moduli of the
@@ -262,10 +264,11 @@ lemma IsLaplaceDatum.one_div_four_le_norm_laplaceIntegrand {n m X S : Type} [Fin
     _ ≤ ‖l.dsCoeff (j s).1‖ * ‖k.dsCoeff (j s).2‖ := by gcongr
     _ = ‖l.laplaceIntegrand k j φ s‖ := (h_datum.norm_laplaceIntegrand s).symm
 
-variable {n m X S : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X]
-  [DecidableEq X] [Group S] [Nonempty n] [Nonempty m] {ε : n → ℤˣ} {η : m → ℤˣ} {l : HCParam ε}
-  {k : HCParam η} {τ : X → m} {B β T : ℝ} {L M h : ℕ} {e : X ⊕ Fin M ≃ n}
-  {j : S →* USign ε × USign η} {φ : S → ℂ}
+variable
+  {n m X S : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X]
+  [DecidableEq X] [Group S] [Nonempty n] [Nonempty m]
+  {ε : n → ℤˣ} {η : m → ℤˣ} {l : HCParam ε} {k : HCParam η} {τ : X → m} {B β T : ℝ} {L M h : ℕ}
+  {e : X ⊕ Fin M ≃ n} {j : S →* USign ε × USign η} {φ : S → ℂ}
 
 section Cone
 
@@ -482,7 +485,8 @@ lemma measure_large_ball_le_pow_mul_small_ball {ι : Type} [Fintype ι] [Decidab
   simpa only [mul_one, ← pow_mul, ← mul_assoc, Nat.reduceMul] using
     measure_ball_le_covering ν J 1 h_one (by linarith) h_radii
 
-/-- **Laplace's method.** Let `j : S →* U(ε) × U(η)` and `φ` satisfy `IsLaplaceDatum` with `B ≥ 1`:
+/--
+**Laplace's method.** Let `j : S →* U(ε) × U(η)` and `φ` satisfy `IsLaplaceDatum` with `B ≥ 1`:
 the weight of the lowest `K`-type of `l` is `0` at the indices `e (inl x)`, `x : X`, and decreases
 in `[-3 B, -B]` elsewhere, that of `k` is nonnegative and `0` on the image of `τ`, the difference
 `φ` of the two phases is additive and imaginary, and the image of `j` contains `U(X)`, placed in the
@@ -492,17 +496,18 @@ Harish-Chandra parameters `l = 2λ`, `k` (doubled) be bounded by `L`, let `β �
 `card n + card m + L`, and let both have gap `500 · (dimension)³ + h` with
 `h ≥ 10³⁰ ((card n + card m)² log β)³`. Then the function `θ = laplaceIntegrand` is integrable, and
 the volume of the set of `s` at which both components of `j s` have operator norm at most `β + 1` is
-at most `β ^ (20 (card n + card m)²) ‖∫ θ‖`. -/
-theorem IsLaplaceDatum.laplace_method [TopologicalSpace S] [BorelSpace S]
-    [IsFiniteMeasureOnCompacts ν] (h_datum : IsLaplaceDatum l k j τ B e φ)
-    (hj : IsProperMap fun s : S ↦ (j s).1) (hj' : Continuous fun s : S ↦ (j s).2)
-    (hl : l.HasLargeGap h) (hk : k.HasLargeGap h) (hB : 1 ≤ B) (hl_le : ∀ a : n, |l a| ≤ L)
-    (hk_le : ∀ a : m, |k a| ≤ L) (hβ : 10 ^ 12 ≤ β) (hβ_le : card n + card m + L ≤ β)
-    (hh : 10 ^ 30 * ((card n + card m) ^ 2 * β.log) ^ 3 ≤ h) :
-    Integrable (l.laplaceIntegrand k j φ) ν ∧
-    ν {s : S | ‖((j s).1 : Matrix n n ℂ)‖ ≤ β + 1 ∧ ‖((j s).2 : Matrix m m ℂ)‖ ≤ β + 1} ≤
-      ENNReal.ofReal (β ^ (20 * (card n + card m) ^ 2) *
-        ‖∫ s : S, l.laplaceIntegrand k j φ s ∂ν‖) := by
+at most `β ^ (20 (card n + card m)²) ‖∫ θ‖`.
+-/
+theorem IsLaplaceDatum.laplace_method
+    [TopologicalSpace S] [BorelSpace S] [IsFiniteMeasureOnCompacts ν]
+    (h_datum : IsLaplaceDatum l k j τ B e φ) (hj : IsProperMap fun s : S ↦ (j s).1)
+    (hj' : Continuous fun s : S ↦ (j s).2) (hl : l.HasLargeGap h) (hk : k.HasLargeGap h)
+    (hB : 1 ≤ B) (hl_le : ∀ a : n, |l a| ≤ L) (hk_le : ∀ a : m, |k a| ≤ L) (hβ : 10 ^ 12 ≤ β)
+    (hβ_le : card n + card m + L ≤ β) (hh : 10 ^ 30 * ((card n + card m) ^ 2 * β.log) ^ 3 ≤ h)
+    : Integrable (l.laplaceIntegrand k j φ) ν
+      ∧ ν {s : S | ‖((j s).1 : Matrix n n ℂ)‖ ≤ β + 1 ∧ ‖((j s).2 : Matrix m m ℂ)‖ ≤ β + 1}
+        ≤ ENNReal.ofReal
+          (β ^ (20 * (card n + card m) ^ 2) * ‖∫ s : S, l.laplaceIntegrand k j φ s ∂ν‖) := by
   -- Integrate the pointwise bounds (cone and decay) along the proper map `J : s ↦ g ⊕ g'`, where
   -- `j s = (g, g')`, and compare the volumes of a large and a small ball by covering.
   have hβ16 : 16 ≤ β := le_trans (by norm_num) hβ
@@ -513,8 +518,11 @@ theorem IsLaplaceDatum.laplace_method [TopologicalSpace S] [BorelSpace S]
   let UnitBall : Set S := {s | ‖(J s : Matrix (n ⊕ m) (n ⊕ m) ℂ) - 1‖ ≤ 1}
   let Small : Set S := {s : S | ‖(J s : Matrix (n ⊕ m) (n ⊕ m) ℂ) - 1‖ ≤ (200 * β ^ 5)⁻¹}
   let G (s : S) : ℝ := (2 / ‖(J s : Matrix (n ⊕ m) (n ⊕ m) ℂ)‖) ^ (9 * N)
-  have h_decay_cone : ∀ s : S, ‖l.laplaceIntegrand k j φ s‖ ≤ G s ∧ ‖l.laplaceIntegrand k j φ s‖ ≤
-      2 * (l.laplaceIntegrand k j φ s).re + 6 * β⁻¹ ^ (50 * N) * G s :=
+  have h_decay_cone
+      : ∀ s : S,
+        ‖l.laplaceIntegrand k j φ s‖ ≤ G s
+          ∧ ‖l.laplaceIntegrand k j φ s‖
+            ≤ 2 * (l.laplaceIntegrand k j φ s).re + 6 * β⁻¹ ^ (50 * N) * G s :=
     h_datum.norm_laplaceIntegrand_le_two_mul_re_add hl hk hB hl_le hk_le (by linarith) hβ_le hh hN
   -- The decay makes `laplaceIntegrand` integrable.
   have hN_pos : 1 ≤ N := Nat.one_le_pow _ _ (Nat.add_pos_left card_pos _)
@@ -535,16 +543,22 @@ theorem IsLaplaceDatum.laplace_method [TopologicalSpace S] [BorelSpace S]
     simpa [measureReal_def, ENNReal.toReal_ofReal (by positivity : 0 ≤ β ^ (16 * N))] using
       ENNReal.toReal_mono (by finiteness) h_cover
   have h_large_fin : ν Large ≠ ⊤ := ne_top_of_le_ne_top (by finiteness) h_cover
-  have h_int : ν.real Small / 4 ≤ 2 * ‖∫ s, l.laplaceIntegrand k j φ s ∂ν‖ +
-      6 * β⁻¹ ^ (50 * N) * (16 ^ (9 * N) * ν.real Large) := by
-    refine (measureReal_div_four_le ν hθ_int hG_int (fun s ↦ (h_decay_cone s).2) fun s hs ↦
-      h_datum.one_div_four_le_norm_laplaceIntegrand hl hk hl_le hk_le hβ_le hs).trans ?_
+  have h_int
+      : ν.real Small / 4
+        ≤ 2 * ‖∫ s, l.laplaceIntegrand k j φ s ∂ν‖
+          + 6 * β⁻¹ ^ (50 * N) * (16 ^ (9 * N) * ν.real Large) := by
+    refine (measureReal_div_four_le ν hθ_int hG_int
+      (fun s ↦ (h_decay_cone s).2)
+      fun s hs ↦ h_datum.one_div_four_le_norm_laplaceIntegrand hl hk hl_le hk_le hβ_le hs).trans ?_
     grw [hG_le, measureReal_mono (s₁ := UnitBall) (s₂ := Large)
       (fun s hs ↦ (norm_le_norm_add_norm_sub' _ 1).trans (by
         simpa only [norm_one] using add_le_add (show 1 ≤ β by linarith) hs)) h_large_fin]
-  refine ⟨hθ_int, (measure_mono fun s hs ↦ ?_).trans <|
-    (ENNReal.le_ofReal_iff_toReal_le h_large_fin (by positivity)).2 <|
-      le_pow_mul_of_le hβ16 hN_pos measureReal_nonneg (norm_nonneg _) h_cover_real h_int⟩
+  refine ⟨
+    hθ_int,
+    (measure_mono fun s hs ↦ ?_).trans <|
+      (ENNReal.le_ofReal_iff_toReal_le h_large_fin (by positivity)).2 <|
+        le_pow_mul_of_le hβ16 hN_pos measureReal_nonneg (norm_nonneg _) h_cover_real h_int
+  ⟩
   simpa [Large, J, norm_coe_sum_eq_max] using hs
 
 end New.DiscreteSeries

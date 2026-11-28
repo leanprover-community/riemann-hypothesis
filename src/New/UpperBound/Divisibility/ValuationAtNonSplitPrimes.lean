@@ -58,17 +58,23 @@ See `New.UpperBound.Divisibility.ValuationAtLevel` for related work.
 
 namespace New.Data
 
-variable {P : Parameters} {D : Data P} {ϑ : D.Twist} {Ψ : D.Translations →₀ ℂ}
-  {p : ℕ} [hp : Fact p.Prime] [PadicPlace p] {Λ : Finset (FinPlace D.E)}
+variable
+  {P : Parameters} {D : Data P} {ϑ : D.Twist} {Ψ : D.Translations →₀ ℂ} {p : ℕ}
+  [hp : Fact p.Prime] [PadicPlace p]
+  {Λ : Finset (FinPlace D.E)}
 
 open Fact Finset Real Polynomial SiegelWeil Gf Parameters Kernel
 
-/-- The loss of the lift from `X_j` to `X_{j+1}` evaluated at a neighbor: `𝔯 = D.ceilLogLifts p` for
+/--
+The loss of the lift from `X_j` to `X_{j+1}` evaluated at a neighbor: `𝔯 = D.ceilLogLifts p` for
 each low column (height below `n_{j+1}` and different from one) at a place of `placesInducing Λ`,
-less the divisibility bound for the set `placesInducing Λ`. -/
+less the divisibility bound for the set `placesInducing Λ`.
+-/
 noncomputable def liftLoss (Λ : Finset (FinPlace D.E)) (j : ℕ) : ℝ :=
-  D.ceilLogLifts p * ∑ σ ∈ placesInducing Λ,
-    D.lowColumns j σ - D.divisibilityBound p j (placesInducing Λ)
+  D.ceilLogLifts p
+      * ∑ σ ∈ placesInducing Λ,
+        D.lowColumns j σ
+    - D.divisibilityBound p j (placesInducing Λ)
 
 /-- At a non-split prime `p` (`χ_K(p) ≠ 1`), a standard datum `φ` of level one for the kernel
 `D.liftKernel ϑ j` of the lift from `X_j` to `X_{j+1}` multiplies `p`-adic gauges by at most
@@ -85,35 +91,54 @@ lemma mem_raises_neg_divisibilityBound (D : Data P) (hp_nonsplit : chiK P.d p �
   exact mem_raises_predictedDivisibility hp_nonsplit norm_star_piMBar_le_one hφ
 
 open scoped Classical in
-/-- Sets `J l` of row indices at the primes of `Λ`, read at the infinite places: `τ` gets the set
-of its induced prime if that lies in `Λ`, and the set of the conjugate prime otherwise. -/
-noncomputable def markedIndices {n' : Type} (Λ : Finset (FinPlace D.E))
-    (J : FinPlace D.E → Finset n') (τ : D.Φ) : Finset n' :=
+/--
+Sets `J l` of row indices at the primes of `Λ`, read at the infinite places: `τ` gets the set
+of its induced prime if that lies in `Λ`, and the set of the conjugate prime otherwise.
+-/
+noncomputable def markedIndices
+    {n' : Type} (Λ : Finset (FinPlace D.E)) (J : FinPlace D.E → Finset n') (τ : D.Φ)
+    : Finset n' :=
   if inducedPlace τ ∈ Λ then J (inducedPlace τ) else J (star (inducedPlace τ))
 
 open scoped Classical in
-/-- The exponent of `p` by which a box with index `b` at `τ` is divided when the lift is evaluated
+/--
+The exponent of `p` by which a box with index `b` at `τ` is divided when the lift is evaluated
 at the neighbor given by `J`: it is `1` on the marked indices at the places inducing a prime of `Λ`,
-`-1` on those at the places inducing its conjugate, and `0` elsewhere. -/
-noncomputable def neighborExponent {n' : Type} (Λ : Finset (FinPlace D.E))
-    (J : FinPlace D.E → Finset n') (τ : D.Φ) (b : n') : ℤ :=
-  (if τ ∈ placesInducing Λ ∧ b ∈ markedIndices Λ J τ then 1 else 0) -
-    if τ ∈ placesInducingConj Λ ∧ b ∈ markedIndices Λ J τ then 1 else 0
+`-1` on those at the places inducing its conjugate, and `0` elsewhere.
+-/
+noncomputable def neighborExponent
+    {n' : Type} (Λ : Finset (FinPlace D.E)) (J : FinPlace D.E → Finset n') (τ : D.Φ) (b : n')
+    : ℤ :=
+  (if τ ∈ placesInducing Λ ∧ b ∈ markedIndices Λ J τ then 1 else 0)
+    - if τ ∈ placesInducingConj Λ ∧ b ∈ markedIndices Λ J τ then 1 else 0
 
 open scoped Classical in
-/-- The charge of a box with index `b` in a column of height `h` at `τ`. It is `1` at a place
+/--
+The charge of a box with index `b` in a column of height `h` at `τ`. It is `1` at a place
 inducing a prime of `Λ` if `h = 1` and `b` is not marked, and at a place inducing the conjugate of a
-prime of `Λ`, for any `h`, if `b` is marked; otherwise it is `0`. -/
-noncomputable def neighborCharge {n' : Type} (Λ : Finset (FinPlace D.E))
-    (J : FinPlace D.E → Finset n') (τ : D.Φ) (h : ℕ) (b : n') : ℕ :=
-  if τ ∈ placesInducing Λ ∧ h = 1 ∧ b ∉ markedIndices Λ J τ ∨
-      τ ∈ placesInducingConj Λ ∧ b ∈ markedIndices Λ J τ then 1 else 0
+prime of `Λ`, for any `h`, if `b` is marked; otherwise it is `0`.
+-/
+noncomputable def neighborCharge
+    {n' : Type}
+    (Λ : Finset (FinPlace D.E)) (J : FinPlace D.E → Finset n') (τ : D.Φ) (h : ℕ) (b : n')
+    : ℕ :=
+  if τ ∈ placesInducing Λ ∧ h = 1 ∧ b ∉ markedIndices Λ J τ
+      ∨ τ ∈ placesInducingConj Λ ∧ b ∈ markedIndices Λ J τ then
+    1
+  else
+    0
 
 open scoped Classical in
-/-- The diagonal matrix over the completion at `l` with entry `p` at the indices in `J l` and `1` at
-the others. -/
-noncomputable def neighborDiagonal (p : ℕ) [Fact p.Prime] {n' : Type} [Fintype n'] [DecidableEq n']
-    (Λ : Finset (FinPlace D.E)) (J : FinPlace D.E → Finset n') (l : Λ) : GL n' (LocField l.val) :=
+/--
+The diagonal matrix over the completion at `l` with entry `p` at the indices in `J l` and `1` at
+the others.
+-/
+noncomputable def neighborDiagonal
+    (p : ℕ) [Fact p.Prime]
+    {n' : Type} [Fintype n'] [DecidableEq n']
+    (Λ : Finset (FinPlace D.E))
+    (J : FinPlace D.E → Finset n') (l : Λ)
+    : GL n' (LocField l.val) :=
   diagGL fun b : n' ↦ if b ∈ J l then .mk0 p NeZero.out else 1
 
 open scoped Classical in
@@ -808,10 +833,12 @@ lemma IsWeakChainDatum.exists_hecke_transfer (H : IsWeakChainDatum ϑ Ψ) {p : �
 
 /-! ## The valuation on the image of the scaled Hecke operators -/
 
-/-- The action `b ↦ ω (1, b)` of the finite unitary group of `X_{j+1}` on the data of the lift from
-`X_j` to `X_{j+1}`. -/
-noncomputable abbrev liftTargetRep (ϑ : D.TameChar) (j : ℕ) :
-    Representation ℂ (Gf D.E (D.X (j + 1))) (D.homX j).finitePart :=
+/--
+The action `b ↦ ω (1, b)` of the finite unitary group of `X_{j+1}` on the data of the lift from
+`X_j` to `X_{j+1}`.
+-/
+noncomputable abbrev liftTargetRep (ϑ : D.TameChar) (j : ℕ)
+    : Representation ℂ (Gf D.E (D.X (j + 1))) (D.homX j).finitePart :=
   (D.liftKernel ϑ j).ω.comp (.inr (Gf D.E (D.X j)) (Gf D.E (D.X (j + 1))))
 
 /-- Let `ω` be the twisted Weil action of the theta lift `D.liftKernel ϑ j`, `a` an element of
@@ -982,7 +1009,8 @@ lemma IsWeakChainDatum.exists_lift_eq_chain_scaledHeckeOperator (H : IsWeakChain
       refine sum_mem fun i hi ↦ smul_mem_raises _ (h_coset i (mem_Iic.1 hi)) ?_
       exact (h_scalar i).trans_eq (by simp [β, add_assoc])
 
-/-- Let `ϑ` be a twist and `Ψ` a weak chain datum for `ϑ`: the coefficients, on tuples `x = (x_j)`
+/--
+Let `ϑ` be a twist and `Ψ` a weak chain datum for `ϑ`: the coefficients, on tuples `x = (x_j)`
 of finite adelic matrices, of a jointly invariant sum of the tensors `⊗_j D.translateDatum x j`. Let
 `p` be a prime coprime to the norm of `ϑ.Q`, and let `Λ` be a marked set of primes of `E = D.E`
 above `p`. Let `Y` be the product over `l ∈ Λ` of `IsMarked.scaledHeckeOperator`, which is
@@ -990,12 +1018,15 @@ above `p`. Let `Y` be the product over `l ∈ Λ` of `IsMarked.scaledHeckeOperat
 let `v` be an integral source form. Apply to `Y ^ m v` the combination `Ψ` of the chains of
 `m = D.m` theta lifts with data `D.translateDatum x`, and restrict to the space indexed by `D.Y m`.
 Its gauge at the base point `1` is everywhere at most `p ^ c` (`GaugeLe`), where `c` is the sum over
-`j < m` of `#Λ * D.transferExponent p + liftLoss Λ j`. -/
-theorem IsWeakChainDatum.gaugeLe_scaledHeckeOperator_pow (H : IsWeakChainDatum ϑ Ψ)
-    {p : ℕ} [hp : Fact p.Prime] [PadicPlace p] (hQ : p.Coprime ϑ.normQ)
-    {Λ : Finset (FinPlace D.E)} (hΛ : D.IsMarked Λ) {v : D.SourceForm}
-    (hv : v ∈ D.integralSourceForms) :
-    GaugeLe 1 (p ^ ∑ j ∈ range D.m, (#Λ * D.transferExponent p + liftLoss Λ j))
+`j < m` of `#Λ * D.transferExponent p + liftLoss Λ j`.
+-/
+theorem IsWeakChainDatum.gaugeLe_scaledHeckeOperator_pow
+    (H : IsWeakChainDatum ϑ Ψ)
+    {p : ℕ} [hp : Fact p.Prime] [PadicPlace p]
+    (hQ : p.Coprime ϑ.normQ)
+    {Λ : Finset (FinPlace D.E)} (hΛ : D.IsMarked Λ)
+    {v : D.SourceForm} (hv : v ∈ D.integralSourceForms)
+    : GaugeLe 1 (p ^ ∑ j ∈ range D.m, (#Λ * D.transferExponent p + liftLoss Λ j))
       (restrictedChain ϑ Ψ (((Λ.attach.toList.map hΛ.scaledHeckeOperator).prod ^ D.m) v)) := by
   classical
   -- Move one of the `m` copies of `Y` into the datum of each lift, then bound the chain by the
@@ -1003,24 +1034,27 @@ theorem IsWeakChainDatum.gaugeLe_scaledHeckeOperator_pow (H : IsWeakChainDatum �
   let Y : Module.End embValRing D.SourceForm := (Λ.attach.toList.map hΛ.scaledHeckeOperator).prod
   choose t ht using fun j ↦
     H.exists_lift_eq_chain_scaledHeckeOperator hQ hΛ j Λ.attach.nodup_toList
-  have h_chain (x : D.Translations) (hx : x ∈ Ψ.support) (j : ℕ) :
-      chain (D.liftKernel ϑ) (fun j ↦ t j (D.translateDatum x j)) j v =
-        chain (D.liftKernel ϑ) (D.translateDatum x) j ((Y ^ j) v) := by
+  have h_chain (x : D.Translations) (hx : x ∈ Ψ.support) (j : ℕ)
+      : chain (D.liftKernel ϑ) (fun j ↦ t j (D.translateDatum x j)) j v
+        = chain (D.liftKernel ϑ) (D.translateDatum x) j ((Y ^ j) v) := by
     induction j with
     | zero => rfl
     | succ j ih =>
       rw [pow_succ', mul_apply_eq_comp, ← (ht j x hx).2.1, ← ih]
       simp [chain, compUpTo]
-  have h_comb : restrictedChain ϑ Ψ ((Y ^ D.m) v) =
-      D.restrictToY (chainCombination ϑ Ψ (fun x j ↦ t j (D.translateDatum x j)) D.m v) := by
+  have h_comb
+      : restrictedChain ϑ Ψ ((Y ^ D.m) v)
+        = D.restrictToY (chainCombination ϑ Ψ (fun x j ↦ t j (D.translateDatum x j)) D.m v) := by
     simp +contextual [restrictedChain, Finsupp.sum, h_chain]
   obtain ⟨-, hp_N, -⟩ := hΛ.not_dvd_M_mul_N
   have hv_gauge : GaugeLe 1 1 v.val := hv.2
   rw [h_comb]
   refine GaugeLe.restrictToY D hp_N ?_
-  refine H.gaugeLe_chain hQ t (fun j x hx a b hb ↦ (ht j x hx).1 a b (D.isLevel_levelX.le hb))
-    1 (fun x hx j hj ↦ ?_) hv_gauge
-  simpa [← Nat.cast_sum, sum_attach, -List.map_subtype, Prod.mk_one_one] using
-    (ht j x hx).2.2 1 hj
+  refine H.gaugeLe_chain hQ t
+    (fun j x hx a b hb ↦ (ht j x hx).1 a b (D.isLevel_levelX.le hb))
+    1
+    (fun x hx j hj ↦ ?_)
+    hv_gauge
+  simpa [← Nat.cast_sum, sum_attach, -List.map_subtype, Prod.mk_one_one] using (ht j x hx).2.2 1 hj
 
 end New.Data

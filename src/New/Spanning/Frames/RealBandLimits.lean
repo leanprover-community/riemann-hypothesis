@@ -79,14 +79,17 @@ section BandLimits
 open Matrix MeasureTheory Measure Fintype RealPlace Real ENNReal InnerProductSpace Finset
   FloorGroups IsCutBessel Function Norms.L2Operator PlaceData Gauge
 
-variable {𝔰 : Shape} {s : ℕ} {I : Type} [Fintype I] [DecidableEq I]
-  {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ}
-  {ρ b : ℝ} {f : ℕ} {F W : C(𝔰.G₁, EuclideanSpace ℂ I)}
+variable
+  {𝔰 : Shape} {s : ℕ} {I : Type} [Fintype I] [DecidableEq I]
+  {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ} {ρ b : ℝ} {f : ℕ}
+  {F W : C(𝔰.G₁, EuclideanSpace ℂ I)}
 
 variable (F) in
-/-- The vector Ξ(p): the tensor J(w_p σ_p) times the real normalising factor of
+/--
+The vector Ξ(p): the tensor J(w_p σ_p) times the real normalising factor of
 `New.normalizedOrbitalIntegral`. Here J(γ) = ∫ F(y) ⊗ F(γ⁻¹y)^* dy, w_p is the Weyl element
-`weylElem ϱ p`, and σ_p is the chart `New.Floors.cellChart` of floor ϱ at the last entry `p ϱ`. -/
+`weylElem ϱ p`, and σ_p is the chart `New.Floors.cellChart` of floor ϱ at the last entry `p ϱ`.
+-/
 noncomputable def normalizedCellIntegral (p : ℕ → ℂˣ) : EuclideanSpace ℂ (I × I) :=
   normalizedOrbitalIntegral (cellChart 𝔰 𝔰.ϱ (p 𝔰.ϱ)) F p
 
@@ -278,8 +281,10 @@ lemma IsCutBessel.integrable_and_integral_wave_mul_inner_normalizedCellIntegral 
   hF.descent_last_entry_of_norm_le_one p q (φ := fun c ↦ wave (ξ * c)) (by fun_prop [wave])
     fun c ↦ (norm_wave (ξ * c)).le
 
-/-- The matrix coefficient `⟪A, R(x) B⟫` in `L²(𝖴∖G₁)`, where `R(x)` is right translation, 𝖴 is the
-unipotent group `besselU` and `besselQuotMeasure` computes integrals over `𝖴∖G₁`. -/
+/--
+The matrix coefficient `⟪A, R(x) B⟫` in `L²(𝖴∖G₁)`, where `R(x)` is right translation, 𝖴 is the
+unipotent group `besselU` and `besselQuotMeasure` computes integrals over `𝖴∖G₁`.
+-/
 noncomputable def quotientPairing (A B : 𝔰.G₁ → EuclideanSpace ℂ I) (x : 𝔰.G₁) : ℂ :=
   ∫ y, ⟪A y, B (y * x)⟫_ℂ ∂besselQuotMeasure
 
@@ -635,32 +640,39 @@ lemma IsCutBessel.norm_floorForm_zero_le (hF : IsCutBessel F rep ρ s b W f) {de
       grw [← ofReal_add (by positivity) (by positivity), ← add_div,
         one_add_inv_pow_twelve_sq_add_le hb]
 
-/-- For a cut Bessel function `F`, lists `p`, `q`, a floor `i ≤ ϱ` and a frequency `ν ≠ 0`, take the
+/--
+For a cut Bessel function `F`, lists `p`, `q`, a floor `i ≤ ϱ` and a frequency `ν ≠ 0`, take the
 form of floor `i`, normalised by `formConst`, whose weight is the character `wave` of `ν` times the
 diagonal frame entry number `i`. Its modulus times the dimension `card I` is at most
 `scaledVolumeRatio * b ^ (2000 n ^ 9)` times the decay `dampedPower (k - n ^ 7) ‖ν‖⁻¹` times the
-weights `headWeight` of `p` and `q`. -/
-theorem IsCutBessel.norm_floorForm_wave_le (hF : IsCutBessel F rep ρ s b W f) {i : ℕ}
-    (hi : i ≤ 𝔰.ϱ) (p q : ℕ → ℂˣ) (ν : ℂˣ) :
-    card I * ‖hF.formConst * hF.complexData.floorForm i p q F
-        fun x : 𝔰.G₁ ↦ wave (ν * (realFrameGram x).diag ⟨i, Nat.lt_succ_of_le hi⟩)‖ ≤
-      𝔰.scaledVolumeRatio * b ^ (2000 * 𝔰.n ^ 9) * dampedPower (𝔰.k - 𝔰.n ^ 7) ‖(ν : ℂ)‖⁻¹ *
-        (headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6) i p *
-          headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6) i q) :=
-  hF.norm_floorForm_le hi ν (fun _ ↦ (norm_wave _).le) fun Γ hp ↦
-    Γ.formIntegrandL1Norm_sq_le_of_char hF.isCut_complexData hi hp trivial fun _ _ ↦ rfl
+weights `headWeight` of `p` and `q`.
+-/
+theorem IsCutBessel.norm_floorForm_wave_le
+    (hF : IsCutBessel F rep ρ s b W f) {i : ℕ} (hi : i ≤ 𝔰.ϱ) (p q : ℕ → ℂˣ) (ν : ℂˣ)
+    : card I
+        * ‖hF.formConst * hF.complexData.floorForm i p q F
+          fun x : 𝔰.G₁ ↦ wave (ν * (realFrameGram x).diag ⟨i, Nat.lt_succ_of_le hi⟩)‖
+      ≤ 𝔰.scaledVolumeRatio * b ^ (2000 * 𝔰.n ^ 9) * dampedPower (𝔰.k - 𝔰.n ^ 7) ‖(ν : ℂ)‖⁻¹
+        * (headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6) i p
+          * headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6) i q) :=
+  hF.norm_floorForm_le hi ν
+    (fun _ ↦ (norm_wave _).le)
+    fun Γ hp ↦ Γ.formIntegrandL1Norm_sq_le_of_char hF.isCut_complexData hi hp trivial fun _ _ ↦ rfl
 
-/-- Decay for unequal last entries at a real place. If `i + 1 ≤ ϱ` and `ν = (p i)⁻¹ - (q i)⁻¹` is
+/--
+Decay for unequal last entries at a real place. If `i + 1 ≤ ϱ` and `ν = (p i)⁻¹ - (q i)⁻¹` is
 not zero, the modulus of the form of floor `i + 1` with weight `1`, normalised by `formConst`, times
 the dimension `card I` is at most `scaledVolumeRatio * b ^ (2000 n ^ 9)` times the decay
-`dampedPower (k - n ^ 7) ‖ν‖⁻¹` times the weights `headWeight` of `p` and `q`. -/
-theorem IsCutBessel.norm_floorForm_heads_le (hF : IsCutBessel F rep ρ s b W f) {i : ℕ}
-    (hi : i + 1 ≤ 𝔰.ϱ) (p q : ℕ → ℂˣ) (ν : ℂˣ)
-    (hν : (ν : ℂ) = ((p i)⁻¹ : ℂˣ) - ((q i)⁻¹ : ℂˣ)) :
-    card I * ‖hF.formConst * hF.complexData.floorForm (i + 1) p q F 1‖ ≤
-      𝔰.scaledVolumeRatio * b ^ (2000 * 𝔰.n ^ 9) * dampedPower (𝔰.k - 𝔰.n ^ 7) ‖(ν : ℂ)‖⁻¹ *
-        (headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6) (i + 1) p *
-          headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6) (i + 1) q) :=
+`dampedPower (k - n ^ 7) ‖ν‖⁻¹` times the weights `headWeight` of `p` and `q`.
+-/
+theorem IsCutBessel.norm_floorForm_heads_le
+    (hF : IsCutBessel F rep ρ s b W f)
+    {i : ℕ} (hi : i + 1 ≤ 𝔰.ϱ)
+    (p q : ℕ → ℂˣ) (ν : ℂˣ) (hν : (ν : ℂ) = ((p i)⁻¹ : ℂˣ) - ((q i)⁻¹ : ℂˣ))
+    : card I * ‖hF.formConst * hF.complexData.floorForm (i + 1) p q F 1‖
+      ≤ 𝔰.scaledVolumeRatio * b ^ (2000 * 𝔰.n ^ 9) * dampedPower (𝔰.k - 𝔰.n ^ 7) ‖(ν : ℂ)‖⁻¹
+        * (headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6) (i + 1) p
+          * headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6) (i + 1) q) :=
   hF.norm_floorForm_le hi ν (by simp) fun Γ hp ↦
     Γ.formIntegrandL1Norm_sq_le_of_heads hF.isCut_complexData hi hp trivial rfl (by simp [hν])
 

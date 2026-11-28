@@ -58,15 +58,14 @@ section RatModInt
 
 open Nat Function QuotientAddGroup AddCircle CharacterModule ZMod NeZero AddMonoidHom AddMonoid
 
-variable {n : ℕ}
-  {G H A B W : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Monoid H]
+variable
+  {n : ℕ} {G H A B W : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Monoid H]
   [TopologicalSpace H] [ContinuousMul H] [AddCommGroup A] [AddCommGroup B] [AddCommGroup W]
 
 /-- A homomorphism from a topological group to a topological monoid is continuous as soon as its
 kernel is open. -/
 lemma Continuous.of_isOpen_ker (f : G →* H) (h_open : f.ker.IsOpen) : Continuous f :=
   continuous_of_tendsto_nhds_one f (tendsto_nhds_of_eventually_eq (h_open.mem_nhds f.map_one))
-
 
 namespace New.QZ
 
@@ -87,13 +86,13 @@ lemma mk_surjective : Surjective mk := mk'_surjective (AddSubgroup.zmultiples 1)
 lemma mk_eq_zero_iff {x : ℚ} : mk x = 0 ↔ ∃ k : ℤ, x = k :=
   (coe_eq_zero_iff 1).trans (by simp [eq_comm])
 
-/-- The group homomorphism from `ℚ/ℤ`, written multiplicatively, to `ℂˣ` sending the class of `x`
-to `exp (2 π i x)`. -/
+/--
+The group homomorphism from `ℚ/ℤ`, written multiplicatively, to `ℂˣ` sending the class of `x`
+to `exp (2 π i x)`.
+-/
 def expUnit : Multiplicative QZ →* ℂˣ :=
-  Circle.toUnits.comp
-    (toCircle_addChar.compAddMonoidHom
-      (map (AddSubgroup.zmultiples 1) (AddSubgroup.zmultiples 1) (Rat.castHom ℝ)
-        (by simp))).toMonoidHom
+  Circle.toUnits.comp (toCircle_addChar.compAddMonoidHom (map (AddSubgroup.zmultiples 1)
+    (AddSubgroup.zmultiples 1) (Rat.castHom ℝ) (by simp))).toMonoidHom
 
 /-- The value of `expUnit` at the class of a rational number `x` is `exp (2 π i x)`. -/
 lemma coe_expUnit_ofAdd_mk (x : ℚ) :
@@ -128,8 +127,10 @@ lemma eq_zero_of_forall_hom_eq_zero {a : A} (h_eval : ∀ u : A →+ QZ, u a = 0
 
 /-! ### The embedding of `ZMod n` -/
 
-/-- The additive homomorphism `ℤ/n → ℚ/ℤ` sending the class of `k` to the class
-of `k / n`. For `n = 0`, this is the zero homomorphism. -/
+/--
+The additive homomorphism `ℤ/n → ℚ/ℤ` sending the class of `k` to the class
+of `k / n`. For `n = 0`, this is the zero homomorphism.
+-/
 def ofZMod (n : ℕ) : ZMod n →+ QZ :=
   ZMod.lift n ⟨zmultiplesHom QZ (mk (n : ℚ)⁻¹), int.divByNat_self n⟩
 
@@ -198,11 +199,12 @@ attribute [instance] isClosed_topologicalClosure
 
 namespace QZChar
 
-/-- The additive map sending a continuous 1-cocycle of `G` with values in `ℤ/n` (trivial action)
+/--
+The additive map sending a continuous 1-cocycle of `G` with values in `ℤ/n` (trivial action)
 to the character `G → ℚ/ℤ` obtained by composing with the map `ofZMod n`, which is zero when
-`n = 0`. -/
-noncomputable abbrev ofZModCocycle (n : ℕ) :
-    Z1 (Representation.trivial ℤ G (ZMod n)) →+ QZChar G :=
+`n = 0`.
+-/
+noncomputable abbrev ofZModCocycle (n : ℕ) : Z1 (Representation.trivial ℤ G (ZMod n)) →+ QZChar G :=
   pairMapZ1 (ContinuousMonoidHom.id G) (ofZMod n).toIntLinearMap
 
 omit [IsTopologicalGroup G] in
@@ -213,8 +215,8 @@ instance (χ : QZChar G) : Fact (toHom χ).ker.IsOpen :=
   ⟨(continuous_val χ).isOpen_preimage {0} (isOpen_discrete _)⟩
 
 @[simp]
-theorem abelianLift_mk (χ : QZChar G) (g : G) :
-    abelianLift χ g = Multiplicative.ofAdd (χ.val g) := rfl
+theorem abelianLift_mk (χ : QZChar G) (g : G) : abelianLift χ g = Multiplicative.ofAdd (χ.val g) :=
+  rfl
 
 @[fun_prop]
 lemma continuous_abelianLift (χ : QZChar G) : Continuous (abelianLift χ) :=

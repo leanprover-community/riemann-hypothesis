@@ -94,8 +94,10 @@ lemma inclMatrix_mulVec_vecMul [Fintype n] (μ : r → R) (x : Matrix n r R) :
     (inclMatrix R ι *ᵥ μ) ᵥ* x = μ ᵥ* x.submatrix ι id := by
   rw [← vecMul_transpose, vecMul_vecMul, inclMatrix_transpose_mul]
 
-/-- The square matrix `(u' 0; u'' 1)`: its columns `ι` are the columns of `u`, and its other columns
-are those of the identity matrix. -/
+/--
+The square matrix `(u' 0; u'' 1)`: its columns `ι` are the columns of `u`, and its other columns
+are those of the identity matrix.
+-/
 def completeColumns (u : Matrix n r R) : Matrix n n R :=
   1 + (u - inclMatrix R ι) * (inclMatrix R ι)ᵀ
 
@@ -131,8 +133,10 @@ lemma vecMul_inclMatrix (l : n → R) : l ᵥ* inclMatrix R ι = l ∘ ι := by
   ext b
   simp [inclMatrix, vecMul, dotProduct, Matrix.one_apply]
 
-/-- The matrix `h_v = (1 + v λ, v λ'; 0, 1)` of a column `v` and a row `l = (λ, λ')`, where `λ` has
-the entries of `l` indexed by `ι` and `λ'` has the other entries. -/
+/--
+The matrix `h_v = (1 + v λ, v λ'; 0, 1)` of a column `v` and a row `l = (λ, λ')`, where `λ` has
+the entries of `l` indexed by `ι` and `λ'` has the other entries.
+-/
 def rowShear (v : r → R) (l : n → R) : Matrix n n R := 1 + vecMulVec (inclMatrix R ι *ᵥ v) l
 
 lemma rowShear_mul_eq_self_of_vecMul_eq_zero {v : r → R} {l : n → R} {x : Matrix n r R}
@@ -268,28 +272,34 @@ end Hyperplane
 
 section Covered
 
-variable {E r n : Type} [Field E] [NumberField E] [Fintype r] [DecidableEq r] [Fintype n]
-  [DecidableEq n] {w : FinPlace E} {ι : r ↪ n} {chosen : Prop} {x : Matrix n r (LocField w)}
+variable
+  {E r n : Type} [Field E] [NumberField E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+  {w : FinPlace E} {ι : r ↪ n} {chosen : Prop} {x : Matrix n r (LocField w)}
 
-/-- Let `x'` be the square block of the rows `ι` of `x`, and `x''` the block of the other rows. The
+/--
+Let `x'` be the square block of the rows `ι` of `x`, and `x''` the block of the other rows. The
 matrix `x` has an integral block ratio if `x'` is invertible and `x'' x'⁻¹` is integral, and also
 `≡ 0` modulo `w` if the proposition `chosen` holds. In the applications `chosen` says that `w` is a
-chosen place. Here `v` is the valuation at `w`. -/
-structure HasIntegralBlockRatio (ι : r ↪ n) (chosen : Prop) (x : Matrix n r (LocField w)) :
-  Prop where
+chosen place. Here `v` is the valuation at `w`.
+-/
+structure HasIntegralBlockRatio (ι : r ↪ n) (chosen : Prop) (x : Matrix n r (LocField w))
+    : Prop where
   /-- The block `x'` is invertible. -/
   isUnit_det : IsUnit (x.submatrix ι id).det
   /-- The matrix `x'' x'⁻¹` is integral. -/
   valuation_le_one : ∀ a : n, a ∉ Set.range ι → ∀ b : r, v ((x * (x.submatrix ι id)⁻¹) a b) ≤ 1
   /-- At a chosen place `x'' x'⁻¹` is `≡ 0` modulo `w`. -/
-  valuation_lt_one : chosen → ∀ a : n, a ∉ Set.range ι → ∀ b : r,
-    v ((x * (x.submatrix ι id)⁻¹) a b) < 1
+  valuation_lt_one
+    : chosen → ∀ a : n, a ∉ Set.range ι → ∀ b : r, v ((x * (x.submatrix ι id)⁻¹) a b) < 1
 
-/-- An integral row `l = (λ, λ')` with `λ x' + λ' x'' = 0`, with `λ ≢ 0` modulo `w`, and with
+/--
+An integral row `l = (λ, λ')` with `λ x' + λ' x'' = 0`, with `λ ≢ 0` modulo `w`, and with
 `λ' ≡ 0` modulo `w` unless `chosen` holds. Here `λ` and `x'` are the entries of `l` and the rows of
-`x` indexed by `ι`, and `λ'` and `x''` are the others. -/
-structure IsAnnihilatingRow (ι : r ↪ n) (chosen : Prop) (x : Matrix n r (LocField w))
-    (l : n → LocInt w) : Prop where
+`x` indexed by `ι`, and `λ'` and `x''` are the others.
+-/
+structure IsAnnihilatingRow
+    (ι : r ↪ n) (chosen : Prop) (x : Matrix n r (LocField w)) (l : n → LocInt w)
+    : Prop where
   /-- The row annihilates `x`. -/
   vecMul_eq_zero : (fun a : n ↦ (l a).val) ᵥ* x = 0
   /-- The part `λ` of the row is not zero modulo `w`. -/
@@ -445,16 +455,20 @@ section SmallCosets
 variable {E m : Type} [Field E] [CMType E] {S : Set (FinPlace E)}
 
 variable (E) in
-/-- The finite idele `i!`. The quotient of each of these ideles by the one before is integral, and
-they tend to `0` at every finite place, like the powers of a uniformiser at one place. -/
+/--
+The finite idele `i!`. The quotient of each of these ideles by the one before is integral, and
+they tend to `0` at every finite place, like the powers of a uniformiser at one place.
+-/
 def factorialIdele (i : ℕ) : (𝔸f E)ˣ := (isUnit_natCast_finAdele (E := E) i.factorial_ne_zero).unit
 
 variable (E) in
 lemma val_factorialIdele (i : ℕ) : (factorialIdele E i : 𝔸f E) = i.factorial := rfl
 
 variable (m S) in
-/-- The finite adelic vectors `x` that are `≡ 0` modulo `i!` at the places of `S`, that is, such
-that `(i!)⁻¹ x` lies in `integralBox m S`, the vectors integral at these places. -/
+/--
+The finite adelic vectors `x` that are `≡ 0` modulo `i!` at the places of `S`, that is, such
+that `(i!)⁻¹ x` lies in `integralBox m S`, the vectors integral at these places.
+-/
 def factorialBox (i : ℕ) : AddSubgroup (m → 𝔸f E) :=
   (integralBox m S).comap (smulAddHom (𝔸f E) (m → 𝔸f E) (factorialIdele E i)⁻¹.val)
 
@@ -511,7 +525,8 @@ end SmallCosets
 
 namespace IsSchwartzBruhat
 
-variable {E m : Type} [Field E] [CMType E] [Fintype m] [DecidableEq m]
+variable
+  {E m : Type} [Field E] [CMType E] [Fintype m] [DecidableEq m]
   {S : Set (FinPlace E)} (Ψ : (m → 𝔸f E) → ℂ) [hΨ : IsSchwartzBruhat S Ψ]
 
 /-- Let `Ψ` be a Schwartz–Bruhat function of the components at `S`. For large `i` it is constant on
@@ -598,13 +613,16 @@ variable [Fintype n]
 variable (E r n) in
 /-- The action `x ↦ h x` of the finite adelic points of `U(V)` on finite adelic `n × r` matrices. -/
 def leftMul : Representation (𝔸f E) (Gf E n) (n × r → 𝔸f E) where
-  toFun h :=
-    { toFun x := matrixToVec ((h : Matrix n n (𝔸f E)) * vecToMatrix x)
-      map_add' x y := congrArg matrixToVec (Matrix.mul_add _ (vecToMatrix x) (vecToMatrix y))
-      map_smul' c x := congrArg matrixToVec (Matrix.mul_smul _ c (vecToMatrix x)) }
+  toFun h := {
+    toFun x := matrixToVec ((h : Matrix n n (𝔸f E)) * vecToMatrix x)
+    map_add' x y := congrArg matrixToVec (Matrix.mul_add _ (vecToMatrix x) (vecToMatrix y))
+    map_smul' c x := congrArg matrixToVec (Matrix.mul_smul _ c (vecToMatrix x))
+  }
   map_one' := LinearMap.ext fun x ↦ congrArg matrixToVec (vecToMatrix x).one_mul
-  map_mul' h k := LinearMap.ext fun x ↦ congrArg matrixToVec
-    (Matrix.mul_assoc (h : Matrix n n (𝔸f E)) (k : Matrix n n (𝔸f E)) (vecToMatrix x))
+  map_mul' h k :=
+    LinearMap.ext fun x ↦
+      congrArg matrixToVec
+        (Matrix.mul_assoc (h : Matrix n n (𝔸f E)) (k : Matrix n n (𝔸f E)) (vecToMatrix x))
 
 lemma leftMul_apply (h : Gf E n) (x : n × r → 𝔸f E) :
     leftMul E r n h x = matrixToVec ((h : Matrix n n (𝔸f E)) * vecToMatrix x) := rfl
@@ -700,8 +718,10 @@ lemma mem_levelGroup_of_reduceAt {k : stdLevel E n}
   rintro (i | i) -
   exacts [mem_stabilizer_col_iff.2 (h_chosen i), (mem_rangeParabolic_iff O.incl).2 (h_twist i)]
 
-/-- The function `Ψ_bl(· A)`: the block datum of `O` as a function of an adelic `n × r` matrix,
-translated on the right by `A`. -/
+/--
+The function `Ψ_bl(· A)`: the block datum of `O` as a function of an adelic `n × r` matrix,
+translated on the right by `A`.
+-/
 def translatedBlockFn (O : DescentPair E r n) (A : Gf E r) (x : n × r → 𝔸f E) : ℂ :=
   residueDatum O.placeAt O.residueBlockDatum (matrixToVec (vecToMatrix x * (A : Matrix r r (𝔸f E))))
 
@@ -715,8 +735,8 @@ lemma isSchwartzBruhat_residueDatum_residueBlockDatum :
 instance (A : Gf E r) : IsSchwartzBruhat O.places (O.translatedBlockFn A) := by
   -- The map `x ↦ x A` is given by an invertible matrix `T` on the entries of `x`.
   let T : GL (n × r) (𝔸f E) := (G.onHom (s := 1) (s' := (1 : n → ℤˣ)) ((1, A), 1)).2⁻¹.val
-  have h_eq (x : n × r → 𝔸f E) :
-      residueDatum O.placeAt O.residueBlockDatum (T.val *ᵥ x) = O.translatedBlockFn A x := by
+  have h_eq (x : n × r → 𝔸f E)
+      : residueDatum O.placeAt O.residueBlockDatum (T.val *ᵥ x) = O.translatedBlockFn A x := by
     simp [T, translatedBlockFn, onHom_snd_inv_mulVec]
   simpa only [h_eq] using (isSchwartzBruhat_residueDatum_residueBlockDatum (O := O)).comp_mulVec T
 
@@ -888,15 +908,19 @@ lemma exists_leftMul_eq_of_translatedBlockFn_ne_zero {A : Gf E r} {x : n × r �
   rw [matrixAt_leftMul, matrixAt_inclMatrix_mul, ← Matrix.mul_assoc, h_comp,
     completeColumns_mul_inclMatrix, map_inv, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one]
 
-/-- The translation `Ψ ↦ c Ψ(h⁻¹ ·)` by an element `h` of the level group of `O`, where `c` is the
+/--
+The translation `Ψ ↦ c Ψ(h⁻¹ ·)` by an element `h` of the level group of `O`, where `c` is the
 conjugate of the level character `O.levelChar h`: the product over the places `w ∈ Q` of
-`χ_w(det h_w')⁻¹`, for the first diagonal block `h_w'` of the reduction of `h` at `w`. -/
-def levelTranslate (O : DescentPair E r n) :
-    Representation ℂ O.levelGroup ((n × r → 𝔸f E) → ℂ) where
+`χ_w(det h_w')⁻¹`, for the first diagonal block `h_w'` of the reduction of `h` at `w`.
+-/
+def levelTranslate (O : DescentPair E r n)
+    : Representation ℂ O.levelGroup ((n × r → 𝔸f E) → ℂ) where
   toFun h := star (O.levelChar h) • LinearMap.funLeft ℂ ℂ (leftMul E r n h.val⁻¹)
   map_one' := LinearMap.ext fun Ψ ↦ funext fun x ↦ by simp
-  map_mul' h k := LinearMap.ext fun Ψ ↦ funext fun x ↦ by
-    simpa [mul_assoc] using mul_left_comm (star (O.levelChar h)) (star (O.levelChar k)) _
+  map_mul' h k :=
+    LinearMap.ext fun Ψ ↦
+      funext fun x ↦ by
+        simpa [mul_assoc] using mul_left_comm (star (O.levelChar h)) (star (O.levelChar k)) _
 
 lemma levelTranslate_apply (h : O.levelGroup) (Ψ : (n × r → 𝔸f E) → ℂ) (x : n × r → 𝔸f E) :
     O.levelTranslate h Ψ x = star (O.levelChar h) * Ψ (leftMul E r n h.val⁻¹ x) := rfl
@@ -1063,17 +1087,21 @@ lemma isAutomorphic_star_algFormCoeff (u : (WeylIndex n O.columnCount → ℂ) �
     (stdSpace E n).IsAutomorphic (star (algFormCoeff 1 u y.val)) :=
   (isAutomorphic_algFormCoeff y.val).conj
 
-variable [WeilData E] (u : (WeylIndex n O.columnCount → ℂ) →ₗ[ℂ] ℂ)
-  (P : MvPolynomial (InfinitePlace E × n × r) ℂ) (g : G E O.signs)
+variable
+  [WeilData E]
+  (u : (WeylIndex n O.columnCount → ℂ) →ₗ[ℂ] ℂ) (P : MvPolynomial (InfinitePlace E × n × r) ℂ)
+  (g : G E O.signs)
 
-/-- The conjugate of the value at `g` of the descent of the matrix coefficient `u` of a form `y` by
+/--
+The conjugate of the value at `g` of the descent of the matrix coefficient `u` of a form `y` by
 the datum `v_P ⊗ Ψ ⊗ vac`, where `v_P` is the Fock vector of the polynomial `P`. It is linear in
-`Ψ` and conjugate linear in `y`; below it is written `B(Ψ, y)`. -/
+`Ψ` and conjugate linear in `y`; below it is written `B(Ψ, y)`.
+-/
 def descentPairing : ((n × r → 𝔸f E) → ℂ) →ₗ[ℂ] O.FormV →ₗ⋆[ℂ] ℂ :=
   let datum : ((n × r → 𝔸f E) → ℂ) →ₗ[ℂ] 𝒮 (O.W.hom (stdSpace E n)) :=
-    ((O.W.hom (stdSpace E n)).integrated (polyVector (realSigns E (homSigns O.signs 1)) P) ∘L
-      .apply ℂ (𝒮 (O.W.hom (stdSpace E n))) (vacElem (O.W.hom (stdSpace E n)))).toLinearMap ∘ₗ
-      schrodingerOp (O.W.hom (stdSpace E n)) O.places
+    ((O.W.hom (stdSpace E n)).integrated (polyVector (realSigns E (homSigns O.signs 1)) P)
+        ∘L .apply ℂ (𝒮 (O.W.hom (stdSpace E n))) (vacElem (O.W.hom (stdSpace E n)))).toLinearMap
+      ∘ₗ schrodingerOp (O.W.hom (stdSpace E n)) O.places
   let coeff : O.FormV →ₗ⋆[ℂ] (stdSpace E n).rapidFunctions.toSubmodule :=
     .codRestrict (stdSpace E n).rapidFunctions.toSubmodule
       ((starLinearEquiv ℂ).toLinearMap ∘ₛₗ (algFormCoeff 1 u).domRestrict _)
@@ -1089,12 +1117,16 @@ lemma descentPairing_apply (Ψ : (n × r → 𝔸f E) → ℂ) (y : O.FormV) :
         (schrodingerOp (O.W.hom (stdSpace E n)) O.places Ψ (vacElem (O.W.hom (stdSpace E n)))))
       (star (algFormCoeff 1 u y.val)) g := rfl
 
-/-- The descent to `W` of the matrix coefficient `u` of the form `y` by the datum
-`v_P ⊗ Ψ_bl ⊗ vac` vanishes, where `Ψ_bl ⊗ vac` is the block datum `O.blockDatum`. -/
+/--
+The descent to `W` of the matrix coefficient `u` of the form `y` by the datum
+`v_P ⊗ Ψ_bl ⊗ vac` vanishes, where `Ψ_bl ⊗ vac` is the block datum `O.blockDatum`.
+-/
 def BlockDescentVanishes (y : O.FormV) : Prop :=
   lift (pairThetaKer O.W (stdSpace E n) O.charW 1).swap
-    (integrated (O.W.hom (stdSpace E n)) (polyVector (realSigns E (homSigns O.signs 1)) P)
-      O.blockDatum.val) (star (algFormCoeff 1 u y.val)) = 0
+      (integrated (O.W.hom (stdSpace E n)) (polyVector (realSigns E (homSigns O.signs 1)) P)
+        O.blockDatum.val)
+      (star (algFormCoeff 1 u y.val))
+    = 0
 
 omit [WeilData E] [DecidableEq n] in
 /-- No place of the descent pair `O` is the conjugate of itself or of another place of `O`. -/
@@ -1271,22 +1303,29 @@ lemma eventually_descentPairing_eq_zero_of_hasIntegralBlockRatio
   rw [← h_pairing, eq_smul_translatedBlockFn h_one h_idem h_inv h_supp, map_smul,
     LinearMap.smul_apply, descentPairing_translatedBlockFn_eq_zero u P g h_datum hA_on, smul_zero]
 
-/-- The form `χ(s)⁻¹ s̄ y` for blocks `s` at the chosen places and the places of `Q`, where
-`χ(s) = ∏ χ_w(det s_w)` over all these places and `s̄` is the part of `s` at the chosen places. -/
-def blockAction (O : DescentPair E r n)
-    (s : ∀ j : O.ChosenIndex ⊕ O.TwistIndex, GL r (ResField (O.placeAt j))) (y : O.FormV) :
-    O.FormV :=
-  (∏ j : O.ChosenIndex ⊕ O.TwistIndex, (O.tamePart (O.placeAt j))⁻¹ (s j).val.det) •
-    O.formAction (fun i : O.ChosenIndex ↦ s (Sum.inl i)) y
+/--
+The form `χ(s)⁻¹ s̄ y` for blocks `s` at the chosen places and the places of `Q`, where
+`χ(s) = ∏ χ_w(det s_w)` over all these places and `s̄` is the part of `s` at the chosen places.
+-/
+def blockAction
+    (O : DescentPair E r n)
+    (s : ∀ j : O.ChosenIndex ⊕ O.TwistIndex, GL r (ResField (O.placeAt j))) (y : O.FormV)
+    : O.FormV :=
+  (∏ j : O.ChosenIndex ⊕ O.TwistIndex, (O.tamePart (O.placeAt j))⁻¹ (s j).val.det)
+    • O.formAction (fun i : O.ChosenIndex ↦ s (Sum.inl i)) y
 
-/-- The hyperplane sums annihilate the form `y`: for rows `λ_w` at the chosen places `w`, not all
-zero, the product of the sums `∑ χ_w(det s)⁻¹ s` over the invertible `s = 1 + v λ_w` kills `y`. -/
-def HyperplaneSumsAnnihilate (O : DescentPair E r n) [DecidableEq O.ChosenIndex] (y : O.FormV) :
-    Prop :=
+/--
+The hyperplane sums annihilate the form `y`: for rows `λ_w` at the chosen places `w`, not all
+zero, the product of the sums `∑ χ_w(det s)⁻¹ s` over the invertible `s = 1 + v λ_w` kills `y`.
+-/
+def HyperplaneSumsAnnihilate (O : DescentPair E r n) [DecidableEq O.ChosenIndex] (y : O.FormV)
+    : Prop :=
   ∀ (i : O.ChosenIndex) (l : ∀ j : O.ChosenIndex, r → ResField (O.chosenPlace j)),
-    l i ≠ 0 → O.formAction.asAlgebraHom
-      (piTensorElem fun j : O.ChosenIndex ↦ hyperplaneSum (O.tamePart (O.chosenPlace j)) (l j)) y =
-        0
+    l i ≠ 0
+      → O.formAction.asAlgebraHom
+          (piTensorElem fun j : O.ChosenIndex ↦ hyperplaneSum (O.tamePart (O.chosenPlace j)) (l j))
+          y
+        = 0
 
 variable [DecidableEq O.ChosenIndex]
 section
@@ -1463,7 +1502,8 @@ lemma descentPairing_eq_zero_of_not_hasIntegralBlockRatio {y : O.FormV}
       = ∑ s : hyperplaneGroup l₀, B (O.blockAction (Pi.mulSingle j s.val) y) := by simp [h_term]
     _ = 0 := by rw [← map_sum, sum_blockAction_eq_zero hQ h_sums j hl.residue_ne_zero, map_zero]
 
-/-- **The bottom of the tower.** Let `O` be a descent pair: spaces `W = O.W` and `V = stdSpace E n`
+/--
+**The bottom of the tower.** Let `O` be a descent pair: spaces `W = O.W` and `V = stdSpace E n`
 of ranks `r` and `n`, two families of split places and residue characters `χ_w = O.tamePart w`. Let
 `y` be a form on `V` and `u` a linear functional on its values. Assume that `χ_w` is nontrivial for
 `w ∈ Q`, and that the hyperplane sums annihilate `y`: for rows `λ_w` at the chosen places, not all
@@ -1471,18 +1511,22 @@ zero, the product of the sums `∑ χ_w(det s)⁻¹ s` over the invertible `s = 
 column, kills `y`. Assume that the descents of the conjugate of the matrix coefficient
 `algFormCoeff 1 u y` by the data `v_P ⊗ Ψ_bl ⊗ vac` vanish for all polynomials `P`. Then its
 descents, for the character `O.charW` of `U(1)` attached to `W`, vanish for all data that are the
-vacuum at the finite places other than the chosen places, the places of `Q` and their conjugates. -/
-theorem descentsVanish_of_hyperplaneSumsAnnihilate {y : O.FormV}
+vacuum at the finite places other than the chosen places, the places of `Q` and their conjugates.
+-/
+theorem descentsVanish_of_hyperplaneSumsAnnihilate
+    {y : O.FormV}
     (hQ : ∀ i : O.TwistIndex, O.tamePart (O.twistPlace i) ≠ 1)
     (h_sums : O.HyperplaneSumsAnnihilate y)
-    (h_datum : ∀ P : MvPolynomial (InfinitePlace E × n × r) ℂ, BlockDescentVanishes u P y) :
-    DescentsVanish O.W (stdSpace E n) O.charW O.places.conjClosureᶜ
+    (h_datum : ∀ P : MvPolynomial (InfinitePlace E × n × r) ℂ, BlockDescentVanishes u P y)
+    : DescentsVanish O.W (stdSpace E n) O.charW O.places.conjClosureᶜ
       (star (algFormCoeff 1 u y.val)) := by
   -- It suffices to treat the data `v_P ⊗ Ψ ⊗ vac`, and then the small classes around each `z`.
-  refine .of_schrodingerOp isConjDisjoint_places (isAutomorphic_star_algFormCoeff u y)
-    fun P Ψ hΨ ↦ funext fun g ↦ ?_
-  suffices h_small : ∀ z : n × r → 𝔸f E, ∀ᶠ i : ℕ in atTop,
-      descentPairing u P g (cosetIndicator O.places (factorialIdele E i) z) y = 0 by
+  refine .of_schrodingerOp isConjDisjoint_places (isAutomorphic_star_algFormCoeff u y) fun P Ψ hΨ ↦
+    funext fun g ↦ ?_
+  suffices h_small
+      : ∀ z : n × r → 𝔸f E,
+        ∀ᶠ i : ℕ in atTop,
+          descentPairing u P g (cosetIndicator O.places (factorialIdele E i) z) y = 0 by
     change descentPairing u P g Ψ y = 0
     exact IsSchwartzBruhat.mem_of_eventually_coset (S := O.places) Ψ
       ((descentPairing u P g).flip y).ker h_small
@@ -1490,8 +1534,8 @@ theorem descentsVanish_of_hyperplaneSumsAnnihilate {y : O.FormV}
   by_cases! hz : ∀ j, HasIntegralBlockRatio O.incl j.isLeft (matrixAt (O.placeAt j) z)
   · exact eventually_descentPairing_eq_zero_of_hasIntegralBlockRatio u P g (h_datum P) hz
   · obtain ⟨j, hj⟩ := hz
-    exact .of_forall fun i ↦ descentPairing_eq_zero_of_not_hasIntegralBlockRatio u P g hQ h_sums hj
-      _
+    exact .of_forall fun i ↦
+      descentPairing_eq_zero_of_not_hasIntegralBlockRatio u P g hQ h_sums hj _
 
 end DescentPair
 

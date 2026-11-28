@@ -50,7 +50,8 @@ open Matrix Finset Filter Subgroup Nat Function Ideal Quotient MulEquiv Algebra
 
 namespace New
 
-variable {R n B V : Type*} [CommRing R] [CommRing B] [Fintype n] [DecidableEq n]
+variable
+  {R n B V : Type*} [CommRing R] [CommRing B] [Fintype n] [DecidableEq n]
   {σ : R →+* R} {p : ℕ} {m x : R} {θ : B →+* B} [AddCommGroup V] [Module R V]
 
 /-! ### The five conditions of a tame action -/

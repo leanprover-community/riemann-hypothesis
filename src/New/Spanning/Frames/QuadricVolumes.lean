@@ -49,9 +49,11 @@ namespace New.Floors
 open Matrix MeasureTheory Measure ENNReal Sum Set Function FloorGroups Size Place TraceOne PlaceData
   HyperbolicBasis Finset
 
-variable {A ι : Type} {𝔰 : Shape} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A]
-  [Place A] [Fintype ι] [DecidableEq ι] {C B I : ℝ≥0∞} {m j : ℕ} {p : ℕ → Aˣ} {a : Fin 𝔰.ϱ}
-  {T : 𝔰.Form A} [IsHermitianUnit T.splitGram] {F : PlaceData ι T m} {Γ : Gauge F} {b : Fin 𝔰.n}
+variable
+  {A ι : Type} {𝔰 : Shape} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [Place A]
+  [Fintype ι] [DecidableEq ι]
+  {C B I : ℝ≥0∞} {m j : ℕ} {p : ℕ → Aˣ} {a : Fin 𝔰.ϱ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
+  {F : PlaceData ι T m} {Γ : Gauge F} {b : Fin 𝔰.n}
 
 namespace Gauge
 
@@ -331,17 +333,21 @@ end Gauge
 
 /-! ### Sections of the isotropic cones -/
 
-/-- The vector c n⁻¹ e*_a. For n in the Heisenberg group of floor a it is a point of the section
-⟨e_a, y⟩ = c of the isotropic cone of Y^(a). -/
+/--
+The vector c n⁻¹ e*_a. For n in the Heisenberg group of floor a it is a point of the section
+⟨e_a, y⟩ = c of the isotropic cone of Y^(a).
+-/
 noncomputable def sectionPoint (a : Fin 𝔰.ϱ) (c : A) (n : T.G) : 𝔰.BesselIndex → A :=
   c • n⁻¹.val.val *ᵥ Pi.single (eStar a) 1
 
-/-- The measure dy / dc = |c|^r dn of the section ⟨e_a, y⟩ = c, where r is the rank of Y^(a+1),
-|c| = `modulus c`, and dn is `heisenbergMeasure a` carried over by `sectionPoint a c`. -/
-noncomputable def sectionMeasure (T : 𝔰.Form A) [IsHermitianUnit T.splitGram] (a : Fin 𝔰.ϱ)
-    (c : A) : Measure (𝔰.BesselIndex → A) :=
-  modulus c ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1))) •
-    (heisenbergMeasure a).map (sectionPoint (T := T) a c)
+/--
+The measure dy / dc = |c|^r dn of the section ⟨e_a, y⟩ = c, where r is the rank of Y^(a+1),
+|c| = `modulus c`, and dn is `heisenbergMeasure a` carried over by `sectionPoint a c`.
+-/
+noncomputable def sectionMeasure (T : 𝔰.Form A) [IsHermitianUnit T.splitGram] (a : Fin 𝔰.ϱ) (c : A)
+    : Measure (𝔰.BesselIndex → A) :=
+  modulus c ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1)))
+    • (heisenbergMeasure a).map (sectionPoint (T := T) a c)
 
 omit [IsHermitianUnit T.splitGram] in
 @[fun_prop]

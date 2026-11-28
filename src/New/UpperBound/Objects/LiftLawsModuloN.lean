@@ -47,12 +47,15 @@ open Matrix Finset Function MulAction GeneralLinearGroup Exchange SemilocalField
 
 section
 
-variable {E n n' n'' : Type} [Field E] [CMType E]
-  {P S : Finset (FinPlace E)} {N : ℕ} [Fact N.Prime] [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] [Fintype n'']
+variable
+  {E n n' n'' : Type} [Field E] [CMType E]
+  {P S : Finset (FinPlace E)} {N : ℕ}
+  [Fact N.Prime] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype n'']
 
-/-- `P` consists of one place of each pair `w, w̄` above `N`; these places are unramified of degree
-one. -/
+/--
+`P` consists of one place of each pair `w, w̄` above `N`; these places are unramified of degree
+one.
+-/
 class IsSplitLevel (P : Finset (FinPlace E)) (N : outParam ℕ) : Prop where
   /-- The conjugate of a place in `P` is not in `P`; in particular the places in `P` are split. -/
   star_notMem : ∀ w ∈ P, star w ∉ P
@@ -63,10 +66,13 @@ class IsSplitLevel (P : Finset (FinPlace E)) (N : outParam ℕ) : Prop where
   /-- The places above `N` are those in `P` and their conjugates. -/
   natCast_mem_iff (w : FinPlace E) : ↑N ∈ w.asIdeal ↔ w ∈ P ∨ star w ∈ P
 
-/-- The finite adele that is `y w / N` at `w ∈ P`, with `y w` read in `[0, N)`, and `0`
-elsewhere. -/
-def residueOverN {E : Type} [Field E] [NumberField E] {P : Finset (FinPlace E)}
-    (y : P → ZMod N) : 𝔸f E := adeleOfLocal P fun w : P ↦ (y w).val / N
+/--
+The finite adele that is `y w / N` at `w ∈ P`, with `y w` read in `[0, N)`, and `0`
+elsewhere.
+-/
+def residueOverN {E : Type} [Field E] [NumberField E] {P : Finset (FinPlace E)} (y : P → ZMod N)
+    : 𝔸f E :=
+  adeleOfLocal P fun w : P ↦ (y w).val / N
 
 open scoped Classical in
 omit [Fact N.Prime] in
@@ -87,11 +93,15 @@ open scoped Classical in
 variable (n S) in
 /-- The matrix `diag (1, …, 1, N)` at the places of `P` that lie in `S`, and `1` at the others. -/
 def diagN : GL (n ⊕ Unit) (LocProd P) :=
-  diagGL fun i : n ⊕ Unit ↦ if i.isLeft then 1 else
-    MulEquiv.piUnits.symm fun w : P ↦ if ↑w ∈ S then .mk0 N NeZero.out else 1
+  diagGL fun i : n ⊕ Unit ↦
+    if i.isLeft then
+      1
+    else
+      MulEquiv.piUnits.symm fun w : P ↦ if ↑w ∈ S then .mk0 N NeZero.out else 1
 
-variable [Λ : IsSplitLevel P N] (π : Rep ℂ (GL (n ⊕ Unit) (LocProd P)))
-  (π' : Rep ℂ (GL (n' ⊕ Unit) (LocProd P)))
+variable
+  [Λ : IsSplitLevel P N]
+  (π : Rep ℂ (GL (n ⊕ Unit) (LocProd P))) (π' : Rep ℂ (GL (n' ⊕ Unit) (LocProd P)))
 
 /-- The residue field at a place of `P` is `ℤ / N`. -/
 def residueEquiv (w : P) : ResField w.val ≃+* ZMod N :=
@@ -132,8 +142,9 @@ lemma reduction_surjective : Surjective Λ.reduction := by
   exact ⟨⟨_, h_int⟩, by simp [reduction_eq_iff]⟩
 
 /-- The inclusion of the integral invertible matrices into all invertible matrices at `P`. -/
-abbrev inclGL {E : Type} [Field E] [NumberField E] {P : Finset (FinPlace E)} :
-    GL n (O (F := LocProd P)) →* GL n (LocProd P) := map (O (F := LocProd P)).subtype
+abbrev inclGL {E : Type} [Field E] [NumberField E] {P : Finset (FinPlace E)}
+    : GL n (O (F := LocProd P)) →* GL n (LocProd P) :=
+  map (O (F := LocProd P)).subtype
 
 /-- Reduction modulo `N` of integral invertible matrices. -/
 abbrev reductionGL : GL n (O (F := LocProd P)) →* GL n (P → ZMod N) := map Λ.reduction
@@ -149,9 +160,11 @@ end
 /-- The matrix `diag (1, …, 1, N⁻¹)` at all places of `P`. -/
 abbrev diagNInv : GL (n ⊕ Unit) (LocProd P) := (diagN (N := N) n P)⁻¹
 
-/-- The character `ψ_N (y) = ψ (-y / N)` of the residues at `P`, where `ψ` is the additive character
-`stdLattice.selfDualAddChar E` of the finite adeles and `y / N` is the adele `residueOverN y`. -/
-def psiN (y : P → ZMod N) : ℂ := stdLattice.selfDualAddChar E (-residueOverN y)
+/--
+The character `ψ_N (y) = ψ (-y / N)` of the residues at `P`, where `ψ` is the additive character
+`stdLattice.selfDualAddChar E` of the finite adeles and `y / N` is the adele `residueOverN y`.
+-/
+def psiN (y : P → ZMod N) : ℂ := stdLattice.selfDualAddChar E (- residueOverN y)
 
 /-- The last basis vector modulo `N`. -/
 abbrev lastBasisVector : n ⊕ Unit → P → ZMod N := Pi.single (.inr ()) 1
@@ -172,8 +185,10 @@ lemma exists_GL_last_col_and_row {R : Type*} [CommRing R] :
   -- factor is `u` times that vector.
   constructor <;> ext a <;> simp [h, Matrix.mul_apply, ← mul_assoc]
 
-/-- For `y` with unit last entry, an integral invertible matrix whose last column and last row are
-both `y` modulo `N`. -/
+/--
+For `y` with unit last entry, an integral invertible matrix whose last column and last row are
+both `y` modulo `N`.
+-/
 def lastRowColGL (y : n ⊕ Unit → P → ZMod N) : GL (n ⊕ Unit) (O (F := LocProd P)) :=
   Λ.liftGL (exists_GL_last_col_and_row.choose y)
 
@@ -201,15 +216,20 @@ lemma lastBasisVector_vecMul_lastRowColGL {y : n ⊕ Unit → P → ZMod N} (hy 
   simpa using (lastRowColGL_col_and_row hy).right
 
 open scoped Classical in
-/-- The operator `Up = π (D) ∑ y, ψ_N (y_last) π (lastRowColGL y)`, where `D = diagNInv` and `y`
+/--
+The operator `Up = π (D) ∑ y, ψ_N (y_last) π (lastRowColGL y)`, where `D = diagNInv` and `y`
 runs over the vectors modulo `N` whose last entry `y_last` is a unit. The matrix `D` replaces the
-standard lattice by the lattice enlarged by the last basis vector divided by `N`. -/
+standard lattice by the lattice enlarged by the last basis vector divided by `N`.
+-/
 def upOperator : Module.End ℂ π :=
-  π.ρ (diagNInv (P := P) (N := N)) * ∑ y : n ⊕ Unit → P → ZMod N with IsUnit (y (.inr ())),
-    psiN (y (.inr ())) • π.ρ (inclGL (lastRowColGL y))
+  π.ρ (diagNInv (P := P) (N := N))
+    * ∑ y : n ⊕ Unit → P → ZMod N with IsUnit (y (.inr ())),
+      psiN (y (.inr ())) • π.ρ (inclGL (lastRowColGL y))
 
-/-- The integral invertible matrices whose last column is the last basis vector modulo `N`: the
-stabiliser of the standard lattice marked with that vector. -/
+/--
+The integral invertible matrices whose last column is the last basis vector modulo `N`: the
+stabiliser of the standard lattice marked with that vector.
+-/
 def mirabolic : Subgroup (GL (n ⊕ Unit) (LocProd P)) :=
   ((stabilizer (GL (n ⊕ Unit) (P → ZMod N)) (lastBasisVector : n ⊕ Unit → P → ZMod N)).comap
     Λ.reductionGL).map inclGL
@@ -222,18 +242,22 @@ lemma mem_mirabolic {g : GL (n ⊕ Unit) (LocProd P)} :
       inclGL k = g :=
   Iff.rfl
 
-/-- A vector is ramified if at each place `w` of `P` it has the form `ψ - x ψ` for an integral unit
+/--
+A vector is ramified if at each place `w` of `P` it has the form `ψ - x ψ` for an integral unit
 scalar `x` that is `1` modulo `N` at the other places. A vector that is fixed by the scalars
 congruent to `1` modulo `N` has this form if its mean over the unit scalars at each `w` is zero.
-The lift laws use only this form. -/
+The lift laws use only this form.
+-/
 def ramified : Set π :=
   {φ : π | ∀ w : P, ∃ x : (O (F := LocProd P))ˣ, (∀ w' : P, w' ≠ w → Λ.reduction x w' = 1) ∧
     φ ∈ (1 - π.ρ (inclGL (scalar (n ⊕ Unit) x))).range}
 
-/-- A function of matrices modulo `N`, as a function of integral matrices at `P`, extended by
-zero. -/
-@[simps! -isSimp] abbrev liftFn :
-    (Matrix n' n (P → ZMod N) → ℂ) →ₗ[ℂ] Matrix n' n (LocProd P) → ℂ :=
+/--
+A function of matrices modulo `N`, as a function of integral matrices at `P`, extended by
+zero.
+-/
+@[simps! -isSimp]
+abbrev liftFn : (Matrix n' n (P → ZMod N) → ℂ) →ₗ[ℂ] Matrix n' n (LocProd P) → ℂ :=
   liftIntegralFn Λ.reduction
 
 /-- Applying `liftFn` to `T ↦ f (reductionGL b * T * reductionGL a)` gives
@@ -266,21 +290,25 @@ def lastColDatum (y : n' → P → ZMod N) : Matrix n' (n ⊕ Unit) (LocProd P) 
 def charDatum (y : n → P → ZMod N) : Matrix (n' ⊕ Unit) n (LocProd P) → ℂ :=
   Λ.liftFn fun T : Matrix (n' ⊕ Unit) n (P → ZMod N) ↦ psiN (T (.inr ()) ⬝ᵥ y)
 
-/-- The direct datum: the indicator of the integral matrices whose last column is the last basis
-vector modulo `N`. For marked lattices `(L, ε)`, `(L', ε')` it is `1[S L ⊆ L', S ε = ε']`. -/
-abbrev directDatum : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ :=
-  Λ.lastColDatum lastBasisVector
+/--
+The direct datum: the indicator of the integral matrices whose last column is the last basis
+vector modulo `N`. For marked lattices `(L, ε)`, `(L', ε')` it is `1[S L ⊆ L', S ε = ε']`.
+-/
+abbrev directDatum : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ := Λ.lastColDatum lastBasisVector
 
-/-- The mirror datum: `ψ_N` of the corner entry modulo `N` on integral matrices, zero elsewhere. For
+/--
+The mirror datum: `ψ_N` of the corner entry modulo `N` on integral matrices, zero elsewhere. For
 marked lattices `(L, ε)`, `(L', ε')` it is `1[S L ⊆ L'⁺] ψ_N (u' (S ε))` in bases of `L` and
-`L'⁺ = L' + 𝒪 ε' / N`, where `u'` is the last coordinate on `L'⁺` modulo `N`. -/
-abbrev mirrorDatum : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ :=
-  Λ.charDatum lastBasisVector
+`L'⁺ = L' + 𝒪 ε' / N`, where `u'` is the last coordinate on `L'⁺` modulo `N`.
+-/
+abbrev mirrorDatum : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ := Λ.charDatum lastBasisVector
 
-/-- The glued datum of a double lift: on pairs of integral matrices, `ψ_N` of the corner entry of
-the product `R T`. -/
-def gluedDatum (T : Matrix n' (n ⊕ Unit) (LocProd P))
-    (R : Matrix (n'' ⊕ Unit) n' (LocProd P)) : ℂ :=
+/--
+The glued datum of a double lift: on pairs of integral matrices, `ψ_N` of the corner entry of
+the product `R T`.
+-/
+def gluedDatum (T : Matrix n' (n ⊕ Unit) (LocProd P)) (R : Matrix (n'' ⊕ Unit) n' (LocProd P))
+    : ℂ :=
   Λ.liftFn (fun T' : Matrix n' (n ⊕ Unit) (P → ZMod N) ↦ Λ.charDatum (T'ᵀ (.inr ())) R) T
 
 open scoped Classical in
@@ -298,25 +326,35 @@ open scoped Classical in
 abbrev primitiveVectors (n : Type) [Fintype n] [DecidableEq n] : Finset (n → P → ZMod N) :=
   {y : n → P → ZMod N | ∀ w : P, ∃ a : n, IsUnit (y a w)}
 
-/-- The rules for a lift `L Ψ` from `π` to `π'` that is linear in its datum `Ψ`, a function on
-matrices at `P`; the constant `γ` is the cost of the change of lattices `diagNInv`. -/
-structure LiftLaw (L : (Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π →ₗ[ℂ] π') (γ : ℂ) :
-    Prop where
-  /-- Integral invertible matrices move between the datum and the two representations with no
-  factor. -/
-  integral_equivariant (a : GL (n ⊕ Unit) (O (F := LocProd P)))
-    (b : GL (n' ⊕ Unit) (O (F := LocProd P)))
-    (f : Matrix (n' ⊕ Unit) (n ⊕ Unit) (P → ZMod N) → ℂ) (φ : π) :
-    π'.ρ (inclGL b) (L (liftFn fun T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (P → ZMod N) ↦
-      f ((reductionGL b).val * T * (reductionGL a).val)) (π.ρ (inclGL a) φ)) = L (liftFn f) φ
-  /-- Passing in the direct datum from bases of the enlarged lattices (`lastRowDatum`) to bases of
-  the original lattices (`directDatum`) costs the factor `γ`. -/
-  diagNInv_lastRowDatum (φ : π) :
-    π'.ρ (diagNInv (P := P) (N := N)) (L lastRowDatum φ) =
-        γ • L directDatum (π.ρ (diagNInv (P := P) (N := N)) φ)
+/--
+The rules for a lift `L Ψ` from `π` to `π'` that is linear in its datum `Ψ`, a function on
+matrices at `P`; the constant `γ` is the cost of the change of lattices `diagNInv`.
+-/
+structure LiftLaw (L : (Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π →ₗ[ℂ] π') (γ : ℂ)
+    : Prop where
+  /--
+  Integral invertible matrices move between the datum and the two representations with no
+  factor.
+  -/
+  integral_equivariant
+    (a : GL (n ⊕ Unit) (O (F := LocProd P))) (b : GL (n' ⊕ Unit) (O (F := LocProd P)))
+    (f : Matrix (n' ⊕ Unit) (n ⊕ Unit) (P → ZMod N) → ℂ) (φ : π)
+    : π'.ρ (inclGL b)
+        (L
+          (liftFn fun T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (P → ZMod N) ↦
+            f ((reductionGL b).val * T * (reductionGL a).val))
+          (π.ρ (inclGL a) φ))
+      = L (liftFn f) φ
+  /--
+  Passing in the direct datum from bases of the enlarged lattices (`lastRowDatum`) to bases of
+  the original lattices (`directDatum`) costs the factor `γ`.
+  -/
+  diagNInv_lastRowDatum (φ : π)
+    : π'.ρ (diagNInv (P := P) (N := N)) (L lastRowDatum φ)
+      = γ • L directDatum (π.ρ (diagNInv (P := P) (N := N)) φ)
 
-variable {π π'} {φ : π}
-  {L : (Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π →ₗ[ℂ] π'} {γ : ℂ}
+variable
+  {π π'} {φ : π} {L : (Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π →ₗ[ℂ] π'} {γ : ℂ}
 
 /-! ## The direct datum in terms of valuations -/
 
@@ -848,14 +886,15 @@ end
 
 namespace IsSplitLevel
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {P : Finset (FinPlace E)}
-  {N : ℕ} [Fact N.Prime] [Λ : IsSplitLevel P N]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {P : Finset (FinPlace E)} {N : ℕ} [Fact N.Prime] [Λ : IsSplitLevel P N]
 
 -- A chain: `L j` is a lift from `π j` to `π (j + 1)`, with factor `γ j` in its lift law.
-variable {X : ℕ → Type} [∀ j : ℕ, Fintype (X j)] [∀ j : ℕ, DecidableEq (X j)]
+variable
+  {X : ℕ → Type} [∀ j : ℕ, Fintype (X j)] [∀ j : ℕ, DecidableEq (X j)]
   (π : ∀ j : ℕ, Rep ℂ (GL (X j ⊕ Unit) (LocProd P)))
-  {L : ∀ j : ℕ,
-    (Matrix (X (j + 1) ⊕ Unit) (X j ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π j →ₗ[ℂ] π (j + 1)}
+  {L : ∀ j : ℕ, (Matrix (X (j + 1) ⊕ Unit) (X j ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π j →ₗ[ℂ] π (j + 1)}
   {γ : ℕ → ℂ}
 
 omit [WeilData E] in
@@ -883,17 +922,21 @@ lemma upOperator_compUpTo_direct (law : ∀ j : ℕ, LiftLaw (π j) (π (j + 1))
     rw [(law j).upOperator_direct (compUpTo_direct_mem_ramified π law hφ j), ih, map_smul,
       smul_smul, prod_range_succ_comm]
 
-/-- The `i`-th glued double lift of a chain of lifts `L j` between representations `π j`: it is
+/--
+The `i`-th glued double lift of a chain of lifts `L j` between representations `π j`: it is
 `d i` times the sum over the vectors `y` modulo `N` of the lift `L (2 i + 1)` by `charDatum y` after
-the lift `L (2 i)` by `lastColDatum y`, moved by `diagNInv`. -/
+the lift `L (2 i)` by `lastColDatum y`, moved by `diagNInv`.
+-/
 abbrev gluedLift
-    (L : ∀ j : ℕ,
-      (Matrix (X (j + 1) ⊕ Unit) (X j ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π j →ₗ[ℂ] π (j + 1))
-    (d : ℕ → ℂ) (i : ℕ) : π (2 * i) →ₗ[ℂ] π (2 * (i + 1)) :=
+    (L
+      : ∀ j : ℕ, (Matrix (X (j + 1) ⊕ Unit) (X j ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π j →ₗ[ℂ] π (j + 1))
+    (d : ℕ → ℂ) (i : ℕ)
+    : π (2 * i) →ₗ[ℂ] π (2 * (i + 1)) :=
   open scoped Classical in
-  d i • (π (2 * i + 1 + 1)).ρ (diagNInv (P := P) (N := N)) ∘ₗ
-    ∑ y : X (2 * i + 1) ⊕ Unit → P → ZMod N,
-      L (2 * i + 1) (charDatum y) ∘ₗ L (2 * i) (lastColDatum y)
+  d i
+    • (π (2 * i + 1 + 1)).ρ (diagNInv (P := P) (N := N))
+      ∘ₗ ∑ y : X (2 * i + 1) ⊕ Unit → P → ZMod N,
+           L (2 * i + 1) (charDatum y) ∘ₗ L (2 * i) (lastColDatum y)
 
 open scoped Classical in
 /-- **All lifts become direct.** Let each lift `L j Ψ : π j → π (j + 1)` be linear in its datum `Ψ`

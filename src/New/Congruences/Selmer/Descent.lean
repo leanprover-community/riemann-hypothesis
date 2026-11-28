@@ -241,7 +241,9 @@ lemma sum_lt_sum_of_ne_top {α : Type} {s : Finset α} {f g : α → ℕ∞} (h_
   refine WithTop.add_lt_add_of_lt_of_le (ne_top_of_le_ne_top ?_ h_rest) h_lt h_rest
   exact ENat.sum_ne_top.2 fun a ha ↦ h_fin a (mem_of_mem_erase ha)
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
   {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)}
 
 /-! ### The first prime -/
@@ -304,7 +306,8 @@ lemma finite_tiedSelmer (ha : a ∣ ℓ ^ M) (R J : Finset (FinPlace E))
   have : NeZero a := ⟨ne_zero_of_dvd_ne_zero (NeZero.ne _) ha⟩
   finite_selmerModule ha (T.isLocallyConstant M) (Finset.finite_toSet _) _
 
-variable {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {P₀ : FinPlace E} {J : Finset (FinPlace E)}
+variable
+  {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {P₀ : FinPlace E} {J : Finset (FinPlace E)}
   {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)} {i j : ι}
 
 open scoped Classical in
@@ -505,21 +508,28 @@ lemma length_tiedSelmer_pow_le {ϖ : O} (hϖ : Irreducible ϖ) {e : ℕ}
 
 end SelmerDatum
 
-variable {n : ι → Type} [∀ i : ι, Fintype (n i)] [∀ i : ι, DecidableEq (n i)]
+variable
+  {n : ι → Type} [∀ i : ι, Fintype (n i)] [∀ i : ι, DecidableEq (n i)]
   (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O (n i))
 
 /-! ### The loop over all data and levels -/
 
-/-- The sum of the lengths of the tied Selmer groups `Sel(J)` of `T i` modulo `ϖ ^ k`, over all data
-`i` and all levels `1 ≤ k ≤ i₀`. -/
-def totalTiedLength [Fintype ι] (ϖ : O) (i₀ : ℕ) (J : Finset (FinPlace E)) {N : ℕ}
-    (x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)) : ℕ∞ :=
+/--
+The sum of the lengths of the tied Selmer groups `Sel(J)` of `T i` modulo `ϖ ^ k`, over all data
+`i` and all levels `1 ≤ k ≤ i₀`.
+-/
+def totalTiedLength
+    [Fintype ι]
+    (ϖ : O) (i₀ : ℕ) (J : Finset (FinPlace E))
+    {N : ℕ} (x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O))
+    : ℕ∞ :=
   ∑ p ∈ univ ×ˢ Icc 1 i₀, length O ((T p.1).tiedSelmer J J x p.1 (ϖ ^ p.2))
 
 section Steps
 
-variable {M N : ℕ} {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {P₀ : FinPlace E}
-  {J : Finset (FinPlace E)} {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
+variable
+  {M N : ℕ} {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {P₀ : FinPlace E} {J : Finset (FinPlace E)}
+  {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
 
 open scoped Classical in
 /-- Let `IsTiedPrimes ℓ S₀ V W N P₀ J x` hold: primes outside `S₀`, the first one `P₀` with
@@ -652,7 +662,8 @@ lemma exists_totalTiedLength_le [Fintype ι] (V : ι → Gal(Ω/E) → Prop) (W 
     (h_dvd k (mem_product.1 h_mem).2) fun v hv ↦ congrFun (h_slope v hv) i
 
 open IsDiscreteValuationRing in
-/-- Descent. Let `E` be a CM field, `Gal(Ω/E)` the Galois group of the algebraic closure `Ω` of
+/--
+Descent. Let `E` be a CM field, `Gal(Ω/E)` the Galois group of the algebraic closure `Ω` of
 `ℚ` over it, `ℓ` a prime, `O` the integer ring of a finite extension of `ℚ_ℓ`, and `T i` finitely
 many Selmer data: Galois lattices `O ^ (n i)` of rank `card (n i)` with local conditions, unramified
 outside the finite set `S₀` of places, on which `det(g - 1) ≠ 0` for `g = g₀, g₀^{-c}`, where
@@ -675,18 +686,21 @@ ties `z(γ_v) = (x v).2 i • z(φ_v)` between tame generator and Frobenius elem
 `v ∈ J` and their conjugates. For a datum `T`, `T.globalTerm` is the supremum over `a ≠ 0` of the
 lengths of `Hom_G(T / a, (T / a)^{*c})`, with `*c` the dual twisted by complex conjugation, and
 `T.placesTerm` is the sum, over the places of `T.places` prime to `ℓ`, of the supremum over
-`a ≠ 0` of the excess length of the local cocycles over `T / a`. -/
-theorem exists_isTiedPrimes_card_le_and_length_le [Finite ι]
-    (hg₀ : g₀ ∈ inertiaAbove (S₀ \ placesDividing E ℓ)) (M : ℕ)
-    (h_room : ∀ i : ι,
-      2 * Fintype.card (n i) * addVal O (ℓ ^ M) + 1 < Nat.card (ResidueField O))
-    {W : Set Gal(Ω/E)} (hW : W ∈ nhds g₀) :
-    ∃ s : ℕ, ∀ N > M, ∃ (P₀ : FinPlace E) (J : Finset (FinPlace E))
-      (x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)),
-      IsTiedPrimes ℓ S₀ (fun (i : ι) (g : Gal(Ω/E)) ↦ reduceModPow ℓ M (T i).ρ g = 1) W N P₀ J x ∧
-      #J ≤ s ∧
-      ∀ i : ι,
-        length O ((T i).tiedSelmer J J x i (ℓ ^ M)) ≤ (T i).globalTerm + (T i).placesTerm := by
+`a ≠ 0` of the excess length of the local cocycles over `T / a`.
+-/
+theorem exists_isTiedPrimes_card_le_and_length_le
+    [Finite ι]
+    (hg₀ : g₀ ∈ inertiaAbove (S₀ \ placesDividing E ℓ))
+    (M : ℕ)
+    (h_room : ∀ i : ι, 2 * Fintype.card (n i) * addVal O (ℓ ^ M) + 1 < Nat.card (ResidueField O))
+    {W : Set Gal(Ω/E)} (hW : W ∈ nhds g₀)
+    : ∃ s : ℕ, ∀ N > M,
+      ∃ (P₀ : FinPlace E) (J : Finset (FinPlace E))
+          (x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)),
+        IsTiedPrimes ℓ S₀ (fun (i : ι) (g : Gal(Ω/E)) ↦ reduceModPow ℓ M (T i).ρ g = 1) W N P₀ J x
+          ∧ #J ≤ s
+          ∧ ∀ i : ι,
+            length O ((T i).tiedSelmer J J x i (ℓ ^ M)) ≤ (T i).globalTerm + (T i).placesTerm := by
   let : Fintype ι := Fintype.ofFinite ι
   obtain ⟨ϖ, hϖ⟩ := exists_irreducible O
   obtain ⟨e, he⟩ : ∃ e : ℕ, Associated ((ℓ : O) ^ M) (ϖ ^ e) :=
@@ -697,8 +711,11 @@ theorem exists_isTiedPrimes_card_le_and_length_le [Finite ι]
   refine ⟨1 + b, fun N hN ↦ ?_⟩
   -- Start from the first prime alone, with slopes `0`, and descend.
   obtain ⟨P₀, l, hJ⟩ := exists_isTiedPrimes_singleton (O := O) hg₀ hW V N
-  obtain ⟨J, x, hJ', h_card, h_short⟩ := exists_isTiedPrimes_length_tiedSelmer_le T hϖ
-    (fun i ↦ mod_cast h_room i) (fun _ _ ↦ Iff.rfl) hN he.symm.dvd hJ
+  obtain ⟨J, x, hJ', h_card, h_short⟩ :=
+    exists_isTiedPrimes_length_tiedSelmer_le T hϖ
+      (fun i ↦ mod_cast h_room i)
+      (fun _ _ ↦ Iff.rfl)
+      hN he.symm.dvd hJ
   refine ⟨P₀, J, x, hJ', ?_, fun i ↦ ?_⟩
   · exact_mod_cast h_card.trans (add_le_add_right (hb hJ fun _ _ ↦ rfl) _)
   · -- The ideals `(ℓ ^ M)` and `(ϖ ^ e)` are equal.

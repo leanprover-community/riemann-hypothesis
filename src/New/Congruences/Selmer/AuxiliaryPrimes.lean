@@ -58,11 +58,13 @@ noncomputable section
 
 namespace New
 
-/-- The data at an auxiliary prime of a CM field `E` inside `Ω`, the algebraic closure of `ℚ`: a
+/--
+The data at an auxiliary prime of a CM field `E` inside `Ω`, the algebraic closure of `ℚ`: a
 place `place` of `Ω`, two elements `tameGenerator` and `frob` of `Gal(Ω/E)`, and a homomorphism
-`character` from `Gal(Ω/E)` to `ℤ/q`. -/
-structure Selmer.AuxPrimeData (E : Type*) [Field E]
-    [EmbeddedNumberField E] [NumberField.IsCMField E] (q : ℕ) where
+`character` from `Gal(Ω/E)` to `ℤ/q`.
+-/
+structure Selmer.AuxPrimeData
+    (E : Type*) [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E] (q : ℕ) where
   /-- A place of `Ω`, meant to lie over the auxiliary prime. -/
   place : ClosurePlace
   /-- The element meant to be the tame generator of inertia at `place`. -/
@@ -72,37 +74,49 @@ structure Selmer.AuxPrimeData (E : Type*) [Field E]
   /-- The character to `ℤ / q` attached to the prime. -/
   character : Gal(Ω/E) →* Multiplicative (ZMod q)
 
-/-- For auxiliary prime data `l`: `P ≠ P̄` has norm `≡ 1 mod q` and lies outside `T`, `l.frob` is a
+/--
+For auxiliary prime data `l`: `P ≠ P̄` has norm `≡ 1 mod q` and lies outside `T`, `l.frob` is a
 Frobenius and `l.tameGenerator` the chosen tame generator at the place `l.place` over `P`, and the
 character `l.character` to `ℤ/q` comes from an idele class character of level `P` (`New.IsFromU1`
-for `T` and `{P}`) and takes the value `1 ∈ ℤ/q` at `l.tameGenerator`. -/
-structure IsAuxPrimeDataAt {E : Type} [Field E]
-    [EmbeddedNumberField E] [NumberField.IsCMField E] (T : Set (FinPlace E))
-    (P : FinPlace E) {q : ℕ} (l : Selmer.AuxPrimeData E q) :
-      Prop extends IsFromU1 T {P} l.character where
+for `T` and `{P}`) and takes the value `1 ∈ ℤ/q` at `l.tameGenerator`.
+-/
+structure IsAuxPrimeDataAt
+    {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+    (T : Set (FinPlace E)) (P : FinPlace E)
+    {q : ℕ} (l : Selmer.AuxPrimeData E q)
+    : Prop
+    extends IsFromU1 T {P} l.character where
   /-- The norm of `P` is congruent to `1` modulo `q`. -/
   norm_modEq : P.q ≡ 1 [MOD q]
   /-- The valuation subring `l.place` of `Ω` lies over `P`. -/
   isPlaceOver : IsPlaceOver l.place P
-  /-- `l.frob` is an arithmetic Frobenius at `l.place`: it stabilises `l.place` and acts on residues
-  as the power `P.q`. -/
+  /--
+  `l.frob` is an arithmetic Frobenius at `l.place`: it stabilises `l.place` and acts on residues
+  as the power `P.q`.
+  -/
   isFrob : IsFrob l.place P.q l.frob
   /-- The prime `P` does not lie in `T`. -/
   notMem : P ∉ T
   /-- The prime `P` is not its own conjugate. -/
   star_ne : star P ≠ P
-  /-- `l.tameGenerator` lies in the inertia group of `l.place`, `l.character` sends it to
-  `1 ∈ ℤ/q`, and it is the chosen generator of tame inertia at `l.place`. -/
-  tame_gen :
-      l.tameGenerator ∈ inertiaGroup Gal(Ω/E) l.place ∧
-      l.character l.tameGenerator = Multiplicative.ofAdd 1 ∧
-      isPlaceOver.tameGenerator = l.tameGenerator
+  /--
+  `l.tameGenerator` lies in the inertia group of `l.place`, `l.character` sends it to
+  `1 ∈ ℤ/q`, and it is the chosen generator of tame inertia at `l.place`.
+  -/
+  tame_gen
+    : l.tameGenerator ∈ inertiaGroup Gal(Ω/E) l.place
+      ∧ l.character l.tameGenerator = Multiplicative.ofAdd 1
+      ∧ isPlaceOver.tameGenerator = l.tameGenerator
 
-/-- A finite set `I` of places is auxiliary for `S` if every place of `I` has prime norm, neither it
-nor its conjugate lies in `S`, and its conjugate lies outside `I`. -/
+/--
+A finite set `I` of places is auxiliary for `S` if every place of `I` has prime norm, neither it
+nor its conjugate lies in `S`, and its conjugate lies outside `I`.
+-/
 @[grind]
-def IsAuxiliary {E : Type*} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-    (S I : Finset (FinPlace E)) : Prop :=
+def IsAuxiliary
+    {E : Type*} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+    (S I : Finset (FinPlace E))
+    : Prop :=
   ∀ v ∈ I, v ∉ S ∧ v.q.Prime ∧ star v ∉ I ∧ star v ∉ S
 
 end New
@@ -409,58 +423,83 @@ open IsDiscreteValuationRing Module Fintype Matrix.Module
 
 open scoped Classical in
 /-- The set `S ∪ J ∪ J̄` of places, for finite sets `S` and `J`. -/
-@[grind] def unionWithConj {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-    (S J : Finset (FinPlace E)) :
-    Finset (FinPlace E) :=
+@[grind]
+def unionWithConj
+    {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+    (S J : Finset (FinPlace E))
+    : Finset (FinPlace E) :=
   S ∪ (J ∪ J.image star)
 
-/-- The character `g ↦ ∏ j, y j ^ h j g` of `G`, for characters `h j` to `ℤ/q` and `q`-th roots of
-unity `y j`. -/
-@[simps] def pointChar {G O σ : Type} [CommRing O] [Fintype σ] [Monoid G] {q : ℕ} [NeZero q]
-    (h : σ → G →* Multiplicative (ZMod q)) (y : σ → O) (hy : ∀ j : σ, y j ^ q = 1) : G →* O where
+/--
+The character `g ↦ ∏ j, y j ^ h j g` of `G`, for characters `h j` to `ℤ/q` and `q`-th roots of
+unity `y j`.
+-/
+@[simps]
+def pointChar
+    {G O σ : Type} [CommRing O] [Fintype σ] [Monoid G]
+    {q : ℕ} [NeZero q]
+    (h : σ → G →* Multiplicative (ZMod q))
+    (y : σ → O) (hy : ∀ j : σ, y j ^ q = 1)
+    : G →* O where
   toFun g := ∏ j : σ, y j ^ (h j g).toAdd.val
   map_one' := by simp
   map_mul' := by simp [ZMod.val_add, ← pow_eq_pow_mod, hy, pow_add, Finset.prod_mul_distrib]
 
 /-- The reduction of the matrix representation `ρ` modulo `l ^ M`. -/
-def reduceModPow {G O n : Type} [CommRing O] [Fintype n] [DecidableEq n] [Monoid G] (l M : ℕ)
-    (ρ : G →* Matrix n n O) : G →* Matrix n n (QuotSpan (l ^ M : O)) :=
+def reduceModPow
+    {G O n : Type} [CommRing O] [Fintype n] [DecidableEq n] [Monoid G]
+    (l M : ℕ) (ρ : G →* Matrix n n O)
+    : G →* Matrix n n (QuotSpan (l ^ M : O)) :=
   (algebraMap O (QuotSpan (l ^ M : O))).mapMatrix.toMonoidHom.comp ρ
 
 open scoped Classical in
-/-- A set of tied primes for the finite set `S₀` of places records the auxiliary primes chosen so
+/--
+A set of tied primes for the finite set `S₀` of places records the auxiliary primes chosen so
 far: a set `J` that consists of a first prime `P₀`, whose Frobenius element lies in `W`, and later
 primes. Each prime `v ∈ J` carries the data `(x v).1` (place, Frobenius element, tame generator,
 character to `ℤ / ℓ ^ N`) and a slope `(x v).2 i` for each datum `i`. One set `J` serves all data:
 the primes chosen for datum `i` are those with a nonzero slope, and there the Frobenius elements
-satisfy the given condition `U i` (typically: they act trivially on the datum `i`). -/
-structure IsTiedPrimes (ℓ : ℕ) {E ι O : Type} [Field E]
-    [EmbeddedNumberField E] [NumberField.IsCMField E] [CommRing O]
-    (S₀ : Finset (FinPlace E)) (U : ι → Gal(Ω/E) → Prop) (W : Set Gal(Ω/E)) (N : ℕ)
-    (P₀ : FinPlace E) (J : Finset (FinPlace E))
-    (x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)) : Prop where
+satisfy the given condition `U i` (typically: they act trivially on the datum `i`).
+-/
+structure IsTiedPrimes
+    (ℓ : ℕ)
+    {E ι O : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E] [CommRing O]
+    (S₀ : Finset (FinPlace E)) (U : ι → Gal(Ω/E) → Prop) (W : Set Gal(Ω/E))
+    (N : ℕ)
+    (P₀ : FinPlace E) (J : Finset (FinPlace E)) (x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O))
+    : Prop where
   /-- `J` is a set of auxiliary primes for `S₀`. -/
   auxiliary : IsAuxiliary S₀ J
   /-- The first prime `P₀` lies in `J`. -/
   first_mem : P₀ ∈ J
-  /-- At each `v ∈ J` the first component is a place over `v`, a Frobenius, the tame generator
-  and the character attached to them. -/
+  /--
+  At each `v ∈ J` the first component is a place over `v`, a Frobenius, the tame generator
+  and the character attached to them.
+  -/
   isAuxPrimeDataAt : ∀ v ∈ J, IsAuxPrimeDataAt (placesDividing E ℓ) v (x v).1
-  /-- For `v ≠ P₀` in `J`, the Frobenius at `v` has value `1` in `ℤ / ℓ ^ N` under the character of
-  `P₀` and value `0` under the characters of the other primes of `J`. -/
-  char_frob_eq_ite : ∀ v ∈ J, v ≠ P₀ → ∀ w ∈ J,
-    (x w).1.character (x v).1.frob = if w = P₀ then Multiplicative.ofAdd 1 else 1
+  /--
+  For `v ≠ P₀` in `J`, the Frobenius at `v` has value `1` in `ℤ / ℓ ^ N` under the character of
+  `P₀` and value `0` under the characters of the other primes of `J`.
+  -/
+  char_frob_eq_ite
+    : ∀ v ∈ J,
+      v ≠ P₀
+        → ∀ w ∈ J, (x w).1.character (x v).1.frob = if w = P₀ then Multiplicative.ofAdd 1 else 1
   /-- The Frobenius element of the first prime lies in `W`. -/
   first_frob_mem : (x P₀).1.frob ∈ W
   /-- The first prime has slope `0` for every datum. -/
   first_slope : (x P₀).2 = 0
-  /-- The primes of `S₀` and the later primes do not divide the norm of the first prime, so that the
-  Greenberg–Wiles count can choose its extra primes away from the first prime. -/
+  /--
+  The primes of `S₀` and the later primes do not divide the norm of the first prime, so that the
+  Greenberg–Wiles count can choose its extra primes away from the first prime.
+  -/
   notMem_placesDividing : ∀ v : FinPlace E, v ∈ S₀ ∨ v ∈ J ∧ v ≠ P₀ → v ∉ placesDividing E P₀.q
-  /-- Where the slope for datum `i` at `v` is not zero, `U i` holds at `φ_v = (x v).1.frob` and at
-  `φ_v^{-c}`. -/
-  frob_of_slope_ne_zero : ∀ v ∈ J, ∀ i : ι,
-    (x v).2 i ≠ 0 → U i (x v).1.frob ∧ U i (conjGal (x v).1.frob)⁻¹
+  /--
+  Where the slope for datum `i` at `v` is not zero, `U i` holds at `φ_v = (x v).1.frob` and at
+  `φ_v^{-c}`.
+  -/
+  frob_of_slope_ne_zero
+    : ∀ v ∈ J, ∀ i : ι, (x v).2 i ≠ 0 → U i (x v).1.frob ∧ U i (conjGal (x v).1.frob)⁻¹
 
 /-- If a tied prime has a nonzero slope, its Frobenius `φ_v` and the inverse `φ_v^{-c}` of its
 conjugate satisfy the chosen condition. -/
@@ -475,17 +514,21 @@ lemma IsTiedPrimes.apply_idOrConjInv_of_slope_ne_zero {ℓ : ℕ} {E ι O : Type
   cases b
   exacts [h_conj, h_frob]
 
-/-- The ties `z(γ_w) = s • z(φ_w)` of datum `i`, for `v ∈ J` with slope `s = (x v).2 i` and
+/--
+The ties `z(γ_w) = s • z(φ_w)` of datum `i`, for `v ∈ J` with slope `s = (x v).2 i` and
 `w = v, v̄`, as formal combinations of group elements with matrix coefficients, where
 `γ_v = (x v).1.tameGenerator` and `φ_v = (x v).1.frob`; at `v̄` the elements are `γ_v^{-c}` and
-`φ_v^{-c}`. -/
-def tieRelations {E ι O n : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-    [CommRing O] [DecidableEq n] {q : ℕ}
-    (J : Finset (FinPlace E)) (x : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι) :
-    Set (Gal(Ω/E) →₀ Matrix n n O) :=
+`φ_v^{-c}`.
+-/
+def tieRelations
+    {E ι O n : Type}
+    [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E] [CommRing O] [DecidableEq n]
+    {q : ℕ}
+    (J : Finset (FinPlace E)) (x : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι)
+    : Set (Gal(Ω/E) →₀ Matrix n n O) :=
   Set.range fun p : J × Bool ↦
-    Finsupp.single (idOrConjInv p.2 (x p.1).1.tameGenerator) 1 -
-      Finsupp.single (idOrConjInv p.2 (x p.1).1.frob) ((x p.1).2 i • 1)
+    Finsupp.single (idOrConjInv p.2 (x p.1).1.tameGenerator) 1
+      - Finsupp.single (idOrConjInv p.2 (x p.1).1.frob) ((x p.1).2 i • 1)
 
 /-- If `τ` is inertial at a place over `P` and `S` contains `P` and its conjugate, then `τ` and
 `τ^{-c}` (the two values of `New.idOrConjInv b τ`) lie in inertia groups above `S`. -/

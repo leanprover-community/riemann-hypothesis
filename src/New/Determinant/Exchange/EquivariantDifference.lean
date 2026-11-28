@@ -42,19 +42,23 @@ namespace New.Exchange
 
 open RingHom Matrix Pi WeilData SemilocalField Fintype SplitTameChar GeneralLinearGroup
 
-variable {E : Type} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
   {n a b : Type} [Fintype n] [DecidableEq n] [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
-  {s : n → ℤˣ} {t : a → ℤˣ} {t' : b → ℤˣ} {μ : NumberField.InfinitePlace E → ℤ} (W : Space E n s)
-  (V : Space E a t) (V' : Space E b t') (𝔠 : SplitTameChar E μ)
+  {s : n → ℤˣ} {t : a → ℤˣ} {t' : b → ℤˣ} {μ : NumberField.InfinitePlace E → ℤ}
+  (W : Space E n s) (V : Space E a t) (V' : Space E b t') (𝔠 : SplitTameChar E μ)
 
-/-- The small side: the theta integral over `U(V)`, as a function on `U(W)`, of the datum with real
+/--
+The small side: the theta integral over `U(V)`, as a function on `U(W)`, of the datum with real
 part `v` and component `y ↦ Ψ yᵀ`, read in the model at the conjugates of the ramified places of
 `𝔠`. The two characters of `U(1)` are `ν υ ^ ⌊rk W / 2⌋` (`rankTwist`) and `υ ^ rk V`, where
 `ν = 𝔠.character`. Here `υ` is the splitting character of the Weil data, restricted to the norm-one
-ideles (`upsilonU1`). In the exchange identity it is applied to the space `V'`. -/
+ideles (`upsilonU1`). In the exchange identity it is applied to the space `V'`.
+-/
 noncomputable abbrev thetaSmall
     (v : (Fock.isVacuum_realVac (ε := realSigns E (homSigns s t))).Model)
-    (Ψ : Matrix n a (LocProd 𝔠.ramifiedPlaces) → ℂ) : G E s → ℂ :=
+    (Ψ : Matrix n a (LocProd 𝔠.ramifiedPlaces) → ℂ)
+    : G E s → ℂ :=
   thetaIntegral W V (rankTwist 𝔠.character n) (upsilonU1 ^ card a)
     (localDatum W V v (fun y : Matrix a n (LocProd 𝔠.ramifiedPlaces) ↦ Ψ yᵀ) 𝔠.readsAt.star)
 

@@ -47,8 +47,10 @@ namespace New.Floors
 
 open Matrix MeasureTheory Measure ProbabilityTheory ENNReal Fintype Set Sum Function FloorGroups
 
-variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  {B κ : Type} [Fintype B] [Fintype κ] {S : Set A} {M : ℝ≥0∞}
+variable
+  {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  {B κ : Type} [Fintype B] [Fintype κ]
+  {S : Set A} {M : ℝ≥0∞}
 
 /-- The vectors with all coordinates in S. -/
 abbrev coordinateBox (κ : Type) (S : Set A) : Set (κ → A) := {x : κ → A | ∀ i : κ, x i ∈ S}
@@ -87,14 +89,16 @@ lemma measurePreserving_sumElim_comp_symm {η : Type} [Fintype η] (e : η ⊕ B
 
 namespace Place
 
-/-- The measure ρ on A^κ is solved in the block of coordinates `blk`: it is the volume in the other
+/--
+The measure ρ on A^κ is solved in the block of coordinates `blk`: it is the volume in the other
 coordinates w times measures ζ(w) in the coordinates of the block. The ζ(w) form an s-finite kernel,
-and each gives mass at most M to the box of S, the vectors with all coordinates in S. -/
+and each gives mass at most M to the box of S, the vectors with all coordinates in S.
+-/
 def IsSolvedIn (blk : B → κ) (ρ : Measure (κ → A)) (S : Set A) (M : ℝ≥0∞) : Prop :=
   ∃ (η : Type) (_ : Fintype η) (e : η ⊕ B ≃ κ) (ζ : Kernel (η → A) (B → A)),
-    e ∘ inr = blk ∧ IsSFiniteKernel ζ ∧
-    MeasurePreserving (fun p : (η → A) × (B → A) ↦ (p.1 ⊕ᵥ p.2) ∘ e.symm) (volume ⊗ₘ ζ) ρ ∧
-    ∀ w : η → A, ζ w (coordinateBox B S) ≤ M
+    e ∘ inr = blk ∧ IsSFiniteKernel ζ
+      ∧ MeasurePreserving (fun p : (η → A) × (B → A) ↦ (p.1 ⊕ᵥ p.2) ∘ e.symm) (volume ⊗ₘ ζ) ρ
+      ∧ ∀ w : η → A, ζ w (coordinateBox B S) ≤ M
 
 /-- The volume is solved in any block: it is the volume in the other coordinates times the volume in
 the coordinates of the block. Any bound M for the volume of the box of S in A^B may be taken. -/
@@ -107,8 +111,10 @@ lemma isSolvedIn_volume {blk : B → κ} (h_inj : Injective blk) (hM : volume S 
     exact measurePreserving_sumElim_comp_symm e
   · rwa [Kernel.const_apply, volume_coordinateBox]
 
-/-- The index of the quadric h(x, x) = r: the skew element τδr − star (τδr), with τ of trace one and
-δ the skew unit of the place. It is δr if r is hermitian. -/
+/--
+The index of the quadric h(x, x) = r: the skew element τδr − star (τδr), with τ of trace one and
+δ the skew unit of the place. It is δr if r is hermitian.
+-/
 def quadricIndex (r : A) : skewAdjoint A := skewPart (P.element * P.skewUnit * r)
 
 /-- The index of the quadric h(x, x) = r is a measurable function of r. -/
@@ -137,26 +143,29 @@ lemma IsDisintegration.lintegral_quadricIndex {μ : Measure (κ → A)} {J : Mat
   simpa only [h_index] using
     hl.lintegral_eq (fun p : A × (κ → A) ↦ G (quadricIndex p.1, p.2)) (by fun_prop)
 
-/-- Let the s-finite kernels l and l' disintegrate μ and μ' along the forms J and J', so that l(b)
+/--
+Let the s-finite kernels l and l' disintegrate μ and μ' along the forms J and J', so that l(b)
 lives on the vectors whose value under the form has index b (`quadricIndex`). On the quadric of
 index β of the sum of the forms, one may let the first vector run freely and solve for the second,
-or the reverse: the two iterated integrals agree. -/
-theorem IsDisintegration.lintegral_lintegral_comm {μ : Measure (κ → A)} {μ' : Measure (B → A)}
-    {J : Matrix κ κ A} {J' : Matrix B B A} {l : Kernel (skewAdjoint A) (κ → A)}
-    {l' : Kernel (skewAdjoint A) (B → A)} [IsSFiniteKernel l] [IsSFiniteKernel l']
+or the reverse: the two iterated integrals agree.
+-/
+theorem IsDisintegration.lintegral_lintegral_comm
+    {μ : Measure (κ → A)} {μ' : Measure (B → A)} {J : Matrix κ κ A} {J' : Matrix B B A}
+    {l : Kernel (skewAdjoint A) (κ → A)} {l' : Kernel (skewAdjoint A) (B → A)}
+    [IsSFiniteKernel l] [IsSFiniteKernel l']
     (hl : IsDisintegration μ J l) (hl' : IsDisintegration μ' J' l') (β : skewAdjoint A)
-    {f : (κ → A) × (B → A) → ℝ≥0∞} (hf : Measurable f) :
-    ∫⁻ y : κ → A, ∫⁻ z : B → A, f (y, z) ∂l' (β - quadricIndex (star y ⬝ᵥ J *ᵥ y)) ∂μ =
-      ∫⁻ z : B → A, ∫⁻ y : κ → A, f (y, z) ∂l (β - quadricIndex (star z ⬝ᵥ J' *ᵥ z)) ∂μ' := by
+    {f : (κ → A) × (B → A) → ℝ≥0∞} (hf : Measurable f)
+    : ∫⁻ y : κ → A, ∫⁻ z : B → A, f (y, z) ∂l' (β - quadricIndex (star y ⬝ᵥ J *ᵥ y)) ∂μ
+      = ∫⁻ z : B → A, ∫⁻ y : κ → A, f (y, z) ∂l (β - quadricIndex (star z ⬝ᵥ J' *ᵥ z)) ∂μ' := by
   let k : Kernel (skewAdjoint A × (κ → A)) (B → A) :=
     l'.comap (fun p : skewAdjoint A × (κ → A) ↦ β - p.1) (by fun_prop)
   let k' : Kernel (skewAdjoint A × (B → A)) (κ → A) :=
     l.comap (fun p : skewAdjoint A × (B → A) ↦ β - p.1) (by fun_prop)
-  have h_meas : Measurable fun p : skewAdjoint A × (κ → A) ↦
-      ∫⁻ z : B → A, f (p.2, z) ∂l' (β - p.1) :=
+  have h_meas
+      : Measurable fun p : skewAdjoint A × (κ → A) ↦ ∫⁻ z : B → A, f (p.2, z) ∂l' (β - p.1) :=
     Measurable.lintegral_kernel_prod_right (κ := k) (by fun_prop)
-  have h_meas' : Measurable fun p : skewAdjoint A × (B → A) ↦
-      ∫⁻ y : κ → A, f (y, p.2) ∂l (β - p.1) :=
+  have h_meas'
+      : Measurable fun p : skewAdjoint A × (B → A) ↦ ∫⁻ y : κ → A, f (y, p.2) ∂l (β - p.1) :=
     Measurable.lintegral_kernel_prod_right (κ := k') (by fun_prop)
   calc
     _ = ∫⁻ b : skewAdjoint A, ∫⁻ y : κ → A, ∫⁻ z : B → A, f (y, z) ∂l' (β - b) ∂l b ∂skewMeasure :=
@@ -220,20 +229,25 @@ lemma measurePreserving_join_coordinates {κ₂ : Type} [Fintype κ₂] (e : κ�
     (volume_preserving_prodAssoc.comp measurePreserving_swap)).prod (.id skewMeasure)).comp
     ((measurePreserving_prodAssoc volume volume skewMeasure).symm _)
 
-/-- Let the measures l(b) on A^B, for skew b, disintegrate the volume along x ↦ x*x, so l(b) is the
+/--
+Let the measures l(b) on A^B, for skew b, disintegrate the volume along x ↦ x*x, so l(b) is the
 fibre measure on x*x = δ⁻¹b with δ the skew unit of the place, and let each give mass at most M to
 the box of S (vectors with all coordinates in S). For a hermitian form T on A^κ, let `blk` inject B
 into indices whose rows of T are those of the identity. Then `quadricMeasure T β`, the fibre measure
 dv / dh(v, v) on the quadric h(v, v) = δ⁻¹β with h a hyperbolic plane plus T, is solved in this
 block: it is the volume in the other coordinates times an s-finite kernel of block measures, each of
-mass at most M on the box. -/
-theorem IsDisintegration.isSolvedIn_quadricMeasure [DecidableEq B] [DecidableEq κ]
+mass at most M on the box.
+-/
+theorem IsDisintegration.isSolvedIn_quadricMeasure
+    [DecidableEq B] [DecidableEq κ]
     {l : Kernel (skewAdjoint A) (B → A)} [IsSFiniteKernel l]
     (hl : IsDisintegration volume (1 : Matrix B B A) l)
-    (h_mass : ∀ b : skewAdjoint A, l b (coordinateBox B S) ≤ M) {T : Matrix κ κ A} (hT : Tᴴ = T)
-    {blk : B → κ} (h_inj : Injective blk)
-    (h_orth : ∀ (i : B) (k : κ), T (blk i) k = (1 : Matrix κ κ A) (blk i) k) (β : skewAdjoint A) :
-    IsSolvedIn (inr ∘ blk) (quadricMeasure T β) S M := by
+    (h_mass : ∀ b : skewAdjoint A, l b (coordinateBox B S) ≤ M)
+    {T : Matrix κ κ A} (hT : Tᴴ = T)
+    {blk : B → κ}
+    (h_inj : Injective blk) (h_orth : ∀ (i : B) (k : κ), T (blk i) k = (1 : Matrix κ κ A) (blk i) k)
+    (β : skewAdjoint A)
+    : IsSolvedIn (inr ∘ blk) (quadricMeasure T β) S M := by
   -- Split `T` as `T₂` plus the block. In `flatChart` the part `z` in the block is free, and the
   -- rest lies on a quadric of the plane plus `T₂`. Exchange the roles of the two parts.
   classical
@@ -245,12 +259,13 @@ theorem IsDisintegration.isSolvedIn_quadricMeasure [DecidableEq B] [DecidableEq 
   let ε : (Fin 2 ⊕ κ₂) ⊕ B ≃ Fin 2 ⊕ κ := (Equiv.sumAssoc ..).trans (.sumCongr (.refl _) e)
   let join (p : (Fin 2 ⊕ κ₂ → A) × (B → A)) : Fin 2 ⊕ κ → A := (p.1 ⊕ᵥ p.2) ∘ ε.symm
   have h_join : Measurable join := (measurePreserving_sumElim_comp_symm ε).measurable
-  have h_chart (t : A) (w : κ₂ → A) (z : B → A) (a : skewAdjoint A) :
-      flatChart T β ((t, (w ⊕ᵥ z) ∘ e.symm), a) =
-        join (flatChart T₂ (β - quadricIndex (star z ⬝ᵥ 1 *ᵥ z)) ((t, w), a), z) :=
+  have h_chart (t : A) (w : κ₂ → A) (z : B → A) (a : skewAdjoint A)
+      : flatChart T β ((t, (w ⊕ᵥ z) ∘ e.symm), a)
+        = join (flatChart T₂ (β - quadricIndex (star z ⬝ᵥ 1 *ᵥ z)) ((t, w), a), z) :=
     flatChart_sumElim_comp_symm h_split β t w z a
-  obtain ⟨q, _, hq⟩ : ∃ q : Kernel (skewAdjoint A) (Fin 2 ⊕ κ₂ → A), IsSFiniteKernel q ∧
-      ∀ b : skewAdjoint A, q b = quadricMeasure T₂ b :=
+  obtain ⟨q, _, hq⟩
+      : ∃ q : Kernel (skewAdjoint A) (Fin 2 ⊕ κ₂ → A),
+        IsSFiniteKernel q ∧ ∀ b : skewAdjoint A, q b = quadricMeasure T₂ b :=
     exists_kernel_eq_map (volume.prod skewMeasure) (measurable_flatChart (T := T₂))
   have h_dis : IsDisintegration volume (planeSumGram T₂) q := by
     rw [funext hq]
@@ -262,8 +277,8 @@ theorem IsDisintegration.isSolvedIn_quadricMeasure [DecidableEq B] [DecidableEq 
     -- Join `z` in the block and `w` outside it to one vector of A^κ.
     let coords (p : (B → A) × (A × (κ₂ → A)) × skewAdjoint A) : (A × (κ → A)) × skewAdjoint A :=
       ((p.2.1.1, (p.2.1.2 ⊕ᵥ p.1) ∘ e.symm), p.2.2)
-    have h_coords : MeasurePreserving coords
-        (volume.prod (volume.prod skewMeasure)) (volume.prod skewMeasure) :=
+    have h_coords : MeasurePreserving coords (volume.prod (volume.prod skewMeasure))
+        (volume.prod skewMeasure) :=
       measurePreserving_join_coordinates e
     have h_meas : Measurable fun x : (A × (κ → A)) × skewAdjoint A ↦ f (flatChart T β x) := by
       fun_prop

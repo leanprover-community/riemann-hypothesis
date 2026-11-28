@@ -98,40 +98,49 @@ lemma det_sum_smul_X (τ : Φ) {h : ℕ} (c : Matrix (Fin h) (n τ) R) :
       Function.comp_def]
 
 variable (n κ) in
-/-- The index set of the basis tensors for the diagram with `κ τ h` columns of height `h` at `τ`,
+/--
+The index set of the basis tensors for the diagram with `κ τ h` columns of height `h` at `τ`,
 for the heights below the rank `rankAt n τ`, the number of elements of `n τ`: an increasing sequence
-of `h` row numbers for each column. -/
+of `h` row numbers for each column.
+-/
 abbrev ColumnFilling : Type :=
   ∀ (τ : Φ) (h : Fin (rankAt n τ)), Fin (κ τ h) → IncreasingMap (rankAt n τ) h
 
-/-- The tableau of a column filling at `τ`, with row numbers read as rows through `rowEquivFin n τ`,
-the numbering of `n τ` by `Fin (rankAt n τ)`. -/
+/--
+The tableau of a column filling at `τ`, with row numbers read as rows through `rowEquivFin n τ`,
+the numbering of `n τ` by `Fin (rankAt n τ)`.
+-/
 def fillingRows (T : ColumnFilling n κ) (τ : Φ) : Tableau (n τ) (rankAt n τ) (κ τ) :=
   fun (h : Fin (rankAt n τ)) (j : Fin (κ τ h)) (s : Fin h) ↦ (rowEquivFin n τ).symm ((T τ h j).1 s)
 
 variable [Fintype Φ]
 
 variable (R) in
-/-- The product of the minors of the variables on the columns of a filling: a column of height `h`
-gives the minor with the rows of its entries and the first `h` columns of variables. -/
+/--
+The product of the minors of the variables on the columns of a filling: a column of height `h`
+gives the minor with the rows of its entries and the first `h` columns of variables.
+-/
 def fillingPoly (T : ColumnFilling n κ) : MatrixPoly (Σ τ : Φ, n τ) R :=
   ∏ τ : Φ, tableauPoly R (Sigma.mk τ) (fillingRows T τ)
 
 variable (κ) in
-/-- The matrix by which `z` acts on tensors: the entry at `(T, T')` is the product, over the
+/--
+The matrix by which `z` acts on tensors: the entry at `(T, T')` is the product, over the
 columns of the diagram, of the minor of `z τ` with rows from `T` and columns from `T'`, where `τ`
-is the place of the column. -/
-def minorsMatrix (z : ∀ τ : Φ, Matrix (n τ) (n τ) R) :
-    Matrix (ColumnFilling n κ) (ColumnFilling n κ) R :=
-  of fun T T' : ColumnFilling n κ ↦ ∏ τ : Φ, ∏ h : Fin (rankAt n τ), ∏ j : Fin (κ τ h),
-    ((z τ).submatrix (fillingRows T τ h j) (fillingRows T' τ h j)).det
+is the place of the column.
+-/
+def minorsMatrix (z : ∀ τ : Φ, Matrix (n τ) (n τ) R)
+    : Matrix (ColumnFilling n κ) (ColumnFilling n κ) R :=
+  of fun T T' : ColumnFilling n κ ↦
+    ∏ τ : Φ, ∏ h : Fin (rankAt n τ), ∏ j : Fin (κ τ h),
+      ((z τ).submatrix (fillingRows T τ h j) (fillingRows T' τ h j)).det
 
 end Tensors
 
 section Action
 
-variable {Φ R : Type} [CommRing R] {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] {κ : Φ → ℕ → ℕ}
-  [Fintype Φ]
+variable
+  {Φ R : Type} [CommRing R] {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] {κ : Φ → ℕ → ℕ} [Fintype Φ]
 
 /-- The action `minorsMatrix` of transposed matrices on tensors is the transpose of the action. -/
 lemma minorsMatrix_transpose (z : ∀ τ : Φ, Matrix (n τ) (n τ) R) :
@@ -178,12 +187,16 @@ end Action
 
 section Embedding
 
-variable {Φ R : Type} [CommRing R] {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] {κ : Φ → ℕ → ℕ}
-  [Fintype Φ] [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)]
+variable
+  {Φ R : Type} [CommRing R]
+  {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)]
+  {κ : Φ → ℕ → ℕ} [Fintype Φ] [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)]
 
 variable (n κ) in
-/-- The integral matrix of the embedding of the Weyl module into tensors: row `T` holds the
-coordinates, in the standard basis, of the product of minors of `T`. -/
+/--
+The integral matrix of the embedding of the Weyl module into tensors: row `T` holds the
+coordinates, in the standard basis, of the product of minors of `T`.
+-/
 def fillingMatrix : Matrix (ColumnFilling n κ) (WeylIndexFamily n κ) ℤ :=
   of fun T : ColumnFilling n κ ↦ invFun (nablaCombination (R := ℤ) κ) (fillingPoly ℤ T)
 

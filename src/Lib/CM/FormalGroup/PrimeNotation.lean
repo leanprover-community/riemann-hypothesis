@@ -79,8 +79,10 @@ instance (d p : ℕ) [Fact d.Prime] [Fact p.Prime] : NeZero (primeNorm d p - 1) 
 
 /-! ### The numbers `v(π_p)`, `ρ_p` and `γ_p` -/
 
-/-- The valuation `v(π_p)` of the number `π_p = piPrime d p`, with `v(p) = 1`: it is `1 / 2` if
-`p = d`, and `1` otherwise (see `New.norm_piPrime`). -/
+/--
+The valuation `v(π_p)` of the number `π_p = piPrime d p`, with `v(p) = 1`: it is `1 / 2` if
+`p = d`, and `1` otherwise (see `New.norm_piPrime`).
+-/
 noncomputable def piPrimeValuation (d p : ℕ) : ℝ := if p = d then 1 / 2 else 1
 
 lemma piPrimeValuation_self (d : ℕ) : piPrimeValuation d d = 1 / 2 := ite_eq_left rfl
@@ -104,9 +106,11 @@ lemma chiK_self (d : ℕ) [Fact d.Prime] : chiK d d = 0 := by
 lemma ne_of_chiK_ne_zero {d p : ℕ} [Fact d.Prime] (hp : chiK d p ≠ 0) : p ≠ d :=
   fun h ↦ hp (by rw [h, chiK_self])
 
-/-- The number `ρ_p = v(π_p) / (q_p - 1)`, where `v(π_p) = piPrimeValuation d p` and
+/--
+The number `ρ_p = v(π_p) / (q_p - 1)`, where `v(π_p) = piPrimeValuation d p` and
 `q_p = primeNorm d p`. For primes `p` and `d ≡ 7 mod 8` it is `1 / (p - 1)`, `1 / (p² - 1)`,
-`1 / (2 p - 2)` when `p` is split, inert, ramified in `ℚ(√-d)`. -/
+`1 / (2 p - 2)` when `p` is split, inert, ramified in `ℚ(√-d)`.
+-/
 noncomputable def varpiValuation (d p : ℕ) [Fact d.Prime] : ℝ :=
   piPrimeValuation d p / (primeNorm d p - 1)
 
@@ -133,9 +137,11 @@ lemma varpiValuation_le_one_div_sub_one (d p : ℕ) [Fact d.Prime] [Fact p.Prime
   exact div_le_div₀ zero_le_one (piPrimeValuation_le_one d p)
     (sub_pos.2 (mod_cast (Fact.out : p.Prime).one_lt)) (sub_le_sub_right (mod_cast h_le) 1)
 
-/-- The number `γ_p = 1 / (p - 1) - ρ_p`, where `ρ_p = varpiValuation d p`. For primes `p` and
+/--
+The number `γ_p = 1 / (p - 1) - ρ_p`, where `ρ_p = varpiValuation d p`. For primes `p` and
 `d ≡ 7 mod 8` it is `0`, `p / (p² - 1)`, `1 / (2 p - 2)` when `p` is split, inert, ramified in
-`ℚ(√-d)`. -/
+`ℚ(√-d)`.
+-/
 noncomputable def gammaPrime (d p : ℕ) [Fact d.Prime] : ℝ := 1 / (p - 1) - varpiValuation d p
 
 lemma gammaPrime_of_split {d p : ℕ} [Fact d.Prime] (h_split : chiK d p = 1) :
@@ -165,14 +171,18 @@ lemma gammaPrime_le_one (d p : ℕ) [Fact d.Prime] [Fact p.Prime] : gammaPrime d
 
 /-! ### The sets `I_p°` and `I_p` of exponents -/
 
-/-- The set `I_p°` of exponents at a prime `p`: the odd numbers if the Legendre symbol `chiK d p` is
+/--
+The set `I_p°` of exponents at a prime `p`: the odd numbers if the Legendre symbol `chiK d p` is
 `-1`, all numbers if `p = d`, and none otherwise; for `d ≡ 7 mod 8` these cases are `p` inert,
 ramified, split in `ℚ(√-d)`. The partners of an infinite place `τ` are the places `-p ^ e τ`
-(`New.Parameters.partner`) with `e` in this set. -/
+(`New.Parameters.partner`) with `e` in this set.
+-/
 def partnerExponents (d p : ℕ) [Fact d.Prime] : Set ℕ := {e : ℕ | p = d ∨ chiK d p = -1 ∧ Odd e}
 
-/-- The set `I_p` of the positive elements of `I_p° = partnerExponents d p`: the odd numbers if
-`chiK d p = -1`, all positive numbers if `p = d`, and none otherwise. -/
+/--
+The set `I_p` of the positive elements of `I_p° = partnerExponents d p`: the odd numbers if
+`chiK d p = -1`, all positive numbers if `p = d`, and none otherwise.
+-/
 def positivePartnerExponents (d p : ℕ) [Fact d.Prime] : Set ℕ :=
   {e : ℕ | 0 < e ∧ e ∈ partnerExponents d p}
 
@@ -185,9 +195,9 @@ lemma mem_positivePartnerExponents {d p e : ℕ} [Fact d.Prime] :
 noncomputable instance (d p : ℕ) [Fact d.Prime] : DecidablePred (· ∈ partnerExponents d p) :=
   fun _ ↦ decidable_of_iff _ mem_partnerExponents.symm
 
-noncomputable instance (d p : ℕ) [Fact d.Prime] :
-    DecidablePred (· ∈ positivePartnerExponents d p) :=
-  fun _ ↦ decidable_of_iff _ mem_positivePartnerExponents.symm
+noncomputable instance (d p : ℕ) [Fact d.Prime]
+    : DecidablePred (· ∈ positivePartnerExponents d p) := fun _ ↦
+  decidable_of_iff _ mem_positivePartnerExponents.symm
 
 lemma chiK_ne_one_of_mem_partnerExponents {d p e : ℕ} [Fact d.Prime]
     (he : e ∈ partnerExponents d p) : chiK d p ≠ 1 := by
@@ -323,10 +333,13 @@ lemma norm_piPrime_eq_rpow_pow (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact 
       div_mul_cancel₀ _ (sub_pos.2 hq).ne']
   rw [norm_piPrime, ← Real.rpow_mul_natCast p.cast_nonneg, h_exponent]
 
-/-- The image `ιₚ π_p` of the number `π_p` in the ring of integers of `ℂ_p`, for the `p`-adic
-place that is given by the instance `PadicPlace p`. -/
-noncomputable def piPrimeInt (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact p.Prime]
-    [PadicPlace p] : valRingCp p := ⟨ιₚ (piPrime d p), (norm_piPrime_lt_one d).le⟩
+/--
+The image `ιₚ π_p` of the number `π_p` in the ring of integers of `ℂ_p`, for the `p`-adic
+place that is given by the instance `PadicPlace p`.
+-/
+noncomputable def piPrimeInt (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] [PadicPlace p]
+    : valRingCp p :=
+  ⟨ιₚ (piPrime d p), (norm_piPrime_lt_one d).le⟩
 
 lemma coe_piPrimeInt (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] [PadicPlace p] :
     (piPrimeInt d : ℂ_[p]) = ιₚ (piPrime d p) := rfl

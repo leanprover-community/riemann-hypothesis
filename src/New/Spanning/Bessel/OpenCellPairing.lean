@@ -59,14 +59,17 @@ namespace New.BesselSystem
 
 variable {ι : Type} [Fintype ι] {𝔰 : Shape} {b : ℝ} {f : ℕ}
 
-/-- The matrix of the operator `W (γ z) ⊗ W (z)^*`, as a vector with the Hilbert–Schmidt norm. Here
+/--
+The matrix of the operator `W (γ z) ⊗ W (z)^*`, as a vector with the Hilbert–Schmidt norm. Here
 `W` is the tensor product, over a finite family `X` of Bessel systems, of the Bessel functions
 (`σ = .full`) or of their cuts (`σ = .cut`). The adjoint of `piKernel X σ γ⁻¹ y` is
-`pairKernel X σ γ y`. -/
-noncomputable def piKernel (X : ι → BesselSystem 𝔰 b f) (σ : FullOrCut) (γ z : ι → 𝔰.G₁) :
-    EuclideanSpace ℂ (((v : ι) → (X v).Index) × ((v : ι) → (X v).Index)) :=
-  WithLp.toLp 2 fun i ↦ ∏ v : ι, (X v).besselFn σ (γ v * z v) (i.1 v) * conj
-    ((X v).besselFn σ (z v) (i.2 v))
+`pairKernel X σ γ y`.
+-/
+noncomputable def piKernel (X : ι → BesselSystem 𝔰 b f) (σ : FullOrCut) (γ z : ι → 𝔰.G₁)
+    : EuclideanSpace ℂ (((v : ι) → (X v).Index) × ((v : ι) → (X v).Index)) :=
+  WithLp.toLp 2 fun i ↦
+    ∏ v : ι, (X v).besselFn σ (γ v * z v) (i.1 v) * conj
+      ((X v).besselFn σ (z v) (i.2 v))
 
 lemma continuous_piKernel (X : ι → BesselSystem 𝔰 b f) (σ : FullOrCut) (γ : ι → 𝔰.G₁) :
     Continuous (piKernel X σ γ) := by
@@ -223,19 +226,24 @@ lemma hasCompactSupport_and_enorm_integral_piKernel_le (X : ι → BesselSystem 
         rw [h_translate, integral_sub (h_int .full) (h_int .cut), _root_.sub_sub_cancel]
       _ ≤ _ := eNorm_sub_le.trans (add_le_add h_full h_diff)
 
-/-- The matrix of the operator `W (y) ⊗ W (γ⁻¹ y)^*`, as a vector with the Hilbert–Schmidt norm.
+/--
+The matrix of the operator `W (y) ⊗ W (γ⁻¹ y)^*`, as a vector with the Hilbert–Schmidt norm.
 Here `W` is the tensor product, over a finite family `X` of Bessel systems, of the Bessel functions
 (`σ = .full`) or of their cuts (`σ = .cut`). It is the adjoint of `piKernel X σ γ⁻¹ y`, the matrix
-of `W (γ⁻¹ y) ⊗ W (y)^*`. -/
-noncomputable def pairKernel (X : ι → BesselSystem 𝔰 b f) (σ : FullOrCut) (γ y : ι → 𝔰.G₁) :
-    EuclideanSpace ℂ (((v : ι) → (X v).Index) × ((v : ι) → (X v).Index)) :=
-  WithLp.toLp 2 fun i ↦ ∏ v : ι, (X v).besselFn σ (y v) (i.1 v) * conj
-    ((X v).besselFn σ ((γ v)⁻¹ * y v) (i.2 v))
+of `W (γ⁻¹ y) ⊗ W (y)^*`.
+-/
+noncomputable def pairKernel (X : ι → BesselSystem 𝔰 b f) (σ : FullOrCut) (γ y : ι → 𝔰.G₁)
+    : EuclideanSpace ℂ (((v : ι) → (X v).Index) × ((v : ι) → (X v).Index)) :=
+  WithLp.toLp 2 fun i ↦
+    ∏ v : ι, (X v).besselFn σ (y v) (i.1 v) * conj
+      ((X v).besselFn σ ((γ v)⁻¹ * y v) (i.2 v))
 
-/-- The passage to the adjoint (conjugate transpose) of a complex matrix indexed by `I × I`, a real
-linear isometry for the Hilbert–Schmidt norm. -/
-noncomputable def adjointIsometry (I : Type) [Fintype I] :
-    EuclideanSpace ℂ (I × I) →ₗᵢ[ℝ] EuclideanSpace ℂ (I × I) where
+/--
+The passage to the adjoint (conjugate transpose) of a complex matrix indexed by `I × I`, a real
+linear isometry for the Hilbert–Schmidt norm.
+-/
+noncomputable def adjointIsometry (I : Type) [Fintype I]
+    : EuclideanSpace ℂ (I × I) →ₗᵢ[ℝ] EuclideanSpace ℂ (I × I) where
   toFun x := WithLp.toLp 2 fun i ↦ conj (x i.swap)
   map_add' x x' := by ext; simp
   map_smul' r x := by ext; simp
@@ -243,7 +251,8 @@ noncomputable def adjointIsometry (I : Type) [Fintype I] :
     simpa [EuclideanSpace.norm_eq] using
       congrArg (√·) ((Equiv.prodComm I I).sum_comp fun i ↦ ‖x i‖ ^ 2)
 
-/-- **One pairing.** Let `X v` be Bessel systems with size parameter `b`, one for each place `v`,
+/--
+**One pairing.** Let `X v` be Bessel systems with size parameter `b`, one for each place `v`,
 and `W`, `W♭` the tensor products of their Bessel functions and of their cuts. Let the frame Gram
 matrix of each `γ v` have `0 < gramDiscReal`, and let some `y'` have both `y' v` and
 `(γ v)⁻¹ * y' v` in `frameBox (ρ v)`, where `b ^ (6 n + 2) ≤ ρ v` and `n = 𝔰.n` is the number of
@@ -252,39 +261,44 @@ vectors in the frame. Let `φ` be measurable, of modulus at most `1`, left invar
 `pairKernel X .cut γ`, the matrix of `W♭ (y) ⊗ W♭ (γ⁻¹ y)^*`, vanishes unless `y` lies in the boxes.
 Then this product has compact support, and the Hilbert–Schmidt norm of its integral is at most the
 root of the product of the local bounds `pairingBoundSq`, plus the integral of `‖φ‖` times the norm
-of the difference of the uncut kernel `W (y) ⊗ W (γ⁻¹ y)^*` and the cut kernel. -/
-theorem enorm_integral_pairKernel_cut_le (X : ι → BesselSystem 𝔰 b f)
+of the difference of the uncut kernel `W (y) ⊗ W (γ⁻¹ y)^*` and the cut kernel.
+-/
+theorem enorm_integral_pairKernel_cut_le
+    (X : ι → BesselSystem 𝔰 b f)
     {γ y' : ι → 𝔰.G₁} {ρ : ι → ℝ} (h_disc : ∀ v : ι, 0 < gramDiscReal (realFrameGram (γ v)))
     (hy_box : ∀ v : ι, y' v ∈ frameBox (ρ v)) (hγy_box : ∀ v : ι, (γ v)⁻¹ * y' v ∈ frameBox (ρ v))
-    (h_radius : ∀ v : ι, b ^ (6 * 𝔰.n + 2) ≤ ρ v) {φ : (ι → 𝔰.G₁) → ℂ}
-    (hφ_meas : Measurable φ) (hφ_le : ∀ y : ι → 𝔰.G₁, ‖φ y‖ ≤ 1)
+    (h_radius : ∀ v : ι, b ^ (6 * 𝔰.n + 2) ≤ ρ v)
+    {φ : (ι → 𝔰.G₁) → ℂ} (hφ_meas : Measurable φ) (hφ_le : ∀ y : ι → 𝔰.G₁, ‖φ y‖ ≤ 1)
     (hφ_inv : ∀ s y : ι → 𝔰.G₁, (∀ v : ι, s v ∈ besselFixer) → φ (s * y) = φ y)
-    (hφ_box : ∀ y : ι → 𝔰.G₁, φ y • pairKernel X .cut γ y ≠ 0 → ∀ v : ι, y v ∈ frameBox (ρ v)) :
-    HasCompactSupport (fun y : ι → 𝔰.G₁ ↦ φ y • pairKernel X .cut γ y) ∧
-    ‖∫ y : ι → 𝔰.G₁, φ y • pairKernel X .cut γ y‖ₑ ≤
-      .ofReal √(∏ v : ι, pairingBoundSq (γ v) (X v).deg (ρ v) (card (X v).Index)) +
-        ∫⁻ y : ι → 𝔰.G₁, ‖φ y‖ₑ * ‖pairKernel X .full γ y - pairKernel X .cut γ y‖ₑ := by
+    (hφ_box : ∀ y : ι → 𝔰.G₁, φ y • pairKernel X .cut γ y ≠ 0 → ∀ v : ι, y v ∈ frameBox (ρ v))
+    : HasCompactSupport (fun y : ι → 𝔰.G₁ ↦ φ y • pairKernel X .cut γ y)
+      ∧ ‖∫ y : ι → 𝔰.G₁, φ y • pairKernel X .cut γ y‖ₑ
+        ≤ .ofReal √(∏ v : ι, pairingBoundSq (γ v) (X v).deg (ρ v) (card (X v).Index))
+          + ∫⁻ y : ι → 𝔰.G₁, ‖φ y‖ₑ * ‖pairKernel X .full γ y - pairKernel X .cut γ y‖ₑ := by
   -- The kernel is the adjoint of `W (γ⁻¹ y) ⊗ W (y)^*`, and `γ⁻¹` has the same `gramDiscReal`.
   let T := adjointIsometry ((v : ι) → (X v).Index)
   have h_kernel (σ : FullOrCut) (y : ι → 𝔰.G₁) : pairKernel X σ γ y = T (piKernel X σ γ⁻¹ y) := by
     ext; simp [T, adjointIsometry, pairKernel, piKernel, mul_comm]
-  have h_adjoint (y : ι → 𝔰.G₁) :
-      φ y • pairKernel X .cut γ y = T (conj (φ y) • piKernel X .cut γ⁻¹ y) := by
+  have h_adjoint (y : ι → 𝔰.G₁)
+      : φ y • pairKernel X .cut γ y = T (conj (φ y) • piKernel X .cut γ⁻¹ y) := by
     ext; simp [h_kernel, T, adjointIsometry]
-  have h_disc_inv (v : ι) :
-      gramDiscReal (realFrameGram (γ⁻¹ v)) = gramDiscReal (realFrameGram (γ v)) := by
+  have h_disc_inv (v : ι)
+      : gramDiscReal (realFrameGram (γ⁻¹ v)) = gramDiscReal (realFrameGram (γ v)) := by
     rw [Pi.inv_apply, realFrameGram, Filling.frameGram_inv]
     simp [gramDiscReal, frameDisc, leadingMinor, ← Matrix.conjTranspose_submatrix]
-  obtain ⟨h_support, h_bound⟩ := hasCompactSupport_and_enorm_integral_piKernel_le X (γ := γ⁻¹)
-    (y := γ⁻¹ * y')
-    (φ := fun y ↦ conj (φ y)) (fun v ↦ by simpa only [h_disc_inv] using h_disc v) hγy_box
-    (fun v ↦ by simpa using hy_box v) h_radius (Complex.continuous_conj.measurable.comp hφ_meas)
-    (by simpa using hφ_le) (fun s y hs ↦ by rw [hφ_inv s y hs])
-    fun y hy ↦ hφ_box y (by rwa [h_adjoint, map_ne_zero_iff T T.injective])
+  obtain ⟨h_support, h_bound⟩ :=
+    hasCompactSupport_and_enorm_integral_piKernel_le X (γ := γ⁻¹) (y := γ⁻¹ * y')
+      (φ := fun y ↦ conj (φ y))
+      (fun v ↦ by simpa only [h_disc_inv] using h_disc v)
+      hγy_box
+      (fun v ↦ by simpa using hy_box v)
+      h_radius (Complex.continuous_conj.measurable.comp hφ_meas) (by simpa using hφ_le)
+      (fun s y hs ↦ by rw [hφ_inv s y hs])
+      fun y hy ↦ hφ_box y (by rwa [h_adjoint, map_ne_zero_iff T T.injective])
   simp only [h_adjoint]
   refine ⟨h_support.comp_left (map_zero T), ?_⟩
   rw [T.integral_comp_comm, T.eNorm_map]
-  simpa only [h_kernel, ← map_sub, T.eNorm_map, pairingBoundSq, h_disc_inv,
-    RCLike.eNorm_conj] using h_bound
+  simpa only [h_kernel, ← map_sub, T.eNorm_map, pairingBoundSq, h_disc_inv, RCLike.eNorm_conj] using
+    h_bound
 
 end New.BesselSystem

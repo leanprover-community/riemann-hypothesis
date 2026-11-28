@@ -41,9 +41,11 @@ namespace New
 /-- The gain at the ratio `r`: the function `r ^ k * min 1 r ^ 6`. -/
 def dampedPower (k : ℕ) (r : ℝ) : ℝ := r ^ k * min 1 r ^ 6
 
-/-- The weight of a head `p` (with entries in `ℂˣ`) of length `i` at a real place. It is zero unless
+/--
+The weight of a head `p` (with entries in `ℂˣ`) of length `i` at a real place. It is zero unless
 the partial products `δ = p 0 * ⋯ * p l`, `l < i`, have modulus at most `R`, and then it is the
-product of the numbers `max 1 ‖δ‖⁻¹ ^ K`. -/
+product of the numbers `max 1 ‖δ‖⁻¹ ^ K`.
+-/
 def headWeight (R : ℝ) (K i : ℕ) (p : ℕ → ℂˣ) : ℝ :=
   ∏ l ∈ range i,
     let δ : ℂ := ∏ a ∈ range (l + 1), (p a : ℂ)
@@ -54,43 +56,53 @@ lemma headWeight_nonneg (R : ℝ) (K i : ℕ) (p : ℕ → ℂˣ) : 0 ≤ headWe
 
 variable {C U τ : Type} [CommRing C] [MeasureSpace C] [TopologicalSpace U] [Fintype τ]
 
-/-- The axioms of the sieve at a place or a product of places: `C` is a ring with a measure, `u c`
+/--
+The axioms of the sieve at a place or a product of places: `C` is a ring with a measure, `u c`
 is the entry given by `c ∈ C`, and `ι` maps entries back to `C` (in the applications `x ↦ x⁻¹`,
 times a constant at the finite places). The forms `J i p q`, `i ≤ n + 1`, pair two sequences of
 entries, called heads, with weights `Λ i p`. The field `integrable_and_integral_update` makes each
 form but the top one the integral of the next over a common entry, and bounds the same integral
 twisted by `ψ (ξ * c)` at a unit `ξ` in terms of the decay `β ξ`. The top form `J (n + 1)` is
 continuous, and positive semidefinite on heads with a common entry at position `n`. The bottom form
-`J 0` has modulus at most `En`. -/
-structure SieveSystem (u : C → U) (ι : U → C) (n : ℕ) (J : ℕ → (ℕ → U) → (ℕ → U) → ℂ) (ψ : C → ℂ)
-    (En : ℝ) (Λ : ℕ → (ℕ → U) → ℝ) (β : C → ℝ) : Prop where
+`J 0` has modulus at most `En`.
+-/
+structure SieveSystem
+    (u : C → U) (ι : U → C) (n : ℕ) (J : ℕ → (ℕ → U) → (ℕ → U) → ℂ) (ψ : C → ℂ) (En : ℝ)
+    (Λ : ℕ → (ℕ → U) → ℝ) (β : C → ℝ)
+    : Prop where
   /-- The function `ψ` takes the value `1` at `0`. -/
   psi_zero : ψ 0 = 1
-  /-- For `i ≤ n`, give both heads the entry `u c` at position `i`. Then `ψ (ξ * c)` times the form
+  /--
+  For `i ≤ n`, give both heads the entry `u c` at position `i`. Then `ψ (ξ * c)` times the form
   `J (i + 1)` is integrable in `c`; its integral is `J i p q` if `ξ = 0`, and has modulus at most
-  `β ξ * (Λ i p * Λ i q)` if `ξ` is a unit. -/
-  integrable_and_integral_update (i : ℕ) (p q : ℕ → U) (ξ : C) :
-      i ≤ n →
-      let f (c : C) : ℂ := ψ (ξ * c) * J (i + 1) (update p i (u c)) (update q i (u c))
-      Integrable f ∧
-      (ξ = 0 → ∫ c : C, f c = J i p q) ∧
-      (IsUnit ξ → ‖∫ c : C, f c‖ ≤ β ξ * (Λ i p * Λ i q))
-  /-- The top form `J (n + 1)` is a positive semidefinite kernel on heads with the same entry at
-  position `n`. -/
-  posSemidef {κ : Type} [Fintype κ] (a : κ → ℕ → U) (t : U) :
-      (∀ i : κ, a i n = t) → (Matrix.of fun i j : κ ↦ J (n + 1) (a i) (a j)).PosSemidef
+  `β ξ * (Λ i p * Λ i q)` if `ξ` is a unit.
+  -/
+  integrable_and_integral_update (i : ℕ) (p q : ℕ → U) (ξ : C)
+    : i ≤ n
+      → let f (c : C) : ℂ := ψ (ξ * c) * J (i + 1) (update p i (u c)) (update q i (u c))
+        Integrable f ∧ (ξ = 0 → ∫ c : C, f c = J i p q)
+          ∧ (IsUnit ξ → ‖∫ c : C, f c‖ ≤ β ξ * (Λ i p * Λ i q))
+  /--
+  The top form `J (n + 1)` is a positive semidefinite kernel on heads with the same entry at
+  position `n`.
+  -/
+  posSemidef {κ : Type} [Fintype κ] (a : κ → ℕ → U) (t : U)
+    : (∀ i : κ, a i n = t) → (Matrix.of fun i j : κ ↦ J (n + 1) (a i) (a j)).PosSemidef
   /-- The top form `J (n + 1)` is jointly continuous. -/
   continuous : Continuous (J (n + 1)).uncurry
   /-- The bottom form `J 0` has modulus at most `En`. -/
   norm_bot_le (p q : ℕ → U) : ‖J 0 p q‖ ≤ En
-  /-- For `i < n`, if `ξ = ι (p i) - ι (q i)` is a unit, then `J (i + 1) p q` has modulus at most
-  `β ξ * (Λ (i + 1) p * Λ (i + 1) q)`. -/
-  norm_le_of_isUnit_sub (i : ℕ) (p q : ℕ → U) :
-      i < n →
-      let ξ : C := ι (p i) - ι (q i)
-      IsUnit ξ → ‖J (i + 1) p q‖ ≤ β ξ * (Λ (i + 1) p * Λ (i + 1) q)
+  /--
+  For `i < n`, if `ξ = ι (p i) - ι (q i)` is a unit, then `J (i + 1) p q` has modulus at most
+  `β ξ * (Λ (i + 1) p * Λ (i + 1) q)`.
+  -/
+  norm_le_of_isUnit_sub (i : ℕ) (p q : ℕ → U)
+    : i < n
+      → let ξ : C := ι (p i) - ι (q i)
+        IsUnit ξ → ‖J (i + 1) p q‖ ≤ β ξ * (Λ (i + 1) p * Λ (i + 1) q)
 
-variable {u : C → U} {ι : U → C} {n : ℕ} {J : ℕ → (ℕ → U) → (ℕ → U) → ℂ} {ψ : C → ℂ} {B₀ : ℝ}
+variable
+  {u : C → U} {ι : U → C} {n : ℕ} {J : ℕ → (ℕ → U) → (ℕ → U) → ℂ} {ψ : C → ℂ} {B₀ : ℝ}
   {Λ : ℕ → (ℕ → U) → ℝ} {β : C → ℝ}
 
 /-- Bounds on the norms of finitely many complex factors `f v` and of one more factor `a` multiply
@@ -111,8 +123,10 @@ lemma posSemidef_prod_mul {σ κ : Type} {A : σ → κ → κ → ℂ} {B : κ 
     simp only [prod_insert hv, mul_assoc]
     exact (hA v).hadamard ih
 
-/-- The component at the complex factor `v` of a head `p` with entries in `(τ → ℂˣ) × U`: the
-sequence `k ↦ (p k).1 v`. -/
+/--
+The component at the complex factor `v` of a head `p` with entries in `(τ → ℂˣ) × U`: the
+sequence `k ↦ (p k).1 v`.
+-/
 def headAt (v : τ) (p : ℕ → (τ → ℂˣ) × U) : ℕ → ℂˣ := (fun y : (τ → ℂˣ) × U ↦ y.1 v) ∘ p
 
 /-- For `i ≤ n`, give both heads the entry `u c` at position `i`. Then `ψ (ξ * c)` times the form

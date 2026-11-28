@@ -172,12 +172,12 @@ section RigidFibres
 open CategoryTheory AlgebraicGeometry Submodule New Variety LineBundle Set Nat IsLocalRing Spec
 open scoped CategoryTheory.MonoidalCategory
 
-variable {E O W : Type} [Field E] [CMBase E] [CommRing O] [ValuativeArc O] [FinComplexSpace W]
+variable
+  {E O W : Type} [Field E] [CMBase E] [CommRing O] [ValuativeArc O] [FinComplexSpace W]
   {D : PEL E} {Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (NumberField.RingOfIntegers E))}
-  {X : ThetaFamily D Z τ} {y : ThetaObject X (Spec (CommRingCat.of O))}
-  {g : GL D.Index (𝔸f E)} {ℓ : Matrix D.Index D.Index ℂ} {Y : ThetaTori.PeriodMap D g ℓ W}
-  {B : Type} [CommRing B] {x : ThetaObject X (Spec (CommRingCat.of B))}
-  {b : CommRingCat.of O ⟶ CommRingCat.of B}
+  {X : ThetaFamily D Z τ} {y : ThetaObject X (Spec (CommRingCat.of O))} {g : GL D.Index (𝔸f E)}
+  {ℓ : Matrix D.Index D.Index ℂ} {Y : ThetaTori.PeriodMap D g ℓ W} {B : Type} [CommRing B]
+  {x : ThetaObject X (Spec (CommRingCat.of B))} {b : CommRingCat.of O ⟶ CommRingCat.of B}
 
 /-- Let `v z = expMap (z / c)` for a model `a` and `c ≠ 0`. Then multiplication by `c` sends the
 complex point of `v z` to that of `expMap z`. -/
@@ -550,11 +550,13 @@ attribute [local instance low] Fintype.ofFinite
 
 variable {E : Type} [Field E] [CMBase E]
 
-/-- A universal object for the PEL data D: a theta family 𝒜 → S with S projective and smooth of
+/--
+A universal object for the PEL data D: a theta family 𝒜 → S with S projective and smooth of
 relative dimension n - 1 over R, where n = `card D.Index`, and a dense set of complex points of S
 whose fibres are uniformised by tori. The points are indexed by pairs a = (f, b) of an analytic
 family of tori f and a parameter b; the uniformisations are holomorphic in b on the domain
-`f.domain` of f. -/
+`f.domain` of f.
+-/
 structure Variety.UniversalFamily (D : PEL E) (R : Subalgebra (𝓞 E) E) where
   /-- The ring `R` is a Dedekind domain. -/
   isDedekindDomain : IsDedekindDomain R
@@ -566,63 +568,87 @@ structure Variety.UniversalFamily (D : PEL E) (R : Subalgebra (𝓞 E) E) where
   hasProjEmbedding : HasProjEmbedding base.hom
   /-- S is smooth over `R` of relative dimension n - 1, where n is `card D.Index`. -/
   smooth : SmoothOfRelativeDimension (card D.Index - 1) base.hom
-  /-- The complex point of S attached to a pair (f, b) of an analytic family `f` and a parameter
-  `b`. -/
+  /--
+  The complex point of S attached to a pair (f, b) of an analytic family `f` and a parameter
+  `b`.
+  -/
   obj : AnalyticFamily D × BallBase D.Index → (specOver R ℂ ⟶ base)
   /-- The fibre over `obj a` is modelled on the torus of the family `a.1` at the parameter `a.2`. -/
-  model (a : AnalyticFamily D × BallBase D.Index) :
-    TorusModel (X := family) (obj a).left (a.1.torus a.2).toPeriodMap
-  /-- The uniformisations give complex points of 𝒜 that are holomorphic in `(b, z)`, for `b` in the
-  domain of the family. -/
-  holomorphic (f : AnalyticFamily D) : ∀ b ∈ f.domain, ∀ z : BallFibre E D.Index,
-    HolomorphicAt
-      (fun q ↦
-        atGeneric (model (f, q.1)).uniformisation.expMap q.2 ≫ (toFamily (obj (f, q.1)).left).left)
-      (b, z)
+  model (a : AnalyticFamily D × BallBase D.Index)
+    : TorusModel (X := family) (obj a).left (a.1.torus a.2).toPeriodMap
+  /--
+  The uniformisations give complex points of 𝒜 that are holomorphic in `(b, z)`, for `b` in the
+  domain of the family.
+  -/
+  holomorphic (f : AnalyticFamily D)
+    : ∀ b ∈ f.domain, ∀ z : BallFibre E D.Index,
+      HolomorphicAt
+        (fun q ↦
+          atGeneric (model (f, q.1)).uniformisation.expMap q.2
+            ≫ (toFamily (obj (f, q.1)).left).left)
+        (b, z)
   /-- The points `obj a` are dense in S. -/
   dense : IsDenseFamily (obj · |>.left)
 
 attribute [instance] UniversalFamily.hasProjEmbedding
 
-variable {D : PEL E} {R : Subalgebra (𝓞 E) E} {κ : Sort _} {ν : ℕ} [Finite κ]
-  {T Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ}
-  {O : Type} [CommRing O] [ValuativeArc O] {U : UniversalFamily D R} {𝔪 : (𝓞 E)⁰}
-  {y : ThetaObject X T} {Q : κ → (𝟙_ (Over T) ⟶ y.groupScheme)} {a : ModuliPoint E D.Index ν}
+variable
+  {D : PEL E} {R : Subalgebra (𝓞 E) E} {κ : Sort _} {ν : ℕ} [Finite κ]
+  {T Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ} {O : Type}
+  [CommRing O] [ValuativeArc O]
+  {U : UniversalFamily D R} {𝔪 : (𝓞 E)⁰} {y : ThetaObject X T}
+  {Q : κ → (𝟙_ (Over T) ⟶ y.groupScheme)} {a : ModuliPoint E D.Index ν}
 
 /-! ### Fibre powers and the points of linear data -/
 
-/-- For a finite set κ, the κ-fold fibre power of the abelian scheme `X.total` over its base, as a
-scheme over the base. -/
+/--
+For a finite set κ, the κ-fold fibre power of the abelian scheme `X.total` over its base, as a
+scheme over the base.
+-/
 abbrev ThetaFamily.fibrePower (κ : Type) [Finite.{1} κ] : Over Z := ∏ᶜ fun _ : κ ↦ X.total
 
-/-- For i in κ, the i-th projection from the κ-fold fibre power of `X.total` to `X.total`, as a
-morphism of underlying schemes. -/
+/--
+For i in κ, the i-th projection from the κ-fold fibre power of `X.total` to `X.total`, as a
+morphism of underlying schemes.
+-/
 abbrev ThetaFamily.proj (i : κ) : (∏ᶜ fun (_ : κ) ↦ X.total).left ⟶ X.total.left :=
   (Pi.π _ i : X.fibrePower κ ⟶ X.total).left
 
-/-- Let y be an object of the family X over T, and Q i, for i in κ, sections of its group scheme
+/--
+Let y be an object of the family X over T, and Q i, for i in κ, sections of its group scheme
 `y.groupScheme` over T. This is the T-point of the κ-fold fibre power of `X.total` whose i-th factor
-is the section Q i followed by the map of y to the family. -/
-def ThetaObject.pointOf (y : ThetaObject X T) (Q : κ → (𝟙_ (Over T) ⟶ y.groupScheme)) :
-    T ⟶ (X.fibrePower κ).left :=
+is the section Q i followed by the map of y to the family.
+-/
+def ThetaObject.pointOf (y : ThetaObject X T) (Q : κ → (𝟙_ (Over T) ⟶ y.groupScheme))
+    : T ⟶ (X.fibrePower κ).left :=
   (Pi.lift fun i ↦ y.isGroupBaseChange.pointEquiv (Q i)).left
 
-/-- Let a = (x, ℓ, P) be a point at infinite level with ν marked vectors, and t an O-point, over the
+/--
+Let a = (x, ℓ, P) be a point at infinite level with ν marked vectors, and t an O-point, over the
 arc O, of the fibre power of `X.total` with one factor for each non-zero 𝔪-torsion class and one for
 each marked vector. `IsPointOf 𝔪 a t` says that t is the point of an object over O that has a torus
 model (`TorusModel`) on a period map for the frame x and the reflection ℓ: its factors are the
-torsion points of the model at the non-zero 𝔪-torsion classes and the images of the vectors P i. -/
+torsion points of the model at the non-zero 𝔪-torsion classes and the images of the vectors P i.
+-/
 @[mk_iff]
-inductive ThetaFamily.IsPointOf (𝔪 : (𝓞 E)⁰) (a : ModuliPoint E D.Index ν)
-    (t : Spec ⟨O⟩ ⟶ (X.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left) : Prop
-  /-- Builds `ThetaFamily.IsPointOf` from a torus model `m` of an object `x` over the arc on a
+inductive ThetaFamily.IsPointOf
+  (𝔪 : (𝓞 E)⁰)
+  (a : ModuliPoint E D.Index ν)
+  (t : Spec ⟨O⟩ ⟶ (X.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left)
+  : Prop
+  /--
+  Builds `ThetaFamily.IsPointOf` from a torus model `m` of an object `x` over the arc on a
   period map `Y` for `a.frame` and `a.reflection`. It requires a proof that `t` is the point of `x`
   given by the torsion points of `m.fullStructure` and the images under `m.π` of the vectors
-  `a.markedPoint`. -/
-  | mk {x : ThetaObject X (Spec (CommRingCat.of O))} {V : Type} [FinComplexSpace V]
-      {Y : PeriodMap D a.frame a.reflection V} (m : TorusModel x Y)
-      (h : t = x.pointOf ((fun s : NonzeroTorsion 𝔪 D.Index ↦ m.fullStructure.torsionPoint s.val) ⊕ᵥ
-        (fun i : Fin ν ↦ m.π (a.markedPoint i))))
+  `a.markedPoint`.
+  -/
+  | mk
+    {x : ThetaObject X (Spec (CommRingCat.of O))} {V : Type} [FinComplexSpace V]
+    {Y : PeriodMap D a.frame a.reflection V} (m : TorusModel x Y)
+    (h : t
+      = x.pointOf
+        ((fun s : NonzeroTorsion 𝔪 D.Index ↦ m.fullStructure.torsionPoint s.val)
+          ⊕ᵥ (fun i : Fin ν ↦ m.π (a.markedPoint i))))
 
 /-- The point `y.pointOf Q` lies over the base point of y. -/
 @[reassoc (attr := simp)]
@@ -646,11 +672,14 @@ lemma Variety.UniversalFamily.exists_isPointOf (U : UniversalFamily D R) (𝔪 :
   obtain ⟨f, hf⟩ := exists_isBallFamily a
   exact hf.ballPoint_zero ▸ ⟨homMk _, U.model (f, 0), rfl⟩
 
-/-- For a point a = (x, ℓ, P) at infinite level, a chosen complex point over R of the fibre power of
+/--
+For a point a = (x, ℓ, P) at infinite level, a chosen complex point over R of the fibre power of
 the family that is the point of a with its 𝔪-torsion (`New.ThetaFamily.IsPointOf`): an object
-modelled on (x, ℓ), with its non-zero 𝔪-torsion points and the images of the vectors P i. -/
-def Variety.UniversalFamily.datumPoint (𝔪 : (𝓞 E)⁰) (a : ModuliPoint E D.Index ν) :
-    specOver R ℂ ⟶ (Over.map U.base.hom) (U.family.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)) :=
+modelled on (x, ℓ), with its non-zero 𝔪-torsion points and the images of the vectors P i.
+-/
+def Variety.UniversalFamily.datumPoint (𝔪 : (𝓞 E)⁰) (a : ModuliPoint E D.Index ν)
+    : specOver R ℂ
+      ⟶ (Over.map U.base.hom) (U.family.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)) :=
   (U.exists_isPointOf 𝔪 a).choose
 
 /-- Two T-points of the κ-fold fibre power of `X.total` are equal if and only if they have the same
@@ -667,8 +696,10 @@ lemma fibrePower_ext_iff {t t' : T ⟶ (X.fibrePower κ).left} :
     Pi.hom_ext _ _ fun i ↦ OverMorphism.ext (by simpa using h_proj i)
   exact congrArg (fun f ↦ f.left) h_over
 
-variable {t : Spec ⟨O⟩ ⟶ (X.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
-  {b : ModuliPoint E D.Index ν} {J : Sort _} [Finite J] {γ : J → (𝓞 E)⁰ × GUPlus E D.Index}
+variable
+  {t : Spec ⟨O⟩ ⟶ (X.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
+  {b : ModuliPoint E D.Index ν} {J : Sort _} [Finite J]
+  {γ : J → (𝓞 E)⁰ × GUPlus E D.Index}
   {s : Spec (CommRingCat.of ℂ) ⟶ (X.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
   {u : Spec (CommRingCat.of ℂ) ⟶ (U.family.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
 
@@ -891,13 +922,14 @@ namespace Variety.UniversalFamily
 
 /-! ### Closures of graphs, smoothness and density -/
 
-/-- For a finite family γ of pairs (𝔪_j, g_j) of a non-zero integer and a similitude whose inverse
+/--
+For a finite family γ of pairs (𝔪_j, g_j) of a non-zero integer and a similitude whose inverse
 has entries in Ô (`GUPlus`), the reduced closure, in a product of fibre powers of the family, of the
 tuples (over j) of the points `datumPoint 𝔪_j (a.act g_j)` of the translates of the points a at
-infinite level. -/
+infinite level.
+-/
 abbrev GraphClosure (γ : J → (𝓞 E)⁰ × GUPlus E D.Index) (ν : ℕ) : Type 1 :=
   ReducedClosure fun j a ↦ U.datumPoint (ν := ν) (γ j).1 (ModuliPoint.act a (γ j).2)
-
 
 /-- The chosen point `datumPoint 𝔪 a` is the point of a with its 𝔪-torsion. -/
 lemma isPointOf_datumPoint : U.family.IsPointOf 𝔪 a (datumPoint 𝔪 a).left :=
@@ -924,8 +956,10 @@ instance : HasProjEmbedding X.total.hom := ⟨X.embeds⟩
 /-- A fibre power of the abelian scheme of a theta family is projective over the base. -/
 instance : HasProjEmbedding (X.fibrePower κ).hom := .of_isClosedImmersion_pi (𝟙 _)
 
-/-- The closure `C.scheme` is projective over the base, as a closed subscheme of a product of fibre
-powers. -/
+/--
+The closure `C.scheme` is projective over the base, as a closed subscheme of a product of fibre
+powers.
+-/
 instance (C : U.GraphClosure γ ν) : HasProjEmbedding C.scheme.hom := .of_isClosedImmersion_pi C.incl
 
 /-- There is a level m such that the point of the closure C attached to a depends only on the
@@ -1054,7 +1088,6 @@ lemma smooth_and_isDenseFamily_and_exists_comp_eq_act (ν : ℕ) :
   ⟨smoothOfRelativeDimension_fibrePower ν, isDenseFamily_datumPoint ν, exists_comp_datumPoint_act ν⟩
 
 end Variety.UniversalFamily
-
 
 end New
 

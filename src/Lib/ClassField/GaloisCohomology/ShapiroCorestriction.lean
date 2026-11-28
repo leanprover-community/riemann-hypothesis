@@ -60,12 +60,18 @@ section Corestriction
 
 open QuotientGroup MulAction Function AddMonoidHom Fintype
 
-variable {R Γ : Type} {H : Type*} [CommRing R] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
-  [Group H] {M : New.DiscreteModule R Γ} [CompactSpace Γ] (U : OpenSubgroup Γ) [TopologicalSpace H]
+variable
+  {R Γ : Type} {H : Type*}
+  [CommRing R] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [Group H]
+  {M : New.DiscreteModule R Γ} [CompactSpace Γ]
+  (U : OpenSubgroup Γ)
+  [TopologicalSpace H]
   (φ : H →ₜ* Γ)
 
-/-- For a continuous homomorphism φ: H → Γ, the additive map from continuous ℚ/ℤ-valued
-characters of Γ to those of H, χ ↦ χ∘φ. -/
+/--
+For a continuous homomorphism φ: H → Γ, the additive map from continuous ℚ/ℤ-valued
+characters of Γ to those of H, χ ↦ χ∘φ.
+-/
 def New.QZChar.comap : QZChar Γ →+ QZChar H := pairMapZ1 φ LinearMap.id
 
 /-- An open normal subgroup `U` of the compact group `Γ` with cyclic quotient is the kernel of a
@@ -98,14 +104,18 @@ lemma funModule_apply_one (u : U.toSubgroup) (F : (M.funModule U).V) :
   refine congrArg (_ ∘ F) ?_
   simp [QuotientGroup.eq]
 
-/-- The Shapiro map on continuous 1-cocycles, Z¹(Γ, Fun(Γ/U, M)) → Z¹(U, M): restrict to U and
-evaluate at the trivial coset. -/
+/--
+The Shapiro map on continuous 1-cocycles, Z¹(Γ, Fun(Γ/U, M)) → Z¹(U, M): restrict to U and
+evaluate at the trivial coset.
+-/
 abbrev shapiroZ1 : ↥(Z1 (M.funModule U).ρ) →+ ↥(Z1 (M.restrictTo U).ρ) :=
   pairMapZ1 (ρ := (M.funModule U).ρ) (subgroupIncl U.toSubgroup) (LinearMap.proj ⟦1⟧)
     (M.funModule_apply_one U)
 
-/-- The linear map H²(Γ, Fun(Γ/U,M)) → H²(U,M) given by restriction to U followed by evaluation
-at the identity coset. -/
+/--
+The linear map H²(Γ, Fun(Γ/U,M)) → H²(U,M) given by restriction to U followed by evaluation
+at the identity coset.
+-/
 abbrev shapiroH2 : New.H2 (M.funModule U).ρ →ₗ[R] New.H2 (M.restrictTo U).ρ :=
   pairMapH2 (ρ := (M.funModule U).ρ) (subgroupIncl U.toSubgroup) (LinearMap.proj ⟦1⟧)
     (M.funModule_apply_one U)
@@ -314,19 +324,25 @@ open QuotientGroup QuotientAddGroup Subgroup
 
 namespace New.DiscreteModule
 
-variable {R Γ : Type} [CommRing R] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
+variable
+  {R Γ : Type} [CommRing R] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
   {M : DiscreteModule R Γ} [CompactSpace Γ]
 
-/-- The group `Y ≤ Z¹(Γ, M)` of cocycles contains every coboundary and a corestriction of each
-cocycle in `Y' ≤ Z¹(U, M)`, for an open subgroup `U` of `Γ`. -/
-structure HoldsCorestrictions (U : OpenSubgroup Γ) (Y' : AddSubgroup (Z1 (M.restrictTo U).ρ))
-    (Y : AddSubgroup (Z1 M.ρ)) : Prop where
+/--
+The group `Y ≤ Z¹(Γ, M)` of cocycles contains every coboundary and a corestriction of each
+cocycle in `Y' ≤ Z¹(U, M)`, for an open subgroup `U` of `Γ`.
+-/
+structure HoldsCorestrictions
+    (U : OpenSubgroup Γ) (Y' : AddSubgroup (Z1 (M.restrictTo U).ρ)) (Y : AddSubgroup (Z1 M.ρ))
+    : Prop where
   /-- Every coboundary `g ↦ g m - m` lies in `Y`. -/
   coboundary_mem : ∀ m : M.V, M.coboundary m ∈ Y
-  /-- Each `y ∈ Y'` is the Shapiro image (restrict to `U`, evaluate at the trivial coset) of a
-  cocycle `F` with values in the functions `Γ ⧸ U → M` whose sum over `Γ ⧸ U` lies in `Y`. -/
-  exists_corestriction :
-    ∀ y ∈ Y', ∃ F : ↥(Z1 (M.funModule U).ρ), M.shapiroZ1 U F = y ∧ (M.sum U).mapZ1 F ∈ Y
+  /--
+  Each `y ∈ Y'` is the Shapiro image (restrict to `U`, evaluate at the trivial coset) of a
+  cocycle `F` with values in the functions `Γ ⧸ U → M` whose sum over `Γ ⧸ U` lies in `Y`.
+  -/
+  exists_corestriction
+    : ∀ y ∈ Y', ∃ F : ↥(Z1 (M.funModule U).ρ), M.shapiroZ1 U F = y ∧ (M.sum U).mapZ1 F ∈ Y
 
 omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
 /-- If the restriction of `α` to `U ⊓ V`, seen as a subgroup of `V`, vanishes, then so does

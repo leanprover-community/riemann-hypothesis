@@ -45,23 +45,28 @@ open NumberField Pointwise MulAction Units MulSemiringAction ValuationSubring Se
 
 namespace New
 
-/-- The field `Ω` is an algebraic closure of `ℚ`: it has characteristic zero, is algebraically
-closed and is algebraic over `ℚ`. -/
+/--
+The field `Ω` is an algebraic closure of `ℚ`: it has characteristic zero, is algebraically
+closed and is algebraic over `ℚ`.
+-/
 def Ω : Type := AlgebraicClosure ℚ
-  deriving Field, IsAlgClosed, CharZero
+deriving Field, IsAlgClosed, CharZero
 
 instance : Algebra.IsAlgebraic ℚ Ω := AlgebraicClosure.isAlgebraic ℚ
 
 /-- The type of valuation subrings of `New.Ω`, the algebraic closure of `ℚ`. -/
 abbrev ClosurePlace : Type := ValuationSubring Ω
 
-/-- The element c of Γ is a complex conjugation: for some embedding j : Ω → ℂ, j(cx) is the
-complex conjugate of j(x) for all x. -/
+/--
+The element c of Γ is a complex conjugation: for some embedding j : Ω → ℂ, j(cx) is the
+complex conjugate of j(x) for all x.
+-/
 def IsComplexConj {Γ : Type*} [SMul Γ Ω] (c : Γ) : Prop :=
   ∃ j : Ω →+* ℂ, ∀ x : Ω, j (c • x) = star (j x)
 
-variable (O Γ : Type*)
-  (K Ω : outParam Type*) [Group Γ] [Field K] [Field Ω] [Algebra K Ω] [MulSemiringAction Γ Ω]
+variable
+  (O Γ : Type*) (K Ω : outParam Type*)
+  [Group Γ] [Field K] [Field Ω] [Algebra K Ω] [MulSemiringAction Γ Ω]
   (l : ℕ) [Fact l.Prime] [CommRing O] [Algebra ℤ_[l] O]
 
 /-- The multiplicative group Ω^×, written additively; it is given the discrete topology. -/
@@ -73,10 +78,13 @@ instance : DiscreteTopology (DiscreteUnits Ω) := ⟨rfl⟩
 
 /-! ### Profinite and local Galois groups -/
 
-/-- The profinite group Γ acts on the Galois extension Ω/K as its Galois group, with open
-stabilisers. -/
-class IsProGalois [TopologicalSpace Γ] extends IsGaloisGroup Γ K Ω, IsGalois K Ω,
-  IsTopologicalGroup Γ, CompactSpace Γ, TotallyDisconnectedSpace Γ where
+/--
+The profinite group Γ acts on the Galois extension Ω/K as its Galois group, with open
+stabilisers.
+-/
+class IsProGalois [TopologicalSpace Γ]
+    extends IsGaloisGroup Γ K Ω, IsGalois K Ω, IsTopologicalGroup Γ, CompactSpace Γ,
+      TotallyDisconnectedSpace Γ where
   /-- The stabiliser of every element of `Ω` is open in `Γ`. -/
   isOpen_stabilizer (x : Ω) : IsOpen (stabilizer Γ x : Set Γ)
 
@@ -85,21 +93,27 @@ scoped instance : CoeFun (ValuationSubring Ω) (Ω → ·.ValueGroup) := ⟨(·.
 
 variable {Ω} (A : ValuationSubring Ω)
 
-/-- The decomposition group of a valuation subring A of Ω: the elements of Γ mapping A onto
-itself. -/
+/--
+The decomposition group of a valuation subring A of Ω: the elements of Γ mapping A onto
+itself.
+-/
 abbrev decompGroup : Subgroup Γ := stabilizer Γ A
 
-/-- For a valuation subring A of Ω and x in K, the value of the image of x in Ω under the
-multiplicative valuation attached to A. -/
+/--
+For a valuation subring A of Ω and x in K, the value of the image of x in Ω under the
+multiplicative valuation attached to A.
+-/
 abbrev valuationVia (x : K) : A.ValueGroup := A (algebraMap K Ω x)
 
 /-- The valuation subring A ∩ K of K. -/
 abbrev valRingBelow : ValuationSubring K := (A.valuation.comap (algebraMap K Ω)).valuationSubring
 
-/-- Γ = Gal(Ω/K) with Ω algebraically closed of characteristic 0 stabilises A, and A ∩ K is a
-discrete valuation ring with finite residue field. The field K need not be complete. -/
-class IsLocalGalois (A : outParam (ValuationSubring Ω))
-    [TopologicalSpace Γ] extends IsProGalois Γ K Ω, IsAlgClosed Ω, CharZero Ω where
+/--
+Γ = Gal(Ω/K) with Ω algebraically closed of characteristic 0 stabilises A, and A ∩ K is a
+discrete valuation ring with finite residue field. The field K need not be complete.
+-/
+class IsLocalGalois (A : outParam (ValuationSubring Ω)) [TopologicalSpace Γ]
+    extends IsProGalois Γ K Ω, IsAlgClosed Ω, CharZero Ω where
   /-- Every element of `Γ` maps the valuation ring `A` to itself. -/
   mem_decompGroup (g : Γ) : g ∈ decompGroup Γ A
   /-- The valuation ring of `K` under `A` is a discrete valuation ring. -/
@@ -109,32 +123,41 @@ class IsLocalGalois (A : outParam (ValuationSubring Ω))
 
 variable {Γ K} (v : IsDedekindDomain.HeightOneSpectrum (𝓞 K))
 
-/-- The ℤ-linear representation of Γ on Ω^× (written additively) coming from the action of Γ on
-the field Ω by ring automorphisms. -/
+/--
+The ℤ-linear representation of Γ on Ω^× (written additively) coming from the action of Γ on
+the field Ω by ring automorphisms.
+-/
 def unitsRep : Representation ℤ Γ (DiscreteUnits Ω) :=
   letI : MulDistribMulAction Γ Ωˣ := mulDistribMulActionRight
   Representation.ofMulDistribMulAction Γ Ωˣ
 
 /-! ### Frobenius elements, places and inertia -/
 
-/-- `σ` stabilises the valuation subring `A` and `σ • x ≡ x ^ q` modulo the maximal ideal for all
+/--
+`σ` stabilises the valuation subring `A` and `σ • x ≡ x ^ q` modulo the maximal ideal for all
 `x ∈ A`. For `q` the order of the residue field of the base this is an arithmetic Frobenius;
-for `q = 1` it is membership in the inertia group `New.inertiaGroup`. -/
+for `q = 1` it is membership in the inertia group `New.inertiaGroup`.
+-/
 def IsFrob (q : ℕ) (σ : Γ) : Prop :=
   σ ∈ decompGroup Γ A ∧ ∀ x : Ω, A.valuation x ≤ 1 → A.valuation (σ • x - x ^ q) < 1
 
-/-- The valuation subring `A` of `Ω` lies over the nonzero prime `v` of the ring of integers `𝓞 K`:
-an element of `𝓞 K` is in the maximal ideal of `A` exactly when it lies in `v`. -/
+/--
+The valuation subring `A` of `Ω` lies over the nonzero prime `v` of the ring of integers `𝓞 K`:
+an element of `𝓞 K` is in the maximal ideal of `A` exactly when it lies in `v`.
+-/
 def IsPlaceOver : Prop := ∀ x : 𝓞 K, A.valuation (algebraMap K Ω x) < 1 ↔ x ∈ v.asIdeal
 
 end New
 
 namespace New
 
-variable (O : Type*) {Γ : Type*} {K Ω : outParam Type*} [Group Γ] [Field K] [Field Ω] [Algebra K Ω]
-  [MulSemiringAction Γ Ω] (l : ℕ) [Fact l.Prime] [CommRing O] [Algebra ℤ_[l] O]
-  {A : ValuationSubring Ω} {q : ℕ} {σ τ g : Γ}
-  {Γ' Ω' : Type*} [Group Γ'] [Field Ω'] [MulSemiringAction Γ' Ω']
+variable
+  (O : Type*)
+  {Γ : Type*} {K Ω : outParam Type*}
+  [Group Γ] [Field K] [Field Ω] [Algebra K Ω] [MulSemiringAction Γ Ω]
+  (l : ℕ) [Fact l.Prime] [CommRing O] [Algebra ℤ_[l] O]
+  {A : ValuationSubring Ω} {q : ℕ} {σ τ g : Γ} {Γ' Ω' : Type*}
+  [Group Γ'] [Field Ω'] [MulSemiringAction Γ' Ω']
   {φ : Γ' → Γ} {j : Ω →+* Ω'} {A' : ValuationSubring Ω'} {q' : ℕ}
 
 lemma IsFrob.mem_decompGroup (h : IsFrob A q σ) : σ ∈ decompGroup Γ A := h.left
@@ -230,8 +253,10 @@ lemma IsFrob.pow (h : IsFrob A q σ) (n : ℕ) : IsFrob A (q ^ n) (σ ^ n) := by
     exact ih.mul_iff.mpr h
 
 variable (Γ A) in
-/-- The inertia group of A: the σ in Γ stabilising the valuation subring A with σx − x in the
-maximal ideal for every x in A. -/
+/--
+The inertia group of A: the σ in Γ stabilising the valuation subring A with σx − x in the
+maximal ideal for every x in A.
+-/
 def inertiaGroup : Subgroup Γ where
   carrier := {σ : Γ | IsFrob A 1 σ}
   mul_mem' hσ hτ := hσ.mul_iff.2 hτ
@@ -249,14 +274,18 @@ lemma IsFrob.inv_mul_mem_inertiaGroup (h : IsFrob A q σ) (hτ : IsFrob A q τ) 
 
 variable (Ω)
 
-/-- The `l`-adic cyclotomic character Γ → ℤ_l^× of a group Γ acting on the field Ω by ring
-automorphisms. -/
+/--
+The `l`-adic cyclotomic character Γ → ℤ_l^× of a group Γ acting on the field Ω by ring
+automorphisms.
+-/
 def cyclotomicChar : Γ →* ℤ_[l]ˣ := (cyclotomicCharacter Ω l).comp (toRingAut Γ Ω)
 
-/-- The `l`-adic cyclotomic character of Γ composed with ℤ_l^× → O^×, for a commutative
-ℤ_l-algebra O. -/
-abbrev cyclotomicCharIn : Γ →* Oˣ := (map (algebraMap ℤ_[l] O).toMonoidHom).comp
-  (cyclotomicChar (Γ := Γ) Ω l)
+/--
+The `l`-adic cyclotomic character of Γ composed with ℤ_l^× → O^×, for a commutative
+ℤ_l-algebra O.
+-/
+abbrev cyclotomicCharIn : Γ →* Oˣ :=
+  (map (algebraMap ℤ_[l] O).toMonoidHom).comp (cyclotomicChar (Γ := Γ) Ω l)
 
 end New
 

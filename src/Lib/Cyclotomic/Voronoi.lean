@@ -100,21 +100,25 @@ lemma exists_map_eq_bernoulli_sub_comp :
   linear_combination (d * N ^ j : ℚ) * hc - (_root_.bernoulli j * N ^ j) * hd_cast -
     ((e + 1)! * (e + 2).choose (k + 1) * _root_.bernoulli j : ℚ) * h_pow
 
-/-- Power sums along an arithmetic progression. For a natural number `a`, the number
+/--
+Power sums along an arithmetic progression. For a natural number `a`, the number
 `β = (e + 2)! N ^ (e + 1) B_{e+1}(a / N)` is an integer, and for every `u`,
-`(e + 2)! ∑_{i<u} (a + i N) ^ (e + 1) ≡ β u` modulo `u²`. -/
-theorem exists_sq_dvd_factorial_mul_sum_pow_sub (a : ℕ) :
-    ∃ β : ℤ,
-      (β : ℚ) = (e + 2)! * N ^ (e + 1) * (Polynomial.bernoulli (e + 1)).eval ((a : ℚ) / N) ∧
-      ∀ u : ℕ, (u : ℤ) ^ 2 ∣ (e + 2)! * ∑ i ∈ range u, ((a : ℤ) + i * N) ^ (e + 1) - β * u := by
+`(e + 2)! ∑_{i<u} (a + i N) ^ (e + 1) ≡ β u` modulo `u²`.
+-/
+theorem exists_sq_dvd_factorial_mul_sum_pow_sub (a : ℕ)
+    : ∃ β : ℤ,
+      (β : ℚ) = (e + 2)! * N ^ (e + 1) * (Polynomial.bernoulli (e + 1)).eval ((a : ℚ) / N)
+        ∧ ∀ u : ℕ, (u : ℤ) ^ 2 ∣ (e + 2)! * ∑ i ∈ range u, ((a : ℤ) + i * N) ^ (e + 1) - β * u := by
   -- Let `p = (e + 1)! N ^ (e + 2) (B_{e+2}(X / N) - B_{e+2}(0))`, so that `β = p'(a)`. Then
   -- `p(a + u N) - p(a)` is `N (e + 2)!` times the power sum, and it is `β u N` modulo `(u N)²`.
   have hN : (N : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr (ne N)
   obtain ⟨p, hp⟩ := exists_map_eq_bernoulli_sub_comp N e
   have h_eval (q : ℤ[X]) (t : ℤ) : ((q.eval t : ℤ) : ℚ) = (q.map (Int.castRingHom ℚ)).eval ↑t := by
     simp
-  have hp_eval (t : ℤ) : ((p.eval t : ℤ) : ℚ) = (e + 1)! * N ^ (e + 2) *
-      ((Polynomial.bernoulli (e + 2)).eval ((t : ℚ) / N) - _root_.bernoulli (e + 2)) := by
+  have hp_eval (t : ℤ)
+      : ((p.eval t : ℤ) : ℚ)
+        = (e + 1)! * N ^ (e + 2)
+          * ((Polynomial.bernoulli (e + 2)).eval ((t : ℚ) / N) - _root_.bernoulli (e + 2)) := by
     simp [h_eval, hp, div_eq_inv_mul]
   -- The difference equation of the Bernoulli polynomial.
   have h_step (t : ℤ) : p.eval (t + N) = p.eval t + N * ((e + 2)! * t ^ (e + 1)) := by
@@ -124,12 +128,12 @@ theorem exists_sq_dvd_factorial_mul_sum_pow_sub (a : ℕ) :
       show e + 2 - 1 = e + 1 from rfl, div_pow]
     push_cast
     field
-  have h_sum (u : ℕ) : p.eval (a + u * N : ℤ) =
-      p.eval (a : ℤ) + N * ((e + 2)! * ∑ i ∈ range u, ((a : ℤ) + i * N) ^ (e + 1)) := by
+  have h_sum (u : ℕ)
+      : p.eval (a + u * N : ℤ)
+        = p.eval (a : ℤ) + N * ((e + 2)! * ∑ i ∈ range u, ((a : ℤ) + i * N) ^ (e + 1)) := by
     induction u with
     | zero => simp
-    | succ u ih =>
-      simp [_root_.add_one_mul, ← add_assoc, h_step, ih, sum_range_succ, mul_add]
+    | succ u ih => simp [_root_.add_one_mul, ← add_assoc, h_step, ih, sum_range_succ, mul_add]
   refine ⟨p.derivative.eval (a : ℤ), ?_, fun u ↦ ?_⟩
   · rw [h_eval, ← derivative_map, hp, derivative_C_mul]
     simp [derivative_comp, derivative_bernoulli_add_one, factorial_succ (e + 1), div_eq_inv_mul]
@@ -138,22 +142,31 @@ theorem exists_sq_dvd_factorial_mul_sum_pow_sub (a : ℕ) :
     refine ⟨k * N, mul_left_cancel₀ (Nat.cast_ne_zero.mpr (ne N) : (N : ℤ) ≠ 0) ?_⟩
     linear_combination -h_sum u - hk
 
-/-- The Stickelberger property of `X` for `N` and `e`: a divisibility for each prime, and a
-congruence for the Stickelberger sums. -/
+/--
+The Stickelberger property of `X` for `N` and `e`: a divisibility for each prime, and a
+congruence for the Stickelberger sums.
+-/
 structure IsStickelbergerBound (X : ℕ) : Prop where
-  /-- For every prime `l`, some `c ≡ 1 mod N` prime to `l` has
-  `(c ^ e - 1) (c ^ (e + 1) - 1) ∣ X`. -/
-  exists_modEq_one_coprime_dvd {l : ℕ} (hl : l.Prime) :
-    ∃ c : ℕ, c ≡ 1 [MOD N] ∧ l.Coprime c ∧ (c ^ e - 1) * (c ^ (e + 1) - 1) ∣ X
-  /-- Let `c ≡ 1 mod N`, and let `ψ` be a character mod `N` with values in a domain `O` of
+  /--
+  For every prime `l`, some `c ≡ 1 mod N` prime to `l` has
+  `(c ^ e - 1) (c ^ (e + 1) - 1) ∣ X`.
+  -/
+  exists_modEq_one_coprime_dvd {l : ℕ} (hl : l.Prime)
+    : ∃ c : ℕ, c ≡ 1 [MOD N] ∧ l.Coprime c ∧ (c ^ e - 1) * (c ^ (e + 1) - 1) ∣ X
+  /--
+  Let `c ≡ 1 mod N`, and let `ψ` be a character mod `N` with values in a domain `O` of
   characteristic `0` and `ψ(-1) = -(-1) ^ e`. Then some `w` in `O`, the same for every `m`, has
   `(c ^ (e + 1) - 1) X ≡ 2 w ∑ ⌊c a / (N m)⌋ a ^ e ψ(a)` modulo `m` for all `m ≥ 1` prime to `c`,
-  the sum over `0 ≤ a < N m`. -/
-  exists_natCast_dvd_sub_mul_sum {c : ℕ} (hc : c ≡ 1 [MOD N]) (O : Type) [CommRing O] [IsDomain O]
-    [CharZero O] (ψ : DirichletCharacter O N) (hψ : ψ (-1) = -(-1) ^ e) :
-    ∃ w : O, ∀ (m : ℕ) [NeZero m], m.Coprime c →
-      (m : O) ∣
-        (c ^ (e + 1) - 1) * X - 2 * w * ∑ a ∈ range (N * m), ↑(c * a / (N * m)) * (a ^ e * ψ a)
+  the sum over `0 ≤ a < N m`.
+  -/
+  exists_natCast_dvd_sub_mul_sum
+    {c : ℕ} (hc : c ≡ 1 [MOD N])
+    (O : Type) [CommRing O] [IsDomain O] [CharZero O]
+    (ψ : DirichletCharacter O N) (hψ : ψ (-1) = - (-1) ^ e)
+    : ∃ w : O, ∀ (m : ℕ) [NeZero m],
+      m.Coprime c
+        → (m : O)
+          ∣ (c ^ (e + 1) - 1) * X - 2 * w * ∑ a ∈ range (N * m), ↑(c * a / (N * m)) * (a ^ e * ψ a)
 
 /-- The twisted Bernoulli sums are generalised Bernoulli numbers. Let `χ` be a Dirichlet character
 mod `N` with values in a `ℚ`-algebra, let `e ≥ 1`, and let `β a` be the integer
@@ -211,41 +224,51 @@ lemma sum_range_mul_eq_sum_sum {α : Type*} [AddCommMonoid α] (F : ℕ → α) 
     refine sum_congr rfl fun a _ ↦ ?_
     rw [sum_range_succ, add_comm (N * K) a, mul_comm N K]
 
-/-- Voronoi's congruence for the Stickelberger sums. Let `χ` be a character mod `N` with values in
+/--
+Voronoi's congruence for the Stickelberger sums. Let `χ` be a character mod `N` with values in
 a commutative ring without additive torsion, let `c ≡ 1 mod N` be prime to `m ≥ 1`, and let
 `β a = (e + 2)! N ^ (e + 1) B_{e+1}(a / N)`. Then
 `(e + 2)! (e + 1) N c ^ e ∑ ⌊c a / (N m)⌋ a ^ e χ(a) ≡ (c ^ (e + 1) - 1) ∑ χ(a) β a` modulo `m`,
-the first sum over `0 ≤ a < N m` and the second over `0 ≤ a < N`. -/
-theorem voronoi_congruence_bernoulli {O : Type*} [CommRing O] [HasUniqueDiv O]
-    (χ : DirichletCharacter O N) {m c : ℕ} [NeZero m] (hcm : m.Coprime c) (hcN : c ≡ 1 [MOD N])
-    (β : ℕ → ℤ) (hβ : ∀ a : ℕ,
-      (β a : ℚ) = (e + 2)! * N ^ (e + 1) * (Polynomial.bernoulli (e + 1)).eval ((a : ℚ) / N)) :
-    (m : O) ∣
-      (e + 2)! * (e + 1) * N * c ^ e * ∑ a ∈ range (N * m), ↑(c * a / (N * m)) * (a ^ e * χ a) -
-        (c ^ (e + 1) - 1) * ∑ a : ZMod N, χ a * β a.val := by
+the first sum over `0 ≤ a < N m` and the second over `0 ≤ a < N`.
+-/
+theorem voronoi_congruence_bernoulli
+    {O : Type*} [CommRing O] [HasUniqueDiv O]
+    (χ : DirichletCharacter O N)
+    {m c : ℕ} [NeZero m]
+    (hcm : m.Coprime c) (hcN : c ≡ 1 [MOD N])
+    (β : ℕ → ℤ)
+    (hβ : ∀ a : ℕ,
+      (β a : ℚ) = (e + 2)! * N ^ (e + 1) * (Polynomial.bernoulli (e + 1)).eval ((a : ℚ) / N))
+    : (m : O)
+      ∣ (e + 2)! * (e + 1) * N * c ^ e * ∑ a ∈ range (N * m), ↑(c * a / (N * m)) * (a ^ e * χ a)
+        - (c ^ (e + 1) - 1) * ∑ a : ZMod N, χ a * β a.val := by
   -- Multiply the congruence for power sums modulo `(N m)²` by `(e + 2)!`, replace
   -- `(e + 2)! ∑ χ(t) t ^ (e + 1)` by `m ∑ χ(a) β a` modulo `m²`, and divide by `m`.
   have h_range : ∀ (f : ℕ) [NeZero f] (F : ℕ → O), (range f).sum F = ∑ a : ZMod f, F a.val
     | _ + 1, _ => sum_range
-  have h_class (a : ℕ) : (m : O) ^ 2 ∣
-      χ a * ((e + 2)! * ∑ i ∈ range m, ((a : O) + i * N) ^ (e + 1) - β a * m) := by
+  have h_class (a : ℕ)
+      : (m : O) ^ 2 ∣ χ a * ((e + 2)! * ∑ i ∈ range m, ((a : O) + i * N) ^ (e + 1) - β a * m) := by
     obtain ⟨β', hβ', h_dvd⟩ := exists_sq_dvd_factorial_mul_sum_pow_sub N e a
     obtain rfl : β' = β a := Int.cast_injective (hβ'.trans (hβ a).symm)
     exact .mul_left (by simpa using map_dvd (Int.castRingHom O) (h_dvd m)) _
-  have h_split : (e + 2)! * ∑ t ∈ range (N * m), χ t * (t : O) ^ (e + 1) -
-      m * ∑ a ∈ range N, χ a * β a =
-      ∑ a ∈ range N, χ a * ((e + 2)! * ∑ i ∈ range m, ((a : O) + i * N) ^ (e + 1) - β a * m) := by
-    rw [sum_range_mul_eq_sum_sum, mul_sum, mul_sum, ← sum_sub_distrib]
-    refine sum_congr rfl fun a _ ↦ ?_
-    simp only [Nat.cast_add, Nat.cast_mul, natCast_self, mul_zero, add_zero, ← mul_sum]
-    ring
-  obtain ⟨w, hw⟩ : (m : O) ^ 2 ∣ (e + 2)! * ∑ t ∈ range (N * m), χ t * (t : O) ^ (e + 1) -
-      m * ∑ a ∈ range N, χ a * β a := by
+  have h_split
+      : (e + 2)! * ∑ t ∈ range (N * m), χ t * (t : O) ^ (e + 1) - m * ∑ a ∈ range N, χ a * β a
+        = ∑ a ∈ range N, χ a * ((e + 2)! * ∑ i ∈ range m, ((a : O) + i * N) ^ (e + 1) - β a * m) :=
+    by
+      rw [sum_range_mul_eq_sum_sum, mul_sum, mul_sum, ← sum_sub_distrib]
+      refine sum_congr rfl fun a _ ↦ ?_
+      simp only [Nat.cast_add, Nat.cast_mul, natCast_self, mul_zero, add_zero, ← mul_sum]
+      ring
+  obtain ⟨w, hw⟩
+      : (m : O) ^ 2
+        ∣ (e + 2)! * ∑ t ∈ range (N * m), χ t * (t : O) ^ (e + 1)
+          - m * ∑ a ∈ range N, χ a * β a := by
     simpa only [h_split] using dvd_sum fun a _ ↦ h_class a
-  obtain ⟨v, hv⟩ : ((N * m : ℕ) : O) ^ 2 ∣
-      (c ^ (e + 1) - 1) * ∑ t : ZMod (N * m), χ t.val * t.val ^ (e + 1) -
-        (e + 1) * c ^ e * (N * m : ℕ) *
-          ∑ t : ZMod (N * m), ↑(c * t.val / (N * m)) * (χ t.val * t.val ^ e) :=
+  obtain ⟨v, hv⟩
+      : ((N * m : ℕ) : O) ^ 2
+        ∣ (c ^ (e + 1) - 1) * ∑ t : ZMod (N * m), χ t.val * t.val ^ (e + 1)
+          - (e + 1) * c ^ e * (N * m : ℕ)
+            * ∑ t : ZMod (N * m), ↑(c * t.val / (N * m)) * (χ t.val * t.val ^ e) :=
     voronoi_congruence N e χ (f := N * m) rfl hcm hcN
   refine ⟨(c ^ (e + 1) - 1) * w - (e + 2)! * N ^ 2 * v, nsmul_right_injective (ne m) ?_⟩
   simp only [h_range, natCast_zmod_val, nsmul_eq_mul, Nat.cast_mul, mul_comm _ (χ _)] at hw hv ⊢

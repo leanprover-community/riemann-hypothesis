@@ -96,34 +96,36 @@ lemma New.Fock.norm_sq_le_norm_sq_add_norm_mulVec_add_sq {ι : Type} [Fintype ι
     _ ≤ 2 * ((‖M‖ * ‖toLp 2 (M.mulVec x) + toLp 2 y‖) ^ 2 + (‖M‖ * ‖toLp 2 x‖) ^ 2) := add_sq_le
     _ = _ := by ring
 
-/-- Let ι be nonempty, P a complex polynomial with P(cx) = c^d P(x) for real c, v = v_P its Fock
+/--
+Let ι be nonempty, P a complex polynomial with P(cx) = c^d P(x) for real c, v = v_P its Fock
 vector (`polyVector`), σ in U(ε), and y ≠ 0 in ℂ^ι. For natural numbers A ≥ d + |ι| and n,
 |⟨v, ϱ(y)ω(σ)v⟩| ≤ (4(A + n))^n |y|^{−2n} ‖σ‖^{|ι| + 2n} ⟨v, v⟩.
 Here ϱ = `realHeisenbergOp` is the Heisenberg action on the Fock space and ω = `realWeil` the Weil
 representation of U(ε), |y| = `‖toLp 2 y‖` is the Euclidean norm, ‖σ‖ the ℓ² operator norm of the
-matrix of σ, and ⟨v, v⟩ is real. -/
-theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [DecidableEq ι]
-    [Nonempty ι]
-    {ε : ι → ℤˣ} {P : MvPolynomial ι ℂ} {v : fockSpace ε} {y : ι → ℂ} (σ : USign (n := ι) ε)
-    (hv : v = polyVector ε P) {d A n : ℕ}
+matrix of σ, and ⟨v, v⟩ is real.
+-/
+theorem New.Fock.norm_fockInner_realHeisenbergOp_le
+    {ι : Type} [Fintype ι] [DecidableEq ι] [Nonempty ι]
+    {ε : ι → ℤˣ} {P : MvPolynomial ι ℂ} {v : fockSpace ε} {y : ι → ℂ}
+    (σ : USign (n := ι) ε) (hv : v = polyVector ε P)
+    {d A n : ℕ}
     (hP : ∀ (c : ℝ) (x : ι → ℂ), eval (c • x) P = c ^ d * eval x P) (hA : d + card ι ≤ A)
-    (hy : 0 < ‖toLp 2 y‖) :
-    ‖fockInner v (realHeisenbergOp y (realWeil σ v))‖ ≤
-      ‖(σ : Matrix ι ι ℂ)‖ ^ (card ι + 2 * n) * (fockInner v v).re * (4 * (A + n)) ^ n *
-        ‖toLp 2 y‖⁻¹ ^ (2 * n) := by
+    (hy : 0 < ‖toLp 2 y‖)
+    : ‖fockInner v (realHeisenbergOp y (realWeil σ v))‖
+      ≤ ‖(σ : Matrix ι ι ℂ)‖ ^ (card ι + 2 * n) * (fockInner v v).re * (4 * (A + n)) ^ n
+        * ‖toLp 2 y‖⁻¹ ^ (2 * n) := by
   -- The coefficient is at most `‖σ‖^|ι| ∫ ‖v x‖ ‖v (σ x + y)‖ dx`. Dilating by `c = √(n/A + 1)`
   -- takes a Gaussian factor out of `v`, which is small at `x` or at `σ x + y`; the rest is bounded
   -- by `2ab ≤ a² + b²`, which does the work of the Cauchy–Schwarz inequality as `a²` and `b²` have
   -- the same integral. The dilation costs the factor `c^(2(d + |ι|)) ≤ eⁿ`.
-  have A_ne : A ≠ 0 :=
-    (card_pos.trans_le ((Nat.le_add_left (card ι) d).trans hA)).ne'
+  have A_ne : A ≠ 0 := (card_pos.trans_le ((Nat.le_add_left (card ι) d).trans hA)).ne'
   let c : ℝ := √(n / A + 1)
   let v_scaled : fockSpace ε := (c : ℂ) ^ d • v
   let G (x : ι → ℂ) : ℝ := ‖v_scaled (c⁻¹ • x)‖ ^ 2
   let K : ℝ := (4 * (A + n) * ((‖(σ : Matrix ι ι ℂ)‖ / ‖toLp 2 y‖) ^ 2 / exp 1)) ^ n
   -- Homogeneity of `P`, and `1 - c⁻² = n / (n + A)`.
-  have norm_v (x : ι → ℂ) :
-      ‖v x‖ = ‖v_scaled (c⁻¹ • x)‖ / exp (‖toLp 2 x‖ ^ 2 / (n + A) / 2) ^ n := by
+  have norm_v (x : ι → ℂ)
+      : ‖v x‖ = ‖v_scaled (c⁻¹ • x)‖ / exp (‖toLp 2 x‖ ^ 2 / (n + A) / 2) ^ n := by
     simp (disch := positivity) [v_scaled, *, realVac, star_dotProduct_self_eq_norm_sq, sq, c,
       ← exp_natCast_mul, mul_assoc, ← exp_add, field, star_trivial, Complex.norm_exp]
   have G_int : Integrable G (normalizedVolume ι) :=
@@ -137,56 +139,64 @@ theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [De
       simp [field]
     have c_pow : (c ^ 2) ^ (card ι + d) ≤ exp n := by
       grw [sq_sqrt (by positivity), add_one_le_exp, ← exp_natCast_mul, exponent_le]
-    calc _ = (c ^ 2) ^ card ι * ((c ^ 2) ^ d * ∫ x, ‖v x‖ ^ 2 ∂normalizedVolume ι) := by
-          -- ↓ changes variables before simp rewrites inside the integral.
-          simp [G, ↓(normalizedVolume ι).integral_comp_inv_smul (‖v_scaled ·‖ ^ 2), v_scaled,
-            mul_pow, integral_const_mul, pow_mul, finrank_real_of_complex, pow_right_comm _ d]
+    calc
+      _ = (c ^ 2) ^ card ι * ((c ^ 2) ^ d * ∫ x, ‖v x‖ ^ 2 ∂normalizedVolume ι) := by
+        -- ↓ changes variables before simp rewrites inside the integral.
+        simp [G, ↓ (normalizedVolume ι).integral_comp_inv_smul (‖v_scaled ·‖ ^ 2), v_scaled,
+          mul_pow, integral_const_mul, pow_mul, finrank_real_of_complex, pow_right_comm _ d]
       _ ≤ _ := by grw [← mul_assoc, ← pow_add, c_pow]
   -- As `x` and `σ x + y` are not both small, the two denominators multiply to at least `K⁻¹`.
-  have pointwise (x : ι → ℂ) :
-      ‖v x‖ * ‖v ((σ : Matrix ι ι ℂ).mulVec x + y)‖ ≤ K / 2 * (G x + G (σ • x + y)) := by
-    let e : ℝ := ‖toLp 2 x‖ ^ 2 / (n + A) / 2 +
-      ‖toLp 2 ((σ : Matrix ι ι ℂ).mulVec x) + toLp 2 y‖ ^ 2 / (n + A) / 2
-    have one_le :
-        1 ≤ exp e * (4 * (A + n) * ((‖(σ : Matrix ι ι ℂ)‖ / ‖toLp 2 y‖) ^ 2 / exp 1)) := by
+  have pointwise (x : ι → ℂ)
+      : ‖v x‖ * ‖v ((σ : Matrix ι ι ℂ).mulVec x + y)‖ ≤ K / 2 * (G x + G (σ • x + y)) := by
+    let e : ℝ :=
+      ‖toLp 2 x‖ ^ 2 / (n + A) / 2
+        + ‖toLp 2 ((σ : Matrix ι ι ℂ).mulVec x) + toLp 2 y‖ ^ 2 / (n + A) / 2
+    have one_le
+        : 1 ≤ exp e * (4 * (A + n) * ((‖(σ : Matrix ι ι ℂ)‖ / ‖toLp 2 y‖) ^ 2 / exp 1)) := by
       grw [← exp_one_mul_le_exp]
       simp only [e]
       field_simp
       linear_combination 2 * (n + A) * norm_sq_le_norm_sq_add_norm_mulVec_add_sq σ x y
-    calc _ = ‖v_scaled (c⁻¹ • x)‖ * ‖v_scaled (c⁻¹ • (σ • x + y))‖ / exp e ^ n := by
-          simp [norm_v, unitary_smul_eq_mulVec, e, exp_add, mul_pow, div_mul_div_comm]
+    calc
+      _ = ‖v_scaled (c⁻¹ • x)‖ * ‖v_scaled (c⁻¹ • (σ • x + y))‖ / exp e ^ n := by
+        simp [norm_v, unitary_smul_eq_mulVec, e, exp_add, mul_pow, div_mul_div_comm]
       _ ≤ (G x + G (σ • x + y)) / 2 / exp e ^ n := by
-          gcongr
-          linarith [two_mul_le_add_sq ‖v_scaled (c⁻¹ • x)‖ ‖v_scaled (c⁻¹ • (σ • x + y))‖]
+        gcongr
+        linarith [two_mul_le_add_sq ‖v_scaled (c⁻¹ • x)‖ ‖v_scaled (c⁻¹ • (σ • x + y))‖]
       _ ≤ (G x + G (σ • x + y)) / 2 / exp e ^ n * (exp e ^ n * K) := by
-          grw [← mul_pow, ← one_le_pow₀ one_le, mul_one]
+        grw [← mul_pow, ← one_le_pow₀ one_le, mul_one]
       _ = _ := by field_simp
   -- By the reproducing property of the vacuum, the integrand below has the norm just bounded.
-  have integrand_le (x : ι → ℂ) :
-      ‖v x * fockInner (realHeisenbergOp (-y) v)
-        (realHeisenbergOp ((σ : Matrix ι ι ℂ).mulVec x) vacElem)‖ ≤
-        K / 2 * (G x + G (σ • x + y)) := by
+  have integrand_le (x : ι → ℂ)
+      : ‖v x * fockInner (realHeisenbergOp (-y) v)
+          (realHeisenbergOp ((σ : Matrix ι ι ℂ).mulVec x) vacElem)‖
+        ≤ K / 2 * (G x + G (σ • x + y)) := by
     rw [← conj_modelInner, modelInner_heisenbergOp_vacElem]
     simpa [norm_eq_one] using pointwise x
   -- Move `realHeisenbergOp y` to the left and write `realWeil σ v` as an integral of translated
   -- vacua.
-  have coeff_eq : ‖fockInner v (realHeisenbergOp y (realWeil σ v))‖ = ‖realMultiplier σ‖ *
-      ‖∫ x, v x * fockInner (realHeisenbergOp (-y) v)
-        (realHeisenbergOp ((σ : Matrix ι ι ℂ).mulVec x) vacElem)
-        ∂normalizedVolume ι‖ := by
+  have coeff_eq
+      : ‖fockInner v (realHeisenbergOp y (realWeil σ v))‖
+        = ‖realMultiplier σ‖
+          * ‖∫ x, v x * fockInner (realHeisenbergOp (-y) v)
+              (realHeisenbergOp ((σ : Matrix ι ι ℂ).mulVec x) vacElem)
+              ∂normalizedVolume ι‖ := by
     rw [← modelInner_heisenbergOp (-y), mul, neg_add_cancel, Rep.rho_zero_apply]
     simp [weilRep, map_integrated_eq_integral, realAction, self_eq_one]
   -- The multiplier has norm at most `‖σ‖^|ι|`, and both terms of the bound have integral `∫ G`,
   -- since `x ↦ σ x + y` preserves the measure.
   rw [coeff_eq]
-  calc _ ≤ ‖(σ : Matrix ι ι ℂ)‖ ^ card ι * (K / 2 *
-        (exp n * ∫ x, ‖v x‖ ^ 2 ∂normalizedVolume ι + exp n * ∫ x,
-          ‖v x‖ ^ 2 ∂normalizedVolume ι)) := by
-        have G_int' : Integrable (G ∘ (σ • · + y)) _ :=
-          preserving.integrable_comp_of_integrable G_int
-        grw [norm_integral_le_of_norm_le ((G_int.add G_int').const_mul (K / 2))
-          (.of_forall integrand_le), integral_const_mul, integral_add' G_int G_int',
-          preserving.hasLaw.integral_comp G_int.aestronglyMeasurable, norm_realMultiplier_le, G_le]
+  calc
+    _ ≤ ‖(σ : Matrix ι ι ℂ)‖ ^ card ι
+        * (K / 2
+          * (exp n * ∫ x, ‖v x‖ ^ 2 ∂normalizedVolume ι
+            + exp n
+              * ∫ x,
+                ‖v x‖ ^ 2 ∂normalizedVolume ι)) := by
+      have G_int' : Integrable (G ∘ (σ • · + y)) _ := preserving.integrable_comp_of_integrable G_int
+      grw [norm_integral_le_of_norm_le ((G_int.add G_int').const_mul (K / 2))
+        (.of_forall integrand_le), integral_const_mul, integral_add' G_int G_int',
+        preserving.hasLaw.integral_comp G_int.aestronglyMeasurable, norm_realMultiplier_le, G_le]
     _ = _ := by
       simp [modelInner_self, K, mul_pow, pow_mul, div_pow, pow_add, field, one_add_one_eq_two]
 
@@ -206,19 +216,25 @@ namespace New.Rows
 open NumberField Matrix ComplexConjugate Fock WeilData Norms.L2Operator Fintype Space G
   EuclideanSpace Complex BigOperators Modulus Finset Prod Set AddChar Circle
 
-variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  [Fintype n'] [DecidableEq n'] {s' : n' → ℤˣ}
-  {S : Space E n s} (T : Space E n' s')
+variable
+  {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} [Fintype n'] [DecidableEq n']
+  {s' : n' → ℤˣ} {S : Space E n s} (T : Space E n' s')
 
-/-- For a space `V` let `λ(V) = V.firstMinimum` be the minimum of `1` and the length of a shortest
+/--
+For a space `V` let `λ(V) = V.firstMinimum` be the minimum of `1` and the length of a shortest
 nonzero vector of the lattice of `V`. If the natural number `N ≠ 0` lies in the different of `E`,
 then `λ(S) λ(T) / (C |n'| |n|) ≤ λ(Hom (S, T))`, where `C = shortBasisConst E n N = 6 N (f |n|)²`
-and `f` is the number of infinite places of `E`. -/
-theorem firstMinimum_mul_le_hom [Nonempty n] [Nonempty n']
-    {S : Space E n s} (T : Space E n' s') {N : ℕ} [NeZero N]
-    (hN_mem : ↑N ∈ differentIdeal ℤ (𝓞 E)) :
-    S.firstMinimum * T.firstMinimum / (shortBasisConst E n N * Fintype.card n' * Fintype.card n) ≤
-      (S.hom T).firstMinimum := by
+and `f` is the number of infinite places of `E`.
+-/
+theorem firstMinimum_mul_le_hom
+    [Nonempty n] [Nonempty n']
+    {S : Space E n s}
+    (T : Space E n' s')
+    {N : ℕ} [NeZero N]
+    (hN_mem : ↑N ∈ differentIdeal ℤ (𝓞 E))
+    : S.firstMinimum * T.firstMinimum / (shortBasisConst E n N * Fintype.card n' * Fintype.card n)
+      ≤ (S.hom T).firstMinimum := by
   -- Read a nonzero lattice vector `z` of `Hom (S, T)` as a matrix and apply it to a short basis `Y`
   -- of the lattice of `S`. Some image is a nonzero lattice vector of `T`, so it has length at least
   -- `T.firstMinimum`; and its length is at most `card n' * card n * ‖z‖` times that of the basis
@@ -233,10 +249,12 @@ theorem firstMinimum_mul_le_hom [Nonempty n] [Nonempty n']
   let k : Matrix n' n (𝔸 E) := vecToMatrix ((S.hom T).vecAtPoint z)
   have vec_eq (y : n → E) : T.vecAtPoint (vecToMatrix z *ᵥ y) = k *ᵥ S.vecAtPoint y := by
     -- `z` is `matrixToVec (vecToMatrix z)` by definition.
-    simp [k, show (S.hom T).vecAtPoint z = matrixToVec (T.ratMap S (vecToMatrix z)) from
-      vecAtPoint_hom _ _ (vecToMatrix z), ratMap_mulVec_vecAtPoint]
-  have norm_k (w : InfinitePlace E) :
-      ‖k.map (·.1 w)‖ ≤ card n' * card n * ‖(S.hom T).archCoords z‖ :=
+    simp [k,
+      show (S.hom T).vecAtPoint z = matrixToVec (T.ratMap S (vecToMatrix z)) from
+        vecAtPoint_hom _ _ (vecToMatrix z),
+      ratMap_mulVec_vecAtPoint]
+  have norm_k (w : InfinitePlace E)
+      : ‖k.map (·.1 w)‖ ≤ card n' * card n * ‖(S.hom T).archCoords z‖ :=
     l2_opNorm_le_of_apply fun i j ↦ ((S.hom T).archCoords z).norm_apply_le (w, i, j)
   have k_int (i : n') (j : n) : (k i j).2 ∈ Ô E := hz (i, j)
   -- As `Y` is invertible and `z ≠ 0`, some basis vector has a nonzero image.
@@ -500,7 +518,8 @@ lemma modKernel_expect_traceChar {a b : AutChar E} {γ γ' : InfinitePlace E →
   simp [modKernel, pairTheta, mul_comm (conj _), h_real, expect, NNRat.smul_def, ← hv,
     div_eq_inv_mul, phase_cancel]
 
-/-- Let `S`, `T` be hermitian spaces over `E` with signs `s`, `s'`, let `g`, `h` be points of their
+/--
+Let `S`, `T` be hermitian spaces over `E` with signs `s`, `s'`, let `g`, `h` be points of their
 adelic unitary groups, and let `a`, `b` be characters of the unitary adeles of `E` with weights `γ`,
 `γ'` and tame parts `ψ`, `ψ'` (`HasWeight`). The class `WeilData E` fixes an imaginary element `j`
 of `E` and a finite idele `α` that makes `Ô E` self-dual for the pairing `ψ_f(j α ᾱ z z')`. Let
@@ -516,24 +535,27 @@ twisted by `a` and `b`. Then some `Ψ` has the property that, for all real point
 kernel at `(g u, h u')` is within `(100 (d + 2q) / m²) ^ q (‖u‖ ‖u'‖) ^ (3q) |⟨v, v⟩|` of
 `⟨v, Ω(u, u') v⟩`. Here `Ω` is the real Weil representation `realPairWeil γ γ'`, on the Fock space
 for the signs `(τ, (i, k)) ↦ s' i * s k`, and `‖u‖ = maxOpNorm u` is the largest operator norm of
-`u` at a place. -/
-theorem exists_norm_modKernel_sub_fockInner_le [Nonempty n] [Nonempty n']
+`u` at a place.
+-/
+theorem exists_norm_modKernel_sub_fockInner_le
+    [Nonempty n] [Nonempty n']
     {a b : AutChar E} {γ γ' : InfinitePlace E → ℤ}
     {ψ ψ' : (w : FinPlace E) → MulChar (ResField w) ℂ} {𝔪 : Modulus E} {g : G E s}
-    (ha : a.HasWeight γ ψ) (hb : b.HasWeight γ' ψ') {c : E} (hc_ne : c ≠ 0)
-    (hc : ∀ z : Ô E, 𝔪.reduction z = 0 → (c : 𝔸f E) * (α.val * z.val) ∈ Ô E) (h : G E s') (m : ℝ)
-    (q : ℕ) (hm_pos : 0 < m)
-    (hm : ∀ w : InfinitePlace E, m * ‖Φ w c‖ ≤
-      √(2 * Real.pi * (Φ w j).im) * ((S.move g).hom (T.move h)).firstMinimum)
+    (ha : a.HasWeight γ ψ) (hb : b.HasWeight γ' ψ')
+    {c : E} (hc_ne : c ≠ 0) (hc : ∀ z : Ô E, 𝔪.reduction z = 0 → (c : 𝔸f E) * (α.val * z.val) ∈ Ô E)
+    (h : G E s') (m : ℝ) (q : ℕ) (hm_pos : 0 < m)
+    (hm : ∀ w : InfinitePlace E,
+      m * ‖Φ w c‖ ≤ √(2 * Real.pi * (Φ w j).im) * ((S.move g).hom (T.move h)).firstMinimum)
     (hq : Fintype.card (InfinitePlace E × n' × n) < q)
-    (Q : MvPolynomial (InfinitePlace E × n' × n) ℂ) {v : fockSpace (realSigns E (homSigns s s'))}
-    (hv : v = polyVector (realSigns E (homSigns s s')) Q) (d : ℕ)
-    (hQ : ∀ (r : ℝ) (x : InfinitePlace E × n' × n → ℂ), Q.eval (r • x) = r ^ d * Q.eval x) :
-    ∃ Ψ : Matrix n' n 𝔪.ResidueRing → ℂ, ∀ (u : GInf E s) (u' : GInf E s'),
+    (Q : MvPolynomial (InfinitePlace E × n' × n) ℂ)
+    {v : fockSpace (realSigns E (homSigns s s'))}
+    (hv : v = polyVector (realSigns E (homSigns s s')) Q)
+    (d : ℕ) (hQ : ∀ (r : ℝ) (x : InfinitePlace E × n' × n → ℂ), Q.eval (r • x) = r ^ d * Q.eval x)
+    : ∃ Ψ : Matrix n' n 𝔪.ResidueRing → ℂ, ∀ (u : GInf E s) (u' : GInf E s'),
       ‖modKernel S T a b 𝔪 Ψ Q (g * (u, 1)) (h * (u', 1)) -
-          fockInner v (realPairWeil γ γ' (u, u') v)‖ ≤
-        maxOpNorm u' ^ (3 * q) * (100 * (d + 2 * q) / m ^ 2) ^ q * ‖fockInner v v‖ *
-          maxOpNorm u ^ (3 * q) := by
+          fockInner v (realPairWeil γ γ' (u, u') v)‖
+        ≤ maxOpNorm u' ^ (3 * q) * (100 * (d + 2 * q) / m ^ 2) ^ q * ‖fockInner v v‖
+          * maxOpNorm u ^ (3 * q) := by
   classical
   -- Take for `Ψ` the mean of the characters `traceChar t`, weighted by the conjugates of their
   -- kernels at `(g, h)`. Its kernel is a mean of products of thetas, hence a sum of terms `term y`
@@ -543,32 +565,34 @@ theorem exists_norm_modKernel_sub_fockInner_le [Nonempty n] [Nonempty n']
   let p : G E (homSigns s s') := G.onHom (g, h)
   let V : Space E (n' × n) (homSigns s s') := (S.hom T).move p
   rw [show (S.move g).hom (T.move h) = V by
-    simp [V, p, move, Space.hom, Units.ext_iff, mul_kronecker_mul, G.onHom]] at hm
+      simp [V, p, move, Space.hom, Units.ext_iff, mul_kronecker_mul, G.onHom]]
+    at hm
   let L : Set (n' × n → E) := {y | c • y ∈ V.baseLattice ∧ y ≠ 0}
   let len (y : n' × n → E) : ℝ := ‖WithLp.toLp 2 (realCoord (V.vecAtPoint y))‖
-  obtain ⟨h_far, h_summable, h_tsum⟩ : (∀ y : L, m ≤ len y) ∧
-      Summable (fun y : L ↦ (len y)⁻¹ ^ (2 * q)) ∧
-      ∑' y : L, (len y)⁻¹ ^ (2 * q) ≤ (5 / m) ^ (2 * q) :=
+  obtain ⟨h_far, h_summable, h_tsum⟩
+      : (∀ y : L, m ≤ len y) ∧ Summable (fun y : L ↦ (len y)⁻¹ ^ (2 * q))
+        ∧ ∑' y : L, (len y)⁻¹ ^ (2 * q) ≤ (5 / m) ^ (2 * q) :=
     tsum_inv_norm_realCoord_pow_le V hc_ne hm_pos hm hq
   -- The mean over `t` of the products of thetas is a sum over rational vectors.
   let w : fockSpace (realSigns E (homSigns s s')) := realPairWeil γ γ' (u, u') v
-  let φ (t : Matrix n n' 𝔪.ResidueRing) (f : fockSpace (realSigns E (homSigns s s'))) :
-    𝒮 (S.hom T) :=
+  let φ (t : Matrix n n' 𝔪.ResidueRing) (f : fockSpace (realSigns E (homSigns s s')))
+      : 𝒮 (S.hom T) :=
     (S.hom T).ω p (modDatum S T 𝔪 (traceChar t) f)
-  let mean : ℂ := (∑ t, (S.hom T).θ (φ t w) * conj ((S.hom T).θ (φ t v))) /
-    card (Matrix n n' 𝔪.ResidueRing)
+  let mean : ℂ :=
+    (∑ t, (S.hom T).θ (φ t w) * conj ((S.hom T).θ (φ t v))) / card (Matrix n n' 𝔪.ResidueRing)
   let term (y : n' × n → E) : ℂ :=
-    (∑ t, (S.hom T).dataInner (φ t v) ((S.hom T).ϱ ((S.hom T).vecAtPoint y) (φ t w))) /
-      card (Matrix n n' 𝔪.ResidueRing)
+    (∑ t, (S.hom T).dataInner (φ t v) ((S.hom T).ϱ ((S.hom T).vecAtPoint y) (φ t w)))
+      / card (Matrix n n' 𝔪.ResidueRing)
   have h_sum : HasSum term mean :=
     (hasSum_sum fun t _ ↦ hasSum_dataInner _ (φ t w) (φ t v)).div_const _
   let x (y : n' × n → E) : n' × n → 𝔸 E := V.vecAtPoint y
-  let χ (y : n' × n → E) : Circle :=
-    ψf E ((traceOne * j / 2 : E) * ∑ i, star (x y i).2 * (x y i).2)
-  have term_eq (y : n' × n → E) : term y =
-      if ∃ hx : ∀ i, finCoord (x y) i ∈ Ô E, ∀ i, 𝔪.reduction ⟨finCoord (x y) i, hx i⟩ = 0 then
-        fockInner v (realHeisenbergOp (realCoord (x y)) w) * χ y
-      else 0 :=
+  let χ (y : n' × n → E) : Circle := ψf E ((traceOne * j / 2 : E) * ∑ i, star (x y i).2 * (x y i).2)
+  have term_eq (y : n' × n → E)
+      : term y
+        = if ∃ hx : ∀ i, finCoord (x y) i ∈ Ô E, ∀ i, 𝔪.reduction ⟨finCoord (x y) i, hx i⟩ = 0 then
+            fockInner v (realHeisenbergOp (realCoord (x y)) w) * χ y
+          else
+            0 :=
     sum_dataInner_traceChar_div_card T p v w y
   -- By `hc`, the condition in `term_eq` puts `c • y` in the lattice.
   have h_supp : Function.support (fun y ↦ if y = 0 then 0 else term y) ⊆ L := by
@@ -583,24 +607,26 @@ theorem exists_norm_modKernel_sub_fockInner_le [Nonempty n] [Nonempty n']
   set dim : ℕ := card (InfinitePlace E × n' × n)
   let σ : USign (realSigns E (homSigns s s')) := pairHomInf (u, u')
   let normσ : ℝ := ‖(σ : Matrix (InfinitePlace E × n' × n) (InfinitePlace E × n' × n) ℂ)‖
-  have term_le (y : L) :
-      ‖if y.val = 0 then 0 else term y‖ ≤
-        normσ ^ (dim + 2 * q) * (fockInner v v).re * (4 * ((d + dim : ℕ) + q)) ^ q *
-          (len y)⁻¹ ^ (2 * q) := by
-    calc _ ≤ ‖fockInner v (realHeisenbergOp (realCoord (x y)) (realWeil σ v))‖ := by
-          rw [term_eq]
-          split_ifs <;> simp [w, σ, realPairWeil, prod_mul_distrib, norm_coe]
+  have term_le (y : L)
+      : ‖if y.val = 0 then 0 else term y‖
+        ≤ normσ ^ (dim + 2 * q) * (fockInner v v).re * (4 * ((d + dim : ℕ) + q)) ^ q
+          * (len y)⁻¹ ^ (2 * q) := by
+    calc
+      _ ≤ ‖fockInner v (realHeisenbergOp (realCoord (x y)) (realWeil σ v))‖ := by
+        rw [term_eq]
+        split_ifs <;> simp [w, σ, realPairWeil, prod_mul_distrib, norm_coe]
       _ ≤ _ := norm_fockInner_realHeisenbergOp_le σ hv hQ le_rfl (hm_pos.trans_le (h_far y))
   have h_zero : term 0 = fockInner v w := by
     simp [term_eq, x, χ, finCoord, ← ZeroMemClass.zero_def, realCoord.eq_unfold, ← Pi.zero_def]
   rw [modKernel_expect_traceChar T ha hb g h Q hv u u', ← h_zero]
   -- Sum the bounds of the terms, use `dim ≤ q`, and collect the constants: `100 = 4 * 5 ^ 2`.
-  calc ‖mean - term 0‖
-      ≤ normσ ^ (dim + 2 * q) * (fockInner v v).re * (4 * ((d + dim : ℕ) + q)) ^ q *
-          ∑' y : L, (len y)⁻¹ ^ (2 * q) :=
-        h_rest.norm_le_of_bounded (h_summable.hasSum.mul_left _) term_le
-    _ ≤ (maxOpNorm u * maxOpNorm u') ^ (q + 2 * q) * ‖fockInner v v‖ * (4 * ((d + q : ℕ) + q)) ^ q *
-        (5 / m) ^ (2 * q) := by
+  calc
+    ‖mean - term 0‖
+        ≤ normσ ^ (dim + 2 * q) * (fockInner v v).re * (4 * ((d + dim : ℕ) + q)) ^ q
+          * ∑' y : L, (len y)⁻¹ ^ (2 * q) :=
+      h_rest.norm_le_of_bounded (h_summable.hasSum.mul_left _) term_le
+    _ ≤ (maxOpNorm u * maxOpNorm u') ^ (q + 2 * q) * ‖fockInner v v‖ * (4 * ((d + q : ℕ) + q)) ^ q
+        * (5 / m) ^ (2 * q) := by
       have one_le : 1 ≤ normσ := U.one_le_norm σ
       have normσ_le : normσ ≤ maxOpNorm u * maxOpNorm u' := norm_pairHomInf_le_mul u u'
       grw [re_le_norm, h_tsum, hq, hq, normσ_le]
@@ -634,10 +660,15 @@ open MeasureTheory Matrix Norms.L2Operator Finset Fintype AddCircle NumberField
 
 namespace New.Rows
 
-/-- A point of the archimedean unitary group has operator norm at least `1` at every place, so the
-largest of these norms is at least `1`. -/
-@[bound] theorem one_le_maxOpNorm {E n : Type} [Field E] [NumberField E] [Fintype n]
-    [DecidableEq n] [Nonempty n] {s : n → ℤˣ} (h : GInf E s) : 1 ≤ maxOpNorm h := by
+/--
+A point of the archimedean unitary group has operator norm at least `1` at every place, so the
+largest of these norms is at least `1`.
+-/
+@[bound]
+theorem one_le_maxOpNorm
+    {E n : Type} [Field E] [NumberField E] [Fintype n] [DecidableEq n] [Nonempty n]
+    {s : n → ℤˣ} (h : GInf E s)
+    : 1 ≤ maxOpNorm h := by
   obtain ⟨w⟩ : Nonempty (InfinitePlace E) := inferInstance
   exact (U.one_le_norm (h w)).trans (norm_le_pi_norm (fun w ↦ (h w : Matrix n n ℂ)) w)
 
@@ -680,7 +711,8 @@ lemma two_pow_mul_pow_f_le_b_pow_nStar {P : Parameters} (D : Data P) :
     _ ≤ D.b ^ (D.f * D.t ^ 3) * D.b ^ (D.f * (D.t * D.t ^ 2)) := by gcongr
     _ = _ := by ring
 
-variable {P : Parameters} {D : Data P} {n : Type} [Fintype n] [DecidableEq n] [Nonempty n]
+variable
+  {P : Parameters} {D : Data P} {n : Type} [Fintype n] [DecidableEq n] [Nonempty n]
   {s : n → ℤˣ} {o : n → ℤ} {u u' : D.Φ → n → ℤ}
 
 attribute [fun_prop] IsHolOfWeight IsHolOfWeight.continuous
@@ -815,98 +847,116 @@ lemma integral_norm_holMinorsPi_sq_pos (h_rank : card n ≤ D.t) (ho : IsPosFirs
   simpa only [integral_norm_holMinorsPi_sq_eq_inv_prod hl_coeff, inv_pos] using
     (prod_pos fun τ _ ↦ formalDegree_pos (hl_gap τ))
 
-/-- Let `D` be admissible data, `b = D.b`, `t = D.t`, `n_* = nStar D`, and let the rank satisfy
+/--
+Let `D` be admissible data, `b = D.b`, `t = D.t`, `n_* = nStar D`, and let the rank satisfy
 `1 ≤ n ≤ t`. Let the order `o` put the signs `+1` first. Let the weights `u τ`, `u' τ` at the
 infinite places `τ` be dominant within each sign block, with gap `300 n_*` between the blocks, and
 let `u` have entries of modulus at most `5 b`. Write `m_u = holMinorsPi s u` for the product of
 quotients of minors of weight `u`, and `|h| = maxOpNorm h` for the largest operator norm of `h` at
 a place. Then `∫ |m_u|² > 0`, and `|m_u'(h)| |h| ^ (6 n_*)` is integrable with integral at most
-`b ^ n_* ∫ |m_u|²`. -/
-theorem integral_norm_holMinorsPi_mul_pow_le (h_rank : card n ≤ D.t) (ho : IsPosFirstOrder s o)
-    (hu_dom : ∀ τ : D.Φ, IsKDominant s o (u τ)) (hu'_dom : ∀ τ : D.Φ, IsKDominant s o (u' τ))
+`b ^ n_* ∫ |m_u|²`.
+-/
+theorem integral_norm_holMinorsPi_mul_pow_le
+    (h_rank : card n ≤ D.t) (ho : IsPosFirstOrder s o) (hu_dom : ∀ τ : D.Φ, IsKDominant s o (u τ))
+    (hu'_dom : ∀ τ : D.Φ, IsKDominant s o (u' τ))
     (hu_gap : ∀ τ : D.Φ, HasHolGap s (u τ) (300 * nStar D))
     (hu'_gap : ∀ τ : D.Φ, HasHolGap s (u' τ) (300 * nStar D))
-    (hu_le : ∀ (τ : D.Φ) (i : n), |(u τ i : ℝ)| ≤ 5 * D.b) :
-    0 < ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2 ∧
-    Integrable (fun h : GInf D.E s ↦ ‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)) ∧
-    ∫ h : GInf D.E s, ‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D) ≤
-      D.b ^ nStar D * ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2 := by
-  refine ⟨integral_norm_holMinorsPi_sq_pos h_rank ho hu_dom hu_gap,
-    integrable_norm_holMinorsPi_mul_pow h_rank ho hu'_dom hu'_gap, ?_⟩
+    (hu_le : ∀ (τ : D.Φ) (i : n), |(u τ i : ℝ)| ≤ 5 * D.b)
+    : 0 < ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2
+      ∧ Integrable (fun h : GInf D.E s ↦ ‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D))
+      ∧ ∫ h : GInf D.E s, ‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)
+        ≤ D.b ^ nStar D * ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2 := by
+  refine ⟨
+    integral_norm_holMinorsPi_sq_pos h_rank ho hu_dom hu_gap,
+    integrable_norm_holMinorsPi_mul_pow h_rank ho hu'_dom hu'_gap,
+    ?_
+  ⟩
   -- At each place the factors of `m_u` and `m_u'` are discrete series coefficients. So the
   -- integrand is at most `2 ^ (6 n_*) ∫ |m_u|²` times a product of tails
   -- `deg * (2 / ‖g‖) ^ (10 n³)`; the formal degrees are those of `u`, with product `(∫ |m_u|²)⁻¹`.
   let l (τ : D.Φ) : HCParam s := 2 * u τ + twoRho (-o) ⊤
-  obtain ⟨hl_gap, hl_coeff⟩ : (∀ τ, (l τ).HasLargeGap (8 * nStar D)) ∧
-      ∀ (τ : D.Φ) (g : USign s), (l τ).dsCoeff g = holMinors s (u τ) g :=
+  obtain ⟨hl_gap, hl_coeff⟩
+      : (∀ τ, (l τ).HasLargeGap (8 * nStar D))
+        ∧ ∀ (τ : D.Φ) (g : USign s), (l τ).dsCoeff g = holMinors s (u τ) g :=
     forall_and.1 fun τ ↦ hasLargeGap_and_dsCoeff_eq_holMinors h_rank ho (hu_dom τ) (hu_gap τ)
   let tail (τ : D.Φ) (g : USign s) : ℝ :=
     (l τ).formalDegree * (2 / ‖(g : Matrix n n ℂ)‖) ^ (10 * card n ^ 3)
-  obtain ⟨htail_int, htail_le⟩ : (∀ τ : D.Φ, Integrable (tail τ)) ∧
-      ∀ τ : D.Φ, ∫ g, tail τ g ≤ 2 ^ (13 * D.t ^ 3) * D.b ^ (14 * D.t ^ 2) :=
+  obtain ⟨htail_int, htail_le⟩
+      : (∀ τ : D.Φ, Integrable (tail τ))
+        ∧ ∀ τ : D.Φ, ∫ g, tail τ g ≤ 2 ^ (13 * D.t ^ 3) * D.b ^ (14 * D.t ^ 2) :=
     forall_and.1 fun τ ↦ integrable_tail_and_integral_le h_rank rfl (hl_gap τ) (hu_le τ)
   set I : ℝ := ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2
   have hI : I = (∏ τ, (l τ).formalDegree)⁻¹ := integral_norm_holMinorsPi_sq_eq_inv_prod hl_coeff
   have hdeg_pos (τ : D.Φ) : 0 < (l τ).formalDegree := formalDegree_pos (hl_gap τ)
-  have hbound (h : GInf D.E s) : ‖‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)‖ ≤
-      2 ^ (6 * nStar D) * I * ∏ τ, tail τ (h τ) := by
+  have hbound (h : GInf D.E s)
+      : ‖‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)‖
+        ≤ 2 ^ (6 * nStar D) * I * ∏ τ, tail τ (h τ) := by
     rw [Real.norm_of_nonneg (by positivity), hI, prod_mul_distrib, mul_assoc,
       inv_mul_cancel_left₀ (prod_pos fun τ _ ↦ hdeg_pos τ).ne']
     exact norm_holMinorsPi_mul_pow_le h_rank ho hu'_dom hu'_gap h
   have hI_pos : 0 < I := integral_norm_holMinorsPi_sq_pos h_rank ho hu_dom hu_gap
-  calc _ ≤ ∫ h : GInf D.E s, 2 ^ (6 * nStar D) * I * ∏ τ, tail τ (h τ) :=
-        (le_abs_self _).trans (norm_integral_le_of_norm_le
-          ((Integrable.fintype_prod htail_int).const_mul _) (.of_forall hbound))
+  calc
+    _ ≤ ∫ h : GInf D.E s, 2 ^ (6 * nStar D) * I * ∏ τ, tail τ (h τ) :=
+      (le_abs_self _).trans
+        (norm_integral_le_of_norm_le ((Integrable.fintype_prod htail_int).const_mul _)
+          (.of_forall hbound))
     _ = 2 ^ (6 * nStar D) * (∏ τ, ∫ g, tail τ g) * I := by
-        rw [integral_const_mul, integral_fintype_prod_volume_eq_prod, mul_right_comm]
+      rw [integral_const_mul, integral_fintype_prod_volume_eq_prod, mul_right_comm]
     _ ≤ 2 ^ (6 * nStar D) * (∏ _τ : D.Φ, 2 ^ (13 * D.t ^ 3) * D.b ^ (14 * D.t ^ 2)) * I := by
-        gcongr with τ
-        exacts [fun τ _ ↦ integral_nonneg fun g ↦ mul_nonneg (hdeg_pos τ).le (by positivity),
-          htail_le τ]
+      gcongr with τ
+      exacts [fun τ _ ↦ integral_nonneg fun g ↦ mul_nonneg (hdeg_pos τ).le (by positivity),
+        htail_le τ]
     _ ≤ D.b ^ nStar D * I := by grw [prod_const, card_univ, D.two_pow_mul_pow_f_le_b_pow_nStar]
 
-/-- Let `D` be admissible data (`Data P`), `b = D.b`, `t = D.t`, `n_* = nStar D`, and let the index
+/--
+Let `D` be admissible data (`Data P`), `b = D.b`, `t = D.t`, `n_* = nStar D`, and let the index
 type `n` be nonempty with `card n ≤ t`. Let `s` be signs and let the order `o` put the indices of
 sign `+1` first. Let the weights `u`, `u'` be K-dominant for `o` within each sign block, with gap
 `300 n_*` between the blocks, and let the entries of `u` be at most `5 b` in modulus. Write
 `m_u = holMinorsPi s u` and `|h| = maxOpNorm h` for `h` in `GInf D.E s`. If `A` is continuous on
 `GInf D.E s` and `|A h| ≤ C |h| ^ (6 n_*)`, then `A m_u'` is integrable and
-`|∫ A m_u'| ≤ C b ^ n_* ∫ |m_u|²`. -/
-theorem integrable_mul_holMinorsPi (h_rank : card n ≤ D.t) (ho : IsPosFirstOrder s o)
-    (hu_dom : ∀ τ : D.Φ, IsKDominant s o (u τ)) (hu'_dom : ∀ τ : D.Φ, IsKDominant s o (u' τ))
+`|∫ A m_u'| ≤ C b ^ n_* ∫ |m_u|²`.
+-/
+theorem integrable_mul_holMinorsPi
+    (h_rank : card n ≤ D.t) (ho : IsPosFirstOrder s o) (hu_dom : ∀ τ : D.Φ, IsKDominant s o (u τ))
+    (hu'_dom : ∀ τ : D.Φ, IsKDominant s o (u' τ))
     (hu_gap : ∀ τ : D.Φ, HasHolGap s (u τ) (300 * nStar D))
     (hu'_gap : ∀ τ : D.Φ, HasHolGap s (u' τ) (300 * nStar D))
     (hu_le : ∀ (τ : D.Φ) (i : n), |(u τ i : ℝ)| ≤ 5 * D.b)
-    {A : GInf D.E s → ℂ} {C : ℝ} (hA : Continuous A)
-    (hA_le : ∀ h : GInf D.E s, ‖A h‖ ≤ C * maxOpNorm h ^ (6 * nStar D)) :
-    Integrable (A * holMinorsPi s u') ∧
-    ‖∫ h : GInf D.E s, A h * holMinorsPi s u' h‖ ≤
-      C * D.b ^ nStar D * ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2 := by
-  obtain ⟨-, hint, hle⟩ : 0 < ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2 ∧
-      Integrable (fun h : GInf D.E s ↦ ‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)) ∧
-      ∫ h : GInf D.E s, ‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D) ≤
-        D.b ^ nStar D * ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2 :=
+    {A : GInf D.E s → ℂ} {C : ℝ}
+    (hA : Continuous A) (hA_le : ∀ h : GInf D.E s, ‖A h‖ ≤ C * maxOpNorm h ^ (6 * nStar D))
+    : Integrable (A * holMinorsPi s u')
+      ∧ ‖∫ h : GInf D.E s, A h * holMinorsPi s u' h‖
+        ≤ C * D.b ^ nStar D * ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2 := by
+  obtain ⟨-, hint, hle⟩
+      : 0 < ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2
+        ∧ Integrable (fun h : GInf D.E s ↦ ‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D))
+        ∧ ∫ h : GInf D.E s, ‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)
+          ≤ D.b ^ nStar D * ∫ h : GInf D.E s, ‖holMinorsPi s u h‖ ^ 2 :=
     integral_norm_holMinorsPi_mul_pow_le h_rank ho hu_dom hu'_dom hu_gap hu'_gap hu_le
   have hC : 0 ≤ C := by simpa [maxOpNorm] using (norm_nonneg _).trans (hA_le 1)
   have hcont : Continuous (holMinorsPi s u') := (isHolOfWeight_holMinorsPi ho hu'_dom).continuous
-  have hbound (h : GInf D.E s) : ‖A h * holMinorsPi s u' h‖ ≤
-      C * (‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)) := by
+  have hbound (h : GInf D.E s)
+      : ‖A h * holMinorsPi s u' h‖ ≤ C * (‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)) := by
     grw [norm_mul, hA_le, mul_assoc, mul_comm (maxOpNorm h ^ _)]
   refine ⟨(hint.const_mul C).mono' (by fun_prop) (.of_forall hbound), ?_⟩
-  calc _ ≤ ∫ h : GInf D.E s, C * (‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)) :=
-        norm_integral_le_of_norm_le (hint.const_mul C) (.of_forall hbound)
+  calc
+    _ ≤ ∫ h : GInf D.E s, C * (‖holMinorsPi s u' h‖ * maxOpNorm h ^ (6 * nStar D)) :=
+      norm_integral_le_of_norm_le (hint.const_mul C) (.of_forall hbound)
     _ ≤ _ := by grw [integral_const_mul, hle, mul_assoc]
 
-/-- Let `D : Data P`, `t = D.t`, `n_* = nStar D`, and let the rank satisfy `1 ≤ n ≤ t`. Let the
+/--
+Let `D : Data P`, `t = D.t`, `n_* = nStar D`, and let the rank satisfy `1 ≤ n ≤ t`. Let the
 order `o` put the signs `+1` first, and let the weights `u τ` be dominant within each sign block,
 with gap `300 n_*` between the blocks. Then `holMinorsPi s u`, the product of quotients of minors of
-weight `u`, is integrable. -/
-theorem integrable_holMinorsPi (h_rank : card n ≤ D.t) (ho : IsPosFirstOrder s o)
-    (hu_dom : ∀ τ : D.Φ, IsKDominant s o (u τ))
-    (hu_gap : ∀ τ : D.Φ, HasHolGap s (u τ) (300 * nStar D)) :
-    Integrable (holMinorsPi s u) := by
-  have hbound (h : GInf D.E s) :
-      ‖holMinorsPi s u h‖ ≤ ‖holMinorsPi s u h‖ * maxOpNorm h ^ (6 * nStar D) :=
+weight `u`, is integrable.
+-/
+theorem integrable_holMinorsPi
+    (h_rank : card n ≤ D.t) (ho : IsPosFirstOrder s o) (hu_dom : ∀ τ : D.Φ, IsKDominant s o (u τ))
+    (hu_gap : ∀ τ : D.Φ, HasHolGap s (u τ) (300 * nStar D))
+    : Integrable (holMinorsPi s u) := by
+  have hbound (h : GInf D.E s)
+      : ‖holMinorsPi s u h‖ ≤ ‖holMinorsPi s u h‖ * maxOpNorm h ^ (6 * nStar D) :=
     le_mul_of_one_le_right (norm_nonneg _) (one_le_pow₀ (one_le_maxOpNorm h))
   exact (integrable_norm_holMinorsPi_mul_pow h_rank ho hu_dom hu_gap).mono'
     (isHolOfWeight_holMinorsPi ho hu_dom).continuous.aestronglyMeasurable (.of_forall hbound)
@@ -983,7 +1033,8 @@ lemma integral_mul_norm_apply_one_mul_le (ho : IsPosFirstOrder s o)
         norm_integral_le_of_norm_le_const (h_int.prod_right_ae.mono h_le)
     _ = B := by simp [Measure.real]
 
-/-- Let `D` be admissible data (`Data`), of which only these are used: the CM field `E = D.E`, the
+/--
+Let `D` be admissible data (`Data`), of which only these are used: the CM field `E = D.E`, the
 set `D.Φ` of its `f` infinite places `τ`, the number `t = D.t`, the weight `b = D.b`, which is very
 large against `t`, and `n_* = nStar D = 2 f t³`. For signs `s` on `n` indices, `1 ≤ n ≤ t`, the
 group `GInf D.E s` is the product of the groups `U(diag s)` over `τ`, with its Haar measure `dh`,
@@ -997,20 +1048,23 @@ norm of `h` at a place.
 Let `F` on `G D.E s` be continuous and holomorphic of weight `u` in the archimedean variable, with a
 peak `z` (`F` is bounded and `|F z|` exceeds half of `sup |F|`), and let `K₀` be bounded. Suppose
 that at every peak `x` we have `∫ conj F(x h) K(h) m_u'(h) dh = 0` for some `K` that is holomorphic
-of weight `u - u'` and has `|K h - K₀ h| ≤ δ |h| ^ (6 n_*)`. Then `|K₀ 1| ≤ (4 b ^ n_* + 1) δ`. -/
-theorem norm_apply_one_le_of_forall_isPeak (h_rank : card n ≤ D.t) (ho : IsPosFirstOrder s o)
-    (hu_dom : ∀ τ : D.Φ, IsKDominant s o (u τ)) (hu'_dom : ∀ τ : D.Φ, IsKDominant s o (u' τ))
+of weight `u - u'` and has `|K h - K₀ h| ≤ δ |h| ^ (6 n_*)`. Then `|K₀ 1| ≤ (4 b ^ n_* + 1) δ`.
+-/
+theorem norm_apply_one_le_of_forall_isPeak
+    (h_rank : card n ≤ D.t) (ho : IsPosFirstOrder s o) (hu_dom : ∀ τ : D.Φ, IsKDominant s o (u τ))
+    (hu'_dom : ∀ τ : D.Φ, IsKDominant s o (u' τ))
     (hu_gap : ∀ τ : D.Φ, HasHolGap s (u τ) (300 * nStar D))
     (hu'_gap : ∀ τ : D.Φ, HasHolGap s (u' τ) (300 * nStar D))
     (hu_le : ∀ (τ : D.Φ) (i : n), |(u τ i : ℝ)| ≤ 5 * D.b)
-    {F : New.G D.E s → ℂ} {z : New.G D.E s} {K₀ : GInf D.E s → ℂ} {C δ : ℝ}
-    (hF : Continuous F) (hF_hol : IsAdelicHol o u F) (hz : IsPeak F z)
-    (hK₀_le : ∀ h : GInf D.E s, ‖K₀ h‖ ≤ C)
-    (h_orth : ∀ x : New.G D.E s, IsPeak F x → ∃ K : GInf D.E s → ℂ,
-      IsHolOfWeight s o (u - u') K ∧
-      (∀ h : GInf D.E s, ‖K h - K₀ h‖ ≤ δ * maxOpNorm h ^ (6 * nStar D)) ∧
-      ∫ h : GInf D.E s, star (F (x * (h, 1))) * K h * holMinorsPi s u' h = 0) :
-    ‖K₀ 1‖ ≤ (4 * D.b ^ nStar D + 1) * δ := by
+    {F : New.G D.E s → ℂ} {z : New.G D.E s} {K₀ : GInf D.E s → ℂ} {C δ : ℝ} (hF : Continuous F)
+    (hF_hol : IsAdelicHol o u F) (hz : IsPeak F z) (hK₀_le : ∀ h : GInf D.E s, ‖K₀ h‖ ≤ C)
+    (h_orth : ∀ x : New.G D.E s,
+      IsPeak F x
+        → ∃ K : GInf D.E s → ℂ,
+          IsHolOfWeight s o (u - u') K
+            ∧ (∀ h : GInf D.E s, ‖K h - K₀ h‖ ≤ δ * maxOpNorm h ^ (6 * nStar D))
+            ∧ ∫ h : GInf D.E s, star (F (x * (h, 1))) * K h * holMinorsPi s u' h = 0)
+    : ‖K₀ 1‖ ≤ (4 * D.b ^ nStar D + 1) * δ := by
   -- Rotate `z` by a circle `rot θ`: all `z * rot θ` are peaks, so `h_orth` gives functions `K θ`.
   -- Replacing `K θ` by `K 0` has a small cost, the mean over `θ` turns the translate of `F` into
   -- `F z * m_u`, and the reproducing formula evaluates the integral.
@@ -1021,20 +1075,22 @@ theorem norm_apply_one_le_of_forall_isPeak (h_rank : card n ≤ D.t) (ho : IsPos
     have hF_rot : F (z * (rot θ, 1)) = (∏ τ, ∏ i, (↑(θ.toCircle ^ o i) : ℂ) ^ u τ i) * F z := by
       simpa [Prod.mk_one_one] using (hF_hol z).apply_mul_diagTorus 1 fun i ↦ θ.toCircle ^ o i
     exact hz.of_norm_le (by simp [hF_rot, Circle.norm_coe])
-  have hK (θ : UnitAddCircle) : ∃ K : GInf D.E s → ℂ, IsHolOfWeight s o (u - u') K ∧
-      (∀ h, ‖K h - K₀ h‖ ≤ δ * maxOpNorm h ^ (6 * nStar D)) ∧
-      ∫ h, star (F (z * (rot θ, 1) * (h, 1))) * K h * holMinorsPi s u' h = 0 :=
+  have hK (θ : UnitAddCircle)
+      : ∃ K : GInf D.E s → ℂ,
+        IsHolOfWeight s o (u - u') K ∧ (∀ h, ‖K h - K₀ h‖ ≤ δ * maxOpNorm h ^ (6 * nStar D))
+          ∧ ∫ h, star (F (z * (rot θ, 1) * (h, 1))) * K h * holMinorsPi s u' h = 0 :=
     h_orth (z * (rot θ, 1)) (hpeak θ)
   choose K hK_hol hK_close hK_orth using hK
   -- `W θ` is the conjugate of the quotient of the rotated translate of `F` by the character.
   let W (θ : UnitAddCircle) (h : GInf D.E s) : ℂ :=
     starRingEnd ℂ (F (z * (rot θ * h, 1)) * ∏ τ, ∏ i, ↑((θ.toCircle ^ o i) ^ u τ i)⁻¹)
   have hW_orth (θ : UnitAddCircle) : ∫ h, W θ h * K θ h * holMinorsPi s u' h = 0 :=
-    calc _ = ∫ h, star (F (z * (rot θ, 1) * (h, 1))) * K θ h * holMinorsPi s u' h *
+    calc
+      _ = ∫ h, star (F (z * (rot θ, 1) * (h, 1))) * K θ h * holMinorsPi s u' h *
           starRingEnd ℂ (∏ τ, ∏ i, ↑((θ.toCircle ^ o i) ^ u τ i)⁻¹) := by
-          congr with h
-          simp [W, mul_assoc z]
-          ring
+        congr with h
+        simp [W, mul_assoc z]
+        ring
       _ = 0 := by rw [integral_mul_const, hK_orth, zero_mul]
   -- As `h ↦ F (z h)` is holomorphic of weight `u`, this quotient has circle mean `m_u * F z`.
   have hW_mean (h : GInf D.E s) : ∫ θ, W θ h = starRingEnd ℂ (holMinorsPi s u h * F z) := by
@@ -1047,17 +1103,16 @@ theorem norm_apply_one_le_of_forall_isPeak (h_rank : card n ≤ D.t) (ho : IsPos
       ← le_mul_of_one_le_right ((norm_nonneg _).trans (hK₀_le h))
         (one_le_pow₀ (one_le_maxOpNorm h))]
   have hK_int : Integrable (K 0 * holMinorsPi s u') :=
-    (integrable_mul_holMinorsPi h_rank ho hu_dom hu'_dom hu_gap hu'_gap hu_le
-      (hK_hol 0).continuous hK_le).1
-  have hprod_int : Integrable
-      (Function.uncurry fun θ h ↦ (K 0 * holMinorsPi s u') h * W θ h) (volume.prod volume) :=
+    (integrable_mul_holMinorsPi h_rank ho hu_dom hu'_dom hu_gap hu'_gap hu_le (hK_hol 0).continuous
+      hK_le).1
+  have hprod_int : Integrable (Function.uncurry fun θ h ↦ (K 0 * holMinorsPi s u') h * W θ h)
+      (volume.prod volume) :=
     (hK_int.comp_snd volume).mul_bdd (g := W.uncurry) (by fun_prop)
       (.of_forall fun x ↦ hW_le x.1 x.2)
-  have hslice (θ : UnitAddCircle) (hθ : Integrable fun h ↦ (K 0 * holMinorsPi s u') h * W θ h) :
-      ‖∫ h, (K 0 * holMinorsPi s u') h * W θ h‖ ≤ 2 * δ * (2 * ‖F z‖) * D.b ^ nStar D * I :=
-    norm_integral_mul_holMinorsPi_mul_le h_rank ho hu_dom hu'_dom hu_gap hu'_gap hu_le
-      (by fun_prop) (hK_hol 0).continuous (hK_hol θ).continuous (hW_le θ) (hK_close 0) (hK_close θ)
-      (hW_orth θ) hθ
+  have hslice (θ : UnitAddCircle) (hθ : Integrable fun h ↦ (K 0 * holMinorsPi s u') h * W θ h)
+      : ‖∫ h, (K 0 * holMinorsPi s u') h * W θ h‖ ≤ 2 * δ * (2 * ‖F z‖) * D.b ^ nStar D * I :=
+    norm_integral_mul_holMinorsPi_mul_le h_rank ho hu_dom hu'_dom hu_gap hu'_gap hu_le (by fun_prop)
+      (hK_hol 0).continuous (hK_hol θ).continuous (hW_le θ) (hK_close 0) (hK_close θ) (hW_orth θ) hθ
   -- `K 0 * m_u'` is holomorphic of weight `u`, and its value at `1` is `K 0 1`.
   have hhol : IsHolOfWeight s o u (K 0 * holMinorsPi s u') := by
     simpa using (hK_hol 0).mul ho.1 (isHolOfWeight_holMinorsPi ho hu'_dom)

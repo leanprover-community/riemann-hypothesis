@@ -259,10 +259,12 @@ open Finset Real IsSplitLevel SemilocalField
 
 variable {P : Parameters} (D : Data P) (ϑ : D.TameChar) [PadicPlace D.N]
 
-/-- The character `g ↦ χ (det g) |det g| ^ (-r / 2)` of `GL n` over the product of the completions
-at `Σ_N`, for the base change `χ` of the character `chainChar ϑ i` of lift `i`. -/
-noncomputable abbrev liftCharAtN {n : Type} [Fintype n] [DecidableEq n] (i r : ℕ) :
-    GL n (LocProd D.nonInducedPlaces) →* ℂˣ :=
+/--
+The character `g ↦ χ (det g) |det g| ^ (-r / 2)` of `GL n` over the product of the completions
+at `Σ_N`, for the base change `χ` of the character `chainChar ϑ i` of lift `i`.
+-/
+noncomputable abbrev liftCharAtN {n : Type} [Fintype n] [DecidableEq n] (i r : ℕ)
+    : GL n (LocProd D.nonInducedPlaces) →* ℂˣ :=
   detCharAt (D.chainChar ϑ i).baseChange r
 
 /-- Let `φ` be an algebraic form on the definite space `X_j` of rank `n_j = D.n j`, and let `v` be a
@@ -295,20 +297,24 @@ lemma lift_schrodingerOpAt_comp (j : ℕ) (v : (D.homX j).finitePart)
   rw [h_datum, ← (D.liftKernel ϑ j).lift_equivariant (embedGL g)]
   simp [Units.smul_def]
 
-/-- Put a function `Ψ` of matrices at `Σ_N`, written in bases of `L_j` and `L_{j+1}`, on a finite
-datum. -/
-noncomputable def schrodingerOpAtN (j : ℕ)
-    (Ψ : Matrix (D.X (j + 1)) (D.X j) (LocProd D.nonInducedPlaces) → ℂ) :
-    Module.End ℂ (D.homX j).finitePart :=
+/--
+Put a function `Ψ` of matrices at `Σ_N`, written in bases of `L_j` and `L_{j+1}`, on a finite
+datum.
+-/
+noncomputable def schrodingerOpAtN
+    (j : ℕ) (Ψ : Matrix (D.X (j + 1)) (D.X j) (LocProd D.nonInducedPlaces) → ℂ)
+    : Module.End ℂ (D.homX j).finitePart :=
   (D.liftKernel ϑ j).ω (D.diagPointN j, D.diagPointN (j + 1)) ∘ₗ schrodingerOpAt Ψ
 
-/-- The lift from `X_j` to `X_{j+1}` by `v` with the function `Ψ` at `Σ_N`, written in bases of
-`L_j` and `L_{j+1}`, as a linear map in `Ψ`. -/
-noncomputable def liftAtN (j : ℕ) (v : (D.homX j).finitePart) :
-    (Matrix (D.X (j + 1)) (D.X j) (LocProd D.nonInducedPlaces) → ℂ) →ₗ[ℂ]
-      D.FormX j →ₗ[ℂ] D.FormX (j + 1) :=
-  (D.liftKernel ϑ j).lift ∘ₗ (D.liftKernel ϑ j).ω (D.diagPointN j, D.diagPointN (j + 1)) ∘ₗ
-    LinearMap.applyₗ v ∘ₗ schrodingerOpAt
+/--
+The lift from `X_j` to `X_{j+1}` by `v` with the function `Ψ` at `Σ_N`, written in bases of
+`L_j` and `L_{j+1}`, as a linear map in `Ψ`.
+-/
+noncomputable def liftAtN (j : ℕ) (v : (D.homX j).finitePart)
+    : (Matrix (D.X (j + 1)) (D.X j) (LocProd D.nonInducedPlaces) → ℂ) →ₗ[ℂ]
+        D.FormX j →ₗ[ℂ] D.FormX (j + 1) :=
+  (D.liftKernel ϑ j).lift ∘ₗ (D.liftKernel ϑ j).ω (D.diagPointN j, D.diagPointN (j + 1))
+    ∘ₗ LinearMap.applyₗ v ∘ₗ schrodingerOpAt
 
 /-- `D.liftAtN ϑ j v Ψ φ` is computed in three steps. First translate `φ` on the right
 (`smoothFormRep`) by `δ_j⁻¹`. Then apply the lift of the kernel `D.liftKernel ϑ j` by
@@ -321,11 +327,13 @@ lemma liftAtN_apply (j : ℕ) (v : (D.homX j).finitePart)
   simp only [liftAtN, LinearMap.coe_comp, Function.comp_apply, LinearMap.applyₗ_apply_apply,
     ← (D.liftKernel ϑ j).lift_equivariant (D.diagPointN j), Representation.self_inv_apply]
 
-/-- The factor by which `Up` moves through the direct lift from `X_j` to `X_{j+1}`: the ratio of the
-values of `liftCharAtN` at `diag (1, …, 1, N)` on `X_j` and on `X_{j+1}`. -/
+/--
+The factor by which `Up` moves through the direct lift from `X_j` to `X_{j+1}`: the ratio of the
+values of `liftCharAtN` at `diag (1, …, 1, N)` on `X_j` and on `X_{j+1}`.
+-/
 noncomputable def upCommutationFactor (j : ℕ) : ℂˣ :=
-  D.liftCharAtN ϑ (j + 1) (D.n (j + 1)) (diagN (N := D.N) (D.InitIndex j) D.nonInducedPlaces) /
-    D.liftCharAtN ϑ (j + 1) (D.n j) (diagN (N := D.N) (D.InitIndex (j + 1)) D.nonInducedPlaces)
+  D.liftCharAtN ϑ (j + 1) (D.n (j + 1)) (diagN (N := D.N) (D.InitIndex j) D.nonInducedPlaces)
+    / D.liftCharAtN ϑ (j + 1) (D.n j) (diagN (N := D.N) (D.InitIndex (j + 1)) D.nonInducedPlaces)
 
 /-- Let `v` be in the finite part of the Weil representation of `Hom (X_j, X_{j+1})`, and let
 `L Ψ = D.liftAtN ϑ j v Ψ` be the theta lift, for the tame character `ϑ`, from forms on `X_j` to
@@ -364,14 +372,16 @@ lemma liftLaw_liftAtN (j : ℕ) (v : (D.homX j).finitePart) :
       one_smul]
 
 open scoped Classical in
-/-- The factor for rewriting the glued datum of `X_{2i} → X_{2i+1} → X_{2i+2}` in bases of `L_{2i}`
+/--
+The factor for rewriting the glued datum of `X_{2i} → X_{2i+1} → X_{2i+2}` in bases of `L_{2i}`
 and `L_{2i+2}^∨`: the product of the values of `liftCharAtN` at `diag (1, …, 1, N)`, taken on
-`X_{2i+2}` at the places of `Σ_N` prime to `π` and on `X_{2i}` at those dividing `π`. -/
+`X_{2i+2}` at the places of `Σ_N` prime to `π` and on `X_{2i}` at those dividing `π`.
+-/
 noncomputable def gluedFactor (i : ℕ) : ℂˣ :=
   D.liftCharAtN ϑ (2 * i + 2) (D.n (2 * i + 1))
-      (diagN (N := D.N) (D.InitIndex (2 * i + 2)) (D.nonInducedPlaces \ D.piNPlaces)) *
-    D.liftCharAtN ϑ (2 * i + 1) (D.n (2 * i + 1))
-        (diagN (N := D.N) (D.InitIndex (2 * i)) D.piNPlaces)
+      (diagN (N := D.N) (D.InitIndex (2 * i + 2)) (D.nonInducedPlaces \ D.piNPlaces))
+    * D.liftCharAtN ϑ (2 * i + 1) (D.n (2 * i + 1))
+      (diagN (N := D.N) (D.InitIndex (2 * i)) D.piNPlaces)
 
 /-- For `i ≤ ϱ`, where `m = 2 (ϱ + 1)`, each place of `Σ_N` contributes one character value to
 `gluedFactor`, so this factor loses at most `2 f b` powers of `N`. -/

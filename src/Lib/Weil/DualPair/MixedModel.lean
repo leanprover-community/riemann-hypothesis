@@ -51,16 +51,20 @@ namespace New.Space
 
 open Matrix Kronecker WeilData G Fintype AutChar
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
   {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
-  {s : n → ℤˣ} {s' : n' → ℤˣ}
-  {n₀ p : Type} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
-  {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} (D : V.Splitting V₀ p) (T : Space E n' s')
-  (a b : AutChar E) {n₁ q : Type} [Fintype n₁] [DecidableEq n₁] [Fintype q] [DecidableEq q]
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {n₀ p : Type}
+  [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} (D : V.Splitting V₀ p)
+  (T : Space E n' s') (a b : AutChar E)
+  {n₁ q : Type} [Fintype n₁] [DecidableEq n₁] [Fintype q] [DecidableEq q]
   {s₁ : n₁ → ℤˣ} {V₁ : Space E n₁ s₁}
 
-/-- For a space T with adelic frame x, the invertible adelic matrix (x⁻¹)* ε, with inverse ε x*,
-where ε is the standard form of its signs. -/
+/--
+For a space T with adelic frame x, the invertible adelic matrix (x⁻¹)* ε, with inverse ε x*,
+where ε is the standard form of its signs.
+-/
 def dualFrame : GL n' (𝔸 E) where
   val := T.x⁻¹.valᴴ * stdForm E s'
   inv := stdForm E s' * T.xᴴ
@@ -81,16 +85,20 @@ namespace Splitting
 
 /-! ### The induced splittings and their frames -/
 
-/-- From a splitting (k, l, ι) of V over V₀, the splitting of Hom(V,T) over Hom(V₀,T) with
-frames J_T⁻¹⊗(k*J)ᵀ, 1⊗(l*J)ᵀ, 1⊗(J₀⁻¹ι*J)ᵀ; the first spans the maps killing k^⊥. -/
+/--
+From a splitting (k, l, ι) of V over V₀, the splitting of Hom(V,T) over Hom(V₀,T) with
+frames J_T⁻¹⊗(k*J)ᵀ, 1⊗(l*J)ᵀ, 1⊗(J₀⁻¹ι*J)ᵀ; the first spans the maps killing k^⊥.
+-/
 def homSource : (V.hom T).Splitting (V₀.hom T) (n' × p) where
   k := T.J⁻¹ ⊗ₖ (D.kᴴ * V.J)ᵀ
   l := 1 ⊗ₖ (D.lᴴ * V.J)ᵀ
   i := 1 ⊗ₖ (V₀.J⁻¹ * D.iᴴ * V.J)ᵀ
-  gram_kk := by simp [conjTranspose_kronecker, conjTranspose_J, hom_J,
-    conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul, ← transpose_mul]
-  gram_ll := by simp [conjTranspose_kronecker, conjTranspose_J, hom_J,
-    conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul, ← transpose_mul]
+  gram_kk := by
+    simp [conjTranspose_kronecker, conjTranspose_J, hom_J,
+      conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul, ← transpose_mul]
+  gram_ll := by
+    simp [conjTranspose_kronecker, conjTranspose_J, hom_J,
+      conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul, ← transpose_mul]
   gram_lk := by
     rw [← conjTranspose_inj]
     simp [-gram_kl, conjTranspose_kronecker, hom_J, Matrix.mul_assoc,
@@ -111,8 +119,10 @@ def homSource : (V.hom T).Splitting (V₀.hom T) (n' × p) where
     simp [D.card_eq]
     ring
 
-/-- From a splitting (k, l, ι) of V over V₀, the splitting of Hom(T,V) over Hom(T,V₀) with
-frames k⊗J_Tᵀ, l⊗1, ι⊗1. -/
+/--
+From a splitting (k, l, ι) of V over V₀, the splitting of Hom(T,V) over Hom(T,V₀) with
+frames k⊗J_Tᵀ, l⊗1, ι⊗1.
+-/
 def homTarget : (T.hom V).Splitting (T.hom V₀) (p × n') where
   k := D.k ⊗ₖ T.Jᵀ
   l := D.l ⊗ₖ 1
@@ -188,8 +198,10 @@ end
 
 /-! ### The mixed model on Hom(V,T) -/
 
-/-- For an adelic n′×p matrix x, the map f ↦ f[x]: the zero term, along maps killing k^⊥, of
-ϱ(x̃)f, where x̃ ∈ Hom(V,T) has x̃k = x and kills l, ι. -/
+/--
+For an adelic n′×p matrix x, the map f ↦ f[x]: the zero term, along maps killing k^⊥, of
+ϱ(x̃)f, where x̃ ∈ Hom(V,T) has x̃k = x and kills l, ι.
+-/
 def homSlice (x : Matrix n' p (𝔸 E)) : 𝒮 (V.hom T) →L[ℂ] 𝒮 (V₀.hom T) :=
   (D.homSource T).zeroTerm ∘L ϱ (V.hom T) (matrixToVec (x * D.kCoord))
 

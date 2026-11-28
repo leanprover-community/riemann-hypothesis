@@ -92,8 +92,10 @@ open Matrix NumberField ComplexConjugate Fintype Subgroup Space WeilData Rows Su
 
 section
 
-variable {E r n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype r] [DecidableEq r]
-  [Fintype n] [DecidableEq n] (S : LevelPlaces E) (u : r ↪ n)
+variable
+  {E r n : Type}
+  [Field E] [NumberField E] [IsCMField E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+  (S : LevelPlaces E) (u : r ↪ n)
 
 /-- The finite group given by the product over the M-places w of GL_r of the residue field at w. -/
 abbrev LevelPlaces.ChosenGL (r : Type) [Fintype r] [DecidableEq r] : Type :=
@@ -101,10 +103,12 @@ abbrev LevelPlaces.ChosenGL (r : Type) [Fintype r] [DecidableEq r] : Type :=
 
 /-! ### Levels at the places of M and Q -/
 
-/-- The homomorphism sending (g_w) in ∏_M GL_r(k_w) to the family equal to diag(g_w, 1) at the
-places of M and 1 at those of Q. -/
-def firstBlockHom :
-    S.ChosenGL r →* ∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i)) :=
+/--
+The homomorphism sending (g_w) in ∏_M GL_r(k_w) to the family equal to diag(g_w, 1) at the
+places of M and 1 at those of Q.
+-/
+def firstBlockHom
+    : S.ChosenGL r →* ∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i)) :=
   MonoidHom.pi fun
     | .inl i => (extendGL u).comp (Pi.evalMonoidHom _ i)
     | .inr _ => 1
@@ -113,12 +117,15 @@ def firstBlockHom :
 lemma firstBlockHom_apply_inr (g : S.ChosenGL r) (i : S.TwistIndex) :
     firstBlockHom S u g (inr i) = 1 := rfl
 
-/-- The group of families in GL_n(k_w) that at the places of M fix the basis vectors indexed by u,
-and at the places of Q preserve the span of the other basis vectors. -/
-def descentResidueLevel : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex,
-  GL n (ResField (S.placeAt i))) :=
+/--
+The group of families in GL_n(k_w) that at the places of M fix the basis vectors indexed by u,
+and at the places of Q preserve the span of the other basis vectors.
+-/
+def descentResidueLevel
+    : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i))) :=
   pi Set.univ fun
-    | .inl i => MulAction.stabilizer (GL n (ResField (S.placeAt (inl i))))
+    | .inl i =>
+      MulAction.stabilizer (GL n (ResField (S.placeAt (inl i))))
         (inclMatrix (ResField (S.placeAt (inl i))) u).col
     | .inr _ => rangeParabolic u
 
@@ -161,14 +168,17 @@ lemma firstBlockHom_conj_mem_descentResidueLevel (s : S.ChosenGL r)
 
 end
 
-variable (E r n : Type) [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
-  [WeilData E]
+variable
+  (E r n : Type)
+  [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] [WeilData E]
 
 /-! ### Descent pairs and their forms on V -/
 
-/-- A descent pair: places M and Q, a space W of rank r with an index `numbering` on its basis
+/--
+A descent pair: places M and Q, a space W of rank r with an index `numbering` on its basis
 vectors, an embedding of indices into n > r, column multiplicities k⁺ and k⁻, and a character
-μ = `u1Char` whose tame part is trivial off M and Q. -/
+μ = `u1Char` whose tame part is trivial off M and Q.
+-/
 structure DescentPair extends LevelPlaces E where
   /-- The signs of the basis vectors of `W` at the infinite places. -/
   signs : r → ℤˣ
@@ -176,14 +186,20 @@ structure DescentPair extends LevelPlaces E where
   W : Space E r signs
   /-- The embedding of the index set of the basis of `W` in that of `V = I_n`. -/
   incl : r ↪ n
-  /-- An index for each basis vector of `W`; under `New.DescentPair.FitsParams` it numbers the
-  vectors within each sign. -/
+  /--
+  An index for each basis vector of `W`; under `New.DescentPair.FitsParams` it numbers the
+  vectors within each sign.
+  -/
   numbering : r → ℕ
-  /-- k⁺: the number of columns of height `i` of the partition at `τ` for the sign `1`, as a
-  function of `τ` and `i`. -/
+  /--
+  k⁺: the number of columns of height `i` of the partition at `τ` for the sign `1`, as a
+  function of `τ` and `i`.
+  -/
   colsPlus : InfinitePlace E → ℕ → ℕ
-  /-- k⁻: the number of columns of height `i` of the partition at `τ` for the sign `-1`, as a
-  function of `τ` and `i`. -/
+  /--
+  k⁻: the number of columns of height `i` of the partition at `τ` for the sign `-1`, as a
+  function of `τ` and `i`.
+  -/
   colsMinus : InfinitePlace E → ℕ → ℕ
   /-- The character μ of `U(1)(𝔸)`, trivial on rational points. -/
   u1Char : AutChar E
@@ -204,37 +220,49 @@ attribute [instance] hasWeight
 
 variable {E r n} (O : DescentPair E r n)
 
-/-- The level of the descent pair: the elements of K₀ whose reductions modulo the places of M fix
+/--
+The level of the descent pair: the elements of K₀ whose reductions modulo the places of M fix
 the basis vectors indexed by `incl`, and whose reductions modulo the places of Q preserve the span
-of the other basis vectors. -/
-abbrev levelGroup : Subgroup (Gf E n) := levelOf O.placeAt
-  (descentResidueLevel O.toLevelPlaces O.incl)
+of the other basis vectors.
+-/
+abbrev levelGroup : Subgroup (Gf E n) :=
+  levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl)
 
 open scoped Classical in
-/-- The block datum Ψ_bl as a function of families X of residue matrices: it is the product over
+/--
+The block datum Ψ_bl as a function of families X of residue matrices: it is the product over
 w ∈ Q of ψ_w(det of the rows of X_w indexed by `incl`) if X_w is the inclusion matrix of `incl` at
-every w in M, else 0. -/
-def residueBlockDatum (X : ∀ i : O.ChosenIndex ⊕ O.TwistIndex,
-  Matrix n r (ResField (O.placeAt i))) : ℂ :=
+every w in M, else 0.
+-/
+def residueBlockDatum (X : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i)))
+    : ℂ :=
   if ∀ i : O.ChosenIndex, X (Sum.inl i) = inclMatrix (ResField (O.placeAt (inl i))) O.incl then
     ∏ i : O.TwistIndex, O.tamePart (O.placeAt (inr i)) ((X (Sum.inr i)).submatrix O.incl id).det
-  else 0
+  else
+    0
 
-/-- The column numbers (τ, i) ↦ k⁺(τ, i) + k⁻(τ, n − i) of the highest weight of the forms on
-V = I_n, with n the rank of V. -/
+/--
+The column numbers (τ, i) ↦ k⁺(τ, i) + k⁻(τ, n − i) of the highest weight of the forms on
+V = I_n, with n the rank of V.
+-/
 abbrev columnCount : InfinitePlace E → ℕ → ℕ := mixedWeight n O.colsPlus O.colsMinus
 
-/-- For an infinite place τ, the integer −∑_{1 ≤ i < n} k⁻(τ, i), the power of the determinant in
-the highest weight of the forms on V. -/
+/--
+For an infinite place τ, the integer −∑_{1 ≤ i < n} k⁻(τ, i), the power of the determinant in
+the highest weight of the forms on V.
+-/
 abbrev detExp (τ : InfinitePlace E) : ℤ := -((∑ i ∈ Finset.Ico 1 (card n), O.colsMinus τ i :) : ℤ)
 
-/-- The character of `New.descentResidueLevel` sending g to ∏_{w ∈ Q} ψ_w⁻¹(det g_{w,00}). Here
+/--
+The character of `New.descentResidueLevel` sending g to ∏_{w ∈ Q} ψ_w⁻¹(det g_{w,00}). Here
 g_{w,00} is the diagonal block of the component of g at w on the basis vectors indexed by `incl`
 (block 0 of `New.rangeParabolic`). It is multiplicative because these components are block
-triangular. -/
+triangular.
+-/
 def residueLevelChar : descentResidueLevel O.toLevelPlaces O.incl →* ℂ where
-  toFun g := ∏ i : O.TwistIndex,
-    O.tamePart⁻¹ (O.placeAt (inr i)) ((g.val (Sum.inr i)).val.submatrix O.incl O.incl).det
+  toFun g :=
+    ∏ i : O.TwistIndex,
+      O.tamePart⁻¹ (O.placeAt (inr i)) ((g.val (Sum.inr i)).val.submatrix O.incl O.incl).det
   -- `elim_inr` would change the residue field in the type of the matrix, so `simp` leaves it out.
   map_one' := by simp [-elim_inr]
   map_mul' g h := by
@@ -261,48 +289,63 @@ lemma residueLevelChar_firstBlockHom_conj (s : O.ChosenGL r)
       O.residueLevelChar x := by
   simp only [residueLevelChar_apply, firstBlockHom_conj_apply_inr]
 
-/-- The character of `New.DescentPair.levelGroup` obtained by reduction modulo the places of M and Q
-followed by `New.DescentPair.residueLevelChar`. -/
+/--
+The character of `New.DescentPair.levelGroup` obtained by reduction modulo the places of M and Q
+followed by `New.DescentPair.residueLevelChar`.
+-/
 abbrev levelChar : levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl) →* ℂ :=
   O.residueLevelChar.comp (levelOf.reduction O.placeAt (descentResidueLevel O.toLevelPlaces O.incl))
 
-/-- Algebraic forms on V = I_n of weight (`O.columnCount`, `O.detExp`) whose level fixes the basis
+/--
+Algebraic forms on V = I_n of weight (`O.columnCount`, `O.detExp`) whose level fixes the basis
 vectors indexed by `incl` modulo the places of M and the span of the other basis vectors modulo the
-places of Q, with character ∏_Q ψ_w⁻¹(det g₀₀), g₀₀ the diagonal block on `incl`. -/
-abbrev FormV : Type := O.LevelForm (descentResidueLevel O.toLevelPlaces O.incl) O.residueLevelChar
-  O.columnCount O.detExp
+places of Q, with character ∏_Q ψ_w⁻¹(det g₀₀), g₀₀ the diagonal block on `incl`.
+-/
+abbrev FormV : Type :=
+  O.LevelForm (descentResidueLevel O.toLevelPlaces O.incl) O.residueLevelChar O.columnCount O.detExp
 
-/-- The representation of ∏_{w∈M} GL_r(k_w) on the vectors of π on which
+/--
+The representation of ∏_{w∈M} GL_r(k_w) on the vectors of π on which
 `New.DescentPair.levelGroup` acts by `New.DescentPair.levelChar`. An element g acts by ∏_w ψ_w(det
-g_w) times π of a lift of the family equal to diag(g_w, 1) at M and to 1 at Q. -/
-def chosenGLRep {W : Type*} [AddCommGroup W] [Module ℂ W] (π : Representation ℂ (Gf E n) W) :
-    Representation ℂ (O.ChosenGL r)
-      (levelSpace π (levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl)) O.levelChar)
-        where
-  toFun g := (∏ i : O.ChosenIndex, O.tamePart (O.chosenPlace i) (g i).val.det) •
-    levelRep π O.residueLevelChar (firstBlockHom O.toLevelPlaces O.incl)
-      (fun s x ↦ ⟨firstBlockHom_conj_mem_descentResidueLevel O.toLevelPlaces O.incl s x.prop,
-        O.residueLevelChar_firstBlockHom_conj s x⟩) g
+g_w) times π of a lift of the family equal to diag(g_w, 1) at M and to 1 at Q.
+-/
+def chosenGLRep {W : Type*} [AddCommGroup W] [Module ℂ W] (π : Representation ℂ (Gf E n) W)
+    : Representation ℂ (O.ChosenGL r)
+      (levelSpace π (levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl))
+        O.levelChar) where
+  toFun g :=
+    (∏ i : O.ChosenIndex, O.tamePart (O.chosenPlace i) (g i).val.det)
+      • levelRep π O.residueLevelChar (firstBlockHom O.toLevelPlaces O.incl)
+        (fun s x ↦ ⟨
+          firstBlockHom_conj_mem_descentResidueLevel O.toLevelPlaces O.incl s x.prop,
+          O.residueLevelChar_firstBlockHom_conj s x
+        ⟩)
+        g
   map_one' := by simp
   map_mul' := by simp [← smul_mul_smul, Finset.prod_mul_distrib]
 
-/-- The representation `New.DescentPair.chosenGLRep` on right translation of algebraic forms
-(`New.algFormRep`): the action of ∏_M GL_r(k_w) on the forms on V. -/
+/--
+The representation `New.DescentPair.chosenGLRep` on right translation of algebraic forms
+(`New.algFormRep`): the action of ∏_M GL_r(k_w) on the forms on V.
+-/
 def formAction : Representation ℂ (O.ChosenGL r) O.FormV :=
   O.chosenGLRep (algFormRep O.columnCount O.detExp)
 
 /-! ### The theta kernel and the normalized descent -/
 
-/-- The linear map from V_{k⁺} ⊗ V_{k⁻}, seen as functions on pairs of indices of Weyl module bases
+/--
+The linear map from V_{k⁺} ⊗ V_{k⁻}, seen as functions on pairs of indices of Weyl module bases
 (`New.WeylIndex`: families of standard fillings over the places), to polynomials, sending a ⊗ b to
 the product of the polynomials (`New.letterPoly`) of a in the Fock variables of the basis vectors of
 W of sign 1 and of b in those of sign −1. The letter h of a filling stands for the sum of the
-variables of the basis vectors of that sign with `O.numbering` equal to h. -/
-def tensorPoly : (WeylIndex n O.colsPlus × WeylIndex n O.colsMinus → ℂ) →ₗ[ℂ]
-    MvPolynomial (InfinitePlace E × n × r) ℂ :=
+variables of the basis vectors of that sign with `O.numbering` equal to h.
+-/
+def tensorPoly
+    : (WeylIndex n O.colsPlus × WeylIndex n O.colsMinus → ℂ) →ₗ[ℂ]
+      MvPolynomial (InfinitePlace E × n × r) ℂ :=
   Fintype.linearCombination ℂ fun p : WeylIndex n O.colsPlus × WeylIndex n O.colsMinus ↦
-    letterPoly O.signs O.numbering 1 O.colsPlus (Pi.single p.1 1) *
-      letterPoly O.signs O.numbering (-1) O.colsMinus (Pi.single p.2 1)
+    letterPoly O.signs O.numbering 1 O.colsPlus (Pi.single p.1 1)
+      * letterPoly O.signs O.numbering (-1) O.colsMinus (Pi.single p.2 1)
 
 omit [WeilData E] in
 /-- The value of `New.DescentPair.tensorPoly` at a pure tensor a ⊗ b, the vector with entry a_i b_j
@@ -318,70 +361,90 @@ lemma tensorPoly_vecMulVec (a : WeylIndex n O.colsPlus → ℂ) (b : WeylIndex n
   simp [tensorPoly, linearCombination_apply, sum_prod_type, sum_mul_sum, vecMulVec_apply, mul_smul,
     Pi.single_apply]
 
-/-- The Fock polynomial of a vector: the linear map ξ ↦ P_ξ that applies the integer matrix of
+/--
+The Fock polynomial of a vector: the linear map ξ ↦ P_ξ that applies the integer matrix of
 `New.mixedCartan`, a chosen embedding of the module of weight
 `mixedWeight n O.colsPlus O.colsMinus` into the tensor product of those of weights k⁺ and k⁻, and
-reads the resulting tensor as a polynomial in the Fock variables by `New.DescentPair.tensorPoly`. -/
-def fockPoly : (WeylIndex n (mixedWeight n O.colsPlus O.colsMinus) → ℂ) →ₗ[ℂ]
-    MvPolynomial (InfinitePlace E × n × r) ℂ :=
+reads the resulting tensor as a polynomial in the Fock variables by `New.DescentPair.tensorPoly`.
+-/
+def fockPoly
+    : (WeylIndex n (mixedWeight n O.colsPlus O.colsMinus) → ℂ) →ₗ[ℂ]
+      MvPolynomial (InfinitePlace E × n × r) ℂ :=
   O.tensorPoly ∘ₗ ((mixedCartan n O.colsPlus O.colsMinus).matrix.map (↑)).mulVecLin
 
-/-- The character ν_W of U(1)(𝔸) attached to W: `upsilonU1` raised to the number r₋ of basis
+/--
+The character ν_W of U(1)(𝔸) attached to W: `upsilonU1` raised to the number r₋ of basis
 vectors of W with sign −1. It belongs to the standard splitting character υ^{2r₋ − r} of W, with υ
-the character of the Weil data. -/
+the character of the Weil data.
+-/
 abbrev charW : AutChar E := upsilonU1 ^ Exchange.negCount O.signs
 
-/-- The character ν_V = μ·υ^{⌊n/2⌋} of U(1)(𝔸) attached to V, for μ the character of the descent
+/--
+The character ν_V = μ·υ^{⌊n/2⌋} of U(1)(𝔸) attached to V, for μ the character of the descent
 pair, υ that of the Weil data and n the rank of V. For even n it belongs to the splitting character
-of V that is the base change of μ (`New.Exchange.spaceChar_rankTwist`). -/
+of V that is the base change of μ (`New.Exchange.spaceChar_rankTwist`).
+-/
 abbrev charV : AutChar E := rankTwist O.u1Char n
 
-/-- The theta kernel of the pair (W, I_n) of the descent pair, with the characters
-`New.DescentPair.charW` and `New.DescentPair.charV`. -/
+/--
+The theta kernel of the pair (W, I_n) of the descent pair, with the characters
+`New.DescentPair.charW` and `New.DescentPair.charV`.
+-/
 abbrev pairThetaKernel : ThetaKernel (𝒮 (O.W.hom (stdSpace E n))) O.W (stdSpace E n) :=
   pairThetaKer O.W (stdSpace E n) O.charW O.charV
 
-/-- The finite datum Ψ_bl ⊗ vac on Hom(W, I_n): the block datum `New.DescentPair.residueBlockDatum`
+/--
+The finite datum Ψ_bl ⊗ vac on Hom(W, I_n): the block datum `New.DescentPair.residueBlockDatum`
 at the places of M and Q and the vacuum at the other finite places. It is the `New.vacuumDatum`, an
 element of the finite part of the space of data, of the function of matrices modulo M²Q that applies
-the block datum to their reductions at these places; reading it modulo MQ gives the same vector. -/
+the block datum to their reductions at these places; reading it modulo MQ gives the same vector.
+-/
 def blockDatum : (O.W.hom (stdSpace E n)).finitePart :=
   delta% vacuumDatum O.W (stdSpace E n) (O.levelModulus 2) fun X ↦
     O.residueBlockDatum fun i ↦ X.map (levelResidueAt i)
 
-/-- The datum v_{P_ξ} ⊗ Ψ_bl ⊗ vac in 𝒮(Hom(W, V)): the Fock vector of the polynomial
-P_ξ = `New.DescentPair.fockPoly` ξ tensored with the finite datum `New.DescentPair.blockDatum`. -/
+/--
+The datum v_{P_ξ} ⊗ Ψ_bl ⊗ vac in 𝒮(Hom(W, V)): the Fock vector of the polynomial
+P_ξ = `New.DescentPair.fockPoly` ξ tensored with the finite datum `New.DescentPair.blockDatum`.
+-/
 @[simp]
-abbrev fockDatum (ξ : WeylIndex n (mixedWeight n O.colsPlus O.colsMinus) → ℂ) :
-    𝒮 (O.W.hom (stdSpace E n)) :=
+abbrev fockDatum (ξ : WeylIndex n (mixedWeight n O.colsPlus O.colsMinus) → ℂ)
+    : 𝒮 (O.W.hom (stdSpace E n)) :=
   integrated (O.W.hom (stdSpace E n)) (O.fockPoly ξ) O.blockDatum.val
 
-/-- The linear form ξ ↦ conj θ(ω_{ν_W,ν_V}(g, h)(v_{P_ξ̄} ⊗ Ψ_bl ⊗ vac)) for g in U(W)(𝔸) and finite
+/--
+The linear form ξ ↦ conj θ(ω_{ν_W,ν_V}(g, h)(v_{P_ξ̄} ⊗ Ψ_bl ⊗ vac)) for g in U(W)(𝔸) and finite
 h in U(V). Here ν_W = `O.charW`, ν_V = `O.charV`, and v_{P_ξ} is the Fock vector of the polynomial
-P_ξ. -/
-def conjKernel (g : G E O.signs) (h : Gf E n) :
-    (WeylIndex n (mixedWeight n O.colsPlus O.colsMinus) → ℂ) →ₗ[ℂ] ℂ :=
+P_ξ.
+-/
+def conjKernel (g : G E O.signs) (h : Gf E n)
+    : (WeylIndex n (mixedWeight n O.colsPlus O.colsMinus) → ℂ) →ₗ[ℂ] ℂ :=
   IsLinearMap.mk' (R := ℂ)
     (fun ξ ↦ conj (pairTheta O.W (stdSpace E n) O.charW O.charV (O.fockDatum (star ξ)) (g, 1, h)))
     ⟨fun ξ η ↦ by simp [pairTheta], fun c ξ ↦ by simp [pairTheta]⟩
 
-/-- The normalized descent, a linear map from forms Ξ on V to functions on U(W)(𝔸): θΞ(g) is the
+/--
+The normalized descent, a linear map from forms Ξ on V to functions on U(W)(𝔸): θΞ(g) is the
 class sum over h, for `New.DescentPair.levelGroup`, of `New.DescentPair.conjKernel` at g and h
-applied to Ξ(h). -/
+applied to Ξ(h).
+-/
 def normalizedDescent : O.FormV →ₗ[ℂ] G E O.signs → ℂ where
   toFun Ξ g := stdClassSum O.levelGroup fun h ↦ O.conjKernel g h (Ξ h)
   -- The double cosets are finite; `↓` turns each `∑ᶠ` into a sum before its summand is rewritten.
-  map_add' Ξ Ξ' := funext fun g ↦ by
-    simp [apply_eq_evalForm, classSum, ↓ finsum_eq_sum_of_fintype, Finset.sum_add_distrib]
-  map_smul' c Ξ := funext fun g ↦ by
-    simp [apply_eq_evalForm, classSum, ↓ finsum_eq_sum_of_fintype, Finset.mul_sum]
+  map_add' Ξ Ξ' :=
+    funext fun g ↦ by
+      simp [apply_eq_evalForm, classSum, ↓ finsum_eq_sum_of_fintype, Finset.sum_add_distrib]
+  map_smul' c Ξ :=
+    funext fun g ↦ by simp [apply_eq_evalForm, classSum, ↓ finsum_eq_sum_of_fintype, Finset.mul_sum]
 
 /-! ### Hecke polynomials -/
 
-/-- For split w with w, w̄ off M and Q, the operator H_w(X) = ∑_{i≤n} (−X)^i q^{i(i−1)/2} T_{w,i} on
-the forms on V, with q the norm of w. -/
-def heckePolyOnForms {w : FinPlace E} (hw : star w ≠ w) (hS : w ∉ O.places.conjClosure) (X : ℂ) :
-    Module.End ℂ O.FormV :=
+/--
+For split w with w, w̄ off M and Q, the operator H_w(X) = ∑_{i≤n} (−X)^i q^{i(i−1)/2} T_{w,i} on
+the forms on V, with q the norm of w.
+-/
+def heckePolyOnForms {w : FinPlace E} (hw : star w ≠ w) (hS : w ∉ O.places.conjClosure) (X : ℂ)
+    : Module.End ℂ O.FormV :=
   (heckePolyOp (algFormRep O.columnCount O.detExp) hw X).restrict fun y hy ↦ by
     -- `y` is spherical at `w`, so each `T_{w,j}` keeps its level and character.
     have h_sph : y ∈ sphericalAt (algFormRep O.columnCount O.detExp) w :=
@@ -408,21 +471,26 @@ lemma heckePolyOnForms_eq_smul {w : FinPlace E} (hw : star w ≠ w)
 /-- The difference of ranks t = n − r = dim V − dim W of the descent pair. -/
 abbrev rankDiff (_ : DescentPair E r n) : ℕ := card n - card r
 
-/-- The complex number q^{1−n+r/2} υ(ϖ_w)^{r−2r₋}, with υ the character of the Weil data, q the
-norm of w, ϖ_w the chosen uniformiser and r₋ the number of minus signs of W. -/
+/--
+The complex number q^{1−n+r/2} υ(ϖ_w)^{r−2r₋}, with υ the character of the Weil data, q the
+norm of w, ϖ_w the chosen uniformiser and r₋ the number of minus signs of W.
+-/
 def liftHeckeRoot (w : FinPlace E) : ℂ := (O.charW.frobValue r w * w.q ^ (O.rankDiff - 1))⁻¹
 
-/-- At each split w with w, w̄ off M and Q, y is spherical with Hecke polynomial
+/--
+At each split w with w, w̄ off M and Q, y is spherical with Hecke polynomial
 ∏_{l<n−r} (1 − q^l νT) · H_{z(w)}(q^{n−r} νT/ν'). Here q is the norm of w, H_{z(w)} is the rank r
 polynomial `New.heckePolyEval` with eigenvalues z(w), and ν, ν' are the `New.AutChar.frobValue` of
-the characters `O.charW`, `O.charV` in ranks r, n. -/
+the characters `O.charW`, `O.charV` in ranks r, n.
+-/
 def HasLiftHeckePolynomial (y : O.FormV) (z : FinPlace E → ℕ → ℂ) : Prop :=
-  ∀ (w : FinPlace E) (hw : star w ≠ w), w ∉ O.places.conjClosure →
-    HasHeckePolynomial (rightRegular ℂ (Gf E n) (WeylIndex n O.columnCount → ℂ)) hw
-      (fun T : ℂ ↦ SiegelWeil.qPochhammer w.q O.rankDiff (O.charW.frobValue r w * T) *
-        heckePolyEval r w (z w) (w.q ^ O.rankDiff * O.charW.frobValue r w / O.charV.frobValue n w *
-          T))
-      y.val.val
+  ∀ (w : FinPlace E) (hw : star w ≠ w),
+    w ∉ O.places.conjClosure
+      → HasHeckePolynomial (rightRegular ℂ (Gf E n) (WeylIndex n O.columnCount → ℂ)) hw
+        (fun T : ℂ ↦
+          SiegelWeil.qPochhammer w.q O.rankDiff (O.charW.frobValue r w * T) * heckePolyEval r w
+            (z w) (w.q ^ O.rankDiff * O.charW.frobValue r w / O.charV.frobValue n w * T))
+        y.val.val
 
 end DescentPair
 
@@ -441,21 +509,26 @@ section AuxDatumLaw
 
 open Matrix LevelPlaces MulChar Finset Rows stdLevel
 
-variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] (S : LevelPlaces E) (O : DescentPair E n n')
+variable
+  {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  (S : LevelPlaces E) (O : DescentPair E n n')
 
-/-- The product of the groups GL_n(k_w) over the places w of Q, where k_w is the residue field at
-w. -/
+/--
+The product of the groups GL_n(k_w) over the places w of Q, where k_w is the residue field at
+w.
+-/
 abbrev LevelPlaces.TwistGL (n : Type*) [Fintype n] [DecidableEq n] : Type _ :=
   ∀ i : S.TwistIndex, GL n (ResField (S.placeAt (Sum.inr i)))
 
 /-- The group ∏_{w ∈ Q} GL_n(k_w) is finite. -/
 instance : Fintype (S.TwistGL n) := .ofFinite _
 
-/-- For A in the product of GL_n(k_w) over Q, the family of residue matrices that is 1 at the places
-of M and the inverse of the component of A at each place of Q. -/
-def LevelPlaces.twistResidue (A : TwistGL S n) :
-    ∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i))
+/--
+For A in the product of GL_n(k_w) over Q, the family of residue matrices that is 1 at the places
+of M and the inverse of the component of A at each place of Q.
+-/
+def LevelPlaces.twistResidue (A : TwistGL S n)
+    : ∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i))
   | .inl _ => 1
   | .inr i => (A i)⁻¹
 
@@ -468,8 +541,10 @@ lemma LevelPlaces.twistResidue_inl (A : TwistGL S n) (i : S.ChosenIndex) :
 lemma LevelPlaces.twistResidue_inr (A : TwistGL S n) (i : S.TwistIndex) :
     S.twistResidue A (.inr i) = (A i)⁻¹ := rfl
 
-/-- For A in the product of GL_n(k_w) over Q, a chosen element of K₀ reducing to A⁻¹ at the
-places in Q and to 1 at those in M. -/
+/--
+For A in the product of GL_n(k_w) over Q, a chosen element of K₀ reducing to A⁻¹ at the
+places in Q and to 1 at those in M.
+-/
 def LevelPlaces.twistResidueLift (A : TwistGL S n) : stdLevel E n := liftResidue (S.twistResidue A)
 
 /-- The lift `twistResidueLift A` reduces to the family `twistResidue A`. -/
@@ -491,15 +566,20 @@ lemma LevelPlaces.reduceAt_twistResidueLift_inr (A : TwistGL S n) (i : S.TwistIn
 variable [WeilData E]
 
 open scoped Classical in
-/-- The indicator Ψ¹ of the matrices `y` modulo `M Q` that reduce to the inclusion matrix of the
+/--
+The indicator Ψ¹ of the matrices `y` modulo `M Q` that reduce to the inclusion matrix of the
 embedding of indices of the pair at the places of `M` and whose rows indexed by that embedding
-reduce to the identity at the places of `Q`. -/
+reduce to the identity at the places of `Q`.
+-/
 def DescentPair.identityBlockIndicator (y : Matrix n' n (O.levelModulus 1).ResidueRing) : ℂ :=
   let X (i : O.ChosenIndex ⊕ O.TwistIndex) :=
     Matrix.map y (levelResidueAt (S := O.toLevelPlaces) (c := 1) i)
   if (∀ i : O.ChosenIndex,
-      X (Sum.inl i) = inclMatrix (ResField ((O.chosenPlace ⊕ᵥ O.twistPlace) (Sum.inl i))) O.incl) ∧
-    ∀ i : O.TwistIndex, (X (Sum.inr i)).submatrix O.incl id = 1 then 1 else 0
+        X (Sum.inl i) = inclMatrix (ResField ((O.chosenPlace ⊕ᵥ O.twistPlace) (Sum.inl i))) O.incl)
+      ∧ ∀ i : O.TwistIndex, (X (Sum.inr i)).submatrix O.incl id = 1 then
+    1
+  else
+    0
 
 omit [DecidableEq n'] in
 /-- For `k` in `stdLevel E n` (integral finite points of U(W)), `O.charV` of `detFin O.signs k` is
@@ -685,9 +765,11 @@ open NumberField (InfinitePlace)
 
 variable {E r n : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
 
-/-- The doubled parameter on `V`: at the place `w`, the entry at `i` is the entry of
+/--
+The doubled parameter on `V`: at the place `w`, the entry at `i` is the entry of
 `New.hcParameter` of the weight `(O.columnCount, O.detExp)` in rank `card n` at the position of `i`
-in the numbering of `n`. -/
+in the numbering of `n`.
+-/
 noncomputable def paramV (O : DescentPair E r n) (w : InfinitePlace E) (i : n) : ℤ :=
   hcParameter O.columnCount O.detExp (Fintype.card n) w (Fintype.equivFin n i)
 
@@ -697,36 +779,47 @@ forms on `V`, in the sense of `New.IsHCParam`. -/
 lemma isHCParam_paramV (O : DescentPair E r n) : IsHCParam O.columnCount O.detExp O.paramV :=
   isHCParam_hcParameter n O.columnCount O.detExp
 
-/-- The doubled parameter l on W fits the descent pair O: it corresponds to l' = `O.paramV` on V
+/--
+The doubled parameter l on W fits the descent pair O: it corresponds to l' = `O.paramV` on V
 (`New.ParamsCorrespond`: at each infinite place the two satisfy the block rule `New.IsBlockRule` for
 the weights), the numbering `O.numbering` lists the basis vectors of sign ±1 by decreasing ±l, and
-k^± have no column higher than the number r_± of signs ±1. -/
+k^± have no column higher than the number r_± of signs ±1.
+-/
 structure FitsParams (O : DescentPair E r n) (l : InfinitePlace E → r → ℤ) where
-  /-- The parameters `l` on `W` and `O.paramV` on `V` correspond, for the weights r₋ (the number of
-  minus signs of `W`) and ⌊n/2⌋ plus `O.weight`, the weight of `O.u1Char`. -/
-  paramsCorrespond :
-      ParamsCorrespond (fun _ ↦ negCount O.signs) ((Fintype.card n / 2 : ℕ) + O.weight ·) l O.paramV
-        O.signs 1
-  /-- At every place the basis vectors `c` of each sign are numbered from `0` by decreasing
-  `O.signs c * l w c`. -/
-  numbering_eq (w : InfinitePlace E) (c : r) :
-      O.numbering c = #{c' : r | O.signs c' = O.signs c ∧ O.signs c * l w c < O.signs c * l w c'}
+  /--
+  The parameters `l` on `W` and `O.paramV` on `V` correspond, for the weights r₋ (the number of
+  minus signs of `W`) and ⌊n/2⌋ plus `O.weight`, the weight of `O.u1Char`.
+  -/
+  paramsCorrespond
+    : ParamsCorrespond
+      (fun _ ↦ negCount O.signs)
+      ((Fintype.card n / 2 : ℕ) + O.weight ·) l O.paramV O.signs 1
+  /--
+  At every place the basis vectors `c` of each sign are numbered from `0` by decreasing
+  `O.signs c * l w c`.
+  -/
+  numbering_eq (w : InfinitePlace E) (c : r)
+    : O.numbering c = # {c' : r | O.signs c' = O.signs c ∧ O.signs c * l w c < O.signs c * l w c'}
   /-- `O.colsPlus τ i` vanishes when `i` exceeds the number r₊ of plus signs of `W`. -/
-  colsPlus_eq_zero (τ : InfinitePlace E) (i : ℕ) :
-      Fintype.card {c // O.signs c = 1} < i → O.colsPlus τ i = 0
+  colsPlus_eq_zero (τ : InfinitePlace E) (i : ℕ)
+    : Fintype.card {c // O.signs c = 1} < i → O.colsPlus τ i = 0
   /-- `O.colsMinus τ i` vanishes when `i` exceeds the number r₋ of minus signs of `W`. -/
   colsMinus_eq_zero (τ : InfinitePlace E) (i : ℕ) : negCount O.signs < i → O.colsMinus τ i = 0
 
 /-! ### The action of the real points of `U(V)` -/
 
-/-- The substitution of Fock variables by which y in the compact group U(n)(ℝ) acts on the rows: the
+/--
+The substitution of Fock variables by which y in the compact group U(n)(ℝ) acts on the rows: the
 variable (τ, i, a) goes to ∑_j (y_τ)_{j i} X(τ, j, a) if the column a has sign s(a) = 1, and to
-∑_j (y_τ⁻¹)_{i j} X(τ, j, a) otherwise. -/
-noncomputable def _root_.New.fockRowSubst (s : r → ℤˣ) (y : GInf E (1 : n → ℤˣ)) :
-    MvPolynomial (InfinitePlace E × n × r) ℂ →ₐ[ℂ] MvPolynomial (InfinitePlace E × n × r) ℂ :=
+∑_j (y_τ⁻¹)_{i j} X(τ, j, a) otherwise.
+-/
+noncomputable def _root_.New.fockRowSubst (s : r → ℤˣ) (y : GInf E (1 : n → ℤˣ))
+    : MvPolynomial (InfinitePlace E × n × r) ℂ →ₐ[ℂ] MvPolynomial (InfinitePlace E × n × r) ℂ :=
   aeval fun ((τ, i, a) : InfinitePlace E × n × r) ↦
-    if s a = 1 then ∑ j : n, (y τ).val.val j i • X (τ, j, a)
-    else ∑ j : n, (y τ)⁻¹.val.val i j • X (τ, j, a)
+    if s a = 1 then
+      ∑ j : n, (y τ).val.val j i • X (τ, j, a)
+    else
+      ∑ j : n, (y τ)⁻¹.val.val i j • X (τ, j, a)
 
 /-- Let the pair be U(diag s) and the compact group U(n)(ℝ), so that the Fock variables have the
 signs s (`New.realSigns` of `New.homSigns s 1`). In its real Weil representation `New.realPairWeil`
@@ -816,13 +909,15 @@ lemma realPairWeil_fockPoly (O : DescentPair E r n) {γ' : InfinitePlace E → �
 
 /-! ### Joint harmonics and the edge -/
 
-/-- The product of minors at the infinite place w. Order the rows by decreasing η·l', with
+/--
+The product of minors at the infinite place w. Order the rows by decreasing η·l', with
 l' = `O.paramV w`, and the columns of sign η by `O.numbering`. It is the product over η = ±1 and
 p < n of the minor (the determinant of `New.staircaseBlock`) on the first p rows and columns for η,
 raised to the power k⁺(w, p) = `O.colsPlus w p` for η = 1 and k⁻(w, p) = `O.colsMinus w p` for
-η = −1. -/
-noncomputable def productOfMinors (O : DescentPair E r n) (w : InfinitePlace E) :
-    MvPolynomial (n × r) ℂ :=
+η = −1.
+-/
+noncomputable def productOfMinors (O : DescentPair E r n) (w : InfinitePlace E)
+    : MvPolynomial (n × r) ℂ :=
   ∏ η : ℤˣ, ∏ p : Fin (Fintype.card n),
     (staircaseBlock O.signs O.numbering (O.paramV w) η p).det ^
       (if η = 1 then O.colsPlus w else O.colsMinus w) p

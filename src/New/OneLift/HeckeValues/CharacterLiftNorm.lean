@@ -72,25 +72,34 @@ variable {P : Parameters} {D : Data P} (p : D.CriticalPair) (n : Type) [Fintype 
 /-- For the pair `p = (ν, z)`, the index set `n` has `2 z` elements, and `z ≥ 2`. -/
 abbrev HasLiftRank : Prop := card n = 2 * p.z ∧ 2 ≤ p.z
 
-/-- The pair `p = (ν, z)`, with `ν` of weight `-c`, has empty row: `c τ = z` at every infinite place
-`τ`. Moreover the index set `n` has `2 z` elements, and `z ≥ 2`. -/
+/--
+The pair `p = (ν, z)`, with `ν` of weight `-c`, has empty row: `c τ = z` at every infinite place
+`τ`. Moreover the index set `n` has `2 z` elements, and `z ≥ 2`.
+-/
 abbrev HasEmptyRow : Prop := (∀ τ : D.Φ, p.negWeight τ = p.z) ∧ p.HasLiftRank n
 
-/-- The sum `∑ τ, (c τ - z)` of the row lengths of the pair `p = (ν, z)` with `ν` of weight `-c`. It
-is the total order of the derivatives in the lift. -/
-@[simp] abbrev rowLengthSum : ℕ := ∑ τ : D.Φ, (p.negWeight τ - p.z)
+/--
+The sum `∑ τ, (c τ - z)` of the row lengths of the pair `p = (ν, z)` with `ν` of weight `-c`. It
+is the total order of the derivatives in the lift.
+-/
+@[simp]
+abbrev rowLengthSum : ℕ := ∑ τ : D.Φ, (p.negWeight τ - p.z)
 
-/-- A denominator for the values of the lift: the number `n_ν = M ^ (4 f z) * (M d) ^ j`, where
+/--
+A denominator for the values of the lift: the number `n_ν = M ^ (4 f z) * (M d) ^ j`, where
 `M = D.M`, `f = D.f` is the number of infinite places, `d = P.d`, and `j = p.rowLengthSum` is the
-sum of the row lengths. -/
+sum of the row lengths.
+-/
 def denomBound : ℕ := D.M ^ (2 * D.f * (2 * p.z)) * (D.M * P.d) ^ p.rowLengthSum
 
-variable {p : D.CriticalPair} {n : Type} [Fintype n] [DecidableEq n] (H : p.HasLiftRank n)
-  (ϑ : D.TameChar)
+variable
+  {p : D.CriticalPair} {n : Type} [Fintype n] [DecidableEq n] (H : p.HasLiftRank n) (ϑ : D.TameChar)
 
-/-- The lift data `New.LValueData` for the pair `p = (ν, z)` twisted by the tame character `ϑ`, when
+/--
+The lift data `New.LValueData` for the pair `p = (ν, z)` twisted by the tame character `ϑ`, when
 `n` has `2 z ≥ 4` elements: the chosen places together with the set `Q` of `ϑ`, the row lengths
-`c τ - z` and the character `ν ϑ`. -/
+`c τ - z` and the character `ν ϑ`.
+-/
 abbrev lValueData : LValueData D.E n where
   toLevelPlaces := D.levelPlaces ϑ
   rowLength := fun τ ↦ p.negWeight τ - p.z
@@ -100,24 +109,31 @@ abbrev lValueData : LValueData D.E n where
   one_lt_card := by lia
   unramified := by simp_all [levelPlaces, ϑ.tamePart_eq_one, tamePart_eq_one, range_chosenPlace]
 
-/-- The lift `φ` of `ν ϑ`, an algebraic form on the definite `U(n)` with the weight, level and level
+/--
+The lift `φ` of `ν ϑ`, an algebraic form on the definite `U(n)` with the weight, level and level
 character of the descent datum `(lValueData H ϑ).descentPair` (the space `New.DescentPair.FormV`).
 It is the lift for the data `lValueData H ϑ`, multiplied by `vacuumScale ^ card n`, which makes the
 vacuum integral, and by the power `rowLengthSum` of the scale `star piMBar * jetScale` of the
 derivatives. Both scales are taken at `towerExp = D.towerExp`, the exponent that selects the field
-`D.E = P.E towerExp`. -/
+`D.E = P.E towerExp`.
+-/
 def trivialLift : (lValueData H ϑ).descentPair.FormV :=
-  (P.vacuumScale D.towerExp ^ card n *
-      (star (D.piMBar : ℂ) * P.jetScale D.towerExp) ^ p.rowLengthSum) •
-    (lValueData H ϑ).trivialLift
+  (P.vacuumScale D.towerExp ^ card n
+      * (star (D.piMBar : ℂ) * P.jetScale D.towerExp) ^ p.rowLengthSum)
+    • (lValueData H ϑ).trivialLift
 
-/-- The algebraic part `L^alg(z, ν ϑ) = ‖φ‖ ^ 2 / N(Q) ^ (2 z - 1)`, viewed in `ℂ`: the squared norm
+/--
+The algebraic part `L^alg(z, ν ϑ) = ‖φ‖ ^ 2 / N(Q) ^ (2 z - 1)`, viewed in `ℂ`: the squared norm
 of the lift `φ = trivialLift H ϑ`, divided by a power of the product `N(Q)` of the norms of the
-places in the set `Q` of `ϑ`. -/
-@[simp] def algPart : ℂ := ‖trivialLift H ϑ‖ ^ 2 / ϑ.normQ ^ (card n - 1)
+places in the set `Q` of `ϑ`.
+-/
+@[simp]
+def algPart : ℂ := ‖trivialLift H ϑ‖ ^ 2 / ϑ.normQ ^ (card n - 1)
 
-/-- The multiple `n_L L^alg(z, ν ϑ)` of `algPart H ϑ` by the natural number
-`n_L = chosenGroupOrder * denomBound ^ 2`. -/
+/--
+The multiple `n_L L^alg(z, ν ϑ)` of `algPart H ϑ` by the natural number
+`n_L = chosenGroupOrder * denomBound ^ 2`.
+-/
 def integralAlgebraicPart : ℂ := (D.chosenGroupOrder * p.denomBound ^ 2 : ℕ) * algPart H ϑ
 
 end New.Data.CriticalPair
@@ -164,33 +180,41 @@ lemma LValueData.isForm_const_one :
 def LValueData.constForm : X.descentPair.W.Form (typeKernel 0 X.descentPair.signs) :=
   ⟨fun _ ↦ 1, X.isForm_const_one⟩
 
-/-- The lift `X.trivialLift` is the theta lift `Θ_W 1` of the constant function `1` on `U(1)`, times
-the index of the principal level at the chosen places. -/
-theorem LValueData.trivialLift_eq_smul_thetaLift [WeilData E] :
-    X.trivialLift = (stdLevelIndex X.chosenLevel : ℂ) •
-      X.descentPair.thetaLift X.fitsParams_descentPair X.constForm := by
+/--
+The lift `X.trivialLift` is the theta lift `Θ_W 1` of the constant function `1` on `U(1)`, times
+the index of the principal level at the chosen places.
+-/
+theorem LValueData.trivialLift_eq_smul_thetaLift [WeilData E]
+    : X.trivialLift
+      = (stdLevelIndex X.chosenLevel : ℂ)
+        • X.descentPair.thetaLift X.fitsParams_descentPair X.constForm := by
   -- Pair both sides with a form `y`. As `Θ_W 1 = ∫ θ_W(g, ·) dg`, the product with `Θ_W 1` is the
   -- integral of the descent `⟨θ_W(g, ·), y⟩` of `y`, which depends only on the class of `g` at
   -- the level; so the integral is a class sum.
   refine ext_inner_right ℂ fun y ↦ ?_
   have h_descent := X.descentPair.isForm_normalizedDescent X.fitsParams_descentPair y
   let f (g : Gf E Unit) : ℂ := inner ℂ (X.kernelForm g) y
-  have h_avg (g : Gf E Unit) : ∫ x : GInf E (1 : Unit → ℤˣ),
-    X.descentPair.normalizedDescent y (x, g) = f g := by
+  have h_avg (g : Gf E Unit)
+      : ∫ x : GInf E (1 : Unit → ℤˣ),
+          X.descentPair.normalizedDescent y (x, g)
+        = f g := by
     simp [f, X.normalizedDescent_eq_inner_kernelForm]
   have h_level : X.chosenLevel ≤ rightStabilizer f :=
     X.kernelForm_invariant.2.trans fun k hk g ↦ congrArg (inner ℂ · y) (hk g)
   have h_sum : inner ℂ X.trivialLift y = stdClassSum X.chosenLevel f := by
     simp [f, X.inner_trivialLift 1, X.normalizedDescent_eq_inner_kernelForm]
-  have h_lift : inner ℂ (X.descentPair.thetaLift X.fitsParams_descentPair X.constForm) y =
-      (stdLevelIndex X.chosenLevel : ℂ)⁻¹ * stdClassSum X.chosenLevel f :=
-    calc _ = ∫ g, X.descentPair.normalizedDescent y g ∂X.descentPair.W.quotMeasure := by
-          rw [DescentPair.thetaLift_eq_integral, ← inner_conj_symm, ← integral_inner
-            (X.descentPair.integrable_smul_vectorKernelForm X.fitsParams_descentPair X.constForm),
-            ← integral_conj]
-          simp [constForm, DescentPair.normalizedDescent_eq_inner_vectorKernelForm]
-      _ = _ := integral_quotMeasure_eq_classSum h_descent.rat_mul h_avg _ h_level
-        h_descent.continuous
+  have h_lift
+      : inner ℂ (X.descentPair.thetaLift X.fitsParams_descentPair X.constForm) y
+        = (stdLevelIndex X.chosenLevel : ℂ)⁻¹ * stdClassSum X.chosenLevel f :=
+    calc
+      _ = ∫ g, X.descentPair.normalizedDescent y g ∂X.descentPair.W.quotMeasure := by
+        rw [DescentPair.thetaLift_eq_integral, ← inner_conj_symm,
+          ← integral_inner (X.descentPair.integrable_smul_vectorKernelForm X.fitsParams_descentPair
+            X.constForm),
+          ← integral_conj]
+        simp [constForm, DescentPair.normalizedDescent_eq_inner_vectorKernelForm]
+      _ = _ :=
+        integral_quotMeasure_eq_classSum h_descent.rat_mul h_avg _ h_level h_descent.continuous
   rw [inner_smul_left, map_natCast, h_lift, h_sum, mul_inv_cancel_left₀ (by simp)]
 
 /-- The lift `X.trivialLift` has the Hecke polynomials of a lift of the trivial system of
@@ -316,13 +340,15 @@ lemma LValueData.relIndex_descentResidueLevel :
     X.index_rangeParabolic_incl,
     X.index_stabilizer_inclMatrix_col, card_ResField]
 
-/-- The mean of `|Ψ|²` for the block datum `Ψ = X.descentPair.blockFn`, that is the proportion of
+/--
+The mean of `|Ψ|²` for the block datum `Ψ = X.descentPair.blockFn`, that is the proportion of
 the columns in its support, written as an explicit product (see `blockMass_eq_blockMeanSquare_div`):
 a factor `q ^ (-card n)` at each place `X.chosenPlace` and `(q - 1) / q` at each place
-`X.twistPlace`, where `q` is the norm of the place. -/
+`X.twistPlace`, where `q` is the norm of the place.
+-/
 def LValueData.blockMeanSquare : ℂ :=
-  (∏ i : X.ChosenIndex, (((X.chosenPlace i).q : ℂ) ^ Fintype.card n)⁻¹) *
-    ∏ i : X.TwistIndex, (((X.twistPlace i).q : ℂ) - 1) / (X.twistPlace i).q
+  (∏ i : X.ChosenIndex, (((X.chosenPlace i).q : ℂ) ^ Fintype.card n)⁻¹)
+    * ∏ i : X.TwistIndex, (((X.twistPlace i).q : ℂ) - 1) / (X.twistPlace i).q
 
 /-- For lift data `X` the block datum `Ψ = X.descentPair.blockFn` is a function of the columns `x`
 of length `card n` modulo the places of `X`: it is zero unless `x` reduces at each `X.chosenPlace`
@@ -439,7 +465,8 @@ lemma LValueData.integral_fockInner_realPairWeil :
 
 /-! ### The inner product formula, the Euler product and the norm -/
 
-/-- The inner product formula for the constant function `1` on `U(1)`. Let `X` be lift data of rank
+/--
+The inner product formula for the constant function `1` on `U(1)`. Let `X` be lift data of rank
 `N = card n > 2`. The squared norm of the lift of `1` is a product of six factors:
 * the volumes of `[U(1)]` and `[U(n)]` divided by the index of `X.chosenLevel`;
 * the dimension of the weight, the cardinality of the index set `WeylIndex` of a basis;
@@ -450,49 +477,54 @@ lemma LValueData.integral_fockInner_realPairWeil :
 * the sum `vacuumSum` of the coefficients `(b(det g) * finMultiplier g ^ N)⁻¹` of the vacuum, with
   `b = charV = X.u1Char * upsilonU1 ^ (N / 2)` and `finMultiplier` the multiplier of the Weil
   representation. Here `g` runs over representatives of the finite points of `U(1)` modulo those
-  integral at every place other than the places of `X` and their conjugates. -/
-theorem LValueData.inner_thetaLift_constForm_self [WeilData E] (h_rank : 2 < Fintype.card n) :
-    inner ℂ (X.descentPair.thetaLift X.fitsParams_descentPair X.constForm)
-        (X.descentPair.thetaLift X.fitsParams_descentPair X.constForm) =
-      (stdSpace E Unit).quotMeasure.real .univ * (stdSpace E n).quotMeasure.real .univ /
-          stdLevelIndex X.chosenLevel *
-        card (WeylIndex n X.descentPair.columnCount) *
-        hookNumber X.descentPair.columnCount (rankAt fun _ : NumberField.InfinitePlace E ↦ n) *
-        (levelOf X.descentPair.placeAt (descentResidueLevel X.descentPair.toLevelPlaces
-          X.descentPair.incl)).relIndex
-          (stdLevel E n) *
-        X.blockMeanSquare * vacuumSum Unit (Fintype.card n) X.descentPair.charV
-          X.places.conjClosureᶜ := by
+  integral at every place other than the places of `X` and their conjugates.
+-/
+theorem LValueData.inner_thetaLift_constForm_self [WeilData E] (h_rank : 2 < Fintype.card n)
+    : inner ℂ (X.descentPair.thetaLift X.fitsParams_descentPair X.constForm)
+        (X.descentPair.thetaLift X.fitsParams_descentPair X.constForm)
+      = (stdSpace E Unit).quotMeasure.real .univ * (stdSpace E n).quotMeasure.real .univ
+        / stdLevelIndex X.chosenLevel * card (WeylIndex n X.descentPair.columnCount)
+        * hookNumber X.descentPair.columnCount (rankAt fun _ : NumberField.InfinitePlace E ↦ n)
+        * (levelOf X.descentPair.placeAt
+            (descentResidueLevel X.descentPair.toLevelPlaces X.descentPair.incl)).relIndex
+          (stdLevel E n)
+        * X.blockMeanSquare
+        * vacuumSum Unit (Fintype.card n) X.descentPair.charV X.places.conjClosureᶜ := by
   let O : DescentPair E Unit n := X.descentPair
   let σ : ℂ := vacuumSum Unit (card n) O.charV X.places.conjClosureᶜ
   let v : PairFock E O.signs (1 : n → ℤˣ) :=
     polyVector (realSigns E (homSigns 1 1)) (O.fockPoly (highestVector O.columnCount O.paramV))
   let θ₁ : G E (1 : n → ℤˣ) → ℂ :=
     lift O.pairThetaKernel (O.fockDatum (highestVector O.columnCount O.paramV)) fun _ ↦ 1
-  have h_lift : ofAlgForm O.paramV 1 (O.thetaLift X.fitsParams_descentPair X.constForm).val =
-    θ₁ := by
+  have h_lift
+      : ofAlgForm O.paramV 1 (O.thetaLift X.fitsParams_descentPair X.constForm).val = θ₁ := by
     rw [O.ofAlgForm_thetaLift, X.fitsParams_descentPair.isArrow_fockDatum.coe_formLift]
     rfl
   have h_one : (fun _ : G E O.signs ↦ (1 : ℂ)) ∈ (stdSpace E Unit).rapidFunctions :=
     ((stdSpace E Unit).isAutomorphic_const 1).mem_rapidFunctions fun _ _ ↦ rfl
-  have h_rallis : (stdSpace E n).petersson θ₁ θ₁ =
-      (stdSpace E n).quotMeasure.real .univ * (X.blockMeanSquare / stdLevelIndex X.chosenLevel) *
-        ∫ x : GInf E O.signs,
-          fockInner v (realPairWeil O.detExp (fun τ ↦ -(X.rowLength τ : ℤ)) (x, 1) v) *
-            O.W.petersson (fun _ ↦ 1) fun g : G E O.signs ↦
-              rallisSeries (card n) O.charV X.places.conjClosureᶜ (fun _ ↦ 1) (g * (x, 1)) :=
+  have h_rallis
+      : (stdSpace E n).petersson θ₁ θ₁
+        = (stdSpace E n).quotMeasure.real .univ * (X.blockMeanSquare / stdLevelIndex X.chosenLevel)
+          * ∫ x : GInf E O.signs,
+              fockInner v (realPairWeil O.detExp (fun τ ↦ -(X.rowLength τ : ℤ)) (x, 1) v) *
+                O.W.petersson (fun _ ↦ 1) fun g : G E O.signs ↦
+                  rallisSeries (card n) O.charV X.places.conjClosureᶜ (fun _ ↦ 1) (g * (x, 1)) :=
     (X.isSharp_blockDatum.petersson_lift_eq_integral (by simpa) O.charW O.detExp v h_one h_one
       fun _ _ _ ↦ rfl).right
   -- Translations fix `1`, so its series is the constant `σ`; the real points fix `v`.
-  have h_series (x : GInf E O.signs) : O.W.petersson (fun _ ↦ 1) (fun g : G E O.signs ↦
-      rallisSeries (card n) O.charV X.places.conjClosureᶜ (fun _ ↦ 1) (g * (x, 1))) =
-        O.W.petersson 1 1 * σ := by
+  have h_series (x : GInf E O.signs)
+      : O.W.petersson
+          (fun _ ↦ 1)
+          (fun g : G E O.signs ↦
+            rallisSeries (card n) O.charV X.places.conjClosureᶜ (fun _ ↦ 1) (g * (x, 1)))
+        = O.W.petersson 1 1 * σ := by
     simp [rallisSeries_const, petersson, σ]
-  have h_real : ∫ x : GInf E O.signs,
-        fockInner v (realPairWeil O.detExp (fun τ ↦ -(X.rowLength τ : ℤ)) (x, 1) v) *
-          O.W.petersson 1 1 =
-      hookNumber O.columnCount (rankAt fun _ : NumberField.InfinitePlace E ↦ n) *
-        ((stdSpace E Unit).quotMeasure.real .univ : ℂ) :=
+  have h_real
+      : ∫ x : GInf E O.signs,
+          fockInner v (realPairWeil O.detExp (fun τ ↦ -(X.rowLength τ : ℤ)) (x, 1) v) *
+            O.W.petersson 1 1
+        = hookNumber O.columnCount (rankAt fun _ : NumberField.InfinitePlace E ↦ n)
+          * ((stdSpace E Unit).quotMeasure.real .univ : ℂ) :=
     X.integral_fockInner_realPairWeil
   simp only [h_series, ← mul_assoc, integral_mul_const, h_real] at h_rallis
   rw [LevelPlaces.LevelForm.inner_eq_petersson (stdSpace E n) O.isHCParam_paramV, h_lift, h_rallis]

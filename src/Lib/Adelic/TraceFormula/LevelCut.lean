@@ -42,17 +42,21 @@ open NumberField Module LinearMap MonoidAlgebra InnerProductSpace
 
 open Variety (spanOn)
 
-variable {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
-  {w : FinPlace E}
+variable
+  {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n] {w : FinPlace E}
 
 /-- The part of `K` whose component at `w` lies in `J`. -/
-abbrev cutLevel (K : Subgroup (Gf E n)) (w : FinPlace E) (J : Subgroup (GL n (LocField w))) :
-    Subgroup (Gf E n) := K ⊓ J.comap (Gf.atPlace w)
+abbrev cutLevel (K : Subgroup (Gf E n)) (w : FinPlace E) (J : Subgroup (GL n (LocField w)))
+    : Subgroup (Gf E n) :=
+  K ⊓ J.comap (Gf.atPlace w)
 
-/-- The cut of a level by the stabiliser of a line at `w` is again a level: it is open and lies in
-`stdLevel E n`, the subgroup of elements that are integral at every place. -/
-instance isLevel_cutLevel_lineStabilizer (K : Subgroup (Gf E n)) [IsLevel K] (w : FinPlace E)
-    (i : n) : IsLevel (cutLevel K w (lineStabilizer w i)) where
+/--
+The cut of a level by the stabiliser of a line at `w` is again a level: it is open and lies in
+`stdLevel E n`, the subgroup of elements that are integral at every place.
+-/
+instance isLevel_cutLevel_lineStabilizer
+    (K : Subgroup (Gf E n)) [IsLevel K] (w : FinPlace E) (i : n)
+    : IsLevel (cutLevel K w (lineStabilizer w i)) where
   le := inf_le_left.trans IsLevel.le
   isOpen := IsLevel.isOpen.inter ((isOpen_lineStabilizer w i).preimage (Gf.continuous_atPlace w))
 
@@ -71,8 +75,12 @@ lemma ofSplitPlace_mem_of_maxCompactAt_le (hw : w.IsSplit) {K : Subgroup (Gf E n
 
 section Algebraic
 
-variable (hw : w.IsSplit) {K : Subgroup (Gf E n)} {J : Subgroup (GL n (LocField w))}
-  {M : Type} [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ (Gf E n) M) [IsLevel K]
+variable
+  (hw : w.IsSplit)
+  {K : Subgroup (Gf E n)} {J : Subgroup (GL n (LocField w))} {M : Type}
+  [AddCommGroup M] [Module ℂ M]
+  (ρ : Representation ℂ (Gf E n) M)
+  [IsLevel K]
 
 /-- The action of an element through its part off `w`. -/
 abbrev offRep : Representation ℂ (Gf E n) M := ρ.comp (offPlace hw)
@@ -115,11 +123,15 @@ lemma asAlgebraHom_offRep_apply {a : ℂ[Gf E n]}
   | add a b _ _ ha hb => simp [ha, hb]
   | smul c a _ ha => simp [ha]
 
-/-- The inclusion of the vectors of level `K` in those of the level that is cut down to the
-stabiliser of the `i`-th coordinate line at `w`. -/
-def cutInclusion (w : FinPlace E) (K : Subgroup (Gf E n)) {M : Type} [AddCommGroup M] [Module ℂ M]
-    (ρ : Representation ℂ (Gf E n) M) (i : n) :
-    levelSpace ρ K →ₗ[ℂ] levelSpace ρ (cutLevel K w (lineStabilizer w i)) :=
+/--
+The inclusion of the vectors of level `K` in those of the level that is cut down to the
+stabiliser of the `i`-th coordinate line at `w`.
+-/
+def cutInclusion
+    (w : FinPlace E) (K : Subgroup (Gf E n))
+    {M : Type} [AddCommGroup M] [Module ℂ M]
+    (ρ : Representation ℂ (Gf E n) M) (i : n)
+    : levelSpace ρ K →ₗ[ℂ] levelSpace ρ (cutLevel K w (lineStabilizer w i)) :=
   Submodule.inclusion (levelSpace_anti inf_le_left)
 
 /-- If `K` contains the maximal compact subgroup at the split place `w` and `J ≤ GL_n(𝒪_w)`, a
@@ -149,31 +161,37 @@ lemma mem_levelSpace_iff_offRep_localRep (hK : maxCompactAt n w ≤ K) {y : M} :
     inf_eq_left.2 fun k hk ↦ mem_stdLevel_iff.1 (IsLevel.le hk) w
   rw [← mem_levelSpace_cutLevel_iff hw ρ hK le_rfl, h_cut]
 
-/-- The elements of the group algebra that map the space of vectors fixed by the part of `K` off
-`w` to itself act on the vectors of the cut level through their parts off `w`. -/
-def offAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ localIntGL n w) :
-    levelAlgebra (offRep hw ρ) K →ₐ[ℂ] End ℂ (levelSpace ρ (cutLevel K w J)) :=
-  (levelAction ρ (cutLevel K w J)).comp <|
-    ((mapDomainAlgHom ℂ ℂ (offPlace hw)).comp (levelAlgebra (offRep hw ρ) K).val).codRestrict _
-      fun a y hy ↦ by
-        obtain ⟨h_off, h_local⟩ := (mem_levelSpace_cutLevel_iff hw ρ hK hJ).1 hy
-        change ρ.asAlgebraHom (mapDomain (offPlace hw) a) y ∈ levelSpace ρ (cutLevel K w J)
-        rw [asAlgebraHom_mapDomain, mem_levelSpace_cutLevel_iff hw ρ hK hJ]
-        exact ⟨a.property y h_off, map_mem_levelSpace_of_commute h_local
-          fun x ↦ commute_localRep_offRep hw ρ x a⟩
+/--
+The elements of the group algebra that map the space of vectors fixed by the part of `K` off
+`w` to itself act on the vectors of the cut level through their parts off `w`.
+-/
+def offAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ localIntGL n w)
+    : levelAlgebra (offRep hw ρ) K →ₐ[ℂ] End ℂ (levelSpace ρ (cutLevel K w J)) :=
+  (levelAction ρ (cutLevel K w J)).comp <| ((mapDomainAlgHom ℂ ℂ (offPlace hw)).comp
+      (levelAlgebra (offRep hw ρ) K).val).codRestrict _ fun a y hy ↦ by
+    obtain ⟨h_off, h_local⟩ := (mem_levelSpace_cutLevel_iff hw ρ hK hJ).1 hy
+    change ρ.asAlgebraHom (mapDomain (offPlace hw) a) y ∈ levelSpace ρ (cutLevel K w J)
+    rw [asAlgebraHom_mapDomain, mem_levelSpace_cutLevel_iff hw ρ hK hJ]
+    exact ⟨
+      a.property y h_off,
+      map_mem_levelSpace_of_commute h_local fun x ↦ commute_localRep_offRep hw ρ x a
+    ⟩
 
-/-- The elements of the group algebra at `w` that map the space of vectors fixed by `J` to itself
-act on the vectors of the cut level. -/
-def localAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ localIntGL n w) :
-    levelAlgebra (localRep hw ρ) J →ₐ[ℂ] End ℂ (levelSpace ρ (cutLevel K w J)) :=
-  (levelAction ρ (cutLevel K w J)).comp <|
-    ((mapDomainAlgHom ℂ ℂ (ofSplitPlace hw)).comp (levelAlgebra (localRep hw ρ) J).val).codRestrict
-      _ fun u y hy ↦ by
-        obtain ⟨h_off, h_local⟩ := (mem_levelSpace_cutLevel_iff hw ρ hK hJ).1 hy
-        change ρ.asAlgebraHom (mapDomain (ofSplitPlace hw) u) y ∈ levelSpace ρ (cutLevel K w J)
-        rw [asAlgebraHom_mapDomain, mem_levelSpace_cutLevel_iff hw ρ hK hJ]
-        exact ⟨map_mem_levelSpace_of_commute h_off fun k ↦ commute_offRep_localRep hw ρ k u,
-          u.property y h_local⟩
+/--
+The elements of the group algebra at `w` that map the space of vectors fixed by `J` to itself
+act on the vectors of the cut level.
+-/
+def localAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ localIntGL n w)
+    : levelAlgebra (localRep hw ρ) J →ₐ[ℂ] End ℂ (levelSpace ρ (cutLevel K w J)) :=
+  (levelAction ρ (cutLevel K w J)).comp <| ((mapDomainAlgHom ℂ ℂ (ofSplitPlace hw)).comp
+      (levelAlgebra (localRep hw ρ) J).val).codRestrict _ fun u y hy ↦ by
+    obtain ⟨h_off, h_local⟩ := (mem_levelSpace_cutLevel_iff hw ρ hK hJ).1 hy
+    change ρ.asAlgebraHom (mapDomain (ofSplitPlace hw) u) y ∈ levelSpace ρ (cutLevel K w J)
+    rw [asAlgebraHom_mapDomain, mem_levelSpace_cutLevel_iff hw ρ hK hJ]
+    exact ⟨
+      map_mem_levelSpace_of_commute h_off fun k ↦ commute_offRep_localRep hw ρ k u,
+      u.property y h_local
+    ⟩
 
 /-- On the vectors of the cut level, `offAction` of `a` is the action of `a` through the parts off
 `w`. -/
@@ -215,30 +233,36 @@ lemma coe_offAction_mul_localAction_apply (hK : maxCompactAt n w ≤ K) (hJ : J 
         coe_localAction_apply, coe_offAction_apply]
     _ = _ := by rw [map_mul, mul_apply_eq_comp, asAlgebraHom_mapDomain, asAlgebraHom_mapDomain]
 
-/-- The operator `T⁺` at `w` on the vectors whose level is the stabiliser of the `i`-th coordinate
-line at `w` and `K` elsewhere. -/
-def raiseAt (hK : maxCompactAt n w ≤ K) (i : n) :
-    End ℂ (levelSpace ρ (cutLevel K w (lineStabilizer w i))) :=
-  localAction hw ρ hK (lineStabilizer_le_localIntGL w i) ⟨lineHecke w i, fun y hy ↦ by
-    simpa only [asAlgebraHom_lineHecke] using lineRaise_mem hy⟩
+/--
+The operator `T⁺` at `w` on the vectors whose level is the stabiliser of the `i`-th coordinate
+line at `w` and `K` elsewhere.
+-/
+def raiseAt (hK : maxCompactAt n w ≤ K) (i : n)
+    : End ℂ (levelSpace ρ (cutLevel K w (lineStabilizer w i))) :=
+  localAction hw ρ hK (lineStabilizer_le_localIntGL w i)
+    ⟨lineHecke w i, fun y hy ↦ by simpa only [asAlgebraHom_lineHecke] using lineRaise_mem hy⟩
 
-/-- The operator `T⁻` at `w` on the vectors whose level is the stabiliser of the `i`-th coordinate
-line at `w` and `K` elsewhere. -/
-def lowerAt (hK : maxCompactAt n w ≤ K) (i : n) :
-    End ℂ (levelSpace ρ (cutLevel K w (lineStabilizer w i))) :=
-  localAction hw ρ hK (lineStabilizer_le_localIntGL w i) ⟨lineHeckeLower w i, fun y hy ↦ by
-    simpa only [asAlgebraHom_lineHeckeLower] using lineLower_mem hy⟩
+/--
+The operator `T⁻` at `w` on the vectors whose level is the stabiliser of the `i`-th coordinate
+line at `w` and `K` elsewhere.
+-/
+def lowerAt (hK : maxCompactAt n w ≤ K) (i : n)
+    : End ℂ (levelSpace ρ (cutLevel K w (lineStabilizer w i))) :=
+  localAction hw ρ hK (lineStabilizer_le_localIntGL w i) ⟨
+    lineHeckeLower w i,
+    fun y hy ↦ by simpa only [asAlgebraHom_lineHeckeLower] using lineLower_mem hy
+  ⟩
 
 /-- The mean over `GL_n(𝒪_w)`, from the level that is cut at `w` to the level `K`. -/
-def meanAt (hK : maxCompactAt n w ≤ K) (i : n) :
-    levelSpace ρ (cutLevel K w (lineStabilizer w i)) →ₗ[ℂ] levelSpace ρ K :=
+def meanAt (hK : maxCompactAt n w ≤ K) (i : n)
+    : levelSpace ρ (cutLevel K w (lineStabilizer w i)) →ₗ[ℂ] levelSpace ρ K :=
   (sphericalMean (localRep hw ρ)).restrict fun y hy ↦ by
-    obtain ⟨h_off, h_local⟩ := (mem_levelSpace_cutLevel_iff hw ρ hK
-      (lineStabilizer_le_localIntGL w i)).1 hy
+    obtain ⟨h_off, h_local⟩ :=
+      (mem_levelSpace_cutLevel_iff hw ρ hK (lineStabilizer_le_localIntGL w i)).1 hy
     rw [mem_levelSpace_iff_offRep_localRep hw ρ hK]
     refine ⟨map_mem_levelSpace_of_commute h_off fun k ↦ ?_, sphericalMean_mem h_local⟩
-    simpa only [asAlgebraHom_sphericalMeanElement] using commute_offRep_localRep hw ρ k
-      (sphericalMeanElement n w)
+    simpa only [asAlgebraHom_sphericalMeanElement] using
+      commute_offRep_localRep hw ρ k (sphericalMeanElement n w)
 
 /-- `raiseAt` is the restriction of the operator `T⁺ = lineRaise` of the representation at `w`. -/
 lemma coe_raiseAt_apply (hK : maxCompactAt n w ≤ K) (i : n)
@@ -306,7 +330,8 @@ lemma coe_offAction_pow_mul_raiseAt_pow_apply (hK : maxCompactAt n w ≤ K) (i :
 
 end Algebraic
 
-variable {K : Subgroup (Gf E n)} {M M' : Type}
+variable
+  {K : Subgroup (Gf E n)} {M M' : Type}
   [NormedAddCommGroup M] [InnerProductSpace ℂ M] [NormedAddCommGroup M'] [InnerProductSpace ℂ M']
   {ρ : Representation ℂ (Gf E n) M} {ρ' : Representation ℂ (Gf E n) M'} [IsLevel K]
 
@@ -344,7 +369,8 @@ lemma lineRelation_offAction (hw : w.IsSplit) (hK : maxCompactAt n w ≤ K) (i :
       commute_minus :=
         commute_offAction_localAction hw ρ hK (lineStabilizer_le_localIntGL w i) a _ }
 
-/-- Let the level `K` contain the maximal compact subgroup at the split place `w`, and let `a` be
+/--
+Let the level `K` contain the maximal compact subgroup at the split place `w`, and let `a` be
 in `universalLevelAlgebra K` (it maps the space of `K`-fixed vectors to itself in every
 representation) and be a combination of elements that are integral at `w`. Consider two unitary
 representations whose spaces of vectors of level `K'`, the level cut by the stabiliser of a line at
@@ -352,8 +378,12 @@ representations whose spaces of vectors of level `K'`, the level cut by the stab
 `b = (T⁺) ^ (m + 1) * a' ^ (l + 1)` of the group algebra, with `T⁺ = lineHecke w i` placed at `w`
 and `a'` the part of `a` off `w`, has the same trace in both at level `K'` (`h_trace`, where `S`,
 `S'` are the two operators by which `b` acts there). Then `a` has the same trace at level `K` in
-both. -/
-theorem trace_eq_of_trace_cutLevel_eq (hw : w.IsSplit) (hK : maxCompactAt n w ≤ K) (i : n)
+both.
+-/
+theorem trace_eq_of_trace_cutLevel_eq
+    (hw : w.IsSplit)
+    (hK : maxCompactAt n w ≤ K)
+    (i : n)
     (hρ : ∀ (g : Gf E n) (x y : M), ⟪ρ g x, ρ g y⟫_ℂ = ⟪x, y⟫_ℂ)
     (hρ' : ∀ (g : Gf E n) (x y : M'), ⟪ρ' g x, ρ' g y⟫_ℂ = ⟪x, y⟫_ℂ)
     [Module.Finite ℂ (levelSpace ρ (cutLevel K w (lineStabilizer w i)))]
@@ -361,17 +391,18 @@ theorem trace_eq_of_trace_cutLevel_eq (hw : w.IsSplit) (hK : maxCompactAt n w �
     {a : ℂ[Gf E n]} (ha : a ∈ universalLevelAlgebra K)
     (h_int : a ∈ spanOn ℂ {g : Gf E n | g.atPlace w ∈ localIntGL n w})
     (h_trace : ∀ (l m : ℕ) (S : End ℂ (levelSpace ρ (cutLevel K w (lineStabilizer w i))))
-      (S' : End ℂ (levelSpace ρ' (cutLevel K w (lineStabilizer w i)))),
+        (S' : End ℂ (levelSpace ρ' (cutLevel K w (lineStabilizer w i)))),
       let K' : Subgroup (Gf E n) := cutLevel K w (lineStabilizer w i)
-      let b : ℂ[Gf E n] := mapDomain (ofSplitPlace hw) (lineHecke w i ^ (m + 1)) *
-        mapDomain (offPlace hw) (a ^ (l + 1))
-      (∀ y : levelSpace ρ K', (S y : M) = ρ.asAlgebraHom b y) →
-      (∀ y : levelSpace ρ' K', (S' y : M') = ρ'.asAlgebraHom b y) →
-        trace ℂ (levelSpace ρ K') S = trace ℂ (levelSpace ρ' K') S')
+      let b : ℂ[Gf E n] :=
+        mapDomain (ofSplitPlace hw) (lineHecke w i ^ (m + 1))
+          * mapDomain (offPlace hw) (a ^ (l + 1))
+      (∀ y : levelSpace ρ K', (S y : M) = ρ.asAlgebraHom b y)
+        → (∀ y : levelSpace ρ' K', (S' y : M') = ρ'.asAlgebraHom b y)
+        → trace ℂ (levelSpace ρ K') S = trace ℂ (levelSpace ρ' K') S')
     {T : End ℂ (levelSpace ρ K)} {T' : End ℂ (levelSpace ρ' K)}
     (hT : ∀ y : levelSpace ρ K, (T y : M) = ρ.asAlgebraHom a y)
-    (hT' : ∀ y : levelSpace ρ' K, (T' y : M') = ρ'.asAlgebraHom a y) :
-    trace ℂ (levelSpace ρ K) T = trace ℂ (levelSpace ρ' K) T' := by
+    (hT' : ∀ y : levelSpace ρ' K, (T' y : M') = ρ'.asAlgebraHom a y)
+    : trace ℂ (levelSpace ρ K) T = trace ℂ (levelSpace ρ' K) T' := by
   let a₁ : levelAlgebra (offRep hw ρ) K := ⟨a, universalLevelAlgebra_le K (offRep hw ρ) ha⟩
   let a₂ : levelAlgebra (offRep hw ρ') K := ⟨a, universalLevelAlgebra_le K (offRep hw ρ') ha⟩
   -- Vectors of level `K` are spherical at `w`, so `a` acts on them through its part off `w`.
@@ -388,6 +419,5 @@ theorem trace_eq_of_trace_cutLevel_eq (hw : w.IsSplit) (hK : maxCompactAt n w �
     (coe_offAction_pow_mul_raiseAt_pow_apply hw ρ' hK i a₂ (l + 1) (m + 1))
 
 end New
-
 
 end

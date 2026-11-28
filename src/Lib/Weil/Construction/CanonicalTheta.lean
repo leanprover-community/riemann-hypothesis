@@ -47,9 +47,12 @@ namespace New.Space
 
 open Function Matrix G
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n₁ n₂ : Type*} [Fintype n] [DecidableEq n]
-  [Fintype n₁] [DecidableEq n₁] [Fintype n₂] {s : n → ℤˣ} {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ}
-  {σ : ℂ →+* ℂ} [RingHomIsometric σ] (D : CoordChange E σ s₁ s) {W V : Space E n s}
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n n₁ n₂ : Type*} [Fintype n] [DecidableEq n] [Fintype n₁] [DecidableEq n₁] [Fintype n₂]
+  {s : n → ℤˣ} {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ} {σ : ℂ →+* ℂ} [RingHomIsometric σ]
+  (D : CoordChange E σ s₁ s)
+  {W V : Space E n s}
   (V₁ : Space E n₁ s₁)
 
 /-- Let `σ` be an isometric ring endomorphism of ℂ that is an involution. Let `D` be a change of

@@ -60,12 +60,16 @@ export Lift (InClass)
 
 open Lift Period crysCocycles Module Set Multiset Finset DFunLike Submodule Finite TensorProduct
 
-variable {ℓ : ℕ} [ThePrime ℓ] {O : CoeffRing ℓ} {Γ : Type} {n : Type} [Group Γ] [Fintype n]
-  [DecidableEq n] [𝒥 : OverGp Γ ℓ] {R : Type} [CommRing R] [Algebra ℤ_[ℓ] R] [TopologicalSpace Γ]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {O : CoeffRing ℓ} {Γ : Type} {n : Type} [Group Γ] [Fintype n] [DecidableEq n] [𝒥 : OverGp Γ ℓ]
+  {R : Type} [CommRing R] [Algebra ℤ_[ℓ] R] [TopologicalSpace Γ]
   {L : GalLattice O Γ}
 
-/-- The Γ-lattice over R given by the module R^n with Γ acting through the matrix representation
-ρ. -/
+/--
+The Γ-lattice over R given by the module R^n with Γ acting through the matrix representation
+ρ.
+-/
 noncomputable abbrev matrixLattice (ρ : Γ →* Matrix n n R) : GalLattice R Γ where
   Carrier := n → R
   ρ := actionRep R (n → R) ρ
@@ -246,8 +250,10 @@ lemma New.Selmer.noMultipleNear_of_forall_not_dvd {ℓ n G b c δ a : ℕ} (h_la
   simp only [abs_le, mem_Ioc] at hu ⊢
   omega
 
-/-- The size conditions of the crystalline bound: `Q² ≪ h`, `h³ ≪ G`, `h³ G ≪ b`, `log b ≪ m` and
-`Q η ≪ h³`, with `δ < η`. Here `A ≪ B` stands for `99 A ≤ B`, except in the logarithmic one. -/
+/--
+The size conditions of the crystalline bound: `Q² ≪ h`, `h³ ≪ G`, `h³ G ≪ b`, `log b ≪ m` and
+`Q η ≪ h³`, with `δ < η`. Here `A ≪ B` stands for `99 A ≤ B`, except in the logarithmic one.
+-/
 structure New.Selmer.CrystallineSizes (Q m h G b δ η W : ℕ) : Prop where
   /-- The bound `Q` for small primes is positive. -/
   bound_pos : 0 < Q
@@ -264,25 +270,34 @@ structure New.Selmer.CrystallineSizes (Q m h G b δ η W : ℕ) : Prop where
   /-- `Q η ≪ h³`, with room for `W Q` and `h`. -/
   low_le : 99 * ((η + W) * Q + η + h) ≤ h ^ 3
 
-/-- The lattice `L` has few low jumps: at each embedding the negative members of `U` and `U'` are
-at most `-h / 2`, and at most `μ` jumps of `L` lie in `[-η, η]`. -/
-structure New.Selmer.HasFewLowJumps {ℓ : ℕ} [ThePrime ℓ] {Γ : Type} [Group Γ] [OverGp Γ ℓ]
-    {O : CoeffRing ℓ} (L : GalLattice O Γ) (h μ η : ℕ) (U U' : (O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ) :
-    Prop where
+/--
+The lattice `L` has few low jumps: at each embedding the negative members of `U` and `U'` are
+at most `-h / 2`, and at most `μ` jumps of `L` lie in `[-η, η]`.
+-/
+structure New.Selmer.HasFewLowJumps
+    {ℓ : ℕ} [ThePrime ℓ]
+    {Γ : Type} [Group Γ] [OverGp Γ ℓ]
+    {O : CoeffRing ℓ} (L : GalLattice O Γ)
+    (h μ η : ℕ) (U U' : (O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ)
+    : Prop where
   /-- The negative members of `U g` and `U' g` are at most `-h / 2`. -/
-  two_mul_le (g : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) (u : ℤ) (hu : u < 0) (h_mem : u ∈ U g ∨ u ∈ U' g) :
-    2 * u ≤ -h
+  two_mul_le (g : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) (u : ℤ) (hu : u < 0) (h_mem : u ∈ U g ∨ u ∈ U' g) : 2 * u ≤ -h
   /-- At most `μ` jumps of `L` at `g`, counted with multiplicity, lie in `[-η, η]`. -/
   sum_jump_le (g : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) : ∑ u ∈ Icc (-η : ℤ) η, jump L.ρ g u ≤ μ
 
-/-- `LettersReadThick k letter th ε Q h T s`: for embeddings `g` indexed by `ι`, with thickness
+/--
+`LettersReadThick k letter th ε Q h T s`: for embeddings `g` indexed by `ι`, with thickness
 `th g` and sign `ε g`, the value `letter g` in `ℂ_ℓ` determines both by the functions `T` and `s`,
 at thick `g` and, if `Q < ℓ`, at every `g`. Here `k` is a Kummer chart, the prime `ℓ` is small if
 `ℓ ≤ Q`, and `h` bounds the ramification. The degree of `k` is the index of `Γ`, the chart is
-unramified with `ℓ ≥ 7`, or `ℓ ≤ Q` and all signs agree; for `ℓ ≤ Q` thick letters are sparse. -/
-structure New.Selmer.LettersReadThick {ℓ : ℕ} [ThePrime ℓ] {Γ : GroupOverGp ℓ}
-    (k : KummerChart Γ) {ι : Type} (letter : ι → ℂ_[ℓ]) (th : ι → Prop) (ε : ι → ℤˣ) (Q h : ℕ)
-    (T : ℂ_[ℓ] → Prop) (s : ℂ_[ℓ] → ℤˣ) : Prop where
+unramified with `ℓ ≥ 7`, or `ℓ ≤ Q` and all signs agree; for `ℓ ≤ Q` thick letters are sparse.
+-/
+structure New.Selmer.LettersReadThick
+    {ℓ : ℕ} [ThePrime ℓ]
+    {Γ : GroupOverGp ℓ} (k : KummerChart Γ)
+    {ι : Type} (letter : ι → ℂ_[ℓ]) (th : ι → Prop) (ε : ι → ℤˣ)
+    (Q h : ℕ) (T : ℂ_[ℓ] → Prop) (s : ℂ_[ℓ] → ℤˣ)
+    : Prop where
   /-- The degree `e f` of the chart is the index of the image of `Γ` in `G_ℓ`. -/
   e_mul_f_eq_index : k.e * k.f = Γ.overGp.toGp.range.index
   /-- The ramification `e` of the chart is at most `h`. -/
@@ -293,10 +308,17 @@ structure New.Selmer.LettersReadThick {ℓ : ℕ} [ThePrime ℓ] {Γ : GroupOver
   sign_eq (g : ι) (hg : th g ∨ Q < ℓ) : ε g = s (letter g)
   /-- The chart is unramified with `ℓ ≥ 7`, or `ℓ ≤ Q` and all letters have the same sign. -/
   isUnramified_or_sign_eq : k.IsUnramified ∧ 7 ≤ ℓ ∨ ℓ ≤ Q ∧ ∀ z z' : ℂ_[ℓ], s z = s z'
-  /-- For `ℓ ≤ Q` no three thick letters, that is letters with `T`, follow one another at
-  distances `≤ log_ℓ h³` in an orbit of `z ↦ z ^ ℓ`. -/
-  not_thick_pow (hℓ : ℓ ≤ Q) (z : ℂ_[ℓ]) (a : ℕ) (ha : a ∈ Icc 1 (ℓ.log (h ^ 3))) (a' : ℕ)
-    (ha' : a' ∈ Icc 1 (ℓ.log (h ^ 3))) (hz : T z) (hz' : T (z ^ ℓ ^ a)) : ¬T (z ^ ℓ ^ (a + a'))
+  /--
+  For `ℓ ≤ Q` no three thick letters, that is letters with `T`, follow one another at
+  distances `≤ log_ℓ h³` in an orbit of `z ↦ z ^ ℓ`.
+  -/
+  not_thick_pow
+    (hℓ : ℓ ≤ Q)
+    (z : ℂ_[ℓ])
+    (a : ℕ) (ha : a ∈ Icc 1 (ℓ.log (h ^ 3)))
+    (a' : ℕ) (ha' : a' ∈ Icc 1 (ℓ.log (h ^ 3)))
+    (hz : T z) (hz' : T (z ^ ℓ ^ a))
+    : ¬ T (z ^ ℓ ^ (a + a'))
 
 open scoped Classical in
 /-- Let `k` be a Kummer chart of `Γ`. Its letters `i` are the units of `𝔽_{ℓ^f}`, and

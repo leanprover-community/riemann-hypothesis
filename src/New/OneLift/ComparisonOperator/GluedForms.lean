@@ -86,9 +86,11 @@ section GluedFormTheta
 
 open Matrix ComplexConjugate Finset Modulus MvPolynomial Sum
 
-variable {E r n N m a : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n]
-  [DecidableEq n] [Fintype N] [DecidableEq N] [Fintype m]
-  {O : DescentPair E r n} {z : r ↪ m} (V : DividedSplitting N m a O z) {L : DividedLattice O}
+variable
+  {E r n N m a : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+  [Fintype N] [DecidableEq N] [Fintype m]
+  {O : DescentPair E r n} {z : r ↪ m} (V : DividedSplitting N m a O z)
+  {L : DividedLattice O}
 
 omit [DecidableEq n] in
 /-- The kernel `kernelClassSum` of `c • y` is `c` times that of `y`. It is the sum, over classes `h`
@@ -533,16 +535,20 @@ namespace New.Rows.DividedSplitting
 
 open Matrix ComplexConjugate Finset Fintype IsUltrametricDist Ideal Modulus
 
-variable {E r n N m a : Type} {l : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r]
-  [Fintype n] [DecidableEq n] [Fintype N] [Fintype m] [Fintype a] [Fintype l]
+variable
+  {E r n N m a : Type} {l : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n]
+  [DecidableEq n] [Fintype N] [Fintype m] [Fintype a] [Fintype l]
   {O : DescentPair E r n} {z : r ↪ m} (V : DividedSplitting N m a O z)
-  {p : ℕ} [Fact p.Prime] [ι : PadicPlace p] {M : ℕ} [NeZero M]
+  {p : ℕ} [Fact p.Prime] [ι : PadicPlace p]
+  {M : ℕ} [NeZero M]
 
-/-- The exponent of `M` in the denominator: at each infinite place `τ`, `card a` times the number of
+/--
+The exponent of `M` in the denominator: at each infinite place `τ`, `card a` times the number of
 columns of `O.colsPlus` of height below `card N` (a column has distinct entries, so at most `card a`
 of them lie in the range of `V.dividedEmb`, the copy of `a` in `N`), plus `card m` times the number
 of columns of `O.colsMinus` of height below `card m`, a bound for the number of their boxes. In both
-diagrams the entry at `τ h` counts the columns of height `h`. -/
+diagrams the entry at `τ h` counts the columns of height `h`.
+-/
 noncomputable def denominatorExponent : ℕ :=
   ∑ τ : NumberField.InfinitePlace E,
     (#(univ.map V.dividedEmb) * ∑ h ∈ range (Fintype.card N), O.colsPlus τ h +

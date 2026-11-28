@@ -40,13 +40,17 @@ open Matrix Submodule Real Seesaw LValueData
 variable {P : Parameters} {D : Data P} {n : Type} [Fintype n] [DecidableEq n]
 variable (Y : LValueData D.E n)
 
-/-- The finite points of `U(1)` act on the forms on `U(n)` for the lift data `Y` through translation
-by scalar matrices. -/
+/--
+The finite points of `U(1)` act on the forms on `U(n)` for the lift data `Y` through translation
+by scalar matrices.
+-/
 def LValueData.centralRep : Representation ℂ (Gf D.E Unit) Y.descentPair.FormV :=
   algFormCentralRep.comp (U.det (by simp))
 
-/-- Translation by the scalar `z`, multiplied by the value at `det z` of `Y.descentPair.charV`, the
-character by which the kernel of the lift twists the action of `U(1)`. -/
+/--
+Translation by the scalar `z`, multiplied by the value at `det z` of `Y.descentPair.charV`, the
+character by which the kernel of the lift twists the action of `U(1)`.
+-/
 def LValueData.normalizedCentralOp (z : Gf D.E Unit) : Module.End ℂ Y.descentPair.FormV :=
   (Y.descentPair.charV.val (detFin 1 z) : ℂ) • Y.centralRep z
 

@@ -65,13 +65,16 @@ namespace New
 
 open NumberField MvPolynomial Nat Finsupp Finset Fock
 
-variable {E : Type} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
   {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
   {s : n → ℤˣ} (V : Space E n s)
 
-/-- The space `V` is standard: all its signs are `+1` and its point is the identity matrix. This
+/--
+The space `V` is standard: all its signs are `+1` and its point is the identity matrix. This
 describes the standard space `stdSpace E n` without fixing the form in which the signs are
-written. -/
+written.
+-/
 class Space.IsStd (V : Space E n s) where
   /-- All signs at the infinite places are `+1`. -/
   signs_eq_one : s = 1
@@ -88,15 +91,17 @@ instance : ((stdSpace E n).hom (stdSpace E n')).IsStd where
     ext1
     simp [Space.hom]
 
-/-- The series in which the coefficient of `z ^ α` is `a ^ |α| / α!` times the theta functional of
+/--
+The series in which the coefficient of `z ^ α` is `a ^ |α| / α!` times the theta functional of
 `v ⊗ f`, where `v` is the Fock vector of the monomial `z ^ α`. If all signs of `V` are `+1` and `f`
 lies in the finite part, it is the Taylor series at `0` of `z ↦ V.entireTheta f (a • z)`; this is
-proved on each line through `0` in `New.Space.taylor_line_eq_subst_jetSeries`. -/
+proved on each line through `0` in `New.Space.taylor_line_eq_subst_jetSeries`.
+-/
 @[simps! -isSimp apply]
 def Space.jetSeries (a : ℂ) : 𝒮 V →ₗ[ℂ] MvPowerSeries (InfinitePlace E × n) ℂ :=
   LinearMap.pi fun α ↦
-    (a ^ α.degree / α.prod fun _ k ↦ (k ! : ℂ)) •
-      (V.θ ∘L V.integrated (polyVector (realSigns E s) (monomial α 1))).toLinearMap
+    (a ^ α.degree / α.prod fun _ k ↦ (k ! : ℂ))
+      • (V.θ ∘L V.integrated (polyVector (realSigns E s) (monomial α 1))).toLinearMap
 
 /-- `V.jetSeries a f` is the power series in variables indexed by `InfinitePlace E × n` whose
 `z ^ α` coefficient is `a ^ |α| / α!` times `V.θ (V.integrated v f)`, with `v` the Fock vector of
@@ -118,16 +123,20 @@ lemma Space.jet_jetSeries_eq_theta (f : 𝒮 V) (P : MvPolynomial (InfinitePlace
       field, C_mul', prod_smul, prod_pow_eq_pow_sum, degree_apply, MvPowerSeries.coeff_apply]
   | add P Q hP hQ => simp [hP, hQ]
 
-/-- The number of boxes in the columns of height below `N`, where `κ τ h` is the number of columns
-of height `h` at the place `τ`. -/
+/--
+The number of boxes in the columns of height below `N`, where `κ τ h` is the number of columns
+of height `h` at the place `τ`.
+-/
 abbrev boxes {Φ : Type} [Fintype Φ] (κ : Φ → ℕ → ℕ) (N : ℕ) : ℕ :=
   ∑ τ : Φ, ∑ h ∈ Finset.range N, h * κ τ h
 
-/-- The matrix of jets of a power series `F` in the entries of matrices `z τ` of size `n' × n`: the
-entry at `(i', i)` is `P(∂) F` at `0`, for `P` the polynomial at `(i', i)` in `schur κ z`. -/
-def schurJet {Φ R : Type} [Fintype Φ] [DecidableEq Φ] [CommRing R] (κ : Φ → ℕ → ℕ) :
-    MvPowerSeries (Φ × n' × n) R →ₗ[R]
-      Matrix (WeylIndexFamily (fun _ : Φ ↦ n') κ) (WeylIndexFamily (fun _ : Φ ↦ n) κ) R :=
+/--
+The matrix of jets of a power series `F` in the entries of matrices `z τ` of size `n' × n`: the
+entry at `(i', i)` is `P(∂) F` at `0`, for `P` the polynomial at `(i', i)` in `schur κ z`.
+-/
+def schurJet {Φ R : Type} [Fintype Φ] [DecidableEq Φ] [CommRing R] (κ : Φ → ℕ → ℕ)
+    : MvPowerSeries (Φ × n' × n) R →ₗ[R]
+        Matrix (WeylIndexFamily (fun _ : Φ ↦ n') κ) (WeylIndexFamily (fun _ : Φ ↦ n) κ) R :=
   -- `F` goes to the matrix of the `jet R P F`, with `P` an entry of `schur κ` at the variables
   (LinearMap.mapMatrixLinear R ∘ₗ (jet R).flip).flip
     (schur κ fun τ : Φ ↦ Matrix.of fun (b : n') (c : n) ↦ X (τ, b, c))
@@ -138,14 +147,19 @@ end New
 
 namespace New.Space
 
-variable {E : Type} [Field E] [CMType E] [WeilData E]
-  {n : Type} [Fintype n] [DecidableEq n] {s : n → ℤˣ} {V : Space E n s}
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n : Type} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {V : Space E n s}
 
-/-- The jets of `f'` at scale `t'` are the `σ`-conjugates of the jets of `f` at scale `t`: applying
+/--
+The jets of `f'` at scale `t'` are the `σ`-conjugates of the jets of `f` at scale `t`: applying
 `σ` to the coefficients of the series of `f` gives the series of `f'` with each variable
-`(v, i)` renamed `(π⁻¹ v, i)`, where `π` permutes the infinite places `v` of `E`. -/
-abbrev IsJetConjugate (σ : ℂ →+* ℂ) (π : Equiv.Perm (NumberField.InfinitePlace E)) (t t' : ℂ)
-    (f f' : 𝒮 V) : Prop :=
+`(v, i)` renamed `(π⁻¹ v, i)`, where `π` permutes the infinite places `v` of `E`.
+-/
+abbrev IsJetConjugate
+    (σ : ℂ →+* ℂ) (π : Equiv.Perm (NumberField.InfinitePlace E)) (t t' : ℂ) (f f' : 𝒮 V)
+    : Prop :=
   (V.jetSeries t f).map σ = (V.jetSeries t' f').rename (Prod.map π.symm id)
 
 /-- The constant term of the scaled Taylor series of `f` is the theta functional of the projection
@@ -167,15 +181,16 @@ cocycles under rational points.
 
 namespace New
 
-open NumberField Complex Finset WeilData Space ComplexConjugate stdLattice Heisenberg ThetaTori
-  Fock
+open NumberField Complex Finset WeilData Space ComplexConjugate stdLattice Heisenberg ThetaTori Fock
 
 variable {E n : Type} [Field E] [CMType E] [WeilData E] (γ : n → E)
 
 /-! ### Rational vectors at the real and at the finite places -/
 
-/-- The archimedean image of γ in E^n in Fock's coordinates: the complex vector with the entry √(2π
-Im τ(ȷ))·τ(γ_i) at (τ, i), where τ(c) is written `Φ τ c`. -/
+/--
+The archimedean image of γ in E^n in Fock's coordinates: the complex vector with the entry √(2π
+Im τ(ȷ))·τ(γ_i) at (τ, i), where τ(c) is written `Φ τ c`.
+-/
 noncomputable def realImage (p : InfinitePlace E × n) : ℂ := realCoord (toAdele ∘ γ) p
 
 lemma denseRange_finiteImage : DenseRange (α := n → E) finiteImage :=

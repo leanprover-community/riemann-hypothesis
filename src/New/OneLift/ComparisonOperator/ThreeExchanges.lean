@@ -97,8 +97,10 @@ variable {P : Parameters} (D : Data P)
 /-- The point `z_±` of the pair of sign `s`: it is `m` for `s = 1` and `m / 2` for `s = -1`. -/
 def signPoint (s : ℤˣ) : ℕ := if s = 1 then D.m else D.m / 2
 
-/-- The number `z_* = 7 (m / 2) + k / 2`, the point of the pair of the third exchange. Here
-`k = r + 1 - m` is the rank of the source. -/
+/--
+The number `z_* = 7 (m / 2) + k / 2`, the point of the pair of the third exchange. Here
+`k = r + 1 - m` is the rank of the source.
+-/
 def mainPairPoint : ℕ := 7 * (D.m / 2) + D.k / 2
 
 /-- The rank `k` of the source satisfies `k + 6 ≤ t`, for `t = 5 r`. -/
@@ -141,53 +143,60 @@ lemma chiMLocal_zpow_eq_one_of_not_isChosen (n : ℤ) (w : New.FinPlace D.E) (hw
     (D.chiMLocal ^ n) w = 1 := by
   rw [Pi.pow_apply, D.chiMLocal_eq_one_of_not_isChosen hw, one_zpow]
 
-/-- The pairs of the three exchanges, indexed by `Option ℤˣ`: the sign `-1` belongs to the first,
+/--
+The pairs of the three exchanges, indexed by `Option ℤˣ`: the sign `-1` belongs to the first,
 the sign `1` to the second and `none` to the third exchange. Here `j` is a lift index
 (`1 ≤ j ≤ m`), `w j v = D.liftWeight j v` is the weight and `μ_j⁰ = D.untwistedLiftChar j` the
 untwisted part of the character of the `j`-th lift, `υ = upsilonU1`, `t = 5 r`, and `ω` is the tame
 part of `χ`. For `none`: `ν_j = μ_j⁰ υ ^ n` with `n = j + (t - 11 m - 1) / 2`, of weight
 `-(w j v - n)` at `v` and tame part `ω ^ j`, at the point `z_* = D.mainPairPoint`.
 For a sign `s = ±1`: `ν_± = υ ^ (-z_±) χ ^ (± j)`, of weight `-z_±` at every place and tame part
-`ω ^ (± j)`, at the point `z_± = D.signPoint s`. -/
+`ω ^ (± j)`, at the point `z_± = D.signPoint s`.
+-/
 noncomputable def exchangePair : Option ℤˣ → D.CriticalPair
   | none =>
     let n : ℕ := j + (D.t - 11 * D.m - 1) / 2
     have h_le (v : D.Φ) : n + D.mainPairPoint ≤ D.liftWeight j v :=
       exponent_add_mainPairPoint_le_liftWeight j v
-    { character := D.untwistedLiftChar j * upsilonU1 ^ n
+    {
+      character := D.untwistedLiftChar j * upsilonU1 ^ n
       negWeight v := D.liftWeight j v - n
       tamePart := D.chiMLocal ^ (j : ℤ)
       z := D.mainPairPoint
       -- `n ≤ w j v`, so the subtraction in `negWeight` is not truncated
-      hasWeight := ((D.untwistedLiftChar_hasWeight j).mul_upsilonU1_pow n).of_weight_eq <|
-        funext fun v ↦ by
-        have hn_le : n ≤ D.liftWeight j v := le_self_add.trans (h_le v)
-        omega
+      hasWeight :=
+        ((D.untwistedLiftChar_hasWeight j).mul_upsilonU1_pow n).of_weight_eq <| funext fun v ↦ by
+          have hn_le : n ≤ D.liftWeight j v := le_self_add.trans (h_le v)
+          omega
       tamePart_eq_one := chiMLocal_zpow_eq_one_of_not_isChosen j
       z_mem := D.mainPairPoint_mem_Icc
       le_negWeight v := Nat.le_sub_of_add_le' (h_le v)
-      negWeight_le v := (Nat.mono_cast (Nat.sub_le _ n)).trans (liftWeight_le_four_mul_b j v) }
-  | some s =>
-    { character := (upsilonU1 ^ D.signPoint s)⁻¹ * D.chiM ^ ((s : ℤ) * j)
-      negWeight _ := D.signPoint s
-      tamePart := D.chiMLocal ^ ((s : ℤ) * j)
-      z := D.signPoint s
-      hasWeight := by simpa using!
-        (hasWeight_upsilonU1_pow (D.signPoint s)).inv.mul (D.chiM_hasWeight.zpow (s * j))
-      tamePart_eq_one := chiMLocal_zpow_eq_one_of_not_isChosen ((s : ℤ) * j)
-      z_mem := D.signPoint_mem_Icc s
-      le_negWeight _ := le_rfl
-      negWeight_le v := by
-                have h_le : D.signPoint s ≤ D.liftWeight j v := by
-                  grind [D.signPoint_mem_Icc s, D.k_add_t_add_one_le_liftWeight j v]
-                exact (Nat.mono_cast h_le).trans (liftWeight_le_four_mul_b j v) }
+      negWeight_le v := (Nat.mono_cast (Nat.sub_le _ n)).trans (liftWeight_le_four_mul_b j v)
+    }
+  | some s => {
+    character := (upsilonU1 ^ D.signPoint s)⁻¹ * D.chiM ^ ((s : ℤ) * j)
+    negWeight _ := D.signPoint s
+    tamePart := D.chiMLocal ^ ((s : ℤ) * j)
+    z := D.signPoint s
+    hasWeight := by
+      simpa using! (hasWeight_upsilonU1_pow (D.signPoint s)).inv.mul (D.chiM_hasWeight.zpow (s * j))
+    tamePart_eq_one := chiMLocal_zpow_eq_one_of_not_isChosen ((s : ℤ) * j)
+    z_mem := D.signPoint_mem_Icc s
+    le_negWeight _ := le_rfl
+    negWeight_le v := by
+      have h_le : D.signPoint s ≤ D.liftWeight j v := by
+        grind [D.signPoint_mem_Icc s, D.k_add_t_add_one_le_liftWeight j v]
+      exact (Nat.mono_cast h_le).trans (liftWeight_le_four_mul_b j v)
+  }
 
-/-- The product of the Hecke values for the three pairs `(ν, z)` of `exchangePair j`,
+/--
+The product of the Hecke values for the three pairs `(ν, z)` of `exchangePair j`,
 twisted by `ϑ`. A twist consists of a character `ϑ.toAutChar` of U(1)(𝔸) with a tame part that is
 non-trivial at every place of its finite set of places `ϑ.Q`. The factor of a pair is the real
 number `Exchange.lValueProd` for the set of the chosen places and the places of `ϑ.Q`, the
 character `(ν χ')⁻¹` and the integer `z`. Here `χ'` is `ϑ.toAutChar` for the pair `none` and
-`ϑ.toAutChar ^ s` for the pair of sign `s`. -/
+`ϑ.toAutChar ^ s` for the pair of sign `s`.
+-/
 noncomputable def heckeValueProd (ϑ : D.Twist) : ℂ :=
   ∏ i : Option ℤˣ, (Exchange.lValueProd ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q)
     ((exchangePair j i).character * ϑ.toAutChar ^ ((i.getD 1 : ℤˣ) : ℤ))⁻¹ (exchangePair j i).z : ℝ)
@@ -605,29 +614,32 @@ private lemma carrierChar_inv_div_twistedChiMPow_mul_upsilonU1_pow (ϑ : D.Twist
 
 variable (ϑ : D.Twist) (j : D.LiftIndex)
 
-/-- The space `W' = W_j ⊕ (E^j)⁻ ⊕ E^{3m-j} ⊕ W♭` of the third exchange, where `W♭` is the standard
+/--
+The space `W' = W_j ⊕ (E^j)⁻ ⊕ E^{3m-j} ⊕ W♭` of the third exchange, where `W♭` is the standard
 definite space on the `6m + 1` indices `D.FlatIndex`. Its basis is indexed by `FirstFactorIndex j`,
 like that of the definite space `V″`, and `padSigns j` gives the signs on the first three
-summands. -/
+summands.
+-/
 abbrev enlargedSpace : Space D.E (FirstFactorIndex j) (padSigns j ⊕ᵥ 1) :=
-  ((D.spaceW j).sum ((stdSpace D.E (Fin j)).neg.sum
-    (stdSpace D.E (Fin (2 * D.m + (D.m - j)))))).sum (stdSpace D.E D.FlatIndex)
+  ((D.spaceW j).sum ((stdSpace D.E (Fin j)).neg.sum (stdSpace D.E (Fin (2 * D.m + (D.m - j)))))).sum
+    (stdSpace D.E D.FlatIndex)
 
 /-- The point `(g, 1, 1, h♭)` of `U(W')`, with `h♭` the class of the index `i`. -/
-abbrev enlargedPoint (i : ChoiceIndex j) (g : New.G D.E (D.signsW j)) :
-    New.G D.E (n := FirstFactorIndex j) (padSigns j ⊕ᵥ 1) :=
+abbrev enlargedPoint (i : ChoiceIndex j) (g : New.G D.E (D.signsW j))
+    : New.G D.E (n := FirstFactorIndex j) (padSigns j ⊕ᵥ 1) :=
   .sum (.sum (g, 1), (1, i.rowChoice.classRep))
 
 /-- The list of the positive, then the negative basis vectors of `W = E^{3m} ⊕ W'`. -/
-def signOrder : (Fin (D.posRank j) ⊕ AddedIndex j) ⊕ Fin D.m ≃ D.CarrierIndex ⊕ FirstFactorIndex
-  j :=
+def signOrder
+    : (Fin (D.posRank j) ⊕ AddedIndex j) ⊕ Fin D.m ≃ D.CarrierIndex ⊕ FirstFactorIndex j :=
   .ofBijective
-    (regroupEquiv j ∘ Sum.map (D.rowIndexOfNumber ∘ Fin.val) inr ⊕ᵥ inr ∘ inl ∘ negIndex j) <| by
-    -- an injection between sets of equal size; `↓` counts the indices before they are unfolded
-    simp [↓card_rowIndex, ↓bijective_iff_injective_and_card, Injective, rowIndexOfNumber, negIndex,
-      regroupEquiv]
-    -- different basis numbers give different vectors
-    grind [Equiv.injective]
+      (regroupEquiv j ∘ Sum.map (D.rowIndexOfNumber ∘ Fin.val) inr ⊕ᵥ inr ∘ inl ∘ negIndex j) <|
+    by
+      -- an injection between sets of equal size; `↓` counts the indices before they are unfolded
+      simp [↓ card_rowIndex, ↓ bijective_iff_injective_and_card, Injective, rowIndexOfNumber,
+        negIndex, regroupEquiv]
+      -- different basis numbers give different vectors
+      grind [Equiv.injective]
 
 /-- The left side lists the signs of `W = E^{3m} ⊕ W'` with `W' = W_j ⊕ (E^j)⁻ ⊕ E^{3m-j} ⊕ W♭`:
 sign `1` on the `3m` indices `D.CarrierIndex` of `E^{3m}`, the signs `padSigns j` on the first three
@@ -647,11 +659,14 @@ lemma signs_eq_blockSigns_signOrder :
     simp [signOrder, signsW, rowIndexOfNumber, negIndex, apply_dite (padSigns j)]
     grind
 
-/-- The invariant trace character `ψ^inv_Λ`: the sum over `γ` in `GL_{3m}` modulo `ϖ²` of the
-additive character `traceChar Λ` at `x γ`, for `x` reduced modulo `ϖ²`. -/
-def invariantTraceChar (Λ : Matrix D.CarrierIndex (FirstFactorIndex j)
-  (D.untwistedModulus 2).ResidueRing)
-    (x : Matrix (FirstFactorIndex j) D.CarrierIndex (D.twistModulus ϑ 2).ResidueRing) : ℂ :=
+/--
+The invariant trace character `ψ^inv_Λ`: the sum over `γ` in `GL_{3m}` modulo `ϖ²` of the
+additive character `traceChar Λ` at `x γ`, for `x` reduced modulo `ϖ²`.
+-/
+def invariantTraceChar
+    (Λ : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+    (x : Matrix (FirstFactorIndex j) D.CarrierIndex (D.twistModulus ϑ 2).ResidueRing)
+    : ℂ :=
   ∑ γ : GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing,
     traceChar Λ (x.map (forgetTwist ϑ.toTameChar) * γ.val)
 
@@ -666,37 +681,49 @@ lemma invariantTraceChar_mul
   Finset.sum_equiv (.mulLeft (γ.map (forgetTwist ϑ.toTameChar))) (by simp)
     (by simp [Matrix.mul_assoc])
 
-/-- The character of the residue ring modulo `D.twistModulus ϑ 2 = ϖ² Q`, with `ϖ` the product of
+/--
+The character of the residue ring modulo `D.twistModulus ϑ 2 = ϖ² Q`, with `ϖ` the product of
 the chosen places and `Q` the product of the places of `ϑ`, that comes from the tame part of
-`twistedChiMPow ϑ j`, the product `χ' = χ^j ϑ` of the fixed character `D.chiM` and the twist. -/
+`twistedChiMPow ϑ j`, the product `χ' = χ^j ϑ` of the fixed character `D.chiM` and the twist.
+-/
 abbrev twistedChiMod : MulChar (D.twistModulus ϑ 2).ResidueRing ℂ :=
   (D.twistModulus ϑ 2).charOfTamePart (D.liftTamePart ϑ j)
 
-/-- The theta kernel of `(W, V″)` in the third exchange: `W = E^{3m} ⊕ W'`, and `V″` is the standard
+/--
+The theta kernel of `(W, V″)` in the third exchange: `W = E^{3m} ⊕ W'`, and `V″` is the standard
 definite space on `FirstFactorIndex j`. The characters are `twistedChiMPow ϑ j * carrierChar j` and
 `ν″ = firstFactorChar ϑ j`, the character of the `j`-th lift times a power of υ; here
 `carrierChar j` is `ν″ υ ^ m / twistedChiMPow ϑ j`, which is free of the twist. The datum is `Ψ`,
 and the polynomial is `stackedDetProd` of the constant rows `constantRows` of `i`, read through the
 bijection `posEquiv j` between its column indices and the positive part of the basis. It is taken at
-the point `(h', g, 1, 1, h♭)` of `U(W)` and the point `h` of `U(V″)`. -/
-def thirdExchangeKernel (i : ChoiceIndex j) (g : New.G D.E (D.signsW j))
+the point `(h', g, 1, 1, h♭)` of `U(W)` and the point `h` of `U(V″)`.
+-/
+def thirdExchangeKernel
+    (i : ChoiceIndex j) (g : New.G D.E (D.signsW j))
     (Ψ : Matrix (FirstFactorIndex j) (D.CarrierIndex ⊕ FirstFactorIndex j)
-      (D.twistModulus ϑ 2).ResidueRing → ℂ)
-    (h' : Gf D.E D.CarrierIndex) (h : Gf D.E (FirstFactorIndex j)) : ℂ :=
+        (D.twistModulus ϑ 2).ResidueRing
+      → ℂ)
+    (h' : Gf D.E D.CarrierIndex) (h : Gf D.E (FirstFactorIndex j))
+    : ℂ :=
   modKernelStdSpace ((stdSpace D.E D.CarrierIndex).sum (enlargedSpace j))
     (twistedChiMPow ϑ j * carrierChar j) (firstFactorChar ϑ j) (D.twistModulus ϑ 2) Ψ
     (renameRowsCols id (signOrder j ∘ inl)
       (stackedDetProd (posEquiv j) (constantRows j i.rowChoice (D.shortRows i.rowChoice))))
     (.sum ((1, h'), enlargedPoint j i g)) h
 
-/-- The left side of the third exchange: the class sum over `U(V″)` of the kernel with the datum
+/--
+The left side of the third exchange: the class sum over `U(V″)` of the kernel with the datum
 `(x' x″) ↦ χ' (det x″) ψ^inv_Λ (x″⁻¹ x')`, summed over the classes `h'` of `E^{3m}` against the
-coefficients `carrierCoeff` at `h'`. -/
+coefficients `carrierCoeff` at `h'`.
+-/
 def thirdExchangeLeftSide (i : ChoiceIndex j) (g : New.G D.E (D.signsW j)) : ℂ :=
-  stdClassSum (stdLevel D.E D.CarrierIndex) fun h' ↦ carrierCoeff D.m (twistedChiMPow ϑ j) h' *
-    stdClassSum (stdLevel D.E (FirstFactorIndex j)) (thirdExchangeKernel ϑ j i g (fun x ↦
-      twistedChiMod ϑ j x.toCols₂.det *
-        invariantTraceChar ϑ j i.matrix (x.toCols₂⁻¹ * x.toCols₁)) h')
+  stdClassSum (stdLevel D.E D.CarrierIndex) fun h' ↦
+    carrierCoeff D.m (twistedChiMPow ϑ j) h' * stdClassSum (stdLevel D.E (FirstFactorIndex j))
+      (thirdExchangeKernel ϑ j i g
+        (fun x ↦
+          twistedChiMod ϑ j x.toCols₂.det
+            * invariantTraceChar ϑ j i.matrix (x.toCols₂⁻¹ * x.toCols₁))
+        h')
 
 /-- The identity `ν″ υ ^ m = χ' (ν♭ υ ^ m)` of characters, with `ν″ = firstFactorChar ϑ j`,
 `χ' = twistedChiMPow ϑ j` and `ν♭ υ ^ m = carrierChar j`, a character that does not depend on
@@ -858,18 +885,23 @@ lemma exists_mul_thirdExchangeLeftSide_eq_choiceFn : ∃ (C : ℂ) (c : D.Twist 
     rw [← matchedPoly_constantRows, eq_div_of_mul_eq'' (firstFactorChar_mul_upsilonU1_pow ϑ j)]
     exact h_third (h_tame₃ ϑ) (constantRows j i.rowChoice (D.shortRows i.rowChoice)) hΦΨ _ _
 
-/-- The product datum `Ψ^×` at `x = (x' x″)`, with `x″` square: the datum `columnDatum` of the rows
+/--
+The product datum `Ψ^×` at `x = (x' x″)`, with `x″` square: the datum `columnDatum` of the rows
 `w` on the columns of `x″` at `W_j`, times `ψ^inv_Λ (x')` if the other columns of `x″` are those of
-`1` (`FixesColsOff`), and `0` otherwise. -/
-def productDatum {a : Type}
-    (w : Matrix a (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+`1` (`FixesColsOff`), and `0` otherwise.
+-/
+def productDatum
+    {a : Type} (w : Matrix a (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
     (Λ : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
     (x : Matrix (FirstFactorIndex j) (D.CarrierIndex ⊕ FirstFactorIndex j)
-      (D.twistModulus ϑ 2).ResidueRing) : ℂ :=
+      (D.twistModulus ϑ 2).ResidueRing)
+    : ℂ :=
   columnDatum (twistedChiMod ϑ j) (forgetTwist ϑ.toTameChar) w (.trans .inl .inl)
-      (x.toCols₂.submatrix id (inl ∘ inl)) *
-    if FixesColsOff (r := D.RowIndex) (.trans .inl .inl) x.toCols₂ then
-      invariantTraceChar ϑ j Λ x.toCols₁ else 0
+      (x.toCols₂.submatrix id (inl ∘ inl))
+    * if FixesColsOff (r := D.RowIndex) (.trans .inl .inl) x.toCols₂ then
+        invariantTraceChar ϑ j Λ x.toCols₁
+      else
+        0
 
 -- Keeps definitional checks from unfolding `Finset.univ`.
 seal Finset.univ in

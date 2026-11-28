@@ -75,8 +75,7 @@ namespace New.Filling
 
 section GeneralBlocks
 
-variable {E : Type} [Field E] [CMType E]
-  {𝔰 : Shape} {S : Filling E 𝔰} {side : FullOrCut}
+variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} {side : FullOrCut}
 
 /-! ### Preliminaries on cutoffs, the kernel, sums by layers and majorants -/
 
@@ -85,11 +84,13 @@ side by rational points of `besselU` does not affect membership in `besselS`. -/
 lemma isStable_besselS : S.IsStable (S.ratMiddle E).besselS := by
   simp +contextual [IsStable, mul_mem_cancel_right, mul_mem_cancel_left]
 
-/-- The quotient measure of a unimodular Haar measure `ν` on a subgroup of `G₁` is σ-finite, as its
-density, a chosen cutoff for `ν`, is almost everywhere finite. -/
+/--
+The quotient measure of a unimodular Haar measure `ν` on a subgroup of `G₁` is σ-finite, as its
+density, a chosen cutoff for `ν`, is almost everywhere finite.
+-/
 instance sigmaFinite_orbitMeasure
-    {A : Subgroup 𝔰.G₁} (ν : Measure A) [h : RealPlace.IsUnimodularHaar ν] :
-    SigmaFinite (orbitMeasure ν (@volume 𝔰.G₁ _)) :=
+    {A : Subgroup 𝔰.G₁} (ν : Measure A) [h : RealPlace.IsUnimodularHaar ν]
+    : SigmaFinite (orbitMeasure ν (@volume 𝔰.G₁ _)) :=
   have h_cutoff : IsCutoff ν (chosenCutoff ν) := Classical.epsilon_spec h.out
   .withDensity_of_ne_top (h_cutoff.ae_cutoff_lt_top.mono fun _ hy ↦ hy.ne)
 
@@ -123,8 +124,10 @@ lemma tsum_integral_apply {X J I : Type*} [MeasurableSpace X] {μ : Measure X} [
     _ = ∑' j, ∫ x, g j x i ∂μ := tsum_congr fun j ↦ eval_integral_piLp (h_integrable j).eval_piLp i
     _ = ∫ x, ∑' j, g j x i ∂μ := (integral_tsum (by fun_prop) h_coord_fin.ne).symm
 
-/-- The group `S.ResidueGL`, a finite product of general linear groups over finite residue fields,
-is finite. -/
+/--
+The group `S.ResidueGL`, a finite product of general linear groups over finite residue fields,
+is finite.
+-/
 noncomputable instance : Fintype S.ResidueGL := .ofFinite _
 
 /-- The Bessel function `S.besselFn side` is invariant under left translation by the image at the
@@ -214,9 +217,11 @@ lemma tsum_mul_inv_pow_le_of_layers {α : Type*} {w : α → ℝ≥0∞} {u : α
     _ = .ofReal (2 * K ^ d) := by rw [mul_one, mul_comm]
 
 variable (S) in
-/-- The product over the infinite places `v` of the scaled lengths of `y v`, each of which is
+/--
+The product over the infinite places `v` of the scaled lengths of `y v`, each of which is
 `max 1 (besselLength (y v) / b ^ (6 n))`. Here `besselLength x` is the infimum of `‖s x‖ + 1` over
-`s` in the Bessel subgroup `besselS`, `b = S.b` and `n = ϱ + 1`. -/
+`s` in the Bessel subgroup `besselS`, `b = S.b` and `n = ϱ + 1`.
+-/
 noncomputable def scaledBesselLengthProd (y : InfinitePlace E → 𝔰.G₁) : ℝ :=
   ∏ v : InfinitePlace E, scaledBesselLength (y v) S.b
 
@@ -548,30 +553,34 @@ lemma le_scaledBesselLengthProd_pow_mul (y : InfinitePlace E → 𝔰.G₁) (i :
 
 variable [HasPrimitiveRoot5040 E]
 
-/-- Let the CM field `E` contain a primitive 5040th root of unity, and let the data `S` satisfy the
+/--
+Let the CM field `E` contain a primitive 5040th root of unity, and let the data `S` satisfy the
 standing hypotheses `IsAdmissible`. Let `d` run over all classes and `γ` over the elements of `T`
 that are terms over `(c, s, d)`. Then the sum of `β_d(γ⁻¹ y) ∏_v ‖W_v((γ⁻¹ y)_v)‖` is at most a
 finite constant `C` that does not depend on the point `y` of G_∞, the product of one copy of `G₁`
-for each infinite place `v`. -/
-theorem exists_tsum_classCutoff_mul_prod_enorm_le {E : Type} [Field E] [CMType E]
-    [HasPrimitiveRoot5040 E] {𝔰 : Shape} {S : Filling E 𝔰} {side : FullOrCut} [S.IsAdmissible]
-    (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) :
-    ∃ C : NNReal, ∀ y : InfinitePlace E → 𝔰.G₁,
+for each infinite place `v`.
+-/
+theorem exists_tsum_classCutoff_mul_prod_enorm_le
+    {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E]
+    {𝔰 : Shape} {S : Filling E 𝔰} {side : FullOrCut} [S.IsAdmissible]
+    (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL)
+    : ∃ C : NNReal, ∀ y : InfinitePlace E → 𝔰.G₁,
       ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)),
           S.classCutoff d ((S.ratToInf γ)⁻¹ * y) *
             ∏ v : InfinitePlace E,
-              ‖(S.besselSystem v).besselFn side (((S.ratToInf γ)⁻¹ * y) v)‖ₑ ≤
-        C := by
+              ‖(S.besselSystem v).besselFn side (((S.ratToInf γ)⁻¹ * y) v)‖ₑ
+        ≤ C := by
   -- The Bessel functions decay in the scaled lengths, and this decay makes the sum converge.
-  have h_majorant (v : InfinitePlace E) : ∃ (w : 𝔰.G₁ → ℝ≥0∞) (a : ℝ≥0∞),
-      IsDecayMajorant S.b (numInfPlaces E) (S.besselSystem v).besselFn w a :=
+  have h_majorant (v : InfinitePlace E)
+      : ∃ (w : 𝔰.G₁ → ℝ≥0∞) (a : ℝ≥0∞),
+        IsDecayMajorant S.b (numInfPlaces E) (S.besselSystem v).besselFn w a :=
     (S.besselSystem v).isCutPair.exists_majorant
   choose w a hw using h_majorant
-  have h_decay (z : InfinitePlace E → 𝔰.G₁) : ∏ v, ‖(S.besselSystem v).besselFn side (z v)‖ₑ ≤
-      (∏ v, a v) * .ofReal ((S.scaledBesselLengthProd z)⁻¹ ^ (𝔰.r ^ 3 * numInfPlaces E)) :=
+  have h_decay (z : InfinitePlace E → 𝔰.G₁)
+      : ∏ v, ‖(S.besselSystem v).besselFn side (z v)‖ₑ
+        ≤ (∏ v, a v) * .ofReal ((S.scaledBesselLengthProd z)⁻¹ ^ (𝔰.r ^ 3 * numInfPlaces E)) :=
     (le_scaledBesselLengthProd_pow_mul z _ _).trans (pow_mul_prod_enorm_le_bound hw z)
-  let bound : ℝ≥0∞ :=
-    (∏ v, a v) * .ofReal (2 * S.b ^ (12 * 𝔰.n ^ 3 * 𝔰.r * numInfPlaces E))
+  let bound : ℝ≥0∞ := (∏ v, a v) * .ofReal (2 * S.b ^ (12 * 𝔰.n ^ 3 * 𝔰.r * numInfPlaces E))
   have h_bound_fin : bound ≠ ∞ :=
     mul_ne_top (prod_ne_top fun v _ ↦ (hw v).bound_ne_top) ofReal_ne_top
   refine ⟨bound.toNNReal, fun y ↦ ?_⟩
@@ -584,49 +593,57 @@ theorem exists_tsum_classCutoff_mul_prod_enorm_le {E : Type} [Field E] [CMType E
     _ ≤ bound := tsum_classCutoff_mul_const_mul_inv_pow_le T c s (∏ v, a v) y
     _ = bound.toNNReal := (coe_toNNReal h_bound_fin).symm
 
-/-- Let `S` be admissible, and let `γ` run over the elements of `T` that are terms over `(c, s, d)`,
+/--
+Let `S` be admissible, and let `γ` run over the elements of `T` that are terms over `(c, s, d)`,
 for all classes `d`. The sum of the integrals `∫ β_c(y) β_d(γ⁻¹ y) ‖W(y) ⊗ W(γ⁻¹ y)^*‖ dy`
-(`amplitudeMajorant`) is finite. -/
-theorem tsum_amplitudeMajorant_lt_top (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) :
-    ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)), S.amplitudeMajorant side c d γ < ∞ := by
+(`amplitudeMajorant`) is finite.
+-/
+theorem tsum_amplitudeMajorant_lt_top (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL)
+    : ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)), S.amplitudeMajorant side c d γ < ∞ := by
   choose w a hw using fun v : InfinitePlace E ↦ (S.besselSystem v).isCutPair.exists_majorant
   refine lt_of_le_of_lt (le_trans ?_ (tsum_lintegral_classCutoff_mul_majorant_le T c s hw))
     (by finiteness)
   simp_rw [amplitudeMajorant, enorm_besselKernel]
   refine tsum_le_tsum fun d ↦ tsum_le_tsum fun γ ↦ lintegral_mono fun y ↦ ?_
-  exact mul_le_mul' le_rfl (mul_le_mul'
-    ((le_scaledBesselLengthProd_pow_mul y _ _).trans (pow_mul_prod_enorm_le_majorant hw y))
-    ((le_scaledBesselLengthProd_pow_mul _ _ _).trans (pow_mul_prod_enorm_le_bound hw _)))
+  exact mul_le_mul' le_rfl
+    (mul_le_mul'
+      ((le_scaledBesselLengthProd_pow_mul y _ _).trans (pow_mul_prod_enorm_le_majorant hw y))
+      ((le_scaledBesselLengthProd_pow_mul _ _ _).trans (pow_mul_prod_enorm_le_bound hw _)))
 
-/-- Let `S` be admissible, let `d` run over all classes and `γ` over the elements of `T` that are
+/--
+Let `S` be admissible, let `d` run over all classes and `γ` over the elements of `T` that are
 terms over `(c, s, d)`. The kernel `besselKernel side γ y` is `W(y) ⊗ W(γ⁻¹ y)^*`. The sum of the
 integrals of `β_c(y) β_d(γ⁻¹ y)` times the norm of the difference between this kernel and the one
 built from the cut function is at most `ν b ^ (-k³ f) / 2`. Here `ν = S.unipotentCovolume`,
 `β_d = S.classCutoff d`, `k + 1` is the size of the middle block of the basis (`k = 𝔰.k`), `f` is
-the number of infinite places and `b` is the size parameter of `S`. -/
-theorem tsum_lintegral_enorm_besselKernel_sub_cut_le (T : Set (S.G E)) (c : S.Classes)
-    (s : S.ResidueGL) :
-    ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)),
-      ∫⁻ y : InfinitePlace E → 𝔰.G₁, S.classCutoff c y * S.classCutoff d ((S.ratToInf γ)⁻¹ * y) *
-        ‖S.besselKernel side γ y - S.besselKernel .cut γ y‖ₑ ≤
-      .ofReal (S.unipotentCovolume * (S.b ^ (𝔰.k ^ 3 * numInfPlaces E))⁻¹ / 2) := by
+the number of infinite places and `b` is the size parameter of `S`.
+-/
+theorem tsum_lintegral_enorm_besselKernel_sub_cut_le
+    (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL)
+    : ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)),
+        ∫⁻ y : InfinitePlace E → 𝔰.G₁, S.classCutoff c y * S.classCutoff d ((S.ratToInf γ)⁻¹ * y) *
+          ‖S.besselKernel side γ y - S.besselKernel .cut γ y‖ₑ
+      ≤ .ofReal (S.unipotentCovolume * (S.b ^ (𝔰.k ^ 3 * numInfPlaces E))⁻¹ / 2) := by
   choose w a hw using fun v : InfinitePlace E ↦ (S.besselSystem v).isCutPair.exists_majorant
   let gain : ℝ≥0∞ := .ofReal (S.b ^ (2 * (𝔰.r ^ 3 * numInfPlaces E)))
   have hb : 1 ≤ S.b := S.one_le_b
   have h_gain_fin : gain⁻¹ ≠ ∞ := inv_ne_top.2 (by positivity)
   let majorant (γ : S.G E) (y : InfinitePlace E → 𝔰.G₁) : ℝ≥0∞ :=
-    (∏ v, w v (y v)) * ((∏ v, a v) * .ofReal
-      ((S.scaledBesselLengthProd ((S.ratToInf γ)⁻¹ * y))⁻¹ ^ (𝔰.r ^ 3 * numInfPlaces E)))
+    (∏ v, w v (y v))
+      * ((∏ v, a v) * .ofReal
+        ((S.scaledBesselLengthProd ((S.ratToInf γ)⁻¹ * y))⁻¹ ^ (𝔰.r ^ 3 * numInfPlaces E)))
   calc
     _ ≤ ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)), ∫⁻ y, S.classCutoff c y *
           S.classCutoff d ((S.ratToInf γ)⁻¹ * y) * (gain⁻¹ * (2 * majorant γ y)) := by
       grw [enorm_besselKernel_sub_cut_le hw]
-    _ = gain⁻¹ * 2 * ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)),
+    _ = gain⁻¹ * 2
+        * ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)),
           ∫⁻ y, S.classCutoff c y * S.classCutoff d ((S.ratToInf γ)⁻¹ * y) * majorant γ y := by
       simp (disch := finiteness) only [← mul_assoc gain⁻¹, mul_left_comm _ (gain⁻¹ * _),
         lintegral_const_mul', ENNReal.tsum_mul_left]
-    _ ≤ _ := (mul_le_mul_right (tsum_lintegral_classCutoff_mul_majorant_le T c s hw) _).trans
-      inv_pow_mul_unipotentCovolume_mul_card_le
+    _ ≤ _ :=
+      (mul_le_mul_right (tsum_lintegral_classCutoff_mul_majorant_le T c s hw) _).trans
+        inv_pow_mul_unipotentCovolume_mul_card_le
 
 /-- For admissible `S`, the amplitudes of the elements of `T` over `(c, s, c')` are summable. -/
 lemma summable_amplitude (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes) :

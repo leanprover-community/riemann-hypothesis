@@ -67,8 +67,10 @@ namespace New.Variety
 
 variable {A k ι : Type} [CommRing A] [CommRing k] {c : HodgeTest k} {n d : ℕ} [Fintype ι]
 
-/-- For a pair `c = (A, M)` and a family `(f_i)` in `A`, the subfunctor of h_c of the morphisms
-`y : c ⟶ X` whose ring map `A → X.baseAlg` sends some `f_i` to a unit. -/
+/--
+For a pair `c = (A, M)` and a family `(f_i)` in `A`, the subfunctor of h_c of the morphisms
+`y : c ⟶ X` whose ring map `A → X.baseAlg` sends some `f_i` to a unit.
+-/
 def someUnitLocus (f : ι → c.baseAlg) : Subfunctor (reprBy c) where
   obj _ := {y | ∃ i : ι, IsUnit (y.down.1 (f i))}
   map a _ := Exists.imp fun _ ↦ IsUnit.map a.1.hom'
@@ -97,24 +99,26 @@ lemma depth_vanishing (H : ℕ → ModuleCat A → ModuleCat A) {I : Ideal A} {l
     exact ((h_regular n M r hr_reg h_quot).pow j).right_eq_zero_of_smul hj
 
 /-- The flat algebras over a commutative ring `R`, as a property of commutative `R`-algebras. -/
-private abbrev flatAlgebras (R : Type) [CommRing R] : ObjectProperty (CommAlg R) :=
-  fun B ↦ Module.Flat R B
+private abbrev flatAlgebras (R : Type) [CommRing R] : ObjectProperty (CommAlg R) := fun B ↦
+  Module.Flat R B
 
-/-- For a flat `R`-algebra `B` and `b ∈ B`, the maps from `B` to flat `R`-algebras that send `b`
-to a unit. -/
-private def flatUnitLocus {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory)
-    (b : B.obj) : Subfunctor (reprBy B) where
+/--
+For a flat `R`-algebra `B` and `b ∈ B`, the maps from `B` to flat `R`-algebras that send `b`
+to a unit.
+-/
+private def flatUnitLocus {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory) (b : B.obj)
+    : Subfunctor (reprBy B) where
   obj _ := {x | IsUnit (x.down.hom b)}
   map a _ := .map a.hom.hom
 
 /-- The localization `B[1/b]` of a flat `R`-algebra `B`, again a flat `R`-algebra. -/
-private abbrev flatAway {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory) (b : B.obj) :
-    (flatAlgebras R).FullSubcategory :=
+private abbrev flatAway {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory) (b : B.obj)
+    : (flatAlgebras R).FullSubcategory :=
   ⟨.of _ (Away b), B.property.trans ..⟩
 
 /-- The localization map `B → B[1/b]`, as a member of `flatUnitLocus B b`. -/
-private abbrev flatToAway {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory) (b : B.1) :
-    (flatUnitLocus B b).toFunctor.obj (flatAway B b) :=
+private abbrev flatToAway {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory) (b : B.1)
+    : (flatUnitLocus B b).toFunctor.obj (flatAway B b) :=
   ⟨⟨⟨B.obj.toAway b⟩⟩, algebraMap_isUnit b⟩
 
 /-- `B[1/b]` represents the maps from a flat `R`-algebra `B` that send `b` to a unit: for every
@@ -129,11 +133,13 @@ private lemma bijective_pointMap_flatToAway {R : Type} [CommRing R]
   ext
   simp [Algebra.algHom]
 
-/-- For a pair `c`, consider the comma category of pairs `(S, s)` of a type `S` and a map
+/--
+For a pair `c`, consider the comma category of pairs `(S, s)` of a type `S` and a map
 `s : S → (c ⟶ d)` to the points of h_c at some `d`. This is the subfunctor of `(S, s) ↦ S` of the
-`t ∈ S` whose ring map `s t` sends `g` to a unit. -/
-private def commaUnitLocus (g : c.baseAlg) :
-    Subfunctor (Comma.fst (𝟭 Type) (coyoneda.obj ⟨c⟩) ⋙ uliftFunctor) where
+`t ∈ S` whose ring map `s t` sends `g` to a unit.
+-/
+private def commaUnitLocus (g : c.baseAlg)
+    : Subfunctor (Comma.fst (𝟭 Type) (coyoneda.obj ⟨c⟩) ⋙ uliftFunctor) where
   obj X := {t | IsUnit ((X.hom t.down).1 g)}
   map a _ h := congr(IsUnit (($a.w _).1 g)).mpr (h.map a.right.1.hom')
 

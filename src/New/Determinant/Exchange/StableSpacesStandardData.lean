@@ -58,10 +58,12 @@ namespace New.Exchange
 
 open Matrix MeasureTheory SemilocalField schwartzBruhat IsIntMatrix Finset Function
 
-variable {F a b m n : Type} [V : SemilocalField F] [Fintype a] [Fintype b] [DecidableEq b]
-  [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] {χ : MulChar F ℂ}
-  {P : Submodule ℂ (Matrix n b F → ℂ)} {Φ : Matrix a n F → ℂ} {Ψ : Matrix n b F → ℂ}
-  [hχ : TameLocalChar χ] {e : b ⊕ a ≃ n} {U : Set (Matrix n b F)}
+variable
+  {F a b m n : Type} [V : SemilocalField F] [Fintype a] [Fintype b] [DecidableEq b] [Fintype m]
+  [DecidableEq m] [Fintype n] [DecidableEq n]
+  {χ : MulChar F ℂ} {P : Submodule ℂ (Matrix n b F → ℂ)} {Φ : Matrix a n F → ℂ}
+  {Ψ : Matrix n b F → ℂ} [hχ : TameLocalChar χ]
+  {e : b ⊕ a ≃ n} {U : Set (Matrix n b F)}
 
 /-- Let χ be tame, let A be an integral frame (an integral basis of Fⁿ with column blocks L, K, I,
 whose integral inverse has row blocks L', K', I'), and let σ order the n rows as L', K', I'. The row
@@ -525,35 +527,44 @@ lemma New.Exchange.SplitTameChar.isIntMatrix_glue_hermitian {E : Type} [Field E]
   exact add_mem (P_int i j)
     (by simpa [e, ← idem_compl, idem_mul_mem_Ô, or_iff_not_imp_left] using entry_int)
 
-/-- The pairs `(T, q)` of an index `T` and a point `q` of `GL_b(𝔸)` at which vanishing at self-dual
+/--
+The pairs `(T, q)` of an index `T` and a point `q` of `GL_b(𝔸)` at which vanishing at self-dual
 lattices is tested, for a hermitian space `V'` over the CM field `E` with form `V'.J`, signs `t'`
 and adelic frame `V'.x`. Either (a) `T = V'.J` and `q = scaleIdele E • V'.x * Y` (`scaleIdele E` is
 the idele of `WeilData E` that makes `Ô` self-dual), where the finite part of `Y` times some
 `k ∈ GL_b(Ô)` is unitary for the form `1` (`U 1`), so that the columns of `V'.x * Y` span a lattice
 that is self-dual for `T`; or (b) `T` is invertible and not of the form `aᴴ diag(t') a` at some
-infinite place, and `q` is arbitrary. -/
-def New.Exchange.IsSelfDualTestPair {E : Type} [Field E] [CMType E] [H : WeilData E]
-    {b : Type} [Fintype b] [DecidableEq b] {t' : b → ℤˣ} (V' : Space E b t') (T : Matrix b b E)
-    (q : GL b (𝔸 E)) : Prop :=
+infinite place, and `q` is arbitrary.
+-/
+def New.Exchange.IsSelfDualTestPair
+    {E : Type} [Field E] [CMType E] [H : WeilData E]
+    {b : Type} [Fintype b] [DecidableEq b]
+    {t' : b → ℤˣ} (V' : Space E b t')
+    (T : Matrix b b E) (q : GL b (𝔸 E))
+    : Prop :=
   (∃ Y : GL b (𝔸 E), ∃ k ∈ intGL b (Ô E),
-    scaleIdele E • V'.x * Y = q ∧
-      Y.map (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)) * k ∈ U 1 ∧ V'.J = T) ∨
-  IsUnit T ∧ ¬RepresentedBy t' (T.map toAdele)
+      scaleIdele E • V'.x * Y = q
+        ∧ Y.map (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)) * k ∈ U 1 ∧ V'.J = T)
+    ∨ IsUnit T ∧ ¬ RepresentedBy t' (T.map toAdele)
 
-/-- Let `D` be a splitting of the space `X` (indices `m`, signs `r`) as `W₁` (indices `n`, signs
+/--
+Let `D` be a splitting of the space `X` (indices `m`, signs `r`) as `W₁` (indices `n`, signs
 `s`) plus hyperbolic planes along `b` lines. A function `f` on `U(X)` vanishes at self-dual lattices
 if its Fourier coefficient along the centre of the unipotent radical of the parabolic of `D`, at the
 index `j • T` (`j` is the fixed skew element of `WeilData E`), vanishes at each point
 `D.radicalElement c z * D.levi (q, g)` of that parabolic (a radical element times the Levi element
 of `q ∈ GL_b(𝔸)` and `g ∈ U(W₁)`) for which `(T, q)` is a test pair for `V'`
-(`IsSelfDualTestPair`). -/
+(`IsSelfDualTestPair`).
+-/
 def New.Space.Splitting.VanishesAtSelfDual
-    {E : Type} [Field E] [CMType E] [H : WeilData E] {n b m : Type}
+    {E : Type} [Field E] [CMType E] [H : WeilData E]
+    {n b m : Type}
     [Fintype n] [DecidableEq n] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m]
-    {s : n → ℤˣ} {r : m → ℤˣ} {X : Space E m r} {W₁ : Space E n s}
-    (D : X.Splitting W₁ b) {t' : b → ℤˣ} (V' : Space E b t') (f : G E r → ℂ) : Prop :=
-  ∀ (T : Matrix b b E) (c : Matrix n b (𝔸 E)) (z : Matrix b b (𝔸 E)) (q : GL b (𝔸 E))
-      (g : G E s),
+    {s : n → ℤˣ} {r : m → ℤˣ} {X : Space E m r} {W₁ : Space E n s} (D : X.Splitting W₁ b)
+    {t' : b → ℤˣ} (V' : Space E b t')
+    (f : G E r → ℂ)
+    : Prop :=
+  ∀ (T : Matrix b b E) (c : Matrix n b (𝔸 E)) (z : Matrix b b (𝔸 E)) (q : GL b (𝔸 E)) (g : G E s),
     IsSelfDualTestPair V' T q → D.centerCoeff (H.j • T) f (D.radicalElement c z * D.levi (q, g)) = 0
 
 /-- Let `D` be a splitting of `X` over `W₁` along `b` lines, let `j` be the fixed skew element of
@@ -608,10 +619,12 @@ lemma New.Space.Splitting.centreCoeff_eq_zero_of_orthonormal
 
 section PartialMeans
 
-variable {E : Type} [Field E] [CMType E] [H : WeilData E] {n a b m : Type} [Fintype n]
-  [DecidableEq n] [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype m]
-  [DecidableEq m]
-variable {s : n → ℤˣ} {t : a → ℤˣ} {r : m → ℤˣ} {μ : NumberField.InfinitePlace E → ℤ}
+variable
+  {E : Type} [Field E] [CMType E] [H : WeilData E]
+  {n a b m : Type} [Fintype n] [DecidableEq n] [Fintype a] [DecidableEq a] [Fintype b]
+  [DecidableEq b] [Fintype m] [DecidableEq m]
+variable
+  {s : n → ℤˣ} {t : a → ℤˣ} {r : m → ℤˣ} {μ : NumberField.InfinitePlace E → ℤ}
   {𝔠 : SplitTameChar E μ} {X : Space E m r} {W₁ : Space E n s} {W : Space E a t}
 
 /-- Let `𝒟` be an equivariant lift on `M` and let `ν ∈ U(X)` have matrix `1 + e u c - ē N`, with
@@ -769,7 +782,8 @@ lemma New.Exchange.IsEquivariantLift.shearInvariant_stdColDatum
 
 end PartialMeans
 
-/-- Self-dual lattices suffice. Let `𝒟` be an equivariant lift on `M` (a linear map from data at the
+/--
+Self-dual lattices suffice. Let `𝒟` be an equivariant lift on `M` (a linear map from data at the
 ramified places `S = 𝔠.ramifiedPlaces` to functions on `U(X)`, automorphic and `S`-equivariant on
 `M`). Let `D` and `D₁` be adapted splittings of `X` over `W₁` along `b` lines and of `W₁` over `W`
 along one line; the extra line `D₁` gives the shears under which the partial means are invariant.
@@ -777,24 +791,27 @@ Let `f = 𝒟 Ψ₀` for the standard datum `Ψ₀ ∈ M`: `y ↦ χ⁻¹(det (d
 determinant, 0 elsewhere, for the dual block `dualL` of the frame of `D` read at `S` and
 `χ = 𝔠.semilocalChar`. Suppose that `f` vanishes at self-dual lattices along `D`, tested on the
 pairs of the hermitian space `V'` with form `V'.J`. Then `𝒟` maps to zero every locally constant
-datum `Ψ` that has a matched function `Φ`. -/
+datum `Ψ` that has a matched function `Φ`.
+-/
 theorem New.Exchange.IsEquivariantLift.apply_eq_zero_of_areMatched
-    {E : Type} [Field E] [CMType E] [H : WeilData E] {n a b m : Type}
-    [Fintype n] [DecidableEq n] [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
-    [Fintype m] [DecidableEq m] {s : n → ℤˣ} {t : a → ℤˣ} {r : m → ℤˣ}
-    {μ : NumberField.InfinitePlace E → ℤ} {𝔠 : SplitTameChar E μ}
-    {X : Space E m r} {W₁ : Space E n s} {W : Space E a t}
+    {E : Type} [Field E] [CMType E] [H : WeilData E]
+    {n a b m : Type} [Fintype n] [DecidableEq n] [Fintype a] [DecidableEq a] [Fintype b]
+    [DecidableEq b] [Fintype m] [DecidableEq m]
+    {s : n → ℤˣ} {t : a → ℤˣ} {r : m → ℤˣ} {μ : NumberField.InfinitePlace E → ℤ}
+    {𝔠 : SplitTameChar E μ} {X : Space E m r} {W₁ : Space E n s} {W : Space E a t}
     {M : Submodule ℂ (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ)}
     {𝒟 : (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) →ₗ[ℂ] G E r → ℂ}
     (h_lift : IsEquivariantLift 𝔠 X M 𝒟) (D : X.Splitting W₁ b) (D₁ : W₁.Splitting W Unit)
-    [IsBaseAdapted D] [IsBaseAdapted D₁] {t' : b → ℤˣ} (V' : Space E b t')
-    (h_van : D.VanishesAtSelfDual V'
-      (𝒟 (stdColDatum 𝔠.semilocalChar (adaptedFrame 𝔠.readsAt D).dualL)))
+    [IsBaseAdapted D] [IsBaseAdapted D₁]
+    {t' : b → ℤˣ} (V' : Space E b t')
+    (h_van
+      : D.VanishesAtSelfDual V' (𝒟 (stdColDatum 𝔠.semilocalChar (adaptedFrame 𝔠.readsAt D).dualL)))
     (h_frame : stdColDatum 𝔠.semilocalChar (adaptedFrame 𝔠.readsAt D).dualL ∈ M)
-    {p : Type} [Fintype p] {σ : b ⊕ p ≃ m} {Φ : Matrix p m (LocProd 𝔠.ramifiedPlaces) → ℂ}
+    {p : Type} [Fintype p]
+    {σ : b ⊕ p ≃ m} {Φ : Matrix p m (LocProd 𝔠.ramifiedPlaces) → ℂ}
     {Ψ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ}
-    (hΨ : IsLocallyConstant Ψ) (hΦΨ : AreMatched O σ 𝔠.semilocalChar Φ Ψ) :
-    𝒟 Ψ = 0 := by
+    (hΨ : IsLocallyConstant Ψ) (hΦΨ : AreMatched O σ 𝔠.semilocalChar Φ Ψ)
+    : 𝒟 Ψ = 0 := by
   -- It is enough that the coefficients along `D` of the image under `𝒟` of the standard datum of
   -- the frame vanish at the indices `T` for which `invDifferentIdele⁻¹ T` is unimodular at
   -- `𝔠.ramifiedPlaces`.
@@ -805,15 +822,15 @@ theorem New.Exchange.IsEquivariantLift.apply_eq_zero_of_areMatched
   -- show vanishing at the points of the parabolic where the Gram matrix is unimodular; there
   -- `centreCoeff_eq_zero_of_orthonormal` applies.
   obtain ⟨-, hdet_unit⟩ := isPrimitiveMatrix_iff_int_and_unit_det.1 hP
-  have hdet : T.det ≠ 0 := fun h_zero ↦ by
-    simp [← mapMatrix_apply, ← map_det, h_zero] at hdet_unit
+  have hdet : T.det ≠ 0 := fun h_zero ↦ by simp [← mapMatrix_apply, ← map_det, h_zero] at hdet_unit
   -- Remove the extra line first: `A` splits `X` over `W` plus `b` planes, and the
   -- frame of `D` is that of these planes.
   obtain ⟨A : X.Splitting (hyperbolicSum b W) Unit, hA, hA_comp, -⟩ :=
     exists_isBaseAdapted_comp_removePlanes (D.comp D₁) (.sumComm ..)
   have hD_frame : D.kAdelic = A.iAdelic * (removePlanes b W).kAdelic := by
-    have h_cols : (A.comp (removePlanes b W)).kAdelic =
-        (D.comp D₁).kAdelic.submatrix _root_.id (Equiv.sumComm Unit b) := by
+    have h_cols
+        : (A.comp (removePlanes b W)).kAdelic
+          = (D.comp D₁).kAdelic.submatrix _root_.id (Equiv.sumComm Unit b) := by
       rw [kAdelic, hA_comp]; rfl
     simp only [comp_kAdelic] at h_cols
     exact (congrArg toCols₂ h_cols).symm
@@ -826,14 +843,15 @@ theorem New.Exchange.IsEquivariantLift.apply_eq_zero_of_areMatched
   refine centreCoeff_eq_zero_of_unimodular h_level h_aut A _ hD_frame hdet (.star 𝔠.nonempty)
     (h_lift.shearInvariant_stdColDatum D h_frame T A hD_frame rfl)
     (h_lift.shearInvariant_stdColDatum D h_frame T A.symm hD_frame rfl)
-    (fun x γ hx hγ ↦ ?_) (mem_frameStabilizer_of_mem_supportedOn hg₀_supp)
+    (fun x γ hx hγ ↦ ?_)
+    (mem_frameStabilizer_of_mem_supportedOn hg₀_supp)
   obtain ⟨C_int, C', C'_int, hC'⟩ := hγ
   -- Let `τ` be the normalised index `invDifferentIdele⁻¹ T`, and write `x` as a point
   -- `D.radicalElement l z * D.levi (q₀, g)` of the parabolic.
   let τ : GL b (𝔸 E) :=
     (invDifferentIdele E)⁻¹ • (GeneralLinearGroup.mkOfDetNeZero T hdet).map toAdele
-  have hτ : τ.valᴴ = τ := by simp [τ, hT, Units.smul_def, star_invDifferentIdele_inv,
-    Matrix.map_neg]
+  have hτ : τ.valᴴ = τ := by
+    simp [τ, hT, Units.smul_def, star_invDifferentIdele_inv, Matrix.map_neg]
   obtain ⟨l, z, q₀, g, rfl, hq₀, -⟩ := D.exists_eq_radicalElement_mul_levi hx
   -- The Gram matrix `siegelBracket T q₀` is `siegelBracket T γ` on `S` and `τ` off `S`, so it is
   -- unimodular at all finite places.
@@ -841,8 +859,12 @@ theorem New.Exchange.IsEquivariantLift.apply_eq_zero_of_areMatched
   let Q : Matrix b b (𝔸 E) := e • siegelBracket T γ + (1 - e) • τ.val
   have Q_prim : IsPrimitiveMatrix (Ô E) (Q.map snd) := by
     have τ_inv_int := ((isPrimitiveMatrix_iff_mem_intGL (τ.map _)).1 hP).isIntMatrix_inv
-    refine ⟨𝔠.isIntMatrix_glue_hermitian (S := S) rfl hτ C_int hP.1, _,
-        𝔠.isIntMatrix_glue_hermitian (S := S) rfl ?_ C'_int τ_inv_int, ?_⟩
+    refine ⟨
+      𝔠.isIntMatrix_glue_hermitian (S := S) rfl hτ C_int hP.1,
+      _,
+      𝔠.isIntMatrix_glue_hermitian (S := S) rfl ?_ C'_int τ_inv_int,
+      ?_
+    ⟩
     -- the inverse glues `C'` and `τ⁻¹`: show that `τ⁻¹` is hermitian and compute the product
     · simp [hτ, conjTranspose_nonsing_inv]
     · simp [Q, e, ← coe_snd, ← Matrix.map_mul, sub_mul, hC', mul_add, add_mul, smul_smul, mul_sub]

@@ -75,15 +75,19 @@ def rightStabilizer (f : G → W) : Subgroup G where
 
 variable (Γ K K' : Subgroup G) [AddCommGroup W] [Module ℚ W] (f : G → W) [TopologicalSpace G]
 
-/-- The class sum of `f` at the level `K ∩ Stab f`, divided by the index of that level in `K`. It is
+/--
+The class sum of `f` at the level `K ∩ Stab f`, divided by the index of that level in `K`. It is
 the finite-sum analogue, defined without measure theory, of the integral of `f` over `Γ \ G` for the
 Haar measure with `vol K = 1`, and is meant for `(Γ, K)` of finite type and `f` smooth and left
-`Γ`-invariant. -/
+`Γ`-invariant.
+-/
 def classIntegral : W :=
   ((rightStabilizer f).relIndex K : ℚ)⁻¹ • classSum Γ (rightStabilizer f ⊓ K) f
 
-/-- The pair `(Γ, K)` has finite type: `K` is compact and open, `Γ \ G / K` is finite and every
-`Γ ∩ g K g⁻¹` is finite. -/
+/--
+The pair `(Γ, K)` has finite type: `K` is compact and open, `Γ \ G / K` is finite and every
+`Γ ∩ g K g⁻¹` is finite.
+-/
 class HasFiniteType : Prop where
   /-- There are finitely many double cosets `Γ g K`. -/
   finite_classes : Finite (DoubleCoset.Quotient (Γ : Set G) K)
@@ -150,8 +154,10 @@ end Definitions
 
 open HasFiniteType
 
-variable {G W W' : Type*} [Group G] {Γ K K' : Subgroup G} [AddCommGroup W] [Module ℚ W]
-  [AddCommGroup W'] [Module ℚ W'] {f : G → W}
+variable
+  {G W W' : Type*} [Group G]
+  {Γ K K' : Subgroup G} [AddCommGroup W] [Module ℚ W] [AddCommGroup W'] [Module ℚ W']
+  {f : G → W}
 
 /-- The order of the stabiliser `classAut Γ K g` depends only on the class ΓgK. -/
 lemma card_classAut_out (g : G) :
@@ -418,8 +424,10 @@ open Finset MulAut Subgroup IsTopologicalGroup
 
 namespace New
 
-variable {G W W' : Type*} [Group G] {Γ K : Subgroup G} [AddCommGroup W] [Module ℚ W]
-  [AddCommGroup W'] [Module ℚ W'] {f : G → W} [TopologicalSpace G] [IsTopologicalGroup G]
+variable
+  {G W W' : Type*} [Group G]
+  {Γ K : Subgroup G} [AddCommGroup W] [Module ℚ W] [AddCommGroup W'] [Module ℚ W']
+  {f : G → W} [TopologicalSpace G] [IsTopologicalGroup G]
 
 /-- Let `(Γ, K)` have finite type. The integral `classIntegral Γ K` over `Γ \ G` is additive on
 `smoothInvariants Γ`, the left `Γ`-invariant functions fixed on the right by an open subgroup. -/
@@ -441,17 +449,22 @@ lemma classIntegral_map_mul_right [HasFiniteType Γ K] (L : W →+ W') {F : G �
 
 variable (R : Type*) [CommSemiring R] [Module R W]
 
-/-- The smooth functions `G → W`, those fixed under right translation by an open subgroup, as a
-subrepresentation of the right regular representation. -/
+/--
+The smooth functions `G → W`, those fixed under right translation by an open subgroup, as a
+subrepresentation of the right regular representation.
+-/
 def smoothFunctions : Subrepresentation (rightRegular R G W) where
   toSubmodule :=
     -- A linear combination is fixed by the intersection of the two stabilisers.
     .ofLinearComb {f : G → W | IsOpen (rightStabilizer f : Set G)} ⟨0, by simp [rightStabilizer]⟩
-      fun f hf g hg _ _ ↦ isOpen_mono (H₁ := rightStabilizer f ⊓ rightStabilizer g)
-        (fun k hk x ↦ by simp [hk.1 x, hk.2 x]) (hf.inter hg)
+      fun f hf g hg _ _ ↦
+        isOpen_mono (H₁ := rightStabilizer f ⊓ rightStabilizer g)
+          (fun k hk x ↦ by simp [hk.1 x, hk.2 x])
+          (hf.inter hg)
   apply_mem_toSubmodule a f hf := by
     -- The translate of `f` by `a` is fixed by the conjugate `a * rightStabilizer f * a⁻¹`.
-    refine ((rightStabilizer f).comap (conj a⁻¹).toMonoidHom).isOpen_mono (fun k hk g ↦ ?_)
+    refine ((rightStabilizer f).comap (conj a⁻¹).toMonoidHom).isOpen_mono
+      (fun k hk g ↦ ?_)
       (hf.preimage (continuous_conj _))
     simpa [mul_assoc] using hk (g * a)
 
@@ -623,11 +636,15 @@ lemma IsUnitary.adjoint_eq_inv {B : V →ₗ⋆[ℂ] V →ₗ[ℂ] ℂ} (hB : Is
 
 end Unitary
 
-variable {G V W : Type*} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-  (ρ : Representation ℂ G V) (H : Subgroup G) {x : V} [TopologicalSpace G]
+variable
+  {G V W : Type*} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
+  (ρ : Representation ℂ G V) (H : Subgroup G)
+  {x : V} [TopologicalSpace G]
 
-/-- The representation `ρ` is smooth: every vector is fixed by all `g` in some neighbourhood
-of `1`. -/
+/--
+The representation `ρ` is smooth: every vector is fixed by all `g` in some neighbourhood
+of `1`.
+-/
 class IsSmoothRep (ρ : Representation ℂ G V) : Prop where
   /-- The vector `x` is fixed by all `g` in some neighbourhood of `1`. -/
   eventually_fixed (x : V) : ∀ᶠ g : G in 𝓝 1, ρ g x = x
@@ -668,16 +685,20 @@ lemma orbit_mem_smoothInvariants (x : V) :
   exact (isCompact_univ.eventually_forall_of_forall_eventually fun p _ ↦ h_local p).mono
     fun k hk q ↦ hk q (Set.mem_univ q)
 
-/-- The mean of `ρ` over a compact subgroup `H`: the mean of `ρ (a⁻¹ b)` over `(a, b) ∈ H × H`.
+/--
+The mean of `ρ` over a compact subgroup `H`: the mean of `ρ (a⁻¹ b)` over `(a, b) ∈ H × H`.
 Invariance of class integrals under right translation (`classIntegral_map_mul_right`) then gives
-both sides: right translation in `a` multiplies `a⁻¹ b` on the left, and in `b` on the right. -/
-@[irreducible] def compactMean : Module.End ℂ V where
+both sides: right translation in `a` multiplies `a⁻¹ b` on the left, and in `b` on the right.
+-/
+@[irreducible]
+def compactMean : Module.End ℂ V where
   toFun x := classIntegral ⊥ ⊤ fun p : H × H ↦ ρ (p.1⁻¹ * p.2) x
   map_add' x y := by
     rw [← classIntegral_add (orbit_mem_smoothInvariants ρ H x) (orbit_mem_smoothInvariants ρ H y)]
     simp only [map_add, Pi.add_def]
-  map_smul' c x := classIntegral_map_mul_right (DistribSMul.toAddMonoidHom V c) 1
-    (orbit_mem_smoothInvariants ρ H x) (by simp)
+  map_smul' c x :=
+    classIntegral_map_mul_right (DistribSMul.toAddMonoidHom V c) 1
+      (orbit_mem_smoothInvariants ρ H x) (by simp)
 
 variable {ρ H}
 /-- An additive map `L` applied to the mean of `x` over `H` is the mean of
@@ -778,9 +799,11 @@ namespace New
 
 open HasFiniteType Finset Nat
 
-variable {G G' W W' : Type*} [Group G] [Group G'] {Γ K : Subgroup G} {Γ' K' : Subgroup G'}
-  [AddCommGroup W] [Module ℚ W] [TopologicalSpace G] [TopologicalSpace G'] [HasFiniteType Γ K]
-  [HasFiniteType Γ' K'] {A : Type*} [Ring A] [Algebra ℚ A]
+variable
+  {G G' W W' : Type*} [Group G] [Group G']
+  {Γ K : Subgroup G} {Γ' K' : Subgroup G'} [AddCommGroup W] [Module ℚ W] [TopologicalSpace G]
+  [TopologicalSpace G'] [HasFiniteType Γ K] [HasFiniteType Γ' K']
+  {A : Type*} [Ring A] [Algebra ℚ A]
 
 /-- Class sums over `Γ \ G / K` and over `Γ' \ G' / K'` commute. -/
 lemma classSum_comm (f : G → G' → W) :

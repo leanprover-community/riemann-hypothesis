@@ -77,13 +77,14 @@ open Matrix WithZero Valued Equiv Module Units Pi Submodule ComplexOrder Submono
 
 namespace New
 
-variable {F : Type*} [Field F] [Valued F ℤᵐ⁰] {N : ℕ}
-  {ρ : Rep ℂ (GL (Fin N) F)} [IsSmoothRep ρ.ρ]
+variable
+  {F : Type*} [Field F] [Valued F ℤᵐ⁰]
+  {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)} [IsSmoothRep ρ.ρ]
   {ϖ : Fˣ} {θ : Fin N → Fˣ →* ℂˣ} {l : ρ →ₗ[ℂ] ℂ} {x : ρ} {τ : (Fin N → Fˣ) → ℂ}
 
 /-- If `j` is the successor of `i` in `Fin n`, then `i.rev` is the successor of `j.rev`. -/
-theorem _root_.Fin.rev_val_eq_rev_val_add_one_of_covBy {n : ℕ} {i j : Fin n} (h : i ⋖ j) :
-    i.rev.val = j.rev.val + 1 := by
+theorem _root_.Fin.rev_val_eq_rev_val_add_one_of_covBy {n : ℕ} {i j : Fin n} (h : i ⋖ j)
+    : i.rev.val = j.rev.val + 1 := by
   have h_succ : i.val + 1 = j.val := Nat.covBy_iff_add_one_eq.mp (Fin.covBy_iff.mp h)
   rw [Fin.val_rev, Fin.val_rev]
   omega

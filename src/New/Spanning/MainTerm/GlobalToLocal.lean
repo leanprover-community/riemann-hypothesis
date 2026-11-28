@@ -80,8 +80,8 @@ See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 
 namespace New.Filling
 
-open NumberField MeasureTheory Matrix ENNReal Fintype Floors FloorGroups Function
-  ComplexOrder SemilocalField Measure Filter Complex Set
+open NumberField MeasureTheory Matrix ENNReal Fintype Floors FloorGroups Function ComplexOrder
+  SemilocalField Measure Filter Complex Set
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape}
 
@@ -286,12 +286,16 @@ lemma isIntegralOff_weylElem_mul {c c' : S.Classes} {σ : S.G E} {p : ℕ → E�
   exact hp a ha
 
 variable (S T) in
-/-- The properties of the element `σ` that names the link `Λ` over `(c, s, c')`: it fixes the
+/--
+The properties of the element `σ` that names the link `Λ` over `(c, s, c')`: it fixes the
 hyperbolic planes, the last diagonal entry `t` of its frame products lies in 𝒯 with `t t̄ - N²`
-totally positive, and its translate is integral off `T`. The element `k` is a lift of `s`. -/
-structure NamesLink (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes)
+totally positive, and its translate is integral off `T`. The element `k` is a lift of `s`.
+-/
+structure NamesLink
+    (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes)
     (Λ : Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E)) (t : Eˣ) (σ : S.G E)
-    (k : S.latticeStabilizer) : Prop where
+    (k : S.latticeStabilizer)
+    : Prop where
   /-- `σ` fixes the hyperbolic planes. -/
   mem_floorGroup : σ ∈ floorGroup 𝔰.ϱ
   /-- `t` is the last diagonal entry of the frame products of `σ`. -/
@@ -470,17 +474,19 @@ lemma exists_amplitudeSum_eq_sum_cosetAmplitude [WeilData E] [S.IsAdmissible] {c
 
 /-! ### Global against local: levels, moduli and characters -/
 
-/-- For a finite adele `t` and a tuple `x` of finite adeles, the vector `vectorOfLastEntry` of their
+/--
+For a finite adele `t` and a tuple `x` of finite adeles, the vector `vectorOfLastEntry` of their
 projections to `T`, formed with the projection of `S.piN`, is the projection of their vector
-`vectorOfLastEntry`. -/
-theorem vectorOfLastEntry_evalPlaces (t : 𝔸f E) (x : 𝔰.κ → 𝔸f E) :
-    vectorOfLastEntry (S.piN.map (evalPlaces T)) (evalPlaces T t) (evalPlaces T ∘ x) =
-      evalPlaces T ∘ vectorOfLastEntry S.piN t x := by
+`vectorOfLastEntry`.
+-/
+theorem vectorOfLastEntry_evalPlaces (t : 𝔸f E) (x : 𝔰.κ → 𝔸f E)
+    : vectorOfLastEntry (S.piN.map (evalPlaces T)) (evalPlaces T t) (evalPlaces T ∘ x)
+      = evalPlaces T ∘ vectorOfLastEntry S.piN t x := by
   -- Coordinate by coordinate: `evalPlaces T` is a ring homomorphism that commutes with `star`.
   apply funext
   simp [Sum.forall, vectorOfLastEntry, besselLatticeBasis, middleInclusionMatrix, mulVec,
-    dotProduct,
-    Matrix.diagonal, apply_ite (evalPlaces T), ← star_evalPlaces, -Units.val_inv_eq_inv_val]
+    dotProduct, Matrix.diagonal, apply_ite (evalPlaces T), ← star_evalPlaces,
+    -Units.val_inv_eq_inv_val]
 
 /-- The projection to `T` of h_c⁻¹ w_p σ h_c' is w_p times the projection of h_c⁻¹ σ h_c'. -/
 lemma toPlaces_translateByClassReps_weylElem_mul {σ : (S.ratMiddle E).G} {p : ℕ → Eˣ}
@@ -498,17 +504,20 @@ lemma toPlaces_translateByClassReps_weylElem_mul {σ : (S.ratMiddle E).G} {p : �
     -Units.val_inv_eq_inv_val]
   rfl
 
-variable [P : IntegralPlace (LocProd T)]
+variable
+  [P : IntegralPlace (LocProd T)]
   {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)}
 
-/-- Let `P` be a structure of a finite place on the product of the completions at `T`, with modulus
+/--
+Let `P` be a structure of a finite place on the product of the completions at `T`, with modulus
 `P.modulus`. Let `x` and `x⁻¹` lie in the ring `ratIntegralOff T` of `T`-integers of `E`. Then the
 square root of `P.modulus` at the component `evalPlaces T x` of `x` at `T` is the inverse of the
 product of the absolute values `‖Φ v x‖` over the infinite places `v`, with `Φ v` the chosen
-embedding. -/
-theorem _root_.New.Floors.IntegralPlace.modulus_evalPlaces_rpow_half {x : Eˣ}
-    (hx : x.val ∈ ratIntegralOff T ∧ x⁻¹.val ∈ ratIntegralOff T) :
-    P.modulus (evalPlaces T x.val) ^ (2⁻¹ : ℝ) = (∏ v : InfinitePlace E, ‖Φ v x.val‖ₑ)⁻¹ := by
+embedding.
+-/
+theorem _root_.New.Floors.IntegralPlace.modulus_evalPlaces_rpow_half
+    {x : Eˣ} (hx : x.val ∈ ratIntegralOff T ∧ x⁻¹.val ∈ ratIntegralOff T)
+    : P.modulus (evalPlaces T x.val) ^ (2⁻¹ : ℝ) = (∏ v : InfinitePlace E, ‖Φ v x.val‖ₑ)⁻¹ := by
   obtain ⟨hx_int, hx_inv⟩ := hx
   let u : (LocProd T)ˣ := x.map (ratToPlaces T).toMonoidHom
   -- The product formula: the inequality `sqrt_genIndex_le_prod_norm` for `x` and for `x⁻¹` gives
@@ -523,35 +532,44 @@ theorem _root_.New.Floors.IntegralPlace.modulus_evalPlaces_rpow_half {x : Eˣ}
   rw [h_modulus, h_prod]
   simp [inv_rpow, ← rpow_natCast_mul, ofReal_prod_of_nonneg]
 
-/-- Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
+/--
+Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
 modulus `F.levelUnit` is the component of `M = p₀p₁ = S.ideleM`. Let `M⁻¹` be integral off `T`
 (`hM_inv`). A finite adelic point `x` lies in the principal level `K(M)` exactly when it is integral
-off `T` and its projection to `T` lies in the group `K(M) = F.congruenceSubgroup`. -/
-theorem IsFillingData.mem_principalLevel_iff [hF : S.IsFillingData T F]
-    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] :
-    x ∈ S.principalLevel ↔ S.IsIntegralOff T x ∧ S.toPlaces T x ∈ F.congruenceSubgroup := by
+off `T` and its projection to `T` lies in the group `K(M) = F.congruenceSubgroup`.
+-/
+theorem IsFillingData.mem_principalLevel_iff
+    [hF : S.IsFillingData T F] [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)]
+    : x ∈ S.principalLevel ↔ S.IsIntegralOff T x ∧ S.toPlaces T x ∈ F.congruenceSubgroup := by
   rw [principalLevel_eq_unitaryLevel, mem_unitaryLevel_iff hM_inv.out, ← hF.levelUnit_eq]
 
-/-- Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
+/--
+Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
 modulus `F.levelUnit` is the component of `M = p₀p₁ = S.ideleM`. Let `M⁻¹` be integral off `T`
 (`hM_inv`). Two elements `k`, `l` of the group `K` of integral points have the same reduction modulo
 `M` exactly when their projections to `T` are in the same left coset of
-`K(M) = F.congruenceSubgroup`. -/
-theorem IsFillingData.reduction_eq_iff [hF : S.IsFillingData T F]
-    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] (k l : S.latticeStabilizer) :
-    S.reduction k = S.reduction l ↔ (S.toPlaces T k)⁻¹ * S.toPlaces T l ∈ F.congruenceSubgroup := by
+`K(M) = F.congruenceSubgroup`.
+-/
+theorem IsFillingData.reduction_eq_iff
+    [hF : S.IsFillingData T F] [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)]
+    (k l : S.latticeStabilizer)
+    : S.reduction k = S.reduction l
+      ↔ (S.toPlaces T k)⁻¹ * S.toPlaces T l ∈ F.congruenceSubgroup := by
   obtain ⟨l, rfl⟩ : ∃ a : S.latticeStabilizer, k * a = l := mul_left_surjective k l
-  simpa [principalLevel, mem_latticeStabilizer_iff.mp l.prop] using hF.mem_principalLevel_iff
-    (x := l)
+  simpa [principalLevel, mem_latticeStabilizer_iff.mp l.prop] using
+    hF.mem_principalLevel_iff (x := l)
 
-/-- Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
+/--
+Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
 modulus `F.levelUnit` is the component of `M = p₀p₁ = S.ideleM`. Let `M⁻¹` be integral off `T`
 (`hM_inv`). For a finite adelic point `x` integral off `T`, the character `P.ψ` at the sum of the
 simple root coordinates of its projection, divided by `F.levelUnit`, is the unipotent character of
-`S` at `x`. -/
-theorem IsFillingData.psi_simpleRootSum_eq_unipotentChar [hF : S.IsFillingData T F]
-    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] (h_off : S.IsIntegralOff T x) :
-    P.ψ (F.levelUnit⁻¹.val * simpleRootSum (S.toPlaces T x)) = S.unipotentChar x := by
+`S` at `x`.
+-/
+theorem IsFillingData.psi_simpleRootSum_eq_unipotentChar
+    [hF : S.IsFillingData T F] [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)]
+    (h_off : S.IsIntegralOff T x)
+    : P.ψ (F.levelUnit⁻¹.val * simpleRootSum (S.toPlaces T x)) = S.unipotentChar x := by
   have h_int : S.ideleM⁻¹.val * simpleRootSum x ∈ integralOff T :=
     mul_mem hM_inv.out (sum_mem fun _ _ ↦ h_off.isIntMatrix _ _)
   calc
@@ -559,32 +577,36 @@ theorem IsFillingData.psi_simpleRootSum_eq_unipotentChar [hF : S.IsFillingData T
       simp [hF.levelUnit_eq, hF.psi_eq, simpleRootSum, toPlaces, U.map]
     _ = _ := S.charOnPlaces_evalPlaces T h_int
 
-/-- Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
+/--
+Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
 modulus `F.levelUnit` is the component of `M = p₀p₁ = S.ideleM`. Let `M⁻¹` be integral off `T`
 (`hM_inv`). Then `P.modulus F.levelUnit` is `(M ^ f)⁻¹ ^ 2`, with `M` read as the natural number
-`S.M` and `f` the number of infinite places of `E`. -/
-theorem IsFillingData.modulus_levelUnit [hF : S.IsFillingData T F]
-    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] :
-    P.modulus F.levelUnit = (S.M ^ numInfPlaces E : ℝ≥0∞)⁻¹ ^ 2 := by
+`S.M` and `f` the number of infinite places of `E`.
+-/
+theorem IsFillingData.modulus_levelUnit
+    [hF : S.IsFillingData T F] [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)]
+    : P.modulus F.levelUnit = (S.M ^ numInfPlaces E : ℝ≥0∞)⁻¹ ^ 2 := by
   -- The product formula for `S.ideleM`, which is a unit off `T`, squared.
   have h_rat : P.modulus F.levelUnit ^ (2⁻¹ : ℝ) = (S.M ^ numInfPlaces E : ℝ≥0∞)⁻¹ := by
     simpa [hF.levelUnit_eq, ideleM_val, ← ofReal_norm] using
       P.modulus_evalPlaces_rpow_half ⟨((mem_Ô_iff T).1 S.ideleM_mem).2, hM_inv.out⟩
   rw [← h_rat, ← rpow_natCast, Nat.cast_ofNat, rpow_inv_rpow two_ne_zero]
 
-/-- Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
+/--
+Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
 modulus `F.levelUnit` is the component of `M = p₀p₁ = S.ideleM`. Let `M⁻¹` be integral off `T`
 (`hM_inv`). Let 𝖴 = `besselU` be the group of block upper unitriangular isometries. The order
 `S.unipotentOrder` of the reduction modulo `M` of the integral points of 𝖴, times the measure
 `F.unipotentMass` of 𝖴 ∩ K(M) at `T`, is one. Here `K(M) = F.congruenceSubgroup` consists of the
-integral points congruent to `1` modulo `M`. -/
-theorem IsFillingData.unipotentOrder_mul_unipotentMass_eq_one [hF : S.IsFillingData T F]
-    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] :
-    S.unipotentOrder * F.unipotentMass = 1 := by
+integral points congruent to `1` modulo `M`.
+-/
+theorem IsFillingData.unipotentOrder_mul_unipotentMass_eq_one
+    [hF : S.IsFillingData T F] [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)]
+    : S.unipotentOrder * F.unipotentMass = 1 := by
   -- By `modulus_levelUnit` the floor `l` has volume `(M ^ f)⁻¹ ^ (2 d + 1)`, with
   -- `f = numInfPlaces E` and `d = k + 1 + 2 (ϱ - (l + 1))`; sum the exponents.
-  have h_sum (n : ℕ) :
-      ∑ l ∈ .range n, (2 * (𝔰.k + 1 + 2 * (n - (l + 1))) + 1) = n * (2 * 𝔰.k + 2 * n + 1) := by
+  have h_sum (n : ℕ)
+      : ∑ l ∈ .range n, (2 * (𝔰.k + 1 + 2 * (n - (l + 1))) + 1) = n * (2 * 𝔰.k + 2 * n + 1) := by
     induction n with
     | zero => simp
     | succ n ih => grind [Finset.sum_range_succ']
@@ -596,7 +618,8 @@ theorem IsFillingData.unipotentOrder_mul_unipotentMass_eq_one [hF : S.IsFillingD
 
 /-! ### Counting images modulo `M` by measures -/
 
-/-- Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
+/--
+Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
 modulus `F.levelUnit` is the component of `M = p₀p₁ = S.ideleM`. Let `M⁻¹` be integral off `T`
 (`hM_inv`). Let `B` be a subgroup of the finite adelic unitary group and `μ` an s-finite measure on
 the unitary group over the product `LocProd T` of the completions at `T`. Suppose that almost every
@@ -604,20 +627,22 @@ point for `μ` is the projection (`toPlaces`) of an element of `B` integral off 
 invariant under right translation by the projections of the elements of `B`. Then the order of the
 image `S.reducedImage B` modulo `M` of the integral points of `B`, times the measure of the
 principal congruence subgroup `K(M) = F.congruenceSubgroup`, is the measure of the group
-`unitaryLevel P.integers 1 _` of integral points at `T`. -/
-theorem IsFillingData.card_reducedImage_mul_measure_congruenceSubgroup_eq [hF : S.IsFillingData T F]
-    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] {B : Subgroup S.GFin}
-    {μ : Measure (U (S.latticeMiddle (LocProd T)).splitGram)} [SFinite μ]
-    (h_supp : ∀ᵐ z : U (S.latticeMiddle (LocProd T)).splitGram ∂μ,
-      ∃ x ∈ B, S.toPlaces T x = z ∧ S.IsIntegralOff T x)
-    (h_inv : ∀ x ∈ B, μ ∗ₘ Measure.dirac (S.toPlaces T x) = μ) :
-    Nat.card (S.reducedImage B) * μ F.congruenceSubgroup =
-      μ (unitaryLevel P.integers 1 (S.latticeMiddle (LocProd T)).splitGram) := by
+`unitaryLevel P.integers 1 _` of integral points at `T`.
+-/
+theorem IsFillingData.card_reducedImage_mul_measure_congruenceSubgroup_eq
+    [hF : S.IsFillingData T F] [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)]
+    {B : Subgroup S.GFin} {μ : Measure (U (S.latticeMiddle (LocProd T)).splitGram)} [SFinite μ]
+    (h_supp
+      : ∀ᵐ z : U (S.latticeMiddle (LocProd T)).splitGram ∂μ,
+        ∃ x ∈ B, S.toPlaces T x = z ∧ S.IsIntegralOff T x)
+    (h_inv : ∀ x ∈ B, μ ∗ₘ Measure.dirac (S.toPlaces T x) = μ)
+    : Nat.card (S.reducedImage B) * μ F.congruenceSubgroup
+      = μ (unitaryLevel P.integers 1 (S.latticeMiddle (LocProd T)).splitGram) := by
   classical
   -- Choose lifts `k s ∈ B ∩ K` of the `s ∈ S.reducedImage B`. Almost everywhere, the integral
   -- points are the disjoint union of the cosets `C s = K(M) (k s)⁻¹`, all of measure `μ K(M)`.
-  have h_lift (s : S.reducedImage B) :
-      ∃ k : S.latticeStabilizer, k.val ∈ B ∧ S.reduction k = s := s.property
+  have h_lift (s : S.reducedImage B) : ∃ k : S.latticeStabilizer, k.val ∈ B ∧ S.reduction k = s :=
+    s.property
   choose k hkB hk_red using h_lift
   let C (s : S.reducedImage B) : Set (U (S.latticeMiddle (LocProd T)).splitGram) :=
     (· * S.toPlaces T (k s)) ⁻¹' F.congruenceSubgroup
@@ -630,8 +655,9 @@ theorem IsFillingData.card_reducedImage_mul_measure_congruenceSubgroup_eq [hF : 
     refine fun s t hst ↦ disjoint_left.2 fun z hs ht ↦ hst (Subtype.ext ?_)
     rw [← hk_red s, ← hk_red t, hF.reduction_eq_iff]
     simpa using mul_mem (inv_mem hs.out) ht.out
-  have h_cover : ⋃ s, C s =ᵐ[μ]
-      (unitaryLevel P.integers 1 (S.latticeMiddle (LocProd T)).splitGram : Set _) := by
+  have h_cover
+      : ⋃ s, C s =ᵐ[μ]
+        (unitaryLevel P.integers 1 (S.latticeMiddle (LocProd T)).splitGram : Set _) := by
     refine eventuallyEqSet_iff.2 (h_supp.mono ?_)
     rintro _ ⟨x, hx, rfl, hx_off⟩
     refine mem_iUnion.trans ⟨fun ⟨s, hs⟩ ↦ ?_, fun hxK ↦ ?_⟩
@@ -854,7 +880,8 @@ lemma besselOrbitalIntegral_ratToInf_besselU_mul {side : FullOrCut} {u u' : S.G 
 
 variable [WeilData E]
 
-/-- Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
+/--
+Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
 modulus `F.levelUnit` is the component of `M = p₀p₁ = S.ideleM`. Let `M⁻¹` be integral off `T`
 (`hM_inv`). Let `γ = w_p σ`, with the inverses of the entries `p a`, `a < ϱ`, integral off `T`, `σ`
 fixing the `ϱ` hyperbolic pairs and `h_c⁻¹ γ h_c'` integral off `T`. Let `x` and `s` be the
@@ -863,16 +890,18 @@ The Kloosterman sum `F.kloostermanSum x s` is the sum of `χ(u) conj χ(u')` ove
 in `𝖴 / (𝖴 ∩ K(M))` at `T` with `u⁻¹ x u' ∈ s K(M)`, where `χ` is the character of 𝖴 = `besselU`.
 Then the orbit sum `New.Filling.cosetAmplitude` of `γ` over `(c, k̄, c')` is this sum times the
 orbital integral of `γ` at the infinite places, for the full or the cut Bessel function
-`S.besselFn side`. -/
-theorem IsFillingData.cosetAmplitude_eq_kloostermanSum_smul [hF : S.IsFillingData T F]
-    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] [S.IsAdmissible] {side : FullOrCut}
-    {σ : S.G E} {p : ℕ → Eˣ} {c c' : S.Classes} (k : S.latticeStabilizer) (hσ : σ ∈ floorGroup 𝔰.ϱ)
+`S.besselFn side`.
+-/
+theorem IsFillingData.cosetAmplitude_eq_kloostermanSum_smul
+    [hF : S.IsFillingData T F] [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] [S.IsAdmissible]
+    {side : FullOrCut} {σ : S.G E} {p : ℕ → Eˣ} {c c' : S.Classes}
+    (k : S.latticeStabilizer) (hσ : σ ∈ floorGroup 𝔰.ϱ)
     (hp : ∀ a : Fin 𝔰.ϱ, (p a)⁻¹.val ∈ ratIntegralOff T)
-    (h_off : S.IsIntegralOff T (S.translateByClassReps c c' (weylElem 𝔰.ϱ p * σ))) :
-    S.cosetAmplitude side c (S.reduction k) c' (weylElem 𝔰.ϱ p * σ) =
-      F.kloostermanSum (S.toPlaces T (S.translateByClassReps c c' (weylElem 𝔰.ϱ p * σ)))
-        (S.toPlaces T k) •
-        besselOrbitalIntegral volume
+    (h_off : S.IsIntegralOff T (S.translateByClassReps c c' (weylElem 𝔰.ϱ p * σ)))
+    : S.cosetAmplitude side c (S.reduction k) c' (weylElem 𝔰.ϱ p * σ)
+      = F.kloostermanSum (S.toPlaces T (S.translateByClassReps c c' (weylElem 𝔰.ϱ p * σ)))
+          (S.toPlaces T k)
+        • besselOrbitalIntegral volume
           (fun y : InfinitePlace E → 𝔰.G₁ ↦ WithLp.toLp 2 (S.besselFn side y))
           (S.ratToInf (weylElem 𝔰.ϱ p * σ)) := by
   set γ : S.G E := weylElem 𝔰.ϱ p * σ
@@ -881,39 +910,43 @@ theorem IsFillingData.cosetAmplitude_eq_kloostermanSum_smul [hF : S.IsFillingDat
   obtain ⟨r', r'_inj, hr', r'_off, r'_level, r'_rep⟩ :=
     hF.exists_injective_mem_besselU_and_isIntegralOff c'
   -- In a term `u⁻¹ γ u'` over `(c, k̄, c')`, `u` and `u'` have translates integral off `T`.
-  have h_int (u : S.G E) (hu : u ∈ besselU) (u' : S.G E) (hu' : u' ∈ besselU)
-      (h_over : u⁻¹ * γ * u' ∈ S.termsOver c (S.reduction k) c') :
-      S.IsIntegralOff T (S.translateByClassReps c c u) ∧
-        S.IsIntegralOff T (S.translateByClassReps c' c' u') := by
+  have h_int
+      (u : S.G E) (hu : u ∈ besselU)
+      (u' : S.G E) (hu' : u' ∈ besselU) (h_over : u⁻¹ * γ * u' ∈ S.termsOver c (S.reduction k) c')
+      : S.IsIntegralOff T (S.translateByClassReps c c u)
+        ∧ S.IsIntegralOff T (S.translateByClassReps c' c' u') := by
     obtain ⟨h_left, -⟩ := isIntegralOff_of_mem_termsOver hu hu' hσ hp h_over
     obtain ⟨l, -, hl⟩ := h_over
     have h_all : S.IsIntegralOff T l.val := (mem_latticeStabilizer_iff.1 l.property).1
     rw [hl, translateByClassReps_inv_mul_mul] at h_all
     exact ⟨h_left, (mul_mem_cancel_left (mul_mem (inv_mem h_left) h_off)).1 h_all⟩
   -- Unfolding: each double coset gives one orbital integral at the infinite places.
-  have h_sum := hasSum_besselOrbitalIntegral_cosetAmplitude (side := side) hσ p hr hr' r_inj r'_inj
-    fun u hu u' hu' h_over ↦ (h_int u hu u' hu' h_over).imp (r_rep u hu) (r'_rep u' hu')
+  have h_sum :=
+    hasSum_besselOrbitalIntegral_cosetAmplitude (side := side) hσ p hr hr' r_inj r'_inj
+      fun u hu u' hu' h_over ↦ (h_int u hu u' hu' h_over).imp (r_rep u hu) (r'_rep u' hu')
   -- Rational and local pairs: `(r w)⁻¹ γ (r' w')` is a term over `(c, k̄, c')` exactly when
   -- `(w, w')` is a pair in the sum at `T`.
   let x : (S.latticeMiddle (LocProd T)).G := S.toPlaces T (S.translateByClassReps c c' γ)
   let s : (S.latticeMiddle (LocProd T)).G := S.toPlaces T k
-  have h_pair (w w' : F.UnipotentCosets) :
-      (r w)⁻¹ * γ * r' w' ∈ S.termsOver c (S.reduction k) c' ↔
-        s⁻¹ * (w.out.val⁻¹ * x * w'.out.val) ∈ F.congruenceSubgroup := by
+  have h_pair (w w' : F.UnipotentCosets)
+      : (r w)⁻¹ * γ * r' w' ∈ S.termsOver c (S.reduction k) c'
+        ↔ s⁻¹ * (w.out.val⁻¹ * x * w'.out.val) ∈ F.congruenceSubgroup := by
     have h_term : S.IsIntegralOff T (S.translateByClassReps c c' ((r w)⁻¹ * γ * r' w')) := by
       rw [translateByClassReps_inv_mul_mul]
       exact mul_mem (mul_mem (inv_mem (r_off w)) h_off) (r'_off w')
-    have h_conj : s⁻¹ * (w.out.val⁻¹ * S.toPlaces T (S.translateByClassReps c c (r w))) * s⁻¹⁻¹ ∈
-        F.congruenceSubgroup :=
+    have h_conj
+        : s⁻¹ * (w.out.val⁻¹ * S.toPlaces T (S.translateByClassReps c c (r w))) * s⁻¹⁻¹
+          ∈ F.congruenceSubgroup :=
       conj_mem_unitaryLevel (inv_mem (mem_latticeStabilizer_iff.1 k.property).2) (r_level w)
     rw [hF.mem_termsOver_iff k h_term, ← mul_mem_cancel_left h_conj,
       ← mul_mem_cancel_right (inv_mem (r'_level w')), translateByClassReps_inv_mul_mul]
     simp [x, s, mul_assoc]
   -- Phases: the factor of a pair is the term of the Kloosterman sum.
-  have h_phase {d : S.Classes} {u : S.G E} {w : F.UnipotentCosets} (hu : u ∈ besselU)
-      (hu_off : S.IsIntegralOff T (S.translateByClassReps d d u))
-      (hw : w.out.val⁻¹ * S.toPlaces T (S.translateByClassReps d d u) ∈ F.congruenceSubgroup) :
-      S.unipotentChar (S.ratToFin u) = P.extendedBesselChar F.levelUnit w.out.val := by
+  have h_phase
+      {d : S.Classes} {u : S.G E} {w : F.UnipotentCosets}
+      (hu : u ∈ besselU) (hu_off : S.IsIntegralOff T (S.translateByClassReps d d u))
+      (hw : w.out.val⁻¹ * S.toPlaces T (S.translateByClassReps d d u) ∈ F.congruenceSubgroup)
+      : S.unipotentChar (S.ratToFin u) = P.extendedBesselChar F.levelUnit w.out.val := by
     rw [← hF.extendedBesselChar_toPlaces_translateByClassReps hu hu_off,
       P.extendedBesselChar_eq_of_inv_mul_mem hw]
   ext i
@@ -926,7 +959,8 @@ theorem IsFillingData.cosetAmplitude_eq_kloostermanSum_smul [hF : S.IsFillingDat
     rfl
   · rw [indicator_of_notMem hw, ite_eq_right (mt (h_pair w.1 w.2).2 hw), map_zero, zero_mul]
 
-/-- Unfolding, for either of the Bessel functions at infinity. Let `S` be admissible, and let `F` be
+/--
+Unfolding, for either of the Bessel functions at infinity. Let `S` be admissible, and let `F` be
 a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose modulus
 `F.levelUnit` is the component of `M = p₀p₁ = S.ideleM`. Let `M⁻¹` be integral off `T` (`hM_inv`).
 Put `K(M) = F.congruenceSubgroup`. Let `γ = w_p σ`, with `w_p = weylElem 𝔰.ϱ p`. Suppose the
@@ -939,20 +973,23 @@ powers of the `P.modulus (q i)`, `i < ϱ`. Then `F.scaledOrbitalIntegral Z q l�
 orbital integral of the finite Bessel vector of `Z` at `w_q l`. Its entry `(a, b)` times the
 integral `New.besselOrbitalIntegral` of `γ` at the infinite places is `κ` times the measure of
 `K(M)` times the orbit sum `New.Filling.cosetAmplitude` of `γ` over `(c, k̄, c')`, with `k̄` the
-reduction of `k`. -/
-theorem IsFillingData.scaledOrbitalIntegral_smul_eq_cosetAmplitude [hF : S.IsFillingData T F]
-    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] [S.IsAdmissible] {side : FullOrCut}
-    {σ : S.G E} {p : ℕ → Eˣ} {c c' : S.Classes} {Z : F.IntermediateGroup} {k : S.latticeStabilizer}
+reduction of `k`.
+-/
+theorem IsFillingData.scaledOrbitalIntegral_smul_eq_cosetAmplitude
+    [hF : S.IsFillingData T F] [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] [S.IsAdmissible]
+    {side : FullOrCut} {σ : S.G E} {p : ℕ → Eˣ} {c c' : S.Classes} {Z : F.IntermediateGroup}
+    {k : S.latticeStabilizer}
     (hσ : σ ∈ floorGroup 𝔰.ϱ) (hp : ∀ a : Fin 𝔰.ϱ, (p a)⁻¹.val ∈ ratIntegralOff T)
-    (h_off : S.IsIntegralOff T (S.translateByClassReps c c' (weylElem 𝔰.ϱ p * σ))) {a b : Z.Cosets}
-    (hab : (S.toPlaces T k)⁻¹ * a.out.val * b.out.val⁻¹ ∈ F.congruenceSubgroup) :
-    let q : ℕ → (LocProd T)ˣ := Units.map (ratToPlaces T) ∘ p
-    let γ : S.G E := weylElem 𝔰.ϱ p * σ
-    F.scaledOrbitalIntegral Z q (S.toPlaces T (S.translateByClassReps c c' σ))⁻¹ (a, b) •
-        besselOrbitalIntegral volume (fun y : InfinitePlace E → 𝔰.G₁ ↦
-          WithLp.toLp 2 (S.besselFn side y)) (S.ratToInf γ) =
-      (F.headDensity 𝔰.ϱ q 1).toReal • F.groupMeasure.real F.congruenceSubgroup •
-        S.cosetAmplitude side c (S.reduction k) c' γ := by
+    (h_off : S.IsIntegralOff T (S.translateByClassReps c c' (weylElem 𝔰.ϱ p * σ)))
+    {a b : Z.Cosets} (hab : (S.toPlaces T k)⁻¹ * a.out.val * b.out.val⁻¹ ∈ F.congruenceSubgroup)
+    : let q : ℕ → (LocProd T)ˣ := Units.map (ratToPlaces T) ∘ p
+      let γ : S.G E := weylElem 𝔰.ϱ p * σ
+      F.scaledOrbitalIntegral Z q (S.toPlaces T (S.translateByClassReps c c' σ))⁻¹ (a, b)
+          • besselOrbitalIntegral volume
+            (fun y : InfinitePlace E → 𝔰.G₁ ↦ WithLp.toLp 2 (S.besselFn side y))
+            (S.ratToInf γ)
+        = (F.headDensity 𝔰.ϱ q 1).toReal • F.groupMeasure.real F.congruenceSubgroup
+          • S.cosetAmplitude side c (S.reduction k) c' γ := by
   -- Both the entry at `T` and the orbit sum contain the Kloosterman sum.
   intro q γ
   rw [PlaceData.scaledOrbitalIntegral, inv_inv, ← toPlaces_translateByClassReps_weylElem_mul,

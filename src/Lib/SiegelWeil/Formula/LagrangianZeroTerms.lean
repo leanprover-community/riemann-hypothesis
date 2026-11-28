@@ -91,25 +91,34 @@ namespace New.SiegelWeil
 
 open Matrix WeilData Space Splitting ENNReal Fintype Filling Subsingleton New.Core MeasureTheory
 
-variable {E n m n₁ r : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
-  [Fintype m] [DecidableEq m] [Fintype n₁] [DecidableEq n₁] [Fintype r] [DecidableEq r]
-  {s : n → ℤˣ} {t : m → ℤˣ} {s₁ : n₁ → ℤˣ} (S : Space E n s) {S₁ : Space E n₁ s₁} (T : Space E m t)
+variable
+  {E n m n₁ r : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
+  [DecidableEq m] [Fintype n₁] [DecidableEq n₁] [Fintype r] [DecidableEq r]
+  {s : n → ℤˣ} {t : m → ℤˣ} {s₁ : n₁ → ℤˣ} (S : Space E n s)
+  {S₁ : Space E n₁ s₁}
+  (T : Space E m t)
   (p : Type) [Fintype p] [DecidableEq p]
 
-/-- The type of splittings of `S` into `p` hyperbolic planes with zero-dimensional complement, that
-is, of decompositions `S = l E ^ p ⊕ k E ^ p` with dual isotropic frames `l`, `k`. -/
+/--
+The type of splittings of `S` into `p` hyperbolic planes with zero-dimensional complement, that
+is, of decompositions `S = l E ^ p ⊕ k E ^ p` with dual isotropic frames `l`, `k`.
+-/
 abbrev CompleteSplitting : Type := S.Splitting (stdSpace E Empty) p
 
-/-- The Weil representation of the pair `(S, T)` on the function space of `Hom(S, T)`, twisted by
+/--
+The Weil representation of the pair `(S, T)` on the function space of `Hom(S, T)`, twisted by
 the character `upsilonU1 ^ (n / 2)` of `det h`, where `n` is the rank of `S` and `n / 2` is rounded
 down. In `splitWeil S T (g, h)` the element `g` is in the group of `S` and `h` in that of `T`. For
 split `S` this twist makes the group of `T` act on slices by substitution alone
-(`New.SiegelWeil.mixedValue_splitWeil`). -/
+(`New.SiegelWeil.mixedValue_splitWeil`).
+-/
 abbrev splitWeil : G E s × G E t →* 𝒮 (S.hom T) →L[ℂ] 𝒮 (S.hom T) :=
   pairWeil S T (1 * upsilonU1 ^ (card n / 2)) 1
 
-/-- The type of Lagrangians of `S`: subspaces `L` of `E ^ n` that are equal to their own orthogonal
-complement for the form `x* J y` of `S`. -/
+/--
+The type of Lagrangians of `S`: subspaces `L` of `E ^ n` that are equal to their own orthogonal
+complement for the form `x* J y` of `S`.
+-/
 abbrev Lagrangian : Type :=
   {L : Submodule E (n → E) // ∀ y : n → E, y ∈ L ↔ ∀ x ∈ L, star x ⬝ᵥ S.J *ᵥ y = 0}
 
@@ -150,16 +159,19 @@ lemma exists_mulVec_add_mulVec_of_orthogonal (y : n → E) (hy : D₁.kᴴ *ᵥ 
 
 variable (P : CompleteSplitting S p) (L : Lagrangian S) (γ : U S.J) (x : p → ℕ)
 
-/-- For a complete splitting `P` of `S` and an adelic matrix `x`, the continuous functional
+/--
+For a complete splitting `P` of `S` and an adelic matrix `x`, the continuous functional
 `f ↦ f[x]`: the slice of `f` at `x`, which is a number, the value at `x` in the Schrödinger model
-attached to `P`. -/
+attached to `P`.
+-/
 def mixedValue (x : Matrix m p (𝔸 E)) : 𝒮 (S.hom T) →L[ℂ] ℂ :=
   θ ((stdSpace E Empty).hom T) ∘L P.homSlice T x
 
 /-- The Lagrangian `k E ^ p` spanned by the columns of the frame `k` of a complete splitting `P`. -/
-def CompleteSplitting.lagrangian : Lagrangian S :=
-  ⟨colSpan P.k, by simpa [iff_def, forall_and, eq_zero P.i] using
-                     exists_mulVec_add_mulVec_of_orthogonal P⟩
+def CompleteSplitting.lagrangian : Lagrangian S := ⟨
+  colSpan P.k,
+  by simpa [iff_def, forall_and, eq_zero P.i] using exists_mulVec_add_mulVec_of_orthogonal P
+⟩
 
 omit [WeilData E] in
 lemma Lagrangian.eq_of_le {L L' : Lagrangian S} (h_le : L.val ≤ L') : L = L' :=
@@ -194,10 +206,12 @@ lemma Lagrangian.exists_completeSplitting (L : Lagrangian S) :
         _ = 0 := by rw [← Matrix.mul_assoc, D.gram_ik, Matrix.zero_mul]
     exact absurd h_zero V.isUnit_J.ne_zero
 
-/-- A natural number `r` and a splitting of `S` into `r` hyperbolic planes whose isotropic frame `k`
-spans the Lagrangian `L`, chosen once. -/
-def Lagrangian.completeSplitting :
-    {P : Σ r : ℕ, CompleteSplitting S (Fin r) // P.snd.lagrangian = L} :=
+/--
+A natural number `r` and a splitting of `S` into `r` hyperbolic planes whose isotropic frame `k`
+spans the Lagrangian `L`, chosen once.
+-/
+def Lagrangian.completeSplitting
+    : {P : Σ r : ℕ, CompleteSplitting S (Fin r) // P.snd.lagrangian = L} :=
   Nonempty.some <| by
     obtain ⟨r, P, hP⟩ := L.exists_completeSplitting
     exact ⟨⟨r, P⟩, hP⟩
@@ -205,8 +219,10 @@ def Lagrangian.completeSplitting :
 /-- The number of hyperbolic planes in the splitting chosen for the Lagrangian `L`. -/
 abbrev Lagrangian.numPlanes : ℕ := L.completeSplitting.val.fst
 
-/-- The complete splitting of `S` chosen for the Lagrangian `L`; its frame `k` spans `L`
-(`New.SiegelWeil.Lagrangian.lagrangian_chosenSplitting`). -/
+/--
+The complete splitting of `S` chosen for the Lagrangian `L`; its frame `k` spans `L`
+(`New.SiegelWeil.Lagrangian.lagrangian_chosenSplitting`).
+-/
 abbrev Lagrangian.chosenSplitting : CompleteSplitting S (Fin L.numPlanes) :=
   L.completeSplitting.val.snd
 
@@ -214,10 +230,12 @@ lemma Lagrangian.lagrangian_chosenSplitting (L : Lagrangian S) :
     L.chosenSplitting.lagrangian = L :=
   L.completeSplitting.property
 
-/-- The zero term along a Lagrangian `L`: the value at `0` in the Schrödinger model of the chosen
+/--
+The zero term along a Lagrangian `L`: the value at `0` in the Schrödinger model of the chosen
 complete splitting `L.chosenSplitting`, whose frame `k` spans `L`. It sends `f` to the mean of
 `θ (ϱ z f)` over the maps `z : S → T` that vanish on `L`, adelic modulo rational
-(`New.Space.Splitting.zeroTerm_apply`). -/
+(`New.Space.Splitting.zeroTerm_apply`).
+-/
 def Lagrangian.zeroTerm : 𝒮 (S.hom T) →L[ℂ] ℂ := mixedValue T L.chosenSplitting 0
 
 /-- For a complete splitting `P` of `S`, the zero term along its Lagrangian is the value `f[0]` in
@@ -237,11 +255,13 @@ lemma zeroTerm_lagrangian_eq_theta (f : 𝒮 (S.hom T)) :
   change mixedValue T Q 0 f = _
   simp [mixedValue, h_congr]
 
-/-- For a rational isometry `γ` of `S`, the splitting of `S` with no hyperbolic planes whose
-complement is `S` itself, mapped in by `γ`. -/
+/--
+For a rational isometry `γ` of `S`, the splitting of `S` with no hyperbolic planes whose
+complement is `S` itself, mapped in by `γ`.
+-/
 def isometrySplitting : S.Splitting S Empty := by
-  use 0, 0, γ <;>
-    simp [show γ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 γ.property, ← ext_iff]
+  use 0, 0, γ
+    <;> simp [show γ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 γ.property, ← ext_iff]
 
 /-- For a rational isometry `γ` of `S`, the zero term on `Hom(S, T)` of the splitting without planes
 given by `γ` is the Weil operator of `(γ⁻¹, 1)`, where `S.ratEmbed` embeds the rational points. -/
@@ -370,12 +390,14 @@ lemma hasSum_mixedValue_theta_splitWeil (h : G E t) (f : 𝒮 (S.hom T)) :
   simp only [← mixedValue_splitWeil]
   exact P.hasSum_theta_homSlice T _
 
-/-- For `x : p → ℕ`, the operator `2 ^ (-d * rank T * ∑ i, x i) • splitWeil S T (P.levi (δ, 1), 1)`,
+/--
+For `x : p → ℕ`, the operator `2 ^ (-d * rank T * ∑ i, x i) • splitWeil S T (P.levi (δ, 1), 1)`,
 where `d` is the number of infinite places and `δ = New.Core.dyadicDiag x` is diagonal with entries
-`2 ^ x i` at the infinite places and `1` at the finite places. -/
+`2 ^ x i` at the infinite places and `1` at the finite places.
+-/
 def normalisedTorus : 𝒮 (S.hom T) →L[ℂ] 𝒮 (S.hom T) :=
-  (((2 ^ Core.numInfPlaces E) ^ ∑ i : p, x i) ^ card m : ℂ)⁻¹ •
-    splitWeil S T (P.levi (dyadicDiag (x ·), 1), 1)
+  (((2 ^ Core.numInfPlaces E) ^ ∑ i : p, x i) ^ card m : ℂ)⁻¹
+    • splitWeil S T (P.levi (dyadicDiag (x ·), 1), 1)
 
 /-- For a complete splitting `P` of `S`, the normalised torus operator `normalisedTorus T P x` on
 the function space of `Hom(S, T)` is the identity at `x = 0`. -/
@@ -471,8 +493,9 @@ namespace New.SiegelWeil
 
 open Matrix Fintype Space Splitting New.Core Real ContinuousLinearMap G Subsingleton
 
-variable {E n m p r : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
-  [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p] [Fintype r] [DecidableEq r]
+variable
+  {E n m p r : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
+  [DecidableEq m] [Fintype p] [DecidableEq p] [Fintype r] [DecidableEq r]
   {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s} {T : Space E m t} {P : CompleteSplitting S p}
   (P' : CompleteSplitting S r)
 
@@ -683,23 +706,30 @@ lemma New.SiegelWeil.prod_mul_prod_lt_prod_one_add_pow {x : ℝ} (hx : 1 < x) {p
 
 section SplitPlace
 
-variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
-  [DecidableEq m] {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s} {T : Space E m t} {w : FinPlace E}
+variable
+  {E n m : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s} {T : Space E m t} {w : FinPlace E}
 
-/-- The weight of the subspace `U` of `𝔽_w ^ n` in the Hecke operator at `w` that the Hecke transfer
+/--
+The weight of the subspace `U` of `𝔽_w ^ n` in the Hecke operator at `w` that the Hecke transfer
 at `-1` gives on the side of `S`, for `S` of rank `2 * p` and `T` of rank `N = 2 * p + k`. Here
 `𝔽_w = ResField w` is the residue field, `w.q` is the norm of `w` and `υ.atUniformizer w` the value
 of the splitting character at a uniformiser. For `x ≥ 0`, `qPochhammer q k (-x)` has norm
-`∏ j < k, (1 + q ^ j * x)`, and `heckePolyCoeff y U = (-y) ^ dim U * q ^ (dim U choose 2)`. -/
+`∏ j < k, (1 + q ^ j * x)`, and `heckePolyCoeff y U = (-y) ^ dim U * q ^ (dim U choose 2)`.
+-/
 def New.SiegelWeil.transferWeight (p k N : ℕ) (U : Submodule (ResField w) (n → ResField w)) : ℂ :=
-  qPochhammer w.q k (-√w.q ^ (2 * p)) *
-    heckePolyCoeff (-(w.q ^ k * √w.q ^ (2 * p) / ((υ.atUniformizer w ^ N)⁻¹ * √w.q ^ N))) U
+  qPochhammer w.q k (- √w.q ^ (2 * p))
+    * heckePolyCoeff (-(w.q ^ k * √w.q ^ (2 * p) / ((υ.atUniformizer w ^ N)⁻¹ * √w.q ^ N))) U
 
-/-- The point of the unitary group `G E s`, supported above the split place `w` (the inverse of the
+/--
+The point of the unitary group `G E s`, supported above the split place `w` (the inverse of the
 representative `basicCosetRep U` of `U`, put at `w` by `ofSplitPlace`), by which the summand of the
-subspace `U` of `𝔽_w ^ n` in the Hecke operator at `w` translates. -/
-def New.SiegelWeil.transferPoint (s : n → ℤˣ) (hw : w.IsSplit)
-    (U : Submodule (ResField w) (n → ResField w)) : G E s :=
+subspace `U` of `𝔽_w ^ n` in the Hecke operator at `w` translates.
+-/
+def New.SiegelWeil.transferPoint
+    (s : n → ℤˣ) (hw : w.IsSplit) (U : Submodule (ResField w) (n → ResField w))
+    : G E s :=
   (1, ofSplitPlace hw (basicCosetRep U)⁻¹)
 
 /-- The Hecke transfer at `-1`. Let `S` have rank `2 * p` and `T` rank `2 * p + k`, let `f` be

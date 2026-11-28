@@ -445,18 +445,21 @@ lemma le_one_add_nine_mul_of_le_add {x C M : ℝ} (hx₀ : 0 ≤ x) (hx : x ≤ 
   have h_mul : (1 - x) * M ≤ (1 - x) * ((1 + 9 * x) * C) := by linarith
   exact le_of_mul_le_mul_left h_mul (by linarith)
 
-/-- Let the filling `S` over the CM field `E` be admissible (`IsAdmissible`) and assume Weil data on
+/--
+Let the filling `S` over the CM field `E` be admissible (`IsAdmissible`) and assume Weil data on
 `E`, which include a primitive `5040`-th root of unity. If `s ↦ ‖P_s‖²` has positive type, that is,
 `‖P_(x⁻¹ y)‖² = ⟪u x, u y⟫` for vectors `u x` of an inner product space, and `‖P_1‖² ≤ 2 D_X`, then
-`∑ ‖P_s‖² ≤ (1 + 9 b⁻⁴) 𝒟_main`. -/
-theorem sum_secondMoment_le [S.IsAdmissible] {V : Type*} [NormedAddCommGroup V]
-    [InnerProductSpace ℂ V] [WeilData E] (u : S.ResidueGL → V)
+`∑ ‖P_s‖² ≤ (1 + 9 b⁻⁴) 𝒟_main`.
+-/
+theorem sum_secondMoment_le
+    [S.IsAdmissible]
+    {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [WeilData E]
+    (u : S.ResidueGL → V)
     (h_posType : ∀ a b : S.ResidueGL,
-      ⟪u a, u b⟫_ℂ = (secondMoment (S.amplitudeSum .full Set.univ) {a⁻¹ * b} :
-      ℝ))
-    (h_one : secondMoment (S.amplitudeSum .full Set.univ) {1} ≤ 2 * S.sourceDim) :
-    ∑ s : S.ResidueGL, secondMoment (S.amplitudeSum .full Set.univ) {s} ≤
-      (1 + 9 / S.b ^ 4) * S.mainSecondMoment := by
+      ⟪u a, u b⟫_ℂ = (secondMoment (S.amplitudeSum .full Set.univ) {a⁻¹ * b} : ℝ))
+    (h_one : secondMoment (S.amplitudeSum .full Set.univ) {1} ≤ 2 * S.sourceDim)
+    : ∑ s : S.ResidueGL, secondMoment (S.amplitudeSum .full Set.univ) {s}
+      ≤ (1 + 9 / S.b ^ 4) * S.mainSecondMoment := by
   classical
   -- Choose places and vectors maximizing `stabFactor ^ #places` times the sum over the fixer.
   -- Comparison with the empty set of places shows that it suffices to bound the sum for this
@@ -466,32 +469,39 @@ theorem sum_secondMoment_le [S.IsAdmissible] {V : Type*} [NormedAddCommGroup V]
   let β (s : S.ResidueGL) : ℝ := secondMoment (S.amplitudeSum .full Set.univ) {s}
   have h_nonneg (s : S.ResidueGL) : 0 ≤ β s := secondMoment_nonneg
   set stabFactor : ℝ := S.b ^ (6 * 𝔰.k)
-  let fixerMass (places : Finset (S.chosenPlaces 0))
-      (vectors : ∀ w : S.chosenPlaces 0, S.FrameVector w) : ℝ :=
+  let fixerMass
+      (places : Finset (S.chosenPlaces 0)) (vectors : ∀ w : S.chosenPlaces 0, S.FrameVector w)
+      : ℝ :=
     ∑ s : S.ResidueGL with s ∈ S.fixer places vectors, β s
   have : Nonempty (∀ w : S.chosenPlaces 0, S.FrameVector w) := ⟨fun _ ↦ (true, ⟨1, one_ne_zero⟩)⟩
-  obtain ⟨places, vectors, h_max_weighted⟩ : ∃ places vectors, ∀ places' vectors',
-      stabFactor ^ #places' * fixerMass places' vectors' ≤
-        stabFactor ^ #places * fixerMass places vectors := by
-    simpa only [Prod.exists, Prod.forall, Function.uncurry_apply_pair] using Finite.exists_max
-      (Function.uncurry fun places vectors ↦ stabFactor ^ #places * fixerMass places vectors)
-  suffices h_fixer_bound : fixerMass places vectors ≤
-      (1 + 9 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment) by
-    calc _ = stabFactor ^ #(∅ : Finset (S.chosenPlaces 0)) * fixerMass ∅ vectors := by
-          simp [fixerMass, β, mem_fixer]
+  obtain ⟨places, vectors, h_max_weighted⟩
+      : ∃ places vectors, ∀ places' vectors',
+        stabFactor ^ #places' * fixerMass places' vectors'
+          ≤ stabFactor ^ #places * fixerMass places vectors := by
+    simpa only [Prod.exists, Prod.forall, Function.uncurry_apply_pair] using
+      Finite.exists_max (Function.uncurry fun places vectors ↦
+        stabFactor ^ #places * fixerMass places vectors)
+  suffices h_fixer_bound
+      : fixerMass places vectors
+        ≤ (1 + 9 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment) by
+    calc
+      _ = stabFactor ^ #(∅ : Finset (S.chosenPlaces 0)) * fixerMass ∅ vectors := by
+        simp [fixerMass, β, mem_fixer]
       _ ≤ stabFactor ^ #places * fixerMass places vectors := h_max_weighted ∅ vectors
-      _ ≤ stabFactor ^ #places *
-          ((1 + 9 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment)) := by gcongr
+      _ ≤ stabFactor ^ #places
+          * ((1 + 9 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment)) := by
+        gcongr
       _ = (1 + 9 / S.b ^ 4) * S.mainSecondMoment := by
         rw [inv_pow]
         field
   -- If every place is fixed, positive type bounds each term by its value at the identity.
   obtain rfl | h_places := eq_or_ne places univ
-  · calc _ = secondMoment (S.amplitudeSum .full Set.univ) (S.fixer univ vectors) :=
-          (secondMoment_eq_sum_secondMoment_singleton _
-            (S.fixer univ vectors : Set S.ResidueGL)).symm
-      _ ≤ stabFactor⁻¹ ^ #univ * S.mainSecondMoment := secondMoment_fixer_univ_le vectors fun s ↦
-        (le_apply_one_of_inner_eq (β := β) h_posType s).trans h_one
+  · calc
+      _ = secondMoment (S.amplitudeSum .full Set.univ) (S.fixer univ vectors) :=
+        (secondMoment_eq_sum_secondMoment_singleton _ (S.fixer univ vectors : Set S.ResidueGL)).symm
+      _ ≤ stabFactor⁻¹ ^ #univ * S.mainSecondMoment :=
+        secondMoment_fixer_univ_le vectors fun s ↦
+          (le_apply_one_of_inner_eq (β := β) h_posType s).trans h_one
       _ ≤ _ := le_mul_of_one_le_left (by positivity) (le_add_of_nonneg_right (by positivity))
   -- Take `w ∉ places`. Stabilizers of vectors at `w` are fixers for `insert w places`, so they are
   -- small by maximality.
@@ -499,27 +509,31 @@ theorem sum_secondMoment_le [S.IsAdmissible] {V : Type*} [NormedAddCommGroup V]
     not_forall.1 (mt eq_univ_iff_forall.2 h_places)
   have fixerMass_eq : fixerMass places vectors = ∑ s : S.fixer places vectors, β s.val :=
     sum_subtype _ (by simp) β
-  have h_vector_fixer (d : S.FrameVector w) :
-      ∑ s : S.fixer places vectors with s.val ∈ S.vectorFixer w d, β s.val ≤
-        fixerMass places vectors / stabFactor := by
+  have h_vector_fixer (d : S.FrameVector w)
+      : ∑ s : S.fixer places vectors with s.val ∈ S.vectorFixer w d, β s.val
+        ≤ fixerMass places vectors / stabFactor := by
     have h_le := h_max_weighted (insert w places) (Function.update vectors w d)
     rw [card_insert_of_notMem hw, pow_succ, mul_assoc, mul_le_mul_iff_right₀ (by positivity),
-      ← le_div_iff₀' (by positivity)] at h_le
+        ← le_div_iff₀' (by positivity)]
+      at h_le
     rw [sum_subgroup_filter _ (· ∈ S.vectorFixer w d)]
     simpa only [fixerMass, mem_fixer_insert hw] using h_le
-  have h_nonopen : ∑ s : S.fixer places vectors with ¬S.IsOpenElement s.val, β s.val ≤
-      (S.b ^ 4)⁻¹ * fixerMass places vectors := by
+  have h_nonopen
+      : ∑ s : S.fixer places vectors with ¬S.IsOpenElement s.val, β s.val
+        ≤ (S.b ^ 4)⁻¹ * fixerMass places vectors := by
     rw [fixerMass_eq] at h_vector_fixer ⊢
     exact sum_not_isOpenElement_le h_nonneg h_posType h_vector_fixer
-  have h_open : ∑ s : S.fixer places vectors with S.IsOpenElement s.val, β s.val ≤
-      (1 + 4 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment) := by
+  have h_open
+      : ∑ s : S.fixer places vectors with S.IsOpenElement s.val, β s.val
+        ≤ (1 + 4 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment) := by
     refine le_trans (le_of_eq ?_) (secondMoment_fixer_isOpenElement_le places vectors)
     rw [sum_subgroup_filter, secondMoment_eq_sum_secondMoment_singleton]
     congr!
   -- Absorb the non-open contribution, at most b⁻⁴ of the fixer mass itself.
-  have h_open_nonopen : fixerMass places vectors ≤
-      (1 + 4 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment) +
-        (S.b ^ 4)⁻¹ * fixerMass places vectors := by
+  have h_open_nonopen
+      : fixerMass places vectors
+        ≤ (1 + 4 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment)
+          + (S.b ^ 4)⁻¹ * fixerMass places vectors := by
     grw [← h_open, ← h_nonopen, sum_filter_add_sum_filter_not, fixerMass_eq]
   simp only [div_eq_mul_inv _ (S.b ^ 4)] at h_open_nonopen ⊢
   exact le_one_add_nine_mul_of_le_add (by positivity) (by grw [← hb]; norm_num) (by positivity)

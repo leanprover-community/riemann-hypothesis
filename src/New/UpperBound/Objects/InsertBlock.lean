@@ -38,8 +38,10 @@ namespace New
 
 open Fintype Finset
 
-/-- A stem and a finite set of centres at one place. Each centre has a value, a length and a kind,
-down or up. The entries of the stem are doubled; the values of the centres are not. -/
+/--
+A stem and a finite set of centres at one place. Each centre has a value, a length and a kind,
+down or up. The entries of the stem are doubled; the values of the centres are not.
+-/
 structure CentreSystem (ι : Type) where
   /-- The finite set C of centres. -/
   centres : Finset ι
@@ -67,24 +69,29 @@ def entries (B : Finset ι) : Finset ℤ := X.stem ∪ B.biUnion X.block
 /-- The rank n_B: the length of the stem plus the lengths of the blocks in B. -/
 def rank (B : Finset ι) : ℕ := #X.stem + ∑ c ∈ B, X.length c
 
-/-- The doubled difference of λ⁺_B and λ_B: it is 1 if the length of the stem and #B are odd, and
-0 otherwise. -/
+/--
+The doubled difference of λ⁺_B and λ_B: it is 1 if the length of the stem and #B are odd, and
+0 otherwise.
+-/
 def lowering (B : Finset ι) : ℤ := if Odd #X.stem ∧ Odd #B then 1 else 0
 
 /-- The centre c counts for the doubled entry y: it is down and above y/2, or up and below y/2. -/
-def CountsFor (c : ι) (y : ℤ) : Prop :=
-  if X.isUp c then 2 * X.center c < y else y < 2 * X.center c
+def CountsFor (c : ι) (y : ℤ) : Prop := if X.isUp c then 2 * X.center c < y else y < 2 * X.center c
 
 instance (c : ι) (y : ℤ) : Decidable (X.CountsFor c y) := by
   unfold CountsFor
   infer_instance
 
-/-- The sign of the doubled entry y of λ⁺_B: it is −1 exactly if an odd number of the centres
-outside B count for y. -/
-def sign (B : Finset ι) (y : ℤ) : ℤˣ := (-1) ^ #{c ∈ X.centres \ B | X.CountsFor c y}
+/--
+The sign of the doubled entry y of λ⁺_B: it is −1 exactly if an odd number of the centres
+outside B count for y.
+-/
+def sign (B : Finset ι) (y : ℤ) : ℤˣ := (-1) ^ # {c ∈ X.centres \ B | X.CountsFor c y}
 
-/-- All lengths have one parity, the stem lies in ½ + ℤ or in ℤ as they are even or odd, and each
-centre c is at a distance of at least (h + l_c)/2 from the stem and from the other blocks. -/
+/--
+All lengths have one parity, the stem lies in ½ + ℤ or in ℤ as they are even or odd, and each
+centre c is at a distance of at least (h + l_c)/2 from the stem and from the other blocks.
+-/
 structure IsSeparated (h : ℕ) : Prop where
   /-- The blocks have lengths of the same parity as the stem. -/
   length_mod_two : ∀ c ∈ X.centres, X.length c % 2 = #X.stem % 2
@@ -93,13 +100,16 @@ structure IsSeparated (h : ℕ) : Prop where
   /-- The centres are far from the stem. -/
   stem_far : ∀ c ∈ X.centres, ∀ y ∈ X.stem, (h + X.length c : ℤ) ≤ |y - 2 * X.center c|
   /-- The centres are far from the blocks of the other centres. -/
-  block_far : ∀ c ∈ X.centres, ∀ c' ∈ X.centres, c' ≠ c →
-    ∀ y ∈ X.block c', (h + X.length c : ℤ) ≤ |y - 2 * X.center c|
+  block_far
+    : ∀ c ∈ X.centres, ∀ c' ∈ X.centres,
+      c' ≠ c → ∀ y ∈ X.block c', (h + X.length c : ℤ) ≤ |y - 2 * X.center c|
 
-/-- The vector l lists 2λ_B on a space of rank n_B, whose signs are those of the entries of λ⁺_B
-times the common sign σ. -/
-structure IsParam (B : Finset ι) (σ : ℤˣ) {n : Type} [Fintype n] {s : n → ℤˣ} (l : HCParam s) :
-    Prop where
+/--
+The vector l lists 2λ_B on a space of rank n_B, whose signs are those of the entries of λ⁺_B
+times the common sign σ.
+-/
+structure IsParam (B : Finset ι) (σ : ℤˣ) {n : Type} [Fintype n] {s : n → ℤˣ} (l : HCParam s)
+    : Prop where
   /-- The space has rank n_B. -/
   card_eq : card n = X.rank B
   /-- Before the lowering the entries are those of λ⁺_B. -/
@@ -200,8 +210,9 @@ lemma IsSeparated.rank_mod_two (hX : X.IsSeparated h) (hB : B ⊆ X.centres) :
     rw [rank_insert hcB]
     grind [lowering]
 
-variable {n n' : Type} [Fintype n] [Fintype n'] {s : n → ℤˣ} {t : n' → ℤˣ}
-  {l : HCParam s} {l' : HCParam t} {σ : ℤˣ}
+variable
+  {n n' : Type} [Fintype n] [Fintype n']
+  {s : n → ℤˣ} {t : n' → ℤˣ} {l : HCParam s} {l' : HCParam t} {σ : ℤˣ}
 
 /-- If l lists 2λ_B, each of its entries becomes an entry of 2λ⁺_B when the lowering is added. -/
 lemma IsParam.add_lowering_mem (hl : X.IsParam B σ l) (x : n) :
@@ -225,13 +236,15 @@ lemma IsParam.exists_not_countsFor_iff_of_sign_ne (hl : X.IsParam B σ l) {x x' 
   apply h_sign_ne
   rw [hl.sign_eq, hl.sign_eq, sign, sign, filter_congr h_same]
 
-/-- Let X be a system with separation h and B a set of its centres. Let l list 2λ_B on a space of
+/--
+Let X be a system with separation h and B a set of its centres. Let l list 2λ_B on a space of
 rank n: λ_B consists of the stem and the blocks of the centres in B, lowered by ½ or 0, and the
 sign of a coordinate is σ times −1 to the number of centres outside B that count for its entry.
 Then l has gap h: its entries are distinct and congruent to n − 1 mod 2, and the entries of λ_B at
-coordinates of opposite signs are at least h apart. -/
-theorem IsParam.hasGap (hl : X.IsParam B σ l) (hX : X.IsSeparated h) (hB : B ⊆ X.centres) :
-    l.HasGap h where
+coordinates of opposite signs are at least h apart.
+-/
+theorem IsParam.hasGap (hl : X.IsParam B σ l) (hX : X.IsSeparated h) (hB : B ⊆ X.centres)
+    : l.HasGap h where
   injective := by
     have h_inj : Set.InjOn (fun x : n ↦ l x + X.lowering B) (univ : Finset n) := by
       rw [← card_image_iff, hl.image_eq, hX.card_entries hB, card_univ, hl.card_eq]
@@ -243,8 +256,9 @@ theorem IsParam.hasGap (hl : X.IsParam B σ l) (hX : X.IsSeparated h) (hB : B �
     rw [hl.card_eq]
     grind
   gap x x' h_sign_ne := by
-    obtain ⟨c, hc_mem, h_sep⟩ : ∃ c ∈ X.centres \ B,
-        ¬(X.CountsFor c (l x + X.lowering B) ↔ X.CountsFor c (l x' + X.lowering B)) :=
+    obtain ⟨c, hc_mem, h_sep⟩
+        : ∃ c ∈ X.centres \ B,
+          ¬(X.CountsFor c (l x + X.lowering B) ↔ X.CountsFor c (l x' + X.lowering B)) :=
       hl.exists_not_countsFor_iff_of_sign_ne h_sign_ne
     obtain ⟨hc, hcB⟩ := mem_sdiff.1 hc_mem
     have h_far (z : n) : (h + X.length c : ℤ) ≤ |l z + X.lowering B - 2 * X.center c| :=
@@ -292,49 +306,65 @@ lemma IsParam.image_eq_union_and_sign_ne_iff (hl : X.IsParam B σ l)
   · rw [hl.sign_eq, hl'.sign_eq, ← h_eq, sign_eq_ite_sign_insert hc hcB]
     split_ifs with h_counts <;> simp [h_counts]
 
-/-- Let X be separated with bound h (`IsSeparated h`), B ⊆ `X.centres`, c a centre outside B with
+/--
+Let X be separated with bound h (`IsSeparated h`), B ⊆ `X.centres`, c a centre outside B with
 `X.isUp c = false`, B' = B ∪ {c}. Let l list 2λ_B and l' list 2λ_B' for one sign σ on spaces of
 ranks `card n`, `card n'`. Here λ_B is the stem of X together with the blocks of the centres in B,
 lowered by ½ or 0. If h ≥ 500(`card n` + `card n'`)³, then l and l' satisfy the block rule with
-γ = `X.center c` + ⌊`card n`/2⌋ and γ' = `X.center c` + ⌊`card n'`/2⌋. -/
-theorem IsParam.isBlockRule_insert_of_down {B' : Finset ι} (hl : X.IsParam B σ l)
-    (hl' : X.IsParam B' σ l') (h_insert : B' = insert c B) (hX : X.IsSeparated h)
-    (hB : B ⊆ X.centres) (hc : c ∈ X.centres) (hcB : c ∉ B)
-    (h_gap : 500 * (card n + card n') ^ 3 ≤ h) (h_down : X.isUp c = false) :
-    IsBlockRule (X.center c + (card n : ℤ) / 2) (X.center c + (card n' : ℤ) / 2) l l' := by
+γ = `X.center c` + ⌊`card n`/2⌋ and γ' = `X.center c` + ⌊`card n'`/2⌋.
+-/
+theorem IsParam.isBlockRule_insert_of_down
+    {B' : Finset ι}
+    (hl : X.IsParam B σ l) (hl' : X.IsParam B' σ l') (h_insert : B' = insert c B)
+    (hX : X.IsSeparated h) (hB : B ⊆ X.centres) (hc : c ∈ X.centres) (hcB : c ∉ B)
+    (h_gap : 500 * (card n + card n') ^ 3 ≤ h) (h_down : X.isUp c = false)
+    : IsBlockRule (X.center c + (card n : ℤ) / 2) (X.center c + (card n' : ℤ) / 2) l l' := by
   subst h_insert
   obtain ⟨h_entries, h_signs⟩ := hl.image_eq_union_and_sign_ne_iff hl' hX hB hc hcB
   rw [isBlockRule_iff_of_character (hl.card_le_card_insert hl' hcB) rfl rfl]
-  refine ⟨(hl.hasGap hX hB).mono h_gap, (hl'.hasGap hX (insert_subset hc hB)).mono h_gap,
-    h_entries, fun x r h_eq ↦ ?_⟩
+  refine ⟨
+    (hl.hasGap hX hB).mono h_gap,
+    (hl'.hasGap hX (insert_subset hc hB)).mono h_gap,
+    h_entries,
+    fun x r h_eq ↦ ?_
+  ⟩
   -- For a down centre, c counts for the entries below it.
   simp [h_signs x r h_eq, CountsFor, h_down]
 
-/-- Let X have separation h, let B be a set of its centres, c a centre outside B that is up, B' = B
+/--
+Let X have separation h, let B be a set of its centres, c a centre outside B that is up, B' = B
 ∪ {c}. Let l list 2λ_B and l' list 2λ_B' for one sign σ on spaces of ranks n, n', where λ_B is the
 stem with the blocks of B, lowered by ½ or 0. If h ≥ 500(n + n')³, then −l and −l' satisfy the block
 rule with γ = −c + ⌈n/2⌉, γ' = −c + ⌈n'/2⌉: both have the gap 500(n + n')³, the shifted entries of
 −l' are those of −l and a block centred at 0, and the coordinates of a common shifted entry have
-equal signs if it is positive and opposite signs if it is negative. -/
-theorem IsParam.isBlockRule_neg_insert_of_up {B' : Finset ι} (hl : X.IsParam B σ l)
-    (hl' : X.IsParam B' σ l') (h_insert : B' = insert c B) (hX : X.IsSeparated h)
-    (hB : B ⊆ X.centres) (hc : c ∈ X.centres) (hcB : c ∉ B)
-    (h_gap : 500 * (card n + card n') ^ 3 ≤ h) (h_up : X.isUp c = true) :
-    IsBlockRule (-X.center c + ((card n : ℤ) + 1) / 2) (-X.center c + ((card n' : ℤ) + 1) / 2)
+equal signs if it is positive and opposite signs if it is negative.
+-/
+theorem IsParam.isBlockRule_neg_insert_of_up
+    {B' : Finset ι}
+    (hl : X.IsParam B σ l) (hl' : X.IsParam B' σ l') (h_insert : B' = insert c B)
+    (hX : X.IsSeparated h) (hB : B ⊆ X.centres) (hc : c ∈ X.centres) (hcB : c ∉ B)
+    (h_gap : 500 * (card n + card n') ^ 3 ≤ h) (h_up : X.isUp c = true)
+    : IsBlockRule (- X.center c + ((card n : ℤ) + 1) / 2) (- X.center c + ((card n' : ℤ) + 1) / 2)
       (-l) (-l') := by
   subst h_insert
   obtain ⟨h_entries, h_signs⟩ := hl.image_eq_union_and_sign_ne_iff hl' hX hB hc hcB
   rw [isBlockRule_iff_of_character_conj (hl.card_le_card_insert hl' hcB) rfl rfl]
-  refine ⟨((hl.hasGap hX hB).mono h_gap).neg,
-    ((hl'.hasGap hX (insert_subset hc hB)).mono h_gap).neg, ?_, fun x r h_eq ↦ ?_⟩
-  · have h_neg : (univ.image fun r : n' ↦ l' r + (card n : ℤ) % 2).image Neg.neg =
-        (univ.image fun x : n ↦ l x + (card n' : ℤ) % 2).image Neg.neg ∪
-          centeredBlock (-X.center c) (card n' - card n) := by
+  refine ⟨
+    ((hl.hasGap hX hB).mono h_gap).neg,
+    ((hl'.hasGap hX (insert_subset hc hB)).mono h_gap).neg,
+    ?_,
+    fun x r h_eq ↦ ?_
+  ⟩
+  · have h_neg
+        : (univ.image fun r : n' ↦ l' r + (card n : ℤ) % 2).image Neg.neg
+          = (univ.image fun x : n ↦ l x + (card n' : ℤ) % 2).image Neg.neg
+            ∪ centeredBlock (- X.center c) (card n' - card n) := by
       rw [h_entries, image_union, image_neg_centeredBlock]
     simpa only [image_image, Function.comp_def, neg_add, sub_eq_add_neg, Pi.neg_apply,
-      centeredBlock] using h_neg
-  · change -l x - (card n' : ℤ) % 2 = -l' r - (card n : ℤ) % 2 at h_eq
-    change s x ≠ t r ↔ -l x - (card n' : ℤ) % 2 < 2 * -X.center c
+        centeredBlock]
+      using h_neg
+  · change - l x - (card n' : ℤ) % 2 = - l' r - (card n : ℤ) % 2 at h_eq
+    change s x ≠ t r ↔ - l x - (card n' : ℤ) % 2 < 2 * - X.center c
     -- For an up centre, c counts for the entries above it.
     simp only [h_signs x r (by omega), CountsFor, h_up, ite_eq_left]
     omega

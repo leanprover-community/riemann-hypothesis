@@ -36,8 +36,7 @@ variable {P : Parameters} (D : Data P) [PadicPlace D.N]
 
 open scoped Classical in
 /-- The set `Σ_N` of the conjugates of the places above `N` that `ιₚ` induces. -/
-def nonInducedPlaces : Finset (FinPlace D.E) :=
-  univ.image fun τ : D.Φ ↦ star (D.inducedPlace τ)
+def nonInducedPlaces : Finset (FinPlace D.E) := univ.image fun τ : D.Φ ↦ star (D.inducedPlace τ)
 
 lemma star_inducedPlace_mem_nonInducedPlaces (τ : D.Φ) :
     star (D.inducedPlace τ) ∈ D.nonInducedPlaces := by
@@ -48,8 +47,10 @@ lemma natCast_mem_of_mem_nonInducedPlaces {w : FinPlace D.E} (hw : w ∈ D.nonIn
     ↑D.N ∈ w.asIdeal := by
   grind [p_mem_inducedPlace, mem_star_place, star_natCast, nonInducedPlaces]
 
-/-- The set `Σ_N = D.nonInducedPlaces` is a split level for `N`: it contains exactly one place of
-each pair `w, w̄` above `N`, and these places are unramified of degree one. -/
+/--
+The set `Σ_N = D.nonInducedPlaces` is a split level for `N`: it contains exactly one place of
+each pair `w, w̄` above `N`, and these places are unramified of degree one.
+-/
 instance isSplitLevel_nonInducedPlaces : IsSplitLevel D.nonInducedPlaces D.N where
   star_notMem := by
     -- The induced places form one orbit of `Φ`, which contains no conjugate pair as `N` splits.
@@ -67,23 +68,28 @@ instance isSplitLevel_nonInducedPlaces : IsSplitLevel D.nonInducedPlaces D.N whe
       rcases hτ with rfl | rfl <;> simp [D.star_inducedPlace_mem_nonInducedPlaces τ]
     · rintro (hw | hw) <;> simpa using D.natCast_mem_of_mem_nonInducedPlaces hw
 
-/-- The point supported above `N` that is `diag (1, …, 1, N)` at the places of `Σ_N` in `S`, and `1`
-at the other places of `Σ_N`. -/
+/--
+The point supported above `N` that is `diag (1, …, 1, N)` at the places of `Σ_N` in `S`, and `1`
+at the other places of `Σ_N`.
+-/
 abbrev diagPoint (j : ℕ) (S : Finset (FinPlace D.E)) : Gf D.E (D.X j) :=
   embedGL (diagN (P := D.nonInducedPlaces) (N := D.N) (D.InitIndex j) S)
 
-/-- The point `δ_j`, which is `diag (1, …, 1, N)` at the places of `Σ_N` that divide `π` and `1` at
+/--
+The point `δ_j`, which is `diag (1, …, 1, N)` at the places of `Σ_N` that divide `π` and `1` at
 the others. It takes the standard lattice at `Σ_N` to `L_j`, the lattice of integral vectors whose
-last coordinate is divisible by `π`. -/
+last coordinate is divisible by `π`.
+-/
 abbrev diagPointN (j : ℕ) : Gf D.E (D.X j) := D.diagPoint j D.piNPlaces
 
 /-- The point `δ_j^∨`, which takes the standard lattice to the dual lattice `L_j^∨` at `Σ_N`. -/
-abbrev dualPointN (j : ℕ) : Gf D.E (D.X j) :=
-  D.diagPointN j * (D.diagPoint j D.nonInducedPlaces)⁻¹
+abbrev dualPointN (j : ℕ) : Gf D.E (D.X j) := D.diagPointN j * (D.diagPoint j D.nonInducedPlaces)⁻¹
 
-/-- A matrix `a` over `LocProd D.nonInducedPlaces`, the product of the completions at `Σ_N`, goes to
+/--
+A matrix `a` over `LocProd D.nonInducedPlaces`, the product of the completions at `Σ_N`, goes to
 `δ_j * embedGL a * δ_j⁻¹`. Here `embedGL a` is the unitary adelic point supported above `N` with
-components `a` at `Σ_N`, and `δ_j = D.diagPointN j`. So `a` is read in a basis of `L_j`. -/
+components `a` at `Σ_N`, and `δ_j = D.diagPointN j`. So `a` is read in a basis of `L_j`.
+-/
 def conjEmbedGL (j : ℕ) : GL (D.X j) (LocProd D.nonInducedPlaces) →* Gf D.E (D.X j) :=
   (MulAut.conj (D.diagPointN j)).toMonoidHom.comp embedGL
 
@@ -324,10 +330,12 @@ lemma upOperator_mem_sourceForm {φ : D.FormX 0} (hφ : φ ∈ D.SourceForm) :
   exact mirabolic_fix_upOperator (π := D.formRepAtN 0)
     (fun _ hg ↦ h_fix (D.conjEmbedGL_mem_levelX hg)) ha
 
-/-- The module `𝒜'` of the forms `φ` on `X_0` such that `Up ^ (ϱ + 1) φ` is a source form with
+/--
+The module `𝒜'` of the forms `φ` on `X_0` such that `Up ^ (ϱ + 1) φ` is a source form with
 values integral for `L_0`, over the ring `embValRing` of complex numbers that `ιₚ` sends to `N`-adic
 integers. Here `Up` is the operator `upOperator` at `Σ_N` (see `upOperator_mem_sourceForm`), and
-`ϱ = D.ϱ` with `ϱ + 1 = m / 2`. The module does not depend on the twist. -/
+`ϱ = D.ϱ` with `ϱ + 1 = m / 2`. The module does not depend on the twist.
+-/
 abbrev upIntegralForms : Submodule embValRing (D.FormX 0) :=
   (integralFormsAt D.SourceForm (D.diagPointN 0)).comap
     ((upOperator (D.formRepAtN 0) ^ (D.ϱ + 1)).restrictScalars embValRing)

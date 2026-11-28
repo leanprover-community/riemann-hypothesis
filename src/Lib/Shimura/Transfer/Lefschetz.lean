@@ -48,29 +48,34 @@ namespace New.Variety
 
 open NumberField Matrix CategoryTheory Polynomial LinearMap Finset Nat ModuliPoint QuotientAddGroup
 
-variable {E : Type} [Field E] [CMBase E] {d₀ : ℕ}
-  {n : Type} [Fintype n] [DecidableEq n] [HasQuadSubfield d₀ E]
+variable
+  {E : Type} [Field E] [CMBase E]
+  {d₀ : ℕ} {n : Type} [Fintype n] [DecidableEq n] [HasQuadSubfield d₀ E]
   {𝔑 : 𝓞 E} {ν : ℕ} {R : Subalgebra (𝓞 E) E} (X : Model n d₀ 𝔑 ν R)
 
-/-- `b` is `h`-null; the condition is void if `b` is not regular. For every `α : Fin ν → 𝓞 E`:
+/--
+`b` is `h`-null; the condition is void if `b` is not regular. For every `α : Fin ν → 𝓞 E`:
 finitely many classes of marked triples (flag `True` of `New.Variety.countTerm`) have a non-zero
 term with weight 1 (this part does not depend on `α`), and the sum over the classes of the value of
 `b` times the coefficient of `X ^ h` in the local term `New.Variety.localTerm` at `2 α` is 0. Only
 even multipliers `2 α` are used: for them the determinant of `1 - 2 α y` on the lattice is odd,
-hence non-zero. -/
+hence non-zero.
+-/
 def IsNullHecke (ν h : ℕ) (b : heckeAlgebra n ℂ 𝔑) : Prop :=
-  IsRegularHecke b →
-  ∀ α : Fin ν → 𝓞 E,
-    (countTerm True b 1).support.Finite ∧
-    ∑ᶠ x, countTerm True b (fun P μ ↦ (localTerm (2 * α) P μ).coeff h) x = 0
+  IsRegularHecke b
+    → ∀ α : Fin ν → 𝓞 E,
+      (countTerm True b 1).support.Finite
+        ∧ ∑ᶠ x, countTerm True b (fun P μ ↦ (localTerm (2 * α) P μ).coeff h) x = 0
 
-/-- θ occurs in weight h: for every linear combination p of words in the operators `tauHecke` with
+/--
+θ occurs in weight h: for every linear combination p of words in the operators `tauHecke` with
 p(θ) = 1, some b·p with b in the Hecke algebra is not `h`-null in the sense of
-`New.Variety.IsNullHecke`. -/
+`New.Variety.IsNullHecke`.
+-/
 def OccursInWeight (a ν : ℕ) (θ : SafePlace 𝔑 → ℕ → ℂ) (h : ℕ) : Prop :=
   ∀ (s : Finset (List (SafePlace 𝔑 × ℕ))) (c : List (SafePlace 𝔑 × ℕ) → ℂ),
-    ∑ L ∈ s, c L * (L.map ↿θ).prod = 1 →
-    ¬∀ b : heckeAlgebra (Fin a) ℂ 𝔑, IsNullHecke ν h (b * ∑ L ∈ s, c L • (L.map tauHecke).prod)
+    ∑ L ∈ s, c L * (L.map ↿θ).prod = 1
+      → ¬ ∀ b : heckeAlgebra (Fin a) ℂ 𝔑, IsNullHecke ν h (b * ∑ L ∈ s, c L • (L.map tauHecke).prod)
 
 /-- Let the rational matrix `z` be integral in the frame `x`, and let `β` be an integer of `E`. Then
 `B = 1 - 2 β z` maps the lattice `frameLattice x` into itself, `det B ≠ 0`, and the index of the
@@ -126,10 +131,12 @@ lemma relIndex_comap_one_sub_two_smul {x : GL n (𝔸f E)} {z B : Matrix n n E}
     refine (relIndex_comap_eq_det_mul_conj_det h_maps (equivOfDetNeZero _ h_ne).injective).trans ?_
     simp [h_det, prod_embeddings_eq_prod_pairs, prod_mul_distrib]
 
-/-- The class under `GL n E` of the marked triple `(x · levelGU n 𝔑, t)`: the coset of `x` and the
-pair `t`. -/
-noncomputable abbrev tripleClass (𝔑 : 𝓞 E) (x : GL n (𝔸f E)) (t : GL n E × n) :
-    MulAction.orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n) :=
+/--
+The class under `GL n E` of the marked triple `(x · levelGU n 𝔑, t)`: the coset of `x` and the
+pair `t`.
+-/
+noncomputable abbrev tripleClass (𝔑 : 𝓞 E) (x : GL n (𝔸f E)) (t : GL n E × n)
+    : MulAction.orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n) :=
   ⟦((x : GL n (𝔸f E) ⧸ levelGU n 𝔑), t)⟧
 
 /-- Let the reflections of `p` and `p'` be those of the marked elements `t` and `t'`. The triples of
@@ -179,10 +186,12 @@ lemma Model.point_comp_deck_injective (h_neat : IsNeat n 𝔑)
   exact Prod.ext rfl (((X.covering i).torsor ℂ _ _ (congrArg (·.left) h_deck)).unique
     (congrArg (·.left) e) rfl)
 
-/-- The group of vectors `P` with `(1 - 2 β z) P` in the lattice `frameLattice x`: the solutions of
-`P ≡ 2 β z P` modulo the lattice of `x`. -/
-private noncomputable def solutionLattice (x : GL n (𝔸f E)) (z : GL n E) (β : 𝓞 E) :
-    AddSubgroup (RealVectors E n) :=
+/--
+The group of vectors `P` with `(1 - 2 β z) P` in the lattice `frameLattice x`: the solutions of
+`P ≡ 2 β z P` modulo the lattice of `x`.
+-/
+private noncomputable def solutionLattice (x : GL n (𝔸f E)) (z : GL n E) (β : 𝓞 E)
+    : AddSubgroup (RealVectors E n) :=
   (frameLattice x).comap
     (realVecAction (1 - ((2 * β : 𝓞 E) : E) • (z : Matrix n n E))).toAddMonoidHom
 
@@ -206,12 +215,15 @@ private lemma frameLattice_le_solutionLattice_and_card {b : heckeAlgebra n ℂ �
     simpa [mul_assoc] using (heckeAlgebra.mem_GUPlus_of_ne_zero hz).2 k l
   exact relIndex_comap_one_sub_two_smul h_int β rfl
 
-/-- The pair `t = (z, μ)` is fixed at the point `p` for the Hecke element `b` and the multipliers
+/--
+The pair `t = (z, μ)` is fixed at the point `p` for the Hecke element `b` and the multipliers
 `2 α`: the Hecke function of `b` is non-zero at `invAutInFrame z p.frame`, the reflection of `p` is
 the reflection of `z` marked by `μ`, and every vector `p.markedPoint j` lies in
-`solutionLattice p.frame z (α j)`. -/
-private structure IsFixedPair (b : heckeAlgebra n ℂ 𝔑) (α : Fin ν → 𝓞 E) (p : ModuliPoint E n ν)
-    (t : GL n E × n) : Prop where
+`solutionLattice p.frame z (α j)`.
+-/
+private structure IsFixedPair
+    (b : heckeAlgebra n ℂ 𝔑) (α : Fin ν → 𝓞 E) (p : ModuliPoint E n ν) (t : GL n E × n)
+    : Prop where
   /-- The Hecke function of `b` is non-zero at `invAutInFrame t.fst p.frame`. -/
   heckeCosetFn_ne_zero : heckeCosetFn b (invAutInFrame t.fst p.frame) ≠ 0
   /-- The reflection of `p` is the reflection of `t.fst` marked by `t.snd`. -/

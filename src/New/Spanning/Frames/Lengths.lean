@@ -110,33 +110,37 @@ The basis is indexed by `𝔰.BesselIndex`: `inl a` is e_a and `eStar a = inr (i
 (`a < ϱ`), in hyperbolic pairs.
 -/
 
-/-- Sizes for a fixed scale. There are two cases in view. At a real place, a number x has size i if
+/--
+Sizes for a fixed scale. There are two cases in view. At a real place, a number x has size i if
 |x| ≤ L^i, for a fixed number L. At the finite places, x has size i if α^i x is integral, for a
-fixed integral unit α. The fields are the rules that the proofs use. -/
+fixed integral unit α. The fields are the rules that the proofs use.
+-/
 structure Size where
   /-- The set A_(i) of numbers of size i. -/
   ofSize : ℕ → Set A
   /-- Sizes add under multiplication: A_(i) A_(j) ⊆ A_(i+j). -/
   mul_mem_ofSize {i j : ℕ} {x y : A} : x ∈ ofSize i → y ∈ ofSize j → x * y ∈ ofSize (i + j)
   /-- A sum of at most r + 1 terms of size i has size i + 1, where r is the rank of the space. -/
-  sum_mem_ofSize {i : ℕ} {n : Type} [Fintype n] {f : n → A} :
-      Fintype.card n ≤ 𝔰.r + 1 → (∀ a : n, f a ∈ ofSize i) → ∑ a : n, f a ∈ ofSize (i + 1)
+  sum_mem_ofSize {i : ℕ} {n : Type} [Fintype n] {f : n → A}
+    : Fintype.card n ≤ 𝔰.r + 1 → (∀ a : n, f a ∈ ofSize i) → ∑ a : n, f a ∈ ofSize (i + 1)
   /-- Each of -x and star x has size i exactly when x has. -/
-  neg_mem_iff_and_star_mem_iff {i : ℕ} {x : A} :
-      (-x ∈ ofSize i ↔ x ∈ ofSize i) ∧ (star x ∈ ofSize i ↔ x ∈ ofSize i)
+  neg_mem_iff_and_star_mem_iff {i : ℕ} {x : A}
+    : (-x ∈ ofSize i ↔ x ∈ ofSize i) ∧ (star x ∈ ofSize i ↔ x ∈ ofSize i)
   /-- The elements 0 and 1 have every size. -/
   zero_one_mem_ofSize (i : ℕ) : 0 ∈ ofSize i ∧ 1 ∈ ofSize i
   /-- The entries of the Gram matrix `T.splitGram` and of its inverse have size 1. -/
-  splitGram_and_inv_mem :
-      (∀ i j : 𝔰.BesselIndex, T.splitGram i j ∈ ofSize 1) ∧
-      ∀ i j : 𝔰.BesselIndex, T.splitGram⁻¹ i j ∈ ofSize 1
+  splitGram_and_inv_mem
+    : (∀ i j : 𝔰.BesselIndex, T.splitGram i j ∈ ofSize 1)
+      ∧ ∀ i j : 𝔰.BesselIndex, T.splitGram⁻¹ i j ∈ ofSize 1
 
-variable {T} {i j : ℕ}
-  {s g x u : T.G} {v w : 𝔰.BesselIndex → A} {a : Fin 𝔰.ϱ} {p q : ℕ → Aˣ} {r : Aˣ} {S : Size T}
-  {X Z : Matrix l 𝔰.BesselIndex A}
+variable
+  {T} {i j : ℕ} {s g x u : T.G} {v w : 𝔰.BesselIndex → A} {a : Fin 𝔰.ϱ} {p q : ℕ → Aˣ} {r : Aˣ}
+  {S : Size T} {X Z : Matrix l 𝔰.BesselIndex A}
 
-/-- The quotient w_q⁻¹ w_p of two Weyl elements of the first j hyperbolic pairs. Here
-w_p = `weylElem j p` sends e_a to p_a e*_a and e*_a to (star p_a)⁻¹ e_a for a < j. -/
+/--
+The quotient w_q⁻¹ w_p of two Weyl elements of the first j hyperbolic pairs. Here
+w_p = `weylElem j p` sends e_a to p_a e*_a and e*_a to (star p_a)⁻¹ e_a for a < j.
+-/
 noncomputable def weylRatio (j : ℕ) (p q : ℕ → Aˣ) : T.G := (weylElem j q)⁻¹ * (weylElem j p : T.G)
 
 /-- The matrix of `weylRatio j p q` = w_q⁻¹ w_p is diagonal. For a < min j ϱ, its entry at e_a is
@@ -233,13 +237,17 @@ section Lifts
 
 variable {l : ℕ} {ω ω' o : 𝔰.BesselIndex → A}
 
-/-- The vector ω is orthogonal to the e_b, b < l. The product ⟨e_b, ω⟩ is the coordinate of ω at
-e*_b. -/
+/--
+The vector ω is orthogonal to the e_b, b < l. The product ⟨e_b, ω⟩ is the coordinate of ω at
+e*_b.
+-/
 def IsOrthogonalBelow (l : ℕ) (ω : 𝔰.BesselIndex → A) : Prop :=
   ∀ b : Fin 𝔰.ϱ, b.val < l → ω (eStar b) = 0
 
-/-- The vectors ω and ω' differ by an element of the span of the e_b, b < l, for l ≤ ϱ: they are two
-lifts of one class. The indices of level at least l are those other than the e_b, b < l. -/
+/--
+The vectors ω and ω' differ by an element of the span of the e_b, b < l, for l ≤ ϱ: they are two
+lifts of one class. The indices of level at least l are those other than the e_b, b < l.
+-/
 def CongrBelow (l : ℕ) (ω ω' : 𝔰.BesselIndex → A) : Prop :=
   ∀ k : 𝔰.BesselIndex, l ≤ level k → ω' k = ω k
 
@@ -423,45 +431,58 @@ def vecsOfSize (i : ℕ) : Set (n → A) := {v : n → A | ∀ a : n, v a ∈ S.
 /-- A matrix has size i for the sizes `S` if all its entries have size i. -/
 def HasMatrixSize (i : ℕ) (X : Matrix l n A) : Prop := ∀ (a : l) (b : n), X a b ∈ S.ofSize i
 
-/-- The vector y has length at most L^i at the point g: the vector g⁻¹ y has size i. Here and below
-L is the scale of the sizes `S`. -/
-def LengthLeAt (g : T.G) (i : ℕ) (y : 𝔰.BesselIndex → A) : Prop :=
-  g⁻¹.val.val *ᵥ y ∈ S.vecsOfSize i
+/--
+The vector y has length at most L^i at the point g: the vector g⁻¹ y has size i. Here and below
+L is the scale of the sizes `S`.
+-/
+def LengthLeAt (g : T.G) (i : ℕ) (y : 𝔰.BesselIndex → A) : Prop := g⁻¹.val.val *ᵥ y ∈ S.vecsOfSize i
 
-/-- Some vector congruent to y modulo the e_b, b < l, has length at most L^i at g. For l ≤ ϱ and y
-orthogonal to these e_b, this bounds the induced length of the class of y in Y^(l). -/
+/--
+Some vector congruent to y modulo the e_b, b < l, has length at most L^i at g. For l ≤ ϱ and y
+orthogonal to these e_b, this bounds the induced length of the class of y in Y^(l).
+-/
 def InducedLengthLe (g : T.G) (l i : ℕ) (y : 𝔰.BesselIndex → A) : Prop :=
   ∃ y' : 𝔰.BesselIndex → A, CongrBelow l y y' ∧ S.LengthLeAt g i y'
 
-/-- The vector e_a is balanced in Y^(a) at g, with bound L^i: its class has induced length at most
-L^i. -/
+/--
+The vector e_a is balanced in Y^(a) at g, with bound L^i: its class has induced length at most
+L^i.
+-/
 structure IsBalanced (g : T.G) (a : Fin 𝔰.ϱ) (i : ℕ) : Prop where
   /-- The class of e_a in Y^(a) has induced length at most L^i. -/
   inducedLengthLe : S.InducedLengthLe g a i (Pi.single (inl a) 1)
 
-/-- The vector ω read at g agrees modulo r with a vector ω' read at g', where ω' is congruent to ω
-modulo the e_b, b < l: the vector (g⁻¹ ω - g'⁻¹ ω') / r has size i. -/
+/--
+The vector ω read at g agrees modulo r with a vector ω' read at g', where ω' is congruent to ω
+modulo the e_b, b < l: the vector (g⁻¹ ω - g'⁻¹ ω') / r has size i.
+-/
 def AgreesModulo (r : Aˣ) (g g' : T.G) (l i : ℕ) (ω : 𝔰.BesselIndex → A) : Prop :=
-  ∃ ω' : 𝔰.BesselIndex → A, CongrBelow l ω ω' ∧
-    r⁻¹.val • (g⁻¹.val.val *ᵥ ω - g'⁻¹.val.val *ᵥ ω') ∈ S.vecsOfSize i
+  ∃ ω' : 𝔰.BesselIndex → A,
+    CongrBelow l ω ω' ∧ r⁻¹.val • (g⁻¹.val.val *ᵥ ω - g'⁻¹.val.val *ᵥ ω') ∈ S.vecsOfSize i
 
-/-- The lengths at g and g' on Y^(l) differ by at most L^t, modulo r: a vector orthogonal to the
+/--
+The lengths at g and g' on Y^(l) differ by at most L^t, modulo r: a vector orthogonal to the
 e_b, b < l, of length at most L^i at g agrees modulo r, up to size i + t, with a lift of its class
 read at g'. For r = 1 the class then has length at most L^(i+t+1) at g'. The comparison goes from g
-to g' only, and for general r it asks for a congruence, not only for a bound on lengths. -/
+to g' only, and for general r it asks for a congruence, not only for a bound on lengths.
+-/
 def GaugesDifferLe (r : Aˣ) (g g' : T.G) (l t : ℕ) : Prop :=
   ∀ (i : ℕ) (ω : 𝔰.BesselIndex → A),
     IsOrthogonalBelow l ω → S.LengthLeAt g i ω → S.AgreesModulo r g g' l (i + t) ω
 
-/-- The vector e_a has a short dual ζ for the points g and g': ζ is orthogonal to the e_b, b < a,
+/--
+The vector e_a has a short dual ζ for the points g and g': ζ is orthogonal to the e_b, b < a,
 ⟨e_a, ζ⟩ = 1, the length of ζ at g is at most L^i, and ζ read at g agrees modulo r, up to size i,
-with a lift of its class in Y^(a) read at g'. -/
+with a lift of its class in Y^(a) read at g'.
+-/
 def HasShortDual (r : Aˣ) (g g' : T.G) (a : Fin 𝔰.ϱ) (i : ℕ) : Prop :=
   ∃ ζ : 𝔰.BesselIndex → A,
     IsOrthogonalBelow a ζ ∧ ζ (eStar a) = 1 ∧ S.LengthLeAt g i ζ ∧ S.AgreesModulo r g g' a i ζ
 
-/-- The head p of length j, a sequence of units p₀, …, p_(j-1), is adapted to the scale: the
-inverses of the products p₀ ⋯ p_(l-1), l ≤ j, have size 1. -/
+/--
+The head p of length j, a sequence of units p₀, …, p_(j-1), is adapted to the scale: the
+inverses of the products p₀ ⋯ p_(l-1), l ≤ j, have size 1.
+-/
 def IsHead (j : ℕ) (p : ℕ → Aˣ) : Prop :=
   ∀ l : ℕ, l ≤ j → (∏ a ∈ Finset.range l, p a)⁻¹.val ∈ S.ofSize 1
 

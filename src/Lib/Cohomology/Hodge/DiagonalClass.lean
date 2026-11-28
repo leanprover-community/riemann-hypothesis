@@ -89,23 +89,31 @@ lemma EtaleChart.subsingleton_hodgeH_offDiagonal (c : EtaleChart (d + d) (X ⊗ 
   exact (h_univ.comp_iff.mpr (c.isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) rfl)
     m).injective.subsingleton
 
-/-- On the subfunctor `O` of `X × X`, the class `δ` is the symbol of the differences of the
+/--
+On the subfunctor `O` of `X × X`, the class `δ` is the symbol of the differences of the
 coordinates of the chart `a`: every point of `O` is a pair of points `φ`, `ψ` of the chart, the
 differences `f i = φ (a.coordinate i) - ψ (a.coordinate i)` cut out the diagonal there, and `δ`
-pulls back to `[df / f]`. -/
-structure IsDiagonalSymbolOn [CharZero k]
-    (δ : HodgeH (relFreeAb (offDiagonal X)) d) (a : EtaleChart d X)
-    (O : Subfunctor (X ⊗ X)) : Prop where
+pulls back to `[df / f]`.
+-/
+structure IsDiagonalSymbolOn
+    [CharZero k]
+    (δ : HodgeH (relFreeAb (offDiagonal X)) d) (a : EtaleChart d X) (O : Subfunctor (X ⊗ X))
+    : Prop where
   /-- The first component of a point of `O` lies in the chart `a`. -/
   fst_mem_locus {B : CommAlg k} {p : (X ⊗ X).obj B} (hp : p ∈ O.obj B) : p.fst ∈ a.locus.obj B
   /-- The second component of a point of `O` lies in the chart `a`. -/
   snd_mem_locus {B : CommAlg k} {p : (X ⊗ X).obj B} (hp : p ∈ O.obj B) : p.snd ∈ a.locus.obj B
-  /-- At a point `p` of `O` given by `φ` and `ψ` in the chart, the differences of the coordinates
-  cut out the diagonal and `δ` is their symbol. -/
-  isLocalSymbol {B : CommAlg k} {p : (X ⊗ X).obj B} (hp : p ∈ O.obj B) {φ ψ : a.coordRing ⟶ B}
-    (hφ : X.map φ a.point = p.fst) (hψ : X.map ψ a.point = p.snd) :
-    IsLocalSymbol δ p (fun (C : CommAlg k) (q : (X ⊗ X).obj C) ↦ q.fst = q.snd)
-      (fun i : Fin d ↦ φ (a.coordinate i) - ψ (a.coordinate i)) 1
+  /--
+  At a point `p` of `O` given by `φ` and `ψ` in the chart, the differences of the coordinates
+  cut out the diagonal and `δ` is their symbol.
+  -/
+  isLocalSymbol
+    {B : CommAlg k} {p : (X ⊗ X).obj B} (hp : p ∈ O.obj B)
+    {φ ψ : a.coordRing ⟶ B} (hφ : X.map φ a.point = p.fst) (hψ : X.map ψ a.point = p.snd)
+    : IsLocalSymbol δ p
+      (fun (C : CommAlg k) (q : (X ⊗ X).obj C) ↦ q.fst = q.snd)
+      (fun i : Fin d ↦ φ (a.coordinate i) - ψ (a.coordinate i))
+      1
 
 /-- A chart `a` of `X` gives a chart `V` of `X × X` near the diagonal. The point of `V` is a pair of
 points `φ`, `ψ` of `a`, its coordinates are those of `φ` and `ψ`, their differences cut out the

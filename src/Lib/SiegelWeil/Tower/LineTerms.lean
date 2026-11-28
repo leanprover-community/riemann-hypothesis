@@ -56,17 +56,22 @@ the stabiliser of the isotropic line: `New.Exchange.lineRadical` on the unipoten
 
 section LineParabolic
 
-variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
-  [DecidableEq m] {s : n → ℤˣ} {t : m → ℤˣ} {V' : Space E m t} {V : Space E n s}
-  (D : V'.Splitting V Unit)
+variable
+  {E n m : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {t : m → ℤˣ} {V' : Space E m t} {V : Space E n s} (D : V'.Splitting V Unit)
 
-/-- The element `D.radicalElement c b` of the unipotent radical with `c = V.x⁻¹ * q.1` and
-`b = 2 q.2`. -/
+/--
+The element `D.radicalElement c b` of the unipotent radical with `c = V.x⁻¹ * q.1` and
+`b = 2 q.2`.
+-/
 abbrev lineRadical (q : Matrix n Unit (𝔸 E) × Matrix Unit Unit (𝔸 E)) : G E t :=
   D.radicalElement (V.x⁻¹.val * q.1) (toAdele (2 : E) • q.2)
 
-/-- The homomorphism that sends an idele `a` and an element `g` of the group of `V` to the Levi
-element `D.levi (a⁻¹, g)`, which acts by `a⁻¹` on the isotropic line. -/
+/--
+The homomorphism that sends an idele `a` and an element `g` of the group of `V` to the Levi
+element `D.levi (a⁻¹, g)`, which acts by `a⁻¹` on the isotropic line.
+-/
 def lineLevi : (𝔸 E)ˣ × G E s →* G E t :=
   D.levi.comp (((Matrix.GeneralLinearGroup.scalar Unit).comp invMonoidHom).prodMap (.id (G E s)))
 
@@ -85,19 +90,25 @@ section TwoLineTerms
 
 open Matrix Kronecker Fintype WeilData Space Splitting Function
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} [Fintype n] [DecidableEq n]
-  [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r']
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n n' r r' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r]
+  [DecidableEq r] [Fintype r'] [DecidableEq r']
   {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
   {V : Space E r t} {V' : Space E r' t'} (A : W'.Splitting W Unit) (X : V'.Splitting V Unit)
 
-/-- The term at the adele `a`, from `𝒮 (W'.hom V')` to `𝒮 (W.hom V)`, in the model `β`. For
+/--
+The term at the adele `a`, from `𝒮 (W'.hom V')` to `𝒮 (W.hom V)`, in the model `β`. For
 `β = true` it is translation by the map `a • X.kAdelic * A.kCoord`, followed by the zero term along
 the line of `A` and then the one along the line of `X`. For `β = false` it is translation by
-`a • X.lAdelic * A.lCoord`, followed by the zero term along the line of `X` and then that of `A`. -/
+`a • X.lAdelic * A.lCoord`, followed by the zero term along the line of `X` and then that of `A`.
+-/
 noncomputable def lineTerm (β : Bool) (a : 𝔸 E) : 𝒮 (W'.hom V') →L[ℂ] 𝒮 (W.hom V) :=
-  if β then (X.homTarget W).zeroTerm ∘L A.homSlice V' (a • X.kAdelic)
-  else (A.homSource V).zeroTerm ∘L (X.homTarget W').zeroTerm ∘L
-    ϱ (W'.hom V') (matrixToVec (a • X.lAdelic * A.lCoord))
+  if β then
+    (X.homTarget W).zeroTerm ∘L A.homSlice V' (a • X.kAdelic)
+  else
+    (A.homSource V).zeroTerm ∘L (X.homTarget W').zeroTerm
+      ∘L ϱ (W'.hom V') (matrixToVec (a • X.lAdelic * A.lCoord))
 
 section
 
@@ -219,19 +230,23 @@ lemma lineTerm_pairWeil_levi {u : (𝔸 E)ˣ} (hu : u = 1 ∨ card r = card n) (
     h_scalar_k, map_mul, Circle.coe_mul, ideleAbs_nonneg_and_ne_zero, Real.sqrt_mul,
     Complex.ofReal_mul, add_zero, x]
 
-/-- The index set of the isotropic frames that split `W'.hom V'` over `W.hom V`. The right summand
+/--
+The index set of the isotropic frames that split `W'.hom V'` over `W.hom V`. The right summand
 indexes one line of the hyperbolic plane `Hom(A, B) ⊕ Hom(A*, B*)`, where `A`, `A*` are the lines
-spanned by `A.k`, `A.l` and `B`, `B*` those spanned by `X.k`, `X.l`. -/
+spanned by `A.k`, `A.l` and `B`, `B*` those spanned by `X.k`, `X.l`.
+-/
 abbrev LineIndex (n r : Type) : Type := (Unit × (n ⊕ Unit) ⊕ r × Unit) ⊕ Unit × Unit
 
 /-- A shortcut: the search for this instance inside larger index sets exceeds the default size. -/
 instance : DecidableEq (LineIndex n r) := inferInstance
 
-/-- The splitting of `Hom(W', V')` along `Hom(W ⊕ A*, B) ⊕ Hom(A*, V)`, over the plane
+/--
+The splitting of `Hom(W', V')` along `Hom(W ⊕ A*, B) ⊕ Hom(A*, V)`, over the plane
 `Hom(A, B) ⊕ Hom(A*, B*)` plus `Hom(W, V)`. Here `hyperbolicSum p T` is the orthogonal sum of
-`card p` hyperbolic planes and `T`, and `A`, `A*`, `B`, `B*` are the lines as in `LineIndex`. -/
-noncomputable def planeSplitting :
-    (W'.hom V').Splitting (hyperbolicSum (Unit × Unit) (W.hom V))
+`card p` hyperbolic planes and `T`, and `A`, `A*`, `B`, `B*` are the lines as in `LineIndex`.
+-/
+noncomputable def planeSplitting
+    : (W'.hom V').Splitting (hyperbolicSum (Unit × Unit) (W.hom V))
       (Unit × (n ⊕ Unit) ⊕ r × Unit) := by
   -- `A.kᴴ * W'.J`, `A.lᴴ * W'.J` and `W.J⁻¹ * A.iᴴ * W'.J` are the coordinates on `W'` along
   -- `A*`, `A` and `W`. The relations of the frame follow from those of `A` and `X`.
@@ -247,16 +262,19 @@ noncomputable def planeSplitting :
       gram_ii, gram_lk, gram_kl, gram_ik, conjTranspose_kronecker,
       conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul, ← transpose_mul]
   -- `↓`: the Gram relations must fire before their subterms are simplified.
-  all_goals simp [← ext_iff, A.card_eq, X.card_eq, Matrix.mul_assoc, ↓gram_ik, ↓gram_ii, ↓gram_il,
-    fromBlocks_one]
+  all_goals
+    simp [← ext_iff, A.card_eq, X.card_eq, Matrix.mul_assoc, ↓ gram_ik, ↓ gram_ii, ↓ gram_il,
+      fromBlocks_one]
   ring
 
 variable (W V) in
-/-- The two splittings over `Hom(W, V)` of the plane `Hom(A, B) ⊕ Hom(A*, B*)` plus `Hom(W, V)`.
+/--
+The two splittings over `Hom(W, V)` of the plane `Hom(A, B) ⊕ Hom(A*, B*)` plus `Hom(W, V)`.
 For `β = true` the first line is the frame `l` of the translation and the second the frame `k` of
-the zero term; for `β = false` the two lines are exchanged. -/
-noncomputable def planeModel (β : Bool) :
-    (hyperbolicSum (Unit × Unit) (W.hom V)).Splitting (W.hom V) (Unit × Unit) :=
+the zero term; for `β = false` the two lines are exchanged.
+-/
+noncomputable def planeModel (β : Bool)
+    : (hyperbolicSum (Unit × Unit) (W.hom V)).Splitting (W.hom V) (Unit × Unit) :=
   cond β (removePlanes (Unit × Unit) (W.hom V)) (removePlanes (Unit × Unit) (W.hom V)).symm
 
 /-- In each model, the adelic frame `l` of the plane, embedded in `Hom(W', V')` by `planeSplitting`,
@@ -318,11 +336,18 @@ noncomputable def lineTermSplitting (β : Bool) : (W'.hom V').Splitting (W.hom V
   (planeSplitting A X).comp (planeModel W V β)
 
 variable (W V) in
-/-- The block-diagonal change of basis, built from `star W.x` and `adaptedHomBasis Unit V`, in which
-the frame of `lineTermSplitting` is adapted (`isAdapted_lineTermSplitting`). -/
+/--
+The block-diagonal change of basis, built from `star W.x` and `adaptedHomBasis Unit V`, in which
+the frame of `lineTermSplitting` is adapted (`isAdapted_lineTermSplitting`).
+-/
 noncomputable def lineTermBasis : GL (LineIndex n r) (𝔸 E) :=
-  blockGL (blockGL (Matrix.GeneralLinearGroup.kronecker 1 (transposeGL (blockGL (star W.x, 1))),
-    adaptedHomBasis Unit V), 1)
+  blockGL (
+    blockGL (
+      Matrix.GeneralLinearGroup.kronecker 1 (transposeGL (blockGL (star W.x, 1))),
+      adaptedHomBasis Unit V
+    ),
+    1
+  )
 
 /-- Each line term is the mixed term `slice` (translation by `l`, then the zero term) of
 `lineTermSplitting`, the composite of `planeSplitting` and the model `β`, at the vector with last

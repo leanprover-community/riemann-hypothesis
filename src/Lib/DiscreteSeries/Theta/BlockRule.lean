@@ -42,43 +42,59 @@ namespace New
 open Fintype Finset
 
 /-- The block [d] = ((d−1)/2, (d−3)/2, …, (1−d)/2), with its entries doubled. -/
-def doubledBlock (d : ℕ) : Finset ℤ :=
-  (range d).image fun b : ℕ ↦ (d : ℤ) - 1 - 2 * b
+def doubledBlock (d : ℕ) : Finset ℤ := (range d).image fun b : ℕ ↦ (d : ℤ) - 1 - 2 * b
 
 /-- The block e + [d] of length d and centre e, with its entries doubled. -/
-def centeredBlock (e : ℤ) (d : ℕ) : Finset ℤ :=
-  (doubledBlock d).image fun x : ℤ ↦ 2 * e + x
+def centeredBlock (e : ℤ) (d : ℕ) : Finset ℤ := (doubledBlock d).image fun x : ℤ ↦ 2 * e + x
 
-/-- Twice the entries of a parameter λ, l = 2λ, shifted by minus the weight of the other space's
-character: for m the rank of the other space and γ = wt χ + m/2 this is l − 2γ + m. -/
-def shiftedEntry {ι : Type} (γ : ℤ) (m : ℕ) (l : ι → ℤ) (i : ι) : ℤ :=
-  l i - 2 * γ + m
+/--
+Twice the entries of a parameter λ, l = 2λ, shifted by minus the weight of the other space's
+character: for m the rank of the other space and γ = wt χ + m/2 this is l − 2γ + m.
+-/
+def shiftedEntry {ι : Type} (γ : ℤ) (m : ℕ) (l : ι → ℤ) (i : ι) : ℤ := l i - 2 * γ + m
 
-/-- The block rule at one place, for spaces S, T of ranks n, n' with signs s, t, parameters
+/--
+The block rule at one place, for spaces S, T of ranks n, n' with signs s, t, parameters
 l = 2λ, l' = 2λ', and γ = wt χ_S + n/2, γ' = wt χ_T + n'/2. It compares the entries of λ shifted
-by −wt χ_T with those of λ' shifted by −wt χ_S. -/
-structure IsBlockRule {n n' : Type} [Fintype n] [Fintype n'] {s : n → ℤˣ} {t : n' → ℤˣ}
-    (γ γ' : ℤ) (l : HCParam s) (l' : HCParam t) : Prop where
-  /-- λ has distinct entries in (n−1)/2 + ℤ, and those of opposite signs differ by at least
-  500(n+n')³. -/
+by −wt χ_T with those of λ' shifted by −wt χ_S.
+-/
+structure IsBlockRule
+    {n n' : Type} [Fintype n] [Fintype n']
+    {s : n → ℤˣ} {t : n' → ℤˣ}
+    (γ γ' : ℤ) (l : HCParam s) (l' : HCParam t)
+    : Prop where
+  /--
+  λ has distinct entries in (n−1)/2 + ℤ, and those of opposite signs differ by at least
+  500(n+n')³.
+  -/
   hasGap_left : l.HasGap (500 * (card n + card n') ^ 3)
-  /-- λ' has distinct entries in (n'−1)/2 + ℤ, and those of opposite signs differ by at least
-  500(n+n')³. -/
+  /--
+  λ' has distinct entries in (n'−1)/2 + ℤ, and those of opposite signs differ by at least
+  500(n+n')³.
+  -/
   hasGap_right : l'.HasGap (500 * (card n + card n') ^ 3)
   /-- If n ≤ n', the shifted entries for T are those for S together with the block [n'−n]. -/
-  entries_of_le : card n ≤ card n' →
-    univ.image (shiftedEntry γ (card n) l') =
-      univ.image (shiftedEntry γ' (card n') l) ∪ doubledBlock (card n' - card n)
+  entries_of_le
+    : card n ≤ card n'
+      → univ.image (shiftedEntry γ (card n) l')
+        = univ.image (shiftedEntry γ' (card n') l) ∪ doubledBlock (card n' - card n)
   /-- If n' ≤ n, the shifted entries for S are those for T together with the block [n−n']. -/
-  entries_of_ge : card n' ≤ card n →
-    univ.image (shiftedEntry γ' (card n') l) =
-      univ.image (shiftedEntry γ (card n) l') ∪ doubledBlock (card n - card n')
+  entries_of_ge
+    : card n' ≤ card n
+      → univ.image (shiftedEntry γ' (card n') l)
+        = univ.image (shiftedEntry γ (card n) l') ∪ doubledBlock (card n - card n')
   /-- A positive shifted entry that occurs on both spaces has the same sign on S and T. -/
-  sign_of_pos : ∀ (c : n) (r : n'), shiftedEntry γ' (card n') l c = shiftedEntry γ (card n) l' r →
-    0 < shiftedEntry γ' (card n') l c → s c = t r
+  sign_of_pos
+    : ∀ (c : n) (r : n'),
+      shiftedEntry γ' (card n') l c = shiftedEntry γ (card n) l' r
+        → 0 < shiftedEntry γ' (card n') l c
+        → s c = t r
   /-- A negative shifted entry that occurs on both spaces has opposite signs on S and T. -/
-  sign_of_neg : ∀ (c : n) (r : n'), shiftedEntry γ' (card n') l c = shiftedEntry γ (card n) l' r →
-    shiftedEntry γ' (card n') l c < 0 → s c = -t r
+  sign_of_neg
+    : ∀ (c : n) (r : n'),
+      shiftedEntry γ' (card n') l c = shiftedEntry γ (card n) l' r
+        → shiftedEntry γ' (card n') l c < 0
+        → s c = - t r
 
 /-- The points of (d−1)/2 + ℤ of modulus below d/2 form [d]; here all is doubled. -/
 lemma mem_doubledBlock {d : ℕ} {x : ℤ} :
@@ -185,8 +201,9 @@ lemma entries_eq_of_exists_matched {C R : Type} [Fintype C] [Fintype R] {s : C �
     fun c r heq h ↦ (hsign c r heq).2 (heq.symm.trans_lt h)⟩
 
 section BlockRule
-variable {n n' : Type} [Fintype n] [Fintype n'] {s : n → ℤˣ} {t : n' → ℤˣ}
-  {γ γ' : ℤ} {l : HCParam s} {l' : HCParam t}
+variable
+  {n n' : Type} [Fintype n] [Fintype n']
+  {s : n → ℤˣ} {t : n' → ℤˣ} {γ γ' : ℤ} {l : HCParam s} {l' : HCParam t}
 
 /-- The shifted entries of a parameter with a gap are distinct. -/
 lemma shiftedEntry_injective {g : ℕ} (hl : l.HasGap g) (m : ℕ) :
@@ -255,9 +272,11 @@ lemma IsMatch.std_symm (h : IsMatch (.std t s γ (-γ')) l' (-l)) :
   · rintro ⟨c, heq, hlt⟩
     exact ⟨c, heq.symm, by rwa [abs_sub_comm, mul_comm (s c), ← heq]⟩
 
-/-- The block rule is symmetric: for spaces S, T of ranks n, n' with signs s, t, parameters l = 2λ,
+/--
+The block rule is symmetric: for spaces S, T of ranks n, n' with signs s, t, parameters l = 2λ,
 l' = 2λ', and γ = wt χ_S + n/2, γ' = wt χ_T + n'/2, if `IsBlockRule γ γ' l l'` holds then so does
-`IsBlockRule γ' γ l' l`, with the roles of the two spaces exchanged. -/
+`IsBlockRule γ' γ l' l`, with the roles of the two spaces exchanged.
+-/
 theorem IsBlockRule.symm (h : IsBlockRule γ γ' l l') : IsBlockRule γ' γ l' l where
   hasGap_left := by simpa [add_comm] using h.hasGap_right
   hasGap_right := by simpa [add_comm] using h.hasGap_left
@@ -298,33 +317,39 @@ lemma isBlockRule_iff_isMatch_of_le (hle : card n ≤ card n') :
     -- For equal ranks the block is empty.
     simpa [show d = 0 by omega, Nat.sub_eq_zero_of_le hle, doubledBlock] using hentries.symm
 
-/-- Parameters λ, λ' on (S, T) satisfy the block rule for γ, γ' if and only if λ', −λ match for the
-oscillator pair with rows for T and columns for S. -/
-theorem isBlockRule_iff_isMatch :
-    IsBlockRule γ γ' l l' ↔ IsMatch (.std t s γ (-γ')) l' (-l) := by
+/--
+Parameters λ, λ' on (S, T) satisfy the block rule for γ, γ' if and only if λ', −λ match for the
+oscillator pair with rows for T and columns for S.
+-/
+theorem isBlockRule_iff_isMatch : IsBlockRule γ γ' l l' ↔ IsMatch (.std t s γ (-γ')) l' (-l) := by
   -- Both sides are symmetric in the two spaces.
   rcases le_total (card n) (card n') with hle | hge
   · exact isBlockRule_iff_isMatch_of_le hle
-  · exact ⟨fun h ↦ ((isBlockRule_iff_isMatch_of_le hge).1 h.symm).std_symm,
-      fun h ↦ ((isBlockRule_iff_isMatch_of_le hge).2 h.std_symm).symm⟩
+  · exact ⟨
+      fun h ↦ ((isBlockRule_iff_isMatch_of_le hge).1 h.symm).std_symm,
+      fun h ↦ ((isBlockRule_iff_isMatch_of_le hge).2 h.std_symm).symm
+    ⟩
 
-/-- The block rule `IsBlockRule γ γ' l l'` is stated for spaces S, T of ranks n, n' with signs s, t,
+/--
+The block rule `IsBlockRule γ γ' l l'` is stated for spaces S, T of ranks n, n' with signs s, t,
 doubled parameters l = 2λ, l' = 2λ', and γ = wt χ_S + n/2, γ' = wt χ_T + n'/2. It compares the
 entries of λ shifted by −wt χ_T with those of λ' shifted by −wt χ_S. If it holds, then −λ, −λ'
 satisfy it on (S⁻, T) for n − γ, n' − γ', that is, for the inverse characters: shifted entries and
 the signs of S are negated. Here S⁻ is S with all signs negated, and `toHCParam s l` is l read as a
-parameter for the signs s. -/
-theorem IsBlockRule.neg (h : IsBlockRule γ γ' l l') :
-    IsBlockRule (card n - γ) (card n' - γ') (toHCParam (-s) (-l)) (toHCParam t (-l')) := by
-  have hneg {ι : Type} (δ : ℤ) (m : ℕ) (f : ι → ℤ) :
-      shiftedEntry ((m : ℤ) - δ) m (-f) = Neg.neg ∘ shiftedEntry δ m f := by
+parameter for the signs s.
+-/
+theorem IsBlockRule.neg (h : IsBlockRule γ γ' l l')
+    : IsBlockRule (card n - γ) (card n' - γ') (toHCParam (-s) (-l)) (toHCParam t (-l')) := by
+  have hneg {ι : Type} (δ : ℤ) (m : ℕ) (f : ι → ℤ)
+      : shiftedEntry ((m : ℤ) - δ) m (-f) = Neg.neg ∘ shiftedEntry δ m f := by
     funext i
     grind [shiftedEntry, Pi.neg_apply]
   have hblock (d : ℕ) : (doubledBlock d).image Neg.neg = doubledBlock d := by
     simpa [centeredBlock] using image_neg_centeredBlock 0 d
-  have hgap : (toHCParam (-s) (-l)).HasGap (500 * (card n + card n') ^ 3) :=
-    { h.hasGap_left.neg with gap := fun i j hij ↦ h.hasGap_left.neg.gap i j fun hs ↦ hij (congrArg
-      Neg.neg hs) }
+  have hgap : (toHCParam (-s) (-l)).HasGap (500 * (card n + card n') ^ 3) := {
+    h.hasGap_left.neg with
+    gap := fun i j hij ↦ h.hasGap_left.neg.gap i j fun hs ↦ hij (congrArg Neg.neg hs)
+  }
   refine ⟨hgap, h.hasGap_right.neg, ?_, ?_, ?_, ?_⟩
   all_goals simp only [toHCParam, hneg]
   · intro hle
@@ -336,20 +361,23 @@ theorem IsBlockRule.neg (h : IsBlockRule γ γ' l l') :
   · intro c r heq hc
     simp [h.sign_of_pos c r (by simpa using heq) (by simpa using hc)]
 
-/-- If γ and γ' are raised by integers u and u', then λ + u' and λ' + u still satisfy the block
-rule: the shifted entries do not change. -/
-theorem IsBlockRule.shift (h : IsBlockRule γ γ' l l') (u u' : ℤ) :
-    IsBlockRule (γ + u) (γ' + u') (toHCParam s fun c : n ↦ l c + 2 * u')
+/--
+If γ and γ' are raised by integers u and u', then λ + u' and λ' + u still satisfy the block
+rule: the shifted entries do not change.
+-/
+theorem IsBlockRule.shift (h : IsBlockRule γ γ' l l') (u u' : ℤ)
+    : IsBlockRule (γ + u) (γ' + u') (toHCParam s fun c : n ↦ l c + 2 * u')
       (toHCParam t fun r : n' ↦ l' r + 2 * u) := by
-  have hshift {ι : Type} (δ v : ℤ) (m : ℕ) (f : ι → ℤ) :
-      shiftedEntry (δ + v) m (fun i : ι ↦ f i + 2 * v) = shiftedEntry δ m f := by
+  have hshift {ι : Type} (δ v : ℤ) (m : ℕ) (f : ι → ℤ)
+      : shiftedEntry (δ + v) m (fun i : ι ↦ f i + 2 * v) = shiftedEntry δ m f := by
     funext i
     grind [shiftedEntry]
-  have hgap {ι : Type} [Fintype ι] {ε : ι → ℤˣ} {f : HCParam ε} {g : ℕ} (hf : f.HasGap g) (v : ℤ) :
-      (toHCParam ε fun i : ι ↦ f i + 2 * v).HasGap g :=
-    { injective := fun i j hij ↦ hf.injective (by simpa using hij)
-      parity := fun i ↦ by grind [hf.parity i]
-      gap := fun i j hij ↦ by simpa using hf.gap i j hij }
+  have hgap {ι : Type} [Fintype ι] {ε : ι → ℤˣ} {f : HCParam ε} {g : ℕ} (hf : f.HasGap g) (v : ℤ)
+      : (toHCParam ε fun i : ι ↦ f i + 2 * v).HasGap g := {
+    injective := fun i j hij ↦ hf.injective (by simpa using hij)
+    parity := fun i ↦ by grind [hf.parity i]
+    gap := fun i j hij ↦ by simpa using hf.gap i j hij
+  }
   refine ⟨hgap h.hasGap_left u', hgap h.hasGap_right u, ?_, ?_, ?_, ?_⟩
   all_goals simp only [toHCParam, hshift]
   exacts [h.entries_of_le, h.entries_of_ge, h.sign_of_pos, h.sign_of_neg]
@@ -363,74 +391,90 @@ lemma IsBlockRule.shiftedEntry_ne_zero (h : IsBlockRule γ γ' l l') (hle : card
   rw [hr, hzero, mul_zero] at hlt
   exact (abs_nonneg _).not_gt hlt
 
-/-- The block rule for n ≤ n', recentred at an integer e, with offsets p = n − 2γ + 2e and
+/--
+The block rule for n ≤ n', recentred at an integer e, with offsets p = n − 2γ + 2e and
 p' = n' − 2γ' + 2e: both parameters have gap 500(n+n')³, the entries l' + p are the l + p'
 together with the doubled entries of the block e + [n'−n], and where an l c + p' equals an
-l' r + p, the signs of c and r differ exactly if this number is below 2e. -/
-theorem isBlockRule_iff_of_offsets {e p p' : ℤ} (hle : card n ≤ card n')
-    (hp : (card n : ℤ) - 2 * γ = p - 2 * e) (hp' : (card n' : ℤ) - 2 * γ' = p' - 2 * e) :
-    IsBlockRule γ γ' l l' ↔
-      l.HasGap (500 * (card n + card n') ^ 3) ∧
-      l'.HasGap (500 * (card n + card n') ^ 3) ∧
-      univ.image (fun r : n' ↦ l' r + p) =
-        univ.image (fun c : n ↦ l c + p') ∪
-          centeredBlock e (card n' - card n) ∧
-      ∀ (c : n) (r : n'), l c + p' = l' r + p → (s c ≠ t r ↔ l c + p' < 2 * e) := by
+l' r + p, the signs of c and r differ exactly if this number is below 2e.
+-/
+theorem isBlockRule_iff_of_offsets
+    {e p p' : ℤ}
+    (hle : card n ≤ card n') (hp : (card n : ℤ) - 2 * γ = p - 2 * e)
+    (hp' : (card n' : ℤ) - 2 * γ' = p' - 2 * e)
+    : IsBlockRule γ γ' l l'
+      ↔ l.HasGap (500 * (card n + card n') ^ 3) ∧ l'.HasGap (500 * (card n + card n') ^ 3)
+        ∧ univ.image (fun r : n' ↦ l' r + p)
+          = univ.image (fun c : n ↦ l c + p') ∪ centeredBlock e (card n' - card n)
+        ∧ ∀ (c : n) (r : n'), l c + p' = l' r + p → (s c ≠ t r ↔ l c + p' < 2 * e) := by
   have hrow (r : n') : l' r + p = 2 * e + shiftedEntry γ (card n) l' r := by grind [shiftedEntry]
   have hcol (c : n) : l c + p' = 2 * e + shiftedEntry γ' (card n') l c := by grind [shiftedEntry]
-  have himage {ι : Type} [Fintype ι] (f : ι → ℤ) :
-      univ.image (fun i : ι ↦ 2 * e + f i) = (univ.image f).image (fun x : ℤ ↦ 2 * e + x) :=
+  have himage {ι : Type} [Fintype ι] (f : ι → ℤ)
+      : univ.image (fun i : ι ↦ 2 * e + f i) = (univ.image f).image (fun x : ℤ ↦ 2 * e + x) :=
     Finset.image_image.symm
   -- After a translation by 2e these are the conditions on the shifted entries.
   simp only [hrow, hcol, himage, centeredBlock, ← Finset.image_union, add_right_inj,
     add_lt_iff_neg_left, (Finset.image_injective (add_right_injective (2 * e))).eq_iff]
   constructor
   · intro h
-    refine ⟨h.hasGap_left, h.hasGap_right, h.entries_of_le hle, fun c r heq ↦
-      ⟨fun hne ↦ ?_, fun hlt ↦ Int.units_ne_iff_eq_neg.2 (h.sign_of_neg c r heq hlt)⟩⟩
+    refine ⟨
+      h.hasGap_left,
+      h.hasGap_right,
+      h.entries_of_le hle,
+      fun c r heq ↦ ⟨fun hne ↦ ?_, fun hlt ↦ Int.units_ne_iff_eq_neg.2 (h.sign_of_neg c r heq hlt)⟩
+    ⟩
     by_contra hnot
     exact hne (h.sign_of_pos c r heq ((not_lt.1 hnot).lt_of_ne' (h.shiftedEntry_ne_zero hle c)))
   · intro ⟨hgap, hgap', hentries, hsign⟩
-    refine ⟨hgap, hgap', fun _ ↦ hentries, fun hge ↦ ?_,
+    refine ⟨
+      hgap,
+      hgap',
+      fun _ ↦ hentries,
+      fun hge ↦ ?_,
       fun c r heq hc ↦ not_not.1 fun hne ↦ hc.not_gt ((hsign c r heq).1 hne),
-      fun c r heq hc ↦ Int.units_ne_iff_eq_neg.1 ((hsign c r heq).2 hc)⟩
+      fun c r heq hc ↦ Int.units_ne_iff_eq_neg.1 ((hsign c r heq).2 hc)
+    ⟩
     simpa [le_antisymm hle hge, doubledBlock] using hentries.symm
 
-/-- The block rule (`IsBlockRule`) for n ≤ n' when γ = e + ⌊n/2⌋ and γ' = e + ⌊n'/2⌋, as for
+/--
+The block rule (`IsBlockRule`) for n ≤ n' when γ = e + ⌊n/2⌋ and γ' = e + ⌊n'/2⌋, as for
 characters whose weights for spaces of ranks n, n' are e less the fractional parts of n/2, n'/2. It
 holds iff four conditions hold. The doubled parameters l = 2λ, l' = 2λ' have gap 500(n+n')³
 (distinct entries ≡ card − 1 mod 2, |λ i − λ j| ≥ gap when signs differ). The entries l' + (n mod 2)
 are the l + (n' mod 2) together with `centeredBlock e (n'−n)`, the doubled entries of the block of
 length n'−n centred at e. A column c and a row r with a common entry have s c ≠ t r exactly if it is
-below 2e. -/
-theorem isBlockRule_iff_of_character {e : ℤ} (hle : card n ≤ card n')
-    (hγ : γ = e + (card n : ℤ) / 2) (hγ' : γ' = e + (card n' : ℤ) / 2) :
-    IsBlockRule γ γ' l l' ↔
-      l.HasGap (500 * (card n + card n') ^ 3) ∧
-      l'.HasGap (500 * (card n + card n') ^ 3) ∧
-      univ.image (fun r : n' ↦ l' r + (card n : ℤ) % 2) =
-        univ.image (fun c : n ↦ l c + (card n' : ℤ) % 2) ∪
-          centeredBlock e (card n' - card n) ∧
-      ∀ (c : n) (r : n'), l c + (card n' : ℤ) % 2 = l' r + (card n : ℤ) % 2 →
-        (s c ≠ t r ↔ l c + (card n' : ℤ) % 2 < 2 * e) :=
+below 2e.
+-/
+theorem isBlockRule_iff_of_character
+    {e : ℤ}
+    (hle : card n ≤ card n') (hγ : γ = e + (card n : ℤ) / 2) (hγ' : γ' = e + (card n' : ℤ) / 2)
+    : IsBlockRule γ γ' l l'
+      ↔ l.HasGap (500 * (card n + card n') ^ 3) ∧ l'.HasGap (500 * (card n + card n') ^ 3)
+        ∧ univ.image (fun r : n' ↦ l' r + (card n : ℤ) % 2)
+          = univ.image (fun c : n ↦ l c + (card n' : ℤ) % 2) ∪ centeredBlock e (card n' - card n)
+        ∧ ∀ (c : n) (r : n'),
+          l c + (card n' : ℤ) % 2 = l' r + (card n : ℤ) % 2
+            → (s c ≠ t r ↔ l c + (card n' : ℤ) % 2 < 2 * e) :=
   isBlockRule_iff_of_offsets hle (by omega) (by omega)
 
-/-- The block rule for n ≤ n' when γ = e + ⌈n/2⌉ and γ' = e + ⌈n'/2⌉, as for characters whose
+/--
+The block rule for n ≤ n' when γ = e + ⌈n/2⌉ and γ' = e + ⌈n'/2⌉, as for characters whose
 weights for spaces of ranks n, n' are e plus the fractional parts of n/2, n'/2. It holds iff three
 conditions hold. First, both parameters have gap 500(n+n')³. Second, the entries of l' − (n mod 2)
 are those of l − (n' mod 2) together with those of `centeredBlock e (n'−n)` = {2e + d−1, 2e + d−3,
 …, 2e + 1−d} for d = n'−n (the block e + [d], doubled). Third, whenever l_c − (n' mod 2) = l'_r − (n
-mod 2), s_c ≠ t_r exactly if this common entry is below 2e. -/
-theorem isBlockRule_iff_of_character_conj {e : ℤ} (hle : card n ≤ card n')
-    (hγ : γ = e + ((card n : ℤ) + 1) / 2) (hγ' : γ' = e + ((card n' : ℤ) + 1) / 2) :
-    IsBlockRule γ γ' l l' ↔
-      l.HasGap (500 * (card n + card n') ^ 3) ∧
-      l'.HasGap (500 * (card n + card n') ^ 3) ∧
-      univ.image (fun r : n' ↦ l' r - (card n : ℤ) % 2) =
-        univ.image (fun c : n ↦ l c - (card n' : ℤ) % 2) ∪
-          centeredBlock e (card n' - card n) ∧
-      ∀ (c : n) (r : n'), l c - (card n' : ℤ) % 2 = l' r - (card n : ℤ) % 2 →
-        (s c ≠ t r ↔ l c - (card n' : ℤ) % 2 < 2 * e) := by
+mod 2), s_c ≠ t_r exactly if this common entry is below 2e.
+-/
+theorem isBlockRule_iff_of_character_conj
+    {e : ℤ}
+    (hle : card n ≤ card n') (hγ : γ = e + ((card n : ℤ) + 1) / 2)
+    (hγ' : γ' = e + ((card n' : ℤ) + 1) / 2)
+    : IsBlockRule γ γ' l l'
+      ↔ l.HasGap (500 * (card n + card n') ^ 3) ∧ l'.HasGap (500 * (card n + card n') ^ 3)
+        ∧ univ.image (fun r : n' ↦ l' r - (card n : ℤ) % 2)
+          = univ.image (fun c : n ↦ l c - (card n' : ℤ) % 2) ∪ centeredBlock e (card n' - card n)
+        ∧ ∀ (c : n) (r : n'),
+          l c - (card n' : ℤ) % 2 = l' r - (card n : ℤ) % 2
+            → (s c ≠ t r ↔ l c - (card n' : ℤ) % 2 < 2 * e) := by
   have hp : (card n : ℤ) - 2 * γ = -((card n : ℤ) % 2) - 2 * e := by omega
   have hp' : (card n' : ℤ) - 2 * γ' = -((card n' : ℤ) % 2) - 2 * e := by omega
   simpa only [sub_eq_add_neg] using isBlockRule_iff_of_offsets (l := l) (l' := l') hle hp hp'
