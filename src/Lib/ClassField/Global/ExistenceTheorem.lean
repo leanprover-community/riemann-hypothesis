@@ -4,6 +4,7 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.Topology.Algebra.Group.OpenMapping
 import Mathlib.Topology.Baire.LocallyCompactRegular
+import TauCeti.NumberTheory.NumberField.Global.Places.PowerClasses
 import TauCeti.Topology.Algebra.Group.Units
 public import Lib.ClassField.GaloisCohomology.TateIndexFormula
 public import Lib.ClassField.Local.ArtinMap
@@ -12,7 +13,6 @@ import Lib.ClassField.Global.AlbertBrauerHasseNoether
 import Lib.ClassField.Global.ArtinMap
 import Lib.ClassField.Global.ArtinReciprocity
 import Lib.ClassField.Global.NormTheorems
-import Lib.ClassField.LocalDuality.KummerFiniteness
 import Lib.ClassField.Places.LocalFields
 import Lib.ClassField.Places.TameInertia
 import Lib.General.NumberTheory.SUnitsAndClassNumber
@@ -56,7 +56,7 @@ Known; see `Lib.ClassField.Global.AlbertBrauerHasseNoether` for sources.
 namespace New
 
 open NumberField QuotientGroup Subgroup Set QZChar Cohomology Function QZ DiscreteUnits NeZero
-  Module Nat Pi Fact
+  Module Nat Pi Fact TauCeti.GlobalNumberFields
 
 attribute [local instance low] Fintype.ofFinite
 
@@ -118,50 +118,27 @@ where `a` is the multiplicity of `v` in the ideal `(n)`; that is, at most `n ^ 2
 lemma index_pow_local_le (v : FinPlace K) :
     let i := (powMonoidHom n : (LocField v)ˣ →* (LocField v)ˣ).range.index
     i ≠ 0 ∧ i ≤ n ^ 2 * (v.asIdeal ^ multiplicity v.asIdeal (Ideal.span {(n : 𝓞 K)})).absNorm := by
-  -- View `K_v` as a local field inside `ℚ̄_p`, with integers `O`. The index of the `n`-th powers is
-  -- `n * #(O / n)` times the number of `n`-th roots of unity, which is at most `n`
-  -- (`cokerKerIndex_local_units`).
-  let algebra_K_Ω : Algebra K Ω := (Ω.fieldEmb K).toAlgebra
-  obtain ⟨p, hp_prime, h_alg, _j, ⟨hF⟩⟩ : ∃ (p : ℕ) (_ : Fact p.Prime)
-      (_ : Algebra (LocField v) (PadicAlgCl p)) (j : Ω →+* PadicAlgCl p),
-      Nonempty (IsCompletionEmb v p Gal(Ω/K) (placeOver v) j) :=
-    v.isPlaceOver_placeOver.exists_isCompletionEmb Gal(Ω/K)
-  set a : ℕ := multiplicity v.asIdeal (Ideal.span {(n : 𝓞 K)})
-  -- `n` has the valuation of `π ^ a` for a uniformiser `π`, so `#(O / n) = q ^ a = N(v ^ a)`.
-  have h_val :
-      (intQpBar p).valuation
-          (algebraMap (LocField v) (PadicAlgCl p)
-            ((n : valRingBelow (LocField v) (intQpBar p)) : LocField v)) =
-        (intQpBar p).valuation
-          (algebraMap (LocField v) (PadicAlgCl p) (uniformizer v : LocField v)) ^ a := by
-    -- The valuation of `ℚ̄_p` restricts to one on `K_v` with the same valuation ring as `v`.
-    have h_equiv : ((intQpBar p).valuation.comap (algebraMap (LocField v) (PadicAlgCl p))).IsEquiv
-        (Valued.v : Valuation (LocField v) _) :=
-      (Valuation.isEquiv_iff_valuationSubring _ _).mpr hF.valRingBelow_eq
-    rw [← map_pow, ← map_pow, ← Valuation.comap_apply, ← Valuation.comap_apply, h_equiv.eq_iff]
-    simpa [v.intValuation_eq_exp_neg_multiplicity, NeZero.ne n] using
-      v_algebraMap_eq_intValuation (w := v) n
-  have h_card :
-      (v.asIdeal ^ a).absNorm =
-        Nat.card (valRingBelow (LocField v) (intQpBar p) ⧸
-          Ideal.span {(n : valRingBelow (LocField v) (intQpBar p))}) := by
-    rw [map_pow, ← FinPlace.q, ← hF.residueCard_eq,
-      (hF.isUniformizer_iff.2 (v_uniformizer v)).card_quotient_span_eq_pow hF.toIsLocalGalois _
-        h_val]
-  rw [h_card, sq, mul_right_comm]
+  -- By Tau Ceti's local power-class formula, `[K_v^× : K_v^× ^ n] * ‖n‖_v = n * #μ_n(K_v)`.
+  -- Since `‖n‖_v = N(v ^ a)⁻¹` and `#μ_n(K_v) ≤ n`, the index is `n * #μ_n(K_v) * N(v ^ a)`,
+  -- which is nonzero and at most `n ^ 2 * N(v ^ a)`.
   intro i
-  -- `[K_v^× : K_v^× ^ n] = n * #(O / n) * #μ_n(K_v)`, and `#μ_n(K_v) ≤ n`.
-  obtain ⟨h_index_ne, h_index_eq⟩ :
-      i ≠ 0 ∧
-        i = n * Nat.card (valRingBelow (LocField v) (intQpBar p) ⧸
-            Ideal.span {(n : valRingBelow (LocField v) (intQpBar p))}) *
-          Nat.card (powMonoidHom n : (LocField v)ˣ →* (LocField v)ˣ).ker :=
-    index_range_pow_eq
-      (mod_cast cokerKerIndex_local_units hF.toIsLocalGalois n (AddEquiv.refl _))
-  have h_roots_le :
-      Nat.card (powMonoidHom n : (LocField v)ˣ →* (LocField v)ˣ).ker ≤ n :=
+  set a : ℕ := multiplicity v.asIdeal (Ideal.span {(n : 𝓞 K)})
+  -- Express the normalized absolute value `‖n‖_v` as the inverse of `N(v ^ a)`.
+  have h_abs : normalizedAbsValue (.inl v) (n : K) = ((v.asIdeal ^ a).absNorm : ℝ)⁻¹ := by
+    simpa [a, map_pow, zpow_neg, zpow_natCast] using
+      normalizedAbsValue_inl_algebraMap_eq_absNorm_zpow v (n : 𝓞 K) (NeZero.ne _)
+  -- Combine with `card_powerClasses_adicCompletion_mul_normalizedAbsValue` for the exact index.
+  have h_index_eq : i = n * Nat.card (rootsOfUnity n (LocField v)) * (v.asIdeal ^ a).absNorm := by
+    have h_card := v.card_powerClasses_adicCompletion_mul_normalizedAbsValue (NeZero.ne n)
+    rw [← index_eq_card, h_abs, mul_inv_eq_iff_eq_mul₀] at h_card
+    · exact_mod_cast h_card
+    · simp [v.ne_bot]
+  -- Bound `#μ_n(K_v) ≤ n` by `card_rootsOfUnity`, and use that `(K_v^×)ⁿ` has finite index.
+  have h_roots_le : Nat.card (rootsOfUnity n (LocField v)) ≤ n :=
     card_rootsOfUnity (LocField v) n
-  exact ⟨h_index_ne, h_index_eq.trans_le (mul_right_mono h_roots_le)⟩
+  refine ⟨FiniteIndex.index_ne_zero, ?_⟩
+  rw [h_index_eq, sq]
+  gcongr
 
 /-- For `n ≠ 0` and a finite set `S` of finite places of `K`, the ideles that are `n`-th powers at
 the places of `S` have finite index, at most `n ^ (2 |S| + [K : ℚ])`. -/
