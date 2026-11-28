@@ -146,6 +146,7 @@ lemma isSemisimple_of_moebius_ne_zero (h_mu_ne : moebius (simClassOf g) ≠ 0) :
       simClassOf_eq_of_equiv topEquiv fun _ ↦ rfl
     rwa [h_top]
 
+/-- The Möbius value of an orbit of dimension 0 is 1. -/
 @[simp]
 lemma moebius_eq_one_of_dim_eq_zero (h_dim : o.dim = 0) : moebius o = 1 := by
   simpa [h_dim] using congrFun (moebius_mul_constOne (k := k)) o
