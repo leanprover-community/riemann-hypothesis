@@ -100,6 +100,13 @@ jobs:
         if: steps.queue.outputs.tested != 'true'
         run: python3 -I scripts/tests/test_ci_cache_baseline.py
 
+      - name: Check out the part of Tau Ceti that src imports
+        if: steps.queue.outputs.tested != 'true'
+        # Before the first lake command, which would check out all of Tau Ceti: about 45,000
+        # files, of which src needs under 2,000. This only saves time: if it fails, it leaves
+        # nothing behind, and Lake checks out all of Tau Ceti as before.
+        run: python3 scripts/tauceti-cache-get.py --sparse-checkout || echo "::warning::The sparse checkout of Tau Ceti failed; Lake checks out all of it."
+
       - name: Restore Mathlib's cache
         if: steps.queue.outputs.tested != 'true'
         # As in scripts/lake-cache-get.sh, which `lake exe cache get` runs.
