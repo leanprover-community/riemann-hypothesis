@@ -244,7 +244,7 @@ variable {D} {Λ : Finset (FinPlace D.E)} {l : FinPlace D.E}
 /-- Let `p` be a prime with `(p/d) = -1`. Two places induce the same prime or conjugate primes
 exactly when they differ by a power of `D.placeOfInt (-p)`, the place of the class of `-p` modulo
 `q₁`. -/
-lemma inducedPlace_eq_or_star_iff (h_inert : chiK P.d p = -1) (σ τ : D.Φ) :
+lemma inducedPlace_eq_or_star_iff (h_inert : chiK P.d p = -1) {σ τ : D.Φ} :
     D.inducedPlace σ = inducedPlace τ ∨ inducedPlace σ = star (inducedPlace τ) ↔
       ∃ i : ℕ, σ = D.placeOfInt (-p) ^ i * τ := by
   -- Even powers of `-p` fix a prime above `p` (`smul_eq_self_iff_of_inert`), odd powers conjugate
@@ -298,14 +298,14 @@ lemma IsMarked.inducedPlace_placeOfInt_neg_mul (h : D.IsMarked Λ) (σ : D.Φ) :
 /-- For a marked set `Λ` and odd `e`, multiplication by the place named by `-p ^ e` carries the
 places whose conjugate induced prime lies in `Λ` onto the places whose induced prime lies in `Λ`. -/
 lemma IsMarked.neg_pow_mul_mem_placesInducing_iff (h : D.IsMarked Λ) {e : ℕ} (he : Odd e)
-    (σ : D.Φ) :
+    {σ : D.Φ} :
     D.placeOfInt (-p ^ e) * σ ∈ placesInducing Λ ↔ σ ∈ placesInducingConj Λ := by
   simp [D.inducedPlace_neg_pow_mul_of_odd h.isExceptional.chiK_eq_neg_one he]
 
 /-- For a marked set `Λ` and odd `e`, multiplication by the place named by `-p ^ e` carries the
 places whose induced prime lies in `Λ` onto the places whose conjugate induced prime lies in `Λ`. -/
 lemma IsMarked.neg_pow_mul_mem_placesInducingConj_iff (h : D.IsMarked Λ) {e : ℕ} (he : Odd e)
-    (σ : D.Φ) :
+    {σ : D.Φ} :
     D.placeOfInt (-p ^ e) * σ ∈ placesInducingConj Λ ↔ σ ∈ placesInducing Λ := by
   simp [D.inducedPlace_neg_pow_mul_of_odd h.isExceptional.chiK_eq_neg_one he]
 
@@ -318,7 +318,7 @@ lemma IsMarked.notMem_bPlaces (h : D.IsMarked Λ) (σ : D.Φ)
   -- An a-place induces the prime of `σ` or its conjugate, so it lies on the `-p`-orbit of `σ`.
   obtain ⟨τ, h_aPlace, h_ind⟩ : ∃ τ ∈ D.aPlaces, inducedPlace τ = inducedPlace σ ∨
       inducedPlace τ = star (inducedPlace σ) := by grind [h.induced_by_aPlace]
-  obtain ⟨i, rfl⟩ := (inducedPlace_eq_or_star_iff h.isExceptional.chiK_eq_neg_one τ σ).1 h_ind
+  obtain ⟨i, rfl⟩ := (inducedPlace_eq_or_star_iff h.isExceptional.chiK_eq_neg_one).1 h_ind
   -- Modulo `q₀`, `(-p) ^ i ≡ -1`; raising to the odd order `o₀` of `-p` gives `-1 ≡ 1`.
   have h_neg : -P.placeClass (P.q₀.dvd_mul_right _) (D.placeOfInt (-p)) ^ i = 1 := by
     simpa [aPlaces, placeClass_of_mem_bPlaces, h_bPlace] using h_aPlace
@@ -460,7 +460,7 @@ lemma IsFullMark.collisionSum_placesInducing_eq_zero (h : D.IsFullMark Λ) :
     have h_conj : τ ∈ placesInducingConj Λ := by
       simpa using (h.mem_or_star_mem τ h_aPlace).resolve_left (by simpa using h_notMem)
     exact notMem_sdiff_of_mem_right
-      ((h.toIsMarked.neg_pow_mul_mem_placesInducing_iff h_odd τ).2 h_conj) h_partner
+      ((h.toIsMarked.neg_pow_mul_mem_placesInducing_iff h_odd).2 h_conj) h_partner
   simp [collisionSum, h_none]
 
 end MarkedPrimes

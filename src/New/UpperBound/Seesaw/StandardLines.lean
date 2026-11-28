@@ -107,12 +107,12 @@ lemma lineIdele_divStar_pow (b : Fin s) :
   · obtain ⟨h_left, h_right⟩ : (s - b + n : ℤ) = k ∧ (-1 - b + n : ℤ) = -k + 1 := by omega
     simp [hs, hb, h_left, h_right, _root_.zpow_add_one, mul_assoc]
 
-lemma eq_rev_iff (b : Fin s) : b = b.rev ↔ 2 * b.val + 1 = s := by
+lemma eq_rev_iff {b : Fin s} : b = b.rev ↔ 2 * b.val + 1 = s := by
   rw [Fin.ext_iff, Fin.val_rev]
   omega
 
 lemma odd_of_eq_rev {b : Fin s} (hb : b = b.rev) : Odd s :=
-  ⟨b.val, ((eq_rev_iff b).1 hb).symm⟩
+  ⟨b.val, (eq_rev_iff.1 hb).symm⟩
 
 lemma eq_of_eq_rev {b b' : Fin s} (hb : b = b.rev) (hb' : b' = b'.rev) : b = b' := by
   rw [eq_rev_iff] at hb hb'
@@ -275,7 +275,7 @@ lemma isGraded (hL : Y.SpansLattice a π u) : Y.IsGraded (V.lattice 1) := by
     exact ite_mem.2 ⟨fun _ ↦ h_last, fun _ ↦ zero_mem _⟩
   · specialize h_line b
     by_cases hb : b = b.rev
-    · have hb_val : 2 * b.val + 1 = s := (eq_rev_iff b).1 hb
+    · have hb_val : 2 * b.val + 1 = s := eq_rev_iff.1 hb
       have h_grade : (s - 1 - 2 * b.val : ℤ) = 0 := by omega
       rw [ite_eq_left hb] at h_line ⊢
       by_cases hd : 0 = d <;> simp [h_grade, hd, h_line]
@@ -358,7 +358,7 @@ constant `c` of `Y` have the valuations of `a ā`. Then `Y.stringSum t = ∑ t i
 lemma stringSum_mem_latticeMinus_iff (hL : Y.SpansLattice a π (divStar a ^ ((s + 2) / 2)))
     (hc : ∀ w : FinPlace E, v (algebraMap E (𝔸f E) Y.genericConst.val w) = v
       ((a.val * star a.val) w))
-    (t : ℕ → 𝔸f E) :
+    {t : ℕ → 𝔸f E} :
     Y.stringSum t ∈ Y.latticeMinus 1 ↔ ∀ i : ℕ, i < s →
       (if 2 * i < s then 1 else algebraMap E (𝔸f E) N) *
         ((powerIdele a s i)⁻¹.val * t i) ∈ Ô E := by
@@ -379,7 +379,7 @@ lemma stringSum_mem_latticePlus_iff (hL : Y.SpansLattice a π (divStar a ^ ((s +
     (hπ : IsSplitSquarefree P N π)
     (hc : ∀ w : FinPlace E, v (algebraMap E (𝔸f E) Y.genericConst.val w) = v
       ((a.val * star a.val) w))
-    (t : ℕ → 𝔸f E) :
+    {t : ℕ → 𝔸f E} :
     Y.stringSum t ∈ Y.latticePlus 1 ↔ ∀ i : ℕ, i < s →
       (if 2 * i + 1 < s then 1 else algebraMap E (𝔸f E) N) *
         ((powerIdele a s i)⁻¹.val * t i) ∈ Ô E := by
@@ -424,16 +424,16 @@ lemma map_stringMapFin_latticePlus (hL : Y.SpansLattice a π (divStar a ^ ((s + 
     obtain ⟨t, rfl⟩ := exists_stringSum_eq (stringProj_eq_of_mem_latticePlus hy)
     refine ⟨Y'.stringSum fun i ↦ a⁻¹.val * t i, ?_,
       by simp [h_smul, stringMapFin_stringSum hconst_eq]⟩
-    refine (hL'.stringSum_mem_latticeMinus_iff hc' _).2 fun i hi ↦ ?_
+    refine (hL'.stringSum_mem_latticeMinus_iff hc').2 fun i hi ↦ ?_
     rw [← h_line i hi, Units.mul_inv_cancel_left]
-    exact (hL.stringSum_mem_latticePlus_iff hπ hc t).1 hy i (by omega)
+    exact (hL.stringSum_mem_latticePlus_iff hπ hc).1 hy i (by omega)
   · rintro _ ⟨z, hz, rfl⟩
     obtain ⟨t, rfl⟩ := exists_stringSum_eq (mem_latticeMinus.1 hz).right
     let t' (i : ℕ) : 𝔸f E := if i < s - 1 then a.val * t i else 0
     have h_mem : Y.stringSum t' ∈ Y.latticePlus 1 := by
-      refine (hL.stringSum_mem_latticePlus_iff hπ hc t').2 fun i _ ↦ ?_
+      refine (hL.stringSum_mem_latticePlus_iff hπ hc).2 fun i _ ↦ ?_
       by_cases hi : i < s - 1
-      · simpa [t', hi, h_line i hi] using (hL'.stringSum_mem_latticeMinus_iff hc' t).1 hz i hi
+      · simpa [t', hi, h_line i hi] using (hL'.stringSum_mem_latticeMinus_iff hc').1 hz i hi
       · simp [t', hi]
     have h_shift : Y.stringMapFin Y' (Y.stringSum t') = a.val • Y'.stringSum t := by
       rw [stringMapFin_stringSum hconst_eq, h_smul, stringSum, stringSum]

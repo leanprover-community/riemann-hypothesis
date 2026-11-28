@@ -173,12 +173,12 @@ lemma IsMarked.neighborCharge_ne_zero_or_partner (hΛ : D.IsMarked Λ) {ι : Typ
   -- its conjugate.
   obtain hτ | ⟨rfl, h_partner⟩ := h_inducing
   · have h_partner : P.partner D.towerExp p e τ ∈ placesInducingConj Λ :=
-      (hΛ.neg_pow_mul_mem_placesInducingConj_iff h_odd τ).2 hτ
+      (hΛ.neg_pow_mul_mem_placesInducingConj_iff h_odd).2 hτ
     by_cases hb : b ∈ markedIndices Λ J τ
     · exact .inr (h_marked h_partner (by rwa [h_same (.inl hτ)]) h)
     · exact .inl (h_unmarked hτ hb)
   · have hτ : τ ∈ placesInducingConj Λ :=
-      (hΛ.neg_pow_mul_mem_placesInducing_iff h_odd τ).1 h_partner
+      (hΛ.neg_pow_mul_mem_placesInducing_iff h_odd).1 h_partner
     by_cases hb : b ∈ markedIndices Λ J τ
     · exact .inl (h_marked hτ hb 1)
     · exact .inr (h_unmarked h_partner (by rwa [h_same (.inr hτ)]))

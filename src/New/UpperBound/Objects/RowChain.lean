@@ -140,7 +140,7 @@ def lastResidueLevel (ϑ : D.TameChar) :
 
 /-- A family lies in `New.Data.lastResidueLevel` if and only if it is 1 at the chosen places above
 p₀, p₁ and block upper triangular at the places of Q. -/
-lemma mem_lastResidueLevel (ϑ : D.TameChar) {g : LevelReductionsY ϑ D.m} :
+lemma mem_lastResidueLevel {ϑ : D.TameChar} {g : LevelReductionsY ϑ D.m} :
     g ∈ lastResidueLevel ϑ ↔
       (∀ x : (D.levelPlaces ϑ).ChosenIndex, g (Sum.inl x) = 1) ∧
       ∀ x : (D.levelPlaces ϑ).TwistIndex, g (Sum.inr x) ∈ parabolic (blockNumber D.m) := by
@@ -151,7 +151,7 @@ lemma mem_lastResidueLevel (ϑ : D.TameChar) {g : LevelReductionsY ϑ D.m} :
 lemma eq_one_of_mem_lastResidueLevel (ϑ : D.TameChar) {g : LevelReductionsY ϑ D.m}
     (hg : g ∈ lastResidueLevel ϑ) (x : (D.levelPlaces ϑ).ChosenIndex) :
     g (Sum.inl x) = 1 :=
-  ((mem_lastResidueLevel ϑ).mp hg).left x
+  (mem_lastResidueLevel.mp hg).left x
 
 /-- For a tame character ϑ, the component of a family in `New.Data.lastResidueLevel` at any level
 place (a chosen place above p₀, p₁ or a place of the modulus Q of ϑ) is block upper triangular for
@@ -160,7 +160,7 @@ lemma mem_parabolic_of_mem_lastResidueLevel (ϑ : D.TameChar) {g : LevelReductio
     (hg : g ∈ lastResidueLevel ϑ)
     (x : (D.levelPlaces ϑ).ChosenIndex ⊕ (D.levelPlaces ϑ).TwistIndex) :
     g x ∈ parabolic (blockNumber D.m) := by
-  obtain ⟨h_one, h_tri⟩ := (mem_lastResidueLevel ϑ).mp hg
+  obtain ⟨h_one, h_tri⟩ := mem_lastResidueLevel.mp hg
   cases x with
   | inl x =>
     rw [h_one x]
