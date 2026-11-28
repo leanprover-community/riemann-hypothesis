@@ -16,6 +16,7 @@ import Mathlib.RingTheory.MvPolynomial.Ideal
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.Unramified.LocalStructure
+import TauCeti.RingTheory.MvPolynomial.LocalOrder
 public import Lib.Cohomology.Etale.Basic
 
 /-!
@@ -92,13 +93,9 @@ coefficients of `p` of degree below `d` are zero. -/
 lemma New.coeff_translate_eq_zero_of_mem_vanishingIdeal_pow {K ι : Type} [Field K]
     {w : ι → K} {d : ℕ} {p : MvPolynomial ι K} (hp : p ∈ vanishingIdeal K {w} ^ d) {γ : ι →₀ ℕ}
     (hγ : γ.degree < d) : (aeval (X + C ∘ w) p).coeff γ = 0 := by
-  let T : MvPolynomial ι K →ₐ[K] MvPolynomial ι K := aeval (X + C ∘ w)
-  have h_origin : vanishingIdeal K {w} ≤ (idealOfVars ι K).comap T := fun q hq ↦ by
-    have h_const : constantCoeff (T q) = 0 := by simpa [T, map_aeval] using hq
-    rw [Ideal.mem_comap, ← pow_one (idealOfVars ι K), mem_pow_idealOfVars_iff']
-    simpa [degree_eq_zero_iff, ← constantCoeff_eq] using h_const
-  have h_mem : T p ∈ idealOfVars ι K ^ d := le_comap_pow T d (pow_right_mono h_origin d hp)
-  exact (mem_pow_idealOfVars_iff' d _).1 h_mem γ hγ
+  -- `p` has order at least `d` at `w`, and `aeval (X + C ∘ w)` is the Taylor shift `taylor w`.
+  simpa only [taylor_apply, Pi.add_def, Function.comp_def] using
+    le_orderAt_iff.1 ((mem_pow_vanishingIdeal_singleton_iff p w d).1 hp) γ (by exact_mod_cast hγ)
 
 /-- If the polynomials `φ u` vanish at the point `w`, the product `∏ φ u ^ γ u` vanishes at `w` to
 every order `d ≤ |γ|`. -/
