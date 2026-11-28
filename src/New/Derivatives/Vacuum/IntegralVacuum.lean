@@ -304,12 +304,6 @@ lemma exists_mul_vacElem_integral_bounded (P : Parameters) : ∃ C : ℕ, ∀ s 
   -- The vector `F` is the theta product for the lattice of `cmCurve` with the period `cmPeriod`.
   obtain ⟨F, hF : IsThetaProduct V P.cmCurve P.cmPeriod 1 F⟩ := exists_isThetaProduct_cmCurve V
   obtain ⟨c, hc_ne, Γ, _, a, b, h_card, hc⟩ := hF.exists_smul_vacElem_eq_sum
-  -- A value of `c • vacElem` is a sum of `card Γ` values of `F` times roots of unity.
-  have h_sum (x : Unit → 𝔸f (P.E s)) :
-      ∃ (w : Γ → 𝔸f (P.E s)) (y : Γ → Unit → 𝔸f (P.E s)), c * V.vacElem (finVec x) =
-        ∑ k, stdLattice.selfDualAddChar (P.E s) (w k) * F (finVec (y k)) := by
-    simpa only [← hc, V.smul_apply] using V.exists_sum_finHeisenbergOp_apply_eq a b x F
-  choose w y h_sum using h_sum
   -- A value of `F` is a product of `N²` torsion values of `θ`.
   have h_value (σ : Gal(ℂ/K P)) (z : Unit → 𝔸f (P.E s)) :
       ‖σ (F (finVec z))‖ ≤ rexp M ^ (N * N) := by
@@ -331,10 +325,11 @@ lemma exists_mul_vacElem_integral_bounded (P : Parameters) : ∃ C : ℕ, ∀ s 
   refine ⟨c, hc_ne, fun p _ _ x ↦ ?_, fun σ x ↦ ?_⟩
   · exact V.norm_mul_vacElem_le_one_of_eq_sum (hF.norm_le_one p) hc x
   · calc ‖σ (c * V.vacElem (finVec x))‖
-      _ ≤ ∑ k : Γ, ‖σ (F (finVec (y x k)))‖ := by
-        grw [h_sum, map_sum, norm_sum_le]
-        refine Finset.sum_le_sum fun k _ ↦ ?_
-        rw [map_mul, norm_mul, norm_map_selfDualAddChar, one_mul]
+      _ ≤ ∑ k : Γ, ‖σ (F (finVec (x + (a k + b))))‖ := by
+        rw [← V.smul_apply, hc, ← theta_rho]
+        simp only [map_sum, theta_rho]
+        exact (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun k _ ↦
+          V.norm_map_finHeisenbergOp_rho_finVec_apply σ (a k) b x F)
       _ ≤ card Γ * rexp M ^ (N * N) :=
         (sum_le_sum fun k _ ↦ h_value σ _).trans_eq (by
           rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul])
@@ -616,8 +611,7 @@ lemma finitePart_le_span_translates {V : Space (P.E s) n ε} {F : 𝒮 V} {c : �
   intro z
   rw [(eq_inv_smul_iff₀ hc_ne).2 hc, map_smul, map_sum]
   refine Submodule.smul_mem _ _ (Submodule.sum_mem _ fun j _ ↦ ?_)
-  simp only [finHeisenbergOp, _root_.smul_apply, map_smul, rho_finVec_rho_finVec,
-    smul_smul]
+  simp only [finHeisenbergOp_rho_finVec, map_smul, smul_smul]
   exact Submodule.smul_mem _ _ (subset_span (mem_range_self _))
 
 /-- The series `zetaLinearSeries Ω c k j` is the linear form `Ω / q₁ / areaScale * c * ∑ w, conj (Φ

@@ -100,6 +100,16 @@ lemma rho_finVec_rho_finVec (x y : n → 𝔸f E) (f : 𝒮 V) :
       selfDualAddChar E (half * star y ⬝ᵥ x) • V.ϱ (finVec (x + y)) f := by
   simp [← heisenbergRep_right_rho, stdLattice.finHeisenberg, mul]
 
+/-- A signed finite translation at `x` following the ordinary translation at `y`
+has displacement `x + y`. The character argument adds the semicharacter term
+at `x` to the ordered pairing of `y` with `x`. -/
+lemma finHeisenbergOp_rho_finVec (x y : n → 𝔸f E) (f : 𝒮 V) :
+    V.finHeisenbergOp x (V.ϱ (finVec y) f) =
+      selfDualAddChar E (traceOneAdele * half * star x ⬝ᵥ x + half * star y ⬝ᵥ x) •
+        V.ϱ (finVec (x + y)) f := by
+  rw [finHeisenbergOp, semichar, _root_.smul_apply, rho_finVec_rho_finVec,
+    smul_smul, AddChar.map_add_eq_mul]
+
 /-- The normalised finite operators `finHeisenbergOp` compose to the operator at the sum, times the
 character value `selfDualAddChar E (star traceOneAdele * star y ⬝ᵥ x)`. -/
 lemma finHeisenbergOp_finHeisenbergOp (x y : n → 𝔸f E) (f : 𝒮 V) :

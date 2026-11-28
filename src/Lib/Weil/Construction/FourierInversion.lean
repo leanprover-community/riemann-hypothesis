@@ -454,31 +454,26 @@ theorem Space.exists_fourier_coefficients {ε : n → ℤˣ} (V : Space E n ε) 
     fun i ↦ (mem_inv_smul_idealLattice (ne_zero_of_mul_star_eq hN_ne hN)).1 (hy.mem i),
     hγ.mem, (card_representatives_idealLattice hy hγ hδ hN_ne hN).2, h_average, h_inversion⟩
 
-/-- Let `E` be a CM field with Weil data, `V : Space E n ε` a hermitian space, `φ` a vector of
-`𝒮 V`, and `a j`, `b`, `x` finite adelic vectors. Write `ρ(b) φ = V.ϱ (finVec b) φ` for the
-translate of `φ` by `finVec b`, the adelic vector with finite part `α b` and infinite part zero,
-where `α` is the finite idele of the Weil data. The value at `finVec x` of the sum over `j` of the
-operators `V.finHeisenbergOp (a j)` (scalar-twisted translates) applied to `ρ(b) φ` equals a sum
-over `j` of values of `φ` at some vectors `finVec (z j)`, each multiplied by the value at some `w j`
-of the finite-adelic character `selfDualAddChar`. -/
-lemma Space.exists_sum_finHeisenbergOp_apply_eq {ε : n → ℤˣ} (V : Space E n ε) {J : Type}
-    [Fintype J] (a : J → n → 𝔸f E) (b x : n → 𝔸f E) (φ : 𝒮 V) :
-    ∃ (w : J → 𝔸f E) (z : J → n → 𝔸f E),
-      (∑ j : J, V.finHeisenbergOp (a j) (V.ϱ (finVec b) φ)) (finVec x) =
-        ∑ j : J, selfDualAddChar E (w j) * φ (finVec (z j)) := by
-  -- Composing the translations gives one by `a j + b`, so `φ` is evaluated at `x + (a j + b)`, and
-  -- the phases add up.
-  let w (j : J) : 𝔸f E := traceOneAdele * half * star (a j) ⬝ᵥ a j +
-    (half * star b ⬝ᵥ a j + half * star (a j + b) ⬝ᵥ x)
-  have h_term (j : J) : V.finHeisenbergOp (a j) (V.ϱ (finVec b) φ) (finVec x) =
-      selfDualAddChar E (w j) * φ (finVec (x + (a j + b))) := by
-    rw [← theta_rho]
-    simp only [w, finHeisenbergOp, semichar, _root_.smul_apply, map_smul,
-      rho_finVec_rho_finVec,
-      smul_eq_mul, ← mul_assoc, ← AddChar.map_add_eq_mul, theta_rho]
-  refine ⟨w, fun j ↦ x + (a j + b), ?_⟩
-  rw [← theta_rho]
-  simp only [map_sum, theta_rho, h_term]
+/-- Evaluating the signed translation by `a` of the ordinary translate by `b` at
+the finite vector `x` gives the value at `x + (a + b)` with its full phase. -/
+lemma Space.finHeisenbergOp_rho_finVec_apply {ε : n → ℤˣ} (V : Space E n ε)
+    (a b x : n → 𝔸f E) (φ : 𝒮 V) :
+    V.finHeisenbergOp a (V.ϱ (finVec b) φ) (finVec x) =
+      selfDualAddChar E ((traceOneAdele * half * star a ⬝ᵥ a + half * star b ⬝ᵥ a) +
+        half * star (a + b) ⬝ᵥ x) * φ (finVec (x + (a + b))) := by
+  rw [← theta_rho, finHeisenbergOp_rho_finVec, map_smul, rho_finVec_rho_finVec]
+  simp only [map_smul, smul_eq_mul, ← mul_assoc, ← AddChar.map_add_eq_mul, theta_rho]
+
+/-- Under any multiplicative map to a normed field, the finite-order phase
+has norm one. The norm therefore reads the value at the same translated point. -/
+lemma Space.norm_map_finHeisenbergOp_rho_finVec_apply {ε : n → ℤˣ} (V : Space E n ε)
+    {R F : Type*} [NormedField R] [FunLike F ℂ R] [MonoidHomClass F ℂ R] (ι : F)
+    (a b x : n → 𝔸f E) (φ : 𝒮 V) :
+    ‖ι (V.finHeisenbergOp a (V.ϱ (finVec b) φ) (finVec x))‖ =
+      ‖ι (φ (finVec (x + (a + b))))‖ := by
+  have h_root (z : 𝔸f E) : ‖ι (selfDualAddChar E z)‖ = 1 :=
+    ((ι : ℂ →* R).isOfFinOrder (isOfFinOrder_ψf _)).norm_eq_one
+  rw [V.finHeisenbergOp_rho_finVec_apply, map_mul, norm_mul, h_root, one_mul]
 
 /-- Let the values of a vector `φ` of `𝒮 V` at the points `finVec x` with infinite part zero be
 integral at `p`, that is, of norm at most `1` under the embedding `ιₚ : ℂ → ℂ_[p]` given by the
@@ -490,13 +485,9 @@ lemma Space.norm_mul_vacElem_le_one_of_eq_sum {ε : n → ℤˣ} (V : Space E n 
     {c : ℂ} {J : Type} [Fintype J] {a : J → n → 𝔸f E} {b : n → 𝔸f E}
     (hc : c • V.vacElem = ∑ j : J, V.finHeisenbergOp (a j) (V.ϱ (finVec b) φ)) (x : n → 𝔸f E) :
     ‖ιₚ (c * V.vacElem (finVec x))‖ ≤ 1 := by
-  -- The value is a sum of values of `φ` times roots of unity.
-  obtain ⟨w, z, h_sum⟩ := V.exists_sum_finHeisenbergOp_apply_eq a b x φ
-  have h_root (j : J) : ‖ιₚ (selfDualAddChar E (w j))‖ = 1 :=
-    ((ιₚ : ℂ →* ℂ_[p]).isOfFinOrder (isOfFinOrder_ψf _)).norm_eq_one
-  rw [← V.smul_apply, hc, h_sum, map_sum]
-  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun j _ ↦ ?_
-  rw [map_mul, norm_mul, h_root j, one_mul]
-  exact hφ (z j)
+  rw [← V.smul_apply, hc, ← theta_rho]
+  simp only [map_sum, theta_rho]
+  exact IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun j _ ↦
+    (V.norm_map_finHeisenbergOp_rho_finVec_apply ιₚ (a j) b x φ).le.trans (hφ _)
 
 end New

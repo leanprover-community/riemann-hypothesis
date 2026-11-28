@@ -272,12 +272,7 @@ translate of `F` by `x + y`, and the scalar lies in the valuation ring `embValRi
 `ιₚ` of `ℂ` in `ℂ_p`. -/
 lemma exists_finHeisenbergOp_rho_eq_smul (x y : n → 𝔸f (P.E s)) (F : 𝒮 V) :
     ∃ c : embValRing, V.finHeisenbergOp x (V.ϱ (finVec y) F) = c • V.ϱ (finVec (x + y)) F := by
-  let z : 𝔸f (P.E s) :=
-    stdLattice.traceOneAdele * stdLattice.half * star x ⬝ᵥ x + stdLattice.half * star y ⬝ᵥ x
-  refine ⟨⟨stdLattice.selfDualAddChar (P.E s) z, (norm_map_selfDualAddChar ιₚ z).le⟩, ?_⟩
-  rw [finHeisenbergOp, stdLattice.semichar, _root_.smul_apply, rho_finVec_rho_finVec,
-    smul_smul,
-    ← AddChar.map_add_eq_mul, Subring.smul_def]
+  exact ⟨⟨_, (norm_map_selfDualAddChar ιₚ _).le⟩, V.finHeisenbergOp_rho_finVec x y F⟩
 
 variable (V p) in
 /-- An expansion of the integral vacuum of a standard space `V` (of rank `n`, with signs `ε` at the
