@@ -495,16 +495,15 @@ lemma exists_forall_valuation_thetaCoord_zero_le (h_good : HasGoodReduction x.au
 /-- Along a surjective ring map `φ : A →+* B`, every form of degree `d` over `B` is the image of a
 form of degree `d` over `A`: mapping coefficients by `φ` is surjective on homogeneous
 polynomials of degree `d`. -/
-lemma surjective_map_homogeneous {σ A B : Type} [CommRing A] [CommRing B] {φ : A →+* B}
+lemma surjective_map_homogeneous {σ A B : Type} [CommSemiring A] [CommSemiring B] {φ : A →+* B}
     (hφ : Surjective φ) (d : ℕ) :
     Surjective fun f : homogeneousSubmodule σ A d ↦
       (⟨f.val.map φ, f.property.map φ⟩ : homogeneousSubmodule σ B d) := by
   rintro ⟨g, hg⟩
-  -- Lift `g` coefficient by coefficient along a right inverse of `φ`.
-  let f : MvPolynomial σ A := ∑ m ∈ g.support, monomial m (surjInv hφ (g.coeff m))
-  have hf_hom : f ∈ homogeneousSubmodule σ A d :=
-    sum_mem fun m hm ↦ isHomogeneous_monomial _ (hg.degree_eq_sum_deg_support hm).symm
-  exact ⟨⟨f, hf_hom⟩, Subtype.ext (by simp [f, surjInv_eq])⟩
+  -- Lift `g` along `φ`, then project to its degree-`d` homogeneous component.
+  obtain ⟨f, hf⟩ := MvPolynomial.map_surjective φ hφ g
+  refine ⟨⟨homogeneousComponent d f, homogeneousComponent_mem _ _⟩, Subtype.ext ?_⟩
+  simpa [map_homogeneousComponent, hf] using homogeneousComponent_eq_self hg
 
 /-- A form `f` of degree `r ^ j` in the theta coordinates is small at the chart `c` if the theta
 function `f(θ)` has norm (`New.ThetaTori.LatticeForm.thetaNorm` at `v` for `r ^ j • B`) below
