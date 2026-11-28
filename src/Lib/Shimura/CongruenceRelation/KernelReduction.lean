@@ -142,16 +142,13 @@ lemma cartier (K : Type) [Field.{0} K] [IsAlgClosed K] [CharZero K] [Algebra V K
     -- Modulo `ε`, `c` and `v` cancel; at `c` (that is, along `μ`) the first two terms cancel.
     have h_mod_ε := specOver.map (fstHom V (K ⊗[V] S) (K ⊗[V] S)) ≫= hρ.trans (sub_add ..)
     have h_along_μ := specOver.map (μ.restrictScalars V) ≫= hρ
-    have h_fst : ∀ x : S, (ρ (1 ⊗ₜ[V] x)).fst = 1 ⊗ₜ[V] x := by
-      simpa +zetaDelta [sub_eq_zero_of_eq, cancel_mono, map_bijective.injective.eq_iff,
-        AlgHom.ext_iff, hv, map_comp_assoc, algebraMap_eq_inl', lift_apply_apply,
-        AddGrpObj.comp_sub] using h_mod_ε
     -- `TensorProduct.algebraMap_apply` stays out: with it the call no longer reduces `h_along_μ`.
+    simp +zetaDelta [sub_eq_zero_of_eq, cancel_mono, map_bijective.injective.eq_iff,
+      AlgHom.ext_iff, hv, -TensorProduct.algebraMap_apply, map_comp_assoc, algebraMap_eq_inl',
+      lift_apply_apply, AddGrpObj.comp_sub, comp_add] at h_mod_ε h_along_μ
+    have h_fst : ∀ x : S, (ρ (1 ⊗ₜ[V] x)).fst = 1 ⊗ₜ[V] x := h_mod_ε
     have h_at_c : ∀ x : S, inl (c (ρ (1 ⊗ₜ[V] x)).fst) + inl (c (ρ (1 ⊗ₜ[V] x)).snd) * ε =
-        inl (c (1 ⊗ₜ[V] x)) + inl (v (1 ⊗ₜ[V] x)).snd * ε := by
-      simpa +zetaDelta [sub_eq_zero_of_eq, cancel_mono, map_bijective.injective.eq_iff,
-        AlgHom.ext_iff, hv, -TensorProduct.algebraMap_apply, map_comp_assoc, algebraMap_eq_inl',
-        lift_apply_apply, AddGrpObj.comp_sub, comp_add] using h_along_μ
+        inl (c (1 ⊗ₜ[V] x)) + inl (v (1 ⊗ₜ[V] x)).snd * ε := h_along_μ
     -- `ι` is a monomorphism, so these are identities on the elements `1 ⊗ x`: `ρ` is a section of
     -- `R[ε] → R`, and its value at `c` is `v`.
     have h_section : (fstHom ..).comp ρ = 1 := ext_ring (AlgHom.ext h_fst)

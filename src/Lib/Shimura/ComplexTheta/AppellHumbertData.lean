@@ -109,8 +109,7 @@ def RealComplexForm.thetaSpace (B : ThetaTori.LatticeForm L) : Submodule ℂ (V 
       Differentiable ℂ f ∧
       ∀ l ∈ L, ∀ z : V, f (z + l) = χ l * Complex.exp (B l z + B l l / 2) * f z}
     ⟨0, by simp⟩ (by
-      simp +contextual only [Set.mem_ofPred_eq, Pi.add_apply, Pi.smul_apply, smul_eq_mul, and_imp,
-        field, implies_true, and_true]
+      simp +contextual [field]
       fun_prop)
 
 /-- The Riemann form of B: the alternating real form E(u, v) = Im(B(u,v) − B(v,u))/(2π). It is

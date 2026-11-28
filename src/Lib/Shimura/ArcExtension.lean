@@ -498,8 +498,7 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
       w ((i', fun _ ↦ b), b', fun _ ↦ i) * ((r j : N.H0 O).val i ^ m).pull π.left
     simp [IsFrame, IsSection, IsRegularOn, pow, landsIn_iInf] at hw
     simp only [IsRegularOn] at hr_reg hM_reg
-    simp only [pow, mul_opens, pull_opens, pi_opens, inv_opens, landsIn_inf, landsIn_preimage,
-      assoc, landsIn_iInf, isUnit_iff_ne_zero] at hw_unit
+    simp [pow, landsIn_iInf] at hw_unit
     simp only [IsHomogeneousCoords, isUnit_iff_ne_zero, ne_eq, Ring.inverse_eq_inv'] at h_lifts
     push Not at h_zero
     simp only [assoc, hTπ] at ha
