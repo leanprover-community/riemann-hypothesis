@@ -4,6 +4,7 @@ import TauCeti.NumberTheory.ArithmeticFunction.VonMangoldt
 public import Mathlib.NumberTheory.LSeries.PrimesInAP
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.AbsMax
 import Mathlib.Dynamics.Newton
 import Mathlib.NumberTheory.LSeries.Linearity
 import Mathlib.Order.CompletePartialOrder
@@ -418,14 +419,16 @@ theorem New.exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M)
   by_contra h_none
   let P (z : ℂ) : ℂ := ∑ n ∈ .range ⌈U.exp⌉₊, term a (1 + z) n
   let G (z : ℂ) : ℂ := (F z - z * P z) / (2 - U * z - 4⁻¹ * X * (1 + X * z) ^ 2).exp
-  -- A bound on the circle bounds `G 0`, which is too large.
+  -- The maximum modulus principle bounds the value at zero by the bound on the circle.
   suffices h_circle : ∀ z : ℂ, ‖z‖ = X⁻¹ → ‖G z‖ ≤ 3 * U by
     have hG : AnalyticOnNhd ℂ G (Metric.closedBall 0 X⁻¹) := fun s hs ↦
       (analyticOnNhd_sub_mul_sum_term q ⌈U.exp⌉₊ (fun z hz χ ↦ (h_disc hz χ).1) s hs).div
         (by fun_prop) (Complex.exp_ne_zero _)
-    have h_zero : ‖G 0‖ ≤ 3 * U := by
-      simpa using norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le 0 (inv_pos.2 hX)
-        (hG.differentiableOn.diffContOnCl_ball le_rfl) (by simpa using h_circle)
+    have h_zero : ‖G 0‖ ≤ 3 * U :=
+      norm_le_of_forall_mem_frontier_norm_le Metric.isBounded_ball
+        (hG.differentiableOn.diffContOnCl_ball le_rfl)
+        (fun z hz ↦ h_circle z (by simpa using Metric.frontier_ball_subset_sphere hz))
+        (subset_closure (Metric.mem_ball_self (inv_pos.2 hX)))
     have h_value : ‖G 0‖ = rexp (4⁻¹ * X) / rexp 2 / q.totient := by
       simp [G, F, norm_exp, Real.exp_sub, field]
     have h_large : 3 * U < rexp (4⁻¹ * X) / rexp 2 / q.totient := by
