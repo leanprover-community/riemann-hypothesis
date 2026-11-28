@@ -351,15 +351,16 @@ lemma IsAcyclicOver.isCohomEquiv (hB : IsDomain B) (hB' : IsDomain B') (u : T' �
       .comp ⟨h_inj', h_onto' 0⟩ (down_bijective.comp bijective_const_of_isDomain)
     refine (bijective_iff_of_comm_sq (f := id) ?_ h_const h_const').mp bijective_id
     exact fun x ↦ map_locConstClass (fun _ _ ↦ by tauto) 0
-  · -- in positive degree `locConstClass` is zero and onto, so both groups vanish
+  · -- in positive degree `locConstClass` is zero and onto, so both groups vanish. It is `0` by
+    -- definition there, so `rfl` and `map_zero` close the goals without unfolding it with `simp`.
     constructor
     · intro x₁ x₂ _
       obtain ⟨_, rfl⟩ := h_onto (n + 1) x₁
       obtain ⟨_, rfl⟩ := h_onto (n + 1) x₂
-      simp only [locConstClass, AddMonoidHom.zero_apply]
+      rfl
     · intro y
       obtain ⟨_, rfl⟩ := h_onto' (n + 1) y
-      exact ⟨0, by simp only [map_zero, locConstClass, AddMonoidHom.zero_apply]⟩
+      exact ⟨0, map_zero _⟩
 
 /-- A filtered colimit of test rings, taken in commutative rings, is a test ring: absolutely
 integrally closed, comparable for divisibility after splitting by an idempotent, and reduced. -/
@@ -450,13 +451,14 @@ lemma continuousUpTo_locConstCoeff (hL : ∀ j : J, IsTest (L j)) :
     · obtain ⟨y, rfl⟩ := h_acyclic_colim.right 0 y
       obtain ⟨j, x, rfl⟩ := h_surj y
       exact ⟨j, locConstClass (𝟙 _) 0 x, class_nat (colimit.ι L j) x⟩
-  · -- In positive degree `locConstClass` is zero and onto, so every group vanishes.
+  · -- In positive degree `locConstClass` is zero and onto, so every group vanishes. It is `0` by
+    -- definition there, so `map_zero` closes the goals without unfolding it with `simp`.
     refine ⟨fun j x _ ↦ ⟨j, 𝟙 j, ?_⟩, fun y ↦ ?_⟩
     · obtain ⟨_, rfl⟩ := (h_acyclic (hL j)).right (n + 1) x
-      simp only [locConstClass, AddMonoidHom.zero_apply, map_zero]
+      exact map_zero _
     · obtain ⟨_, rfl⟩ := h_acyclic_colim.right (n + 1) y
       obtain ⟨j⟩ := IsFiltered.nonempty (C := J)
-      exact ⟨j, 0, by simp only [map_zero, locConstClass, AddMonoidHom.zero_apply]⟩
+      exact ⟨j, 0, map_zero _⟩
 
 end AcyclicTests
 
