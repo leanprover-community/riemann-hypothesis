@@ -161,13 +161,9 @@ lemma exists_siegel_set :
     (fun q : (Matrix p p (𝔸 E) × _) × Matrix n n (𝔸 E) ↦
       (P.kCoord * q.1.2.adeleMatrix * q.2 * (r I G).map toAdele) i j) '' (Ω ×ˢ C)
   -- A rational `a` with `2 ^ (-e) * a` in the compact set `entries i` and `e < c i` is zero.
-  have h_compact (i : p) : IsCompact (entries i) :=
+  choose c hc using fun i : p ↦ exists_eq_zero_of_zpow_mul_mem (B := entries i) <|
     hF.isCompact_biUnion fun G _ ↦ isCompact_iUnion fun I ↦ isCompact_iUnion fun j ↦
       (hΩ.prod hC).image_of_continuous _
-  have h_threshold : ∀ i : p, ∃ c : ℤ, ∀ e < c, ∀ {a : E},
-      (twoAtInfinity E ^ (-e)).val * a ∈ entries i → a = 0 := fun i ↦
-    exists_eq_zero_of_zpow_mul_mem (h_compact i)
-  choose c hc using h_threshold
   refine ⟨_, ((isCompact_closedBall_prod_integral (E := E)).matrix.prod hΩ).image_of_continuous
     fun (a, b, κ) ↦ P.radicalElement 0 (a * b * aᴴ) * ((P.levi (dyadicDiag (-c), 1))⁻¹ * κ),
     fun g ↦ ?_⟩
@@ -203,11 +199,7 @@ lemma exists_siegel_set :
   have frame_gram : P.kᴴ * S.J * P.k = (W.val * D * R)ᴴ * S.J * (W.val * D * R) :=
     P.gram_kk.trans ((gram_mul ..).trans R_iso).symm
   obtain ⟨a, ha⟩ := S.witt ⟨_, P.gram_lk⟩ ⟨L * W.val⁻¹, frame_left_inv⟩ frame_gram
-  obtain ⟨δ, x, y, ν, hκ, hy⟩ :
-      ∃ (δ : U S.J) (x : p → ℤ) (y : GL p E) (ν : Matrix p p (𝔸 E)),
-        (ν, P.levi (dyadicDiag x, 1) * (P.radicalElement 0 ν)⁻¹ * S.ratEmbed δ⁻¹ * g) ∈ Ω ∧
-          P.ActsOnFrame (S.ratEmbed (δ⁻¹ * a)) (y.map toAdele).val :=
-    normal g a
+  obtain ⟨δ, x, y, ν, hκ, hy⟩ := normal g a
   -- In standard coordinates `δ⁻¹` carries the frame `W D R = a k` to `k y`.
   have h_act : (S.ratEmbed δ)⁻¹.adeleMatrix * (S.x⁻¹.val * (W.val * D * R).map toAdele) =
       P.kAdelic * y.val.map toAdele := by
@@ -470,13 +462,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
   -- translations shrink by `2 ^ x ι` at infinity, and `theta_normalisedTorus_le` bounds the error
   -- by `B h` times the modulus of continuity of the translates on `C`.
   -- `B h` bounds the normalised theta function at `h`, uniformly in the torus element.
-  obtain ⟨B, hB_meas, hB_fin, h_theta⟩ :
-      ∃ B : G E t → ENNReal,
-        Measurable B ∧
-        ∫⁻ (h : G E t), B h ∂T.quotMeasure ≠ ⊤ ∧
-        ∀ (h : G E t) (x : p → ℕ) (f : 𝒮 (S.hom T)),
-          ‖(S.hom T).θ (splitWeil S T (1, h) (normalisedTorus T P x f))‖ₑ ≤ B h * ‖f‖ₑ :=
-    theta_normalisedTorus_le T P hm
+  obtain ⟨B, hB_meas, hB_fin, h_theta⟩ := theta_normalisedTorus_le T P hm
   obtain ⟨R, hR⟩ : ∃ R : ℝ, ∀ f ∈ C, ‖f‖ ≤ R := hC.isBounded.exists_norm_le
   obtain ⟨Ω, hΩ, h_cover⟩ := IsCovolOneLattice.exists_compact_cover (ratVectors E (m × Unit))
   let translate (h : G E t) (y : m × Unit → 𝔸 E) (f : 𝒮 (S.hom T)) : 𝒮 (S.hom T) :=
@@ -508,9 +494,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
   refine tendsto_zero_iff_eNorm_tendsto_zero.mpr (ENNReal.tendsto_nhds_zero.mpr fun ε hε ↦ ?_)
   -- The scalar that is `M` at the finite places and `M / 2 ^ j` at infinity is small for a
   -- suitable integer `M` and large `j`.
-  obtain ⟨M, hM, h_small⟩ : ∃ M : ℕ, M ≠ 0 ∧
-      ∀ a ∈ Ô E, ∀ᶠ z : NumberField.InfinitePlace E → ℂ in nhds 0,
-        ∫⁻ h : G E t, B h * modulus (Prod.swap (M * a, z), h) ∂T.quotMeasure ≤ ε :=
+  obtain ⟨M, hM, h_small⟩ :=
     mem_nhds_zero_finAdele_iff.mp (h_lim.eventually_le_const hε).curry_nhds
   let z (j : ℕ) : NumberField.InfinitePlace E → ℂ := (1 / 2 : ℝ) ^ j • ↑M
   have hz : Tendsto z atTop (nhds 0) := (summable_geometric_two.smul_const _).tendsto_atTop_zero
@@ -529,8 +513,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
   refine (convex_closedEBall ..).integral_mem isClosed_closedEBall (.of_forall fun q ↦ ?_)
     (isContPeriodic_along_k ..).integrable_out
   -- Write `q = M b` and move `b` into `Ω` by a rational `c`; the integrand is periodic.
-  obtain ⟨b, hb⟩ : ∃ b : m × Unit → 𝔸 E, toAdele (M : E) • b = q.out :=
-    ((Nat.cast_ne_zero (R := E).mpr hM).isUnit.map toAdele).smul_bijective.2 q.out
+  obtain ⟨b, hb⟩ := ((Nat.cast_ne_zero (R := E).mpr hM).isUnit.map toAdele).smul_bijective.2 q.out
   obtain ⟨c, hc, hcb⟩ : ∃ γ ∈ ratVectors E (m × Unit), γ + b ∈ Ω := h_cover b
   let y : m × Unit → 𝔸 E := star (twoAtInfinity E ^ x ι)⁻¹.val • (M • c + q.out)
   have hy : (Prod.swap (M * 1, z (x ι)) : 𝔸 E) • (c + b) = y := by
@@ -564,8 +547,7 @@ lemma New.SiegelWeil.tendsto_zeroTerm_of_notMem (hm : card m ≠ 0) {L : Lagrang
     Tendsto (fun z : (p → ℕ) × C ↦ Lagrangian.zeroTerm T L (normalisedTorus T P z.1 z.2))
       (atTop.comap fun z : (p → ℕ) × C ↦ z.1 ι) (nhds 0) := by
   -- Write `L = k' E^r` and extend `l'* J` from `L` to a rational `Y` that kills column `ι` of `k`.
-  obtain ⟨⟨r, P'⟩, rfl⟩ : { P : (r : ℕ) × CompleteSplitting S (Fin r) // P.snd.lagrangian = L } :=
-    L.completeSplitting
+  obtain ⟨⟨r, P'⟩, rfl⟩ := L.completeSplitting
   obtain ⟨Y, hY, hYι⟩ : ∃ Y : Matrix (Fin r) n E,
       (∀ v ∈ P'.lagrangian.val, Y *ᵥ v = (P'.lᴴ * S.J) *ᵥ v) ∧ Y *ᵥ P.k.col ι = 0 := by
     obtain ⟨φ, hφ, hφι⟩ :=
@@ -643,36 +625,23 @@ lemma New.SiegelWeil.bddAbove_norm_sub_tsum_norm_zeroTerm {ℓ : 𝒮 (S.hom T) 
     exact (Finite.pi' h_ev).subset
       fun x ⟨v, hv, h_gt⟩ ι h_le ↦ h_gt.not_ge (h_le (x, ⟨v, hv⟩) rfl)
   let a (x : p → ℕ) : G E s := P.levi (dyadicDiag (x ·), 1)
-  obtain ⟨B, hB₀, hB⟩ :
-      ∃ B > (0 : ℝ),
-        ∀ z ∈ (fun g : G E s ↦ ℓ (splitWeil S T (g, 1) f)) '' Set.image2 (· * ·) (a '' bad) Ω,
-        ‖z‖ ≤ B :=
-    (((h_fin.image a).isCompact.mul hΩ).image (by fun_prop)).isBounded.exists_pos_norm_le
+  obtain ⟨B, hB₀, hB⟩ := (((h_fin.image a).isCompact.mul hΩ).image
+    (f := fun g : G E s ↦ ℓ (splitWeil S T (g, 1) f)) (by fun_prop)).isBounded.exists_pos_norm_le
   refine ⟨B, forall_mem_range.mpr fun g ↦ sub_le_iff_le_add'.mpr ?_⟩
   obtain ⟨γ, x, κ, hκ, rfl⟩ := h_siegel g
-  -- `ℓ` does not see `γ`, which moves the zero term along each `L` to that along `σ L`.
-  obtain ⟨σ, hσ⟩ :
-      ∃ σ : Lagrangian S ≃ { L : Lagrangian S // colSpan (isometrySplitting γ).k ≤ L },
-        ∀ (L : Lagrangian S) (f : 𝒮 (S.hom T)),
-        Lagrangian.zeroTerm T (σ L) f = Lagrangian.zeroTerm T L (Splitting.zeroTerm f) :=
-    exists_lagrangian_equiv_containing T (isometrySplitting γ)
   rw [mul_assoc, ← Prod.mk_one_mul_mk_one, ← rep_apply_apply, h_inv]
   by_cases hx : x ∈ bad
   · exact le_add_of_nonneg_of_le (by positivity)
       (hB _ (mem_image_of_mem _ (mul_mem_mul (mem_image_of_mem a hx) hκ)))
-  have h_small : ‖ℓ (normalisedTorus T P x ((vacSize κ)⁻¹ • splitWeil S T (κ, 1) f))‖ ≤ 1 :=
-    not_lt.1 fun h_gt ↦ hx ⟨_, mem_image_of_mem _ hκ, h_gt⟩
-  -- Keep only the term of `σ P.lagrangian`; the torus scales it by the factor that normalises
-  -- `normalisedTorus`.
-  let v : 𝒮 (S.hom T) := splitWeil S T ((S.ratEmbed γ, 1) * (a x * κ, 1)) (vacElem (S.hom T))
-  have h_term :
-      ‖ℓ (splitWeil S T (a x * κ, 1) f)‖ ≤ ‖Lagrangian.zeroTerm T (σ P.lagrangian).val v‖ := by
-    simpa [v, a, vacSize, hσ, zeroTerm_isometrySplitting, normalisedTorus,
-      norm_zeroTerm_parabolic_mul (actsOnFrame_levi ..), rep_apply_apply, field,
-      div_le_iff₀ (norm_zeroTerm_vacElem_pos ..), mul_assoc, ideleAbs_det_dyadicDiag_natCast,
-      Real.sqrt_sq_eq_abs] using h_small
-  exact (h_term.trans ((h_summable v).le_tsum _ fun L _ ↦ norm_nonneg _)).trans
-    (le_add_of_nonneg_right hB₀.le)
+  -- Keep only the term of the shifted Lagrangian; the torus scales it by the factor that
+  -- normalises `normalisedTorus`.
+  refine (le_trans ?_ ((h_summable _).le_tsum
+    (SiegelWeil.CompleteSplitting.lagrangian ((isometrySplitting γ).comp P))
+    fun _ _ ↦ norm_nonneg _)).trans (le_add_of_nonneg_right hB₀.le)
+  simpa [a, vacSize, zeroTerm_lagrangian_isometrySplitting_comp, normalisedTorus,
+    norm_zeroTerm_parabolic_mul (actsOnFrame_levi ..), rep_apply_apply, field,
+    div_le_iff₀ (norm_zeroTerm_vacElem_pos ..), mul_assoc, ideleAbs_det_dyadicDiag_natCast,
+    Real.sqrt_sq_eq_abs] using not_lt.1 fun h_gt ↦ hx ⟨_, mem_image_of_mem _ hκ, h_gt⟩
 
 /-- Let `D₁` split off the isotropic line spanned by the column `ι` of `P.k`. The Lagrangians of the
 complement `S₁` correspond to the Lagrangians of `S` through that line, and the zero term along the
