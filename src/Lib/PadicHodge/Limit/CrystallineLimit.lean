@@ -116,54 +116,46 @@ section UniformBound
 
 open New.Period TensorProduct Matrix Module Submodule MulSemiringAction Function algebraMap
 
-/-- **Uniform period bound.** For `Γ` over `G_p` with open image (instance `OverGp Γ p`) and `h : ℕ`
-there is `a` in `A = Amax`, a unit in `B = Bmax`, such that for every crystalline `ρ` on `T` with
-basis `e` and jumps in `[0, h]`: (a) each `a ⊗ t` lies in the `A`-span of the invariants of `A ⊗ T`;
-(b) some `U`, `U'` over `A` have `U U' = a · 1` and `ρ(g) · g(U) = U`, with `ρ(g)` the matrix of
-`ρ g` in `e`: the columns of `U` are invariant vectors.
-Known result: Dwork's trick (an integral crystalline comparison with a uniform denominator). -/
-lemma New.Lift.uniform_period_bound {p : ℕ} [ThePrime p] (Γ : Type) [Group Γ] [OverGp Γ p] (h : ℕ) :
-    ∃ a : Amax, IsUnit (a : Bmax) ∧
-      ∀ {T ι : Type} [AddCommGroup T] [Module ℤ_[p] T] [Fintype ι] [DecidableEq ι]
-        (e : Basis ι ℤ_[p] T) {ρ : Representation ℤ_[p] Γ T}, IsCrystallineUpTo h ρ →
-        -- (a)
-        (∀ t : T, a ⊗ₜ t ∈ span Amax (fixedPeriods ρ Amax ⊤)) ∧
-        -- (b)
-        ∃ U U' : Matrix ι ι Amax,
-          U * U' = a • 1 ∧
-          ∀ g : Γ,
-            ((ρ g).toMatrix e e).map ((↑) : ℤ_[p] → Amax) * U.map (fun x : Amax ↦ toGp g • x) =
-              U := by
-  -- A period matrix `U` of `ρ` has entries in `BPlus = Amax [1/p]`. After a Frobenius power `m`
-  -- that depends on `Γ` only, a change of basis fixed by `toGp Γ` brings it into `Amax`. The Kummer
-  -- chart `k` of the fixed field of `toGp Γ` has a coordinate `z` and an Eisenstein element `E` of
-  -- degree `k.e`; `toGp Γ` fixes its constants `Λ` and `θ z` (`h_fix`).
-  obtain ⟨k, h_fix, -⟩ := exists_kummerChart Γ
-  -- `m` is `φ ^ l` with `3 k.e ≤ p ^ l` (as the radius lemma asks), `α : Ainf → Amax` is `m`
-  -- followed by the structure map, and `a = α (E τ) ^ h`, a unit of `Bmax` as `E τ ∣ μ`.
-  let m : FrobGal := (.ofAdd (p.clog (3 * k.e)), 1)
-  let α : Ainf →+* Amax := (algebraMap Ainf Amax).comp (toRingHom FrobGal Ainf m)
-  have h_unit : IsUnit ((α (k.E * tau) ^ h : Amax) : Bmax) := by
-    simpa [α, ← IsScalarTower.algebraMap_apply] using
-      (isUnit_smul_of_dvd_mu m k.associated_E_mul_tau_mu.dvd).pow h
-  refine ⟨α (k.E * tau) ^ h, h_unit, ?_⟩
-  intro T ι _ _ _ _ e ρ hρ
-  -- It suffices to prove (b), from which (a) follows.
-  refine (and_iff_right_of_imp fun h_matrix t ↦ ?_).mpr ?_
-  · -- Claim (a) follows from (b): if `u` is the linear map with matrix `U`, then
-    -- `a ⊗ t = U U' (1 ⊗ t)` is a combination of the columns `u (b n)` of `U`, which are invariant.
-    let b : Basis ι Amax (Amax ⊗[ℤ_[p]] T) := e.baseChange Amax
-    obtain ⟨u, U', h_mul, h_inv⟩ := (toLinAlgEquiv b).symm.surjective.exists.mp h_matrix
-    -- apply both sides of `h_mul`, as maps, to `1 ⊗ t`
-    have h_comb : (α (k.E * tau) ^ h) ⊗ₜ t = ∑ n, (U' *ᵥ b.repr (1 ⊗ₜ t)) n • u (b n) := by
-      simpa [toLinAlgEquiv_apply, smul_tmul'] using
-        (congrArg (toLinAlgEquiv b · (1 ⊗ₜ t)) h_mul).symm
-    refine Set.mem_of_eq_of_mem h_comb (sum_smul_mem _ _ fun n _ ↦ subset_span fun g ↦ ?_)
-    have h_coord : b.equivFun (u (b n)) = ((toLinAlgEquiv b).symm u).col n :=
-      funext fun _ ↦ by simp [LinearMap.toMatrixAlgEquiv_apply]
-    refine b.equivFun.injective ((equivFun_tensorAction ..).trans ?_)
-    rw [h_coord]
-    exact congrArg (fun X : Matrix ι ι Amax ↦ X.col n) (h_inv g)
+/-- Claim (a) of `New.Lift.uniform_period_bound` follows from claim (b): if `U U' = a • 1` over
+`Amax` for a matrix `U` with `ρ(g) · g(U) = U` for all `g`, where `ρ(g)` is the matrix of `ρ g` in
+the basis `e`, then `a ⊗ t` lies in the `Amax`-span of the invariants of `Amax ⊗ T` for all `t`. -/
+lemma New.Period.tmul_mem_span_fixedPeriods_of_exists_mul_eq_smul_one {p : ℕ} [ThePrime p]
+    {Γ : Type} [Group Γ] [OverGp Γ p] {T ι : Type} [AddCommGroup T] [Module ℤ_[p] T] [Fintype ι]
+    [DecidableEq ι] (e : Basis ι ℤ_[p] T) {ρ : Representation ℤ_[p] Γ T} {a : Amax}
+    (h_matrix : ∃ U U' : Matrix ι ι Amax, U * U' = a • 1 ∧ ∀ g : Γ,
+      ((ρ g).toMatrix e e).map ((↑) : ℤ_[p] → Amax) * U.map (fun x : Amax ↦ toGp g • x) = U)
+    (t : T) :
+    a ⊗ₜ t ∈ span Amax (fixedPeriods ρ Amax ⊤) := by
+  -- If `u` is the linear map with matrix `U`, then `a ⊗ t = U U' (1 ⊗ t)` is a combination of the
+  -- columns `u (b n)` of `U`, which are invariant.
+  let b : Basis ι Amax (Amax ⊗[ℤ_[p]] T) := e.baseChange Amax
+  obtain ⟨u, U', h_mul, h_inv⟩ := (toLinAlgEquiv b).symm.surjective.exists.mp h_matrix
+  -- apply both sides of `h_mul`, as maps, to `1 ⊗ t`
+  have h_comb : a ⊗ₜ t = ∑ n, (U' *ᵥ b.repr (1 ⊗ₜ t)) n • u (b n) := by
+    simpa [toLinAlgEquiv_apply, smul_tmul'] using
+      (congrArg (toLinAlgEquiv b · (1 ⊗ₜ t)) h_mul).symm
+  refine Set.mem_of_eq_of_mem h_comb (sum_smul_mem _ _ fun n _ ↦ subset_span fun g ↦ ?_)
+  have h_coord : b.equivFun (u (b n)) = ((toLinAlgEquiv b).symm u).col n :=
+    funext fun _ ↦ by simp [LinearMap.toMatrixAlgEquiv_apply]
+  refine b.equivFun.injective ((equivFun_tensorAction ..).trans ?_)
+  rw [h_coord]
+  exact congrArg (fun X : Matrix ι ι Amax ↦ X.col n) (h_inv g)
+
+/-- Claim (b) of `New.Lift.uniform_period_bound` for a Kummer chart `k` of `Γ` (`hk`). Let `α` be
+the Frobenius power `φ ^ l`, with `3 k.e ≤ p ^ l`, followed by the structure map `Ainf → Amax`. Then
+for every crystalline `ρ` on `T` with basis `e` and jumps in `[0, h]` there are `U`, `U'` over
+`Amax` with `U U' = α (E τ) ^ h · 1` and `ρ(g) · g(U) = U`, with `ρ(g)` the matrix of `ρ g` in
+`e`. -/
+private lemma New.Lift.exists_mul_eq_smul_one_of_isCrystallineUpTo {p : ℕ} [ThePrime p] {Γ : Type}
+    [Group Γ] [OverGp Γ p] {k : KummerChart ⟨Γ⟩} (hk : KummerChart.IsChartFor Γ k) (h : ℕ)
+    {T ι : Type} [AddCommGroup T] [Module ℤ_[p] T] [Fintype ι] [DecidableEq ι]
+    (e : Basis ι ℤ_[p] T) {ρ : Representation ℤ_[p] Γ T} (hρ : IsCrystallineUpTo h ρ) :
+    let m : FrobGal := (.ofAdd (p.clog (3 * k.e)), 1)
+    let α : Ainf →+* Amax := (algebraMap Ainf Amax).comp (toRingHom FrobGal Ainf m)
+    ∃ U U' : Matrix ι ι Amax, U * U' = α (k.E * tau) ^ h • 1 ∧ ∀ g : Γ,
+      ((ρ g).toMatrix e e).map ((↑) : ℤ_[p] → Amax) * U.map (fun x : Amax ↦ toGp g • x) = U := by
+  intro m α
+  obtain ⟨h_fix, -⟩ := hk
   -- Take a period matrix `U` over `BPlus`, equal over `Bmax` to a matrix `M` with invariant
   -- columns, and its frame: `Q L = τ ^ h` over `Ainf`, `U Z = E ^ h Q`, `Z' Z = E ^ h`, and
   -- `g Z = Z G` with `G` over `Ainf` for `g` fixing `Λ` and `θ z` (`Z_gal`).
@@ -225,6 +217,43 @@ lemma New.Lift.uniform_period_bound {p : ℕ} [ThePrime p] (Γ : Type) [Group Γ
     -- in `U_inv` only after unfolding the casts
     simpa [map_mul, incl_gal, ↓h_new_matrix, mul_assoc, C_fix, act, m, comp_def, smul_smul] using!
       congrArg (act m · * C) U_inv
+
+/-- **Uniform period bound.** For `Γ` over `G_p` with open image (instance `OverGp Γ p`) and `h : ℕ`
+there is `a` in `A = Amax`, a unit in `B = Bmax`, such that for every crystalline `ρ` on `T` with
+basis `e` and jumps in `[0, h]`: (a) each `a ⊗ t` lies in the `A`-span of the invariants of `A ⊗ T`;
+(b) some `U`, `U'` over `A` have `U U' = a · 1` and `ρ(g) · g(U) = U`, with `ρ(g)` the matrix of
+`ρ g` in `e`: the columns of `U` are invariant vectors.
+Known result: Dwork's trick (an integral crystalline comparison with a uniform denominator). -/
+lemma New.Lift.uniform_period_bound {p : ℕ} [ThePrime p] (Γ : Type) [Group Γ] [OverGp Γ p] (h : ℕ) :
+    ∃ a : Amax, IsUnit (a : Bmax) ∧
+      ∀ {T ι : Type} [AddCommGroup T] [Module ℤ_[p] T] [Fintype ι] [DecidableEq ι]
+        (e : Basis ι ℤ_[p] T) {ρ : Representation ℤ_[p] Γ T}, IsCrystallineUpTo h ρ →
+        -- (a)
+        (∀ t : T, a ⊗ₜ t ∈ span Amax (fixedPeriods ρ Amax ⊤)) ∧
+        -- (b)
+        ∃ U U' : Matrix ι ι Amax,
+          U * U' = a • 1 ∧
+          ∀ g : Γ,
+            ((ρ g).toMatrix e e).map ((↑) : ℤ_[p] → Amax) * U.map (fun x : Amax ↦ toGp g • x) =
+              U := by
+  -- A period matrix `U` of `ρ` has entries in `BPlus = Amax [1/p]`. After a Frobenius power `m`
+  -- that depends on `Γ` only, a change of basis fixed by `toGp Γ` brings it into `Amax`. The Kummer
+  -- chart `k` of the fixed field of `toGp Γ` has a coordinate `z` and an Eisenstein element `E` of
+  -- degree `k.e`; `toGp Γ` fixes its constants `Λ` and `θ z` (`hk`).
+  obtain ⟨k, hk⟩ := exists_kummerChart Γ
+  -- `m` is `φ ^ l` with `3 k.e ≤ p ^ l` (as the radius lemma asks), `α : Ainf → Amax` is `m`
+  -- followed by the structure map, and `a = α (E τ) ^ h`, a unit of `Bmax` as `E τ ∣ μ`.
+  let m : FrobGal := (.ofAdd (p.clog (3 * k.e)), 1)
+  let α : Ainf →+* Amax := (algebraMap Ainf Amax).comp (toRingHom FrobGal Ainf m)
+  have h_unit : IsUnit ((α (k.E * tau) ^ h : Amax) : Bmax) := by
+    simpa [α, ← IsScalarTower.algebraMap_apply] using
+      (isUnit_smul_of_dvd_mu m k.associated_E_mul_tau_mu.dvd).pow h
+  refine ⟨α (k.E * tau) ^ h, h_unit, ?_⟩
+  intro T ι _ _ _ _ e ρ hρ
+  -- It suffices to prove (b), from which (a) follows.
+  exact (and_iff_right_of_imp fun h_matrix ↦
+    New.Period.tmul_mem_span_fixedPeriods_of_exists_mul_eq_smul_one e h_matrix).mpr
+      (New.Lift.exists_mul_eq_smul_one_of_isCrystallineUpTo hk h e hρ)
 
 end UniformBound
 
@@ -662,30 +691,80 @@ private lemma baseChange_mem_nsmulRange_and_eq_zero_of_eq_zero {T : AlgCat ℤ_[
   | add x y hx hy =>
     exact ⟨by simpa using add_mem hx.1 hy.1, fun l hl ↦ by simp [hx.2 l hl, hy.2 l hl]⟩
 
-/-- Let `G` be a compact group, `Δ` a group with a homomorphism `j : Δ → G_p` of open image
-(`OverGp Δ p`), `w : Δ → ℤ_p[G]` multiplicative, and `R : G → GL_m(ℚ̄_p)` continuous with trace form
-non-degenerate on the span of the matrices `R(g)`. Let `X η` be finite families of continuous
-representations of `G` over `ℚ̄_p` whose pullbacks `g ↦ X(w(g))` along `w` (`viaGroupRing`, through
-the linear extension `groupRingHom` to `ℤ_p[G]`; `η : I`, members indexed by finite `ι η`) are
-crystalline (with respect to `j`) with Hodge–Tate jumps in `[0, h]`. If for each `ε > 0` some `X η`
-has `‖tr R(y)‖ ≤ ε` for all `y ∈ ℤ_p[G]` killed by every member of `X η`, then the pullback of `R`
-along `w` is crystalline. -/
-lemma isCrystalline_of_trace_limit [IsTopologicalGroup G]
-    {h : ℕ} (hR : Continuous R.rep) (hR_nondeg : IsTraceNondeg R.rep)
-    {X : ∀ η : I, ι η → PadicRep G p}
-    (hX_crys : ∀ (η : I) (x : ι η), IsCrystallineUpTo h (viaGroupRing w (X η x)))
-    (hX : ∀ (η : I) (x : ι η), Continuous (X η x).rep)
-    (happrox : ∀ ε > (0 : ℝ), ∃ η : I, ∀ y : ℤ_[p][G],
-      (∀ x : ι η, groupRingHom (X η x) y = 0) → ‖(groupRingHom R y).trace‖ ≤ ε) :
+omit [TopologicalSpace G] [CompactSpace G] in
+/-- An element `z` of `Amax ⊗ T` is invariant if for every `k` it agrees modulo `p ^ k` with the
+image under `q` of an element `v` of `Amax ⊗ ℤ_p[G]` whose image is invariant modulo `p ^ k`. -/
+private lemma mem_fixedPeriods_of_forall_exists_sub_mem_nsmulRange {T : AlgCat.{0} ℤ_[p]}
+    [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] {q : ℤ_[p][G] →ₐ[ℤ_[p]] T} {z : Amax ⊗[ℤ_[p]] T}
+    (hz : ∀ k : ℕ, ∃ v : Amax ⊗[ℤ_[p]] ℤ_[p][G],
+      (∀ g : Δ, q.toLinearMap.baseChange Amax
+          (tensorAction Amax (OverGp.toGp g) (mulLeft ℤ_[p] (w g)) v - v) ∈
+        nsmulRange (p ^ k) (Amax ⊗[ℤ_[p]] T)) ∧
+      q.toLinearMap.baseChange Amax v - z ∈ nsmulRange (p ^ k) (Amax ⊗[ℤ_[p]] T)) :
+    z ∈ fixedPeriods (actionRep ℤ_[p] T (q.toMonoidHom.comp w)) Amax ⊤ := by
+  let A : Type := Amax
+  -- Torsion-free `A`-modules have no additive torsion (used below as an instance).
+  have h_torsionFree := HasUniqueDiv.of_isTorsionFree.{0, 0} A
+  let Q : A ⊗[ℤ_[p]] ℤ_[p][G] →ₗ[A] A ⊗[ℤ_[p]] T := q.toLinearMap.baseChange A
+  refine fun g ↦ eq_of_sub_eq_zero (eq_zero_of_forall_mem_nsmulRange fun k ↦ ?_)
+  obtain ⟨v, hv, hvz⟩ := hz k
+  let σ := tensorAction A (OverGp.toGp g) (actionRep ℤ_[p] T (q.toMonoidHom.comp w) g)
+  have h₁ : σ (Q v) - Q v ∈ nsmulRange (p ^ k) _ := by
+    -- `σ` is the action on `A ⊗ T` written through `q`.
+    rw [show σ (Q v) = Q (tensorAction A (OverGp.toGp g) (mulLeft ℤ_[p] (w g)) v) from
+      tensorAction_periodTensorMap (g := mulLeft ℤ_[p] (w g)) (by simp) .., ← map_sub]
+    exact hv g
+  -- `σ z - z = (σ (Q v) - Q v) - σ (Q v - z) + (Q v - z)`
+  have h_tel : σ z - z = (σ (Q v) - Q v) - σ (Q v - z) + (Q v - z) := by
+    rw [map_sub]
+    abel
+  rw [h_tel]
+  exact add_mem (sub_mem h₁ (nsmulRange.map_mem σ hvz)) hvz
+
+omit [TopologicalSpace G] [CompactSpace G] in
+/-- Let `groupRingHom R` factor through an algebra map `q : ℤ_p[G] → T` via `u` (`hu`), and let
+`δ ∈ Amax` be a unit in `Bmax` such that the image of `δ ⊗ 1` in `Amax ⊗ T` lies in the `Amax`-span
+of the invariants. Then the pullback of `R` along `w` is crystalline: the equivariant maps
+`t ↦ u t * v` carry `δ ⊗ 1` to `δ ⊗ v`. -/
+private lemma isCrystalline_viaGroupRing_of_mem_span {T : AlgCat.{0} ℤ_[p]}
+    {q : ℤ_[p][G] →ₐ[ℤ_[p]] T} {u : T →ₐ[ℤ_[p]] Matrix R.Index R.Index (PadicAlgCl p)}
+    (hu : ∀ y : ℤ_[p][G], u (q y) = groupRingHom R y) {δ : Amax}
+    (hδ_unit : IsUnit (algebraMap Amax Bmax δ))
+    (hδ_span : q.toLinearMap.baseChange Amax (δ ⊗ₜ 1) ∈
+      span Amax (fixedPeriods (actionRep ℤ_[p] T (q.toMonoidHom.comp w)) Amax ⊤)) :
     IsCrystalline (viaGroupRing w R) := by
-  -- Let `T` be the image of `ℤ_p[G]` under `R`, and `T' k` its image under families `0, …, k`,
-  -- chosen so that the kernel of `ℤ_p[G] → T' k` dies in `T / p ^ k`. One period `δ` puts `δ ⊗ 1`
-  -- in the `A`-span (`A = Amax`) of the invariants of every `A ⊗ T' k`, hence, in the limit, of
-  -- those of `A ⊗ T`. `Λ` is the coefficient ring of a chart for `Δ`, fixed by `Δ` (`hfix`).
+  let A : Type := Amax
+  refine isAdmissible_of_one_tmul_mem_span fun v ↦
+    (smul_mem_iff_of_isUnit _ hδ_unit).mp (span_subset_span A _ _ ?_)
+  refine Set.mem_of_eq_of_mem ?_
+    (mapsTo_span (f := periodTensorMap A Bmax (applyVec u.toLinearMap v))
+      (fun y hy ↦ fixedPeriods.periodTensorMap_mem (ρ' := viaGroupRing w R)
+        (by simp [hu]) hy) hδ_span)
+  simp only [periodTensorMap, LinearMap.baseChange_tmul, map_one, AlgebraTensorModule.map_tmul,
+    Algebra.linearMap_apply, LinearMap.comp_apply, LinearMap.flip_apply, AlgHom.toLinearMap_apply,
+    Matrix.mulVecBilin_apply, Matrix.one_mulVec, smul_tmul', smul_eq_mul, mul_one]
+  rfl
+
+omit [TopologicalSpace G] [CompactSpace G] in
+/-- The limit step of `isCrystalline_of_trace_limit`. Let `q : ℤ_p[G] → T` and
+`π k : ℤ_p[G] → T' k` be finite free quotients such that the kernel of `π k` dies in
+`(Amax ⊗ T) / p ^ k` and in `Amax ⊗ T' l` for `l ≤ k` (`hker`), and let `δ ⊗ t` lie in the
+`Amax`-span of the invariants of `Amax ⊗ T' k` for all `t` (`hδ`). Then the image of `δ ⊗ 1` in
+`Amax ⊗ T` lies in the `Amax`-span of the invariants of `Amax ⊗ T`. -/
+private lemma baseChange_tmul_one_mem_span_fixedPeriods {T : AlgCat.{0} ℤ_[p]} [Free ℤ_[p] T]
+    [Module.Finite ℤ_[p] T] {q : ℤ_[p][G] →ₐ[ℤ_[p]] T} {T' : ℕ → AlgCat.{0} ℤ_[p]}
+    [∀ k, Free ℤ_[p] (T' k)] [∀ k, Module.Finite ℤ_[p] (T' k)]
+    {π : ∀ k : ℕ, ℤ_[p][G] →ₐ[ℤ_[p]] T' k} (hπ : ∀ k, Function.Surjective (π k))
+    (hker : ∀ {k : ℕ} {v : Amax ⊗[ℤ_[p]] ℤ_[p][G]}, (π k).toLinearMap.baseChange Amax v = 0 →
+      q.toLinearMap.baseChange Amax v ∈ nsmulRange (p ^ k) (Amax ⊗[ℤ_[p]] T) ∧
+        ∀ l ≤ k, (π l).toLinearMap.baseChange Amax v = 0)
+    {δ : Amax} (hδ : ∀ (k : ℕ) (t : T' k), δ ⊗ₜ t ∈
+      span Amax (fixedPeriods (actionRep ℤ_[p] (T' k) ((π k).toMonoidHom.comp w)) Amax ⊤)) :
+    q.toLinearMap.baseChange Amax (δ ⊗ₜ 1) ∈
+      span Amax (fixedPeriods (actionRep ℤ_[p] T (q.toMonoidHom.comp w)) Amax ⊤) := by
+  -- The invariants form finite free modules over the coefficient ring `Λ` of a chart for `Δ`,
+  -- fixed by `Δ` (`hfix`), so the limit can be taken there.
   obtain ⟨chart, hfix, -⟩ := exists_kummerChart Δ
-  -- `δ ∈ A` is a unit in `Bmax`, and `δ ⊗ t` lies in the `A`-span of the invariants of `A ⊗ L`
-  -- for every crystalline lattice `L` with jumps in `[0, h]` and every `t ∈ L`.
-  obtain ⟨δ, hδ_unit, hδ⟩ := uniform_period_bound Δ h
   let A : Type := Amax
   let Λ : Type := WittFq chart.f
   -- `Λ` acts on `A` through `Ainf`.
@@ -710,10 +789,59 @@ lemma isCrystalline_of_trace_limit [IsTopologicalGroup G]
   have hD {T : AlgCat ℤ_[p]} [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] (q : ℤ_[p][G] →ₐ[ℤ_[p]] T) :
       (⇑((D q).subtype.liftBaseChange A)).Injective ∧ Free Λ (D q) ∧ Module.Finite Λ (D q) :=
     finite_free_of_fixed_periods chart.chart_isChartOf (fun _ ↦ rfl) fun _ hy ↦ hy
+  obtain ⟨-, hDq_free, hDq_finite⟩ := hD q
+  let Q : A ⊗[ℤ_[p]] ℤ_[p][G] →ₗ[A] A ⊗[ℤ_[p]] T := q.toLinearMap.baseChange A
+  let Q' (k : ℕ) : A ⊗[ℤ_[p]] ℤ_[p][G] →ₗ[A] A ⊗[ℤ_[p]] T' k := (π k).toLinearMap.baseChange A
+  -- Invariance of `Q' k v`, read in `A ⊗ ℤ_p[G]`.
+  have hinv {k : ℕ} {v : A ⊗[ℤ_[p]] ℤ_[p][G]} : Q' k v ∈ D (π k) ↔
+      ∀ g : Δ, Q' k (tensorAction A (OverGp.toGp g) (mulLeft ℤ_[p] (w g)) v - v) = 0 :=
+    forall_congr' fun g ↦ (tensorAction_periodTensorMap (g := mulLeft ℤ_[p] (w g))
+      (by simp) (OverGp.toGp g) v).congr_left.trans sub_mem_ker_iff.symm
+  -- The uniform period: `δ ⊗ 1` is in the `A`-span of the `v` with `Q' k v` invariant.
+  have hspan (k : ℕ) : δ ⊗ₜ 1 ∈ span A (Q' k ⁻¹' D (π k)) := by
+    rw [span_preimage_eq (f := Q' k) (D _).nonempty
+      fun x _hx ↦ lTensor_surjective A (hπ k) x]
+    exact hδ k _
+  -- An element that is invariant modulo every `p ^ k` is invariant.
+  have hclosed (z : A ⊗[ℤ_[p]] T)
+      (hz : ∀ k : ℕ, ∃ v, Q' k v ∈ D (π k) ∧ Q v - z ∈ nsmulRange (p ^ k) _) : z ∈ D q :=
+    mem_fixedPeriods_of_forall_exists_sub_mem_nsmulRange w fun k ↦
+      (hz k).imp fun _ hv ↦ ⟨fun g ↦ (hker (hinv.mp hv.1 g)).left, hv.2⟩
+  -- `D q` is saturated because `A ⊗ T` is torsion free.
+  have hsat (k : ℕ) (v : A ⊗[ℤ_[p]] T) (hv : p ^ k • v ∈ D q) : v ∈ D q :=
+    fun g ↦ by simpa [NeZero.ne, -nsmul_eq_mul] using hv g
+  -- In the limit, `δ ⊗ 1` is in the `A`-span of the invariants of `A ⊗ T`.
+  have hδ_span : Q (δ ⊗ₜ 1) ∈ span A (D q : Set (A ⊗[ℤ_[p]] T)) :=
+    mem_span_of_forall_mem_span_preimage (fun _ _ hv ↦ (hker hv).left) (fun k ↦ (hD (π k)).left)
+      (fun k _ _ hkm hv ↦ hinv.mpr fun g ↦ (hker (hinv.mp hv g)).right k hkm) hclosed hsat hspan
+  exact hδ_span
+
+/-- Let `G` be a compact group, `Δ` a group with a homomorphism `j : Δ → G_p` of open image
+(`OverGp Δ p`), `w : Δ → ℤ_p[G]` multiplicative, and `R : G → GL_m(ℚ̄_p)` continuous with trace form
+non-degenerate on the span of the matrices `R(g)`. Let `X η` be finite families of continuous
+representations of `G` over `ℚ̄_p` whose pullbacks `g ↦ X(w(g))` along `w` (`viaGroupRing`, through
+the linear extension `groupRingHom` to `ℤ_p[G]`; `η : I`, members indexed by finite `ι η`) are
+crystalline (with respect to `j`) with Hodge–Tate jumps in `[0, h]`. If for each `ε > 0` some `X η`
+has `‖tr R(y)‖ ≤ ε` for all `y ∈ ℤ_p[G]` killed by every member of `X η`, then the pullback of `R`
+along `w` is crystalline. -/
+lemma isCrystalline_of_trace_limit [IsTopologicalGroup G]
+    {h : ℕ} (hR : Continuous R.rep) (hR_nondeg : IsTraceNondeg R.rep)
+    {X : ∀ η : I, ι η → PadicRep G p}
+    (hX_crys : ∀ (η : I) (x : ι η), IsCrystallineUpTo h (viaGroupRing w (X η x)))
+    (hX : ∀ (η : I) (x : ι η), Continuous (X η x).rep)
+    (happrox : ∀ ε > (0 : ℝ), ∃ η : I, ∀ y : ℤ_[p][G],
+      (∀ x : ι η, groupRingHom (X η x) y = 0) → ‖(groupRingHom R y).trace‖ ≤ ε) :
+    IsCrystalline (viaGroupRing w R) := by
+  -- Let `T` be the image of `ℤ_p[G]` under `R`, and `T' k` its image under families `0, …, k`,
+  -- chosen so that the kernel of `ℤ_p[G] → T' k` dies in `T / p ^ k`. One period `δ` puts `δ ⊗ 1`
+  -- in the `A`-span (`A = Amax`) of the invariants of every `A ⊗ T' k`, hence, in the limit, of
+  -- those of `A ⊗ T`.
+  -- `δ ∈ A` is a unit in `Bmax`, and `δ ⊗ t` lies in the `A`-span of the invariants of `A ⊗ L`
+  -- for every crystalline lattice `L` with jumps in `[0, h]` and every `t ∈ L`.
+  obtain ⟨δ, hδ_unit, hδ⟩ := uniform_period_bound Δ h
   -- The lattices `q : ℤ_p[G] → T` and `π k : ℤ_p[G] → T' k`.
   obtain ⟨T, q, u, hT_free, hT_finite, hq, hu, hq_ker, -⟩ :=
     exists_finite_groupRing_quotient Δ fun _ : Unit ↦ hR
-  obtain ⟨-, hDq_free, hDq_finite⟩ := hD q
   -- Traces control divisibility by `p ^ k` in `T`, and the trace of `R` is small on the common
   -- kernel of some family `X (η k)`.
   choose ε hε htrace using
@@ -724,58 +852,17 @@ lemma isCrystalline_of_trace_limit [IsTopologicalGroup G]
     exists_finite_groupRing_quotient Δ fun s : Σ l : Set.Iic k, ι (η l.val) ↦ hX _ s.snd
   have hT'_free (k : ℕ) : Free ℤ_[p] (T' k) := (hT' k).free
   have hT'_finite (k : ℕ) : Module.Finite ℤ_[p] (T' k) := (hT' k).finite
-  let Q : A ⊗[ℤ_[p]] ℤ_[p][G] →ₗ[A] A ⊗[ℤ_[p]] T := q.toLinearMap.baseChange A
-  let Q' (k : ℕ) : A ⊗[ℤ_[p]] ℤ_[p][G] →ₗ[A] A ⊗[ℤ_[p]] T' k := (π k).toLinearMap.baseChange A
-  -- The kernel of `Q' k` dies in `(A ⊗ T) / p ^ k` and in `A ⊗ T' l` for `l ≤ k`.
-  have hker {k : ℕ} {v : A ⊗[ℤ_[p]] ℤ_[p][G]} (hv : Q' k v = 0) :
-      Q v ∈ nsmulRange (p ^ k) _ ∧ ∀ l ≤ k, Q' l v = 0 :=
+  -- The kernel of `π k` dies in `(A ⊗ T) / p ^ k` and in `A ⊗ T' l` for `l ≤ k`.
+  have hker {k : ℕ} {v : Amax ⊗[ℤ_[p]] ℤ_[p][G]} (hv : (π k).toLinearMap.baseChange Amax v = 0) :
+      q.toLinearMap.baseChange Amax v ∈ nsmulRange (p ^ k) _ ∧
+        ∀ l ≤ k, (π l).toLinearMap.baseChange Amax v = 0 :=
     baseChange_mem_nsmulRange_and_eq_zero_of_eq_zero (hu ()) htrace hη (fun k ↦ (hT' k).surjective)
       (fun k ↦ (hT' k).apply_eq_zero_iff) hv
-  -- Invariance of `Q' k v`, read in `A ⊗ ℤ_p[G]`.
-  have hinv {k : ℕ} {v : A ⊗[ℤ_[p]] ℤ_[p][G]} : Q' k v ∈ D (π k) ↔
-      ∀ g : Δ, Q' k (tensorAction A (OverGp.toGp g) (mulLeft ℤ_[p] (w g)) v - v) = 0 :=
-    forall_congr' fun g ↦ (tensorAction_periodTensorMap (g := mulLeft ℤ_[p] (w g))
-      (by simp) (OverGp.toGp g) v).congr_left.trans sub_mem_ker_iff.symm
-  -- The uniform period: `δ ⊗ 1` is in the `A`-span of the `v` with `Q' k v` invariant.
-  have hspan (k : ℕ) : δ ⊗ₜ 1 ∈ span A (Q' k ⁻¹' D (π k)) := by
-    rw [span_preimage_eq (f := Q' k) (D _).nonempty
-      fun x _hx ↦ lTensor_surjective A (hT' k).surjective x]
-    exact (hδ (finBasis ℤ_[p] (T' k)) ((hT' k).isCrystallineUpTo fun s ↦ hX_crys _ s.snd)).left _
-  -- An element that is invariant modulo every `p ^ k` is invariant.
-  have hclosed (z : A ⊗[ℤ_[p]] T)
-      (hz : ∀ k : ℕ, ∃ v, Q' k v ∈ D (π k) ∧ Q v - z ∈ nsmulRange (p ^ k) _) : z ∈ D q := by
-    refine fun g ↦ eq_of_sub_eq_zero (eq_zero_of_forall_mem_nsmulRange fun k ↦ ?_)
-    obtain ⟨v, hv, hvz⟩ := hz k
-    let σ := tensorAction A (OverGp.toGp g) (actionRep ℤ_[p] T (q.toMonoidHom.comp w) g)
-    have h₁ : σ (Q v) - Q v ∈ nsmulRange (p ^ k) _ := by
-      -- `σ` is the action on `A ⊗ T` written through `q`.
-      rw [show σ (Q v) = Q (tensorAction A (OverGp.toGp g) (mulLeft ℤ_[p] (w g)) v) from
-        tensorAction_periodTensorMap (g := mulLeft ℤ_[p] (w g)) (by simp) .., ← map_sub]
-      exact (hker (hinv.mp hv g)).left
-    -- `σ z - z = (σ (Q v) - Q v) - σ (Q v - z) + (Q v - z)`
-    have h_tel : σ z - z = (σ (Q v) - Q v) - σ (Q v - z) + (Q v - z) := by
-      rw [map_sub]
-      abel
-    rw [h_tel]
-    exact add_mem (sub_mem h₁ (nsmulRange.map_mem σ hvz)) hvz
-  -- `D q` is saturated because `A ⊗ T` is torsion free.
-  have hsat (k : ℕ) (v : A ⊗[ℤ_[p]] T) (hv : p ^ k • v ∈ D q) : v ∈ D q :=
-    fun g ↦ by simpa [NeZero.ne, -nsmul_eq_mul] using hv g
   -- In the limit, `δ ⊗ 1` is in the `A`-span of the invariants of `A ⊗ T`.
-  have hδ_span : Q (δ ⊗ₜ 1) ∈ span A (D q : Set (A ⊗[ℤ_[p]] T)) :=
-    mem_span_of_forall_mem_span_preimage (fun _ _ hv ↦ (hker hv).left) (fun k ↦ (hD (π k)).left)
-      (fun k _ _ hkm hv ↦ hinv.mpr fun g ↦ (hker (hinv.mp hv g)).right k hkm) hclosed hsat hspan
+  have hδ_span := baseChange_tmul_one_mem_span_fixedPeriods w (fun k ↦ (hT' k).surjective) hker
+    fun k ↦ (hδ (finBasis ℤ_[p] (T' k)) ((hT' k).isCrystallineUpTo fun s ↦ hX_crys _ s.snd)).left
   -- The equivariant map `t ↦ u () t * v` carries this to `δ ⊗ v`, and `δ` is a unit in `Bmax`.
-  refine isAdmissible_of_one_tmul_mem_span fun v ↦
-    (smul_mem_iff_of_isUnit _ hδ_unit).mp (span_subset_span A _ _ ?_)
-  refine Set.mem_of_eq_of_mem ?_
-    (mapsTo_span (f := periodTensorMap A Bmax (applyVec (u ()).toLinearMap v))
-      (fun y hy ↦ fixedPeriods.periodTensorMap_mem (ρ' := viaGroupRing w R)
-        (by simp [hu]) hy) hδ_span)
-  simp only [Q, periodTensorMap, LinearMap.baseChange_tmul, map_one, AlgebraTensorModule.map_tmul,
-    Algebra.linearMap_apply, LinearMap.comp_apply, LinearMap.flip_apply, AlgHom.toLinearMap_apply,
-    Matrix.mulVecBilin_apply, Matrix.one_mulVec, smul_tmul', smul_eq_mul, mul_one]
-  rfl
+  exact isCrystalline_viaGroupRing_of_mem_span w (hu ()) hδ_unit hδ_span
 
 end New.Period
 
