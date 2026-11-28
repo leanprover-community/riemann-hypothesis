@@ -81,23 +81,16 @@ theorem exists_span_isAuxiliaryForm_eq_top :
   -- norms are at most `x ^ 99 + x ^ 202 b²`.
   obtain ⟨scalar, h_modulus, h_span⟩ := D.exists_span_short_lifts_eq_top
   set F : D.MFoldTwist → ℝ := ∏ i ∈ Finset.range D.m, ∏ j ∈ Finset.range D.m, D.turnRatio i j
-  have hF (ϑ : D.MFoldTwist) :
-      F ϑ = ∏ i ∈ Finset.range D.m, ∏ j ∈ Finset.range D.m, D.turnRatio i j ϑ := by
-    simp only [F, Finset.prod_apply]
   have hF_one : F 1 = 1 := by
-    rw [hF]
-    exact prod_eq_one fun i hi ↦ prod_eq_one fun j hj ↦
+    simpa only [F, Finset.prod_apply] using prod_eq_one fun i hi ↦ prod_eq_one fun j hj ↦
       (isRamifiedRatio_turnRatio (mem_range.1 hi) (mem_range.1 hj)).apply_one
   have hF_nonneg (ϑ : D.MFoldTwist) : 0 ≤ F ϑ := by
-    rw [hF]
-    exact prod_nonneg fun i hi ↦ prod_nonneg fun j hj ↦
+    simpa only [F, Finset.prod_apply] using prod_nonneg fun i hi ↦ prod_nonneg fun j hj ↦
       (isRamifiedRatio_turnRatio (mem_range.1 hi) (mem_range.1 hj)).nonneg ϑ
-  obtain ⟨e, he⟩ : ∃ e : ℤ, ∀ ϑ : D.MFoldTwist,
-      ‖(scalar ϑ / scalar 1 : ℂ)‖ = (ϑ.normQ : ℝ) ^ (e / 2 : ℝ) * F ϑ :=
-    h_modulus.exists_norm_div_eq hF_one hF_nonneg (scalar 1).ne_zero
+  obtain ⟨e, he⟩ := h_modulus.exists_norm_div_eq hF_one hF_nonneg (scalar 1).ne_zero
   have hγ_norm (ϑ : D.MFoldTwist) : ‖(scalar ϑ / scalar 1 : ℂ)‖ = (ϑ.normQ : ℝ) ^ (e / 2 : ℝ) *
       ∏ i ∈ Finset.range D.m, ∏ j ∈ Finset.range D.m, D.turnRatio i j ϑ := by
-    rw [he, hF]
+    simpa only [F, Finset.prod_apply] using he ϑ
   refine ⟨e, fun ϑ ↦ scalar ϑ / scalar 1,
     fun ϑ ↦ div_ne_zero (scalar ϑ).ne_zero (scalar 1).ne_zero, div_self (scalar 1).ne_zero,
     hγ_norm, ?_⟩
@@ -136,11 +129,10 @@ lemma mul_completion_cost_le {n n' : ℕ} (hn : (1 - 4 / D.b ^ 2) * D.targetDim 
   -- There are at most `4 d / b²` forms, and the factor `b⁻²` cancels the `b²` in their cost.
   have h_dim : (D.targetDim : ℝ) = n + n' := mod_cast h_card
   have h_few : (n' : ℝ) ≤ 4 / D.b ^ 2 * D.targetDim := by linarith
-  have h_cost : 4 * (2 * D.x₁ ^ 2 + D.b⁻¹) ≤ D.b := D.le_of_hasLogBound
   calc n' * (2 * D.x₁ ^ 2 * D.b ^ 2 + D.b)
       ≤ 4 / D.b ^ 2 * D.targetDim * (2 * D.x₁ ^ 2 * D.b ^ 2 + D.b) := by gcongr
     _ = D.targetDim * (4 * (2 * D.x₁ ^ 2 + D.b⁻¹)) := by field
-    _ ≤ D.targetDim * D.b := by gcongr
+    _ ≤ D.targetDim * D.b := mul_le_mul_of_nonneg_left D.le_of_hasLogBound D.targetDim.cast_nonneg
 
 /-! ### The inverse ratio -/
 
@@ -201,9 +193,8 @@ lemma heightLe_chainDeterminant_one_div {θ : PrimePadicIso → D.MFoldTwist} (h
     ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ
   -- The power of `Nm Q` costs nothing, and each of the at most `m² t` inverse ratios of Hecke
   -- values costs `x₁`.
-  have h_scalar : HeightLe D.b fun ι : PrimePadicIso ↦ (scalar (θ ι) : ℂ)⁻¹ := by
-    have h_cost : D.m * D.m * (D.t * D.x₁) ≤ D.b := D.le_of_hasLogBound
-    exact (hθ.heightLe_inv_rpow_mul_prod_quotientRatio e).mono h_cost fun _ ↦ le_rfl
+  have h_scalar : HeightLe D.b fun ι : PrimePadicIso ↦ (scalar (θ ι) : ℂ)⁻¹ :=
+    (hθ.heightLe_inv_rpow_mul_prod_quotientRatio e).mono D.le_of_hasLogBound fun _ ↦ le_rfl
   -- The `m` bounds for the single lifts add up, as `m k D.directionAmount = D.mainAmount`.
   have h_lifts : HeightLe (D.targetDim * (D.f * D.a * D.logB ^ 4 - D.mainAmount))
       (∏ j ∈ Icc 1 D.m, fun ι : PrimePadicIso ↦
@@ -277,8 +268,7 @@ theorem integral_forms_long {n : ℕ} {y : Fin n → D.targetForms} {δ c : ℝ}
     D.targetDim * (D.mainAmount - 3 * (D.f * D.a * D.logB ^ 4)) ≤ c + 2 * δ := by
   have h_long := integral_forms_long_with_completion_cost hy hδ hc
   have h_rank : n ≤ D.targetDim := by simpa using hy.fintype_card_le_finrank
-  have h_card : D.targetDim = n + (D.targetDim - n) := by omega
-  have h_completion := mul_completion_cost_le hn h_card
+  have h_completion := mul_completion_cost_le hn (by omega : D.targetDim = n + (D.targetDim - n))
   rw [Nat.cast_sub h_rank] at h_completion
   -- The two terms `d b` are absorbed in the error.
   have h_b_le_error : D.targetDim * D.b ≤ D.targetDim * (D.f * D.a * D.logB ^ 4) :=
