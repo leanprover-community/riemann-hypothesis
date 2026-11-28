@@ -283,6 +283,21 @@ def vacElem : 𝒮 V := IsVacuum.vacElem
 
 end Space
 
+/-- The space `V` is standard: all its signs are `+1` and its point is the identity matrix. This
+describes the standard space `stdSpace E n` without fixing the form in which the signs are
+written. -/
+class Space.IsStd {E : Type} [Field E] [CMType E] {n : Type} [Fintype n] [DecidableEq n]
+    {s : n → ℤˣ} (V : Space E n s) where
+  /-- All signs at the infinite places are `+1`. -/
+  signs_eq_one : s = 1
+  /-- The point of `V` is the identity matrix. -/
+  point_eq_one : V.x = 1
+
+instance {E : Type} [Field E] [CMType E] {n : Type} [Fintype n] [DecidableEq n] :
+    (stdSpace E n).IsStd where
+  signs_eq_one := rfl
+  point_eq_one := rfl
+
 /-! ### Real and finite coordinates -/
 
 /-- The additive map from complex vectors indexed by pairs (infinite place τ, coordinate i) to 𝔸^n
@@ -303,6 +318,10 @@ abbrev finCoord (i : n) : 𝔸f E := α⁻¹.val * (y i).2
 /-- The adelic vector with finite part αx (α the finite idele of the Weil data) and zero real part,
 for a finite adelic vector x. -/
 def finVec (x : n → 𝔸f E) (i : n) : (InfinitePlace E → ℂ) × 𝔸f E := ((0, α.val * x i) : 𝔸 E)
+
+omit [Fintype n] [DecidableEq n] in
+@[simp]
+lemma finVec_zero : finVec (0 : n → 𝔸f E) = 0 := by simp [funext_iff, finVec]
 
 omit [Fintype n] [DecidableEq n] in
 /-- An adelic vector `y` is the real vector of its archimedean coordinates plus its finite part. -/

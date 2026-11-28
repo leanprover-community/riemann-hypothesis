@@ -1,5 +1,6 @@
 module
 
+public import Lib.Weil.DualPair.Defs
 public import New.Derivatives.Divisibility.Count
 public import New.Derivatives.Vacuum.IntegralVacuum
 import Lib.Shimura.Uniformisation.HolomorphicFamilies

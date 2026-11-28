@@ -3,6 +3,7 @@ module
 import Mathlib.Topology.Algebra.Group.Matrix
 public import Lib.Adelic.AutomorphicForms.Basic
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+public import Lib.Weil.DualPair.Defs
 public import Lib.Weil.Fock.OscillatorPair
 public import Lib.Weil.Periods.Grading
 import Lib.Adelic.Unitary.RationalPoints

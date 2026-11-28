@@ -2,6 +2,7 @@ module
 
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Data.Rat.Cast.OfScientific
+public import Lib.Weil.DualPair.Defs
 public import New.Derivatives.Field.ChosenPlaces
 import Lib.ClassField.HeckeCharacter.SplitTameCharacters
 

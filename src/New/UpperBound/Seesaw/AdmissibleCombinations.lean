@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Ring.IsFormallyReal
 public import Lib.General.LinearAlgebra.TensorChains
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+public import Lib.Weil.DualPair.Defs
 public import Lib.Weil.Periods.Grading
 import Lib.ClassField.HeckeCharacter.AlgebraicValues
 import Lib.General.LinearAlgebra.HermiteForm

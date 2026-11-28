@@ -2,9 +2,10 @@ module
 
 public import Mathlib.RingTheory.MvPowerSeries.Rename
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Lib.GLn.SchurModule.Basic
 public import Lib.General.LinearAlgebra.PolarDecomposition
 public import Lib.Shimura.ComplexTheta.DimensionFormula
-public import Lib.Weil.DualPair.Defs
+public import Lib.Weil.Construction.VacuumProjections
 public import Lib.Weil.MixedModel.RealTheta
 
 /-!
@@ -68,25 +69,6 @@ open NumberField MvPolynomial Nat Finsupp Finset Fock
 variable {E : Type} [Field E] [CMType E] [WeilData E]
   {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
   {s : n → ℤˣ} (V : Space E n s)
-
-/-- The space `V` is standard: all its signs are `+1` and its point is the identity matrix. This
-describes the standard space `stdSpace E n` without fixing the form in which the signs are
-written. -/
-class Space.IsStd (V : Space E n s) where
-  /-- All signs at the infinite places are `+1`. -/
-  signs_eq_one : s = 1
-  /-- The point of `V` is the identity matrix. -/
-  point_eq_one : V.x = 1
-
-instance : (stdSpace E n).IsStd where
-  signs_eq_one := rfl
-  point_eq_one := rfl
-
-instance : ((stdSpace E n).hom (stdSpace E n')).IsStd where
-  signs_eq_one := rfl
-  point_eq_one := by
-    ext1
-    simp [Space.hom]
 
 /-- The series in which the coefficient of `z ^ α` is `a ^ |α| / α!` times the theta functional of
 `v ⊗ f`, where `v` is the Fock vector of the monomial `z ^ α`. If all signs of `V` are `+1` and `f`

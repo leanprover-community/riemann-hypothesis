@@ -156,6 +156,13 @@ def Space.hom : Space E (n' × n) (homSigns s s') where
       conjTranspose_transpose_eq_transpose_conjTranspose, transpose_map, ← mul_kronecker_mul,
       ← transpose_mul]
 
+instance {E : Type} [Field E] [CMType E] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
+    [DecidableEq n'] : ((stdSpace E n).hom (stdSpace E n')).IsStd where
+  signs_eq_one := rfl
+  point_eq_one := by
+    ext1
+    simp [Space.hom]
+
 /-! ### Characters, the action of the pair and the theta kernel -/
 
 /-- The restriction of υ to the norm-one ideles, as a character of U(1)(𝔸) trivial on the elements

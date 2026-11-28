@@ -341,10 +341,6 @@ variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {S : Set (FinPlace E)} {Ψ : (n₁ → 𝔸f E) → ℂ} {Ψ' : (n₂ → 𝔸f E) → ℂ}
   {e : n₁ ⊕ n₂ ≃ n} (hs : s ∘ e = s₁ ⊕ᵥ s₂)
 
-omit [Fintype n] [DecidableEq n] in
-@[simp]
-lemma finVec_zero : finVec (0 : n → 𝔸f E) = 0 := by simp [funext_iff, finVec]
-
 /-- Names are transported by a change of coordinates `D`. Let `S` and `S'` be disjoint from their
 conjugates. Let the finite part `D.finEquiv` carry parts at `S'` to parts at `S`, and parts at
 `S'.conjClosure` to parts at `S.conjClosure` (the sets with their conjugates). For `Ψ`
