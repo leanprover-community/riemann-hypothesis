@@ -4,6 +4,7 @@ import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Algebra.Pointwise.Stabilizer
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.LinearAlgebra.Span.TensorProduct
+import TauCeti.Algebra.Ring.GeomSum
 public import Lib.PadicHodge.Kisin.Modules
 import Lib.PadicComparison.Descent.TestCategory
 import Lib.PadicHodge.Kisin.FrameTheorem
@@ -276,9 +277,9 @@ lemma isPrimitiveRoot_thetaPhiInv_teichmuller_epsTilt :
 lemma sum_pow_eq_zero_of_isPrimitiveRoot {R : Type*} [CommRing R] [IsDomain R] {ζ : R}
     {q N m : ℕ} (hζ : IsPrimitiveRoot ζ q) (hN : q ∣ N) (hm : ¬q ∣ m) :
     ∑ l : Fin N, (ζ ^ m) ^ l.val = 0 := by
-  apply mul_left_cancel₀ (sub_ne_zero.2 (mt (hζ.pow_eq_one_iff_dvd m).1 hm) : ζ ^ m - 1 ≠ 0)
-  rw [← sum_range, mul_geom_sum, pow_right_comm, (hζ.pow_eq_one_iff_dvd N).2 hN]
-  simp
+  have h_ne : ζ ^ m ≠ 1 := mt (hζ.pow_eq_one_iff_dvd m).mp hm
+  rw [← sum_range, TauCeti.geom_sum_eq_zero_iff_pow_eq_one h_ne, pow_right_comm,
+    (hζ.pow_eq_one_iff_dvd N).mpr hN, one_pow]
 
 /-- The Galois elements for the step n = 0 of the depth lemma. There are p^c elements t_l of the
 Galois group Γ' of the chart (`k.galMonoid`) such that for every s in the ring S of the chart and

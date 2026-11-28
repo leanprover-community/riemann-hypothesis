@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Algebra.Ring.GeomSum
 public import New.Congruences.Selmer.OneSystem
 public import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 
@@ -78,8 +79,8 @@ and `c` vanishes at it. -/
 lemma affineAction_pow_eq_one (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h)
     {g : Gal(Ω/E)} {α : O} (hg : ρ g = α • 1) {k : ℕ} (hα : ∑ i ∈ range k, α ^ i = 0) :
     affineAction hc g ^ k = 1 := by
-  have h_pow : α ^ k = 1 := by rw [← sub_eq_zero, ← geom_sum_mul, hα, zero_mul]
-  exact Equiv.ext fun u ↦ by simp [affineAction_pow_apply hc hg, hα, h_pow]
+  exact Equiv.ext fun u ↦ by
+    simp [affineAction_pow_apply hc hg, hα, TauCeti.pow_eq_one_of_geom_sum_eq_zero hα]
 
 /-- Let `c` be a locally constant cocycle for `ρ`, let `A` be a place of `Ω` over the prime `v`, and
 let `ρ` be trivial on the elements of inertia at `A` near `1`. Each `g` acts by the affine map
@@ -340,8 +341,8 @@ lemma IsTiedPrimes.frob_sub_one_smul_eq [ThePrime ℓ] (hp : IsTiedPrimes ℓ S�
   let lam (w : J) : Gal(Ω/E) →* Multiplicative (ZMod (ℓ ^ N)) := (d w).1.character
   have h_sum {α : O'} (hα : y ∣ α - 1) : ∑ j ∈ range (ℓ ^ N), algebraMap O' B α ^ j = 0 := by
     simpa [B] using (Ideal.Quotient.eq_zero_iff_dvd _ _).2 (h_geom_sum α hα)
-  have hx_pow (w : J) : algebraMap O' B (1 + x w) ^ ℓ ^ N = 1 := by
-    rw [← sub_eq_zero, ← geom_sum_mul, h_sum (by simp [hx_dvd]), zero_mul]
+  have hx_pow (w : J) : algebraMap O' B (1 + x w) ^ ℓ ^ N = 1 :=
+    TauCeti.pow_eq_one_of_geom_sum_eq_zero (h_sum (by simp [hx_dvd]))
   obtain ⟨R, hR_smul, hR_scalar⟩ : ∃ R : Gal(Ω/E) →* Matrix n n B,
       (∀ (g : Gal(Ω/E)) (u : n → B), R g • u = pointTwist lam x e ρ g • u) ∧
       ∀ g : Gal(Ω/E), reduceModPow ℓ M ρ g = 1 →
