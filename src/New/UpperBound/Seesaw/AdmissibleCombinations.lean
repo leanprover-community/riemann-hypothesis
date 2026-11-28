@@ -218,54 +218,49 @@ lemma map_gluedGram {K L : Type*} [CommRing K] [CommRing L] (f : K →+* L) (p q
       Sum.inl.injEq, Sum.elim_inl, Sum.elim_inr, Pi.one_apply, Pi.zero_apply, apply_ite f,
       map_one, map_zero, map_neg, reduceCtorEq]
 
+/-- On the two middle coordinates of an odd string the Gram matrix acts by the block
+`[[q, -1], [-1, -p]]`. On the rest of the string it acts by reversal. -/
+private lemma gluedGram_mulVec_apply [Fintype X] {K : Type*} [CommRing K] (p q : K)
+    (v : ((X ⊕ Unit) ⊕ Fin s) → K) (i : (X ⊕ Unit) ⊕ Fin s) :
+    (gluedGram p q *ᵥ v) i = match i with
+      | .inl (.inl x) => v (.inl (.inl x))
+      | .inl (.inr _) => if h : Odd s then
+          q * v (.inl (.inr ())) - v (.inr ⟨s / 2, by obtain ⟨k, rfl⟩ := h; omega⟩)
+        else v (.inl (.inr ()))
+      | .inr b => if b = b.rev then -v (.inl (.inr ())) - p * v (.inr b) else v (.inr b.rev) := by
+  classical
+  rcases i with (x | ⟨⟩) | b
+  all_goals simp [gluedGram, mulVec_apply, dotProduct, sum_sum_type, Function.swap,
+    diagonal, ite_mul]
+  · by_cases hs : Odd s
+    · simp [hs, eq_rev_iff_of_odd hs, sub_eq_add_neg]
+    · simp [hs, ne_rev_of_not_odd hs]
+  · have rev (c : Fin s) : b = c.rev ↔ c = b.rev := by rw [eq_comm, Fin.rev_eq_iff]
+    by_cases h : b = b.rev
+    · simp [rev, ← h, sub_eq_add_neg]
+    · simp [rev, h]
+
 /-- The matrices `gluedGram p 0` and `gluedGram 0 p` multiply to `1`. -/
 lemma gluedGram_mul_eq_one [Fintype X] {K : Type*} [CommRing K] (p : K) :
     gluedGram (X := X) (s := s) p 0 * gluedGram 0 p = 1 := by
-  -- Compute the block product by cases on whether `s` is odd (existence of a middle vector).
-  by_cases hs : Odd s
-  · simp only [gluedGram, diagonal, hs, ↓reduceIte, eq_rev_iff_of_odd hs, transpose_of,
-      neg_zero, fromBlocks_multiply, ← fromBlocks_one, ← ext_iff, Sum.forall, fromBlocks_apply₁₁,
-      Matrix.add_apply, Matrix.mul_apply, of_apply, mul_ite, ite_mul, zero_mul, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, Sum.elim_inl, Pi.one_apply, mul_one, Function.swap,
-      Pi.zero_apply, Finset.sum_const_zero, add_zero, Sum.elim_inr, mul_neg, fromBlocks_apply₁₂,
-      Finset.sum_ite_eq, Matrix.zero_apply, Sum.inl.injEq, Matrix.one_apply, implies_true,
-      reduceCtorEq, and_self, ite_self, fromBlocks_apply₂₁, zero_add, fromBlocks_apply₂₂,
-      ite_eq_left_iff, ite_eq_right_iff, neg_eq_zero, true_and, forall_const, neg_mul,
-      one_mul, sum_sum_type, Finset.univ_unique, PUnit.default_eq_unit, Finset.sum_ite_irrel,
-      Finset.sum_neg_distrib, Finset.sum_const, Finset.card_singleton, one_smul, Fin.rev_rev]
-    let m : Fin s := ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩
-    have hm : m = m.rev := (eq_rev_iff_of_odd hs m).2 rfl
-    dsimp only [m] at hm
-    refine ⟨⟨neg_neg 1, fun b h1 h2 ↦ ?_⟩, fun b ↦ ⟨?_, fun b1 ↦ ?_⟩⟩
-    · exact False.elim (h1 ((eq_rev_iff_of_odd hs b).2 ((Fin.rev_eq_iff.mp h2).trans hm.symm)).symm)
-    · by_cases hb : b = m
-      · dsimp only [m] at hb; subst hb; simp only [← hm, ↓reduceIte, add_neg_cancel]
-      · dsimp only [m] at hb
-        have hbr : b ≠ (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s).rev :=
-          fun h ↦ hb (h.trans hm.symm)
-        simp only [hb, hbr, ↓reduceIte, neg_zero, add_zero]
-    · by_cases hb1 : b1 = m
-      · dsimp only [m] at hb1; subst hb1
-        by_cases hbb1 : b = ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩
-        · rw [hbb1, ← hm]; simp only [↓reduceIte, neg_neg, add_zero]
-        · simp only [← hm, hbb1, ↓reduceIte, neg_zero, add_zero]
-      · dsimp only [m] at hb1
-        have hb1r : b1 ≠ b1.rev := fun h ↦ hb1 ((eq_rev_iff_of_odd hs b1).1 h)
-        by_cases hbb1 : b = b1
-        · subst hbb1; simp only [hb1, hb1r, hb1r.symm, ↓reduceIte, zero_add]
-        · simp only [hb1, hb1r.symm, hbb1, ↓reduceIte, add_zero]
-  · simp only [gluedGram, diagonal, hs, ↓reduceIte, ne_rev_of_not_odd hs, transpose_of,
-      neg_zero, fromBlocks_multiply, ← fromBlocks_one, ← ext_iff, Sum.forall, fromBlocks_apply₁₁,
-      Matrix.add_apply, Matrix.mul_apply, of_apply, mul_ite, ite_mul, zero_mul, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, Sum.elim_inl, Pi.one_apply, mul_one, Function.swap,
-      Pi.zero_apply, Finset.sum_const_zero, add_zero, Sum.elim_inr, fromBlocks_apply₁₂,
-      Finset.sum_ite_eq, Matrix.zero_apply, Sum.inl.injEq, Matrix.one_apply, implies_true,
-      reduceCtorEq, and_self, ite_self, fromBlocks_apply₂₁, fromBlocks_apply₂₂, sum_sum_type,
-      Finset.univ_unique, PUnit.default_eq_unit, Fin.rev_rev, zero_add, true_and]
-    intro b c
-    by_cases hbc : b = c <;> simp only [hbc, ↓reduceIte, eq_comm]
-    · split_ifs with h1; exact False.elim (ne_rev_of_not_odd hs c h1); rfl
-    · split_ifs with h1; exact False.elim (ne_rev_of_not_odd hs c h1); rfl
+  classical
+  refine ext_iff_mulVec.2 fun v ↦ funext fun i ↦ ?_
+  rw [← mulVec_mulVec, one_mulVec]
+  rcases i with (x | ⟨⟩) | b
+  · simp only [gluedGram_mulVec_apply]
+  · by_cases hs : Odd s
+    · let m : Fin s := ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩
+      have hm : m = m.rev := (eq_rev_iff_of_odd hs m).2 rfl
+      simp only [gluedGram_mulVec_apply, dite_eq_left hs,
+        show (⟨s / 2, _⟩ : Fin s) = m from rfl, hm.symm,
+        ↓reduceIte, zero_mul, zero_sub, sub_zero, neg_neg]
+    · simp [gluedGram_mulVec_apply, hs]
+  · by_cases h : b = b.rev
+    · have hs : Odd s := by_contra fun hn ↦ ne_rev_of_not_odd hn b h
+      have hb := (eq_rev_iff_of_odd hs b).1 h
+      simp only [gluedGram_mulVec_apply, ite_eq_left h, dite_eq_left hs, ← hb, zero_mul, sub_zero]
+      ring
+    · simp [gluedGram_mulVec_apply, h, Ne.symm h]
 
 /-- A ring homomorphism carries the graded Gram matrix with parameter `r` to the one with `f r`. -/
 lemma map_gradedGram (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*} [CommRing S] (f : S →+* R) (r : S) :
@@ -534,23 +529,20 @@ lemma gram_stringFrame_eq_signMatrix {s N : ℕ} (hN : 0 < N) :
         Int.cast_one, not_true_eq_false, mul_one]
     · simp only [h_lt, ↓reduceIte, Units.val_one, Int.cast_one, not_false_eq_true,
         Units.val_neg, Int.reduceNeg, Int.cast_neg, mul_neg, mul_one]
-  have h_col_mid (b : Fin s) (hb : b = b.rev) (i : Fin s) :
-      stringFrame s N i b = if i = b then r else 0 := by
+  -- A column has two possible nonzero entries. At a fixed point of reversal they coincide.
+  let revCoeff (b : Fin s) : ℂ := t + if b = b.rev then r else 0
+  have h_col (b i : Fin s) : stringFrame s N i b =
+      (if i = b then σ b * t else 0) + if i = b.rev then revCoeff b else 0 := by
     by_cases hi : i = b
-    · simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
-        Complex.ofReal_add, Complex.ofReal_inv, hi, of_apply, ↓reduceIte, stringSign_mid b hb,
-        neg_div, one_div, ← hb, neg_add_cancel_left, r]
-    · simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
-        Complex.ofReal_add, Complex.ofReal_inv, of_apply, hi, ↓reduceIte, ← hb, add_zero]
-  have h_col (b : Fin s) (hb : b ≠ b.rev) (i : Fin s) :
-      stringFrame s N i b = (if i = b then σ b * t else 0) + if i = b.rev then t else 0 := by
-    by_cases hi : i = b
-    · simp only [stringFrame, div_eq_mul_inv, Complex.ofReal_mul, Complex.ofReal_intCast,
-        Complex.ofReal_inv, Real.sqrt_inv, Complex.ofReal_add, hi, of_apply, ↓reduceIte,
-        hb, add_zero, σ, t]
-    · simp only [stringFrame, div_eq_mul_inv, Complex.ofReal_mul, Complex.ofReal_intCast,
-        Complex.ofReal_inv, Real.sqrt_inv, Complex.ofReal_add, of_apply, hi, ↓reduceIte,
-        Complex.ofReal_zero, add_zero, zero_add, t]
+    · subst i
+      simp only [stringFrame, of_apply, revCoeff, σ, t, r, div_eq_mul_inv, Complex.ofReal_mul,
+        Complex.ofReal_intCast, Real.sqrt_inv, Complex.ofReal_inv]
+      split_ifs <;> simp only [Complex.ofReal_add, Complex.ofReal_inv, add_zero]
+    · by_cases hj : i = b.rev
+      · have hb : b ≠ b.rev := fun e ↦ hi (hj.trans e.symm)
+        simp only [stringFrame, of_apply, ite_eq_right hi, ite_eq_left hj, ite_eq_right hb,
+          revCoeff, t, add_zero]
+      · simp only [stringFrame, of_apply, ite_eq_right hi, ite_eq_right hj]
   have h_star (i b : Fin s) : star (stringFrame s N i b) = stringFrame s N i b := by
     simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
       Complex.ofReal_add, Complex.ofReal_inv, of_apply, star_add, apply_ite star, star_div₀,
@@ -562,42 +554,23 @@ lemma gram_stringFrame_eq_signMatrix {s N : ℕ} (hN : 0 < N) :
     simpa only [← Fin.rev_eq_iff, Matrix.mul_apply, conjTranspose_apply, h_star, of_apply,
       ite_mul, neg_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte,
       mul_ite, mul_neg, signMatrix, diagonal_apply] using h_entry
-  have rev_eq_self (x y : Fin s) (hx : x = x.rev) (hy : y = y.rev) : x = y := by
-    rw [Fin.ext_iff, Fin.val_rev] at hx hy; exact Fin.ext (by omega)
-  by_cases ha : a = a.rev
-  · simp only [h_col_mid a ha, ite_mul, zero_mul, Fintype.sum_ite_eq', ← ha, σ, stringSign_mid a ha]
-    by_cases hb : b = b.rev
-    · have hab : a = b := rev_eq_self a b ha hb
-      subst hab
-      simp only [h_col_mid a ha, ↓reduceIte]
-      calc r * (-(N : ℂ) * r) = -(r * r * (N : ℂ)) := by ring
-        _ = -1 := by rw [hr]
-    · have hab : a ≠ b := fun h ↦ hb (by rw [← h]; exact ha)
-      have hab' : a ≠ b.rev := fun h ↦ hb (by rw [h, Fin.rev_rev] at ha; exact ha.symm)
-      simp only [h_col b hb, hab, hab', ↓reduceIte, add_zero, mul_zero]
-  · simp only [h_col a ha, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul,
-      Fintype.sum_ite_eq', Fin.rev_rev]
-    by_cases hb : b = b.rev
-    · have hab : a ≠ b := fun h ↦ ha (by rw [h]; exact hb)
-      have har : a.rev ≠ b := fun h ↦ ha (by rw [← h, Fin.rev_rev] at hb; exact hb.symm)
-      simp only [h_col_mid b hb, hab, har, ↓reduceIte, ite_self, mul_zero, add_zero]
-    · by_cases hab : a = b
-      · subst hab
-        have hba : a.rev ≠ a := fun h ↦ ha h.symm
-        simp only [h_col a hb, ha, hba, ↓reduceIte, add_zero, zero_add, one_mul]
-        calc σ a * t * t + t * (σ a * t) = σ a * (2 * (t * t)) := by ring
-          _ = σ a := by rw [ht]; ring
-      · by_cases har : a = b.rev
-        · subst har
-          have hrne : b.rev ≠ b := fun h ↦ hb h.symm
-          simp only [h_col b hb, hrne, hrne.symm, Fin.rev_rev, ↓reduceIte, zero_add,
-            add_zero, one_mul]
-          calc σ b.rev * t * (σ b * t) + t * t = (σ b * σ b.rev + 1) * (t * t) := by ring
-            _ = 0 := by rw [hσ_rev b hb]; ring
-        · have h1 : a.rev ≠ b := fun h ↦ har (by rw [← h, Fin.rev_rev])
-          have h2 : a.rev ≠ b.rev := fun h ↦ hab (Fin.rev_inj.mp h)
-          simp only [h_col b hb, hab, har, h1, h2, ha, ↓reduceIte, ite_self, mul_zero,
-            add_zero]
+  simp only [h_col a, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul,
+    Fintype.sum_ite_eq', Fin.rev_rev]
+  by_cases hab : a = b
+  · subst b
+    by_cases ha : a = a.rev
+    · simp only [h_col, ← ha, σ, stringSign_mid a ha, revCoeff, ↓reduceIte, neg_one_mul]
+      linear_combination -hr
+    · simp only [h_col, revCoeff, ha, Ne.symm ha, ↓reduceIte, add_zero, zero_add, one_mul]
+      linear_combination 2 * σ a * ht
+  · by_cases har : a = b.rev
+    · subst a
+      have hb : b ≠ b.rev := Ne.symm hab
+      simp only [h_col, revCoeff, hb, hab, Fin.rev_rev, ↓reduceIte, add_zero, zero_add, one_mul]
+      linear_combination t * t * hσ_rev b hb
+    · have hrb : a.rev ≠ b := fun h ↦ har (Fin.rev_eq_iff.mp h)
+      have hrr : a.rev ≠ b.rev := fun h ↦ hab (Fin.rev_inj.mp h)
+      simp only [h_col, hab, har, hrb, hrr, ↓reduceIte, ite_self, add_zero, mul_zero]
 
 /-- For `N = 1` the frame `stringFrame s N` is unitary. -/
 lemma conjTranspose_stringFrame_one_mul_self : (stringFrame s 1)ᴴ * stringFrame s 1 = 1 := by
