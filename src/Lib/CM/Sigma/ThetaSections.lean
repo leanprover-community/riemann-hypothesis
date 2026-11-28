@@ -209,8 +209,8 @@ lemma theta_sq (hz : z ∉ C.Λ) : C.θ z ^ 2 = (℘[C.periodPair] z - ℘[C.per
 /-- The invariant g₃ equals 4℘(t)³ − g₂℘(t): this is the equation ℘′² = 4℘³ − g₂℘ − g₃ at the
 point t, where ℘′ vanishes. -/
 lemma g₃_eq : C.g₃ = 4 * ℘[C.periodPair] C.t ^ 3 - C.g₂ * ℘[C.periodPair] C.t := by
-  have h_zero : ℘'[C.periodPair] C.t = 0 := by grind [derivWeierstrassP_eq_zero_iff, CMLattice]
-  linear_combination C.derivWeierstrassP_sq C.t C.t_notMem - ℘'[C.periodPair] C.t * h_zero
+  linear_combination C.derivWeierstrassP_sq C.t C.t_notMem -
+    ℘'[C.periodPair] C.t * C.derivWeierstrassP_t_eq_zero
 
 /-- Let `C` be a CM lattice: a lattice `Λ` with a point `t` of order two modulo `Λ`, scaled so that
 `℘''(t) = 2`, together with a square root `a₁` of `12 ℘(t)`. Then the discriminant g₂³ − 27g₃² of

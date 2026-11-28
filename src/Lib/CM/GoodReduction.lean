@@ -7,6 +7,7 @@ import Mathlib.RingTheory.PiTensorProduct
 public import Lib.CM.Sigma.Basic
 import Lib.CM.Sigma.ThetaSections
 import Lib.General.NumberTheory.SUnitsAndClassNumber
+import TauCeti.Analysis.SpecialFunctions.Elliptic.Torsion
 
 /-!
 # CM lattices as multiples of fractional ideals, and good reduction of CM curves
@@ -197,7 +198,8 @@ lemma QuadField.exists_cmLattice_latticeModule_eq_scaledIdeal [PrimeSevenModEigh
   have h_ne : 3 * ℘[L 1] (l / 2) ^ 2 - (L 1).g₂ / 4 ≠ 0 := by
     have h_cubic : 4 * ℘[L 1] (l / 2) ^ 3 - (L 1).g₂ * ℘[L 1] (l / 2) - (L 1).g₃ = 0 := by
       rw [← (L 1).derivWeierstrassP_sq _ ht,
-        (derivWeierstrassP_eq_zero_iff (L 1) ht).2 (by rwa [add_halves]), zero_pow two_ne_zero]
+        ((L 1).derivWeierstrassP_eq_zero_iff (l / 2)).2 (by rwa [two_mul, add_halves]),
+        zero_pow two_ne_zero]
     -- a common root of the cubic and its derivative `12 x² - g₂` would kill its discriminant
     grind [weierstrass_disc_ne_zero (L 1)]
   lift c to ℂˣ using (ne_zero_pow four_ne_zero (hc.trans_ne h_ne)).isUnit
@@ -348,7 +350,8 @@ lemma scaledDisc_congr (hu₁ : u₁ ∉ L.lattice) (h_sub : u₁ - u₂ ∈ L.l
 lemma IsOrderTwo.weierstrassP_cubic_eq_zero (hu : L.IsOrderTwo u) :
     4 * ℘[L] u ^ 3 - L.g₂ * ℘[L] u - L.g₃ = 0 := by
   rw [← L.derivWeierstrassP_sq u hu.notMem,
-    (derivWeierstrassP_eq_zero_iff L hu.notMem).2 hu.add_self_mem, zero_pow two_ne_zero]
+    (L.derivWeierstrassP_eq_zero_iff u).2 (by simpa [two_mul] using hu.add_self_mem),
+    zero_pow two_ne_zero]
 
 /-- If `u₁`, `u₂`, `u₃` are points of order two whose sum is a period, then `℘(u₁) ≠ ℘(u₂)`. -/
 lemma IsOrderTwo.weierstrassP_ne (h₁ : L.IsOrderTwo u₁) (h₂ : L.IsOrderTwo u₂)

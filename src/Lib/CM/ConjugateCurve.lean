@@ -1,6 +1,7 @@
 module
 
 import TauCeti.Analysis.SpecialFunctions.Elliptic.LatticeClassification
+import TauCeti.Analysis.SpecialFunctions.Elliptic.Torsion
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
@@ -371,7 +372,7 @@ lemma exists_galConjugate_of_g₂_g₃ (L : PeriodPair) (hg₂ : L.g₂ = σ C.g
   let D : CMLattice 0 := {
     periodPair := L, t, a₁ := σ C.a₁, t_notMem := ht
     g₂_eq := by simp [hg₂, g₂_eq, ht_wp, map_ofNat]
-    two_t_mem := by simpa [← derivWeierstrassP_eq_zero_iff, ht] using ht_wp'
+    two_t_mem := by simpa [two_mul] using (L.derivWeierstrassP_eq_zero_iff t).1 ht_wp'
     a₁_sq := by simp [← map_pow, a₁_sq, ht_wp, map_ofNat]
     mul_mem_of_quadInt := fun {h} ↦ absurd rfl h.out
     quadGen_mul_t_notMem := fun {h} ↦ absurd rfl h.out }

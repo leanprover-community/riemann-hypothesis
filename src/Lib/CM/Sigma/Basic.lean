@@ -3,7 +3,7 @@ module
 public import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
 public import Mathlib.NumberTheory.ModularForms.Discriminant
-import TauCeti.Analysis.SpecialFunctions.Elliptic.AdditionTheorem
+import TauCeti.Analysis.SpecialFunctions.Elliptic.Torsion
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -598,10 +598,8 @@ lemma New.sigma_two_mul (L : PeriodPair) {z : ℂ} (hz : z ∉ L.lattice) :
   rw [two_mul]
   linear_combination -key
 
-lemma New.derivWeierstrassP_eq_zero_iff (L : PeriodPair) {z : ℂ} (hz : z ∉ L.lattice) :
-    ℘'[L] z = 0 ↔ z + z ∈ L.lattice := by
-  rw [← sigma_eq_zero_iff (L := L), ← two_mul, sigma_two_mul L hz]
-  simp [hz]
+/-! The zeros of the Weierstrass derivative are the points whose double lies in the lattice,
+by `PeriodPair.derivWeierstrassP_eq_zero_iff`. -/
 
 /-- The second derivative of the Weierstrass function ℘ of L: for z outside the lattice,
 ℘′′(z) = 6℘(z)² − g₂/2. -/
@@ -693,13 +691,15 @@ def translatedY (z : ℂ) : ℂ := (℘'[C.periodPair] (z + C.t) - C.a₁ * C.tr
 equals yθ³ off t + Λ, with y = `C.translatedY`. -/
 def translatedYThetaCube : ℂ → ℂ := C.σ * (deriv C.σ * C.θ - C.σ * (deriv C.θ + (C.a₁ / 2) • C.θ))
 
+/-- The Weierstrass derivative vanishes at the distinguished point of order two. -/
+lemma derivWeierstrassP_t_eq_zero : ℘'[C.periodPair] C.t = 0 :=
+  (C.periodPair.derivWeierstrassP_eq_zero_iff C.t).2 (by simpa [two_mul] using C.two_t_mem)
+
 /-- The function `y = C.translatedY`, given by `y(z) = ½(℘′(z + t) − a₁(℘(z + t) − ℘(t)))`, vanishes
 at `0`, since `℘'` vanishes at the point `t` of order two. -/
 @[simp]
 lemma translatedY_zero : C.translatedY 0 = 0 := by
-  have h_two : ℘'[C.periodPair] C.t = 0 :=
-    (derivWeierstrassP_eq_zero_iff C.periodPair C.t_notMem).2 C.two_t_mem
-  simp [translatedY, translatedX, h_two]
+  simp [translatedY, translatedX, C.derivWeierstrassP_t_eq_zero]
 
 end CMLattice
 
