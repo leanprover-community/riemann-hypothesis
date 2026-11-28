@@ -86,9 +86,9 @@ namespace New
 open Matrix MvPolynomial Finset Units DiscreteSeries Function Fischer
 
 variable {L : Type*} [Fintype L] {I : L → Type} [∀ t : L, Fintype (I t)]
-  [∀ t : L, DecidableEq (I t)] {R C : Type} [Fintype C] [DecidableEq C]
-  {ε : R → ℤˣ} {ε' : C → ℤˣ} {ι : Type} [Fintype ι] {T : FockDualPair ε ε' ι} {l ν : HCParam ε}
-  {l' ν' : HCParam ε'} {ρ : (t : L) → I t → R} {κ : (t : L) → I t → C}
+  [∀ t : L, DecidableEq (I t)] {R C : Type} {ε : R → ℤˣ} {ε' : C → ℤˣ} {ι : Type}
+  {T : FockDualPair ε ε' ι} {l ν : HCParam ε} {l' ν' : HCParam ε'} {ρ : (t : L) → I t → R}
+  {κ : (t : L) → I t → C}
 
 /-- A derivation of a polynomial ring sends a finite product to the sum of the products in which
 one factor is replaced by its derivative. -/
@@ -129,7 +129,9 @@ theorem derivation_prod_det (D : Derivation ℂ (MvPolynomial R ℂ) (MvPolynomi
     simp only [prod_cons, D.leibniz, ih, h_det, sum_cons, _root_.smul_eq_mul, ← sum_mul]
     ring
 
-variable [DecidableEq R]
+section
+
+variable [Fintype C] [DecidableEq C] [DecidableEq R]
 
 /-- Finitely many layers `t`, each pairing distinct rows `ρ t` with columns `κ t`. Layers that share
 a row have columns of one sign. With each of its rows a layer contains all rows of the same sign as
@@ -151,7 +153,6 @@ structure IsLayering (T : FockDualPair ε ε' ι) (l ν : HCParam ε) (ρ : (t :
   weight_eq (r : R) :
       ν r = T.vacuumWeight (ε r) + ∑ t : L, ∑ i : I t with ρ t i = r, (T.varSign (r, κ t i)).val
 
-omit [Fintype ι] in
 /-- Let `(ρ, κ)` be layers and let `P` be the product of their minors, with the matrices transposed.
 If `a = b`, or `a` has the sign of `b` and lies further out than `b` in the direction `s`, then the
 polarisation `∑ X (a, c) * ∂P/∂X (b, c)`, over the columns `c` where the variable `(b, c)` has sign
@@ -186,7 +187,6 @@ theorem IsLayering.polarization_prod_det (H : IsLayering T l ν ρ κ) {P : MvPo
 
 variable [Fintype R]
 
-omit [Fintype ι] in
 /-- Let `(ρ, κ)` be a layering of weight `ν` for `l`: finitely many layers `t`, each pairing
 distinct rows `ρ t` with columns `κ t`, such that layers sharing a row have columns of one sign,
 each layer contains with each of its rows all rows of the same sign lying further out in `l` in the
@@ -231,7 +231,6 @@ theorem IsLayering.isKHighest_and_isTermwiseHarmonic (H : IsLayering T l ν ρ �
         map_zero]
     · rw [h_absent (c, b) fun t i j h_eq ↦ h_occurs ⟨t, i, j, h_eq⟩, map_zero]
 
-omit [Fintype ι] in
 /-- Let `(ρ, κ)` be layers of weight `ν` for the rows and `(κ, ρ)` layers of weight `ν'` for the
 columns. Then the product over `t` of the minors of the variables with rows `ρ t` and columns `κ t`
 is nonzero, highest of weight `ν` for the rows and `ν'` for the columns, and harmonic both ways. -/
@@ -256,7 +255,6 @@ theorem IsLayering.isJointHighest_prod_det (H : IsLayering T l ν ρ κ)
     H.isKHighest_and_isTermwiseHarmonic (P := P) (by simp only [hP, det_transpose])
   exact ⟨h_ne, h_col_highest, h_col_harmonic, h_row_highest, h_row_harmonic⟩
 
-omit [Fintype ι] in
 /-- Version of `IsLayering.isJointHighest_prod_det` for a polynomial `P` that is given as the
 product of the minors: `P` is nonzero, highest of weight `ν` for the rows and `ν'` for the columns,
 and harmonic both ways. -/
@@ -267,7 +265,12 @@ theorem IsLayering.isJointHighest_of_eq_prod_det (H : IsLayering T l ν ρ κ)
   subst hP
   exact H.isJointHighest_prod_det h_swap
 
-omit [DecidableEq R] [DecidableEq C] [Fintype ι] in
+end
+
+section
+
+variable [Fintype C] [Fintype R]
+
 /-- Let the parameters `l` and `l'` match: each row and each column is either matched, that is, its
 centred parameter (`l r - 2 γ + card C` for a row) is large and opposite to that of its partner, or
 has a small one. Then a row `r` of nonzero weight `T.relWeight l r` (the lowest `K`-type relative to
@@ -286,7 +289,6 @@ theorem IsMatch.exists_isMatchedPair_of_relWeight_ne_zero (hm : IsMatch T l l') 
     have h2 := hm.sign_mul_relWeight_nonneg r (-1) (by grind [Units.val_neg, val_one])
     grind [Units.val_neg, val_one]
 
-omit [DecidableEq R] [DecidableEq C] [Fintype ι] in
 /-- Let the row `r` be matched with the column `c` and have nonzero weight `T.relWeight l r`. A row
 `r'` of the same sign that lies further out in `l`, in the direction of the sign of the variable
 `(r, c)`, is matched with a column of the sign of `c`, and its weight is at least as large in
@@ -311,6 +313,10 @@ theorem IsMatch.exists_isMatchedPair_of_outer (hm : IsMatch T l l') {r r' : R} {
     Units.ext (h_sign'.trans (h_same_sign.trans h_sign.symm))
   exact ⟨c', h_pair', by simpa [pairSign, h_row] using h_var, by grind⟩
 
+end
+
+variable [Fintype ι]
+
 namespace FockDualPair
 
 variable (T) (s : Equiv.Perm (ℤˣ × ℤˣ)) (w : ι → ℕ) (t : Fin (univ.sup w) × ℤˣ × ℤˣ)
@@ -329,19 +335,18 @@ def layerCol (x : T.Layer s w t) : C := (T.varEquiv.symm x).2
 
 variable {T s w t}
 
-omit [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] in
 theorem varEquiv_layerRow_layerCol (x : T.Layer s w t) :
     T.varEquiv (T.layerRow s w t x, T.layerCol s w t x) = x :=
   T.varEquiv.apply_symm_apply x
 
-omit [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] in
 theorem sign_layerCol_eq (x y : T.Layer s w t) :
     ε' (T.layerCol s w t x) = ε' (T.layerCol s w t y) :=
   congrArg Prod.snd (s.injective (x.property.right.trans y.property.right.symm))
 
 end FockDualPair
 
-omit [DecidableEq C] in
+variable [Fintype C] [DecidableEq R] [Fintype R]
+
 /-- Let `l = 2λ`, `l' = 2λ'` match (`IsMatch`): with `n = card R` and `n' = card C` both have gap
 `500(n+n')³`, and with `ξ r = λ r − γ + n'/2` and `ξ' c = λ' c − γ' + n/2`, rows and columns pair
 off as `ξ r = −ξ' c` with `σ ε r ε' c ξ r > |n−n'|/2`, the rest having small `|ξ|`. Let the height
@@ -413,6 +418,8 @@ theorem IsMatch.isLayering (hm : IsMatch T l l') (s : Equiv.Perm (ℤˣ × ℤˣ
       obtain ⟨c, h_pair', h_sign⟩ := hm.exists_isMatchedPair_of_relWeight_ne_zero (r := r) (by lia)
       rwa [hm.col_eq_of_isMatchedPair h_pair' h_pair] at h_sign
 
+variable [DecidableEq C]
+
 /-- If the parameters `l = 2λ`, `l' = 2λ'` match, there is a joint harmonic. With `n = card R` and
 `n' = card C`, matching means that both have gap `500(n+n')³`, and the entries
 `ξ r = λ r − γ + n'/2`, `ξ' c = λ' c − γ' + n/2` pair off as `ξ r = −ξ' c` with
@@ -451,10 +458,9 @@ section HoweArgument
 
 open New MvPolynomial Submodule Int Fischer DiscreteSeries Fock
 
-variable {R C ι : Type} [Fintype R] [Fintype C] {ε : R → ℤˣ} {ε' : C → ℤˣ}
+variable {R C ι : Type} [Fintype C] {ε : R → ℤˣ} {ε' : C → ℤˣ}
   {T : FockDualPair ε ε' ι} {l : HCParam ε} {l' : HCParam ε'}
 
-omit [Fintype R] in
 /-- For rows `a` and `b` with `ε a ≠ ε b`: if row `b` of `Q` has no variable of sign `1`, or row `a`
 has none of sign `-1`, then the Laplacian `T.fockLaplacian a b` kills `Q`. It is a sum, over the
 columns `c` with `T.varSign (a, c) = -1`, of terms built from `∂/∂X(a,c) ∂/∂X(b,c)`. -/
@@ -475,6 +481,8 @@ theorem New.Fischer.fockLaplacian_eq_zero_of_pderiv_eq_zero {Q : MvPolynomial ι
   · rw [h_row_b c hb, map_zero]
   · rw [pderiv_comm, h_row_a c ha, map_zero]
 
+variable [Fintype R]
+
 /-- For matched parameters (each row is matched with a column or has a small centred parameter) and
 `l b ≤ l a`, the centred parameter `l b - 2γ + card C` of row `b` is below `card R - card C` or that
 of row `a` is above `card C - card R`. -/
@@ -490,18 +498,15 @@ theorem New.IsMatch.centeredParam_lt_or_lt (hm : IsMatch T l l') {a b : R} (h_le
     · exact .inl (by linarith)
   · exact .inr (by linarith [(abs_lt.1 h_free).1])
 
-variable [Fintype ι]
-
 /-- If `G` does not contain all polynomials of degree at most `j`, then some nonzero one of them is
 orthogonal to those in `G` for the Fischer inner product. -/
-theorem New.Fischer.perpInDegree_ne_bot {j : ℤ} {G : Submodule ℂ (MvPolynomial ι ℂ)}
+theorem New.Fischer.perpInDegree_ne_bot [Fintype ι] {j : ℤ} {G : Submodule ℂ (MvPolynomial ι ℂ)}
     (hj : ¬ polyDegreeLE j ≤ G) : perpInDegree j G ≠ ⊥ := by
   intro h_bot
   have h_split : polyDegreeLE j ⊓ G ⊔ perpInDegree j G = polyDegreeLE j :=
     sup_orthogonal_inf_of_hasOrthogonalProjection inf_le_left
   exact hj (by simpa [h_bot] using h_split)
 
-omit [Fintype ι] in
 /-- Let `Q` be highest of the weight `Λ` of the lowest `K`-type for the rows and harmonic for the
 columns (each `T.swap.fockLaplacian c d` with `ε' c ≠ ε' d` kills `Q`). If `s` times the centred
 parameter `l r - 2γ + card C` of row `r` exceeds `card C - card R`, then `Q` has no variable of sign
@@ -514,6 +519,8 @@ theorem New.IsMatch.pderiv_eq_zero_of_lt_centeredParam [DecidableEq C] [Decidabl
   obtain ⟨h_weight, h_row⟩ := h_highest
   exact (polarization_self_eq_smul_of_isCompactPrimitive hm.hasGap_row.injective h_row h_harm
     (h_weight r) (hm.sign_mul_relWeight_nonneg r s hr)).2 c hc
+
+variable [Fintype ι]
 
 /-- Howe's argument: a column-stable subspace that contains a joint harmonic and the images (a)–(c)
 below is the whole space.

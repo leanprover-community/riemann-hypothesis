@@ -64,7 +64,7 @@ section OscillatorDefs
 
 open Matrix Fintype Fock MvPolynomial Finset GlModule
 
-variable {R C ι : Type} [Fintype C] [DecidableEq C] [Fintype ι]
+variable {R C ι : Type}
 
 private theorem oscRaise_eq (η : R → ℤˣ) (a : R) :
     TauCeti.oscRaise ℂ (fun i ↦ η i = 1) a = raiseOp η a := by
@@ -90,11 +90,9 @@ theorem Fock.lowerOp_comm (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) 
   simpa only [oscLower_eq, mul_apply_eq_comp] using
     DFunLike.congr_fun (TauCeti.commute_oscLower (K := ℂ) (p := fun i ↦ η i = 1) a b).eq P
 
-variable [DecidableEq R]
-
 /-- The commutator of the lowering operator `lowerOp η a` (`∂ a` or `X a`, by the sign `η a`) with
 the raising operator `raiseOp η b` (`X b` or `-∂ b`) is the identity if `a = b`, and zero if not. -/
-theorem Fock.lowerOp_raiseOp (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
+theorem Fock.lowerOp_raiseOp [DecidableEq R] (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
     lowerOp η a (raiseOp η b P) = raiseOp η b (lowerOp η a P) + if a = b then P else 0 := by
   simpa only [oscRaise_eq, oscLower_eq, mul_apply_eq_comp, LinearMap.add_apply,
     DFunLike.ite_apply, one_apply_eq_self, LinearMap.zero_apply] using DFunLike.congr_fun
@@ -103,7 +101,7 @@ theorem Fock.lowerOp_raiseOp (η : R → ℤˣ) (a b : R) (P : MvPolynomial R �
 /-- The canonical commutation relations of the Fock model for the signs `η`: raising operators
 commute, lowering operators commute, and the commutator of `lowerOp η a` with `raiseOp η b` is
 `δ_ab`. -/
-theorem Fock.canonical_commutation (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
+theorem Fock.canonical_commutation [DecidableEq R] (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
     raiseOp η a (raiseOp η b P) = raiseOp η b (raiseOp η a P) ∧
       lowerOp η a (lowerOp η b P) = lowerOp η b (lowerOp η a P) ∧
       lowerOp η a (raiseOp η b P) = raiseOp η b (lowerOp η a P) + if a = b then P else 0 :=
@@ -137,12 +135,11 @@ abbrev FockDualPair.std [Fintype R]
   columnShift := γ' + Fintype.card R
   varEquiv := Equiv.refl (R × C)
 
-variable [Fintype R]
-
-variable {ε : R → ℤˣ} {ε' : C → ℤˣ} (T : FockDualPair ε ε' ι) (l : HCParam ε) (l' : HCParam ε')
-  (Φ : MvPolynomial ι ℂ)
+variable {ε : R → ℤˣ} {ε' : C → ℤˣ}
 
 namespace FockDualPair
+
+variable (T : FockDualPair ε ε' ι)
 
 /-- The data with rows and columns exchanged: the sign `-σ`, the integers `γ'` and `γ` in this
 order, and the variable of `(c, r)` named as that of `(r, c)`. -/
@@ -152,7 +149,6 @@ abbrev swap : FockDualPair ε' ε ι where
   columnShift := T.rowShift
   varEquiv := (Equiv.prodComm C R).trans T.varEquiv
 
-omit [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] [Fintype ι] in
 theorem swap_swap : T.swap.swap = T := by
   simp only [swap, neg_neg]
   rfl
@@ -164,6 +160,17 @@ abbrev varSign : R × C → ℤˣ := pairSign T.globalSign ε ε'
 `σ * ε r * ε' c`. -/
 @[simp]
 abbrev indexSign : ι → ℤˣ := T.varSign ∘ T.varEquiv.symm
+
+theorem swap_indexSign : T.swap.indexSign = -T.indexSign := by
+  ext i
+  simp [pairSign, mul_right_comm T.globalSign]
+
+end FockDualPair
+
+variable [Fintype C] [DecidableEq C] [DecidableEq R] [Fintype R] (T : FockDualPair ε ε' ι)
+  (l : HCParam ε) (l' : HCParam ε') (Φ : MvPolynomial ι ℂ)
+
+namespace FockDualPair
 
 /-! ### Vacuum weight, the row action, Laplacians and polarisation -/
 
@@ -180,10 +187,6 @@ abbrev relWeight (r : R) : ℤ := l.lowestKType r - T.vacuumWeight (ε r)
 `λ r - γ + card C / 2`. -/
 @[simp]
 abbrev centeredParam (r : R) : ℤ := l r - 2 * T.rowShift + Fintype.card C
-
-section
-
-omit [Fintype ι]
 
 /-- The operators `glOp η i j = raiseOp η i * lowerOp η j` satisfy the commutation rule
 `[E i j, E k m] = δ_jk E i m - δ_im E k j` of the matrix units. Here `raiseOp η i` and `lowerOp η i`
@@ -231,8 +234,6 @@ theorem sum_glOp_commutator (a b c d : R) :
   -- Only the pairs of equal columns contribute.
   simp [ite_and]
 
-end
-
 /-- For a sign `σ`, the factor that is `1` if `s = t` and `σ` if not is multiplicative along three
 signs `s`, `t`, `u`. -/
 theorem _root_.New.ite_units_eq_mul_ite_units_eq (σ s t u : ℤˣ) :
@@ -243,7 +244,7 @@ theorem _root_.New.ite_units_eq_mul_ite_units_eq (σ s t u : ℤˣ) :
     rcases Int.units_eq_one_or t with rfl | rfl <;> rcases Int.units_eq_one_or u with rfl | rfl <;>
     simp
 
-omit [Fintype R] [Fintype ι] in
+omit [Fintype R] in
 /-- The operators `oscRowsUnit a b`, by which the matrix units of `gl R` act on the rows, satisfy
 the commutation rule `[E a b, E c d] = δ_bc E a d - δ_ad E c b`. -/
 theorem oscRowsUnit_commutator (a b c d : R) :
@@ -302,10 +303,6 @@ def oscRows : GlModule R (MvPolynomial ι ℂ) where
         rw [single_mul_single_sub_single_mul_single, map_sub, apply_ite (liftLinear ℂ _),
           apply_ite (liftLinear ℂ _)]
         simpa using h_commutator.symm
-
-section
-
-omit [Fintype ι]
 
 theorem oscRows_E (a b : R) : T.oscRows.E a b = T.oscRowsUnit a b := by
   simp [oscRows, E]
@@ -368,11 +365,6 @@ structure IsJointHighest (ν : R → ℤ) (ν' : C → ℤ) : Prop where
   /-- No monomial of `Φ` contains two variables of one row from columns of opposite signs. -/
   isTermwiseHarmonic_swap : T.swap.IsTermwiseHarmonic Φ
 
-omit [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] in
-theorem swap_indexSign : T.swap.indexSign = -T.indexSign := by
-  ext i
-  simp [pairSign, mul_right_comm T.globalSign]
-
 /-- For a dual pair `T` in Fock space, with sign `σ`, integers `γ` and `γ'`, and variables
 `varEquiv (r, c)` indexed by rows `r : R` and columns `c : C`, the matrix unit `E a b` of `gl C`
 acts on the columns by `s • (-∑ r, lowerOp η (varEquiv (r, a)) * raiseOp η (varEquiv (r, b))) + γ'
@@ -399,8 +391,6 @@ theorem swap_oscRows_E (a b : C) :
       h_sign, smul_sum]
   rw [oscRows_E, oscRowsUnit, h_sum]
   by_cases hab : ε' a = ε' b <;> simp [hab]
-
-end
 
 end FockDualPair
 

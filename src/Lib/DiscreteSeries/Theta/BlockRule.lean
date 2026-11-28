@@ -185,8 +185,17 @@ lemma entries_eq_of_exists_matched {C R : Type} [Fintype C] [Fintype R] {s : C �
     fun c r heq h ↦ (hsign c r heq).2 (heq.symm.trans_lt h)⟩
 
 section BlockRule
-variable {n n' : Type} [Fintype n] [Fintype n'] {s : n → ℤˣ} {t : n' → ℤˣ}
+variable {n n' : Type} [Fintype n'] {s : n → ℤˣ} {t : n' → ℤˣ}
   {γ γ' : ℤ} {l : HCParam s} {l' : HCParam t}
+
+/-- The centred column parameter of −λ for the oscillator pair is minus the shifted entry. -/
+lemma centeredParam_swap_std (c : n) :
+    (FockDualPair.std t s γ (-γ')).swap.centeredParam (-l) c =
+      -shiftedEntry γ' (card n') l c := by
+  simp only [shiftedEntry, FockDualPair.centeredParam, Pi.neg_apply]
+  ring
+
+variable [Fintype n]
 
 /-- The shifted entries of a parameter with a gap are distinct. -/
 lemma shiftedEntry_injective {g : ℕ} (hl : l.HasGap g) (m : ℕ) :
@@ -198,14 +207,6 @@ lemma shiftedEntry_injective {g : ℕ} (hl : l.HasGap g) (m : ℕ) :
 lemma even_shiftedEntry_add_sub_one {g : ℕ} (hl : l.HasGap g) {m d : ℕ} (hd : card n = m + d)
     (c : n) : Even (shiftedEntry γ' m l c + d - 1) := by
   grind [shiftedEntry, hl.parity c]
-
-omit [Fintype n] in
-/-- The centred column parameter of −λ for the oscillator pair is minus the shifted entry. -/
-lemma centeredParam_swap_std (c : n) :
-    (FockDualPair.std t s γ (-γ')).swap.centeredParam (-l) c =
-      -shiftedEntry γ' (card n') l c := by
-  simp only [shiftedEntry, FockDualPair.centeredParam, Pi.neg_apply]
-  ring
 
 /-- For the oscillator pair with rows for T and columns for S, a row r of λ' and a column c of −λ
 are matched if and only if the doubled shifted entries agree and t_r s_c times them exceeds

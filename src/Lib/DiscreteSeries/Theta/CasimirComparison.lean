@@ -143,14 +143,15 @@ end SumsOfSquares
 
 section Casimir
 
-variable {R C ι : Type} [Fintype R] [DecidableEq R] [Fintype C] {ε : R → ℤˣ} {ε' : C → ℤˣ}
+variable {R C ι : Type} [Fintype C] {ε : R → ℤˣ} {ε' : C → ℤˣ}
 
-omit [Fintype R] [DecidableEq R] in
 /-- The centred parameters `l r - 2γ + card C` of a vector `l` with distinct entries are
 distinct. -/
 theorem FockDualPair.centeredParam_injective (T : FockDualPair ε ε' ι) {l : HCParam ε}
     (hl : Function.Injective l) : Function.Injective (T.centeredParam l) :=
   fun a b hab ↦ hl (by simpa [FockDualPair.centeredParam] using hab)
+
+variable [Fintype R] [DecidableEq R]
 
 /-- Let `l`, `l'` be matching parameters of the pair `T`: they have a large gap, and each row and
 column is matched, with opposite centred parameters, or has a small one. Let `n' ≤ n` for
