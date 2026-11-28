@@ -163,9 +163,6 @@ theorem HCParam.HasLargeGap.isIdempotentKernel_dsKernel (hg : l.HasLargeGap A) :
   apply_one_ne_zero := by simp [dsKernel, ne_of_gt]
   convolution_eq x y := by
     -- the integrand is that of Schur orthogonality for `dsCoeff`, times `l.formalDegree ^ 2`
-    have h_schur : l.formalDegree * ∫ z : USign ε, l.dsCoeff ↑(y⁻¹ * z * x) * conj (l.dsCoeff z) =
-        l.dsCoeff ↑y⁻¹ * l.dsCoeff x :=
-      dsCoeff_schur_orthogonality hg y⁻¹ x
     have h_integrand (z : USign ε) : l.dsKernel z * l.dsKernel ((z * x)⁻¹ * y) = l.formalDegree *
         (l.formalDegree * (l.dsCoeff ↑(y⁻¹ * z * x) * conj (l.dsCoeff z))) := by
       simp [dsKernel, ↓← dsCoeff_inv, mul_comm, mul_left_comm, mul_assoc]
@@ -173,7 +170,7 @@ theorem HCParam.HasLargeGap.isIdempotentKernel_dsKernel (hg : l.HasLargeGap A) :
         l.formalDegree * (l.dsCoeff ↑y⁻¹ * l.dsCoeff x) := by
       simp [dsKernel, ↓dsCoeff_inv, ne_of_gt]
       ring
-    simp only [h_integrand, integral_const_mul, h_schur, h_value]
+    simp only [h_integrand, integral_const_mul, dsCoeff_schur_orthogonality hg y⁻¹ x, h_value]
 
 /-- For `n ≥ 1` and `λ = l / 2` with gap `500 n³ + A`, let `e_λ = l.dsKernel`. Then there is a
 smooth compactly supported `α` on `U(diag ε)` with `∫ α(x⁻¹) e_λ(x⁻¹ g) dx = e_λ(g)` for all `g`. So
@@ -183,13 +180,11 @@ theorem HCParam.HasLargeGap.exists_bump_conv_dsKernel (hg : l.HasLargeGap A) :
     ∃ α : Bumps ε, ∀ g : USign ε,
       ∫ x : USign ε, α.val.val x⁻¹ * l.dsKernel (x⁻¹ * g) = l.dsKernel g := by
   -- `smear l.dsCoeffSmooth.1 α` is `g ↦ ∫ y, α y⁻¹ • l.dsCoeff (g * y)`
-  obtain ⟨α, hα⟩ : ∃ α : Bumps ε, (smear l.dsCoeffSmooth.val) α = l.dsGenerator.val :=
-    exists_smear_dsCoeffSmooth_eq hg l.dsGenerator
+  obtain ⟨α, hα⟩ := exists_smear_dsCoeffSmooth_eq hg l.dsGenerator
   refine ⟨α, fun g ↦ ?_⟩
   -- evaluate at `g⁻¹`; `dsCoeff` at an inverse is the conjugate (`dsCoeff_inv`)
-  have h_eval : ∫ y : USign ε, α.val.val y⁻¹ * l.dsCoeff ↑(g⁻¹ * y) = l.dsCoeff ↑g⁻¹ := by
-    simpa using congrFun hα g⁻¹
-  simpa [↓← dsCoeff_inv, mul_left_comm, dsKernel, integral_const_mul, ne_of_gt] using h_eval
+  simpa [↓← dsCoeff_inv, mul_left_comm, dsKernel, integral_const_mul, ne_of_gt] using
+    congrFun hα g⁻¹
 
 /-- Integration by parts. Let `λ = l / 2` have gap `500 n³ + A`, and let `π` be as in
 `New.IsUnitaryRep` with derivative `ρ` along `ι`. Let `(-l).DsModule` be the space U(𝔤)c_{−λ}
@@ -228,11 +223,10 @@ theorem exists_integration_by_parts (hg : l.HasLargeGap A) (hu : IsUnitaryRep A 
     have h_deriv (g : USign ε) (t : ℝ) :
         HasDerivAt (fun s : ℝ ↦ F (g * expU (s • Y))) (F' (g * expU (t • Y))) t :=
       (hasDerivAt_rightDeriv_expU f.val g Y t).smul (hd.isCoeffMap 1 g Y v t)
-    have h_cont (g : USign ε) : Continuous fun t : ℝ ↦ F' (g * expU (t • Y)) := by fun_prop
     have h_ftc (g : USign ε) :
         ∫ t in Set.Ioc (0 : ℝ) 1, F' (g * expU (t • Y)) = F (g * expU Y) - F g := by
       simpa [intervalIntegral.integral_of_le] using intervalIntegral.integral_eq_sub_of_hasDerivAt
-        (fun t _ ↦ h_deriv g t) ((h_cont g).intervalIntegrable 0 1)
+        (fun t _ ↦ h_deriv g t) (Continuous.intervalIntegrable (by fun_prop) 0 1)
     rw [← add_eq_zero_iff_eq_neg, ← integral_add (h_int f _) (h_int _ _)]
     calc ∫ g : USign ε, F' g = ∫ t in Set.Ioc (0 : ℝ) 1, ∫ g : USign ε, F' g := by
           simp [Set.univ_inter]
@@ -243,10 +237,8 @@ theorem exists_integration_by_parts (hg : l.HasLargeGap A) (hu : IsUnitaryRep A 
       _ = 0 := by simp [integral_sub (hF.comp_mul_right _) hF, integral_mul_right_eq_self F]
   refine ⟨l.formalDegree • P, ?_, fun Y f v ↦ ?_⟩
   · -- the generator `(-l).dsGenerator` is the conjugate of `l.dsCoeff`
-    have h_kernel :
-        l.dsKernel = (l.formalDegree • (-l).dsGenerator : (-l).DsModule).val.val :=
-      funext fun g ↦ by simp [dsKernel]
-    rw [h_kernel]
+    rw [show l.dsKernel = (l.formalDegree • (-l).dsGenerator : (-l).DsModule).val.val from
+      funext fun g ↦ by simp [dsKernel]]
     exact P.map_smul l.formalDegree (-l).dsGenerator
   · -- a complex matrix is `Y₁ + I • Y₂` with `Y₁`, `Y₂` in the real Lie algebra
     rw [eq_unitaryLiePart_add_I_smul ε Y]
@@ -320,9 +312,6 @@ theorem integratedRep_eq_zero_of_notMem_rootCone (hg : l.HasLargeGap A)
         T * B w (ι v) := by
     simpa [T, hu.form_apply_eq_form_inv_apply] using
       hv.integral_conj_weightMinors_mul hu hd hν (B w)
-  have h_psi (g : USign ε) :
-      ∫ k : maxCompactU ε, conj (weightMinors ν k) * l.dsCoeff ↑(y * k * g) ∂haarK ε = 0 :=
-    integral_conj_weightMinors_mul_dsCoeff_eq_zero hg y g hν hν_cone
   have h_zero (w : X) : ∫ g : USign ε, l.dsCoeff g * B (π y⁻¹ (π g w)) (ι v) = 0 := by
     -- Move the average over `K` from the coefficient to `dsCoeff`: `integral_conv` evaluates one
     -- double integral with the average on the coefficient (`on_vec`) or on `dsCoeff` (`on_psi`).
@@ -345,8 +334,8 @@ theorem integratedRep_eq_zero_of_notMem_rootCone (hg : l.HasLargeGap A)
           B w (π ((y * k)⁻¹ * g)⁻¹ (ι v)) ∂haarK ε = T * B (π y⁻¹ (π g w)) (ι v) := by
       simpa [hu.form_apply_eq_form_inv_apply, rep_apply_apply, mul_assoc, -map_mul] using
         h_vec (π y⁻¹ (π g w))
-    simp only [h_average, h_psi, zero_mul, integral_zero, mul_left_comm (l.dsCoeff _),
-      integral_const_mul] at h_exchange
+    simp only [h_average, integral_conj_weightMinors_mul_dsCoeff_eq_zero hg y _ hν hν_cone,
+      zero_mul, integral_zero, mul_left_comm (l.dsCoeff _), integral_const_mul] at h_exchange
     exact (mul_eq_zero.1 h_exchange).resolve_left (by simp [T, ne_of_gt])
   let w : X := integratedRep π l.dsKernel (π y (ι v))
   have h_integrand (g : USign ε) : l.dsKernel g⁻¹ • B w (π g⁻¹ (π y (ι v))) =
@@ -440,10 +429,9 @@ theorem re_integratedRep_dsKernel_pos (hg : l.HasLargeGap A) (hu : IsUnitaryRep 
     simp only [h_subst, integral_const_mul, h_left, mul_left_comm _ (ofReal Λ.kTypeNormSq), h_right]
     simp [c, field]
   -- Each factor on the right of `h_inner` is positive, `u⁻¹ z u` being positive definite.
-  have h_inner_pos (u : maxCompactU ε) : 0 < ∫ k, Ψ k u ∂μ := by
-    simp [h_inner, h_pos, conj_pos, -map_mul, maxCompactU.coe_inv, weightMinors_pos]
   simp_rw [← h_polar, integral_integral_swap Ψ_int]
-  exact re_integral_pos Ψ_int.integral_prod_right fun u ↦ (pos_iff.1 (h_inner_pos u)).1
+  refine re_integral_pos Ψ_int.integral_prod_right fun u ↦ (pos_iff.1 ?_).1
+  simp [h_inner, h_pos, conj_pos, -map_mul, maxCompactU.coe_inv, weightMinors_pos]
 
 /-! ### Rigidity of highest vectors -/
 
@@ -493,14 +481,11 @@ theorem exists_isUnitaryCasimirGe_generatedModule (hu : IsUnitaryRep A π B)
       IsUnitaryCasimirGe l (σ.generatedModule ((j.toLinearMap ∘ₗ ι).rangeRestrict v)) := by
   let jι : M →ₗ[ℂ] H := j.toLinearMap ∘ₗ ι
   let x : jι.range := jι.rangeRestrict v
-  have skew (a b : n) (u w : M) :
-      B (ι (ρ.E a b u)) (ι w) = (ε a * ε b).val * B (ι u) (ι (ρ.E b a w)) :=
-    hd.form_E_eq_sign_mul hu a b u w
   -- by skewness `ρ` keeps the kernel of `ι`, so it descends to a module `σ` on the range
   have h_ker (Y : Matrix n n ℂ) (w : M) (hw : jι w = 0) : jι (ρ Y w) = 0 := by
     rw [← inner_self_eq_zero (𝕜 := ℂ)]
     nth_rw 1 [apply_eq_sum]
-    simp_all [jι]
+    simp_all [jι, hd.form_E_eq_sign_mul hu]
   obtain ⟨σ, σ_apply⟩ := ρ.exists_action_on_range jι h_ker
   refine ⟨σ, σ_apply, ?_⟩
   change IsUnitaryCasimirGe l (σ.generatedModule x)
@@ -511,7 +496,7 @@ theorem exists_isUnitaryCasimirGe_generatedModule (hu : IsUnitaryRep A π B)
     have gen_apply (Y : Matrix n n ℂ) (u : M) (hu_mem : jι.rangeRestrict u ∈ σ.filtration 1 x 0) :
         (σ.generatedModule x Y ⟨jι.rangeRestrict u, hu_mem⟩ : H) = j (ι (ρ Y u)) :=
       congrArg Subtype.val (σ_apply Y u)
-    simp [coe_inner, gen_apply, jι, inner_j, skew]
+    simp [coe_inner, gen_apply, jι, inner_j, hd.form_E_eq_sign_mul hu]
   · -- `Ω` acts on all of the generated module by `c`
     have Ω_x : σ.casimirK 1 x = ofReal c • x := by
       ext
@@ -599,12 +584,10 @@ theorem coeff_eq_dsCoeff_of_isKHighest (hg : l.HasLargeGap A) (hu : IsUnitaryRep
         rw [← hg.isDerivedAction_toL2_and_inner_toL2.2.1, map_one]
         rfl
       simp [coef_apply, d, inner_fst, inner_snd, ↓inner_smul_left, sub_eq_add_neg]
-    rw [← h_inner]
-    exact inner_left_of_mem_orthogonal hw (perp s)
+    exact h_inner.symm.trans (inner_left_of_mem_orthogonal hw (perp s))
   have h_zero : coef g (d 1) = 0 :=
     (highest 1).coeffMap_eq_zero P_unitary is_coef bounded at_one g
-  have x_norm_sq : inner ℂ x x = B (ι v) (ι v) := inner_j (ι v) (ι v)
-  rw [coef_apply, x_norm_sq] at h_zero
+  rw [coef_apply, show inner ℂ x x = B (ι v) (ι v) from inner_j (ι v) (ι v)] at h_zero
   simpa [d, x, jι, sub_eq_zero] using h_zero
 
 /-- Let `λ = l / 2` have gap `500 n³ + A`, let `π`, `B` be as in `New.IsUnitaryRep` with
@@ -632,7 +615,7 @@ theorem integratedRep_fix_of_isKHighest (hg : l.HasLargeGap A) (hu : IsUnitaryRe
       coeff_eq_dsCoeff_of_isKHighest hg hu hd hv hv_casimir hc_ge, smul_eq_mul, mul_left_comm (f _),
       integral_const_mul, h_psi, sub_self, map_zero]
   have h_zero : B d d = 0 := calc
-    _ = B d (integratedRep π f (ι v)) - B d (π 1 (ι v)) := by rw [map_one, ← map_sub]; rfl
+    _ = B d (integratedRep π f (ι v)) - B d (π 1 (ι v)) := by simp [← map_sub, d]
     _ = 0 := by simp only [map_integratedRep hu hf, h_orth, smul_zero, integral_zero, sub_zero]
   simpa [h_zero] using hu.pos d (sub_ne_zero.2 h_ne)
 
