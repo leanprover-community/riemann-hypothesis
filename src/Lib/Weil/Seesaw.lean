@@ -114,7 +114,7 @@ sought by `simp; rfl`). Let v be a real Fock vector and vac the vacuum outside �
 b the representation `pairWeil` at (k, k') sends the datum v ⊗ 1_x ⊗ vac to a(det k') b(det k)⁻¹
 (the value of `pairChar`) times the datum v ⊗ 1_y ⊗ vac. -/
 theorem pairWeil_modDatum_single {a b : AutChar E} {x y : Matrix n' n 𝔪.ResidueRing}
-    {v : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E (homSigns s s')))}
+    {v : Fock.fockSpace (realSigns E (homSigns s s'))}
       (k : stdLevel E n)
     (k' : stdLevel E n') (hx : x = (𝔪.reductionGL k')⁻¹.val * y * (𝔪.reductionGL k).val := by
       simp

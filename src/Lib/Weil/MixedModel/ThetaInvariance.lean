@@ -108,7 +108,8 @@ lemma integrable_slice (f : 𝒮 V) : Integrable fun x : p → 𝔸 E ↦ D.slic
   obtain ⟨C, hC⟩ := D.tsum_enorm_slice_le
   -- Translation by `x` is the action of `ϱ` at `D.lAdelic *ᵥ x`, which keeps the norm of `f`.
   have h_bound (x : p → 𝔸 E) : ∑' ξ : p → E, ‖D.slice (toAdele ∘ ξ + x) f‖ₑ ≤ C * ‖f‖ₑ := by
-    simpa [← ofReal_norm, Heisenberg.Rep.norm_map] using! hC (V.ϱ (D.lAdelic.mulVec x) f)
+    simpa [← ofReal_norm, TauCeti.HeisenbergDatum.Representation.norm_apply] using!
+      hC (V.ϱ (D.lAdelic.mulVec x) f)
   refine ⟨by fun_prop, ?_⟩
   -- Unfold the integral into an integral over the quotient of sums over the lattice `E^p`.
   calc ∫⁻ x : p → 𝔸 E, ‖D.slice x f‖ₑ
@@ -135,7 +136,7 @@ on `𝒮`.
 -/
 
 open Exchange MeasureTheory Matrix ComplexOrder WeilData Fock Finset Complex G Circle
-  Heisenberg.IsVacuum
+  TauCeti ReproducingModel
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E] {n : Type*} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} {n₀ p : Type*} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
@@ -216,7 +217,7 @@ lemma integrable_dataInner_slice (f f' : 𝒮 V) :
   -- norm at most `‖dataInner ∘ zeroTerm‖ * ‖f‖ * ‖slice x f'‖`
   refine ((D.integrable_slice f').norm.const_mul (‖V₀.dataInner ∘SL D.zeroTerm‖ * ‖f‖)).mono'
     (Continuous.aestronglyMeasurable (by fun_prop)) (.of_forall fun x ↦ ?_)
-  simpa [Heisenberg.Rep.norm_map, slice] using
+  simpa [TauCeti.HeisenbergDatum.Representation.norm_apply, slice] using
     (V₀.dataInner ∘SL D.zeroTerm).le_opNorm₂ (V.ϱ (D.lAdelic *ᵥ x) f) (D.slice x f')
 
 /-- For a Witt splitting `D` of `V` over `V₀` with frames of `p` columns, let f[x] = `D.slice x f`
@@ -234,7 +235,7 @@ lemma integral_dataInner_slice :
     rw [← integral_add_right_eq_self (fun x ↦ V₀.dataInner (D.slice x f) (D.slice x f'))
       (D.lCoord *ᵥ y)]
     simp [← mul_assoc]
-  exact ⟨_, integral_form_eq_mul_modelInner
+  exact ⟨_, integral_form_eq_mul_innerSL
     (fun x ↦ V₀.dataInner.bilinearComp (D.slice x) (D.slice x))
     D.integrable_dataInner_slice h_inv⟩
 
@@ -359,7 +360,7 @@ lemma zeroTerm_omega_levi (f : 𝒮 V) :
       integral_pos_of_integrable_nonneg_ne_zero (x := 0) (by fun_prop)
         (D.integrable_dataInner_slice u u).norm (fun _ ↦ norm_nonneg _)
         (by simp [hu, hw, φ, vacuumFn])
-  have hφ_cont : Continuous φ := (cont (adelicHeisenberg E 1)).norm.pow 2
+  have hφ_cont : Continuous φ := (isVacuum_vacuumFn (s := (1 : p → ℤˣ))).continuous.norm.pow 2
   have h_scale : ∫ x, φ (a.valᴴ *ᵥ x) * φ (a.valᴴ *ᵥ x) = (ideleAbs a.det)⁻¹ * I :=
     integral_comp_conjTranspose_mulVec a (hφ_cont.mul hφ_cont)
   -- If the integrand of `hC` is `r * F x` with `F` real, the constant `r` comes out.
@@ -467,12 +468,12 @@ lemma slice_omega_radicalElement_zero {z : Matrix p p (𝔸 E)} (hz : zᴴ = z) 
   calc D.slice x (V.ω (D.radicalElement 0 z) f)
     _ = D.zeroTerm (V.ω (D.radicalElement 0 z) (V.ϱ y f)) := by
       rw [omega_rho, h_point, slice, ContinuousLinearMap.comp_apply]
-    _ = (adelicHeisenberg E 1).β x (toAdele (j⁻¹ : E) • z *ᵥ x) • D.slice x f := by
+    _ = adelicHeisenberg E 1 x (toAdele (j⁻¹ : E) • z *ᵥ x) • D.slice x f := by
       rw [h_fix, ← slice_zero, D.isMixedLaw_slice]
       simp [y, mulVec_add, mulVec_mulVec, mulVec_smul]
     _ = _ := by
-      simp [adelicHeisenberg, star_mulVec, hz, ← dotProduct_mulVec, star_j, ← mul_assoc, ← map_mul,
-        h_coeff]
+      simp [adelicHeisenberg_apply, star_mulVec, hz, ← dotProduct_mulVec, star_j, ← mul_assoc,
+        ← map_mul, h_coeff]
 
 end New.Space.Splitting
 

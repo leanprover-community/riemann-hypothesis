@@ -167,7 +167,7 @@ cocycles under rational points.
 
 namespace New
 
-open NumberField Complex Finset WeilData Space ComplexConjugate stdLattice Heisenberg ThetaTori
+open NumberField Complex Finset WeilData Space ComplexConjugate stdLattice TauCeti ThetaTori
   Fock
 
 variable {E n : Type} [Field E] [CMType E] [WeilData E] (γ : n → E)
@@ -225,18 +225,19 @@ lemma entireTheta_translate_finiteImage (V : Space E n ε)
   have h_translate : V.ϱ (finVec z) f (realVec y) = f ((adelicSum E ε).equiv (y, z)) := by
     have h_fin : (finVec z : n → 𝔸 E) = (adelicSum E ε).equiv (0, z) :=
       funext fun i ↦ Prod.ext (mul_zero _).symm rfl
-    rw [h_fin, rho_apply, ← adelicSum_real_eq_realVec ε, OrthogonalSum.beta_equiv, ← map_add]
+    rw [h_fin, rho_apply, ← adelicSum_real_eq_realVec ε,
+      TauCeti.HeisenbergDatum.OrthogonalSum.apply_equiv_equiv, ← map_add]
     simp
   have h_period : f (realVec (y + -r)) =
-      (realHeisenberg (realSigns E ε)).β r (y + -r) * f ((adelicSum E ε).equiv (y, z)) := by
+      realHeisenberg (realSigns E ε) r (y + -r) * f ((adelicSum E ε).equiv (y, z)) := by
     rw [← V.apply_vecAtPoint_add f γ, vecAtPoint_eq_adelicSum γ V, ← adelicSum_real_eq_realVec ε,
-      OrthogonalSum.beta_equiv, ← map_add]
+      TauCeti.HeisenbergDatum.OrthogonalSum.apply_equiv_equiv, ← map_add]
     simp [r, z]
   have h_exp : cexp (-(B (-r) (-r) / 2) + -B (-r) y) *
-      (realHeisenberg (realSigns E ε)).β r (y + -r) / realVac (y + -r) = 1 / realVac y := by
+      realHeisenberg (realSigns E ε) r (y + -r) / realVac (y + -r) = 1 / realVac y := by
     -- Unfolded, both sides are exponentials; the exponents agree as polynomials in the four
     -- inner products of `y` and `r`.
-    simp [IsStd.signs_eq_one (V := V), hB, realHeisenberg, realVac, signMatrix, ← exp_add,
+    simp [IsStd.signs_eq_one (V := V), hB, realHeisenberg_apply, realVac, signMatrix, ← exp_add,
       ← exp_sub, ← exp_neg, dotProduct_add, add_dotProduct, fieldEq]
     ring_nf
   rw [thetaShift_apply, entireTheta, entireTheta, h_translate, h_period]
@@ -268,7 +269,7 @@ lemma semichar_finiteImage {b : (InfinitePlace E × n → ℂ) →L[ℂ] Infinit
   -- The adelic cocycle is trivial on the rational vectors `t • γ` and `γ`, and it is the product
   -- of the real and the finite cocycle; these two are the factors of the statement.
   have real_part : canonicalMultiplier B b (-realImage γ) =
-      (realHeisenberg fun _ ↦ 1).β (realImage ((traceOne : E) • γ)) (realImage γ) := by
+      realHeisenberg (fun _ ↦ 1) (realImage ((traceOne : E) • γ)) (realImage γ) := by
     set S : ℂ := ∑ p : InfinitePlace E × n,
       Φ p.1 (traceOne : E) * (conj (realImage γ p) * realImage γ p) with hS
     -- With `u = -realImage γ`, one has `B (b u) u = S` and `B u (b u) = conj S`.
@@ -282,17 +283,18 @@ lemma semichar_finiteImage {b : (InfinitePlace E × n → ℂ) →L[ℂ] Infinit
       push_cast
       field
     rw [canonicalMultiplier, h_form]
-    simp [hS, realHeisenberg, dotProduct, signMatrix, realImage_smul_apply, mul_assoc, mul_comm,
-      mul_left_comm]
-  have finite_part : semichar (finiteImage γ) = (stdLattice.finHeisenberg E n).β
+    simp [hS, realHeisenberg_apply, dotProduct, signMatrix, realImage_smul_apply, mul_assoc,
+      mul_comm, mul_left_comm]
+  have finite_part : semichar (finiteImage γ) = (stdLattice.finHeisenberg E n)
       (finiteImage ((traceOne : E) • γ)) (finiteImage γ) := by
     refine congrArg (selfDualAddChar E) ?_
     simp [stdLattice.traceOneAdele, dotProduct, mul_sum, finiteImage_smul_apply, mul_assoc,
       mul_comm]
-  have h_product : (realHeisenberg (realSigns E (1 : n → ℤˣ))).β (realImage ((traceOne : E) • γ))
-      (realImage γ) * (stdLattice.finHeisenberg E n).β (finiteImage ((traceOne : E) • γ))
+  have h_product : (realHeisenberg (realSigns E (1 : n → ℤˣ))) (realImage ((traceOne : E) • γ))
+      (realImage γ) * (stdLattice.finHeisenberg E n) (finiteImage ((traceOne : E) • γ))
       (finiteImage γ) = 1 := by
-    simpa only [vecAtPoint_eq_adelicSum, OrthogonalSum.beta_equiv] using
+    simpa only [vecAtPoint_eq_adelicSum,
+      TauCeti.HeisenbergDatum.OrthogonalSum.apply_equiv_equiv] using
       beta_vecAtPoint_eq_one (stdSpace E n) ((traceOne : E) • γ) γ
   rw [real_part, finite_part]
   exact eq_inv_of_mul_eq_one_right h_product

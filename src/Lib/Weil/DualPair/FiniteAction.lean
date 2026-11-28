@@ -398,8 +398,8 @@ noncomputable def negSource : CoordChange E conj (homSigns s s') (homSigns (-s) 
     simp [adelicSum, Units.smul_def, Subring.smul_def, normNegOneIdele, mul_left_comm,
       ContinuousAddEquiv.mk', funext_iff]
   beta_realEquiv := by
-    simp [↓Heisenberg.conj_beta, realHeisenberg, dotProduct, signMatrix, neg_add_eq_sub, pairSign,
-      mulVec_diagonal]
+    simp [↓TauCeti.HeisenbergDatum.conj_apply, realHeisenberg_apply, dotProduct, signMatrix,
+      neg_add_eq_sub, pairSign, mulVec_diagonal]
   vac_realEquiv := by simp
   selfDualAddChar_finEquiv := by
     simp [dotProduct, Units.smul_def, Subring.smul_def, normNegOne_inv, mul_left_comm, mul_assoc,

@@ -128,12 +128,13 @@ lemma IsSchwartzVector.adjointDatum {y : PairFock E u s} (hy : IsSchwartzVector 
     simp only [pi_nnNorm_le_iff, h_coord, Prod.forall, Prod.swap_prod_mk]
     exact forall_congr' fun _ ↦ forall_comm
   have h_measure : MeasurePreserving f.realEquiv (normalizedVolume _) (normalizedVolume _) :=
-    Heisenberg.IsVacuum.measurePreserving_equiv (realHeisenberg 1) (realHeisenberg 1)
-      f.vac_realEquiv
+    TauCeti.ReproducingModel.measurePreserving_of_vacuum (β := realHeisenberg 1)
+      (β' := realHeisenberg 1) (normalizedVolume _) (normalizedVolume _) f.vac_realEquiv
   intro N
   calc fockMoment N (Exchange.adjointDatum y)
       = ∫⁻ x, (1 + ‖f.realEquiv x‖ₑ) ^ N * ‖y (f.realEquiv x)‖ₑ ∂normalizedVolume _ := by
-        simp only [eNorm_eq_nnNorm, h_norm]
+        simp only [fockMoment, Exchange.adjointDatum, CoordChange.realMap,
+          TauCeti.ReproducingModel.transport_apply, RingHom.id_apply, eNorm_eq_nnNorm, h_norm]
         rfl
     _ = fockMoment N y := h_measure.lintegral_comp_emb f.realEquiv.measurableEmbedding
         fun x ↦ (1 + ‖x‖ₑ) ^ N * ‖y x‖ₑ
@@ -436,7 +437,8 @@ integral of `(X', X')`. Put `L_*(-k) = L_*(k)⁻¹`.
 
 section EqualRankValue
 
-open MeasureTheory NumberField Fintype Space Equiv Fock MixedModel Heisenberg OrthogonalSum
+open MeasureTheory NumberField Fintype Space Equiv Fock MixedModel TauCeti
+  TauCeti.HeisenbergDatum.OrthogonalSum
 
 variable {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
 
@@ -479,7 +481,7 @@ lemma integral_thetaOnRealData_eq_zero (W : Space E n s) {μ : InfinitePlace E �
       fockMoment N (Fock.vacVector : PairFock E s s) * ENNReal.ofReal C * (1 + ‖u‖ₑ) ^ N := by
     have h_norm : ‖(φ u).2‖ₑ ≤ ‖u‖ₑ := eNorm_le_iff_norm_le.2 (pi_norm_comp_le u _)
     have h_coeff : ‖T (realHeisenbergOp (φ u).1 Fock.vacVector)‖ₑ ≤ ENNReal.ofReal C := by
-      grw [← ofReal_norm, T.le_opNorm, Heisenberg.Rep.norm_map]
+      grw [← ofReal_norm, T.le_opNorm, TauCeti.HeisenbergDatum.Representation.norm_apply]
     calc fockMoment N (F u)
         ≤ ENNReal.ofReal C * ((1 + ‖(φ u).2‖ₑ) ^ N *
             fockMoment N (Fock.vacVector : PairFock E s s)) := by
@@ -493,7 +495,7 @@ lemma integral_thetaOnRealData_eq_zero (W : Space E n s) {μ : InfinitePlace E �
       (realHeisenbergOp u Fock.vacVector : PairFock E s (Sum.elim t s)) =
         realBoxProd (realSigns_comp_split (homSigns_sum_target signs_comp_refl))
           (realHeisenbergOp (φ u).1 Fock.vacVector) (realHeisenbergOp (φ u).2 Fock.vacVector) := by
-    rw [realBoxProd, ← heisenbergOp_tmul, tmul_vacElem]
+    rw [realBoxProd, ← heisenbergRep_tmul, tmul_vacuum]
   -- The integral is `thetaLarge` of that datum: compare the integrands at `l`.
   rw [← h_zero _ h_schwartz g]
   refine integral_congr_ae (.of_forall fun l ↦ ?_)
@@ -506,7 +508,7 @@ lemma integral_thetaOnRealData_eq_zero (W : Space E n s) {μ : InfinitePlace E �
     rw [h_coherent, map_smul]
     exact thetaOnRealData_boxProd_eq_mul V α β f f₀ x g y _ _ l
   calc S w = ∫ u, w u • S (realHeisenbergOp u Fock.vacVector) ∂normalizedVolume _ :=
-        IsVacuum.map_eq_integral w S
+        TauCeti.ReproducingModel.map_eq_integral w S
     _ = ∫ u, L (w u • F u) ∂normalizedVolume _ := by simp only [h_product, map_smul]
     _ = L (∫ u, w u • F u ∂normalizedVolume _) := L.integral_comp_comm h_integrable
 

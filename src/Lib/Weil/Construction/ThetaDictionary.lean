@@ -181,12 +181,13 @@ the product of the real cocycle `β` of `realHeisenberg` at the real images (whi
 `exp (-π i ratRiemannForm γ γ')`; see `exp_ratRiemannForm`) and of the finite character
 `ψ₀ (x'* x / 2)`, is `1`. -/
 lemma realHeisenberg_beta_mul_selfDualAddChar_eq_one (γ γ' : n → E) :
-    (Fock.realHeisenberg fun _ : InfinitePlace E × n ↦ 1).β (realImage γ) (realImage γ') *
+    (Fock.realHeisenberg fun _ : InfinitePlace E × n ↦ 1) (realImage γ) (realImage γ') *
       selfDualAddChar E (half * star (finiteImage γ') ⬝ᵥ finiteImage γ) = 1 := by
-  have h_adelic : (adelicHeisenberg E (1 : n → ℤˣ)).β ((stdSpace E n).vecAtPoint γ)
+  have h_adelic : (adelicHeisenberg E (1 : n → ℤˣ)) ((stdSpace E n).vecAtPoint γ)
       ((stdSpace E n).vecAtPoint γ') = 1 :=
     beta_vecAtPoint_eq_one (stdSpace E n) γ γ'
-  simp only [vecAtPoint_eq_adelicSum, Heisenberg.OrthogonalSum.beta_equiv] at h_adelic
+  simp only [vecAtPoint_eq_adelicSum, TauCeti.HeisenbergDatum.OrthogonalSum.apply_equiv_equiv,
+    stdLattice.finHeisenberg_apply] at h_adelic
   exact h_adelic
 
 /-- The product formula for the Heisenberg cocycle: for rational vectors `γ, γ'` with finite
@@ -196,13 +197,13 @@ lemma exp_ratRiemannForm (γ γ' : n → E) :
     exp (Real.pi * I * ratRiemannForm γ γ') =
       selfDualAddChar E (half * star (finiteImage γ') ⬝ᵥ finiteImage γ) := by
   -- Both sides are inverse to the real cocycle `β` at the real images of `γ` and `γ'`.
-  set β : ℂ := (Fock.realHeisenberg fun _ : InfinitePlace E × n ↦ 1).β (realImage γ) (realImage γ')
+  set β : ℂ := (Fock.realHeisenberg fun _ : InfinitePlace E × n ↦ 1) (realImage γ) (realImage γ')
   have h_real : exp (Real.pi * I * ratRiemannForm γ γ') * β = 1 := by
     have h_sub : star (realImage γ) ⬝ᵥ realImage γ' - star (realImage γ') ⬝ᵥ realImage γ =
         2 * Real.pi * I * (fockForm _).riemannForm (realImage γ) (realImage γ') :=
       isAppellHumbert_fockForm.sub_eq_riemannForm (realImage γ) (realImage γ')
     have h_sign : signMatrix (fun _ : InfinitePlace E × n ↦ 1) = 1 := signMatrix_one
-    simp only [β, Fock.realHeisenberg, ← exp_add, ratRiemannForm, h_sign, Matrix.one_mulVec]
+    simp only [β, Fock.realHeisenberg_apply, ← exp_add, ratRiemannForm, h_sign, Matrix.one_mulVec]
     rw [← exp_zero]
     congr 1
     linear_combination (-1 / 2 : ℂ) * h_sub
@@ -283,14 +284,14 @@ lemma semichar_finiteImage_add {E n : Type} [Field E] [CMType E] [WeilData E] [F
       selfDualAddChar E (star traceOneAdele * star (finiteImage γ') ⬝ᵥ finiteImage γ) = 1 :=
     selfDualAddChar_eq_one_of_mem h_int
   -- The finite cocycle is by definition `ψ₀ (x'* x / 2)`; the product formula evaluates it.
-  have h_cocycle : (finHeisenberg E n).β (finiteImage γ) (finiteImage γ') =
+  have h_cocycle : finHeisenberg E n (finiteImage γ) (finiteImage γ') =
       exp (Real.pi * I * ratRiemannForm γ γ') :=
     (exp_ratRiemannForm γ γ').symm
   calc semichar (finiteImage (γ + γ'))
       = selfDualAddChar E (star traceOneAdele * star (finiteImage γ') ⬝ᵥ finiteImage γ) *
           semichar (finiteImage γ + finiteImage γ') := by rw [h_one, one_mul, map_add]
     _ = semichar (finiteImage γ) * semichar (finiteImage γ') *
-          (finHeisenberg E n).β (finiteImage γ) (finiteImage γ') := (semichar_add _ _).symm
+          finHeisenberg E n (finiteImage γ) (finiteImage γ') := (semichar_add _ _).symm
     _ = semichar (finiteImage γ) * semichar (finiteImage γ') *
           exp (Real.pi * I * ratRiemannForm γ γ') := by rw [h_cocycle]
 

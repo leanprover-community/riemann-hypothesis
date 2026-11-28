@@ -250,7 +250,7 @@ lemma exists_classTerm_mul_eq_of_not_survives (hW : Y.IsEquivariant W)
     simpa only [not_forall, exists_prop] using h_killed
   -- The constant is the quotient of the two phases (`IsEquivariant.unipotent_mul_constTerm`).
   let u' : Y.besselGroup := ⟨u, Y.unipotent_le_besselGroup hu⟩
-  exact ⟨u', _, by simp [Heisenberg.norm_eq_one], div_ne_one_of_ne phase_ne,
+  exact ⟨u', _, by simp [TauCeti.HeisenbergDatum.norm_apply], div_ne_one_of_ne phase_ne,
     fun r ↦ hW.unipotent_mul_constTerm hd (u := u') u_deg wu_deg r h⟩
 
 /-- Let `W` on `Y.besselGroup` be equivariant (`New.Grading.IsEquivariant`) and let `d` be odd under

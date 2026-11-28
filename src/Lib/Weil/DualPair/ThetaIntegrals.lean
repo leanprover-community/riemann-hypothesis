@@ -397,7 +397,7 @@ at the ramified places `𝔠.ramifiedPlaces` of the split tame character `𝔠`,
 both characters are `rankTwist 𝔠.character⁻¹ n`, that is ν⁻¹υ^⌊n/2⌋ with n = rk S and υ restricted
 to the norm-one ideles. -/
 noncomputable abbrev thetaLarge
-    (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s s'))))
+    (v : Fock.fockSpace (realSigns E (homSigns s s')))
     (Φ : Matrix n' n (LocProd 𝔠.ramifiedPlaces) → ℂ) : G E s → ℂ :=
   thetaIntegral S T (rankTwist 𝔠.character⁻¹ n) (rankTwist 𝔠.character⁻¹ n)
     (localDatum S T v Φ 𝔠.readsAt)

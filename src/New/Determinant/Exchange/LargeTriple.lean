@@ -87,7 +87,7 @@ characters α, γ at a point p of U(W₁) × U(V) and then by the Heisenberg tra
 matrix x. -/
 noncomputable def thetaOnRealData (α γ : AutChar E) (F : 𝒮 (W₁.hom V)) (x : Matrix a n (𝔸 E))
     (p : G E s × G E t) :
-    Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s t))) →L[ℂ] ℂ :=
+    Fock.fockSpace (realSigns E (homSigns s t)) →L[ℂ] ℂ :=
   θ (W₁.hom V) ∘L ϱ (W₁.hom V) (matrixToVec x) ∘L pairWeil W₁ V α γ p ∘L
     (integrated (W₁.hom V)).flip F
 
@@ -366,7 +366,7 @@ lemma thetaOnRealData_boxProd_eq_mul {E n b : Type} {s : n → ℤˣ} {t' : b �
   have h_heis (f₁ : 𝒮 (W₁.hom V')) (f₂ : 𝒮 (W₁.hom W₁)) :
       ϱ (W₁.hom (V'.sum W₁)) (matrixToVec (fromRows c 0)) (box f₁ f₂) =
         box (ϱ (W₁.hom V') (matrixToVec c) f₁) f₂ :=
-    (rho_boxProd ..).trans (congrArg (box _) (Heisenberg.Rep.rho_zero_apply ..))
+    (rho_boxProd ..).trans (congrArg (box _) (TauCeti.HeisenbergDatum.Representation.zero_apply ..))
   simp only [thetaOnRealData, ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply]
   rw [← boxProd_integrated, mul_comm α β, h_weil, h_heis, pairTheta]
   exact theta_boxProd_target (hs := rfl) (h_block := rfl) ..
@@ -441,7 +441,7 @@ with `e` half the rank of `X`, rounded down. Here `L_*(e) = lValueProdInt 𝔠 e
 `∏_{w ∈ S} q_w ^ (e ^ 2) ∏_{1 ≤ i ≤ e} |L^S(i, ν)| ^ 2` for `ν = 𝔠.character` and
 `S = 𝔠.ramifiedPlaces`. -/
 noncomputable def equalRankThetaRatio
-    (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns r r)))) : ℝ :=
+    (v : Fock.fockSpace (realSigns E (homSigns r r))) : ℝ :=
   ‖thetaLarge X X 𝔠 v (stdColDatum 𝔠.semilocalChar 1) 1‖ ^ 2 / lValueProdInt 𝔠 (card m / 2)
 
 /-- The exchange identity for standard data. The real vectors `v` and `y` are Schwartz vectors (all

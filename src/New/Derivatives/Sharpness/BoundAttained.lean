@@ -232,7 +232,8 @@ lemma exists_integral_isThetaFunction_twelveTaylor_eq {P : Parameters} {p : ℕ}
       rw [resolutionShift, Pi.zero_apply,
         Finset.sum_eq_zero fun τ _ ↦ by rw [map_zero, zero_mul], neg_zero, mul_zero]
     have h := hF.jetSeries_translate 0 (conj ↑D.piMBar * P.jetScale D.towerExp)
-    rw [map_zero, finVec_zero, Space.ϱ, Heisenberg.Rep.rho_zero_apply, h_scale] at h
+    rw [map_zero, finVec_zero, Space.ϱ, TauCeti.HeisenbergDatum.Representation.zero_apply,
+      h_scale] at h
     refine h.trans (prod_congr rfl fun x _ ↦ ?_)
     rw [h_shift x, twistedTranslate, thetaShift_zero]
   have hθ : AnalyticAt ℂ P.cmCurve.θ 0 := P.cmCurve.differentiable_theta.analyticAt 0

@@ -34,9 +34,9 @@ along splittings of the coordinates and over real places are compatible with pol
 
 * `New.Fock.realMultiplier`, `New.Fock.norm_realMultiplier_le`: the multiplier of the Weil
   representation, the conjugate of the negative minor, is bounded by ‖u‖^{|ι|}.
-* `New.Fock.realAction`: the unitary group `U(ε)` acts on the datum in the sense of
-  `New.Heisenberg.MultiplierAction`, with multiplier `New.Fock.realMultiplier` (the conjugate
-  determinant of the negative block) and cocycle `1`.
+* `New.Fock.realAction`, `New.Fock.realAction_cocycle`: the unitary group `U(ε)` acts on the datum,
+  with multiplier `New.Fock.realMultiplier` (the conjugate determinant of the negative block), a
+  `TauCeti.HeisenbergDatum.Multiplier` whose cocycle is `1`.
 * `New.Fock.fockSpace`, `New.Fock.realWeil`, `New.Fock.realHeisenbergOp`, `New.Fock.vacVector`,
   `New.Fock.fockInner`: the space, the Weil representation of U(ε), the Heisenberg action, the
   vacuum, the inner product.
@@ -49,12 +49,12 @@ along splittings of the coordinates and over real places are compatible with pol
   factor.
 
 Notions from other files:
-* `New.Heisenberg`: A continuous function β on W × W, W a topological abelian group, with values of
-  modulus one, multiplicative in each variable, and β(x,x) = 1.
+* `TauCeti.HeisenbergDatum`: A continuous function β on W × W, W a topological abelian group, with
+  values of modulus one, multiplicative in each variable, and β(x,x) = 1.
 * `New.Fock.normalizedVolume`: Lebesgue measure on `ι → ℂ` divided by `π ^ card ι`.
 * `New.principalMinor`: the determinant of the block of a square matrix on the indices that
   satisfy a condition.
-* `New.Heisenberg.IsVacuum.modelSubmodule`: The complex subspace of integrable functions v on W
+* `TauCeti.reproducingSubmodule`: The complex subspace of integrable functions v on W
   satisfying the reproducing identity v(x) = ∫ v(y) β(y,x) e(x−y) dμ(y) for every x, where β is the
   bicharacter, e the vacuum and μ the measure.
 
@@ -88,20 +88,25 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι] (ε : ι → ℤˣ) (x : ι 
 
 /-- For signs ε, the Heisenberg datum on ℂ^ι given by the continuous unit-modulus bicharacter
 β(x,y) = exp((y*εx − x*εy)/2) = exp(i Im y*εx). -/
-def realHeisenberg : Heisenberg (ι → ℂ) where
-  β x y := Complex.exp ((star y ⬝ᵥ signMatrix ε *ᵥ x - star x ⬝ᵥ signMatrix ε *ᵥ y) / 2)
-  add_left x x' y := by
+def realHeisenberg : TauCeti.HeisenbergDatum (ι → ℂ) where
+  toFun x y := Complex.exp ((star y ⬝ᵥ signMatrix ε *ᵥ x - star x ⬝ᵥ signMatrix ε *ᵥ y) / 2)
+  map_add_left' x x' y := by
     simp [← exp_add, mulVec_add]
     grind
-  add_right x y y' := by
+  map_add_right' x y y' := by
     simp [← exp_add, mulVec_add]
     grind
-  self_eq_one x := by simp
-  norm_eq_one x y := by
+  apply_self' x := by simp
+  norm_apply' x y := by
     -- The exponent is purely imaginary.
     simp [signMatrix, dotProduct, mulVec_diagonal, norm_exp, Finset.sum_add_distrib, sub_eq_zero]
     grind
-  cont := by fun_prop
+  continuous_uncurry' := by fun_prop
+
+lemma realHeisenberg_apply (y : ι → ℂ) :
+    realHeisenberg ε x y =
+      Complex.exp ((star y ⬝ᵥ signMatrix ε *ᵥ x - star x ⬝ᵥ signMatrix ε *ᵥ y) / 2) :=
+  rfl
 
 /-- The function on ℂ^ι sending x to exp(−|x|²/2). -/
 def realVac : ℂ := Complex.exp (-(star x ⬝ᵥ x) / 2)
@@ -250,7 +255,7 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ}
 /-- For the Gaussian e and the real bicharacter β of signs ε, β(y,x) e(x − y) = e(x) e(y)
 exp(conj ζ(y) · ζ(x)), with ζ = `New.Fock.holomorphicCoord` ε the holomorphic coordinates. -/
 lemma beta_mul_realVac (x y : ι → ℂ) :
-    (realHeisenberg ε).β y x * realVac (x - y) =
+    realHeisenberg ε y x * realVac (x - y) =
       realVac x * realVac y * exp (star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε x) := by
   -- Both sides are exponentials; the exponents agree coordinate by coordinate.
   have h_exponent :
@@ -261,7 +266,7 @@ lemma beta_mul_realVac (x y : ι → ℂ) :
     simp [posProj, dotProduct, signMatrix_eq_posProj_sub, sub_mulVec, mulVec_diagonal,
       ← sum_sub_distrib, sum_div, ← sum_neg_distrib, ← sum_add_distrib, holomorphicCoord_eq]
     grind [conj_conj]
-  simp only [realHeisenberg, realVac, ← exp_add]
+  simp only [realHeisenberg_apply, realVac, ← exp_add]
   rw [h_exponent]
 
 /-- For every real C, the function u ↦ exp(C‖u‖) exp(−|u|²/2) on ℂ^ι, with ‖u‖ the maximum norm
@@ -311,31 +316,32 @@ and the normalised measure `New.Fock.normalizedVolume`. -/
 instance isVacuum_realVac : (realHeisenberg ε).IsVacuum (normalizedVolume ι) realVac := by
   have h_cont : Continuous (realVac : (ι → ℂ) → ℂ) := by fun_prop [realVac]
   refine
-    { cont := h_cont
+    { continuous := h_cont
       apply_zero := by simp [realVac]
       apply_neg := by simp [realVac]
       conj_apply := by simp [star_dotProduct_self_eq_sum, ← exp_conj, map_ofNat, realVac]
-      twisted_conv := fun y x ↦ ?_
+      integral_mul_apply := fun y x ↦ ?_
       integrable := (integrable_exp_mul_realVac 0).mono' h_cont.aestronglyMeasurable (by simp) }
   -- The integrand is `realVac z` times the value at `x` of the vacuum translated by `y`, then by
   -- `z`. Two uses of the kernel formula turn it into the integrand of the reproducing formula for
   -- the function `ζ ↦ exp (conj ζ(y) · (ζ(x) - ζ))`, whose value at `ζ(x)` is `1`.
-  have h_beta (z : ι → ℂ) : (realHeisenberg ε).β z y * (realHeisenberg ε).β (z + y) x =
-      (realHeisenberg ε).β z x * (realHeisenberg ε).β y (x - z) := by
-    rw [sub_eq_add_neg, Heisenberg.add_left, Heisenberg.add_right, Heisenberg.beta_neg_right]
+  have h_beta (z : ι → ℂ) : realHeisenberg ε z y * realHeisenberg ε (z + y) x =
+      realHeisenberg ε z x * realHeisenberg ε y (x - z) := by
+    rw [sub_eq_add_neg, TauCeti.HeisenbergDatum.map_add_left, TauCeti.HeisenbergDatum.map_add_right,
+      TauCeti.HeisenbergDatum.apply_neg]
     ring
   have h_integrand (z : ι → ℂ) :
-      realVac z * ((realHeisenberg ε).β z y *
-        ((realHeisenberg ε).β (z + y) x * realVac (x - (z + y)))) =
+      realVac z * (realHeisenberg ε z y *
+        (realHeisenberg ε (z + y) x * realVac (x - (z + y)))) =
         realVac y * realVac x * exp (star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε x) *
           (exp (-star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε z) *
             exp (star (holomorphicCoord ε z) ⬝ᵥ holomorphicCoord ε x) * exp (-(star z ⬝ᵥ z))) := by
     calc
-      _ = realVac z * (realHeisenberg ε).β z x *
-        ((realHeisenberg ε).β y (x - z) * realVac (x - z - y)) := by
-        rw [← mul_assoc ((realHeisenberg ε).β z y), h_beta, sub_add_eq_sub_sub]
+      _ = realVac z * realHeisenberg ε z x *
+        (realHeisenberg ε y (x - z) * realVac (x - z - y)) := by
+        rw [← mul_assoc (realHeisenberg ε z y), h_beta, sub_add_eq_sub_sub]
         ring
-      _ = realVac z * realVac y * ((realHeisenberg ε).β z x * realVac (x - z)) *
+      _ = realVac z * realVac y * (realHeisenberg ε z x * realVac (x - z)) *
             exp (star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε (x - z)) := by
         rw [beta_mul_realVac]
         ring
@@ -402,16 +408,17 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 as the structure `(realHeisenberg ε).OrthogonalSum`. -/
 def realCoordSum {ι₁ ι₂ : Type*} [Fintype ι₁] [DecidableEq ι₁] [Fintype ι₂] [DecidableEq ι₂]
     {ε : ι → ℤˣ} {ε₁ : ι₁ → ℤˣ} {ε₂ : ι₂ → ℤˣ} {e : ι₁ ⊕ ι₂ ≃ ι} (he : ε ∘ e = ε₁ ⊕ᵥ ε₂) :
-    (realHeisenberg ε).OrthogonalSum (realHeisenberg ε₁) (realHeisenberg ε₂) realVac where
+    (realHeisenberg ε).OrthogonalSum (realHeisenberg ε₁) (realHeisenberg ε₂) realVac realVac
+      realVac where
   equiv :=
     { (LinearEquiv.funCongrLeft ℂ ℂ e ≪≫ₗ LinearEquiv.sumArrowLequivProdArrow
       ι₁ ι₂ (ℂ) (ℂ)).symm.toContinuousLinearEquiv with toFun x := (x.1 ⊕ᵥ x.2) ∘ e.symm }
   -- Both exponents are sums over `ι`, which split along `e` into sums over `ι₁` and `ι₂`.
-  beta_equiv := by
-    simp_all [← exp_add, ← e.sum_comp, funext_iff, dotProduct, signMatrix, realHeisenberg,
+  apply_equiv_equiv := by
+    simp_all [← exp_add, ← e.sum_comp, funext_iff, dotProduct, signMatrix, realHeisenberg_apply,
       mulVec_diagonal]
     grind
-  vac_equiv := by
+  vacuum_equiv := by
     simp [← exp_add, ← e.sum_comp, dotProduct, realVac]
     grind
 
@@ -455,7 +462,7 @@ bicharacter of `New.Fock.realHeisenberg` ε, and both integrals are for `New.Foc
 the double integral is a Gaussian integral on `ℂ^ι × ℂ^ι`. -/
 lemma realMultiplier_mul_integral_eq_one {ε : ι → ℤˣ} (g h : USign ε) :
     realMultiplier g * realMultiplier h * realMultiplier (g * h)⁻¹ *
-      ∫ x : ι → ℂ, ∫ y : ι → ℂ, realVac (h • x) * realVac ((g * h) • y) * (realHeisenberg ε).β x y *
+      ∫ x : ι → ℂ, ∫ y : ι → ℂ, realVac (h • x) * realVac ((g * h) • y) * realHeisenberg ε x y *
         realVac (x + y) ∂normalizedVolume ι ∂normalizedVolume ι = 1 := by
   -- The integrand is a Gaussian `exp (-z* A z)` in `z = (x, y)`, with `A` accretive. The
   -- Gaussian integral is `(det A)⁻¹`, and a factorisation of `A` into three block matrices gives
@@ -500,17 +507,18 @@ lemma realMultiplier_mul_integral_eq_one {ε : ι → ℤˣ} (g h : USign ε) :
   have h_gauss : A.det * ∫ z : ι ⊕ ι → ℂ,
     cexp (-(star z ⬝ᵥ A *ᵥ z)) ∂normalizedVolume (ι ⊕ ι) = 1 := by
     simpa [field, mul_comm, hA_pos.det_ne_zero] using integral_gauss hA_pos 0
-  let S : (realHeisenberg (ε ⊕ᵥ ε)).OrthogonalSum (realHeisenberg ε) (realHeisenberg ε) realVac :=
+  let S : (realHeisenberg (ε ⊕ᵥ ε)).OrthogonalSum (realHeisenberg ε) (realHeisenberg ε) realVac
+      realVac realVac :=
     realCoordSum (e := .refl _) (ε ⊕ᵥ ε).comp_id
-  rw [S.integral_eq_integral_prod] at h_gauss
+  rw [S.integral_eq_integral_prod (μ₁ := normalizedVolume ι) (μ₂ := normalizedVolume ι)] at h_gauss
   rw [integral_prod _ (.of_integral_ne_zero (right_ne_zero_of_mul_eq_one h_gauss))] at h_gauss
   -- It remains to compare the integrands, which have the same exponent.
   have h_integrand (x y : ι → ℂ) :
-      realVac (h • x) * realVac (k • y) * (realHeisenberg ε).β x y * realVac (x + y) =
+      realVac (h • x) * realVac (k • y) * realHeisenberg ε x y * realVac (x + y) =
         cexp (-(star (S.equiv (x, y)) ⬝ᵥ A *ᵥ S.equiv (x, y))) := by
     simp [S, A, J, field, realCoordSum, ← exp_add, fromBlocks_mulVec, star_mulVec_dotProduct,
-      Function.star_sumElim, realVac, realHeisenberg, fromBlocks_conjTranspose, fromBlocks_multiply,
-      fromBlocks_smul, fromBlocks_add, add_mulVec, smul_mulVec, sub_mulVec]
+      Function.star_sumElim, realVac, realHeisenberg_apply, fromBlocks_conjTranspose,
+      fromBlocks_multiply, fromBlocks_smul, fromBlocks_add, add_mulVec, smul_mulVec, sub_mulVec]
     ring_nf
   simpa only [h_integrand, hA_det] using h_gauss
 
@@ -518,14 +526,23 @@ lemma realMultiplier_mul_integral_eq_one {ε : ι → ℤˣ} (g h : USign ε) :
 `New.Fock.realHeisenberg ε` and the measure. Its multiplier is `New.Fock.realMultiplier g`, the
 conjugate of the determinant of the negative block of `g`, and its cocycle is trivial. -/
 def realAction (ε : ι → ℤˣ) :
-    (realHeisenberg ε).MultiplierAction (normalizedVolume ι) realVac (USign ε) where
-  beta_smul := by simp [↓form_mulVec_mulVec, realHeisenberg]
-  measurePreserving g := ⟨by fun_prop, by simp [map_mulVec_addHaar_eq_smul g.val.det_ne_zero]⟩
-  Δ := realMultiplier
-  continuous_delta := by fun_prop [realMultiplier]
-  Δ_one := by simp [realMultiplier]
-  Δ_inv := by simp [↓principalMinor_coe_inv, realMultiplier]
-  cocycle := realMultiplier_mul_integral_eq_one
+    (realHeisenberg ε).Multiplier (normalizedVolume ι) (USign ε) where
+  apply_smul_smul := by simp [↓form_mulVec_mulVec, realHeisenberg_apply]
+  measurePreserving_smul g :=
+    ⟨by fun_prop, by simp [map_mulVec_addHaar_eq_smul g.val.det_ne_zero]⟩
+  toFun := realMultiplier
+  continuous_toFun := by fun_prop [realMultiplier]
+  map_one' := by simp [realMultiplier]
+  map_inv' := by simp [↓principalMinor_coe_inv, realMultiplier]
+
+@[simp]
+lemma realAction_apply (ε : ι → ℤˣ) (g : USign ε) : realAction ε g = realMultiplier g := rfl
+
+/-- The cocycle of the multiplier of `New.Fock.realAction` is trivial. -/
+lemma realAction_cocycle (ε : ι → ℤˣ) (g h : USign ε) :
+    (realAction ε).cocycle realVac g h = 1 := by
+  rw [TauCeti.HeisenbergDatum.Multiplier.cocycle_def]
+  exact realMultiplier_mul_integral_eq_one g h
 
 end FockAction
 
@@ -543,7 +560,7 @@ end FockAction
 
 section FockSpace
 
-open Complex MvPolynomial Heisenberg IsVacuum Finset Int
+open Complex MvPolynomial TauCeti ReproducingModel Finset Int
 
 variable {ι : Type _} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ}
 
@@ -552,23 +569,30 @@ variable {ι : Type _} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ}
 /-- The Fock space: integrable functions c on ℂ^ι with c(x) = ∫ c(y)β(y,x)e(x−y) dy, under the L¹
 norm. Here β is the bicharacter of `New.Fock.realHeisenberg` ε and e is the Gaussian
 exp(−|x|²/2). -/
-abbrev fockSpace (ε : ι → ℤˣ) : Type _ := Model (realHeisenberg (ι := ι) ε)
+abbrev fockSpace (ε : ι → ℤˣ) : Type _ :=
+  ReproducingModel (realHeisenberg (ι := ι) ε) (normalizedVolume ι) realVac
 
 /-- The Weil representation of U(ε) on the Fock space 𝓕: u sends c to Δ(u) ∫ c(y) ρ(uy) e dy, where
 ρ is the Heisenberg action `New.Fock.realHeisenbergOp`, e is the Gaussian and Δ is the multiplier of
 `New.Fock.realAction`. -/
-abbrev realWeil : USign ε →* fockSpace ε →L[ℂ] fockSpace ε := weilRep (realAction ε)
+abbrev realWeil : USign ε →* fockSpace ε →L[ℂ] fockSpace ε :=
+  weilRep realVac (realAction ε) (realAction_cocycle ε)
+
+/-- The Weil representation of U(ε) on the Fock space is jointly continuous. -/
+@[fun_prop]
+lemma continuous_realWeil : Continuous ↿(fun (u : USign ε) (c : fockSpace ε) ↦ realWeil u c) :=
+  continuous_weilRep (realAction ε) (realAction_cocycle ε)
 
 /-- For x in ℂ^ι, the Heisenberg operator on the Fock space 𝓕 sending c to z ↦ β(x,z) c(z − x),
 where β is the bicharacter of `New.Fock.realHeisenberg` ε. -/
-abbrev realHeisenbergOp (x : ι → ℂ) : fockSpace ε →L[ℂ] fockSpace ε := heisenbergOp x
+abbrev realHeisenbergOp (x : ι → ℂ) : fockSpace ε →L[ℂ] fockSpace ε := heisenbergRep x
 
 /-- The Gaussian exp(−|x|²/2) regarded as an element of the Fock space. -/
-abbrev vacVector : fockSpace ε := vacElem
+abbrev vacVector : fockSpace ε := vacuum
 
 /-- The bounded sesquilinear form on the Fock space, conjugate-linear in the first variable:
 (c, c′) ↦ ∫ c̄ c′ for the measure `New.Fock.normalizedVolume`. -/
-abbrev fockInner : fockSpace ε →L⋆[ℂ] fockSpace ε →L[ℂ] ℂ := modelInner
+abbrev fockInner : fockSpace ε →L⋆[ℂ] fockSpace ε →L[ℂ] ℂ := innerSL
 
 /-! ### Differentiating the Heisenberg action -/
 
@@ -627,7 +651,7 @@ lemma differentiableAt_integral_smul_realHeisenbergOp (ε : ι → ℤˣ) {E : T
     linarith [norm_sq_le_re_star_dotProduct_self x, sq_nonneg ‖x‖]
   calc
     _ = ‖eval (f z (1, x)).1 P‖ * Real.exp (f z (1, x)).2.re * ‖(vacVector : fockSpace ε)‖ := by
-      simp [norm_smul, Rep.norm_map, norm_exp]
+      simp [norm_smul, norm_exp]
     _ ≤ |A| * Real.exp (k * ‖(f z (1, x)).1‖ + (f z (1, x)).2.re) *
         ‖(vacVector : fockSpace ε)‖ := by grw [h_eval_le, Real.exp_add, mul_assoc |A|]
     _ ≤ |A| * Real.exp (1 + k * ‖x‖ - (star x ⬝ᵥ x).re / 8) * ‖(vacVector : fockSpace ε)‖ := by
@@ -652,12 +676,12 @@ private lemma eval_heisenbergDeriv (v l : ι → ℂ) (P : MvPolynomial ι ℂ) 
 /-- If v_P(x) = P(ζ(x))exp(−|x|²/2), ζ = `New.Fock.holomorphicCoord` ε, lies in the Fock space, then
 for v in ℂ^ι so does v_Q, Q = ∑_i (conj(ζ_i(v)) X_i − ζ_i(v) ∂_i)P, and v_Q is the derivative at t =
 0 of t ↦ `New.Fock.realHeisenbergOp`(tv)v_P, t real. Here `hP_mem` and `h_mem` are the memberships
-of v_P and v_Q in `New.Heisenberg.IsVacuum.modelSubmodule`, the subspace that is the Fock space. -/
+of v_P and v_Q in `TauCeti.reproducingSubmodule`, the subspace that is the Fock space. -/
 lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → ℂ)
-    (hP_mem : (fun x : ι → ℂ ↦ eval (holomorphicCoord ε x) P) * realVac ∈ modelSubmodule
-      (realHeisenberg ε)) :
+    (hP_mem : (fun x : ι → ℂ ↦ eval (holomorphicCoord ε x) P) * realVac ∈
+      reproducingSubmodule (realHeisenberg ε) (normalizedVolume ι) realVac) :
     ∃ h_mem : (fun x : ι → ℂ ↦ eval (holomorphicCoord ε x) (heisenbergDeriv ε v P)) * realVac ∈
-        modelSubmodule (realHeisenberg ε),
+        reproducingSubmodule (realHeisenberg ε) (normalizedVolume ι) realVac,
       HasDerivAt
         (fun t : ℝ ↦
           realHeisenbergOp (t • v) ⟨(fun x : ι → ℂ ↦ P.eval (holomorphicCoord ε x)) * realVac,
@@ -676,14 +700,14 @@ lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → �
       t * s * (star (holomorphicCoord ε v) ⬝ᵥ holomorphicCoord ε w - s * star v ⬝ᵥ v / 2 * t))
   have h_val (t : ℝ) (w : ι → ℂ) :
       realHeisenbergOp (t • v) u w = P.eval (f t (1, w)).1 * (f t (1, w)).2.exp := by
-    -- By `heisenbergOp_apply` the left side is `β (t • v) w * u (w - t • v)`; compare the
+    -- By `heisenbergRep_apply` the left side is `β (t • v) w * u (w - t • v)`; compare the
     -- exponents.
     have h_u : u (w - t • v) = eval (holomorphicCoord ε (w - t • v)) P * realVac (w - t • v) := rfl
     have h_exponent : realVac w * realVac (t • v) *
         exp (star (holomorphicCoord ε (t • v)) ⬝ᵥ holomorphicCoord ε w) = exp (f t (1, w)).2 := by
       simp [star_trivial, f, realVac, ← exp_add]
       ring_nf
-    rw [realHeisenbergOp, heisenbergOp_apply, h_u, mul_left_comm, beta_mul_realVac, h_exponent]
+    rw [realHeisenbergOp, heisenbergRep_apply, h_u, mul_left_comm, beta_mul_realVac, h_exponent]
     simp [f, sub_eq_add_neg]
   obtain ⟨⟨D, h_mem⟩, hD⟩ :
       ∃ D : fockSpace ε, HasDerivAt (fun t : ℝ ↦ realHeisenbergOp (t • v) u) D 0 := by
@@ -692,12 +716,13 @@ lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → �
     have hf_homog : ∀ (t : ℂ) (r : ℝ) (y : ℂ × (ι → ℂ)),
         f t (r • y) = (r • (f t y).1, r ^ 2 • (f t y).2) := by
       simp [star_trivial, f, _root_.funext_iff, field]
-    -- The integral is the reproducing formula `integrated_vacElem` for the vector
+    -- The integral is the reproducing formula `integrated_vacuum` for the vector
     -- `realHeisenbergOp (t • v) u`.
     have h_integral (t : ℝ) :
         realHeisenbergOp (t • v) u = ∫ x : ι → ℂ, (eval (f t (1, x)).1 P * exp (f t (1, x)).2) •
           realHeisenbergOp x (vacVector : fockSpace ε) ∂normalizedVolume ι := by
-      simp_rw [← h_val, ← Rep.integrated_apply, integrated_vacElem]
+      simp_rw [← h_val, ← TauCeti.HeisenbergDatum.Representation.integrated_apply,
+        integrated_vacuum]
     simp_rw [h_integral]
     have h_diff :=
       differentiableAt_integral_smul_realHeisenbergOp ε P f (by fun_prop) (by fun_prop) hf_base
@@ -726,7 +751,8 @@ lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → �
       ring
     -- By `h_val` this is the derivative of the value of the curve at `w`, which is also `D w`.
     simp_rw [← h_val] at h_deriv
-    exact (hD.map_clm (valueAt w)).unique h_deriv
+    have h_eq := (hD.map_clm (evalCLM w)).unique (by simpa only [evalCLM_apply] using h_deriv)
+    exact (evalCLM_apply (⟨D, h_mem⟩ : fockSpace ε) w).symm.trans h_eq
   exact ⟨h_mem, hD⟩
 
 /-! ### The polynomial vectors -/
@@ -734,14 +760,15 @@ lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → �
 /-- The linear map P ↦ v_P from complex polynomials to the Fock space, v_P(x) = P(ζ(x))exp(−|x|²/2),
 where ζ(x)_i is x̄_i at positive and x_i at negative coordinates. -/
 def polyVector (ε : ι → ℤˣ) : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace ε :=
-  LinearMap.codRestrict (modelSubmodule (realHeisenberg ε))
+  LinearMap.codRestrict (reproducingSubmodule (realHeisenberg ε) (normalizedVolume ι) realVac)
     (LinearMap.pi fun x ↦ (aeval (holomorphicCoord ε x)).toLinearMap.smulRight (realVac x))
     fun P ↦ by
       induction P using induction_on with
       | C c =>
         convert (c • vacVector).property
-        ext
-        simp
+        ext x
+        change _ = (c • vacVector : fockSpace ε) x
+        simp [vacVector]
       | add => aesop
       | mul_X P i hP =>
         -- The derivative along `holomorphicCoord ε (Pi.single i c)` is the vector of the polynomial
@@ -749,8 +776,8 @@ def polyVector (ε : ι → ℤˣ) : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace �
         -- the cases `c = 1` and `c = I`: the terms `pderiv i P` cancel.
         have h_deriv (c : ℂ) : (c / 2) • ((fun x : ι → ℂ ↦ eval (holomorphicCoord ε x)
             (heisenbergDeriv ε (holomorphicCoord ε (Pi.single i c)) P)) * realVac) ∈
-              modelSubmodule (realHeisenberg ε) :=
-          (modelSubmodule _).smul_mem _ (exists_hasDerivAt_realHeisenbergOp _ hP).1
+              reproducingSubmodule (realHeisenberg ε) (normalizedVolume ι) realVac :=
+          (reproducingSubmodule _ _ _).smul_mem _ (exists_hasDerivAt_realHeisenbergOp _ hP).1
         convert add_mem (h_deriv 1) (h_deriv I)
         ext
         simp_all [heisenbergDeriv, holomorphicCoord_eq, sum_eq_single i]
@@ -808,8 +835,8 @@ end FockSpace
 
 section FockTensor
 
-open MeasureTheory Matrix Complex MvPolynomial Finset Heisenberg IsVacuum Sum OrthogonalSum Function
-  Fintype
+open MeasureTheory Matrix Complex MvPolynomial Finset TauCeti ReproducingModel Sum
+  HeisenbergDatum.OrthogonalSum Function Fintype
 
 variable {ι : Type _} [Fintype ι] [DecidableEq ι] {ε}
   {ι₁ ι₂ T : Type*} [Fintype ι₁] [DecidableEq ι₁] [Fintype ι₂] [DecidableEq ι₂] [Fintype T]
@@ -820,7 +847,8 @@ variable {ι : Type _} [Fintype ι] [DecidableEq ι] {ε}
 the signs ε₁ : ι₁ → ℤˣ on ι₁ and ε₂ : ι₂ → ℤˣ on ι₂ (`he`), the bounded bilinear map sending two
 Fock vectors c₁, c₂ to their external product x ↦ c₁(x ∘ e ∘ inl) c₂(x ∘ e ∘ inr) in the Fock
 space of ε. -/
-def realBoxProd : fockSpace ε₁ →L[ℂ] fockSpace ε₂ →L[ℂ] fockSpace ε := (realCoordSum he).tmul
+def realBoxProd : fockSpace ε₁ →L[ℂ] fockSpace ε₂ →L[ℂ] fockSpace ε :=
+  (realCoordSum he).tmul (normalizedVolume ι)
 
 /-- Currying x : α × β → γ and evaluating at a gives the function b ↦ x (a, b). -/
 private lemma _root_.MeasurableEquiv.curry_apply_eq {α β γ : Type*} [MeasurableSpace γ]
@@ -837,23 +865,32 @@ lemma pi_normalizedVolume :
   simp [normalizedVolume, pow_mul', -inv_pow, Measure.map_smul, measurePreserving_curry.map_eq,
     (MeasurableEquiv.measurable _).aemeasurable, prod_mul_distrib, ← volume_pi_pi]
 
+/-- The product x ↦ ∏ v_τ(x_τ) of a T-indexed family of Fock vectors v_τ lies in the Fock space
+on T × ι: integrability and the reproducing identity hold factor by factor, by Fubini. -/
+lemma prod_mem_reproducingSubmodule (v : T → fockSpace ε) :
+    (fun x : T × ι → ℂ ↦ ∏ τ, v τ (MeasurableEquiv.curry T ι ℂ x τ)) ∈
+      reproducingSubmodule (realHeisenberg fun p : T × ι ↦ ε p.2) (normalizedVolume (T × ι))
+        realVac := by
+  refine mem_reproducingSubmodule_iff.2 ⟨(integrable_map_equiv ..).1
+    (pi_normalizedVolume.subst (.fintype_prod fun τ ↦ (v τ).integrable)), ?_⟩
+  simpa [realHeisenberg_apply, signMatrix, dotProduct, mulVec_diagonal, sum_prod_type, realVac,
+    ← integral_fintype_prod_eq_prod, prod_mul_distrib, ← exp_sum, ← sum_div,
+    integral_map_equiv] using! fun _ ↦ congr(∏ τ, $((v τ).integral_mul_kernel _))
+
 /-- The continuous multilinear map sending (for signs ε : ι → ℤˣ) a T-indexed family of Fock vectors
 v_τ to the product function x ↦ ∏ v_τ(x_τ) in the Fock space on T × ι. -/
 def piTensor :
     ContinuousMultilinearMap ℂ (fun _ : T ↦ fockSpace ε) (fockSpace fun p : T × ι ↦ ε p.2) :=
   -- The multilinear map sending `v` to the function `x ↦ ∏ τ, v τ (x (τ, ·))`; it has norm `≤ 1`.
-  MultilinearMap.mkContinuous
+  MultilinearMap.mkContinuous (G := fockSpace fun p : T × ι ↦ ε p.2)
     (MultilinearMap.codRestrict
       (MultilinearMap.pi fun x : T × ι → ℂ ↦
         MultilinearMap.compLinearMap (MultilinearMap.mkPiAlgebra ℂ T ℂ) fun τ ↦
-          (IsVacuum.valueAt (MeasurableEquiv.curry T ι ℂ x τ)).toLinearMap)
-      (IsVacuum.modelSubmodule (realHeisenberg fun p ↦ ε p.2)) fun v ↦ by
-        -- Integrability and the reproducing identity hold factor by factor, by Fubini.
-        refine ⟨(integrable_map_equiv ..).1
-          (pi_normalizedVolume.subst (.fintype_prod fun τ ↦ (v τ).property.1)), ?_⟩
-        simpa [realHeisenberg, signMatrix, dotProduct, mulVec_diagonal, sum_prod_type, realVac,
-          ← integral_fintype_prod_eq_prod, prod_mul_distrib, ← exp_sum, ← sum_div,
-          integral_map_equiv] using! fun _ ↦ congr(∏ τ, $((v τ).property.2 _)))
+          ({ toFun c := c (MeasurableEquiv.curry T ι ℂ x τ)
+             map_add' _ _ := rfl
+             map_smul' _ _ := rfl } : fockSpace ε →ₗ[ℂ] ℂ))
+      (reproducingSubmodule (realHeisenberg fun p ↦ ε p.2) (normalizedVolume (T × ι)) realVac)
+      prod_mem_reproducingSubmodule)
     1 fun v ↦ by
       simp [norm_eq_integral_norm, integral_map_equiv, ← integral_fintype_prod_eq_prod, ← norm_prod,
         MeasurableEquiv.curry_apply_eq]
@@ -872,7 +909,7 @@ lemma piTensor_polyVector (P : T → MvPolynomial ι ℂ) :
 
 lemma fockInner_piTensor (w : T → fockSpace ε) :
     fockInner (piTensor v) (piTensor w) = ∏ τ : T, fockInner (v τ) (w τ) := by
-  simp [modelInner_apply, prod_mul_distrib, integral_map_equiv, ← integral_fintype_prod_eq_prod,
+  simp [innerSL_apply, prod_mul_distrib, integral_map_equiv, ← integral_fintype_prod_eq_prod,
     MeasurableEquiv.curry_apply_eq]
 
 /-- The ring homomorphism sending a T-indexed family of complex ι × ι matrices to the block
@@ -913,13 +950,13 @@ lemma realWeil_piTensor :
   ext x
   -- Both sides are a multiplier times an integral over `T × ι → ℂ` (on the right by Fubini and
   -- `pi_normalizedVolume`).
-  simp [realAction, weilRep, realMultiplier, integrated_apply_eq_integral, realVac, dotProduct,
+  simp [realAction_apply, weilRep_apply, realMultiplier, realVac, dotProduct,
     sum_prod_type, prod_mul_distrib, ← integral_fintype_prod_eq_prod, ← exp_sum, ← sum_div,
     integral_map_equiv]
   -- The block matrix acts on each block separately; with the curried coordinates written out,
   -- the integrands agree.
-  simp [mulVec, blockDiagonal, realHeisenberg, diagonal, signMatrix, dotProduct, sum_prod_type,
-    ← exp_sum, ← sum_div, MeasurableEquiv.curry_apply_eq]
+  simp [mulVec, blockDiagonal, realHeisenberg_apply, diagonal, signMatrix, dotProduct,
+    sum_prod_type, ← exp_sum, ← sum_div, MeasurableEquiv.curry_apply_eq]
 
 /-- For the splitting e : ι₁ ⊕ ι₂ ≃ ι and signs ε : ι → ℤˣ, ε₁ : ι₁ → ℤˣ, ε₂ : ι₂ → ℤˣ with ε ∘
 e = ε₁ ⊕ᵥ ε₂ (`he`), `New.Fock.realBoxProd` sends the Fock vectors of a polynomial P in the

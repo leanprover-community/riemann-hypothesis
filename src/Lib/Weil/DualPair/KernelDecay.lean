@@ -63,7 +63,7 @@ namespace New
 section KernelDecay
 
 open MeasureTheory Matrix Kronecker
-  Fock WeilData Space Prod G IsDualFamily Heisenberg ENNReal
+  Fock WeilData Space Prod G IsDualFamily TauCeti ENNReal
 
 variable {E : Type} [Field E] [CMType E] {n n' p q : Type} [Fintype n] [DecidableEq n] [Fintype n']
   [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
@@ -521,7 +521,7 @@ variable [WeilData E]
 /-- The datum is linear in `Ψ`: it is the combination of the data of the indicator functions of
 single matrices. -/
 lemma modDatum_eq_sum (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (v : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E (homSigns s s')))) :
+    (v : Fock.fockSpace (realSigns E (homSigns s s'))) :
     modDatum S T 𝔪 Ψ v = ∑ x : Matrix n' n 𝔪.ResidueRing,
       Ψ x • modDatum S T 𝔪 (Pi.single x 1) v := by
   have h_sum : Ψ ∘ vecToMatrix = ∑ x, Ψ x • Pi.single x 1 ∘ vecToMatrix := by

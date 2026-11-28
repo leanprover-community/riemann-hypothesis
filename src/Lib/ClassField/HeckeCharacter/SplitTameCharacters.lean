@@ -272,8 +272,7 @@ def localChar (ξ : HeckeChar E) (k : ℤ) : MulChar (∀ i : P, LocField i.val)
               map_mul' := by simp } ^ k).comp (Units.map (evalMonoidHom _ i))
 
 variable {μ : InfinitePlace E → ℤ} {P A π} (𝔠 : SplitTameChar E μ) (a b : AutChar E)
-  (f : 𝒮 (S.hom T)) (v : Heisenberg.IsVacuum.Model
-    (Fock.realHeisenberg (realSigns E (homSigns s s'))))
+  (f : 𝒮 (S.hom T)) (v : Fock.fockSpace (realSigns E (homSigns s s')))
   (Ψ : _ → ℂ) (i : P)
 
 omit [WeilData E] in

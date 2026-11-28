@@ -258,7 +258,7 @@ lemma homSlice_rho (x : Matrix n' p (𝔸 E)) (y : Matrix n' n (𝔸 E)) (f : �
             ((y * D.lAdelic)ᴴ * stdForm E s' * (x + x + y * D.kAdelic)).trace)).val •
         ϱ (V₀.hom T) (matrixToVec (y * D.iAdelic)) (D.homSlice T (x + y * D.kAdelic) f) := by
   -- The law `isMixedLaw_slice` of the splitting `D.homSource T`, in matrix coordinates.
-  simpa [adelicHeisenberg, add_assoc, kCoord, lCoord, iCoord, dualFrame, homSlice, slice,
+  simpa [adelicHeisenberg_apply, add_assoc, kCoord, lCoord, iCoord, dualFrame, homSlice, slice,
     homSource_lAdelic, homSource_kAdelic, homSource_iAdelic, conjTranspose_kronecker, mulVec_add,
     kronecker_mulVec_eq_matrixToVec, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul,
     conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul, ← transpose_mul] using

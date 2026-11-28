@@ -46,7 +46,7 @@ See `New.Determinant.Exchange.TheoremForPartners` for related work.
 section NonnegativeVanishing
 
 open New Matrix MeasureTheory Measure Space Pointwise Pi Fintype MulAction ComplexConjugate
-  ComplexOrder MatrixOrder Fock Heisenberg.IsVacuum Finset CStarAlgebra Exchange DiscreteSeries
+  ComplexOrder MatrixOrder Fock TauCeti ReproducingModel Finset CStarAlgebra Exchange DiscreteSeries
 
 section Rotation
 

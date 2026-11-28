@@ -504,7 +504,7 @@ omit [DecidableEq n] [DecidableEq n₁] in
 
 @[fun_prop] lemma continuous_frameWeight [WeilData E] :
     Continuous (frameWeight (E := E) (n := n) (n₁ := n₁)) :=
-  (isVacuum_vacuumFn (s := 1).cont.comp (by fun_prop [matrixToVec])).norm.pow 2
+  ((isVacuum_vacuumFn (s := 1)).continuous.comp (by fun_prop [matrixToVec])).norm.pow 2
 
 omit [DecidableEq n] [DecidableEq n₁] in
 /-- The slice `frameWeight x = vac[α₀ x]` of the vacuum is not zero exactly when all entries of `x`
@@ -698,7 +698,7 @@ lemma exists_theta_homSlice_eq_mul_frameChar (T : Set (FinPlace E)) (u : n × n�
     ring
   have h_shift : A.homSlice V ((scaleIdele E).val • x) f = (frameChar T x u : ℂ) •
       A.homSlice V ((scaleIdele E).val • x) ((hyperbolicSpace E n₁).hom V).vacElem := by
-    simp [homSlice_eq_adapted_slice, f, V, adelicHeisenberg, star_mulVec, dotProduct_mulVec,
+    simp [homSlice_eq_adapted_slice, f, V, adelicHeisenberg_apply, star_mulVec, dotProduct_mulVec,
       ← conjTranspose_mul, ← add_mul, h_half, frameChar, invDifferentIdele, mul_assoc]
   have h_one : ((stdSpace E Empty).hom V).θ ((stdSpace E Empty).hom V).vacElem = 1 := by
     simp [vacElem_apply_eq_prod_lineTheta, Finset.univ_eq_empty, funext_iff]

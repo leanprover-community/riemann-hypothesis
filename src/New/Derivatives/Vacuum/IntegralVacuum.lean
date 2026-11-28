@@ -173,7 +173,7 @@ lemma IsThetaProduct.theta_eq_one [DecidableEq n] {V : Space (P.E s) n ε} {C : 
     rw [map_zero]
     ext i : 1
     exact Prod.ext rfl (mul_zero _)
-  rw [h_fin0, Heisenberg.Rep.rho_zero_apply] at h0
+  rw [h_fin0, TauCeti.HeisenbergDatum.Representation.zero_apply] at h0
   rw [h0]
   refine Finset.prod_eq_one fun k _ ↦ Finset.prod_eq_one fun j _ ↦ ?_
   have h_coord0 : P.zetaCoord s k 0 = 0 := by
@@ -523,7 +523,8 @@ lemma norm_dataInner_self_le {f : 𝒮 V} {M : ℝ}
           (algebraMap (P.E s) (𝔸f (P.E s)) (γ i) + (p i).2))
       rw [← mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, one_mul]
   rw [← V.apply_vecAtPoint_add _ γ, h_point, norm_mul, (starRingEnd ℂ).map_mul, norm_mul,
-    norm_mul, Complex.norm_conj, Complex.norm_conj, Heisenberg.norm_eq_one, one_mul, ← sq]
+    norm_mul, Complex.norm_conj, Complex.norm_conj, TauCeti.HeisenbergDatum.norm_apply, one_mul,
+    ← sq]
   exact pow_le_pow_left₀ (norm_nonneg _) (h_bound x) 2
 
 /-- For a standard space `V`, there is a finite adelic vector `x` such that the integral vacuum

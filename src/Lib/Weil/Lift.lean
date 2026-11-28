@@ -248,7 +248,7 @@ namespace New
 section Edge
 
 open NumberField MeasureTheory Matrix ComplexConjugate MvPolynomial Fock Fintype Norms.L2Operator
-  Complex CompactlySupported Set Heisenberg.IsVacuum
+  Complex CompactlySupported Set TauCeti ReproducingModel
 
 variable {E n n' ι : Type} [Field E] [CMType E] [WeilData E]
   [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype ι] [DecidableEq ι]
@@ -430,13 +430,19 @@ theorem integral_piTensor_eq_integratedRep {A : ℕ}
     (by fun_prop) (.of_forall fun _ ↦ piTensor.le_opNorm _)
   have F₀_eq : ∫ x, F₀ x = piTensor fun w ↦ integratedRep (π w) (k w) (v w) := ext fun z ↦ by
     -- the value of `piTensor` at `z` is the product of the values of its factors
-    let ev (w : InfinitePlace E) : fockSpace η →L[ℂ] ℂ := valueAt fun i ↦ z (w, i)
-    calc (∫ x, F₀ x) z = ∫ x : GInf E s, ∏ w, k w (x w) • ev w (π w (x w) (v w)) :=
-        ((valueAt z).integral_comp_comm F₀_int).symm
+    let ev (w : InfinitePlace E) : fockSpace η →L[ℂ] ℂ := evalCLM fun i ↦ z (w, i)
+    have h_eval : (∫ x, F₀ x) z = ∫ x : GInf E s, ∏ w, k w (x w) • ev w (π w (x w) (v w)) := by
+      have h := ((evalCLM z).integral_comp_comm F₀_int).symm
+      rw [evalCLM_apply] at h
+      refine h.trans (integral_congr_ae (.of_forall fun x ↦ ?_))
+      simp only [evalCLM_apply, ev, F₀, piTensor_apply, ReproducingModel.smul_apply, smul_eq_mul]
+    calc (∫ x, F₀ x) z = ∫ x : GInf E s, ∏ w, k w (x w) • ev w (π w (x w) (v w)) := h_eval
       _ = ∏ w, ∫ g, k w g • ev w (π w g (v w)) :=
         integral_fintype_prod_eq_prod fun w g ↦ k w g • ev w (π w g (v w))
       _ = ∏ w, ev w (integratedRep (π w) (k w) (v w)) := by
         simp only [map_integratedRep (hπ _) (hk _)]
+      _ = (piTensor fun w ↦ integratedRep (π w) (k w) (v w)) z := by
+        simp only [ev, evalCLM_apply, piTensor_apply]
   exact ⟨T.integrable_comp F₀_int, (T.integral_comp_comm F₀_int).trans (congrArg T F₀_eq)⟩
 
 /-- Let `Ω (x, 1)` act on pure tensors place by place through the oscillator pairs `π w`, `π' w` for

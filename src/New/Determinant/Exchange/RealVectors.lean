@@ -167,7 +167,9 @@ lemma exists_isSchwartzVector_realSlice_eq (D : X.Splitting W₁ b) [IsBaseAdapt
       simp only [Prod.fst_mul, Pi.mul_apply, h0, zero_mul, Prod.fst_one, Pi.one_apply,
         zero_ne_one] at h1
     exact mul_div_cancel_left₀ _ hne
-  rw [(adelicSum E 1).integral_eq_integral_prod, (adelicSum E 1).integral_eq_integral_prod]
+  rw [(adelicSum E 1).integral_eq_integral_prod (μ₁ := normalizedVolume _)
+      (μ₂ := latticeMeasure E _),
+    (adelicSum E 1).integral_eq_integral_prod (μ₁ := normalizedVolume _) (μ₂ := latticeMeasure E _)]
   have h_lhs (y : (InfinitePlace E × a × b → ℂ) × (a × b → 𝔸f E)) :
       (W₁.hom V').integrated (𝓜.slice (realCoord ((adelicSum E 1).equiv y)) Λ)
         ((D.homSource V').slice (g⁻¹.valᴴ *ᵥ fun i ↦ (0, ((adelicSum E 1).equiv y i).2))
@@ -274,8 +276,8 @@ lemma isSchwartzVector_realBoxProd {ι ι₁ ι₂ : Type*} [Fintype ι] [Decida
     {e : ι₁ ⊕ ι₂ ≃ ι}
     (he : ε ∘ e = ε₁ ⊕ᵥ ε₂) {v : fockSpace ε₁} {w : fockSpace ε₂} (hv : IsSchwartzVector v)
     (hw : IsSchwartzVector w) : IsSchwartzVector (realBoxProd he v w) := by
-  -- `realBoxProd he v w` is an iterated integral of translates of the vacuum, against `w` and then
-  -- `v`; padding a vector with zeros does not increase its maximum norm.
+  -- `realBoxProd he v w` is the product of `v` and `w` along the splitting; padding a vector with
+  -- zeros does not increase its maximum norm.
   intro N
   have pad_left (x : ι₁ → ℂ) : ‖(realCoordSum he).equiv (x, 0)‖ₑ ≤ ‖x‖ₑ := by
     rw [eNorm_eq_nnNorm, eNorm_eq_nnNorm, ENNReal.coe_le_coe, pi_nnNorm_le_iff]
@@ -295,24 +297,36 @@ lemma isSchwartzVector_realBoxProd {ι ι₁ ι₂ : Type*} [Fintype ι] [Decida
     · change ‖((0 : ι₁ → ℂ) ⊕ᵥ y) (e.symm (e (Sum.inr i)))‖₊ ≤ ‖y‖₊
       rw [e.symm_apply_apply, Sum.elim_inr]
       exact nnNorm_le_pi_nnNorm y i
-  let inner : fockSpace ε := ∫ y, w y • realHeisenbergOp ((realCoordSum he).equiv (0, y))
-    Fock.vacVector
-    ∂normalizedVolume ι₂
-  have inner_le : fockMoment N inner ≤
-      fockMoment N (Fock.vacVector : fockSpace ε) * fockMoment N w := by
-    refine (fockMoment_integral_le _).trans (lintegral_fockMoment_smul_le fun y ↦ ?_)
-    exact ((fockMoment_realHeisenbergOp_le _ _ _).trans
-      (mul_le_mul_left (pow_le_pow_left' (add_le_add_right (pad_right y) 1) N) _)).trans_eq
-      (mul_comm _ _)
-  have outer_le : fockMoment N (realBoxProd he v w) ≤
-      fockMoment N (Fock.vacVector : fockSpace ε) * fockMoment N w * fockMoment N v := by
-    refine (fockMoment_integral_le _).trans (lintegral_fockMoment_smul_le fun x ↦ ?_)
-    change fockMoment N (realHeisenbergOp ((realCoordSum he).equiv (x, 0)) inner) ≤ _
-    exact ((fockMoment_realHeisenbergOp_le _ _ _).trans
-      (mul_le_mul' (pow_le_pow_left' (add_le_add_right (pad_left x) 1) N) inner_le)).trans_eq
-      (mul_comm _ _)
-  exact ne_top_of_le_ne_top (mul_ne_top (mul_ne_top (isSchwartzVector_vacVector N) (hw N)) (hv N))
-    outer_le
+  -- The weight of `(x, y)` is at most the product of the weights of `x` and `y`.
+  have h_weight (x : ι₁ → ℂ) (y : ι₂ → ℂ) :
+      (1 + ‖(realCoordSum he).equiv (x, y)‖ₑ) ^ N ≤ (1 + ‖x‖ₑ) ^ N * (1 + ‖y‖ₑ) ^ N := by
+    rw [← mul_pow]
+    gcongr
+    have h_split : (realCoordSum he).equiv (x, y) =
+        (realCoordSum he).equiv (x, 0) + (realCoordSum he).equiv (0, y) := by
+      rw [← map_add, Prod.mk_add_mk, add_zero, zero_add]
+    calc 1 + ‖(realCoordSum he).equiv (x, y)‖ₑ ≤ 1 + ‖x‖ₑ + ‖y‖ₑ := by
+          grw [h_split, eNorm_add_le, pad_left, pad_right, add_assoc]
+      _ ≤ 1 + ‖x‖ₑ + ‖y‖ₑ + ‖x‖ₑ * ‖y‖ₑ := le_self_add
+      _ = (1 + ‖x‖ₑ) * (1 + ‖y‖ₑ) := by ring
+  -- `realBoxProd he v w` is the product `v x * w y` along the splitting, which preserves the
+  -- measure.
+  have h_moment : fockMoment N (realBoxProd he v w) =
+      ∫⁻ p : (ι₁ → ℂ) × (ι₂ → ℂ), (1 + ‖(realCoordSum he).equiv p‖ₑ) ^ N * (‖v p.1‖ₑ * ‖w p.2‖ₑ)
+        ∂(normalizedVolume ι₁).prod (normalizedVolume ι₂) := by
+    rw [fockMoment, ← ((realCoordSum he).measurePreserving_equiv (μ := normalizedVolume ι)
+      (μ₁ := normalizedVolume ι₁) (μ₂ := normalizedVolume ι₂)).lintegral_comp_emb
+        (realCoordSum he).equiv.toHomeomorph.measurableEmbedding]
+    simp [realBoxProd, TauCeti.HeisenbergDatum.OrthogonalSum.tmul_apply]
+  have h_le : fockMoment N (realBoxProd he v w) ≤ fockMoment N v * fockMoment N w := by
+    rw [h_moment, fockMoment, fockMoment, ← lintegral_prod_mul (by fun_prop) (by fun_prop)]
+    refine lintegral_mono fun p ↦ ?_
+    calc (1 + ‖(realCoordSum he).equiv p‖ₑ) ^ N * (‖v p.1‖ₑ * ‖w p.2‖ₑ)
+        ≤ (1 + ‖p.1‖ₑ) ^ N * (1 + ‖p.2‖ₑ) ^ N * (‖v p.1‖ₑ * ‖w p.2‖ₑ) := by
+          gcongr
+          exact h_weight p.1 p.2
+      _ = (1 + ‖p.1‖ₑ) ^ N * ‖v p.1‖ₑ * ((1 + ‖p.2‖ₑ) ^ N * ‖w p.2‖ₑ) := by ring
+  exact ne_top_of_le_ne_top (mul_ne_top (hv N) (hw N)) h_le
 
 /-- Matrix inversion agrees, near a matrix `A₀` of nonzero determinant, with a function that is
 smooth on all matrices. -/

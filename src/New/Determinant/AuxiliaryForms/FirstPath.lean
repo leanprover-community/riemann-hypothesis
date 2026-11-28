@@ -97,9 +97,8 @@ lemma pairWeil_gridChar_modDatum_eq_self (z : Bool) (ϑ : D.MFoldTwist) (i : ℕ
     {u : stdLevel D.E (D.GridIndex z 0 i)} (hu : (triangleModulus z ϑ).reductionGL u = 1)
     {u' : stdLevel D.E (D.GridIndex z 0 (i + 1))} (hu' : (triangleModulus z ϑ).reductionGL u' = 1)
     (Ψ : Matrix (D.GridIndex z 0 (i + 1)) (D.GridIndex z 0 i) (triangleModulus z ϑ).ResidueRing → ℂ)
-    (v : Heisenberg.IsVacuum.Model
-      (Fock.realHeisenberg
-        (realSigns D.E (homSigns (D.gridSigns z 0 0 i) (D.gridSigns z 0 0 (i + 1)))))) :
+    (v : Fock.fockSpace
+      (realSigns D.E (homSigns (D.gridSigns z 0 0 i) (D.gridSigns z 0 0 (i + 1))))) :
     pairWeil (D.gridSpace 0 z 0 i) (D.gridSpace 0 z 0 (i + 1))
         (gridChar ϑ (!z) i (D.GridIndex z 0 i)) (gridChar ϑ (!z) i (D.GridIndex z 0 (i + 1)))
         ((1, u.val), 1, u'.val)

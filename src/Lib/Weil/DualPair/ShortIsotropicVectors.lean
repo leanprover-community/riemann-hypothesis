@@ -50,7 +50,7 @@ namespace New
 section KernelDecay
 
 open MeasureTheory Matrix Kronecker
-  Fock WeilData Space Prod G IsDualFamily Heisenberg ENNReal
+  Fock WeilData Space Prod G IsDualFamily TauCeti ENNReal
 
 variable {E : Type} [Field E] [CMType E] {n n' p q : Type} [Fintype n] [DecidableEq n] [Fintype n']
   [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
@@ -355,8 +355,8 @@ lemma Space.rho_add_of_mem_adelicPoints {E n : Type} [Field E] [CMType E] [WeilD
       obtain ⟨γ, hγ, rfl⟩ := hy
       rw [V.stdForm_vecAtPoint, h_iso γ hγ η hη, map_zero]
     | _ => simp [mulVec_add, mulVec_smul, *]
-  have h_beta : (adelicHeisenberg E s).β x y = 1 := by simp [adelicHeisenberg, h_form]
-  rw [V.heisenbergRep.mul, h_beta, one_smul]
+  have h_beta : adelicHeisenberg E s x y = 1 := by simp [adelicHeisenberg_apply, h_form]
+  rw [V.heisenbergRep.apply_apply, h_beta, one_smul]
 
 /-- Let `Z` be an isotropic subspace of `V` and `Λ` a bounded functional that is invariant under the
 Heisenberg operators of `Z`. Then `x ↦ Λ (ϱ x f)` is continuous on the adelic points of `Z` and
@@ -423,7 +423,8 @@ lemma Space.exists_rho_nsmul_eq_self {E n : Type} [Field E] [CMType E] [WeilData
       finVec ((M : 𝔸f E) • (α (E := E))⁻¹.val • fun k : n ↦ (u k).2) :=
     funext fun k ↦ by simp [finVec, mul_left_comm (α (E := E)).val]
   have h_zero : finVec (0 : n → 𝔸f E) = 0 := funext fun k ↦ by simp [finVec]
-  rw [h_vec, h_near _ ⟨fun k ↦ (u k).2, hu, rfl⟩, h_zero, Rep.rho_zero_apply]
+  rw [h_vec, h_near _ ⟨fun k ↦ (u k).2, hu, rfl⟩, h_zero,
+    TauCeti.HeisenbergDatum.Representation.zero_apply]
 
 /-- Let `f₀` lie in the finite part of `𝒮 V` and let `ι` be a finite index type. There is `C` as
 follows. Let the vectors `z i` lie in the lattice at `g` with lengths at most `δ ≥ 0`
@@ -564,7 +565,7 @@ theorem Space.exists_norm_sub_subspaceMean_le {E n : Type} [Field E] [CMType E] 
   have h_norm_mean : ‖Λ₀ ∘L V.ω g‖ ≤ ‖Λ ∘L V.ω g‖ := by
     refine ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg _) fun f ↦ ?_
     have h_term (x : V.adelicPoints Z) : ‖Λ (V.ϱ x (V.ω g f))‖ ≤ ‖Λ ∘L V.ω g‖ * ‖f‖ := by
-      rw [rho_omega, ← V.heisenbergRep.norm_map (g⁻¹.adeleMatrix *ᵥ x) f]
+      rw [rho_omega, ← V.heisenbergRep.norm_apply (g⁻¹.adeleMatrix *ᵥ x) f]
       exact (Λ ∘L V.ω g).le_opNorm _
     rw [ContinuousLinearMap.comp_apply, h_mean]
     exact norm_quotMean_le _ h_term

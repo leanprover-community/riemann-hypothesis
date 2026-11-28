@@ -488,7 +488,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
       (hΩ.prod hC).continuous_sSup (by fun_prop [kronecker, kroneckerMap])⟩
   have modulus_le (a : 𝔸 E × G E t) : modulus a ≤ ENNReal.ofReal (R + R) :=
     sSup_le <| forall_mem_image.mpr fun ⟨_, f⟩ ⟨_, hf⟩ ↦ by
-      grw [← ofReal_norm, norm_sub_le, (heisenbergRep _).norm_map, hR _ hf]
+      grw [← ofReal_norm, norm_sub_le, (heisenbergRep _).norm_apply, hR _ hf]
   have modulus_zero (h : G E t) : modulus (0, h) = 0 := by simp [modulus, translate, sSup_image]
   -- By dominated convergence the integral of `B * modulus` tends to `0` with the scalar `a`.
   have h_lim : Tendsto (fun a : 𝔸f E × (NumberField.InfinitePlace E → ℂ) ↦

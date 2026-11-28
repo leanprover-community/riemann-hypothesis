@@ -9,6 +9,7 @@ import TauCeti.Algebra.Group.AddChar.Basic
 import TauCeti.NumberTheory.NumberField.Countable
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
+import TauCeti.Analysis.HeisenbergModel.Wiener
 public import Lib.Weil.Fock.Basic
 public import Lib.General.Analysis.FourierTransforms
 public import Lib.General.Analysis.HolomorphicIntegrals
@@ -26,24 +27,25 @@ The adelic Heisenberg datum β = `New.adelicHeisenberg E s` on `𝔸 ^ n`, with 
 `New.vacuumFn`, splits into a real and a finite part. The data of the adelic Weil representation
 (measure, multiplier Δ and action of the adelic unitary group `New.G E s`) are built as products of
 the real and the finite data. For a hermitian space with a point `V` (`New.Space`), the space
-`New.𝒮 V`, whose vectors are also called data, is the model `Model (adelicHeisenberg E s)`. It
-carries the Heisenberg operators `New.Space.ϱ` (`ρ x` or `heisenbergOp x` on the model), the Weil
-representation `New.Space.ω`, the inner product `New.Space.dataInner` (`⟨·, ·⟩`, conjugate linear on
-the left) and the vacuum `New.Space.vacElem`. A theta functional is a bounded functional on the
-model that is invariant under the rational vectors `New.Space.ratVectors` and normalised;
-`New.Space.θ` is a definite choice of one. A vector `f : 𝒮 V` applied to `x` is its theta function
-θ(ϱ(x) f), not the integrable function `f.1 x = ⟨ϱ(x) vac, f⟩`.
+`New.𝒮 V`, whose vectors are also called data, is the model
+`ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn`. It carries the Heisenberg
+operators `New.Space.ϱ` (`ρ x` or `heisenbergRep x` on the model), the Weil representation
+`New.Space.ω`, the inner product `New.Space.dataInner` (`⟨·, ·⟩`, conjugate linear on the left) and
+the vacuum `New.Space.vacElem`. A theta functional is a bounded functional on the model that is
+invariant under the rational vectors `New.Space.ratVectors` and normalised; `New.Space.θ` is a
+definite choice of one. A vector `f : 𝒮 V` applied to `x` is its theta function θ(ϱ(x) f), not the
+integrable function `f.1 x = ⟨ϱ(x) vac, f⟩`.
 
 ## Main definitions and results
 
 * `New.adelicSum`: multiplication by the idele `New.WeilData.scaleIdele` identifies complex
   coordinates, indexed by pairs (infinite place, index), times finite adelic vectors with `𝔸 ^ n`.
   The bicharacter and `New.vacuumFn` become products of those of `New.Fock.realHeisenberg` and
-  `New.stdLattice.finHeisenberg` (`New.Heisenberg.OrthogonalSum`). This scaling turns the adelic
-  Gaussian into the standard one (`New.WeilData.conj_scaleIdele_mul`).
+  `New.stdLattice.finHeisenberg` (`TauCeti.HeisenbergDatum.OrthogonalSum`). This scaling turns the
+  adelic Gaussian into the standard one (`New.WeilData.conj_scaleIdele_mul`).
 * `New.adelicAction`: the adelic unitary group `New.G` acts on `𝔸 ^ n` by matrices, keeping the
-  bicharacter and the measure, and `Δ` satisfies the identity of `New.Heisenberg.MultiplierAction`
-  with trivial cocycle.
+  bicharacter and the measure, and `Δ` satisfies the identity of
+  `TauCeti.HeisenbergDatum.Multiplier` with trivial cocycle.
 * `New.Space.omega_rho`, `New.Space.dataInner_omega`, `New.Space.dataInner_vacElem_omega_vacElem`:
   `ω g` takes `ϱ x` to `ϱ (g x)`, keeps the inner product, and has overlap `(conj (Δ g))⁻¹` with the
   vacuum.
@@ -56,15 +58,15 @@ Notions from other files:
 * `New.adelicHeisenberg`: the Heisenberg datum on adelic n-space with bicharacter β(x,y)=ψ(½ȷ
   h(y,x)), h being the standard hermitian form of signs s and ȷ = −ȷ̄ the element `j` of the Weil
   data.
-* `New.Heisenberg.OrthogonalSum`: an isomorphism W₁ × W₂ ≃ W along which the bicharacter and the
-  vacuum function of W are the products of those of W₁ and W₂.
-* `New.Heisenberg.MultiplierAction`: an action of a group on W that keeps β and the measure, with a
-  multiplier Δ that satisfies the cocycle identity of the Weil representation.
+* `TauCeti.HeisenbergDatum.OrthogonalSum`: an isomorphism W₁ × W₂ ≃ W along which the bicharacter
+  and the vacuum function of W are the products of those of W₁ and W₂.
+* `TauCeti.HeisenbergDatum.Multiplier`: an action of a group on W that keeps β and the measure, with
+  a multiplier Δ that satisfies the cocycle identity of the Weil representation.
 * `New.Space`: a hermitian space with a point, given by a matrix J over E and x in GL_n(𝔸) with xᴴJx
   equal to diag(s) at the infinite places and 1 at the finite places; `New.Space.vecAtPoint` sends
   y in E^n to the adelic vector x⁻¹y.
-* `New.Heisenberg.IsVacuum.Model`: the space of integrable v with v(x) = ∫ v(y) β(y,x) e(x−y) dμ(y),
-  as a type.
+* `TauCeti.ReproducingModel.Model`: the space of integrable v with v(x) = ∫ v(y) β(y,x) e(x−y)
+  dμ(y), as a type.
 
 ## Relation to the literature
 
@@ -105,8 +107,7 @@ pairs (infinite place, index)) times finite adelic vectors z onto 𝔸^n. Along 
 `realSigns E s`, and the finite ones. -/
 def adelicSum :
     (adelicHeisenberg E s).OrthogonalSum (realHeisenberg (realSigns E s))
-      (stdLattice.finHeisenberg E n)
-      vacuumFn where
+      (stdLattice.finHeisenberg E n) vacuumFn realVac stdLattice.finVac where
   -- Join the archimedean and the finite coordinates into adeles, and scale by `scaleIdele`.
   equiv.toAddEquiv :=
     { toFun y i := scaleIdele E * (fun w ↦ y.1 (w, i), y.2 i)
@@ -114,19 +115,20 @@ def adelicSum :
       left_inv y := by simp [-fst_mul, -snd_mul]
       right_inv x := by simp [-fst_mul, -snd_mul]
       map_add' x y := by simp [funext_iff, ← mul_add, -fst_mul, -snd_mul] }
-  beta_equiv x y := by
+  apply_equiv_equiv x y := by
     have conj_j (σ : E →+* ℂ) : -σ j = starRingEnd ℂ (σ j) := by
       simpa [star_j] using map_star_complex σ j
     -- Both sides are a complex exponential times a value of `ψf`. At an infinite place `w`,
     -- `Φ w j` is purely imaginary, and `conj_scaleIdele_mul` cancels `2π Im (Φ w j)` against
     -- `|scaleIdele|²`.
-    simp [adelicHeisenberg, realHeisenberg, stdLattice.finHeisenberg, stdAddChar, fourierChar,
+    simp [adelicHeisenberg_apply, realHeisenberg_apply, stdLattice.finHeisenberg_apply, stdAddChar,
+      fourierChar,
       stdForm, signMatrix,
       ← sum_sub_distrib, map_ofNat, ← sum_neg_distrib, re_eq_add_conj, sum_mul, mul_sum, dotProduct,
       mulVec_diagonal, fst_sum, snd_sum, val_scaleIdele_snd, sum_prod_type, sum_div, half,
-      selfDualAddChar_apply]
+      selfDualAddChar_apply, -mul_re, -mul_im]
     grind [conj_scaleIdele_mul, im_eq_sub_conj, I_sq]
-  vac_equiv y := by
+  vacuum_equiv y := by
     -- Both sides vanish unless `y.2` is integral; the Gaussians agree by `conj_scaleIdele_mul`.
     simp [vacuumFn, finVac, realVac, neg_div, mul_pow, ← conj_mul', mem_stdLattice,
       ↓sum_prod_type_right, val_scaleIdele_snd, mul_sum, dotProduct, sum_div, half,
@@ -159,7 +161,7 @@ end AdelicSum
 
 section AdelicAction
 
-open Matrix MeasureTheory Measure U NumberField Fock Heisenberg G
+open Matrix MeasureTheory Measure U NumberField Fock TauCeti G
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ} (g : G E s)
@@ -180,10 +182,10 @@ instance : (vacuumMeasure (E := E) (n := n)).IsAddHaarMeasure :=
   (adelicSum E 1).equiv.isAddHaarMeasure_map _
 
 /-- The function `New.vacuumFn` (Gaussian at infinity times twisted lattice indicator at finite
-places) is a vacuum, in the sense of `New.Heisenberg.IsVacuum`, for the bicharacter β of signs s and
-the measure `New.vacuumMeasure`: it is the product of a real and a finite vacuum. -/
+places) is a vacuum, in the sense of `TauCeti.HeisenbergDatum.IsVacuum`, for the bicharacter β of
+signs s and the measure `New.vacuumMeasure`: it is the product of a real and a finite vacuum. -/
 instance isVacuum_vacuumFn : (adelicHeisenberg E s).IsVacuum vacuumMeasure vacuumFn :=
-  (adelicSum E s).isVacuum
+  (adelicSum E s).isVacuum inferInstance inferInstance
 
 section
 
@@ -202,45 +204,53 @@ instance : ContinuousSMul (G E s) (n → 𝔸 E) := by
 
 end
 
-/-- The continuous, β- and measure-preserving action of the adelic unitary group on 𝔸^n by matrices.
-Its multiplier is `New.weilMultiplier`, which satisfies the identity of
-`New.Heisenberg.MultiplierAction` with trivial cocycle. -/
-@[simps Δ]
-def adelicAction : (adelicHeisenberg E s).MultiplierAction vacuumMeasure vacuumFn (G E s) where
-  Δ := New.weilMultiplier
-  beta_smul := by simp [adelicHeisenberg, adeleMatrix, ↓form_mulVec_mulVec]
-  measurePreserving g :=
+/-- The continuous, β- and measure-preserving action of the adelic unitary group on 𝔸^n by matrices,
+with multiplier `New.weilMultiplier`. Its cocycle is trivial (`New.adelicAction_cocycle`). -/
+def adelicAction : (adelicHeisenberg E s).Multiplier vacuumMeasure (G E s) where
+  toFun := New.weilMultiplier
+  apply_smul_smul := by simp [adelicHeisenberg_apply, adeleMatrix, ↓form_mulVec_mulVec]
+  measurePreserving_smul g :=
     -- Along `adelicSum` the action is the product of the real and the finite action.
     MeasurePreserving.of_semiconj ⟨by fun_prop, rfl⟩
-      (MeasurePreserving.prod ((realAction (realSigns E s)).measurePreserving (blockU g.1))
-        (finAction.measurePreserving g.2))
+      (MeasurePreserving.prod ((realAction (realSigns E s)).measurePreserving_smul (blockU g.1))
+        (finAction.measurePreserving_smul g.2))
       (fun y ↦ (adeleMatrix_mulVec_adelicSum g y).symm) (by fun_prop)
-  continuous_delta := Continuous.mul (by fun_prop [realMultiplier]) finAction.continuous_delta.snd'
-  Δ_one := by simp [New.weilMultiplier, realMultiplier, finMultiplier_eq_one_of_mem]
-  Δ_inv := by simp [New.weilMultiplier, realMultiplier, finMultiplier_inv, ← principalMinor_coe_inv]
-  cocycle g h := by
-    -- Multiply the cocycle identities of the real and of the finite action. Along `adelicSum` the
-    -- double integral is the product of the real and the finite one.
-    have h_mul := congr_arg₂ (· * ·)
-      ((realAction (realSigns E s)).cocycle (blockU g.1) (blockU h.1)) (finAction.cocycle g.2 h.2)
-    simpa only [New.weilMultiplier, ← realMultiplier_blockU, ← map_mul, ← map_inv,
-      smul_eq_adeleMatrix_mulVec, ← map_add, OrthogonalSum.beta_equiv, realAction,
-      (adelicSum E s).integral_eq_integral_prod, adeleMatrix_mulVec_adelicSum,
-        OrthogonalSum.vac_equiv,
-      ← integral_prod_mul, mul_mul_mul_comm _ _ (_ * _), mul_mul_mul_comm _ (realVac _),
-      mul_mul_mul_comm _ (realMultiplier _)] using! h_mul.trans (one_mul 1)
+  continuous_toFun := Continuous.mul (by fun_prop [realMultiplier]) finAction.continuous.snd'
+  map_one' := by simp [New.weilMultiplier, realMultiplier, finMultiplier_eq_one_of_mem]
+  map_inv' := by
+    simp [New.weilMultiplier, realMultiplier, finMultiplier_inv, ← principalMinor_coe_inv]
+
+@[simp]
+lemma adelicAction_apply : adelicAction g = weilMultiplier g := rfl
+
+/-- The multiplier of the adelic action has trivial cocycle: it is the product of the cocycles of
+the real and of the finite action. -/
+lemma adelicAction_cocycle (h : G E s) : adelicAction.cocycle vacuumFn g h = 1 := by
+  -- Multiply the cocycle identities of the real and of the finite action. Along `adelicSum` the
+  -- double integral is the product of the real and the finite one.
+  have h_mul := congr_arg₂ (· * ·)
+    ((realAction (realSigns E s)).cocycle_def realVac (blockU g.1) (blockU h.1) ▸
+      realAction_cocycle (realSigns E s) (blockU g.1) (blockU h.1))
+    (finAction.cocycle_def stdLattice.finVac g.2 h.2 ▸ finAction_cocycle g.2 h.2)
+  rw [TauCeti.HeisenbergDatum.Multiplier.cocycle_def]
+  simpa only [adelicAction_apply, New.weilMultiplier, ← realMultiplier_blockU, ← map_mul, ← map_inv,
+    realAction_apply, finAction_apply, smul_eq_adeleMatrix_mulVec, ← map_add,
+    TauCeti.HeisenbergDatum.OrthogonalSum.apply_equiv_equiv,
+    (adelicSum E s).integral_eq_integral_prod (μ₁ := normalizedVolume _) (μ₂ := latticeMeasure E n),
+    adeleMatrix_mulVec_adelicSum, TauCeti.HeisenbergDatum.OrthogonalSum.vacuum_equiv,
+    ← integral_prod_mul, mul_mul_mul_comm _ _ (_ * _), mul_mul_mul_comm _ (realVac _),
+    mul_mul_mul_comm _ (realMultiplier _)] using! h_mul.trans (one_mul 1)
 
 /-- The multiplier of `g⁻¹` is the complex conjugate of the multiplier of `g`. -/
 lemma weilMultiplier_inv : weilMultiplier g⁻¹ = starRingEnd ℂ (weilMultiplier g) :=
-  adelicAction.Δ_inv g
+  adelicAction.map_inv g
 
 /-- The multiplier `weilMultiplier g` = Δ_f(g_f) ∏_w conj(det d_w) of `g` in the adelic unitary
 group `G E s` does not vanish. Here w runs over the infinite places, d_w is the block of g_w on the
-coordinates of sign −1, and Δ_f = `finMultiplier`. It is a factor of the left side of the cocycle
-identity. -/
+coordinates of sign −1, and Δ_f = `finMultiplier`. It is a factor of the cocycle, which is `1`. -/
 lemma weilMultiplier_ne_zero : weilMultiplier g ≠ 0 := by
   intro h_zero
-  simpa [adelicAction_Δ, h_zero] using (adelicAction (s := s)).cocycle g g
+  simpa [TauCeti.HeisenbergDatum.Multiplier.cocycle_def, h_zero] using adelicAction_cocycle g g
 
 end AdelicAction
 
@@ -250,7 +260,7 @@ end New
 
 namespace New
 
-open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle
+open NumberField Matrix WeilData Filter Finset TauCeti Fock ReproducingModel Space Equiv Circle
   Complex
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
@@ -259,27 +269,27 @@ variable {E : Type*} [Field E] [CMType E] [WeilData E]
 
 /-- The Banach space 𝒮(V) of integrable functions c on 𝔸^n with c(x) = ∫ c(y)β(y,x)e(x−y) dy,
 under the L¹ norm; it depends only on the signs of V. -/
-def 𝒮 (_ : Space E n s) : Type _ := Model (adelicHeisenberg E s)
+def 𝒮 (_ : Space E n s) : Type _ := ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn
   deriving NormedAddCommGroup, NormedSpace ℂ, CompleteSpace
 
 namespace Space
 
 /-- The Heisenberg representation y ↦ ϱ(y) of (𝔸^n, β) on the Banach space 𝒮(V). -/
-def heisenbergRep : (adelicHeisenberg E s).Rep (𝒮 V) := IsVacuum.heisenbergRep
+def heisenbergRep : (adelicHeisenberg E s).Representation (𝒮 V) := ReproducingModel.heisenbergRep
 
 /-- The Heisenberg operator of an adelic vector `y` on `𝒮 V`. -/
-abbrev ϱ : 𝒮 V →L[ℂ] 𝒮 V := V.heisenbergRep.ρ y
+abbrev ϱ : 𝒮 V →L[ℂ] 𝒮 V := V.heisenbergRep y
 
 /-- The Weil representation: the homomorphism from the adelic unitary group to the bounded operators
 on 𝒮(V), ω(g)c = Δ(g) ∫ c(y) ϱ(gy) vac dy, where Δ is `New.weilMultiplier`. -/
-def ω : G E s →* 𝒮 V →L[ℂ] 𝒮 V := weilRep adelicAction
+def ω : G E s →* 𝒮 V →L[ℂ] 𝒮 V := weilRep vacuumFn adelicAction adelicAction_cocycle
 
 /-- The bounded sesquilinear form ⟨c, c′⟩ = ∫ c̄ c′ over 𝔸^n on 𝒮(V), on the underlying integrable
 functions, conjugate-linear in the first variable. -/
-def dataInner : 𝒮 V →L⋆[ℂ] 𝒮 V →L[ℂ] ℂ := modelInner
+def dataInner : 𝒮 V →L⋆[ℂ] 𝒮 V →L[ℂ] ℂ := innerSL
 
 /-- The vacuum: the function e (Gaussian times twisted lattice indicator) as an element of 𝒮(V). -/
-def vacElem : 𝒮 V := IsVacuum.vacElem
+def vacElem : 𝒮 V := ReproducingModel.vacuum
 
 end Space
 
@@ -327,12 +337,12 @@ lemma _root_.Circle.coe_prod {ι : Type*} (t : Finset ι) (f : ι → Circle) :
 /-- The bicharacter `β` of the adelic Heisenberg datum of signs `s` is the product, over the
 coordinates `i`, of the bicharacters of the lines of sign `s i`. -/
 lemma adelicHeisenberg_beta_eq_prod :
-    (adelicHeisenberg E s).β x y =
+    adelicHeisenberg E s x y =
       ∏ i : n,
-        (adelicHeisenberg E fun _ : Unit ↦ s i).β (fun _ : Unit ↦ x i) fun _ : Unit ↦ y i := by
+        adelicHeisenberg E (fun _ : Unit ↦ s i) (fun _ : Unit ↦ x i) fun _ : Unit ↦ y i := by
   -- The character `stdAddChar E` turns the sum over coordinates into a product.
-  simp [adelicHeisenberg, stdForm, dotProduct, mulVec_diagonal, mul_sum, AddChar.map_sum_eq_prod,
-    Circle.coe_prod]
+  simp [adelicHeisenberg_apply, stdForm, dotProduct, mulVec_diagonal, mul_sum,
+    AddChar.map_sum_eq_prod, Circle.coe_prod]
 
 omit [DecidableEq n] in
 /-- The vacuum function of `𝔸^n` is the product, over the coordinates, of the vacuum functions of
@@ -349,7 +359,7 @@ end New
 
 namespace New.Space
 
-open Matrix ComplexConjugate Heisenberg.IsVacuum
+open Matrix ComplexConjugate TauCeti ReproducingModel
 
 variable {E : Type _} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n]
@@ -365,7 +375,7 @@ lemma map_eq_integral_dataInner {Y : Type*} [NormedAddCommGroup Y] [NormedSpace 
     T f = ∫ y : n → 𝔸 E, V.dataInner (V.ϱ y V.vacElem) f • T (V.ϱ y V.vacElem) ∂vacuumMeasure := by
   refine (map_eq_integral f T).trans ?_
   congr with y : 1
-  exact congrArg (· • T (V.ϱ y V.vacElem)) (modelInner_heisenbergOp_vacElem y f).symm
+  exact congrArg (· • T (V.ϱ y V.vacElem)) (innerSL_heisenbergRep_vacuum f y).symm
 
 /-- The Weil representation `(g, f) ↦ ω(g) f` is jointly continuous. -/
 @[fun_prop]
@@ -373,24 +383,25 @@ lemma continuous_omega : Continuous fun p : G E s × 𝒮 V ↦ V.ω p.1 p.2 := 
 
 /-- The Weil operators intertwine the Heisenberg operators: ω(g)ϱ(x)f = ϱ(gx)ω(g)f for g in G, x
 an adelic vector and f in 𝒮(V). -/
-lemma omega_rho : V.ω g (V.ϱ x f) = V.ϱ (g.adeleMatrix *ᵥ x) (V.ω g f) := weilRep_heisenbergOp ..
+lemma omega_rho : V.ω g (V.ϱ x f) = V.ϱ (g.adeleMatrix *ᵥ x) (V.ω g f) := weilRep_heisenbergRep ..
 
 /-- The Heisenberg operators `ϱ x` keep the inner product. -/
 lemma dataInner_rho : V.dataInner (V.ϱ x f) (V.ϱ x f') = V.dataInner f f' :=
-  modelInner_heisenbergOp ..
+  innerSL_heisenbergRep ..
 
 /-- The Weil operators `ω g` keep the inner product. -/
-lemma dataInner_omega : V.dataInner (V.ω g f) (V.ω g f') = V.dataInner f f' := modelInner_weilRep ..
+lemma dataInner_omega : V.dataInner (V.ω g f) (V.ω g f') = V.dataInner f f' := innerSL_weilRep ..
 
 /-- The inner product is definite: `⟨f, f⟩ = 0` forces `f = 0`. -/
 lemma eq_zero_of_dataInner_self {f : 𝒮 V} : V.dataInner f f = 0 → f = 0 :=
-  eq_zero_of_modelInner_self
+  eq_zero_of_innerSL_self
 
 /-- The vacuum has inner square one. -/
 lemma dataInner_vacElem_vacElem : V.dataInner V.vacElem V.vacElem = 1 := by
   -- Pairing with the vacuum evaluates the vacuum function at `0`, where it is `1`.
   have h_eval : V.dataInner V.vacElem V.vacElem =
-      (Heisenberg.IsVacuum.vacElem : Model (adelicHeisenberg E s)) 0 := modelInner_vacElem ..
+      (vacuum : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) 0 :=
+    innerSL_vacuum ..
   simp [h_eval, vacuumFn]
 
 /-- The Heisenberg matrix coefficient of `vacElem` at `y` is the vacuum function `New.vacuumFn` at
@@ -398,9 +409,9 @@ lemma dataInner_vacElem_vacElem : V.dataInner V.vacElem V.vacElem = 1 := by
 lemma dataInner_vacElem_rho_vacElem : V.dataInner V.vacElem (V.ϱ y V.vacElem) = vacuumFn y := by
   -- Conjugating swaps the arguments, the reproducing property gives the value of the vacuum
   -- function at `y`, and that function is real.
-  exact (conj_modelInner ..).symm.trans <|
-    (congrArg conj (modelInner_heisenbergOp_vacElem ..)).trans <|
-      (adelicSum E s).isVacuum.conj_apply ..
+  refine (conj_innerSL ..).symm.trans <| (congrArg conj (innerSL_heisenbergRep_vacuum ..)).trans ?_
+  rw [vacElem, vacuum_apply]
+  exact (isVacuum_vacuumFn (s := s)).conj_apply y
 
 /-- For a hermitian space `V` over a CM field `E` with Weil data, and `g` in the adelic unitary
 group `G E s`, let `vacElem` be the vacuum vector of `𝒮 V` (a Gaussian times a twisted lattice
@@ -411,12 +422,13 @@ lemma dataInner_vacElem_omega_vacElem :
     V.dataInner V.vacElem (V.ω g V.vacElem) = (conj (weilMultiplier g))⁻¹ := by
   -- Pairing with the vacuum evaluates `ω g vacElem` at `0`.
   have h_eval : V.dataInner V.vacElem (V.ω g V.vacElem) =
-      weilRep adelicAction g Heisenberg.IsVacuum.vacElem 0 := modelInner_vacElem ..
-  exact h_eval.trans (eq_inv_of_mul_eq_one_right (conj_delta_mul_weilRep_vacElem adelicAction g))
+      weilRep vacuumFn adelicAction adelicAction_cocycle g vacuum 0 := innerSL_vacuum ..
+  exact h_eval.trans (eq_inv_of_mul_eq_one_right
+    (conj_mul_weilRep_vacuum_apply_zero adelicAction g adelicAction_cocycle))
 
 /-- The operator norm of `ω g` is at most the norm of the vacuum times `|Δ g|`. -/
 lemma norm_omega_le : ‖V.ω g‖ ≤ ‖V.vacElem‖ * ‖weilMultiplier g‖ :=
-  norm_weilRep_le adelicAction g
+  norm_weilRep_le adelicAction g adelicAction_cocycle
 
 /-- For `g` in the adelic unitary group, the inner product `dataInner` of ω(g) vac with its
 translate ϱ(y) ω(g) vac is `vacuumFn` evaluated at the adelic vector g⁻¹y. `vacuumFn` is the adelic
@@ -468,11 +480,12 @@ characters are `x ↦ β x (V.vecAtPoint γ) ^ 2`, `γ ∈ E^n` (`New.Space.isDu
 
 namespace New.Space
 
-open Matrix WeilData Function MeasureTheory ComplexConjugate ComplexOrder Heisenberg IsVacuum
+open Matrix WeilData Function MeasureTheory ComplexConjugate ComplexOrder TauCeti ReproducingModel
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type*} [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} (V : Space E n s) (ℓ ℓ' θ : Model (adelicHeisenberg E s) →L[ℂ] ℂ)
+  {s : n → ℤˣ} (V : Space E n s)
+  (ℓ ℓ' θ : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn →L[ℂ] ℂ)
 
 /-- The rational points of V: the additive subgroup of 𝔸^n of the vectors x⁻¹y, y in E^n, where x is
 the point `V.x` of V. -/
@@ -495,25 +508,28 @@ instance : CompactSpace ((n → 𝔸 E) ⧸ V.ratVectors) := by
 /-- The rational points of V are isotropic: the bicharacter β of `adelicHeisenberg E s` is `1` on
 pairs of them. -/
 lemma beta_vecAtPoint_eq_one (x y : n → E) :
-    (adelicHeisenberg E s).β (V.vecAtPoint x) (V.vecAtPoint y) = 1 := by
-  simp [adelicHeisenberg, stdForm_vecAtPoint, ← map_mul]
+    adelicHeisenberg E s (V.vecAtPoint x) (V.vecAtPoint y) = 1 := by
+  simp [adelicHeisenberg_apply, stdForm_vecAtPoint, ← map_mul]
 
 /-! ### Invariant functionals and the summation formula -/
 
-/-- A bounded functional ℓ on `Model (adelicHeisenberg E s)` is invariant under the rational
-Heisenberg operators: ℓ(ρ(γ)v) = ℓ(v) for all v and all γ in `V.ratVectors`, where ρ(γ) =
-`heisenbergOp γ` is the Heisenberg operator of γ. -/
+/-- A bounded functional ℓ on `ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn` is
+invariant under the rational Heisenberg operators: ℓ(ρ(γ)v) = ℓ(v) for all v and all γ in
+`V.ratVectors`, where ρ(γ) = `ReproducingModel.heisenbergRep γ` is the Heisenberg operator of γ. -/
 def IsRatInvariant : Prop :=
-  ∀ γ ∈ V.ratVectors, ∀ v : Model (adelicHeisenberg E s), ℓ (heisenbergOp γ v) = ℓ v
+  ∀ γ ∈ V.ratVectors, ∀ v : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn,
+    ℓ (ReproducingModel.heisenbergRep γ v) = ℓ v
 
-/-- A theta functional of V: a bounded functional θ on `Model (adelicHeisenberg E s)` such that
+/-- A theta functional of V: a bounded functional θ on
+`ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn` such that
 (1) θ is invariant under the rational Heisenberg operators (`IsRatInvariant`), and
 (2) the mean of |θ(ρ(x) vac)|² over x in 𝔸^n modulo `V.ratVectors` (`quotMean`, for the Haar
 probability measure of the quotient) is 1. -/
 def IsThetaFunctional : Prop :=
   V.IsRatInvariant θ ∧
   quotMean V.ratVectors (fun x : n → 𝔸 E ↦
-    θ (heisenbergOp x IsVacuum.vacElem) * conj (θ (heisenbergOp x IsVacuum.vacElem))) = 1
+    θ (ReproducingModel.heisenbergRep x vacuum) *
+      conj (θ (ReproducingModel.heisenbergRep x vacuum))) = 1
 
 variable {V ℓ ℓ' θ}
 
@@ -523,7 +539,8 @@ lemma IsThetaFunctional.isRatInvariant (h : V.IsThetaFunctional θ) : V.IsRatInv
 is 1. -/
 lemma IsThetaFunctional.quotMean_eq_one (h : V.IsThetaFunctional θ) :
     quotMean V.ratVectors (fun x : n → 𝔸 E ↦
-      θ (heisenbergOp x IsVacuum.vacElem) * conj (θ (heisenbergOp x IsVacuum.vacElem))) = 1 :=
+      θ (ReproducingModel.heisenbergRep x vacuum) *
+        conj (θ (ReproducingModel.heisenbergRep x vacuum))) = 1 :=
   h.2
 
 /-- Self-duality of the rational points: let β(x, y) = ψ(½ȷ h(y, x)) be the bicharacter of
@@ -534,20 +551,21 @@ the common kernel of these characters lies in `V.ratVectors`. The square removes
 in `β`. -/
 lemma isDualFamily_beta_sq :
     IsDualFamily V.ratVectors fun (γ : n → E) (x : n → 𝔸 E) ↦
-      (adelicHeisenberg E s).β x (V.vecAtPoint γ) ^ 2 := by
+      adelicHeisenberg E s x (V.vecAtPoint γ) ^ 2 := by
   -- Throughout, `β x y ^ 2 = stdAddChar (j * star y ⬝ᵥ stdForm *ᵥ x)`.
   have β_sq (x y : n → 𝔸 E) :
-      (adelicHeisenberg E s).β x y ^ 2 = stdAddChar E (toAdele j * star y ⬝ᵥ stdForm E s *ᵥ x) := by
-    simp [adelicHeisenberg, sq, ← Circle.coe_mul, ← AddChar.map_add_eq_mul, ← add_mul, ← map_add]
+      adelicHeisenberg E s x y ^ 2 = stdAddChar E (toAdele j * star y ⬝ᵥ stdForm E s *ᵥ x) := by
+    simp [adelicHeisenberg_apply, sq, ← Circle.coe_mul, ← AddChar.map_add_eq_mul, ← add_mul,
+      ← map_add]
   refine
-    { periodic := fun γ ↦ ⟨(adelicHeisenberg E s).cont.curry_left.pow 2, ?_⟩
-      add_left := fun γ δ x ↦ by simp [mul_pow, add_right]
-      add_right := fun γ x y ↦ by simp [mul_pow, add_left]
-      norm_eq_one := fun γ x ↦ by simp [norm_eq_one]
+    { periodic := fun γ ↦ ⟨(adelicHeisenberg E s).continuous_uncurry.curry_left.pow 2, ?_⟩
+      add_left := fun γ δ x ↦ by simp [mul_pow, TauCeti.HeisenbergDatum.map_add_right]
+      add_right := fun γ x y ↦ by simp [mul_pow, TauCeti.HeisenbergDatum.map_add_left]
+      norm_eq_one := fun γ x ↦ by simp
       mem_of_forall_eq_one := fun x hx ↦ ?_
       eq_zero_of_forall_eq_one := fun γ hγ ↦ ?_ }
   · -- Periodicity holds since `V.ratVectors` is isotropic for `β`.
-    simp [ratVectors, beta_vecAtPoint_eq_one, add_left]
+    simp [ratVectors, beta_vecAtPoint_eq_one, TauCeti.HeisenbergDatum.map_add_left]
   · -- Separation: the character of `γ = J⁻¹ *ᵥ single i (star (j⁻¹ * a))` takes the value
     -- `stdAddChar (a * (V.x *ᵥ x) i)` at `x`, so every coordinate of `V.x *ᵥ x` is rational.
     refine V.mem_ratVectors_iff.mpr (mem_ratVectors.mpr fun i ↦
@@ -572,24 +590,28 @@ lemma isDualFamily_beta_sq :
 
 /-- For f', f in the model, the series of ⟨f', ρ(x⁻¹γ) f⟩ over the rational vectors γ ∈ E^n is
 summable. -/
-lemma summable_modelInner (f' f : Model (adelicHeisenberg E s)) :
-    Summable fun γ : n → E ↦ modelInner f' (heisenbergOp (V.vecAtPoint γ) f) := by
+lemma summable_modelInner (f' f : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
+    Summable fun γ : n → E ↦ innerSL f' (ReproducingModel.heisenbergRep (V.vecAtPoint γ) f) := by
   -- Superpose `f` from translates of the vacuum; the coefficients of `f'` on these are values of
-  -- `f'`, and their sums over translates of the rational points are bounded. `wiener_bound` does
-  -- both steps: the sum is at most `M * ‖f‖` times the number of rational points in a compact set
-  -- `B`, which is finite.
-  have h_vac_ne : (IsVacuum.vacElem : Model (adelicHeisenberg E s)) 0 ≠ 0 := by simp [vacuumFn]
-  have h_int : Integrable f' vacuumMeasure := f'.prop.left
+  -- `f'`, and their sums over translates of the rational points are bounded.
+  -- `exists_isCompact_tsum_enorm_le` does both steps: the sum is at most `M * ‖f‖` times the number
+  -- of rational points in a compact set `B`, which is finite.
+  have h_vac_ne :
+      (vacuum : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) 0 ≠ 0 := by
+    simp [vacuumFn]
+  have h_int : Integrable f' vacuumMeasure := f'.integrable
   -- The coefficient of `f'` on a translate of the vacuum is a value of `f'`.
   have h_norm (z x : n → 𝔸 E) :
-      ‖modelInner f' (heisenbergOp (z + ContinuousAddMonoidHom.id (n → 𝔸 E) x) IsVacuum.vacElem)‖ₑ =
+      ‖innerSL f'
+          (ReproducingModel.heisenbergRep (z + ContinuousAddMonoidHom.id (n → 𝔸 E) x) vacuum)‖ₑ =
         ‖f' (id z + x)‖ₑ := by
-    rw [← conj_modelInner, modelInner_heisenbergOp_vacElem, RCLike.eNorm_conj]
+    rw [← conj_innerSL, innerSL_heisenbergRep_vacuum, RCLike.eNorm_conj]
     simp only [ContinuousAddMonoidHom.id_toFun, id_eq]
   obtain ⟨B, hB, M, hM⟩ :=
-    wiener_bound (modelInner f') h_vac_ne (ContinuousAddMonoidHom.id (n → 𝔸 E)) h_int id h_norm
+    exists_isCompact_tsum_enorm_le (innerSL f') h_vac_ne (ContinuousAddMonoidHom.id (n → 𝔸 E))
+      h_int id h_norm
   -- Wiener's bound, with the rational points `E ^ n` as index group, at `f`.
-  have h_bound : ∑' γ : n → E, ‖modelInner f' (heisenbergOp (V.vecAtPoint γ) f)‖ₑ ≤
+  have h_bound : ∑' γ : n → E, ‖innerSL f' (ReproducingModel.heisenbergRep (V.vecAtPoint γ) f)‖ₑ ≤
       (V.vecAtPoint ⁻¹' B).encard * M * ‖f‖ₑ :=
     hM V.vecAtPoint.toAddMonoidHom f
   have h_fin : (V.vecAtPoint ⁻¹' B).Finite :=
@@ -602,57 +624,73 @@ namespace IsRatInvariant
 /-- For rationally invariant functionals ℓ', ℓ, the function x ↦ ℓ(ρ(x) f) · conj(ℓ'(ρ(x) f')) is
 continuous and periodic under `V.ratVectors`. -/
 lemma isContPeriodic (hℓ' : V.IsRatInvariant ℓ') (hℓ : V.IsRatInvariant ℓ)
-    (f' f : Model (adelicHeisenberg E s)) :
+    (f' f : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
     IsContPeriodic V.ratVectors fun x : n → 𝔸 E ↦
-      ℓ (heisenbergOp x f) * conj (ℓ' (heisenbergOp x f')) := by
+      ℓ (ReproducingModel.heisenbergRep x f) * conj (ℓ' (ReproducingModel.heisenbergRep x f')) := by
   refine ⟨by fun_prop, fun γ hγ x ↦ ?_⟩
-  -- `heisenbergOp (γ + x)` is `heisenbergOp γ ∘ heisenbergOp x` up to a factor of modulus one,
-  -- which cancels against its conjugate.
-  have h_inv (v w : Model (adelicHeisenberg E s)) :
-      ℓ (heisenbergOp γ v) * conj (ℓ' (heisenbergOp γ w)) = ℓ v * conj (ℓ' w) := by
+  -- `ReproducingModel.heisenbergRep (γ + x)` is
+  -- `ReproducingModel.heisenbergRep γ ∘ ReproducingModel.heisenbergRep x` up to a factor of modulus
+  -- one, which cancels against its conjugate.
+  have h_inv (v w : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
+      ℓ (ReproducingModel.heisenbergRep γ v) * conj (ℓ' (ReproducingModel.heisenbergRep γ w)) =
+        ℓ v * conj (ℓ' w) := by
     rw [hℓ γ hγ, hℓ' γ hγ]
-  simpa [mul_mul_mul_comm, Rep.mul] using h_inv (heisenbergOp x f) (heisenbergOp x f')
+  simpa [TauCeti.HeisenbergDatum.Representation.apply_apply] using
+    h_inv (ReproducingModel.heisenbergRep x f) (ReproducingModel.heisenbergRep x f')
 
 /-- For rationally invariant functionals `ℓ'`, `ℓ`, the mean of `ℓ (ρ x f) * conj (ℓ' (ρ x f'))`
 over `x` modulo the rational points is `c ⟨f', f⟩`, where `c` is the same mean for
 `f' = f = vacElem`. -/
 lemma quotMean_eq_mul_modelInner (hℓ' : V.IsRatInvariant ℓ') (hℓ : V.IsRatInvariant ℓ) {c : ℂ}
     (hc : quotMean V.ratVectors (fun x : n → 𝔸 E ↦
-      ℓ (heisenbergOp x IsVacuum.vacElem) * conj (ℓ' (heisenbergOp x IsVacuum.vacElem))) = c)
-    (f' f : Model (adelicHeisenberg E s)) :
-    quotMean V.ratVectors (fun x : n → 𝔸 E ↦ ℓ (heisenbergOp x f) * conj (ℓ' (heisenbergOp x f'))) =
-      c * modelInner f' f := by
-  -- Apply the uniqueness of the invariant form (`integral_form_eq_mul_modelInner`) to the mean of
-  -- the sesquilinear forms `(f', f) ↦ conj (ℓ' (heisenbergOp z f')) * ℓ (heisenbergOp z f)`.
+      ℓ (ReproducingModel.heisenbergRep x vacuum) *
+        conj (ℓ' (ReproducingModel.heisenbergRep x vacuum))) = c)
+    (f' f : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
+    quotMean V.ratVectors (fun x : n → 𝔸 E ↦
+      ℓ (ReproducingModel.heisenbergRep x f) * conj (ℓ' (ReproducingModel.heisenbergRep x f'))) =
+      c * innerSL f' f := by
+  -- Apply the uniqueness of the invariant form (`integral_form_eq_mul_innerSL`) to the mean of the
+  -- sesquilinear forms `(f', f) ↦ conj (ℓ' (ReproducingModel.heisenbergRep z f')) *
+  -- ℓ (ReproducingModel.heisenbergRep z f)`.
   subst hc
-  refine integral_form_eq_mul_modelInner
+  -- The mean is taken for the Borel σ-algebra of the quotient, which instance search would not
+  -- choose here.
+  let : MeasurableSpace ((n → 𝔸 E) ⧸ V.ratVectors) := IsDualFamily.quotMeasurableSpace _
+  refine integral_form_eq_mul_innerSL
     (fun z : (n → 𝔸 E) ⧸ V.ratVectors ↦
-      (innerSL ℂ).bilinearComp (ℓ' ∘L heisenbergOp z.out) (ℓ ∘L heisenbergOp z.out))
+      (_root_.innerSL ℂ).bilinearComp (ℓ' ∘L ReproducingModel.heisenbergRep z.out)
+        (ℓ ∘L ReproducingModel.heisenbergRep z.out))
     (fun v w ↦ (hℓ'.isContPeriodic hℓ v w).integrable_out) (fun x v w ↦ ?_) f' f
   -- Invariance: the factors of β have modulus one and cancel, and the mean is translation
   -- invariant.
-  simpa [quotMean, mul_mul_mul_comm, Rep.mul] using quotMean_translate (hℓ'.isContPeriodic hℓ v w) x
+  simpa [quotMean, mul_mul_mul_comm, TauCeti.HeisenbergDatum.Representation.apply_apply] using
+    quotMean_translate (hℓ'.isContPeriodic hℓ v w) x
 
 /-- The summation formula. For rationally invariant functionals `ℓ'`, `ℓ`, let `c` be the mean of
 `ℓ (ρ x vacElem) * conj (ℓ' (ρ x vacElem))` over `x` modulo the rational points. Then the series of
 `c ⟨f', ρ (V.vecAtPoint γ) f⟩` over `γ ∈ E^n` converges to `ℓ f * conj (ℓ' f')`. -/
 lemma hasSum_modelInner (hℓ' : V.IsRatInvariant ℓ') (hℓ : V.IsRatInvariant ℓ) {c : ℂ}
     (hc : quotMean V.ratVectors (fun x : n → 𝔸 E ↦
-      ℓ (heisenbergOp x IsVacuum.vacElem) * conj (ℓ' (heisenbergOp x IsVacuum.vacElem))) = c)
-    (f' f : Model (adelicHeisenberg E s)) :
-    HasSum (fun γ : n → E ↦ c * modelInner f' (heisenbergOp (V.vecAtPoint γ) f))
+      ℓ (ReproducingModel.heisenbergRep x vacuum) *
+        conj (ℓ' (ReproducingModel.heisenbergRep x vacuum))) = c)
+    (f' f : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
+    HasSum (fun γ : n → E ↦ c * innerSL f' (ReproducingModel.heisenbergRep (V.vecAtPoint γ) f))
       (ℓ f * conj (ℓ' f')) := by
   -- Fourier inversion at `0` for the periodic function of `isContPeriodic`. Its Fourier
-  -- coefficients come from `quotMean_eq_mul_modelInner` for the pair `f'`, `heisenbergOp γ f`:
-  -- commuting `heisenbergOp γ` past `heisenbergOp x` gives the factor `β x γ ^ 2`, and `ℓ` absorbs
-  -- `heisenbergOp γ`.
+  -- coefficients come from `quotMean_eq_mul_modelInner` for the pair `f'`,
+  -- `ReproducingModel.heisenbergRep γ f`: commuting `ReproducingModel.heisenbergRep γ` past
+  -- `ReproducingModel.heisenbergRep x` gives the factor `β x γ ^ 2`, and `ℓ` absorbs
+  -- `ReproducingModel.heisenbergRep γ`.
   have h_coeff (γ : n → E) :
-      c * modelInner f' (heisenbergOp (V.vecAtPoint γ) f) = quotMean V.ratVectors fun x : n → 𝔸 E ↦
-      (adelicHeisenberg E s).β x (V.vecAtPoint γ) ^ 2 *
-        (ℓ (heisenbergOp x f) * conj (ℓ' (heisenbergOp x f'))) := by
+      c * innerSL f' (ReproducingModel.heisenbergRep (V.vecAtPoint γ) f) =
+        quotMean V.ratVectors fun x : n → 𝔸 E ↦
+          adelicHeisenberg E s x (V.vecAtPoint γ) ^ 2 *
+            (ℓ (ReproducingModel.heisenbergRep x f) *
+              conj (ℓ' (ReproducingModel.heisenbergRep x f'))) := by
     rw [← hℓ'.quotMean_eq_mul_modelInner hℓ hc]
     congr with x
-    simp [← hℓ (V.vecAtPoint γ) ⟨γ, rfl⟩ (heisenbergOp x f), add_comm, field, mul_assoc, Rep.mul]
+    simp [← hℓ (V.vecAtPoint γ) ⟨γ, rfl⟩ (ReproducingModel.heisenbergRep x f), add_comm, field,
+      mul_assoc, TauCeti.HeisenbergDatum.Representation.apply_apply]
   simpa using
     isDualFamily_beta_sq.fourier_inversion (hℓ'.isContPeriodic hℓ f' f)
       ((summable_modelInner f' f).mul_left c) h_coeff 0
@@ -662,52 +700,60 @@ end IsRatInvariant
 /-- For u in the model, the partial sums of the functionals `f ↦ ⟨u, ρ (V.vecAtPoint γ) f⟩` over
 finite sets of γ ∈ E^n converge pointwise to the full series. -/
 private lemma tendsto_sum_modelInner_heisenbergOp (V : Space E n s)
-    (u : Model (adelicHeisenberg E s)) :
+    (u : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
     Filter.Tendsto
-      (fun (S : Finset (n → E)) (f : Model (adelicHeisenberg E s)) ↦
-        (∑ γ ∈ S, modelInner u ∘L heisenbergOp (V.vecAtPoint γ)) f)
-      Filter.atTop (nhds fun f : Model (adelicHeisenberg E s) ↦
-        ∑' γ : n → E, modelInner u (heisenbergOp (V.vecAtPoint γ) f)) := by
+      (fun (S : Finset (n → E))
+          (f : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) ↦
+        (∑ γ ∈ S, innerSL u ∘L ReproducingModel.heisenbergRep (V.vecAtPoint γ)) f)
+      Filter.atTop (nhds fun f : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn ↦
+        ∑' γ : n → E, innerSL u (ReproducingModel.heisenbergRep (V.vecAtPoint γ) f)) := by
   -- `HasSum` is, by definition, the convergence of the partial sums over finite sets.
   refine tendsto_pi_nhds.2 fun f ↦ ?_
   simpa [HasSum] using (summable_modelInner u f).hasSum
 
 /-- For u in the model, the bounded functional `f ↦ ∑' γ, ⟨u, ρ (V.vecAtPoint γ) f⟩`, a sum over the
 rational vectors γ ∈ E^n. -/
-private noncomputable def ratSum (V : Space E n s) (u : Model (adelicHeisenberg E s)) :
-    Model (adelicHeisenberg E s) →L[ℂ] ℂ :=
+private noncomputable def ratSum (V : Space E n s)
+    (u : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
+    ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn →L[ℂ] ℂ :=
   continuousLinearMapOfTendsto
-    (fun S : Finset (n → E) ↦ ∑ γ ∈ S, modelInner u ∘L heisenbergOp (V.vecAtPoint γ))
+    (fun S : Finset (n → E) ↦ ∑ γ ∈ S, innerSL u ∘L ReproducingModel.heisenbergRep (V.vecAtPoint γ))
     (tendsto_sum_modelInner_heisenbergOp V u)
 
-private lemma ratSum_apply (V : Space E n s) (u f : Model (adelicHeisenberg E s)) :
-    V.ratSum u f = ∑' γ : n → E, modelInner u (heisenbergOp (V.vecAtPoint γ) f) :=
+private lemma ratSum_apply (V : Space E n s)
+    (u f : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
+    V.ratSum u f = ∑' γ : n → E, innerSL u (ReproducingModel.heisenbergRep (V.vecAtPoint γ) f) :=
   rfl
 
 /-- The functional `V.ratSum u` is rationally invariant: translating by a rational vector
 reindexes the series, and the factors of β are `1` on rational vectors. -/
-private lemma isRatInvariant_ratSum (V : Space E n s) (u : Model (adelicHeisenberg E s)) :
+private lemma isRatInvariant_ratSum (V : Space E n s)
+    (u : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
     V.IsRatInvariant (V.ratSum u) := by
   rintro _ ⟨γ, rfl⟩ f
-  simpa [ratSum_apply, beta_vecAtPoint_eq_one, Rep.mul] using
-    (Equiv.addRight γ).tsum_eq fun δ ↦ modelInner u (heisenbergOp (V.vecAtPoint δ) f)
+  simpa [ratSum_apply, beta_vecAtPoint_eq_one,
+    TauCeti.HeisenbergDatum.Representation.apply_apply] using
+    (Equiv.addRight γ).tsum_eq fun δ ↦ innerSL u (ReproducingModel.heisenbergRep (V.vecAtPoint δ) f)
 
-/-- Every space V has a theta functional: a bounded functional θ on `Model (adelicHeisenberg E s)`,
-invariant under the rational Heisenberg operators, with |θ(ρ(x)vac)|² of mean 1 over 𝔸^n modulo the
-rational points. -/
-lemma exists_isThetaFunctional : ∃ θ : Model (adelicHeisenberg E s) →L[ℂ] ℂ,
-  V.IsThetaFunctional θ := by
+/-- Every space V has a theta functional: a bounded functional θ on
+`ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn`, invariant under the rational
+Heisenberg operators, with |θ(ρ(x)vac)|² of mean 1 over 𝔸^n modulo the rational points. -/
+lemma exists_isThetaFunctional :
+    ∃ θ : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn →L[ℂ] ℂ,
+      V.IsThetaFunctional θ := by
   -- If no theta functional existed, no invariant functional could be normalised, so all would
-  -- vanish. But summing `modelInner u` over the rational points gives an invariant functional
-  -- `V.ratSum u`, and `V.ratSum u u` for `u = heisenbergOp (-a) vacElem` has mean `1` in `a`.
+  -- vanish. But summing `innerSL u` over the rational points gives an invariant functional
+  -- `V.ratSum u`, and `V.ratSum u u` for `u = ReproducingModel.heisenbergRep (-a) vacElem` has mean
+  -- `1` in `a`.
   by_contra! h_none
-  have h_zero (ℓ : Model (adelicHeisenberg E s) →L[ℂ] ℂ) (hℓ : V.IsRatInvariant ℓ)
-      (u : Model (adelicHeisenberg E s)) : ℓ u = 0 := by
+  have h_zero (ℓ : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn →L[ℂ] ℂ)
+      (hℓ : V.IsRatInvariant ℓ)
+      (u : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) : ℓ u = 0 := by
     -- The mean that normalises `ℓ` is nonnegative, so it is `r * star r` for some `r`.
     have h_mean_nonneg : 0 ≤ quotMean V.ratVectors
-        (fun x : n → 𝔸 E ↦ ℓ (heisenbergOp x IsVacuum.vacElem) * conj
-          (ℓ (heisenbergOp x IsVacuum.vacElem))) :=
-      integral_nonneg fun q ↦ mul_star_self_nonneg (ℓ (heisenbergOp q.out IsVacuum.vacElem))
+        (fun x : n → 𝔸 E ↦ ℓ (ReproducingModel.heisenbergRep x vacuum) * conj
+          (ℓ (ReproducingModel.heisenbergRep x vacuum))) :=
+      integral_nonneg fun q ↦ mul_star_self_nonneg (ℓ (ReproducingModel.heisenbergRep q.out vacuum))
     obtain ⟨r, hr⟩ := CStarAlgebra.nonneg_iff_eq_mul_star_self.mp h_mean_nonneg
     by_cases hr0 : r = 0
     · -- By the summation formula with constant `0`, `ℓ u * conj (ℓ u) = 0`.
@@ -715,30 +761,34 @@ lemma exists_isThetaFunctional : ∃ θ : Model (adelicHeisenberg E s) →L[ℂ]
     · -- Otherwise `r⁻¹ • ℓ` is a theta functional.
       have h_mean_scaled :
           quotMean V.ratVectors (fun x : n → 𝔸 E ↦
-            (r⁻¹ • ℓ) (heisenbergOp x IsVacuum.vacElem) *
-              conj ((r⁻¹ • ℓ) (heisenbergOp x IsVacuum.vacElem))) = 1 := by
+            (r⁻¹ • ℓ) (ReproducingModel.heisenbergRep x vacuum) *
+              conj ((r⁻¹ • ℓ) (ReproducingModel.heisenbergRep x vacuum))) = 1 := by
         simpa [mul_mul_mul_comm r⁻¹, hr, field] using hr0
       exact (h_none (r⁻¹ • ℓ) ⟨fun γ hγ f ↦ by simp [hℓ γ hγ f], h_mean_scaled⟩).elim
   -- `c γ` is the coefficient of the vacuum on its translate by the rational point `γ`.
   let c (γ : n → E) : ℂ :=
-    modelInner (H := adelicHeisenberg E s) IsVacuum.vacElem
-      (heisenbergOp (V.vecAtPoint γ) IsVacuum.vacElem)
-  -- `V.ratSum u` for `u = heisenbergOp (-a) vacElem`, applied to `u`, is a Fourier series in `a`.
+    innerSL (vacuum : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn)
+      (ReproducingModel.heisenbergRep (V.vecAtPoint γ) vacuum)
+  -- `V.ratSum u` for `u = ReproducingModel.heisenbergRep (-a) vacElem`, applied to `u`, is a
+  -- Fourier series in `a`.
   have h_series (a : n → 𝔸 E) :
-      ∑' γ : n → E, (adelicHeisenberg E s).β a (V.vecAtPoint γ) ^ 2 * c γ = 0 := by
+      ∑' γ : n → E, adelicHeisenberg E s a (V.vecAtPoint γ) ^ 2 * c γ = 0 := by
     have h_term (γ : n → E) :
-        (adelicHeisenberg E s).β a (V.vecAtPoint γ) ^ 2 * c γ =
-          modelInner (H := adelicHeisenberg E s) (heisenbergOp (-a) IsVacuum.vacElem)
-            (heisenbergOp (V.vecAtPoint γ) (heisenbergOp (-a) IsVacuum.vacElem)) := by
-      simp [c, field, Rep.mul, add_right, self_eq_one]
+        adelicHeisenberg E s a (V.vecAtPoint γ) ^ 2 * c γ =
+          innerSL (ReproducingModel.heisenbergRep (-a)
+            (vacuum : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn))
+            (ReproducingModel.heisenbergRep (V.vecAtPoint γ)
+              (ReproducingModel.heisenbergRep (-a) vacuum)) := by
+      simp [c, field, TauCeti.HeisenbergDatum.Representation.apply_apply,
+        TauCeti.HeisenbergDatum.map_add_right]
     rw [tsum_congr h_term, ← ratSum_apply]
     exact h_zero _ (V.isRatInvariant_ratSum _) _
   -- The mean of this series over `a` is its term at `γ = 0`
-  -- (`IsDualFamily.tsum_coeff_eq_quotMean`), which is `modelInner vacElem vacElem = 1`.
+  -- (`IsDualFamily.tsum_coeff_eq_quotMean`), which is `innerSL vacElem vacElem = 1`.
   have h_mean : ∑' γ : ({0} : Set (n → E)), c γ = quotMean V.ratVectors
-      fun a : n → 𝔸 E ↦ ∑' γ : n → E, (adelicHeisenberg E s).β a (V.vecAtPoint γ) ^ 2 * c γ :=
+      fun a : n → 𝔸 E ↦ ∑' γ : n → E, adelicHeisenberg E s a (V.vecAtPoint γ) ^ 2 * c γ :=
     isDualFamily_beta_sq.tsum_coeff_eq_quotMean id (fun γ ↦ Set.mem_singleton_iff.symm)
-      (summable_modelInner IsVacuum.vacElem IsVacuum.vacElem)
+      (summable_modelInner vacuum vacuum)
   -- So the mean is 1; but the series vanishes, so it is also 0.
   simp only [h_series, quotMean_const] at h_mean
   simp [c, vacuumFn] at h_mean
@@ -748,27 +798,32 @@ namespace IsThetaFunctional
 /-! ### Uniqueness of the theta functional -/
 
 /-- Let θ be a theta functional of V: a bounded functional on the Heisenberg model
-`Model (adelicHeisenberg E s)`, invariant under the Heisenberg operators ρ(γ) for γ in
-`V.ratVectors`, and normalised so that the mean of |θ(ρ(x)vac)|² over 𝔸^n modulo `V.ratVectors`
-is 1. Then there is a vector u in the model such that every bounded functional ℓ invariant under the
-same operators equals ℓ(u) • θ. -/
+`ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn`, invariant under the Heisenberg
+operators ρ(γ) for γ in `V.ratVectors`, and normalised so that the mean of |θ(ρ(x)vac)|² over 𝔸^n
+modulo `V.ratVectors` is 1. Then there is a vector u in the model such that every bounded functional
+ℓ invariant under the same operators equals ℓ(u) • θ. -/
 lemma exists_eq_apply_smul (hθ : V.IsThetaFunctional θ) :
-    ∃ u : Model (adelicHeisenberg E s), ∀ ℓ : Model (adelicHeisenberg E s) →L[ℂ] ℂ,
+    ∃ u : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn,
+      ∀ ℓ : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn →L[ℂ] ℂ,
       V.IsRatInvariant ℓ →
       ℓ = ℓ u • θ := by
-  -- `θ` is not zero, since `|θ (heisenbergOp x vacElem)|²` has mean `1`; take `u` with `θ u = 1`.
+  -- `θ` is not zero, since `|θ (ReproducingModel.heisenbergRep x vacElem)|²` has mean `1`; take `u`
+  -- with `θ u = 1`.
   have h_ne : θ.toLinearMap ≠ 0 := fun h_zero ↦ by
-    have h_θ_zero : ∀ v : Model (adelicHeisenberg E s), θ v = 0 := LinearMap.congr_fun h_zero
+    have h_θ_zero : ∀ v : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn, θ v = 0 :=
+      LinearMap.congr_fun h_zero
     simpa [h_θ_zero] using hθ.quotMean_eq_one
   obtain ⟨u, hu : θ u = 1⟩ := θ.toLinearMap.surjective_of_ne_zero h_ne 1
   refine ⟨u, fun ℓ hℓ ↦ ContinuousLinearMap.ext fun f ↦ ?_⟩
   -- The summation formula for the pairs `ℓ, θ` and `θ, θ` gives the same series up to the mean
   -- `c` of `ℓ (ρ x vacElem) * conj (θ (ρ x vacElem))`.
   generalize hc : quotMean V.ratVectors (fun x : n → 𝔸 E ↦
-    ℓ (heisenbergOp x IsVacuum.vacElem) * conj (θ (heisenbergOp x IsVacuum.vacElem))) = c
-  have h_apply_mul (g : Model (adelicHeisenberg E s)) :
+    ℓ (ReproducingModel.heisenbergRep x vacuum) *
+      conj (θ (ReproducingModel.heisenbergRep x vacuum))) = c
+  have h_apply_mul (g : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn) :
       ℓ g * conj (θ u) = c * (θ g * conj (θ u)) := by
-    have h_sum_θ : HasSum (fun γ : n → E ↦ c * modelInner u (heisenbergOp (V.vecAtPoint γ) g))
+    have h_sum_θ : HasSum
+        (fun γ : n → E ↦ c * innerSL u (ReproducingModel.heisenbergRep (V.vecAtPoint γ) g))
         (c * (θ g * conj (θ u))) := by
       simpa only [one_mul] using
         (hθ.isRatInvariant.hasSum_modelInner hθ.isRatInvariant hθ.quotMean_eq_one u g).mul_left c
@@ -777,9 +832,9 @@ lemma exists_eq_apply_smul (hθ : V.IsThetaFunctional θ) :
   calc ℓ f = c * θ f := by simpa [hu] using h_apply_mul f
     _ = (ℓ u • θ) f := by simp [h_c_eq]
 
-/-- If θ is a theta functional of V, every bounded functional ℓ on `Model (adelicHeisenberg E s)`
-invariant under the Heisenberg operators ρ(γ), γ a rational point of V, is a complex multiple of
-θ. -/
+/-- If θ is a theta functional of V, every bounded functional ℓ on
+`ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn` invariant under the Heisenberg
+operators ρ(γ), γ a rational point of V, is a complex multiple of θ. -/
 lemma eq_smul (hθ : V.IsThetaFunctional θ) (hℓ : V.IsRatInvariant ℓ) : ∃ c : ℂ, ℓ = c • θ := by
   obtain ⟨u, hu⟩ := hθ.exists_eq_apply_smul
   exact ⟨ℓ u, hu ℓ hℓ⟩
@@ -787,11 +842,13 @@ lemma eq_smul (hθ : V.IsThetaFunctional θ) (hℓ : V.IsRatInvariant ℓ) : ∃
 /-- If θ is a theta functional of V, a vector `f` of the model is determined by its theta function
 `x ↦ θ (ρ x f)` on `𝔸^n`. -/
 lemma injective_apply_heisenbergOp (hθ : V.IsThetaFunctional θ) :
-    Injective fun (f : Model (adelicHeisenberg E s)) (x : n → 𝔸 E) ↦ θ (heisenbergOp x f) := by
-  refine fun f₁ f₂ h_eq ↦ eq_of_sub_eq_zero (eq_zero_of_modelInner_self ?_)
+    Injective fun (f : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn)
+      (x : n → 𝔸 E) ↦ θ (ReproducingModel.heisenbergRep x f) := by
+  refine fun f₁ f₂ h_eq ↦ eq_of_sub_eq_zero (eq_zero_of_innerSL_self ?_)
   -- By `IsRatInvariant.quotMean_eq_mul_modelInner` the square norm of `f₁ - f₂` is the mean of
-  -- `|θ (heisenbergOp x (f₁ - f₂))|² = 0`.
-  have h_vanish (x : n → 𝔸 E) : θ (heisenbergOp x (f₁ - f₂)) = 0 := by simp [congr_fun h_eq x]
+  -- `|θ (ReproducingModel.heisenbergRep x (f₁ - f₂))|² = 0`.
+  have h_vanish (x : n → 𝔸 E) : θ (ReproducingModel.heisenbergRep x (f₁ - f₂)) = 0 := by
+    simp [congr_fun h_eq x]
   simpa only [h_vanish, zero_mul, quotMean_const, one_mul] using
     (hθ.isRatInvariant.quotMean_eq_mul_modelInner hθ.isRatInvariant hθ.quotMean_eq_one (f₁ - f₂)
       (f₁ - f₂)).symm
@@ -810,7 +867,7 @@ end New.Space
 
 namespace New
 
-open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle
+open NumberField Matrix WeilData Filter Finset TauCeti Fock ReproducingModel Space Equiv Circle
   Complex
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
@@ -822,31 +879,34 @@ variable {E : Type*} [Field E] [CMType E] [WeilData E]
 standard line of sign c. -/
 def lineTheta (c : ℤˣ) (a : 𝔸 E) : ℂ :=
   (signedSpace E fun _ ↦ c).exists_isThetaFunctional.choose
-    (heisenbergOp (fun () ↦ a) IsVacuum.vacElem)
+    (ReproducingModel.heisenbergRep (fun () ↦ a) vacuum)
 
 /-- The standard space `signedSpace E s` has a theta functional θ with θ(ϱ(x)vac) = ∏_i
 θ_i(ϱ(x_i)vac) for all x in 𝔸^n. Here θ is a bounded functional on the Heisenberg model
-`Model (adelicHeisenberg E s)`, invariant under the rational Heisenberg operators and with mean of
-|θ(ϱ(x)vac)|² equal to 1. Also, ϱ(x) = `heisenbergOp x`, vac is the vacuum vector, and
-θ_i(ϱ(x_i)vac) = `lineTheta (s i) (x i)` for a chosen theta functional θ_i of the line of sign
-s_i. -/
+`ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn`, invariant under the rational
+Heisenberg operators and with mean of |θ(ϱ(x)vac)|² equal to 1. Also, ϱ(x) =
+`ReproducingModel.heisenbergRep x`, vac is the vacuum vector, and θ_i(ϱ(x_i)vac) =
+`lineTheta (s i) (x i)` for a chosen theta functional θ_i of the line of sign s_i. -/
 lemma exists_isThetaFunctional_signedSpace :
-    ∃ θ : Model (adelicHeisenberg E s) →L[ℂ] ℂ,
+    ∃ θ : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn →L[ℂ] ℂ,
       (signedSpace E s).IsThetaFunctional θ ∧
-      ∀ x : n → 𝔸 E, θ (heisenbergOp x IsVacuum.vacElem) = ∏ i : n, lineTheta (s i) (x i) := by
+      ∀ x : n → 𝔸 E,
+        θ (ReproducingModel.heisenbergRep x vacuum) = ∏ i : n, lineTheta (s i) (x i) := by
   classical
   -- Take any theta functional θ. The identity θ(f) conj θ(f') = ∑_γ ⟨f', ϱ(γ) f⟩
   -- (`hasSum_modelInner`) factors over the coordinates, so θ(ϱ(x) vac) is proportional to the
   -- product; rescale θ by a factor of modulus 1.
   obtain ⟨θ, h_inv, h_mean⟩ := (signedSpace E s).exists_isThetaFunctional
-  let a (x : n → 𝔸 E) : ℂ := θ (heisenbergOp x IsVacuum.vacElem)
+  let a (x : n → 𝔸 E) : ℂ := θ (ReproducingModel.heisenbergRep x vacuum)
   -- On the line of sign `s i`: `v i x = ϱ(x) vacElem`, and `t i x y γ = 1 * ⟨v i y, ϱ(γ) (v i x)⟩`
   -- is the term of the series, the factor `1` being the mean that normalises a theta functional.
-  let v (i : n) (x : 𝔸 E) : Model (adelicHeisenberg E fun _ : Unit ↦ s i) :=
-    heisenbergOp (fun () ↦ x) IsVacuum.vacElem
+  let v (i : n) (x : 𝔸 E) :
+      ReproducingModel (adelicHeisenberg E fun _ : Unit ↦ s i) vacuumMeasure vacuumFn :=
+    ReproducingModel.heisenbergRep (fun () ↦ x) vacuum
   let t (i : n) (x y : 𝔸 E) (γ : E) : ℂ :=
     1 *
-      modelInner (v i y) (heisenbergOp ((signedSpace E fun _ : Unit ↦ s i).vecAtPoint fun _ ↦ γ)
+      innerSL (v i y)
+        (ReproducingModel.heisenbergRep ((signedSpace E fun _ : Unit ↦ s i).vecAtPoint fun _ ↦ γ)
         (v i x))
   have h_line (i : n) (x y : 𝔸 E) :
       HasSum (t i x y) (lineTheta (s i) x * star (lineTheta (s i) y)) := by
@@ -857,15 +917,18 @@ lemma exists_isThetaFunctional_signedSpace :
   -- The term of the series of θ at `γ : n → E` is the product of the terms at the `γ i`.
   have h_term (x y : n → 𝔸 E) (γ : n → E) :
       ∏ i, t i (x i) (y i) (γ i) =
-        1 * modelInner (H := adelicHeisenberg E s) (heisenbergOp y IsVacuum.vacElem)
-          (heisenbergOp ((signedSpace E s).vecAtPoint γ) (heisenbergOp x IsVacuum.vacElem)) := by
+        1 * innerSL (ReproducingModel.heisenbergRep y
+          (vacuum : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn))
+          (ReproducingModel.heisenbergRep ((signedSpace E s).vecAtPoint γ)
+            (ReproducingModel.heisenbergRep x vacuum)) := by
     simp [t, v, adelicHeisenberg_beta_eq_prod (s := s), vacuumFn_eq_prod (n := n), signedSpace,
-      ← map_inv, vecAtPoint, Rep.mul, prod_mul_distrib, mulVec_diagonal, Pi.smul_def, Pi.add_def,
+      ← map_inv, vecAtPoint, TauCeti.HeisenbergDatum.Representation.apply_apply, prod_mul_distrib,
+      mulVec_diagonal, Pi.smul_def, Pi.add_def,
       Pi.sub_def, Function.comp_def, smul_eq_mul]
   have h_all (x y : n → 𝔸 E) :
       HasSum (fun γ : n → E ↦ ∏ i, t i (x i) (y i) (γ i)) (a x * star (a y)) :=
-    (h_inv.hasSum_modelInner h_inv h_mean (heisenbergOp y IsVacuum.vacElem)
-      (heisenbergOp x IsVacuum.vacElem)).congr_fun (h_term x y)
+    (h_inv.hasSum_modelInner h_inv h_mean (ReproducingModel.heisenbergRep y vacuum)
+      (ReproducingModel.heisenbergRep x vacuum)).congr_fun (h_term x y)
   let P (x : n → 𝔸 E) : ℂ := ∏ i, lineTheta (s i) (x i)
   -- Compare the two sums along the boxes Fⁿ, F a finite subset of E.
   have h_prod_eq (x y : n → 𝔸 E) : P x * star (P y) = a x * star (a y) := by
@@ -905,25 +968,29 @@ namespace Space
 map that intertwines the Heisenberg operators along an isomorphism `φ` of adelic vectors. If `φ`
 sends the rational vectors of `V₁` to those of `V` and `T vacElem` has inner square one, then
 `σ ∘ θ ∘ T` is a theta functional of `V₁`. -/
-lemma IsThetaFunctional.comp {V₁ : Space E n' s'} {θ : Model (adelicHeisenberg E s) →L[ℂ] ℂ}
+lemma IsThetaFunctional.comp {V₁ : Space E n' s'}
+    {θ : ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn →L[ℂ] ℂ}
     {σ : ℂ →+* ℂ} [RingHomIsometric σ] [RingHomInvPair σ σ] (h : V.IsThetaFunctional θ)
-    (T : Model (adelicHeisenberg E s') →SL[σ] Model (adelicHeisenberg E s))
+    (T : ReproducingModel (adelicHeisenberg E s') vacuumMeasure vacuumFn →SL[σ]
+      ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn)
     (φ : (n' → 𝔸 E) ≃ₜ+ (n → 𝔸 E)) (hφ : ∀ x ∈ V₁.ratVectors, φ x ∈ V.ratVectors)
-    (hρ : ∀ (x : n' → 𝔸 E) (v : Model (adelicHeisenberg E s')),
-      T (heisenbergOp x v) = heisenbergOp (φ x) (T v))
-    (h_norm : modelInner (T IsVacuum.vacElem) (T IsVacuum.vacElem) = 1) :
+    (hρ : ∀ (x : n' → 𝔸 E) (v : ReproducingModel (adelicHeisenberg E s') vacuumMeasure vacuumFn),
+      T (ReproducingModel.heisenbergRep x v) = ReproducingModel.heisenbergRep (φ x) (T v))
+    (h_norm : innerSL (T vacuum) (T vacuum) = 1) :
     V₁.IsThetaFunctional (σ.toSemilinearMap.mkContinuous 1 (by simp) ∘SL θ ∘SL T) := by
   obtain ⟨h_inv, h_mean⟩ := h
-  -- `T` carries `heisenbergOp γ` to `heisenbergOp (φ γ)`, and `θ` is invariant under the latter.
+  -- `T` carries `ReproducingModel.heisenbergRep γ` to `ReproducingModel.heisenbergRep (φ γ)`, and
+  -- `θ` is invariant under the latter.
   refine ⟨fun γ hγ v ↦ by simp [hρ, h_inv (φ γ) (hφ γ hγ) (T v)], ?_⟩
   -- σ keeps absolute values, and the surjection induced by φ on the quotients keeps means.
   let F (x : n → 𝔸 E) : ℂ :=
-    θ (heisenbergOp x (T IsVacuum.vacElem)) * star (θ (heisenbergOp x (T IsVacuum.vacElem)))
+    θ (ReproducingModel.heisenbergRep x (T vacuum)) *
+      star (θ (ReproducingModel.heisenbergRep x (T vacuum)))
   calc
     _ = quotMean V₁.ratVectors fun x ↦ F (φ x) := by simp [F, hρ, mul_conj']
     _ = quotMean V.ratVectors F :=
       quotMean_comp _ (.mk' φ (map_add φ))
-        (h_inv.isContPeriodic h_inv (T IsVacuum.vacElem) (T IsVacuum.vacElem)) hφ φ.surjective
+        (h_inv.isContPeriodic h_inv (T vacuum) (T vacuum)) hφ φ.surjective
         φ.continuous
     -- By `quotMean_eq_mul_modelInner`, the mean of `F` is the inner product of `T vacElem` with
     -- itself.
@@ -964,9 +1031,11 @@ lemma isThetaFunctional_rawTheta : V.IsThetaFunctional V.rawTheta := by
   -- inner square one.
   obtain ⟨h_std, -⟩ := (exists_isThetaFunctional_signedSpace (E := E) (s := s)).choose_spec
   let φ : (n → 𝔸 E) ≃ₜ+ (n → 𝔸 E) := .mk' (.smul h_move.choose) (by simp)
-  have h_norm : modelInner (weilRep adelicAction h_move.choose IsVacuum.vacElem)
-      (weilRep adelicAction h_move.choose IsVacuum.vacElem) = 1 := by simp [vacuumFn]
-  exact h_std.comp (φ := φ) _ _ h_move.choose_spec (weilRep_heisenbergOp adelicAction _) h_norm
+  have h_norm : innerSL (weilRep vacuumFn adelicAction adelicAction_cocycle h_move.choose vacuum)
+      (weilRep vacuumFn adelicAction adelicAction_cocycle h_move.choose vacuum) = 1 := by
+    simp [vacuumFn]
+  exact h_std.comp (φ := φ) _ _ h_move.choose_spec
+    (fun x v ↦ weilRep_heisenbergRep adelicAction _ x v adelicAction_cocycle) h_norm
 
 /-- A vector `f` is read as its theta function: `f x` is θ(ϱ(x) f). -/
 instance : FunLike (𝒮 V) (n → 𝔸 E) ℂ where
@@ -977,8 +1046,8 @@ instance : FunLike (𝒮 V) (n → 𝔸 E) ℂ where
 
 /-- The bounded bilinear map (v, f) ↦ v ⊗ f = ∫ v(y) ϱ(y)f dy, for v in the Fock space, f in
 𝒮(V), y over real vectors in Fock coordinates. -/
-def integrated : Model (realHeisenberg (realSigns E s)) →L[ℂ] 𝒮 V →L[ℂ] 𝒮 V :=
-  (V.heisenbergRep.left (adelicSum E s)).integrated
+def integrated : fockSpace (realSigns E s) →L[ℂ] 𝒮 V →L[ℂ] 𝒮 V :=
+  (V.heisenbergRep.restrictLeft (adelicSum E s)).integrated (normalizedVolume _) realVac
 
 /-- For a finite adelic vector x, the operator ϱ_f(x) = ψ(½c₀ȷαᾱ x*x) ϱ(αx) on 𝒮(V), α the finite
 idele of the Weil data, where c₀ = `traceOneAdele` is integral with c₀ + c̄₀ = 1. The scalar is
@@ -1012,7 +1081,7 @@ Convention: applying `f : 𝒮 V` to an adelic vector gives the theta function `
 
 namespace New.Space
 
-open Matrix ComplexConjugate Heisenberg.IsVacuum
+open Matrix ComplexConjugate TauCeti ReproducingModel
 
 variable {E : Type _} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n]
@@ -1023,10 +1092,10 @@ functional `V.rawTheta` (see `New.Space.rawTheta`) applied to the Heisenberg tra
 lemma apply_eq_rawTheta : f x = V.rawTheta (V.ϱ x f) := rfl
 
 /-- The theta function of a translate: `(ϱ y f) x = β x y * f (x + y)`. -/
-lemma rho_apply : V.ϱ y f x = (adelicHeisenberg E s).β x y * f (x + y) := by
+lemma rho_apply : V.ϱ y f x = adelicHeisenberg E s x y * f (x + y) := by
   -- The value `f x` is `V.rawTheta (V.ϱ x f)`; apply `V.rawTheta` to the Heisenberg relation.
-  have h_mul : V.ϱ x (V.ϱ y f) = (adelicHeisenberg E s).β x y • V.ϱ (x + y) f :=
-    V.heisenbergRep.mul x y f
+  have h_mul : V.ϱ x (V.ϱ y f) = adelicHeisenberg E s x y • V.ϱ (x + y) f :=
+    V.heisenbergRep.apply_apply x y f
   simp only [apply_eq_rawTheta, h_mul, map_smul, smul_eq_mul]
 
 lemma theta_apply : V.θ f = f 0 := rfl
@@ -1047,7 +1116,7 @@ instance : ContinuousEval (𝒮 V) (n → 𝔸 E) ℂ := ⟨V.rawTheta.cont.comp
 f(x) = θ(ϱ(x)f). Here β(x, y) = ψ(½ȷ h(y, x)) is the bicharacter of the Heisenberg datum
 `adelicHeisenberg E s`, and h is the hermitian form with matrix `stdForm E s`. -/
 lemma apply_vecAtPoint_add (γ : n → E) (x : n → 𝔸 E) :
-    (adelicHeisenberg E s).β (V.vecAtPoint γ) x * f (V.vecAtPoint γ + x) = f x := by
+    adelicHeisenberg E s (V.vecAtPoint γ) x * f (V.vecAtPoint γ + x) = f x := by
   -- The left side is `V.rawTheta (V.ϱ (V.vecAtPoint γ) (V.ϱ x f))`, and `V.rawTheta` is invariant
   -- under the operators of rational vectors.
   obtain ⟨h_inv, -⟩ := V.isThetaFunctional_rawTheta
@@ -1072,7 +1141,7 @@ lemma theta_rho : V.θ (V.ϱ y f) = f y := by simp
 
 /-- A theta function is bounded by the norm of the theta functional times the norm of `f`. -/
 lemma norm_apply_le : ‖f x‖ ≤ ‖V.θ‖ * ‖f‖ := by
-  simpa [Heisenberg.Rep.norm_map] using V.θ.le_opNorm (V.ϱ x f)
+  simpa [TauCeti.HeisenbergDatum.Representation.norm_apply] using V.θ.le_opNorm (V.ϱ x f)
 
 /-- For f, f' in 𝒮(V), the family ⟨f', ϱ(γ)f⟩, γ running over the rational vectors of V, is summable
 with sum θ(f) times the complex conjugate of θ(f').

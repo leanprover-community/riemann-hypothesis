@@ -414,7 +414,7 @@ end Carrier
 
 section CarrierProperties
 
-open Exchange Matrix Function MeasureTheory SiegelWeil Finset Sum Heisenberg.IsVacuum Space
+open Exchange Matrix Function MeasureTheory SiegelWeil Finset Sum TauCeti ReproducingModel Space
 open NumberField (InfinitePlace RingOfIntegers)
 
 variable {E : Type} [Field.{0} E] [CMType E] [WeilData E]
@@ -559,7 +559,7 @@ lemma carrierForm_ne_zero {m : ℕ} [NeZero m] : carrierForm E m ≠ 0 := by
       (by simp [IsAutomorphic.mem_rapidFunctions, isAutomorphic_const]) (by simp [NeZero.pos])
       h_lift_zero 0 (by simp [h_fockInner_const])
   -- The integrand is the constant `⟨v, v⟩`, which is not zero.
-  simpa [realConv, h_fockInner_const, eq_zero_of_modelInner_self.mt hv_ne,
+  simpa [realConv, h_fockInner_const, eq_zero_of_innerSL_self.mt hv_ne,
     measureReal_univ_ne_zero] using congrFun h_conv 1
 
 end CarrierProperties

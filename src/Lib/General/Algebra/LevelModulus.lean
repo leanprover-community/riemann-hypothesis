@@ -1,6 +1,7 @@
 module
 
 import Mathlib.LinearAlgebra.PiTensorProduct.Finite
+import Mathlib.RingTheory.PiTensorProduct
 public import Lib.Adelic.AutomorphicForms.PAdicGauge
 public import Lib.General.LinearAlgebra.BlockEmbeddings
 public import Lib.Weil.DualPair.KernelDecay
