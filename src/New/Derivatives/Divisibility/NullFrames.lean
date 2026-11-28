@@ -5,6 +5,7 @@ import Std.Tactic.BVDecide.Normalize.BitVec
 public import Lib.General.Algebra.AdicCompletion
 import Lib.Cohomology.Etale.Basic
 import Lib.General.Algebra.SeriesCongruences
+import New.Reduction.Lattices.Colength
 
 /-!
 # The change of directions
@@ -48,27 +49,9 @@ determinant dividing `α`, after which `α` divides all values. -/
 lemma New.exists_det_dvd_and_dvd_mulVec {p : ℕ} [Fact p.Prime] {m : ℕ} (a : Fin m → valRingCp p)
     (α : valRingCp p) :
     ∃ u : Matrix (Fin m) (Fin m) (valRingCp p), u.det ∣ α ∧ ∀ k : Fin m, α ∣ (u *ᵥ a) k := by
-  obtain h_empty | h_nonempty := isEmpty_or_nonempty (Fin m)
-  · exact ⟨1, by simp, fun k ↦ h_empty.elim k⟩
-  -- Take a row `k₀` of least valuation, subtract multiples of it from the other rows so that their
-  -- values vanish, and multiply it by `α`.
-  obtain ⟨k₀, h_max⟩ := Finite.exists_max fun k ↦ ‖(a k : ℂ_[p])‖
-  have h_dvd (k : Fin m) : ∃ c : valRingCp p, a k = a k₀ * c :=
-    valRingCp.dvd_iff_norm_le.2 (h_max k)
-  choose c hc using h_dvd
-  let b (k : Fin m) : valRingCp p := if k = k₀ then α else -c k
-  let u : Matrix (Fin m) (Fin m) (valRingCp p) := updateCol 1 k₀ b
-  have h_det : u.det = α := by simp [u, b, ← cramer_apply, cramer_one]
-  have h_value (k : Fin m) : (u *ᵥ a) k = b k * a k₀ + if k = k₀ then 0 else a k := by
-    have h_rest : ∑ l ∈ univ.erase k₀, u k l * a l =
-        ∑ l ∈ univ.erase k₀, if k = l then a l else 0 :=
-      sum_congr rfl fun l hl ↦ by simp [u, ne_of_mem_erase hl, Matrix.one_apply]
-    rw [mulVec, dotProduct, ← add_sum_erase univ _ (mem_univ k₀), h_rest]
-    simp [u]
-  refine ⟨u, h_det.dvd, fun k ↦ ?_⟩
-  obtain rfl | hk := eq_or_ne k k₀
-  · simp [h_value, b]
-  · simp [h_value, b, hk, hc k, mul_comm]
+  simpa [mulVec, dotProduct, Ideal.mem_span_singleton] using
+    colengthDvd_inf_comap_span (⊤ : Submodule (valRingCp p) (valRingCp p)) LinearMap.id α m a
+      (fun _ ↦ Submodule.mem_top)
 
 /-- For finitely many linear forms with coefficient vectors `A i` and moduli `α i` over the integers
 `valRingCp p` of `ℂ_p`, there is a square matrix `g`, with determinant dividing the product of the
@@ -77,20 +60,13 @@ lemma New.exists_det_dvd_prod_and_dvd_mulVec {p : ℕ} [Fact p.Prime] {ι : Type
     (t : Finset ι) (A : ι → Fin m → valRingCp p) (α : ι → valRingCp p) :
     ∃ g : Matrix (Fin m) (Fin m) (valRingCp p),
       g.det ∣ ∏ i ∈ t, α i ∧ ∀ i ∈ t, ∀ k : Fin m, α i ∣ (g *ᵥ A i) k := by
-  -- Start from the identity matrix and treat the forms one after the other.
-  induction t using Finset.cons_induction with
-  | empty => exact ⟨1, by simp, by simp⟩
-  | cons i t hi ih =>
-    obtain ⟨g, hg_det, hg_dvd⟩ := ih
-    obtain ⟨u, hu_det, hu_dvd⟩ := exists_det_dvd_and_dvd_mulVec (g *ᵥ A i) (α i)
-    refine ⟨u * g, ?_, fun j hj k ↦ ?_⟩
-    · simpa only [det_mul, prod_cons] using mul_dvd_mul hu_det hg_det
-    · rw [← mulVec_mulVec]
-      obtain rfl | hj_old := mem_cons.1 hj
-      · exact hu_dvd k
-      · -- The new rows are integral combinations of the old ones.
-        rw [mulVec, dotProduct]
-        exact dvd_sum fun l _ ↦ (hg_dvd j hj_old l).mul_left (u k l)
+  -- Apply the coordinate divisibility conditions to the family of columns of `A`.
+  obtain ⟨g, hg_det, hg⟩ := colengthDvd_iInf_comap_span
+    (LinearMap.proj (R := valRingCp p) (φ := fun _ : ι ↦ valRingCp p)) α t m
+    (fun k i ↦ A i k) (fun _ ↦ Submodule.mem_top)
+  simp only [Submodule.mem_iInf] at hg
+  refine ⟨g, hg_det, fun i hi k ↦ ?_⟩
+  simpa [mulVec, dotProduct, Ideal.mem_span_singleton] using hg k i hi
 
 /-- Let `π` divide `p`, and let `root x` be a `p ^ e`-th root of `x`. If `root π` divides the linear
 form `∑ root (y' a) * β a`, then `π` divides the pairing `∑ β a ^ p ^ e * y' a`, as `p ^ e`-th
