@@ -5,6 +5,7 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.IsAdjoinRoot
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.TotallySplit
+import TauCeti.NumberTheory.NumberField.ComplexConjugation.MaximalRealOrCMSubfield
 public import Lib.Adelic.Adeles.Basic
 import Lib.Adelic.Adeles.IdeleModulus
 import Lib.Adelic.Adeles.StrongApproximation
@@ -12,10 +13,10 @@ import Lib.Adelic.Adeles.StrongApproximation
 /-!
 # Criteria for CM fields
 
-This file gives two ways to show that a number field is CM. The first asks that the field contain a
-totally complex field, and that complex conjugation be induced, in all embeddings at once, by a map
-of the field to itself. The second shows that adjoining to a CM field a root of a suitable
-polynomial gives a CM field, whose finite adeles it also describes.
+An intermediate field between a totally complex field and a CM field is CM. A number field is
+also CM if it contains a totally complex field and a map of the field to itself induces
+conjugation under every complex embedding. This criterion applies to adjoining a root of a
+suitable polynomial to a CM field. The file also describes the finite adeles of the resulting field.
 
 We write `𝔸f K` for the ring of finite adeles of a number field `K`. For an extension `L / K` of
 number fields, `𝔸f L` is an algebra over `𝔸f K`, and complex conjugation `star` of a CM field
@@ -23,6 +24,7 @@ extends to its finite adeles.
 
 ## Main definitions and results
 
+* `New.isCMField_intermediateField`: an intermediate field of an extension of CM fields is CM.
 * `New.isCMField_of_forall_exists_conj`: a number field is CM if it contains a totally complex field
   and complex conjugation is induced, in all embeddings at once, by a map of the field to itself.
 * `New.isCMField_adjoinRoot_of_forall_root_mul_star_eq`: let `E` be a CM field and `P` an
@@ -36,6 +38,21 @@ extends to its finite adeles.
 -/
 
 @[expose] public section
+
+/-! ## Intermediate fields of CM extensions -/
+
+open NumberField in
+/-- Every intermediate field between a totally complex field and a CM number field is CM. -/
+lemma New.isCMField_intermediateField {E L : Type*} [Field E] [NumberField E] [IsTotallyComplex E]
+    [Field L] [NumberField L] [IsCMField L] [Algebra E L] (K : IntermediateField E L) :
+    IsCMField K := by
+  have h_complex : IsTotallyComplex K := isTotallyComplex_of_algebra E K
+  have h_le : K.toSubfield ≤ TauCeti.NumberField.maximalRealOrCMSubfield L := by
+    rw [TauCeti.NumberField.maximalRealOrCMSubfield_eq_top_of_isCMField]
+    exact le_top
+  obtain h_real | h_cm := TauCeti.NumberField.le_maximalRealOrCMSubfield_iff.mp h_le
+  · exact (IsTotallyComplex.not_isTotallyReal (K := K) h_real).elim
+  · exact h_cm
 
 /-! ## A CM criterion via a conjugation on the field -/
 

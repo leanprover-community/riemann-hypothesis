@@ -128,17 +128,6 @@ lemma New.exists_principalIdele_div_mul_adeleMap_eq {E L : Type} [Field E] [Numb
   rw [← finAdeleIncl_adeleNorm_fixedField_zpowers, ← Units.coe_map, map_div, ← hk,
     map_adeleNorm_principalIdele, div_self', Units.val_one, map_one]
 
-/-- Let `L` be a CM field and `g` an automorphism of `L` over the CM field `E`. Then the fixed field
-of `g` is a CM field: it is stable under conjugation, which commutes with `g`. -/
-lemma New.isCMField_fixedField_zpowers {E L : Type} [Field E] [NumberField E] [IsCMField E]
-    [Field L] [NumberField L] [IsCMField L] [Algebra E L] (g : Gal(L/E)) :
-    IsCMField (fixedField (zpowers g)) := by
-  refine isCMField_of_forall_exists_conj E fun y : fixedField (zpowers g) ↦
-    ⟨⟨star y.val, fun a ↦ ?_⟩, fun φ ↦ ?_⟩
-  · -- `star y` is fixed by `g`, as `y` is and conjugation commutes with `g`
-    exact (map_star_CM a.val.toRingHom y).trans (congrArg star (y.property a))
-  · simp [← lift_algebraMap_apply L φ]
-
 /-- Hasse principle in one CM field. Let `E'/E` be a step with character `μ` (`IsStep`): `E`
 contains a primitive 5040th root of unity, `E'` is a CM field Galois over `E` of prime degree, and
 `μ` is a finite idele character of `E` with open kernel, trivial on `Eˣ`. Let `L = E'[x]` be a CM
@@ -168,7 +157,7 @@ lemma New.IsStep.exists_isSelfAdjoint_of_mem_kerCompNorm {E E' L : Type} [Field 
   have : IsGalois K L := of_fixed_field L (zpowers g)
   have h_cyc : IsCyclic Gal(L/K) :=
     (subgroupEquivAlgEquiv (zpowers g)).isCyclic.mp (isCyclic_zpowers g)
-  have : IsCMField K := isCMField_fixedField_zpowers g
+  have : IsCMField K := isCMField_intermediateField K
   have h_norm : finAdeleIncl K L (adeleNorm K L u) =
       ∏ i ∈ range (orderOf g), adeleMap (↑(g ^ i) : L →+* L) u :=
     finAdeleIncl_adeleNorm_fixedField_zpowers g u
