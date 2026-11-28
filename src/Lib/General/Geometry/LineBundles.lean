@@ -281,9 +281,6 @@ lemma landsIn_iInf {V : κ → X.Opens} (p : Y ⟶ X) [Finite κ] :
 
 lemma isOpenCover_top : IsOpenCover fun _ : Unit ↦ (⊤ : Y.Opens) := iSup_const
 
-lemma isOpenCover_preimage {V : κ → X.Opens} (hV : IsOpenCover V) (p : Y ⟶ X) :
-    IsOpenCover fun i : κ ↦ p ⁻¹ᵁ V i := p.iSup_preimage_eq_top hV
-
 /-- The intersections of the members of two open covers form an open cover. -/
 lemma isOpenCover_inf {ι : Type} {V : κ → Y.Opens} {W : ι → Y.Opens} (hV : IsOpenCover V)
     (hW : IsOpenCover W) : IsOpenCover fun i : κ × ι ↦ V i.1 ⊓ W i.2 := by
@@ -492,7 +489,7 @@ lemma exists_ofSection_glue (p : Y ⟶ X) [Flat p] [Surjective p] [QuasiCompact 
       ∀ (a : κ) (A : CommRingCat) (t : Spec A ⟶ Limits.pullback p U.ι),
         LandsIn t (fst p U.ι ⁻¹ᵁ V a) →
         t ≫ q = specMap (FreeCommRing.lift ![f a A (t ≫ fst p U.ι)]) := by
-    refine exists_hom_of_cover (isOpenCover_preimage hV _) _ fun i j A B φ t hi hj ↦ ?_
+    refine exists_hom_of_cover ((fst p U.ι).iSup_preimage_eq_top hV) _ fun i j A B φ t hi hj ↦ ?_
     have natural : f j B ((map φ ≫ t) ≫ fst p U.ι) = φ (f i A (t ≫ fst p U.ι)) := by
       rw [← hf i φ _ (landsIn_inf.2 ⟨in_U t, landsIn_preimage.1 hi⟩), ← assoc]
       exact h j i B _ _ rfl (in_U _) hj (landsIn_preimage.1 (hi.comp _))
@@ -503,8 +500,8 @@ lemma exists_ofSection_glue (p : Y ⟶ X) [Flat p] [Surjective p] [QuasiCompact 
   -- By `h`, the morphism `q` is constant on the fibres of `p`.
   have descends {Z : Scheme} (a b : Z ⟶ Limits.pullback p U.ι)
       (hab : a ≫ snd p U.ι = b ≫ snd p U.ι) : a ≫ q = b ≫ q := by
-    refine hom_ext_of_isOpenCover (isOpenCover_inf (isOpenCover_preimage hV (a ≫ fst p U.ι))
-      (isOpenCover_preimage hV (b ≫ fst p U.ι))) fun i A r hr ↦ ?_
+    refine hom_ext_of_isOpenCover (isOpenCover_inf ((a ≫ fst p U.ι).iSup_preimage_eq_top hV)
+      ((b ≫ fst p U.ι).iSup_preimage_eq_top hV)) fun i A r hr ↦ ?_
     -- At a point `r` of `Z`, `hq` computes both sides; `r ≫ a` and `r ≫ b` have the same image
     -- in `X` by `hab` and `condition`, so the values of the `f` there agree by `h`.
     obtain ⟨ha, hb⟩ : LandsIn ((r ≫ a) ≫ fst p U.ι) (V i.1) ∧
