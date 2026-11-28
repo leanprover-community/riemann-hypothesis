@@ -156,64 +156,80 @@ lemma New.IsLocalGalois.exists_surjective_ord {Γ L Ω : Type} [Group Γ] [Topol
   · rintro rfl
     exact h_ord a
 
-/-- The index of `l`-th powers in a field `L`, where `Γ = Gal(Ω/L)` with `Ω` algebraically closed of
-characteristic 0 and `O = New.valRingBelow L A` a discrete valuation ring with finite residue field
-(`New.IsLocalGalois Γ L A`). Let `l ≠ 0` and let `Y` be an additive group isomorphic to `Lˣ` (by
-`y`). For multiplication by `l` on `Y`, the index `#(Y / l Y) / #Y[l]` (a) is not `0`, that is, both
-groups are finite; (b) equals `l · #(O / l O)`. -/
-lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpace Γ] [Field L]
-    [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω] {A : ValuationSubring Ω}
-    (hLocal : IsLocalGalois Γ L A) (l : ℕ) [NeZero l] {Y : Type} [AddCommGroup Y]
-    (y : Y ≃+ Additive Lˣ) :
-    -- (a) both groups are finite
-    cokerKerIndex (l : End ℤ Y) ≠ 0 ∧
-    -- (b) the value of the index
-    cokerKerIndex (l : End ℤ Y) =
-      l * Nat.card (valRingBelow L A ⧸ span {(l : valRingBelow L A)}) := by
-  -- The index is multiplicative in `1 → Oˣ → Lˣ → ℤ → 0`, it is `l` on `ℤ`, and `Oˣ` may be
-  -- replaced by the subgroup `V = 1 + l π O` of finite index. On `V` the `l`-th power map is
-  -- injective, and `a ↦ (a - 1) / (l π)` identifies its cokernel with `O / l`.
-  obtain ⟨π, hπ⟩ := hLocal.exists_isUniformizer
-  -- The fields of `hLocal` (discrete valuation ring, finite residue field, …) as local instances.
+/-- The principal unit subgroup `1 + l π O` inside the unit group `f.ker` (where `f : Y →ₗ[ℤ] ℤ`
+is the valuation order map on `Y ≃+ Additive Lˣ`). -/
+private noncomputable def New.localUnitSubgroup {Γ L Ω : Type} [Group Γ] [TopologicalSpace Γ]
+    [Field L] [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω] {A : ValuationSubring Ω}
+    (hLocal : IsLocalGalois Γ L A) (π : Lˣ) (l : ℕ) [NeZero l]
+    {Y : Type} [AddCommGroup Y] (y : Y ≃+ Additive Lˣ) {f : Y →ₗ[ℤ] ℤ}
+    (h_val : ∀ a : f.ker, (A.valuation.comap (algebraMap L Ω)) (y a).toMul = 1) :
+    Submodule ℤ f.ker := by
+  have h_fields := hLocal
+  obtain ⟨⟩ := h_fields
+  have : CharZero L := (algebraMap L Ω).charZero
+  set w : Valuation L A.ValueGroup := A.valuation.comap (algebraMap L Ω)
+  have div_mem {x : L} : x / (l * π) ∈ valRingBelow L A ↔ w x ≤ w (l * π) := by
+    simp [div_le_one₀, w, pos_iff, NeZero.ne]
+  exact (AddSubgroup.ofSub {a : f.ker | ((y a).toMul.val - 1) / (l * π) ∈ valRingBelow L A}
+    ⟨0, by simp⟩ fun a ha b hb ↦ by
+      -- As `|b| = 1`, `a / b - 1` has the absolute value of `(a - 1) - (b - 1)`.
+      have hb1 : w (y b).toMul = 1 := h_val b
+      simpa [hb1, div_mem, ← division_def, ← sub_div, div_sub_one] using
+        sub_mem ha.out hb.out).toIntSubmodule
+
+/-- Reduction modulo `l π` embeds the unit quotient `Oˣ / (1 + l π O)` into the finite ring
+`O / l π`, so `1 + l π O` has finite index in `f.ker`. -/
+private lemma New.finite_quotient_localUnitSubgroup {Γ L Ω : Type} [Group Γ] [TopologicalSpace Γ]
+    [Field L] [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω] {A : ValuationSubring Ω}
+    (hLocal : IsLocalGalois Γ L A) {π : Lˣ} (hπ : IsUniformizer A (π : L)) (l : ℕ) [NeZero l]
+    {Y : Type} [AddCommGroup Y] (y : Y ≃+ Additive Lˣ) {f : Y →ₗ[ℤ] ℤ}
+    (h_val : ∀ a : f.ker, (A.valuation.comap (algebraMap L Ω)) (y a).toMul = 1) :
+    Finite (f.ker ⧸ localUnitSubgroup hLocal π l y h_val) := by
   have h_fields := hLocal
   obtain ⟨⟩ := h_fields
   have h_char : CharZero L := (algebraMap L Ω).charZero
-  -- `w` is the absolute value of `L`.
   set w : Valuation L A.ValueGroup := A.valuation.comap (algebraMap L Ω)
-  have h_finite_l : Finite (valRingBelow L A ⧸ span {(l : valRingBelow L A)}) :=
-    hLocal.finite_quotient_span_singleton (by simpa using NeZero.ne l)
+  have div_mem {x : L} : x / (l * π) ∈ valRingBelow L A ↔ w x ≤ w (l * π) := by
+    simp [div_le_one₀, w, pos_iff, NeZero.ne]
+  let V := localUnitSubgroup hLocal π l y h_val
+  refine (hLocal.finite_quotient_span_singleton (x := l * ⟨π, hπ.valuationVia_lt_one.le⟩)
+    (by simpa [Subtype.ext_iff] using NeZero.ne l)).of_injective
+    (fun a ↦ mk _ ⟨(y a.out).toMul, (h_val a.out).le⟩) fun a b hab ↦ ?_
+  -- Equal residues mod `l π` of representatives put their quotient in `V`.
+  have h_quot : w (((y (a.out - b.out : f.ker)).toMul : L) - 1) ≤ w (l * π) := by
+    simpa [mk_span_eq_iff_dvd_sub, dvd_iff_valuationVia_le, h_val, w, div_sub_one,
+      valuationVia] using hab
+  exact out_equiv_out.mp (V.quotientRel_def.mpr (div_mem.mpr h_quot))
+
+/-- On `V = 1 + l π O`, multiplication by `l` is injective (no nontrivial `l`-th roots of unity
+lie closer to `1` than `|l|`), and `a ↦ (a - 1) / (l π)` induces a surjection `V → O / l` whose
+kernel is `l V` by Hensel's lemma. -/
+private lemma New.exists_exact_localUnitSubgroup_quotient {Γ L Ω : Type} [Group Γ]
+    [TopologicalSpace Γ] [Field L] [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω]
+    {A : ValuationSubring Ω} (hLocal : IsLocalGalois Γ L A) {π : Lˣ}
+    (hπ : IsUniformizer A (π : L)) (l : ℕ) [NeZero l] {Y : Type} [AddCommGroup Y]
+    (y : Y ≃+ Additive Lˣ) {f : Y →ₗ[ℤ] ℤ}
+    (h_ker : ∀ a : Y, (A.valuation.comap (algebraMap L Ω)) (y a).toMul = 1 ↔ f a = 0)
+    (h_val : ∀ a : f.ker, (A.valuation.comap (algebraMap L Ω)) (y a).toMul = 1) :
+    let V := localUnitSubgroup hLocal π l y h_val
+    LinearMap.ker (l : End ℤ V) = ⊥ ∧
+    ∃ red : V →ₗ[ℤ] valRingBelow L A ⧸ span {(l : valRingBelow L A)},
+      Function.Surjective red ∧ Function.Exact (l : End ℤ V) red := by
+  have h_fields := hLocal
+  obtain ⟨⟩ := h_fields
+  have h_char : CharZero L := (algebraMap L Ω).charZero
+  set w : Valuation L A.ValueGroup := A.valuation.comap (algebraMap L Ω)
   have lπ_lt : w (l * π) < A.valuation l := by simp [w, hπ.valuationVia_lt_one, pos_iff, NeZero.ne]
   have div_mem {x : L} : x / (l * π) ∈ valRingBelow L A ↔ w x ≤ w (l * π) := by
     simp [div_le_one₀, w, pos_iff, NeZero.ne]
-  -- The order `f : Y → ℤ`, whose kernel is the unit group.
-  obtain ⟨f₀, f_surj, h_ord⟩ := hLocal.exists_surjective_ord hπ y
-  let f := f₀.toIntLinearMap
-  have val_ker (a : f.ker) : w (y a).toMul = 1 := by
-    simpa [w] using (h_ord a 0).mpr a.property
-  -- `V` is the subgroup `1 + l π O` of the unit group.
-  let V : Submodule ℤ f.ker :=
-    (AddSubgroup.ofSub {a : f.ker | ((y a).toMul.val - 1) / (l * π) ∈ valRingBelow L A}
-      ⟨0, by simp⟩ fun a ha b hb ↦ by
-        -- As `|b| = 1`, `a / b - 1` has the absolute value of `(a - 1) - (b - 1)`.
-        simpa [val_ker, div_mem, ← division_def, ← sub_div, div_sub_one] using
-          sub_mem ha.out hb.out).toIntSubmodule
+  let V := localUnitSubgroup hLocal π l y h_val
   -- The element `1 + x` of `V`, for `x ∈ l π O`.
   let oneAdd (x : L) (hx : w x ≤ w (l * π)) : V :=
-    have h_val : w (1 + x) = 1 := w.map_one_add_of_lt ((hx.trans_lt lπ_lt).trans_le (by simp))
-    have h_ne : 1 + x ≠ 0 := fun h_zero ↦ by simp [h_zero] at h_val
-    have h_ker : f (y.symm (.ofMul (.mk0 (1 + x) h_ne))) = 0 :=
-      (h_ord _ 0).mp (by simpa [w] using h_val)
-    ⟨⟨y.symm (.ofMul (.mk0 (1 + x) h_ne)), h_ker⟩, div_mem.mpr (by simp_all)⟩
-  -- Reduction modulo `l π` embeds `Oˣ / V` into the finite ring `O / l π`.
-  have h_finite_index : Finite (f.ker ⧸ V) := by
-    refine (hLocal.finite_quotient_span_singleton (x := l * ⟨π, hπ.valuationVia_lt_one.le⟩)
-      (by simpa [Subtype.ext_iff] using NeZero.ne l)).of_injective
-      (fun a ↦ mk _ ⟨(y a.out).toMul, (val_ker a.out).le⟩) fun a b hab ↦ ?_
-    -- Equal residues mod `l π` of representatives put their quotient in `V`.
-    have h_quot : w (((y (a.out - b.out : f.ker)).toMul : L) - 1) ≤ w (l * π) := by
-      simpa [mk_span_eq_iff_dvd_sub, dvd_iff_valuationVia_le, val_ker, w, div_sub_one,
-        valuationVia] using hab
-    exact out_equiv_out.mp (V.quotientRel_def.mpr (div_mem.mpr h_quot))
+    have h_val1 : w (1 + x) = 1 := w.map_one_add_of_lt ((hx.trans_lt lπ_lt).trans_le (by simp))
+    have h_ne : 1 + x ≠ 0 := fun h_zero ↦ by simp [h_zero] at h_val1
+    have h_f : f (y.symm (.ofMul (.mk0 (1 + x) h_ne))) = 0 :=
+      (h_ker _).mp (by simpa [w] using h_val1)
+    ⟨⟨y.symm (.ofMul (.mk0 (1 + x) h_ne)), h_f⟩, div_mem.mpr (by simp_all)⟩
   -- An `l`-th root of unity closer to `1` than `|l|` is `1`.
   have ker_pow : LinearMap.ker (l : End ℤ V) = ⊥ := by
     refine LinearMap.ker_eq_bot'.mpr fun a ha ↦ ?_
@@ -251,6 +267,43 @@ lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpac
       refine ⟨oneAdd (x - 1) (by simpa [w] using hx), Subtype.ext (Subtype.ext (y.injective ?_))⟩
       ext
       simp [oneAdd, hx_pow]
+  exact ⟨ker_pow, red, red_surj, red_exact⟩
+
+/-- The index of `l`-th powers in a field `L`, where `Γ = Gal(Ω/L)` with `Ω` algebraically closed of
+characteristic 0 and `O = New.valRingBelow L A` a discrete valuation ring with finite residue field
+(`New.IsLocalGalois Γ L A`). Let `l ≠ 0` and let `Y` be an additive group isomorphic to `Lˣ` (by
+`y`). For multiplication by `l` on `Y`, the index `#(Y / l Y) / #Y[l]` (a) is not `0`, that is, both
+groups are finite; (b) equals `l · #(O / l O)`. -/
+lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpace Γ] [Field L]
+    [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω] {A : ValuationSubring Ω}
+    (hLocal : IsLocalGalois Γ L A) (l : ℕ) [NeZero l] {Y : Type} [AddCommGroup Y]
+    (y : Y ≃+ Additive Lˣ) :
+    -- (a) both groups are finite
+    cokerKerIndex (l : End ℤ Y) ≠ 0 ∧
+    -- (b) the value of the index
+    cokerKerIndex (l : End ℤ Y) =
+      l * Nat.card (valRingBelow L A ⧸ span {(l : valRingBelow L A)}) := by
+  -- The index is multiplicative in `1 → Oˣ → Lˣ → ℤ → 0`, it is `l` on `ℤ`, and `Oˣ` may be
+  -- replaced by the subgroup `V = 1 + l π O` of finite index. On `V` the `l`-th power map is
+  -- injective, and `a ↦ (a - 1) / (l π)` identifies its cokernel with `O / l`.
+  obtain ⟨π, hπ⟩ := hLocal.exists_isUniformizer
+  have h_fields := hLocal
+  obtain ⟨⟩ := h_fields
+  have : CharZero L := (algebraMap L Ω).charZero
+  have h_finite_l : Finite (valRingBelow L A ⧸ span {(l : valRingBelow L A)}) :=
+    hLocal.finite_quotient_span_singleton (by simpa using NeZero.ne l)
+  -- The order `f : Y → ℤ`, whose kernel is the unit group.
+  obtain ⟨f₀, f_surj, h_ord⟩ := hLocal.exists_surjective_ord hπ y
+  let f := f₀.toIntLinearMap
+  have h_ker (a : Y) : (A.valuation.comap (algebraMap L Ω)) (y a).toMul = 1 ↔ f a = 0 := by
+    simpa [f] using h_ord a 0
+  have val_ker (a : f.ker) : (A.valuation.comap (algebraMap L Ω)) (y a).toMul = 1 :=
+    (h_ker a).mpr a.property
+  let V := localUnitSubgroup hLocal π l y val_ker
+  have h_finite_index : Finite (f.ker ⧸ V) :=
+    finite_quotient_localUnitSubgroup hLocal hπ l y val_ker
+  obtain ⟨ker_pow, red, red_surj, red_exact⟩ :=
+    exists_exact_localUnitSubgroup_quotient hLocal hπ l y h_ker val_ker
   -- Pass from `f.ker` to `V` (the inclusion has finite kernel and cokernel), and read off the
   -- kernel and the cokernel on `V`.
   have idx_units :
