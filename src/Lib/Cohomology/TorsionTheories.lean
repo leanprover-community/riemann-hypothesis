@@ -924,33 +924,6 @@ lemma TorsionCoeff.nsmul_totalH_eq_zero (y : TotalH N M.functor) : ℓ • y = 0
   have h_zero : ℓ • (1 : End M.functor) = 0 := End.ext (by bound [M.prime_smul_eq_zero])
   rw [← smul_one_smul (End M.functor) ℓ y, h_zero, zero_smul]
 
-variable [NeZero ℓ] [HasFlatValues N]
-
-/-- For `ℓ ≠ 0` and a functor `N` from `C` to abelian groups with flat values, the sequence
-`0 → N → N → N / ℓN → 0` is short exact; its maps are multiplication by `ℓ` and the quotient map
-`abCoker.π`. -/
-lemma shortExact_nsmul_abCoker :
-    ∃ w : (ℓ • 𝟙 N) ≫ abCoker.π (ℓ • 𝟙 N) = 0,
-      ShortComplex.ShortExact ⟨ℓ • 𝟙 N, abCoker.π (ℓ • 𝟙 N), w⟩ := by
-  refine shortExact_of_app (fun c ↦ ?_) (fun _ ↦ eq_zero_iff) fun _ ↦ mk_surjective
-  -- a flat `ℤ`-module is torsion-free, so multiplication by `ℓ ≠ 0` is injective
-  have h_flat : Module.Flat ℤ (N.obj c) := HasFlatValues.flat c
-  exact (HasUniqueDiv.of_isTorsionFree ℤ _).nsmul_right_injective NeZero.out
-
-/-- For a coefficient `M` along `g` and a functor `N` with flat values, pull-back along the quotient
-map `N → N / ℓN` is onto, from the total cohomology of `N / ℓN` to that of `N`, both with
-coefficients `M.functor`. -/
-lemma TorsionCoeff.pullbackAlong_abCoker_pi_surjective :
-    Surjective (pullbackAlong (G := M.functor) (abCoker.π (ℓ • 𝟙 N))) := by
-  -- by the long exact sequence of `shortExact_nsmul_abCoker` it suffices that pull-back along
-  -- `ℓ • 𝟙 N` is zero
-  obtain ⟨w, h_exact⟩ := shortExact_nsmul_abCoker (ℓ := ℓ) (N := N)
-  obtain ⟨h_mid, -, -⟩ := exact_triangle h_exact M.functor
-  refine fun y ↦ (h_mid y).mp ?_
-  -- pull-back along `ℓ • 𝟙 N` is `ℓ` times a class, and `ℓ` kills total cohomology
-  simp_rw [pullbackAlong, TotalH.homClass, ← addEquiv₀_symm_apply, map_nsmul]
-  exact M.nsmul_totalH_eq_zero _
-
 /-- The map from (ℤ[pt]/ℤ[O])/ℓ, O the locus where I is the unit ideal, to locally constant
 ℤ/ℓ-valued functions modulo those dying where I = 0, sending the point to 1. -/
 def IdealFamily.constToZeros :
@@ -967,7 +940,6 @@ def IdealFamily.constToZeros :
       exact (map_nsmul (oneLocConst.app c).hom ℓ (FreeAddCommGroup.of x)).trans
         (Theory.locallyConstant.prime_smul_eq_zero (g.obj c) _))⟧))
 
-omit [NeZero ℓ] in
 /-- The map `New.Variety.IdealFamily.constToZeros` sends the class of `n` times the generator to the
 class of the constant function `n`. -/
 lemma IdealFamily.constToZeros_zsmul_mk (c : C) (n : ℤ) :
@@ -983,7 +955,6 @@ lemma IdealFamily.constToZeros_zsmul_mk (c : C) (n : ℤ) :
   rw [← zsmul_one]
   rfl
 
-omit [NeZero ℓ] in
 /-- Let `g` be a functor from a category `C` to tests over `A`, with a theory `Θ` whose coefficient
 is the locally constant `ℤ/ℓ`-valued functions, and `I` a family of ideals of the rings `g(c)`.
 Then for every functor `φ : C' ⥤ C` and every coefficient `F'` on `C'` with Zariski descent for the
@@ -1040,6 +1011,33 @@ lemma IdealFamily.isCohomEquiv_constToZeros (hΘ : Θ.functor = locConstAlong g)
       rw [hn]
       exact congrArg _ (h_const B f hf).symm
     exact (hF (h_loc.whisker φ)).preimage _
+
+variable [NeZero ℓ] [HasFlatValues N]
+
+/-- For `ℓ ≠ 0` and a functor `N` from `C` to abelian groups with flat values, the sequence
+`0 → N → N → N / ℓN → 0` is short exact; its maps are multiplication by `ℓ` and the quotient map
+`abCoker.π`. -/
+lemma shortExact_nsmul_abCoker :
+    ∃ w : (ℓ • 𝟙 N) ≫ abCoker.π (ℓ • 𝟙 N) = 0,
+      ShortComplex.ShortExact ⟨ℓ • 𝟙 N, abCoker.π (ℓ • 𝟙 N), w⟩ := by
+  refine shortExact_of_app (fun c ↦ ?_) (fun _ ↦ eq_zero_iff) fun _ ↦ mk_surjective
+  -- a flat `ℤ`-module is torsion-free, so multiplication by `ℓ ≠ 0` is injective
+  have h_flat : Module.Flat ℤ (N.obj c) := HasFlatValues.flat c
+  exact (HasUniqueDiv.of_isTorsionFree ℤ _).nsmul_right_injective NeZero.out
+
+/-- For a coefficient `M` along `g` and a functor `N` with flat values, pull-back along the quotient
+map `N → N / ℓN` is onto, from the total cohomology of `N / ℓN` to that of `N`, both with
+coefficients `M.functor`. -/
+lemma TorsionCoeff.pullbackAlong_abCoker_pi_surjective :
+    Surjective (pullbackAlong (G := M.functor) (abCoker.π (ℓ • 𝟙 N))) := by
+  -- by the long exact sequence of `shortExact_nsmul_abCoker` it suffices that pull-back along
+  -- `ℓ • 𝟙 N` is zero
+  obtain ⟨w, h_exact⟩ := shortExact_nsmul_abCoker (ℓ := ℓ) (N := N)
+  obtain ⟨h_mid, -, -⟩ := exact_triangle h_exact M.functor
+  refine fun y ↦ (h_mid y).mp ?_
+  -- pull-back along `ℓ • 𝟙 N` is `ℓ` times a class, and `ℓ` kills total cohomology
+  simp_rw [pullbackAlong, TotalH.homClass, ← addEquiv₀_symm_apply, map_nsmul]
+  exact M.nsmul_totalH_eq_zero _
 
 /-- For a coefficient `M` along `g` (`M.functor` is `ℓ`-torsion with Zariski descent, `ℓ ≠ 0`), let
 L(c) be the group of locally constant functions Spec g(c) → ℤ/ℓ, and let `oneLocConst : ℤ → L` send

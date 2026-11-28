@@ -47,7 +47,7 @@ open CategoryTheory Function DirectSum TotalH Finsupp H
 
 variable {A C : Type 1} [Category A] [Category C]
   {Φ : (A ⥤ Ab) ⥤ AbFunctor C} [@IsExactFunctor A C _ _ Φ] {G : A ⥤ Ab} {S S' : AbFunctor A}
-  {n e : ℕ} {F N M : AbFunctor C} {I : Type _} [DecidableEq I] {d : I → ℕ}
+  {n e : ℕ} {F N M : AbFunctor C} {I : Type _} {d : I → ℕ}
   (θ : ∀ i : I, H (Φ G) F (d i)) {X : ShortComplex (AbFunctor A)} (h : X.ShortExact)
 
 /-! ### The map and its naturality -/
@@ -60,10 +60,6 @@ def lerayHirsch (S : AbFunctor A) : (I →₀ TotalH S G) →ₗ[ℤ] TotalH (Φ
 /-- The Leray–Hirsch property for S: the Leray–Hirsch map `New.Variety.lerayHirsch` of θ at S is
 bijective. -/
 abbrev IsLerayHirschBasis (S : AbFunctor A) : Prop := Bijective (lerayHirsch θ S)
-
-section
-
-omit [DecidableEq I]
 
 lemma lerayHirsch_single (i : I) (x : TotalH S G) :
     lerayHirsch θ S (.single i x) = .comp (.map Φ x) (θ i).toTotalH := by
@@ -94,9 +90,11 @@ lemma lerayHirsch_mapRange_comp {ξ : TotalH S' S} {ζ : TotalH (Φ.obj S') (Φ.
     simp [map_comp_assoc, hξ, mapThenComp]
   lerayHirsch_naturality _ _ h_inter w
 
-end
-
 /-! ### Truncation by total degree -/
+
+section
+
+variable [DecidableEq I]
 
 open scoped Classical in
 /-- The truncation of finitely supported families (w_i) in total Ext(S, G) to total degree below
@@ -257,7 +255,10 @@ lemma lerayHirsch.devissage :
   -- a map between groups with one element is bijective
   aesop
 
-omit [DecidableEq I] in
+end
+
+variable {θ}
+
 /-- The functors `S` at which `θ` is a Leray–Hirsch basis form a closed class
 (`New.Variety.IsClosedClass`): the class contains the zero functors, and along a short exact
 sequence whose subobject is in it, the middle term is in it exactly when the quotient is. -/
@@ -286,7 +287,6 @@ lemma Devissage.allBijective_of_allBijective_sigma_reprBy {A B : C ⥤ Ab → �
     exact hf.bijectiveUpTo_quotient h_exact
       (allBijective_iff_forall_bijectiveUpTo.mp (h_sum ι c) (r + 1)) (ih _)
 
-omit [DecidableEq I] in
 /-- Let θ be a finite family of classes in Ext(G∘φ, F), for a functor φ. If the Leray–Hirsch map
 `New.Variety.lerayHirsch` is bijective at ℤ[h_c], the free abelian functor on h_c = Hom(c, −), for
 every object c of the target of φ, it is bijective at every S. Here `S`, `G` are functors `A ⥤ Ab`,
