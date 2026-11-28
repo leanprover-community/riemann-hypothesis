@@ -690,9 +690,7 @@ lemma toWittResidue_smul_of_isFrob {n : ℕ} (h_isFrob : IsFrob (intQpBar p) (p 
   -- condition on `ℂ_p` (balls are open and closed)
   have h_frob (y : ℂ_[p]) : dist y 0 ≤ 1 → dist (g⁻¹ • y - y ^ p ^ n) 0 < 1 := by
     induction y using UniformSpace.Completion.induction_on with
-    | hp =>
-      exact isClosed_imp (isOpen_closedBall _ one_ne_zero) <| (isClosed_ball 0 1).preimage <|
-        (continuous_const_smul _).fun_sub (continuous_pow _)
+    | hp => exact isClosed_frobenius_congruence (continuous_const_smul g⁻¹) (p ^ n)
     | ih y =>
       obtain ⟨-, h_cong⟩ := h_isFrob
       intro h_le

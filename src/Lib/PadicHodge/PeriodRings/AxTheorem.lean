@@ -238,6 +238,14 @@ abbrev OC {p : ℕ} [ThePrime p] : Type := ↥(valRingCp p)
 abbrev intQpBar (p : ℕ) [Fact p.Prime] : ValuationSubring (PadicAlgCl p) :=
   (PadicAlgCl.valued p).v.valuationSubring
 
+/-- On an ultrametric normed field, the condition that `f x` is congruent to `x ^ q` modulo the
+open unit ball whenever `x` is integral defines a closed set. -/
+lemma isClosed_frobenius_congruence {F : Type*} [NormedField F] [IsUltrametricDist F]
+    {f : F → F} (hf : Continuous f) (q : ℕ) :
+    IsClosed {x : F | x ∈ Metric.closedBall 0 1 → f x - x ^ q ∈ Metric.ball 0 1} :=
+  isClosed_imp (IsUltrametricDist.isOpen_closedBall _ one_ne_zero)
+    ((IsUltrametricDist.isClosed_ball _ _).preimage (hf.sub (continuous_pow _)))
+
 variable {p : ℕ} [Fact p.Prime] (g : Gp p)
 
 open UniformSpace.Completion Variety IsLocalization

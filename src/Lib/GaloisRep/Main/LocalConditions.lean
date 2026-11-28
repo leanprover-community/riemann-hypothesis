@@ -195,9 +195,9 @@ lemma isFrob_iff {q : ℕ} {s : decompGroup Gal(Ω/E) A} :
   -- The Frobenius congruence is a closed condition on `x`: the integers are open and the open
   -- unit ball is closed. So it passes from the dense image of `e` to all of `PadicAlgCl ℓ`.
   let g : Gp ℓ := Period.OverGp.toGp s
-  have h_closed : IsClosed {x : PadicAlgCl ℓ | ‖x‖₊ ≤ 1 → g • x - x ^ q ∈ Metric.ball 0 1} :=
-    isClosed_imp (Valued.isOpen_integer (PadicAlgCl ℓ))
-      ((IsUltrametricDist.isClosed_ball (0 : PadicAlgCl ℓ) 1).preimage (by fun_prop))
+  have h_closed : IsClosed {x : PadicAlgCl ℓ | ‖x‖₊ ≤ 1 → g • x - x ^ q ∈ Metric.ball 0 1} := by
+    simpa [Metric.mem_closedBall, dist_zero_right, ← NNReal.coe_le_coe] using
+      isClosed_frobenius_congruence (F := PadicAlgCl ℓ) (continuous_const_smul g) q
   -- Both valuations are read off from the norm of `PadicAlgCl ℓ`; `Metric.mem_ball` stays folded,
   -- as the closedness argument above is stated with the open unit ball.
   calc IsFrob (intQpBar ℓ) q g
