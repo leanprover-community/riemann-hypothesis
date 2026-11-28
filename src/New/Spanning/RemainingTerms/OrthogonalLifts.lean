@@ -1,8 +1,9 @@
 module
 
-import TauCeti.LinearAlgebra.Matrix.Range
 public import New.Spanning.RemainingTerms.BorderedDeterminant
 public import Lib.General.NumberTheory.LatticeCovolumes
+import TauCeti.LinearAlgebra.Matrix.Determinant.FromBlocks
+import TauCeti.LinearAlgebra.Matrix.Range
 import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
@@ -114,10 +115,8 @@ lemma exists_orthogonal_lift [Fintype τ] [DecidableEq τ] (hj : S.HasCellRank j
   have hcol (b : IndexNotBelow j ⊕ τ) :
       ((fromRows 0 (fromCols 0 v)).fromRows (fromCols (diagonal 1) 0)).col b ∈
         colSpan (((mᴴ * S.ratGram).fromRows (linkMatrix γ)).fromRows (sᴴ * S.ratGram)) := by
-    have hv_col : (fromCols 0 v).col b ∈ colSpan v := by
-      rcases b with b | b
-      · exact zero_mem (colSpan v)
-      · exact ⟨Pi.single b 1, v.mulVec_single_one b⟩
+    have hv_col : (fromCols 0 v).col b ∈ colSpan v :=
+      b.rec (fun _ ↦ zero_mem _) (col_mem_range_mulVecLin v)
     -- A vector `t` meets the first two conditions, as the column of `(0 | v)` lies in the link.
     obtain ⟨t, ht, ht_link⟩ : ∃ t : 𝔰.BesselIndex → E,
         t ∈ ((isotropicFramePair γ)ᴴ * S.ratGram).mulVecLin.ker ∧
@@ -138,12 +137,9 @@ lemma exists_orthogonal_lift [Fintype τ] [DecidableEq τ] (hj : S.HasCellRank j
       rw [mulVec_add, hframe]
       simpa [frameImage_one_mulVec, ht_eStar] using ht_inv_eStar
     have h_link_zero : linkMatrix γ *ᵥ (frameImage 1 *ᵥ x) = 0 := by
-      rw [linkMatrix, fromRows_mulVec]
       ext (i | i)
-      · change ((1 : S.G E).val.val *ᵥ frameImage 1 *ᵥ x) (inr (inl i)) = 0
-        rcases i with i | i <;> simp [frameImage_one_mulVec, hx_top]
-      · change (γ⁻¹.val.val *ᵥ frameImage 1 *ᵥ x) (inr (inl i)) = 0
-        rw [hframe]
+      · rcases i with i | i <;> simp [frameImage_one_mulVec, hx_top]
+      · simp only [linkMatrix_mulVec, elim_inr, hframe]
         rcases i with i | i <;> simp [frameImage_one_mulVec, hy_top]
     have h_dual : (sᴴ * S.ratGram) *ᵥ (t + frameImage 1 *ᵥ x) =
         (fromCols (diagonal 1) 0).col b := by
@@ -276,8 +272,6 @@ lemma abs_norm_det_gram_eq_abs_norm_subframeMinor_sq :
     (fromCols (listPair j γ) (lastPair γ))ᴴ * S.ratGram *
     fromCols (listPair j γ) (lastPair γ) + fromBlocks 0 0 0 ((S.N : E) • 1)
   let index : IndexBelow j ⊕ Unit → Fin (𝔰.ϱ + 1) := Sum.elim (·.val.castSucc) fun _ ↦ 𝔰.top
-  let position : (IndexBelow j ⊕ IndexBelow j) ⊕ Unit ⊕ Unit → Fin (𝔰.ϱ + 1) ⊕ Fin (𝔰.ϱ + 1) :=
-    Sum.elim (.map (·.val.castSucc) (·.val.castSucc)) (.map (fun _ ↦ 𝔰.top) fun _ ↦ 𝔰.top)
   let C : Matrix (IndexBelow j ⊕ Unit) (IndexBelow j ⊕ Unit) E :=
     (S.frameProducts γ).submatrix index index
   have h_mem (x : IndexBelow j ⊕ Unit) : index x ∈ subframeIndices j := by
@@ -295,28 +289,26 @@ lemma abs_norm_det_gram_eq_abs_norm_subframeMinor_sq :
   have hC : C.det = S.subframeMinor j γ :=
     det_submatrix_equiv_self (.ofBijective _ h_bijective)
       ((S.frameProducts γ).submatrix Subtype.val Subtype.val)
-  -- Order the vectors list by list, and exchange the two halves of the rows.
+  -- Reorder the vectors list by list; the diagonal blocks cancel, leaving an antidiagonal matrix.
   let e : (IndexBelow j ⊕ Unit) ⊕ (IndexBelow j ⊕ Unit) ≃
       (IndexBelow j ⊕ IndexBelow j) ⊕ Unit ⊕ Unit :=
     sumSumSumComm (IndexBelow j) Unit (IndexBelow j) Unit
-  let swap : Perm ((IndexBelow j ⊕ Unit) ⊕ (IndexBelow j ⊕ Unit)) :=
-    sumComm (IndexBelow j ⊕ Unit) (IndexBelow j ⊕ Unit)
-  have h_blocks : (G.submatrix e e).submatrix swap id = fromBlocks Cᴴ 0 0 C := by
+  have h_blocks : G.submatrix e e = fromBlocks 0 C Cᴴ 0 := by
     have h_gram : (framePair γ)ᴴ * S.ratGram * framePair γ =
         fromBlocks (single 𝔰.top 𝔰.top (-S.N : E)) (S.frameProducts γ) (S.frameProducts γ)ᴴ
           (single 𝔰.top 𝔰.top (-S.N : E)) := gram_framePair _ (by simp) γ
-    have h_entry (x y : (IndexBelow j ⊕ IndexBelow j) ⊕ Unit ⊕ Unit) : G x y =
-        ((framePair γ)ᴴ * S.ratGram * framePair γ) (position x) (position y) +
-          fromBlocks 0 0 0 ((S.N : E) • 1) x y := by
+    have h_entry (x y : (IndexBelow j ⊕ Unit) ⊕ (IndexBelow j ⊕ Unit)) : G (e x) (e y) =
+        ((framePair γ)ᴴ * S.ratGram * framePair γ) (.map index index x) (.map index index y) +
+          fromBlocks 0 0 0 ((S.N : E) • 1) (e x) (e y) := by
       rcases x with (x | x) | (x | x) <;> rcases y with (y | y) | (y | y) <;> rfl
-    ext ((a | a) | (a | a)) ((b | b) | (b | b)) <;>
-      simp [h_entry, h_gram, C, e, swap, index, position, (castSucc_lt_last _).ne']
-  have h_det : Perm.sign swap * G.det = star C.det * C.det := by
-    rw [← det_submatrix_equiv_self e G, ← det_permute, h_blocks, det_fromBlocks_zero₂₁,
-      det_conjTranspose]
-  rw [← hC]
-  simpa [sq, abs_norm_eq_prod_norm_sq, abs_unit_intCast] using
-    congrArg (fun x : E ↦ |(norm ℚ x : ℝ)|) h_det
+    ext x y
+    rw [submatrix_apply, h_entry]
+    rcases x with (a | a) | (a | a) <;> rcases y with (b | b) | (b | b) <;>
+      simp [h_gram, C, e, index, (castSucc_lt_last _).ne']
+  have h_det : G.det = (-1) ^ card (IndexBelow j ⊕ Unit) * C.det * star C.det := by
+    rw [← det_submatrix_equiv_self e G, h_blocks, det_fromBlocks_zero₁₁_zero₂₂, det_conjTranspose]
+  rw [h_det, ← hC]
+  simp [sq, abs_norm_eq_prod_norm_sq, mul_assoc]
 
 section Index
 
@@ -336,14 +328,13 @@ lemma submoduleIndex_colLattice_dvd_preimageLattice {μ : Type}
     submoduleIndex (colLattice (Ô E) M)
         (intVectors (Ô E) μ ⊓ (colSpan P).restrictScalars (Ô E)) ∣
       submoduleIndex (intVectors (Ô E) α) (preimageLattice (Ô E) M) := by
+  -- Factor `P = M * G` so that `colSpan P ≤ colSpan M`.
+  obtain ⟨G, rfl⟩ := exists_mul_eq_of_range_le h_span
   refine submoduleIndex_dvd_of_le (M.mulVecLin.restrictScalars (Ô E))
-    (fun x hx ↦ ⟨x, hx, rfl⟩) fun x ⟨hx_int, hx_span⟩ ↦ mem_sup_left ?_
-  obtain ⟨y, rfl⟩ : x ∈ colSpan M := by
-    choose w hw using h_span
-    have h_eq : M * (of w)ᵀ = P := ext_col hw
-    obtain ⟨y, rfl⟩ := hx_span
-    exact ⟨(of w)ᵀ *ᵥ y, by rw [mulVecLin_apply, mulVec_mulVec, h_eq, mulVecLin_apply]⟩
-  exact ⟨y, hx_int, rfl⟩
+    (fun x hx ↦ ⟨x, hx, rfl⟩) ?_
+  rintro _ ⟨hx_int, y, rfl⟩
+  exact mem_sup_left ⟨G *ᵥ y, by simpa [preimageLattice, mulVec_mulVec] using hx_int,
+    by simp [mulVec_mulVec]⟩
 
 /-- Let `k` be finite-adelic, acting on the standard lattice with Gram matrix
 `latticeMiddle.splitGram`. The products of the vectors `k e₁, …, k e_ϱ, k z` with the `e_a` form the
@@ -412,6 +403,23 @@ lemma torsionIndex_dvd_submoduleIndex
     rw [← mulVec_mulVec]
     exact hq.isIntMatrix_coord.mulVec hx
 
+/-- If a matrix `φ` maps the columns of `A` into `colLattice (Ô E) C` and sends columns of `B`
+onto all columns of `D`, then the index of `colLattice (Ô E) C` in `colLattice (Ô E) D` divides
+that of `colLattice (Ô E) A` in `colLattice (Ô E) B`. -/
+private lemma submoduleIndex_colLattice_dvd_of_mulVec {m n α β γ δ : Type}
+    [Fintype n] [Fintype α] [Fintype β] [Fintype γ] [Fintype δ] [DecidableEq β]
+    (φ : Matrix m n (𝔸f E)) {A : Matrix n α (𝔸f E)} {B : Matrix n β (𝔸f E)}
+    {C : Matrix m γ (𝔸f E)} {D : Matrix m δ (𝔸f E)}
+    (hA : ∀ i, ∃ v ∈ colLattice (Ô E) C, φ *ᵥ A.col i = v)
+    (hD : ∀ i, ∃ j, φ *ᵥ B.col j = D.col i) :
+    submoduleIndex (colLattice (Ô E) C) (colLattice (Ô E) D) ∣
+      submoduleIndex (colLattice (Ô E) A) (colLattice (Ô E) B) :=
+  submoduleIndex_dvd_of_le (mulVecBilin ℕ _ φ)
+    (colLattice_le fun i ↦ by obtain ⟨v, hv, h⟩ := hA i; simpa [h] using hv)
+    (colLattice_le fun i ↦ by
+      obtain ⟨j, hj⟩ := hD i
+      exact mem_sup_left ⟨B.col j, col_mem_colLattice j, hj⟩)
+
 /-- Let `k` be a finite-adelic element such that the frame `e₁, …, e_ϱ, z` and its image under `k`
 (`framePair k`) are integral. Let `Λ` be the standard lattice of integral vectors and `I` the span
 of the columns of `ι`. Let these columns be a basis of `Λ ∩ I`, orthogonal to the frame and its
@@ -449,38 +457,19 @@ lemma isotropicRowsIndex_mul_dvd_submoduleIndex
   have h_products : (framePair k)ᴴ * J * B * P = (framePair k)ᴴ * J * isotropicFramePair k :=
     hq.mul_basis_mul_coord (orthogonal_symm h_herm h_orth) h_pair
   have h_first : S.isotropicRowsIndex j k ∣ submoduleIndex L₁ L₂ := by
-    let φ : Matrix (Fin (𝔰.ϱ + 1)) μ (𝔸f E) := ((framePair k)ᴴ * J * B).toRows₂
-    have h_image : φ * P = fromCols (isotropicRows ((S.latticeMiddle (𝔸f E)).frameGram k))ᴴ 0 :=
-      (congrArg toRows₂ h_products).trans (toRows₂_gram_framePair_isotropicFramePair k)
-    have h_col (x : Fin 𝔰.ϱ ⊕ Fin 𝔰.ϱ) : φ *ᵥ P.col x =
-        (fromCols (isotropicRows ((S.latticeMiddle (𝔸f E)).frameGram k))ᴴ 0).col x :=
-      congrArg (Matrix.col · x) h_image
-    refine submoduleIndex_dvd_of_le (mulVecBilin ℕ _ φ) (colLattice_le ?_)
-      (colLattice_le fun a ↦ mem_sup_left ⟨_, col_mem_colLattice (inl a), h_col (inl a)⟩)
-    rintro (a | a)
-    · change φ *ᵥ P.col (inl a.val) ∈ colLattice (Ô E) _
-      rw [h_col]
-      exact col_mem_colLattice a
-    · change φ *ᵥ P.col (inr a.val) ∈ colLattice (Ô E) _
-      rw [h_col]
-      exact zero_mem _
+    have h_image := (congrArg toRows₂ h_products).trans
+      (toRows₂_gram_framePair_isotropicFramePair k)
+    exact submoduleIndex_colLattice_dvd_of_mulVec ((framePair k)ᴴ * J * B).toRows₂
+      (Sum.rec (fun a ↦ ⟨_, col_mem_colLattice a, congrArg (col · (inl a.val)) h_image⟩)
+        fun a ↦ ⟨_, zero_mem _, congrArg (col · (inr a.val)) h_image⟩)
+      fun a ↦ ⟨inl a, congrArg (col · (inl a)) h_image⟩
   have h_second : S.isotropicRowsIndex j k⁻¹ ∣ submoduleIndex L₂ L₃ := by
-    let φ : Matrix (Fin (𝔰.ϱ + 1)) μ (𝔸f E) := ((framePair k)ᴴ * J * B).toRows₁
-    have h_frame : φ * P =
-        fromCols 0 (isotropicRows ((S.latticeMiddle (𝔸f E)).frameGram k⁻¹.val.val))ᴴ :=
-      (congrArg toRows₁ h_products).trans (toRows₁_gram_framePair_isotropicFramePair k)
-    have h_col (x : Fin 𝔰.ϱ ⊕ Fin 𝔰.ϱ) : φ *ᵥ P.col x =
-        (fromCols 0 (isotropicRows ((S.latticeMiddle (𝔸f E)).frameGram k⁻¹.val.val))ᴴ).col x :=
-      congrArg (Matrix.col · x) h_frame
-    refine submoduleIndex_dvd_of_le (mulVecBilin ℕ _ φ) (colLattice_le ?_)
-      (colLattice_le fun a ↦ mem_sup_left ⟨_, col_mem_colLattice (inr a), h_col (inr a)⟩)
-    rintro (a | a)
-    · change φ *ᵥ P.col (inl a) ∈ colLattice (Ô E) _
-      rw [h_col]
-      exact zero_mem _
-    · change φ *ᵥ P.col (inr a.val) ∈ colLattice (Ô E) _
-      rw [h_col]
-      exact col_mem_colLattice a
+    have h_frame := (congrArg toRows₁ h_products).trans
+      (toRows₁_gram_framePair_isotropicFramePair k)
+    exact submoduleIndex_colLattice_dvd_of_mulVec ((framePair k)ᴴ * J * B).toRows₁
+      (Sum.rec (fun a ↦ ⟨_, zero_mem _, congrArg (col · (inl a)) h_frame⟩)
+        fun a ↦ ⟨_, col_mem_colLattice a, congrArg (col · (inr a.val)) h_frame⟩)
+      fun a ↦ ⟨inr a, congrArg (col · (inr a)) h_frame⟩
   have hk' : IsIntMatrix (Ô E) (isotropicFramePair k) := fun a b ↦ hk a _
   have h_torsion : S.torsionIndex k ∣ submoduleIndex L₃ L₄ :=
     torsionIndex_dvd_submoduleIndex hq hk' h_pair hι
