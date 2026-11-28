@@ -71,13 +71,6 @@ lemma New.norm_det_sq_le_of_posSemidef {A B : Matrix ι ι ℂ} (h : (fromBlocks
   have h_left : ‖(A * Q⁻¹ * Aᴴ).det‖ = ‖A.det‖ ^ 2 / ‖Q.det‖ := by simp [field]
   rwa [h_left, div_le_iff₀ (norm_pos_iff.2 hQ)] at h_det
 
-/-- Gram–Schmidt for a positive definite matrix `G`: there is a lower triangular matrix `Γ` whose
-columns are orthonormal for `G`. -/
-lemma New.exists_lowerTriangular_conjTranspose_mul_mul_eq_one {m : ℕ}
-    {G : Matrix (Fin m) (Fin m) ℂ} (hG : G.PosDef) :
-    ∃ Γ : Matrix (Fin m) (Fin m) ℂ, (∀ a b : Fin m, a < b → Γ a b = 0) ∧ Γᴴ * G * Γ = 1 :=
-  PosDef.exists_isUpperTriangular_conjTranspose_mul_mul_eq_one (n := OrderDual (Fin m)) hG
-
 end PosSemidefDet
 
 /-!

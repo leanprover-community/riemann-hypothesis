@@ -5,6 +5,7 @@ import Mathlib.Algebra.Order.Star.Real
 public import New.Spanning.RemainingTerms.BorderedDeterminant
 import Lib.Cohomology.Etale.Basic
 import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.General.LinearAlgebra.PolarDecomposition
 import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
@@ -492,18 +493,18 @@ lemma RealPlace.exists_isTriangularBasis {i : ℕ} {Z : 𝔰.FrameMatrix} (hi_le
   have h_left :
       (inclMatrix ℂ (subframeIndex hi_le))ᴴ * (𝔰.frameColsᴴ * 𝔰.J₁ * y.val.val) * W = 1 := by
     simp [← inclMatrix_mul_dualProducts hi_le hδ, ← h_products, W, Matrix.mul_assoc]
-  have h_inj : Function.Injective W.mulVec := HasLeftInv.injective_mulVec ⟨_, h_left⟩
-  obtain ⟨L, h_triangular, hL⟩ : ∃ L : Matrix (Fin (i + 1)) (Fin (i + 1)) ℂ,
-      (∀ a b : Fin (i + 1), a < b → L a b = 0) ∧ Lᴴ * (Wᴴ * W) * L = 1 :=
-    exists_lowerTriangular_conjTranspose_mul_mul_eq_one (PosDef.conjTranspose_mul_self W h_inj)
-  refine ⟨ω₀ * L, L,
-    { J₁_mul := ?_, gram_eq_neg_one := ?_, products_eq := ?_, triangular := h_triangular,
-      det_ne_zero := fun h_zero ↦ ?_ }⟩
+  -- Reverse the index order to obtain a lower triangular change of basis.
+  obtain ⟨L, h_triangular, hL⟩ :=
+    exists_orthonormal_mul (OrderDual.toDual : Fin (i + 1) → (Fin (i + 1))ᵒᵈ) ⟨_, h_left⟩
+  have hL_gram : L.valᴴ * (Wᴴ * W) * L.val = 1 := by
+    simpa only [conjTranspose_mul, Matrix.mul_assoc] using hL
+  refine ⟨ω₀ * L.val, L.val,
+    { J₁_mul := ?_, gram_eq_neg_one := ?_, products_eq := ?_,
+      triangular := fun _ _ h ↦ h_triangular h, det_ne_zero := (isUnits_det_units L).ne_zero }⟩
   · rw [← Matrix.mul_assoc y⁻¹.val.val, ← Matrix.mul_assoc, hW, Matrix.neg_mul]
-  · rw [← hL, ← Matrix.neg_mul, ← Matrix.mul_neg, ← h_gram]
+  · rw [← hL_gram, ← Matrix.neg_mul, ← Matrix.mul_neg, ← h_gram]
     simp only [conjTranspose_mul, Matrix.mul_assoc]
   · simp [← Matrix.mul_assoc, h_products]
-  · simpa [h_zero] using congrArg det hL
 
 section TriangularBasis
 
