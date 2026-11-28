@@ -485,10 +485,9 @@ section Lattices
 
 /-! In this section `c` is a class and e_a is a row; `S` is admissible unless this is omitted. -/
 
-open scoped Classical
-
 variable [HasPrimitiveRoot5040 E]
 
+open scoped Classical in
 /-- The transpose of the square block of the lattice basis `classBasis c` on the free columns
 (`IsFreeEntry`) of the row e_a, as an invertible matrix. -/
 noncomputable def freeBlock (c : S.Classes) (a : Fin 𝔰.ϱ) :
@@ -497,12 +496,14 @@ noncomputable def freeBlock (c : S.Classes) (a : Fin 𝔰.ϱ) :
     obtain ⟨M, h_basis, -⟩ := exists_classBasis_eq_fromBlocks c
     simp [det_toSquareBlockProp_isFreeEntry h_basis]
 
+open scoped Classical in
 lemma freeBlock_mulVec (c : S.Classes) (a : Fin 𝔰.ϱ) (l : 𝔰.BesselIndex → 𝔸f E)
     (j : {j : 𝔰.BesselIndex // IsFreeEntry (a, j)}) :
     ((freeBlock c a).val *ᵥ l ∘ Subtype.val) j = (l ᵥ* (classBasis c).val) j := by
   obtain ⟨M, h_basis, -⟩ := exists_classBasis_eq_fromBlocks c
   exact transpose_toSquareBlockProp_mulVec h_basis a l j
 
+open scoped Classical in
 lemma genIndex_det_freeBlock (c : S.Classes) (a : Fin 𝔰.ϱ) :
     genIndex (freeBlock c a).val.det = 1 / S.N ^ numInfPlaces E := by
   obtain ⟨M, h_basis, h_index⟩ := exists_classBasis_eq_fromBlocks c
@@ -520,6 +521,7 @@ lemma isUnit_basisScale_ratio (a : Fin 𝔰.ϱ) :
       (S.M : ℂ) / S.basisScale v (inl a) * S.basisScale v j := by
   simp [Nat.Prime.ne_zero, Pi.isUnit_iff]
 
+open scoped Classical in
 /-- The lattice of free entries of the row e_a for the class `c`: the vectors with entries
 `S.M / S.basisScale v e_a * S.basisScale v j * Φ v (x j)`, for the rational vectors `x` on the free
 columns `j` such that `freeBlock c a *ᵥ x` is integral. Here `S.basisScale v j` is the scale of the
@@ -529,6 +531,7 @@ noncomputable def freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) :
   (Variety.classLattice (freeBlock c a)⁻¹ ⊥
     (ContinuousLinearEquiv.smulLeft (isUnit_basisScale_ratio S a).unit)).toAddSubmonoid
 
+open scoped Classical in
 /-- Let `S` be a filling of shape `𝔰` over the CM field `E` containing a primitive 5040th root of
 unity, with `S` admissible. For `c` in `S.Classes`, the lattice `freeLattice c a` of free entries of
 the row e_a has a measurable strict fundamental domain. Its volume is `((∏ v, S.M ^
@@ -546,6 +549,7 @@ lemma exists_fundamental_domain_freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) :
   exact ⟨F, hF_meas, by rw [hF_vol, genIndex_det_freeBlock, prod_norm_basisScale_sq_div_eq],
     hF_fund⟩
 
+open scoped Classical in
 /-- Let `E` contain a primitive 5040th root of unity and let `S` be admissible. The free entries
 (`IsFreeEntry`) of the row e_a of the real image of any `γ ∈ S.classUnipotent c` lie in
 `freeLattice c a`, the lattice of rescaled rational vectors `x` on the free columns with
@@ -562,6 +566,7 @@ lemma rowCoords_fst_mem_freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) (γ : S.cl
   simp [funext_iff, mul_assoc, freeRowCoords, coe_classUnipotentToInf_apply,
     inl_ne_coe_isFreeEntry, field, -Nat.cast_mul]
 
+open scoped Classical in
 /-- Let `E` contain a primitive 5040th root of unity and let `S` be admissible. Fix a class `c` and
 a row e_a; its free columns (`IsFreeEntry`) are e_b and e*_b with b > a and the middle block. Let
 `l` lie in `freeLattice c a`: its entries are the rescaled complex embeddings of a rational vector

@@ -426,7 +426,8 @@ lemma simClassOf_eq_dualMap : simClassOf g = simClassOf g.dualMap := by
 open scoped Classical in
 /-- For finite `k`, the induction product makes the class functions a commutative ring. -/
 instance : CommRing (Hall k) := by
-  refine' { mul_assoc := _, .. } <;> intros <;> ext _ g
+  refine { mul_assoc := ?_, mul_comm := ?_, left_distrib := ?_, right_distrib := ?_,
+           zero_mul := ?_, mul_zero := ?_, one_mul := ?_, mul_one := ?_ } <;> intros <;> ext _ g
   -- The laws of `0` and distributivity hold term by term; in `1 * a` only `W = ⊥` contributes,
   -- in `a * 1` only `W = ⊤`.
   any_goals solve
