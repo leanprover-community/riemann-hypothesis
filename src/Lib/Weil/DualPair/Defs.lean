@@ -73,15 +73,19 @@ section PairDefs
 
 open Matrix Kronecker WeilData
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
   {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
-  {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s') {m m' R : Type*}
+  {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
+  {m m' R : Type*}
   (a b : AutChar E)
 
 /-! ### The space of homomorphisms -/
 
-/-- For sign vectors s on n and s′ on n′, the sign vector on n′ × n given by the products
-s′(i)s(j). -/
+/--
+For sign vectors s on n and s′ on n′, the sign vector on n′ × n given by the products
+s′(i)s(j).
+-/
 abbrev homSigns (s : n → ℤˣ) (s' : n' → ℤˣ) : n' × n → ℤˣ := pairSign 1 s' s
 
 /-- A matrix x read as the function (i, j) ↦ x_{ij} on pairs (row, column). -/
@@ -102,15 +106,18 @@ n′ × n is the Kronecker product of that of s′ and the transpose of that of 
 lemma stdForm_homSigns : stdForm E (homSigns s s') = stdForm E s' ⊗ₖ (stdForm E s)ᵀ := by
   simp [stdForm, pairSign, diagonal_kronecker_diagonal, Pi.mul_def]
 
-/-- The homomorphism from G(s) × G(s′) to the adelic unitary group of the product signs sending
-(g, h) to x ↦ hxg⁻¹ on n′ × n matrices. -/
+/--
+The homomorphism from G(s) × G(s′) to the adelic unitary group of the product signs sending
+(g, h) to x ↦ hxg⁻¹ on n′ × n matrices.
+-/
 def G.onHom : G E s × G E s' →* G E (homSigns s s') :=
-  toUnitary.symm.toMonoidHom.comp
-    ((U.kroneckerHom stdForm_mul_self stdForm_homSigns).comp
-      (toUnitary.toMonoidHom.prodMap toUnitary.toMonoidHom))
+  toUnitary.symm.toMonoidHom.comp ((U.kroneckerHom stdForm_mul_self stdForm_homSigns).comp
+    (toUnitary.toMonoidHom.prodMap toUnitary.toMonoidHom))
 
-/-- The determinant, as a homomorphism from the adelic unitary group of signs s to the group of
-adeles x of E with x x̄ = 1 (the determinant of the standard form is a unit). -/
+/--
+The determinant, as a homomorphism from the adelic unitary group of signs s to the group of
+adeles x of E with x x̄ = 1 (the determinant of the standard form is a unit).
+-/
 def G.det : G E s →* unitary (𝔸 E) :=
   (U.det (isUnit_stdForm.map detMonoidHom)).comp (toUnitary : G E s ≃* U (stdForm E s)).toMonoidHom
 
@@ -131,24 +138,29 @@ lemma det_fst : (g.det : 𝔸 E).1 =
     fun w : NumberField.InfinitePlace E ↦ ((g.1 w : GL n ℂ) : Matrix n n ℂ).det :=
   funext fun w ↦ (evalInf w).map_det g.adeleMatrix
 
-/-- For g in the finite adelic unitary group, the determinant of the element (1, g) of G, as an
-adele of norm one. -/
+/--
+For g in the finite adelic unitary group, the determinant of the element (1, g) of G, as an
+adele of norm one.
+-/
 @[simp]
 abbrev detFin (s : n → ℤˣ) (g : Gf E n) : unitary (𝔸 E) := G.det (s := s) (1, g)
 
 end
 
-/-- The space `Hom(S, T)` of `n' × n` matrices, indexed by pairs (row, column): its Gram matrix is
+/--
+The space `Hom(S, T)` of `n' × n` matrices, indexed by pairs (row, column): its Gram matrix is
 the Kronecker product `J_T ⊗ (J_S⁻¹)ᵀ`, its point is `x_T ⊗ (x_S⁻¹)ᵀ` (with inverse
-`x_T⁻¹ ⊗ x_Sᵀ`), and the coordinate `(i, j)` has the sign `s' i * s j`. -/
+`x_T⁻¹ ⊗ x_Sᵀ`), and the coordinate `(i, j)` has the sign `s' i * s j`.
+-/
 @[simps -isSimp J]
 def Space.hom : Space E (n' × n) (homSigns s s') where
   J := T.J ⊗ₖ S.J⁻¹ᵀ
-  x :=
-    { val := T.x ⊗ₖ S.x⁻¹.valᵀ
-      inv := ↑T.x⁻¹ ⊗ₖ S.xᵀ
-      val_inv := by simp [← mul_kronecker_mul, ← transpose_mul]
-      inv_val := by simp [← mul_kronecker_mul, ← transpose_mul] }
+  x := {
+    val := T.x ⊗ₖ S.x⁻¹.valᵀ
+    inv := ↑T.x⁻¹ ⊗ₖ S.xᵀ
+    val_inv := by simp [← mul_kronecker_mul, ← transpose_mul]
+    inv_val := by simp [← mul_kronecker_mul, ← transpose_mul]
+  }
   -- The identity is the Kronecker product of `gram_point` for `T` with the inverse transpose of
   -- `gram_point` for `S`.
   gram_point := by
@@ -158,8 +170,10 @@ def Space.hom : Space E (n' × n) (homSigns s s') where
 
 /-! ### Characters, the action of the pair and the theta kernel -/
 
-/-- The restriction of υ to the norm-one ideles, as a character of U(1)(𝔸) trivial on the elements
-coming from E. -/
+/--
+The restriction of υ to the norm-one ideles, as a character of U(1)(𝔸) trivial on the elements
+coming from E.
+-/
 def WeilData.upsilonU1 : AutChar E :=
   ⟨υ.1.comp ⟨Unitary.toUnits, Continuous.of_coeHom_comp (by fun_prop)⟩, fun _ hx ↦ υ.2 _ hx⟩
 
@@ -169,29 +183,39 @@ idele. -/
 lemma WeilData.upsilonU1_apply (u : unitary (𝔸 E)) :
     upsilonU1.val u = υ.val (Unitary.toUnits u) := rfl
 
-/-- The Hecke character `x ↦ a (x / x̄) * υ x ^ (-k)` of `E`, for a character `a` of `[U(1)]` and a
+/--
+The Hecke character `x ↦ a (x / x̄) * υ x ^ (-k)` of `E`, for a character `a` of `[U(1)]` and a
 natural number `k`: the base change `a.baseChange` divided by the `k`-th power of the splitting
-character `υ`. It is the character attached to a space of rank `k` in a dual pair. -/
+character `υ`. It is the character attached to a space of rank `k` in a dual pair.
+-/
 def AutChar.spaceChar (k : ℕ) : HeckeChar E := a.baseChange * υ⁻¹ ^ k
 
-/-- For a character a of [U(1)] and a finite index set of size n, the character a·υ^⌊n/2⌋ of [U(1)],
-where υ is restricted to the norm-one ideles (`upsilonU1`). -/
+/--
+For a character a of [U(1)] and a finite index set of size n, the character a·υ^⌊n/2⌋ of [U(1)],
+where υ is restricted to the norm-one ideles (`upsilonU1`).
+-/
 def rankTwist (n : Type*) [Fintype n] : AutChar E := a * upsilonU1 ^ (Fintype.card n / 2)
 
-/-- For characters a, b of [U(1)], the complex character (g, h) ↦ a(det h) b(det g)⁻¹ of
-G(s) × G(s′). -/
+/--
+For characters a, b of [U(1)], the complex character (g, h) ↦ a(det h) b(det g)⁻¹ of
+G(s) × G(s′).
+-/
 def pairChar : G E s × G E s' →* ℂ :=
   Circle.coeHom.comp ((b⁻¹.val.toMonoidHom.comp G.det).coprod (a.val.toMonoidHom.comp G.det))
 
-/-- The representation (g, h) ↦ a(det h) b(det g)⁻¹ ω(x ↦ hxg⁻¹) of the product of the two adelic
-unitary groups on the data space of Hom(S, T). -/
+/--
+The representation (g, h) ↦ a(det h) b(det g)⁻¹ ω(x ↦ hxg⁻¹) of the product of the two adelic
+unitary groups on the data space of Hom(S, T).
+-/
 def pairWeil : G E s × G E s' →* 𝒮 (S.hom T) →L[ℂ] 𝒮 (S.hom T) where
   toFun p := pairChar a b p • (S.hom T).ω (G.onHom p)
   map_one' := by simp
   map_mul' := by simp [← smul_mul_smul]
 
-/-- The theta kernel θ^{S,T}_{a,b}(f)(g, h) = θ(ω_{a,b}(g,h)f), for f in 𝒮(Hom(S,T)) and θ the
-theta functional of Hom(S,T). -/
+/--
+The theta kernel θ^{S,T}_{a,b}(f)(g, h) = θ(ω_{a,b}(g,h)f), for f in 𝒮(Hom(S,T)) and θ the
+theta functional of Hom(S,T).
+-/
 def pairTheta (f : 𝒮 (S.hom T)) (p : G E s × G E s') : ℂ := (S.hom T).θ (pairWeil S T a b p f)
 
 end PairDefs
@@ -210,15 +234,17 @@ section
 
 variable (E : Type*) [Field E] [NumberField E] [IsCMField E]
 
-/-- A modulus: a nonzero ideal of O_E prime to its complex conjugate, that is, no prime w divides
-it together with its conjugate w̄. -/
+/--
+A modulus: a nonzero ideal of O_E prime to its complex conjugate, that is, no prime w divides
+it together with its conjugate w̄.
+-/
 structure Modulus where
   /-- The ideal `𝔪` of the ring of integers of `E`. -/
   ideal : Ideal (𝓞 E)
   /-- The ideal is not zero. -/
   ne_bot : ideal ≠ ⊥
   /-- No prime `w` divides the ideal together with its complex conjugate `star w`. -/
-  not_le_star (w : FinPlace E) : ideal ≤ w → ¬ideal ≤ star w
+  not_le_star (w : FinPlace E) : ideal ≤ w → ¬ ideal ≤ star w
 
 variable {E} (𝔪 : Modulus E)
 
@@ -241,20 +267,25 @@ def places : Set (FinPlace E) := {w : FinPlace E | 𝔪.ideal ≤ w}
 instance : Finite 𝔪.places := by
   simpa [places, dvd_iff_le] using (finite_factors 𝔪.ne_bot).to_subtype
 
-/-- A chosen ring homomorphism Ô → O_E/𝔪, on the integral finite adeles Ô, extending reduction on
-O_E, with kernel tÔ for an integral idele t equal to 1 off 𝔪. -/
+/--
+A chosen ring homomorphism Ô → O_E/𝔪, on the integral finite adeles Ô, extending reduction on
+O_E, with kernel tÔ for an integral idele t equal to 1 off 𝔪.
+-/
 def reduction : Ô E →+* 𝔪.ResidueRing := (exists_reduction_and_idele_generator 𝔪.ne_bot).choose
 
 open scoped Classical in
-/-- A function `Ψ` of vectors modulo `𝔪`, read on finite adelic vectors `x`. Multiplying by
+/--
+A function `Ψ` of vectors modulo `𝔪`, read on finite adelic vectors `x`. Multiplying by
 `idem 𝔪.places` keeps the components at the primes dividing `𝔪` and sets the others to `0`. If the
-result is integral, the value is `Ψ` of its reduction modulo `𝔪`; otherwise it is `0`. -/
+result is integral, the value is `Ψ` of its reduction modulo `𝔪`; otherwise it is `0`.
+-/
 @[simps -isSimp]
 def liftFn {n : Type*} : ((n → 𝔪.ResidueRing) → ℂ) →ₗ[ℂ] (n → 𝔸f E) → ℂ where
   toFun Ψ x :=
     if h : ∀ i : n, idem 𝔪.places * x i ∈ Ô E then
       Ψ fun i ↦ 𝔪.reduction ⟨idem 𝔪.places * x i, h i⟩
-    else 0
+    else
+      0
   map_add' Ψ Ψ' := by ext x; simp [dite_add_dite]
   map_smul' c Ψ := by ext x; simp [apply_dite (c * ·)]
 
@@ -262,27 +293,36 @@ end Modulus
 
 end
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E] {n n' : Type} [Fintype n] [DecidableEq n]
-  [Fintype n'] [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
 
-/-- The datum v ⊗ Ψ ⊗ vac on Hom(S,T), for a vector v of the real Heisenberg model of Hom(S,T) and
+/--
+The datum v ⊗ Ψ ⊗ vac on Hom(S,T), for a vector v of the real Heisenberg model of Hom(S,T) and
 a function Ψ on matrices modulo 𝔪: its real part is v, the lift of Ψ is put in at the places
 dividing 𝔪 by `New.Space.schrodingerOp` (the operator attached to a function of finite adelic
-vectors), and it is the vacuum elsewhere. -/
-def modDatum (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s s')))) :
-      𝒮 (S.hom T) :=
+vectors), and it is the vacuum elsewhere.
+-/
+def modDatum
+    (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
+    (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s s'))))
+    : 𝒮 (S.hom T) :=
   (S.hom T).integrated v
     ((S.hom T).schrodingerOp (Modulus.places 𝔪) (𝔪.liftFn (Ψ ∘ vecToMatrix)) (S.hom T).vacElem)
 
-/-- The theta kernel `(g, h) ↦ θ (ω_{a,b} (g, h) f)` on the product of the adelic unitary groups
+/--
+The theta kernel `(g, h) ↦ θ (ω_{a,b} (g, h) f)` on the product of the adelic unitary groups
 of `S` and `T`, for the datum `f = modDatum S T 𝔪 Ψ v` given by a function `Ψ` on matrices modulo
 `𝔪` and the Fock vector `v` of the polynomial `P`; `a` and `b` are the characters that twist
-the action. -/
-def modKernel (a b : AutChar E) (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) : G E s → G E s' → ℂ :=
-  fun g h ↦
-    pairTheta S T a b (modDatum S T 𝔪 Ψ (Fock.polyVector (realSigns E (homSigns s s')) P)) (g, h)
+the action.
+-/
+def modKernel
+    (a b : AutChar E)
+    (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
+    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ)
+    : G E s → G E s' → ℂ := fun g h ↦
+  pairTheta S T a b (modDatum S T 𝔪 Ψ (Fock.polyVector (realSigns E (homSigns s s')) P)) (g, h)
 
 end ModulusKernel
 
@@ -304,13 +344,18 @@ open NumberField Finset RingHom MeasureTheory Ideal Quotient Function Space stdL
 
 section
 
-variable {E : Type _} [Field E] [NumberField E] [IsCMField E] {n : Type _} [Fintype n]
-  [DecidableEq n] (𝔪 : Modulus E) (Ψ : (n → 𝔪.ResidueRing) → ℂ) (x : Ô E)
+variable
+  {E : Type _} [Field E] [NumberField E] [IsCMField E]
+  {n : Type _} [Fintype n] [DecidableEq n]
+  (𝔪 : Modulus E) (Ψ : (n → 𝔪.ResidueRing) → ℂ)
+  (x : Ô E)
 
 /-! ### Reduction modulo `𝔪` and the generator of its kernel -/
 
-/-- The finite idele `t` generates the modulus `𝔪` in the integral finite adeles `Ô E`, and it is
-`1` away from `𝔪`. -/
+/--
+The finite idele `t` generates the modulus `𝔪` in the integral finite adeles `Ô E`, and it is
+`1` away from `𝔪`.
+-/
 structure IsGenerator (𝔪 : Modulus E) (t : (𝔸f E)ˣ) : Prop where
   /-- The idele `t` is integral. -/
   mem : t.val ∈ Ô E
@@ -319,7 +364,7 @@ structure IsGenerator (𝔪 : Modulus E) (t : (𝔸f E)ˣ) : Prop where
   /-- The kernel of `𝔪.reduction` consists of the multiples of `t` in `Ô E`. -/
   reduction_eq_zero_iff (x : Ô E) : 𝔪.reduction x = 0 ↔ t⁻¹.val * x ∈ Ô E
   /-- The order of `t` at every place `w` is the multiplicity of `w` in `𝔪`. -/
-  valued_apply (w : FinPlace E) : Valued.v (t.val w) = .exp (-multiplicity w.asIdeal 𝔪.ideal)
+  valued_apply (w : FinPlace E) : Valued.v (t.val w) = .exp (- multiplicity w.asIdeal 𝔪.ideal)
 
 /-- Every modulus `𝔪` is generated in `Ô E` by a finite idele that is `1` away from `𝔪`. -/
 lemma exists_generator : ∃ t : (𝔸f E)ˣ, 𝔪.IsGenerator t := by
@@ -327,10 +372,12 @@ lemma exists_generator : ∃ t : (𝔸f E)ˣ, 𝔪.IsGenerator t := by
     (exists_reduction_and_idele_generator 𝔪.ne_bot).choose_spec
   exact ⟨t, h_mem, h_one, h_ker, h_order⟩
 
-/-- A finite idele `t` generating `𝔪` in `Ô E`, chosen from `exists_generator`. It is integral,
+/--
+A finite idele `t` generating `𝔪` in `Ô E`, chosen from `exists_generator`. It is integral,
 and equal to `1` at the places not dividing `𝔪`. The kernel of `𝔪.reduction` consists of the
 multiples of `t` in `Ô E`. See `generator_mem`, `generator_apply_of_notMem`,
-`reduction_eq_zero_iff_generator_inv_mul_mem` and `valued_generator`. -/
+`reduction_eq_zero_iff_generator_inv_mul_mem` and `valued_generator`.
+-/
 noncomputable def generator : (𝔸f E)ˣ := 𝔪.exists_generator.choose
 
 lemma isGenerator_generator : 𝔪.IsGenerator 𝔪.generator := 𝔪.exists_generator.choose_spec
@@ -495,13 +542,19 @@ lemma factor_reduction {𝔫 : Modulus E} (h_le : 𝔫.ideal ≤ 𝔪.ideal) :
 
 end
 
-variable {E : Type _} [Field E] [CMType E] {n : Type _} [Fintype n] [DecidableEq n] (𝔪 : Modulus E)
-  (Ψ : (n → 𝔪.ResidueRing) → ℂ) (x : Ô E) [WeilData E]
+variable
+  {E : Type _} [Field E] [CMType E]
+  {n : Type _} [Fintype n] [DecidableEq n]
+  (𝔪 : Modulus E) (Ψ : (n → 𝔪.ResidueRing) → ℂ)
+  (x : Ô E)
+  [WeilData E]
 
 open scoped Classical in
-/-- The lift of any function Ψ on (O_E/𝔪)^n to finite adelic vectors is Schwartz–Bruhat on the
+/--
+The lift of any function Ψ on (O_E/𝔪)^n to finite adelic vectors is Schwartz–Bruhat on the
 places dividing 𝔪: it depends only on the components at these places, it is locally constant, and
-those components stay in a compact set on its support. -/
+those components stay in a compact set on its support.
+-/
 instance isSchwartzBruhat_liftFn : IsSchwartzBruhat 𝔪.places (𝔪.liftFn Ψ) where
   idem_smul := by simp [← mul_assoc, idem_mul_self, mem_Ô, liftFn_apply]
   locally_constant := by
@@ -563,10 +616,12 @@ lemma exists_isPrimitive_addChar :
     ⟨𝔪.reduction_surjective, 𝔪.reduction_eq_zero_iff_generator_inv_mul_mem⟩
     forall_selfDualAddChar_mul_eq_one_iff
 
-/-- The character ψ′ of `𝔪.ResidueRing` with ψ′(x mod 𝔪) = ψ₀(t⁻¹x) for `x` in `Ô E`, where
+/--
+The character ψ′ of `𝔪.ResidueRing` with ψ′(x mod 𝔪) = ψ₀(t⁻¹x) for `x` in `Ô E`, where
 `t = 𝔪.generator` (`New.Modulus.primAddChar_reduction`). It is primitive
 (`New.Modulus.isPrimitive_primAddChar`) because `Ô E` is self-dual for ψ₀
-(`forall_selfDualAddChar_mul_eq_one_iff`). -/
+(`forall_selfDualAddChar_mul_eq_one_iff`).
+-/
 noncomputable def primAddChar : AddChar 𝔪.ResidueRing ℂ := 𝔪.exists_isPrimitive_addChar.choose
 
 /-- For a modulus 𝔪 of the CM field E with Weil data, the character ψ′ = `𝔪.primAddChar` of O_E/𝔪

@@ -53,39 +53,47 @@ open Matrix Finset Fintype Equiv Function MulChar
 
 namespace New.Exchange
 
-variable {R : Type} [Fintype R]
+variable
+  {R : Type} [Fintype R]
   {a b N n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype N]
   [DecidableEq N] [Fintype n] [DecidableEq n]
 
 /-! ### The square law and the data -/
 
-/-- The square law with constant `c` for a function `L` on `a × n` matrices and a function `L'` on
+/--
+The square law with constant `c` for a function `L` on `a × n` matrices and a function `L'` on
 `n × b` matrices over the finite ring `R`, the indices being split by `σ : b ⊕ a ≃ n`: both
 functions transform by `χ ∘ det`, and `∑ Ψ L' = c ∑ Φ L` for all matched functions `Φ`, `Ψ` in the
 sense of `New.AreMatched`. In the application `L x` and `L' y` are values of the two composites of
-theta lifts around a commuting square. -/
-structure SquareLaw [CommRing R] (χ : MulChar R ℂ) (σ : b ⊕ a ≃ n) (c : ℂ) (L : Matrix a n R → ℂ)
-    (L' : Matrix n b R → ℂ) where
+theta lifts around a commuting square.
+-/
+structure SquareLaw
+    [CommRing R]
+    (χ : MulChar R ℂ) (σ : b ⊕ a ≃ n) (c : ℂ) (L : Matrix a n R → ℂ) (L' : Matrix n b R → ℂ) where
   /-- `L` transforms by `χ ∘ det` under left multiplication by invertible matrices. -/
   left_mul (k : GL a R) (x : Matrix a n R) : L (k.val * x) = χ k.val.det * L x
   /-- `L'` transforms by `χ ∘ det` under right multiplication by invertible matrices. -/
   right_mul (k : GL b R) (y : Matrix n b R) : L' (y * k.val) = χ k.val.det * L' y
   /-- For matched functions `Φ`, `Ψ` the sum of `Ψ L'` is `c` times the sum of `Φ L`. -/
-  sum_eq_of_areMatched (Φ : Matrix a n R → ℂ) (Ψ : Matrix n b R → ℂ) :
-      AreMatched ⊤ σ χ Φ Ψ → ∑ y : Matrix n b R, Ψ y * L' y = c * ∑ x : Matrix a n R, Φ x * L x
+  sum_eq_of_areMatched (Φ : Matrix a n R → ℂ) (Ψ : Matrix n b R → ℂ)
+    : AreMatched ⊤ σ χ Φ Ψ → ∑ y : Matrix n b R, Ψ y * L' y = c * ∑ x : Matrix a n R, Φ x * L x
 
 variable (R) in
-/-- The point datum: the indicator function of the inclusion matrix `(1; 0)` among the
-`(a ⊕ b) × a` matrices. -/
-abbrev pointDatum [CommRing R] [DecidableEq R] :
-    Matrix (a ⊕ b) a R → ℂ := Pi.single (inclMatrix R Sum.inl) 1
+/--
+The point datum: the indicator function of the inclusion matrix `(1; 0)` among the
+`(a ⊕ b) × a` matrices.
+-/
+abbrev pointDatum [CommRing R] [DecidableEq R] : Matrix (a ⊕ b) a R → ℂ :=
+  Pi.single (inclMatrix R Sum.inl) 1
 
-/-- The datum built from a function `p` on `n × a` matrices. It is a function on
+/--
+The datum built from a function `p` on `n × a` matrices. It is a function on
 `(n ⊕ b) × (a ⊕ b)` matrices. At a block matrix `(η s; 0 1)`, with `η` of size `n × a` and `s` any
 `n × b` matrix, its value is `p (-η)` divided by the number of all `n × b` matrices over `R`; it
-vanishes at all other matrices. -/
-def nextDatum [CommRing R] [DecidableEq R]
-    (p : Matrix n a R → ℂ) (y : Matrix (n ⊕ b) (a ⊕ b) R) : ℂ :=
+vanishes at all other matrices.
+-/
+def nextDatum [CommRing R] [DecidableEq R] (p : Matrix n a R → ℂ) (y : Matrix (n ⊕ b) (a ⊕ b) R)
+    : ℂ :=
   if y.toBlocks₂₂ = 1 ∧ y.toBlocks₂₁ = 0 then p (-y.toBlocks₁₁) / Fintype.card (Matrix n b R) else 0
 
 /-- The order of the basis of `n ⊕ a ⊕ b` that puts the block `a` first. -/
@@ -233,9 +241,11 @@ omit [Fintype R] in
 lemma blockInlGL_sumEmpty (g : GL b R) : blockInlGL (sumEmpty b Empty) g = g := by
   simp [Units.ext_iff, ← ext_iff]
 
-/-- The function on `a × n` matrices that is `0` off the matrices `invLastRows e γ` (the rows `a`
+/--
+The function on `a × n` matrices that is `0` off the matrices `invLastRows e γ` (the rows `a`
 of `γ⁻¹`) and has the value `χ (det γ) Ψ (firstCols e γ)` at `invLastRows e γ`, for a chosen `γ`.
-The choice is immaterial if `Ψ` transforms by `χ⁻¹ ∘ det` on the right. -/
+The choice is immaterial if `Ψ` transforms by `χ⁻¹ ∘ det` on the right.
+-/
 def matchOf (χ : MulChar R ℂ) (e : b ⊕ a ≃ n) (Ψ : Matrix n b R → ℂ) : Matrix a n R → ℂ :=
   extend (invLastRows e) (fun γ : GL n R ↦ χ γ.val.det * Ψ (firstCols e γ)) 0
 

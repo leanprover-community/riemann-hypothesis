@@ -65,10 +65,13 @@ namespace New
 
 section Definitions
 
-variable {S X : Scheme} {A : Over S} {ι O R M : Type} {B C C' D : CommRingCat} {V : A.left.Opens}
-  (f : X ⟶ S) [AddObj A] {t : Spec C ⟶ S} {s : Spec B ⟶ S} (ψ : C ⟶ C') (z : ι → Γ(A.1, V))
-  (y : Over.mk t ⟶ A) [CommRing O] [ModuleObj O A] [Fintype ι] [DecidableEq ι] [CommRing R]
-  [AddCommGroup M] [Module R M] [Module Rᵐᵒᵖ M] [IsCentralScalar R M]
+variable
+  {S X : Scheme} {A : Over S} {ι O R M : Type} {B C C' D : CommRingCat} {V : A.left.Opens}
+  (f : X ⟶ S) [AddObj A]
+  {t : Spec C ⟶ S} {s : Spec B ⟶ S}
+  (ψ : C ⟶ C') (z : ι → Γ(A.1, V)) (y : Over.mk t ⟶ A)
+  [CommRing O] [ModuleObj O A] [Fintype ι] [DecidableEq ι] [CommRing R] [AddCommGroup M]
+  [Module R M] [Module Rᵐᵒᵖ M] [IsCentralScalar R M]
 
 /-! ### Square-zero extensions, charts and the conditions on the Lie action -/
 
@@ -88,24 +91,29 @@ class IsSqZeroExt (ψ : C ⟶ C') where
 /-- For ψ : C → C', the C-point y of the group scheme A becomes 0 in A(C'). -/
 def IsInfinitesimal : Prop := (homMk (Spec.map ψ) : mk (Spec.map ψ ≫ t) ⟶ mk t) ≫ y = 0
 
-/-- For a C-point y of A over t : Spec C → S and functions z_i on the open V, the entry
-z_i(y) − z_i(0) in C; a function takes the value 0 at a point that does not land in V. -/
+/--
+For a C-point y of A over t : Spec C → S and functions z_i on the open V, the entry
+z_i(y) − z_i(0) in C; a function takes the value 0 at a point that does not land in V.
+-/
 def tangentCoords (i : ι) : C :=
   PointFn.ofSection (z i) C y.1 - PointFn.ofSection (z i) C (0 : mk t ⟶ A).1
 
-/-- The z_i are regular on V and étale coordinates for f: along square-zero extensions C → C',
-points in V lift uniquely over S with any prescribed lifts of the values z_i. -/
+/--
+The z_i are regular on V and étale coordinates for f: along square-zero extensions C → C',
+points in V lift uniquely over S with any prescribed lifts of the values z_i.
+-/
 def IsEtaleChart (V : X.Opens) (z : ι → Γ(X, V)) : Prop :=
   ∀ ⦃C D : CommRingCat⦄ ⦃ψ : C ⟶ D⦄ [IsSqZeroExt ψ] ⦃t : Spec C ⟶ S⦄ (x : Spec D ⟶ X) (l : ι → C),
-    LandsIn x V → x ≫ f = Spec.map ψ ≫ t →
-    ψ ∘ l = (fun s ↦ PointFn.ofSection s D x) ∘ z →
-    ∃! y : mk t ⟶ mk f, Spec.map ψ ≫ y.1 = x ∧ (fun s ↦ PointFn.ofSection s C y.1) ∘ z = l
+    LandsIn x V → x ≫ f = Spec.map ψ ≫ t → ψ ∘ l = (fun s ↦ PointFn.ofSection s D x) ∘ z
+      → ∃! y : mk t ⟶ mk f, Spec.map ψ ≫ y.1 = x ∧ (fun s ↦ PointFn.ofSection s C y.1) ∘ z = l
 
 variable (R M) in
-/-- The morphism Spec R → Spec(R ⊕ M) induced by the projection of the trivial square-zero
-extension R ⊕ M onto R. -/
-abbrev Variety.sqZeroReduction :
-    Spec (CommRingCat.of R) ⟶ Spec (CommRingCat.of (TrivSqZeroExt R M)) :=
+/--
+The morphism Spec R → Spec(R ⊕ M) induced by the projection of the trivial square-zero
+extension R ⊕ M onto R.
+-/
+abbrev Variety.sqZeroReduction
+    : Spec (CommRingCat.of R) ⟶ Spec (CommRingCat.of (TrivSqZeroExt R M)) :=
   specMap (fstHom R R M).toRingHom
 
 /-- The projection R ⊕ M → R of the trivial square-zero extension is a square-zero extension. -/
@@ -114,33 +122,42 @@ instance isSqZeroExt_fstHom : IsSqZeroExt (ofHom (fstHom R R M).toRingHom) where
   mul_eq_zero := by aesop
 
 variable (A) in
-/-- The functions z are coordinates at 0 over s : Spec B → S in which O acts by the matrices m:
+/--
+The functions z are coordinates at 0 over s : Spec B → S in which O acts by the matrices m:
 (a) the z_i are étale coordinates on V; for every ring map φ : B → C, with t : Spec C → S the
 induced point, (b) the zero C-point of A lies in V, and, for C-points y, x that vanish modulo a
 square-zero ideal and dz = `New.tangentCoords z`, (c) dz(ay) = φ(m(a)) dz(y) for a in O and
-(d) dz(y + x) = dz(y) + dz(x). -/
-def IsLieChart (s : Spec B ⟶ S) (V : A.left.Opens) (z : ι → Γ(A.left, V)) (m : O → Matrix ι ι B) :
-    Prop :=
-  IsEtaleChart A.hom V z ∧
-  ∀ ⦃C : CommRingCat⦄ ⦃φ : B ⟶ C⦄ ⦃t : Spec C ⟶ S⦄, Spec.map φ ≫ s = t →
-    LandsIn (0 : mk t ⟶ A).left V ∧
-    ∀ ⦃D : CommRingCat⦄ ⦃ψ : C ⟶ D⦄ [IsSqZeroExt ψ] ⦃y : mk t ⟶ A⦄, IsInfinitesimal ψ y →
-      (∀ a : O, tangentCoords z (a • y) = (m a).map φ *ᵥ tangentCoords z y) ∧
-      ∀ x : mk t ⟶ A, IsInfinitesimal ψ x →
-        tangentCoords z (y + x) = tangentCoords z y + tangentCoords z x
+(d) dz(y + x) = dz(y) + dz(x).
+-/
+def IsLieChart (s : Spec B ⟶ S) (V : A.left.Opens) (z : ι → Γ(A.left, V)) (m : O → Matrix ι ι B)
+    : Prop :=
+  IsEtaleChart A.hom V z
+    ∧ ∀ ⦃C : CommRingCat⦄ ⦃φ : B ⟶ C⦄ ⦃t : Spec C ⟶ S⦄,
+      Spec.map φ ≫ s = t
+        → LandsIn (0 : mk t ⟶ A).left V
+          ∧ ∀ ⦃D : CommRingCat⦄ ⦃ψ : C ⟶ D⦄ [IsSqZeroExt ψ] ⦃y : mk t ⟶ A⦄,
+            IsInfinitesimal ψ y
+              → (∀ a : O, tangentCoords z (a • y) = (m a).map φ *ᵥ tangentCoords z y)
+                ∧ ∀ x : mk t ⟶ A,
+                  IsInfinitesimal ψ x
+                    → tangentCoords z (y + x) = tangentCoords z y + tangentCoords z x
 
-/-- The signature condition for a ring map ρ : O → R, elements b, b' of O and square matrices m(a)
+/--
+The signature condition for a ring map ρ : O → R, elements b, b' of O and square matrices m(a)
 over R: some vector X with a unit coordinate has m(a)X = ρ(a)X for all a in O, and
-m(b) − ρ(b')·1 = Xξᵀ for some vector ξ. -/
+m(b) − ρ(b')·1 = Xξᵀ for some vector ξ.
+-/
 def HasSignature (ρ : O →+* R) (b b' : O) (m : O → Matrix ι ι R) : Prop :=
   ∃ (X ξ : ι → R) (k : ι),
     IsUnit (X k) ∧ (∀ a : O, m a *ᵥ X = ρ a • X) ∧ m b - ρ b' • 1 = vecMulVec X ξ
 
 end Definitions
 
-variable {S X : Scheme} {A : Over S} {ι O : Type} {B C C' D : CommRingCat} {V : A.left.Opens}
-  {f : X ⟶ S} [AddObj A] {t : Spec C ⟶ S} {s : Spec B ⟶ S} {ψ : C ⟶ C'} {z : ι → Γ(A.1, V)}
-  {y : Over.mk t ⟶ A} [CommRing O] [ModuleObj O A]
+variable
+  {S X : Scheme} {A : Over S} {ι O : Type} {B C C' D : CommRingCat} {V : A.left.Opens} {f : X ⟶ S}
+  [AddObj A]
+  {t : Spec C ⟶ S} {s : Spec B ⟶ S} {ψ : C ⟶ C'} {z : ι → Γ(A.1, V)} {y : Over.mk t ⟶ A}
+  [CommRing O] [ModuleObj O A]
 
 /-! ### Existence of charts; the signature condition -/
 

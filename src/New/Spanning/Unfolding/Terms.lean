@@ -59,30 +59,41 @@ open NumberField Matrix Fintype
 
 namespace New
 
-variable {R : Type*} {E : Type} [CommRing R] [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
-  [StarRing R] {T : 𝔰.Form R}
+variable
+  {R : Type*} {E : Type} [CommRing R] [Field E] [CMType E]
+  {𝔰 : Shape} (S : Filling E 𝔰)
+  [StarRing R]
+  {T : 𝔰.Form R}
 
-/-- For a square matrix T on the middle coordinates, the two-row block diagonal matrix with two
-copies of the row of T indexed by z. -/
-abbrev Filling.zRowBlockDiagonal (T : 𝔰.Form R) :
-    Matrix (Unit ⊕ Unit) (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) R :=
+/--
+For a square matrix T on the middle coordinates, the two-row block diagonal matrix with two
+copies of the row of T indexed by z.
+-/
+abbrev Filling.zRowBlockDiagonal (T : 𝔰.Form R)
+    : Matrix (Unit ⊕ Unit) (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) R :=
   T.toRows₂.fromBlocks 0 0 T.toRows₂
-/-- The module of the vectors x of X₀ for which there is a pair of middle vectors, both orthogonal
+/--
+The module of the vectors x of X₀ for which there is a pair of middle vectors, both orthogonal
 to z, that lies in the links (`New.link`) of both γ and γ' and whose first vector has
-X₀-coordinates x. -/
+X₀-coordinates x.
+-/
 def commonLink (γ γ' : T.G) : Submodule R (𝔰.κ → R) :=
   (link γ ⊓ link γ' ⊓ (Filling.zRowBlockDiagonal T).mulVecLin.ker).map
     (LinearMap.funLeft R R (Sum.inl ∘ .inl))
 
-/-- The frame f = (e₁, …, e_ϱ, z) and its image γf satisfy fx = γfy for some coefficient vectors
-x, y that vanish at indices above a and have x_a = c, y_a = c'. -/
+/--
+The frame f = (e₁, …, e_ϱ, z) and its image γf satisfy fx = γfy for some coefficient vectors
+x, y that vanish at indices above a and have x_a = c, y_a = c'.
+-/
 def PairOccursAt (γ : T.G) (c c' : R) (a : Fin (𝔰.ϱ + 1)) : Prop :=
   ∃ x y : Fin (𝔰.ϱ + 1) → R,
-    frameImage (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) *ᵥ x = frameImage γ.val.val *ᵥ y ∧
-    x a = c ∧ y a = c' ∧ ∀ b : Fin (𝔰.ϱ + 1), b > a → x b = 0 ∧ y b = 0
+    frameImage (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) *ᵥ x = frameImage γ.val.val *ᵥ y ∧ x a = c
+      ∧ y a = c' ∧ ∀ b : Fin (𝔰.ϱ + 1), b > a → x b = 0 ∧ y b = 0
 
-/-- For some c with c c̄ = 1 and every index a ≥ j (counted from 0), the flags of f and γf share a
-vector with leading coefficients c and 1 at a. -/
+/--
+For some c with c c̄ = 1 and every index a ≥ j (counted from 0), the flags of f and γf share a
+vector with leading coefficients c and 1 at a.
+-/
 def NormOnePairOccursFrom (j : ℕ) (γ : T.G) : Prop :=
   ∃ c : R, c * star c = 1 ∧ ∀ a : Fin (𝔰.ϱ + 1), j ≤ a.val → PairOccursAt γ c 1 a
 
@@ -90,60 +101,77 @@ namespace Filling
 
 /-! ### Forms, coordinates, cell ranks and nearness -/
 
-/-- The Gram matrix over E of the form on the space: two dual isotropic blocks of rank ϱ around the
-middle Gram matrix `S.ratMiddle E` of X₀⊕Ez. -/
+/--
+The Gram matrix over E of the form on the space: two dual isotropic blocks of rank ϱ around the
+middle Gram matrix `S.ratMiddle E` of X₀⊕Ez.
+-/
 abbrev ratGram : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E := (S.ratMiddle E).splitGram
 
 /-- The block diagonal matrix diag(M, −M) over E on two copies of X₀⊕Ez, M = `S.ratMiddle E`. -/
 abbrev linkForm : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) E :=
-  (S.ratMiddle E).fromBlocks 0 0 (-S.ratMiddle E)
+  (S.ratMiddle E).fromBlocks 0 0 (- S.ratMiddle E)
 
-/-- For a class c, the inverse of the matrix `New.Filling.classBasis` c; it takes rational
-coordinates to coordinates in the basis of the lattice h_cΛ₀. -/
-def classCoord (c : S.Classes) :
-    Matrix (Fin 𝔰.ϱ ⊕ 𝔰.MiddleIndex ⊕ Fin 𝔰.ϱ) (Fin 𝔰.ϱ ⊕ 𝔰.MiddleIndex ⊕ Fin 𝔰.ϱ) (𝔸f E) :=
+/--
+For a class c, the inverse of the matrix `New.Filling.classBasis` c; it takes rational
+coordinates to coordinates in the basis of the lattice h_cΛ₀.
+-/
+def classCoord (c : S.Classes)
+    : Matrix (Fin 𝔰.ϱ ⊕ 𝔰.MiddleIndex ⊕ Fin 𝔰.ϱ) (Fin 𝔰.ϱ ⊕ 𝔰.MiddleIndex ⊕ Fin 𝔰.ϱ) (𝔸f E) :=
   (S.classBasis c)⁻¹.val
 
-/-- The matrix whose columns are the standard basis vectors of X₀, written in the basis of the
+/--
+The matrix whose columns are the standard basis vectors of X₀, written in the basis of the
 middle part of the lattice h_cΛ₀ of the class c. It is `New.middleInclusionMatrix` times the inverse
 of the chosen representative `c.out` of c in U(X₀)(𝔸_f), whose image in the unitary group of V is
-h_c = `S.classRep c`. It depends on this choice of representative. -/
+h_c = `S.classRep c`. It depends on this choice of representative.
+-/
 def classCoordX₀ (c : S.Classes) : Matrix (𝔰.κ ⊕ Unit) 𝔰.κ (𝔸f E) :=
   middleInclusionMatrix 𝔰 S.piN * ((c.out⁻¹ : Gf E 𝔰.κ) : Matrix 𝔰.κ 𝔰.κ (𝔸f E))
 
-/-- The number `n_p = #R̄₀ n_X N ^ (-k f)` against which pairs of terms are counted: here `R̄₀` is
+/--
+The number `n_p = #R̄₀ n_X N ^ (-k f)` against which pairs of terms are counted: here `R̄₀` is
 the reduced image of the Bessel subgroup `besselS`, `n_X` the number of classes and `f` the number
-of infinite places. -/
+of infinite places.
+-/
 abbrev pairCountScale : ℝ :=
   Nat.card (S.reducedImage besselS) * card S.Classes / S.N ^ (𝔰.k * numInfPlaces E)
 
-/-- γ has cell rank j ≤ ϱ+1: `New.NormOnePairOccursFrom` j holds, the leading minor D_j of
-`S.frameProducts γ` is nonzero, and `S.termDisc γ` is nonzero exactly when j = ϱ+1. -/
+/--
+γ has cell rank j ≤ ϱ+1: `New.NormOnePairOccursFrom` j holds, the leading minor D_j of
+`S.frameProducts γ` is nonzero, and `S.termDisc γ` is nonzero exactly when j = ϱ+1.
+-/
 @[mk_iff]
 structure HasCellRank (j : Fin (𝔰.ϱ + 1 + 1)) (γ : S.G E) : Prop where
-  /-- For some c with c c̄ = 1 and every index a ≥ j, the flags of the frame f and of γf share a
-  vector with leading coefficients c and 1 at a. -/
+  /--
+  For some c with c c̄ = 1 and every index a ≥ j, the flags of the frame f and of γf share a
+  vector with leading coefficients c and 1 at a.
+  -/
   normOnePairOccursFrom : NormOnePairOccursFrom j.val γ
   /-- The leading minor D_j of the products of the two frames is nonzero. -/
   leadingMinor_ne_zero : leadingMinor (S.frameProducts γ) j ≠ 0
   /-- The cell rank is the top one, ϱ+1, exactly when `S.termDisc γ` is nonzero. -/
   lt_iff_termDisc_ne_zero : 𝔰.ϱ < j.val ↔ S.termDisc γ ≠ 0
 
-/-- The product over the infinite places v of E of the complex absolute values of the images under
+/--
+The product over the infinite places v of E of the complex absolute values of the images under
 the embeddings `Φ v` of `S.termDisc γ` = |D_{ϱ+1}|² − N²|D_ϱ|², where D_l is the leading minor of
-order l of `S.frameProducts γ`. -/
+order l of `S.frameProducts γ`.
+-/
 def termDiscNorm (γ : S.G E) : ℝ := ∏ v : InfinitePlace E, ‖Φ v (S.termDisc γ)‖
 
-/-- The rational element γ is near: there is an archimedean point y such that both y and γ⁻¹y
-lie in the set `New.Filling.boxedPoints` of boxed points. -/
-def IsNear (γ : S.G E) : Prop :=
-  ∃ y ∈ S.boxedPoints, (S.ratToInf γ)⁻¹ * y ∈ S.boxedPoints
+/--
+The rational element γ is near: there is an archimedean point y such that both y and γ⁻¹y
+lie in the set `New.Filling.boxedPoints` of boxed points.
+-/
+def IsNear (γ : S.G E) : Prop := ∃ y ∈ S.boxedPoints, (S.ratToInf γ)⁻¹ * y ∈ S.boxedPoints
 
-/-- The finite character `New.Filling.unipotentChar` takes the same value at u and at γ⁻¹uγ for
-every rational u in 𝖴 ∩ γ𝖴γ⁻¹. -/
+/--
+The finite character `New.Filling.unipotentChar` takes the same value at u and at γ⁻¹uγ for
+every rational u in 𝖴 ∩ γ𝖴γ⁻¹.
+-/
 def CharsAgree (γ : S.G E) : Prop :=
-  ∀ u ∈ besselU, ∀ u' ∈ besselU, u * γ = γ * u' →
-    S.unipotentChar (S.ratToFin u) = S.unipotentChar (S.ratToFin u')
+  ∀ u ∈ besselU, ∀ u' ∈ besselU,
+    u * γ = γ * u' → S.unipotentChar (S.ratToFin u) = S.unipotentChar (S.ratToFin u')
 
 end Filling
 
@@ -155,9 +183,10 @@ namespace New.Filling
 
 open Subgroup Real NumberField Matrix Finset ComplexOrder Complex Fin Floors FloorGroups Nat
 
-variable {R : Type} [CommRing R] [StarRing R] {𝔰 : Shape} {T : 𝔰.Form R} {s s' : T.G}
-  {E : Type} [Field E] [CMType E] {S : Filling E 𝔰} {γ u : S.G E} {c c' : S.Classes}
-  {r : S.ResidueGL} {x y : Fin (𝔰.ϱ + 1) → E}
+variable
+  {R : Type} [CommRing R] [StarRing R]
+  {𝔰 : Shape} {T : 𝔰.Form R} {s s' : T.G} {E : Type} [Field E] [CMType E]
+  {S : Filling E 𝔰} {γ u : S.G E} {c c' : S.Classes} {r : S.ResidueGL} {x y : Fin (𝔰.ϱ + 1) → E}
 
 /-! ### Frames and the Bessel subgroup -/
 
@@ -309,11 +338,13 @@ lemma hasCellRank_last (h_disc_ne : S.termDisc γ ≠ 0) : S.HasCellRank (last (
   have h_zero : ‖Φ v₀ (S.termDisc γ)‖ = 0 := by nlinarith [norm_nonneg (Φ v₀ (S.termDisc γ))]
   exact h_disc_ne (by simpa using h_zero)
 
-/-- Either `S.termDisc γ` is totally positive, and then the matrix of products of the two frames
-has a nonzero determinant, or `S.termDisc γ` vanishes. -/
-theorem termDisc_pos_or_eq_zero (γ : S.G E) :
-    ((∀ v : InfinitePlace E, 0 < Φ v (S.termDisc γ)) ∧ (S.frameProducts γ).det ≠ 0) ∨
-      S.termDisc γ = 0 := by
+/--
+Either `S.termDisc γ` is totally positive, and then the matrix of products of the two frames
+has a nonzero determinant, or `S.termDisc γ` vanishes.
+-/
+theorem termDisc_pos_or_eq_zero (γ : S.G E)
+    : ((∀ v : InfinitePlace E, 0 < Φ v (S.termDisc γ)) ∧ (S.frameProducts γ).det ≠ 0)
+      ∨ S.termDisc γ = 0 := by
   refine or_iff_not_imp_right.2 fun h_ne ↦
     ⟨fun v ↦ ?_, (hasCellRank_last h_ne).leadingMinor_ne_zero⟩
   rw [map_termDisc_eq_norm, zero_lt_real, norm_pos_iff]

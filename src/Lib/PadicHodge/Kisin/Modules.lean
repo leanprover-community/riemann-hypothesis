@@ -89,13 +89,17 @@ namespace New.Lift
 
 open Period WittVector Submodule Set FrobGroup Module Fintype Algebra
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] [k : KummerChart Γ]
-  {R X : Type*} [CommRing R] [AddCommGroup X] [Module R X] {Q : Submodule R X}
+variable
+  {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] [k : KummerChart Γ]
+  {R X : Type*} [CommRing R] [AddCommGroup X] [Module R X]
+  {Q : Submodule R X}
 
 /-! ### Saturation of a submodule -/
 
-/-- The saturation of a submodule P of X by a submonoid M: the x in X with mx in P for some m in
-M. -/
+/--
+The saturation of a submodule P of X by a submonoid M: the x in X with mx in P for some m in
+M.
+-/
 def saturateBy (M : Submonoid R) (P : Submodule R X) : Submodule R X :=
   -- the preimage of the `M`-torsion of `X ⧸ P`, with its carrier written out
   ((torsion' R (X ⧸ P) M).comap P.mkQ).copy {x : X | ∃ r ∈ M, r • x ∈ P}
@@ -131,11 +135,13 @@ namespace KummerChart
 
 /-! ### Letters, coefficients and lattices with jump sets -/
 
-/-- The letters of a Kummer chart: the multiplicative group of the field with p^f elements in
+/--
+The letters of a Kummer chart: the multiplicative group of the field with p^f elements in
 O^♭. A letter i singles out the embeddings g of a ring of coefficients into ℂ_p with g(ζ) = θ([i]),
-[i] the Teichmüller lift; these are the embeddings above i, and φ^a sends [i] to [i^(p^a)]. -/
+[i] the Teichmüller lift; these are the embeddings above i, and φ^a sends [i] to [i^(p^a)].
+-/
 def Letter : Type := (flatFq k.f)ˣ
-  deriving CommGroup, Finite, IsCyclic
+deriving CommGroup, Finite, IsCyclic
 
 /-- The letters form a finite type. -/
 instance : Fintype Letter := .ofFinite _
@@ -143,22 +149,26 @@ instance : Fintype Letter := .ofFinite _
 /-- The number `p ^ f - 1` of letters is invertible in `ℤ_[p]`, being a unit modulo `p`. -/
 instance : Invertible (card Letter : ℤ_[p]) :=
   IsUnit.invertible <| .of_map PadicInt.toZMod _ <| by
-    simp [↓card_eq_nat_card, Letter, Nat.card_units, NeZero.pos, ZMod.natCast_self]
+    simp [↓ card_eq_nat_card, Letter, Nat.card_units, NeZero.pos, ZMod.natCast_self]
 
 /-- The permutation i ↦ i^p of the letters, the units of the field with p^f elements. -/
 def letterFrob : Equiv.Perm Letter :=
   (Units.mapEquiv (frobeniusEquiv (flatFq k.f) p).toMulEquiv).toEquiv
 
-/-- The multiplicative map sending a letter to its Teichmüller lift in the Witt vectors of the
-field with p^f elements, viewed in the ring S of the chart. -/
+/--
+The multiplicative map sending a letter to its Teichmüller lift in the Witt vectors of the
+field with p^f elements, viewed in the ring S of the chart.
+-/
 def letterTeich : Letter →* k.S :=
   (algebraMap (WittFq k.f) k.S).toMonoidHom.comp ((teichmuller p).comp (Units.coeHom (flatFq k.f)))
 
 /-- The elements ζ of O with ζ^q = 1, where q = p^f − 1 is the number of letters of the chart. -/
 abbrev LetterRoot (O : Type*) [Monoid O] : Type _ := {ζ : O // ζ ^ Nat.card Letter = 1}
 
-/-- A ring of coefficients: a finite free Z_p-algebra O with an element ζ, ζ^{p^f−1} = 1, which
-cuts out the letters. -/
+/--
+A ring of coefficients: a finite free Z_p-algebra O with an element ζ, ζ^{p^f−1} = 1, which
+cuts out the letters.
+-/
 structure Coeffs where
   /-- The ring of coefficients O. -/
   (O : Type)
@@ -174,30 +184,38 @@ attribute [instance] Coeffs.commRing Coeffs.padicIntegerRing
 -- A ring of coefficients is read as its underlying type.
 instance : CoeSort Coeffs Type := ⟨Coeffs.O⟩
 
-/-- A lattice with jump sets: a finite free O-module with an action of Γ, crystalline over Γ', with,
+/--
+A lattice with jump sets: a finite free O-module with an action of Γ, crystalline over Γ', with,
 for each letter i, a finite set of integers that contains its jumps at every embedding g of O with
-g(ζ) = θ(ω(i)). -/
+g(ζ) = θ(ω(i)).
+-/
 structure JumpLattice (O : Coeffs) extends toGalLattice : GalLattice O Γ where
   /-- For each letter, a finite set of integers that holds the jumps at that letter. -/
   jumpSet : Letter → Finset ℤ
   /-- One set of integers for each embedding of O. -/
   embJumps : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ
-  /-- The lattice is crystalline over Γ' and has its jumps at each embedding in the set given for
-  that embedding. -/
+  /--
+  The lattice is crystalline over Γ' and has its jumps at each embedding in the set given for
+  that embedding.
+  -/
   inClass : InClass (Filter.map k.subgroup.subtype ⊤) ⊥ embJumps toGalLattice
   /-- The set at a letter i contains the set of every embedding g with g(ζ) = θ(ω(i)). -/
-  embJumps_subset {g : O →ₐ[ℤ_[p]] ℂ_[p]} {i : Letter} :
-      g O.ζ = (theta (k.letterTeich i)).val → embJumps g ⊆ jumpSet i
+  embJumps_subset {g : O →ₐ[ℤ_[p]] ℂ_[p]} {i : Letter}
+    : g O.ζ = (theta (k.letterTeich i)).val → embJumps g ⊆ jumpSet i
 
 variable {k} {O : Coeffs} {L : JumpLattice O} (L' : JumpLattice O) (i : Letter) (l a : ℕ) (u : ℤ)
 
-/-- The letter a steps before i: the image of i under the a-th power of the inverse of the
-permutation x ↦ x^p, so that φ^a sends its Teichmüller lift to that of i. -/
+/--
+The letter a steps before i: the image of i under the a-th power of the inverse of the
+permutation x ↦ x^p, so that φ^a sends its Teichmüller lift to that of i.
+-/
 @[simp]
 abbrev Letter.stepBack : Letter := (k.letterFrob ^ a)⁻¹ i
 
-/-- The standard exponent at the step `a` for the level `l` and the weight `u`: `0` for `a < l`
-and `-u` for `a ≥ l`. -/
+/--
+The standard exponent at the step `a` for the level `l` and the weight `u`: `0` for `a < l`
+and `-u` for `a ≥ l`.
+-/
 @[grind]
 def stdOrders : ℤ := if a < l then 0 else -u
 
@@ -208,8 +226,10 @@ namespace JumpLattice
 /-- The module W(C^♭)⊗L for the lattice underlying L. -/
 abbrev Ambient : Type := DiagTensor (Rep.of (overZp L.ρ))
 
-/-- For an O-linear map F: L → L' of lattices, the W(C^♭)-linear map W(C^♭) ⊗ L → W(C^♭) ⊗ L'
-obtained by extension of scalars. -/
+/--
+For an O-linear map F: L → L' of lattices, the W(C^♭)-linear map W(C^♭) ⊗ L → W(C^♭) ⊗ L'
+obtained by extension of scalars.
+-/
 abbrev wittMap (F : L.Carrier →ₗ[O] L'.Carrier) : L.Ambient →ₗ[WittCFlat] L'.Ambient :=
   DiagTensor.map F
 
@@ -219,8 +239,10 @@ def ainfLattice : Submodule Ainf L.Ambient := span Ainf (M := L.Ambient) (range 
 /-- The type of A_inf-linear maps from W(C^♭) ⊗ L to B_dR. -/
 abbrev Functional : Type := L.Ambient →ₗ[Ainf] BdR
 
-/-- The set of A_inf-linear maps μ: W(C^♭) ⊗ L → B_dR that are Γ'-equivariant on 1 ⊗ L, that is,
-μ(1 ⊗ gt) = g·μ(1 ⊗ t). -/
+/--
+The set of A_inf-linear maps μ: W(C^♭) ⊗ L → B_dR that are Γ'-equivariant on 1 ⊗ L, that is,
+μ(1 ⊗ gt) = g·μ(1 ⊗ t).
+-/
 def forms : Set L.Functional :=
   {μ : L.Functional | ∀ (t : L.Carrier) (g : k.subgroup),
     μ (DiagTensor.mk 1 (L.ρ g t)) = toGp g.val • μ (DiagTensor.mk 1 t)}
@@ -229,34 +251,43 @@ def forms : Set L.Functional :=
 lemma frobGroup_smul_smul (m : FrobGroup Γ) (r : Ainf) (x : L.Ambient) :
     m • r • x = (m • r) • m • x := smul_distrib_smul m r x
 
-/-- The action of an element m of ℤ × Γ on W(C^♭) ⊗ L, as a map semilinear for the action of m
-on A_inf. -/
+/--
+The action of an element m of ℤ × Γ on W(C^♭) ⊗ L, as a map semilinear for the action of m
+on A_inf.
+-/
 @[simps]
-def semilinearAct (m : FrobGroup Γ) :
-    L.Ambient →ₛₗ[MulSemiringAction.toRingHom (FrobGroup Γ) Ainf m] L.Ambient where
+def semilinearAct (m : FrobGroup Γ)
+    : L.Ambient →ₛₗ[MulSemiringAction.toRingHom (FrobGroup Γ) Ainf m] L.Ambient where
   toFun x := m • x
   map_add' := smul_add m
   map_smul' := frobGroup_smul_smul m
 
-/-- The A_inf-module of the x in A_inf[1/τ] ⊗ L (some power of the element `tau` of A_inf sends x
+/--
+The A_inf-module of the x in A_inf[1/τ] ⊗ L (some power of the element `tau` of A_inf sends x
 into the A_inf-span of the 1 ⊗ y, y in L) with μ(φ^n x) in B_dR^+ for all n ≥ 1 and all μ in
-`New.Lift.KummerChart.JumpLattice.forms`. -/
+`New.Lift.KummerChart.JumpLattice.forms`.
+-/
 def kisinAinf : Submodule Ainf L.Ambient :=
-  saturateBy (Submonoid.powers tau) L.ainfLattice ⊓
-    { carrier := {x : Ambient | ∀ n : ℕ, ∀ μ ∈ L.forms, μ (φ ^ (n + 1) • x) ∈ hodgeFil 0}
-      add_mem' := by aesop
-      zero_mem' := by simp
-      smul_mem' := by simp_all [frobGroup_smul_smul, smul_of_tower_mem] }
+  saturateBy (Submonoid.powers tau) L.ainfLattice ⊓ {
+    carrier := {x : Ambient | ∀ n : ℕ, ∀ μ ∈ L.forms, μ (φ ^ (n + 1) • x) ∈ hodgeFil 0}
+    add_mem' := by aesop
+    zero_mem' := by simp
+    smul_mem' := by simp_all [frobGroup_smul_smul, smul_of_tower_mem]
+  }
 
-/-- The invariant functionals μ (`New.Lift.KummerChart.JumpLattice.forms`) whose restriction to
-1 ⊗ L comes from a Z_p-linear map of L into the period ring `Bmax`. -/
+/--
+The invariant functionals μ (`New.Lift.KummerChart.JumpLattice.forms`) whose restriction to
+1 ⊗ L comes from a Z_p-linear map of L into the period ring `Bmax`.
+-/
 def crysForms : Set L.Functional :=
   {μ ∈ L.forms | ∃ l : L.Carrier →ₗ[ℤ_[p]] Bmax, ∀ t : Rep.of (overZp L.ρ),
     μ (DiagTensor.mk 1 t) = algebraMap Bmax BdR (l t)}
 
-/-- For an A_inf-submodule Q of W(C^♭) ⊗ L, the S-submodule of the x in Q on which every form in
+/--
+For an A_inf-submodule Q of W(C^♭) ⊗ L, the S-submodule of the x in Q on which every form in
 `New.Lift.KummerChart.JumpLattice.forms` takes values in the field 𝒦₀ = `valueField 0`, a subfield
-of B_dR that contains the image of S. -/
+of B_dR that contains the image of S.
+-/
 def valueFieldPoints (Q : Submodule Ainf L.Ambient) : Submodule k.S L.Ambient where
   carrier := {x ∈ Q | ∀ μ ∈ L.forms, μ x ∈ valueField 0}
   add_mem' := by aesop
@@ -268,21 +299,29 @@ def valueFieldPoints (Q : Submodule Ainf L.Ambient) : Submodule k.S L.Ambient wh
     simpa [phiInvToBdR, smul_def', IsScalarTower.algebraMap_apply k.S Ainf BdR] using
       mul_mem (phiInvToBdR_mem_valueField s) (hx_val μ hμ)
 
-/-- The Kisin module of L: the S-module of the x in `New.Lift.KummerChart.JumpLattice.kisinAinf` on
-which all Γ'-equivariant forms take values in the field 𝒦₀ (`New.Lift.KummerChart.valueField`). -/
+/--
+The Kisin module of L: the S-module of the x in `New.Lift.KummerChart.JumpLattice.kisinAinf` on
+which all Γ'-equivariant forms take values in the field 𝒦₀ (`New.Lift.KummerChart.valueField`).
+-/
 abbrev kisinModule : Submodule k.S L.Ambient := valueFieldPoints L.kisinAinf
 
-/-- The image of `New.Lift.KummerChart.JumpLattice.kisinAinf` under φ^l. It is the A_inf-submodule
-of the x in W(C^♭)⊗L with φ^{−l}x in `New.Lift.KummerChart.JumpLattice.kisinAinf`. -/
+/--
+The image of `New.Lift.KummerChart.JumpLattice.kisinAinf` under φ^l. It is the A_inf-submodule
+of the x in W(C^♭)⊗L with φ^{−l}x in `New.Lift.KummerChart.JumpLattice.kisinAinf`.
+-/
 def frobKisinAinf : Submodule Ainf L.Ambient := L.kisinAinf.comap (semilinearAct (φ ^ l)⁻¹)
 
-/-- The x in W(C^♭) ⊗ L that some product of the φ^a E multiplies into
-`New.Lift.KummerChart.JumpLattice.kisinAinf`. -/
+/--
+The x in W(C^♭) ⊗ L that some product of the φ^a E multiplies into
+`New.Lift.KummerChart.JumpLattice.kisinAinf`.
+-/
 def kisinLocAinf : Submodule Ainf L.Ambient :=
   saturateBy (Submonoid.closure (range fun a ↦ (k.frobE a).val)) L.kisinAinf
 
-/-- The Kisin module N with all φ^a E inverted: the x in
-`New.Lift.KummerChart.JumpLattice.kisinLocAinf` on which all forms take values in the field 𝒦₀. -/
+/--
+The Kisin module N with all φ^a E inverted: the x in
+`New.Lift.KummerChart.JumpLattice.kisinLocAinf` on which all forms take values in the field 𝒦₀.
+-/
 def kisinLoc : Submodule k.S L.Ambient := L.valueFieldPoints kisinLocAinf
 
 /-! ### Equivariant maps -/
@@ -290,51 +329,72 @@ def kisinLoc : Submodule k.S L.Ambient := L.valueFieldPoints kisinLocAinf
 /-- A Γ-equivariant O-linear map L → L' between lattices over the same coefficients O. -/
 abbrev Hom : Type := L.ρ.IntertwiningMap L'.ρ
 
-/-- For an equivariant map F : L → L', the W(C^♭)-linear map W(C^♭)⊗L → W(C^♭)⊗L' obtained by
-extension of scalars. -/
+/--
+For an equivariant map F : L → L', the W(C^♭)-linear map W(C^♭)⊗L → W(C^♭)⊗L' obtained by
+extension of scalars.
+-/
 abbrev Hom.wittMap {L' : JumpLattice O} (F : L.Hom L') : L.Ambient →ₗ[WittCFlat] L'.Ambient :=
   L.wittMap L' F.toLinearMap
 
-/-- Scalar multiplication on L by the root of unity ζ of the coefficient ring O, as an
-equivariant map from L to itself. -/
+/--
+Scalar multiplication on L by the root of unity ζ of the coefficient ring O, as an
+equivariant map from L to itself.
+-/
 def mulZeta : L.Hom L := ⟨LinearMap.lsmul O L.Carrier O.ζ, by aesop⟩
 
-/-- The endomorphism ω(i)⁻¹ζ of W(C^♭) ⊗ L, with ζ acting through L and ω(i), the Teichmüller
-lift of the letter i, as a scalar. -/
+/--
+The endomorphism ω(i)⁻¹ζ of W(C^♭) ⊗ L, with ζ acting through L and ω(i), the Teichmüller
+lift of the letter i, as a scalar.
+-/
 def letterOp : L.Ambient →ₗ[WittCFlat] L.Ambient := k.letterTeich i⁻¹ • L.mulZeta.wittMap
 
-/-- The part of W(C^♭) ⊗ L at the letter i: the A_inf-submodule on which ζ acts as the
-Teichmüller lift ω(i). -/
+/--
+The part of W(C^♭) ⊗ L at the letter i: the A_inf-submodule on which ζ acts as the
+Teichmüller lift ω(i).
+-/
 def letterPart : Submodule Ainf L.Ambient := (L.letterOp i - 1).ker.restrictScalars Ainf
 
-/-- The endomorphism q⁻¹ Σ_{n<q} (ω(i)⁻¹ζ)^n of W(C^♭) ⊗ L, q = p^f − 1; as ζ^q = 1 it
-projects to the part at the letter i. -/
+/--
+The endomorphism q⁻¹ Σ_{n<q} (ω(i)⁻¹ζ)^n of W(C^♭) ⊗ L, q = p^f − 1; as ζ^q = 1 it
+projects to the part at the letter i.
+-/
 def letterProj : L.Ambient →ₗ[WittCFlat] L.Ambient :=
   ⅟(card Letter : ℤ_[p]) • ∑ n ∈ Finset.range (card Letter), L.letterOp i ^ n
 
-/-- The A_inf-linear μ: W(C^♭) ⊗ L → B_dR that are Γ'-equivariant on 1 ⊗ L and send the
-projection of 1 ⊗ L to the letter i into t^{−u}B_dR^+. -/
+/--
+The A_inf-linear μ: W(C^♭) ⊗ L → B_dR that are Γ'-equivariant on 1 ⊗ L and send the
+projection of 1 ⊗ L to the letter i into t^{−u}B_dR^+.
+-/
 def formsOfType : Set L.Functional :=
   {μ ∈ L.forms | ∀ t : Rep.of (overZp L.ρ), μ (L.letterProj i (DiagTensor.mk 1 t)) ∈ hodgeFil (-u)}
 
 open scoped Classical in
-/-- The total multiplicity of the Hodge–Tate jump u of L over all embeddings γ of O in ℂ_p above
-the letter i, that is, with γ(ζ) = θ(ω(i)). -/
+/--
+The total multiplicity of the Hodge–Tate jump u of L over all embeddings γ of O in ℂ_p above
+the letter i, that is, with γ(ζ) = θ(ω(i)).
+-/
 abbrev jumpMultiplicity : ℕ :=
   ∑ γ : O.O →ₐ[ℤ_[p]] ℂ_[p] with γ O.ζ = ↑(theta (k.letterTeich i)), jump L.ρ γ u
 
-/-- The x in W(C^♭) ⊗ L that some non-zero divisor of A_inf multiplies into the A_inf-span of
-the elements 1 ⊗ y, y in L. -/
+/--
+The x in W(C^♭) ⊗ L that some non-zero divisor of A_inf multiplies into the A_inf-span of
+the elements 1 ⊗ y, y in L.
+-/
 abbrev fracSpan : Submodule Ainf L.Ambient := saturateBy (nonZeroDivisors Ainf) L.ainfLattice
 
-/-- The least natural number a such that all Hodge–Tate jumps of L, as a Z_p-representation of
-Γ', lie in [−a, a]; it is 0 if there is none. -/
+/--
+The least natural number a such that all Hodge–Tate jumps of L, as a Z_p-representation of
+Γ', lie in [−a, a]; it is 0 if there is none.
+-/
 def jumpBound : ℕ :=
-  sInf {a : ℕ | ∀ u : ℤ,
-    jump ((overZp L.ρ).comp k.subgroup.subtype) (ofId ℤ_[p] ℂ_[p]) u ≠ 0 → -a ≤ u ∧ u ≤ a}
+  sInf
+    {a : ℕ | ∀ u : ℤ,
+      jump ((overZp L.ρ).comp k.subgroup.subtype) (ofId ℤ_[p] ℂ_[p]) u ≠ 0 → -a ≤ u ∧ u ≤ a}
 
-/-- For an A_inf-linear μ: W(C^♭) ⊗ L → B_dR, the map μ ∘ φ^{−a}, semilinear for φ^{−a}: A_inf →
-B_dR. -/
+/--
+For an A_inf-linear μ: W(C^♭) ⊗ L → B_dR, the map μ ∘ φ^{−a}, semilinear for φ^{−a}: A_inf →
+B_dR.
+-/
 def valueAt (μ : L.Functional) : L.Ambient →ₛₗ[phiInvToBdR a] BdR where
   toAddHom := μ.toAddHom.comp (semilinearAct (φ ^ a)⁻¹).toAddHom
   map_smul' := by simp [phiInvToBdR, smul_def']
@@ -357,9 +417,12 @@ namespace New.Lift.KummerChart.JumpLattice
 
 open Period WittVector Submodule Set FrobGroup Module RingHom Finset Algebra
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
+variable
+  {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
   {k : KummerChart Γ} {O : Coeffs} {L L' : JumpLattice O} {l a b : ℕ} {i i' : Letter} {n : ℤ}
-  {x : L.Ambient} (g : k.galMonoid) (F : L.Hom L') (m : FrobGroup Γ) {μ : L.Functional}
+  {x : L.Ambient} (g : k.galMonoid) (F : L.Hom L')
+  (m : FrobGroup Γ)
+  {μ : L.Functional}
 
 /-- The map `W(C^♭) ⊗ L → W(C^♭) ⊗ L'` induced by an equivariant `F` commutes with the action of
 `m` in ℤ × Γ. -/
@@ -531,11 +594,13 @@ lemma zTauUnit_smul : k.zTauUnit • x = k.zTau • x := (rfl)
 @[simp]
 lemma frobEUnit_smul : k.frobEUnit a • x = (k.frobE a).val • x := (rfl)
 
-/-- The B_dR-linear map sending μ: W(C^♭) ⊗ L → B_dR to the vector of its values μ(1 ⊗ e_l) on a
-chosen Z_p-basis (e_l) of L. -/
+/--
+The B_dR-linear map sending μ: W(C^♭) ⊗ L → B_dR to the vector of its values μ(1 ⊗ e_l) on a
+chosen Z_p-basis (e_l) of L.
+-/
 noncomputable def basisValues : L.Functional →ₗ[BdR] Fin (Module.finrank ℤ_[p] L.Carrier) → BdR :=
-  LinearMap.pi fun l ↦ LinearMap.applyₗ' BdR
-    (DiagTensor.mk 1 (finBasis ℤ_[p] (Rep.of (overZp L.ρ)) l))
+  LinearMap.pi fun l ↦
+    LinearMap.applyₗ' BdR (DiagTensor.mk 1 (finBasis ℤ_[p] (Rep.of (overZp L.ρ)) l))
 
 /-- The A_inf-span of the `1 ⊗ y`, y in L, is spanned by the `1 ⊗ e_l` for the chosen ℤ_p-basis
 (e_l) of L. -/
@@ -565,8 +630,10 @@ lemma apply_eq_of_mem_fracSpan (f f' : L.Functional) (h_values : basisValues f =
 @[simp]
 lemma inr_smul {r : Ainf} (g : Γ) : inr g • r = toGp g • r := rfl
 
-/-- The conjugate of an A_inf-linear map μ: W(C^♭) ⊗ L → B_dR by g in Γ, namely
-x ↦ (toGp g)⁻¹ · μ(g x). -/
+/--
+The conjugate of an A_inf-linear map μ: W(C^♭) ⊗ L → B_dR by g in Γ, namely
+x ↦ (toGp g)⁻¹ · μ(g x).
+-/
 @[simps]
 noncomputable def conjForm (μ : L.Functional) (g : Γ) : L.Functional :=
   ⟨⟨fun x ↦ (toGp g)⁻¹ • μ (inr g • x), by simp⟩, by simp [smul_distrib_smul]⟩

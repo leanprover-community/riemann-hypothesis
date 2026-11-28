@@ -56,14 +56,16 @@ section MoveCounting
 
 open Set Finsupp
 
-/-- There are finitely many points `p i` with complex weights `w i` such that
+/--
+There are finitely many points `p i` with complex weights `w i` such that
 `a = ∑ w i * F (p i)`, and `∑ w i * #(M (p i) y) = c` for every point `y` such that `F x ≠ 0`
 whenever there is a move in `M x y`. Here `M x y` is thought of as the set of moves from `x` to
-`y`, and `Set.ncard` is `0` on infinite sets. -/
+`y`, and `Set.ncard` is `0` on infinite sets.
+-/
 def New.IsSampleTotal {P A : Type*} (M : P → P → Set A) (F : P → ℂ) (c a : ℂ) : Prop :=
   ∃ w : P →₀ ℂ,
-    a = lift ℂ ℂ P F w ∧
-    ∀ y : P, (∀ x : P, ∀ g ∈ M x y, F x ≠ 0) → lift ℂ ℂ P (fun x ↦ (M x y).ncard) w = c
+    a = lift ℂ ℂ P F w
+      ∧ ∀ y : P, (∀ x : P, ∀ g ∈ M x y, F x ≠ 0) → lift ℂ ℂ P (fun x ↦ (M x y).ncard) w = c
 
 /-- Double counting of moves. `IsSampleTotal M F c a` says that, for finitely many points `p i` with
 complex weights `w i`, `a = ∑ w i * F (p i)` and `∑ w i * #(M (p i) y) = c` for every `y` such that
@@ -134,7 +136,8 @@ section TwistedTraceSum
 
 open Subgroup LinearMap New.Variety DoubleCoset New.HasFiniteType Finset
 
-variable {E n : Type} [Field E] [New.CMType E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type} [Field E] [New.CMType E] [Fintype n] [DecidableEq n]
   (V : New.Space E n 1) (κ : New.Weight E)
 
 /-- The twist `ψ ↦ s ∘ ψ ∘ σ⁻¹` maps forms of weight `κ` on `V` to forms. Here `σ` is an
@@ -345,11 +348,13 @@ section BaseChangeWeight
 
 open NumberField Matrix ComplexEmbedding ComplexConjugate Finset Module Fin RingHom Equiv Function
 
-variable {E E' n : Type} [Field E] [Field E'] [Algebra E E'] [IsGalois E E'] [Fintype n]
-    {σ : Gal(E'/E)}
+variable
+  {E E' n : Type} [Field E] [Field E'] [Algebra E E'] [IsGalois E E'] [Fintype n] {σ : Gal(E'/E)}
 
-/-- The base change of a weight: at an infinite place of `E'`, the diagram and the power of the
-determinant that `κ` has at the place of `E` below it. -/
+/--
+The base change of a weight: at an infinite place of `E'`, the diagram and the power of the
+determinant that `κ` has at the place of `E` below it.
+-/
 noncomputable def New.Weight.baseChange (κ : Weight E) : Weight E' :=
   (fun u ↦ κ.1 (u.comap (algebraMap E E')), fun u ↦ κ.2 (u.comap (algebraMap E E')))
 
@@ -613,24 +618,27 @@ lemma New.exists_isRootQuotient_of_isNormRoot {E E' n : Type} [Field E] [CMType 
 
 section MatchingRoots
 
-variable {E E' n : Type} [Field E] [CMType E] [Field E'] [Algebra E E'] [Fintype n] [DecidableEq n]
-  [CMTypeOver E E']
+variable
+  {E E' n : Type}
+  [Field E] [CMType E] [Field E'] [Algebra E E'] [Fintype n] [DecidableEq n] [CMTypeOver E E']
 
-/-- Facts about the maps between unitary points over `E` and `E'` in `New.twisted_trace_identity`:
+/--
+Facts about the maps between unitary points over `E` and `E'` in `New.twisted_trace_identity`:
 `j` is base change of rational points from `E` to `E'`, `ω` the action of `σ` on rational points
 over `E'`, `e` the inclusion of rational into finite adelic points. The maps `j` and `e` are
 injective, the three maps are compatible with `σ` and with base change, Galois descent holds for
 adelic and for rational points, and a rational cocycle of twisted norm one that splits adelically
-splits (Hasse principle). -/
-private structure New.IsBaseChangeMaps (σ : Gal(E'/E))
-    (j : U (1 : Matrix n n E) →* U (1 : Matrix n n E'))
-    (ω : U (1 : Matrix n n E') →* U (1 : Matrix n n E')) (e : U (1 : Matrix n n E') →* Gf E' n) :
-    Prop where
+splits (Hasse principle).
+-/
+private structure New.IsBaseChangeMaps
+    (σ : Gal(E'/E)) (j : U (1 : Matrix n n E) →* U (1 : Matrix n n E'))
+    (ω : U (1 : Matrix n n E') →* U (1 : Matrix n n E')) (e : U (1 : Matrix n n E') →* Gf E' n)
+    : Prop where
   j_injective : Injective j
   e_injective : Injective e
   map_apply_eq_galoisGf (δ : U (1 : Matrix n n E')) : e (ω δ) = galoisGf σ (e δ)
-  map_apply_eq_baseChangeGf (γ : U (1 : Matrix n n E)) :
-    e (j γ) = baseChangeGf ((stdSpace E n).embFin γ)
+  map_apply_eq_baseChangeGf (γ : U (1 : Matrix n n E))
+    : e (j γ) = baseChangeGf ((stdSpace E n).embFin γ)
   map_apply_eq_self (γ : U (1 : Matrix n n E)) : ω (j γ) = j γ
   galoisGf_baseChangeGf (g : Gf E n) : galoisGf σ (baseChangeGf g) = baseChangeGf g
   /-- Galois descent for finite adelic points. -/
@@ -638,42 +646,51 @@ private structure New.IsBaseChangeMaps (σ : Gal(E'/E))
   /-- Galois descent for rational points. -/
   exists_j_eq (δ : U (1 : Matrix n n E')) : ω δ = δ → ∃ γ : U (1 : Matrix n n E), j γ = δ
   /-- The Hasse principle: a rational cocycle of twisted norm one that splits adelically splits. -/
-  exists_ω_eq_inv_mul (s : U (1 : Matrix n n E')) (u : Gf E' n) :
-    e s = u * (galoisGf σ u)⁻¹ → twistedNorm ω (finrank E E') s = 1 →
-      ∃ g : U (1 : Matrix n n E'), ω g = s⁻¹ * g
+  exists_ω_eq_inv_mul (s : U (1 : Matrix n n E')) (u : Gf E' n)
+    : e s = u * (galoisGf σ u)⁻¹ → twistedNorm ω (finrank E E') s = 1
+      → ∃ g : U (1 : Matrix n n E'), ω g = s⁻¹ * g
 
-/-- Facts about a matching pair `(f, φ)` used by the double counting in
+/--
+Facts about a matching pair `(f, φ)` used by the double counting in
 `New.twisted_trace_identity`. `Good ν` marks the rational `ν` over `E'` whose characteristic
 polynomial occurs in the matching condition, with a rational root quotient `A ν` and an adelic one
 `B ν`. The fields: twisted invariance of `φ` under `K`, goodness at non-zero terms, compatibility
-with conjugation, the twisted norm through `A ν` and `B ν`, and matching of values and of `K`. -/
-private structure New.IsMatchingRoots (σ : Gal(E'/E)) (K : Subgroup (Gf E' n)) (f : Gf E n → ℂ)
-    (φ : U (1 : Matrix n n (𝔸f E')) → ℂ) (j : U (1 : Matrix n n E) →* U (1 : Matrix n n E'))
+with conjugation, the twisted norm through `A ν` and `B ν`, and matching of values and of `K`.
+-/
+private structure New.IsMatchingRoots
+    (σ : Gal(E'/E)) (K : Subgroup (Gf E' n)) (f : Gf E n → ℂ) (φ : U (1 : Matrix n n (𝔸f E')) → ℂ)
+    (j : U (1 : Matrix n n E) →* U (1 : Matrix n n E'))
     (ω : U (1 : Matrix n n E') →* U (1 : Matrix n n E')) (e : U (1 : Matrix n n E') →* Gf E' n)
     (Good : U (1 : Matrix n n E') → Prop) (A : U (1 : Matrix n n E') → U (1 : Matrix n n E'))
-    (B : U (1 : Matrix n n E') → Gf E' n) : Prop where
-  apply_inv_mul_mul_galoisGf (k : Gf E' n) (hk : k ∈ K) (δ : Gf E' n) :
-    φ (k⁻¹ * δ * galoisGf σ k) = φ δ
-  good_of_apply_ne_zero (x : Gf E n) (γ : U (1 : Matrix n n E)) :
-    f (x⁻¹ * (stdSpace E n).embFin γ * x) ≠ 0 → Good (j γ)
-  good_twistedNorm (x : Gf E' n) (δ : U (1 : Matrix n n E')) :
-    φ (x⁻¹ * e δ * galoisGf σ x) ≠ 0 → Good (twistedNorm ω (finrank E E') δ)
-  good_and_conj_of_semiconjBy {ν ν' : U (1 : Matrix n n E')} (g : U (1 : Matrix n n E')) :
-    Good ν → SemiconjBy g ν ν' →
-    Good ν' ∧ A ν' = g * A ν * g⁻¹ ∧ B ν' = e g * B ν * (e g)⁻¹
-  map_twistedNorm_eq {ν δ : U (1 : Matrix n n E')} : Good ν → SemiconjBy δ (ω ν) ν →
-    e (twistedNorm ω (finrank E E') δ) =
-      e ν * ((B ν)⁻¹ * e (twistedNorm ω (finrank E E') (A ν * δ)) * B ν)
-  exists_inv_mul_eq {ν δ : U (1 : Matrix n n E')} : Good ν → SemiconjBy δ (ω ν) ν →
-    ∃ r : Gf E' n, r⁻¹ * e δ = (B ν)⁻¹ * e (A ν * δ) * galoisGf σ (B ν) ∧
-      ∀ y : Gf E' n,
-        (∀ g : Gf E n, baseChangeGf g = y⁻¹ * e ν * y →
-          twistedNorm (galoisGf σ) (finrank E E') (y⁻¹ * r * y) = y⁻¹ * e ν * y →
-          f g = φ (y⁻¹ * r * y)) ∧
-        ∀ δ' : Gf E' n, twistedNorm (galoisGf σ) (finrank E E') δ' = y⁻¹ * e ν * y → φ δ' ≠ 0 →
-          (y⁻¹ * r * y)⁻¹ * δ' ∈ K
+    (B : U (1 : Matrix n n E') → Gf E' n)
+    : Prop where
+  apply_inv_mul_mul_galoisGf (k : Gf E' n) (hk : k ∈ K) (δ : Gf E' n)
+    : φ (k⁻¹ * δ * galoisGf σ k) = φ δ
+  good_of_apply_ne_zero (x : Gf E n) (γ : U (1 : Matrix n n E))
+    : f (x⁻¹ * (stdSpace E n).embFin γ * x) ≠ 0 → Good (j γ)
+  good_twistedNorm (x : Gf E' n) (δ : U (1 : Matrix n n E'))
+    : φ (x⁻¹ * e δ * galoisGf σ x) ≠ 0 → Good (twistedNorm ω (finrank E E') δ)
+  good_and_conj_of_semiconjBy {ν ν' : U (1 : Matrix n n E')} (g : U (1 : Matrix n n E'))
+    : Good ν → SemiconjBy g ν ν' → Good ν' ∧ A ν' = g * A ν * g⁻¹ ∧ B ν' = e g * B ν * (e g)⁻¹
+  map_twistedNorm_eq {ν δ : U (1 : Matrix n n E')}
+    : Good ν → SemiconjBy δ (ω ν) ν
+      → e (twistedNorm ω (finrank E E') δ)
+        = e ν * ((B ν)⁻¹ * e (twistedNorm ω (finrank E E') (A ν * δ)) * B ν)
+  exists_inv_mul_eq {ν δ : U (1 : Matrix n n E')}
+    : Good ν → SemiconjBy δ (ω ν) ν
+      → ∃ r : Gf E' n,
+        r⁻¹ * e δ = (B ν)⁻¹ * e (A ν * δ) * galoisGf σ (B ν)
+          ∧ ∀ y : Gf E' n,
+            (∀ g : Gf E n,
+                baseChangeGf g = y⁻¹ * e ν * y
+                  → twistedNorm (galoisGf σ) (finrank E E') (y⁻¹ * r * y) = y⁻¹ * e ν * y
+                  → f g = φ (y⁻¹ * r * y))
+              ∧ ∀ δ' : Gf E' n,
+                twistedNorm (galoisGf σ) (finrank E E') δ' = y⁻¹ * e ν * y → φ δ' ≠ 0
+                  → (y⁻¹ * r * y)⁻¹ * δ' ∈ K
 
-variable {σ : Gal(E'/E)} {j : U (1 : Matrix n n E) →* U (1 : Matrix n n E')}
+variable
+  {σ : Gal(E'/E)} {j : U (1 : Matrix n n E) →* U (1 : Matrix n n E')}
   {ω : U (1 : Matrix n n E') →* U (1 : Matrix n n E')} {e : U (1 : Matrix n n E') →* Gf E' n}
   {K : Subgroup (Gf E' n)} {f : Gf E n → ℂ} {φ : U (1 : Matrix n n (𝔸f E')) → ℂ}
   {Good : U (1 : Matrix n n E') → Prop} {A : U (1 : Matrix n n E') → U (1 : Matrix n n E')}

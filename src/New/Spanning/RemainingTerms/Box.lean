@@ -108,8 +108,8 @@ lemma encard_le_of_isIntegral_norm_le {α ι E : Type*} [Fintype ι] {A : Set α
   grw [encard_le_of_separated one_pos hr h_separated h_bounded]
   simp [Module.finrank_pi_fintype]
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
-  {D : Set (InfinitePlace E → ℂ)}
+variable
+  {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} {D : Set (InfinitePlace E → ℂ)}
 
 /-- A tuple of complex numbers, one for each infinite place, lies in `S.levelMultiples`, the
 multiples of the level `M = S.M`, if and only if it consists of the images of `M x` for an integer
@@ -210,9 +210,11 @@ lemma isResidueDomain_residueDomain [S.IsAdmissible] : S.IsResidueDomain S.resid
   Classical.epsilon_spec S.exists_isResidueDomain
 
 variable (S) in
-/-- The boxed points: the archimedean points `y` that are reduced for a chosen set satisfying
+/--
+The boxed points: the archimedean points `y` that are reduced for a chosen set satisfying
 `New.Filling.IsResidueDomain` (one exists for admissible data) and lie in the cut at every infinite
-place `v`, that is, `besselLength (y v) ≤ S.b ^ (6 * 𝔰.n + 2)`. -/
+place `v`, that is, `besselLength (y v) ≤ S.b ^ (6 * 𝔰.n + 2)`.
+-/
 def boxedPoints : Set (InfinitePlace E → 𝔰.G₁) :=
   {y ∈ S.reducedPoints S.residueDomain |
     ∀ v : InfinitePlace E, InCut (y v) S.b}

@@ -52,26 +52,33 @@ section Nodes
 
 variable {j : ℕ} {P : Parameters} (D : Data P) (z : Bool) (o i : ℕ) (τ : D.Φ)
 
-/-- The index set of the node `(i, j)`. For `z = false` (grid `Y`) it is `D.RowIndex` with `i`
+/--
+The index set of the node `(i, j)`. For `z = false` (grid `Y`) it is `D.RowIndex` with `i`
 and then `j` blocks of length `t`. For `z = true` (grid `Ỹ`) it is `D.RowIndex ⊕ Unit` with `i`
-blocks of length `t + 1` and `j` blocks of length `t - 1`. -/
+blocks of length `t + 1` and `j` blocks of length `t - 1`.
+-/
 protected def GridIndex (j : ℕ) : Type :=
   BlockIndex (BlockIndex (BlockIndex D.RowIndex Unit z.toNat) (Fin (D.t + z.toNat)) i)
     (Fin (D.t - z.toNat)) j
-  deriving Fintype, DecidableEq
+deriving Fintype, DecidableEq
 
-/-- The numbering of the base index set: `D.basisNumber` on `D.RowIndex`, and `r` for the extra
-point of grid `Ỹ`. -/
+/--
+The numbering of the base index set: `D.basisNumber` on `D.RowIndex`, and `r` for the extra
+point of grid `Ỹ`.
+-/
 def gridNumber : ∀ z : Bool, BlockIndex D.RowIndex Unit z.toNat ≃ Fin (D.r + z.toNat)
   | false => D.basisNumber
   | true => (D.basisNumber.sumCongr finOneEquiv.symm).trans finSumFinEquiv
 
-/-- A chosen splitting of the index set of the node `(i, j)` into blocks. An index becomes either a
+/--
+A chosen splitting of the index set of the node `(i, j)` into blocks. An index becomes either a
 base number or a pair `(l, b)` of a block of the first or second kind and a position in that block.
 At the node `(0, 0)` the base number is the one under `D.gridNumber z`; otherwise the bijection is
-arbitrary (`New.BlockIndex.equivSum`). -/
-def gridBlockEquiv {z : Bool} {i : ℕ} : D.GridIndex z i j ≃
-    (Fin (D.r + z.toNat) ⊕ Fin i × Fin (D.t + z.toNat)) ⊕ Fin j × Fin (D.t - z.toNat) :=
+arbitrary (`New.BlockIndex.equivSum`).
+-/
+def gridBlockEquiv {z : Bool} {i : ℕ}
+    : D.GridIndex z i j
+      ≃ (Fin (D.r + z.toNat) ⊕ Fin i × Fin (D.t + z.toNat)) ⊕ Fin j × Fin (D.t - z.toNat) :=
   equivSum (equivSum (D.gridNumber z) i) j
 
 /-- The sign `entrySign o j a` is `-1` if `o + a + min (a - o) j` is odd and `1` otherwise, the
@@ -80,24 +87,35 @@ lemma entrySign_eq_ite (j a : ℕ) :
     entrySign o j a = (if (o + a + min (a - o) j) % 2 = 1 then -1 else 1) := by
   grind [entrySign_eq_neg_one_pow, neg_one_pow_eq_ite]
 
-/-- The signs at the node `(i, j)` with offset `o`; the grids are the case `o = 0`, the triangles
+/--
+The signs at the node `(i, j)` with offset `o`; the grids are the case `o = 0`, the triangles
 the case `i = 0`. The base index with number `n` has the sign `entrySign o j (n + 1 - k)`, and the
-added blocks have the sign `+1`. -/
+added blocks have the sign `+1`.
+-/
 def gridSigns (j : ℕ) (x : D.GridIndex z i j) : ℤˣ :=
   (D.gridBlockEquiv x).elim
     (Sum.elim (fun n : Fin (D.r + z.toNat) ↦ entrySign o j (n.val + 1 - D.k)) 1) 1
 
-/-- The doubled parameter at the node `(i, j)` with offset `o` and the infinite place `τ`: an
+/--
+The doubled parameter at the node `(i, j)` with offset `o` and the infinite place `τ`: an
 integer vector on the index set (`HCParam`). For `o = 0` it is twice the
 parameter of `Y^i_j` if `z = false`, and minus twice the parameter of `Ỹ^j_i` if `z = true`; see
 `gridParam_false` and `neg_gridParam_true`. A block of length `s` centred at `c` has the doubled
-entries `2c + s - 1, 2c + s - 3, …, 2c - s + 1`. -/
+entries `2c + s - 1, 2c + s - 3, …, 2c - s + 1`.
+-/
 def gridParam (j : ℕ) (τ : D.Φ) : HCParam (D.gridSigns z o i j) := fun x : D.GridIndex z i j ↦
-  let y : ℤ := (D.gridBlockEquiv x).elim
-    (Sum.elim (fun n : Fin (D.r + z.toNat) ↦ 2 * D.targetParameter τ n.val)
-      fun (l, b) ↦ 2 * D.liftWeight (l + 1) τ + D.t - 1 - 2 * b)
-    fun (l, b) ↦ D.t - 1 - 2 * (D.liftWeight (l + 1 + o) τ + z.toNat) - 2 * b
-  bif z then y + 1 else if (j + i) % 2 = 1 then y - 1 else y
+  let y : ℤ :=
+    (D.gridBlockEquiv x).elim
+      (Sum.elim
+        (fun n : Fin (D.r + z.toNat) ↦ 2 * D.targetParameter τ n.val)
+        fun (l, b) ↦ 2 * D.liftWeight (l + 1) τ + D.t - 1 - 2 * b)
+      fun (l, b) ↦ D.t - 1 - 2 * (D.liftWeight (l + 1 + o) τ + z.toNat) - 2 * b
+  bif z then
+    y + 1
+  else if (j + i) % 2 = 1 then
+    y - 1
+  else
+    y
 
 /-- Grid `Y`: `D.gridParam false o i j τ` is twice `D.targetParameter τ` on the base, with blocks of
 length `t` centred at `w_l` (`1 ≤ l ≤ i`) and at `-w_(o+l)` (`1 ≤ l ≤ j`). All entries are lowered
@@ -136,29 +154,37 @@ lemma neg_gridParam_true (x : D.GridIndex true i j) :
   rw [Pi.neg_apply, gridParam_true]
   rcases D.gridBlockEquiv x with (n | ⟨l, b⟩) | ⟨l, b⟩ <;> grind
 
-/-- The signs of the space `Y_j` on its index type `D.Y j` (`D.RowIndex` and `j` blocks of length
-`t`), which is the node `(0, j)` of grid `Y` with offset `0`. -/
+/--
+The signs of the space `Y_j` on its index type `D.Y j` (`D.RowIndex` and `j` blocks of length
+`t`), which is the node `(0, j)` of grid `Y` with offset `0`.
+-/
 def signsY (j : ℕ) : D.Y j → ℤˣ := D.gridSigns false 0 0 j
 
-/-- Twice the parameter of the space `Y_j` at each infinite place, on the index type `D.Y j`
-(`D.RowIndex` and `j` blocks of length `t`): the node `(0, j)` of grid `Y` with offset `0`. -/
+/--
+Twice the parameter of the space `Y_j` at each infinite place, on the index type `D.Y j`
+(`D.RowIndex` and `j` blocks of length `t`): the node `(0, j)` of grid `Y` with offset `0`.
+-/
 def paramY (j : ℕ) : D.Φ → D.Y j → ℤ := D.gridParam false 0 0 j
 
 variable {z o i}
 
-/-- A step between two nodes inserts the block of a centre `±w_{l+1}`, and each of the two nodes has
+/--
+A step between two nodes inserts the block of a centre `±w_{l+1}`, and each of the two nodes has
 a weight: if its index type `n` has cardinality `N`, the weight at `τ` is `⌊N/2⌋ - w_{l+1}(τ)` for
-`c = true` and `⌈N/2⌉ - w_{l+1}(τ)` for `c = false`. The ceiling is written `(N + 1) / 2`. -/
+`c = true` and `⌈N/2⌉ - w_{l+1}(τ)` for `c = false`. The ceiling is written `(N + 1) / 2`.
+-/
 def gridWeight (c : Bool) (l : ℕ) (n : Type) [Fintype n] (τ : D.Φ) : ℤ :=
   (((Fintype.card n + (!c).toNat) / 2 : ℕ) - D.liftWeight (l + 1) τ : ℤ)
 
-/-- The product over the infinite places of the field `D.E` of the chosen joint harmonic
+/--
+The product over the infinite places of the field `D.E` of the chosen joint harmonic
 polynomials (`New.jointHarmonic`) for the nodes `(a, b)` and `(i, j)` of grid `z` with offset `o`.
 The weights are `D.gridWeight c l`, where `l` gives the centre `±w_{l+1}` of the step and `c` the
 rounding. The parameters are negated (`negIf`) if `d` is true, as for the step from `(i, j)` to
-`(i + 1, j)`. -/
-def gridHarmonic (o : ℕ) (d c : Bool) (l : ℕ) (z : Bool) (a b i j : ℕ) :
-    MvPolynomial (NumberField.InfinitePlace D.E × D.GridIndex z i j × D.GridIndex z a b) ℂ :=
+`(i + 1, j)`.
+-/
+def gridHarmonic (o : ℕ) (d c : Bool) (l : ℕ) (z : Bool) (a b i j : ℕ)
+    : MvPolynomial (NumberField.InfinitePlace D.E × D.GridIndex z i j × D.GridIndex z a b) ℂ :=
   jointHarmonic (D.gridWeight c l (D.GridIndex z a b)) (D.gridWeight c l (D.GridIndex z i j))
     (negIf d (D.gridParam z o a b)) (negIf d (D.gridParam z o i j)) (D.gridSigns z o a b)
     (D.gridSigns z o i j)
@@ -219,8 +245,10 @@ lemma exists_equiv_diagonal_signs (j : ℕ) :
     · grind
     · grind
 
-/-- A bijection from the index set of `Y` at `(j, j)` plus one point to that of `Ỹ`. It is the
-identity for `j = 0`. Otherwise it is chosen to match the signs (`exists_equiv_diagonal_signs`). -/
+/--
+A bijection from the index set of `Y` at `(j, j)` plus one point to that of `Ỹ`. It is the
+identity for `j = 0`. Otherwise it is chosen to match the signs (`exists_equiv_diagonal_signs`).
+-/
 def gridDiagEquiv : ∀ j : ℕ, D.GridIndex false j j ⊕ Unit ≃ D.GridIndex true j j
   | 0 => Equiv.refl (D.GridIndex false 0 0 ⊕ Unit)
   | j + 1 => (D.exists_equiv_diagonal_signs (j + 1)).choose.symm
@@ -472,19 +500,23 @@ lemma targetParameter_add_liftWeight_gap (j : ℕ) (τ : D.Φ) (p : ℕ) :
   · exact D.halfGap_le_targetParameter_add_liftWeight τ hp
   · exact D.targetParameter_add_liftWeight_le_neg_halfGap τ (not_lt.1 hp)
 
-/-- The centres of the grid `z` at `τ`: for `l < m` an up centre `w_(l+1)`, named `inl l`, and a
+/--
+The centres of the grid `z` at `τ`: for `l < m` an up centre `w_(l+1)`, named `inl l`, and a
 down centre `-w_(l+1)`, named `inr l`. The lengths are `t` in grid `Y`, and `t + 1` and `t - 1` in
 grid `Ỹ`. The stem is the parameter on the base. In grid `Ỹ` this is the negative of the system of
-the spaces `Ỹ^i_j`, whose up and down centres are exchanged. -/
+the spaces `Ỹ^i_j`, whose up and down centres are exchanged.
+-/
 def gridCentres (z : Bool) : CentreSystem (ℕ ⊕ ℕ) where
   centres := (range D.m).disjSum (range D.m)
-  center := Sum.elim (fun l : ℕ ↦ D.liftWeight (l + 1) τ) fun l : ℕ ↦ -D.liftWeight (l + 1) τ
+  center := Sum.elim (fun l : ℕ ↦ D.liftWeight (l + 1) τ) fun l : ℕ ↦ - D.liftWeight (l + 1) τ
   length := Sum.elim (fun _ : ℕ ↦ D.t + z.toNat) fun _ : ℕ ↦ D.t - z.toNat
   isUp := Sum.isLeft
   stem := (range (D.r + z.toNat)).image fun n : ℕ ↦ 2 * D.targetParameter τ n + z.toNat
 
-/-- The centres whose blocks are present at the node `(i, j)` with offset `o`: the up centres
-`l < i` and the down centres `o ≤ l < o + j`. -/
+/--
+The centres whose blocks are present at the node `(i, j)` with offset `o`: the up centres
+`l < i` and the down centres `o ≤ l < o + j`.
+-/
 def gridBlocks (o i j : ℕ) : Finset (ℕ ⊕ ℕ) := (range i).disjSum (Ico o (o + j))
 
 /-- The step from `(i, j)` to `(i + 1, j)` adds the up centre `i`. -/

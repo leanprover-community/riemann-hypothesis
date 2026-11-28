@@ -79,14 +79,18 @@ underlying `x`.
 
 namespace New.DiscreteUnits
 
-variable {Ω Γ K : Type*} [Field Ω] (x : DiscreteUnits Ω)
-  (a : Ω) [Group Γ] [Field K] [Algebra K Ω] [MulSemiringAction Γ Ω] [SMulCommClass Γ K Ω]
+variable
+  {Ω Γ K : Type*} [Field Ω]
+  (x : DiscreteUnits Ω) (a : Ω)
+  [Group Γ] [Field K] [Algebra K Ω] [MulSemiringAction Γ Ω] [SMulCommClass Γ K Ω]
 
 @[ext]
 lemma ext {x y : DiscreteUnits Ω} (h : x.toMul.val = y.toMul.val) : x = y := Units.ext h
 
-/-- A non-zero element a of the field Ω, viewed as an element of the additively written
-multiplicative group `New.DiscreteUnits` Ω. -/
+/--
+A non-zero element a of the field Ω, viewed as an element of the additively written
+multiplicative group `New.DiscreteUnits` Ω.
+-/
 def ofNeZero (ha : a ≠ 0) : DiscreteUnits Ω := Units.mk0 a ha
 
 @[simp]
@@ -123,40 +127,50 @@ namespace New
 
 open Function AddSubgroup QuotientAddGroup AddMonoidHom DFunLike Nat DiscreteModule
 
-variable {R R' S : Type}
-  (Γ : Type) [CommRing R] [CommRing R'] [CommRing S] [Group Γ] [TopologicalSpace Γ]
-  {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] [MulSemiringAction Γ Ω] [IsAlgClosed Ω]
-  [IsProGalois Γ K Ω] {A B C : Type} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C]
+variable
+  {R R' S : Type} (Γ : Type) [CommRing R] [CommRing R'] [CommRing S] [Group Γ] [TopologicalSpace Γ]
+  {K Ω : Type}
+  [Field K] [Field Ω] [Algebra K Ω] [MulSemiringAction Γ Ω] [IsAlgClosed Ω] [IsProGalois Γ K Ω]
+  {A B C : Type} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C]
 
-/-- The multiplicative group Ω^×, written additively, as a discrete module with its continuous
-action of Γ. -/
+/--
+The multiplicative group Ω^×, written additively, as a discrete module with its continuous
+action of Γ.
+-/
 abbrev unitsModule : DiscreteModule ℤ Γ :=
   of (unitsRep (Γ := Γ) (Ω := Ω)) <|
     -- the orbit map of each unit is locally constant
     continuous_prod_of_discrete_right.2 fun x ↦
-      ((isLocallyConstant_smul x.val).desc (fun g ↦ unitsRep g x) Units.val
-        Units.val_injective).continuous
+      ((isLocallyConstant_smul x.val).desc
+        (fun g ↦ unitsRep g x)
+        Units.val Units.val_injective).continuous
 
 /-- Additive maps from a finite group `A` to `Ωˣ` (written additively) form a finite set. -/
 instance [Finite A] : Finite (A →+ DiscreteUnits Ω) :=
   .of_equiv (Multiplicative A →* Ωˣ) toMultiplicativeLeft.symm
 
-/-- For Ω algebraically closed, `Ωˣ` written additively is divisible by every non-zero integer,
-since every unit has `n`-th roots (`New.DiscreteUnits.exists_nsmul`). -/
+/--
+For Ω algebraically closed, `Ωˣ` written additively is divisible by every non-zero integer,
+since every unit has `n`-th roots (`New.DiscreteUnits.exists_nsmul`).
+-/
 instance : DivisibleBy (DiscreteUnits Ω) ℤ :=
   @AddGroup.divisibleByIntOfDivisibleByNat _ _
     (divisibleByOfSMulRightSurj _ _ (swap (·.exists_nsmul)))
 
-variable {Γ}
-  (W : DiscreteModule S Γ) (M : DiscreteModule R Γ) (N : DiscreteModule R' Γ) (b : A →+ B →+ C)
+variable
+  {Γ} (W : DiscreteModule S Γ) (M : DiscreteModule R Γ) (N : DiscreteModule R' Γ) (b : A →+ B →+ C)
 
 /-! ### Annihilators -/
 
-/-- For a biadditive pairing b : A × B → C and a subgroup L of A, the subgroup of y in B with
-b(x, y) = 0 for all x in L. -/
+/--
+For a biadditive pairing b : A × B → C and a subgroup L of A, the subgroup of y in B with
+b(x, y) = 0 for all x in L.
+-/
 def pairingAnnihilator (L : AddSubgroup A) : AddSubgroup B :=
-  (b.comp (AddSubgroup.subtype L)).flip.ker.copy {y : B | ∀ x ∈ L,
-    b x y = 0} (by aesop (add simp ext_iff))
+  (b.comp (AddSubgroup.subtype L)).flip.ker.copy
+    {y : B | ∀ x ∈ L,
+      b x y = 0}
+    (by aesop (add simp ext_iff))
 
 /-- Let `β : A × B → C` be biadditive and let `e` identify ℚ/ℤ (`New.QZ`) with `C`. The index in
 `B` of the right kernel `{y | ∀ x, β x y = 0}` divides the index in `A` of the left kernel
@@ -196,47 +210,59 @@ instance : TopologicalSpace (A →+ B) := ⊥
 
 instance : DiscreteTopology (A →+ B) := ⟨rfl⟩
 
-/-- For a finite discrete Γ-module `M`, the discrete Γ-module `Hom(M, Ω^×)` of additive maps to
-`New.unitsModule`, on which `g` acts by `(g f)(m) = g f(g⁻¹ m)`. -/
+/--
+For a finite discrete Γ-module `M`, the discrete Γ-module `Hom(M, Ω^×)` of additive maps to
+`New.unitsModule`, on which `g` acts by `(g f)(m) = g f(g⁻¹ m)`.
+-/
 abbrev DiscreteModule.cartierDual [Finite M] : DiscreteModule ℤ Γ :=
   let W : DiscreteModule ℤ Γ := unitsModule Γ
   of (V := M →+ W)
       -- `g` sends `f` to `g ∘ f ∘ g⁻¹`.
-      { toFun g :=
-          toIntLinearMap
-            (AddMonoidHom.mk'
-              (fun f : M →+ W ↦ AddMonoidHom.comp (W.ρ g) (AddMonoidHom.comp f (M.ρ g⁻¹)))
-              (by simp [ext_iff]))
+      {
+        toFun g :=
+          toIntLinearMap (AddMonoidHom.mk'
+            (fun f : M →+ W ↦ AddMonoidHom.comp (W.ρ g) (AddMonoidHom.comp f (M.ρ g⁻¹)))
+            (by simp [ext_iff]))
         map_one' := by simp [ext_iff]
-        map_mul' := by simp [ext_iff] } <| by
-    -- A map from the finite set `M` is a finite tuple of values, each continuous in `g`.
-    refine .congr ?_ fun _ ↦ leftInverse_invFun coe_injective _
-    simp [continuous_prod_of_discrete_right]
-    fun_prop
+        map_mul' := by simp [ext_iff]
+      } <|
+    by
+      -- A map from the finite set `M` is a finite tuple of values, each continuous in `g`.
+      refine .congr ?_ fun _ ↦ leftInverse_invFun coe_injective _
+      simp [continuous_prod_of_discrete_right]
+      fun_prop
 
-variable (b : M →+ N →+ W)
-  (e : ∀ (g : Γ) (x : M.V) (y : N.V), b (M.ρ g x) (N.ρ g y) = W.ρ g (b x y))
+variable
+  (b : M →+ N →+ W) (e : ∀ (g : Γ) (x : M.V) (y : N.V), b (M.ρ g x) (N.ρ g y) = W.ρ g (b x y))
 
-/-- Let `M`, `N`, `W` be discrete Γ-modules and `b : M × N → W` a biadditive pairing that is
+/--
+Let `M`, `N`, `W` be discrete Γ-modules and `b : M × N → W` a biadditive pairing that is
 equivariant: `e` says `b (g x) (g y) = g (b x y)`. The cup product `Z¹(M) × Z¹(N) → H²(W)` sends
-1-cocycles `x`, `y` to the class of the 2-cocycle `(g, h) ↦ b (x g) (g (y h))`. -/
+1-cocycles `x`, `y` to the class of the 2-cocycle `(g, h) ↦ b (x g) (g (y h))`.
+-/
 def cupProduct : Z1 M.ρ →+ Z1 N.ρ →+ W.H2 :=
   (AddMonoidHom.mk'
-      (fun x : Z1 M.ρ ↦
-        AddMonoidHom.mk'
-          (fun y : Z1 N.ρ ↦
-            (⟨fun p ↦ b (x.val p.1) (N.ρ p.1 (y.val p.2)), by
-              obtain ⟨hx_cont, hx⟩ := x.property
-              obtain ⟨hy_cont, hy⟩ := y.property
-              -- The cocycle identities and `e` make the terms cancel in pairs.
-              exact ⟨by fun_prop, fun g h k ↦ by simp [hx, hy, ← e]⟩⟩ : Z2 W.ρ))
-          (by simp [funext_iff]))
-      (by simp [ext_iff, funext_iff])).compr₂ (QuotientAddGroup.mk' _)
+    (fun x : Z1 M.ρ ↦
+      AddMonoidHom.mk'
+        (fun y : Z1 N.ρ ↦
+          (⟨
+             fun p ↦ b (x.val p.1) (N.ρ p.1 (y.val p.2)),
+             by
+               obtain ⟨hx_cont, hx⟩ := x.property
+               obtain ⟨hy_cont, hy⟩ := y.property
+               -- The cocycle identities and `e` make the terms cancel in pairs.
+               exact ⟨by fun_prop, fun g h k ↦ by simp [hx, hy, ← e]⟩
+           ⟩
+            : Z2 W.ρ))
+        (by simp [funext_iff]))
+    (by simp [ext_iff, funext_iff])).compr₂ (QuotientAddGroup.mk' _)
 
-/-- For a finite discrete Γ-module `M`, the cup product `Z¹(Hom(M, Ω^×)) × Z¹(M) → H²(Ω^×)` of the
-evaluation pairing `(f, m) ↦ f m` (`Hom(M, Ω^×)` is `New.DiscreteModule.cartierDual`). -/
-abbrev DiscreteModule.evalCup [Finite M] :
-    ↥(Z1 M.cartierDual.ρ) →+ ↥(Z1 M.ρ) →+ (unitsModule Γ).H2 :=
+/--
+For a finite discrete Γ-module `M`, the cup product `Z¹(Hom(M, Ω^×)) × Z¹(M) → H²(Ω^×)` of the
+evaluation pairing `(f, m) ↦ f m` (`Hom(M, Ω^×)` is `New.DiscreteModule.cartierDual`).
+-/
+abbrev DiscreteModule.evalCup [Finite M]
+    : ↥(Z1 M.cartierDual.ρ) →+ ↥(Z1 M.ρ) →+ (unitsModule Γ).H2 :=
   cupProduct (unitsModule Γ) M.cartierDual M (AddMonoidHom.id M.cartierDual.V) (by simp)
 
 /-- Anticommutativity of the cup product. Let `Γ` be a group with a topology and let `W`, `M`, `N`
@@ -346,7 +372,8 @@ namespace New
 open DFunLike Set Submodule DistribSMul Function QZ DiscreteUnits QZChar IntermediateField Period
   DiscreteModule NeZero
 
-variable {Γ K Ω : Type _} [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω]
+variable
+  {Γ K Ω : Type _} [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω]
   [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
   (f : Z1 (unitsRep (Γ := Γ) (Ω := Ω)))
 
@@ -479,9 +506,10 @@ namespace New
 open QZChar DiscreteUnits DiscreteModule Algebra IsGalois Function Quotient QuotientGroup
   MulSemiringAction
 
-variable {Γ K Ω L : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω]
-  [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω] [Field L] [Algebra K L] [Algebra L Ω]
-  [IsScalarTower K L Ω]
+variable
+  {Γ K Ω L : Type}
+  [Group Γ] [TopologicalSpace Γ] [Field K] [Field Ω] [Algebra K Ω] [MulSemiringAction Γ Ω]
+  [IsProGalois Γ K Ω] [Field L] [Algebra K L] [Algebra L Ω] [IsScalarTower K L Ω]
 
 include K in
 /-- Let `U` be the closed subgroup of `Γ` of the elements that fix `L`, embedded in `Ω` by

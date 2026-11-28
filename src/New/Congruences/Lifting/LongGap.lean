@@ -58,24 +58,28 @@ section LongGap
 
 open Period Submodule Finset Polynomial JumpLattice algebraMap
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
-  {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O}
+variable
+  {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O}
 
-/-- The system of exponents obtained from the standard one of level `l` (`0` for `a < l`, `-u` for
-`a ≥ l`) by adding `o u` at `a = 0`, that is, at `E`. Here `a` stands for the element φ^a E. -/
+/--
+The system of exponents obtained from the standard one of level `l` (`0` for `a < l`, `-u` for
+`a ≥ l`) by adding `o u` at `a = 0`, that is, at `E`. Here `a` stands for the element φ^a E.
+-/
 abbrev JumpLattice.shiftedStdOrders (l : ℕ) (o : ℤ → ℤ) (a : ℕ) (u : ℤ) : ℤ :=
   stdOrders l a u + if 0 = a then o u else 0
 
-/-- The constants modulo `E ^ A` at the letter `i` of a lattice `L`. Let `x` lie in
+/--
+The constants modulo `E ^ A` at the letter `i` of a lattice `L`. Let `x` lie in
 `L.stdOrdersPart l i`: in the Kisin module of `L` with all `φ^a E` inverted, at `i`, with the
 standard orders of level `l`. This means that the value at `φ^a E` of each form of jump `u` is
 divisible by `t ^ c`, where `c` is `0` for `a < l` and `-u` for `a ≥ l`. It is a constant if every
 `g • x - x`, for `g` in the subgroup `Γ'` of the chart, has these orders raised by `A` at `E`, that
-is, at `a = 0`. The constants form a ℤ_p-module. -/
-noncomputable def JumpLattice.constantsModE (l : ℕ) (A : ℕ) (i : k.Letter) :
-    Submodule ℤ_[p] (Ambient (k := k) (O := O) (L := L)) :=
-  (L.stdOrdersPart l i).restrictScalars ℤ_[p] ⊓
-    invariantsMod (withOrders i (shiftedStdOrders l fun _ : ℤ ↦ A))
+is, at `a = 0`. The constants form a ℤ_p-module.
+-/
+noncomputable def JumpLattice.constantsModE (l : ℕ) (A : ℕ) (i : k.Letter)
+    : Submodule ℤ_[p] (Ambient (k := k) (O := O) (L := L)) :=
+  (L.stdOrdersPart l i).restrictScalars ℤ_[p]
+    ⊓ invariantsMod (withOrders i (shiftedStdOrders l fun _ : ℤ ↦ A))
 
 section ConstantsModE
 

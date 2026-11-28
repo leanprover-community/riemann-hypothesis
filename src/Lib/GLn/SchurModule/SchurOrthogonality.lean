@@ -73,51 +73,65 @@ open Matrix Finset Fintype
 
 namespace New
 
-variable {Φ n : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
-  {R : Type} [CommRing R] (κ : Φ → ℕ → ℕ) (e : Φ → ℤ) (l : Φ → n → ℤ) {s : n → ℤˣ}
+variable
+  {Φ n : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
+  {R : Type} [CommRing R]
+  (κ : Φ → ℕ → ℕ) (e : Φ → ℤ) (l : Φ → n → ℤ)
+  {s : n → ℤˣ}
 
-/-- The matrix representation of the product over places of the unitary groups of the diagonal
-form of signs s: g acts by `New.weylRep` at the entrywise complex conjugate of g. -/
-abbrev conjWeylMatrix :
-    (Φ → USign s) →* Matrix (WeylIndexFamily (fun _ ↦ n) κ) (WeylIndexFamily (fun _ ↦ n) κ) ℂ :=
+/--
+The matrix representation of the product over places of the unitary groups of the diagonal
+form of signs s: g acts by `New.weylRep` at the entrywise complex conjugate of g.
+-/
+abbrev conjWeylMatrix
+    : (Φ → USign s) →* Matrix (WeylIndexFamily (fun _ ↦ n) κ) (WeylIndexFamily (fun _ ↦ n) κ) ℂ :=
   (weylRep κ e).comp
-    (MonoidHom.pi
-      ((GeneralLinearGroup.map (starRingEnd ℂ)).comp <|
-        (USign s).subtype.comp <| Pi.evalMonoidHom _ ·))
+    (MonoidHom.pi ((GeneralLinearGroup.map (starRingEnd ℂ)).comp <| (USign s).subtype.comp <|
+      Pi.evalMonoidHom _ ·))
 
-/-- The complex linear representation of the product over places of the unitary groups of signs
-s on coordinate vectors of weight κ, acting by the matrices `New.conjWeylMatrix`. -/
+/--
+The complex linear representation of the product over places of the unitary groups of signs
+s on coordinate vectors of weight κ, acting by the matrices `New.conjWeylMatrix`.
+-/
 def conjWeylRep : Representation ℂ (Φ → USign s) (WeylIndex n κ → ℂ) :=
   toLinAlgEquiv'.toMonoidHom.comp (conjWeylMatrix κ e)
 
 /-! ### Highest vector and Harish-Chandra parameter -/
 
 /-- For an integer vector l and an index i, the number of indices j with l_j > l_i. -/
-def decreasingPosition (l : n → ℤ) (i : n) : ℕ := #{j : n | l i < l j}
+def decreasingPosition (l : n → ℤ) (i : n) : ℕ := # {j : n | l i < l j}
 
-/-- The complex evaluation vector of weight κ at the array with entry 1 in row a of block w
-exactly in column #{j : l_w(j) > l_w(a)}, and 0 elsewhere. -/
-def highestVector : WeylIndex n κ → ℂ := weylEval _ κ
-  (permArray fun τ i ↦ decreasingPosition (l τ) i)
+/--
+The complex evaluation vector of weight κ at the array with entry 1 in row a of block w
+exactly in column #{j : l_w(j) > l_w(a)}, and 0 elsewhere.
+-/
+def highestVector : WeylIndex n κ → ℂ :=
+  weylEval _ κ (permArray fun τ i ↦ decreasingPosition (l τ) i)
 
-/-- The integer 2μ_p + N − 1 − 2p, entry p (counted from 0) of twice the Harish-Chandra parameter
+/--
+The integer 2μ_p + N − 1 − 2p, entry p (counted from 0) of twice the Harish-Chandra parameter
 μ + ρ in rank N, where μ_p = e_w + Σ_{p<h<N} κ_w(h) is the highest weight at the place w; the sum is
-`diagramWeight (fun _ ↦ N) κ (w, p)`. -/
+`diagramWeight (fun _ ↦ N) κ (w, p)`.
+-/
 def hcParameter (N : ℕ) (w : Φ) (p : ℕ) : ℤ :=
   2 * (e w + diagramWeight (fun _ ↦ N) κ (w, p)) + N - 1 - 2 * p
 
-/-- `l` lists twice the Harish-Chandra parameter of the weight `(κ, e)`, in some order: at each
+/--
+`l` lists twice the Harish-Chandra parameter of the weight `(κ, e)`, in some order: at each
 place `w` the numbers `l w i` are distinct, and each of them is `hcParameter κ e (card n) w p` for
 some position `p < card n`. As `hcParameter` is strictly decreasing in `p`, the position of `i` is
-necessarily `decreasingPosition (l w) i`, the number of `j` with `l w i < l w j`. -/
+necessarily `decreasingPosition (l w) i`, the number of `j` with `l w i < l w j`.
+-/
 def IsHCParam : Prop :=
   ∀ w : Φ,
     (l w).Injective ∧ ∀ i : n, ∃ p < Fintype.card n, l w i = hcParameter κ e (Fintype.card n) w p
 
 variable {κ}
 
-/-- The sesquilinear form (ξ,η) ↦ ξ* G η on complex coordinate vectors of weight κ, conjugate
-linear in ξ, with G the integer Gram matrix. -/
+/--
+The sesquilinear form (ξ,η) ↦ ξ* G η on complex coordinate vectors of weight κ, conjugate
+linear in ξ, with G the integer Gram matrix.
+-/
 def gramForm : (WeylIndex n κ → ℂ) →ₗ⋆[ℂ] (WeylIndex n κ → ℂ) →ₗ[ℂ] ℂ :=
   (dotProductBilin ℂ ℂ).compl₂ weylGramOver.mulVecLin ∘ₛₗ (starLinearEquiv ℂ).toLinearMap
 
@@ -165,11 +179,14 @@ open MeasureTheory Matrix ComplexConjugate Finset Fintype Fin Norms.Operator New
 
 namespace New
 
-variable {Φ n : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
+variable
+  {Φ n : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
   {κ : Φ → ℕ → ℕ} {e : Φ → ℤ} {l : Φ → n → ℤ} {s : n → ℤˣ}
 
-/-- The index type `WeylIndex n κ` is never empty: it indexes the coordinates of a vector of norm
-one. -/
+/--
+The index type `WeylIndex n κ` is never empty: it indexes the coordinates of a vector of norm
+one.
+-/
 instance : Nonempty (WeylIndex n κ) := by
   by_contra! h_empty
   simpa [weylNormSq] using weylNormSq_weylEval_permArray (κ := κ) (rowEquivFin fun _ ↦ n)

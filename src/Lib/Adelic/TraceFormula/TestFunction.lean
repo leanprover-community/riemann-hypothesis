@@ -38,8 +38,10 @@ section Group
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G]
 
-/-- The space of test functions on `G`: the locally constant complex functions of compact
-support. -/
+/--
+The space of test functions on `G`: the locally constant complex functions of compact
+support.
+-/
 abbrev TestFunction (G : Type) [TopologicalSpace G] : Submodule ℂ (G → ℂ) :=
   schwartzBruhat (Set.univ : Set G)
 
@@ -50,8 +52,9 @@ lemma TestFunction.comp_mul_mem {f : G → ℂ} (hf : f ∈ TestFunction G) (a b
 
 /-- Left and right translation of test functions: `(a, b)` takes `f` to `x ↦ f (a⁻¹ * x * b)`. -/
 def TestFunction.translate : Representation ℂ (G × G) (TestFunction G) where
-  toFun g := (LinearMap.funLeft ℂ ℂ fun x : G ↦ g.1⁻¹ * x * g.2).restrict
-    fun _ hf ↦ TestFunction.comp_mul_mem hf g.1 g.2
+  toFun g :=
+    (LinearMap.funLeft ℂ ℂ fun x : G ↦ g.1⁻¹ * x * g.2).restrict fun _ hf ↦
+      TestFunction.comp_mul_mem hf g.1 g.2
   map_one' := by
     ext f x
     simp
@@ -64,16 +67,22 @@ def TestFunction.translate : Representation ℂ (G × G) (TestFunction G) where
     (translate g f : G → ℂ) x = (f : G → ℂ) (g.1⁻¹ * x * g.2) := rfl
 
 /-- The characteristic function of a compact open subgroup. -/
-noncomputable def TestFunction.indicator {K : Subgroup G} (hK_open : IsOpen (K : Set G))
-    (hK_compact : IsCompact (K : Set G)) : TestFunction G :=
-  ⟨Set.indicator K 1,
-    (LocallyConstant.indicator 1 ⟨K.isClosed_of_isOpen hK_open, hK_open⟩).isLocallyConstant,
-    HasCompactSupport.intro hK_compact fun _ hx ↦ Set.indicator_of_notMem hx _, Set.subset_univ _⟩
+noncomputable def TestFunction.indicator
+    {K : Subgroup G} (hK_open : IsOpen (K : Set G)) (hK_compact : IsCompact (K : Set G))
+    : TestFunction G := ⟨
+  Set.indicator K 1,
+  (LocallyConstant.indicator 1 ⟨K.isClosed_of_isOpen hK_open, hK_open⟩).isLocallyConstant,
+  HasCompactSupport.intro hK_compact fun _ hx ↦ Set.indicator_of_notMem hx _,
+  Set.subset_univ _
+⟩
 
-/-- The linear map `a ↦ a ⋆ 1_K` from the group algebra to the test functions, for a compact open
-subgroup `K`: the group element `b` goes to the characteristic function of the coset `b K`. -/
-noncomputable def convIndicator {K : Subgroup G} (hK_open : IsOpen (K : Set G))
-    (hK_compact : IsCompact (K : Set G)) : MonoidAlgebra ℂ G →ₗ[ℂ] TestFunction G :=
+/--
+The linear map `a ↦ a ⋆ 1_K` from the group algebra to the test functions, for a compact open
+subgroup `K`: the group element `b` goes to the characteristic function of the coset `b K`.
+-/
+noncomputable def convIndicator
+    {K : Subgroup G} (hK_open : IsOpen (K : Set G)) (hK_compact : IsCompact (K : Set G))
+    : MonoidAlgebra ℂ G →ₗ[ℂ] TestFunction G :=
   (Representation.asAlgebraHom (TestFunction.translate.comp (.inl G G))).toLinearMap.flip
     (TestFunction.indicator hK_open hK_compact)
 
@@ -95,13 +104,17 @@ lemma convIndicator_single_mul {K : Subgroup G} (hK_open : IsOpen (K : Set G))
       c * (convIndicator hK_open hK_compact a : G → ℂ) (b⁻¹ * x) := by
   simp [convIndicator]
 
-/-- The representation of `G × G` on test functions by translation is smooth: each test function is
-fixed by all translations near the identity. -/
+/--
+The representation of `G × G` on test functions by translation is smooth: each test function is
+fixed by all translations near the identity.
+-/
 instance : IsSmoothRep (TestFunction.translate (G := G)) := by
   refine ⟨fun f : TestFunction G ↦ ?_⟩
   have h_const : IsLocallyConstant fun (g : G × G) (x : G) ↦ f.val (g.1⁻¹ * x * g.2) :=
-    schwartzBruhat.isLocallyConstant_curry f.property (fun (g : G × G) (x : G) ↦ g.1⁻¹ * x * g.2)
-      (fun (g : G × G) (x : G) ↦ g.1 * (x * g.2⁻¹)) (fun g x ↦ by group)
+    schwartzBruhat.isLocallyConstant_curry f.property
+      (fun (g : G × G) (x : G) ↦ g.1⁻¹ * x * g.2)
+      (fun (g : G × G) (x : G) ↦ g.1 * (x * g.2⁻¹))
+      (fun g x ↦ by group)
   filter_upwards [h_const.eventually_eq 1] with g hg
   ext x
   simpa using congrFun hg x
@@ -129,21 +142,24 @@ lemma map_radicalHom_coordProjector {k' : Type} [CommRing k'] (f : k →+* k') (
 
 end Radical
 
-variable {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
-  {w : FinPlace E}
+variable
+  {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n] {w : FinPlace E}
 
-/-- The test function `φ` is cuspidal at the split place `w`. Let `U` be the unipotent radical of a
+/--
+The test function `φ` is cuspidal at the split place `w`. Let `U` be the unipotent radical of a
 proper parabolic subgroup of `GL_n(F_w)`, with `F_w` the residue field at `w`, that is cut out by a
 set `T` of coordinates. Then every left translate of `φ` has sum zero over each coset `U t`, lifted
 to `GL_n(O_w)` and put into the adelic group at `w` by `ofSplitPlace`. In detail, the sum runs over
 all matrices `Z` over `F_w`, each with a lift of the element `radicalHom Z * t` of the coset; every
-element is met equally often, and every choice of these lifts is allowed. -/
+element is met equally often, and every choice of these lifts is allowed.
+-/
 def IsCuspidalAt (hw : w.IsSplit) (φ : TestFunction (Gf E n)) : Prop :=
-  ∀ T : Finset n, T ≠ ∅ → T ≠ univ → ∀ (t : GL n (ResField w))
-    (lift : Matrix n n (ResField w) → localIntGL n w),
-    (∀ Z : Matrix n n (ResField w),
-      reduceGL (lift Z) = radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z) * t) →
-    ∀ g : Gf E n, ∑ᶠ Z : Matrix n n (ResField w), φ.val (g * ofSplitPlace hw (lift Z)) = 0
+  ∀ T : Finset n,
+    T ≠ ∅ → T ≠ univ
+      → ∀ (t : GL n (ResField w)) (lift : Matrix n n (ResField w) → localIntGL n w),
+        (∀ Z : Matrix n n (ResField w),
+            reduceGL (lift Z) = radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z) * t)
+          → ∀ g : Gf E n, ∑ᶠ Z : Matrix n n (ResField w), φ.val (g * ofSplitPlace hw (lift Z)) = 0
 
 omit [IsCMField E] in
 /-- Let `T` be a set of coordinates. Every element `1 + ε Z (1 - ε)` (`radicalHom`, with `ε` the

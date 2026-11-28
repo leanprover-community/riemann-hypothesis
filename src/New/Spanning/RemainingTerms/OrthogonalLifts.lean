@@ -45,37 +45,44 @@ namespace New.Filling
 
 open Matrix Fintype Equiv Fin Algebra Sum Submodule RingHom Pointwise
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {τ : Type}
-  {S : Filling E 𝔰} {c c' : S.Classes} {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
+variable
+  {E : Type} [Field E] [CMType E]
+  {𝔰 : Shape} {τ : Type} {S : Filling E 𝔰} {c c' : S.Classes} {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
 
 /-! ### A basis of `I` and lifts of a basis of the link -/
 
 /-- The indices `b ≥ j` of the basis vectors `e_b` of `A`. -/
-abbrev IndexNotBelow (j : Fin (𝔰.ϱ + 2)) : Type := {a : Fin 𝔰.ϱ // ¬a.val < j}
+abbrev IndexNotBelow (j : Fin (𝔰.ϱ + 2)) : Type := {a : Fin 𝔰.ϱ // ¬ a.val < j}
 
 /-- The vectors `z` and `k z`, as columns. -/
-abbrev lastPair {R : Type} [CommRing R] [StarRing R] {T : 𝔰.Form R} (k : T.G) :
-    Matrix 𝔰.BesselIndex (Unit ⊕ Unit) R :=
+abbrev lastPair {R : Type} [CommRing R] [StarRing R] {T : 𝔰.Form R} (k : T.G)
+    : Matrix 𝔰.BesselIndex (Unit ⊕ Unit) R :=
   (framePair k).submatrix id (.map (fun _ ↦ 𝔰.top) fun _ ↦ 𝔰.top)
 
 /-- The matrix whose columns are the basis vectors `e*_b` with `b ≥ j`. -/
-noncomputable def eStarCols (R : Type) [CommRing R] (j : Fin (𝔰.ϱ + 2)) :
-    Matrix 𝔰.BesselIndex (IndexNotBelow j) R :=
+noncomputable def eStarCols (R : Type) [CommRing R] (j : Fin (𝔰.ϱ + 2))
+    : Matrix 𝔰.BesselIndex (IndexNotBelow j) R :=
   (diagonal 1).submatrix id (inr ∘ inr ∘ sumCompl (fun a : Fin 𝔰.ϱ ↦ a.val < j) ∘ inr)
 
-/-- An orthogonal lift of `v` at cell rank `j`. The columns of `u` are orthogonal to the isotropic
+/--
+An orthogonal lift of `v` at cell rank `j`. The columns of `u` are orthogonal to the isotropic
 space `A = ⟨e₁, …, e_ϱ⟩` and to `γ A`. The first ones, one for each index `b ≥ j`, are dual to the
 vectors `e*_b` and are sent to zero by `linkMatrix γ` (the map to the middle coordinates of `t` and
-`γ⁻¹ t`). The others are orthogonal to the `e*_b` and are sent to the columns of `v`. -/
-structure IsOrthogonalLift (j : Fin (𝔰.ϱ + 2)) (γ : S.G E)
-    (v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E)
-    (u : Matrix 𝔰.BesselIndex (IndexNotBelow j ⊕ τ) E) : Prop where
+`γ⁻¹ t`). The others are orthogonal to the `e*_b` and are sent to the columns of `v`.
+-/
+structure IsOrthogonalLift
+    (j : Fin (𝔰.ϱ + 2))
+    (γ : S.G E) (v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E)
+    (u : Matrix 𝔰.BesselIndex (IndexNotBelow j ⊕ τ) E)
+    : Prop where
   /-- The columns of `u` are orthogonal to `A` and `γ A`. -/
   orthogonal : (isotropicFramePair γ)ᴴ * S.ratGram * u = 0
   /-- The map `linkMatrix γ` kills the first columns of `u` and sends the others to those of `v`. -/
   linkMatrix_mul : linkMatrix γ * u = fromCols 0 v
-  /-- The first columns of `u` are dual to the `e*_b` with `b ≥ j`, the others are orthogonal to
-  them. -/
+  /--
+  The first columns of `u` are dual to the `e*_b` with `b ≥ j`, the others are orthogonal to
+  them.
+  -/
   dual : (eStarCols E j)ᴴ * S.ratGram * u = fromCols 1 0
 
 /-- Let `γ` have cell rank `j`. For any `d`, some vector of `A ∩ γ A`, where `A` is the span of the
@@ -166,7 +173,8 @@ lemma exists_orthogonal_lift [Fintype τ] [DecidableEq τ] (hj : S.HasCellRank j
 
 section OrthogonalLift
 
-variable {τ : Type} {v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E}
+variable
+  {τ : Type} {v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E}
   {u : Matrix 𝔰.BesselIndex (IndexNotBelow j ⊕ τ) E}
 
 /-- Let `u` be an orthogonal lift. In its row of the isotropic basis vector `e_i`, `i ≥ j`, it has
@@ -259,8 +267,8 @@ end OrthogonalLift
 /-! ### The two lists and their index -/
 
 /-- The vectors `e_a` and `k e_a` with `a < j`, as columns. -/
-abbrev listPair {R : Type} [CommRing R] [StarRing R] {T : 𝔰.Form R} (j : Fin (𝔰.ϱ + 2)) (k : T.G) :
-    Matrix 𝔰.BesselIndex (IndexBelow j ⊕ IndexBelow j) R :=
+abbrev listPair {R : Type} [CommRing R] [StarRing R] {T : 𝔰.Form R} (j : Fin (𝔰.ϱ + 2)) (k : T.G)
+    : Matrix 𝔰.BesselIndex (IndexBelow j ⊕ IndexBelow j) R :=
   (isotropicFramePair k).submatrix id (.map Subtype.val Subtype.val)
 
 /-- Take the Gram matrix of the vectors `e_a`, `γ e_a` (`a < j`), `z`, `γ z`, and add `N` to the
@@ -320,7 +328,8 @@ lemma abs_norm_det_gram_eq_abs_norm_subframeMinor_sq :
 
 section Index
 
-variable {k : S.GFin} {σ μ : Type} [Fintype σ] [Fintype μ] [DecidableEq μ]
+variable
+  {k : S.GFin} {σ μ : Type} [Fintype σ] [Fintype μ] [DecidableEq μ]
   {ι : Matrix 𝔰.BesselIndex σ (𝔸f E)} {B : Matrix 𝔰.BesselIndex μ (𝔸f E)}
   {q : Matrix μ 𝔰.BesselIndex (𝔸f E)}
 

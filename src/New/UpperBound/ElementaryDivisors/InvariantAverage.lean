@@ -102,9 +102,11 @@ lemma cast_multinomial_dvd_pow {O : Type} [CommRing O] [IsDomain O] [ValuationRi
     rw [multinomial_cons, cast_mul, card_cons, Nat.add_one_mul, pow_add, mul_comm]
     exact mul_dvd_mul (ih (by grind)) (cast_choose_dvd_pow hp_prime hp (by simpa using h_lt))
 
-/-- Give the polynomials in the variables `σ` the bilinear form for which monomials are orthogonal
+/--
+Give the polynomials in the variables `σ` the bilinear form for which monomials are orthogonal
 and `⟨x ^ α, x ^ α⟩ = η α`. The weights `η` are adjoint weights if, for every matrix `A`, the linear
-substitutions of the variables (`linSubst`) by `A` and by `Aᵀ` are adjoint for this form. -/
+substitutions of the variables (`linSubst`) by `A` and by `Aᵀ` are adjoint for this form.
+-/
 def IsAdjointWeight {O σ : Type} [CommRing O] [Fintype σ] (η : (σ →₀ ℕ) → O) : Prop :=
   ∀ (A : Matrix σ σ O) (α β : σ →₀ ℕ),
     (linSubst A (monomial β 1)).coeff α * η α = η β * (linSubst Aᵀ (monomial α 1)).coeff β
@@ -166,13 +168,15 @@ lemma exists_isAdjointWeight {O : Type} (σ : Type) [CommRing O] [Fintype σ] [I
 
 /-! ### Conjugation and averages -/
 
-/-- Conjugation of the generic matrix: the `O`-algebra map that substitutes `ι(a⁻¹) * X * ι(a)` for
+/--
+Conjugation of the generic matrix: the `O`-algebra map that substitutes `ι(a⁻¹) * X * ι(a)` for
 `X`, so `X (i, j) ↦ ∑ s t, ι (a⁻¹ i s) * ι (a t j) • X (s, t)`. It is written as the linear
 substitution `New.linSubst` by the Kronecker product of `ι(a⁻¹)ᵀ` and `ι(a)`, whose entry at
-`((s, t), (i, j))` is that coefficient. -/
-noncomputable def conjSubst {k : ℕ} {W O : Type} [CommRing W] [CommRing O] (ι : W →+* O)
-    (a : GL (Fin k) W) :
-    MvPolynomial (Fin k × Fin k) O →ₐ[O] MvPolynomial (Fin k × Fin k) O :=
+`((s, t), (i, j))` is that coefficient.
+-/
+noncomputable def conjSubst
+    {k : ℕ} {W O : Type} [CommRing W] [CommRing O] (ι : W →+* O) (a : GL (Fin k) W)
+    : MvPolynomial (Fin k × Fin k) O →ₐ[O] MvPolynomial (Fin k × Fin k) O :=
   linSubst (a⁻¹.valᵀ.kroneckerMap (fun s t : W ↦ ι s * ι t) a.val)
 
 /-- Conjugation (`conjSubst`) by the diagonal matrix `diagGL u` with unit entries `u i` scales the
@@ -185,8 +189,8 @@ lemma conjSubst_diagGL_X {k : ℕ} {W O : Type} [CommRing W] [CommRing O] (ι : 
   simp [linSubst, sum_prod_type, diagonal_apply, apply_ite ι]
 
 /-- The form `ψ ↦ c * ψ(1)`: evaluation at the identity matrix, times `c`. -/
-noncomputable def evalAtOne {k : ℕ} {O : Type} [CommRing O] (c : O) :
-    Dual O (MvPolynomial (Fin k × Fin k) O) :=
+noncomputable def evalAtOne {k : ℕ} {O : Type} [CommRing O] (c : O)
+    : Dual O (MvPolynomial (Fin k × Fin k) O) :=
   c • (aeval (vec (1 : Matrix (Fin k) (Fin k) O))).toLinearMap
 
 /-- The form `evalAtOne c` sends `ψ` to `c` times the value of `ψ` at the identity matrix. -/
@@ -261,27 +265,35 @@ lemma apply_monomial_eq_zero_of_weight_ne {k : ℕ} {W O : Type} [CommRing W] [I
     rw [← smul_eq_mul, ← map_smul, ← conjSubst_diagGL_zpow_monomial, hI _ h_levi]
   exact (mul_left_eq_self₀.1 h_inv).resolve_left h_ne
 
-/-- The linear form `I` on polynomials over `O` in the entries of a `k × k` matrix `X` is an average
+/--
+The linear form `I` on polynomials over `O` in the entries of a `k × k` matrix `X` is an average
 for the Levi subgroup `L(W) = levi W τ` of the `a ∈ GL_k(W)` with `a i j = 0` whenever `τ i ≠ τ j`,
 which acts by the substitutions `conjSubst ι a : X ↦ ι(a⁻¹) * X * ι(a)`. A monomial `α` is bad if
 its row weight `∑ α (i, j) • ρ i` exceeds `t`; `c` scales the evaluation at the matrix `1`, and `D`
 bounds the degree. If `W` is local and `O` is a domain of characteristic `0` in which some `p > 0`
 is not a unit, then by invariance `I` also vanishes on the monomials whose row weight and column
-weight differ (`apply_monomial_eq_zero_of_weight_ne`). -/
-structure IsAverage {k : ℕ} {W O : Type} [CommRing W] [CommRing O] (τ : Fin k → ℕ) (ι : W →+* O)
-    (ρ : Fin k → ℤ) (t : ℤ) (c : O) (D : ℕ)
-    (I : Dual O (MvPolynomial (Fin k × Fin k) O)) : Prop where
+weight differ (`apply_monomial_eq_zero_of_weight_ne`).
+-/
+structure IsAverage
+    {k : ℕ} {W O : Type} [CommRing W] [CommRing O]
+    (τ : Fin k → ℕ) (ι : W →+* O) (ρ : Fin k → ℤ) (t : ℤ) (c : O) (D : ℕ)
+    (I : Dual O (MvPolynomial (Fin k × Fin k) O))
+    : Prop where
   /-- `I` is invariant under conjugation by `L(W)`. -/
   map_conjSubst : ∀ a ∈ levi W τ, ∀ ψ : MvPolynomial (Fin k × Fin k) O, I (conjSubst ι a ψ) = I ψ
   /-- `I` vanishes on bad monomials. -/
-  map_monomial_eq_zero : ∀ α : Fin k × Fin k →₀ ℕ,
-    t < weight (fun v : Fin k × Fin k ↦ ρ v.1) α → I (monomial α 1) = 0
-  /-- If `ψ` has degree at most `D` and the bad monomials of all its conjugates have coefficients
-  in the ideal `J`, then `I ψ ≡ c * ψ(1)` modulo `J`. -/
-  sub_evalAtOne_mem : ∀ (J : Ideal O) (ψ : MvPolynomial (Fin k × Fin k) O), ψ.totalDegree ≤ D →
-    (∀ a ∈ levi W τ, ∀ α : Fin k × Fin k →₀ ℕ,
-      t < weight (fun v : Fin k × Fin k ↦ ρ v.1) α → (conjSubst ι a ψ).coeff α ∈ J) →
-    I ψ - evalAtOne c ψ ∈ J
+  map_monomial_eq_zero
+    : ∀ α : Fin k × Fin k →₀ ℕ, t < weight (fun v : Fin k × Fin k ↦ ρ v.1) α → I (monomial α 1) = 0
+  /--
+  If `ψ` has degree at most `D` and the bad monomials of all its conjugates have coefficients
+  in the ideal `J`, then `I ψ ≡ c * ψ(1)` modulo `J`.
+  -/
+  sub_evalAtOne_mem
+    : ∀ (J : Ideal O) (ψ : MvPolynomial (Fin k × Fin k) O),
+      ψ.totalDegree ≤ D
+        → (∀ a ∈ levi W τ, ∀ α : Fin k × Fin k →₀ ℕ,
+          t < weight (fun v : Fin k × Fin k ↦ ρ v.1) α → (conjSubst ι a ψ).coeff α ∈ J)
+        → I ψ - evalAtOne c ψ ∈ J
 
 /-- An `O`-linear form `l` on polynomials, applied entry by entry to a matrix `X`, commutes with
 multiplication by constant matrices `A` and `B`. -/
@@ -349,64 +361,82 @@ lemma eq_top_of_eval_monomial {W O σ : Type} [CommRing W] [IsLocalRing W] [Comm
 
 section SchurAlgebra
 
-/-- The generic block matrix of the labelling `τ` of the indices, transposed: the entry at `(i, j)`
+/--
+The generic block matrix of the labelling `τ` of the indices, transposed: the entry at `(i, j)`
 is the variable `X (j, i)` if `τ i = τ j` and `0` otherwise. This is the index order of
-`Matrix.vec`. -/
-noncomputable def leviGeneric {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ) :
-    Matrix (Fin k) (Fin k) (MvPolynomial (Fin k × Fin k) O) :=
+`Matrix.vec`.
+-/
+noncomputable def leviGeneric {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ)
+    : Matrix (Fin k) (Fin k) (MvPolynomial (Fin k × Fin k) O) :=
   of fun i j : Fin k ↦ C (if τ i = τ j then 1 else 0) * X (j, i)
 
 /-- The `d`-th tensor power of the generic block matrix `leviGeneric O τ`. -/
-noncomputable def leviTensor {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ) (d : ℕ) :
-    Matrix (Fin d → Fin k) (Fin d → Fin k) (MvPolynomial (Fin k × Fin k) O) :=
+noncomputable def leviTensor {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ) (d : ℕ)
+    : Matrix (Fin d → Fin k) (Fin d → Fin k) (MvPolynomial (Fin k × Fin k) O) :=
   kroneckerPi fun _ : Fin d ↦ leviGeneric O τ
 
-/-- The map onto the Schur algebra of degree `d`: a linear form, given by its values on the
-monomials of degree `d`, is applied to the entries of `leviTensor O τ d`. -/
-noncomputable def schurMap {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ) (d : ℕ) :
-    (Monomials (Fin k × Fin k) d → O) →ₗ[O] Matrix (Fin d → Fin k) (Fin d → Fin k) O :=
+/--
+The map onto the Schur algebra of degree `d`: a linear form, given by its values on the
+monomials of degree `d`, is applied to the entries of `leviTensor O τ d`.
+-/
+noncomputable def schurMap {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ) (d : ℕ)
+    : (Monomials (Fin k × Fin k) d → O) →ₗ[O] Matrix (Fin d → Fin k) (Fin d → Fin k) O :=
   (Pi.basisFun O (Monomials (Fin k × Fin k) d)).constr O fun γ : Monomials (Fin k × Fin k) d ↦
     (leviTensor O τ d).map (·.coeff γ.val)
 
-/-- The values of the monomials of degree `d` at the point `a` of the Levi subgroup, mapped to `O`
-by `ι`. The variable `X (j, i)` takes the value `a i j`, as in `Matrix.vec`. -/
-noncomputable def leviMonomialValues {k : ℕ} {W O : Type} [CommRing W] [CommRing O]
-    (τ : Fin k → ℕ) (ι : W →+* O) (d : ℕ) (a : levi W τ) : Monomials (Fin k × Fin k) d → O :=
-  fun γ ↦ aeval (ι ∘ vec (a.val : Matrix (Fin k) (Fin k) W)) (monomial γ.val (1 : O))
+/--
+The values of the monomials of degree `d` at the point `a` of the Levi subgroup, mapped to `O`
+by `ι`. The variable `X (j, i)` takes the value `a i j`, as in `Matrix.vec`.
+-/
+noncomputable def leviMonomialValues
+    {k : ℕ} {W O : Type} [CommRing W] [CommRing O]
+    (τ : Fin k → ℕ)
+    (ι : W →+* O) (d : ℕ) (a : levi W τ)
+    : Monomials (Fin k × Fin k) d → O := fun γ ↦
+  aeval (ι ∘ vec (a.val : Matrix (Fin k) (Fin k) W)) (monomial γ.val (1 : O))
 
 /-- The coefficients of degree `d` of a polynomial, scaled by `η`: `ψ ↦ (γ ↦ coeff γ ψ * η γ)`. -/
-noncomputable def scaledCoeff {k : ℕ} {O : Type} [CommRing O] (η : (Fin k × Fin k →₀ ℕ) → O)
-    (d : ℕ) :
-    MvPolynomial (Fin k × Fin k) O →ₗ[O] Monomials (Fin k × Fin k) d → O :=
+noncomputable def scaledCoeff {k : ℕ} {O : Type} [CommRing O] (η : (Fin k × Fin k →₀ ℕ) → O) (d : ℕ)
+    : MvPolynomial (Fin k × Fin k) O →ₗ[O] Monomials (Fin k × Fin k) d → O :=
   pi fun γ : Monomials (Fin k × Fin k) d ↦ (lcoeff O γ.val).smulRight (η γ.val)
 
-/-- Polynomials as operators: the element `ψ♯` of the Schur algebra of degree `d` dual to the
+/--
+Polynomials as operators: the element `ψ♯` of the Schur algebra of degree `d` dual to the
 polynomial `ψ`, a matrix that acts on `(O ^ k)^{⊗ d}`. For multi-indices `i, j : Fin d → Fin k` its
 entry at `(i, j)` is `η α` times the coefficient in `ψ` of the monomial `α = ∏ l, X (j l, i l)` if
-`τ (i l) = τ (j l)` for all `l`, and `0` otherwise. Only the part of degree `d` of `ψ` matters. -/
-noncomputable def dualOperator {k : ℕ} {O : Type} [CommRing O] (τ : Fin k → ℕ)
-    (η : (Fin k × Fin k →₀ ℕ) → O) (d : ℕ) :
-    MvPolynomial (Fin k × Fin k) O →ₗ[O] Matrix (Fin d → Fin k) (Fin d → Fin k) O :=
+`τ (i l) = τ (j l)` for all `l`, and `0` otherwise. Only the part of degree `d` of `ψ` matters.
+-/
+noncomputable def dualOperator
+    {k : ℕ} {O : Type} [CommRing O] (τ : Fin k → ℕ) (η : (Fin k × Fin k →₀ ℕ) → O) (d : ℕ)
+    : MvPolynomial (Fin k × Fin k) O →ₗ[O] Matrix (Fin d → Fin k) (Fin d → Fin k) O :=
   schurMap O τ d ∘ₗ scaledCoeff η d
 
-/-- The map that sends `c` to the image of the basis tensor with indices `j` under the element
-`schurMap O τ d c` of the Schur algebra. -/
-noncomputable def tensorOrbit {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ) {d : ℕ}
-    (j : Fin d → Fin k) : (Monomials (Fin k × Fin k) d → O) →ₗ[O] (Fin d → Fin k) → O :=
+/--
+The map that sends `c` to the image of the basis tensor with indices `j` under the element
+`schurMap O τ d c` of the Schur algebra.
+-/
+noncomputable def tensorOrbit
+    {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ) {d : ℕ} (j : Fin d → Fin k)
+    : (Monomials (Fin k × Fin k) d → O) →ₗ[O] (Fin d → Fin k) → O :=
   toLin'.toLinearMap.flip (Pi.single j 1) ∘ₗ schurMap O τ d
 
-/-- The submodule `U₊` of the `d`-th tensor power of `O ^ k` that is generated under the Schur
-algebra by the basis tensors `j` whose weight `∑ l, ρ (j l)` exceeds `t`. -/
-noncomputable def largeWeightSubmodule {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ)
-    (ρ : Fin k → ℤ) (t : ℤ) (d : ℕ) : Submodule O ((Fin d → Fin k) → O) :=
+/--
+The submodule `U₊` of the `d`-th tensor power of `O ^ k` that is generated under the Schur
+algebra by the basis tensors `j` whose weight `∑ l, ρ (j l)` exceeds `t`.
+-/
+noncomputable def largeWeightSubmodule
+    {k : ℕ} (O : Type) [CommRing O] (τ : Fin k → ℕ) (ρ : Fin k → ℤ) (t : ℤ) (d : ℕ)
+    : Submodule O ((Fin d → Fin k) → O) :=
   ⨆ j : {j : Fin d → Fin k // t < ∑ l : Fin d, ρ (j l)}, range (tensorOrbit O τ j.val)
 
 /-- `largeWeightSubmodule` is a finite sum of images of finite modules. -/
-instance finite_largeWeightSubmodule {k : ℕ} {O : Type} [CommRing O] (τ : Fin k → ℕ) {d : ℕ}
-    (ρ : Fin k → ℤ) (t : ℤ) :
-    Module.Finite O (largeWeightSubmodule O τ ρ t d) :=
-  inferInstanceAs (Module.Finite O (⨆ j : {j : Fin d → Fin k // t < ∑ l : Fin d, ρ (j l)},
-    range (tensorOrbit O τ j.val) : Submodule O ((Fin d → Fin k) → O)))
+instance finite_largeWeightSubmodule
+    {k : ℕ} {O : Type} [CommRing O] (τ : Fin k → ℕ) {d : ℕ} (ρ : Fin k → ℤ) (t : ℤ)
+    : Module.Finite O (largeWeightSubmodule O τ ρ t d) :=
+  inferInstanceAs (Module.Finite O
+    (⨆ j : {j : Fin d → Fin k // t < ∑ l : Fin d, ρ (j l)},
+        range (tensorOrbit O τ j.val)
+      : Submodule O ((Fin d → Fin k) → O)))
 
 lemma tensorOrbit_apply {k : ℕ} {O : Type} [CommRing O] (τ : Fin k → ℕ) {d : ℕ}
     (j : Fin d → Fin k) (c : Monomials (Fin k × Fin k) d → O) :
@@ -699,14 +729,18 @@ lemma schurMap_mem_largeWeightSubmodule {k : ℕ} {W O : Type} [CommRing W] [IsL
     exact schurMap_mulVec_single_mem_largeWeightSubmodule τ hj (leviMonomialValues τ ι d (a * a'))
   exact h_top.ge (mem_top (x := c))
 
-/-- The action of the Schur algebra on `U₊ = largeWeightSubmodule O τ ρ t d`, the submodule of the
+/--
+The action of the Schur algebra on `U₊ = largeWeightSubmodule O τ ρ t d`, the submodule of the
 `d`-th tensor power of `O ^ k` that it generates from the basis tensors `j` of weight
 `∑ l, ρ (j l) > t`. The vector `c` acts by the restriction of the matrix `schurMap O τ d c`; the
-ring map `ι` and the bound `hW` serve only to show that this matrix keeps `U₊`. -/
-noncomputable def largeWeightRep {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
-    (τ : Fin k → ℕ) (ι : W →+* O) {d : ℕ} (hW : d + k ≤ Nat.card (ResidueField W)) (ρ : Fin k → ℤ)
-    (t : ℤ) :
-    (Monomials (Fin k × Fin k) d → O) →ₗ[O] End O (largeWeightSubmodule O τ ρ t d) where
+ring map `ι` and the bound `hW` serve only to show that this matrix keeps `U₊`.
+-/
+noncomputable def largeWeightRep
+    {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
+    (τ : Fin k → ℕ) (ι : W →+* O)
+    {d : ℕ} (hW : d + k ≤ Nat.card (ResidueField W))
+    (ρ : Fin k → ℤ) (t : ℤ)
+    : (Monomials (Fin k × Fin k) d → O) →ₗ[O] End O (largeWeightSubmodule O τ ρ t d) where
   toFun c := (schurMap O τ d c).toLin'.restrict (schurMap_mem_largeWeightSubmodule τ ι hW ρ t c)
   map_add' := by simp [LinearMap.ext_iff, restrict_apply]
   map_smul' := by simp [LinearMap.ext_iff, restrict_apply]
@@ -732,11 +766,16 @@ lemma trace_mem_of_forall_mem_smul_top {O : Type} [CommRing O] {M : Type*} [AddC
   rw [trace_eq_matrix_trace O b]
   exact J.sum_mem fun i _ ↦ by simpa [toMatrix_apply] using h_dual (b.coord i) (hf (b i))
 
-/-- The trace on `U₊ = largeWeightSubmodule O τ ρ t d` of the operator `ψ♯ = dualOperator τ η d ψ`,
-which keeps `U₊` because it lies in the Schur algebra (`schurMap_mem_largeWeightSubmodule`). -/
-noncomputable def largeWeightTrace {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
-    (τ : Fin k → ℕ) (ι : W →+* O) {d : ℕ} (hW : d + k ≤ Nat.card (ResidueField W)) (ρ : Fin k → ℤ)
-    (t : ℤ) (η : (Fin k × Fin k →₀ ℕ) → O) : Dual O (MvPolynomial (Fin k × Fin k) O) :=
+/--
+The trace on `U₊ = largeWeightSubmodule O τ ρ t d` of the operator `ψ♯ = dualOperator τ η d ψ`,
+which keeps `U₊` because it lies in the Schur algebra (`schurMap_mem_largeWeightSubmodule`).
+-/
+noncomputable def largeWeightTrace
+    {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
+    (τ : Fin k → ℕ) (ι : W →+* O)
+    {d : ℕ} (hW : d + k ≤ Nat.card (ResidueField W))
+    (ρ : Fin k → ℤ) (t : ℤ) (η : (Fin k × Fin k →₀ ℕ) → O)
+    : Dual O (MvPolynomial (Fin k × Fin k) O) :=
   trace O (largeWeightSubmodule O τ ρ t d) ∘ₗ largeWeightRep τ ι hW ρ t ∘ₗ scaledCoeff η d
 
 /-- `largeWeightTrace` at `ψ` is the trace on `U₊ = largeWeightSubmodule O τ ρ t d` of the action
@@ -749,11 +788,16 @@ lemma largeWeightTrace_apply {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W]
       trace O (largeWeightSubmodule O τ ρ t d) (largeWeightRep τ ι hW ρ t (scaledCoeff η d ψ)) :=
   rfl
 
-/-- The part of degree `d` of the average: the trace of `ψ♯ = dualOperator τ η d ψ` on the whole
-tensor power `(O ^ k)^{⊗ d}` minus its trace on `U₊ = largeWeightSubmodule O τ ρ t d`. -/
-noncomputable def averagePart {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
-    (τ : Fin k → ℕ) (ι : W →+* O) {d : ℕ} (hW : d + k ≤ Nat.card (ResidueField W)) (ρ : Fin k → ℤ)
-    (t : ℤ) (η : (Fin k × Fin k →₀ ℕ) → O) : Dual O (MvPolynomial (Fin k × Fin k) O) :=
+/--
+The part of degree `d` of the average: the trace of `ψ♯ = dualOperator τ η d ψ` on the whole
+tensor power `(O ^ k)^{⊗ d}` minus its trace on `U₊ = largeWeightSubmodule O τ ρ t d`.
+-/
+noncomputable def averagePart
+    {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
+    (τ : Fin k → ℕ) (ι : W →+* O)
+    {d : ℕ} (hW : d + k ≤ Nat.card (ResidueField W))
+    (ρ : Fin k → ℤ) (t : ℤ) (η : (Fin k × Fin k →₀ ℕ) → O)
+    : Dual O (MvPolynomial (Fin k × Fin k) O) :=
   traceLinearMap (Fin d → Fin k) O O ∘ₗ dualOperator τ η d - largeWeightTrace τ ι hW ρ t η
 
 lemma averagePart_apply {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
@@ -944,35 +988,46 @@ lemma sum_trace_dualOperator {k : ℕ} {O : Type} [CommRing O] (τ : Fin k → �
   simp only [map_sum, map_smul, trace_sum, trace_smul, sum_comm (s := univ), ← Finset.smul_sum]
   exact sum_congr rfl fun α hα ↦ by rw [h_monomial α ((le_totalDegree hα).trans h_deg)]
 
-/-- Let `O` be a valuation domain of characteristic `0` in which the prime `p` is not a unit, let
+/--
+Let `O` be a valuation domain of characteristic `0` in which the prime `p` is not a unit, let
 `ι : W → O` be a ring map from a local ring whose residue field is finite with at least `D + k`
 elements, and let `D < p ^ f`. The matrices `a ∈ GL_k(W)` with `a i j = 0` whenever `τ i ≠ τ j` act
 on polynomials in the entries of a `k × k` matrix `X` by the conjugation `X ↦ ι(a⁻¹) * X * ι(a)`.
 For all weights `ρ` of the indices and every threshold `t` there is a linear form `I` on these
 polynomials that is invariant under conjugation, vanishes on the monomials `α` of row weight
 `∑ α (i, j) • ρ i > t`, and agrees modulo an ideal `J` with `p ^ (k² f) ψ(1)` on every `ψ` of degree
-at most `D` whose conjugates have the coefficients of such monomials in `J` (`IsAverage`). -/
-theorem exists_isAverage {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
-    (τ : Fin k → ℕ) (ι : W →+* O) [IsDomain O] [CharZero O] [ValuationRing O] {p : ℕ}
-    (hp_prime : p.Prime) (hp : ¬IsUnit (p : O)) (f : ℕ) {D : ℕ} (hD : D < p ^ f)
-    (hW : D + k ≤ Nat.card (ResidueField W)) (ρ : Fin k → ℤ) (t : ℤ) :
-    ∃ I : Dual O (MvPolynomial (Fin k × Fin k) O),
+at most `D` whose conjugates have the coefficients of such monomials in `J` (`IsAverage`).
+-/
+theorem exists_isAverage
+    {k : ℕ} {W O : Type} [CommRing W] [IsLocalRing W] [CommRing O]
+    (τ : Fin k → ℕ) (ι : W →+* O)
+    [IsDomain O] [CharZero O] [ValuationRing O]
+    {p : ℕ} (hp_prime : p.Prime) (hp : ¬ IsUnit (p : O))
+    (f : ℕ)
+    {D : ℕ} (hD : D < p ^ f) (hW : D + k ≤ Nat.card (ResidueField W))
+    (ρ : Fin k → ℤ) (t : ℤ)
+    : ∃ I : Dual O (MvPolynomial (Fin k × Fin k) O),
       IsAverage τ ι ρ t ((p : O) ^ (k ^ 2 * f)) D I := by
   -- `I` is the sum of the parts of degree `d ≤ D`, for the weights
   -- `η γ = p ^ (k² f) / multinomial γ`.
   obtain ⟨η, hη_mul, hη_adj : IsAdjointWeight η⟩ :=
     exists_isAdjointWeight (Fin k × Fin k) hp_prime hp f
-  have h_const (α : Fin k × Fin k →₀ ℕ) (hα : degree α ≤ D) :
-      (p : O) ^ (k ^ 2 * f) = α.multinomial * η α := by
+  have h_const (α : Fin k × Fin k →₀ ℕ) (hα : degree α ≤ D)
+      : (p : O) ^ (k ^ 2 * f) = α.multinomial * η α := by
     simpa [sq] using hη_mul α (hα.trans_lt hD)
   have h_card (d : Fin (D + 1)) : d + k ≤ Nat.card (ResidueField W) := by lia
-  refine ⟨∑ d : Fin (D + 1), averagePart τ ι (h_card d) ρ t η, fun a ha ψ ↦ ?_, fun α hα ↦ ?_,
-    fun J ψ h_deg hψ ↦ ?_⟩
+  refine ⟨
+    ∑ d : Fin (D + 1), averagePart τ ι (h_card d) ρ t η,
+    fun a ha ψ ↦ ?_,
+    fun α hα ↦ ?_,
+    fun J ψ h_deg hψ ↦ ?_
+  ⟩
   · simp [averagePart_conjSubst τ ι _ ρ t η hη_adj ⟨a, ha⟩]
   · simp [averagePart_monomial_eq_zero_of_lt τ ι _ ρ t η hα]
-  · have h_diff : (∑ d : Fin (D + 1), averagePart τ ι (h_card d) ρ t η) ψ -
-        evalAtOne ((p : O) ^ (k ^ 2 * f)) ψ =
-          -∑ d : Fin (D + 1), largeWeightTrace τ ι (h_card d) ρ t η ψ := by
+  · have h_diff
+        : (∑ d : Fin (D + 1), averagePart τ ι (h_card d) ρ t η) ψ
+            - evalAtOne ((p : O) ^ (k ^ 2 * f)) ψ
+          = - ∑ d : Fin (D + 1), largeWeightTrace τ ι (h_card d) ρ t η ψ := by
       simp [averagePart_apply, sum_trace_dualOperator τ h_const h_deg]
     rw [h_diff]
     exact neg_mem (sum_mem fun d _ ↦ largeWeightTrace_mem τ ι (h_card d) ρ t η hη_adj hψ)

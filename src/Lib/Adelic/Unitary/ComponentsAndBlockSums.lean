@@ -89,8 +89,10 @@ abbrev _root_.Set.conjClosure : Set (FinPlace E) := S ∪ star ⁻¹' S
 
 lemma _root_.Set.Finite.conjClosure (hS : S.Finite) : S.conjClosure.Finite := hS.union hS.star
 
-/-- The set S of finite places is disjoint from its complex conjugate: its places are not
-self-conjugate, and it holds at most one place of each conjugate pair. -/
+/--
+The set S of finite places is disjoint from its complex conjugate: its places are not
+self-conjugate, and it holds at most one place of each conjugate pair.
+-/
 abbrev _root_.Set.IsConjDisjoint : Prop := Disjoint S (star ⁻¹' S)
 
 @[fun_prop]
@@ -199,8 +201,10 @@ lemma star_idem_conjClosure : star (idem S.conjClosure) = idem S.conjClosure := 
   simp [star_idem, S.union_comm]
 
 variable (n S) in
-/-- The endomorphism of the finite adelic unitary group that keeps the components at the places
-of S ∪ S̄ and replaces the others by 1. -/
+/--
+The endomorphism of the finite adelic unitary group that keeps the components at the places
+of S ∪ S̄ and replaces the others by 1.
+-/
 def Gf.componentOn : Gf E n →* Gf E n := U.cutAt (idem_mul_self S.conjClosure) star_idem_conjClosure
 
 open scoped Classical in
@@ -251,8 +255,10 @@ end ComponentsAtPlaces
 
 section SplitPlaces
 
-variable {E : Type*} [Field E] [NumberField E] {n : Type*} [Fintype n] [DecidableEq n]
-  [IsCMField E] {w : FinPlace E} (hw : star w ≠ w) (g : GL n (LocField w))
+variable
+  {E : Type*} [Field E] [NumberField E]
+  {n : Type*} [Fintype n] [DecidableEq n] [IsCMField E]
+  {w : FinPlace E} (hw : star w ≠ w) (g : GL n (LocField w))
 
 /-! ### Split places -/
 
@@ -296,9 +302,11 @@ lemma continuous_ofSplitPlace : Continuous (ofSplitPlace (n := n) hw) := by
 
 variable {S : Finset (FinPlace E)} (hS : ∀ w ∈ S, star w ∉ S)
 
-/-- For a finite set `S` of finite places disjoint from `S̄`, the homomorphism sending a family
+/--
+For a finite set `S` of finite places disjoint from `S̄`, the homomorphism sending a family
 `(g_w)` in `∏ w ∈ S, GL_n(E_w)` to the unitary element with component `g_w` at each `w` in `S`
-and `1` off `S ∪ S̄`. -/
+and `1` off `S ∪ S̄`.
+-/
 def ofSplitPlaces : (∀ w : S, GL n (LocField w.val)) →* Gf E n :=
   -- the factors commute: at each place one of the two is trivial
   noncommPiCoprod (fun w : S ↦ ofSplitPlace (n := n) (w := w.val) (by grind)) <| by
@@ -365,15 +373,18 @@ variable {m n R : Type*} [DecidableEq m] [DecidableEq n] [CommRing R]
 
 /-! ### Sign matrices, and blocks and reindexing over a ring -/
 
-/-- The homomorphism GL_m(R) × GL_n(R) → GL_{m+n}(R) sending (g, h) to the block diagonal matrix
-diag(g, h). -/
+/--
+The homomorphism GL_m(R) × GL_n(R) → GL_{m+n}(R) sending (g, h) to the block diagonal matrix
+diag(g, h).
+-/
 @[simps! apply_val]
 def blockGL [Fintype m] [Fintype n] : GL m R × GL n R →* GL (m ⊕ n) R where
-  toFun g :=
-    { val := fromBlocks g.1 0 0 g.2
-      inv := fromBlocks ↑g.1⁻¹ 0 0 ↑g.2⁻¹
-      val_inv := by simp [fromBlocks_multiply]
-      inv_val := by simp [fromBlocks_multiply] }
+  toFun g := {
+    val := fromBlocks g.1 0 0 g.2
+    inv := fromBlocks ↑g.1⁻¹ 0 0 ↑g.2⁻¹
+    val_inv := by simp [fromBlocks_multiply]
+    inv_val := by simp [fromBlocks_multiply]
+  }
   map_one' := by ext : 1; simp
   map_mul' g h := by ext : 1; simp [fromBlocks_multiply]
 
@@ -388,37 +399,48 @@ lemma signMatrix_neg (s : n → ℤˣ) : signMatrix (-s) = -signMatrix (n := n) 
 
 variable [Fintype m] [Fintype n] [StarRing R] (e : m ≃ n) {J : Matrix m m R}
 
-/-- For a bijection e of index sets, the isomorphism GL_m(R) ≅ GL_n(R) relabelling rows and
-columns along e. -/
+/--
+For a bijection e of index sets, the isomorphism GL_m(R) ≅ GL_n(R) relabelling rows and
+columns along e.
+-/
 @[simps! apply_val]
 def reindexGL : GL m R ≃* GL n R := Units.mapEquiv (reindexRingEquiv R e).toMulEquiv
 
-/-- The block embedding `U J × U J' → U J''`, `(g, h) ↦ diag(g, h)`, where `J''` is the block
-diagonal sum of `J` and `J'`. -/
-def U.sum {J' : Matrix n n R} {J'' : Matrix (m ⊕ n) (m ⊕ n) R} (h : fromBlocks J 0 0 J' = J'') :
-    U J × U J' →* U J'' :=
+/--
+The block embedding `U J × U J' → U J''`, `(g, h) ↦ diag(g, h)`, where `J''` is the block
+diagonal sum of `J` and `J'`.
+-/
+def U.sum {J' : Matrix n n R} {J'' : Matrix (m ⊕ n) (m ⊕ n) R} (h : fromBlocks J 0 0 J' = J'')
+    : U J × U J' →* U J'' :=
   (blockGL.comp ((U J).subtype.prodMap (U J').subtype)).codRestrict (U J'') <| by
     aesop (add simp [mem_unitaryGroupOf_iff, star_eq_conjTranspose, fromBlocks_conjTranspose,
       fromBlocks_multiply])
 
-/-- The block diagonal homomorphism U_m(R) × U_n(R) → U_{m+n}(R), (g, h) ↦ diag(g, h), between
-the unitary groups of identity matrices. -/
-abbrev U.blockSumOne :
-    U (1 : Matrix m m R) × U (1 : Matrix n n R) →* U (1 : Matrix (m ⊕ n) (m ⊕ n) R) :=
+/--
+The block diagonal homomorphism U_m(R) × U_n(R) → U_{m+n}(R), (g, h) ↦ diag(g, h), between
+the unitary groups of identity matrices.
+-/
+abbrev U.blockSumOne
+    : U (1 : Matrix m m R) × U (1 : Matrix n n R) →* U (1 : Matrix (m ⊕ n) (m ⊕ n) R) :=
   sum (fromBlocks_one (l := m) (m := n) (α := R))
 
-/-- Renaming the basis by `e` identifies the unitary group of `J` with that of the form `J'`
-obtained from `J` by the same renaming of rows and columns. -/
+/--
+Renaming the basis by `e` identifies the unitary group of `J` with that of the form `J'`
+obtained from `J` by the same renaming of rows and columns.
+-/
 def U.reindex {J' : Matrix n n R} (h : J.submatrix e.symm e.symm = J') : U J ≃* U J' where
-  toEquiv := (reindexGL e).subtypeEquiv <| by
-    subst h
-    simp [← ext_iff, reindex_equiv e.symm, mem_unitaryGroupOf_iff, star_eq_conjTranspose]
+  toEquiv :=
+    (reindexGL e).subtypeEquiv <| by
+      subst h
+      simp [← ext_iff, reindex_equiv e.symm, mem_unitaryGroupOf_iff, star_eq_conjTranspose]
   map_mul' := by simp
 
 variable {l : Type*} [Fintype l] [DecidableEq l] (e : m ⊕ l ≃ n)
 
-/-- The block diagonal embedding U(1_m) × U(1_l) → U(1_n) of unitary groups of identity
-matrices, along a bijection of the disjoint union of m and l with n. -/
+/--
+The block diagonal embedding U(1_m) × U(1_l) → U(1_n) of unitary groups of identity
+matrices, along a bijection of the disjoint union of m and l with n.
+-/
 def U.block : U (1 : Matrix m m R) × U (1 : Matrix l l R) →* U (1 : Matrix n n R) :=
   (reindex e (submatrix_one_equiv e.symm)).toMonoidHom.comp blockSumOne
 
@@ -433,16 +455,21 @@ end
 
 section
 
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
-  {m n : Type*} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] {s : n → ℤˣ} {t : m → ℤˣ}
+variable
+  {E : Type*} [Field E] [NumberField E] [IsCMField E]
+  {m n : Type*} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {t : m → ℤˣ}
 
 /-! ### The adelic unitary groups -/
 
-/-- The block diagonal embedding of the product of the adelic unitary groups for signs s and t
-into the one for the concatenated signs. -/
+/--
+The block diagonal embedding of the product of the adelic unitary groups for signs s and t
+into the one for the concatenated signs.
+-/
 def G.sum : G E s × G E t →* G E (s ⊕ᵥ t) :=
-  .prod (.mk' (fun g w ↦ U.sum (signMatrix_sum s t) (g.1.1 w, g.2.1 w))
-      (by simp [← map_mul, funext_iff]))
+  .prod
+    (.mk' (fun g w ↦ U.sum (signMatrix_sum s t) (g.1.1 w, g.2.1 w)) (by
+      simp [← map_mul, funext_iff]))
     ((U.sum (by simp)).comp (.prodMap (.snd (GInf E s) (Gf E n)) (.snd (GInf E t) (Gf E m))))
 
 /-- The adelic matrix (`New.G.adeleMatrix`) of the block sum of g₁ and g₂ is diag(g₁, g₂). -/
@@ -451,8 +478,10 @@ lemma G.adeleMatrix_sum (g : G E s × G E t) :
     (sum g).adeleMatrix = g.1.adeleMatrix.fromBlocks 0 0 g.2.adeleMatrix := by
   ext (i | i) (j | j) <;> rfl
 
-/-- The isomorphism between the adelic unitary groups for signs s and −s that is the identity on
-matrices, since U(J) = U(−J) at each infinite place. -/
+/--
+The isomorphism between the adelic unitary groups for signs s and −s that is the identity on
+matrices, since U(J) = U(−J) at each infinite place.
+-/
 def G.neg : G E s ≃* G E (-s) :=
   .prodCongr (.piCongrRight fun _ ↦ MulEquiv.subgroupCongr (by ext; simp [mem_unitaryGroupOf_iff]))
     (.refl (Gf E n))
@@ -465,8 +494,11 @@ lemma stdForm_sum : fromBlocks (stdForm E s) 0 0 (stdForm E t) = stdForm E (s �
 
 end
 
-variable {E : Type*} [Field E] [CMType E] {m n : Type*} [Fintype m] [DecidableEq m] [Fintype n]
-  [DecidableEq n] {s : n → ℤˣ} {t : m → ℤˣ} (V : Space E n s) (e : n ≃ m) (h : s ∘ e.symm = t)
+variable
+  {E : Type*} [Field E] [CMType E]
+  {m n : Type*} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {t : m → ℤˣ} (V : Space E n s)
+  (e : n ≃ m) (h : s ∘ e.symm = t)
   (g : G E s)
 
 /-- If `a w` carries `J`, embedded in `ℂ` by the CM type, to the diagonal matrix of signs `s` at
@@ -485,14 +517,16 @@ lemma gram_mkAdelicGL {J : Matrix n n E} {a : InfinitePlace E → GL n ℂ} {b :
 
 section
 
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E] (e : n ≃ m) (h : s ∘ e.symm = t)
-  (g : G E s)
+variable
+  {E : Type*} [Field E] [NumberField E] [IsCMField E] (e : n ≃ m) (h : s ∘ e.symm = t) (g : G E s)
 
 @[simp]
 lemma G.adeleMatrix_neg : (neg g).adeleMatrix = g.adeleMatrix := by ext <;> rfl
 
-/-- For a bijection of index sets carrying signs s to signs t, the isomorphism of the
-corresponding adelic unitary groups relabelling rows and columns in every component. -/
+/--
+For a bijection of index sets carrying signs s to signs t, the isomorphism of the
+corresponding adelic unitary groups relabelling rows and columns in every component.
+-/
 def G.reindex : G E s ≃* G E t :=
   toUnitary.trans ((U.reindex e (by simp [← h, stdForm])).trans toUnitary.symm)
 
@@ -506,12 +540,14 @@ variable [HasPrimitiveRoot5040 E]
 
 /-! ### A unit of norm `-1` and the standard spaces -/
 
-/-- For a field `E` with a primitive root of unity of order 5040, a chosen element ε of Ô with
-ε̄ε = −1, as a unit with inverse −ε̄. It exists by `New.exists_unit_star_mul_self_eq`. -/
-def Weil.normNegOne {E : Type*} [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E] :
-    (Ô E)ˣ :=
+/--
+For a field `E` with a primitive root of unity of order 5040, a chosen element ε of Ô with
+ε̄ε = −1, as a unit with inverse −ε̄. It exists by `New.exists_unit_star_mul_self_eq`.
+-/
+def Weil.normNegOne {E : Type*} [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E]
+    : (Ô E)ˣ :=
   have h_norm := exists_unit_star_mul_self_eq (u := -1) (by simp) (by simp)
-  Units.mkOfMulEqOne h_norm.choose (-star h_norm.choose.val) (by
+  Units.mkOfMulEqOne h_norm.choose (- star h_norm.choose.val) (by
     ext1
     rw [mul_neg]
     change -(h_norm.choose.val.val * star h_norm.choose.val.val) = (1 : 𝔸f E)
@@ -527,14 +563,19 @@ lemma star_normNegOne_mul_self {E : Type*} [Field E] [NumberField E] [IsCMField 
 
 variable (E)
 
-/-- The idele that is 1 at the infinite places and whose finite part is the unit
-ε = `New.Weil.normNegOne` of Ô, with ε̄ε = −1. -/
-def normNegOneIdele (E : Type*) [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E] :
-    (𝔸 E)ˣ := normNegOne.map (MonoidHom.prod 1 (Ô E).subtype.toMonoidHom)
+/--
+The idele that is 1 at the infinite places and whose finite part is the unit
+ε = `New.Weil.normNegOne` of Ô, with ε̄ε = −1.
+-/
+def normNegOneIdele (E : Type*) [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E]
+    : (𝔸 E)ˣ :=
+  normNegOne.map (MonoidHom.prod 1 (Ô E).subtype.toMonoidHom)
 
-/-- If `E` contains a primitive root of unity of order 5040, the standard space with matrix
+/--
+If `E` contains a primitive root of unity of order 5040, the standard space with matrix
 diag(s). Its point is diagonal, with entry 1 where s_i = 1 and `normNegOneIdele E` (the idele
-with finite part of norm −1) where s_i = −1. -/
+with finite part of norm −1) where s_i = −1.
+-/
 def signedSpace (s : n → ℤˣ) : Space E n s where
   J := diagonal fun i ↦ s i
   x := diagGL fun i ↦ if s i = 1 then 1 else normNegOneIdele E
@@ -549,16 +590,20 @@ namespace Space
 
 /-! ### Operations on spaces -/
 
-/-- For spaces V, W with signs s, t, the space with concatenated signs whose matrix and point
-are the block diagonal sums of those of V and W. -/
+/--
+For spaces V, W with signs s, t, the space with concatenated signs whose matrix and point
+are the block diagonal sums of those of V and W.
+-/
 def sum (W : Space E m t) : Space E (n ⊕ m) (s ⊕ᵥ t) where
   J := V.J.fromBlocks 0 0 W.J
   x := blockGL (V.x, W.x)
   gram_point := by
     simp [fromBlocks_conjTranspose, fromBlocks_map, fromBlocks_multiply, gram_point, stdForm]
 
-/-- For a space V with signs s and an index bijection carrying s to t, the space with signs t
-obtained by relabelling its matrix and point. -/
+/--
+For a space V with signs s and an index bijection carrying s to t, the space with signs t
+obtained by relabelling its matrix and point.
+-/
 def reindex : Space E m t where
   J := V.J.reindex e e
   x := reindexGL e V.x
@@ -566,9 +611,11 @@ def reindex : Space E m t where
     subst h
     simp [← submatrix_map, gram_point, stdForm]
 
-/-- If `E` contains a primitive root of unity of order 5040 and (J, x) is a space with signs s,
+/--
+If `E` contains a primitive root of unity of order 5040 and (J, x) is a space with signs s,
 the space with signs −s, matrix −J and point x multiplied by the scalar `normNegOneIdele E`, the
-idele that is 1 at infinity and whose finite part has norm −1. -/
+idele that is 1 at infinity and whose finite part has norm −1.
+-/
 def neg : Space E n (-s) where
   J := -V.J
   x := normNegOneIdele E • V.x

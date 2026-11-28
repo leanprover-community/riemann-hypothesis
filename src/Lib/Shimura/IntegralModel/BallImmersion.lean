@@ -75,11 +75,12 @@ lemma fderiv_apply_eq_neg_of_eventually_eq_zero {F : Type*} [NormedAddCommGroup 
 namespace New.Variety
 
 open CategoryTheory Over OverMorphism AlgebraicGeometry NumberField IsLocalRing ThetaObject Obj
-  TorusModel Filter Cardinal IsGroupBaseChange LocallyOfFiniteType Set Submodule
-  ModuliPoint
+  TorusModel Filter Cardinal IsGroupBaseChange LocallyOfFiniteType Set Submodule ModuliPoint
 
-variable {E : Type} [Field E] [CMBase E] {D : PEL E}
-  {R : Subalgebra (𝓞 E) E} {ν : ℕ} [NeZero ν] {U : UniversalFamily D R} {J : Type} [Finite J]
+variable
+  {E : Type} [Field E] [CMBase E]
+  {D : PEL E} {R : Subalgebra (𝓞 E) E} {ν : ℕ} [NeZero ν]
+  {U : UniversalFamily D R} {J : Type} [Finite J]
   {γ : J → nonZeroDivisors (𝓞 E) × GUPlus E D.Index}
 
 /-- Two invertible finite adelic matrices that induce the same map on torsion classes are equal. -/

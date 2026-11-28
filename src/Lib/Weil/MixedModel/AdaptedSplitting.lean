@@ -61,10 +61,13 @@ lemma Matrix.submatrix_conjTranspose_mul_mul {α m k l : Type*} [Fintype m]
 
 /-! ## The hyperbolic space as a splitting over the zero space -/
 
-/-- The splitting of hyperbolic space of rank 2p over the zero space. Here l is the first p basis
-vectors and k is the last p basis vectors. -/
-noncomputable def New.hyperbolicSplitting (E p : Type*) [Field E] [CMType E] [WeilData E]
-    [Fintype p] [DecidableEq p] : (hyperbolicSpace E p).Splitting (stdSpace E Empty) p where
+/--
+The splitting of hyperbolic space of rank 2p over the zero space. Here l is the first p basis
+vectors and k is the last p basis vectors.
+-/
+noncomputable def New.hyperbolicSplitting
+    (E p : Type*) [Field E] [CMType E] [WeilData E] [Fintype p] [DecidableEq p]
+    : (hyperbolicSpace E p).Splitting (stdSpace E Empty) p where
   k := Matrix.fromRows 0 1
   l := Matrix.fromRows 1 0
   i := 0
@@ -90,25 +93,37 @@ section AdaptedSplitting
 
 open Matrix Space Splitting
 
-/-- The splitting `D` of `V'` over `V` (with `card p` hyperbolic planes) is adapted: the adelic
+/--
+The splitting `D` of `V'` over `V` (with `card p` hyperbolic planes) is adapted: the adelic
 matrix with column blocks `lAdelic`, `kAdelic`, `iAdelic` has orthonormal columns at every infinite
-place and integral entries at every finite place. -/
-class IsBaseAdapted {E : Type} [Field E] [CMType E] {n m p : Type} [Fintype n]
-    [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p] {s : n → ℤˣ}
-    {t : m → ℤˣ} {V' : Space E m t} {V : Space E n s} (D : V'.Splitting V p) : Prop where
-  /-- The block matrix of the three adelic frames is orthonormal at the infinite places and integral
-  at the finite places. -/
+place and integral entries at every finite place.
+-/
+class IsBaseAdapted
+    {E : Type} [Field E] [CMType E]
+    {n m p : Type}
+    [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p]
+    {s : n → ℤˣ} {t : m → ℤˣ} {V' : Space E m t} {V : Space E n s} (D : V'.Splitting V p)
+    : Prop where
+  /--
+  The block matrix of the three adelic frames is orthonormal at the infinite places and integral
+  at the finite places.
+  -/
   isOrthoIntegral : IsOrthoIntegral ((D.lAdelic.fromCols D.kAdelic).fromCols D.iAdelic)
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n : Type} (p : Type) [Fintype n]
-  [DecidableEq n] [Fintype p] [DecidableEq p] {s : n → ℤˣ} (V : Space E n s)
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n : Type} (p : Type) [Fintype n] [DecidableEq n] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} (V : Space E n s)
 
-/-- The tautological splitting over V of the sum of `card p` hyperbolic planes and V: the
-frames l, k, i are the column blocks of the identity matrix. -/
+/--
+The tautological splitting over V of the sum of `card p` hyperbolic planes and V: the
+frames l, k, i are the column blocks of the identity matrix.
+-/
 noncomputable def removePlanes : (hyperbolicSum p V).Splitting V p := by
   use (fromRows 0 1).fromRows 0, (fromRows 1 0).fromRows 0, fromRows 0 1
-  all_goals simp +arith [hyperbolicSum, conjTranspose_fromRows_eq_fromCols_conjTranspose,
-    fromCols_mul_fromBlocks, fromCols_mul_fromRows]
+  all_goals
+    simp +arith [hyperbolicSum, conjTranspose_fromRows_eq_fromCols_conjTranspose,
+      fromCols_mul_fromBlocks, fromCols_mul_fromRows]
 
 /-- The tautological splitting `removePlanes p V` is adapted. -/
 instance : IsBaseAdapted (removePlanes p V) where
@@ -131,16 +146,22 @@ section AdaptedHom
 
 open Matrix Kronecker Space Splitting Equiv
 
-variable {E : Type _} [Field E] [CMType E] {n n' r : Type _} {p : Type _}
-  [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r]
-  [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {W : Space E n s}
-  {W' : Space E n' s'} (A : W'.Splitting W p) (T : Space E r t)
+variable
+  {E : Type _} [Field E] [CMType E]
+  {n n' r : Type _} {p : Type _} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  [Fintype r] [DecidableEq r] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
+  (A : W'.Splitting W p) (T : Space E r t)
 
-/-- The invertible adelic matrix (x⁻¹)ᴴ ⊗ 1, where x is the adelic frame of T and 1 is the p×p
-identity. -/
-noncomputable def adaptedHomBasis {E : Type*} [Field E] [CMType E] {r : Type*}
-    (p : Type*) [Fintype r] [DecidableEq r] [Fintype p] [DecidableEq p] {t : r → ℤˣ}
-    (T : Space E r t) : GL (r × p) (𝔸 E) :=
+/--
+The invertible adelic matrix (x⁻¹)ᴴ ⊗ 1, where x is the adelic frame of T and 1 is the p×p
+identity.
+-/
+noncomputable def adaptedHomBasis
+    {E : Type*} [Field E] [CMType E]
+    {r : Type*} (p : Type*) [Fintype r] [DecidableEq r] [Fintype p] [DecidableEq p]
+    {t : r → ℤˣ} (T : Space E r t)
+    : GL (r × p) (𝔸 E) :=
   Matrix.GeneralLinearGroup.kronecker (m := p) (star T.x⁻¹) 1
 
 variable {M : Matrix n' n (𝔸 E)}
@@ -227,7 +248,8 @@ section AdaptedStages
 
 open Matrix Space Splitting Fintype Equiv
 
-variable {E : Type} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
   {n m p q n₁ : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype p]
   [DecidableEq p] [Fintype q] [DecidableEq q] [Fintype n₁] [DecidableEq n₁]
   {s : n → ℤˣ} {t : m → ℤˣ} {V' : Space E m t} {V : Space E n s} (D : V'.Splitting V p)
@@ -236,9 +258,11 @@ variable {E : Type} [Field E] [CMType E] [WeilData E]
 instance [hD : IsBaseAdapted D] : IsBaseAdapted D.symm where
   isOrthoIntegral := by
     -- Exchanging `k` and `l` permutes the columns of the adelic frame.
-    have h_frame : (D.symm.lAdelic.fromCols D.symm.kAdelic).fromCols D.symm.iAdelic =
-        ((D.lAdelic.fromCols D.kAdelic).fromCols D.iAdelic).submatrix id (Sum.map Sum.swap id) *
-          (1 : Matrix ((p ⊕ p) ⊕ n) ((p ⊕ p) ⊕ n) (𝔸 E)) := by aesop
+    have h_frame
+        : (D.symm.lAdelic.fromCols D.symm.kAdelic).fromCols D.symm.iAdelic
+          = ((D.lAdelic.fromCols D.kAdelic).fromCols D.iAdelic).submatrix id (Sum.map Sum.swap id)
+            * (1 : Matrix ((p ⊕ p) ⊕ n) ((p ⊕ p) ⊕ n) (𝔸 E)) := by
+      aesop
     exact hD.isOrthoIntegral.of_eq_submatrix_mul (Sum.map Sum.swap id) .one h_frame
 
 omit [WeilData E] in
@@ -317,15 +341,19 @@ lemma exists_isBaseAdapted_comp_removePlanes [hD : IsBaseAdapted D] (e : n₁ �
   simp [← ext_iff, Matrix.mul_apply, ε, A₁, M, removePlanes, splittingOfGram, toCols₁, toCols₂,
     Splitting.comp, Matrix.one_apply]
 
-/-- If `D` (a splitting of `V'` over `V`) and `A` (a splitting of `V` over `W`) are adapted, so
-is their composite `D.comp A`, a splitting of `V'` over `W`. -/
-instance [hD : IsBaseAdapted D] {r : n₁ → ℤˣ} {W : Space E n₁ r} {A : V.Splitting W q}
-    [hA : IsBaseAdapted A] : IsBaseAdapted (D.comp A) where
+/--
+If `D` (a splitting of `V'` over `V`) and `A` (a splitting of `V` over `W`) are adapted, so
+is their composite `D.comp A`, a splitting of `V'` over `W`.
+-/
+instance
+    [hD : IsBaseAdapted D]
+    {r : n₁ → ℤˣ} {W : Space E n₁ r} {A : V.Splitting W q} [hA : IsBaseAdapted A]
+    : IsBaseAdapted (D.comp A) where
   isOrthoIntegral := by
     -- Up to the order of the columns, the frame of the composite is the frame of `D` times the
     -- block matrix of `1` and the frame of `A`.
     refine (hD.isOrthoIntegral.mul (.block_diag (.one (n := p ⊕ p))
-      hA.isOrthoIntegral)).of_eq_submatrix_mul
+        hA.isOrthoIntegral)).of_eq_submatrix_mul
       (sumAssoc (p ⊕ p) (q ⊕ q) n₁ ∘ Sum.map (sumSumSumComm p q p q) id) .one ?_
     -- The frames `k`, `l` of the composite are `(k, i k')`, `(l, i l')`, its embedding is `i i'`.
     aesop (add simp [lAdelic, Splitting.comp, fromCols_map, kAdelic, iAdelic, ratMap,

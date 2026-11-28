@@ -232,15 +232,16 @@ end RowJumps
 
 section RowsExist
 
-open Matrix Polynomial Fintype Filter Data GaloisRep AutChar LinearMap Space Subtype
-  SiegelWeil Finset
+open Matrix Polynomial Fintype Filter Data GaloisRep AutChar LinearMap Space Subtype SiegelWeil
+  Finset
 
 variable {P : Parameters} {D : Data P}
 
 section DescentPair
 
-variable {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] {O : DescentPair D.E r n} {ℓ : ℕ}
-  [ThePrime ℓ]
+variable
+  {r n : Type} [Fintype r] [DecidableEq r] [Fintype n]
+  {O : DescentPair D.E r n} {ℓ : ℕ} [ThePrime ℓ]
 
 omit [DecidableEq r] in
 /-- Let `r` and `n` be nonempty. Suppose that, for all `X`, the Hecke polynomial at `w` of rank `n`
@@ -466,12 +467,17 @@ lemma map_jumps_sub_eq_map_targetParameter {d : D.Φ → ℕ → ℕ} {κ : D.Φ
     Units.val_one]
   grind [Data.t, D.r_odd]
 
-/-- A nonzero function with Hecke polynomial `Q w` at every split place `w` off the chosen places
-and their conjugates is an eigenform for the system `Q`. -/
-theorem _root_.New.Data.isEigenform_of_hasHeckePolyAt [DecidableEq n] (D : Data P) {M : Type}
-    {f : Gf D.E n → M → ℂ} (hf : f ≠ 0) {Q : FinPlace D.E → ℂ[X]}
-    (h_eig : ∀ (w : FinPlace D.E) (hw : D.IsSplitOffLevel w), HasHeckePolyAt f w hw.isSplit (Q w)) :
-    IsEigenform f Q := by
+/--
+A nonzero function with Hecke polynomial `Q w` at every split place `w` off the chosen places
+and their conjugates is an eigenform for the system `Q`.
+-/
+theorem _root_.New.Data.isEigenform_of_hasHeckePolyAt
+    [DecidableEq n]
+    (D : Data P)
+    {M : Type} {f : Gf D.E n → M → ℂ} (hf : f ≠ 0)
+    {Q : FinPlace D.E → ℂ[X]}
+    (h_eig : ∀ (w : FinPlace D.E) (hw : D.IsSplitOffLevel w), HasHeckePolyAt f w hw.isSplit (Q w))
+    : IsEigenform f Q := by
   classical
   -- Almost every `w` has `w` and `star w` off `chosenPlace`; if its norm is prime it is also split.
   refine ⟨hf, (eventually_notMem_star_notMem 1 (Finset.image D.chosenPlace ⊤)).mono ?_⟩
@@ -481,16 +487,22 @@ end DescentPair
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum in
-/-- Let the Hecke eigenvalues `p (w, i)` occur in a nonzero good form on `D.spaceW D.m`: a form of
+/--
+Let the Hecke eigenvalues `p (w, i)` occur in a nonzero good form on `D.spaceW D.m`: a form of
 principal level at the chosen places, in the image of the idempotent `D.e₀`. Let `O` be the `j`-th
 descent pair of the trivial twist, `1 ≤ j ≤ m = D.m`: its two spaces have dimensions `r = D.r` and
 `r + t`, `t = D.t`, and its character has weight `-D.liftWeight j`. Then some `r`-dimensional
-`ℓ`-adic Galois representation `T` of `D.E` has `IsMainSummand O` for `p`. -/
-theorem exists_isMainSummand_descentPair {ℓ : ℕ} [ThePrime ℓ] (ι : PadicIso ℓ)
+`ℓ`-adic Galois representation `T` of `D.E` has `IsMainSummand O` for `p`.
+-/
+theorem exists_isMainSummand_descentPair
+    {ℓ : ℕ} [ThePrime ℓ]
+    (ι : PadicIso ℓ)
     {p : FinPlace D.E × ℕ → ℂ}
-    (h_ne_bot : D.goodForms (D.spaceW D.m) ⊓ D.eigenPart (D.spaceW D.m) p ≠ ⊥) (j : D.LiftIndex) :
-    ∃ T : GalRep ℓ D.E D.RowIndex,
-      IsMainSummand (D.descentPair TameChar.one j) (fun (w : FinPlace D.E) (i : ℕ) ↦ p (w, i))
+    (h_ne_bot : D.goodForms (D.spaceW D.m) ⊓ D.eigenPart (D.spaceW D.m) p ≠ ⊥)
+    (j : D.LiftIndex)
+    : ∃ T : GalRep ℓ D.E D.RowIndex,
+      IsMainSummand (D.descentPair TameChar.one j)
+        (fun (w : FinPlace D.E) (i : ℕ) ↦ p (w, i))
         T := by
   classical
   -- A nonzero good form `z` with system `p` is not killed by the idempotent of some good tuple `c`.
@@ -503,16 +515,16 @@ theorem exists_isMainSummand_descentPair {ℓ : ℕ} [ThePrime ℓ] (ι : PadicI
   -- `L` sends a form on `W` to its algebraic form of weight `(d, κ)`, a function on `Gf`
   let L : W.Form (typeKernel D.paramW _) →ₗ[ℂ] Gf D.E D.RowIndex → WeylIndex D.RowIndex d → ℂ :=
     (AlgForm D.RowIndex d κ).subtype ∘ₗ (W.toAlgForm hκ).toLinearMap
-  have L_equiv (g : Gf D.E D.RowIndex) (y : W.Form (typeKernel D.paramW _)) :
-      L (W.formRep _ g y) = rightRegular ℂ _ _ g (L y) :=
+  have L_equiv (g : Gf D.E D.RowIndex) (y : W.Form (typeKernel D.paramW _))
+      : L (W.formRep _ g y) = rightRegular ℂ _ _ g (L y) :=
     congrArg Subtype.val (toAlgForm_formRep hκ g y)
   -- the action of the product of the finite groups at the chosen places
   let π : Representation ℂ D.chosenGL (D.principalForms W) := D.principalRep W
   let O : DescentPair D.E D.RowIndex (D.RowIndex ⊕ Fin D.t) := D.descentPair .one j
   -- `e₀` fixes `z` and is the sum of the `tupleIdem c` over the good tuples `c`
   have h_fixed : π.asAlgebraHom D.e₀ z = z := (D.isCentralProj_e₀.1.map _).mem_range_iff.1 hz_good
-  obtain ⟨c : ∀ i : O.ChosenIndex, (ResField (O.chosenPlace i))[X], hc_good, hcz_ne⟩ :
-      ∃ c ∈ D.goodTupleFamilies, π.asAlgebraHom (tupleIdem D.RowIndex c) z ≠ 0 :=
+  obtain ⟨c : ∀ i : O.ChosenIndex, (ResField (O.chosenPlace i))[X], hc_good, hcz_ne⟩
+      : ∃ c ∈ D.goodTupleFamilies, π.asAlgebraHom (tupleIdem D.RowIndex c) z ≠ 0 :=
     D.goodTupleFamilies.exists_ne_zero_of_sum_ne_zero (by simpa [e₀] using h_fixed.trans_ne hz_ne)
   have h_setting : IsLiftSetting O c 1 := isLiftSetting_descentPair D 1 j hc_good
   have h_level : L z ∈ levelSpace (rightRegular ℂ (Gf D.E D.RowIndex) _) D.chosenLevel := by
@@ -520,9 +532,12 @@ theorem exists_isMainSummand_descentPair {ℓ : ℕ} [ThePrime ℓ] (ι : PadicI
   have h_form : L z ∈ (stdSpace D.E D.RowIndex).forms (d, κ) := (toAlgForm _ hκ z.val).property
   have h_eig : IsEigenform (L z) fun w : FinPlace D.E ↦
       heckePoly w.q (card D.RowIndex) fun i : ℕ ↦ p (w, i) := by
-    refine D.isEigenform_of_hasHeckePolyAt (by simpa [L]) fun w hw ↦
-      ⟨levelSpace_anti (maxCompactAt_le_levelOf hw.notMem_conjClosure) h_level,
-        fun i ↦ p (w, i), rfl, fun i ↦ ?_⟩
+    refine D.isEigenform_of_hasHeckePolyAt (by simpa [L]) fun w hw ↦ ⟨
+      levelSpace_anti (maxCompactAt_le_levelOf hw.notMem_conjClosure) h_level,
+      fun i ↦ p (w, i),
+      rfl,
+      fun i ↦ ?_
+    ⟩
     -- `L` commutes with the Hecke operators, and these act on `z` by the scalars `p`
     have h_scalar : heckeSplit (W.formRep _) hw.isSplit i z.val = p (w, i) • z.val := by
       rw [← D.coe_heckeOperator_apply _ hw, (D.mem_eigenPart _).1 hz_eig, Submodule.coe_smul]
@@ -540,33 +555,34 @@ theorem exists_isMainSummand_descentPair {ℓ : ℕ} [ThePrime ℓ] (ι : PadicI
     simpa [-GeneralLinearGroup.val_det_apply] using!
       ((congrArg L h_lift).trans (L_equiv _ z.val)).symm
   refine exists_isMainSummand_of_isRepOfType ι h_setting _ (jumps (d, κ) (card D.RowIndex)) R ?_
-    (fun g ↦ ?_) ?_
+    (fun g ↦ ?_)
+    ?_
   · -- the level is maximal off the chosen places and their conjugates; at the chosen place `i`
     -- the idempotent of the label `c i` does not kill `z`, or else `tupleIdem c` would
     have L_inj : Function.Injective (L.domRestrict (D.principalForms W)) := fun _ ↦ by simp [L]
-    have h_label (i : O.ChosenIndex) : HasProductLabel (L z)
-        (O.isConjApart_chosenPlace.star_ne i i) (faithfulChar (ResField (O.chosenPlace i)))
-        (card D.RowIndex)
+    have h_label (i : O.ChosenIndex) : HasProductLabel (L z) (O.isConjApart_chosenPlace.star_ne i i)
+        (faithfulChar (ResField (O.chosenPlace i))) (card D.RowIndex)
         ((c i).scaleRoots (charName (faithfulChar (ResField (O.chosenPlace i))) 1).val) 1 _ :=
       HasParahoricType.hasProductLabel _ L_inj
-        (fun h_zero ↦ hcz_ne (piTensorElem_apply_eq_zero i h_zero)) (h_type i) nofun nofun
+        (fun h_zero ↦ hcz_ne (piTensorElem_apply_eq_zero i h_zero))
+        (h_type i) nofun nofun
     convert isRepOfType_of_hasProductLabel h_setting h_form h_eig hR
       (fun v _ hv ↦ levelSpace_anti (maxCompactAt_le_levelOf hv) h_level) h_label
     simp
   · -- the trace and the first Hecke eigenvalue are minus the coefficients of `X ^ (r - 1)`
-    have h_trace : (R g).val.trace = -(R g).val.charpoly.coeff (D.r - 1) := by
+    have h_trace : (R g).val.trace = - (R g).val.charpoly.coeff (D.r - 1) := by
       rw [trace_eq_neg_charpoly_coeff, card_rowIndex]
-    have h_hecke (w : FinPlace D.E) :
-        p (w, 1) = -(heckePoly w.q (card D.RowIndex) fun i : ℕ ↦ p (w, i)).coeff (D.r - 1) := by
+    have h_hecke (w : FinPlace D.E)
+        : p (w, 1) = - (heckePoly w.q (card D.RowIndex) fun i : ℕ ↦ p (w, i)).coeff (D.r - 1) := by
       rw [card_rowIndex]
       simp [Nat.sub_sub_self D.r_odd.pos]
-    simpa only [h_trace, h_hecke, map_neg, id_eq] using
-      (hR.tendsto_charpoly_coeff g (D.r - 1)).neg
+    simpa only [h_trace, h_hecke, map_neg, id_eq] using (hR.tendsto_charpoly_coeff g (D.r - 1)).neg
   · -- the shifted jumps are those of `isMainSummandWeights_descentPair`
-    have h_weight (v : D.Φ) : O.weight v = -D.liftWeight j v := rfl
+    have h_weight (v : D.Φ) : O.weight v = - D.liftWeight j v := rfl
     have h_rankDiff : O.rankDiff = D.t := by simp [DescentPair.rankDiff]
     simpa only [card_rowIndex, h_rankDiff, h_weight, mul_neg, sub_neg_eq_add,
-      map_jumps_sub_eq_map_targetParameter hκ] using isMainSummandWeights_descentPair j.property
+        map_jumps_sub_eq_map_targetParameter hκ]
+      using isMainSummandWeights_descentPair j.property
 
 end RowsExist
 

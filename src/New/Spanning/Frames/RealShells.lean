@@ -71,24 +71,28 @@ section ComplexShells
 
 open MeasureTheory Size Fintype Real PlaceData Shape ENNReal Finset Gauge RealPlaceSizes
 
-variable {j s : ℕ} {𝔰 : Shape} {I : Type} [Fintype I] [DecidableEq I]
+variable
+  {j s : ℕ} {𝔰 : Shape} {I : Type} [Fintype I] [DecidableEq I]
   {F : C(𝔰.G₁, EuclideanSpace ℂ I)} {p q : ℕ → ℂˣ} {ρ L t b : ℝ}
   {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* Matrix.unitaryGroup I ℂ} {F₀ : C(𝔰.G₁, EuclideanSpace ℂ I)}
   {f : ℕ}
 
 /-! ### Cut Bessel functions and their gauges -/
 
-/-- `F` is the cut of the normalised Bessel function `F₀` of irreducible type `rep`: the two form a
+/--
+`F` is the cut of the normalised Bessel function `F₀` of irreducible type `rep`: the two form a
 cut pair (`New.IsCutPair`) with base `b` and decay rate `f`, and the box radius `ρ`, the exponent
-`s` and `b` satisfy the numerical hypotheses `New.Floors.RealPlaceSizes`. -/
-structure IsCutBessel (F : C(𝔰.G₁, EuclideanSpace ℂ I))
-    (rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* Matrix.unitaryGroup I ℂ) (ρ : ℝ) (s : ℕ) (b : ℝ)
-    (F₀ : C(𝔰.G₁, EuclideanSpace ℂ I)) (f : ℕ) : Prop extends
-    IsCutPair b f rep (FullOrCut.select F₀ F), RealPlaceSizes 𝔰 ρ s b where
+`s` and `b` satisfy the numerical hypotheses `New.Floors.RealPlaceSizes`.
+-/
+structure IsCutBessel
+    (F : C(𝔰.G₁, EuclideanSpace ℂ I)) (rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* Matrix.unitaryGroup I ℂ)
+    (ρ : ℝ) (s : ℕ) (b : ℝ) (F₀ : C(𝔰.G₁, EuclideanSpace ℂ I)) (f : ℕ)
+    : Prop
+    extends IsCutPair b f rep (FullOrCut.select F₀ F), RealPlaceSizes 𝔰 ρ s b where
   /-- Every matrix that commutes with all `rep h` is scalar. -/
-  irreducible (M : Matrix I I ℂ) :
-    (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h : Matrix I I ℂ)) →
-      M ∈ Set.range (Matrix.scalar I)
+  irreducible (M : Matrix I I ℂ)
+    : (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h : Matrix I I ℂ))
+      → M ∈ Set.range (Matrix.scalar I)
 
 /-- The position ball at scale `T`: the entries of `x - 1` have modulus at most `T ^ (99 n)`. -/
 def positionBall (𝔰 : Shape) (T : ℝ) : Set 𝔰.G₁ :=
@@ -98,8 +102,10 @@ lemma measurableSet_positionBall (T : ℝ) : MeasurableSet (positionBall 𝔰 T)
   simp only [positionBall, Set.ofPred_forall]
   exact .iInter fun a ↦ .iInter fun c ↦ measurableSet_le (by fun_prop) measurable_const
 
-/-- The shell of height `2 ^ i`: the positions `x` for which `2 ^ i` is the least of `1, 2, 4, …`
-that bounds the moduli of the entries of `x - 1`. -/
+/--
+The shell of height `2 ^ i`: the positions `x` for which `2 ^ i` is the least of `1, 2, 4, …`
+that bounds the moduli of the entries of `x - 1`.
+-/
 def dyadicShell (𝔰 : Shape) (i : ℕ) : Set 𝔰.G₁ :=
   {x | IsLeast {l : ℕ | ∀ a c : 𝔰.BesselIndex, ‖(x.val.val - 1) a c‖ ≤ 2 ^ l} i}
 
@@ -129,9 +135,11 @@ lemma notMem_positionBall_of_mem_dyadicShell {i : ℕ} {x : 𝔰.G₁} (hx : x �
 
 namespace IsCutBessel
 
-/-- The normalising constant vol U(k) / vol U(r) / (λ · card I)² of the forms, where k = card κ, r
+/--
+The normalising constant vol U(k) / vol U(r) / (λ · card I)² of the forms, where k = card κ, r
 is the rank of the group and λ = `New.Floors.RealPlaceSizes.haarRatio` is the ratio of the two Haar
-measures. -/
+measures.
+-/
 def formConst (hF : IsCutBessel F rep ρ s b F₀ f) : ℝ :=
   volU 𝔰.k / volU 𝔰.r / (hF.haarRatio.toReal * card I) ^ 2
 

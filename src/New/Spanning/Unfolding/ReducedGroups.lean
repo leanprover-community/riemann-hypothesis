@@ -45,15 +45,17 @@ variable {n α R : Type*} [Fintype n] [DecidableEq n] [LinearOrder α] [CommRing
 /-- The free entries of a block unitriangular matrix: the pairs `(i, j)` with `lev i < lev j`. -/
 abbrev FreeEntry (lev : n → α) : Type _ := {p : n × n // lev p.1 < lev p.2}
 
-/-- A matrix that is block unitriangular for the level function `lev` (equal to `1` at the entries
-`(i, j)` with `lev j ≤ lev i`) is the same as a choice of its free entries. -/
+/--
+A matrix that is block unitriangular for the level function `lev` (equal to `1` at the entries
+`(i, j)` with `lev j ≤ lev i`) is the same as a choice of its free entries.
+-/
 def unitriangularEquiv (R : Type*) [CommRing R] : unitriangular lev R ≃ (FreeEntry lev → R) where
   toFun u p := (u : GL n R) p.val.1 p.val.2
   invFun a :=
     let Z : Matrix n n R :=
       of fun i j ↦ if h : lev i < lev j then a ⟨(i, j), h⟩ else (1 : Matrix n n R) i j
-    have hZ : ∀ i j : n, lev j ≤ lev i → Z i j = (1 : Matrix n n R) i j :=
-      fun _ _ hij ↦ dite_eq_right hij.not_gt
+    have hZ : ∀ i j : n, lev j ≤ lev i → Z i j = (1 : Matrix n n R) i j := fun _ _ hij ↦
+      dite_eq_right hij.not_gt
     have h_det : IsUnit Z.det := by simp [det_eq_one_of_unitriangular hZ]
     ⟨GeneralLinearGroup.mk'' Z h_det, hZ⟩
   left_inv u := by
@@ -270,20 +272,25 @@ lemma reduction_apply_eq_one_apply {k : S.latticeStabilizer} {a b : 𝔰.BesselI
       (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (ResField (w : FinPlace E))) a b := by
   rw [reduction_apply_congr 1 i w hk, map_one, Pi.one_apply, Pi.one_apply, Units.val_one]
 
-/-- Let `Ū = S.reducedImage besselU` be the reduction at the chosen places of the integral points of
+/--
+Let `Ū = S.reducedImage besselU` be the reduction at the chosen places of the integral points of
 the Bessel unipotent group. An element `s` of `S.ResidueGL`, the product of the general linear
 groups over the residue fields at the chosen places, lies in `Ū` if and only if all its components
-`s i w` are block upper unitriangular for `BesselIndex.level`. -/
-theorem mem_reducedImage_besselU {s : S.ResidueGL} :
-    s ∈ S.reducedImage besselU ↔ ∀ (i : Fin 2) (w : S.chosenPlaces i),
-      s i w ∈ unitriangular BesselIndex.level (ResField (w : FinPlace E)) := by
-  refine ⟨fun ⟨k, hk, h⟩ i w a b hab ↦ h ▸ S.reduction_apply_eq_one_apply (hk a b hab) i w,
-    fun hs ↦ ?_⟩
+`s i w` are block upper unitriangular for `BesselIndex.level`.
+-/
+theorem mem_reducedImage_besselU {s : S.ResidueGL}
+    : s ∈ S.reducedImage besselU
+      ↔ ∀ (i : Fin 2) (w : S.chosenPlaces i),
+        s i w ∈ unitriangular BesselIndex.level (ResField (w : FinPlace E)) := by
+  refine
+    ⟨fun ⟨k, hk, h⟩ i w a b hab ↦ h ▸ S.reduction_apply_eq_one_apply (hk a b hab) i w, fun hs ↦ ?_⟩
   -- Lift the free entries to `Ô`, complete `u` by its inverse adjoint `u'`, and glue to `k`.
-  obtain ⟨u, hu, hu_red⟩ := exists_unitriangular_map_eq BesselIndex.level
-    (fun p : Σ i : Fin 2, S.chosenPlaces i ↦ reduceAt (p.2 : FinPlace E))
-    (fun t ↦ (S.exists_reduceAboveM_eq fun x ↦ t x.1).imp fun y hy p ↦ hy (p, false))
-    _ fun p ↦ hs p.1 p.2
+  obtain ⟨u, hu, hu_red⟩ :=
+    exists_unitriangular_map_eq BesselIndex.level
+      (fun p : Σ i : Fin 2, S.chosenPlaces i ↦ reduceAt (p.2 : FinPlace E))
+      (fun t ↦ (S.exists_reduceAboveM_eq fun x ↦ t x.1).imp fun y hy p ↦ hy (p, false))
+      _
+      fun p ↦ hs p.1 p.2
   obtain ⟨u', h_adj, hu'⟩ :=
     exists_invAdjoint_unitriangular (T := S.latticeMiddle (Ô E)) Floors.IsHermitianUnit.isUnit hu
   obtain ⟨k, hk_one, hk_red⟩ := S.exists_reduction_eq_of_invAdjoint Set.univ h_adj
@@ -310,24 +317,30 @@ lemma card_freeEntry_besselIndex (𝔰 : Shape) :
       · simp [h_zero]
       · rw [show 2 * 𝔰.ϱ - 1 + 2 * (𝔰.k + 1) = 2 * 𝔰.k + 2 * 𝔰.ϱ + 1 by omega]
 
-/-- The order of `Ū = S.reducedImage besselU`, the reduction of the integral points of the Bessel
+/--
+The order of `Ū = S.reducedImage besselU`, the reduction of the integral points of the Bessel
 unipotent group, is `S.unipotentOrder = M ^ (f ϱ (2k + 2ϱ + 1))`. Here `M` is the product of the two
 level primes, `f` the number of infinite places of `E`, `k` the dimension of `X₀` and `ϱ` the number
-of hyperbolic planes. -/
+of hyperbolic planes.
+-/
 theorem card_reducedImage_besselU : Nat.card (S.reducedImage besselU) = S.unipotentOrder := by
   let d : ℕ := 𝔰.ϱ * (2 * 𝔰.k + 2 * 𝔰.ϱ + 1)
-  let equivPi : S.reducedImage besselU ≃ ∀ (i : Fin 2) (w : S.chosenPlaces i),
-      unitriangular (BesselIndex.level : 𝔰.BesselIndex → ℕ) (ResField (w : FinPlace E)) :=
-    { toFun s i w := ⟨(s : S.ResidueGL) i w, S.mem_reducedImage_besselU.1 s.property i w⟩
-      invFun t := ⟨fun i w ↦ t i w, S.mem_reducedImage_besselU.2 fun i w ↦ (t i w).property⟩ }
-  calc Nat.card (S.reducedImage besselU)
-      = ∏ i : Fin 2, ∏ w : S.chosenPlaces i, Nat.card
-          (unitriangular (BesselIndex.level : 𝔰.BesselIndex → ℕ) (ResField (w : FinPlace E))) := by
-        simp only [Nat.card_congr equivPi, Nat.card_pi]
+  let equivPi
+      : S.reducedImage besselU
+        ≃ ∀ (i : Fin 2) (w : S.chosenPlaces i),
+          unitriangular (BesselIndex.level : 𝔰.BesselIndex → ℕ) (ResField (w : FinPlace E)) := {
+    toFun s i w := ⟨(s : S.ResidueGL) i w, S.mem_reducedImage_besselU.1 s.property i w⟩
+    invFun t := ⟨fun i w ↦ t i w, S.mem_reducedImage_besselU.2 fun i w ↦ (t i w).property⟩
+  }
+  calc
+    Nat.card (S.reducedImage besselU)
+        = ∏ i : Fin 2, ∏ w : S.chosenPlaces i, Nat.card
+            (unitriangular (BesselIndex.level : 𝔰.BesselIndex → ℕ) (ResField (w : FinPlace E))) :=
+      by simp only [Nat.card_congr equivPi, Nat.card_pi]
     _ = ∏ i : Fin 2, ∏ _w : S.chosenPlaces i, S.levelPrime i ^ d := by
-        simp only [card_unitriangular, card_freeEntry_besselIndex, card_resField_eq_levelPrime, d]
+      simp only [card_unitriangular, card_freeEntry_besselIndex, card_resField_eq_levelPrime, d]
     _ = (S.levelPrime 0 * S.levelPrime 1) ^ (numInfPlaces E * d) := by
-        simp [S.card_chosenPlaces, mul_pow, ← pow_mul, mul_comm d]
+      simp [S.card_chosenPlaces, mul_pow, ← pow_mul, mul_comm d]
     _ = S.unipotentOrder := rfl
 
 /-- If the image `S.inclHFin k` of an element `k` of the unitary group of `X₀` preserves the
@@ -343,16 +356,19 @@ lemma coe_mem_principalLevel_iff_reduction_eq_one {k : S.latticeStabilizer} :
     (k : S.GFin) ∈ S.principalLevel ↔ S.reduction k = 1 :=
   Subgroup.mem_map_iff_mem S.latticeStabilizer.subtype_injective
 
-/-- The finite adelic points `k` of the unitary group of `X₀` with `S.inclHFin k` in
+/--
+The finite adelic points `k` of the unitary group of `X₀` with `S.inclHFin k` in
 `S.principalLevel` (the principal congruence subgroup) have index `|H̄|` among those with
-`S.inclHFin k` in `S.latticeStabilizer`. -/
-theorem relIndex_comap_principalLevel :
-    (S.principalLevel.comap S.inclHFin).relIndex (S.latticeStabilizer.comap S.inclHFin) =
-      Nat.card (S.reducedImage besselH) := by
+`S.inclHFin k` in `S.latticeStabilizer`.
+-/
+theorem relIndex_comap_principalLevel
+    : (S.principalLevel.comap S.inclHFin).relIndex (S.latticeStabilizer.comap S.inclHFin)
+      = Nat.card (S.reducedImage besselH) := by
   -- The subgroup is the kernel of the reduction, whose image is `H̄`.
   let reduce := S.reduction.comp (S.inclHFin.subgroupComap S.latticeStabilizer)
-  refine (congrArg Subgroup.index (a₂ := reduce.ker) (Subgroup.ext fun k ↦
-    S.coe_mem_principalLevel_iff_reduction_eq_one (k := ⟨S.inclHFin k, k.property⟩))).trans ?_
+  refine (congrArg Subgroup.index (a₂ := reduce.ker)
+    (Subgroup.ext fun k ↦
+      S.coe_mem_principalLevel_iff_reduction_eq_one (k := ⟨S.inclHFin k, k.property⟩))).trans ?_
   suffices reduce.range = S.reducedImage besselH by rw [Subgroup.index_ker, this]
   ext s
   refine ⟨fun ⟨k, hk⟩ ↦ hk ▸ S.reduction_inclHFin_mem_reducedImage_besselH k.property, ?_⟩
@@ -393,16 +409,22 @@ lemma mem_reducedImage_besselS {s : S.ResidueGL} :
   · rintro ⟨u', ⟨u, hu, rfl⟩, h', ⟨h, hh, rfl⟩, rfl⟩
     exact ⟨u * h, mem_besselS.2 ⟨u, hu, h, hh, rfl⟩, S.reduction.map_mul u h⟩
 
-/-- Let `Ū`, `H̄`, `R̄` be the reductions of `besselU`, `besselH` (the fixer of the basis vectors
-outside `X₀`) and `besselS`. Then `|R̄| = |H̄| |Ū|`, where `|Ū| = S.unipotentOrder`. -/
-theorem card_reducedImage_besselS :
-    Nat.card (S.reducedImage besselS) = Nat.card (S.reducedImage besselH) * S.unipotentOrder := by
+/--
+Let `Ū`, `H̄`, `R̄` be the reductions of `besselU`, `besselH` (the fixer of the basis vectors
+outside `X₀`) and `besselS`. Then `|R̄| = |H̄| |Ū|`, where `|Ū| = S.unipotentOrder`.
+-/
+theorem card_reducedImage_besselS
+    : Nat.card (S.reducedImage besselS) = Nat.card (S.reducedImage besselH) * S.unipotentOrder := by
   -- Multiplication is a bijection from `Ū × H̄` onto `R̄`.
   let mul (p : S.reducedImage besselU × S.reducedImage besselH) : S.reducedImage besselS :=
     ⟨p.1 * p.2, S.mem_reducedImage_besselS.2 ⟨p.1, p.1.prop, p.2, p.2.prop, rfl⟩⟩
   have h_bij : Function.Bijective mul := by
-    refine ⟨fun p q hpq ↦ Subgroup.mul_injective_of_disjoint
-      S.disjoint_reducedImage_besselU_besselH (congrArg Subtype.val hpq), ?_⟩
+    refine ⟨
+      fun p q hpq ↦
+        Subgroup.mul_injective_of_disjoint S.disjoint_reducedImage_besselU_besselH
+          (congrArg Subtype.val hpq),
+      ?_
+    ⟩
     rintro ⟨s, hs⟩
     obtain ⟨u, hu, h, hh, rfl⟩ := S.mem_reducedImage_besselS.1 hs
     exact ⟨(⟨u, hu⟩, ⟨h, hh⟩), rfl⟩

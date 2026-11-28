@@ -50,9 +50,11 @@ namespace New.Floors
 open Matrix MeasureTheory Measure ENNReal Sum Set Function FloorGroups Size Place TraceOne PlaceData
   HyperbolicBasis Finset
 
-variable {A ι : Type} {𝔰 : Shape} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A]
-  [Place A] [Fintype ι] [DecidableEq ι] {m j : ℕ} {a : Fin 𝔰.ϱ} {T : 𝔰.Form A}
-  [IsHermitianUnit T.splitGram] {F : PlaceData ι T m} {g x y σ ξ : T.G}
+variable
+  {A ι : Type} {𝔰 : Shape} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [Place A]
+  [Fintype ι] [DecidableEq ι]
+  {m j : ℕ} {a : Fin 𝔰.ϱ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
+  {F : PlaceData ι T m} {g x y σ ξ : T.G}
 
 namespace PlaceData
 
@@ -252,12 +254,16 @@ end New.Floors
 namespace New.Floors.Gauge
 
 open Matrix MeasureTheory BesselIndex ENNReal Fintype FloorGroups ProbabilityTheory Size Set
-  PlaceData U
-  Place Finset
+  PlaceData U Place Finset
 
-variable {A ι : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  {𝔰 : Shape} [Fintype ι] [DecidableEq ι] {m j : ℕ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
-  {F : PlaceData ι T m} (Γ : Gauge F) {x : T.G} (a : Fin 𝔰.ϱ) {p : ℕ → Aˣ}
+variable
+  {A ι : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  {𝔰 : Shape} [Fintype ι] [DecidableEq ι]
+  {m j : ℕ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
+  {F : PlaceData ι T m} (Γ : Gauge F)
+  {x : T.G}
+  (a : Fin 𝔰.ϱ)
+  {p : ℕ → Aˣ}
 
 /-- A combination of the orthonormal vectors, the columns of `F.orthonormalPart`, is orthogonal to
 the frame vectors e_b with b < l and b < ϱ. -/
@@ -287,8 +293,10 @@ lemma floorMassLe_depth_pow (hx : x ∈ F.positions) :
       (isOrthogonalBelow_orthonormalPart_mulVec w).mulVec
         (mem_partialUnitriangularGroup_of_mem_floorGroup hσ) le_rfl) _
 
-/-- The bound Λ^(10⁶ n³) for all floors of a head together: at most n floors at Λ^(10⁶ n²) each,
-with n = `𝔰.n` and Λ = `Γ.loss`, the constant of the gauge. -/
+/--
+The bound Λ^(10⁶ n³) for all floors of a head together: at most n floors at Λ^(10⁶ n²) each,
+with n = `𝔰.n` and Λ = `Γ.loss`, the constant of the gauge.
+-/
 noncomputable abbrev floorsConst : ℝ≥0∞ := Γ.loss ^ (10 ^ 6 * 𝔰.n ^ 3)
 
 omit [TopologicalSpace A] [MeasureSpace A] [Place A] [IsHermitianUnit T.splitGram] in
@@ -475,8 +483,10 @@ lemma lintegral_mul_invDepthWeight_le {b : ℕ} {Φ : T.G → ℝ≥0∞} {ρ : 
   · grw [Γ.lintegral_invDepthWeight_le hj hp hx (h_near.anti hjb)]
   · simp [hΦ_zero y h_near]
 
-/-- The cost of floor l on the position ball: |M|^(r_l+1/2) c^(rank X') Λ^(4900 n), where
-|M|^(r_l+1/2) = `F.floorModulus l`, c = `P.kernelBound` and X' has the basis `F.FreeIndex`. -/
+/--
+The cost of floor l on the position ball: |M|^(r_l+1/2) c^(rank X') Λ^(4900 n), where
+|M|^(r_l+1/2) = `F.floorModulus l`, c = `P.kernelBound` and X' has the basis `F.FreeIndex`.
+-/
 noncomputable abbrev floorConst (l : ℕ) : ℝ≥0∞ :=
   F.floorModulus l * P.kernelBound ^ Fintype.card F.FreeIndex * Γ.loss ^ (4900 * 𝔰.n)
 
@@ -504,8 +514,10 @@ lemma form_sub_form_heisenbergElem_inv_mulVec {ζ ζ' o : 𝔰.BesselIndex → A
   rw [h_unitary, h_move, mulVec_sub, mulVec_smul, dotProduct_sub, dotProduct_smul, h_lift, h_frame]
   simp [mul_comm]
 
-/-- The translates under U_(<l) of the points that are close to g: the z for which g⁻¹ ν z is a
-close position for some ν in U_(<l). -/
+/--
+The translates under U_(<l) of the points that are close to g: the z for which g⁻¹ ν z is a
+close position for some ν in U_(<l).
+-/
 def closeBelow (l : ℕ) (g : T.G) : Set T.G :=
   {z : T.G | ∃ ν ∈ unipotentBelow l, g⁻¹ * (ν * z) ∈ Γ.positionsOfSize}
 
@@ -729,9 +741,11 @@ namespace New.Floors
 open Matrix MeasureTheory Measure ENNReal Sum Set Function FloorGroups Size Place TraceOne PlaceData
   HyperbolicBasis Finset
 
-variable {A ι : Type} {𝔰 : Shape} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A]
-  [Place A] [Fintype ι] [DecidableEq ι] {m j : ℕ} {p : ℕ → Aˣ} {a : Fin 𝔰.ϱ} {T : 𝔰.Form A}
-  [IsHermitianUnit T.splitGram] {F : PlaceData ι T m} {Γ : Gauge F} {g x y : T.G}
+variable
+  {A ι : Type} {𝔰 : Shape} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [Place A]
+  [Fintype ι] [DecidableEq ι]
+  {m j : ℕ} {p : ℕ → Aˣ} {a : Fin 𝔰.ϱ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
+  {F : PlaceData ι T m} {Γ : Gauge F} {g x y : T.G}
 
 namespace Gauge
 

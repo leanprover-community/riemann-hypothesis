@@ -427,49 +427,74 @@ private lemma pow_pow_eq_of_isWeilPair {p : ℕ} [ThePrime p] {R : CommRingCat} 
   simpa [← map_inv, h𝔭, hj, norm_sub_rev] using
     hs.2 _ ((New.intQpBar p).valuation_le_one ⟨_, hR r⟩)
 
-/-- Let `k` be a perfect domain of characteristic `p` and `πk : R →+* k`. The ring map
-`R → W(k) ⧸ pdIdeal W(k)` that sends `z` to the class of the Teichmüller lift of `πk z`. -/
-private noncomputable def teichReduction {p : ℕ} [ThePrime p] {R k : Type} [CommRing R]
-    [CommRing k] [IsDomain k] [CharP k p] [PerfectRing k p] (πk : R →+* k) :
-    R →+* WittVector p k ⧸ pdIdeal (WittVector p k) :=
-  (constantCoeff.liftOfRightInverse (teichmuller p) .refl
-    ⟨pdQuotientMk _, by simp [IsCompleteTorsionFree.p_mem_pdIdeal,
-      isReductionMod_constantCoeff_and_isCompleteTorsionFree k]⟩).comp πk
+/--
+Let `k` be a perfect domain of characteristic `p` and `πk : R →+* k`. The ring map
+`R → W(k) ⧸ pdIdeal W(k)` that sends `z` to the class of the Teichmüller lift of `πk z`.
+-/
+private noncomputable def teichReduction
+    {p : ℕ} [ThePrime p]
+    {R k : Type} [CommRing R] [CommRing k] [IsDomain k] [CharP k p] [PerfectRing k p]
+    (πk : R →+* k)
+    : R →+* WittVector p k ⧸ pdIdeal (WittVector p k) :=
+  (constantCoeff.liftOfRightInverse (teichmuller p) .refl ⟨
+    pdQuotientMk _,
+    by
+      simp [IsCompleteTorsionFree.p_mem_pdIdeal,
+        isReductionMod_constantCoeff_and_isCompleteTorsionFree k]
+  ⟩).comp πk
 
-/-- The coefficients `Bmax ⊗ A` of the period maps on `p`-adic tests, where `A` is the completion of
-`Amax ⊗ W(c♭)` at the test `c`. -/
-private noncomputable abbrev periodCoeff {p : ℕ} [ThePrime p] [CrysPeriodAlgebra] :
-    AbFunctor PadicTest := moduleCoeff (asModules (tilt ⋙ periodAlg Amax) ⋙ tensorWith Bmax Bmax)
+/--
+The coefficients `Bmax ⊗ A` of the period maps on `p`-adic tests, where `A` is the completion of
+`Amax ⊗ W(c♭)` at the test `c`.
+-/
+private noncomputable abbrev periodCoeff {p : ℕ} [ThePrime p] [CrysPeriodAlgebra]
+    : AbFunctor PadicTest :=
+  moduleCoeff (asModules (tilt ⋙ periodAlg Amax) ⋙ tensorWith Bmax Bmax)
 
-/-- Degree-`n` cohomology of the points of `V` in `B ⧸ pdIdeal B`, where `B` runs over the
+/--
+Degree-`n` cohomology of the points of `V` in `B ⧸ pdIdeal B`, where `B` runs over the
 `p`-torsion-free, `p`-adically complete `W(k)`-algebras and `R` acts through `teichReduction πk`,
 with coefficients `B`. The periods `C z` of `map_J_tensorAction_eq_pull` and
-`sum_linearFrob_apply_eq_zero` are indexed by its elements `z`. -/
-private noncomputable abbrev crysClasses (p : ℕ) [ThePrime p] {R : CommRingCat} {k : Type}
-    [CommRing k] [IsDomain k] [CharP k p] [PerfectRing k p] (πk : R →+* k) {Y : Over (Spec R)}
-    (V : Subfunctor (algPointsOf R R Y)) (n : ℕ) : Type 2 :=
+`sum_linearFrob_apply_eq_zero` are indexed by its elements `z`.
+-/
+private noncomputable abbrev crysClasses
+    (p : ℕ) [ThePrime p]
+    {R : CommRingCat} {k : Type} [CommRing k] [IsDomain k] [CharP k p] [PerfectRing k p]
+    (πk : R →+* k)
+    {Y : Over (Spec R)} (V : Subfunctor (algPointsOf R R Y))
+    (n : ℕ)
+    : Type 2 :=
   H (freeAb.obj (pdReduction (teichReduction (p := p) πk) ⋙ V.toFunctor))
     (moduleCoeff (asModules (ObjectProperty.ι fun A : CommAlg (WittVector p k) ↦
-      IsCompleteTorsionFree A))) n
+      IsCompleteTorsionFree A)))
+    n
 
-/-- Let `z ^ p ^ a = z` on `k`, and let `W(k) → A_max` agree with `integersToPdQuotient` on the
+/--
+Let `z ^ p ^ a = z` on `k`, and let `W(k) → A_max` agree with `integersToPdQuotient` on the
 Teichmüller lifts of the image of `R` (`hr`). Then `x ↦ x ^ p ^ a` on `B ⧸ pdIdeal B`, for the
 crystalline tests `B`, is a map of `R`-algebras from the structure through `integersToPdQuotient` to
-the structure through `teichReduction πk`. -/
-private noncomputable def frobPowHom {p : ℕ} [ThePrime p] [CrysPeriodAlgebra] {R : CommRingCat}
-    [Algebra R OC] {k : Type} [CommRing k] [IsDomain k] [CharP k p] [PerfectRing k p]
-    [Algebra (WittVector p k) Amax] (πk : R →+* k)
-    (hr : ∀ z : R, pdQuotientMk Amax (algebraMap (WittVector p k) Amax (teichmuller p (πk z))) =
-      integersToPdQuotient (algebraMap R OC z))
-    (a : ℕ) (ha : ∀ z : k, z ^ p ^ a = z) :
-    pdReduction integersToPdQuotient ⋙ restrictAlg R OC ⟶
-      CrysTest.restrictScalars (WittVector p k) ⋙ pdReduction (teichReduction (p := p) πk) where
-  app B := CommAlg.homOfRingHom (frobPow B.p_eq_zero_mod_pdIdeal a) fun z ↦ by
-    -- `z ^ p ^ a` and `z` have the same image in `k`.
-    have hz : pdQuotientMk Amax (algebraMap (WittVector p k) Amax (teichmuller p (πk z))) =
-        integersToPdQuotient (algebraMap R OC z) ^ p ^ a := by
-      rw [← map_pow, ← map_pow, ← hr, map_pow πk, ha (πk z)]
-    exact ((congrArg (pdQuotientMap _) hz).trans (map_pow ..)).symm
+the structure through `teichReduction πk`.
+-/
+private noncomputable def frobPowHom
+    {p : ℕ} [ThePrime p] [CrysPeriodAlgebra]
+    {R : CommRingCat} [Algebra R OC]
+    {k : Type}
+    [CommRing k] [IsDomain k] [CharP k p] [PerfectRing k p] [Algebra (WittVector p k) Amax]
+    (πk : R →+* k)
+    (hr : ∀ z : R,
+      pdQuotientMk Amax (algebraMap (WittVector p k) Amax (teichmuller p (πk z)))
+        = integersToPdQuotient (algebraMap R OC z))
+    (a : ℕ) (ha : ∀ z : k, z ^ p ^ a = z)
+    : pdReduction integersToPdQuotient ⋙ restrictAlg R OC
+      ⟶ CrysTest.restrictScalars (WittVector p k) ⋙ pdReduction (teichReduction (p := p) πk) where
+  app B :=
+    CommAlg.homOfRingHom (frobPow B.p_eq_zero_mod_pdIdeal a) fun z ↦ by
+      -- `z ^ p ^ a` and `z` have the same image in `k`.
+      have hz
+          : pdQuotientMk Amax (algebraMap (WittVector p k) Amax (teichmuller p (πk z)))
+            = integersToPdQuotient (algebraMap R OC z) ^ p ^ a := by
+        rw [← map_pow, ← map_pow, ← hr, map_pow πk, ha (πk z)]
+      exact ((congrArg (pdQuotientMap _) hz).trans (map_pow ..)).symm
   naturality _ _ _ := by
     ext
     exact (map_pow ..).symm

@@ -63,9 +63,11 @@ attribute [local instance] algebraMvPolynomial
 
 section Steps
 
-variable {O L Y G J σ W : Type} [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ]
-  [Group G] (u : Y → G →* Matrix σ σ O) {S : Subalgebra O (Y → MvPolynomial J L)}
-  (𝒥 : Submodule S (Y → MvPolynomial J L))
+variable
+  {O L Y G J σ W : Type}
+  [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ] [Group G]
+  (u : Y → G →* Matrix σ σ O)
+  {S : Subalgebra O (Y → MvPolynomial J L)} (𝒥 : Submodule S (Y → MvPolynomial J L))
 
 variable {p : O} {τ φ : J × Bool → G} {ε : J → O[X]}
 
@@ -343,9 +345,11 @@ lemma exists_areCoordinates_ribetGenerators (u : Y → G →* Matrix σ σ O) [D
 section CharacterRows
 
 variable {u : Y → G →* Matrix σ σ O}
-variable [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G] {t : ℕ} {ξ : Fin t → G →* O}
-  [Fintype W] [DecidableEq W] {δ : W → G} {o : W → O[X]} {s₀ s : Finset G} {γ a : G} {c₁ C : O}
-  {ty : J →o Fin t} {b : Fin t → ℕ∞}
+variable
+  [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G]
+  {t : ℕ} {ξ : Fin t → G →* O} [Fintype W] [DecidableEq W]
+  {δ : W → G} {o : W → O[X]} {s₀ s : Finset G} {γ a : G} {c₁ C : O} {ty : J →o Fin t}
+  {b : Fin t → ℕ∞}
 
 /-- Let `R` be a system of matrices for the characters `ξ e`, `e : Fin t` (`CharacterRows`). For
 each `e` it has `R.count e` matrices `R.charMatrix e j` over `O[X j]` and weights `R.coeff e j` with
@@ -393,9 +397,11 @@ end Steps
 
 section Lemma
 
-variable {O L Y G J σ W : Type} [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ]
-  [Group G] (u : Y → G →* Matrix σ σ O) {S : Subalgebra O (Y → MvPolynomial J L)}
-  (𝒥 : Submodule S (Y → MvPolynomial J L))
+variable
+  {O L Y G J σ W : Type}
+  [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ] [Group G]
+  (u : Y → G →* Matrix σ σ O)
+  {S : Subalgebra O (Y → MvPolynomial J L)} (𝒥 : Submodule S (Y → MvPolynomial J L))
 
 /-- Membership in `ribetCocyclesIn`: `c` is a cocycle for `ρ`, and it obeys every linear relation
 among the families `u · g - 1`. -/

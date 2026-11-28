@@ -284,10 +284,12 @@ lemma regroup_surjective (J : I ≃ L × H) :
     Surjective (regroup J : ((H × X) × L → O) → X → I → O) :=
   fun G ↦ ⟨fun ((h, x), l) ↦ G x (J.symm (l, h)), by simp [funext_iff, regroup_apply]⟩
 
-/-- The map on functions of edges with values in `O ^ H ⊗ O ^ L` that acts on the value at the edge
-`e` by `u e ⊗ A`. -/
-def edgewise (u : Ed → Matrix H H O) (A : Matrix L L O) :
-    Matrix ((H × Ed) × L) ((H × Ed) × L) O := blockDiagonal u ⊗ₖ A
+/--
+The map on functions of edges with values in `O ^ H ⊗ O ^ L` that acts on the value at the edge
+`e` by `u e ⊗ A`.
+-/
+def edgewise (u : Ed → Matrix H H O) (A : Matrix L L O) : Matrix ((H × Ed) × L) ((H × Ed) × L) O :=
+  blockDiagonal u ⊗ₖ A
 
 variable [Fintype H] [Fintype Ed] [Fintype L]
 
@@ -307,18 +309,22 @@ lemma edgewise_mulVec (u : Ed → Matrix H H O) (A : Matrix L L O) (ψ : (H × E
 
 variable {E : Type*} [DecidableEq H] [DecidableEq L]
 
-/-- The map `Add` that sends a function on edges to its pairings with the columns of `Q'`, which
+/--
+The map `Add` that sends a function on edges to its pairings with the columns of `Q'`, which
 are functions on the dual edges. At the edge `e` the pairing is by `u e` on the factor `O ^ H` and
-by `(h, h') ↦ h' ⬝ᵥ (b * h)` on the factor `O ^ L`. -/
-def pairingMap (u : Ed → GL H O) (b : L → O) (Q' : Matrix ((H × Ed) × L) E O) :
-    Matrix E ((H × Ed) × L) O :=
+by `(h, h') ↦ h' ⬝ᵥ (b * h)` on the factor `O ^ L`.
+-/
+def pairingMap (u : Ed → GL H O) (b : L → O) (Q' : Matrix ((H × Ed) × L) E O)
+    : Matrix E ((H × Ed) × L) O :=
   Q'ᵀ * edgewise (fun e : Ed ↦ (u e).val) (diagonal b)
 
-/-- The map `Inv` in the direction opposite to `New.pairingMap`. It applies `R'ᵀ`, and then at the
+/--
+The map `Inv` in the direction opposite to `New.pairingMap`. It applies `R'ᵀ`, and then at the
 edge `e` it applies `(u e)⁻¹` on the factor `O ^ H` and multiplication by `b'` followed by `Av` on
-the factor `O ^ L`. -/
-def nearInverse (u : Ed → GL H O) (Av : Matrix L L O) (b' : L → O)
-    (R' : Matrix E ((H × Ed) × L) O) : Matrix ((H × Ed) × L) E O :=
+the factor `O ^ L`.
+-/
+def nearInverse (u : Ed → GL H O) (Av : Matrix L L O) (b' : L → O) (R' : Matrix E ((H × Ed) × L) O)
+    : Matrix ((H × Ed) × L) E O :=
   edgewise (fun e : Ed ↦ (u e)⁻¹.val) (Av * diagonal b') * R'ᵀ
 
 /-- Let `Ed` be the set of edges, so that a vector indexed by `(H × Ed) × L` is a function on edges
@@ -352,15 +358,19 @@ lemma pairingMap_mul_nearInverse_apply (u : Ed → GL H O) (Av : Matrix L L O) (
 
 end Edgewise
 
-/-- The edges of a Hecke operator in coordinates. The situation in mind is this: `p` is a
+/--
+The edges of a Hecke operator in coordinates. The situation in mind is this: `p` is a
 uniformizer of `W`, and a group `Γ` acts freely, with finitely many orbits, on pairs of a
 `W`-lattice of rank `k` and a free `O`-module with a basis indexed by `H`. The points of `X` are
 representatives of the orbits, each with a basis of its lattice and of its module, and
 `e = (x, b)` is the edge `b` into `x`. The origin of `e` is `δ` times the representative
 `origin e` for one `δ ∈ Γ`. In the chosen bases
 `δ⁻¹ = originBasisChange e * diag(p⁻¹, …, p⁻¹, 1, …, 1) * terminusBasisChange b`, with `r` entries
-`p⁻¹`. Only coordinates are recorded: `p`, `Γ` and `δ` are no part of the structure. -/
-structure EdgeCoordinates (W O : Type) [CommRing W] [IsLocalRing W] [CommRing O] (k r : ℕ)
+`p⁻¹`. Only coordinates are recorded: `p`, `Γ` and `δ` are no part of the structure.
+-/
+structure EdgeCoordinates
+    (W O : Type) [CommRing W] [IsLocalRing W] [CommRing O]
+    (k r : ℕ)
     (X H : Type*) [Fintype H] [DecidableEq H] where
   /-- The representative of the origin of an edge. -/
   origin : X × ParahoricCosets W k r → X
@@ -371,14 +381,18 @@ structure EdgeCoordinates (W O : Type) [CommRing W] [IsLocalRing W] [CommRing O]
   /-- The matrix of `δ` from the module at `origin e` to the module at `x`. -/
   transition : X × ParahoricCosets W k r → GL H O
   /-- The inverse of `terminusBasisChange b` represents the coset `b`. -/
-  mk_terminusBasisChange_inv : ∀ b : ParahoricCosets W k r,
-    QuotientGroup.mk (terminusBasisChange b)⁻¹ = b
-  /-- An edge is determined by its origin and the coset of its transposed change of basis there;
-  this is where the action of `Γ` has to be free. -/
-  eq_of_origin_eq : ∀ e e' : X × ParahoricCosets W k r, origin e = origin e' →
-    transposeGL (originBasisChange e) * (transposeGL (originBasisChange e'))⁻¹ ∈ parahoric W
-      (twoBlock k r) →
-      e = e'
+  mk_terminusBasisChange_inv
+    : ∀ b : ParahoricCosets W k r, QuotientGroup.mk (terminusBasisChange b)⁻¹ = b
+  /--
+  An edge is determined by its origin and the coset of its transposed change of basis there;
+  this is where the action of `Γ` has to be free.
+  -/
+  eq_of_origin_eq
+    : ∀ e e' : X × ParahoricCosets W k r,
+      origin e = origin e'
+        → transposeGL (originBasisChange e) * (transposeGL (originBasisChange e'))⁻¹
+          ∈ parahoric W (twoBlock k r)
+        → e = e'
 
 namespace FrobeniusCycle
 
@@ -386,8 +400,10 @@ open MvPolynomial Ideal
 
 section ValuationRing
 
-variable {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
-  [IsDomain O] [ValuationRing O] [CharZero O] (T : FrobeniusCycle N W O)
+variable
+  {N k n : ℕ} {W O : Type}
+  [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O] [IsDomain O] [ValuationRing O] [CharZero O]
+  (T : FrobeniusCycle N W O)
 
 /-! ### The standing assumptions and the sizes that follow -/
 
@@ -395,8 +411,10 @@ section Sizes
 
 omit [IsDomain O] [ValuationRing O] [CharZero O]
 
-/-- The size conditions in the theorem on elementary divisors, for the rank `k`, the degree `n`,
-the size `r` of the first block and the proportion `θ` of exceptional elementary divisors. -/
+/--
+The size conditions in the theorem on elementary divisors, for the rank `k`, the degree `n`,
+the size `r` of the first block and the proportion `θ` of exceptional elementary divisors.
+-/
 structure IsLargeDegree (k n r : ℕ) (θ : ℝ) : Prop where
   /-- The first block is not empty. -/
   block_pos : 0 < r
@@ -422,8 +440,10 @@ include T in
 lemma two_le_card_letters : 2 ≤ N :=
   Nat.le_of_dvd (NeZero.pos N) (even_iff_two_dvd.1 ⟨_, T.card_isEven_add_self.symm⟩)
 
-/-- The precision `c = 5 N c₀`, with `c₀ = T.multinomialExponent k`, of the congruences modulo
-`w ^ c` that are imposed on the value of a function at an edge. -/
+/--
+The precision `c = 5 N c₀`, with `c₀ = T.multinomialExponent k`, of the congruences modulo
+`w ^ c` that are imposed on the value of a function at an edge.
+-/
 def congruencePrecision (k : ℕ) : ℕ := 5 * (N * T.multinomialExponent k)
 
 /-- For rank `k ≥ 2` one has `N c₀ ≥ 2`, where `N` is the number of letters and
@@ -625,32 +645,43 @@ end Sizes
 
 /-! ### Conditions on an edge -/
 
-/-- Conditions modulo `w ^ c` on the value of a function at an edge. Vectors are coefficients in the
+/--
+Conditions modulo `w ^ c` on the value of a function at an edge. Vectors are coefficients in the
 normalized monomials, and `(h, h') ↦ h' ⬝ᵥ (b * h)` is the pairing with the dual edge. The module
 `C` consists of the values that satisfy the conditions, `Av` is the averaging map, and `S` contains
-the reductions of the vectors `h` with `w ^ (c - 1) • h ∈ C`. -/
-structure IsEdgeCondition {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W]
-    [CommRing O] [IsDomain O] [ValuationRing O] (T : FrobeniusCycle N W O) (r c : ℕ) (θ : ℝ)
-    (b : Exponents N k n → O)
+the reductions of the vectors `h` with `w ^ (c - 1) • h ∈ C`.
+-/
+structure IsEdgeCondition
+    {N k n : ℕ} {W O : Type}
+    [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O] [IsDomain O] [ValuationRing O]
+    (T : FrobeniusCycle N W O) (r c : ℕ) (θ : ℝ) (b : Exponents N k n → O)
     (C : Submodule O (Exponents N k n → O))
     (S : Submodule (ResidueField O) (Exponents N k n → ResidueField O))
-    (Av : Matrix (Exponents N k n) (Exponents N k n) O) : Prop where
+    (Av : Matrix (Exponents N k n) (Exponents N k n) O)
+    : Prop where
   /-- The conditions hold for the forms in the halfway lattices of all edges from the origin. -/
   allEdgesForms_le : T.allEdgesForms k n r ≤ C
   /-- The values of `Av` satisfy the conditions. -/
   average_mem : ∀ h : Exponents N k n → O, Av *ᵥ h ∈ C
-  /-- Against the forms in the halfway lattices of all edges from the origin of the dual edge, `Av`
-  is multiplication by `p ^ (N c₀)` modulo `w ^ c`, with `c₀ = T.multinomialExponent k`. -/
-  pow_dvd_pairing_average : ∀ h : Exponents N k n → O, ∀ h' ∈ T.allEdgesForms k n r,
-    T.sqrtPrime ^ c ∣ h' ⬝ᵥ (b * Av *ᵥ h) - (T.p : O) ^ (N * T.multinomialExponent k) * h' ⬝ᵥ
-      (b * h)
+  /--
+  Against the forms in the halfway lattices of all edges from the origin of the dual edge, `Av`
+  is multiplication by `p ^ (N c₀)` modulo `w ^ c`, with `c₀ = T.multinomialExponent k`.
+  -/
+  pow_dvd_pairing_average
+    : ∀ h : Exponents N k n → O, ∀ h' ∈ T.allEdgesForms k n r,
+      T.sqrtPrime ^ c
+        ∣ h' ⬝ᵥ (b * Av *ᵥ h) - (T.p : O) ^ (N * T.multinomialExponent k) * h' ⬝ᵥ (b * h)
   /-- If `w ^ (c - 1) • h` satisfies the conditions, then `h` reduces into `S`. -/
-  residue_mem : ∀ h : Exponents N k n → O,
-    T.sqrtPrime ^ (c - 1) • h ∈ C → (fun β : Exponents N k n ↦ residue O (h β)) ∈ S
-  /-- The number of edges into a lattice times `dim S` is at most `1 + θ` times the number of
-  monomials. -/
-  index_mul_finrank_le : ((parahoric W (twoBlock k r)).index * finrank (ResidueField O) S : ℝ) ≤
-    (1 + θ) * Fintype.card (Exponents N k n)
+  residue_mem
+    : ∀ h : Exponents N k n → O,
+      T.sqrtPrime ^ (c - 1) • h ∈ C → (fun β : Exponents N k n ↦ residue O (h β)) ∈ S
+  /--
+  The number of edges into a lattice times `dim S` is at most `1 + θ` times the number of
+  monomials.
+  -/
+  index_mul_finrank_le
+    : ((parahoric W (twoBlock k r)).index * finrank (ResidueField O) S : ℝ)
+      ≤ (1 + θ) * Fintype.card (Exponents N k n)
 
 omit [ValuationRing O] in
 /-- The module `T.translatesIn n τ J B` consists of the vectors whose translates by the Levi
@@ -682,7 +713,8 @@ lemma charP_residueField [IsLocalRing O] (hp : ¬IsUnit (T.p : O)) :
   refine (CharP.charP_iff_prime_eq_zero T.prime).2 ?_
   simpa only [map_natCast] using (residue_eq_zero_iff (T.p : O)).2 hp
 
-/-- Let `W` be a local ring, `O` a valuation domain of characteristic zero and `T` a Frobenius cycle
+/--
+Let `W` be a local ring, `O` a valuation domain of characteristic zero and `T` a Frobenius cycle
 with `N` letters (ring maps `W → O`). Its prime `p = T.p = w ^ 2`, `w = T.sqrtPrime`, is not a unit
 of `O`, and the residue field of `W` has `q = P ^ N` elements for the power `P = T.P` of `p`. Forms
 have `k` variables and degree `n` in each letter and are given by their coefficients, and
@@ -697,12 +729,15 @@ from a lattice. Then there are
   modulo `w ^ c`,
 * a space `S` over the residue field of `O` that contains the reductions of the `h` with
   `w ^ (c - 1) • h ∈ C`, such that `dim S` times the index in `GL_k(W)` of the parahoric subgroup
-  with blocks `r` and `k - r` is at most `1 + θ` times the number of monomials. -/
-theorem exists_isEdgeCondition (hp : ¬IsUnit (T.p : O)) {r : ℕ} {θ : ℝ}
-    (h_large : T.IsLargeDegree k n r θ) {b b' : Exponents N k n → O} (hb : T.IsEdgePairing b b') :
-    ∃ (C : Submodule O (Exponents N k n → O))
-      (S : Submodule (ResidueField O) (Exponents N k n → ResidueField O))
-      (Av : Matrix (Exponents N k n) (Exponents N k n) O),
+  with blocks `r` and `k - r` is at most `1 + θ` times the number of monomials.
+-/
+theorem exists_isEdgeCondition
+    (hp : ¬ IsUnit (T.p : O))
+    {r : ℕ} {θ : ℝ} (h_large : T.IsLargeDegree k n r θ)
+    {b b' : Exponents N k n → O} (hb : T.IsEdgePairing b b')
+    : ∃ (C : Submodule O (Exponents N k n → O))
+        (S : Submodule (ResidueField O) (Exponents N k n → ResidueField O))
+        (Av : Matrix (Exponents N k n) (Exponents N k n) O),
       T.IsEdgeCondition r (T.congruencePrecision k) θ b C S Av := by
   -- `C` and `S` are the defect conditions over `O` modulo `w ^ c` and over the residue field;
   -- `Av` is the averaging map, and `dim S` is bounded by counting monomials of small defect.
@@ -722,27 +757,35 @@ theorem exists_isEdgeCondition (hp : ¬IsUnit (T.p : O)) {r : ℕ} {θ : ℝ}
   obtain ⟨Av, h_mem : ∀ h : Exponents N k n → O, Av *ᵥ h ∈ C, h_pairing⟩ :=
     T.exists_average_mem_defectConditions_and_dvd_sub hp ha T.card_isEven_add_self
       (h_large.mul_degree_add_lt_P_pow T.card_isEven_add_self) hb c
-  have h_index : ((parahoric W (twoBlock k r)).index * finrank (ResidueField O) S : ℝ) ≤
-      (1 + θ) * Fintype.card (Exponents N k n) := by
+  have h_index
+      : ((parahoric W (twoBlock k r)).index * finrank (ResidueField O) S : ℝ)
+        ≤ (1 + θ) * Fintype.card (Exponents N k n) := by
     have h_rank : 2 * (k + 1) ≤ defectThreshold k c :=
       (by lia : 2 * (k + 1) ≤ 3 * k).trans (Nat.le_mul_of_pos_right _ hc)
     simpa only [Fintype.card_fun, ZMod.card, Nat.cast_pow] using
       (T.map (residue O)).index_mul_finrank_defectConditions_le ha h_large.one_lt_degree.le h_rank
         h_large.proportion_le_one h_large.mul_defectThreshold_le_mul_degree
-  exact ⟨C, S, Av,
-    { allEdgesForms_le := T.allEdgesForms_le_defectConditions ha.le c
+  exact ⟨
+    C,
+    S,
+    Av,
+    {
+      allEdgesForms_le := T.allEdgesForms_le_defectConditions ha.le c
       average_mem := h_mem
       pow_dvd_pairing_average := h_pairing
-      residue_mem := fun h h_cond ↦ T.residue_mem_translatesIn
-        (T.mem_translatesIn_of_pow_smul_mem hc (T.sqrtPrime_mem_maximalIdeal hp) h_cond)
-      index_mul_finrank_le := h_index }⟩
+      residue_mem := fun h h_cond ↦
+        T.residue_mem_translatesIn (T.mem_translatesIn_of_pow_smul_mem hc
+          (T.sqrtPrime_mem_maximalIdeal hp) h_cond)
+      index_mul_finrank_le := h_index
+    }
+  ⟩
 
 /-! ### The operator and its factorization -/
 
 section Operator
 
-variable {r : ℕ} {X H I : Type*} [Fintype (ParahoricCosets W k r)] [Fintype H] [DecidableEq H]
-  [Fintype I]
+variable
+  {r : ℕ} {X H I : Type*} [Fintype (ParahoricCosets W k r)] [Fintype H] [DecidableEq H] [Fintype I]
 
 omit [IsDomain O] [ValuationRing O] [CharZero O]
 
@@ -750,19 +793,22 @@ omit [IsDomain O] [ValuationRing O] [CharZero O]
 abbrev depthPower (k n r : ℕ) : Matrix (Exponents N k n) (Exponents N k n) O :=
   diagonal fun β : Exponents N k n ↦ (T.p : O) ^ T.depth k n r β
 
-/-- The edge Hecke operator on functions `F : X → O ^ I`, in coordinates. Here `J` identifies `I`
+/--
+The edge Hecke operator on functions `F : X → O ^ I`, in coordinates. Here `J` identifies `I`
 with (exponents) × `H`, and the values of `F` are coefficients in the basis `(n! ^ N / β!) z ^ β`,
 in which the substitution `h ↦ h ∘ g` has the matrix `ρ(g)ᵀ`, `ρ = T.letterRep n`. The value at `x`
 is the sum over the edges `e = (x, b)` into `x` of the matrix `(ρ(originBasisChange e) p ^ depth
 ρ(terminusBasisChange b))ᵀ ⊗ transition e` applied to `F (origin e)`. In terms of forms this is
 `p ^ (N n / 2)` times the sum of the values at the origins of the edges, each carried to `x` by the
-element `δ` of its edge. -/
-def edgeHeckeOperator (n : ℕ) (J : I ≃ Exponents N k n × H) (𝓔 : EdgeCoordinates W O k r X H) :
-    End O (X → I → O) :=
-  LinearMap.pi fun x : X ↦ ∑ b : ParahoricCosets W k r,
-    (((T.letterRep n (𝓔.originBasisChange (x, b)) * T.depthPower k n r *
-        T.letterRep n (𝓔.terminusBasisChange b))ᵀ ⊗ₖ
-      (𝓔.transition (x, b)).val).submatrix J J).mulVecLin ∘ₗ LinearMap.proj (𝓔.origin (x, b))
+element `δ` of its edge.
+-/
+def edgeHeckeOperator (n : ℕ) (J : I ≃ Exponents N k n × H) (𝓔 : EdgeCoordinates W O k r X H)
+    : End O (X → I → O) :=
+  LinearMap.pi fun x : X ↦
+    ∑ b : ParahoricCosets W k r,
+      (((T.letterRep n (𝓔.originBasisChange (x, b)) * T.depthPower k n r *
+          T.letterRep n (𝓔.terminusBasisChange b))ᵀ ⊗ₖ
+        (𝓔.transition (x, b)).val).submatrix J J).mulVecLin ∘ₗ LinearMap.proj (𝓔.origin (x, b))
 
 /-- The edge Hecke operator entry by entry: at `x`, `i` it is the sum over `b`, `j` of
 `𝓔.transition (x, b)` at `(J i).2`, `(J j).2`, times the `((J j).1, (J i).1)` entry of the matrix
@@ -1170,22 +1216,29 @@ lemma _root_.New.EdgeCoordinates.surjective_origin_originBasisChange {k : ℕ} {
   obtain ⟨h_origin, h_coset⟩ := Prod.mk.inj h
   exact 𝓔.eq_of_origin_eq e e' h_origin (by simpa only [inv_inv] using QuotientGroup.eq.1 h_coset)
 
-/-- The theorem on elementary divisors. Let `O` be a valuation domain of characteristic zero and `T`
+/--
+The theorem on elementary divisors. Let `O` be a valuation domain of characteristic zero and `T`
 a Frobenius cycle with `N` letters, prime `p = T.p` and power `P = T.P` of `p`, so that the residue
 field of `W` has `q = T.q = P ^ N` elements. Let `k` be the rank and `n` the degree in each letter,
 and let `J` split the index set `I` into exponents and `H`. Let `p` be a non-unit of `O`, and let
 `Y ∘ f = f ∘ A` for the edge Hecke operator `A` of the edges `𝓔` between the representatives `X`.
 Let `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `q ≥ n ^ 4` and `n ≥ (N k log q / θ) ^ 5 P ^ (3 r)`. Then `Y`
 keeps the image `L` of `f`, and for every `m` the colength of `Y L + p ^ m L` in `L` divides `p ^ l`
-for some `l ≤ (3 c_div + θ m) |X| |I|`, with `c_div = T.divisorConstant k n r`. -/
-theorem elementary_divisors {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W]
-    [CommRing O] [IsDomain O] [ValuationRing O] [CharZero O] (T : FrobeniusCycle N W O)
-    {X : Type*} [Fintype X] (hp : ¬IsUnit (T.p : O)) {r : ℕ} {θ : ℝ}
-    (h_large : T.IsLargeDegree k n r θ) {H : Type*} {I M : Type} [Fintype H] [DecidableEq H]
-    [Fintype (ParahoricCosets W k r)] [Fintype I] [AddCommGroup M] [Module O M]
+for some `l ≤ (3 c_div + θ m) |X| |I|`, with `c_div = T.divisorConstant k n r`.
+-/
+theorem elementary_divisors
+    {N k n : ℕ} {W O : Type}
+    [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O] [IsDomain O] [ValuationRing O] [CharZero O]
+    (T : FrobeniusCycle N W O)
+    {X : Type*} [Fintype X]
+    (hp : ¬ IsUnit (T.p : O))
+    {r : ℕ} {θ : ℝ} (h_large : T.IsLargeDegree k n r θ)
+    {H : Type*} {I M : Type} [Fintype H] [DecidableEq H] [Fintype (ParahoricCosets W k r)]
+    [Fintype I] [AddCommGroup M] [Module O M]
     (J : I ≃ Exponents N k n × H) (𝓔 : EdgeCoordinates W O k r X H) (f : (X → I → O) →ₗ[O] M)
-    {Y : End O M} (hY : Y ∘ₗ f = f ∘ₗ T.edgeHeckeOperator n J 𝓔) (m : ℕ) :
-    IsOntoUpToColength (T.p : O) f.range m Y
+    {Y : End O M} (hY : Y ∘ₗ f = f ∘ₗ T.edgeHeckeOperator n J 𝓔)
+    (m : ℕ)
+    : IsOntoUpToColength (T.p : O) f.range m Y
       ((3 * T.divisorConstant k n r + θ * m) * (Nat.card X * Nat.card I)) := by
   classical
   have hY_apply (F : X → I → O) : Y (f F) = f (T.edgeHeckeOperator n J 𝓔 F) :=
@@ -1194,24 +1247,24 @@ theorem elementary_divisors {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [
   -- Every pair of a point of `H × X` and a coset occurs among the edges, and by construction
   -- also among the dual edges.
   have h_origin : Surjective fun e : H × X × ParahoricCosets W k r ↦
-      ((Prod.map id 𝓔.origin e, ↑(transposeGL (𝓔.originBasisChange e.2))⁻¹) :
-        (H × X) × ParahoricCosets W k r) :=
+      ((Prod.map id 𝓔.origin e, ↑(transposeGL (𝓔.originBasisChange e.2))⁻¹)
+        : (H × X) × ParahoricCosets W k r) :=
     (Equiv.prodAssoc H X _).symm.surjective.comp
       (surjective_id.prodMap 𝓔.surjective_origin_originBasisChange)
   have h_dual : Surjective fun e : H × X × ParahoricCosets W k r ↦
-      ((Prod.map id Prod.fst e, ↑(𝓔.terminusBasisChange e.2.2)⁻¹) :
-        (H × X) × ParahoricCosets W k r) :=
-    fun q ↦ ⟨Equiv.prodAssoc H X _ q, Prod.ext rfl (𝓔.mk_terminusBasisChange_inv q.2)⟩
+      ((Prod.map id Prod.fst e, ↑(𝓔.terminusBasisChange e.2.2)⁻¹)
+        : (H × X) × ParahoricCosets W k r) := fun q ↦
+    ⟨Equiv.prodAssoc H X _ q, Prod.ext rfl (𝓔.mk_terminusBasisChange_inv q.2)⟩
   let A : Matrix ((H × X) × Exponents N k n) ((H × X) × Exponents N k n) O :=
-    pairingMap 𝓔.transition b (T.edgeRestriction n r (Prod.map id Prod.fst)
-        (𝓔.terminusBasisChange ∘ Prod.snd ∘ Prod.snd)) *
-      T.edgeRestriction n r (Prod.map id 𝓔.origin)
-        fun e : H × X × ParahoricCosets W k r ↦ transposeGL (𝓔.originBasisChange e.2)
-  obtain ⟨l, hl,
-      h_colength : ColengthDvd ⊤ (A.mulVecLin.range ⊔ (T.p : O) ^ m • ⊤) ((T.p : O) ^ l)⟩ :=
+    pairingMap 𝓔.transition b
+        (T.edgeRestriction n r (Prod.map id Prod.fst) (𝓔.terminusBasisChange ∘ Prod.snd ∘ Prod.snd))
+      * T.edgeRestriction n r (Prod.map id 𝓔.origin) fun e : H × X × ParahoricCosets W k r ↦
+        transposeGL (𝓔.originBasisChange e.2)
+  obtain
+      ⟨l, hl, h_colength : ColengthDvd ⊤ (A.mulVecLin.range ⊔ (T.p : O) ^ m • ⊤) ((T.p : O) ^ l)⟩ :=
     T.exists_colengthDvd_range_pairingMap_mul_edgeRestriction hp h_large hb 𝓔.transition h_origin
-      h_dual
-      (by simp only [Fintype.card_prod, Subgroup.index, Nat.card_eq_fintype_card, mul_assoc]) m
+      h_dual (by simp only [Fintype.card_prod, Subgroup.index, Nat.card_eq_fintype_card, mul_assoc])
+      m
   -- Carry the colength along `f`; the factored operator is `Y` on vectors multiplied by `b`.
   let π : ((H × X) × Exponents N k n → O) →ₗ[O] M := f ∘ₗ regroup J
   have h_range : Submodule.map π ⊤ = f.range := by

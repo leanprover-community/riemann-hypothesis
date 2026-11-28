@@ -69,12 +69,16 @@ variable {P : Parameters} {D : Data P} (ϑ : D.MFoldTwist)
 /-- `D.natB` is nonzero. -/
 instance instNeZeroNatB : NeZero D.natB := .of_pos D.nat_le_of_hasLogBound
 
-/-- The element `ϖ ^ D.natB` of the ring of integers of `E`, with `ϖ = D.piM` the generator of
-the product of the chosen places. -/
+/--
+The element `ϖ ^ D.natB` of the ring of integers of `E`, with `ϖ = D.piM` the generator of
+the product of the chosen places.
+-/
 abbrev gridLevelGen : NumberField.RingOfIntegers D.E := D.piM ^ D.natB
 
-/-- The modulus `ϖ^{natB} Q` of the twist `ϑ`: the product of the chosen places to the power
-`D.natB`, times the product of the places of `ϑ`. -/
+/--
+The modulus `ϖ^{natB} Q` of the twist `ϑ`: the product of the chosen places to the power
+`D.natB`, times the product of the places of `ϑ`.
+-/
 abbrev gridModulus : Modulus D.E := D.twistModulus ϑ D.natB
 
 lemma gridModulus_one_ideal : (D.gridModulus 1).ideal = span {D.gridLevelGen} := by
@@ -82,15 +86,19 @@ lemma gridModulus_one_ideal : (D.gridModulus 1).ideal = span {D.gridLevelGen} :=
   rw [show (D.gridModulus 1).ideal = (D.untwistedModulus D.natB).ideal by rfl',
     D.ideal_untwistedModulus_eq_span]
 
-/-- The twist whose places divide `New.Data.triangleModulus`: `ϑ` in the grid `false`, the trivial
-twist in the grid `true`. -/
+/--
+The twist whose places divide `New.Data.triangleModulus`: `ϑ` in the grid `false`, the trivial
+twist in the grid `true`.
+-/
 abbrev triangleTwist (ϑ : D.MFoldTwist) : Bool → D.MFoldTwist
   | false => ϑ
   | true => 1
 
 variable (D) in
-/-- The exponent of the chosen places in `New.Data.triangleModulus`: `1` in the grid `false`,
-`D.natB` in the grid `true`. -/
+/--
+The exponent of the chosen places in `New.Data.triangleModulus`: `1` in the grid `false`,
+`D.natB` in the grid `true`.
+-/
 abbrev triangleExponent : Bool → ℕ
   | false => 1
   | true => D.natB
@@ -99,13 +107,13 @@ abbrev triangleExponent : Bool → ℕ
 instance instNeZeroTriangleExponent (z : Bool) : NeZero (D.triangleExponent z) := by
   cases z <;> infer_instance
 
-/-- The modulus at the nodes `(0, b)` of grid `z` (the triangle of that grid), used for the
+/--
+The modulus at the nodes `(0, b)` of grid `z` (the triangle of that grid), used for the
 transposed lifts `New.Data.pointTransposedLift` between them: `𝔪₀ = ϖ Q`, with `Q` the product of
-the places of `ϑ`, if `z` is false, and `𝔟 = ϖ ^ D.natB` if `z` is true. Here `ϖ = D.piM`. -/
+the places of `ϑ`, if `z` is false, and `𝔟 = ϖ ^ D.natB` if `z` is true. Here `ϖ = D.piM`.
+-/
 abbrev triangleModulus (z : Bool) (ϑ : D.MFoldTwist) : Modulus D.E :=
   D.twistModulus (triangleTwist ϑ z) (D.triangleExponent z)
-
-
 
 /-- Let `ϑ` be an `m`-fold twist, `Q` the product of its places, `ϖ = D.piM` the generator of the
 product of the chosen places, and `b = D.natB ≥ 1`. The triangle modulus of grid `z`, which is
@@ -126,11 +134,13 @@ lemma gridModulus_ideal_le_triangleModulus_ideal (ϑ : D.MFoldTwist) (z : Bool) 
     rw [mul_one]
     exact Ideal.mul_le_left
 
-/-- Reduction from the residue ring of `New.Data.gridModulus` = ϖ^b Q to that of
-`New.Data.triangleModulus`, which is ϖQ for z false and ϖ^b for z true, with b = `D.natB`. -/
-abbrev reduceToTriangle (z : Bool) :
-    NumberField.RingOfIntegers D.E ⧸ (gridModulus ϑ).ideal →+*
-      NumberField.RingOfIntegers D.E ⧸ (triangleModulus z ϑ).ideal :=
+/--
+Reduction from the residue ring of `New.Data.gridModulus` = ϖ^b Q to that of
+`New.Data.triangleModulus`, which is ϖQ for z false and ϖ^b for z true, with b = `D.natB`.
+-/
+abbrev reduceToTriangle (z : Bool)
+    : NumberField.RingOfIntegers D.E ⧸ (gridModulus ϑ).ideal
+      →+* NumberField.RingOfIntegers D.E ⧸ (triangleModulus z ϑ).ideal :=
   factor (gridModulus_ideal_le_triangleModulus_ideal ϑ z)
 
 lemma piM_dvd_gridLevelGen : D.piM ∣ D.gridLevelGen := dvd_pow_self _ (NeZero.ne _)
@@ -149,15 +159,20 @@ section GridDefs
 
 open Matrix Fintype Exchange Space
 
-variable {P : Parameters} {D : Data P} (ϑ : D.MFoldTwist) {z : Bool} {i j a b : ℕ} (c : Bool)
-  (l : ℕ) (n : Type) [Fintype n]
+variable
+  {P : Parameters} {D : Data P} (ϑ : D.MFoldTwist)
+  {z : Bool} {i j a b : ℕ}
+  (c : Bool) (l : ℕ)
+  (n : Type) [Fintype n]
 
 /-! ### Spaces, types, characters and levels -/
 
-/-- The hermitian spaces at the nodes `(z, i, j)` with offset `o`: the triangles are `i = 0` and the
+/--
+The hermitian spaces at the nodes `(z, i, j)` with offset `o`: the triangles are `i = 0` and the
 grids `o = 0`. For `o = 0` they are `Y_j` along the first column of grid `Y` and `Y₀` plus a line
 at the corner of grid `Ỹ`. At `i = j = 0` offset `o` multiplies the space by `(-1) ^ o`. All other
-spaces are orthogonal sums of lines with the signs `gridSigns`. -/
+spaces are orthogonal sums of lines with the signs `gridSigns`.
+-/
 def gridSpace : ∀ (o : ℕ) (z : Bool) (i j : ℕ), Space D.E (D.GridIndex z i j) (D.gridSigns z o i j)
   | 0, true, 0, 0 =>
     ((D.spaceY 0).sum (signedSpace D.E 1)).reindex (Equiv.refl (D.Y 0 ⊕ Unit))
@@ -166,27 +181,34 @@ def gridSpace : ∀ (o : ℕ) (z : Bool) (i j : ℕ), Space D.E (D.GridIndex z i
   | o + 1, z, 0, 0 => (gridSpace o z 0 0).neg
   | o, z, i, j => signedSpace D.E (D.gridSigns z o i j)
 
-/-- The pair of kernels of the types at a node: at `false` that of the parameter `gridParam` and at
-`true` that of its negative. -/
+/--
+The pair of kernels of the types at a node: at `false` that of the parameter `gridParam` and at
+`true` that of its negative.
+-/
 def gridKernel (z : Bool) (i j : ℕ) : Bool → GInf D.E (D.gridSigns z 0 i j) → ℂ :=
   kernelPair (D.gridParam z 0 i j) (D.gridSigns z 0 i j)
 
-/-- The forms of the kernel `gridKernel` at `true` at a node, that is of the parameter `-gridParam`:
-conjugate forms in grid `Y`, and forms in grid `Ỹ`, whose `gridParam` carries the opposite sign. -/
+/--
+The forms of the kernel `gridKernel` at `true` at a node, that is of the parameter `-gridParam`:
+conjugate forms in grid `Y`, and forms in grid `Ỹ`, whose `gridParam` carries the opposite sign.
+-/
 abbrev GridForm (z : Bool) (a b : ℕ) : Type := (D.gridSpace 0 z a b).Form (D.gridKernel z a b true)
 
-/-- The character of U(1)(𝔸) of an edge of index `l` at an end of index type `n`. Write
+/--
+The character of U(1)(𝔸) of an edge of index `l` at an end of index type `n`. Write
 `μ = D.untwistedLiftChar (l + 1)`, so that `D.liftChar ξ (l + 1) = μ ξ` for a tame character `ξ`,
 and `υ = WeilData.upsilonU1` for the splitting character restricted to the norm-one ideles. For a
 vertical edge (`c = true`) the character is `μ ϑ ^ (l + 1) υ ^ ⌊card n / 2⌋`. For a horizontal edge
-(`c = false`) it is `μ υ ^ ⌈card n / 2⌉`, without twist. -/
+(`c = false`) it is `μ υ ^ ⌈card n / 2⌉`, without twist.
+-/
 def gridChar : AutChar D.E :=
-  D.liftChar (bif c then ϑ.pow (l + 1) else TameChar.one) (l + 1) *
-    WeilData.upsilonU1 ^ ((card n + (!c).toNat) / 2)
+  D.liftChar (bif c then ϑ.pow (l + 1) else TameChar.one) (l + 1)
+    * WeilData.upsilonU1 ^ ((card n + (!c).toNat) / 2)
 
-
-/-- The tame part of `gridChar`: that of `liftChar` with the twist `ϑ ^ (l + 1)` if `c`, and with
-the trivial twist otherwise. -/
+/--
+The tame part of `gridChar`: that of `liftChar` with the twist `ϑ ^ (l + 1)` if `c`, and with
+the trivial twist otherwise.
+-/
 abbrev gridTamePart : ∀ w : New.FinPlace D.E, MulChar (ResField w) ℂ :=
   D.liftTamePart (bif c then ϑ.pow (l + 1) else .one) (l + 1)
 
@@ -194,31 +216,39 @@ abbrev gridTamePart : ∀ w : New.FinPlace D.E, MulChar (ResField w) ℂ :=
 abbrev triangleGLCard (z : Bool) (ϑ : D.MFoldTwist) (n : ℕ) : ℕ :=
   card (GL (D.GridIndex z 0 n) (D.triangleModulus z ϑ).ResidueRing)
 
-/-- The nodes of the two grids: `(false, i, j)` is the space `Y^i_j` of grid `Y`, and
-`(true, i, j)` is the space `Ỹ^j_i` of grid `Ỹ`. -/
+/--
+The nodes of the two grids: `(false, i, j)` is the space `Y^i_j` of grid `Y`, and
+`(true, i, j)` is the space `Ỹ^j_i` of grid `Ỹ`.
+-/
 abbrev GridNode : Type := Bool × ℕ × ℕ
 
 /-- The index set of a node. -/
 abbrev NodeIndex (p : GridNode) : Type := D.GridIndex p.1 p.2.1 p.2.2
 
-/-- The level at node p, a subgroup of GL over the residue ring of 𝔪 = 𝔟Q: trivial at the nodes
-(false, 0, b), that is at Y_b = Y^{0}_{b}, and the kernel of reduction modulo 𝔟 elsewhere. -/
-def nodeLevel (p : GridNode) :
-    Subgroup (GL (NodeIndex (P := P) (D := D) p)
+/--
+The level at node p, a subgroup of GL over the residue ring of 𝔪 = 𝔟Q: trivial at the nodes
+(false, 0, b), that is at Y_b = Y^{0}_{b}, and the kernel of reduction modulo 𝔟 elsewhere.
+-/
+def nodeLevel (p : GridNode)
+    : Subgroup (GL (NodeIndex (P := P) (D := D) p)
       (NumberField.RingOfIntegers D.E ⧸ (gridModulus ϑ).ideal)) :=
   if !p.1 ∧ p.2.1 = 0 then
     ⊥
   else
     (GeneralLinearGroup.map (n := D.NodeIndex p) (reduceToTriangle ϑ true)).ker
 
-/-- The index of the level `New.Data.nodeLevel` at node (a, b) of grid z in the general linear
-group, as a complex number. -/
+/--
+The index of the level `New.Data.nodeLevel` at node (a, b) of grid z in the general linear
+group, as a complex number.
+-/
 abbrev levelIndex (z : Bool) (a b : ℕ) : ℂ := ((nodeLevel ϑ (z, a, b)).index : ℂ)
 
-/-- The forms of level `𝔟`, the principal level of `New.Data.gridLevelGen`, at the node
-`(true, 0, i)`, the space `Ỹ^i_0`. For `i = m` these are the forms at the start of every path. -/
-abbrev gridLevelForms (i : ℕ) :
-    Submodule ℂ (Form (E := D.E) (gridSpace 0 true 0 i) (gridKernel true 0 i true)) :=
+/--
+The forms of level `𝔟`, the principal level of `New.Data.gridLevelGen`, at the node
+`(true, 0, i)`, the space `Ỹ^i_0`. For `i = m` these are the forms at the start of every path.
+-/
+abbrev gridLevelForms (i : ℕ)
+    : Submodule ℂ (Form (E := D.E) (gridSpace 0 true 0 i) (gridKernel true 0 i true)) :=
   levelSpace ((D.gridSpace 0 true 0 i).formRep (D.gridKernel true 0 i true))
     (principalLevel (D.GridIndex true 0 i) D.gridLevelGen)
 
@@ -233,12 +263,14 @@ lemma isConjKernelPair_gridKernel (h_le : i ≤ D.m ∧ j ≤ D.m) :
   grw [gapThreshold, D.card_gridIndex_le h_le.1 h_le.2]
   simpa using D.nat_le_of_hasLogBound
 
-/-- The character `New.Data.gridChar` has weight `D.gridWeight c l n`, which is the exponent of `υ`
+/--
+The character `New.Data.gridChar` has weight `D.gridWeight c l n`, which is the exponent of `υ`
 in it (`⌊card n / 2⌋` or `⌈card n / 2⌉`) minus `D.liftWeight (l + 1)`. Its tame part
 `New.Data.gridTamePart` is the family of residue characters `ω ^ (l + 1)`, `ω = D.chiMLocal`, times
-the tame part of `ϑ ^ (l + 1)` if `c` is true. -/
-instance gridChar_hasWeight :
-    (gridChar ϑ c l n).HasWeight (D.gridWeight c l n) (gridTamePart ϑ c l) :=
+the tame part of `ϑ ^ (l + 1)` if `c` is true.
+-/
+instance gridChar_hasWeight
+    : (gridChar ϑ c l n).HasWeight (D.gridWeight c l n) (gridTamePart ϑ c l) :=
   D.hasWeight_liftChar.mul_upsilonU1_pow _
 
 /-- The step from the node `(i, j)` to `(i + 1, j)` of grid `z`, for `i + 1, j ≤ m` and a family
@@ -304,19 +336,22 @@ lemma gridSpace_subdiag (j : ℕ) :
 
 /-! ### Transposed lifts and lifts -/
 
-/-- The transposed lift, from forms at `(0, b + 1)` to forms at `(0, b)` of grid z, with the datum
+/--
+The transposed lift, from forms at `(0, b + 1)` to forms at `(0, b)` of grid z, with the datum
 `New.Exchange.pointDatum` (the indicator of the inclusion matrix), times the cardinality
-`triangleGLCard z ϑ b`. -/
+`triangleGLCard z ϑ b`.
+-/
 def pointTransposedLift (z : Bool) (b : ℕ) : D.GridForm z 0 (b + 1) →ₗ[ℂ] D.GridForm z 0 b :=
-  (triangleGLCard z ϑ b : ℂ) •
-    modTransposedLift (D.gridSpace 0 z 0 b) (D.gridSpace 0 z 0 (b + 1)) (gridChar ϑ (!z) b)
-      (D.gridHarmonic 0 false (!z) b z 0 b 0 (b + 1))
-      (pointDatum (triangleModulus z ϑ).ResidueRing)
+  (triangleGLCard z ϑ b : ℂ)
+    • modTransposedLift (D.gridSpace 0 z 0 b) (D.gridSpace 0 z 0 (b + 1)) (gridChar ϑ (!z) b)
+      (D.gridHarmonic 0 false (!z) b z 0 b 0 (b + 1)) (pointDatum (triangleModulus z ϑ).ResidueRing)
       (D.gridKernel z 0 (b + 1) true) (D.gridKernel z 0 b true)
 
-/-- The composite of the transposed lifts `New.Data.pointTransposedLift` of grid z from the node
+/--
+The composite of the transposed lifts `New.Data.pointTransposedLift` of grid z from the node
 `(0, m)` to `(0, b)`: the identity for `b = m`, and zero by convention for `b > m`. It takes
-conjugate forms from `Y_m` to `Y_b` in grid `Y`, and forms from `Ỹ^m_0` to `Ỹ^b_0` in grid `Ỹ`. -/
+conjugate forms from `Y_m` to `Y_b` in grid `Y`, and forms from `Ỹ^m_0` to `Ỹ^b_0` in grid `Ỹ`.
+-/
 def transposedChain (z : Bool) (b : ℕ) : D.GridForm z 0 D.m →ₗ[ℂ] D.GridForm z 0 b :=
   if b < D.m then
     pointTransposedLift ϑ z b ∘ₗ transposedChain z (b + 1)
@@ -335,27 +370,30 @@ lemma transposedChain_self : transposedChain ϑ z D.m = LinearMap.id := by
 
 variable {ϑ}
 
-/-- The transposed theta lift (`New.Exchange.modTransposedLift`) from forms at `(a, b + 1)` to forms
+/--
+The transposed theta lift (`New.Exchange.modTransposedLift`) from forms at `(a, b + 1)` to forms
 at `(a, b)` in grid `z`, for the characters `gridChar ϑ (!z) b`. Its Schwartz datum is the indicator
 of the matrix `y` modulo `𝔪` at the finite places, and at the infinite places it is given by the
-joint harmonic polynomial `gridHarmonic` of the two nodes. -/
+joint harmonic polynomial `gridHarmonic` of the two nodes.
+-/
 def transposedMove
-    (y : Matrix (D.GridIndex z a (b + 1)) (D.GridIndex z a b) (gridModulus ϑ).ResidueRing) :
-    D.GridForm z a (b + 1) →ₗ[ℂ] D.GridForm z a b :=
+    (y : Matrix (D.GridIndex z a (b + 1)) (D.GridIndex z a b) (gridModulus ϑ).ResidueRing)
+    : D.GridForm z a (b + 1) →ₗ[ℂ] D.GridForm z a b :=
   modTransposedLift (D.gridSpace 0 z a b) (D.gridSpace 0 z a (b + 1)) (gridChar ϑ (!z) b)
-    (D.gridHarmonic 0 false (!z) b z a b a (b + 1))
-    (Pi.single y 1) (D.gridKernel z a (b + 1) true) (D.gridKernel z a b true)
+    (D.gridHarmonic 0 false (!z) b z a b a (b + 1)) (Pi.single y 1) (D.gridKernel z a (b + 1) true)
+    (D.gridKernel z a b true)
 
-/-- The theta lift (`New.Exchange.modLift`) from forms at `(a, b)` to forms at `(a + 1, b)` in grid
+/--
+The theta lift (`New.Exchange.modLift`) from forms at `(a, b)` to forms at `(a + 1, b)` in grid
 `z`, for the characters `gridChar ϑ z a`. Its Schwartz datum is the indicator of the matrix `y`
 modulo `𝔪` at the finite places, and at the infinite places it is given by the joint harmonic
-polynomial `gridHarmonic` of the two nodes. -/
-def liftMove
-    (y : Matrix (D.GridIndex z (a + 1) b) (D.GridIndex z a b) (gridModulus ϑ).ResidueRing) :
-    D.GridForm z a b →ₗ[ℂ] D.GridForm z (a + 1) b :=
+polynomial `gridHarmonic` of the two nodes.
+-/
+def liftMove (y : Matrix (D.GridIndex z (a + 1) b) (D.GridIndex z a b) (gridModulus ϑ).ResidueRing)
+    : D.GridForm z a b →ₗ[ℂ] D.GridForm z (a + 1) b :=
   modLift (D.gridSpace 0 z a b) (D.gridSpace 0 z (a + 1) b) (gridChar ϑ z a)
-    (D.gridHarmonic 0 true z a z a b (a + 1) b)
-    (Pi.single y 1) (D.gridKernel z a b true) (D.gridKernel z (a + 1) b true)
+    (D.gridHarmonic 0 true z a z a b (a + 1) b) (Pi.single y 1) (D.gridKernel z a b true)
+    (D.gridKernel z (a + 1) b true)
 
 /-- Let `k` lie in `stdLevel D.E n'`, the stabiliser of the standard lattice in the finite adelic
 unitary group of index type `n'`. The pair `(1, k)` is the point of the adelic unitary group of
@@ -474,21 +512,27 @@ open Exchange Space
 
 variable {P : Parameters} {D : Data P} (ϑ : D.MFoldTwist)
 
-/-- A matrix modulo `𝔪` for each pair of nodes, where `𝔪` is `New.Data.gridModulus` of the twist
-`ϑ`. -/
+/--
+A matrix modulo `𝔪` for each pair of nodes, where `𝔪` is `New.Data.gridModulus` of the twist
+`ϑ`.
+-/
 abbrev EdgeTuple : Type :=
   ∀ e : GridNode × GridNode, Matrix (D.NodeIndex e.2) (D.NodeIndex e.1) (gridModulus ϑ).ResidueRing
 
 /-- An invertible matrix modulo `𝔪` for each node. -/
 abbrev NodeFamily : Type := ∀ p : GridNode, GL (D.NodeIndex p) (gridModulus ϑ).ResidueRing
 
-/-- The vertical edges, whose character carries the twist: from `p` to `q` the first index changes
-if `p` is in the grid of the `Ỹ`, and stays if it is in that of the `Y`. -/
+/--
+The vertical edges, whose character carries the twist: from `p` to `q` the first index changes
+if `p` is in the grid of the `Ỹ`, and stays if it is in that of the `Y`.
+-/
 abbrev IsVerticalEdge (p q : GridNode) : Prop := p.1 ↔ p.2.1 ≠ q.2.1
 
-/-- The character modulo `𝔪` of an edge `e = ((z, a, b), (z', a', b'))`: the character of the tame
+/--
+The character modulo `𝔪` of an edge `e = ((z, a, b), (z', a', b'))`: the character of the tame
 part `New.Data.gridTamePart`, with the twist if the edge is vertical, at the index that changes
-along the edge (`b` if `a = a'`, else `a`). -/
+along the edge (`b` if `a = a'`, else `a`).
+-/
 def edgeChar (e : GridNode × GridNode) : MulChar (gridModulus ϑ).ResidueRing ℂ :=
   (gridModulus ϑ).charOfTamePart
     (gridTamePart ϑ (IsVerticalEdge e.1 e.2) (if e.1.2.1 = e.2.2.1 then e.1.2.2 else e.1.2.1))
@@ -498,49 +542,60 @@ open scoped Classical in
 def tuplesOn (w : Finset (GridNode × GridNode)) : Finset (EdgeTuple ϑ) :=
   univ.image (updateFinset (0 : EdgeTuple ϑ) w)
 
-/-- A bound for the number of matrices of an edge between nodes with indices at most `D.m`: the
+/--
+A bound for the number of matrices of an edge between nodes with indices at most `D.m`: the
 order of the residue ring of `𝔪` to the power `(2 * D.n D.m) ^ 2`, where `2 * D.n D.m` bounds the
-ranks of such nodes. -/
+ranks of such nodes.
+-/
 abbrev edgeMatrixCountBound : ℕ := card (D.gridModulus ϑ).ResidueRing ^ (2 * D.n D.m) ^ 2
 
-/-- A bound for the number of column vectors modulo `𝔪` of a space of the grids at indices at most
-`D.m`. -/
+/--
+A bound for the number of column vectors modulo `𝔪` of a space of the grids at indices at most
+`D.m`.
+-/
 abbrev vectorCountBound : ℕ := card (D.gridModulus ϑ).ResidueRing ^ (2 * D.n D.m)
 
 variable {ϑ}
 
 variable {w : Finset (GridNode × GridNode)} {S : EdgeTuple ϑ}
 
-/-- The families that must fix a path datum. At the ends `Y^0_m` and `Ỹ^m_0` the element lies in the
+/--
+The families that must fix a path datum. At the ends `Y^0_m` and `Ỹ^m_0` the element lies in the
 level of the node (which is trivial modulo `𝔪` at `Y^0_m`), at `Ỹ^a_a` it is `g ⊕ 1` for the element
-`g` at `Y^a_a`, and elsewhere it is free. -/
+`g` at `Y^a_a`, and elsewhere it is free.
+-/
 def IsAdmissibleFamily (g : NodeFamily ϑ) : Prop :=
-  (∀ z : Bool, g (z, 0, D.m) ∈ nodeLevel ϑ (z, 0, D.m)) ∧
-    ∀ a : ℕ, g (true, a, a) = blockInlGL (D.gridDiagEquiv a) (g (false, a, a))
+  (∀ z : Bool, g (z, 0, D.m) ∈ nodeLevel ϑ (z, 0, D.m))
+    ∧ ∀ a : ℕ, g (true, a, a) = blockInlGL (D.gridDiagEquiv a) (g (false, a, a))
 
-/-- The action of a family `g` of invertible matrices at the nodes on tuples: the matrix at the edge
-from `p` to `q` becomes `(g q)⁻¹ * S (p, q) * g p`. -/
-def tupleAction (g : NodeFamily ϑ) (S : EdgeTuple ϑ) : EdgeTuple ϑ :=
-  fun e : GridNode × GridNode ↦ ((g e.2)⁻¹).val * S e * (g e.1).val
+/--
+The action of a family `g` of invertible matrices at the nodes on tuples: the matrix at the edge
+from `p` to `q` becomes `(g q)⁻¹ * S (p, q) * g p`.
+-/
+def tupleAction (g : NodeFamily ϑ) (S : EdgeTuple ϑ) : EdgeTuple ϑ := fun e : GridNode × GridNode ↦
+  ((g e.2)⁻¹).val * S e * (g e.1).val
 
-/-- The factor in the action on functions of the matrices of the edges `w`: the product over the
-edges from `p` to `q` of the characters `New.Data.edgeChar` at `det (g q) / det (g p)`. -/
+/--
+The factor in the action on functions of the matrices of the edges `w`: the product over the
+edges from `p` to `q` of the characters `New.Data.edgeChar` at `det (g q) / det (g p)`.
+-/
 def edgeCharProd (g : NodeFamily ϑ) (w : Finset (GridNode × GridNode)) : ℂ :=
   ∏ e ∈ w, (edgeChar ϑ e).toUnitHom ((g e.2).det / (g e.1).det)
 
-/-- A function `Ψ` of tuples of matrices is a path datum for a set `w` of edges if it depends on the
+/--
+A function `Ψ` of tuples of matrices is a path datum for a set `w` of edges if it depends on the
 matrices at `w` only, is fixed by the action of admissible families twisted by the characters of the
 edges (`New.Data.edgeCharProd`), vanishes unless the vertical edges carry matrices with left
-inverses, and has as values sums of at most `N` roots of unity. -/
+inverses, and has as values sums of at most `N` roots of unity.
+-/
 structure IsPathDatum (N : ℕ) (w : Finset (GridNode × GridNode)) (Ψ : EdgeTuple ϑ → ℂ) : Prop where
   /-- `Ψ` is a function of the matrices of the edges in `w`. -/
   dependsOn : DependsOn Ψ w
   /-- (i) Admissible families fix `Ψ`, up to the factor `New.Data.edgeCharProd`. -/
-  invariant (g : NodeFamily ϑ) (hg : IsAdmissibleFamily g) (S : EdgeTuple ϑ) :
-    edgeCharProd g w * Ψ (tupleAction g S) = Ψ S
+  invariant (g : NodeFamily ϑ) (hg : IsAdmissibleFamily g) (S : EdgeTuple ϑ)
+    : edgeCharProd g w * Ψ (tupleAction g S) = Ψ S
   /-- (ii) `Ψ` vanishes unless the matrices of the vertical edges are split injective. -/
-  hasLeftInv (S : EdgeTuple ϑ) (hS : Ψ S ≠ 0) :
-    ∀ e ∈ w, IsVerticalEdge e.1 e.2 → HasLeftInv (S e)
+  hasLeftInv (S : EdgeTuple ϑ) (hS : Ψ S ≠ 0) : ∀ e ∈ w, IsVerticalEdge e.1 e.2 → HasLeftInv (S e)
   /-- (iii) The values of `Ψ` are sums of at most `N` roots of unity. -/
   isSumOfRootsOfUnity (S : EdgeTuple ϑ) : IsSumOfRootsOfUnity N (Ψ S)
 
@@ -657,36 +712,45 @@ lemma card_tuplesOn_le
   obtain ⟨hp, hq⟩ := hw p q hpq
   exact card_matrix_le_edgeMatrixCountBound hq hp
 
-/-- The edge from `(a, b)` to `(a, b + 1)` in the grid `z`: the vertical edge `Y^a_b → Y^a_(b+1)`
-or the horizontal edge `Ỹ^b_a → Ỹ^(b+1)_a`. -/
+/--
+The edge from `(a, b)` to `(a, b + 1)` in the grid `z`: the vertical edge `Y^a_b → Y^a_(b+1)`
+or the horizontal edge `Ỹ^b_a → Ỹ^(b+1)_a`.
+-/
 abbrev columnEdge (z : Bool) (a b : ℕ) : GridNode × GridNode := ((z, a, b), z, a, b + 1)
 
-/-- The edge from `(a, b)` to `(a + 1, b)` in the grid `z`: the horizontal edge `Y^a_b → Y^(a+1)_b`
-or the vertical edge `Ỹ^b_a → Ỹ^b_(a+1)`. -/
+/--
+The edge from `(a, b)` to `(a + 1, b)` in the grid `z`: the horizontal edge `Y^a_b → Y^(a+1)_b`
+or the vertical edge `Ỹ^b_a → Ỹ^b_(a+1)`.
+-/
 abbrev rowEdge (z : Bool) (a b : ℕ) : GridNode × GridNode := ((z, a, b), z, a + 1, b)
 
 end Data
 
 open Data Exchange Space
 
-variable {P : Parameters} {D : Data P} {ϑ : D.MFoldTwist} {S S' : EdgeTuple ϑ}
-  {z : Bool} {a₀ b₀ a b a' b' m : ℕ}
+variable
+  {P : Parameters} {D : Data P} {ϑ : D.MFoldTwist}
+  {S S' : EdgeTuple ϑ} {z : Bool} {a₀ b₀ a b a' b' m : ℕ}
 
 namespace GridPath
 
-/-- The edges in the grid `z` of a monotone path from the node `(a₀, b₀)` to `(a, b)`: a step `down`
+/--
+The edges in the grid `z` of a monotone path from the node `(a₀, b₀)` to `(a, b)`: a step `down`
 from `(a, b + 1)` to `(a, b)` gives `columnEdge z a b`, and a step `right` from `(a, b)` to
-`(a + 1, b)` gives `rowEdge z a b`. -/
+`(a + 1, b)` gives `rowEdge z a b`.
+-/
 def edges (z : Bool) : ∀ {a b : ℕ}, GridPath a₀ b₀ a b → Finset (GridNode × GridNode)
   | _, _, nil => ∅
   | a, b, down p => insert (columnEdge z a b) (p.edges z)
   | _, b, right (a := a) p => insert (rowEdge z a b) (p.edges z)
 
-/-- The composite of the maps by the matrices of `S` along a path in the grid `z`: a transposed lift
+/--
+The composite of the maps by the matrices of `S` along a path in the grid `z`: a transposed lift
 when the second index drops, a lift when the first index grows. It moves conjugate forms in the grid
-of the `Y` and forms in the grid of the `Ỹ`. -/
-def formMap (S : EdgeTuple ϑ) (z : Bool) :
-    ∀ {a b : ℕ}, GridPath a₀ b₀ a b → D.GridForm z a₀ b₀ →ₗ[ℂ] D.GridForm z a b
+of the `Y` and forms in the grid of the `Ỹ`.
+-/
+def formMap (S : EdgeTuple ϑ) (z : Bool)
+    : ∀ {a b : ℕ}, GridPath a₀ b₀ a b → D.GridForm z a₀ b₀ →ₗ[ℂ] D.GridForm z a b
   | _, _, nil => .id
   | a, b, down p => transposedMove (S (columnEdge z a b)) ∘ₗ p.formMap S z
   | _, b, right (a := a) p => liftMove (S (rowEdge z a b)) ∘ₗ p.formMap S z
@@ -752,8 +816,10 @@ lemma card_edges_le (p : GridPath a₀ b₀ a b) : #(p.edges z) + a₀ + b ≤ a
 
 end GridPath
 
-/-- The edges of a path `Γ` through the two grids: those of its halves `Γ.half z`, each a path in
-the grid `z` from the node `(0, m)` to the diagonal node `(Γ.diagonalIndex, Γ.diagonalIndex)`. -/
+/--
+The edges of a path `Γ` through the two grids: those of its halves `Γ.half z`, each a path in
+the grid `z` from the node `(0, m)` to the diagonal node `(Γ.diagonalIndex, Γ.diagonalIndex)`.
+-/
 def TwoGridPath.edges (Γ : TwoGridPath m) : Finset (GridNode × GridNode) :=
   (Γ.half false).edges false ∪ (Γ.half true).edges true
 
@@ -774,18 +840,23 @@ lemma card_tuplesOn_edges_le (Γ : TwoGridPath D.m) :
     have := (Γ.half true).card_edges_le (z := true)
     exact (card_union_le _ _).trans (by omega)
 
-/-- The period of a conjugate form on `Y^j_j` and a form on `Ỹ^j_j` along `U(Y^j_j) → U(Ỹ^j_j)`. The
+/--
+The period of a conjugate form on `Y^j_j` and a form on `Ỹ^j_j` along `U(Y^j_j) → U(Ỹ^j_j)`. The
 second form is translated by a real point `g` of `U(Ỹ^j_j)` and, on the added line, by the `j`-th
 power of `New.Modulus.flipScalar`, the finite idele `ū / u` with `u` a fixed multiple of the chosen
-idele generating `𝔪 = gridModulus ϑ`. -/
-@[simp] def diagonalPeriodForm (ϑ : D.MFoldTwist) {j : ℕ} (h : j ≤ D.m)
-    (g : GInf D.E (D.gridSigns true 0 j j)) :
-    D.GridForm false j j →ₗ[ℂ] D.GridForm true j j →ₗ[ℂ] ℂ :=
+idele generating `𝔪 = gridModulus ϑ`.
+-/
+@[simp]
+def diagonalPeriodForm
+    (ϑ : D.MFoldTwist) {j : ℕ} (h : j ≤ D.m) (g : GInf D.E (D.gridSigns true 0 j j))
+    : D.GridForm false j j →ₗ[ℂ] D.GridForm true j j →ₗ[ℂ] ℂ :=
   periodPairing (isConjKernelPair_gridKernel ⟨h, h⟩)
-    { weightFn := 1
-      comparisonMap := ⟨fun x ↦ .reindex (D.gridDiagEquiv j)
-        (D.sumElim_gridSigns_comp_gridDiagEquiv_symm h)
-        (.sum (x, 1, (gridModulus ϑ).flipScalar ^ j)),
+    {
+      weightFn := 1
+      comparisonMap := ⟨
+        fun x ↦
+          .reindex (D.gridDiagEquiv j) (D.sumElim_gridSigns_comp_gridDiagEquiv_symm h)
+            (.sum (x, 1, (gridModulus ϑ).flipScalar ^ j)),
         (G.continuous_reindex _ _).comp <| G.continuous_iff.2 <| continuous_pi fun i ↦
           continuous_pi fun k ↦ by
             simp only [G.adeleMatrix_sum]
@@ -793,33 +864,44 @@ idele generating `𝔪 = gridModulus ϑ`. -/
             · exact (continuous_apply k).comp ((continuous_apply i).comp G.continuous_adeleMatrix)
             · exact continuous_const
             · exact continuous_const
-            · exact continuous_const⟩
+            · exact continuous_const
+      ⟩
       isModerate := ⟨1, 0, by simp⟩
       -- the space at Ỹ^j_j is the sum with a line (gridSpace_diag), and the line contributes a
       -- constant factor to the height of the orthogonal sum
-      height_le := ⟨_, fun _ ↦ gridSpace_diag h ▸ (height_reindex ..).trans_le (height_sum_le ..)⟩ }
+      height_le := ⟨_, fun _ ↦ gridSpace_diag h ▸ (height_reindex ..).trans_le (height_sum_le ..)⟩
+    }
     g
 
 variable (D) in
 /-- A twist, a conjugate form on `Y_m` and a form on `Ỹ^m_0`, of any levels. -/
 abbrev PeriodTriple : Type := D.MFoldTwist × D.GridForm false 0 D.m × D.GridForm true 0 D.m
 
-/-- The period `I(Ψ; g)` on the path `Γ`, as a function of a triple `x = (ϑ, y', φ)` of a twist, a
+/--
+The period `I(Ψ; g)` on the path `Γ`, as a function of a triple `x = (ϑ, y', φ)` of a twist, a
 conjugate form on `Y_m` and a form on `Ỹ^m_0`: the sum over the tuples `S` on `Γ` of `Ψ_ϑ(S)` times
 the pairing of the images of `y'` and `φ` along the two halves of `Γ`, which end at the diagonal
-nodes `(l, l)`, `l = Γ.diagonalIndex`. Here `g` is a real point of `U(Ỹ^l_l)`. -/
-def gridPeriod (Γ : TwoGridPath D.m) (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ)
-    (g : GInf D.E (D.gridSigns true 0 Γ.diagonalIndex Γ.diagonalIndex)) (x : D.PeriodTriple) : ℂ :=
+nodes `(l, l)`, `l = Γ.diagonalIndex`. Here `g` is a real point of `U(Ỹ^l_l)`.
+-/
+def gridPeriod
+    (Γ : TwoGridPath D.m)
+    (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ)
+    (g : GInf D.E (D.gridSigns true 0 Γ.diagonalIndex Γ.diagonalIndex)) (x : D.PeriodTriple)
+    : ℂ :=
   ∑ S ∈ tuplesOn x.1 Γ.edges, Ψ x.1 S * diagonalPeriodForm x.1 Γ.diagonalIndex_le g
     ((Γ.half false).formMap S false x.2.1)
     ((Γ.half true).formMap S true x.2.2)
 
-/-- The relation `Ψ ∝ Ξ`: at each real point `g` the period `New.Data.gridPeriod` of `Ψ` is a
-multiple of `Ξ` by a number that depends neither on the twist nor on the forms. -/
-def IsProportional (Γ : TwoGridPath D.m) (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ)
-    (Ξ : D.PeriodTriple → ℂ) : Prop :=
+/--
+The relation `Ψ ∝ Ξ`: at each real point `g` the period `New.Data.gridPeriod` of `Ψ` is a
+multiple of `Ξ` by a number that depends neither on the twist nor on the forms.
+-/
+def IsProportional
+    (Γ : TwoGridPath D.m) (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ) (Ξ : D.PeriodTriple → ℂ)
+    : Prop :=
   ∀ g : GInf D.E (D.gridSigns true 0 Γ.diagonalIndex Γ.diagonalIndex), ∃ β : ℂ,
-    ∀ x : D.PeriodTriple, gridPeriod Γ Ψ g x = β * Ξ x
+    ∀ x : D.PeriodTriple,
+      gridPeriod Γ Ψ g x = β * Ξ x
 
 end Data
 

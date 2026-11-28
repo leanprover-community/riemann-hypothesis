@@ -60,19 +60,26 @@ section BlockPartners
 
 open Matrix MulChar Function
 
-/-- Cut the `a × n` matrix `x = (x₁ x₂)` by columns along `e`, with `x₂` square. The value of this
-function at `x` is `χ⁻¹(det x₂) f(x₂⁻¹ x₁)`; it is zero unless `x₂` is invertible. -/
-def New.Rows.blockRowDatum {n a b R : Type} [Fintype a] [DecidableEq a] [CommRing R]
-    (e : b ⊕ a ≃ n) (χ : MulChar R ℂ) (f : Matrix a b R → ℂ) (x : Matrix a n R) : ℂ :=
-  χ⁻¹ (x.submatrix id e).toCols₂.det *
-    f ((x.submatrix id e).toCols₂⁻¹ * (x.submatrix id e).toCols₁)
+/--
+Cut the `a × n` matrix `x = (x₁ x₂)` by columns along `e`, with `x₂` square. The value of this
+function at `x` is `χ⁻¹(det x₂) f(x₂⁻¹ x₁)`; it is zero unless `x₂` is invertible.
+-/
+def New.Rows.blockRowDatum
+    {n a b R : Type} [Fintype a] [DecidableEq a] [CommRing R]
+    (e : b ⊕ a ≃ n) (χ : MulChar R ℂ) (f : Matrix a b R → ℂ) (x : Matrix a n R)
+    : ℂ :=
+  χ⁻¹ (x.submatrix id e).toCols₂.det * f ((x.submatrix id e).toCols₂⁻¹ * (x.submatrix id e).toCols₁)
 
-/-- Cut the `n × b` matrix `y = (y₁; y₂)` by rows along `e`, with `y₁` square. The value of this
-function at `y` is `χ⁻¹(det y₁) f(-(y₂ y₁⁻¹))`; it is zero unless `y₁` is invertible. -/
-def New.Rows.blockColDatum {n a b R : Type} [Fintype b] [DecidableEq b] [CommRing R]
-    (e : b ⊕ a ≃ n) (χ : MulChar R ℂ) (f : Matrix a b R → ℂ) (y : Matrix n b R) : ℂ :=
-  χ⁻¹ (y.submatrix e id).toRows₁.det *
-    f (-((y.submatrix e id).toRows₂ * (y.submatrix e id).toRows₁⁻¹))
+/--
+Cut the `n × b` matrix `y = (y₁; y₂)` by rows along `e`, with `y₁` square. The value of this
+function at `y` is `χ⁻¹(det y₁) f(-(y₂ y₁⁻¹))`; it is zero unless `y₁` is invertible.
+-/
+def New.Rows.blockColDatum
+    {n a b R : Type} [Fintype b] [DecidableEq b] [CommRing R]
+    (e : b ⊕ a ≃ n) (χ : MulChar R ℂ) (f : Matrix a b R → ℂ) (y : Matrix n b R)
+    : ℂ :=
+  χ⁻¹ (y.submatrix e id).toRows₁.det
+    * f (-((y.submatrix e id).toRows₂ * (y.submatrix e id).toRows₁⁻¹))
 
 /-- The block determinant functions `Φ (x₁ x₂) = χ⁻¹(det x₂) f(x₂⁻¹ x₁)` (`blockRowDatum`) and
 `Ψ (y₁; y₂) = χ⁻¹(det y₁) f(-(y₂ y₁⁻¹))` (`blockColDatum`) are matched functions for `χ` over the
@@ -136,7 +143,8 @@ namespace New
 
 open Matrix schwartzBruhat SemilocalField Finsupp
 
-variable {F : Type} [SemilocalField F]
+variable
+  {F : Type} [SemilocalField F]
   {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype n] [DecidableEq n]
 
 /-- On the complex functions on a type `ι` there is a linear functional equal to `f ↦ ∑ i, f i` on
@@ -151,17 +159,19 @@ lemma exists_linearMap_eq_sum (ι : Type*) :
   simpa [linearCombination_onFinset] using LinearMap.congr_fun hℓ (onFinset t f hf)
 
 variable (n) in
-/-- Let `O` be the ring of integers of the semilocal field `F` (`SemilocalField.O`), and `intGL b O`
+/--
+Let `O` be the ring of integers of the semilocal field `F` (`SemilocalField.O`), and `intGL b O`
 the subgroup `GL_b(O)` of `GL_b(F)`. The matrices `r q` are indexed by the cosets `q` in
 `GL_b(F)/GL_b(O)`, and each `n × b` matrix `y` with a left inverse has `y * r q` primitive (entries
-in `O`, with a left inverse over `O`) for exactly one `q`, and likewise `y * (r q)⁻¹`. -/
+in `O`, with a left inverse over `O`) for exactly one `q`, and likewise `y * (r q)⁻¹`.
+-/
 structure IsCommonCosetRep (r : GL b F ⧸ intGL b (O : Subring F) → GL b F) : Prop where
   /-- If `y` has a left inverse, exactly one representative makes `y * r q` primitive. -/
-  existsUnique_mul (y : Matrix n b F) (hy : HasLeftInv y) :
-    ∃! q : GL b F ⧸ intGL b O, IsPrimitiveMatrix O (y * (r q).val)
+  existsUnique_mul (y : Matrix n b F) (hy : HasLeftInv y)
+    : ∃! q : GL b F ⧸ intGL b O, IsPrimitiveMatrix O (y * (r q).val)
   /-- If `y` has a left inverse, exactly one representative makes `y * (r q)⁻¹` primitive. -/
-  existsUnique_mul_inv (y : Matrix n b F) (hy : HasLeftInv y) :
-    ∃! q : GL b F ⧸ intGL b O, IsPrimitiveMatrix O (y * (r q).val⁻¹)
+  existsUnique_mul_inv (y : Matrix n b F) (hy : HasLeftInv y)
+    : ∃! q : GL b F ⧸ intGL b O, IsPrimitiveMatrix O (y * (r q).val⁻¹)
 
 variable (F b n) in
 /-- For a semilocal field `F` with ring of integers `O` there are representatives `r q` of the
@@ -214,16 +224,20 @@ lemma exists_linearMap_eq_sum_and_isCommonCosetRep :
   exact ⟨ℓ ∘ₗ LinearMap.funLeft ℂ ℂ r, r, fun t f hf ↦ hℓ t (fun q ↦ f (r q)) hf, hr⟩
 
 variable (F b n) in
-/-- A linear functional on all functions on `GL b F`, chosen from
+/--
+A linear functional on all functions on `GL b F`, chosen from
 `exists_linearMap_eq_sum_and_isCommonCosetRep`. It extends the finite sum of the values at the
-representatives `commonCosetRep` (`commonCosetSum_eq_sum`). -/
+representatives `commonCosetRep` (`commonCosetSum_eq_sum`).
+-/
 def commonCosetSum : (GL b F → ℂ) →ₗ[ℂ] ℂ :=
   (exists_linearMap_eq_sum_and_isCommonCosetRep (F := F) (b := b) (n := n)).choose
 
 variable (F b n) in
-/-- The representatives of the cosets of `GL b O` in `GL b F` that are chosen from
+/--
+The representatives of the cosets of `GL b O` in `GL b F` that are chosen from
 `exists_linearMap_eq_sum_and_isCommonCosetRep` together with `commonCosetSum`
-(`isCommonCosetRep_commonCosetRep`). -/
+(`isCommonCosetRep_commonCosetRep`).
+-/
 def commonCosetRep : GL b F ⧸ intGL b O → GL b F :=
   (exists_linearMap_eq_sum_and_isCommonCosetRep (F := F) (b := b) (n := n)).choose_spec.choose
 
@@ -253,13 +267,15 @@ lemma existsUnique_isPrimitiveMatrix_mul_inv_commonCosetRep {y : Matrix n b F} (
     ∃! q : GL b F ⧸ intGL b O, IsPrimitiveMatrix O (y * (commonCosetRep F b n q).val⁻¹) :=
   isCommonCosetRep_commonCosetRep.existsUnique_mul_inv y hy
 
-/-- For a character `χ` of `F` and an `n × b` matrix `y`, the section at `y` is the functional
+/--
+For a character `χ` of `F` and an `n × b` matrix `y`, the section at `y` is the functional
 sending `Ψ` to `commonCosetSum` of `g ↦ χ (det g) * Ψ (y * g)` on `GL b F`, that is, to the sum of
 this function over representatives of `GL_b(F)/GL_b(O)` when the sum is finite
-(`localSection_eq_sum`). -/
+(`localSection_eq_sum`).
+-/
 def localSection (χ : MulChar F ℂ) (y : Matrix n b F) : (Matrix n b F → ℂ) →ₗ[ℂ] ℂ :=
-  commonCosetSum F b n ∘ₗ LinearMap.mulLeft ℂ (fun g : GL b F ↦ χ g.val.det) ∘ₗ
-    LinearMap.funLeft ℂ ℂ fun g : GL b F ↦ y * g.val
+  commonCosetSum F b n ∘ₗ LinearMap.mulLeft ℂ (fun g : GL b F ↦ χ g.val.det)
+    ∘ₗ LinearMap.funLeft ℂ ℂ fun g : GL b F ↦ y * g.val
 
 /-- The section of `Ψ` at `y` is the sum of `χ (det r) * Ψ (y * r)` over the chosen matrices `r`
 indexed by `GL_b(F)/GL_b(O)` (`commonCosetRep`), when the indices with `Ψ (y * r) ≠ 0` lie in a
@@ -272,15 +288,17 @@ lemma localSection_eq_sum (χ : MulChar F ℂ) (y : Matrix n b F) (Ψ : Matrix n
   commonCosetSum_eq_sum (fun g : GL b F ↦ χ g.val.det * Ψ (y * g.val)) t fun q hq ↦
     ht q (right_ne_zero_of_mul hq)
 
-/-- Same-section pairs (compare matched functions, `AreMatched`): pairs `(Φ, Ψ)` of
+/--
+Same-section pairs (compare matched functions, `AreMatched`): pairs `(Φ, Ψ)` of
 Schwartz–Bruhat functions, on the matrices `x` such that `xᵀ` has a left inverse and on the matrices
 with a left inverse, such that for every `k` the section of `y ↦ Φ yᵀ` at `(invLastRows e k)ᵀ` is
-`χ (det k)` times the section of `Ψ` at `firstCols e k` (`mem_sameSectionPairs_iff`). -/
-def sameSectionPairs (χ : MulChar F ℂ) (e : b ⊕ a ≃ n) :
-    Submodule ℂ ((Matrix a n F → ℂ) × (Matrix n b F → ℂ)) :=
+`χ (det k)` times the section of `Ψ` at `firstCols e k` (`mem_sameSectionPairs_iff`).
+-/
+def sameSectionPairs (χ : MulChar F ℂ) (e : b ⊕ a ≃ n)
+    : Submodule ℂ ((Matrix a n F → ℂ) × (Matrix n b F → ℂ)) :=
   Submodule.prod (schwartzBruhat {x : Matrix a n F | HasLeftInv xᵀ})
-      (schwartzBruhat {y | HasLeftInv y}) ⊓
-    (LinearMap.pi fun k : GL n F ↦
+      (schwartzBruhat {y | HasLeftInv y})
+    ⊓ (LinearMap.pi fun k : GL n F ↦
       (localSection χ (invLastRows e k)ᵀ ∘ₗ LinearMap.funLeft ℂ ℂ transpose).coprod
         (-(χ k.val.det • localSection χ (firstCols e k)))).ker
 
@@ -545,9 +563,10 @@ lemma apply_invLastRows_eq_of_isPrimitiveMatrix {R a b n : Type} [CommRing R] [F
       rw [h_rows, hΦΨ.apply_eq i hi, h_cols, h_det, map_mul, mul_right_comm, mul_assoc]
     _ = χ j.val.det * Ψ (firstCols e j) := by rw [hΦΨ.right_mul g hg]
 
-variable {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype n]
-  [DecidableEq n] {F : Type} [SemilocalField F] {χ : MulChar F ℂ} {e : b ⊕ a ≃ n}
-  {Φ : Matrix a n F → ℂ} {Ψ : Matrix n b F → ℂ}
+variable
+  {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype n] [DecidableEq n]
+  {F : Type} [SemilocalField F]
+  {χ : MulChar F ℂ} {e : b ⊕ a ≃ n} {Φ : Matrix a n F → ℂ} {Ψ : Matrix n b F → ℂ}
 
 omit [DecidableEq b] in
 /-- If `Φ` and `Ψ` are matched functions over the ring of integers `O` of `F` (`AreMatched`), then

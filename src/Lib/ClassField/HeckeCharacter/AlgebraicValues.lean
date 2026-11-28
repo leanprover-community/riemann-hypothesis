@@ -66,30 +66,35 @@ open NumberField Finset
 
 variable {K : Type} [Field K] [NumberField K] (θ : AlgHeckeChar K) (y : (𝔸f K)ˣ)
 
-/-- Let `θ` be an algebraic Hecke character with exponents `n τ` and `y` a finite idele. There are
+/--
+Let `θ` be an algebraic Hecke character with exponents `n τ` and `y` a finite idele. There are
 `N > 0` and `γ` in `Kˣ` such that `y ^ N / γ` is a unit at all finite places and
 `θ(y) ^ N = ∏ τ, τ γ ^ (-n τ)`. This is the key step in Weil's proof that characters of type A₀
-take algebraic values on finite ideles. -/
-theorem exists_pow_eq_prod :
-    ∃ N > (0 : ℕ), ∃ γ : Kˣ,
-      y ^ N / principalIdele γ ∈ idelesUnitOff ∅ ∧
-      (θ.val.fst y : ℂ) ^ N = ∏ τ : K →+* ℂ, τ γ ^ (-θ.val.snd.toAdd τ) := by
+take algebraic values on finite ideles.
+-/
+theorem exists_pow_eq_prod
+    : ∃ N > (0 : ℕ), ∃ γ : Kˣ,
+      y ^ N / principalIdele γ ∈ idelesUnitOff ∅
+        ∧ (θ.val.fst y : ℂ) ^ N = ∏ τ : K →+* ℂ, τ γ ^ (-θ.val.snd.toAdd τ) := by
   -- The principal ideles and the units in the kernel generate an open subgroup `H` of finite index.
   let H : Subgroup (𝔸f K)ˣ := principalIdele.range ⊔ (θ.val.fst.ker ⊓ idelesUnitOff ∅)
-  have h_fin : H.FiniteIndex := finiteIndex_idele_subgroup_of_isOpen H
-    (Subgroup.isOpen_mono le_sup_right (θ.property.1.inter (isOpen_idelesUnitOff ∅)))
-    fun x _ ↦ Subgroup.mem_sup_left ⟨x, rfl⟩
+  have h_fin : H.FiniteIndex :=
+    finiteIndex_idele_subgroup_of_isOpen H
+      (Subgroup.isOpen_mono le_sup_right (θ.property.1.inter (isOpen_idelesUnitOff ∅)))
+      fun x _ ↦ Subgroup.mem_sup_left ⟨x, rfl⟩
   obtain ⟨_, ⟨γ, rfl⟩, u, ⟨hu_ker, hu_unit⟩, h_eq⟩ := Subgroup.mem_sup.1 (H.pow_index_mem y)
   refine ⟨H.index, h_fin.index_ne_zero.pos, γ, by rwa [← h_eq, mul_div_cancel_left], ?_⟩
   simpa [← Units.val_pow_eq_pow_val, ← map_pow, ← h_eq, MonoidHom.mem_ker.1 hu_ker] using
     θ.property.2 γ
 
-/-- Let `γ` in `Kˣ` and the finite idele `y` be such that `y ^ N / γ` is a unit at all finite
+/--
+Let `γ` in `Kˣ` and the finite idele `y` be such that `y ^ N / γ` is a unit at all finite
 places. Then the moduli of the conjugates `σ (τ γ)` have product `|y| ^ (-N)`, where `|y|` is the
-norm of `y` and `τ` runs over the embeddings of `K`. This is the product formula for `γ`. -/
-theorem prod_norm_map_embeddings_eq_inv_finIdeleAbs_pow {N : ℕ} {γ : Kˣ}
-    (h_unit : y ^ N / principalIdele γ ∈ idelesUnitOff ∅) (σ : ℂ →+* ℂ) :
-    ∏ τ : K →+* ℂ, ‖σ (τ γ)‖ = (finIdeleAbs y ^ N)⁻¹ := by
+norm of `y` and `τ` runs over the embeddings of `K`. This is the product formula for `γ`.
+-/
+theorem prod_norm_map_embeddings_eq_inv_finIdeleAbs_pow
+    {N : ℕ} {γ : Kˣ} (h_unit : y ^ N / principalIdele γ ∈ idelesUnitOff ∅) (σ : ℂ →+* ℂ)
+    : ∏ τ : K →+* ℂ, ‖σ (τ γ)‖ = (finIdeleAbs y ^ N)⁻¹ := by
   have h_one : finIdeleAbs (y ^ N / principalIdele γ) = 1 := ideleAbs_finIdeleIncl_eq_one h_unit
   have h_prod : ∏ τ : K →+* ℂ, τ γ = (Algebra.norm ℚ γ.val : ℚ) :=
     ((RingHom.equivRatAlgHom K ℂ).prod_comp (· γ.val)).trans
@@ -98,18 +103,23 @@ theorem prod_norm_map_embeddings_eq_inv_finIdeleAbs_pow {N : ℕ} {γ : Kˣ}
     finIdeleAbs_principalIdele, ← norm_prod, ← map_prod, h_prod]
   simp
 
-/-- Let `K` be a CM field and `θ` an algebraic Hecke character whose exponents satisfy
+/--
+Let `K` be a CM field and `θ` an algebraic Hecke character whose exponents satisfy
 `n τ + n τ̄ = j` for all `τ`. Then every conjugate `σ (θ y)` of a value has modulus `|y| ^ (j / 2)`,
-where `|y|` is the norm of the finite idele `y`. -/
-theorem norm_map_eq_sqrt_finIdeleAbs_zpow [IsCMField K] {j : ℤ}
-    (hj : ∀ τ : K →+* ℂ, θ.val.snd.toAdd τ + θ.val.snd.toAdd (star τ) = j) (σ : ℂ →+* ℂ) :
-    ‖σ (θ.val.fst y)‖ = √(finIdeleAbs y) ^ j := by
+where `|y|` is the norm of the finite idele `y`.
+-/
+theorem norm_map_eq_sqrt_finIdeleAbs_zpow
+    [IsCMField K]
+    {j : ℤ} (hj : ∀ τ : K →+* ℂ, θ.val.snd.toAdd τ + θ.val.snd.toAdd (star τ) = j)
+    (σ : ℂ →+* ℂ)
+    : ‖σ (θ.val.fst y)‖ = √(finIdeleAbs y) ^ j := by
   -- The embeddings `σ τ` and `σ τ̄` are complex conjugate. So the square of the modulus of
   -- `σ (θ(y) ^ N)` is `∏ τ, |σ τ γ| ^ (-j)`, and `∏ τ, |σ τ γ|`, the modulus of the norm of `γ`, is
   -- `|y| ^ (-N)` by the product formula.
-  obtain ⟨N, hN, γ, h_unit, h_pow⟩ : ∃ N > (0 : ℕ), ∃ γ : Kˣ,
-      y ^ N / principalIdele γ ∈ idelesUnitOff ∅ ∧
-      (θ.val.fst y : ℂ) ^ N = ∏ τ : K →+* ℂ, τ γ ^ (-θ.val.snd.toAdd τ) :=
+  obtain ⟨N, hN, γ, h_unit, h_pow⟩
+      : ∃ N > (0 : ℕ), ∃ γ : Kˣ,
+        y ^ N / principalIdele γ ∈ idelesUnitOff ∅
+          ∧ (θ.val.fst y : ℂ) ^ N = ∏ τ : K →+* ℂ, τ γ ^ (-θ.val.snd.toAdd τ) :=
     θ.exists_pow_eq_prod y
   have h_conj (τ : K →+* ℂ) : ‖σ (star τ γ)‖ = ‖σ (τ γ)‖ := by
     rw [show star τ γ = τ (star γ.val) from (map_star_complex τ γ).symm, ← σ.comp_apply,
@@ -118,13 +128,14 @@ theorem norm_map_eq_sqrt_finIdeleAbs_zpow [IsCMField K] {j : ℤ}
     prod_norm_map_embeddings_eq_inv_finIdeleAbs_pow y h_unit σ
   have h_value : ‖σ (θ.val.fst y)‖ ^ N = ∏ τ : K →+* ℂ, ‖σ (τ γ)‖ ^ (-θ.val.snd.toAdd τ) := by
     simp [← norm_pow, ← map_pow, h_pow]
-  have h_value_conj :
-      ‖σ (θ.val.fst y)‖ ^ N = ∏ τ : K →+* ℂ, ‖σ (τ γ)‖ ^ (-θ.val.snd.toAdd (star τ)) := by
+  have h_value_conj
+      : ‖σ (θ.val.fst y)‖ ^ N = ∏ τ : K →+* ℂ, ‖σ (τ γ)‖ ^ (-θ.val.snd.toAdd (star τ)) := by
     rw [h_value, ← Equiv.prod_comp (Function.Involutive.toPerm star star_involutive)]
     simp only [Function.Involutive.coe_toPerm, h_conj]
   -- It is enough to compare the powers with exponent `N * 2`.
   refine (pow_left_inj₀ (norm_nonneg _) (by positivity) (mul_ne_zero hN.ne' two_ne_zero)).1 ?_
-  calc ‖σ (θ.val.fst y)‖ ^ (N * 2)
+  calc
+    ‖σ (θ.val.fst y)‖ ^ (N * 2)
     _ = ∏ τ : K →+* ℂ, ‖σ (τ γ)‖ ^ (-j) := by
       rw [pow_mul, sq]
       nth_rw 1 [h_value]
@@ -136,36 +147,48 @@ theorem norm_map_eq_sqrt_finIdeleAbs_zpow [IsCMField K] {j : ℤ}
       rw [← zpow_natCast (_ ^ j), zpow_comm, zpow_natCast, pow_mul',
         Real.sq_sqrt (show 0 ≤ finIdeleAbs y from ideleAbs_pos.le), zpow_mul, zpow_natCast]
 
-/-- Let `θ` be an algebraic Hecke character with exponents `n τ`, and let `ι : ℂ →+* ℂ_[p]`. Then
+/--
+Let `θ` be an algebraic Hecke character with exponents `n τ`, and let `ι : ℂ →+* ℂ_[p]`. Then
 `‖ι (θ y)‖ = ∏ τ, ‖y_τ‖ ^ (-n τ)`, where `y_τ` is the image in `ℂ_[p]` of the component of the
-finite idele `y` at the prime induced by `ι ∘ τ`. -/
-theorem norm_padic_eq_prod {p : ℕ} [Fact p.Prime] (ι : ℂ →+* ℂ_[p]) :
-    ‖ι (θ.val.fst y)‖ =
-      ∏ τ : K →+* ℂ, ‖adeleExtension (ι.comp τ) y.val‖ ^ (-θ.val.snd.toAdd τ) := by
-  obtain ⟨N, hN, γ, h_unit, (h_pow : (θ.val.fst y : ℂ) ^ N =
-      ∏ τ : K →+* ℂ, τ γ ^ (-θ.val.snd.toAdd τ))⟩ := θ.exists_pow_eq_prod y
+finite idele `y` at the prime induced by `ι ∘ τ`.
+-/
+theorem norm_padic_eq_prod {p : ℕ} [Fact p.Prime] (ι : ℂ →+* ℂ_[p])
+    : ‖ι (θ.val.fst y)‖
+      = ∏ τ : K →+* ℂ, ‖adeleExtension (ι.comp τ) y.val‖ ^ (-θ.val.snd.toAdd τ) := by
+  obtain ⟨
+      N,
+      hN,
+      γ,
+      h_unit,
+      (h_pow : (θ.val.fst y : ℂ) ^ N = ∏ τ : K →+* ℂ, τ γ ^ (-θ.val.snd.toAdd τ))
+    ⟩ :=
+    θ.exists_pow_eq_prod y
   have h_norm (τ : K →+* ℂ) : ‖ι (τ γ)‖ = ‖adeleExtension (ι.comp τ) y.val‖ ^ N := by
     -- `y ^ N / γ` is a unit at the prime induced by `ι ∘ τ`.
-    have h_val : ‖adeleExtension (ι.comp τ) (y ^ N / principalIdele γ).val‖ =
-        ‖adeleExtension (ι.comp τ) 1‖ :=
+    have h_val
+        : ‖adeleExtension (ι.comp τ) (y ^ N / principalIdele γ).val‖
+          = ‖adeleExtension (ι.comp τ) 1‖ :=
       (norm_adeleExtension_eq_iff _ _).2
         (by simpa using mem_idelesUnitOff.1 h_unit _ (Set.notMem_empty _))
     rw [← norm_pow, ← map_pow, ← Units.val_pow_eq_pow_val,
       ← div_mul_cancel (y ^ N) (principalIdele γ), Units.val_mul, map_mul, norm_mul, h_val]
     simp
   refine (pow_left_inj₀ (norm_nonneg _) (by positivity) hN.ne').1 ?_
-  calc ‖ι (θ.val.fst y)‖ ^ N
+  calc
+    ‖ι (θ.val.fst y)‖ ^ N
     _ = ∏ τ : K →+* ℂ, ‖ι (τ γ)‖ ^ (-θ.val.snd.toAdd τ) := by simp [← norm_pow, ← map_pow, h_pow]
     _ = (∏ τ : K →+* ℂ, ‖adeleExtension (ι.comp τ) y.val‖ ^ (-θ.val.snd.toAdd τ)) ^ N := by
       simp only [h_norm, ← zpow_natCast, zpow_comm _ (N : ℤ), prod_zpow]
 
-/-- If the finite idele `y` is a unit at all primes above `p`, then the value `θ y` of an algebraic
-Hecke character is a unit at `ι : ℂ →+* ℂ_[p]`. -/
-theorem norm_padic_eq_one {p : ℕ} [Fact p.Prime] (ι : ℂ →+* ℂ_[p])
-    (hy : ∀ w : FinPlace K, (p : 𝓞 K) ∈ w.asIdeal → Valued.v (y.val w) = 1) :
-    ‖ι (θ.val.fst y)‖ = 1 := by
-  have h_unit (τ : K →+* ℂ) :
-      ‖adeleExtension (ι.comp τ) y.val‖ = ‖adeleExtension (ι.comp τ) 1‖ :=
+/--
+If the finite idele `y` is a unit at all primes above `p`, then the value `θ y` of an algebraic
+Hecke character is a unit at `ι : ℂ →+* ℂ_[p]`.
+-/
+theorem norm_padic_eq_one
+    {p : ℕ} [Fact p.Prime]
+    (ι : ℂ →+* ℂ_[p]) (hy : ∀ w : FinPlace K, (p : 𝓞 K) ∈ w.asIdeal → Valued.v (y.val w) = 1)
+    : ‖ι (θ.val.fst y)‖ = 1 := by
+  have h_unit (τ : K →+* ℂ) : ‖adeleExtension (ι.comp τ) y.val‖ = ‖adeleExtension (ι.comp τ) 1‖ :=
     (norm_adeleExtension_eq_iff _ _).2 (by simpa using hy _ (natCast_mem_placeOfEmb _))
   simp [θ.norm_padic_eq_prod y ι, h_unit]
 
@@ -180,44 +203,48 @@ open Finset Complex Real Variety
 -- `Type _`: the algebraic characters need `E : Type`, the lemma on `finPart` has any universe.
 variable {E : Type _} [Field E] [CMType E] {ψ : (𝔸f E)ˣ →* ℂˣ} {m : (E →+* ℂ) → ℤ} {k : ℤ}
 
-/-- Let `Φ w` be the embedding of the CM type at an infinite place `w`. Suppose that
+/--
+Let `Φ w` be the embedding of the CM type at an infinite place `w`. Suppose that
 `m (Φ w) + m (Φ̄ w) = k` for every `w` and that the character `ψ` of the finite ideles is the finite
 part of a Hecke character of type `m (Φ w) - m (Φ̄ w)`. This is the algebraic Hecke character
-`ψ |·| ^ (k / 2)` of infinity type `m`. -/
+`ψ |·| ^ (k / 2)` of infinity type `m`.
+-/
 def IsHeckeOfType.toAlgebraic
     (hk : ∀ w : NumberField.InfinitePlace E, m (Φ w) + m (star (Φ w)) = k)
-    (H : IsHeckeOfType ψ fun w : NumberField.InfinitePlace E ↦ m (Φ w) - m (star (Φ w))) :
-    AlgHeckeChar E where
-  val :=
-    (ψ *
-        MonoidHom.toHomUnits (G := (𝔸f E)ˣ) (M := ℂ)
-          { toFun a := √(finIdeleAbs a)
-            map_one' := by simp
-            -- Without `id (…)`, `simp` cannot evaluate this homomorphism below.
-            map_mul' := id (by simp [finIdeleAbs]) } ^ k,
-      Multiplicative.ofAdd m)
+    (H : IsHeckeOfType ψ fun w : NumberField.InfinitePlace E ↦ m (Φ w) - m (star (Φ w)))
+    : AlgHeckeChar E where
+  val := (
+    ψ * MonoidHom.toHomUnits (G := (𝔸f E)ˣ) (M := ℂ) {
+        toFun a := √(finIdeleAbs a)
+        map_one' := by simp
+        -- Without `id (…)`, `simp` cannot evaluate this homomorphism below.
+        map_mul' := id (by simp [finIdeleAbs])
+      }
+      ^ k,
+    Multiplicative.ofAdd m
+  )
   property := by
     obtain ⟨h_open, h_principal⟩ := H
     refine ⟨?_, fun x ↦ ?_⟩
     · -- The kernel contains the open group `ψ.ker ⊓ idelesUnitOff ∅`, as `finIdeleAbs` is `1` on
       -- `idelesUnitOff ∅`.
-      refine (ψ.ker ⊓ idelesUnitOff ∅).isOpen_mono (fun y hy ↦ ?_)
-        (h_open.and (isOpen_idelesUnitOff _))
+      refine
+        (ψ.ker ⊓ idelesUnitOff ∅).isOpen_mono (fun y hy ↦ ?_) (h_open.and (isOpen_idelesUnitOff _))
       obtain ⟨hy_ker, hy_unit⟩ := hy
       ext
       simp [show ψ y = 1 from hy_ker,
         show finIdeleAbs y = 1 from ideleAbs_finIdeleIncl_eq_one hy_unit]
     · -- For `z = Φ w x` and `k = a + b`, from `z * conj z = ‖z‖ ^ 2` we get
       -- `(z / ‖z‖) ^ (a - b) * ‖z‖ ^ (a + b) = z ^ a * conj z ^ b`.
-      have h_place (w : NumberField.InfinitePlace E) :
-          (Φ w x / ‖Φ w x‖) ^ (m (Φ w) - m (star (Φ w))) * ‖Φ w x‖ ^ k =
-            Φ w x ^ m (Φ w) * starRingEnd ℂ (Φ w x) ^ m (star (Φ w)) := by
+      have h_place (w : NumberField.InfinitePlace E)
+          : (Φ w x / ‖Φ w x‖) ^ (m (Φ w) - m (star (Φ w))) * ‖Φ w x‖ ^ k
+            = Φ w x ^ m (Φ w) * starRingEnd ℂ (Φ w x) ^ m (star (Φ w)) := by
         simp [← hk w, div_zpow, zpow_add₀, zpow_sub₀, field, ← mul_zpow, mul_conj', sq]
       -- On `Eˣ` the value of `ψ` is given by its type, that of `finIdeleAbs` by the product
       -- formula.
       have h_psi := eq_inv_of_mul_eq_one_left (h_principal x)
-      have h_sqrt : √|(Algebra.norm ℚ (x : E) : ℝ)| =
-          ∏ w : NumberField.InfinitePlace E, ‖Φ w x‖ := by
+      have h_sqrt
+          : √ |(Algebra.norm ℚ (x : E) : ℝ)| = ∏ w : NumberField.InfinitePlace E, ‖Φ w x‖ := by
         simp [abs_norm_eq_prod_norm_sq, sqrt_prod]
       -- After inverting both sides we compare products over the infinite places.
       simp [h_psi, h_sqrt, prod_embeddings_eq_prod_pairs, ← prod_zpow, ← mul_inv,
@@ -270,8 +297,9 @@ open NumberField Finset Complex Variety
 
 section BaseChangeType
 
-variable {E : Type*} [Field E] [CMType E] {e : InfinitePlace E → ℤ} {ν : AutChar E}
-  {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
+variable
+  {E : Type*} [Field E] [CMType E]
+  {e : InfinitePlace E → ℤ} {ν : AutChar E} {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
 
 /-- At infinity the base change `x ↦ ν (x / x̄)` of a character `ν` of weight `e` is
 `z ↦ ∏ w, (z w / ‖z w‖) ^ (2 * e w)`. -/
@@ -296,17 +324,20 @@ lemma isHeckeOfType [h : ν.HasWeight e ψ] : IsHeckeOfType ν.baseChange.finPar
 
 end BaseChangeType
 
-variable {E : Type} [Field E] [CMType E] {μ : AutChar E} {e : InfinitePlace E → ℤ}
-  {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
+variable
+  {E : Type} [Field E] [CMType E]
+  {μ : AutChar E} {e : InfinitePlace E → ℤ} {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
 
 open scoped Classical in
-/-- The base change `y ↦ μ (y / ȳ)` of a character `μ` of `U(1)(𝔸)` of weight `e`, on finite
+/--
+The base change `y ↦ μ (y / ȳ)` of a character `μ` of `U(1)(𝔸)` of weight `e`, on finite
 ideles, as an algebraic Hecke character: its exponents are `e` on the CM type and `-e` on its
-conjugate. -/
+conjugate.
+-/
 def baseChangeAlgebraic (h : μ.HasWeight e ψ) : AlgHeckeChar E :=
   IsHeckeOfType.toAlgebraic (k := 0)
     (m := fun σ : E →+* ℂ ↦
-      if σ = Φ (InfinitePlace.mk σ) then e (InfinitePlace.mk σ) else -e (InfinitePlace.mk σ))
+      if σ = Φ (InfinitePlace.mk σ) then e (InfinitePlace.mk σ) else - e (InfinitePlace.mk σ))
     (by simp)
     (μ.baseChange.isHeckeOfType_finPart fun z ↦ by simp [h.baseChange_apply_inf z, two_mul])
 
@@ -381,15 +412,17 @@ open NumberField Finset Variety
 variable {E : Type} [Field E] [CMType E] [WeilData E]
 
 open scoped Classical in
-/-- The character `υ |·| ^ (-1 / 2)` of the finite ideles, with `υ` the splitting character, as an
-algebraic Hecke character: its exponents are `0` on the CM type and `-1` on its conjugate. -/
+/--
+The character `υ |·| ^ (-1 / 2)` of the finite ideles, with `υ` the splitting character, as an
+algebraic Hecke character: its exponents are `0` on the CM type and `-1` on its conjugate.
+-/
 def chiFinAlgebraic : AlgHeckeChar E :=
   IsHeckeOfType.toAlgebraic (k := -1)
     (m := fun σ : E →+* ℂ ↦ if σ = Φ (InfinitePlace.mk σ) then 0 else -1)
     (by simp)
     ((υ : HeckeChar E).isHeckeOfType_finPart fun z ↦ by
-      simpa using υ_unit (z.map (MonoidHom.inl (InfinitePlace E → ℂ) (𝔸f E)))
-        ⟨one_mem _, one_mem _⟩)
+      simpa using
+        υ_unit (z.map (MonoidHom.inl (InfinitePlace E → ℂ) (𝔸f E))) ⟨one_mem _, one_mem _⟩)
 
 /-- Let `E` be a CM field with a chosen CM type and Weil data, and let `υ` be the splitting
 character. For every finite idele `x`, the finite-idele character underlying the algebraic Hecke

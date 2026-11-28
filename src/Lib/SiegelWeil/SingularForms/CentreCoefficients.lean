@@ -64,17 +64,21 @@ namespace New.Space.Splitting
 
 open Matrix Exchange MeasureTheory QuotientAddGroup IsDualFamily
 
-variable {E : Type*} [Field E] [CMType E] [WeilData E]
-  {n p n₀ : Type*} [Fintype n] [DecidableEq n] [Fintype p] [DecidableEq p] [Fintype n₀]
-  [DecidableEq n₀] {s : n → ℤˣ}
+variable
+  {E : Type*} [Field E] [CMType E] [WeilData E]
+  {n p n₀ : Type*}
+  [Fintype n] [DecidableEq n] [Fintype p] [DecidableEq p] [Fintype n₀] [DecidableEq n₀]
+  {s : n → ℤˣ}
 
-/-- D is a continuous function on the adelic unitary group of W that is left invariant under the
-rational points. -/
+/--
+D is a continuous function on the adelic unitary group of W that is left invariant under the
+rational points.
+-/
 def _root_.New.Exchange.IsAutFunction (W : Space E n s) (D : G E s → ℂ) : Prop :=
   Continuous D ∧ W.Γ.FixesLeft D
 
-variable {W : Space E n s} {D : G E s → ℂ} {s₀ : n₀ → ℤˣ} {W₀ : Space E n₀ s₀}
-  (H : W.Splitting W₀ p)
+variable
+  {W : Space E n s} {D : G E s → ℂ} {s₀ : n₀ → ℤˣ} {W₀ : Space E n₀ s₀} (H : W.Splitting W₀ p)
 
 /-- If D is continuous and left invariant under the rational points, then M ↦ D (z(M) g) is
 continuous and periodic under rational matrices, z(M) being the element `H.radicalCenter M` of the
@@ -183,45 +187,59 @@ namespace New.Exchange
 
 open Matrix NumberField
 
-variable {E : Type} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
   {n b m : Type} [Fintype n] [DecidableEq n] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m]
-  {s : n → ℤˣ} {r : m → ℤˣ} {μ : InfinitePlace E → ℤ} (𝔠 : SplitTameChar E μ) (x : Matrix n b (𝔸 E))
+  {s : n → ℤˣ} {r : m → ℤˣ} {μ : InfinitePlace E → ℤ} (𝔠 : SplitTameChar E μ)
+  (x : Matrix n b (𝔸 E))
 
 /-- The ring map sending an adele to its components at the ramified places S of 𝔠. -/
 noncomputable def componentsAt : (InfinitePlace E → ℂ) × 𝔸f E →+* LocProd 𝔠.ramifiedPlaces :=
   (evalPlaces 𝔠.ramifiedPlaces).comp (RingHom.snd (InfinitePlace E → ℂ) (𝔸f E) : 𝔸 E →+* 𝔸f E)
 
 /-- The homomorphism G_f → GL_n(∏_{w∈P} E_w) sending an element to its components at P. -/
-noncomputable def _root_.New.atPlaces {E : Type} [Field E] [NumberField E] [IsCMField E]
-    (P : Finset (FinPlace E)) : Gf E n →* GL n (LocProd P) :=
+noncomputable def _root_.New.atPlaces
+    {E : Type} [Field E] [NumberField E] [IsCMField E] (P : Finset (FinPlace E))
+    : Gf E n →* GL n (LocProd P) :=
   (GeneralLinearGroup.map (evalPlaces P)).comp (U 1).subtype
 
-/-- Let X be a hermitian space with index type m, let S = `𝔠.ramifiedPlaces` be the ramified places
+/--
+Let X be a hermitian space with index type m, let S = `𝔠.ramifiedPlaces` be the ramified places
 of the character 𝔠, and let M be a space of functions of m × b matrices over the completions at S. A
 linear map 𝒟 from such functions to functions on U(X) is an equivariant lift on M if M consists of
 locally constant functions with compact support in the left invertible matrices, and on M the map 𝒟
 has automorphic values, is equivariant at S up to a character of the determinant, and has values
-right invariant under the elements of `stdLevel` with component 1 at S. -/
-structure IsEquivariantLift (X : Space E m r)
-  (M : Submodule ℂ (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ))
-    (𝒟 : (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) →ₗ[ℂ] G E r → ℂ) : Prop where
+right invariant under the elements of `stdLevel` with component 1 at S.
+-/
+structure IsEquivariantLift
+    (X : Space E m r) (M : Submodule ℂ (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ))
+    (𝒟 : (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) →ₗ[ℂ] G E r → ℂ)
+    : Prop where
   /-- The data in `M` are locally constant, with compact support in the left invertible matrices. -/
   le_schwartzBruhat : M ≤ schwartzBruhat {x | HasLeftInv x}
   /-- `𝒟 Ψ` is continuous and left invariant under the rational points of `U(X)`. -/
   isAutFunction {Ψ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ} (hΨ : Ψ ∈ M) : IsAutFunction X (𝒟 Ψ)
-  /-- For `g` supported on `S ∪ S̄`, the translate `Φ y = Ψ (g_S y)` lies in `M`, and `𝒟 Φ`,
-  translated on the right by `g`, is `𝒟 Ψ` divided by `(υ |·|^(1/2)) (det g_S) ^ card b`. -/
-  map_translate {Ψ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ} (hΨ : Ψ ∈ M) (g : Gf E m)
-      (hg : g ∈ Gf.supportedOn m 𝔠.ramifiedPlaces) :
-    let Φ (y : Matrix m b (LocProd 𝔠.ramifiedPlaces)) : ℂ :=
-      Ψ ((atPlaces 𝔠.ramifiedPlaces g).val * y)
-    Φ ∈ M ∧ ∀ x : G E r, 𝒟 Φ (x * (1, g)) =
-      𝒟 Ψ x / localChar 𝔠.ramifiedPlaces WeilData.υ 1 (atPlaces 𝔠.ramifiedPlaces g).val.det ^
-        Fintype.card b
+  /--
+  For `g` supported on `S ∪ S̄`, the translate `Φ y = Ψ (g_S y)` lies in `M`, and `𝒟 Φ`,
+  translated on the right by `g`, is `𝒟 Ψ` divided by `(υ |·|^(1/2)) (det g_S) ^ card b`.
+  -/
+  map_translate
+    {Ψ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ} (hΨ : Ψ ∈ M)
+    (g : Gf E m) (hg : g ∈ Gf.supportedOn m 𝔠.ramifiedPlaces)
+    : let Φ (y : Matrix m b (LocProd 𝔠.ramifiedPlaces)) : ℂ :=
+        Ψ ((atPlaces 𝔠.ramifiedPlaces g).val * y)
+      Φ ∈ M
+        ∧ ∀ x : G E r,
+          𝒟 Φ (x * (1, g))
+            = 𝒟 Ψ x
+              / localChar 𝔠.ramifiedPlaces WeilData.υ 1 (atPlaces 𝔠.ramifiedPlaces g).val.det
+                ^ Fintype.card b
   /-- `𝒟 Ψ` is right invariant under the elements of `stdLevel` that are `1` at `S`. -/
-  invariant_off (Ψ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) (hΨ : Ψ ∈ M) (k : Gf E m)
-      (hk : k ∈ stdLevel E m ⊓ Gf.trivialOn m 𝔠.ramifiedPlaces) (x : G E r) :
-        𝒟 Ψ (x * (1, k)) = 𝒟 Ψ x
+  invariant_off
+    (Ψ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) (hΨ : Ψ ∈ M)
+    (k : Gf E m) (hk : k ∈ stdLevel E m ⊓ Gf.trivialOn m 𝔠.ramifiedPlaces)
+    (x : G E r)
+    : 𝒟 Ψ (x * (1, k)) = 𝒟 Ψ x
 
 section
 
@@ -230,8 +248,10 @@ variable {E : Type} [Field E] [NumberField E] (x : Matrix n b (𝔸 E))
 /-- The complex matrix of components of the adelic matrix x at the infinite place v. -/
 abbrev atRealPlace (v : InfinitePlace E) : Matrix n b ℂ := x.map fun a ↦ a.1 v
 
-/-- An adelic b × b matrix T is represented by the signs t if at every infinite place its component
-has the form cᴴ diag(t) c for some complex matrix c. -/
+/--
+An adelic b × b matrix T is represented by the signs t if at every infinite place its component
+has the form cᴴ diag(t) c for some complex matrix c.
+-/
 def RepresentedBy (t : b → ℤˣ) (T : Matrix b b (𝔸 E)) : Prop :=
   ∀ v : InfinitePlace E, ∃ c : Matrix b b ℂ, cᴴ * signMatrix t * c = atRealPlace T v
 
@@ -263,9 +283,11 @@ section CompositeSplitting
 
 open Matrix
 
-variable {E n n₂ p : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  [Fintype n₂] [DecidableEq n₂] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₂ : n₂ → ℤˣ}
-  {W : Space E n s} {W₂ : Space E n₂ s₂} {W₀ : Space E ((p ⊕ p) ⊕ n₂) (hyperbolicSigns p ⊕ᵥ s₂)}
+variable
+  {E n n₂ p : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n₂] [DecidableEq n₂]
+  [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s₂ : n₂ → ℤˣ} {W : Space E n s} {W₂ : Space E n₂ s₂}
+  {W₀ : Space E ((p ⊕ p) ⊕ n₂) (hyperbolicSigns p ⊕ᵥ s₂)}
   (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
 
 @[simp]
@@ -306,13 +328,16 @@ section PartialMeans
 
 open Matrix Exchange WeilData IsDualFamily
 
-variable {E n n₁ n₂ p : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  [Fintype n₁] [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] [Fintype p] [DecidableEq p]
+variable
+  {E n n₁ n₂ p : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n₁]
+  [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] [Fintype p] [DecidableEq p]
   {s : n → ℤˣ} {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ} {W : Space E n s}
   {W₀ : Space E ((p ⊕ p) ⊕ n₂) (hyperbolicSigns p ⊕ᵥ s₂)} {W₁ : Space E n₁ s₁} {W₂ : Space E n₂ s₂}
 
-/-- For an adele e, the group of the points g that fix e·k, where k is the frame of D. If e is an
-idempotent, these are the points that fix the frame at the places where e is 1. -/
+/--
+For an adele e, the group of the points g that fix e·k, where k is the frame of D. If e is an
+idempotent, these are the points that fix the frame at the places where e is 1.
+-/
 def frameStabilizer (D : W.Splitting W₁ p) (e : 𝔸 E) : Subgroup (G E s) where
   carrier := {g : G E s | g.adeleMatrix * e • D.kAdelic = e • D.kAdelic}
   mul_mem' {g h : G E s} hg hh := by
@@ -341,9 +366,11 @@ lemma ActsOnFrame.mem_frameStabilizer {D : W.Splitting W₁ p} {g : G E s}
 
 variable [WeilData E] (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
 
-/-- The shift n₊(a) : u ↦ u − k aᴴ of the isotropic vector u of A by the image k in W of the frame
+/--
+The shift n₊(a) : u ↦ u − k aᴴ of the isotropic vector u of A by the image k in W of the frame
 of B. Here a is an adelic row. It is a central element of the radical for the splitting
-`A.symm.comp B`. -/
+`A.symm.comp B`.
+-/
 noncomputable def lineShift (a : Matrix Unit p (𝔸 E)) : G E s :=
   (A.symm.comp B).radicalCenter (fromBlocks 0 a 0 0)
 
@@ -394,15 +421,19 @@ lemma actsOnFrame_lineShift (a : Matrix Unit p (𝔸 E)) :
 
 variable (D : W.Splitting W₁ p) (T : Matrix p p E) (f : G E s → ℂ)
 
-/-- The partial mean f⁺(g): the mean, over the adelic rows b modulo the rational rows, of the
+/--
+The partial mean f⁺(g): the mean, over the adelic rows b modulo the rational rows, of the
 coefficient of f along D at T at the point n₋(b) g, where n₋(b) = `A.symm.lineShift B b`. The
-partial mean for `A.symm` is f⁻. -/
+partial mean for `A.symm` is f⁻.
+-/
 noncomputable def partialMean (g : G E s) : ℂ :=
   quotMean (ratMatrices E Unit p) fun b : Matrix Unit p (𝔸 E) ↦
     D.centerCoeff T f (A.symm.lineShift B b * g)
 
-/-- The function φ⁺_g(a) = f⁺(n₊(a) g) of an adelic row a, where f⁺ is the partial mean and
-n₊(a) = `A.lineShift B a`. The function for `A.symm` is φ⁻_g. -/
+/--
+The function φ⁺_g(a) = f⁺(n₊(a) g) of an adelic row a, where f⁺ is the partial mean and
+n₊(a) = `A.lineShift B a`. The function for `A.symm` is φ⁻_g.
+-/
 noncomputable def shiftedMean (g : G E s) (a : Matrix Unit p (𝔸 E)) : ℂ :=
   A.partialMean B D T f (A.lineShift B a * g)
 
@@ -673,26 +704,33 @@ section Singularity
 
 open Matrix Exchange WeilData
 
-variable {E n n₁ n₂ p : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
-  [Fintype n₁] [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] [Fintype p] [DecidableEq p]
+variable
+  {E n n₁ n₂ p : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype n₁]
+  [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] [Fintype p] [DecidableEq p]
   {s : n → ℤˣ} {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ} {W : Space E n s}
   {W₀ : Space E ((p ⊕ p) ⊕ n₂) (hyperbolicSigns p ⊕ᵥ s₂)} {W₁ : Space E n₁ s₁} {W₂ : Space E n₂ s₂}
 
-/-- For an adele e and a point g, the condition that the partial mean f⁺ takes the same value at g
+/--
+For an adele e and a point g, the condition that the partial mean f⁺ takes the same value at g
 and ν g for every shear ν, that is, every ν with matrix 1 + ē·uc − e·a. Here u = `A.kAdelic` is the
 isotropic vector of A, c is a row with cu = 0, and a is arbitrary. If e is the idempotent of a set
-of places U disjoint from its conjugate, such a ν is 1 + uc on Ū and 1 outside U ∪ Ū. -/
-def ShearInvariant (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p) (D : W.Splitting W₁ p)
-    (T : Matrix p p E) (f : G E s → ℂ) (e : 𝔸 E) (g : G E s) : Prop :=
+of places U disjoint from its conjugate, such a ν is 1 + uc on Ū and 1 outside U ∪ Ū.
+-/
+def ShearInvariant
+    (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p) (D : W.Splitting W₁ p) (T : Matrix p p E)
+    (f : G E s → ℂ) (e : 𝔸 E) (g : G E s)
+    : Prop :=
   ∀ ⦃ν : G E s⦄ (c : Matrix Unit n (𝔸 E)) (a : Matrix n n (𝔸 E)),
-    c * A.kAdelic = 0 →
-    ν.adeleMatrix = 1 + (star e • (A.kAdelic * c :) - e • a) →
-    A.partialMean B D T f (ν * g) = A.partialMean B D T f g
+    c * A.kAdelic = 0 → ν.adeleMatrix = 1 + (star e • (A.kAdelic * c :) - e • a)
+      → A.partialMean B D T f (ν * g) = A.partialMean B D T f g
 
-/-- The Fourier coefficient of f along the composite of the splittings A (one line) and B, at the
-block diagonal matrix 0 ⊕ T. -/
-noncomputable abbrev borderedCentreCoeff (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
-    (T : Matrix p p E) (f : G E s → ℂ) : G E s → ℂ :=
+/--
+The Fourier coefficient of f along the composite of the splittings A (one line) and B, at the
+block diagonal matrix 0 ⊕ T.
+-/
+noncomputable abbrev borderedCentreCoeff
+    (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p) (T : Matrix p p E) (f : G E s → ℂ)
+    : G E s → ℂ :=
   (A.comp B).centerCoeff (fromBlocks 0 0 0 T) f
 
 variable {A : W.Splitting W₀ Unit} {B : W₀.Splitting W₂ p} {D : W.Splitting W₁ p}

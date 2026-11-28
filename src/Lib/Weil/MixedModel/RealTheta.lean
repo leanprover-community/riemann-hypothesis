@@ -67,9 +67,10 @@ section RealData
 
 open Fock Heisenberg Rep
 
-variable {E n : Type*}
-  {s : n → ℤˣ} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
-  (V : Space E n s) (v w : IsVacuum.Model (realHeisenberg (realSigns E s))) (f f' : 𝒮 V)
+variable
+  {E n : Type*} {s : n → ℤˣ} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
+  (V : Space E n s)
+  (v w : IsVacuum.Model (realHeisenberg (realSigns E s))) (f f' : 𝒮 V)
 
 /-- For v in the Fock space, f in 𝒮(V) and a bounded linear map T from 𝒮(V) to a Banach space,
 T(v ⊗ f) = ∫ v(y) T(ϱ(y) f) dy, with y over real vectors in Fock coordinates (`New.realVec`). -/
@@ -131,7 +132,9 @@ section EntireTheta
 
 open MeasureTheory Matrix ComplexConjugate Fock Complex Finset Prod
 
-variable {E : Type _} [Field E] [CMType E] [WeilData E] {n : Type _} [Fintype n] [DecidableEq n]
+variable
+  {E : Type _} [Field E] [CMType E] [WeilData E]
+  {n : Type _} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} {V : Space E n s} (f : 𝒮 V)
 
 omit [Fintype n] [DecidableEq n] in
@@ -141,8 +144,10 @@ lemma continuous_realVec :
   refine continuous_pi fun i ↦ Continuous.prodMk ?_ continuous_const
   exact continuous_const.mul (continuous_pi fun w ↦ continuous_apply (w, i))
 
-/-- For f in 𝒮(V), the function Θ_f(y) = θ(ϱ(y)f)·exp(|y|²/2) of a real vector y in Fock
-coordinates, placed in the adelic vectors with finite part zero. -/
+/--
+For f in 𝒮(V), the function Θ_f(y) = θ(ϱ(y)f)·exp(|y|²/2) of a real vector y in Fock
+coordinates, placed in the adelic vectors with finite part zero.
+-/
 noncomputable def entireTheta (y : NumberField.InfinitePlace E × n → ℂ) : ℂ :=
   f (realVec y) / realVac y
 
@@ -285,15 +290,21 @@ namespace New.Space.Splitting
 open NumberField Matrix Fock Exchange Prod Complex Fintype ComplexOrder MeasureTheory Heisenberg Rep
   IsVacuum
 
-variable {E : Type _} [Field E] [CMType E] [WeilData E] {n n₀ p : Type _} [Fintype n]
-  [DecidableEq n] [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ}
-  {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} {D : V.Splitting V₀ p}
-  (L : 𝒮 V →L[ℂ] 𝒮 V₀) (A : Matrix n p (𝔸 E)) {T : (p → 𝔸 E) → 𝒮 V →L[ℂ] 𝒮 V₀}
+variable
+  {E : Type _} [Field E] [CMType E] [WeilData E]
+  {n n₀ p : Type _}
+  [Fintype n] [DecidableEq n] [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} {D : V.Splitting V₀ p}
+  (L : 𝒮 V →L[ℂ] 𝒮 V₀)
+  (A : Matrix n p (𝔸 E))
+  {T : (p → 𝔸 E) → 𝒮 V →L[ℂ] 𝒮 V₀}
 
-/-- The archimedean part of an adelic matrix A as one complex matrix, block diagonal over the
-infinite places, whose block at τ is the τ-component of A. -/
-noncomputable def realMatrix {E : Type _} [Field E] [NumberField E] (A : Matrix n p (𝔸 E)) :
-    Matrix (InfinitePlace E × n) (InfinitePlace E × p) ℂ :=
+/--
+The archimedean part of an adelic matrix A as one complex matrix, block diagonal over the
+infinite places, whose block at τ is the τ-component of A.
+-/
+noncomputable def realMatrix {E : Type _} [Field E] [NumberField E] (A : Matrix n p (𝔸 E))
+    : Matrix (InfinitePlace E × n) (InfinitePlace E × p) ℂ :=
   (blockDiagonal (A.map <| evalInf ·)).submatrix Prod.swap Prod.swap
 
 /-- In the coordinates of the orthogonal sum of `s` and `s₀` (`New.Fock.realCoordSum`, whose `equiv`

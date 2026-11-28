@@ -50,63 +50,85 @@ section LevelGauge
 open Matrix MeasureTheory Measure BesselIndex ENNReal Fintype FloorGroups Place TraceOne Function
   Filter
 
-variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  {ι : Type} [Fintype ι] [DecidableEq ι] {𝔰 : Shape} {T : 𝔰.Form A} {m : ℕ}
-  [IsHermitianUnit T.splitGram] (F : PlaceData ι T m)
+variable
+  {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  {ι : Type} [Fintype ι] [DecidableEq ι]
+  {𝔰 : Shape} {T : 𝔰.Form A} {m : ℕ} [IsHermitianUnit T.splitGram]
+  (F : PlaceData ι T m)
 
 namespace PlaceData
 
 variable (j : ℕ) (k : T.G → T.G → ℂ) (w x g y : T.G) (K : ℝ≥0∞)
 
-/-- For every g, the integral of c(σ g) for the measure of floor j, over the σ with σ g near at
-j + 1 (`IsNear`), is at most the bound `K` (a number, not the compact set `F.boxSet`). -/
+/--
+For every g, the integral of c(σ g) for the measure of floor j, over the σ with σ g near at
+j + 1 (`IsNear`), is at most the bound `K` (a number, not the compact set `F.boxSet`).
+-/
 def FloorMassLe (c : T.G → ℝ≥0∞) : Prop :=
-  ∀ g : T.G,
-    ∫⁻ σ : T.G in {σ : T.G | F.IsNear (j + 1) (σ * g)}, c (σ * g) ∂F.floorMeasure j ≤ K
+  ∀ g : T.G, ∫⁻ σ : T.G in {σ : T.G | F.IsNear (j + 1) (σ * g)}, c (σ * g) ∂F.floorMeasure j ≤ K
 
-/-- The correlation from floor j on: the integral of k(x g, x y) in x for `F.quotientMeasureFrom j`,
-the measure on G that represents the quotient (U ∩ G^(j)) ∖ G^(j), where U = `besselU`. -/
+/--
+The correlation from floor j on: the integral of k(x g, x y) in x for `F.quotientMeasureFrom j`,
+the measure on G that represents the quotient (U ∩ G^(j)) ∖ G^(j), where U = `besselU`.
+-/
 def partialCorrelation : ℂ := ∫ x : T.G, k (x * g) (x * y) ∂F.quotientMeasureFrom j
 
-/-- The rules for a kernel k on G × G and an element w that commutes with G^(j). They hold for the
-correlation k(g, y) = ⟪W g, W (w y)⟫ of a Bessel function W. -/
+/--
+The rules for a kernel k on G × G and an element w that commutes with G^(j). They hold for the
+correlation k(g, y) = ⟪W g, W (w y)⟫ of a Bessel function W.
+-/
 structure IsPairingKernel : Prop where
   /-- The kernel is jointly measurable. -/
   measurable : Measurable ↿k
-  /-- For n, n' in U_(<l) = `unipotentBelow l`, putting n before g and n' before y multiplies the
+  /--
+  For n, n' in U_(<l) = `unipotentBelow l`, putting n before g and n' before y multiplies the
   correlation from floor l + 1 on by ψ((σ₀(w n' w⁻¹) - σ₀(n)) / M), where σ₀ = `simpleRootSum`, ψ is
-  the additive character of the place and M = `F.levelUnit` is the level. -/
-  equivariance : ∀ {l : ℕ} {n n' : T.G}, n ∈ unipotentBelow l → n' ∈ unipotentBelow l → ∀ g y : T.G,
-    F.partialCorrelation (l + 1) k (n * g) (n' * y) =
-      ψ (F.levelUnit⁻¹.val * (simpleRootSum (w * n' * w⁻¹) - simpleRootSum n)) *
-        F.partialCorrelation (l + 1) k g y
+  the additive character of the place and M = `F.levelUnit` is the level.
+  -/
+  equivariance
+    : ∀ {l : ℕ} {n n' : T.G},
+      n ∈ unipotentBelow l → n' ∈ unipotentBelow l
+        → ∀ g y : T.G,
+          F.partialCorrelation (l + 1) k (n * g) (n' * y)
+            = ψ (F.levelUnit⁻¹.val * (simpleRootSum (w * n' * w⁻¹) - simpleRootSum n))
+              * F.partialCorrelation (l + 1) k g y
   /-- The element w commutes with G^(j). -/
   conj_eq_self : ∀ s ∈ floorGroup j, w * s * w⁻¹ = s
-  /-- The integral of |k(x g, x y)| over the floors from l on has a finite bound that does not
-  depend on g and y. -/
-  exists_lintegral_le (l : ℕ) :
-    ∃ c < ∞, ∀ g y : T.G, ∫⁻ x : T.G, ‖k (x * g) (x * y)‖ₑ ∂F.quotientMeasureFrom l ≤ c
+  /--
+  The integral of |k(x g, x y)| over the floors from l on has a finite bound that does not
+  depend on g and y.
+  -/
+  exists_lintegral_le (l : ℕ)
+    : ∃ c < ∞, ∀ g y : T.G, ∫⁻ x : T.G, ‖k (x * g) (x * y)‖ₑ ∂F.quotientMeasureFrom l ≤ c
   /-- If the correlation of g and y from floor l on is not zero, then g is near at l. -/
-  isNear_of_partialCorrelation_ne_zero : ∀ {l : ℕ} {g y : T.G},
-    F.partialCorrelation l k g y ≠ 0 → F.IsNear l g
+  isNear_of_partialCorrelation_ne_zero
+    : ∀ {l : ℕ} {g y : T.G}, F.partialCorrelation l k g y ≠ 0 → F.IsNear l g
 
-/-- The function of z that is the inverse of the weight `F.depthWeight j z x` of length j at the
-points z and z x if z is near at j, and 0 elsewhere. -/
+/--
+The function of z that is the inverse of the weight `F.depthWeight j z x` of length j at the
+points z and z x if z is near at j, and 0 elsewhere.
+-/
 def invDepthWeight : T.G → ℝ≥0∞ :=
   {z : T.G | F.IsNear j z}.indicator fun z : T.G ↦ (F.depthWeight j z x)⁻¹
 
-/-- The integral over the σ in floor j of the modulus of the correlation of σ g and σ y from floor
-j + 1 on. -/
+/--
+The integral over the σ in floor j of the modulus of the correlation of σ g and σ y from floor
+j + 1 on.
+-/
 def pivotL1Norm : ℝ≥0∞ :=
   ∫⁻ σ : T.G, ‖F.partialCorrelation (j + 1) k (σ * g) (σ * y)‖ₑ ∂F.floorMeasure j
 
-/-- The weight of length j times the squared modulus of the correlation from floor j + 1 on, both
-taken at the points g and g x. -/
-abbrev weightedSquare : ℝ≥0∞ := F.depthWeight j g x * ‖F.partialCorrelation (j + 1) k g (g * x)‖ₑ ^
-  2
+/--
+The weight of length j times the squared modulus of the correlation from floor j + 1 on, both
+taken at the points g and g x.
+-/
+abbrev weightedSquare : ℝ≥0∞ :=
+  F.depthWeight j g x * ‖F.partialCorrelation (j + 1) k g (g * x)‖ₑ ^ 2
 
-/-- The function b_j(g) = ∫ (a_j + b_{j+1})(σ g) dθ_j(σ) for j < n = `𝔰.n`, and 0 for j ≥ n, where
-a_j is `New.Floors.PlaceData.weightedSquare` at the position x and θ_j = `F.floorMeasure j`. -/
+/--
+The function b_j(g) = ∫ (a_j + b_{j+1})(σ g) dθ_j(σ) for j < n = `𝔰.n`, and 0 for j ≥ n, where
+a_j is `New.Floors.PlaceData.weightedSquare` at the position x and θ_j = `F.floorMeasure j`.
+-/
 def weightedSquareSum (x : T.G) (j : ℕ) (g : T.G) : ℝ≥0∞ :=
   if j < 𝔰.n then
     ∫⁻ σ : T.G,
@@ -114,18 +136,23 @@ def weightedSquareSum (x : T.G) (j : ℕ) (g : T.G) : ℝ≥0∞ :=
   else
     0
 
-/-- The integral of `F.weightedSquareSum k x j`, the sum of the weighted squared correlations from
-floor j on, over the floors below j. -/
-def weightedSquareIntegral : ℝ≥0∞ := ∫⁻ g : T.G,
-  F.weightedSquareSum k x j g ∂descConv F.floorMeasure 0 j
+/--
+The integral of `F.weightedSquareSum k x j`, the sum of the weighted squared correlations from
+floor j on, over the floors below j.
+-/
+def weightedSquareIntegral : ℝ≥0∞ :=
+  ∫⁻ g : T.G,
+    F.weightedSquareSum k x j g ∂descConv F.floorMeasure 0 j
 
 end PlaceData
 
-/-- The data through which a gauge is used at either kind of place, for the data F: sizes of numbers
+/--
+The data through which a gauge is used at either kind of place, for the data F: sizes of numbers
 for one scale element, together with a number Λ = `loss` whose powers bound moduli and volumes, also
 those of the products with close pairs. It is not the length itself: lengths at a point are bounded
 by `New.Floors.Size.LengthLeAt`, and at a real place the length is `lengthAt`. The last two fields
-are the facts that are proved separately at a real place and at the finite places. -/
+are the facts that are proved separately at a real place and at the finite places.
+-/
 structure Gauge extends Size T where
   /-- The constant Λ of the scale: losses are its powers. -/
   loss : ℝ≥0∞
@@ -148,39 +175,53 @@ structure Gauge extends Size T where
   /-- The elements of K = `F.boxSet` have size 1. -/
   hasMatrixSize_boxSet ⦃x : T.G⦄ : x ∈ F.boxSet → toSize.HasMatrixSize 1 x.val.val
   /-- For a close pair (ω₁, ω₂), the vectors ω₁ and (ω₁ - ω₂) / M have size 1. -/
-  mem_vecsOfSize_of_mem_closePairs ⦃ω₁ ω₂ : 𝔰.BesselIndex → A⦄ : (ω₁, ω₂) ∈ F.closePairs →
-    ω₁ ∈ toSize.vecsOfSize 1 ∧ F.levelUnit⁻¹.val • (ω₁ - ω₂) ∈ toSize.vecsOfSize 1
-  /-- If 1 / M has size 1, some unit c with inverse of size i + 2 turns any two vectors of size i
-  into a close pair. -/
-  exists_unit_smul_mem_closePairs (i : ℕ) : F.levelUnit⁻¹.val ∈ ofSize 1 →
-    ∃ c : Aˣ, c⁻¹.val ∈ ofSize (i + 2) ∧
-      ∀ ω₁ ∈ toSize.vecsOfSize i, ∀ ω₂ ∈ toSize.vecsOfSize i,
-        (c.val • ω₁, c.val • ω₂) ∈ F.closePairs
+  mem_vecsOfSize_of_mem_closePairs ⦃ω₁ ω₂ : 𝔰.BesselIndex → A⦄
+    : (ω₁, ω₂) ∈ F.closePairs
+      → ω₁ ∈ toSize.vecsOfSize 1 ∧ F.levelUnit⁻¹.val • (ω₁ - ω₂) ∈ toSize.vecsOfSize 1
+  /--
+  If 1 / M has size 1, some unit c with inverse of size i + 2 turns any two vectors of size i
+  into a close pair.
+  -/
+  exists_unit_smul_mem_closePairs (i : ℕ)
+    : F.levelUnit⁻¹.val ∈ ofSize 1
+      → ∃ c : Aˣ,
+        c⁻¹.val ∈ ofSize (i + 2)
+          ∧ ∀ ω₁ ∈ toSize.vecsOfSize i, ∀ ω₂ ∈ toSize.vecsOfSize i,
+            (c.val • ω₁, c.val • ω₂) ∈ F.closePairs
   /-- An invertible number of size j has modulus at most Λ^j. -/
   modulus_le (j : ℕ) (u : Aˣ) : (u : A) ∈ ofSize j → P.modulus u ≤ loss ^ j
   /-- The numbers of size j have volume at most Λ^(j+1). -/
   volume_ofSize_le (j : ℕ) : volume (ofSize j) ≤ loss ^ (j + 1)
   /-- There is room for two blocks among the orthonormal basis vectors. -/
   two_mul_blockRank_le : 2 * F.blockRank ≤ card ι
-  /-- The quadrics of a block, of rank p = `F.blockRank`. The volume of A^p disintegrates along the
+  /--
+  The quadrics of a block, of rank p = `F.blockRank`. The volume of A^p disintegrates along the
   standard form into an s-finite kernel, each measure of which gives mass at most Λ^(p (j+1)) to
-  the vectors of size j. -/
-  exists_blockKernel : ∃ l : ProbabilityTheory.Kernel (skewAdjoint A) (Fin F.blockRank → A),
-      ProbabilityTheory.IsSFiniteKernel l ∧ IsDisintegration volume 1 l ∧
-      ∀ (β : skewAdjoint A) (j : ℕ), l β (toSize.vecsOfSize j) ≤ loss ^ (F.blockRank * (j + 1))
-  /-- Common vectors. For g in K, a position z and ϱ linear forms on X' = `F.FreeIndex → A` (the
+  the vectors of size j.
+  -/
+  exists_blockKernel
+    : ∃ l : ProbabilityTheory.Kernel (skewAdjoint A) (Fin F.blockRank → A),
+      ProbabilityTheory.IsSFiniteKernel l ∧ IsDisintegration volume 1 l
+        ∧ ∀ (β : skewAdjoint A) (j : ℕ), l β (toSize.vecsOfSize j) ≤ loss ^ (F.blockRank * (j + 1))
+  /--
+  Common vectors. For g in K, a position z and ϱ linear forms on X' = `F.FreeIndex → A` (the
   rows of v), let W = `F.commonVectors g z v` be the set of vectors killed by the forms and short
   (`IsShortFrom`) from g and g z. Some φ controls the products ⟨u, ω⟩ with ω ∈ W, in the sense of
-  `IsCommonBound`. -/
-  exists_commonBound : ∀ g ∈ F.boxSet, ∀ z ∈ F.positions, ∀ v : Matrix (Fin 𝔰.ϱ) F.FreeIndex A,
-      ∃ φ : (F.FreeIndex → A) → ℝ≥0∞, F.IsCommonBound toSize loss (F.commonVectors g z v) φ
+  `IsCommonBound`.
+  -/
+  exists_commonBound
+    : ∀ g ∈ F.boxSet, ∀ z ∈ F.positions, ∀ v : Matrix (Fin 𝔰.ϱ) F.FreeIndex A,
+      ∃ φ : (F.FreeIndex → A) → ℝ≥0∞,
+        F.IsCommonBound toSize loss (F.commonVectors g z v) φ
 
 /-- The constant Λ of a gauge is at least 1. -/
 @[simp]
 lemma Gauge.one_le_loss (Γ : Gauge F) : 1 ≤ Γ.loss := one_le_two.trans Γ.two_le_loss
 
-/-- The close positions of a gauge Γ for the place datum F: the positions z ∈ `F.positions` for
-which the matrix (z - 1) / M has size 1, where M = `F.levelUnit` is the level. -/
+/--
+The close positions of a gauge Γ for the place datum F: the positions z ∈ `F.positions` for
+which the matrix (z - 1) / M has size 1, where M = `F.levelUnit` is the level.
+-/
 def Gauge.positionsOfSize (Γ : Gauge F) : Set T.G :=
   {z ∈ F.positions | Γ.HasMatrixSize 1 (F.levelUnit⁻¹.val • (z.val.val - 1))}
 
@@ -197,9 +238,11 @@ namespace New.Floors
 open Matrix MeasureTheory Measure ENNReal Sum Set Function FloorGroups Size Place TraceOne PlaceData
   HyperbolicBasis Finset
 
-variable {A ι : Type} {𝔰 : Shape} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A]
-  [Place A] [Fintype ι] [DecidableEq ι] {m i j : ℕ} {a : Fin 𝔰.ϱ} {T : 𝔰.Form A}
-  [IsHermitianUnit T.splitGram] {F : PlaceData ι T m} {Γ : Gauge F} {b : Fin 𝔰.n} {g x σ ξ : T.G}
+variable
+  {A ι : Type} {𝔰 : Shape} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [Place A]
+  [Fintype ι] [DecidableEq ι]
+  {m i j : ℕ} {a : Fin 𝔰.ϱ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
+  {F : PlaceData ι T m} {Γ : Gauge F} {b : Fin 𝔰.n} {g x σ ξ : T.G}
 
 namespace PlaceData
 
@@ -422,8 +465,10 @@ namespace New.Floors.PlaceData
 
 open MeasureTheory Measure ProbabilityTheory FloorGroups Set
 
-variable {R ι : Type} {𝔰 : Shape} [CommRing R] [StarRing R] [TopologicalSpace R] [MeasureSpace R]
-  [Place R] [Fintype ι] [DecidableEq ι] {m j l : ℕ} {T : 𝔰.Form R} [IsHermitianUnit T.splitGram]
+variable
+  {R ι : Type} {𝔰 : Shape} [CommRing R] [StarRing R] [TopologicalSpace R] [MeasureSpace R] [Place R]
+  [Fintype ι] [DecidableEq ι]
+  {m j l : ℕ} {T : 𝔰.Form R} [IsHermitianUnit T.splitGram]
   {F : PlaceData ι T m} {g y : T.G} {s : T.G} {k : T.G → T.G → ℂ} {d : T.G}
 
 namespace IsPairingKernel

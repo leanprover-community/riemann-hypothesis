@@ -57,8 +57,10 @@ lemma enorm_integral_sq_le {Y : Type*} [MeasurableSpace Y] {μ : Measure Y} {g :
 
 section Fibres
 
-variable {W Z : Type*} [MeasurableSpace W] [MeasurableSpace Z] {ν : Measure W} {ζ : Kernel W Z}
-  [SFinite ν] [IsSFiniteKernel ζ] {V : Set Z} {M : ℝ≥0∞}
+variable
+  {W Z : Type*} [MeasurableSpace W] [MeasurableSpace Z]
+  {ν : Measure W} {ζ : Kernel W Z} [SFinite ν] [IsSFiniteKernel ζ]
+  {V : Set Z} {M : ℝ≥0∞}
 
 /-- Let each measure ζ(w) give mass at most M to V. The integral over B × V of a function of the
 first variable is at most M times its integral over B. -/
@@ -116,18 +118,23 @@ end Fibres
 
 namespace Place
 
-variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  {κ n : Type} [Fintype κ] [Fintype n] {J : Matrix κ κ A} {ξ : A} {ρ' ρ : Measure (κ → A)}
-  {S' S : Set (κ → A)} {C : ℝ≥0∞}
+variable
+  {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  {κ n : Type} [Fintype κ] [Fintype n]
+  {J : Matrix κ κ A} {ξ : A} {ρ' ρ : Measure (κ → A)} {S' S : Set (κ → A)} {C : ℝ≥0∞}
 
-/-- The kernel ψ(ξ ⟨v, y⟩), with ψ the character of the place and ⟨v, y⟩ = v* J y, multiplies
+/--
+The kernel ψ(ξ ⟨v, y⟩), with ψ the character of the place and ⟨v, y⟩ = v* J y, multiplies
 square norms by at most C from the functions on (S, ρ) to the functions on (S', ρ'). It is tested on
-the measurable integrable functions φ that vanish off S. -/
-def FourierSqNormLe (J : Matrix κ κ A) (ξ : A) (ρ' ρ : Measure (κ → A)) (S' S : Set (κ → A))
-    (C : ℝ≥0∞) : Prop :=
-  ∀ φ : (κ → A) → ℂ, Measurable φ → Integrable φ ρ → (∀ y : κ → A, φ y ≠ 0 → y ∈ S) →
-    ∫⁻ v : κ → A in S', ‖∫ y : κ → A, ψ (ξ * star v ⬝ᵥ J *ᵥ y) * φ y ∂ρ‖ₑ ^ 2 ∂ρ' ≤
-      C * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ
+the measurable integrable functions φ that vanish off S.
+-/
+def FourierSqNormLe
+    (J : Matrix κ κ A) (ξ : A) (ρ' ρ : Measure (κ → A)) (S' S : Set (κ → A)) (C : ℝ≥0∞)
+    : Prop :=
+  ∀ φ : (κ → A) → ℂ,
+    Measurable φ → Integrable φ ρ → (∀ y : κ → A, φ y ≠ 0 → y ∈ S)
+      → ∫⁻ v : κ → A in S', ‖∫ y : κ → A, ψ (ξ * star v ⬝ᵥ J *ᵥ y) * φ y ∂ρ‖ₑ ^ 2 ∂ρ'
+        ≤ C * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ
 
 /-- The constant may be enlarged. -/
 lemma FourierSqNormLe.mono {C' : ℝ≥0∞} (h : FourierSqNormLe J ξ ρ' ρ S' S C) (hC : C ≤ C') :
@@ -162,8 +169,9 @@ lemma FourierSqNormLe.map {J₁ : Matrix n n A} {ξ₁ : A} {f' f : (κ → A) �
           fun y hy ↦ h_sub y (hφ_supp (f y) hy)
     _ = C * ∫⁻ y : n → A, ‖φ y‖ₑ ^ 2 ∂ρ.map f := by rw [lintegral_map (by fun_prop) hf]
 
-variable {ι B B' : Type} [Fintype ι] [Fintype B'] {blk : B → κ} {blk' : B' → κ}
-  {inner : ι → κ} {R R' : Set A} {M M' : ℝ≥0∞}
+variable
+  {ι B B' : Type} [Fintype ι] [Fintype B']
+  {blk : B → κ} {blk' : B' → κ} {inner : ι → κ} {R R' : Set A} {M M' : ℝ≥0∞}
 
 omit [Fintype κ] [Fintype n] in
 /-- Multiplication by a value of ψ preserves the absolute value. -/
@@ -206,13 +214,14 @@ lemma lintegral_lintegral_fourier_integral_kernel_le [DecidableEq ι] {Y Z : Typ
       (integrable_integral_kernel hf_meas hf_int),
     lintegral_enorm_integral_kernel_sq_le hf_meas h_supp h_fibre]
 
-/-- The vector with outer coordinates p.1.1, inner coordinates p.1.2 and coordinates p.2 in the
-block, along a bijection e of indices. -/
+/--
+The vector with outer coordinates p.1.1, inner coordinates p.1.2 and coordinates p.2 in the
+block, along a bijection e of indices.
+-/
 def blockChart {η : Type} (e : (η ⊕ ι) ⊕ B ≃ κ) (p : ((η → A) × (ι → A)) × (B → A)) : κ → A :=
   ((p.1.1 ⊕ᵥ p.1.2) ⊕ᵥ p.2) ∘ e.symm
 
-omit [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] P [Fintype κ] [Fintype ι]
-  in
+omit [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] P [Fintype κ] [Fintype ι] in
 /-- A vector lies in the box of R exactly when its three parts do. -/
 lemma preimage_blockChart_coordinateBox {η : Type} (e : (η ⊕ ι) ⊕ B ≃ κ) (R : Set A) :
     blockChart e ⁻¹' coordinateBox κ R =
@@ -398,49 +407,59 @@ lemma IsSolvedIn.exists_blockChart (h : IsSolvedIn blk ρ R M)
     · simp [blockChart, e, join]
     · simp [blockChart, e, join]
 
-/-- Let ρ be solved in a block with fibres of mass at most M on the box of R, that is, let it be the
+/--
+Let ρ be solved in a block with fibres of mass at most M on the box of R, that is, let it be the
 volume in the coordinates off the block times such measures in the block. For a function G of inner
 coordinates off the block, the integral over the box of R is at most the volume of the box in the
-outer coordinates, times M, times the integral of G over the box in A^ι. -/
-theorem IsSolvedIn.setLIntegral_le (h : IsSolvedIn blk ρ R M) (hR : MeasurableSet R)
-    (h_inj : Function.Injective (inner ⊕ᵥ blk)) {G : (ι → A) → ℝ≥0∞} (hG : Measurable G) :
-    ∫⁻ x : κ → A in coordinateBox κ R, G (x ∘ inner) ∂ρ ≤
-      volume R ^ (card κ - card ι - card B) * M * ∫⁻ w : ι → A in coordinateBox ι R, G w := by
+outer coordinates, times M, times the integral of G over the box in A^ι.
+-/
+theorem IsSolvedIn.setLIntegral_le
+    (h : IsSolvedIn blk ρ R M) (hR : MeasurableSet R) (h_inj : Function.Injective (inner ⊕ᵥ blk))
+    {G : (ι → A) → ℝ≥0∞} (hG : Measurable G)
+    : ∫⁻ x : κ → A in coordinateBox κ R, G (x ∘ inner) ∂ρ
+      ≤ volume R ^ (card κ - card ι - card B) * M * ∫⁻ w : ι → A in coordinateBox ι R, G w := by
   obtain ⟨η, _, e, ζ, _, rfl, rfl, h_card, h_chart, h_mass⟩ := h.exists_blockChart h_inj
-  calc ∫⁻ x : κ → A in coordinateBox κ R, G (x ∘ e ∘ inl ∘ inr) ∂ρ
+  calc
+    ∫⁻ x : κ → A in coordinateBox κ R, G (x ∘ e ∘ inl ∘ inr) ∂ρ
     _ = ∫⁻ p : ((η → A) × (ι → A)) × (B → A) in
           (coordinateBox η R ×ˢ coordinateBox ι R) ×ˢ coordinateBox B R, G p.1.2
           ∂(volume.prod volume) ⊗ₘ ζ := by
       rw [← h_chart.setLIntegral_comp_preimage (measurableSet_coordinateBox κ hR) (by fun_prop),
         preimage_blockChart_coordinateBox]
       simp [blockChart, Function.comp_def]
-    _ ≤ M * ∫⁻ q : (η → A) × (ι → A) in coordinateBox η R ×ˢ coordinateBox ι R, G q.2
+    _ ≤ M
+        * ∫⁻ q : (η → A) × (ι → A) in coordinateBox η R ×ˢ coordinateBox ι R, G q.2
           ∂volume.prod volume :=
-      setLIntegral_comp_fst_le (F := fun q : (η → A) × (ι → A) ↦ G q.2)
+      setLIntegral_comp_fst_le
+        (F := fun q : (η → A) × (ι → A) ↦ G q.2)
         ((measurableSet_coordinateBox η hR).prod (measurableSet_coordinateBox ι hR))
         (measurableSet_coordinateBox B hR) h_mass (by fun_prop)
-    _ = volume R ^ (card κ - card ι - card B) * M *
-          ∫⁻ w : ι → A in coordinateBox ι R, G w := by
+    _ = volume R ^ (card κ - card ι - card B) * M * ∫⁻ w : ι → A in coordinateBox ι R, G w := by
       rw [← prod_restrict, lintegral_prod _ (by fun_prop)]
       simp only [lintegral_const, restrict_apply_univ, volume_coordinateBox, h_card]
       ring
 
-/-- Let ρ be solved in the block `blk`, meaning it is the volume in the other coordinates times an
+/--
+Let ρ be solved in the block `blk`, meaning it is the volume in the other coordinates times an
 s-finite kernel of block measures, each of mass at most M on the box of R (vectors with all
 coordinates in R). Let ρ' be solved likewise in `blk'` with M' and a measurable R', and let the
 inner coordinates and both blocks be pairwise disjoint. If the rows of J at the inner indices and at
 `blk'` are those of the identity, then for a unit ξ the kernel ψ(ξ v* J y), with ψ the character of
 the place, multiplies square norms from the box of R with ρ to the box of R' with ρ' by at most
 (c / |ξ|) per inner coordinate (c = `kernelBound`, |·| = `modulus`), times M, M' and the volume of R
-(resp. R') raised to the number of coordinates outside the inner ones and `blk` (resp. `blk'`). -/
-theorem IsSolvedIn.fourierSqNormLe [DecidableEq ι] [DecidableEq κ] (h' : IsSolvedIn blk' ρ' R' M')
-    (h : IsSolvedIn blk ρ R M) (hR' : MeasurableSet R')
-    (h_inj : Function.Injective (inner ⊕ᵥ (blk' ⊕ᵥ blk))) {J : Matrix κ κ A}
-    (h_orth : ∀ (i : ι ⊕ B') (k : κ),
-      J ((inner ⊕ᵥ blk') i) k = (1 : Matrix κ κ A) ((inner ⊕ᵥ blk') i) k) (ξ : Aˣ) :
-    FourierSqNormLe J ξ ρ' ρ (coordinateBox κ R') (coordinateBox κ R)
-      (volume R' ^ (card κ - card ι - card B') * M' * (volume R ^ (card κ - card ι - card B) * M) *
-        (P.kernelBound / P.modulus ξ) ^ card ι) := by
+(resp. R') raised to the number of coordinates outside the inner ones and `blk` (resp. `blk'`).
+-/
+theorem IsSolvedIn.fourierSqNormLe
+    [DecidableEq ι] [DecidableEq κ]
+    (h' : IsSolvedIn blk' ρ' R' M') (h : IsSolvedIn blk ρ R M) (hR' : MeasurableSet R')
+    (h_inj : Function.Injective (inner ⊕ᵥ (blk' ⊕ᵥ blk)))
+    {J : Matrix κ κ A}
+    (h_orth
+      : ∀ (i : ι ⊕ B') (k : κ), J ((inner ⊕ᵥ blk') i) k = (1 : Matrix κ κ A) ((inner ⊕ᵥ blk') i) k)
+    (ξ : Aˣ)
+    : FourierSqNormLe J ξ ρ' ρ (coordinateBox κ R') (coordinateBox κ R)
+      (volume R' ^ (card κ - card ι - card B') * M' * (volume R ^ (card κ - card ι - card B) * M)
+        * (P.kernelBound / P.modulus ξ) ^ card ι) := by
   -- As the blocks are disjoint and the rows of J at the block of `v` are those of the identity, the
   -- fibre variables of `v` and of `y` are not paired. So the kernel is a Fourier kernel in the
   -- inner coordinates times phases, and Cauchy–Schwarz handles the rest.
@@ -466,29 +485,32 @@ theorem IsSolvedIn.fourierSqNormLe [DecidableEq ι] [DecidableEq κ] (h' : IsSol
   -- Fourier transform in the inner ones of the integral of `f y'` over the block of `y`.
   let f (y' : η' → A) (p : ((η → A) × (ι → A)) × (B → A)) : ℂ :=
     P.ψ (ξ * a y' p) * φ (blockChart e p)
-  let H (q' : (η' → A) × (ι → A)) : ℝ≥0∞ := ∫⁻ y : η → A,
-    ‖∫ w : ι → A, P.ψ (ξ * star q'.2 ⬝ᵥ w) * ∫ z : B → A, f q'.1 ((y, w), z) ∂ζ (y, w)‖ₑ ^ 2
+  let H (q' : (η' → A) × (ι → A)) : ℝ≥0∞ :=
+    ∫⁻ y : η → A,
+      ‖∫ w : ι → A, P.ψ (ξ * star q'.2 ⬝ᵥ w) * ∫ z : B → A, f q'.1 ((y, w), z) ∂ζ (y, w)‖ₑ ^ 2
   let c : ℝ≥0∞ := (P.kernelBound / P.modulus ξ) ^ card ι
   let T (v : κ → A) : ℝ≥0∞ := ‖∫ y : κ → A, P.ψ (ξ * star v ⬝ᵥ J *ᵥ y) * φ y ∂ρ‖ₑ ^ 2
   have h_chart_meas : Measurable (blockChart e) := h_chart.measurable
-  have h_box (p : ((η → A) × (ι → A)) × (B → A)) (hp : φ (blockChart e p) ≠ 0) :
-      p ∈ (coordinateBox η R ×ˢ coordinateBox ι R) ×ˢ coordinateBox B R :=
+  have h_box (p : ((η → A) × (ι → A)) × (B → A)) (hp : φ (blockChart e p) ≠ 0)
+      : p ∈ (coordinateBox η R ×ˢ coordinateBox ι R) ×ˢ coordinateBox B R :=
     (preimage_blockChart_coordinateBox e R).subset (hφ_supp _ hp)
   have hH_meas : Measurable H :=
     measurable_lintegral_fourier_integral_kernel (ξ : A) (f := f) (by fun_prop)
-  have h_schwarz (p' : ((η' → A) × (ι → A)) × (B' → A)) :
-      T (blockChart e' p') ≤ volume (coordinateBox η R) * H p'.1 :=
-    enorm_integral_fourier_sq_le h_chart hφ_meas hφ_int (fun p hp ↦ (mem_prod.1 (h_box p hp).1).1)
-      ξ (blockChart e' p') _ (b := fun y : η → A ↦ star p'.2 ⬝ᵥ y ∘ out)
+  have h_schwarz (p' : ((η' → A) × (ι → A)) × (B' → A))
+      : T (blockChart e' p') ≤ volume (coordinateBox η R) * H p'.1 :=
+    enorm_integral_fourier_sq_le h_chart hφ_meas hφ_int
+      (fun p hp ↦ (mem_prod.1 (h_box p hp).1).1)
+      ξ (blockChart e' p') _
+      (b := fun y : η → A ↦ star p'.2 ⬝ᵥ y ∘ out)
       (star_blockChart_dotProduct_mulVec e e' h_inner' h_out h_orth p')
   -- Plancherel's inequality in the inner coordinates, Cauchy–Schwarz in the block of `y`.
-  have h_plancherel (y' : η' → A) :
-      ∫⁻ w' : ι → A, H (y', w') ≤ c * (M * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ) := by
+  have h_plancherel (y' : η' → A)
+      : ∫⁻ w' : ι → A, H (y', w') ≤ c * (M * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ) := by
     have hf_int : Integrable (f y') ((volume.prod volume) ⊗ₘ ζ) :=
       (h_chart.integrable_comp_of_integrable hφ_int).bdd_mul (c := 1)
         (Measurable.aestronglyMeasurable (by fun_prop)) (by simp [norm_psi])
-    have h_supp (p : ((η → A) × (ι → A)) × (B → A)) (hp : f y' p ≠ 0) :
-        p.2 ∈ coordinateBox B R := by
+    have h_supp (p : ((η → A) × (ι → A)) × (B → A)) (hp : f y' p ≠ 0)
+        : p.2 ∈ coordinateBox B R := by
       obtain ⟨-, h_mem⟩ := h_box p (right_ne_zero_of_mul hp)
       exact h_mem
     grw [lintegral_lintegral_fourier_integral_kernel_le ξ (by fun_prop) hf_int h_supp h_mass,
@@ -498,19 +520,20 @@ theorem IsSolvedIn.fourierSqNormLe [DecidableEq ι] [DecidableEq κ] (h' : IsSol
     rw [← h_chart.map_eq]
     infer_instance
   have h_transform : Measurable T := measurable_enorm_integral_fourier_sq hφ_meas J ξ
-  calc ∫⁻ v : κ → A in coordinateBox κ R', T v ∂ρ'
+  calc
+    ∫⁻ v : κ → A in coordinateBox κ R', T v ∂ρ'
     _ = ∫⁻ p' : ((η' → A) × (ι → A)) × (B' → A) in
           (coordinateBox η' R' ×ˢ coordinateBox ι R') ×ˢ coordinateBox B' R',
           T (blockChart e' p') ∂(volume.prod volume) ⊗ₘ ζ' := by
       rw [← h_chart'.setLIntegral_comp_preimage (measurableSet_coordinateBox κ hR') h_transform,
         preimage_blockChart_coordinateBox]
-    _ ≤ volume (coordinateBox η R) * (M' * (c * (M * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ) *
-          volume (coordinateBox η' R'))) :=
+    _ ≤ volume (coordinateBox η R)
+        * (M' * (c * (M * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ) * volume (coordinateBox η' R'))) :=
       setLIntegral_le_of_le_comp_fst (measurableSet_coordinateBox η' hR')
         (measurableSet_coordinateBox ι hR') (measurableSet_coordinateBox B' hR') h_mass' hH_meas
         h_schwarz h_plancherel
-    _ = volume R' ^ (card κ - card ι - card B') * M' * (volume R ^ (card κ - card ι - card B) * M) *
-          c * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ := by
+    _ = volume R' ^ (card κ - card ι - card B') * M' * (volume R ^ (card κ - card ι - card B) * M)
+        * c * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ := by
       rw [volume_coordinateBox, volume_coordinateBox, h_card, h_card']
       ring
 

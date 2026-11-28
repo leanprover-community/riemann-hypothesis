@@ -65,8 +65,9 @@ attribute [local instance low] Fintype.ofFinite
 open Multiset hiding card
 open scoped NumberField
 
-variable {ℓ : ℕ} [hp : ThePrime ℓ] {P : Parameters} {D : Data P}
-  {r n : Type} [Fintype r] [DecidableEq r] [Fintype n]
+variable
+  {ℓ : ℕ} [hp : ThePrime ℓ]
+  {P : Parameters} {D : Data P} {r n : Type} [Fintype r] [DecidableEq r] [Fintype n]
 
 /-- Let `x` be a root of unity in `ℚ̄_ℓ`. If `(x ^ a) ^ ℓ ^ u ≠ (x ^ b) ^ ℓ ^ u` for all `u`, then
 `x ^ a - x ^ b` has norm `1`. -/
@@ -150,21 +151,26 @@ lemma not_q₂_dvd_mul_pow_mul {j t : ℕ} (hj : j ∈ Set.Icc 1 D.m)
   exact Nat.not_dvd_of_pos_of_lt (mul_pos hj.1 ht.1) h_lt
     ((Nat.coprime_pow_primes D.towerExp b hp_prime out hpℓ).dvd_mul_left.1 h_pow_dvd)
 
-variable [PadicIso ℓ]
+variable
+  [PadicIso ℓ]
   {O : DescentPair D.E r n} {ϑ : D.Twist}
   {c : (i : O.ChosenIndex) → (ResField (O.chosenPlace i))[X]}
 
 variable (O c) in
-/-- A multiset `μ` of possible eigenvalues of `s` at the place `A` of `Ω = ℚ̄`, common to all
+/--
+A multiset `μ` of possible eigenvalues of `s` at the place `A` of `Ω = ℚ̄`, common to all
 representations `R` of a type of rank `card m` whose type polynomials are the scaled type
 polynomials `scaledTypePoly O c i` times `(X - 1) ^ t`; the duality twist `k`, the jumps `J` and the
 level `S` of `R` are arbitrary. It consists of `card r + t` roots of unity whose orders are bounded
 through `p = D.levelPrime l`. On every such representation the polynomial with roots `μ` kills `s`
 at `A`, and kills `conjGal s⁻¹` at the complex conjugate place `conjPlace A`. Here `conjGal` is
 conjugation by complex conjugation, and off `ℓ` "`Q` kills `s`" (`PolyKillsAt`) means
-`Q (R s) = 0`. -/
-structure IsInertiaSpectrum (m : Type) [Fintype m] [DecidableEq m] (l : Fin 2) (A : ClosurePlace)
-    (t : ℕ) (s : Gal(Ω/D.E)) (μ : Multiset (PadicAlgCl ℓ)) : Prop where
+`Q (R s) = 0`.
+-/
+structure IsInertiaSpectrum
+    (m : Type) [Fintype m] [DecidableEq m]
+    (l : Fin 2) (A : ClosurePlace) (t : ℕ) (s : Gal(Ω/D.E)) (μ : Multiset (PadicAlgCl ℓ))
+    : Prop where
   /-- `μ` has `card r + t` members. -/
   card_eq : Multiset.card μ = card r + t
   /-- Each member of `μ` has order dividing `p ^ (card r)! - 1`, `p = D.levelPrime l`. -/
@@ -172,16 +178,20 @@ structure IsInertiaSpectrum (m : Type) [Fintype m] [DecidableEq m] (l : Fin 2) (
   /-- Each member of `μ` has order dividing `p ^ d - 1` for some `1 ≤ d ≤ D.r`. -/
   exists_pow_eq_one : ∀ y ∈ μ, ∃ d ∈ Set.Icc 1 D.r, y ^ (D.levelPrime l ^ d - 1) = 1
   /-- On every such representation, the polynomial with roots `μ` kills `s` at `A`. -/
-  polyKillsAt {R : GalRep ℓ D.E m} {k : ℕ} {J : (D.E →+* ℂ) → Multiset ℤ} {S : Set (FinPlace D.E)}
-    (hR : IsRepOfType (m := m) O k J
-      (fun i : O.ChosenIndex ↦ scaledTypePoly O c i * (X - 1) ^ t) S R) :
-    PolyKillsAt R A s (μ.map fun y : PadicAlgCl ℓ ↦ X - C y).prod
-  /-- On every such representation, the polynomial with roots `μ` kills `conjGal s⁻¹` at the
-  conjugate place. -/
-  polyKillsAt_conjPlace {R : GalRep ℓ D.E m} {k : ℕ} {J : (D.E →+* ℂ) → Multiset ℤ}
-    {S : Set (FinPlace D.E)} (hR : IsRepOfType (m := m) O k J
-      (fun i : O.ChosenIndex ↦ scaledTypePoly O c i * (X - 1) ^ t) S R) :
-    PolyKillsAt R (conjPlace A) (conjGal s⁻¹) (μ.map fun y : PadicAlgCl ℓ ↦ X - C y).prod
+  polyKillsAt
+    {R : GalRep ℓ D.E m} {k : ℕ} {J : (D.E →+* ℂ) → Multiset ℤ} {S : Set (FinPlace D.E)}
+    (hR
+      : IsRepOfType (m := m) O k J (fun i : O.ChosenIndex ↦ scaledTypePoly O c i * (X - 1) ^ t) S R)
+    : PolyKillsAt R A s (μ.map fun y : PadicAlgCl ℓ ↦ X - C y).prod
+  /--
+  On every such representation, the polynomial with roots `μ` kills `conjGal s⁻¹` at the
+  conjugate place.
+  -/
+  polyKillsAt_conjPlace
+    {R : GalRep ℓ D.E m} {k : ℕ} {J : (D.E →+* ℂ) → Multiset ℤ} {S : Set (FinPlace D.E)}
+    (hR
+      : IsRepOfType (m := m) O k J (fun i : O.ChosenIndex ↦ scaledTypePoly O c i * (X - 1) ^ t) S R)
+    : PolyKillsAt R (conjPlace A) (conjGal s⁻¹) (μ.map fun y : PadicAlgCl ℓ ↦ X - C y).prod
 
 /-- If `μ` is an inertia spectrum (`IsInertiaSpectrum`: a multiset of possible eigenvalues) of
 `conjGal s⁻¹` at the conjugate place `conjPlace A`, then `μ` is also an inertia spectrum of `s` at
@@ -362,24 +372,33 @@ lemma IsRepOfType.exists_map_pow_eq_one_and_ellVal_det_le (hc : IsLiftSetting O 
       simpa only [map_inv, coe_units_inv] using (hμ.polyKillsAt_conjPlace hR_zero).1 h_val_conj
 
 variable (ℓ O c) in
-/-- The roots of the scaled type polynomial `scaledTypePoly O c i`, taken in an algebraic closure of
+/--
+The roots of the scaled type polynomial `scaledTypePoly O c i`, taken in an algebraic closure of
 the residue field of `O.chosenPlace i`, have the common `e`-th power `y`, of large order relative to
 `j`. With `q` the order of the residue field, each root is fixed by the `q ^ card r`-th power, and
-its Frobenius conjugates stay distinct after raising to powers of `ℓ`. -/
-structure IsCommonRootPower (i : O.ChosenIndex) (j e : ℕ)
-    (y : AlgebraicClosure (ResField (O.chosenPlace i))) : Prop where
+its Frobenius conjugates stay distinct after raising to powers of `ℓ`.
+-/
+structure IsCommonRootPower
+    (i : O.ChosenIndex) (j e : ℕ) (y : AlgebraicClosure (ResField (O.chosenPlace i)))
+    : Prop where
   /-- Each root `ξ` has `ξ ^ e = y`. -/
-  pow_eq : ∀ ξ ∈ (scaledTypePoly O c i).aroots (AlgebraicClosure (ResField (O.chosenPlace i))),
-    ξ ^ e = y
+  pow_eq
+    : ∀ ξ ∈ (scaledTypePoly O c i).aroots (AlgebraicClosure (ResField (O.chosenPlace i))), ξ ^ e = y
   /-- Each root is fixed by the `q ^ card r`-th power. -/
-  pow_q_pow_card_eq : ∀ ξ ∈ (scaledTypePoly O c i).aroots
-    (AlgebraicClosure (ResField (O.chosenPlace i))), ξ ^ (O.chosenPlace i).q ^ card r = ξ
-  /-- For each root `ξ` and each `u`, the powers `(ξ ^ q ^ a) ^ ℓ ^ u`, `a < card r`, are
-  distinct. -/
-  injOn_pow : ∀ ξ ∈ (scaledTypePoly O c i).aroots (AlgebraicClosure (ResField (O.chosenPlace i))),
-    ∀ u : ℕ, (Set.Iio (card r)).InjOn fun a : ℕ ↦ (ξ ^ (O.chosenPlace i).q ^ a) ^ ℓ ^ u
-  /-- If `y ^ x = 1` then `P.q₂ D.towerExp`, the order of `D.chiMLocal` at the chosen places,
-  divides `j * x`. -/
+  pow_q_pow_card_eq
+    : ∀ ξ ∈ (scaledTypePoly O c i).aroots (AlgebraicClosure (ResField (O.chosenPlace i))),
+      ξ ^ (O.chosenPlace i).q ^ card r = ξ
+  /--
+  For each root `ξ` and each `u`, the powers `(ξ ^ q ^ a) ^ ℓ ^ u`, `a < card r`, are
+  distinct.
+  -/
+  injOn_pow
+    : ∀ ξ ∈ (scaledTypePoly O c i).aroots (AlgebraicClosure (ResField (O.chosenPlace i))), ∀ u : ℕ,
+      (Set.Iio (card r)).InjOn fun a : ℕ ↦ (ξ ^ (O.chosenPlace i).q ^ a) ^ ℓ ^ u
+  /--
+  If `y ^ x = 1` then `P.q₂ D.towerExp`, the order of `D.chiMLocal` at the chosen places,
+  divides `j * x`.
+  -/
   dvd_of_pow_eq_one (x : ℕ) (hx : y ^ x = 1) : P.q₂ D.towerExp ∣ j * x
 
 omit [PadicIso ℓ] in
@@ -701,17 +720,21 @@ lemma isSplit_twistPlace (O : DescentPair D.E r n) (i : O.TwistIndex) : (O.twist
   O.apart.star_ne (.inr i) (.inr i)
 
 variable (O) in
-/-- The function `f` on the finite adelic unitary group `Gf D.E n`, with values in the coordinates
+/--
+The function `f` on the finite adelic unitary group `Gf D.E n`, with values in the coordinates
 `WeylIndex n O.columnCount → ℂ` of the Weyl module of weight `O.columnCount`, has the parahoric type
 (`New.HasParahoricType`) of the pair `O` at `w = O.twistPlace i`, a place of the twist of `O`.
 Block `0` is empty; block `1` is the complement of the range of the embedding `O.incl : r ↪ n`, with
 the trivial character; block `2` is that range, with the character `(O.tamePart w)⁻¹`. So an
 integral matrix at `w` whose reduction is block triangular multiplies `f` by `(O.tamePart w)⁻¹` of
-the determinant of block `2` of the reduction. -/
-def HasTwistParahoricType [DecidableEq n] (f : Gf D.E n → WeylIndex n O.columnCount → ℂ)
-    (i : O.TwistIndex) : Prop :=
+the determinant of block `2` of the reduction.
+-/
+def HasTwistParahoricType
+    [DecidableEq n] (f : Gf D.E n → WeylIndex n O.columnCount → ℂ) (i : O.TwistIndex)
+    : Prop :=
   HasParahoricType f (isSplit_twistPlace O i) (ρ := Empty) Function.Embedding.ofIsEmpty
-    (fun a : n ↦ if a ∈ Set.range O.incl then 2 else 1) 1 ![1, (O.tamePart (O.twistPlace i))⁻¹]
+    (fun a : n ↦ if a ∈ Set.range O.incl then 2 else 1)
+    1 ![1, (O.tamePart (O.twistPlace i))⁻¹]
     fun _ : GL Empty (ResField (O.twistPlace i)) ↦ f
 
 omit [PadicIso ℓ] in

@@ -37,11 +37,14 @@ noncomputable section
 namespace New.Exchange
 
 open Matrix NumberField MeasureTheory Measure Fock Fintype Finset Real ENNReal Space
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} [Fintype n] [DecidableEq n]
-  [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r']
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n n' r r' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r]
+  [DecidableEq r] [Fintype r'] [DecidableEq r']
   {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
   {V : Space E r t} {V' : Space E r' t'} (A : W'.Splitting W Unit) (X : V'.Splitting V Unit)
-  [IsBaseAdapted A] [IsBaseAdapted X] (μ : InfinitePlace E → ℤ)
+  [IsBaseAdapted A] [IsBaseAdapted X]
+  (μ : InfinitePlace E → ℤ)
 
 /-- The idele with archimedean component `a` and finite component `1`. -/
 abbrev realIdele (a : (InfinitePlace E → ℂ)ˣ) : (𝔸 E)ˣ :=
@@ -59,21 +62,26 @@ lemma continuous_ideleAbs_realIdele :
     Continuous fun a : (InfinitePlace E → ℂ)ˣ ↦ ideleAbs (realIdele a) :=
   continuous_ideleAbs.comp ((Continuous.prodMk_left (Y := 𝔸f E) 1).units_map _)
 
-/-- The integrand of the cone integral at `p = (k, a)`, with `k` in the maximal compact subgroup of
+/--
+The integrand of the cone integral at `p = (k, a)`, with `k` in the maximal compact subgroup of
 `U(V')`: the line term `lineTermReal A X β a` of `k v`, times the character
 `∏ w, (a w / |a w|) ^ (2 μ w)` and the power `z` of the idele norm of `a`. Here `k` acts through its
 archimedean component, as the element `(1, k)` of `U(W') × U(V')` in the Weil representation with
 weight `targetWeight n' μ` on `U(V')` and `0` on `U(W')`. The two values of `β` give the terms on
-the two sides of Poisson's formula on the line (`tsum_lineTerm`). -/
-def coneIntegrand (β : Bool) (z : ℝ) (v : PairFock E s' t')
-    (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) : fockSpace (realSigns E (homSigns s t)) :=
-  ((∏ w : InfinitePlace E, (p.2.val w / ‖p.2.val w‖) ^ (2 * μ w)) *
-      (ideleAbs (realIdele p.2) ^ z : ℝ)) •
-    lineTermReal A X β p.2 (realPairWeil (targetWeight n' μ) 0 (1, (p.1 : G E t').1) v)
+the two sides of Poisson's formula on the line (`tsum_lineTerm`).
+-/
+def coneIntegrand
+    (β : Bool) (z : ℝ) (v : PairFock E s' t') (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ)
+    : fockSpace (realSigns E (homSigns s t)) :=
+  ((∏ w : InfinitePlace E, (p.2.val w / ‖p.2.val w‖) ^ (2 * μ w))
+      * (ideleAbs (realIdele p.2) ^ z : ℝ))
+    • lineTermReal A X β p.2 (realPairWeil (targetWeight n' μ) 0 (1, (p.1 : G E t').1) v)
 
-/-- The cone integral: the real Tate integral of `v`, with exponent `z`, over the cone of the
+/--
+The cone integral: the real Tate integral of `v`, with exponent `z`, over the cone of the
 isotropic vectors `k⁻¹ x a`, where `x` spans the isotropic line `X.k` of `V'`, `k` runs over the
-maximal compact subgroup of `U(V')` and `a` over the archimedean ideles `(E ⊗ ℝ)ˣ`. -/
+maximal compact subgroup of `U(V')` and `a` over the archimedean ideles `(E ⊗ ℝ)ˣ`.
+-/
 def cone (z : ℝ) (v : PairFock E s' t') : PairFock E s t :=
   ∫ p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ, coneIntegrand A X μ true z v p ∂haar.prod haar
 

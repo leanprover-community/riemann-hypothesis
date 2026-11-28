@@ -54,8 +54,8 @@ open CategoryTheory Function AddMonoidAlgebra Period MonoidalCategory PadicTest 
 open CommAlgCat hiding of
 
 /-- The objectwise tensor product of two functors with flat values has flat values. -/
-instance {C : Type 1} [Category C] {F A : AbFunctor C} [HasFlatValues F] [HasFlatValues A] :
-    HasFlatValues (abTensor F A) := by
+instance {C : Type 1} [Category C] {F A : AbFunctor C} [HasFlatValues F] [HasFlatValues A]
+    : HasFlatValues (abTensor F A) := by
   refine ⟨fun c ↦ ?_⟩
   -- The field `HasFlatValues.flat` is not an instance, so the two facts are stated here.
   have h_flat_F : Module.Flat ℤ (F.obj c) := HasFlatValues.flat c
@@ -64,76 +64,98 @@ instance {C : Type 1} [Category C] {F A : AbFunctor C} [HasFlatValues F] [HasFla
 
 namespace PerfectLine
 
-variable {p : ℕ} [ThePrime p]
-  (χ : Multiplicative ℚ →* OFlat) {S : Type} [AddCommMonoid S]
-  (f : S →+ ℚ) (g : ℚ≥0 →+ ℚ) {b b' : CommAlg OFlat} (a : ULift.{1} Bool)
+variable
+  {p : ℕ} [ThePrime p]
+  (χ : Multiplicative ℚ →* OFlat)
+  {S : Type} [AddCommMonoid S]
+  (f : S →+ ℚ) (g : ℚ≥0 →+ ℚ)
+  {b b' : CommAlg OFlat}
+  (a : ULift.{1} Bool)
   (X : PadicTest ⥤ Type 1 := onePointFunctor PadicTest)
 
 /-! ### The discs, the torus and the gluing map -/
 
-/-- For an additive commutative monoid S, the monoid algebra O^♭[S], as a commutative
-O^♭-algebra. -/
+/--
+For an additive commutative monoid S, the monoid algebra O^♭[S], as a commutative
+O^♭-algebra.
+-/
 abbrev monoidAlg (S : Type) [AddCommMonoid S] : CommAlgCat OFlat := CommAlgCat.of OFlat OFlat[S]
 
-/-- For a character χ of ℚ with values in O^♭ and an additive map f: S → ℚ, the O^♭-algebra
-endomorphism T^s ↦ χ(f(s)) T^s of O^♭[S]. -/
+/--
+For a character χ of ℚ with values in O^♭ and an additive map f: S → ℚ, the O^♭-algebra
+endomorphism T^s ↦ χ(f(s)) T^s of O^♭[S].
+-/
 def charTwist : monoidAlg S ⟶ monoidAlg S :=
   ofHom (lift OFlat OFlat[S] S
     ((algebraMap OFlat OFlat[S]).toMonoidHom.comp (χ.comp f.toMultiplicative) * of OFlat S))
 
-/-- For an additive map g: ℚ≥0 → ℚ, the map of monoid algebras O^♭[ℚ≥0] → O^♭[ℚ] over O^♭
-sending T^a to T^{g(a)}. -/
+/--
+For an additive map g: ℚ≥0 → ℚ, the map of monoid algebras O^♭[ℚ≥0] → O^♭[ℚ] over O^♭
+sending T^a to T^{g(a)}.
+-/
 abbrev discToTorus : monoidAlg ℚ≥0 ⟶ monoidAlg ℚ := ofHom (mapDomainAlgHom OFlat OFlat g)
 
-/-- Evaluation at T = 0: the O^♭-algebra map from O^♭[ℚ_{≥0}] to b sending T^0 to 1 and T^a to 0
-for a > 0. -/
+/--
+Evaluation at T = 0: the O^♭-algebra map from O^♭[ℚ_{≥0}] to b sending T^0 to 1 and T^a to 0
+for a > 0.
+-/
 abbrev evalZero (b : CommAlgCat OFlat) : monoidAlg ℚ≥0 ⟶ b :=
   ofHom (lift OFlat b ℚ≥0 ⟨⟨fun s ↦ if s = 1 then 1 else 0, ite_eq_left rfl⟩, by aesop⟩)
 
-variable (B : ULift.{1} Bool → CommAlg OFlat)
-  (ψ : CommAlg OFlat ⥤ CommAlg OFlat := 𝟭 (CommAlg OFlat))
+variable
+  (B : ULift.{1} Bool → CommAlg OFlat) (ψ : CommAlg OFlat ⥤ CommAlg OFlat := 𝟭 (CommAlg OFlat))
 
-/-- The family of two `O^♭`-algebras: the ring `O^♭[ℚ]` of the perfect torus at the index `true`,
-and the ring `O^♭` of a point at the index `false`. -/
+/--
+The family of two `O^♭`-algebras: the ring `O^♭[ℚ]` of the perfect torus at the index `true`,
+and the ring `O^♭` of a point at the index `false`.
+-/
 def pointOrTorus : ULift.{1} Bool → CommAlg OFlat
   | ⟨true⟩ => monoidAlg ℚ
   | ⟨false⟩ => CommAlgCat.of OFlat OFlat
 
 lemma pointOrTorus_true : pointOrTorus ⟨true⟩ = monoidAlg ℚ := rfl
 
-
-/-- For O^♭-algebras B_i indexed by Bool and an endofunctor ψ of O^♭-algebras (default the
-identity), the functor S ↦ ⊔_i Hom(ψ(B_i), S^♭) on p-adic tests. -/
+/--
+For O^♭-algebras B_i indexed by Bool and an endofunctor ψ of O^♭-algebras (default the
+identity), the functor S ↦ ⊔_i Hom(ψ(B_i), S^♭) on p-adic tests.
+-/
 abbrev tiltPointsSum : PadicTest ⥤ Type 1 := sigma fun a ↦ tilt ⋙ reprBy (ψ (B a))
 
-/-- Two affine lines with all roots of the coordinate: for an endofunctor ψ of O^♭-algebras (default
+/--
+Two affine lines with all roots of the coordinate: for an endofunctor ψ of O^♭-algebras (default
 the identity), the disjoint union of two copies of the functor of points of ψ(O^♭[ℚ_{≥0}]) in the
-tilts of p-adic tests. -/
+tilts of p-adic tests.
+-/
 abbrev twoDiscs : PadicTest ⥤ Type 1 := tiltPointsSum (fun _ ↦ monoidAlg ℚ≥0) ψ
 
-/-- The map ℤ[torus ⊔ point] → ℤ[two discs] sending a point t of the torus to t⁻¹ in the disc
-`false` minus t in the disc `true`, and the point to the origin of the disc `false`. -/
+/--
+The map ℤ[torus ⊔ point] → ℤ[two discs] sending a point t of the torus to t⁻¹ in the disc
+`false` minus t in the disc `true`, and the point to the origin of the disc `false`.
+-/
 abbrev gluing : freeAb (tiltPointsSum pointOrTorus ψ) ⟶ freeAb (twoDiscs ψ) :=
   freeAb.desc
     (fun
       | _, ⟨⟨true⟩, t⟩ =>
-        .of ⟨⟨false⟩, ⟨ψ.map (discToTorus (-coeHom)) ≫ t.down⟩⟩ -
-          .of ⟨⟨true⟩, ⟨ψ.map (discToTorus coeHom) ≫ t.down⟩⟩
+        .of ⟨⟨false⟩, ⟨ψ.map (discToTorus (-coeHom)) ≫ t.down⟩⟩
+          - .of ⟨⟨true⟩, ⟨ψ.map (discToTorus coeHom) ≫ t.down⟩⟩
       | _, ⟨⟨false⟩, t⟩ =>
         FreeAddCommGroup.of ⟨⟨false⟩, ⟨ψ.map (evalZero (pointOrTorus { down := false })) ≫ t.down⟩⟩)
     (by bound)
 
-private def ofTorus {ψ : CommAlg OFlat ⥤ CommAlg OFlat} {A : PadicTest}
-    (t : ψ (monoidAlg ℚ) ⟶ tilt A) : (freeAb (tiltPointsSum pointOrTorus ψ)).obj A :=
+private def ofTorus
+    {ψ : CommAlg OFlat ⥤ CommAlg OFlat} {A : PadicTest} (t : ψ (monoidAlg ℚ) ⟶ tilt A)
+    : (freeAb (tiltPointsSum pointOrTorus ψ)).obj A :=
   FreeAddCommGroup.of ⟨⟨true⟩, ⟨t⟩⟩
 
-private def ofPoint {ψ : CommAlg OFlat ⥤ CommAlg OFlat} {A : PadicTest}
-    (t : ψ (CommAlgCat.of OFlat OFlat) ⟶ tilt A) :
-    (freeAb (tiltPointsSum pointOrTorus ψ)).obj A :=
+private def ofPoint
+    {ψ : CommAlg OFlat ⥤ CommAlg OFlat} {A : PadicTest} (t : ψ (CommAlgCat.of OFlat OFlat) ⟶ tilt A)
+    : (freeAb (tiltPointsSum pointOrTorus ψ)).obj A :=
   FreeAddCommGroup.of ⟨⟨false⟩, ⟨t⟩⟩
 
-private def ofDisc {ψ : CommAlg OFlat ⥤ CommAlg OFlat} {A : PadicTest}
-    (b : ULift.{1} Bool) (t : ψ (monoidAlg ℚ≥0) ⟶ tilt A) : (freeAb (twoDiscs ψ)).obj A :=
+private def ofDisc
+    {ψ : CommAlg OFlat ⥤ CommAlg OFlat} {A : PadicTest}
+    (b : ULift.{1} Bool) (t : ψ (monoidAlg ℚ≥0) ⟶ tilt A)
+    : (freeAb (twoDiscs ψ)).obj A :=
   FreeAddCommGroup.of ⟨b, ⟨t⟩⟩
 
 private lemma gluing_ofTorus (ψ : CommAlg OFlat ⥤ CommAlg OFlat) (A : PadicTest)
@@ -152,22 +174,33 @@ private lemma gluing_ofPoint (ψ : CommAlg OFlat ⥤ CommAlg OFlat) (A : PadicTe
 @[simp]
 lemma evalZero_comp (g : b ⟶ b') : evalZero b ≫ g = evalZero b' := by aesop
 
-variable {B : ULift.{1} Bool → CommAlg OFlat} (Δ : ∀ b : ULift.{1, 0} Bool, B b ⟶ B b)
+variable
+  {B : ULift.{1} Bool → CommAlg OFlat} (Δ : ∀ b : ULift.{1, 0} Bool, B b ⟶ B b)
   {N : ModuleCat OFlat}
 
 /-! ### Origins, the operator 1 − Δ, and injectivity of the gluing map -/
 
-/-- For a set-valued functor X on p-adic tests (by default the point), the morphism
-ℤ[X] → ℤ[two discs] sending every point to the origin T = 0 of the disc with index a. -/
+/--
+For a set-valued functor X on p-adic tests (by default the point), the morphism
+ℤ[X] → ℤ[two discs] sending every point to the origin T = 0 of the disc with index a.
+-/
 abbrev origin : freeAb X ⟶ freeAb twoDiscs :=
-  freeAb.desc (fun _ _ ↦ FreeAddCommGroup.of ⟨a, ⟨evalZero _⟩⟩) fun _ _ _ _ ↦ by
-    congr
-    simp
+  freeAb.desc
+    (fun _ _ ↦ FreeAddCommGroup.of ⟨a, ⟨evalZero _⟩⟩)
+    fun _ _ _ _ ↦ by
+      congr
+      simp
 
-/-- The map ℤ[Hom(B_true, S^♭) ⊔ Hom(B_false, S^♭)] → ℤ[Hom(B_true, S^♭)] that keeps the points
-of the first part and sends those of the second to 0. -/
+/--
+The map ℤ[Hom(B_true, S^♭) ⊔ Hom(B_false, S^♭)] → ℤ[Hom(B_true, S^♭)] that keeps the points
+of the first part and sends those of the second to 0.
+-/
 abbrev projFirst : freeAb (tiltPointsSum B) ⟶ freeAb (tilt ⋙ reprBy (B ⟨true⟩)) :=
-  freeAb.desc (fun | _, ⟨⟨true⟩, t⟩ => FreeAddCommGroup.of t | _, ⟨⟨false⟩, _⟩ => 0) (by bound)
+  freeAb.desc
+    (fun
+      | _, ⟨⟨true⟩, t⟩ => FreeAddCommGroup.of t
+      | _, ⟨⟨false⟩, _⟩ => 0)
+    (by bound)
 
 /-- The projection kills a generator of the false summand. -/
 lemma projFirst_false (c : PadicTest)
@@ -181,8 +214,10 @@ lemma projFirst_true (c : PadicTest)
     ((projFirst (B := B)).app c).hom (.of (⟨⟨true⟩, t⟩ : (tiltPointsSum B).obj c)) = .of t :=
   freeAb.desc_of ..
 
-/-- For endomorphisms Δ_b of the O^♭-algebras B_b, the endomorphism 1 − Δ of the functor S ↦
-ℤ[⊔_b Hom(B_b, S^♭)], sending [x] to [x] − [x∘Δ_b]. -/
+/--
+For endomorphisms Δ_b of the O^♭-algebras B_b, the endomorphism 1 − Δ of the functor S ↦
+ℤ[⊔_b Hom(B_b, S^♭)], sending [x] to [x] − [x∘Δ_b].
+-/
 abbrev oneSub : freeAb (tiltPointsSum B) ⟶ freeAb (tiltPointsSum B) :=
   freeAb.desc (fun _ x ↦ .of x - .of ⟨x.1, ⟨Δ x.1 ≫ x.2.down⟩⟩) (by bound)
 
@@ -199,14 +234,18 @@ lemma charTwist_comp_discToTorus :
   ext
   simp [charTwist]
 
-/-- The endomorphism `T^s ↦ χ(s) T^s` of the ring of the torus, and the identity of the ring of
-the point. -/
+/--
+The endomorphism `T^s ↦ χ(s) T^s` of the ring of the torus, and the identity of the ring of
+the point.
+-/
 def pointOrTorusTwist : ∀ i : ULift.{1} Bool, pointOrTorus i ⟶ pointOrTorus i
   | ⟨true⟩ => charTwist χ (AddMonoidHom.id ℚ)
   | ⟨false⟩ => 𝟙 (pointOrTorus ⟨false⟩)
 
-/-- The endomorphism `T^s ↦ χ(s) T^s` of the ring of the disc `true`, and `T^s ↦ χ(-s) T^s` of
-the ring of the disc `false`. -/
+/--
+The endomorphism `T^s ↦ χ(s) T^s` of the ring of the disc `true`, and `T^s ↦ χ(-s) T^s` of
+the ring of the disc `false`.
+-/
 def discTwist : ULift.{1} Bool → (monoidAlg ℚ≥0 ⟶ monoidAlg ℚ≥0)
   | ⟨true⟩ => charTwist χ coeHom
   | ⟨false⟩ => charTwist χ (-coeHom)
@@ -265,13 +304,20 @@ instance : Mono gluing := by
   refine (NatTrans.mono_iff_mono_app _).mpr fun c ↦ ?_
   let r : (freeAb twoDiscs).obj c ⟶ (freeAb (tiltPointsSum pointOrTorus)).obj c :=
     AddCommGrpCat.ofHom (FreeAddCommGroup.lift fun x ↦
-      ofPoint (ψ := 𝟭 _) structureMap -
-        cond x.1.down (extend (fun s : monoidAlg ℚ ⟶ tilt c ↦ discToTorus coeHom ≫ s)
-          (fun s ↦ ofTorus (ψ := 𝟭 _) s) 0 x.2.down) 0)
-  have hr (b : ULift.{1} Bool) (t : monoidAlg ℚ≥0 ⟶ tilt c) :
-      r (ofDisc (ψ := 𝟭 _) b t) = ofPoint (ψ := 𝟭 _) structureMap -
-        cond b.down (extend (fun s : monoidAlg ℚ ⟶ tilt c ↦ discToTorus coeHom ≫ s)
-          (fun s ↦ ofTorus (ψ := 𝟭 _) s) 0 t) 0 :=
+      ofPoint (ψ := 𝟭 _) structureMap - cond x.1.down
+        (extend
+          (fun s : monoidAlg ℚ ⟶ tilt c ↦ discToTorus coeHom ≫ s)
+          (fun s ↦ ofTorus (ψ := 𝟭 _) s)
+          0 x.2.down)
+        0)
+  have hr (b : ULift.{1} Bool) (t : monoidAlg ℚ≥0 ⟶ tilt c)
+      : r (ofDisc (ψ := 𝟭 _) b t)
+        = ofPoint (ψ := 𝟭 _) structureMap - cond b.down
+          (extend
+            (fun s : monoidAlg ℚ ⟶ tilt c ↦ discToTorus coeHom ≫ s)
+            (fun s ↦ ofTorus (ψ := 𝟭 _) s)
+            0 t)
+          0 :=
     FreeAddCommGroup.lift_apply_of _ _
   refine SplitMono.mono ⟨r, AddCommGrpCat.hom_ext (FreeAddCommGroup.lift_ext _ _ fun x ↦ ?_)⟩
   rcases x with ⟨⟨_ | _⟩, ⟨t⟩⟩
@@ -326,22 +372,27 @@ lemma hasFlatBaseChange_freeAb_tiltPointsSum (B : ULift.{1} Bool → CommAlg OFl
   | tmul m y => simp [e, mapₗ, map_push, funext_iff]
   | add x y hx hy => simp_all [funext_iff]
 
-/-- The projection of a pair `(y₀, y₁)` of elements of `O^♭[ℚ≥0]` to `y₀` (for `false`) or to
-`y₁` (for `true`). -/
-private def pairProj (b : Bool) :
-    ModuleCat.of OFlat (monoidAlg ℚ≥0 × monoidAlg ℚ≥0) ⟶ ModuleCat.of OFlat (monoidAlg ℚ≥0) :=
+/--
+The projection of a pair `(y₀, y₁)` of elements of `O^♭[ℚ≥0]` to `y₀` (for `false`) or to
+`y₁` (for `true`).
+-/
+private def pairProj (b : Bool)
+    : ModuleCat.of OFlat (monoidAlg ℚ≥0 × monoidAlg ℚ≥0) ⟶ ModuleCat.of OFlat (monoidAlg ℚ≥0) :=
   ModuleCat.ofHom (cond b (.snd ..) (.fst ..))
 
-/-- The `O^♭`-linear maps that describe the gluing map in degree `0`. A pair `(y₀, y₁)` of
+/--
+The `O^♭`-linear maps that describe the gluing map in degree `0`. A pair `(y₀, y₁)` of
 elements of `O^♭[ℚ≥0]` goes to the value `y₀(0)` in the ring `O^♭` of the point, and to
-`y₀(T⁻¹) - y₁(T)` in the ring `O^♭[ℚ]` of the torus. -/
-private def glueLinear : ∀ b : ULift.{1} Bool,
-    ModuleCat.of OFlat (monoidAlg ℚ≥0 × monoidAlg ℚ≥0) ⟶
-      (asModules (𝟭 (CommAlg OFlat))) (pointOrTorus b)
+`y₀(T⁻¹) - y₁(T)` in the ring `O^♭[ℚ]` of the torus.
+-/
+private def glueLinear
+    : ∀ b : ULift.{1} Bool,
+      ModuleCat.of OFlat (monoidAlg ℚ≥0 × monoidAlg ℚ≥0)
+        ⟶ (asModules (𝟭 (CommAlg OFlat))) (pointOrTorus b)
   | ⟨false⟩ => pairProj false ≫ (asModules (𝟭 (CommAlg OFlat))).map (evalZero _)
   | ⟨true⟩ =>
-    pairProj false ≫ (asModules (𝟭 (CommAlg OFlat))).map (discToTorus (-coeHom)) -
-      pairProj true ≫ (asModules (𝟭 (CommAlg OFlat))).map (discToTorus coeHom)
+    pairProj false ≫ (asModules (𝟭 (CommAlg OFlat))).map (discToTorus (-coeHom))
+      - pairProj true ≫ (asModules (𝟭 (CommAlg OFlat))).map (discToTorus coeHom)
 
 /-- The map `(y₀, y₁) ↦ (y₀(0), y₀(T⁻¹) - y₁(T))` from pairs of elements of `O^♭[ℚ≥0]` to pairs
 in `O^♭ × O^♭[ℚ]` is bijective. -/

@@ -45,8 +45,9 @@ noncomputable section
 
 namespace New
 
-variable {E X ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι]
-  [DecidableEq X] {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε}
+variable
+  {E X ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [DecidableEq X]
+  {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε}
 
 namespace Space
 

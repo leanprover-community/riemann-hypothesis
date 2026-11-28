@@ -46,16 +46,21 @@ open NumberField Matrix Polynomial Submodule Set Subgroup Valued
 
 namespace New.Variety
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ} {𝔑 : 𝓞 E}
-  {W : Type} [AddCommGroup W] [Module ℂ W]
+variable
+  {E : Type} [Field E] [NumberField E] [IsCMField E]
+  {a : ℕ} {𝔑 : 𝓞 E} {W : Type} [AddCommGroup W] [Module ℂ W]
 
-/-- `v` is a test vector for `π` at the split places `w₀` and `w₁`: it is nonzero, has the
+/--
+`v` is a test vector for `π` at the split places `w₀` and `w₁`: it is nonzero, has the
 cuspidal type `(J, χ)` at `w₀` and is spherical at `w₁`. The local groups act through
 `conjAtSplit`, and the level at `w` is the preimage of `levelGU (Fin a) 𝔑` under
-`conjAtSplit w`. -/
-structure IsTestVector (𝔑 : 𝓞 E) (π : Representation ℂ (GL (Fin a) (𝔸f E)) W) (v : W)
-    (w₀ w₁ : SplitFinPlace E) {J : Subgroup (GL (Fin a) (LocField w₀.val))} (χ : J →* ℂ) :
-    Prop where
+`conjAtSplit w`.
+-/
+structure IsTestVector
+    (𝔑 : 𝓞 E) (π : Representation ℂ (GL (Fin a) (𝔸f E)) W) (v : W)
+    (w₀ w₁ : SplitFinPlace E)
+    {J : Subgroup (GL (Fin a) (LocField w₀.val))} (χ : J →* ℂ)
+    : Prop where
   /-- The two places are distinct. -/
   place_ne : w₀.val ≠ w₁.val
   /-- `𝔑` does not lie in the conjugate of `w₀`. -/
@@ -182,9 +187,11 @@ lemma dominant_doubleCoset_mul {w : SplitFinPlace E} {t s : Fin a → (LocField 
   refine ⟨k * ⟨_, conj_unitriangular_mem_proIwahori ht hu⟩, ⟨_, h_rest⟩ * l', ?_⟩
   simp [mul_assoc]
 
-/-- The adelic elements `g` such that `dualComponent w g`, the inverse transpose of the component
+/--
+The adelic elements `g` such that `dualComponent w g`, the inverse transpose of the component
 of `g` at `w`, lies in a double coset `I s I`, where `I = proIwahori` and `s` is diagonal and
-strictly dominant. -/
+strictly dominant.
+-/
 def strictlyDominantAt (w : SplitFinPlace E) : Set (GL (Fin a) (𝔸f E)) :=
   {g : GL (Fin a) (𝔸f E) | ∃ s : Fin a → (LocField w.val)ˣ, StrictMono (fun i ↦ v (s i).val) ∧
     ∃ k l : proIwahori, dualComponent w g = k.val * diagGL s * l.val}
@@ -329,42 +336,44 @@ private lemma asAlgebraHom_mem_levelSpace_of_mem_levelSpace
     π.asAlgebraHom f.val x ∈ levelSpace π (levelGU (Fin a) 𝔑) :=
   f.property.2 hx
 
-/-- The test function. Let `π` be a representation of `GL_a(𝔸f E)` on `W`, and let `φ` be a test
+/--
+The test function. Let `π` be a representation of `GL_a(𝔸f E)` on `W`, and let `φ` be a test
 vector of level `𝔑` (nonzero, of cuspidal type `(J, χ)` at `w₀` and spherical at `w₁`). Suppose `φ`
 is fixed by a Hecke element `c` supported on unitary similitudes whose component at `w₁` is `1`.
 Then there is a Hecke element `b` such that no power of `b * c` kills `φ`, and every positive power
 is regular (nonzero at `x⁻¹y⁻¹x`, `y ∈ GL_a(E)`, only if `y` has separable characteristic
 polynomial). Every positive power also sends vectors of level `𝔑` to vectors on which `J`, through
-`conjAtSplit w₀`, acts by `χ`. -/
-theorem exists_test_function {w₀ w₁ : SplitFinPlace E}
-    {J : Subgroup (GL (Fin a) (LocField w₀.val))} {χ : J →* ℂ}
+`conjAtSplit w₀`, acts by `χ`.
+-/
+theorem exists_test_function
+    {w₀ w₁ : SplitFinPlace E} {J : Subgroup (GL (Fin a) (LocField w₀.val))} {χ : J →* ℂ}
     {π : Representation ℂ (GL (Fin a) (𝔸f E)) W} {φ : W}
     (hφ_lev : φ ∈ levelSpace π (levelGU (Fin a) 𝔑)) (hφ_test : IsTestVector 𝔑 π φ w₀ w₁ χ)
     {c : heckeAlgebra (Fin a) ℂ 𝔑}
     (hc : c.val ∈ spanOn ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier)
-    (hcφ : π.asAlgebraHom c φ = φ) :
-    ∃ b : heckeAlgebra (Fin a) ℂ 𝔑, ∀ m : ℕ,
-      π.asAlgebraHom ((b * c) ^ m).val φ ≠ 0 ∧
-      IsRegularHecke ((b * c) ^ (m + 1)) ∧
-      ((b * c) ^ (m + 1)).val ∈ fixedToEigen (levelGU (Fin a) 𝔑) (conjAtSplit w₀) J χ := by
+    (hcφ : π.asAlgebraHom c φ = φ)
+    : ∃ b : heckeAlgebra (Fin a) ℂ 𝔑, ∀ m : ℕ,
+      π.asAlgebraHom ((b * c) ^ m).val φ ≠ 0 ∧ IsRegularHecke ((b * c) ^ (m + 1))
+        ∧ ((b * c) ^ (m + 1)).val ∈ fixedToEigen (levelGU (Fin a) 𝔑) (conjAtSplit w₀) J χ := by
   -- Take `b = b₁ b₀`, where `b₀` averages against `χ` over `J` at `w₀` and `b₁` is the element
   -- of `exists_iwahori_hecke_element` at `w₁`.
   -- `χ` is trivial on the level, because the level fixes `φ ≠ 0`.
-  have hχ (g : GL (Fin a) (LocField w₀.val)) (hg : conjAtSplit w₀ g ∈ levelGU (Fin a) 𝔑) :
-      ∃ h : g ∈ J, χ ⟨g, h⟩ = 1 := by
+  have hχ (g : GL (Fin a) (LocField w₀.val)) (hg : conjAtSplit w₀ g ∈ levelGU (Fin a) 𝔑)
+      : ∃ h : g ∈ J, χ ⟨g, h⟩ = 1 := by
     refine ⟨hφ_test.level_le hg, smul_left_injective ℂ hφ_test.ne_zero ?_⟩
     -- both `χ ⟨g, _⟩ • φ` and `1 • φ` are the image of `φ` under `conjAtSplit w₀ g`
     exact (mem_levelSpace.mp hφ_test.isEigenvector ⟨g, _⟩).symm.trans
       (mem_levelSpace.mp hφ_lev ⟨_, hg⟩)
-  obtain ⟨b₀, hb₀_supp, hb₀_type, hb₀⟩ := exists_local_hecke_element π hφ_test.le_localIntGL χ hχ
-    hφ_test.notMem_star_fst 1 Commute.one_right (by simp)
+  obtain ⟨b₀, hb₀_supp, hb₀_type, hb₀⟩ :=
+    exists_local_hecke_element π hφ_test.le_localIntGL χ hχ hφ_test.notMem_star_fst 1
+      Commute.one_right (by simp)
   obtain ⟨b₁, hb₁_type, hb₁_ne, hb₁⟩ :=
     exists_iwahori_hecke_element π hφ_test.notMem_star_snd hφ_test.level_le_proIwahori
   -- `w₁` is neither `w₀` nor its conjugate, so the terms of `b₀ c` are trivial at `w₁`.
   have hw_star : star w₁.val ≠ w₀.val := fun h_eq ↦
     hφ_test.notMem_star_fst (by simpa [← h_eq] using hφ_test.mem_snd)
-  have h_term_mem (j : J) :
-      conjAtSplit w₀ j * (1 * conjAtSplit w₀ 1) ∈ GU E (Fin a) ⊓ (dualComponent w₁).ker := by
+  have h_term_mem (j : J)
+      : conjAtSplit w₀ j * (1 * conjAtSplit w₀ 1) ∈ GU E (Fin a) ⊓ (dualComponent w₁).ker := by
     simp [dualComponent, evalAt_conjAtSplit_of_ne _ hφ_test.place_ne.symm hw_star]
   have hb₀c : b₀.val * c.val ∈ spanOn ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier :=
     spanOn.mul hb₀_supp hc (forall_mem_range.mpr fun j g hg ↦ Subgroup.mul_mem _ (h_term_mem j) hg)
@@ -373,23 +382,27 @@ theorem exists_test_function {w₀ w₁ : SplitFinPlace E}
   have hb₀φ : π.asAlgebraHom b₀ φ = φ := by
     simpa using hb₀ 1 φ (by simpa using hφ_test.isEigenvector)
   -- By induction every power of `b₁ b₀ c` sends `φ` to a nonzero `proIwahori`-fixed vector.
-  have h_vec (m : ℕ) :
-      π.asAlgebraHom ((b₁ * (b₀ * c)) ^ m).val φ ∈
-          levelSpace (π.comp (conjAtSplit w₁)) proIwahori ∧
-        π.asAlgebraHom ((b₁ * (b₀ * c)) ^ m).val φ ≠ 0 := by
+  have h_vec (m : ℕ)
+      : π.asAlgebraHom ((b₁ * (b₀ * c)) ^ m).val φ ∈ levelSpace (π.comp (conjAtSplit w₁)) proIwahori
+        ∧ π.asAlgebraHom ((b₁ * (b₀ * c)) ^ m).val φ ≠ 0 := by
     induction m with
     | zero => simpa [hφ_test.ne_zero] using fun g hg ↦ hφ_test.fixed ⟨g, hg.1⟩
     | succ m ih =>
       -- `b₀ c` commutes past the power and fixes `φ`.
-      have h_succ : π.asAlgebraHom ((b₁ * (b₀ * c)) ^ (m + 1)).val φ =
-          π.asAlgebraHom b₁ (π.asAlgebraHom ((b₁ * (b₀ * c)) ^ m).val φ) := by
+      have h_succ
+          : π.asAlgebraHom ((b₁ * (b₀ * c)) ^ (m + 1)).val φ
+            = π.asAlgebraHom b₁ (π.asAlgebraHom ((b₁ * (b₀ * c)) ^ m).val φ) := by
         simp [pow_succ', ((h_comm.mul_right rfl).pow_right m).right_comm, hcφ, hb₀φ]
       rw [h_succ]
       exact ⟨hb₁_type (asAlgebraHom_mem_levelSpace_of_mem_levelSpace _ hφ_lev), hb₁_ne _ ih.1 ih.2⟩
   refine ⟨b₁ * b₀, fun m ↦ ?_⟩
   rw [mul_assoc]
-  refine ⟨(h_vec m).right, isRegularHecke_pow_succ_of_strictlyDominantAt hφ_test.notMem_star_snd
-    hφ_test.level_le_proIwahori h_supp m, ?_⟩
+  refine ⟨
+    (h_vec m).right,
+    isRegularHecke_pow_succ_of_strictlyDominantAt hφ_test.notMem_star_snd
+      hφ_test.level_le_proIwahori h_supp m,
+    ?_
+  ⟩
   -- The power begins with `b₀`, which produces `χ`-eigenvectors.
   intro V _ _ ρ x hx
   have h_begin : (b₁ * (b₀ * c)) ^ (m + 1) = b₀ * (c * (b₁ * (b₁ * (b₀ * c)) ^ m)) := by

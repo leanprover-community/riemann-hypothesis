@@ -74,18 +74,21 @@ namespace New.ZetaIntegral
 def principalIdeles (K : Type*) [Field K] [NumberField K] : Subgroup ((mixedSpace K)ˣ × (𝔸f K)ˣ) :=
   ((Units.map (mixedEmbedding K).toMonoidHom).prod principalIdele).range
 
-variable {K : Type*} [Field K] [NumberField K]
-  (r : ℝ) (d : (𝔸f K)ˣ) (a : (mixedSpace K)ˣ × (𝔸f K)ˣ)
+variable {K : Type*} [Field K] [NumberField K] (r : ℝ) (d : (𝔸f K)ˣ) (a : (mixedSpace K)ˣ × (𝔸f K)ˣ)
 
-/-- The module of an idele, a homomorphism to ℝ: the absolute value of the norm to ℝ of its
-infinite part times the module `New.finIdeleAbs` of its finite part. -/
+/--
+The module of an idele, a homomorphism to ℝ: the absolute value of the norm to ℝ of its
+infinite part times the module `New.finIdeleAbs` of its finite part.
+-/
 def ideleModule : (mixedSpace K)ˣ × (𝔸f K)ˣ →* ℝ :=
   (normHom.toMonoidHom.comp ((Algebra.norm ℝ).comp (coeHom (mixedSpace K)))).coprod
     (finIdeleAbs (E := K))
 
 open scoped Classical in
-/-- The function on adeles x = (x_∞, x_f) equal to the tent max(r − dist(x_∞, 1), 0) if x_f lies
-in 1 + d⁻¹Ô, and 0 otherwise. -/
+/--
+The function on adeles x = (x_∞, x_f) equal to the tent max(r − dist(x_∞, 1), 0) if x_f lies
+in 1 + d⁻¹Ô, and 0 otherwise.
+-/
 @[simp]
 def adelicTent (x : mixedSpace K × 𝔸f K) : ℝ :=
   if d.val * (x.snd - 1) ∈ Ô K then max (r - dist x.fst 1) 0 else 0
@@ -195,8 +198,10 @@ lemma abs_adelicTent_add_sub_le {ε : ℝ} (hr : 0 < r) (hε : 0 < ε) (x w : mi
   · simp
 
 open scoped Classical in
-/-- The box `ball 0 ρ ×ˢ d⁻¹ Ô` in `mixedSpace K × 𝔸f K`: the points whose infinite part has norm
-less than `ρ` and whose finite part times `d` is integral. -/
+/--
+The box `ball 0 ρ ×ˢ d⁻¹ Ô` in `mixedSpace K × 𝔸f K`: the points whose infinite part has norm
+less than `ρ` and whose finite part times `d` is integral.
+-/
 def adelicBox (ρ : ℝ) : Set (mixedSpace K × 𝔸f K) :=
   ball (0 : mixedSpace K) ρ ×ˢ ((d.val * ·) ⁻¹' (Ô K : Set (𝔸f K)))
 
@@ -252,8 +257,8 @@ lemma map_val_val_mem_range_of_mem_principalIdeles {b : (mixedSpace K)ˣ × (�
   exact ⟨x, rfl⟩
 
 /-- A principal idele, as an element of the image of `K` in `mixedSpace K × 𝔸f K`. -/
-private def principalIdelesToRange :
-    principalIdeles K → ((mixedEmbedding K).prod (algebraMap K (𝔸f K))).toAddMonoidHom.range :=
+private def principalIdelesToRange
+    : principalIdeles K → ((mixedEmbedding K).prod (algebraMap K (𝔸f K))).toAddMonoidHom.range :=
   Subtype.map (fun b ↦ b.map val val) fun _ ↦ map_val_val_mem_range_of_mem_principalIdeles
 
 private lemma principalIdelesToRange_injective :
@@ -352,8 +357,10 @@ lemma norm_setIntegral_vadd_sub_adelicTent_le {R t : ℝ} (hR : 0 < R) (ht : 0 <
   rw [mul_add]
   exact abs_adelicTent_add_sub_le r d hr (mul_pos hR ht) _ (c.map val val * z) h_inf h_fin
 
-/-- The theta sum of radius `ρ` at an idele `b`: the sum of the tent `adelicTent ρ d` over the coset
-of `b` modulo the principal ideles. -/
+/--
+The theta sum of radius `ρ` at an idele `b`: the sum of the tent `adelicTent ρ d` over the coset
+of `b` modulo the principal ideles.
+-/
 def thetaSum (ρ : ℝ) (b : (mixedSpace K)ˣ × (𝔸f K)ˣ) : ℝ :=
   ∑' γ : principalIdeles K, adelicTent ρ d ((γ.val * b).map val val)
 

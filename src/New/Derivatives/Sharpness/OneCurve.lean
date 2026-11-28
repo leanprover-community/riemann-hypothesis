@@ -122,8 +122,10 @@ lemma coeff_subst_mul_subst (g h : ℂ_[p]⟦X⟧) (m n : ℕ) :
 namespace CMLattice
 variable {d : ℕ} (C : CMLattice d) [PadicPlace p]
 
-/-- The greatest norm of `g⁽ⁿ⁾(0) = n! · coeff n g` for `g` in `𝒪[[y]] = C.integralSeriesRing`; it
-is `p ^ (-v)` for the least valuation `v` of these derivatives. -/
+/--
+The greatest norm of `g⁽ⁿ⁾(0) = n! · coeff n g` for `g` in `𝒪[[y]] = C.integralSeriesRing`; it
+is `p ^ (-v)` for the least valuation `v` of these derivatives.
+-/
 noncomputable def maxDerivNorm (n : ℕ) : ℝ :=
   sSup ((fun g : ℂ_[p]⟦X⟧ ↦ ‖n ! * coeff n g‖) '' C.integralSeriesRing)
 

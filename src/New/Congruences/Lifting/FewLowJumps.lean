@@ -71,25 +71,34 @@ section DeepConstants
 
 variable {k : KummerChart Γ} {O : k.Coeffs}
 
-/-- The constants below the points of the extension with a pole of order at most `-t` and depth `c`
+/--
+The constants below the points of the extension with a pole of order at most `-t` and depth `c`
 at the letter `i`: the image under `S.localizedProjTrivial` of the elements of `S.deepElements i c`
 that lie in the Kisin part with exponents `raisedOrdersAtZero t` (`t - u` at the level `0`, `-u`
-beyond). -/
-noncomputable def deepConstants (S : PairingSide O) (i : Letter) (t : ℤ) (c : ℕ → ℤ → ℤ) :
-    Submodule ℤ_[p] (Ambient (k := k) (O := O) (L := S.trivialLattice)) :=
+beyond).
+-/
+noncomputable def deepConstants (S : PairingSide O) (i : Letter) (t : ℤ) (c : ℕ → ℤ → ℤ)
+    : Submodule ℤ_[p] (Ambient (k := k) (O := O) (L := S.trivialLattice)) :=
   (locKisinPart (S.extensionLattice.withOrders i (raisedOrdersAtZero t)) ⊓ S.deepElements i c).map
     S.localizedProjTrivial
 
-/-- The depth used at a letter whose far window `-[b, b + W]` is negative, as a function of the
+/--
+The depth used at a letter whose far window `-[b, b + W]` is negative, as a function of the
 level `l` and the line `u`: the constant `b + W + a + η` at the level `0`, `W + 1 - u` at the level
-`1` (plus `2a` on the low lines `|u| ≤ η`), and `-u` beyond. -/
+`1` (plus `2a` on the low lines `|u| ≤ η`), and `-u` beyond.
+-/
 def negativeWindowDepth (a η W b : ℕ) (l : ℕ) (u : ℤ) : ℤ :=
-  if l = 0 then b + W + a + η
-  else if l = 1 then W + 1 - u + (if |u| ≤ η then 2 * a else 0)
-  else -u
+  if l = 0 then
+    b + W + a + η
+  else if l = 1 then
+    W + 1 - u + (if |u| ≤ η then 2 * a else 0)
+  else
+    -u
 
-/-- The depth used at a letter whose far window is `ε [b, b + W]`: it is
-`raisedOrdersAtZero (2a + η)` if `ε = 1` and `negativeWindowDepth a η W b` if `ε = -1`. -/
+/--
+The depth used at a letter whose far window is `ε [b, b + W]`: it is
+`raisedOrdersAtZero (2a + η)` if `ε = 1` and `negativeWindowDepth a η W b` if `ε = -1`.
+-/
 def fewLowJumpsDepth (a η W b : ℕ) (ε : ℤˣ) : ℕ → ℤ → ℤ :=
   if ε = 1 then raisedOrdersAtZero (2 * a + η) else negativeWindowDepth a η W b
 

@@ -341,21 +341,24 @@ open ComplexConjugate
 variable {E : Type} [Field E] [CMType E]
 
 variable (E) in
-/-- The idele `x` of `E` lies in `F^× N(𝔸_E^×)`, for the maximal real subfield `F` of `E`: it
+/--
+The idele `x` of `E` lies in `F^× N(𝔸_E^×)`, for the maximal real subfield `F` of `E`: it
 is `a z z̄` for an element `a` of `E^×` fixed by conjugation and an idele `z` of `E`. Here
-`a.map toAdele` is `a` as a principal idele, and `star` is complex conjugation. -/
+`a.map toAdele` is `a` as a principal idele, and `star` is complex conjugation.
+-/
 def IsRealTimesNorm (x : (𝔸 E)ˣ) : Prop :=
   ∃ (a : Eˣ) (z : (𝔸 E)ˣ), star (a : E) = a ∧ x = a.map (toAdele (E := E)) * (z * star z)
 
 open scoped Classical in
 variable (E) in
-/-- The quadratic character `η` of `E/F`, for the maximal real subfield `F` of `E`. The ideles of
+/--
+The quadratic character `η` of `E/F`, for the maximal real subfield `F` of `E`. The ideles of
 `F` are the ideles of `E` fixed by conjugation; `η` is `1` on `F^× N(𝔸_E^×)` and `-1` on the other
 ideles of `F`. Its values at ideles of `E` that conjugation moves are not used. At a finite place
 `w = w̄`, `η` is `-1` at some finite idele `t` fixed by conjugation that is `1` at the other finite
-places and at infinity (`exists_quadraticIdeleChar_eq_neg_one`). -/
-noncomputable def quadraticIdeleChar (x : (𝔸 E)ˣ) : ℂ :=
-  if IsRealTimesNorm E x then 1 else -1
+places and at infinity (`exists_quadraticIdeleChar_eq_neg_one`).
+-/
+noncomputable def quadraticIdeleChar (x : (𝔸 E)ˣ) : ℂ := if IsRealTimesNorm E x then 1 else -1
 
 private lemma val_fst_apply_ne_zero (x : (𝔸 E)ˣ) (w : InfinitePlace E) : (x : 𝔸 E).1 w ≠ 0 := by
   have h_mul : (x : 𝔸 E).1 w * ((x⁻¹ : (𝔸 E)ˣ) : 𝔸 E).1 w = 1 :=
@@ -550,11 +553,13 @@ lemma isRealTimesNorm_of_upsilon_eq_one [SplittingChar E] {x : (𝔸 E)ˣ} (hx :
         star_mul']
       ring
 
-/-- On an idele `x` of `E` fixed by conjugation, that is, an idele of the maximal real subfield
+/--
+On an idele `x` of `E` fixed by conjugation, that is, an idele of the maximal real subfield
 `F`, a splitting character `υ` equals the quadratic character `η` of `E/F`
-(`quadraticIdeleChar`). -/
-theorem upsilon_eq_quadraticIdeleChar [SplittingChar E] {x : (𝔸 E)ˣ} (hx : star x = x) :
-    (υ.val x : ℂ) = quadraticIdeleChar E x := by
+(`quadraticIdeleChar`).
+-/
+theorem upsilon_eq_quadraticIdeleChar [SplittingChar E] {x : (𝔸 E)ˣ} (hx : star x = x)
+    : (υ.val x : ℂ) = quadraticIdeleChar E x := by
   -- `υ(x)² = υ(x) υ(x̄) = 1`, so `υ(x) = ±1`; and `υ(x) = 1` exactly on `F^× N(𝔸_E^×)`.
   have h_sq : (υ.val x : ℂ) * υ.val x = 1 := by
     have h_mul_star : υ.val x * υ.val (star x) = 1 := by rw [υ_star, mul_inv_cancel]
@@ -567,14 +572,18 @@ theorem upsilon_eq_quadraticIdeleChar [SplittingChar E] {x : (𝔸 E)ˣ} (hx : s
     rw [quadraticIdeleChar, ite_eq_right h_mem]
     exact (mul_self_eq_one_iff.mp h_sq).resolve_left h_ne
 
-/-- Let `E` be a CM field with a CM type, and let `υ` be a splitting character of `E`. That is, `υ`
+/--
+Let `E` be a CM field with a CM type, and let `υ` be a splitting character of `E`. That is, `υ`
 is a unitary Hecke character with `υ x̄ = (υ x)⁻¹`, and it equals `∏ x_τ / |x_τ|` on ideles whose
 finite part is a unit of `Ô`. If `w` is a finite place of `E` with `star w = w` and `ϖ ∈ E_w^×` has
 valuation `exp(-1)` (a uniformiser), then `υ` takes the value `-1` on `locFullIdele w ϖ`, the idele
-that is `ϖ` at `w` and `1` at every other place. -/
-theorem upsilon_locFullIdele_eq_neg_one_of_star_eq [SplittingChar E] (w : FinPlace E)
-    (ϖ : (LocField w)ˣ) (hw : star w = w) (hϖ : Valued.v (ϖ : LocField w) = WithZero.exp (-1)) :
-    (υ.val (locFullIdele w ϖ) : ℂ) = -1 := by
+that is `ϖ` at `w` and `1` at every other place.
+-/
+theorem upsilon_locFullIdele_eq_neg_one_of_star_eq
+    [SplittingChar E]
+    (w : FinPlace E) (ϖ : (LocField w)ˣ)
+    (hw : star w = w) (hϖ : Valued.v (ϖ : LocField w) = WithZero.exp (-1))
+    : (υ.val (locFullIdele w ϖ) : ℂ) = -1 := by
   -- `υ` is `η` on the ideles fixed by conjugation, so it is `-1` at some `t` that is `1` off `w`.
   obtain ⟨t, ht_star, ht_one, ht⟩ := exists_quadraticIdeleChar_eq_neg_one hw
   have h_value : (υ.val (finIdeleIncl t) : ℂ) = -1 := by
@@ -737,9 +746,11 @@ end SplittingCharExists
 
 namespace New
 
-variable {ℓ : ℕ} [ThePrime ℓ]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
   {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-  {A : ClosurePlace} {v : FinPlace E} (b : Bool) (g : Gal(Ω/E))
+  {A : ClosurePlace} {v : FinPlace E}
+  (b : Bool) (g : Gal(Ω/E))
 
 @[simp, grind =]
 lemma star_mem_placesDividing {T : ℕ} : star v ∈ placesDividing E T ↔ v ∈ placesDividing E T := by
@@ -786,8 +797,10 @@ lemma artinMap_star {x : (𝔸f E)ˣ} (h : artinMap Gal(Ω/E) x = g) :
   rw [← h_norm]
   exact artinMap_map_adeleNorm h_art _ cmConj_algebraMap (cmConj_conjGal_smul g)
 
-/-- The conjugate place: the preimage of the valuation subring A of Ω under the chosen complex
-conjugation. -/
+/--
+The conjugate place: the preimage of the valuation subring A of Ω under the chosen complex
+conjugation.
+-/
 noncomputable def conjPlace (A : ClosurePlace) : ValuationSubring Ω := A.comap cmConj.toRingHom
 
 variable {g}

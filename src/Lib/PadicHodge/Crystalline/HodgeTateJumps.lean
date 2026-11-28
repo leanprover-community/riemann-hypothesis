@@ -91,18 +91,23 @@ section HodgeFrame
 open Matrix nonZeroDivisors BdRPlus IsDiscreteValuationRing IsScalarTower Finset RingHom Function
   Units Filter algebraMap
 
-variable {p : ℕ} [ThePrime p] {ι : Type*} [Fintype ι] [DecidableEq ι] {A : Type*} [CommRing A]
-  [Algebra A (PadicAlgCl p)] [Algebra A BdR] [IsScalarTower A (PadicAlgCl p) BdR]
+variable
+  {p : ℕ} [ThePrime p]
+  {ι : Type*} [Fintype ι] [DecidableEq ι]
+  {A : Type*}
+  [CommRing A] [Algebra A (PadicAlgCl p)] [Algebra A BdR] [IsScalarTower A (PadicAlgCl p) BdR]
 
 /-- The matrix `W · diag (t ^ k i)` over `B_dR`, where `t` is the period `tUnit`. -/
 noncomputable def hodgeMatrix (W : Matrix ι ι BdRPlus) (k : ι → ℤ) : Matrix ι ι BdR :=
   W.map (↑) * diagonal fun i ↦ ((tUnit ^ k i : BdRˣ) : BdR)
 
-/-- The columns of `P` are Hodge–Tate vectors of weights `k` for the semilinear map
+/--
+The columns of `P` are Hodge–Tate vectors of weights `k` for the semilinear map
 `v ↦ N (g • v)` of `ℂ_p ^ ι`: it multiplies the column `j` by `χ(g) ^ (-k j)`, where `χ` is the
-cyclotomic character. -/
+cyclotomic character.
+-/
 def IsHodgeTateFrame (N P : Matrix ι ι ℂ_[p]) (k : ι → ℤ) (g : Gp p) : Prop :=
-  ∀ j : ι, N *ᵥ (g • P.col j) = ((cyclotomicGp g ^ (-k j) : ℤ_[p]ˣ) : ℤ_[p]) • P.col j
+  ∀ j : ι, N *ᵥ (g • P.col j) = ((cyclotomicGp g ^ (- k j) : ℤ_[p]ˣ) : ℤ_[p]) • P.col j
 
 omit [DecidableEq ι] in
 /-- In the coordinates given by a Hodge–Tate frame `P`, the map `v ↦ N (g • v)` acts on the
@@ -121,12 +126,16 @@ lemma IsHodgeTateFrame.mulVec_twist {N P : Matrix ι ι ℂ_[p]} {k : ι → ℤ
     _ = ∑ m, ∑ j, N i m * g • P m j * g • w j := sum_comm
     _ = (N *ᵥ (g • (P *ᵥ w))) i := by simp [mulVec, dotProduct, smul_sum, mul_sum, mul_assoc]
 
-/-- `Y`, `W`, `k` form a Hodge frame for the matrix `U` over `B_dR` and the family `N` along the
+/--
+`Y`, `W`, `k` form a Hodge frame for the matrix `U` over `B_dR` and the family `N` along the
 filter `F` on `Γ`: the algebraic, integral, fixed change of basis `Y` turns `U` into the invariant
-matrix `W · diag (t ^ k i)` with `W` invertible over `B_dR⁺`. -/
-structure IsHodgeFrame {Γ : Type*} [Group Γ] [OverGp Γ p] (F : Filter Γ) (N : Γ → Matrix ι ι A)
-    (U : Matrix ι ι BdR) (Y : SpecialLinearGroup ι (PadicAlgCl p)) (W : Matrix ι ι BdRPlus)
-    (k : ι → ℤ) : Prop where
+matrix `W · diag (t ^ k i)` with `W` invertible over `B_dR⁺`.
+-/
+structure IsHodgeFrame
+    {Γ : Type*} [Group Γ] [OverGp Γ p]
+    (F : Filter Γ) (N : Γ → Matrix ι ι A) (U : Matrix ι ι BdR)
+    (Y : SpecialLinearGroup ι (PadicAlgCl p)) (W : Matrix ι ι BdRPlus) (k : ι → ℤ)
+    : Prop where
   /-- The matrix `W` is invertible over `B_dR⁺`. -/
   isUnit : IsUnit W
   /-- The entries of `Y` are fixed by `g`, eventually along `F`. -/
@@ -134,8 +143,7 @@ structure IsHodgeFrame {Γ : Type*} [Group Γ] [OverGp Γ p] (F : Filter Γ) (N 
   /-- The product `U Y` is `W · diag (t ^ k i)`. -/
   mul_map_eq : U * (Y : Matrix ι ι (PadicAlgCl p)).map (↑) = hodgeMatrix W k
   /-- The matrix `W · diag (t ^ k i)` is fixed by `M ↦ N g * g • M`, eventually along `F`. -/
-  eventually_mul_smul_eq :
-    ∀ᶠ g : Γ in F, (N g).map (↑) * toGp g • hodgeMatrix W k = hodgeMatrix W k
+  eventually_mul_smul_eq : ∀ᶠ g : Γ in F, (N g).map (↑) * toGp g • hodgeMatrix W k = hodgeMatrix W k
   /-- The entries of `Y` are integral. -/
   norm_le_one : ∀ i l : ι, ‖Y i l‖ ≤ 1
 
@@ -318,10 +326,12 @@ section HodgeTateFrame
 
 open Filter Finset Matrix Module Submodule LinearMap
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R T : Type*} [Group Γ] [CommRing R] [AddCommGroup T] [Module R T] [Algebra ℤ_[p] R]
-  [Algebra.IsAlgebraic ℤ_[p] R] [OverGp Γ p] {ρ : Representation R Γ T}
-  {ι : Type*} [Fintype ι] [DecidableEq ι] (e : Basis ι R T)
+  [Algebra.IsAlgebraic ℤ_[p] R] [OverGp Γ p]
+  {ρ : Representation R Γ T} {ι : Type*} [Fintype ι] [DecidableEq ι]
+  (e : Basis ι R T)
 
 /-- The rows of the inverse of an invertible Hodge–Tate frame `P` satisfy
 `P⁻¹ N = diag (χ(g) ^ (-k i)) · g(P⁻¹)`. -/
@@ -474,12 +484,13 @@ its dimension, is the multiplicity of the jump u; so χ^c has the jump −c.
 
 section Jumps
 
-open LinearEquiv Filter Module Submodule LinearMap Finset hodgeTateMaps Algebra
-  RingHomClass Fintype Finite IsAlgebraic Matrix
+open LinearEquiv Filter Module Submodule LinearMap Finset hodgeTateMaps Algebra RingHomClass Fintype
+  Finite IsAlgebraic Matrix
 
 section
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R T T' R' ι κ : Type*} [Group Γ] [CommRing R] [AddCommGroup T] [Module R T] [Algebra ℤ_[p] R]
   [AddCommGroup T'] [OverGp Γ p]
   {ρ ρ' : Representation R Γ T} [CommRing R'] [Module R' T'] [Algebra ℤ_[p] R']
@@ -488,15 +499,20 @@ variable {p : ℕ} [ThePrime p]
 
 /-! ### Pull-back of forms, base change and twists -/
 
-/-- For a φ-semilinear map i: T' → T equivariant near 1, the Q̄_p-linear map f ↦ f∘i between the
-spaces `New.Period.hodgeTateMaps` for u, of T at γ and T' at γ' = γ∘φ. -/
-def hodgeTateMaps.pull [RingHomCompTriple φ (toRingHom γ) γ'] (i : T' →ₛₗ[φ] T)
-    (hi : ∀ᶠ g : Γ in nearOne Γ, ∀ x : T', i (σ g x) = ρ g (i x)) :
-    hodgeTateMaps ρ γ u →ₗ[PadicAlgCl p] hodgeTateMaps σ γ' u where
-  toFun f :=
-    ⟨f.val ∘ₛₗ i, fun x ↦ by
+/--
+For a φ-semilinear map i: T' → T equivariant near 1, the Q̄_p-linear map f ↦ f∘i between the
+spaces `New.Period.hodgeTateMaps` for u, of T at γ and T' at γ' = γ∘φ.
+-/
+def hodgeTateMaps.pull
+    [RingHomCompTriple φ (toRingHom γ) γ']
+    (i : T' →ₛₗ[φ] T) (hi : ∀ᶠ g : Γ in nearOne Γ, ∀ x : T', i (σ g x) = ρ g (i x))
+    : hodgeTateMaps ρ γ u →ₗ[PadicAlgCl p] hodgeTateMaps σ γ' u where
+  toFun f := ⟨
+    f.val ∘ₛₗ i,
+    fun x ↦ by
       filter_upwards [hi, f.property (i x)] with g h_equiv h_weight
-      simpa [h_equiv] using h_weight⟩
+      simpa [h_equiv] using h_weight
+  ⟩
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
@@ -669,22 +685,23 @@ end
 
 section
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R T T' R' ι κ : Type*} [Group Γ] [CommRing R] [AddCommGroup T] [Module R T] [Algebra ℤ_[p] R]
   [AddCommGroup T'] [OverGp Γ p]
   {ρ ρ' : Representation R Γ T} [CommRing R'] [Module R' T'] [Algebra ℤ_[p] R']
   {σ : Representation R' Γ T'} {γ' : R' →ₐ[ℤ_[p]] ℂ_[p]} {φ : R' →+* R} {u : ℤ}
-  {γ : R →ₐ[ℤ_[p]] ℂ_[p]} [Module.Finite R T]
-  [Algebra.IsAlgebraic ℤ_[p] R] [Free R T] [IsDomain R] [Fintype κ]
+  {γ : R →ₐ[ℤ_[p]] ℂ_[p]}
+  [Module.Finite R T] [Algebra.IsAlgebraic ℤ_[p] R] [Free R T] [IsDomain R] [Fintype κ]
   {S : ι → Type _} [∀ i, AddCommGroup (S i)] [∀ i, Module R (S i)] [∀ i, Module ℤ_[p] (S i)]
   [∀ i, IsScalarTower ℤ_[p] R (S i)] [∀ i, Free R (S i)] [∀ i, Module.Finite R (S i)]
   {τ : ∀ i : ι, Representation R Γ (S i)} (h_potCrys : ∀ i : ι, IsPotentiallyCrystalline (τ i))
-  (e : Basis κ R' T') {δ : ι → R →ₐ[ℤ_[p]] ℂ_[p]} [∀ i, RingHomCompTriple φ (toRingHom (δ i)) γ']
+  (e : Basis κ R' T')
+  {δ : ι → R →ₐ[ℤ_[p]] ℂ_[p]} [∀ i, RingHomCompTriple φ (toRingHom (δ i)) γ']
   (f : ∀ i : ι, T' →ₛₗ[φ] S i)
   (h_equiv : ∀ i : ι, ∀ᶠ g : Γ in nearOne Γ, ∀ x : T', f i (σ g x) = τ i g (f i x))
-  (h_indep :
-    LinearIndependent ℂ_[p] fun (a : κ) (l : Σ i : ι, Fin (finrank R (S i))) ↦
-      δ l.fst ((finBasis R (S l.fst)).coord l.snd (f l.fst (e a))))
+  (h_indep : LinearIndependent ℂ_[p] fun (a : κ) (l : Σ i : ι, Fin (finrank R (S i))) ↦
+    δ l.fst ((finBasis R (S l.fst)).coord l.snd (f l.fst (e a))))
 
 /-! ### Modules that map to a family S_i -/
 
@@ -758,7 +775,8 @@ lemma exists_jump_of_jointly_injective [Fintype ι] (f : ∀ i : ι, T →ₗ[R]
   exact exists_jump_of_linearIndependent h_potCrys (finBasis R T) f (fun i ↦ .of_forall (hf i))
     (linearIndependent_algebraMap_comp_iff.2 ((finBasis R T).linearIndependent.map' coords h_ker))
 
-variable [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [Module ℤ_[p] T'] [FaithfulSMul ℤ_[p] R]
+variable
+  [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [Module ℤ_[p] T'] [FaithfulSMul ℤ_[p] R]
   (f : ∀ i : ι, T' →ₗ[ℤ_[p]] S i) (e : Basis κ ℤ_[p] T')
 
 /-! ### Restriction of scalars from R to ℤ_p -/
@@ -799,8 +817,10 @@ lemma linearIndependent_algHom_coord (h_inj : ∀ x : T', (∀ i : ι, f i x = 0
   have hc (k : κ) : c k = 0 := linearIndependent_iff.1 e.linearIndependent c h_sum k
   simpa [c, funext_iff] using fun k ↦ congrArg Subtype.val (hc k)
 
-/-- For Z_p-linear maps f_i: T' → S_i and a pair (i, k) in ι × κ, the map f_i regarded as semilinear
-along the structure map Z_p → R; it does not depend on k. -/
+/--
+For Z_p-linear maps f_i: T' → S_i and a pair (i, k) in ι × κ, the map f_i regarded as semilinear
+along the structure map Z_p → R; it does not depend on k.
+-/
 def asSemilinear (i : ι × κ) : T' →ₛₗ[algebraMap ℤ_[p] R] S i.fst := ⟨f i.fst, by simp⟩
 
 /-- Composing the structure map ℤ_p → R with γ gives the structure map ℤ_p → ℂ_p. -/

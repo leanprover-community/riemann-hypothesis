@@ -62,29 +62,42 @@ open Matrix Function
 
 section Blocks
 
-variable {R a b n : Type} [CommRing R]
-  [Fintype n] [DecidableEq n] (O : Subring R) {y : Matrix n b R} (e : b ⊕ a ≃ n) (k : GL n R)
+variable
+  {R a b n : Type} [CommRing R] [Fintype n] [DecidableEq n]
+  (O : Subring R)
+  {y : Matrix n b R}
+  (e : b ⊕ a ≃ n) (k : GL n R)
 
 /-! ### Blocks of an invertible matrix and partners -/
 
-/-- For `k` invertible and the indices split by `e : b ⊕ a ≃ n`, the rows of `k⁻¹` indexed by the
-block `a`. -/
+/--
+For `k` invertible and the indices split by `e : b ⊕ a ≃ n`, the rows of `k⁻¹` indexed by the
+block `a`.
+-/
 abbrev invLastRows : Matrix a n R := k⁻¹.val.submatrix (e ∘ Sum.inr) id
 
-/-- For `k` invertible and the indices split by `e : b ⊕ a ≃ n`, the columns of `k` indexed by the
-block `b`. -/
+/--
+For `k` invertible and the indices split by `e : b ⊕ a ≃ n`, the columns of `k` indexed by the
+block `b`.
+-/
 abbrev firstCols : Matrix n b R := k.val.submatrix id (e ∘ Sum.inl)
 
-/-- The functions `Φ` on `a × n` matrices and `Ψ` on `n × b` matrices are partners for the
+/--
+The functions `Φ` on `a × n` matrices and `Ψ` on `n × b` matrices are partners for the
 multiplicative character `χ` over `O` if `Φ` vanishes off the matrices `invLastRows e k` and `Ψ` off
 the matrices `firstCols e k`, for `k` in `GL_n(O)`, and
-`Φ (invLastRows e k) = χ (det k) * Ψ (firstCols e k)` for all such `k`. -/
+`Φ (invLastRows e k) = χ (det k) * Ψ (firstCols e k)` for all such `k`.
+-/
 structure AreMatched (χ : MulChar R ℂ) (Φ : Matrix a n R → ℂ) (Ψ : Matrix n b R → ℂ) where
-  /-- `Φ` vanishes off the matrices `invLastRows e k`, the rows `a` of `k⁻¹`, for `k` in
-  `GL_n(O)`. -/
+  /--
+  `Φ` vanishes off the matrices `invLastRows e k`, the rows `a` of `k⁻¹`, for `k` in
+  `GL_n(O)`.
+  -/
   supp_left (x : Matrix a n R) : Φ x ≠ 0 → ∃ k ∈ intGL n O, x = invLastRows e k
-  /-- `Ψ` vanishes off the matrices `firstCols e k`, the columns `b` of `k`, for `k` in
-  `GL_n(O)`. -/
+  /--
+  `Ψ` vanishes off the matrices `firstCols e k`, the columns `b` of `k`, for `k` in
+  `GL_n(O)`.
+  -/
   supp_right (y : Matrix n b R) : Ψ y ≠ 0 → ∃ k ∈ intGL n O, y = firstCols e k
   /-- For `k` in `GL_n(O)` the values of `Φ` and `Ψ` differ by the factor `χ (det k)`. -/
   apply_eq : ∀ k ∈ intGL n O, Φ (invLastRows e k) = χ k.val.det * Ψ (firstCols e k)
@@ -262,7 +275,9 @@ end Blocks
 
 section Lift
 
-variable {R a b n : Type} [CommRing R] [Fintype n] [DecidableEq n] {F : Type} [CommRing F]
+variable
+  {R a b n : Type} [CommRing R] [Fintype n] [DecidableEq n]
+  {F : Type} [CommRing F]
   {O : Subring F} {l m : Type} [Fintype l] [Fintype m]
 
 /-- At a matrix `M` over the subring `O`, the lift `liftIntegralFn π f` takes the value of `f` at
@@ -341,8 +356,8 @@ lemma lift_of_reduction {e : b ⊕ a ≃ n} {χ : MulChar R ℂ} {Φ : Matrix a 
 
 variable [DecidableEq a] [DecidableEq b]
 
-variable {O : Subring R} {e : b ⊕ a ≃ n} {χ : MulChar R ℂ} {Φ : Matrix a n R → ℂ}
-  {Ψ : Matrix n b R → ℂ}
+variable
+  {O : Subring R} {e : b ⊕ a ≃ n} {χ : MulChar R ℂ} {Φ : Matrix a n R → ℂ} {Ψ : Matrix n b R → ℂ}
 omit [Fintype b] [DecidableEq b] in
 /-- If `Φ`, `Ψ` are partners for `χ` over `O` (supported on the rows `a` of `k⁻¹` and the columns
 `b` of `k` for `k ∈ GL n O`, with values differing by the factor `χ (det k)`), then

@@ -56,9 +56,11 @@ lemma ne_top_of_normLength_le {ℓ : ℕ} [ThePrime ℓ] {O : CoeffRing ℓ} {k 
   rintro rfl
   exact hb (top_le_iff.1 hk)
 
-variable {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {n : Type} [Fintype n]
-  [DecidableEq n] {t : ℕ} {J : (D.E →+* ℂ) → Multiset ℤ} {R : GalRep ℓ D.E n}
-  {O : CoeffRing ℓ} {u : AbsGal D →* Matrix n n O}
+variable
+  {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+  {n : Type} [Fintype n] [DecidableEq n]
+  {t : ℕ} {J : (D.E →+* ℂ) → Multiset ℤ} {R : GalRep ℓ D.E n} {O : CoeffRing ℓ}
+  {u : AbsGal D →* Matrix n n O}
 
 lemma IsMainSummandLike.nonempty (hrow : IsMainSummandLike D t J R) : Nonempty n :=
   card_pos_iff.1 hrow.rank_mem.1
@@ -270,7 +272,8 @@ lemma IsMainSummandLike.exists_mem_inertiaAbove_eq_smul_one_isUnit
   exact ⟨γ, hγ, ζ, hΦ_inj (by simpa [hΦ_u]),
     (O.isUnit_iff_norm_eq_one _).2 (by simpa using hy_unit)⟩
 
-/-- Main summands are Selmer data. Let `D` be the data for the parameters `P`, with field `D.E`, and
+/--
+Main summands are Selmer data. Let `D` be the data for the parameters `P`, with field `D.E`, and
 let `n` be a finite index type. Fix a prime `ℓ` and an isomorphism `ℂ ≃ ℚ̄_ℓ` (`PadicIso ℓ`). Let
 `R` be a row (`IsMainSummandLike`): a continuous representation on `n`-vectors of the Galois group
 of `D.E` over `ℚ̄_ℓ`, unramified off `ℓ p₀ p₁`, with `R^c ≅ R^∨(1 - t)` on traces (`t = 0` read as
@@ -285,20 +288,28 @@ Over all large coefficient rings `O` there is a Selmer datum `T` for `γ` and th
 on the allowed cocycles are those that hold on the crystalline cocycles at the places above `ℓ`
 (`crysRelations`); and `T.β` has normalised length `O.normLength T.β` at most `(4 f + 3) · card n`
 times the `ℓ`-adic valuation of `D.chosenGroupOrder`, with `f = D.f` the number of infinite
-places. -/
-theorem IsMainSummandLike.eventually_exists_selmerDatum (hrow : IsMainSummandLike D t J R)
-    {w : FinPlace D.E} (hw_chosen : D.IsChosen w) (hw : w ∈ placesAboveM D \ placesDividing D.E ℓ) :
-    ∀ᶠ O : CoeffRing ℓ in .atTop,
-      ∃ T : SelmerDatum ℓ (badPlaces D ℓ) w.isPlaceOver_placeOver.tameGenerator O n,
-        IsLatticeIn R T.ρ ∧
-        ↑T.places = placesDividing D.E ℓ ∪ placesAboveM D ∧
-        T.localRelations = crysRelations T.ρ ∧
-        O.normLength T.β ≤ (4 * D.f + 3) * card n * padicValNat ℓ D.chosenGroupOrder := by
+places.
+-/
+theorem IsMainSummandLike.eventually_exists_selmerDatum
+    (hrow : IsMainSummandLike D t J R)
+    {w : FinPlace D.E} (hw_chosen : D.IsChosen w) (hw : w ∈ placesAboveM D \ placesDividing D.E ℓ)
+    : ∀ᶠ O : CoeffRing ℓ in .atTop,
+        ∃ T : SelmerDatum ℓ (badPlaces D ℓ) w.isPlaceOver_placeOver.tameGenerator O n,
+          IsLatticeIn R T.ρ ∧
+          ↑T.places = placesDividing D.E ℓ ∪ placesAboveM D ∧
+          T.localRelations = crysRelations T.ρ ∧
+          O.normLength T.β ≤ (4 * D.f + 3) * card n * padicValNat ℓ D.chosenGroupOrder := by
   filter_upwards [hrow.eventually_span_eq_top_and_exists_eq_smul_one,
     eventually_exists_isLatticeIn hrow.continuous]
     with O h_span_scalar ⟨u, hu⟩
-  obtain ⟨h_span_top : Submodule.span O (Set.range u) = ⊤, g, l, α,
-    h_cyc : (cyclotomicChar Ω ℓ g : ℤ_[ℓ]) = D.levelPrime l ^ card n, hg : u g = α • 1⟩ :=
+  obtain ⟨
+      h_span_top : Submodule.span O (Set.range u) = ⊤,
+      g,
+      l,
+      α,
+      h_cyc : (cyclotomicChar Ω ℓ g : ℤ_[ℓ]) = D.levelPrime l ^ card n,
+      hg : u g = α • 1
+    ⟩ :=
     h_span_scalar u hu
   obtain ⟨γ, ⟨v, ⟨hv_M, hv_ℓ⟩, hγ⟩, ζ, hζ : u γ = ζ • 1, h_unit : IsUnit (ζ ^ 2 - 1)⟩ :=
     hrow.exists_mem_inertiaAbove_eq_smul_one_isUnit hu
@@ -308,41 +319,45 @@ theorem IsMainSummandLike.eventually_exists_selmerDatum (hrow : IsMainSummandLik
   have hS : ↑S = placesDividing D.E ℓ ∪ placesAboveM D := Set.Finite.coe_toFinset _
   have h_global : O.normLength (congruenceTerm ℓ u) ≤ card n * padicValNat ℓ D.chosenGroupOrder :=
     hrow.normLength_congruenceTerm_le hu h_span_top h_cyc hg
-  have h_local : O.normLength (placeTerms ℓ u S +
-      firstPrimeTerms ℓ u w.isPlaceOver_placeOver.tameGenerator) ≤
-        (4 * D.f + 2) * card n * padicValNat ℓ D.chosenGroupOrder :=
+  have h_local
+      : O.normLength (placeTerms ℓ u S + firstPrimeTerms ℓ u w.isPlaceOver_placeOver.tameGenerator)
+        ≤ (4 * D.f + 2) * card n * padicValNat ℓ D.chosenGroupOrder :=
     hrow.normLength_placeTerms_add_firstPrimeTerms_le hu hS hw_chosen hw
   -- The cyclotomic character is trivial at `γ`, so `γ^{-c}` acts by the same scalar.
   have hζ' : u (conjGal γ)⁻¹ = ζ • 1 := by
     simp [hrow.conjGal_inv_eq_smul_one hu h_span_top hζ, cyclotomicInv,
       cyclotomicChar_eq_one_of_mem_inertiaAbove ⟨v, hv_ℓ, hγ⟩]
-  let T : SelmerDatum ℓ (badPlaces D ℓ) w.isPlaceOver_placeOver.tameGenerator O n :=
-    { nonempty := hrow.nonempty
-      ρ := u
-      isLocallyConstant M s := (isOpen_discrete s).preimage
-        ((hu.continuous hrow.continuous).matrix_map continuous_quot_mk)
-      places := S
-      subset := coe_subset.1 (hS.le.trans h_bad)
-      placesDividing_subset := Set.subset_union_left.trans hS.ge
-      unramified s hs := hu.eq_one (hrow.eq_one_of_mem_inertiaAbove s (by simpa [hS] using hs))
-      Z v' := crysCocyclesAt v' u
-      finite_Z v' :=
-        crysCocycles.fg (hrow.toIsConjSelfDualOfLevel.inClass_localLattice hrow hu
-          v').isPotentiallyCrystalline
-      coboundary_mem_Z _ b := crysCocycles.coboundary_mem b
-      span_range_eq_top := h_span_top
-      sum_finrank_Z_le := hrow.sum_finrank_crysCocyclesAt_le hu
-      congruenceTerm_ne_top := ne_top_of_normLength_le h_global (by finiteness)
-      localTerms_ne_top := ne_top_of_normLength_le h_local (by finiteness)
-      γ := γ
-      ζ := ζ
-      γ_mem_inertiaAbove := ⟨v, ⟨hS.superset (.inr hv_M), hv_ℓ⟩, hγ⟩
-      ρ_eq_smul_one := Bool.forall_bool.2 ⟨hζ', hζ⟩
-      isUnit_sq_sub_one := h_unit }
+  let T : SelmerDatum ℓ (badPlaces D ℓ) w.isPlaceOver_placeOver.tameGenerator O n := {
+    nonempty := hrow.nonempty
+    ρ := u
+    isLocallyConstant M s :=
+      (isOpen_discrete s).preimage ((hu.continuous hrow.continuous).matrix_map continuous_quot_mk)
+    places := S
+    subset := coe_subset.1 (hS.le.trans h_bad)
+    placesDividing_subset := Set.subset_union_left.trans hS.ge
+    unramified s hs := hu.eq_one (hrow.eq_one_of_mem_inertiaAbove s (by simpa [hS] using hs))
+    Z v' := crysCocyclesAt v' u
+    finite_Z v' :=
+      crysCocycles.fg (hrow.toIsConjSelfDualOfLevel.inClass_localLattice hrow hu
+        v').isPotentiallyCrystalline
+    coboundary_mem_Z _ b := crysCocycles.coboundary_mem b
+    span_range_eq_top := h_span_top
+    sum_finrank_Z_le := hrow.sum_finrank_crysCocyclesAt_le hu
+    congruenceTerm_ne_top := ne_top_of_normLength_le h_global (by finiteness)
+    localTerms_ne_top := ne_top_of_normLength_le h_local (by finiteness)
+    γ := γ
+    ζ := ζ
+    γ_mem_inertiaAbove := ⟨v, ⟨hS.superset (.inr hv_M), hv_ℓ⟩, hγ⟩
+    ρ_eq_smul_one := Bool.forall_bool.2 ⟨hζ', hζ⟩
+    isUnit_sq_sub_one := h_unit
+  }
   refine ⟨T, hu, hS, rfl, ?_⟩
-  calc O.normLength T.β = O.normLength T.globalTerm + O.normLength T.localTerms := map_add ..
-    _ ≤ card n * padicValNat ℓ D.chosenGroupOrder +
-        (4 * D.f + 2) * card n * padicValNat ℓ D.chosenGroupOrder := add_le_add h_global h_local
+  calc
+    O.normLength T.β
+      = O.normLength T.globalTerm + O.normLength T.localTerms := map_add ..
+    _ ≤ card n * padicValNat ℓ D.chosenGroupOrder
+        + (4 * D.f + 2) * card n * padicValNat ℓ D.chosenGroupOrder :=
+      add_le_add h_global h_local
     _ = (4 * D.f + 3) * card n * padicValNat ℓ D.chosenGroupOrder := by ring
 
 end New.Selmer

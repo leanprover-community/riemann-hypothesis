@@ -94,8 +94,10 @@ open Matrix MeasureTheory Measure RealPlace Fintype Real FloorGroups Finset
 
 variable {𝔰 : Shape}
 
-/-- The Gaussian exp(−π Σ_{b<l}(Σ_i |g_{i,e*_b}|² + (Im g_{e_b,e*_b})²)) on G₁, the inner sum over
-the indices i of floor greater than b. -/
+/--
+The Gaussian exp(−π Σ_{b<l}(Σ_i |g_{i,e*_b}|² + (Im g_{e_b,e*_b})²)) on G₁, the inner sum over
+the indices i of floor greater than b.
+-/
 noncomputable abbrev dualColumnGaussian (l : ℕ) (g : 𝔰.G₁) : ENNReal :=
   ‖rexp
     (-π *
@@ -302,10 +304,12 @@ open MeasureTheory Measure Matrix Real Metric Fintype ENNReal RealPlace Sum Norm
 
 variable (𝔰 : Shape) (ρ : ℝ)
 
-/-- The numerical hypotheses at a real place on the shape `𝔰`, a box radius `ρ`, an exponent `s` and
+/--
+The numerical hypotheses at a real place on the shape `𝔰`, a box radius `ρ`, an exponent `s` and
 a base `b`. Here ϱ is the number of hyperbolic planes, n = ϱ + 1, k = |κ| is the rank of the
 positive summand X₀ and r the rank of the whole space: ρ = b^(6n+2) ≥ 8r with b ≥ 2,
-k = s + 3n + 6 ≥ n⁷, s > 10⁹n³ and ϱ ≥ 10⁸. -/
+k = s + 3n + 6 ≥ n⁷, s > 10⁹n³ and ϱ ≥ 10⁸.
+-/
 structure RealPlaceSizes (s : ℕ) (b : ℝ) where
   /-- The box radius is ρ = b^(6n+2). -/
   rho_eq : ρ = b ^ (6 * 𝔰.n + 2)
@@ -341,47 +345,50 @@ lemma map_embedH_mconv_dirac (u : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
   rw [← map_dirac, ← map_mconv_monoidHom (toBesselH 𝔰 1) (by fun_prop), mconv_dirac,
     map_mul_right_eq_self]
 
-/-- The place datum at `ℂ`: the unit `levelUnit = 1`, the close pairs `(ω₁, ω₂)` with
+/--
+The place datum at `ℂ`: the unit `levelUnit = 1`, the close pairs `(ω₁, ω₂)` with
 `|ω₁|² + |ω₂|² < 1` for the Euclidean length, the box `‖x‖ ≤ ρ` in operator norm, all positions
 allowed, `measureH` the Haar measure of the compact group `U(κ)` carried into `𝔰.G₁`, and
-`topFloorMeasure` the law `cellLaw ϱ` of floor `ϱ` convolved with `measureH`. -/
+`topFloorMeasure` the law `cellLaw ϱ` of floor `ϱ` convolved with `measureH`.
+-/
 @[simps toHyperbolicBasis topFloorMeasure measureH levelUnit closePairs boxSet positions]
 def RealPlaceSizes.complexData : PlaceData {i // i ≠ 𝔰.k₀} (𝔰.middleGram (1 : ℂ)) 0 where
   toHyperbolicBasis := complexBasis 𝔰
   topFloorMeasure := cellLaw 𝔰.ϱ ∗ₘ volume.map embedH
   measureH := volume.map embedH
   levelUnit := 1
-  closePairs := {u : (𝔰.BesselIndex → ℂ) × (𝔰.BesselIndex → ℂ) |
-    ‖toLp 2 u.1‖ ^ 2 + ‖toLp 2 u.2‖ ^ 2 < 1}
+  closePairs :=
+    {u : (𝔰.BesselIndex → ℂ) × (𝔰.BesselIndex → ℂ) |
+      ‖toLp 2 u.1‖ ^ 2 + ‖toLp 2 u.2‖ ^ 2 < 1}
   boxSet := {x : (𝔰.middleGram (1 : ℂ)).G | ‖x.val.val‖ ≤ ρ}
   positions := Set.univ
   topFloorMeasure_mem_and_map_eq := by
-                        refine ⟨ae_mem_mconv ?_ ?_ measurableSet_floorGroup,
-                          map_orbitPoint_cellLaw_top (by simp [hF.k_eq])⟩
-                        · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2
-                            (.of_forall fun _ ↦ inv_mem cellChart_mem_floorGroup)
-                        · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2
-                            (.of_forall embedH_mem_floorGroup)
+    refine
+      ⟨ae_mem_mconv ?_ ?_ measurableSet_floorGroup, map_orbitPoint_cellLaw_top (by simp [hF.k_eq])⟩
+    · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2
+        (.of_forall fun _ ↦ inv_mem cellChart_mem_floorGroup)
+    · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2 (.of_forall embedH_mem_floorGroup)
   measureH_mem_and_invariant_and_le_one := by
-                            refine ⟨?_, fun s hs ↦ ?_, fun _ ↦ prob_le_one⟩
-                            · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2
-                                (.of_forall toBesselH_mem)
-                            · obtain ⟨u, rfl⟩ : ∃ u : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ),
-                                s = toBesselH 𝔰 1 u :=
-                                exists_eq_toBesselH hs isUnit_one
-                              exact map_embedH_mconv_dirac u
+    refine ⟨?_, fun s hs ↦ ?_, fun _ ↦ prob_le_one⟩
+    · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2 (.of_forall toBesselH_mem)
+    · obtain ⟨u, rfl⟩ : ∃ u : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), s = toBesselH 𝔰 1 u :=
+        exists_eq_toBesselH hs isUnit_one
+      exact map_embedH_mconv_dirac u
   star_levelUnit := by simp
   isOpen_closePairs_and_zero_mem_and_isCompact_closure := by
-                                         refine ⟨isOpen_lt (by fun_prop) continuous_const, by simp,
-                                           ((isBounded_closedBall (x := 0) (r := 1)).subset fun u
-                                             hu ↦ ?_).isCompact_closure⟩
-                                         simpa [Prod.norm_def, pi_norm_le_iff_of_nonneg, forall_and]
-                                           using
-                                           norm_apply_le_one_of_sq_add_sq_lt_one hu
+    refine ⟨
+      isOpen_lt (by fun_prop) continuous_const,
+      by simp,
+      ((isBounded_closedBall (x := 0) (r := 1)).subset fun u hu ↦ ?_).isCompact_closure
+    ⟩
+    simpa [Prod.norm_def, pi_norm_le_iff_of_nonneg, forall_and] using
+      norm_apply_le_one_of_sq_add_sq_lt_one hu
   isCompact_boxSet_and_measurableSet_positions := ⟨isCompact_U_norm_le ρ, MeasurableSet.univ⟩
 
-/-- A chosen constant c in [0, ∞] with 𝖬 = c · dy, where 𝖬 is the product `groupMeasure` of the
-measures of all floors of the place datum at ℂ and dy is the Haar measure `volume` on G₁. -/
+/--
+A chosen constant c in [0, ∞] with 𝖬 = c · dy, where 𝖬 is the product `groupMeasure` of the
+measures of all floors of the place datum at ℂ and dy is the Haar measure `volume` on G₁.
+-/
 def RealPlaceSizes.haarRatio : ℝ≥0∞ :=
   (exists_eq_smul_haar volume hF.complexData.isMulRightInvariant_groupMeasure).choose
 
@@ -600,8 +607,8 @@ instance : hF.complexData.groupMeasure.IsHaarMeasure := by
   simp [hF.haarRatio_ne_zero_and_groupMeasure_eq_smul, IsHaarMeasure.smul]
 
 attribute [local simp ←] ofReal_pow ofReal_mul ofReal_coe_nnreal dotProduct_mulVec
-attribute [local simp] inclMatrix star_mulVec Size.vecsOfSize MeasureTheory.volume_pi_closedBall
-  pi_norm_le_iff_of_nonneg
+attribute [local simp]
+  inclMatrix star_mulVec Size.vecsOfSize MeasureTheory.volume_pi_closedBall pi_norm_le_iff_of_nonneg
 
 open Fock Set ComplexOrder ProbabilityTheory Complex EuclideanSpace Size
 
@@ -1059,41 +1066,45 @@ lemma RealPlaceSizes.smul_mem_closePairs (hF : RealPlaceSizes 𝔰 ρ s b) (hρ 
         rw [div_lt_one (by positivity)]
         linarith [le_self_pow₀ (a := L) (by linarith) four_ne_zero]
 
-/-- The gauge of scale `L ≥ ρ` for the place datum at `ℂ`: a number has size `j` if its modulus is
+/--
+The gauge of scale `L ≥ ρ` for the place datum at `ℂ`: a number has size `j` if its modulus is
 at most `L ^ j`, and the constant whose powers bound moduli and volumes is the field `loss`, equal
-to `L²`. -/
+to `L²`.
+-/
 def RealPlaceSizes.gauge (hρ : ρ ≤ L := by rfl) : Gauge hF.complexData := by
   obtain ⟨hk, hr, h4⟩ := hF.k_eq, hF.eight_mul_r_le_rho, hF.four_le.trans hρ
-  refine
-    { ofSize j := {x | ‖x‖ ≤ L ^ j}
-      loss := .ofReal L ^ 2
-      mul_mem_ofSize hx hy := (norm_mul_le_of_le hx hy).trans_eq (pow_add ..).symm
-      sum_mem_ofSize := fun h_card hf ↦ ?sum
-      neg_mem_iff_and_star_mem_iff := by simp
-      zero_one_mem_ofSize i :=
-        ⟨by simpa using by positivity, by simpa using one_le_pow₀ (by linarith)⟩
-      splitGram_and_inv_mem := by
-              simp [inv_eq_left_inv IsHermitianInvolution.mul_self, h4.trans',
-                (entry_norm_bound_of_unitary IsHermitianInvolution.mem_unitary ..).trans]
-      isCompact_ofSize _ := by simpa [closedBall] using isCompact_closedBall (0 : ℂ) _
-      two_le_loss := ?le
-      loss_ne_top := by simp
-      pairs_le := by simp
-      one_le_kernelBound := by simpa [abs_of_pos pi_pos] using by linarith [two_le_pi]
-      levelUnit_mem_ofSize := by simpa using by linarith
-      hasMatrixSize_basisMatrix := ?basis
-      traceOne_div_mem_ofSize := ?trace
-      hasMatrixSize_boxSet := ?box
-      mem_vecsOfSize_of_mem_closePairs := fun ω₁ ω₂ h_close ↦ ?close
-      exists_unit_smul_mem_closePairs i _ :=
-        ⟨(Units.mk0 ((L : ℂ) ^ (i + 2)) (by simpa using by linarith))⁻¹,
-          by simp [abs_of_nonneg, h4.trans'],
-          fun _ h₁ _ h₂ ↦ hF.smul_mem_closePairs hρ h₁ h₂⟩
-      modulus_le := ?md
-      volume_ofSize_le := ?vol
-      two_mul_blockRank_le := by simp [hk, PlaceData.blockRank]
-      exists_blockKernel := ?block
-      exists_commonBound x _ y _ := hF.exists_isCommonBound hρ (fun _ ↦ rfl) x y }
+  refine {
+    ofSize j := {x | ‖x‖ ≤ L ^ j}
+    loss := .ofReal L ^ 2
+    mul_mem_ofSize hx hy := (norm_mul_le_of_le hx hy).trans_eq (pow_add ..).symm
+    sum_mem_ofSize := fun h_card hf ↦ ?sum
+    neg_mem_iff_and_star_mem_iff := by simp
+    zero_one_mem_ofSize i :=
+      ⟨by simpa using by positivity, by simpa using one_le_pow₀ (by linarith)⟩
+    splitGram_and_inv_mem := by
+      simp [inv_eq_left_inv IsHermitianInvolution.mul_self, h4.trans',
+        (entry_norm_bound_of_unitary IsHermitianInvolution.mem_unitary ..).trans]
+    isCompact_ofSize _ := by simpa [closedBall] using isCompact_closedBall (0 : ℂ) _
+    two_le_loss := ?le
+    loss_ne_top := by simp
+    pairs_le := by simp
+    one_le_kernelBound := by simpa [abs_of_pos pi_pos] using by linarith [two_le_pi]
+    levelUnit_mem_ofSize := by simpa using by linarith
+    hasMatrixSize_basisMatrix := ?basis
+    traceOne_div_mem_ofSize := ?trace
+    hasMatrixSize_boxSet := ?box
+    mem_vecsOfSize_of_mem_closePairs := fun ω₁ ω₂ h_close ↦ ?close
+    exists_unit_smul_mem_closePairs i _ := ⟨
+      (Units.mk0 ((L : ℂ) ^ (i + 2)) (by simpa using by linarith))⁻¹,
+      by simp [abs_of_nonneg, h4.trans'],
+      fun _ h₁ _ h₂ ↦ hF.smul_mem_closePairs hρ h₁ h₂
+    ⟩
+    modulus_le := ?md
+    volume_ofSize_le := ?vol
+    two_mul_blockRank_le := by simp [hk, PlaceData.blockRank]
+    exists_blockKernel := ?block
+    exists_commonBound x _ y _ := hF.exists_isCommonBound hρ (fun _ ↦ rfl) x y
+  }
   case block =>
     -- the spheres of ℂ² have mass at most `4 π² L ^ (2 j)` in size `j`
     obtain ⟨l, h_finite, h_dis, h_mass⟩ :=
@@ -1101,13 +1112,14 @@ def RealPlaceSizes.gauge (hρ : ρ ≤ L := by rfl) : Gauge hF.complexData := by
     refine ⟨l, h_finite, h_dis, fun β j ↦ (h_mass β (L ^ j)).trans ?_⟩
     have h_one : 1 ≤ L ^ j := one_le_pow₀ (by linarith)
     have h_sphere : sphereDensity 2 (2 * (L ^ j) ^ 2) ≤ (L ^ 2) ^ (2 * (j + 1)) :=
-      calc sphereDensity 2 (2 * (L ^ j) ^ 2) = 4 * π ^ 2 * (L ^ j) ^ 2 := by
-            simp only [sphereDensity]
-            norm_num
-            ring
+      calc
+        sphereDensity 2 (2 * (L ^ j) ^ 2) = 4 * π ^ 2 * (L ^ j) ^ 2 := by
+          simp only [sphereDensity]
+          norm_num
+          ring
         _ ≤ L ^ 2 * L ^ 2 * (L ^ j) ^ 4 := by
-            gcongr
-            exacts [by nlinarith, pi_le_four.trans h4, by norm_num]
+          gcongr
+          exacts [by nlinarith, pi_le_four.trans h4, by norm_num]
         _ = (L ^ 2) ^ (2 * (j + 1)) := by ring
     rw [← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_pow (by positivity)]
     exact ENNReal.ofReal_le_ofReal (by simpa using h_sphere)
@@ -1127,8 +1139,7 @@ def RealPlaceSizes.gauge (hρ : ρ ≤ L := by rfl) : Gauge hF.complexData := by
   case trace =>
     simp
     linarith
-  case box =>
-    simp +contextual [HasMatrixSize, (norm_apply_le_l2_opNorm ..).trans, hρ.trans']
+  case box => simp +contextual [HasMatrixSize, (norm_apply_le_l2_opNorm ..).trans, hρ.trans']
   case close =>
     have h_entry (k : 𝔰.BesselIndex) : ‖ω₁ k‖ ≤ 1 ∧ ‖ω₂ k‖ ≤ 1 :=
       norm_apply_le_one_of_sq_add_sq_lt_one h_close k
@@ -1151,14 +1162,18 @@ def RealPlaceSizes.gauge (hρ : ρ ≤ L := by rfl) : Gauge hF.complexData := by
 /-- The length of the vector y at the point g: the Euclidean length of g⁻¹ y. -/
 def lengthAt (g : 𝔰.G₁) (y : 𝔰.BesselIndex → ℂ) : ℝ := ‖toLp 2 (g⁻¹.val.val *ᵥ y)‖
 
-/-- The length at the point g of the class of y modulo the e_b, b < l: the infimum of the lengths
-at g of its lifts. -/
+/--
+The length at the point g of the class of y modulo the e_b, b < l: the infimum of the lengths
+at g of its lifts.
+-/
 def inducedLength (g : 𝔰.G₁) (l : ℕ) (y : 𝔰.BesselIndex → ℂ) : ℝ :=
   ⨅ y' : {y' : 𝔰.BesselIndex → ℂ // CongrBelow l y y'}, lengthAt g y'
 
-/-- The depth of e_a at the points g and g': the infimum of |ζ|_g² + |ζ|_g'², for the lengths
+/--
+The depth of e_a at the points g and g': the infimum of |ζ|_g² + |ζ|_g'², for the lengths
 `inducedLength` modulo the e_b, b < a, over the ζ orthogonal to these e_b with ⟨e_a, ζ⟩ = 1. The
-product ⟨e_a, ζ⟩ is the coordinate of ζ at e*_a. -/
+product ⟨e_a, ζ⟩ is the coordinate of ζ at e*_a.
+-/
 def realDepth (a : Fin 𝔰.ϱ) (g g' : 𝔰.G₁) : ℝ :=
   ⨅ ζ : {ζ : 𝔰.BesselIndex → ℂ // IsOrthogonalBelow a ζ ∧ ζ (eStar a) = 1},
     inducedLength g a ζ ^ 2 + inducedLength g' a ζ ^ 2

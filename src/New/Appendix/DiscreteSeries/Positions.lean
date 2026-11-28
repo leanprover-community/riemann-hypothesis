@@ -45,52 +45,65 @@ def formAdjoint (ε : n → ℤˣ) (η : m → ℤˣ) (A : Matrix n m ℂ) : Mat
 def initCols {d : ℕ} (v : Matrix n (Fin (d + 1)) ℂ) : Matrix n (Fin d) ℂ :=
   v.submatrix id Fin.castSucc
 
-/-- A position of `U(η)` in `U(ε)`, where the ranks differ by `2 j₀ - 1` and `j₀ = d + 1`. It
+/--
+A position of `U(η)` in `U(ε)`, where the ranks differ by `2 j₀ - 1` and `j₀ = d + 1`. It
 consists of independent vectors `v₁, …, v_{j₀}`, the columns of `v`, whose pairings for the form
 `ε` vanish except that the pairing of `v_{j₀}` with itself is `±1`, and of an isometry `i₀` into
-their orthogonal complement. -/
-structure IsPosition (ε : n → ℤˣ) (η : m → ℤˣ) (d : ℕ) (v : Matrix n (Fin (d + 1)) ℂ)
-    (i₀ : Matrix n m ℂ) : Prop where
+their orthogonal complement.
+-/
+structure IsPosition
+    (ε : n → ℤˣ) (η : m → ℤˣ) (d : ℕ) (v : Matrix n (Fin (d + 1)) ℂ) (i₀ : Matrix n m ℂ)
+    : Prop where
   /-- The ranks differ by `2 j₀ - 1`. -/
   card_eq : Fintype.card n = Fintype.card m + 2 * d + 1
   /-- The vectors `v₁, …, v_{j₀}` are independent. -/
   independent : LinearIndependent ℂ v.col
   /-- The product of `v_i` and `v_j` vanishes unless `i = j = j₀`. -/
-  gram_eq_zero (a b : Fin (d + 1)) :
-    a ≠ Fin.last d ∨ b ≠ Fin.last d → (vᴴ * signMatrix ε * v) a b = 0
+  gram_eq_zero (a b : Fin (d + 1))
+    : a ≠ Fin.last d ∨ b ≠ Fin.last d → (vᴴ * signMatrix ε * v) a b = 0
   /-- The pairing of `v_{j₀}` with itself, which can be negative, is `±1`. -/
-  gram_last_eq_sign : (vᴴ * signMatrix ε * v) (Fin.last d) (Fin.last d) = 1 ∨
-    (vᴴ * signMatrix ε * v) (Fin.last d) (Fin.last d) = -1
+  gram_last_eq_sign
+    : (vᴴ * signMatrix ε * v) (Fin.last d) (Fin.last d) = 1
+      ∨ (vᴴ * signMatrix ε * v) (Fin.last d) (Fin.last d) = -1
   /-- The map `i₀` is an isometry. -/
   isometry : i₀ᴴ * signMatrix ε * i₀ = signMatrix η
   /-- The image of `i₀` is orthogonal to `v₁, …, v_{j₀}`. -/
   orthogonal : i₀ᴴ * signMatrix ε * v = 0
 
-/-- Let `A_{≤ j}` be the span of the columns `v₁, …, v_j` of `v`. Then `Y` maps `A_{≤ j}` into
+/--
+Let `A_{≤ j}` be the span of the columns `v₁, …, v_j` of `v`. Then `Y` maps `A_{≤ j}` into
 `A_{≤ j - 1}` for `j ≤ j₀ = d + 1`, and `σ` is the sum of the coefficients of `v_j` in
-`Y v_{j + 1}` over `j < j₀`, which is determined by `Y` if the `v_j` are independent. -/
+`Y v_{j + 1}` over `j < j₀`, which is determined by `Y` if the `v_j` are independent.
+-/
 def LowersFlag (d : ℕ) (v : Matrix n (Fin (d + 1)) ℂ) (Y : Matrix n n ℂ) (σ : ℂ) : Prop :=
   ∃ N : Matrix (Fin d) (Fin (d + 1)) ℂ,
-    (∀ (a : Fin d) (b : Fin (d + 1)), b.val ≤ a.val → N a b = 0) ∧
-    Y * v = initCols v * N ∧
-    ∑ a : Fin d, N a a.succ = σ
+    (∀ (a : Fin d) (b : Fin (d + 1)), b.val ≤ a.val → N a b = 0) ∧ Y * v = initCols v * N
+      ∧ ∑ a : Fin d, N a a.succ = σ
 
 /-- `Y` acts by `Y'` on the image of `i₀`, modulo the span `A_{≤ j₀ - 1}` of `v₁, …, v_{j₀ - 1}`. -/
-def InducesOn (d : ℕ) (v : Matrix n (Fin (d + 1)) ℂ) (i₀ : Matrix n m ℂ) (Y : Matrix n n ℂ)
-    (Y' : Matrix m m ℂ) : Prop :=
+def InducesOn
+    (d : ℕ) (v : Matrix n (Fin (d + 1)) ℂ)
+    (i₀ : Matrix n m ℂ) (Y : Matrix n n ℂ) (Y' : Matrix m m ℂ)
+    : Prop :=
   ∃ C : Matrix (Fin d) m ℂ, Y * i₀ = i₀ * Y' + initCols v * C
 
-/-- A stationary position. Let `μ`, `μ'` be the weights of the lowest `K`-types of `l`, `k`, as
+/--
+A stationary position. Let `μ`, `μ'` be the weights of the lowest `K`-types of `l`, `k`, as
 diagonal matrices. Then `μ` moves `v_j` to `v_{j + 1}` for `j < j₀` and compresses to `μ'`, and `i₀`
-is the identity on `ℂ^X`, where `e` and `e'` place `X` among the coordinates `n` and `m`. -/
-structure IsStationary {ε : n → ℤˣ} {η : m → ℤˣ} (l : HCParam ε) (k : HCParam η) {L L' : ℕ}
-    (e : X ⊕ Fin L ≃ n) (e' : X ⊕ Fin L' ≃ m) (d : ℕ) (v : Matrix n (Fin (d + 1)) ℂ)
-    (i₀ : Matrix n m ℂ) : Prop extends IsPosition ε η d v i₀ where
+is the identity on `ℂ^X`, where `e` and `e'` place `X` among the coordinates `n` and `m`.
+-/
+structure IsStationary
+    {ε : n → ℤˣ} {η : m → ℤˣ} (l : HCParam ε) (k : HCParam η)
+    {L L' : ℕ} (e : X ⊕ Fin L ≃ n) (e' : X ⊕ Fin L' ≃ m)
+    (d : ℕ) (v : Matrix n (Fin (d + 1)) ℂ)
+    (i₀ : Matrix n m ℂ)
+    : Prop
+    extends IsPosition ε η d v i₀ where
   /-- `μ v_j = v_{j + 1}` for `j < j₀`. -/
   shift : intDiagonal l.lowestKType * initCols v = v.submatrix id Fin.succ
   /-- `i₀† μ i₀ = μ'`. -/
-  adjoint_weight_mul_eq : formAdjoint ε η i₀ * intDiagonal l.lowestKType * i₀ = intDiagonal
-    k.lowestKType
+  adjoint_weight_mul_eq
+    : formAdjoint ε η i₀ * intDiagonal l.lowestKType * i₀ = intDiagonal k.lowestKType
   /-- `i₀ = 1` on `ℂ^X`. -/
   apply_inl (i : n) (x : X) : i₀ i (e' (Sum.inl x)) = if i = e (Sum.inl x) then 1 else 0
 

@@ -78,9 +78,10 @@ namespace New
 
 open Module LinearMap Fintype Function QuotientAddGroup ValuationRing
 
-variable {V : Type} [FinComplexSpace V]
-  {L : Submodule ℤ V} [IsFullRankLattice L] {B : ThetaTori.LatticeForm L}
-  {χ : V → ℂ} [hB : IsAppellHumbert B χ] [hp : IsPosRiemann B]
+variable
+  {V : Type} [FinComplexSpace V]
+  {L : Submodule ℤ V} [IsFullRankLattice L]
+  {B : ThetaTori.LatticeForm L} {χ : V → ℂ} [hB : IsAppellHumbert B χ] [hp : IsPosRiemann B]
 
 /-- Schur orthogonality for the translates of theta functions. Let translation by every point of
 the dual lattice permute the points `a s`, `s ∈ T`, of the dual lattice modulo `L`. With
@@ -281,13 +282,18 @@ namespace New.ThetaTori
 
 open Module Submodule NNReal Valuation MvPolynomial Set IsLocalRing
 
-variable {ι V : Type} [FinComplexSpace V]
-  {L : Submodule ℤ V} {B : LatticeForm L} {χ g : V → ℂ} {u : V} {f : V → ℂ}
-  {v : Valuation ℂ ℝ≥0} {r a : ℕ} {M : Submodule v.valuationSubring (V → ℂ)} (R : Type*)
-  {A : Type*} [CommRing R] [CommRing A] [Algebra R A] (x : ι → A) (m : ℕ)
+variable
+  {ι V : Type} [FinComplexSpace V]
+  {L : Submodule ℤ V} {B : LatticeForm L} {χ g : V → ℂ} {u : V} {f : V → ℂ} {v : Valuation ℂ ℝ≥0}
+  {r a : ℕ} {M : Submodule v.valuationSubring (V → ℂ)}
+  (R : Type*)
+  {A : Type*} [CommRing R] [CommRing A] [Algebra R A]
+  (x : ι → A) (m : ℕ)
 
-/-- The m-th power of the R-span of the x_i in A, that is, the values at x of the forms of
-degree m over R. -/
+/--
+The m-th power of the R-span of the x_i in A, that is, the values at x of the forms of
+degree m over R.
+-/
 abbrev formSpan : Submodule R A := span R (range x) ^ m
 
 /-- Evaluation at `x` maps the homogeneous polynomials of degree `m` over `R` onto
@@ -297,8 +303,10 @@ lemma map_homogeneousSubmodule_eq_formSpan :
   simp [Submodule.map_pow, ← homogeneousSubmodule_one_pow R m, map_span,
     homogeneousSubmodule_one_eq_span_X, ← range_comp']
 
-/-- p is a primitive integral scaling of w: p_j = w_j/s for one complex s and all j, and some
-coordinate p_c is a unit of the valuation ring. -/
+/--
+p is a primitive integral scaling of w: p_j = w_j/s for one complex s and all j, and some
+coordinate p_c is a unit of the valuation ring.
+-/
 def IsIntegralCoords (w : ι → ℂ) (p : ι → v.valuationSubring) : Prop :=
   ∃ s : ℂ, (∀ j : ι, p j = w j / s) ∧ ∃ c : ι, v (p c) = 1
 
@@ -349,14 +357,15 @@ lemma IsAmpleType.thetaNorm_thetaShift (G : IsAmpleType B χ) (hu : u ∈ B.dual
 namespace HasGoodReduction
 
 variable (B χ v) in
-/-- The ball of radius ‖f‖: the module, over the valuation ring of v, of the theta functions g for
-(L, B, χ) with v(`New.RealComplexForm.thetaShift` B x g 0) ≤ ‖f‖ at every torsion point x. -/
-noncomputable def normBall (f : V → ℂ) :
-    Submodule v.valuationSubring (V → ℂ) :=
-  (B.thetaSpace χ).restrictScalars v.valuationSubring ⊓
-    ⨅ x : torsionPoints L,
-      Submodule.comap ((LinearMap.proj 0 ∘ₗ B.thetaShift x).restrictScalars v.valuationSubring)
-        (v.leSubmodule (B.thetaNorm v f))
+/--
+The ball of radius ‖f‖: the module, over the valuation ring of v, of the theta functions g for
+(L, B, χ) with v(`New.RealComplexForm.thetaShift` B x g 0) ≤ ‖f‖ at every torsion point x.
+-/
+noncomputable def normBall (f : V → ℂ) : Submodule v.valuationSubring (V → ℂ) :=
+  (B.thetaSpace χ).restrictScalars v.valuationSubring
+    ⊓ ⨅ x : torsionPoints L,
+        Submodule.comap ((LinearMap.proj 0 ∘ₗ B.thetaShift x).restrictScalars v.valuationSubring)
+          (v.leSubmodule (B.thetaNorm v f))
 
 variable (G : HasGoodReduction B χ v r)
 
@@ -611,7 +620,8 @@ lemma normBall_pow_pow [IsFullRankLattice L₀] (hAH : IsAppellHumbert (L := L�
 
 /-! ### Reduction of a ball -/
 
-variable {W : Type} [AddCommGroup W] [Module v.valuationSubring W]
+variable
+  {W : Type} [AddCommGroup W] [Module v.valuationSubring W]
   {ballMap : W →ₗ[v.valuationSubring] V → ℂ}
 
 include hf_ne

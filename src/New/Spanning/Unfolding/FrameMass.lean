@@ -84,17 +84,20 @@ where `b` is the weight of the data. -/
 lemma apply_deltaE_mem_Icc (v : D.Φ) : v (P.deltaE D.towerExp).val ∈ Set.Icc 2 D.b :=
   ⟨D.le_of_hasLogBound, D.le_of_hasLogBound⟩
 
-/-- The number `sph_l = (2π) ^ l / (|ϖ|_v ^ (l - 1 / 2) (l - 1)!)` at the infinite place `v`, where
+/--
+The number `sph_l = (2π) ^ l / (|ϖ|_v ^ (l - 1 / 2) (l - 1)!)` at the infinite place `v`, where
 `ϖ` generates the different of `E`. For `l ≥ 1` it is the mass of the unit sphere of `ℂ ^ l` for
 the fibre measure `dy / d⟨y, y⟩`, when `ℂ` carries `2 / |ϖ|_v` and `ℝ` carries `|ϖ|_v ^ (-1 / 2)`
-times Lebesgue measure. -/
+times Lebesgue measure.
+-/
 def unitSphereMass (l : ℕ) (v : D.Φ) : ℝ :=
   (2 * π) ^ l / (v (P.deltaE D.towerExp).val ^ (l - 1 / 2 : ℝ) * (l - 1).factorial)
 
-/-- The number `fr_v = N ^ k sph_{k+1} ⋯ sph_r` at the infinite place `v`, where `N` is the level,
-`k ≤ r` are the ranks of the data and `sph_l` is `New.Data.unitSphereMass`. -/
-def frameMass (v : D.Φ) : ℝ :=
-  D.N ^ D.k * ∏ i ∈ Ico D.k D.r, D.unitSphereMass (i + 1) v
+/--
+The number `fr_v = N ^ k sph_{k+1} ⋯ sph_r` at the infinite place `v`, where `N` is the level,
+`k ≤ r` are the ranks of the data and `sph_l` is `New.Data.unitSphereMass`.
+-/
+def frameMass (v : D.Φ) : ℝ := D.N ^ D.k * ∏ i ∈ Ico D.k D.r, D.unitSphereMass (i + 1) v
 
 lemma unitSphereMass_pos (l : ℕ) (v : D.Φ) : 0 < D.unitSphereMass l v := by
   have hϖ : 0 < v (P.deltaE D.towerExp).val := InfinitePlace.pos_iff.mpr D.filling.deltaE_ne_zero

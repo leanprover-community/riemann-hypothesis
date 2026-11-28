@@ -65,11 +65,13 @@ namespace New
 
 open MvPolynomial Matrix IsLocalRing Function Module Finset Fintype Ideal
 
-/-- The left cosets of the parahoric subgroup with blocks of sizes `r` and `k - r`. For `r ≤ k` they
+/--
+The left cosets of the parahoric subgroup with blocks of sizes `r` and `k - r`. For `r ≤ k` they
 index the edges into the lattice `W ^ k`, that is, the sublattices that contain `𝔪 W ^ k`, for the
 maximal ideal `𝔪` of `W`, and have a quotient of dimension `r` over the residue field: the
 parahoric subgroup is the stabilizer of one of them. As matrices act transposed, the same cosets
-index the edges from a lattice, which is how they are used here. -/
+index the edges from a lattice, which is how they are used here.
+-/
 abbrev ParahoricCosets (W : Type) [CommRing W] [IsLocalRing W] (k r : ℕ) : Type :=
   GL (Fin k) W ⧸ parahoric W (twoBlock k r)
 
@@ -146,7 +148,8 @@ lemma pow_sub_dvd_of_pow_dvd_pow_mul {O : Type} [CommRing O] [IsDomain O] {w x :
 namespace FrobeniusCycle
 
 section Edges
-variable {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
+variable
+  {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
   (T : FrobeniusCycle N W O)
 
 /-- A coefficient vector `v` lies in `T.translatesIn n τ I B` if and only if its translates by the
@@ -172,11 +175,13 @@ lemma residue_mem_translatesIn [IsLocalRing O] {τ : Fin k → ℕ} {B : Set (Ex
 
 /-! ### One edge -/
 
-/-- The matrix that takes coefficients in the monomials `z ^ β` to coefficients in the normalized
+/--
+The matrix that takes coefficients in the monomials `z ^ β` to coefficients in the normalized
 monomials `w ^ (-depth β) z ^ β`, which form a basis of the halfway lattice of the edge. It is
 diagonal with entries `w ^ depth β`, where `depth β` is the degree of `z ^ β` in the deep
 variables. The variable `b` of the letter `s`, with `b` counted from `0`, is deep if `s` is even
-and `r ≤ b`, or `s` is odd and `b < r`. -/
+and `r ≤ b`, or `s` is odd and `b < r`.
+-/
 def depthScaling (k n r : ℕ) : Matrix (Exponents N k n) (Exponents N k n) O :=
   diagonal fun β : Exponents N k n ↦ T.sqrtPrime ^ T.depth k n r β
 
@@ -257,15 +262,18 @@ lemma commute_depthScaling_letterRep {r : ℕ} {g : GL (Fin k) W} (hg : g ∈ le
   simp only [commute_iff_eq, depthScaling_eq_kroneckerPi, letterRep_apply, ← kroneckerPi_mul,
     ← map_mul, h_letter]
 
-/-- The forms that lie in the halfway lattices of all edges from the origin, in the normalized
+/--
+The forms that lie in the halfway lattices of all edges from the origin, in the normalized
 coefficients `v` of one edge. The form is `w ^ (-m) h` for an integral form `h`; every edge from
 the origin has an adapted basis in which it becomes a translate by some `g ∈ GL_k(W)`, and the
-normalized coefficients of all these translates are integral. -/
+normalized coefficients of all these translates are integral.
+-/
 def allEdgesForms (k n r : ℕ) : Submodule O (Exponents N k n → O) where
-  carrier := {v : Exponents N k n → O | ∃ (m : ℕ) (h : Exponents N k n → O),
-    T.sqrtPrime ^ m • v = T.depthScaling k n r *ᵥ h ∧
-    ∀ (g : GL (Fin k) W) (β : Exponents N k n),
-      T.sqrtPrime ^ m ∣ (T.depthScaling k n r *ᵥ T.letterRep n g *ᵥ h) β}
+  carrier :=
+    {v : Exponents N k n → O | ∃ (m : ℕ) (h : Exponents N k n → O),
+      T.sqrtPrime ^ m • v = T.depthScaling k n r *ᵥ h ∧
+      ∀ (g : GL (Fin k) W) (β : Exponents N k n),
+        T.sqrtPrime ^ m ∣ (T.depthScaling k n r *ᵥ T.letterRep n g *ᵥ h) β}
   add_mem' := by
     rintro v v' ⟨m, h, hv, h_dvd⟩ ⟨m', h', hv', h_dvd'⟩
     refine ⟨m + m', T.sqrtPrime ^ m' • h + T.sqrtPrime ^ m • h', ?_, fun g β ↦ ?_⟩
@@ -283,21 +291,26 @@ def allEdgesForms (k n r : ℕ) : Submodule O (Exponents N k n → O) where
 
 /-! ### Duality -/
 
-/-- The number `c₀ = k² log_p q`, where `q = p ^ (T.frobExp * N)` is the size of the residue field
+/--
+The number `c₀ = k² log_p q`, where `q = p ^ (T.frobExp * N)` is the size of the residue field
 of `W`. Here `T.frobExp` is the exponent of the power `P = p ^ T.frobExp` that links consecutive
 letters: the ring map of the letter `s + 1` is the `P`-th power of that of `s` modulo `p`. A
 multinomial coefficient of degree less than `q` with at most `k²` parts has `p`-adic valuation at
-most `c₀`. -/
+most `c₀`.
+-/
 def multinomialExponent (k : ℕ) : ℕ := k ^ 2 * (T.frobExp * N)
 
-/-- The weights `b` define a pairing `⟨h, h'⟩ = ∑_β h'_β b_β h_β` on coefficient vectors for which
+/--
+The weights `b` define a pairing `⟨h, h'⟩ = ∑_β h'_β b_β h_β` on coefficient vectors for which
 the matrices `ρ(g) = T.letterRep n g` and `ρ(gᵀ)` are adjoint, and the vector `b'` inverts `b` up to
 the factor `p ^ (N c₀)`, where `c₀ = T.multinomialExponent k`. It is used as the pairing, in
-normalized coefficients, of the halfway lattices of an edge and of the edge of dual lattices. -/
+normalized coefficients, of the halfway lattices of an edge and of the edge of dual lattices.
+-/
 structure IsEdgePairing (b b' : Exponents N k n → O) : Prop where
   /-- The adjoint of `ρ(g)` is `ρ(gᵀ)`: entry by entry, `diag(b) ρ(gᵀ) = ρ(g)ᵀ diag(b)`. -/
-  adjoint : ∀ (g : GL (Fin k) W) (α β : Exponents N k n),
-    b β * T.letterRep n (transposeGL g) β α = b α * T.letterRep n g α β
+  adjoint
+    : ∀ (g : GL (Fin k) W) (α β : Exponents N k n),
+      b β * T.letterRep n (transposeGL g) β α = b α * T.letterRep n g α β
   /-- The pairing is perfect up to `p ^ (N c₀)`. -/
   mul_eq_pow : ∀ β : Exponents N k n, b β * b' β = (T.p : O) ^ (N * T.multinomialExponent k)
 
@@ -356,22 +369,27 @@ section Global
 
 variable {X E : Type*} [Fintype X] [DecidableEq X]
 
-/-- The map from the integral functions on the set `X` of origins to the functions on the set `E`
+/--
+The map from the integral functions on the set `X` of origins to the functions on the set `E`
 of edges. The edge `e` has the origin `src e`, and `g e` passes to a basis adapted to `e`. The
 value at `e` is the vector of normalized coefficients of the translate by `g e` of the value at
-`src e`. -/
-def edgeRestriction (n r : ℕ) (src : E → X) (g : E → GL (Fin k) W) :
-    Matrix (E × Exponents N k n) (X × Exponents N k n) O :=
+`src e`.
+-/
+def edgeRestriction (n r : ℕ) (src : E → X) (g : E → GL (Fin k) W)
+    : Matrix (E × Exponents N k n) (X × Exponents N k n) O :=
   of fun (x : E × Exponents N k n) (y : X × Exponents N k n) ↦
     if src x.1 = y.1 then (T.depthScaling k n r * T.letterRep n (g x.1)) x.2 y.2 else 0
 
-/-- The functions `ψ` on edges, with values in the halfway lattices, that depend only on the origin:
+/--
+The functions `ψ` on edges, with values in the halfway lattices, that depend only on the origin:
 some `sqrtPrime ^ m • ψ` is the image under `edgeRestriction` of an integral function `φ` on
-origins. -/
-def originFunctions (n r : ℕ) (src : E → X) (g : E → GL (Fin k) W) :
-    Submodule O (E × Exponents N k n → O) where
-  carrier := {ψ : E × Exponents N k n → O | ∃ (m : ℕ) (φ : X × Exponents N k n → O),
-    T.sqrtPrime ^ m • ψ = T.edgeRestriction n r src g *ᵥ φ}
+origins.
+-/
+def originFunctions (n r : ℕ) (src : E → X) (g : E → GL (Fin k) W)
+    : Submodule O (E × Exponents N k n → O) where
+  carrier :=
+    {ψ : E × Exponents N k n → O | ∃ (m : ℕ) (φ : X × Exponents N k n → O),
+      T.sqrtPrime ^ m • ψ = T.edgeRestriction n r src g *ᵥ φ}
   add_mem' := by
     rintro ψ ψ' ⟨m, φ, hψ⟩ ⟨m', φ', hψ'⟩
     refine ⟨m + m', T.sqrtPrime ^ m' • φ + T.sqrtPrime ^ m • φ', ?_⟩

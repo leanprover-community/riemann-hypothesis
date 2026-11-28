@@ -66,17 +66,22 @@ section SplitHecke
 
 open Matrix NumberField Gf Set RingHom
 
-variable {n A W W' E : Type*} [Fintype n] [DecidableEq n] [Field E] [NumberField E] [IsCMField E]
+variable
+  {n A W W' E : Type*} [Fintype n] [DecidableEq n] [Field E] [NumberField E] [IsCMField E]
   [CommRing A] [AddCommGroup W] [Module A W] [AddCommGroup W'] [Module A W']
-  {w u : FinPlace E} (π : Representation A (Gf E n) W) {π' : Representation A (Gf E n) W'} {v : W}
+  {w u : FinPlace E}
+  (π : Representation A (Gf E n) W)
+  {π' : Representation A (Gf E n) W'} {v : W}
 
 variable (n w) in
 /-- The subgroup of K₀ of elements whose components away from w and w̄ are 1. -/
 noncomputable abbrev maxCompactAt : Subgroup (Gf E n) := stdLevel E n ⊓ supportedOn n {w}
 
-/-- The Hecke operator `T_{w,j}` at a split place `w`: the operator of the double coset of
+/--
+The Hecke operator `T_{w,j}` at a split place `w`: the operator of the double coset of
 `diag (ϖ 1_j, 1)` in `GL_n(E_w)`, acting through the embedding `ofSplitPlace hw` of `GL_n(E_w)` in
-the finite adelic unitary group. -/
+the finite adelic unitary group.
+-/
 noncomputable def heckeSplit (hw : w.IsSplit) (j : ℕ) : Module.End A W :=
   heckeGL (π.comp (ofSplitPlace hw)) j
 
@@ -86,8 +91,10 @@ lemma heckeSplit_eq_heckeFun (hw : w.IsSplit) (j : ℕ) :
       heckeFun (π.comp (ofSplitPlace hw)) (localIntGL n w) ((basicDoubleCoset n w j).indicator 1) :=
         rfl
 
-/-- For a representation π of G_f, the vectors spherical at w: those fixed by all elements of K₀
-whose components away from w and w̄ are 1. -/
+/--
+For a representation π of G_f, the vectors spherical at w: those fixed by all elements of K₀
+whose components away from w and w̄ are 1.
+-/
 noncomputable abbrev sphericalAt (w : FinPlace E) : Submodule A W := levelSpace π (maxCompactAt n w)
 
 variable {π} {σ : A →+* A}
@@ -426,31 +433,38 @@ lemma eventually_maxCompactAt_le {K : Subgroup (Gf E n)} (hK : K.IsOpen) :
 
 end OpenSubgroups
 
-
 /-! ## The Hecke polynomial at a split place -/
 
 section HeckePolynomial
 
-variable (n : Type*)
+variable
+  (n : Type*)
   {W E : Type*} [Fintype n] [DecidableEq n] [AddCommGroup W] [Module ℂ W] [Field E] [NumberField E]
-  [NumberField.IsCMField E] (π : Representation ℂ (Gf E n) W) (w : FinPlace E)
+  [NumberField.IsCMField E]
+  (π : Representation ℂ (Gf E n) W) (w : FinPlace E)
 
-/-- For a sequence t_i in a complex vector space and X ∈ ℂ, the sum ∑_{i=0}^{n} (−X)^i
+/--
+For a sequence t_i in a complex vector space and X ∈ ℂ, the sum ∑_{i=0}^{n} (−X)^i
 q^{binom(i,2)} t_i, with q the order of the residue field at w and n the number of elements of the
-index type `n`. -/
+index type `n`.
+-/
 noncomputable def heckePolyEval (t : ℕ → W) (X : ℂ) : W :=
   ∑ i ∈ Finset.range (Fintype.card n + 1), ((-X) ^ i * w.q ^ i.choose 2) • t i
 
 variable {n w} (hw : star w ≠ w)
 
-/-- The Hecke polynomial at `w` as a family of operators on `π`: the function sending `X : ℂ` to
+/--
+The Hecke polynomial at `w` as a family of operators on `π`: the function sending `X : ℂ` to
 `∑ i ≤ n, (-X)^i q^(i choose 2) T_{w,i}`, with `n` the rank and `q` the order of the residue
-field at `w`. Here `hw` is a proof that `star w ≠ w`. -/
+field at `w`. Here `hw` is a proof that `star w ≠ w`.
+-/
 noncomputable def heckePolyOp : ℂ → Module.End ℂ W := heckePolyEval n w (heckeSplit π hw)
 
-/-- The vector y is spherical at w (`New.sphericalAt`), that is, fixed by the elements of the
+/--
+The vector y is spherical at w (`New.sphericalAt`), that is, fixed by the elements of the
 maximal compact subgroup whose components away from w and w̄ are 1. Moreover, the Hecke polynomial
-`New.heckePolyOp` at each T ∈ ℂ acts on y by p(T). -/
+`New.heckePolyOp` at each T ∈ ℂ acts on y by p(T).
+-/
 def HasHeckePolynomial (p : ℂ → ℂ) (y : W) : Prop :=
   y ∈ sphericalAt π w ∧ ∀ T : ℂ, heckePolyOp π hw T y = p T • y
 
@@ -466,39 +480,50 @@ section SphericalHecke
 
 open Finset PowerSeries Polynomial NumberField
 
-variable {E n W W' : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
+variable
+  {E n W W' : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
   [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
   {π : Representation ℂ (Gf E n) W} {w : FinPlace E} {p : ℂ → ℂ} {y : W}
   {π' : Representation ℂ (Gf E n) W'} {hw : star w ≠ w} {σ : ℂ →+* ℂ} (L : W →ₛₗ[σ] W')
 
-/-- A spherical vector on which each `T_i` acts by `t i` is an eigenvector of the Hecke polynomial,
-with eigenvalue the polynomial made from the `t i`. -/
-theorem hasHeckePolynomial_of_heckeSplit (hy : y ∈ sphericalAt π w) {t : ℕ → ℂ}
-    (h : ∀ i : ℕ, heckeSplit π hw i y = t i • y) :
-    HasHeckePolynomial π hw (heckePolyEval n w t) y := by
+/--
+A spherical vector on which each `T_i` acts by `t i` is an eigenvector of the Hecke polynomial,
+with eigenvalue the polynomial made from the `t i`.
+-/
+theorem hasHeckePolynomial_of_heckeSplit
+    (hy : y ∈ sphericalAt π w) {t : ℕ → ℂ} (h : ∀ i : ℕ, heckeSplit π hw i y = t i • y)
+    : HasHeckePolynomial π hw (heckePolyEval n w t) y := by
   change y ∈ sphericalAt π w ∧ ∀ T : ℂ, heckePolyOp π hw T y = heckePolyEval n w t T • y
   refine ⟨hy, fun T ↦ ?_⟩
   -- termwise, `T_i` acts on `y` by `t i`
-  calc heckePolyOp π hw T y
-      = ∑ i ∈ range (Fintype.card n + 1), ((-T) ^ i * w.q ^ i.choose 2) • heckeSplit π hw i y := by
-        simp [heckePolyOp, heckePolyEval]
+  calc
+    heckePolyOp π hw T y
+        = ∑ i ∈ range (Fintype.card n + 1), ((-T) ^ i * w.q ^ i.choose 2) • heckeSplit π hw i y :=
+      by simp [heckePolyOp, heckePolyEval]
     _ = heckePolyEval n w t T • y := by simp [heckePolyEval, h, sum_smul, mul_smul]
 
-/-- A `σ`-semilinear map that is equivariant on `y` for the elements supported above `w` and
-`star w` carries the Hecke polynomial at `T` to the Hecke polynomial at `σ T`. -/
-theorem map_heckePolyOp (T : ℂ)
-    (hL : ∀ g ∈ Gf.supportedOn n {w}, L (π g y) = π' g (L y)) :
-    L (heckePolyOp π hw T y) = heckePolyOp π' hw (σ T) (L y) := by
+/--
+A `σ`-semilinear map that is equivariant on `y` for the elements supported above `w` and
+`star w` carries the Hecke polynomial at `T` to the Hecke polynomial at `σ T`.
+-/
+theorem map_heckePolyOp (T : ℂ) (hL : ∀ g ∈ Gf.supportedOn n {w}, L (π g y) = π' g (L y))
+    : L (heckePolyOp π hw T y) = heckePolyOp π' hw (σ T) (L y) := by
   -- termwise: `L` commutes with each `T_{w,i}` (`map_heckeSplit`)
   simp [heckePolyOp, heckePolyEval, fun i : ℕ ↦ map_heckeSplit hw i L hL]
 
-/-- Let w be split and B a G_f-invariant pairing of π and π', σ-semilinear in the first
+/--
+Let w be split and B a G_f-invariant pairing of π and π', σ-semilinear in the first
 variable. On vectors spherical at w, the adjoint of the Hecke polynomial H_w(X) is
-H_{w̄}(σX): B(H_w(X)y, z) = B(y, H_{w̄}(σX)z). -/
-theorem heckePolyOp_adjoint (hw : w.IsSplit) {Z : Type*} [AddCommGroup Z] [Module ℂ Z] {z : W'}
-    (B : W →ₛₗ[σ] W' →ₗ[ℂ] Z) (hy : y ∈ sphericalAt π w) (hz : z ∈ sphericalAt π' w)
-    (hB : ∀ (g : Gf E n) (x : W) (y' : W'), B (π g x) (π' g y') = B x y') (X : ℂ) :
-    B (heckePolyOp π hw X y) z = B y (heckePolyOp π' hw.star (σ X) z) := by
+H_{w̄}(σX): B(H_w(X)y, z) = B(y, H_{w̄}(σX)z).
+-/
+theorem heckePolyOp_adjoint
+    (hw : w.IsSplit)
+    {Z : Type*} [AddCommGroup Z] [Module ℂ Z]
+    {z : W'}
+    (B : W →ₛₗ[σ] W' →ₗ[ℂ] Z)
+    (hy : y ∈ sphericalAt π w) (hz : z ∈ sphericalAt π' w)
+    (hB : ∀ (g : Gf E n) (x : W) (y' : W'), B (π g x) (π' g y') = B x y') (X : ℂ)
+    : B (heckePolyOp π hw X y) z = B y (heckePolyOp π' hw.star (σ X) z) := by
   -- termwise: the adjoint of `T_{w,i}` is `T_{w̄,i}` (`heckeSplit_adjoint`)
   simp [heckePolyOp, heckePolyEval, ← heckeSplit_adjoint hw _ B hy hz hB]
 
@@ -531,14 +556,16 @@ lemma sum_coeff_invOfUnit_smul_eq {R V : Type*} [CommRing R] [Algebra R ℂ] [Ad
       _ = f (a r) := by simp [← mul_assoc, h_inv, hr]
   simpa [Algebra.smul_def] using h_eq
 
-/-- Let `π` be a complex representation of the finite adelic unitary group `Gf E n` on `W`, and let
+/--
+Let `π` be a complex representation of the finite adelic unitary group `Gf E n` on `W`, and let
 `w` be a finite place of the CM field `E` that is split, so `star w ≠ w` (witnessed by `hw`). If a
 ℂ-linear subspace `N` of the endomorphisms of `W` contains the Hecke polynomial operator
 `heckePolyOp π hw X = ∑ i ≤ n, (-X)^i q^(i choose 2) T_{w,i}` for every `X : ℂ`, then `N` contains
-the Hecke operator `heckeSplit π hw i` (that is, `T_{w,i}`) for every `i`. -/
-theorem heckeSplit_mem_of_heckePolyOp (N : Submodule ℂ (Module.End ℂ W))
-    (hN_mem : ∀ X : ℂ, heckePolyOp π hw X ∈ N) (i : ℕ) :
-    heckeSplit π hw i ∈ N := by
+the Hecke operator `heckeSplit π hw i` (that is, `T_{w,i}`) for every `i`.
+-/
+theorem heckeSplit_mem_of_heckePolyOp
+    (N : Submodule ℂ (Module.End ℂ W)) (hN_mem : ∀ X : ℂ, heckePolyOp π hw X ∈ N) (i : ℕ)
+    : heckeSplit π hw i ∈ N := by
   by_cases hi : i ∈ range (Fintype.card n + 1)
   · -- modulo `N` the Hecke polynomial vanishes at every point, so its coefficients vanish
     let a (j : ℕ) : Module.End ℂ W ⧸ N := (w.q ^ j.choose 2 : ℂ) • N.mkQ (heckeSplit π hw j)
@@ -563,16 +590,20 @@ theorem heckeSplit_mem_of_heckePolyOp (N : Submodule ℂ (Module.End ℂ W))
       Set.eq_empty_of_forall_notMem fun g hg ↦ (le_card_of_mem_basicDoubleCoset hg).not_gt h_gt
     simp [heckeSplit_eq_heckeFun, h_empty, heckeFun]
 
-/-- The eigenvalue `p` of the Hecke polynomial determines eigenvalues `t i` of the operators `T_i`,
-the same for all spherical eigenvectors. -/
-theorem exists_heckeSplit_eq_smul (p : ℂ → ℂ) :
-    ∃ t : ℕ → ℂ, ∀ y : W, HasHeckePolynomial π hw p y → ∀ i : ℕ, heckeSplit π hw i y = t i • y := by
+/--
+The eigenvalue `p` of the Hecke polynomial determines eigenvalues `t i` of the operators `T_i`,
+the same for all spherical eigenvectors.
+-/
+theorem exists_heckeSplit_eq_smul (p : ℂ → ℂ)
+    : ∃ t : ℕ → ℂ, ∀ y : W,
+      HasHeckePolynomial π hw p y → ∀ i : ℕ, heckeSplit π hw i y = t i • y := by
   -- `N`: the operators that act by a single scalar on all `y` with `HasHeckePolynomial π hw p y`
-  let N : Submodule ℂ (Module.End ℂ W) :=
-    { carrier := {A | ∃ c : ℂ, ∀ y, HasHeckePolynomial π hw p y → A y = c • y}
-      zero_mem' := ⟨0, by simp⟩
-      add_mem' := fun ⟨c, hc⟩ ⟨d, hd⟩ ↦ ⟨c + d, by simp +contextual [hc, hd, add_smul]⟩
-      smul_mem' := fun a _ ⟨c, hc⟩ ↦ ⟨a * c, by simp +contextual [hc, mul_smul]⟩ }
+  let N : Submodule ℂ (Module.End ℂ W) := {
+    carrier := {A | ∃ c : ℂ, ∀ y, HasHeckePolynomial π hw p y → A y = c • y}
+    zero_mem' := ⟨0, by simp⟩
+    add_mem' := fun ⟨c, hc⟩ ⟨d, hd⟩ ↦ ⟨c + d, by simp +contextual [hc, hd, add_smul]⟩
+    smul_mem' := fun a _ ⟨c, hc⟩ ↦ ⟨a * c, by simp +contextual [hc, mul_smul]⟩
+  }
   choose t ht using heckeSplit_mem_of_heckePolyOp N fun T ↦ ⟨p T, fun _ hy ↦ hy.2 T⟩
   exact ⟨t, fun y hy i ↦ ht i y hy⟩
 

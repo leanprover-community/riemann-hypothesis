@@ -179,8 +179,10 @@ omit [PrimeSevenModEight d] in
 lemma map_I_mul_sqrt_sq : ιₚ (I * √d) ^ 2 = -d := by
   simpa using congrArg (fun w : QuadField d ↦ ιₚ (w : ℂ)) (sqrtNegD_sq d)
 
-/-- The closure in `ℂ_p²` of the set of images under `ιₚ` of the pairs `(α, α ᾱ)`, with `α` an
-integer of `K = ℚ(√-d)`. -/
+/--
+The closure in `ℂ_p²` of the set of images under `ιₚ` of the pairs `(α, α ᾱ)`, with `α` an
+integer of `K = ℚ(√-d)`.
+-/
 noncomputable def normPairClosure : Set (ℂ_[p] × ℂ_[p]) :=
   closure {(ιₚ a, ιₚ (a * conj a)) | a ∈ quadInt d}
 
@@ -307,13 +309,16 @@ protected noncomputable def uniformizer : ↑O := (exists_irreducible O).choose
 variable (O) in
 lemma irreducible_uniformizer : Irreducible O.uniformizer := (exists_irreducible O).choose_spec
 
-/-- Normalised length: the additive map sending n to n·v(ϖ) and ∞ to ∞, where ϖ is the chosen
-uniformiser `O.uniformizer` and v(ℓ) = 1. -/
+/--
+Normalised length: the additive map sending n to n·v(ϖ) and ∞ to ∞, where ϖ is the chosen
+uniformiser `O.uniformizer` and v(ℓ) = 1.
+-/
 noncomputable def normLength : ℕ∞ →+ ℝ≥0∞ :=
-  AddMonoidHom.ENatMap
-    { toFun n := n * (-logb ℓ ‖O.uniformizer.val‖).toNNReal
-      map_zero' := by simp
-      map_add' := by simp [add_mul] }
+  AddMonoidHom.ENatMap {
+    toFun n := n * (- logb ℓ ‖O.uniformizer.val‖).toNNReal
+    map_zero' := by simp
+    map_add' := by simp [add_mul]
+  }
 
 lemma normLength_top : O.normLength ⊤ = ∞ := rfl
 
@@ -358,8 +363,10 @@ lemma eventually_exists_isPrimitiveRoot (k : ℕ) [NeZero k] :
   filter_upwards [eventually_mem (hζ.isOfFinOrder (NeZero.ne k)).norm_eq_one.le] with O hO
   exact ⟨⟨ζ, hO⟩, .coe_submonoidClass_iff.1 hζ⟩
 
-/-- A coefficient ring is an ℓ-adic integer ring; its quotients by nonzero ideals are finite, as
-these ideals are open and the ring is compact. -/
+/--
+A coefficient ring is an ℓ-adic integer ring; its quotients by nonzero ideals are finite, as
+these ideals are open and the ring is compact.
+-/
 noncomputable instance : PadicIntegerRing O ℓ where
   finiteQuotient hI := AddSubgroup.quotient_finite_of_isOpen _ (isOpen_iff.mpr hI)
 

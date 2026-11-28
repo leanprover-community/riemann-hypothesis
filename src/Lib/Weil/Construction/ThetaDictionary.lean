@@ -57,10 +57,11 @@ variable (X : Type) [Fintype X]
 
 /-- The standard Hermitian form `u* z = ∑ conj (u x) z x` on `ℂ^X`. -/
 noncomputable def fockForm : RealComplexForm (X → ℂ) :=
-  LinearMap.toContinuousLinearMap
-    { toFun u := LinearMap.toContinuousLinearMap (dotProductBilin ℂ ℂ (star u))
-      map_add' u v := ContinuousLinearMap.ext fun z ↦ by simp
-      map_smul' r u := ContinuousLinearMap.ext fun z ↦ by simp [star_trivial] }
+  LinearMap.toContinuousLinearMap {
+    toFun u := LinearMap.toContinuousLinearMap (dotProductBilin ℂ ℂ (star u))
+    map_add' u v := ContinuousLinearMap.ext fun z ↦ by simp
+    map_smul' r u := ContinuousLinearMap.ext fun z ↦ by simp [star_trivial]
+  }
 
 variable {X}
 
@@ -134,8 +135,10 @@ lemma mem_inv_smul_idealLattice {δ : E} (hδ : δ ≠ 0) {y : n → E} :
 
 variable [Fintype n]
 
-/-- The translation `T_γ` of functions on `ℂ^(Φ × n)`: the translation by the real image of `γ`,
-twisted by the exponential factor of the standard Hermitian form (`thetaShift`). -/
+/--
+The translation `T_γ` of functions on `ℂ^(Φ × n)`: the translation by the real image of `γ`,
+twisted by the exponential factor of the standard Hermitian form (`thetaShift`).
+-/
 noncomputable def ratShift (γ : n → E) : Module.End ℂ ((InfinitePlace E × n → ℂ) → ℂ) :=
   (fockForm (InfinitePlace E × n)).thetaShift (realImage γ)
 
@@ -300,10 +303,11 @@ lemma signedShift_add {γ γ' : n → E} (hγ : γ ∈ idealLattice E n) (hγ' :
   simp only [signedShift_apply, map_smul, ratShift_ratShift, smul_smul,
     semichar_finiteImage_add hγ hγ', mul_comm (semichar (finiteImage γ)), mul_assoc]
 
-/-- A theta function for a subgroup `Y` of `Eⁿ` is an entire function on `ℂ^(Φ × n)` that the
-signed translations `signedShift γ`, `γ ∈ Y`, fix. -/
-structure IsThetaFunction (Y : AddSubgroup (n → E)) (F : (InfinitePlace E × n → ℂ) → ℂ) :
-    Prop where
+/--
+A theta function for a subgroup `Y` of `Eⁿ` is an entire function on `ℂ^(Φ × n)` that the
+signed translations `signedShift γ`, `γ ∈ Y`, fix.
+-/
+structure IsThetaFunction (Y : AddSubgroup (n → E)) (F : (InfinitePlace E × n → ℂ) → ℂ) : Prop where
   /-- The function is entire. -/
   differentiable : Differentiable ℂ F
   /-- The signed translations along `Y` fix the function. -/
@@ -351,9 +355,9 @@ instance : IsFullRankLattice (realLattice E n) := by
   -- The image is the lattice `Variety.classLattice` of the trivial torsion class `⊥` for the scalar
   -- matrix `α`, in the real coordinates scaled by the image of `1`.
   let Q : Variety.RealVectors E n ≃L[ℝ] (InfinitePlace E × n → ℂ) :=
-    ((LinearEquiv.curry ℝ ℂ n (InfinitePlace E)).symm ≪≫ₗ
-      LinearEquiv.funCongrLeft ℝ ℂ (Equiv.prodComm (InfinitePlace E) n) ≪≫ₗ
-      h_unit.unit.mulLeftLinearEquiv ℝ _).toContinuousLinearEquiv
+    ((LinearEquiv.curry ℝ ℂ n (InfinitePlace E)).symm
+      ≪≫ₗ LinearEquiv.funCongrLeft ℝ ℂ (Equiv.prodComm (InfinitePlace E) n)
+      ≪≫ₗ h_unit.unit.mulLeftLinearEquiv ℝ _).toContinuousLinearEquiv
   have h_eq : realLattice E n = Variety.classLattice (.scalar n α) ⊥ Q := by
     ext x
     -- Both sides consist of images of the `γ` with `α⁻¹ γ` integral; compare the two images.
@@ -367,7 +371,8 @@ end Dictionary
 
 section StandardSpace
 
-variable {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
   {F : (InfinitePlace E × n → ℂ) → ℂ} {ε : n → ℤˣ} (V : Space E n ε)
 
 /-- The theta function of a vector, as a linear map. -/
@@ -535,19 +540,21 @@ lemma finrank_thetaSpace_realLattice
     h_sq.trans (AddSubgroup.relIndex_eq_one.2 (dualLattice_fockForm_le_realLattice h_AH))
   exact (pow_eq_one_iff.1 h_one).resolve_right two_ne_zero
 
-/-- Let `V` be a standard space over the CM field `E` (all signs `+1`, point the identity matrix).
+/--
+Let `V` be a standard space over the CM field `E` (all signs `+1`, point the identity matrix).
 A function `F` on `ℂ^(Φ × n)` is a theta function for the lattice `𝔞₀ⁿ` of `Eⁿ`, that is, entire
 and fixed by its signed translations, exactly when it is a multiple of the theta function of the
-vacuum vector of `V`. -/
-theorem Space.exists_smul_entireTheta_of_isThetaFunction
-    (hF : IsThetaFunction (idealLattice E n) F) :
-    ∃ c : ℂ, c • entireTheta V.vacElem = F := by
+vacuum vector of `V`.
+-/
+theorem Space.exists_smul_entireTheta_of_isThetaFunction (hF : IsThetaFunction (idealLattice E n) F)
+    : ∃ c : ℂ, c • entireTheta V.vacElem = F := by
   -- The theta functions are those of the Hermitian form `B` on `ℂ^(Φ × n)` for the image of
   -- `𝔞₀ⁿ`. As this lattice is unimodular, their space is spanned by that of the vacuum.
   let b : (InfinitePlace E × n → ℂ) →L[ℂ] InfinitePlace E × n → ℂ :=
     .pi fun x ↦ conj (Φ x.1 (traceOne : E)) • .proj x
-  have hb (u : InfinitePlace E × n → ℂ) (x : InfinitePlace E × n) :
-      b u x = conj (Φ x.1 (traceOne : E)) * u x := rfl
+  have hb (u : InfinitePlace E × n → ℂ) (x : InfinitePlace E × n)
+      : b u x = conj (Φ x.1 (traceOne : E)) * u x :=
+    rfl
   let B : LatticeForm (realLattice E n) := fockForm (InfinitePlace E × n)
   have h_dim : Module.finrank ℂ (B.thetaSpace (canonicalMultiplier B b)) = 1 :=
     finrank_thetaSpace_realLattice hb

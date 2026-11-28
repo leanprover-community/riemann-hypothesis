@@ -43,27 +43,34 @@ open Pi CategoryTheory CommRingCat IsLocalRing RingHom Ideal ResidueField Set al
 
 namespace New.Variety
 
-variable {Z : CommRingCat ⥤ Type 1} {D P C C' : CommRingCat} (α : D ⟶ P) {s : Z ⟶ reprBy D}
-  {F : Type} [Field.{0} F]
+variable
+  {Z : CommRingCat ⥤ Type 1} {D P C C' : CommRingCat} (α : D ⟶ P)
+  {s : Z ⟶ reprBy D} {F : Type} [Field.{0} F]
 
 /-! ### Proper functors -/
 
-/-- The functor `Z` on rings, with structure map `s : Z ⟶ reprBy D`, is proper over `D`: its
+/--
+The functor `Z` on rings, with structure map `s : Z ⟶ reprBy D`, is proper over `D`: its
 diagonal is closed, and it satisfies a valuative criterion with one ring `T` and one point
 `a ∈ Z(T)` serving all valuation rings of algebraically closed fields (which includes
-quasi-compactness). -/
+quasi-compactness).
+-/
 structure IsProperOver (s : Z ⟶ reprBy D) where
-  /-- The diagonal is closed: for points `x`, `y` over `C`, some ideal `I` of `C` is killed exactly
-  by the maps `C ⟶ C'` that make `x` and `y` equal. -/
-  diagonal_closed (C : CommRingCat) (x y : Z.obj C) :
-    ∃ I : Ideal C, ∀ (C' : CommRingCat) (f : C ⟶ C'),
-    Z.map f x = Z.map f y ↔ I ≤ ker f.hom
-  /-- For one ring `T` and one point `a` over it, each point in an algebraically closed field `K`
-  that maps `D` into a valuation ring `O` of `K` is the image of `a` under some `T → O ⊆ K`. -/
-  valuative_cover : ∃ (T : CommRingCat) (a : Z.obj T),
-    ∀ {K : Type} [Field K] [IsAlgClosed K] (O : ValuationSubring K) (z : Z.obj (of K)),
-    (∀ d : D, baseRingMap (B := of K) s z d ∈ O) →
-      ∃ u : T ⟶ of O, Z.map (u ≫ ofHom O.subtype) a = z
+  /--
+  The diagonal is closed: for points `x`, `y` over `C`, some ideal `I` of `C` is killed exactly
+  by the maps `C ⟶ C'` that make `x` and `y` equal.
+  -/
+  diagonal_closed (C : CommRingCat) (x y : Z.obj C)
+    : ∃ I : Ideal C, ∀ (C' : CommRingCat) (f : C ⟶ C'), Z.map f x = Z.map f y ↔ I ≤ ker f.hom
+  /--
+  For one ring `T` and one point `a` over it, each point in an algebraically closed field `K`
+  that maps `D` into a valuation ring `O` of `K` is the image of `a` under some `T → O ⊆ K`.
+  -/
+  valuative_cover
+    : ∃ (T : CommRingCat) (a : Z.obj T),
+      ∀ {K : Type} [Field K] [IsAlgClosed K] (O : ValuationSubring K) (z : Z.obj (of K)),
+        (∀ d : D, baseRingMap (B := of K) s z d ∈ O)
+          → ∃ u : T ⟶ of O, Z.map (u ≫ ofHom O.subtype) a = z
 
 /-- Two points of a proper functor over `C` are equal if they become equal along a jointly
 injective family of ring maps `C ⟶ K j`. -/
@@ -84,8 +91,10 @@ lemma IsProperOver.injective_map_valuationSubring (hs : IsProperOver s) (U : Val
     (Z.map (ofHom U.subtype) ·).Injective := fun _ _ hxy ↦
   hs.ext_of_jointly_injective (fun _ : Unit ↦ ofHom U.subtype) (by simp) fun _ ↦ hxy
 
-/-- For `α : D → P`, a place is a prime `q` of `P` together with a valuation ring `O` of the residue
-field `κ(q)` that contains the image of `D`. -/
+/--
+For `α : D → P`, a place is a prime `q` of `P` together with a valuation ring `O` of the residue
+field `κ(q)` that contains the image of `D`.
+-/
 structure ResiduePlace where
   /-- A prime ideal of `P`. -/
   prime : PrimeSpectrum P
@@ -96,14 +105,18 @@ structure ResiduePlace where
 
 namespace ResiduePlace
 
-/-- For α: D → P, the product of the valuation rings O over all places (q, O) of
-`New.Variety.ResiduePlace`. -/
+/--
+For α: D → P, the product of the valuation rings O over all places (q, O) of
+`New.Variety.ResiduePlace`.
+-/
 abbrev prodValuationRing : CommRingCat := of (∀ j : ResiduePlace α, j.valuationSubring)
 
 variable {α} (s) (f : prodValuationRing α ⟶ C) (t : P) (j : ResiduePlace α)
 
-/-- For a place j, the projection ring homomorphism from the product of all the valuation rings
-to the valuation ring of j. -/
+/--
+For a place j, the projection ring homomorphism from the product of all the valuation rings
+to the valuation ring of j.
+-/
 abbrev projHom : prodValuationRing α ⟶ of j.valuationSubring :=
   ofHom (evalRingHom (fun j ↦ j.valuationSubring) j)
 
@@ -119,20 +132,28 @@ lemma ne_zero_of_notMem_valuationSubring (h_notMem : ↑t ∉ j.valuationSubring
   fun h_zero ↦ by simp [h_zero] at h_notMem
 
 open scoped Classical in
-/-- For t∈P and a place (q,O), the element of O equal to 1 if the image of t in κ(q) lies in O,
-and its inverse otherwise. -/
+/--
+For t∈P and a place (q,O), the element of O equal to 1 if the image of t in κ(q) lies in O,
+and its inverse otherwise.
+-/
 def denominator : j.valuationSubring :=
-  if h : ↑t ∈ j.valuationSubring then 1 else
+  if h : ↑t ∈ j.valuationSubring then
+    1
+  else
     ⟨t⁻¹, (j.valuationSubring.mem_or_inv_mem' t).resolve_left h⟩
 
-/-- For t∈P and a place (q,O), the element of O given by the image of t in κ(q) times the
-denominator. -/
-def numerator : j.valuationSubring :=
-  ⟨t * j.denominator t, by
+/--
+For t∈P and a place (q,O), the element of O given by the image of t in κ(q) times the
+denominator.
+-/
+def numerator : j.valuationSubring := ⟨
+  t * j.denominator t,
+  by
     -- the product is `t` if `t ∈ j.valuationSubring`, and `t * t⁻¹ = 1` otherwise
     by_cases h_mem : ↑t ∈ j.valuationSubring
     · simp [denominator, h_mem]
-    · simp [denominator, h_mem, mul_inv_cancel₀ (ne_zero_of_notMem_valuationSubring t j h_mem)]⟩
+    · simp [denominator, h_mem, mul_inv_cancel₀ (ne_zero_of_notMem_valuationSubring t j h_mem)]
+⟩
 
 /-- For `f : prodValuationRing α ⟶ C` and `t ∈ P`, `f (denominator t)` and `f (numerator t)` are
 coprime. -/
@@ -146,25 +167,31 @@ lemma isCoprime_denominator_numerator : IsCoprime (f (denominator t)) (f (numera
   · simp [numerator, denominator, h_mem, mul_inv_cancel₀
     (ne_zero_of_notMem_valuationSubring t j h_mem)]
 
-/-- For `f : ∏ O → C`, the subring of pairs `(t, c)` in `P × C` with the following property: there
+/--
+For `f : ∏ O → C`, the subring of pairs `(t, c)` in `P × C` with the following property: there
 are `r`, `r'` in the product of the valuation rings such that `f r` is a unit, `r · t = r'` in
-`∏ κ(q)`, and `f r · c = f r'`. -/
+`∏ κ(q)`, and `f r · c = f r'`.
+-/
 def fractionGraph : Subring (P × C) :=
   letI : Algebra (prodValuationRing α) C := f.hom.toAlgebra
   ((⊥ : Subalgebra (prodValuationRing α) _).saturation
-    (_ ⊓ (IsUnit.submonoid C).comap (snd ((j : ResiduePlace α) → j.PlaceField) C))
+      (_ ⊓ (IsUnit.submonoid C).comap (snd ((j : ResiduePlace α) → j.PlaceField) C))
       inf_le_left).toSubring.comap
     ((algebraMap P (∀ j : ResiduePlace α, j.PlaceField)).prodMap (RingHom.id C))
 
-/-- For `ξ ∈ Z(P)`: a point of `Z` over the product of the valuation rings of all places that agrees
+/--
+For `ξ ∈ Z(P)`: a point of `Z` over the product of the valuation rings of all places that agrees
 with `ξ` over the product of the residue fields. It comes with three facts: `Z` is proper over `D`,
-`P` is absolutely flat, and all residue fields of `P` are algebraically closed. -/
+`P` is absolutely flat, and all residue fields of `P` are algebraically closed.
+-/
 structure ValuativeLift (ξ : Z P) where
   /-- A point of `Z` over the product of the valuation rings of all places. -/
   point : Z (prodValuationRing (baseRingMap s ξ))
-  /-- Over the product `∏ⱼ κ(j.prime)` of residue fields, indexed by the places `j`, the point
+  /--
+  Over the product `∏ⱼ κ(j.prime)` of residue fields, indexed by the places `j`, the point
   agrees with `ξ`; the map on the right is the algebra map `P → ∏ⱼ κ(j.prime)`,
-  `t ↦ (t mod j.prime)_j`. -/
+  `t ↦ (t mod j.prime)_j`.
+  -/
   map_point_eq : Z.map toFieldProd point = Z.map (ofHom (algebraMap ..)) ξ
   /-- `Z` is proper over `D`. -/
   isProperOver : IsProperOver s
@@ -204,18 +231,22 @@ lemma mem_fractionGraph {c : C} :
 
 /-! ### The space of places and its loci -/
 
-/-- The space of places of a valuative lift `z` of `ξ ∈ Z(P)`. With `T` the product
+/--
+The space of places of a valuative lift `z` of `ξ ∈ Z(P)`. With `T` the product
 `prodValuationRing (baseRingMap s ξ)` of the valuation rings of all places, its points over `C` are
 classes of maps `f : T ⟶ C`. Two maps are identified when they send the point of `z` to the same
-point of `Z(C)` and give the same ratios `f (numerator t) : f (denominator t)` for all `t ∈ P`. -/
+point of `Z(C)` and give the same ratios `f (numerator t) : f (denominator t)` for all `t ∈ P`.
+-/
 def placeSpace : PointFunctor where
-  obj C := ULift <| Quotient
-    { r (f g : prodValuationRing (baseRingMap s ξ) ⟶ C) :=
-        Z.map f z.point = Z.map g z.point ∧
-        ∀ t : P, f (numerator t) * g (denominator t) = g (numerator t) * f (denominator t)
+  obj C :=
+    ULift <| Quotient {
+      r (f g : prodValuationRing (baseRingMap s ξ) ⟶ C) :=
+        Z.map f z.point = Z.map g z.point
+          ∧ ∀ t : P, f (numerator t) * g (denominator t) = g (numerator t) * f (denominator t)
       iseqv := by
         -- transitivity: the middle pair can be cancelled because it is coprime
-        constructor <;> intros <;> grind [!isCoprime_denominator_numerator, IsCoprime] }
+        constructor <;> intros <;> grind [!isCoprime_denominator_numerator, IsCoprime]
+    }
   map k := ↾fun x ↦ ULift.up (x.down.map' (· ≫ k) (by simp_all [← map_mul]))
   map_id C := by
     ext ⟨⟨f⟩⟩
@@ -231,8 +262,8 @@ def placeSpaceMap : placeSpace z ⟶ Z where
     ext ⟨⟨f⟩⟩
     apply Z.map_comp_apply
 
-variable {z} {R : Type} [CommRing R] [IsLocalRing R] {q : Ideal P} [M : q.IsMaximal]
-  (x : placeSpace z C)
+variable
+  {z} {R : Type} [CommRing R] [IsLocalRing R] {q : Ideal P} [M : q.IsMaximal] (x : placeSpace z C)
 
 /-- A ring map `g : P ⟶ F` to a field factors through the residue field of some prime `q` of
 `P`. -/
@@ -245,10 +276,12 @@ lemma exists_algebraMap_residueField_comp_eq (g : P ⟶ of F) :
   exact ⟨⟨ker g.hom, inferInstance⟩, ofHom (lift _ g.hom le_rfl h_unit),
     hom_ext (RingHom.ext (lift_algebraMap _ g.hom le_rfl h_unit))⟩
 
-/-- For a point `x` of the space of places over `C`, the subring of `P × C` of pairs `(t, c)` such
+/--
+For a point `x` of the space of places over `C`, the subring of `P × C` of pairs `(t, c)` such
 that `x` gives `t` the finite value `c`. For any representative `f` of `x`, these are the pairs of
 `New.Variety.ResiduePlace.fractionGraph f`, that is, `f (numerator t) = f (denominator t) * c`. This
-does not depend on the choice of `f`. -/
+does not depend on the choice of `f`.
+-/
 def placeGraph : Subring (P × C) :=
   x.down.lift fractionGraph (by
     -- equal values give the same graph, by `mem_fractionGraph` and coprimality
@@ -267,27 +300,34 @@ lemma placeGraph_map {k : C ⟶ C'} {c : C} :
 
 variable (z) (J : Ideal D) (B : Subring q.ResidueField)
 
-/-- For an ideal I of P, the subfunctor of the space of places W of points that give every t ∈ I
-the value 0. -/
+/--
+For an ideal I of P, the subfunctor of the space of places W of points that give every t ∈ I
+the value 0.
+-/
 def killingPlaces (I : Ideal P) : Subfunctor (placeSpace z) where
   obj _ := {x | ∀ t ∈ I, (t, 0) ∈ placeGraph x}
   map k x hx t ht := by simpa using placeGraph_map (k := k) (hx t ht)
 
-/-- For a maximal ideal q of P and a place y killing q, the subring of κ(q) = P/q formed by the
+/--
+For a maximal ideal q of P and a place y killing q, the subring of κ(q) = P/q formed by the
 images of the t ∈ P finite at y, that is, of those `t` with a value at `y`: some
-`(t, c) ∈ placeGraph y`. -/
+`(t, c) ∈ placeGraph y`.
+-/
 def finiteValueSubring (y : killingPlaces z q C) : Subring q.ResidueField :=
   (((algebraMap P q.ResidueField).comp (fst P C)).domRestrict (placeGraph y.val)).range
 
-/-- For an ideal J of D and a subring B of κ(q), the subfunctor of places vanishing on q that
-are finite on B and whose structure map from D kills J. -/
+/--
+For an ideal J of D and a subring B of κ(q), the subfunctor of places vanishing on q that
+are finite on B and whose structure map from D kills J.
+-/
 def placesFiniteOn : Subfunctor (killingPlaces z q).toFunctor :=
-  zeroPoints ((killingPlaces z q).ι ≫ placeSpaceMap z ≫ s) J ⊓
-    { obj _ := {y | B ≤ finiteValueSubring z y}
-      map k y hy u hb := by
-        -- if `u` is the residue of `t` and `t` has the value `c`, then it now has the value `k c`
-        obtain ⟨⟨⟨t, c⟩, htc⟩, ht⟩ := hy hb
-        exact ⟨⟨(t, k c), placeGraph_map htc⟩, ht⟩ }
+  zeroPoints ((killingPlaces z q).ι ≫ placeSpaceMap z ≫ s) J ⊓ {
+    obj _ := {y | B ≤ finiteValueSubring z y}
+    map k y hy u hb := by
+      -- if `u` is the residue of `t` and `t` has the value `c`, then it now has the value `k c`
+      obtain ⟨⟨⟨t, c⟩, htc⟩, ht⟩ := hy hb
+      exact ⟨⟨(t, k c), placeGraph_map htc⟩, ht⟩
+  }
 
 variable {z J B x}
 

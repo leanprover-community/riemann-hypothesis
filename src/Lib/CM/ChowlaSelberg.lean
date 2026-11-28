@@ -338,24 +338,29 @@ lemma CMLattice.exists_finAdele_taylorVia_twistedTranslate_theta (C : CMLattice 
     (hU_int x' (b S * x) hx' (by rwa [map_mul])), h_point]
   exact hb S x (hS (mem_singleton_self x))
 
-/-- Data for complex multiplication of theta functions of a CM lattice `C` of `K = ℚ(√-d)`, under
+/--
+Data for complex multiplication of theta functions of a CM lattice `C` of `K = ℚ(√-d)`, under
 an automorphism `σ` of `ℂ` over `K`. The number `Ω` scales the lattice of the conjugate curve
 `C.galConjugate σ`, and the finite adele `β` of `K` describes the action of `σ` on the translates
-of `θ` by the points `x Ω₀` with `x ∈ K`. -/
-structure CMLattice.IsComplexMultiplicationData (C : CMLattice d) (σ : Gal(ℂ/QuadField d))
-    (Ω₀ Ω : ℂˣ) (β : 𝔸f (QuadField d)) : Prop where
+of `θ` by the points `x Ω₀` with `x ∈ K`.
+-/
+structure CMLattice.IsComplexMultiplicationData
+    (C : CMLattice d) (σ : Gal(ℂ/QuadField d)) (Ω₀ Ω : ℂˣ) (β : 𝔸f (QuadField d))
+    : Prop where
   /-- The lattice of the conjugate curve has the area `|Ω|² √d / 2`. -/
   area_eq : (C.galConjugate σ).area = ‖Ω.val‖ ^ 2 * √d / 2
   /-- A positive integral multiple of `Ω` is a period of the conjugate curve. -/
   exists_mul_mem_latticeModule : ∃ e : ℕ+, Ω.val * e ∈ (C.galConjugate σ).latticeModule
-  /-- For `x' ∈ K` close enough to `β x` in the finite adeles, `σ` takes the Taylor series of the
+  /--
+  For `x' ∈ K` close enough to `β x` in the finite adeles, `σ` takes the Taylor series of the
   translate of `θ` by `x Ω₀` to that of the translate by `x' Ω` of the theta function of the
-  conjugate curve. -/
-  taylorVia_twistedTranslate_theta (x : QuadField d) :
-    ∃ U ∈ nhds (β * algebraMap (QuadField d) (𝔸f (QuadField d)) x),
-      ∀ x' : QuadField d, algebraMap (QuadField d) (𝔸f (QuadField d)) x' ∈ U →
-        taylorVia σ (C.twistedTranslate 1 (x * Ω₀) C.θ) =
-          taylorAtZero ((C.galConjugate σ).twistedTranslate 1 (x' * Ω) (C.galConjugate σ).θ)
+  conjugate curve.
+  -/
+  taylorVia_twistedTranslate_theta (x : QuadField d)
+    : ∃ U ∈ nhds (β * algebraMap (QuadField d) (𝔸f (QuadField d)) x), ∀ x' : QuadField d,
+      algebraMap (QuadField d) (𝔸f (QuadField d)) x' ∈ U
+        → taylorVia σ (C.twistedTranslate 1 (x * Ω₀) C.θ)
+          = taylorAtZero ((C.galConjugate σ).twistedTranslate 1 (x' * Ω) (C.galConjugate σ).θ)
 
 /-- Complex multiplication for theta functions, for `d` a prime `≡ 7 (mod 8)` and `K = ℚ(√-d)`. Let
 the lattice of `C` be `Ω₀ 𝓞_K` and let `σ` be an automorphism of `ℂ` over `K`. There are a number

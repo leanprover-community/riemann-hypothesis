@@ -74,8 +74,12 @@ namespace New.GaloisRep
 
 open NumberField Polynomial Cohomology Ideal Quotient IsAlgClosed IsLocalRing RingHom algebraMap
 
-variable {E : Type} [Field E] [EmbeddedNumberField E] (w : FinPlace E) (A : ClosurePlace)
-  {K : Type} [Field K] [Algebra (ResField w) K] (T : MulChar K ℂ) (f : ℕ) (s : Gal(Ω/E)) (a : ℕ)
+variable
+  {E : Type} [Field E] [EmbeddedNumberField E]
+  (w : FinPlace E)
+  (A : ClosurePlace)
+  {K : Type} [Field K] [Algebra (ResField w) K]
+  (T : MulChar K ℂ) (f : ℕ) (s : Gal(Ω/E)) (a : ℕ)
 
 /-- A ring homomorphism `g : 𝓞 E →+* R` to a field killing `w` factors through `ResField w`. -/
 lemma exists_resField_hom {R : Type*} [Field R] (g : 𝓞 E →+* R) (h_le_ker : w.asIdeal ≤ ker g) :
@@ -86,30 +90,36 @@ lemma exists_resField_hom {R : Type*} [Field R] (g : 𝓞 E →+* R) (h_le_ker :
 /-- Witness data for `New.GaloisRep.IsTameExponent`. -/
 structure IsTameWitness (φ : 𝓞 Ω →+* K) (π : E) (z : Ω) (t : 𝓞 Ω) : Prop where
   centrePrime_le_ker : centerPrime Ω A ≤ ker φ
-  commutes (x : 𝓞 E) : φ (algebraMap (𝓞 E) (𝓞 Ω) x) =
-    algebraMap (ResField w) K (algebraMap (𝓞 E) (ResField w) x)
+  commutes (x : 𝓞 E)
+    : φ (algebraMap (𝓞 E) (𝓞 Ω) x) = algebraMap (ResField w) K (algebraMap (𝓞 E) (ResField w) x)
   isUniformiser : IsUniformizer A π
   pow_eq : z ^ (w.q ^ f - 1) = algebraMap E Ω π
   coe_eq : (t : Ω) = s z / z
   map_eq : T (φ t) = Complex.exp (2 * Real.pi * Complex.I / (w.q ^ f - 1 : ℕ)) ^ a
 
-/-- `s` has tame exponent `a` at level `f`: `A` lies over `w`, `f ≠ 0`, `s` lies in the inertia
-group of `A`, and there is a witness (`New.GaloisRep.IsTameWitness`). -/
+/--
+`s` has tame exponent `a` at level `f`: `A` lies over `w`, `f ≠ 0`, `s` lies in the inertia
+group of `A`, and there is a witness (`New.GaloisRep.IsTameWitness`).
+-/
 structure IsTameExponent : Prop where
   isPlaceOver : IsPlaceOver A w
   level_ne_zero : f ≠ 0
   mem_inertiaGroup : s ∈ inertiaGroup Gal(Ω/E) A
-  exists_witness : ∃ (φ : 𝓞 Ω →+* K) (π : E) (z : Ω) (t : 𝓞 Ω),
-    IsTameWitness w A T f s a φ π z t
+  exists_witness : ∃ (φ : 𝓞 Ω →+* K) (π : E) (z : Ω) (t : 𝓞 Ω), IsTameWitness w A T f s a φ π z t
 
 variable {w A f s a}
 
 open Nat
 
-/-- Inertia acts through the tame characters of level `f` given by the roots of `c`: whenever `s`
-has tame exponent `a`, `P` holds for `s` and `∏ x, (X - ιℓ ((T ^ a) x))` over the roots of `c`. -/
-def IsLabelledAt {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] (A : ClosurePlace) (T : MulChar K ℂ) (f : ℕ)
-    (P : Gal(Ω/E) → (PadicAlgCl ℓ)[X] → Prop) (c : (ResField w)[X]) : Prop :=
+/--
+Inertia acts through the tame characters of level `f` given by the roots of `c`: whenever `s`
+has tame exponent `a`, `P` holds for `s` and `∏ x, (X - ιℓ ((T ^ a) x))` over the roots of `c`.
+-/
+def IsLabelledAt
+    {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    (A : ClosurePlace) (T : MulChar K ℂ) (f : ℕ) (P : Gal(Ω/E) → (PadicAlgCl ℓ)[X] → Prop)
+    (c : (ResField w)[X])
+    : Prop :=
   ∀ ⦃s : Gal(Ω/E)⦄ ⦃a : ℕ⦄,
     IsTameExponent w A T f s a → P s ((c.aroots K).map fun x : K ↦ X - C (ιℓ ((T ^ a) x))).prod
 
@@ -275,12 +285,14 @@ private lemma exists_inertStep {E : Type} [Field E] [EmbeddedNumberField E] [CMT
       u.ncard_mul_ramificationIdx_mul_inertiaDeg (K := E)
   simp [← h_below, ← h_in, absNorm_pow_inertiaDeg]
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E n : Type} [Nonempty n] [Field E] [CMType E]
-  [EmbeddedNumberField E] [Fintype n] [DecidableEq n] {κ : Weight E}
-  {f : Gf E n → WeylIndex n κ.1 → ℂ} {P : FinPlace E → ℂ[X]} {r : GalRep ℓ E n}
-  {w : FinPlace E} {A : ValuationSubring Ω} {hw : star w ≠ w} {K : Type} [Field K]
-  [Algebra (ResField w) K] {T : MulChar K ℂ} [IsFaithfulMulChar K T] {s d : ℕ}
-  {c : (ResField w)[X]} {χ : Fin s → MulChar (ResField w) ℂ} {t : Fin s → ℕ} [WeilData E]
+variable
+  {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+  {E n : Type} [Nonempty n] [Field E] [CMType E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
+  {κ : Weight E} {f : Gf E n → WeylIndex n κ.1 → ℂ} {P : FinPlace E → ℂ[X]} {r : GalRep ℓ E n}
+  {w : FinPlace E} {A : ValuationSubring Ω} {hw : star w ≠ w} {K : Type}
+  [Field K] [Algebra (ResField w) K]
+  {T : MulChar K ℂ} [IsFaithfulMulChar K T]
+  {s d : ℕ} {c : (ResField w)[X]} {χ : Fin s → MulChar (ResField w) ℂ} {t : Fin s → ℕ} [WeilData E]
 
 /-- Level-`1` case of `New.GaloisRep.Attached.isLabelledAt`, where `c` splits linearly. -/
 private lemma New.GaloisRep.Attached.isLabelledAt_one (hf : f ∈ (stdSpace E n).forms κ)

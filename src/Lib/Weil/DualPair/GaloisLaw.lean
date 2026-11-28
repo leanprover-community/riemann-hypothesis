@@ -53,13 +53,18 @@ open Matrix ComplexConjugate WeilData stdLattice Submodule Unitary Complex Space
 
 unseal finitePart
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n : Type} [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} {V : Space E n s} (σ : ℂ →+* ℂ) (g : Gf E n)
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n : Type} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} {V : Space E n s}
+  (σ : ℂ →+* ℂ) (g : Gf E n)
 
 /-! ### The factor σΔ/Δ -/
 
-/-- The factor `σ (Δ g) / Δ g`, for the multiplier `Δ = New.finMultiplier` of a finite unitary point
-`g`. -/
+/--
+The factor `σ (Δ g) / Δ g`, for the multiplier `Δ = New.finMultiplier` of a finite unitary point
+`g`.
+-/
 noncomputable def multiplierRatio : ℂ := σ (finMultiplier g) / finMultiplier g
 
 /-- An embedding `σ` of `ℂ` into itself fixes the product of the finite multiplier `Δ g` and its
@@ -214,19 +219,21 @@ lemma Space.finsum_finHeisenbergOp_unit_smul (a : (Ô E)ˣ) (g : Gf E n) :
     exact (V.finHeisenbergOp_mulVec_out_vacElem h_rep).symm
   exact finsum_eq_of_bijective perm perm.bijective h_term
 
-/-- The `σ`-semilinear map `L` on the data of `V` scales finite translations by the finite adele
+/--
+The `σ`-semilinear map `L` on the data of `V` scales finite translations by the finite adele
 `b`: it keeps the finite part, spanned by the translates of the vacuum, and turns the translation by
 `x` into that by `b x` there, and `σ` acts on the additive character `selfDualAddChar` as
-multiplication by `b b̄` does. -/
-structure Space.ScalesTranslations (V : Space E n s) (σ : ℂ →+* ℂ) (b : 𝔸f E)
-    (L : 𝒮 V →ₛₗ[σ] 𝒮 V) : Prop where
+multiplication by `b b̄` does.
+-/
+structure Space.ScalesTranslations (V : Space E n s) (σ : ℂ →+* ℂ) (b : 𝔸f E) (L : 𝒮 V →ₛₗ[σ] 𝒮 V)
+    : Prop where
   /-- `σ` takes `selfDualAddChar z` to `selfDualAddChar (b b̄ z)`. -/
   map_selfDualAddChar (z : 𝔸f E) : σ (selfDualAddChar E z) = selfDualAddChar E (b * star b * z)
   /-- `L` maps the finite part to itself. -/
   map_mem {f : 𝒮 V} (hf : f ∈ V.finitePart) : L f ∈ V.finitePart
   /-- On the finite part, `L ϱ(x) = ϱ(b x) L` for the finite vectors `finVec x`. -/
-  map_rho {f : 𝒮 V} (hf : f ∈ V.finitePart) (x : n → 𝔸f E) :
-    L (V.ϱ (finVec x) f) = V.ϱ (finVec (b • x)) (L f)
+  map_rho {f : 𝒮 V} (hf : f ∈ V.finitePart) (x : n → 𝔸f E)
+    : L (V.ϱ (finVec x) f) = V.ϱ (finVec (b • x)) (L f)
 
 namespace Space.ScalesTranslations
 
@@ -376,41 +383,51 @@ lemma isUnit (hL : V.ScalesTranslations σ b L) : IsUnit b := by
   obtain ⟨u, a, rfl, -⟩ := hL.exists_eq_unitary_mul_unit (R := ∅) disjoint_bot_left
   exact isUnit_coe.mul (a.isUnit.map (Ô E).subtype)
 
-/-- Let `L` be a `σ`-semilinear map on the data of `V` that scales finite translations by the finite
+/--
+Let `L` be a `σ`-semilinear map on the data of `V` that scales finite translations by the finite
 adele `b`: it preserves the finite part (spanned by the translates of the vacuum), turns translation
 by `x` into translation by `b x` there, and `σ` acts on `selfDualAddChar` as multiplication by
 `b b̄` does. Then for a finite point `g` and `f` in the finite part,
 `L (ω(1, g) f) = (σ (Δ g) / Δ g) • ω(1, g) (L f)`, where `Δ = finMultiplier` is the multiplier of
-the Weil representation. This is the Galois law for the finite Weil representation. -/
-theorem map_omega (hL : V.ScalesTranslations σ b L) (g : Gf E n) (hf : f ∈ V.finitePart) :
-    L (V.ω (1, g) f) = multiplierRatio σ g • V.ω (1, g) (L f) := by
+the Weil representation. This is the Galois law for the finite Weil representation.
+-/
+theorem map_omega (hL : V.ScalesTranslations σ b L) (g : Gf E n) (hf : f ∈ V.finitePart)
+    : L (V.ω (1, g) f) = multiplierRatio σ g • V.ω (1, g) (L f) := by
   -- Write `b = u a`; the law holds for `ω(u)⁻¹ L`, and `u` is central.
   obtain ⟨u, a, rfl, -⟩ := hL.exists_eq_unitary_mul_unit (R := ∅) disjoint_bot_left
-  have h_unit : V.ω (1, (scalarFin n u)⁻¹) (L (V.ω (1, g) f)) =
-      multiplierRatio σ g • V.ω (1, g) (V.ω (1, (scalarFin n u)⁻¹) (L f)) :=
+  have h_unit
+      : V.ω (1, (scalarFin n u)⁻¹) (L (V.ω (1, g) f))
+        = multiplierRatio σ g • V.ω (1, g) (V.ω (1, (scalarFin n u)⁻¹) (L f)) :=
     hL.omega_inv_comp.map_omega_of_unit g hf
   simpa [rep_apply_apply, (Seesaw.commute_scalarFin g).left_comm, Prod.mk_one_one] using
     congrArg (V.ω (1, scalarFin n u)) h_unit
 
-/-- Let `L` be `σ`-semilinear and scale finite translations, and let `R` be a set of places disjoint
+/--
+Let `L` be `σ`-semilinear and scale finite translations, and let `R` be a set of places disjoint
 from its conjugate. There are a number `c` and a unitary adele `u`, acting as a scalar matrix, with
 `L vacElem = c ω(u) vacElem` and `L (Ψ ⊗ vacElem) = c ω(u) ((σ ∘ Ψ) ⊗ vacElem)` for all `Ψ`
-Schwartz–Bruhat above `R`, where `Ψ ⊗` is `V.schrodingerOp R Ψ`. -/
-theorem exists_map_schrodingerOp (hL : V.ScalesTranslations σ b L) {R : Set (FinPlace E)}
-    (hR : R.IsConjDisjoint) :
-    ∃ (c : ℂ) (u : unitary (𝔸f E)),
-      L V.vacElem = c • V.ω (1, scalarFin n u) V.vacElem ∧
-      ∀ Ψ : (n → 𝔸f E) → ℂ, IsSchwartzBruhat R Ψ →
-        L (V.schrodingerOp R Ψ V.vacElem) = c • V.ω (1, scalarFin n u)
-          (V.schrodingerOp R (σ ∘ Ψ) V.vacElem) := by
+Schwartz–Bruhat above `R`, where `Ψ ⊗` is `V.schrodingerOp R Ψ`.
+-/
+theorem exists_map_schrodingerOp
+    (hL : V.ScalesTranslations σ b L) {R : Set (FinPlace E)} (hR : R.IsConjDisjoint)
+    : ∃ (c : ℂ) (u : unitary (𝔸f E)),
+      L V.vacElem = c • V.ω (1, scalarFin n u) V.vacElem
+        ∧ ∀ Ψ : (n → 𝔸f E) → ℂ,
+          IsSchwartzBruhat R Ψ
+            → L (V.schrodingerOp R Ψ V.vacElem)
+              = c • V.ω (1, scalarFin n u) (V.schrodingerOp R (σ ∘ Ψ) V.vacElem) := by
   -- Write `b = u a` with `a = 1` on `R`, and apply `ω(u)` to the laws for `ω(u)⁻¹ L`.
   obtain ⟨u, a, rfl, ha⟩ := hL.exists_eq_unitary_mul_unit hR
   obtain ⟨c, hc⟩ := hL.omega_inv_comp.exists_map_vacElem_of_unit
-  have h_move {f f' : 𝒮 V} (h : V.ω (1, (scalarFin n u)⁻¹) (L f) = c • f') :
-      L f = c • V.ω (1, scalarFin n u) f' := by
+  have h_move {f f' : 𝒮 V} (h : V.ω (1, (scalarFin n u)⁻¹) (L f) = c • f')
+      : L f = c • V.ω (1, scalarFin n u) f' := by
     simpa [rep_apply_apply, Prod.mk_one_one] using congrArg (V.ω (1, scalarFin n u)) h
-  exact ⟨c, u, h_move hc, fun Ψ hΨ ↦ h_move
-    (hL.omega_inv_comp.map_schrodingerOp_of_map_vacElem hR ha hc hΨ)⟩
+  exact ⟨
+    c,
+    u,
+    h_move hc,
+    fun Ψ hΨ ↦ h_move (hL.omega_inv_comp.map_schrodingerOp_of_map_vacElem hR ha hc hΨ)
+  ⟩
 
 end Space.ScalesTranslations
 

@@ -91,8 +91,10 @@ section
 
 variable {p : ℕ} [ThePrime p] (O Γ : Type) [CommRing O] [Algebra ℤ_[p] O] [Group Γ]
 
-/-- A finite free O-module, with compatible Z_p-module structure, together with an O-linear
-representation of the group Γ on it. -/
+/--
+A finite free O-module, with compatible Z_p-module structure, together with an O-linear
+representation of the group Γ on it.
+-/
 structure GalLattice where
   /-- The underlying module `Λ`. -/
   (Carrier : Type)
@@ -113,29 +115,33 @@ structure GalLattice where
 
 open Module Submodule Period GalLattice TensorProduct Polynomial AdjoinRoot IsWeilPair
 
-attribute [instance] GalLattice.addCommGroup moduleO moduleZp GalLattice.isScalarTower free
-  module_finite
+attribute [instance]
+  GalLattice.addCommGroup moduleO moduleZp GalLattice.isScalarTower free module_finite
 
 /-- A lattice is read as its underlying type. -/
 instance : CoeSort (GalLattice O Γ) Type := ⟨Carrier⟩
 
-variable {O Γ} [OverGp Γ p]
+variable
+  {O Γ} [OverGp Γ p]
   (F : Filter Γ) (K : Γ → O[X] → Prop) (U : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ) (Y L : GalLattice O Γ)
 
-/-- The twisted dual L^∨(1) = Hom_O(L, O(1)) of a lattice L, with Γ acting on O(1) through the
-cyclotomic character. -/
+/--
+The twisted dual L^∨(1) = Hom_O(L, O(1)) of a lattice L, with Γ acting on O(1) through the
+cyclotomic character.
+-/
 abbrev GalLattice.tateDual : GalLattice O Γ := mk (L.Carrier →ₗ[O] O) (L.ρ.linHom (actionRep O O χ))
 
-/-- The lattice `Y` lies in the class given by a filter `F` on `Γ`, a relation `K`, and finite sets
+/--
+The lattice `Y` lies in the class given by a filter `F` on `Γ`, a relation `K`, and finite sets
 `U g` of integers for the `ℤ_[p]`-algebra maps `g : O → ℂ_[p]`. The periods of `Y` fixed by almost
 all elements of `Γ` for the supremum of `F` and the filter 'near 1' span
 (`New.Period.IsAdmissible`); every Hodge–Tate jump of `Y` at `g` lies in `U g`; and if `K s Q` holds
 and `toGp s` is in inertia, the polynomial `Q` over `O` kills `s` on the periods of `Y`
-(`New.Period.IsKilledBy`). For `K = ⊥` the last condition is empty. -/
+(`New.Period.IsKilledBy`). For `K = ⊥` the last condition is empty.
+-/
 def InClass : Prop :=
-  IsAdmissible Y.ρ (nearOne Γ ⊔ F) ∧
-  (∀ (g : O →ₐ[ℤ_[p]] ℂ_[p]) (u : ℤ), jump Y.ρ g u ≠ 0 → u ∈ U g) ∧
-  ∀ (s : Γ) (Q : O[X]), K s Q → IsWeilPair (toGp s) 0 → IsKilledBy Y.ρ s 0 Q
+  IsAdmissible Y.ρ (nearOne Γ ⊔ F) ∧ (∀ (g : O →ₐ[ℤ_[p]] ℂ_[p]) (u : ℤ), jump Y.ρ g u ≠ 0 → u ∈ U g)
+    ∧ ∀ (s : Γ) (Q : O[X]), K s Q → IsWeilPair (toGp s) 0 → IsKilledBy Y.ρ s 0 Q
 
 section Projections
 
@@ -162,9 +168,11 @@ lemma InClass.isPotentiallyCrystalline (h : InClass F K U Y) : IsPotentiallyCrys
 /-- The tensor product Y ⊗_O L of two lattices, with the diagonal action of Γ. -/
 abbrev GalLattice.tensor : GalLattice O Γ := mk (Y.Carrier ⊗[O] L.Carrier) (Y.ρ.tprod L.ρ)
 
-/-- A pairing of Y and L modulo p^m, with m = `exponent`: an O-linear ψ = `integralForm` :
+/--
+A pairing of Y and L modulo p^m, with m = `exponent`: an O-linear ψ = `integralForm` :
 Y ⊗ L → O(1) with gψ − ψ = p^m c(g) for a crystalline cocycle c = `cocycle`, and a Z_p-linear
-f = `toZp` : O → Z_p. -/
+f = `toZp` : O → Z_p.
+-/
 structure Pairing where
   /-- The exponent `m` of the modulus `p ^ m`. -/
   (exponent : ℕ)
@@ -175,42 +183,52 @@ structure Pairing where
   /-- A crystalline cocycle `c` of `Z`; it defines an extension `Z ⊕ O` of `O` by `Z`. -/
   (cocycle : crysCocycles (tateDual (Y.tensor L)).ρ)
   /-- The coboundary of `ψ` is `p ^ m` times the cocycle. -/
-  pow_smul_cocycle (g : Γ) :
-    p ^ exponent • cocycle.val g = ρ (Y.tensor L).tateDual g integralForm - integralForm
+  pow_smul_cocycle (g : Γ)
+    : p ^ exponent • cocycle.val g = ρ (Y.tensor L).tateDual g integralForm - integralForm
 
 variable {Y L} (P : Pairing Y L)
 
-/-- The Z_p-bilinear pairing Y × L → Z_p/p^m sending (y, l) to f(ψ(y ⊗ l)) modulo p^m, for the
-form ψ and the functional f: O → Z_p of P. -/
-def Pairing.modPairing : Y.Carrier →ₗ[ℤ_[p]] L.Carrier →ₗ[ℤ_[p]] QuotSpan
-  ((p : ℤ_[p]) ^ P.exponent) :=
+/--
+The Z_p-bilinear pairing Y × L → Z_p/p^m sending (y, l) to f(ψ(y ⊗ l)) modulo p^m, for the
+form ψ and the functional f: O → Z_p of P.
+-/
+def Pairing.modPairing
+    : Y.Carrier →ₗ[ℤ_[p]] L.Carrier →ₗ[ℤ_[p]] QuotSpan
+      ((p : ℤ_[p]) ^ P.exponent) :=
   ((curry P.integralForm).restrictScalars₁₂ ℤ_[p] ℤ_[p]).compr₂
     (Qₗ := QuotSpan (p ^ P.exponent : ℤ_[p]))
-      (mkQ (Ideal.span {(p : ℤ_[p]) ^ P.exponent}) ∘ₗ P.toZp)
+    (mkQ (Ideal.span {(p : ℤ_[p]) ^ P.exponent}) ∘ₗ P.toZp)
 
-/-- The cup product (g, h) ↦ b(a(g), g·c(h)) for b = `P.modPairing`, with Z/p^m(1) embedded in
-Q̄_p^×, is the coboundary of a continuous cochain Γ → Q̄_p^×. -/
+/--
+The cup product (g, h) ↦ b(a(g), g·c(h)) for b = `P.modPairing`, with Z/p^m(1) embedded in
+Q̄_p^×, is the coboundary of a continuous cochain Γ → Q̄_p^×.
+-/
 def Pairing.IsCupCoboundary [TopologicalSpace Γ] (a : Γ → Y.Carrier) (c : Γ → L.Carrier) : Prop :=
-  (fun q : Γ × Γ ↦ zmodPowToUnits P.exponent (P.modPairing (a q.fst) (L.ρ q.fst (c q.snd)))) ∈
-    B2 (unitsRep.comp toGp)
+  (fun q : Γ × Γ ↦ zmodPowToUnits P.exponent (P.modPairing (a q.fst) (L.ρ q.fst (c q.snd))))
+    ∈ B2 (unitsRep.comp toGp)
 
-/-- The annihilator `L^{⊥𝒬}` of a class `𝒬` of lattices: the `O`-module of functions `c : Γ → L`
+/--
+The annihilator `L^{⊥𝒬}` of a class `𝒬` of lattices: the `O`-module of functions `c : Γ → L`
 (not assumed to be cocycles) such that for every lattice `Y` in `𝒬`, every `m`, every pairing
 `P : Y × L → ℤ/p^m(1)` (`New.Lift.Pairing`) and every crystalline cocycle `a` of `Y`
 (`New.Period.crysCocycles`), the cup product of `a` and `c` under `P` is a coboundary
-(`New.Lift.Pairing.IsCupCoboundary`). -/
-def cupOrthogonal [TopologicalSpace Γ] (𝒬 : GalLattice O Γ → Prop) (L : GalLattice O Γ) :
-    Submodule O (Γ → L.Carrier) where
-  carrier := {c : Γ → L | ∀ (Y : GalLattice O Γ) (P : Pairing Y L), 𝒬 Y →
-    ∀ a ∈ crysCocycles Y.ρ, P.IsCupCoboundary a c}
+(`New.Lift.Pairing.IsCupCoboundary`).
+-/
+def cupOrthogonal [TopologicalSpace Γ] (𝒬 : GalLattice O Γ → Prop) (L : GalLattice O Γ)
+    : Submodule O (Γ → L.Carrier) where
+  carrier :=
+    {c : Γ → L | ∀ (Y : GalLattice O Γ) (P : Pairing Y L), 𝒬 Y →
+      ∀ a ∈ crysCocycles Y.ρ, P.IsCupCoboundary a c}
   add_mem' := by simp_all [← Pi.add_def, add_mem, Pairing.IsCupCoboundary]
   zero_mem' := by simp [← Pi.zero_def, Pairing.IsCupCoboundary]
   smul_mem' (o : O) c hc Y P hY a ha := by
     -- `integralForm` is a form on the tensor product over `O`, so the scalar moves from `c` to `a`
     simpa [Pairing.modPairing, Pairing.IsCupCoboundary] using hc Y P hY (o • a) (smul_mem _ o ha)
 
-/-- The defect on the dual side: the length over `O`, not normalised, of the crystalline cocycles of
-`L` modulo those in the annihilator `cupOrthogonal 𝒬 L` of the class `𝒬` under cup products. -/
+/--
+The defect on the dual side: the length over `O`, not normalised, of the crystalline cocycles of
+`L` modulo those in the annihilator `cupOrthogonal 𝒬 L` of the class `𝒬` under cup products.
+-/
 def dualDefect [TopologicalSpace Γ] (𝒬 : GalLattice O Γ → Prop) (L : GalLattice O Γ) : ℕ∞ :=
   relLength (crysCocycles L.ρ) (cupOrthogonal 𝒬 L)
 
@@ -219,10 +237,13 @@ lemma dualDefect_eq_zero_iff [TopologicalSpace Γ] {𝒬 : GalLattice O Γ → P
     {L : GalLattice O Γ} : dualDefect 𝒬 L = 0 ↔ crysCocycles L.ρ ≤ cupOrthogonal 𝒬 L :=
   relLength_eq_zero
 
-/-- The power `p ^ e` carries every crystalline cocycle of `L` into the annihilator
-`cupOrthogonal 𝒬 L` of the class `𝒬` under cup products. -/
-def HasCupExponent [TopologicalSpace Γ] (𝒬 : GalLattice O Γ → Prop) (L : GalLattice O Γ) (e : ℕ) :
-    Prop := ∀ x : Γ → L, x ∈ crysCocycles L.ρ → (p : O) ^ e • x ∈ cupOrthogonal 𝒬 L
+/--
+The power `p ^ e` carries every crystalline cocycle of `L` into the annihilator
+`cupOrthogonal 𝒬 L` of the class `𝒬` under cup products.
+-/
+def HasCupExponent [TopologicalSpace Γ] (𝒬 : GalLattice O Γ → Prop) (L : GalLattice O Γ) (e : ℕ)
+    : Prop :=
+  ∀ x : Γ → L, x ∈ crysCocycles L.ρ → (p : O) ^ e • x ∈ cupOrthogonal 𝒬 L
 
 /-- A larger power of `p` also carries the crystalline cocycles into `cupOrthogonal 𝒬 L`. -/
 lemma HasCupExponent.mono [TopologicalSpace Γ] {𝒬 : GalLattice O Γ → Prop} {L : GalLattice O Γ}
@@ -235,8 +256,10 @@ variable [Free ℤ_[p] O]
 
 instance : Free ℤ_[p] L := .trans (S := O)
 
-/-- The O-valued pairing ((λ, o), t) ↦ (p^m λ + oψ)(t) of the extension of O by (Y ⊗ L)^∨(1)
-along the cocycle c of P with Y ⊗ L. -/
+/--
+The O-valued pairing ((λ, o), t) ↦ (p^m λ + oψ)(t) of the extension of O by (Y ⊗ L)^∨(1)
+along the cocycle c of P with Y ⊗ L.
+-/
 def Pairing.extensionForm : (Y.tensor L).tateDual.Carrier × O →ₗ[O] (Y.tensor L).tateDual.Carrier :=
   (p ^ P.exponent • LinearMap.id).coprod (.toSpanSingleton O (Y.tensor L).tateDual P.integralForm)
 
@@ -272,10 +295,12 @@ end
 
 open Module Submodule Period GalLattice TensorProduct Polynomial AdjoinRoot IsWeilPair
 
-variable {p : ℕ} [ThePrime p] {O Γ : Type} [CommRing O] [Algebra ℤ_[p] O] [Group Γ] [OverGp Γ p]
+variable
+  {p : ℕ} [ThePrime p]
+  {O Γ : Type} [CommRing O] [Algebra ℤ_[p] O] [Group Γ] [OverGp Γ p]
   {F : Filter Γ} {K : Γ → O[X] → Prop} {U : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ} {Y L : GalLattice O Γ}
-  [Module.Finite ℤ_[p] O] {K' : Γ → O[X] → Prop}
-  {U' : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ}
+  [Module.Finite ℤ_[p] O]
+  {K' : Γ → O[X] → Prop} {U' : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ}
 
 instance : Module.Finite ℤ_[p] L := .trans O _
 
@@ -429,7 +454,9 @@ namespace New
 open Period Lift Module LE Submodule Function crysCocycles NeZero AddSubgroup Multiset Topology Nat
   Algebra LinearMap IsDiscreteValuationRing PadicInt MulAction Equiv DFunLike IsLocalGalois Selmer
 
-variable {ℓ : ℕ} [ThePrime ℓ] {R Γ : Type} [CommRing R] [PadicIntegerRing R ℓ] [Group Γ]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {R Γ : Type} [CommRing R] [PadicIntegerRing R ℓ] [Group Γ]
   {L L' : GalLattice R Γ}
 
 /-- There is a `ℤ_[ℓ]`-linear form `f` on `R` such that `(φ, x) ↦ f (φ x)` is a perfect pairing
@@ -558,18 +585,25 @@ lemma Period.exists_div_rootOfUnity (m : ℕ) {l : ℤ_[ℓ]} (hl : l ≠ 0) :
   refine ⟨E, i + m, hE, fun z ↦ ?_⟩
   simp [← E.map_nsmul, pow_add, ← hv, mul_assoc, hE, u]
 
-/-- The cup product `(g, h) ↦ b (g c(h)) (a g)` of maps `a : Γ → L` and `c : Γ → L'`, reduced
-modulo `ℓᵐ` and embedded in `Q̄_ℓ^×` by `zmodPowToUnits m`. -/
-noncomputable def Period.cupModPow (b : L' ≃ₗ[ℤ_[ℓ]] Dual ℤ_[ℓ] L) (m : ℕ) (a : Γ → L) (c : Γ → L')
-    (x : Γ × Γ) : DiscreteUnits (PadicAlgCl ℓ) :=
+/--
+The cup product `(g, h) ↦ b (g c(h)) (a g)` of maps `a : Γ → L` and `c : Γ → L'`, reduced
+modulo `ℓᵐ` and embedded in `Q̄_ℓ^×` by `zmodPowToUnits m`.
+-/
+noncomputable def Period.cupModPow
+    (b : L' ≃ₗ[ℤ_[ℓ]] Dual ℤ_[ℓ] L) (m : ℕ) (a : Γ → L) (c : Γ → L') (x : Γ × Γ)
+    : DiscreteUnits (PadicAlgCl ℓ) :=
   zmodPowToUnits m
     (Ideal.Quotient.mk (Ideal.span {(ℓ : ℤ_[ℓ]) ^ m}) (b (L'.ρ x.fst (c x.snd)) (a x.fst)))
 
-/-- A map `s : Γ → V`, with `q : L → V` a reduction modulo `ℓᵐ`, is a continuous cocycle that is
-orthogonal under the cup product to the group `H` of maps `Γ → L'`. -/
-structure Period.IsCupOrthogonal (b : L' ≃ₗ[ℤ_[ℓ]] Dual ℤ_[ℓ] L) (m : ℕ)
-    {V : DiscreteModule ℤ_[ℓ] Γ} (q : L →ₗ[ℤ_[ℓ]] V) (H : AddSubgroup (Γ → L')) (s : Γ → V) :
-    Prop where
+/--
+A map `s : Γ → V`, with `q : L → V` a reduction modulo `ℓᵐ`, is a continuous cocycle that is
+orthogonal under the cup product to the group `H` of maps `Γ → L'`.
+-/
+structure Period.IsCupOrthogonal
+    (b : L' ≃ₗ[ℤ_[ℓ]] Dual ℤ_[ℓ] L) (m : ℕ)
+    {V : DiscreteModule ℤ_[ℓ] Γ} (q : L →ₗ[ℤ_[ℓ]] V)
+    (H : AddSubgroup (Γ → L')) (s : Γ → V)
+    : Prop where
   /-- `s` is a continuous cocycle. -/
   mem_Z1 : s ∈ Z1 V.ρ
   /-- The cup products of some lift of `s` with the elements of `H` are 2-coboundaries. -/

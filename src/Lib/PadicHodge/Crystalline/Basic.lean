@@ -57,16 +57,20 @@ section Defs
 
 open TensorProduct Module DistribSMul RingHomClass
 
-/-- A group `Γ` together with a homomorphism `j` from `Γ` to `Gp p` = Gal(Q̄_p/Q_p) whose image
-is open. -/
+/--
+A group `Γ` together with a homomorphism `j` from `Γ` to `Gp p` = Gal(Q̄_p/Q_p) whose image
+is open.
+-/
 class OverGp (Γ : Type*) (p : outParam ℕ) [Fact p.Prime] [Group Γ] where
   /-- The homomorphism from the group to `New.Gp p`. -/
   toGp : Γ →* Gp p
   /-- The image of the homomorphism is open in `New.Gp p`. -/
   isOpen_range : Fact (IsOpen (SetLike.coe toGp.range))
 
-/-- A group `G` bundled with a homomorphism from `G` to `Gp p` = Gal(Q̄_p/Q_p) whose image is
-open. -/
+/--
+A group `G` bundled with a homomorphism from `G` to `Gp p` = Gal(Q̄_p/Q_p) whose image is
+open.
+-/
 class GroupOverGp (p : outParam ℕ) [Fact p.Prime] where
   /-- The group. -/
   G : Type
@@ -80,42 +84,57 @@ attribute [instance_reducible, instance] GroupOverGp.group GroupOverGp.overGp
 
 export OverGp (toGp)
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R T : Type*} [Group Γ] [CommRing R] [AddCommGroup T] [Module R T] [Algebra ℤ_[p] R]
   [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [𝒥 : OverGp Γ p]
-  (ρ : Representation R Γ T) (B : Type*) [CommRing B] [Algebra ℤ_[p] B] (u : ℤ)
+  (ρ : Representation R Γ T)
+  (B : Type*) [CommRing B] [Algebra ℤ_[p] B]
+  (u : ℤ)
 
 /-- A bundled group over `Gp p` is read as its underlying type. -/
 instance : CoeSort (GroupOverGp p) Type := ⟨(·.G)⟩
 
 /-! ### Periods and crystalline cocycles -/
 
-/-- For an element `m` of a monoid `M` acting on the `ℤ_p`-algebra `B` and an endomorphism `f` of
+/--
+For an element `m` of a monoid `M` acting on the `ℤ_p`-algebra `B` and an endomorphism `f` of
 `T`, the `ℤ_p`-linear endomorphism `b ⊗ x ↦ (m • b) ⊗ f x` of `B ⊗ T`, the tensor product taken over
-`ℤ_p`. -/
-def tensorAction {M : Type*} [Monoid M] [MulSemiringAction M B] [SMulCommClass M ℤ_[p] B] (m : M)
-    (f : End R T) : End ℤ_[p] (B ⊗[ℤ_[p]] T) :=
+`ℤ_p`.
+-/
+def tensorAction
+    {M : Type*} [Monoid M] [MulSemiringAction M B] [SMulCommClass M ℤ_[p] B] (m : M) (f : End R T)
+    : End ℤ_[p] (B ⊗[ℤ_[p]] T) :=
   map (toLinearMap ℤ_[p] B m) f
 
-/-- For a `ℤ_p`-algebra `B` with an action of `Gp p` and a filter `F` on `Γ`, the set of elements of
-`B ⊗ T` (over `ℤ_p`) fixed by `j(g) ⊗ ρ(g)` for `F`-almost all `g`, where `j` is `toGp`. -/
-def fixedPeriods [MulSemiringAction (Gp p) B] [SMulCommClass (Gp p) ℤ_[p] B] (F : Filter Γ) :
-    Set (B ⊗[ℤ_[p]] T) :=
+/--
+For a `ℤ_p`-algebra `B` with an action of `Gp p` and a filter `F` on `Γ`, the set of elements of
+`B ⊗ T` (over `ℤ_p`) fixed by `j(g) ⊗ ρ(g)` for `F`-almost all `g`, where `j` is `toGp`.
+-/
+def fixedPeriods [MulSemiringAction (Gp p) B] [SMulCommClass (Gp p) ℤ_[p] B] (F : Filter Γ)
+    : Set (B ⊗[ℤ_[p]] T) :=
   {x : B ⊗[ℤ_[p]] T | ∀ᶠ g : Γ in F, tensorAction B (toGp g) (ρ g) x = x}
 
-/-- For a representation `ρ` of `Γ` on `T` and a filter `F` on `Γ`: the elements of `Bmax ⊗ T`
-fixed by `j(g) ⊗ ρ(g)` for `F`-almost all `g` span `Bmax ⊗ T` over `Bmax`. -/
+/--
+For a representation `ρ` of `Γ` on `T` and a filter `F` on `Γ`: the elements of `Bmax ⊗ T`
+fixed by `j(g) ⊗ ρ(g)` for `F`-almost all `g` span `Bmax ⊗ T` over `Bmax`.
+-/
 def IsAdmissible (F : Filter Γ) : Prop := Submodule.span Bmax (fixedPeriods ρ Bmax F) = ⊤
 
-/-- `ρ` is crystalline: the elements of `Bmax ⊗ T` fixed by `j(g) ⊗ ρ(g)` for all `g` in `Γ` span
-`Bmax ⊗ T` over `Bmax`. -/
+/--
+`ρ` is crystalline: the elements of `Bmax ⊗ T` fixed by `j(g) ⊗ ρ(g)` for all `g` in `Γ` span
+`Bmax ⊗ T` over `Bmax`.
+-/
 abbrev IsCrystalline : Prop := IsAdmissible ρ ⊤
 
-/-- The `R`-submodule of functions `c : Γ → T` that become coboundaries in `Bmax ⊗ T`: some `y` in
-`Bmax ⊗ T` satisfies `1 ⊗ c g = (j(g) ⊗ ρ(g)) y - y` for all `g` in `Γ`. -/
+/--
+The `R`-submodule of functions `c : Γ → T` that become coboundaries in `Bmax ⊗ T`: some `y` in
+`Bmax ⊗ T` satisfies `1 ⊗ c g = (j(g) ⊗ ρ(g)) y - y` for all `g` in `Γ`.
+-/
 def crysCocycles : Submodule R (Γ → T) where
-  carrier := {c : Γ → T |
-    ∃ y : Bmax ⊗[ℤ_[p]] T, ∀ g : Γ, 1 ⊗ₜ c g = tensorAction Bmax (toGp g) (ρ g) y - y}
+  carrier :=
+    {c : Γ → T |
+      ∃ y : Bmax ⊗[ℤ_[p]] T, ∀ g : Γ, 1 ⊗ₜ c g = tensorAction Bmax (toGp g) (ρ g) y - y}
   add_mem' := by
     rintro c d ⟨y, hy⟩ ⟨z, hz⟩
     refine ⟨y + z, fun g ↦ ?_⟩
@@ -126,17 +145,19 @@ def crysCocycles : Submodule R (Γ → T) where
     -- Apply `A = 1 ⊗ a`, which commutes with `tensorAction` because `ρ g` is `R`-linear.
     let A : End ℤ_[p] (Bmax ⊗[ℤ_[p]] T) := map 1 (a • LinearMap.id)
     refine ⟨A y, fun g ↦ ?_⟩
-    have h_comm :
-        A (tensorAction Bmax (toGp g) (ρ g) y) = tensorAction Bmax (toGp g) (ρ g) (A y) := by
+    have h_comm
+        : A (tensorAction Bmax (toGp g) (ρ g) y) = tensorAction Bmax (toGp g) (ρ g) (A y) := by
       simp [A, tensorAction, map_map, LinearMap.comp]
     have h_tmul : A (1 ⊗ₜ c g) = 1 ⊗ₜ (a • c) g := by simp [A]
     rw [← h_tmul, hy, map_sub, h_comm]
 
 /-! ### Weil pairs and potentially crystalline representations -/
 
-/-- `(s, m)` is a Weil pair: `s` in `Gp p` acts on the residue field of the valuation ring of Q̄_p
+/--
+`(s, m)` is a Weil pair: `s` in `Gp p` acts on the residue field of the valuation ring of Q̄_p
 as `x ↦ x ^ (1 / p ^ m)`, that is, `s⁻¹` is a Frobenius element for `p ^ m`; `m = 0` means
-inertia. -/
+inertia.
+-/
 def IsWeilPair (s : Gp p) (m : ℕ) : Prop := IsFrob (intQpBar p) (p ^ m) s⁻¹
 
 /-- For `s` in `Gp p` = Gal(ℚ̄_p/ℚ_p), `(s, 0)` is a Weil pair (that is, `s` acts trivially on the
@@ -151,8 +172,10 @@ lemma isWeilPair_zero_iff {s : Gp p} : IsWeilPair s 0 ↔ s ∈ inertiaGroup (Gp
 abbrev χ : Γ →* ℤ_[p]ˣ := cyclotomicGp.comp 𝒥.toGp
 
 variable (Γ) in
-/-- The filter 'near 1' on `Γ`: the pull-back along `j : Γ → Gp p` of the filter of
-neighbourhoods of the identity. -/
+/--
+The filter 'near 1' on `Γ`: the pull-back along `j : Γ → Gp p` of the filter of
+neighbourhoods of the identity.
+-/
 def nearOne : Filter Γ := (nhds 1).comap 𝒥.toGp
 
 variable (Γ) in
@@ -163,24 +186,32 @@ lemma eventually_nearOne_apply_eq (c : PadicAlgCl p) : ∀ᶠ g : Γ in nearOne 
     (isLocallyConstant_smul c {c}).mem_nhds (one_smul (Gp p) c)
   filter_upwards [Filter.preimage_mem_comap h_stab_nhds] with g hg using hg
 
-/-- `Dpcris ρ`: the set of elements of `Bmax ⊗ T` fixed by `j(g) ⊗ ρ(g)` for all `g` with `j(g)` in
-some neighbourhood of `1` in `Gp p`. -/
+/--
+`Dpcris ρ`: the set of elements of `Bmax ⊗ T` fixed by `j(g) ⊗ ρ(g)` for all `g` with `j(g)` in
+some neighbourhood of `1` in `Gp p`.
+-/
 abbrev Dpcris : Set (Bmax ⊗[ℤ_[p]] T) := fixedPeriods ρ Bmax (nearOne Γ)
 
-/-- `ρ` is potentially crystalline: the elements of `Bmax ⊗ T` fixed by `j(g) ⊗ ρ(g)` for all `g`
-with `j(g)` near `1` span `Bmax ⊗ T` over `Bmax`. -/
+/--
+`ρ` is potentially crystalline: the elements of `Bmax ⊗ T` fixed by `j(g) ⊗ ρ(g)` for all `g`
+with `j(g)` near `1` span `Bmax ⊗ T` over `Bmax`.
+-/
 abbrev IsPotentiallyCrystalline : Prop := IsAdmissible ρ (nearOne Γ)
 
-/-- The element `y` of `ℂ_p ⊗ T` (over `ℤ_p`) has Hodge–Tate weight `u`:
-`(j(g) ⊗ ρ(g)) y = χ(j(g)) ^ (-u) • y` for all `g` in `Γ`, with `χ` the cyclotomic character. -/
+/--
+The element `y` of `ℂ_p ⊗ T` (over `ℤ_p`) has Hodge–Tate weight `u`:
+`(j(g) ⊗ ρ(g)) y = χ(j(g)) ^ (-u) • y` for all `g` in `Γ`, with `χ` the cyclotomic character.
+-/
 def _root_.New.HasHodgeTateWeight (y : ℂ_[p] ⊗[ℤ_[p]] T) : Prop :=
   ∀ g : Γ,
     tensorAction ℂ_[p] (toGp g) (ρ g) y = ((cyclotomicGp (toGp g) ^ (-u) : ℤ_[p]ˣ) : ℤ_[p]) • y
 
-/-- For a homomorphism `r` from `Γ` to `GL n R`, the representation on `n → R` in which `g` acts
-by multiplying column vectors by `r g`. -/
-abbrev matrixRep {n : Type _} [Fintype n] [DecidableEq n] (r : Γ →* GL n R) :
-    Representation R Γ (n → R) :=
+/--
+For a homomorphism `r` from `Γ` to `GL n R`, the representation on `n → R` in which `g` acts
+by multiplying column vectors by `r g`.
+-/
+abbrev matrixRep {n : Type _} [Fintype n] [DecidableEq n] (r : Γ →* GL n R)
+    : Representation R Γ (n → R) :=
   actionRep R (n → R) ((Units.coeHom (Matrix n n R)).comp r)
 
 end Defs
@@ -191,17 +222,21 @@ section Frobenius
 
 open TensorProduct Module DistribSMul RingHomClass
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R T : Type*} [Group Γ] [CommRing R] [AddCommGroup T] [Module R T] [Algebra ℤ_[p] R]
   [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [𝒥 : OverGp Γ p]
   (ρ : Representation R Γ T) (γ : R →ₐ[ℤ_[p]] ℂ_[p]) (u : ℤ)
 
-/-- For `γ : R → ℂ_p` and an integer `u`, the Q̄_p-space of `γ`-semilinear maps `f : T → ℂ_p` with,
+/--
+For `γ : R → ℂ_p` and an integer `u`, the Q̄_p-space of `γ`-semilinear maps `f : T → ℂ_p` with,
 for each `x`, `f (ρ g x) = χ(g) ^ (-u) • j(g) • f x` for `g` near `1`, where `χ` is the cyclotomic
-character. -/
+character.
+-/
 def hodgeTateMaps : Submodule (PadicAlgCl p) (T →ₛₗ[toRingHom γ] ℂ_[p]) where
-  carrier := {f : T →ₛₗ[toRingHom γ] ℂ_[p] |
-    ∀ x : T, ∀ᶠ g : Γ in nearOne Γ, f (ρ g x) = ((χ g ^ (-u) : ℤ_[p]ˣ) : ℤ_[p]) • toGp g • f x}
+  carrier :=
+    {f : T →ₛₗ[toRingHom γ] ℂ_[p] |
+      ∀ x : T, ∀ᶠ g : Γ in nearOne Γ, f (ρ g x) = ((χ g ^ (-u) : ℤ_[p]ˣ) : ℤ_[p]) • toGp g • f x}
   add_mem' hf hf' x := by
     filter_upwards [hf x, hf' x] with g hg hg'
     simp [hg, hg']
@@ -211,15 +246,20 @@ def hodgeTateMaps : Submodule (PadicAlgCl p) (T →ₛₗ[toRingHom γ] ℂ_[p])
     filter_upwards [hf x, eventually_nearOne_apply_eq Γ c] with g hg h_fix
     simp [hg, h_fix, Algebra.smul_def c, ← PadicComplex.coe_eq]
 
-/-- The multiplicity of the Hodge–Tate jump `u` at `γ`: the dimension over Q̄_p (zero if infinite)
-of the space `New.Period.hodgeTateMaps ρ γ u`. -/
+/--
+The multiplicity of the Hodge–Tate jump `u` at `γ`: the dimension over Q̄_p (zero if infinite)
+of the space `New.Period.hodgeTateMaps ρ γ u`.
+-/
 def jump : ℕ := finrank (PadicAlgCl p) (hodgeTateMaps ρ γ u)
 
-/-- The multiset `J` of integers lists the Hodge–Tate jumps of `ρ` at `γ`: for every integer `u`,
-the multiplicity `jump ρ γ u` equals the number of times `u` occurs in `J`. -/
+/--
+The multiset `J` of integers lists the Hodge–Tate jumps of `ρ` at `γ`: for every integer `u`,
+the multiplicity `jump ρ γ u` equals the number of times `u` occurs in `J`.
+-/
 def HasJumps (J : Multiset ℤ) : Prop := ∀ u : ℤ, jump ρ γ u = Multiset.count u J
 
-/-- A chosen `Bmax`-linear endomorphism of `Bmax ⊗ T` that agrees on `Dpcris ρ` with the map
+/--
+A chosen `Bmax`-linear endomorphism of `Bmax ⊗ T` that agrees on `Dpcris ρ` with the map
 `φ ^ m s ⊗ ρ s`, where `φ` is Frobenius, if one exists (`linearFrob_eq_tensorAction_of_exists`);
 otherwise the value is unspecified. Potential crystallinity makes `Dpcris ρ` span the tensor
 module, so there is at most one such map. Existence for Weil pairs is proved in
@@ -227,10 +267,11 @@ module, so there is at most one such map. Existence for Weil pairs is proved in
 operator is determined by its action on the fixed periods.
 
 This operator plays the role of Fontaine's Weil–Deligne representation: it extends the action of a
-Weil pair on `Dpcris ρ` linearly to `Bmax ⊗ T`. -/
+Weil pair on `Dpcris ρ` linearly to `Bmax ⊗ T`.
+-/
 def linearFrob (s : Γ) (m : ℕ) : End Bmax (Bmax ⊗[ℤ_[p]] T) :=
-  Classical.epsilon fun β : End Bmax (Bmax ⊗[ℤ_[p]] T) ↦ ∀ d ∈ Dpcris ρ,
-    β d = tensorAction Bmax (⟨.ofAdd m, toGp s⟩ : FrobGal) (ρ s) d
+  Classical.epsilon fun β : End Bmax (Bmax ⊗[ℤ_[p]] T) ↦
+    ∀ d ∈ Dpcris ρ, β d = tensorAction Bmax (⟨.ofAdd m, toGp s⟩ : FrobGal) (ρ s) d
 
 /-- If some `Bmax`-linear map agrees with `φ ^ m s ⊗ ρ s` on `Dpcris ρ`, then so does
 `linearFrob ρ s m`. -/
@@ -241,18 +282,22 @@ lemma linearFrob_eq_tensorAction_of_exists (s : Γ) (m : ℕ)
   Classical.epsilon_spec h_exists
 
 variable (R T) in
-/-- The ring homomorphism from `R` to the `Bmax`-linear endomorphisms of `Bmax ⊗ T` (tensor over
-`ℤ_p`) sending `a` to `1 ⊗ (multiplication by a on T)`. -/
+/--
+The ring homomorphism from `R` to the `Bmax`-linear endomorphisms of `Bmax ⊗ T` (tensor over
+`ℤ_p`) sending `a` to `1 ⊗ (multiplication by a on T)`.
+-/
 def coeffEnd : R →+* End Bmax (Bmax ⊗[ℤ_[p]] T) :=
   toRingHom ((End.baseChangeHom ℤ_[p] Bmax T).comp (Algebra.lsmul (A := R) ℤ_[p] ℤ_[p] T))
 
-/-- The polynomial `P` over `R` kills `(s, m)`: `ρ` is potentially crystalline and `P`, evaluated
+/--
+The polynomial `P` over `R` kills `(s, m)`: `ρ` is potentially crystalline and `P`, evaluated
 at `linearFrob ρ s m` with the coefficients acting on `T` through `coeffEnd`, is zero on
 `Bmax ⊗ T`.
 
 This is the analogue, tested on `Bmax ⊗ T`, of the vanishing of a polynomial at an element acting on
 Fontaine's Weil–Deligne representation. The Weil-pair condition is not a field of `IsKilledBy`;
-results that identify the chosen operator with the period action require it separately. -/
+results that identify the chosen operator with the period action require it separately.
+-/
 def IsKilledBy (s : Γ) (m : ℕ) (P : Polynomial R) : Prop :=
   IsPotentiallyCrystalline ρ ∧ Polynomial.eval₂ (coeffEnd R T) (linearFrob ρ s m) P = 0
 
@@ -274,8 +319,10 @@ open Module Filter Topology nonZeroDivisors AlgHom
 variable {p : ℕ} [ThePrime p] {Γ : Type*} [Group Γ] [𝒥 : OverGp Γ p]
 
 /-- A `ℚ_p`-algebra is flat over `ℤ_p`. -/
-instance flat_padicInt_of_algebra_padic {B : Type*} [CommRing B] [Algebra ℤ_[p] B] [Algebra ℚ_[p] B]
-    [IsScalarTower ℤ_[p] ℚ_[p] B] : Flat ℤ_[p] B := Module.Flat.trans ℤ_[p] ℚ_[p] B
+instance flat_padicInt_of_algebra_padic
+    {B : Type*} [CommRing B] [Algebra ℤ_[p] B] [Algebra ℚ_[p] B] [IsScalarTower ℤ_[p] ℚ_[p] B]
+    : Flat ℤ_[p] B :=
+  Module.Flat.trans ℤ_[p] ℚ_[p] B
 
 /-- If `j : Γ → Gp p` is an open embedding for a topology on `Γ`, the filter near `1` on `Γ` is the
 filter of neighbourhoods of `1`. -/
@@ -326,9 +373,11 @@ namespace New.Lift
 
 open Period TensorProduct LinearMap
 
-variable {p : ℕ} [ThePrime p] {T T' T'' A A' : Type} [AddCommGroup T] [Module ℤ_[p] T]
-  [AddCommGroup T'] [Module ℤ_[p] T'] [AddCommGroup T''] [Module ℤ_[p] T''] [CommRing A]
-  [CommRing A'] [Algebra ℤ_[p] A] [Algebra ℤ_[p] A']
+variable
+  {p : ℕ} [ThePrime p]
+  {T T' T'' A A' : Type}
+  [AddCommGroup T] [Module ℤ_[p] T] [AddCommGroup T'] [Module ℤ_[p] T'] [AddCommGroup T'']
+  [Module ℤ_[p] T''] [CommRing A] [CommRing A'] [Algebra ℤ_[p] A] [Algebra ℤ_[p] A']
   (b : T →ₗ[ℤ_[p]] T' →ₗ[ℤ_[p]] T'')
 
 -- A shortcut instance: without it, the instance searches for `FaithfulSMul Ainf _` in later files
@@ -337,8 +386,10 @@ open scoped Classical in
 /-- The ideals of `OFlat` (the tilt `O^♭`) are linearly ordered. -/
 noncomputable instance : LinearOrder (Ideal OFlat) := by infer_instance
 
-/-- The `A`-bilinear map `(A ⊗ T) × (A ⊗ T') → A ⊗ T''` obtained from a `ℤ_p`-bilinear map
-`b : T × T' → T''` by extension of scalars. -/
+/--
+The `A`-bilinear map `(A ⊗ T) × (A ⊗ T') → A ⊗ T''` obtained from a `ℤ_p`-bilinear map
+`b : T × T' → T''` by extension of scalars.
+-/
 noncomputable def baseChangePairing : A ⊗[ℤ_[p]] T →ₗ[A] A ⊗[ℤ_[p]] T' →ₗ[A] A ⊗[ℤ_[p]] T'' :=
   (baseChangeHom ℤ_[p] A T' T'' ∘ₗ b).liftBaseChange A
 
@@ -378,15 +429,17 @@ section Admissible
 
 open TensorProduct Filter Submodule Module Function Set Multiplicative AlgebraTensorModule
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R T R' T' : Type*} [Group Γ] [CommRing R] [AddCommGroup T] [Module R T] [Algebra ℤ_[p] R]
   [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [CommRing R'] [AddCommGroup T'] [Module R' T']
   [Algebra ℤ_[p] R'] [Module ℤ_[p] T'] [IsScalarTower ℤ_[p] R' T'] [𝒥 : OverGp Γ p]
-  {ρ σ : Representation R Γ T} {ρ' : Representation R' Γ T'} {F F' : Filter Γ}
-  {B B' M : Type*} [CommRing B] [Algebra ℤ_[p] B] [Monoid M] [MulSemiringAction M B]
-  [SMulCommClass M ℤ_[p] B] [CommRing B'] [Algebra ℤ_[p] B'] [MulSemiringAction M B']
-  [SMulCommClass M ℤ_[p] B'] [Algebra B B'] [IsScalarTower ℤ_[p] B B'] [SMulDistribClass M B B']
-  {f : T →ₗ[ℤ_[p]] T'} {Γ' : Type*} [Group Γ'] (φ : Γ' →* Γ) (m n : M) (g k : End R T)
+  {ρ σ : Representation R Γ T} {ρ' : Representation R' Γ T'} {F F' : Filter Γ} {B B' M : Type*}
+  [CommRing B] [Algebra ℤ_[p] B] [Monoid M] [MulSemiringAction M B] [SMulCommClass M ℤ_[p] B]
+  [CommRing B'] [Algebra ℤ_[p] B'] [MulSemiringAction M B'] [SMulCommClass M ℤ_[p] B']
+  [Algebra B B'] [IsScalarTower ℤ_[p] B B'] [SMulDistribClass M B B']
+  {f : T →ₗ[ℤ_[p]] T'} {Γ' : Type*} [Group Γ']
+  (φ : Γ' →* Γ) (m n : M) (g k : End R T)
 
 variable (ρ) in
 /-- A representation over `R`, read as a representation over `ℤ_[p]`. -/
@@ -622,22 +675,27 @@ section PeriodCoordinates
 
 open Algebra Module Matrix LinearMap
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ ι B R T : Type _} [Group Γ] [Fintype ι] [DecidableEq ι] [OverGp Γ p] [CommRing B]
   [Algebra ℤ_[p] B] [MulSemiringAction (Gp p) B] [SMulCommClass (Gp p) ℤ_[p] B] [CommRing R]
   [Algebra ℤ_[p] R] [AddCommGroup T] [Module R T] [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T]
   (ρ : Representation R Γ T) (e : Basis ι ℤ_[p] T)
 
-/-- The monoid homomorphism sending `g` in `Γ` to the matrix over `ℤ_[p]` of `ρ g` in a finite
-`ℤ_[p]`-basis `e` of `T`. -/
+/--
+The monoid homomorphism sending `g` in `Γ` to the matrix over `ℤ_[p]` of `ρ g` in a finite
+`ℤ_[p]`-basis `e` of `T`.
+-/
 noncomputable def repMatrix : Γ →* Matrix ι ι ℤ_[p] :=
   (toMatrixAlgEquiv e).toMonoidHom.comp (overZp ρ)
 
-/-- The action on `B ⊗ T` in coordinates. `g` acts on a vector `y : ι → B` by applying `toGp g` to
-each coordinate. It then multiplies by the matrix `New.Period.repMatrix ρ e g`, read over `B`. -/
+/--
+The action on `B ⊗ T` in coordinates. `g` acts on a vector `y : ι → B` by applying `toGp g` to
+each coordinate. It then multiplies by the matrix `New.Period.repMatrix ρ e g`, read over `B`.
+-/
 noncomputable def coordAction : Representation ℤ_[p] Γ (ι → B) where
-  toFun g := ((repMatrix ρ e g).map (algebraMap ℤ_[p] B)).mulVecLin ∘ₗ
-    actionRep ℤ_[p] (ι → B) toGp g
+  toFun g :=
+    ((repMatrix ρ e g).map (algebraMap ℤ_[p] B)).mulVecLin ∘ₗ actionRep ℤ_[p] (ι → B) toGp g
   map_one' := by aesop
   -- `Gp p` fixes the entries of `repMatrix ρ e g`, which come from `ℤ_[p]`
   map_mul' := by simp [LinearMap.ext_iff, mul_smul, mulVec_eq_sum, Finset.smul_sum]

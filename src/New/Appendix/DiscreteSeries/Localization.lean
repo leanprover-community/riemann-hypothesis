@@ -56,15 +56,19 @@ namespace New.DiscreteSeries
 
 open Norms.Frobenius
 
-variable {n m X S : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X]
-  [DecidableEq X] [Group S] {ε : n → ℤˣ} {l : HCParam ε} {η : m → ℤˣ} {k : HCParam η}
-  {j : S →* USign ε × USign η} {τ : X → m} {B : ℝ} {M : ℕ}
+variable
+  {n m X S : Type}
+  [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X] [DecidableEq X] [Group S]
+  {ε : n → ℤˣ} {l : HCParam ε} {η : m → ℤˣ}
+  {k : HCParam η} {j : S →* USign ε × USign η} {τ : X → m} {B : ℝ} {M : ℕ}
 
 /-! ### The relation `g ε gᴴ = ε` row by row -/
 
 variable (ε) in
-/-- The noncompact part `A - blockDiagPart ε A` of a matrix `A` for the signs `ε`: it keeps the
-entries `A i j` with `ε i ≠ ε j` and puts zero elsewhere. -/
+/--
+The noncompact part `A - blockDiagPart ε A` of a matrix `A` for the signs `ε`: it keeps the
+entries `A i j` with `ε i ≠ ε j` and puts zero elsewhere.
+-/
 def noncompactPart (A : Matrix n n ℂ) : Matrix n n ℂ := A - blockDiagPart ε A
 
 /-- Let `ε : n → ℤˣ` be a vector of signs and let `g` be in `U(ε) = USign ε`, the unitary group of
@@ -179,8 +183,10 @@ lemma norm_sub_one_le_norm_mul_self_sub_one {z : Matrix X X ℂ} (hz : z.PosSemi
     exact h_pos.trace_nonneg
   exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 (real_le_real.1 (sub_nonneg.1 h_trace))
 
-/-- The indicator function of the coordinates off `X`: under `e : X ⊕ Fin M ≃ n` it is `0` on the
-image of `X` and `1` on the image of `Fin M`. -/
+/--
+The indicator function of the coordinates off `X`: under `e : X ⊕ Fin M ≃ n` it is `0` on the
+image of `X` and `1` on the image of `Fin M`.
+-/
 def offBlockIndicator (e : X ⊕ Fin M ≃ n) (i : n) : ℤ := (e.symm i).elim 0 1
 
 /-- The block of a matrix with rows and columns in `X`, seen in `n` through `e : X ⊕ Fin M ≃ n`. -/

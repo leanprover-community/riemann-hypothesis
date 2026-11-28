@@ -52,27 +52,34 @@ open CategoryTheory MonoidalCategory TensorProduct Abelian Function Finsupp AddS
   Basis Algebra.TensorProduct CommAlgCat CartesianMonoidalCategory TotalH Ext Comparison
   IsCohomEquiv Eqv Finset
 
-/-- Coordinates for the classes on the functor represented by a test `a`: they all have degree `0`
+/--
+Coordinates for the classes on the functor represented by a test `a`: they all have degree `0`
 and are the forms on `a` (`New.Variety.TotalH.sectionEquiv`), here written in the basis
-`a.formBasis` of the forms, reindexed by `g` and with its vectors multiplied by the signs `η`. -/
-private noncomputable def formCoord {k : Type} [Field k] (a : HodgeTest k) {I : Type}
-    (g : Finset a.Index ≃ I) (η : I → ℤˣ) :
-    (I →₀ a.baseAlg) ≃+ TotalH (freeAb (reprBy a)) hodgeCoeff :=
+`a.formBasis` of the forms, reindexed by `g` and with its vectors multiplied by the signs `η`.
+-/
+private noncomputable def formCoord
+    {k : Type} [Field k] (a : HodgeTest k) {I : Type} (g : Finset a.Index ≃ I) (η : I → ℤˣ)
+    : (I →₀ a.baseAlg) ≃+ TotalH (freeAb (reprBy a)) hodgeCoeff :=
   a.formBasis.reindex g
     |>.groupSMul η
     |>.repr.symm.toAddEquiv.trans (.trans (.symm .ulift) (sectionEquiv hodgeCoeff a))
 
-/-- For a basis `b` over `k` of the forms on a test `c`, the `k`-linear isomorphism from families,
+/--
+For a basis `b` over `k` of the forms on a test `c`, the `k`-linear isomorphism from families,
 indexed by `b`, of families of elements of the ring `A'` of `c'` indexed by subsets of the index set
 of `c'`, to families of elements of `A' ⊗ A` indexed by pairs of subsets: each vector of `b` is
 expanded in the basis `c.formBasis` of the forms on `c`, over the ring `A` of `c`, indexed by
-subsets of the index set of `c`. -/
-private noncomputable def formTensor {k : Type} [Field k] (c c' : HodgeTest k) {J : Type}
-    [DecidableEq J] (b : Basis J k (_root_.ExteriorAlgebra c.baseAlg (c.Index → c.baseAlg))) :
-    (J →₀ Finset c'.Index →₀ c'.baseAlg) ≃ₗ[k]
-      Finset c'.Index × Finset c.Index →₀ c'.baseAlg ⊗[k] c.baseAlg :=
-  (equivFinsuppOfBasisRight (M := Finset c'.Index →₀ c'.baseAlg) b).symm ≪≫ₗ
-    (c.formBasis.repr.restrictScalars k).lTensor _ ≪≫ₗ finsuppTensorFinsupp ..
+subsets of the index set of `c`.
+-/
+private noncomputable def formTensor
+    {k : Type} [Field k]
+    (c c' : HodgeTest k)
+    {J : Type} [DecidableEq J]
+    (b : Basis J k (_root_.ExteriorAlgebra c.baseAlg (c.Index → c.baseAlg)))
+    : (J →₀ Finset c'.Index →₀ c'.baseAlg) ≃ₗ[k]
+        Finset c'.Index × Finset c.Index →₀ c'.baseAlg ⊗[k] c.baseAlg :=
+  (equivFinsuppOfBasisRight (M := Finset c'.Index →₀ c'.baseAlg) b).symm
+    ≪≫ₗ (c.formBasis.repr.restrictScalars k).lTensor _ ≪≫ₗ finsuppTensorFinsupp ..
 
 /-- The cross product of two forms is their product. Let `l : c' ⟶ p` and `q : c ⟶ p` be maps of
 tests, `x` a form on `c'` and `y` a form on `c`, read as classes of degree `0` on the represented

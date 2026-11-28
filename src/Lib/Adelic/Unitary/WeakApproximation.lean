@@ -58,8 +58,10 @@ namespace New
 
 open NumberField Topology U
 
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E] {n : Type*} [Fintype n]
-  [DecidableEq n] {s : n → ℤˣ}
+variable
+  {E : Type*} [Field E] [NumberField E] [IsCMField E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ}
 
 /-- Sending an element of the adelic unitary group to its adelic matrix is a closed embedding. -/
 lemma G.isClosedEmbedding_adeleMatrix : IsClosedEmbedding
@@ -83,19 +85,21 @@ lemma G.continuous_iff {X : Type*} [TopologicalSpace X] {f : X → G E s} :
     Continuous f ↔ Continuous fun x : X ↦ (f x).adeleMatrix :=
   isClosedEmbedding_adeleMatrix.continuous_iff
 
-/-- For a space `W` whose signs are all `1`, the finite parts of the rational points form a
-discrete subgroup `W.Γf` of `G_f`. -/
+/--
+For a space `W` whose signs are all `1`, the finite parts of the rational points form a
+discrete subgroup `W.Γf` of `G_f`.
+-/
 instance {E : Type*} [Field E] [CMType E] (W : Space E n 1) : DiscreteTopology W.Γf := by
   -- The rational points are discrete in `G E 1`, so a compact set holds only finitely many.
   have h_emb : Filter.Tendsto W.ratEmbed .cofinite (.cocompact (G E 1)) :=
     W.ratEmbed.tendsto_coe_cofinite_of_isDiscrete W.ratEmbed_injective ⟨W.discreteTopology_Gamma⟩
   -- All signs are `1`, so the infinite part of `G E 1` is compact and can be dropped.
-  have h_fin : Filter.Tendsto (fun γ : U W.J ↦ (W.ratEmbed γ).2) .cofinite
-    (.cocompact (Gf E n)) := by
+  have h_fin
+      : Filter.Tendsto (fun γ : U W.J ↦ (W.ratEmbed γ).2) .cofinite (.cocompact (Gf E n)) := by
     simpa [← Filter.coprod_cocompact, Function.comp_def] using h_emb
   -- `W.Γf` is the range of `W.embFin γ = (W.ratEmbed γ).2`.
-  refine continuous_subtypeVal.discrete_of_tendsto_cofinite_cocompact
-    (.mono_left ?_ (Set.rangeFactorization_surjective (f := W.embFin)).le_map_cofinite)
+  refine continuous_subtypeVal.discrete_of_tendsto_cofinite_cocompact (.mono_left ?_
+    (Set.rangeFactorization_surjective (f := W.embFin)).le_map_cofinite)
   exact h_fin
 
 end New
@@ -117,8 +121,8 @@ namespace New.Space
 
 open Matrix Topology Filter G Exchange Function Gf RingHom Algebra
 
-variable {E n : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  (V : Space E n s)
+variable
+  {E n : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ} (V : Space E n s)
 
 /-- A CM field has infinitely many elements `c` with `star c * c = 1`. -/
 instance : Infinite (unitary E) := by
@@ -134,8 +138,8 @@ instance : Infinite (unitary E) := by
   simpa [hz.ne_zero] using hkl
 
 /-- The Cayley transform `(1 - A) (1 + A)⁻¹` of a square matrix (`0` if `1 + A` is singular). -/
-noncomputable def _root_.New.cayleyTransform {K : Type*} [Field K] (A : Matrix n n K) :
-    Matrix n n K :=
+noncomputable def _root_.New.cayleyTransform {K : Type*} [Field K] (A : Matrix n n K)
+    : Matrix n n K :=
   (1 - A) * (1 + A)⁻¹
 
 /-- The Cayley transform is an involution where it is defined: if `2 ≠ 0` in `K` and `1 + A` is
@@ -192,8 +196,10 @@ lemma _root_.New.continuousAt_cayleyTransform {K : Type*} [NormedField K] {A : M
   exact (continuousAt_const.sub continuousAt_id).mul
     ((continuousAt_matrix_inv _ h_inv).comp (continuousAt_const.add continuousAt_id))
 
-/-- The part of a rational matrix `C` that is skew for the form `J = V.J`, namely
-`(C - J⁻¹ Cᴴ J) / 2`. -/
+/--
+The part of a rational matrix `C` that is skew for the form `J = V.J`, namely
+`(C - J⁻¹ Cᴴ J) / 2`.
+-/
 noncomputable def formSkewPart (C : Matrix n n E) : Matrix n n E :=
   (2 : E)⁻¹ • (C - V.J⁻¹ * Cᴴ * V.J)
 
@@ -221,16 +227,20 @@ lemma smul_cayleyTransform_isometry (c : unitary E) {u : Matrix n n E}
     _ = V.J := by simp [h_det]
 
 open scoped Classical in
-/-- A map from rational matrices to rational points of the space `V`. For `star c * c = 1` and a
+/--
+A map from rational matrices to rational points of the space `V`. For `star c * c = 1` and a
 square matrix `A` over `E`, let `u` be the skew part of the Cayley transform of `c A`. The value is
 the image under `V.ratEmbed` of the isometry `c⁻¹ (1 - u) (1 + u)⁻¹` of `V.J` if `1 + u` is
-invertible, and `1` otherwise. -/
+invertible, and `1` otherwise.
+-/
 noncomputable def cayleyMap (c : unitary E) (A : Matrix n n E) : G E s :=
   let u : Matrix n n E := V.formSkewPart (cayleyTransform (c.val • A))
-  V.ratEmbed (if h : (1 + u).det ≠ 0 then
-    U.of V.isUnit_J (c.val⁻¹ • cayleyTransform u)
-      (V.smul_cayleyTransform_isometry c (V.conjTranspose_formSkewPart_mul _) h)
-  else 1)
+  V.ratEmbed
+    (if h : (1 + u).det ≠ 0 then
+       U.of V.isUnit_J (c.val⁻¹ • cayleyTransform u)
+         (V.smul_cayleyTransform_isometry c (V.conjTranspose_formSkewPart_mul _) h)
+     else
+       1)
 
 /-- Let `V` be a hermitian space over the CM field `E`: a matrix `J` with a point `x` in `GL_n(𝔸)`
 such that `xᴴ J x` is `diag s` at the infinite places and `1` at the finite places. Let `f` be a

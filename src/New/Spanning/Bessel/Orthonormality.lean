@@ -161,66 +161,76 @@ lemma New.IsCutPair.integrable_cut {𝔰 : Shape} {I : Type} [Fintype I] [Decida
       exact ENNReal.lt_top_of_mul_ne_top_right h_mul.ne ha
   exact ⟨(W .cut).continuous.aestronglyMeasurable, (lintegral_mono h_le).trans_lt h_fin⟩
 
-/-- Let `W` be a cut pair of type `rep` with values in `ℂ^I`: a Bessel function `W .full` and its
+/--
+Let `W` be a cut pair of type `rep` with values in `ℂ^I`: a Bessel function `W .full` and its
 cut `W♭ = W .cut`, a Bessel function that vanishes outside a region of size bounded in terms of `b`.
 Suppose that `rep` is irreducible: every matrix that commutes with all `rep h` is scalar. Then the
-operator `∫ W♭ ⊗ W♭^*` over 𝖴∖G₁ is a scalar `c` between `0` and `1`. -/
-theorem New.IsCutPair.exists_integral_cut_mul_conj_eq {𝔰 : Shape} {I : Type} [Fintype I]
-    [DecidableEq I] [Nonempty I] {b : ℝ} {f : ℕ}
-    {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ}
+operator `∫ W♭ ⊗ W♭^*` over 𝖴∖G₁ is a scalar `c` between `0` and `1`.
+-/
+theorem New.IsCutPair.exists_integral_cut_mul_conj_eq
+    {𝔰 : Shape} {I : Type} [Fintype I] [DecidableEq I] [Nonempty I]
+    {b : ℝ} {f : ℕ} {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ}
     {W : FullOrCut → C(𝔰.G₁, EuclideanSpace ℂ I)} (hW : IsCutPair b f rep W)
     (h_irred : ∀ M : Matrix I I ℂ,
-      (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h : Matrix I I ℂ)) →
-        M ∈ Set.range (scalar I)) :
-    ∃ c ∈ Set.Icc (0 : ℝ) 1, ∀ i j : I,
-      ∫ y : 𝔰.G₁, W .cut y i * conj (W .cut y j) ∂besselQuotMeasure =
-        if i = j then (c : ℂ) else 0 := by
+      (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h : Matrix I I ℂ)) → M ∈ Set.range (scalar I))
+    : ∃ c ∈ Set.Icc (0 : ℝ) 1, ∀ i j : I,
+      ∫ y : 𝔰.G₁, W .cut y i * conj (W .cut y j) ∂besselQuotMeasure
+        = if i = j then (c : ℂ) else 0 := by
   have h_bessel : IsBesselFunction rep (W .cut) := hW.isBesselFunction .cut
   have h_mass : ∫ y, ‖W .cut y‖ ^ 2 ∂besselQuotMeasure ≤ Fintype.card I := by
     simpa [lintegral_enorm_sq hW.integrable_cut h_bessel.memLp_top] using hW.lintegral_sq_cut_le
-  refine ⟨(∫ y, ‖W .cut y‖ ^ 2 ∂besselQuotMeasure) / Fintype.card I, ⟨?_, ?_⟩,
-    h_bessel.integral_mul_conj_eq hW.integrable_cut h_irred⟩
+  refine ⟨
+    (∫ y, ‖W .cut y‖ ^ 2 ∂besselQuotMeasure) / Fintype.card I,
+    ⟨?_, ?_⟩,
+    h_bessel.integral_mul_conj_eq hW.integrable_cut h_irred
+  ⟩
   · positivity
   · exact div_le_one_of_le₀ h_mass (Nat.cast_nonneg _)
 
-/-- Let `W` be a cut pair of type `rep` with values in `ℂ^I`: a Bessel function `W .full` and its
+/--
+Let `W` be a cut pair of type `rep` with values in `ℂ^I`: a Bessel function `W .full` and its
 cut `W♭ = W .cut`, both transforming on the left by a character under the unipotent group 𝖴 and by
 `rep` under `U(κ)`, with squared L² norm over 𝖴∖G₁ at most `|I|`; `b` is the parameter of the length
 at which `W` is cut, `f` the rate of decay in the length. Suppose that every matrix commuting with
 all `rep h` is scalar. Then for every vector `v` the integral of `|⟪v, W♭ y⟫| ^ 2` over 𝖴∖G₁ is at
-most `‖v‖ ^ 2`. -/
-theorem New.IsCutPair.lintegral_sq_inner_cut_le {𝔰 : Shape} {I : Type} [Fintype I] [DecidableEq I]
-    [Nonempty I] {b : ℝ} {f : ℕ} {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ}
+most `‖v‖ ^ 2`.
+-/
+theorem New.IsCutPair.lintegral_sq_inner_cut_le
+    {𝔰 : Shape} {I : Type} [Fintype I] [DecidableEq I] [Nonempty I]
+    {b : ℝ} {f : ℕ} {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ}
     {W : FullOrCut → C(𝔰.G₁, EuclideanSpace ℂ I)} (hW : IsCutPair b f rep W)
     (h_irred : ∀ M : Matrix I I ℂ,
-      (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h : Matrix I I ℂ)) →
-        M ∈ Set.range (scalar I))
-    (v : EuclideanSpace ℂ I) :
-    ∫⁻ y : 𝔰.G₁, ‖inner ℂ v (W .cut y)‖ₑ ^ 2 ∂besselQuotMeasure ≤ ‖v‖ₑ ^ 2 := by
+      (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h : Matrix I I ℂ)) → M ∈ Set.range (scalar I))
+    (v : EuclideanSpace ℂ I)
+    : ∫⁻ y : 𝔰.G₁, ‖inner ℂ v (W .cut y)‖ₑ ^ 2 ∂besselQuotMeasure ≤ ‖v‖ₑ ^ 2 := by
   -- The operator is a scalar `c ≤ 1`, so the integral is `c * ‖v‖ ^ 2`.
   have h_int : Integrable (W .cut) besselQuotMeasure := hW.integrable_cut
   have h_memLp_top : MemLp (W .cut) ⊤ besselQuotMeasure := (hW.isBesselFunction .cut).memLp_top
-  obtain ⟨c, ⟨-, hc_le⟩, h_scalar⟩ : ∃ c ∈ Set.Icc (0 : ℝ) 1, ∀ i j : I,
-      ∫ y : 𝔰.G₁, W .cut y i * conj (W .cut y j) ∂besselQuotMeasure =
-        if i = j then (c : ℂ) else 0 := hW.exists_integral_cut_mul_conj_eq h_irred
-  have h_int_prod (i j : I) :
-      Integrable (fun y ↦ W .cut y i * conj (W .cut y j)) besselQuotMeasure :=
+  obtain ⟨c, ⟨-, hc_le⟩, h_scalar⟩
+      : ∃ c ∈ Set.Icc (0 : ℝ) 1, ∀ i j : I,
+        ∫ y : 𝔰.G₁, W .cut y i * conj (W .cut y j) ∂besselQuotMeasure
+          = if i = j then (c : ℂ) else 0 :=
+    hW.exists_integral_cut_mul_conj_eq h_irred
+  have h_int_prod (i j : I)
+      : Integrable (fun y ↦ W .cut y i * conj (W .cut y j)) besselQuotMeasure :=
     (h_int.eval_piLp i).mul_of_top_left (h_memLp_top.eval_piLp j).star
-  have h_expand (y : 𝔰.G₁) : ((‖inner ℂ v (W .cut y)‖ ^ 2 : ℝ) : ℂ) =
-      ∑ i, ∑ j, conj (v i) * v j * (W .cut y i * conj (W .cut y j)) := by
+  have h_expand (y : 𝔰.G₁)
+      : ((‖inner ℂ v (W .cut y)‖ ^ 2 : ℝ) : ℂ)
+        = ∑ i, ∑ j, conj (v i) * v j * (W .cut y i * conj (W .cut y j)) := by
     rw [ofReal_pow, ← mul_conj', PiLp.inner_apply, map_sum, Finset.sum_mul_sum]
     refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun j _ ↦ ?_
     simp only [RCLike.inner_apply, map_mul, conj_conj]
     ring
   have h_integral : ∫ y, ‖inner ℂ v (W .cut y)‖ ^ 2 ∂besselQuotMeasure = c * ‖v‖ ^ 2 := by
     refine ofReal_injective ?_
-    calc ((∫ y, ‖inner ℂ v (W .cut y)‖ ^ 2 ∂besselQuotMeasure : ℝ) : ℂ)
-        = ∑ i, ∑ j, conj (v i) * v j *
-            ∫ y, W .cut y i * conj (W .cut y j) ∂besselQuotMeasure := by
-          simp (disch := fun_prop) only [← integral_complex_ofReal, h_expand, integral_finsetSum,
-            integral_const_mul]
+    calc
+      ((∫ y, ‖inner ℂ v (W .cut y)‖ ^ 2 ∂besselQuotMeasure : ℝ) : ℂ)
+          = ∑ i, ∑ j, conj (v i) * v j *
+              ∫ y, W .cut y i * conj (W .cut y j) ∂besselQuotMeasure := by
+        simp (disch := fun_prop) only [← integral_complex_ofReal, h_expand, integral_finsetSum,
+          integral_const_mul]
       _ = ∑ i, conj (v i) * v i * c := by simp [h_scalar]
       _ = ((c * ‖v‖ ^ 2 : ℝ) : ℂ) := by
-          simp [conj_mul', PiLp.norm_sq_eq_of_L2, Finset.sum_mul, mul_comm (c : ℂ)]
+        simp [conj_mul', PiLp.norm_sq_eq_of_L2, Finset.sum_mul, mul_comm (c : ℂ)]
   grw [lintegral_enorm_sq (h_int.const_inner v) (h_memLp_top.const_inner v), h_integral, hc_le,
     one_mul, ENNReal.ofReal_pow (norm_nonneg v), ofReal_norm]

@@ -67,9 +67,10 @@ namespace New
 
 open MvPolynomial «GL» Fintype Finset Matrix
 
-variable {Φ : Type} {R : Type _} [CommRing R] [Fintype Φ] [DecidableEq Φ]
-  {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] {κ : Φ → ℕ → ℕ}
-  (ξ η : WeylIndexFamily n κ → R)
+variable
+  {Φ : Type} {R : Type _} [CommRing R] [Fintype Φ] [DecidableEq Φ]
+  {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
+  {κ : Φ → ℕ → ℕ} (ξ η : WeylIndexFamily n κ → R)
 
 /-- The Fock pairing of the polynomial Σ_i (Gξ)_i b_i attached to ξ with b_k is the coordinate k of
 HᵀGξ, where G is the Gram matrix and H the integer matrix of the Fock pairings ⟨b_i, b_j⟩. -/
@@ -213,8 +214,10 @@ open MvPolynomial Finset Matrix Nat
 
 variable {Φ R : Type} [Fintype Φ] {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] {κ : Φ → ℕ → ℕ}
 
-/-- The exponent of the monomial `∏ z_τ ^ α_τ`, where `z_τ` is the first column of variables at
-`τ`. -/
+/--
+The exponent of the monomial `∏ z_τ ^ α_τ`, where `z_τ` is the first column of variables at
+`τ`.
+-/
 noncomputable def firstColumnExponent (α : ∀ τ : Φ, n τ → ℕ) : ((τ : Φ) × n τ) × ℕ →₀ ℕ :=
   (Finsupp.equivFunOnFinite.symm fun x : (τ : Φ) × n τ ↦ α x.1 x.2).embDomain
     (Function.Embedding.sectL ((τ : Φ) × n τ) 0)
@@ -284,14 +287,16 @@ namespace New
 
 open MvPolynomial Matrix Complex ComplexOrder
 
-variable {Φ : Type} {R : Type} [CommRing R] [Fintype Φ] [DecidableEq Φ]
+variable
+  {Φ : Type} {R : Type} [CommRing R] [Fintype Φ] [DecidableEq Φ]
   {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
   {κ : Φ → ℕ → ℕ} (ξ : WeylIndexFamily n κ → ℂ)
 
-/-- For a complex coordinate vector ξ, the real part of ξ* G ξ, where G is the integer Gram
-matrix. It is the squared norm of ξ for the Hermitian form of G, which is positive definite. -/
-noncomputable def weylNormSq : ℝ :=
-  re (star ξ ⬝ᵥ (weylGram n κ).map (Int.cast : ℤ → ℂ) *ᵥ ξ)
+/--
+For a complex coordinate vector ξ, the real part of ξ* G ξ, where G is the integer Gram
+matrix. It is the squared norm of ξ for the Hermitian form of G, which is positive definite.
+-/
+noncomputable def weylNormSq : ℝ := re (star ξ ⬝ᵥ (weylGram n κ).map (Int.cast : ℤ → ℂ) *ᵥ ξ)
 
 @[simp]
 lemma weylNormSq_nonneg : 0 ≤ weylNormSq ξ := weylGramOver_posDef.posSemidef.re_dotProduct_nonneg ξ
@@ -456,15 +461,19 @@ open Matrix Kronecker SetLike
 
 namespace New.GL
 
-variable {Φ R : Type} [CommRing R] [Fintype Φ] [DecidableEq Φ]
-  {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] {κ κ' : Φ → ℕ → ℕ}
+variable
+  {Φ R : Type} [CommRing R] [Fintype Φ] [DecidableEq Φ]
+  {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
+  {κ κ' : Φ → ℕ → ℕ}
 
 variable (R n κ κ') in
-/-- The matrix of multiplication: row `(p, q)` holds the integer coordinates of the product of the
+/--
+The matrix of multiplication: row `(p, q)` holds the integer coordinates of the product of the
 basis elements `nablaBasis ℤ n κ p` and `nablaBasis ℤ n κ' q` in the basis for `κ + κ'`, cast to
-`R`. -/
-noncomputable def comulMatrix :
-    Matrix (WeylIndexFamily n κ × WeylIndexFamily n κ') (WeylIndexFamily n (κ + κ')) R :=
+`R`.
+-/
+noncomputable def comulMatrix
+    : Matrix (WeylIndexFamily n κ × WeylIndexFamily n κ') (WeylIndexFamily n (κ + κ')) R :=
   of fun (p, q) k ↦
     (Function.invFun (nablaCombination (κ + κ')) (nablaBasis ℤ n κ p * nablaBasis ℤ n κ' q) k : ℤ)
 
@@ -607,12 +616,15 @@ namespace New
 
 open Matrix
 
-variable {Φ n a S : Type} [Fintype Φ] [Fintype n] [CommRing S] [Algebra ℂ S] [Fintype a]
-  [DecidableEq a] {ι : Φ → Type} [∀ τ : Φ, Fintype (ι τ)]
+variable
+  {Φ n a S : Type} [Fintype Φ] [Fintype n] [CommRing S] [Algebra ℂ S] [Fintype a] [DecidableEq a]
+  {ι : Φ → Type} [∀ τ : Φ, Fintype (ι τ)]
   (Y : Φ → n → a → S) (η : ∀ τ : Φ, ι τ → Matrix a n ℂ)
 
-/-- The element ∏_τ ∏_k det(η_{τk} Y_τ) of the ℂ-algebra S, for n×a matrices Y_τ over S and
-complex a×n matrices η_{τk}. -/
+/--
+The element ∏_τ ∏_k det(η_{τk} Y_τ) of the ℂ-algebra S, for n×a matrices Y_τ over S and
+complex a×n matrices η_{τk}.
+-/
 noncomputable def pairedDetProd : S :=
   ∏ τ : Φ, ∏ k : ι τ, ((η τ k).map (algebraMap ℂ S) * of (Y τ)).det
 

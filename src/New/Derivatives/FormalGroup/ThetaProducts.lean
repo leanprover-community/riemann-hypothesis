@@ -105,13 +105,15 @@ lemma piPrimeInt_dvd_iff {d p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] [Padi
 
 namespace Parameters
 
-/-- The partner `-p ^ e τ` of an infinite place `τ` of `E`. Here `P` fixes the prime `d` and the
+/--
+The partner `-p ^ e τ` of an infinite place `τ` of `E`. Here `P` fixes the prime `d` and the
 modulus `q₀`, and `E = P.E s` is `K = ℚ(√-d)` with a root of unity of order `q₁ = P.q₁ s` adjoined,
 `s` being the level in the tower of these fields. The infinite places `P.Φ s` of `E` form the group
 `Gal(E/K) = (ℤ/q₁)ˣ`, and the partner is the product of `τ` with `P.placeOfInt s (-p ^ e)`, the
-place of the class of `-p ^ e` modulo `q₁` (the identity if this class is not a unit). -/
+place of the class of `-p ^ e` modulo `q₁` (the identity if this class is not a unit).
+-/
 noncomputable def partner (P : Parameters) (s p e : ℕ) (τ : P.Φ s) : P.Φ s :=
-  P.placeOfInt s (-p ^ e) * τ
+  P.placeOfInt s (- p ^ e) * τ
 
 /-- Let `p` be non-split in `K = ℚ(√-d)` (`χ_K(p) ≠ 1`) and let `ϖ` have valuation
 `ρ_p = varpiValuation P.d p`, which is `1 / (p² - 1)` if `p` is inert and `1 / (2 p - 2)` if
@@ -371,8 +373,11 @@ lemma seriesToCp_subst {X : Type} {L : MvPowerSeries X (valRingCp p)} (hL : cons
   PowerSeries.map_subst (.of_constantCoeff_zero hL) G
 
 namespace CMLattice
-variable {d : ℕ} (C : CMLattice d) [PadicPlace p] {I X : Type} [Fintype I]
-  [Fintype X] {μ : I → X → valRingCp p} {ϖ : ℂ_[p]}
+variable
+  {d : ℕ} (C : CMLattice d)
+  [PadicPlace p]
+  {I X : Type} [Fintype I] [Fintype X]
+  {μ : I → X → valRingCp p} {ϖ : ℂ_[p]}
 
 /-- Let `d ≡ 7 mod 8` be prime, `C` a lattice with complex multiplication by the integers of
 `ℚ(√-d)` and a point `t` of order two with `a₁² = 12 ℘(t)`, and `y` the Taylor series at `0`, read

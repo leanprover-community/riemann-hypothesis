@@ -69,7 +69,8 @@ namespace New.DiscreteSeries
 variable {n : Type*} [Fintype n] [DecidableEq n] {P X Y : Matrix n n ℂ} {ρ : ℝ}
 
 /-- An integral weight as a diagonal matrix. -/
-@[simp] abbrev intDiagonal (w : n → ℤ) : Matrix n n ℂ := diagonal fun i ↦ (w i : ℂ)
+@[simp]
+abbrev intDiagonal (w : n → ℤ) : Matrix n n ℂ := diagonal fun i ↦ (w i : ℂ)
 
 /-- The Cauchy–Schwarz inequality for the trace form: `‖tr (X * Y)‖` is at most the product of the
 Hilbert–Schmidt norms of `X` and `Y`. -/
@@ -288,8 +289,10 @@ lemma norm_proj_mul_le (hP : IsStarProjection P) (hX : ‖X‖ ≤ ρ) : ‖P * 
       frobenius_norm_mul_of_unitary hP.two_mul_sub_one_mem_unitary.1]
   linarith
 
-/-- The diagonal matrix whose entry at `i` is `1` if `p i` holds and `0` otherwise. It is the
-coordinate projection onto the indices satisfying `p`. -/
+/--
+The diagonal matrix whose entry at `i` is `1` if `p i` holds and `0` otherwise. It is the
+coordinate projection onto the indices satisfying `p`.
+-/
 def coordProj (p : n → Prop) [DecidablePred p] : Matrix n n ℂ :=
   diagonal fun i : n ↦ if p i then 1 else 0
 

@@ -34,11 +34,15 @@ open MeasureTheory ENNReal ComplexConjugate
 
 namespace New
 
-variable {Z W X : Type*} [MeasurableSpace Z] [MeasurableSpace W]
-  {μ : Measure Z} {ν : Measure W} [NormedAddCommGroup X] {F : Z → X}
+variable
+  {Z W X : Type*} [MeasurableSpace Z] [MeasurableSpace W]
+  {μ : Measure Z} {ν : Measure W} [NormedAddCommGroup X]
+  {F : Z → X}
 
-/-- The function `F : Z → X` is strongly measurable, and its norm is bounded by one constant on all
-of `Z`. -/
+/--
+The function `F : Z → X` is strongly measurable, and its norm is bounded by one constant on all
+of `Z`.
+-/
 structure IsBoundedMeasurable (F : Z → X) where
   /-- `F` is strongly measurable. -/
   stronglyMeasurable : StronglyMeasurable F
@@ -195,9 +199,11 @@ lemma integral_conv [Group Z] [MeasurableMul₂ Z] [MeasurableInv Z] [μ.IsMulLe
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [MeasureSpace G] {e : G → ℂ}
 
-/-- The function `e` is a continuous integrable idempotent kernel on the group `G`: `e g⁻¹` is the
+/--
+The function `e` is a continuous integrable idempotent kernel on the group `G`: `e g⁻¹` is the
 conjugate of `e g`, `e 1 ≠ 0`, and `∫ e z * e (x⁻¹ z⁻¹ y) dz = e x⁻¹ * e y / e 1`, the integral
-being against `volume` on `G`. -/
+being against `volume` on `G`.
+-/
 structure IsIdempotentKernel (e : G → ℂ) where
   /-- `e` is continuous. -/
   continuous : Continuous e

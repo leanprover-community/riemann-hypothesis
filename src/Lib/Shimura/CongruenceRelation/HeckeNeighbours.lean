@@ -115,9 +115,10 @@ lemma exists_residue_torsion_emb (w : HeightOneSpectrum (𝓞 E)) :
 
 end
 
-variable {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n] {D : PEL E} {d₀ : ℕ}
-  [HasQuadSubfield d₀ E] {v : n → 𝔸f E} {w : SplitFinPlace E}
-  {C : Submodule (ResField w.val) (n → ResField w.val)}
+variable
+  {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n]
+  {D : PEL E} {d₀ : ℕ} [HasQuadSubfield d₀ E]
+  {v : n → 𝔸f E} {w : SplitFinPlace E} {C : Submodule (ResField w.val) (n → ResField w.val)}
 
 omit [Fintype n] [DecidableEq n] in
 /-- An integer `a` of `E` kills the class of `v` in `(𝔸_f / Ô)ⁿ` exactly when
@@ -355,7 +356,9 @@ lemma comp_nsmul_id_eq_zero_of_torsionPoint {V : ValuationSubring ℂ}
 
 section HeckeIsogenyTorsion
 
-variable {d₀ : ℕ} [HasQuadSubfield d₀ E] {V : Type} [CommRing V]
+variable
+  {d₀ : ℕ} [HasQuadSubfield d₀ E]
+  {V : Type} [CommRing V]
   {y y' : ThetaObject X (Spec (CommRingCat.of V))} {e : y.FullLevelStructure}
   {e' : y'.FullLevelStructure} {ψ : y.groupScheme ⟶ y'.groupScheme} {w : SplitFinPlace E}
   {C : Submodule (ResField w.val) (D.Index → ResField w.val)}
@@ -453,9 +456,10 @@ end HeckeIsogenyTorsion
 
 section Multiplier
 
-variable [IsAlgClosed k] {x₀ x x' : ThetaObject X (Spec (CommRingCat.of k))} {μ : ℕ}
-  {g : x₀.groupScheme ⟶ x.groupScheme} {g' : x₀.groupScheme ⟶ x'.groupScheme}
-  [IsIsogeny g] [IsIsogeny g'] [IsLinear g] [IsLinear g']
+variable
+  [IsAlgClosed k]
+  {x₀ x x' : ThetaObject X (Spec (CommRingCat.of k))} {μ : ℕ} {g : x₀.groupScheme ⟶ x.groupScheme}
+  {g' : x₀.groupScheme ⟶ x'.groupScheme} [IsIsogeny g] [IsIsogeny g'] [IsLinear g] [IsLinear g']
 
 omit [IsIsogeny g'] in
 /-- Let `g` and `g'` be linear isogenies with the same source and the same multiplier `μ`. A map `j`
@@ -543,38 +547,47 @@ section TwistedReduction
 
 variable {V : Type} [CommRing V]
 
-/-- The absolute Frobenius `t ↦ t ^ l ^ f` of a `k`-scheme, as a map over `V` between its two
-structures given by `π` followed by the Frobenius of `k` and by `π`. -/
-noncomputable def frobeniusTwist (π : V →+* k) (l : ℕ) [Fact l.Prime] [CharP k l] (f : ℕ) :
-    Over.map (specMap ((iterateFrobenius k l f).comp π)) ⟶ Over.map (specMap π) where
-  app T := homMk (absFrobenius f T) (by
-    have h_frob : absFrobenius f T ≫ T.hom = T.hom ≫ specMap (iterateFrobenius k l f) :=
-      (absFrobenius_comm f T (.mk (𝟙 _)) T.hom).trans
-        (T.hom ≫= by simpa using! comp_absFrobenius f (.mk (𝟙 _)) (𝟙 _))
-    simpa [specMap] using! h_frob =≫ specMap π)
+/--
+The absolute Frobenius `t ↦ t ^ l ^ f` of a `k`-scheme, as a map over `V` between its two
+structures given by `π` followed by the Frobenius of `k` and by `π`.
+-/
+noncomputable def frobeniusTwist (π : V →+* k) (l : ℕ) [Fact l.Prime] [CharP k l] (f : ℕ)
+    : Over.map (specMap ((iterateFrobenius k l f).comp π)) ⟶ Over.map (specMap π) where
+  app T :=
+    homMk (absFrobenius f T) (by
+      have h_frob : absFrobenius f T ≫ T.hom = T.hom ≫ specMap (iterateFrobenius k l f) :=
+        (absFrobenius_comm f T (.mk (𝟙 _)) T.hom).trans
+          (T.hom ≫= by simpa using! comp_absFrobenius f (.mk (𝟙 _)) (𝟙 _))
+      simpa [specMap] using! h_frob =≫ specMap π)
   naturality := by simp [absFrobenius_comm, OverMorphism.ext_iff]
 
-variable {π : V →+* k} {l f : ℕ} [Fact l.Prime] [CharP k l]
+variable
+  {π : V →+* k} {l f : ℕ} [Fact l.Prime] [CharP k l]
   {y y' : ThetaObject X (Spec (CommRingCat.of V))} {x₀ x : ThetaObject X (Spec (CommRingCat.of k))}
 
 open scoped MonoidalCategory in
-/-- Let `x₀` be the reduction of `y` along `π`, and `x` that of `y'` along `π` followed by the
+/--
+Let `x₀` be the reduction of `y` along `π`, and `x` that of `y'` along `π` followed by the
 Frobenius `t ↦ t ^ l ^ f`. The map `g : x₀ → x` is the reduction of `ψ : y → y'` twisted by that
-Frobenius. -/
-structure IsTwistedReduction (hx₀ : x₀.IsPullbackAlong (specMap π) y)
+Frobenius.
+-/
+structure IsTwistedReduction
+    (hx₀ : x₀.IsPullbackAlong (specMap π) y)
     (hx : x.IsPullbackAlong (specMap ((iterateFrobenius k l f).comp π)) y')
-    (ψ : y.groupScheme ⟶ y'.groupScheme) (g : x₀.groupScheme ⟶ x.groupScheme) : Prop where
+    (ψ : y.groupScheme ⟶ y'.groupScheme) (g : x₀.groupScheme ⟶ x.groupScheme)
+    : Prop where
   /-- On points, `g` is the Frobenius followed by `ψ`. -/
-  pointEquiv_comp {T : Over (Spec (CommRingCat.of k))} (u : T ⟶ x₀.groupScheme) :
-    hx.isGroupBaseChange.pointEquiv (u ≫ g) =
-      (frobeniusTwist π l f).app T ≫ hx₀.isGroupBaseChange.pointEquiv u ≫ ψ
+  pointEquiv_comp {T : Over (Spec (CommRingCat.of k))} (u : T ⟶ x₀.groupScheme)
+    : hx.isGroupBaseChange.pointEquiv (u ≫ g)
+      = (frobeniusTwist π l f).app T ≫ hx₀.isGroupBaseChange.pointEquiv u ≫ ψ
   /-- The map `g` is `𝓞 E`-linear. -/
   isLinear : IsLinear g
   /-- The map `g` sends the reduction of a section `a` to the reduction of `ψ a`. -/
-  pullSection_comp (a : 𝟙_ (Over (Spec (CommRingCat.of V))) ⟶ y.groupScheme) :
-    hx₀.isGroupBaseChange.pullSection a ≫ g = hx.isGroupBaseChange.pullSection (a ≫ ψ)
+  pullSection_comp (a : 𝟙_ (Over (Spec (CommRingCat.of V))) ⟶ y.groupScheme)
+    : hx₀.isGroupBaseChange.pullSection a ≫ g = hx.isGroupBaseChange.pullSection (a ≫ ψ)
 
-variable {hx₀ : x₀.IsPullbackAlong (specMap π) y}
+variable
+  {hx₀ : x₀.IsPullbackAlong (specMap π) y}
   {hx : x.IsPullbackAlong (specMap ((iterateFrobenius k l f).comp π)) y'}
   {ψ : y.groupScheme ⟶ y'.groupScheme} {g : x₀.groupScheme ⟶ x.groupScheme}
 

@@ -68,9 +68,9 @@ open Matrix Space G Norms.L2Operator Prod
 open NumberField (InfinitePlace)
 open DiscreteSeries (exists_conj_mem_dilationGroup)
 
-variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {s : n → ℤˣ} {t : n' → ℤˣ}
-  {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X]
+variable
+  {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {t : n' → ℤˣ} {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X]
   {S : Space E n s} {V : Space E n' t} (Θ : ThetaKernel X S V)
 
 /-- The operator norms ‖ω(k)‖ of a theta kernel on a Banach space are bounded for k in a compact
@@ -80,19 +80,22 @@ lemma exists_norm_le_of_isCompact {K : Set (G E s × G E t)} (hK : IsCompact K) 
   ContRepresentation.exists_norm_le_of_isCompact (π := .ofMonoidHom Θ.ω)
     (fun _ ↦ Θ.continuous.comp₂ continuous_id continuous_const) hK
 
-/-- One step of reduction: for `g` an adelic point of the unitary group of `V`, there is an
+/--
+One step of reduction: for `g` an adelic point of the unitary group of `V`, there is an
 archimedean point `y` with operator norm at most `2` at every infinite place such that the height of
 `g (y,1)⁻¹` is at most half the height of `g`, or at most `2`. Height is 1/λ, where λ is the first
-minimum, cut off at 1, of `V` moved by `g`. -/
-theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G E t) :
-    ∃ y : GInf E t, (∀ τ : InfinitePlace E, ‖((y τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2) ∧
-      V.height (g * (y, 1)⁻¹) ≤ max (V.height g / 2) 2 := by
+minimum, cut off at 1, of `V` moved by `g`.
+-/
+theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G E t)
+    : ∃ y : GInf E t,
+      (∀ τ : InfinitePlace E, ‖((y τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2)
+        ∧ V.height (g * (y, 1)⁻¹) ≤ max (V.height g / 2) 2 := by
   -- The point `y` doubles the lattice vectors of length below `1` and at most halves the others.
   let W : Space E n' t := V.move g
   -- The lattice vectors of length below `1` are orthogonal to one another, so they span an
   -- isotropic space.
-  let A (w : InfinitePlace E) : Matrix n' {ξ ∈ W.baseLattice | ‖W.archCoords ξ‖ < 1} ℂ :=
-    fun i ξ ↦ W.archCoords ξ (w, i)
+  let A (w : InfinitePlace E) : Matrix n' {ξ ∈ W.baseLattice | ‖W.archCoords ξ‖ < 1} ℂ := fun i ξ ↦
+    W.archCoords ξ (w, i)
   have h_iso (w : InfinitePlace E) : (A w)ᴴ * (signMatrix t * A w) = 0 := by
     ext ⟨ξ, hξ, hξ_short⟩ ⟨η, hη, hη_short⟩
     refine (stdForm_dotProduct_fst (W.vecAtPoint ξ) (W.vecAtPoint η) w).symm.trans ?_
@@ -100,8 +103,10 @@ theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G 
       form_eq_zero_of_norm_mul_lt_one hξ hη (by grw [hη_short.le, mul_one, hξ_short])]
     simp
   -- `y w` is within distance `1` of `1` and is a dilation along this space by the factor `2`.
-  have h_dilation (w : InfinitePlace E) : ∃ z : USign t,
-      dist (z : Matrix n' n' ℂ) 1 ≤ 1 ∧ ((z : GL n' ℂ) : Matrix n' n' ℂ) * A w = (2 : ℂ) • A w := by
+  have h_dilation (w : InfinitePlace E)
+      : ∃ z : USign t,
+        dist (z : Matrix n' n' ℂ) 1 ≤ 1
+          ∧ ((z : GL n' ℂ) : Matrix n' n' ℂ) * A w = (2 : ℂ) • A w := by
     obtain ⟨z, hz_near, hz_dil, -⟩ := exists_conj_mem_dilationGroup (h_iso w) 1 one_pos
     exact ⟨z, hz_near, by simpa [one_add_one_eq_two] using hz_dil⟩
   choose y y_near y_dil using h_dilation
@@ -111,8 +116,8 @@ theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G 
   -- At `g y⁻¹` the lattice is no larger, and a vector has at least half its length at `g`, and
   -- twice it if that is below `1`.
   let W' : Space E n' t := V.move (g * (y⁻¹, 1))
-  have h_half (ξ : n' → E) : (ξ ∈ W'.baseLattice → ξ ∈ W.baseLattice) ∧
-      ‖W.archCoords ξ‖ ≤ 2 * ‖W'.archCoords ξ‖ := by
+  have h_half (ξ : n' → E)
+      : (ξ ∈ W'.baseLattice → ξ ∈ W.baseLattice) ∧ ‖W.archCoords ξ‖ ≤ 2 * ‖W'.archCoords ξ‖ := by
     -- The coordinates of `ξ` at `g` are those at `g y⁻¹` moved by `(y⁻¹, 1)`, which has norm at
     -- most `2` at every infinite place and is the identity at the finite places.
     have h_norm (w : InfinitePlace E) : ‖(adeleMatrix (y⁻¹, 1)).map fun a : 𝔸 E ↦ a.1 w‖ ≤ 2 :=
@@ -122,12 +127,13 @@ theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G 
       simp [W, W', -inv_mk, vecAtPoint_move, adeleMatrix]
     simpa [ite_mem, Matrix.one_apply] using
       W.mem_and_norm_le_of_vecAtPoint ξ W' ξ (adeleMatrix (y⁻¹, 1)) 1 h_norm h_crd
-  have h_double (ξ : n' → E) (hξ : ξ ∈ W.baseLattice) (hξ_short : ‖W.archCoords ξ‖ < 1) :
-      W'.archCoords ξ = (2 : ℂ) • W.archCoords ξ := by
+  have h_double (ξ : n' → E) (hξ : ξ ∈ W.baseLattice) (hξ_short : ‖W.archCoords ξ‖ < 1)
+      : W'.archCoords ξ = (2 : ℂ) • W.archCoords ξ := by
     have h_vec : W'.vecAtPoint ξ = adeleMatrix ((y, 1) : G E t) *ᵥ W.vecAtPoint ξ := by
       simp [W, W', vecAtPoint_move, adeleMatrix_mul]
     ext ⟨w, i⟩
-    calc W'.archCoords ξ (w, i) = evalInf w ((adeleMatrix ((y, 1) : G E t) *ᵥ W.vecAtPoint ξ) i) :=
+    calc
+      W'.archCoords ξ (w, i) = evalInf w ((adeleMatrix ((y, 1) : G E t) *ᵥ W.vecAtPoint ξ) i) :=
         congrArg (fun v : n' → 𝔸 E ↦ evalInf w (v i)) h_vec
       _ = (((y w : GL n' ℂ) : Matrix n' n' ℂ) * A w) i ⟨ξ, hξ, hξ_short⟩ :=
         (evalInf w).map_mulVec _ _ i
@@ -145,31 +151,38 @@ theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G 
     · -- A long vector keeps at least half its length.
       exact min_le_of_right_le (by linarith)
   refine ⟨y, y_norm, ?_⟩
-  calc V.height (g * (y, 1)⁻¹) = W'.firstMinimum⁻¹ := by simp [height, W']
+  calc
+    V.height (g * (y, 1)⁻¹)
+      = W'.firstMinimum⁻¹ := by simp [height, W']
     _ ≤ (min (2 * W.firstMinimum) 2⁻¹)⁻¹ :=
       inv_anti₀ (lt_min (mul_pos two_pos firstMinimum_pos) (by norm_num)) h_min
     _ ≤ max (V.height g / 2) 2 := by
-      rcases min_choice (2 * W.firstMinimum) 2⁻¹ with h_eq | h_eq <;>
-        simp [h_eq, height, W, div_eq_mul_inv]
+      rcases min_choice (2 * W.firstMinimum) 2⁻¹ with h_eq | h_eq
+        <;> simp [h_eq, height, W, div_eq_mul_inv]
 
-/-- Reduction theory with a height bound: there is a compact set `Ω` such that every `g` has a
+/--
+Reduction theory with a height bound: there is a compact set `Ω` such that every `g` has a
 rational `γ` and a real point `x` with `γ g x⁻¹ ∈ Ω` and operator norm at most the height of `g`
 at every infinite place. Here `x` is the product of a list `l` of real points of norm at most `2`,
-and `2 ^ l.length` is at most the height of `g`. -/
-theorem _root_.New.Space.exists_reduction_norm_le_height (V : Space E n' t) :
-    ∃ Ω : Set (G E t), IsCompact Ω ∧ ∀ g : G E t, ∃ γ ∈ V.Γ, ∃ l : List (GInf E t),
-      γ * g * (l.prod, 1)⁻¹ ∈ Ω ∧
-      (∀ τ : InfinitePlace E, ‖((l.prod τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ V.height g) ∧
-      2 ^ l.length ≤ V.height g ∧
-      ∀ y ∈ l, ∀ τ : InfinitePlace E, ‖((y τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2 := by
+and `2 ^ l.length` is at most the height of `g`.
+-/
+theorem _root_.New.Space.exists_reduction_norm_le_height (V : Space E n' t)
+    : ∃ Ω : Set (G E t),
+      IsCompact Ω
+        ∧ ∀ g : G E t, ∃ γ ∈ V.Γ, ∃ l : List (GInf E t),
+          γ * g * (l.prod, 1)⁻¹ ∈ Ω
+            ∧ (∀ τ : InfinitePlace E, ‖((l.prod τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ V.height g)
+            ∧ 2 ^ l.length ≤ V.height g
+            ∧ ∀ y ∈ l, ∀ τ : InfinitePlace E, ‖((y τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2 := by
   -- Let `2 ^ k ≤ height g < 2 ^ (k + 1)`. After `k` halving steps the height is at most `2`, and
   -- Mahler's criterion applies.
   obtain ⟨Ω, hΩ, h_mahler⟩ := V.mahler_criterion 2
   -- By induction on `k`: `g` of height at most `2 ^ (k + 1)` is reduced by `k` steps.
-  have h_reduce (k : ℕ) (g : G E t) (hg : V.height g ≤ 2 ^ (k + 1)) :
-      ∃ γ ∈ V.Γ, ∃ l : List (GInf E t), l.length = k ∧ γ * g * (l.prod, 1)⁻¹ ∈ Ω ∧
-        (∀ τ : InfinitePlace E, ‖((l.prod τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2 ^ k) ∧
-        ∀ y ∈ l, ∀ τ : InfinitePlace E, ‖((y τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2 := by
+  have h_reduce (k : ℕ) (g : G E t) (hg : V.height g ≤ 2 ^ (k + 1))
+      : ∃ γ ∈ V.Γ, ∃ l : List (GInf E t),
+        l.length = k ∧ γ * g * (l.prod, 1)⁻¹ ∈ Ω
+          ∧ (∀ τ : InfinitePlace E, ‖((l.prod τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2 ^ k)
+          ∧ ∀ y ∈ l, ∀ τ : InfinitePlace E, ‖((y τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2 := by
     induction k generalizing g with
     | zero =>
       obtain ⟨γ, hγ, h_mem⟩ := h_mahler g (by simpa using hg)
@@ -190,17 +203,19 @@ theorem _root_.New.Space.exists_reduction_norm_le_height (V : Space E n' t) :
   obtain ⟨γ, hγ, l, rfl, h_mem, hl_norm, hl_factors⟩ := h_reduce k g h_lt.le
   exact ⟨γ, hγ, l, h_mem, fun τ ↦ (hl_norm τ).trans h_le, h_le, hl_factors⟩
 
-/-- Fix `g₀` in the group of `S`. For every large exponent `a`, each `g` in the group of `V` has a
+/--
+Fix `g₀` in the group of `S`. For every large exponent `a`, each `g` in the group of `V` has a
 rational translate `γ g` such that the operator `ω (g₀, γ g)` has norm at most
-`(2 * height g) ^ a`. -/
-theorem eventually_exists_norm_omega_le_mul_height_pow (g₀ : G E s) :
-    ∀ᶠ a : ℕ in Filter.atTop, ∀ g : G E t, ∃ γ ∈ V.Γ,
-      ‖Θ.ω (g₀, γ * g)‖ ≤ 2 ^ a * V.height g ^ a := by
+`(2 * height g) ^ a`.
+-/
+theorem eventually_exists_norm_omega_le_mul_height_pow (g₀ : G E s)
+    : ∀ᶠ a : ℕ in Filter.atTop, ∀ g : G E t, ∃ γ ∈ V.Γ,
+        ‖Θ.ω (g₀, γ * g)‖ ≤ 2 ^ a * V.height g ^ a := by
   -- Write `γ g = z x` with `z` in a compact set and `x` a product of `k` real points of norm at
   -- most `2`, where `2 ^ k ≤ height g`. Each of the `k + 1` factors acts with norm at most `2 ^ a`.
   obtain ⟨Ω, hΩ, h_reduce⟩ := V.exists_reduction_norm_le_height
-  obtain ⟨C, hC⟩ := Θ.exists_norm_le_of_isCompact <|
-    ((isCompact_singleton (x := 1)).insert g₀).prod <| hΩ.union
+  obtain ⟨C, hC⟩ :=
+    Θ.exists_norm_le_of_isCompact <| ((isCompact_singleton (x := 1)).insert g₀).prod <| hΩ.union
       ((isCompact_univ_pi fun _ ↦ isCompact_U_norm_le 2).prod (isCompact_singleton (x := 1)))
   filter_upwards [(tendsto_pow_atTop_atTop_of_one_lt one_lt_two).eventually_ge_atTop C] with a ha g
   obtain ⟨γ, hγ, l, h_mem, -, h_length, h_factors⟩ := h_reduce g
@@ -217,32 +232,38 @@ theorem eventually_exists_norm_omega_le_mul_height_pow (g₀ : G E s) :
       (hC (1, y, 1) (by simp [h_factors y (by simp)])).trans ha]
     simp [pow_succ, mul_assoc]
 
-/-- Let `S` and `T` be hermitian spaces of ranks `n` and `n'`, let `a` and `b` be automorphic
+/--
+Let `S` and `T` be hermitian spaces of ranks `n` and `n'`, let `a` and `b` be automorphic
 characters, and let `pairWeil S T a b` be the resulting Weil representation of the product of the
 two adelic unitary groups. For a compact set `Ξ` of adelic points there is a constant `C`, depending
 on `S`, `T`, `a`, `b` and `Ξ`, such that for every `z` in `Ξ` and all archimedean points `y`, `y'`
 (placed in the infinite components of the two groups), the operator
 `pairWeil S T a b (z ((y, 1), (y', 1)))` has norm at most `C (‖y‖ ‖y'‖) ^ (n n')`. Here the norm of
 an archimedean point is the product of the operator norms of its components at the infinite places,
-and the exponent is the product of the cardinalities of `n` and `n'`. -/
-theorem _root_.New.exists_norm_pairWeil_mul_real_le [WeilData E] (S : Space E n s)
-    (T : Space E n' t) (a b : AutChar E) {Ξ : Set (G E s × G E t)} (hΞ : IsCompact Ξ) :
-    ∃ C : ℝ, ∀ z ∈ Ξ, ∀ (y : GInf E s) (y' : GInf E t),
-      ‖pairWeil S T a b (z * ((y, 1), (y', 1)))‖ ≤ C *
-        ((∏ τ : InfinitePlace E, ‖((y τ : GL n ℂ) : Matrix n n ℂ)‖) *
-          ∏ τ : InfinitePlace E, ‖((y' τ : GL n' ℂ) : Matrix n' n' ℂ)‖) ^
-            (Fintype.card n * Fintype.card n') := by
+and the exponent is the product of the cardinalities of `n` and `n'`.
+-/
+theorem _root_.New.exists_norm_pairWeil_mul_real_le
+    [WeilData E]
+    (S : Space E n s) (T : Space E n' t) (a b : AutChar E)
+    {Ξ : Set (G E s × G E t)} (hΞ : IsCompact Ξ)
+    : ∃ C : ℝ, ∀ z ∈ Ξ, ∀ (y : GInf E s) (y' : GInf E t),
+      ‖pairWeil S T a b (z * ((y, 1), (y', 1)))‖
+        ≤ C
+          * ((∏ τ : InfinitePlace E, ‖((y τ : GL n ℂ) : Matrix n n ℂ)‖)
+              * ∏ τ : InfinitePlace E, ‖((y' τ : GL n' ℂ) : Matrix n' n' ℂ)‖)
+            ^ (Fintype.card n * Fintype.card n') := by
   -- The operators are bounded on `Ξ`; at a real point the characters have modulus one and the
   -- multiplier is a product of minors of size at most `n n'`.
   obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ z ∈ Ξ, ‖pairWeil S T a b z‖ ≤ C :=
     (pairThetaKer S T a b).exists_norm_le_of_isCompact hΞ
   refine ⟨C * ‖(S.hom T).vacElem‖, fun z hz y y' ↦ ?_⟩
-  have h_char : ‖pairWeil S T a b ((y, 1), (y', 1))‖ =
-      ‖(S.hom T).ω (G.onHom ((y, 1), (y', 1)))‖ := by
+  have h_char
+      : ‖pairWeil S T a b ((y, 1), (y', 1))‖ = ‖(S.hom T).ω (G.onHom ((y, 1), (y', 1)))‖ := by
     change ‖pairChar a b _ • (S.hom T).ω _‖ = _
     simp [norm_smul, pairChar_apply, Circle.norm_coe]
-  have h_multiplier : weilMultiplier (G.onHom (((y, 1), (y', 1)) : G E s × G E t)) =
-      ∏ τ : InfinitePlace E, Fock.realMultiplier (Fock.pairHom t s (y τ, y' τ)) := by
+  have h_multiplier
+      : weilMultiplier (G.onHom (((y, 1), (y', 1)) : G E s × G E t))
+        = ∏ τ : InfinitePlace E, Fock.realMultiplier (Fock.pairHom t s (y τ, y' τ)) := by
     simp [weilMultiplier, G.onHom_eq, Prod.mk_one_one, finMultiplier_eq_one_of_mem]
   have hC_nonneg : 0 ≤ C := (norm_nonneg _).trans (hC z hz)
   rw [map_mul, ← Finset.prod_mul_distrib, ← Finset.prod_pow, mul_assoc]
@@ -261,21 +282,25 @@ section Lift
 
 open MeasureTheory Space
 
-variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {s : n → ℤˣ} {t : n' → ℤˣ}
-  {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X]
+variable
+  {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {t : n' → ℤˣ} {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X]
   {S : Space E n s} {T : Space E n' t} {φ : X} {y : G E s → ℂ} {y' : G E t → ℂ}
   (K : ThetaKernel X S T)
 
-/-- The theta lift from S with datum φ is the function h ↦ ∫_{Γ_S\G} θ(ω(g, h)φ) y(g) dg on the
-group of T. -/
+/--
+The theta lift from S with datum φ is the function h ↦ ∫_{Γ_S\G} θ(ω(g, h)φ) y(g) dg on the
+group of T.
+-/
 def Space.lift (φ : X) (y : G E s → ℂ) (h : G E t) : ℂ :=
   ∫ g : G E s, K.θ (K.ω (g, h) φ) * y g ∂S.quotMeasure
 
 variable (S T) in
-/-- A continuous function `weightFn` of moderate growth on the adelic unitary group of `S`, with a
+/--
+A continuous function `weightFn` of moderate growth on the adelic unitary group of `S`, with a
 continuous map `comparisonMap` to the group of `T` whose heights are bounded by a constant times the
-heights in `S`. -/
+heights in `S`.
+-/
 structure Space.ModerateWeight where
   /-- The weight function, continuous on the group of `S`. -/
   weightFn : C(G E s, ℂ)
@@ -294,9 +319,11 @@ lemma lift_mul_right (h k : G E t) : lift K φ y (h * k) = lift K (K.ω (1, k) �
 
 namespace ThetaKernel
 
-/-- The theta kernel for the pair `T`, `S`. It uses the representation `(h, g) ↦ ω (g, h)` of the
+/--
+The theta kernel for the pair `T`, `S`. It uses the representation `(h, g) ↦ ω (g, h)` of the
 pair of groups in the other order, and the same functional `K.θ`. Its lifts are the transposed
-lifts of `K`. -/
+lifts of `K`.
+-/
 @[simps]
 abbrev swap : ThetaKernel X T S where
   ω := K.ω.comp MulEquiv.prodComm.toMonoidHom
@@ -412,11 +439,14 @@ lemma integrable_theta_mul (hy : y ∈ S.rapidFunctions) (φ : X) (h : G E t) :
 
 variable (hr : y ∈ S.rapidFunctions) in
 include hr in
-/-- The theta lift (φ, y) ↦ `New.Space.lift` K φ y as a ℂ-bilinear map from X and rapidly
+/--
+The theta lift (φ, y) ↦ `New.Space.lift` K φ y as a ℂ-bilinear map from X and rapidly
 decaying automorphic functions for S to functions on the group of T. The definition also takes an
-argument `hr : y ∈ S.rapidFunctions` for a function `y` that the map does not use. -/
+argument `hr : y ∈ S.rapidFunctions` for a function `y` that the map does not use.
+-/
 def liftBilin : X →ₗ[ℂ] S.rapidFunctions.toSubmodule →ₗ[ℂ] G E t → ℂ :=
-  LinearMap.mk₂ ℂ (fun φ y ↦ lift K φ y)
+  LinearMap.mk₂ ℂ
+    (fun φ y ↦ lift K φ y)
     (by simp [add_mul, funext_iff, integral_add, integrable_theta_mul, lift])
     (by simp [funext_iff, lift, ← integral_const_mul, ← mul_assoc])
     (by simp [funext_iff, mul_add, integral_add, integrable_theta_mul, lift])

@@ -43,10 +43,12 @@ namespace New
 
 open Subgroup QZChar QuotientGroup Set Module Function IsScalarTower Algebra
 
-variable (Γ : Type)
+variable
+  (Γ : Type)
   {K L : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [EmbeddedNumberField K]
   [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
-  (χ : QZChar Γ) [Field L] [EmbeddedNumberField L] [Algebra K L]
+  (χ : QZChar Γ)
+  [Field L] [EmbeddedNumberField L] [Algebra K L]
 
 open Pointwise in
 /-- The image of the global Artin map from the finite ideles of `K` to `Γ^ab` is closed. -/

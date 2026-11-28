@@ -560,7 +560,8 @@ lemma New.Rows.ofMatrix_transvection_snd_mem_principalLevel {E n : Type} [Field 
       (mul_mem (algebraMap (𝓞 E) (Ô E) p).property (h_int i j))
   · simp [h_entry]
 
-/-- Peaks of a holomorphic form lie away from the cusp. The order `o` puts the signs `+1` first. Let
+/--
+Peaks of a holomorphic form lie away from the cusp. The order `o` puts the signs `+1` first. Let
 `F` on the adelic unitary group `G E s` be left invariant under the rational points `V.Γ` of the
 space `V`. Let it be holomorphic at every translate (`IsAdelicHol`) of a weight `u` with gap `1`
 (`u w i + 1 ≤ u w j` when `s i = 1`, `s j = -1`) and entries in `[-A, A]`, `A ≥ 2`. Let it be right
@@ -568,34 +569,37 @@ invariant under the principal level `p`, where `p = -p̄` and `im (Φ w p) ∈ (
 embedding `Φ w` at each infinite place `w`, `A' ≥ 1`. Then at a peak `g` of `F` (where `|F g|`
 exceeds half the supremum of `|F|`), the first minimum of the moved space `V.move g` is at least
 `(A A')^(-1/2)`. This first minimum is the length, in the norm of `archCoords`, of the shortest
-nonzero vector of `baseLattice`, cut off at `1`. -/
-theorem New.Rows.IsPeak.le_firstMinimum {E n : Type} [Field E] [CMType E] [Fintype n]
-    [DecidableEq n] [Nonempty n] {s : n → ℤˣ} {V : Space E n s} {o : n → ℤ}
-    {u : InfinitePlace E → n → ℤ} {F : G E s → ℂ} {g : G E s} (hg : IsPeak F g) (A A' : ℝ)
-    {p : 𝓞 E} (ho : IsPosFirstOrder s o)
-    (h_gap : ∀ w : InfinitePlace E, HasHolGap s (u w) 1)
+nonzero vector of `baseLattice`, cut off at `1`.
+-/
+theorem New.Rows.IsPeak.le_firstMinimum
+    {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Nonempty n]
+    {s : n → ℤˣ} {V : Space E n s} {o : n → ℤ} {u : InfinitePlace E → n → ℤ} {F : G E s → ℂ}
+    {g : G E s} (hg : IsPeak F g)
+    (A A' : ℝ)
+    {p : 𝓞 E}
+    (ho : IsPosFirstOrder s o) (h_gap : ∀ w : InfinitePlace E, HasHolGap s (u w) 1)
     (h_wt : ∀ (w : InfinitePlace E) (i : n), |(u w i : ℝ)| ≤ A) (hA : 2 ≤ A) (hA' : 1 ≤ A')
     (hp : star p = -p) (hp_im : ∀ w : InfinitePlace E, (Φ w p.val).im ∈ Set.Ioc 0 A')
     (h_rat : ∀ γ ∈ V.Γ, ∀ x : G E s, F (γ * x) = F x)
     (h_level : ∀ k ∈ principalLevel n p, ∀ x : G E s, F (x * (1, k)) = F x)
-    (h_hol : IsAdelicHol o u F) : (√(A * A'))⁻¹ ≤ (V.move g).firstMinimum := by
+    (h_hol : IsAdelicHol o u F)
+    : (√(A * A'))⁻¹ ≤ (V.move g).firstMinimum := by
   -- If the first minimum at `g` is small, a short lattice vector is isotropic, and the transvection
   -- along it fixes `F (g ·)`. The Schwarz lemma then makes `F g` too small for a peak.
   let C : ℝ := ⨆ x, ‖F x‖
   have le_sup (x : G E s) : ‖F x‖ ≤ C := le_ciSup hg.bddAbove x
   have C_pos : 0 < C := (norm_pos_iff.2 hg.ne_zero).trans_le (le_sup g)
-  have le_one : (√(A * A'))⁻¹ ≤ 1 :=
-    inv_le_one_of_one_le₀ (Real.one_le_sqrt.2 (by nlinarith))
+  have le_one : (√(A * A'))⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (Real.one_le_sqrt.2 (by nlinarith))
   refine le_firstMinimum_iff.2 ⟨le_one, fun y hy hy₀ ↦ ?_⟩
   by_contra! short
   -- a lattice vector `y` of length less than `1` is isotropic; `Y` are its coordinates at `g`
   set Y : n → 𝔸 E := (V.move g).vecAtPoint y
   have iso : star Y ⬝ᵥ stdForm E s *ᵥ Y = 0 := by
-    rw [stdForm_vecAtPoint, form_eq_zero_of_norm_mul_lt_one hy hy
-      (by grw [← sq, short, le_one, one_pow]), map_zero]
+    rw [stdForm_vecAtPoint,
+      form_eq_zero_of_norm_mul_lt_one hy hy (by grw [← sq, short, le_one, one_pow]), map_zero]
   replace short : ∑ w, ∑ i, ‖(Y i).1 w‖ ^ 2 < A'⁻¹ * A⁻¹ := by
-    simpa [lt_sqrt, Space.archCoords, EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type,
-      ← sqrt_inv] using short
+    simpa [lt_sqrt, Space.archCoords, EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type, ← sqrt_inv]
+      using short
   replace hy (i : n) : (Y i).2 ∈ Ô E := hy i
   -- the transvection `t`: `g * t * g⁻¹` is rational and the finite part of `t` has level `p`
   let m : Matrix n n (𝔸 E) := 1 - toAdele p.val • vecMulVec Y (star Y) * stdForm E s
@@ -609,28 +613,34 @@ theorem New.Rows.IsPeak.le_firstMinimum {E n : Type} [Field E] [CMType E] [Finty
     ofMatrix_transvection_snd_mem_principalLevel hy m_unitary rfl
   have t_fix (h : GInf E s) : F (g * (t.1 * h, 1)) = F (g * (h, 1)) := by
     have t_split : t * ((h, 1) * (1, t.2⁻¹)) = (t.1 * h, 1) := by simp [t.mul_def]
-    calc F (g * (t.1 * h, 1)) = F (g * t * g⁻¹ * (g * (h, 1) * (1, t.2⁻¹))) := by
-          simp [← t_split, mul_assoc]
+    calc
+      F (g * (t.1 * h, 1))
+        = F (g * t * g⁻¹ * (g * (h, 1) * (1, t.2⁻¹))) := by simp [← t_split, mul_assoc]
       _ = F (g * (h, 1) * (1, t.2⁻¹)) := h_rat _ t_rat _
       _ = F (g * (h, 1)) := h_level _ (inv_mem t_cong) _
-  have re_eq (w : InfinitePlace E) : (Φ w p.val).re = 0 := self_eq_neg.1 <| by
-    simpa [coe_star_ringOfIntegers] using congr_arg (fun q : 𝓞 E ↦ (Φ w q.val).re) hp
-  have iso_inf (w : InfinitePlace E) :
-      star (fun i ↦ (Y i).1 w) ⬝ᵥ signMatrix s *ᵥ (fun i ↦ (Y i).1 w) = 0 := by
+  have re_eq (w : InfinitePlace E) : (Φ w p.val).re = 0 :=
+    self_eq_neg.1 <| by
+      simpa [coe_star_ringOfIntegers] using congr_arg (fun q : 𝓞 E ↦ (Φ w q.val).re) hp
+  have iso_inf (w : InfinitePlace E)
+      : star (fun i ↦ (Y i).1 w) ⬝ᵥ signMatrix s *ᵥ (fun i ↦ (Y i).1 w) = 0 := by
     simp [← stdForm_dotProduct_fst, iso]
   have size_pos (w : InfinitePlace E) : 0 < (Φ w p.val).im * ∑ i, ‖(Y i).1 w‖ ^ 2 := by
-    simpa [ne_iff, (hp_im w).1, sq_pos_iff, sum_pos_iff_of_nonneg]
-      using eq_zero_of_vecAtPoint_fst_eq_zero.mt hy₀
+    simpa [ne_iff, (hp_im w).1, sq_pos_iff, sum_pos_iff_of_nonneg] using
+      eq_zero_of_vecAtPoint_fst_eq_zero.mt hy₀
   have size_sum : A * ∑ w, (Φ w p.val).im * ∑ i, ‖(Y i).1 w‖ ^ 2 ≤ 1 := by
     grw [(hp_im _).2, ← mul_sum, short]
     simp [field]
-  have t_eq (w : InfinitePlace E) : ((t.1 w : USign s) : Matrix n n ℂ) =
-      1 - Φ w p.val • vecMulVec (fun i ↦ (Y i).1 w) (star fun i ↦ (Y i).1 w) * signMatrix s := by
+  have t_eq (w : InfinitePlace E)
+      : ((t.1 w : USign s) : Matrix n n ℂ)
+        = 1
+          - Φ w p.val • vecMulVec (fun i ↦ (Y i).1 w) (star fun i ↦ (Y i).1 w) * signMatrix s := by
     simp [← ext_iff, t, m, stdForm, signMatrix, Matrix.one_apply, apply_ite, ite_apply,
       ← adeleMatrix_fst, vecMulVec_apply]
   have schwarz : ‖F g‖ ≤ C * exp (2 + -(2 * π)) := by
-    simpa [Prod.mk_one_one] using norm_le_of_transvection_invariant ho h_gap h_wt hA (h_hol g)
-      (fun h ↦ le_sup _) C_pos re_eq iso_inf size_pos size_sum t_eq t_fix
+    simpa [Prod.mk_one_one] using
+      norm_le_of_transvection_invariant ho h_gap h_wt hA (h_hol g)
+        (fun h ↦ le_sup _)
+        C_pos re_eq iso_inf size_pos size_sum t_eq t_fix
   -- so `C / 2 < ‖F g‖ ≤ C * exp (2 - 2 π) ≤ C / e < C / 2`
   nlinarith [hg.half_lt,
     exp_neg_one_lt_half.trans_le' (show exp (2 + -(2 * π)) ≤ exp (-1) by bound [two_le_pi])]

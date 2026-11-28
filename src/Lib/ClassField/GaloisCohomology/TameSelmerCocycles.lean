@@ -58,9 +58,9 @@ section SelmerMembership
 
 open Matrix.Module
 
-variable {E : Type}
-  {Λ n B : Type*} [Field E] [EmbeddedNumberField E] [CommRing Λ] [Fintype n] [DecidableEq n]
-  [AddCommGroup B] [Module Λ B]
+variable
+  {E : Type} {Λ n B : Type*} [Field E] [EmbeddedNumberField E] [CommRing Λ] [Fintype n]
+  [DecidableEq n] [AddCommGroup B] [Module Λ B]
   {ρ : Gal(Ω/E) → Matrix n n Λ} {S T : Set (FinPlace E)} {L K : Set (Gal(Ω/E) →₀ Matrix n n Λ)}
   {c : Gal(Ω/E) → n → B}
 
@@ -115,23 +115,29 @@ section TameCocycles
 
 open Equiv.Perm Matrix Module MulAction LinearMap
 
-variable {ℓ : ℕ} {E : Type} {O n : Type*} [Field E] [EmbeddedNumberField E] [CommRing O]
-  [Fintype n] [DecidableEq n] {ρ : Gal(Ω/E) →* Matrix n n O} {L : Set (Gal(Ω/E) →₀ Matrix n n O)}
-  {A : ClosurePlace} {B : Type*} [AddCommGroup B] [Module O B] {M : ℕ} {P : FinPlace E}
-  {c : Gal(Ω/E) → n → B} {m : ℕ}
+variable
+  {ℓ : ℕ} {E : Type} {O n : Type*}
+  [Field E] [EmbeddedNumberField E] [CommRing O] [Fintype n] [DecidableEq n]
+  {ρ : Gal(Ω/E) →* Matrix n n O} {L : Set (Gal(Ω/E) →₀ Matrix n n O)} {A : ClosurePlace} {B : Type*}
+  [AddCommGroup B] [Module O B]
+  {M : ℕ} {P : FinPlace E} {c : Gal(Ω/E) → n → B} {m : ℕ}
 
 variable (ρ L A B) in
-/-- The module of restrictions to the decomposition group at `A` of the locally constant cocycles
-for `ρ` with values in `B ^ n` that obey the relations `L`. -/
+/--
+The module of restrictions to the decomposition group at `A` of the locally constant cocycles
+for `ρ` with values in `B ^ n` that obey the relations `L`.
+-/
 noncomputable def localCocycles : Submodule O (decompGroup Gal(Ω/E) A → n → B) :=
   (selmerModule ρ .univ L B).map (funLeft O (n → B) (decompGroup Gal(Ω/E) A).subtype)
 
-/-- The affine action `u ↦ c g + ρ g • u` of `Gal(Ω/E)` on `B ^ n` given by a cocycle `c` for the
-matrix representation `ρ`. -/
-noncomputable def affineAction (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h) :
-    Gal(Ω/E) →* Equiv.Perm (n → B) :=
-  MonoidHom.mk' (fun g ↦ Equiv.addLeft (c g) * toPerm (ρ.toHomUnits g))
-    (by simp [Equiv.ext_iff, Units.smul_def, hc, mul_smul, add_assoc])
+/--
+The affine action `u ↦ c g + ρ g • u` of `Gal(Ω/E)` on `B ^ n` given by a cocycle `c` for the
+matrix representation `ρ`.
+-/
+noncomputable def affineAction (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h)
+    : Gal(Ω/E) →* Equiv.Perm (n → B) :=
+  MonoidHom.mk' (fun g ↦ Equiv.addLeft (c g) * toPerm (ρ.toHomUnits g)) (by
+    simp [Equiv.ext_iff, Units.smul_def, hc, mul_smul, add_assoc])
 
 /-- The affine action of a cocycle `c` sends `u` to `c g + ρ g • u`. -/
 lemma affineAction_apply (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h) (g : Gal(Ω/E))

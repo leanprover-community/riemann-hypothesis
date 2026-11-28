@@ -214,8 +214,8 @@ The relevant subgroup of `Gal(ℚ̄_p/ℚ_p)` is the image of `j = toGp : Γ →
 
 namespace New.Period
 
-variable {p : ℕ} [ThePrime p] (Γ : Type*) [Group Γ] [𝒥 : OverGp Γ p] {m n : ℤ} {x : BdR}
-  {y : BdRPlus}
+variable
+  {p : ℕ} [ThePrime p] (Γ : Type*) [Group Γ] [𝒥 : OverGp Γ p] {m n : ℤ} {x : BdR} {y : BdRPlus}
 
 /-- Ax–Sen–Tate: if `j : Γ → G_p` has open image, an element of `ℂ_p` fixed by every `j(g)` lies
 in the subfield `K` of `ℚ̄_p` fixed by that image. -/

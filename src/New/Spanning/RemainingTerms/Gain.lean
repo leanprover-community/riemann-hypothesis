@@ -51,7 +51,9 @@ namespace New.Filling
 
 open NumberField Matrix Module Pointwise ComplexOrder
 
-variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
+variable
+  {E : Type} [Field E] [CMType E]
+  {𝔰 : Shape} {S : Filling E 𝔰}
   {j j' : Fin (𝔰.ϱ + 2)} {c c' : S.Classes} {γ γ' : S.G E} {s : S.ResidueGL} {x : ℕ}
 
 /-! ### Ranks -/
@@ -158,10 +160,12 @@ lemma abs_norm_det_gram_sub_le {i : ℕ} {b b' : Matrix 𝔰.MiddleIndex (Fin i)
         |(Algebra.norm ℚ (bᴴ * S.positiveGram * b).det : ℝ)| := by
       rw [abs_norm_det_smul h_two, ← mul_assoc, ← mul_pow, sq]
 
-/-- The matrix whose columns are the vectors `y₀ + λ z⁺` of `X₀ ⊥ E z⁺` attached to the columns
-`(y₀ + λ' z, y₀' + λ z)` of `y`. -/
-def sourceCols {σ : Type} (y : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) σ E) :
-    Matrix 𝔰.MiddleIndex σ E :=
+/--
+The matrix whose columns are the vectors `y₀ + λ z⁺` of `X₀ ⊥ E z⁺` attached to the columns
+`(y₀ + λ' z, y₀' + λ z)` of `y`.
+-/
+def sourceCols {σ : Type} (y : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) σ E)
+    : Matrix 𝔰.MiddleIndex σ E :=
   (of fun a : σ ↦ linkSource E 𝔰 (y.col a))ᵀ
 
 /-- The entries of `yᴴ Q y'` are the values of the form with matrix `Q` on the columns of `y` and
@@ -809,7 +813,8 @@ lemma pairLattice_comm : S.pairLattice c c' γ γ' = S.pairLattice c c' γ' γ :
 lemma pairDiscriminant_comm : S.pairDiscriminant c c' γ γ' = S.pairDiscriminant c c' γ' γ := by
   rw [pairDiscriminant, pairDiscriminant, commonLink_comm, pairLattice_comm]
 
-/-- **Gain.** Let `γ`, `γ'` be rational terms of cell ranks `j`, `j'` over one block: two classes
+/--
+**Gain.** Let `γ`, `γ'` be rational terms of cell ranks `j`, `j'` over one block: two classes
 `c`, `c'` and an element `s` of `S.ResidueGL` to which both reduce after translation to the lattices
 of the classes. Let `s` agree and let `x` be at most `S.meetNorm s`, the product of the norms of the
 places at which `s` meets (modulo such a place the spans of the frame and of its image under `s`
@@ -820,22 +825,24 @@ the terms. Its discriminant is at most `(2 / M) ^ (c⁺ f)` times the geometric 
 isotropic row indices, times `M ^ (2 min(ϱ, j) f)`, `j'` for `γ'`. Here `M = S.M` is the level,
 `c⁺ = S.linkCorank γ γ'` is the codimension in each link of the intersection of the two, and `f` is
 the number of infinite places. The bound may be divided by `x` if `c⁺ = 0` and `γ` has the top rank
-`𝔰.ϱ < j`. The inequality is stated squared. -/
-theorem pairDiscriminant_sq_le (h_agrees : S.Agrees s) (h_meet : x ≤ S.meetNorm s)
-    (h_over : γ ∈ S.termsOver c s c') (h_over' : γ' ∈ S.termsOver c s c')
-    (h_cell : S.HasCellRank j γ) (h_cell' : S.HasCellRank j' γ') :
-    (S.pairDiscriminant c c' γ γ' *
-        (if 𝔰.ϱ < j ∧ S.linkCorank γ γ' = 0 then x else 1 : ℕ)) ^ 2 ≤
-      (2 / S.M) ^ (2 * S.linkCorank γ γ' * numInfPlaces E) *
-        (S.levelGauge j c c' γ * S.levelGauge j' c c' γ') := by
+`𝔰.ϱ < j`. The inequality is stated squared.
+-/
+theorem pairDiscriminant_sq_le
+    (h_agrees : S.Agrees s) (h_meet : x ≤ S.meetNorm s) (h_over : γ ∈ S.termsOver c s c')
+    (h_over' : γ' ∈ S.termsOver c s c') (h_cell : S.HasCellRank j γ) (h_cell' : S.HasCellRank j' γ')
+    : (S.pairDiscriminant c c' γ γ' * (if 𝔰.ϱ < j ∧ S.linkCorank γ γ' = 0 then x else 1 : ℕ)) ^ 2
+      ≤ (2 / S.M) ^ (2 * S.linkCorank γ γ' * numInfPlaces E)
+        * (S.levelGauge j c c' γ * S.levelGauge j' c c' γ') := by
   -- Bound the index of the common lattice once from each term; the torsion indices change places.
-  have h_first : S.pairDiscriminant c c' γ γ' ≤
-      discriminant (finrank E (commonLink γ γ')) (S.commonPart c c' γ γ') *
-        S.torsionIndex (S.translateByClassReps c c' γ') :=
+  have h_first
+      : S.pairDiscriminant c c' γ γ'
+        ≤ discriminant (finrank E (commonLink γ γ')) (S.commonPart c c' γ γ')
+          * S.torsionIndex (S.translateByClassReps c c' γ') :=
     (isLatticeOfRank_and_pairDiscriminant_le h_agrees h_over h_over' h_cell h_cell').2
-  have h_second : S.pairDiscriminant c c' γ' γ ≤
-      discriminant (finrank E (commonLink γ' γ)) (S.commonPart c c' γ' γ) *
-        S.torsionIndex (S.translateByClassReps c c' γ) :=
+  have h_second
+      : S.pairDiscriminant c c' γ' γ
+        ≤ discriminant (finrank E (commonLink γ' γ)) (S.commonPart c c' γ' γ)
+          * S.torsionIndex (S.translateByClassReps c c' γ) :=
     (isLatticeOfRank_and_pairDiscriminant_le h_agrees h_over' h_over h_cell' h_cell).2
   rw [pairDiscriminant_comm] at h_second
   have h_nonneg : 0 ≤ S.pairDiscriminant c c' γ γ' :=
@@ -846,10 +853,10 @@ theorem pairDiscriminant_sq_le (h_agrees : S.Agrees s) (h_meet : x ≤ S.meetNor
   refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
   calc
     S.pairDiscriminant c c' γ γ' * S.pairDiscriminant c c' γ γ'
-      ≤ (discriminant (finrank E (commonLink γ γ')) (S.commonPart c c' γ γ') *
-          S.torsionIndex (S.translateByClassReps c c' γ')) *
-        (discriminant (finrank E (commonLink γ' γ)) (S.commonPart c c' γ' γ) *
-          S.torsionIndex (S.translateByClassReps c c' γ)) :=
+        ≤ (discriminant (finrank E (commonLink γ γ')) (S.commonPart c c' γ γ')
+            * S.torsionIndex (S.translateByClassReps c c' γ'))
+          * (discriminant (finrank E (commonLink γ' γ)) (S.commonPart c c' γ' γ)
+            * S.torsionIndex (S.translateByClassReps c c' γ)) :=
       mul_le_mul h_first h_second h_nonneg (h_nonneg.trans h_first)
     _ = _ := by ring
 

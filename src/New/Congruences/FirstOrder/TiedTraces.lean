@@ -68,28 +68,34 @@ open Valued
 
 variable {E J : Type} [Field E] [NumberField E] [NumberField.IsCMField E] [Algebra E Ω] {m : ℕ}
 
-/-- A local choice at one auxiliary place `w = Q.place j`: a uniformiser `ϖ`, a unit `tameUnit` and
+/--
+A local choice at one auxiliary place `w = Q.place j`: a uniformiser `ϖ`, a unit `tameUnit` and
 a logarithm `ind` on the units of the residue field, fitted to the Frobenius element `φ` and the
 tame generator `γ` of the Frobenius datum `Q.frobData j`. Here `Q` is a family of places, no two
-equal or conjugate, with `m ∣ q - 1` for the order `q` of each residue field. -/
+equal or conjugate, with `m ∣ q - 1` for the order `q` of each residue field.
+-/
 structure LocalChoice (Q : TaylorWilesPlaces E J m) (j : J) where
   /-- A uniformiser that the local Artin map sends to the class of `φ`. -/
   ϖ : (LocField (Q.place j))ˣ
   /-- A unit that the local Artin map sends to the class of `γ`. -/
   tameUnit : (LocField (Q.place j))ˣ
-  /-- The logarithm modulo `m` on the units of the residue field, to the base the residue of
-  `tameUnit`. -/
+  /--
+  The logarithm modulo `m` on the units of the residue field, to the base the residue of
+  `tameUnit`.
+  -/
   ind : (ResField (Q.place j))ˣ →* Multiplicative (ZMod m)
   /-- `ϖ` is a uniformiser. -/
   v_ϖ : v ϖ.val = .exp (-1)
   /-- `tameUnit` is a unit of the ring of integers. -/
   v_tameUnit : v tameUnit.val = 1
   /-- The Artin symbol of `ϖ` is the class of `φ`. -/
-  localArtin_ϖ : localArtin Gal(Ω/E) (Q.frobData j).valuationSubring (Q.place j) ϖ =
-    ⟦⟨(Q.frobData j).frob, inv_mem_iff.1 (Q.frobData j).isFrob_inv.1⟩⟧
+  localArtin_ϖ
+    : localArtin Gal(Ω/E) (Q.frobData j).valuationSubring (Q.place j) ϖ
+      = ⟦⟨(Q.frobData j).frob, inv_mem_iff.1 (Q.frobData j).isFrob_inv.1⟩⟧
   /-- The Artin symbol of `tameUnit` is the class of `γ`. -/
-  localArtin_tameUnit : localArtin Gal(Ω/E) (Q.frobData j).valuationSubring (Q.place j) tameUnit =
-    ⟦⟨(Q.frobData j).isPlaceOver.tameGenerator, (Q.frobData j).isPlaceOver.tameGenerator.2.1⟩⟧
+  localArtin_tameUnit
+    : localArtin Gal(Ω/E) (Q.frobData j).valuationSubring (Q.place j) tameUnit
+      = ⟦⟨(Q.frobData j).isPlaceOver.tameGenerator, (Q.frobData j).isPlaceOver.tameGenerator.2.1⟩⟧
   /-- The logarithm of the residue of `tameUnit` is `1`. -/
   ind_tameUnit : ind (residueUnit tameUnit) = .ofAdd 1
 
@@ -117,18 +123,22 @@ namespace LocalChoice
 
 variable {Q : TaylorWilesPlaces E J m} {j : J} (P : Q.LocalChoice j) {N : ℕ} [NeZero N]
 
-/-- The logarithm `ind₁ g = ind g₁₁` of the first entry, on the stabiliser in `GL_N(𝔽_w)` of the
-line of the first basis vector. -/
-noncomputable abbrev indLine :
-    residueLineStabilizer (ResField (Q.place j)) N →* Multiplicative (ZMod m) :=
+/--
+The logarithm `ind₁ g = ind g₁₁` of the first entry, on the stabiliser in `GL_N(𝔽_w)` of the
+line of the first basis vector.
+-/
+noncomputable abbrev indLine
+    : residueLineStabilizer (ResField (Q.place j)) N →* Multiplicative (ZMod m) :=
   P.ind.comp firstEntry
 
 /-- The logarithm `indDet = ind ∘ det` on `GL_N(𝔽_w)`. -/
 noncomputable abbrev indDet : GL (Fin N) (ResField (Q.place j)) →* Multiplicative (ZMod m) :=
   P.ind.comp Matrix.GeneralLinearGroup.det
 
-/-- The element `⟨γ⟩ = diag (z, 1, …, 1)` of `GL_N(𝔽_w)`, where `z` is the residue of
-`P.tameUnit`. -/
+/--
+The element `⟨γ⟩ = diag (z, 1, …, 1)` of `GL_N(𝔽_w)`, where `z` is the residue of
+`P.tameUnit`.
+-/
 noncomputable def diamond : GL (Fin N) (ResField (Q.place j)) :=
   diagGL (Pi.mulSingle 0 (residueUnit P.tameUnit))
 
@@ -148,22 +158,26 @@ namespace New.Patching.BaseLevel
 
 section BaseData
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E : Type} [Field E] [CMType E]
-  [Algebra E Ω] {n : Type} [Fintype n] [DecidableEq n]
-  [Nonempty n] {V : Space E n 1} {κ : Weight E} {J : Type} [Fintype J] [DecidableEq J] {ν c : ℕ}
-  {D : BaseLevel V κ c} (Q : TaylorWilesPlaces E J (ℓ ^ ν))
+variable
+  {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+  {E : Type} [Field E] [CMType E] [Algebra E Ω]
+  {n : Type} [Fintype n] [DecidableEq n] [Nonempty n]
+  {V : Space E n 1} {κ : Weight E} {J : Type} [Fintype J] [DecidableEq J]
+  {ν c : ℕ} {D : BaseLevel V κ c} (Q : TaylorWilesPlaces E J (ℓ ^ ν))
 
 variable (D) in
-/-- The action of the group `GL_n(𝔽_w)` at the auxiliary place `w = Q.place j` on the forms of
-principal level. -/
-noncomputable def placeRep (j : J) :
-    GL (Fin (card n)) (ResField (Q.place j)) →* D.integralEnd Q.place :=
+/--
+The action of the group `GL_n(𝔽_w)` at the auxiliary place `w = Q.place j` on the forms of
+principal level.
+-/
+noncomputable def placeRep (j : J)
+    : GL (Fin (card n)) (ResField (Q.place j)) →* D.integralEnd Q.place :=
   (D.residueRep Q).comp (.mulSingle (fun i : J ↦ GL (Fin (card n)) (ResField (Q.place i))) j)
 
 variable (D) in
 /-- The action of the stabiliser of a line in `GL_n(𝔽_w)` at the auxiliary place `w = Q.place j`. -/
-noncomputable def lineRep (j : J) :
-    residueLineStabilizer (ResField (Q.place j)) (card n) →* D.integralEnd Q.place :=
+noncomputable def lineRep (j : J)
+    : residueLineStabilizer (ResField (Q.place j)) (card n) →* D.integralEnd Q.place :=
   (D.placeRep Q j).comp (residueLineStabilizer (ResField (Q.place j)) (card n)).subtype
 
 omit [Nonempty n] in
@@ -262,7 +276,8 @@ end Parahoric
 /-! ### The Hecke algebra: characteristic polynomials, traces and the tied relations -/
 section Traces
 
-variable {N : Isotypic V κ → GalRep ℓ E n} {L : J → FinPlace E} [V.IsStd] [WeilData E]
+variable
+  {N : Isotypic V κ → GalRep ℓ E n} {L : J → FinPlace E} [V.IsStd] [WeilData E]
   {a : Gal(Ω/E) →* EllAdicIntegers}
 
 omit [Nonempty n] [DecidableEq J] [V.IsStd] in
@@ -290,8 +305,10 @@ lemma heckeEigenvalues_mem_heckeAlgebra (w : FrobeniusDatum E)
     localGroupAlgebra_le_endPreserving hℓ (heckeFun_mem_localGroupAlgebra _ (.id _)) _ hy
   rwa [h_op y.property] at h_int
 
-/-- For every isotypic space `x`, the representation `N x` is the twist of the Galois representation
-`x.galRep` by the character `a` with values in the ℓ-adic integers. -/
+/--
+For every isotypic space `x`, the representation `N x` is the twist of the Galois representation
+`x.galRep` by the character `a` with values in the ℓ-adic integers.
+-/
 def IsGalRepTwist (N : Isotypic V κ → GalRep ℓ E n) (a : Gal(Ω/E) →* EllAdicIntegers) : Prop :=
   ∀ (x : Isotypic V κ) (g : Gal(Ω/E)),
     (N x g).val = algebraMap EllAdicIntegers (PadicAlgCl ℓ) (a g) • (x.galRep g).val
@@ -331,8 +348,10 @@ lemma charpoly_coeff_mem_heckeAlgebra (hN : IsGalRepTwist N a) (g : Gal(Ω/E)) (
   exact mul_mem (intCast_mem _ m) (heckeEigenvalues_mem_heckeAlgebra w hw (card n - i))
 
 variable (N) in
-/-- Two systems are congruent if the characteristic polynomials of their representations `N` agree
-modulo the maximal ideal at every element of the Galois group. -/
+/--
+Two systems are congruent if the characteristic polynomials of their representations `N` agree
+modulo the maximal ideal at every element of the Galois group.
+-/
 def IsCongruent (x x' : Isotypic V κ) : Prop :=
   ∀ (g : Gal(Ω/E)) (i : ℕ), ‖(N x g).val.charpoly.coeff i - (N x' g).val.charpoly.coeff i‖ < 1
 
@@ -386,26 +405,32 @@ lemma exists_indicator_isCongruent (hN : IsGalRepTwist N a)
   rw [A_apply, prod_eq_zero (mem_univ (⟨x, hx⟩ : Cong))
     (by simp [norm_pos_iff.1 (one_pos.trans_le (h_unit x hx))]), sub_zero]
 
-/-- The trace `tr[P(h) g]`, the function `x ↦ tr (P(N x h) N x g)` on systems of level `L`, as a
-member of the Hecke algebra. Here `N x` is the twist of `x.galRep` by the character `a`. -/
-noncomputable def traceElement (hN : IsGalRepTwist N a) (P : EllAdicIntegers[X]) (h g : Gal(Ω/E)) :
-    D.heckeAlgebra L :=
-  ⟨fun x : D.Eigensystem L ↦ (aeval (N x.val h).val P * (N x.val g).val).trace, by
+/--
+The trace `tr[P(h) g]`, the function `x ↦ tr (P(N x h) N x g)` on systems of level `L`, as a
+member of the Hecke algebra. Here `N x` is the twist of `x.galRep` by the character `a`.
+-/
+noncomputable def traceElement (hN : IsGalRepTwist N a) (P : EllAdicIntegers[X]) (h g : Gal(Ω/E))
+    : D.heckeAlgebra L := ⟨
+  fun x : D.Eigensystem L ↦ (aeval (N x.val h).val P * (N x.val g).val).trace,
+  by
     -- The trace is, up to sign, a coefficient of the characteristic polynomial.
-    have trace_mem (g : Gal(Ω/E)) : (fun x : D.Eigensystem L ↦ (N x.val g).val.trace) ∈
-        D.heckeAlgebra L := by
+    have trace_mem (g : Gal(Ω/E))
+        : (fun x : D.Eigensystem L ↦ (N x.val g).val.trace) ∈ D.heckeAlgebra L := by
       simpa [neg_def, ← Matrix.trace_eq_neg_charpoly_coeff] using
         neg_mem (charpoly_coeff_mem_heckeAlgebra hN g (card n - 1))
     -- Expand `P` in monomials: a linear combination of the traces at `h ^ k * g`.
     simpa [aeval_eq_sum_range, Finset.sum_mul, Finset.sum_fn] using
-      sum_mem fun k _ ↦ (heckeAlgebra L).smul_mem (trace_mem (h ^ k * g)) (P.coeff k)⟩
+      sum_mem fun k _ ↦ (heckeAlgebra L).smul_mem (trace_mem (h ^ k * g)) (P.coeff k)
+⟩
 
-/-- The trace `tr[(γ - 1) g P(φ)]` for the tame generator `γ` and the Frobenius element `φ` at
-`Q.place j`, as a member of the Hecke algebra. -/
-noncomputable def tameTrace (hN : IsGalRepTwist N a) (j : J) (P : EllAdicIntegers[X])
-    (g : Gal(Ω/E)) : D.heckeAlgebra Q.place :=
-  traceElement hN P (Q.frobData j).frob ((Q.frobData j).isPlaceOver.tameGenerator * g) -
-    traceElement hN P (Q.frobData j).frob g
+/--
+The trace `tr[(γ - 1) g P(φ)]` for the tame generator `γ` and the Frobenius element `φ` at
+`Q.place j`, as a member of the Hecke algebra.
+-/
+noncomputable def tameTrace (hN : IsGalRepTwist N a) (j : J) (P : EllAdicIntegers[X]) (g : Gal(Ω/E))
+    : D.heckeAlgebra Q.place :=
+  traceElement hN P (Q.frobData j).frob ((Q.frobData j).isPlaceOver.tameGenerator * g)
+    - traceElement hN P (Q.frobData j).frob g
 
 omit [DecidableEq J] in
 /-- `tameTrace Q hN j 1 g` equals `traceElement hN (X - 1) γ g`: both are the trace `tr[(γ - 1) g]`
@@ -416,16 +441,19 @@ lemma tameTrace_one (hN : IsGalRepTwist N a) (j : J) (g : Gal(Ω/E)) :
   ext
   simp [tameTrace, traceElement, sub_mul]
 
-/-- The ideal `𝔞` of `𝕋[α]` generated by the `ℓ ^ ν tr[g]` and the traces `tr[r j g]` of the tied
+/--
+The ideal `𝔞` of `𝕋[α]` generated by the `ℓ ^ ν tr[g]` and the traces `tr[r j g]` of the tied
 relations `r j = γ j - 1 - α j P j (φ j)`, where `𝕋` is the Hecke algebra, `P j = (X - 1) H j` and
 `α j` are polynomial variables. Reading only the coefficients of the square-free monomials
-`α_S = ∏_{j ∈ S} α j` has the effect of `α j ^ 2 = 0`. -/
-noncomputable def tiedIdeal (hN : IsGalRepTwist N a) (H : J → EllAdicIntegers[X]) :
-    Ideal (MvPolynomial J (D.heckeAlgebra Q.place)) :=
-  Ideal.span {z : MvPolynomial J (D.heckeAlgebra Q.place) |
-    ∃ g : Gal(Ω/E), z = ℓ ^ ν • .C (traceElement hN 1 1 g) ∨
-    ∃ j : J, z = .C (traceElement hN (X - 1) (Q.frobData j).isPlaceOver.tameGenerator g) -
-      .X j * .C (traceElement hN ((X - 1) * H j) (Q.frobData j).frob g)}
+`α_S = ∏_{j ∈ S} α j` has the effect of `α j ^ 2 = 0`.
+-/
+noncomputable def tiedIdeal (hN : IsGalRepTwist N a) (H : J → EllAdicIntegers[X])
+    : Ideal (MvPolynomial J (D.heckeAlgebra Q.place)) :=
+  Ideal.span
+    {z : MvPolynomial J (D.heckeAlgebra Q.place) |
+      ∃ g : Gal(Ω/E), z = ℓ ^ ν • .C (traceElement hN 1 1 g) ∨
+      ∃ j : J, z = .C (traceElement hN (X - 1) (Q.frobData j).isPlaceOver.tameGenerator g) -
+        .X j * .C (traceElement hN ((X - 1) * H j) (Q.frobData j).frob g)}
 
 /-! ### One place: the dictionary between Galois elements and operators on forms -/
 
@@ -532,22 +560,28 @@ lemma tameTrace_smul_eq_diamond_sub_one (hQ : ∀ j : J, D.IsOffLevel (ℓ := �
   simp [trace_eq, hy, P.indDet_diamond, smul_sub, sub_smul, smul_smul, mul_sub, mul_comm, θ]
 
 variable (V κ) {Q} in
-/-- The polynomial `p(Ũ)` in the normalised operator `Ũ = a(φ) U`, where `U` is the Hecke operator
+/--
+The polynomial `p(Ũ)` in the normalised operator `Ũ = a(φ) U`, where `U` is the Hecke operator
 of `diag (ϖ, 1, …, 1)` for `proIwahori` at `Q.place j`, `ϖ = P.ϖ`, and `φ` is the Frobenius
-element. -/
-noncomputable abbrev aevalHecke {j : J} (P : Q.LocalChoice j) (a : Gal(Ω/E) →* EllAdicIntegers)
-    (p : EllAdicIntegers[X]) : Module.End ℂ (V.forms κ) :=
+element.
+-/
+noncomputable abbrev aevalHecke
+    {j : J} (P : Q.LocalChoice j) (a : Gal(Ω/E) →* EllAdicIntegers) (p : EllAdicIntegers[X])
+    : Module.End ℂ (V.forms κ) :=
   aeval
     (heckeCoset (localFormRep V κ (Q.apart.star_ne j j)).ρ proIwahori (diagGL (mulSingle 0 P.ϖ)))
     (p.comp (C (a (Q.frobData j).frob) * X))
 
 end BaseData
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E : Type} [Field E] [CMType E]
-  [Algebra E Ω] {n : Type} [Fintype n] [DecidableEq n]
-  [Nonempty n] {V : Space E n 1} {κ : Weight E} {J : Type} [Fintype J] [DecidableEq J] {ν c : ℕ}
-  {D : BaseLevel V κ c} (Q : TaylorWilesPlaces E J (ℓ ^ ν)) {N : Isotypic V κ → GalRep ℓ E n}
-  [V.IsStd] [WeilData E] {a : Gal(Ω/E) →* EllAdicIntegers}
+variable
+  {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+  {E : Type} [Field E] [CMType E] [Algebra E Ω]
+  {n : Type} [Fintype n] [DecidableEq n] [Nonempty n]
+  {V : Space E n 1} {κ : Weight E} {J : Type} [Fintype J] [DecidableEq J]
+  {ν c : ℕ} {D : BaseLevel V κ c} (Q : TaylorWilesPlaces E J (ℓ ^ ν))
+  {N : Isotypic V κ → GalRep ℓ E n} [V.IsStd] [WeilData E]
+  {a : Gal(Ω/E) →* EllAdicIntegers}
 
 section OnePlace
 
@@ -676,8 +710,8 @@ lemma exists_aevalHecke_weightedSum (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) !
     simp [B_apply]
   exact ⟨.mk' B B_add, B_mem, B_apply⟩
 
-variable {P : Q.LocalChoice j} {p : EllAdicIntegers[X]}
-  {B : (ZMod (ℓ ^ ν) → ℤ) →+ D.integralEnd Q.place}
+variable
+  {P : Q.LocalChoice j} {p : EllAdicIntegers[X]} {B : (ZMod (ℓ ^ ν) → ℤ) →+ D.integralEnd Q.place}
 
 /-- Let the auxiliary places be off the base level (`hQ`), and let `N x` be the twist of `x.galRep`
 by `a`, which is `1` at the tame generators (`hN`, `ha`). Fix an index `j` and a local choice `P`

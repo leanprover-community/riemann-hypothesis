@@ -62,20 +62,26 @@ open Parameters
 
 variable {P : Parameters} (D : Data P)
 
-/-- The main amount `m k ∑_τ (s_∞(κ(τ)) - s_fin(κ(τ), τ))`, that is, `m k` times the direction
+/--
+The main amount `m k ∑_τ (s_∞(κ(τ)) - s_fin(κ(τ), τ))`, that is, `m k` times the direction
 amount. Here `m = D.m` is the number of theta lifts in each chain; the source has rank
-`k = D.k = r + 1 - m` and the target has rank `r = D.r`. -/
+`k = D.k = r + 1 - m` and the target has rank `r = D.r`.
+-/
 def mainAmount : ℝ := D.m * D.k * D.directionAmount
 
-/-- The expected value `s_main = a (log (a / κ̄) + c₁)` of the mean of the prime sums `s_fin(a, τ)`
+/--
+The expected value `s_main = a (log (a / κ̄) + c₁)` of the mean of the prime sums `s_fin(a, τ)`
 over the `a`-places `τ`, that is, the main term of this mean (see `sum_aPlaces_primeSum` and
 `card_aPlaces_mul_mainPrimeSum`). Here `log κ̄` is the mean of `log κ(τ)` over all `f` places, `κ`
-is the weight, and `c₁ = (logDerivMean P.d 1 1).re`. -/
+is the weight, and `c₁ = (logDerivMean P.d 1 1).re`.
+-/
 def mainPrimeSum : ℝ :=
   D.a * (log D.a - (∑ τ : D.Φ, log (D.weight τ)) / D.f + (logDerivMean P.d 1 1).re)
 
-/-- The total remainder `rem = ∑ (s_fin(a, τ) - s_main)`, summed over the `a`-places `τ`; `s_fin` is
-`D.primeSum` and `s_main` is `D.mainPrimeSum`. -/
+/--
+The total remainder `rem = ∑ (s_fin(a, τ) - s_main)`, summed over the `a`-places `τ`; `s_fin` is
+`D.primeSum` and `s_main` is `D.mainPrimeSum`.
+-/
 def totalRemainder : ℝ := ∑ τ ∈ D.aPlaces, (D.primeSum D.a τ - D.mainPrimeSum)
 
 /-- The set `D.aPlaces` of places `≡ 1` modulo `q₀` has `towerDeg towerExp = q₁ / q₀` elements. Here

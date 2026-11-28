@@ -67,32 +67,39 @@ variable {A : Type} [CommRing A] [StarRing A] {𝔰 : Shape} {l : ℕ}
 
 namespace FloorGroups
 
-variable [TraceOne A] {T : 𝔰.Form A} (a : Fin 𝔰.ϱ)
+variable
+  [TraceOne A]
+  {T : 𝔰.Form A}
+  (a : Fin 𝔰.ϱ)
   {g s : T.G} [H : IsHermitianUnit T.splitGram]
   (p q : ({i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} → A) × skewAdjoint A)
 
 /-! ### The Heisenberg groups of the floors and the Bessel subgroup -/
 
-/-- The isometry ν(v, β) of floor a: the Eichler transformation with
+/--
+The isometry ν(v, β) of floor a: the Eichler transformation with
 e*_a ↦ e*_a + v + (β − τh(v,v))e_a, for β skew. Here v is a vector of the floors at least a + 1,
-extended by zero. -/
+extended by zero.
+-/
 def _root_.New.Floors.TraceOne.heisenbergElem : U T.splitGram :=
   let v := inclMatrix A (↑) *ᵥ p.1
   U.of H.isUnit
       (eichlerMap T.splitGram (Pi.single (inl a) 1) (-v)
-        (element * star v ⬝ᵥ T.splitGram *ᵥ v - p.2)) <| by
-    -- The Eichler map is unitary: `e_a` is isotropic and orthogonal to `v`, and the parameter has
-    -- trace `h(v, v)` because `τ + star τ = 1` and `p.2` is skew.
-    have h_trace : element * star v ⬝ᵥ T.splitGram *ᵥ v - p.2 +
-        star (element * star v ⬝ᵥ T.splitGram *ᵥ v - (p.2 : A)) =
-          star (-v) ⬝ᵥ T.splitGram *ᵥ (-v) := by
-      simp [IsHermitianUnit.conjTranspose_eq, ↓ star_dotProduct_mulVec_comm, mulVec_neg]
-      grind
-    obtain ⟨e, he⟩ :=
-      exists_unitary_eq_eichlerMap (x := Pi.single (inl a) 1) H.conjTranspose_eq (by simp)
-        (by simp [v, inclMatrix_val_mulVec]) h_trace
-    rw [← he]
-    exact mem_unitaryGroupOf_iff.1 e.property
+        (element * star v ⬝ᵥ T.splitGram *ᵥ v - p.2)) <|
+    by
+      -- The Eichler map is unitary: `e_a` is isotropic and orthogonal to `v`, and the parameter has
+      -- trace `h(v, v)` because `τ + star τ = 1` and `p.2` is skew.
+      have h_trace
+          : element * star v ⬝ᵥ T.splitGram *ᵥ v - p.2
+              + star (element * star v ⬝ᵥ T.splitGram *ᵥ v - (p.2 : A))
+            = star (-v) ⬝ᵥ T.splitGram *ᵥ (-v) := by
+        simp [IsHermitianUnit.conjTranspose_eq, ↓ star_dotProduct_mulVec_comm, mulVec_neg]
+        grind
+      obtain ⟨e, he⟩ :=
+        exists_unitary_eq_eichlerMap (x := Pi.single (inl a) 1) H.conjTranspose_eq (by simp)
+          (by simp [v, inclMatrix_val_mulVec]) h_trace
+      rw [← he]
+      exact mem_unitaryGroupOf_iff.1 e.property
 
 /-- The Heisenberg element ν(v, β) sends w to w + w(e*_a)v + ((β − τh(v, v))w(e*_a) − h(v, w))e_a.
 Here w(e*_a) is the e*_a coordinate of w, and v is the vector of floors at least a + 1, extended by
@@ -405,25 +412,32 @@ lemma simpleRootSum_conj_heisenbergElem (hs : s ∈ floorGroup (a + 1)) :
 
 end FloorGroups
 
-variable [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  (ι : Type) [Fintype ι] [DecidableEq ι] (T : 𝔰.Form A) (m : ℕ)
+variable
+  [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  (ι : Type) [Fintype ι] [DecidableEq ι]
+  (T : 𝔰.Form A) (m : ℕ)
   {n k Z : Type} [Fintype n] [Fintype k] [DecidableEq k]
 
 /-! ### The Haar measure of `V_l` -/
 
-/-- Haar measure of `V_l`, as a measure on all vectors: the image of the volume on the coordinates
-of floor at least `l` under extension by zero. -/
+/--
+Haar measure of `V_l`, as a measure on all vectors: the image of the volume on the coordinates
+of floor at least `l` under extension by zero.
+-/
 abbrev FloorGroups.floorVolume (l : ℕ) : Measure (𝔰.BesselIndex → A) :=
-  Measure.map (fun v ↦ inclMatrix A (Subtype.val : {i // l ≤ floorOf i} → 𝔰.BesselIndex) *ᵥ v)
+  Measure.map
+    (fun v ↦ inclMatrix A (Subtype.val : {i // l ≤ floorOf i} → 𝔰.BesselIndex) *ᵥ v)
     volume
 
 /-! ### Hyperbolic bases, Weyl elements and changes of coordinates -/
 
-/-- A basis of the middle space `V_ϱ`, which has Gram matrix `T` and rank `𝔰.k + 1`: a first
+/--
+A basis of the middle space `V_ϱ`, which has Gram matrix `T` and rank `𝔰.k + 1`: a first
 hyperbolic pair, `m` more pairs and an orthonormal part indexed by `ι`. So there are
 `card ι + 2 * m + 2` basis vectors, and the field `card_eq` equates the two counts. As the modulus
 of `det T` is 1, the change of coordinates preserves volume
-(`New.Floors.HyperbolicBasis.measurePreserving_mulVec`). -/
+(`New.Floors.HyperbolicBasis.measurePreserving_mulVec`).
+-/
 structure HyperbolicBasis where
   /-- The matrix whose columns are the basis vectors. -/
   basisMatrix : Matrix 𝔰.MiddleIndex (Fin 2 ⊕ SplitIndex m ι) A
@@ -436,8 +450,10 @@ structure HyperbolicBasis where
 
 variable {ι T m} (F : HyperbolicBasis ι T m) (b : Fin 𝔰.n) [MeasurableSpace Z] {ζ : Measure Z}
 
-/-- The image of the measure md(c)^{d_l} dc on A under c ↦ w_l(c)⁻¹, where w_l(c) is the Weyl
-element of floor l and d_l = `𝔰.k` + 1 + 2(ϱ − (l + 1)), the subtraction being truncated. -/
+/--
+The image of the measure md(c)^{d_l} dc on A under c ↦ w_l(c)⁻¹, where w_l(c) is the Weyl
+element of floor l and d_l = `𝔰.k` + 1 + 2(ϱ − (l + 1)), the subtraction being truncated.
+-/
 abbrev Place.weylLaw (l : ℕ) : Measure T.G :=
   (volume.withDensity fun c ↦ modulus c ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (l + 1)))).map fun c ↦
     (floorWeyl l c)⁻¹
@@ -471,24 +487,28 @@ lemma map_inclMatrix_middle_eq_floorVolume :
       floorVolume 𝔰.top :=
   map_inclMatrix_eq_floorVolume _ (inr_injective.comp inl_injective) (by simp)
 
-/-- The indices of the hyperbolic pairs of `V_b` after the first: the `m` other pairs of `V_ϱ`, and
-the pairs `e_a`, `e*_a` with `b ≤ a`. -/
+/--
+The indices of the hyperbolic pairs of `V_b` after the first: the `m` other pairs of `V_ϱ`, and
+the pairs `e_a`, `e*_a` with `b ≤ a`.
+-/
 abbrev FloorPairs (m : ℕ) : Type := Fin m ⊕ {i : Fin 𝔰.ϱ // b.val ≤ i}
 
-/-- The basis of `V_b` made of the basis `F` of `V_ϱ` and the pairs `e_a`, `e*_a` with `b ≤ a`, as
+/--
+The basis of `V_b` made of the basis `F` of `V_ϱ` and the pairs `e_a`, `e*_a` with `b ≤ a`, as
 the columns of a matrix. It is the block matrix of `F.basisMatrix` and the identity on these pairs,
 with its rows placed among the basis indices and its columns reordered. The Gram matrix is computed
-in `New.Floors.HyperbolicBasis.gram_floorBasis`. -/
-def HyperbolicBasis.floorBasis :
-    Matrix 𝔰.BesselIndex (Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m) A :=
+in `New.Floors.HyperbolicBasis.gram_floorBasis`.
+-/
+def HyperbolicBasis.floorBasis
+    : Matrix 𝔰.BesselIndex (Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m) A :=
   let S : Type := {i : Fin 𝔰.ϱ // b.val ≤ i}
   -- the basis indices of `V_b`: the middle block, then the `e_a` and the `e*_a` with `b ≤ a`
   let incl : 𝔰.MiddleIndex ⊕ S ⊕ S → 𝔰.BesselIndex := inr ∘ inl ⊕ᵥ Sum.map (↑) (inr ∘ (↑))
   -- the new order: the first pair of `F.basisMatrix`; the first vectors of the other pairs; the
   -- orthonormal part; the second vectors of the other pairs
   let order : Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m → (Fin 2 ⊕ SplitIndex m ι) ⊕ S ⊕ S :=
-    inl ∘ inl ⊕ᵥ
-      (Sum.map (inr ∘ inl) inl ⊕ᵥ (inl ∘ inr ∘ inr ∘ inl ⊕ᵥ Sum.map (inr ∘ inr ∘ inr) inr))
+    inl ∘ inl
+      ⊕ᵥ (Sum.map (inr ∘ inl) inl ⊕ᵥ (inl ∘ inr ∘ inr ∘ inl ⊕ᵥ Sum.map (inr ∘ inr ∘ inr) inr))
   inclMatrix A incl * F.basisMatrix.fromBlocks 0 0 (diagonal (n := S ⊕ S) 1) * inclMatrix A order
 
 /-- The Gram matrix of `F.floorBasis b` consists of a hyperbolic plane for the first pair, one for
@@ -551,13 +571,16 @@ lemma HyperbolicBasis.map_floorBasis_volume :
         ((measurePreserving_sumPiEquivProdPi _).comp
           (measurePreserving_inclMatrix (.ofBijective order h_order)))))).map_eq
 
-variable {μ ν : Measure T.G} [SFinite μ] [SFinite ν]
+variable
+  {μ ν : Measure T.G} [SFinite μ] [SFinite ν]
   (σ : ℕ → Measure T.G) [∀ l, SFinite (σ l)]
   {i j : ℕ} {s : T.G} {S : Subgroup T.G} {f : T.G → ℝ≥0∞}
 
-/-- The measure `η_l` on the unitary group. For `l < ϱ` it is the image of the Haar measure of
+/--
+The measure `η_l` on the unitary group. For `l < ϱ` it is the image of the Haar measure of
 `V_(l+1)` times the skew measure of the place, under the Heisenberg parametrisation
-`New.Floors.TraceOne.heisenbergElem` of `N_l`. Otherwise it is the unit mass at `1`. -/
+`New.Floors.TraceOne.heisenbergElem` of `N_l`. Otherwise it is the unit mass at `1`.
+-/
 def Place.heisenbergMeasure [H : IsHermitianUnit T.splitGram] (l : ℕ) : Measure (U T.splitGram) :=
   if h : l < 𝔰.ϱ then (volume.prod P.skewMeasure).map (heisenbergElem (T := T) ⟨l, h⟩) else dirac 1
 
@@ -699,14 +722,18 @@ lemma dirac_mconv_heisenbergMeasure_comm [H : IsHermitianUnit T.splitGram]
 
 /-! ### Convolutions along the floors, quadric measures and Plancherel -/
 
-/-- For measures σ_l on the unitary group, the convolution σ_{a+i−1} ∗ ⋯ ∗ σ_a in descending order
-of i consecutive terms; the Dirac measure at 1 if i = 0. -/
+/--
+For measures σ_l on the unitary group, the convolution σ_{a+i−1} ∗ ⋯ ∗ σ_a in descending order
+of i consecutive terms; the Dirac measure at 1 if i = 0.
+-/
 def descConv : ℕ → ℕ → Measure T.G
   | _, 0 => dirac 1
   | a, i + 1 => descConv (a + 1) i ∗ₘ σ a
 
-/-- For measures σ_l on the unitary group, the convolution σ_0 ∗ ⋯ ∗ σ_{j−1} in ascending order; the
-Dirac measure at 1 if j = 0. -/
+/--
+For measures σ_l on the unitary group, the convolution σ_0 ∗ ⋯ ∗ σ_{j−1} in ascending order; the
+Dirac measure at 1 if j = 0.
+-/
 def ascConv : ℕ → Measure T.G
   | 0 => dirac 1
   | j + 1 => ascConv j ∗ₘ σ j
@@ -781,12 +808,16 @@ lemma exists_ne_zero_of_ae {p : T.G → Prop} (h : ∀ᵐ x : T.G ∂μ, p x) (h
   by_contra! h_zero
   exact hf (lintegral_eq_zero_of_ae_eq_zero (h.mono h_zero))
 
-/-- The measure on a quadric in V_b: the image of `New.Floors.Place.quadricMeasure` with parameter β
-under the basis `F.floorBasis b`. By default, β is obtained from h(f_b, f_b) by `skewUnitMul`. -/
-abbrev HyperbolicBasis.floorQuadricMeasure [_H : IsHermitianUnit T.splitGram]
-    (β : skewAdjoint A := skewUnitMul (T.splitGram (𝔰.besselFrame b) (𝔰.besselFrame b))
-      (IsHermitian.apply IsHermitianUnit.conjTranspose_eq (𝔰.besselFrame b) (𝔰.besselFrame b))) :
-    Measure (𝔰.BesselIndex → A) :=
+/--
+The measure on a quadric in V_b: the image of `New.Floors.Place.quadricMeasure` with parameter β
+under the basis `F.floorBasis b`. By default, β is obtained from h(f_b, f_b) by `skewUnitMul`.
+-/
+abbrev HyperbolicBasis.floorQuadricMeasure
+    [_H : IsHermitianUnit T.splitGram]
+    (β : skewAdjoint A :=
+      skewUnitMul (T.splitGram (𝔰.besselFrame b) (𝔰.besselFrame b))
+        (IsHermitian.apply IsHermitianUnit.conjTranspose_eq (𝔰.besselFrame b) (𝔰.besselFrame b)))
+    : Measure (𝔰.BesselIndex → A) :=
   (quadricMeasure (hyperbolicGram (FloorPairs b m) 1) β).map (F.floorBasis b *ᵥ ·)
 
 /-- Let `V_b` be the span of the basis vectors of floor at least `b`, with Haar measure

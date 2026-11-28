@@ -78,30 +78,35 @@ open Matrix MulAction
 
 namespace New.Rows
 
-variable {R S r a c N : Type} [CommRing R] [CommRing S] [Fintype r] [DecidableEq r] [Fintype N]
-  [DecidableEq N]
+variable
+  {R S r a c N : Type}
+  [CommRing R] [CommRing S] [Fintype r] [DecidableEq r] [Fintype N] [DecidableEq N]
 
 /-- The columns of the square matrix z outside the image of e are those of the identity matrix. -/
 abbrev FixesColsOff (e : r ↪ N) (z : Matrix N N R) : Prop :=
   z * (1 - inclMatrix R e * (inclMatrix R e)ᵀ) = 1 - inclMatrix R e * (inclMatrix R e)ᵀ
 
-/-- The subgroup of the A in GL_N(R) such that (a) the columns of A outside the image of e are those
+/--
+The subgroup of the A in GL_N(R) such that (a) the columns of A outside the image of e are those
 of 1, and (b) w · φ(A) = w. Condition (a) says that A fixes the projection
 `1 - inclMatrix R e * (inclMatrix R e)ᵀ` under left multiplication. Condition (b) says that φ(A)
-fixes w under right multiplication, hence the passage through the opposite group. -/
+fixes w under right multiplication, hence the passage through the opposite group.
+-/
 def rowStabilizer (φ : R →+* S) (w : Matrix c N S) (e : r ↪ N) : Subgroup (GL N R) :=
   -- the set is the intersection of two stabilizers, for left and for right multiplication
   Subgroup.copy (s := {A : GL N R | FixesColsOff e A.val ∧ w * A.val.map φ = w})
-    (stabilizer (GL N R) (1 - inclMatrix R e * (inclMatrix R e)ᵀ) ⊓
-      ((stabilizer (Matrix N N S)ᵐᵒᵖˣ w.row).comap Units.opEquiv.symm.toMonoidHom).unop.comap
+    (stabilizer (GL N R) (1 - inclMatrix R e * (inclMatrix R e)ᵀ)
+      ⊓ ((stabilizer (Matrix N N S)ᵐᵒᵖˣ w.row).comap Units.opEquiv.symm.toMonoidHom).unop.comap
         (GeneralLinearGroup.map φ))
     rfl
 
 open scoped Classical in
-/-- The function of an N×r matrix σ equal to χ(det of the rows e of σ) if
-`w * σ.map φ = w * inclMatrix S e`, and 0 otherwise. -/
-def columnDatum (χ : MulChar R ℂ) (φ : R →+* S) (w : Matrix c N S) (e : r ↪ N)
-    (σ : Matrix N r R) : ℂ :=
+/--
+The function of an N×r matrix σ equal to χ(det of the rows e of σ) if
+`w * σ.map φ = w * inclMatrix S e`, and 0 otherwise.
+-/
+def columnDatum (χ : MulChar R ℂ) (φ : R →+* S) (w : Matrix c N S) (e : r ↪ N) (σ : Matrix N r R)
+    : ℂ :=
   if w * map σ φ = w * inclMatrix S e then χ (submatrix σ e id).det else 0
 
 open scoped Classical in
@@ -167,8 +172,9 @@ namespace New.Rows
 
 open NumberField Matrix Finset MeasureTheory Ideal.Quotient Exchange Subgroup IsLevel Fock Space
 
-variable {E n b : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype b]
-  [DecidableEq b]
+variable
+  {E n b : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype b] [DecidableEq b]
 
 /-- Let `S` and `V` be hermitian spaces with signs `s` and `t` at the infinite places. If some place
 divides the modulus `𝔪` and the function `Ψ` on matrices modulo `𝔪` is supported on matrices with a
@@ -380,11 +386,13 @@ lemma stdClassSum_tower {𝔪 : Modulus E} (H : Subgroup (GL b 𝔪.ResidueRing)
     _ = _ := by simp [classIntegral_eq_inv_smul_classSum left_inv₀ right_inv₀ le, Rat.smul_def,
         𝔪.stdLevelIndex_levelOfSubgroup, index_eq_card]
 
-/-- The substitution `x_τ ↦ c_τᵀ x_τ` in the columns `j` with `s j = 1` and `x_τ ↦ d_τ x_τ` in the
+/--
+The substitution `x_τ ↦ c_τᵀ x_τ` in the columns `j` with `s j = 1` and `x_τ ↦ d_τ x_τ` in the
 other columns, on complex polynomials in the entries of `b × n` matrices `x_τ`, one for each
-infinite place `τ`. -/
-abbrev signedRowSubst (s : n → ℤˣ) (c d : InfinitePlace E → Matrix b b ℂ) :
-    MvPolynomial (InfinitePlace E × b × n) ℂ →ₐ[ℂ] MvPolynomial (InfinitePlace E × b × n) ℂ :=
+infinite place `τ`.
+-/
+abbrev signedRowSubst (s : n → ℤˣ) (c d : InfinitePlace E → Matrix b b ℂ)
+    : MvPolynomial (InfinitePlace E × b × n) ℂ →ₐ[ℂ] MvPolynomial (InfinitePlace E × b × n) ℂ :=
   MvPolynomial.aeval fun ((τ, k, j) : InfinitePlace E × b × n) ↦
     ∑ i : b, (if s j = 1 then c τ i k else d τ k i) • MvPolynomial.X (τ, i, j)
 

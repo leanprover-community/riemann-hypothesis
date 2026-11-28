@@ -203,7 +203,8 @@ lemma exists_squareLaw_triangleTransposedLift {P : Parameters} (D : Data P) (z :
     rw [inv_inv]
     exact D.gridChar_mul_leftPairChar z ϑ hn (by simpa using h_card) (by simp)
 
-/-- The first commutation relation, in the square with nodes `(i, n + 1)`, `(i, n + 2)`,
+/--
+The first commutation relation, in the square with nodes `(i, n + 1)`, `(i, n + 2)`,
 `(i + 1, n)`, `(i + 1, n + 1)` of the triangle `z`, for `i + n + 1 < D.m`, the number of lifts of
 the data `D`. The transposed lifts `triangleTransposedLift` go from `(i, j + 1)` to `(i + 1, j)` and
 are formed with polynomials at infinity `Φ₀`, `Φ₁` that make edges along the left pairs at `(i, n)`,
@@ -212,20 +213,24 @@ the transposed lift with datum `Ψ` followed by the lift, weighted by the group 
 `triangleGLCard z ϑ n`, is a multiple of the lift followed by the transposed lift with datum
 `nextDatum Ψ`, weighted by `triangleGLCard z ϑ (n + 2)`. The factor is `conj (β ϑ)⁻¹`, which is `0`
 where `β ϑ = 0`. For `z = false`, `‖β ϑ‖²` is the square of `quotientRatio`, a product of ratios of
-Hecke values, times a constant and a fixed power of the norm of the modulus Q of `ϑ`. -/
-theorem exists_triangleLift_triangleTransposedLift_comm {P : Parameters} (D : Data P) (z : Bool)
-    {i n : ℕ} (h_lt : i + (n + 1) < D.m) {Φ₀ : D.EdgePoly z n (n + 1)}
-    {Φ₁ : D.EdgePoly z (n + 1) (n + 1 + 1)} (h_pair₀ : D.IsLeftPair z i n Φ₀)
-    (h_pair₁ : D.IsLeftPair z i (n + 1) Φ₁) :
-    ∃ β : D.MFoldTwist → ℂ,
+Hecke values, times a constant and a fixed power of the norm of the modulus Q of `ϑ`.
+-/
+theorem exists_triangleLift_triangleTransposedLift_comm
+    {P : Parameters} (D : Data P)
+    (z : Bool)
+    {i n : ℕ} (h_lt : i + (n + 1) < D.m)
+    {Φ₀ : D.EdgePoly z n (n + 1)} {Φ₁ : D.EdgePoly z (n + 1) (n + 1 + 1)}
+    (h_pair₀ : D.IsLeftPair z i n Φ₀) (h_pair₁ : D.IsLeftPair z i (n + 1) Φ₁)
+    : ∃ β : D.MFoldTwist → ℂ,
       (∀ (ϑ : D.MFoldTwist) (Ψ : D.EdgeDatum z ϑ n (n + 1)) (y : D.TriangleForm z i (n + 1))
-          (x : D.TriangleForm z (i + 1) (n + 1)),
-        triangleGLCard z ϑ n * ⟪x, D.triangleLift z ϑ (i + 1) n
-          (D.triangleTransposedLift z ϑ i n Φ₀ Ψ y)⟫ =
-          conj (β ϑ)⁻¹ * triangleGLCard z ϑ (n + 2) *
-            ⟪x, D.triangleTransposedLift z ϑ i (n + 1) Φ₁ (nextDatum Ψ)
-              (D.triangleLift z ϑ i (n + 1) y)⟫) ∧
-      (z = false → D.HasAbsUpToNormPower β (D.quotientRatio (i + 1) (i + 1 + n + 1))) := by
+            (x : D.TriangleForm z (i + 1) (n + 1)),
+          triangleGLCard z ϑ n
+              * ⟪x, D.triangleLift z ϑ (i + 1) n
+                (D.triangleTransposedLift z ϑ i n Φ₀ Ψ y)⟫
+            = conj (β ϑ)⁻¹ * triangleGLCard z ϑ (n + 2)
+              * ⟪x, D.triangleTransposedLift z ϑ i (n + 1) Φ₁ (nextDatum Ψ)
+                  (D.triangleLift z ϑ i (n + 1) y)⟫)
+        ∧ (z = false → D.HasAbsUpToNormPower β (D.quotientRatio (i + 1) (i + 1 + n + 1))) := by
   -- Expand both finite data in point data, for which the square law holds, and apply
   -- `SquareLaw.sum_eq_nextDatum`.
   let dist : D.LiftIndex := ⟨n + 1, n.succ_pos, by omega⟩
@@ -239,14 +244,17 @@ theorem exists_triangleLift_triangleTransposedLift_comm {P : Parameters} (D : Da
     simp only [map_sum, map_smul, inner_sum, inner_smul_right, map_inv₀, conj_conj, inv_div]
     simpa [triangleLift_eq_triangleDatumLift] using! (h_law ϑ y (innerₛₗ ℂ x)).sum_eq_nextDatum Ψ
   · rintro rfl
-    have h_ratio : D.quotientRatio (i + 1) (i + 1 + n + 1) =
-        fun ϑ ↦ D.lRatioProd ν.character ν.z (ϑ.pow dist) :=
-          funext (quotientRatio_add_eq_lRatioProd dist (i + 1))
+    have h_ratio
+        : D.quotientRatio (i + 1) (i + 1 + n + 1)
+          = fun ϑ ↦ D.lRatioProd ν.character ν.z (ϑ.pow dist) :=
+      funext (quotientRatio_add_eq_lRatioProd dist (i + 1))
     rw [h_ratio]
     refine ν.hasAbsUpToNormPower_of_norm_sq_eq_lValueProd 1 dist (C := C / ‖κ‖ ^ 2) fun ϑ ↦ ?_
-    have h_norm : ‖c ϑ‖ ^ 2 =
-        C * lValueProd (D.twistModulus ϑ 1).places (ν.character * ϑ.toAutChar ^ dist.val)⁻¹ ν.z :=
-          hc_norm ϑ
+    have h_norm
+        : ‖c ϑ‖ ^ 2
+          = C
+            * lValueProd (D.twistModulus ϑ 1).places (ν.character * ϑ.toAutChar ^ dist.val)⁻¹ ν.z :=
+      hc_norm ϑ
     rw [RCLike.norm_conj, norm_div, div_pow, h_norm, div_mul_eq_mul_div]
 
 /-- The square law for point data in the square with reversed pairs of the triangle `z = false` (the
@@ -311,34 +319,41 @@ lemma HasAbsUpToNormPower.of_norm_sq_mul_card_pow_eq_one {P : Parameters} {D : D
   rw [one_mul, _root_.zpow_neg, _root_.zpow_natCast]
   exact eq_inv_of_mul_eq_one_left (hc ϑ)
 
-/-- The commutation relation in the square with reversed pairs of the triangle `z = false` (the
+/--
+The commutation relation in the square with reversed pairs of the triangle `z = false` (the
 twisted one), for `i + n + 1 < D.m`, the number of lifts of the data `D`. The reversed lifts
 `triangleReversedLift` go from `(i + 1, j)` to `(i, j + 1)`. They are formed with polynomials `Φ₀`,
 `Φ₁` that make edges along the reversed pairs at `(i, n)`, `(i, n + 1)` (`IsReversedPair`), and with
 `fourierDatum`, the Fourier transform of the complex conjugate, of a datum `Ψ` and of its extension
 `nextDatum Ψ` to the next column. The reversed lift followed by the lift is `γ ϑ` times the lift
 followed by the reversed lift, where `‖γ ϑ‖²` is a constant times a fixed power of the norm of the
-modulus Q of the twist `ϑ` (`HasAbsUpToNormPower γ 1`). -/
-theorem exists_triangleLift_triangleReversedLift_comm {P : Parameters} (D : Data P) {i n : ℕ}
-    (h_lt : i + (n + 1) < D.m) {Φ₀ : D.EdgePoly false (n + 1) n}
-    {Φ₁ : D.EdgePoly false (n + 1 + 1) (n + 1)} (h_rev₀ : D.IsReversedPair false i n Φ₀)
-    (h_rev₁ : D.IsReversedPair false i (n + 1) Φ₁) :
-    ∃ γ : D.MFoldTwist → ℂ, D.HasAbsUpToNormPower γ 1 ∧
-      ∀ (ϑ : D.MFoldTwist) (Ψ : D.EdgeDatum false ϑ n (n + 1)) (y : D.TriangleForm false (i + 1) n)
-          (x : D.TriangleForm false i (n + 1 + 1)),
-        ⟪x, D.triangleLift false ϑ i (n + 1)
-          (D.triangleReversedLift false ϑ i n Φ₀ (D.fourierDatum false ϑ Ψ) y)⟫ =
-          γ ϑ * ⟪x, D.triangleReversedLift false ϑ i (n + 1) Φ₁
-            (D.fourierDatum false ϑ (nextDatum Ψ))
-            (D.triangleLift false ϑ (i + 1) n y)⟫ := by
+modulus Q of the twist `ϑ` (`HasAbsUpToNormPower γ 1`).
+-/
+theorem exists_triangleLift_triangleReversedLift_comm
+    {P : Parameters} (D : Data P)
+    {i n : ℕ} (h_lt : i + (n + 1) < D.m)
+    {Φ₀ : D.EdgePoly false (n + 1) n} {Φ₁ : D.EdgePoly false (n + 1 + 1) (n + 1)}
+    (h_rev₀ : D.IsReversedPair false i n Φ₀) (h_rev₁ : D.IsReversedPair false i (n + 1) Φ₁)
+    : ∃ γ : D.MFoldTwist → ℂ,
+      D.HasAbsUpToNormPower γ 1
+        ∧ ∀ (ϑ : D.MFoldTwist) (Ψ : D.EdgeDatum false ϑ n (n + 1))
+            (y : D.TriangleForm false (i + 1) n) (x : D.TriangleForm false i (n + 1 + 1)),
+          ⟪x, D.triangleLift false ϑ i (n + 1)
+            (D.triangleReversedLift false ϑ i n Φ₀ (D.fourierDatum false ϑ Ψ) y)⟫
+            = γ ϑ
+              * ⟪x, D.triangleReversedLift false ϑ i (n + 1) Φ₁
+                (D.fourierDatum false ϑ (nextDatum Ψ))
+                (D.triangleLift false ϑ (i + 1) n y)⟫ := by
   -- The modulus is squarefree, so the tame character `χ ϑ` is primitive. Expand both Fourier
   -- transforms in point data and apply `SquareLaw.exists_sum_matrixFourier_eq_sum_nextDatum`.
   let dist : D.LiftIndex := ⟨n + 1, n.succ_pos, by omega⟩
   let ν : D.CriticalPair := D.quotientPair dist
   let χ (ϑ : D.MFoldTwist) : MulChar (triangleModulus false ϑ).ResidueRing ℂ :=
     ((triangleModulus false ϑ).charOfTamePart (ν.tamePart * ϑ.tamePart ^ (n + 1)))⁻¹
-  have h_tame (ϑ : D.MFoldTwist) : IsTameFor (triangleModulus false ϑ)
-      (ν.character * ϑ.toAutChar ^ (n + 1))⁻¹ (fun τ ↦ ν.negWeight τ) (χ ϑ) :=
+  have h_tame (ϑ : D.MFoldTwist)
+      : IsTameFor (triangleModulus false ϑ) (ν.character * ϑ.toAutChar ^ (n + 1))⁻¹
+        (fun τ ↦ ν.negWeight τ)
+        (χ ϑ) :=
     ν.isTameFor_inv_mul_pow (isRamified_quotientPair dist) 1 dist ϑ
   choose C κ c _hc_ne hc_norm h_law using
     D.exists_squareLaw_triangleReversedLift h_lt dist.prop h_rev₀ h_rev₁ h_tame
@@ -357,10 +372,12 @@ theorem exists_triangleLift_triangleReversedLift_comm {P : Parameters} (D : Data
 
 /-! ### Adjoints of descents and the triangle conditions -/
 
-/-- The scalar matrix `Modulus.flipScalar` of the modulus of the triangle, a central element of the
-finite adelic unitary group of a node in column `n`. Reversing a theta kernel translates by it. -/
-abbrev reversalScalar {P : Parameters} (D : Data P) (z : Bool) (ϑ : D.MFoldTwist) (n : ℕ) :
-    Gf D.E (D.GridIndex z 0 n) :=
+/--
+The scalar matrix `Modulus.flipScalar` of the modulus of the triangle, a central element of the
+finite adelic unitary group of a node in column `n`. Reversing a theta kernel translates by it.
+-/
+abbrev reversalScalar {P : Parameters} (D : Data P) (z : Bool) (ϑ : D.MFoldTwist) (n : ℕ)
+    : Gf D.E (D.GridIndex z 0 n) :=
   (triangleModulus z ϑ).flipScalar (D.GridIndex z 0 n)
 
 /-- Reversal of the theta kernel of a left pair of the triangle `z = false` (the twisted one),
@@ -519,7 +536,8 @@ lemma exists_inner_triangleLift_eq {P : Parameters} (D : Data P) (z : Bool) (ϑ 
   exact ⟨_, (h_edge.isArrow_lift _ _ _ ϑ).inner_formLift_adjoint (h_edge.isArrow_swap _ _ _ ϑ)
     (h_target _).2 (h_source true).2 x⟩
 
-/-- The second commutation relation in adjoint form, in the triangle `z = false` (the twisted one),
+/--
+The second commutation relation in adjoint form, in the triangle `z = false` (the twisted one),
 for `i + n + 1 < D.m`, the number of lifts of the data `D`. The transposed lifts
 `triangleTransposedLift` go from `(i, j + 1)` to `(i + 1, j)` and are formed with polynomials `Φ₀`,
 `Φ₁` that make edges along the left pairs at `(i, n)`, `(i, n + 1)` (`IsLeftPair`). Let `x'` be the
@@ -527,18 +545,23 @@ image of `x` under the adjoint of `triangleLift` from `(i, n + 1)` to `(i, n + 2
 transposed lift of `x` with `nextDatum Ψ`, the extension of the datum `Ψ` to the next column, and
 apply the adjoint of `triangleLift` from `(i + 1, n)` to `(i + 1, n + 1)`. Up to a factor
 `conj (κ ϑ)` this is the transposed lift of `x'` with `Ψ`, where `‖κ ϑ‖²` is a constant times a
-fixed power of the norm of the modulus Q of the twist `ϑ` (`HasAbsUpToNormPower κ 1`). -/
-theorem exists_triangleTransposedLift_adjoint_comm {P : Parameters} (D : Data P) {i n : ℕ}
-    (h_lt : i + (n + 1) < D.m) {Φ₀ : D.EdgePoly false n (n + 1)}
-    {Φ₁ : D.EdgePoly false (n + 1) (n + 1 + 1)} (h_pair₀ : D.IsLeftPair false i n Φ₀)
-    (h_pair₁ : D.IsLeftPair false i (n + 1) Φ₁) :
-    ∃ κ : D.MFoldTwist → ℂ, D.HasAbsUpToNormPower κ 1 ∧
-      ∀ (ϑ : D.MFoldTwist) (Ψ : D.EdgeDatum false ϑ n (n + 1))
-          (x : D.TriangleForm false i (n + 1 + 1)) (x' : D.TriangleForm false i (n + 1)),
-        (∀ y : D.TriangleForm false i (n + 1), ⟪D.triangleLift false ϑ i (n + 1) y, x⟫ = ⟪y, x'⟫) →
-        ∀ y : D.TriangleForm false (i + 1) n, ⟪D.triangleTransposedLift false ϑ i n Φ₀ Ψ x', y⟫ =
-          κ ϑ * ⟪D.triangleTransposedLift false ϑ i (n + 1) Φ₁ (nextDatum Ψ) x,
-            D.triangleLift false ϑ (i + 1) n y⟫ := by
+fixed power of the norm of the modulus Q of the twist `ϑ` (`HasAbsUpToNormPower κ 1`).
+-/
+theorem exists_triangleTransposedLift_adjoint_comm
+    {P : Parameters} (D : Data P)
+    {i n : ℕ} (h_lt : i + (n + 1) < D.m)
+    {Φ₀ : D.EdgePoly false n (n + 1)} {Φ₁ : D.EdgePoly false (n + 1) (n + 1 + 1)}
+    (h_pair₀ : D.IsLeftPair false i n Φ₀) (h_pair₁ : D.IsLeftPair false i (n + 1) Φ₁)
+    : ∃ κ : D.MFoldTwist → ℂ,
+      D.HasAbsUpToNormPower κ 1
+        ∧ ∀ (ϑ : D.MFoldTwist) (Ψ : D.EdgeDatum false ϑ n (n + 1))
+            (x : D.TriangleForm false i (n + 1 + 1)) (x' : D.TriangleForm false i (n + 1)),
+          (∀ y : D.TriangleForm false i (n + 1), ⟪D.triangleLift false ϑ i (n + 1) y, x⟫ = ⟪y, x'⟫)
+            → ∀ y : D.TriangleForm false (i + 1) n,
+              ⟪D.triangleTransposedLift false ϑ i n Φ₀ Ψ x', y⟫
+                = κ ϑ
+                  * ⟪D.triangleTransposedLift false ϑ i (n + 1) Φ₁ (nextDatum Ψ) x,
+                    D.triangleLift false ϑ (i + 1) n y⟫ := by
   -- Turn the first descent into a reversed lift, commute it with the lift, and turn it back.
   obtain ⟨Φ₀', h_rev₀⟩ := D.exists_isReversedPair (i := i) (n := n) false h_lt.le
   obtain ⟨Φ₁', h_rev₁⟩ := D.exists_isReversedPair false h_lt
@@ -549,24 +572,30 @@ theorem exists_triangleTransposedLift_adjoint_comm {P : Parameters} (D : Data P)
     D.exists_triangleLift_reversalScalar_eq (i := i + 1) (n := n) false ϑ
       (lt_of_eq_of_lt (Nat.add_right_comm i 1 n) h_lt)
   have hη' : D.HasAbsUpToNormPower η 1 := ⟨1, 0, by simp [hη]⟩
-  refine ⟨c₀ * γ * η * c₁, by simpa using ((hc₀.mul hγ).mul hη').mul hc₁,
-    fun ϑ Ψ x x' h_adj y ↦ ?_⟩
+  refine ⟨c₀ * γ * η * c₁, by simpa using ((hc₀.mul hγ).mul hη').mul hc₁, fun ϑ Ψ x x' h_adj y ↦ ?_⟩
   let A₀ : D.TriangleForm false (i + 1) n →ₗ[ℂ] D.TriangleForm false i (n + 1) :=
     D.triangleReversedLift false ϑ i n Φ₀' (D.fourierDatum false ϑ Ψ)
   let A₁ : D.TriangleForm false (i + 1) (n + 1) →ₗ[ℂ] D.TriangleForm false i (n + 1 + 1) :=
     D.triangleReversedLift false ϑ i (n + 1) Φ₁' (D.fourierDatum false ϑ (nextDatum Ψ))
   let y' : D.TriangleForm false (i + 1) n :=
     D.triangleRep false (i + 1) n (D.reversalScalar false ϑ n)⁻¹ y
-  calc ⟪D.triangleTransposedLift false ϑ i n Φ₀ Ψ x', y⟫ = c₀ ϑ * ⟪x', A₀ y'⟫ := h_descent ϑ Ψ x' y
+  calc
+    ⟪D.triangleTransposedLift false ϑ i n Φ₀ Ψ x', y⟫
+      = c₀ ϑ * ⟪x', A₀ y'⟫ := h_descent ϑ Ψ x' y
     _ = c₀ ϑ * ⟪x, D.triangleLift false ϑ i (n + 1) (A₀ y')⟫ := by
       rw [← inner_conj_symm x', ← h_adj, inner_conj_symm]
     _ = c₀ ϑ * (γ ϑ * ⟪x, A₁ (D.triangleLift false ϑ (i + 1) n y')⟫) := by rw [h_comm]
-    _ = c₀ ϑ * (γ ϑ * (η ϑ * (c₁ ϑ * ⟪D.triangleTransposedLift false ϑ i (n + 1) Φ₁ (nextDatum Ψ) x,
-          D.triangleLift false ϑ (i + 1) n y⟫))) := by
+    _ = c₀ ϑ
+        * (γ ϑ
+          * (η ϑ
+            * (c₁ ϑ
+              * ⟪D.triangleTransposedLift false ϑ i (n + 1) Φ₁ (nextDatum Ψ) x,
+                D.triangleLift false ϑ (i + 1) n y⟫))) := by
       rw [h_shift, map_smul, inner_smul_right, h_ascent]
     _ = _ := by simp only [Pi.mul_apply, mul_assoc]
 
-/-- There are linear maps `d`, the descents, from `(i, n + 1)` to `(i + 1, n)` with the following
+/--
+There are linear maps `d`, the descents, from `(i, n + 1)` to `(i + 1, n)` with the following
 properties. With the theta lifts `triangleLift` from `(i, n)` to `(i, n + 1)`, the group orders
 `triangleGLCard` as weights and the embeddings `triangleEmbedding` at `(i, 0)` of the forms at
 `(0, 0)` fixed by the base level, they form a triangle `IsTriangle` of size `D.m`: each square
@@ -575,34 +604,37 @@ descent, and their composite maps the copy in row `i` injectively to that in row
 `z = false` the squares satisfy `HasSquareModuli`: their constants have the moduli `quotientRatio`
 in the sense of `HasAbsUpToNormPower`, and the descent of the adjoint image of a form under the
 upper lift is a multiple of the adjoint image of its descent under the lower lift, by a constant of
-modulus `1` in the sense of `HasAbsUpToNormPower`. -/
-theorem exists_isTriangle {P : Parameters} (D : Data P) (z : Bool) :
-    ∃ d : D.MFoldTwist → ∀ i n : ℕ, D.TriangleForm z i (n + 1) →ₗ[ℂ] D.TriangleForm z (i + 1) n,
-      IsTriangle D.m (D.triangleGLCard z) (D.triangleLift z) d (D.triangleEmbedding z) ∧
-      (z = false →
-        HasSquareModuli D.m (D.triangleGLCard z) D.HasAbsUpToNormPower D.quotientRatio
-          (D.triangleLift z) d) := by
+modulus `1` in the sense of `HasAbsUpToNormPower`.
+-/
+theorem exists_isTriangle {P : Parameters} (D : Data P) (z : Bool)
+    : ∃ d : D.MFoldTwist → ∀ i n : ℕ, D.TriangleForm z i (n + 1) →ₗ[ℂ] D.TriangleForm z (i + 1) n,
+      IsTriangle D.m (D.triangleGLCard z) (D.triangleLift z) d (D.triangleEmbedding z)
+        ∧ (z = false
+          → HasSquareModuli D.m (D.triangleGLCard z) D.HasAbsUpToNormPower D.quotientRatio
+            (D.triangleLift z) d) := by
   -- The datum at `n = 0` makes the descent the adjoint of the lift; `nextDatum` gives the others.
   choose! Φ h_left_pair using fun (i n : ℕ) (h : i + n < D.m) ↦ D.exists_isLeftPair z h
-  have h_adjoint_datum (i : ℕ) (h : i + 0 < D.m) (ϑ : D.MFoldTwist) :
-      ∃ Ψ : D.EdgeDatum z ϑ 0 1, ∀ (y : D.TriangleForm z i 0) (x : D.TriangleForm z i 1),
-        ⟪x, D.triangleLift z ϑ i 0 y⟫ = ⟪D.triangleTransposedLift z ϑ i 0 (Φ i 0) Ψ x,
-          formNegEquiv _ _ y⟫ :=
+  have h_adjoint_datum (i : ℕ) (h : i + 0 < D.m) (ϑ : D.MFoldTwist)
+      : ∃ Ψ : D.EdgeDatum z ϑ 0 1, ∀ (y : D.TriangleForm z i 0) (x : D.TriangleForm z i 1),
+        ⟪x, D.triangleLift z ϑ i 0 y⟫
+          = ⟪D.triangleTransposedLift z ϑ i 0 (Φ i 0) Ψ x,
+            formNegEquiv _ _ y⟫ :=
     (D.isEdgeFamily_triangleKernel z h).exists_inner_modLift_eq_inner_modTransposedLift
-      (D.gridSpace i z 0 0)
-      (D.gridSpace i z 0 (0 + 1)) (h_left_pair i 0 h) ϑ
-        (pointDatum (triangleModulus z ϑ).ResidueRing)
+      (D.gridSpace i z 0 0) (D.gridSpace i z 0 (0 + 1)) (h_left_pair i 0 h) ϑ
+      (pointDatum (triangleModulus z ϑ).ResidueRing)
   choose! Ψ₀ h_adjoint using h_adjoint_datum
   -- the datum of the descent at `(i, n)` is defined by recursion on `n`
   let e (ϑ : D.MFoldTwist) (i : ℕ) : ∀ n : ℕ, D.EdgeDatum z ϑ n (n + 1) :=
     Nat.rec (Ψ₀ i ϑ) fun _ ↦ nextDatum
-  let d (ϑ : D.MFoldTwist) (i n : ℕ) : D.TriangleForm z i (n + 1) →ₗ[ℂ] D.TriangleForm z (i + 1)
-    n :=
+  let d (ϑ : D.MFoldTwist) (i n : ℕ)
+      : D.TriangleForm z i (n + 1) →ₗ[ℂ] D.TriangleForm z (i + 1)
+        n :=
     D.triangleTransposedLift z ϑ i n (Φ i n) (e ϑ i n)
   -- the first commutation relation
-  have h_square (i n : ℕ) (h : i + (n + 1) < D.m) : ∃ β : D.MFoldTwist → ℂ,
-      SquareCommutes (D.triangleGLCard z) (D.triangleLift z) d i n β ∧
-      (z = false → D.HasAbsUpToNormPower β (D.quotientRatio (i + 1) (i + 1 + n + 1))) := by
+  have h_square (i n : ℕ) (h : i + (n + 1) < D.m)
+      : ∃ β : D.MFoldTwist → ℂ,
+        SquareCommutes (D.triangleGLCard z) (D.triangleLift z) d i n β
+          ∧ (z = false → D.HasAbsUpToNormPower β (D.quotientRatio (i + 1) (i + 1 + n + 1))) := by
     obtain ⟨β, h_comm, hβ⟩ :=
       D.exists_triangleLift_triangleTransposedLift_comm z h (h_left_pair i n h.le)
         (h_left_pair i (n + 1) h)
@@ -612,13 +644,14 @@ theorem exists_isTriangle {P : Parameters} (D : Data P) (z : Bool) :
     exact h_comm ϑ (e ϑ i n) y x
   -- With a = `triangleFirstLift`, let v be the form whose copy is d (a y). Then
   -- ⟪v, x⟫ = ⟪a y, a x⟫, which gives the level of v and the injectivity.
-  have h_base (i : ℕ) (h : i < D.m) (ϑ : D.MFoldTwist) (y : D.triangleBase z)
-    (v : D.TriangleForm z 0 0)
-      (hv : D.triangleNegEquiv z (i + 1) v = d ϑ i 0
-        (D.triangleLift z ϑ i 0 (D.triangleEmbedding z i y))) :
-      v ∈ D.triangleBase z ∧ (v = 0 → y = 0) := by
-    have h_pair (x : D.TriangleForm z 0 0) :
-        ⟪v, x⟫ = ⟪D.triangleFirstLift z ϑ i y, D.triangleFirstLift z ϑ i x⟫ := by
+  have h_base
+      (i : ℕ) (h : i < D.m)
+      (ϑ : D.MFoldTwist) (y : D.triangleBase z) (v : D.TriangleForm z 0 0)
+      (hv : D.triangleNegEquiv z (i + 1) v
+        = d ϑ i 0 (D.triangleLift z ϑ i 0 (D.triangleEmbedding z i y)))
+      : v ∈ D.triangleBase z ∧ (v = 0 → y = 0) := by
+    have h_pair (x : D.TriangleForm z 0 0)
+        : ⟪v, x⟫ = ⟪D.triangleFirstLift z ϑ i y, D.triangleFirstLift z ϑ i x⟫ := by
       rw [← (D.triangleNegEquiv z (i + 1)).inner_map_map, hv]
       exact (h_adjoint i h ϑ (D.triangleNegEquiv z i x) _).symm
     obtain ⟨C, h_lift⟩ := D.exists_hasSum_inner_triangleFirstLift z i h
@@ -630,8 +663,9 @@ theorem exists_isTriangle {P : Parameters} (D : Data P) (z : Bool) :
     exact ⟨β, h_comm⟩
   · -- the adjointness holds by the choice of the datum at `n = 0`
     exact h_adjoint i h ϑ (D.triangleEmbedding z i y)
-  · obtain ⟨v, hv⟩ := (D.triangleNegEquiv z (i + 1)).surjective
-      (d ϑ i 0 (D.triangleLift z ϑ i 0 (D.triangleEmbedding z i y)))
+  · obtain ⟨v, hv⟩ :=
+      (D.triangleNegEquiv z (i + 1)).surjective
+        (d ϑ i 0 (D.triangleLift z ϑ i 0 (D.triangleEmbedding z i y)))
     obtain ⟨hv_mem, -⟩ := h_base i h ϑ y v hv
     exact ⟨⟨v, hv_mem⟩, hv⟩
   · obtain ⟨-, h_inj⟩ := h_base i h ϑ y 0 (by rw [hy, map_zero])

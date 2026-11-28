@@ -48,12 +48,15 @@ Known; see `Lib.Cohomology.ProperBaseChange.Theorem` for sources.
 namespace New.Variety
 
 open PrimeSpectrum Polynomial CommRingCat Ideal.Quotient IsLocalization IsLocalRing
-  IsAbsIntegrallyClosed Submodule
-  Algebra AlgebraMonoidAlgebra Pointwise IsScalarTower Subring Set Filter algebraMap
+  IsAbsIntegrallyClosed Submodule Algebra AlgebraMonoidAlgebra Pointwise IsScalarTower Subring Set
+  Filter algebraMap
 
-variable {ι A B C D : Type} [CommRing A] [CommRing B] [CommRing C] [CommRing D] [Algebra A B]
-  [Algebra A C] [Algebra A D] [Algebra B D] [Algebra C D] [IsScalarTower A B D]
-  (I : Ideal A) [IsScalarTower A C D] (t : B) (s : C) [Away t D] [Away s D]
+variable
+  {ι A B C D : Type} [CommRing A] [CommRing B] [CommRing C] [CommRing D] [Algebra A B] [Algebra A C]
+  [Algebra A D] [Algebra B D] [Algebra C D] [IsScalarTower A B D]
+  (I : Ideal A)
+  [IsScalarTower A C D]
+  (t : B) (s : C) [Away t D] [Away s D]
 
 /-- Approximation by finitely generated subrings: if `z` lies in the `A`-span of a family
 `f : ι → D`, then for all large finite `T ⊆ ι` and `S ⊆ A`, `z` lies in the span of `f(T)` over
@@ -490,8 +493,10 @@ lemma exists_locallyConstant_eq_sub_of_pow_eq_mul [IsDomain A] [IsDomain D] {ℓ
       ← ZMod.natCast_eq_natCast_iff] using h_pow
   exact h_sum.symm.trans (sub_neg_eq_add ((i : ZMod ℓ) + ex pB) (ey pC : ZMod ℓ)).symm
 
-/-- The condition on the chart `R[1 / a]` of a line modulo the ideal `I` of `R`: `a * (a - 1) ∈ I`,
-or the equation `ε + r * ε ^ 2 = 1` has a solution `ε ∈ R` for every `r ∈ I`. -/
+/--
+The condition on the chart `R[1 / a]` of a line modulo the ideal `I` of `R`: `a * (a - 1) ∈ I`,
+or the equation `ε + r * ε ^ 2 = 1` has a solution `ε ∈ R` for every `r ∈ I`.
+-/
 def IsLineChartCase {R : Type} [CommRing R] (I : Ideal R) (a : R) : Prop :=
   a * (a - 1) ∈ I ∨ ∀ r ∈ I, ∃ ε : R, ε + r * ε ^ 2 = 1
 

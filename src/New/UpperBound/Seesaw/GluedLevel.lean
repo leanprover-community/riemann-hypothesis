@@ -38,8 +38,9 @@ preserve the gluing.
 namespace New
 
 open Filling Matrix Seesaw Space
-variable {E X ι : Type _} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X]
-  [DecidableEq X] {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} (Y : Grading V N (X ⊕ Unit) s)
+variable
+  {E X ι : Type _} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
+  {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} (Y : Grading V N (X ⊕ Unit) s)
   {a π : (𝔸f E)ˣ}
 
 /-- Let the grading `Y` split the index set `ι` of a basis of the hermitian space `V` over `E` into

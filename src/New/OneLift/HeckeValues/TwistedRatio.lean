@@ -168,68 +168,75 @@ lemma algPart_pos (H : p.HasLiftRank n) (ϑ : D.TameChar) : 0 < algPart H ϑ := 
   rw [algPart]
   exact_mod_cast (show (0 : ℝ) < ‖trivialLift H ϑ‖ ^ 2 / ϑ.normQ ^ (card n - 1) by positivity)
 
-/-- Let `p = (ν, z)` be a critical pair and `H : p.HasLiftRank n` the hypothesis that the index set
+/--
+Let `p = (ν, z)` be a critical pair and `H : p.HasLiftRank n` the hypothesis that the index set
 `n` has `2 z` elements, with `z ≥ 2`. For a tame character `ϑ` of modulus `Q`, `algPart H ϑ` is the
 algebraic part of the `L`-value of `ν ϑ` at `z`, defined as `‖φ‖ ^ 2 / N(Q) ^ (card n - 1)`. Here
 `φ = trivialLift H ϑ` is the scaled lift of `ν ϑ` to `U(n)`, and `N(Q)` is the product of the norms
 of the places of `Q`. There is a constant `A ≠ 0` such that, for every `ϑ`, this number is `A` times
 the `L`-value of `ν ϑ` at `z`, without the Euler factors at the chosen places, the modulus `Q` and
-their conjugates. -/
-theorem exists_ne_zero_algPart_eq_mul_L (H : p.HasLiftRank n) :
-    ∃ A ≠ (0 : ℂ), ∀ ϑ : D.TameChar,
-      algPart H ϑ = A * (p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q)
-        p.z := by
+their conjugates.
+-/
+theorem exists_ne_zero_algPart_eq_mul_L (H : p.HasLiftRank n)
+    : ∃ A ≠ (0 : ℂ), ∀ ϑ : D.TameChar,
+      algPart H ϑ
+        = A * (p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) p.z := by
   -- The constant is that of the unscaled lift times the squared absolute value of the scale.
   obtain ⟨C, hC, h_norm_sq⟩ := exists_norm_sq_trivialLift_eq_mul_L H
-  let scale : ℂ := P.vacuumScale D.towerExp ^ card n * (star (D.piMBar : ℂ) * P.jetScale D.towerExp)
-    ^ p.rowLengthSum
+  let scale : ℂ :=
+    P.vacuumScale D.towerExp ^ card n
+      * (star (D.piMBar : ℂ) * P.jetScale D.towerExp) ^ p.rowLengthSum
   have h_scale : scale ≠ 0 := p.vacuumScale_pow_mul_pow_rowLengthSum_ne_zero (card n)
   refine ⟨‖scale‖ ^ 2 * C, mul_ne_zero (by simpa using h_scale) hC, fun ϑ ↦ ?_⟩
   have h_level : (ϑ.normQ : ℂ) ≠ 0 := by
     simp [Finset.prod_eq_zero_iff, IsDedekindDomain.HeightOneSpectrum.ne_bot]
-  calc algPart H ϑ
-      = ‖scale‖ ^ 2 * (‖(lValueData H ϑ).trivialLift‖ ^ 2 / ϑ.normQ ^ (card n - 1)) := by
-        rw [algPart, trivialLift, norm_smul, Complex.ofReal_mul]
-        ring
+  calc
+    algPart H ϑ = ‖scale‖ ^ 2 * (‖(lValueData H ϑ).trivialLift‖ ^ 2 / ϑ.normQ ^ (card n - 1)) := by
+      rw [algPart, trivialLift, norm_smul, Complex.ofReal_mul]
+      ring
     _ = ‖scale‖ ^ 2 * C * (p.character * ϑ.toAutChar).L ({w | D.IsChosen w} ∪ ϑ.Q) p.z := by
-        rw [h_norm_sq, p.L_mul_inv, mul_div_cancel_right₀ _ (pow_ne_zero _ h_level), ← mul_assoc]
+      rw [h_norm_sq, p.L_mul_inv, mul_div_cancel_right₀ _ (pow_ne_zero _ h_level), ← mul_assoc]
 
 open scoped ComplexOrder in
-/-- For every tame character `ϑ` of modulus `Q`, the algebraic part `algPart H ϑ = ‖trivialLift H ϑ‖
+/--
+For every tame character `ϑ` of modulus `Q`, the algebraic part `algPart H ϑ = ‖trivialLift H ϑ‖
 ^ 2 / N(Q) ^ (card n - 1)`, the normalised squared norm of the lift of `ν ϑ`, is positive. It is the
 `L`-value of `ν ϑ` at `z`, without the factors at the chosen places, the modulus and their
-conjugates, times a number `A` that depends neither on `ϑ` nor on its modulus. -/
-theorem exists_algPart_eq_mul_L (H : p.HasLiftRank n) :
-    ∃ A : ℂ, ∀ ϑ : D.TameChar,
+conjugates, times a number `A` that depends neither on `ϑ` nor on its modulus.
+-/
+theorem exists_algPart_eq_mul_L (H : p.HasLiftRank n)
+    : ∃ A : ℂ, ∀ ϑ : D.TameChar,
       algPart H ϑ = A * (p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) p.z
-        ∧
-      0 < algPart H ϑ := by
+        ∧ 0 < algPart H ϑ := by
   obtain ⟨A, -, h_value⟩ := exists_ne_zero_algPart_eq_mul_L H
   exact ⟨A, fun ϑ ↦ ⟨h_value ϑ, algPart_pos H ϑ⟩⟩
 
 open scoped ComplexOrder in
-/-- The sign in `p.ratio ϑ` is the default `1`, so this is the ratio of the absolute values of the
+/--
+The sign in `p.ratio ϑ` is the default `1`, so this is the ratio of the absolute values of the
 `L`-values at `z` of `(ν ϑ)⁻¹` and of `ν⁻¹`. It is equal to the algebraic part `algPart H
 ϑ = ‖trivialLift H ϑ‖ ^ 2 / N(Q) ^ (card n - 1)`, the normalised squared norm of the lift of `ν ϑ`,
-divided by the same number for the trivial character. -/
-theorem ratio_eq_algPart_div (H : p.HasLiftRank n) (ϑ : D.TameChar) :
-    p.ratio ϑ = algPart H ϑ / algPart H TameChar.one := by
+divided by the same number for the trivial character.
+-/
+theorem ratio_eq_algPart_div (H : p.HasLiftRank n) (ϑ : D.TameChar)
+    : p.ratio ϑ = algPart H ϑ / algPart H TameChar.one := by
   obtain ⟨A, hA⟩ := exists_algPart_eq_mul_L H
   obtain ⟨h_value, h_pos⟩ := hA ϑ
   obtain ⟨h_value_one, h_pos_one⟩ := hA TameChar.one
   -- The constant `A` is a factor of a positive number, so it cancels in the quotient.
   have hA_ne : A ≠ 0 := left_ne_zero_of_mul (h_value.symm.trans_ne h_pos.ne')
-  have h_div : algPart H ϑ / algPart H TameChar.one =
-      (p.character * ϑ.toAutChar)⁻¹.L ({w | D.IsChosen w} ∪ ϑ.Q) p.z / p.character⁻¹.L
-        {w | D.IsChosen w} p.z := by
+  have h_div
+      : algPart H ϑ / algPart H TameChar.one
+        = (p.character * ϑ.toAutChar)⁻¹.L ({w | D.IsChosen w} ∪ ϑ.Q) p.z
+          / p.character⁻¹.L {w | D.IsChosen w} p.z := by
     rw [h_value, h_value_one, mul_div_mul_left _ _ hA_ne, ← p.L_mul_inv, ← p.L_mul_inv]
     simp [toAutChar_one_and_toTwist_one_and_Q_one]
   -- The quotient is a positive real number, so it is equal to its norm.
-  calc p.ratio ϑ = ‖algPart H ϑ / algPart H TameChar.one‖ := by
-        rw [h_div]
-        simp [ratio]
-    _ = algPart H ϑ / algPart H TameChar.one :=
-        Complex.norm_of_nonneg' (div_pos h_pos h_pos_one).le
+  calc
+    p.ratio ϑ = ‖algPart H ϑ / algPart H TameChar.one‖ := by
+      rw [h_div]
+      simp [ratio]
+    _ = algPart H ϑ / algPart H TameChar.one := Complex.norm_of_nonneg' (div_pos h_pos h_pos_one).le
 
 open scoped ComplexOrder in
 /-- Let `p = (ν, z)` be a critical pair with `z ≥ 2` and `ϑ` a tame character. The number
@@ -288,8 +295,8 @@ open Fintype Finset Matrix Complex Space SiegelWeil Rows WeilData
 
 section
 
-variable {E m : Type} [Field E] [CMType E] [WeilData E] [Fintype m] [DecidableEq m]
-  (X : LValueData E m)
+variable
+  {E m : Type} [Field E] [CMType E] [WeilData E] [Fintype m] [DecidableEq m] (X : LValueData E m)
 
 /-- Let `X` be data for the lift from U(1) to the definite unitary group on `m`, with descent pair
 `X.descentPair` (the line, the group on `m` and the character of `X`). The product `ChosenGL Unit`
@@ -352,16 +359,18 @@ lemma IsRegularFamily.heightLe_of_eq_zpow_mul {c c' : ℝ} {y y' : PrimePadicIso
   · rw [hk ι h_zero, Rat.cast_intCast, Real.rpow_intCast, Complex.ofReal_zpow,
       Complex.ofReal_natCast]
 
-/-- The pair with the same character as `p` and the point `max 1 (min z p.z)`; for `1 ≤ z ≤ p.z`
-this is `z`. Clamping makes the definition total. -/
-def CriticalPair.lowerPoint (p : D.CriticalPair) (z : ℕ) : CriticalPair D :=
-  { p with
-    z := 1 ⊔ z ⊓ p.z
-    z_mem :=
-      ⟨le_sup_left,
-        sup_le (p.z_mem.left.trans p.z_mem.right) (inf_le_right.trans p.z_mem.right)⟩
-    le_negWeight := fun v ↦ sup_le (p.z_mem.left.trans (p.le_negWeight v))
-      (inf_le_right.trans (p.le_negWeight v)) }
+/--
+The pair with the same character as `p` and the point `max 1 (min z p.z)`; for `1 ≤ z ≤ p.z`
+this is `z`. Clamping makes the definition total.
+-/
+def CriticalPair.lowerPoint (p : D.CriticalPair) (z : ℕ) : CriticalPair D := {
+  p with
+  z := 1 ⊔ z ⊓ p.z
+  z_mem :=
+    ⟨le_sup_left, sup_le (p.z_mem.left.trans p.z_mem.right) (inf_le_right.trans p.z_mem.right)⟩
+  le_negWeight := fun v ↦
+    sup_le (p.z_mem.left.trans (p.le_negWeight v)) (inf_le_right.trans (p.le_negWeight v))
+}
 
 /-- No place of the modulus `Q` of a tame character `ϑ` is a chosen place. -/
 lemma TameChar.disjoint_isChosen_Q (ϑ : D.TameChar) :

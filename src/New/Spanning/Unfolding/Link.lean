@@ -271,18 +271,22 @@ lemma Filling.isStable_hasCellRank {E : Type} [Field E] [CMType E] {S : Filling 
 
 /-! ### The big cell -/
 
-/-- Over a field `A` with involution, let `T.splitGram` be hermitian and invertible, with isometry
+/--
+Over a field `A` with involution, let `T.splitGram` be hermitian and invertible, with isometry
 group `T.G`. Let `σ` fix the hyperbolic planes, and let `w_p = weylElem 𝔰.ϱ p` send `e_a` to
 `p a • e*_a`. Let `t = T.frameGram σ 𝔰.top 𝔰.top` be the product of the last frame vector `z` with
 `σ z`, and let `d` be the product of the first `ϱ` units of `p`. Let `T.frameGram (w_p σ)` be the
 matrix of products of the frame `(e₁, …, e_ϱ, z)` with its image under `w_p σ`. Then `frameDisc N`
 of this matrix, that is `|D_{ϱ+1}|² - N² |D_ϱ|²` in its leading minors `D_l`, equals
-`d d̄ (t t̄ - N²)`. -/
-theorem Filling.frameDisc_weylElem_mul {A : Type} [Field A] [StarRing A] {T : 𝔰.Form A}
-    {σ : T.G} {p : ℕ → Aˣ} (hσ : σ ∈ floorGroup 𝔰.ϱ) (N : A) :
-    let t : A := T.frameGram σ 𝔰.top 𝔰.top
-    let d : A := ∏ a : Fin 𝔰.ϱ, (p a).val
-    frameDisc N (T.frameGram (weylElem 𝔰.ϱ p * σ).val) = d * star d * (t * star t - N ^ 2) := by
+`d d̄ (t t̄ - N²)`.
+-/
+theorem Filling.frameDisc_weylElem_mul
+    {A : Type} [Field A] [StarRing A]
+    {T : 𝔰.Form A} {σ : T.G} {p : ℕ → Aˣ} (hσ : σ ∈ floorGroup 𝔰.ϱ)
+    (N : A)
+    : let t : A := T.frameGram σ 𝔰.top 𝔰.top
+      let d : A := ∏ a : Fin 𝔰.ϱ, (p a).val
+      frameDisc N (T.frameGram (weylElem 𝔰.ϱ p * σ).val) = d * star d * (t * star t - N ^ 2) := by
   intro t d
   -- The matrix is diagonal, with entries `p a` and `t`.
   have h_det : (T.frameGram (weylElem 𝔰.ϱ p * σ).val).det = d * t := by
@@ -307,13 +311,15 @@ lemma Filling.mem_link_weylElem_mul_iff {A : Type} [Field A] [StarRing A] {T : �
   rw [mem_link, coe_weylElem_mul hρ]
   simp [← elim_add_add, elim_eq_iff, h_ker, fromBlocks_mulVec]
 
-/-- Over a field with involution, let `T.splitGram` be hermitian and invertible. Let `σ`, `τ` fix
+/--
+Over a field with involution, let `T.splitGram` be hermitian and invertible. Let `σ`, `τ` fix
 the hyperbolic planes, and let `w_p = weylElem 𝔰.ϱ p` send `e_a` to `p a • e*_a`. Then `w_p σ` and
-`w_q τ` have the same link exactly when `σ = τ`. -/
-theorem Filling.link_weylElem_mul_eq_iff {A : Type} [Field A] [StarRing A] {T : 𝔰.Form A}
-    {σ τ : T.G} {p q : ℕ → Aˣ} (hσ : σ ∈ floorGroup 𝔰.ϱ)
-    (hτ : τ ∈ floorGroup 𝔰.ϱ) :
-    link (weylElem 𝔰.ϱ p * σ) = link (weylElem 𝔰.ϱ q * τ) ↔ σ = τ := by
+`w_q τ` have the same link exactly when `σ = τ`.
+-/
+theorem Filling.link_weylElem_mul_eq_iff
+    {A : Type} [Field A] [StarRing A]
+    {T : 𝔰.Form A} {σ τ : T.G} {p q : ℕ → Aˣ} (hσ : σ ∈ floorGroup 𝔰.ϱ) (hτ : τ ∈ floorGroup 𝔰.ϱ)
+    : link (weylElem 𝔰.ϱ p * σ) = link (weylElem 𝔰.ϱ q * τ) ↔ σ = τ := by
   -- The link of `w_p σ` is the graph of the middle block of `σ`, and this block determines `σ`.
   constructor
   · intro h_link
@@ -368,14 +374,18 @@ def isotropicSpan (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) : Submodule E
 def commonIsotropic (γ : S.G E) : Submodule E (𝔰.BesselIndex → E) :=
   isotropicSpan 1 ⊓ isotropicSpan γ.val.val
 
-/-- The orthogonal complement `(A + γ A)^⊥`, where `A = ⟨e_1, …, e_ϱ⟩`, for the form
-`S.ratGram = (S.ratMiddle E).splitGram` of `ϱ` hyperbolic planes and the space `X₀ ⊥ E z_N`. -/
+/--
+The orthogonal complement `(A + γ A)^⊥`, where `A = ⟨e_1, …, e_ϱ⟩`, for the form
+`S.ratGram = (S.ratMiddle E).splitGram` of `ϱ` hyperbolic planes and the space `X₀ ⊥ E z_N`.
+-/
 def isotropicPerp (γ : S.G E) : Submodule E (𝔰.BesselIndex → E) :=
   ((isotropicFramePair γ)ᴴ * S.ratGram).mulVecLin.ker
 
 variable (S) in
-/-- The Gram matrix of the positive space `X₀ ⊥ E z⁺`, where `X₀` has an orthonormal basis and `z⁺`
-has the norm `S.N`, the prime of the filling `S`. -/
+/--
+The Gram matrix of the positive space `X₀ ⊥ E z⁺`, where `X₀` has an orthonormal basis and `z⁺`
+has the norm `S.N`, the prime of the filling `S`.
+-/
 def positiveGram : 𝔰.Form E := diagonal (1 ⊕ᵥ fun _ : Unit ↦ S.N)
 
 variable (E 𝔰) in
@@ -642,9 +652,11 @@ lemma linkSourceEquiv_apply (γ : S.G E) (p : link γ) : linkSourceEquiv γ p = 
 lemma linkTargetEquiv_apply (γ : S.G E) (p : link γ) : linkTargetEquiv γ p = linkTarget E 𝔰 p :=
   rfl
 
-/-- The link isometry `Υ_γ` of `X₀ ⊥ E z⁺`: for a pair `(y₀ + λ' z_N, y₀' + λ z_N)` in the link of
+/--
+The link isometry `Υ_γ` of `X₀ ⊥ E z⁺`: for a pair `(y₀ + λ' z_N, y₀' + λ z_N)` in the link of
 `γ`, it sends `y₀ + λ z⁺` to `y₀' + λ' z⁺`. Here `z_N` has the norm `-N` and `z⁺` the norm `N`,
-for the prime `N = S.N` of the filling `S`. -/
+for the prime `N = S.N` of the filling `S`.
+-/
 def linkIsometry (γ : S.G E) : (𝔰.MiddleIndex → E) ≃ₗ[E] (𝔰.MiddleIndex → E) :=
   (linkSourceEquiv γ).symm ≪≫ₗ linkTargetEquiv γ
 
@@ -661,18 +673,22 @@ lemma exists_mem_link_linkSource_eq (γ : S.G E) (a : 𝔰.MiddleIndex → E) :
   obtain ⟨p, hpa⟩ := (linkSourceEquiv γ).surjective a
   exact ⟨p, p.property, (linkSourceEquiv_apply γ p).symm.trans hpa⟩
 
-/-- The map `Υ_γ = linkIsometry γ` preserves the form of the positive space `X₀ ⊥ E z⁺`, whose Gram
-matrix is `S.positiveGram`. -/
-theorem dotProduct_positiveGram_mulVec_linkIsometry (γ : S.G E) (a b : 𝔰.MiddleIndex → E) :
-    star (linkIsometry γ a) ⬝ᵥ S.positiveGram *ᵥ linkIsometry γ b =
-      star a ⬝ᵥ S.positiveGram *ᵥ b := by
+/--
+The map `Υ_γ = linkIsometry γ` preserves the form of the positive space `X₀ ⊥ E z⁺`, whose Gram
+matrix is `S.positiveGram`.
+-/
+theorem dotProduct_positiveGram_mulVec_linkIsometry (γ : S.G E) (a b : 𝔰.MiddleIndex → E)
+    : star (linkIsometry γ a) ⬝ᵥ S.positiveGram *ᵥ linkIsometry γ b
+      = star a ⬝ᵥ S.positiveGram *ᵥ b := by
   obtain ⟨p, hp, rfl⟩ := exists_mem_link_linkSource_eq γ a
   obtain ⟨q, hq, rfl⟩ := exists_mem_link_linkSource_eq γ b
   rw [linkIsometry_linkSource hp, linkIsometry_linkSource hq,
     form_linkSource_eq_form_linkTarget hp hq]
 
-/-- The map `y ↦ y₀ + λ z⁺` on `(A + γ A)^⊥`, where `y₀` is the `X₀`-part of `y` and `λ` is the
-`z_N`-coordinate of `γ⁻¹ y`. -/
+/--
+The map `y ↦ y₀ + λ z⁺` on `(A + γ A)^⊥`, where `y₀` is the `X₀`-part of `y` and `λ` is the
+`z_N`-coordinate of `γ⁻¹ y`.
+-/
 def perpToPositive (γ : S.G E) : isotropicPerp γ →ₗ[E] (𝔰.MiddleIndex → E) :=
   (linkSource E 𝔰 ∘ₗ (linkMatrix γ).mulVecLin).domRestrict (isotropicPerp γ)
 
@@ -710,14 +726,16 @@ lemma perpToPositive_surjective (γ : S.G E) : Surjective (perpToPositive γ) :=
   obtain ⟨y, hy, rfl⟩ := mem_link_iff_exists_mem_isotropicPerp.1 hp
   exact ⟨⟨y, hy⟩, perpToPositive_apply γ ⟨y, hy⟩⟩
 
-/-- The space `commonIsotropic γ = A ∩ γ A`, for `A` the span of `e_1, …, e_ϱ`, lies in
+/--
+The space `commonIsotropic γ = A ∩ γ A`, for `A` the span of `e_1, …, e_ϱ`, lies in
 `isotropicPerp γ = (A + γ A)^⊥`. The map `perpToPositive γ`, `y ↦ y₀ + λ z⁺`, sends `y` to its
 `X₀`-part `y₀` plus `λ z⁺`, where `λ` is the `z_N`-coordinate of `γ⁻¹ y`. It has kernel `A ∩ γ A`
-and is surjective, so it induces a bijection from `(A + γ A)^⊥ / (A ∩ γ A)` onto `X₀ ⊥ E z⁺`. -/
-theorem ker_perpToPositive_and_surjective (γ : S.G E) :
-    commonIsotropic γ ≤ isotropicPerp γ ∧
-    (perpToPositive γ).ker = (commonIsotropic γ).submoduleOf (isotropicPerp γ) ∧
-    Surjective (perpToPositive γ) :=
+and is surjective, so it induces a bijection from `(A + γ A)^⊥ / (A ∩ γ A)` onto `X₀ ⊥ E z⁺`.
+-/
+theorem ker_perpToPositive_and_surjective (γ : S.G E)
+    : commonIsotropic γ ≤ isotropicPerp γ
+      ∧ (perpToPositive γ).ker = (commonIsotropic γ).submoduleOf (isotropicPerp γ)
+      ∧ Surjective (perpToPositive γ) :=
   ⟨commonIsotropic_le_isotropicPerp γ, ker_perpToPositive γ, perpToPositive_surjective γ⟩
 
 /-- The link of `γ` is the graph of `Υ_γ`: a pair `p` lies in it if and only if `Υ_γ` sends
@@ -731,8 +749,8 @@ lemma mem_link_iff_linkIsometry {γ : S.G E} {p : 𝔰.MiddleIndex ⊕ 𝔰.Midd
   rwa [← eq_of_linkSource_eq_of_linkTarget_eq h_source h_target]
 
 /-- Two elements of `S.G E` with the same link have the same link isometry. -/
-theorem linkIsometry_eq_of_link_eq {γ γ' : S.G E} (h : link γ = link γ') :
-    linkIsometry γ = linkIsometry γ' := by
+theorem linkIsometry_eq_of_link_eq {γ γ' : S.G E} (h : link γ = link γ')
+    : linkIsometry γ = linkIsometry γ' := by
   refine LinearEquiv.ext fun a ↦ ?_
   obtain ⟨p, hp, rfl⟩ := exists_mem_link_linkSource_eq γ a
   rw [linkIsometry_linkSource hp, linkIsometry_linkSource (h.le hp)]
@@ -772,45 +790,56 @@ lemma _root_.New.mem_link_iff_orthogonal {γ : S.G E} {p : 𝔰.MiddleIndex ⊕ 
 
 /-! ### The link on the second frame, and the vanishing of `termDisc` -/
 
-/-- Let `S` be a filling over the CM field `E`, with the prime `N = S.N`, and let `γ` lie in
+/--
+Let `S` be a filling over the CM field `E`, with the prime `N = S.N`, and let `γ` lie in
 `S.G E`. The columns of `frameImage γ` are the images under `γ` of the frame
 `f = (e_1, …, e_ϱ, z_N)`. Let their combination `y = γ f · c` have the products `(0, …, 0, c')` with
 `f`. Let `y₀` be the `X₀`-part of `y` and `c_z = c 𝔰.top` the last coefficient. Then
 `linkIsometry γ`, the isometry of `X₀ ⊥ E z⁺` read off from the link of `γ`, where `z⁺` has the norm
-`N`, sends `y₀ + c_z z⁺` to `-(c' / N) z⁺`. -/
-theorem linkIsometry_frameImage_mulVec {γ : S.G E} {c : Fin (𝔰.ϱ + 1) → E} {c' : E}
-    (h_products : S.frameProducts γ *ᵥ c = Pi.single 𝔰.top c') :
-    linkIsometry γ (((frameImage γ *ᵥ c) ∘ 𝔰.indexX₀) ⊕ᵥ fun _ : Unit ↦ c 𝔰.top) =
-      (0 : 𝔰.κ → E) ⊕ᵥ fun _ : Unit ↦ -(c' / S.N) := by
+`N`, sends `y₀ + c_z z⁺` to `-(c' / N) z⁺`.
+-/
+theorem linkIsometry_frameImage_mulVec
+    {γ : S.G E} {c : Fin (𝔰.ϱ + 1) → E} {c' : E}
+    (h_products : S.frameProducts γ *ᵥ c = Pi.single 𝔰.top c')
+    : linkIsometry γ (((frameImage γ *ᵥ c) ∘ 𝔰.indexX₀) ⊕ᵥ fun _ : Unit ↦ c 𝔰.top)
+      = (0 : 𝔰.κ → E) ⊕ᵥ fun _ : Unit ↦ -(c' / S.N) := by
   -- The classes of `y` and `γ⁻¹ y = f · c` are `y₀ - (c' / N) z_N` and `c_z z_N`.
   set y : 𝔰.BesselIndex → E := frameImage γ *ᵥ c with hy
   have h_coord : y 𝔰.z = -(c' / S.N) := by
     simp [← neg_mul_frameImage_mulVec_z_eq h_products, hy, neg_div, S.N_prime.ne_zero]
   have h_inv : γ⁻¹.val.val *ᵥ y = init c ⊕ᵥ ((0 ⊕ᵥ fun _ : Unit ↦ c 𝔰.top) ⊕ᵥ 0) := by
     simp [← frameImage_one_mulVec, hy, frameImage_mulVec γ.val.val]
-  have h_perp : y ∈ isotropicPerp γ := mem_isotropicPerp.2
-    ⟨frameImage_mulVec_eStar_eq_zero h_products, fun a ↦ congrFun h_inv (eStar a)⟩
+  have h_perp : y ∈ isotropicPerp γ :=
+    mem_isotropicPerp.2
+      ⟨frameImage_mulVec_eStar_eq_zero h_products, fun a ↦ congrFun h_inv (eStar a)⟩
   have h_image := linkIsometry_linkSource (linkMatrix_mulVec_mem_link h_perp)
   rwa [linkSource_linkMatrix_mulVec, linkTarget_linkMatrix_mulVec, h_inv, h_coord] at h_image
 
-/-- Let `S` be a filling over the CM field `E`, with the prime `N = S.N`, and let `γ ∈ S.G E`. Let
+/--
+Let `S` be a filling over the CM field `E`, with the prime `N = S.N`, and let `γ ∈ S.G E`. Let
 `y = frameImage γ *ᵥ c` be a combination of the image `γ f` of the frame `f = (e_1, …, e_ϱ, z)`
 whose products with `f`, the vector `S.frameProducts γ *ᵥ c`, are `(0, …, 0, c')`. Let
 `y₀ = y ∘ 𝔰.indexX₀` be the part of `y` in the definite summand `X₀`, and `c_z = c 𝔰.top` the
-coefficient at `z`. Then `N ⟨y₀, y₀⟩ = c' c̄' - N² c_z c̄_z`. -/
-theorem mul_dotProduct_comp_indexX₀_eq_sub {γ : S.G E} {c : Fin (𝔰.ϱ + 1) → E} {c' : E}
-    (h_products : S.frameProducts γ *ᵥ c = Pi.single 𝔰.top c') :
-    S.N * (star ((frameImage γ *ᵥ c) ∘ 𝔰.indexX₀) ⬝ᵥ (frameImage γ *ᵥ c) ∘ 𝔰.indexX₀) =
-      c' * star c' - S.N ^ 2 * (c 𝔰.top * star (c 𝔰.top)) := by
+coefficient at `z`. Then `N ⟨y₀, y₀⟩ = c' c̄' - N² c_z c̄_z`.
+-/
+theorem mul_dotProduct_comp_indexX₀_eq_sub
+    {γ : S.G E} {c : Fin (𝔰.ϱ + 1) → E} {c' : E}
+    (h_products : S.frameProducts γ *ᵥ c = Pi.single 𝔰.top c')
+    : S.N * (star ((frameImage γ *ᵥ c) ∘ 𝔰.indexX₀) ⬝ᵥ (frameImage γ *ᵥ c) ∘ 𝔰.indexX₀)
+      = c' * star c' - S.N ^ 2 * (c 𝔰.top * star (c 𝔰.top)) := by
   set y₀ : 𝔰.κ → E := (frameImage γ *ᵥ c) ∘ 𝔰.indexX₀
   have hN : (S.N : E) ≠ 0 := Nat.cast_ne_zero.2 S.N_prime.ne_zero
-  have h_norm : S.N * (star (c' / S.N) * (c' / S.N)) =
-      star y₀ ⬝ᵥ y₀ + S.N * (star (c 𝔰.top) * c 𝔰.top) := by
+  have h_norm
+      : S.N * (star (c' / S.N) * (c' / S.N))
+        = star y₀ ⬝ᵥ y₀ + S.N * (star (c 𝔰.top) * c 𝔰.top) := by
     let a : 𝔰.MiddleIndex → E := y₀ ⊕ᵥ fun _ : Unit ↦ c 𝔰.top
-    have h_form : star (linkIsometry γ a) ⬝ᵥ S.positiveGram *ᵥ linkIsometry γ a =
-        star a ⬝ᵥ S.positiveGram *ᵥ a := dotProduct_positiveGram_mulVec_linkIsometry γ a a
+    have h_form
+        : star (linkIsometry γ a) ⬝ᵥ S.positiveGram *ᵥ linkIsometry γ a
+          = star a ⬝ᵥ S.positiveGram *ᵥ a :=
+      dotProduct_positiveGram_mulVec_linkIsometry γ a a
     rw [linkIsometry_frameImage_mulVec h_products, dotProduct_positiveGram_mulVec_eq_sum_add,
-      dotProduct_positiveGram_mulVec_eq_sum_add] at h_form
+        dotProduct_positiveGram_mulVec_eq_sum_add]
+      at h_form
     simpa [a, dotProduct] using h_form
   rw [star_div₀, star_natCast] at h_norm
   field_simp at h_norm
@@ -895,12 +924,14 @@ lemma frameImage_mulVec_eq_zero_iff {γ : S.G E} {y : Fin (𝔰.ϱ + 1) → E} :
   simpa only [mulVec_zero] using
     (mulVec_injective_iff.mpr (linearIndependent_col_frameImage γ)).eq_iff (a := y) (b := 0)
 
-/-- The quantity `S.termDisc γ`, formed from the last two leading minors of the matrix of products
+/--
+The quantity `S.termDisc γ`, formed from the last two leading minors of the matrix of products
 of the frame `f = (e_1, …, e_ϱ, z)` with `γ f`, vanishes if the spans of `f` and of `γ f` have a
-nonzero intersection. -/
-theorem termDisc_eq_zero_of_inf_ne_bot {γ : S.G E}
-    (h : colSpan (frameImage 1) ⊓ colSpan (frameImage γ.val.val) ≠ ⊥) :
-    S.termDisc γ = 0 := by
+nonzero intersection.
+-/
+theorem termDisc_eq_zero_of_inf_ne_bot
+    {γ : S.G E} (h : colSpan (frameImage 1) ⊓ colSpan (frameImage γ.val.val) ≠ ⊥)
+    : S.termDisc γ = 0 := by
   obtain ⟨t, ⟨⟨x, hxy⟩, ⟨y, rfl⟩⟩, h_ne⟩ := (Submodule.ne_bot_iff _).1 h
   exact termDisc_eq_zero_iff_exists.2 ⟨x, y, frameImage_mulVec_eq_zero_iff.not.1 h_ne, hxy⟩
 

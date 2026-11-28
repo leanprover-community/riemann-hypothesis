@@ -166,8 +166,8 @@ section FaithfulChar
 open WittVector Algebra IsIntegral Function RingHom
 
 /-- The algebraic closure of a finite field has an injective multiplicative character to `ℂ`. -/
-theorem New.exists_injective_mulChar (k : Type*) [Field k] [Finite k] :
-    ∃ T : MulChar (AlgebraicClosure k) ℂ, Injective T := by
+theorem New.exists_injective_mulChar (k : Type*) [Field k] [Finite k]
+    : ∃ T : MulChar (AlgebraicClosure k) ℂ, Injective T := by
   -- Teichmüller lifts are integral over `ℤ`, and the ring `R` of Witt vectors integral over
   -- `ℤ` is a domain of characteristic zero, so it embeds in `ℂ`.
   have : CharZero (WittVector (ringChar k) (AlgebraicClosure k)) :=
@@ -187,9 +187,10 @@ theorem New.exists_injective_mulChar (k : Type*) [Field k] [Finite k] :
     have h_single : _root_.IsIntegral ℤ (MonoidAlgebra.single x' (1 : ℤ)) := isIntegral _
     rw [← h_apply]
     exact h_single.map toWitt
-  let lift : MulChar (AlgebraicClosure k) R :=
-    { (teichmuller (ringChar k)).codRestrict R h_int with
-      map_nonunit' := by simp [Subtype.ext_iff] }
+  let lift : MulChar (AlgebraicClosure k) R := {
+    (teichmuller (ringChar k)).codRestrict R h_int with
+    map_nonunit' := by simp [Subtype.ext_iff]
+  }
   let emb : R →ₐ[ℤ] ℂ := IsAlgClosed.lift
   -- The kernel of `emb` is a prime of `R` lying over `(0)`, and `R` is integral over `ℤ`.
   have h_emb : Injective emb :=
@@ -201,11 +202,13 @@ theorem New.exists_injective_mulChar (k : Type*) [Field k] [Finite k] :
     congrArg (fun w : R ↦ (w : WittVector (ringChar k) (AlgebraicClosure k)).coeff 0) h_lift
   simpa only [teichmuller_coeff_zero] using h_coeff
 
-/-- For a finite field `k` the character `faithfulChar k`, chosen among the multiplicative
+/--
+For a finite field `k` the character `faithfulChar k`, chosen among the multiplicative
 characters from the algebraic closure of `k` to `ℂ`, is injective, so it is faithful
-(`IsFaithfulMulChar`). -/
-instance New.faithfulChar_injective {k : Type*} [Field k] [Finite k] :
-    IsFaithfulMulChar (AlgebraicClosure k) (faithfulChar k) where
+(`IsFaithfulMulChar`).
+-/
+instance New.faithfulChar_injective {k : Type*} [Field k] [Finite k]
+    : IsFaithfulMulChar (AlgebraicClosure k) (faithfulChar k) where
   injective := Classical.epsilon_spec (exists_injective_mulChar k)
 
 end FaithfulChar
@@ -351,11 +354,14 @@ open CategoryTheory AlgebraicGeometry Limits RingHom Over Set Scheme IsArtinianR
 
 attribute [local instance low] Fintype.ofFinite
 
-/-- Let `b` be a complex point of a scheme `S`, let `Z j` be finitely many schemes over `S`, and let
+/--
+Let `b` be a complex point of a scheme `S`, let `Z j` be finitely many schemes over `S`, and let
 `F j a` be a complex point of `Z j` over `b` for each `a : A`. A reduced closure of the tuples
 `(F j a)_j` is a reduced closed subscheme `W` (the field `scheme`) of the product of the `Z j` over
-`S`, with a dense family of complex points that lift these tuples. -/
-structure ReducedClosure {S : Scheme} {b : Spec (of ℂ) ⟶ S} {J A : Type} [Finite J]
+`S`, with a dense family of complex points that lift these tuples.
+-/
+structure ReducedClosure
+    {S : Scheme} {b : Spec (of ℂ) ⟶ S} {J A : Type} [Finite J]
     {Z : J → Over S} (F : (j : J) → A → (Over.mk b ⟶ Z j)) where
   /-- The closure, a scheme over `S`. -/
   scheme : Over S
@@ -374,15 +380,18 @@ attribute [instance] ReducedClosure.isClosedImmersion
 
 -- `S` is the base scheme, `b` a complex point of it, and `F j a` a complex point of the factor
 -- `Z j` over `b`, for `j` in the finite set `J` and `a` in the index set `A`.
-variable {S : Scheme} {b : Spec (of ℂ) ⟶ S} {J A : Type} [Finite J] {Z : J → Over S}
-  {F : (j : J) → A → (Over.mk b ⟶ Z j)}
+variable
+  {S : Scheme} {b : Spec (of ℂ) ⟶ S} {J A : Type} [Finite J]
+  {Z : J → Over S} {F : (j : J) → A → (Over.mk b ⟶ Z j)}
 
 /-- A reduced closure is a reduced scheme. -/
 instance (C : ReducedClosure F) : AlgebraicGeometry.IsReduced C.scheme.left :=
   C.isSeparatingFamily.1
 
-/-- The morphism from the closure `C.scheme` to the factor `Z j`: the inclusion into the product
-followed by the `j`-th projection. -/
+/--
+The morphism from the closure `C.scheme` to the factor `Z j`: the inclusion into the product
+followed by the `j`-th projection.
+-/
 def ReducedClosure.proj (C : ReducedClosure F) (j : J) : C.scheme ⟶ Z j := C.incl ≫ Pi.π Z j
 
 @[simp]
@@ -394,10 +403,14 @@ lemma ReducedClosure.point_comp_proj (C : ReducedClosure F) (a : A) (j : J) :
 instance : Nonempty (ReducedClosure F) := by
   obtain ⟨Y, i, e, h_closed, he, h_sep⟩ :=
     exists_reduced_closure fun a : A ↦ (Pi.lift fun j : J ↦ F j a).left
-  exact ⟨{ scheme := .mk (i ≫ (∏ᶜ Z).hom), incl := homMk i
-           point a := homMk (e a) (by simp [reassoc_of% he])
-           point_incl a := ext (he a)
-           isClosedImmersion := h_closed, isSeparatingFamily := h_sep }⟩
+  exact ⟨{
+    scheme := .mk (i ≫ (∏ᶜ Z).hom)
+    incl := homMk i
+    point a := homMk (e a) (by simp [reassoc_of% he])
+    point_incl a := ext (he a)
+    isClosedImmersion := h_closed
+    isSeparatingFamily := h_sep
+  }⟩
 
 /-- Two morphisms over `S` to a reduced closure `C.scheme` agree as soon as their composites with
 all projections `C.proj j` to the factors agree. -/
@@ -633,9 +646,10 @@ lemma IsGaloisCovering.exists_simply_transitive_action {R : CommRingCat} {W Z : 
 section ProductOfFields
 
 -- `Ω m` is an algebra over the residue field of the reduced Artinian ring `N` at `m`.
-variable {N : Type*} [CommRing N] [IsArtinianRing N] [IsReduced N] {Ω : MaximalSpectrum N → Type*}
-  [∀ m, CommRing (Ω m)] [∀ m, Algebra N (Ω m)] [∀ m, Algebra (N ⧸ m.asIdeal) (Ω m)]
-  [∀ m, IsScalarTower N (N ⧸ m.asIdeal) (Ω m)]
+variable
+  {N : Type*} [CommRing N] [IsArtinianRing N] [IsReduced N]
+  {Ω : MaximalSpectrum N → Type*} [∀ m, CommRing (Ω m)] [∀ m, Algebra N (Ω m)]
+  [∀ m, Algebra (N ⧸ m.asIdeal) (Ω m)] [∀ m, IsScalarTower N (N ⧸ m.asIdeal) (Ω m)]
 
 /-- A reduced Artinian ring `N` embeds in any product over its maximal ideals `m` of faithful
 algebras over the residue fields `N ⧸ m`. -/

@@ -109,8 +109,10 @@ variable {d : ℕ} (C : CMLattice d)
 /-- `u` lies in `ℚ Λ`, that is, it represents a torsion point of `ℂ / Λ`. -/
 def IsTorsion (u : ℂ) : Prop := ∃ n : ℕ, n ≠ 0 ∧ n * u ∈ C.Λ
 
-/-- The torsion value `G[u]` of a function `G` with the degree `n`: the value at `0` of the twisted
-translate of `G` by `u` for `n` times the Hermitian form of the lattice. -/
+/--
+The torsion value `G[u]` of a function `G` with the degree `n`: the value at `0` of the twisted
+translate of `G` by `u` for `n` times the Hermitian form of the lattice.
+-/
 noncomputable def torsionValue (n : ℕ) (G : ℂ → ℂ) (u : ℂ) : ℂ := C.twistedTranslate n u G 0
 
 /-- The torsion value of `G` at `u` is `G(u) exp (-n π |u|² / (2 area Λ))`. -/
@@ -137,8 +139,10 @@ lemma torsionValue_comp_isogeny {C' : CMLattice d} {a : ℂ} {N : ℕ}
 
 variable {p : ℕ} [Fact p.Prime] [PadicPlace p]
 
-/-- The torsion values of `G` with the degree `n` are all integral in `ℂ_p`: for every torsion
-point `u`, the image of `G[u]` under `ιₚ` has norm at most `1`. -/
+/--
+The torsion values of `G` with the degree `n` are all integral in `ℂ_p`: for every torsion
+point `u`, the image of `G[u]` under `ιₚ` has norm at most `1`.
+-/
 def HasIntegralValues (n : ℕ) (G : ℂ → ℂ) : Prop :=
   ∀ u : ℂ, C.IsTorsion u → ‖ιₚ (C.torsionValue n G u)‖ ≤ 1
 
@@ -417,18 +421,21 @@ lemma translateHeight_le_naiveHeight {y : ℂ} (hy : C.IsTorsion y) (w : ℂ) :
   exact lt_irrefl _ h_mul
 
 /-- If `g ≤ h' ^ m`, a torsion translate of `g` along an isogeny of degree `N` is `≤ h ^ (m N)`. -/
-theorem norm_twistedTranslate_mul_le {C' : CMLattice d} {a : ℂ} {N m : ℕ}
-    (h : C.IsIsogeny C'.periodPair a N) {y : ℂ} (hy : C'.IsTorsion y) {g : ℂ → ℂ}
-    (hg : ∀ w : ℂ, ‖ιₚ (g w)‖ ≤ C'.naiveHeight w ^ m) (z : ℂ) :
-    ‖ιₚ (C'.twistedTranslate m y g (a * z))‖ ≤ C.naiveHeight z ^ (m * N) := by
+theorem norm_twistedTranslate_mul_le
+    {C' : CMLattice d} {a : ℂ} {N m : ℕ} (h : C.IsIsogeny C'.periodPair a N)
+    {y : ℂ} (hy : C'.IsTorsion y)
+    {g : ℂ → ℂ} (hg : ∀ w : ℂ, ‖ιₚ (g w)‖ ≤ C'.naiveHeight w ^ m)
+    (z : ℂ)
+    : ‖ιₚ (C'.twistedTranslate m y g (a * z))‖ ≤ C.naiveHeight z ^ (m * N) := by
   have h_nonneg : 0 ≤ C'.translateHeight (p := p) y (a * z) :=
     mul_nonneg (norm_nonneg _) (C'.naiveHeight_pos _).le
-  calc ‖ιₚ (C'.twistedTranslate m y g (a * z))‖
+  calc
+    ‖ιₚ (C'.twistedTranslate m y g (a * z))‖
       ≤ C'.translateHeight y (a * z) ^ m := C'.norm_twistedTranslate_le_translateHeight_pow hg y _
     _ ≤ C'.naiveHeight (a * z) ^ m :=
-        pow_le_pow_left₀ h_nonneg (C'.translateHeight_le_naiveHeight hy _) m
+      pow_le_pow_left₀ h_nonneg (C'.translateHeight_le_naiveHeight hy _) m
     _ ≤ (C.naiveHeight z ^ N) ^ m :=
-        pow_le_pow_left₀ (C'.naiveHeight_pos _).le (C.naiveHeight_mul_le h z) m
+      pow_le_pow_left₀ (C'.naiveHeight_pos _).le (C.naiveHeight_mul_le h z) m
     _ = C.naiveHeight z ^ (m * N) := by rw [← pow_mul, mul_comm]
 
 end New.CMLattice

@@ -40,8 +40,10 @@ section RowChain
 
 open New Space LevelPlaces Matrix Fin Units
 
-/-- The number, from 0 to j, of the block containing an index: 0 on R and l on the l-th copy of
-T. -/
+/--
+The number, from 0 to j, of the block containing an index: 0 on R and l on the l-th copy of
+T.
+-/
 def New.blockNumber {R T : Type} : ∀ j : ℕ, BlockIndex R T j → Fin (j + 1)
   | 0 => 0
   | j + 1 => castSucc ∘ blockNumber j ⊕ᵥ fun _ ↦ last (j + 1)
@@ -63,23 +65,29 @@ variable {P : Parameters} {D : Data P}
 
 instance (j : ℕ) : Nonempty (D.Y j) := .map (BlockIndex.firstBlock j) inferInstance
 
-/-- The forms on U(Y_j) of the type given by the parameter `New.Data.paramY` and the signs of Y_j,
-with the Petersson product. -/
+/--
+The forms on U(Y_j) of the type given by the parameter `New.Data.paramY` and the signs of Y_j,
+with the Petersson product.
+-/
 abbrev FormY (j : ℕ) : Type := (D.spaceY j).Form (typeKernel (D.paramY j) (D.signsY j))
 
 variable (D) in
-/-- The joint harmonic of lift j + 1: the product over the infinite places of the chosen joint
+/--
+The joint harmonic of lift j + 1: the product over the infinite places of the chosen joint
 harmonics for the parameters and signs of Y_j and Y_{j+1}. The splitting character on a space of
-rank n has weight ⌊n/2⌋ − w_{j+1}(τ) at τ. -/
+rank n has weight ⌊n/2⌋ − w_{j+1}(τ) at τ.
+-/
 abbrev harmonicY (j : ℕ) : MvPolynomial (NumberField.InfinitePlace D.E × D.Y (j + 1) × D.Y j) ℂ :=
-  jointHarmonic (D.gridWeight true j (D.Y j)) (D.gridWeight true j (D.Y (j + 1)))
-    (D.paramY j) (D.paramY (j + 1)) (D.signsY j) (D.signsY (j + 1))
+  jointHarmonic (D.gridWeight true j (D.Y j)) (D.gridWeight true j (D.Y (j + 1))) (D.paramY j)
+    (D.paramY (j + 1)) (D.signsY j) (D.signsY (j + 1))
 
-/-- The datum φ ⊗ Υ on Hom(Y_j, Y_{j+1}) of lift j + 1: the joint harmonic at infinity and the
-finite datum `New.Data.pointDatumY`. -/
+/--
+The datum φ ⊗ Υ on Hom(Y_j, Y_{j+1}) of lift j + 1: the joint harmonic at infinity and the
+finite datum `New.Data.pointDatumY`.
+-/
 abbrev datumY (ϑ : D.TameChar) (j : ℕ) : 𝒮 ((D.spaceY j).hom (D.spaceY (j + 1))) :=
-  (hom (D.spaceY j) (D.spaceY (j + 1))).integrated
-    (Fock.polyVector _ (D.harmonicY j)) (pointDatumY ϑ j).val
+  (hom (D.spaceY j) (D.spaceY (j + 1))).integrated (Fock.polyVector _ (D.harmonicY j))
+    (pointDatumY ϑ j).val
 
 /-- For j < m the doubled parameters `New.Data.paramY` of Y_j and Y_(j+1), with their signs,
 correspond (`New.ParamsCorrespond`) for the weights `New.Data.gridWeight` of the characters of lift
@@ -120,18 +128,22 @@ lemma isArrow_swap_thetaKernelY_datumY (ϑ : D.TameChar) {j : ℕ} (hj : j < D.m
       (star (typeKernel (D.paramY j) (D.signsY j))) (datumY ϑ j) :=
   (isArrow_datumY ϑ hj).right
 
-/-- Lift j + 1, from forms on Y_j to forms on Y_{j+1}: the theta lift with datum `New.Data.datumY`,
-multiplied by the index in K₀ of the level `New.Data.levelY`. -/
+/--
+Lift j + 1, from forms on Y_j to forms on Y_{j+1}: the theta lift with datum `New.Data.datumY`,
+multiplied by the index in K₀ of the level `New.Data.levelY`.
+-/
 def liftY (ϑ : D.TameChar) (j : ℕ) : D.FormY j →ₗ[ℂ] D.FormY (j + 1) :=
-  (stdLevelIndex (levelY ϑ j) : ℂ) •
-    formLift (thetaKernelY ϑ j) (typeKernel (D.paramY j) (D.signsY j))
+  (stdLevelIndex (levelY ϑ j) : ℂ)
+    • formLift (thetaKernelY ϑ j) (typeKernel (D.paramY j) (D.signsY j))
       (typeKernel (D.paramY (j + 1)) (D.signsY (j + 1))) (datumY ϑ j)
 
-/-- The group of reductions that cuts out the level on Y_m: the families in ∏_w GL(Y_m mod w), w
+/--
+The group of reductions that cuts out the level on Y_m: the families in ∏_w GL(Y_m mod w), w
 over the level places, that are 1 at the chosen places above p₀, p₁ (the left summand) and block
-upper triangular at the places of Q (the right summand). -/
-def lastResidueLevel (ϑ : D.TameChar) :
-    Subgroup
+upper triangular at the places of Q (the right summand).
+-/
+def lastResidueLevel (ϑ : D.TameChar)
+    : Subgroup
       (∀ x : (D.levelPlaces ϑ).ChosenIndex ⊕ (D.levelPlaces ϑ).TwistIndex,
         GL (D.Y D.m) (ResField ((D.levelPlaces ϑ).placeAt x))) :=
   Subgroup.pi Set.univ fun
@@ -167,21 +179,27 @@ lemma mem_parabolic_of_mem_lastResidueLevel (ϑ : D.TameChar) {g : LevelReductio
     exact one_mem _
   | inr x => exact h_tri x
 
-/-- The level J_m on the last space Y_m of the chain: the elements of K₀ = `New.stdLevel` that are 1
-modulo the chosen places above p₀, p₁ and block upper triangular modulo each place of Q. -/
+/--
+The level J_m on the last space Y_m of the chain: the elements of K₀ = `New.stdLevel` that are 1
+modulo the chosen places above p₀, p₁ and block upper triangular modulo each place of Q.
+-/
 abbrev lastLevel (ϑ : D.TameChar) : Subgroup (Gf D.E (D.Y D.m)) :=
   levelOf (D.levelPlaces ϑ).placeAt (lastResidueLevel ϑ)
 
-/-- The composite of the first j theta lifts along Y₀, …, Y_j for the twist ϑ, from forms of
-principal level at the chosen places on Y₀ to forms on Y_j. -/
+/--
+The composite of the first j theta lifts along Y₀, …, Y_j for the twist ϑ, from forms of
+principal level at the chosen places on Y₀ to forms on Y_j.
+-/
 def lowerChainUpTo (ϑ : D.TameChar) (j : ℕ) : D.principalForms (D.spaceY 0) →ₗ[ℂ] D.FormY j :=
   compUpTo (liftY ϑ) j ∘ₗ (D.principalForms (D.spaceY 0)).subtype
 
-/-- The map ι_μ for the twist ϑ: the composite of the m lifts from forms of principal level at the
+/--
+The map ι_μ for the twist ϑ: the composite of the m lifts from forms of principal level at the
 chosen places on Y₀ to forms on Y_m, read as algebraic forms of weight λ°. The subscript μ stands
-for the characters μ_j⁰ϑ^j = `D.chainChar ϑ j` (1 ≤ j ≤ m) of the lifts. -/
-def lowerChain (ϑ : D.TameChar) :
-    D.principalForms (D.spaceY 0) →ₗ[ℂ] AlgForm (D.Y D.m) D.columnsY (D.lastEntry D.m) :=
+for the characters μ_j⁰ϑ^j = `D.chainChar ϑ j` (1 ≤ j ≤ m) of the lifts.
+-/
+def lowerChain (ϑ : D.TameChar)
+    : D.principalForms (D.spaceY 0) →ₗ[ℂ] AlgForm (D.Y D.m) D.columnsY (D.lastEntry D.m) :=
   (toAlgForm (D.spaceY D.m) D.isHCParam_paramY).toLinearMap ∘ₗ lowerChainUpTo ϑ D.m
 
 /-- The determinants of the diagonal blocks of the upper left corner of a matrix on `j + 2` blocks
@@ -354,11 +372,13 @@ lemma algFormRep_lowerChain (ϑ : D.TameChar) (s : D.chosenGL) (y : D.principalF
       congrArg toAlg (formRep_lowerChainUpTo_eq_lowerChainUpTo_smul ϑ le_rfl s y k g hk h_tri
         h_first)
 
-/-- The character of the level on Y_m: k ↦ ∏_w ∏_{l<m} ψ_{l,w}(det k_w^{(l+1)}), where w runs over
+/--
+The character of the level on Y_m: k ↦ ∏_w ∏_{l<m} ψ_{l,w}(det k_w^{(l+1)}), where w runs over
 all level places (the chosen ones above p₀, p₁ and those of Q), k_w^{(l+1)} is the diagonal block
 l + 1 of the component k_w (`New.blockHom`) and ψ_l = `New.Data.chainTamePart` ϑ l is the tame
 character of lift l + 1. The chain of compositions reads from the right: component at w, block,
-determinant, character. -/
+determinant, character.
+-/
 def lastLevelChar (ϑ : D.TameChar) : lastResidueLevel ϑ →* ℂ :=
   ∏ x : (D.levelPlaces ϑ).ChosenIndex ⊕ (D.levelPlaces ϑ).TwistIndex, ∏ l : Fin D.m,
     (chainTamePart ϑ l ((D.levelPlaces ϑ).placeAt x)).toMonoidHom.comp
@@ -403,18 +423,22 @@ lemma lowerChain_mem_levelSpace (ϑ : D.TameChar) (y : D.principalForms (D.space
   rw [← h_scalar, map_one, one_apply_eq_self]
   rfl
 
-/-- The map ι_μ with its target restricted to the space of algebraic forms on Y_m with level J_m
-(`New.Data.lastLevel`) and the character `New.Data.lastLevelChar`. -/
-def lowerChainAtLevel (ϑ : D.TameChar) :
-    D.principalForms (D.spaceY 0) →ₗ[ℂ]
-      LevelForm (D.levelPlaces ϑ) (lastResidueLevel ϑ) (lastLevelChar ϑ) D.columnsY
-        (D.lastEntry D.m) :=
+/--
+The map ι_μ with its target restricted to the space of algebraic forms on Y_m with level J_m
+(`New.Data.lastLevel`) and the character `New.Data.lastLevelChar`.
+-/
+def lowerChainAtLevel (ϑ : D.TameChar)
+    : D.principalForms (D.spaceY 0) →ₗ[ℂ]
+        LevelForm (D.levelPlaces ϑ) (lastResidueLevel ϑ) (lastLevelChar ϑ) D.columnsY
+          (D.lastEntry D.m) :=
   (lowerChain ϑ).codRestrict _ (lowerChain_mem_levelSpace ϑ)
 
-/-- For s in 𝖦, a chosen element of K₀ on Y_m reducing to diag(s, 1) at the chosen places above p₀,
-p₁ and to 1 at Q. -/
-def firstBlockLift (ϑ : D.TameChar) (s : D.chosenGL) :
-    stdLevel D.E (BlockIndex D.RowIndex (Fin D.t) D.m) :=
+/--
+For s in 𝖦, a chosen element of K₀ on Y_m reducing to diag(s, 1) at the chosen places above p₀,
+p₁ and to 1 at Q.
+-/
+def firstBlockLift (ϑ : D.TameChar) (s : D.chosenGL)
+    : stdLevel D.E (BlockIndex D.RowIndex (Fin D.t) D.m) :=
   liftResidue (firstBlockHom (D.levelPlaces ϑ) (BlockIndex.firstBlock (T := Fin D.t) D.m) s)
 
 /-- For a tame character ϑ with modulus Q, the chain ι_μ = `lowerChain ϑ` of the m lifts with

@@ -92,74 +92,87 @@ lemma star_locIdele {E : Type*} [Field E] [NumberField E] [NumberField.IsCMField
 
 variable (Γ K : Type) [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K]
 
-/-- The group of algebraic Hecke characters: pairs `(θ, n)` of a character `θ` of the finite
+/--
+The group of algebraic Hecke characters: pairs `(θ, n)` of a character `θ` of the finite
 ideles with open kernel and an infinity type `n`, an integer for each embedding `σ : K → ℂ`,
 such that `θ x = ∏ σ, σ x ^ (-n σ)` for all `x` in `Kˣ`. The condition is asked of all `x`, not
-only of the totally positive ones, so this is the usual notion when `K` is totally complex. -/
+only of the totally positive ones, so this is the usual notion when `K` is totally complex.
+-/
 def algHeckeChars : Subgroup (((𝔸f K)ˣ →* ℂˣ) × Multiplicative ((K →+* ℂ) → ℤ)) :=
   Subgroup.ofDiv
     {θ : ((𝔸f K)ˣ →* ℂˣ) × Multiplicative ((K →+* ℂ) → ℤ) |
       IsOpen (SetLike.coe θ.1.ker) ∧
       ∀ x : Kˣ, θ.1 (principalIdele x) = ∏ σ : K →+* ℂ, σ x ^ (-θ.2.toAdd σ)}
-    ⟨1, by simp⟩ fun θ hθ η hη ↦ by
+    ⟨1, by simp⟩
+    fun θ hθ η hη ↦ by
       constructor
       · -- The kernel of the quotient contains the open subgroup `θ.1.ker ⊓ η.1.ker`.
         exact Subgroup.isOpen_mono (H₁ := θ.1.ker ⊓ η.1.ker) (by aesop_cat) (hθ.1.inter hη.1)
       · simp_all [zpow_add₀, field, Finset.prod_mul_distrib]
 
-/-- The type of algebraic Hecke characters of K: pairs (θ, n) of a character of the finite
-ideles and its infinity type, as in `New.algHeckeChars`. -/
+/--
+The type of algebraic Hecke characters of K: pairs (θ, n) of a character of the finite
+ideles and its infinity type, as in `New.algHeckeChars`.
+-/
 abbrev AlgHeckeChar : Type := ↥(algHeckeChars K)
 
 /-- The character of the finite ideles of an algebraic Hecke character `θ = (χ, n)`: the map `χ`. -/
-abbrev AlgHeckeChar.character {K : Type} [Field K] [NumberField K] (θ : AlgHeckeChar K) :
-    (𝔸f K)ˣ →* ℂˣ :=
+abbrev AlgHeckeChar.character {K : Type} [Field K] [NumberField K] (θ : AlgHeckeChar K)
+    : (𝔸f K)ˣ →* ℂˣ :=
   θ.val.1
 
-/-- The infinity type of an algebraic Hecke character `θ = (χ, n)`: the integer `n σ` for each
-embedding `σ : K → ℂ`, with `χ x = ∏ σ, σ x ^ (-n σ)` for `x` in `Kˣ`. -/
-abbrev AlgHeckeChar.infinityType {K : Type} [Field K] [NumberField K] (θ : AlgHeckeChar K) :
-    (K →+* ℂ) → ℤ :=
+/--
+The infinity type of an algebraic Hecke character `θ = (χ, n)`: the integer `n σ` for each
+embedding `σ : K → ℂ`, with `χ x = ∏ σ, σ x ^ (-n σ)` for `x` in `Kˣ`.
+-/
+abbrev AlgHeckeChar.infinityType {K : Type} [Field K] [NumberField K] (θ : AlgHeckeChar K)
+    : (K →+* ℂ) → ℤ :=
   θ.val.2.toAdd
 
 variable {K} [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
 
-/-- The local Artin map `K_v^× → Γ^ab` at the finite place `v` of `K`: the local Artin map
+/--
+The local Artin map `K_v^× → Γ^ab` at the finite place `v` of `K`: the local Artin map
 `New.localArtin` to the abelianised decomposition group of `New.placeOver v`, the chosen place of
-`Ω` above `v`, followed by the map that the inclusion of that group in `Γ` induces. -/
-def artinAt (v : FinPlace K) :
-    (IsDedekindDomain.HeightOneSpectrum.adicCompletion K v)ˣ →*
-      Γ ⧸ (commutator Γ).topologicalClosure :=
+`Ω` above `v`, followed by the map that the inclusion of that group in `Γ` induces.
+-/
+def artinAt (v : FinPlace K)
+    : (IsDedekindDomain.HeightOneSpectrum.adicCompletion K v)ˣ
+      →* Γ ⧸ (commutator Γ).topologicalClosure :=
   -- The inclusion of the decomposition group maps the closure of its commutator subgroup into
   -- that of `Γ`, so it passes to the abelianisations.
   (QuotientGroup.map _ (commutator Γ).topologicalClosure (decompGroup Γ (placeOver v)).subtype
-      (Set.MapsTo.closure (fun g hg ↦
+    (Set.MapsTo.closure
+      (fun g hg ↦
         Subgroup.map_derivedSeries_le_derivedSeries (decompGroup Γ (placeOver v)).subtype 1
-            ⟨g, hg, rfl⟩)
-        (by fun_prop))).comp (localArtin Γ (placeOver v) v)
+          ⟨g, hg, rfl⟩)
+      (by fun_prop))).comp (localArtin Γ (placeOver v) v)
 
-/-- The global Artin map from the finite ideles to the topological abelianisation of `Γ`: a
+/--
+The global Artin map from the finite ideles to the topological abelianisation of `Γ`: a
 homomorphism `f`, chosen by `Classical.epsilon`, such that for every continuous character `χ` of `Γ`
 the value of `χ` at `f a` is the product over the finite places `v` of its values at the local Artin
 symbols of the components of `a`. This file does not prove that such an `f` exists; when one
-does, `New.abelianLift_artinMap_eq_finprod_of_exists` gives that formula for `New.artinMap`. -/
+does, `New.abelianLift_artinMap_eq_finprod_of_exists` gives that formula for `New.artinMap`.
+-/
 def artinMap : (𝔸f K)ˣ →* TopologicalAbelianization Γ :=
   Classical.epsilon fun f : (𝔸f K)ˣ →* TopologicalAbelianization Γ ↦
     ∀ (χ : ↥(QZChar Γ)) (a : (𝔸f K)ˣ),
-      QZChar.abelianLift χ (f a) =
-        ∏ᶠ v : FinPlace K, QZChar.abelianLift χ (artinAt Γ v (ideleAt v a))
+      QZChar.abelianLift χ (f a)
+        = ∏ᶠ v : FinPlace K, QZChar.abelianLift χ (artinAt Γ v (ideleAt v a))
 
-/-- If some homomorphism from the finite ideles of `K` to the topological abelianisation of `Γ`
+/--
+If some homomorphism from the finite ideles of `K` to the topological abelianisation of `Γ`
 takes, on every character `χ` of `Γ`, the product over the finite places `v` of the values of `χ`
-at the local Artin symbols (`New.artinAt`), then `New.artinMap` is such a homomorphism. -/
+at the local Artin symbols (`New.artinAt`), then `New.artinMap` is such a homomorphism.
+-/
 theorem abelianLift_artinMap_eq_finprod_of_exists
-    (h_exists : ∃ f : (𝔸f K)ˣ →* TopologicalAbelianization Γ,
-      ∀ (χ : ↥(QZChar Γ)) (a : (𝔸f K)ˣ),
-        QZChar.abelianLift χ (f a) =
-          ∏ᶠ v : FinPlace K, QZChar.abelianLift χ (artinAt Γ v (ideleAt v a)))
-    (χ : ↥(QZChar Γ)) (a : (𝔸f K)ˣ) :
-    QZChar.abelianLift χ (artinMap Γ a) =
-      ∏ᶠ v : FinPlace K, QZChar.abelianLift χ (artinAt Γ v (ideleAt v a)) :=
+    (h_exists : ∃ f : (𝔸f K)ˣ →* TopologicalAbelianization Γ, ∀ (χ : ↥(QZChar Γ)) (a : (𝔸f K)ˣ),
+      QZChar.abelianLift χ (f a)
+        = ∏ᶠ v : FinPlace K, QZChar.abelianLift χ (artinAt Γ v (ideleAt v a)))
+    (χ : ↥(QZChar Γ)) (a : (𝔸f K)ˣ)
+    : QZChar.abelianLift χ (artinMap Γ a)
+      = ∏ᶠ v : FinPlace K, QZChar.abelianLift χ (artinAt Γ v (ideleAt v a)) :=
   Classical.epsilon_spec h_exists χ a
 
 end New
@@ -218,8 +231,7 @@ Valuations are multiplicative: `Valued.v x = exp (-n)` says that `x` has order `
 
 namespace New
 
-open Filter WithZero Units Module LinearMap Subgroup Cohomology DFunLike QZChar
-  IsProGalois Valued
+open Filter WithZero Units Module LinearMap Subgroup Cohomology DFunLike QZChar IsProGalois Valued
 open scoped Classical
 
 variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K] {w : FinPlace K}
@@ -256,11 +268,13 @@ lemma continuous_hom_locField_units [IsTopologicalGroup Γ] [CompactSpace Γ]
 
 section
 
-variable [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
-  {A : ClosurePlace} (h : IsPlaceOver A w)
+variable
+  [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω] {A : ClosurePlace} (h : IsPlaceOver A w)
 
-/-- The union of all inertia groups in the Galois group of Ω over K at places of Ω above the
-places in S. -/
+/--
+The union of all inertia groups in the Galois group of Ω over K at places of Ω above the
+places in S.
+-/
 def inertiaAbove (S : Set (FinPlace K)) : Set Gal(Ω/K) :=
   {g : Gal(Ω/K) | ∃ v ∈ S, ∃ A : ClosurePlace, IsPlaceOver A v ∧ g ∈ inertiaGroup Gal(Ω/K) A}
 
@@ -432,25 +446,33 @@ lemma _root_.New.IsPadicAt.below {k : Type} [Field k] [EmbeddedNumberField k] [A
 
 section Norm
 
-variable {Γ' k : Type} [Group Γ'] [TopologicalSpace Γ'] [Field k] [EmbeddedNumberField k]
+variable
+  {Γ' k : Type} [Group Γ'] [TopologicalSpace Γ'] [Field k] [EmbeddedNumberField k]
   [MulSemiringAction Γ' Ω] [IsProGalois Γ' k Ω] [Algebra k K]
 
 omit h in
-/-- Let `K / k` be number fields with Galois groups `Γ` and `Γ'`, and let `ψ : Γ → Γ'` be the map
+/--
+Let `K / k` be number fields with Galois groups `Γ` and `Γ'`, and let `ψ : Γ → Γ'` be the map
 induced by `j : Ω → Ω`. The local Artin maps at `A` over `w` and at `A.comap j` over the place of
-`k` below `w` are compatible with the local norm from `K_w`. -/
-structure _root_.New.IsNormCompatible (A : ClosurePlace) (w : FinPlace K) (ψ : Γ →* Γ')
-    (j : Ω →+* Ω) (hψ : ∀ (g : Γ) (x : Ω), j (ψ g • x) = g • j x) : Prop where
+`k` below `w` are compatible with the local norm from `K_w`.
+-/
+structure _root_.New.IsNormCompatible
+    (A : ClosurePlace) (w : FinPlace K)
+    (ψ : Γ →* Γ') (j : Ω →+* Ω) (hψ : ∀ (g : Γ) (x : Ω), j (ψ g • x) = g • j x)
+    : Prop where
   /-- If `y` has the symbol `g`, then the norm of `y` has the symbol `ψ g`. -/
-  localArtin_localNorm {y : (LocField w)ˣ} {g : decompGroup Γ A} (hy : localArtin Γ A w y = g) :
-    localArtin Γ' (A.comap j) (w.below k) (localNorm k w y) =
-      (⟨ψ g, decompGroup.map hψ g.property⟩ : decompGroup Γ' (A.comap j))
-  /-- If the kernel of `χ` is the image of the decomposition group of `A` under `ψ` and `χ` kills
-  the symbol of `x`, then `x` is a local norm. -/
-  exists_localNorm_eq {χ : QZChar (decompGroup Γ' (A.comap j))} {x : (LocField (w.below k))ˣ}
+  localArtin_localNorm {y : (LocField w)ˣ} {g : decompGroup Γ A} (hy : localArtin Γ A w y = g)
+    : localArtin Γ' (A.comap j) (w.below k) (localNorm k w y)
+      = (⟨ψ g, decompGroup.map hψ g.property⟩ : decompGroup Γ' (A.comap j))
+  /--
+  If the kernel of `χ` is the image of the decomposition group of `A` under `ψ` and `χ` kills
+  the symbol of `x`, then `x` is a local norm.
+  -/
+  exists_localNorm_eq
+    {χ : QZChar (decompGroup Γ' (A.comap j))} {x : (LocField (w.below k))ˣ}
     (hχ : ∀ g' : decompGroup Γ' (A.comap j), χ.val g' = 0 ↔ ∃ g : decompGroup Γ A, ψ g = g')
-    (hx : abelianLift χ (localArtin Γ' (A.comap j) (w.below k) x) = 1) :
-    ∃ y : (LocField w)ˣ, localNorm k w y = x
+    (hx : abelianLift χ (localArtin Γ' (A.comap j) (w.below k) x) = 1)
+    : ∃ y : (LocField w)ˣ, localNorm k w y = x
 
 omit h in
 /-- The symbol of a norm, computed in `ℚ̄_p`. Let `emb_w` and `emb_u` embed `K_w` and `k_u`, for the
@@ -943,12 +965,16 @@ end IsPlaceOver
 
 end
 
-/-- An element `γ` of the inertia group of `A` is a tame generator: for every `n` that is a unit at
+/--
+An element `γ` of the inertia group of `A` is a tame generator: for every `n` that is a unit at
 `A` (prime to the residue characteristic) it multiplies an `n`-th root `y` of a uniformiser `π` of
-`K` by a primitive `n`-th root of unity. -/
+`K` by a primitive `n`-th root of unity.
+-/
 def IsTameGenerator [Algebra K Ω] {A : ClosurePlace} (γ : inertiaGroup Gal(Ω/K) A) : Prop :=
-  ∀ n : ℕ, A.valuation n = 1 → ∃ (π : Kˣ) (y : Ω),
-    IsUniformizer A π.val ∧ y ^ n = algebraMap K Ω π ∧ IsPrimitiveRoot (γ • y / y) n
+  ∀ n : ℕ,
+    A.valuation n = 1
+      → ∃ (π : Kˣ) (y : Ω),
+        IsUniformizer A π.val ∧ y ^ n = algebraMap K Ω π ∧ IsPrimitiveRoot (γ • y / y) n
 
 namespace IsPlaceOver
 
@@ -1006,8 +1032,10 @@ lemma exists_tameGenerator :
   exact ⟨⟨g, hg⟩, fun n hn ↦ ⟨π, y ⟨n, hn⟩, h.isUniformizer_iff.mpr hπ_val, hy ⟨n, hn⟩,
     Set.mem_iInter.mp hgood ⟨n, hn⟩⟩⟩
 
-/-- A chosen generator of tame inertia at the place `A` above `w`, as an element of the inertia
-group. Its defining property is `New.IsPlaceOver.exists_isPrimitiveRoot_tameGenerator_smul_div`. -/
+/--
+A chosen generator of tame inertia at the place `A` above `w`, as an element of the inertia
+group. Its defining property is `New.IsPlaceOver.exists_isPrimitiveRoot_tameGenerator_smul_div`.
+-/
 noncomputable def tameGenerator : inertiaGroup Gal(Ω/K) A := h.exists_tameGenerator.choose
 
 /-- For every `n` that is a unit at `A`, the tame generator multiplies some `n`-th root `y` of a
@@ -1065,17 +1093,20 @@ lemma tame_inertia {P : Type*} [Monoid P] (f : Gal(Ω/K) →* P)
     ∀ (q : ℕ) (φ : Gal(Ω/K)), IsFrob A q φ → f (φ * s * φ⁻¹) = f s ^ q :=
   h.exists_eq_pow_and_apply_conj_eq_pow h.isTameGenerator_tameGenerator f hf hn hP s
 
-/-- For `A` over `w`: `u` in `K_wˣ` is a unit of the valuation ring whose local Artin symbol is the
-tame generator and whose residue generates the units of the residue field. -/
+/--
+For `A` over `w`: `u` in `K_wˣ` is a unit of the valuation ring whose local Artin symbol is the
+tame generator and whose residue generates the units of the residue field.
+-/
 structure IsTameUnit (u : (LocField w)ˣ) : Prop where
   /-- `u` lies in the unit group of the valuation ring. -/
   mem_unitGroup : u ∈ (LocInt w).unitGroup
   /-- The symbol of `u` is the class of the tame generator. -/
-  localArtin_eq : localArtin Gal(Ω/K) A w u =
-    (⟨h.tameGenerator, h.tameGenerator.property.left⟩ : decompGroup Gal(Ω/K) A)
+  localArtin_eq
+    : localArtin Gal(Ω/K) A w u
+      = (⟨h.tameGenerator, h.tameGenerator.property.left⟩ : decompGroup Gal(Ω/K) A)
   /-- Every unit of the residue field is a power of the residue of `u`. -/
-  mem_zpowers_residue (z : (ResField w)ˣ) :
-    z ∈ zpowers ((LocInt w).unitGroupToResidueFieldUnits ⟨u, mem_unitGroup⟩)
+  mem_zpowers_residue (z : (ResField w)ˣ)
+    : z ∈ zpowers ((LocInt w).unitGroupToResidueFieldUnits ⟨u, mem_unitGroup⟩)
   /-- `u` has valuation `1`. -/
   valuation_eq_one : Valued.v u.val = 1
 

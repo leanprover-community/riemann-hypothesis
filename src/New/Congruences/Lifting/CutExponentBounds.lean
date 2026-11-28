@@ -84,19 +84,24 @@ structure Letter.IsNearestCut (i : k.Letter) (cut : k.Letter → Prop) (l : ℕ)
   /-- The letter `l` steps back is a cut. -/
   cut_stepBack : cut (i.stepBack l)
   /-- No letter strictly between it and `i` is a cut. -/
-  not_cut : ∀ a ∈ Set.Ioo 0 l, ¬cut (i.stepBack a)
+  not_cut : ∀ a ∈ Set.Ioo 0 l, ¬ cut (i.stepBack a)
 
-/-- Each of the `l` letters `i.stepBack a` with `a < l` has the sign `ρ`, or its far window
-`[β, β + V]` ends at or below `η`. -/
-def Letter.HasSignBefore (i : k.Letter) (ε : k.Letter → ℤˣ) (β : k.Letter → ℕ) (η V l : ℕ)
-    (ρ : ℤˣ) : Prop :=
+/--
+Each of the `l` letters `i.stepBack a` with `a < l` has the sign `ρ`, or its far window
+`[β, β + V]` ends at or below `η`.
+-/
+def Letter.HasSignBefore (i : k.Letter) (ε : k.Letter → ℤˣ) (β : k.Letter → ℕ) (η V l : ℕ) (ρ : ℤˣ)
+    : Prop :=
   ∀ a < l, ε (i.stepBack a) = ρ ∨ β (i.stepBack a) + V ≤ η
 
-/-- A long gap at the pivot `i.stepBack t`, one of the `l` letters after `i.stepBack l` up to `i`:
+/--
+A long gap at the pivot `i.stepBack t`, one of the `l` letters after `i.stepBack l` up to `i`:
 the far window of the pivot starts far out, and the other letters have the opposite sign or small
-far windows. The number `ω` bounds the low window and the far windows before the pivot. -/
-structure Letter.IsLongGap (i : k.Letter) (ε : k.Letter → ℤˣ) (s β : k.Letter → ℕ)
-    (η V J s₀ ω l t : ℕ) : Prop where
+far windows. The number `ω` bounds the low window and the far windows before the pivot.
+-/
+structure Letter.IsLongGap
+    (i : k.Letter) (ε : k.Letter → ℤˣ) (s β : k.Letter → ℕ) (η V J s₀ ω l t : ℕ)
+    : Prop where
   /-- The chart is unramified. -/
   isUnramified : k.IsUnramified
   /-- The prime is at least `5`. -/
@@ -108,8 +113,8 @@ structure Letter.IsLongGap (i : k.Letter) (ε : k.Letter → ℤˣ) (s β : k.Le
   /-- The far window of the pivot starts beyond `s₀ + ω (1 + p + ⋯ + p ^ J)`. -/
   lt_far_pivot : s₀ + ω * ∑ a ∈ range (J + 1), p ^ a < β (i.stepBack t)
   /-- The other letters have the opposite sign, or a far window that ends at or below `η`. -/
-  sign_ne_or_far_le : ∀ a < l, a ≠ t → ε (i.stepBack a) ≠ ε (i.stepBack t) ∨ β (i.stepBack a) + V ≤
-    η
+  sign_ne_or_far_le
+    : ∀ a < l, a ≠ t → ε (i.stepBack a) ≠ ε (i.stepBack t) ∨ β (i.stepBack a) + V ≤ η
   /-- The low window ends at or below `ω`. -/
   low_le : η ≤ ω
   /-- The far windows of the letters before the pivot end at or below `ω`. -/
@@ -117,7 +122,7 @@ structure Letter.IsLongGap (i : k.Letter) (ε : k.Letter → ℤˣ) (s β : k.Le
 
 /-- None of the `J` letters after `i` satisfies `T`. -/
 def Letter.HasThinSuccessors (i : k.Letter) (T : k.Letter → Prop) (J : ℕ) : Prop :=
-  ∀ t ≥ 1, t ≤ J → ¬T ((k.letterFrob ^ t) i)
+  ∀ t ≥ 1, t ≤ J → ¬ T ((k.letterFrob ^ t) i)
 
 /-- Suppose that no three letters with `T` follow one another with both gaps between `1` and `J`.
 If `i.stepBack r` satisfies `T` and does not have thin successors, that is, one of the `J` letters
@@ -140,18 +145,20 @@ lemma Letter.hasThinSuccessors_stepBack_add {T : k.Letter → Prop} {J : ℕ}
 /-- The two kinds of letters `i` at which `p ^ κ * E ^ s i` is shown to kill the cokernel. -/
 inductive Letter.IsKillingCut (i : k.Letter) (s β : k.Letter → ℕ) (W J G s₀ κ : ℕ) : Prop
   /-- The shift is `0` and the next `J` letters have `β + W ≤ G`. -/
-  | of_thin (shift_eq_zero : s i = 0)
-      (next_le : ∀ t ∈ Icc 1 J, β ((k.letterFrob ^ t) i) + W ≤ G)
+  | of_thin (shift_eq_zero : s i = 0) (next_le : ∀ t ∈ Icc 1 J, β ((k.letterFrob ^ t) i) + W ≤ G)
   /-- The chart is unramified, `p ≥ 5`, and the shift lies in `[s₀ - κ, β i)`. -/
-  | of_isUnramified (shift_lt : s i < β i) (isUnramified : k.IsUnramified) (five_le : 5 ≤ p)
-      (le_add_shift : s₀ ≤ κ + s i)
+  | of_isUnramified
+    (shift_lt : s i < β i) (isUnramified : k.IsUnramified) (five_le : 5 ≤ p)
+    (le_add_shift : s₀ ≤ κ + s i)
 
-/-- The size conditions of the scheme of cuts, for shifts `s i`, far windows that start at `β i`
+/--
+The size conditions of the scheme of cuts, for shifts `s i`, far windows that start at `β i`
 and a width `W`. The shifted far windows end at or below `2 b`, and `G` bounds `β + W` at the `J`
 letters after a thin cut (`Letter.IsKillingCut.of_thin`). The number `n` bounds `G / (p - 1)`, and
 `s₀` bounds `(β i + W) / (p - 3)` if `p ≥ 5`. The number `X` is the cost of one letter or level,
 `δ` the cost of the depth `2 b`, and `p ^ κ` is the killer at a cut. Here `k.differentBound` is `0`
-if the ramification index `k.e` is `1`, and `v_p(k.e) + 1` otherwise. -/
+if the ramification index `k.e` is `1`, and `v_p(k.e) + 1` otherwise.
+-/
 structure CutSizes (k : KummerChart Γ) (s β : k.Letter → ℕ) (W X δ κ b n J s₀ G : ℕ) : Prop where
   /-- The unit of cost `X` is large against `n`, `log_p (2 b)`, `W` and `G`. -/
   le_cost : n + p.log (2 * b) + (J + 1 + k.differentBound) * W + k.differentBound * G ≤ X
@@ -175,25 +182,38 @@ lemma Letter.IsKillingCut.shift_eq_zero_or_lt {i : k.Letter} {s β : k.Letter �
   obtain h_zero | ⟨h_lt, ⟨-, -, h_diff⟩⟩ := h_cut
   exacts [.inl h_zero, .inr ⟨h_lt, h_diff⟩]
 
-/-- The exponents of the standard point at a cut with shift `s`, where the cut before is `l` steps
+/--
+The exponents of the standard point at a cut with shift `s`, where the cut before is `l` steps
 back. The point has the exponents `raisedOrdersAtZero (-s)` (`-u`, lowered by `s` at the level `0`)
 and the depth `standardDepth s η (l + 1)` (`-u`, raised by `s` at the level `0` and by `η` at the
 levels up to `l`). This depth improves the exponents: they become the depth where they were
-positive, and the minimum of the depth and `0` elsewhere (`JumpLattice.improvedOrders`). -/
+positive, and the minimum of the depth and `0` elsewhere (`JumpLattice.improvedOrders`).
+-/
 def cutOrders (s η l : ℕ) : ℕ → ℤ → ℤ :=
   JumpLattice.improvedOrders (raisedOrdersAtZero (-s)) (PairingSide.standardDepth s η (l + 1))
 
-/-- The depth of the point at which a side rests when the walk meets a cut with a long gap: `r` at
-the level `t` of the pivot, `1` at the other levels below `l`, and `-u` beyond. -/
+/--
+The depth of the point at which a side rests when the walk meets a cut with a long gap: `r` at
+the level `t` of the pivot, `1` at the other levels below `l`, and `-u` beyond.
+-/
 def longGapDepth (l t r a : ℕ) (u : ℤ) : ℤ :=
-  if a = t then r else if a < l then 1 else -u
+  if a = t then
+    r
+  else if a < l then
+    1
+  else
+    -u
 
-/-- The steps that may be needed to deepen a point at `i` of a side whose far windows have the
-signs `σ`: two windows, around `0` and `∓ β`, at each of the first `2 J + 2` levels. -/
-noncomputable def Letter.windowSteps (i : k.Letter) (σ : k.Letter → ℤˣ) (s β : k.Letter → ℕ)
-    (W J : ℕ) : Finset (Σ _ : ℕ, ℤ) :=
-  (range (2 * J + 2)).sigma fun a ↦ twoWindows ((if a = 0 then s i else 0) + W)
-    ((if σ (i.stepBack a) = 1 then -1 else 1) * β (i.stepBack a))
+/--
+The steps that may be needed to deepen a point at `i` of a side whose far windows have the
+signs `σ`: two windows, around `0` and `∓ β`, at each of the first `2 J + 2` levels.
+-/
+noncomputable def Letter.windowSteps
+    (i : k.Letter) (σ : k.Letter → ℤˣ) (s β : k.Letter → ℕ) (W J : ℕ)
+    : Finset (Σ _ : ℕ, ℤ) :=
+  (range (2 * J + 2)).sigma fun a ↦
+    twoWindows ((if a = 0 then s i else 0) + W)
+      ((if σ (i.stepBack a) = 1 then -1 else 1) * β (i.stepBack a))
 
 /-- The steps `i.windowSteps σ s β W J` are the pairs `(a, m)` of a level `a < 2 J + 2` and an
 integer `m` near `0` or near `-σ j • β j`, where `j = i.stepBack a` and `σ j` is any sign; near

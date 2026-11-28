@@ -500,13 +500,15 @@ are the entrywise actions of `σ` on rational and finite adelic unitary matrices
 
 section UnitaryHassePrinciple
 
-open NumberField Matrix Polynomial UniqueFactorizationMonoid ComplexOrder ComplexEmbedding
-  Module Function IsGalois
+open NumberField Matrix Polynomial UniqueFactorizationMonoid ComplexOrder ComplexEmbedding Module
+  Function IsGalois
 
 namespace New
 
-variable {E E' n : Type} [Field E] [NumberField E] [Field E'] [NumberField E']
-  [Algebra E E'] [IsGalois E E'] [Fintype n] [DecidableEq n] {σ : Gal(E'/E)}
+variable
+  {E E' n : Type} [Field E] [NumberField E] [Field E'] [NumberField E'] [Algebra E E']
+  [IsGalois E E'] [Fintype n] [DecidableEq n]
+  {σ : Gal(E'/E)}
 
 open scoped Classical in
 /-- A normal matrix over a CM field (one commuting with its conjugate transpose) is killed by

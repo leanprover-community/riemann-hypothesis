@@ -44,8 +44,10 @@ open Matrix MeasureTheory Measure ENNReal NNReal Sum Fintype FloorGroups Place S
   Function Filter Topology
 
 section Place
-variable {A ι κ : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A]
-  [P : Place A] [Fintype ι] [Fintype κ] {𝔰 : Shape} {π : Aˣ} {t : A}
+variable
+  {A ι κ : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  [Fintype ι] [Fintype κ]
+  {𝔰 : Shape} {π : Aˣ} {t : A}
 
 /-- Let the measures `l b`, indexed by the skew elements `b` of the place `A`, disintegrate `μ`
 along the form `J`. For a continuous complex function `f` of compact support, the integral of `f`
@@ -81,19 +83,23 @@ lemma Place.IsDisintegration.continuous_integral {μ : Measure (ι → A)} {J : 
   exact (h_re.add (h_im.mul_const Complex.I)).congr fun b ↦ integral_re_add_im (f_int b)
 
 variable (κ) in
-/-- The fiber measures `dω / d⟨ω, ω⟩` of the standard hermitian form on `κ → A`: the disintegration
+/--
+The fiber measures `dω / d⟨ω, ω⟩` of the standard hermitian form on `κ → A`: the disintegration
 of the volume along `ω ↦ ω* ω`, if there is one (it is unique by `IsDisintegration.unique`), and an
 arbitrary family otherwise. At a finite place and in rank at least two the disintegration exists
 (`IntegralPlace.isDisintegration_normFiberMeasure`), and the measure at `b` lives on the quadric
-`ω* ω = δ⁻¹ b`, where `δ = P.skewUnit` (`IntegralPlace.ae_normFiberMeasure_dotProduct_eq`). -/
+`ω* ω = δ⁻¹ b`, where `δ = P.skewUnit` (`IntegralPlace.ae_normFiberMeasure_dotProduct_eq`).
+-/
 def Place.normFiberMeasure [DecidableEq κ] : skewAdjoint A → Measure (κ → A) :=
   Classical.epsilon fun l : skewAdjoint A → Measure (κ → A) ↦
     P.IsDisintegration volume (1 : Matrix κ κ A) l
 
-/-- The skew element `δ α`, where `δ = P.skewUnit`, `α = t t̄ / N - N` and `N = π π̄`; it is the
+/--
+The skew element `δ α`, where `δ = P.skewUnit`, `α = t t̄ / N - N` and `N = π π̄`; it is the
 index in `Place.normFiberMeasure` of the sphere `ω* ω = α`. With `z` the last frame vector, of norm
 `-N` and orthogonal to `X₀`, the vector `y = ω - N⁻¹ t z` has `⟨z, y⟩ = t`, and it has norm `-N` if
-and only if `ω` lies on this sphere. -/
+and only if `ω` lies on this sphere.
+-/
 def lastEntrySphereIndex (π : Aˣ) (t : A) : skewAdjoint A :=
   P.skewUnitMul (↑(π * star π)⁻¹ * t * star t - π * star (π : A)) <| by
     simp [mul_comm, mul_left_comm, mul_assoc]
@@ -135,9 +141,11 @@ lemma measurePreserving_append_last {Z : Type} [MeasurableSpace Z] (ζ : Measure
     ((MeasurePreserving.id volume).prod h_join).comp h_rotate
   exact (h_vec.prod (.id ζ)).comp (measurePreserving_prodAssoc ν volume ζ).symm
 
-/-- The top quadric of the form `T.splitGram`: the vectors of `X₀ ⊕ A z`, that is with no component
+/--
+The top quadric of the form `T.splitGram`: the vectors of `X₀ ⊕ A z`, that is with no component
 along the hyperbolic pairs (the indices of floor less than `𝔰.ϱ`), that have the norm of the last
-frame vector `z`. -/
+frame vector `z`.
+-/
 def lastVectorQuadric (T : 𝔰.Form A) : Set (𝔰.BesselIndex → A) :=
   {e | (∀ i : 𝔰.BesselIndex, floorOf i < 𝔰.ϱ → e i = 0) ∧
     star e ⬝ᵥ T.splitGram *ᵥ e = T.splitGram 𝔰.z 𝔰.z}
@@ -211,8 +219,10 @@ lemma vectorOfLastEntry_eq_mulVec (x : 𝔰.κ → A) :
 
 end TailBasis
 
-variable {A ι κ : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A] [Fintype ι]
-  [DecidableEq ι] [Fintype κ] [DecidableEq κ] {𝔰 : Shape} {π : Aˣ} {N : A} {m : ℕ}
+variable
+  {A ι κ : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A] [Fintype ι] [DecidableEq ι]
+  [Fintype κ] [DecidableEq κ]
+  {𝔰 : Shape} {π : Aˣ} {N : A} {m : ℕ}
 
 /-- At a finite place and in rank at least two, the fiber measures `P.normFiberMeasure κ`
 disintegrate the volume of `κ → A` along the standard form `x ↦ x* x`. -/
@@ -443,7 +453,8 @@ lemma HyperbolicBasis.measurePreserving_vectorOfLastEntry_flatChart
   exact (h_chart.comp (measurePreserving_append_last P.skewMeasure scale)).congr (by fun_prop)
     (.of_forall fun ⟨t, ⟨s, w⟩, a⟩ ↦ chart_eq_tailVector t s w a)
 
-/-- Let `A` be a semilocal field with involution, `P` a finite place on it and `π` a unit of `A`
+/--
+Let `A` be a semilocal field with involution, `P` a finite place on it and `π` a unit of `A`
 with `π π̄ = N`; multiplication by `π` scales the volume of `A` by `P.modulus π`. The matrix
 `latticeMiddleGram 𝔰 N` is the form of `X₀ ⊕ A z` in the lattice basis, where `X₀ = (𝔰.κ → A)` is
 the standard hermitian space, of rank at least two, and `z` is orthogonal to it of norm `-N`. The
@@ -455,36 +466,44 @@ For `t` in `A`, take `(P.modulus π)⁻¹` times the integral of
 This function of `t` is integrable, and its integral is that of `f` against
 `F.floorQuadricMeasure 𝔰.top`. The latter has its default index `δ ⟨z, z⟩`, where `δ = P.skewUnit`:
 it is the measure on the quadric of vectors of norm `-N` in `X₀ ⊕ A z` defined by a basis `F` made
-of `m + 1` hyperbolic pairs and orthonormal vectors indexed by `ι`. -/
+of `m + 1` hyperbolic pairs and orthonormal vectors indexed by `ι`.
+-/
 theorem HyperbolicBasis.integral_floorQuadricMeasure_top
     [IsHermitianUnit (latticeMiddleGram 𝔰 N).splitGram]
     (F : HyperbolicBasis ι (latticeMiddleGram 𝔰 N) m) (hN : π * star (π : A) = N)
-    (h_rank : 2 ≤ card 𝔰.κ) {f : (𝔰.BesselIndex → A) → ℂ} (hf : Continuous f)
-    (h_supp : HasCompactSupport f) :
-    Integrable (fun t : A ↦ (P.modulus π)⁻¹.toReal *
-        ∫ x : 𝔰.κ → A, f (vectorOfLastEntry π t x) ∂P.normFiberMeasure 𝔰.κ
-          (lastEntrySphereIndex π t)) ∧
-      ∫ t : A, (P.modulus π)⁻¹.toReal *
-          ∫ x : 𝔰.κ → A, f (vectorOfLastEntry π t x) ∂P.normFiberMeasure 𝔰.κ
-            (lastEntrySphereIndex π t) =
-        ∫ e : 𝔰.BesselIndex → A, f e ∂F.floorQuadricMeasure 𝔰.top := by
+    (h_rank : 2 ≤ card 𝔰.κ)
+    {f : (𝔰.BesselIndex → A) → ℂ} (hf : Continuous f) (h_supp : HasCompactSupport f)
+    : Integrable (fun t : A ↦
+        (P.modulus π)⁻¹.toReal
+          * ∫ x : 𝔰.κ → A, f (vectorOfLastEntry π t x) ∂P.normFiberMeasure 𝔰.κ
+              (lastEntrySphereIndex π t))
+      ∧ ∫ t : A, (P.modulus π)⁻¹.toReal *
+            ∫ x : 𝔰.κ → A, f (vectorOfLastEntry π t x) ∂P.normFiberMeasure 𝔰.κ
+              (lastEntrySphereIndex π t)
+        = ∫ e : 𝔰.BesselIndex → A, f e ∂F.floorQuadricMeasure 𝔰.top := by
   obtain ⟨B, hB⟩ : ∃ B : Matrix 𝔰.κ (Fin 2 ⊕ Fin (card 𝔰.κ - 2)) A, Bᴴ * B = planeSumGram 1 :=
     P.exists_hyperbolic_basis h_rank
   let K (p : A × (A × (Fin (card 𝔰.κ - 2) → A)) × skewAdjoint A) : 𝔰.BesselIndex → A :=
     vectorOfLastEntry π p.1 (B *ᵥ flatChart 1 (lastEntrySphereIndex π p.1) p.2)
   have h_pres : MeasurePreserving K (((P.modulus π)⁻¹ • volume).prod (volume.prod P.skewMeasure))
-      (F.floorQuadricMeasure 𝔰.top) := F.measurePreserving_vectorOfLastEntry_flatChart hN h_rank hB
+      (F.floorQuadricMeasure 𝔰.top) :=
+    F.measurePreserving_vectorOfLastEntry_flatChart hN h_rank hB
   have : IsFiniteMeasureOnCompacts (F.floorQuadricMeasure 𝔰.top) :=
     (F.isDisintegration_floorVolume 𝔰.top rfl).isFiniteMeasureOnCompacts _
-  have h_int : Integrable (fun p ↦ f (K p))
+  have h_int : Integrable
+      (fun p ↦ f (K p))
       (((P.modulus π)⁻¹ • volume).prod (volume.prod P.skewMeasure)) :=
     h_pres.integrable_comp_of_integrable (hf.integrable_of_hasCompactSupport h_supp)
   -- Fubini in the coordinates `(t, p)`; the inner integral is the one over the sphere.
   let G (t : A) : ℂ := ∫ p, f (K (t, p)) ∂volume.prod P.skewMeasure
-  have h_sphere (t : A) : ∫ x, f (vectorOfLastEntry π t x) ∂P.normFiberMeasure 𝔰.κ
-    (lastEntrySphereIndex π t) = G t := by
-    have h_chart_meas : AEMeasurable (fun p ↦ B *ᵥ flatChart 1 (lastEntrySphereIndex π t) p)
-        (volume.prod P.skewMeasure) := by fun_prop
+  have h_sphere (t : A)
+      : ∫ x, f (vectorOfLastEntry π t x) ∂P.normFiberMeasure 𝔰.κ
+          (lastEntrySphereIndex π t)
+        = G t := by
+    have h_chart_meas : AEMeasurable
+        (fun p ↦ B *ᵥ flatChart 1 (lastEntrySphereIndex π t) p)
+        (volume.prod P.skewMeasure) := by
+      fun_prop
     rw [P.normFiberMeasure_eq_map_flatChart h_rank hB]
     exact integral_map h_chart_meas (by fun_prop)
   have G_int : Integrable G := by

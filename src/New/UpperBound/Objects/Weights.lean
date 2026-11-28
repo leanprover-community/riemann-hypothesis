@@ -50,17 +50,22 @@ namespace New.Data
 
 variable {P : Parameters} (D : Data P)
 
-/-- The number of columns of height `h` at the place `τ` of the weight on the definite space `X_j`
+/--
+The number of columns of height `h` at the place `τ` of the weight on the definite space `X_j`
 of rank `n_j = k + j (t + 1)`, for `h < n_j` (see `weightX_eq`); here `k = D.k` and `t = D.t`. For
 `h = 1` it is `D.a` at the places in `D.aPlaces` and `0` elsewhere; for `h = k ≠ 1` it is
 `κ_1(τ) − ⌊(k + t + 1) / 2⌋`, with `κ_1(τ) = D.liftWeight 1 τ`; for `h > k` with `h ≡ k` mod `t + 1`
-it is the gap `D.gap` minus `t + 1`; else it is `0`. Subtraction is that of natural numbers. -/
+it is the gap `D.gap` minus `t + 1`; else it is `0`. Subtraction is that of natural numbers.
+-/
 def columnCount (τ : D.Φ) (h : ℕ) : ℕ :=
   if h = 1 then
     (if τ ∈ D.aPlaces then D.a else 0)
   else if h = D.k then
     D.liftWeight 1 τ - (D.k + D.t + 1) / 2
-  else if D.k < h ∧ D.t + 1 ∣ h - D.k then D.gap - (D.t + 1) else 0
+  else if D.k < h ∧ D.t + 1 ∣ h - D.k then
+    D.gap - (D.t + 1)
+  else
+    0
 
 /-- Bound on the number of columns of height `h` at `τ`, with the count at height one replaced by
 `a`: `D.columnCount τ h` (or `a` if `h = 1`) is at most `a` (if `h = 1`) plus `D.liftWeight 1 τ` (if
@@ -70,20 +75,26 @@ lemma columnCount_le (τ : D.Φ) (h a : ℕ) :
       (if h = 1 then a else 0) + (if h = D.k then D.liftWeight 1 τ else 0) + D.gap := by
   grind [columnCount]
 
-/-- The last entry of the weight on `X_j` at the place `τ` (see `weightX_eq`): it is `0` for
+/--
+The last entry of the weight on `X_j` at the place `τ` (see `weightX_eq`): it is `0` for
 `j = 0`, else `⌊n_{j−1} / 2⌋ − κ_j(τ)`, with `n_j = D.n j` the rank `k + j (t + 1)` and
-`κ_j(τ) = D.liftWeight j τ`. -/
+`κ_j(τ) = D.liftWeight j τ`.
+-/
 def lastEntry (j : ℕ) (τ : D.Φ) : ℤ := if j = 0 then 0 else (D.n (j - 1) / 2 - D.liftWeight j τ : ℤ)
 
-/-- Let `m = D.m` be the number of lifts, and let `X_m`, `Y_m` be the definite spaces of ranks `n_m`
+/--
+Let `m = D.m` be the number of lifts, and let `X_m`, `Y_m` be the definite spaces of ranks `n_m`
 and `n_m - 1`. For `h < n_m` this is the number of columns of height `h` of the weight on `X_m` that
 keep their height under branching to `Y_m` (see `weightY_eq`). It is `Δ / 2 − (t + 1) / 2`, with
-`Δ / 2 = D.halfGap` half the gap, if `h ≥ k` and `h ≡ k` mod `t + 1`, and `0` otherwise. -/
+`Δ / 2 = D.halfGap` half the gap, if `h ≥ k` and `h ≡ k` mod `t + 1`, and `0` otherwise.
+-/
 def keptColumns (h : ℕ) : ℕ := if D.k ≤ h ∧ D.t + 1 ∣ h - D.k then D.reducedHalfGap else 0
 
-/-- The number of columns of height `h` at `τ` of the weight on `Y_m`, for `h < n_m - 1` (see
+/--
+The number of columns of height `h` at `τ` of the weight on `Y_m`, for `h < n_m - 1` (see
 `weightY_eq`): the kept columns of height `h`, and the columns of height `h + 1` of the weight on
-`X_m` that are not kept. -/
+`X_m` that are not kept.
+-/
 def columnsY (τ : D.Φ) (h : ℕ) : ℕ :=
   D.keptColumns h + (D.columnCount τ (h + 1) - D.keptColumns (h + 1))
 
@@ -145,15 +156,17 @@ lemma halfGap_le_liftWeight (j : ℕ) (τ : D.Φ) :
 /-- The number `a_τ`: it is `a` at the places in `D.aPlaces` (the `a`-places) and `0` elsewhere. -/
 def firstRowExcess (τ : D.Φ) : ℕ := if τ ∈ D.aPlaces then D.a else 0
 
-/-- Twice the Harish-Chandra parameters of the `X_j` at the place `τ`, in decreasing order: first
+/--
+Twice the Harish-Chandra parameters of the `X_j` at the place `τ`, in decreasing order: first
 `λ^X = [k] + (a_τ, 0, …, 0)`, then the blocks `-κ_i + [t + 1]` for `i = 1, 2, …`. The parameter of
-`X_j` consists of the first `n_j` entries. That they decrease follows from `weightX_eq`. -/
+`X_j` consists of the first `n_j` entries. That they decrease follows from `weightX_eq`.
+-/
 def paramX (τ : D.Φ) (p : ℕ) : ℤ :=
   if p < D.k then
     twiceBlockEntry D.k p + if p = 0 then 2 * (D.firstRowExcess τ : ℤ) else 0
   else
-    twiceBlockEntry (D.t + 1) ((p - D.k) % (D.t + 1)) -
-      2 * D.liftWeight ((p - D.k) / (D.t + 1) + 1) τ
+    twiceBlockEntry (D.t + 1) ((p - D.k) % (D.t + 1))
+      - 2 * D.liftWeight ((p - D.k) / (D.t + 1) + 1) τ
 
 /-- The sequence `D.paramX τ` lists twice the Harish-Chandra parameters of the definite spaces `X_i`
 at the place `τ`. For `b < t + 1`, with `t = D.t`, its entry at position `n_j + b` is twice entry
@@ -168,9 +181,11 @@ lemma paramX_block (j : ℕ) (τ : D.Φ) {b : ℕ} (hb : b < D.t + 1) :
     rw [Nat.add_mul_div_left _ _ D.t.succ_pos, Nat.div_eq_of_lt hb, zero_add]
   rw [paramX, ite_eq_right h_le.not_gt, h_index, h_mod, h_div]
 
-/-- Entry `p` of the highest weight `μ(X_j)` at the place `τ`: the decreasing parameter less the
+/--
+Entry `p` of the highest weight `μ(X_j)` at the place `τ`: the decreasing parameter less the
 block `[n_j]`, where `n_j = D.n j` is the rank of `X_j`. Both `D.paramX τ` and `twiceBlockEntry` are
-doubled, and the division by `2` is exact (`two_mul_weightX`). -/
+doubled, and the division by `2` is exact (`two_mul_weightX`).
+-/
 def weightX (j : ℕ) (τ : D.Φ) (p : ℕ) : ℤ := (D.paramX τ p - twiceBlockEntry (D.n j) p) / 2
 
 /-- The division by `2` in the definition of the weight `μ(X_j) = D.weightX j τ` is exact: twice the
@@ -184,10 +199,12 @@ lemma two_mul_weightX (j : ℕ) (τ : D.Φ) {p : ℕ} :
   simp only [weightX, paramX, twiceBlockEntry]
   split_ifs <;> omega
 
-/-- Row `p` at the place `τ` of the diagram `μ_{j+1}^+ = μ(X_j) + κ_{j+1} - n_{j+1} / 2` of lift
+/--
+Row `p` at the place `τ` of the diagram `μ_{j+1}^+ = μ(X_j) + κ_{j+1} - n_{j+1} / 2` of lift
 `j + 1`, the theta lift from forms on `U(X_j)` to forms on `U(X_{j+1})`. Here `μ(X_j)` is the weight
 `D.weightX j τ`, `κ_{j+1} = D.liftWeight (j + 1) τ` and `n_j = D.n j` is the rank of `X_j`. The
-diagram has `n_j` rows and is continued by `0`. -/
+diagram has `n_j` rows and is continued by `0`.
+-/
 def liftDiagram (j : ℕ) (τ : D.Φ) (p : ℕ) : ℤ :=
   if p < D.n j then D.weightX j τ p + D.liftWeight (j + 1) τ - D.n (j + 1) / 2 else 0
 
@@ -388,19 +405,21 @@ lemma two_mul_targetParameter_of_lt (τ : D.Φ) {p : ℕ} (hp : p + 1 < D.k) :
   rw [targetParameter, ite_eq_left hp, twiceBlockEntry]
   omega
 
-/-- Twice the Harish-Chandra parameter of `Y_m` at the place `τ`, in decreasing order: first
+/--
+Twice the Harish-Chandra parameter of `Y_m` at the place `τ`, in decreasing order: first
 `[k - 1]`, then for `i = 1, 2, …` the entry `-κ_{i - 1/2}` followed by the block `-κ_i + [t]`. Here
 `[n] = ((n - 1) / 2, …, (1 - n) / 2)` is the block of `twiceBlockEntry`, `κ_i = D.liftWeight i τ`
 and `κ_{i - 1/2} = κ_i - D.halfGap`. The block `[k - 1]` and the `-κ_{i - 1/2}` are the entries of
-`D.targetParameter τ`. The parameter consists of the first `n_m - 1` entries. -/
+`D.targetParameter τ`. The parameter consists of the first `n_m - 1` entries.
+-/
 def sortedParamY (τ : D.Φ) (p : ℕ) : ℤ :=
   if p + 1 < D.k then
     2 * D.targetParameter τ p
   else if D.t + 1 ∣ p + 1 - D.k then
     2 * D.targetParameter τ (D.k - 1 + (p + 1 - D.k) / (D.t + 1))
   else
-    twiceBlockEntry D.t ((p + 1 - D.k) % (D.t + 1) - 1) -
-      2 * D.liftWeight ((p + 1 - D.k) / (D.t + 1) + 1) τ
+    twiceBlockEntry D.t ((p + 1 - D.k) % (D.t + 1) - 1)
+      - 2 * D.liftWeight ((p + 1 - D.k) / (D.t + 1) + 1) τ
 
 /-- In `D.sortedParamY τ`, twice the Harish-Chandra parameter of `Y_m` (the definite space of rank
 `n_m - 1`, `m = D.m`) at `τ` in decreasing order, entry `k - 1 + j` of `λ^Y = D.targetParameter τ`
@@ -432,10 +451,12 @@ lemma sortedParamY_block (j : ℕ) (τ : D.Φ) {b : ℕ} (hb : b < D.t) :
     rw [Nat.add_mul_div_left _ _ D.t.succ_pos, Nat.div_eq_of_lt h_lt, zero_add]
   simp [sortedParamY, h_not_lt, h_index, Nat.dvd_iff_mod_eq_zero, h_mod, h_div]
 
-/-- Entry `p` of the highest weight `μ(Y_m)` at the place `τ`: the decreasing parameter less the
+/--
+Entry `p` of the highest weight `μ(Y_m)` at the place `τ`: the decreasing parameter less the
 block `[n] = ((n - 1) / 2, …, (1 - n) / 2)` for the rank `n = n_m - 1` of `Y_m`. Both
 `D.sortedParamY τ` and `twiceBlockEntry` are doubled, and the division by `2` is exact
-(`two_mul_weightY`). -/
+(`two_mul_weightY`).
+-/
 def weightY (τ : D.Φ) (p : ℕ) : ℤ := (D.sortedParamY τ p - twiceBlockEntry (D.n D.m - 1) p) / 2
 
 /-- Let `λ`, `λ'` be the decreasing Harish-Chandra parameters of `X_m` and `Y_m` at the place `τ`,

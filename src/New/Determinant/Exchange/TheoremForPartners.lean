@@ -94,13 +94,17 @@ section ExchangeCore
 
 open Matrix MeasureTheory NumberField Fintype Fock CoordChange Weil Seesaw
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n r b : Type} [Fintype n] [DecidableEq n]
-  [Fintype r] [DecidableEq r] [Fintype b] [DecidableEq b] {s : n → ℤˣ} {t : r → ℤˣ} {u : b → ℤˣ}
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n r b : Type} [Fintype n] [DecidableEq n] [Fintype r] [DecidableEq r] [Fintype b] [DecidableEq b]
+  {s : n → ℤˣ} {t : r → ℤˣ} {u : b → ℤˣ}
 
 variable (E s u) in
-/-- Passing to adjoint maps: the change of coordinates that carries data for the pair `(U, W)` to
+/--
+Passing to adjoint maps: the change of coordinates that carries data for the pair `(U, W)` to
 data for `(W, U⁻)`. Here `W` has signs `s`, `U` has signs `u` and the opposite space `U⁻` has
-signs `-u`. -/
+signs `-u`.
+-/
 abbrev adjointCoords : CoordChange E (.id ℂ) (homSigns u s) (homSigns s (-u)) :=
   flipCoords (E := E) (s := s) star_normNegOne_mul_self (t := u) rfl
 
@@ -110,8 +114,10 @@ lemma adjointCoords_finEquiv_apply (x : b × n → 𝔸f E) (i : n × b) :
     (adjointCoords E s u).finEquiv x i = (normNegOne (E := E) : Ô E) * star (x i.swap) :=
   rfl
 
-/-- The real vector `y^ad` for `(W, U⁻)` that belongs to a real vector `y` for `(U, W)`: the image
-of `y` under the real part of `adjointCoords`. -/
+/--
+The real vector `y^ad` for `(W, U⁻)` that belongs to a real vector `y` for `(U, W)`: the image
+of `y` under the real part of `adjointCoords`.
+-/
 def adjointDatum (y : PairFock E u s) : PairFock E s (-u) := (adjointCoords E s u).realMap y
 
 /-- Let `U`, `W` have signs `u`, `s` and let `y` be a vector of the real Fock space of `(U, W)` all
@@ -861,9 +867,10 @@ lemma spaceChar_mul_spaceChar_eq_iff {E : Type} [Field E] [CMType E] [WeilData E
   rw [h_mul, ← map_inv, ← spaceChar_rankTwist h_even]
   simp only [AutChar.spaceChar, mul_left_inj, AutChar.baseChange_injective.eq_iff]
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n a b : Type} [Fintype n] [DecidableEq n]
-  [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] {s : n → ℤˣ} {t : a → ℤˣ} {t' : b → ℤˣ}
-  (W : Space E n s) (V : Space E a t) (V' : Space E b t')
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n a b : Type} [Fintype n] [DecidableEq n] [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
+  {s : n → ℤˣ} {t : a → ℤˣ} {t' : b → ℤˣ} (W : Space E n s) (V : Space E a t) (V' : Space E b t')
 
 /-- Let `W`, `V`, `V'` be spaces with coordinates indexed by `n`, `a`, `b`, split by
 `σ : b ⊕ a ≃ n`, and let the tame character `𝔠` be ramified exactly at the primes of the modulus
@@ -1029,7 +1036,8 @@ lemma exchange_theorem (σ : b ⊕ a ≃ n) (h_signs : negCount s = negCount t +
     exists_areMatched_modDatum_eq W V V' σ 𝔪 𝔠 h_places (by rwa [hχ] at h_matched)
   simpa only [hΦ, hΨ] using h_exch Φ' Ψ' h_locally_const h_matched'
 
-/-- Let `W`, `V`, `V'` have ranks `|n| = |b| + |a|` (split by `σ`), `|a| = |b| + 2e`, `|b|`. Let `W`
+/--
+Let `W`, `V`, `V'` have ranks `|n| = |b| + |a|` (split by `σ`), `|a| = |b| + 2e`, `|b|`. Let `W`
 have as many negative signs `q` as `V` and `V'` together, with `2q + 2 ≤ |n| ≤ 2 μ + 2q`, and let
 `v` be a real Schwartz vector for `(V', W)`. There are `C > 0` and a Schwartz vector `x` for
 `(W, V)`, chosen before `𝔪` and `ν`, such that every character `ν` of `[U(1)]` of weight `μ` that is
@@ -1038,26 +1046,33 @@ For all `α`, `α'` such that the characters `α.spaceChar |a|` of `V` and `α'.
 have product inverse to the base change `x ↦ ν (x / x̄)`, and all matched functions `Φ`, `Ψ` modulo
 `𝔪`, the theta integral of `(x, Φ)` over `[U(V)]` is `c` times that of `(v, Ψ)` over `[U(V')]`, as
 functions on `U(W)`. The character of `W` is `rankTwist ν⁻¹ n = ν⁻¹ υ ^ (|n| / 2)`, and `modDatum`
-puts a function modulo `𝔪` at the primes of `𝔪` and the vacuum at the other finite places. -/
-theorem exchange_identity (σ : b ⊕ a ≃ n) (h_signs : negCount s = negCount t + negCount t')
-    {e : ℕ} (h_rank : card a = card b + 2 * e) (h_few_neg : 2 * negCount s + 2 ≤ card n)
+puts a function modulo `𝔪` at the primes of `𝔪` and the vacuum at the other finite places.
+-/
+theorem exchange_identity
+    (σ : b ⊕ a ≃ n) (h_signs : negCount s = negCount t + negCount t')
+    {e : ℕ} (h_rank : card a = card b + 2 * e)
+    (h_few_neg : 2 * negCount s + 2 ≤ card n)
     {μ : NumberField.InfinitePlace E → ℤ}
     (hμ : ∀ τ : NumberField.InfinitePlace E, card n ≤ 2 * μ τ + 2 * negCount s)
-    {v : PairFock E t' s} (hv : IsSchwartzVector v) :
-    ∃ C : ℝ, 0 < C ∧ ∃ x : PairFock E s t, IsSchwartzVector x ∧
-      ∀ (𝔪 : Modulus E) (ν : AutChar E) (χ : MulChar 𝔪.ResidueRing ℂ), IsTameFor 𝔪 ν μ χ →
-      ∃ c : ℂ,
-        ‖c‖ ^ 2 = C * lValueProd 𝔪.places ν e ∧
-        C * lValueProd 𝔪.places ν e ≠ 0 ∧
-        ∀ α α' : AutChar E,
-          α.spaceChar (card a) * α'.spaceChar (card b) = ν.baseChange⁻¹ →
-          ∀ (Φ : Matrix a n 𝔪.ResidueRing → ℂ) (Ψ : Matrix n b 𝔪.ResidueRing → ℂ),
-            AreMatched ⊤ σ χ Φ Ψ →
-            ∀ g : G E s,
-              thetaIntegral W V (rankTwist ν⁻¹ n) α (modDatum W V 𝔪 Φ x) g =
-                c * ∫ h : G E t',
-                  pairTheta V' W α' (rankTwist ν⁻¹ n) (modDatum V' W 𝔪 Ψ v) (h, g)
-                  ∂V'.quotMeasure := by
+    {v : PairFock E t' s} (hv : IsSchwartzVector v)
+    : ∃ C : ℝ,
+      0 < C
+        ∧ ∃ x : PairFock E s t,
+          IsSchwartzVector x
+            ∧ ∀ (𝔪 : Modulus E) (ν : AutChar E) (χ : MulChar 𝔪.ResidueRing ℂ),
+              IsTameFor 𝔪 ν μ χ
+                → ∃ c : ℂ,
+                  ‖c‖ ^ 2 = C * lValueProd 𝔪.places ν e ∧ C * lValueProd 𝔪.places ν e ≠ 0
+                    ∧ ∀ α α' : AutChar E,
+                      α.spaceChar (card a) * α'.spaceChar (card b) = ν.baseChange⁻¹
+                        → ∀ (Φ : Matrix a n 𝔪.ResidueRing → ℂ) (Ψ : Matrix n b 𝔪.ResidueRing → ℂ),
+                          AreMatched ⊤ σ χ Φ Ψ
+                            → ∀ g : G E s,
+                              thetaIntegral W V (rankTwist ν⁻¹ n) α (modDatum W V 𝔪 Φ x) g
+                                = c
+                                  * ∫ h : G E t',
+                                    pairTheta V' W α' (rankTwist ν⁻¹ n) (modDatum V' W 𝔪 Ψ v) (h, g)
+                                    ∂V'.quotMeasure := by
   -- `exchange_theorem` is the case `α = 1`, `α' = rankTwist ν⁻¹ n`; other splitting characters
   -- multiply both sides by the same factor `α (det g)⁻¹`.
   obtain ⟨C, x, hx, h_exch⟩ := exchange_theorem W V V' σ h_signs h_rank h_few_neg hμ hv
@@ -1080,18 +1095,21 @@ theorem exchange_identity (σ : b ⊕ a ≃ n) (h_signs : negCount s = negCount 
   have h_char' : γ * α⁻¹ = α' := by rw [← h_char, mul_inv_cancel_comm]
   -- The twist law on both kernels, with the factor `d = α (det g)⁻¹`.
   let d : ℂ := (α.val g.det : ℂ)⁻¹
-  have h_left (h : G E t) : pairTheta W V γ α (modDatum W V 𝔪 Φ x) (g, h) =
-      d * pairTheta W V γ 1 (modDatum W V 𝔪 Φ x) (g, h) := by
+  have h_left (h : G E t)
+      : pairTheta W V γ α (modDatum W V 𝔪 Φ x) (g, h)
+        = d * pairTheta W V γ 1 (modDatum W V 𝔪 Φ x) (g, h) := by
     simpa using pairTheta_twist W V γ 1 1 α (modDatum W V 𝔪 Φ x) g h
-  have h_right (h : G E t') : pairTheta V' W α' γ (modDatum V' W 𝔪 Ψ v) (h, g) =
-      d * pairTheta V' W γ γ (modDatum V' W 𝔪 Ψ v) (h, g) := by
+  have h_right (h : G E t')
+      : pairTheta V' W α' γ (modDatum V' W 𝔪 Ψ v) (h, g)
+        = d * pairTheta V' W γ γ (modDatum V' W 𝔪 Ψ v) (h, g) := by
     simpa [h_char', circleChar_inv_apply] using
       pairTheta_twist V' W γ γ α⁻¹ 1 (modDatum V' W 𝔪 Ψ v) h g
-  calc thetaIntegral W V γ α (modDatum W V 𝔪 Φ x) g
-      = d * thetaIntegral W V γ 1 (modDatum W V 𝔪 Φ x) g := by
-        simp only [thetaIntegral, h_left, MeasureTheory.integral_const_mul]
+  calc
+    thetaIntegral W V γ α (modDatum W V 𝔪 Φ x) g
+        = d * thetaIntegral W V γ 1 (modDatum W V 𝔪 Φ x) g := by
+      simp only [thetaIntegral, h_left, MeasureTheory.integral_const_mul]
     _ = c * ∫ h : G E t', pairTheta V' W α' γ (modDatum V' W 𝔪 Ψ v) (h, g) ∂V'.quotMeasure := by
-        simp only [h_base Φ Ψ h_matched g, h_right, MeasureTheory.integral_const_mul, mul_left_comm]
+      simp only [h_base Φ Ψ h_matched g, h_right, MeasureTheory.integral_const_mul, mul_left_comm]
 
 end ExchangeTheorem
 

@@ -266,7 +266,8 @@ lemma eq_zero_of_mem_fixed_invariant {G : Type*} [Group G] [TopologicalSpace G]
       (fun _ ↦ rfl) ((hV φ).1 hφ).1 h_zero
   exact h_inj.iterate n (by simpa [pow_apply_eq_iterate] using show (S ^ n) ψ = 0 by simp [h_nil])
 
-/-- Vanishing of constant terms. Let `G` be a second countable locally compact group with left Haar
+/--
+Vanishing of constant terms. Let `G` be a second countable locally compact group with left Haar
 measure and let `e` be a minimal idempotent kernel (continuous, integrable, self-adjoint, with
 `e * δ_x * e` a multiple of `e`) with `‖e‖ * ℓ` integrable, where `H` is a continuous function with
 `|H (x * g) - H x| ≤ ℓ g`. Let `D` be a subgroup of `G × ℂˣ` such that `H (r * g) = H g - log ‖c‖`
@@ -277,18 +278,22 @@ bounded continuous `f` with `f (r * g) = f g` whenever `(r, 1) ∈ D`.
 This is meant as a step toward Harish-Chandra's theorem that `K`-finite discrete series coefficients
 are cusp forms; that theorem itself is not stated here. It applies to every minimal idempotent
 kernel `e` with the hypotheses on `H`, `ℓ` and `D`, and shows that `e` integrates to zero against
-bounded continuous invariant functions. -/
-theorem integral_idempotentKernel_mul_eq_zero {G : Type*} [Group G] [TopologicalSpace G]
-    [IsTopologicalGroup G]
-    [SecondCountableTopology G] [LocallyCompactSpace G] [MeasureSpace G] [BorelSpace G]
-    [(volume (α := G)).IsHaarMeasure] {e : G → ℂ} (H ℓ : G → ℝ) (D : Subgroup (G × ℂˣ))
+bounded continuous invariant functions.
+-/
+theorem integral_idempotentKernel_mul_eq_zero
+    {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G]
+    [LocallyCompactSpace G] [MeasureSpace G] [BorelSpace G] [(volume (α := G)).IsHaarMeasure]
+    {e : G → ℂ}
+    (H ℓ : G → ℝ)
+    (D : Subgroup (G × ℂˣ))
     (h_ker : IsIdempotentKernel e) (hℓ : Integrable fun g : G ↦ ‖e g‖ * ℓ g) (hH : Continuous H)
     (hH_lip : ∀ x g : G, |H (x * g) - H x| ≤ ℓ g)
-    (hD_shift : ∀ z ∈ D, ∀ g : G, H (z.1 * g) = -Real.log ‖(z.2 : ℂ)‖ + H g)
+    (hD_shift : ∀ z ∈ D, ∀ g : G, H (z.1 * g) = - Real.log ‖(z.2 : ℂ)‖ + H g)
     (hD_near : ∀ W ∈ nhds (1 : G), ∃ c : ℂˣ,
       Real.log ‖(c : ℂ)‖ ≠ 0 ∧ ∀ x : G, ∃ b ∈ W, (x * b * x⁻¹, c) ∈ D)
-    (f : G →ᵇ ℂ) (hf : ∀ r : G, (r, 1) ∈ D → ∀ g : G, f (r * g) = f g) (x : G) :
-    ∫ g : G, e g * f (x * g) = 0 := by
+    (f : G →ᵇ ℂ) (hf : ∀ r : G, (r, 1) ∈ D → ∀ g : G, f (r * g) = f g)
+    (x : G)
+    : ∫ g : G, e g * f (x * g) = 0 := by
   -- Let `T φ y = ∫ g, e g * φ (y * g)` and let `V` be the space of `φ` fixed by `T` and invariant
   -- under the radical, the `r` with `(r, 1) ∈ D`. Then `V = 0`, and `T f ∈ V`.
   have he : Integrable e := h_ker.integrable
@@ -339,18 +344,22 @@ lemma New.DiscreteSeries.exists_isStarProjection_mul_eq_zero_iff {n m : Type} [F
   -- The columns of `p * v` are the images under `p` of the columns of `v`.
   exact forall_congr' fun j ↦ h_vec (v.col j)
 
-/-- Dilations near `1`. Let `J` be a hermitian involution, let the columns of `A` be isotropic for
+/--
+Dilations near `1`. Let `J` be a hermitian involution, let the columns of `A` be isotropic for
 `J`, and let `c > 0` and `x ∈ U J`, the group of `g` with `gᴴ * J * g = J`. Then some `y ∈ U J` is
 within distance `c` of `1` for the operator norm, and `x * y * x⁻¹` is a dilation along `A` by the
 factor `1 + c`: this element `g` has `g * A = (1 + c) • A`, and `wᴴ * J * g * v = wᴴ * J * v`
-whenever `Aᴴ * J * v = 0` and `Aᴴ * J * w = 0`. -/
-theorem New.DiscreteSeries.exists_conj_mem_dilationGroup {n m : Type} [Fintype n] [DecidableEq n]
-    {J : Matrix n n ℂ} {A : Matrix n m ℂ} [hJ : IsHermitianInvolution J] (hA : Aᴴ * (J * A) = 0)
-    (x : U J) {c : ℝ} (hc : 0 < c) :
-    ∃ y : U J,
-      dist (y : Matrix n n ℂ) 1 ≤ c ∧
-      (x * y * x⁻¹, Units.mk0 (1 + c : ℂ) (mod_cast (add_pos one_pos hc).ne')) ∈
-        dilationGroup A := by
+whenever `Aᴴ * J * v = 0` and `Aᴴ * J * w = 0`.
+-/
+theorem New.DiscreteSeries.exists_conj_mem_dilationGroup
+    {n m : Type} [Fintype n] [DecidableEq n]
+    {J : Matrix n n ℂ} {A : Matrix n m ℂ} [hJ : IsHermitianInvolution J]
+    (hA : Aᴴ * (J * A) = 0) (x : U J)
+    {c : ℝ} (hc : 0 < c)
+    : ∃ y : U J,
+      dist (y : Matrix n n ℂ) 1 ≤ c
+        ∧ (x * y * x⁻¹, Units.mk0 (1 + c : ℂ) (mod_cast (add_pos one_pos hc).ne'))
+          ∈ dilationGroup A := by
   -- Let `p` be the orthogonal projection onto the span of the columns of `x⁻¹ * A`, the
   -- orthogonal complement of the kernel of `B = (x⁻¹ * A)ᴴ`, and `q = J * p * J`.
   -- The dilation is `y = 1 + c • p - (c / (1 + c)) • q`.
@@ -369,12 +378,13 @@ theorem New.DiscreteSeries.exists_conj_mem_dilationGroup {n m : Type} [Fintype n
       simp [(h_ker (p - 1)).1 (by simp [mul_sub, hp.isIdempotentElem.eq])]
     -- `↓` distributes the adjoint before the product inside it is rewritten.
     simpa [B, hJ_herm, hp_herm, Matrix.mul_assoc, hX_adjoint, hJ_cancel, Matrix.sub_mul,
-      sub_eq_zero, ↓conjTranspose_mul] using hB_adjoint
+        sub_eq_zero, ↓ conjTranspose_mul]
+      using hB_adjoint
   -- `p * J * x⁻¹` kills whatever is `J`-orthogonal to `A`, and likewise after taking adjoints.
   have h_kill {l : Type} (v : Matrix n l ℂ) (hv : Aᴴ * (J * v) = 0) : p * (J * (X⁻¹ * v)) = 0 := by
     simpa [h_ker, B, X, Matrix.mul_assoc, hJ_cancel] using hv
-  have h_kill_adjoint {l : Type} (w : Matrix n l ℂ) (hw : Aᴴ * (J * w) = 0) (z : Matrix n n ℂ) :
-      wᴴ * (J * (X * (p * z))) = 0 := by
+  have h_kill_adjoint {l : Type} (w : Matrix n l ℂ) (hw : Aᴴ * (J * w) = 0) (z : Matrix n n ℂ)
+      : wᴴ * (J * (X * (p * z))) = 0 := by
     have hpw_adjoint : (p * (Xᴴ * J * w))ᴴ * z = 0 := by simp [hX_adjoint, J.mul_assoc, h_kill w hw]
     simpa [hJ_herm, hp_herm, Matrix.mul_assoc] using hpw_adjoint
   -- As `A` is isotropic, so is the range of `p`.
@@ -383,8 +393,7 @@ theorem New.DiscreteSeries.exists_conj_mem_dilationGroup {n m : Type} [Fintype n
   have h_isotropic : p * (J * p) = 0 := by simpa using h_isotropic_mul 1
   -- `y` preserves `J`: expand, using `p * p = p`, `J * J = 1` and `p * J * p = 0`.
   let y : Matrix n n ℂ := 1 + c • (p - (1 + c)⁻¹ • q)
-  have h_expand : yᴴ * J * y =
-      J + (c - c * (1 + c)⁻¹ - c * (c * (1 + c)⁻¹)) • (p * J + J * p) := by
+  have h_expand : yᴴ * J * y = J + (c - c * (1 + c)⁻¹ - c * (c * (1 + c)⁻¹)) • (p * J + J * p) := by
     simp [y, q, hJ_herm, hp_herm, mul_assoc, mul_add, add_mul, mul_sub, sub_mul, hJ_cancel,
       h_isotropic, h_isotropic_mul, hJ.mul_self, hp.isIdempotentElem.eq,
       hp.isIdempotentElem.mul_self_mul, star]

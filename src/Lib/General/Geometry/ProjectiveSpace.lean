@@ -67,7 +67,8 @@ section ProjectiveSpace
 open CategoryTheory AlgebraicGeometry Limits PointFn Finset Proj Int Algebra CommRingCat
   IsLocalization MvPolynomial HomogeneousLocalization Localization MorphismProperty prod Ring
 
-variable {X Y S : Scheme} {ι κ : Type} {A : CommRingCat} {i j k l : ι} {L M : LineBundle X ι}
+variable
+  {X Y S : Scheme} {ι κ : Type} {A : CommRingCat} {i j k l : ι} {L M : LineBundle X ι}
   {N : LineBundle X κ} {t : Spec A ⟶ X} {v : ι → A} {p : Y ⟶ X} {s : X ⟶ S}
 
 attribute [local instance] gradedAlgebra
@@ -83,17 +84,19 @@ open ProjSpace
 abbrev ProjSpace (ι : Type) : Scheme := Proj (homogeneousSubmodule.{0} ι ℤ)
 
 /-- The fraction X_j/X_i in the degree-zero part of the localization of ℤ[X] at X_i. -/
-abbrev ProjSpace.coordFraction (i j : ι) :
-    HomogeneousLocalization.Away (homogeneousSubmodule ι ℤ) (MvPolynomial.X i) :=
+abbrev ProjSpace.coordFraction (i j : ι)
+    : HomogeneousLocalization.Away (homogeneousSubmodule ι ℤ) (MvPolynomial.X i) :=
   Away.isLocalizationElem (X_mem_homogeneousSubmodule i) (X_mem_homogeneousSubmodule j)
 
 /-- The fraction X_j/X_i as a section over the standard chart D₊(X_i) of projective space. -/
-abbrev ProjSpace.coordSection (i j : ι) :
-    Γ(ProjSpace ι, basicOpen (homogeneousSubmodule ι ℤ) (MvPolynomial.X i)) :=
+abbrev ProjSpace.coordSection (i j : ι)
+    : Γ(ProjSpace ι, basicOpen (homogeneousSubmodule ι ℤ) (MvPolynomial.X i)) :=
   awayToSection (homogeneousSubmodule ι ℤ) (MvPolynomial.X i) (coordFraction i j)
 
-/-- The function X_j/X_i on ring-valued points of projective space landing in D₊(X_i), and zero
-at the other points. -/
+/--
+The function X_j/X_i on ring-valued points of projective space landing in D₊(X_i), and zero
+at the other points.
+-/
 abbrev ProjSpace.coordRatio (i j : ι) : PointFn (Proj (homogeneousSubmodule ι ℤ)) :=
   ofSection (awayToSection (homogeneousSubmodule ι ℤ) (MvPolynomial.X i)
     (Away.isLocalizationElem (X_mem_homogeneousSubmodule i) (X_mem_homogeneousSubmodule j)))
@@ -128,8 +131,10 @@ lemma ProjSpace.coordRatio_mul (i j k : ι) (t : Spec A ⟶ Proj (homogeneousSub
     ← map_coordSection_mul i j k inf_le_left inf_le_right]
   simp only [ofSection_eq ht, map_mul]
 
-/-- The line bundle O(1) on projective space, with the standard cover D₊(X_i) and transition
-functions X_j/X_i. -/
+/--
+The line bundle O(1) on projective space, with the standard cover D₊(X_i) and transition
+functions X_j/X_i.
+-/
 def ProjSpace.hyperplaneBundle (ι : Type) : LineBundle (ProjSpace ι) ι where
   opens i := basicOpen (homogeneousSubmodule ι ℤ) (MvPolynomial.X i)
   transition := coordRatio
@@ -166,11 +171,14 @@ lemma ProjSpace.landsIn_chart_iff_isUnit {t : Spec A ⟶ ProjSpace ι}
 
 namespace LineBundle
 
-/-- v is a vector of homogeneous coordinates of the point t for L: t lands in U_j exactly when v_j
-is a unit, and then g_jk(t) = v_k/v_j. -/
+/--
+v is a vector of homogeneous coordinates of the point t for L: t lands in U_j exactly when v_j
+is a unit, and then g_jk(t) = v_k/v_j.
+-/
 def IsHomogeneousCoords (L : LineBundle X ι) (t : Spec A ⟶ X) (v : ι → A) : Prop :=
-  ∀ j : ι, (LandsIn t (L.opens j) ↔ IsUnit (v j)) ∧
-    ∀ k : ι, IsUnit (v j) → L.transition j k A t = v k * (v j)⁻¹ʳ
+  ∀ j : ι,
+    (LandsIn t (L.opens j) ↔ IsUnit (v j))
+      ∧ ∀ k : ι, IsUnit (v j) → L.transition j k A t = v k * (v j)⁻¹ʳ
 
 lemma IsHomogeneousCoords.landsIn_iff_isUnit (hv : L.IsHomogeneousCoords t v) (j : ι) :
     LandsIn t (L.opens j) ↔ IsUnit (v j) := (hv j).1
@@ -188,19 +196,25 @@ chart i of L and in the chart k of N. -/
 lemma landsIn_mul_opens_iff {a : ι × κ} :
     LandsIn t ((L.mul N).opens a) ↔ LandsIn t (L.opens a.1) ∧ LandsIn t (N.opens a.2) := landsIn_inf
 
-/-- `L` is a linear system, that is, the data of a map to projective space. The model is
+/--
+`L` is a linear system, that is, the data of a map to projective space. The model is
 `L.transition i j = s j / s i` on the chart `L.opens i` where `s i` does not vanish, for sections
-`s i` without common zero. -/
+`s i` without common zero.
+-/
 structure IsLinearSystem (L : LineBundle X ι) : Prop where
   /-- The function `L.transition i j` is regular on the whole chart `L.opens i`. -/
   isRegularOn_transition (i j : ι) : (L.transition i j).IsRegularOn (L.opens i)
   /-- The function `L.transition i j` vanishes at the points that do not land in `L.opens i`. -/
-  transition_eq_zero {A : CommRingCat} {i : ι} (j : ι) {t : Spec A ⟶ X}
-    (ht : ¬LandsIn t (L.opens i)) : L.transition i j A t = 0
-  /-- The values `L.transition i j A t`, as `j` varies, are homogeneous coordinates of every point
-  `t` of the chart `L.opens i`. -/
-  isHomogeneousCoords_transition {A : CommRingCat} {i : ι} {t : Spec A ⟶ X}
-    (ht : LandsIn t (L.opens i)) : L.IsHomogeneousCoords t fun j : ι ↦ L.transition i j A t
+  transition_eq_zero
+    {A : CommRingCat} {i : ι} (j : ι) {t : Spec A ⟶ X} (ht : ¬ LandsIn t (L.opens i))
+    : L.transition i j A t = 0
+  /--
+  The values `L.transition i j A t`, as `j` varies, are homogeneous coordinates of every point
+  `t` of the chart `L.opens i`.
+  -/
+  isHomogeneousCoords_transition
+    {A : CommRingCat} {i : ι} {t : Spec A ⟶ X} (ht : LandsIn t (L.opens i))
+    : L.IsHomogeneousCoords t fun j : ι ↦ L.transition i j A t
 
 /-- The standard charts D₊(X_i) with the functions X_j/X_i form a linear system on projective
 space. -/
@@ -352,18 +366,24 @@ lemma _root_.New.ProjSpace.exists_isHomogeneousCoords (b : Spec A ⟶ S) (hi : I
   rw [IsHomogeneousCoords.pull_iff, lift_fst, h_v]
   exact (isLinearSystem_hyperplaneBundle.isHomogeneousCoords_transition hx).smul hi
 
-/-- `L` embeds `X` in projective space over `S`: it is a linear system that separates the
-ring-valued points of `X` over `S` chart by chart, and `s : X ⟶ S` is proper. -/
+/--
+`L` embeds `X` in projective space over `S`: it is a linear system that separates the
+ring-valued points of `X` over `S` chart by chart, and `s : X ⟶ S` is proper.
+-/
 structure IsProjEmbedding (L : LineBundle X ι) (s : X ⟶ S) : Prop where
   /-- `L` is a linear system. -/
   isLinearSystem : L.IsLinearSystem
   /-- `X` is proper over `S`. -/
   isProper : IsProper s
-  /-- Two points of one chart with the same affine coordinates and the same image in `S` are
-  equal. -/
-  eq_of_transition_eq {i : ι} {A : CommRingCat} {a b : Spec A ⟶ X} (ha : LandsIn a (L.opens i))
-    (hb : LandsIn b (L.opens i)) (h_coord : ∀ j : ι, L.transition i j A a = L.transition i j A b)
-    (h_base : a ≫ s = b ≫ s) : a = b
+  /--
+  Two points of one chart with the same affine coordinates and the same image in `S` are
+  equal.
+  -/
+  eq_of_transition_eq
+    {i : ι} {A : CommRingCat} {a b : Spec A ⟶ X}
+    (ha : LandsIn a (L.opens i)) (hb : LandsIn b (L.opens i))
+    (h_coord : ∀ j : ι, L.transition i j A a = L.transition i j A b) (h_base : a ≫ s = b ≫ s)
+    : a = b
 
 /-- Under a projective embedding, two points a and t with the same homogeneous coordinates v and the
 same image in the base are equal, provided a lands in some chart (as it does when A is a local
@@ -594,9 +614,11 @@ lemma IsLinearSystem.exists_hom_projSpace [Finite κ] (hN : N.IsLinearSystem) (s
     grind [(hf i A t hi).transition_eq_mul_inverse h_unit, N.transition_self i A t hi]
   exact ⟨lift f s, lift_snd f s, by rw [← pull_comp, lift_fst, h_pull]⟩
 
-/-- The morphism `s : X ⟶ S` has a projective embedding with finitely many coordinates; then `X` is
+/--
+The morphism `s : X ⟶ S` has a projective embedding with finitely many coordinates; then `X` is
 a closed subscheme of a projective space over `S`
-(`New.LineBundle.IsProjEmbedding.exists_isClosedImmersion`). -/
+(`New.LineBundle.IsProjEmbedding.exists_isClosedImmersion`).
+-/
 @[mk_iff]
 class inductive _root_.New.Variety.HasProjEmbedding (s : X ⟶ S) : Prop
   /-- A projective embedding with finitely many coordinates. -/
@@ -757,11 +779,15 @@ namespace New.LineBundle
 
 open CategoryTheory AlgebraicGeometry PointFn Finset Over Function TopologicalSpace
 
-variable {X Y S : Scheme} {ι Λ : Type} [Fintype Λ] {ν : Λ → Type}
-  (N : ∀ l : Λ, LineBundle X (ν l)) (L : LineBundle X ι) (m : ℕ) (p : Y ⟶ X)
+variable
+  {X Y S : Scheme} {ι Λ : Type} [Fintype Λ]
+  {ν : Λ → Type} (N : ∀ l : Λ, LineBundle X (ν l))
+  (L : LineBundle X ι) (m : ℕ) (p : Y ⟶ X)
 
-/-- The tensor product of the line bundles `N a` over `a` in `s` (by default all `a`), on the common
-refinement of all covers; for linear systems and `s` the set of all `a`, the Segre product. -/
+/--
+The tensor product of the line bundles `N a` over `a` in `s` (by default all `a`), on the common
+refinement of all covers; for linear systems and `s` the set of all `a`, the Segre product.
+-/
 @[simps -fullyApplied]
 noncomputable def pi (s : Finset Λ := univ) : LineBundle X (∀ l : Λ, ν l) where
   opens i := ⨅ a : Λ, (N a).opens (i a)
@@ -771,8 +797,10 @@ noncomputable def pi (s : Finset Λ := univ) : LineBundle X (∀ l : Λ, ν l) w
   transition_trans i j k A t hi hj hk := by
     simp_all [landsIn_iInf, ← prod_mul_distrib, (N _).transition_trans]
 
-/-- The `m`-th tensor power of `L`, indexed by `m`-tuples of indices; for a linear system, the
-Veronese system of all monomials of degree `m`. -/
+/--
+The `m`-th tensor power of `L`, indexed by `m`-tuples of indices; for a linear system, the
+Veronese system of all monomials of degree `m`.
+-/
 noncomputable def pow : LineBundle X (Fin m → ι) := pi fun _ : Fin m ↦ L
 
 variable {N L}

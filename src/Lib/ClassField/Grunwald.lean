@@ -284,13 +284,17 @@ lemma grunwald [IsTotallyComplex E] {p : ℕ} {S : Set (FinPlace E)} (hp : p.Pri
 
 variable [IsCMField E] (χ : QZChar Gal(Ω/E))
 
-/-- For a character `χ` of the absolute Galois group of a CM field, the character
-`g ↦ χ g + χ (gᶜ)`, where `gᶜ` is the conjugate of `g` by complex conjugation (`New.conjGal`). -/
+/--
+For a character `χ` of the absolute Galois group of a CM field, the character
+`g ↦ χ g + χ (gᶜ)`, where `gᶜ` is the conjugate of `g` by complex conjugation (`New.conjGal`).
+-/
 noncomputable abbrev QZChar.symmetrize : ↥(QZChar Gal(Ω/E)) :=
   χ + comap ⟨conjGal, continuous_conjGal⟩ χ
 
-/-- For a `ℚ/ℤ`-valued character `χ` of `Gal(Ω/E)`, the character `exp (2πi χ ∘ Art)` of the
-finite ideles of `E`. -/
+/--
+For a `ℚ/ℤ`-valued character `χ` of `Gal(Ω/E)`, the character `exp (2πi χ ∘ Art)` of the
+finite ideles of `E`.
+-/
 noncomputable abbrev QZChar.ideleChar : (𝔸f E)ˣ →* ℂˣ :=
   expUnit.comp ((abelianLift χ).comp (artinMap Gal(Ω/E)))
 
@@ -326,12 +330,16 @@ section
 
 variable [IsCMField E] (χ : QZChar Gal(Ω/E))
 
-/-- The extension of the CM field `E` inside `Ω` cut out by the character `g ↦ χ g + χ (gᶜ)`, that
-is, the fixed field of its kernel. -/
+/--
+The extension of the CM field `E` inside `Ω` cut out by the character `g ↦ χ g + χ (gᶜ)`, that
+is, the fixed field of its kernel.
+-/
 noncomputable abbrev QZChar.stepField : IntermediateField E Ω := fixedFieldOf (ker (symmetrize χ))
 
-/-- The field `New.QZChar.stepField χ` is a CM field: the complex conjugation `cmConj` of `Ω` maps
-it to itself and restricts on it to complex conjugation under every embedding into `ℂ`. -/
+/--
+The field `New.QZChar.stepField χ` is a CM field: the complex conjugation `cmConj` of `Ω` maps
+it to itself and restricts on it to complex conjugation under every embedding into `ℂ`.
+-/
 instance : IsCMField (stepField χ) := by
   refine isCMField_of_forall_exists_conj E fun y ↦ ⟨⟨cmConj y, fun g ↦ ?_⟩, fun φ ↦ ?_⟩
   · -- `cmConj y` is fixed by `g`, since `y` is fixed by `conjGal g`, which is again in the kernel
@@ -368,8 +376,10 @@ end
 
 open scoped Classical in
 open InfinitePlace in
-/-- A CM type of `E` extends to `New.QZChar.stepField χ`: at each infinite place take the embedding
-whose restriction to `E` is the embedding chosen at the place below. -/
+/--
+A CM type of `E` extends to `New.QZChar.stepField χ`: at each infinite place take the embedding
+whose restriction to `E` is the embedding chosen at the place below.
+-/
 noncomputable instance [CMType E] (χ : QZChar Gal(Ω/E)) : CMTypeOver E (stepField χ) where
   -- Of the two embeddings at `u`, take the one that restricts to the chosen embedding below.
   Φ u :=
@@ -379,8 +389,8 @@ noncomputable instance [CMType E] (χ : QZChar Gal(Ω/E)) : CMTypeOver E (stepFi
     else
       star e
   mk_Φ := by aesop
-  eq_chosen_iff := by grind [embedding_mk_eq, Φ_mk_eq_or_star_eq, comap_mk, conjugate_comp,
-    star_star]
+  eq_chosen_iff := by
+    grind [embedding_mk_eq, Φ_mk_eq_or_star_eq, comap_mk, conjugate_comp, star_star]
 
 variable [IsCMField E] (χ : QZChar Gal(Ω/E))
 
@@ -759,16 +769,21 @@ section GrunwaldStep
 
 open New NumberField Valued QZChar
 
-/-- Let `A` be a place of the algebraic closure `Ω` (a valuation subring), `w` a finite place of
+/--
+Let `A` be a place of the algebraic closure `Ω` (a valuation subring), `w` a finite place of
 `E`, `χ` a character of `E_wˣ` (`LocField w`) with values in `ℚ/ℤ`, `ν` a Galois character of `E`
 with `E' = stepField ν` the fixed field of the kernel of `symmetrize ν`, and `u` a finite place of
 `E'`. The predicate says that `E' / E` is a step (`New.IsStep`: CM, Galois of prime degree, an
 integer of trace `1`, for `ideleChar ν = exp (2πi ν ∘ Art)`) of degree `p` and `E'` has Weil data,
 that `u` is split, lies below `A` and is the only place of `E'` above `w`, and that under the local
-Artin map at `w` the character `ν` is trivial and `symmetrize ν` is `χ`. -/
-structure New.GaloisRep.IsStepOfLocalChar {E : Type} [Field E] [EmbeddedNumberField E] [CMType E]
-    {w : FinPlace E} (A : ClosurePlace) (χ : (LocField w)ˣ →* Multiplicative QZ) (p : ℕ)
-    (ν : QZChar Gal(Ω/E)) (u : FinPlace (stepField ν)) : Prop where
+Artin map at `w` the character `ν` is trivial and `symmetrize ν` is `χ`.
+-/
+structure New.GaloisRep.IsStepOfLocalChar
+    {E : Type} [Field E] [EmbeddedNumberField E] [CMType E]
+    {w : FinPlace E}
+    (A : ClosurePlace) (χ : (LocField w)ˣ →* Multiplicative QZ) (p : ℕ)
+    (ν : QZChar Gal(Ω/E)) (u : FinPlace (stepField ν))
+    : Prop where
   /-- The field `E'` has Weil data. -/
   nonempty_weilData : Nonempty (WeilData (stepField ν))
   /-- The extension `E' / E`, with the idele character of `ν`, is a step. -/
@@ -784,8 +799,8 @@ structure New.GaloisRep.IsStepOfLocalChar {E : Type} [Field E] [EmbeddedNumberFi
   /-- Under the local Artin map at `w`, the character `ν` is trivial. -/
   abelianLift_artinAt (x : (LocField w)ˣ) : abelianLift ν (artinAt Gal(Ω/E) w x) = 1
   /-- Under the local Artin map at `w`, the character `symmetrize ν` is `χ`. -/
-  abelianLift_symmetrize_artinAt (x : (LocField w)ˣ) :
-    abelianLift (symmetrize ν) (artinAt Gal(Ω/E) w x) = χ x
+  abelianLift_symmetrize_artinAt (x : (LocField w)ˣ)
+    : abelianLift (symmetrize ν) (artinAt Gal(Ω/E) w x) = χ x
 
 /-- Let `χ` be a character of `E_wˣ` (`LocField w`) with values in `ℚ/ℤ` that is killed by `p` and
 kills the `(q - 1)`-th powers of units, `q = w.q` being the norm of `w`. If `w` lies above `p`,
@@ -800,25 +815,30 @@ lemma New.GaloisRep.apply_eq_one_of_natCast_mem_asIdeal {E : Type} [Field E] [Nu
   have h_cop : p.Coprime (w.q - 1) := .of_dvd_left h_dvd (by simp)
   exact (pow_eq_one_iff_of_coprime h_cop).mp ⟨hχ_pow x, by rw [← map_pow, h_tame x hx]⟩
 
-/-- The local behaviour of the Galois character `ν` of `E` that Grunwald's theorem gives in the
+/--
+The local behaviour of the Galois character `ν` of `E` that Grunwald's theorem gives in the
 proof of `New.GaloisRep.exists_isStepOfLocalChar`, for a character `χ` of `E_wˣ` (`LocField w`)
 and a number `p`: `ν` is killed by `p`; under the local Artin map at `w` it is trivial and
 `symmetrize ν` is `χ`; and it kills the local units at every finite place that is fixed by
-complex conjugation or lies above `p`. -/
-private structure New.GaloisRep.IsGrunwaldChar {E : Type} [Field E] [EmbeddedNumberField E]
-    [CMType E] (w : FinPlace E) (χ : (LocField w)ˣ →* Multiplicative QZ) (p : ℕ)
-    (ν : QZChar Gal(Ω/E)) : Prop where
+complex conjugation or lies above `p`.
+-/
+private structure New.GaloisRep.IsGrunwaldChar
+    {E : Type} [Field E] [EmbeddedNumberField E] [CMType E]
+    (w : FinPlace E) (χ : (LocField w)ˣ →* Multiplicative QZ)
+    (p : ℕ) (ν : QZChar Gal(Ω/E))
+    : Prop where
   /-- The character `ν` is killed by `p`. -/
   nsmul_eq_zero : p • ν = 0
   /-- Under the local Artin map at `w`, the character `ν` is trivial. -/
   abelianLift_artinAt (x : (LocField w)ˣ) : abelianLift ν (artinAt Gal(Ω/E) w x) = 1
   /-- Under the local Artin map at `w`, the character `symmetrize ν` is `χ`. -/
-  abelianLift_symmetrize_artinAt (x : (LocField w)ˣ) :
-    abelianLift (symmetrize ν) (artinAt Gal(Ω/E) w x) = χ x
+  abelianLift_symmetrize_artinAt (x : (LocField w)ˣ)
+    : abelianLift (symmetrize ν) (artinAt Gal(Ω/E) w x) = χ x
   /-- At a place `u` fixed by conjugation or above `p`, the character `ν` kills the local units. -/
-  abelianLift_artinMap_locIdele (u : FinPlace E) (x : (LocField u)ˣ)
-    (hu : star u = u ∨ (p : 𝓞 E) ∈ u.asIdeal) (hx : v x.val = 1) :
-    abelianLift ν (artinMap Gal(Ω/E) (locIdele u x)) = 1
+  abelianLift_artinMap_locIdele
+    (u : FinPlace E) (x : (LocField u)ˣ)
+    (hu : star u = u ∨ (p : 𝓞 E) ∈ u.asIdeal) (hx : v x.val = 1)
+    : abelianLift ν (artinMap Gal(Ω/E) (locIdele u x)) = 1
 
 /-- Let `w` be a split finite place of the CM field `E`, `p` a prime, and `χ` a character of `E_wˣ`
 killed by `p` that kills the `(w.q - 1)`-th powers of units (`E` also satisfies

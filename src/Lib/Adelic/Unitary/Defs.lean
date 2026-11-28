@@ -59,8 +59,8 @@ namespace New
 
 section Components
 
-variable {E : Type*} [Field E] [NumberField E] {n : Type*} [Fintype n] [DecidableEq n]
-  (w : FinPlace E)
+variable
+  {E : Type*} [Field E] [NumberField E] {n : Type*} [Fintype n] [DecidableEq n] (w : FinPlace E)
 
 /-! ### Adelic matrices and their local components -/
 
@@ -71,8 +71,10 @@ lemma matrix_ext_evalAt {m n : Type*} {M N : Matrix m n (𝔸f E)}
   Matrix.ext fun i j ↦
     DFunLike.ext _ _ fun u ↦ by simpa [evalAt_apply] using congr_fun₂ (h u) i j
 
-/-- The ring homomorphism 𝔸 → ℂ taking an adele of E to its component at the infinite place v;
-in `𝔸 E` every infinite component is a complex number. -/
+/--
+The ring homomorphism 𝔸 → ℂ taking an adele of E to its component at the infinite place v;
+in `𝔸 E` every infinite component is a complex number.
+-/
 @[simps!]
 def evalInf (v : InfinitePlace E) : 𝔸 E →+* ℂ := (Pi.evalRingHom _ v).comp (RingHom.fst ..)
 
@@ -85,13 +87,16 @@ lemma matrix_ext_𝔸 {m n : Type*} {M N : Matrix m n (𝔸 E)}
   Matrix.ext fun i j ↦
     Prod.ext (funext fun v ↦ congr_fun₂ (h_inf v) i j) (congr_fun₂ h_fin i j)
 
-/-- The homomorphism sending g in GL_n(E_w) to the element of GL_n(𝔸_f) with component g at w
-and 1 at the other places. -/
+/--
+The homomorphism sending g in GL_n(E_w) to the element of GL_n(𝔸_f) with component g at w
+and 1 at the other places.
+-/
 def singleGL : GL n (LocField w) →* GL n (𝔸f E) :=
-  Units.map
-    { toFun g := 1 + (g - 1).map (singleAdele w)
-      map_one' := by simp
-      map_mul' := by noncomm_ring [← Matrix.map_mul, ← Matrix.map_add _ (map_add _), implies_true] }
+  Units.map {
+    toFun g := 1 + (g - 1).map (singleAdele w)
+    map_one' := by simp
+    map_mul' := by noncomm_ring [← Matrix.map_mul, ← Matrix.map_add _ (map_add _), implies_true]
+  }
 
 /-- The component of `singleGL w g` at `w` itself is `g`. -/
 @[simp]
@@ -176,16 +181,20 @@ end Components
 
 section Groups
 
-variable {E : Type*} [Field E] [NumberField E] (n : Type*) [Fintype n] [DecidableEq n]
-  (w : FinPlace E)
+variable
+  {E : Type*} [Field E] [NumberField E] (n : Type*) [Fintype n] [DecidableEq n] (w : FinPlace E)
 
-/-- For a finite place w of E, the subgroup GL_n(O_w) of GL_n(E_w) of matrices that, with their
-inverses, have entries in the local integers. -/
+/--
+For a finite place w of E, the subgroup GL_n(O_w) of GL_n(E_w) of matrices that, with their
+inverses, have entries in the local integers.
+-/
 abbrev localIntGL : Subgroup (GL n (LocField w)) := intGL n (LocInt w).toSubring
 
-/-- The set of g in GL_n(E_w) with g and ϖg⁻¹ integral and det g of valuation j, where ϖ is a
+/--
+The set of g in GL_n(E_w) with g and ϖg⁻¹ integral and det g of valuation j, where ϖ is a
 uniformiser. For j at most the cardinality of n it is the GL_n(O_w)-double coset of
-diag(ϖ1_j, 1). -/
+diag(ϖ1_j, 1).
+-/
 def basicDoubleCoset (j : ℕ) : Set (GL n (LocField w)) :=
   {g : GL n (LocField w) |
     (∀ a b : n, v (g a b) ≤ 1) ∧ (∀ a b : n, v (g⁻¹ a b) ≤ exp 1) ∧ v g.val.det = exp (-↑j)}
@@ -195,7 +204,7 @@ variable (E) [IsCMField E]
 /-- The finite adelic unitary group G_f: matrices g in GL_n(𝔸_f) with gᴴg = 1. -/
 @[instance_reducible]
 def Gf : Type _ := ↥(U (1 : Matrix n n (𝔸f E)))
-  deriving Group, TopologicalSpace, MeasurableSpace, DistribMulAction _ (n → 𝔸f E), PolishSpace,
+deriving Group, TopologicalSpace, MeasurableSpace, DistribMulAction _ (n → 𝔸f E), PolishSpace,
   CoeOut _ (GL n (𝔸f E)), CoeOut _ (Matrix n n (𝔸f E)), SecondCountableTopology
 
 instance : ContinuousSMul (Gf E n) (n → 𝔸f E) := ⟨.matrix_mulVec (by fun_prop) continuous_snd⟩
@@ -230,44 +239,60 @@ lemma Gf.codRestrict_eq_mk {M : Type*} [Monoid M] (f : M →* GL n (𝔸f E))
 @[ext]
 lemma Gf.val_ext {g k : Gf E n} (h : g.val = k.val) : g = k := Subtype.ext h
 
-/-- The subgroup K_0 = G_f ∩ GL_n(Ô) of the finite adelic unitary group, the stabiliser of the
-standard lattice Ô^n. -/
+/--
+The subgroup K_0 = G_f ∩ GL_n(Ô) of the finite adelic unitary group, the stabiliser of the
+standard lattice Ô^n.
+-/
 def stdLevel : Subgroup (Gf E n) := (intGL n (Ô E)).subgroupOf (U 1)
 
 variable {n} (s : n → ℤˣ)
 
-/-- The archimedean unitary group G_∞ for signs s: one copy of the complex unitary group U(diag
-s) = `USign s`, the g in GL_n(ℂ) with gᴴ diag(s) g = diag(s), for each infinite place of E. -/
+/--
+The archimedean unitary group G_∞ for signs s: one copy of the complex unitary group U(diag
+s) = `USign s`, the g in GL_n(ℂ) with gᴴ diag(s) g = diag(s), for each infinite place of E.
+-/
 abbrev GInf : Type _ := InfinitePlace E → USign s
 
-/-- The adelic unitary group G = G_∞ × G_f for signs s at the infinite places and the identity
-matrix at the finite places. -/
+/--
+The adelic unitary group G = G_∞ × G_f for signs s at the infinite places and the identity
+matrix at the finite places.
+-/
 abbrev G : Type _ := GInf E s × Gf E n
 
 /-- Elements of `New.Gf` are viewed in `New.G` with component 1 at the infinite places. -/
 instance : Coe (Gf E n) (G E s) := ⟨(1, ·)⟩
 
-/-- The diagonal adelic matrix that is diag(s) at every infinite place and the identity at the
-finite places. -/
+/--
+The diagonal adelic matrix that is diag(s) at every infinite place and the identity at the
+finite places.
+-/
 def stdForm : Matrix n n (𝔸 E) := diagonal (α := 𝔸 E) fun i ↦ (fun _ ↦ s i, 1)
 
 end Groups
 
 section SplitPlaces
 
-variable {E : Type*} [Field E] [NumberField E] {n : Type*} [Fintype n] [DecidableEq n]
-  [IsCMField E] {s : n → ℤˣ} {w : FinPlace E} (hw : w.IsSplit)
+variable
+  {E : Type*} [Field E] [NumberField E]
+  {n : Type*} [Fintype n] [DecidableEq n] [IsCMField E]
+  {s : n → ℤˣ} {w : FinPlace E} (hw : w.IsSplit)
 
-/-- The function F on G = G_∞ × G_f is right invariant under K, a subset or subgroup of G_f:
-F(g·(1, k)) = F(g) for all k ∈ K and all g ∈ G. -/
+/--
+The function F on G = G_∞ × G_f is right invariant under K, a subset or subgroup of G_f:
+F(g·(1, k)) = F(g) for all k ∈ K and all g ∈ G.
+-/
 @[simp]
 abbrev HasLevel {W : Sort*} {S : Type*} [Membership _ S] (F : G E s → W) (K : S) :=
   ∀ k ∈ K, ∀ g : G E s, F (g * (1, k)) = F g
 
-/-- The j-th Hecke operator on a representation π of GL_n(E_w): the action (`New.heckeFun`) of
-the indicator function of `New.basicDoubleCoset` j, for K = GL_n(O_w). -/
-def heckeGL {A W : Type*} [CommSemiring A] [AddCommMonoid W] [Module A W]
-    (π : Representation A (GL n (LocField w)) W) (j : ℕ) : Module.End A W :=
+/--
+The j-th Hecke operator on a representation π of GL_n(E_w): the action (`New.heckeFun`) of
+the indicator function of `New.basicDoubleCoset` j, for K = GL_n(O_w).
+-/
+def heckeGL
+    {A W : Type*} [CommSemiring A] [AddCommMonoid W] [Module A W]
+    (π : Representation A (GL n (LocField w)) W) (j : ℕ)
+    : Module.End A W :=
   heckeFun π (localIntGL n w) ((basicDoubleCoset n w j).indicator 1)
 
 /-! ### Conjugate places and split places -/
@@ -319,13 +344,14 @@ lemma singleGL_mul_star_singleGL_inv_mem_U {w : FinPlace E} (hw : w.IsSplit)
   · simp [ha, hu]
   · simp [ha, hu, hu_star]
 
-/-- For a split place w, the homomorphism GL_n(E_w) → G_f sending g to the unitary element with
-component g at w, the inverse conjugate transpose of g at w̄, and 1 at all other places. -/
+/--
+For a split place w, the homomorphism GL_n(E_w) → G_f sending g to the unitary element with
+component g at w, the inverse conjugate transpose of g at w̄, and 1 at all other places.
+-/
 def ofSplitPlace : GL n (LocField w) →* Gf E n :=
-  MonoidHom.mk' (fun g ↦ ⟨singleGL w g * star (singleGL w g⁻¹),
-    singleGL_mul_star_singleGL_inv_mem_U hw g⟩) fun _ _ ↦
-    Subtype.ext <| GL_ext_evalAt fun u ↦ by
-      by_cases hu : u = w <;> aesop
+  MonoidHom.mk'
+    (fun g ↦ ⟨singleGL w g * star (singleGL w g⁻¹), singleGL_mul_star_singleGL_inv_mem_U hw g⟩)
+    fun _ _ ↦ Subtype.ext <| GL_ext_evalAt fun u ↦ by by_cases hu : u = w <;> aesop
 
 /-- For a finite place `w` of `E` that is split over the maximal real subfield and for `g` in
 `GL_n(E_w)`, the component at `w` of the element `ofSplitPlace hw g` of `G_f` is `g`. -/
@@ -339,28 +365,36 @@ variable (n) (S : Set (FinPlace E))
 
 /-! ### Supports, levels and reductions -/
 
-/-- For a ring homomorphism f from the integral finite adeles to S, the homomorphism K_0 →
-GL_n(S) applying f to each entry. -/
+/--
+For a ring homomorphism f from the integral finite adeles to S, the homomorphism K_0 →
+GL_n(S) applying f to each entry.
+-/
 def stdLevel.map {S : Type*} [CommRing S] (f : Ô E →+* S) : stdLevel E n →* GL n S :=
   (intGL.map f).comp ((U 1).subtype.subgroupComap (intGL n (Ô E)))
 
-/-- The subgroup of G_f of elements supported on S ∪ S̄, that is, with component 1 at every
-place outside S ∪ S̄. -/
+/--
+The subgroup of G_f of elements supported on S ∪ S̄, that is, with component 1 at every
+place outside S ∪ S̄.
+-/
 def Gf.supportedOn : Subgroup (Gf E n) :=
   ⨅ w : FinPlace E, ⨅ _ : w ∉ S ∧ star w ∉ S, (atPlace (n := n) w).ker
 
-/-- The elements of `New.Gf` whose component at each `w ∈ S` lies in the subgroup `K w`, with no
+/--
+The elements of `New.Gf` whose component at each `w ∈ S` lies in the subgroup `K w`, with no
 condition outside `S`; by default `K w` is `New.localIntGL`, the integral matrices with integral
-inverse. -/
-def localLevel (K : (w : FinPlace E) → Subgroup (GL n (LocField w)) := fun w ↦ localIntGL n w) :
-    Subgroup (Gf E n) where
+inverse.
+-/
+def localLevel (K : (w : FinPlace E) → Subgroup (GL n (LocField w)) := fun w ↦ localIntGL n w)
+    : Subgroup (Gf E n) where
   carrier := {g : Gf E n | ∀ w ∈ S, g.atPlace w ∈ K w}
   mul_mem' := by simp_all [mul_mem]
   one_mem' := by simp
   inv_mem' := by simp_all
 
-/-- The subgroup of G_f of elements with component 1 at every place in S (hence, being unitary,
-also at the conjugate places). -/
+/--
+The subgroup of G_f of elements with component 1 at every place in S (hence, being unitary,
+also at the conjugate places).
+-/
 def Gf.trivialOn : Subgroup (Gf E n) := ⨅ w ∈ S, (atPlace (n := n) w).ker
 
 end SplitPlaces
@@ -369,11 +403,16 @@ section Levels
 
 section
 
-variable {E : Type*} [Field E] [NumberField E] {n : Type*} [Fintype n] [DecidableEq n]
-  [IsCMField E] {s : n → ℤˣ} (g : G E s) {K : Subgroup (Gf E n)}
+variable
+  {E : Type*} [Field E] [NumberField E]
+  {n : Type*} [Fintype n] [DecidableEq n] [IsCMField E]
+  {s : n → ℤˣ} (g : G E s)
+  {K : Subgroup (Gf E n)}
 
-/-- Reduction modulo w: the homomorphism from K_0 = G_f ∩ GL_n(Ô) to GL_n of the residue field
-at w. -/
+/--
+Reduction modulo w: the homomorphism from K_0 = G_f ∩ GL_n(Ô) to GL_n of the residue field
+at w.
+-/
 def stdLevel.reduceAt (w : FinPlace E) : stdLevel E n →* GL n (ResField w) := map n (New.reduceAt w)
 
 /-- An element of the finite adelic unitary group G_f lies in `localLevel n S K` iff its component
@@ -395,8 +434,10 @@ lemma isOpen_stdLevel : (stdLevel E n).IsOpen := (isOpen_intGL isOpen_Ô).preima
 lemma isCompact_stdLevel : IsCompact (stdLevel E n : Set (Gf E n)) :=
   (isCompact_intGL isCompact_Ô).preimage_val (isClosed_unitaryGroupOf _)
 
-/-- The subgroup K of the finite adelic unitary group G_f is a level: it is open and contained
-in K_0 = G_f ∩ GL_n(Ô). -/
+/--
+The subgroup K of the finite adelic unitary group G_f is a level: it is open and contained
+in K_0 = G_f ∩ GL_n(Ô).
+-/
 class IsLevel (K : Subgroup (Gf E n)) : Prop where
   /-- K lies in K_0 = `New.stdLevel`. -/
   le : K ≤ stdLevel E n
@@ -405,39 +446,49 @@ class IsLevel (K : Subgroup (Gf E n)) : Prop where
 
 instance : IsLevel (stdLevel E n) := ⟨le_rfl, isOpen_stdLevel⟩
 
-/-- For a subgroup K of G_f, the index [K₀ : K ∩ K₀], where K₀ = `New.stdLevel`; it is 0 if the
-index is infinite. -/
+/--
+For a subgroup K of G_f, the index [K₀ : K ∩ K₀], where K₀ = `New.stdLevel`; it is 0 if the
+index is infinite.
+-/
 abbrev stdLevelIndex (K : Subgroup (Gf E n)) : ℕ := K.relIndex (stdLevel E n)
 
 /-! ### The adelic group as a group of adelic matrices; compactness and Haar measure -/
 
-/-- The homomorphism sending a family (a_w) in GL_n(ℂ), indexed by the infinite places, and b in
-GL_n(𝔸_f) to the element of GL_n(𝔸) with components a_w and finite part b. -/
+/--
+The homomorphism sending a family (a_w) in GL_n(ℂ), indexed by the infinite places, and b in
+GL_n(𝔸_f) to the element of GL_n(𝔸) with components a_w and finite part b.
+-/
 @[simps! apply_val]
 def mkAdelicGL : (InfinitePlace E → GL n ℂ) × GL n (𝔸f E) →* GL n (𝔸 E) :=
-  MonoidHom.toHomUnits
-    { toFun g := of fun i j ↦ (fun v ↦ g.1 v i j, g.2 i j)
-      map_one' := by
-        ext <;> simp [apply_ite Prod.fst, apply_ite Prod.snd, ite_apply, Matrix.one_apply]
-      map_mul' g h := Matrix.ext fun i j ↦ by simp [Matrix.mul_apply, ← prod_mk_sum, funext_iff] }
+  MonoidHom.toHomUnits {
+    toFun g := of fun i j ↦ (fun v ↦ g.1 v i j, g.2 i j)
+    map_one' := by
+      ext <;> simp [apply_ite Prod.fst, apply_ite Prod.snd, ite_apply, Matrix.one_apply]
+    map_mul' g h := Matrix.ext fun i j ↦ by simp [Matrix.mul_apply, ← prod_mk_sum, funext_iff]
+  }
 
-/-- The isomorphism from G = G_∞ × G_f to the unitary group over the adeles of the form that is
-diag(s) at the infinite places and 1 at the finite ones, `New.stdForm`. -/
+/--
+The isomorphism from G = G_∞ × G_f to the unitary group over the adeles of the form that is
+diag(s) at the infinite places and 1 at the finite ones, `New.stdForm`.
+-/
 def G.toUnitary : G E s ≃* U (stdForm E s) where
-  toFun g :=
-    ⟨mkAdelicGL (fun v ↦ g.1 v, g.2), by
+  toFun g := ⟨
+    mkAdelicGL (fun v ↦ g.1 v, g.2),
+    by
       -- The relation is checked at every infinite place and on the finite part.
       rw [mem_unitaryGroupOf_iff]
       apply matrix_ext_𝔸
-      · simp only [↓Matrix.map_mul, stdForm, evalInf_apply, Prod.fst_zero, Pi.zero_apply,
+      · simp only [↓ Matrix.map_mul, stdForm, evalInf_apply, Prod.fst_zero, Pi.zero_apply,
           diagonal_map]
         exact fun v ↦ mem_unitaryGroupOf_iff.1 (g.1 v).property
-      · simp only [↓Matrix.map_mul, RingHom.coe_snd, stdForm, Prod.snd_zero, diagonal_map,
+      · simp only [↓ Matrix.map_mul, RingHom.coe_snd, stdForm, Prod.snd_zero, diagonal_map,
           diagonal_one]
-        exact mem_unitaryGroupOf_iff.1 g.2.property⟩
-  invFun g :=
-    (fun v ↦ U.map (evalInf v) (by simp) (by simp [stdForm, signMatrix]) g,
-      U.map (RingHom.snd ..) (by simp) (by simp [stdForm]) g)
+        exact mem_unitaryGroupOf_iff.1 g.2.property
+  ⟩
+  invFun g := (
+    fun v ↦ U.map (evalInf v) (by simp) (by simp [stdForm, signMatrix]) g,
+    U.map (RingHom.snd ..) (by simp) (by simp [stdForm]) g
+  )
   map_mul' g k := Subtype.ext (mkAdelicGL.map_mul (_, g.2.val) (_, k.2.val))
 
 /-- The matrix over the adeles of an element g of the adelic unitary group G. -/
@@ -501,8 +552,10 @@ variable (E : Type*) [Field E] [CMType E] {n : Type*} [Fintype n] [DecidableEq n
 
 /-! ### Hermitian spaces with a point -/
 
-/-- A hermitian space with a point: a matrix J over E and x in GL_n(𝔸) with xᴴJx equal to
-diag(s) at the infinite places and 1 at the finite places. -/
+/--
+A hermitian space with a point: a matrix J over E and x in GL_n(𝔸) with xᴴJx equal to
+diag(s) at the infinite places and 1 at the finite places.
+-/
 structure Space (n : Type*) [Fintype n] [DecidableEq n] (s : n → ℤˣ) where
   /-- The matrix over `E` of the hermitian form. -/
   J : Matrix n n E
@@ -518,28 +571,36 @@ variable {E} (V : Space E n s)
 /-- For a space (J, x), the isomorphism g ↦ x g x⁻¹ from G to the adelic unitary group U(J)(𝔸). -/
 def toRatCoords : G E s ≃* U (V.J.map toAdele) := G.toUnitary.trans (U.conj V.x V.gram_point)
 
-/-- For a space (J, x), the homomorphism γ ↦ x⁻¹ γ x from the rational unitary group U(J)(E) to
-G. -/
+/--
+For a space (J, x), the homomorphism γ ↦ x⁻¹ γ x from the rational unitary group U(J)(E) to
+G.
+-/
 def ratEmbed : U V.J →* G E s := V.toRatCoords.symm.toMonoidHom.comp (U.map toAdele (by simp) rfl)
 
 /-- For a space (J, x), the homomorphism U(J)(E) → G_f sending γ to the finite part of x⁻¹ γ x. -/
 def embFin : U V.J →* Gf E n := (MonoidHom.snd ..).comp V.ratEmbed
 
-/-- For a space (J, x), the subgroup x⁻¹ U(J)(E) x of G, the image of the rational unitary
-group. -/
+/--
+For a space (J, x), the subgroup x⁻¹ U(J)(E) x of G, the image of the rational unitary
+group.
+-/
 def Γ : Subgroup (G E s) := V.ratEmbed.range
 
-/-- For a space (J, x), the subgroup of G_f formed by the finite parts of the elements x⁻¹ γ x,
-γ in U(J)(E). -/
+/--
+For a space (J, x), the subgroup of G_f formed by the finite parts of the elements x⁻¹ γ x,
+γ in U(J)(E).
+-/
 abbrev Γf : Subgroup (Gf E n) := V.embFin.range
 
 /-- For a space (J, x), the adelic vector x⁻¹y attached to a rational vector y in E^n. -/
 def vecAtPoint : (n → E) →ₛₗ[(toAdele : E →+* 𝔸 E)] n → 𝔸 E :=
-  V.x⁻¹.val.mulVecLin ∘ₛₗ LinearMap.mk (σ := toAdele) ⟨fun y ↦ toAdele ∘ y, by simp⟩
-    (by simp [funext_iff])
+  V.x⁻¹.val.mulVecLin
+    ∘ₛₗ LinearMap.mk (σ := toAdele) ⟨fun y ↦ toAdele ∘ y, by simp⟩ (by simp [funext_iff])
 
-/-- For a space (J, x), the lattice E^n ∩ x_f Ô^n, as an additive subgroup of E^n. It consists of
-the y whose vector x⁻¹y has integral finite part. -/
+/--
+For a space (J, x), the lattice E^n ∩ x_f Ô^n, as an additive subgroup of E^n. It consists of
+the y whose vector x⁻¹y has integral finite part.
+-/
 def baseLattice : AddSubgroup (n → E) where
   carrier := {y : n → E | ∀ i : n, (V.vecAtPoint y i).2 ∈ Ô E}
   add_mem' := by simp_all [add_mem]
@@ -550,26 +611,34 @@ end Space
 
 variable (n)
 
-/-- The definite space I_n with J = 1 and x = 1, the hermitian form given by the sum of the norms
-of the coordinates. -/
+/--
+The definite space I_n with J = 1 and x = 1, the hermitian form given by the sum of the norms
+of the coordinates.
+-/
 @[simps]
 def stdSpace : Space E n 1 where
   J := 1
   x := 1
   gram_point := by simp [stdForm, ← Pi.one_def, Prod.mk_one_one]
 
-/-- The mass of the genus of O_E^l: the sum of 1/#(Γ ∩ gK_0g⁻¹) over the classes ΓgK_0 in G_f,
-where Γ is the image of U_l(E), the rational unitary group of the standard space `stdSpace`. -/
+/--
+The mass of the genus of O_E^l: the sum of 1/#(Γ ∩ gK_0g⁻¹) over the classes ΓgK_0 in G_f,
+where Γ is the image of U_l(E), the rational unitary group of the standard space `stdSpace`.
+-/
 def mass (l : ℕ) : ℝ := (classSum (stdSpace E (Fin l)).Γf (stdLevel E (Fin l)) 1 : ℝ)
 
 variable {E n}
 
-/-- The homomorphism U_n(E) → G_f sending a matrix γ over E with γᴴγ = 1 to its image over the
-finite adeles. -/
+/--
+The homomorphism U_n(E) → G_f sending a matrix γ over E with γᴴγ = 1 to its image over the
+finite adeles.
+-/
 abbrev stdEmbFin : U (stdSpace E n).J →* Gf E n := (stdSpace E n).embFin
 
-/-- The image of U_n(E), the matrices γ over E with γᴴγ = 1, in the finite adelic unitary group
-G_f. -/
+/--
+The image of U_n(E), the matrices γ over E with γᴴγ = 1, in the finite adelic unitary group
+G_f.
+-/
 abbrev stdRatPoints : Subgroup (Gf E n) := (stdSpace E n).Γf
 
 end Levels

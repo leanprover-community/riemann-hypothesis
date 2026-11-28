@@ -51,8 +51,10 @@ open scoped ENNReal
 
 section Characters
 
-variable {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E] {C C' : Type*}
-  [CommMonoid C] [CommMonoid C'] {S I I' : Set (FinPlace E)} {χ χ' : Gal(Ω/E) →* C}
+variable
+  {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+  {C C' : Type*} [CommMonoid C] [CommMonoid C']
+  {S I I' : Set (FinPlace E)} {χ χ' : Gal(Ω/E) →* C}
 
 /-- Enlarging the modulus: let the character `χ` of the absolute Galois group `Gal(Ω/E)` satisfy
 `χ(Art y) = η(y / ȳ)` for an idele class character `η` of modulus `I` that is trivial at the places
@@ -104,11 +106,13 @@ namespace Selmer
 
 section ClassGroup
 
-variable {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-  (Q : Finset (FinPlace E))
+variable
+  {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E] (Q : Finset (FinPlace E))
 
-/-- The group `Cl_Q`: finite ideles `u` with `u ū = 1`, modulo those in `Eˣ` and the units that
-are `≡ 1` at the primes of `Q`. -/
+/--
+The group `Cl_Q`: finite ideles `u` with `u ū = 1`, modulo those in `Eˣ` and the units that
+are `≡ 1` at the primes of `Q`.
+-/
 abbrev U1ClassGroup : Type :=
   unitary (𝔸f E) ⧸ Subgroup.closure {u : unitary (𝔸f E) |
     Unitary.toUnits u ∈ principalIdele.range ∨ Unitary.toUnits u ∈ idelesUnitOff ∅ ∧
@@ -136,8 +140,10 @@ lemma divStarClass_surjective (Q : Finset (FinPlace E)) :
 
 variable {Q}
 
-/-- A chosen element of the Galois group that lifts `Art y`, for a chosen finite idele `y` with
-`y / ȳ` in the class `c`. -/
+/--
+A chosen element of the Galois group that lifts `Art y`, for a chosen finite idele `y` with
+`y / ȳ` in the class `c`.
+-/
 def galoisLift (c : U1ClassGroup Q) : Gal(Ω/E) :=
   (artinMap Gal(Ω/E) (Function.surjInv (divStarClass_surjective Q) c)).out
 
@@ -171,11 +177,13 @@ lemma _root_.New.IsFromU1.apply_galoisLift {C : Type*} [CommMonoid C] {S : Set (
     _ = η' (divStarClass Q y) := by rw [← hη', Function.surjInv_eq (divStarClass_surjective Q)]
     _ = χ g := by rw [hη', η_artin y g hy]
 
-variable {O R R' : Type*} [CommSemiring O] [AddCommMonoid R] [Module O R] [AddCommMonoid R']
-  [Module O R']
+variable
+  {O R R' : Type*} [CommSemiring O] [AddCommMonoid R] [Module O R] [AddCommMonoid R'] [Module O R']
 
-/-- The value of a function `f` on the Galois group, read on `Cl_Q` through `galoisLift` and
-extended linearly, at an element of the group ring of `Cl_Q`. -/
+/--
+The value of a function `f` on the Galois group, read on `Cl_Q` through `galoisLift` and
+extended linearly, at an element of the group ring of `Cl_Q`.
+-/
 def groupRingEval (f : Gal(Ω/E) → R) (a : MonoidAlgebra O (U1ClassGroup Q)) : R :=
   Finsupp.linearCombination O (fun c ↦ f (galoisLift c)) a.coeff
 
@@ -199,10 +207,11 @@ section EulerFactor
 
 variable {K : Type*} [Field K] (exps : List ℤ) (a : K) (q : ℕ)
 
-/-- The product of the factors `1 - a ^ (±1) q ^ (-e)` over a list of integers `e` and both
-signs. -/
-def eulerFactor : K :=
-  (exps.map fun e ↦ ∏ ε : ℤˣ, (1 - a ^ (ε : ℤ) * (q : K) ^ (-e))).prod
+/--
+The product of the factors `1 - a ^ (±1) q ^ (-e)` over a list of integers `e` and both
+signs.
+-/
+def eulerFactor : K := (exps.map fun e ↦ ∏ ε : ℤˣ, (1 - a ^ (ε : ℤ) * (q : K) ^ (-e))).prod
 
 lemma eulerFactor_nil : eulerFactor [] a q = 1 := rfl
 
@@ -220,11 +229,13 @@ end EulerFactor
 variable (ℓ : ℕ) [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
 
 open scoped Classical in
-/-- A Stickelberger system for a finite set `S₀` of places of the CM field `E` and an element `g₀`
+/--
+A Stickelberger system for a finite set `S₀` of places of the CM field `E` and an element `g₀`
 of `Gal(Ω/E)` consists of a continuous character `ϑ = twistChar` with `ϑ g₀ ≠ 1`, a
 list of integers `exponents`, and an element `Θ_Q = element Q` of the group ring of `Cl_Q` over
 `ℤ̄_ℓ` for every finite set `Q` of places, whose values under characters for `Q` change by Euler
-factors when a place is added to `Q` such that the enlarged set is auxiliary for `S₀`. -/
+factors when a place is added to `Q` such that the enlarged set is auxiliary for `S₀`.
+-/
 structure StickelbergerSystem (S₀ : Finset (FinPlace E)) (g₀ : Gal(Ω/E)) where
   /-- The character `ϑ` by which the characters `ψ` are twisted in the Euler factors. -/
   twistChar : Gal(Ω/E) →* (PadicAlgCl ℓ)ˣ
@@ -238,28 +249,33 @@ structure StickelbergerSystem (S₀ : Finset (FinPlace E)) (g₀ : Gal(Ω/E)) wh
   element (Q : Finset (FinPlace E)) : MonoidAlgebra (intQpBar ℓ) (U1ClassGroup Q)
   /-- The trivial character does not vanish at the element for the empty set. -/
   one_element_empty_ne_zero : groupRingEval (1 : Gal(Ω/E) →* PadicAlgCl ℓ) (element ∅) ≠ 0
-  /-- The norm relation: for a character `ψ` for `Q`, adding a prime `P` to `Q` multiplies the
+  /--
+  The norm relation: for a character `ψ` for `Q`, adding a prime `P` to `Q` multiplies the
   value of `ψ` by the factors `1 - (ϑ ψ)(φ) ^ (±1) (N P) ^ (-e)`, where `φ` is any Frobenius
   element at `P`. As both signs occur, arithmetic and geometric Frobenius elements give the same
-  product. -/
-  element_insert (Q : Finset (FinPlace E)) (P : FinPlace E) (hP : P ∉ Q)
-    (hQ : IsAuxiliary S₀ (insert P Q)) (ψ : Gal(Ω/E) →* PadicAlgCl ℓ)
-    (hψ : IsFromU1 (placesDividing E ℓ) Q ψ) (A : ClosurePlace) (hA : IsPlaceOver A P)
-    (φ : Gal(Ω/E)) (hφ : IsFrob A P.q φ) :
-    groupRingEval ψ (element (insert P Q)) =
-      groupRingEval ψ (element Q) * eulerFactor exponents ((twistChar φ : PadicAlgCl ℓ) * ψ φ) P.q
+  product.
+  -/
+  element_insert
+    (Q : Finset (FinPlace E)) (P : FinPlace E) (hP : P ∉ Q) (hQ : IsAuxiliary S₀ (insert P Q))
+    (ψ : Gal(Ω/E) →* PadicAlgCl ℓ) (hψ : IsFromU1 (placesDividing E ℓ) Q ψ)
+    (A : ClosurePlace) (hA : IsPlaceOver A P)
+    (φ : Gal(Ω/E)) (hφ : IsFrob A P.q φ)
+    : groupRingEval ψ (element (insert P Q))
+      = groupRingEval ψ (element Q) * eulerFactor exponents ((twistChar φ : PadicAlgCl ℓ) * ψ φ) P.q
 
 namespace StickelbergerSystem
 
 variable {ℓ} {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} (Y : StickelbergerSystem ℓ S₀ g₀)
 
-/-- For a Stickelberger system `Y`, the number `β = v(1(Θ_∅)) + ∑_e 2 v(ϑ(g₀) - 1)`. Here `v` is
+/--
+For a Stickelberger system `Y`, the number `β = v(1(Θ_∅)) + ∑_e 2 v(ϑ(g₀) - 1)`. Here `v` is
 the `ℓ`-adic valuation `ellVal`, `ϑ = Y.twistChar`, `g₀` is the Galois element at which the system
 has `ϑ(g₀) ≠ 1`, `e` runs over the list `Y.exponents`, and `1(Θ_∅)` is the value of the trivial
-character at the group-ring element `Θ_∅ = Y.element ∅`. -/
+character at the group-ring element `Θ_∅ = Y.element ∅`.
+-/
 def β : ℝ≥0∞ :=
-  ellVal (groupRingEval (1 : Gal(Ω/E) →* PadicAlgCl ℓ) (Y.element ∅)) +
-    Y.exponents.length * (2 * ellVal (Y.twistChar g₀ - 1 : PadicAlgCl ℓ))
+  ellVal (groupRingEval (1 : Gal(Ω/E) →* PadicAlgCl ℓ) (Y.element ∅))
+    + Y.exponents.length * (2 * ellVal (Y.twistChar g₀ - 1 : PadicAlgCl ℓ))
 
 /-- The values of the character `Y.twistChar` (written `ϑ`), read in `PadicAlgCl ℓ`, have norm one,
 as `ϑ` is continuous on a compact group. -/

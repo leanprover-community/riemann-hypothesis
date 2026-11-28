@@ -212,8 +212,10 @@ lemma exists_tPeriod : ∃ t : Amax,
       ring
   exact eq_of_forall_pow_dvd_sub p fun n ↦ dvd_of_mul_right_dvd (h_dvd n)
 
-/-- A chosen element `t` of `Amax` with the three properties of `exists_tPeriod`. These properties
-are unchanged when `t` is multiplied by a unit of `ℤ_[p]`, so they do not fix a normalisation. -/
+/--
+A chosen element `t` of `Amax` with the three properties of `exists_tPeriod`. These properties
+are unchanged when `t` is multiplied by a unit of `ℤ_[p]`, so they do not fix a normalisation.
+-/
 noncomputable def tPeriodAmax : Amax := exists_tPeriod.choose
 
 /-- In Colmez's ring `Amax` (A_max), the product of μ = [ε] − 1 (the Teichmüller lift of ε minus
@@ -248,7 +250,8 @@ section BdR
 open Ideal MulSemiringAction nonZeroDivisors AdicCompletion IsLocalization Away BdRPlus Amax Algebra
   FormallySmooth IsScalarTower BPlus NeZero IsFractionRing algebraMap
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {R : Type*} [CommRing R] [SMul (Gp p) R] [Algebra R BPlus] [SMulDistribClass (Gp p) R BPlus]
   {S : Type*} [CommRing S] [SMul R S]
 
@@ -261,7 +264,7 @@ instance : SMulCommClass FrobGal ℚ_[p] Bmax where
 instance actBdRPlus : MulSemiringAction (Gp p) BdRPlus := by
   -- `g` keeps the ideal `(ξ) = ker θ` of `BPlus`, so it extends to the completion.
   apply actionOfHoms _ fun g ↦
-    adicMap (toRingHom _ _ g) (by simp [mem_span_singleton, ↓← thetaBPlus_eq_zero_iff])
+    adicMap (toRingHom _ _ g) (by simp [mem_span_singleton, ↓ ← thetaBPlus_eq_zero_iff])
   -- The two laws are checked on classes of Cauchy sequences, modulo each power of `ξ`.
   · exact DFunLike.ext' (map_ext _ fun x ↦ ext_evalₐ (by simp))
   · exact fun a b ↦ DFunLike.ext' (map_ext _ fun x ↦ ext_evalₐ (by simp [mul_smul]))
@@ -272,10 +275,10 @@ instance : SMulDistribClass (Gp p) R BdRPlus :=
 /-- The de Rham period field B_dR, defined as the fraction field of the ring B_dR⁺. -/
 @[instance_reducible]
 def BdR : Type := FractionRing BdRPlus
-  deriving Field
+deriving Field
 
-variable [Algebra R BdRPlus] [Algebra S BdRPlus] [IsScalarTower R S BdRPlus]
-  [FaithfulSMul R BdRPlus] in
+variable
+  [Algebra R BdRPlus] [Algebra S BdRPlus] [IsScalarTower R S BdRPlus] [FaithfulSMul R BdRPlus] in
 deriving instance Algebra R, IsScalarTower R S, IsFractionRing BdRPlus, FaithfulSMul R for @BdR p _
 
 instance : CharZero BdR := charZero_of_charZero ℚ_[p] _
@@ -292,17 +295,17 @@ instance : Algebra Bmax BdR :=
 instance : IsScalarTower R Bmax BdR := of_algebraMap_eq fun _ ↦ .symm (lift_eq _ _)
 
 instance : FaithfulSMul Bmax BdR :=
-  .of_injective (ofId Bmax BdR)
-    ((lift_injective_iff _).mpr (by simp [injective_BPlus_Bmax.eq_iff]))
+  .of_injective (ofId Bmax BdR) ((lift_injective_iff _).mpr (by simp [injective_BPlus_Bmax.eq_iff]))
 
 attribute [local instance] FormallyEtale.of_isSeparable
 
-/-- The embedding of `Q̄_p` in `B_dR⁺`: `Q̄_p` is formally étale over `ℚ_p`, so its map to
-`B⁺/ξ ≃ ℂ_p` lifts to the `ξ`-adic completion `B_dR⁺`. -/
+/--
+The embedding of `Q̄_p` in `B_dR⁺`: `Q̄_p` is formally étale over `ℚ_p`, so its map to
+`B⁺/ξ ≃ ℂ_p` lifts to the `ξ`-adic completion `B_dR⁺`.
+-/
 instance : Algebra (PadicAlgCl p) BdRPlus :=
-  (Exists.choose
-    (exists_adicCompletionEvalOneₐ_comp_eq (thetaEquiv.symm.toAlgHom.comp (algHom ..))) :
-    _ →ₐ[ℚ_[p]] BdRPlus).toAlgebra
+  (Exists.choose (exists_adicCompletionEvalOneₐ_comp_eq (thetaEquiv.symm.toAlgHom.comp (algHom ..)))
+    : _ →ₐ[ℚ_[p]] BdRPlus).toAlgebra
 
 instance : IsScalarTower ℤ_[p] (PadicAlgCl p) BdRPlus := to₁₃₄ _ ℚ_[p] ..
 

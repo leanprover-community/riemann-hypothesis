@@ -64,8 +64,10 @@ open Period WittVector
 
 variable {p : ℕ} [ThePrime p] {𝔣 : ℕ+} {g : Gp p} {c : WittFq 𝔣}
 
-/-- The Z_p-algebra homomorphism from Λ = W(F_{p^f}) to Q̄_p that becomes the restriction of θ
-after the inclusion of Q̄_p in C_p. -/
+/--
+The Z_p-algebra homomorphism from Λ = W(F_{p^f}) to Q̄_p that becomes the restriction of θ
+after the inclusion of Q̄_p in C_p.
+-/
 noncomputable def wittToQpBar : WittFq 𝔣 →ₐ[ℤ_[p]] PadicAlgCl p :=
   (exists_algHom_lift (OC.toPadicIntAlgHom (theta.comp (algebraMap (WittFq 𝔣) Ainf)))).choose
 
@@ -107,10 +109,12 @@ variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {f : ℕ+}
 
 /-! ### The action of ℤ × Γ -/
 
-/-- The group ℤ × Γ (ℤ written multiplicatively); on rings with bijective Frobenius φ, such as
-A_inf, the pair (n, g) acts as φ^n j(g). -/
+/--
+The group ℤ × Γ (ℤ written multiplicatively); on rings with bijective Frobenius φ, such as
+A_inf, the pair (n, g) acts as φ^n j(g).
+-/
 def FrobGroup (Γ : GroupOverGp p) : Type := Multiplicative ℤ × Γ
-  deriving Group
+deriving Group
 
 /-- The projection ℤ × Γ → Γ. -/
 def FrobGroup.snd : FrobGroup Γ →* Γ := MonoidHom.snd (Multiplicative ℤ) Γ
@@ -276,11 +280,13 @@ lemma exists_smul_teichmuller_eq (C : Subgroup (Gp p)) [hC : IsClosed (C : Set (
     Subtype.ext (by simpa [← hb] using hg_n)
   exact (congrArg (Ideal.Quotient.mk (span {(p : OC)})) h_root_eq).trans (v.mk_untiltRoot n)
 
-/-- A Kummer chart for j : Γ → G_p with open image: a chart S = Λ⟦z⟧ ⊂ A_inf, Λ = W(𝔽_{p^f}), and a
+/--
+A Kummer chart for j : Γ → G_p with open image: a chart S = Λ⟦z⟧ ⊂ A_inf, Λ = W(𝔽_{p^f}), and a
 subgroup Γ' (the field `subgroup`) of Γ of index prime to p, with four properties. The image j(Γ')
 fixes Λ and θ(z), and it contains every element of G_p that fixes Λ and θ(z). Γ' contains all g with
 j(g) close enough to 1, that is, ∀ᶠ g in `New.Period.nearOne` Γ, g ∈ Γ'. For each l ≥ 0 some g in Γ'
-has g z = [ε]^l z. -/
+has g z = [ε]^l z.
+-/
 class KummerChart extends chart : Chart where
   /-- The subgroup `Γ'` of `Γ` whose fixed field the chart belongs to. -/
   subgroup : Subgroup Γ
@@ -293,8 +299,8 @@ class KummerChart extends chart : Chart where
   /-- The elements of `Γ` whose image under `j` is close enough to `1` lie in `Γ'`. -/
   nearOne_le : nearOne Γ ≤ Filter.map subgroup.subtype ⊤
   /-- For every natural number `l`, some `g` in `Γ'` has `g z = [ε] ^ l z`. -/
-  exists_smul_z (l : ℕ) :
-    ∃ g : subgroup, toGp (g : Γ) • (chart.z : Ainf) = teichmuller p epsTilt ^ l * chart.z
+  exists_smul_z (l : ℕ)
+    : ∃ g : subgroup, toGp (g : Γ) • (chart.z : Ainf) = teichmuller p epsTilt ^ l * chart.z
 
 /-- The map `thetaPhiInv a` = θ ∘ φ^{−a} sends φ^a • r to θ(r), for r in A_inf and φ = (1, 1). -/
 @[simp]
@@ -309,9 +315,11 @@ variable {Γ} [k : KummerChart Γ]
 /-- The number d = 0 if the ramification index e of the chart is 1, and d = v_p(e) + 1 otherwise. -/
 def KummerChart.differentBound : ℕ := if k.e = 1 then 0 else padicValNat p k.e + 1
 
-/-- The Kummer chart is unramified: E = z + p and the ramification index e is 1. The third
+/--
+The Kummer chart is unramified: E = z + p and the ramification index e is 1. The third
 condition d = 0 follows from e = 1 by the definition of `New.Lift.KummerChart.differentBound`; it is
-recorded for convenience. -/
+recorded for convenience.
+-/
 def KummerChart.IsUnramified : Prop := k.E = k.z + p ∧ k.e = 1 ∧ k.differentBound = 0
 
 /-- The chart of a Kummer chart belongs to the field fixed by j(Γ): every element of G_p that fixes
@@ -354,18 +362,22 @@ lemma associated_pow_neg_of_irreducible (V : OpenSubgroup (Gp p)) {e : ℕ}
     (isUniformizer_ell.valuation_pow_eq_zpow_iff_mul_ordRat_eq isLocalGalois_padic _ 1).mpr
       (by simpa [h_ord] using h_one)
 
-/-- A Kummer chart `k` for `Γ`, seen in `G_p` through `j = 𝒥.toGp`, fits the field fixed by
-`j(Γ)`: the four properties that `exists_kummerChart` provides. -/
-structure KummerChart.IsChartFor (Γ : Type) [Group Γ] [𝒥 : OverGp Γ p] (k : KummerChart ⟨Γ⟩) :
-    Prop where
+/--
+A Kummer chart `k` for `Γ`, seen in `G_p` through `j = 𝒥.toGp`, fits the field fixed by
+`j(Γ)`: the four properties that `exists_kummerChart` provides.
+-/
+structure KummerChart.IsChartFor (Γ : Type) [Group Γ] [𝒥 : OverGp Γ p] (k : KummerChart ⟨Γ⟩)
+    : Prop where
   /-- All of `j(Γ)` fixes `Λ` pointwise and `θ(z)`. -/
   fixes_thetaZ : ∀ g : Γ, k.FixesThetaZ (𝒥.toGp g)
   /-- The ramification index times the residue degree is the index `[G_p : j(Γ)]`. -/
   e_mul_f_eq_index : k.e * k.f = 𝒥.toGp.range.index
   /-- If `j(Γ)` contains the inertia group of `G_p`, the chart is unramified. -/
   isUnramified_of_inertia_le : inertiaGroup (Gp p) (intQpBar p) ≤ 𝒥.toGp.range → k.IsUnramified
-  /-- `j(Γ)` contains an element `φ` with `φ x ≡ x ^ (p ^ f)` on the integers of `ℚ̄_p`, modulo
-  their maximal ideal. -/
+  /--
+  `j(Γ)` contains an element `φ` with `φ x ≡ x ^ (p ^ f)` on the integers of `ℚ̄_p`, modulo
+  their maximal ideal.
+  -/
   exists_isFrob : ∃ φ ∈ 𝒥.toGp.range, IsFrob (intQpBar p) (p ^ k.f.val) φ
 
 /-- The Kummer chart of the field fixed by j(Γ), where `Γ` carries a homomorphism j to G_p with open

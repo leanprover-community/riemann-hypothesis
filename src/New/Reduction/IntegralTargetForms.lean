@@ -59,25 +59,30 @@ lemma classAut_lastResidueLevel_eq_bot (ϑ : D.TameChar) (g : Gf D.E (D.Y D.m)) 
   exact D.classAut_eq_bot_of_le_chosenLevel (levelOf_lastResidueLevel_le_chosenLevel ϑ) h_card g
 
 variable (D) in
-/-- The target forms `D.targetForms` as a twisted lattice. Its twists are the `m`-fold twists `ϑ`:
+/--
+The target forms `D.targetForms` as a twisted lattice. Its twists are the `m`-fold twists `ϑ`:
 twists whose tame part `ψ` has `ψ_w^n ≠ 1` for `1 ≤ n ≤ m` and `w` in its modulus, a finite set `Q`
 of places. The map at `ϑ` is the chain of lifts `Θ_ϑ` to the forms on `Y_m` with the level and
 character of `ϑ` and the weight given by the column counts `D.columnsY` and the last entries
 `D.lastEntry D.m`. The lattice at `ι` consists of the forms integral at `ι`, and `ϑ` is allowed at
 `l` if the norm `ϑ.normQ` of its modulus is prime to `l`. The coordinates of a form for the
 trivial twist are those of its values at representatives of the classes, in the standard basis of
-the Weyl module. -/
+the Weyl module.
+-/
 def targetLattice : TwistedLattice D.targetForms D.MFoldTwist where
-  Space (ϑ : D.MFoldTwist) := (D.levelPlaces ϑ.toTameChar).LevelForm (lastResidueLevel ϑ.toTameChar)
-    (lastLevelChar ϑ.toTameChar) D.columnsY (D.lastEntry D.m)
+  Space (ϑ : D.MFoldTwist) :=
+    (D.levelPlaces ϑ.toTameChar).LevelForm (lastResidueLevel ϑ.toTameChar)
+      (lastLevelChar ϑ.toTameChar) D.columnsY (D.lastEntry D.m)
   lift := D.Θ
   IsAllowed (l : ℕ) (ϑ : D.MFoldTwist) := l.Coprime ϑ.normQ
   lattice (_ : D.MFoldTwist) (ι : PrimePadicIso) := integralForms ι.place
   norm_inner_le_one {ϑ} ι _ φ hφ φ' hφ' := by
     -- The place of `ῑ` is that of `ι` composed with complex conjugation.
     have hφ_conj : φ ∈ integralForms ⟨ι.place.ιₚ.comp (starRingEnd ℂ)⟩ := hφ
-    have h_card (g : Gf D.E (D.Y D.m)) : Nat.card (classAut stdRatPoints
-        (levelOf (D.levelPlaces ϑ.toTameChar).placeAt (lastResidueLevel ϑ.toTameChar)) g) ∣ 1 := by
+    have h_card (g : Gf D.E (D.Y D.m))
+        : Nat.card (classAut stdRatPoints
+            (levelOf (D.levelPlaces ϑ.toTameChar).placeAt (lastResidueLevel ϑ.toTameChar)) g)
+          ∣ 1 := by
       rw [classAut_lastResidueLevel_eq_bot, Subgroup.card_bot]
     have h_bound : ‖ι.place.ιₚ ((1 : ℕ) • inner ℂ φ φ')‖ ≤ 1 :=
       norm_nsmul_inner_le_one φ φ' ι.place h_card hφ_conj hφ'

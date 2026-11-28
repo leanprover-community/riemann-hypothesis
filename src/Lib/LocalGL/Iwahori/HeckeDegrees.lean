@@ -64,7 +64,9 @@ open Matrix Module WithZero Valued Finset DoubleCoset Ideal Pi Fin Quotient Nat
 
 namespace New
 
-variable {E V : Type*} [Field E] [NumberField E] {w : FinPlace E} [AddCommGroup V] [Module ℂ V]
+variable
+  {E V : Type*} [Field E] [NumberField E]
+  {w : FinPlace E} [AddCommGroup V] [Module ℂ V]
   {N j : ℕ} {ρ : Representation ℂ (GL (Fin N) (LocField w)) V} {ϖ : (LocField w)ˣ}
   {g k : GL (Fin N) (LocField w)} {m : ℕ} {x : V} (r : Fin N)
 
@@ -73,8 +75,10 @@ variable {E V : Type*} [Field E] [NumberField E] {w : FinPlace E} [AddCommGroup 
 attribute [-simp] WithZero.inv_exp
 attribute [local simp] WithZero.exp_neg
 
-/-- The product of `‖t j / t i‖` over the pairs `i < j`. For dominant `t` it is the number of
-cosets in `K0 t K0 / K0`, the factor in `New.heckeFun_iwahoriDoubleCoset_eq_iwahoriDegree_smul`. -/
+/--
+The product of `‖t j / t i‖` over the pairs `i < j`. For dominant `t` it is the number of
+cosets in `K0 t K0 / K0`, the factor in `New.heckeFun_iwahoriDoubleCoset_eq_iwahoriDegree_smul`.
+-/
 @[simp]
 def iwahoriDegree (t : Fin N → (LocField w)ˣ) : ℂ :=
   ∏ p : Fin N × Fin N with p.1 < p.2, ‖(t p.2 / t p.1).val‖
@@ -132,17 +136,23 @@ private lemma heckeFun_iwahoriDoubleCoset_eq_card_smul [IsSmoothRep ρ] {t : Fin
     _ = (Fintype.card C : ℂ) • compactMean ρ proIwahori (ρ (diagGL t) x) := by
         simp [Nat.cast_smul_eq_nsmul]
 
-/-- For dominant `t`, the families `c` of classes `c (i, j)` in `𝒪 / (t i / t j)`, over the pairs
-`i < j`. -/
+/--
+For dominant `t`, the families `c` of classes `c (i, j)` in `𝒪 / (t i / t j)`, over the pairs
+`i < j`.
+-/
 private abbrev UnitriangularClasses (t : Fin N → (LocField w)ˣ) (ht : t ∈ dominantTorus) : Type _ :=
-  ∀ p : {p : Fin N × Fin N // p.fst < p.snd}, 𝒪[LocField w] ⧸
-    span {(⟨(t p.val.fst / t p.val.snd).val,
-      by simp [v.mem_integer_iff, ht p.property.le, div_le_one_of_le₀]⟩ : 𝒪[LocField w])}
+  ∀ p : {p : Fin N × Fin N // p.fst < p.snd},
+    𝒪[LocField w] ⧸
+      span {(⟨(t p.val.fst / t p.val.snd).val,
+        by simp [v.mem_integer_iff, ht p.property.le, div_le_one_of_le₀]⟩ : 𝒪[LocField w])}
 
-/-- The upper unitriangular integral matrix whose entries above the diagonal are representatives of
-the classes `c`. -/
-private def unitriangularOfClasses {t : Fin N → (LocField w)ˣ} {ht : t ∈ dominantTorus}
-    (c : UnitriangularClasses t ht) : Matrix (Fin N) (Fin N) (LocField w) :=
+/--
+The upper unitriangular integral matrix whose entries above the diagonal are representatives of
+the classes `c`.
+-/
+private def unitriangularOfClasses
+    {t : Fin N → (LocField w)ˣ} {ht : t ∈ dominantTorus} (c : UnitriangularClasses t ht)
+    : Matrix (Fin N) (Fin N) (LocField w) :=
   of fun i j ↦ (if h : i < j then (c ⟨(i, j), h⟩).out else diagonal 1 i j : 𝒪[LocField w]).val
 
 /-- Let `t` be dominant, and let `r c ∈ K = proIwahori` have the matrix `unitriangularOfClasses c`
@@ -287,13 +297,17 @@ lemma heckeCoset_mulSingle_zero_eq (hϖ : v ϖ.val = exp (-1)) {x : V} [IsSmooth
 
 /-! ### Lattices that contain the first basis vectors -/
 
-/-- The `g` in `New.basicDoubleCoset` (colength `j`) whose lattice `g 𝒪^N` contains the first `r`
-basis vectors, that is, the first `r` columns of `g⁻¹` are integral. -/
+/--
+The `g` in `New.basicDoubleCoset` (colength `j`) whose lattice `g 𝒪^N` contains the first `r`
+basis vectors, that is, the first `r` columns of `g⁻¹` are integral.
+-/
 def partialCosets (r j : ℕ) : Set (GL (Fin N) (LocField w)) :=
   {g ∈ basicDoubleCoset (Fin N) w j | ∀ b a : Fin N, b.val < r → v (g⁻¹ a b) ≤ 1}
 
-/-- The sum of `ρ g` over the cosets `g localIntGL` in `New.partialCosets r j`, one for each such
-lattice. -/
+/--
+The sum of `ρ g` over the cosets `g localIntGL` in `New.partialCosets r j`, one for each such
+lattice.
+-/
 def partialHecke (ρ : Representation ℂ (GL (Fin N) (LocField w)) V) (r j : ℕ) : End ℂ V :=
   heckeFun ρ (localIntGL (Fin N) w) ((partialCosets r j).indicator 1)
 

@@ -54,54 +54,71 @@ variable {V : Type} [FinComplexSpace V] {L : Submodule ℤ V}
 
 /-! ### Definitions -/
 
-/-- The ℤ-submodule of the vectors a of V with na in L for some n ≠ 0: the preimage in V of the
-torsion subgroup of V/L. -/
+/--
+The ℤ-submodule of the vectors a of V with na in L for some n ≠ 0: the preimage in V of the
+torsion subgroup of V/L.
+-/
 def torsionPoints (L : Submodule ℤ V) : Submodule ℤ V :=
   ((torsion' ℤ (V ⧸ L) (nonZeroDivisors ℕ)).comap L.mkQ).copy {a : V | ∃ n ≠ (0 : ℕ), n • a ∈ L}
     (by simp [← mk_smul])
 
 variable (v : Valuation ℂ ℝ≥0) (B B' : LatticeForm L)
 
-/-- (L, B, χ) is an Appell–Humbert datum (the Riemann form E of B is integral on L, and χ is a
+/--
+(L, B, χ) is an Appell–Humbert datum (the Riemann form E of B is integral on L, and χ is a
 nonvanishing multiplier on L) with positive Riemann form, and χ has finite order on L: χⁿ = 1 there
-for some n ≠ 0. -/
-structure IsAmpleType (χ : V → ℂ) extends isAppellHumbert : IsAppellHumbert B χ,
-  isPosRiemann : IsPosRiemann B where
+for some n ≠ 0.
+-/
+structure IsAmpleType (χ : V → ℂ)
+    extends isAppellHumbert : IsAppellHumbert B χ, isPosRiemann : IsPosRiemann B where
   /-- The multiplier `χ` has finite order on `L`. -/
   finite_order : ∃ n ≠ (0 : ℕ), ∀ l ∈ L, χ l ^ n = 1
 
-/-- The size of f at a vector x of V of finite order modulo L: the value
-v(exp(−B(x, x)/2)·f(x)). -/
+/--
+The size of f at a vector x of V of finite order modulo L: the value
+v(exp(−B(x, x)/2)·f(x)).
+-/
 def LatticeForm.sizeAt (f : V → ℂ) (x : torsionPoints L) : ℝ≥0 := v (B.thetaShift x f 0)
 
-/-- The sup norm of f in degree B: the supremum of its sizes `New.ThetaTori.LatticeForm.sizeAt` over
-all torsion points of V/L. -/
+/--
+The sup norm of f in degree B: the supremum of its sizes `New.ThetaTori.LatticeForm.sizeAt` over
+all torsion points of V/L.
+-/
 abbrev LatticeForm.thetaNorm (v : Valuation ℂ ℝ≥0) (f : V → ℂ) : ℝ≥0 := iSup (B.sizeAt v f)
 
-/-- The sizes of degree B: the functions `New.ThetaTori.LatticeForm.sizeAt` of f on the torsion
+/--
+The sizes of degree B: the functions `New.ThetaTori.LatticeForm.sizeAt` of f on the torsion
 points of V/L, for f a theta function of type (B, χ) (f is holomorphic, and for l in L, f(z + l) is
 χ(l) times an exponential factor fixed by B, times f(z)), with any χ such that
-`New.ThetaTori.IsAmpleType` holds for B and χ (a twisted theta function of degree B). -/
+`New.ThetaTori.IsAmpleType` holds for B and χ (a twisted theta function of degree B).
+-/
 inductive LatticeForm.IsSize : (torsionPoints L → ℝ≥0) → Prop
-  /-- For `f` in `B.thetaSpace χ` with `IsAmpleType B χ`, the function `B.sizeAt v f` belongs to
-  `LatticeForm.sizes`. -/
+  /--
+  For `f` in `B.thetaSpace χ` with `IsAmpleType B χ`, the function `B.sizeAt v f` belongs to
+  `LatticeForm.sizes`.
+  -/
   | of_mem_thetaSpace {χ f : V → ℂ} : IsAmpleType B χ → f ∈ B.thetaSpace χ → IsSize (B.sizeAt v f)
 
-/-- The set of the functions satisfying `New.ThetaTori.LatticeForm.IsSize` (`Set` is a structure, so
-an inductive predicate cannot be a `Set` directly). -/
+/--
+The set of the functions satisfying `New.ThetaTori.LatticeForm.IsSize` (`Set` is a structure, so
+an inductive predicate cannot be a `Set` directly).
+-/
 abbrev LatticeForm.sizes : Set (torsionPoints L → ℝ≥0) := {φ | B.IsSize v φ}
 
-/-- The analytic form of good reduction of V/L at v: for all degrees B, C and all sizes φ, ψ of
+/--
+The analytic form of good reduction of V/L at v: for all degrees B, C and all sizes φ, ψ of
 these degrees (sizes of twisted theta functions f, g), the sup norm of the product φψ, the size of
-fg, is the product of the sup norms. -/
+fg, is the product of the sup norms.
+-/
 def HasMultiplicativeNorm (L : Submodule ℤ V) : Prop :=
-  ∀ ⦃B C : LatticeForm L⦄ ⦃φ ψ : ↥(torsionPoints L) → ℝ≥0⦄, φ ∈ B.sizes v →
-    ψ ∈ C.sizes v →
-    iSup (φ * ψ) = iSup φ * iSup ψ
+  ∀ ⦃B C : LatticeForm L⦄ ⦃φ ψ : ↥(torsionPoints L) → ℝ≥0⦄,
+    φ ∈ B.sizes v → ψ ∈ C.sizes v → iSup (φ * ψ) = iSup φ * iSup ψ
 
-/-- The conditions of `New.ThetaTori.IsAmpleType`, plus three more. Some natural N with v(N) = 1
+/--
+The conditions of `New.ThetaTori.IsAmpleType`, plus three more. Some natural N with v(N) = 1
 maps the dual lattice of L into L. The level r > 1 has v(r) = 1. The sup norm is multiplicative
-(`New.ThetaTori.HasMultiplicativeNorm`). -/
+(`New.ThetaTori.HasMultiplicativeNorm`).
+-/
 structure HasGoodReduction (χ : V → ℂ) (v : Valuation ℂ ℝ≥0) (r : ℕ) extends IsAmpleType B χ where
   /-- Some natural number of valuation `1` multiplies the dual lattice of `L` into `L`. -/
   dual_torsion : ∃ N : ℕ, v N = 1 ∧ ∀ a ∈ B.dualLattice, N • a ∈ L
@@ -112,16 +129,18 @@ structure HasGoodReduction (χ : V → ℂ) (v : Valuation ℂ ℝ≥0) (r : ℕ
   /-- The sup norm of theta functions on the torsion points is multiplicative. -/
   hasMultiplicativeNorm : HasMultiplicativeNorm v L
 
-/-- For the size function φ of every twisted theta function of degree B, (sup φ)² ≤ C · sup_x
-φ(x) φ(x + w), x over the torsion points. -/
+/--
+For the size function φ of every twisted theta function of degree B, (sup φ)² ≤ C · sup_x
+φ(x) φ(x + w), x over the torsion points.
+-/
 def LatticeForm.HasShiftBound (w : ↥(torsionPoints L)) (C : ℝ≥0) : Prop :=
-  ∀ φ ∈ B.sizes v, ∀ y : ↥(torsionPoints L),
-    φ y ^ 2 ≤ C * ⨆ x : ↥(torsionPoints L), φ x * φ (x + w)
+  ∀ φ ∈ B.sizes v, ∀ y : ↥(torsionPoints L), φ y ^ 2 ≤ C * ⨆ x : ↥(torsionPoints L), φ x * φ (x + w)
 
 open LatticeForm
 
-variable {v : Valuation ℂ ℝ≥0} {B B' : LatticeForm L} {χ g : V → ℂ}
-  {φ ψ : ↥(torsionPoints L) → ℝ≥0} {C : ℝ≥0} {n : ℕ} {f : V → ℂ} {x y w : torsionPoints L}
+variable
+  {v : Valuation ℂ ℝ≥0} {B B' : LatticeForm L} {χ g : V → ℂ} {φ ψ : ↥(torsionPoints L) → ℝ≥0}
+  {C : ℝ≥0} {n : ℕ} {f : V → ℂ} {x y w : torsionPoints L}
 
 /-! ### Products, translates and periodicity of sizes -/
 

@@ -78,13 +78,18 @@ namespace New.ThetaTori.IsHermitianAction
 
 open MeasureTheory Complex NNReal Function Finset LinearMap Ideal Filter FiniteDimensional
 
-variable {V R : Type} [FinComplexSpace V] [CommRing R] [StarRing R] [IsDomain R]
-  {L : Submodule ℤ V} {B : LatticeForm L} {F : R →+* V →L[ℂ] V} {f : V → ℂ}
-  {β c d : R} [IsFullRankLattice L]
-  (h : IsHermitianAction L B F β) {v : Valuation ℂ ℝ≥0} [NeZero c] [NeZero d] {A : LatticeForm L}
+variable
+  {V R : Type} [FinComplexSpace V] [CommRing R] [StarRing R] [IsDomain R]
+  {L : Submodule ℤ V} {B : LatticeForm L} {F : R →+* V →L[ℂ] V} {f : V → ℂ} {β c d : R}
+  [IsFullRankLattice L]
+  (h : IsHermitianAction L B F β)
+  {v : Valuation ℂ ℝ≥0} [NeZero c] [NeZero d]
+  {A : LatticeForm L}
 
-/-- The action of `a` on the points of `V` of finite order modulo `L`: `x ↦ F a x`, again of finite
-order because `F a` preserves `L`. -/
+/--
+The action of `a` on the points of `V` of finite order modulo `L`: `x ↦ F a x`, again of finite
+order because `F a` preserves `L`.
+-/
 abbrev torsionAction (a : R) (x : torsionPoints L) : torsionPoints L :=
   ⟨F a x, x.property.imp (by grind [IsHermitianAction])⟩
 
@@ -159,9 +164,11 @@ lemma normShift_comp_inverse_eq (hd : star c = d) (w : V) (f : V → ℂ) :
 
 /-! ### The theta identity and the kernel of a multiplication -/
 
-/-- The averaged pull-back along `c` and `d`: the operator sending `t : V → ℂ` to the sum, over the
+/--
+The averaged pull-back along `c` and `d`: the operator sending `t : V → ℂ` to the sum, over the
 classes `z` of `d⁻¹ L / L` (with chosen representatives `z.out`), of the normalised translates of
-`t ∘ F c ∘ (F d)⁻¹` by `d z`. -/
+`t ∘ F c ∘ (F d)⁻¹` by `d z`.
+-/
 private noncomputable def averagedPullback (c d : R) [NeZero d] : (V → ℂ) →ₗ[ℂ] V → ℂ :=
   (∑ z : h.MulKernel d, h.normShift (F d z.out)) ∘ₗ funLeft ℂ ℂ (F c ∘ (F d).inverse)
 
@@ -452,16 +459,18 @@ lemma exists_theta_identity (hd : star c = d)
     _ = δ ^ 8 := by rw [a_mul_conj, one_pow, mul_one]
 
 omit h in
-/-- Let `v` be a valuation on `ℂ` with values in `ℝ≥0`, let `p` be a prime and `ζ` a `p ^ n`-th root
-of unity. Then `v (ζ - 1) ^ p ^ n ≤ v p`. -/
-theorem _root_.Valuation.map_sub_one_pow_le_of_pow_eq_one {v : Valuation ℂ ℝ≥0} {p n : ℕ}
-    (hp : p.Prime) {ζ : ℂ} (hζ : ζ ^ p ^ n = 1) : v (ζ - 1) ^ p ^ n ≤ v p := by
+/--
+Let `v` be a valuation on `ℂ` with values in `ℝ≥0`, let `p` be a prime and `ζ` a `p ^ n`-th root
+of unity. Then `v (ζ - 1) ^ p ^ n ≤ v p`.
+-/
+theorem _root_.Valuation.map_sub_one_pow_le_of_pow_eq_one
+    {v : Valuation ℂ ℝ≥0} {p n : ℕ} (hp : p.Prime) {ζ : ℂ} (hζ : ζ ^ p ^ n = 1)
+    : v (ζ - 1) ^ p ^ n ≤ v p := by
   -- In the valuation ring, the binomial theorem gives `ζ ^ p ^ n = 1 + (ζ - 1) ^ p ^ n + p * r`,
   -- so `p` divides `(ζ - 1) ^ p ^ n`.
   let ζ₀ : v.integer := ⟨ζ, (valuation_eq_one_of_pow_eq_one (pow_ne_zero n hp.ne_zero) hζ).le⟩
   have h_pow : ζ₀ ^ p ^ n = 1 := Subtype.ext (by simpa [ζ₀] using hζ)
-  obtain ⟨r, hr⟩ : ∃ r : v.integer,
-      (1 + (ζ₀ - 1)) ^ p ^ n = 1 ^ p ^ n + (ζ₀ - 1) ^ p ^ n + p * r :=
+  obtain ⟨r, hr⟩ : ∃ r : v.integer, (1 + (ζ₀ - 1)) ^ p ^ n = 1 ^ p ^ n + (ζ₀ - 1) ^ p ^ n + p * r :=
     ⟨_, add_pow_prime_pow_eq' hp 1 (ζ₀ - 1) n⟩
   have dvd : (p : v.integer) ∣ (ζ₀ - 1) ^ p ^ n := by
     rw [add_sub_cancel, h_pow, one_pow] at hr
@@ -470,8 +479,9 @@ theorem _root_.Valuation.map_sub_one_pow_le_of_pow_eq_one {v : Valuation ℂ ℝ
 
 omit h in
 /-- If `S ≤ max (√T) (ρ * S)` in `ℝ≥0` with `ρ < 1`, then `S ^ 2 ≤ T`. -/
-theorem _root_.NNReal.sq_le_of_le_max_sqrt_mul {S T ρ : ℝ≥0} (hρ : ρ < 1)
-    (h_le : S ≤ max (NNReal.sqrt T) (ρ * S)) : S ^ 2 ≤ T := by
+theorem _root_.NNReal.sq_le_of_le_max_sqrt_mul
+    {S T ρ : ℝ≥0} (hρ : ρ < 1) (h_le : S ≤ max (NNReal.sqrt T) (ρ * S))
+    : S ^ 2 ≤ T := by
   rw [← NNReal.le_sqrt_iff_sq_le, ← not_lt]
   intro h_lt
   exact (max_lt h_lt (mul_lt_of_lt_one_left (pos_of_gt h_lt) hρ)).not_ge h_le

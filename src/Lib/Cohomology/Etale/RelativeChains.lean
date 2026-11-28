@@ -53,9 +53,10 @@ open CategoryTheory ShortComplex Function MonoidalCategory AddCommGrpCat Quotien
 
 namespace New.Variety
 
-variable {C : Type 1} [Category C]
-  {V V' V'' : C ⥤ Type 1} {F M N : AbFunctor C} {U : Subfunctor V} {U' : Subfunctor V'}
-  {U'' : Subfunctor V''} {α : M ⟶ N}
+variable
+  {C : Type 1} [Category C]
+  {V V' V'' : C ⥤ Type 1} {F M N : AbFunctor C}
+  {U : Subfunctor V} {U' : Subfunctor V'} {U'' : Subfunctor V''} {α : M ⟶ N}
 
 /-- For a subfunctor `U` of `V`, the sequence `0 → ℤ[U] → ℤ[V] → ℤ[V]/ℤ[U] → 0` (inclusion, then the
 quotient map `π U`) is short exact. -/
@@ -151,8 +152,10 @@ def zeroSection (N : C ⥤ Ab) : Subfunctor (N ⋙ forget Ab) where
   obj _ := {0}
   map _ := OrderBot.bot_le (ker _)
 
-/-- The subgroup of locally zero elements of N(A): the s such that the maps A → B killing s form
-a subfunctor of h_A that is dense for F. -/
+/--
+The subgroup of locally zero elements of N(A): the s such that the maps A → B killing s form
+a subfunctor of h_A that is dense for F.
+-/
 def locallyZero (F N : AbFunctor C) (A : C) : AddSubgroup (N.obj A) :=
   AddSubgroup.ofSub {s : N.obj A | IsCohomDense F ((zeroSection N).preimage (pointMap s))}
     -- `0` is locally zero: every map kills it.
@@ -160,18 +163,23 @@ def locallyZero (F N : AbFunctor C) (A : C) : AddSubgroup (N.obj A) :=
     -- a difference dies where both sections die, and that intersection is dense
     fun _ hs _ ht ↦ (hs.inf ht).mono fun _ _ h_both ↦ (N.map _).hom.ker.add_mem h_both.1 (by aesop)
 
-/-- If every section of N is locally zero for F (`New.Variety.locallyZero`), then Ext^n(N, F) = 0
-for all n. -/
-theorem cohomology_eq_zero_of_locallyZero {N : AbFunctor C}
-    (h_zero : ∀ (A : C) (s : N.obj A), s ∈ locallyZero F N A) (n : ℕ) (x : H N F n) :
-    x = 0 := by
+/--
+If every section of N is locally zero for F (`New.Variety.locallyZero`), then Ext^n(N, F) = 0
+for all n.
+-/
+theorem cohomology_eq_zero_of_locallyZero
+    {N : AbFunctor C} (h_zero : ∀ (A : C) (s : N.obj A), s ∈ locallyZero F N A)
+    (n : ℕ) (x : H N F n)
+    : x = 0 := by
   -- Let `M = ℤ[N] / ℤ[0]` and let `K` be the kernel of the onto map `π : M ⟶ N`. The zero section
   -- is dense in `N`, so `M` is acyclic; and `K` is again locally zero. Induct on `n`, for all `N`
   -- at once, along the long exact sequence of `0 ⟶ K ⟶ M ⟶ N ⟶ 0`.
-  induction n using Nat.strong_induction_on generalizing N with | _ n ih
+  induction n using Nat.strong_induction_on generalizing N with
+  | _ n ih
   let M := relFreeAb (zeroSection N)
-  let π : M ⟶ N := abCoker.desc (freeAb.desc (fun _ ↦ id) (by simp))
-    (freeAb.hom_ext fun _ s ↦ (add_zero _).trans s.property)
+  let π : M ⟶ N :=
+    abCoker.desc (freeAb.desc (fun _ ↦ id) (by simp))
+      (freeAb.hom_ext fun _ s ↦ (add_zero _).trans s.property)
   have π_surj (A : C) : Surjective (π.app A) := fun s ↦ ⟨relFreeAb.mk _ s, add_zero _⟩
   have zero_dense : IsCohomDense F (zeroSection N) := fun A s ↦ (h_zero A s).isCohomEquiv
   have M_acyclic := (relFreeAb.isCohomEquiv_iff_subsingleton_rel _).1 zero_dense.isCohomEquiv n
@@ -227,8 +235,10 @@ lemma LocalIso.isCohomEquiv
     IsCohomEquiv F α :=
   isCohomEquiv_of_locallyZero h.1 h.2
 
-/-- The pairs `(w, w')` in a fibre of `p : V' → V` (points of `V' ×_V V'`) whose tuples `(f i w)ᵢ`
-and `(f i w')ᵢ` agree up to a permutation of `ι`. -/
+/--
+The pairs `(w, w')` in a fibre of `p : V' → V` (points of `V' ×_V V'`) whose tuples `(f i w)ᵢ`
+and `(f i w')ᵢ` agree up to a permutation of `ι`.
+-/
 abbrev permutedPairs {ι : Type*} (f : ι → (V' ⟶ V'')) (p : V' ⟶ V) : Subfunctor (cech p 1) where
   obj (A : C) :=
     {x : (cech p 1).obj A | ∃ e : ι ≃ ι, ∀ i : ι, f i A (x.val 1) = f (e i) A (x.val 0)}
@@ -366,8 +376,8 @@ namespace New.Variety
 
 open CategoryTheory Subfunctor CartesianMonoidalCategory Fin Comparison LongExactSeq
 
-variable {C : Type _} [Category C]
-  {V X : C ⥤ Type 1} (U : Subfunctor V) {A B : Subfunctor V} (h : A ≤ B)
+variable
+  {C : Type _} [Category C] {V X : C ⥤ Type 1} (U : Subfunctor V) {A B : Subfunctor V} (h : A ≤ B)
 
 /-- For subfunctors U and A ⊆ B of V, the map ℤ[A]/ℤ[U ∩ A] → ℤ[B]/ℤ[U ∩ B]. -/
 abbrev relFreeAb.restrict : relFreeAb (U.preimage A.ι) ⟶ relFreeAb (U.preimage B.ι) :=
@@ -486,17 +496,20 @@ lemma relFreeAb.exists_glued_class {r : ℕ} {F : AbFunctor C} {d : ℕ} (S : Se
   obtain ⟨y, rfl⟩ := (excision (iSup W).ι (U := U) h_dense rfl d).surjective z
   exact ⟨y, fun i ↦ by simpa [← H.map_comp] using hz i⟩
 
-/-- For `U ⊆ V` and `W ⊆ X`, the map `ℤ[V × X] / ℤ[U × X ∪ V × W] → ℤ[V] / ℤ[U] ⊗ ℤ[X] / ℤ[W]` that
-sends `[(v, w)]` to `[v] ⊗ [w]`. -/
-def relFreeAb.prod (W : Subfunctor X) :
-    relFreeAb (U.preimage (fst V X) ⊔ Subfunctor.preimage W (snd V X)) ⟶
-      (abTensor.obj (relFreeAb U)).obj (relFreeAb W) :=
+/--
+For `U ⊆ V` and `W ⊆ X`, the map `ℤ[V × X] / ℤ[U × X ∪ V × W] → ℤ[V] / ℤ[U] ⊗ ℤ[X] / ℤ[W]` that
+sends `[(v, w)]` to `[v] ⊗ [w]`.
+-/
+def relFreeAb.prod (W : Subfunctor X)
+    : relFreeAb (U.preimage (fst V X) ⊔ Subfunctor.preimage W (snd V X))
+      ⟶ (abTensor.obj (relFreeAb U)).obj (relFreeAb W) :=
   abCoker.desc
-      (freeAb.prod V X ≫
-        (abTensor.map (π U)).app (freeAb.obj X) ≫ (abTensor.obj (relFreeAb U)).map (π W)) <| by
-    -- a pair with first entry in `U` or second entry in `W` has a zero factor
-    refine freeAb.hom_ext fun A ⟨⟨v, w⟩, hx⟩ ↦ ?_
-    change mk U v ⊗ₜ mk W w = 0
-    obtain h | h : v ∈ U.obj A ∨ w ∈ W.obj A := hx <;> simp [mk_eq_zero h]
+      (freeAb.prod V X ≫ (abTensor.map (π U)).app (freeAb.obj X)
+        ≫ (abTensor.obj (relFreeAb U)).map (π W)) <|
+    by
+      -- a pair with first entry in `U` or second entry in `W` has a zero factor
+      refine freeAb.hom_ext fun A ⟨⟨v, w⟩, hx⟩ ↦ ?_
+      change mk U v ⊗ₜ mk W w = 0
+      obtain h | h : v ∈ U.obj A ∨ w ∈ W.obj A := hx <;> simp [mk_eq_zero h]
 
 end New.Variety

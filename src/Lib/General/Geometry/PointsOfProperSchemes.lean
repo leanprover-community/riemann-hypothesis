@@ -72,11 +72,15 @@ open CategoryTheory AlgebraicGeometry CommRingCat Over OverMorphism
 
 namespace New.specOver
 
-variable {R C D E : Type} [CommRing R] [CommRing C] [CommRing D] [CommRing E] [Algebra R C]
-  [Algebra R D] [Algebra R E] (φ : C →ₐ[R] D) (ψ : D →ₐ[R] E)
+variable
+  {R C D E : Type}
+  [CommRing R] [CommRing C] [CommRing D] [CommRing E] [Algebra R C] [Algebra R D] [Algebra R E]
+  (φ : C →ₐ[R] D) (ψ : D →ₐ[R] E)
 
-/-- For an R-algebra homomorphism φ: C→D, the induced morphism Spec D → Spec C of schemes over
-Spec R. -/
+/--
+For an R-algebra homomorphism φ: C→D, the induced morphism Spec D → Spec C of schemes over
+Spec R.
+-/
 noncomputable def map : specOver R D ⟶ specOver R C :=
   homMk (Spec.map (ofHom φ)) (by simp [← Spec.map_comp, ← ofHom_comp])
 
@@ -313,15 +317,20 @@ lemma exists_hom_specMap_eq {A B : CommAlg k} (u : CommRingCat.of A ⟶ CommRing
     ∃ φ : A ⟶ B, specMap (φ.hom : A →+* B) = Spec.map u := by
   exact ⟨ofHom ⟨u.hom, ConcreteCategory.congr_hom (map_inj.1 ((Spec.map_comp ..).trans hu))⟩, rfl⟩
 
-/-- If `W` is proper over `Spec R`, its functor of points on `k`-algebras is separated: the locus
-where two points of `W` with values in `A` agree is cut out by an ideal of `A`. -/
-instance isSeparatedFunctor_algPointsOf [IsProper W.hom] :
-    IsSeparatedFunctor (algPointsOf k R W) := by
+/--
+If `W` is proper over `Spec R`, its functor of points on `k`-algebras is separated: the locus
+where two points of `W` with values in `A` agree is cut out by an ideal of `A`.
+-/
+instance isSeparatedFunctor_algPointsOf [IsProper W.hom]
+    : IsSeparatedFunctor (algPointsOf k R W) := by
   refine ⟨fun A ⟨x⟩ y ↦ ?_⟩
   -- the ideal that cuts out the coincidence of the underlying morphisms of schemes
   obtain ⟨I, hI⟩ := (isProperOver_pointsToBase W.hom).diagonal_closed _ ⟨x.left⟩ ⟨y.down.left⟩
-  refine ⟨I, fun B φ ↦ Iff.trans ⟨fun h_eq ↦ ?_, fun h_eq ↦ ?_⟩
-    (hI (.of B) (CommRingCat.ofHom (φ.hom : A →+* B)))⟩
+  refine ⟨
+    I,
+    fun B φ ↦
+      Iff.trans ⟨fun h_eq ↦ ?_, fun h_eq ↦ ?_⟩ (hI (.of B) (CommRingCat.ofHom (φ.hom : A →+* B)))
+  ⟩
   · exact congrArg (fun p : PointsIn W B ↦ up p.down.left) h_eq
   · exact PointsIn.eq_of_left_eq (congrArg down h_eq)
 

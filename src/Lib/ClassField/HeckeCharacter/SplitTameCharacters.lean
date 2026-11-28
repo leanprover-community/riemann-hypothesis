@@ -58,7 +58,8 @@ open NumberField Finset Valued Complex OneMemClass
 
 namespace New
 
-variable {E : Type*} [Field E] [CMType E]
+variable
+  {E : Type*} [Field E] [CMType E]
   {w : FinPlace E} {μ : AutChar E} {e : InfinitePlace E → ℤ}
   {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
 
@@ -148,39 +149,49 @@ variable [WeilData E]
 
 /-! ### The splitting character on U(1) -/
 
-/-- The restriction to U(1)(𝔸) of the splitting character υ of the Weil data has weight 1 at
-every infinite place and trivial tame part. -/
+/--
+The restriction to U(1)(𝔸) of the splitting character υ of the Weil data has weight 1 at
+every infinite place and trivial tame part.
+-/
 instance upsilonU1_hasWeight : upsilonU1.HasWeight (E := E) 1 1 where
   finite_ramification := by simp
   apply_eq _ h := (υ_unit _ ⟨h, star_mem_Ô h⟩).trans (by simp [MulChar.one_apply])
 
-/-- For every integer z, υ^z on U(1)(𝔸) has weight z at every infinite place and trivial tame
-part. -/
-instance hasWeight_upsilonU1_zpow (z : ℤ) :
-    (upsilonU1 ^ z : AutChar E).HasWeight (fun _ : InfinitePlace E ↦ z) 1 := by
+/--
+For every integer z, υ^z on U(1)(𝔸) has weight z at every infinite place and trivial tame
+part.
+-/
+instance hasWeight_upsilonU1_zpow (z : ℤ)
+    : (upsilonU1 ^ z : AutChar E).HasWeight (fun _ : InfinitePlace E ↦ z) 1 := by
   -- `z • 1` is the constant weight `z`, and `1 ^ z = 1`.
   have h_zpow : (upsilonU1 ^ z : AutChar E).HasWeight (z • 1) 1 := by
     simpa only [one_zpow] using upsilonU1_hasWeight.zpow z
   exact h_zpow.of_weight_eq (funext fun _ ↦ by simp)
 
-/-- For every natural number n, υ^n on U(1)(𝔸) has weight n at every infinite place and trivial tame
-part. -/
-instance hasWeight_upsilonU1_pow (n : ℕ) :
-    (upsilonU1 ^ n : AutChar E).HasWeight (fun _ : InfinitePlace E ↦ (n : ℤ)) 1 :=
+/--
+For every natural number n, υ^n on U(1)(𝔸) has weight n at every infinite place and trivial tame
+part.
+-/
+instance hasWeight_upsilonU1_pow (n : ℕ)
+    : (upsilonU1 ^ n : AutChar E).HasWeight (fun _ : InfinitePlace E ↦ (n : ℤ)) 1 :=
   hasWeight_upsilonU1_zpow n
 
 /-- If μ has weight e and tame part ψ, then μ·υ^n has weight n + e and tame part ψ. -/
-instance _root_.New.AutChar.HasWeight.mul_upsilonU1_pow [h : μ.HasWeight e ψ] (n : ℕ) :
-    (μ * upsilonU1 ^ n).HasWeight (fun v : InfinitePlace E ↦ (n : ℤ) + e v) ψ := by
+instance _root_.New.AutChar.HasWeight.mul_upsilonU1_pow [h : μ.HasWeight e ψ] (n : ℕ)
+    : (μ * upsilonU1 ^ n).HasWeight (fun v : InfinitePlace E ↦ (n : ℤ) + e v) ψ := by
   have h_mul : (μ * upsilonU1 ^ n).HasWeight (e + fun _ ↦ (n : ℤ)) ψ := by
     simpa only [mul_one] using h.mul (hasWeight_upsilonU1_pow n)
   exact h_mul.of_weight_eq (funext fun _ ↦ add_comm _ _)
 
-/-- If μ has weight e and tame part ψ, and n is a finite type with #n elements, then the character
-μ·υ^⌊#n/2⌋ (`New.rankTwist μ n`) has weight e + ⌊#n/2⌋ at every infinite place and tame part ψ. -/
-instance _root_.New.AutChar.HasWeight.hasWeight_rankTwist [h : μ.HasWeight e ψ] {n : Type*}
-    [Fintype n] :
-    (rankTwist μ n).HasWeight (fun v : InfinitePlace E ↦ ((Fintype.card n / 2 : ℕ) : ℤ) + e v) ψ :=
+/--
+If μ has weight e and tame part ψ, and n is a finite type with #n elements, then the character
+μ·υ^⌊#n/2⌋ (`New.rankTwist μ n`) has weight e + ⌊#n/2⌋ at every infinite place and tame part ψ.
+-/
+instance _root_.New.AutChar.HasWeight.hasWeight_rankTwist
+    [h : μ.HasWeight e ψ] {n : Type*} [Fintype n]
+    : (rankTwist μ n).HasWeight
+      (fun v : InfinitePlace E ↦ ((Fintype.card n / 2 : ℕ) : ℤ) + e v)
+      ψ :=
   h.mul_upsilonU1_pow (Fintype.card n / 2)
 
 /-- The base change x ↦ υ(x/x̄) of the restriction of the splitting character υ to U(1)(𝔸)
@@ -210,15 +221,18 @@ namespace New.Exchange
 
 open NumberField Pi Space SemilocalField IsLocalRing WithZero MulChar
 
-variable (E : Type) [Field E] [CMType E] [WeilData E]
-  {F n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {s : n → ℤˣ}
-  {s' : n' → ℤˣ} [SemilocalField F]
+variable
+  (E : Type) [Field E] [CMType E] [WeilData E]
+  {F n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} [SemilocalField F]
   (A : Set (FinPlace E)) (π : 𝔸f E →+* F) (S : Space E n s) (T : Space E n' s')
   (P : Finset (FinPlace E))
 
-/-- A character ν (`character`) of [U(1)] of weight e, with e(v) > 0 for every v, and with tame part
+/--
+A character ν (`character`) of [U(1)] of weight e, with e(v) > 0 for every v, and with tame part
 ψ (`tamePart`) non-trivial exactly on a non-empty finite set S (`ramifiedPlaces`) of places disjoint
-from its conjugate. -/
+from its conjugate.
+-/
 structure SplitTameChar (e : InfinitePlace E → ℤ) where
   /-- The character of the norm-one adeles. -/
   character : AutChar E
@@ -230,8 +244,10 @@ structure SplitTameChar (e : InfinitePlace E → ℤ) where
   ramifiedPlaces : Finset (FinPlace E)
   /-- At least one place is ramified. -/
   nonempty : ramifiedPlaces.Nonempty
-  /-- The conjugate of a place of `ramifiedPlaces` is not in `ramifiedPlaces`; in particular these
-  places are split. -/
+  /--
+  The conjugate of a place of `ramifiedPlaces` is not in `ramifiedPlaces`; in particular these
+  places are split.
+  -/
   star_notMem : ∀ w ∈ ramifiedPlaces, star w ∉ ramifiedPlaces
   /-- The residue character `tamePart w` is non-trivial exactly when `w` is in `ramifiedPlaces`. -/
   ne_one_iff (w : FinPlace E) : tamePart w ≠ 1 ↔ w ∈ ramifiedPlaces
@@ -244,24 +260,32 @@ variable {E}
 
 /-! ### Reading the components at a set of places -/
 
-/-- π reads the components at A: A is disjoint from its conjugate, π is continuous with a
+/--
+π reads the components at A: A is disjoint from its conjugate, π is continuous with a
 continuous additive section σ, σ(πx) being the A-part of x, and π(x) ∈ O iff x is integral
-at A. -/
-structure ReadsAt {E : Type} [Field E] [NumberField E] [IsCMField E] (A : Set (FinPlace E))
-    (π : 𝔸f E →+* F) where
+at A.
+-/
+structure ReadsAt
+    {E : Type} [Field E] [NumberField E] [IsCMField E] (A : Set (FinPlace E)) (π : 𝔸f E →+* F) where
   /-- No place of `A` has its conjugate in `A`. -/
   disjoint_star : A.IsConjDisjoint
-  /-- `π x` lies in the subring `SemilocalField.O` exactly when `x` is integral at the places of
-  `A`. -/
+  /--
+  `π x` lies in the subring `SemilocalField.O` exactly when `x` is integral at the places of
+  `A`.
+  -/
   mem_iff (x : 𝔸f E) : π x ∈ O ↔ idem A * x ∈ Ô E
-  /-- `π` is continuous and has a continuous additive section `σ`, with `σ (π x)` the part of `x` at
-  the places of `A`. -/
-  exists_section :
-      Continuous π ∧
-      ∃ σ : F →+ 𝔸f E, Continuous σ ∧ (∀ y : F, π (σ y) = y) ∧ ∀ x : 𝔸f E, σ (π x) = idem A * x
+  /--
+  `π` is continuous and has a continuous additive section `σ`, with `σ (π x)` the part of `x` at
+  the places of `A`.
+  -/
+  exists_section
+    : Continuous π
+      ∧ ∃ σ : F →+ 𝔸f E, Continuous σ ∧ (∀ y : F, π (σ y) = y) ∧ ∀ x : 𝔸f E, σ (π x) = idem A * x
 
-/-- The multiplicative character of ∏_{w∈P} E_w that is t ↦ ξ(t)|t|^{k/2} on invertible
-elements, t read as an idele, and 0 on the others. -/
+/--
+The multiplicative character of ∏_{w∈P} E_w that is t ↦ ξ(t)|t|^{k/2} on invertible
+elements, t read as an idele, and 0 on the others.
+-/
 def localChar (ξ : HeckeChar E) (k : ℤ) : MulChar (∀ i : P, LocField i.val) ℂ :=
   MulChar.ofUnitHom <|
     ∏ i : P,
@@ -271,10 +295,11 @@ def localChar (ξ : HeckeChar E) (k : ℤ) : MulChar (∀ i : P, LocField i.val)
               map_one' := by simp
               map_mul' := by simp } ^ k).comp (Units.map (evalMonoidHom _ i))
 
-variable {μ : InfinitePlace E → ℤ} {P A π} (𝔠 : SplitTameChar E μ) (a b : AutChar E)
-  (f : 𝒮 (S.hom T)) (v : Heisenberg.IsVacuum.Model
-    (Fock.realHeisenberg (realSigns E (homSigns s s'))))
-  (Ψ : _ → ℂ) (i : P)
+variable
+  {μ : InfinitePlace E → ℤ} {P A π} (𝔠 : SplitTameChar E μ)
+  (a b : AutChar E) (f : 𝒮 (S.hom T))
+  (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s s')))) (Ψ : _ → ℂ)
+  (i : P)
 
 omit [WeilData E] in
 /-- If `π` reads the components at `A`, then `π` composed with complex conjugation reads the
@@ -299,27 +324,34 @@ lemma SplitTameChar.readsAt : ReadsAt 𝔠.ramifiedPlaces (evalPlaces 𝔠.ramif
   simp [mem_O_locProd, idem_mul_mem_Ô]
 
 /-- The ring map from the integers of ∏_{w∈P} E_w to the residue field at the place i of P. -/
-def residueAt {E : Type} [Field E] [NumberField E] {P : Finset (FinPlace E)} (i : P) :
-    O (F := LocProd P) →+* ResField i.val :=
+def residueAt {E : Type} [Field E] [NumberField E] {P : Finset (FinPlace E)} (i : P)
+    : O (F := LocProd P) →+* ResField i.val :=
   (residue (LocInt i.val)).comp
-    ((evalRingHom (fun w : P ↦ LocField w.val) i).restrict O (LocInt i.val) (by aesop (add simp
-      mem_O_locProd)))
+    ((evalRingHom (fun w : P ↦ LocField w.val) i).restrict O (LocInt i.val) (by
+      aesop (add simp
+        mem_O_locProd)))
 
-/-- The vector of 𝒮(Hom(S,T)) obtained from the vacuum by applying the operator
+/--
+The vector of 𝒮(Hom(S,T)) obtained from the vacuum by applying the operator
 `New.Space.schrodingerOp`, for the places A, of the function y ↦ Ψ(π y) on finite adelic matrices,
 π acting entrywise. The argument of type `ReadsAt A π` only records that `π` reads the components
-at `A`. -/
+at `A`.
+-/
 abbrev namedVector (Ψ : Matrix n' n F → ℂ) (_h_read : ReadsAt A π) : 𝒮 (S.hom T) :=
   (S.hom T).schrodingerOp A (fun y ↦ Ψ ((vecToMatrix y).map π)) (S.hom T).vacElem
 
-/-- The datum in 𝒮(Hom(S,T)) with real part v, the function Ψ of the components at the places A read
-through π, and the vacuum elsewhere. -/
+/--
+The datum in 𝒮(Hom(S,T)) with real part v, the function Ψ of the components at the places A read
+through π, and the vacuum elsewhere.
+-/
 abbrev localDatum (Ψ : Matrix n' n F → ℂ) (r : ReadsAt A π) : 𝒮 (S.hom T) :=
   (S.hom T).integrated v (delta% namedVector S T Ψ r)
 
-/-- The function g ↦ ∫ θ^{S,T}_{a,b}(f)(g,h) dh on U(S) = G E s, for f in 𝒮(Hom(S,T)). Here h runs
+/--
+The function g ↦ ∫ θ^{S,T}_{a,b}(f)(g,h) dh on U(S) = G E s, for f in 𝒮(Hom(S,T)). Here h runs
 over U(T) = G E s', and dh is the measure `T.quotMeasure` on [U(T)]. It is the integral of the theta
-kernel `New.pairTheta` over [U(T)], for arbitrary characters a and b of U(1)(𝔸). -/
+kernel `New.pairTheta` over [U(T)], for arbitrary characters a and b of U(1)(𝔸).
+-/
 def thetaIntegral (g : G E s) : ℂ := ∫ h : G E s', pairTheta S T a b f (g, h) ∂T.quotMeasure
 
 omit [WeilData E]
@@ -356,8 +388,10 @@ lemma isIntegralUnit_iff_v_eq_one {t : LocProd P} :
 
 namespace SplitTameChar
 
-/-- The character t ↦ ν(t/t̄) of ∏_{w∈S} E_w, t read as an idele supported on S, extended by 0
-to non-invertible elements. -/
+/--
+The character t ↦ ν(t/t̄) of ∏_{w∈S} E_w, t read as an idele supported on S, extended by 0
+to non-invertible elements.
+-/
 abbrev semilocalChar : MulChar ((i : 𝔠.ramifiedPlaces) → LocField (i : FinPlace E)) ℂ :=
   localChar 𝔠.ramifiedPlaces 𝔠.character.baseChange 0
 
@@ -411,15 +445,19 @@ lemma character_apply_of_integral (u : unitary (𝔸 E)) (hu : (u : 𝔸 E).2 �
   simp only [h_red, Finset.univ_eq_attach]
 
 open scoped Classical in
-/-- The tameness data (`New.TameLocalChar`) of t ↦ ν(t/t̄)|t|^{k/2} on ∏_{w∈S} E_w: the product of
-the residue fields at S, with the character ∏ψ_w⁻¹ on it. -/
-instance tameLocalChar (k := 0) : TameLocalChar
-  (localChar 𝔠.ramifiedPlaces 𝔠.character.baseChange k) where
+/--
+The tameness data (`New.TameLocalChar`) of t ↦ ν(t/t̄)|t|^{k/2} on ∏_{w∈S} E_w: the product of
+the residue fields at S, with the character ∏ψ_w⁻¹ on it.
+-/
+instance tameLocalChar (k := 0)
+    : TameLocalChar (localChar 𝔠.ramifiedPlaces 𝔠.character.baseChange k) where
   -- the product over `S` of the residue fields
   ResidueRing := _
   reduction := .pi residueAt
-  resChar := ⟨∏ i : 𝔠.ramifiedPlaces, (𝔠.tamePart i)⁻¹.comp (evalMonoidHom _ i), by
-    simp [isUnit_iff, Finset.prod_eq_zero_iff, apply_eq_zero_iff]⟩
+  resChar := ⟨
+    ∏ i : 𝔠.ramifiedPlaces, (𝔠.tamePart i)⁻¹.comp (evalMonoidHom _ i),
+    by simp [isUnit_iff, Finset.prod_eq_zero_iff, apply_eq_zero_iff]
+  ⟩
   reduction_surjective_and_eq_zero_iff := by
     constructor
     · -- Lift each component of `r` from the residue field.
@@ -432,11 +470,13 @@ instance tameLocalChar (k := 0) : TameLocalChar
       intro a ha
       obtain ⟨i, hi⟩ := Function.ne_iff.1 ha
       obtain ⟨x, hx⟩ := MulChar.ne_one_iff.1 ((𝔠.ne_one_iff i).2 i.property)
-      exact ⟨(mulSingle i x - 1) / a, by
-        simp_all [Finset.prod_eq_single i, inv_apply_eq_inv', apply_eq_zero_iff]⟩
+      exact ⟨
+        (mulSingle i x - 1) / a,
+        by simp_all [Finset.prod_eq_single i, inv_apply_eq_inv', apply_eq_zero_iff]
+      ⟩
     · -- On units this is `localChar_apply_of_isUnit`; a non-unit has residue `0` at some place, so
       -- both sides are `0`.
-      simp_all [invOnUnits, ↓isIntegralUnit_iff_isUnit, localChar_apply_of_isUnit, @eq_comm ℂ 0,
+      simp_all [invOnUnits, ↓ isIntegralUnit_iff_isUnit, localChar_apply_of_isUnit, @eq_comm ℂ 0,
         inv_apply_eq_inv', Finset.prod_eq_zero_iff, apply_eq_zero_iff]
 
 end SplitTameChar
@@ -449,7 +489,8 @@ namespace New.AutChar.HasWeight
 
 open Matrix Prod IsIntMatrix
 
-variable {E n : Type _} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type _} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   {μ : AutChar E} {e : NumberField.InfinitePlace E → ℤ}
   {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ} {s : n → ℤˣ}
 

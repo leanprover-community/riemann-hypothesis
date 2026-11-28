@@ -54,16 +54,20 @@ open Finset Module Submodule
 -- Finite types of vectors and of subspaces are summed over through `Fintype.ofFinite`.
 attribute [local instance low] Fintype.ofFinite
 
-/-- The product of `1 - q ^ l * X` over `0 ≤ l < m`. For `q` the norm of a split place, it is the
-Hecke polynomial of the trivial representation in rank `m`. -/
+/--
+The product of `1 - q ^ l * X` over `0 ≤ l < m`. For `q` the norm of a split place, it is the
+Hecke polynomial of the trivial representation in rank `m`.
+-/
 @[simp]
 noncomputable abbrev New.SiegelWeil.qPochhammer (q m : ℕ) (X : ℂ) : ℂ :=
   ∏ l ∈ range m, (1 - (q : ℂ) ^ l * X)
 
-/-- The number `(-X) ^ d * q ^ (d choose 2)` attached to a subspace `U` of `k^n` of dimension `d`,
-where `q` is the number of elements of `k`. -/
-noncomputable abbrev New.heckePolyCoeff {n k : Type*} [Field k] (X : ℂ) (U : Submodule k (n → k)) :
-    ℂ :=
+/--
+The number `(-X) ^ d * q ^ (d choose 2)` attached to a subspace `U` of `k^n` of dimension `d`,
+where `q` is the number of elements of `k`.
+-/
+noncomputable abbrev New.heckePolyCoeff {n k : Type*} [Field k] (X : ℂ) (U : Submodule k (n → k))
+    : ℂ :=
   (-X) ^ finrank k U * (Nat.card k : ℂ) ^ (finrank k U).choose 2
 
 open scoped Classical in
@@ -146,18 +150,22 @@ open Matrix Polynomial Finset Fin Lagrange
 
 namespace New.Variety
 
-variable {a : ℕ} (l : Fin a → ℕ) {R S : Type} [CommRing R] [CommRing S]
-  (r : Fin a → R) (s : Multiset R)
+variable
+  {a : ℕ} (l : Fin a → ℕ) {R S : Type} [CommRing R] [CommRing S] (r : Fin a → R) (s : Multiset R)
 
-/-- For exponents `l : Fin a → ℕ`, the determinant of the matrix of coefficients of the remainders
+/--
+For exponents `l : Fin a → ℕ`, the determinant of the matrix of coefficients of the remainders
 of the `X ^ l j` modulo `freeMonic ℤ a`, the generic monic polynomial of degree `a`. It is an
-integer polynomial in the `a` generic coefficients. -/
+integer polynomial in the `a` generic coefficients.
+-/
 noncomputable def genericSchur : MvPolynomial (Fin a) ℤ :=
   (of fun k j : Fin a ↦ (X ^ l j %ₘ freeMonic ℤ a).coeff k.val).det
 
-/-- Evaluation of an integer polynomial in `a` variables at the coefficients of degree less than `a`
+/--
+Evaluation of an integer polynomial in `a` variables at the coefficients of degree less than `a`
 of `∏ (X - t)`, with `t` running over the multiset `s`. Applied to `genericSchur l`, with `s` of
-size `a`, it gives the value of the Schur polynomial at the roots. -/
+size `a`, it gives the value of the Schur polynomial at the roots.
+-/
 noncomputable def rootCoeffEval : MvPolynomial (Fin a) ℤ →ₐ[ℤ] R :=
   MvPolynomial.aeval (R := ℤ) fun i : Fin a ↦ (s.map fun t : R ↦ X - C t).prod.coeff i
 

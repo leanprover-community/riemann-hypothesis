@@ -57,9 +57,11 @@ open CategoryTheory NumberField Matrix FourierTransform LinearMap BilinForm Comp
 namespace New.Variety
 
 /- `x` is an object over `ℂ` of the family `X` over `Z`, and `e` is a full structure on it. -/
-variable {E : Type} [Field E] [CMBase E] {D : PEL E} {Z : AlgebraicGeometry.Scheme}
-  {τ : Z ⟶ AlgebraicGeometry.Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ}
-  {x : ThetaObject X (AlgebraicGeometry.Spec ⟨ℂ⟩)} (e : x.FullLevelStructure)
+variable
+  {E : Type} [Field E] [CMBase E]
+  {D : PEL E} {Z : AlgebraicGeometry.Scheme} {τ : Z ⟶ AlgebraicGeometry.Spec (CommRingCat.of (𝓞 E))}
+  {X : ThetaFamily D Z τ} {x : ThetaObject X (AlgebraicGeometry.Spec ⟨ℂ⟩)}
+  (e : x.FullLevelStructure)
 
 /-- Let `u` uniformise `x.groupScheme`, with theta coordinates `θ` of type `(B, χ)` for
 `x.lineBundle`, and let the torsion point of `e` at the class of `m *ᵥ y` be `u.expMap (Q y)` for

@@ -96,20 +96,26 @@ lemma filling_fits :
       exists_point_eq := ⟨γ, fun i w ↦ hγ_red ⟨i, w⟩, toUnits (D.latticeScale 0), ext hγ⟩
       central a := (Seesaw.commute_scalarFin a).inv_left }
 
-/-- The isomorphism that applies the central translation by `D.latticeScale 0` to a source form on
-X₀ and takes its values at the class representatives, in the coordinates of the Bessel systems. -/
-def sourceFormCoords :
-    ↥D.SourceForm ≃ₗ[ℂ] EuclideanSpace ℂ (D.filling.Classes × D.filling.BesselCoord) :=
+/--
+The isomorphism that applies the central translation by `D.latticeScale 0` to a source form on
+X₀ and takes its values at the class representatives, in the coordinates of the Bessel systems.
+-/
+def sourceFormCoords
+    : ↥D.SourceForm ≃ₗ[ℂ] EuclideanSpace ℂ (D.filling.Classes × D.filling.BesselCoord) :=
   LinearEquiv.ofBijective (D.centralRep (D.latticeScale 0))
-    (D.centralRep.apply_bijective (D.latticeScale 0)) ≪≫ₗ D.filling_fits.sourceFormCoords
+      (D.centralRep.apply_bijective (D.latticeScale 0))
+    ≪≫ₗ D.filling_fits.sourceFormCoords
 
-/-- For s in 𝖦, the linear map from forms of parameter ς and level M on Y₀ to the image of the good
-idempotent e₀. It is the translation by s, followed by |𝖦| times the action of e₀. -/
-abbrev goodProjTranslate (s : D.chosenGL) :
-    ↥(D.principalForms (D.spaceY 0)) →ₗ[ℂ]
-      LinearMap.range ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀) :=
-  (Nat.card D.chosenGL : ℂ) •
-    ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀).rangeRestrict ∘ₗ D.principalRep (D.spaceY 0) s
+/--
+For s in 𝖦, the linear map from forms of parameter ς and level M on Y₀ to the image of the good
+idempotent e₀. It is the translation by s, followed by |𝖦| times the action of e₀.
+-/
+abbrev goodProjTranslate (s : D.chosenGL)
+    : ↥(D.principalForms (D.spaceY 0)) →ₗ[ℂ]
+        LinearMap.range ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀) :=
+  (Nat.card D.chosenGL : ℂ)
+    • ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀).rangeRestrict
+      ∘ₗ D.principalRep (D.spaceY 0) s
 
 end New.Data
 
@@ -404,19 +410,21 @@ lemma filling_mainSecondMoment_eq :
 lemma pow_sub_one_pos : (0 : ℝ) < D.N ^ D.k - 1 :=
   sub_pos.mpr (one_lt_pow₀ (mod_cast D.N_prime.one_lt) D.k_pos.ne')
 
-/-- For the filling data of admissible data `D`, let `H̄` be the reduced image of `besselH`, `d_v`
+/--
+For the filling data of admissible data `D`, let `H̄` be the reduced image of `besselH`, `d_v`
 and `deg_v` the dimension and the degree of the Bessel system at `v`, `fr_v` the frame mass, `sph_k`
 the mass of the sphere in rank `k`, `mass_l` the mass `New.mass` in rank `l` and
 `c_v = fr_v N ^ k d_v ^ 2 / (sph_k deg_v)`. Then `|H̄| ^ 2 mass_k ∏ sph_k c_v` is at most
 `(1 + b⁻⁹)` times the main second moment `(n_X ∏ d_v) ^ 2 / (mass_r ∏ deg_v)`. Here `n_X` is the
 number of classes, `k`, `r` are the ranks of `X₀`, `Y₀`, and `b = D.b` is the weight at the
-`b`-places. -/
-theorem card_sq_mul_mass_mul_prod_le :
-    Nat.card (D.filling.reducedImage besselH) ^ 2 * mass D.E D.k *
-        ∏ v : D.Φ, D.unitSphereMass D.k v * (D.frameMass v * D.N ^ D.k *
-          Fintype.card (D.filling.besselSystem v).Index ^ 2 /
-            (D.unitSphereMass D.k v * (D.filling.besselSystem v).deg)) ≤
-      (1 + D.b⁻¹ ^ 9) * D.filling.mainSecondMoment := by
+`b`-places.
+-/
+theorem card_sq_mul_mass_mul_prod_le
+    : Nat.card (D.filling.reducedImage besselH) ^ 2 * mass D.E D.k
+        * ∏ v : D.Φ, D.unitSphereMass D.k v * (D.frameMass v * D.N ^ D.k *
+            Fintype.card (D.filling.besselSystem v).Index ^ 2 /
+              (D.unitSphereMass D.k v * (D.filling.besselSystem v).deg))
+      ≤ (1 + D.b⁻¹ ^ 9) * D.filling.mainSecondMoment := by
   -- The left side is the left side of `prod_frameMass_mul_le` times the number `multiplier`.
   let multiplier : ℝ := D.filling.mainSecondMoment / ((D.N ^ D.k) ^ D.f * mass D.E D.k)
   have N_pos : (0 : ℝ) < D.N := mod_cast D.N_prime.pos
@@ -429,8 +437,8 @@ theorem card_sq_mul_mass_mul_prod_le :
     positivity
   rw [D.prod_unitSphereMass_mul_div_eq]
   calc
-    _ = (∏ v : D.Φ, D.frameMass v) * mass D.E D.r * (D.N ^ D.k / (D.N ^ D.k - 1)) ^ (2 * D.f) *
-        multiplier := by
+    _ = (∏ v : D.Φ, D.frameMass v) * mass D.E D.r * (D.N ^ D.k / (D.N ^ D.k - 1)) ^ (2 * D.f)
+        * multiplier := by
       simp only [multiplier, filling_mainSecondMoment_eq, div_pow, mul_comm 2 D.f, pow_mul]
       field_simp
     _ ≤ (1 + D.b⁻¹ ^ 9) * ((D.N ^ D.k) ^ D.f * mass D.E D.k) * multiplier :=
@@ -439,21 +447,23 @@ theorem card_sq_mul_mass_mul_prod_le :
       simp only [multiplier]
       field_simp
 
-/-- For the filling data of admissible data `D`, let `H̄` be the reduced image of `besselH`, `n_X`
+/--
+For the filling data of admissible data `D`, let `H̄` be the reduced image of `besselH`, `n_X`
 the number of classes, `d_v` and `deg_v` the dimension and the degree of the Bessel system at `v`
 and `fr_v` the frame mass. Then `|H̄| n_X ∏ fr_v d_v ^ 2 / deg_v` is at most `(1 + b⁻⁹)` times the
 main second moment `(n_X ∏ d_v) ^ 2 / (mass_r ∏ deg_v)`. Here `mass_r` is the mass `New.mass` in the
-rank `r` of `Y₀`, and `b = D.b` is the weight at the `b`-places. -/
-theorem card_mul_card_classes_mul_prod_le :
-    Nat.card (D.filling.reducedImage besselH) * Fintype.card D.filling.Classes *
-        ∏ v : D.Φ, D.frameMass v * Fintype.card (D.filling.besselSystem v).Index ^ 2 /
-          (D.filling.besselSystem v).deg ≤
-      (1 + D.b⁻¹ ^ 9) * D.filling.mainSecondMoment := by
+rank `r` of `Y₀`, and `b = D.b` is the weight at the `b`-places.
+-/
+theorem card_mul_card_classes_mul_prod_le
+    : Nat.card (D.filling.reducedImage besselH) * Fintype.card D.filling.Classes
+        * ∏ v : D.Φ, D.frameMass v * Fintype.card (D.filling.besselSystem v).Index ^ 2 /
+            (D.filling.besselSystem v).deg
+      ≤ (1 + D.b⁻¹ ^ 9) * D.filling.mainSecondMoment := by
   -- With `n_X = |H̄| (N ^ k - 1) ^ f mass_k` the left side is at most the left side of
   -- `card_sq_mul_mass_mul_prod_le`, which has `N ^ k` in place of `N ^ k - 1`.
   let H : ℝ := Nat.card (D.filling.reducedImage besselH)
-  let Q : ℝ := (∏ v : D.Φ, D.frameMass v) * Fintype.card D.filling.BesselCoord ^ 2 /
-    D.filling.besselDegree
+  let Q : ℝ :=
+    (∏ v : D.Φ, D.frameMass v) * Fintype.card D.filling.BesselCoord ^ 2 / D.filling.besselDegree
   have frame_pos : 0 < ∏ v : D.Φ, D.frameMass v := prod_pos fun v _ ↦ D.frameMass_pos v
   have deg_pos : 0 < D.filling.besselDegree := D.filling.besselDegree_pos
   have mass_k_pos : 0 < mass D.E D.k := mass_pos D.E D.k
@@ -637,23 +647,26 @@ lemma abs_log_mainSecondMoment_div_identitySecondMoment_sub_le :
     m_eq_two_mul_varrho_add_two] at *
   constructor <;> linarith
 
-/-- For admissible data `D`, the ratio of the main second moment to the identity second moment lies
+/--
+For admissible data `D`, the ratio of the main second moment to the identity second moment lies
 between `b ^ (11 k f)` and `(M / b ^ 6) ^ (k f)`. Here `b = D.b` is the weight at the `b`-places,
-`M = p₀ p₁` is the principal level, `k` the rank of `X₀` and `f` the number of infinite places. -/
-theorem mainSecondMoment_div_identitySecondMoment_mem_Icc :
-    D.filling.mainSecondMoment / D.filling.identitySecondMoment ∈
-      Set.Icc (D.b ^ (11 * (D.k * D.f))) ((D.M / D.b ^ 6) ^ (D.k * D.f)) := by
+`M = p₀ p₁` is the principal level, `k` the rank of `X₀` and `f` the number of infinite places.
+-/
+theorem mainSecondMoment_div_identitySecondMoment_mem_Icc
+    : D.filling.mainSecondMoment / D.filling.identitySecondMoment
+      ∈ Set.Icc (D.b ^ (11 * (D.k * D.f))) ((D.M / D.b ^ 6) ^ (D.k * D.f)) := by
   -- The factor `d ((k - 1)!) ^ f` lies between `1` and `b ^ (5 k f / 4)`, and `b ^ 19 ≤ M`.
   have M_pos : (0 : ℝ) < D.M := Nat.cast_pos.2 (pos D.M)
   have ratio_pos : 0 < D.filling.mainSecondMoment / D.filling.identitySecondMoment := by
     have order_pos : 0 < D.filling.unipotentOrder := by simp [← card_reducedImage_besselU]
     rw [mainSecondMoment_div_identitySecondMoment_eq]
     positivity [D.filling.besselDegree_pos, mass_pos D.E D.k, mass_pos D.E D.r, D.pow_sub_one_pos]
-  have log_factor_nonneg :
-      0 ≤ log (Fintype.card D.filling.BesselCoord * (D.k - 1).factorial ^ D.f) :=
+  have log_factor_nonneg
+      : 0 ≤ log (Fintype.card D.filling.BesselCoord * (D.k - 1).factorial ^ D.f) :=
     mod_cast log_natCast_nonneg (Fintype.card D.filling.BesselCoord * (D.k - 1).factorial ^ D.f)
-  have log_factor_le : log (Fintype.card D.filling.BesselCoord * (D.k - 1).factorial ^ D.f) ≤
-      D.f * D.k * (5 / 4 * D.logB) := by
+  have log_factor_le
+      : log (Fintype.card D.filling.BesselCoord * (D.k - 1).factorial ^ D.f)
+        ≤ D.f * D.k * (5 / 4 * D.logB) := by
     refine (log_le_log (by positivity) D.card_besselCoord_mul_factorial_le).trans_eq ?_
     rw [log_pow, log_pow, log_pow, log_sqrt (sqrt_nonneg _), log_sqrt (exp_nonneg _), log_exp]
     linarith
@@ -688,47 +701,49 @@ lemma pow_div_le_pow_sub_one : (D.N : ℝ) ^ D.k / D.b ≤ D.N ^ D.k - 1 := by
   calc (D.N : ℝ) ^ D.k / D.b ≤ D.N ^ D.k / 2 := by gcongr
     _ ≤ D.N ^ D.k - 1 := by linarith
 
-/-- The filling data of `D` satisfy the standing hypotheses `New.Filling.IsAdmissible`: the level
-is the preimage of the principal level, reduction is onto, and the size inequalities hold. -/
+/--
+The filling data of `D` satisfy the standing hypotheses `New.Filling.IsAdmissible`: the level
+is the preimage of the principal level, reduction is onto, and the size inequalities hold.
+-/
 instance : D.filling.IsAdmissible := by
   have h_energy : 0 < D.filling.identitySecondMoment :=
     mul_pos (Nat.cast_pos.2 Nat.card_pos)
       (Nat.cast_pos.2 (Nat.mul_pos Fintype.card_pos Fintype.card_pos))
   have h_rank : D.shape.k = D.k := D.card_X₀
   have h_b : D.filling.b = D.b := rfl
-  have h_varpi (v : InfinitePlace D.E) : ‖Φ v D.filling.deltaE.val‖ = v
-    (P.deltaE D.towerExp).val := by
+  have h_varpi (v : InfinitePlace D.E)
+      : ‖Φ v D.filling.deltaE.val‖ = v (P.deltaE D.towerExp).val := by
     rw [← InfinitePlace.apply, mk_Φ]
     rfl
-  have h_kappa (v : InfinitePlace D.E) :
-      |D.filling.realM v| = D.M * v (P.deltaE D.towerExp).val / (2 * π) := by
+  have h_kappa (v : InfinitePlace D.E)
+      : |D.filling.realM v| = D.M * v (P.deltaE D.towerExp).val / (2 * π) := by
     rw [abs_realM_eq, ← h_varpi v]
     rfl
-  exact
-    { sourceLevel_eq := D.levelX_zero_eq_comap
-      reduction_surjective := D.filling_reduction_surjective
-      norm_deltaE_le := fun v ↦ by
-                  rw [h_varpi v, h_b]
-                  exact (D.apply_deltaE_mem_Icc v).2
-      one_le_abs_realM := fun v ↦ D.le_of_hasLogBound.trans_eq (h_kappa v).symm
-      abs_realM_le := fun v ↦ by
-        rw [h_kappa v, h_b]
-        exact D.le_of_hasLogBound
-      N_le := D.N_le_pow
-      mul_identitySecondMoment_le := by
-                    rw [h_rank]
-                    exact (le_div_iff₀ h_energy).1
-                      D.mainSecondMoment_div_identitySecondMoment_mem_Icc.1
-      mainSecondMoment_le := by
-              rw [h_rank]
-              exact (div_le_iff₀ h_energy).1 D.mainSecondMoment_div_identitySecondMoment_mem_Icc.2
-      card_besselCoord_le := by
-        rw [h_rank]
-        exact D.card_besselCoord_le_pow
-      le_relIndex := by
-        rw [D.relIndex_latticeStabilizer, h_rank]
-        exact pow_le_pow_left₀ (by positivity) D.pow_div_le_pow_sub_one _
-      scaledSiegelConst_le := D.scaledSiegelConst_le }
+  exact {
+    sourceLevel_eq := D.levelX_zero_eq_comap
+    reduction_surjective := D.filling_reduction_surjective
+    norm_deltaE_le := fun v ↦ by
+      rw [h_varpi v, h_b]
+      exact (D.apply_deltaE_mem_Icc v).2
+    one_le_abs_realM := fun v ↦ D.le_of_hasLogBound.trans_eq (h_kappa v).symm
+    abs_realM_le := fun v ↦ by
+      rw [h_kappa v, h_b]
+      exact D.le_of_hasLogBound
+    N_le := D.N_le_pow
+    mul_identitySecondMoment_le := by
+      rw [h_rank]
+      exact (le_div_iff₀ h_energy).1 D.mainSecondMoment_div_identitySecondMoment_mem_Icc.1
+    mainSecondMoment_le := by
+      rw [h_rank]
+      exact (div_le_iff₀ h_energy).1 D.mainSecondMoment_div_identitySecondMoment_mem_Icc.2
+    card_besselCoord_le := by
+      rw [h_rank]
+      exact D.card_besselCoord_le_pow
+    le_relIndex := by
+      rw [D.relIndex_latticeStabilizer, h_rank]
+      exact pow_le_pow_left₀ (by positivity) D.pow_div_le_pow_sub_one _
+    scaledSiegelConst_le := D.scaledSiegelConst_le
+  }
 
 end New.Data
 

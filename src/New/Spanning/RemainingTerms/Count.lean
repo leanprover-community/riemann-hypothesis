@@ -63,10 +63,12 @@ lemma two_mul_count_exponent_le {n f l : ℕ} (hn : 0 < n) (hl : l ≤ n ^ 3) :
   linarith [Nat.zero_le (n ^ 9 * f)]
 
 variable (S) in
-/-- The terms `γ` and `γ'` from the class `c'` to the class `c` both have the label `t`
+/--
+The terms `γ` and `γ'` from the class `c'` to the class `c` both have the label `t`
 (`S.IsNearTermAt`), and their common lattice `S.pairLattice c c' γ γ'` is a lattice in `Λ ∩ X₀` that
 lies in the lattices `S.termLattice` of both terms and whose rank is the dimension of
-`commonLink γ γ'`, the subspace of `X₀` that the terms share. -/
+`commonLink γ γ'`, the subspace of `X₀` that the terms share.
+-/
 structure IsLabelledPair (c c' : S.Classes) (t : S.reducedImage besselS) (γ γ' : S.G E) : Prop where
   /-- The first term is near and has the label `t`. -/
   isNearTermAt_left : S.IsNearTermAt c t (c', γ)
@@ -107,13 +109,15 @@ lemma exists_isLabelledPair_of_isNearPairOverAgreeingBlock {c c' : S.Classes}
 variable (S) in
 /-- The lattices `L ⊆ Λ ∩ X₀` of rank `r` with discriminant at most `S.discriminantBound`. -/
 abbrev ClassBoundedDiscLattice (c : S.Classes) (r : ℕ) : Type :=
-  {L : Submodule (Ô E) (𝔰.κ → 𝔸f E) // IsLatticeOfRank r L ∧
-    L ≤ S.classLatticeX₀ c ∧ discriminant r L ≤ S.discriminantBound}
+  {L : Submodule (Ô E) (𝔰.κ → 𝔸f E)
+    // IsLatticeOfRank r L ∧ L ≤ S.classLatticeX₀ c ∧ discriminant r L ≤ S.discriminantBound}
 
 variable (S) in
-/-- The near pairs over a block `(c, s, c')` with agreeing `s`
+/--
+The near pairs over a block `(c, s, c')` with agreeing `s`
 (`S.IsNearPairOverAgreeingBlock c c'`) whose common lattice has corank `l` and discriminant at most
-`S.discriminantBound`. -/
+`S.discriminantBound`.
+-/
 def boundedDiscNearPairs (l : ℕ) (c c' : S.Classes) : Set (S.G E × S.G E) :=
   {q : S.G E × S.G E | S.IsNearPairOverAgreeingBlock c c' q ∧
     finrank E (commonLink q.1 q.2) + l = 𝔰.k ∧
@@ -181,7 +185,8 @@ lemma sum_pairDiscriminant_inv_le_tsum [S.IsAdmissible] {c : S.Classes} {r l : �
       _ ≤ .ofReal S.tailScale := ofReal_le_ofReal (pow_le_tailScale h_exponent)
   · simp [tsum_prod', ENat.card_eq_coe_natCard]
 
-/-- **Count.** Let `E` be a CM field with a primitive 5040th root of unity and `f` infinite places,
+/--
+**Count.** Let `E` be a CM field with a primitive 5040th root of unity and `f` infinite places,
 and let `S` be admissible filling data of shape `𝔰` over `E`, with size parameter `b = S.b` and
 prime `N = S.N`. Let `n = 𝔰.n`, let `k = 𝔰.k` be the dimension of the definite space `X₀`, and let
 `l ≤ n³`. For classes `c`, `c'` a near pair is two near, chosen terms over one block `(c, s, c')`
@@ -190,11 +195,12 @@ subspace that the terms share, and has corank `l` if this rank is `k - l`. The s
 `(disc L₁₂) ^ (-k)` over all `c`, `c'` and all such pairs with corank `l` and discriminant at most
 `S.discriminantBound = b ^ (n³ f)` is at most `tailScale ^ (l + 2) * pairCountScale`. Here
 `tailScale = b ^ (k f / 4)`, and `pairCountScale` is the number of labels times the number of
-classes, divided by `N ^ (k f)`. -/
-theorem sum_pairDiscriminant_inv_le [S.IsAdmissible] {l : ℕ} (hl_le : l ≤ 𝔰.n ^ 3) :
-    ∑ c : S.Classes, ∑ c' : S.Classes, ∑' q : S.boundedDiscNearPairs l c c',
-        ENNReal.ofReal (S.pairDiscriminant c c' q.val.fst q.val.snd ^ 𝔰.k)⁻¹ ≤
-      ENNReal.ofReal (S.tailScale ^ (l + 2) * S.pairCountScale) := by
+classes, divided by `N ^ (k f)`.
+-/
+theorem sum_pairDiscriminant_inv_le [S.IsAdmissible] {l : ℕ} (hl_le : l ≤ 𝔰.n ^ 3)
+    : ∑ c : S.Classes, ∑ c' : S.Classes, ∑' q : S.boundedDiscNearPairs l c c',
+          ENNReal.ofReal (S.pairDiscriminant c c' q.val.fst q.val.snd ^ 𝔰.k)⁻¹
+      ≤ ENNReal.ofReal (S.tailScale ^ (l + 2) * S.pairCountScale) := by
   obtain h_corank_gt | h_corank_le := lt_or_ge 𝔰.k l
   · -- No lattice has corank above `k`, so the sum is empty.
     have h_empty (c c' : S.Classes) : IsEmpty (S.boundedDiscNearPairs l c c') := by
@@ -205,17 +211,18 @@ theorem sum_pairDiscriminant_inv_le [S.IsAdmissible] {l : ℕ} (hl_le : l ≤ �
   obtain ⟨r, h_rank⟩ : ∃ r : ℕ, r + l = 𝔰.k := ⟨𝔰.k - l, Nat.sub_add_cancel h_corank_le⟩
   have h_tailScale_nonneg : 0 ≤ S.tailScale := Real.rpow_nonneg (zero_le_one.trans S.one_le_b) _
   let ratio : ℝ := card S.Classes / S.N ^ (𝔰.k * numInfPlaces E)
-  calc _ ≤ ∑ c : S.Classes, Nat.card (S.reducedImage besselS) *
-         (∑' L : S.ClassBoundedDiscLattice c r,
-          ENNReal.ofReal (discriminant r L.val ^ 𝔰.k)⁻¹) * .ofReal S.tailScale :=
-        Finset.sum_le_sum fun c _ ↦ sum_pairDiscriminant_inv_le_tsum hl_le h_rank
-    _ ≤ Nat.card (S.reducedImage besselS) * .ofReal (ratio * S.tailScale ^ (l + 1)) *
-          .ofReal S.tailScale := by
-        grw [← Finset.sum_mul, ← Finset.mul_sum, sum_discriminant_inv_le h_rank]
+  calc
+    _ ≤ ∑ c : S.Classes, Nat.card (S.reducedImage besselS) *
+        (∑' L : S.ClassBoundedDiscLattice c r,
+         ENNReal.ofReal (discriminant r L.val ^ 𝔰.k)⁻¹) * .ofReal S.tailScale :=
+      Finset.sum_le_sum fun c _ ↦ sum_pairDiscriminant_inv_le_tsum hl_le h_rank
+    _ ≤ Nat.card (S.reducedImage besselS) * .ofReal (ratio * S.tailScale ^ (l + 1))
+        * .ofReal S.tailScale := by
+      grw [← Finset.sum_mul, ← Finset.mul_sum, sum_discriminant_inv_le h_rank]
     _ = .ofReal (S.tailScale ^ (l + 2) * S.pairCountScale) := by
-        rw [← ofReal_natCast, ← ofReal_mul (by positivity), ← ofReal_mul (by positivity),
-          pairCountScale]
-        congr 1
-        ring
+      rw [← ofReal_natCast, ← ofReal_mul (by positivity), ← ofReal_mul (by positivity),
+        pairCountScale]
+      congr 1
+      ring
 
 end New.Filling

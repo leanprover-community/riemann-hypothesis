@@ -105,10 +105,12 @@ lemma isLerayHirschBasis_lineBasis_of_basis (Θ : Theory g) {I : Type*} {S : AbF
     exact h_at
   exact ⟨w i, h_coeff_i⟩
 
-/-- For a test c over A, the class η · 1 with locally constant ℤ/ℓ coefficients L: η of
+/--
+For a test c over A, the class η · 1 with locally constant ℤ/ℓ coefficients L: η of
 `New.Variety.Theory.locallyConstant` on the points of ℙ¹, pulled back along
 `New.Variety.oneLocConst` (ℤ → L, 1 ↦ the constant 1) and then to the functor
-(B, x ∈ ℙ¹(B)) ↦ Hom(c, B). It lies in H²(ℤ[Hom(c, −)], L) on the points of ℙ¹ over tests over A. -/
+(B, x ∈ ℙ¹(B)) ↦ Hom(c, B). It lies in H²(ℤ[Hom(c, −)], L) on the points of ℙ¹ over tests over A.
+-/
 def etaOneClass (c : TestOver A) :=
   H.map _ (freeAb.map (toUnit (testOfPoint A projLine ⋙ reprBy c))) 2
     (H.map _ oneLocConst 2 Theory.locallyConstant.cupClass)
@@ -246,18 +248,23 @@ variable (A) (k : Type _) [Field k] [IsAlgClosed k] [Algebra A k]
 
 /-! ### Tests over an algebraically closed field -/
 
-/-- For an A-algebra k that is a field, the restriction of scalars functor from test k-algebras to
-test A-algebras. -/
+/--
+For an A-algebra k that is a field, the restriction of scalars functor from test k-algebras to
+test A-algebras.
+-/
 def TestOver.restrictScalars : TestOver k ⥤ TestOver A := lift _ (ι _ ⋙ restrictAlg ..) (·.property)
 
-/-- On test k-algebras B, the map from the point to the functor B ↦ Hom_A(k, B) that picks the
-structure map k → B. -/
-def TestOver.structurePt :
-    onePointFunctor (TestOver k) ⟶ restrictScalars A k ⋙ reprBy
-      ⟨of A k, isTest_of_preValuationRing⟩ :=
-  sectionMap
-    { val B := ⟨⟨CommAlg.homOfRingHom (algebraMap k B.obj) (by tauto)⟩⟩
-      property f := congr(⟨⟨$(by ext; apply f.hom.hom.commutes')⟩⟩) }
+/--
+On test k-algebras B, the map from the point to the functor B ↦ Hom_A(k, B) that picks the
+structure map k → B.
+-/
+def TestOver.structurePt
+    : onePointFunctor (TestOver k)
+      ⟶ restrictScalars A k ⋙ reprBy ⟨of A k, isTest_of_preValuationRing⟩ :=
+  sectionMap {
+    val B := ⟨⟨CommAlg.homOfRingHom (algebraMap k B.obj) (by tauto)⟩⟩
+    property f := congr(⟨⟨$(by ext; apply f.hom.hom.commutes')⟩⟩)
+  }
 
 /-- For an algebraically closed field k over A, restriction of scalars from tests over k to tests
 over A compares the point with the functor Hom_A(k, −) in the sense of

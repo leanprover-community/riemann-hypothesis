@@ -46,8 +46,9 @@ open Submodule MonoidAlgebra Representation Gf Module ComplexOrder
 
 section General
 
-variable {E n : Type} [Field E] [NumberField E] [NumberField.IsCMField E] [Fintype n]
-  [DecidableEq n] {S : Set (FinPlace E)}
+variable
+  {E n : Type} [Field E] [NumberField E] [NumberField.IsCMField E] [Fintype n] [DecidableEq n]
+  {S : Set (FinPlace E)}
 
 /-- A vector has level `K` (with trivial character) if and only if every element of `K` fixes it. -/
 lemma mem_levelSpace_iff_forall_apply_eq {G M : Type*} [Group G] [AddCommGroup M] [Module ℂ M]
@@ -102,11 +103,13 @@ namespace Data
 
 variable {P : Parameters} (D : Data P) {s : D.RowIndex → ℤˣ} (V : Space D.E D.RowIndex s)
 
-/-- The level `M` is the product of the two primes `D.levelPrime 0` and `D.levelPrime 1`, and the
+/--
+The level `M` is the product of the two primes `D.levelPrime 0` and `D.levelPrime 1`, and the
 places `D.chosenPlace x` are the chosen places of `D.E` above them. The Hecke operators are read at
 the finite places `w` that are split (`star w ≠ w`, where `star w` is the complex conjugate) and are
 neither a chosen place nor the conjugate of one. In this file, "not above `M`" and "away from `M`"
-refer to the places that are neither chosen nor conjugate to a chosen one. -/
+refer to the places that are neither chosen nor conjugate to a chosen one.
+-/
 structure IsSplitOffLevel (w : FinPlace D.E) : Prop where
   /-- The place `w` differs from its conjugate. -/
   isSplit : w.IsSplit
@@ -121,8 +124,10 @@ protected lemma IsSplitOffLevel.star {D : Data P} {w : FinPlace D.E}
   notMem_conjClosure h_mem := hw.notMem_conjClosure <| by
     simpa only [Set.mem_union, Set.mem_preimage, star_star, or_comm] using h_mem
 
-/-- The group `G^M` of the elements of the finite adelic unitary group `G_f` that have component
-`1` at the chosen places above `M`. -/
+/--
+The group `G^M` of the elements of the finite adelic unitary group `G_f` that have component
+`1` at the chosen places above `M`.
+-/
 abbrev offLevelGroup : Subgroup (Gf D.E D.RowIndex) :=
   trivialOn D.RowIndex (Set.range D.chosenPlace)
 
@@ -152,21 +157,25 @@ lemma heckeSplit_mem_principalForms {w : FinPlace D.E} (hw : D.IsSplitOffLevel w
   heckeSplit_mem_levelSpace hw.isSplit i (D.principalForms_le_sphericalAt V hw hy)
     levelOf_le_stdLevel hy
 
-/-- The restriction of the Hecke operator `T_{w,i}` to the forms of principal level on `V`, at a
-split place `w` such that neither it nor its conjugate is a chosen place above the level `M`. -/
-def principalHeckeSplit {w : FinPlace D.E} (hw : D.IsSplitOffLevel w) (i : ℕ) :
-    End ℂ (D.principalForms V) :=
-  (heckeSplit (V.formRep (typeKernel D.paramW s)) hw.isSplit i).restrict
-    fun _ hy ↦ D.heckeSplit_mem_principalForms V hw i hy
+/--
+The restriction of the Hecke operator `T_{w,i}` to the forms of principal level on `V`, at a
+split place `w` such that neither it nor its conjugate is a chosen place above the level `M`.
+-/
+def principalHeckeSplit {w : FinPlace D.E} (hw : D.IsSplitOffLevel w) (i : ℕ)
+    : End ℂ (D.principalForms V) :=
+  (heckeSplit (V.formRep (typeKernel D.paramW s)) hw.isSplit i).restrict fun _ hy ↦
+    D.heckeSplit_mem_principalForms V hw i hy
 
 lemma coe_principalHeckeSplit_apply {w : FinPlace D.E} (hw : D.IsSplitOffLevel w) (i : ℕ)
     (y : D.principalForms V) :
     (D.principalHeckeSplit V hw i y).val =
       heckeSplit (V.formRep (typeKernel D.paramW s)) hw.isSplit i y := rfl
 
-/-- The spherical elements away from `M`: the elements of the group algebra of
+/--
+The spherical elements away from `M`: the elements of the group algebra of
 `G^M = D.offLevelGroup` that keep the vectors fixed by the principal level `J_M = D.chosenLevel` in
-every representation of `G_f`. -/
+every representation of `G_f`.
+-/
 def sphericalAlgebra : Subalgebra ℂ ℂ[D.offLevelGroup] :=
   (universalLevelAlgebra D.chosenLevel).comap (mapDomainAlgHom ℂ ℂ D.offLevelGroup.subtype)
 
@@ -183,8 +192,10 @@ lemma mem_sphericalAlgebra_of_mem_universalLevelAlgebra {a : ℂ[D.offLevelGroup
   D.mem_sphericalAlgebra.2
     (mapDomain_mem_universalLevelAlgebra levelOf_le_stdLevel inf_trivialOn_le_levelOf ha)
 
-/-- The families `T` of operators `T V` on the forms of principal level `D.principalForms V`, one
-for each hermitian space `V`, with the pointwise operations. -/
+/--
+The families `T` of operators `T V` on the forms of principal level `D.principalForms V`, one
+for each hermitian space `V`, with the pointwise operations.
+-/
 def OperatorFamily : Type :=
   ∀ {s : D.RowIndex → ℤˣ} (V : Space D.E D.RowIndex s), End ℂ (D.principalForms V)
 
@@ -214,24 +225,33 @@ variable {D}
 
 end OperatorFamily
 
-/-- The spherical Hecke operators away from `M`: the families `T` of operators `T V` on the forms of
+/--
+The spherical Hecke operators away from `M`: the families `T` of operators `T V` on the forms of
 principal level of all hermitian spaces `V` that are given by one spherical element `a` of the group
-algebra of `G^M = D.offLevelGroup`. -/
+algebra of `G^M = D.offLevelGroup`.
+-/
 def heckeAlgebra : Subalgebra ℂ D.OperatorFamily where
-  carrier := {T | ∃ a ∈ D.sphericalAlgebra,
-    ∀ {s : D.RowIndex → ℤˣ} (V : Space D.E D.RowIndex s) (y : D.principalForms V),
-      (T V y).val = (V.formRep (typeKernel D.paramW s)).asAlgebraHom
-        (mapDomain D.offLevelGroup.subtype a) y}
+  carrier :=
+    {T | ∃ a ∈ D.sphericalAlgebra,
+      ∀ {s : D.RowIndex → ℤˣ} (V : Space D.E D.RowIndex s) (y : D.principalForms V),
+        (T V y).val = (V.formRep (typeKernel D.paramW s)).asAlgebraHom
+          (mapDomain D.offLevelGroup.subtype a) y}
   mul_mem' := by
     rintro S T ⟨a, ha, hS⟩ ⟨b, hb, hT⟩
-    exact ⟨a * b, mul_mem ha hb,
+    exact ⟨
+      a * b,
+      mul_mem ha hb,
       fun V y ↦ by
-        simp only [mapDomain_mul, map_mul, mul_apply_eq_comp, OperatorFamily.mul_apply, hS, hT]⟩
+        simp only [mapDomain_mul, map_mul, mul_apply_eq_comp, OperatorFamily.mul_apply, hS, hT]
+    ⟩
   add_mem' := by
     rintro S T ⟨a, ha, hS⟩ ⟨b, hb, hT⟩
     exact ⟨a + b, add_mem ha hb, fun V y ↦ by simp [mapDomain_add, hS, hT]⟩
-  algebraMap_mem' c := ⟨c • 1, D.sphericalAlgebra.smul_mem (one_mem _) c,
-    fun V y ↦ by simp [one_def, Algebra.algebraMap_eq_smul_one]⟩
+  algebraMap_mem' c := ⟨
+    c • 1,
+    D.sphericalAlgebra.smul_mem (one_mem _) c,
+    fun V y ↦ by simp [one_def, Algebra.algebraMap_eq_smul_one]
+  ⟩
 
 /-- Let `G^M = D.offLevelGroup` be the group of the finite adelic elements that are `1` at the
 chosen places above the level `M`. A family `T` of operators on the forms of principal level of all
@@ -304,12 +324,15 @@ lemma principalHeckeSplit_mem_heckeAlgebra {w : FinPlace D.E} (hw : D.IsSplitOff
   exact D.mem_heckeAlgebra.2 ⟨a, h_sph, fun V y ↦ by rw [ha, coe_principalHeckeSplit_apply]⟩
 
 open scoped Classical in
-/-- The Hecke operator `T_{w,i}`, as a member of the Hecke algebra, for `x = (w, i)` with `w` split
-and not above `M`; it is `0` at the other places. -/
+/--
+The Hecke operator `T_{w,i}`, as a member of the Hecke algebra, for `x = (w, i)` with `w` split
+and not above `M`; it is `0` at the other places.
+-/
 def heckeOperator (x : FinPlace D.E × ℕ) : D.heckeAlgebra :=
   if hx : D.IsSplitOffLevel x.1 then
     ⟨fun V ↦ D.principalHeckeSplit V hx x.2, D.principalHeckeSplit_mem_heckeAlgebra hx x.2⟩
-  else 0
+  else
+    0
 
 /-- At a split place `w` not above `M`, `D.heckeOperator (w, i)` acts on forms as `T_{w,i}`. -/
 lemma coe_heckeOperator_apply {w : FinPlace D.E} (hw : D.IsSplitOffLevel w) (i : ℕ)
@@ -318,8 +341,10 @@ lemma coe_heckeOperator_apply {w : FinPlace D.E} (hw : D.IsSplitOffLevel w) (i :
       heckeSplit (V.formRep (typeKernel D.paramW s)) hw.isSplit i y := by
   rw [heckeOperator, dite_eq_left hw, coe_principalHeckeSplit_apply]
 
-/-- The part of the forms of principal level on `V` for the eigensystem `p`: the forms on which
-each `D.heckeOperator (w, i)` acts by the scalar `p (w, i)`. -/
+/--
+The part of the forms of principal level on `V` for the eigensystem `p`: the forms on which
+each `D.heckeOperator (w, i)` acts by the scalar `p (w, i)`.
+-/
 def eigenPart (p : FinPlace D.E × ℕ → ℂ) : Submodule ℂ (D.principalForms V) :=
   ⨅ x : FinPlace D.E × ℕ, ((D.heckeOperator x).val V).eigenspace (p x)
 
@@ -338,7 +363,6 @@ lemma hasHeckePolynomial_of_mem_eigenPart {p : FinPlace D.E × ℕ → ℂ} {y :
       (heckePolyEval D.RowIndex w fun i : ℕ ↦ p (w, i)) y.val :=
   hasHeckePolynomial_of_heckeSplit (D.principalForms_le_sphericalAt V hw y.prop) fun i ↦ by
     rw [← D.coe_heckeOperator_apply V hw, (D.mem_eigenPart V).1 hy, coe_smul]
-
 
 open scoped Classical in
 /-- For an eigensystem `q` and a finite set `F` of eigensystems, one member `T` of the Hecke algebra
@@ -383,8 +407,10 @@ lemma exists_hecke_proj_eigenPart (q : FinPlace D.E × ℕ → ℂ) (F : Finset 
 lemma coe_principalRep_apply (g : D.chosenGL) (y : D.principalForms V) :
     (D.principalRep V g y).val = V.formRep (typeKernel D.paramW s) (liftResidue g).val y := rfl
 
-/-- The lift to the group algebra of `G_f` of an element of the group algebra of the finite group
-`D.chosenGL`: each group element is replaced by an integral lift that is `1` off `M`. -/
+/--
+The lift to the group algebra of `G_f` of an element of the group algebra of the finite group
+`D.chosenGL`: each group element is replaced by an integral lift that is `1` off `M`.
+-/
 def liftGroupAlgebra (x : ℂ[D.chosenGL]) : ℂ[Gf D.E D.RowIndex] :=
   mapDomain (fun g ↦ (liftResidue g).val) x
 
@@ -447,14 +473,18 @@ lemma commute_heckeAlgebra_principalRep (T : D.heckeAlgebra) (x : ℂ[D.chosenGL
     _ = ((D.principalRep V g * T.val V) y).val := by
         rw [mul_apply_eq_comp, D.coe_principalRep_apply, ha]
 
-/-- A spherical Hecke operator away from `M` preserves the good forms of `V`, the image of the
+/--
+A spherical Hecke operator away from `M` preserves the good forms of `V`, the image of the
 idempotent `D.e₀` in the forms of principal level. This is the resulting action of the Hecke
-algebra on the good forms. -/
+algebra on the good forms.
+-/
 def heckeOnGood : D.heckeAlgebra →* End ℂ (D.goodForms V) where
-  toFun T := (T.val V).restrict <| by
-    -- The good forms are the range of `e₀`, which commutes with `T`.
-    rintro _ ⟨y, rfl⟩
-    exact ⟨T.val V y, LinearMap.congr_fun (D.commute_heckeAlgebra_principalRep V T D.e₀).eq.symm y⟩
+  toFun T :=
+    (T.val V).restrict <| by
+      -- The good forms are the range of `e₀`, which commutes with `T`.
+      rintro _ ⟨y, rfl⟩
+      exact
+        ⟨T.val V y, LinearMap.congr_fun (D.commute_heckeAlgebra_principalRep V T D.e₀).eq.symm y⟩
   map_one' := rfl
   map_mul' _ _ := rfl
 

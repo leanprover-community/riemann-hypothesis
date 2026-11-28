@@ -70,8 +70,10 @@ section LabelCharacters
 
 open Polynomial Hall
 
-variable {k K n : Type*} {r : ℕ} [Field k] [Finite k] [Field K] [Algebra k K] (T : MulChar K ℂ)
-  [IsFaithfulMulChar K T] [Fintype n] [DecidableEq n] {c P : k[X]}
+variable
+  {k K n : Type*} {r : ℕ} [Field k] [Finite k] [Field K] [Algebra k K]
+  (T : MulChar K ℂ) [IsFaithfulMulChar K T] [Fintype n] [DecidableEq n]
+  {c P : k[X]}
 
 /-- Let K be an algebraically closed field over the finite field k, with an injective multiplicative
 character T : K → ℂ. For a multiplicative character χ of k, let a ∈ kˣ be its name under T, the
@@ -320,8 +322,9 @@ open Matrix Finset Hall LinearMap Function Submodule MonoidAlgebra Representatio
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {n ι : Type _} [Fintype n] [DecidableEq n] [Fintype ι] [DecidableEq ι] {k : Type _}
-  [Field k] [Finite k]
+variable
+  {n ι : Type _} [Fintype n] [DecidableEq n] [Fintype ι] [DecidableEq ι]
+  {k : Type _} [Field k] [Finite k]
 
 /-- Each polynomial c over k gives an element e_c of ℂ[G], where G = GL_n(k). If c is a label of
 degree |n| (monic, squarefree, nonzero constant term), e_c = ∑_g (Ξ_c(1)/|G|)·conj Ξ_c(g)·g, with
@@ -448,12 +451,14 @@ lemma hyperplaneSum_mul_labelIdem {c : Polynomial k} {χ : MulChar k ℂ}
   simp [hc, sum_ite, ← sum_subtype_eq_sum_filter, ← h_isChar.apply_inv, mul_assoc, ← mul_sum,
     labelIdem, hyperplaneSum, coeff_mul_apply_right, Finsupp.sum_fintype, h_sum_zero]
 
-variable {k : ι → Type _} [∀ w : ι, Field (k w)] [∀ w : ι, Finite (k w)]
-  (c : ∀ w : ι, Polynomial (k w))
+variable
+  {k : ι → Type _} [∀ w : ι, Field (k w)] [∀ w : ι, Finite (k w)] (c : ∀ w : ι, Polynomial (k w))
 
 variable (n) in
-/-- For a tuple (c_w) of polynomials over the fields k_w, the tensor product of the label
-idempotents e_{c_w} in the group algebra of ∏ GL_n(k_w). -/
+/--
+For a tuple (c_w) of polynomials over the fields k_w, the tensor product of the label
+idempotents e_{c_w} in the group algebra of ∏ GL_n(k_w).
+-/
 noncomputable def tupleIdem : MonoidAlgebra ℂ ((i : ι) → GL n (k i)) :=
   piTensorElem fun w ↦ labelIdem n (c w)
 
@@ -502,11 +507,16 @@ section LabelTwist
 
 open Polynomial Hall Matrix Finset Finite Nat Function
 
-variable {k K n : Type*} {r : ℕ} [Field k] [Finite k] [Field K] [Fintype n]
-  {T : MulChar K ℂ} [IsFaithfulMulChar K T] {c : k[X]} (a : kˣ)
+variable
+  {k K n : Type*} {r : ℕ} [Field k] [Finite k] [Field K] [Fintype n]
+  {T : MulChar K ℂ} [IsFaithfulMulChar K T]
+  {c : k[X]}
+  (a : kˣ)
 
-/-- For nonzero a in k, the multiplicative bijection of k[X] to itself scaling the roots of a
-polynomial by a, with inverse scaling by a⁻¹. -/
+/--
+For nonzero a in k, the multiplicative bijection of k[X] to itself scaling the roots of a
+polynomial by a, with inverse scaling by a⁻¹.
+-/
 noncomputable def scaleRootsEquiv : k[X] ≃* k[X] where
   toFun P := P.scaleRoots a
   invFun P := P.scaleRoots a⁻¹

@@ -79,17 +79,22 @@ namespace New.SiegelWeil
 
 open Space Fock
 
-variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
-  [DecidableEq m] {s : n → ℤˣ} {t : m → ℤˣ}
+variable
+  {E n m : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {t : m → ℤˣ}
 
-/-- All descents of `Y` from `U(V)` to `U(W)` vanish, for the data that are vacua above the places
+/--
+All descents of `Y` from `U(V)` to `U(W)` vanish, for the data that are vacua above the places
 of `S` and their conjugates: for every datum `f` on `Hom(W, V)` fixed by the projection `projOn S`,
 the function `g ↦ ∫ θ_f(g, h) Y(h) dh` on `U(W)(𝔸)` is zero. The integral is over the adelic
 quotient `[U(V)]`, and `θ_f` is the theta kernel of the pair twisted by `a (det h)`, for the
 character `a` of `U(1)`. No twist in `g` is taken: it would only multiply a descent by a character
-of `det g`. -/
-def DescentsVanish (W : Space E n s) (V : Space E m t) (a : AutChar E) (S : Set (FinPlace E))
-    (Y : G E t → ℂ) : Prop :=
+of `det g`.
+-/
+def DescentsVanish
+    (W : Space E n s) (V : Space E m t) (a : AutChar E) (S : Set (FinPlace E)) (Y : G E t → ℂ)
+    : Prop :=
   ∀ f : 𝒮 (W.hom V), projOn (W.hom V) S f = f → lift (pairThetaKer W V a 1).swap f Y = 0
 
 variable {W : Space E n s} {a : AutChar E}
@@ -164,8 +169,8 @@ namespace New.Space.Splitting
 open Matrix MeasureTheory
 
 /-- A monoid that acts on columns acts on matrices, column by column. -/
-instance (priority := low) {m p M R : Type*} [Monoid M] [MulAction M (m → R)] :
-    MulAction M (Matrix m p R) :=
+instance (priority := low) {m p M R : Type*} [Monoid M] [MulAction M (m → R)]
+    : MulAction M (Matrix m p R) :=
   (Equiv.piComm _).mulAction M
 
 /-- The unitary group acts on frames by matrix multiplication. -/
@@ -176,13 +181,15 @@ lemma _root_.New.U.smul_matrix_eq_mul {m p E : Type*} [CommRing E] [StarRing E] 
 
 section Stabilizer
 
-variable {E m p : Type} [Field E] [CMType E] [Fintype m] [DecidableEq m]
-  {t : m → ℤˣ} {V : Space E m t}
+variable
+  {E m p : Type} [Field E] [CMType E] [Fintype m] [DecidableEq m] {t : m → ℤˣ} {V : Space E m t}
 
-/-- The rational stabiliser of a rational frame `x`: the image in `U(V)(𝔸)` of the group of the
-rational points `γ` of `U(V)` with `γ x = x`. -/
-noncomputable def _root_.New.Space.ratStabilizer (V : Space E m t) (x : Matrix m p E) :
-    Subgroup (G E t) :=
+/--
+The rational stabiliser of a rational frame `x`: the image in `U(V)(𝔸)` of the group of the
+rational points `γ` of `U(V)` with `γ x = x`.
+-/
+noncomputable def _root_.New.Space.ratStabilizer (V : Space E m t) (x : Matrix m p E)
+    : Subgroup (G E t) :=
   (MulAction.stabilizer (U V.J) x).map V.ratEmbed
 
 /-- The elements of the rational stabiliser of `x` are the images of the rational points of the
@@ -209,9 +216,11 @@ lemma _root_.New.Space.gram_eq_iff_mem_orbit {E m p : Type} [Field E] [CMType E]
   · rintro ⟨γ, rfl⟩
     exact (U.gram_invariant γ z z).symm
 
-variable {E n n₀ m p : Type} [Field E] [CMType E] [H : WeilData E] [Fintype n] [DecidableEq n]
-  [Fintype n₀] [DecidableEq n₀] [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p] {s : n → ℤˣ}
-  {s₀ : n₀ → ℤˣ} {t : m → ℤˣ} {W : Space E n s} {W₀ : Space E n₀ s₀} (D : W.Splitting W₀ p)
+variable
+  {E n n₀ m p : Type} [Field E] [CMType E] [H : WeilData E] [Fintype n] [DecidableEq n] [Fintype n₀]
+  [DecidableEq n₀] [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s₀ : n₀ → ℤˣ} {t : m → ℤˣ} {W : Space E n s} {W₀ : Space E n₀ s₀}
+  (D : W.Splitting W₀ p)
   {V : Space E m t} {a b : AutChar E} {f : 𝒮 (W.hom V)} {g : G E s} {y : G E t → ℂ}
 
 /-- By definition `radicalCenter z` is the element `radicalElement` of the unipotent radical with
@@ -372,8 +381,8 @@ equals the complex conjugate of the period wherever `frameWeight` is nonzero, so
 
 namespace New.SiegelWeil
 
-open Matrix MeasureTheory Measure WeilData Space Gf Exchange G Splitting Subgroup
-  ContinuousMap AddChar
+open Matrix MeasureTheory Measure WeilData Space Gf Exchange G Splitting Subgroup ContinuousMap
+  AddChar
 
 /-- A continuous function `f` on a compact space that depends only on the image under a continuous
 map `p` to a normal Hausdorff space is a continuous function of `p`. -/
@@ -392,41 +401,53 @@ lemma exists_continuousMap_comp_eq {K X : Type*} [TopologicalSpace K] [CompactSp
   calc χ (p a) = χ.restrict (Set.range p) (q a) := rfl
     _ = f a := by rw [hχ, ← ContinuousMap.comp_apply, hq.lift_comp]
 
-variable {E n n₁ n₂ : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  [Fintype n₁] [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] (o : n₁ ⊕ n₂ ≃ n)
-  (hs : (1 : n → ℤˣ) ∘ o = (1 : n₁ → ℤˣ) ⊕ᵥ (1 : n₂ → ℤˣ))
+variable
+  {E n n₁ n₂ : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n₁] [DecidableEq n₁]
+  [Fintype n₂] [DecidableEq n₂]
+  (o : n₁ ⊕ n₂ ≃ n) (hs : (1 : n → ℤˣ) ∘ o = (1 : n₁ → ℤˣ) ⊕ᵥ (1 : n₂ → ℤˣ))
 
 variable (E) in
-/-- The matrix whose columns are the basis vectors of the first block of the splitting
-`n₁ ⊕ n₂ ≃ n`. In the comments below this frame is written `o₁`. -/
+/--
+The matrix whose columns are the basis vectors of the first block of the splitting
+`n₁ ⊕ n₂ ≃ n`. In the comments below this frame is written `o₁`.
+-/
 noncomputable def firstFrame : Matrix n n₁ (𝔸 E) := (inclMatrix E (o ∘ .inl)).map toAdele
 
 /-- The frame `h⁻¹ o₁`, where `o₁` stands for `firstFrame E o`. -/
 noncomputable def movedFrame (h : G E (1 : n → ℤˣ)) : Matrix n n₁ (𝔸 E) :=
   h⁻¹.adeleMatrix * firstFrame E o
 
-/-- The embedding `h₂ ↦ diag(1, h₂)` of the unitary group of the second block of the splitting
-`n₁ ⊕ n₂ ≃ n` in that of the whole space. -/
+/--
+The embedding `h₂ ↦ diag(1, h₂)` of the unitary group of the second block of the splitting
+`n₁ ⊕ n₂ ≃ n` in that of the whole space.
+-/
 noncomputable def secondBlock : G E (1 : n₂ → ℤˣ) →* G E (1 : n → ℤˣ) :=
   (blockEmb hs).comp (.inr (G E (1 : n₁ → ℤˣ)) (G E (1 : n₂ → ℤˣ)))
 
-/-- The period `I(h) = ∫ Y(diag(h₁, h₂) h) dh₂` over the adelic quotient `[U(n₂)]`, for a fixed
-`h₁`. -/
-noncomputable def blockPeriod (Y : G E (1 : n → ℤˣ) → ℂ) (h₁ : G E (1 : n₁ → ℤˣ))
-    (h : G E (1 : n → ℤˣ)) : ℂ :=
+/--
+The period `I(h) = ∫ Y(diag(h₁, h₂) h) dh₂` over the adelic quotient `[U(n₂)]`, for a fixed
+`h₁`.
+-/
+noncomputable def blockPeriod
+    (Y : G E (1 : n → ℤˣ) → ℂ) (h₁ : G E (1 : n₁ → ℤˣ)) (h : G E (1 : n → ℤˣ))
+    : ℂ :=
   ∫ h₂ : G E (1 : n₂ → ℤˣ), Y (blockEmb hs (h₁, h₂) * h) ∂(stdSpace E n₂).quotMeasure
 
-/-- The value `ψ_u(x) = ψ(δ ∑ u_{ij} x_{ij})` at a frame `x`, with `ψ` the standard additive
+/--
+The value `ψ_u(x) = ψ(δ ∑ u_{ij} x_{ij})` at a frame `x`, with `ψ` the standard additive
 character, `δ = invDifferentIdele E` an idele whose finite part generates the inverse different, and
-the components of the sum at the places of `T` and their conjugates replaced by zero. -/
-noncomputable def frameChar [WeilData E]
-    (T : Set (FinPlace E)) (x : Matrix n n₁ (𝔸 E)) (u : n × n₁ → 𝔸 E) :
-    Circle :=
+the components of the sum at the places of `T` and their conjugates replaced by zero.
+-/
+noncomputable def frameChar
+    [WeilData E] (T : Set (FinPlace E)) (x : Matrix n n₁ (𝔸 E)) (u : n × n₁ → 𝔸 E)
+    : Circle :=
   stdAddChar E (invDifferentIdele E * ((1 - idemAdele T.conjClosure) * u ⬝ᵥ matrixToVec x : 𝔸 E))
 
-/-- The weight `vac[α₀ x] = |e(α₀ x)|²` of a frame `x`, with `e = vacuumFn` the vacuum function on
+/--
+The weight `vac[α₀ x] = |e(α₀ x)|²` of a frame `x`, with `e = vacuumFn` the vacuum function on
 adelic vectors and `α₀ = scaleIdele E`. It is called the slice of the vacuum below: up to a nonzero
-constant, it is what the vacuum datum contributes to the term of a frame in the theta kernel. -/
+constant, it is what the vacuum datum contributes to the term of a frame in the theta kernel.
+-/
 noncomputable def frameWeight [WeilData E] (x : Matrix n n₁ (𝔸 E)) : ℝ :=
   ‖vacuumFn ((scaleIdele E : 𝔸 E) • matrixToVec x)‖ ^ 2
 

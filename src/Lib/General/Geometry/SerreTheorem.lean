@@ -85,12 +85,13 @@ lemma exists_absFrobenius :
   ext x
   simp
 
-/-- For a scheme `X` over a field `k` of prime characteristic `l`, the absolute `l ^ f`-Frobenius of
+/--
+For a scheme `X` over a field `k` of prime characteristic `l`, the absolute `l ^ f`-Frobenius of
 the underlying scheme. It acts on `B`-valued points through `x ↦ x ^ l ^ f` on `B`
 (`comp_absFrobenius`: `t ≫ absFrobenius f X = specMap (frobPow _ f) ≫ t`, where `frobPow` is that
-map on `B` and `specMap` its map on spectra), and this determines it. -/
-noncomputable def absFrobenius : X.left ⟶ X.left :=
-  (exists_absFrobenius (l := l) f X).choose
+map on `B` and `specMap` its map on spectra), and this determines it.
+-/
+noncomputable def absFrobenius : X.left ⟶ X.left := (exists_absFrobenius (l := l) f X).choose
 
 lemma comp_absFrobenius {B : CommRingCat} (t : Spec B ⟶ X.left) :
     t ≫ absFrobenius f X =
@@ -365,8 +366,9 @@ section ProperProduct
 open CategoryTheory AlgebraicGeometry Limits MorphismProperty
 
 /-- A finite product of proper schemes over `S` is proper over `S`. -/
-instance New.isProper_pi {S : Scheme} {J : Type*} [Finite J] {A : J → Over S}
-    [h : ∀ l : J, IsProper (A l).hom] : IsProper (∏ᶜ A).hom := by
+instance New.isProper_pi
+    {S : Scheme} {J : Type*} [Finite J] {A : J → Over S} [h : ∀ l : J, IsProper (A l).hom]
+    : IsProper (∏ᶜ A).hom := by
   -- Form the product in the category of proper schemes over `S`; the forgetful functor to
   -- `Over S` preserves it.
   let P : MorphismProperty Scheme := @IsProper
@@ -389,11 +391,14 @@ namespace New.Variety
 
 open CategoryTheory AlgebraicGeometry LineBundle Limits
 
-/-- If `A` has a projective embedding over `X`, and `X` has one over `S`, then `A` has one over `S`,
-given by the Segre product of the two linear systems. -/
-instance {X S : Scheme} {s : X ⟶ S} {A : Over X} [hA : HasProjEmbedding A.hom]
-    [hs : HasProjEmbedding (X := X) (S := S) s] :
-    HasProjEmbedding ((Over.map s).obj A).hom := by
+/--
+If `A` has a projective embedding over `X`, and `X` has one over `S`, then `A` has one over `S`,
+given by the Segre product of the two linear systems.
+-/
+instance
+    {X S : Scheme} {s : X ⟶ S} {A : Over X}
+    [hA : HasProjEmbedding A.hom] [hs : HasProjEmbedding (X := X) (S := S) s]
+    : HasProjEmbedding ((Over.map s).obj A).hom := by
   obtain ⟨⟨hA⟩, ⟨hs⟩⟩ := And.intro hA hs
   exact ⟨hA.mul hs⟩
 

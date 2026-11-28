@@ -79,8 +79,10 @@ namespace New
 
 variable {n : Type _} [Fintype n] [DecidableEq n] (u : GL n ℂ) (f : n → ℤ)
 
-/-- The matrix `u* diag(2^f) u`. For unitary `u` it is a positive definite matrix with eigenvalues
-`2 ^ (f i)`. -/
+/--
+The matrix `u* diag(2^f) u`. For unitary `u` it is a positive definite matrix with eigenvalues
+`2 ^ (f i)`.
+-/
 @[simp]
 noncomputable abbrev twoPowDiagConj : Matrix n n ℂ :=
   (u : Matrix n n ℂ)ᴴ * diagonal (fun k : n ↦ (2 : ℂ) ^ f k) * u
@@ -285,9 +287,11 @@ open Matrix MeasureTheory Finset Complex DiscreteSeries ComplexOrder Norms.L2Ope
 
 variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {l : HCParam (n := n) ε} {h : ℕ}
 
-/-- For `l = 2λ` and `J = diag ε`, the integral of `m_{-(λ-ρ)}(kᴴ J k) / m_{-(λ+ρ)}(kᴴ A k)` over
+/--
+For `l = 2λ` and `J = diag ε`, the integral of `m_{-(λ-ρ)}(kᴴ J k) / m_{-(λ+ρ)}(kᴴ A k)` over
 the `k` in `U(n)` outside `New.openOrbit ε l` (the open orbit `G B`), for the Haar
-measure of mass one, where `m` is `New.weightMinors`. -/
+measure of mass one, where `m` is `New.weightMinors`.
+-/
 noncomputable def offOrbitIntegral (l : HCParam (n := n) ε) (A : Matrix n n ℂ) : ℂ :=
   ∫ k : USign (1 : n → ℤˣ) in {k : USign (1 : n → ℤˣ) | (k : Matrix n n ℂ) ∈ openOrbit ε l}ᶜ,
     weightMinors (-l.compactForm.lowestKType) ((k : Matrix n n ℂ)ᴴ * signMatrix ε * k) /

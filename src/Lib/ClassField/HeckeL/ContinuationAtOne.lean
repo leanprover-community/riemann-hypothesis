@@ -96,22 +96,27 @@ lemma measureReal_idelesUnitOff_empty_inter_ne_zero (μ : Measure (𝔸f K)ˣ) [
     (measure_inter_ne_top_of_left_ne_top isCompact_idelesUnitOff_empty.measure_ne_top)]
   exact ((isOpen_idelesUnitOff ∅).inter hV).measure_ne_zero μ ⟨1, one_mem _, hV_one⟩
 
-/-- Let `μ` be a left-invariant measure on a group `G`, and `W` a measurable set with
+/--
+Let `μ` be a left-invariant measure on a group `G`, and `W` a measurable set with
 `μ.real W ≠ 0`. If `c` has sum `a` over a countable type `ι`, then for all `t : ι → G` the function
 `x ↦ ∑' i, c i * W.indicator 1 (t i * x)` has integral `a * μ.real W`: every translate of the
-indicator of `W` has integral `μ.real W`. -/
-theorem _root_.MeasureTheory.integral_tsum_mul_indicator_mul_left_of_hasSum {G ι : Type*}
-    [Group G] [MeasurableSpace G] [MeasurableMul G] (μ : Measure G) [μ.IsMulLeftInvariant]
-    [Countable ι] {W : Set G} (hW : MeasurableSet W) (hW_vol : μ.real W ≠ 0) {c : ι → ℂ} {a : ℂ}
-    (hc : HasSum c a) (t : ι → G) :
-    ∫ x : G, ∑' i : ι, c i * W.indicator 1 (t i * x) ∂μ = a * μ.real W := by
+indicator of `W` has integral `μ.real W`.
+-/
+theorem _root_.MeasureTheory.integral_tsum_mul_indicator_mul_left_of_hasSum
+    {G ι : Type*} [Group G] [MeasurableSpace G] [MeasurableMul G]
+    (μ : Measure G) [μ.IsMulLeftInvariant] [Countable ι]
+    {W : Set G} (hW : MeasurableSet W) (hW_vol : μ.real W ≠ 0)
+    {c : ι → ℂ} {a : ℂ} (hc : HasSum c a)
+    (t : ι → G)
+    : ∫ x : G, ∑' i : ι, c i * W.indicator 1 (t i * x) ∂μ = a * μ.real W := by
   have h_translate (i : ι) : ∫ x, W.indicator (1 : G → ℂ) (t i * x) ∂μ = μ.real W := by
     simp [hW, integral_mul_left_eq_self, Pi.one_def]
   have h_int (i : ι) : Integrable (fun x ↦ c i * W.indicator (1 : G → ℂ) (t i * x)) μ :=
     .const_mul (.of_integral_ne_zero (by simp [h_translate, hW_vol])) (c i)
   have h_sum : Summable fun i ↦ ∫ x, ‖c i * W.indicator (1 : G → ℂ) (t i * x)‖ ∂μ := by
     simpa [hW, integral_const_mul, integral_mul_left_eq_self, Pi.one_def,
-      norm_indicator_eq_indicator_norm] using hc.summable.norm.mul_right (μ.real W)
+        norm_indicator_eq_indicator_norm]
+      using hc.summable.norm.mul_right (μ.real W)
   rw [← integral_tsum_of_summable_integral_norm h_int h_sum]
   simp [integral_const_mul, h_translate, hc.tsum_eq, tsum_mul_right]
 
@@ -177,8 +182,9 @@ private lemma mem_Ô_iff_exists_coeIdeal_eq_divisor
 
 namespace IsHeckeOfType
 
-variable [PlaceEmbedding K] {n : InfinitePlace K → ℤ} {S : Set (FinPlace K)}
-  (h : IsHeckeOfType ψ n) (hS : S.Finite)
+variable
+  [PlaceEmbedding K]
+  {n : InfinitePlace K → ℤ} {S : Set (FinPlace K)} (h : IsHeckeOfType ψ n) (hS : S.Finite)
 
 attribute [local fun_prop] Continuous.rpow_const
 
@@ -528,20 +534,29 @@ lemma exists_radius_tent_integral_ne_zero {χ : (mixedEmbedding.mixedSpace K)ˣ 
 
 open NumberField.mixedEmbedding (mixedSpace)
 
-/-- Let `v` be a valuation and `a`, `x` elements with `1 < v a` and `v a * v (x - 1) ≤ 1`. Then
-`v x = 1`, because the second hypothesis forces `v (x - 1) < 1`. -/
-private theorem _root_.Valuation.map_eq_one_of_one_lt_of_mul_map_sub_one_le {R Γ₀ : Type*}
-    [Ring R] [LinearOrderedCommGroupWithZero Γ₀] (v : Valuation R Γ₀) {a x : R} (ha : 1 < v a)
-    (h_mul : v a * v (x - 1) ≤ 1) : v x = 1 := by
-  have h_sub : v (x - 1) < 1 := lt_of_mul_lt_mul_of_le₀
-    (h_mul.trans_lt (ha.trans_eq (mul_one _).symm)) (zero_lt_one.trans ha) le_rfl
+/--
+Let `v` be a valuation and `a`, `x` elements with `1 < v a` and `v a * v (x - 1) ≤ 1`. Then
+`v x = 1`, because the second hypothesis forces `v (x - 1) < 1`.
+-/
+private theorem _root_.Valuation.map_eq_one_of_one_lt_of_mul_map_sub_one_le
+    {R Γ₀ : Type*} [Ring R] [LinearOrderedCommGroupWithZero Γ₀]
+    (v : Valuation R Γ₀)
+    {a x : R} (ha : 1 < v a) (h_mul : v a * v (x - 1) ≤ 1)
+    : v x = 1 := by
+  have h_sub : v (x - 1) < 1 :=
+    lt_of_mul_lt_mul_of_le₀ (h_mul.trans_lt (ha.trans_eq (mul_one _).symm)) (zero_lt_one.trans ha)
+      le_rfl
   exact (v.map_eq_of_sub_lt (h_sub.trans_eq v.map_one.symm)).trans v.map_one
 
-/-- Let `v` be a valuation and `a`, `x` elements with `v a ≤ 1` and `v x ≤ 1`. Then
-`v a * v (x - 1) ≤ 1`. -/
-private theorem _root_.Valuation.mul_map_sub_one_le_one_of_map_le_one {R Γ₀ : Type*} [Ring R]
-    [LinearOrderedCommGroupWithZero Γ₀] (v : Valuation R Γ₀) {a x : R} (ha : v a ≤ 1)
-    (hx : v x ≤ 1) : v a * v (x - 1) ≤ 1 :=
+/--
+Let `v` be a valuation and `a`, `x` elements with `v a ≤ 1` and `v x ≤ 1`. Then
+`v a * v (x - 1) ≤ 1`.
+-/
+private theorem _root_.Valuation.mul_map_sub_one_le_one_of_map_le_one
+    {R Γ₀ : Type*} [Ring R] [LinearOrderedCommGroupWithZero Γ₀]
+    (v : Valuation R Γ₀)
+    {a x : R} (ha : v a ≤ 1) (hx : v x ≤ 1)
+    : v a * v (x - 1) ≤ 1 :=
   mul_le_one' ha (v.map_sub_le hx (map_one v).le)
 
 open Valuation ZetaIntegral in
@@ -653,36 +668,42 @@ private lemma mul_adelicTent_factor {X : (mixedSpace K)ˣ × (𝔸f K)ˣ →* �
     ring
   · simp [ha]
 
-/-- Finite integral of a difference, for a Mellin-type integrand. Let `N > 0` and suppose that
+/--
+Finite integral of a difference, for a Mellin-type integrand. Let `N > 0` and suppose that
 `|θ₁ a - θ₂ a| ≤ C * N a ^ δ * (|φ₁ a| + |φ₂ a|)` for all `a`, and that `u * φ₁ * N ^ (σ + δ)` and
-`u * φ₂ * N ^ (σ + δ)` are integrable. Then `u * (θ₁ - θ₂) * N ^ σ` has finite integral. -/
+`u * φ₂ * N ^ (σ + δ)` are integrable. Then `u * (θ₁ - θ₂) * N ^ σ` has finite integral.
+-/
 private theorem _root_.MeasureTheory.hasFiniteIntegral_mul_sub_mul_rpow_of_abs_sub_le
-    {G : Type*} [MeasurableSpace G] {μ : Measure G} {N : G → ℝ} (hN_pos : ∀ a : G, 0 < N a)
+    {G : Type*} [MeasurableSpace G]
+    {μ : Measure G} {N : G → ℝ} (hN_pos : ∀ a : G, 0 < N a)
     {u : G → ℂ} {θ₁ θ₂ φ₁ φ₂ : G → ℝ} {C δ σ : ℝ}
     (h₁ : Integrable (fun a : G ↦ u a * φ₁ a * (N a ^ (σ + δ) : ℝ)) μ)
     (h₂ : Integrable (fun a : G ↦ u a * φ₂ a * (N a ^ (σ + δ) : ℝ)) μ)
-    (h_le : ∀ a : G, |θ₁ a - θ₂ a| ≤ C * N a ^ δ * (|φ₁ a| + |φ₂ a|)) :
-    HasFiniteIntegral (fun a : G ↦ u a * ((θ₁ a : ℂ) - θ₂ a) * (N a ^ σ : ℝ)) μ := by
+    (h_le : ∀ a : G, |θ₁ a - θ₂ a| ≤ C * N a ^ δ * (|φ₁ a| + |φ₂ a|))
+    : HasFiniteIntegral (fun a : G ↦ u a * ((θ₁ a : ℂ) - θ₂ a) * (N a ^ σ : ℝ)) μ := by
   refine ((h₁.norm.add h₂.norm).const_mul C).hasFiniteIntegral.mono' (.of_forall fun a ↦ ?_)
   have h_norm (x τ : ℝ) : ‖u a * x * (N a ^ τ : ℝ)‖ = ‖u a‖ * |x| * N a ^ τ := by
     simp [abs_of_pos (Real.rpow_pos_of_pos (hN_pos a) τ)]
-  calc ‖u a * ((θ₁ a : ℂ) - θ₂ a) * (N a ^ σ : ℝ)‖
+  calc
+    ‖u a * ((θ₁ a : ℂ) - θ₂ a) * (N a ^ σ : ℝ)‖
       = ‖u a‖ * |θ₁ a - θ₂ a| * N a ^ σ := by rw [← Complex.ofReal_sub, h_norm]
     _ ≤ ‖u a‖ * (C * N a ^ δ * (|φ₁ a| + |φ₂ a|)) * N a ^ σ := by
-        gcongr
-        exacts [Real.rpow_nonneg (hN_pos a).le σ, h_le a]
+      gcongr
+      exacts [Real.rpow_nonneg (hN_pos a).le σ, h_le a]
     _ = C * (‖u a * φ₁ a * (N a ^ (σ + δ) : ℝ)‖ + ‖u a * φ₂ a * (N a ^ (σ + δ) : ℝ)‖) := by
-        rw [h_norm, h_norm, Real.rpow_add (hN_pos a)]
-        ring
+      rw [h_norm, h_norm, Real.rpow_add (hN_pos a)]
+      ring
 
-/-- Comparison through a common approximation. Suppose that for every `l > 0` some number `i` is
+/--
+Comparison through a common approximation. Suppose that for every `l > 0` some number `i` is
 within `C * l ^ δ * |φ b|` of `θ b` for all `b` with `N b = l`. If `0 < N a` and `N b = N a`, then
-`|θ a - θ b| ≤ C * N a ^ δ * (|φ a| + |φ b|)`. -/
-private theorem _root_.abs_sub_le_mul_rpow_of_forall_exists_abs_sub_le {G : Type*}
-    {N θ φ : G → ℝ} {C δ : ℝ}
+`|θ a - θ b| ≤ C * N a ^ δ * (|φ a| + |φ b|)`.
+-/
+private theorem _root_.abs_sub_le_mul_rpow_of_forall_exists_abs_sub_le
+    {G : Type*} {N θ φ : G → ℝ} {C δ : ℝ}
     (h_approx : ∀ l > (0 : ℝ), ∃ i : ℝ, ∀ b : G, N b = l → |i - θ b| ≤ C * l ^ δ * |φ b|)
-    {a b : G} (ha_pos : 0 < N a) (h_eq : N b = N a) :
-    |θ a - θ b| ≤ C * N a ^ δ * (|φ a| + |φ b|) := by
+    {a b : G} (ha_pos : 0 < N a) (h_eq : N b = N a)
+    : |θ a - θ b| ≤ C * N a ^ δ * (|φ a| + |φ b|) := by
   obtain ⟨i, hi⟩ := h_approx (N a) ha_pos
   exact (dist_triangle_left (θ a) (θ b) i).trans
     ((add_le_add (hi a rfl) (hi b h_eq)).trans_eq (mul_add _ _ _).symm)

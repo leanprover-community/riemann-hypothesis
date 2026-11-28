@@ -73,9 +73,11 @@ open New Seesaw Space Fintype Matrix Grading MeasureTheory
 namespace New.Data
 variable {P : Parameters} {D : Data P} {M : ℕ}
 
-/-- The restriction from the forms `D.FormX M` on `X_m` to the forms `D.FormY M` of the lower chain
+/--
+The restriction from the forms `D.FormX M` on `X_m` to the forms `D.FormY M` of the lower chain
 on `Y_m`: it is `D.restrictToY`, read in automorphic forms. The index `m` is written as any number
-`M` equal to it. -/
+`M` equal to it.
+-/
 noncomputable def restrictToFormY (hM : D.m = M) : D.FormX M →ₗ[ℂ] D.FormY M := by
   subst hM
   exact (toAlgForm _ D.isHCParam_paramY).symm.toLinearMap ∘ₗ D.restrictToY
@@ -180,12 +182,14 @@ variable {P : Parameters} {D : Data P}
 abbrev ConjFormY (D : Data P) (j : ℕ) : Type :=
   (D.spaceY j).Form (star (typeKernel (D.paramY j) (D.signsY j)))
 
-/-- The transposed lift, or descent, from `Y_{j+1}` to `Y_j`, times the index `[J° : J_ξ(Y_j)]`
-that normalises the lift `liftY ϑ j`. -/
+/--
+The transposed lift, or descent, from `Y_{j+1}` to `Y_j`, times the index `[J° : J_ξ(Y_j)]`
+that normalises the lift `liftY ϑ j`.
+-/
 def transposedLiftY (ϑ : D.TameChar) (j : ℕ) : D.ConjFormY (j + 1) →ₗ[ℂ] D.ConjFormY j :=
-  (stdLevelIndex (levelY ϑ j) : ℂ) • formLift (thetaKernelY ϑ j).swap
-    (star (typeKernel (D.paramY (j + 1)) (D.signsY (j + 1))))
-    (star (typeKernel (D.paramY j) (D.signsY j))) (datumY ϑ j)
+  (stdLevelIndex (levelY ϑ j) : ℂ)
+    • formLift (thetaKernelY ϑ j).swap (star (typeKernel (D.paramY (j + 1)) (D.signsY (j + 1))))
+      (star (typeKernel (D.paramY j) (D.signsY j))) (datumY ϑ j)
 
 /-- The descent as a theta integral. Let `ϑ` be a tame character, let `j < m`, and let `z` be a
 conjugate form on `Y_(j+1)`. The descent of `z` at `g` is the index of the level `levelY ϑ j` in the
@@ -268,16 +272,20 @@ lemma isRapid_conjFormY {j : ℕ} (hj : j < D.m) (z : D.ConjFormY (j + 1)) :
   obtain ⟨⟨-, h_rapid⟩, -⟩ := isArrow_swap_thetaKernelY_datumY (D := D) .one hj z
   exact h_rapid
 
-/-- The integral `Ξ_{k+1}` of the product `𝒲_{k+1} z` over `R_{k+1}(F) \ G_{k+1}(𝔸)`, where
+/--
+The integral `Ξ_{k+1}` of the product `𝒲_{k+1} z` over `R_{k+1}(F) \ G_{k+1}(𝔸)`, where
 `𝒲_{k+1} = unfoldStage ϑ t φ ξ y k hk Y` is the function on `G_{k+1}` left by the first `k + 1`
 steps of unfolding for the source form `φ`, the linear form `t` and the outer variables
 `g_i = (ξ i, y i)`, and `R_{k+1}(F) = Y.ratBessel` consists of the rational points of the Bessel
-group of `Y`. -/
-def unfoldedPeriod (ϑ : D.TameChar)
-    (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) (φ : D.SourceForm)
+group of `Y`.
+-/
+def unfoldedPeriod
+    (ϑ : D.TameChar) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) (φ : D.SourceForm)
     (ξ : ∀ i : ℕ, GInf D.E (D.signsY i)) (y : ∀ i : ℕ, Gf D.E (D.Y i))
-    (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1) {X : Type} {s : ℕ} [DecidableEq X]
-    (Y : Grading (D.spaceY (k + 1)) D.N X s) (z : D.ConjFormY (k + 1)) : ℂ :=
+    (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1)
+    {X : Type} {s : ℕ} [DecidableEq X]
+    (Y : Grading (D.spaceY (k + 1)) D.N X s) (z : D.ConjFormY (k + 1))
+    : ℂ :=
   ∫ h : New.G D.E (D.signsY (k + 1)),
     (unfoldStage ϑ t φ ξ y k hk Y * z.val) h ∂Y.ratBessel.quotMeasure
 
@@ -490,10 +498,11 @@ lemma exists_integral_mul_lowerChainUpTo_eq_cutSum
 
 /-! ### The tensor `φ_ξ` and the seesaw identity -/
 
-/-- The tensor product of the evaluated data (`evaluatedDatum`) of all double lifts, translated by
-representatives of the classes `c j` of the outer variables of the lower chain. -/
-def evaluatedTensor (ϑ : D.TameChar) (c : ∀ i : ℕ, Gf D.E (D.Y i) ⧸ levelY ϑ i) :
-    D.ChainTensor :=
+/--
+The tensor product of the evaluated data (`evaluatedDatum`) of all double lifts, translated by
+representatives of the classes `c j` of the outer variables of the lower chain.
+-/
+def evaluatedTensor (ϑ : D.TameChar) (c : ∀ i : ℕ, Gf D.E (D.Y i) ⧸ levelY ϑ i) : D.ChainTensor :=
   pure (evaluatedDatum ϑ fun i ↦ (c i).out) (D.ϱ + 1)
 
 /-- At the classes of a tuple `y` of points of `G_f`, `evaluatedTensor ϑ` is the pure tensor
@@ -502,8 +511,10 @@ lemma evaluatedTensor_mk (ϑ : D.TameChar) (y : ∀ i : ℕ, Gf D.E (D.Y i)) :
     (evaluatedTensor ϑ fun i : ℕ ↦ y i) = pure (evaluatedDatum ϑ y) (D.ϱ + 1) := by
   rw [evaluatedTensor, evaluatedDatum_out]
 
-/-- The tensor `φ_ξ` of finite data for the upper chain: the weighted sum `cutSum` over the cuts of
-the lower chain of the evaluated translates `evaluatedTensor` of its data. -/
+/--
+The tensor `φ_ξ` of finite data for the upper chain: the weighted sum `cutSum` over the cuts of
+the lower chain of the evaluated translates `evaluatedTensor` of its data.
+-/
 def seesawDatum (ϑ : D.TameChar) : D.ChainTensor :=
   cutSum ϑ (2 * D.ϱ + 2) le_rfl (evaluatedTensor ϑ)
 
@@ -614,7 +625,8 @@ lemma exists_isAdmissibleCombination_seesawDatum (D : Data P) :
 
 end Unfolding
 
-/-- **Seesaw identity**. Let `D` be admissible data, with field `E = D.E`, number of lifts
+/--
+**Seesaw identity**. Let `D` be admissible data, with field `E = D.E`, number of lifts
 `m = D.m`, and hermitian spaces `X_j` (upper chain) and `Y_j` over `E`. Let `t` be a linear form on
 the values of forms on `X_0` and `g` an archimedean point of `U(Y_0)`. Then there is a number
 `c ≠ 0` such that every twist `ϑ` has a chain datum `Ψ` with
@@ -625,12 +637,15 @@ for each lift of the upper chain; its glued tensor is the sum of `Ψ x` times th
 translated by `x`, and `compositeLift ϑ Ψ` is the upper chain from `X_0` to `X_m` with this tensor
 as data, restricted to `Y_m`. That `Ψ` is a chain datum (`IsChainDatum`) means that its support is
 admissible and supported at the level, its values are integral away from the modulus of `ϑ` and
-bounded if this is empty, and its glued tensor is invariant under the levels of the `X_j`. -/
-theorem seesaw_identity {P : Parameters} {D : Data P}
-    (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) (g : GInf D.E (D.signsY 0)) :
-    ∃ c : ℂˣ, ∀ ϑ : D.Twist, ∃ Ψ : D.Translations →₀ ℂ, IsChainDatum ϑ Ψ ∧
-      ∀ φ : D.ramifiedSourceForms,
-        lowerChain ϑ (D.poincareAt g t φ) = (c : ℂ) • compositeLift ϑ Ψ φ := by
+bounded if this is empty, and its glued tensor is invariant under the levels of the `X_j`.
+-/
+theorem seesaw_identity
+    {P : Parameters} {D : Data P}
+    (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) (g : GInf D.E (D.signsY 0))
+    : ∃ c : ℂˣ, ∀ ϑ : D.Twist, ∃ Ψ : D.Translations →₀ ℂ,
+      IsChainDatum ϑ Ψ
+        ∧ ∀ φ : D.ramifiedSourceForms,
+          lowerChain ϑ (D.poincareAt g t φ) = (c : ℂ) • compositeLift ϑ Ψ φ := by
   obtain ⟨c₀, h_chain⟩ := exists_lowerChainUpTo_poincareAt_eq t g
   obtain ⟨C, h_admissibleComb⟩ := D.exists_isAdmissibleCombination_seesawDatum
   -- `u` is the inverse of `c₀ C / d`, with `d` the denominator of the combination. If this number
@@ -638,9 +653,8 @@ theorem seesaw_identity {P : Parameters} {D : Data P}
   -- comes from a chain datum.
   let u : ℂˣ := normUnit (c₀ * C / (D.residueMatrixCount ^ (2 * D.m) : ℕ))
   refine ⟨u⁻¹, fun ϑ ↦ ?_⟩
-  have h_rescaled : IsAdmissibleCombination D.gluedVacuum (admissibleTranslations ϑ.normQ)
-      ϑ.normQ 1 (ϑ.Q = ∅) ((D.residueMatrixCount ^ (2 * D.m) : ℕ) * D.residueMatrixCount ^
-        (2 * D.ϱ + 2))
+  have h_rescaled : IsAdmissibleCombination D.gluedVacuum (admissibleTranslations ϑ.normQ) ϑ.normQ 1
+      (ϑ.Q = ∅) ((D.residueMatrixCount ^ (2 * D.m) : ℕ) * D.residueMatrixCount ^ (2 * D.ϱ + 2))
       ((u : ℂ) • c₀ • seesawDatum ϑ) :=
     (h_admissibleComb ϑ).normUnit_smul c₀ NeZero.out
   -- Replace each translation by a supported representative without changing the glued tensor.
@@ -648,11 +662,13 @@ theorem seesaw_identity {P : Parameters} {D : Data P}
   obtain ⟨Ψ, h_adm, h_glued : (u : ℂ) • c₀ • seesawDatum ϑ = gluedTensor Ψ⟩ :=
     h_rescaled.of_eq_isOfFinOrder_smul
       (A' := admissibleTranslations ϑ.normQ ∩ supportedTranslations (D.M * ϑ.normQ))
-      (v' := D.gluedVacuum) fun x hx ↦ by
+      (v' := D.gluedVacuum)
+      fun x hx ↦ by
         obtain ⟨x', hx', h_eq⟩ := D.exists_supported_translateDatum_eq hx
         exact ⟨1, .one, x', hx', by simp only [one_smul, gluedVacuum, h_eq]⟩
-  have h_size : (↑(D.residueMatrixCount ^ (2 * D.m)) * D.residueMatrixCount ^ (2 * D.ϱ + 2) : ℝ) =
-      D.M ^ (3 * D.f * D.m * D.n D.m ^ 2) := by
+  have h_size
+      : (↑(D.residueMatrixCount ^ (2 * D.m)) * D.residueMatrixCount ^ (2 * D.ϱ + 2) : ℝ)
+        = D.M ^ (3 * D.f * D.m * D.n D.m ^ 2) := by
     rw [← D.m_eq_two_mul_varrho_add_two]
     -- `D.residueMatrixCount = D.M ^ (D.f * D.n D.m ^ 2)` by definition.
     push_cast

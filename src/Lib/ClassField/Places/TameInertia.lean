@@ -66,9 +66,12 @@ namespace New
 
 open Polynomial IsSepClosed MulAction Subgroup Cohomology Set QuotientGroup Finset
 
-variable {Γ k Ω : Type*} [Group Γ] [Field k] [Field Ω] [Algebra k Ω] [MulSemiringAction Γ Ω]
-  {A : ValuationSubring Ω} {π : kˣ} (hπ : IsUniformizer A π.val) {s : Γ} (hs : s ∈ inertiaGroup Γ A)
-  {n : ℕ} (hn : A.valuation n = 1) {y : Ω} (hy : y ^ n = algebraMap k Ω π)
+variable
+  {Γ k Ω : Type*} [Group Γ] [Field k] [Field Ω] [Algebra k Ω] [MulSemiringAction Γ Ω]
+  {A : ValuationSubring Ω} {π : kˣ} (hπ : IsUniformizer A π.val)
+  {s : Γ} (hs : s ∈ inertiaGroup Γ A)
+  {n : ℕ} (hn : A.valuation n = 1)
+  {y : Ω} (hy : y ^ n = algebraMap k Ω π)
 
 namespace Cohomology
 

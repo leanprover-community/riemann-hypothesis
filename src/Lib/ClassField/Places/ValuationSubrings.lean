@@ -70,7 +70,8 @@ section Places
 
 open New NumberField IsDedekindDomain.HeightOneSpectrum Pointwise Ideal Cohomology WithZero
   Valuation Nat IsScalarTower RingOfIntegers IsLocalRing Algebra IsGaloisGroup
-variable {K Ω Γ : Type*} [Field K] [Field Ω] [Algebra K Ω] [Group Γ] [MulSemiringAction Γ Ω]
+variable
+  {K Ω Γ : Type*} [Field K] [Field Ω] [Algebra K Ω] [Group Γ] [MulSemiringAction Γ Ω]
   {A A' : ValuationSubring Ω} {w : Valuation K ℤᵐ⁰}
 
 namespace New.Cohomology
@@ -78,13 +79,17 @@ namespace New.Cohomology
 /-! ### The centre of a valuation subring -/
 
 variable (A) in
-/-- The image in `Ω` of an integer of `K` lies in every valuation subring `A` of `Ω`: it is
-integral over `ℤ`, and a valuation subring is integrally closed. -/
+/--
+The image in `Ω` of an integer of `K` lies in every valuation subring `A` of `Ω`: it is
+integral over `ℤ`, and a valuation subring is integrally closed.
+-/
 theorem algebraMap_ringOfIntegers_mem (x : 𝓞 K) : algebraMap K Ω x ∈ A :=
   Subring.isIntegrallyClosedIn_iff.mp inferInstance x.prop.algebraMap.tower_top
 
-/-- The centre of the valuation subring `A` on `K`: the ideal of those integers of `K` whose image
-in `Ω` lies in the maximal ideal of `A`. -/
+/--
+The centre of the valuation subring `A` on `K`: the ideal of those integers of `K` whose image
+in `Ω` lies in the maximal ideal of `A`.
+-/
 def centerPrime (K : Type*) [Field K] [Algebra K Ω] (A : ValuationSubring Ω) : Ideal (𝓞 K) :=
   (maximalIdeal A).comap
     (((algebraMap K Ω).comp (algebraMap (𝓞 K) K)).codRestrict A (algebraMap_ringOfIntegers_mem A))
@@ -92,25 +97,29 @@ def centerPrime (K : Type*) [Field K] [Algebra K Ω] (A : ValuationSubring Ω) :
 lemma mem_centerPrime {x : 𝓞 K} : x ∈ centerPrime K A ↔ valuationVia K A x < 1 :=
   A.valuation_lt_one_iff _
 
-/-- For a tower `K ⊆ k ⊆ Ω`, the valuation of `A` on `k` extends the one on `K` (here
-`algebraMap K _` is the map from `K` to `Ω`). -/
-instance {k : Type*} [Field k] [Algebra K k] [Algebra k Ω] [IsScalarTower K k Ω] :
-    (A.valuation.comap <| algebraMap K _).HasExtension (A.valuation.comap (algebraMap k Ω)) := by
+/--
+For a tower `K ⊆ k ⊆ Ω`, the valuation of `A` on `k` extends the one on `K` (here
+`algebraMap K _` is the map from `K` to `Ω`).
+-/
+instance {k : Type*} [Field k] [Algebra K k] [Algebra k Ω] [IsScalarTower K k Ω]
+    : (A.valuation.comap <| algebraMap K _).HasExtension (A.valuation.comap (algebraMap k Ω)) := by
   constructor
   rw [algebraMap_eq K k Ω]
   exact Valuation.IsEquiv.refl
 
-/-- If `A` induces on `K` a valuation equivalent to `w`, and `w` takes the value `exp (-1)`, then
+/--
+If `A` induces on `K` a valuation equivalent to `w`, and `w` takes the value `exp (-1)`, then
 the uniformisers for `A` in `K` (the `π` with `valuationVia K A x < 1 ↔ valuationVia K A
-x ≤ valuationVia K A π` for all `x : K`) are the elements with `w π = exp (-1)`. -/
-theorem isUniformizer_iff_of_isEquiv (h_equiv : (A.valuation.comap (algebraMap K Ω)).IsEquiv w)
-    (h_exists : ∃ p : K, w p = exp (-1)) {π : K} :
-    IsUniformizer A π ↔ w π = exp (-1) := by
+x ≤ valuationVia K A π` for all `x : K`) are the elements with `w π = exp (-1)`.
+-/
+theorem isUniformizer_iff_of_isEquiv
+    (h_equiv : (A.valuation.comap (algebraMap K Ω)).IsEquiv w) (h_exists : ∃ p : K, w p = exp (-1))
+    {π : K}
+    : IsUniformizer A π ↔ w π = exp (-1) := by
   -- Both sides of `IsUniformizer` transfer to `w`, where `w x < 1` means `w x ≤ exp (-1)`.
   have h_lt (x : K) : A.valuation (algebraMap K Ω x) < 1 ↔ w x ≤ exp (-1) :=
     h_equiv.lt_one_iff_lt_one.trans (lt_mul_exp_iff_le (exp_ne_zero (a := -1)))
-  have h_le (x : K) :
-      A.valuation (algebraMap K Ω x) ≤ A.valuation (algebraMap K Ω π) ↔ w x ≤ w π :=
+  have h_le (x : K) : A.valuation (algebraMap K Ω x) ≤ A.valuation (algebraMap K Ω π) ↔ w x ≤ w π :=
     h_equiv x π
   simp only [IsUniformizer, valuationVia, h_lt, h_le]
   obtain ⟨p, hp⟩ := h_exists
@@ -124,7 +133,8 @@ end Cohomology
 
 instance : (centerPrime K A).IsPrime := .comap _
 
-variable {v v' : FinPlace K} (h : IsPlaceOver A v)
+variable
+  {v v' : FinPlace K} (h : IsPlaceOver A v)
   {L : Type*} [Field L] [Algebra K L] [Algebra L Ω] [IsScalarTower K L Ω]
 
 namespace IsPlaceOver
@@ -132,8 +142,8 @@ namespace IsPlaceOver
 /-! ### Properties of a valuation subring over a prime -/
 
 /-- As `v` is maximal, `A` lies over `v` as soon as its centre contains `v`. -/
-theorem of_le_centerPrime [NumberField K]
-    (h_le : v.asIdeal ≤ centerPrime K A) : IsPlaceOver A v := by
+theorem of_le_centerPrime [NumberField K] (h_le : v.asIdeal ≤ centerPrime K A)
+    : IsPlaceOver A v := by
   -- The maximal ideal `v` lies in the proper ideal `centerPrime K A`, so the two are equal.
   have h_eq : v.asIdeal = centerPrime K A := v.isMaximal.eq_of_le IsPrime.ne_top' h_le
   exact fun x ↦ by rw [h_eq, mem_centerPrime]
@@ -393,8 +403,11 @@ open NumberField Valued NormedField Valuation ComplexConjugate IntermediateField
 
 namespace New
 
-variable {E : Type*} [Field E] [NumberField E] {p : ℕ} [Fact p.Prime]
-  {F : Type*} [NormedField F] [IsUltrametricDist F] [CharZero F] [PadicField F p] (σ : E →+* F)
+variable
+  {E : Type*} [Field E] [NumberField E]
+  {p : ℕ} [Fact p.Prime]
+  {F : Type*} [NormedField F] [IsUltrametricDist F] [CharZero F] [PadicField F p]
+  (σ : E →+* F)
 
 omit [Fact p.Prime] [CharZero F] [PadicField F p] in
 lemma norm_le_one_of_isIntegral {R : Type*} [CommRing R] (ι : R →+* F) {x : R}
@@ -407,9 +420,11 @@ lemma norm_ringOfIntegers_le (x : 𝓞 E) : ‖σ x‖ ≤ 1 := norm_le_one_of_i
 
 /-! ### The prime induced by an embedding -/
 
-/-- The prime of `E` induced by an embedding `σ : E →+* F` into an ultrametric normed field over
+/--
+The prime of `E` induced by an embedding `σ : E →+* F` into an ultrametric normed field over
 `ℚ_p`: the centre on the integers of `E` of the valuation ring `{x : E | ‖σ x‖ ≤ 1}`. An integer `x`
-of `E` lies in it exactly when `‖σ x‖ < 1` (`New.mem_placeOfEmb`). -/
+of `E` lies in it exactly when `‖σ x‖ < 1` (`New.mem_placeOfEmb`).
+-/
 def placeOfEmb : FinPlace E where
   asIdeal := Cohomology.centerPrime E (valuation.comap σ).valuationSubring
   isPrime := Ideal.IsPrime.comap _
@@ -435,13 +450,17 @@ lemma mem_placeOfEmb (x : 𝓞 E) : x ∈ (placeOfEmb σ).asIdeal ↔ ‖σ x‖
 
 attribute [irreducible] placeOfEmb
 
-/-- The ring homomorphism from `ℂ` to `ℂ_p` obtained by composing an isomorphism `ι` from `ℂ` onto
-the algebraic closure of `ℚ_p` with the inclusion into `ℂ_p`. -/
+/--
+The ring homomorphism from `ℂ` to `ℂ_p` obtained by composing an isomorphism `ι` from `ℂ` onto
+the algebraic closure of `ℚ_p` with the inclusion into `ℂ_p`.
+-/
 abbrev complexToCp (ι : ℂ ≃+* PadicAlgCl p) : ℂ →+* ℂ_[p] :=
   (algebraMap (PadicAlgCl p) ℂ_[p]).comp ι.toRingHom
 
-/-- The prime of `E` above `p` induced by the complex embedding `σ` followed by the isomorphism
-`ιℓ` from `ℂ` to the algebraic closure of `ℚ_p` that `[PadicIso p]` fixes. -/
+/--
+The prime of `E` above `p` induced by the complex embedding `σ` followed by the isomorphism
+`ιℓ` from `ℂ` to the algebraic closure of `ℚ_p` that `[PadicIso p]` fixes.
+-/
 abbrev inducedPrime [PadicIso p] (σ : E →+* ℂ) : FinPlace E := placeOfEmb (ιℓ.toRingHom.comp σ)
 
 omit [CharZero F] in
@@ -456,8 +475,8 @@ instance : FiniteDimensional ℚ_[p] (adjoin ℚ_[p] (Set.range σ)) := by
   let σE : IntermediateField ℚ F := σ.toRatAlgHom.fieldRange
   have h_finite : FiniteDimensional ℚ σE :=
     σ.toRatAlgHom.equivFieldRange.toLinearEquiv.finiteDimensional
-  exact rank_lt_aleph0_iff.mp
-    ((σE.adjoin_rank_le_of_isAlgebraic_right ℚ_[p]).trans_lt (rank_lt_aleph0 ℚ σE))
+  exact rank_lt_aleph0_iff.mp ((σE.adjoin_rank_le_of_isAlgebraic_right ℚ_[p]).trans_lt
+    (rank_lt_aleph0 ℚ σE))
 
 /-! ### Extension to the completion and to finite adeles -/
 
@@ -512,8 +531,10 @@ lemma exists_placeOfEmb_extension :
   -- `‖φ x‖ ≤ ‖φ y‖` holds iff `‖x‖ ^ c ≤ ‖y‖ ^ c`, iff `‖x‖ ≤ ‖y‖`, iff `v x ≤ v y`.
   simp [← coe_le_coe, hφ_norm, Real.rpow_le_rpow_iff, hc_pos, Valued.toNormedField.norm_le_iff]
 
-/-- The extension of `σ` to the completion of `E` at the prime `New.placeOfEmb σ`, chosen by
-`New.exists_placeOfEmb_extension`: continuous, extending `σ`, with values in `ℚ_p(σ E)`. -/
+/--
+The extension of `σ` to the completion of `E` at the prime `New.placeOfEmb σ`, chosen by
+`New.exists_placeOfEmb_extension`: continuous, extending `σ`, with values in `ℚ_p(σ E)`.
+-/
 def placeOfEmbExtension : LocField (placeOfEmb σ) →+* F := (exists_placeOfEmb_extension σ).choose
 
 lemma continuous_placeOfEmbExtension : Continuous (placeOfEmbExtension σ) :=
@@ -526,10 +547,11 @@ lemma valuation_comap_placeOfEmbExtension_isEquiv :
   let ⟨_, _, _, h_equiv⟩ := (exists_placeOfEmb_extension σ).choose_spec
   h_equiv
 
-/-- The extension of `σ` to the finite adeles of `E`: take the component at the prime
-`New.placeOfEmb σ`, then apply `New.placeOfEmbExtension σ`. -/
-def adeleExtension : 𝔸f E →+* F :=
-  (placeOfEmbExtension σ).comp (evalAt (placeOfEmb σ))
+/--
+The extension of `σ` to the finite adeles of `E`: take the component at the prime
+`New.placeOfEmb σ`, then apply `New.placeOfEmbExtension σ`.
+-/
+def adeleExtension : 𝔸f E →+* F := (placeOfEmbExtension σ).comp (evalAt (placeOfEmb σ))
 
 @[simp]
 lemma adeleExtension_algebraMap (x : E) : adeleExtension σ x = σ x :=
@@ -575,10 +597,12 @@ lemma adeleExtension_star :
     rw [star_algebraMap_finAdele, adeleExtension_algebraMap, adeleExtension_algebraMap]
     rfl
 
-/-- The embedding `x ↦ ι (Φ v (conj x))` of `E` into `F`, for `ι : ℂ →+* F` and an infinite
-place `v` with chosen complex embedding `Φ v`. -/
-abbrev weightEmbedding {E : Type*} [Field E] [CMType E]
-    (ι : ℂ →+* F) (v : InfinitePlace E) : E →+* F :=
+/--
+The embedding `x ↦ ι (Φ v (conj x))` of `E` into `F`, for `ι : ℂ →+* F` and an infinite
+place `v` with chosen complex embedding `Φ v`.
+-/
+abbrev weightEmbedding {E : Type*} [Field E] [CMType E] (ι : ℂ →+* F) (v : InfinitePlace E)
+    : E →+* F :=
   (ι.comp (Φ v)).comp (starRingEnd E)
 
 end New
@@ -597,8 +621,9 @@ section EfgFormula
 
 open NumberField IsDedekindDomain HeightOneSpectrum Ideal New
 
-variable {K L : Type*} [Field K] [Field L] [Algebra K L] [NumberField K] [NumberField L]
-  [IsGalois K L] (w : FinPlace L)
+variable
+  {K L : Type*} [Field K] [Field L] [Algebra K L] [NumberField K] [NumberField L] [IsGalois K L]
+  (w : FinPlace L)
 
 /-- The place `w` of `L` lies over the place of `K` below it. -/
 instance : w.asIdeal.LiesOver (w.below K).asIdeal := ⟨rfl⟩

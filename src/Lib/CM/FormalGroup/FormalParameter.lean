@@ -100,8 +100,10 @@ lemma expSubst_rescale_sub_mem_of_pow_eq_one {ζ : ℂ_[p]} (hζ : ζ ^ (primeNo
   rwa [rescale_subst (by simp [hf, constantCoeff_rescale, constantCoeff_negLogTheta]), h_eq]
     at h_rescale
 
-/-- The formal parameter `T`: the part in degrees `≡ 1` mod `q - 1` of `y`, the `p`-adic Taylor
-series of `C.translatedY`, where `q = primeNorm d p`. -/
+/--
+The formal parameter `T`: the part in degrees `≡ 1` mod `q - 1` of `y`, the `p`-adic Taylor
+series of `C.translatedY`, where `q = primeNorm d p`.
+-/
 noncomputable def formalParam : ℂ_[p]⟦X⟧ :=
   congruencePart (primeNorm d p - 1) 1 (taylorVia ιₚ C.translatedY)
 

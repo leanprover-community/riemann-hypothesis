@@ -69,10 +69,11 @@ namespace New.SiegelWeil
 
 open Matrix MeasureTheory WeilData Exchange Space Splitting Finset Fintype Real G Fock
 
-variable {E r n m p : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r]
-  [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p] {s : r → ℤˣ}
-  {t : m → ℤˣ} {W : Space E r s} {W' : Space E m t} {V : Space E n 1} {a : AutChar E}
-  {Y : G E (1 : n → ℤˣ) → ℂ}
+variable
+  {E r n m p : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n]
+  [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p]
+  {s : r → ℤˣ} {t : m → ℤˣ}
+  {W : Space E r s} {W' : Space E m t} {V : Space E n 1} {a : AutChar E} {Y : G E (1 : n → ℤˣ) → ℂ}
 
 omit [WeilData E] in
 /-- Small roots: let `F` be a bounded function on the adelic unitary group of signs `t`, of rank

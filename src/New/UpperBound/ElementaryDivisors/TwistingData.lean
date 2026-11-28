@@ -59,25 +59,33 @@ namespace New
 
 open Fintype Finset MvPolynomial Matrix IsLocalRing Ideal
 
-/-- The exponents of the monomials that are homogeneous of degree `n` in each of the `N` letters,
-with `k` variables in each letter. -/
+/--
+The exponents of the monomials that are homogeneous of degree `n` in each of the `N` letters,
+with `k` variables in each letter.
+-/
 abbrev Exponents (N k n : ℕ) : Type := ZMod N → Monomials (Fin k) n
 
-/-- For natural `r`, the labelling of the indices `b : Fin k` that is `0` if `b < r` and `1`
-otherwise. -/
+/--
+For natural `r`, the labelling of the indices `b : Fin k` that is `0` if `b < r` and `1`
+otherwise.
+-/
 def twoBlock (k r : ℕ) (b : Fin k) : ℕ := if (b : ℕ) < r then 0 else 1
 
-/-- The number `c* = 3 k c`, for the rank `k` and a precision `c` of congruences modulo powers of
-the square root of `p`. It is the unit in which later files state their thresholds for defects. -/
+/--
+The number `c* = 3 k c`, for the rank `k` and a precision `c` of congruences modulo powers of
+the square root of `p`. It is the unit in which later files state their thresholds for defects.
+-/
 def defectThreshold (k c : ℕ) : ℕ := 3 * k * c
 
 lemma three_mul_le_defectThreshold {k : ℕ} (hk : 0 < k) (c : ℕ) : 3 * c ≤ defectThreshold k c :=
   Nat.mul_le_mul_right c (Nat.le_mul_of_pos_right 3 hk)
 
-/-- A Frobenius cycle: a prime `p` with `P = p ^ frobExp ≥ 5`, where the residue field of `W` has
+/--
+A Frobenius cycle: a prime `p` with `P = p ^ frobExp ≥ 5`, where the residue field of `W` has
 `P ^ N` elements. It also gives ring maps `embedding s : W → R` for `s` in `ℤ/N`, alternately even
 and odd, with `embedding (s + 1) ≡ embedding s ^ P` modulo `p`, and an element `sqrtPrime` of `R`
-with `sqrtPrime ^ 2 = p`. -/
+with `sqrtPrime ^ 2 = p`.
+-/
 structure FrobeniusCycle (N : ℕ) (W R : Type) [CommRing W] [IsLocalRing W] [CommRing R] where
   /-- The prime `p`. -/
   p : ℕ
@@ -98,15 +106,18 @@ structure FrobeniusCycle (N : ℕ) (W R : Type) [CommRing W] [IsLocalRing W] [Co
   /-- `embedding (s + 1) ≡ embedding s ^ P` modulo `p`. -/
   frobenius_congr (s : ZMod N) (x : W) : (p : R) ∣ embedding (s + 1) x - embedding s x ^ p ^ frobExp
   /-- Even and odd letters alternate. -/
-  isEven_succ (s : ZMod N) : isEven (s + 1) = !isEven s
+  isEven_succ (s : ZMod N) : isEven (s + 1) = ! isEven s
   /-- The residue field of `W` has `(p ^ frobExp) ^ N` elements. -/
   card_residueField : Nat.card (IsLocalRing.ResidueField W) = (p ^ frobExp) ^ N
 
 namespace FrobeniusCycle
 
-variable {k N : ℕ} {W R R' : Type} [CommRing W] [IsLocalRing W] [CommRing R] [CommRing R']
-  (φ : R →+* R') [NeZero N] (T : FrobeniusCycle N W R) (n r : ℕ) (i : ZMod N) (a a' : Fin k)
-  (g : GL (Fin k) W) (s : ZMod N) (x : Fin k × ZMod N)
+variable
+  {k N : ℕ} {W R R' : Type} [CommRing W] [IsLocalRing W] [CommRing R] [CommRing R']
+  (φ : R →+* R')
+  [NeZero N]
+  (T : FrobeniusCycle N W R) (n r : ℕ) (i : ZMod N) (a a' : Fin k) (g : GL (Fin k) W) (s : ZMod N)
+  (x : Fin k × ZMod N)
 
 /-! ### The twisted action -/
 
@@ -116,83 +127,108 @@ abbrev P : ℕ := T.p ^ T.frobExp
 /-- The number `q = P ^ N` of elements of the residue field of `W`. -/
 abbrev q : ℕ := T.P ^ N
 
-/-- For a Frobenius cycle over `R` and a ring map `φ : R →+* R'`, the Frobenius cycle over `R'`
-obtained by composing each ring map `embedding s` with `φ` and applying `φ` to `sqrtPrime`. -/
-def map : FrobeniusCycle N W R' :=
-  { T with
-    embedding := φ.comp ∘ T.embedding
-    sqrtPrime := φ T.sqrtPrime
-    sqrtPrime_sq := by simp [← map_pow, sqrtPrime_sq]
-    frobenius_congr s x := by simpa using map_dvd φ (T.frobenius_congr s x) }
+/--
+For a Frobenius cycle over `R` and a ring map `φ : R →+* R'`, the Frobenius cycle over `R'`
+obtained by composing each ring map `embedding s` with `φ` and applying `φ` to `sqrtPrime`.
+-/
+def map : FrobeniusCycle N W R' := {
+  T with
+  embedding := φ.comp ∘ T.embedding
+  sqrtPrime := φ T.sqrtPrime
+  sqrtPrime_sq := by simp [← map_pow, sqrtPrime_sq]
+  frobenius_congr s x := by simpa using map_dvd φ (T.frobenius_congr s x)
+}
 
-/-- The homomorphism sending g in GL_k(W) to the matrix g_s over R: ι_s(g) if the letter s is
-even, ι_s of the inverse transpose if s is odd. -/
+/--
+The homomorphism sending g in GL_k(W) to the matrix g_s over R: ι_s(g) if the letter s is
+even, ι_s of the inverse transpose if s is odd.
+-/
 @[simps -isSimp]
 def letterMatrix : GL (Fin k) W →* Matrix (Fin k) (Fin k) R where
   toFun g := (if T.isEven s then ↑g else g⁻¹.valᵀ).map (T.embedding s)
   map_one' := by simp
   map_mul' g h := by cases T.isEven s <;> simp [Matrix.map_mul]
 
-/-- The action of GL_k(W) on polynomials in the variables x_{bs}: g sends x_{bs} to ∑_c
-(g_s)_{cb} x_{cs}, with g_s = `New.FrobeniusCycle.letterMatrix` s g. -/
-def polyAction :
-    GL (Fin k) W →* MvPolynomial (Fin k × ZMod N) R →ₐ[R] MvPolynomial (Fin k × ZMod N) R where
+/--
+The action of GL_k(W) on polynomials in the variables x_{bs}: g sends x_{bs} to ∑_c
+(g_s)_{cb} x_{cs}, with g_s = `New.FrobeniusCycle.letterMatrix` s g.
+-/
+def polyAction
+    : GL (Fin k) W →* MvPolynomial (Fin k × ZMod N) R →ₐ[R] MvPolynomial (Fin k × ZMod N) R where
   toFun g := linSubst (blockDiagonal fun s : ZMod N ↦ T.letterMatrix s g)
   map_one' := by simp [← Pi.one_def, AlgHom.ext_iff]
   map_mul' := by simp [AlgHom.ext_iff, linSubst_mul]
 
-/-- The matrix ρ(g) of g in GL_k(W) on forms of degree n in each letter: the Kronecker product
-over s of the n-th symmetric powers of `New.FrobeniusCycle.letterMatrix` s g. -/
+/--
+The matrix ρ(g) of g in GL_k(W) on forms of degree n in each letter: the Kronecker product
+over s of the n-th symmetric powers of `New.FrobeniusCycle.letterMatrix` s g.
+-/
 @[simps -isSimp]
 def letterRep : GL (Fin k) W →* Matrix (Exponents N k n) (Exponents N k n) R :=
-  ({ toFun g := kroneckerPi fun s : ZMod N ↦ symPowMatrix n (T.letterMatrix s g)
+  ({
+     toFun g := kroneckerPi fun s : ZMod N ↦ symPowMatrix n (T.letterMatrix s g)
      map_one' := by simp
-     map_mul' := by simp [kroneckerPi_mul] } : GL (Fin k) W →* _)
+     map_mul' := by simp [kroneckerPi_mul]
+   }
+    : GL (Fin k) W →* _)
 
 /-! ### Depth, defect and the coefficient condition -/
 
-/-- The indicator of the deep variables `x = (b, s)`, with `b` counted from `0`: it is `1` if `s`
-is even and `r ≤ b`, or `s` is odd and `b < r`, and `0` otherwise. -/
+/--
+The indicator of the deep variables `x = (b, s)`, with `b` counted from `0`: it is `1` if `s`
+is even and `r ≤ b`, or `s` is odd and `b < r`, and `0` otherwise.
+-/
 def deepIndicator : ℕ := if T.isEven x.2 ↔ r ≤ (x.1 : ℕ) then 1 else 0
 
-/-- The depth of a family β of exponent vectors of degree n, one for each letter: the total degree
-of the monomial x^β in the variables that are deep for r (`New.FrobeniusCycle.deepIndicator`). -/
+/--
+The depth of a family β of exponent vectors of degree n, one for each letter: the total degree
+of the monomial x^β in the variables that are deep for r (`New.FrobeniusCycle.deepIndicator`).
+-/
 def depth (k n r : ℕ) (β : Exponents N k n) : ℕ := (exponentOf β).weight (T.deepIndicator r)
 
 /-- For indices a,a' and letter s, the variable index (a',s) if s is even and (a,s) if s is odd. -/
 @[simps]
 def rootVar : Fin k × ZMod N := (if T.isEven s then a' else a, s)
 
-/-- The weight of the variable `x = (b, s)` in the defect of a monomial at the letter `i` along the
+/--
+The weight of the variable `x = (b, s)` in the defect of a monomial at the letter `i` along the
 root `(a, a')`; the defect is the sum of these weights over the monomial. Write
 `u_s = T.rootVar a a' s` and `ū_s = T.rootVar a' a s`. The weight is `P ^ ((s - i) mod N) / (q - 1)`
 times `[x = u_s] - [x = ū_s]`, plus `1` if `x = u_i`. For the recursive description of the defect
-see `New.FrobeniusCycle.defectWeight_dotProduct_permStep`. -/
+see `New.FrobeniusCycle.defectWeight_dotProduct_permStep`.
+-/
 def defectWeight : ℝ :=
-  ((if x = T.rootVar a a' x.2 then (T.P : ℝ) ^ (1 + (x.2 - 1 - i).val) else 0) -
-    if x = T.rootVar a' a x.2 then (T.P : ℝ) ^ (x.2 - i).val else 0) / (T.q - 1)
+  ((if x = T.rootVar a a' x.2 then (T.P : ℝ) ^ (1 + (x.2 - 1 - i).val) else 0)
+      - if x = T.rootVar a' a x.2 then (T.P : ℝ) ^ (x.2 - i).val else 0)
+    / (T.q - 1)
 
-/-- The submodule of the coefficient vectors `F : Exponents N k n → R` with `(ρ(g) F) β ∈ I` for
+/--
+The submodule of the coefficient vectors `F : Exponents N k n → R` with `(ρ(g) F) β ∈ I` for
 all `g` in the Levi subgroup `levi W τ` and all `β` in the set `B` of exponents, where
 `ρ = T.letterRep n`. Here `τ` labels the indices `Fin k` by natural numbers, and `levi W τ`
-consists of the matrices in `GL_k(W)` whose entry `(i, j)` is zero whenever `τ i ≠ τ j`. -/
-def translatesIn (τ : Fin k → ℕ) (I : Ideal R) (B : Set (Exponents N k n)) :
-    Submodule R (Exponents N k n → R) :=
-  { carrier := {F : Exponents N k n → R | ∀ g ∈ levi W τ, ∀ β ∈ B, (T.letterRep n g *ᵥ F) β ∈ I}
-    add_mem' hF hG g hg β hβ := by simpa [mulVec_add] using add_mem (hF g hg β hβ) (hG g hg β hβ)
-    zero_mem' := by simp
-    smul_mem' c F hF g hg β hβ := by
-      simpa [mulVec_smul] using I.mul_mem_left c (hF g hg β hβ) }
+consists of the matrices in `GL_k(W)` whose entry `(i, j)` is zero whenever `τ i ≠ τ j`.
+-/
+def translatesIn (τ : Fin k → ℕ) (I : Ideal R) (B : Set (Exponents N k n))
+    : Submodule R (Exponents N k n → R) := {
+  carrier := {F : Exponents N k n → R | ∀ g ∈ levi W τ, ∀ β ∈ B, (T.letterRep n g *ᵥ F) β ∈ I}
+  add_mem' hF hG g hg β hβ := by simpa [mulVec_add] using add_mem (hF g hg β hβ) (hG g hg β hβ)
+  zero_mem' := by simp
+  smul_mem' c F hF g hg β hβ := by simpa [mulVec_smul] using I.mul_mem_left c (hF g hg β hβ)
+}
 
-/-- The coefficient vectors F such that (ρ(g)F)_β lies in I, with ρ = `New.FrobeniusCycle.letterRep`
+/--
+The coefficient vectors F such that (ρ(g)F)_β lies in I, with ρ = `New.FrobeniusCycle.letterRep`
 n. This must hold whenever g is block diagonal with blocks of sizes a' and k − a' and β has defect
-along the root (a, a') (`New.FrobeniusCycle.defectWeight`) above h at some letter. -/
+along the root (a, a') (`New.FrobeniusCycle.defectWeight`) above h at some letter.
+-/
 abbrev defectConditions (I : Ideal R) (h : ℝ) : Submodule R (Exponents N k n → R) :=
   T.translatesIn n (twoBlock k a') I
     {β : Exponents N k n | ∃ i : ZMod N, h < (exponentOf β).weight (T.defectWeight i a a')}
 
-/-- The coefficient vectors F of forms of degree n in each letter such that, for every g in GL_k(W),
-all monomials of ρ(g)F have depth (`New.FrobeniusCycle.depth`, for r) at least d. -/
+/--
+The coefficient vectors F of forms of degree n in each letter such that, for every g in GL_k(W),
+all monomials of ρ(g)F have depth (`New.FrobeniusCycle.depth`, for r) at least d.
+-/
 abbrev deepForms (k n r d : ℕ) : Submodule R (Exponents N k n → R) :=
   T.translatesIn n 0 ⊥ {β : Exponents N k n | T.depth k n r β < d}
 

@@ -55,17 +55,20 @@ variable {S S' : Scheme.{0}} (b : S' ⟶ S) (O : outParam Type) [CommRing O] (A 
 
 /-! ### Group objects, ring actions, base change, abelian schemes -/
 
-/-- A commutative group object in schemes over `S`: an additive group object whose addition is
-commutative. -/
-class abbrev AddObj :=
-  AddGrpObj A, IsCommAddMonObj A
+/--
+A commutative group object in schemes over `S`: an additive group object whose addition is
+commutative.
+-/
+class abbrev AddObj := AddGrpObj A, IsCommAddMonObj A
 
 attribute [instance] Hom.addCommGroup
 
 export AddMonObj (comp_add add_comp comp_nsmul nsmul_comp comp_zero)
 
-/-- An action of the commutative ring O on a commutative group object A: O-module structures on
-all groups Hom(T, A), functorial in T. -/
+/--
+An action of the commutative ring O on a commutative group object A: O-module structures on
+all groups Hom(T, A), functorial in T.
+-/
 class ModuleObj [AddObj A] where
   /-- For each `T` over `S`, the group of `T`-points of `A` is an `O`-module. -/
   [homModule (T : Over S) : Module O (T ⟶ A)]
@@ -74,38 +77,51 @@ class ModuleObj [AddObj A] where
 
 attribute [reducible, instance] ModuleObj.homModule
 
-/-- The commutative group scheme A over S is an abelian scheme: it is smooth and proper over S,
-and multiplication by every m ≠ 0 is surjective. -/
+/--
+The commutative group scheme A over S is an abelian scheme: it is smooth and proper over S,
+and multiplication by every m ≠ 0 is surjective.
+-/
 class IsAbelianScheme extends AddObj A, Smooth A.hom, IsProper A.hom where
   /-- Multiplication by every natural number `m ≠ 0` is surjective. -/
   nsmul_surjective : ∀ m ≠ (0 : ℕ), Surjective (m • 𝟙 A).left
 
-variable {A B T X Y : Over S} [AddObj A] [AddObj B]
-  {R : outParam Type} [CommRing R] [ModuleObj R A] [ModuleObj R B] (c : R) (f : A ⟶ B)
+variable
+  {A B T X Y : Over S} [AddObj A] [AddObj B]
+  {R : outParam Type} [CommRing R] [ModuleObj R A] [ModuleObj R B]
+  (c : R) (f : A ⟶ B)
 
-/-- The morphism p : B → A makes B the base change of A along b : S' → S, and composing with p is
-R-linear on T-points for every S'-scheme T. -/
-structure IsGroupBaseChange {B : Over S'} [AddObj B] [ModuleObj R B]
-    (p : (Over.map b).obj B ⟶ A) where
+/--
+The morphism p : B → A makes B the base change of A along b : S' → S, and composing with p is
+R-linear on T-points for every S'-scheme T.
+-/
+structure IsGroupBaseChange
+    {B : Over S'} [AddObj B] [ModuleObj R B] (p : (Over.map b).obj B ⟶ A) where
   /-- The square of `p`, `b` and the structure morphisms of `B` and `A` is cartesian. -/
   isPullback : IsPullback p.left B.hom A.hom b
-  /-- For each `U` over `S'`, the map `u ↦ (Over.map b).map u ≫ p` from `U`-points of `B` to
-  `(Over.map b).obj U`-points of `A` is `R`-linear. -/
+  /--
+  For each `U` over `S'`, the map `u ↦ (Over.map b).map u ≫ p` from `U`-points of `B` to
+  `(Over.map b).obj U`-points of `A` is `R`-linear.
+  -/
   linear {U : Over S'} : IsLinearMap R (@(Over.map b).map U B · ≫ p)
 
 /-! ### Homomorphisms -/
 
-/-- The morphism f : A → B of commutative group objects is a homomorphism: composing with f is
-additive on U-points for every U. -/
+/--
+The morphism f : A → B of commutative group objects is a homomorphism: composing with f is
+additive on U-points for every U.
+-/
 abbrev IsAdditive : Prop := IsAddMonHom f
 
-/-- An isogeny is a homomorphism f : A → B that is finite, flat and surjective as a morphism of
-schemes. -/
-class abbrev IsIsogeny :=
-  IsAddMonHom f, IsFinite f.left, Flat f.left, Surjective f.left
+/--
+An isogeny is a homomorphism f : A → B that is finite, flat and surjective as a morphism of
+schemes.
+-/
+class abbrev IsIsogeny := IsAddMonHom f, IsFinite f.left, Flat f.left, Surjective f.left
 
-/-- The morphism f : A → B of R-module objects is a homomorphism that commutes with R:
-multiplication by c on A followed by f equals c times f, for every c in R. -/
+/--
+The morphism f : A → B of R-module objects is a homomorphism that commutes with R:
+multiplication by c on A followed by f equals c times f, for every c in R.
+-/
 class IsLinear extends IsAddMonHom f where
   /-- Multiplication by `c` on `A` followed by `f` equals `c • f`. -/
   smul_id_comp (c : R) : (c • 𝟙 A) ≫ f = c • f
@@ -142,8 +158,10 @@ lemma isAdditive_of_universal (h_univ : (fst A A + snd A A) ≫ f = fst A A ≫ 
   · -- The addition of `A` is `fst A A + snd A A`, so this is `h_univ`.
     rw [add_eq_add, add_eq_add, h_univ, comp_add, tensorHom_fst, tensorHom_snd]
 
-/-- Every commutative group object is a `ℤ`-module object: the points form `ℤ`-modules through
-integer multiples. -/
+/--
+Every commutative group object is a `ℤ`-module object: the points form `ℤ`-modules through
+integer multiples.
+-/
 instance (priority := low) : ModuleObj ℤ A := ⟨fun a c x ↦ comp_zsmul a x c⟩
 
 omit [ModuleObj R A] in
@@ -158,21 +176,24 @@ instance [IsAdditive f] : IsAdditive (c • f) := by
 @[irreducible]
 instance pullbackAddObj : AddObj ((pullback b).obj A) where
   -- `↓` rewrites with `map_comp` backwards before `simp` visits the subterms
-  add_comm := by simp [← LaxBraided.braided_assoc, ↓← map_comp, IsCommAddMonObj.add_comm]
+  add_comm := by simp [← LaxBraided.braided_assoc, ↓ ← map_comp, IsCommAddMonObj.add_comm]
 
 /-- The pull-back along `b` of an `R`-module object `A` is an `R`-module object. -/
 instance : ModuleObj R ((pullback b).obj A) where
   -- Transport the module structure on the points of `A` along the adjunction bijection.
   homModule _ :=
     AddEquiv.module _
-      (.symm ⟨(mapPullbackAdj b).homEquiv .., fun x y ↦ by
-        delta pullbackAddObj
-        dsimp only [Equiv.toFun_as_coe]
-        rw [homEquiv_unit, homEquiv_unit, homEquiv_unit, Functor.map_add', comp_add]⟩)
+      (.symm ⟨
+        (mapPullbackAdj b).homEquiv ..,
+        fun x y ↦ by
+          delta pullbackAddObj
+          dsimp only [Equiv.toFun_as_coe]
+          rw [homEquiv_unit, homEquiv_unit, homEquiv_unit, Functor.map_add', comp_add]
+      ⟩)
   comp_smul := by
     intro T' T a c x
-    change a ≫ (mapPullbackAdj b).homEquiv T A (c • ((mapPullbackAdj b).homEquiv T A).symm x) =
-      (mapPullbackAdj b).homEquiv T' A (c • ((mapPullbackAdj b).homEquiv T' A).symm (a ≫ x))
+    change a ≫ (mapPullbackAdj b).homEquiv T A (c • ((mapPullbackAdj b).homEquiv T A).symm x)
+      = (mapPullbackAdj b).homEquiv T' A (c • ((mapPullbackAdj b).homEquiv T' A).symm (a ≫ x))
     rw [← homEquiv_naturality_left, ModuleObj.comp_smul, ← homEquiv_naturality_left_symm]
 
 variable (c : Pic A.left) (x y : T ⟶ A) (f : X ⟶ Y) (z : 𝟙_ (Over S) ⟶ A)
@@ -180,23 +201,27 @@ variable (c : Pic A.left) (x y : T ⟶ A) (f : X ⟶ Y) (z : 𝟙_ (Over S) ⟶ 
 /-- An isomorphism over `S` is an isomorphism of schemes. -/
 instance [IsIso f] : IsIso f.left := map_isIso (forget S) f
 
-/-- A morphism `f` over `S` from a proper `S`-scheme to a separated `S`-scheme is proper; `f.1`
-is the underlying morphism of schemes `f.left`. -/
+/--
+A morphism `f` over `S` from a proper `S`-scheme to a separated `S`-scheme is proper; `f.1`
+is the underlying morphism of schemes `f.left`.
+-/
 instance [IsProper X.hom] [IsSeparated Y.hom] : IsProper f.1 := by
   -- `f.left ≫ Y.hom` is the proper structure morphism `X.hom`
   have h_comp : IsProper (f.left ≫ Y.hom) := by rw [f.w]; infer_instance
   exact IsProper.of_comp f.left Y.hom
 
-/-- Smoothness of relative dimension `d` is stable under base change: if `f : X ⟶ S` is smooth of
-relative dimension `d`, so is the projection `X ×_S Y ⟶ Y` for any `g : Y ⟶ S`. -/
-instance {X Y S : Scheme} {d : ℕ} (f : X ⟶ S) (g : Y ⟶ S) [SmoothOfRelativeDimension d f] :
-    SmoothOfRelativeDimension d (Limits.pullback.snd f g) :=
+/--
+Smoothness of relative dimension `d` is stable under base change: if `f : X ⟶ S` is smooth of
+relative dimension `d`, so is the projection `X ×_S Y ⟶ Y` for any `g : Y ⟶ S`.
+-/
+instance {X Y S : Scheme} {d : ℕ} (f : X ⟶ S) (g : Y ⟶ S) [SmoothOfRelativeDimension d f]
+    : SmoothOfRelativeDimension d (Limits.pullback.snd f g) :=
   (smoothOfRelativeDimension_isStableUnderBaseChange d).of_isPullback (.of_hasPullback f g)
     inferInstance
 
 /-- The spectrum of an R-algebra B, as a scheme over Spec R. -/
-abbrev specOver (R B : Type) [CommRing.{0} R] [CommRing B] [Algebra R B] :
-    Over (Spec (CommRingCat.of R)) :=
+abbrev specOver (R B : Type) [CommRing.{0} R] [CommRing B] [Algebra R B]
+    : Over (Spec (CommRingCat.of R)) :=
   Over.mk (Spec.map (ofHom (algebraMap R B)))
 
 /-! ### Translations -/
@@ -207,13 +232,17 @@ abbrev translation : A ⟶ A := 𝟙 A + toUnit A ≫ z
 
 /-- Translation by `z` is an isomorphism, with inverse the translation by `-z`. -/
 instance : IsIso (translation z) where
-  out := ⟨translation (-z),
-    by rw [translation, translation, comp_add, Category.comp_id, ← Category.assoc,
+  out := ⟨
+    translation (-z),
+    by
+      rw [translation, translation, comp_add, Category.comp_id, ← Category.assoc,
         toUnit_unique ((𝟙 A + toUnit A ≫ z) ≫ toUnit A) (toUnit A), comp_neg, _root_.add_assoc,
         add_neg_cancel, _root_.add_zero],
-    by rw [translation, translation, comp_add, Category.comp_id, ← Category.assoc,
+    by
+      rw [translation, translation, comp_add, Category.comp_id, ← Category.assoc,
         toUnit_unique ((𝟙 A + toUnit A ≫ (-z)) ≫ toUnit A) (toUnit A), comp_neg, _root_.add_assoc,
-        neg_add_cancel, _root_.add_zero]⟩
+        neg_add_cancel, _root_.add_zero]
+  ⟩
 
 namespace Pic
 
@@ -222,12 +251,16 @@ namespace Pic
 /-- For c in Pic A and a T-point x of A, the pull-back x^*c in Pic T. -/
 def atPoint : Pic T.left := c.pull x.left
 
-/-- For c in Pic A and T-points x, y of A, the class ⟨x, y⟩ = (x + y)^*c − x^*c − y^*c + 0^*c in
-Pic T. -/
+/--
+For c in Pic A and T-points x, y of A, the class ⟨x, y⟩ = (x + y)^*c − x^*c − y^*c + 0^*c in
+Pic T.
+-/
 def pairing : Pic T.left := c.atPoint (x + y) - c.atPoint x - c.atPoint y + c.atPoint 0
 
-/-- The parallelogram law for a class c in Pic A: (x+y)^*c + (x−y)^*c + 2·0^*c = 2(x^*c + y^*c)
-in Pic T for all T-points x, y of A and all S-schemes T. -/
+/--
+The parallelogram law for a class c in Pic A: (x+y)^*c + (x−y)^*c + 2·0^*c = 2(x^*c + y^*c)
+in Pic T for all T-points x, y of A and all S-schemes T.
+-/
 def ParallelogramLaw : Prop :=
   ∀ ⦃T : Over S⦄ (x y : T ⟶ A),
     c.atPoint (x + y) + c.atPoint (x - y) + 2 • c.atPoint 0 = 2 • (c.atPoint x + c.atPoint y)
@@ -276,27 +309,38 @@ namespace New.IsGroupBaseChange
 
 open CategoryTheory MonoidalCategory Over CartesianMonoidalCategory
 
-variable {S S' : AlgebraicGeometry.Scheme} {b : S' ⟶ S} {O : Type} [CommRing O] {A' : Over S'}
-  {A : Over S} [AddObj (S := S') A'] [AddObj (S := S) A] [ModuleObj O A'] [ModuleObj O A]
+variable
+  {S S' : AlgebraicGeometry.Scheme} {b : S' ⟶ S} {O : Type} [CommRing O]
+  {A' : Over S'} {A : Over S}
+  [AddObj (S := S') A'] [AddObj (S := S) A] [ModuleObj O A'] [ModuleObj O A]
   {p : (Over.map b).obj A' ⟶ A} (h : IsGroupBaseChange (A := A) (B := A') b p)
 
-/-- For an O-compatible base change p : A' → A and an S'-scheme T, the O-linear bijection
-x ↦ (Over.map b).map x ≫ p from T-points of A' over S' to T-points of A over S. -/
+/--
+For an O-compatible base change p : A' → A and an S'-scheme T, the O-linear bijection
+x ↦ (Over.map b).map x ≫ p from T-points of A' over S' to T-points of A over S.
+-/
 @[simps! -isSimp apply]
 def pointEquiv {T : Over S'} : (T ⟶ A') ≃ₗ[O] ((Over.map b).obj T ⟶ A) :=
   -- the linear map `u ↦ (map b).map u ≫ p`, inverted by the universal property of the pull-back
-  LinearEquiv.mk (h.linear (U := T)).mk' (fun u ↦ homMk (h.isPullback.lift u.left T.hom u.w))
-    (fun x ↦ OverMorphism.ext (h.isPullback.hom_ext (h.isPullback.lift_fst _ _ _)
-      ((h.isPullback.lift_snd _ _ _).trans x.w.symm)))
+  LinearEquiv.mk (h.linear (U := T)).mk'
+    (fun u ↦ homMk (h.isPullback.lift u.left T.hom u.w))
+    (fun x ↦
+      OverMorphism.ext (h.isPullback.hom_ext (h.isPullback.lift_fst _ _ _)
+        ((h.isPullback.lift_snd _ _ _).trans x.w.symm)))
     (fun u ↦ OverMorphism.ext (h.isPullback.lift_fst u.left T.hom u.w))
 
-/-- For a base change A' of A along b : S' → S, the O-linear map pulling sections of A over S
-back to sections of A' over S'. -/
+/--
+For a base change A' of A along b : S' → S, the O-linear map pulling sections of A over S
+back to sections of A' over S'.
+-/
 def pullSection : (𝟙_ (Over S) ⟶ A) →ₗ[O] 𝟙_ (Over S') ⟶ A' :=
-  h.pointEquiv.symm.toLinearMap ∘ₗ
-    ⟨⟨fun z ↦ toUnit ((Over.map b).obj (𝟙_ (Over S'))) ≫ z,
-        comp_add (toUnit ((Over.map b).obj (𝟙_ (Over S'))))⟩,
-      fun c z ↦ ModuleObj.comp_smul _ c z⟩
+  h.pointEquiv.symm.toLinearMap ∘ₗ ⟨
+    ⟨
+      fun z ↦ toUnit ((Over.map b).obj (𝟙_ (Over S'))) ≫ z,
+      comp_add (toUnit ((Over.map b).obj (𝟙_ (Over S'))))
+    ⟩,
+    fun c z ↦ ModuleObj.comp_smul _ c z
+  ⟩
 
 @[reassoc]
 lemma pullSection_comp (z : 𝟙_ (Over S) ⟶ A) : (h.pullSection z).left ≫ p.left = b ≫ z.left := by
@@ -456,9 +500,11 @@ lemma eq_zero_iff_factors_zero_section :
       rw [← Over.w ζ[B], ← Category.assoc, hl, f.w]
     rw [hl_eq]
 
-/-- `ι : Spec S ⟶ A` is the kernel of `f : A ⟶ B` over `Spec R`, and `S` is finite over `R`: `ι` is
+/--
+`ι : Spec S ⟶ A` is the kernel of `f : A ⟶ B` over `Spec R`, and `S` is finite over `R`: `ι` is
 a closed immersion killed by `f`, through which every point of `A` killed by `f` factors; `S` is
-flat over `R` if `f` is flat. -/
+flat over `R` if `f` is flat.
+-/
 structure IsFiniteKernelRing (f : A ⟶ B) (S : CommAlgCat R) (ι : specOver R S ⟶ A) : Prop where
   /-- `S` is a finite `R`-module. -/
   finite : Module.Finite R S
@@ -469,8 +515,9 @@ structure IsFiniteKernelRing (f : A ⟶ B) (S : CommAlgCat R) (ι : specOver R S
   /-- `ι` is killed by `f`. -/
   comp_eq_zero : ι ≫ f = 0
   /-- Every point of `A` killed by `f` factors through `ι`. -/
-  exists_comp_eq : ∀ ⦃T : Over (Spec (CommRingCat.of R))⦄ (y : T ⟶ A),
-    y ≫ f = 0 → ∃ z : T ⟶ specOver R S, z ≫ ι = y
+  exists_comp_eq
+    : ∀ ⦃T : Over (Spec (CommRingCat.of R))⦄ (y : T ⟶ A),
+      y ≫ f = 0 → ∃ z : T ⟶ specOver R S, z ≫ ι = y
 
 variable [IsSeparated B.hom]
 
@@ -529,8 +576,10 @@ section ConstantFunctions
 
 open CategoryTheory AlgebraicGeometry New.PointFn Scheme.Hom AddMonObj
 
-/-- For s : X → S, every function regular on all of X takes equal values at two ring-valued
-points of X with the same image under s. -/
+/--
+For s : X → S, every function regular on all of X takes equal values at two ring-valued
+points of X with the same image under s.
+-/
 def New.HasConstFunctions {X S : Scheme} (s : X ⟶ S) : Prop :=
   ∀ (c : Γ(X, ⊤)) (B : CommRingCat) (x y : Spec B ⟶ X),
     x ≫ s = y ≫ s → ofSection c B x = ofSection c B y

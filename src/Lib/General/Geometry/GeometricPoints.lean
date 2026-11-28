@@ -228,25 +228,33 @@ lemma isReduced_of_etale {A B : Type*} [CommRing A] [CommRing B] [IsDomain A] {a
   have : IsReduced (K ⊗[A] B) := FormallyUnramified.isReduced_of_field K _
   exact isReduced_of_injective _ (includeRight_injective (IsFractionRing.injective A K))
 
-/-- An abelian scheme (`New.IsAbelianScheme`: smooth, proper and divisible) over an algebraically
-closed field is integral. -/
-instance {k : Type} [Field k] [IsAlgClosed k] (A : Over (Spec ⟨k⟩)) [hA : IsAbelianScheme A] :
-    AlgebraicGeometry.IsIntegral A.left := by
+/--
+An abelian scheme (`New.IsAbelianScheme`: smooth, proper and divisible) over an algebraically
+closed field is integral.
+-/
+instance {k : Type} [Field k] [IsAlgClosed k] (A : Over (Spec ⟨k⟩)) [hA : IsAbelianScheme A]
+    : AlgebraicGeometry.IsIntegral A.left := by
   -- The `k`-points act by translation on the finite set of irreducible components, so `n • x` fixes
   -- every component, where `n = G.index` is the index of the kernel. As multiplication by `n` is
   -- onto, the component of the origin is everything.
   have : IsReduced A.left := GeometricallyReduced.isReduced_of_flat_of_isLocallyNoetherian A.hom
-  have : IsNoetherian A.left :=
-    { isLocallyNoetherian A.hom, compactSpace_of_universallyClosed A.hom with }
+  have : IsNoetherian A.left := {
+    isLocallyNoetherian A.hom, compactSpace_of_universallyClosed A.hom with
+  }
   have := (finite_irreducibleComponents_of_isNoetherian (X := A.left)).to_subtype
   -- Translation by a `k`-point is a homeomorphism, so it acts on the irreducible components.
   let P : Type := MonoidalCategoryStruct.tensorUnit (Over (Spec ⟨k⟩)) ⟶ A
-  let act : AddAction P (irreducibleComponents A.left) :=
-    { vadd g C := ⟨(translation g).left ⁻¹' C, preimage_mem_irreducibleComponents C.prop
-        (translation g).left.isOpenEmbedding (by simp [C.prop.1.nonempty, Set.inter_univ])⟩
-      zero_vadd := by simp [HVAdd.hVAdd, preimage]
-      add_vadd := by simp [P, HVAdd.hVAdd, preimage, ← Scheme.Hom.comp_apply, ← Over.comp_left,
-        add_assoc, comp_add] }
+  let act : AddAction P (irreducibleComponents A.left) := {
+    vadd g C := ⟨
+      (translation g).left ⁻¹' C,
+      preimage_mem_irreducibleComponents C.prop (translation g).left.isOpenEmbedding
+        (by simp [C.prop.1.nonempty, Set.inter_univ])
+    ⟩
+    zero_vadd := by simp [HVAdd.hVAdd, preimage]
+    add_vadd := by
+      simp [P, HVAdd.hVAdd, preimage, ← Scheme.Hom.comp_apply, ← Over.comp_left, add_assoc,
+        comp_add]
+  }
   let G : AddSubgroup P := (AddAction.toPermHom P (irreducibleComponents A.left)).ker
   let pt : Spec ⟨k⟩ := default
   let C : irreducibleComponents A.left :=
@@ -255,9 +263,10 @@ instance {k : Type} [Field k] [IsAlgClosed k] (A : Over (Spec ⟨k⟩)) [hA : Is
     by_contra h_ne
     -- Otherwise some `k`-point `x` has `n • x` outside `C`.
     have h_onto : Surjective (G.index • 𝟙 A).left := hA.nsmul_surjective _ G.index_ne_zero_of_finite
-    obtain ⟨x, hx⟩ : ∃ x : P, x.left pt ∈ (G.index • 𝟙 A).left ⁻¹' C.valᶜ := exists_point_mem A
-      (isClosed_irreducibleComponent.isOpen_compl.preimage (by fun_prop)).isLocallyClosed
-      ((nonempty_compl.mpr h_ne).preimage h_onto.surj)
+    obtain ⟨x, hx⟩ : ∃ x : P, x.left pt ∈ (G.index • 𝟙 A).left ⁻¹' C.valᶜ :=
+      exists_point_mem A
+        (isClosed_irreducibleComponent.isOpen_compl.preimage (by fun_prop)).isLocallyClosed
+        ((nonempty_compl.mpr h_ne).preimage h_onto.surj)
     -- But `n • x` is the translate of the origin by `n • x`, which preserves `C`.
     have h_ker : AddAction.toPermHom P _ (G.index • x) = 0 := G.nsmul_index_mem x
     have h_fix : (translation (G.index • x)).left ⁻¹' C.val = C.val :=
@@ -286,15 +295,19 @@ section Specialisation
 
 open AlgebraicGeometry Scheme RingHom.FaithfullyFlat Flat
 
-/-- Every point of `S` specialises to the image of the closed point under some `t : Spec k ⟶ S` with
-`k` algebraically closed and `Q t`. -/
-def New.Variety.AllSpecializeTo (S : Scheme)
-    (Q : ∀ {k : Type} [Field k], (Spec ⟨k⟩ ⟶ S) → Prop) : Prop :=
+/--
+Every point of `S` specialises to the image of the closed point under some `t : Spec k ⟶ S` with
+`k` algebraically closed and `Q t`.
+-/
+def New.Variety.AllSpecializeTo (S : Scheme) (Q : ∀ {k : Type} [Field k], (Spec ⟨k⟩ ⟶ S) → Prop)
+    : Prop :=
   ∀ s : S, ∃ (k : Type) (_ : Field k) (_ : IsAlgClosed k) (t : Spec ⟨k⟩ ⟶ S),
     s ⤳ t (IsLocalRing.closedPoint k) ∧ Q t
 
-/-- For a point `s` of a scheme `Z`, the morphism from the spectrum of the stalk at `s` to `Z` is
-flat. -/
+/--
+For a point `s` of a scheme `Z`, the morphism from the spectrum of the stalk at `s` to `Z` is
+flat.
+-/
 instance {Z : Scheme} (s : Z) : Flat (fromSpecStalk Z s) := by
   -- The stalk is a localization of the ring of an affine open `U` around `s`, and `U ⊆ Z` is open.
   obtain ⟨U, hU, hs, -⟩ := exists_isAffineOpen_mem_and_subset (x := s) (U := ⊤) trivial

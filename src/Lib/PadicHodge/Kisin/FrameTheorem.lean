@@ -97,8 +97,8 @@ open Period Pointwise Submodule Set FrobGroup Module FaithfulSMul Matrix Algebra
   Finset LinearMap TensorProduct algebraMap
 open Chart hiding φ
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
-  {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O}
+variable
+  {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O}
 
 /-- Every `ℤ_[p]`-linear map `f` from the lattice `L` to `BdR` is the restriction of some
 form `μ` to the vectors `1 ⊗ t`. -/
@@ -163,10 +163,12 @@ The proof of `frame_theorem` reads everything off a frame of `L` (`Frame`): the 
 `(E * τ) ^ a • M` of `L`, with `a = L.jumpBound`, and the frame `Q`, `Q'`, `Z`, `Y`, `B` that
 `New.Lift.Chart.IsPeriodMatrix.exists_frame` gives for it. -/
 
-/-- The vector `∑ i, t i • (1 ⊗ e i)` of `L.ainfLattice` with coordinates `t` in the basis
-`e = finBasis ℤ_[p] L.Carrier`. -/
-private noncomputable def latticeVec (L : JumpLattice O) :
-    (Fin (finrank ℤ_[p] L.Carrier) → Ainf) →ₗ[Ainf] L.Ambient :=
+/--
+The vector `∑ i, t i • (1 ⊗ e i)` of `L.ainfLattice` with coordinates `t` in the basis
+`e = finBasis ℤ_[p] L.Carrier`.
+-/
+private noncomputable def latticeVec (L : JumpLattice O)
+    : (Fin (finrank ℤ_[p] L.Carrier) → Ainf) →ₗ[Ainf] L.Ambient :=
   Fintype.linearCombination Ainf (DiagTensor.mk 1 ∘ finBasis ℤ_[p] L.Carrier)
 
 private lemma ainfLattice_eq_range_latticeVec : L.ainfLattice = (latticeVec L).range := by
@@ -176,10 +178,12 @@ private lemma ainfLattice_eq_range_latticeVec : L.ainfLattice = (latticeVec L).r
 private noncomputable def frobPowToBdR (m : ℕ) : Bmax →+* BdR :=
   (algebraMap Bmax BdR).comp (toRingHom FrobGal Bmax (.ofAdd m, 1))
 
-/-- A frame of the lattice `L`, with `a = L.jumpBound`: a period matrix `U` made from an invertible
+/--
+A frame of the lattice `L`, with `a = L.jumpBound`: a period matrix `U` made from an invertible
 matrix `M` (`New.Lift.Chart.IsPeriodMatrixOf`), the matrices `Q`, `Q'`, `Z`, `Y`, `B` of
 `New.Lift.Chart.IsPeriodMatrix.exists_frame`, and vectors `n i` such that `τ ^ a • n i` is the
-vector of `L.ainfLattice` with coordinates the column `i` of `Q`. -/
+vector of `L.ainfLattice` with coordinates the column `i` of `Q`.
+-/
 private structure Frame (L : JumpLattice O) where
   /-- An invertible matrix over `Bmax` with invariant columns. -/
   M : GL (Fin (finrank ℤ_[p] L.Carrier)) Bmax
@@ -188,14 +192,17 @@ private structure Frame (L : JumpLattice O) where
   /-- The unit `μ / (E * τ)` of `Ainf`. -/
   v : Ainfˣ
   /-- The period matrix is made from `M` by the factor `(E * τ) ^ a`, with unit `v`. -/
-  isPeriodMatrixOf : k.chart.IsPeriodMatrixOf ((overZp L.ρ).comp k.subgroup.subtype) L.jumpBound
-    L.jumpBound (finBasis ℤ_[p] L.Carrier) M.val U v
+  isPeriodMatrixOf
+    : k.chart.IsPeriodMatrixOf ((overZp L.ρ).comp k.subgroup.subtype) L.jumpBound L.jumpBound
+      (finBasis ℤ_[p] L.Carrier) M.val U v
   /-- The frame matrix over `Ainf` whose columns give the basis. -/
   Q : Matrix (Fin (finrank ℤ_[p] L.Carrier)) (Fin (finrank ℤ_[p] L.Carrier)) Ainf
   /-- An inverse of `Q` up to `τ ^ (a + a)`. -/
   Q' : Matrix (Fin (finrank ℤ_[p] L.Carrier)) (Fin (finrank ℤ_[p] L.Carrier)) Ainf
-  /-- The matrix over `BPlus` with entries in `k.bicommutant` that carries `U` to
-  `E ^ (a + a) • Q`. -/
+  /--
+  The matrix over `BPlus` with entries in `k.bicommutant` that carries `U` to
+  `E ^ (a + a) • Q`.
+  -/
   Z : Matrix (Fin (finrank ℤ_[p] L.Carrier)) (Fin (finrank ℤ_[p] L.Carrier)) BPlus
   /-- An inverse of `Z` up to `E ^ (a + a)`. -/
   Y : Matrix (Fin (finrank ℤ_[p] L.Carrier)) (Fin (finrank ℤ_[p] L.Carrier)) BPlus
@@ -212,9 +219,11 @@ private structure Frame (L : JumpLattice O) where
   /-- The Frobenius acts on `Q` by `φ Q = v ^ a • (Q * B)`. -/
   map_frobEnd_Q : Q.map frobEnd = v ^ L.jumpBound • (Q * B.map (↑))
   /-- The elements of `FixesThetaZ` act on `Z` through matrices over `Ainf`. -/
-  exists_smul_Z : ∀ g : Gp p, k.FixesThetaZ g →
-    ∃ G : Matrix (Fin (finrank ℤ_[p] L.Carrier)) (Fin (finrank ℤ_[p] L.Carrier)) Ainf,
-      g • Z = Z * G.map ainfToBPlus
+  exists_smul_Z
+    : ∀ g : Gp p,
+      k.FixesThetaZ g
+        → ∃ G : Matrix (Fin (finrank ℤ_[p] L.Carrier)) (Fin (finrank ℤ_[p] L.Carrier)) Ainf,
+          g • Z = Z * G.map ainfToBPlus
   /-- The vectors `τ ^ (-a) • Qᵀ i`. -/
   n : Fin (finrank ℤ_[p] L.Carrier) → L.Ambient
   /-- `τ ^ a • n i` has the coordinates of the column `i` of `Q`. -/
@@ -242,8 +251,8 @@ private lemma nonempty_frame : Nonempty (Frame L) := by
 namespace Frame
 
 /-- The combination `F.comb m t = ∑ i, t i • φ ^ m • F.n i`. -/
-private noncomputable def comb (F : Frame L) (m : ℕ) :
-    (Fin (finrank ℤ_[p] L.Carrier) → Ainf) →ₗ[Ainf] L.Ambient :=
+private noncomputable def comb (F : Frame L) (m : ℕ)
+    : (Fin (finrank ℤ_[p] L.Carrier) → Ainf) →ₗ[Ainf] L.Ambient :=
   Fintype.linearCombination Ainf ((fun x : L.Ambient ↦ φ • x)^[m] ∘ F.n)
 
 /-- `(φ ^ m τ ^ a) • F.comb m t`, with `a = L.jumpBound`, is the vector of `L.ainfLattice` with
@@ -669,78 +678,96 @@ private lemma frobEUnit_pow_smul_phi_smul_mem_kisinModule (F : Frame L) {x : L.A
 
 end Frame
 
-/-- The properties of `L.kisinAinf` and of the Kisin module `L.kisinModule` given by the frame
-theorem, with `a = L.jumpBound`, `S = k.S` the ring of the Kummer chart and `E = k.E`. -/
+/--
+The properties of `L.kisinAinf` and of the Kisin module `L.kisinModule` given by the frame
+theorem, with `a = L.jumpBound`, `S = k.S` the ring of the Kummer chart and `E = k.E`.
+-/
 structure FrameProperties (L : JumpLattice O) : Prop where
-  /-- (a) An `S`-linear map `f : Ainf → S` carries a relation `∑ i, c i • v i = 0` among vectors of
-  `L.valueFieldPoints L.fracSpan` to the relation `∑ i, f (c i) • v i = 0`. -/
-  sum_map_smul_eq_zero :
-    ∀ (f : Ainf →ₗ[k.S] k.S) {ι : Type} [Fintype ι] (v : ι → L.Ambient) (c : ι → Ainf),
-      (∀ i : ι, v i ∈ L.valueFieldPoints L.fracSpan) →
-        ∑ i : ι, c i • v i = 0 → ∑ i : ι, f (c i) • v i = 0
-  /-- (b) If `3 e ≤ p ^ l` and `e A ≤ p ^ l δ`, then `p ^ (4 δ)` times a vector of
+  /--
+  (a) An `S`-linear map `f : Ainf → S` carries a relation `∑ i, c i • v i = 0` among vectors of
+  `L.valueFieldPoints L.fracSpan` to the relation `∑ i, f (c i) • v i = 0`.
+  -/
+  sum_map_smul_eq_zero
+    : ∀ (f : Ainf →ₗ[k.S] k.S) {ι : Type} [Fintype ι] (v : ι → L.Ambient) (c : ι → Ainf),
+      (∀ i : ι, v i ∈ L.valueFieldPoints L.fracSpan) → ∑ i : ι, c i • v i = 0
+        → ∑ i : ι, f (c i) • v i = 0
+  /--
+  (b) If `3 e ≤ p ^ l` and `e A ≤ p ^ l δ`, then `p ^ (4 δ)` times a vector of
   `L.valueFieldPoints (L.frobKisinAinf l)` lies in the `S`-span of the vectors `y` of that module
-  with `g • μ y - μ y ∈ hodgeFil A` for every `μ ∈ L.forms` and every `g ∈ Γ'`. -/
-  pow_smul_mem_span_of_mem_valueFieldPoints :
-    ∀ l A δ : ℕ, 3 * k.e ≤ p ^ l → k.e * A ≤ p ^ l * δ →
-      ∀ x ∈ L.valueFieldPoints (L.frobKisinAinf l),
-        p ^ (4 * δ) • x ∈ span k.S
-          {y ∈ L.valueFieldPoints (L.frobKisinAinf l) |
-            ∀ μ ∈ L.forms, ∀ g : k.subgroup, toGp g.val • μ y - μ y ∈ hodgeFil A}
+  with `g • μ y - μ y ∈ hodgeFil A` for every `μ ∈ L.forms` and every `g ∈ Γ'`.
+  -/
+  pow_smul_mem_span_of_mem_valueFieldPoints
+    : ∀ l A δ : ℕ,
+      3 * k.e ≤ p ^ l → k.e * A ≤ p ^ l * δ
+        → ∀ x ∈ L.valueFieldPoints (L.frobKisinAinf l),
+          p ^ (4 * δ) • x ∈ span k.S
+            {y ∈ L.valueFieldPoints (L.frobKisinAinf l) |
+              ∀ μ ∈ L.forms, ∀ g : k.subgroup, toGp g.val • μ y - μ y ∈ hodgeFil A}
   /-- (c) `L.kisinAinf` is the `Ainf`-span of the Kisin module. -/
   kisinAinf_eq_span_kisinModule : L.kisinAinf = span Ainf (L.kisinModule : Set L.Ambient)
-  /-- (d) For a crystalline form `μ` and `y` in the Kisin module, `E ^ a • μ y` is the image of an
-  element of `k.bicommutant`. -/
-  exists_mem_bicommutant_pow_smul_eq :
-    ∀ μ ∈ L.crysForms, ∀ y ∈ L.kisinModule,
-      ∃ s ∈ k.bicommutant, k.E.val ^ L.jumpBound • μ y = algebraMap BPlus BdR s
-  /-- (e) Let `d ∈ Ainf` divide `r` whenever it divides `E ^ m r` in `BPlus`. Then `x ∈ L.kisinAinf`
+  /--
+  (d) For a crystalline form `μ` and `y` in the Kisin module, `E ^ a • μ y` is the image of an
+  element of `k.bicommutant`.
+  -/
+  exists_mem_bicommutant_pow_smul_eq
+    : ∀ μ ∈ L.crysForms, ∀ y ∈ L.kisinModule, ∃ s ∈ k.bicommutant,
+      k.E.val ^ L.jumpBound • μ y = algebraMap BPlus BdR s
+  /--
+  (e) Let `d ∈ Ainf` divide `r` whenever it divides `E ^ m r` in `BPlus`. Then `x ∈ L.kisinAinf`
   lies in `d • L.kisinAinf` once, for one `n`, `E ^ n • μ x ∈ BPlus ∙ d` for every crystalline form
-  `μ`. -/
-  mem_smul_kisinAinf_of_forall_crysForms :
-    ∀ d : Ainf, (∀ {m : ℕ} {r : Ainf}, ainfToBPlus d ∣ ainfToBPlus (k.E.val ^ m * r) → d ∣ r) →
-      ∀ x ∈ L.kisinAinf, ∀ n : ℕ,
-        (∀ μ ∈ L.crysForms, k.E.val ^ n • μ x ∈ BPlus ∙ algebraMap Ainf BdR d) →
-          x ∈ d • L.kisinAinf
+  `μ`.
+  -/
+  mem_smul_kisinAinf_of_forall_crysForms
+    : ∀ d : Ainf,
+      (∀ {m : ℕ} {r : Ainf}, ainfToBPlus d ∣ ainfToBPlus (k.E.val ^ m * r) → d ∣ r)
+        → ∀ x ∈ L.kisinAinf, ∀ n : ℕ,
+          (∀ μ ∈ L.crysForms, k.E.val ^ n • μ x ∈ BPlus ∙ algebraMap Ainf BdR d)
+            → x ∈ d • L.kisinAinf
   /-- (f) `τ ^ a` carries `L.kisinAinf` into `L.ainfLattice`. -/
   tau_pow_smul_mem_ainfLattice : ∀ x ∈ L.kisinAinf, tau ^ L.jumpBound • x ∈ L.ainfLattice
   /-- (g) `τ ^ a` carries `L.ainfLattice` into `L.kisinAinf`. -/
   tau_pow_smul_mem_kisinAinf : ∀ x ∈ L.ainfLattice, tau ^ L.jumpBound • x ∈ L.kisinAinf
-  /-- (h) `E ^ a • φ`, with `E` the unit `k.frobEUnit 0` of `W(C♭)`, maps the Kisin module into
-  itself. -/
-  frobEUnit_pow_smul_phi_smul_mem_kisinModule :
-    ∀ x ∈ L.kisinModule, k.frobEUnit 0 ^ L.jumpBound • φ • x ∈ L.kisinModule
-  /-- (i) Some vectors `v i`, one for each index of a basis of `L`, span the Kisin module over `S`,
-  span `L.kisinAinf` over `Ainf`, and are linearly independent over `Ainf`. -/
-  exists_span_eq_kisinModule_linearIndependent :
-    ∃ v : Fin (finrank ℤ_[p] L.Carrier) → L.Ambient,
-      span k.S (Set.range v) = L.kisinModule ∧
-      span Ainf (Set.range v) = L.kisinAinf ∧
-      LinearIndependent Ainf v
+  /--
+  (h) `E ^ a • φ`, with `E` the unit `k.frobEUnit 0` of `W(C♭)`, maps the Kisin module into
+  itself.
+  -/
+  frobEUnit_pow_smul_phi_smul_mem_kisinModule
+    : ∀ x ∈ L.kisinModule, k.frobEUnit 0 ^ L.jumpBound • φ • x ∈ L.kisinModule
+  /--
+  (i) Some vectors `v i`, one for each index of a basis of `L`, span the Kisin module over `S`,
+  span `L.kisinAinf` over `Ainf`, and are linearly independent over `Ainf`.
+  -/
+  exists_span_eq_kisinModule_linearIndependent
+    : ∃ v : Fin (finrank ℤ_[p] L.Carrier) → L.Ambient,
+      span k.S (Set.range v) = L.kisinModule ∧ span Ainf (Set.range v) = L.kisinAinf
+        ∧ LinearIndependent Ainf v
 
-/-- The frame theorem for the lattice `L` over the Kummer chart `k`: `L` has the nine properties of
+/--
+The frame theorem for the lattice `L` over the Kummer chart `k`: `L` has the nine properties of
 `FrameProperties`. This gives part of Kisin's theorem: it shows `E ^ a φ N ⊆ N` but not the
 finite-height inclusion `E ^ n N ⊆ S φ N`. That theorem concerns the module attached to a
-crystalline lattice, for Kummer charts. -/
+crystalline lattice, for Kummer charts.
+-/
 theorem frame_theorem : FrameProperties L := by
   -- Every field is read off a frame `F` of `L` (`Frame`). The vectors `F.n i` span `L.kisinAinf`
   -- over `Ainf`, and the `φ ^ l • F.n i` span `L.valueFieldPoints (L.frobKisinAinf l)` over `S`;
   -- the other fields are computations in these coordinates.
   obtain ⟨F⟩ : Nonempty (Frame L) := nonempty_frame
-  exact
-    { sum_map_smul_eq_zero := F.sum_map_smul_eq_zero_of_sum_smul_eq_zero
-      pow_smul_mem_span_of_mem_valueFieldPoints l A δ hl hA x :=
-        F.pow_smul_mem_span_of_mem_valueFieldPoints hl hA
-      kisinAinf_eq_span_kisinModule := by
-        rw [← F.span_n_eq_kisinModule, span_span_of_tower, F.span_n_eq_kisinAinf]
-      exists_mem_bicommutant_pow_smul_eq μ hμ y := F.exists_mem_bicommutant_of_mem_kisinModule hμ
-      mem_smul_kisinAinf_of_forall_crysForms d hd x hx n :=
-        F.mem_smul_kisinAinf_of_forall_crysForms d hd hx
-      tau_pow_smul_mem_ainfLattice x := F.tau_pow_smul_mem_ainfLattice_of_mem_kisinAinf
-      tau_pow_smul_mem_kisinAinf x := F.tau_pow_smul_mem_kisinAinf_of_mem_ainfLattice
-      frobEUnit_pow_smul_phi_smul_mem_kisinModule x := F.frobEUnit_pow_smul_phi_smul_mem_kisinModule
-      exists_span_eq_kisinModule_linearIndependent :=
-        ⟨F.n, F.span_n_eq_kisinModule, F.span_n_eq_kisinAinf, F.linearIndependent_n⟩ }
+  exact {
+    sum_map_smul_eq_zero := F.sum_map_smul_eq_zero_of_sum_smul_eq_zero
+    pow_smul_mem_span_of_mem_valueFieldPoints l A δ hl hA x :=
+      F.pow_smul_mem_span_of_mem_valueFieldPoints hl hA
+    kisinAinf_eq_span_kisinModule := by
+      rw [← F.span_n_eq_kisinModule, span_span_of_tower, F.span_n_eq_kisinAinf]
+    exists_mem_bicommutant_pow_smul_eq μ hμ y := F.exists_mem_bicommutant_of_mem_kisinModule hμ
+    mem_smul_kisinAinf_of_forall_crysForms d hd x hx n :=
+      F.mem_smul_kisinAinf_of_forall_crysForms d hd hx
+    tau_pow_smul_mem_ainfLattice x := F.tau_pow_smul_mem_ainfLattice_of_mem_kisinAinf
+    tau_pow_smul_mem_kisinAinf x := F.tau_pow_smul_mem_kisinAinf_of_mem_ainfLattice
+    frobEUnit_pow_smul_phi_smul_mem_kisinModule x := F.frobEUnit_pow_smul_phi_smul_mem_kisinModule
+    exists_span_eq_kisinModule_linearIndependent :=
+      ⟨F.n, F.span_n_eq_kisinModule, F.span_n_eq_kisinAinf, F.linearIndependent_n⟩
+  }
 
 /-- `kisinAinf` is the A_inf-module of those x in A_inf[1/τ] ⊗ L with μ(φ^n x) ∈ B_dR⁺ for all n ≥ 1
 and all Γ'-equivariant forms μ (`forms`). It equals the A_inf-span of the Kisin module
@@ -810,25 +837,33 @@ lemma saturateBy_tau_span_kisinModule :
   exact le_antisymm (h_le tau_pow_jumpBound_smul_mem_ainfLattice_of_mem_kisinAinf)
     (h_le tau_pow_jumpBound_smul_mem_kisinAinf_of_mem_ainfLattice)
 
-/-- In W(C^♭) ⊗ L, `kisinAinf` is the A_inf-module of those `x` in A_inf[1/τ] ⊗ L with
+/--
+In W(C^♭) ⊗ L, `kisinAinf` is the A_inf-module of those `x` in A_inf[1/τ] ⊗ L with
 μ(φ^n x) ∈ B_dR⁺ for all n ≥ 1 and all μ in `L.forms`. Then `x` lies in `kisinAinf` if
 and only if two conditions hold. First, some power of `tau` = [ε^{1/p}] − 1 multiplies `x` into
 `ainfLattice`, the A_inf-span of the elements 1 ⊗ y with y in L. Second, for some `n` and every `μ`
 in `crysForms`, `E ^ n • μ x` is the image in `BdR` of an element of `BPlus`; here `crysForms` are
 the invariant forms whose restriction to 1 ⊗ L comes from a Z_p-linear map L → `Bmax`, and `E` is
-`k.E`. -/
-theorem mem_kisinAinf_of_crysForms {x : L.Ambient}
-    (hx_sat : x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice) {n : ℕ}
-    (h_val : ∀ μ ∈ L.crysForms, ∃ s : BPlus, k.E.val ^ n • μ x = algebraMap BPlus BdR s) :
-    x ∈ L.kisinAinf := by
+`k.E`.
+-/
+theorem mem_kisinAinf_of_crysForms
+    {x : L.Ambient} (hx_sat : x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice)
+    {n : ℕ} (h_val : ∀ μ ∈ L.crysForms, ∃ s : BPlus, k.E.val ^ n • μ x = algebraMap BPlus BdR s)
+    : x ∈ L.kisinAinf := by
   -- Some `tau ^ N • x` lies in `kisinAinf`, and the crystalline forms show that it is divisible by
   -- `tau ^ N` there.
   rw [← saturateBy_tau_span_kisinModule, ← kisinAinf_eq_span_kisinModule] at hx_sat
   obtain ⟨_, ⟨N, rfl⟩, hx_tau⟩ := hx_sat
-  obtain ⟨w, hw, hw_eq⟩ := (mem_smul_pointwise_iff_exists _ (tau ^ N) L.kisinAinf).mp <|
-    mem_smul_kisinAinf_of_crysForms tau_pow_dvd_of_dvd_E_pow_mul hx_tau (n := n) fun μ hμ ↦
-      (h_val μ hμ).elim fun s hs ↦ mem_span_singleton.mpr ⟨s, by
-        rw [map_smul, smul_comm (k.E.val ^ n), hs, Algebra.smul_def, Algebra.smul_def, mul_comm]⟩
+  obtain ⟨w, hw, hw_eq⟩ :=
+    (mem_smul_pointwise_iff_exists _ (tau ^ N) L.kisinAinf).mp <|
+      mem_smul_kisinAinf_of_crysForms tau_pow_dvd_of_dvd_E_pow_mul hx_tau (n := n) fun μ hμ ↦
+        (h_val μ hμ).elim fun s hs ↦
+          mem_span_singleton.mpr ⟨
+            s,
+            by
+              rw [map_smul, smul_comm (k.E.val ^ n), hs, Algebra.smul_def, Algebra.smul_def,
+                mul_comm]
+          ⟩
   rwa [← smul_right_injective L.Ambient (pow_ne_zero N tau_ne_zero) hw_eq]
 
 /-- Let the vectors `v i` lie in the Kisin module of `L`, and let `u i ∈ Ainf`. Suppose that for
@@ -876,41 +911,54 @@ lemma apply_sum_sub_coord₀_smul_eq_zero_of_mem_crysForms {μ : L.Functional} {
     simp only [h_value, map_sub, sub_mul, Finset.sum_sub_distrib, h_fix, sub_self, map_zero]
   simpa only [smul_eq_zero, pow_ne_zero _ k.chart.E_ne_zero, false_or] using h_zero
 
-/-- Let `x` be a vector of W(C^♭) ⊗ L, for a lattice `L` with jump sets over the Kummer chart `k`
+/--
+Let `x` be a vector of W(C^♭) ⊗ L, for a lattice `L` with jump sets over the Kummer chart `k`
 with ring S. Then `x` lies in the Kisin module of `L` if and only if two conditions hold. First,
 some power of `tau` = [ε^{1/p}] − 1 multiplies `x` into `ainfLattice`, the A_inf-span of the 1 ⊗ y
 with y in L. Second, for some `n` and every `μ` in `crysForms` (the invariant A_inf-linear
 functionals to B_dR whose restriction to 1 ⊗ L comes from a Z_p-linear map L → B_max), `E ^ n • μ x`
 is the image in `BdR` of an element of `bicommutant`, the elements of B^+ = A_max[1/p] whose
-multiplication commutes with every S-linear endomorphism of B^+ preserving the image of A_max. -/
-theorem mem_kisinModule_iff_crysForms {x : L.Ambient} :
-    x ∈ L.kisinModule ↔ x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice ∧
-      ∃ n : ℕ, ∀ μ ∈ L.crysForms, ∃ s ∈ k.bicommutant,
-        k.E.val ^ n • μ x = algebraMap BPlus BdR s := by
+multiplication commutes with every S-linear endomorphism of B^+ preserving the image of A_max.
+-/
+theorem mem_kisinModule_iff_crysForms {x : L.Ambient}
+    : x ∈ L.kisinModule
+      ↔ x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice
+        ∧ ∃ n : ℕ, ∀ μ ∈ L.crysForms, ∃ s ∈ k.bicommutant,
+          k.E.val ^ n • μ x = algebraMap BPlus BdR s := by
   -- Forwards: crystalline forms on the Kisin module. Backwards: `x` lies in `kisinAinf`, so it is
   -- `∑ i, u i • v i` for a spanning family `v`. Replacing each `u i` by `coord₀ (u i)` changes `x`
   -- by a vector annihilated by every crystalline form, which is `0` by the `d = 0` divisibility
   -- test.
   obtain ⟨v, h_span_S, h_span_A, -⟩ := exists_span_eq_kisinModule_linearIndependent (L := L)
-  refine ⟨fun hx ↦ ⟨(mem_kisinAinf_of_mem_kisinModule hx).left,
-    L.jumpBound, fun μ hμ ↦ exists_mem_bicommutant_pow_smul_eq_of_mem_kisinModule hμ hx⟩, ?_⟩
+  refine ⟨
+    fun hx ↦ ⟨
+      (mem_kisinAinf_of_mem_kisinModule hx).left,
+      L.jumpBound,
+      fun μ hμ ↦ exists_mem_bicommutant_pow_smul_eq_of_mem_kisinModule hμ hx
+    ⟩,
+    ?_
+  ⟩
   rintro ⟨hx_sat, n, h_val⟩
-  obtain ⟨u, rfl⟩ := (mem_span_range_iff_exists_fun Ainf).mp <| h_span_A.ge <|
-    mem_kisinAinf_of_crysForms hx_sat fun μ hμ ↦ (h_val μ hμ).imp fun _ h ↦ h.2
+  obtain ⟨u, rfl⟩ :=
+    (mem_span_range_iff_exists_fun Ainf).mp <| h_span_A.ge <|
+      mem_kisinAinf_of_crysForms hx_sat fun μ hμ ↦ (h_val μ hμ).imp fun _ h ↦ h.2
   have hv_mem i : v i ∈ L.kisinModule := h_span_S.le (subset_span ⟨i, rfl⟩)
-  have h_diff : ∑ i, (u i - algebraMap k.S Ainf (k.coord₀ (u i))) • v i ∈
-      (0 : Ainf) • L.kisinAinf := by
-    refine mem_smul_kisinAinf_of_crysForms (fun {m r} h ↦ ?_)
+  have h_diff
+      : ∑ i, (u i - algebraMap k.S Ainf (k.coord₀ (u i))) • v i ∈ (0 : Ainf) • L.kisinAinf := by
+    refine mem_smul_kisinAinf_of_crysForms
+      (fun {m r} h ↦ ?_)
       (sum_mem fun i _ ↦ L.kisinAinf.smul_mem _ (mem_kisinAinf_of_mem_kisinModule (hv_mem i)))
-      (n := 0) fun μ hμ ↦ ?_
+      (n := 0)
+      fun μ hμ ↦ ?_
     · simpa only [map_zero, zero_dvd_iff, map_eq_zero_iff _ (algebraMap_injective Ainf BPlus),
-        mul_eq_zero, pow_ne_zero m k.chart.E_ne_zero, false_or] using h
+          mul_eq_zero, pow_ne_zero m k.chart.E_ne_zero, false_or]
+        using h
     · simp only [apply_sum_sub_coord₀_smul_eq_zero_of_mem_crysForms hv_mem h_val hμ, smul_zero,
         zero_mem]
   obtain ⟨y, -, hy⟩ := (mem_smul_pointwise_iff_exists _ (0 : Ainf) L.kisinAinf).mp h_diff
   rw [show ∑ i, u i • v i = ∑ i, k.coord₀ (u i) • v i by
-    simpa only [zero_smul, sub_smul, Finset.sum_sub_distrib, algebraMap_smul, sub_eq_zero]
-      using hy.symm]
+    simpa only [zero_smul, sub_smul, Finset.sum_sub_distrib, algebraMap_smul, sub_eq_zero] using
+      hy.symm]
   exact sum_mem fun i _ ↦ L.kisinModule.smul_mem (k.coord₀ (u i)) (hv_mem i)
 
 end New.Lift.KummerChart.JumpLattice
@@ -923,7 +971,8 @@ namespace New.Lift.KummerChart.JumpLattice
 
 open Period Submodule FrobGroup
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
+variable
+  {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
   {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O} {x : L.Ambient} {μ : L.Functional}
 
 /-- For the Kummer chart `k`, let `k.bicommutant` be its ring S_B: the elements of `BPlus` whose

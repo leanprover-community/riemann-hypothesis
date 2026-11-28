@@ -90,8 +90,9 @@ namespace New.Period.crysCocycles
 
 open Module TensorProduct
 
-variable {p : ℕ} {Γ R R' T T' : Type*}
-  {c : Γ → T} [ThePrime p] [Group Γ] [CommRing R] [Algebra ℤ_[p] R] [CommRing R'] [Algebra ℤ_[p] R']
+variable
+  {p : ℕ} {Γ R R' T T' : Type*} {c : Γ → T}
+  [ThePrime p] [Group Γ] [CommRing R] [Algebra ℤ_[p] R] [CommRing R'] [Algebra ℤ_[p] R']
   [AddCommGroup T] [Module R T] [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [AddCommGroup T']
   [Module R' T'] [Module ℤ_[p] T'] [IsScalarTower ℤ_[p] R' T'] [OverGp Γ p]
   {ρ : Representation R Γ T} {σ : Representation R' Γ T'}
@@ -167,10 +168,12 @@ namespace New.Period
 
 section CocycleContinuity
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R T C : Type} [Group Γ] [CommRing R] [Algebra ℤ_[p] R] [AddCommGroup T] [Module R T]
   [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [AddCommGroup C] [Module R C] [Module ℤ_[p] C]
-  [IsScalarTower ℤ_[p] R C] [OverGp Γ p] {ρ : Representation R Γ T}
+  [IsScalarTower ℤ_[p] R C] [OverGp Γ p]
+  {ρ : Representation R Γ T}
 
 open Algebra Submodule Matrix IsScalarTower Finset Function NonarchimedeanGroup algebraMap
 /-- Hodge basis over B_dR. Let `j = toGp : Γ → Gal(Q̄_p/Q_p)` have open image, and let T be
@@ -288,8 +291,10 @@ open Filter Module LinearMap PadicInt crysCocycles
 
 variable (a : C →ₗ[R] crysCocycles ρ) [Free ℤ_[p] T]
 
-/-- The representation g(y, c) = (ρ(g)y + a(c)(g), c) on T × C: the extension of the trivial
-module C by T given by the crystalline cocycles a(c). Here `proj g` evaluates a map Γ → T at g. -/
+/--
+The representation g(y, c) = (ρ(g)y + a(c)(g), c) on T × C: the extension of the trivial
+module C by T given by the crystalline cocycles a(c). Here `proj g` evaluates a map Γ → T at g.
+-/
 @[local simp]
 noncomputable def extensionRep : Representation R Γ (T × C) where
   toFun g := ((ρ g).coprod (proj g ∘ₗ (crysCocycles ρ).subtype ∘ₗ a)).prod (LinearMap.snd R T C)
@@ -408,13 +413,14 @@ crystalline.
 
 section CocycleReduction
 
-open Module Nat crysCocycles PadicInt LinearMap LE DiscreteModule Function AddSubgroup
-  Topology
-variable {p : ℕ} [ThePrime p]
+open Module Nat crysCocycles PadicInt LinearMap LE DiscreteModule Function AddSubgroup Topology
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R T μ : Type} [Group Γ] [CommRing R] [Algebra ℤ_[p] R] [AddCommGroup T] [Module R T]
   [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [AddCommGroup μ] [𝒥 : OverGp Γ p]
-  {ρ : Representation R Γ T} [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] [TopologicalSpace Γ]
-  [IsTopologicalGroup Γ] (hj : IsOpenEmbedding 𝒥.toGp)
+  {ρ : Representation R Γ T}
+  [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
+  (hj : IsOpenEmbedding 𝒥.toGp)
 
 variable (T) in
 /-- For a natural number m, the additive subgroup p^m T of T, the image of multiplication by p^m. -/
@@ -437,9 +443,11 @@ lemma index_pPowMultiples (m : ℕ) : (pPowMultiples T m).index = (p ^ m) ^ finr
     card_congr ((finBasis ℤ_[p] T).baseChange _).equivFun.toEquiv, card_pi]
   simp only [h_card_quot, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
 
-/-- The additive homomorphism from ℤ_p/p^m to the multiplicative group of Q̄_p, written additively,
+/--
+The additive homomorphism from ℤ_p/p^m to the multiplicative group of Q̄_p, written additively,
 that sends the class of a to ζ^a, where ζ is the primitive p^m-th root of unity chosen in
-`New.rootPowHom`. -/
+`New.rootPowHom`.
+-/
 def zmodPowToUnits (m : ℕ) : QuotSpan (p ^ m : ℤ_[p]) →+ DiscreteUnits (PadicAlgCl p) :=
   (rootPowHom (PadicAlgCl p) (p ^ m)).val.comp
     (Ideal.Quotient.lift (Ideal.span {(p : ℤ_[p]) ^ m}) (toZModPow m)
@@ -456,8 +464,10 @@ lemma map_cyclotomicGp_smul [Module ℤ_[p] μ] (f : μ →+ DiscreteUnits (Padi
     _ = unitsRep g (f x) :=
       (cyclotomicCharMod_eq_iff_unitsRep.1 (ZMod.natCast_zmod_val _).symm (h x)).symm
 
-variable (h : IsPotentiallyCrystalline ρ) {S : Type} [CommRing S] {V : DiscreteModule S Γ}
-  {q : T →+ V} {m : ℕ}
+variable
+  (h : IsPotentiallyCrystalline ρ)
+  {S : Type} [CommRing S]
+  {V : DiscreteModule S Γ} {q : T →+ V} {m : ℕ}
 
 lemma nsmul_zmodPowToUnits (x : QuotSpan ((p : ℤ_[p]) ^ m)) : p ^ m • zmodPowToUnits m x = 0 := by
   rw [← map_nsmul, Selmer.nsmul_quot_eq_zero, map_zero]
@@ -478,8 +488,7 @@ lemma crysCocycles.continuous_comp [TopologicalSpace μ] (q : T →+ μ) (hq : �
   filter_upwards [eventually_eq_pow_smul h hx m] with u ⟨y, hy⟩ g
   simp [apply_mul hx, hy, hq]
 
-variable (e : ∀ (g : Γ) (x : T), q (ρ g x) = V.ρ g (q x))
-  (k : q.ker = pPowMultiples T m)
+variable (e : ∀ (g : Γ) (x : T), q (ρ g x) = V.ρ g (q x)) (k : q.ker = pPowMultiples T m)
 
 include e k in
 /-- For an additive map `q : T → V` that is equivariant (`e`) and has kernel `p ^ m T` (`k`), the
@@ -496,9 +505,11 @@ lemma IsPotentiallyCrystalline.comp_mem_Z1 {c : Γ → T} (hc : c ∈ crysCocycl
   intro g g'
   simp [apply_mul hc, e]
 
-/-- For an additive map q: T → V that is equivariant (`e`) and has kernel p^m T (`k`), the additive
+/--
+For an additive map q: T → V that is equivariant (`e`) and has kernel p^m T (`k`), the additive
 map sending a crystalline cocycle c to the continuous cocycle q∘c in Z¹(V). Here `𝒥.toGp` is an
-open embedding (`hj`) and `T` is potentially crystalline (`h`). -/
+open embedding (`hj`) and `T` is potentially crystalline (`h`).
+-/
 abbrev IsPotentiallyCrystalline.reducedCocycle : crysCocycles ρ →+ Z1 V.ρ :=
   AddMonoidHom.codRestrict ((q.compLeft Γ).domRestrict (crysCocycles ρ)) (Z1 V.ρ) fun ⟨_, hx⟩ ↦
     h.comp_mem_Z1 hj e k hx
@@ -593,7 +604,8 @@ namespace New.Period
 
 open Function Module IsScalarTower Submodule Multiset Bmax crysCocycles Algebra IsFractionRing
   LinearMap QuotientAddGroup NeZero algebraMap PadicInt Matrix
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R T T' : Type} [Group Γ] [CommRing R] [Algebra ℤ_[p] R] [AddCommGroup T] [Module R T]
   [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [AddCommGroup T'] [𝒥 : OverGp Γ p]
   {ρ : Representation R Γ T} [Free ℤ_[p] T] [Module.Finite ℤ_[p] T]

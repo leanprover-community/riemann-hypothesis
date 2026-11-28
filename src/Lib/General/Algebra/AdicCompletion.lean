@@ -77,10 +77,12 @@ class ThePrime (p : outParam ℕ) : Prop extends Fact p.Prime
 
 /-! ### Normed fields over `ℚ_[p]` -/
 
-/-- A normed field F that is a normed algebra over Q_p, not necessarily complete; the prime p is
-read off from F (an `outParam`). -/
-class PadicField (F : Type*) (p : outParam ℕ) [Fact p.Prime] [NormedField F] extends
-  NormedAlgebra ℚ_[p] F
+/--
+A normed field F that is a normed algebra over Q_p, not necessarily complete; the prime p is
+read off from F (an `outParam`).
+-/
+class PadicField (F : Type*) (p : outParam ℕ) [Fact p.Prime] [NormedField F]
+  extends NormedAlgebra ℚ_[p] F
 
 /-- For a prime ℓ, a choice of ring isomorphism ιℓ from ℂ to the algebraic closure of Q_ℓ. -/
 class PadicIso (ℓ : outParam ℕ) [Fact ℓ.Prime] where
@@ -96,13 +98,18 @@ class PadicPlace (p : outParam ℕ) [Fact p.Prime] where
 
 export PadicPlace (ιₚ)
 
-/-- The valuation ring O_ι ⊂ ℂ of complex numbers whose image under ι : ℂ → ℂ_p has absolute
-value at most 1. -/
+/--
+The valuation ring O_ι ⊂ ℂ of complex numbers whose image under ι : ℂ → ℂ_p has absolute
+value at most 1.
+-/
 noncomputable abbrev embValRing {p : ℕ} [Fact p.Prime] [ι : PadicPlace p] : ValuationSubring ℂ :=
   ((NormedField.valuation (K := ℂ_[p])).comap ιₚ).valuationSubring
 
-variable {R : Type*} (N : Type*) [CommRing R] [AddCommGroup N] [Module R N] {π x y : R}
-  {p n : ℕ} [Fact p.Prime] {F : Type*} [NormedField F] [PadicField F p] {S : Type*} [CommRing S]
+variable
+  {R : Type*} (N : Type*) [CommRing R] [AddCommGroup N] [Module R N]
+  {π x y : R} {p n : ℕ} [Fact p.Prime]
+  {F : Type*} [NormedField F] [PadicField F p]
+  {S : Type*} [CommRing S]
 
 noncomputable instance : PadicField ℂ_[p] p where
 
@@ -111,8 +118,10 @@ noncomputable instance : PadicField (PadicAlgCl p) p where
 lemma norm_p_eq_inv : ‖(p : F)‖ = (↑p)⁻¹ := by
   simpa using norm_algebraMap' F (p : ℚ_[p])
 
-/-- The ring of integers of `ℂ_p`: the elements of norm at most one. It has the same elements as
-Mathlib's `PadicComplexInt p`; here membership is the inequality `‖x‖ ≤ 1` by definition. -/
+/--
+The ring of integers of `ℂ_p`: the elements of norm at most one. It has the same elements as
+Mathlib's `PadicComplexInt p`; here membership is the inequality `‖x‖ ≤ 1` by definition.
+-/
 noncomputable def valRingCp (p : ℕ) [Fact p.Prime] : Subring ℂ_[p] :=
   (NormedField.valuation (K := ℂ_[p])).integer
 
@@ -261,11 +270,17 @@ section RingActions
 
 open Ideal MulSemiringAction AdicCompletion IsLocalization Algebra algebraMap
 
-variable (M : Type*) {R : Type*} {S : Type*} [Monoid M] [CommRing R] [MulSemiringAction M R]
-  [CommRing S] {I : Ideal R} {J : Ideal S} (f : R →+* S) {π : R}
+variable
+  (M : Type*)
+  {R : Type*} {S : Type*} [Monoid M] [CommRing R] [MulSemiringAction M R] [CommRing S]
+  {I : Ideal R} {J : Ideal S}
+  (f : R →+* S)
+  {π : R}
 
-/-- For a ring homomorphism f: R → S carrying the ideal I into J, the induced ring homomorphism
-from the I-adic completion of R to the J-adic completion of S. -/
+/--
+For a ring homomorphism f: R → S carrying the ideal I into J, the induced ring homomorphism
+from the I-adic completion of R to the J-adic completion of S.
+-/
 @[irreducible]
 def adicMap (h : I ≤ comap f J) : AdicCompletion I R →+* AdicCompletion J S :=
   -- the component in `S / J ^ n` is the image of the component in `R / I ^ n`
@@ -294,40 +309,54 @@ lemma adicMap_algebraMap (h : I ≤ comap f J) (x : R) :
     adicMap f h (x : AdicCompletion I R) = (f x : AdicCompletion J S) :=
   ext_evalₐ (by simp)
 
-variable {A : Type*} {B : Type*} [CommRing A] [CommRing B] [Algebra A R]
+variable
+  {A : Type*} {B : Type*} [CommRing A] [CommRing B] [Algebra A R]
   (i : R →+* B) (f : M → B →+* B) (m : M)
 
 /-! ### Actions of a monoid by ring endomorphisms -/
 
-/-- The action of a monoid M on a ring B by ring endomorphisms given by a family f(m) with f(1)
-the identity and f(ab) = f(a)∘f(b). -/
-abbrev actionOfHoms (h_one : f 1 = 1) (h_mul : ∀ a b : M, f (a * b) = f a * f b) :
-    MulSemiringAction M B :=
-  { MulSemiringAction.compHom B { toFun := f, map_one' := h_one, map_mul' := h_mul } with
-    smul := fun m ↦ f m }
+/--
+The action of a monoid M on a ring B by ring endomorphisms given by a family f(m) with f(1)
+the identity and f(ab) = f(a)∘f(b).
+-/
+abbrev actionOfHoms (h_one : f 1 = 1) (h_mul : ∀ a b : M, f (a * b) = f a * f b)
+    : MulSemiringAction M B := {
+  MulSemiringAction.compHom B { toFun := f, map_one' := h_one, map_mul' := h_mul } with
+  smul := fun m ↦ f m
+}
 
 @[simp]
 lemma smul_natCast' (n : ℕ) : m • (n : R) = n := smul_algebraMap m n
 
-/-- The M-action on B given by endomorphisms f(m) compatible with the action on R along i: R →
-B, when endomorphisms of B are determined on the image of i. -/
-abbrev extendAction (hf : ∀ (m : M) (a : R), f m (i a) = i (m • a))
-    (h_ext : ∀ {F G : B →+* B}, (∀ a : R, F (i a) = G (i a)) → F = G) :
-    MulSemiringAction M B :=
+/--
+The M-action on B given by endomorphisms f(m) compatible with the action on R along i: R →
+B, when endomorphisms of B are determined on the image of i.
+-/
+abbrev extendAction
+    (hf : ∀ (m : M) (a : R), f m (i a) = i (m • a))
+    (h_ext : ∀ {F G : B →+* B}, (∀ a : R, F (i a) = G (i a)) → F = G)
+    : MulSemiringAction M B :=
   actionOfHoms M f (h_ext (by simp [hf])) fun a b ↦ h_ext (by simp [hf, mul_smul])
 
-/-- The action of M on the localisation B of R away from x extending the action on R, given that
-each m sends x to an element invertible in B. -/
-abbrev locAction (x : R) [Algebra R B] [Away x B]
-    (h_unit : ∀ m : M, IsUnit ((algebraMap R B).comp (toRingHom M R m) x)) :
-    MulSemiringAction M B :=
-  extendAction M (algebraMap R B) (fun m ↦ Away.lift x (h_unit m)) (by simp) fun h_eq ↦
-    ringHom_ext (Submonoid.powers x) (RingHom.ext h_eq)
+/--
+The action of M on the localisation B of R away from x extending the action on R, given that
+each m sends x to an element invertible in B.
+-/
+abbrev locAction
+    (x : R) [Algebra R B] [Away x B]
+    (h_unit : ∀ m : M, IsUnit ((algebraMap R B).comp (toRingHom M R m) x))
+    : MulSemiringAction M B :=
+  extendAction M (algebraMap R B)
+    (fun m ↦ Away.lift x (h_unit m))
+    (by simp)
+    fun h_eq ↦ ringHom_ext (Submonoid.powers x) (RingHom.ext h_eq)
 
-/-- A ring action of `M` on `R` induces an action of `M` on the Witt vectors `WittVector p R`. Each
-element acts by mapping Witt vector coordinates through its ring endomorphism of `R`. -/
-instance (priority := 50) wittAction (p : ℕ) [Fact p.Prime] :
-    MulSemiringAction M (WittVector p R) :=
+/--
+A ring action of `M` on `R` induces an action of `M` on the Witt vectors `WittVector p R`. Each
+element acts by mapping Witt vector coordinates through its ring endomorphism of `R`.
+-/
+instance (priority := 50) wittAction (p : ℕ) [Fact p.Prime]
+    : MulSemiringAction M (WittVector p R) :=
   actionOfHoms M (WittVector.map <| toRingHom M R ·) (by aesop) (by aesop (add simp mul_smul))
 
 variable {M} [SMul M A]
@@ -427,13 +456,17 @@ section AdicExtension
 
 open Quot Ideal Submodule Finsupp AdicCompletion SModEq Function Module
 
-variable {S F M : Type*} [CommRing S] [AddCommGroup F] [Module S F] [AddCommGroup M] [Module S M]
-  {C : Type*} [AddCommGroup C] [Module S C] (I : Ideal S) [IsAdicComplete I C] (β : F →ₗ[S] M)
+variable
+  {S F M : Type*} [CommRing S] [AddCommGroup F] [Module S F] [AddCommGroup M] [Module S M]
+  {C : Type*} [AddCommGroup C] [Module S C]
+  (I : Ideal S) [IsAdicComplete I C]
+  (β : F →ₗ[S] M)
 instance [IsPrecomplete I S] [Module.Finite S M] : IsPrecomplete I M := by
   -- `M → Ŝ ⊗ M` is onto since `S → Ŝ` is, and `Ŝ ⊗ M` maps onto the completion of the finite `M`.
   refine of_surjective_iff.mp fun x ↦ ?_
-  simpa using (ofTensorProduct_surjective_of_finite I M).comp
-    (TensorProduct.mk_surjective S M _ (of_surjective I S)) x
+  simpa using
+    (ofTensorProduct_surjective_of_finite I M).comp
+      (TensorProduct.mk_surjective S M _ (of_surjective I S)) x
 
 /-- A module that embeds linearly in a product of copies of an `I`-adically separated module is
 `I`-adically separated. -/
@@ -516,9 +549,11 @@ lemma eq_zero_or_exists_pow_smul_eq {p z : S}
     · exact .inl h
     exact (ih c w hc).imp_right fun ⟨c', hc'⟩ ↦ ⟨c', by grind [sub_eq_zero, pow_succ', mul_smul]⟩
 
-/-- A topological basis of `M` over `S` for the `I`-adic topology: vectors `b i` whose finite
+/--
+A topological basis of `M` over `S` for the `I`-adic topology: vectors `b i` whose finite
 combinations are dense, with linear forms `coord i` on `M` that read off the coefficients of a
-finite combination. -/
+finite combination.
+-/
 structure Lift.AdicBasis.{u} (M : Type u) [AddCommGroup M] [Module S M] where
   /-- The index set of the basis. -/
   (Index : Type u)
@@ -625,8 +660,8 @@ open Ideal Submodule
 abbrev nsmulRange (n : ℕ) (X : Type*) [AddCommGroup X] : AddSubgroup X :=
   (nsmulAddMonoidHom (α := X) n).range
 
-variable {X Y S : Type*} [AddCommGroup X] [AddCommGroup Y] [CommRing S] [Module S X] [Module S Y]
-  {p : ℕ}
+variable
+  {X Y S : Type*} [AddCommGroup X] [AddCommGroup Y] [CommRing S] [Module S X] [Module S Y] {p : ℕ}
 
 /-- A linear map carries the subgroup `n X` of multiples into `n Y`. -/
 lemma nsmulRange.map_mem (f : X →ₗ[S] Y) {n : ℕ} {x : X} :
@@ -717,8 +752,10 @@ namespace New
 
 open IsHausdorff AdicCompletion Submodule
 
-variable {R R' N M : Type*} [CommRing R] [CommRing R'] [AddCommGroup N] [Module R N]
-  [AddCommGroup M] [Module R' M] {π : R} {π' : R'}
+variable
+  {R R' N M : Type*}
+  [CommRing R] [CommRing R'] [AddCommGroup N] [Module R N] [AddCommGroup M] [Module R' M]
+  {π : R} {π' : R'}
 
 /-- On a `π`-adically separated module, `(x_j) ↦ (x_j - π • x_{j+1})` is injective. -/
 instance [IsHausdorff (Ideal.span {π}) N] : Fact (shiftDiff N π).Injective := by

@@ -146,19 +146,25 @@ lemma New.Variety.absIntegrallyClosedSubrings.exists_cocone_iSup {Λ : Ab} {F : 
 
 section ValueMap
 
-variable {Y : PointFunctor} {D P : CommRingCat} {s : Y ⟶ reprBy D} {ξ : Y.obj P}
-  {z : ValuativeLift s ξ} {q : Ideal P} [q.IsMaximal] {J : Ideal D}
+variable
+  {Y : PointFunctor} {D P : CommRingCat} {s : Y ⟶ reprBy D} {ξ : Y.obj P} {z : ValuativeLift s ξ}
+  {q : Ideal P} [q.IsMaximal]
+  {J : Ideal D}
 
-/-- For a place `y` with values in `C` that vanishes on the maximal ideal `q` of `P`, the ring map
+/--
+For a place `y` with values in `C` that vanishes on the maximal ideal `q` of `P`, the ring map
 from `finiteValueSubring z y` to `C` that sends the residue of `t` to the value of `y` at `t`. It
-is well defined: a pair `(t, c)` of the graph `placeGraph y` with `t ∈ q` has `c = 0`. -/
-private def New.Variety.ResiduePlace.residueValue {C : CommRingCat} (y : killingPlaces z q C) :
-    finiteValueSubring z y →+* C :=
-  .liftOfSurjective _ (rangeRestrict_surjective _)
-    ⟨(snd P C).domRestrict (placeGraph y.val), fun w hw ↦
+is well defined: a pair `(t, c)` of the graph `placeGraph y` with `t ∈ q` has `c = 0`.
+-/
+private def New.Variety.ResiduePlace.residueValue {C : CommRingCat} (y : killingPlaces z q C)
+    : finiteValueSubring z y →+* C :=
+  .liftOfSurjective _ (rangeRestrict_surjective _) ⟨
+    (snd P C).domRestrict (placeGraph y.val),
+    fun w hw ↦
       placeGraph_unique w.prop
-        (y.prop w.val.1 ((ker_algebraMap_residueField q).le
-          (congrArg Subtype.val (RingHom.mem_ker.mp hw))))⟩
+        (y.prop w.val.1
+          ((ker_algebraMap_residueField q).le (congrArg Subtype.val (RingHom.mem_ker.mp hw))))
+  ⟩
 
 /-- `residueValue y` sends the residue of `t` to `c` when `(t, c)` lies in the graph of `y`. -/
 private lemma New.Variety.ResiduePlace.residueValue_apply {C : CommRingCat}
@@ -176,18 +182,23 @@ private lemma New.Variety.ResiduePlace.extendedIdeal_le_ker_residueValue_comp
   map_le_of_le_comap (K := ker _) fun a ha ↦
     (residueValue_apply (baseRingMap_mem_placeGraph a)).trans (x.prop.left a ha)
 
-/-- The value map. Let `s : Y → h_D`, let `z` be a valuative lift of `ξ ∈ Y(P)`, let `q` be a
+/--
+The value map. Let `s : Y → h_D`, let `z` be a valuative lift of `ξ ∈ Y(P)`, let `q` be a
 maximal ideal of `P`, `J` an ideal of `D`, and `B` a ring in `absIntegrallyClosedSubrings` for the
 map from `D` to the residue field at `q`. A place `x` with values in `C` that is finite on `B` and
 kills `J` gives a ring map `B / J B → C`, naturally in `C`, which sends the class of the residue
-of `t` to the value of `x` at `t` (`ResiduePlace.baseRingMap_valueMap_mk`). -/
+of `t` to the value of `x` at `t` (`ResiduePlace.baseRingMap_valueMap_mk`).
+-/
 @[no_expose]
-def New.Variety.ResiduePlace.valueMap {Y : PointFunctor} {D P : CommRingCat} {s : Y ⟶ reprBy D}
-    {ξ : Y.obj P} {q : Ideal P} [q.IsMaximal] (z : ValuativeLift s ξ) (J : Ideal D)
-    (B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom)) :
-    (placesFiniteOn z J B.val).toFunctor ⟶ reprBy ((quotientFunctor J _).obj B) where
-  app C := ↾fun x ↦ ⟨ofHom (lift _ ((residueValue x.val).comp (B.val.inclusion x.prop.right))
-    (extendedIdeal_le_ker_residueValue_comp x))⟩
+def New.Variety.ResiduePlace.valueMap
+    {Y : PointFunctor} {D P : CommRingCat} {s : Y ⟶ reprBy D} {ξ : Y.obj P} {q : Ideal P}
+    [q.IsMaximal]
+    (z : ValuativeLift s ξ) (J : Ideal D)
+    (B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom))
+    : (placesFiniteOn z J B.val).toFunctor ⟶ reprBy ((quotientFunctor J _).obj B) where
+  app C :=
+    ↾fun x ↦ ⟨ofHom (lift _ ((residueValue x.val).comp (B.val.inclusion x.prop.right))
+      (extendedIdeal_le_ker_residueValue_comp x))⟩
   naturality C C' k := by
     -- A map of rings of values carries the graph of `x` into that of its image.
     ext x
@@ -196,8 +207,8 @@ def New.Variety.ResiduePlace.valueMap {Y : PointFunctor} {D P : CommRingCat} {s 
     obtain ⟨w, rfl⟩ := x.prop.2 ht
     -- For `w = (t, c)` it remains that `t` with the value of `residueValue x` at its residue lies
     -- in `placeGraph x`: this pair is `w`.
-    have h_mem :
-        (w.val.1, residueValue x.val ⟨_, ⟨w.val, w.prop⟩, rfl⟩) ∈ placeGraph x.val.val := by
+    have h_mem
+        : (w.val.1, residueValue x.val ⟨_, ⟨w.val, w.prop⟩, rfl⟩) ∈ placeGraph x.val.val := by
       simpa only [residueValue_apply w.prop] using w.prop
     -- (`y` is given explicitly: found by unification, it costs most of the time of this proof)
     exact residueValue_apply (y := ((placesFiniteOn z J B.val).toFunctor.map k x).val)
@@ -291,8 +302,10 @@ lemma New.Variety.ResiduePlace.isAcyclicOver_of_mem_or_inv_mem {Λ : Ab} {Y : Po
 
 section ValueMaps
 
-variable {Λ : Ab} {Y : PointFunctor} {D P : CommRingCat} {s : Y ⟶ reprBy D} {ξ : Y.obj P}
-  {z : ValuativeLift s ξ} {q : Ideal P} [q.IsMaximal] {J : Ideal D}
+variable
+  {Λ : Ab} {Y : PointFunctor} {D P : CommRingCat} {s : Y ⟶ reprBy D} {ξ : Y.obj P}
+  {z : ValuativeLift s ξ} {q : Ideal P} [q.IsMaximal]
+  {J : Ideal D}
 
 /-- Let `v B`, for every `B` in `absIntegrallyClosedSubrings`, be a map from the places that are
 finite on `B` and kill `J` to `h_{B / J B}` that sends the class of the residue of `t` to the value
@@ -935,11 +948,14 @@ private lemma map_unitPoints_ι_add_eq_zero {T : TestRing} {a : R ⟶ of T.obj}
   · exact (H.map_map ..).trans (map_unitPoints_ι_eq_zero_of_forall_dvd (by simpa using h_c_dvd) hc)
   · exact (H.map_map ..).trans (map_unitPoints_ι_eq_zero_of_forall_dvd (by simpa using h_b_dvd) hb)
 
-/-- For a class `x` on `W_T`, the ideal of the `b ∈ T` such that `x` vanishes on the points of
-`W_T` at which `b` becomes a unit. -/
-private def unitVanishingIdeal (T : TestRing) (a : R ⟶ of T.obj)
-    (x : H (freeAb.obj (testIncl ⋙ baseChangeOf s a)) (locConstCoeff ⟨ZMod ℓ⟩) n) :
-    Ideal T.obj where
+/--
+For a class `x` on `W_T`, the ideal of the `b ∈ T` such that `x` vanishes on the points of
+`W_T` at which `b` becomes a unit.
+-/
+private def unitVanishingIdeal
+    (T : TestRing) (a : R ⟶ of T.obj)
+    (x : H (freeAb.obj (testIncl ⋙ baseChangeOf s a)) (locConstCoeff ⟨ZMod ℓ⟩) n)
+    : Ideal T.obj where
   carrier := {b : T.obj | map ⟨ZMod ℓ⟩ (unitPoints (fiberProd.snd s (reprMap a)) {b}).ι n x = 0}
   add_mem' hb hc := map_unitPoints_ι_add_eq_zero hb hc
   -- no point makes `0` a unit except over the zero ring
@@ -1046,7 +1062,9 @@ section ProperBaseChange
 open CategoryTheory MonoidalCategory CommRingCat Function projLine Ideal AddEquiv Functor
   InvertsPrime
 
-variable {ℓ : ℕ} {A : Type} [CommRing A] {X : CommRingCat ⥤ Type 1} {D : Type _} [Category D]
+variable
+  {ℓ : ℕ} {A : Type} [CommRing A]
+  {X : CommRingCat ⥤ Type 1} {D : Type _} [Category D]
   (g : D ⥤ TestOver A) (I : IdealFamily (elementsProj (X ⊗ reprBy (CommRingCat.of A))))
   (c : TestOver A)
 
@@ -1080,49 +1098,63 @@ lemma isProperOver_projLinePow (ι : Type) :
     refine ⟨ofHom (FreeCommRing.lift (Sum.elim u v)), funext fun i ↦ congrArg ULift.up ?_⟩
     simpa using huv i
 
-/-- For a test `c` over `A` and a prime `P` of `c`, the residue field of `c` at `P` as a test over
-`A`, together with the canonical map from `c` to it. -/
+/--
+For a test `c` over `A` and a prime `P` of `c`, the residue field of `c` at `P` as a test over
+`A`, together with the canonical map from `c` to it.
+-/
 def residueTest (P : PrimeSpectrum c.obj) : Under c :=
   -- the residue field at `P` is a test, being that of an absolutely integrally closed local domain
   have := (c.property.exists_valuationSubring_atPrime P).1
   Under.mk (Y := ⟨CommAlgCat.of A P.asIdeal.ResidueField, isTest_of_preValuationRing⟩)
     ⟨CommAlg.homOfRingHom (algebraMap ..) (by tauto)⟩
 
-/-- Classes are detected at points, for a functor `g` from `D` to tests over `A` and a coefficient
+/--
+Classes are detected at points, for a functor `g` from `D` to tests over `A` and a coefficient
 `F` on `D`. For a test `c` over `A` the groups in question are `Extⁿ(ℤ[Hom(c, g –)], F)`, and a
 class vanishes at a prime `P` of `c` if it restricts to zero over the residue field of `c` at
-`P` (`residueTest c P`). -/
+`P` (`residueTest c P`).
+-/
 structure IsDetectedAtPoints (F : AbFunctor D) : Prop where
-  /-- For a class `x` over a test `c`, the set `z` of primes of `c` at which `x` vanishes is open,
-  and if `z` is all of `Spec c`, then `x = 0`. -/
-  isOpen_zero_set_and_eq_zero (c : TestOver A) (n : ℕ)
-    (x : H (freeAb.obj (g ⋙ reprFunctor.obj (Opposite.op c))) F n) :
-    let z := {P : PrimeSpectrum c.obj |
-      H.map F (freeAb.map (g.whiskerLeft (reprMap (residueTest c P).hom))) n x = 0}
-    IsOpen z ∧ (z = Set.univ → x = 0)
+  /--
+  For a class `x` over a test `c`, the set `z` of primes of `c` at which `x` vanishes is open,
+  and if `z` is all of `Spec c`, then `x = 0`.
+  -/
+  isOpen_zero_set_and_eq_zero
+    (c : TestOver A) (n : ℕ) (x : H (freeAb.obj (g ⋙ reprFunctor.obj (Opposite.op c))) F n)
+    : let z :=
+        {P : PrimeSpectrum c.obj |
+          H.map F (freeAb.map (g.whiskerLeft (reprMap (residueTest c P).hom))) n x = 0}
+      IsOpen z ∧ (z = Set.univ → x = 0)
   /-- A map `φ : V ⟶ k` of tests over `A` that are fields induces bijections on these groups. -/
-  isCohomEquiv_map_of_isField (V k : TestOver A) (φ : V ⟶ k) (hV : IsField V.obj)
-    (hk : IsField k.obj) :
-    IsCohomEquiv F (freeAb.map (g.whiskerLeft (reprMap φ)))
+  isCohomEquiv_map_of_isField
+    (V k : TestOver A) (φ : V ⟶ k) (hV : IsField V.obj) (hk : IsField k.obj)
+    : IsCohomEquiv F (freeAb.map (g.whiskerLeft (reprMap φ)))
 
-/-- The family I on the points of X × Spec A, pulled back to tests: to a test B over A and x ∈ X(B)
-it assigns the ideal of I at the point (x, A → B). -/
+/--
+The family I on the points of X × Spec A, pulled back to tests: to a test B over A and x ∈ X(B)
+it assigns the ideal of I at the point (x, A → B).
+-/
 def IdealFamily.pullToTests : IdealFamily (ringOf (testOfPoint A X)) :=
   -- `a` is a test over `A` with a point `a.2` of `X`; its structure map is a point of
   -- `reprBy (of A)`, and a morphism `f` respects both.
-  I.whisker
-    (sectionLift (ringOf (testOfPoint A X))
-      ⟨fun a ↦ (a.val, ⟨ofHom (algebraMap A a.obj.obj)⟩), fun f ↦
-        congr(⟨$(f.map_val), ⟨ofHom $(f.hom.hom.hom'.comp_algebraMap)⟩⟩)⟩)
+  I.whisker (sectionLift (ringOf (testOfPoint A X)) ⟨
+    fun a ↦ (a.val, ⟨ofHom (algebraMap A a.obj.obj)⟩),
+    fun f ↦ congr(⟨$(f.map_val), ⟨ofHom $(f.hom.hom.hom'.comp_algebraMap)⟩⟩)
+  ⟩)
 
-/-- For a family `I` of ideals on the points of `X × Spec A` and `p : X ⟶ reprBy ℤ`, the subfunctor
-of the base change `X_A` of the points at which `I` is zero. -/
-private def botLocusBaseChange (p : X ⟶ reprBy (CommRingCat.of ℤ)) :
-    Subfunctor (baseChangeOf p (zIsInitial.to (of A))) :=
-  ⟨fun C ↦ {x : (baseChangeOf p (zIsInitial.to (CommRingCat.of A))).obj C | I.ideal
-    (Functor.elementsMk _ C x.val) = ⊥},
-    fun {C C'} f x ↦ @I.botLocus.map (Functor.elementsMk _ C x.val)
-      (Functor.elementsMk _ C' ((baseChangeOf p (zIsInitial.to (of A))).map f x).val) ⟨f, rfl⟩ ⟨⟩⟩
+/--
+For a family `I` of ideals on the points of `X × Spec A` and `p : X ⟶ reprBy ℤ`, the subfunctor
+of the base change `X_A` of the points at which `I` is zero.
+-/
+private def botLocusBaseChange (p : X ⟶ reprBy (CommRingCat.of ℤ))
+    : Subfunctor (baseChangeOf p (zIsInitial.to (of A))) := ⟨
+  fun C ↦
+    {x : (baseChangeOf p (zIsInitial.to (CommRingCat.of A))).obj C | I.ideal
+      (Functor.elementsMk _ C x.val) = ⊥},
+  fun {C C'} f x ↦
+    @I.botLocus.map (Functor.elementsMk _ C x.val)
+      (Functor.elementsMk _ C' ((baseChangeOf p (zIsInitial.to (of A))).map f x).val) ⟨f, rfl⟩ ⟨⟩
+⟩
 
 /-- If `X` is proper over `ℤ`, the locus `botLocusBaseChange I p` in `X_A` where the family of
 ideals `I` is zero is proper over `A`: a universal point `a` of `X_A`, taken modulo the ideal of

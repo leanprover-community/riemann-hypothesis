@@ -56,9 +56,11 @@ section Moduli
 variable {f f' : D.MFoldTwist → ℝ}
 
 variable (D) in
-/-- The product over `1 ≤ z ≤ s` of the ratios `|L^{MQ}(z, (ν ϑ)⁻¹) / L^M(z, ν⁻¹)|` of Hecke values,
+/--
+The product over `1 ≤ z ≤ s` of the ratios `|L^{MQ}(z, (ν ϑ)⁻¹) / L^M(z, ν⁻¹)|` of Hecke values,
 where `L^M` omits the chosen places and their conjugates, and `L^{MQ}` also the places of the
-modulus `Q` of `ϑ` and their conjugates. -/
+modulus `Q` of `ϑ` and their conjugates.
+-/
 noncomputable def lRatioProd (ν : AutChar D.E) (s : ℕ) (ϑ : D.TameChar) : ℝ :=
   ∏ z ∈ Icc 1 s, ‖(ν * ϑ.toAutChar)⁻¹.L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) z‖ /
     ‖ν⁻¹.L {w : FinPlace D.E | D.IsChosen w} z‖
@@ -114,9 +116,11 @@ lemma CriticalPair.lRatioProd_one_pow (p : D.CriticalPair) (n : ℕ) :
   simp [TameChar.pow, toAutChar_one_and_toTwist_one_and_Q_one, h_ne]
 
 variable (D c f) in
-/-- `c` has absolute value `f` up to a norm power: `‖c ϑ‖² = C (Nm Q)ᵏ (f ϑ)²` for all `m`-fold
+/--
+`c` has absolute value `f` up to a norm power: `‖c ϑ‖² = C (Nm Q)ᵏ (f ϑ)²` for all `m`-fold
 twists `ϑ`, with `Q` the modulus of `ϑ` and with a real `C` and an integer `k` that do not depend on
-`ϑ`. The case `C = 0`, where `c` vanishes for all twists, is allowed. -/
+`ϑ`. The case `C = 0`, where `c` vanishes for all twists, is allowed.
+-/
 def HasAbsUpToNormPower : Prop :=
   ∃ (C : ℝ) (k : ℤ), ∀ ϑ : D.MFoldTwist, ‖c ϑ‖ ^ 2 = C * (ϑ.normQ : ℝ) ^ k * f ϑ ^ 2
 
@@ -199,25 +203,30 @@ lemma CriticalPair.hasAbsUpToNormPower_of_norm_sq_eq_lValueProd {c : D.MFoldTwis
   ring
 
 variable (D) in
-/-- `F` is the product of the ratios of Hecke values of a ramified pair at the `n`-th powers of the
-twists, for some `1 ≤ n ≤ m`. -/
+/--
+`F` is the product of the ratios of Hecke values of a ramified pair at the `n`-th powers of the
+twists, for some `1 ≤ n ≤ m`.
+-/
 def IsRamifiedRatio (F : D.MFoldTwist → ℝ) : Prop :=
-  ∃ (p : D.CriticalPair) (n : D.LiftIndex), p.IsRamified ∧
-    ∀ ϑ : D.MFoldTwist, F ϑ = D.lRatioProd p.character p.z (ϑ.pow n)
+  ∃ (p : D.CriticalPair) (n : D.LiftIndex),
+    p.IsRamified ∧ ∀ ϑ : D.MFoldTwist, F ϑ = D.lRatioProd p.character p.z (ϑ.pow n)
 
-/-- Let `θ ι` be twists with small ratios: their moduli have norm `N ι = (θ ι).normQ` prime to `ℓ`,
+/--
+Let `θ ι` be twists with small ratios: their moduli have norm `N ι = (θ ι).normQ` prime to `ℓ`,
 and the inverse ratios of L-values of ramified pairs at their powers have height at most the cut-off
 `D.x₁`. For `a` in a finite set `s`, let `F a` be a ramified ratio: `F a ϑ` is the product
 `lRatioProd` of the ratios of Hecke values of a ramified pair at `ϑⁿ`, for a fixed `1 ≤ n ≤ m`. Then
-the family `((N ι) ^ (e / 2) ∏_{a ∈ s} F a (θ ι))⁻¹` has height at most `#s · t · x₁`. -/
-theorem HasSmallRatios.heightLe_inv_rpow_mul_prod {A : Type} {s : Finset A}
-    {F : A → D.MFoldTwist → ℝ} {θ : PrimePadicIso → D.MFoldTwist}
-    (hθ : D.HasSmallRatios θ) (e : ℤ) (hF : ∀ a ∈ s, D.IsRamifiedRatio (F a)) :
-    HeightLe (#s * (D.t * D.x₁)) fun ι : PrimePadicIso ↦
+the family `((N ι) ^ (e / 2) ∏_{a ∈ s} F a (θ ι))⁻¹` has height at most `#s · t · x₁`.
+-/
+theorem HasSmallRatios.heightLe_inv_rpow_mul_prod
+    {A : Type} {s : Finset A} {F : A → D.MFoldTwist → ℝ} {θ : PrimePadicIso → D.MFoldTwist}
+    (hθ : D.HasSmallRatios θ)
+    (e : ℤ) (hF : ∀ a ∈ s, D.IsRamifiedRatio (F a))
+    : HeightLe (#s * (D.t * D.x₁)) fun ι : PrimePadicIso ↦
       ((((θ ι).normQ : ℝ) ^ (e / 2 : ℝ) * ∏ a ∈ s, F a (θ ι) : ℝ) : ℂ)⁻¹ := by
   -- Each factor is a product of at most `t` ratios, whose inverses have height at most `x₁`.
-  have h_factor (a : A) (ha : a ∈ s) :
-      HeightLe (D.t * D.x₁) fun ι : PrimePadicIso ↦ ((F a (θ ι) : ℝ) : ℂ)⁻¹ := by
+  have h_factor (a : A) (ha : a ∈ s)
+      : HeightLe (D.t * D.x₁) fun ι : PrimePadicIso ↦ ((F a (θ ι) : ℝ) : ℂ)⁻¹ := by
     obtain ⟨p, n, hp, h_eq⟩ := hF a ha
     have h_ratios : HeightLe (∑ _z ∈ Icc 1 p.z, D.x₁)
         (∏ z ∈ Icc 1 p.z,
@@ -228,8 +237,8 @@ theorem HasSmallRatios.heightLe_inv_rpow_mul_prod {A : Type} {s : Finset A}
       grw [p.z_mem.2]
     · rw [h_eq, p.ofReal_lRatioProd, Finset.prod_apply, prod_inv_distrib]
       rfl
-  have h_prod : HeightLe (#s * (D.t * D.x₁))
-      (∏ a ∈ s, fun ι : PrimePadicIso ↦ ((F a (θ ι) : ℝ) : ℂ)⁻¹) :=
+  have h_prod
+      : HeightLe (#s * (D.t * D.x₁)) (∏ a ∈ s, fun ι : PrimePadicIso ↦ ((F a (θ ι) : ℝ) : ℂ)⁻¹) :=
     (HeightLe.prod h_factor).mono (by simp) fun _ ↦ le_rfl
   -- The norm of the modulus is prime to the prime of `ι`, so its power does not raise the height.
   refine (h_prod.rpow_mul le_rfl hθ.coprime fun _ ↦ -(e / 2)).mono le_rfl fun ι ↦ le_of_eq ?_
@@ -249,19 +258,21 @@ lemma IsRamifiedRatio.apply_one {G : D.MFoldTwist → ℝ} (h : D.IsRamifiedRati
   rw [h_eq, p.lRatioProd_one_pow]
 
 variable (D) in
-/-- The pair of the character `ν = (υ ^ (-Δ) χ) ^ n` and the integer `t`. Here
+/--
+The pair of the character `ν = (υ ^ (-Δ) χ) ^ n` and the integer `t`. Here
 `υ = WeilData.upsilonU1` is the splitting character on the norm-one ideles, `Δ = D.gap`, and
 `χ = D.chiM` has weight `0` and tame part `D.chiMLocal`, so `ν` has weight `-n Δ` and tame part
 `D.chiMLocal ^ n`. As `D.untwistedLiftChar j = D.chiZero * (υ ^ (-Δ) χ) ^ j`, one has
-`ν = D.untwistedLiftChar (i + n) / D.untwistedLiftChar i` for every `i`. -/
+`ν = D.untwistedLiftChar (i + n) / D.untwistedLiftChar i` for every `i`.
+-/
 noncomputable def quotientPair (n : D.LiftIndex) : D.CriticalPair where
   character := (WeilData.upsilonU1 ^ (-D.gap : ℤ) * D.chiM) ^ n.val
   negWeight (_ : D.Φ) := n.val * D.gap
   tamePart := D.chiMLocal ^ (n.val : ℤ)
   z := D.t
   hasWeight := by
-    convert! ((WeilData.hasWeight_upsilonU1_zpow (-D.gap : ℤ)).mul D.chiM_hasWeight).zpow n.val <;>
-      simp
+    convert! ((WeilData.hasWeight_upsilonU1_zpow (-D.gap : ℤ)).mul D.chiM_hasWeight).zpow n.val
+      <;> simp
   tamePart_eq_one w hw := by simp_all
   z_mem := ⟨D.nat_le_of_hasLogBound, le_rfl⟩
   le_negWeight _ := (D.nat_le_of_hasLogBound : D.t ≤ D.gap).trans (Nat.le_mul_of_pos_left _ n.2.1)
@@ -280,10 +291,12 @@ lemma isRamified_quotientPair (n : D.LiftIndex) : (D.quotientPair n).IsRamified 
   exact D.chiMLocal_zpow_ne_one_iff_isChosen (n.val : ℤ) (by grind [n.2]) (by grind [n.2]) w
 
 variable (D) in
-/-- The product of the ratios of Hecke values of the character
+/--
+The product of the ratios of Hecke values of the character
 `D.untwistedLiftChar j / D.untwistedLiftChar i` at the twist `ϑ ^ (j - i)` (truncated subtraction),
 over the points `1 ≤ z ≤ t`. The characters `D.untwistedLiftChar j = D.chiZero * (υ ^ (-D.gap) *
-D.chiM) ^ j` of U(1)(𝔸), with `υ = WeilData.upsilonU1`, form a geometric progression. -/
+D.chiM) ^ j` of U(1)(𝔸), with `υ = WeilData.upsilonU1`, form a geometric progression.
+-/
 noncomputable def quotientRatio (i j : ℕ) (ϑ : D.MFoldTwist) : ℝ :=
   D.lRatioProd (D.untwistedLiftChar j / D.untwistedLiftChar i) D.t (ϑ.pow (j - i))
 
@@ -377,27 +390,29 @@ lemma CriticalPair.lValueProd_mul_zpow_eq (p : D.CriticalPair) (ξ : D.Twist) (e
   · simp only [Units.val_one, zpow_one, lValueProd, p.L_mul_inv]
   · simp
 
-/-- Let `p = (ν, z)` be a ramified critical pair of `D` of weight `-negWeight`, so the tame part of
+/--
+Let `p = (ν, z)` be a ramified critical pair of `D` of weight `-negWeight`, so the tame part of
 `ν` is non-trivial exactly at the chosen places. Let `ξ` be a twist, a tame character whose tame
 part is non-trivial at each place of its modulus `Q`. Let `𝔪 = ϖᵉ Q` with `e ≠ 0`, where `ϖ` is the
 product of the chosen places. Then `ν ξ` and its inverse are tame for `𝔪`: they have weights
 `-negWeight` and `negWeight`, tame part non-trivial exactly at the places of `𝔪`, and character
 `charOfTamePart` (or its inverse). For both of them, `lValueProd` equals that for `ν` and the chosen
 places, times `ξ.normQ ^ z ^ 2` and the square of `lRatioProd`, the product of the ratios of Hecke
-values. -/
-theorem CriticalPair.isTameFor_mul_and_lValueProd_eq (p : D.CriticalPair) (hp : p.IsRamified)
-    (ξ : D.Twist) (e : ℕ) [NeZero e] :
-    IsTameFor (D.twistModulus ξ.toTameChar e) (p.character * ξ.toAutChar)
-      (fun τ : NumberField.InfinitePlace D.E ↦ -p.negWeight τ)
-      (charOfTamePart (D.twistModulus ξ.toTameChar e) (p.tamePart * ξ.tamePart)) ∧
-    IsTameFor (D.twistModulus ξ.toTameChar e) (p.character * ξ.toAutChar)⁻¹
-      (fun τ : NumberField.InfinitePlace D.E ↦ p.negWeight τ)
-      (charOfTamePart (D.twistModulus ξ.toTameChar e) (p.tamePart * ξ.tamePart))⁻¹ ∧
-    ∀ sign : ℤˣ,
-      lValueProd (D.twistModulus ξ.toTameChar e).places ((p.character * ξ.toAutChar) ^ sign.val) p.z
-        =
-        lValueProd {w : FinPlace D.E | D.IsChosen w} p.character p.z *
-          (ξ.normQ : ℝ) ^ p.z ^ 2 * D.lRatioProd p.character p.z ξ.toTameChar ^ 2 :=
+values.
+-/
+theorem CriticalPair.isTameFor_mul_and_lValueProd_eq
+    (p : D.CriticalPair) (hp : p.IsRamified) (ξ : D.Twist) (e : ℕ) [NeZero e]
+    : IsTameFor (D.twistModulus ξ.toTameChar e) (p.character * ξ.toAutChar)
+        (fun τ : NumberField.InfinitePlace D.E ↦ - p.negWeight τ)
+        (charOfTamePart (D.twistModulus ξ.toTameChar e) (p.tamePart * ξ.tamePart))
+      ∧ IsTameFor (D.twistModulus ξ.toTameChar e) (p.character * ξ.toAutChar)⁻¹
+        (fun τ : NumberField.InfinitePlace D.E ↦ p.negWeight τ)
+        (charOfTamePart (D.twistModulus ξ.toTameChar e) (p.tamePart * ξ.tamePart))⁻¹
+      ∧ ∀ sign : ℤˣ,
+        lValueProd (D.twistModulus ξ.toTameChar e).places ((p.character * ξ.toAutChar) ^ sign.val)
+            p.z
+          = lValueProd {w : FinPlace D.E | D.IsChosen w} p.character p.z * (ξ.normQ : ℝ) ^ p.z ^ 2
+            * D.lRatioProd p.character p.z ξ.toTameChar ^ 2 :=
   ⟨p.isTameFor_mul hp ξ e, p.isTameFor_mul_inv hp ξ e, p.lValueProd_mul_zpow_eq ξ e⟩
 
 /-- For a ramified critical pair `(ν, z)`, `1 ≤ n ≤ m` and `e ≠ 0`, the character `(ν ϑⁿ)⁻¹` is tame

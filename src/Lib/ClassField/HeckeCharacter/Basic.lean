@@ -60,49 +60,62 @@ noncomputable section
 
 namespace New
 
-variable (E : Type*) [Field E] [CMType E]
-  (G : Type*) [Monoid G] [TopologicalSpace G]
+variable (E : Type*) [Field E] [CMType E] (G : Type*) [Monoid G] [TopologicalSpace G]
 
 @[simp]
 lemma circleChar_inv_apply (χ : G →ₜ* Circle) (x : G) : χ⁻¹ x = (χ x)⁻¹ := rfl
 
-/-- The group of continuous circle-valued characters of a topological monoid `G` that are trivial at
-every `x` whose image under `f` lies in the diagonal copy of `E` in its adeles. -/
+/--
+The group of continuous circle-valued characters of a topological monoid `G` that are trivial at
+every `x` whose image under `f` lies in the diagonal copy of `E` in its adeles.
+-/
 def charsTrivialOnPrincipal (f : G → 𝔸 E) : Subgroup (G →ₜ* Circle) where
   carrier := {χ : G →ₜ* Circle | ∀ x : G, f x ∈ toAdele.range → χ x = 1}
   mul_mem' hχ hχ' x hx := by simp [hχ x hx, hχ' x hx]
   one_mem' := by simp
   inv_mem' hχ x hx := by simp [hχ x hx]
 
-/-- The group of unitary Hecke characters of E: continuous circle-valued characters of the idele
-group trivial on principal ideles. -/
+/--
+The group of unitary Hecke characters of E: continuous circle-valued characters of the idele
+group trivial on principal ideles.
+-/
 abbrev HeckeChar : Type _ := ↥(charsTrivialOnPrincipal E (𝔸 E)ˣ Units.val)
 
-/-- The group of continuous circle-valued characters of U(1)(𝔸), the norm-one adeles of the CM
-field E, trivial on elements coming from E. -/
+/--
+The group of continuous circle-valued characters of U(1)(𝔸), the norm-one adeles of the CM
+field E, trivial on elements coming from E.
+-/
 abbrev AutChar : Type _ := ↥(charsTrivialOnPrincipal E (unitary (𝔸 E)) Subtype.val)
 
-variable {E}
-  {R : Type*} [CommMonoid R] [StarMul R] [TopologicalSpace R] [ContinuousMul R] [ContinuousStar R]
+variable
+  {E} {R : Type*}
+  [CommMonoid R] [StarMul R] [TopologicalSpace R] [ContinuousMul R] [ContinuousStar R]
 
-/-- The homomorphism sending a unitary Hecke character of E to its restriction to the finite
-ideles, with values in ℂ^×. -/
+/--
+The homomorphism sending a unitary Hecke character of E to its restriction to the finite
+ideles, with values in ℂ^×.
+-/
 def HeckeChar.finPart : HeckeChar E →* (𝔸f E)ˣ →* ℂˣ :=
   MonoidHom.mk' (fun χ ↦ Circle.toUnits.comp (χ.val.toMonoidHom.comp finIdeleIncl)) (by aesop)
 
-/-- The value of the Hecke character χ at the local idele given by the chosen uniformiser at the
-finite place w. -/
+/--
+The value of the Hecke character χ at the local idele given by the chosen uniformiser at the
+finite place w.
+-/
 def HeckeChar.atUniformizer (χ : HeckeChar E) (w : FinPlace E) : ℂ :=
   (χ.finPart (locIdele w (uniformizer w))).val
 
-/-- The continuous homomorphism x ↦ x/x̄ from the units of a commutative topological monoid R
-with involution to the elements u with uū = 1. -/
+/--
+The continuous homomorphism x ↦ x/x̄ from the units of a commutative topological monoid R
+with involution to the elements u with uū = 1.
+-/
 def divStar : Rˣ →ₜ* unitary R where
   toMonoidHom :=
     MonoidHom.mk' (fun x ↦
-        ⟨x * star ↑x⁻¹, (x.mul_inv_mem_unitary (star x)).2 (by simp [mul_comm])⟩) <| by
-      simp
-      grind
+        ⟨x * star ↑x⁻¹, (x.mul_inv_mem_unitary (star x)).2 (by simp [mul_comm])⟩) <|
+      by
+        simp
+        grind
   continuous_toFun := by exact Continuous.subtype_mk (by fun_prop) _
 
 lemma coe_divStar (x : Rˣ) : (divStar x).val = x * star ↑x⁻¹ := rfl
@@ -116,12 +129,15 @@ lemma comp_divStar_mem_charsTrivialOnPrincipal (μ : AutChar E) :
   refine μ.prop _ ⟨y / star y, (star x).eq_mul_inv_iff_mul_eq.mpr ?_⟩
   simp [← hy, ← map_mul, div_mul_cancel_of_imp]
 
-/-- Base change: the homomorphism sending a character μ of U(1)(𝔸), trivial on rational points,
-to the Hecke character x ↦ μ(x/x̄) of E. -/
+/--
+Base change: the homomorphism sending a character μ of U(1)(𝔸), trivial on rational points,
+to the Hecke character x ↦ μ(x/x̄) of E.
+-/
 @[simps! -isSimp]
 def AutChar.baseChange : AutChar E →* HeckeChar E :=
-  MonoidHom.mk' (fun μ ↦ ⟨μ.val.comp divStar, comp_divStar_mem_charsTrivialOnPrincipal μ⟩) fun _ _ ↦
-    rfl
+  MonoidHom.mk'
+    (fun μ ↦ ⟨μ.val.comp divStar, comp_divStar_mem_charsTrivialOnPrincipal μ⟩)
+    fun _ _ ↦ rfl
 
 /-- On a unitary adele `w`, where `w / w̄ = w * w`, the base change of `ν` is `ν (w * w)`. -/
 lemma AutChar.baseChange_toUnits (ν : AutChar E) (w : unitary (𝔸 E)) :
@@ -130,18 +146,24 @@ lemma AutChar.baseChange_toUnits (ν : AutChar E) (w : unitary (𝔸 E)) :
     Subtype.ext (congrArg (w.val * ·) (star_star w.val))
   exact congrArg ν.val h_div
 
-/-- μ has weight e and tame part ψ: almost all residue characters ψ_w are trivial, and μ(u) = ∏_v
-u_v^{e(v)} · ∏_w ψ_w(u mod w) whenever u has integral finite part. -/
-class AutChar.HasWeight (μ : AutChar E) (e : outParam (NumberField.InfinitePlace E → ℤ))
+/--
+μ has weight e and tame part ψ: almost all residue characters ψ_w are trivial, and μ(u) = ∏_v
+u_v^{e(v)} · ∏_w ψ_w(u mod w) whenever u has integral finite part.
+-/
+class AutChar.HasWeight
+    (μ : AutChar E) (e : outParam (NumberField.InfinitePlace E → ℤ))
     (ψ : outParam (∀ w : FinPlace E, MulChar (ResField w) ℂ)) where
   /-- Only finitely many of the residue characters `ψ w` are nontrivial. -/
   finite_ramification : {w : FinPlace E | ψ w ≠ 1}.Finite
-  /-- If `u` has integral finite part, then `μ u` is the product of the powers `u_v ^ e v` over the
+  /--
+  If `u` has integral finite part, then `μ u` is the product of the powers `u_v ^ e v` over the
   infinite places and of the values of `ψ w` at the reductions `reduceAt w` of the finite part of
-  `u` modulo the finite places `w` (in the residue field `ResField w`). -/
-  apply_eq (u : unitary (𝔸 E)) (h : (u : 𝔸 E).snd ∈ Ô E) :
-      μ.val u = (∏ v : NumberField.InfinitePlace E, (u : 𝔸 E).fst v ^ e v) *
-          ∏ᶠ w : FinPlace E, ψ w (reduceAt w ⟨(u : 𝔸 E).snd, h⟩)
+  `u` modulo the finite places `w` (in the residue field `ResField w`).
+  -/
+  apply_eq (u : unitary (𝔸 E)) (h : (u : 𝔸 E).snd ∈ Ô E)
+    : μ.val u
+      = (∏ v : NumberField.InfinitePlace E, (u : 𝔸 E).fst v ^ e v)
+        * ∏ᶠ w : FinPlace E, ψ w (reduceAt w ⟨(u : 𝔸 E).snd, h⟩)
 
 end New
 
@@ -162,8 +184,7 @@ open NumberField IsCMField Subgroup QuotientGroup
 
 namespace New
 
-variable {E : Type*} [Field E] [CMType E]
-  (S : Finset (FinPlace E)) (u : unitary (𝔸 E))
+variable {E : Type*} [Field E] [CMType E] (S : Finset (FinPlace E)) (u : unitary (𝔸 E))
 
 /-- The subgroup of rational points of U(1)(𝔸): the adeles u with uū = 1 that come from E. -/
 def rationalU1 : Subgroup (unitary (𝔸 E)) where
@@ -173,18 +194,21 @@ def rationalU1 : Subgroup (unitary (𝔸 E)) where
 
 open Prod
 
-/-- For a finite set S of finite places, the subgroup of U(1)(𝔸) of elements whose finite part is
-integral and congruent to 1 modulo every place of S. -/
-def integralU1 {E : Type*} [Field E] [NumberField E] [IsCMField E] (S : Finset (FinPlace E)) :
-    Subgroup (unitary (𝔸 E)) :=
+/--
+For a finite set S of finite places, the subgroup of U(1)(𝔸) of elements whose finite part is
+integral and congruent to 1 modulo every place of S.
+-/
+def integralU1 {E : Type*} [Field E] [NumberField E] [IsCMField E] (S : Finset (FinPlace E))
+    : Subgroup (unitary (𝔸 E)) :=
   ofDiv {u : unitary (𝔸 E) | ∃ h : (u : 𝔸 E).2 ∈ Ô E, ∀ w ∈ S, reduceAt w ⟨(u : 𝔸 E).2, h⟩ = 1}
-    ⟨1, one_mem (Ô E), fun w _ ↦ map_one (reduceAt w)⟩ (by
+    ⟨1, one_mem (Ô E), fun w _ ↦ map_one (reduceAt w)⟩
+    (by
       -- The finite part of `u / v` is that of `u v̄`; reduce `u v̄ * v = u` modulo `w`.
       rintro u ⟨hu, hu_red⟩ v ⟨hv, hv_red⟩
       have h_int : (u : 𝔸 E).2 * star (v : 𝔸 E).2 ∈ Ô E := mul_mem hu (star_mem_Ô hv)
       refine ⟨h_int, fun w hw ↦ ?_⟩
-      simpa [Unitary.star_mul_self_of_mem, hu_red, hv_red, hw, mul_assoc, ← snd_mul,
-        ← snd_star] using! (map_mul (reduceAt w) ⟨_, h_int⟩ ⟨_, hv⟩).symm)
+      simpa [Unitary.star_mul_self_of_mem, hu_red, hv_red, hw, mul_assoc, ← snd_mul, ← snd_star]
+        using! (map_mul (reduceAt w) ⟨_, h_int⟩ ⟨_, hv⟩).symm)
 
 /-- Membership in `integralU1 S`: the finite part of `u` is integral and reduces to `1` modulo every
 place of `S`. -/
@@ -246,12 +270,16 @@ lemma divStar_eq_of_eq_mul_star {y : (𝔸 E)ˣ} {u : unitary (𝔸 E)}
     divStar y = u :=
   Subtype.ext <| (Units.mul_inv_eq_iff_eq_mul (star y)).mpr h_eq
 
-/-- Hilbert's Theorem 90 for a field with an involution that negates some nonzero element `j`: an
+/--
+Hilbert's Theorem 90 for a field with an involution that negates some nonzero element `j`: an
 element `a` with `a * star a = 1` satisfies `b = a * star b`, that is `a = b / star b`, for some
-nonzero `b`. -/
-theorem exists_eq_mul_star {K : Type*} [Field K] [StarRing K] {j : K} (hj_ne : j ≠ 0)
-    (hj_star : star j = -j) {a : K} (ha_norm : a * star a = 1) :
-    ∃ b : K, b ≠ 0 ∧ b = a * star b := by
+nonzero `b`.
+-/
+theorem exists_eq_mul_star
+    {K : Type*} [Field K] [StarRing K]
+    {j : K} (hj_ne : j ≠ 0) (hj_star : star j = -j)
+    {a : K} (ha_norm : a * star a = 1)
+    : ∃ b : K, b ≠ 0 ∧ b = a * star b := by
   by_cases h_one_add : 1 + a = 0
   · exact ⟨j, hj_ne, by linear_combination (-a) * hj_star + j * h_one_add⟩
   · exact ⟨1 + a, h_one_add, by simp [mul_add, ha_norm, add_comm]⟩
@@ -282,14 +310,17 @@ lemma AutChar.baseChange_injective :
   Subtype.ext <| DFunLike.coe_injective <|
     divStar_surjective.injective_comp_right (congrArg (fun χ : HeckeChar E ↦ ⇑χ.val) h_eq)
 
-/-- Reduction modulo w: the homomorphism from the elements of U(1)(𝔸) with integral finite part
-to the multiplicative group of the residue field at w. -/
-def reduceU1 {E : Type*} [Field E] [NumberField E] [IsCMField E]
-    (w : FinPlace E) : integralU1 (∅ : Finset (FinPlace E)) →* (ResField w)ˣ :=
-  ((reduceAt w).toMonoidHom.comp
-    { toFun (u : integralU1 ∅) := ⟨u.val.val.snd, u.property.fst⟩
-      map_one' := rfl
-      map_mul' := by simp }).toHomUnits
+/--
+Reduction modulo w: the homomorphism from the elements of U(1)(𝔸) with integral finite part
+to the multiplicative group of the residue field at w.
+-/
+def reduceU1 {E : Type*} [Field E] [NumberField E] [IsCMField E] (w : FinPlace E)
+    : integralU1 (∅ : Finset (FinPlace E)) →* (ResField w)ˣ :=
+  ((reduceAt w).toMonoidHom.comp {
+    toFun (u : integralU1 ∅) := ⟨u.val.val.snd, u.property.fst⟩
+    map_one' := rfl
+    map_mul' := by simp
+  }).toHomUnits
 
 /-- For `x` in `Eˣ` with finite idele `y`, the point `y / ȳ` of U(1)(𝔸) is a rational point times a
 point that has integral finite part and is 1 modulo the places of `S`. -/
@@ -304,11 +335,12 @@ lemma divStar_principalIdele_mem_sup (x : Eˣ) :
     simp [toAdele, div_eq_mul_inv, ← map_mul]
   exact mem_sup.2 ⟨_, h_rat, _, mem_integralU1_of_snd_eq_one _ h_snd, mul_div_cancel _ _⟩
 
-/-- The class group of `U(1)` of tame level `S`: the quotient of U(1)(𝔸) by the subgroup generated
+/--
+The class group of `U(1)` of tame level `S`: the quotient of U(1)(𝔸) by the subgroup generated
 by the rational points and the points with integral finite part that are 1 modulo every place of
-the finite set `S`. -/
-abbrev AdelicU1ClassGroup {E : Type*} [Field E] [CMType E] (S : Finset (FinPlace E)) :
-    Type _ :=
+the finite set `S`.
+-/
+abbrev AdelicU1ClassGroup {E : Type*} [Field E] [CMType E] (S : Finset (FinPlace E)) : Type _ :=
   unitary (𝔸 E) ⧸ rationalU1 ⊔ integralU1 S
 
 /-- Every class in the class group of `U(1)` of tame level `S`, the quotient of U(1)(𝔸) by the join
@@ -320,10 +352,12 @@ lemma exists_mk_divStar_eq (q : unitary (𝔸 E) ⧸ rationalU1 ⊔ integralU1 S
   obtain ⟨y, hy⟩ := exists_snd_div_divStar_finIdeleIncl_eq_one u
   exact ⟨y, (eq_iff_div_mem.2 (mem_sup_right (mem_integralU1_of_snd_eq_one _ hy))).symm⟩
 
-/-- The class group of `U(1)` of tame level `S` is finite.
+/--
+The class group of `U(1)` of tame level `S` is finite.
 
 This is the analogue for `U(1)` of a CM field of the finiteness of ray class groups of a number
-field, for a tame level given by a finite set of finite places. -/
+field, for a tame level given by a finite set of finite places.
+-/
 instance finite_u1_classGroup : Finite (unitary (𝔸 E) ⧸ rationalU1 ⊔ integralU1 S) := by
   -- `f x = x / x̄` maps the finite ideles onto the class group, through a finite quotient.
   let f : (𝔸f E)ˣ →* unitary (𝔸 E) := divStar.toMonoidHom.comp finIdeleIncl
@@ -356,8 +390,11 @@ namespace New
 
 section
 
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
-  {ψ ψ' : ∀ w : FinPlace E, MulChar (ResField w) ℂ} (u : unitary (𝔸 E)) {S : Finset (FinPlace E)}
+variable
+  {E : Type*} [Field E] [NumberField E] [IsCMField E]
+  {ψ ψ' : ∀ w : FinPlace E, MulChar (ResField w) ℂ}
+  (u : unitary (𝔸 E))
+  {S : Finset (FinPlace E)}
 
 /-! ### Elements of norm one -/
 
@@ -436,8 +473,11 @@ lemma finprod_tame_eq_prod_reduceU1 {ψ : ∀ w : FinPlace E, MulChar (ResField 
 
 end
 
-variable {E : Type*} [Field E] [CMType E] {ψ ψ' : ∀ w : FinPlace E, MulChar (ResField w) ℂ}
-  (u : unitary (𝔸 E)) {S : Finset (FinPlace E)} {μ ν : AutChar E} {e e' : InfinitePlace E → ℤ}
+variable
+  {E : Type*} [Field E] [CMType E]
+  {ψ ψ' : ∀ w : FinPlace E, MulChar (ResField w) ℂ}
+  (u : unitary (𝔸 E))
+  {S : Finset (FinPlace E)} {μ ν : AutChar E} {e e' : InfinitePlace E → ℤ}
 
 /-- A rational point `u` of `U(1)(𝔸)` is the image of an element `y` of `E` with `y ȳ = 1`. -/
 lemma exists_unitary_of_mem_rationalU1 {u : unitary (𝔸 E)} (hu : u ∈ rationalU1) :
@@ -587,13 +627,16 @@ lemma exists_hasWeight_of_prod_eq_one (hS : ∀ w : FinPlace E, w ∉ S → ψ w
   obtain ⟨μ, hμ, -⟩ := exists_hasWeight (e := e) ((coeHom ℂ).comp χ) h_rat_ℂ hS h_formula
   exact ⟨μ, hμ⟩
 
-/-- For a finite set S of finite places, the group of pairs (μ, ψ): μ a character of U(1)(𝔸) of
-weight 0 with tame part ψ, and ψ trivial outside S. -/
-noncomputable def tameChars (S : Finset (FinPlace E)) :
-    Subgroup (AutChar E × ∀ w : FinPlace E, MulChar (ResField w) ℂ) :=
-  ofDiv {μ : AutChar E × ((w : FinPlace E) → MulChar (ResField w) ℂ) |
-    HasWeight μ.1 0 μ.2 ∧ ∀ w ∉ S, μ.2 w = 1} ⟨1, HasWeight.one, by simp⟩
-    fun _ ⟨hμ, _⟩ _ ⟨hν, _⟩ ↦ ⟨(hμ.mul hν.inv :), by simp_all⟩
+/--
+For a finite set S of finite places, the group of pairs (μ, ψ): μ a character of U(1)(𝔸) of
+weight 0 with tame part ψ, and ψ trivial outside S.
+-/
+noncomputable def tameChars (S : Finset (FinPlace E))
+    : Subgroup (AutChar E × ∀ w : FinPlace E, MulChar (ResField w) ℂ) :=
+  ofDiv
+    {μ : AutChar E × ((w : FinPlace E) → MulChar (ResField w) ℂ) |
+      HasWeight μ.1 0 μ.2 ∧ ∀ w ∉ S, μ.2 w = 1}
+    ⟨1, HasWeight.one, by simp⟩ fun _ ⟨hμ, _⟩ _ ⟨hν, _⟩ ↦ ⟨(hμ.mul hν.inv :), by simp_all⟩
 
 /-- Let `χ` be a complex character of the class group `U(1)(𝔸) / (rationalU1 ⊔ integralU1 S)` of
 level `S`. Its pullback to `U(1)(𝔸)` is a continuous unitary character of weight 0 whose tame part
@@ -659,8 +702,7 @@ instance finite_tameChars : Finite (tameChars S) := by
   -- is determined by its finitely many components at the places of `S`.
   choose θ hθ using fun χ : tameChars S ↦
     exists_classGroup_char_eq_of_hasWeight_zero χ.property.1 χ.property.2
-  let data (χ : tameChars S) :
-      (AdelicU1ClassGroup S →* ℂˣ) × ∀ w : S, MulChar (ResField w.val) ℂ :=
+  let data (χ : tameChars S) : (AdelicU1ClassGroup S →* ℂˣ) × ∀ w : S, MulChar (ResField w.val) ℂ :=
     (toUnits.comp (θ χ), S.restrict χ.val.2)
   refine .of_injective data fun χ χ' h ↦ ?_
   ext w
@@ -733,7 +775,8 @@ end CharacterExistence
 
 namespace New.AutChar.HasWeight
 
-variable {E : Type*} [Field E] [CMType E]
+variable
+  {E : Type*} [Field E] [CMType E]
   {μ : AutChar E} {e : NumberField.InfinitePlace E → ℤ}
   {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
 

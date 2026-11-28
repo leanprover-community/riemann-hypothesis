@@ -210,7 +210,8 @@ lemma IsFillingData.norm_floorForm_zero_div_massRatio_le {E : Type} {𝔰 : Shap
     ← ENNReal.mul_le_mul_iff_left (P.unitaryLevel_open_compact.1.measure_ne_zero _ (by simp))
       (hF.groupMeasure_ne_top le_rfl : vol K ≠ ∞), ← mul_assoc, ofReal_pow (by positivity)]
 
-/-- Let `S` be admissible and `F` a filling datum (a large lattice datum on the unitary group over
+/--
+Let `S` be admissible and `F` a filling datum (a large lattice datum on the unitary group over
 the completions at `T`, whose modulus `g` is the component of `S.ideleM`, the product of the two
 level primes of `S`), and let `S.ideleM⁻¹` be integral off `T`. Let `Sg` be a set of chosen places
 above the first level prime, and for each such place `w` let `d w` be a nonzero vector of the span
@@ -220,24 +221,27 @@ adelic element whose reduction lies in `S.fixer Sg d`, that is, fixes `d w` for 
 the orbital integral `F.floorForm 0` of `Z.besselVector` (the translates of the generic character by
 the cosets of `K(g)` in `Z`), divided by `Z.massRatio = vol(Z) vol(K(g)) / F.unipotentMass ^ 2`, is
 a real number between `0` and `(1 + b⁻¹ ^ 6) / (b ^ (6 k)) ^ #Sg`, where `b = S.b` is the size
-parameter and `k = 𝔰.k` the rank of the definite summand. -/
-theorem IsFillingData.exists_intermediateGroup_norm_floorForm_div_le {E : Type} {𝔰 : Shape}
-    [Field E] [CMType E]
-    [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible] {T : Finset (FinPlace E)} [T.StarStable]
+parameter and `k = 𝔰.k` the rank of the definite summand.
+-/
+theorem IsFillingData.exists_intermediateGroup_norm_floorForm_div_le
+    {E : Type} {𝔰 : Shape} [Field E] [CMType E] [WeilData E]
+    {S : Filling E 𝔰} [S.IsAdmissible]
+    {T : Finset (FinPlace E)} [T.StarStable]
     {P : IntegralPlace (LocProd T)}
-    {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
-      5)}
-    (hF : S.IsFillingData T F) (Sg : Finset (S.chosenPlaces 0))
-    (d : ∀ w : S.chosenPlaces 0, S.FrameVector w) [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] :
-    ∃ Z : F.IntermediateGroup,
-      (∀ k : S.latticeStabilizer, S.reduction k ∈ S.fixer Sg d → S.toPlaces T k ∈ Z.val) ∧
-      ∀ p q : ℕ → (LocProd T)ˣ,
-        0 ≤ F.floorForm 0 p q Z.besselVector 1 / Z.massRatio.toReal ∧
-        ‖F.floorForm 0 p q Z.besselVector 1 / Z.massRatio.toReal‖ ≤
-          (1 + S.b⁻¹ ^ 6) / (S.b ^ (6 * 𝔰.k)) ^ #Sg := by
+    {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T))
+      (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)}
+    (hF : S.IsFillingData T F)
+    (Sg : Finset (S.chosenPlaces 0)) (d : ∀ w : S.chosenPlaces 0, S.FrameVector w)
+    [Fact (↑S.ideleM⁻¹ ∈ integralOff T)]
+    : ∃ Z : F.IntermediateGroup,
+      (∀ k : S.latticeStabilizer, S.reduction k ∈ S.fixer Sg d → S.toPlaces T k ∈ Z.val)
+        ∧ ∀ p q : ℕ → (LocProd T)ˣ,
+          0 ≤ F.floorForm 0 p q Z.besselVector 1 / Z.massRatio.toReal
+            ∧ ‖F.floorForm 0 p q Z.besselVector 1 / Z.massRatio.toReal‖
+              ≤ (1 + S.b⁻¹ ^ 6) / (S.b ^ (6 * 𝔰.k)) ^ #Sg := by
   obtain ⟨Z, h_mem, h_floorZeroForm_le⟩ := hF.exists_intermediateGroup_places Sg d Fact.out
-  refine ⟨Z, h_mem, fun p q ↦
-    ⟨?_, hF.norm_floorForm_zero_div_massRatio_le Z #Sg h_floorZeroForm_le p q⟩⟩
+  refine
+    ⟨Z, h_mem, fun p q ↦ ⟨?_, hF.norm_floorForm_zero_div_massRatio_le Z #Sg h_floorZeroForm_le p q⟩⟩
   rw [floorForm_zero_eq_integral hF.gauge (isCut_besselVector Z), ← Complex.ofReal_div]
   positivity
 

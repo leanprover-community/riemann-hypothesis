@@ -63,8 +63,8 @@ open Fintype NumberField
 
 namespace New.Filling
 
-variable {E : Type} {𝔰 : Shape} [Field E] [CMType E] {S : Filling E 𝔰} {γ : S.G E}
-  {side : FullOrCut}
+variable
+  {E : Type} {𝔰 : Shape} [Field E] [CMType E] {S : Filling E 𝔰} {γ : S.G E} {side : FullOrCut}
 
 /-- Each coordinate of the product of the local Bessel functions is continuous on G_∞. -/
 @[fun_prop]
@@ -240,8 +240,9 @@ attribute [local grind] IsFreeEntry
 
 section FreeBlock
 
-variable {R : Type*} [CommRing R] {𝔰 : Shape} {b : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R}
-  {M : Matrix 𝔰.MiddleIndex 𝔰.MiddleIndex R}
+variable
+  {R : Type*} [CommRing R]
+  {𝔰 : Shape} {b : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R} {M : Matrix 𝔰.MiddleIndex 𝔰.MiddleIndex R}
 
 open scoped Classical in
 /-- If `b` differs from the identity only in its middle block, then its square block on the free
@@ -274,10 +275,12 @@ section Coordinates
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
 
-/-- The embedding of `S.classUnipotent c` into the real unipotent group 𝖴_∞, the product over the
-infinite places of the Bessel unipotent group of G₁. -/
-noncomputable def classUnipotentToInf (c : S.Classes) :
-    S.classUnipotent c →* InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU :=
+/--
+The embedding of `S.classUnipotent c` into the real unipotent group 𝖴_∞, the product over the
+infinite places of the Bessel unipotent group of G₁.
+-/
+noncomputable def classUnipotentToInf (c : S.Classes)
+    : S.classUnipotent c →* InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU :=
   .mk' (fun γ v ↦ ⟨S.ratToInf γ v, γ.property.1.ratToInf_mem_agreeWithOneOn v⟩) (by aesop)
 
 lemma coe_classUnipotentToInf_apply {c : S.Classes} (γ : S.classUnipotent c) (v : InfinitePlace E) :
@@ -288,24 +291,34 @@ lemma classUnipotentToInf_injective (c : S.Classes) : Injective (classUnipotentT
   simp [funext_iff, coe_classUnipotentToInf_apply, ← SetLike.coe_eq_coe, GeneralLinearGroup.ext_iff,
     (RingHom.injective _).eq_iff]
 
-/-- The free entries (`IsFreeEntry`) of the row e_a of a point `u` of the real unipotent group
-𝖴_∞, at all infinite places. -/
-def freeRowCoords (u : InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU) (a : Fin 𝔰.ϱ)
-    (j : {j : 𝔰.BesselIndex // IsFreeEntry (a, j)}) (v : InfinitePlace E) : ℂ :=
+/--
+The free entries (`IsFreeEntry`) of the row e_a of a point `u` of the real unipotent group
+𝖴_∞, at all infinite places.
+-/
+def freeRowCoords
+    (u : InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU)
+    (a : Fin 𝔰.ϱ) (j : {j : 𝔰.BesselIndex // IsFreeEntry (a, j)})
+    (v : InfinitePlace E)
+    : ℂ :=
   (u v : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (inl a) j
 
-/-- The imaginary parts of the entry at (e_a, e*_a) of a point `u` of the real unipotent group
-𝖴_∞, at all infinite places. -/
-def imRowCoords (u : InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU) (a : Fin 𝔰.ϱ)
-    (v : InfinitePlace E) : ℝ :=
+/--
+The imaginary parts of the entry at (e_a, e*_a) of a point `u` of the real unipotent group
+𝖴_∞, at all infinite places.
+-/
+def imRowCoords
+    (u : InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU) (a : Fin 𝔰.ϱ) (v : InfinitePlace E)
+    : ℝ :=
   ((u v : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (inl a) (eStar a)).im
 
-/-- The coordinates of a point `u` of the real unipotent group 𝖴_∞, grouped by rows: for each row
+/--
+The coordinates of a point `u` of the real unipotent group 𝖴_∞, grouped by rows: for each row
 e_a, its free entries (`freeRowCoords`) and the imaginary parts of its entry at e*_a
-(`imRowCoords`), at all infinite places. -/
-def rowCoords (u : InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU) :
-    (∀ a : Fin 𝔰.ϱ, {j : 𝔰.BesselIndex // IsFreeEntry (a, j)} → InfinitePlace E → ℂ) ×
-      (Fin 𝔰.ϱ → InfinitePlace E → ℝ) :=
+(`imRowCoords`), at all infinite places.
+-/
+def rowCoords (u : InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU)
+    : (∀ a : Fin 𝔰.ϱ, {j : 𝔰.BesselIndex // IsFreeEntry (a, j)} → InfinitePlace E → ℂ)
+      × (Fin 𝔰.ϱ → InfinitePlace E → ℝ) :=
   (freeRowCoords u, imRowCoords u)
 
 open scoped Classical in
@@ -489,10 +502,12 @@ open scoped Classical
 
 variable [HasPrimitiveRoot5040 E]
 
-/-- The transpose of the square block of the lattice basis `classBasis c` on the free columns
-(`IsFreeEntry`) of the row e_a, as an invertible matrix. -/
-noncomputable def freeBlock (c : S.Classes) (a : Fin 𝔰.ϱ) :
-    GL {j : 𝔰.BesselIndex // IsFreeEntry (a, j)} (𝔸f E) :=
+/--
+The transpose of the square block of the lattice basis `classBasis c` on the free columns
+(`IsFreeEntry`) of the row e_a, as an invertible matrix.
+-/
+noncomputable def freeBlock (c : S.Classes) (a : Fin 𝔰.ϱ)
+    : GL {j : 𝔰.BesselIndex // IsFreeEntry (a, j)} (𝔸f E) :=
   .mk'' ((classBasis c).val.toSquareBlockProp fun j ↦ IsFreeEntry (a, j))ᵀ <| by
     obtain ⟨M, h_basis, -⟩ := exists_classBasis_eq_fromBlocks c
     simp [det_toSquareBlockProp_isFreeEntry h_basis]
@@ -520,12 +535,14 @@ lemma isUnit_basisScale_ratio (a : Fin 𝔰.ϱ) :
       (S.M : ℂ) / S.basisScale v (inl a) * S.basisScale v j := by
   simp [Nat.Prime.ne_zero, Pi.isUnit_iff]
 
-/-- The lattice of free entries of the row e_a for the class `c`: the vectors with entries
+/--
+The lattice of free entries of the row e_a for the class `c`: the vectors with entries
 `S.M / S.basisScale v e_a * S.basisScale v j * Φ v (x j)`, for the rational vectors `x` on the free
 columns `j` such that `freeBlock c a *ᵥ x` is integral. Here `S.basisScale v j` is the scale of the
-basis vector `j` at the infinite place `v`, and `Φ v` is the chosen complex embedding at `v`. -/
-noncomputable def freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) :
-    AddSubmonoid ({j : 𝔰.BesselIndex // IsFreeEntry (a, j)} → InfinitePlace E → ℂ) :=
+basis vector `j` at the infinite place `v`, and `Φ v` is the chosen complex embedding at `v`.
+-/
+noncomputable def freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ)
+    : AddSubmonoid ({j : 𝔰.BesselIndex // IsFreeEntry (a, j)} → InfinitePlace E → ℂ) :=
   (Variety.classLattice (freeBlock c a)⁻¹ ⊥
     (ContinuousLinearEquiv.smulLeft (isUnit_basisScale_ratio S a).unit)).toAddSubmonoid
 

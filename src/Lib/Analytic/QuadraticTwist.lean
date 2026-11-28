@@ -71,14 +71,18 @@ section ThreeLines
 
 open Set HadamardThreeLines
 
-/-- The measure of cancellation `J(c, T) = ∫_{1/T}^∞ (|θ_c(u)| + |θ_{μc}(u)|) du / u` of a sequence
-`c`, where `θ_c` is its theta series of parity `j`. -/
+/--
+The measure of cancellation `J(c, T) = ∫_{1/T}^∞ (|θ_c(u)| + |θ_{μc}(u)|) du / u` of a sequence
+`c`, where `θ_c` is its theta series of parity `j`.
+-/
 noncomputable def thetaTailIntegral (c : ℕ → ℂ) (T : ℝ) : ℝ :=
   ∫ u : ℝ in Ioi T⁻¹, (‖thetaSeries j c u‖ + ‖thetaSeries j (fun n : ℕ ↦ c n * μ n) u‖) / u
 
-/-- The mollifier `𝓜(s) = ∫_{1/T}^∞ θ_{μc}(u) u ^ (s - 1/2) du / u`, where `θ_{μc}` is the theta
+/--
+The mollifier `𝓜(s) = ∫_{1/T}^∞ θ_{μc}(u) u ^ (s - 1/2) du / u`, where `θ_{μc}` is the theta
 series with the coefficients `c(n) μ(n)`. For a character `c = χ` it is the truncated integral for
-`Γ_j / L`. -/
+`Γ_j / L`.
+-/
 noncomputable def mollifier (c : ℕ → ℂ) (T : ℝ) (s : ℂ) : ℂ :=
   ∫ u : ℝ in Ioi T⁻¹, (u : ℂ) ^ (s - 2⁻¹ - 1) • thetaSeries j (fun n : ℕ ↦ c n * μ n) u
 
@@ -211,23 +215,26 @@ lemma norm_gaussianMellin_mul_LFunction_le (hχ : χ.IsPrimitive) (hχ_ne : χ �
         ← le_add_of_nonneg_right (integral_norm_thetaSeries_div_nonneg (inv_pos.2 hT).le)]
 
 variable (j) in
-/-- For each parity `j` there is a constant `C` with the following property. Let `δ, T > 0`, and let
+/--
+For each parity `j` there is a constant `C` with the following property. Let `δ, T > 0`, and let
 `χ ≠ 1` be a primitive character of conductor `q ≤ T²` with `χ(-1) = (-1)^j` and
 `J(χ, T) ≤ T ^ (2 δ)`, where `J(χ, T) = ∫_{1/T}^∞ (|θ_χ(u)| + |θ_{μχ}(u)|) du / u`
 (`thetaTailIntegral`) and `θ_c` is the parity-`j` theta series of `c`. Then every zero `s` of
 `L(s, χ)` with `1/2 + 9 δ ≤ re s ≤ 1` satisfies `|Γ_j(s)|² ≤ C T ^ (-2 δ)`, where
 `Γ_j(s) = ∫_0^∞ w(z) z ^ s dz / z` (`gaussianMellin`) is the Mellin transform of the parity-`j`
-weight `w`. -/
-theorem three_lines_bound_of_LFunction_eq_zero :
-    ∃ C : ℝ, ∀ {δ T : ℝ} {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q} {s : ℂ}, 0 < δ →
-      χ.IsPrimitive → χ ≠ 1 → χ (-1) = (-1) ^ j.val → 0 < T → q ≤ T ^ 2 →
-      thetaTailIntegral j (χ ·) T ≤ T ^ (2 * δ) →
-      χ.LFunction s = 0 → 1 / 2 + 9 * δ ≤ s.re → s.re ≤ 1 →
-      ‖gaussianMellin j s‖ ^ 2 ≤ C * T ^ (-(2 * δ)) := by
+weight `w`.
+-/
+theorem three_lines_bound_of_LFunction_eq_zero
+    : ∃ C : ℝ, ∀ {δ T : ℝ} {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q} {s : ℂ},
+      0 < δ → χ.IsPrimitive → χ ≠ 1 → χ (-1) = (-1) ^ j.val → 0 < T → q ≤ T ^ 2
+        → thetaTailIntegral j (χ ·) T ≤ T ^ (2 * δ) → χ.LFunction s = 0 → 1 / 2 + 9 * δ ≤ s.re
+        → s.re ≤ 1
+        → ‖gaussianMellin j s‖ ^ 2 ≤ C * T ^ (-(2 * δ)) := by
   -- Apply the three-lines theorem on `1/2 ≤ re z ≤ 2` to `Ψ = Γ_j L 𝓜 - Γ_j²`, which is `-Γ_j²`
   -- at the zero, `≪ T ^ (4 δ)` on the left line and `≪ 1 / T` on the right line.
-  obtain ⟨hΓ_diff, G, hG⟩ : DifferentiableOn ℂ (gaussianMellin j) {z : ℂ | 0 < z.re} ∧
-      ∃ G : ℝ, ∀ z : ℂ, z.re ∈ Set.Icc 2⁻¹ 2 → ‖gaussianMellin j z‖ ≤ G :=
+  obtain ⟨hΓ_diff, G, hG⟩
+      : DifferentiableOn ℂ (gaussianMellin j) {z : ℂ | 0 < z.re}
+        ∧ ∃ G : ℝ, ∀ z : ℂ, z.re ∈ Set.Icc 2⁻¹ 2 → ‖gaussianMellin j z‖ ≤ G :=
     gaussianMellin_differentiableOn_and_bdd
   set C : ℝ := 9 + G ^ 2
   refine ⟨C, fun {δ T q} _ {χ s} hδ hχ hχ_ne h_parity hT hq hJ h_zero h_re h_re_le ↦ ?_⟩
@@ -240,7 +247,8 @@ theorem three_lines_bound_of_LFunction_eq_zero :
     have h_prod : ‖gaussianMellin j z * χ.LFunction z‖ ≤ 2 * T ^ (2 * δ) := by
       grw [norm_gaussianMellin_mul_LFunction_le hχ hχ_ne h_parity hT hq hz, hJ]
     have h𝓜 : ‖mollifier j (χ ·) T z‖ ≤ T ^ (2 * δ) := (norm_mollifier_le hχ_le hT hz).trans hJ
-    calc ‖Ψ z‖
+    calc
+      ‖Ψ z‖
       _ ≤ 2 * T ^ (2 * δ) * T ^ (2 * δ) + G ^ 2 := by
         grw [norm_sub_le, norm_mul, norm_pow, hG z (by norm_num [hz]), h_prod, h𝓜]
       _ ≤ C * T ^ (4 * δ) := by
@@ -250,9 +258,10 @@ theorem three_lines_bound_of_LFunction_eq_zero :
       show 9 ≤ C from le_add_of_nonneg_right (sq_nonneg G)]
   -- `Γ_j`, `Γ_j L` and `𝓜` are holomorphic and bounded in the strip.
   obtain ⟨h𝓜_diff, G₂, hG₂⟩ := mollifier_differentiableOn_and_bounded (j := j) hχ_le hT
-  obtain ⟨G₁, hG₁⟩ : ∃ G₁ : ℝ, ∀ z : ℂ,
-      z.re ∈ Set.Icc 2⁻¹ 2 → ‖mellin (gaussianTheta j (χ ·)) z‖ ≤ G₁ :=
-    (mellin_differentiableOn_and_bounded (fun _ ↦ norm_gaussianTheta_char_le hχ_ne h_parity)
+  obtain ⟨G₁, hG₁⟩
+      : ∃ G₁ : ℝ, ∀ z : ℂ, z.re ∈ Set.Icc 2⁻¹ 2 → ‖mellin (gaussianTheta j (χ ·)) z‖ ≤ G₁ :=
+    (mellin_differentiableOn_and_bounded
+      (fun _ ↦ norm_gaussianTheta_char_le hχ_ne h_parity)
       measurable_gaussianTheta).2
   have h_pos {x : ℝ} (hx : x ∈ Set.Icc 2⁻¹ 2) : 0 < x := lt_of_lt_of_le (by norm_num) hx.1
   have h_diff : DifferentiableOn ℂ Ψ (closure (verticalStrip 2⁻¹ 2)) := by
@@ -268,7 +277,9 @@ theorem three_lines_bound_of_LFunction_eq_zero :
   -- The line `re z = 2` has the weight `(re s - 1/2) / (3/2) ≥ 6 δ`.
   let weight : ℝ := (s.re - 2⁻¹) / (2 - 2⁻¹)
   have h_weight : 6 * δ ≤ weight := (le_div_iff₀ (by norm_num)).2 (by linarith)
-  calc ‖gaussianMellin j s‖ ^ 2 = ‖Ψ s‖ := by simp [Ψ, h_zero]
+  calc
+    ‖gaussianMellin j s‖ ^ 2
+      = ‖Ψ s‖ := by simp [Ψ, h_zero]
     _ ≤ (C * T ^ (4 * δ)) ^ (1 - weight) * (C * T ^ (-1 : ℝ)) ^ weight :=
       norm_le_interp_of_mem_verticalClosedStrip' (by norm_num) ⟨by linarith, by linarith⟩
         h_diff.diffContOnCl h_bdd h_left h_right
@@ -282,21 +293,23 @@ theorem three_lines_bound_of_LFunction_eq_zero :
       gcongr
 
 variable (j) in
-/-- **Three lines.** Let `δ > 0`, let `T` be large in terms of `δ` and the height `H`, and let
+/--
+**Three lines.** Let `δ > 0`, let `T` be large in terms of `δ` and the height `H`, and let
 `χ ≠ 1` be primitive of conductor `q ≤ T²`, with `χ(-1) = (-1) ^ j`. If `L(s, χ)` has a zero in the
 box `re s ≥ 1/2 + 9 δ`, `|im s| ≤ H`, then the integral `J(χ, T)` of `(|θ_χ(u)| + |θ_{μχ}(u)|) / u`
-over `u > 1 / T` (`thetaTailIntegral`) exceeds `T ^ (2 δ)`. -/
-theorem eventually_rpow_lt_thetaTailIntegral (hδ : 0 < δ) (H : ℝ) :
-    ∀ᶠ T : ℝ in atTop, ∀ {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q} {s : ℂ},
-      χ.IsPrimitive → χ ≠ 1 → χ (-1) = (-1) ^ j.val → q ≤ T ^ 2 →
-      1 / 2 + 9 * δ ≤ s.re → |s.im| ≤ H → χ.LFunction s = 0 →
-      T ^ (2 * δ) < thetaTailIntegral j (χ ·) T := by
+over `u > 1 / T` (`thetaTailIntegral`) exceeds `T ^ (2 δ)`.
+-/
+theorem eventually_rpow_lt_thetaTailIntegral (hδ : 0 < δ) (H : ℝ)
+    : ∀ᶠ T : ℝ in atTop, ∀ {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q} {s : ℂ},
+        χ.IsPrimitive → χ ≠ 1 → χ (-1) = (-1) ^ j.val → q ≤ T ^ 2 →
+        1 / 2 + 9 * δ ≤ s.re → |s.im| ≤ H → χ.LFunction s = 0 →
+        T ^ (2 * δ) < thetaTailIntegral j (χ ·) T := by
   obtain ⟨C, hC⟩ := three_lines_bound_of_LFunction_eq_zero j -- `|Γ_j(s)|² ≤ C T ^ (-2 δ)`
   -- `|Γ_j|` has a positive lower bound on the rectangle `1/2 ≤ re s ≤ 1`, `|im s| ≤ H`.
-  obtain ⟨c, hc_pos, hc⟩ :
-      ∃ c > 0, ∀ s ∈ Set.Icc 2⁻¹ 1 ×ℂ Set.Icc (-H) H, c ≤ ‖gaussianMellin j s‖ :=
-    exists_pos_le_norm_gaussianMellin (isCompact_Icc.reProdIm isCompact_Icc)
-      fun s hs ↦ lt_of_lt_of_le (by norm_num) (mem_reProdIm.1 hs).1.1
+  obtain ⟨c, hc_pos, hc⟩
+      : ∃ c > 0, ∀ s ∈ Set.Icc 2⁻¹ 1 ×ℂ Set.Icc (-H) H, c ≤ ‖gaussianMellin j s‖ :=
+    exists_pos_le_norm_gaussianMellin (isCompact_Icc.reProdIm isCompact_Icc) fun s hs ↦
+      lt_of_lt_of_le (by norm_num) (mem_reProdIm.1 hs).1.1
   have h_lim : Tendsto (fun T : ℝ ↦ C * T ^ (-(2 * δ))) atTop (nhds 0) := by
     simpa using (tendsto_rpow_neg_atTop (by positivity : 0 < 2 * δ)).const_mul C
   filter_upwards [h_lim.eventually_lt_const (pow_pos hc_pos 2), eventually_gt_atTop 0]
@@ -305,7 +318,8 @@ theorem eventually_rpow_lt_thetaTailIntegral (hδ : 0 < δ) (H : ℝ) :
     le_of_not_ge fun hs ↦ χ.LFunction_ne_zero_of_one_le_re (.inl hχ_ne) hs h_zero
   by_contra! hJ
   refine h_small.not_ge ?_
-  calc c ^ 2
+  calc
+    c ^ 2
     _ ≤ ‖gaussianMellin j s‖ ^ 2 := by grw [hc s ⟨⟨by linarith, h_re_le⟩, abs_le.1 h_im⟩]
     _ ≤ C * T ^ (-(2 * δ)) := hC hδ hχ hχ_ne h_parity hT hq hJ h_zero h_re h_re_le
 
@@ -539,50 +553,60 @@ lemma exists_summable_mul_norm_sum_jacobiSym_le (j : Fin 2) {δ : ℝ} (hδ : 0 
           by ring, mul_rpow (by positivity) (by positivity)]
       _ ≤ _ := mul_le_mul_of_nonneg_right (le_add_of_nonneg_left (by positivity)) (by positivity)
 
-/-- **Mean value.** Let `n°` be the odd part of `n`, `w(z) = z ^ j e^(-π z²)` and `δ > 0`. For
+/--
+**Mean value.** Let `n°` be the odd part of `n`, `w(z) = z ^ j e^(-π z²)` and `δ > 0`. For
 `T > 0`, `u ≥ 1 / T` and `|αₙ| ≤ 1`, the theta series `θ_v(u) = u ^ (1/2) ∑ₙ αₙ (-v/n°) w(n u)`
 (`thetaSeries`) satisfy `∑_{1 ≤ v ≤ T²} |θ_v(u)|² ≪_δ T² u ^ (-2 δ)`. This is a form of an estimate
 of Elliott.
 
 It replaces Heath-Brown's quadratic large sieve: here the coefficients are bounded by `1`, the
 weight is fixed, and the effective length `1 / u` of the sums is at most `T`, the square root of the
-range of `v`. -/
-theorem sum_sq_thetaSeries_jacobiSym_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
-    ∃ C : ℝ, ∀ T > (0 : ℝ), ∀ u ≥ T⁻¹, ∀ α : ℕ → ℂ, (∀ n : ℕ, ‖α n‖ ≤ 1) →
-      ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖thetaSeries j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) u‖ ^ 2 ≤
-        C * (T ^ 2 * u ^ (-2 * δ)) := by
+range of `v`.
+-/
+theorem sum_sq_thetaSeries_jacobiSym_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ)
+    : ∃ C : ℝ, ∀ T > (0 : ℝ), ∀ u ≥ T⁻¹, ∀ α : ℕ → ℂ,
+      (∀ n : ℕ, ‖α n‖ ≤ 1)
+        → ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖thetaSeries j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) u‖ ^ 2
+          ≤ C * (T ^ 2 * u ^ (-2 * δ)) := by
   -- Expand the square into a sum over pairs `(n, m)` with the inner sum `∑_v (-v / (n m)°)`.
   obtain ⟨M, hM, hM_ge⟩ := exists_summable_mul_norm_sum_jacobiSym_le j hδ
   refine ⟨∑' p, M p, fun T hT u hu α hα ↦ ?_⟩
   have hu_pos : 0 < u := (inv_pos.2 hT).trans_le hu
   let a (v : ℕ) (n : ℕ+) : ℂ := √u * (α n * J(-v | ordCompl[2] n) * gaussianMonomial j (n * u))
   let θ (v : ℕ) : ℂ := thetaSeries j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) u
-  have ha (v : ℕ) : HasSum (a v) (θ v) := (summable_and_norm_gaussianTheta_le (j := j)
-    (norm_mul_jacobiSym_le_one hα v) hu_pos).1.hasSum.mul_left (√u : ℂ)
-  have h_expand : HasSum (fun p : ℕ+ × ℕ+ ↦ ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, a v p.1 * star (a v p.2))
+  have ha (v : ℕ) : HasSum (a v) (θ v) :=
+    (summable_and_norm_gaussianTheta_le (j := j) (norm_mul_jacobiSym_le_one hα v)
+      hu_pos).1.hasSum.mul_left (√u : ℂ)
+  have h_expand : HasSum
+      (fun p : ℕ+ × ℕ+ ↦ ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, a v p.1 * star (a v p.2))
       (∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, θ v * star (θ v)) :=
-    hasSum_sum fun v _ ↦ (ha v).mul (g := star (a v)) (ha v).star
-      (summable_mul_of_summable_norm (ha v).summable.norm (ha v).summable.star.norm)
-  have h_pair (n m : ℕ+) (v : ℕ) : a v n * star (a v m) =
-      α n * star (α m) * (u * gaussianMonomial j (n * u) * gaussianMonomial j (m * u) : ℝ) *
-        J(-v | ordCompl[2] (n * m : ℕ)) := by
+    hasSum_sum fun v _ ↦
+      (ha v).mul (g := star (a v)) (ha v).star
+        (summable_mul_of_summable_norm (ha v).summable.norm (ha v).summable.star.norm)
+  have h_pair (n m : ℕ+) (v : ℕ)
+      : a v n * star (a v m)
+        = α n * star (α m) * (u * gaussianMonomial j (n * u) * gaussianMonomial j (m * u) : ℝ)
+          * J(-v | ordCompl[2] (n * m : ℕ)) := by
     have h_sqrt : (√u : ℂ) * √u = u := mod_cast mul_self_sqrt hu_pos.le
     rw [ordCompl_mul, mul_right' _ (ordCompl_pos 2 n.ne_zero).ne' (ordCompl_pos 2 m.ne_zero).ne']
     simp only [a, star_mul', star_intCast, star_def, conj_ofReal, ofReal_mul, Int.cast_mul]
     linear_combination α n * (starRingEnd ℂ) (α m) * gaussianMonomial j (n * u) *
       gaussianMonomial j (m * u) * J(-v | ordCompl[2] n) * J(-v | ordCompl[2] m) * h_sqrt
-  calc ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖θ v‖ ^ 2
+  calc
+    ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖θ v‖ ^ 2
     _ ≤ ‖∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, θ v * star (θ v)‖ := by
       simp_rw [star_def, mul_conj']
       exact mod_cast le_norm_self _
-    _ ≤ _ := h_expand.norm_le_of_bounded (hM.hasSum.mul_right _) fun (n, m) ↦ by
-      calc ‖∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, a v n * star (a v m)‖
-        _ = ‖α n‖ * ‖α m‖ * (u * |gaussianMonomial j (n * u)| * |gaussianMonomial j (m * u)|) *
-            ‖∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, (J(-v | ordCompl[2] (n * m : ℕ)) : ℂ)‖ := by
-          rw [sum_congr rfl fun v _ ↦ h_pair n m v, ← mul_sum]
-          simp [abs_of_pos hu_pos]
-        _ ≤ M (n, m) * (T ^ 2 * u ^ (-2 * δ)) := by
-          grw [hα, hα, one_mul, one_mul, hM_ge T hT u hu n m]
+    _ ≤ _ :=
+      h_expand.norm_le_of_bounded (hM.hasSum.mul_right _) fun (n, m) ↦ by
+        calc
+          ‖∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, a v n * star (a v m)‖
+          _ = ‖α n‖ * ‖α m‖ * (u * |gaussianMonomial j (n * u)| * |gaussianMonomial j (m * u)|)
+              * ‖∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, (J(-v | ordCompl[2] (n * m : ℕ)) : ℂ)‖ := by
+            rw [sum_congr rfl fun v _ ↦ h_pair n m v, ← mul_sum]
+            simp [abs_of_pos hu_pos]
+          _ ≤ M (n, m) * (T ^ 2 * u ^ (-2 * δ)) := by
+            grw [hα, hα, one_mul, one_mul, hM_ge T hT u hu n m]
 
 /-- For `|αₙ| ≤ 1` let `θ_v(u) = u ^ (1/2) ∑_{n ≥ 1} αₙ (-v/n°) w(n u)` be the `thetaSeries` with
 the weight `w` of index `j`. Here `(-v/n°)` is the Jacobi symbol and `n°` is the odd part of `n`.
@@ -668,8 +692,10 @@ lemma isPrimitive_quadTwist {M d : ℕ} [NeZero M] [Fact d.Prime] {ψ : Dirichle
   rw [conductor_mul_of_coprime, conductor_changeLevel, conductor_changeLevel, hψ, hε]
   simpa only [conductor_changeLevel, show ψ.conductor = M from hψ, hε] using hM
 
-/-- The number `d` is a prime, and the `L`-function of the twist `ψ (·/d)` (`quadTwist ψ d`) has a
-zero in the box `re s ≥ β`, `|im s| ≤ H`. -/
+/--
+The number `d` is a prime, and the `L`-function of the twist `ψ (·/d)` (`quadTwist ψ d`) has a
+zero in the box `re s ≥ β`, `|im s| ≤ H`.
+-/
 structure IsPrimeWithTwistZero (ψ : DirichletCharacter ℂ N) (β H : ℝ) (d : ℕ) : Prop where
   /-- The number `d` is prime. -/
   [prime : Fact d.Prime]
@@ -724,8 +750,10 @@ lemma exists_card_zero_quadTwist_le {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {M : ℕ
       rw [mul_assoc, ← rpow_add hT]
       ring_nf
 
-/-- A prime `d` of the class `a` modulo `N` is bad if some `L(s, ξ (·/d))`, with `ξ` modulo `N`, has
-a zero in the box `re s ≥ β`, `|im s| ≤ H`. -/
+/--
+A prime `d` of the class `a` modulo `N` is bad if some `L(s, ξ (·/d))`, with `ξ` modulo `N`, has
+a zero in the box `re s ≥ β`, `|im s| ≤ H`.
+-/
 def IsBadPrime (a : ZMod N) (β H : ℝ) (d : ℕ) : Prop :=
   (d : ZMod N) = a ∧ ∃ ξ : DirichletCharacter ℂ N, IsPrimeWithTwistZero ξ β H d
 

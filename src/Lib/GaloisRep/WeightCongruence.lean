@@ -89,35 +89,43 @@ open Matrix RingHomClass IntermediateField
 
 namespace New
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  {l : ℕ} [Fact l.Prime] [PadicIso l] (κ κ' : Weight E)
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {l : ℕ} [Fact l.Prime] [PadicIso l]
+  (κ κ' : Weight E)
 
-/-- The homomorphism sending g to the family, over infinite places v, of its component at the place
+/--
+The homomorphism sending g to the family, over infinite places v, of its component at the place
 induced by x ↦ ιΦ_v(x̄) (`New.weightEmbedding`; Φ_v is the embedding of the CM type at v, x̄ the
-complex conjugate of x), read in GL_n(Q̄_l). -/
+complex conjugate of x), read in GL_n(Q̄_l).
+-/
 @[simps! -isSimp toFun]
 def padicComponents : Gf E n →ₜ* NumberField.InfinitePlace E → GL n (PadicAlgCl l) where
-  toMonoidHom := MonoidHom.pi fun v ↦
-    (GeneralLinearGroup.map
-        (exists_placeOfEmb_extension (weightEmbedding (toRingHom ιℓ) v)).choose).comp
-      (Gf.atPlace (placeOfEmb (weightEmbedding (toRingHom ιℓ) v)))
-  continuous_toFun := continuous_pi fun v ↦ (continuous_adeleExtension
-    (weightEmbedding (toRingHom ιℓ) v)).generalLinearGroup_map.continuousOn.domRestrict
+  toMonoidHom :=
+    MonoidHom.pi fun v ↦
+      (GeneralLinearGroup.map (exists_placeOfEmb_extension (weightEmbedding (toRingHom ιℓ)
+        v)).choose).comp (Gf.atPlace (placeOfEmb (weightEmbedding (toRingHom ιℓ) v)))
+  continuous_toFun :=
+    continuous_pi fun v ↦
+      (continuous_adeleExtension (weightEmbedding (toRingHom ιℓ)
+        v)).generalLinearGroup_map.continuousOn.domRestrict
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
-/-- The ι-semilinear map sending f to the l-adic function g ↦ M ρ_{κ'}(z(g))⁻¹ ι(f(g)), with
-z = `New.padicComponents`, viewed as a function of g and a coordinate. -/
-def padicModel (M : Matrix (WeylIndex n κ.1) (WeylIndexFamily (fun _ ↦ n) κ'.1) (PadicAlgCl l)) :
-    (Gf E n → WeylIndexFamily (fun _ ↦ n) κ'.1 → ℂ) →ₛₗ[toRingHom ιℓ]
-      Gf E n × WeylIndex n κ.1 → PadicAlgCl l where
+/--
+The ι-semilinear map sending f to the l-adic function g ↦ M ρ_{κ'}(z(g))⁻¹ ι(f(g)), with
+z = `New.padicComponents`, viewed as a function of g and a coordinate.
+-/
+def padicModel (M : Matrix (WeylIndex n κ.1) (WeylIndexFamily (fun _ ↦ n) κ'.1) (PadicAlgCl l))
+    : (Gf E n → WeylIndexFamily (fun _ ↦ n) κ'.1 → ℂ) →ₛₗ[toRingHom ιℓ]
+        Gf E n × WeylIndex n κ.1 → PadicAlgCl l where
   toFun f x := (M *ᵥ weylRep κ'.1 κ'.2 (padicComponents x.1)⁻¹ *ᵥ ιℓ ∘ f x.1) x.2
-  map_add' f g := funext fun x ↦ by
-    simp [mulVec_add]
-  map_smul' c f := funext fun x ↦ by
-    have h_smul : ιℓ ∘ (c • f) x.1 = ιℓ c • ιℓ ∘ f x.1 := funext fun i ↦ map_mul ιℓ c (f x.1 i)
-    rw [h_smul, mulVec_smul, mulVec_smul]
-    rfl
+  map_add' f g := funext fun x ↦ by simp [mulVec_add]
+  map_smul' c f :=
+    funext fun x ↦ by
+      have h_smul : ιℓ ∘ (c • f) x.1 = ιℓ c • ιℓ ∘ f x.1 := funext fun i ↦ map_mul ιℓ c (f x.1 i)
+      rw [h_smul, mulVec_smul, mulVec_smul]
+      rfl
 
 /-- For a rational point `γ`, applying `ιℓ` turns the action of `γ` on vectors of weight `κ` into
 multiplication by the matrix `weylRep` at `padicComponents` of the finite adelic image of `γ`. -/
@@ -182,8 +190,9 @@ section FreeWeightDensity
 
 open Module Finset IsUltrametricDist Matrix MvPolynomial Submodule Fintype ContinuousMap
 
-variable {X k : Type} [TopologicalSpace X] [CompactSpace X] [Nonempty X] [NormedField k]
-  [IsUltrametricDist k]
+variable
+  {X k : Type}
+  [TopologicalSpace X] [CompactSpace X] [Nonempty X] [NormedField k] [IsUltrametricDist k]
 
 /-- An ultrametric Stone–Weierstrass theorem. Suppose that for each point `a` some `d ∈ N` equals
 `φ` at all points where every multiplier `u ∈ N / N` takes the same value as at `a`. Then `φ` lies
@@ -427,17 +436,20 @@ end FreeWeightDensity
 
 section WeightCongruence
 
-open NumberField IsCMField Matrix Kronecker
-  Set Submodule IsUltrametricDist Finset RingHom
+open NumberField IsCMField Matrix Kronecker Set Submodule IsUltrametricDist Finset RingHom
 
 namespace New
 
-variable {E : Type} [Field E] [CMType E]
+variable
+  {E : Type} [Field E] [CMType E]
   {N l : ℕ} [Fact l.Prime] [PadicIso l]
-  (κ : Weight E) (w : FinPlace E) (hw : star w ≠ w) (g : GL (Fin N) (LocField w))
+  (κ : Weight E)
+  (w : FinPlace E) (hw : star w ≠ w) (g : GL (Fin N) (LocField w))
 
-/-- The statement that the finite place `u` of E induced by the l-adic embedding x ↦ ιΦ_v(x̄)
-attached to the infinite place `v` (`New.weightEmbedding`) is w or its conjugate w̄. -/
+/--
+The statement that the finite place `u` of E induced by the l-adic embedding x ↦ ιΦ_v(x̄)
+attached to the infinite place `v` (`New.weightEmbedding`) is w or its conjugate w̄.
+-/
 def InducesPlacePair (v : InfinitePlace E) : Prop :=
   let u : FinPlace E := placeOfEmb (weightEmbedding ιℓ.toRingHom v)
   u = star w ∨ u = w

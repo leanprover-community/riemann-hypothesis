@@ -58,8 +58,10 @@ open MeasureTheory ComplexConjugate
 
 variable (W : Type*) [AddCommGroup W] [TopologicalSpace W]
 
-/-- A continuous function β on W × W, W an abelian group with a topology, with values of modulus
-one, multiplicative in each variable, and β(x,x) = 1. -/
+/--
+A continuous function β on W × W, W an abelian group with a topology, with values of modulus
+one, multiplicative in each variable, and β(x,x) = 1.
+-/
 structure New.Heisenberg where
   /-- The bicharacter `β x y`, a complex-valued function on `W × W`. -/
   β : W → W → ℂ
@@ -76,11 +78,13 @@ structure New.Heisenberg where
 
 namespace New.Heisenberg
 
-variable {W} [MeasurableSpace W]
-  (H : Heisenberg W) (μ : outParam (Measure W)) (e : outParam (W → ℂ))
+variable
+  {W} [MeasurableSpace W] (H : Heisenberg W) (μ : outParam (Measure W)) (e : outParam (W → ℂ))
 
-/-- A representation of the Heisenberg datum `H`: linear isometries `ρ x`, `x : W`, of a complex
-normed space `X`, with `ρ x ∘ ρ y = β x y • ρ (x + y)` and `(x, v) ↦ ρ x v` continuous. -/
+/--
+A representation of the Heisenberg datum `H`: linear isometries `ρ x`, `x : W`, of a complex
+normed space `X`, with `ρ x ∘ ρ y = β x y • ρ (x + y)` and `(x, v) ↦ ρ x v` continuous.
+-/
 structure Rep (X : Type*) [NormedAddCommGroup X] [NormedSpace ℂ X] where
   /-- The operator `ρ x` on `X` attached to the vector `x` of `W`. -/
   ρ : W → X →L[ℂ] X
@@ -91,8 +95,10 @@ structure Rep (X : Type*) [NormedAddCommGroup X] [NormedSpace ℂ X] where
   /-- The map `(x, v) ↦ ρ x v` is jointly continuous on `W × X`. -/
   cont : Continuous fun p : W × X ↦ ρ p.1 p.2
 
-/-- The function e: W → ℂ is a vacuum for β and μ: continuous, integrable, even, real-valued,
-e(0) = 1, and ∫ e(z)e(x−y−z)β(z,y)β(z+y,x) dμ(z) = e(y)e(x). -/
+/--
+The function e: W → ℂ is a vacuum for β and μ: continuous, integrable, even, real-valued,
+e(0) = 1, and ∫ e(z)e(x−y−z)β(z,y)β(z+y,x) dμ(z) = e(y)e(x).
+-/
 class IsVacuum where
   /-- `e` is continuous. -/
   cont : Continuous e
@@ -102,17 +108,21 @@ class IsVacuum where
   apply_neg (x : W) : e (-x) = e x
   /-- `e` is real-valued. -/
   conj_apply (x : W) : conj (e x) = e x
-  /-- The key identity: the convolution of `e` with itself at `x - y`, twisted by
-  `β z y * β (z + y) x`, is `e y * e x`. -/
-  twisted_conv (y x : W) :
-      ∫ z : W, e z * (β H z y * (β H (z + y) x * e (x - (z + y)))) ∂μ = e y * e x
+  /--
+  The key identity: the convolution of `e` with itself at `x - y`, twisted by
+  `β z y * β (z + y) x`, is `e y * e x`.
+  -/
+  twisted_conv (y x : W)
+    : ∫ z : W, e z * (β H z y * (β H (z + y) x * e (x - (z + y)))) ∂μ = e y * e x
   /-- `e` is integrable for `μ`. -/
   integrable : Integrable e μ
 
-/-- The action of G on W preserves β and μ, and a continuous multiplier Δ: G → ℂ has Δ(1) = 1,
-Δ(g⁻¹) = conj Δ(g), Δ(g)Δ(h)Δ((gh)⁻¹) ∬ e(hx)e(ghy)β(x,y)e(x+y) = c(g,h). -/
-structure MultiplierAction (G : Type*) [Group G] [TopologicalSpace G] [DistribMulAction G W]
-    (c : G → G → ℂ := 1) where
+/--
+The action of G on W preserves β and μ, and a continuous multiplier Δ: G → ℂ has Δ(1) = 1,
+Δ(g⁻¹) = conj Δ(g), Δ(g)Δ(h)Δ((gh)⁻¹) ∬ e(hx)e(ghy)β(x,y)e(x+y) = c(g,h).
+-/
+structure MultiplierAction
+    (G : Type*) [Group G] [TopologicalSpace G] [DistribMulAction G W] (c : G → G → ℂ := 1) where
   /-- The action of `G` on `W` preserves `β`. -/
   beta_smul (g : G) (x y : W) : β H (g • x) (g • y) = β H x y
   /-- The action of `G` on `W` preserves the measure `μ`. -/
@@ -125,11 +135,14 @@ structure MultiplierAction (G : Type*) [Group G] [TopologicalSpace G] [DistribMu
   Δ_one : Δ 1 = 1
   /-- The multiplier takes inverses to complex conjugates. -/
   Δ_inv (g : G) : Δ g⁻¹ = conj (Δ g)
-  /-- The double integral of `e (h • x) * e ((g * h) • y) * β x y * e (x + y)` times
-  `Δ g * Δ h * Δ (g * h)⁻¹` is the prescribed value `c g h` (by default `1`). -/
-  cocycle (g h : G) :
-      Δ g * Δ h * Δ (g * h)⁻¹ *
-        ∫ x : W, ∫ y : W, e (h • x) * e ((g * h) • y) * β H x y * e (x + y) ∂μ ∂μ = c g h
+  /--
+  The double integral of `e (h • x) * e ((g * h) • y) * β x y * e (x + y)` times
+  `Δ g * Δ h * Δ (g * h)⁻¹` is the prescribed value `c g h` (by default `1`).
+  -/
+  cocycle (g h : G)
+    : Δ g * Δ h * Δ (g * h)⁻¹
+        * ∫ x : W, ∫ y : W, e (h • x) * e ((g * h) • y) * β H x y * e (x + y) ∂μ ∂μ
+      = c g h
 
 end New.Heisenberg
 
@@ -148,9 +161,11 @@ open MeasureTheory Complex
 
 namespace New.Heisenberg
 
-variable {W : Type*} [AddCommGroup W] [TopologicalSpace W] {H : Heisenberg W}
-  {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X]
-  (R : H.Rep X) (x y : W) (w : X) {mW : MeasurableSpace W} {μ : Measure W} {e : W → ℂ}
+variable
+  {W : Type*} [AddCommGroup W] [TopologicalSpace W]
+  {H : Heisenberg W} {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X]
+  (R : H.Rep X) (x y : W) (w : X)
+  {mW : MeasurableSpace W} {μ : Measure W} {e : W → ℂ}
 
 attribute [fun_prop] cont Rep.cont
 
@@ -227,15 +242,19 @@ is `x ↦ ρ (g • x)`.
 
 namespace New.Heisenberg.Rep
 
-variable {W : Type*} [AddCommGroup W] [TopologicalSpace W]
+variable
+  {W : Type*} [AddCommGroup W] [TopologicalSpace W]
   {H : Heisenberg W} [MeasurableSpace W]
-  {μ : MeasureTheory.Measure W} {e : W → ℂ}
-  {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] (R : H.Rep X)
+  {μ : MeasureTheory.Measure W} {e : W → ℂ} {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X]
+  (R : H.Rep X)
   {G : Type*} [Group G] [TopologicalSpace G] [DistribMulAction G W] [ContinuousSMul G W]
-  {c : G → G → ℂ} (A : H.MultiplierAction μ e G c) (g : G)
+  {c : G → G → ℂ} (A : H.MultiplierAction μ e G c)
+  (g : G)
 
-/-- The representation `x ↦ R.ρ (g • x)`; it is again a representation of `H` because `g` preserves
-`β`. -/
+/--
+The representation `x ↦ R.ρ (g • x)`; it is again a representation of `H` because `g` preserves
+`β`.
+-/
 @[simps]
 def moveBy : H.Rep X where
   ρ := (R.ρ <| g • ·)
@@ -265,10 +284,11 @@ open MeasureTheory ComplexConjugate Subtype LinearMap DFunLike
 
 namespace New.Heisenberg
 
-variable {W : Type*} [AddCommGroup W] [TopologicalSpace W]
-  (H : Heisenberg W) [MeasurableSpace W] [IsTopologicalAddGroup W] [BorelSpace W]
-  [SecondCountableTopology W] {μ : Measure W}
-  {e : W → ℂ} [he : IsVacuum H μ e]
+variable
+  {W : Type*} [AddCommGroup W] [TopologicalSpace W]
+  (H : Heisenberg W)
+  [MeasurableSpace W] [IsTopologicalAddGroup W] [BorelSpace W] [SecondCountableTopology W]
+  {μ : Measure W} {e : W → ℂ} [he : IsVacuum H μ e]
   {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X]
   {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y]
 
@@ -299,16 +319,20 @@ lemma IsVacuum.integrable_mul_kernel (x : W) {f : W → ℂ} (hf : Integrable f 
 
 variable [μ.IsAddHaarMeasure]
 
-/-- The complex subspace of integrable functions v on W satisfying the reproducing identity v(x) = ∫
-v(y) β(y,x) e(x−y) dμ(y) for every x. -/
+/--
+The complex subspace of integrable functions v on W satisfying the reproducing identity v(x) = ∫
+v(y) β(y,x) e(x−y) dμ(y) for every x.
+-/
 def IsVacuum.modelSubmodule : Submodule ℂ (W → ℂ) where
   carrier := {v : W → ℂ | Integrable v μ ∧ ∀ x : W, ∫ y : W, v y * (H.β y x * e (x - y)) ∂μ = v x}
   add_mem' := by simp_all [add_mul, integrable_mul_kernel, integral_add]
   zero_mem' := by simp
   smul_mem' := by simp_all [mul_assoc, Integrable.smul, integral_const_mul]
 
-/-- The space of integrable v with v(x) = ∫ v(y) β(y,x) e(x−y) dμ(y), as a type; it carries the
-L¹ norm. -/
+/--
+The space of integrable v with v(x) = ∫ v(y) β(y,x) e(x−y) dμ(y), as a type; it carries the
+L¹ norm.
+-/
 def IsVacuum.Model : Type _ := ↥he.modelSubmodule
 
 deriving instance AddCommGroup, Module ℂ for (he.Model)
@@ -323,10 +347,11 @@ def IsVacuum.toL1 : he.Model →ₗ[ℂ] W →₁[μ] ℂ where
   map_smul' := by tauto
 
 instance : NormedAddCommGroup he.Model :=
-  .induced _ _ he.toL1 fun v w h ↦ Subtype.ext <| funext fun x ↦ by
-    -- functions that agree almost everywhere have the same reproducing integrals
-    rw [← v.prop.2 x, ← w.prop.2 x]
-    exact integral_congr_ae (.mul_right (by simp_all [IsVacuum.toL1, coe]))
+  .induced _ _ he.toL1 fun v w h ↦
+    Subtype.ext <| funext fun x ↦ by
+      -- functions that agree almost everywhere have the same reproducing integrals
+      rw [← v.prop.2 x, ← w.prop.2 x]
+      exact integral_congr_ae (.mul_right (by simp_all [IsVacuum.toL1, coe]))
 
 instance : NormedSpace ℂ he.Model := .induced ..
 
@@ -396,47 +421,57 @@ lemma continuous : Continuous v := by
 
 /-! ### The representation, the vacuum vector and the inner product -/
 
-/-- The Heisenberg representation on the model: y acts by the L¹ isometry that sends v to
-x ↦ β(y, x) v(x - y), see `New.Heisenberg.IsVacuum.heisenbergOp_apply`. -/
+/--
+The Heisenberg representation on the model: y acts by the L¹ isometry that sends v to
+x ↦ β(y, x) v(x - y), see `New.Heisenberg.IsVacuum.heisenbergOp_apply`.
+-/
 def heisenbergRep : H.Rep he.Model :=
   -- the twisted translation `x ↦ H.β y x * v (x - y)`, an isometry for the `L¹` norm
-  let ρ (y : W) : he.Model →ₗᵢ[ℂ] he.Model :=
-    { toFun v :=
-        ⟨fun x ↦ H.β y x * v.val (x - y),
-          (v.property.1.comp_sub_right y).bdd_mul (c := 1) (by fun_prop) (by simp [norm_eq_one]),
-          fun x ↦ by
-            -- translate the variable of integration by `y` and use the equation of `v` at `x - y`
-            rw [← integral_add_right_eq_self _ y]
-            simp only [↓← v.property.2 (x - _), ← integral_const_mul, sub_eq_add_neg, add_right,
-              self_eq_one, add_left, mul_one, add_neg_cancel_right, neg_add_rev, beta_neg_right]
-            ac_nf⟩
-      map_add' v w := ext fun x ↦ mul_add (H.β y x) (v (x - y)) (w (x - y))
-      map_smul' c v := ext fun x ↦ mul_left_comm (H.β y x) c (v (x - y))
-      norm_map' v := by simp [↓norm_eq_integral_norm, coe, integral_sub_right_eq_self (‖v.val ·‖),
-        norm_eq_one] }
-  { ρ y := (ρ y).toContinuousLinearMap
+  let ρ (y : W) : he.Model →ₗᵢ[ℂ] he.Model := {
+    toFun v := ⟨
+      fun x ↦ H.β y x * v.val (x - y),
+      (v.property.1.comp_sub_right y).bdd_mul (c := 1) (by fun_prop) (by simp [norm_eq_one]),
+      fun x ↦ by
+        -- translate the variable of integration by `y` and use the equation of `v` at `x - y`
+        rw [← integral_add_right_eq_self _ y]
+        simp only [↓ ← v.property.2 (x - _), ← integral_const_mul, sub_eq_add_neg, add_right,
+          self_eq_one, add_left, mul_one, add_neg_cancel_right, neg_add_rev, beta_neg_right]
+        ac_nf
+    ⟩
+    map_add' v w := ext fun x ↦ mul_add (H.β y x) (v (x - y)) (w (x - y))
+    map_smul' c v := ext fun x ↦ mul_left_comm (H.β y x) c (v (x - y))
+    norm_map' v := by
+      simp [↓ norm_eq_integral_norm, coe, integral_sub_right_eq_self (‖v.val ·‖), norm_eq_one]
+  }
+  {
+    ρ y := (ρ y).toContinuousLinearMap
     mul := by
-      simp [↓he.ext_iff, ↓smul_apply, ρ, coe, sub_eq_add_neg, add_right, add_left]
+      simp [↓ he.ext_iff, ↓ smul_apply, ρ, coe, sub_eq_add_neg, add_right, add_left]
       grind
     norm_map y := (ρ y).norm_map
     cont := by
       -- each `ρ y` is an isometry, so continuity in `y` for each fixed `v` suffices
-      refine continuous_prod_of_continuous_lipschitzWith' _ _ (fun y ↦ (ρ y).lipschitzWith) fun v ↦
-        continuous_iff_continuousAt.2 fun a ↦ tendsto_iff_norm_sub_tendsto_zero.2 ?_
+      refine continuous_prod_of_continuous_lipschitzWith' _ _
+        (fun y ↦ (ρ y).lipschitzWith)
+        fun v ↦ continuous_iff_continuousAt.2 fun a ↦ tendsto_iff_norm_sub_tendsto_zero.2 ?_
       have h_int (w : he.Model) : Integrable (‖w ·‖) μ := w.property.1.norm
       -- Scheffé's trick: this integrand is dominated by `‖ρ a v x‖` and continuous in `t`; its
       -- integral is `‖v‖ - ‖ρ t v - ρ a v‖`, which is `‖v‖` at `t = a`
       have h_cont : Continuous fun t : W ↦ ∫ x : W, ‖ρ t v x‖ - ‖(ρ t v + -ρ a v) x‖ ∂μ := by
-        refine continuous_of_dominated (fun t ↦ ((h_int _).sub (h_int _)).1) ?_ (h_int (-ρ a v))
-          (.of_forall ?_)
+        refine continuous_of_dominated
+          (fun t ↦ ((h_int _).sub (h_int _)).1)
+          ?_ (h_int (- ρ a v)) (.of_forall ?_)
         · simp [(abs_norm_sub_norm_le ..).trans]
-        · simp only [↓add_apply, ρ, coe, Complex.norm_mul]
+        · simp only [↓ add_apply, ρ, coe, Complex.norm_mul]
           fun_prop
       simpa [norm_map, integral_sub, h_int, ← norm_eq_integral_norm, ← sub_eq_add_neg] using
-        (h_cont.tendsto a).const_sub ‖v‖ }
+        (h_cont.tendsto a).const_sub ‖v‖
+  }
 
-/-- For `x` in `W`, the bounded operator on the reproducing space sending `v` to the function
-`z ↦ β x z * v (z - x)`. -/
+/--
+For `x` in `W`, the bounded operator on the reproducing space sending `v` to the function
+`z ↦ β x z * v (z - x)`.
+-/
 abbrev heisenbergOp : Model H →L[ℂ] Model H := heisenbergRep.ρ x
 
 /-- The function e itself, viewed as an element of the reproducing space it defines. -/
@@ -445,12 +480,15 @@ def vacElem : Model H := ⟨e, he.integrable, by simpa [he.apply_zero] using he.
 /-- The continuous linear functional on `Model H` that evaluates an element at the point `x`. -/
 def valueAt : Model H →L[ℂ] ℂ := mkContinuous (by use! (· x) <;> simp) 1 (by simp [coe])
 
-/-- For σ an isometric ring endomorphism of ℂ and strongly continuous linear contractions K(y):
+/--
+For σ an isometric ring endomorphism of ℂ and strongly continuous linear contractions K(y):
 X → Y, the bounded σ-semilinear map v ↦ (x ↦ ∫ σ(v(y)) K(y)x dμ(y)) on the reproducing
-space. -/
-def kernelIntegral (σ : ℂ →+* ℂ) [RingHomIsometric σ] (K : W → X →L[ℂ] Y)
-    (hK : ∀ x : X, Continuous (K · x)) (hC : ∀ (y : W) (x : X), ‖K y x‖ ≤ ‖x‖) :
-    he.Model →SL[σ] X →L[ℂ] Y :=
+space.
+-/
+def kernelIntegral
+    (σ : ℂ →+* ℂ) [RingHomIsometric σ]
+    (K : W → X →L[ℂ] Y) (hK : ∀ x : X, Continuous (K · x)) (hC : ∀ (y : W) (x : X), ‖K y x‖ ≤ ‖x‖)
+    : he.Model →SL[σ] X →L[ℂ] Y :=
   -- the integrand `σ (v y) • K y x` is dominated by `‖v y‖ * ‖x‖`
   have h_dom (v : he.Model) (x : X) : Integrable (fun y : W ↦ ‖v y‖ * ‖x‖) μ :=
     v.property.1.norm.mul_const ‖x‖
@@ -459,15 +497,19 @@ def kernelIntegral (σ : ℂ →+* ℂ) [RingHomIsometric σ] (K : W → X →L[
       ((σ.isometry.continuous.comp' (continuous v)).fun_smul (hK x)).aestronglyMeasurable
       (by simp [hC, norm_smul, mul_le_mul])
   mkContinuous₂
-    (mk₂'ₛₗ σ (RingHom.id ℂ) (fun v x ↦ ∫ y : W, σ (v y) • K y x ∂μ)
+    (mk₂'ₛₗ σ (RingHom.id ℂ)
+      (fun v x ↦ ∫ y : W, σ (v y) • K y x ∂μ)
       (by simp [add_smul, h_int, integral_add]) (by simp [← integral_smul, smul_smul])
       (by simp [h_int, integral_add]) (by simp [← integral_smul, mul_comm, smul_smul]))
-    1 fun v x ↦ by
+    1
+    fun v x ↦ by
       simpa [norm_eq_integral_norm, integral_mul_const] using
         norm_integral_le_of_norm_le (h_dom v x) (by simp [hC, norm_smul, mul_le_mul])
 
-/-- The bounded sesquilinear form on the reproducing space sending (v, w) to ∫ conj(v) w dμ,
-conjugate-linear in the first argument. -/
+/--
+The bounded sesquilinear form on the reproducing space sending (v, w) to ∫ conj(v) w dμ,
+conjugate-linear in the first argument.
+-/
 def modelInner : Model H →L⋆[ℂ] Model H →L[ℂ] ℂ :=
   kernelIntegral (starRingEnd ℂ) valueAt continuous norm_apply_le
 
@@ -548,18 +590,19 @@ instance : CompleteSpace he.Model := by
     (Lp.coeFn_tsum (tsum_eNorm_ne_top_iff_summable_norm.mpr hu)).trans
       ((ae_all_iff.mpr fun n ↦ (u n).integrable.coeFn_toL1).mono fun _ ↦ tsum_congr)
   have h_int : Integrable (fun x : W ↦ ∑' n : ℕ, u n x) μ := .congr (by fun_prop) h_ae
-  have h_repr (x : W) :
-      ∫ y : W, (∑' n : ℕ, u n y) * (H.β y x * e (x - y)) ∂μ = ∑' n : ℕ, u n x := by
+  have h_repr (x : W)
+      : ∫ y : W, (∑' n : ℕ, u n y) * (H.β y x * e (x - y)) ∂μ = ∑' n : ℕ, u n x := by
     -- Exchange the sum and the integral, then use the reproducing identity of each `u n`.
     have h_int_n (n : ℕ) : Integrable (fun y : W ↦ u n y * (H.β y x * e (x - y))) μ :=
       IsVacuum.integrable_mul_kernel H x (u n).integrable
     have h_norm_le (n : ℕ) : ∫ y : W, ‖u n y * (H.β y x * e (x - y))‖ ∂μ ≤ ‖u n‖ := by
       rw [IsVacuum.norm_eq_integral_norm (u n)]
-      exact integral_mono (h_int_n n).norm (u n).integrable.norm
-        fun y ↦ IsVacuum.norm_mul_beta_mul_le x y (u n y)
+      exact integral_mono (h_int_n n).norm (u n).integrable.norm fun y ↦
+        IsVacuum.norm_mul_beta_mul_le x y (u n y)
     have h_summable : Summable fun n : ℕ ↦ ∫ y : W, ‖u n y * (H.β y x * e (x - y))‖ ∂μ :=
       Summable.of_nonneg_of_le (fun n ↦ integral_nonneg fun y ↦ norm_nonneg _) h_norm_le hu
-    calc ∫ y : W, (∑' n : ℕ, u n y) * (H.β y x * e (x - y)) ∂μ
+    calc
+      ∫ y : W, (∑' n : ℕ, u n y) * (H.β y x * e (x - y)) ∂μ
         = ∫ y : W, ∑' n : ℕ, u n y * (H.β y x * e (x - y)) ∂μ := by simp_rw [tsum_mul_right]
       _ = ∑' n : ℕ, ∫ y : W, u n y * (H.β y x * e (x - y)) ∂μ :=
         (integral_tsum_of_summable_integral_norm h_int_n h_summable).symm
@@ -573,13 +616,17 @@ instance : CompleteSpace he.Model := by
   -- The topology of the model is induced from `L¹`.
   exact ⟨v, ((Topology.IsInducing.hasSum_iff ⟨rfl⟩ u v).mp h_sum).tendsto_sum_nat⟩
 
-variable {H} [CompleteSpace X]
-  (R : H.Rep X) (T : X →L[ℂ] Y) (x : W) (v w : IsVacuum.Model H) (f : X) [CompleteSpace Y]
+variable
+  {H} [CompleteSpace X]
+  (R : H.Rep X) (T : X →L[ℂ] Y) (x : W) (v w : IsVacuum.Model H) (f : X)
+  [CompleteSpace Y]
 
 /-! ### The integrated action -/
 
-/-- The integrated action of the model on a representation R in a complex Banach space X: the
-bounded bilinear map (v, f) ↦ ∫ v(y) • R.ρ y f dμ(y), see `New.Heisenberg.Rep.integrated_apply`. -/
+/--
+The integrated action of the model on a representation R in a complex Banach space X: the
+bounded bilinear map (v, f) ↦ ∫ v(y) • R.ρ y f dμ(y), see `New.Heisenberg.Rep.integrated_apply`.
+-/
 def Rep.integrated : he.Model →L[ℂ] X →L[ℂ] X :=
   he.kernelIntegral (RingHom.id ℂ) R.ρ (by fun_prop) (by simp [norm_map])
 

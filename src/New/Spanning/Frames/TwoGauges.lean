@@ -53,21 +53,25 @@ open Matrix BesselIndex Sum Fintype FloorGroups Finset Fin
 
 variable {A : Type} [CommRing A] [StarRing A] {𝔰 : Shape} {T : 𝔰.Form A}
 
-variable {c i j : ℕ} [IsHermitianUnit T.splitGram] {s g x : T.G} {a : Fin 𝔰.ϱ} {p : ℕ → Aˣ}
-  {r : Aˣ} {S : Size T}
+variable
+  {c i j : ℕ} [IsHermitianUnit T.splitGram]
+  {s g x : T.G} {a : Fin 𝔰.ϱ} {p : ℕ → Aˣ} {r : Aˣ} {S : Size T}
 
 namespace Size
 
-/-- Let the isometries `ξ` and `ξ'` change each frame vector of index below `l` by a combination of
+/--
+Let the isometries `ξ` and `ξ'` change each frame vector of index below `l` by a combination of
 the earlier ones (`partialUnitriangularGroup l`). If all entries of `ξ g` and `ξ' γ⁻¹ g` have size 1
 (size i: in `S.ofSize i`), then the leading minors of order `j ≤ l` of `T.frameGram γ`, the matrix
-of the products ⟨f_a, γ f_b⟩ of the `𝔰.n = ϱ + 1` frame vectors f_a, have size `9 * 𝔰.n`. -/
-theorem leadingMinor_mem_ofSize {l : ℕ} {γ g ξ ξ' : T.G} (hξ : ξ ∈ partialUnitriangularGroup l)
-    (hξ' : ξ' ∈ partialUnitriangularGroup l)
+of the products ⟨f_a, γ f_b⟩ of the `𝔰.n = ϱ + 1` frame vectors f_a, have size `9 * 𝔰.n`.
+-/
+theorem leadingMinor_mem_ofSize
+    {l : ℕ} {γ g ξ ξ' : T.G}
+    (hξ : ξ ∈ partialUnitriangularGroup l) (hξ' : ξ' ∈ partialUnitriangularGroup l)
     (hg : S.HasMatrixSize 1 (↑(ξ * g) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A))
     (hγg : S.HasMatrixSize 1 (↑(ξ' * (γ⁻¹ * g)) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A))
-    {j : Fin (𝔰.n + 1)} (hj : j.val ≤ l) :
-    leadingMinor (T.frameGram γ) j ∈ S.ofSize (9 * 𝔰.n) := by
+    {j : Fin (𝔰.n + 1)} (hj : j.val ≤ l)
+    : leadingMinor (T.frameGram γ) j ∈ S.ofSize (9 * 𝔰.n) := by
   -- The element `x = (ξ g) (ξ' γ⁻¹ g)⁻¹ = ξ γ ξ'⁻¹` has size 7, and `T.frameGram x` has the same
   -- leading minors of order at most `l` as `T.frameGram γ`.
   let x : T.G := ξ * g * (ξ' * (γ⁻¹ * g))⁻¹
@@ -77,8 +81,8 @@ theorem leadingMinor_mem_ofSize {l : ℕ} {γ g ξ ξ' : T.G} (hξ : ξ ∈ part
     have hx : ξ⁻¹ * x * ξ' = γ := by simp [x, mul_assoc]
     rw [← leadingMinor_frameGram_partialUnitriangularGroup_mul hξ hξ' x hj, hx]
   -- In `J x`, with `J = T.splitGram`, the row of `e_a` is the row of `e*_a` in `x`.
-  have h_row (i k : 𝔰.BesselIndex) (hi : floorOf i < 𝔰.ϱ) :
-      (T.splitGram * X) i k = X (oppositeIndex i) k :=
+  have h_row (i k : 𝔰.BesselIndex) (hi : floorOf i < 𝔰.ϱ)
+      : (T.splitGram * X) i k = X (oppositeIndex i) k :=
     splitGram_mulVec_apply (e := fun m ↦ X m k) i hi
   have h_all : S.HasMatrixSize 9 (T.splitGram * X) := hasMatrixSize_splitGram.mul h_size
   rw [h_minor, leadingMinor]

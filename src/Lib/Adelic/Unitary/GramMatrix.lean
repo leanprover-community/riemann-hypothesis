@@ -127,13 +127,17 @@ namespace New
 
 open scoped Matrix
 
-variable {E : Type*} [Field E] [NumberField E] [NumberField.IsCMField E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
+variable
+  {E : Type*} [Field E] [NumberField E] [NumberField.IsCMField E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ}
 
-/-- The element of the adelic unitary group `G E s` given by an adelic matrix `m` with
-`mᴴ S m = S`, where `S` is the standard form `stdForm E s`. -/
-noncomputable def G.ofMatrix (m : Matrix n n (𝔸 E)) (h : mᴴ * stdForm E s * m = stdForm E s) :
-    G E s :=
+/--
+The element of the adelic unitary group `G E s` given by an adelic matrix `m` with
+`mᴴ S m = S`, where `S` is the standard form `stdForm E s`.
+-/
+noncomputable def G.ofMatrix (m : Matrix n n (𝔸 E)) (h : mᴴ * stdForm E s * m = stdForm E s)
+    : G E s :=
   toUnitary.symm (U.of isUnit_stdForm m h)
 
 /-- For a CM field `E` and signs `s` indexed by a finite type `n`, let `S = stdForm E s` be the

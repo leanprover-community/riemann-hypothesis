@@ -52,24 +52,27 @@ section families
 
 variable {Φ : Type}
 
-/-- The couplings `z_τ ^ p ^ e τ * z_(τ⁺)`, `τ ∈ Φ₀`, `τ⁺ = pr (e τ) τ`, have `e τ` odd, and each
+/--
+The couplings `z_τ ^ p ^ e τ * z_(τ⁺)`, `τ ∈ Φ₀`, `τ⁺ = pr (e τ) τ`, have `e τ` odd, and each
 has strictly the lowest exponent among the couplings `z_τ₁ ^ p ^ e' * z_(τ⁺)` with `τ₁ ∈ Φ₀`,
-`e'` odd and `pr e' τ₁ = τ⁺`. Here `pr e τ` is the partner of the place `τ` for the exponent `e`. -/
+`e'` odd and `pr e' τ₁ = τ⁺`. Here `pr e τ` is the partner of the place `τ` for the exponent `e`.
+-/
 structure IsCouplingFamily (pr : ℕ → Φ → Φ) (Φ₀ : Finset Φ) (e : Φ → ℕ) : Prop where
   /-- The exponents are odd. -/
   odd : ∀ τ ∈ Φ₀, Odd (e τ)
-  /-- For `τ, τ₁ ∈ Φ₀` and odd `e' ≤ e τ`, the equation `pr e' τ₁ = τ⁺` holds only for `τ₁ = τ`,
-  `e' = e τ`. -/
-  eq_of_partner_eq : ∀ τ ∈ Φ₀, ∀ τ₁ ∈ Φ₀, ∀ e' ≤ e τ, Odd e' →
-    pr e' τ₁ = pr (e τ) τ → τ₁ = τ ∧ e' = e τ
+  /--
+  For `τ, τ₁ ∈ Φ₀` and odd `e' ≤ e τ`, the equation `pr e' τ₁ = τ⁺` holds only for `τ₁ = τ`,
+  `e' = e τ`.
+  -/
+  eq_of_partner_eq
+    : ∀ τ ∈ Φ₀, ∀ τ₁ ∈ Φ₀, ∀ e' ≤ e τ, Odd e' → pr e' τ₁ = pr (e τ) τ → τ₁ = τ ∧ e' = e τ
 
 /-- The degree `ν'` of the monomial `∏ z_τ ^ (p ^ e τ * j τ)` over `τ ∈ Φ₀`. -/
 noncomputable def powerDegree (p : ℕ) (Φ₀ : Finset Φ) (e j : Φ → ℕ) : Φ × Unit →₀ ℕ :=
   ∑ τ ∈ Φ₀, .single (τ, ()) (p ^ e τ * j τ)
 
 /-- The degree `ν''` of the monomial `∏ z_(τ⁺) ^ j τ` over `τ ∈ Φ₀`, where `τ⁺ = pr (e τ) τ`. -/
-noncomputable def partnerDegree (pr : ℕ → Φ → Φ) (Φ₀ : Finset Φ) (e j : Φ → ℕ) :
-    Φ × Unit →₀ ℕ :=
+noncomputable def partnerDegree (pr : ℕ → Φ → Φ) (Φ₀ : Finset Φ) (e j : Φ → ℕ) : Φ × Unit →₀ ℕ :=
   ∑ τ ∈ Φ₀, .single (pr (e τ) τ, ()) (j τ)
 
 lemma powerDegree_apply_of_mem {p : ℕ} {Φ₀ : Finset Φ} {e j : Φ → ℕ} {τ : Φ} (hτ : τ ∈ Φ₀) :
@@ -275,10 +278,13 @@ lemma IsCouplingFamily.norm_coeff_powerDegree {pr : ℕ → Φ → Φ} {Φ₀ : 
   rw [coeff_map, Subring.coe_subtype, ← isUnit_integer_iff_norm_eq_one]
   exact (residue_ne_zero_iff_isUnit _).1 (right_ne_zero_of_mul (h_coeff.trans_ne h_lead))
 
-/-- The coefficients of the substitution `z_0 = δ_0 z' + z''`, `z_c = δ_c z'` for `c ≠ 0`, in two
-copies `z'`, `z''` of the variables. -/
-noncomputable def couplingSubst {R : Type} [CommRing R] {n : ℕ} (δ : Fin (n + 1) → R)
-    (c : Fin (n + 1)) : Fin 2 → R :=
+/--
+The coefficients of the substitution `z_0 = δ_0 z' + z''`, `z_c = δ_c z'` for `c ≠ 0`, in two
+copies `z'`, `z''` of the variables.
+-/
+noncomputable def couplingSubst
+    {R : Type} [CommRing R] {n : ℕ} (δ : Fin (n + 1) → R) (c : Fin (n + 1))
+    : Fin 2 → R :=
   ![δ c, if c = 0 then 1 else 0]
 
 /-- The coefficients of `couplingSubst δ` are integral if the `δ_c` are. -/

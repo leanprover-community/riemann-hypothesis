@@ -150,8 +150,8 @@ variable (E ι : Type*) [Field E] [CMType E] [WeilData E] [Fintype ι]
 /-! ### The lattice and the character -/
 
 /-- The standard lattice Ô^ι, as an additive subgroup of the finite adelic vectors indexed by ι. -/
-def _root_.New.stdLattice (E ι : Type*) [Field E] [NumberField E] :
-    AddSubgroup (ι → 𝔸f E) := (intVectors (Ô E) ι).toAddSubgroup
+def _root_.New.stdLattice (E ι : Type*) [Field E] [NumberField E] : AddSubgroup (ι → 𝔸f E) :=
+  (intVectors (Ô E) ι).toAddSubgroup
 
 /-- The character `z ↦ ψf (j α ᾱ z)` of the finite adeles, with complex values. -/
 def selfDualAddChar : AddChar (𝔸f E) ℂ :=
@@ -230,8 +230,10 @@ lemma selfDualAddChar_congr {a b o : 𝔸f E} (t : 𝔸f E) (ho : o ∈ Ô E)
 
 /-! ### The vacuum and the Heisenberg datum -/
 
-/-- For a finite adelic vector x, the complex number ψ₀(c₀ x* x / 2). It equals ψ_f(−y* y / 4) at
-y = αx and is a sign on the lattice Ô^ι. -/
+/--
+For a finite adelic vector x, the complex number ψ₀(c₀ x* x / 2). It equals ψ_f(−y* y / 4) at
+y = αx and is a sign on the lattice Ô^ι.
+-/
 def semichar (x : ι → 𝔸f E) : ℂ := selfDualAddChar E (traceOneAdele * half * star x ⬝ᵥ x)
 
 lemma isOfFinOrder_semichar (x : ι → 𝔸f E) : IsOfFinOrder (semichar x) := by
@@ -304,7 +306,7 @@ variable (E) in
 /-- The Haar measure on n-tuples of finite adeles of E that gives the lattice Ô^n mass one. -/
 noncomputable def _root_.New.latticeMeasure (n : Type*) [Fintype n] : Measure (n → 𝔸f E) :=
   addHaarMeasure ⟨⟨stdLattice E n, isCompact_stdLattice⟩, by simp [isOpen_stdLattice.interior_eq]⟩
-  deriving IsAddHaarMeasure
+deriving IsAddHaarMeasure
 
 /-- For a CM field E, the Haar measure `latticeMeasure` on ι-tuples of finite adeles of E, which is
 normalised so that Ô^ι has mass one, gives the standard lattice Ô^ι (`stdLattice E ι`) measure 1. -/
@@ -395,8 +397,10 @@ lemma _root_.New.integral_selfDualAddChar_stdLattice (x : ι → 𝔸f E) :
   simp [h_triv, real_def]
 
 open scoped Classical in
-/-- The function `New.stdLattice.finVac` is a vacuum for the Heisenberg datum
-`New.stdLattice.finHeisenberg` with respect to the measure `New.latticeMeasure`. -/
+/--
+The function `New.stdLattice.finVac` is a vacuum for the Heisenberg datum
+`New.stdLattice.finHeisenberg` with respect to the measure `New.latticeMeasure`.
+-/
 instance isVacuum_finVac : (finHeisenberg E ι).IsVacuum (latticeMeasure E ι) finVac := by
   have even (x : ι → 𝔸f E) : finVac (-x) = finVac x := by simp [finVac]
   have cont : Continuous (finVac : (ι → 𝔸f E) → ℂ) :=
@@ -408,24 +412,32 @@ instance isVacuum_finVac : (finHeisenberg E ι).IsVacuum (latticeMeasure E ι) f
     by_cases hx : x ∈ stdLattice E ι
     · obtain h | h := mul_self_eq_one_iff.1 (vac_sq x hx) <;> simp [h]
     · simp [finVac_of_notMem hx]
-  refine ⟨cont, by simp [finVac], even, real, fun y x ↦ ?_,
-    cont.integrable_of_hasCompactSupport (.intro isCompact_stdLattice fun x ↦ finVac_of_notMem)⟩
+  refine ⟨
+    cont,
+    by simp [finVac],
+    even,
+    real,
+    fun y x ↦ ?_,
+    cont.integrable_of_hasCompactSupport (.intro isCompact_stdLattice fun x ↦ finVac_of_notMem)
+  ⟩
   -- On the lattice the integrand is a constant times the character
   -- `z ↦ selfDualAddChar E (star x ⬝ᵥ z)`: expand `finVac (x - y - z)` by `finVac_add`; the factors
   -- `β z y` and `β y z` cancel.
   set H : Heisenberg (ι → 𝔸f E) := finHeisenberg E ι
-  have integrand (z : ι → 𝔸f E) (hz : z ∈ stdLattice E ι) :
-      finVac z * (H.β z y * (H.β (z + y) x * finVac (x - (z + y)))) =
-        finVac (x - y) / H.β x y * selfDualAddChar E (star x ⬝ᵥ z) := by
+  have integrand (z : ι → 𝔸f E) (hz : z ∈ stdLattice E ι)
+      : finVac z * (H.β z y * (H.β (z + y) x * finVac (x - (z + y))))
+        = finVac (x - y) / H.β x y * selfDualAddChar E (star x ⬝ᵥ z) := by
     have h_shift : finVac (x - (z + y)) = finVac (x - y) * finVac z * H.β (x - y) (-z) := by
       rw [← even z, finVac_add (x - y) (neg_mem hz), ← sub_eq_add_neg, sub_sub, add_comm y z]
     have β_sq : H.β z x ^ 2 = selfDualAddChar E (star x ⬝ᵥ z) := by
       simp [H, finHeisenberg, sq, ← map_add_eq_mul, ← two_mul, ← mul_assoc, two_mul_half]
     rw [h_shift, ← β_sq, H.add_left z y x, sub_eq_add_neg x y, add_left, beta_neg_right x z,
       beta_neg_right (-y) z, beta_neg_right z y, div_eq_mul_inv,
-        inv_eq_of_mul_eq_one_right (beta_mul_beta x y)]
-    calc _ = finVac z * finVac z * (H.β z y * H.β y z) *
-          (finVac (x + -y) * H.β y x * H.β z x ^ 2) := by ring
+      inv_eq_of_mul_eq_one_right (beta_mul_beta x y)]
+    calc
+      _ = finVac z * finVac z * (H.β z y * H.β y z)
+          * (finVac (x + -y) * H.β y x * H.β z x ^ 2) := by
+        ring
       _ = finVac (x + -y) * H.β y x * H.β z x ^ 2 := by simp [vac_sq z hz, beta_mul_beta]
   -- Off the lattice it vanishes, and the character integrates to `1` or `0` as `x` is in it or not.
   rw [← setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz ↦ by simp [finVac_of_notMem hz],
@@ -467,9 +479,11 @@ variable {E ι κ B B' : Type*} [Ring B] [Ring B'] {S : Subring B} {g u : Bˣ}
 
 /-! ### Saturating matrices -/
 
-/-- Units `g`, `u` of a ring satisfy this relation over a subring `S` when `u` and `g u` lie in `S`
+/--
+Units `g`, `u` of a ring satisfy this relation over a subring `S` when `u` and `g u` lie in `S`
 and `u⁻¹ = l + m g` for some `l`, `m` in `S`. For matrices and the lattice `Λ` of vectors with
-entries in the subring this implies `u Λ = Λ ∩ g⁻¹ Λ`. -/
+entries in the subring this implies `u Λ = Λ ∩ g⁻¹ Λ`.
+-/
 def IsSaturating (S : Subring B) (g u : Bˣ) : Prop :=
   ↑u ∈ S ∧ g.val * u ∈ S ∧ ∃ l ∈ S, ∃ m ∈ S, ↑u⁻¹ = l + m * g
 
@@ -509,8 +523,10 @@ lemma IsSaturating.mul_val_mem (h : IsSaturating S g u) : g.val * u.val ∈ S :=
 open MeasureTheory Matrix ComplexConjugate NumberField GeneralLinearGroup WeilData stdLattice Valued
   IsSaturating
 
-variable [Field E] [NumberField E] [Fintype ι] [DecidableEq ι] [Fintype κ]
-  (g : GL ι (𝔸f E)) {u b b' k k' : GL ι (𝔸f E)} {w : FinPlace E}
+variable
+  [Field E] [NumberField E] [Fintype ι] [DecidableEq ι] [Fintype κ]
+  (g : GL ι (𝔸f E))
+  {u b b' k k' : GL ι (𝔸f E)} {w : FinPlace E}
 
 @[local simp]
 lemma mem_subring_matrix_iff {x : Matrix ι ι B} : x ∈ S.matrix ↔ ∀ i j : ι, x i j ∈ S := .rfl
@@ -553,11 +569,13 @@ lemma exists_eq_mul_diagGL_mul :
   lift d to ι → (𝔸f E)ˣ using by simpa [hg] using g.det.isUnit
   exact ⟨k, hk, k', hk', d, Units.ext hg⟩
 
-/-- The denominator of a finite idele `x`: the idele with component `1` where `x` is integral and
-`x⁻¹` elsewhere. If `x` has order `μ` at `w`, its denominator has order `max 0 (-μ)` there. -/
+/--
+The denominator of a finite idele `x`: the idele with component `1` where `x` is integral and
+`x⁻¹` elsewhere. If `x` has order `μ` at `w`, its denominator has order `max 0 (-μ)` there.
+-/
 def denominatorIdele (x : (𝔸f E)ˣ) : (𝔸f E)ˣ where
-  val := idem {w : FinPlace E | v (x.val w) ≤ 1} +
-    idem {w : FinPlace E | v (x.val w) ≤ 1}ᶜ * x⁻¹.val
+  val :=
+    idem {w : FinPlace E | v (x.val w) ≤ 1} + idem {w : FinPlace E | v (x.val w) ≤ 1}ᶜ * x⁻¹.val
   inv := idem {w : FinPlace E | v (x.val w) ≤ 1} + idem {w : FinPlace E | v (x.val w) ≤ 1}ᶜ * x.val
   val_inv := by grind [idem_compl, idem_mul_self, Units.inv_mul]
   inv_val := by grind [idem_compl, idem_mul_self, Units.inv_mul]
@@ -617,8 +635,10 @@ lemma IsSaturating.exists_isSaturating :
       simp
     simpa only [← Matrix.mul_assoc, h_split] using hLu
 
-/-- For g in GL_ι(𝔸_f), a chosen u in GL_ι(𝔸_f) that saturates g over integral matrices
-(`New.IsSaturating`): u and gu are integral, and u⁻¹ = l + mg for some integral matrices l, m. -/
+/--
+For g in GL_ι(𝔸_f), a chosen u in GL_ι(𝔸_f) that saturates g over integral matrices
+(`New.IsSaturating`): u and gu are integral, and u⁻¹ = l + mg for some integral matrices l, m.
+-/
 def saturatingElem : Subtype (IsSaturating (Ô E).matrix g) :=
   (nonempty_subtype.mpr (IsSaturating.exists_isSaturating g)).some
 
@@ -645,21 +665,28 @@ open MeasureTheory Matrix ComplexConjugate NumberField GeneralLinearGroup WeilDa
 
 attribute [local simp] mem_subring_matrix_iff
 
-variable {E ι κ B : Type*} [Ring B] {S : Subring B} [Field E] [CMType E] [Fintype ι] [DecidableEq ι]
-  [Fintype κ] (g : GL ι (𝔸f E)) {u b b' k k' : GL ι (𝔸f E)} {w : FinPlace E} [WeilData E]
+variable
+  {E ι κ B : Type*} [Ring B]
+  {S : Subring B} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype κ]
+  (g : GL ι (𝔸f E))
+  {u b b' k k' : GL ι (𝔸f E)} {w : FinPlace E} [WeilData E]
 
 /-! ### The multiplier on `GL_ι(𝔸_f)` -/
 
-/-- The homomorphism x ↦ υ(x)|x|^(−1/2) from the ideles of E to ℂ, with υ the splitting
-character and |x| the idele norm. -/
+/--
+The homomorphism x ↦ υ(x)|x|^(−1/2) from the ideles of E to ℂ, with υ the splitting
+character and |x| the idele norm.
+-/
 @[local simp]
 def chiAdelic : (𝔸 E)ˣ →* ℂ where
-  toFun x := υ.val x * (↑√(ideleAbs x))⁻¹
+  toFun x := υ.val x * (↑ √(ideleAbs x))⁻¹
   map_one' := by simp
   map_mul' := by simp [field]
 
-/-- The character x ↦ υ(x)|x|^(−1/2) of the finite ideles of E, x being extended by 1 at
-infinity. -/
+/--
+The character x ↦ υ(x)|x|^(−1/2) of the finite ideles of E, x being extended by 1 at
+infinity.
+-/
 def chiFin : (𝔸f E)ˣ →* ℂ := chiAdelic (E := E).comp finIdeleIncl
 
 /-- The character `χ_f = υ |·|^(-1/2)` of the finite ideles (`New.chiFin`) takes the same value on
@@ -668,8 +695,10 @@ lemma chiFin_congr {x y : (𝔸f E)ˣ} (h_val : ∀ w : FinPlace E, v (x.val w) 
     chiFin x = chiFin y := by
   simp [chiFin, upsilon_eq_prod_mul_of_v_eq y, ideleAbs, FinitePlace.norm_def, h_val]
 
-/-- For g in GL_ι(𝔸_f), Δ_f(g) = χ_f(det u), where u is the matrix `New.saturatingElem` chosen for
-g, with uÔ^ι = Ô^ι ∩ g⁻¹Ô^ι. -/
+/--
+For g in GL_ι(𝔸_f), Δ_f(g) = χ_f(det u), where u is the matrix `New.saturatingElem` chosen for
+g, with uÔ^ι = Ô^ι ∩ g⁻¹Ô^ι.
+-/
 def glMultiplier : ℂ := chiFin (GeneralLinearGroup.det (saturatingElem g).val)
 
 lemma IsSaturating.glMultiplier_eq (h : IsSaturating (Ô E).matrix b u) :
@@ -692,13 +721,15 @@ lemma glMultiplier_mul_of_mem (hk : k ∈ intGL ι (Ô E)) (hk' : k' ∈ intGL �
 
 /-! ### The formula in the elementary divisors, and the laws -/
 
-/-- The multiplier in terms of elementary divisors: if `k`, `k'` lie in `GL_ι(Ô)`, the multiplier of
+/--
+The multiplier in terms of elementary divisors: if `k`, `k'` lie in `GL_ι(Ô)`, the multiplier of
 `k * diag(d) * k'` is the product of `χ_f` at the denominators of the `d i`. As `χ_f` depends only
 on orders (`New.chiFin_congr`), this is `∏_w χ_f(ϖ_w) ^ (∑_i max 0 (-μ_{w,i}))`, where `μ_{w,i}` is
-the order of `d i` at `w`. -/
-theorem glMultiplier_mul_diagGL_mul (hk : k ∈ intGL ι (Ô E)) (hk' : k' ∈ intGL ι (Ô E))
-    (d : ι → (𝔸f E)ˣ) :
-    glMultiplier (k * diagGL d * k') = ∏ i : ι, chiFin (denominatorIdele (d i)) := by
+the order of `d i` at `w`.
+-/
+theorem glMultiplier_mul_diagGL_mul
+    (hk : k ∈ intGL ι (Ô E)) (hk' : k' ∈ intGL ι (Ô E)) (d : ι → (𝔸f E)ˣ)
+    : glMultiplier (k * diagGL d * k') = ∏ i : ι, chiFin (denominatorIdele (d i)) := by
   have h_det : (diagGL fun i : ι ↦ denominatorIdele (d i)).det = ∏ i : ι, denominatorIdele (d i) :=
     Units.ext (by simp)
   rw [glMultiplier_mul_of_mem _ hk hk', (isSaturating_diagGL d).glMultiplier_eq, h_det, map_prod]
@@ -900,8 +931,10 @@ lemma norm_glMultiplier_sq (γ : GL ι (𝔸f E)) :
 
 /-! ### The multiplier on the finite unitary group -/
 
-/-- For g in the finite adelic unitary group, Δ_f(g) is `New.glMultiplier` of its underlying
-invertible matrix. -/
+/--
+For g in the finite adelic unitary group, Δ_f(g) is `New.glMultiplier` of its underlying
+invertible matrix.
+-/
 def finMultiplier (g : Gf E ι) : ℂ := glMultiplier g.val
 
 /-- Let `g` be in the finite adelic unitary group `Gf E ι`, that is, `g` is in `GL_ι(𝔸_f)` with

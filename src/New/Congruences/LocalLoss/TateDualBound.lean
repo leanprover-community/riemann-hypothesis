@@ -52,21 +52,28 @@ See `New.Congruences.FirstOrder.RibetElement` for related work.
 
 @[expose] public section
 
-open New Matrix Period Lift Module Function Topology Submodule crysCocycles Ideal.Quotient
-  NeZero LinearMap LE DistribSMul
+open New Matrix Period Lift Module Function Topology Submodule crysCocycles Ideal.Quotient NeZero
+  LinearMap LE DistribSMul
 
-/-- Let `Γ` be a group with a map to the absolute Galois group of `ℚ_ℓ` with open image
+/--
+Let `Γ` be a group with a map to the absolute Galois group of `ℚ_ℓ` with open image
 (`OverGp Γ ℓ`), let `R` be the integer ring of a finite extension of `ℚ_ℓ`, and let `Γ` act through
 the matrix representation `σ` on vectors over `R / ℓ ^ m`. A map `s` from `Γ` to such vectors comes
 from the class of lattices `𝒬` if `s = t ∘ a` for a lattice `Y` in `𝒬`, a `Γ`-equivariant `R`-linear
 map `t : Y → (R / ℓ ^ m) ^ d` and a crystalline cocycle `a` of `Y` (a map `Γ → Y` that becomes a
-coboundary after tensoring with `Bmax`). -/
-def New.Selmer.ComesFromClass {ℓ : ℕ} [ThePrime ℓ] {R Γ d : Type} [CommRing R]
-    [PadicIntegerRing R ℓ] [Group Γ] [Fintype d] [DecidableEq d] [OverGp Γ ℓ]
-    (𝒬 : GalLattice R Γ → Prop) (σ : Γ →* Matrix d d R) (m : ℕ)
-    (s : Γ → d → QuotSpan (ℓ ^ m : R)) : Prop :=
-  ∃ Y : GalLattice R Γ, 𝒬 Y ∧ ∃ t : Y →ₗ[R] d → QuotSpan (ℓ ^ m : R),
-    (∀ (g : Γ) (x : Y), t (Y.ρ g x) = σ g • t x) ∧ ∃ a ∈ crysCocycles Y.ρ, t ∘ a = s
+coboundary after tensoring with `Bmax`).
+-/
+def New.Selmer.ComesFromClass
+    {ℓ : ℕ} [ThePrime ℓ]
+    {R Γ d : Type}
+    [CommRing R] [PadicIntegerRing R ℓ] [Group Γ] [Fintype d] [DecidableEq d] [OverGp Γ ℓ]
+    (𝒬 : GalLattice R Γ → Prop) (σ : Γ →* Matrix d d R)
+    (m : ℕ) (s : Γ → d → QuotSpan (ℓ ^ m : R))
+    : Prop :=
+  ∃ Y : GalLattice R Γ,
+    𝒬 Y
+      ∧ ∃ t : Y →ₗ[R] d → QuotSpan (ℓ ^ m : R),
+        (∀ (g : Γ) (x : Y), t (Y.ρ g x) = σ g • t x) ∧ ∃ a ∈ crysCocycles Y.ρ, t ∘ a = s
 
 /-- A vector over `R` reduces to `0` modulo `ℓ ^ m` exactly if it lies in `ℓ ^ m R ^ d`. -/
 lemma New.Selmer.ker_compLeft_mkQ_eq_pPowMultiples {ℓ : ℕ} [ThePrime ℓ] {R d : Type} [CommRing R]

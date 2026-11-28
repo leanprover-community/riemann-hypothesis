@@ -78,10 +78,14 @@ lemma star_dotProduct_mulVec_comm (hJ : Jᴴ = J) (u v : n → R) :
     star (star u ⬝ᵥ J *ᵥ v) = star v ⬝ᵥ J *ᵥ u := by
   grind [star_dotProduct, star_mulVec_dotProduct]
 
-/-- The quasi-reflection x ↦ x − v σ⁻¹ h(v, x) in U(J), where h(v, x) = vᴴJx, J is hermitian and
-invertible, and σ is a unit with σ + σ̄ = h(v, v). -/
-noncomputable def quasiReflection (hJ : Jᴴ = J) (hJ' : IsUnit J) (v : n → R) (σ : Rˣ)
-    (h : (σ : R) + star (σ : R) = star v ⬝ᵥ J *ᵥ v) : U J :=
+/--
+The quasi-reflection x ↦ x − v σ⁻¹ h(v, x) in U(J), where h(v, x) = vᴴJx, J is hermitian and
+invertible, and σ is a unit with σ + σ̄ = h(v, v).
+-/
+noncomputable def quasiReflection
+    (hJ : Jᴴ = J) (hJ' : IsUnit J)
+    (v : n → R) (σ : Rˣ) (h : (σ : R) + star (σ : R) = star v ⬝ᵥ J *ᵥ v)
+    : U J :=
   U.of hJ' (1 - (↑σ⁻¹ : R) • vecMulVec v (star v ᵥ* J)) <| by
     set τ : R := ↑σ⁻¹
     have h_coeff : τ * star τ * (star v ᵥ* J ⬝ᵥ v) = star τ + τ := by
@@ -652,10 +656,12 @@ namespace New
 variable {A : Type*} [CommRing A] [StarRing A]
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
-/-- The matrix of the Eichler map v ↦ v + h(u, v)x − h(x, v)(u + ςx), where h is the form of J.
+/--
+The matrix of the Eichler map v ↦ v + h(u, v)x − h(x, v)(u + ςx), where h is the form of J.
 
 A variant of the standard Eichler transformation of a hermitian form, without the usual conditions
-on x, u, ς that make it an isometry. -/
+on x, u, ς that make it an isometry.
+-/
 noncomputable def eichlerMap (J : Matrix n n A) (x : n → A) (u : n → A) (ς : A) : Matrix n n A :=
   1 + vecMulVec x (star u ᵥ* J) - vecMulVec (u + ς • x) (star x ᵥ* J)
 

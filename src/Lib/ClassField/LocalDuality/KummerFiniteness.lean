@@ -280,8 +280,10 @@ open Nat Function HasEnoughRootsOfUnity NeZero LinearMap CommGroup Ideal
 
 namespace New.IsLocalGalois
 
-variable {Γ k Ω : Type} [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω]
-  [MulSemiringAction Γ Ω] {A : ValuationSubring Ω}
+variable
+  {Γ k Ω : Type}
+  [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω] [MulSemiringAction Γ Ω]
+  {A : ValuationSubring Ω}
 
 /-- Kummer theory. Assume `New.IsLocalGalois Γ k A`: `Ω` is algebraically closed of characteristic
 0, `Γ` is the Galois group of `Ω` over `k` and stabilises the valuation subring `A`, and

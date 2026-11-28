@@ -116,9 +116,11 @@ lemma Variety.locallyQuasiFinite_of_pull_picClass [IsSeparated B.hom] {ι : Type
   -- A closed immersion followed by the structure map of affine space is affine.
   infer_instance
 
-variable [AddObj A]
+variable
+  [AddObj A]
   {c : Pic A.left} {S' : Scheme} (b : S' ⟶ S)
-  {O : Type} [CommRing O] [ModuleObj O A] (x y z : T ⟶ A) (m : ℕ)
+  {O : Type} [CommRing O] [ModuleObj O A]
+  (x y z : T ⟶ A) (m : ℕ)
 
 /-! ### The pairing of a class that satisfies the parallelogram law -/
 
@@ -192,7 +194,8 @@ noncomputable instance [i : IsAbelianScheme B] : IsAbelianScheme (pullback b B) 
   -- Smoothness and properness pass to the base change, and multiplication by `m` on the
   -- pullback is the base change of multiplication by `m` on `B`.
   IsAbelianScheme.mk (toSmooth := of_isPullback h.isPullback i.toSmooth)
-    (toIsProper := of_isPullback h.isPullback i.toIsProper) fun m hm ↦
+    (toIsProper := of_isPullback h.isPullback i.toIsProper)
+    fun m hm ↦
       of_isPullback (.of_bot (by simp_rw [w, h.isPullback]) (h.nsmul_id_comp m).symm h.isPullback)
         (i.nsmul_surjective m hm)
 
@@ -272,9 +275,10 @@ lemma New.Variety.exists_eq_lift_of_comp_whiskerRight_eq {S : Scheme.{0}} {A A�
   · rw [lift_comp_fst_snd, hu]
   · rw [h_snd, lift_comp_fst_snd, hu']
 
-variable {k : Type} [Field k]
-  {A₀ : Over (Spec ⟨k⟩)} [IsAbelianScheme A₀] [IsIntegral A₀.left] {S : Scheme}
-  {A A₁ A' B B' : Over S} [AddObj A'] [AddObj B] [AddObj B']
+variable
+  {k : Type} [Field k]
+  {A₀ : Over (Spec ⟨k⟩)} [IsAbelianScheme A₀] [IsIntegral A₀.left]
+  {S : Scheme} {A A₁ A' B B' : Over S} [AddObj A'] [AddObj B] [AddObj B']
   {p : A'.left ⟶ A₀.left} {q : S ⟶ Spec (CommRingCat.of k)}
 
 /-- Let A' be the base change of an integral abelian variety over a field (`hp`), and let `u` be a

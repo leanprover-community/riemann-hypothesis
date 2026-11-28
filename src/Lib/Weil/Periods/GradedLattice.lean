@@ -49,8 +49,10 @@ section DegreeZeroPart
 
 variable {R ι ι' ι'' : Type*} [CommRing R] {w : ι → ℤ} {w' : ι' → ℤ} {w'' : ι'' → ℤ}
 
-/-- The part of degree `0` of a matrix `A`, for weights `w'` on the rows and `w` on the columns:
-the entries `(i, k)` with `w' i = w k` are kept and the others are replaced by `0`. -/
+/--
+The part of degree `0` of a matrix `A`, for weights `w'` on the rows and `w` on the columns:
+the entries `(i, k)` with `w' i = w k` are kept and the others are replaced by `0`.
+-/
 def degreeZeroPart (w' : ι' → ℤ) (w : ι → ℤ) (A : Matrix ι' ι R) : Matrix ι' ι R :=
   of fun i k ↦ if w' i = w k then A i k else 0
 
@@ -107,8 +109,9 @@ lemma degreeZeroPart_conjTranspose (A : Matrix ι' ι R) :
 
 end DegreeZeroPart
 
-variable {E X ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι]
-  [DecidableEq X] {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
+variable
+  {E X ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [DecidableEq X]
+  {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
 
 /-- Distinct columns of an element of `GL(Ô)` form a primitive matrix: one with integral entries
 and an integral left inverse. -/

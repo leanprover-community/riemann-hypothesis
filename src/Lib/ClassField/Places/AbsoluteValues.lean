@@ -60,26 +60,29 @@ theorem isEquiv_of_forall_le_one_iff (h : ∀ x, v x ≤ 1 ↔ w x ≤ 1) : v.Is
 
 end Field
 
-variable {Ω Γ : Type*} [Field Ω] [Group Γ] [MulSemiringAction Γ Ω] {A : ValuationSubring Ω}
-  {w : AbsoluteValue Ω ℝ}
+variable
+  {Ω Γ : Type*} [Field Ω] [Group Γ] [MulSemiringAction Γ Ω]
+  {A : ValuationSubring Ω} {w : AbsoluteValue Ω ℝ}
 
 /-- If `A` is the closed unit ball of `w`, then `A.valuation x ≤ 1` iff `w x ≤ 1`. -/
-theorem valuation_le_one_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 1) {x : Ω} :
-    A.valuation x ≤ 1 ↔ w x ≤ 1 :=
+theorem valuation_le_one_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 1) {x : Ω}
+    : A.valuation x ≤ 1 ↔ w x ≤ 1 :=
   (A.valuation_le_one_iff x).trans (hA x)
 
 /-- If `A` is the closed unit ball of `w`, the maximal ideal of `A` is the open unit ball of `w`. -/
-theorem valuation_lt_one_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 1) {x : Ω} :
-    A.valuation x < 1 ↔ w x < 1 := by
+theorem valuation_lt_one_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 1) {x : Ω}
+    : A.valuation x < 1 ↔ w x < 1 := by
   rw [← ValuationSubring.mem_nonunits_iff, ValuationSubring.mem_nonunits_iff_or, hA,
     apply_lt_one_iff_or]
 
 variable {K : Type*} [Field K] [NumberField K] [Algebra K Ω] {v : FinPlace K}
 
-/-- If `A` is the closed unit ball of `w`, then `A` lies over the prime `v` of `𝓞 K` exactly when
-the restriction of `w` to `K` is equivalent to the `v`-adic absolute value. -/
-theorem isPlaceOver_iff_isEquiv_adicAbv (hA : ∀ x, x ∈ A ↔ w x ≤ 1) :
-    IsPlaceOver A v ↔ (w.under K).IsEquiv (adicAbv K v) := by
+/--
+If `A` is the closed unit ball of `w`, then `A` lies over the prime `v` of `𝓞 K` exactly when
+the restriction of `w` to `K` is equivalent to the `v`-adic absolute value.
+-/
+theorem isPlaceOver_iff_isEquiv_adicAbv (hA : ∀ x, x ∈ A ↔ w x ≤ 1)
+    : IsPlaceOver A v ↔ (w.under K).IsEquiv (adicAbv K v) := by
   have h_adic (x : K) : adicAbv K v x < 1 ↔ v.valuation K x < 1 := by
     rw [adicAbv_def, NNReal.coe_lt_one,
       WithZeroMulInt.toNNReal_lt_one_iff (one_lt_absNorm_nnreal v)]
@@ -92,11 +95,13 @@ theorem isPlaceOver_iff_isEquiv_adicAbv (hA : ∀ x, x ∈ A ↔ w x ≤ 1) :
 
 variable [CharZero Ω]
 
-/-- Let `A` be the closed unit ball of `w`, and let `w` restrict to the real or a `p`-adic absolute
-value on `ℚ`. Then `σ` stabilises `A` exactly when it preserves `w`. -/
-theorem mem_decompGroup_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 1)
-    (hw : Rat.AbsoluteValue.IsStandard (w.under ℚ)) {σ : Γ} :
-    σ ∈ decompGroup Γ A ↔ ∀ x, w (σ • x) = w x := by
+/--
+Let `A` be the closed unit ball of `w`, and let `w` restrict to the real or a `p`-adic absolute
+value on `ℚ`. Then `σ` stabilises `A` exactly when it preserves `w`.
+-/
+theorem mem_decompGroup_iff_of_forall_mem_iff
+    (hA : ∀ x, x ∈ A ↔ w x ≤ 1) (hw : Rat.AbsoluteValue.IsStandard (w.under ℚ)) {σ : Γ}
+    : σ ∈ decompGroup Γ A ↔ ∀ x, w (σ • x) = w x := by
   rw [mem_decompGroup_iff]
   refine ⟨fun h ↦ ?_, fun h x ↦ by rw [hA, hA, h]⟩
   -- `x ↦ w (σ • x)` also has closed unit ball `A`, and it agrees with `w` on `ℚ`, so it is `w`.
@@ -110,21 +115,25 @@ theorem mem_decompGroup_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 1
       rw [AbsoluteValue.under_apply, map_natCast (algebraMap ℚ Ω)]
   exact fun x ↦ DFunLike.congr_fun h_eq x
 
-/-- Let `A` be the closed unit ball of `w`, and let `w` restrict to the real or a `p`-adic absolute
+/--
+Let `A` be the closed unit ball of `w`, and let `w` restrict to the real or a `p`-adic absolute
 value on `ℚ`. Then `σ` is a Frobenius element for `q` at `A` exactly when it preserves `w` and
-`w (σ • x - x ^ q) < 1` whenever `w x ≤ 1`. -/
-theorem isFrob_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 1)
-    (hw : Rat.AbsoluteValue.IsStandard (w.under ℚ)) {q : ℕ} {σ : Γ} :
-    IsFrob A q σ ↔ (∀ x, w (σ • x) = w x) ∧ ∀ x, w x ≤ 1 → w (σ • x - x ^ q) < 1 := by
+`w (σ • x - x ^ q) < 1` whenever `w x ≤ 1`.
+-/
+theorem isFrob_iff_of_forall_mem_iff
+    (hA : ∀ x, x ∈ A ↔ w x ≤ 1) (hw : Rat.AbsoluteValue.IsStandard (w.under ℚ)) {q : ℕ} {σ : Γ}
+    : IsFrob A q σ ↔ (∀ x, w (σ • x) = w x) ∧ ∀ x, w x ≤ 1 → w (σ • x - x ^ q) < 1 := by
   rw [IsFrob, mem_decompGroup_iff_of_forall_mem_iff hA hw]
   simp only [valuation_le_one_iff_of_forall_mem_iff hA, valuation_lt_one_iff_of_forall_mem_iff hA]
 
-/-- Let `A` be the closed unit ball of `w`, and let `w` restrict to the real or a `p`-adic absolute
+/--
+Let `A` be the closed unit ball of `w`, and let `w` restrict to the real or a `p`-adic absolute
 value on `ℚ`. Then `σ` lies in the inertia group of `A` exactly when it preserves `w` and
-`w (σ • x - x) < 1` whenever `w x ≤ 1`. -/
-theorem mem_inertiaGroup_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 1)
-    (hw : Rat.AbsoluteValue.IsStandard (w.under ℚ)) {σ : Γ} :
-    σ ∈ inertiaGroup Γ A ↔ (∀ x, w (σ • x) = w x) ∧ ∀ x, w x ≤ 1 → w (σ • x - x) < 1 := by
+`w (σ • x - x) < 1` whenever `w x ≤ 1`.
+-/
+theorem mem_inertiaGroup_iff_of_forall_mem_iff
+    (hA : ∀ x, x ∈ A ↔ w x ≤ 1) (hw : Rat.AbsoluteValue.IsStandard (w.under ℚ)) {σ : Γ}
+    : σ ∈ inertiaGroup Γ A ↔ (∀ x, w (σ • x) = w x) ∧ ∀ x, w x ≤ 1 → w (σ • x - x) < 1 := by
   simp only [mem_inertiaGroup_iff, isFrob_iff_of_forall_mem_iff hA hw, pow_one]
 
 end New

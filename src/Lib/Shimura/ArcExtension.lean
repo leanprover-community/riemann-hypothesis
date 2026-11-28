@@ -73,8 +73,8 @@ section SectionComponents
 
 open CategoryTheory AlgebraicGeometry
 
-variable {X : Scheme.{0}} {ι : Type} {L : LineBundle X ι} {R : Type} [CommRing R]
-  [X.Over (Spec ⟨R⟩)]
+variable
+  {X : Scheme.{0}} {ι : Type} {L : LineBundle X ι} {R : Type} [CommRing R] [X.Over (Spec ⟨R⟩)]
 
 private lemma _root_.New.LineBundle.H0.isSection_val (r : L.H0 R) : L.IsSection r.val :=
   r.prop.left
@@ -97,8 +97,8 @@ section ComplexComparison
 
 open CategoryTheory AlgebraicGeometry Over ValuativeArc Function IsSchemeTheoreticallyDominant
 
-variable {V ι κ : Type} [FinComplexSpace V]
-  {O : Type} [CommRing O] [ValuativeArc O] {A : Over (Spec ⟨O⟩)}
+variable
+  {V ι κ : Type} [FinComplexSpace V] {O : Type} [CommRing O] [ValuativeArc O] {A : Over (Spec ⟨O⟩)}
 
 /-- Let A be a smooth proper scheme over a valuation ring O with fraction field ℂ, and let
 s : Z → (sections of A over O) be surjective. Then A is reduced and the complex points
@@ -135,7 +135,8 @@ lemma _root_.New.HasThetaCoords.holomorphicAt [Finite κ] {Λ : Submodule ℤ V}
 
 section ThetaEval
 
-variable {L : LineBundle A.left κ} {χ : V → ℂ} {θ : V → κ → ℂ} {Λ : Submodule ℤ V}
+variable
+  {L : LineBundle A.left κ} {χ : V → ℂ} {θ : V → κ → ℂ} {Λ : Submodule ℤ V}
   {s : V → (MonoidalCategoryStruct.tensorUnit (Over (Spec (CommRingCat.of O))) ⟶ A)}
   {B : ThetaTori.LatticeForm Λ}
 
@@ -148,15 +149,19 @@ private lemma apply_thetaChart_ne_zero (h : HasThetaCoords Λ (atGeneric s) L B 
     θ z (thetaChart h z) ≠ 0 :=
   (h.hasFieldCoords z).exists_ne_zero.choose_spec
 
-/-- Sections of `L` read as functions on `V`, for theta coordinates `θ` of `L` along `s`: a
+/--
+Sections of `L` read as functions on `V`, for theta coordinates `θ` of `L` along `s`: a
 section `r` goes to `z ↦ θ z i * r_i (s z)` for a chart `i` with `θ z i ≠ 0`. The value does not
-depend on the chart (`New.Variety.thetaEval_eq_iff`). -/
+depend on the chart (`New.Variety.thetaEval_eq_iff`).
+-/
 @[no_expose]
 noncomputable def thetaEval (h : HasThetaCoords Λ (atGeneric s) L B χ θ) : L.H0 O →ₗ[O] V → ℂ :=
-  .pi fun z ↦ θ z (thetaChart h z) •
-    { toFun r := r.val (thetaChart h z) (CommRingCat.of ℂ) (atGeneric s z)
+  .pi fun z ↦
+    θ z (thetaChart h z) • {
+      toFun r := r.val (thetaChart h z) (CommRingCat.of ℂ) (atGeneric s z)
       map_add' := by simp
-      map_smul' := by simp [H0_smul, atGeneric, ValuativeArc.genericPt_eq, Algebra.smul_def] }
+      map_smul' := by simp [H0_smul, atGeneric, ValuativeArc.genericPt_eq, Algebra.smul_def]
+    }
 
 /-- `thetaEval h r` is the function `g` exactly when `r_i = g / θ_i` at each point `s z`, in each
 chart `i` with `θ z i ≠ 0`. -/
@@ -181,9 +186,12 @@ lemma thetaEval_coordSection (h : HasThetaCoords Λ (atGeneric s) L B χ θ) (i 
 
 end ThetaEval
 
-variable [IsAbelianScheme A]
-  {L : LineBundle A.left κ} (u : Uniformisation A V) {B : ThetaTori.LatticeForm u.lattice}
-  {χ : V → ℂ} {θ : V → κ → ℂ} (h : HasThetaCoords u.lattice (atGeneric u.expMap) L B χ θ)
+variable
+  [IsAbelianScheme A]
+  {L : LineBundle A.left κ}
+  (u : Uniformisation A V)
+  {B : ThetaTori.LatticeForm u.lattice} {χ : V → ℂ} {θ : V → κ → ℂ}
+  (h : HasThetaCoords u.lattice (atGeneric u.expMap) L B χ θ)
 
 /-- Along a uniformisation, `thetaEval h` is injective: the points `atGeneric u.expMap z` are
 dense, so sections that agree there are equal. -/
@@ -388,17 +396,20 @@ section ArcExtension
 
 open CategoryTheory AlgebraicGeometry CartesianMonoidalCategory Over Category LineBundle PointFn
 
-variable {V ι κ O : Type} [FinComplexSpace V] [CommRing O] [ValuativeArc O]
+variable
+  {V ι κ O : Type} [FinComplexSpace V] [CommRing O] [ValuativeArc O]
   {A A' : Over (Spec ⟨O⟩)} [AddObj A']
-  {s' : V →+ (MonoidalCategoryStruct.tensorUnit (Over (Spec (CommRingCat.of O))) ⟶ A')} [Finite κ]
-  [IsAbelianScheme A] [Finite ι]
-  (u : Uniformisation A V) {N : LineBundle A.left ι} {B : ThetaTori.LatticeForm u.lattice}
-  {χ : V → ℂ} {θ : V → ι → ℂ}
+  {s' : V →+ (MonoidalCategoryStruct.tensorUnit (Over (Spec (CommRingCat.of O))) ⟶ A')}
+  [Finite κ] [IsAbelianScheme A] [Finite ι]
+  (u : Uniformisation A V)
+  {N : LineBundle A.left ι} {B : ThetaTori.LatticeForm u.lattice} {χ : V → ℂ} {θ : V → ι → ℂ}
   (h : HasThetaCoords u.lattice (atGeneric u.expMap) N B χ θ) [IsPosRiemann B]
-  (hs' : ∀ l ∈ u.lattice, s' l = 0) {n : ℕ} (hn : IsUnit (n : O))
+  (hs' : ∀ l ∈ u.lattice, s' l = 0)
+  {n : ℕ} (hn : IsUnit (n : O))
   (h_tors_lift : ∀ a ∈ B.dualLattice,
     n • a ∈ u.lattice ∧ ∃ Φ : Module.End O ↥(N.H0 O), IsTranslationLift N (u.expMap a) Φ)
-  [IsProper A'.hom] {M : LineBundle A'.left κ} (hM : M.IsProjEmbedding A'.hom)
+  [IsProper A'.hom]
+  {M : LineBundle A'.left κ} (hM : M.IsProjEmbedding A'.hom)
 
 include h hs' hn h_tors_lift hM
 

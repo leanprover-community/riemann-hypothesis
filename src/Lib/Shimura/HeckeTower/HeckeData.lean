@@ -87,18 +87,21 @@ lemma asAlgebraHom_eq_sum_support (π : Representation k G W) :
     π.asAlgebraHom a = ∑ g ∈ a.coeff.support, a.coeff g • π g :=
   rfl
 
-/-- The linear map `k[G] → k[G / K]` sending `∑ a_g [g]` to `∑ a_g [gK]`. It is written as the
-action of the group ring element on the basis vector of the trivial coset. -/
+/--
+The linear map `k[G] → k[G / K]` sending `∑ a_g [g]` to `∑ a_g [gK]`. It is written as the
+action of the group ring element on the basis vector of the trivial coset.
+-/
 @[local simp]
 def cosetFn (a : k[G]) : G ⧸ K →₀ k :=
   ((ofMulAction k G (G ⧸ K)).asAlgebraHom a (MonoidAlgebra.single ⟦1⟧ 1)).coeff
 
-/-- The submodule of elements `a` of k[G] with the following property: for every representation π of
+/--
+The submodule of elements `a` of k[G] with the following property: for every representation π of
 G, `a` sends the K-fixed vectors to vectors on which the subgroup J of H acts through π∘ι by the
-character χ. By default J = ι⁻¹(K) and χ is trivial. -/
-def fixedToEigen {H : Type*} [Group H] (ι : H →* G) (J : Subgroup H := K.comap ι)
-    (χ : J →* k := 1) :
-    Submodule k k[G] where
+character χ. By default J = ι⁻¹(K) and χ is trivial.
+-/
+def fixedToEigen {H : Type*} [Group H] (ι : H →* G) (J : Subgroup H := K.comap ι) (χ : J →* k := 1)
+    : Submodule k k[G] where
   carrier :=
     {a : k[G] |
       ∀ ⦃W : Type⦄ [AddCommGroup.{0} W] [Module k W] ⦃π : Representation k G W⦄ ⦃v : W⦄,
@@ -175,11 +178,15 @@ section HeckeData
 
 open NumberField Cardinal Polynomial Module Matrix.GeneralLinearGroup Prod MulAction
 
-variable (E : Type) [Field.{0} E] [NumberField E] [IsCMField E]
-  {n : Type} [Fintype.{0} n] [DecidableEq n] {d d₀ : ℕ} [Fact (d % 4 = 3)]
+variable
+  (E : Type) [Field.{0} E] [NumberField E] [IsCMField E]
+  {n : Type} [Fintype.{0} n] [DecidableEq n]
+  {d d₀ : ℕ} [Fact (d % 4 = 3)]
 
-/-- The prime u of ℚ(√−d) contains an element x = (1 + √−d)/2 − b, b ∈ ℤ, that is coprime to its
-conjugate x̄; here `QuadField.betaK d` is (1 + √−d)/2. -/
+/--
+The prime u of ℚ(√−d) contains an element x = (1 + √−d)/2 − b, b ∈ ℤ, that is coprime to its
+conjugate x̄; here `QuadField.betaK d` is (1 + √−d)/2.
+-/
 def New.GaloisRep.IsSplitPrimeToDisc (u : FinPlace (QuadField d)) : Prop :=
   ∃ b : ℤ,
     let x : 𝓞 (QuadField d) := QuadField.betaK d - b
@@ -216,28 +223,37 @@ lemma New.GaloisRep.IsSplitPrimeToDisc.isSplit_and_prime_q {w : FinPlace (QuadFi
     · exact h_norm
   exact ⟨h_ne, hp, fun u ↦ (h_over u).symm⟩
 
-/-- The number d is 3 mod 4, and the field E is an algebra over the imaginary quadratic field
-ℚ(i√d). -/
-class New.HasQuadSubfield (d : outParam ℕ) (E : semiOutParam Type)
-    [semiOutParam (Field E)] extends Fact (d % 4 = 3), Algebra (QuadField d) E
+/--
+The number d is 3 mod 4, and the field E is an algebra over the imaginary quadratic field
+ℚ(i√d).
+-/
+class New.HasQuadSubfield (d : outParam ℕ) (E : semiOutParam Type) [semiOutParam (Field E)]
+  extends Fact (d % 4 = 3), Algebra (QuadField d) E
 
 namespace New.Variety
 
 /-- The finite places w of E with w̄ ≠ w, that is, those split over the maximal real subfield. -/
 abbrev SplitFinPlace : Type := {w : FinPlace E // w.IsSplit}
 
-variable {E : Type} [Field.{0} E] [CMBase E] {n : Type} [Fintype.{0} n] [DecidableEq n]
-  [HasQuadSubfield d₀ E] (t : E →+* ℂ) {ν : ℕ} (α : Fin ν → 𝓞 E) (P : E[X]) (μ : ℂ) (k : Type*)
-  [CommRing k] (𝔑 : 𝓞 E)
+variable
+  {E : Type} [Field.{0} E] [CMBase E]
+  {n : Type} [Fintype.{0} n] [DecidableEq n] [HasQuadSubfield d₀ E]
+  (t : E →+* ℂ)
+  {ν : ℕ} (α : Fin ν → 𝓞 E)
+  (P : E[X]) (μ : ℂ)
+  (k : Type*) [CommRing k]
+  (𝔑 : 𝓞 E)
 
 omit [DecidableEq n] in
 /-- A finite type embeds in ℂ. -/
 lemma nonempty_embedding_complex : Nonempty (n ↪ ℂ) :=
   (Cardinal.le_def n ℂ).mp (mk_le_aleph0.trans (aleph0_le_mk ℂ))
 
-/-- A chosen injection `n ↪ ℂ` that lists the roots of `t(P)` when these, counted with
+/--
+A chosen injection `n ↪ ℂ` that lists the roots of `t(P)` when these, counted with
 multiplicity, are `|n|` distinct numbers (`roots_map_eq_map_numberedRoots`). Otherwise it is an
-arbitrary injection. -/
+arbitrary injection.
+-/
 def numberedRoots (t : E →+* ℂ) (P : E[X]) : n ↪ ℂ :=
   have : Nonempty (n ↪ ℂ) := nonempty_embedding_complex
   Classical.epsilon fun r : n ↪ ℂ ↦ (P.map t).roots = Finset.univ.val.map r
@@ -250,22 +266,26 @@ lemma roots_map_eq_map_numberedRoots {t : E →+* ℂ} {P : E[X]}
   Classical.epsilon_spec h_exists
 
 open scoped Classical in
-/-- The matrix that describes the signature at `v₀`, written as a polynomial in `Φ v₀ (y)`. The
+/--
+The matrix that describes the signature at `v₀`, written as a polynomial in `Φ v₀ (y)`. The
 proposition `ε` chooses the case. In the marked case (`ε` holds) it is `markedReflection y i`. In
-the definite case (`ε` fails) it is the identity. -/
+the definite case (`ε` fails) it is the identity.
+-/
 def eigenReflection (ε : Prop) (y : GL n E) (i : n) : Matrix n n ℂ :=
   aeval (y.val.map (Φ v₀))
     (if ε then
-      Lagrange.interpolate Finset.univ (numberedRoots (Φ v₀) y.val.charpoly)
-        fun j : n ↦ if j = i then 1 else -1
-    else 1)
+       Lagrange.interpolate Finset.univ (numberedRoots (Φ v₀) y.val.charpoly) fun j : n ↦
+         if j = i then 1 else -1
+     else
+       1)
 
-/-- The marked case of `eigenReflection`: the matrix `Q(Φ v₀ (y))`, where `Q` is the Lagrange
+/--
+The marked case of `eigenReflection`: the matrix `Q(Φ v₀ (y))`, where `Q` is the Lagrange
 polynomial with value `1` at the `i`-th listed root of the characteristic polynomial of `y` and
 `-1` at the others (`markedReflection_eq_aeval`). If the roots are distinct, it is `1` on the
-`i`-th eigenline and `-1` on the other eigenlines. -/
-abbrev markedReflection (y : GL n E) (i : n) : Matrix n n ℂ :=
-  eigenReflection True y i
+`i`-th eigenline and `-1` on the other eigenlines.
+-/
+abbrev markedReflection (y : GL n E) (i : n) : Matrix n n ℂ := eigenReflection True y i
 
 lemma markedReflection_eq_aeval (y : GL n E) (i : n) :
     markedReflection y i = aeval (y.val.map (Φ v₀))
@@ -277,18 +297,22 @@ section
 
 variable {E : Type} [Field.{0} E] [NumberField E] (K : Subgroup (GL n (𝔸f E))) (y : GL n E)
 
-/-- Triples (xK, y, z): a coset of `K` in GL_n of the finite adeles, an element `y` of GL_n(E), and
+/--
+Triples (xK, y, z): a coset of `K` in GL_n of the finite adeles, an element `y` of GL_n(E), and
 a mark `z : Z`. In `New.Variety.countTerm` the type of marks is `Z = n`, the index of an eigenvalue
 of `y`; the default is `Z = ℂ`. GL_n(E) acts by left multiplication on the coset, by
-conjugation on `y`, and trivially on the mark. -/
+conjugation on `y`, and trivially on the mark.
+-/
 def MarkedTriple (Z : Type := ℂ) : Type := (GL n (𝔸f E) ⧸ K) × GL n E × Z
 
 instance {Z : Type} : MulAction (GL n E) (MarkedTriple K Z) :=
   @mulAction _ _ _ _ (.compHom _ toFinGL)
     (@mulAction _ _ _ _ (.compHom _ MulAut.conj) (.ofEndHom 1))
 
-/-- For y in GL_n(E) and x in GL_n of the finite adeles of E, the element x⁻¹y⁻¹x of that adelic
-group, with y embedded diagonally. -/
+/--
+For y in GL_n(E) and x in GL_n of the finite adeles of E, the element x⁻¹y⁻¹x of that adelic
+group, with y embedded diagonally.
+-/
 abbrev invAutInFrame (x : GL n (𝔸f E)) : GL n (𝔸f E) := x⁻¹ * toFinGL y⁻¹ * x
 
 end
@@ -299,54 +323,71 @@ section
 
 variable {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] (v : SplitFinPlace E)
 
-/-- For a split place v, the homomorphism sending g in GL_n(E_v) to the adelic matrix that is
-g⁻ᵀ at v, the conjugate of g at v̄, and 1 elsewhere. -/
+/--
+For a split place v, the homomorphism sending g in GL_n(E_v) to the adelic matrix that is
+g⁻ᵀ at v, the conjugate of g at v̄, and 1 elsewhere.
+-/
 def conjAtSplit : GL n (LocField (v : FinPlace E)) →* GL n (𝔸f E) :=
   (invTransposeGL (n := n)).toMonoidHom.comp
     (MonoidHom.comp (N := Gf E n) (U 1).subtype (ofSplitPlace v.property))
 
-/-- For a split place v, the homomorphism sending an adelic matrix to the inverse transpose of
-its component at v, in GL_n(E_v); a left inverse of `New.Variety.conjAtSplit` at v. -/
+/--
+For a split place v, the homomorphism sending an adelic matrix to the inverse transpose of
+its component at v, in GL_n(E_v); a left inverse of `New.Variety.conjAtSplit` at v.
+-/
 def dualComponent : GL n (𝔸f E) →* GL n (LocField (v : FinPlace E)) :=
   (invTransposeGL (n := n)).symm.toMonoidHom.comp (Matrix.GeneralLinearGroup.map (evalAt v.val))
 
 end
 
-/-- Cuspidality of χ: for every idempotent matrix ε ≠ 0, 1, χ is non-trivial on the elements of
-J lying in the unipotent group 1 + εM_n(1 − ε). -/
+/--
+Cuspidality of χ: for every idempotent matrix ε ≠ 0, 1, χ is non-trivial on the elements of
+J lying in the unipotent group 1 + εM_n(1 − ε).
+-/
 def IsCuspidalType {F : Type*} [Field F] (J : Subgroup (GL n F)) (χ : J →* ℂ) : Prop :=
-  ∀ ε : Matrix n n F, IsIdempotentElem ε → ε ≠ 0 → ε ≠ 1 →
-    ∃ (j : J) (Y : Matrix n n F), 1 + ε * Y * (1 - ε) = ((j : GL n F) : Matrix n n F) ∧ χ j ≠ 1
+  ∀ ε : Matrix n n F,
+    IsIdempotentElem ε → ε ≠ 0 → ε ≠ 1
+      → ∃ (j : J) (Y : Matrix n n F), 1 + ε * Y * (1 - ε) = ((j : GL n F) : Matrix n n F) ∧ χ j ≠ 1
 
 section
 
-variable {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] [HasQuadSubfield d₀ E]
+variable
+  {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] [HasQuadSubfield d₀ E]
   (v : SplitFinPlace E)
 
-/-- The norm from E to K₀ of the finite idele that is the chosen uniformiser at v and 1
-elsewhere. -/
+/--
+The norm from E to K₀ of the finite idele that is the chosen uniformiser at v and 1
+elsewhere.
+-/
 abbrev uniformizerNorm : (𝔸f (QuadField d₀))ˣ :=
   (locIdele v.val (uniformizer v.val)).map (adeleNorm (QuadField d₀) E)
 
-/-- The homomorphism sending a finite idele x of K₀ to the scalar matrix x̄·1 in GL_n of the
-finite adeles of E. -/
+/--
+The homomorphism sending a finite idele x of K₀ to the scalar matrix x̄·1 in GL_n of the
+finite adeles of E.
+-/
 abbrev centralScalar : (𝔸f (QuadField d₀))ˣ →* GL n (𝔸f E) :=
   (scalar n).comp
     (Units.map ((starRingEnd (𝔸f E)).comp (finAdeleIncl (QuadField d₀) E)).toMonoidHom)
 
 end
 
-/-- Safe places w of E: the place u of ℚ(√−d₀) below w satisfies `New.GaloisRep.IsSplitPrimeToDisc`,
-and 𝔑 lies neither in w nor in any place above ū. -/
+/--
+Safe places w of E: the place u of ℚ(√−d₀) below w satisfies `New.GaloisRep.IsSplitPrimeToDisc`,
+and 𝔑 lies neither in w nor in any place above ū.
+-/
 def IsSafe (w : FinPlace E) : Prop :=
-  GaloisRep.IsSplitPrimeToDisc (w.below (QuadField d₀)) ∧
-  𝔑 ∉ w.asIdeal ∧
-  ∀ v : FinPlace E, v.below (QuadField d₀) = star (w.below (QuadField d₀)) → 𝔑 ∉ v.asIdeal
+  GaloisRep.IsSplitPrimeToDisc (w.below (QuadField d₀)) ∧ 𝔑 ∉ w.asIdeal
+    ∧ ∀ v : FinPlace E, v.below (QuadField d₀) = star (w.below (QuadField d₀)) → 𝔑 ∉ v.asIdeal
 
-/-- The split places of E that are safe for K₀ and the level 𝔑, in the sense of
-`New.Variety.IsSafe`. -/
-abbrev SafePlace {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] [HasQuadSubfield d₀ E]
-    (𝔑 : 𝓞 E) : Type := {w : SplitFinPlace E // IsSafe 𝔑 w}
+/--
+The split places of E that are safe for K₀ and the level 𝔑, in the sense of
+`New.Variety.IsSafe`.
+-/
+abbrev SafePlace
+    {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] [HasQuadSubfield d₀ E] (𝔑 : 𝓞 E)
+    : Type :=
+  {w : SplitFinPlace E // IsSafe 𝔑 w}
 
 section
 
@@ -354,46 +395,62 @@ omit [CMBase E]
 
 end
 
-/-- For a subspace U of k_vⁿ (k_v the residue field) of dimension r, the scalar matrix of the
+/--
+For a subspace U of k_vⁿ (k_v the residue field) of dimension r, the scalar matrix of the
 conjugate of the (-r)-th power of `New.Variety.uniformizerNorm` at v, times
-`New.Variety.conjAtSplit` of the transpose of `New.basicCosetRep` U. -/
-def invHeckeIsogeny {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] [HasQuadSubfield d₀ E]
+`New.Variety.conjAtSplit` of the transpose of `New.basicCosetRep` U.
+-/
+def invHeckeIsogeny
+    {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] [HasQuadSubfield d₀ E]
     (v : SplitFinPlace E)
-    (U : Submodule (ResField (v : FinPlace E)) (n → ResField (v : FinPlace E))) :
-    GL n (𝔸f E) :=
-  centralScalar (n := n) (uniformizerNorm v ^ finrank (ResField v.val) ↥U)⁻¹ *
-    conjAtSplit v (transposeGL (basicCosetRep U))
+    (U : Submodule (ResField (v : FinPlace E)) (n → ResField (v : FinPlace E)))
+    : GL n (𝔸f E) :=
+  centralScalar (n := n) (uniformizerNorm v ^ finrank (ResField v.val) ↥U)⁻¹
+    * conjAtSplit v (transposeGL (basicCosetRep U))
 
 variable (n)
 
 section
 
-variable {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] (n : Type) [Fintype.{0} n]
-  [DecidableEq n] [HasQuadSubfield d₀ E] (k : Type*) [CommRing k] (v : SplitFinPlace E) (𝔑 : 𝓞 E)
+variable
+  {E : Type} [Field.{0} E] [NumberField E] [IsCMField E]
+  (n : Type) [Fintype.{0} n] [DecidableEq n] [HasQuadSubfield d₀ E]
+  (k : Type*) [CommRing k]
+  (v : SplitFinPlace E) (𝔑 : 𝓞 E)
 
 /-- The principal level: the similitudes in `GL_n(Ô E)` that are congruent to `1` modulo `𝔑`. -/
-def levelGU : Subgroup (GL n (𝔸f E)) :=
-  GU E n ⊓ congruenceGL (Ô E ∙ algebraMap (𝓞 E) (𝔸f E) 𝔑) id
+def levelGU : Subgroup (GL n (𝔸f E)) := GU E n ⊓ congruenceGL (Ô E ∙ algebraMap (𝓞 E) (𝔸f E) 𝔑) id
 
-/-- The element τ_{v,j} of the group ring over k: the sum of the elements
-`New.Variety.invHeckeIsogeny` over all j-dimensional subspaces U of k_vⁿ. -/
+/--
+The element τ_{v,j} of the group ring over k: the sum of the elements
+`New.Variety.invHeckeIsogeny` over all j-dimensional subspaces U of k_vⁿ.
+-/
 def heckeSum (j : ℕ) : MonoidAlgebra k (GL n (𝔸f E)) :=
   ∑ U ∈ {U : Submodule (ResField v.val) (n → ResField v.val) | finrank (ResField v.val) U = j},
     MonoidAlgebra.of k (GL n (𝔸f E)) (invHeckeIsogeny v U)
 
-/-- The Hecke algebra of level K = `New.Variety.levelGU` for 𝔑. It is the subalgebra of elements
+/--
+The Hecke algebra of level K = `New.Variety.levelGU` for 𝔑. It is the subalgebra of elements
 ∑ a_g [g] of k[GL_n(𝔸_f)] that are supported on `GUPlus E n` and whose function ∑ a_g 1_{gK} is
-left K-invariant. -/
+left K-invariant.
+-/
 def heckeAlgebra : Subalgebra k (MonoidAlgebra k (GL n (𝔸f E))) :=
-  (spanOn k (GUPlus E n) ⊓
-    fixedToEigen (levelGU n 𝔑) (MonoidHom.id (GL n (𝔸f E))) (levelGU n 𝔑)).toSubalgebra
-    ⟨Submodule.subset_span ⟨1, by simp, rfl⟩, fun _ _ _ π v hv ↦ by
-      rw [map_one, one_apply_eq_self]
-      exact hv⟩ fun a b ha hb ↦
+  (spanOn k (GUPlus E n)
+      ⊓ fixedToEigen (levelGU n 𝔑) (MonoidHom.id (GL n (𝔸f E))) (levelGU n 𝔑)).toSubalgebra
+    ⟨
+      Submodule.subset_span ⟨1, by simp, rfl⟩,
+      fun _ _ _ π v hv ↦ by
+        rw [map_one, one_apply_eq_self]
+        exact hv
+    ⟩
+    fun a b ha hb ↦
       -- `GUPlus E n` is closed under products, and `a * b` acts as `b` followed by `a`
-      ⟨spanOn.mul ha.1 hb.1 fun _ hg _ ↦ mul_mem hg, fun _ _ _ π v hv ↦ by
-        rw [map_mul, mul_apply_eq_comp]
-        exact ha.2 (hb.2 hv)⟩
+      ⟨
+        spanOn.mul ha.1 hb.1 fun _ hg _ ↦ mul_mem hg,
+        fun _ _ _ π v hv ↦ by
+          rw [map_mul, mul_apply_eq_comp]
+          exact ha.2 (hb.2 hv)
+      ⟩
 
 end
 
@@ -403,35 +460,50 @@ variable {n 𝔑}
 lemma levelGU_le_GU {𝔑 : 𝓞 E} : levelGU n 𝔑 ≤ GU E n :=
   inf_le_left
 
-/-- For an element f = ∑ a_g [g] of the Hecke algebra of level 𝔑, the function ∑ a_g 1_{gK} on
-cosets of the principal level subgroup K. -/
-abbrev heckeCosetFn {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] {𝔑 : 𝓞 E}
-    (f : heckeAlgebra n ℂ 𝔑) : GL n (𝔸f E) ⧸ levelGU n 𝔑 →₀ ℂ := cosetFn (levelGU n 𝔑) f.val
+/--
+For an element f = ∑ a_g [g] of the Hecke algebra of level 𝔑, the function ∑ a_g 1_{gK} on
+cosets of the principal level subgroup K.
+-/
+abbrev heckeCosetFn
+    {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] {𝔑 : 𝓞 E} (f : heckeAlgebra n ℂ 𝔑)
+    : GL n (𝔸f E) ⧸ levelGU n 𝔑 →₀ ℂ :=
+  cosetFn (levelGU n 𝔑) f.val
 
 open scoped Classical in
-/-- The term of a `GL n E`-orbit of triples, read at a chosen representative `(q, y, μ)` of the
+/--
+The term of a `GL n E`-orbit of triples, read at a chosen representative `(q, y, μ)` of the
 orbit and a chosen representative `x` of the coset `q`. It is `f(x⁻¹ y⁻¹ x K) * ω(charpoly y, μ)`
 if `x` is a signed frame for `eigenReflection ε y μ`, and `0` otherwise. So `ε = True` gives
 the marked count and `ε = False` the definite count. The value does not depend on the two choices;
-see `New.Variety.countTerm_mk` in `Lib.Shimura.Transfer.MarkedPairs`. -/
-def countTerm (ε : Prop) {𝔑 : 𝓞 E} (f : heckeAlgebra n ℂ 𝔑) (ω : E[X] → n → ℂ)
-    (c : orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n)) : ℂ :=
+see `New.Variety.countTerm_mk` in `Lib.Shimura.Transfer.MarkedPairs`.
+-/
+def countTerm
+    (ε : Prop)
+    {𝔑 : 𝓞 E} (f : heckeAlgebra n ℂ 𝔑)
+    (ω : E[X] → n → ℂ) (c : orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n))
+    : ℂ :=
   let (q, y, μ) := c.out
   if IsSignedFrame q.out (eigenReflection ε y μ) then
     heckeCosetFn f (invAutInFrame y q.out) * ω y.val.charpoly μ
-  else 0
+  else
+    0
 
-/-- Regularity of f: whenever f(x⁻¹y⁻¹x) ≠ 0 with y in GL_n(E) and x adelic, the characteristic
-polynomial of y is separable. -/
-def IsRegularHecke {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] {𝔑 : 𝓞 E}
-    (f : heckeAlgebra n ℂ 𝔑) : Prop :=
+/--
+Regularity of f: whenever f(x⁻¹y⁻¹x) ≠ 0 with y in GL_n(E) and x adelic, the characteristic
+polynomial of y is separable.
+-/
+def IsRegularHecke
+    {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] {𝔑 : 𝓞 E} (f : heckeAlgebra n ℂ 𝔑)
+    : Prop :=
   ∀ ⦃y : GL n E⦄ ⦃x : GL n (𝔸f E)⦄,
     heckeCosetFn f (invAutInFrame y x) ≠ 0 → y.val.charpoly.Separable
 
 open scoped Classical in
-/-- For μ : ℂ, the eigenline of the root r at the embedding t : E →+* ℂ lies in the Lie algebra: if
+/--
+For μ : ℂ, the eigenline of the root r at the embedding t : E →+* ℂ lies in the Lie algebra: if
 t = Φ v₀, then r = μ; if t is the other embedding above v₀, then r ≠ μ̄; if t lies above a place
-v ≠ v₀, then t = Φ v. -/
+v ≠ v₀, then t = Φ v.
+-/
 def IsLieRoot (r : ℂ) : Prop :=
   if InfinitePlace.mk t = v₀ then
     if t = Φ v₀ then r = μ else r ≠ star μ
@@ -441,22 +513,26 @@ def IsLieRoot (r : ℂ) : Prop :=
 /-! ### The local term -/
 
 open scoped Classical in
-/-- For an embedding `σ : E →+* ℂ`, the roots `r` of σ(P), as polynomials: `r X` if the eigenline of
+/--
+For an embedding `σ : E →+* ℂ`, the roots `r` of σ(P), as polynomials: `r X` if the eigenline of
 `r` lies in the Lie algebra, the constant `r` otherwise. It is `r X` exactly in these cases:
 * σ = Φ v₀: only `r = μ`;
 * σ the other embedding above `v₀`: all `r` other than the conjugate of `μ`;
-* σ above a place `v ≠ v₀`: all `r` if σ = Φ v, none otherwise. -/
+* σ above a place `v ≠ v₀`: all `r` if σ = Φ v, none otherwise.
+-/
 def lieRoots (σ : E →+* ℂ) : Multiset ℂ[X] :=
   (P.map σ).roots.map fun r : ℂ ↦ (if IsLieRoot σ μ r then X else 1) * C r
 
-/-- For P : E[X] and α : Fin ν → 𝓞 E, with μ the `j`-th listed root of the image of P under Φ v₀:
+/--
+For P : E[X] and α : Fin ν → 𝓞 E, with μ the `j`-th listed root of the image of P under Φ v₀:
 the polynomial L(μX), with L the Lagrange basis polynomial that is 1 at μ and 0 at the other listed
 roots, times ∏ (1 − σ(α i) η), over all i, all embeddings σ and all η in `New.Variety.lieRoots` at
-σ. -/
+σ.
+-/
 def localTerm (j : n) : ℂ[X] :=
   let r : n ↪ ℂ := numberedRoots (Φ v₀) P
-  (Lagrange.basis Finset.univ r j).comp (X * C (r j)) *
-    ∏ i : Fin ν, ∏ σ : E →+* ℂ, ((lieRoots P (r j) σ).map fun x : ℂ[X] ↦ 1 - C (σ (α i)) * x).prod
+  (Lagrange.basis Finset.univ r j).comp (X * C (r j))
+    * ∏ i : Fin ν, ∏ σ : E →+* ℂ, ((lieRoots P (r j) σ).map fun x : ℂ[X] ↦ 1 - C (σ (α i)) * x).prod
 
 end New.Variety
 
@@ -481,11 +557,15 @@ namespace New.Variety
 
 section
 
-variable {E : Type} [Field.{0} E] [NumberField E] [IsCMField E]
-  {n : Type} [Fintype.{0} n] [DecidableEq n] {x : GL n (𝔸f E)} {β : Matrix n n E} {𝔑 : 𝓞 E}
+variable
+  {E : Type} [Field.{0} E] [NumberField E] [IsCMField E]
+  {n : Type} [Fintype.{0} n] [DecidableEq n]
+  {x : GL n (𝔸f E)} {β : Matrix n n E} {𝔑 : 𝓞 E}
 
-/-- A CM field that contains a primitive `5040`-th root of unity has degree at least `3` over `ℚ`,
-hence at least two infinite places. -/
+/--
+A CM field that contains a primitive `5040`-th root of unity has degree at least `3` over `ℚ`,
+hence at least two infinite places.
+-/
 instance [h : HasPrimitiveRoot5040 E] : Nontrivial (InfinitePlace E) := by
   -- A primitive root of unity of order `5040` makes the degree of `E` at least `3`, and the
   -- degree is twice the number of infinite places.
@@ -550,9 +630,12 @@ lemma IsFrameFor.isHermitian_map {f : E →+* ℂ} : IsFrameFor β x → (β.map
 
 end
 
-variable {E : Type} [Field.{0} E] [Ψ : CMBase E] {n : Type} [Fintype.{0} n] [DecidableEq n]
+variable
+  {E : Type} [Field.{0} E] [Ψ : CMBase E]
+  {n : Type} [Fintype.{0} n] [DecidableEq n]
   {x : GL n (𝔸f E)} {ℓ : Matrix n n ℂ} {y : GL n E} {β : Matrix n n E} {x' : GL n (𝔸f E)}
-  {ℓ' : Matrix n n ℂ} {β' : Matrix n n E} {𝔑 : 𝓞 E} [Nonempty n] {c : ℚ} {ι : Type*} [Fintype ι]
+  {ℓ' : Matrix n n ℂ} {β' : Matrix n n E} {𝔑 : 𝓞 E} [Nonempty n]
+  {c : ℚ} {ι : Type*} [Fintype ι]
 
 omit [Nonempty n] in
 /-- A point `g` of the finite adelic unitary group `Gf E n` (so `gᴴ g = 1`) is a signed frame for
@@ -740,8 +823,9 @@ private lemma norm_trace_sub_one_le_of_mul_star_eq_one (v : InfinitePlace E)
 
 section
 
-variable {E : Type} [Field.{0} E] [NumberField E] [IsCMField E] {x : GL n (𝔸f E)} {y : GL n E}
-  {β : Matrix n n E}
+variable
+  {E : Type} [Field.{0} E] [NumberField E] [IsCMField E]
+  {x : GL n (𝔸f E)} {y : GL n E} {β : Matrix n n E}
 
 omit Ψ in
 /-- An algebraic integer `t` of `E` whose images under all the embeddings `Φ v` have modulus at
@@ -826,13 +910,15 @@ lemma IsSignedFrameFor.eq_one_of_congr_large_norm (h : IsSignedFrameFor x ℓ β
 /-! ### Neat levels and freeness -/
 
 variable (n 𝔑) in
-/-- The level 𝔑 is neat: 𝔑 ≠ 0 and, whenever `x` is a signed frame with `ℓ` for some form
+/--
+The level 𝔑 is neat: 𝔑 ≠ 0 and, whenever `x` is a signed frame with `ℓ` for some form
 (`New.Variety.IsSignedFrame`), every y in GL_n(E) with x⁻¹yx in `levelGU n 𝔑` that fixes ℓ under
-`New.Variety.ratConj` equals 1. -/
+`New.Variety.ratConj` equals 1.
+-/
 def IsNeat : Prop :=
-  𝔑 ≠ 0 ∧
-  ∀ {x : GL n (𝔸f E)} {ℓ : Matrix n n ℂ} {y : GL n E}, IsSignedFrame x ℓ →
-    x⁻¹ * toFinGL y * x ∈ levelGU n 𝔑 → ratConj y ℓ = ℓ → y = 1
+  𝔑 ≠ 0
+    ∧ ∀ {x : GL n (𝔸f E)} {ℓ : Matrix n n ℂ} {y : GL n E},
+      IsSignedFrame x ℓ → x⁻¹ * toFinGL y * x ∈ levelGU n 𝔑 → ratConj y ℓ = ℓ → y = 1
 
 omit [Nonempty n] in
 lemma IsNeat.ne_zero (h_neat : IsNeat n 𝔑) : 𝔑 ≠ 0 :=

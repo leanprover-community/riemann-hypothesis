@@ -71,10 +71,11 @@ namespace New
 
 open MvPolynomial Finset Matrix «GL» Submodule Equiv Fintype Function Sigma
 
-variable {Φ : Type}
-  {R S F : Type _} [CommRing R] [CommRing S] [Fintype Φ]
-  {n n' : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
-  [∀ τ : Φ, Fintype (n' τ)] [∀ τ : Φ, DecidableEq (n' τ)] {κ : Φ → ℕ → ℕ}
+variable
+  {Φ : Type} {R S F : Type _} [CommRing R] [CommRing S] [Fintype Φ]
+  {n n' : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (n' τ)]
+  [∀ τ : Φ, DecidableEq (n' τ)]
+  {κ : Φ → ℕ → ℕ}
   (e : Φ → ℕ) (g : ∀ τ : Φ, Matrix (n τ) (n τ) R) (x : ∀ τ : Φ, n τ → R)
 
 /-! ### The standard basis of ∇ -/
@@ -235,8 +236,8 @@ lemma isRegular_detPow {e : Φ → ℕ} : IsRegular (detPow R n e) := by
   simp [reflect, map_pow, map_sub, detPow, minor, AlgHom.map_det, Matrix.map,
     permArray, ← Fin.ext_iff, RingHom.map_det, ← diagonal.eq_1]
 
-omit [Fintype Φ]
-  [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (n' τ)] [∀ τ : Φ, DecidableEq (n' τ)] in
+omit [Fintype Φ] [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (n' τ)]
+  [∀ τ : Φ, DecidableEq (n' τ)] in
 /-- For I a tuple of |n_τ| rows of n'_τ, the substitution y ↦ zy sends the minor on rows I
 (determinant of the variables in rows (τ, I a) and columns 0, …, |n_τ|−1) to det(z_τ[I, ·]) times
 the minor on the rows of n_τ, both taken in the fixed enumeration `New.GL.rowEquivFin n τ` of
@@ -636,18 +637,23 @@ end New
 
 /-! ## Schur representations twisted by determinants -/
 
-/-- The action on the Weyl module of a dominant weight μ, given as (κ, e): κ_τ(h) = μ_h − μ_{h+1} is
+/--
+The action on the Weyl module of a dominant weight μ, given as (κ, e): κ_τ(h) = μ_h − μ_{h+1} is
 the number of columns of height h < |n_τ| at the place τ, and the integer e_τ is the last entry of
 μ_τ. The monoid homomorphism sends a family g of invertible matrices g_τ ∈ GL(n_τ, R) to ∏_τ
-det(g_τ)^{e_τ} times the Schur matrix S_κ(g). -/
-noncomputable def New.weylRep {Φ R : Type} [CommRing R] [Fintype Φ] [DecidableEq Φ]
-    {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] (κ : Φ → ℕ → ℕ)
-    (e : Φ → ℤ) :
-    ((τ : Φ) → GL (n τ) R) →* Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) R :=
+det(g_τ)^{e_τ} times the Schur matrix S_κ(g).
+-/
+noncomputable def New.weylRep
+    {Φ R : Type} [CommRing R] [Fintype Φ] [DecidableEq Φ]
+    {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
+    (κ : Φ → ℕ → ℕ) (e : Φ → ℤ)
+    : ((τ : Φ) → GL (n τ) R) →* Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) R :=
   MonoidHom.mk
-    { toFun := fun g : ∀ τ : Φ, GL (n τ) R ↦
+    {
+      toFun := fun g : ∀ τ : Φ, GL (n τ) R ↦
         (∏ τ : Φ, (g τ).det ^ e τ) • schur κ fun τ : Φ ↦ (g τ : Matrix (n τ) (n τ) R)
-      map_one' := by simp }
+      map_one' := by simp
+    }
     (by simp [mul_zpow, smul_mul_smul, Finset.prod_mul_distrib])
 
 /-!
@@ -665,11 +671,10 @@ Weights of the standard basis b_i = `New.nablaBasis` of the module ∇ = `New.na
 
 namespace New
 
-variable {Φ : Type}
-  {R : Type} [CommRing R] [Fintype Φ]
-  {n : Φ → Type} {n' : Φ → Type _}
-  {κ : Φ → ℕ → ℕ} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
-  [∀ τ : Φ, Fintype (n' τ)] [∀ τ : Φ, DecidableEq (n' τ)]
+variable
+  {Φ : Type} {R : Type} [CommRing R] [Fintype Φ]
+  {n : Φ → Type} {n' : Φ → Type _} {κ : Φ → ℕ → ℕ} [∀ τ : Φ, Fintype (n τ)]
+  [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (n' τ)] [∀ τ : Φ, DecidableEq (n' τ)]
 
 open MvPolynomial Finset Matrix «GL» Equiv Fintype
 

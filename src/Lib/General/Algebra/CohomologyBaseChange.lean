@@ -54,9 +54,10 @@ section TensorCohomology
 
 open CategoryTheory TensorProduct Function Module Flat Abelian.Ext H Comparison LongExactSeq Functor
 
-variable {C C' : Type 1} [Category C] [Category C']
-  {S T M : Type} [CommRing S] [CommRing T] [Algebra S T] [AddCommGroup M] [Module S M]
-  [Module T M] [IsScalarTower S T M]
+variable
+  {C C' : Type 1} [Category C] [Category C']
+  {S T M : Type} [CommRing S] [CommRing T] [Algebra S T] [AddCommGroup M] [Module S M] [Module T M]
+  [IsScalarTower S T M]
   {Φ : C ⥤ ModuleCat S} {Φ' : C' ⥤ ModuleCat S} {φ : C' ⥤ C} {N K : AbFunctor C} {N' : AbFunctor C'}
   {n : ℕ} (β : φ ⋙ Φ ⟶ Φ') (α : N' ⟶ φ ⋙ N)
 
@@ -67,10 +68,12 @@ lemma baseChangeMap_tmul (m : M) (x : H N (moduleCoeff Φ) n) :
     baseChangeMap T M N Φ n (m ⊗ₜ x) = push N (tensorWith.mk T m Φ) n x :=
   (rfl)
 
-/-- For β: Φ∘φ → Φ' of functors to S-modules and α: N' → N∘φ, the comparison map H^n(N, Φ) → H^n(N',
-Φ') (the map `pull α` of the comparison `ofModuleHom φ β` built from β), as an S-linear map. -/
-noncomputable def Comparison.pullₗ (n : ℕ) :
-    H N (moduleCoeff Φ) n →ₗ[S] H N' (moduleCoeff Φ') n where
+/--
+For β: Φ∘φ → Φ' of functors to S-modules and α: N' → N∘φ, the comparison map H^n(N, Φ) → H^n(N',
+Φ') (the map `pull α` of the comparison `ofModuleHom φ β` built from β), as an S-linear map.
+-/
+noncomputable def Comparison.pullₗ (n : ℕ)
+    : H N (moduleCoeff Φ) n →ₗ[S] H N' (moduleCoeff Φ') n where
   __ := (ofModuleHom φ β).pull α n
   map_smul' s := by
     -- A scalar acts by pushing along an endomorphism of the coefficients, which commutes with `β`.
@@ -115,14 +118,15 @@ lemma push_homReprEquiv_symm (γ : K ⟶ N) (A : C) (x : (K.obj A)) :
   exact (mk₀_comp_mk₀ _ _).trans (congrArg mk₀ h_comp)
 
 /-- The Yoneda isomorphism Φ(A) ≅ H^0(ℤ[h_A], Φ), as an S-linear map. -/
-noncomputable def HasBaseChange.yonedaEquiv₀ (Φ : C ⥤ ModuleCat S) (A : C) :
-    Φ.obj A ≃ₗ[S] H (freeAb.obj (reprBy A)) (moduleCoeff Φ) 0 :=
+noncomputable def HasBaseChange.yonedaEquiv₀ (Φ : C ⥤ ModuleCat S) (A : C)
+    : Φ.obj A ≃ₗ[S] H (freeAb.obj (reprBy A)) (moduleCoeff Φ) 0 :=
   AddEquiv.toLinearEquiv
     (show Φ.obj A ≃+ H (freeAb.obj (reprBy A)) (moduleCoeff Φ) 0 from
-      (addEquiv₀.trans ((homReprEquiv A (moduleCoeff Φ)).trans .ulift)).symm) fun s x ↦
-    -- A scalar acts on classes by pushing along an endomorphism of the coefficients; this is
-    -- `smul_eq_push`, which holds by definition.
-    (push_homReprEquiv_symm (CoeffAction.act s : End (moduleCoeff Φ)).asHom A (.up x)).symm
+      (addEquiv₀.trans ((homReprEquiv A (moduleCoeff Φ)).trans .ulift)).symm)
+    fun s x ↦
+      -- A scalar acts on classes by pushing along an endomorphism of the coefficients; this is
+      -- `smul_eq_push`, which holds by definition.
+      (push_homReprEquiv_symm (CoeffAction.act s : End (moduleCoeff Φ)).asHom A (.up x)).symm
 
 /-- `yonedaEquiv₀` sends x to the class of the map ℤ[h_A] → Φ that corresponds to x. -/
 lemma HasBaseChange.yonedaEquiv₀_apply (Φ : C ⥤ ModuleCat S) (A : C) (x : Φ.obj A) :
@@ -154,10 +158,13 @@ M ⊗_S H^n(ℤ[h_A], Φ) → H^n(ℤ[h_A], M ⊗_S Φ) is bijective for all n, 
 lemma hasFlatBaseChange_freeAb_reprBy (A : C) : HasFlatBaseChange (freeAb (reprBy A)) := by
   simp [HasFlatBaseChange, HasBaseChange.baseChangeMap_bijective_freeAb_reprBy]
 
-/-- Composition with a class e in Ext^a(N', N), as an S-linear map from H^n(N, Φ) to
-H^(a+n)(N', Φ). -/
-noncomputable def HasBaseChange.precompₗ (Φ : C ⥤ ModuleCat S) {N N' : AbFunctor C} {a n n' : ℕ}
-    (e : H N' N a) (h : a + n = n') : H N (moduleCoeff Φ) n →ₗ[S] H N' (moduleCoeff Φ) n' where
+/--
+Composition with a class e in Ext^a(N', N), as an S-linear map from H^n(N, Φ) to
+H^(a+n)(N', Φ).
+-/
+noncomputable def HasBaseChange.precompₗ
+    (Φ : C ⥤ ModuleCat S) {N N' : AbFunctor C} {a n n' : ℕ} (e : H N' N a) (h : a + n = n')
+    : H N (moduleCoeff Φ) n →ₗ[S] H N' (moduleCoeff Φ) n' where
   toFun := e.precomp _ h
   map_add' := map_add _
   map_smul' := by simp [smul_eq_push, push]
@@ -172,10 +179,15 @@ lemma HasBaseChange.baseChangeMap_lTensor_precompₗ {N N' : AbFunctor C} {a n n
   | add => simp [*]
   | tmul m x => simp [precompₗ, H.push]
 
-/-- For M flat, the long exact sequence of Ext(–, Φ) of a short exact sequence X, tensored
-with M. -/
-noncomputable def HasBaseChange.tensoredSeq (M : Type) [AddCommGroup M] [Module S M] [Flat S M]
-    (Φ : C ⥤ ModuleCat S) {X : ShortComplex (AbFunctor C)} (hX : X.ShortExact) : LongExactSeq where
+/--
+For M flat, the long exact sequence of Ext(–, Φ) of a short exact sequence X, tensored
+with M.
+-/
+noncomputable def HasBaseChange.tensoredSeq
+    (M : Type) [AddCommGroup M] [Module S M] [Flat S M]
+    (Φ : C ⥤ ModuleCat S)
+    {X : ShortComplex (AbFunctor C)} (hX : X.ShortExact)
+    : LongExactSeq where
   A n := .of (M ⊗[S] H X.X₃ (moduleCoeff Φ) n)
   B n := .of (M ⊗[S] H X.X₂ (moduleCoeff Φ) n)
   C n := .of (M ⊗[S] H X.X₁ (moduleCoeff Φ) n)
@@ -210,19 +222,23 @@ lemma HasBaseChange.devissage [Flat S M] :
   have (F : AbFunctor C) (n : ℕ) : Subsingleton (H N F n) := subsingleton_of_id_eq_zero hN F n
   simp [nontriviality, AllBijective, Bijective, Surjective]
 
-/-- `IsAcyclicAt φ F B` says that restriction along φ (the comparison `Comparison.restrict φ F`,
+/--
+`IsAcyclicAt φ F B` says that restriction along φ (the comparison `Comparison.restrict φ F`,
 taken with α = `freeAbMap` of the identity of h_B∘φ) from H^n(ℤ[h_B], F) to H^n(ℤ[Hom(B, φ –)], F∘φ)
-is bijective for all n; so the latter is F(B) in degree 0 and zero in positive degree. -/
+is bijective for all n; so the latter is F(B) in degree 0 and zero in positive degree.
+-/
 abbrev IsAcyclicAt (φ : C' ⥤ C) (F : AbFunctor C) (B : C) : Prop :=
   IsBijective (Comparison.restrict φ F) (freeAbMap (𝟙 (φ ⋙ reprBy B)))
 
 variable {D : Type*} [Category D] {Ψ : C ⥤ D}
 
-/-- For β: Ψ∘φ → Ψ', α: N' → N∘φ and a functor F to S-modules, the statement that the comparison map
+/--
+For β: Ψ∘φ → Ψ', α: N' → N∘φ and a functor F to S-modules, the statement that the comparison map
 (built from F∘β and α, as in `pullₗ`; `IsBijective` of `ofModuleHom`) H^n(N, F∘Ψ) → H^n(N', F∘Ψ') is
-bijective for all n. -/
-abbrev CoeffCompBijective {Ψ' : C' ⥤ D} (β : φ ⋙ Ψ ⟶ Ψ') (α : N' ⟶ φ ⋙ N) (F : D ⥤ ModuleCat S) :
-    Prop :=
+bijective for all n.
+-/
+abbrev CoeffCompBijective {Ψ' : C' ⥤ D} (β : φ ⋙ Ψ ⟶ Ψ') (α : N' ⟶ φ ⋙ N) (F : D ⥤ ModuleCat S)
+    : Prop :=
   (ofModuleHom (S := S) φ (Φ := Ψ ⋙ F) (whiskerRight β F)).IsBijective α
 
 /-- Suppose β and α induce bijections H^n(N, Φ) → H^n(N', Φ'), M is flat over S and N has flat
@@ -254,25 +270,29 @@ open CategoryTheory ConcreteCategory
 
 variable {C k S : Type _} [Category C] [CommRing k] [CommRing S] [Algebra k S]
 
-/-- Base change from commutative k-algebras to commutative S-algebras is left adjoint to
-restriction of scalars. -/
+/--
+Base change from commutative k-algebras to commutative S-algebras is left adjoint to
+restriction of scalars.
+-/
 def algBaseChangeAdj : algBaseChange S ⊣ restrictAlg k S :=
-  Adjunction.mkOfHomEquiv
-    { -- `S`-algebra maps `S ⊗ A → B` correspond to `k`-algebra maps `A → B` (`AlgHom.liftEquiv`,
-      -- with the `k`-algebra structure on `B` given by restriction of scalars; type class search
-      -- does not find it, so it is left to unification and the scalar tower is given explicitly)
-      homEquiv A B :=
-        homEquiv.trans (Equiv.symm (homEquiv.trans
-          (@AlgHom.liftEquiv k S A B _ _ _ _ _ _ _ (_) (IsScalarTower.of_compHom k S B))))
-      -- both sides agree on pure tensors
-      homEquiv_naturality_left_symm _ _ := ext (tmul_ext fun _ _ ↦ by rfl) }
+  Adjunction.mkOfHomEquiv { -- `S`-algebra maps `S ⊗ A → B` correspond to `k`-algebra maps `A → B` (`AlgHom.liftEquiv`,
+    -- with the `k`-algebra structure on `B` given by restriction of scalars; type class search
+    -- does not find it, so it is left to unification and the scalar tower is given explicitly)
+    homEquiv A B :=
+      homEquiv.trans (Equiv.symm (homEquiv.trans (@AlgHom.liftEquiv k S A B _ _ _ _ _ _ _ (_)
+        (IsScalarTower.of_compHom k S B))))
+    -- both sides agree on pure tensors
+    homEquiv_naturality_left_symm _ _ := ext (tmul_ext fun _ _ ↦ by rfl)
+  }
 
-/-- For functors X to k-algebras and Y to S-algebras, the bijection between natural S-algebra maps
-S ⊗_k X → Y and natural k-algebra maps X → Y. Its inverse sends β to the map s ⊗ a ↦ s • β a. -/
-abbrev baseChangeTranspose :
-    (X : C ⥤ CommAlg k) → (Y : C ⥤ CommAlg S) →
-      (((Functor.whiskeringRight C (CommAlg k) (CommAlg S)).obj (algBaseChange S)).obj X ⟶ Y) ≃
-        (X ⟶ ((Functor.whiskeringRight C (CommAlg S) (CommAlg k)).obj (restrictAlg k S)).obj Y) :=
+/--
+For functors X to k-algebras and Y to S-algebras, the bijection between natural S-algebra maps
+S ⊗_k X → Y and natural k-algebra maps X → Y. Its inverse sends β to the map s ⊗ a ↦ s • β a.
+-/
+abbrev baseChangeTranspose
+    : (X : C ⥤ CommAlg k) → (Y : C ⥤ CommAlg S)
+      → (((Functor.whiskeringRight C (CommAlg k) (CommAlg S)).obj (algBaseChange S)).obj X ⟶ Y)
+        ≃ (X ⟶ ((Functor.whiskeringRight C (CommAlg S) (CommAlg k)).obj (restrictAlg k S)).obj Y) :=
   ((algBaseChangeAdj (k := k) (S := S)).whiskerRight C).homEquiv
 
 /-- For a k-algebra B and an S-algebra A, composing with the unit B → S ⊗ B is a bijection from the

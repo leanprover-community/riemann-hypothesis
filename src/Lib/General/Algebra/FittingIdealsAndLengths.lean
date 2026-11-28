@@ -66,13 +66,17 @@ namespace New
 
 open Matrix Module Submodule LinearMap Finsupp LinearEquiv IsDiscreteValuationRing Ideal
 
-variable {O O' Γ n A : Type*} [CommRing O] [CommRing O'] [Fintype n] [DecidableEq n] [Ring A]
+variable
+  {O O' Γ n A : Type*} [CommRing O] [CommRing O'] [Fintype n] [DecidableEq n] [Ring A]
   {m M M' : Type*} [Fintype m] [AddCommGroup M] [Module A M] [AddCommGroup M'] [Module A M']
   (S T : Submodule A M) (R : Set (Γ →₀ Matrix n n O))
   (B : Type*) [AddCommGroup B] [Module O B]
   {B' : Type*} [AddCommGroup B'] [Module O B']
-  {c : Γ → n → B} (φ : B →ₗ[O] B') (e : O →+* O') (Z : Submodule O (Γ → n → O))
-  {S' T' : Submodule A M'} (f : M →ₗ[A] M') {a p : O}
+  {c : Γ → n → B}
+  (φ : B →ₗ[O] B') (e : O →+* O') (Z : Submodule O (Γ → n → O))
+  {S' T' : Submodule A M'}
+  (f : M →ₗ[A] M')
+  {a p : O}
 
 /-- O is a discrete valuation ring (in particular a domain). -/
 class DVR (O : Type*) [CommRing O] extends IsDomain O, IsDiscreteValuationRing O
@@ -80,34 +84,44 @@ class DVR (O : Type*) [CommRing O] extends IsDomain O, IsDiscreteValuationRing O
 /-- The quotient ring O/aO. -/
 abbrev QuotSpan (a : O) : Type _ := O ⧸ Ideal.span {a}
 
-/-- O is a discrete valuation ring of characteristic 0, finite and free over ℤ_ℓ, with finite
-quotients by nonzero ideals: the integer ring of a finite extension of ℚ_ℓ. -/
-class PadicIntegerRing (O : Type*) (ℓ : outParam ℕ) [Fact ℓ.Prime]
-    [CommRing O] extends Algebra ℤ_[ℓ] O, DVR O, CharZero O, Free ℤ_[ℓ] O, Module.Finite ℤ_[ℓ] O,
-  Ring.HasFiniteQuotients O
+/--
+O is a discrete valuation ring of characteristic 0, finite and free over ℤ_ℓ, with finite
+quotients by nonzero ideals: the integer ring of a finite extension of ℚ_ℓ.
+-/
+class PadicIntegerRing (O : Type*) (ℓ : outParam ℕ) [Fact ℓ.Prime] [CommRing O]
+  extends Algebra ℤ_[ℓ] O, DVR O, CharZero O, Free ℤ_[ℓ] O, Module.Finite ℤ_[ℓ] O,
+    Ring.HasFiniteQuotients O
 
 instance [h : Ring.HasFiniteQuotients O] [NeZero a] : Finite (QuotSpan a) :=
   h.finiteQuotient (by simp [NeZero.ne])
 
 /-! ### Relations, the functions they kill, and lengths modulo a submodule -/
 
-/-- Evaluation of relations. A finitely supported function `f` from `Γ` to `n × n` matrices over
+/--
+Evaluation of relations. A finitely supported function `f` from `Γ` to `n × n` matrices over
 `O` is sent to the `O`-linear map `c ↦ ∑ γ, f γ • c γ` from functions `Γ → Bⁿ` to `Bⁿ`. The
-dependence on `f` is linear over the matrix ring. -/
+dependence on `f` is linear over the matrix ring.
+-/
 @[simp]
 def relEval : (Γ →₀ Matrix n n O) →ₗ[Matrix n n O] (Γ → n → B) →ₗ[O] n → B :=
   (bilinearCombination (Matrix n n O) O).flip
 
-/-- The submodule of the functions `c : Γ → Bⁿ` killed by every relation `f` in `R`, that is, with
-`∑ γ, f γ • c γ = 0` in `Bⁿ`. -/
+/--
+The submodule of the functions `c : Γ → Bⁿ` killed by every relation `f` in `R`, that is, with
+`∑ γ, f γ • c γ = 0` in `Bⁿ`.
+-/
 def obeying : Submodule O (Γ → n → B) := ⨅ f ∈ R, (relEval B f).ker
 
-/-- The matrix-valued finitely supported function obtained from f by applying the ring
-homomorphism e: O → O' to every matrix entry. -/
+/--
+The matrix-valued finitely supported function obtained from f by applying the ring
+homomorphism e: O → O' to every matrix entry.
+-/
 def mapRel (f : Γ →₀ Matrix n n O) : Γ →₀ Matrix n n O' := f.mapRange e.mapMatrix (by simp)
 
-/-- The linear relations of Z: the finitely supported matrix-valued f on Γ with Σ_γ f(γ)z(γ) = 0
-in O^n for all z in Z. -/
+/--
+The linear relations of Z: the finitely supported matrix-valued f on Γ with Σ_γ f(γ)z(γ) = 0
+in O^n for all z in Z.
+-/
 def relationsOn : Set (Γ →₀ Matrix n n O) := {f : Γ →₀ Matrix n n O | ∀ z ∈ Z, relEval O f z = 0}
 
 /-- The length of S/(S ∩ T) as an A-module, for submodules S, T of M. -/
@@ -178,8 +192,10 @@ lemma mkQ_mem_obeying_relationsOn (z : Γ → n → O) (hz : z ∈ Z) :
       obeying (relationsOn Z) (QuotSpan a) :=
   (comp_mem_obeying_iff _).2 fun f hf i ↦ by rw [hf z hz, Pi.zero_apply, map_zero]
 
-/-- The set of matrix-valued relations, one for each pair (g, h), expressing the cocycle
-identity c(gh) = c(g) + ρ(g)c(h). -/
+/--
+The set of matrix-valued relations, one for each pair (g, h), expressing the cocycle
+identity c(gh) = c(g) + ρ(g)c(h).
+-/
 def cocycleRelations [Mul Γ] (ρ : Γ → Matrix n n O) : Set (Γ →₀ Matrix n n O) :=
   {f : Γ →₀ Matrix n n O | ∃ g h : Γ, f = .single (g * h) 1 - .single g 1 - .single h (ρ g)}
 
@@ -393,8 +409,8 @@ open Module Submodule Cardinal
 
 namespace New.Lift
 
-variable {p : ℕ}
-  {V : Type*} [Fact p.Prime] [AddCommGroup V] [Module ℤ_[p] V]
+variable
+  {p : ℕ} {V : Type*} [Fact p.Prime] [AddCommGroup V] [Module ℤ_[p] V]
   {L L' L'' : Submodule ℤ_[p] V} {m n : ℕ}
 
 /-- If `L` has length at most `m` modulo `L'` and `L'` has length at most `n` modulo `L''`, then
@@ -489,8 +505,10 @@ open Matrix Submodule Function
 
 variable {R ι : Type} [CommRing R] [Fintype ι] [DecidableEq ι] (N : Submodule R (ι → R))
 
-/-- The ideal of R generated by the determinants of square matrices with all rows in N ⊆ R^ι:
-the zeroth Fitting ideal of R^ι modulo N. -/
+/--
+The ideal of R generated by the determinants of square matrices with all rows in N ⊆ R^ι:
+the zeroth Fitting ideal of R^ι modulo N.
+-/
 def fittingIdeal : Ideal R := Ideal.span (det '' {B : Matrix ι ι R | ∀ i : ι, B i ∈ N})
 
 variable {N}
@@ -590,12 +608,15 @@ section FittingDuality
 
 open Submodule Module IsDiscreteValuationRing
 
-variable {O R G n ι : Type} [CommRing O] [DVR O] [CommRing R] [Algebra O R]
+variable
+  {O R G n ι : Type} [CommRing O] [DVR O] [CommRing R] [Algebra O R]
   (Φ : (n → O) →ₗ[O] ι → R) (z : G → n → O) (N : Submodule R (ι → R)) (p : O)
 
-/-- The module of the functions `g ↦ Ψ (z g)` on `G`, where `Ψ : O^n → O / p` runs over the
+/--
+The module of the functions `g ↦ Ψ (z g)` on `G`, where `Ψ : O^n → O / p` runs over the
 `O`-linear maps that vanish on `Φ⁻¹ N`. The values are taken in `Unit → O / p`, vectors of
-length one, as for cocycles of a representation of rank one. -/
+length one, as for cocycles of a representation of rank one.
+-/
 noncomputable def formsMod : Submodule O (G → Unit → QuotSpan p) :=
   (((N.restrictScalars O).comap Φ).compatibleMaps ⊥).map
     (LinearMap.pi fun g ↦ LinearMap.applyₗ (z g))

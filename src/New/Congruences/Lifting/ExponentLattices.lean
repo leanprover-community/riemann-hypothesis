@@ -75,14 +75,19 @@ namespace New.Lift.KummerChart
 open Period MulAction Pointwise Submodule Set FrobGroup NeZero MulSemiringAction Polynomial Finset
   Algebra LinearMap
 
-variable {p : ℕ} [P : ThePrime p] [Γ : GroupOverGp p] [k : KummerChart Γ]
-  {O : Coeffs} {L : JumpLattice O} (a : ℕ) (i : Letter) (c : ℕ → ℤ → ℤ) {l : ℕ} {n u : ℤ}
+variable
+  {p : ℕ} [P : ThePrime p] [Γ : GroupOverGp p] [k : KummerChart Γ]
+  {O : Coeffs} {L : JumpLattice O}
+  (a : ℕ) (i : Letter) (c : ℕ → ℤ → ℤ)
+  {l : ℕ} {n u : ℤ}
 
 /-! ### Steps in the Galois group of the chart and their costs -/
 
-/-- The cost c_a(n) of the step n at p_a = φ^a(E): c_a(n) = v_p(n) + d + 3a, with v_p(0) = 0. Here
+/--
+The cost c_a(n) of the step n at p_a = φ^a(E): c_a(n) = v_p(n) + d + 3a, with v_p(0) = 0. Here
 d = `k.differentBound` is 0 if the ramification index e of the chart is 1, and v_p(e) + 1
-otherwise. -/
+otherwise.
+-/
 def cost (a : ℕ) (n : ℤ) : ℕ := padicValInt p n + (k.differentBound + 3 * a)
 
 /-- For a unit `ω` and an integer `n`, the elements `ω ^ |n| - 1` and `ω ^ n - 1` are associated:
@@ -175,10 +180,12 @@ lemma theta_zTau_dvd_pow_mul_thetaPhiInv :
       simp [sq]
     exact (h_sq.trans (pow_dvd_pow _ (by lia))).mul_right _
 
-/-- The data for the step n ≠ 0 of the depth lemma at p_a = φ^a(E) (`k.frobE a`): an element g of
+/--
+The data for the step n ≠ 0 of the depth lemma at p_a = φ^a(E) (`k.frobE a`): an element g of
 the Galois group Γ' of the chart (`k.galMonoid`) that multiplies p_a by a unit ω and acts trivially
 on the ring S of the chart modulo p_a, the quotient X of ω^n − 1 by δ = zτ (`k.zTau`), and an
-inverse υ of X modulo p_a up to the factor p^c, c = `cost a n`. -/
+inverse υ of X modulo p_a up to the factor p^c, c = `cost a n`.
+-/
 structure IsDepthStep (a : ℕ) (n : ℤ) (g : k.galMonoid) (ω : Ainfˣ) (υ X : Ainf) : Prop where
   /-- g multiplies p_a by ω. -/
   smul_frobE : g • (k.frobE a).val = ω.val * (k.frobE a).val
@@ -328,15 +335,18 @@ namespace JumpLattice
 
 /-! ### Lattices with given orders -/
 
-/-- The submodule of the x in A_inf·𝒩 (`L.kisinLocAinf`, for 𝒩 the Kisin module with all φ^a E
+/--
+The submodule of the x in A_inf·𝒩 (`L.kisinLocAinf`, for 𝒩 the Kisin module with all φ^a E
 inverted) at the letter i with μ(φ^{−a}x) ∈ t^{c(a,u)}B_dR^+ for all a, all jumps u at the letter
 `i.stepBack a` and all forms μ of type u at that letter. Such x are said to have orders c at i.
 A letter is a unit of the field with p^f elements, and `i.stepBack a` is the letter whose p^a-th
 power is i. The jumps at a letter j are the elements of `L.jumpSet j`, a finite set of integers that
-contains the Hodge–Tate jumps of L above j. -/
+contains the Hodge–Tate jumps of L above j.
+-/
 def withOrders : Submodule Ainf L.Ambient :=
-  L.kisinLocAinf ⊓ L.letterPart i ⊓
-    { carrier :=
+  L.kisinLocAinf ⊓ L.letterPart i
+    ⊓ {
+      carrier :=
         {x : L.Ambient |
           ∀ a : ℕ, ∀ u ∈ L.jumpSet (i.stepBack a), ∀ μ ∈ L.formsOfType (i.stepBack a) u,
             L.valueAt a μ x ∈ hodgeFil (c a u)}
@@ -344,16 +354,19 @@ def withOrders : Submodule Ainf L.Ambient :=
       zero_mem' := fun a u _ μ _ ↦ by simp
       smul_mem' := fun r x hx a u hu μ hμ ↦ by
         have hr : phiInvToBdR a r ∈ hodgeFil 0 := algebraMap_mem_hodgeFil_zero
-        simpa using mul_mem_hodgeFil hr (hx a u hu μ hμ) }
+        simpa using mul_mem_hodgeFil hr (hx a u hu μ hμ)
+    }
 
-/-- The elements of `L.kisinLoc`, the Kisin module with all `φ^a E` inverted, that lie at the letter
+/--
+The elements of `L.kisinLoc`, the Kisin module with all `φ^a E` inverted, that lie at the letter
 `i` and have the orders `stdOrders l`, which are `0` at `p_a = φ^a E` for `a < l` and `-u` on
-the jump `u` for `a ≥ l`. -/
+the jump `u` for `a ≥ l`.
+-/
 abbrev stdOrdersPart (l : ℕ) (i : Letter) : Submodule k.S L.Ambient :=
   L.kisinLoc ⊓ (L.withOrders i (stdOrders l)).restrictScalars k.S
 
-variable {a i c} {L' : JumpLattice O} {c' : ℕ → ℤ → ℤ} {μ : L.Functional} {x : L.Ambient}
-  {g : k.galMonoid}
+variable
+  {a i c} {L' : JumpLattice O} {c' : ℕ → ℤ → ℤ} {μ : L.Functional} {x : L.Ambient} {g : k.galMonoid}
 
 lemma valueAt_def : L.valueAt a μ x = μ ((φ ^ a)⁻¹ • x) := rfl
 
@@ -592,7 +605,6 @@ lemma smul_sub_mem_withOrders (hx : x ∈ L.withOrders i c) (g : k.galMonoid) :
 
 /-! ### Divisibility of `g x - x` by `zTau` -/
 
-
 /-- An element `g` of `k.galMonoid` (the image of `Γ'` under `inr`) that comes from
 `γ` in `Γ'` acts on `B_dR` through the image of `γ` in `G_p`. -/
 lemma galMonoid_smul_eq_toGp_smul {g : k.galMonoid} {γ : k.subgroup} (hγ : inr γ.val = g.val)
@@ -777,9 +789,11 @@ lemma exists_coordRetract :
   have h_tmul : π (a ⊗ₜ ⟨x, hx⟩) = ⟨a • x, hax⟩ := by simp [π, Subtype.ext_iff]
   simp [← h_tmul, ℓ]
 
-/-- A chosen S-linear map from the A_inf-span `L.kisinLocAinf` to `L.kisinLoc` sending a·x to
+/--
+A chosen S-linear map from the A_inf-span `L.kisinLocAinf` to `L.kisinLoc` sending a·x to
 λ₀(a)·x for a in A_inf and x in `L.kisinLoc`. Here λ₀ = `k.coord₀`: A_inf → S is the coordinate that
-is the identity on S. This property is `coordRetract_smul`. -/
+is the identity on S. This property is `coordRetract_smul`.
+-/
 def coordRetract : L.kisinLocAinf →ₗ[k.S] L.kisinLoc := L.exists_coordRetract.choose
 
 /-- The retraction `coordRetract` sends a·x to λ₀(a)·x for a in A_inf and x in `L.kisinLoc`, where
@@ -874,22 +888,27 @@ namespace New.Lift.KummerChart.JumpLattice
 
 open Period Submodule DistribSMul algebraMap
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
+variable
+  {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
   {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O} {a : ℕ} {i : Letter} {n : ℤ} {x : L.Ambient}
   (Q : Submodule Ainf L.Ambient)
 
-/-- For an A_inf-submodule Q of W(C^♭)⊗L, the Z_p-submodule of
-`New.Lift.KummerChart.JumpLattice.kisinLoc` of the elements that lie in Q. -/
+/--
+For an A_inf-submodule Q of W(C^♭)⊗L, the Z_p-submodule of
+`New.Lift.KummerChart.JumpLattice.kisinLoc` of the elements that lie in Q.
+-/
 abbrev locKisinPart : Submodule ℤ_[p] L.kisinLoc :=
   (Q.restrictScalars ℤ_[p]).comap (L.kisinLoc.subtype.restrictScalars ℤ_[p])
 
-/-- The Z_p-module of the x in W(C^♭) ⊗ L that are invariant modulo Q: gx − x lies in Q for all g in
+/--
+The Z_p-module of the x in W(C^♭) ⊗ L that are invariant modulo Q: gx − x lies in Q for all g in
 Γ'. Take Q = `L.withOrders i o` and x in `L.kisinLocAinf`. Then for every a, every jump u at
 `i.stepBack a` and every form μ of type u there, `valueAt a μ x` is a constant in
 `localFieldOf k.subgroup` modulo `hodgeFil (o a u)`: x has the depth of the module header
 (`exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`). (The module is the
 intersection of the preimages of Q under the maps g − 1; `copy` only makes membership unfold to the
-displayed condition.) -/
+displayed condition.)
+-/
 def invariantsMod : Submodule ℤ_[p] L.Ambient :=
   (⨅ g : k.galMonoid, (Q.restrictScalars ℤ_[p]).comap (toLinearMap ℤ_[p] L.Ambient g - 1)).copy
     {x : L.Ambient | ∀ g : k.galMonoid, g • x - x ∈ Q} (by aesop)
@@ -903,9 +922,11 @@ lemma cost_le_of_isUnramified (hk : k.IsUnramified) (hn : (p : ℤ) ∣ n → n 
   have h_val : padicValInt p n = 0 := by grind [padicValInt.eq_zero_iff]
   simp [cost, h_val, h_different]
 
-/-- The order `hi a u` where `0 < lo a u` and `min (hi a u) 0` elsewhere. An element with
+/--
+The order `hi a u` where `0 < lo a u` and `min (hi a u) 0` elsewhere. An element with
 orders `lo` that is invariant modulo the elements with orders `hi` has these orders
-(`mem_withOrders_improvedOrders`). -/
+(`mem_withOrders_improvedOrders`).
+-/
 @[simp]
 abbrev improvedOrders (lo hi : ℕ → ℤ → ℤ) (a : ℕ) (u : ℤ) : ℤ :=
   min (hi a u) (if 0 < lo a u then hi a u else 0)
@@ -1034,11 +1055,13 @@ lemma smul_sub_phiInvToBdR_mul_mem_hodgeFil_succ {a : ℕ} {n : ℤ} {t : k.galM
     h_fix
 
 variable (L) in
-/-- The operator `p ^ e + υ ∑ l, (t l - 1) / (τ z)` on `L.Ambient = W(C^♭) ⊗ L`, for `υ` in `A_inf`
+/--
+The operator `p ^ e + υ ∑ l, (t l - 1) / (τ z)` on `L.Ambient = W(C^♭) ⊗ L`, for `υ` in `A_inf`
 and finitely many elements `t l` of the Galois group `Γ'` of the chart. Here `k.zTauUnit` is `τ z`
-as a unit of `W(C^♭)`. -/
-def depthStepOperator (e : ℕ) (υ : Ainf) {m : ℕ} (t : Fin m → k.galMonoid) (x : L.Ambient) :
-    L.Ambient :=
+as a unit of `W(C^♭)`.
+-/
+def depthStepOperator (e : ℕ) (υ : Ainf) {m : ℕ} (t : Fin m → k.galMonoid) (x : L.Ambient)
+    : L.Ambient :=
   p ^ e • x + ∑ l : Fin m, υ • k.zTauUnit⁻¹ • (t l • x - x)
 
 lemma depthStepOperator_apply (e : ℕ) (υ : Ainf) {m : ℕ} (t : Fin m → k.galMonoid) (x : L.Ambient) :

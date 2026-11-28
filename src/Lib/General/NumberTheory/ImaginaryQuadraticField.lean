@@ -70,24 +70,32 @@ variable {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (d : ℕ) [Fact d.
 
 /-! ### Characters and `L`-functions -/
 
-/-- For a prime d, the Legendre symbol (·/d) as an integer-valued Dirichlet character modulo d; for
-d ≡ 3 mod 4 it is the character χ_K of K = ℚ(√−d). -/
+/--
+For a prime d, the Legendre symbol (·/d) as an integer-valued Dirichlet character modulo d; for
+d ≡ 3 mod 4 it is the character χ_K of K = ℚ(√−d).
+-/
 def chiK : DirichletCharacter ℤ d := quadraticChar (ZMod d)
 
 lemma chiK_eq_legendreSym (n : ℕ) : chiK d n = legendreSym d n := by simp [chiK, legendreSym]
 
-/-- The product of `χ`, a character modulo `N`, and the Legendre symbol `(·/d)`, as a character
-modulo `N * d`. -/
+/--
+The product of `χ`, a character modulo `N`, and the Legendre symbol `(·/d)`, as a character
+modulo `N * d`.
+-/
 def quadTwist : DirichletCharacter ℂ (N * d) :=
   χ.changeLevel ⟨d, rfl⟩ * .changeLevel (by simp) ((chiK d).ringHomComp (algebraMap ℤ ℂ))
 
-/-- The entire function equal to L(s, χ) if χ is not principal, and to the continuation of
-(s − 1)L(s, χ) if χ is principal. -/
+/--
+The entire function equal to L(s, χ) if χ is not principal, and to the continuation of
+(s − 1)L(s, χ) if χ is principal.
+-/
 def entireL : ℂ → ℂ := if χ = 1 then DirichletCharacter.LFunctionTrivChar₁ N else χ.LFunction
 
-/-- The real number `γ - Re L'/L(1, χ_K)`, with `γ` Euler's constant. The character is written as
+/--
+The real number `γ - Re L'/L(1, χ_K)`, with `γ` Euler's constant. The character is written as
 the twist by `(·/d)` of the character modulo `1`, which for `d ≡ 3 mod 4` is `χ_K` at level
-`1 * d`. For odd `d` it is not principal, so `New.entireL` of it is its `L`-function. -/
+`1 * d`. For odd `d` it is not principal, so `New.entireL` of it is its `L`-function.
+-/
 def chowlaSelbergConst : ℝ :=
   Real.eulerMascheroniConstant - (logDeriv (entireL (quadTwist (N := 1) 1 d)) 1).re
 end Characters
@@ -157,22 +165,32 @@ instance : IsTotallyComplex (QuadField d) := by
 instance : Unique (InfinitePlace (QuadField d)) where
   default := mk (val (QuadField d)).toRingHom
   -- `K` is totally complex of degree `2`, so it has one infinite place
-  uniq w := Fintype.card_le_one_iff.mp
-    (by grind [finrank_eq_two_mul_card_infinitePlace, finrank_eq_two]) w _
+  uniq w :=
+    Fintype.card_le_one_iff.mp (by grind [finrank_eq_two_mul_card_infinitePlace, finrank_eq_two]) w
+      _
 
-/-- For d ≡ 3 mod 4 and y with y² = −d in a field M of characteristic zero, the embedding of
-K = ℚ(i√d) into M sending i√d to y. -/
-def embOfSqrt (d : ℕ) {M : Type} [Field M] [CharZero M] {y : M} [h : Fact (d % 4 = 3)]
-    (e : y ^ 2 = -d) : QuadField d →ₐ[ℚ] M :=
+/--
+For d ≡ 3 mod 4 and y with y² = −d in a field M of characteristic zero, the embedding of
+K = ℚ(i√d) into M sending i√d to y.
+-/
+def embOfSqrt
+    (d : ℕ) {M : Type} [Field M] [CharZero M] {y : M} [h : Fact (d % 4 = 3)] (e : y ^ 2 = -d)
+    : QuadField d →ₐ[ℚ] M :=
   (adjoin.powerBasis (isIntegral_I_mul_sqrt d)).lift y
     (by simp [minpoly_gen, ← minpoly_I_mul_sqrt, e])
 
 open Subalgebra Int Algebra Ideal ZMod
 
-/-- For a prime d ≡ 3 mod 4, an embedding of ℚ(√−d) in a field M of characteristic zero that
-contains a primitive d-th root of unity, given by the quadratic Gauss sum. -/
-def embOfPrimitiveRoot (d : ℕ) {M : Type} [Field M] [CharZero M] {x : M} [h : Fact (d % 4 = 3)]
-    [Fact d.Prime] (hx : IsPrimitiveRoot x d) : QuadField d →ₐ[ℚ] M :=
+/--
+For a prime d ≡ 3 mod 4, an embedding of ℚ(√−d) in a field M of characteristic zero that
+contains a primitive d-th root of unity, given by the quadratic Gauss sum.
+-/
+def embOfPrimitiveRoot
+    (d : ℕ)
+    {M : Type} [Field M] [CharZero M]
+    {x : M} [h : Fact (d % 4 = 3)] [Fact d.Prime]
+    (hx : IsPrimitiveRoot x d)
+    : QuadField d →ₐ[ℚ] M :=
   embOfSqrt d <|
     -- the square of the quadratic Gauss sum is `χ(-1) d`, and `χ(-1) = -1` as `d ≡ 3` mod `4`
     have h_neg_one : quadraticChar (ZMod d) (-1) = -1 := by
@@ -243,8 +261,10 @@ lemma betaK_mul_one_sub : betaK d * (1 - betaK d) = (((d + 1) / 4 : ℕ) : 𝓞 
     simpa [RingOfIntegers.ext_iff]
   grind [sqrtNegD_sq]
 
-/-- For d ≡ 3 mod 4, the element √−d = i√d of the ring of integers of K = ℚ(√−d), defined as
-2·(1 + √−d)/2 − 1. -/
+/--
+For d ≡ 3 mod 4, the element √−d = i√d of the ring of integers of K = ℚ(√−d), defined as
+2·(1 + √−d)/2 − 1.
+-/
 abbrev sqrtNegDInt : 𝓞 (QuadField d) := 2 * betaK d - 1
 
 /-- For `d ≡ 3 mod 4`, the square of the algebraic integer `√-d = 2 * betaK d - 1` is `-d`. -/
@@ -437,8 +457,10 @@ end QuadField
 
 variable [Fact d.Prime]
 
-/-- The number q: p² if (p/d) = −1, and p otherwise. For primes p and d ≡ 7 mod 8 it is the norm of
-a prime of ℚ(√−d) above p. -/
+/--
+The number q: p² if (p/d) = −1, and p otherwise. For primes p and d ≡ 7 mod 8 it is the norm of
+a prime of ℚ(√−d) above p.
+-/
 abbrev primeNorm : ℕ := if chiK d p = -1 then p ^ 2 else p
 
 /-- For primes `p` and `d`, the Legendre symbol `chiK d p = (p / d)` is `0` if `p = d`, and it is

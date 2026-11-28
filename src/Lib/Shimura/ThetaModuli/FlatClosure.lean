@@ -76,8 +76,12 @@ section CutOutIdeals
 
 open AddSemigroupIdeal Finsupp Set
 
-variable {ι κ J A k K : Type} [CommRing A] [Field k] (φ : A →+* k) {d : ℕ}
-  (T : Ideal (MvPolynomial J A)) [IsLocalHom φ]
+variable
+  {ι κ J A k K : Type} [CommRing A] [Field k]
+  (φ : A →+* k)
+  {d : ℕ}
+  (T : Ideal (MvPolynomial J A))
+  [IsLocalHom φ]
 
 variable [Finite J] in
 /-- In finitely many variables there are finitely many exponents of total degree `d`. -/
@@ -85,15 +89,20 @@ instance : Fintype (degree ⁻¹' {d} : Set (J →₀ ℕ)) := (finite_of_degree
 
 /-! ### A degree bound for monomial ideals -/
 
-/-- `d` is a degree bound for monomial ideals in the variables `J` with counts `σ`: every monomial
+/--
+`d` is a degree bound for monomial ideals in the variables `J` with counts `σ`: every monomial
 ideal `M` that leaves out at most `σ i` monomials of degree `r ^ i` for all `i ≤ d` does so for
-all `i`. -/
+all `i`.
+-/
 def IsCutDegree (J : Type) (d r : ℕ) (σ : ℕ → ℕ) : Prop :=
-  ∀ M : AddSemigroupIdeal (J →₀ ℕ), (∀ i ≤ d, (degree ⁻¹' {r ^ i} \ M.carrier).ncard ≤ σ i) →
-      ∀ i : ℕ, (degree ⁻¹' {r ^ i} \ M.carrier).ncard ≤ σ i
+  ∀ M : AddSemigroupIdeal (J →₀ ℕ),
+    (∀ i ≤ d, (degree ⁻¹' {r ^ i} \ M.carrier).ncard ≤ σ i)
+      → ∀ i : ℕ, (degree ⁻¹' {r ^ i} \ M.carrier).ncard ≤ σ i
 
-/-- For a subgroup `T` of an additive group `G`, the integer part of the square root of the number
-of `y` with `r ^ j • y ∈ T`. -/
+/--
+For a subgroup `T` of an additive group `G`, the integer part of the square root of the number
+of `y` with `r ^ j • y ∈ T`.
+-/
 def thetaRanks {G : Type*} [AddGroup G] (T : AddSubgroup G) (r j : ℕ) : ℕ :=
   (Nat.card {y : G // r ^ j • y ∈ T}).sqrt
 
@@ -135,20 +144,23 @@ open MvPolynomial Module Submodule Ideal.Quotient Matrix LinearMap Finite
 abbrev imageMod : Submodule A (MvPolynomial J A) → Submodule A (MvPolynomial J A ⧸ T) :=
   Submodule.map (mkₐ A T).toLinearMap
 
-/-- An ideal `I` of polynomials over the field `k` in the variables `J` is cut out by the points
+/--
+An ideal `I` of polynomials over the field `k` in the variables `J` is cut out by the points
 `p a` of `k ^ J` in the chart `c`, with ranks `σ j` in every degree `r ^ j` and the vanishing
 condition in the degrees `r ^ j` with `j ≤ i`: the ideal `I` contains `X c - 1`. For each `j`,
 the forms of degree `r ^ j` span a space of dimension `σ j` modulo `I`. For `j ≤ i`, the forms of
-degree `r ^ j` in `I` are exactly those that vanish at all the points `p a`. -/
-structure IsCutOut (r i : ℕ) (σ : ℕ → ℕ) (c : J) (p : ι → J → k) (I : Ideal (MvPolynomial J k)) :
-    Prop where
+degree `r ^ j` in `I` are exactly those that vanish at all the points `p a`.
+-/
+structure IsCutOut (r i : ℕ) (σ : ℕ → ℕ) (c : J) (p : ι → J → k) (I : Ideal (MvPolynomial J k))
+    : Prop where
   /-- The coordinate `X c` is `1` modulo `I`: the ideal lives in the affine chart `c`. -/
   X_sub_one_mem : X c - 1 ∈ I
   /-- The forms of degree `r ^ j` span a space of dimension `σ j` modulo `I`. -/
   rank (j : ℕ) : finrank k (imageMod I (homogeneousSubmodule J k (r ^ j))) = σ j
   /-- For `j ≤ i`, a form of degree `r ^ j` lies in `I` iff it vanishes at all the points `p a`. -/
-  mem_iff_vanish (j : ℕ) (hj : j ≤ i) (f : MvPolynomial J k)
-    (hf : f ∈ homogeneousSubmodule J k (r ^ j)) : f ∈ I ↔ ∀ a : ι, eval (p a) f = 0
+  mem_iff_vanish
+    (j : ℕ) (hj : j ≤ i) (f : MvPolynomial J k) (hf : f ∈ homogeneousSubmodule J k (r ^ j))
+    : f ∈ I ↔ ∀ a : ι, eval (p a) f = 0
 
 /-- A polynomial supported on exponents of total degree `d` outside a set `M` is a form of degree
 `d`. -/
@@ -260,8 +272,10 @@ lemma IsCutOut.minors_eq_zero_iff {r i j n : ℕ} {σ : ℕ → ℕ} {c : J} {p 
     (v := fun b x ↦ eval (p x) (monomial (μ b) 1))).trans ?_
   simp only [Fintype.linearIndependent_iff, h_rel]
 
-/-- The determinant whose first row is the `n + 1` monomials `μ l` and whose other rows are their
-values at the `n` points `p s`, expanded along the first row. -/
+/--
+The determinant whose first row is the `n + 1` monomials `μ l` and whose other rows are their
+values at the `n` points `p s`, expanded along the first row.
+-/
 def cofactorForm {n : ℕ} (p : Fin n → J → A) (μ : Fin (n + 1) → J →₀ ℕ) : MvPolynomial J A :=
   ∑ l : Fin (n + 1),
     ((of fun s b : Fin n ↦ eval (p s) (monomial (μ (l.succAbove b)) 1)).det * (-1) ^ l.val) •
@@ -304,8 +318,10 @@ lemma IsCutOut.map_cofactorForm_mem [Finite J]
     _ = 0 := (hI.minors_eq_zero_iff hj hμ).mpr h_dep (vecCons x a)
 
 open scoped Classical in
-/-- The exponents that lead, for the monomial order `o`, the nonzero reduction along `φ` of a form
-in `T`. They form a monomial ideal. -/
+/--
+The exponents that lead, for the monomial order `o`, the nonzero reduction along `φ` of a form
+in `T`. They form a monomial ideal.
+-/
 def leadingExponents (o : MonomialOrder J) : AddSemigroupIdeal (J →₀ ℕ) where
   carrier :=
     {m : J →₀ ℕ | ∃ g ∈ T, m = o.degree (g.map φ) ∧ g.IsHomogeneous m.degree ∧
@@ -507,20 +523,27 @@ section FlatClosure
 open CategoryTheory AlgebraicGeometry Limits LineBundle MvPolynomial Scheme RingHom Flat pullback
   Over PointFn
 
-/-- The ideals of a set `Z ⊂ K ^ J` are cut out at a point `t` of `S` with values in the field `K`
+/--
+The ideals of a set `Z ⊂ K ^ J` are cut out at a point `t` of `S` with values in the field `K`
 by the maps `P a` to projective space. That is: for every choice of charts `l a` of the `P a` that
 contain `t` and every chart `c`, the vanishing ideal of the points `v ∈ Z` with `v c ≠ 0`, scaled to
 `v c = 1`, satisfies `New.Variety.ThetaNull.IsCutOut r i σ c` for the affine coordinates of the
 points `P a` at `t` (ranks `σ j` in the degrees `r ^ j`, and in the degrees `r ^ j` with `j ≤ i`
-the forms of the ideal are those that vanish at these points). -/
-def IsCutOutAt {J I K : Type} [Field K] {S : Scheme} (r i : ℕ) (σ : ℕ → ℕ) (P : I → LineBundle S J)
-    (t : Spec (CommRingCat.of K) ⟶ S) (Z : Set (J → K)) : Prop :=
+the forms of the ideal are those that vanish at these points).
+-/
+def IsCutOutAt
+    {J I K : Type} [Field K]
+    {S : Scheme}
+    (r i : ℕ) (σ : ℕ → ℕ) (P : I → LineBundle S J) (t : Spec (CommRingCat.of K) ⟶ S)
+    (Z : Set (J → K))
+    : Prop :=
   -- `l a` is a chart of `P a` that contains `t`, in which `P a` gives a point of `K ^ J`
   ∀ l : I → J,
-    (∀ a : I, LandsIn t ((P a).opens (l a))) →
-    ∀ c : J,
-      IsCutOut r i σ c (fun a j ↦ (P a).transition (l a) j (CommRingCat.of K) t)
-        (⨅ v ∈ {v ∈ Z | v c ≠ 0}, RingHom.ker (MvPolynomial.eval fun j ↦ v j / v c))
+    (∀ a : I, LandsIn t ((P a).opens (l a)))
+      → ∀ c : J,
+        IsCutOut r i σ c
+          (fun a j ↦ (P a).transition (l a) j (CommRingCat.of K) t)
+          (⨅ v ∈ {v ∈ Z | v c ≠ 0}, RingHom.ker (MvPolynomial.eval fun j ↦ v j / v c))
 
 /-- Let the `P a` be linear systems on `S` with charts `l a` that contain the point
 `s : Spec R ⟶ S`, and let `t = Spec φ ≫ s` for a ring map `φ : R → K` to a field. If the
@@ -541,33 +564,42 @@ lemma isCutOut_of_isCutOutAt {J I K : Type} {S : Scheme} {r i : ℕ} {σ : ℕ �
     ((hP a).isRegularOn_transition (l a) j) φ s (hl a)
   simpa only [h_coord, Function.comp_def] using hZ l (fun a ↦ (hl a).comp (Spec.map φ)) c
 
-/-- `A` is a flat projective family over `S` spanned by points `e n z` over the complex points
-`η n` of `S`, with homogeneous coordinates `θ n z` in the linear system `N`. -/
-structure IsFlatClosure {J W κ : Type} {S : Scheme} {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)}
-    (θ : κ → W → J → ℂ) {A : Over S} (N : LineBundle A.left J)
-    (e : ∀ n : κ, W → (Over.mk (η n) ⟶ A)) : Prop where
-  /-- `A` is proper over `S`, and the linear system `N` separates points with the same image
-  in `S`. -/
+/--
+`A` is a flat projective family over `S` spanned by points `e n z` over the complex points
+`η n` of `S`, with homogeneous coordinates `θ n z` in the linear system `N`.
+-/
+structure IsFlatClosure
+    {J W κ : Type} {S : Scheme} {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)} (θ : κ → W → J → ℂ)
+    {A : Over S} (N : LineBundle A.left J) (e : ∀ n : κ, W → (Over.mk (η n) ⟶ A))
+    : Prop where
+  /--
+  `A` is proper over `S`, and the linear system `N` separates points with the same image
+  in `S`.
+  -/
   isProjEmbedding : IsProjEmbedding N A.hom
   /-- `A` is flat over `S`. -/
   flat : Flat A.hom
   /-- The point `e n z` has homogeneous coordinates `θ n z`. -/
   isHomogeneousCoords (n : κ) (z : W) : IsHomogeneousCoords N (e n z).left (θ n z)
   /-- The fibre over `η n` is reduced, and the points `e n z` are dense in it. -/
-  isSeparatingFamily_fibre (n : κ) :
-    IsSeparatingFamily (X := pullback A.hom (η n)) fun z : W ↦
+  isSeparatingFamily_fibre (n : κ)
+    : IsSeparatingFamily (X := pullback A.hom (η n)) fun z : W ↦
       pullback.lift (e n z).left (𝟙 (Spec (CommRingCat.of ℂ))) (e n z).w
   /-- Every point of `S` specialises to a geometric point over which the fibre is reduced. -/
   allSpecializeTo_isReduced : AllSpecializeTo S fun t ↦ IsReduced (pullback A.hom t)
   /-- `A` is reduced, and all the points `e n z` together are dense in it. -/
   isSeparatingFamily : IsSeparatingFamily fun s : κ × W ↦ (e s.1 s.2).left
 
-/-- The chart `c` of the linear system `L` on a scheme `X` over `Spec R` is affine, and `u` presents
+/--
+The chart `c` of the linear system `L` on a scheme `X` over `Spec R` is affine, and `u` presents
 its ring of sections as a quotient of the polynomial ring in the affine coordinates. Here
 `specMap ψ` is the morphism of spectra given by a ring map `ψ`, and `ofSection g B t` is the value
-of a section `g` at a `B`-valued point `t`. -/
-structure IsChartPresentation {J : Type} {X : Scheme} {R : CommRingCat} (L : LineBundle X J)
-    (s : X ⟶ Spec R) (c : J) (u : MvPolynomial J R →+* Γ(X, L.opens c)) : Prop where
+of a section `g` at a `B`-valued point `t`.
+-/
+structure IsChartPresentation
+    {J : Type} {X : Scheme} {R : CommRingCat}
+    (L : LineBundle X J) (s : X ⟶ Spec R) (c : J) (u : MvPolynomial J R →+* Γ(X, L.opens c))
+    : Prop where
   /-- The chart is affine. -/
   isAffineOpen : IsAffineOpen (L.opens c)
   /-- Every section over the chart is a polynomial in the coordinates. -/
@@ -575,17 +607,18 @@ structure IsChartPresentation {J : Type} {X : Scheme} {R : CommRingCat} (L : Lin
   /-- `u` is compatible with the structure maps to `Spec R`. -/
   specMap_comp_C : specMap (u.comp C) = isAffineOpen.fromSpec ≫ s
   /-- At a point `t` of the chart, `u f` is the value of `f` at the affine coordinates of `t`. -/
-  ofSection_eq {B : CommRingCat} {t : Spec B ⟶ X} (ht : LandsIn t (L.opens c))
-    (f : MvPolynomial J R) :
-    ofSection (u f) B t = eval₂Hom (Spec.preimage (t ≫ s)).hom (L.transition c · B t) f
+  ofSection_eq
+    {B : CommRingCat} {t : Spec B ⟶ X} (ht : LandsIn t (L.opens c)) (f : MvPolynomial J R)
+    : ofSection (u f) B t = eval₂Hom (Spec.preimage (t ≫ s)).hom (L.transition c · B t) f
 
 section Charts
 
-variable {J : Type} {X : Scheme} {R : CommRingCat} {L : LineBundle X J} {s : X ⟶ Spec R}
-  {u : ∀ c : J, MvPolynomial J R →+* Γ(X, L.opens c)}
+variable
+  {J : Type} {X : Scheme} {R : CommRingCat} {L : LineBundle X J}
+  {s : X ⟶ Spec R} {u : ∀ c : J, MvPolynomial J R →+* Γ(X, L.opens c)}
 
-private abbrev chartPresentationCover (hu : ∀ c : J, IsChartPresentation L s c (u c)) :
-    X.OpenCover :=
+private abbrev chartPresentationCover (hu : ∀ c : J, IsChartPresentation L s c (u c))
+    : X.OpenCover :=
   (AffineOpenCover.ofIsOpenCover _ (cover L) fun c ↦ (hu c).isAffineOpen).openCover
 
 /-- `X` is flat over `Spec R` if the ring of each chart is a flat `R`-module. -/

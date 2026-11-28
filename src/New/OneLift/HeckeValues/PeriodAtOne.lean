@@ -50,29 +50,33 @@ open Matrix Finset Fintype RingHom Space SiegelWeil Set
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {E : Type} {n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
+variable
+  {E : Type} {n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
   {α : AutChar E} {c : NumberField.InfinitePlace E → ℕ} {𝔪 𝔪' : Modulus E}
   {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
 
 section Definitions
 
-variable (n) (α : AutChar E) (c : NumberField.InfinitePlace E → ℕ) (𝔪 : Modulus E)
+variable
+  (n) (α : AutChar E) (c : NumberField.InfinitePlace E → ℕ) (𝔪 : Modulus E)
   (ψ : (w : FinPlace E) → MulChar (ResField w) ℂ)
 
-/-- The theta kernel (`New.modKernelStdSpace`) of the pair (I_n, I_n) of standard definite spaces,
+/--
+The theta kernel (`New.modKernelStdSpace`) of the pair (I_n, I_n) of standard definite spaces,
 at the point (1, h) with h finite adelic. Both characters of the pair are α, the datum is the
 function Ψ on matrices modulo 𝔪 and the polynomial is the product over τ of the c_τ-th powers of
 the determinant of the matrix of variables at τ (`New.Rows.variableMinor τ id id`). The character α
-twists the Weil action, so the factor α(det h) is part of the kernel. -/
-noncomputable def detKernel (Ψ : Matrix n n 𝔪.ResidueRing → ℂ) : Gf E n → ℂ :=
-  fun g ↦
-    modKernelStdSpace (stdSpace E n) α α 𝔪 Ψ
-      (∏ τ : NumberField.InfinitePlace E, variableMinor τ id id ^ c τ)
-      1 g
+twists the Weil action, so the factor α(det h) is part of the kernel.
+-/
+noncomputable def detKernel (Ψ : Matrix n n 𝔪.ResidueRing → ℂ) : Gf E n → ℂ := fun g ↦
+  modKernelStdSpace (stdSpace E n) α α 𝔪 Ψ
+    (∏ τ : NumberField.InfinitePlace E, variableMinor τ id id ^ c τ) 1 g
 
-/-- The period: the class sum, at the level of the standard lattice, of `New.Rows.detKernel` for the
+/--
+The period: the class sum, at the level of the standard lattice, of `New.Rows.detKernel` for the
 datum `x ↦ χ (det x)`. Here `ψ` is a family of characters `ψ w` of the residue fields and `χ` is the
-character modulo `𝔪` with local components `ψ w`. -/
+character modulo `𝔪` with local components `ψ w`.
+-/
 noncomputable def detPeriod : ℂ :=
   stdClassSum (stdLevel E n) (detKernel n α c 𝔪 fun x ↦ 𝔪.charOfTamePart ψ (det x))
 

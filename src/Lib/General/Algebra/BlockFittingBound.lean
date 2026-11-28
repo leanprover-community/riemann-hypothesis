@@ -44,8 +44,9 @@ abbrev DivisibleQuot : Type := FractionRing O ⧸ (1 : Submodule O (FractionRing
 
 /-- Division by `a`, from O/a to K/O: the class of t goes to the class of t/a. -/
 noncomputable def divQuot (a : O) : QuotSpan a →ₗ[O] DivisibleQuot O :=
-  (Ideal.span {a}).liftQ ((1 : Submodule O (FractionRing O)).mkQ ∘ₗ
-      LinearMap.toSpanSingleton O (FractionRing O) (algebraMap O (FractionRing O) a)⁻¹)
+  (Ideal.span {a}).liftQ
+    ((1 : Submodule O (FractionRing O)).mkQ
+      ∘ₗ LinearMap.toSpanSingleton O (FractionRing O) (algebraMap O (FractionRing O) a)⁻¹)
     (by
       rw [Ideal.span_singleton_le_iff_mem, mem_ker, LinearMap.comp_apply]
       rcases eq_or_ne a 0 with rfl | ha

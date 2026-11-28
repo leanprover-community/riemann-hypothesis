@@ -40,8 +40,9 @@ open Set Topology Filter MeasureTheory Pointwise
 namespace New
 /-! ### Conjugation of test functions -/
 
-variable {G Γ : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G]
-  [Group Γ] [TopologicalSpace Γ]
+variable
+  {G Γ : Type}
+  [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [Group Γ] [TopologicalSpace Γ]
 
 /-- The action of `Γ` on the test functions on `G` by conjugation through `j : Γ → G`. -/
 def TestFunction.conjugate (j : Γ →ₜ* G) : Representation ℂ Γ (TestFunction G) :=
@@ -52,10 +53,11 @@ def TestFunction.conjugate (j : Γ →ₜ* G) : Representation ℂ Γ (TestFunct
 lemma TestFunction.conjugate_apply (j : Γ →ₜ* G) (g : Γ) (f : TestFunction G) (x : G) :
     (conjugate j g f).val x = f.val ((j g)⁻¹ * x * j g) := rfl
 
-/-- The action of `Γ` on the test functions on `G` by conjugation through `j` is smooth: every test
-function is fixed by the elements of a neighbourhood of `1`. -/
-instance TestFunction.isSmoothRep_conjugate (j : Γ →ₜ* G) :
-    IsSmoothRep (conjugate j) where
+/--
+The action of `Γ` on the test functions on `G` by conjugation through `j` is smooth: every test
+function is fixed by the elements of a neighbourhood of `1`.
+-/
+instance TestFunction.isSmoothRep_conjugate (j : Γ →ₜ* G) : IsSmoothRep (conjugate j) where
   eventually_fixed f :=
     ((j.continuous.prodMk j.continuous).tendsto' 1 1 (Prod.ext (map_one j) (map_one j))).eventually
       (IsSmoothRep.eventually_fixed (ρ := TestFunction.translate) f)
@@ -85,25 +87,27 @@ lemma TestFunction.integrable [MeasurableSpace Y] [OpensMeasurableSpace Y] (f : 
 variable [T2Space Y] [T2Space Z]
 
 /-- The product `(y, z) ↦ a y * b z` of two test functions. -/
-def TestFunction.tensor (a : TestFunction Y) (b : TestFunction Z) : TestFunction (Y × Z) :=
-  ⟨fun p : Y × Z ↦ a.val p.1 * b.val p.2,
-    ((isLocallyConstant a).comp_continuous continuous_fst).mul
-      ((isLocallyConstant b).comp_continuous continuous_snd),
-    HasCompactSupport.intro ((hasCompactSupport a).isCompact.prod (hasCompactSupport b).isCompact)
-      fun p hp ↦ by
+def TestFunction.tensor (a : TestFunction Y) (b : TestFunction Z) : TestFunction (Y × Z) := ⟨
+  fun p : Y × Z ↦ a.val p.1 * b.val p.2,
+  ((isLocallyConstant a).comp_continuous continuous_fst).mul
+    ((isLocallyConstant b).comp_continuous continuous_snd),
+  HasCompactSupport.intro ((hasCompactSupport a).isCompact.prod (hasCompactSupport b).isCompact)
+    fun p hp ↦ by
       rcases not_and_or.1 hp with ha | hb
       · rw [image_eq_zero_of_notMem_tsupport ha, zero_mul]
       · rw [image_eq_zero_of_notMem_tsupport hb, mul_zero],
-    subset_univ _⟩
+  subset_univ _
+⟩
 
 /-- The product of the test functions `a` and `b` takes the value `a y * b z` at `(y, z)`. -/
 lemma TestFunction.tensor_apply (a : TestFunction Y) (b : TestFunction Z) (y : Y) (z : Z) :
     (tensor a b).val (y, z) = a.val y * b.val z := rfl
 
 /-- The test function `z ↦ Ψ (y, z)`. -/
-def TestFunction.partialApply (Ψ : TestFunction (Y × Z)) (y : Y) : TestFunction Z :=
-  ⟨fun z : Z ↦ Ψ.val (y, z),
-    schwartzBruhat.comp Ψ.2 Prod.snd (fun _ ↦ rfl) (mapsTo_univ _ _) (by fun_prop) continuous_snd⟩
+def TestFunction.partialApply (Ψ : TestFunction (Y × Z)) (y : Y) : TestFunction Z := ⟨
+  fun z : Z ↦ Ψ.val (y, z),
+  schwartzBruhat.comp Ψ.2 Prod.snd (fun _ ↦ rfl) (mapsTo_univ _ _) (by fun_prop) continuous_snd
+⟩
 
 /-- For a test function `Ψ` on `Y × Z`, the function `y ↦ Ψ (y, z)` is integrable for every measure
 that is finite on compact sets. -/
@@ -114,11 +118,14 @@ lemma TestFunction.integrable_prodMk_left [MeasurableSpace Y] [OpensMeasurableSp
     schwartzBruhat.comp Ψ.2 Prod.fst (fun _ ↦ rfl) (mapsTo_univ _ _) (by fun_prop) continuous_fst⟩ μ
 
 /-- The characteristic function of a compact open set. -/
-noncomputable def TestFunction.setIndicator {V : Set Y} (hV_open : IsOpen V)
-    (hV_compact : IsCompact V) : TestFunction Y :=
-  ⟨V.indicator 1,
-    (LocallyConstant.indicator 1 ⟨hV_compact.isClosed, hV_open⟩).isLocallyConstant,
-    HasCompactSupport.intro hV_compact fun _ hy ↦ indicator_of_notMem hy _, subset_univ _⟩
+noncomputable def TestFunction.setIndicator
+    {V : Set Y} (hV_open : IsOpen V) (hV_compact : IsCompact V)
+    : TestFunction Y := ⟨
+  V.indicator 1,
+  (LocallyConstant.indicator 1 ⟨hV_compact.isClosed, hV_open⟩).isLocallyConstant,
+  HasCompactSupport.intro hV_compact fun _ hy ↦ indicator_of_notMem hy _,
+  subset_univ _
+⟩
 
 /-- The characteristic function of `V`, as a test function, is `V.indicator 1`. -/
 lemma TestFunction.setIndicator_apply {V : Set Y} (hV_open : IsOpen V) (hV_compact : IsCompact V)
@@ -159,11 +166,15 @@ lemma exists_isCompact_isOpen_preimage_eq {G : Type} [Group G] [TopologicalSpace
     ⟨fun hx ↦ by_contra fun h_notMem ↦ hV_subset hx ⟨x, h_notMem, rfl⟩,
       fun hx ↦ h_subset_V ⟨x, hx, rfl⟩⟩⟩
 
-/-- A test function on a closed subset `C` of a locally compact Hausdorff non-archimedean group is
-the restriction of a test function on the group. -/
-theorem TestFunction.exists_extension {G : Type} [Group G] [TopologicalSpace G]
-    [NonarchimedeanGroup G] [T2Space G] [WeaklyLocallyCompactSpace G] {C : Set G} (hC : IsClosed C)
-    (F : TestFunction C) : ∃ f : TestFunction G, ∀ x : C, f.val x = F.val x := by
+/--
+A test function on a closed subset `C` of a locally compact Hausdorff non-archimedean group is
+the restriction of a test function on the group.
+-/
+theorem TestFunction.exists_extension
+    {G : Type}
+    [Group G] [TopologicalSpace G] [NonarchimedeanGroup G] [T2Space G] [WeaklyLocallyCompactSpace G]
+    {C : Set G} (hC : IsClosed C) (F : TestFunction C)
+    : ∃ f : TestFunction G, ∀ x : C, f.val x = F.val x := by
   classical
   -- `F` takes finitely many values; extend its part on each level set and add up.
   obtain ⟨hF_const, hF_compact, -⟩ := F.property
@@ -175,25 +186,30 @@ theorem TestFunction.exists_extension {G : Type} [Group G] [TopologicalSpace G]
         subset_tsupport _ (ne_of_eq_of_ne hx hc)
     obtain ⟨V, hV_open, hV_compact, hV⟩ :=
       exists_isCompact_isOpen_preimage_eq hC (hF_const.isOpen_fiber c) h_level
-    exact ⟨c • setIndicator hV_open hV_compact, fun x ↦ by
-      simp [setIndicator_apply, indicator_apply, hV x]⟩
+    exact ⟨
+      c • setIndicator hV_open hV_compact,
+      fun x ↦ by simp [setIndicator_apply, indicator_apply, hV x]
+    ⟩
   choose a ha using h_part
-  obtain ⟨values, h_values⟩ := hF_compact.isCompact.elim_finite_subcover _ hF_const.isOpen_fiber
-    fun x _ ↦ mem_iUnion.2 ⟨F.val x, rfl⟩
+  obtain ⟨values, h_values⟩ :=
+    hF_compact.isCompact.elim_finite_subcover _ hF_const.isOpen_fiber fun x _ ↦
+      mem_iUnion.2 ⟨F.val x, rfl⟩
   refine ⟨∑ c ∈ values, a c, fun x ↦ ?_⟩
   suffices F.val x ∉ values → F.val x = 0 by simpa [ha, ite_eq_left_iff, eq_comm]
-  exact fun h_notMem ↦ image_eq_zero_of_notMem_tsupport fun hx ↦
-    h_notMem (by simpa using h_values hx)
+  exact fun h_notMem ↦
+    image_eq_zero_of_notMem_tsupport fun hx ↦ h_notMem (by simpa using h_values hx)
 
 end Extension
 
 /-! ### Invariant distributions -/
 open New.TestFunction
 
-/-- `I` is an invariant distribution on `C`: a linear form on the test functions on `G` that is
-invariant under conjugation by `Γ` and depends only on the restriction to `C`. -/
-structure IsInvariantDistribution (j : Γ →ₜ* G) (C : Set G) (I : TestFunction G →ₗ[ℂ] ℂ) :
-    Prop where
+/--
+`I` is an invariant distribution on `C`: a linear form on the test functions on `G` that is
+invariant under conjugation by `Γ` and depends only on the restriction to `C`.
+-/
+structure IsInvariantDistribution (j : Γ →ₜ* G) (C : Set G) (I : TestFunction G →ₗ[ℂ] ℂ)
+    : Prop where
   /-- `I` is invariant under conjugation by `Γ`. -/
   map_conjugate : ∀ (g : Γ) (f : TestFunction G), I (conjugate j g f) = I f
   /-- `I` kills the test functions that vanish on `C`. -/
@@ -201,8 +217,9 @@ structure IsInvariantDistribution (j : Γ →ₜ* G) (C : Set G) (I : TestFuncti
 
 section Mean
 
-variable {j : Γ →ₜ* G} {C : Set G} {I : TestFunction G →ₗ[ℂ] ℂ}
-  {K L : Subgroup Γ} [CompactSpace K] [CompactSpace L]
+variable
+  {j : Γ →ₜ* G} {C : Set G} {I : TestFunction G →ₗ[ℂ] ℂ} {K L : Subgroup Γ}
+  [CompactSpace K] [CompactSpace L]
 
 /-- An invariant distribution `I` on `C`, for conjugation by `Γ` through `j`, takes the same value
 at a test function and at the mean of its conjugates over a compact subgroup `L` of `Γ`. -/
@@ -234,7 +251,8 @@ end Mean
 
 section Haar
 
-variable {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [T2Space Γ]
+variable
+  {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [T2Space Γ]
   {Y : Type} [TopologicalSpace Y] [T2Space Y]
 
 omit [T2Space Γ] [T2Space Y] in
@@ -292,18 +310,23 @@ lemma TestFunction.exists_eq_sum_tensor {K : Subgroup Γ} (hK_open : IsOpen (K :
   exact fun h_notMem ↦ (image_eq_zero_of_notMem_tsupport fun hp ↦
     h_notMem (h_finite.mem_toFinset.2 ⟨(g, y), hp, rfl⟩)).symm
 
-/-- **Uniqueness of Haar measure, with a parameter.** Let the group `Γ` have a compact open subgroup
+/--
+**Uniqueness of Haar measure, with a parameter.** Let the group `Γ` have a compact open subgroup
 `K`, and let `Λ` be a linear form on the test functions (locally constant, of compact support) on
 `Γ × Y` that is invariant under left translations in the first variable and kills the functions
 that vanish on `Γ × X`. Then `Λ Ψ = 0` if the integral of `Ψ (·, y)` for a left Haar measure `μ`
-vanishes for each `y ∈ X`. -/
-theorem TestFunction.map_eq_zero_of_integral_eq_zero [MeasurableSpace Γ] [BorelSpace Γ]
+vanishes for each `y ∈ X`.
+-/
+theorem TestFunction.map_eq_zero_of_integral_eq_zero
+    [MeasurableSpace Γ] [BorelSpace Γ]
     {K : Subgroup Γ} (hK_open : IsOpen (K : Set Γ)) (hK_compact : IsCompact (K : Set Γ))
-    (μ : Measure Γ) [μ.IsHaarMeasure] {X : Set Y} {Λ : TestFunction (Γ × Y) →ₗ[ℂ] ℂ}
+    (μ : Measure Γ) [μ.IsHaarMeasure]
+    {X : Set Y} {Λ : TestFunction (Γ × Y) →ₗ[ℂ] ℂ}
     (h_left : ∀ (a : Γ) (Ψ Ψ' : TestFunction (Γ × Y)),
       (∀ (g : Γ) (y : Y), Ψ'.val (g, y) = Ψ.val (a⁻¹ * g, y)) → Λ Ψ' = Λ Ψ)
     (h_zero : ∀ Ψ : TestFunction (Γ × Y), (∀ g : Γ, ∀ y ∈ X, Ψ.val (g, y) = 0) → Λ Ψ = 0)
-    {Ψ : TestFunction (Γ × Y)} (hΨ : ∀ y ∈ X, ∫ g : Γ, Ψ.val (g, y) ∂μ = 0) : Λ Ψ = 0 := by
+    {Ψ : TestFunction (Γ × Y)} (hΨ : ∀ y ∈ X, ∫ g : Γ, Ψ.val (g, y) ∂μ = 0)
+    : Λ Ψ = 0 := by
   -- Write `Ψ = ∑ 1_{a O} ⊗ ψ_a`. Then `Λ Ψ = Λ (∑ 1_O ⊗ ψ_a)`, and `vol O * ∑ ψ_a` is the
   -- integral of `Ψ` over `Γ`.
   obtain ⟨O, hO_open, hO_compact, cosets, ψ, rfl⟩ := exists_eq_sum_tensor hK_open hK_compact Ψ
@@ -311,30 +334,34 @@ theorem TestFunction.map_eq_zero_of_integral_eq_zero [MeasurableSpace Γ] [Borel
   have h_integral (a : Γ) : ∫ g : Γ, (translate (a, 1) e).val g ∂μ = μ.real O := by
     simp only [translate_apply, mul_one, integral_mul_left_eq_self e.val a⁻¹]
     exact (integral_indicator_const (1 : ℂ) hO_open.measurableSet).trans (by simp)
-  have h_vol : (μ.real O : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 <| ENNReal.toReal_ne_zero.2
-    ⟨hO_open.measure_ne_zero μ ⟨1, O.one_mem⟩, hO_compact.measure_ne_top⟩
+  have h_vol : (μ.real O : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.2 <|
+      ENNReal.toReal_ne_zero.2 ⟨hO_open.measure_ne_zero μ ⟨1, O.one_mem⟩, hO_compact.measure_ne_top⟩
   have h_sum (y : Y) (hy : y ∈ X) : ∑ q ∈ cosets, (ψ q).val y = 0 := by
     refine (mul_eq_zero.1 ?_).resolve_left h_vol
-    calc (μ.real O : ℂ) * ∑ q ∈ cosets, (ψ q).val y
-        = ∑ q ∈ cosets, ∫ g : Γ, (translate (q.out, 1) e).val g * (ψ q).val y ∂μ := by
-          simp only [integral_mul_const, h_integral, Finset.mul_sum]
+    calc
+      (μ.real O : ℂ) * ∑ q ∈ cosets, (ψ q).val y
+          = ∑ q ∈ cosets, ∫ g : Γ, (translate (q.out, 1) e).val g * (ψ q).val y ∂μ := by
+        simp only [integral_mul_const, h_integral, Finset.mul_sum]
       _ = ∫ g : Γ, ∑ q ∈ cosets, (translate (q.out, 1) e).val g * (ψ q).val y ∂μ :=
-          (integral_finsetSum _ fun q _ ↦ (TestFunction.integrable _ μ).mul_const _).symm
+        (integral_finsetSum _ fun q _ ↦ (TestFunction.integrable _ μ).mul_const _).symm
       _ = 0 := by simpa [tensor_apply] using hΨ y hy
-  calc Λ (∑ q ∈ cosets, tensor (translate (q.out, 1) e) (ψ q))
-      = Λ (∑ q ∈ cosets, tensor e (ψ q)) := by
-        simp only [map_sum]
-        exact Finset.sum_congr rfl fun q _ ↦ h_left q.out _ _ fun g y ↦ by
-          simp [tensor_apply, translate_apply]
+  calc
+    Λ (∑ q ∈ cosets, tensor (translate (q.out, 1) e) (ψ q)) = Λ (∑ q ∈ cosets, tensor e (ψ q)) := by
+      simp only [map_sum]
+      exact Finset.sum_congr rfl fun q _ ↦
+        h_left q.out _ _ fun g y ↦ by simp [tensor_apply, translate_apply]
     _ = 0 := h_zero _ fun g y hy ↦ by simp [tensor_apply, ← Finset.mul_sum, h_sum y hy]
 
 end Haar
 
 /-! ### Step 1: slices and images -/
 
-/-- `X` is a slice of the closed set `C ⊆ G` for conjugation by `Γ` through `j`: the map
+/--
+`X` is a slice of the closed set `C ⊆ G` for conjugation by `Γ` through `j`: the map
 `(g, y) ↦ g y g⁻¹` takes `Γ × X` onto `C`, its fibres are the orbits `{(g h, h⁻¹ y h) | h ∈ H}` of
-the closed subgroup `H`, and it is open in the sense of `eventually_exists_conj_mem`. -/
+the closed subgroup `H`, and it is open in the sense of `eventually_exists_conj_mem`.
+-/
 structure IsSlice (j : Γ →ₜ* G) (H : Subgroup Γ) (C X : Set G) : Prop where
   /-- `H` is closed. -/
   isClosed_subgroup : IsClosed (H : Set Γ)
@@ -344,10 +371,12 @@ structure IsSlice (j : Γ →ₜ* G) (H : Subgroup Γ) (C X : Set G) : Prop wher
   mem_iff : ∀ x : G, x ∈ C ↔ ∃ g : Γ, (j g)⁻¹ * x * j g ∈ X
   /-- A conjugate of an element of `X` lies in `X` exactly if the conjugating element is in `H`. -/
   conj_mem_iff : ∀ y ∈ X, ∀ g : Γ, (j g)⁻¹ * y * j g ∈ X ↔ g ∈ H
-  /-- For every neighbourhood `O` of `1` in `Γ`, the points of `C` near a point of `X` are conjugate
-  into `X` by elements of `O`. -/
-  eventually_exists_conj_mem :
-    ∀ O ∈ 𝓝 (1 : Γ), ∀ y ∈ X, ∀ᶠ x : G in 𝓝[C] y, ∃ o ∈ O, (j o)⁻¹ * x * j o ∈ X
+  /--
+  For every neighbourhood `O` of `1` in `Γ`, the points of `C` near a point of `X` are conjugate
+  into `X` by elements of `O`.
+  -/
+  eventually_exists_conj_mem
+    : ∀ O ∈ 𝓝 (1 : Γ), ∀ y ∈ X, ∀ᶠ x : G in 𝓝[C] y, ∃ o ∈ O, (j o)⁻¹ * x * j o ∈ X
 
 omit [IsTopologicalGroup G] [T2Space G] in
 /-- The set `C` of the conjugates of the elements of a slice `X` is stable under conjugation by
@@ -357,23 +386,32 @@ lemma IsSlice.conj_mem {j : Γ →ₜ* G} {H : Subgroup Γ} {C X : Set G} (hX : 
   obtain ⟨g, hg⟩ := (hX.mem_iff x).1 hx
   exact (hX.mem_iff _).2 ⟨a⁻¹ * g, by simpa [mul_assoc] using hg⟩
 
-variable {G Γ : Type} [Group G] [TopologicalSpace G]
-  [Group Γ] [TopologicalSpace Γ] [MeasurableSpace Γ]
+variable
+  {G Γ : Type} [Group G] [TopologicalSpace G] [Group Γ] [TopologicalSpace Γ] [MeasurableSpace Γ]
 
-/-- The integral of `Ψ` over the orbit `{(g h, h⁻¹ y h) | h ∈ H}` of `(g, y)`, for a measure `ν` on
-`H`; here `h` acts on `y` through `j`. -/
-noncomputable def fiberIntegral (j : Γ →ₜ* G) {H : Subgroup Γ} (ν : Measure H)
-    (Ψ : TestFunction (Γ × G)) (g : Γ) (y : G) : ℂ :=
+/--
+The integral of `Ψ` over the orbit `{(g h, h⁻¹ y h) | h ∈ H}` of `(g, y)`, for a measure `ν` on
+`H`; here `h` acts on `y` through `j`.
+-/
+noncomputable def fiberIntegral
+    (j : Γ →ₜ* G) {H : Subgroup Γ} (ν : Measure H) (Ψ : TestFunction (Γ × G)) (g : Γ) (y : G)
+    : ℂ :=
   ∫ h : H, Ψ.val (g * h, (j h)⁻¹ * y * j h) ∂ν
 
-/-- `f` is an image of `Ψ`: its value at `g y g⁻¹`, for `g ∈ Γ` and `y ∈ X`, is the integral of `Ψ`
-over the `H`-orbit of `(g, y)`. -/
-def IsImage (j : Γ →ₜ* G) {H : Subgroup Γ} (ν : Measure H) (X : Set G) (Ψ : TestFunction (Γ × G))
-    (f : TestFunction G) : Prop :=
+/--
+`f` is an image of `Ψ`: its value at `g y g⁻¹`, for `g ∈ Γ` and `y ∈ X`, is the integral of `Ψ`
+over the `H`-orbit of `(g, y)`.
+-/
+def IsImage
+    (j : Γ →ₜ* G)
+    {H : Subgroup Γ} (ν : Measure H)
+    (X : Set G) (Ψ : TestFunction (Γ × G)) (f : TestFunction G)
+    : Prop :=
   ∀ g : Γ, ∀ y ∈ X, f.val (j g * y * (j g)⁻¹) = fiberIntegral j ν Ψ g y
 
-variable {j : Γ →ₜ* G} {H : Subgroup Γ} {ν : Measure H} {C X : Set G}
-  {Ψ Ψ' : TestFunction (Γ × G)} {f f' : TestFunction G} {I : TestFunction G →ₗ[ℂ] ℂ}
+variable
+  {j : Γ →ₜ* G} {H : Subgroup Γ} {ν : Measure H} {C X : Set G} {Ψ Ψ' : TestFunction (Γ × G)}
+  {f f' : TestFunction G} {I : TestFunction G →ₗ[ℂ] ℂ}
 
 /-- The integral `fiberIntegral j ν Ψ g y` of a test function `Ψ` over the orbit
 `{(g h, h⁻¹ y h) | h ∈ H}` is locally constant in `(g, y)`. -/
@@ -510,17 +548,22 @@ lemma IsSlice.isLocallyConstant_fiberIntegral_conj [IsTopologicalGroup G] (hX : 
 
 section Main
 
-variable {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [MeasurableSpace Γ]
+variable
+  {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [MeasurableSpace Γ]
   {H : Subgroup Γ} [BorelSpace Γ]
-  {G : Type} [Group G] [TopologicalSpace G] [NonarchimedeanGroup G] [T2Space G]
-  [WeaklyLocallyCompactSpace G] {j : Γ →ₜ* G} {C X : Set G}
+  {G : Type}
+  [Group G] [TopologicalSpace G] [NonarchimedeanGroup G] [T2Space G] [WeaklyLocallyCompactSpace G]
+  {j : Γ →ₜ* G} {C X : Set G}
 
-/-- **Images.** Let `X` be a slice of `C` for conjugation by `Γ`: the map `(g, y) ↦ g y g⁻¹` from
+/--
+**Images.** Let `X` be a slice of `C` for conjugation by `Γ`: the map `(g, y) ↦ g y g⁻¹` from
 `Γ × X` onto `C` is open, and its fibres are the orbits of the closed subgroup `H` of `Γ`. For a
 Haar measure `ν` on `H`, every test function `Ψ` on `Γ × G` has an image: a test function `f` on `G`
-whose value at `g y g⁻¹`, for `y ∈ X`, is the integral of `Ψ` over the orbit of `(g, y)`. -/
-theorem IsSlice.exists_isImage (hX : IsSlice j H C X) (ν : Measure H) [ν.IsHaarMeasure]
-    (Ψ : TestFunction (Γ × G)) : ∃ f : TestFunction G, IsImage j ν X Ψ f := by
+whose value at `g y g⁻¹`, for `y ∈ X`, is the integral of `Ψ` over the orbit of `(g, y)`.
+-/
+theorem IsSlice.exists_isImage
+    (hX : IsSlice j H C X) (ν : Measure H) [ν.IsHaarMeasure] (Ψ : TestFunction (Γ × G))
+    : ∃ f : TestFunction G, IsImage j ν X Ψ f := by
   -- Choose `g x` conjugating `x ∈ C` into `X`, and integrate over the orbit of
   -- `(g x, (g x)⁻¹ x (g x))`.
   choose g hg using fun x : C ↦ (hX.mem_iff x).1 x.property
@@ -539,7 +582,9 @@ theorem IsSlice.exists_isImage (hX : IsSlice j H C X) (ν : Measure H) [ν.IsHaa
   have h_conj : (j a)⁻¹ * (j a * y * (j a)⁻¹) * j a = y := by group
   have h_mem : (j a)⁻¹ * (j a * y * (j a)⁻¹) * j a ∈ X := by rwa [h_conj]
   let x : C := ⟨j a * y * (j a)⁻¹, (hX.mem_iff _).2 ⟨a, h_mem⟩⟩
-  calc f.val x = F x := hf x
+  calc
+    f.val x
+      = F x := hf x
     _ = fiberIntegral j ν Ψ a ((j a)⁻¹ * x * j a) := hX.fiberIntegral_conj_eq Ψ h_mem (hg x)
     _ = fiberIntegral j ν Ψ a y := by rw [h_conj]
 
@@ -564,23 +609,30 @@ lemma IsInvariantDistribution.exists_linearMap_eq_of_isImage [T2Space Γ]
   exact ⟨{ toFun := fun Ψ ↦ I (image Ψ), map_add' := h_add, map_smul' := h_smul },
     fun Ψ f hf ↦ h_eq hf⟩
 
-/-- **Descent to a slice.** Let `Γ` have a compact open subgroup `K` and let `μ` and `ν` be Haar
+/--
+**Descent to a slice.** Let `Γ` have a compact open subgroup `K` and let `μ` and `ν` be Haar
 measures on `Γ` and on `H`. Let `X` be a slice of `C` with the fibres of `Γ × X → C` the orbits of
 `H`, and let `I` be an invariant distribution on `C`: a linear form on the test functions on `G`
 that is invariant under conjugation by `Γ` and depends only on the restriction to `C`. If the
 integral of `Ψ (·, y)` over `Γ` vanishes for each `y ∈ X`, then `I f = 0` for every image `f` of
 `Ψ`: a test function whose value at `g y g⁻¹`, for `g ∈ Γ` and `y ∈ X`, is the integral of `Ψ` over
-the orbit of `(g, y)`. -/
-theorem IsInvariantDistribution.eq_zero_of_isImage [T2Space Γ] {K : Subgroup Γ}
-    {I : TestFunction G →ₗ[ℂ] ℂ} (hI : IsInvariantDistribution j C I) (hX : IsSlice j H C X)
-    (hK_open : IsOpen (K : Set Γ)) (hK_compact : IsCompact (K : Set Γ))
-    (μ : Measure Γ) [μ.IsHaarMeasure] {ν : Measure H} [ν.IsHaarMeasure]
+the orbit of `(g, y)`.
+-/
+theorem IsInvariantDistribution.eq_zero_of_isImage
+    [T2Space Γ]
+    {K : Subgroup Γ} {I : TestFunction G →ₗ[ℂ] ℂ} (hI : IsInvariantDistribution j C I)
+    (hX : IsSlice j H C X) (hK_open : IsOpen (K : Set Γ)) (hK_compact : IsCompact (K : Set Γ))
+    (μ : Measure Γ) [μ.IsHaarMeasure]
+    {ν : Measure H} [ν.IsHaarMeasure]
     {Ψ : TestFunction (Γ × G)} (hΨ : ∀ y ∈ X, ∫ g : Γ, Ψ.val (g, y) ∂μ = 0)
-    {f : TestFunction G} (hf : IsImage j ν X Ψ f) : I f = 0 := by
+    {f : TestFunction G} (hf : IsImage j ν X Ψ f)
+    : I f = 0 := by
   -- The value of `I` on the image is a linear form in `Ψ` that left translations do not change.
   obtain ⟨Λ, hΛ⟩ := hI.exists_linearMap_eq_of_isImage hX ν
-  have h_left (a : Γ) (Φ Φ' : TestFunction (Γ × G))
-      (h_translate : ∀ (g : Γ) (y : G), Φ'.val (g, y) = Φ.val (a⁻¹ * g, y)) : Λ Φ' = Λ Φ := by
+  have h_left
+      (a : Γ) (Φ Φ' : TestFunction (Γ × G))
+      (h_translate : ∀ (g : Γ) (y : G), Φ'.val (g, y) = Φ.val (a⁻¹ * g, y))
+      : Λ Φ' = Λ Φ := by
     obtain ⟨φ, hφ⟩ := hX.exists_isImage ν Φ
     rw [hΛ Φ' (conjugate j a φ) (hφ.conjugate h_translate), hI.map_conjugate, hΛ Φ φ hφ]
   have h_zero (Φ : TestFunction (Γ × G)) (hΦ : ∀ g : Γ, ∀ y ∈ X, Φ.val (g, y) = 0) : Λ Φ = 0 := by

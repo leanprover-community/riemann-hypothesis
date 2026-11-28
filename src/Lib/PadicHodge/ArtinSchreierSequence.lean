@@ -64,8 +64,10 @@ open Period WittVector Ideal RingHom Algebra algebraMap Valued IsLocalRing IsLoc
 
 variable {p : ℕ} [ThePrime p]
 
-/-- The ideal W(𝔪^♭) of A_inf: the kernel of the map from A_inf to the Witt vectors of the
-residue field of O^♭. -/
+/--
+The ideal W(𝔪^♭) of A_inf: the kernel of the map from A_inf to the Witt vectors of the
+residue field of O^♭.
+-/
 noncomputable def wittOfMaxIdeal : Ideal Ainf := ker toWittResidue
 
 /-- An element of `A_inf` lies in `W(𝔪^♭)` exactly when none of its Witt coordinates is a unit. -/
@@ -211,7 +213,8 @@ section DiagonalTensor
 
 open TensorProduct New Period
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
+variable
+  {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
   {ρ ρ' ρ'' : Rep ℤ_[p] Γ} (f : ρ →ₗ[ℤ_[p]] ρ') (b : ρ →ₗ[ℤ_[p]] ρ' →ₗ[ℤ_[p]] ρ'')
   {R R' : Type*} [Semiring R] [Module R WittCFlat] [SMulCommClass ℤ_[p] R WittCFlat] [Semiring R']
   [Module R' WittCFlat] [SMulCommClass ℤ_[p] R' WittCFlat] [SMul R R']
@@ -219,7 +222,7 @@ variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
 
 /-- The tensor product `W(C^♭) ⊗ T` over `ℤ_p`, for a representation `T` of `Γ`. -/
 def New.Lift.DiagTensor (T : Rep ℤ_[p] Γ) : Type _ := WittCFlat ⊗[ℤ_[p]] T
-  deriving AddCommGroup
+deriving AddCommGroup
 
 namespace New.Lift.DiagTensor
 
@@ -234,17 +237,23 @@ instance : DistribMulAction (FrobGroup Γ) (DiagTensor ρ) :=
 instance : SMulCommClass (FrobGroup Γ) ℤ_[p] (DiagTensor ρ) :=
   ⟨fun _ c x ↦ (TensorProduct.map _ _).map_smul c x⟩
 
-/-- For a `ℤ_p`-linear map `f : T → T'`, the `W(C^♭)`-linear map `1 ⊗ f` from `W(C^♭) ⊗ T` to
-`W(C^♭) ⊗ T'`. -/
+/--
+For a `ℤ_p`-linear map `f : T → T'`, the `W(C^♭)`-linear map `1 ⊗ f` from `W(C^♭) ⊗ T` to
+`W(C^♭) ⊗ T'`.
+-/
 def map : DiagTensor ρ →ₗ[WittCFlat] DiagTensor ρ' := f.baseChange WittCFlat
 
-/-- For a `ℤ_p`-bilinear map `b : T × T' → T''`, its `W(C^♭)`-bilinear extension
-`(W(C^♭) ⊗ T) × (W(C^♭) ⊗ T') → W(C^♭) ⊗ T''`. -/
+/--
+For a `ℤ_p`-bilinear map `b : T × T' → T''`, its `W(C^♭)`-bilinear extension
+`(W(C^♭) ⊗ T) × (W(C^♭) ⊗ T') → W(C^♭) ⊗ T''`.
+-/
 def pair : DiagTensor ρ →ₗ[WittCFlat] DiagTensor ρ' →ₗ[WittCFlat] DiagTensor ρ'' :=
   baseChangePairing b
 
-/-- The map `(a, t) ↦ a ⊗ t` into `W(C^♭) ⊗ T`, linear over `W(C^♭)` in `a` and over `ℤ_p` in
-`t`. -/
+/--
+The map `(a, t) ↦ a ⊗ t` into `W(C^♭) ⊗ T`, linear over `W(C^♭)` in `a` and over `ℤ_p` in
+`t`.
+-/
 def mk : WittCFlat →ₗ[WittCFlat] ρ →ₗ[ℤ_[p]] DiagTensor ρ :=
   AlgebraTensorModule.mk ℤ_[p] WittCFlat WittCFlat ρ
 
@@ -269,8 +278,8 @@ lemma smul_mk (m : FrobGroup Γ) (a : WittCFlat) (t : ρ) :
     m • no_index (mk a t) = mk (m • a) (ρ.ρ (FrobGroup.snd m) t) :=
   rfl
 
-instance [SMul (FrobGroup Γ) R] [SMulDistribClass (FrobGroup Γ) R WittCFlat] :
-    SMulDistribClass (FrobGroup Γ) R (DiagTensor ρ) where
+instance [SMul (FrobGroup Γ) R] [SMulDistribClass (FrobGroup Γ) R WittCFlat]
+    : SMulDistribClass (FrobGroup Γ) R (DiagTensor ρ) where
   smul_distrib_smul m r x := by
     induction x using DiagTensor.induction with
     -- both sides are pure tensors with second factor `ρ.ρ (FrobGroup.snd m) t`
@@ -304,10 +313,12 @@ open Period Algebra TensorProduct Ideal Ideal.Quotient FrobGroup algebraMap Witt
 
 variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
 
-/-- The `A_inf`-submodule `W(𝔪^♭) • (1 ⊗ 1)` of `W(C^♭) ⊗ ℤ_p/p^m(1)`: the image of the ideal
-`New.Lift.wittOfMaxIdeal` under `a ↦ a • (1 ⊗ 1)`. -/
-noncomputable def smallPart (m : ℕ) :
-    Submodule Ainf (DiagTensor (Rep.of (charRep (QuotSpan ((p : ℤ_[p]) ^ m)) χ))) :=
+/--
+The `A_inf`-submodule `W(𝔪^♭) • (1 ⊗ 1)` of `W(C^♭) ⊗ ℤ_p/p^m(1)`: the image of the ideal
+`New.Lift.wittOfMaxIdeal` under `a ↦ a • (1 ⊗ 1)`.
+-/
+noncomputable def smallPart (m : ℕ)
+    : Submodule Ainf (DiagTensor (Rep.of (charRep (QuotSpan ((p : ℤ_[p]) ^ m)) χ))) :=
   Submodule.map
     (LinearMap.toSpanSingleton Ainf (DiagTensor (Rep.of (charRep (QuotSpan (p ^ m : ℤ_[p])) χ)))
       (DiagTensor.mk 1 1))
@@ -391,8 +402,8 @@ lemma TateTwist.pow_smul_eq_zero {m : ℕ}
   | h_add d e hd he => rw [nsmul_add, hd, he, add_zero]
 
 /-- The map `x ↦ x ⊗ 1` from `W(C^♭)` onto `W(C^♭) ⊗ ℤ_p/p^m(1)`. -/
-private def TateTwist.oneTmul (m : ℕ) (x : WittCFlat) :
-    DiagTensor (Rep.of (charRep (QuotSpan ((p : ℤ_[p]) ^ m)) χ)) :=
+private def TateTwist.oneTmul (m : ℕ) (x : WittCFlat)
+    : DiagTensor (Rep.of (charRep (QuotSpan ((p : ℤ_[p]) ^ m)) χ)) :=
   .mk x 1
 
 private lemma TateTwist.oneTmul_surjective (m : ℕ) :

@@ -61,41 +61,51 @@ section BesselType
 
 open Matrix MeasureTheory
 
-/-- A fixed unitary matrix p with pᴴJ₁p the diagonal matrix of the signs ε, where
-J₁ = `New.Shape.J₁`. -/
-class New.DiscreteSeries.UnitarySignFrame (𝔰 : Shape)
-    (ε : outParam (𝔰.BesselIndex → ℤˣ)) extends SignFrame 𝔰.J₁ ε where
+/--
+A fixed unitary matrix p with pᴴJ₁p the diagonal matrix of the signs ε, where
+J₁ = `New.Shape.J₁`.
+-/
+class New.DiscreteSeries.UnitarySignFrame (𝔰 : Shape) (ε : outParam (𝔰.BesselIndex → ℤˣ))
+    extends SignFrame 𝔰.J₁ ε where
   /-- The matrix `p` is unitary. -/
   mem_unitary : matrix.val ∈ unitary (Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)
 
-/-- The Bessel system `B` has type `(l, kw)`: its full function is the Bessel function of the
-discrete series of parameter `l`, with values in the representation of `H` of weight `kw`. -/
-structure New.Filling.IsDiscreteSeriesBessel {𝔰 : Shape} {ε : 𝔰.BesselIndex → ℤˣ} {b : ℝ} {f : ℕ}
-    [DiscreteSeries.UnitarySignFrame 𝔰 ε] (B : BesselSystem 𝔰 b f) (l : HCParam ε)
-    (kw : ℕ → ℕ) where
+/--
+The Bessel system `B` has type `(l, kw)`: its full function is the Bessel function of the
+discrete series of parameter `l`, with values in the representation of `H` of weight `kw`.
+-/
+structure New.Filling.IsDiscreteSeriesBessel
+    {𝔰 : Shape} {ε : 𝔰.BesselIndex → ℤˣ} {b : ℝ} {f : ℕ} [DiscreteSeries.UnitarySignFrame 𝔰 ε]
+    (B : BesselSystem 𝔰 b f) (l : HCParam ε) (kw : ℕ → ℕ) where
   /-- The degree is given by Weyl's dimension polynomial at `l`. -/
   deg_eq : B.deg = weylDimensionPoly l
-  /-- After an invertible change of coordinates `A`, the representation on the values is given by
+  /--
+  After an invertible change of coordinates `A`, the representation on the values is given by
   the transposed Schur matrix of weight `kw` at `gᵀ`. Here `Unit` is a set of places with one
-  point. -/
-  exists_conj_rep_eq_schur :
-    letI V := WeylIndex 𝔰.κ fun _ : Unit ↦ kw
-    ∃ (A : Matrix V B.Index ℂ) (A' : Matrix B.Index V ℂ),
-      A * A' = 1 ∧
-      A' * A = 1 ∧
-      ∀ g : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ),
-        A * (B.rep g).val = (schur (fun _ ↦ kw) fun _ ↦ (g : Matrix 𝔰.κ 𝔰.κ ℂ)ᵀ)ᵀ * A
-  /-- The full function is fixed by right convolution with the kernel `l.dsKernel`, carried over
-  from `USign ε` by the fixed frame. -/
-  integral_dsKernel_mul (y : 𝔰.G₁) (i : B.Index) :
-    ∫ x : USign ε, l.dsKernel x * B.besselFn .full (y * DiscreteSeries.frameEquiv.symm x) i =
-      B.besselFn .full y i
-  /-- The full function is `c ∫_R c_l(x⁻¹ s y) π(s)⁻¹ v ds` for a constant `c`, a point `x` and a
+  point.
+  -/
+  exists_conj_rep_eq_schur
+    : letI V := WeylIndex 𝔰.κ fun _ : Unit ↦ kw
+      ∃ (A : Matrix V B.Index ℂ) (A' : Matrix B.Index V ℂ),
+        A * A' = 1 ∧ A' * A = 1
+          ∧ ∀ g : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ),
+            A * (B.rep g).val = (schur (fun _ ↦ kw) fun _ ↦ (g : Matrix 𝔰.κ 𝔰.κ ℂ)ᵀ)ᵀ * A
+  /--
+  The full function is fixed by right convolution with the kernel `l.dsKernel`, carried over
+  from `USign ε` by the fixed frame.
+  -/
+  integral_dsKernel_mul (y : 𝔰.G₁) (i : B.Index)
+    : ∫ x : USign ε, l.dsKernel x * B.besselFn .full (y * DiscreteSeries.frameEquiv.symm x) i
+      = B.besselFn .full y i
+  /--
+  The full function is `c ∫_R c_l(x⁻¹ s y) π(s)⁻¹ v ds` for a constant `c`, a point `x` and a
   vector `v`, and the integral converges absolutely. Here `c_l` is the coefficient of `l` and `π`
-  is the representation of `R` that is given by `B.rep` on `H` and a character on `𝖴`. -/
-  exists_eq_besselAverage : ∃ (c : ℝ) (x : 𝔰.G₁) (v : EuclideanSpace ℂ B.Index), ∀ y : 𝔰.G₁,
-    Integrable (DiscreteSeries.besselIntegrand l B.rep x v y) 𝔰.besselGraphMeasure ∧
-      B.besselFn .full y = c • DiscreteSeries.besselAverage l B.rep x v y
+  is the representation of `R` that is given by `B.rep` on `H` and a character on `𝖴`.
+  -/
+  exists_eq_besselAverage
+    : ∃ (c : ℝ) (x : 𝔰.G₁) (v : EuclideanSpace ℂ B.Index), ∀ y : 𝔰.G₁,
+      Integrable (DiscreteSeries.besselIntegrand l B.rep x v y) 𝔰.besselGraphMeasure
+        ∧ B.besselFn .full y = c • DiscreteSeries.besselAverage l B.rep x v y
 
 end BesselType
 
@@ -253,11 +263,15 @@ lemma exists_besselGraph_fst_eq {g : 𝔰.G₁} {N : Matrix (Fin 𝔰.ϱ) (Fin (
 
 variable [p : UnitarySignFrame 𝔰 ε]
 
-/-- The map `s ↦ (x⁻¹ s x, h)`, where `h` is the image of `s` in `H` and `x⁻¹ s x` is written in the
-frame of signs `ε`. -/
+/--
+The map `s ↦ (x⁻¹ s x, h)`, where `h` is the image of `s` in `H` and `x⁻¹ s x` is written in the
+frame of signs `ε`.
+-/
 def besselPairHom (x : 𝔰.G₁) : 𝔰.besselGraph →* USign ε × USign (1 : 𝔰.κ → ℤˣ) :=
-  .domRestrict (.prodMap (.comp (frameEquiv (ε := ε)) (MulAut.conj x⁻¹).toMonoidHom)
-    (inclusion (by simp [USign]))) 𝔰.besselGraph
+  .domRestrict
+    (.prodMap (.comp (frameEquiv (ε := ε)) (MulAut.conj x⁻¹).toMonoidHom)
+      (inclusion (by simp [USign])))
+    𝔰.besselGraph
 
 /-- The first component `s ↦ x⁻¹ s x` of `besselPairHom x` is proper: `R` is closed in `G₁ × H` and
 `H` is compact. -/
@@ -517,7 +531,8 @@ lemma mul_sqrt_mul_pow_le_pow {B b : ℝ} {a : ℕ} (hB : 1 ≤ B) (hb : 3 * B +
     _ ≤ b ^ (5 * 𝔰.n) :=
         (pow_succ' b _).ge.trans (pow_le_pow_right₀ hb_one (by dsimp only [Shape.n]; omega))
 
-/-- Split the coordinates of `G₁` into `X` and `2 n` more (by `e`), and those of `H` into `X` and
+/--
+Split the coordinates of `G₁` into `X` and `2 n` more (by `e`), and those of `H` into `X` and
 one more (by `τ`). Let the parameter `l` of `U(ε)` be steep with bound `B ≥ 1` (its lowest `K`-type
 has weight `0` on `X` and decreasing weight in `[-3 B, -B]` on the others, where the signs
 alternate), and let the lowest `K`-type of the parameter `u` of `H` have weight `a` at the last
@@ -530,30 +545,31 @@ the volume of `{‖x⁻¹ s x - 1‖ ≤ 1}` in `R` is at most `β ^ (20 (r + k)
 period. The period is the integral over `s` in `R`, with image `t` in `H`, of `c_l(x⁻¹ s x)` times
 the conjugate of `c_u(t)` times `exp (conj σ - σ)`. Here `c_l = l.dsCoeff` and `c_u = u.dsCoeff` are
 the discrete series coefficients, and `σ = simpleRootSum s` is the sum of the entries of `s` just
-above the diagonal on the frame `e₁, …, e_ϱ, z`. -/
-theorem IsSteep.exists_stationary_point {X : Type} [Fintype X] {l : HCParam ε}
-    {u : HCParam (1 : 𝔰.κ → ℤˣ)} {e : X ⊕ Fin (2 * 𝔰.ϱ + 2) ≃ 𝔰.BesselIndex} {B b β : ℝ}
-    {a L excess : ℕ} (h_steep : IsSteep l B e) (τ : X ⊕ Unit ≃ 𝔰.κ)
+above the diagonal on the frame `e₁, …, e_ϱ, z`.
+-/
+theorem IsSteep.exists_stationary_point
+    {X : Type} [Fintype X]
+    {l : HCParam ε} {u : HCParam (1 : 𝔰.κ → ℤˣ)} {e : X ⊕ Fin (2 * 𝔰.ϱ + 2) ≃ 𝔰.BesselIndex}
+    {B b β : ℝ} {a L excess : ℕ} (h_steep : IsSteep l B e)
+    (τ : X ⊕ Unit ≃ 𝔰.κ)
     (ha : ∀ i : 𝔰.κ, u.lowestKType i = if i = τ (Sum.inr ()) then (a : ℤ) else 0)
-    (hB : 1 ≤ B) (hb : 3 * B + a ≤ b ^ 2) (hb_rank : 8 * 𝔰.n * 𝔰.r ≤ b)
-    (hl : l.HasLargeGap excess) (hu : u.HasLargeGap excess)
-    (hL : ∀ i : 𝔰.BesselIndex, |l i| ≤ L) (hK : ∀ i : 𝔰.κ, |u i| ≤ L)
+    (hB : 1 ≤ B) (hb : 3 * B + a ≤ b ^ 2) (hb_rank : 8 * 𝔰.n * 𝔰.r ≤ b) (hl : l.HasLargeGap excess)
+    (hu : u.HasLargeGap excess) (hL : ∀ i : 𝔰.BesselIndex, |l i| ≤ L) (hK : ∀ i : 𝔰.κ, |u i| ≤ L)
     (hβ : 10 ^ 12 ≤ β) (h_rank : 𝔰.r + 𝔰.k + L ≤ β)
-    (h_excess : 10 ^ 30 * ((𝔰.r + 𝔰.k) ^ 2 * β.log) ^ 3 ≤ excess) :
-    ∃ x : 𝔰.G₁,
-      besselLength x ≤ b ^ (5 * 𝔰.n) ∧
-      𝔰.besselGraphMeasure.real
-          {s : 𝔰.besselGraph | ‖(subOnePair (besselPairHom (ε := ε) x) s).fst‖ ≤ 1} ≤
-        β ^ (20 * (𝔰.r + 𝔰.k) ^ 2) *
-          ‖∫ s : 𝔰.besselGraph, l.laplaceIntegrand u (besselPairHom x)
-            (fun s' : 𝔰.besselGraph ↦ simpleRootSum s'.val.fst - conj (simpleRootSum s'.val.fst)) s
-            ∂𝔰.besselGraphMeasure‖ := by
+    (h_excess : 10 ^ 30 * ((𝔰.r + 𝔰.k) ^ 2 * β.log) ^ 3 ≤ excess)
+    : ∃ x : 𝔰.G₁,
+      besselLength x ≤ b ^ (5 * 𝔰.n)
+        ∧ 𝔰.besselGraphMeasure.real
+            {s : 𝔰.besselGraph | ‖(subOnePair (besselPairHom (ε := ε) x) s).fst‖ ≤ 1}
+          ≤ β ^ (20 * (𝔰.r + 𝔰.k) ^ 2)
+            * ‖∫ s : 𝔰.besselGraph, l.laplaceIntegrand u (besselPairHom x)
+                (fun s' : 𝔰.besselGraph ↦ simpleRootSum s'.val.fst - conj (simpleRootSum s'.val.fst)) s
+                ∂𝔰.besselGraphMeasure‖ := by
   classical
   have : MeasurableMul 𝔰.besselGraph := measurableMul_besselGraph
   have : BorelSpace 𝔰.besselGraph := borelSpace_besselGraph
   have : 𝔰.besselGraphMeasure.IsMulRightInvariant := 𝔰.besselGraphMeasure_isMulRightInvariant
-  have : IsFiniteMeasureOnCompacts 𝔰.besselGraphMeasure :=
-    𝔰.besselGraphMeasure_finiteOnCompacts
+  have : IsFiniteMeasureOnCompacts 𝔰.besselGraphMeasure := 𝔰.besselGraphMeasure_finiteOnCompacts
   have : Nonempty 𝔰.κ := ⟨τ (Sum.inr ())⟩
   -- The stationary position with `n` vectors, where the weight of `u` lies in `[0, a]`; there are
   -- `2 n` coordinates of `G₁` and one coordinate of `H` outside `X`.
@@ -561,43 +577,50 @@ theorem IsSteep.exists_stationary_point {X : Type} [Fintype X] {l : HCParam ε}
   have hX_sign (y : X) : (1 : 𝔰.κ → ℤˣ) (e' (Sum.inl y)) = 1 := Pi.one_apply _
   have hX_zero (y : X) : u.lowestKType (e' (Sum.inl y)) = 0 := by
     simp only [e', ha, Equiv.trans_apply, Equiv.sumCongr_apply, Equiv.refl_apply, Sum.map_inl,
-      EmbeddingLike.apply_eq_iff_eq, reduceCtorEq, ↓reduceIte]
+      EmbeddingLike.apply_eq_iff_eq, reduceCtorEq, ↓ reduceIte]
   obtain ⟨v, i₀, hP, h_norm, -, -, h_pow_le⟩ :=
     h_steep.exists_isStationary (k := u) (e' := e') (d := 𝔰.ϱ) (B' := a) hB (by omega) hX_sign
-      hX_zero (fun j ↦ by simp only [Fin.eq_zero j, Fin.val_zero, pow_zero, Pi.one_apply])
+      hX_zero
+      (fun j ↦ by simp only [Fin.eq_zero j, Fin.val_zero, pow_zero, Pi.one_apply])
       (Subsingleton.strictMono _) a.cast_nonneg
       (fun j ↦ by
         simp only [e', ha, Equiv.trans_apply, Equiv.sumCongr_apply, Sum.map_inr,
-          Subsingleton.elim (finOneEquiv j) (), ↓reduceIte, Int.cast_natCast, Set.mem_Icc,
+          Subsingleton.elim (finOneEquiv j) (), ↓ reduceIte, Int.cast_natCast, Set.mem_Icc,
           a.cast_nonneg, le_rfl, and_self])
   -- The point: with `μ` the weight of the lowest `K`-type of `l` as a diagonal matrix, the vectors
   -- `μ ^ c v₁` continue `v₁, …, v_n`.
   have h_one_le : 1 ≤ 3 * B + a := by linarith [a.cast_nonneg (α := ℝ)]
   rw [pow_one] at h_norm
-  obtain ⟨x, h_isometry, h_frame, h_len⟩ : ∃ x : 𝔰.G₁,
-      (x.val * p.matrix).val * i₀ = 𝔰.definiteCols ∧ (x.val * p.matrix).val * v = 𝔰.frameCols ∧
-        besselLength x ≤ 8 * 𝔰.n * (√𝔰.r * (3 * B + a) ^ (2 * 𝔰.ϱ + 2)) :=
+  obtain ⟨x, h_isometry, h_frame, h_len⟩
+      : ∃ x : 𝔰.G₁,
+        (x.val * p.matrix).val * i₀ = 𝔰.definiteCols ∧ (x.val * p.matrix).val * v = 𝔰.frameCols
+          ∧ besselLength x ≤ 8 * 𝔰.n * (√𝔰.r * (3 * B + a) ^ (2 * 𝔰.ϱ + 2)) :=
     hP.exists_mul_eq_frameCols_and_besselLength_le h_norm (one_le_pow₀ h_one_le)
       hP.pow_mulVec_col_zero h_pow_le fun c c' hc ↦ by rw [hP.gram_pow_mulVec hc, h_norm]
   refine ⟨x, h_len.trans (mul_sqrt_mul_pow_le_pow hB hb hb_rank), ?_⟩
   -- The group of the position is `x⁻¹ R x`. The period over it bounds the volume of the set where
   -- both components have norm at most `β + 1`.
-  let Large : Set 𝔰.besselGraph := {s : 𝔰.besselGraph |
-    ‖((besselPairHom (ε := ε) x s).fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ β + 1 ∧
-      ‖((besselPairHom (ε := ε) x s).snd : Matrix 𝔰.κ 𝔰.κ ℂ)‖ ≤ β + 1}
-  have h_period : 𝔰.besselGraphMeasure Large ≤ ENNReal.ofReal (β ^ (20 * (𝔰.r + 𝔰.k) ^ 2) *
-      ‖∫ s : 𝔰.besselGraph, l.laplaceIntegrand u (besselPairHom x)
-        (fun s' : 𝔰.besselGraph ↦ simpleRootSum s'.val.fst - conj (simpleRootSum s'.val.fst)) s
-        ∂𝔰.besselGraphMeasure‖) :=
+  let Large : Set 𝔰.besselGraph :=
+    {s : 𝔰.besselGraph |
+      ‖((besselPairHom (ε := ε) x s).fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ β + 1 ∧
+        ‖((besselPairHom (ε := ε) x s).snd : Matrix 𝔰.κ 𝔰.κ ℂ)‖ ≤ β + 1}
+  have h_period
+      : 𝔰.besselGraphMeasure Large
+        ≤ ENNReal.ofReal
+          (β ^ (20 * (𝔰.r + 𝔰.k) ^ 2)
+            * ‖∫ s : 𝔰.besselGraph, l.laplaceIntegrand u (besselPairHom x)
+                (fun s' : 𝔰.besselGraph ↦ simpleRootSum s'.val.fst - conj (simpleRootSum s'.val.fst)) s
+                ∂𝔰.besselGraphMeasure‖) :=
     hP.period_lower_bound_of_surjective h_steep hB hX_sign hX_zero
       (fun i ↦ by rw [ha]; split_ifs; exacts [Int.natCast_nonneg a, le_rfl])
-      (fun _ _ h ↦ (h rfl).elim) hl hu hL hK hβ h_rank h_excess 𝔰.besselGraphMeasure
-      (isProperMap_besselPairHom_fst x) (fun _ ↦ exists_besselPairHom_fst_eq h_frame)
+      (fun _ _ h ↦ (h rfl).elim)
+      hl hu hL hK hβ h_rank h_excess 𝔰.besselGraphMeasure (isProperMap_besselPairHom_fst x)
+      (fun _ ↦ exists_besselPairHom_fst_eq h_frame)
       (lowersFlag_besselPairHom · h_frame) (inducesOn_besselPairHom · h_isometry h_frame)
   -- This set contains the unit ball, as `H` is compact.
   have hβ_one : 1 ≤ β := le_trans (by norm_num) hβ
-  have h_ball : {s : 𝔰.besselGraph | ‖(subOnePair (besselPairHom (ε := ε) x) s).fst‖ ≤ 1} ⊆
-      Large := by
+  have h_ball
+      : {s : 𝔰.besselGraph | ‖(subOnePair (besselPairHom (ε := ε) x) s).fst‖ ≤ 1} ⊆ Large := by
     refine fun s hs ↦ ⟨(norm_le_insert' _ 1).trans (add_le_add (norm_one.trans_le hβ_one) hs), ?_⟩
     rw [besselPairHom_snd_val, CStarRing.norm_of_mem_unitary (U_one_mem_unitaryGroup s.val.snd)]
     linarith
@@ -616,8 +639,9 @@ namespace New.DiscreteSeries
 open Matrix Fintype Complex Norms.L2Operator MeasureTheory ComplexConjugate ENNReal HCParam
   InnerProductSpace ContinuousLinearMap
 
-variable {𝔰 : Shape} {I : Type*} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I] [DecidableEq I]
-  [UnitarySignFrame 𝔰 ε]
+variable
+  {𝔰 : Shape} {I : Type*} {ε : 𝔰.BesselIndex → ℤˣ}
+  [Fintype I] [DecidableEq I] [UnitarySignFrame 𝔰 ε]
 
 private lemma sFinite_besselGraphMeasure : SFinite 𝔰.besselGraphMeasure :=
   @Measure.instSFiniteMap _ _ _ _ (𝔰.besselHaar.prod volume) 𝔰.besselGraphChart inferInstance
@@ -644,14 +668,18 @@ lemma measurePreserving_unfold_besselGraphMeasure :
     lintegral_unfold_besselGraphMeasure (x := 1) g hg]
   simp only [one_mul]
 
-variable (l : HCParam ε) (rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ) (x : 𝔰.G₁)
+variable
+  (l : HCParam ε) (rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ) (x : 𝔰.G₁)
   (v : EuclideanSpace ℂ I)
 
-/-- The volume of the set of `s` in `R` with `‖x⁻¹ s x - 1‖ ≤ 1`, the matrix `x⁻¹ s x` being written
-in the frame of signs `ε` (the first component of `besselPairHom x s`). -/
+/--
+The volume of the set of `s` in `R` with `‖x⁻¹ s x - 1‖ ≤ 1`, the matrix `x⁻¹ s x` being written
+in the frame of signs `ε` (the first component of `besselPairHom x s`).
+-/
 noncomputable def besselBallVolume : ℝ≥0∞ :=
-  𝔰.besselGraphMeasure {s : 𝔰.besselGraph |
-    ‖((besselPairHom (ε := ε) x s).fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) - 1‖ ≤ 1}
+  𝔰.besselGraphMeasure
+    {s : 𝔰.besselGraph |
+      ‖((besselPairHom (ε := ε) x s).fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) - 1‖ ≤ 1}
 
 /-- The ball whose volume is `besselBallVolume x` has finite measure, as the conjugation by `x` is
 proper on `R`. -/

@@ -62,7 +62,9 @@ attribute [local instance low] Fintype.ofFinite
 
 section
 
-variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K] (n : ℕ) [NeZero n]
+variable
+  {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K]
+  (n : ℕ) [NeZero n]
   (S : Set (FinPlace K))
   {L M : Type*} [Field L] [NumberField L] [Algebra K L] [Field M] [NumberField M]
 
@@ -74,8 +76,10 @@ lemma adeleNorm_adeleNorm [Algebra K M] [Algebra L M] [IsScalarTower K L M] :
   -- Both sides are continuous and agree on the dense image of `M`, by the tower law for norms.
   exact denseRange_algebraMap_finAdele.eq fun x ↦ by simp [Algebra.norm_norm]
 
-/-- For a set `S` of finite places of `K`, the group of finite ideles of `K` whose components at
-all places of `S` are `n`-th powers. -/
+/--
+For a set `S` of finite places of `K`, the group of finite ideles of `K` whose components at
+all places of `S` are `n`-th powers.
+-/
 noncomputable abbrev idelesPowAt (n : ℕ) : Subgroup (𝔸f K)ˣ :=
   ⨅ v : S, (powMonoidHom n).range.comap (ideleAt v.val)
 
@@ -409,8 +413,9 @@ end
 
 section Kummer
 
-variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K] {n : ℕ} [NeZero n]
-  [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
+variable
+  {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K]
+  {n : ℕ} [NeZero n] [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
 
 variable (K) in
 include K in
@@ -440,12 +445,14 @@ lemma exists_kummer_hom (h_fix : ∀ g : Γ, cyclotomicCharMod Ω n g = 1) :
         simp [add_sub_add_comm, h_kummer x _ (h_root_pow x), h_kummer y _ (h_root_pow y)]
 
 variable (K) in
-/-- The Kummer map, when `Γ` fixes the `n`-th roots of unity. It sends an invariant `x` of `Ωˣ` to
+/--
+The Kummer map, when `Γ` fixes the `n`-th roots of unity. It sends an invariant `x` of `Ωˣ` to
 the character `κ x : Γ → ℤ/n` with `ζ ^ κ x g = g a / a` for every `a` with `a ^ n = x`, where `ζ`
-is the root of unity of order `n` chosen in `New.rootPowHom` (`New.rootPowHom_kummerChar`). -/
-noncomputable def kummerChar (h_fix : ∀ g : Γ, cyclotomicCharMod Ω n g = 1) :
-    (unitsRep : Representation ℤ Γ (DiscreteUnits Ω)).invariants →+
-      Z1 (Representation.trivial ℤ Γ (ZMod n)) :=
+is the root of unity of order `n` chosen in `New.rootPowHom` (`New.rootPowHom_kummerChar`).
+-/
+noncomputable def kummerChar (h_fix : ∀ g : Γ, cyclotomicCharMod Ω n g = 1)
+    : (unitsRep : Representation ℤ Γ (DiscreteUnits Ω)).invariants
+      →+ Z1 (Representation.trivial ℤ Γ (ZMod n)) :=
   (exists_kummer_hom K h_fix).choose
 
 omit [NumberField K] in
@@ -721,8 +728,12 @@ universe u_1 u_2 u_3
 
 section ExistenceTheorem
 
-variable (Γ : Type) {K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K] {n : ℕ}
-  [NeZero n] (S : Set (FinPlace K)) [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
+variable
+  (Γ : Type)
+  {K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K]
+  {n : ℕ} [NeZero n]
+  (S : Set (FinPlace K))
+  [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
   {C : Type u_3} [Group C] [TopologicalSpace C]
 
 /-- Let `Γ` be the Galois group of `Ω/K`, and let `θ` be a continuous homomorphism from the finite
@@ -921,19 +932,23 @@ lemma exists_comp_artinMap [IsTotallyComplex K] [T1Space C] (θ : (𝔸f K)ˣ �
   exact QZChar.apply_eq_zero_of_pow_eq_one_of_artinMap_eq_one Γ ψ hψ_rat hψ_pow ha
 
 variable {Γ} in
-/-- Let `Γ` be the Galois group of `Ω/K` and `S` a set of finite places of `K`. The map `x : Γ → B`
+/--
+Let `Γ` be the Galois group of `Ω/K` and `S` a set of finite places of `K`. The map `x : Γ → B`
 is a locally constant homomorphism to the additive group `B`, killed by `m`, and zero on the inertia
-groups at the places off `S`. -/
-structure OddPart.IsUnramifiedTorsionHom (m : ℕ) {B : Type*} [AddCommGroup B] (x : Γ → B) :
-    Prop where
+groups at the places off `S`.
+-/
+structure OddPart.IsUnramifiedTorsionHom (m : ℕ) {B : Type*} [AddCommGroup B] (x : Γ → B)
+    : Prop where
   /-- `x` is locally constant. -/
   isLocallyConstant : IsLocallyConstant x
   /-- `x` is a homomorphism to the additive group `B`. -/
   map_mul (g h : Γ) : x (g * h) = x g + x h
   /-- `m` kills the values of `x`. -/
   nsmul_eq_zero (g : Γ) : m • x g = 0
-  /-- `x` vanishes on the inertia group at the chosen place `placeOver v` of `Ω` over each finite
-  place `v ∉ S`. -/
+  /--
+  `x` vanishes on the inertia group at the chosen place `placeOver v` of `Ω` over each finite
+  place `v ∉ S`.
+  -/
   unramified : ∀ v : FinPlace K, v ∉ S → ∀ g : Γ, g ∈ inertiaGroup Γ (placeOver v) → x g = 0
 
 /-- Let `Γ` be the Galois group of `Ω/K` and `S` a set of finite places of `K`. The image under the

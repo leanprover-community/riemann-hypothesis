@@ -50,9 +50,13 @@ namespace New.Selmer.SelmerDatum
 
 open Module Matrix.Module Finset commutatorElement
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-  {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} {O n ι : Type} [CommRing O] [PadicIntegerRing O ℓ]
-  [Fintype n] [DecidableEq n] (T : SelmerDatum ℓ S₀ g₀ O n) {M N : ℕ} {a : O}
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+  {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} {O n ι : Type}
+  [CommRing O] [PadicIntegerRing O ℓ] [Fintype n] [DecidableEq n]
+  (T : SelmerDatum ℓ S₀ g₀ O n)
+  {M N : ℕ} {a : O}
 
 /-- An element that acts trivially on `T / ℓ ^ M` fixes `T / a` for `a ∣ ℓ ^ M`. -/
 lemma smul_eq_self_of_reduceModPow_eq_one (ha : a ∣ ℓ ^ M) {g : Gal(Ω/E)}
@@ -109,7 +113,8 @@ lemma mem_reductionKer_of_mem_inertiaAbove {g : Gal(Ω/E)}
     (hg.imp fun _ hv ↦ ⟨fun h ↦ hv.1 (T.placesDividing_subset h), hv.2⟩)
   exact ⟨by simp [reduceModPow, T.unramified g hg], by simp [cyclotomicCharMod_prime_pow_eq, h_cyc]⟩
 
-variable {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {P₀ : FinPlace E} {J : Finset (FinPlace E)}
+variable
+  {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {P₀ : FinPlace E} {J : Finset (FinPlace E)}
   {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)} {i : ι}
 
 /-- A function `c` obeys the ties of index `i` on `J` if and only if `c(γ_v) = s_v • c(φ_v)` and
@@ -196,7 +201,8 @@ lemma mem_selmerModule_erase (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x) (ha : a
   exact (h_side z hz (T.apply_first_tameGenerator_eq_zero_of_mem_tiedSelmer hp hz side)).1
 
 open scoped Classical in
-/-- The setting of global duality for the tied Selmer group modulo `a`: the module `T / a`, the
+/--
+The setting of global duality for the tied Selmer group modulo `a`: the module `T / a`, the
 primes `T.places ∪ I ∪ Ī` with `I = J \ {P₀}` and the places `A v` above them, and the kernel `U` of
 the action on `T / ℓ ^ M` and on the `ℓ ^ N`-th roots of unity. The allowed local cocycles at `v`
 are the restrictions of the global cocycles that obey the local conditions `T.localRelations` and
@@ -208,11 +214,12 @@ generator `γ_v` of inertia, a Frobenius element `φ_v` and a character to `ℤ 
 `s_v = (x v).2 i` in `O` is the slope for the index `i`. The first prime `P₀ ∈ J` has slope `0` and
 `φ_{P₀} ∈ W`, and `V i` holds at `φ_v` and `φ_v^{-c}` if `s_v ≠ 0`, where `g^{-c} = (c g c)⁻¹` for
 complex conjugation `c`. The ties on `J` are the relations `z(γ_v) = s_v • z(φ_v)` and
-`z(γ_v^{-c}) = s_v • z(φ_v^{-c})` for `v ∈ J`. -/
-def tiedSetting (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
-    (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1) (hN : M < N) (ha : a ∣ ℓ ^ M)
-    (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v}) :
-    RelationSetting (T.reductionModule ha) (ℓ ^ N) where
+`z(γ_v^{-c}) = s_v • z(φ_v^{-c})` for `v ∈ J`.
+-/
+def tiedSetting
+    (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x) (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1)
+    (hN : M < N) (ha : a ∣ ℓ ^ M) (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v})
+    : RelationSetting (T.reductionModule ha) (ℓ ^ N) where
   nsmul_eq_zero b := funext fun j ↦ nsmul_quot_eq_zero (ha.trans (pow_dvd_pow _ hN.le)) (b j)
   subgroup := T.reductionKer M N
   apply_eq_of_mem _ hg := T.smul_eq_self_of_mem_reductionKer ha hg
@@ -220,16 +227,21 @@ def tiedSetting (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
   notMem_of_isComplexConj hc := hc.false_of_isTotallyComplex.elim
   ρ_eq_one_of_isComplexConj hc := hc.false_of_isTotallyComplex.elim
   localPrimes := unionWithConj T.places (J.erase P₀)
-  unramified g := fun ⟨v, hv, h_inertia⟩ ↦ LinearMap.ext fun b ↦ by
-    change T.ρ g • b = b
-    rw [T.unramified g ⟨v, fun h ↦ hv (mem_union_left _ h), h_inertia⟩, one_smul]
+  unramified g := fun ⟨v, hv, h_inertia⟩ ↦
+    LinearMap.ext fun b ↦ by
+      change T.ρ g • b = b
+      rw [T.unramified g ⟨v, fun h ↦ hv (mem_union_left _ h), h_inertia⟩, one_smul]
   place v := A v
   isPlaceOver v := (A v).property
   allowed v := localCocycles T.ρ (T.localRelations ∪ tieRelations J x i) (A v) (QuotSpan a)
   coboundary_le := by
     rintro v - z ⟨b, hb⟩
-    exact ⟨fun g ↦ T.ρ g • b - b, mem_selmerModule_of_subset
-      (T.coboundary_mem_selmerModule hp (fun g ↦ (hV g).mp) ha b) .rfl (Set.subset_univ _), hb⟩
+    exact ⟨
+      fun g ↦ T.ρ g • b - b,
+      mem_selmerModule_of_subset (T.coboundary_mem_selmerModule hp (fun g ↦ (hV g).mp) ha b) .rfl
+        (Set.subset_univ _),
+      hb
+    ⟩
 
 open scoped Classical in
 /-- Let `J` be a set of tied primes with first prime `P₀`, where `V i g` says that `g` acts
@@ -275,14 +287,17 @@ lemma tiedSetting_avoids (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
   exacts [h_places_notMem hv, h_later hv, mt star_mem_placesDividing.1 (h_later hw)]
 
 open scoped Classical in
-/-- The dual `Sel^*(J)` of the tied Selmer group modulo `a`, given as the module of relations off
+/--
+The dual `Sel^*(J)` of the tied Selmer group modulo `a`, given as the module of relations off
 `R \ {P₀, P̄₀}`, for a finite set `R` of primes. These are the equivariant homomorphisms from
 `U = T.reductionKer M N` to the character module of `T / a` that are unramified outside that set, so
-at `P₀` and `P̄₀`, and satisfy the reciprocity law at split primes outside it. -/
-abbrev dualSelmer (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
-    (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1) (hN : M < N) (ha : a ∣ ℓ ^ M)
-    (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v}) (R : Finset (FinPlace E)) :
-    Submodule O (Gal(Ω/E) → CharacterModule (n → QuotSpan a)) :=
+at `P₀` and `P̄₀`, and satisfy the reciprocity law at split primes outside it.
+-/
+abbrev dualSelmer
+    (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x) (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1)
+    (hN : M < N) (ha : a ∣ ℓ ^ M) (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v})
+    (R : Finset (FinPlace E))
+    : Submodule O (Gal(Ω/E) → CharacterModule (n → QuotSpan a)) :=
   (T.tiedSetting hp hV hN ha A).relations (R \ {P₀, star P₀})
 
 /-- Let `J` be a set of tied primes, let `a ∣ ℓ ^ M`, and let `v ∉ T.places` be a prime of `J` or
@@ -507,18 +522,21 @@ lemma exists_sum_length_localCocycles_tied_le (hp : IsTiedPrimes ℓ S₀ V W N 
     _ = (#S' + Core.numInfPlaces E) • lenQuot + T.placesTerm := by
         simp only [← card_sdiff_add_card_eq_card h_sub, add_nsmul, add_assoc]
 
-/-- Let `J` be a set of tied primes, where `V i g` says that `g` acts trivially on `T / ℓ ^ M`, and
+/--
+Let `J` be a set of tied primes, where `V i g` says that `g` acts trivially on `T / ℓ ^ M`, and
 let `M < N` and `a ∣ ℓ ^ M`. Put `S = T.places`. Let `Sel(J) = T.tiedSelmer J J x i a` be the module
 of cocycles with values in `T / a` that are unramified outside `S ∪ J ∪ J̄` (first argument `J`),
 vanish at `γ_* = T.γ` and obey the local conditions `T.localRelations` and the ties on `J` (second
 argument `J`). For suitable places `A v` of `Ω` over the primes `v` and a finite set `R` of primes,
 `Sel(J)` is no longer than its dual `T.dualSelmer`, up to the sum `T.placesTerm` of the local terms
-at the places of `S` prime to `ℓ`. -/
-theorem exists_length_tiedSelmer_le (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
-    (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1) (hN : M < N) (ha : a ∣ ℓ ^ M) :
-    ∃ (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v}) (R : Finset (FinPlace E)),
-      length O (T.tiedSelmer J J x i a) ≤
-        length O (T.dualSelmer hp hV hN ha A R) + T.placesTerm := by
+at the places of `S` prime to `ℓ`.
+-/
+theorem exists_length_tiedSelmer_le
+    (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x) (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1)
+    (hN : M < N) (ha : a ∣ ℓ ^ M)
+    : ∃ (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v}) (R : Finset (FinPlace E)),
+      length O (T.tiedSelmer J J x i a)
+        ≤ length O (T.dualSelmer hp hV hN ha A R) + T.placesTerm := by
   classical
   -- Bound the local modules in the Greenberg–Wiles inequality and pass from cocycles to classes.
   have : NeZero a := ⟨ne_zero_of_dvd_ne_zero (NeZero.ne _) ha⟩
@@ -536,13 +554,14 @@ theorem exists_length_tiedSelmer_le (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
     rw [← succ_nsmul', nsmul_eq_mul]
     exact WithTop.mul_ne_top (ENat.natCast_ne_top _) length_ne_top
   refine (ENat.add_le_add_iff_left h_fin).1 ?_
-  calc lenQuot + d • lenQuot + length O (T.tiedSelmer J J x i a)
+  calc
+    lenQuot + d • lenQuot + length O (T.tiedSelmer J J x i a)
       = lenQuot + length O (T.tiedSelmer J J x i a) + d • lenQuot := by abel
     _ ≤ length O ((T.tiedSetting hp hV hN ha A).cocycles ∅) + d • lenQuot :=
-        add_le_add_left (T.length_add_length_tiedSelmer_le hp hV hN ha A) _
+      add_le_add_left (T.length_add_length_tiedSelmer_le hp hV hN ha A) _
     _ ≤ length O (T.dualSelmer hp hV hN ha A R) + lenQuot + ∑ v ∈ S', lenLocal (A v) := h_formula
     _ ≤ length O (T.dualSelmer hp hV hN ha A R) + lenQuot + (d • lenQuot + T.placesTerm) :=
-        add_le_add_right h_local _
+      add_le_add_right h_local _
     _ = lenQuot + d • lenQuot + (length O (T.dualSelmer hp hV hN ha A R) + T.placesTerm) := by abel
 
 end New.Selmer.SelmerDatum

@@ -54,10 +54,11 @@ variable {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] {I J : Set ℕ}
 
 variable (R p I) in
 open Classical in
-/-- The series `∑_{i ∈ I} z ^ p ^ i` over `R`: its coefficient of degree `n` is `1` if `n = p ^ i`
-for some `i ∈ I`, and `0` otherwise. -/
-noncomputable def primePowerSeries : R⟦X⟧ :=
-  mk fun n : ℕ ↦ if ∃ i ∈ I, n = p ^ i then 1 else 0
+/--
+The series `∑_{i ∈ I} z ^ p ^ i` over `R`: its coefficient of degree `n` is `1` if `n = p ^ i`
+for some `i ∈ I`, and `0` otherwise.
+-/
+noncomputable def primePowerSeries : R⟦X⟧ := mk fun n : ℕ ↦ if ∃ i ∈ I, n = p ^ i then 1 else 0
 
 omit [Fact p.Prime] in
 lemma map_primePowerSeries {S : Type*} [CommRing S] (f : R →+* S) :

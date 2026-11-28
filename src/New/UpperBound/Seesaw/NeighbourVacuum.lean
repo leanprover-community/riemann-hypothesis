@@ -47,57 +47,69 @@ namespace New.Seesaw
 noncomputable section
 
 open Matrix Space WeilData Exchange Finset Weil Valued Splitting stdLattice DoubleLiftData
-  TensorProduct
-  PairIndex
+  TensorProduct PairIndex
 
 section Translations
 
-variable {E X X' X'' : Type} [Field E] [CMType E] [WeilData E] [Fintype X] [DecidableEq X]
-  [Fintype X'] [DecidableEq X'] [Fintype X''] [DecidableEq X''] {N : ℕ} {P : Finset (FinPlace E)}
-  {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E} {κ : PairIndex X X'' → 𝔸f E}
+variable
+  {E X X' X'' : Type} [Field E] [CMType E] [WeilData E] [Fintype X] [DecidableEq X] [Fintype X']
+  [DecidableEq X'] [Fintype X''] [DecidableEq X'']
+  {N : ℕ} {P : Finset (FinPlace E)} {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E} {κ : PairIndex X X'' → 𝔸f E}
 
 variable (E X X' X'') in
-/-- The space `Hom (X', (X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit))` of the standard spaces, the target of
-`arrowTensor` for a pair of standard edges. -/
+/--
+The space `Hom (X', (X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit))` of the standard spaces, the target of
+`arrowTensor` for a pair of standard edges.
+-/
 abbrev stdPairSpace : Space E (PairIndex X X'' × X') (homSigns 1 (-1 ⊕ᵥ 1)) :=
   (stdSpace E X').hom (flipSum (stdSpace E (X ⊕ Unit)) (stdSpace E (X'' ⊕ Unit)))
 
-/-- The glued translate attached to a pair of finite adelic matrices `t = (t₁, t₂)`: translate the
+/--
+The glued translate attached to a pair of finite adelic matrices `t = (t₁, t₂)`: translate the
 vacuum of the edge `Hom(X ⊕ Unit, X')` by `t₁` and that of `Hom(X', X'' ⊕ Unit)` by `t₂`, and apply
-`doubleLiftGluing` (the sum over residues modulo `N` at `P`) to the tensor of the two. -/
-def gluedTranslate (N : ℕ) [Fact N.Prime] (P : Finset (FinPlace E))
-    (t : (X' × (X ⊕ Unit) → 𝔸f E) × ((X'' ⊕ Unit) × X' → 𝔸f E)) :
-    ((stdSpace E (X ⊕ Unit)).hom (stdSpace E X')).finitePart ⊗[ℂ]
-      ((stdSpace E X').hom (stdSpace E (X'' ⊕ Unit))).finitePart :=
+`doubleLiftGluing` (the sum over residues modulo `N` at `P`) to the tensor of the two.
+-/
+def gluedTranslate
+    (N : ℕ) [Fact N.Prime]
+    (P : Finset (FinPlace E)) (t : (X' × (X ⊕ Unit) → 𝔸f E) × ((X'' ⊕ Unit) × X' → 𝔸f E))
+    : ((stdSpace E (X ⊕ Unit)).hom (stdSpace E X')).finitePart ⊗[ℂ]
+        ((stdSpace E X').hom (stdSpace E (X'' ⊕ Unit))).finitePart :=
   doubleLiftGluing X X' P N X''
     (((stdSpace E (X ⊕ Unit)).hom (stdSpace E X')).heisenbergFinPart t.1
-        ⟨((stdSpace E (X ⊕ Unit)).hom (stdSpace E X')).vacElem, vacElem_mem_finitePart⟩ ⊗ₜ
-      ((stdSpace E X').hom (stdSpace E (X'' ⊕ Unit))).heisenbergFinPart t.2
+        ⟨((stdSpace E (X ⊕ Unit)).hom (stdSpace E X')).vacElem, vacElem_mem_finitePart⟩
+      ⊗ₜ ((stdSpace E X').hom (stdSpace E (X'' ⊕ Unit))).heisenbergFinPart t.2
         ⟨((stdSpace E X').hom (stdSpace E (X'' ⊕ Unit))).vacElem, vacElem_mem_finitePart⟩)
 
-/-- There is a constant `C` such that, for every `n` prime to `N` and every proposition `p`, the map
+/--
+There is a constant `C` such that, for every `n` prime to `N` and every proposition `p`, the map
 `L` sends each translate of the vacuum of `Hom(V', V⁻ ⊕ V'')` by a matrix `y`, whose row `i` times
 `d i` is integral away from `n`, to an admissible combination of the vectors
 `C • gluedTranslate N P (t₁, t₂)`, where `β̄ t₁`, `β̄ t₂` are integral away from `n`. The
 coefficients are integral away from `n` after multiplication by the number of classes of integral
 matrices modulo `β`, and if `p` holds their absolute sum is at most `1` under every automorphism
-of `ℂ`. -/
-def IsAdmissibleEval {ι ι' ι'' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
-    [Fintype ι''] [DecidableEq ι''] {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ} {V : Space E ι ε}
-    {V' : Space E ι' ε'} {V'' : Space E ι'' ε''} (N : ℕ) [Fact N.Prime] (P : Finset (FinPlace E))
-    (β : Ô E) (L : 𝒮 (V'.hom (flipSum V V'')) →
-      ((stdSpace E (X ⊕ Unit)).hom (stdSpace E X')).finitePart ⊗[ℂ]
-        ((stdSpace E X').hom (stdSpace E (X'' ⊕ Unit))).finitePart)
-    (d : ι ⊕ ι'' → 𝔸f E) : Prop :=
-  ∃ C : ℂ, ∀ (n : ℕ) (p : Prop), N.Coprime n →
-    ∀ y ∈ weightedTranslations n fun i : (ι ⊕ ι'') × ι' ↦ d i.1,
-      IsAdmissibleCombination
-        (fun t : (X' × (X ⊕ Unit) → 𝔸f E) × ((X'' ⊕ Unit) × X' → 𝔸f E) ↦
-          C • gluedTranslate N P t)
-        (translations (X' × (X ⊕ Unit)) n (star (β : 𝔸f E)) ×ˢ
-          translations ((X'' ⊕ Unit) × X') n (star (β : 𝔸f E))) n
-        (Nat.card (PairIndex X X'' × X' → Ô E ⧸ Ideal.span {β})) p 1
-        (L ((V'.hom (flipSum V V'')).finHeisenbergOp y (V'.hom (flipSum V V'')).vacElem))
+of `ℂ`.
+-/
+def IsAdmissibleEval
+    {ι ι' ι'' : Type}
+    [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] [Fintype ι''] [DecidableEq ι'']
+    {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ}
+    {V : Space E ι ε} {V' : Space E ι' ε'} {V'' : Space E ι'' ε''}
+    (N : ℕ) [Fact N.Prime]
+    (P : Finset (FinPlace E)) (β : Ô E)
+    (L : 𝒮 (V'.hom (flipSum V V''))
+      → ((stdSpace E (X ⊕ Unit)).hom (stdSpace E X')).finitePart ⊗[ℂ]
+          ((stdSpace E X').hom (stdSpace E (X'' ⊕ Unit))).finitePart)
+    (d : ι ⊕ ι'' → 𝔸f E)
+    : Prop :=
+  ∃ C : ℂ, ∀ (n : ℕ) (p : Prop),
+    N.Coprime n
+      → ∀ y ∈ weightedTranslations n fun i : (ι ⊕ ι'') × ι' ↦ d i.1,
+        IsAdmissibleCombination
+          (fun t : (X' × (X ⊕ Unit) → 𝔸f E) × ((X'' ⊕ Unit) × X' → 𝔸f E) ↦ C • gluedTranslate N P t)
+          (translations (X' × (X ⊕ Unit)) n (star (β : 𝔸f E))
+            ×ˢ translations ((X'' ⊕ Unit) × X') n (star (β : 𝔸f E)))
+          n (Nat.card (PairIndex X X'' × X' → Ô E ⧸ Ideal.span {β})) p 1
+          (L ((V'.hom (flipSum V V'')).finHeisenbergOp y (V'.hom (flipSum V V'')).vacElem))
 
 /-! ### Translations above `N` and away from `N` -/
 
@@ -113,7 +125,9 @@ lemma semichar_eq_one_of_smul_eq (hπ : IsSplitSquarefree P (N : E) π) {ι : Ty
 
 section Commute
 
-variable [Fact N.Prime] {s : PairIndex X X'' × X' → ℤˣ} (Z : Space E (PairIndex X X'' × X') s)
+variable
+  [Fact N.Prime]
+  {s : PairIndex X X'' × X' → ℤˣ} (Z : Space E (PairIndex X X'' × X') s)
   {x : PairIndex X X'' × X' → 𝔸f E}
 
 omit [DecidableEq X] [DecidableEq X'] [DecidableEq X''] in
@@ -202,8 +216,10 @@ end Translations
 
 section Edges
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {ι ι' ι'' : Type} [Fintype ι]
-  [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] [Fintype ι''] [DecidableEq ι'']
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {ι ι' ι'' : Type}
+  [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] [Fintype ι''] [DecidableEq ι'']
   {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ}
   {V : Space E ι ε} {V' : Space E ι' ε'} {V'' : Space E ι'' ε''}
 
@@ -233,8 +249,10 @@ end Edges
 
 section Sum
 
-variable {E X X' X'' : Type} [Field E] [CMType E] [WeilData E] [Fintype X] [DecidableEq X]
-  [Fintype X'] [DecidableEq X'] [Fintype X''] [DecidableEq X''] {N : ℕ} [Fact N.Prime]
+variable
+  {E X X' X'' : Type} [Field E] [CMType E] [WeilData E] [Fintype X] [DecidableEq X] [Fintype X']
+  [DecidableEq X'] [Fintype X''] [DecidableEq X'']
+  {N : ℕ} [Fact N.Prime]
   {P : Finset (FinPlace E)} {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E} {κ : PairIndex X X'' → 𝔸f E}
 
 open scoped Classical in
@@ -307,7 +325,8 @@ lemma exists_sum_finHeisenbergOp_neighbourTranslation_eq (hπ : IsSplitSquarefre
     arrowTensor_doubleLiftGluing hπ, map_smul, smul_sum]
 
 open scoped Classical in
-/-- Let `N = π π̄` be a split prime with places `P`. By `hκ`, `β` is a unit above `N` and each row
+/--
+Let `N = π π̄` be a split prime with places `P`. By `hκ`, `β` is a unit above `N` and each row
 factor `κ` is `1` or `δ`, with denominator at most `β̄`. The classes
 `q : AwayLatticeQuotient X' hπ hκ` are those, modulo integral matrices, of the elements of the
 neighbour lattice that vanish above `N`; for residues `y` modulo `N` at `P`,
@@ -321,18 +340,21 @@ these representatives, and read the result on the two edges `Hom(X ⊕ Unit, X')
 vacua of the edges and `β̄ t₁`, `β̄ t₂` are integral away from `n`. Its coefficients, times the
 number of integral matrices modulo `β`, are integral away from `n`. The proposition `boundHyp` is
 arbitrary; if it holds, the absolute sum of the coefficients is at most `1` under every automorphism
-of `ℂ`. -/
+of `ℂ`.
+-/
 theorem isAdmissibleCombination_finHeisenbergOp_sum_neighbourCosetRep
-    (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) {n : ℕ} (boundHyp : Prop)
+    (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
+    {n : ℕ}
+    (boundHyp : Prop)
     {x : PairIndex X X'' × X' → 𝔸f E}
     (hx : x ∈ weightedTranslations n fun i : PairIndex X X'' × X' ↦ selfOrConj β i.1)
-    (hx_zero : x ∈ vanishingAbove (PairIndex X X'' × X') P) :
-    IsAdmissibleCombination
+    (hx_zero : x ∈ vanishingAbove (PairIndex X X'' × X') P)
+    : IsAdmissibleCombination
       (fun t : (X' × (X ⊕ Unit) → 𝔸f E) × ((X'' ⊕ Unit) × X' → 𝔸f E) ↦
         (Fintype.card (AwayLatticeQuotient X' hπ hκ) : ℂ) • gluedTranslate N P t)
-      (translations (X' × (X ⊕ Unit)) n (star (β : 𝔸f E)) ×ˢ
-        translations ((X'' ⊕ Unit) × X') n (star (β : 𝔸f E))) n
-      (Nat.card (PairIndex X X'' × X' → Ô E ⧸ Ideal.span {β})) boundHyp 1
+      (translations (X' × (X ⊕ Unit)) n (star (β : 𝔸f E))
+        ×ˢ translations ((X'' ⊕ Unit) × X') n (star (β : 𝔸f E)))
+      n (Nat.card (PairIndex X X'' × X' → Ô E ⧸ Ideal.span {β})) boundHyp 1
       (arrowTensor.leftInverse ((stdPairSpace E X X' X'').finHeisenbergOp x
         (∑ a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ,
           (stdPairSpace E X X' X'').finHeisenbergOp (neighbourCosetRep a)
@@ -340,36 +362,41 @@ theorem isAdmissibleCombination_finHeisenbergOp_sum_neighbourCosetRep
   let Z := stdPairSpace E X X' X''
   let K : ℕ := Fintype.card (AwayLatticeQuotient X' hπ hκ)
   -- The term of a class `q`: its representative splits off, and `x` passes the shifts.
-  let classTerm (q : AwayLatticeQuotient X' hπ hκ) : 𝒮 Z := ∑ y : X' → P → ZMod N,
-    Z.finHeisenbergOp (neighbourTranslation X X'' y)
-      (Z.finHeisenbergOp x (Z.finHeisenbergOp q.out.val Z.vacElem))
-  have h_terms : Z.finHeisenbergOp x (∑ a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ,
-      Z.finHeisenbergOp (neighbourCosetRep a) Z.vacElem) = ∑ q : AwayLatticeQuotient X' hπ hκ,
-        classTerm q := by
+  let classTerm (q : AwayLatticeQuotient X' hπ hκ) : 𝒮 Z :=
+    ∑ y : X' → P → ZMod N,
+      Z.finHeisenbergOp (neighbourTranslation X X'' y)
+        (Z.finHeisenbergOp x (Z.finHeisenbergOp q.out.val Z.vacElem))
+  have h_terms
+      : Z.finHeisenbergOp x
+          (∑ a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ,
+            Z.finHeisenbergOp (neighbourCosetRep a) Z.vacElem)
+        = ∑ q : AwayLatticeQuotient X' hπ hκ,
+          classTerm q := by
     rw [map_sum, Fintype.sum_prod_type_right]
     refine sum_congr rfl fun q _ ↦ sum_congr rfl fun y _ ↦ ?_
     have hq_zero : q.out.val ∈ vanishingAbove (PairIndex X X'' × X') P :=
       (AddSubgroup.mem_inf.1 q.out.property).2
     rw [neighbourCosetRep, finHeisenbergOp_neighbourTranslation_add Z hπ y hq_zero,
       finHeisenbergOp_comm_neighbourTranslation Z hπ y hx_zero]
-  have h_mean : arrowTensor.leftInverse (∑ q : AwayLatticeQuotient X' hπ hκ, classTerm q) =
-      ∑ q : AwayLatticeQuotient X' hπ hκ,
-        (1 / K : ℂ) • (K : ℂ) • arrowTensor.leftInverse (classTerm q) := by
+  have h_mean
+      : arrowTensor.leftInverse (∑ q : AwayLatticeQuotient X' hπ hκ, classTerm q)
+        = ∑ q : AwayLatticeQuotient X' hπ hκ,
+            (1 / K : ℂ) • (K : ℂ) • arrowTensor.leftInverse (classTerm q) := by
     simp [K, smul_smul]
-  have h_int : (Nat.card (PairIndex X X'' × X' → Ô E ⧸ Ideal.span {β}) : ℂ) * (1 / K) ∈
-      integralAway n := by
+  have h_int
+      : (Nat.card (PairIndex X X'' × X' → Ô E ⧸ Ideal.span {β}) : ℂ) * (1 / K)
+        ∈ integralAway n := by
     simpa [K, div_eq_mul_inv] using
       div_mem_integralAway ((card_awayLatticeQuotient_dvd (X' := X') hπ hκ).mul_right (n ^ 0))
-  have h_size (σ : ℂ ≃+* ℂ) : ∑ _q : AwayLatticeQuotient X' hπ hκ, ‖σ (1 / K)‖ ≤ 1 := by
-    simp [K]
+  have h_size (σ : ℂ ≃+* ℂ) : ∑ _q : AwayLatticeQuotient X' hπ hκ, ‖σ (1 / K)‖ ≤ 1 := by simp [K]
   rw [h_terms, h_mean]
-  refine (IsAdmissibleCombination.of_sum (fun _ _ ↦ h_int)
-    fun _ ↦ h_size).of_eq_isOfFinOrder_smul fun q _ ↦ ?_
+  refine (IsAdmissibleCombination.of_sum (fun _ _ ↦ h_int) fun _ ↦ h_size).of_eq_isOfFinOrder_smul
+    fun q _ ↦ ?_
   -- Translations by `x` and by the representative of `q` compose to the translation by their sum
   -- up to the value `ξ` of the standard additive character `selfDualAddChar`, a root of unity.
   let ξ : ℂ := selfDualAddChar E (star traceOneAdele * star q.out.val ⬝ᵥ x)
-  have h_sum_mem : x + q.out.val ∈
-      weightedTranslations n fun i : PairIndex X X'' × X' ↦ selfOrConj β i.1 :=
+  have h_sum_mem
+      : x + q.out.val ∈ weightedTranslations n fun i : PairIndex X X'' × X' ↦ selfOrConj β i.1 :=
     add_mem hx (awayLattice_le_weightedTranslations hπ hκ n q.out.property)
   obtain ⟨ζ, hζ, t₁, ht₁, t₂, ht₂, h_glue⟩ :=
     exists_sum_finHeisenbergOp_neighbourTranslation_eq hπ h_sum_mem

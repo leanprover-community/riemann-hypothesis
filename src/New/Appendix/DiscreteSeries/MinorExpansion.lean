@@ -34,8 +34,8 @@ open Matrix Finset Norms.Frobenius Complex
 
 namespace New.DiscreteSeries
 
-variable {n : Type} [Fintype n] [DecidableEq n] {P k : Matrix n n ℂ} {p : n → Prop}
-  [DecidablePred p]
+variable
+  {n : Type} [Fintype n] [DecidableEq n] {P k : Matrix n n ℂ} {p : n → Prop} [DecidablePred p]
 
 /-! ### The size of one minor -/
 
@@ -96,11 +96,13 @@ lemma norm_lie_sq_of_unitary (hP : IsStarProjection P) (hk : kᴴ * k = 1) :
   simp only [trace_add, trace_sub, trace_conj, trace_left, trace_right, ofReal_ofNat]
   ring
 
-/-- Size of one minor: let `k` be a unitary matrix, `S` the set of indices satisfying `p`, and
+/--
+Size of one minor: let `k` be a unitary matrix, `S` the set of indices satisfying `p`, and
 `P = coordProj p` the diagonal projection to `S`. Then the principal minor of `k` on `S` satisfies
-`|det_S k|² ≤ exp (-‖[P, k]‖² / 2)`. -/
-theorem norm_principalMinor_sq_le_exp (p : n → Prop) [DecidablePred p] (hk : kᴴ * k = 1) :
-    ‖principalMinor k p‖ ^ 2 ≤ Real.exp (-(‖⁅coordProj p, k⁆‖ ^ 2 / 2)) := by
+`|det_S k|² ≤ exp (-‖[P, k]‖² / 2)`.
+-/
+theorem norm_principalMinor_sq_le_exp (p : n → Prop) [DecidablePred p] (hk : kᴴ * k = 1)
+    : ‖principalMinor k p‖ ^ 2 ≤ Real.exp (-(‖⁅coordProj p, k⁆‖ ^ 2 / 2)) := by
   -- With `M = (1 - P) k P` and `Y = (1 - P) + P k P` we have `det_S k = det Y` and
   -- `Yᴴ Y = (1 - P) + P kᴴ P k P = 1 - Mᴴ M`, while `‖[P, k]‖² = 2 ‖M‖²`.
   have hP : IsStarProjection (coordProj p) := isStarProjection_coordProj p
@@ -118,13 +120,14 @@ theorem norm_principalMinor_sq_le_exp (p : n → Prop) [DecidablePred p] (hk : k
   have gram_eq : Yᴴ * Y - 1 = -(Mᴴ * M) := by
     rw [Y_sq, conjTranspose_mul_self_one_sub_mul_mul hP hk]
     abel
-  calc ‖principalMinor k p‖ ^ 2 ≤ Real.exp (Yᴴ * Y - 1).trace.re := by
-        rw [minor_eq]
-        exact norm_det_sq_le_exp Y
-    _ = Real.exp (-‖M‖ ^ 2) := by
-        rw [gram_eq, trace_neg, trace_star_mul_self_eq_norm_sq, neg_re, ofReal_re]
+  calc
+    ‖principalMinor k p‖ ^ 2 ≤ Real.exp (Yᴴ * Y - 1).trace.re := by
+      rw [minor_eq]
+      exact norm_det_sq_le_exp Y
+    _ = Real.exp (- ‖M‖ ^ 2) := by
+      rw [gram_eq, trace_neg, trace_star_mul_self_eq_norm_sq, neg_re, ofReal_re]
     _ = Real.exp (-(‖⁅P, k⁆‖ ^ 2 / 2)) := by
-        rw [norm_lie_sq_of_unitary hP hk, mul_div_cancel_left₀ _ two_ne_zero]
+      rw [norm_lie_sq_of_unitary hP hk, mul_div_cancel_left₀ _ two_ne_zero]
 
 /-- The entry `(i, j)` of the commutator of `X` with the diagonal projection to the indices
 satisfying `p` has the norm of `X i j` if exactly one of `p i`, `p j` holds, else it is `0`. -/
@@ -144,8 +147,9 @@ namespace New.DiscreteSeries
 
 variable {n : Type*} [Fintype n] [DecidableEq n] {P Q X Y : Matrix n n ℂ} {δ c : ℝ}
 
-attribute [local simp] mul_add add_mul mul_assoc lie_def IsIdempotentElem.eq
-  IsIdempotentElem.mul_self_mul IsStarProjection.isIdempotentElem
+attribute [local simp]
+  mul_add add_mul mul_assoc lie_def IsIdempotentElem.eq IsIdempotentElem.mul_self_mul
+  IsStarProjection.isIdempotentElem
 
 /-- Let `P` and `Q` be orthogonal projections, and let `‖X‖ ≤ δ ≤ 1 / 2`, `tr ([P, Q] Y) = 0`,
 `‖[P, X] - Y‖ ≤ δ c`, `‖Y‖ ≤ c` and `‖Q - P‖ ≤ c`. Then
@@ -246,8 +250,8 @@ open Ring Matrix Norms.Frobenius Complex ComplexConjugate
 
 namespace New.DiscreteSeries
 
-variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {h : ℕ} {l : HCParam ε}
-  {X : Matrix n n ℂ}
+variable
+  {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {h : ℕ} {l : HCParam ε} {X : Matrix n n ℂ}
 
 attribute [local simp] mul_add add_mul mul_assoc lie_def principalMinor_eq_det coordProj
 

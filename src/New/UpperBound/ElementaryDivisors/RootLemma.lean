@@ -96,10 +96,12 @@ lemma stepanov_count {R W : Type} [CommRing R] [CommRing W] [IsLocalRing W] (ι 
 
 /-! ### Filtrations and Gauss weights -/
 
-/-- A decreasing multiplicative filtration of a commutative ring by additive subgroups F_t, t
-real: 1 ∈ F_0, F_s·F_t ⊆ F_{s+t}, and F_t ⊆ F_s for s ≤ t. -/
-class IsRealFiltration {R : Type} [CommRing R] (F : ℝ → AddSubgroup R) extends
-    SetLike.GradedMonoid F where
+/--
+A decreasing multiplicative filtration of a commutative ring by additive subgroups F_t, t
+real: 1 ∈ F_0, F_s·F_t ⊆ F_{s+t}, and F_t ⊆ F_s for s ≤ t.
+-/
+class IsRealFiltration {R : Type} [CommRing R] (F : ℝ → AddSubgroup R)
+    extends SetLike.GradedMonoid F where
   /-- The filtration is decreasing: `F t ≤ F s` for `s ≤ t`. -/
   antitone : Antitone F
 
@@ -109,9 +111,12 @@ section Filtration
 
 variable {σ : Type*} {R A : Type} [CommRing R] [CommRing A] [Algebra R A]
 
-/-- For a ring element `w` and real `t`, the additive subgroup of elements divisible by `w` to the
-power `max(⌈t⌉, 0)`. -/
-@[simp] def adicFiltration (w : R) (t : ℝ) : AddSubgroup R where
+/--
+For a ring element `w` and real `t`, the additive subgroup of elements divisible by `w` to the
+power `max(⌈t⌉, 0)`.
+-/
+@[simp]
+def adicFiltration (w : R) (t : ℝ) : AddSubgroup R where
   carrier := {x : R | w ^ ⌈t⌉₊ ∣ x}
   add_mem' := Dvd.dvd.add
   zero_mem' := by simp only [Set.mem_ofPred_eq, dvd_zero]
@@ -121,28 +126,32 @@ lemma mem_adicFiltration_iff {w : R} {t : ℝ} {x : R} : x ∈ adicFiltration w 
   Iff.rfl
 
 instance (w : R) : IsRealFiltration (adicFiltration w) where
-  one_mem := by simp only [adicFiltration, ceil_zero, pow_zero, isUnit_one, IsUnit.dvd,
-    Set.ofPred_true, AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk,
-    Set.mem_univ]
+  one_mem := by
+    simp only [adicFiltration, ceil_zero, pow_zero, isUnit_one, IsUnit.dvd, Set.ofPred_true,
+      AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk, Set.mem_univ]
   mul_mem s t x y hx hy :=
-    calc w ^ ⌈s + t⌉₊ ∣ w ^ (⌈s⌉₊ + ⌈t⌉₊) := pow_dvd_pow w (ceil_add_le s t)
+    calc
+      w ^ ⌈s + t⌉₊
+        ∣ w ^ (⌈s⌉₊ + ⌈t⌉₊) := pow_dvd_pow w (ceil_add_le s t)
       _ ∣ x • y := by simpa only [pow_add, smul_eq_mul] using mul_dvd_mul hx hy
   antitone s t hst x hx := (pow_dvd_pow w (ceil_mono hst)).trans hx
 
-/-- The Gauss filtration: for subgroups `F t` of `R` and weights `c` of the variables, the additive
-group of polynomials whose coefficient at each `x ^ α` lies in `F (t - c · α)`. -/
-def gaussFiltration (F : ℝ → AddSubgroup R) (c : σ → ℝ) (t : ℝ) :
-    AddSubgroup (MvPolynomial σ R) where
+/--
+The Gauss filtration: for subgroups `F t` of `R` and weights `c` of the variables, the additive
+group of polynomials whose coefficient at each `x ^ α` lies in `F (t - c · α)`.
+-/
+def gaussFiltration (F : ℝ → AddSubgroup R) (c : σ → ℝ) (t : ℝ)
+    : AddSubgroup (MvPolynomial σ R) where
   carrier := {f : MvPolynomial σ R | ∀ α : σ →₀ ℕ, f.coeff α ∈ F (t - weight c α)}
   add_mem' hf hg α := by
     simpa only [AddMonoidAlgebra.coeff_add, Finsupp.coe_add, Pi.add_apply] using
       add_mem (hf α) (hg α)
   zero_mem' := by
-    simp only [Set.mem_ofPred_eq, AddMonoidAlgebra.coeff_zero, Finsupp.coe_zero,
-      Pi.zero_apply, zero_mem, implies_true]
+    simp only [Set.mem_ofPred_eq, AddMonoidAlgebra.coeff_zero, Finsupp.coe_zero, Pi.zero_apply,
+      zero_mem, implies_true]
   neg_mem' := by
-    simp only [Set.mem_ofPred_eq, AddMonoidAlgebra.coeff_neg, Finsupp.coe_neg,
-      Pi.neg_apply, neg_mem_iff, imp_self, implies_true]
+    simp only [Set.mem_ofPred_eq, AddMonoidAlgebra.coeff_neg, Finsupp.coe_neg, Pi.neg_apply,
+      neg_mem_iff, imp_self, implies_true]
 
 variable {F : ℝ → AddSubgroup R} {c : σ → ℝ} {w : R} {t : ℝ}
 
@@ -170,8 +179,8 @@ lemma C_mem_gaussFiltration {x : R} (hx : x ∈ F t) :
   monomial_mem_gaussFiltration (by simpa only [map_zero, sub_zero])
 
 open scoped Classical in
-instance {σ R : Type} [CommRing R] {F : ℝ → AddSubgroup R} {c : σ → ℝ} [IsRealFiltration F] :
-    IsRealFiltration (gaussFiltration F c) where
+instance {σ R : Type} [CommRing R] {F : ℝ → AddSubgroup R} {c : σ → ℝ} [IsRealFiltration F]
+    : IsRealFiltration (gaussFiltration F c) where
   one_mem := monomial_mem_gaussFiltration (by simp only [map_zero, sub_self, one_mem_graded])
   mul_mem s t f g hf hg α := by
     -- The coefficient at `α` is a sum of products of coefficients at `β`, `γ` with `β + γ = α`.
@@ -232,15 +241,22 @@ end Filtration
 
 section Root
 
-variable {R : Type} {N k : ℕ} {W : Type} [CommRing R] [CommRing W] [IsLocalRing W]
-  (T : FrobeniusCycle N W R) {a a' : Fin k}
+variable
+  {R : Type} {N k : ℕ} {W : Type} [CommRing R] [CommRing W] [IsLocalRing W]
+  (T : FrobeniusCycle N W R)
+  {a a' : Fin k}
 
-/-- The group `SL₂(W)` placed in the rows and columns `a`, `a'` of `GL_k(W)`: the matrices of
+/--
+The group `SL₂(W)` placed in the rows and columns `a`, `a'` of `GL_k(W)`: the matrices of
 determinant `1` that agree with the identity matrix at `(i, j)` unless both `i` and `j` are among
-`a`, `a'`. It is trivial for `a = a'`. -/
+`a`, `a'`. It is trivial for `a = a'`.
+-/
 def rootSL (W : Type) [CommRing W] (a a' : Fin k) : Subgroup (GL (Fin k) W) :=
-  agreeWithOneOn (fun i j : Fin k ↦ (i ≠ a ∧ i ≠ a') ∨ (j ≠ a ∧ j ≠ a')) W
-    (fun _ _ _ hij ↦ hij.imp .inl .inr) ⊓ GeneralLinearGroup.det.ker
+  agreeWithOneOn
+      (fun i j : Fin k ↦ (i ≠ a ∧ i ≠ a') ∨ (j ≠ a ∧ j ≠ a'))
+      W
+      (fun _ _ _ hij ↦ hij.imp .inl .inr)
+    ⊓ GeneralLinearGroup.det.ker
 
 omit [IsLocalRing W] in
 lemma rootSL_le_levi {τ : Fin k → ℕ} (hτ : τ a = τ a') : rootSL W a a' ≤ levi W τ :=
@@ -281,9 +297,11 @@ def swapVar (z : Fin k × ZMod N) : Fin k × ZMod N := (Equiv.swap D.fst D.snd z
 def merge (z : Fin k × ZMod N) : Fin k × ZMod N :=
   if z = D.varY D.letter then D.varX D.letter else z
 
-/-- The sign at `Y_s`: `-1` if `s` has the parity of `i = D.letter` and `1` otherwise. It is `0` at
+/--
+The sign at `Y_s`: `-1` if `s` has the parity of `i = D.letter` and `1` otherwise. It is `0` at
 the other variables. The parity of a letter is its mark `T.isEven` in the twisting data, which
-alternates from `s` to `s + 1`. -/
+alternates from `s` to `s + 1`.
+-/
 def sign (z : Fin k × ZMod N) : ℤ :=
   if z = D.varY z.2 then if T.isEven z.2 = T.isEven D.letter then -1 else 1 else 0
 
@@ -293,17 +311,21 @@ def card (_ : T.RootAt k) : ℕ := T.q
 /-- The power `P_s = P ^ (s - i)`, with `s - i` read in `[0, N)`. -/
 def frobPower (s : ZMod N) : ℕ := T.P ^ (s - D.letter).val
 
-/-- The weights `q P_s` at `X_s` and `0` at the other variables, where `q = D.card` and
+/--
+The weights `q P_s` at `X_s` and `0` at the other variables, where `q = D.card` and
 `P_s = D.frobPower s`. Under the hypotheses of `HasBoundedIncrements.weight_zeroOrder_mul_card_le`,
 the weight of the exponent `α` bounds the degree in `t` of the auxiliary polynomial: the coefficient
-`D.mergedCoeff α` after the substitution `D.mainSubst - D.crossSubst`, modulo `w ^ (l + 1)`. -/
+`D.mergedCoeff α` after the substitution `D.mainSubst - D.crossSubst`, modulo `w ^ (l + 1)`.
+-/
 def poleOrder (z : Fin k × ZMod N) : ℕ := if z = D.varX z.2 then D.card * D.frobPower z.2 else 0
 
-/-- The weights `q = D.card` at `Y_i`, `P_s = D.frobPower s` at `Y_s` for `s ≠ i`, and `0` at the
+/--
+The weights `q = D.card` at `Y_i`, `P_s = D.frobPower s` at `Y_s` for `s ≠ i`, and `0` at the
 other variables, where `i = D.letter`. Under the hypotheses of
 `HasBoundedIncrements.weight_zeroOrder_mul_card_le`, the weight of the exponent `α` bounds from
 below the order of vanishing of the auxiliary polynomial (see `poleOrder`) at the points
-`t = ι_i(r)`, `r ∈ W`. -/
+`t = ι_i(r)`, `r ∈ W`.
+-/
 def zeroOrder (z : Fin k × ZMod N) : ℕ :=
   if z = D.varY z.2 then if z.2 = D.letter then D.card else D.frobPower z.2 else 0
 
@@ -485,13 +507,15 @@ lemma defectWeight_eq [NeZero N] {T : FrobeniusCycle N W R} (D : T.RootAt k) (z 
       mul_div_cancel_left₀]
   · simp only [sub_self, cast_zero, card, cast_pow, zero_div]
 
-/-- The matrix `!![0, 1; -1, x]` in the rows and columns `a`, `a'`, with `x = -r` if `i` is even and
+/--
+The matrix `!![0, 1; -1, x]` in the rows and columns `a`, `a'`, with `x = -r` if `i` is even and
 `x = r` otherwise, written as a transposition times a transvection times the diagonal matrix with
 `-1` at `a`. It relates the point at infinity of the projective line to the finite point with the
-affine coordinate `ι_i(r)`. -/
+affine coordinate `ι_i(r)`.
+-/
 def swapTransvection {T : FrobeniusCycle N W R} (D : T.RootAt k) (r : W) : GL (Fin k) W :=
-  .swap W D.fst D.snd * transvectionGL D.ne (if T.isEven D.letter then -r else r) *
-    diagGL (Function.update 1 D.fst (-1))
+  .swap W D.fst D.snd * transvectionGL D.ne (if T.isEven D.letter then -r else r)
+    * diagGL (Function.update 1 D.fst (-1))
 
 /-- The sign `-1` at the variables with index `a`, and `1` at the other variables. -/
 def moveSign {T : FrobeniusCycle N W R} (D : T.RootAt k) (z : Fin k × ZMod N) : ℤ :=
@@ -600,13 +624,15 @@ lemma polyAction_swapTransvection_X [NeZero N] {T : FrobeniusCycle N W R} (D : T
     ↓reduceIte, smul_add, zsmul_eq_mul]
 
 /-- The weights `c` of the variables rise from `X_s` to `Y_s` by an amount in `[1 / 2, 1]`. -/
-def HasBoundedIncrements {T : FrobeniusCycle N W R} (D : T.RootAt k) (c : Fin k × ZMod N → ℝ) :
-    Prop :=
+def HasBoundedIncrements {T : FrobeniusCycle N W R} (D : T.RootAt k) (c : Fin k × ZMod N → ℝ)
+    : Prop :=
   ∀ s : ZMod N, c (D.varY s) - c (D.varX s) ∈ Set.Icc 2⁻¹ 1
 
-/-- The slope `ρ = (c Y_i - c X_i) / q` of weights `c` of the variables, where `i = D.letter` and
+/--
+The slope `ρ = (c Y_i - c X_i) / q` of weights `c` of the variables, where `i = D.letter` and
 `q = D.card`. The variable `t` of the auxiliary polynomial weighs `-ρ` in the expansion at infinity
-and `ρ` in the expansion at a finite point, after the shift `t ↦ t + ι_i(r)`. -/
+and `ρ` in the expansion at a finite point, after the shift `t ↦ t + ι_i(r)`.
+-/
 noncomputable def slope {T : FrobeniusCycle N W R} (D : T.RootAt k) (c : Fin k × ZMod N → ℝ) : ℝ :=
   (c (D.varY D.letter) - c (D.varX D.letter)) / D.card
 
@@ -643,26 +669,32 @@ lemma HasBoundedIncrements.two_le_card_mul_frobPower_mul_slope [NeZero N] {T : F
 
 /-! ### The auxiliary polynomial -/
 
-/-- The main part of the substitution, with a new variable `t = X ()`: `Y_i ↦ X_i`,
-`X_s ↦ t ^ (q P_s) X_s`, and the other variables are fixed. -/
-noncomputable def mainSubst {T : FrobeniusCycle N W R} (D : T.RootAt k) (z : Fin k × ZMod N) :
-    MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R) :=
+/--
+The main part of the substitution, with a new variable `t = X ()`: `Y_i ↦ X_i`,
+`X_s ↦ t ^ (q P_s) X_s`, and the other variables are fixed.
+-/
+noncomputable def mainSubst {T : FrobeniusCycle N W R} (D : T.RootAt k) (z : Fin k × ZMod N)
+    : MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R) :=
   C (monomial (single () (D.poleOrder z)) 1) * X (D.merge z)
 
-/-- The cross terms: for `s ≠ i`, `Y_s ↦ ε_s X_s` and `X_s ↦ ε_s t ^ P_s Y_s`, where `ε_s` is the
+/--
+The cross terms: for `s ≠ i`, `Y_s ↦ ε_s X_s` and `X_s ↦ ε_s t ^ P_s Y_s`, where `ε_s` is the
 sign `D.sign` at `Y_s`; the other variables go to `0`. The substitution that defines the auxiliary
 polynomial is `D.mainSubst - D.crossSubst`. For `ε_s = -1` it sends `(X_s, Y_s)` to
 `Y_s (t ^ P_s, 1) + X_s (t ^ (q P_s), 1)`, and for `ε_s = 1` to the same with `-Y_s` for `Y_s` on
-both sides. -/
-noncomputable def crossSubst {T : FrobeniusCycle N W R} (D : T.RootAt k) (z : Fin k × ZMod N) :
-    MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R) :=
+both sides.
+-/
+noncomputable def crossSubst {T : FrobeniusCycle N W R} (D : T.RootAt k) (z : Fin k × ZMod N)
+    : MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R) :=
   C (monomial (single () (D.zeroOrder (D.swapVar z))) (D.crossSign z)) * X (D.swapVar z)
 
-/-- The Gauss filtration on polynomials over `R[t]` in which `w` weighs `1`, `t` weighs `ρ` and
-each variable `z` weighs `c z - v z * ρ`. -/
-noncomputable abbrev _root_.New.FrobeniusCycle.iteratedGaussFiltration (T : FrobeniusCycle N W R)
-    (c : Fin k × ZMod N → ℝ) (ρ : ℝ) (v : Fin k × ZMod N → ℕ) :
-    ℝ → AddSubgroup (MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R)) :=
+/--
+The Gauss filtration on polynomials over `R[t]` in which `w` weighs `1`, `t` weighs `ρ` and
+each variable `z` weighs `c z - v z * ρ`.
+-/
+noncomputable abbrev _root_.New.FrobeniusCycle.iteratedGaussFiltration
+    (T : FrobeniusCycle N W R) (c : Fin k × ZMod N → ℝ) (ρ : ℝ) (v : Fin k × ZMod N → ℕ)
+    : ℝ → AddSubgroup (MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R)) :=
   gaussFiltration (gaussFiltration (adicFiltration T.sqrtPrime) fun _ : Unit ↦ ρ)
     fun z : Fin k × ZMod N ↦ c z - v z * ρ
 
@@ -737,8 +769,9 @@ lemma HasBoundedIncrements.aeval_mem_and_sub_mem_iteratedGaussFiltration [NeZero
     algebraMap_mem_iteratedGaussFiltration
 
 /-- The error in the rule `(t + ι_i(r)) ^ P ^ n = t ^ P ^ n + ι_{i + n}(r)`. -/
-noncomputable def _root_.New.FrobeniusCycle.frobeniusError (T : FrobeniusCycle N W R) (i : ZMod N)
-    (r : W) (n : ℕ) : MvPolynomial Unit R :=
+noncomputable def _root_.New.FrobeniusCycle.frobeniusError
+    (T : FrobeniusCycle N W R) (i : ZMod N) (r : W) (n : ℕ)
+    : MvPolynomial Unit R :=
   (X () + C (T.embedding i r)) ^ T.P ^ n - X () ^ T.P ^ n - C (T.embedding (i + n) r)
 
 /-- For a letter `i`, `r` in `W` and natural `n`, take the polynomial in `t` `T.frobeniusError i r
@@ -768,8 +801,8 @@ lemma frobeniusError_mul_X_mem {T : FrobeniusCycle N W R} {c : Fin k × ZMod N �
     mul_nonneg (β ()).cast_nonneg hρ
 
 /-- The substitution `t ↦ t + x` in the coefficients. -/
-noncomputable def _root_.New.shiftCoeff (σ : Type*) (x : R) :
-    MvPolynomial σ (MvPolynomial Unit R) →ₐ[R] MvPolynomial σ (MvPolynomial Unit R) :=
+noncomputable def _root_.New.shiftCoeff (σ : Type*) (x : R)
+    : MvPolynomial σ (MvPolynomial Unit R) →ₐ[R] MvPolynomial σ (MvPolynomial Unit R) :=
   mapAlgHom (((uniqueAlgEquiv R Unit).arrowCongr (uniqueAlgEquiv R Unit)).symm
     (Polynomial.taylorAlgHom x))
 
@@ -966,11 +999,14 @@ lemma HasBoundedIncrements.shiftCoeff_aeval_mem [NeZero N]
     simp only [← AlgHom.mul_apply, ← map_mul, mul_inv_cancel, map_one, AlgHom.one_apply]
   rwa [AlgHom.comp_apply, AlgHom.comp_apply, h_cancel] at h_level
 
-/-- The coefficient, a polynomial in `t`, of the monomial obtained from `x ^ α` by writing `X_i`
-for `Y_i`. -/
-noncomputable def mergedCoeff {T : FrobeniusCycle N W R} (D : T.RootAt k)
-    (α : Fin k × ZMod N →₀ ℕ) (p : MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R)) :
-    Polynomial R :=
+/--
+The coefficient, a polynomial in `t`, of the monomial obtained from `x ^ α` by writing `X_i`
+for `Y_i`.
+-/
+noncomputable def mergedCoeff
+    {T : FrobeniusCycle N W R} (D : T.RootAt k)
+    (α : Fin k × ZMod N →₀ ℕ) (p : MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R))
+    : Polynomial R :=
   uniqueAlgEquiv R Unit (p.coeff (mapDomain D.merge α))
 
 lemma mergedCoeff_add {T : FrobeniusCycle N W R} {D : T.RootAt k} (α : Fin k × ZMod N →₀ ℕ)
@@ -1174,7 +1210,8 @@ end FrobeniusCycle.RootAt
 
 variable {R : Type} {N k : ℕ} {W : Type} [CommRing R] [NeZero N] [CommRing W] [IsLocalRing W]
 
-/-- The root lemma. Let `T` be a Frobenius cycle: ring maps `ι_s : W → R` for the letters `s ∈ ℤ/N`,
+/--
+The root lemma. Let `T` be a Frobenius cycle: ring maps `ι_s : W → R` for the letters `s ∈ ℤ/N`,
 alternately even and odd, with `ι_{s+1} ≡ ι_s ^ P` modulo a prime `p`, where `P = T.P` is a power of
 `p` and `W` has `q = P ^ N` residue classes, and a square root `w = T.sqrtPrime` of `p` in `R`.
 
@@ -1186,22 +1223,28 @@ least `l + c · α`, and that `w ^ (l + 1)` does not divide the coefficient of `
 the defect of `α` at the letter `i` is at most `0`.
 
 These bounds along the roots are Pieri's inequalities for the exponent of a term that is least among
-all translates. -/
-theorem FrobeniusCycle.defect_nonpos_of_extreme_term (T : FrobeniusCycle N W R) {a a' : Fin k}
-    (i : ZMod N) (ha : a ≠ a') {c : Fin k × ZMod N → ℝ}
+all translates.
+-/
+theorem FrobeniusCycle.defect_nonpos_of_extreme_term
+    (T : FrobeniusCycle N W R)
+    {a a' : Fin k}
+    (i : ZMod N) (ha : a ≠ a')
+    {c : Fin k × ZMod N → ℝ}
     (hc : ∀ s : ZMod N, c (T.rootVar a a' s) - c (T.rootVar a' a s) ∈ Set.Icc 2⁻¹ 1)
     {f : MvPolynomial (Fin k × ZMod N) R} {α : Fin k × ZMod N →₀ ℕ} {l : ℕ}
     (h_least : ∀ g ∈ rootSL W a a',
       T.polyAction g f ∈ gaussFiltration (adicFiltration T.sqrtPrime) c (l + weight c α))
-    (h_not_dvd : ¬T.sqrtPrime ^ (l + 1) ∣ f.coeff α) : weight (T.defectWeight i a a') α ≤ 0 := by
+    (h_not_dvd : ¬ T.sqrtPrime ^ (l + 1) ∣ f.coeff α)
+    : weight (T.defectWeight i a a') α ≤ 0 := by
   let D : T.RootAt k := ⟨i, a, a', ha⟩
   -- Stepanov's count gives `ν q ≤ q ν'`, and the defect is `(ν - ν') / (q - 1)`.
   have h_count : weight D.zeroOrder α * D.card ≤ weight D.poleOrder α :=
     RootAt.HasBoundedIncrements.weight_zeroOrder_mul_card_le (D := D) hc h_least h_not_dvd
-  have h_defect : weight (T.defectWeight D.letter D.fst D.snd) α =
-      (weight D.zeroOrder α - weight D.poleOrder α / D.card) / (D.card - 1) := by
-    simp only [weight_eq_sum, D.defectWeight_eq, nsmul_eq_mul, mul_div, mul_sub,
-      ← Finset.sum_div, Finset.sum_sub_distrib, smul_eq_mul, cast_sum, cast_mul]
+  have h_defect
+      : weight (T.defectWeight D.letter D.fst D.snd) α
+        = (weight D.zeroOrder α - weight D.poleOrder α / D.card) / (D.card - 1) := by
+    simp only [weight_eq_sum, D.defectWeight_eq, nsmul_eq_mul, mul_div, mul_sub, ← Finset.sum_div,
+      Finset.sum_sub_distrib, smul_eq_mul, cast_sum, cast_mul]
   refine h_defect.trans_le (div_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 ?_)
     (sub_nonneg.mpr D.one_lt_cast_card.le))
   exact (le_div_iff₀ D.cast_card_pos).2 (mod_cast h_count)
@@ -1231,50 +1274,62 @@ lemma FrobeniusCycle.weight_sub_defectWeight_div_three (T : FrobeniusCycle N W R
   simp only [weight_eq_sum, nsmul_eq_mul, mul_sub, mul_div, Finset.sum_sub_distrib,
     ← Finset.sum_div]
 
-/-- A large defect forces a divisible coefficient. Let `a ≠ a'`, and in each letter `s ∈ ℤ/N` let
+/--
+A large defect forces a divisible coefficient. Let `a ≠ a'`, and in each letter `s ∈ ℤ/N` let
 `Y_s = T.rootVar a a' s` be the variable `(a', s)` for even and `(a, s)` for odd `s`, and
 `X_s = T.rootVar a' a s` the other of the two. Let `depth` be weights of the variables that rise by
 `1` from `X_s` to `Y_s` in each letter. If in all translates of `f` by `SL₂(W)` in the rows and
 columns `a`, `a'` each term has order for `w = T.sqrtPrime` plus depth at least `v₀`, then each term
 of `f` has order plus depth at least `v₀` plus a third of its defect at the letter `i` along the
-root `(a, a')`. -/
-theorem FrobeniusCycle.mem_gaussFiltration_sub_defect_div_three (T : FrobeniusCycle N W R)
-    {a a' : Fin k} (i : ZMod N) (ha : a ≠ a') {depth : Fin k × ZMod N → ℝ}
+root `(a, a')`.
+-/
+theorem FrobeniusCycle.mem_gaussFiltration_sub_defect_div_three
+    (T : FrobeniusCycle N W R)
+    {a a' : Fin k}
+    (i : ZMod N) (ha : a ≠ a')
+    {depth : Fin k × ZMod N → ℝ}
     (h_step : ∀ s : ZMod N, depth (T.rootVar a a' s) - depth (T.rootVar a' a s) = 1)
     {v₀ : ℝ} {f : MvPolynomial (Fin k × ZMod N) R}
-    (hf : ∀ g ∈ rootSL W a a', T.polyAction g f ∈ gaussFiltration (adicFiltration T.sqrtPrime) depth
-      v₀) :
-    f ∈ gaussFiltration (adicFiltration T.sqrtPrime)
-      (fun x : Fin k × ZMod N ↦ depth x - T.defectWeight i a a' x / 3) v₀ := by
+    (hf : ∀ g ∈ rootSL W a a',
+      T.polyAction g f ∈ gaussFiltration (adicFiltration T.sqrtPrime) depth v₀)
+    : f ∈ gaussFiltration (adicFiltration T.sqrtPrime)
+      (fun x : Fin k × ZMod N ↦ depth x - T.defectWeight i a a' x / 3)
+      v₀ := by
   -- Let `ω` be the depth minus a third of the defect weight. Suppose that some translate has a
   -- term whose order plus `ω`-weight is below `v₀`, and take a least such term. By
   -- `defect_nonpos_of_extreme_term` its defect is at most `0`, so its order plus depth is below
   -- `v₀` as well, against the hypothesis.
   set ω : Fin k × ZMod N → ℝ := fun x ↦ depth x - T.defectWeight i a a' x / 3
   have ω_step (s : ZMod N) : ω (T.rootVar a a' s) - ω (T.rootVar a' a s) ∈ Set.Icc 2⁻¹ 1 := by
-    have h_rise : T.defectWeight i a a' (T.rootVar a a' s) -
-        T.defectWeight i a a' (T.rootVar a' a s) ∈ Set.Icc 0 (3 / 2) :=
+    have h_rise
+        : T.defectWeight i a a' (T.rootVar a a' s) - T.defectWeight i a a' (T.rootVar a' a s)
+          ∈ Set.Icc 0 (3 / 2) :=
       T.defectWeight_sub_mem_Icc s (i := i) ha
-    have h_diff : ω (T.rootVar a a' s) - ω (T.rootVar a' a s) =
-        1 - (T.defectWeight i a a' (T.rootVar a a' s) -
-          T.defectWeight i a a' (T.rootVar a' a s)) / 3 := by
+    have h_diff
+        : ω (T.rootVar a a' s) - ω (T.rootVar a' a s)
+          = 1
+            - (T.defectWeight i a a' (T.rootVar a a' s) - T.defectWeight i a a' (T.rootVar a' a s))
+              / 3 := by
       simp only [ω]
       linarith [h_step s]
     rw [h_diff]
     exact ⟨by linarith [h_rise.2], by linarith [h_rise.1]⟩
   -- `(α, l) ∈ low`: in some translate the term at `α` has order at most `l`, and `l + ω · α < v₀`.
-  let low : Set ((Fin k × ZMod N →₀ ℕ) × ℕ) := {x | x.2 + weight ω x.1 < v₀ ∧
-    ∃ g ∈ rootSL W a a', ¬T.sqrtPrime ^ (x.2 + 1) ∣ (T.polyAction g f).coeff x.1}
+  let low : Set ((Fin k × ZMod N →₀ ℕ) × ℕ) :=
+    {x | x.2 + weight ω x.1 < v₀ ∧
+      ∃ g ∈ rootSL W a a', ¬T.sqrtPrime ^ (x.2 + 1) ∣ (T.polyAction g f).coeff x.1}
   -- A lower bound `t ≤ v₀` for `l + ω · α` on `low` is a level of all translates.
-  have mem_of_forall {t : ℝ} (ht : t ≤ v₀) (h_low : ∀ x ∈ low, t ≤ x.2 + weight ω x.1)
-      {g : GL (Fin k) W} (hg : g ∈ rootSL W a a') :
-      T.polyAction g f ∈ gaussFiltration (adicFiltration T.sqrtPrime) ω t := by
+  have mem_of_forall
+      {t : ℝ} (ht : t ≤ v₀) (h_low : ∀ x ∈ low, t ≤ x.2 + weight ω x.1)
+      {g : GL (Fin k) W} (hg : g ∈ rootSL W a a')
+      : T.polyAction g f ∈ gaussFiltration (adicFiltration T.sqrtPrime) ω t := by
     intro α
     by_contra h_not
     obtain ⟨l, hl⟩ : ∃ l : ℕ, ⌈t - weight ω α⌉₊ = l + 1 :=
-      exists_eq_succ_of_ne_zero fun h_zero ↦ h_not (by
-        simp only [adicFiltration, h_zero, pow_zero, isUnit_one, IsUnit.dvd, Set.ofPred_true,
-          AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk, Set.mem_univ])
+      exists_eq_succ_of_ne_zero fun h_zero ↦
+        h_not (by
+          simp only [adicFiltration, h_zero, pow_zero, isUnit_one, IsUnit.dvd, Set.ofPred_true,
+            AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk, Set.mem_univ])
     have h_lt : l < t - weight ω α := lt_ceil.1 (by lia)
     linarith [h_low (α, l) ⟨by linarith, g, hg, by
       simpa only [adicFiltration, hl, AddSubgroup.mem_mk, AddSubmonoid.mem_mk,
@@ -1292,8 +1347,8 @@ theorem FrobeniusCycle.mem_gaussFiltration_sub_defect_div_three (T : FrobeniusCy
       (le_totalDegree (MvPolynomial.mem_support_iff.2 fun h_zero ↦
         h_not (by simp only [h_zero, dvd_zero]))).trans (T.totalDegree_polyAction_le g f)
     exact Set.mem_biUnion h_degree ⟨rfl, lt_ceil.2 (by linarith)⟩
-  obtain ⟨⟨α, l⟩, ⟨h_lt, g₀, hg₀, h_not⟩, h_min⟩ :
-      ∃ x ∈ low, ∀ y ∈ low, x.2 + weight ω x.1 ≤ y.2 + weight ω y.1 :=
+  obtain ⟨⟨α, l⟩, ⟨h_lt, g₀, hg₀, h_not⟩, h_min⟩
+      : ∃ x ∈ low, ∀ y ∈ low, x.2 + weight ω x.1 ≤ y.2 + weight ω y.1 :=
     Set.exists_min_image low _ h_finite h_ne
   have h_defect : weight (T.defectWeight i a a') α ≤ 0 :=
     T.defect_nonpos_of_extreme_term i ha ω_step

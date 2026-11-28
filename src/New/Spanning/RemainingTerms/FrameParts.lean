@@ -179,8 +179,9 @@ lemma submoduleIndex_colLattice_gram_transpose {κ : Type} [Fintype κ] {r : ℕ
 
 section Saturated
 
-variable {κ P : Type} [Fintype κ] [DecidableEq κ] [Fintype P] {H' : Matrix κ P (𝔸f E)}
-  {H : Matrix P κ (𝔸f E)}
+variable
+  {κ P : Type} [Fintype κ] [DecidableEq κ] [Fintype P]
+  {H' : Matrix κ P (𝔸f E)} {H : Matrix P κ (𝔸f E)}
 
 /-- Let the adelic matrix `H` have a left inverse. A rational vector of the subspace `V` that `H`
 makes integral lies in the saturated lattice of `V`, the lattice of the vectors in the adelic span
@@ -233,8 +234,10 @@ end Saturated
 
 /-! ## The part in `X₀` of a frame, and moves -/
 
-/-- The part in `X₀` of the frame of `γ`: the coordinates at the indices `𝔰.κ` of the images of the
-frame vectors. -/
+/--
+The part in `X₀` of the frame of `γ`: the coordinates at the indices `𝔰.κ` of the images of the
+frame vectors.
+-/
 def framePartX₀ (γ : S.G E) : Matrix 𝔰.κ (Fin (𝔰.ϱ + 1)) E := (frameMiddle γ.val.val).toRows₁
 
 omit [HasPrimitiveRoot5040 E] in
@@ -359,12 +362,16 @@ lemma col_framePartX₀_sub_mem {c c' c'' : S.Classes} {s s' : S.ResidueGL} {γ 
 
 /-! ## Lifts of a lattice -/
 
-/-- Let `L` be the lattice with the basis `y a`, where `y` is rational and `a` is adelic, let
+/--
+Let `L` be the lattice with the basis `y a`, where `y` is rational and `a` is adelic, let
 `e_1, …, e_ϱ` be the basis of the isotropic space `A` and of the lattice `Λ ∩ A`, and let `M = S.M`.
 The matrix `w` gives a linear map from `L` to `M (Λ ∩ A)`, namely `y t ↦ M ∑ e_i (w t)_i`, such that
-each vector of `L` plus its image is orthogonal to the frame of `γ`. -/
-structure IsLift {r : ℕ} (γ : S.G E) (y : Matrix 𝔰.κ (Fin r) E) (a : GL (Fin r) (𝔸f E))
-    (w : Matrix (Fin 𝔰.ϱ) (Fin r) E) : Prop where
+each vector of `L` plus its image is orthogonal to the frame of `γ`.
+-/
+structure IsLift
+    {r : ℕ}
+    (γ : S.G E) (y : Matrix 𝔰.κ (Fin r) E) (a : GL (Fin r) (𝔸f E)) (w : Matrix (Fin 𝔰.ϱ) (Fin r) E)
+    : Prop where
   /-- The map takes the basis `y a` into `M (Λ ∩ A)`. -/
   isIntMatrix : IsIntMatrix (Ô E) (finAdeleMatrix w * a.val)
   /-- The lifted vectors are orthogonal to the frame of `γ`. -/
@@ -494,10 +501,13 @@ lemma IsLift.exists_conjTranspose_framePartX₀_mul_eq_neg {c : S.Classes} {r : 
 
 /-! ## The lattice orthogonal to `L` -/
 
-/-- The lattice `P = Λ ∩ X₀ ∩ L^⊥`, where `Λ` is the lattice of the class `c` and the columns of `y`
-span the same space as `L`. -/
-noncomputable def complementLattice (S : Filling E 𝔰) {r : ℕ} (c : S.Classes)
-    (y : Matrix 𝔰.κ (Fin r) E) : Submodule (Ô E) (𝔰.κ → 𝔸f E) :=
+/--
+The lattice `P = Λ ∩ X₀ ∩ L^⊥`, where `Λ` is the lattice of the class `c` and the columns of `y`
+span the same space as `L`.
+-/
+noncomputable def complementLattice
+    (S : Filling E 𝔰) {r : ℕ} (c : S.Classes) (y : Matrix 𝔰.κ (Fin r) E)
+    : Submodule (Ô E) (𝔰.κ → 𝔸f E) :=
   saturatedLattice (S.gram_classCoordX₀ c) (LinearMap.ker yᴴ.mulVecLin)
 
 /-- Let `Λ` be the lattice of the class `c`. A rational vector of `Λ ∩ X₀` that is orthogonal to the

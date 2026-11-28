@@ -68,15 +68,18 @@ section OperatorIntegral
 
 open MeasureTheory Function
 
-variable {Y X Z : Type*} [MeasurableSpace Y] [NormedAddCommGroup X] [NormedSpace ℂ X]
+variable
+  {Y X Z : Type*} [MeasurableSpace Y] [NormedAddCommGroup X] [NormedSpace ℂ X]
   [NormedAddCommGroup Z] [NormedSpace ℂ Z]
   (μ : Measure Y) (F : Y → X →L[ℂ] Z)
 
-/-- The strong integral of a family `F` of bounded operators. If some bounded operator agrees
+/--
+The strong integral of a family `F` of bounded operators. If some bounded operator agrees
 with the map `x ↦ ∫ y, F y x ∂μ`, this is that operator (`New.strongIntegral_apply_of_exists`;
 `invFun (⇑)` picks a preimage under the coercion from operators to functions); otherwise it is an
 unspecified operator. The first case holds when every `y ↦ F y x` is integrable and the spaces are
-complete (`New.exists_continuousLinearMap_apply_eq_integral`, `New.strongIntegral_apply`). -/
+complete (`New.exists_continuousLinearMap_apply_eq_integral`, `New.strongIntegral_apply`).
+-/
 noncomputable def New.strongIntegral : X →L[ℂ] Z := invFun (⇑) fun x ↦ ∫ y : Y, F y x ∂μ
 
 lemma New.rep_apply_apply {G : Type*} [Monoid G] (ρ : G →* X →L[ℂ] X) (g h : G) (v : X) :
@@ -147,7 +150,8 @@ namespace New
 
 open MeasureTheory Metric ContinuousMap Module Real Finset
 
-variable {E F K : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E]
+variable
+  {E F K : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E]
   {p : E} [NormedAddCommGroup F] [NormedSpace ℂ F] [TopologicalSpace K] [CompactSpace K]
   {f : E → K → ℂ}
 
@@ -159,8 +163,10 @@ lemma strongIntegral_eval {mK : MeasurableSpace K} [BorelSpace K] (μ : Measure 
     strongIntegral μ (evalCLM ℂ) f = ∫ k : K, f k ∂μ :=
   strongIntegral_apply μ (evalCLM ℂ) (fun g ↦ (g.memLp μ ℂ).integrable le_rfl) f
 
-/-- f : E → K → ℂ agrees near a with a map from E to the Banach space C(K, ℂ) that is analytic
-at a. -/
+/--
+f : E → K → ℂ agrees near a with a map from E to the Banach space C(K, ℂ) that is analytic
+at a.
+-/
 def DiscreteSeries.IsAnalyticFamily (f : E → K → ℂ) (a : E) : Prop :=
   ∃ g : E → C(K, ℂ), AnalyticAt ℂ g a ∧ ∀ᶠ x : E in nhds a, g x = f x
 
@@ -264,8 +270,10 @@ section HolomorphicIntegral
 
 open Complex MeasureTheory Metric Module Set
 
-variable {E F X : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAddCommGroup F]
-  [NormedSpace ℂ F] [MeasurableSpace X] {μ : Measure X}
+variable
+  {E F X : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAddCommGroup F] [NormedSpace ℂ F]
+  [MeasurableSpace X]
+  {μ : Measure X}
 
 /-- A map P between complex normed spaces that is complex differentiable at 0 and satisfies
 P(w + w) = P(w) + P(w) for all w equals its derivative at 0, so is ℂ-linear. -/
@@ -387,8 +395,9 @@ A submodule of a complex normed space is a normed space over ℂ, for the semino
 that comes from its normed group structure.
 -/
 
-noncomputable instance {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (V : Submodule ℂ E) :
-    @NormedSpace ℂ V _ NormedAddCommGroup.toSeminormedAddCommGroup := V.normedSpace
+noncomputable instance {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (V : Submodule ℂ E)
+    : @NormedSpace ℂ V _ NormedAddCommGroup.toSeminormedAddCommGroup :=
+  V.normedSpace
 
 /-! ## Analytic functions vanishing on the image of a submersion -/
 

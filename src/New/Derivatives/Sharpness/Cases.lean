@@ -69,26 +69,33 @@ lemma isIntegralAbove_of_isIntegral_mul {E : Type} [Field E] [CMType E] {N : ℕ
 
 variable [PadicPlace p] {J : Type} [Fintype J]
 
-/-- For a family `w` in the field `E = P.E s`, the linear forms `μ_i z = ∑ μ_(i τ) z_τ` with the
+/--
+For a family `w` in the field `E = P.E s`, the linear forms `μ_i z = ∑ μ_(i τ) z_τ` with the
 coefficients `μ_(i τ) = periodFactor * conj (τ (w i))` at the places `τ`, read in `ℂ_p` by the
 homomorphism `ιₚ : ℂ → ℂ_p`. The complex number `periodFactor = P.periodFactor s` normalises the
 Taylor series of theta functions. For a tight frame `w` of length `π π̄` these are the forms
-`𝔰 u† z = 𝔰 ∑ conj (τ u) z_τ` of the resolution `u = w / π̄`, with `𝔰 = π * periodFactor`. -/
-noncomputable def Parameters.resolutionForms (P : Parameters) (s : ℕ) (w : J → P.E s) (i : J)
-    (x : P.Φ s × Unit) : ℂ_[p] :=
+`𝔰 u† z = 𝔰 ∑ conj (τ u) z_τ` of the resolution `u = w / π̄`, with `𝔰 = π * periodFactor`.
+-/
+noncomputable def Parameters.resolutionForms
+    (P : Parameters) (s : ℕ) (w : J → P.E s) (i : J) (x : P.Φ s × Unit)
+    : ℂ_[p] :=
   ιₚ (P.periodFactor s * conj (New.Φ x.1 (w i)))
 
 namespace Data
 
 variable {P : Parameters}
 
-/-- The vectors `u = w / π̄_M` of `E¹`, where the integer `π̄_M = D.piMBar` of `K` has norm
-`M = D.M`. -/
+/--
+The vectors `u = w / π̄_M` of `E¹`, where the integer `π̄_M = D.piMBar` of `K` has norm
+`M = D.M`.
+-/
 noncomputable def resolutionVectors (D : Data P) (w : J → D.E) (i : J) (_ : Unit) : D.E :=
   w i / algebraMap P.K (P.E D.towerExp) D.piMBar
 
-/-- The scale `𝔰 = periodFactor * π_M` of the Taylor series, read in `ℂ_p`, where `π_M` is the
-conjugate of `D.piMBar`. -/
+/--
+The scale `𝔰 = periodFactor * π_M` of the Taylor series, read in `ℂ_p`, where `π_M` is the
+conjugate of `D.piMBar`.
+-/
 noncomputable def taylorScale (D : Data P) : ℂ_[p] :=
   ιₚ (P.periodFactor D.towerExp * conj (D.piMBar : ℂ))
 
@@ -279,8 +286,10 @@ namespace New.Data
 
 variable {P : Parameters}
 
-/-- The degree `l` is near the weights: `κ(τ) ≤ l_τ ≤ κ(τ) + x ^ 42` at every place `τ`, where
-`l_τ = l (τ, ())`, `κ(τ) = D.weight τ` and `x = D.x`. -/
+/--
+The degree `l` is near the weights: `κ(τ) ≤ l_τ ≤ κ(τ) + x ^ 42` at every place `τ`, where
+`l_τ = l (τ, ())`, `κ(τ) = D.weight τ` and `x = D.x`.
+-/
 structure IsNearWeights (D : Data P) (l : D.Φ × Unit →₀ ℕ) : Prop where
   /-- The degree at `τ` is at least the weight `κ(τ)`. -/
   weight_le (τ : D.Φ) : (D.weight τ : ℝ) ≤ l (τ, ())

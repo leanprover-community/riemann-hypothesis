@@ -41,27 +41,36 @@ namespace New
 
 variable {p : ℕ} [Fact p.Prime] {Φ c : Type} [Fintype Φ] [Fintype c]
 
-/-- The coupling `Γ_e = ∑ z_(τ,i) ^ p ^ e * z_(τ',i)`, summed over all `(τ, i) : Φ × c`, where
-`τ' = pr e τ` is the partner of `τ`. -/
+/--
+The coupling `Γ_e = ∑ z_(τ,i) ^ p ^ e * z_(τ',i)`, summed over all `(τ, i) : Φ × c`, where
+`τ' = pr e τ` is the partner of `τ`.
+-/
 noncomputable def coupling (pr : ℕ → Φ → Φ) (e : ℕ) : MvPowerSeries (Φ × c) (valRingCp p) :=
   ∑ x : Φ × c, X x ^ p ^ e * X (pr e x.1, x.2)
 
-/-- The series `Ξ = ∑_{e ∈ S} ∑_j λ_{e j} Γ_e ^ p ^ j`, where `λ_{e j} = l e j` and `Γ_e` is the
-coupling for the partner rule `pr`. -/
-noncomputable def couplingSum (S : Set ℕ) (pr : ℕ → Φ → Φ) (l : ℕ → ℕ → valRingCp p) :
-    MvPowerSeries (Φ × c) (valRingCp p) :=
+/--
+The series `Ξ = ∑_{e ∈ S} ∑_j λ_{e j} Γ_e ^ p ^ j`, where `λ_{e j} = l e j` and `Γ_e` is the
+coupling for the partner rule `pr`.
+-/
+noncomputable def couplingSum (S : Set ℕ) (pr : ℕ → Φ → Φ) (l : ℕ → ℕ → valRingCp p)
+    : MvPowerSeries (Φ × c) (valRingCp p) :=
   ∑' x : S × ℕ, l x.1 x.2 • coupling pr x.1 ^ p ^ x.2
 
-/-- `F` has the normal form with the given numbers `ϖ` and `λ_{e j} = l e j`:
+/--
+`F` has the normal form with the given numbers `ϖ` and `λ_{e j} = l e j`:
 `F(ϖ z) = W exp (c_ϖ ∑_{e ∈ S} ∑_j λ_{e j} Γ_e ^ p ^ j)` with `W` integral and
-`c_ϖ = ϖ ^ (p + 1) / p`. -/
-def HasNormalForm (S : Set ℕ) (pr : ℕ → Φ → Φ) (ϖ : ℂ_[p]) (l : ℕ → ℕ → valRingCp p)
-    (F : MvPowerSeries (Φ × c) ℂ_[p]) : Prop :=
+`c_ϖ = ϖ ^ (p + 1) / p`.
+-/
+def HasNormalForm
+    (S : Set ℕ) (pr : ℕ → Φ → Φ) (ϖ : ℂ_[p]) (l : ℕ → ℕ → valRingCp p)
+    (F : MvPowerSeries (Φ × c) ℂ_[p])
+    : Prop :=
   ∃ W : MvPowerSeries (Φ × c) (valRingCp p),
-    F.rescale (fun _ : Φ × c ↦ ϖ) =
-      seriesToCp W * expSubst ((ϖ ^ (p + 1) / p) • seriesToCp (couplingSum S pr l))
+    F.rescale (fun _ : Φ × c ↦ ϖ)
+      = seriesToCp W * expSubst ((ϖ ^ (p + 1) / p) • seriesToCp (couplingSum S pr l))
 
-variable {S : Set ℕ} {pr : ℕ → Φ → Φ} {ϖ : ℂ_[p]} {l : ℕ → ℕ → valRingCp p}
+variable
+  {S : Set ℕ} {pr : ℕ → Φ → Φ} {ϖ : ℂ_[p]} {l : ℕ → ℕ → valRingCp p}
   {F : MvPowerSeries (Φ × c) ℂ_[p]}
 
 /-- A substitution `Z` that is allowed (`HasSubst Z`) commutes with the exponential:
@@ -276,10 +285,12 @@ lemma HasNormalForm.norm_coeff_subst_le_one (hF : HasNormalForm S pr ϖ l F) {π
 variable [DecidableEq Φ] [DecidableEq c]
 
 open Classical in
-/-- The sum of the powers `z_x ^ p ^ e` over the `x = (τ, i)` whose partner `(pr e τ, i)` in the
-coupling `Γ_e` is `y`. -/
-noncomputable def partnerPowerSum (pr : ℕ → Φ → Φ) (e : ℕ) (y : Φ × c) :
-    MvPowerSeries (Φ × c) (valRingCp p) :=
+/--
+The sum of the powers `z_x ^ p ^ e` over the `x = (τ, i)` whose partner `(pr e τ, i)` in the
+coupling `Γ_e` is `y`.
+-/
+noncomputable def partnerPowerSum (pr : ℕ → Φ → Φ) (e : ℕ) (y : Φ × c)
+    : MvPowerSeries (Φ × c) (valRingCp p) :=
   ∑ x : Φ × c with (pr e x.1, x.2) = y, X x ^ p ^ e
 
 /-- The derivatives of a `p ^ e`-th power vanish modulo `p`, for `e > 0`. -/

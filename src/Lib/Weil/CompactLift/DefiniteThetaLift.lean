@@ -57,7 +57,8 @@ section DefiniteLift
 
 open NumberField Matrix Finset MvPolynomial Fintype New.Space
 
-variable {E n n' : Type} [Field E] [NumberField E] [Fintype n] [Fintype n']
+variable
+  {E n n' : Type} [Field E] [NumberField E] [Fintype n] [Fintype n']
   {κ : InfinitePlace E → ℕ → ℕ} {l : InfinitePlace E → n → ℤ} {l' : InfinitePlace E → n' → ℤ}
   {ea eb ec : InfinitePlace E → ℤ}
 
@@ -312,7 +313,8 @@ namespace New
 
 open MeasureTheory Space ThetaKernel FiniteDimensional
 
-variable {E n n' : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [Fintype n']
+variable
+  {E n n' : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [Fintype n']
   {κ : NumberField.InfinitePlace E → ℕ → ℕ} {e ea eb : NumberField.InfinitePlace E → ℤ}
 /-- The theta integral over `[U(n)]` (for `quotMeasure`) against the coefficient of an algebraic
 form `φ` at a linear form is additive in the linear form. Here `θ` is the theta functional,
@@ -336,7 +338,7 @@ lemma integral_theta_mul_algFormCoeff_add [DecidableEq n'] [DecidableEq n] (a b 
     ((pairThetaKer _ _ a b).integrable_theta_mul (h_rapid t) v h)]
   refine integral_congr_ae (.of_forall fun g ↦ ?_)
   simp only [algFormCoeff, LinearMap.pi_apply, LinearMap.comp_apply, LinearMap.add_apply, mul_add]
- 
+
 /-- Let `(κ, e)` go up from rank `n > 0` to rank `n' > 0` along `eb`, let `a o n` and `a o n'` be
 characters at the ranks `n` and `n'` of weights `ea` and `eb` (with residue-field characters `ψ o`,
 `ψ' o` at the finite places), let `c ≠ 0` and let `K` be a level. Then the lifts of the kernels of

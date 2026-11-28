@@ -55,8 +55,10 @@ open Int Finset NumberField IntermediateField AddChar MulChar AddMonoidHom QZ ZM
 
 variable {r m p : ℕ} [NeZero r] [hp : Fact p.Prime] {B : ClosurePlace}
 
-/-- For `c : ℕ`, the integer `⌊c ⟨x⟩⌋ - ⌊c ⟨-x⟩⌋`, where `⟨x⟩` is the representative of `x ∈ ℚ/ℤ`
-in `[0, 1)`. -/
+/--
+For `c : ℕ`, the integer `⌊c ⟨x⟩⌋ - ⌊c ⟨-x⟩⌋`, where `⟨x⟩` is the representative of `x ∈ ℚ/ℤ`
+in `[0, 1)`.
+-/
 noncomputable def floorDiff (c : ℕ) (x : QZ) : ℤ := ⌊c * x.fracRep⌋ - ⌊c * (-x).fracRep⌋
 
 /-- The distribution relation for `floorDiff m`, with `m` prime to `r`: its sum over the translates
@@ -249,29 +251,43 @@ lemma isOfFinAddOrder_distribution (hB : B.valuation p < 1) {c M : ℕ} [NeZero 
         Int.cast_zero]
   · simp [hQ, toMul_sub, toMul_sum, h_abs, hx, smul_comm, ← map_nsmul, natCast_self]
 
-/-- The properties of a family `J : ℚ/ℤ → Ωˣ` (written additively) of Jacobi-type quotients of
+/--
+The properties of a family `J : ℚ/ℤ → Ωˣ` (written additively) of Jacobi-type quotients of
 Gauss sums over `𝔽_p`, on the points `x` with `M • x = 0`. Here `B` is a place of `Ω` (above `p`
-where the family is built), and `c` is the exponent in `g(χ) ^ c / g(χ ^ c)`. -/
-structure IsJacobiFamily (p : ℕ) (B : ClosurePlace) (c M : ℕ) [NeZero M]
-    (J : QZ → DiscreteUnits Ω) : Prop where
-  /-- The distribution relation up to a root of unity: for `r ∣ M` prime to `c`, the quotient
-  `(∏ b mod r, J (x + b / r)) / J (r • x)` has finite order. -/
-  isOfFinAddOrder_sum_sub {x : QZ} (hx : M • x = 0) (r : ℕ) [NeZero r] (hr : r ∣ M)
-    (hc : c.Coprime r) : IsOfFinAddOrder (∑ b : ZMod r, J (x + ofZMod r b) - J (r • x))
-  /-- The Galois action: `σ (J x) = J (a • x)` if `σ` raises the `M`-th roots of unity to the
-  power `a`. -/
-  galUnitsRep_apply {x : QZ} (hx : M • x = 0) (σ : Gal(Ω/ℚ)) (a : ℕ)
-    (ha : (cyclotomicCharMod Ω M σ).val = a) : galUnitsRep σ (J x) = J (a • x)
+where the family is built), and `c` is the exponent in `g(χ) ^ c / g(χ ^ c)`.
+-/
+structure IsJacobiFamily (p : ℕ) (B : ClosurePlace) (c M : ℕ) [NeZero M] (J : QZ → DiscreteUnits Ω)
+    : Prop where
+  /--
+  The distribution relation up to a root of unity: for `r ∣ M` prime to `c`, the quotient
+  `(∏ b mod r, J (x + b / r)) / J (r • x)` has finite order.
+  -/
+  isOfFinAddOrder_sum_sub
+    {x : QZ} (hx : M • x = 0) (r : ℕ) [NeZero r] (hr : r ∣ M) (hc : c.Coprime r)
+    : IsOfFinAddOrder (∑ b : ZMod r, J (x + ofZMod r b) - J (r • x))
+  /--
+  The Galois action: `σ (J x) = J (a • x)` if `σ` raises the `M`-th roots of unity to the
+  power `a`.
+  -/
+  galUnitsRep_apply
+    {x : QZ} (hx : M • x = 0) (σ : Gal(Ω/ℚ)) (a : ℕ) (ha : (cyclotomicCharMod Ω M σ).val = a)
+    : galUnitsRep σ (J x) = J (a • x)
   /-- `J x` is a unit at every place not above `p`. -/
-  valuation_eq_one {x : QZ} (hx : M • x = 0) (A : ClosurePlace) (hA : A.valuation p = 1) :
-    A.valuation (J x).toMul.val = 1
+  valuation_eq_one {x : QZ} (hx : M • x = 0) (A : ClosurePlace) (hA : A.valuation p = 1)
+    : A.valuation (J x).toMul.val = 1
   /-- The order of `J x` at `B` is `floorDiff c x`. -/
   ordRat_eq {x : QZ} (hx : M • x = 0) : ordRat ℚ B (J x) = floorDiff c x
-  /-- For a prime `q ∣ p - 1` and `q • b = 0`, the quotient `J (x + b) / J x` is `≡ 1` at every
-  place above `q`. -/
-  sub_mem_principalUnits {x : QZ} (hx : M • x = 0) (q : ℕ) [Fact q.Prime] (A : ClosurePlace)
-    (b : QZ) (hb : q • b = 0) (hq : q ∣ p - 1) (hA : A.valuation q < 1) :
-    J (x + b) - J x ∈ principalUnits A
+  /--
+  For a prime `q ∣ p - 1` and `q • b = 0`, the quotient `J (x + b) / J x` is `≡ 1` at every
+  place above `q`.
+  -/
+  sub_mem_principalUnits
+    {x : QZ} (hx : M • x = 0)
+    (q : ℕ) [Fact q.Prime]
+    (A : ClosurePlace)
+    (b : QZ) (hb : q • b = 0)
+    (hq : q ∣ p - 1) (hA : A.valuation q < 1)
+    : J (x + b) - J x ∈ principalUnits A
 
 /-- A Gauss sum over `𝔽_p` of a multiplicative character `χ₀` and a primitive additive character
 `ψ` divides `p` in `𝓞 Ω`. -/

@@ -180,9 +180,8 @@ open CategoryTheory ShortComplex Subfunctor Splitting Equiv
 
 namespace New.Variety
 
-variable {C : Type 1}
-  {D : Type _} [Category C] [Category D]
-  {P : AbFunctor C → Prop} {E Y : C ⥤ Type 1}
+variable
+  {C : Type 1} {D : Type _} [Category C] [Category D] {P : AbFunctor C → Prop} {E Y : C ⥤ Type 1}
 
 /-- Let P be a closed class and `g : E ⟶ Y` a map of set-valued functors that is bijective at every
 object. If ℤ[E] lies in P, then so does ℤ[Y]. -/
@@ -248,14 +247,19 @@ section Relations
 
 open CategoryTheory Preadditive Subfunctor
 
-variable {C : Type _} [Category C] {Y W : C ⥤ Type 1} {F} {n : ℕ} {ι : Type _} [Fintype ι]
+variable
+  {C : Type _} [Category C]
+  {Y W : C ⥤ Type 1} {F} {n : ℕ} {ι : Type _} [Fintype ι]
   (c : ι → ℤ) (f : ι → (W ⟶ Y))
 
-/-- For finitely many f_i: W → Y and integers c_i, the subfunctor of W of the points x ∈ W(A) with ∑
-c_i [f_i(x)] = 0 in ℤ[Y(A)], expressed by `New.Variety.Cancels`. -/
+/--
+For finitely many f_i: W → Y and integers c_i, the subfunctor of W of the points x ∈ W(A) with ∑
+c_i [f_i(x)] = 0 in ℤ[Y(A)], expressed by `New.Variety.Cancels`.
+-/
 def relationLocus : Subfunctor W :=
-  Subfunctor.mk (fun A ↦ {x : W.obj A | Cancels c fun i ↦ f i A x}) fun _ _ hx ↦
-    hx.mono fun _ ↦ by simp_all
+  Subfunctor.mk
+    (fun A ↦ {x : W.obj A | Cancels c fun i ↦ f i A x})
+    fun _ _ hx ↦ hx.mono fun _ ↦ by simp_all
 
 /-- On the relation locus, the sum `∑ c i • ℤ[f i]` vanishes. -/
 lemma relationLocus_sum_eq_zero :
@@ -295,9 +299,10 @@ open CategoryTheory Function Comparison Ideal IsCohomDense RingHom Limits H
 
 -- `hF` is not used below; the lemmas that need it take it as an argument. The variable fixes the
 -- type elaborated for `elemKillingMaps`.
-variable {C : Type 1} [Category C]
-  {Y : C ⥤ Type 1} {ι : C ⥤ CommRingCat} {F : AbFunctor C} {A : C} (hF : HasPartitions ι F)
-  (e : ι A)
+variable
+  {C : Type 1} [Category C]
+  {Y : C ⥤ Type 1} {ι : C ⥤ CommRingCat} {F : AbFunctor C} {A : C}
+  (hF : HasPartitions ι F) (e : ι A)
 
 /-- If `β : F ⟶ G` is bijective at every object `A` at which `Y` has a point (the hypothesis
 `Y A → …` reads: if the set Y(A) is nonempty), it is bijective on the cohomology of `Y`: `H.push` is
@@ -341,8 +346,10 @@ lemma exists_dvd_idempotent_of_notMem {E B : Type*} [Mul E] [CommRing B] {f : E 
   · -- `f e = f e * (b * g + d)` and `f e * d = g * a`.
     linear_combination ha - f e * h_one
 
-/-- For a functor `ι` from `C` to commutative rings and `e` in `ι A`, the subfunctor of `reprBy A`
-(the maps out of `A`) of the maps `f : A ⟶ B` with `ι.map f e = 0`. -/
+/--
+For a functor `ι` from `C` to commutative rings and `e` in `ι A`, the subfunctor of `reprBy A`
+(the maps out of `A`) of the maps `f : A ⟶ B` with `ι.map f e = 0`.
+-/
 abbrev elemKillingMaps : Subfunctor (reprBy A) where
   obj _ := {f | ι.map f.down e = 0}
   map := by
@@ -525,8 +532,9 @@ section DenseRestriction
 
 open CategoryTheory
 
-variable {C : Type 1} [Category C] {F : AbFunctor C} {Y : C ⥤ Type 1} {n : ℕ} {X K : C ⥤ Type 1}
-  {W : Subfunctor Y}
+variable
+  {C : Type 1} [Category C]
+  {F : AbFunctor C} {Y : C ⥤ Type 1} {n : ℕ} {X K : C ⥤ Type 1} {W : Subfunctor Y}
 
 /-- Pull-back along `v` and then along `u` is pull-back along `u ≫ v`. -/
 lemma H.map_map (u : X ⟶ Y) (v : Y ⟶ K) (x : H (freeAb.obj K) F n) :

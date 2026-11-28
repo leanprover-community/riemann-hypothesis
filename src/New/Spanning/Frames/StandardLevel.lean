@@ -73,8 +73,10 @@ section TailVector
 
 variable {A : Type} {𝔰 : Shape} [CommRing A] [StarRing A]
 
-/-- The vector x − (ππ̄)⁻¹t z of X₀ ⊕ Az, for x in `𝔰.κ → A` and t in A, written in the lattice
-basis `besselLatticeBasis 𝔰 π`. -/
+/--
+The vector x − (ππ̄)⁻¹t z of X₀ ⊕ Az, for x in `𝔰.κ → A` and t in A, written in the lattice
+basis `besselLatticeBasis 𝔰 π`.
+-/
 def vectorOfLastEntry (π : Aˣ) (t : A) (x : 𝔰.κ → A) : 𝔰.BesselIndex → A :=
   (besselLatticeBasis 𝔰 π)⁻¹.val *ᵥ (0 ⊕ᵥ ((x ⊕ᵥ fun _ : Unit ↦ -(π * star π)⁻¹ * t) ⊕ᵥ 0))
 
@@ -123,12 +125,17 @@ end TailVector
 
 /-! ### The lattice datum of integral vectors -/
 
-variable {ι : Type} {𝔰 : Shape} [Fintype ι] [DecidableEq ι] {m : ℕ}
-  {A : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A]
-  {T : 𝔰.Form A} [IsHermitianUnit T.splitGram] {g : Aˣ} (F : PlaceData ι T m)
+variable
+  {ι : Type} {𝔰 : Shape} [Fintype ι] [DecidableEq ι]
+  {m : ℕ} {A : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A]
+  {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
+  {g : Aˣ}
+  (F : PlaceData ι T m)
 
-/-- The principal congruence subgroup K(g) of the place datum `F`: the integral isometries congruent
-to 1 modulo the unit `g = F.levelUnit`. -/
+/--
+The principal congruence subgroup K(g) of the place datum `F`: the integral isometries congruent
+to 1 modulo the unit `g = F.levelUnit`.
+-/
 abbrev PlaceData.congruenceSubgroup : Subgroup (U T.splitGram) :=
   unitaryLevel O F.levelUnit T.splitGram
 
@@ -153,46 +160,56 @@ lemma IntegralPlace.isOpen_congruentPairs_and_isCompact_closure :
     (h_compact.prod h_compact).image (by fun_prop)
   exact h_image.closure_of_subset fun ω hω ↦ ⟨(ω.1, g⁻¹.val • (ω.1 - ω.2)), hω, by simp [smul_smul]⟩
 
-/-- The place datum `F` at a finite place is the one given by the lattice of integral vectors. Its
+/--
+The place datum `F` at a finite place is the one given by the lattice of integral vectors. Its
 data are integral (`integral_data`). Its box is the group `K` of integral isometries, and its close
 pairs are the pairs of integral vectors congruent modulo the level. Its measures are normalised or
 bounded below on `K` (`volume_le_and_boxSet_closePairs_positions_eq`). An isotropic vector is dual
-to the last frame vector (`exists_isotropic`). -/
+to the last frame vector (`exists_isotropic`).
+-/
 structure IntegralPlace.IsLatticeData : Prop where
-  /-- The Gram matrix is hermitian and invertible over `integers`, the basis `F.basisMatrix` is
-  integral, and the unit `F.levelUnit` is integral and fixed by the involution. -/
-  integral_data :
-      IsUnimodular integers T.splitGram ∧ IsIntMatrix integers F.basisMatrix ∧ F.levelUnit.val ∈
-        integers ∧
-        star F.levelUnit.val = F.levelUnit
-  /-- The box `F.boxSet` is the group of integral isometries. Its `F.topFloorMeasure`-measure is at
+  /--
+  The Gram matrix is hermitian and invertible over `integers`, the basis `F.basisMatrix` is
+  integral, and the unit `F.levelUnit` is integral and fixed by the involution.
+  -/
+  integral_data
+    : IsUnimodular integers T.splitGram ∧ IsIntMatrix integers F.basisMatrix
+      ∧ F.levelUnit.val ∈ integers ∧ star F.levelUnit.val = F.levelUnit
+  /--
+  The box `F.boxSet` is the group of integral isometries. Its `F.topFloorMeasure`-measure is at
   least the volume of the units of `integers`, and its `F.measureH`-measure is `1`. The close pairs
   are the pairs of integral vectors congruent modulo `F.levelUnit`. The positions `F.positions` are
   the `y⁻¹ * u * y
-  * k`, with `u` in `T.besselU` and `k` in `F.congruenceSubgroup`. -/
-  volume_le_and_boxSet_closePairs_positions_eq :
-      volume P.intUnits ≤ F.topFloorMeasure F.boxSet ∧
-      F.boxSet = unitaryLevel integers 1 T.splitGram ∧
-      F.measureH F.boxSet = 1 ∧
-      F.closePairs = P.congruentPairs 𝔰 F.levelUnit ∧
-      F.positions = {y⁻¹ * u * y | (y : T.G) (u ∈ T.besselU)} * F.congruenceSubgroup
-  /-- There is a vector `u` such that pairing with `u` reads the coordinate at the last frame vector
-  z, and this coordinate of `u` is zero; so `u` is isotropic with h(u, z) = 1. -/
-  exists_isotropic : ∃ u : 𝔰.BesselIndex → A,
-    star u ᵥ* T.splitGram = Pi.single (𝔰.besselFrame 𝔰.top) 1 ∧ u (𝔰.besselFrame 𝔰.top) = 0
+  * k`, with `u` in `T.besselU` and `k` in `F.congruenceSubgroup`.
+  -/
+  volume_le_and_boxSet_closePairs_positions_eq
+    : volume P.intUnits ≤ F.topFloorMeasure F.boxSet
+      ∧ F.boxSet = unitaryLevel integers 1 T.splitGram ∧ F.measureH F.boxSet = 1
+      ∧ F.closePairs = P.congruentPairs 𝔰 F.levelUnit
+      ∧ F.positions = {y⁻¹ * u * y | (y : T.G) (u ∈ T.besselU)} * F.congruenceSubgroup
+  /--
+  There is a vector `u` such that pairing with `u` reads the coordinate at the last frame vector
+  z, and this coordinate of `u` is zero; so `u` is isotropic with h(u, z) = 1.
+  -/
+  exists_isotropic
+    : ∃ u : 𝔰.BesselIndex → A,
+      star u ᵥ* T.splitGram = Pi.single (𝔰.besselFrame 𝔰.top) 1 ∧ u (𝔰.besselFrame 𝔰.top) = 0
 
-/-- A lattice datum with `m + 1` further hyperbolic pairs is large if its ranks satisfy the bounds
+/--
+A lattice datum with `m + 1` further hyperbolic pairs is large if its ranks satisfy the bounds
 of `zeta_le_and_le_card`, the character of the place is trivial on traces, and the unitary group is
-unimodular. -/
-class IntegralPlace.IsLargeLatticeData (F : PlaceData ι T (m + 1)) :
-  Prop extends P.IsLatticeData F where
-  /-- The ideal zeta sum of `P.integers` at `m` has `𝔰.n`-th power at most `1 + 2⁻¹ ^ 𝔰.n`, the
+unimodular.
+-/
+class IntegralPlace.IsLargeLatticeData (F : PlaceData ι T (m + 1)) : Prop
+    extends P.IsLatticeData F where
+  /--
+  The ideal zeta sum of `P.integers` at `m` has `𝔰.n`-th power at most `1 + 2⁻¹ ^ 𝔰.n`, the
   number `m` is less than `9 * 𝔰.n`, and the orthonormal part of the basis has at least `53 * 𝔰.n`
-  vectors. -/
-  zeta_le_and_le_card :
-      idealZeta P.integers m ^ 𝔰.n ≤ ENNReal.ofReal (1 + 2⁻¹ ^ 𝔰.n) ∧
-      m < 9 * 𝔰.n ∧
-      53 * 𝔰.n ≤ Fintype.card ι
+  vectors.
+  -/
+  zeta_le_and_le_card
+    : idealZeta P.integers m ^ 𝔰.n ≤ ENNReal.ofReal (1 + 2⁻¹ ^ 𝔰.n) ∧ m < 9 * 𝔰.n
+      ∧ 53 * 𝔰.n ≤ Fintype.card ι
   /-- The character of the place is trivial on traces. -/
   psi_add_star (x : A) : P.ψ (x + star x) = 1
   /-- The unitary group is unimodular: some left Haar measure is right invariant. -/
@@ -348,7 +365,6 @@ lemma IntegralPlace.flatChart_mem_intVectors {J : Matrix ι ι A} (hJ : IsIntMat
     · exact ht
   · exact hw i
 
-
 /-- Let `T.splitGram` be unimodular over `P.integers`. Let `u` be an integral vector with
 `star u ᵥ* T.splitGram` equal to the dual of the last frame vector z, and with z-coordinate `0`. Let
 `e` be integral with z-coordinate `r`, a unit of `P.integers`. Then the scaled Eichler map along `u`
@@ -450,15 +466,17 @@ lemma IntegralPlace.exists_measure_floorGroup_top (hT : IsUnimodular P.integers 
   · grw [← le_map_apply Φ_meas.aemeasurable, ← Φ_box]
     simp [volume_eq_prod, isOpen_isCompact_volume_intVectors, data_normalised]
 
-
-/-- At the finite place `P`, let `N` be in `P.integers` with `star N = N`, let `g` be a unit of `A`
+/--
+At the finite place `P`, let `N` be in `P.integers` with `star N = N`, let `g` be a unit of `A`
 in `P.integers` with `star g = g`, and let the rank `𝔰.k` of X₀ be `|ι| + 2 m + 1`. Then the matrix
 `latticeMiddleGram 𝔰 N` has a place datum `F : PlaceData ι (latticeMiddleGram 𝔰 N) m` with
-`P.IsLatticeData F` and `F.levelUnit = g`. -/
-theorem IntegralPlace.exists_isLatticeData {N : A}
-    [IsHermitianUnit (latticeMiddleGram 𝔰 N).splitGram] (hN : N ∈ integers ∧ star N = N)
-    (hg : g.val ∈ integers ∧ star g.val = g) (hm : 𝔰.k = Fintype.card ι + 2 * m + 1) :
-    ∃ F : PlaceData ι (latticeMiddleGram 𝔰 N) m, P.IsLatticeData F ∧ F.levelUnit = g := by
+`P.IsLatticeData F` and `F.levelUnit = g`.
+-/
+theorem IntegralPlace.exists_isLatticeData
+    {N : A} [IsHermitianUnit (latticeMiddleGram 𝔰 N).splitGram]
+    (hN : N ∈ integers ∧ star N = N) (hg : g.val ∈ integers ∧ star g.val = g)
+    (hm : 𝔰.k = Fintype.card ι + 2 * m + 1)
+    : ∃ F : PlaceData ι (latticeMiddleGram 𝔰 N) m, P.IsLatticeData F ∧ F.levelUnit = g := by
   let T : 𝔰.Form A := latticeMiddleGram 𝔰 N
   let K : Subgroup T.G := unitaryLevel integers 1 T.splitGram
   have h_unimod : IsUnimodular integers T.splitGram :=
@@ -473,23 +491,23 @@ theorem IntegralPlace.exists_isLatticeData {N : A}
   obtain ⟨θ, _, θ_mem, θ_map, θ_box⟩ :=
     exists_measure_floorGroup_top h_unimod hx hx_dual hx_last hB hB_last
   obtain ⟨η, _, η_box, η_spec⟩ := exists_right_invariant_measure_besselH (T := T)
-  let F : PlaceData ι T m :=
-    { B with
-      topFloorMeasure := θ
-      measureH := η
-      levelUnit := g
-      closePairs := P.congruentPairs 𝔰 g
-      boxSet := K
-      positions := {y⁻¹ * u * y | (y : T.G) (u ∈ T.besselU)} * unitaryLevel integers g T.splitGram
-      neZero_measureH := ⟨fun h ↦ by simp [h] at η_box⟩
-      topFloorMeasure_mem_and_map_eq := ⟨θ_mem, θ_map⟩
-      measureH_mem_and_invariant_and_le_one := η_spec
-      star_levelUnit := hg.2
-      isOpen_closePairs_and_zero_mem_and_isCompact_closure :=
-        isOpen_congruentPairs_and_isCompact_closure
-      isCompact_boxSet_and_measurableSet_positions :=
-                                            ⟨unitaryLevel_open_compact.2,
-                                              unitaryLevel_open_compact.1.mul_left.measurableSet⟩ }
+  let F : PlaceData ι T m := {
+    B with
+    topFloorMeasure := θ
+    measureH := η
+    levelUnit := g
+    closePairs := P.congruentPairs 𝔰 g
+    boxSet := K
+    positions := {y⁻¹ * u * y | (y : T.G) (u ∈ T.besselU)} * unitaryLevel integers g T.splitGram
+    neZero_measureH := ⟨fun h ↦ by simp [h] at η_box⟩
+    topFloorMeasure_mem_and_map_eq := ⟨θ_mem, θ_map⟩
+    measureH_mem_and_invariant_and_le_one := η_spec
+    star_levelUnit := hg.2
+    isOpen_closePairs_and_zero_mem_and_isCompact_closure :=
+      isOpen_congruentPairs_and_isCompact_closure
+    isCompact_boxSet_and_measurableSet_positions :=
+      ⟨unitaryLevel_open_compact.2, unitaryLevel_open_compact.1.mul_left.measurableSet⟩
+  }
   exact ⟨F, ⟨⟨h_unimod, hB, hg⟩, ⟨θ_box, rfl, η_box, rfl, rfl⟩, x, hx_dual, hx_last⟩, rfl⟩
 
 /-! ### Large lattice data: gauges and masses -/
@@ -498,8 +516,10 @@ namespace IntegralPlace.IsLargeLatticeData
 
 variable {F : PlaceData ι T (m + 1)} [h : P.IsLargeLatticeData F]
 
-/-- The close pairs of a large lattice datum are the pairs of integral vectors congruent modulo the
-level. -/
+/--
+The close pairs of a large lattice datum are the pairs of integral vectors congruent modulo the
+level.
+-/
 theorem closePairs_eq : F.closePairs = P.congruentPairs 𝔰 F.levelUnit := by
   obtain ⟨-, -, -, h_close, -⟩ := h.volume_le_and_boxSet_closePairs_positions_eq
   exact h_close
@@ -534,28 +554,33 @@ theorem boxSet_eq : F.boxSet = unitaryLevel integers 1 T.splitGram := by
   simp only [h.volume_le_and_boxSet_closePairs_positions_eq]
 
 include h in
-/-- If `F` is a large lattice datum (`P.IsLargeLatticeData F`), the Gram matrix `T.splitGram` is
-hermitian and invertible over `integers`, that is, unimodular. -/
-theorem isUnimodular_splitGram : IsUnimodular integers T.splitGram :=
-  h.integral_data.1
+/--
+If `F` is a large lattice datum (`P.IsLargeLatticeData F`), the Gram matrix `T.splitGram` is
+hermitian and invertible over `integers`, that is, unimodular.
+-/
+theorem isUnimodular_splitGram : IsUnimodular integers T.splitGram := h.integral_data.1
 
 /-- At a large lattice datum the basis matrix has entries in `integers`. -/
 theorem isIntMatrix_basisMatrix : IsIntMatrix integers F.basisMatrix := by
   simp only [h.integral_data]
 
 include h in
-/-- At a large lattice datum with `m + 1` further hyperbolic pairs, the ideal zeta sum of
-`P.integers` at `m` is at most `2`. -/
+/--
+At a large lattice datum with `m + 1` further hyperbolic pairs, the ideal zeta sum of
+`P.integers` at `m` is at most `2`.
+-/
 theorem idealZeta_le_two : idealZeta P.integers m ≤ 2 :=
   le_two_of_pow_le_ofReal h.zeta_le_and_le_card.1
 
 include h in
 /-- At a large lattice datum the form `T.splitGram` takes integral values on integral vectors. -/
-theorem star_dotProduct_splitGram_mulVec_mem {v w : 𝔰.BesselIndex → A}
-    (hv : v ∈ intVectors integers 𝔰.BesselIndex) (hw : w ∈ intVectors integers 𝔰.BesselIndex) :
-    star v ⬝ᵥ T.splitGram *ᵥ w ∈ integers :=
-  sum_mem fun i _ ↦ mul_mem (isAdelic.toIsStarStable.star_mem (hv i))
-    (h.isUnimodular_splitGram.isIntMatrix.mulVec hw i)
+theorem star_dotProduct_splitGram_mulVec_mem
+    {v w : 𝔰.BesselIndex → A}
+    (hv : v ∈ intVectors integers 𝔰.BesselIndex) (hw : w ∈ intVectors integers 𝔰.BesselIndex)
+    : star v ⬝ᵥ T.splitGram *ᵥ w ∈ integers :=
+  sum_mem fun i _ ↦
+    mul_mem (isAdelic.toIsStarStable.star_mem (hv i))
+      (h.isUnimodular_splitGram.isIntMatrix.mulVec hw i)
 
 include h in
 /-- The quadrics of a block. The place datum has m + 1 further hyperbolic pairs, so a block has rank
@@ -707,23 +732,25 @@ lemma exists_isCommonBound {α : Aˣ} (hα : α.val ∈ integers) {S : Size T}
       _ ≤ (2 / P.modulus α) ^ (99 * 𝔰.n * (j + 1)) :=
         h.idealZeta_mul_inv_modulus_pow_le hα (by rw [Shape.n] at hm ⊢; nlinarith)
 
-/-- The gauge of scale `α` at a large lattice datum, for an integral self-conjugate unit `α` of `A`:
-a number `x` has size `j` if `α ^ j * x` is integral, and the field `loss` is `2 / P.modulus α`. -/
+/--
+The gauge of scale `α` at a large lattice datum, for an integral self-conjugate unit `α` of `A`:
+a number `x` has size `j` if `α ^ j * x` is integral, and the field `loss` is `2 / P.modulus α`.
+-/
 @[simp]
-def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
-    (sα : star α.val = α := by simp [*] <;> ring) :
-    Gauge F where
+def gauge
+    (α : Aˣ := 1) (hα : α.val ∈ integers := by simp) (sα : star α.val = α := by simp [*] <;> ring)
+    : Gauge F where
   ofSize j := {x : A | α ^ j * x ∈ integers}
   loss := 2 / P.modulus α
   mul_mem_ofSize hx hy := by
     simpa only [Set.mem_ofPred_eq, pow_add, mul_mul_mul_comm] using integers.mul_mem hx hy
   sum_mem_ofSize := by simp_all [pow_succ', mul_assoc, mul_sum, mul_mem, sum_mem]
   neg_mem_iff_and_star_mem_iff := by
-             refine ⟨by simp, fun hx ↦ ?_, fun hx ↦ ?_⟩ <;> simpa [sα] using isAdelic.1.1 hx
+    refine ⟨by simp, fun hx ↦ ?_, fun hx ↦ ?_⟩ <;> simpa [sα] using isAdelic.1.1 hx
   zero_one_mem_ofSize := by simp [pow_mem hα]
   splitGram_and_inv_mem := by
-          simp [hα, h.integral_data.1.isIntMatrix _,
-            h.integral_data.1.isUnit_det_and_isIntMatrix_inv.2 _, mul_mem]
+    simp [hα, h.integral_data.1.isIntMatrix _, h.integral_data.1.isUnit_det_and_isIntMatrix_inv.2 _,
+      mul_mem]
   isCompact_ofSize j := isCompact_O.preimage_smul (α ^ j)
   two_le_loss := two_le_two_div_modulus hα
   loss_ne_top := by simp [div_eq_top]
@@ -733,8 +760,8 @@ def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
   hasMatrixSize_basisMatrix := by simp [hα, h.integral_data.2.1 _, Size.HasMatrixSize, mul_mem]
   traceOne_div_mem_ofSize := by simp [hα, data_normalised, mul_mem]
   hasMatrixSize_boxSet := by
-          simp_all [h.volume_le_and_boxSet_closePairs_positions_eq, unitaryLevel, mem_intGL,
-            -Sum.forall, Size.HasMatrixSize, mul_mem]
+    simp_all [h.volume_le_and_boxSet_closePairs_positions_eq, unitaryLevel, mem_intGL, -Sum.forall,
+      Size.HasMatrixSize, mul_mem]
   mem_vecsOfSize_of_mem_closePairs ω₁ ω₂ hω := by
     rw [closePairs_eq] at hω
     exact ⟨fun i ↦ mul_mem (pow_mem hα 1) (hω.1 i), fun i ↦ mul_mem (pow_mem hα 1) (hω.2 i)⟩
@@ -749,21 +776,25 @@ def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
     convert integers.mul_mem hM (integers.sub_mem (h₁ k) (h₂ k)) using 1
     simp
     ring
-  modulus_le j u hu := (inv_modulus_pow_le α j).trans'
-         (by simpa [mul_comm] using modulus_le_one (α ^ j * u) hu)
-  volume_ofSize_le j := (volume_setOf_mul_mem (α ^ j)).trans_le <| (inv_modulus_pow_le α j).trans <|
-    by
-           bound [one_le_two.trans (two_le_two_div_modulus hα)]
+  modulus_le j u hu :=
+    (inv_modulus_pow_le α j).trans' (by simpa [mul_comm] using modulus_le_one (α ^ j * u) hu)
+  volume_ofSize_le j :=
+    (volume_setOf_mul_mem (α ^ j)).trans_le <| (inv_modulus_pow_le α j).trans <| by
+      bound [one_le_two.trans (two_le_two_div_modulus hα)]
   two_mul_blockRank_le := by
     obtain ⟨-, hm, h_rank⟩ := h.zeta_le_and_le_card
     simp only [blockRank]
     lia
   exists_blockKernel := by
-                 obtain ⟨l, h_sfinite, h_dis, h_mass⟩ :=
-                   h.exists_kernel_isDisintegration_coordinateBox_le
-                 exact ⟨l, h_sfinite, h_dis, fun β j ↦
-                   (h_mass β (α ^ j)).trans
-                     (h.idealZeta_mul_inv_modulus_pow_le hα (by simp only [blockRank]; nlinarith))⟩
+    obtain ⟨l, h_sfinite, h_dis, h_mass⟩ := h.exists_kernel_isDisintegration_coordinateBox_le
+    exact ⟨
+      l,
+      h_sfinite,
+      h_dis,
+      fun β j ↦
+        (h_mass β (α ^ j)).trans
+          (h.idealZeta_mul_inv_modulus_pow_le hα (by simp only [blockRank]; nlinarith))
+    ⟩
   exists_commonBound _ hx _ hz := h.exists_isCommonBound hα (fun _ ↦ rfl) hx hz
 
 include h in
@@ -829,21 +860,26 @@ lemma exists_mul_heisenbergElem_mem_unitaryLevel_iff
     exact .sub (isIntMatrix_vecMulVec_star_vecMul hJ hws he)
       (isIntMatrix_vecMulVec_star_vecMul hJ he hw_int)
 
-/-- For a large lattice datum, an integral self-conjugate unit `g` of `A`, `a < ϱ` and a subgroup
+/--
+For a large lattice datum, an integral self-conjugate unit `g` of `A`, `a < ϱ` and a subgroup
 `S` of the unipotent group `unipotentBelow a` of the floors below `a`, the set `S·K(g)` has mass
 `F.floorModulus a g = modulus g ^ (𝔰.k + 1 + 2(ϱ − a − 1) + 1/2)` for the measure
-`heisenbergMeasure a` of the Heisenberg group of floor `a`. -/
-theorem heisenbergMeasure_eq_floorModulus (hg : g.val ∈ integers ∧ star g.val = g) (a : Fin 𝔰.ϱ)
-    {S : Subgroup T.G} (hS : S ≤ unipotentBelow a) :
-    heisenbergMeasure a
-        {y : U T.splitGram | ∃ u ∈ S, u * (y * 1) ∈ unitaryLevel integers g T.splitGram} =
-      F.floorModulus a g := by
+`heisenbergMeasure a` of the Heisenberg group of floor `a`.
+-/
+theorem heisenbergMeasure_eq_floorModulus
+    (hg : g.val ∈ integers ∧ star g.val = g)
+    (a : Fin 𝔰.ϱ)
+    {S : Subgroup T.G} (hS : S ≤ unipotentBelow a)
+    : heisenbergMeasure a
+        {y : U T.splitGram | ∃ u ∈ S, u * (y * 1) ∈ unitaryLevel integers g T.splitGram}
+      = F.floorModulus a g := by
   -- `heisenbergMeasure a` is the image of `dv dβ` under the Heisenberg chart, and the preimage of
   -- `S·K(g)` is a box.
-  have h_chart : P.heisenbergElem (T := T) a ⁻¹'
-      {y : U T.splitGram | ∃ u ∈ S, u * (y * 1) ∈ unitaryLevel integers g T.splitGram} =
-      Set.univ.pi (fun _ ↦ {x : A | g⁻¹.val * x ∈ integers}) ×ˢ
-        {β : skewAdjoint A | g⁻¹.val * (β : A) ∈ integers} := by
+  have h_chart
+      : P.heisenbergElem (T := T) a
+          ⁻¹' {y : U T.splitGram | ∃ u ∈ S, u * (y * 1) ∈ unitaryLevel integers g T.splitGram}
+        = Set.univ.pi (fun _ ↦ {x : A | g⁻¹.val * x ∈ integers})
+          ×ˢ {β : skewAdjoint A | g⁻¹.val * (β : A) ∈ integers} := by
     ext ⟨v, β⟩
     simpa only [Set.mem_preimage, Set.mem_ofPred, mul_one, Set.mem_prod, Set.mem_univ_pi] using
       h.exists_mul_heisenbergElem_mem_unitaryLevel_iff hg a hS v β
@@ -856,15 +892,17 @@ theorem heisenbergMeasure_eq_floorModulus (hg : g.val ∈ integers ∧ star g.va
     card_subtype_succ_le_floorOf_eq]
   simp [floorModulus, inv_rpow]
 
-/-- For a large lattice datum `F` (`P.IsLargeLatticeData F`), a self-conjugate unit `g` of `A` in
+/--
+For a large lattice datum `F` (`P.IsLargeLatticeData F`), a self-conjugate unit `g` of `A` in
 `integers`, and `j ≤ 𝔰.ϱ` (the number of hyperbolic planes), the convolution
 `ascConv heisenbergMeasure j` of the Heisenberg measures `heisenbergMeasure l`, `l < j`, gives the
 congruence subgroup `unitaryLevel integers g T.splitGram` the mass `∏ l < j, F.floorModulus l g`.
 Each factor is
-|g|^(r+1/2), where r is the rank of the vector part of floor `l`. -/
-theorem ascConv_unitaryLevel (hg : g.val ∈ integers ∧ star g.val = g) (j : ℕ) (hj : j ≤ 𝔰.ϱ) :
-    ascConv heisenbergMeasure j (unitaryLevel integers g T.splitGram : Set (U T.splitGram)) =
-      ∏ l ∈ Finset.range j, F.floorModulus l g := by
+|g|^(r+1/2), where r is the rank of the vector part of floor `l`.
+-/
+theorem ascConv_unitaryLevel (hg : g.val ∈ integers ∧ star g.val = g) (j : ℕ) (hj : j ≤ 𝔰.ϱ)
+    : ascConv heisenbergMeasure j (unitaryLevel integers g T.splitGram : Set (U T.splitGram))
+      = ∏ l ∈ Finset.range j, F.floorModulus l g := by
   induction j with
   | zero => simp [ascConv]
   | succ j ih =>
@@ -875,24 +913,28 @@ theorem ascConv_unitaryLevel (hg : g.val ∈ integers ∧ star g.val = g) (j : �
 
 variable {c : T.G} {θ : Measure T.G} [SFinite θ]
 
-/-- Unfolding over all floors. Let `F` be a large lattice datum and `g` a self-conjugate unit of `A`
+/--
+Unfolding over all floors. Let `F` be a large lattice datum and `g` a self-conjugate unit of `A`
 in `integers`. Write `K(g) = unitaryLevel integers g T.splitGram`. Then the convolution
 `ascConv heisenbergMeasure (𝔰.ϱ + 2) ∗ₘ θ` gives the coset `K(g) c⁻¹` the mass
 `∏ l < 𝔰.ϱ, F.floorModulus l g` times the `θ`-mass of `𝖴 K(g) c⁻¹`. Here `𝖴` is the Bessel unipotent
-group `T.besselU`. -/
-theorem ascConv_mconv_unitaryLevel_coset (hg : g.val ∈ integers ∧ star g.val = g) :
-    (ascConv heisenbergMeasure (𝔰.ϱ + 2) ∗ₘ θ)
-        {y : T.G | y * c ∈ unitaryLevel integers g T.splitGram} =
-      (∏ l ∈ Finset.range 𝔰.ϱ, F.floorModulus l g) *
-        θ {y : T.G | ∃ u ∈ T.besselU, u * (y * c) ∈ unitaryLevel integers g T.splitGram} := by
+group `T.besselU`.
+-/
+theorem ascConv_mconv_unitaryLevel_coset (hg : g.val ∈ integers ∧ star g.val = g)
+    : (ascConv heisenbergMeasure (𝔰.ϱ + 2) ∗ₘ θ)
+        {y : T.G | y * c ∈ unitaryLevel integers g T.splitGram}
+      = (∏ l ∈ Finset.range 𝔰.ϱ, F.floorModulus l g)
+        * θ {y : T.G | ∃ u ∈ T.besselU, u * (y * c) ∈ unitaryLevel integers g T.splitGram} := by
   -- The two top floors contribute the unit mass at `1`.
   have h_top : ascConv (T := T) heisenbergMeasure (𝔰.ϱ + 2) = ascConv heisenbergMeasure 𝔰.ϱ := by
     simp [ascConv]
   rw [ascConv_mconv_unfolding, h_top, h.ascConv_unitaryLevel hg 𝔰.ϱ le_rfl]
   simp [unipotentBelow_eq_besselU]
 
-/-- For a large lattice datum `F` at a finite place, the box `F.boxSet`, which is the group of
-integral isometries, has `F.groupMeasure`-mass at most `1 + 2⁻¹ ^ n`, where `n = ϱ + 1`. -/
+/--
+For a large lattice datum `F` at a finite place, the box `F.boxSet`, which is the group of
+integral isometries, has `F.groupMeasure`-mass at most `1 + 2⁻¹ ^ n`, where `n = ϱ + 1`.
+-/
 theorem groupMeasure_boxSet_le : F.groupMeasure F.boxSet ≤ ENNReal.ofReal (1 + 2⁻¹ ^ 𝔰.n) := by
   -- Unfolding at level `1` bounds `F.groupMeasure F.boxSet` by the mass of the frames near the box,
   -- and each of the `𝔰.n` floors contributes at most `idealZeta P.integers m`: for the gauge of
@@ -900,8 +942,9 @@ theorem groupMeasure_boxSet_le : F.groupMeasure F.boxSet ≤ ENNReal.ofReal (1 +
   have h_floor (l : Fin 𝔰.n) : F.FloorMassLe l (idealZeta P.integers m) 1 := by
     -- Solve the equation in a block. The other coordinates are free in `P.integers`.
     obtain ⟨q, _, h_dis, h_mass⟩ := h.exists_kernel_isDisintegration_coordinateBox_le
-    obtain ⟨blk', blk, h_inj⟩ : ∃ blk' blk : Fin F.blockRank → ι,
-        Function.Injective (F.freeIndex ⊕ᵥ (blk' ⊕ᵥ blk)) := h.gauge.exists_blocks
+    obtain ⟨blk', blk, h_inj⟩
+        : ∃ blk' blk : Fin F.blockRank → ι, Function.Injective (F.freeIndex ⊕ᵥ (blk' ⊕ᵥ blk)) :=
+      h.gauge.exists_blocks
     have h_blocks : Function.Injective (blk' ⊕ᵥ blk) := h_inj.comp inr_injective
     have h_blk : Function.Injective blk := h_blocks.comp inr_injective
     -- `mid` places the orthonormal indices among the indices of the hyperbolic form
@@ -911,19 +954,22 @@ theorem groupMeasure_boxSet_le : F.groupMeasure F.boxSet ≤ ENNReal.ofReal (1 +
     have h_solved : IsSolvedIn (inr ∘ mid ∘ blk)
         (quadricMeasure (hyperbolicGram (FloorPairs l (m + 1)) (1 : Matrix ι ι A)) β) P.integers
         (idealZeta P.integers m) := by
-      refine h_dis.isSolvedIn_quadricMeasure (h_mass := fun b ↦ by simpa using h_mass b 1)
+      refine h_dis.isSolvedIn_quadricMeasure
+        (h_mass := fun b ↦ by simpa using h_mass b 1)
         (hT := ?_) (h_inj := h_mid.comp h_blk) (h_orth := ?_) β
       · simp [fromBlocks_conjTranspose, conjTranspose_fromRows_eq_fromCols_conjTranspose,
           conjTranspose_fromCols_eq_fromRows_conjTranspose]
       · rintro i (k | k | k) <;> simp [mid, Matrix.one_apply]
-    have h_disjoint : Function.Injective ((inr ∘ mid ∘ blk') ⊕ᵥ (inr ∘ mid ∘ blk) :
-        Fin F.blockRank ⊕ Fin F.blockRank →
-          Fin 2 ⊕ FloorPairs l (m + 1) ⊕ ι ⊕ FloorPairs l (m + 1)) := by
+    have h_disjoint : Function.Injective
+        ((inr ∘ mid ∘ blk') ⊕ᵥ (inr ∘ mid ∘ blk)
+          : Fin F.blockRank ⊕ Fin F.blockRank
+            → Fin 2 ⊕ FloorPairs l (m + 1) ⊕ ι ⊕ FloorPairs l (m + 1)) := by
       simpa only [comp_elim] using inr_injective.comp (h_mid.comp h_blocks)
     simpa [SemilocalField.volume_O, volume_coordinateBox, Size.vecsOfSize, -Sum.forall,
-      Set.univ_inter] using!
-      h_solved.setLIntegral_le isOpen_O.measurableSet h_disjoint measurable_one
-  calc F.groupMeasure F.boxSet
+        Set.univ_inter]
+      using! h_solved.setLIntegral_le isOpen_O.measurableSet h_disjoint measurable_one
+  calc
+    F.groupMeasure F.boxSet
     _ ≤ F.quotientMeasureFrom 0 {g : T.G | F.IsNear (𝔰.ϱ + 2) (g * 1)} := by
       simpa [h.boxSet_eq, floorModulus, IsNear, partialGroupMeasure_zero_eq] using
         (h.ascConv_mconv_unitaryLevel_coset (g := 1) (c := 1) (by simp)).le
@@ -961,12 +1007,14 @@ lemma volume_intUnits_le_weylLaw_boxSet (l : ℕ) : volume P.intUnits ≤ weylLa
           ((fun c : A ↦ (floorWeyl (T := T) l c)⁻¹) ⁻¹' F.boxSet) := measure_mono h_mem
     _ ≤ weylLaw l F.boxSet := le_map_apply (by fun_prop) _
 
-/-- Let `F` be a large lattice datum at a finite place. Let `l + i = 𝔰.ϱ`. The measure
+/--
+Let `F` be a large lattice datum at a finite place. Let `l + i = 𝔰.ϱ`. The measure
 `F.partialGroupMeasure l (i + 2)` convolves the Heisenberg and floor measures of the `i + 2` floors
 from `l` on. It gives the box `F.boxSet`, the group of integral isometries, mass at least
-`volume P.intUnits ^ (i + 1)`. -/
-theorem le_partialGroupMeasure_boxSet (i l : ℕ) (hl : l + i = 𝔰.ϱ) :
-    volume P.intUnits ^ (i + 1) ≤ F.partialGroupMeasure l (i + 2) F.boxSet := by
+`volume P.intUnits ^ (i + 1)`.
+-/
+theorem le_partialGroupMeasure_boxSet (i l : ℕ) (hl : l + i = 𝔰.ϱ)
+    : volume P.intUnits ^ (i + 1) ≤ F.partialGroupMeasure l (i + 2) F.boxSet := by
   -- Each floor contributes at least `volume P.intUnits`; descend from the top floor.
   induction i generalizing l with
   | zero =>

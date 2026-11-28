@@ -312,10 +312,12 @@ lemma sum_termSize_mul_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Fi
         ofReal_natCast]
     _ ≤ .ofReal (S.tailScale * B) := by grw [S.cube_add_one_le_tailScale]
 
-/-- Two terms lie in the same link class if `𝗀 = S.termDisc` vanishes for neither and their links
-(`New.link`) are equal. -/
-def InSameLinkClass {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
-    (γ γ' : S.G E) : Prop :=
+/--
+Two terms lie in the same link class if `𝗀 = S.termDisc` vanishes for neither and their links
+(`New.link`) are equal.
+-/
+def InSameLinkClass {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰) (γ γ' : S.G E)
+    : Prop :=
   S.termDisc γ ≠ 0 ∧ S.termDisc γ' ≠ 0 ∧ link γ = link γ'
 
 /-- Let `S` be data of the filling theorem that satisfy the standing hypotheses `S.IsAdmissible`.
@@ -382,35 +384,42 @@ lemma pow_mul_mainSecondMoment_div_le {E : Type} [Field E] [CMType E] {𝔰 : Sh
     _ ≤ S.identitySecondMoment / S.tailScale ^ 10 := by
       grw [← pow_mul, pow_le_pow_right₀ hτ (by norm_num : 10 ≤ 4 * 3)]
 
-/-- **Remaining terms, pairs that do not lie in the same link class.** Let `E` be a CM field with a
+/--
+**Remaining terms, pairs that do not lie in the same link class.** Let `E` be a CM field with a
 primitive root of unity of order 5040, and let `S` be data of the filling theorem over `E` that
 satisfy the standing hypotheses `S.IsAdmissible`. Sum over all classes `c`, `c'` and all near pairs
 over them whose links (`New.link`) differ or for one of which `𝗀 = S.termDisc` vanishes. The
-products of the sizes of the two terms add up to at most `b ^ (-k f) 𝒟_id`. -/
-theorem sum_termSize_mul_not_inSameLinkClass_le {E : Type} [Field E] [CMType E]
-    {𝔰 : Shape} {S : Filling E 𝔰} [HasPrimitiveRoot5040 E] [S.IsAdmissible] :
-    ∑ c : S.Classes, ∑ c' : S.Classes,
-      ∑' q : {q : S.G E × S.G E |
-        S.IsNearPairOverAgreeingBlock c c' q ∧ ¬S.InSameLinkClass q.1 q.2},
-        ENNReal.ofReal
-          (S.termSize c c' (q : S.G E × S.G E).1 * S.termSize c c' (q : S.G E × S.G E).2) ≤
-      .ofReal (S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E)) := by
+products of the sizes of the two terms add up to at most `b ^ (-k f) 𝒟_id`.
+-/
+theorem sum_termSize_mul_not_inSameLinkClass_le
+    {E : Type} [Field E] [CMType E]
+    {𝔰 : Shape} {S : Filling E 𝔰} [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+    : ∑ c : S.Classes, ∑ c' : S.Classes,
+        ∑' q : {q : S.G E × S.G E |
+          S.IsNearPairOverAgreeingBlock c c' q ∧ ¬S.InSameLinkClass q.1 q.2},
+          ENNReal.ofReal
+            (S.termSize c c' (q : S.G E × S.G E).1 * S.termSize c c' (q : S.G E × S.G E).2)
+      ≤ .ofReal (S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E)) := by
   -- Apply `sum_termSize_mul_le` with `B = τ ^ (-10) 𝒟_id`, according to the corank of the links.
   have hM : 2 ≤ S.M := two_le_M
   have hτ : 1 ≤ S.tailScale := one_le_tailScale
   have h_id : 0 ≤ S.identitySecondMoment := identitySecondMoment_nonneg
-  have h_const : S.tailScale * (S.identitySecondMoment / S.tailScale ^ 10) ≤
-      S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E) :=
+  have h_const
+      : S.tailScale * (S.identitySecondMoment / S.tailScale ^ 10)
+        ≤ S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E) :=
     calc
       _ = S.identitySecondMoment / S.tailScale ^ 9 := by field_simp
       _ ≤ S.identitySecondMoment / S.tailScale ^ 4 := by
         grw [pow_le_pow_right₀ hτ (by norm_num : 4 ≤ 9)]
       _ = _ := by rw [tailScale_pow_four]
   have hB : 0 ≤ S.identitySecondMoment / S.tailScale ^ 10 := by positivity
-  refine (sum_termSize_mul_le (fun c c' ↦ {q : S.G E × S.G E |
-      S.IsNearPairOverAgreeingBlock c c' q ∧ ¬S.InSameLinkClass q.1 q.2})
-    (fun c c' q hq ↦ hq.left) hB ?_).trans (ofReal_le_ofReal h_const)
-  rintro c c' γ γ' ⟨hq, h_class : ¬S.InSameLinkClass γ γ'⟩
+  refine (sum_termSize_mul_le
+    (fun c c' ↦
+      {q : S.G E × S.G E |
+        S.IsNearPairOverAgreeingBlock c c' q ∧ ¬S.InSameLinkClass q.1 q.2})
+    (fun c c' q hq ↦ hq.left)
+    hB ?_).trans (ofReal_le_ofReal h_const)
+  rintro c c' γ γ' ⟨hq, h_class : ¬ S.InSameLinkClass γ γ'⟩
   set j : Fin (𝔰.ϱ + 2) := S.cellRank γ
   set j' : Fin (𝔰.ϱ + 2) := S.cellRank γ'
   set i : ℕ := S.linkCorank γ γ'
@@ -423,83 +432,120 @@ theorem sum_termSize_mul_not_inSameLinkClass_le {E : Type} [Field E] [CMType E]
     have h_link : link γ = link γ' := linkCorank_eq_zero_iff.1 hi
     have h_both : S.termDisc γ = 0 ↔ S.termDisc γ' = 0 :=
       termDisc_eq_zero_iff_of_link_eq h_cell h_cell' h_link
-    have h_disc : S.termDisc γ = 0 :=
-      by_contra fun h_ne ↦ h_class ⟨h_ne, mt h_both.2 h_ne, h_link⟩
-    have h_low : ¬𝔰.ϱ < j := fun h_top ↦ h_cell.lt_iff_termDisc_ne_zero.1 h_top h_disc
-    have h_low' : ¬𝔰.ϱ < j' := fun h_top ↦
+    have h_disc : S.termDisc γ = 0 := by_contra fun h_ne ↦ h_class ⟨h_ne, mt h_both.2 h_ne, h_link⟩
+    have h_low : ¬ 𝔰.ϱ < j := fun h_top ↦ h_cell.lt_iff_termDisc_ne_zero.1 h_top h_disc
+    have h_low' : ¬ 𝔰.ϱ < j' := fun h_top ↦
       h_cell'.lt_iff_termDisc_ne_zero.1 h_top (h_both.1 h_disc)
     have h_full : 𝔰.k - finrank E (commonLink γ γ') = 0 := by lia
-    have h_one : (S.pairDiscriminant c c' γ γ' * 1) ^ 2 ≤
-        S.levelGauge j c c' γ * S.levelGauge j' c c' γ' := by
+    have h_one
+        : (S.pairDiscriminant c c' γ γ' * 1) ^ 2
+          ≤ S.levelGauge j c c' γ * S.levelGauge j' c c' γ' := by
       simpa [show S.linkCorank γ γ' = 0 from hi] using h_gain
     have h_moment : S.cellRankSecondMoment j = S.identitySecondMoment / S.tailScale ^ 16 :=
       ite_eq_right h_low
     have h_moment' : S.cellRankSecondMoment j' = S.identitySecondMoment / S.tailScale ^ 16 :=
       ite_eq_right h_low'
-    refine ⟨1, S.identitySecondMoment / S.tailScale ^ 16, one_pos, h_one, h_moment.le, h_moment'.le,
-      le_of_eq ?_⟩
+    refine ⟨
+      1,
+      S.identitySecondMoment / S.tailScale ^ 16,
+      one_pos,
+      h_one,
+      h_moment.le,
+      h_moment'.le,
+      le_of_eq ?_
+    ⟩
     rw [h_full, one_pow, zero_add]
     field_simp
   · -- Different links: the gain is `(M / 2) ^ (i f)`, and the corank is at most `i + 1`.
     have h_corank_le : 𝔰.k - finrank E (commonLink γ γ') ≤ i + 1 := by lia
-    exact ⟨(S.M / 2) ^ (i * numInfPlaces E), S.mainSecondMoment, by positivity, h_gain,
-      cellRankSecondMoment_le_mainSecondMoment j, cellRankSecondMoment_le_mainSecondMoment j',
-      pow_mul_mainSecondMoment_div_le hi h_corank_le⟩
+    exact ⟨
+      (S.M / 2) ^ (i * numInfPlaces E),
+      S.mainSecondMoment,
+      by positivity,
+      h_gain,
+      cellRankSecondMoment_le_mainSecondMoment j,
+      cellRankSecondMoment_le_mainSecondMoment j',
+      pow_mul_mainSecondMoment_div_le hi h_corank_le
+    ⟩
 
-/-- **Remaining terms, pairs in the same link class.** Let `E` be a CM field with a primitive root
+/--
+**Remaining terms, pairs in the same link class.** Let `E` be a CM field with a primitive root
 of unity of order 5040, and let `S` be data of the filling theorem over `E` that satisfy the
 standing hypotheses `S.IsAdmissible`. Let `z ≠ 0`. Sum over all classes `c`, `c'` and all near pairs
 over them with equal links (`New.link`), with `𝗀 = S.termDisc ≠ 0` for both terms, and whose
 reduction `s` has `z ≤ S.meetNorm s`. The products of the sizes `S.termSize` of the two terms add up
-to at most `(b ^ (2 f) / z) ^ k 𝒟_main`. -/
-theorem sum_termSize_mul_inSameLinkClass_le {E : Type} [Field E] [CMType E]
-    {𝔰 : Shape} {S : Filling E 𝔰} [HasPrimitiveRoot5040 E] [S.IsAdmissible] {z : ℕ} (hz : z ≠ 0) :
-    ∑ c : S.Classes, ∑ c' : S.Classes,
-      ∑' q : {q : S.G E × S.G E | S.IsNearPairOverAgreeingBlock c c' q ∧
-        S.InSameLinkClass q.1 q.2 ∧ ∃ s : S.ResidueGL, z ≤ S.meetNorm s ∧ q.1 ∈ S.termsOver c s c'},
-        ENNReal.ofReal
-          (S.termSize c c' (q : S.G E × S.G E).1 * S.termSize c c' (q : S.G E × S.G E).2) ≤
-      .ofReal ((S.b ^ (2 * numInfPlaces E) / z) ^ 𝔰.k * S.mainSecondMoment) := by
+to at most `(b ^ (2 f) / z) ^ k 𝒟_main`.
+-/
+theorem sum_termSize_mul_inSameLinkClass_le
+    {E : Type} [Field E] [CMType E]
+    {𝔰 : Shape} {S : Filling E 𝔰} [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+    {z : ℕ} (hz : z ≠ 0)
+    : ∑ c : S.Classes, ∑ c' : S.Classes,
+        ∑' q : {q : S.G E × S.G E | S.IsNearPairOverAgreeingBlock c c' q ∧
+          S.InSameLinkClass q.1 q.2 ∧ ∃ s : S.ResidueGL, z ≤ S.meetNorm s ∧ q.1 ∈ S.termsOver c s c'},
+          ENNReal.ofReal
+            (S.termSize c c' (q : S.G E × S.G E).1 * S.termSize c c' (q : S.G E × S.G E).2)
+      ≤ .ofReal ((S.b ^ (2 * numInfPlaces E) / z) ^ 𝔰.k * S.mainSecondMoment) := by
   have hτ : 1 ≤ S.tailScale := one_le_tailScale
   have h_main : 0 ≤ S.mainSecondMoment := mainSecondMoment_nonneg
-  have h_const : S.tailScale * (S.tailScale ^ 7 * S.mainSecondMoment / z ^ 𝔰.k) =
-      (S.b ^ (2 * numInfPlaces E) / z) ^ 𝔰.k * S.mainSecondMoment := by
+  have h_const
+      : S.tailScale * (S.tailScale ^ 7 * S.mainSecondMoment / z ^ 𝔰.k)
+        = (S.b ^ (2 * numInfPlaces E) / z) ^ 𝔰.k * S.mainSecondMoment := by
     rw [div_pow, ← pow_mul, mul_assoc, mul_comm _ 𝔰.k, pow_mul', ← tailScale_pow_four]
     ring
   rw [← h_const]
-  refine sum_termSize_mul_le (fun c c' ↦ {q : S.G E × S.G E | S.IsNearPairOverAgreeingBlock c c' q ∧
-      S.InSameLinkClass q.1 q.2 ∧ ∃ s : S.ResidueGL, z ≤ S.meetNorm s ∧ q.1 ∈ S.termsOver c s c'})
-    (fun c c' q hq ↦ hq.left) (by positivity) ?_
-  rintro c c' γ γ' ⟨⟨⟨-, h_cell⟩, ⟨-, h_cell'⟩, s, h_agrees, h_over, h_over'⟩,
-    ⟨h_disc, -, h_link⟩, s', h_meet, h_over_s'⟩
+  refine sum_termSize_mul_le
+    (fun c c' ↦
+      {q : S.G E × S.G E | S.IsNearPairOverAgreeingBlock c c' q ∧
+        S.InSameLinkClass q.1 q.2 ∧ ∃ s : S.ResidueGL, z ≤ S.meetNorm s ∧ q.1 ∈ S.termsOver c s c'})
+    (fun c c' q hq ↦ hq.left)
+    (by positivity) ?_
+  rintro c c' γ γ'
+    ⟨
+      ⟨⟨-, h_cell⟩, ⟨-, h_cell'⟩, s, h_agrees, h_over, h_over'⟩,
+      ⟨h_disc, -, h_link⟩,
+      s',
+      h_meet,
+      h_over_s'
+    ⟩
   obtain rfl : s' = s := eq_of_mem_termsOver h_over_s' h_over
   -- The links are equal and the cell rank is the top one: the gain is `z`, the corank `≤ 1`.
   have h_zero : S.linkCorank γ γ' = 0 := linkCorank_eq_zero_iff.2 h_link
   have h_top : 𝔰.ϱ < S.cellRank γ := h_cell.lt_iff_termDisc_ne_zero.2 h_disc
-  have h_gain : (S.pairDiscriminant c c' γ γ' * z) ^ 2 ≤
-      S.levelGauge (S.cellRank γ) c c' γ * S.levelGauge (S.cellRank γ') c c' γ' := by
-    simpa [h_zero, h_top] using
-      pairDiscriminant_sq_le h_agrees h_meet h_over h_over' h_cell h_cell'
+  have h_gain
+      : (S.pairDiscriminant c c' γ γ' * z) ^ 2
+        ≤ S.levelGauge (S.cellRank γ) c c' γ * S.levelGauge (S.cellRank γ') c c' γ' := by
+    simpa [h_zero, h_top] using pairDiscriminant_sq_le h_agrees h_meet h_over h_over' h_cell h_cell'
   have h_corank : 𝔰.k - finrank E (commonLink γ γ') ≤ 1 := by
-    have h_rank : 𝔰.k ≤ finrank E (commonLink γ γ') + S.linkCorank γ γ' +
-        (S.cellRank γ - 𝔰.ϱ) := le_finrank_commonLink_add h_cell γ'
+    have h_rank : 𝔰.k ≤ finrank E (commonLink γ γ') + S.linkCorank γ γ' + (S.cellRank γ - 𝔰.ϱ) :=
+      le_finrank_commonLink_add h_cell γ'
     lia
-  have h_pow : S.tailScale ^ (𝔰.k - finrank E (commonLink γ γ') + 6) * S.mainSecondMoment /
-      (z : ℝ) ^ 𝔰.k ≤ S.tailScale ^ 7 * S.mainSecondMoment / (z : ℝ) ^ 𝔰.k := by
+  have h_pow
+      : S.tailScale ^ (𝔰.k - finrank E (commonLink γ γ') + 6) * S.mainSecondMoment / (z : ℝ) ^ 𝔰.k
+        ≤ S.tailScale ^ 7 * S.mainSecondMoment / (z : ℝ) ^ 𝔰.k := by
     gcongr
     lia
-  exact ⟨z, S.mainSecondMoment, by positivity, h_gain, cellRankSecondMoment_le_mainSecondMoment _,
-    cellRankSecondMoment_le_mainSecondMoment _, h_pow⟩
+  exact ⟨
+    z,
+    S.mainSecondMoment,
+    by positivity,
+    h_gain,
+    cellRankSecondMoment_le_mainSecondMoment _,
+    cellRankSecondMoment_le_mainSecondMoment _,
+    h_pow
+  ⟩
 
 /-- The pieces into which a block is split: one for each link, and one for `𝗀 = 0`. -/
 abbrev Piece (E : Type) [Field E] (𝔰 : Shape) : Type :=
   Option (Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E))
 
 open scoped Classical in
-/-- The piece of a term `γ`: its link if `𝗀(γ) = S.termDisc γ ≠ 0`; the terms with `𝗀 = 0` form one
-further piece. -/
-noncomputable def piece {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
-    (γ : S.G E) : Piece E 𝔰 :=
+/--
+The piece of a term `γ`: its link if `𝗀(γ) = S.termDisc γ ≠ 0`; the terms with `𝗀 = 0` form one
+further piece.
+-/
+noncomputable def piece {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰) (γ : S.G E)
+    : Piece E 𝔰 :=
   if S.termDisc γ = 0 then none else some (link γ)
 
 /-- The piece of `γ` is the submodule `Λ` if and only if `𝗀(γ) = S.termDisc γ` is not zero and the
@@ -677,18 +723,22 @@ lemma enorm_amplitudeSum_sq_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S
       (CompleteLattice.summable.tsum_add_tsum_compl (s := diagonal) CompleteLattice.summable).symm
     _ ≤ _ := add_le_add h_diagonal.le h_others
 
-/-- **Remaining terms, reduction to one link.** Let `E` be a CM field with a primitive root of unity
+/--
+**Remaining terms, reduction to one link.** Let `E` be a CM field with a primitive root of unity
 of order 5040, and let `S` be data of the filling theorem over `E` that satisfy the standing
 hypotheses `S.IsAdmissible`. Let `Ω` be a set of reductions, `w ≥ 0` and `ν = S.unipotentCovolume`.
 Suppose that the terms with `𝗀 = S.termDisc ≠ 0`, taken link by link, have sum of squared norms of
 amplitude sums (`linkSecondMoment`) at most `w ν²` over `Ω`. Then the second moment over `Ω` of
-`Γ* = S.remainingTerms`, for the cut Bessel function, is at most `w + b ^ (-k f) 𝒟_id`. -/
-theorem secondMoment_remainingTerms_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
-    [HasPrimitiveRoot5040 E] [S.IsAdmissible] {w : ℝ} {Ω : Set S.ResidueGL} (hw : 0 ≤ w)
-    (h_linkMoment : linkSecondMoment {γ : S.G E | S.termDisc γ ≠ 0} Ω ≤
-      ENNReal.ofReal (w * S.unipotentCovolume ^ 2)) :
-    secondMoment (S.amplitudeSum .cut S.remainingTerms) Ω ≤
-      w + S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E) := by
+`Γ* = S.remainingTerms`, for the cut Bessel function, is at most `w + b ^ (-k f) 𝒟_id`.
+-/
+theorem secondMoment_remainingTerms_le
+    {E : Type} [Field E] [CMType E]
+    {𝔰 : Shape} {S : Filling E 𝔰} [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+    {w : ℝ} {Ω : Set S.ResidueGL} (hw : 0 ≤ w)
+    (h_linkMoment : linkSecondMoment {γ : S.G E | S.termDisc γ ≠ 0} Ω
+      ≤ ENNReal.ofReal (w * S.unipotentCovolume ^ 2))
+    : secondMoment (S.amplitudeSum .cut S.remainingTerms) Ω
+      ≤ w + S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E) := by
   -- Bound each block by `enorm_amplitudeSum_sq_le`, and sum over the pairs that do not satisfy
   -- `InSameLinkClass` by `sum_termSize_mul_not_inSameLinkClass_le`.
   classical
@@ -706,38 +756,42 @@ theorem secondMoment_remainingTerms_le {E : Type} [Field E] [CMType E] {𝔰 : S
       ¬S.InSameLinkClass q.1 q.2}
   let apart (c c' : S.Classes) : Set (S.G E × S.G E) :=
     {q | S.IsNearPairOverAgreeingBlock c c' q ∧ ¬S.InSameLinkClass q.1 q.2}
-  have h_mem {c c' : S.Classes} {s : S.ResidueGL} : apartOver c s c' ⊆ apart c c' :=
-    fun q ⟨⟨hq, hq'⟩, h_class⟩ ↦ ⟨isNearPairOverAgreeingBlock_of_mem_nearRepresentativesOver hq hq',
-      h_class⟩
+  have h_mem {c c' : S.Classes} {s : S.ResidueGL}
+      : apartOver c s c' ⊆ apart c c' := fun q ⟨⟨hq, hq'⟩, h_class⟩ ↦
+    ⟨isNearPairOverAgreeingBlock_of_mem_nearRepresentativesOver hq hq', h_class⟩
   -- A pair of terms determines its `s`.
-  have h_blocks (c c' : S.Classes) :
-      ∑' s : Ω, ∑' q : apartOver c s c', size c c' q ≤ ∑' q : apart c c', size c c' q := by
+  have h_blocks (c c' : S.Classes)
+      : ∑' s : Ω, ∑' q : apartOver c s c', size c c' q ≤ ∑' q : apart c c', size c c' q := by
     let pair (x : Σ s : Ω, apartOver c s c') : apart c c' := ⟨x.2, h_mem x.2.prop⟩
     have h_injective : pair.Injective := by
       rintro ⟨⟨s, _⟩, q, ⟨hq, _⟩, _⟩ ⟨⟨s', _⟩, q', ⟨hq', _⟩, _⟩ ⟨⟩
-      obtain rfl : s = s' := eq_of_mem_termsOver (mem_termsOver_of_mem_nearRepresentativesOver hq)
-        (mem_termsOver_of_mem_nearRepresentativesOver hq')
+      obtain rfl : s = s' :=
+        eq_of_mem_termsOver (mem_termsOver_of_mem_nearRepresentativesOver hq)
+          (mem_termsOver_of_mem_nearRepresentativesOver hq')
       rfl
     exact (tsum_sigma' fun x ↦ size c c' (pair x)).symm.trans_le
       (tsum_comp_le_tsum_of_injective h_injective fun q ↦ size c c' q)
-  have h_block (c c' : S.Classes) (s : Ω) : ‖S.amplitudeSum .cut T c s c'‖ₑ ^ 2 ≤
-      ∑' Λ, ‖S.amplitudeSum .cut (T ∩ {γ | S.termDisc γ ≠ 0} ∩ link ⁻¹' {Λ}) c s c'‖ₑ ^ 2 +
-        .ofReal (S.unipotentCovolume ^ 2) * ∑' q : apartOver c s c', size c c' q :=
+  have h_block (c c' : S.Classes) (s : Ω)
+      : ‖S.amplitudeSum .cut T c s c'‖ₑ ^ 2
+        ≤ ∑' Λ, ‖S.amplitudeSum .cut (T ∩ {γ | S.termDisc γ ≠ 0} ∩ link ⁻¹' {Λ}) c s c'‖ₑ ^ 2
+          + .ofReal (S.unipotentCovolume ^ 2) * ∑' q : apartOver c s c', size c c' q :=
     enorm_amplitudeSum_sq_le isStable_remainingTerms hT.subset s
-  suffices ENNReal.ofReal (∑ c, ∑ c', ∑ s with s ∈ Ω, ‖S.amplitudeSum .cut T c s c'‖ ^ 2) ≤
-      .ofReal ((w + S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E)) * S.unipotentCovolume ^
-        2) by
+  suffices ENNReal.ofReal (∑ c, ∑ c', ∑ s with s ∈ Ω, ‖S.amplitudeSum .cut T c s c'‖ ^ 2)
+      ≤ .ofReal
+        ((w + S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E)) * S.unipotentCovolume ^ 2) by
     simp_rw [secondMoment, ← Finset.sum_div]
     rwa [div_le_iff₀ (by positivity), ← ofReal_le_ofReal_iff (by positivity)]
   calc
     _ = ∑ c, ∑ c', ∑' s : Ω, ‖S.amplitudeSum .cut T c s c'‖ₑ ^ 2 := by
       simp (disch := (intros; positivity)) [← sum_subtype_eq_sum_filter, ofReal_sum_of_nonneg]
-    _ ≤ linkSecondMoment (T ∩ {γ | S.termDisc γ ≠ 0}) Ω + .ofReal (S.unipotentCovolume ^ 2) *
-        ∑ c, ∑ c', ∑' s : Ω, ∑' q : apartOver c s c', size c c' q := by
+    _ ≤ linkSecondMoment (T ∩ {γ | S.termDisc γ ≠ 0}) Ω
+        + .ofReal (S.unipotentCovolume ^ 2)
+          * ∑ c, ∑ c', ∑' s : Ω, ∑' q : apartOver c s c', size c c' q := by
       grw [h_block]
       simp [linkSecondMoment, sum_add_distrib, mul_sum]
-    _ ≤ .ofReal (w * S.unipotentCovolume ^ 2) + .ofReal (S.unipotentCovolume ^ 2) *
-        .ofReal (S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E)) := by
+    _ ≤ .ofReal (w * S.unipotentCovolume ^ 2)
+        + .ofReal (S.unipotentCovolume ^ 2)
+          * .ofReal (S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E)) := by
       grw [h_blocks, h_linkMoment]
       gcongr
       exact sum_termSize_mul_not_inSameLinkClass_le
@@ -745,7 +799,8 @@ theorem secondMoment_remainingTerms_le {E : Type} [Field E] [CMType E] {𝔰 : S
       rw [add_mul, ofReal_add (by positivity) (by positivity),
         mul_comm (S.identitySecondMoment / _), ofReal_mul (sq_nonneg S.unipotentCovolume)]
 
-/-- **Remaining terms, one link at a time.** Let `E` be a CM field with a primitive root of unity of
+/--
+**Remaining terms, one link at a time.** Let `E` be a CM field with a primitive root of unity of
 order 5040, and let `S` be data of the filling theorem over `E` that satisfy the standing hypotheses
 `S.IsAdmissible`. Let `Ω` be a set of reductions, that is, of elements of `S.ResidueGL`, the product
 of the general linear groups over the residue fields at the chosen places above the level `M = S.M`.
@@ -759,14 +814,16 @@ lie over `(c, s, c')` and have link `Λ`. The squared norms of these sums, added
 `s ∈ Ω` and `Λ`, give `linkSecondMoment T Ω`, and this is at most `(b ^ (2 f) / z) ^ k 𝒟_main ν²`.
 Here `b = S.b` is the size parameter, `k = 𝔰.k` is the dimension of the definite space, `f` is the
 number of infinite places of `E`, and `𝒟_main = S.mainSecondMoment` and the covolume
-`ν = S.unipotentCovolume` are real constants attached to `S`. -/
-theorem linkSecondMoment_le_of_le_meetNorm {E : Type} [Field E] [CMType E]
+`ν = S.unipotentCovolume` are real constants attached to `S`.
+-/
+theorem linkSecondMoment_le_of_le_meetNorm
+    {E : Type} [Field E] [CMType E]
     {𝔰 : Shape} {S : Filling E 𝔰} [HasPrimitiveRoot5040 E] [S.IsAdmissible]
-    {Ω : Set S.ResidueGL} {z : ℕ} (hz : z ≠ 0)
-    (h_meet : ∀ s ∈ Ω, z ≤ S.meetNorm s) :
-    linkSecondMoment {γ : S.G E | S.termDisc γ ≠ 0} Ω ≤
-      ENNReal.ofReal ((S.b ^ (2 * numInfPlaces E) / z) ^ 𝔰.k * S.mainSecondMoment *
-        S.unipotentCovolume ^ 2) := by
+    {Ω : Set S.ResidueGL} {z : ℕ} (hz : z ≠ 0) (h_meet : ∀ s ∈ Ω, z ≤ S.meetNorm s)
+    : linkSecondMoment {γ : S.G E | S.termDisc γ ≠ 0} Ω
+      ≤ ENNReal.ofReal
+        ((S.b ^ (2 * numInfPlaces E) / z) ^ 𝔰.k * S.mainSecondMoment
+          * S.unipotentCovolume ^ 2) := by
   -- The square of the block of one link is bounded by pairs of near representatives in the same
   -- link class.
   let Link : Type := Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E)
@@ -783,8 +840,8 @@ theorem linkSecondMoment_le_of_le_meetNorm {E : Type} [Field E] [CMType E]
       ∃ s : S.ResidueGL, z ≤ S.meetNorm s ∧ q.1 ∈ S.termsOver c s c'}
   let size (c c' : S.Classes) (q : S.G E × S.G E) : ℝ≥0∞ :=
     .ofReal (S.termSize c c' q.1 * S.termSize c c' q.2)
-  have h_mem {c c' : S.Classes} (p : Ω × Link) (q q' : nearRepsInLink c c' p) :
-      (q.val, q'.val) ∈ sameLinkPairs c c' := by
+  have h_mem {c c' : S.Classes} (p : Ω × Link) (q q' : nearRepsInLink c c' p)
+      : (q.val, q'.val) ∈ sameLinkPairs c c' := by
     obtain ⟨⟨s, hs⟩, Λ⟩ := p
     obtain ⟨γ, hγ⟩ := q
     obtain ⟨γ', hγ'⟩ := q'
@@ -795,15 +852,16 @@ theorem linkSecondMoment_le_of_le_meetNorm {E : Type} [Field E] [CMType E]
       isNearPairOverAgreeingBlock_of_mem_nearRepresentativesOver hγ hγ'
     have h_class : S.InSameLinkClass γ γ' := ⟨h_disc, h_disc', h_link.trans h_link'.symm⟩
     exact ⟨h_pair, h_class, s, h_meet s hs, mem_termsOver_of_mem_nearRepresentativesOver hγ⟩
-  have h_blocks (c c' : S.Classes) :
-      ∑' (s : Ω) (Λ : Link), ‖S.amplitudeSum .cut (terms Λ) c s c'‖ₑ ^ 2 ≤
-        .ofReal (S.unipotentCovolume ^ 2) * ∑' q : sameLinkPairs c c', size c c' q := by
+  have h_blocks (c c' : S.Classes)
+      : ∑' (s : Ω) (Λ : Link), ‖S.amplitudeSum .cut (terms Λ) c s c'‖ₑ ^ 2
+        ≤ .ofReal (S.unipotentCovolume ^ 2) * ∑' q : sameLinkPairs c c', size c c' q := by
     rw [← tsum_prod]
     apply tsum_le_of_pair_blocks (size c c') (h_mem (c := c) (c' := c'))
     · rintro ⟨s, Λ⟩ ⟨s', Λ'⟩ q _ hq _ hq' _
       refine Prod.ext
         (Subtype.ext (eq_of_mem_termsOver (mem_termsOver_of_mem_nearRepresentativesOver hq)
-        (mem_termsOver_of_mem_nearRepresentativesOver hq'))) ?_
+          (mem_termsOver_of_mem_nearRepresentativesOver hq')))
+        ?_
       exact ((mem_of_mem_nearRepresentativesOver hq).2 : link q = Λ).symm.trans
         (mem_of_mem_nearRepresentativesOver hq').2
     · intro p
@@ -813,12 +871,12 @@ theorem linkSecondMoment_le_of_le_meetNorm {E : Type} [Field E] [CMType E]
     _ = ∑ c : S.Classes, ∑ c' : S.Classes,
         ∑' (s : Ω) (Λ : Link), ‖S.amplitudeSum .cut (terms Λ) c s c'‖ₑ ^ 2 := by
       simp only [linkSecondMoment, tsum_fintype (β := S.Classes), terms, Link]
-    _ ≤ .ofReal (S.unipotentCovolume ^ 2) *
-        ∑ c : S.Classes, ∑ c' : S.Classes, ∑' q : sameLinkPairs c c', size c c' q := by
+    _ ≤ .ofReal (S.unipotentCovolume ^ 2)
+        * ∑ c : S.Classes, ∑ c' : S.Classes, ∑' q : sameLinkPairs c c', size c c' q := by
       grw [h_blocks]
       simp only [mul_sum, le_refl]
-    _ ≤ .ofReal (S.unipotentCovolume ^ 2) *
-        .ofReal ((S.b ^ (2 * numInfPlaces E) / z) ^ 𝔰.k * S.mainSecondMoment) := by
+    _ ≤ .ofReal (S.unipotentCovolume ^ 2)
+        * .ofReal ((S.b ^ (2 * numInfPlaces E) / z) ^ 𝔰.k * S.mainSecondMoment) := by
       gcongr
       exact sum_termSize_mul_inSameLinkClass_le hz
     _ = _ := by rw [mul_comm _ (S.unipotentCovolume ^ 2), ofReal_mul (sq_nonneg _)]

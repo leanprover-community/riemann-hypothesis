@@ -99,9 +99,10 @@ namespace New.Seesaw
 
 open Matrix Kronecker Space Splitting Subtype WeilData
 
-variable {E n n₀ : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n₀]
-  [DecidableEq n₀] {t : n → ℤˣ} {t₀ : n₀ → ℤˣ} {m : Type*} {g : G E t} {g₀ : G E t₀}
-  {u : unitary (𝔸 E)} {U : Space E n t} {V₀ : Space E n₀ t₀} {wt : n → ℤ}
+variable
+  {E n n₀ : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n₀] [DecidableEq n₀]
+  {t : n → ℤˣ} {t₀ : n₀ → ℤˣ} {m : Type*}
+  {g : G E t} {g₀ : G E t₀} {u : unitary (𝔸 E)} {U : Space E n t} {V₀ : Space E n₀ t₀} {wt : n → ℤ}
 
 /-- In rational coordinates the element of the unitary group of Hom(U, V₀) given by a pair (g, g₀)
 is the Kronecker product of g₀ and the transpose of g⁻¹. -/
@@ -249,10 +250,13 @@ namespace New
 open Matrix Seesaw QuotientAddGroup Subtype WeilData Function Space Splitting Circle Set Heisenberg
   MeasureTheory
 
-variable {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
-  [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X'] {s s' : ℕ} {N : E}
-  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {V : Space E ι ε} {V' : Space E ι' ε'} (Y : Grading V N X s)
-  (Y' : Grading V' N X' s') (d : ι' → ℤ) [WeilData E]
+variable
+  {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+  [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X']
+  {s s' : ℕ} {N : E} {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {V : Space E ι ε} {V' : Space E ι' ε'}
+  (Y : Grading V N X s) (Y' : Grading V' N X' s')
+  (d : ι' → ℤ)
+  [WeilData E]
   (α : (n : Type) → [Fintype n] → AutChar E) (f : 𝒮 (V.hom V'))
 
 omit [WeilData E] in
@@ -271,30 +275,38 @@ lemma Space.mul_mem_ratMatrices {γ : G E ε} {δ : G E ε'} {w : Matrix ι' ι 
   obtain ⟨w₀, rfl⟩ := hw
   exact ⟨δ₀ * (w₀ * γ₀), by simp [← hγ₀, ← hδ₀]⟩
 
-/-- The rational points of the parabolic subgroup of U(V) of elements that, in rational
-coordinates, do not lower the grading d of the basis. -/
+/--
+The rational points of the parabolic subgroup of U(V) of elements that, in rational
+coordinates, do not lower the grading d of the basis.
+-/
 def Space.ratParabolic (V : Space E ι' ε') : Subgroup (G E ε') :=
-  V.Γ ⊓ (parabolic fun b ↦ -d b).comap V.ratCoordMatrix.toHomUnits
+  V.Γ ⊓ (parabolic fun b ↦ - d b).comap V.ratCoordMatrix.toHomUnits
 
 namespace Grading
 
-/-- The constant term of `f` at `w` along the maps of positive degree for the grades of `Y` and the
+/--
+The constant term of `f` at `w` along the maps of positive degree for the grades of `Y` and the
 weights `d` on `V'`. It is the mean, over adelic vectors `v` modulo rational ones, of the value of
 the Heisenberg translate of `f` by `w` at the map that keeps the entries of `v` of positive degree
-and is zero elsewhere. -/
+and is zero elsewhere.
+-/
 def constTerm (w : Matrix ι' ι (𝔸 E)) : ℂ :=
   quotMean (ratVectors E (ι' × ι)) fun v : ι' × ι → 𝔸 E ↦
     homHeisenbergOp w f
       (V.homAtPoint V' (vecToMatrix fun r : ι' × ι ↦ if 0 < Y.mapDegree d r then v r else 0))
 
-/-- The kernel of one unfolding step: the constant term at `T = Y.stringMap Y'`, for the weights
-`Y'.gradeOf`, of the Weil translate of `f` by `(g, h)` twisted by the characters `α`. -/
+/--
+The kernel of one unfolding step: the constant term at `T = Y.stringMap Y'`, for the weights
+`Y'.gradeOf`, of the Weil translate of `f` by `(g, h)` twisted by the characters `α`.
+-/
 abbrev constTermAtStringMap (g : G E ε) (h : G E ε') : ℂ :=
   Y.constTerm Y'.gradeOf (twistedPairWeil α (g, h) f) (Y.stringMap Y')
 
-/-- The function `h ↦ ∫ W(r) * Y.constTermAtStringMap Y' α f r h dr` on U(V′)(𝔸) that one unfolding
+/--
+The function `h ↦ ∫ W(r) * Y.constTermAtStringMap Y' α f r h dr` on U(V′)(𝔸) that one unfolding
 step leaves; the integral is for `Y.besselMeasure`, the measure of the Bessel group of `Y` modulo
-its rational points. -/
+its rational points.
+-/
 def unfoldStep (W : Y.besselGroup → ℂ) (h : G E ε') : ℂ :=
   ∫ r : Y.besselGroup, W r * Y.constTermAtStringMap Y' α f r h ∂Y.besselMeasure
 
@@ -569,11 +581,13 @@ lemma exists_tsum_enorm_constTerm_le (hd : ∀ b : ι', d (Y'.stringReversal b) 
     _ = (‖U.θ‖₊ * M : NNReal) * ‖f‖ₑ := by rw [ENNReal.coe_mul, mul_assoc, eNorm_eq_nnNorm]
 
 variable (Y) in
-/-- The set `𝒞` of classes whose chosen representative agrees with `T = Y.stringMap Y'`
+/--
+The set `𝒞` of classes whose chosen representative agrees with `T = Y.stringMap Y'`
 (`New.Grading.AgreesWithStringMap`). For `d ≤ Y'.gradeOf ⊔ 0` any representative may be used
-(`agreesWithStringMap_congr_rat`). -/
-def agreeingClasses (Y' : Grading V' N X' (s - 1)) (d : ι' → ℤ) :
-    Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps d) :=
+(`agreesWithStringMap_congr_rat`).
+-/
+def agreeingClasses (Y' : Grading V' N X' (s - 1)) (d : ι' → ℤ)
+    : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps d) :=
   {w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d | Y.AgreesWithStringMap Y' w.out}
 
 /-- For weights `d ≤ Y'.gradeOf ⊔ 0` odd under the string reversal of `Y'`, take the classes of

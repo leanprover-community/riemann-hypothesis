@@ -197,12 +197,14 @@ lemma norm_logDeriv_entireL_le (χ : DirichletCharacter ℂ N) {s : ℂ} {l : �
   rw [h_split]
   linarith [norm_add_le (logDeriv (regularL χ) s) (logDeriv u s)]
 
-/-- **Zero-free region** for a fixed character: for all large `l`, on `re s ≥ 1 - l⁻²⁵`,
+/--
+**Zero-free region** for a fixed character: for all large `l`, on `re s ≥ 1 - l⁻²⁵`,
 `|s| ≤ e^l` the function `entireL χ` (`L(s, χ)` with the pole removed) does not vanish and its
-logarithmic derivative is at most `2 l²⁵`. -/
-theorem eventually_norm_logDeriv_entireL_le (χ : DirichletCharacter ℂ N) :
-    ∀ᶠ l : ℝ in atTop, ∀ s : ℂ, 1 - 1 / l ^ 25 ≤ s.re → ‖s‖ ≤ rexp l →
-      entireL χ s ≠ 0 ∧ ‖logDeriv (entireL χ) s‖ ≤ 2 * l ^ 25 := by
+logarithmic derivative is at most `2 l²⁵`.
+-/
+theorem eventually_norm_logDeriv_entireL_le (χ : DirichletCharacter ℂ N)
+    : ∀ᶠ l : ℝ in atTop, ∀ s : ℂ, 1 - 1 / l ^ 25 ≤ s.re → ‖s‖ ≤ rexp l →
+        entireL χ s ≠ 0 ∧ ‖logDeriv (entireL χ) s‖ ≤ 2 * l ^ 25 := by
   have inv_tendsto : Tendsto (fun l : ℝ ↦ 1 / l) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_id
   filter_upwards [eventually_ge_atTop (10 ^ 10), eventually_ge_atTop (N : ℝ),

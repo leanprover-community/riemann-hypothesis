@@ -53,26 +53,30 @@ open Finset Int
 
 namespace New.Lift
 
-/-- Every element of `U` lies in the low window `[-η, η]` or in the far window `ε [b, b + W]`, where
-`ε` is a sign. -/
+/--
+Every element of `U` lies in the low window `[-η, η]` or in the far window `ε [b, b + W]`, where
+`ε` is a sign.
+-/
 abbrev FitsWindows (η : ℕ) (ε : ℤˣ) (b W : ℕ) (U : Finset ℤ) : Prop :=
   ∀ u ∈ U,
-    (-η ≤ u ∧ u ≤ η) ∨
-    ((ε : ℤ) = 1 ∧ b ≤ u ∧ u ≤ b + W) ∨
-    ((ε : ℤ) = -1 ∧ b ≤ -u ∧ -u ≤ b + W)
+    (-η ≤ u ∧ u ≤ η) ∨ ((ε : ℤ) = 1 ∧ b ≤ u ∧ u ≤ b + W) ∨ ((ε : ℤ) = -1 ∧ b ≤ -u ∧ -u ≤ b + W)
 
-/-- The system of orders that is `-u` on the line `u` at every level `a`, raised by `t` at the
-level `0`. -/
-@[grind] def raisedOrdersAtZero (t : ℤ) (a : ℕ) (u : ℤ) : ℤ := (if a = 0 then t else 0) - u
+/--
+The system of orders that is `-u` on the line `u` at every level `a`, raised by `t` at the
+level `0`.
+-/
+@[grind]
+def raisedOrdersAtZero (t : ℤ) (a : ℕ) (u : ℤ) : ℤ := (if a = 0 then t else 0) - u
 
 /-- The integers within distance `n` of `0` or of `c`. -/
 noncomputable abbrev twoWindows (n : ℕ) (c : ℤ) : Finset ℤ := Icc (-n : ℤ) n ∪ Icc (c - n) (c + n)
 
-
-/-- The gap condition: `p` divides no nonzero integer within distance `n` of `0`, of `b` or
-of `-b`. -/
+/--
+The gap condition: `p` divides no nonzero integer within distance `n` of `0`, of `b` or
+of `-b`.
+-/
 def NoMultipleNear (p n : ℕ) (b : ℤ) : Prop :=
-  ∀ y : ℤ, y ≠ 0 → |y| ≤ n ∨ |y - b| ≤ n ∨ |y + b| ≤ n → ¬(p : ℤ) ∣ y
+  ∀ y : ℤ, y ≠ 0 → |y| ≤ n ∨ |y - b| ≤ n ∨ |y + b| ≤ n → ¬ (p : ℤ) ∣ y
 
 /-- Under the gap condition, the only multiple of `p` in the windows of radius `n` around `0`,
 `b` and `-b` is `0`. -/
@@ -175,9 +179,11 @@ open Period Submodule FrobGroup Module Finset JumpLattice Pairing Equiv Fintype 
 
 variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {k : KummerChart Γ} {O : k.Coeffs}
 
-/-- The lattice datum O(1), on which Γ acts through the cyclotomic character, with jump set {−1}
+/--
+The lattice datum O(1), on which Γ acts through the cyclotomic character, with jump set {−1}
 at every letter and at every embedding of O in ℂ_p (`embJumps`). The field `inClass` says that it is
-crystalline over the group Γ' of the chart with jumps in these sets. -/
+crystalline over the group Γ' of the chart with jumps in these sets.
+-/
 abbrev tateLattice (O : Coeffs) : JumpLattice O where
   Carrier := O
   ρ := actionRep O O χ
@@ -218,92 +224,113 @@ lemma stepBack_zero (i : k.Letter) : i.stepBack 0 = i := rfl
 abbrev inclKer (S : PairingSide O) : S.Hom S.extensionLattice :=
   ⟨LinearMap.inl O.O S.Carrier S.paramLattice.Carrier, by aesop (add simp extensionRep)⟩
 
-/-- The `ℤ_[p]`-linear map from the localized Kisin module `kisinLoc` of the extension of `C` by `Y`
-to `W(C^♭) ⊗ C` induced by the projection onto `C`. -/
-abbrev localizedProjTrivial (S : PairingSide O) :
-    S.extensionLattice.kisinLoc →ₗ[ℤ_[p]] S.trivialLattice.Ambient :=
-  S.projTrivial.wittMap.restrictScalars ℤ_[p] ∘ₗ S.extensionLattice.kisinLoc.subtype.restrictScalars
-    ℤ_[p]
+/--
+The `ℤ_[p]`-linear map from the localized Kisin module `kisinLoc` of the extension of `C` by `Y`
+to `W(C^♭) ⊗ C` induced by the projection onto `C`.
+-/
+abbrev localizedProjTrivial (S : PairingSide O)
+    : S.extensionLattice.kisinLoc →ₗ[ℤ_[p]] S.trivialLattice.Ambient :=
+  S.projTrivial.wittMap.restrictScalars ℤ_[p]
+    ∘ₗ S.extensionLattice.kisinLoc.subtype.restrictScalars ℤ_[p]
 
-/-- The points of `S.extensionLattice.kisinLoc` that lie over a constant at the letter `i` (the
+/--
+The points of `S.extensionLattice.kisinLoc` that lie over a constant at the letter `i` (the
 projection `S.constantAt i c` of some `1 ⊗ c` to `i`) and are deep for `o`, that is, fixed by
 `k.galMonoid` modulo the vectors with orders `o`. For a point `x` at the letter `i` this implies
 that for each jump `u` at `i.stepBack a` and each form `μ` of type `u` there, the value
 `valueAt a μ x = μ (φ^{-a} x)` lies in the fixed field of `Γ'` modulo
 `hodgeFil (o a u) = t ^ (o a u) B_dR⁺`
-(`JumpLattice.exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`). -/
-def deepElements (S : PairingSide O) (i : k.Letter) (o : ℕ → ℤ → ℤ) :
-    Submodule ℤ_[p] S.extensionLattice.kisinLoc :=
-  (S.constantAt i).range.comap S.localizedProjTrivial ⊓
-    (invariantsMod (S.extensionLattice.withOrders i o)).comap
+(`JumpLattice.exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`).
+-/
+def deepElements (S : PairingSide O) (i : k.Letter) (o : ℕ → ℤ → ℤ)
+    : Submodule ℤ_[p] S.extensionLattice.kisinLoc :=
+  (S.constantAt i).range.comap S.localizedProjTrivial
+    ⊓ (invariantsMod (S.extensionLattice.withOrders i o)).comap
       (S.extensionLattice.kisinLoc.subtype.restrictScalars ℤ_[p])
 
 /-- The vectors of the extension that lie over `0` and have orders `o` at the letter `i`. -/
-def kerWithOrders (S : PairingSide O) (i : k.Letter) (o : ℕ → ℤ → ℤ) :
-    Submodule Ainf S.extensionLattice.Ambient :=
+def kerWithOrders (S : PairingSide O) (i : k.Letter) (o : ℕ → ℤ → ℤ)
+    : Submodule Ainf S.extensionLattice.Ambient :=
   S.extensionLattice.withOrders i o ⊓ (S.projTrivial.wittMap.restrictScalars Ainf).ker
 
 /-! ### Operators of a cost, pairings of sides, and points -/
 
-/-- The additive map `A` is an operator of cost `e`: for every letter `i`, all orders `o` and
+/--
+The additive map `A` is an operator of cost `e`: for every letter `i`, all orders `o` and
 every point `x` that lies over the projection of some `1 ⊗ c` to `i` and is deep for `o`, the
 difference `A x - p ^ e • x` lies over `0` and has orders `o` at `i`. Here `locKisinPart Q` is the
-set of the elements of `kisinLoc` that lie in `Q`. -/
-def IsOperatorOfCost (S : PairingSide O) (e : ℕ)
-    (A : S.extensionLattice.kisinLoc →+ S.extensionLattice.kisinLoc) : Prop :=
-  ∀ ⦃i : k.Letter⦄ ⦃o : ℕ → ℤ → ℤ⦄ ⦃x : S.extensionLattice.kisinLoc⦄, x ∈ S.deepElements i o →
-    A x - p ^ e • x ∈ locKisinPart (S.kerWithOrders i o)
+set of the elements of `kisinLoc` that lie in `Q`.
+-/
+def IsOperatorOfCost
+    (S : PairingSide O) (e : ℕ) (A : S.extensionLattice.kisinLoc →+ S.extensionLattice.kisinLoc)
+    : Prop :=
+  ∀ ⦃i : k.Letter⦄ ⦃o : ℕ → ℤ → ℤ⦄ ⦃x : S.extensionLattice.kisinLoc⦄,
+    x ∈ S.deepElements i o → A x - p ^ e • x ∈ locKisinPart (S.kerWithOrders i o)
 
 /-- A pairing between the lattices of the sides S and S'. -/
 abbrev SidePairing (S S' : PairingSide O) : Type := Pairing S.toGalLattice S'.toGalLattice
 
-/-- The points of `S.extensionLattice.kisinLoc` over `p ^ e` times the constant of `c` at the letter
+/--
+The points of `S.extensionLattice.kisinLoc` over `p ^ e` times the constant of `c` at the letter
 `i` (the projection `S.constantAt i c` of `1 ⊗ c` to `i`) that have orders `o` and are deep for
 `o'`. For such a point, for each jump `u` at `i.stepBack a` and each form `μ` of type `u` there,
 the value `valueAt a μ x = μ (φ^{-a} x)` lies in the fixed field of `Γ'` modulo
 `hodgeFil (o' a u) = t ^ (o' a u) B_dR⁺`
-(`JumpLattice.exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`). -/
-def pointsOver (S : PairingSide O) (c : S.paramLattice) (i : k.Letter) (e : ℕ)
-    (o o' : ℕ → ℤ → ℤ) : Set S.extensionLattice.Ambient :=
+(`JumpLattice.exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`).
+-/
+def pointsOver (S : PairingSide O) (c : S.paramLattice) (i : k.Letter) (e : ℕ) (o o' : ℕ → ℤ → ℤ)
+    : Set S.extensionLattice.Ambient :=
   {x ∈ S.extensionLattice.kisinLoc | S.projTrivial.wittMap x = p ^ e • S.constantAt i c ∧
     x ∈ S.extensionLattice.withOrders i o ∧ x ∈ invariantsMod (S.extensionLattice.withOrders i o')}
 
-/-- The depth that the walk asks of a standard point: on the lines of jump `u` it is `-u`, raised by
-`t` at the level `0` and by `η` at the levels below `l`. -/
+/--
+The depth that the walk asks of a standard point: on the lines of jump `u` it is `-u`, raised by
+`t` at the level `0` and by `η` at the levels below `l`.
+-/
 def standardDepth (t η l a : ℕ) (u : ℤ) : ℤ :=
   -u + (if a = 0 then (t : ℤ) else 0) + if a < l then (η : ℤ) else 0
 
-/-- The depth that a point at rest needs at a plain cut: `standardDepth t η l`, and `h₀` more at the
-level `l`. -/
+/--
+The depth that a point at rest needs at a plain cut: `standardDepth t η l`, and `h₀` more at the
+level `l`.
+-/
 def plainDepth (t η l h₀ a : ℕ) (u : ℤ) : ℤ :=
   standardDepth t η l a u + if a = l then (h₀ : ℤ) else 0
 
-/-- The orders of a stop. In the walk one side moves first, to a point called the stop, and rests
+/--
+The orders of a stop. In the walk one side moves first, to a point called the stop, and rests
 there while the other side moves. The orders of a stop are at least those of the pullback by
-`φ ^ l`, and at least `-u` lowered by `η` at the levels below `l`. -/
-def stopOrders (η l a : ℕ) (u : ℤ) : ℤ :=
-  max (stdOrders l a u) (-u - if a < l then (η : ℤ) else 0)
+`φ ^ l`, and at least `-u` lowered by `η` at the levels below `l`.
+-/
+def stopOrders (η l a : ℕ) (u : ℤ) : ℤ := max (stdOrders l a u) (-u - if a < l then (η : ℤ) else 0)
 
-/-- The least sum of the orders of a move and the depth of the point at rest that the rule for `l`
+/--
+The least sum of the orders of a move and the depth of the point at rest that the rule for `l`
 allows, on lines whose jumps add up to `s`: it is `1` at the levels below `l`, `t - s` at the level
-`l` and `-s` above. -/
+`l` and `-s` above.
+-/
 def ruleBound (l t a : ℕ) (s : ℤ) : ℤ := if a < l then 1 else (if a = l then (t : ℤ) else 0) - s
 
-/-- The standard points over `p ^ e c` at the letter `i`: their orders are `-u`, lowered by `η`
-at the level `0`, and their depth is `standardDepth t η l`. -/
-def standardPoints (S : PairingSide O) (c : S.paramLattice) (i : k.Letter) (e t η l : ℕ) :
-    Set S.extensionLattice.Ambient :=
+/--
+The standard points over `p ^ e c` at the letter `i`: their orders are `-u`, lowered by `η`
+at the level `0`, and their depth is `standardDepth t η l`.
+-/
+def standardPoints (S : PairingSide O) (c : S.paramLattice) (i : k.Letter) (e t η l : ℕ)
+    : Set S.extensionLattice.Ambient :=
   S.pointsOver c i e (raisedOrdersAtZero (-η)) (standardDepth t η l)
 
-/-- The points over `p ^ e c` at the letter `i` with the orders of a stop (the depth asked for is
-the same). -/
-def stopPoints (S : PairingSide O) (c : S.paramLattice) (i : k.Letter) (e η l : ℕ) :
-    Set S.extensionLattice.Ambient :=
+/--
+The points over `p ^ e c` at the letter `i` with the orders of a stop (the depth asked for is
+the same).
+-/
+def stopPoints (S : PairingSide O) (c : S.paramLattice) (i : k.Letter) (e η l : ℕ)
+    : Set S.extensionLattice.Ambient :=
   S.pointsOver c i e (stopOrders η l) (stopOrders η l)
 
 /-- The vector `x` lies at the letter `i`, over `p ^ e` times the constant of `c` at `i`. -/
-structure LiesOver (S : PairingSide O) (c : S.paramLattice) (i : k.Letter) (e : ℕ)
-    (x : S.extensionLattice.Ambient) : Prop where
+structure LiesOver
+    (S : PairingSide O) (c : S.paramLattice) (i : k.Letter) (e : ℕ) (x : S.extensionLattice.Ambient)
+    : Prop where
   /-- The vector lies in the part at the letter `i`. -/
   mem_letterPart : x ∈ S.extensionLattice.letterPart i
   /-- Its image in the trivial lattice is `p ^ e` times the constant of `c` at `i`. -/
@@ -315,7 +342,8 @@ variable {S S' : PairingSide O} {c : S.paramLattice} {i : k.Letter}
 
 section Points
 
-variable {c' : S'.paramLattice} {l κ s e e' : ℕ} {o o' o₁ o₂ o₃ : ℕ → ℤ → ℤ}
+variable
+  {c' : S'.paramLattice} {l κ s e e' : ℕ} {o o' o₁ o₂ o₃ : ℕ → ℤ → ℤ}
   {x w : S.extensionLattice.Ambient} {y : S'.extensionLattice.Ambient} {P : S.SidePairing S'}
 
 /-- Over `W(C^♭)`, the inclusion of `Y` into the extension is a section of the first projection
@@ -593,16 +621,19 @@ lemma pointsOver_nonempty_of_killsCokernel (h_kill : S.KillsCokernel i κ s) (c 
     simpa [pr_x, inv_smul_eq_iff, frobEUnit_pow_smul, val_frobE] using h
   module
 
-/-- The operator `x ↦ pr (υ (g x - x) / δ)` on `S.extensionLattice.kisinLoc`, for `g` in
+/--
+The operator `x ↦ pr (υ (g x - x) / δ)` on `S.extensionLattice.kisinLoc`, for `g` in
 `k.galMonoid` (the group `Γ'` of the chart) and `υ` in `Ainf`. Here `δ = k.zTau` is `z τ`, the
 product of the coordinate `z` of the chart and `τ = [ε^{1/p}] - 1`. The element `(g x - x) / δ` lies
 in the `Ainf`-span `S.extensionLattice.kisinLocAinf` of `S.extensionLattice.kisinLoc`, and the
-retraction `pr = coordRetract` maps that span back to `S.extensionLattice.kisinLoc`. -/
-def depthOperator (S : PairingSide O) (g : k.galMonoid) (υ : Ainf) :
-    S.extensionLattice.kisinLoc →+ S.extensionLattice.kisinLoc :=
+retraction `pr = coordRetract` maps that span back to `S.extensionLattice.kisinLoc`.
+-/
+def depthOperator (S : PairingSide O) (g : k.galMonoid) (υ : Ainf)
+    : S.extensionLattice.kisinLoc →+ S.extensionLattice.kisinLoc :=
   AddMonoidHom.mk'
-    (fun x ↦ S.extensionLattice.coordRetract
-      (υ • ⟨k.zTauUnit⁻¹ • (g • x.1 - x.1), zTauUnit_inv_smul_sub_mem_kisinLocAinf g x.2⟩))
+    (fun x ↦
+      S.extensionLattice.coordRetract
+        (υ • ⟨k.zTauUnit⁻¹ • (g • x.1 - x.1), zTauUnit_inv_smul_sub_mem_kisinLocAinf g x.2⟩))
     (by simp [← map_add, add_sub_add_comm])
 
 lemma depthOperator_apply (g : k.galMonoid) (υ : Ainf) (x : S.extensionLattice.kisinLoc) :

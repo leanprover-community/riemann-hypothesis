@@ -35,8 +35,9 @@ principal ideal `(a)` by divisibility of the difference by `a`.
 
 /-- The subgroup U of G is an open subset of G. -/
 @[to_additive /-- The additive subgroup U of G is an open subset of G. -/]
-protected abbrev Subgroup.IsOpen {G : Type*} [Group G] [TopologicalSpace G] (U : Subgroup G) :
-    Prop := IsOpen (X := G) U
+protected abbrev Subgroup.IsOpen {G : Type*} [Group G] [TopologicalSpace G] (U : Subgroup G)
+    : Prop :=
+  IsOpen (X := G) U
 
 /-- Tube lemma for a jointly continuous f: if W is a neighbourhood of f(x₀, y) for each y in a
 compact set K, then f(x, y) ∈ W for all y in K and all x near x₀. -/
@@ -131,10 +132,13 @@ lemma New.Selmer.exists_procyclic_generator {ℓ : ℕ} {Γ : Type*} [Fact ℓ.P
   have h_mem : (γ k ^ n)⁻¹ * g ∈ S := ker_le (by simp [-MonoidHom.coe_comp, hn])
   simpa using S.mul_mem (S.zpow_mem hγS n) h_mem
 
-/-- The element γ generates Γ modulo the kernel of κ: the only closed subgroup that contains γ and
-ker κ is Γ. -/
-def MonoidHom.IsGeneratorModKer {Γ A : Type*} [Group Γ] [TopologicalSpace Γ] [Group A]
-    (κ : Γ →* A) (γ : Γ) : Prop :=
+/--
+The element γ generates Γ modulo the kernel of κ: the only closed subgroup that contains γ and
+ker κ is Γ.
+-/
+def MonoidHom.IsGeneratorModKer
+    {Γ A : Type*} [Group Γ] [TopologicalSpace Γ] [Group A] (κ : Γ →* A) (γ : Γ)
+    : Prop :=
   ∀ S : Subgroup Γ, IsClosed (S : Set Γ) → κ.ker ≤ S → γ ∈ S → S = ⊤
 
 /-- If γ generates Γ modulo the kernel of κ, then so does γ⁻¹. -/

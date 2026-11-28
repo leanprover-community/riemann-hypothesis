@@ -110,11 +110,13 @@ namespace New.SiegelWeil
 
 open MeasureTheory Fock Space Fintype Set
 
-variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
-  [Fintype m] [DecidableEq m] {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s} {a b : AutChar E}
-  {S₀ : Set (FinPlace E)} {J : Subgroup (Gf E n)} {c : ℂ} {T : Space E m t} {F : 𝒮 (S.hom T)}
-  {γ' : NumberField.InfinitePlace E → ℤ} {ψ : ∀ w : FinPlace E, MulChar (ResField w) ℂ}
-  {y : G E s → ℂ}
+variable
+  {E n m : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s} {a b : AutChar E} {S₀ : Set (FinPlace E)}
+  {J : Subgroup (Gf E n)} {c : ℂ} {T : Space E m t}
+  {F : 𝒮 (S.hom T)} {γ' : NumberField.InfinitePlace E → ℤ}
+  {ψ : ∀ w : FinPlace E, MulChar (ResField w) ℂ} {y : G E s → ℂ}
 
 /-- If the finite datum `F` is sharp for the group `J`, then `J` is open. -/
 lemma IsSharp.isOpen_level (hF : IsSharp b S₀ F J c) : IsOpen (J : Set (Gf E n)) := by
@@ -156,18 +158,22 @@ lemma weilMatrixCoeff_integrated [b.HasWeight γ' ψ] (hF : F ∈ finitePart (S.
   simp [hF, realPairWeil, Prod.mk_one_one]
 
 open scoped Classical in
-/-- The coefficient of a sharp datum. Let `F` be sharp for `J` off `S₀`, `v` a vector of the Fock
+/--
+The coefficient of a sharp datum. Let `F` be sharp for `J` off `S₀`, `v` a vector of the Fock
 space and `φ = v ⊗ F`. For a real point `x`, a finite point `u` supported on `S₀ᶜ` and its conjugate
 and a finite point `g` integral off `S₀`, `⟨φ, ω(x u g) φ⟩` is the product of the real coefficient
 `⟨v, Ω(x) v⟩`, the coefficient of the vacuum at `u`, and `⟨F, F⟩` times the indicator of
 `J ⊓ stdLevel E n` at `g`. Here `Ω(x) = realPairWeil γ γ' (x, 1)`, with `γ'` the weight of `b` and
-any `γ`. -/
-theorem IsSharp.weilMatrixCoeff_integrated_mul (hF : IsSharp b S₀ F J c) [b.HasWeight γ' ψ]
-    (γ : NumberField.InfinitePlace E → ℤ) (v : PairFock E s t) (x : GInf E s) {u g : Gf E n}
-    (hu : u ∈ Gf.supportedOn n S₀ᶜ) (hg : g ∈ localLevel n S₀ᶜ) :
-    weilMatrixCoeff b (integrated (S.hom T) v F) (integrated (S.hom T) v F) (x, u * g) =
-      fockInner v (realPairWeil γ γ' (x, 1) v) * vacuumCoeff (card m) b u *
-        if g ∈ J ⊓ stdLevel E n then dataInner (S.hom T) F F else 0 := by
+any `γ`.
+-/
+theorem IsSharp.weilMatrixCoeff_integrated_mul
+    (hF : IsSharp b S₀ F J c)
+    [b.HasWeight γ' ψ]
+    (γ : NumberField.InfinitePlace E → ℤ) (v : PairFock E s t) (x : GInf E s)
+    {u g : Gf E n} (hu : u ∈ Gf.supportedOn n S₀ᶜ) (hg : g ∈ localLevel n S₀ᶜ)
+    : weilMatrixCoeff b (integrated (S.hom T) v F) (integrated (S.hom T) v F) (x, u * g)
+      = fockInner v (realPairWeil γ γ' (x, 1) v) * vacuumCoeff (card m) b u
+        * if g ∈ J ⊓ stdLevel E n then dataInner (S.hom T) F F else 0 := by
   rw [show ((x, u * g) : G E s) = (1, u) * (x, g) by simp,
     weilMatrixCoeff_mul b (hF.vacuum_off S₀ᶜ v disjoint_compl_right) hu hg,
     weilMatrixCoeff_integrated hF.mem_finitePart γ, hF.weilMatrixCoeff_eq g hg, mul_left_comm,
@@ -250,32 +256,39 @@ lemma IsSharp.hasSum_integral_weilMatrixCoeff_mul (hF : IsSharp b S₀ F J c) [b
     (fun g ↦ by simp [← QuotientGroup.eq, mk_cosetRep]) h_int).congr_fun
       fun q ↦ (h_coset _ (cosetRep q).property).symm
 
-/-- Inner product formula. Let `2 * card n < card m`, let `F` be sharp for `J` off `S₀` with mass
+/--
+Inner product formula. Let `2 * card n < card m`, let `F` be sharp for `J` off `S₀` with mass
 `c` (see `IsSharp`), let `v` be a Fock-space vector, and let `Θ` be the lift by `v ⊗ F` for the
 characters `a`, `b`. Let `y`, `y'` be rapidly decreasing automorphic functions with `y` fixed by
 `J`. Let `z = rallisSeries (card m) b S₀ᶜ y` be the series `∑ mc(q) R(q) y` over the cosets `q` of
 the finite points integral at `S₀ᶜ`, with `mc` the vacuum coefficient. Then `⟨Θ y', Θ y⟩` equals the
 volume of `[U(T)]` times `c` times the absolutely convergent integral of `⟨v, Ω(x) v⟩ ⟨y', R(x) z⟩`
 over the real points `x` of `U(S)`. Here `R` is right translation and
-`Ω(x) = realPairWeil γ γ' (x, 1)`, with `γ'` the weight of `b` and `γ` arbitrary. -/
-theorem IsSharp.petersson_lift_eq_integral {S₀ : Set (FinPlace E)} {F : 𝒮 (S.hom T)}
-    {J : Subgroup (Gf E n)} {c : ℂ} (hF : IsSharp b S₀ F J c) [b.HasWeight γ' ψ]
+`Ω(x) = realPairWeil γ γ' (x, 1)`, with `γ'` the weight of `b` and `γ` arbitrary.
+-/
+theorem IsSharp.petersson_lift_eq_integral
+    {S₀ : Set (FinPlace E)} {F : 𝒮 (S.hom T)} {J : Subgroup (Gf E n)} {c : ℂ}
+    (hF : IsSharp b S₀ F J c)
+    [b.HasWeight γ' ψ]
     (h_rank : 2 * card n < card m) (a : AutChar E) (γ : NumberField.InfinitePlace E → ℤ)
-    (v : PairFock E s t) {y y' : G E s → ℂ} (hy : y ∈ S.rapidFunctions)
-    (hy' : y' ∈ S.rapidFunctions) (hJ : HasLevel y J) :
-    Integrable (fun x : GInf E s ↦ fockInner v (realPairWeil γ γ' (x, 1) v) *
-      S.petersson y' fun g : G E s ↦ rallisSeries (card m) b S₀ᶜ y (g * (x, 1))) ∧
-    T.petersson (lift (pairThetaKer S T a b) (integrated (S.hom T) v F) y')
-        (lift (pairThetaKer S T a b) (integrated (S.hom T) v F) y) =
-      T.quotMeasure.real Set.univ * c * ∫ x : GInf E s, fockInner v (realPairWeil γ γ' (x, 1) v) *
-        S.petersson y' fun g : G E s ↦ rallisSeries (card m) b S₀ᶜ y (g * (x, 1)) := by
+    (v : PairFock E s t)
+    {y y' : G E s → ℂ} (hy : y ∈ S.rapidFunctions) (hy' : y' ∈ S.rapidFunctions) (hJ : HasLevel y J)
+    : Integrable (fun x : GInf E s ↦
+        fockInner v (realPairWeil γ γ' (x, 1) v)
+          * S.petersson y' fun g : G E s ↦ rallisSeries (card m) b S₀ᶜ y (g * (x, 1)))
+      ∧ T.petersson (lift (pairThetaKer S T a b) (integrated (S.hom T) v F) y')
+          (lift (pairThetaKer S T a b) (integrated (S.hom T) v F) y)
+        = T.quotMeasure.real Set.univ * c
+          * ∫ x : GInf E s, fockInner v (realPairWeil γ γ' (x, 1) v) *
+            S.petersson y' fun g : G E s ↦ rallisSeries (card m) b S₀ᶜ y (g * (x, 1)) := by
   -- `inner_product_formula` gives the product as an absolutely convergent adelic integral;
   -- integrate first over the finite points.
   let φ : 𝒮 (S.hom T) := integrated (S.hom T) v F
   let P (g : G E s) : ℂ := S.petersson y' fun g' ↦ y (g' * g)
-  obtain ⟨h_int, h_adelic⟩ : Integrable (fun g : G E s ↦ weilMatrixCoeff b φ φ g * P g) volume ∧
-      T.petersson (lift (pairThetaKer S T a b) φ y') (lift (pairThetaKer S T a b) φ y) =
-        T.quotMeasure.real Set.univ * ∫ g, weilMatrixCoeff b φ φ g * P g :=
+  obtain ⟨h_int, h_adelic⟩
+      : Integrable (fun g : G E s ↦ weilMatrixCoeff b φ φ g * P g) volume
+        ∧ T.petersson (lift (pairThetaKer S T a b) φ y') (lift (pairThetaKer S T a b) φ y)
+          = T.quotMeasure.real Set.univ * ∫ g, weilMatrixCoeff b φ φ g * P g :=
     inner_product_formula h_rank a b (hF.clean v) hy hy'
   obtain ⟨y_aut : S.IsAutomorphic y, y_rapid : S.IsRapid y⟩ := hy
   obtain ⟨y'_aut : S.IsAutomorphic y', y'_rapid : S.IsRapid y'⟩ := hy'
@@ -284,25 +297,31 @@ theorem IsSharp.petersson_lift_eq_integral {S₀ : Set (FinPlace E)} {F : 𝒮 (
   have h_level (x : GInf E s) (k : Gf E n) (hk : k ∈ J) (g : Gf E n) : P (x, g * k) = P (x, g) := by
     have h_split : ((x, g * k) : G E s) = (x, g) * (1, k) := by simp
     simp only [P, h_split, ← mul_assoc, hJ k hk]
-  have h_finite : ∀ᵐ x : GInf E s, ∫ g : Gf E n, weilMatrixCoeff b φ φ (x, g) * P (x, g) =
-      c * (fockInner v (realPairWeil γ γ' (x, 1) v) *
-        S.petersson y' fun g ↦ rallisSeries (card m) b S₀ᶜ y (g * (x, 1))) := by
+  have h_finite
+      : ∀ᵐ x : GInf E s, ∫ g : Gf E n, weilMatrixCoeff b φ φ (x, g) * P (x, g) =
+        c * (fockInner v (realPairWeil γ γ' (x, 1) v) *
+          S.petersson y' fun g ↦ rallisSeries (card m) b S₀ᶜ y (g * (x, 1))) := by
     filter_upwards [h_int.prod_right_ae] with x hx
-    have h_series : HasSum (fun q : Gf E n ⧸ localLevel n S₀ᶜ ↦
-        vacuumCoeff (card m) b (cosetRep q).val * P (x, (cosetRep q).val))
+    have h_series : HasSum
+        (fun q : Gf E n ⧸ localLevel n S₀ᶜ ↦
+          vacuumCoeff (card m) b (cosetRep q).val * P (x, (cosetRep q).val))
         (S.petersson y' fun g ↦ rallisSeries (card m) b S₀ᶜ y (g * (x, 1))) := by
       simpa [P, mul_assoc] using hasSum_petersson_rallisSeries h_rank b S₀ᶜ y_bdd y'_int (x, 1)
     exact (hF.hasSum_integral_weilMatrixCoeff_mul γ v x (h_level x) hx).unique
       ((h_series.mul_left _).mul_left c)
-  refine ⟨(integrable_const_mul_iff hF.mass_ne_zero.isUnit _).1
-    (h_int.integral_prod_left.congr h_finite), ?_⟩
+  refine ⟨
+    (integrable_const_mul_iff hF.mass_ne_zero.isUnit _).1 (h_int.integral_prod_left.congr h_finite),
+    ?_
+  ⟩
   rw [h_adelic, Measure.volume_eq_prod, integral_prod _ h_int, integral_congr_ae h_finite,
     integral_const_mul, mul_assoc]
 
 /-! ### Partial integrals and injectivity by the dual datum -/
 
-/-- The integral of `Φ` over the points `g` of the adelic unitary group whose finite part is
-integral at every place of `A`. -/
+/--
+The integral of `Φ` over the points `g` of the adelic unitary group whose finite part is
+integral at every place of `A`.
+-/
 def partialIntegral (A : Set (FinPlace E)) (Φ : G E s → ℂ) : ℂ :=
   ∫ g in {g : G E s | g.2 ∈ localLevel n A}, Φ g
 
@@ -449,26 +468,34 @@ lemma realConv_eq_zero_of_lift_eq_zero (hF : IsSharp b S₀ F J c) [b.HasWeight 
   rw [petersson_realConv_right y_bdd h_int y₁_bdd]
   simp [← conj_petersson (F' := realConv κ y), h_translate]
 
-/-- Injectivity and norm of the lift, in Weil's range `2 * card n < card m`. Let the vector `v` of
+/--
+Injectivity and norm of the lift, in Weil's range `2 * card n < card m`. Let the vector `v` of
 the Fock space be an edge (a real datum that carries type `e` to type `e'`, such as the vector of
 the joint harmonic of corresponding parameters) for the weights `γ`, `γ'`. There is `C ≠ 0`,
 depending only on these real data and the spaces, with the following property. Let `a`, `b` be
 characters of weights `γ`, `γ'`, let the finite datum `F` be sharp for `J`
 off `S₀`, of mass `c` (see `IsSharp`), and let `L` be the lift by `v ⊗ F`. On the forms `y` of type
 `e` fixed by `J` the lift is injective, and `⟨L y', L y⟩` is `C c` times the Petersson product of
-`y'` with the series `rallisSeries` of `y` off `S₀`, for all forms `y'` of type `e`. -/
-theorem exists_petersson_formLift_eq_rallisSeries {γ : NumberField.InfinitePlace E → ℤ}
-    {v : PairFock E s t} {e : GInf E s → ℂ} {e' : GInf E t → ℂ}
-    (h_edge : IsEdge (realPairWeil γ γ') e e' v) (h_rank : 2 * card n < card m) :
-    ∃ C : ℂ, C ≠ 0 ∧ ∀ (a b : AutChar E) {ψ ψ' : ∀ w : FinPlace E, MulChar (ResField w) ℂ}
-      {S₀ : Set (FinPlace E)} {J : Subgroup (Gf E n)} {F : 𝒮 (S.hom T)} {c : ℂ}
-      [a.HasWeight γ ψ] [b.HasWeight γ' ψ'], IsSharp b S₀ F J c →
-      ∀ y : S.Form e, HasLevel y J →
-        let L : S.Form e →ₗ[ℂ] T.Form e' :=
-          formLift (pairThetaKer S T a b) e e' ((S.hom T).integrated v F)
-        (L y = 0 → y = 0) ∧
-        ∀ y' : S.Form e,
-          T.petersson (L y') (L y) = C * c * S.petersson y' (rallisSeries (card m) b S₀ᶜ y) := by
+`y'` with the series `rallisSeries` of `y` off `S₀`, for all forms `y'` of type `e`.
+-/
+theorem exists_petersson_formLift_eq_rallisSeries
+    {γ : NumberField.InfinitePlace E → ℤ} {v : PairFock E s t} {e : GInf E s → ℂ}
+    {e' : GInf E t → ℂ} (h_edge : IsEdge (realPairWeil γ γ') e e' v)
+    (h_rank : 2 * card n < card m)
+    : ∃ C : ℂ,
+      C ≠ 0
+        ∧ ∀ (a b : AutChar E) {ψ ψ' : ∀ w : FinPlace E, MulChar (ResField w) ℂ}
+            {S₀ : Set (FinPlace E)} {J : Subgroup (Gf E n)} {F : 𝒮 (S.hom T)} {c : ℂ}
+            [a.HasWeight γ ψ] [b.HasWeight γ' ψ'],
+          IsSharp b S₀ F J c
+            → ∀ y : S.Form e,
+              HasLevel y J
+                → let L : S.Form e →ₗ[ℂ] T.Form e' :=
+                    formLift (pairThetaKer S T a b) e e' ((S.hom T).integrated v F)
+                  (L y = 0 → y = 0)
+                    ∧ ∀ y' : S.Form e,
+                      T.petersson (L y') (L y)
+                        = C * c * S.petersson y' (rallisSeries (card m) b S₀ᶜ y) := by
   -- The real integral `Z` of `⟨v, Ω(x) v⟩` against the coefficient of the type `e` is not zero for
   -- an edge.
   let Z : ℂ :=
@@ -481,21 +508,23 @@ theorem exists_petersson_formLift_eq_rallisSeries {γ : NumberField.InfinitePlac
     (h_edge.isArrow a b hF.mem_finitePart).1
   simp only [h_arr.coe_formLift]
   -- On forms of type `e`, real translates scale the Petersson product by `conj (e x) / e 1`.
-  have h_real (y' z : S.Form e) : ∫ x : GInf E s, fockInner v (realPairWeil γ γ' (x, 1) v) *
-      S.petersson y' (fun g : G E s ↦ z.val (g * (x, 1))) = Z * S.petersson y' z := by
+  have h_real (y' z : S.Form e)
+      : ∫ x : GInf E s, fockInner v (realPairWeil γ γ' (x, 1) v) *
+          S.petersson y' (fun g : G E s ↦ z.val (g * (x, 1)))
+        = Z * S.petersson y' z := by
     simp [y'.property.petersson_real_translate h_edge.isCuspKernel_source z.property, ← mul_assoc,
       Z, integral_mul_const]
   -- The series `z` of `y` is a form of type `e`, so the real integral of the inner product formula
   -- is `h_real` for `z`.
-  have y_level : HasLevel y (stdLevel E n ⊓ Gf.supportedOn n S₀ᶜ) :=
-    fun k hk ↦ hJ k (hF.inf_supportedOn_le hk)
+  have y_level : HasLevel y (stdLevel E n ⊓ Gf.supportedOn n S₀ᶜ) := fun k hk ↦
+    hJ k (hF.inf_supportedOn_le hk)
   obtain ⟨z : S.Form e, -, hz : ⇑z = rallisSeries (card m) b S₀ᶜ y⟩ :=
     exists_form_eq_rallisSeries h_rank hF.isUnramifiedOn le_rfl
       (inf_le_left.trans stdLevel_le_localLevel) y_level
   rw [← hz]
   set Θ : (G E s → ℂ) → G E t → ℂ := lift (pairThetaKer S T a b) ((S.hom T).integrated v F)
-  have h_norm (y' : S.Form e) :
-      T.petersson (Θ y') (Θ y) = T.quotMeasure.real univ * Z * c * S.petersson y' z := by
+  have h_norm (y' : S.Form e)
+      : T.petersson (Θ y') (Θ y) = T.quotMeasure.real univ * Z * c * S.petersson y' z := by
     obtain ⟨y_rapid, -⟩ := h_arr y
     obtain ⟨y'_rapid, -⟩ := h_arr y'
     obtain ⟨-, h_integral⟩ := hF.petersson_lift_eq_integral h_rank a γ v y_rapid y'_rapid hJ
@@ -562,16 +591,23 @@ O_E/𝔪 and `𝔪.places` the set of places dividing 𝔪.
 namespace New
 
 open HeckeChar Gf Matrix Fintype Valued Rows Space Modulus SiegelWeil WeilData Finset NumberField
-variable {E n m : Type} [Field E] [CMType E] {𝔪 : Modulus E} [Fintype n] [DecidableEq n]
-  [Fintype m] [DecidableEq m] {s : n → ℤˣ} {t : m → ℤˣ} [WeilData E] {w : FinPlace E}
-  {ν : AutChar E}
+variable
+  {E n m : Type} [Field E] [CMType E]
+  {𝔪 : Modulus E} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {t : m → ℤˣ} [WeilData E]
+  {w : FinPlace E} {ν : AutChar E}
 
-/-- A function `Ψ ≠ 0` on matrices modulo `𝔪` is sharp for a group `J` with `J(𝔪) ≤ J` if `J`
+/--
+A function `Ψ ≠ 0` on matrices modulo `𝔪` is sharp for a group `J` with `J(𝔪) ≤ J` if `J`
 fixes `Ψ ⊗ vac` and, for a fixed matrix `A`, the matrix `A x` lies in the image of `J` whenever
 `Ψ x ≠ 0`. Here `K₀ = stdLevel E n` is the group of integral points, `J(𝔪)` consists of those that
-are `1` modulo `𝔪`, and `Ψ ⊗ vac = vacuumDatum S T 𝔪 Ψ`. -/
-structure SiegelWeil.IsSharpFn (S : Space E n s) (T : Space E m t) (b : AutChar E) (𝔪 : Modulus E)
-    (J : Subgroup (Gf E n)) (Ψ : Matrix m n 𝔪.ResidueRing → ℂ) : Prop where
+are `1` modulo `𝔪`, and `Ψ ⊗ vac = vacuumDatum S T 𝔪 Ψ`.
+-/
+structure SiegelWeil.IsSharpFn
+    (S : Space E n s) (T : Space E m t) (b : AutChar E)
+    (𝔪 : Modulus E)
+    (J : Subgroup (Gf E n)) (Ψ : Matrix m n 𝔪.ResidueRing → ℂ)
+    : Prop where
   /-- The principal level of `𝔪` lies in `J`. -/
   principal_le : 𝔪.levelOfSubgroup ⊥ ≤ J
   /-- The function is not zero. -/
@@ -579,13 +615,14 @@ structure SiegelWeil.IsSharpFn (S : Space E n s) (T : Space E m t) (b : AutChar 
   /-- The group `J` fixes the datum `Ψ ⊗ vac`. -/
   fixes : ∀ k ∈ J, pairWeil S T 1 b ((1, k), 1) (vacuumDatum S T 𝔪 Ψ).1 = (vacuumDatum S T 𝔪 Ψ).1
   /-- On the support of `Ψ` the matrix `A x` is the reduction of a point of `J`. -/
-  exists_mul_eq : ∃ A : Matrix n m 𝔪.ResidueRing,
-    ∀ x : Matrix m n 𝔪.ResidueRing,
+  exists_mul_eq
+    : ∃ A : Matrix n m 𝔪.ResidueRing, ∀ x : Matrix m n 𝔪.ResidueRing,
       Ψ x ≠ 0 → ∃ k : stdLevel E n, k.val ∈ J ∧ (𝔪.reductionGL k).val = A * x
 
 section IsSharpFn
 
-variable {S : Space E n s} {T : Space E m t} {b : AutChar E} {J : Subgroup (Gf E n)}
+variable
+  {S : Space E n s} {T : Space E m t} {b : AutChar E} {J : Subgroup (Gf E n)}
   {Ψ : Matrix m n 𝔪.ResidueRing → ℂ}
 
 /-- If `Ψ` is sharp for `J`, then at a place of `𝔪` every matrix in the support of the lift of `Ψ`
@@ -747,10 +784,12 @@ lemma SiegelWeil.isSharp_vacuumDatum_of_mul_eq_one {S : Space E n s} (T : Space 
 /-! ### The vacuum sum in rank one -/
 
 open scoped Classical in
-/-- The sign −1 if w precedes w̄ in a fixed well-ordering, else 1: so 1 if w = w̄, and one of
+/--
+The sign −1 if w precedes w̄ in a fixed well-ordering, else 1: so 1 if w = w̄, and one of
 each sign on a split pair. The product over the places w above a place of norm q of the real
 subfield F of the factors 1 − ε_w q_w^(−k) is 1 − q^(−2k) if this place is split or inert, an
-inverse Euler factor of ζ_F(2k). -/
+inverse Euler factor of ζ_F(2k).
+-/
 noncomputable def placeSign (w : FinPlace E) : ℂ := if WellOrderingRel w (star w) then -1 else 1
 
 omit [WeilData E] in
@@ -950,18 +989,23 @@ lemma vacuumSum_pair {k : ℕ} (hν : ν.HasWeight l ψ) (hψ : ψ w = 1) (hψ_s
     (fun γ ↦ supportedOn_mono (by simp) (r γ).property) (by rwa [h_level]), h_sum.tsum_eq]
 
 omit [DecidableEq m] in
-/-- The Euler product in rank one. Let `ν` have weight `l` and tame part `ψ`, trivial off the set
+/--
+The Euler product in rank one. Let `ν` have weight `l` and tame part `ψ`, trivial off the set
 `S` of places, let `D = S ∪ S̄`, and let the second space have rank `card m = 2 k` with `k > 1`. The
 sum `vacuumSum` of the coefficients `vacuumCoeff (2 k) (ν υ ^ k)` over the cosets at the places off
 `D` is `L^D(k)` divided by the Euler product at `k` of the signs `placeSign` off `D`. Here `υ` is
 the splitting character (`upsilonU1` on `U(1)`), and `L^D = ν⁻¹.L S` is the `L`-function of the base
 change of `ν⁻¹` without the factors at `D`, equal to `ν.L S` (`New.AutChar.HasWeight.L_inv`). If `E`
 is unramified over its real subfield `F` off `D`, the denominator is the value at `2 k` of the zeta
-function of `F` without the places below `D`. -/
-theorem vacuumSum_eq_L_div_eulerProd {k : ℕ} (hν : ν.HasWeight l ψ) {S : Set (FinPlace E)}
-    (hψ : ∀ w : FinPlace E, w ∉ S → ψ w = 1) (h_rank : card m = 2 * k) (hk : 1 < k) :
-    vacuumSum Unit (card m) (ν * upsilonU1 ^ k) S.conjClosureᶜ =
-      ν⁻¹.L S k / eulerProd (S.conjClosureᶜ.indicator placeSign) k := by
+function of `F` without the places below `D`.
+-/
+theorem vacuumSum_eq_L_div_eulerProd
+    {k : ℕ}
+    (hν : ν.HasWeight l ψ)
+    {S : Set (FinPlace E)} (hψ : ∀ w : FinPlace E, w ∉ S → ψ w = 1)
+    (h_rank : card m = 2 * k) (hk : 1 < k)
+    : vacuumSum Unit (card m) (ν * upsilonU1 ^ k) S.conjClosureᶜ
+      = ν⁻¹.L S k / eulerProd (S.conjClosureᶜ.indicator placeSign) k := by
   -- Both sides are products over the pairs `{w, w̄}` off `D`, and `vacuumSum_pair` compares the
   -- factors.
   let D : Set (FinPlace E) := S.conjClosure
@@ -981,14 +1025,14 @@ theorem vacuumSum_eq_L_div_eulerProd {k : ℕ} (hν : ν.HasWeight l ψ) {S : Se
     (hasProd_eulerProd ha hk_real).div₀ (hasProd_eulerProd hε hk_real) hζ_ne
   have h_loc_one (w : FinPlace E) (hw : w ∉ Dᶜ) : loc w = 1 := by
     simp [loc, a, ε, heckeCoeff, Set.indicator_of_notMem hw]
-  have h_loc_eq (w : FinPlace E) (hw : w ∈ Dᶜ) : loc w =
-      (1 - placeSign w / w.q ^ k) / (1 - (ν.baseChange.atUniformizer w)⁻¹ / w.q ^ k) := by
+  have h_loc_eq (w : FinPlace E) (hw : w ∈ Dᶜ)
+      : loc w = (1 - placeSign w / w.q ^ k) / (1 - (ν.baseChange.atUniformizer w)⁻¹ / w.q ^ k) := by
     simp [loc, a, ε, heckeCoeff, Set.indicator_of_mem hw, HeckeChar.atUniformizer, Complex.cpow_neg,
       div_eq_mul_inv, mul_comm]
   have h_unram : IsUnramifiedOn (ν * upsilonU1 ^ k) Unit Dᶜ :=
     (hν.mul_upsilonU1_pow k).isUnramifiedOn fun w hw ↦ hψ_off w (hw.elim id (hD_star w).1)
-  refine vacuumSum_eq_of_hasProd (by simp [h_rank, hk]) hD_star h_unram h_prod h_loc_one
-    fun w hw ↦ ?_
+  refine vacuumSum_eq_of_hasProd (by simp [h_rank, hk]) hD_star h_unram h_prod h_loc_one fun w hw ↦
+    ?_
   have hw_star : star w ∈ Dᶜ := (hD_star w).2 hw
   rw [h_rank, vacuumSum_pair hν (hψ_off w hw) (hψ_off _ hw_star) hk]
   exact prod_congr rfl (by simp [h_loc_eq w hw, h_loc_eq _ hw_star])

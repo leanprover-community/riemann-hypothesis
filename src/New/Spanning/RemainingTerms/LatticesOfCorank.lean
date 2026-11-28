@@ -93,13 +93,15 @@ lemma sum_classes_le_of_sum_translates_le {A : Type} [Fintype A] [Nonempty A] (a
   exact (le_ofReal_iff_toReal_le coe_ne_top (by positivity)).mpr h_real
 
 variable (S) in
-/-- The rows `𝔰.k₀` of the matrices of `y⁻¹` and `y'⁻¹` are congruent modulo `S.piN`: their
-difference maps every integral vector into `Ô π̄`. -/
+/--
+The rows `𝔰.k₀` of the matrices of `y⁻¹` and `y'⁻¹` are congruent modulo `S.piN`: their
+difference maps every integral vector into `Ô π̄`.
+-/
 abbrev InverseRowsCongruent (y y' : stdLevel E 𝔰.κ) : Prop :=
   let Y : Matrix 𝔰.κ 𝔰.κ (𝔸f E) := (y⁻¹ : Gf E 𝔰.κ)
   let Y' : Matrix 𝔰.κ 𝔰.κ (𝔸f E) := (y'⁻¹ : Gf E 𝔰.κ)
-  colLattice (Ô E) (replicateRow Unit (Y 𝔰.k₀) - replicateRow Unit (Y' 𝔰.k₀)) ≤
-    .comap (.proj ()) (Ô E ∙ S.piN.val)
+  colLattice (Ô E) (replicateRow Unit (Y 𝔰.k₀) - replicateRow Unit (Y' 𝔰.k₀))
+    ≤ .comap (.proj ()) (Ô E ∙ S.piN.val)
 
 /-- Let `y`, `y'` be integral unitary matrices whose inverses have congruent rows `𝔰.k₀` modulo the
 idele `S.piN` of the filling `S` (`InverseRowsCongruent`). Then `y` and `y'` lie in the same coset
@@ -144,33 +146,38 @@ variable {S : Filling E 𝔰}
 variable (S) in
 /-- The lattices of rank `r` in `L₀` with discriminant at most `S.discriminantBound`. -/
 abbrev BoundedDiscSublattice (r : ℕ) (L₀ : Submodule (Ô E) (𝔰.κ → 𝔸f E)) : Type :=
-  {L : Submodule (Ô E) (𝔰.κ → 𝔸f E) //
-    IsLatticeOfRank r L ∧ L ≤ L₀ ∧ discriminant r L ≤ S.discriminantBound}
+  {L : Submodule (Ô E) (𝔰.κ → 𝔸f E)
+    // IsLatticeOfRank r L ∧ L ≤ L₀ ∧ discriminant r L ≤ S.discriminantBound}
 
 /-- The unimodular lattice `u Ô ^ κ`: the vectors `v` with `u⁻¹ v` integral. -/
 abbrev unimodularLattice (u : Gf E 𝔰.κ) : Submodule (Ô E) (𝔰.κ → 𝔸f E) :=
   preimageLattice (Ô E) u.val.inv
 
 variable (S) in
-/-- The linear form "row `k₀` of `y⁻¹ u⁻¹`" on `u Ô ^ κ`, called the form of `y`, vanishes on `L`
-modulo `piN`. -/
-def RowVanishesModPiN (u : Gf E 𝔰.κ) (y : stdLevel E 𝔰.κ) (L : Submodule (Ô E) (𝔰.κ → 𝔸f E)) :
-    Prop :=
-  ∀ v ∈ L,
-    (((y⁻¹ : Gf E 𝔰.κ) : Matrix 𝔰.κ 𝔰.κ (𝔸f E)) *ᵥ u.val.inv *ᵥ v) 𝔰.k₀ ∈ Ô E ∙ S.piN.val
+/--
+The linear form "row `k₀` of `y⁻¹ u⁻¹`" on `u Ô ^ κ`, called the form of `y`, vanishes on `L`
+modulo `piN`.
+-/
+def RowVanishesModPiN (u : Gf E 𝔰.κ) (y : stdLevel E 𝔰.κ) (L : Submodule (Ô E) (𝔰.κ → 𝔸f E))
+    : Prop :=
+  ∀ v ∈ L, (((y⁻¹ : Gf E 𝔰.κ) : Matrix 𝔰.κ 𝔰.κ (𝔸f E)) *ᵥ u.val.inv *ᵥ v) 𝔰.k₀ ∈ Ô E ∙ S.piN.val
 
 variable (S) in
-/-- The term `(disc L) ^ (-k)`, for the discriminant in rank `r`, if the form of `y` on `u Ô ^ κ`
-vanishes on `L` modulo `piN`, and `0` otherwise. -/
-def discWeightIfRowVanishes (u : Gf E 𝔰.κ) (y : stdLevel E 𝔰.κ) (r : ℕ) :
-    Submodule (Ô E) (𝔰.κ → 𝔸f E) → ℝ≥0∞ :=
-  {L : Submodule (Ô E) (𝔰.κ → 𝔸f E) | S.RowVanishesModPiN u y L}.indicator
-    fun L ↦ ENNReal.ofReal (discriminant r L ^ 𝔰.k)⁻¹
+/--
+The term `(disc L) ^ (-k)`, for the discriminant in rank `r`, if the form of `y` on `u Ô ^ κ`
+vanishes on `L` modulo `piN`, and `0` otherwise.
+-/
+def discWeightIfRowVanishes (u : Gf E 𝔰.κ) (y : stdLevel E 𝔰.κ) (r : ℕ)
+    : Submodule (Ô E) (𝔰.κ → 𝔸f E) → ℝ≥0∞ :=
+  {L : Submodule (Ô E) (𝔰.κ → 𝔸f E) | S.RowVanishesModPiN u y L}.indicator fun L ↦
+    ENNReal.ofReal (discriminant r L ^ 𝔰.k)⁻¹
 
 variable (S) in
-/-- The cosets in `stdLevel E κ` of the subgroup of elements that `inclHFin` maps into
+/--
+The cosets in `stdLevel E κ` of the subgroup of elements that `inclHFin` maps into
 `latticeStabilizer`: those whose row `k₀` is congruent to that of `1` modulo `piN`. They
-parametrise the positions of the form modulo `piN`. -/
+parametrise the positions of the form modulo `piN`.
+-/
 abbrev LatticeStabilizerCoset : Type :=
   stdLevel E 𝔰.κ ⧸ (S.latticeStabilizer.comap S.inclHFin).subgroupOf (stdLevel E 𝔰.κ)
 
@@ -488,11 +495,15 @@ lemma one_le_sublatticeDiscriminant_unimodular (u : Gf E 𝔰.κ) (V : Submodule
   rw [← h_gram]
   exact hm.conjTranspose.mul hm
 
-/-- The weight of the subspace `V` of `E ^ κ`: it is `d ^ (-k-1)` if `V` has codimension `l`, with
-`d` the discriminant of the lattice of the adelic points of `V` in `u Ô ^ κ`, and `0` otherwise. -/
+/--
+The weight of the subspace `V` of `E ^ κ`: it is `d ^ (-k-1)` if `V` has codimension `l`, with
+`d` the discriminant of the lattice of the adelic points of `V` in `u Ô ^ κ`, and `0` otherwise.
+-/
 abbrev subspaceDiscWeight (u : Gf E 𝔰.κ) (l : ℕ) (V : Submodule E (𝔰.κ → E)) : ℝ≥0∞ :=
-  if finrank E V + l = 𝔰.k then ENNReal.ofReal (sublatticeDiscriminant u.1.val_inv V ^ (𝔰.k + 1))⁻¹
-    else 0
+  if finrank E V + l = 𝔰.k then
+    ENNReal.ofReal (sublatticeDiscriminant u.1.val_inv V ^ (𝔰.k + 1))⁻¹
+  else
+    0
 
 omit [HasPrimitiveRoot5040 E] in
 /-- Let `u` be in `Gf E 𝔰.κ`, let `y` assign an element `y φ` of `stdLevel E 𝔰.κ` to each coset `φ`
@@ -767,7 +778,8 @@ lemma mul_rootDiscr_pow_le_tailScale_pow_div (S : Filling E 𝔰) [S.IsAdmissibl
 
 end
 
-/-- **Lattices of given corank.** Let `S` be filling data, with prime `N = π π̄` and size parameter
+/--
+**Lattices of given corank.** Let `S` be filling data, with prime `N = π π̄` and size parameter
 `b`, that satisfy the standing hypotheses `IsAdmissible`; those used are the form of the level,
 `N ≤ b ^ (60 (ϱ + 1))`, the lower bounds `1000 ≤ b` and `5 ≤ N`, and a lower bound for an index. Let
 `k₀ = 𝔰.k₀` be the distinguished index in `κ` given by the shape `𝔰`, and let `r + l = k = #κ`. For
@@ -775,13 +787,13 @@ a class `c` in the double coset space `S.Classes` of `U(X₀)`, with chosen repr
 lattice `classLatticeX₀ c` consists of the adelic vectors `v` such that `g⁻¹ v` is integral with
 entry `k₀` divisible by `π̄`. Take the sum of `(disc L) ^ (-k)` over all `c` and all lattices `L` of
 rank `r` in that lattice with `disc L ≤ discriminantBound = b ^ ((ϱ + 1) ^ 3 f)`. This sum is at
-most `tailScale ^ (l + 1)` times the number of classes divided by `N ^ (k f)`. -/
-theorem sum_discriminant_inv_le {S : Filling E 𝔰} [S.IsAdmissible] {r l : ℕ}
-    (h_rank : r + l = 𝔰.k) :
-    ∑ c : S.Classes, ∑' L : {L : Submodule (Ô E) (𝔰.κ → 𝔸f E) // IsLatticeOfRank r L ∧
-        L ≤ S.classLatticeX₀ c ∧ discriminant r L ≤ S.discriminantBound},
-      ENNReal.ofReal (discriminant r L.val ^ 𝔰.k)⁻¹ ≤
-      .ofReal (card S.Classes / S.N ^ (𝔰.k * numInfPlaces E) * S.tailScale ^ (l + 1)) := by
+most `tailScale ^ (l + 1)` times the number of classes divided by `N ^ (k f)`.
+-/
+theorem sum_discriminant_inv_le {S : Filling E 𝔰} [S.IsAdmissible] {r l : ℕ} (h_rank : r + l = 𝔰.k)
+    : ∑ c : S.Classes, ∑' L : {L : Submodule (Ô E) (𝔰.κ → 𝔸f E) // IsLatticeOfRank r L ∧
+          L ≤ S.classLatticeX₀ c ∧ discriminant r L ≤ S.discriminantBound},
+        ENNReal.ofReal (discriminant r L.val ^ 𝔰.k)⁻¹
+      ≤ .ofReal (card S.Classes / S.N ^ (𝔰.k * numInfPlaces E) * S.tailScale ^ (l + 1)) := by
   -- The mean over the classes is a mean over `u` of the mean over the lattice stabilizer cosets
   -- `φ`, of which there are at least `(N ^ k / b) ^ f`.
   have hb : 0 < S.b := by linarith [S.thousand_le_b]
@@ -795,35 +807,41 @@ theorem sum_discriminant_inv_le {S : Filling E 𝔰} [S.IsAdmissible] {r l : ℕ
   let : Fintype S.LatticeStabilizerCoset :=
     Subgroup.fintypeOfIndexNeZero (Nat.cast_pos.1 h_card_pos).ne'
   rw [mul_comm_div]
-  refine sum_classes_le_of_sum_translates_le (fun φ : S.LatticeStabilizerCoset ↦ φ.out.val) _
-    (by positivity) fun u ↦ ?_
-  have h_rep : ∀ φ : S.LatticeStabilizerCoset, ∃ (η : U (stdSpace E 𝔰.κ).J) (y : stdLevel E 𝔰.κ),
-      (y : S.LatticeStabilizerCoset) = φ ∧
-        (⟦u * φ.out⟧ : S.Classes).out = (stdSpace E 𝔰.κ).embFin η * u * y :=
+  refine sum_classes_le_of_sum_translates_le
+    (fun φ : S.LatticeStabilizerCoset ↦ φ.out.val)
+    _ (by positivity)
+    fun u ↦ ?_
+  have h_rep
+      : ∀ φ : S.LatticeStabilizerCoset, ∃ (η : U (stdSpace E 𝔰.κ).J) (y : stdLevel E 𝔰.κ),
+        (y : S.LatticeStabilizerCoset) = φ
+          ∧ (⟦u * φ.out⟧ : S.Classes).out = (stdSpace E 𝔰.κ).embFin η * u * y :=
     exists_mk_out_eq_embFin_mul u
   choose η y hy h_out using h_rep
-  calc ∑ φ : S.LatticeStabilizerCoset, ∑' L :
-         S.BoundedDiscSublattice r (S.classLatticeX₀ ⟦u * φ.out⟧),
-        ENNReal.ofReal (discriminant r L.val ^ 𝔰.k)⁻¹
+  calc
+    ∑ φ : S.LatticeStabilizerCoset, ∑' L :
+      S.BoundedDiscSublattice r (S.classLatticeX₀ ⟦u * φ.out⟧),
+     ENNReal.ofReal (discriminant r L.val ^ 𝔰.k)⁻¹
     _ ≤ ∑ φ : S.LatticeStabilizerCoset, ∑' L : S.BoundedDiscSublattice r (unimodularLattice u),
           S.discWeightIfRowVanishes u (y φ) r L.val :=
       Finset.sum_le_sum fun φ _ ↦ tsum_discriminant_inv_le_of_out_eq (h_out φ) r
-    _ ≤ ENNReal.ofReal ((S.N ^ numInfPlaces E) ^ l * S.discriminantBound ^ (2 * 𝔰.ϱ + 4 + 2) *
-          ((200 * (numInfPlaces E * 𝔰.k) * rootDiscr E) ^ (numInfPlaces E * (𝔰.k + 1) * l) *
-            2 ^ 𝔰.k)) := by
+    _ ≤ ENNReal.ofReal
+        ((S.N ^ numInfPlaces E) ^ l * S.discriminantBound ^ (2 * 𝔰.ϱ + 4 + 2)
+          * ((200 * (numInfPlaces E * 𝔰.k) * rootDiscr E) ^ (numInfPlaces E * (𝔰.k + 1) * l)
+            * 2 ^ 𝔰.k)) := by
       refine (sum_tsum_discWeightIfRowVanishes_le u hy h_rank).trans_eq ?_
       simp (disch := positivity) only [ENNReal.ofReal_mul, ENNReal.ofReal_pow two_pos.le,
         ENNReal.ofReal_ofNat]
     _ ≤ ENNReal.ofReal (S.tailScale ^ (l + 1) / S.b ^ numInfPlaces E) :=
       ENNReal.ofReal_le_ofReal (S.mul_rootDiscr_pow_le_tailScale_pow_div l)
-    _ = ENNReal.ofReal ((S.N ^ 𝔰.k / S.b) ^ numInfPlaces E *
-          (S.tailScale ^ (l + 1) / S.N ^ (𝔰.k * numInfPlaces E))) := by
+    _ = ENNReal.ofReal
+        ((S.N ^ 𝔰.k / S.b) ^ numInfPlaces E
+          * (S.tailScale ^ (l + 1) / S.N ^ (𝔰.k * numInfPlaces E))) := by
       congr 1
       rw [div_pow, ← pow_mul]
       field_simp
     _ ≤ ENNReal.ofReal
-          (card S.LatticeStabilizerCoset *
-            (S.tailScale ^ (l + 1) / S.N ^ (𝔰.k * numInfPlaces E))) := by
+        (card S.LatticeStabilizerCoset
+          * (S.tailScale ^ (l + 1) / S.N ^ (𝔰.k * numInfPlaces E))) := by
       grw [h_card, Nat.card_eq_fintype_card]
 
 end CrudeLattices

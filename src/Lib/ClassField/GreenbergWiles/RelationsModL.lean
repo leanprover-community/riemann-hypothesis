@@ -63,18 +63,22 @@ lemma card_torsionBy_le_of_surjective {Y B : Type} [AddCommGroup Y] [AddCommGrou
 
 namespace RelationSetting
 
-variable {K R : Type} [Field K] [EmbeddedNumberField K] [CommRing R]
-  {M : DiscreteModule R Gal(Ω/K)} {m : ℕ} [NeZero m] (D : RelationSetting M m)
+variable
+  {K R : Type} [Field K] [EmbeddedNumberField K] [CommRing R]
+  {M : DiscreteModule R Gal(Ω/K)} {m : ℕ} [NeZero m]
+  (D : RelationSetting M m)
 
 /-- The reductions modulo `ℓ` of the relations off `T`, with values in `M* / ℓ M*`. -/
-def reductions (ℓ : ℕ) (T : Finset (FinPlace K)) :
-    Submodule R (Gal(Ω/K) → QuotSMulTop (ℓ : R) (CharacterModule M)) :=
+def reductions (ℓ : ℕ) (T : Finset (FinPlace K))
+    : Submodule R (Gal(Ω/K) → QuotSMulTop (ℓ : R) (CharacterModule M)) :=
   (D.relations T).map ((Submodule.mkQ _).compLeft Gal(Ω/K))
 
-/-- If `M` is finite, then `D.reductions ℓ T` is finite, as the image of the finite set
-`D.relations T`. -/
-instance finite_reductions [Finite M] (ℓ : ℕ) (T : Finset (FinPlace K)) :
-    Finite (D.reductions ℓ T) :=
+/--
+If `M` is finite, then `D.reductions ℓ T` is finite, as the image of the finite set
+`D.relations T`.
+-/
+instance finite_reductions [Finite M] (ℓ : ℕ) (T : Finset (FinPlace K))
+    : Finite (D.reductions ℓ T) :=
   Set.Finite.image _ (D.finite_relations T)
 
 /-- Two characters of `M` that are congruent modulo `ℓ` agree on the points killed by `ℓ`. -/
@@ -156,7 +160,9 @@ lemma pow_le_card_reductions_mul [Finite M] (ℓ : ℕ) {ι : Type} [Fintype ι]
 end RelationSetting
 namespace IsLargeLevel.SplitPlaces
 
-variable {K ι : Type} [Field K] [EmbeddedNumberField K] {ℓ m N : ℕ} [NeZero m]
+variable
+  {K ι : Type} [Field K] [EmbeddedNumberField K]
+  {ℓ m N : ℕ} [NeZero m]
   {U O : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
 /-- Let `ℓ` divide `m` and let `O ⊇ U` fix the `ℓ`-th roots of unity. A family `s` of primes not
 dividing `N` and split for `U` and `m` extends by two new primes to such a family for `O` and `ℓ`,
@@ -218,15 +224,18 @@ lemma le_stabilizer (s : SplitPlaces (K := K) m N I U ι) (h_detect : s.Frobenii
 end IsLargeLevel.SplitPlaces
 
 /-- The submodule `M[ℓ]` of the points killed by `ℓ`. -/
-abbrev DiscreteModule.torsion {R G : Type} [CommRing R] [Group G] [TopologicalSpace G]
-    (M : DiscreteModule R G) (ℓ : ℕ) : DiscreteModule R G :=
+abbrev DiscreteModule.torsion
+    {R G : Type} [CommRing R] [Group G] [TopologicalSpace G] (M : DiscreteModule R G) (ℓ : ℕ)
+    : DiscreteModule R G :=
   M.submodule (ℓ • LinearMap.id).ker fun g a (h : ℓ • a = 0) ↦
     show ℓ • M.ρ g a = 0 by rw [← map_nsmul, h, map_zero]
 
 namespace RelationSetting
 
-variable {K R : Type} [Field K] [EmbeddedNumberField K] [CommRing R]
-  {M : DiscreteModule R Gal(Ω/K)} {m : ℕ} [NeZero m] (D : RelationSetting M m)
+variable
+  {K R : Type} [Field K] [EmbeddedNumberField K] [CommRing R]
+  {M : DiscreteModule R Gal(Ω/K)} {m : ℕ} [NeZero m]
+  (D : RelationSetting M m)
   {ℓ : ℕ} [Fact ℓ.Prime]
 
 variable (M ℓ) in
@@ -266,10 +275,12 @@ lemma coprime_index_ker_torsionAction [Finite M] (h_card : Nat.card (M.torsion �
   exact (h_coprime.pow_right 2).of_dvd_right h_dvd
 
 variable (ℓ) in
-/-- The local condition for `M[ℓ]`: the functions on the decomposition group of the chosen place
-`D.place v` above `v`, with values in `M[ℓ]`, that are allowed for `M`. -/
-def allowedTorsion (v : FinPlace K) :
-    Submodule R (decompGroup Gal(Ω/K) (D.place v) → M.torsion ℓ) :=
+/--
+The local condition for `M[ℓ]`: the functions on the decomposition group of the chosen place
+`D.place v` above `v`, with values in `M[ℓ]`, that are allowed for `M`.
+-/
+def allowedTorsion (v : FinPlace K)
+    : Submodule R (decompGroup Gal(Ω/K) (D.place v) → M.torsion ℓ) :=
   (D.allowed v).comap ((Submodule.subtype _).compLeft _)
 
 omit [Fact ℓ.Prime] in
@@ -442,7 +453,8 @@ lemma card_torsionBy_cocycles_mul_pow_le (hκ : Continuous κ)
 
 end Procyclic
 
-/-- Relations modulo `ℓ`. Let `ℓ ∣ m`, and let `M[ℓ]` have order `ℓ`. Let `κ` be a continuous
+/--
+Relations modulo `ℓ`. Let `ℓ ∣ m`, and let `M[ℓ]` have order `ℓ`. Let `κ` be a continuous
 character with values in `1 + 4 ℤ_ℓ` (so its image is procyclic) whose kernel lies in `U ∪ U c⁻¹`.
 Let the local condition be zero at the primes not above `ℓ` and vanishing on `ker κ` above `ℓ`. If
 `K` has at least four infinite places, then for some `T ⊇ S` the reductions modulo `ℓ` of the
@@ -450,24 +462,27 @@ relations off `T` form a group of order at least `ℓ ^ (k + 1)`, where `k` coun
 not above `ℓ`. A relation off `T` is a continuous equivariant map from `U` to `M* = Hom(M, ℚ/ℤ)`,
 unramified outside `T`, whose Frobenius values give linear relations among cocycle values at tame
 generators. This is weaker than the count given by the formula of Greenberg and Wiles, which grows
-with the number of infinite places; here only four of these places are used. -/
-theorem exists_pow_le_card_reductions [Finite M] (hm : ℓ ∣ m)
-    (h_places : 4 ≤ card (InfinitePlace K)) {κ : Gal(Ω/K) →* ℤ_[ℓ]ˣ} (hκ : Continuous κ)
-    (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).val - 1) {c : Gal(Ω/K)}
-    (hU : ∀ g : Gal(Ω/K), κ g = 1 → g ∈ D.subgroup ∨ g * c ∈ D.subgroup)
+with the number of infinite places; here only four of these places are used.
+-/
+theorem exists_pow_le_card_reductions
+    [Finite M]
+    (hm : ℓ ∣ m) (h_places : 4 ≤ card (InfinitePlace K))
+    {κ : Gal(Ω/K) →* ℤ_[ℓ]ˣ} (hκ : Continuous κ) (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).val - 1)
+    {c : Gal(Ω/K)} (hU : ∀ g : Gal(Ω/K), κ g = 1 → g ∈ D.subgroup ∨ g * c ∈ D.subgroup)
     (h_card : Nat.card {a : M // ℓ • a = 0} = ℓ)
     (h_allowed : ∀ v : FinPlace K,
-      D.allowed v = .pi {g : decompGroup Gal(Ω/K) (D.place v) | ↑ℓ ∈ v.asIdeal → κ g = 1} ⊥) :
-    open Classical in
-    ∃ T : Finset (FinPlace K), D.localPrimes ⊆ T ∧
-      ℓ ^ (#{v ∈ D.localPrimes | ↑ℓ ∉ v.asIdeal} + 1) ≤ Nat.card (D.reductions ℓ T) := by
+      D.allowed v = .pi {g : decompGroup Gal(Ω/K) (D.place v) | ↑ℓ ∈ v.asIdeal → κ g = 1} ⊥)
+    : open Classical in
+      ∃ T : Finset (FinPlace K),
+        D.localPrimes ⊆ T
+          ∧ ℓ ^ (# {v ∈ D.localPrimes | ↑ℓ ∉ v.asIdeal} + 1) ≤ Nat.card (D.reductions ℓ T) := by
   classical
   -- A family of split primes whose Frobenius elements detect roots, such that every family of
   -- characters that kills the values of the cocycles at the `γ i` comes from a relation off `T`.
   obtain ⟨q, _, ι, _, I, s, γ, T, hS, hST, -, h_detect, -, h_forms⟩ :=
     D.exists_splitPlaces_forall_exists_mem_relations D.avoids_one
   set t : ℕ := Nat.card (Submodule.torsionBy ℕ (D.cocycles (Set.range s.v)) ℓ)
-  have h_few : t * ℓ ^ (#{v ∈ D.localPrimes | ↑ℓ ∉ v.asIdeal} + 1) ≤ ℓ ^ card ι :=
+  have h_few : t * ℓ ^ (# {v ∈ D.localPrimes | ↑ℓ ∉ v.asIdeal} + 1) ≤ ℓ ^ card ι :=
     D.card_torsionBy_cocycles_mul_pow_le hκ hκ_four hm h_places hU h_card h_allowed hS s h_detect
   have h_many : ℓ ^ card ι ≤ Nat.card (D.reductions ℓ T) * t := by
     simpa only [h_card] using D.pow_le_card_reductions_mul ℓ (Set.finite_range s.v) h_forms

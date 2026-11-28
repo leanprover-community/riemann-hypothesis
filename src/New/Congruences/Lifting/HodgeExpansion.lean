@@ -72,23 +72,28 @@ section HodgeExpansion
 
 open Period Submodule Set FrobGroup Module Matrix
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {k : KummerChart Γ} {O : Coeffs}
-  {L A C : JumpLattice O}
+variable
+  {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {k : KummerChart Γ} {O : Coeffs} {L A C : JumpLattice O}
 
 section StandardExponents
 
-variable {l a : ℕ} {i : k.Letter} {n : ℤ} {μ : L.Functional} {c : ℕ → ℤ → ℤ}
-  {x : L.Ambient} {b : A.Carrier →ₗ[O] L.Carrier →ₗ[O] C.Carrier}
+variable
+  {l a : ℕ} {i : k.Letter} {n : ℤ} {μ : L.Functional} {c : ℕ → ℤ → ℤ} {x : L.Ambient}
+  {b : A.Carrier →ₗ[O] L.Carrier →ₗ[O] C.Carrier}
 
 variable (b) in
-/-- The `W(C^♭)`-bilinear extension `(W(C^♭) ⊗ A) × (W(C^♭) ⊗ L) → W(C^♭) ⊗ C` of an `O`-bilinear
-map `b : A × L → C` of lattices. The tensor products are over `ℤ_p`. -/
+/--
+The `W(C^♭)`-bilinear extension `(W(C^♭) ⊗ A) × (W(C^♭) ⊗ L) → W(C^♭) ⊗ C` of an `O`-bilinear
+map `b : A × L → C` of lattices. The tensor products are over `ℤ_p`.
+-/
 abbrev wittPairing : A.Ambient →ₗ[WittCFlat] L.Ambient →ₗ[WittCFlat] C.Ambient :=
   DiagTensor.pair (b.restrictScalars₁₂ ℤ_[p] ℤ_[p])
 
 variable (b) in
-/-- The `O`-bilinear map `b : A × L → C` of lattices is equivariant: `b (g y, g x) = g b (y, x)` for
-all `g` in `Γ`. -/
+/--
+The `O`-bilinear map `b : A × L → C` of lattices is equivariant: `b (g y, g x) = g b (y, x)` for
+all `g` in `Γ`.
+-/
 def IsEquivariantPairing : Prop :=
   ∀ (g : GroupOverGp.G) (y : A.Carrier) (x : L.Carrier), b (A.ρ g y) (L.ρ g x) = C.ρ g (b y x)
 
@@ -115,24 +120,30 @@ lemma wittPairing_mem_saturateBy {y : A.Ambient} {T : Submonoid Ainf}
   obtain ⟨r', hr', hrx⟩ := hx
   exact ⟨r * r', mul_mem hr hr', by simpa [mul_smul] using h_pair hry hrx⟩
 
-/-- The family of exponents `c` shifted by `l` levels: the value at `(a, u)` is `n` for `a < l` and
-`c (a - l) u` for `a ≥ l`. -/
+/--
+The family of exponents `c` shifted by `l` levels: the value at `(a, u)` is `n` for `a < l` and
+`c (a - l) u` for `a ≥ l`.
+-/
 @[simp]
 abbrev shiftedOrders (l : ℕ) (n : ℤ) (c : ℕ → ℤ → ℤ) (a : ℕ) (u : ℤ) : ℤ :=
   if a < l then n else c (a - l) u
 
-/-- A `B_dR`-linear map `D` from functionals to `B_dR` shifts the Hodge filtration by `κ`:
-`D μ ∈ t^(m + κ) B_dR⁺` whenever `μ (1 ⊗ L) ⊆ t^m B_dR⁺`. -/
+/--
+A `B_dR`-linear map `D` from functionals to `B_dR` shifts the Hodge filtration by `κ`:
+`D μ ∈ t^(m + κ) B_dR⁺` whenever `μ (1 ⊗ L) ⊆ t^m B_dR⁺`.
+-/
 abbrev ShiftsHodgeFil (D : L.Functional →ₗ[BdR] BdR) (κ : ℤ) : Prop :=
   ∀ (μ : L.Functional) (m : ℤ),
     (∀ t : Rep.of (overZp L.ρ), μ (DiagTensor.mk 1 t) ∈ hodgeFil m) → D μ ∈ hodgeFil (m + κ)
 
-/-- A `B_dR`-linear map `D` from functionals to `B_dR` respects the action of `Γ'`:
-`D μ₂ = g • D μ₁` whenever `μ₂ (1 ⊗ g t) = g • μ₁ (1 ⊗ t)` for all `t` in `L`. -/
+/--
+A `B_dR`-linear map `D` from functionals to `B_dR` respects the action of `Γ'`:
+`D μ₂ = g • D μ₁` whenever `μ₂ (1 ⊗ g t) = g • μ₁ (1 ⊗ t)` for all `t` in `L`.
+-/
 abbrev RespectsGaloisAction (D : L.Functional →ₗ[BdR] BdR) : Prop :=
   ∀ (μ₁ μ₂ : L.Functional) (g : k.subgroup),
-    (∀ t : L.Carrier, μ₂ (DiagTensor.mk 1 (L.ρ g t)) = toGp g • μ₁ (DiagTensor.mk 1 t)) →
-      D μ₂ = toGp g • D μ₁
+    (∀ t : L.Carrier, μ₂ (DiagTensor.mk 1 (L.ρ g t)) = toGp g • μ₁ (DiagTensor.mk 1 t))
+      → D μ₂ = toGp g • D μ₁
 
 /-- Let `x` lie in `L.fracSpan` and let `μ` be any `A_inf`-linear functional `W(C^♭) ⊗ L → B_dR`. A
 form of type `κ` at the letter `i` is a functional that is equivariant for `Γ' = k.subgroup` on
@@ -507,8 +518,8 @@ section OneStepGain
 
 open Period Submodule FrobGroup Module Finset IsDiscreteValuationRing Algebra
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
-  {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O}
+variable
+  {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O}
 
 /-- The system of exponents obtained from `o` by raising the single value `o a u` by 1. -/
 @[grind]
@@ -517,8 +528,7 @@ def raiseOrder (o : ℕ → ℤ → ℤ) (a : ℕ) (u : ℤ) (b : ℕ) (v : ℤ)
 
 /-- The system of exponents obtained from `o` by raising all values `o a v` at level `a` by 1. -/
 @[grind]
-def raiseOrdersAt (o : ℕ → ℤ → ℤ) (a : ℕ) (b : ℕ) (v : ℤ) : ℤ :=
-  o b v + if b = a then 1 else 0
+def raiseOrdersAt (o : ℕ → ℤ → ℤ) (a : ℕ) (b : ℕ) (v : ℤ) : ℤ := o b v + if b = a then 1 else 0
 
 omit [GroupOverGp p] in
 /-- Let `t` be an `N × r` matrix over `B_dR⁺`. There are `d ≤ r` rows `s i` such that, modulo the

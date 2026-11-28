@@ -42,10 +42,12 @@ open Matrix MvPolynomial
 
 variable {Φ : Type*} {l : Type*} {n n' : Type*} [Fintype l] [DecidableEq l]
 
-/-- The minor `det (X (τ, i a, j b))`, with `a b : l`, of the matrix of variables attached to `τ`,
-taken in the rows `i` and the columns `j`. -/
-noncomputable def New.Rows.variableMinor (τ : Φ) (i : l → n') (j : l → n) :
-    MvPolynomial (Φ × n' × n) ℂ :=
+/--
+The minor `det (X (τ, i a, j b))`, with `a b : l`, of the matrix of variables attached to `τ`,
+taken in the rows `i` and the columns `j`.
+-/
+noncomputable def New.Rows.variableMinor (τ : Φ) (i : l → n') (j : l → n)
+    : MvPolynomial (Φ × n' × n) ℂ :=
   (of fun a b : l ↦ (X (τ, i a, j b) : MvPolynomial (Φ × n' × n) ℂ)).det
 
 /-- If the row indices `i` and the column indices `j` are injective, then the determinant
@@ -71,14 +73,18 @@ open Matrix
 
 variable {k G n : Type} [Field k] [Group G] [Fintype n] [DecidableEq n]
 
-/-- The trace form is non-degenerate on the span of the matrices `r g`: any `x` in that span with
-`tr (x * r g) = 0` for all `g` is zero. -/
+/--
+The trace form is non-degenerate on the span of the matrices `r g`: any `x` in that span with
+`tr (x * r g) = 0` for all `g` is zero.
+-/
 def New.IsTraceNondeg (r : G →* GL n k) : Prop :=
   ∀ x ∈ Submodule.span k (Set.range fun g : G ↦ (r g : Matrix n n k)),
     (∀ g : G, (x * r g).trace = 0) → x = 0
 
-/-- The integers `e i` are free: two vectors `α`, `β` of natural numbers with
-`∑ α i = ∑ β i ≤ (n + 1) ^ 2` and `∑ α i * e i = ∑ β i * e i` are equal. -/
+/--
+The integers `e i` are free: two vectors `α`, `β` of natural numbers with
+`∑ α i = ∑ β i ≤ (n + 1) ^ 2` and `∑ α i * e i = ∑ β i * e i` are equal.
+-/
 def New.HasNoSmallRelations {n : ℕ} (e : Fin n → ℤ) : Prop :=
   ∀ d : ℕ, d ≤ (n + 1) ^ 2 → {α : Fin n →₀ ℕ | Finsupp.degree α = d}.InjOn (Finsupp.weight e)
 
@@ -111,8 +117,8 @@ with star, with ring maps and with intertwining matrices.
 
 open Polynomial in
 /-- The `i`-th power of `Polynomial.mapRingHom f` maps the coefficients by `f ^ i`. -/
-theorem Polynomial.mapRingHom_pow_apply {R : Type*} [Semiring R] (f : R →+* R) (i : ℕ)
-    (p : R[X]) : (mapRingHom f ^ i) p = p.map (f ^ i) :=
+theorem Polynomial.mapRingHom_pow_apply {R : Type*} [Semiring R] (f : R →+* R) (i : ℕ) (p : R[X])
+    : (mapRingHom f ^ i) p = p.map (f ^ i) :=
   let F : (R →+* R) →* R[X] →+* R[X] :=
     ⟨⟨mapRingHom, mapRingHom_id⟩, fun f g ↦ (mapRingHom_comp f g).symm⟩
   DFunLike.congr_fun (map_pow F f i).symm p
@@ -121,8 +127,10 @@ namespace New
 
 open Matrix Polynomial GeneralLinearGroup Finset Algebra
 
-variable {R S n m : Type*} [CommRing R] [CommRing S] [Fintype n] [DecidableEq n] {σ : S →+* S}
-  [Fintype m] {ψ : R →+* S} {c : Matrix m n R} {x Y : Matrix n n R}
+variable
+  {R S n m : Type*} [CommRing R] [CommRing S] [Fintype n] [DecidableEq n]
+  {σ : S →+* S} [Fintype m]
+  {ψ : R →+* S} {c : Matrix m n R} {x Y : Matrix n n R}
 
 /-- For an `R`-algebra `A` with compatible star structures, the star of `q(x)` is the value at
 `star x` of the polynomial obtained from `q` by applying the star of `R` to its coefficients. -/

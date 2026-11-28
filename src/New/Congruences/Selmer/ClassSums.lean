@@ -65,25 +65,36 @@ namespace New.Data.CriticalPair
 variable {P : Parameters} {D : Data P}
 
 open scoped Classical in
-/-- The properties of a family `F` of values, one for each tame character, by which it interpolates
+/--
+The properties of a family `F` of values, one for each tame character, by which it interpolates
 ratios of twisted and untwisted `L`-values (`p.ratio`). The set `I` holds the exponents of the
 inverse Euler factors that a new place in the modulus contributes. At a twist the ratio occurs to
-the power `m + 1`, times the `m`-th power of the norm of the modulus. -/
-structure IsTwistMeasure (p : D.CriticalPair) (I : Finset ℕ) (m : ℕ) (F : D.TameChar → ℂ) :
-  Prop where
+the power `m + 1`, times the `m`-th power of the norm of the modulus.
+-/
+structure IsTwistMeasure (p : D.CriticalPair) (I : Finset ℕ) (m : ℕ) (F : D.TameChar → ℂ)
+    : Prop where
   /-- The value at the trivial character is not zero. -/
   apply_one_ne_zero : F TameChar.one ≠ 0
-  /-- At each modulus, `F` is evaluation on one combination of points whose coefficients are
-  integral at every prime that does not divide the norm of the modulus. -/
+  /--
+  At each modulus, `F` is evaluation on one combination of points whose coefficients are
+  integral at every prime that does not divide the norm of the modulus.
+  -/
   isIntegralMeasure : ∀ ϑ : D.TameChar, ϑ.IsIntegralMeasure F
-  /-- Adding a place `v` to the modulus multiplies `F` by the inverse Euler factors at `v` with
-  the exponents in `I`. -/
-  apply_insert : ∀ (ϑ ϑ' : D.TameChar) (v : FinPlace D.E), v ∉ ϑ.Q → ϑ'.Q = insert v ϑ.Q →
-    ϑ'.toAutChar = ϑ.toAutChar → ϑ'.tamePart = ϑ.tamePart →
-    F ϑ' = F ϑ * ∏ l ∈ I, ∏ ε : ℤˣ,
-      (1 - (p.character * ϑ.toAutChar).baseChange.atUniformizer v ^ ε.val / v.q ^ l)
-  /-- At a twist, `F` is its value at the trivial character times the `m`-th power of the norm of
-  the modulus and the `(m + 1)`-th power of the ratio. -/
+  /--
+  Adding a place `v` to the modulus multiplies `F` by the inverse Euler factors at `v` with
+  the exponents in `I`.
+  -/
+  apply_insert
+    : ∀ (ϑ ϑ' : D.TameChar) (v : FinPlace D.E),
+      v ∉ ϑ.Q → ϑ'.Q = insert v ϑ.Q → ϑ'.toAutChar = ϑ.toAutChar → ϑ'.tamePart = ϑ.tamePart
+        → F ϑ'
+          = F ϑ
+            * ∏ l ∈ I, ∏ ε : ℤˣ,
+              (1 - (p.character * ϑ.toAutChar).baseChange.atUniformizer v ^ ε.val / v.q ^ l)
+  /--
+  At a twist, `F` is its value at the trivial character times the `m`-th power of the norm of
+  the modulus and the `(m + 1)`-th power of the ratio.
+  -/
   apply_twist : ∀ ϑ : D.Twist, F ϑ = F TameChar.one * (ϑ.normQ ^ m * p.ratio ϑ ^ (m + 1))
 
 /-- For a critical pair `p` and a tame character `ϑ`, the product of their tame parts is trivial at
@@ -142,18 +153,24 @@ lemma integralAlgebraicPart_insert {p : D.CriticalPair} {n : Type} [Fintype n] [
   rw [h_coeff, ← h_factors]
   simpa [φ] using h_erase p.z (mod_cast H.2)
 
-/-- For a critical pair `p = (ν, z)`, let `H` say that `n` has `2 z` elements and `z ≥ 2`. Then
+/--
+For a critical pair `p = (ν, z)`, let `H` say that `n` has `2 z` elements and `z ≥ 2`. Then
 `integralAlgebraicPart H`, an integral multiple of the algebraic part of the twisted `L`-value at
 `z`, has the properties of `IsTwistMeasure {z} 0`: it is nonzero at the trivial character; at each
 modulus it is evaluation on finitely many points with coefficients integral away from that modulus
 (an integral measure); it is multiplied by the inverse Euler factors with exponent `z` when a place
 is added; and at a twist it is its value at the trivial character times `p.ratio`, the absolute
-value of the ratio of the twisted to the untwisted `L`-value. -/
-theorem isTwistMeasure_integralAlgebraicPart {p : D.CriticalPair} {n : Type} [Fintype n]
-    [DecidableEq n] (H : p.HasLiftRank n) :
-    p.IsTwistMeasure {p.z} 0 (integralAlgebraicPart H) := by
-  refine ⟨integralAlgebraicPart_ne_zero H TameChar.one, isIntegralMeasure_integralAlgebraicPart H,
-    fun ϑ ϑ' v hv hQ hχ _ ↦ by simpa using integralAlgebraicPart_insert H hv hQ hχ, fun ϑ ↦ ?_⟩
+value of the ratio of the twisted to the untwisted `L`-value.
+-/
+theorem isTwistMeasure_integralAlgebraicPart
+    {p : D.CriticalPair} {n : Type} [Fintype n] [DecidableEq n] (H : p.HasLiftRank n)
+    : p.IsTwistMeasure {p.z} 0 (integralAlgebraicPart H) := by
+  refine ⟨
+    integralAlgebraicPart_ne_zero H TameChar.one,
+    isIntegralMeasure_integralAlgebraicPart H,
+    fun ϑ ϑ' v hv hQ hχ _ ↦ by simpa using integralAlgebraicPart_insert H hv hQ hχ,
+    fun ϑ ↦ ?_
+  ⟩
   simp [ratio_eq_integralAlgebraicPart_div H ϑ,
     mul_div_cancel₀ _ (integralAlgebraicPart_ne_zero H TameChar.one)]
 
@@ -309,62 +326,71 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
   ac_rfl
 
 open scoped Classical in
-/-- Let `p = (ν, 1)` be a critical pair, that is, a character `ν` of U(1) with the point `1`, whose
+/--
+Let `p = (ν, 1)` be a critical pair, that is, a character `ν` of U(1) with the point `1`, whose
 tame part is nontrivial exactly at the chosen places, those dividing `D.piM` (`IsRamified`). There
 is a function `F` of tame characters with the properties of `IsTwistMeasure {0, 1} 1`: it is nonzero
 at the trivial character; at each modulus it is evaluation on finitely many points with coefficients
 integral away from that modulus (an integral measure); adding a place of norm `q` multiplies it by
 the inverse Euler factors with denominators `q ^ 0` and `q ^ 1`; and at a twist `ϑ` it is
 `F 1 * normQ ϑ * r ^ 2`, where `r = p.ratio ϑ` is the ratio of the absolute values of the twisted
-and untwisted `L`-values at `1`. -/
-theorem exists_isTwistMeasure_of_z_eq_one {p : D.CriticalPair} (h_ram : p.IsRamified)
-    (hz : p.z = 1) :
-    ∃ F : D.TameChar → ℂ, p.IsTwistMeasure {0, 1} 1 F := by
+and untwisted `L`-values at `1`.
+-/
+theorem exists_isTwistMeasure_of_z_eq_one {p : D.CriticalPair} (h_ram : p.IsRamified) (hz : p.z = 1)
+    : ∃ F : D.TameChar → ℂ, p.IsTwistMeasure {0, 1} 1 F := by
   -- Take the squared absolute value of a fixed multiple of the period `detPeriod` in rank two of
   -- `ν ϑ υ`.
   let Λ (ϑ : D.TameChar) : ℂ :=
-    detPeriod (Fin 2) (p.character * ϑ.toAutChar * upsilonU1 ^ 1) (fun τ : D.Φ ↦ p.negWeight τ - 1)
+    detPeriod (Fin 2) (p.character * ϑ.toAutChar * upsilonU1 ^ 1)
+      (fun τ : D.Φ ↦ p.negWeight τ - 1)
       (D.twistModulus ϑ 2) (p.tamePart * ϑ.tamePart)
   -- `D.chosenGroupOrder * N` clears the denominators of the period; `C` relates its size at a
   -- twist to `L`-values.
   obtain ⟨N, hN, h_measure⟩ := exists_isIntegralMeasure_norm_sq_detPeriod p
-  obtain ⟨C, Λ_twist⟩ : ∃ C : ℝ, ∀ ϑ : D.Twist, Λ ϑ.toTameChar ≠ 0 ∧ C ≠ 0 ∧
-      C * ‖Λ ϑ.toTameChar‖ ^ 2 =
-        Exchange.lValueProd ({w | D.IsChosen w} ∪ ϑ.Q) (p.character * ϑ.toAutChar)⁻¹ 1 :=
+  obtain ⟨C, Λ_twist⟩
+      : ∃ C : ℝ, ∀ ϑ : D.Twist,
+        Λ ϑ.toTameChar ≠ 0 ∧ C ≠ 0
+          ∧ C * ‖Λ ϑ.toTameChar‖ ^ 2
+            = Exchange.lValueProd ({w | D.IsChosen w} ∪ ϑ.Q) (p.character * ϑ.toAutChar)⁻¹ 1 :=
     exists_mul_norm_sq_detPeriod_eq h_ram
-  refine ⟨fun ϑ ↦ ‖D.chosenGroupOrder * N * Λ ϑ‖ ^ 2,
-    ⟨?_, h_measure, fun ϑ ϑ' v hv hQ hχ hψ ↦ ?_,
-      fun ϑ ↦ ?_⟩⟩
+  refine ⟨
+    fun ϑ ↦ ‖D.chosenGroupOrder * N * Λ ϑ‖ ^ 2,
+    ⟨?_, h_measure, fun ϑ ϑ' v hv hQ hχ hψ ↦ ?_, fun ϑ ↦ ?_⟩
+  ⟩
   · obtain ⟨h_ne_zero, -, -⟩ := Λ_twist 1
     simp [NeZero.ne, hN, h_ne_zero]
   · -- The squared norm of `(1 - X) * (1 - v.q * X)` is the stated product of inverse Euler factors.
-    have h_period : Λ ϑ' = SiegelWeil.qPochhammer v.q 2
-        ((p.character * ϑ.toAutChar * upsilonU1 ^ 1).frobValue (Fin 2) v)⁻¹ * Λ ϑ :=
+    have h_period
+        : Λ ϑ'
+          = SiegelWeil.qPochhammer v.q 2
+              ((p.character * ϑ.toAutChar * upsilonU1 ^ 1).frobValue (Fin 2) v)⁻¹
+            * Λ ϑ :=
       detPeriod_mul_upsilonU1_insert hv hQ hχ hψ
-    simp [h_period, ↓← mul_conj', AutChar.frobValue, AutChar.spaceChar, ← ofReal_pow,
-      prod_range, inv_eq_conj, prod_mul_distrib, IsDedekindDomain.HeightOneSpectrum.ne_bot]
+    simp [h_period, ↓ ← mul_conj', AutChar.frobValue, AutChar.spaceChar, ← ofReal_pow, prod_range,
+      inv_eq_conj, prod_mul_distrib, IsDedekindDomain.HeightOneSpectrum.ne_bot]
     ring
   · -- Compare `Λ_twist` at `ϑ` and at `1`: the two values of `lValueProd` differ by the factor
     -- in `lValueProd_eq_mul_prod_ratio_sq`, and `C ≠ 0` cancels.
-    have h_sq : (‖Λ ϑ.toTameChar‖ : ℂ) ^ 2 =
-        ‖Λ TameChar.one‖ ^ 2 * (ϑ.normQ * p.ratio ϑ ^ 2) := by
-      have h_ratio : Exchange.lValueProd ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q)
-          (p.character * ϑ.toAutChar ^ (1 : ℤˣ).val)⁻¹ p.z = ϑ.normQ ^ p.z ^ 2 *
-            (Exchange.lValueProd {w : FinPlace D.E | D.IsChosen w} p.character⁻¹ p.z *
-              ∏ k ∈ Icc 1 p.z, (p.lowerPoint k).ratio ϑ.toTameChar 1 ^ 2) :=
+    have h_sq : (‖Λ ϑ.toTameChar‖ : ℂ) ^ 2 = ‖Λ TameChar.one‖ ^ 2 * (ϑ.normQ * p.ratio ϑ ^ 2) := by
+      have h_ratio
+          : Exchange.lValueProd ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q)
+              (p.character * ϑ.toAutChar ^ (1 : ℤˣ).val)⁻¹ p.z
+            = ϑ.normQ ^ p.z ^ 2
+              * (Exchange.lValueProd {w : FinPlace D.E | D.IsChosen w} p.character⁻¹ p.z
+                * ∏ k ∈ Icc 1 p.z, (p.lowerPoint k).ratio ϑ.toTameChar 1 ^ 2) :=
         p.lValueProd_eq_mul_prod_ratio_sq 1 ϑ.toTameChar
       obtain ⟨-, hC, h_one⟩ := Λ_twist 1
       obtain ⟨-, -, h_ϑ⟩ := Λ_twist ϑ
       -- With `z = 1` the product has one factor, the square of the ratio; divide by `C` after
       -- casting the identities for `ϑ` and `1` to `ℝ`.
-      simp [ratio, lowerPoint, hz,
-        toAutChar_one_and_toTwist_one_and_Q_one] at h_ratio h_one h_ϑ ⊢
+      simp [ratio, lowerPoint, hz, toAutChar_one_and_toTwist_one_and_Q_one] at h_ratio h_one h_ϑ ⊢
       norm_cast at *
       grind
     simp only [norm_mul, mul_pow, ofReal_mul, pow_one, h_sq]
     ring
 
-/-- Let `p = (ν, z)` be a critical pair, that is, a character `ν` of U(1) with an integer
+/--
+Let `p = (ν, z)` be a critical pair, that is, a character `ν` of U(1) with an integer
 `1 ≤ z ≤ c`, `-c` its weight, whose tame part is nontrivial exactly at the chosen places, those
 dividing `D.piM` (`IsRamified`). Some function `F` of tame characters has the properties of
 `IsTwistMeasure I m`: it is nonzero at the trivial character; at each modulus it is evaluation on
@@ -374,16 +400,20 @@ and at a twist `ϑ` it is `F 1 * normQ ϑ ^ m * r ^ (m + 1)`, where `r = p.ratio
 twisted and untwisted `L`-values at `z` in absolute value. For `z ≥ 2`, which is what
 `HasLiftRank` asks besides `2 z` indices, `I = {z}`, `m = 0` and `F` is `integralAlgebraicPart`, an
 integral multiple of the algebraic part of the `L`-value. For `z = 1`, `I = {0, 1}` and `m = 1`, so
-that the square of the ratio occurs. -/
-theorem exists_isTwistMeasure {p : D.CriticalPair} (h_ram : p.IsRamified) :
-    ∃ F : D.TameChar → ℂ,
-      (∀ H : p.HasLiftRank (Fin (2 * p.z)), F = integralAlgebraicPart H) ∧
-      p.IsTwistMeasure (if p.z = 1 then {0, 1} else {p.z}) (if p.z = 1 then 1 else 0) F := by
+that the square of the ratio occurs.
+-/
+theorem exists_isTwistMeasure {p : D.CriticalPair} (h_ram : p.IsRamified)
+    : ∃ F : D.TameChar → ℂ,
+      (∀ H : p.HasLiftRank (Fin (2 * p.z)), F = integralAlgebraicPart H)
+        ∧ p.IsTwistMeasure (if p.z = 1 then {0, 1} else {p.z}) (if p.z = 1 then 1 else 0) F := by
   obtain ⟨hz_pos, -⟩ := p.z_mem
   obtain hz | hz := hz_pos.lt_or_eq'
   · have H : p.HasLiftRank (Fin (2 * p.z)) := ⟨card_fin _, hz⟩
-    exact ⟨integralAlgebraicPart H, fun _ ↦ rfl, by
-      simpa [hz.ne'] using isTwistMeasure_integralAlgebraicPart H⟩
+    exact ⟨
+      integralAlgebraicPart H,
+      fun _ ↦ rfl,
+      by simpa [hz.ne'] using isTwistMeasure_integralAlgebraicPart H
+    ⟩
   · obtain ⟨F, hF⟩ := exists_isTwistMeasure_of_z_eq_one h_ram hz
     exact ⟨F, fun H ↦ absurd H.2 (by omega), by simpa [hz] using hF⟩
 
@@ -408,13 +438,15 @@ lemma coprime_prod_q_of_isAuxiliary {I : Finset (FinPlace D.E)}
     simpa [badPlaces] using w.asIdeal.mem_of_dvd h_dvd.natCast w.asIdeal.absNorm_mem
   exact Nat.coprime_mul_iff_left.1 (Nat.Coprime.prod_left h_coprime).symm
 
-/-- The tame character of modulus `I` given by a member `χ = (μ, ψ)` of `tameChars I`, that is, a
+/--
+The tame character of modulus `I` given by a member `χ = (μ, ψ)` of `tameChars I`, that is, a
 character `μ` of U(1)(𝔸) of weight `0` whose tame part `ψ` is trivial outside `I`; here `I` is an
-auxiliary set avoiding `badPlaces D ℓ`, the places dividing `ℓ`, `D.M` or `D.N`. -/
+auxiliary set avoiding `badPlaces D ℓ`, the places dividing `ℓ`, `D.M` or `D.N`.
+-/
 @[simp]
-noncomputable def tameCharOfAuxiliary (I : Finset (FinPlace D.E))
-    (hI : IsAuxiliary (badPlaces D ℓ) I) (χ : tameChars I) :
-    D.TameChar where
+noncomputable def tameCharOfAuxiliary
+    (I : Finset (FinPlace D.E)) (hI : IsAuxiliary (badPlaces D ℓ) I) (χ : tameChars I)
+    : D.TameChar where
   toAutChar := χ.val.1
   Q := I
   tamePart := χ.val.2

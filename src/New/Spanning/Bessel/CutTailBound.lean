@@ -54,9 +54,10 @@ namespace New
 
 open Matrix MeasureTheory ENNReal Norms.L2Operator Fintype CStarRing Set DiscreteSeries
 
-variable {𝔰 : Shape} {I : Type} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I] [DecidableEq I]
-  [p : UnitarySignFrame 𝔰 ε] {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ} {l : HCParam ε}
-  {A L : ℕ}
+variable
+  {𝔰 : Shape} {I : Type} {ε : 𝔰.BesselIndex → ℤˣ}
+  [Fintype I] [DecidableEq I] [p : UnitarySignFrame 𝔰 ε]
+  {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ} {l : HCParam ε} {A L : ℕ}
 
 private lemma sFinite_besselGraphMeasure {𝔰 : Shape} : SFinite 𝔰.besselGraphMeasure := by
   unfold Shape.besselGraphMeasure
@@ -282,8 +283,10 @@ lemma exists_enorm_sq_mul_eq {q : ℝ≥0∞} (hq_ne : q ≠ 0) (hq_fin : q ≠ 
     Real.sq_sqrt (by positivity), ofReal_div_of_pos hq_pos, ofReal_natCast, ofReal_toReal hq_fin,
     ENNReal.div_mul_cancel hq_ne hq_fin]
 
-/-- The cutoff of radius `R > 0`: it is `1` up to `R / 2`, `0` from `R` on, and linear in
-between. -/
+/--
+The cutoff of radius `R > 0`: it is `1` up to `R / 2`, `0` from `R` on, and linear in
+between.
+-/
 noncomputable def besselCutoff (R t : ℝ) : ℝ := max 0 (min 1 (2 - 2 * t / R))
 
 lemma besselCutoff_mem_Icc (R t : ℝ) : besselCutoff R t ∈ Icc (0 : ℝ) 1 :=
@@ -297,15 +300,17 @@ lemma besselCutoff_eq_zero {R t : ℝ} (hR : 0 < R) (ht : R ≤ t) : besselCutof
   have h_ge : 2 ≤ 2 * t / R := (le_div_iff₀ hR).2 (by linarith)
   exact max_eq_left (min_le_of_right_le (by linarith))
 
-/-- The cut `F♭` of `F`: the product of `F y` with the cutoff of radius `b ^ (6 n + 2)` evaluated at
-the length `besselLength y`, where `n = ϱ + 1`. -/
-noncomputable def besselCut (b : ℝ) (F : C(𝔰.G₁, EuclideanSpace ℂ I)) :
-    C(𝔰.G₁, EuclideanSpace ℂ I) where
+/--
+The cut `F♭` of `F`: the product of `F y` with the cutoff of radius `b ^ (6 n + 2)` evaluated at
+the length `besselLength y`, where `n = ϱ + 1`.
+-/
+noncomputable def besselCut (b : ℝ) (F : C(𝔰.G₁, EuclideanSpace ℂ I))
+    : C(𝔰.G₁, EuclideanSpace ℂ I) where
   toFun y := besselCutoff (b ^ (6 * 𝔰.n + 2)) (besselLength y) • F y
   continuous_toFun :=
     (continuous_const.max (continuous_const.min (continuous_const.sub
-      ((continuous_const.mul continuous_besselLength).div_const
-        (b ^ (6 * 𝔰.n + 2)))))).smul F.continuous
+        ((continuous_const.mul continuous_besselLength).div_const (b ^ (6 * 𝔰.n + 2)))))).smul
+      F.continuous
 
 section Cut
 

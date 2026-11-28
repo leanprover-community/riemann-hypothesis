@@ -73,30 +73,42 @@ namespace New.Rows
 
 open NumberField Matrix Norms.L2Operator MeasureTheory Fock Finset Space Submodule Int FockDualPair
 
-variable {E n n' : Type} [Field E] [CMType E] [Fintype n]
-  [DecidableEq n] (s : n → ℤˣ) [Fintype n'] [DecidableEq n']
+variable
+  {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  (s : n → ℤˣ)
+  [Fintype n'] [DecidableEq n']
   (s' : n' → ℤˣ) (o : n → ℤ) (u : InfinitePlace E → n → ℤ) (V : Space E n s)
   (γ e : InfinitePlace E → ℤ) (a : 𝓞 E) (F : G E s → ℂ)
 
-/-- The additive character y ↦ ψ(tr(yu)) of matrices modulo 𝔪 attached to the matrix u, with ψ
-the chosen primitive additive character of O_E/𝔪. -/
-def traceChar [WeilData E] {𝔪 : Modulus E} (u : Matrix n n' 𝔪.ResidueRing)
-    (y : Matrix n' n 𝔪.ResidueRing) : ℂ :=
+/--
+The additive character y ↦ ψ(tr(yu)) of matrices modulo 𝔪 attached to the matrix u, with ψ
+the chosen primitive additive character of O_E/𝔪.
+-/
+def traceChar
+    [WeilData E] {𝔪 : Modulus E} (u : Matrix n n' 𝔪.ResidueRing) (y : Matrix n' n 𝔪.ResidueRing)
+    : ℂ :=
   𝔪.primAddChar (y * u).trace
 
 section
 
-variable {E : Type} [Field E] [NumberField E] (s : n → ℤˣ) (s' : n' → ℤˣ) (o : n → ℤ)
-  (u : InfinitePlace E → n → ℤ) (γ e : InfinitePlace E → ℤ)
+variable
+  {E : Type} [Field E] [NumberField E]
+  (s : n → ℤˣ) (s' : n' → ℤˣ) (o : n → ℤ) (u : InfinitePlace E → n → ℤ) (γ e : InfinitePlace E → ℤ)
 
-/-- The coefficient `c_P(h, h') = ⟨v_P, ω(h, h') v_P⟩` of the Fock vector of a polynomial `P`, for
-real points of the two groups and characters of weights `γ`, `e`. -/
-def polyMatrixCoeff (γ e : InfinitePlace E → ℤ) (P : MvPolynomial (InfinitePlace E × n' × n) ℂ)
-    (h : GInf E s) (h' : GInf E s') : ℂ :=
+/--
+The coefficient `c_P(h, h') = ⟨v_P, ω(h, h') v_P⟩` of the Fock vector of a polynomial `P`, for
+real points of the two groups and characters of weights `γ`, `e`.
+-/
+def polyMatrixCoeff
+    (γ e : InfinitePlace E → ℤ) (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) (h : GInf E s)
+    (h' : GInf E s')
+    : ℂ :=
   fockInner (polyVector (realSigns E (homSigns s s')) P) (realPairWeil γ e (h, h') (polyVector _ P))
 
-/-- The set of Fock vectors v such that x ↦ ℓ(Ω(x,1)v) is holomorphic of weight u for the
-order o, for every bounded linear functional ℓ. Here Ω is `New.realPairWeil γ e`. -/
+/--
+The set of Fock vectors v such that x ↦ ℓ(Ω(x,1)v) is holomorphic of weight u for the
+order o, for every bounded linear functional ℓ. Here Ω is `New.realPairWeil γ e`.
+-/
 def holomorphicData : Set (PairFock E s s') :=
   {v : PairFock E s s' |
     ∀ ℓ : PairFock E s s' →L[ℂ] ℂ,
@@ -106,18 +118,24 @@ end
 
 variable {s}
 
-/-- For every adelic g, the function h ↦ F(g·(h,1)) on the archimedean group is holomorphic of
-weight u for the order o (`New.IsHolOfWeight`). -/
-def IsAdelicHol {E : Type} [Field E] [NumberField E] [IsCMField E] (o : n → ℤ)
-    (u : InfinitePlace E → n → ℤ) (F : G E s → ℂ) : Prop :=
+/--
+For every adelic g, the function h ↦ F(g·(h,1)) on the archimedean group is holomorphic of
+weight u for the order o (`New.IsHolOfWeight`).
+-/
+def IsAdelicHol
+    {E : Type} [Field E] [NumberField E] [IsCMField E]
+    (o : n → ℤ) (u : InfinitePlace E → n → ℤ) (F : G E s → ℂ)
+    : Prop :=
   ∀ g : (InfinitePlace E → USign s) × Gf E n,
     IsHolOfWeight s o u fun x : InfinitePlace E → USign s ↦ F (g * (x, 1))
 
-/-- The functions F that are continuous, left invariant under the rational points of V and right
-invariant under the principal level K(a), and that decay rapidly (members of `V.rapidFunctions`). -/
+/--
+The functions F that are continuous, left invariant under the rational points of V and right
+invariant under the principal level K(a), and that decay rapidly (members of `V.rapidFunctions`).
+-/
 def rapidOfLevel : Submodule ℂ (G E s → ℂ) :=
-  V.rapidFunctions.toSubmodule ⊓
-    Representation.invariants ((finRightRep E s).comp (principalLevel n a).subtype)
+  V.rapidFunctions.toSubmodule
+    ⊓ Representation.invariants ((finRightRep E s).comp (principalLevel n a).subtype)
 
 variable {s' o u V γ e a F}
 
@@ -228,8 +246,10 @@ lemma isAdelicHol_pairTheta [WeilData E] {S : Space E n s} {T : Space E n' s'} {
   simp only [h_eq]
   exact hv (θ _ ∘L pairWeil S T a b (g, k) ∘L (integrated _).flip f)
 
-/-- For an element u of the archimedean group, the maximum over infinite places of the operator
-norm of the matrix of u at that place. -/
+/--
+For an element u of the archimedean group, the maximum over infinite places of the operator
+norm of the matrix of u at that place.
+-/
 abbrev maxOpNorm {E : Type} [Field E] [NumberField E] (u : GInf E s) : ℝ :=
   ‖fun w : InfinitePlace E ↦ ((u w).val : Matrix n n ℂ)‖
 
@@ -285,9 +305,11 @@ namespace New.Rows
 
 open NumberField
 
-variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] [WeilData E] {s : n → ℤˣ} {s' : n' → ℤˣ} {S : Space E n s} {T : Space E n' s'}
-  {a b : AutChar E} {𝔪 : Modulus E}
+variable
+  {E n n' : Type}
+  [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [WeilData E]
+  {s : n → ℤˣ} {s' : n' → ℤˣ}
+  {S : Space E n s} {T : Space E n' s'} {a b : AutChar E} {𝔪 : Modulus E}
 
 /-- Let the character `b` have weight `e` and tame part `ψ`, trivial at the places outside `𝔪`. Then
 the theta kernel `modKernel` does not change under right translation of the first variable by an

@@ -143,8 +143,10 @@ lemma New.exists_antitone_of_swap {α : Type*} {N : ℕ} [LinearOrder α] (f : F
 
 open Finsupp LieModule LieSubalgebra Module Submodule LinearMap
 
-variable {k W : Type*} {ι : Sort*} [Field k] [IsAlgClosed k] [AddCommGroup W] [Module k W]
-  (φ : ι → End k W) {S : Submodule k W} [Module.Finite k S]
+variable
+  {k W : Type*} {ι : Sort*} [Field k] [IsAlgClosed k] [AddCommGroup W] [Module k W]
+  (φ : ι → End k W)
+  {S : Submodule k W} [Module.Finite k S]
 
 /-- Let the endomorphisms `φ m` preserve the finite-dimensional subspace `S` and commute on it,
 over an algebraically closed field, and let `U : Submodule k S` be proper. Then there are scalars
@@ -393,27 +395,36 @@ lemma trace_restrict_iInf_maxGenEigenspace_ne_zero {p : Submodule ℂ V} {f : I 
     rfl
   rwa [← h_conj, trace_conj']
 
-/-- For families `A` and `A'` of operators on spaces `W` and `W'`, the pairs `(x, y)` such that
+/--
+For families `A` and `A'` of operators on spaces `W` and `W'`, the pairs `(x, y)` such that
 `x` commutes with `A`, `y` with `A'`, and `tr (y * t.2 * s) = c * tr (x * t.1)` for all `t` in `Q`
-whose second component commutes with `A'`. -/
-def traceIdentityMultipliers {W W' : Type*} {J J' : Sort*} [AddCommGroup W] [Module ℂ W]
-    [AddCommGroup W'] [Module ℂ W'] (A : J → End ℂ W) (A' : J' → End ℂ W') (s : End ℂ W') (c : ℂ)
-    (Q : Set (End ℂ W × End ℂ W')) : Submodule ℂ (End ℂ W × End ℂ W') where
-  carrier := {z : End ℂ W × End ℂ W' |
-    (∀ a : J, Commute z.1 (A a)) ∧ (∀ a : J', Commute z.2 (A' a)) ∧
-    ∀ t ∈ Q, (∀ a : J', Commute t.2 (A' a)) →
-      trace ℂ W' (z.2 * t.2 * s) = c * trace ℂ W (z.1 * t.1)}
+whose second component commutes with `A'`.
+-/
+def traceIdentityMultipliers
+    {W W' : Type*} {J J' : Sort*} [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
+    (A : J → End ℂ W) (A' : J' → End ℂ W') (s : End ℂ W') (c : ℂ) (Q : Set (End ℂ W × End ℂ W'))
+    : Submodule ℂ (End ℂ W × End ℂ W') where
+  carrier :=
+    {z : End ℂ W × End ℂ W' |
+      (∀ a : J, Commute z.1 (A a)) ∧ (∀ a : J', Commute z.2 (A' a)) ∧
+      ∀ t ∈ Q, (∀ a : J', Commute t.2 (A' a)) →
+        trace ℂ W' (z.2 * t.2 * s) = c * trace ℂ W (z.1 * t.1)}
   zero_mem' := by simp
-  add_mem' := fun ⟨hx, hy, htr⟩ ⟨hx', hy', htr'⟩ ↦
-    ⟨fun a ↦ (hx a).add_left (hx' a), fun a ↦ (hy a).add_left (hy' a), fun t ht ht_comm ↦ by
-      simp [add_mul, mul_add, htr t ht ht_comm, htr' t ht ht_comm]⟩
-  smul_mem' := fun r _ ⟨hx, hy, htr⟩ ↦
-    ⟨fun a ↦ (hx a).smul_left r, fun a ↦ (hy a).smul_left r, fun t ht ht_comm ↦ by
-      simp [htr t ht ht_comm, mul_left_comm]⟩
+  add_mem' := fun ⟨hx, hy, htr⟩ ⟨hx', hy', htr'⟩ ↦ ⟨
+    fun a ↦ (hx a).add_left (hx' a),
+    fun a ↦ (hy a).add_left (hy' a),
+    fun t ht ht_comm ↦ by simp [add_mul, mul_add, htr t ht ht_comm, htr' t ht ht_comm]
+  ⟩
+  smul_mem' := fun r _ ⟨hx, hy, htr⟩ ↦ ⟨
+    fun a ↦ (hx a).smul_left r,
+    fun a ↦ (hy a).smul_left r,
+    fun t ht ht_comm ↦ by simp [htr t ht ht_comm, mul_left_comm]
+  ⟩
 
 section Multipliers
 
-variable {W W' : Type*} {J J' : Sort*} [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
+variable
+  {W W' : Type*} {J J' : Sort*} [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
   {A : J → End ℂ W} {A' : J' → End ℂ W'} {s : End ℂ W'} {c : ℂ} {Q : Set (End ℂ W × End ℂ W')}
 
 /-- The multipliers of a trace identity are stable under left multiplication by a pair
@@ -608,8 +619,10 @@ range of `algebraMap B A`.
 
 namespace New
 
-variable {B A n Λ : Type*} [CommRing B] [CommRing A] [Fintype n] [DecidableEq n] [Algebra B A]
-  [Ring Λ] [Algebra B Λ] (ρ : Λ →ₐ[B] Matrix n n A)
+variable
+  {B A n Λ : Type*}
+  [CommRing B] [CommRing A] [Fintype n] [DecidableEq n] [Algebra B A] [Ring Λ] [Algebra B Λ]
+  (ρ : Λ →ₐ[B] Matrix n n A)
 
 open Polynomial Submodule AdjoinRoot Matrix Finset Fintype Algebra Function
 

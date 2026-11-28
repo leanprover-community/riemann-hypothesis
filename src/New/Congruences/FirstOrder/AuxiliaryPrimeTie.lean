@@ -76,11 +76,14 @@ attribute [local instance 1100] RingHomClass.toAddMonoidHomClass MonoidHomClass.
 
 namespace New.Patching.BaseLevel
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E : Type} [Field E] [CMType E]
-  [Algebra E Ω] {n : Type} [Fintype n] [DecidableEq n]
-  [Nonempty n] {V : Space E n 1} {κ : Weight E} {J : Type} [Fintype J] [DecidableEq J] {ν c : ℕ}
-  {D : BaseLevel V κ c} (Q : TaylorWilesPlaces E J (ℓ ^ ν)) {N : Isotypic V κ → GalRep ℓ E n}
-  [V.IsStd] [WeilData E] {a : Gal(Ω/E) →* EllAdicIntegers}
+variable
+  {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+  {E : Type} [Field E] [CMType E] [Algebra E Ω]
+  {n : Type} [Fintype n] [DecidableEq n] [Nonempty n]
+  {V : Space E n 1} {κ : Weight E} {J : Type} [Fintype J] [DecidableEq J]
+  {ν c : ℕ} {D : BaseLevel V κ c} (Q : TaylorWilesPlaces E J (ℓ ^ ν))
+  {N : Isotypic V κ → GalRep ℓ E n} [V.IsStd] [WeilData E]
+  {a : Gal(Ω/E) →* EllAdicIntegers}
 
 /-! ### One place: the operator `∂` -/
 
@@ -121,7 +124,8 @@ lemma map_traceElement_sub_pow_mul (hN : IsGalRepTwist N a) {R : Type*} [Ring R]
     map_nsmul]
   simp [q_one]
 
-/-- Let the auxiliary places `w i = Q.place i` be off the base level, let `N x` be the twist of
+/--
+Let the auxiliary places `w i = Q.place i` be off the base level, let `N x` be the twist of
 `x.galRep` by `a`, which is `1` at the tame generators, and let `δ` be in the Hecke algebra. Write
 `γ` and `φ` for the tame generator and the Frobenius element at `w j`, and `q` for the order of the
 residue field there. Suppose that the Hecke polynomial at `w j` of every base system where `δ` does
@@ -132,29 +136,38 @@ common multiple of the stabiliser orders in `D`, and `≡` for equality after th
 translates at `w j`, such that for all `g` in the Galois group, `Nm_j tr[(γ - 1) g] = 0` and
 `∂ tr[(γ - 1) g] ≡ Nm_j tr[(φ - 1) H(φ) g]`, where `Nm_j` is the sum over `GL_n(𝔽_w)` at `w = w j`,
 and such that each `g ∈ GL_n(𝔽_w)` has an integral operator `Z` with `c ∂ (g - 1) ≡ Nm_j Z` and
-`δ Nm Z = 0`. -/
+`δ Nm Z = 0`.
+-/
 theorem exists_mul_traceElement_tameGenerator_eq_frob
-    (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
-    (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
-    (j : J) {H : EllAdicIntegers[X]} {t : ℕ} (ht : t ≠ 0) (δ : D.heckeAlgebra Q.place)
-    (h_chain : ∀ x : D.Eigensystem Q.place, x.val ∈ D.Eigensystem ![] → δ.val x ≠ 0 →
-      HasRootChain (x.val.heckePolyAt (Q.place j)) (H.map (algebraMap EllAdicIntegers ℂ))
-        (Q.place j).q (algebraMap EllAdicIntegers ℂ (a (Q.frobData j).frob))⁻¹ t)
-    {R : Type*} [Ring R] {σ : D.integralEnd Q.place →+* R}
-    (hσ : IsReductionMod σ (ℓ ^ ν) (2 * (card n)!)) :
-    ∃ der ∈ D.localOperators Q j,
+    (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j)) (hN : IsGalRepTwist N a)
+    (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
+    (j : J)
+    {H : EllAdicIntegers[X]} {t : ℕ} (ht : t ≠ 0)
+    (δ : D.heckeAlgebra Q.place)
+    (h_chain : ∀ x : D.Eigensystem Q.place,
+      x.val ∈ D.Eigensystem ![] → δ.val x ≠ 0
+        → HasRootChain (x.val.heckePolyAt (Q.place j)) (H.map (algebraMap EllAdicIntegers ℂ))
+          (Q.place j).q (algebraMap EllAdicIntegers ℂ (a (Q.frobData j).frob))⁻¹ t)
+    {R : Type*} [Ring R]
+    {σ : D.integralEnd Q.place →+* R} (hσ : IsReductionMod σ (ℓ ^ ν) (2 * (card n)!))
+    : ∃ der ∈ D.localOperators Q j,
       (∀ g : Gal(Ω/E),
-        (∑ k : GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q (mulSingle j k)) *
-          heckeAction (traceElement hN (X - 1) (Q.frobData j).isPlaceOver.tameGenerator g) = 0) ∧
-      (∀ g : Gal(Ω/E), σ (der * heckeAction
-          (traceElement hN (X - 1) (Q.frobData j).isPlaceOver.tameGenerator g)) =
-        σ ((∑ k : GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q (mulSingle j k)) *
-          heckeAction (traceElement hN ((X - 1) * H) (Q.frobData j).frob g))) ∧
-      ∀ g : GL (Fin (card n)) (ResField (Q.place j)),
-        ∃ Z : D.integralEnd Q.place, σ (c • (der * (D.residueRep Q (mulSingle j g) - 1))) =
-          σ ((∑ k : GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q (mulSingle j k)) * Z) ∧
-        heckeAction δ *
-          (∑ k : (j : J) → GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q k) * Z = 0 := by
+          (∑ k : GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q (mulSingle j k))
+              * heckeAction (traceElement hN (X - 1) (Q.frobData j).isPlaceOver.tameGenerator g)
+            = 0)
+        ∧ (∀ g : Gal(Ω/E),
+          σ (der * heckeAction (traceElement hN (X - 1) (Q.frobData j).isPlaceOver.tameGenerator g))
+            = σ
+              ((∑ k : GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q (mulSingle j k))
+                * heckeAction (traceElement hN ((X - 1) * H) (Q.frobData j).frob g)))
+        ∧ ∀ g : GL (Fin (card n)) (ResField (Q.place j)), ∃ Z : D.integralEnd Q.place,
+          σ (c • (der * (D.residueRep Q (mulSingle j g) - 1)))
+              = σ
+                ((∑ k : GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q (mulSingle j k))
+                  * Z)
+            ∧ heckeAction δ
+                * (∑ k : (j : J) → GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q k) * Z
+              = 0 := by
   -- Put `∂ = -Tr p(Ũ) L Tr'` with `p = (X - q ^ t') H` and `t = t' + 1`, where `L` is the norm
   -- over the stabiliser of a line weighted by the logarithm and `Tr`, `Tr'` are the sums over
   -- representatives of its cosets and over their inverses.
@@ -171,51 +184,59 @@ theorem exists_mul_traceElement_tameGenerator_eq_frob
   have Tr'_mem : cosetNormInv ρ K ∈ D.localOperators Q j := sum_mem fun _ _ ↦ ρ_mem _
   have der_mem : cosetDerivative ρ K B ∈ D.localOperators Q j :=
     neg_mem (mul_mem (mul_mem Tr_mem (B_mem _)) Tr'_mem)
-  refine ⟨cosetDerivative ρ K B, der_mem,
-    norm_mul_traceElement_tameGenerator_eq_zero hQ hN ha j, fun g ↦ ?_, fun g ↦ ?_⟩
+  refine ⟨
+    cosetDerivative ρ K B,
+    der_mem,
+    norm_mul_traceElement_tameGenerator_eq_zero hQ hN ha j,
+    fun g ↦ ?_,
+    fun g ↦ ?_
+  ⟩
   · -- Replace `p(Ũ)` by `p(φ)`, sum the logarithms over the lines to that of the determinant,
     -- and read `γ` as the diamond element.
     have comm (s : D.heckeAlgebra Q.place) : Commute (σ (cosetNormInv ρ K)) (σ (heckeAction s)) :=
       (localOperators.commute_heckeAction Tr'_mem s).symm.map σ
     have q_one : ((Q.place j).q : R) = 1 := by
-      simpa [(FinPlace.one_lt_q _).le, sub_eq_zero]
-        using hσ_char.symm.dvd.trans (Q.dvd_q_sub_one j).natCast
+      simpa [(FinPlace.one_lt_q _).le, sub_eq_zero] using
+        hσ_char.symm.dvd.trans (Q.dvd_q_sub_one j).natCast
     rw [← tameTrace_one]
-    calc _ = -(σ (cosetNorm ρ K) * σ (B ZMod.valMinAbs * heckeAction (tameTrace Q hN j 1 g)) *
-            σ (cosetNormInv ρ K)) := by
-          simp only [cosetDerivative, neg_mul, map_neg, map_mul, mul_assoc, (comm _).eq]
-      _ = -(σ (cosetNorm ρ K * weightedSum (D.lineRep Q j) P.indLine ZMod.valMinAbs *
-            cosetNormInv ρ K) * σ (heckeAction (tameTrace Q hN j p g))) := by
-          rw [map_aevalHecke_valMinAbs_mul_tameTrace hQ hN ha hB hσ]
-          simp only [map_mul, mul_assoc, (comm _).eq]
-      _ = -σ (weightedSum ρ P.indDet ZMod.valMinAbs * heckeAction (tameTrace Q hN j p g)) := by
-          rw [lineRep, map_cosetNorm_mul_weightedSum_mul_cosetNormInv ρ hσ_char, P.transfer_indLine,
-            map_mul]
-      _ = -(σ ((ρ P.diamond - 1) * weightedSum ρ P.indDet ZMod.valMinAbs) *
-            σ (heckeAction (traceElement hN p (Q.frobData j).frob g))) := by
-          rw [weightedSum_indDet_mul_tameTrace hQ hN ha, map_mul]
+    calc
+      _ = -(σ (cosetNorm ρ K) * σ (B ZMod.valMinAbs * heckeAction (tameTrace Q hN j 1 g))
+          * σ (cosetNormInv ρ K)) := by
+        simp only [cosetDerivative, neg_mul, map_neg, map_mul, mul_assoc, (comm _).eq]
+      _ = -(σ
+            (cosetNorm ρ K * weightedSum (D.lineRep Q j) P.indLine ZMod.valMinAbs
+              * cosetNormInv ρ K)
+          * σ (heckeAction (tameTrace Q hN j p g))) := by
+        rw [map_aevalHecke_valMinAbs_mul_tameTrace hQ hN ha hB hσ]
+        simp only [map_mul, mul_assoc, (comm _).eq]
+      _ = - σ (weightedSum ρ P.indDet ZMod.valMinAbs * heckeAction (tameTrace Q hN j p g)) := by
+        rw [lineRep, map_cosetNorm_mul_weightedSum_mul_cosetNormInv ρ hσ_char, P.transfer_indLine,
+          map_mul]
+      _ = -(σ ((ρ P.diamond - 1) * weightedSum ρ P.indDet ZMod.valMinAbs)
+          * σ (heckeAction (traceElement hN p (Q.frobData j).frob g))) := by
+        rw [weightedSum_indDet_mul_tameTrace hQ hN ha, map_mul]
       _ = _ := by
-          rw [map_sub_one_mul_weightedSum_valMinAbs ρ hσ_char _ P.indDet_diamond,
-            map_traceElement_sub_pow_mul Q hN σ q_one H t' g, neg_mul, neg_neg, map_mul]
-          rfl
+        rw [map_sub_one_mul_weightedSum_valMinAbs ρ hσ_char _ P.indDet_diamond,
+          map_traceElement_sub_pow_mul Q hN σ q_one H t' g, neg_mul, neg_neg, map_mul]
+        rfl
   · -- The stabiliser of the line fixes `U' = B 1`, so `c U'` is a norm, and `δ Nm U' = 0`.
     obtain ⟨Ψ, hΨ⟩ : ∃ Ψ : D.integralEnd Q.place, ∑ k : K, ρ ↑k⁻¹ * Ψ * ρ k = c :=
       exists_higman_operator hQ (.comp (.mulSingle _ j) K.subtype) fun _ ↦ by simp
-    have B_shift (f : ZMod (ℓ ^ ν) → ℤ) (k : K) :
-        B f * ρ k = B fun s ↦ f (s - (P.indLine k).toAdd) := by
+    have B_shift (f : ZMod (ℓ ^ ν) → ℤ) (k : K)
+        : B f * ρ k = B fun s ↦ f (s - (P.indLine k).toAdd) := by
       ext y : 3
       rw [hB, ← weightedSum_mul]
       exact hB f _
-    have norm_inv (k : GL (Fin (card n)) (ResField (Q.place j))) :
-        heckeAction δ * (∑ g, D.residueRep Q g) * ρ k = heckeAction δ * ∑ g, D.residueRep Q g :=
+    have norm_inv (k : GL (Fin (card n)) (ResField (Q.place j)))
+        : heckeAction δ * (∑ g, D.residueRep Q g) * ρ k = heckeAction δ * ∑ g, D.residueRep Q g :=
       (mul_assoc ..).trans (congrArg _ (sum_monoidHom_mul (D.residueRep Q) (mulSingle j k)))
     have B_fixed (k : K) : ρ k * B 1 = B 1 := lineRep_mul_eq_self hQ hB k
     have norm_B_zero : heckeAction δ * (∑ g, D.residueRep Q g) * B 1 = 0 :=
       heckeAction_mul_norm_mul_eq_zero hQ hB (B_mem 1) rfl δ h_chain
     have no_torsion : IsSMulRegular (D.integralEnd Q.place) (Fintype.card K) :=
       isSMulRegular_integralEnd Q card_ne_zero
-    exact exists_map_nsmul_mul_sub_one_eq_sum_mul ρ hσ_char P.indLine B B_shift B_fixed hΨ
-      norm_inv norm_B_zero no_torsion g
+    exact exists_map_nsmul_mul_sub_one_eq_sum_mul ρ hσ_char P.indLine B B_shift B_fixed hΨ norm_inv
+      norm_B_zero no_torsion g
 
 open Algebra in
 omit [Nonempty n] [Fintype J] [DecidableEq J] [V.IsStd] [WeilData E] in
@@ -235,7 +256,8 @@ lemma commute_of_mem_localOperators_of_ne (i j : J) (hij : i ≠ j) (s : D.integ
   simpa [hg, hg'] using LinearMap.congr_fun h_comm.eq y.val
 
 open Finset in
-/-- The family. Let the auxiliary places `w j = Q.place j` be off the base level (`hQ`), and let
+/--
+The family. Let the auxiliary places `w j = Q.place j` be off the base level (`hQ`), and let
 `N x` be the twist of `x.galRep` by `a`, which is `1` at the tame generators (`hN`, `ha`). Let `𝕋`
 be the Hecke algebra, `c` the common multiple of the stabiliser orders in `D`, `Nm` the sum over the
 finite group `∏ GL_n(𝔽_{w j})`, and `𝔞 = tiedIdeal` the ideal of `𝕋[α]` (polynomials over `𝕋` in
@@ -251,29 +273,37 @@ coefficients of `𝒩 = ∑ 𝒩 S α_S` with `α_S = ∏_{j ∈ S} α j`, that 
 `𝒩 ∅ = Nm`. They satisfy `𝒩 𝔞 ≡ 0` and `δ ^ #J 𝒩 ≡ Y Nm`, where `Y = ∑ Y S α_S` is integral and
 `Y ∅ = δ ^ #J`: one factor `δ` for each place. The first congruence is stated for the coefficient of
 `∏ α j`. As `𝔞` is an ideal, this covers all square-free monomials (multiply by `α_{Sᶜ}`), which are
-all that count where `α j ^ 2 = 0`. -/
-theorem exists_deformed_norm_family (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
-    (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
-    {H : J → EllAdicIntegers[X]} {t : ℕ} (ht : t ≠ 0) (δ' : D.heckeAlgebra Q.place)
-    (h_chain : ∀ (j : J) (x : D.Eigensystem Q.place), x.val ∈ D.Eigensystem ![] → δ'.val x ≠ 0 →
-      HasRootChain (x.val.heckePolyAt (Q.place j)) ((H j).map (algebraMap EllAdicIntegers ℂ))
-        (Q.place j).q (algebraMap EllAdicIntegers ℂ (a (Q.frobData j).frob))⁻¹ t)
-    {R : Type*} [Ring R] {σ : D.integralEnd Q.place →+* R}
-    (hσ : IsReductionMod σ (ℓ ^ ν) (2 * (Fintype.card n)!)) :
-    ∃ 𝒩 Y : Finset J → D.integralEnd Q.place,
-      (∀ (s : D.heckeAlgebra Q.place) (S : Finset J), Commute (heckeAction s) (𝒩 S)) ∧
-      𝒩 ∅ = ∑ g : (j : J) → GL (Fin (Fintype.card n)) (ResField (Q.place j)), D.residueRep Q g ∧
-      (∀ G ∈ tiedIdeal Q hN H,
-        σ (∑ S : Finset J, 𝒩 Sᶜ * heckeAction (G.coeff (∑ j ∈ S, .single j 1))) = 0) ∧
-      (∀ S : Finset J, σ ((c ^ 2 • heckeAction δ') ^ card J * 𝒩 S) =
-        σ (Y S * ∑ g : (j : J) → GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q g)) ∧
-      Y ∅ = (c ^ 2 • heckeAction δ') ^ card J := by
+all that count where `α j ^ 2 = 0`.
+-/
+theorem exists_deformed_norm_family
+    (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j)) (hN : IsGalRepTwist N a)
+    (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
+    {H : J → EllAdicIntegers[X]} {t : ℕ} (ht : t ≠ 0)
+    (δ' : D.heckeAlgebra Q.place)
+    (h_chain : ∀ (j : J) (x : D.Eigensystem Q.place),
+      x.val ∈ D.Eigensystem ![] → δ'.val x ≠ 0
+        → HasRootChain (x.val.heckePolyAt (Q.place j)) ((H j).map (algebraMap EllAdicIntegers ℂ))
+          (Q.place j).q (algebraMap EllAdicIntegers ℂ (a (Q.frobData j).frob))⁻¹ t)
+    {R : Type*} [Ring R]
+    {σ : D.integralEnd Q.place →+* R} (hσ : IsReductionMod σ (ℓ ^ ν) (2 * (Fintype.card n)!))
+    : ∃ 𝒩 Y : Finset J → D.integralEnd Q.place,
+      (∀ (s : D.heckeAlgebra Q.place) (S : Finset J), Commute (heckeAction s) (𝒩 S))
+        ∧ 𝒩 ∅ = ∑ g : (j : J) → GL (Fin (Fintype.card n)) (ResField (Q.place j)), D.residueRep Q g
+        ∧ (∀ G ∈ tiedIdeal Q hN H,
+          σ (∑ S : Finset J, 𝒩 Sᶜ * heckeAction (G.coeff (∑ j ∈ S, .single j 1))) = 0)
+        ∧ (∀ S : Finset J,
+          σ ((c ^ 2 • heckeAction δ') ^ card J * 𝒩 S)
+            = σ (Y S * ∑ g : (j : J) → GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q g))
+        ∧ Y ∅ = (c ^ 2 • heckeAction δ') ^ card J := by
   -- Multiply the factors `Nm j + α j ∂ j`, one for each place.
   choose der der_mem norm_kills tie der_mul_sub_one using fun j : J ↦
     exists_mul_traceElement_tameGenerator_eq_frob Q hQ hN ha j ht δ' (h_chain j) hσ
-  obtain ⟨𝒩, comm, h_empty, h_last⟩ := exists_empty_eq_sum_and_insert_eq_mul (D.residueRep Q)
-    (fun j ↦ (D.localOperators Q j).toSubring) (commute_of_mem_localOperators_of_ne Q)
-    (fun _ ↦ residueRep_mem_localOperators hQ) der_mem
+  obtain ⟨𝒩, comm, h_empty, h_last⟩ :=
+    exists_empty_eq_sum_and_insert_eq_mul (D.residueRep Q)
+      (fun j ↦ (D.localOperators Q j).toSubring)
+      (commute_of_mem_localOperators_of_ne Q)
+      (fun _ ↦ residueRep_mem_localOperators hQ)
+      der_mem
   have hecke_comm (s : D.heckeAlgebra Q.place) (S : Finset J) : Commute (heckeAction s) (𝒩 S) :=
     comm _ (fun _ _ h ↦ localOperators.commute_heckeAction h s) S
   obtain ⟨Ψ, hΨ⟩ := exists_higman_operator hQ (.id _) Function.injective_id
@@ -283,8 +313,9 @@ theorem exists_deformed_norm_family (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) !
   refine ⟨𝒩, Y, hecke_comm, h_empty, fun G hG ↦ ?_, factor, Y_empty ∅ rfl⟩
   -- Prove the claim for all multiples `G' G`; induction over the span reduces it to the multiples
   -- `G' z` of the generators `z`.
-  suffices multiples : ∀ G' : MvPolynomial J (D.heckeAlgebra Q.place),
-      σ (∑ S, 𝒩 Sᶜ * heckeAction ((G' * G).coeff (∑ j ∈ S, .single j 1))) = 0 by
+  suffices multiples
+      : ∀ G' : MvPolynomial J (D.heckeAlgebra Q.place),
+        σ (∑ S, 𝒩 Sᶜ * heckeAction ((G' * G).coeff (∑ j ∈ S, .single j 1))) = 0 by
     simpa only [one_mul] using multiples 1
   intro G'
   induction hG using Submodule.span_induction generalizing G' with
@@ -302,8 +333,7 @@ theorem exists_deformed_norm_family (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) !
       rw [nsmul_eq_mul, hσ.natCast_eq_zero, zero_mul]
     · -- The tie at `w j` cancels the two terms of a tied relation.
       exact map_top_coeff_mul_C_sub_X_mul_C_eq_zero (heckeAction (D := D) (L := Q.place)).toRingHom
-        h_last
-        (norm_kills j g) (tie j g) G'
+        h_last (norm_kills j g) (tie j g) G'
 
 section
 
@@ -439,7 +469,8 @@ lemma sum_mul_residueRep_apply_eq_smul (h_offLevel : ∀ j : J, D.IsOffLevel (�
       rw [smul_comm c, smul_comm d, smul_smul, ← _root_.pow_succ']
 
 open Finset in
-/-- The top coefficient `𝒟_J` clears denominators. Assume that the places `Q.place j` are off the
+/--
+The top coefficient `𝒟_J` clears denominators. Assume that the places `Q.place j` are off the
 level of `D`, and `N x` is the twist of `x.galRep` by a character `a` that is trivial at the tame
 generators. Let `c` be the common multiple of the stabiliser orders in `D`, let `ℓ ^ ν` divide
 `q - 1` at each place (part of `Q`), and let `𝔞 ⊆ 𝕋[α]` be the ideal `tiedIdeal` over the Hecke
@@ -453,26 +484,31 @@ divisor of `H j` (`HasRootChain`). Let `l` be a form of base level with `d l` in
 satisfy `A δ₀ l = n₀ A y`, `δ₀ y = n₀ y` and `𝒟_S y = 0` for `S ≠ J`. If `2 n! (n₀ c²) ^ i₀`
 divides `ℓ ^ ν`, where `i₀ = #J + 1`, then `d c A ^ i₀ 𝒟_J y` is integral. In the application `𝒟`
 is Ribet's element, `A` is the indicator function of the congruent systems (so `A ^ i₀ = A`), and
-`y` is the projection of `l` to the lifts. -/
-theorem smul_top_coeff_mem_ellIntegralForms (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
-    (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
-    {H : J → EllAdicIntegers[X]} {t : ℕ} (ht : t ≠ 0) (A δ₀ : D.heckeAlgebra Q.place)
+`y` is the projection of `l` to the lifts.
+-/
+theorem smul_top_coeff_mem_ellIntegralForms
+    (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
+    (hN : IsGalRepTwist N a)
+    (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
+    {H : J → EllAdicIntegers[X]} {t : ℕ} (ht : t ≠ 0)
+    (A δ₀ : D.heckeAlgebra Q.place)
     (n₀ : EllAdicIntegers)
-    (h_chain : ∀ (j : J) (x : D.Eigensystem Q.place), x.val ∈ D.Eigensystem ![] →
-      (A * δ₀).val x ≠ 0 →
-      HasRootChain (x.val.heckePolyAt (Q.place j)) ((H j).map (algebraMap EllAdicIntegers ℂ))
-        (Q.place j).q (algebraMap EllAdicIntegers ℂ (a (Q.frobData j).frob))⁻¹ t)
+    (h_chain : ∀ (j : J) (x : D.Eigensystem Q.place),
+      x.val ∈ D.Eigensystem ![] → (A * δ₀).val x ≠ 0
+        → HasRootChain (x.val.heckePolyAt (Q.place j)) ((H j).map (algebraMap EllAdicIntegers ℂ))
+          (Q.place j).q (algebraMap EllAdicIntegers ℂ (a (Q.frobData j).frob))⁻¹ t)
     (h_dvd : (2 * (Fintype.card n)! : ℕ) * (n₀ * c ^ 2) ^ (Fintype.card J + 1) ∣ ℓ ^ ν)
     {𝒟 : MvPolynomial J (D.heckeAlgebra Q.place)}
     (h𝒟 : .C (δ₀ - algebraMap EllAdicIntegers (D.heckeAlgebra Q.place) n₀) * 𝒟 ∈ tiedIdeal Q hN H)
-    {l y : D.formsOfLevel Q.place} (hl : l.val ∈ D.formsOfLevel ![]) {d : ℕ}
-    (hd : d • l.val ∈ ellIntegralForms)
+    {l y : D.formsOfLevel Q.place} (hl : l.val ∈ D.formsOfLevel ![])
+    {d : ℕ} (hd : d • l.val ∈ ellIntegralForms)
     (h_proj : (heckeAction (A * δ₀)).val l = n₀ • (heckeAction A).val y)
     (h_lift : (heckeAction δ₀).val y = n₀ • y)
-    (h_low : ∀ S : Finset J, S ≠ univ →
-      (heckeAction (𝒟.coeff (∑ j ∈ S, .single j 1))).val y = 0) :
-    d • c • ((heckeAction (A ^ (Fintype.card J + 1) * 𝒟.coeff (∑ j : J, .single j 1))).val y :
-      V.forms κ) ∈ ellIntegralForms := by
+    (h_low : ∀ S : Finset J, S ≠ univ → (heckeAction (𝒟.coeff (∑ j ∈ S, .single j 1))).val y = 0)
+    : d • c
+        • ((heckeAction (A ^ (Fintype.card J + 1) * 𝒟.coeff (∑ j : J, .single j 1))).val y
+          : V.forms κ)
+      ∈ ellIntegralForms := by
   -- Put `δ = c² A δ₀`, `n₁ = n₀ c²` and `i₀ = i + 1`, and let `G` be the coefficient of `∏ α j` in
   -- `𝒩 𝒟`. Modulo `ℓ ^ ν / (2 n!)`, a multiple of `n₁ ^ i₀`, we have
   -- `n₁ ^ i₀ A ^ i₀ G ≡ δ ^ i₀ G = (δ ^ i 𝒩) (δ 𝒟) ≡ ∑ Y Sᶜ Nm δ 𝒟_S`. Apply both sides to
@@ -484,9 +520,11 @@ theorem smul_top_coeff_mem_ellIntegralForms (hQ : ∀ j : J, D.IsOffLevel (ℓ :
   obtain ⟨μ', hμ'⟩ := h_dvd
   have modulus : (2 * (Fintype.card n)! : ℕ) * (n₁ ^ (i + 1) * μ') = (ℓ ^ ν : ℕ) := by
     rw [← mul_assoc, cast_pow, hμ']
-  obtain ⟨R, _, σ, hσ, ker⟩ : ∃ (R : Type) (_ : Ring R) (σ : D.integralEnd Q.place →+* R),
-      IsReductionMod σ (ℓ ^ ν) (2 * (Fintype.card n)!) ∧ ∀ a b : D.integralEnd Q.place, σ a = σ b →
-        ∃ W : D.integralEnd Q.place, a - b = (n₁ ^ (i + 1) * μ') • W :=
+  obtain ⟨R, _, σ, hσ, ker⟩
+      : ∃ (R : Type) (_ : Ring R) (σ : D.integralEnd Q.place →+* R),
+        IsReductionMod σ (ℓ ^ ν) (2 * (Fintype.card n)!)
+          ∧ ∀ a b : D.integralEnd Q.place,
+            σ a = σ b → ∃ W : D.integralEnd Q.place, a - b = (n₁ ^ (i + 1) * μ') • W :=
     exists_isReductionMod modulus (isSMulRegular_integralEnd (D := D) Q (by positivity))
   -- The family `𝒩` kills `𝔞` under `σ`, with `δ ^ i 𝒩 S ≡ Y S Nm` and `Y ∅ = δ ^ i`.
   obtain ⟨𝒩, Y, comm, -, tied, factor, Y_empty⟩ :=
@@ -494,11 +532,11 @@ theorem smul_top_coeff_mem_ellIntegralForms (hQ : ∀ j : J, D.IsOffLevel (ℓ :
   rw [← map_nsmul] at factor Y_empty
   let G : D.integralEnd Q.place := ∑ S, 𝒩 Sᶜ * heckeAction (coef S)
   let G' : D.integralEnd Q.place := ∑ S, Y Sᶜ * ((∑ g, D.residueRep Q g) * heckeAction (δ * coef S))
-  have mul_G (s : D.heckeAlgebra Q.place) : heckeAction s * G =
-      ∑ S, 𝒩 Sᶜ * heckeAction ((.C s * 𝒟).coeff (∑ j ∈ S, .single j 1)) := by
+  have mul_G (s : D.heckeAlgebra Q.place)
+      : heckeAction s * G = ∑ S, 𝒩 Sᶜ * heckeAction ((.C s * 𝒟).coeff (∑ j ∈ S, .single j 1)) := by
     simp only [G, coef, mul_sum, MvPolynomial.coeff_C_mul, map_mul, ← mul_assoc, (comm _ _).eq]
-  have congr_ideal : σ (n₁ ^ (i + 1) • (heckeAction (A ^ (i + 1)) * G)) =
-      σ (heckeAction δ ^ (i + 1) * G) := by
+  have congr_ideal
+      : σ (n₁ ^ (i + 1) • (heckeAction (A ^ (i + 1)) * G)) = σ (heckeAction δ ^ (i + 1) * G) := by
     obtain ⟨v, hv⟩ := sub_dvd_pow_sub_smul_pow Q A δ₀ n₀ (i + 1)
     have mem : .C (δ ^ (i + 1) - n₁ ^ (i + 1) • A ^ (i + 1)) * 𝒟 ∈ tiedIdeal Q hN H := by
       rw [hv, mul_comm _ v, map_mul, mul_assoc]
@@ -510,16 +548,17 @@ theorem smul_top_coeff_mem_ellIntegralForms (hQ : ∀ j : J, D.IsOffLevel (ℓ :
   have congr_factor : σ (heckeAction δ ^ (i + 1) * G) = σ G' := by
     rw [mul_sum, map_sum, map_sum]
     refine sum_congr rfl fun S _ ↦ ?_
-    calc σ (heckeAction δ ^ (i + 1) * (𝒩 Sᶜ * heckeAction (coef S)))
-        = σ (heckeAction δ ^ i * 𝒩 Sᶜ * heckeAction (δ * coef S)) := by
-          rw [pow_succ, map_mul _ δ, mul_assoc, ← mul_assoc (heckeAction δ), (comm δ Sᶜ).eq]
-          simp only [mul_assoc]
+    calc
+      σ (heckeAction δ ^ (i + 1) * (𝒩 Sᶜ * heckeAction (coef S)))
+          = σ (heckeAction δ ^ i * 𝒩 Sᶜ * heckeAction (δ * coef S)) := by
+        rw [pow_succ, map_mul _ δ, mul_assoc, ← mul_assoc (heckeAction δ), (comm δ Sᶜ).eq]
+        simp only [mul_assoc]
       _ = σ (Y Sᶜ * ((∑ g, D.residueRep Q g) * heckeAction (δ * coef S))) := by
-          rw [σ.map_mul, factor, ← σ.map_mul, mul_assoc]
+        rw [σ.map_mul, factor, ← σ.map_mul, mul_assoc]
   obtain ⟨W, hW⟩ := ker _ _ (congr_ideal.trans congr_factor)
-  obtain ⟨Ψ, hΨ⟩ : ∃ Ψ : D.integralEnd Q.place, ∀ z : D.formsOfLevel Q.place,
-    z.val ∈ D.formsOfLevel ![] →
-      ((∑ g, D.residueRep Q g) * Ψ).val z = c • z :=
+  obtain ⟨Ψ, hΨ⟩
+      : ∃ Ψ : D.integralEnd Q.place, ∀ z : D.formsOfLevel Q.place,
+        z.val ∈ D.formsOfLevel ![] → ((∑ g, D.residueRep Q g) * Ψ).val z = c • z :=
     exists_norm_apply_eq_smul Q hQ
   let u : D.formsOfLevel Q.place := Ψ.val (d • l)
   have norm_u : (∑ g, D.residueRep Q g).val u = d • c • l := by
@@ -529,8 +568,9 @@ theorem smul_top_coeff_mem_ellIntegralForms (hQ : ∀ j : J, D.IsOffLevel (ℓ :
     sum_mul_residueRep_apply_eq_smul Q hQ norm_u h_proj h_lift Y_empty h_low
   have n₁_ne : algebraMap EllAdicIntegers ℂ (n₁ ^ (i + 1)) ≠ 0 := fun h ↦ by
     simpa [n₁, h, (Fact.out : ℓ.Prime).ne_zero] using congrArg (algebraMap EllAdicIntegers ℂ) hμ'
-  have integral : d • c • (heckeAction (A ^ (i + 1) * coef univ)).val y =
-      (heckeAction (A ^ (i + 1)) * G - μ' • W).val u := by
+  have integral
+      : d • c • (heckeAction (A ^ (i + 1) * coef univ)).val y
+        = (heckeAction (A ^ (i + 1)) * G - μ' • W).val u := by
     refine smul_right_injective _ n₁_ne ?_
     simp only [algebraMap_smul]
     rw [← top, ← sub_sub_cancel (n₁ ^ (i + 1) • _) G', hW, mul_smul, ← smul_sub, SetLike.val_smul,

@@ -46,10 +46,12 @@ lemma card_divisors_le_two_mul_sqrt (r : ℕ) : (#r.divisors : ℝ) ≤ 2 * √r
   simp [two_mul]
 
 open scoped ArithmeticFunction.omega in
-/-- The **Pólya–Vinogradov inequality** for initial intervals: for a non-principal Dirichlet
-character `χ` mod `q` one has `|∑_{1 ≤ v ≤ X} χ v| ≤ 2 √q (1 + log q)` for all `X`. -/
-theorem polya_vinogradov (hχ : χ ≠ 1) (X : ℕ) :
-    ‖∑ v ∈ Ioc 0 X, χ v‖ ≤ 2 * √q * (1 + Real.log q) := by
+/--
+The **Pólya–Vinogradov inequality** for initial intervals: for a non-principal Dirichlet
+character `χ` mod `q` one has `|∑_{1 ≤ v ≤ X} χ v| ≤ 2 √q (1 + log q)` for all `X`.
+-/
+theorem polya_vinogradov (hχ : χ ≠ 1) (X : ℕ)
+    : ‖∑ v ∈ Ioc 0 X, χ v‖ ≤ 2 * √q * (1 + Real.log q) := by
   -- Apply Tau Ceti's bound for the primitive `ψ` mod `M` that induces `χ`.
   obtain ⟨M, hMq, ψ, _, hψ, h_ind⟩ := exists_isPrimitive_changeLevel_eq χ
   obtain ⟨r, hr⟩ := exists_eq_mul_right_of_dvd hMq
@@ -69,14 +71,14 @@ theorem polya_vinogradov (hχ : χ ≠ 1) (X : ℕ) :
   have hM_one : 1 ≤ M := NeZero.pos M
   have hlog : Real.log M ≤ Real.log q := Real.log_le_log hM_pos hM_le
   have hlog₀ : 0 ≤ Real.log M := Real.log_nonneg (mod_cast hM_one)
-  calc ‖∑ v ∈ Ioc 0 X, χ v‖
-      = ‖∑ n ∈ Icc 1 X, changeLevel hMq ψ n‖ := by
-        have h_Icc : Ioc 0 X = Icc 1 X := by ext; simp; omega
-        simp [h_Icc, ← h_ind]
+  calc
+    ‖∑ v ∈ Ioc 0 X, χ v‖ = ‖∑ n ∈ Icc 1 X, changeLevel hMq ψ n‖ := by
+      have h_Icc : Ioc 0 X = Icc 1 X := by ext; simp; omega
+      simp [h_Icc, ← h_ind]
     _ ≤ 2 ^ ω r * (√M * (1 + Real.log M)) := h
     _ ≤ 2 * √r * (√M * (1 + Real.log q)) :=
-        mul_le_mul h_two_pow (mul_le_mul_of_nonneg_left (by linarith) (Real.sqrt_nonneg _))
-          (mul_nonneg (Real.sqrt_nonneg _) (by linarith)) (by positivity)
+      mul_le_mul h_two_pow (mul_le_mul_of_nonneg_left (by linarith) (Real.sqrt_nonneg _))
+        (mul_nonneg (Real.sqrt_nonneg _) (by linarith)) (by positivity)
     _ = 2 * √q * (1 + Real.log q) := by rw [hsq]; ring
 
 end New

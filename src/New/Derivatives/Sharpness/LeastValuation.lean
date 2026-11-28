@@ -67,8 +67,10 @@ namespace New
 section LowestTerm
 variable {X R : Type} [CommRing R]
 
-/-- `c z ^ m` is the lowest term of `f` for the weight `w`: in weight at most that of `m`, the
-coefficients of `f` are those of the monomial `c z ^ m` (here `c = 0` is allowed). -/
+/--
+`c z ^ m` is the lowest term of `f` for the weight `w`: in weight at most that of `m`, the
+coefficients of `f` are those of the monomial `c z ^ m` (here `c = 0` is allowed).
+-/
 def IsLowestTerm (w : X → ℕ) (f : MvPowerSeries X R) (m : X →₀ ℕ) (c : R) : Prop :=
   ∀ d : X →₀ ℕ, d.weight w ≤ m.weight w → coeff d f = (monomial m c).coeff d
 
@@ -113,12 +115,15 @@ lemma IsLowestTerm.pow {X R : Type} [CommRing R] {w : X → ℕ} {f : MvPowerSer
     IsLowestTerm w (f ^ k) (k • α) (c ^ k) := by
   simpa using IsLowestTerm.prod (s := range k) fun _ _ ↦ hf
 
-/-- The substitution `F ↦ F (∑ a_k z_k)` of a linear combination of copies `z_k` of the variables
+/--
+The substitution `F ↦ F (∑ a_k z_k)` of a linear combination of copies `z_k` of the variables
 `z`, with the same coefficients `a_k` for all variables. The copy `k` of the variable `x` is the
-variable `(x, k)`. -/
-noncomputable def copySubst {X K R : Type} [Fintype X] [Fintype K] [CommRing R] (a : K → R) :
-    MvPowerSeries X R →ₐ[R] MvPowerSeries (X × K) R :=
-  substAlgHom (a := fun x : X ↦ ∑ k : K, a k • MvPowerSeries.X (x, k))
+variable `(x, k)`.
+-/
+noncomputable def copySubst {X K R : Type} [Fintype X] [Fintype K] [CommRing R] (a : K → R)
+    : MvPowerSeries X R →ₐ[R] MvPowerSeries (X × K) R :=
+  substAlgHom
+    (a := fun x : X ↦ ∑ k : K, a k • MvPowerSeries.X (x, k))
     (hasSubst_of_constantCoeff_zero (by simp))
 
 section copySubst
@@ -269,22 +274,24 @@ lemma padicInt_sum_four_squares {p : ℕ} [Fact p.Prime] (x : ℤ_[p]) :
 
 namespace CMLattice
 
-variable {d : ℕ} {p : ℕ} [Fact p.Prime] [PadicPlace p]
-  {J X : Type} [Fintype J] [Fintype X]
+variable {d : ℕ} {p : ℕ} [Fact p.Prime] [PadicPlace p] {J X : Type} [Fintype J] [Fintype X]
 
-/-- The relation `val_n(ν) ≤ r`: some coefficient of degree `ν` in some product `∏ (H_c Θ)(z_c)`
+/--
+The relation `val_n(ν) ≤ r`: some coefficient of degree `ν` in some product `∏ (H_c Θ)(z_c)`
 over `n` copies `z_c` of the variables has valuation at most `r`. Here `C : CMLattice d` is a
 lattice in `ℂ` with a marked point `t` of order two, which is stable under the integers of
 `ℚ(√-d)` if `d ≠ 0`. The series `Θ = ∏ θ(μ_j z) ^ m j` is `C.thetaProd μ m`, the
 `H_c` are integral series in the `y(μ_j z)`, and `θ`, `y` are the Taylor series of `C.θ` (the
 normalized sigma function translated by `t`) and `C.translatedY` (a combination of the Weierstrass
 functions at `z + t`), read in `ℂ_p` through the place `ιₚ` of `PadicPlace p`. A coefficient of the
-product is the product of one coefficient of each factor. -/
-def LeastValLE (C : CMLattice d) (μ : J → X → ℂ_[p]) (m : J → ℕ) (n : ℕ) (ν : X →₀ ℕ) (r : ℝ) :
-    Prop :=
-  ∃ H : Fin n → MvPowerSeries X ℂ_[p], (∀ c : Fin n, H c ∈ C.multiSeriesRing μ) ∧
-    ∃ α : Fin n → X →₀ ℕ, ∑ c : Fin n, α c = ν ∧
-      (p : ℝ) ^ (-r) ≤ ∏ c : Fin n, ‖coeff (α c) (H c * C.thetaProd μ m)‖
+product is the product of one coefficient of each factor.
+-/
+def LeastValLE (C : CMLattice d) (μ : J → X → ℂ_[p]) (m : J → ℕ) (n : ℕ) (ν : X →₀ ℕ) (r : ℝ)
+    : Prop :=
+  ∃ H : Fin n → MvPowerSeries X ℂ_[p],
+    (∀ c : Fin n, H c ∈ C.multiSeriesRing μ)
+      ∧ ∃ α : Fin n → X →₀ ℕ,
+        ∑ c : Fin n, α c = ν ∧ (p : ℝ) ^ (-r) ≤ ∏ c : Fin n, ‖coeff (α c) (H c * C.thetaProd μ m)‖
 
 /-- The series `Θ = ∏ θ(μ_j z) ^ m j` has constant term `1`, because `θ(0) = 1`. -/
 lemma constantCoeff_thetaProd {C : CMLattice d} {μ : J → X → ℂ_[p]} {m : J → ℕ} :
@@ -455,11 +462,14 @@ lemma prod_rescale_theta_mem [PrimeSevenModEight d] (C : CMLattice d) {n : ℕ} 
   rw [h_prod]
   exact prod_mem fun c _ ↦ C.expSubst_sub_rescale_mem (h_pair (δ c))
 
-/-- The product `∏ Θ(δ_c z)` of copies of `Θ = C.thetaProd μ m = ∏ θ(μ_j z) ^ m j` scaled by
+/--
+The product `∏ Θ(δ_c z)` of copies of `Θ = C.thetaProd μ m = ∏ θ(μ_j z) ^ m j` scaled by
 `p`-adic integers `δ_c`, where `θ` is the Taylor series of the theta function `C.θ`, read in `ℂ_p`,
-and the `μ_j z` are linear forms. -/
-noncomputable def scaledThetaProd (C : CMLattice d) (μ : J → X → ℂ_[p]) (m : J → ℕ) {n : ℕ}
-    (δ : Fin n → ℤ_[p]) : MvPowerSeries X ℂ_[p] :=
+and the `μ_j z` are linear forms.
+-/
+noncomputable def scaledThetaProd
+    (C : CMLattice d) (μ : J → X → ℂ_[p]) (m : J → ℕ) {n : ℕ} (δ : Fin n → ℤ_[p])
+    : MvPowerSeries X ℂ_[p] :=
   ∏ c : Fin n, (C.thetaProd μ m).rescale fun _ : X ↦ algebraMap ℚ_[p] ℂ_[p] (δ c)
 
 /-- The product `∏ Θ(δ_c z)` of the scaled copies of `Θ = ∏ θ(μ_j z) ^ m j` has constant term

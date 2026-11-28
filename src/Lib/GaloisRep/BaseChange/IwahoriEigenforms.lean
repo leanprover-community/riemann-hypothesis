@@ -69,9 +69,9 @@ section IwahoriMatching
 
 open Matrix WithZero Valued Polynomial GeneralLinearGroup DoubleCoset Finset Function
 
-variable {F F' : Type*}
-  {N : ℕ} [Field F] [Valued F ℤᵐ⁰] [Field F'] [Valued F' ℤᵐ⁰]
-  [CompactSpace 𝒪[F']] {σ : F →+* F} {p : ℕ}
+variable
+  {F F' : Type*} {N : ℕ} [Field F] [Valued F ℤᵐ⁰] [Field F'] [Valued F' ℤᵐ⁰] [CompactSpace 𝒪[F']]
+  {σ : F →+* F} {p : ℕ}
 
 /-- Let `σ` be an endomorphism of `F` that keeps the valuation. Then `g ∈ GL N F` lies in the
 pro-`p` Iwahori subgroup `New.proIwahori` exactly when `σ g`, with `σ` applied to the entries,
@@ -313,24 +313,33 @@ private lemma inv_mul_mem_proIwahori_of_twisted_conj (hv : ∀ x : F, v (σ x) =
     (inv_mem ((map_mem_proIwahori_iff_of_isometry hv).mpr hk))
 
 variable (σ p) in
-/-- The polynomial `z` over `F` matches the double cosets `K' s K'` over `F'` and `K t K` over `F`
+/--
+The polynomial `z` over `F` matches the double cosets `K' s K'` over `F'` and `K t K` over `F`
 at the polynomial `P`. Here `K`, `K'` are the pro-`p` Iwahori subgroups `New.proIwahori`, the
 double cosets are `New.iwahoriDoubleCoset`, twisted norms (`New.twistedNorm`) are taken with the
 endomorphism `σ` of `F` and length `p`, and `ι : F' →+* F`. In the last two fields `γ` has
-characteristic polynomial `P` and `a = z γ`. -/
-structure IsIwahoriMatchingPolynomial (ι : F' →+* F) (s : Fin N → F'ˣ) (t : Fin N → Fˣ)
-    (P z : F[X]) : Prop where
+characteristic polynomial `P` and `a = z γ`.
+-/
+structure IsIwahoriMatchingPolynomial (ι : F' →+* F) (s : Fin N → F'ˣ) (t : Fin N → Fˣ) (P z : F[X])
+    : Prop where
   /-- The twisted norm `z * σ z * ⋯ * σ ^ (p - 1) z` is `X` modulo `P`. -/
   dvd_twistedNorm_sub_X : P ∣ twistedNorm (Polynomial.map σ) p z - X
-  /-- If `γ = ι x` and `γ` is the twisted norm of `a`, then `x ∈ K' s K'` exactly when
-  `a ∈ K t K`. -/
-  mem_iwahoriDoubleCoset_iff : ∀ γ a : GL (Fin N) F, γ.val.charpoly = P → a.val = aeval γ.val z →
-    ∀ x : GL (Fin N) F', x.map ι = γ → twistedNorm (GeneralLinearGroup.map σ) p a = γ →
-      (x ∈ iwahoriDoubleCoset s ↔ a ∈ iwahoriDoubleCoset t)
+  /--
+  If `γ = ι x` and `γ` is the twisted norm of `a`, then `x ∈ K' s K'` exactly when
+  `a ∈ K t K`.
+  -/
+  mem_iwahoriDoubleCoset_iff
+    : ∀ γ a : GL (Fin N) F,
+      γ.val.charpoly = P → a.val = aeval γ.val z
+        → ∀ x : GL (Fin N) F',
+          x.map ι = γ → twistedNorm (GeneralLinearGroup.map σ) p a = γ
+            → (x ∈ iwahoriDoubleCoset s ↔ a ∈ iwahoriDoubleCoset t)
   /-- Every `δ ∈ K t K` with twisted norm `γ` has `a⁻¹ * δ ∈ K`, so it lies in the coset `a K`. -/
-  inv_mul_mem_proIwahori : ∀ γ a : GL (Fin N) F, γ.val.charpoly = P → a.val = aeval γ.val z →
-    ∀ δ ∈ iwahoriDoubleCoset t, twistedNorm (GeneralLinearGroup.map σ) p δ = γ →
-      a⁻¹ * δ ∈ proIwahori
+  inv_mul_mem_proIwahori
+    : ∀ γ a : GL (Fin N) F,
+      γ.val.charpoly = P → a.val = aeval γ.val z
+        → ∀ δ ∈ iwahoriDoubleCoset t,
+          twistedNorm (GeneralLinearGroup.map σ) p δ = γ → a⁻¹ * δ ∈ proIwahori
 
 /-- Matching at pro-`p` Iwahori level. Let `σ` be a continuous endomorphism of `F` that keeps the
 valuation, with `σ ^ p = 1` and `p > 0`. Let `ι : F' →+* F` be a map whose image holds the points
@@ -432,9 +441,12 @@ section BaseChangeEigenchar
 
 open Matrix Polynomial Valued Finset Patching
 
-variable {E E' : Type} [Field E] [CMType E] [Field E'] [Algebra E E'] [CMTypeOver E E'] {m : Type _}
-  {μ : (𝔸f E)ˣ →* ℂˣ} [Fintype m] [DecidableEq m] {u : FinPlace E'} [hμ : IsStep E' μ]
-  {hw : (u.below E).IsSplit} (hu : u.IsSplit)
+variable
+  {E E' : Type} [Field E] [CMType E] [Field E'] [Algebra E E'] [CMTypeOver E E']
+  {m : Type _} {μ : (𝔸f E)ˣ →* ℂˣ} [Fintype m] [DecidableEq m]
+  {u : FinPlace E'} [hμ : IsStep E' μ]
+  {hw : (u.below E).IsSplit}
+  (hu : u.IsSplit)
 
 /-- At a place `u` of `E'` fixed by `τ`, the component at `u` of the `i`-th iterate of `τ` on
 finite adeles is the `i`-th iterate of the local action `locMap τ hs` of `τ` on the completion at

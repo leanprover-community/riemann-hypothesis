@@ -64,9 +64,11 @@ open MeasureTheory AddSubgroup Set
 
 namespace New
 
-variable {V X : Type*} [AddCommGroup V] [MeasurableSpace V] {ν : Measure V} [ν.IsAddLeftInvariant]
-  {M L : AddSubgroup V} [NormedAddCommGroup X] [NormedSpace ℝ X]
-  [TopologicalSpace V] [IsTopologicalAddGroup V] [BorelSpace V]
+variable
+  {V X : Type*} [AddCommGroup V] [MeasurableSpace V]
+  {ν : Measure V} [ν.IsAddLeftInvariant]
+  {M L : AddSubgroup V} [NormedAddCommGroup X] [NormedSpace ℝ X] [TopologicalSpace V]
+  [IsTopologicalAddGroup V] [BorelSpace V]
 
 /-- For a left-invariant measure `ν` and a subgroup `M`, the integral over `M` is unchanged by
 translating the integrand by an element of `M`. -/
@@ -156,12 +158,15 @@ lemma lintegral_const_mul_rpow_mul_exp_neg_mul_Ioi {b r K : ℝ} (hb : 0 < b) (h
     (ae_restrict_of_forall_mem measurableSet_Ioi fun t (ht : 0 < t) ↦ by positivity)
   rw [integral_const_mul, integral_rpow_mul_exp_neg_mul_Ioi hb hr]
 
-variable {V : Type} {W : Type} [MeasureSpace V] [MeasureSpace W]
-  {q : V → ℝ} {q' : W → ℝ} {a b : ℝ} {ι : Type} [Fintype ι]
-  [SigmaFinite (volume : Measure V)] [SFinite (volume : Measure W)]
+variable
+  {V : Type} {W : Type} [MeasureSpace V] [MeasureSpace W]
+  {q : V → ℝ} {q' : W → ℝ} {a b : ℝ} {ι : Type}
+  [Fintype ι] [SigmaFinite (volume : Measure V)] [SFinite (volume : Measure W)]
 
-/-- Gaussian normalisation of the volume on `V` for the real function `q` with exponent `a`: for
-every `t > 0`, the integral of `exp (-t * q x)` over `V` equals `(π / t) ^ a`. -/
+/--
+Gaussian normalisation of the volume on `V` for the real function `q` with exponent `a`: for
+every `t > 0`, the integral of `exp (-t * q x)` over `V` equals `(π / t) ^ a`.
+-/
 class HasGaussianIntegral (a : outParam ℝ) (q : outParam (V → ℝ)) : Prop where
   /-- For `t > 0`, the integral of `exp (-t * q x)` over `V` is `(π / t) ^ a`. -/
   integral_exp_eq {t : ℝ} : 0 < t → ∫ x : V, exp (-t * q x) = (π / t) ^ a
@@ -202,25 +207,31 @@ instance : HasGaussianIntegral (1 / 2) fun x : ℝ ↦ x ^ 2 where
 instance : HasGaussianIntegral 1 fun z : ℂ ↦ ‖z‖ ^ 2 where
   integral_exp_eq ht := by simpa using integral_rexp_neg_mul_sq_norm (V := ℂ) ht
 
-/-- If the volumes on `V` (σ-finite) and `W` (s-finite) satisfy `∫ exp (-t q) = (π / t) ^ a` and
+/--
+If the volumes on `V` (σ-finite) and `W` (s-finite) satisfy `∫ exp (-t q) = (π / t) ^ a` and
 `∫ exp (-t q') = (π / t) ^ b` for all `t > 0`, then the volume on `V × W` satisfies the same with
-exponent `a + b` for the sum of `q` and `q'`. -/
-instance [h : HasGaussianIntegral a q] [h' : HasGaussianIntegral b q'] :
-    HasGaussianIntegral (a + b) fun x : V × W ↦ q x.1 + q' x.2 where
+exponent `a + b` for the sum of `q` and `q'`.
+-/
+instance [h : HasGaussianIntegral a q] [h' : HasGaussianIntegral b q']
+    : HasGaussianIntegral (a + b) fun x : V × W ↦ q x.1 + q' x.2 where
   integral_exp_eq {t} ht :=
     -- Fubini applies, since the Gaussian of the sum is a product.
-    calc ∫ x : V × W, exp (-t * (q x.1 + q' x.2))
+    calc
+      ∫ x : V × W, exp (-t * (q x.1 + q' x.2))
       _ = (∫ v : V, exp (-t * q v)) * ∫ w : W, exp (-t * q' w) := by
         simp only [mul_add, exp_add, Measure.volume_eq_prod, ← integral_prod_mul]
       _ = (π / t) ^ (a + b) := by
         rw [h.integral_exp_eq ht, h'.integral_exp_eq ht, rpow_add (by positivity)]
 
-/-- If the volume on `V` is σ-finite and satisfies `∫ exp (-t q) = (π / t) ^ a` for all `t > 0`,
-then the volume on `ι → V` satisfies the same with exponent `a * card ι` for `x ↦ ∑ i, q (x i)`. -/
-instance HasGaussianIntegral.pi [h : HasGaussianIntegral a q] :
-    HasGaussianIntegral (a * Fintype.card ι) fun x : ι → V ↦ ∑ i : ι, q (x i) where
+/--
+If the volume on `V` is σ-finite and satisfies `∫ exp (-t q) = (π / t) ^ a` for all `t > 0`,
+then the volume on `ι → V` satisfies the same with exponent `a * card ι` for `x ↦ ∑ i, q (x i)`.
+-/
+instance HasGaussianIntegral.pi [h : HasGaussianIntegral a q]
+    : HasGaussianIntegral (a * Fintype.card ι) fun x : ι → V ↦ ∑ i : ι, q (x i) where
   integral_exp_eq {t} ht :=
-    calc ∫ x : ι → V, exp (-t * ∑ i : ι, q (x i))
+    calc
+      ∫ x : ι → V, exp (-t * ∑ i : ι, q (x i))
       _ = ∫ x : ι → V, ∏ i : ι, exp (-t * q (x i)) := by simp only [mul_sum, exp_sum]
       _ = ((π / t) ^ a) ^ Fintype.card ι := by
         rw [integral_fintype_prod_volume_eq_pow fun v : V ↦ exp (-t * q v), h.integral_exp_eq ht]

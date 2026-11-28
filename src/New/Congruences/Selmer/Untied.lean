@@ -56,8 +56,10 @@ section Affine
 
 open Matrix.Module
 
-variable {E O n B : Type} [Field E] [EmbeddedNumberField E] [CommRing O] [Fintype n] [DecidableEq n]
-  [AddCommGroup B] [Module O B] {ρ : Gal(Ω/E) →* Matrix n n O} {c : Gal(Ω/E) → n → B}
+variable
+  {E O n B : Type} [Field E] [EmbeddedNumberField E] [CommRing O] [Fintype n] [DecidableEq n]
+  [AddCommGroup B] [Module O B]
+  {ρ : Gal(Ω/E) →* Matrix n n O} {c : Gal(Ω/E) → n → B}
 
 /-- If `g` acts through `ρ` by the scalar `α`, then the affine action `u ↦ c(g) + g u` of the
 cocycle `c` has `k`-th iterate `u ↦ α ^ k u + ∑ i < k, α ^ i c(g)` at `g`. At `u = 0` this says
@@ -155,31 +157,46 @@ section Line
 
 open Matrix.Module Module IsDiscreteValuationRing Polynomial
 
-variable {E ι O n : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-  [CommRing O] [Fintype n] [DecidableEq n]
+variable
+  {E ι O n : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E] [CommRing O]
+  [Fintype n] [DecidableEq n]
   {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {S₀ J : Finset (FinPlace E)} {M N : ℕ}
   {P₀ : FinPlace E} {ρ : Gal(Ω/E) →* Matrix n n O}
   {d : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
 
 open scoped Classical in
-/-- The direction of the line `X_{P₀} = Y`, `X_v = s_v Y` in the space with coordinates `X_v`,
+/--
+The direction of the line `X_{P₀} = Y`, `X_v = s_v Y` in the space with coordinates `X_v`,
 `v ∈ J`: the entry at the prime `P₀` is `1`, and the entry at `v ≠ P₀` is the slope
-`s_v = (d v).2 i` that `d` attaches to `v` and the index `i`. -/
-def lineDirection {q : ℕ} (P₀ : FinPlace E) (J : Finset (FinPlace E))
-    (d : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι) (v : J) : O :=
+`s_v = (d v).2 i` that `d` attaches to `v` and the index `i`.
+-/
+def lineDirection
+    {q : ℕ}
+    (P₀ : FinPlace E)
+    (J : Finset (FinPlace E))
+    (d : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι) (v : J)
+    : O :=
   if ↑v = P₀ then 1 else (d v).2 i
 
-/-- The Selmer module at the point `Y = y` of the line with index `i`. The point `x` has coordinates
+/--
+The Selmer module at the point `Y = y` of the line with index `i`. The point `x` has coordinates
 `x_{P₀} = y` and `x_v = e(s_v) y` for `v ≠ P₀` in `J`, where `s_v = (d v).2 i` (`lineDirection`).
 The module is `Sel(x)` (`selmerAtPoint`) for the characters that `d` attaches to the primes of `J`:
 the locally constant cocycles in `(O' / ℓ ^ M) ^ n` for the twist of `ρ` at `x` that are unramified
-outside `S` and obey the linear relations `L`. -/
-def selmerOnLine (ℓ M : ℕ) {q : ℕ} (ρ : Gal(Ω/E) →* Matrix n n O) (P₀ : FinPlace E)
-    (J : Finset (FinPlace E)) (d : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι)
-    {O' : Type} [CommRing O'] (e : O →+* O') (y : O') (S : Set (FinPlace E))
-    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) : Submodule O' (Gal(Ω/E) → n → QuotSpan (ℓ ^ M : O')) :=
-  selmerAtPoint ℓ M (fun v : J ↦ (d v).1.character) ρ S L e fun v : J ↦
-    e (lineDirection P₀ J d i v) * y
+outside `S` and obey the linear relations `L`.
+-/
+def selmerOnLine
+    (ℓ M : ℕ)
+    {q : ℕ}
+    (ρ : Gal(Ω/E) →* Matrix n n O) (P₀ : FinPlace E) (J : Finset (FinPlace E))
+    (d : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι)
+    {O' : Type} [CommRing O']
+    (e : O →+* O') (y : O') (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O))
+    : Submodule O' (Gal(Ω/E) → n → QuotSpan (ℓ ^ M : O')) :=
+  selmerAtPoint ℓ M
+    (fun v : J ↦ (d v).1.character)
+    ρ S L e
+    fun v : J ↦ e (lineDirection P₀ J d i v) * y
 
 /-- The polynomial `det ((1 + Y) A - 1)`. -/
 def shiftedDet (A : Matrix n n O) : O[X] := ((1 + X : O[X]) • A.map C - 1).det
@@ -200,11 +217,16 @@ lemma coeff_shiftedDet_card (A : Matrix n n O) :
     abel
   rw [shiftedDet, h_split, coeff_det_X_add_C_card]
 
-/-- The polynomial `P¹(Y) = ∏_w det ((1 + Y) ρ(φ_w) - 1)`, over the primes `w` of `I` and their
+/--
+The polynomial `P¹(Y) = ∏_w det ((1 + Y) ρ(φ_w) - 1)`, over the primes `w` of `I` and their
 conjugates; here `φ_w` is the Frobenius element of the data `d` at `v ∈ I` for `w = v`, and its
-conjugate inverse for the conjugate prime. -/
-def tiePolynomial {q : ℕ} (ρ : Gal(Ω/E) →* Matrix n n O) (I : Finset (FinPlace E))
-    (d : FinPlace E → AuxPrimeData E q × (ι → O)) : O[X] :=
+conjugate inverse for the conjugate prime.
+-/
+def tiePolynomial
+    {q : ℕ}
+    (ρ : Gal(Ω/E) →* Matrix n n O) (I : Finset (FinPlace E))
+    (d : FinPlace E → AuxPrimeData E q × (ι → O))
+    : O[X] :=
   ∏ p : I × Bool, shiftedDet (ρ (idOrConjInv p.2 (d p.1).1.frob))
 
 omit [NumberField.IsCMField E] in

@@ -71,18 +71,24 @@ namespace New
 
 open Matrix SemilocalField schwartzBruhat
 
-variable {F : Type _} [SemilocalField F] {a b n : Type} [Fintype b] [DecidableEq b]
-  [Fintype n] [DecidableEq n] (e : b ⊕ a ≃ n) (χ : MulChar F ℂ) (s : Matrix b n F)
+variable
+  {F : Type _} [SemilocalField F]
+  {a b n : Type} [Fintype b] [DecidableEq b] [Fintype n] [DecidableEq n]
+  (e : b ⊕ a ≃ n) (χ : MulChar F ℂ) (s : Matrix b n F)
 
 /-! ### The standard functions -/
 
 open scoped Classical in
-/-- For a matrix `s` with rows indexed by `b`, the function sending an integral `y` with `det (s y)`
-a unit of `O` to `χ⁻¹ (det (s y))`, and every other `y` to zero. -/
+/--
+For a matrix `s` with rows indexed by `b`, the function sending an integral `y` with `det (s y)`
+a unit of `O` to `χ⁻¹ (det (s y))`, and every other `y` to zero.
+-/
 def stdColDatum (y : Matrix n b F) : ℂ := if IsIntMatrix O y then invOnUnits χ (s * y).det else 0
 
-/-- The function sending `x` to `χ⁻¹` of the determinant of the square matrix with rows those of
-`s` and `x`, ordered by `e`, if that matrix lies in `GL_n(O)`, and to zero otherwise. -/
+/--
+The function sending `x` to `χ⁻¹` of the determinant of the square matrix with rows those of
+`s` and `x`, ordered by `e`, if that matrix lies in `GL_n(O)`, and to zero otherwise.
+-/
 def stdRowDatum (x : Matrix a n F) : ℂ := stdColDatum χ 1 ((s.fromRows x).submatrix e.symm id)
 
 /-- A square matrix over `F` is primitive over the compact open subring `O = SemilocalField.O` of
@@ -294,20 +300,24 @@ namespace New.Exchange
 
 open Matrix WeilData MeasureTheory SemilocalField Space Splitting Fintype
 
-variable {E n n' r r' b : Type} {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} [Field E]
-  [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r]
-  [DecidableEq r] [Fintype r'] [DecidableEq r'] {W : Space E n s} {W' : Space E n' s'}
-  {V : Space E r t} {V' : Space E r' t'} [Fintype b] [DecidableEq b] (A : W'.Splitting W Unit)
-  (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n)
+variable
+  {E n n' r r' b : Type} {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r']
+  {W : Space E n s} {W' : Space E n' s'} {V : Space E r t} {V' : Space E r' t'}
+  [Fintype b] [DecidableEq b]
+  (A : W'.Splitting W Unit) (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n)
 
 section Local
 
 variable {F : Type} [SemilocalField F] {χ : MulChar F ℂ}
 
-/-- The matrix with rows indexed by `n' ≃ b ⊕ r'` and columns by `Unit ⊕ (b ⊕ r) ⊕ Unit`, where
-`n ≃ b ⊕ r`: on the rows `b` it is `(0, (1 0), 0)` and on the rows `r'` it is `(K, (0 I), L)`. -/
-noncomputable def frameMatrix (K L : Matrix r' Unit F) (I : Matrix r' r F) :
-    Matrix n' (Unit ⊕ n ⊕ Unit) F :=
+/--
+The matrix with rows indexed by `n' ≃ b ⊕ r'` and columns by `Unit ⊕ (b ⊕ r) ⊕ Unit`, where
+`n ≃ b ⊕ r`: on the rows `b` it is `(0, (1 0), 0)` and on the rows `r'` it is `(K, (0 I), L)`.
+-/
+noncomputable def frameMatrix (K L : Matrix r' Unit F) (I : Matrix r' r F)
+    : Matrix n' (Unit ⊕ n ⊕ Unit) F :=
   ((fromRows 0 K).fromCols
     (((fromBlocks 1 0 0 I).submatrix id σ.symm).fromCols (fromRows 0 L))).submatrix σ'.symm id
 
@@ -352,13 +362,16 @@ lemma stdColDatum_one_mul_mul {m : Type} [Fintype m] [DecidableEq m] {G P : Matr
   simp only [stdColDatum, h_int, Matrix.one_mul, h_det]
   grind [invOnUnits_mul, IsIntMatrix.det_mem, IsIntMatrix.mul]
 
-/-- The matrix under the determinant of the datum, in the frames of the two isotropic lines. It is
+/--
+The matrix under the determinant of the datum, in the frames of the two isotropic lines. It is
 block upper triangular; its diagonal blocks are `c`, the matrix with rows `p` and `y`, and the last
 coordinate `z (.inr 0)` of `z`, in this order (`LineIndex n r` indexes coordinates by `n` and one
 more coordinate, then by `r`, then one last coordinate) if `β = true` and in the opposite order if
-`β = false`. -/
-noncomputable def triangularForm (β : Bool) (c : F) (p : Matrix b n F) (y : Matrix r n F)
-    (z : LineIndex n r → F) : Matrix (Unit ⊕ n ⊕ Unit) (Unit ⊕ n ⊕ Unit) F :=
+`β = false`.
+-/
+noncomputable def triangularForm
+    (β : Bool) (c : F) (p : Matrix b n F) (y : Matrix r n F) (z : LineIndex n r → F)
+    : Matrix (Unit ⊕ n ⊕ Unit) (Unit ⊕ n ⊕ Unit) F :=
   fromBlocks (cond β c (z (.inr 0)) • 1) (vecToMatrix (z ∘ .inl ∘ .inl)) 0
     (((p.fromRows y).submatrix σ.symm id).fromBlocks
       ((fromRows 0 (vecToMatrix (z ∘ .inl ∘ .inr))).submatrix σ.symm id) 0
@@ -540,10 +553,11 @@ namespace New.Exchange.IsEquivariantLift
 
 open Matrix G Space.Splitting
 
-variable {E n₀ a b m p : Type} [Field E] [CMType E] [WeilData E] [Fintype a] [Fintype b]
-  [DecidableEq b] [Fintype m] [DecidableEq m] {μ : NumberField.InfinitePlace E → ℤ}
-  {𝔠 : SplitTameChar E μ} {r : m → ℤˣ} {X : Space E m r}
-  {M : Submodule ℂ (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ)}
+variable
+  {E n₀ a b m p : Type} [Field E] [CMType E] [WeilData E] [Fintype a] [Fintype b] [DecidableEq b]
+  [Fintype m] [DecidableEq m]
+  {μ : NumberField.InfinitePlace E → ℤ} {𝔠 : SplitTameChar E μ} {r : m → ℤˣ}
+  {X : Space E m r} {M : Submodule ℂ (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ)}
   {𝒟 : (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) →ₗ[ℂ] G E r → ℂ}
 
 omit [WeilData E] in

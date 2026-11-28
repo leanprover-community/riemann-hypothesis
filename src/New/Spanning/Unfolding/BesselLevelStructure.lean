@@ -69,11 +69,12 @@ namespace New.Filling
 
 open NumberField Matrix Complex Circle Finset Real Prod Floors.FloorGroups
 
-variable {E : Type} [Field E] [CMType E]
+variable
+  {E : Type} [Field E] [CMType E]
   {𝔰 : Shape} {S : Filling E 𝔰} {R R' : Type} [CommRing R] [CommRing R']
 
-attribute [local aesop simp] selfDualChar ideleM splitGram middleGram latticeMiddleGram
-  besselLatticeBasis BesselIndex.level
+attribute [local aesop simp]
+  selfDualChar ideleM splitGram middleGram latticeMiddleGram besselLatticeBasis BesselIndex.level
 
 /-! ### Change of ring and of basis in the Bessel groups -/
 
@@ -157,10 +158,12 @@ lemma ratToFin_toBesselH (γ : U 1) :
   simp [stdSpace_embFin γ, coe_ratToFin, val_toBesselH_apply_coe, fromBlocks_map, inclHFin,
     toLatticeBasis]
 
-/-- For a class `c`, let h be the image under `toBesselH` of the chosen element `c.out` of the
+/--
+For a class `c`, let h be the image under `toBesselH` of the chosen element `c.out` of the
 double coset `c`, in rational coordinates. This is the finite adelic matrix h · `S.latticeBasis`.
 Its columns form a basis of hΛ₀, where Λ₀ is the lattice spanned by the columns of
-`S.latticeBasis`. -/
+`S.latticeBasis`.
+-/
 noncomputable def classBasis (c : S.Classes) : GL 𝔰.BesselIndex (𝔸f E) :=
   (toBesselH 𝔰 (S.N : 𝔸f E) c.out).val * S.latticeBasis
 
@@ -354,10 +357,12 @@ is `f = (e₁, …, e_ϱ, z)`, and `h(x, y)` is `xᴴ J y`.
 namespace New
 
 open scoped Classical in
-/-- The weight of a head `p 0, …, p (i - 1)` at the finite places: the product over `l < i` of the
+/--
+The weight of a head `p 0, …, p (i - 1)` at the finite places: the product over `l < i` of the
 `K`-th power of `√(genIndex D)`, where `D = p 0 * ⋯ * p l` and `genIndex D` is the inverse of the
 factor by which multiplication by `D` scales Haar measure. It is `0` unless all these partial
-products lie in the ring of integers `SemilocalField.O`. -/
+products lie in the ring of integers `SemilocalField.O`.
+-/
 noncomputable def finHeadWeight {A : Type*} [SemilocalField A] (K i : ℕ) (p : ℕ → Aˣ) : ℝ :=
   ∏ l ∈ Finset.range i,
     let D : A := ∏ a ∈ Finset.range (l + 1), (p a).val
@@ -366,8 +371,7 @@ noncomputable def finHeadWeight {A : Type*} [SemilocalField A] (K i : ℕ) (p : 
 open Matrix Fin Sum Floors Finset
 
 -- `Type _`: the universe is `0` in the statements about `simpleRootSum`, arbitrary in the others.
-variable {A : Type _} [CommRing A]
-  {R : Subring A} {𝔰 : Shape} {T : Shape.Form 𝔰 A}
+variable {A : Type _} [CommRing A] {R : Subring A} {𝔰 : Shape} {T : Shape.Form 𝔰 A}
 
 /-- Let `R` be a subring of `A` and let `N ∈ R` be fixed by the involution. Then
 `latticeMiddleGram 𝔰 N`, the Gram matrix of the middle space `X₀ ⊕ A z` in the lattice basis, is
@@ -499,27 +503,34 @@ lemma transpose_splitGram : (S.latticeMiddle F).splitGramᵀ = (S.latticeMiddle 
   let : StarRing F := starRingOfComm
   exact (conjTranspose_eq : (S.latticeMiddle F).splitGramᴴ = (S.latticeMiddle F).splitGram)
 
-/-- The inverse adjoint s ↦ J⁻¹s⁻ᵀJ, an automorphism of the general linear group over F; J is the
-Gram matrix in the lattice basis. -/
+/--
+The inverse adjoint s ↦ J⁻¹s⁻ᵀJ, an automorphism of the general linear group over F; J is the
+Gram matrix in the lattice basis.
+-/
 def invAdjoint : MulAut (Matrix 𝔰.BesselIndex 𝔰.BesselIndex F)ˣ :=
   letI : StarRing F := starRingOfComm
   MulAut.conj (isUnit (J := (S.latticeMiddle F).splitGram)).unit⁻¹ * invTransposeGL
 
-/-- The automorphism s ↦ J⁻¹s⁻ᵀJ of the general linear group over F if b is true, else the
-identity; J is the Gram matrix in the lattice basis. -/
+/--
+The automorphism s ↦ J⁻¹s⁻ᵀJ of the general linear group over F if b is true, else the
+identity; J is the Gram matrix in the lattice basis.
+-/
 def idOrInvAdjoint (b : Bool) : MulAut (Matrix 𝔰.BesselIndex 𝔰.BesselIndex F)ˣ :=
   if b then S.invAdjoint else 1
 
-
 lemma idOrInvAdjoint_true : S.idOrInvAdjoint (F := F) true = S.invAdjoint := rfl
 
-/-- For a chosen place w, of norm p₀ or p₁, and a Boolean, the ring homomorphism from the integral
+/--
+For a chosen place w, of norm p₀ or p₁, and a Boolean, the ring homomorphism from the integral
 finite adeles to the residue field at w: reduction modulo w, preceded by conjugation if the Boolean
-is true. -/
-def reduceAboveM (x : (Σ i : Fin 2, S.chosenPlaces i) × Bool) :
-    Ô E →+* ResField (x.1.snd : FinPlace E) :=
-  if x.2 then (reduceAt (x.1.snd : FinPlace E)).comp (starRingEnd (Ô E))
-  else reduceAt (x.1.snd : FinPlace E)
+is true.
+-/
+def reduceAboveM (x : (Σ i : Fin 2, S.chosenPlaces i) × Bool)
+    : Ô E →+* ResField (x.1.snd : FinPlace E) :=
+  if x.2 then
+    (reduceAt (x.1.snd : FinPlace E)).comp (starRingEnd (Ô E))
+  else
+    reduceAt (x.1.snd : FinPlace E)
 
 lemma reduceAboveM_false (p : Σ i : Fin 2, S.chosenPlaces i) :
     S.reduceAboveM (p, false) = reduceAt (p.snd : FinPlace E) := rfl

@@ -33,11 +33,14 @@ namespace New
 
 section GenEigenspace
 
-variable {B B' : Type*} [AddCommGroup B] [Module ℂ B] [AddCommGroup B'] [Module ℂ B']
+variable
+  {B B' : Type*} [AddCommGroup B] [Module ℂ B] [AddCommGroup B'] [Module ℂ B']
   {A T : End ℂ B} {A' T' : End ℂ B'}
 
-/-- For an operator `T` that commutes with `A`, the restriction of `T` to the generalised
-eigenspace of `A` for `μ`. -/
+/--
+For an operator `T` that commutes with `A`, the restriction of `T` to the generalised
+eigenspace of `A` for `μ`.
+-/
 abbrev restrictGenEigenspace (h : Commute A T) (μ : ℂ) : End ℂ (A.maxGenEigenspace μ) :=
   T.restrict fun _ hx ↦ End.mapsTo_maxGenEigenspace_of_comm h μ hx
 
@@ -201,15 +204,18 @@ lemma det_one_add_smul_of_isIdempotentElem {e : End ℂ B} (he : IsIdempotentEle
 
 end GenEigenspace
 
-variable {B B' : Type*} [NormedAddCommGroup B] [InnerProductSpace ℂ B]
-  [NormedAddCommGroup B'] [InnerProductSpace ℂ B']
+variable
+  {B B' : Type*}
+  [NormedAddCommGroup B] [InnerProductSpace ℂ B] [NormedAddCommGroup B'] [InnerProductSpace ℂ B']
 variable {d c : ℝ}
 
-/-- The line relations among operators `T⁺ = Tp`, `T⁻ = Tm`, `e` and `A`: `T⁻` is the adjoint of
+/--
+The line relations among operators `T⁺ = Tp`, `T⁻ = Tm`, `e` and `A`: `T⁻` is the adjoint of
 `T⁺`, `e` is idempotent, `T⁺ T⁻ = d (1 + c e)` with `c, d > 0`, and `A` commutes with `T⁺` and
 `T⁻`. They are meant for the stabiliser of a line in `GL_n(𝒪)`, `𝒪` a local ring with residue
 field of order `q`: there `e` is the mean over `GL_n(𝒪)` (whence `mean` in the names of the
-lemmas), `d = q ^ (n - 2)` and `c = q ^ n - 1`. -/
+lemmas), `d = q ^ (n - 2)` and `c = q ^ n - 1`.
+-/
 structure LineRelation (d c : ℝ) (A Tp Tm e : End ℂ B) : Prop where
   /-- The constant `d` is positive. -/
   d_pos : 0 < d
@@ -340,15 +346,18 @@ lemma finrank_range_restrictGenEigenspace_eq (h : LineRelation d c A Tp Tm e)
   exact (h.restrict_maxGenEigenspace α).finrank_range_eq_of_charpoly_eq
     (h'.restrict_maxGenEigenspace α) h_charpoly
 
-/-- Let `A, T⁺, T⁻, e` and `A', T⁺', T⁻', e'` satisfy the line relations (`T⁺`, `T⁻` adjoint,
+/--
+Let `A, T⁺, T⁻, e` and `A', T⁺', T⁻', e'` satisfy the line relations (`T⁺`, `T⁻` adjoint,
 `T⁺ T⁻ = d (1 + c e)`, `A` commuting with both) for the same `c, d > 0`. If the traces of
 `A ^ (l + 1) * T⁺ ^ (i + 1)` and `A' ^ (l + 1) * T⁺' ^ (i + 1)` agree for all `l, i`, then so do
 the traces of `A * e` and `A' * e'`, which are those of `A` and `A'` on the ranges of `e` and
-`e'`. -/
-theorem trace_mul_mean_eq (h : LineRelation d c A Tp Tm e) (h' : LineRelation d c A' Tp' Tm' e')
+`e'`.
+-/
+theorem trace_mul_mean_eq
+    (h : LineRelation d c A Tp Tm e) (h' : LineRelation d c A' Tp' Tm' e')
     (h_trace : ∀ l i : ℕ,
-      trace ℂ B (A ^ (l + 1) * Tp ^ (i + 1)) = trace ℂ B' (A' ^ (l + 1) * Tp' ^ (i + 1))) :
-    trace ℂ B (A * e) = trace ℂ B' (A' * e') := by
+      trace ℂ B (A ^ (l + 1) * Tp ^ (i + 1)) = trace ℂ B' (A' ^ (l + 1) * Tp' ^ (i + 1)))
+    : trace ℂ B (A * e) = trace ℂ B' (A' * e') := by
   -- Both traces are sums over a finite set containing the eigenvalues of `A` and `A'`: the term of
   -- `α` is `α` times the rank of the idempotent on the generalised eigenspace for `α`.
   obtain ⟨S, -, hS, hS'⟩ := exists_finset_maxGenEigenspace_eq_bot A A' 0

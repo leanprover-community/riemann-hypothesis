@@ -60,9 +60,10 @@ section EqualRankConstant
 
 open New Matrix WeilData Space Splitting G Gf MulAction Set
 
-variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
-  [DecidableEq m] {s : n → ℤˣ} {s₀ : m → ℤˣ} {W : Space E n s} {W₀ : Space E m s₀}
-  (H : W.Splitting W₀ Unit)
+variable
+  {E n m : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {s : n → ℤˣ} {s₀ : m → ℤˣ} {W : Space E n s} {W₀ : Space E m s₀} (H : W.Splitting W₀ Unit)
 
 /-- Let `D` be left invariant under the radical elements `H'.radicalElement c z` of every splitting
 `H'` of a hyperbolic plane off `W` with complement `W₀`, and let `R` be a set of finite places. For

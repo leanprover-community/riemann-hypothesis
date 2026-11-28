@@ -47,12 +47,14 @@ An automorphism `σ` of `ℂ` over `K` permutes the embeddings `Φ v` of `E = P.
 indexed by the infinite places `v`.
 -/
 
-/-- For an automorphism `σ` of `ℂ` over `K`, the permutation of the infinite places of `E = P.E s`
+/--
+For an automorphism `σ` of `ℂ` over `K`, the permutation of the infinite places of `E = P.E s`
 given by multiplication by the place of the embedding `σ ∘ Φ 1`. Here `Φ v : E →+* ℂ` is the
 embedding over `K` chosen at the place `v`, and the places carry the group structure of
-`Gal(E/K)` (that of `P.Φ s`). -/
-noncomputable def placePerm {P : Parameters} (s : ℕ) (σ : Gal(ℂ/K P)) :
-    Equiv.Perm (NumberField.InfinitePlace (P.E s)) :=
+`Gal(E/K)` (that of `P.Φ s`).
+-/
+noncomputable def placePerm {P : Parameters} (s : ℕ) (σ : Gal(ℂ/K P))
+    : Equiv.Perm (NumberField.InfinitePlace (P.E s)) :=
   Equiv.mulLeft (NumberField.InfinitePlace.mk (RingHom.comp σ (Φ 1)) : P.Φ s)
 
 lemma placePerm_apply {P : Parameters} {s : ℕ} (σ : Gal(ℂ/P.K)) (v : P.Φ s) :
@@ -244,8 +246,10 @@ lemma adjoin_betaKInE_zetaInt_eq_top : adjoin ℤ {P.betaKInE s, P.zetaInt s} = 
 
 /-! ### The generator P'(ζ) and the different of `E` -/
 
-/-- The value at `ζ` of the derivative of the `q₁`-th cyclotomic polynomial, as an element of `𝓞 E`.
-It generates the different of `E/K`. -/
+/--
+The value at `ζ` of the derivative of the `q₁`-th cyclotomic polynomial, as an element of `𝓞 E`.
+It generates the different of `E/K`.
+-/
 abbrev relDifferentGen (P : Parameters) (s : ℕ) : 𝓞 (P.E s) :=
   (cyclotomic (P.q₁ s) (𝓞 (P.E s))).derivative.eval (P.zetaInt s)
 
@@ -323,8 +327,10 @@ lemma exists_unit_mul_relDifferentGen_real :
   · rw [star_prod, ← prod_mul_distrib, prod_eq_one hu]
   · rw [relDifferentGen_eq_prod_sub, ← prod_mul_distrib, star_prod, prod_congr rfl hu_real]
 
-/-- A chosen `c` in `𝓞 E` with `star c * c = 1` such that `c * relDifferentGen` is fixed by
-`star`; see `star_differentGenPhase_mul_self` and `star_differentGenPhase_mul_relDifferentGen`. -/
+/--
+A chosen `c` in `𝓞 E` with `star c * c = 1` such that `c * relDifferentGen` is fixed by
+`star`; see `star_differentGenPhase_mul_self` and `star_differentGenPhase_mul_relDifferentGen`.
+-/
 def differentGenPhase (P : Parameters) (s : ℕ) : 𝓞 (P.E s) :=
   (exists_unit_mul_relDifferentGen_real (P := P) (s := s)).choose
 
@@ -341,9 +347,11 @@ lemma star_differentGenPhase_mul_relDifferentGen :
 lemma isUnit_differentGenPhase : IsUnit (P.differentGenPhase s) :=
   .of_mul_eq_one_right _ star_differentGenPhase_mul_self
 
-/-- The element `c * relDifferentGen * √-d` of `𝓞 E`, where `c = differentGenPhase`; the comments
+/--
+The element `c * relDifferentGen * √-d` of `𝓞 E`, where `c = differentGenPhase`; the comments
 write `ϖ` for it. It is a purely imaginary generator of the different of `E`: see `star_deltaE` and
-`differentIdeal_eq_span_deltaE`. -/
+`differentIdeal_eq_span_deltaE`.
+-/
 def deltaE (P : Parameters) (s : ℕ) : 𝓞 (P.E s) :=
   P.differentGenPhase s * (P.relDifferentGen s * P.sqrtNegDInE s)
 
@@ -416,17 +424,22 @@ variable {P : Parameters} {s p : ℕ}
 
 /-! ### The action on finite places and the Frobenius element -/
 
-/-- The ring endomorphism of `𝓞 E` given by the element `σ_v = galOfPlace s v` of `Gal(E/K)`
-attached to the infinite place `v`. -/
+/--
+The ring endomorphism of `𝓞 E` given by the element `σ_v = galOfPlace s v` of `Gal(E/K)`
+attached to the infinite place `v`.
+-/
 def galOfPlaceInt (v : P.Φ s) : 𝓞 (P.E s) →+* 𝓞 (P.E s) :=
   MulSemiringAction.toRingHom Gal(P.E s/P.K) (𝓞 (P.E s)) (P.galOfPlace s v)
 
 @[simp]
-theorem coe_galOfPlaceInt {v : P.Φ s} (x : 𝓞 (P.E s)) :
-    (galOfPlaceInt v x : P.E s) = P.galOfPlace s v x := rfl
+theorem coe_galOfPlaceInt {v : P.Φ s} (x : 𝓞 (P.E s))
+    : (galOfPlaceInt v x : P.E s) = P.galOfPlace s v x :=
+  rfl
 
-/-- An infinite place `v` acts on the finite places of `E` by pullback along the element
-`galOfPlace s v` of `Gal(E/K)`. -/
+/--
+An infinite place `v` acts on the finite places of `E` by pullback along the element
+`galOfPlace s v` of `Gal(E/K)`.
+-/
 instance : SMul (P.Φ s) (FinPlace (P.E s)) := ⟨(FinPlace.comap <| P.galOfPlace s ·)⟩
 
 /-- An integer `x` of `E` lies in the prime `v • w` if and only if `σ_v x` lies in `w`, where `σ_v`
@@ -435,16 +448,20 @@ is the element of `Gal(E/K)` attached to `v`. -/
 lemma mem_asIdeal_smul_iff {v : P.Φ s} {w : FinPlace (P.E s)} {x : 𝓞 (P.E s)} :
     x ∈ (v • w).asIdeal ↔ galOfPlaceInt v x ∈ w.asIdeal := .rfl
 
-/-- The Frobenius element at the prime `p`: the pair of the place named by the integer `(p/d) p`
+/--
+The Frobenius element at the prime `p`: the pair of the place named by the integer `(p/d) p`
 and the sign `(p/d) = chiK P.d p`. Let `p ∤ q₁ d` be prime and `e = ±1`. Then `(v, e)` is its
 `n`-th power exactly when, modulo a prime above `p`, `galOfPlaceInt v` acts as the `n`-th power of
 Frobenius, composed with complex conjugation if `e = -1`
-(`New.Parameters.map_galOfPlaceInt_eq_pow_iff_eq_frobElem_pow`). -/
+(`New.Parameters.map_galOfPlaceInt_eq_pow_iff_eq_frobElem_pow`).
+-/
 @[simp]
 def frobElem (s p : ℕ) : P.Φ s × ℤ := (P.placeOfInt s (chiK P.d p * p), chiK P.d p)
 
-/-- The pair `(c, e)` is the identity of `𝓞 E` with the sign `1`, or complex conjugation with the
-sign `-1`. -/
+/--
+The pair `(c, e)` is the identity of `𝓞 E` with the sign `1`, or complex conjugation with the
+sign `-1`.
+-/
 def IsIdOrConjWithSign (c : 𝓞 (P.E s) ≃+* 𝓞 (P.E s)) (e : ℤ) : Prop :=
   c = RingEquiv.refl (𝓞 (P.E s)) ∧ e = 1 ∨ c = starRingAut ∧ e = -1
 
@@ -472,7 +489,9 @@ lemma ne_two_of_not_dvd_q₁ (hp_not_dvd : ¬p ∣ P.q₁ s) : p ≠ 2 := by
   rintro rfl
   exact hp_not_dvd ((dvd_pow_self 2 s.succ_ne_zero).trans two_pow_dvd_q₁)
 
-variable [hp : Fact p.Prime] {R : Type*} [CommRing R] [CharP R p]
+variable
+  [hp : Fact p.Prime]
+  {R : Type*} [CommRing R] [CharP R p]
   {v : P.Φ s} {w w' : FinPlace (P.E s)} {c : 𝓞 (P.E s) ≃+* 𝓞 (P.E s)} {e : ℤ}
 
 lemma isCoprime_q₀_of_not_dvd (hp_not_dvd : ¬p ∣ P.q₁ s) : IsCoprime (p : ℤ) P.q₀ :=

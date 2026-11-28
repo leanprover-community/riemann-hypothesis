@@ -67,20 +67,26 @@ namespace New.Space.Splitting
 
 open Complex Matrix ENNReal ContinuousLinearMap
 
-variable {E : Type} [Field E] [CMType E] [WeilData E]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
   {n n' n₀ p : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype n₀]
-  [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s' : n' → ℤˣ} {s₀ : n₀ → ℤˣ}
-  {S : Space E n s} {S₀ : Space E n₀ s₀} (D : S.Splitting S₀ p) (T : Space E n' s')
+  [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {s₀ : n₀ → ℤˣ} {S : Space E n s} {S₀ : Space E n₀ s₀}
+  (D : S.Splitting S₀ p) (T : Space E n' s')
   (a b : AutChar E) (f : 𝒮 (S.hom T)) (g : G E s) (γ : U T.J) (x : Matrix n' p E) (h : G E s')
 
-/-- For split S and a rational matrix x, the term θ((ω_{a,b}(g,h)f)[x]) of the theta kernel. Here
-f[x] is the slice (`homSlice`) of f over the maps that send the isotropic frame `D.k` to x. -/
+/--
+For split S and a rational matrix x, the term θ((ω_{a,b}(g,h)f)[x]) of the theta kernel. Here
+f[x] is the slice (`homSlice`) of f over the maps that send the isotropic frame `D.k` to x.
+-/
 noncomputable def thetaTerm : ℂ :=
   θ (S₀.hom T) (D.homSlice T (T.x⁻¹.val * x.map toAdele) (pairWeil S T a b (g, h) f))
 
-/-- The function h ↦ ∑ₓ |thetaTerm(g, x, h) · y(h)|, summed over rational matrices x, has finite
+/--
+The function h ↦ ∑ₓ |thetaTerm(g, x, h) · y(h)|, summed over rational matrices x, has finite
 integral for the measure `T.quotMeasure` of the adelic quotient of U(T). The weight y is an optional
-argument; without it y = 1. -/
+argument; without it y = 1.
+-/
 abbrev HasIntegrableTerms (y : G E s' → ℂ := fun _ : G E s' ↦ 1) : Prop :=
   ∫⁻ h : G E s', ∑' x : Matrix n' p E, ‖D.thetaTerm T a b f g x h * y h‖ₑ ∂T.quotMeasure < ⊤
 
@@ -222,7 +228,6 @@ lemma _root_.New.Space.coordMatrix_mul_natCast_smul_ne_zero {q : Type} [Fintype 
   rw [h_smul, Matrix.mul_smul, Matrix.mul_smul, Ne, (isUnit_natCast_finAdele hd).smul_eq_zero]
   simpa using T.coordMatrix_mul_ne_zero hx 1 hy
 
-
 /-- Let `D` split `S` over `S₀`, let `Ψ` be Schwartz–Bruhat above a set `P` of finite places
 disjoint from its conjugate, and let `v` be a Fock vector whose moments `fockMoment N v` are all
 finite. Suppose that for every y with Ψ y ≠ 0, the product y·c becomes right invertible after a ring
@@ -343,9 +348,11 @@ namespace New.Exchange
 
 open Matrix MeasureTheory Space CompactlyCoherentSpace
 
-variable {E : Type} {n n' : Type} {F : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
-  [DecidableEq n] [Fintype n'] [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ}
-  {μ : NumberField.InfinitePlace E → ℤ} (S : Space E n s) (T : Space E n' s')
+variable
+  {E : Type} {n n' : Type} {F : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {μ : NumberField.InfinitePlace E → ℤ}
+  (S : Space E n s) (T : Space E n' s')
   -- `v` is the real part of a datum: a vector of the Fock model of `Hom(S, T)` at the real places
   {v : Fock.fockSpace (realSigns E (homSigns s s'))} [SemilocalField F]
   {A : Set (FinPlace E)} {φ : Matrix n' n F → ℂ} {π : 𝔸f E →+* F} {U : Set (Matrix n' n F)}
@@ -392,18 +399,23 @@ end
 
 /-! ### A growth bound, and linearity of the theta integral -/
 
-/-- The theta integral over [U(T)] of the datum `localDatum` with real part `v`, the function `Φ`
+/--
+The theta integral over [U(T)] of the datum `localDatum` with real part `v`, the function `Φ`
 at the ramified places `𝔠.ramifiedPlaces` of the split tame character `𝔠`, and the vacuum elsewhere;
 both characters are `rankTwist 𝔠.character⁻¹ n`, that is ν⁻¹υ^⌊n/2⌋ with n = rk S and υ restricted
-to the norm-one ideles. -/
+to the norm-one ideles.
+-/
 noncomputable abbrev thetaLarge
     (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s s'))))
-    (Φ : Matrix n' n (LocProd 𝔠.ramifiedPlaces) → ℂ) : G E s → ℂ :=
+    (Φ : Matrix n' n (LocProd 𝔠.ramifiedPlaces) → ℂ)
+    : G E s → ℂ :=
   thetaIntegral S T (rankTwist 𝔠.character⁻¹ n) (rankTwist 𝔠.character⁻¹ n)
     (localDatum S T v Φ 𝔠.readsAt)
 
-/-- There are B and C with |θ^{S,T}_{α,β}(f)(g,h)| ≤ C·ht(g)^B for all characters α, β and all
-g, h: polynomial growth in g, uniformly in h. -/
+/--
+There are B and C with |θ^{S,T}_{α,β}(f)(g,h)| ≤ C·ht(g)^B for all characters α, β and all
+g, h: polynomial growth in g, uniformly in h.
+-/
 def IsTargetBounded (f : 𝒮 (S.hom T)) : Prop :=
   ∃ (B : ℕ) (C : ℝ), ∀ (α β : AutChar E) (g : G E s) (h : G E s'),
     ‖pairTheta S T α β f (g, h)‖ ≤ C * S.height g ^ B

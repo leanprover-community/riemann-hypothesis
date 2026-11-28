@@ -338,7 +338,8 @@ lemma frameImage_eq_frameImage_one_of_close {g : S.G E} {d : S.Classes} {r : S.R
 variable [HasPrimitiveRoot5040 E]
 
 omit [HasPrimitiveRoot5040 E] in
-/-- **Packing of frames.** Let `E` be a CM field, `𝔰` a shape (`𝔰.ϱ` hyperbolic planes), and `S`
+/--
+**Packing of frames.** Let `E` be a CM field, `𝔰` a shape (`𝔰.ϱ` hyperbolic planes), and `S`
 admissible data of the filling theorem over `E` (`IsAdmissible`), with parameter `b = S.b`. Let
 `n = 𝔰.n`, `R ≥ 1` and `frameBoxRadius = b ^ (37 n)`. The frame is `f = (e₁, …, e_ϱ, z)`, and the
 frame vectors of `x ∈ 𝔰.G₁` are the `x⁻¹ f_a` (`frameVector x a`). Let `A` be a set of rational `γ`,
@@ -348,21 +349,23 @@ place, infimum of `‖s x‖ + 1` over the Bessel subgroup (`besselLength`) at m
 Suppose also that it has frame vectors of norm at most `frameBoxRadius * R` (`frameBox`), and that
 the frame vectors of any two of these points differ by an element of the real subspace `V`. Then the
 images `γ f` (`frameImage`) of the frame take at most `(b ^ (6 n ^ 2) R ^ 2) ^ dim V` values on
-`A`. -/
-theorem encard_image_frameImage_le {c : S.Classes} {y : NumberField.InfinitePlace E → 𝔰.G₁}
-    {R : ℝ} (hR : 1 ≤ R) {A : Set (S.G E)}
+`A`.
+-/
+theorem encard_image_frameImage_le
+    {c : S.Classes} {y : NumberField.InfinitePlace E → 𝔰.G₁} {R : ℝ} (hR : 1 ≤ R)
+    {A : Set (S.G E)}
     (h_over : ∀ γ ∈ A, ∃ (s : S.ResidueGL) (c' : S.Classes), γ ∈ S.termsOver c s c')
     (h_size : ∀ γ ∈ A, ∀ v : NumberField.InfinitePlace E,
       besselLength (((S.ratToInf γ)⁻¹ * y) v) ≤ S.b ^ (6 * 𝔰.n + 2) * R)
     (h_box : ∀ γ ∈ A, ∀ v : NumberField.InfinitePlace E,
       ((S.ratToInf γ)⁻¹ * y) v ∈ frameBox (S.frameBoxRadius * R))
-    {V : Submodule ℝ
-      (NumberField.InfinitePlace E → Fin (𝔰.ϱ + 1) → EuclideanSpace ℂ 𝔰.BesselIndex)}
+    {V : Submodule ℝ (NumberField.InfinitePlace E → Fin (𝔰.ϱ + 1) → EuclideanSpace ℂ 𝔰.BesselIndex)}
     (hV : ∀ γ ∈ A, ∀ γ' ∈ A,
-      (fun v : NumberField.InfinitePlace E ↦ frameVector (((S.ratToInf γ)⁻¹ * y) v)) -
-        (fun v : NumberField.InfinitePlace E ↦ frameVector (((S.ratToInf γ')⁻¹ * y) v)) ∈ V) :
-    ((fun γ : S.G E ↦ frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)) '' A).encard ≤
-      ENNReal.ofReal ((S.b ^ (6 * 𝔰.n ^ 2) * R ^ 2) ^ finrank ℝ V) := by
+      (fun v : NumberField.InfinitePlace E ↦ frameVector (((S.ratToInf γ)⁻¹ * y) v))
+          - (fun v : NumberField.InfinitePlace E ↦ frameVector (((S.ratToInf γ')⁻¹ * y) v))
+        ∈ V)
+    : ((fun γ : S.G E ↦ frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)) '' A).encard
+      ≤ ENNReal.ofReal ((S.b ^ (6 * 𝔰.n ^ 2) * R ^ 2) ^ finrank ℝ V) := by
   -- With `ρ = frameBoxRadius * R`, terms with different frames give points of `V` at distance at
   -- least `(N ρ)⁻¹` (`frameImage_eq_frameImage_one_of_close`) in the ball of radius `2 ρ`;
   -- `encard_le_of_separated` compares volumes.
@@ -378,8 +381,8 @@ theorem encard_image_frameImage_le {c : S.Classes} {y : NumberField.InfinitePlac
     frameImage (p.val : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)
   obtain ⟨u, h_image, h_inj⟩ : ∃ u : Set A, frame '' u = range frame ∧ InjOn frame u :=
     exists_image_eq_injOn_of_subset_range le_rfl
-  let F (γ : S.G E) (v : NumberField.InfinitePlace E) :
-      Fin (𝔰.ϱ + 1) → EuclideanSpace ℂ 𝔰.BesselIndex :=
+  let F (γ : S.G E) (v : NumberField.InfinitePlace E)
+      : Fin (𝔰.ϱ + 1) → EuclideanSpace ℂ 𝔰.BesselIndex :=
     frameVector (((S.ratToInf γ)⁻¹ * y) v)
   let f (p : A) : V := ⟨F γ₀ - F p, hV γ₀ hγ₀ p p.property⟩
   have h_sep : u.Pairwise fun p q ↦ (S.N * ρ)⁻¹ ≤ ‖f p - f q‖ := by
@@ -390,10 +393,11 @@ theorem encard_image_frameImage_le {c : S.Classes} {y : NumberField.InfinitePlac
       h_over q q.property
     -- The inverse of the term `p⁻¹ q` sends `p⁻¹ y` to `q⁻¹ y`, whose frame vectors are close.
     refine frameImage_inv_mul_eq_iff.1 (frameImage_eq_frameImage_one_of_close
-      (termsOver.mul (termsOver.inv hp_over) hq_over) hR
-      (h_box p p.property) (h_size p p.property) fun v a ↦ lt_of_le_of_lt ?_ h_close)
-    have h_point : (S.ratToInf (p.val⁻¹ * q.val) v)⁻¹ * ((S.ratToInf p.val)⁻¹ * y) v =
-        ((S.ratToInf q.val)⁻¹ * y) v := by
+      (termsOver.mul (termsOver.inv hp_over) hq_over) hR (h_box p p.property) (h_size p p.property)
+      fun v a ↦ lt_of_le_of_lt ?_ h_close)
+    have h_point
+        : (S.ratToInf (p.val⁻¹ * q.val) v)⁻¹ * ((S.ratToInf p.val)⁻¹ * y) v
+          = ((S.ratToInf q.val)⁻¹ * y) v := by
       simp [mul_assoc]
     have h_diff : ‖f p - f q‖ = ‖F q - F p‖ := by
       rw [← Submodule.norm_coe, Submodule.coe_sub, ← sub_sub_sub_cancel_left (F p) (F q) (F γ₀)]
@@ -408,23 +412,24 @@ theorem encard_image_frameImage_le {c : S.Classes} {y : NumberField.InfinitePlac
     rw [hρ_eq, frameBoxRadius]
     bound
   have h_ratio : 1 + 2 * (ρ + ρ) / (S.N * ρ)⁻¹ ≤ S.b ^ (6 * 𝔰.n ^ 2) * R ^ 2 :=
-    calc 1 + 2 * (ρ + ρ) / (S.N * ρ)⁻¹ = 1 + 4 * (S.N * ρ ^ 2) := by
-          rw [div_inv_eq_mul]
-          ring
+    calc
+      1 + 2 * (ρ + ρ) / (S.N * ρ)⁻¹ = 1 + 4 * (S.N * ρ ^ 2) := by
+        rw [div_inv_eq_mul]
+        ring
       _ ≤ 5 * (S.b ^ (60 * 𝔰.n) * ρ ^ 2) := by
-          grw [IsAdmissible.N_le]
-          linarith
+        grw [IsAdmissible.N_le]
+        linarith
       _ ≤ S.b * (S.b ^ (60 * 𝔰.n) * ρ ^ 2) := by
-          gcongr
-          linarith
+        gcongr
+        linarith
       _ = S.b ^ (74 * 𝔰.n + 60 * 𝔰.n + 1) * R ^ 2 := by
-          rw [hρ_eq, frameBoxRadius]
-          ring
+        rw [hρ_eq, frameBoxRadius]
+        ring
       _ ≤ S.b ^ (6 * 𝔰.n ^ 2) * R ^ 2 := by
-          gcongr
-          · exact S.one_le_b
-          · have h_large : 23 ≤ 𝔰.n := by linarith [S.ten_pow_five_le_varrho]
-            nlinarith
+        gcongr
+        · exact S.one_le_b
+        · have h_large : 23 ≤ 𝔰.n := by linarith [S.ten_pow_five_le_varrho]
+          nlinarith
   rw [image_eq_range, ← h_image, h_inj.encard_image]
   grw [encard_le_of_separated (inv_pos.2 hNρ) (add_pos hρ hρ).le h_sep h_ball, h_ratio]
 

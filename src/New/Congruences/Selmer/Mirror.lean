@@ -89,15 +89,21 @@ lemma characterModule_eq_zero_of_span {O X : Type*} [CommRing O] [AddCommGroup X
 
 namespace SelmerDatum
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-  {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} {O n ι : Type} [CommRing O] [PadicIntegerRing O ℓ]
-  [Fintype n] [DecidableEq n] (T : SelmerDatum ℓ S₀ g₀ O n) {M N : ℕ} {a : O}
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+  {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} {O n ι : Type}
+  [CommRing O] [PadicIntegerRing O ℓ] [Fintype n] [DecidableEq n]
+  (T : SelmerDatum ℓ S₀ g₀ O n)
+  {M N : ℕ} {a : O}
 
 /-! ### New auxiliary primes -/
 
-/-- The group `U ∩ U^c` of the elements `g` such that `g` and `g^c = conjGal g` lie in the kernel
+/--
+The group `U ∩ U^c` of the elements `g` such that `g` and `g^c = conjGal g` lie in the kernel
 `U = T.reductionKer M N` of the action on `T / ℓ ^ M` and on the `ℓ ^ N`-th roots of unity. It
-contains `H = T.sahGroup` and the inertia groups at auxiliary primes. -/
+contains `H = T.sahGroup` and the inertia groups at auxiliary primes.
+-/
 def reductionKerInfConj (M N : ℕ) : Subgroup Gal(Ω/E) :=
   (T.reductionKer M N).toSubgroup ⊓ (T.reductionKer M N).toSubgroup.comap conjGal
 
@@ -126,7 +132,8 @@ lemma mem_reductionKerInfConj_of_mem_inertiaGroup {P : FinPlace E} (hP : P ∉ S
     T.mem_reductionKer_of_mem_inertiaAbove
       ⟨star P, fun h ↦ hP' (T.subset h), _, hB.conjPlace_star, hτ.conjPlace_conjGal⟩⟩
 
-variable {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {P₀ : FinPlace E} {J : Finset (FinPlace E)}
+variable
+  {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {P₀ : FinPlace E} {J : Finset (FinPlace E)}
   {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)} {i : ι}
 
 /-- Let `γ₀ = (x P₀).1.tameGenerator` be the tame generator at the first prime of `J`. Then `γ₀` and
@@ -257,21 +264,28 @@ lemma exists_apply_pair_eq_nsmul (hN : M < N) (ha : a ∣ ℓ ^ M) {P : FinPlace
   obtain ⟨k, hk⟩ : ∃ k : ℕ, f τ = k • f δ := hδ.exists_apply_eq_nsmul hB hℓ hτ f hf_lc hf_add
   exact ⟨k, Prod.ext_iff.1 hk⟩
 
-/-- The form `Ψ(h, h') = ⟨z(h), y(h')⟩ - ⟨z(h'^c), y(h^c)⟩` attached to functions `z` and `y` on the
+/--
+The form `Ψ(h, h') = ⟨z(h), y(h')⟩ - ⟨z(h'^c), y(h^c)⟩` attached to functions `z` and `y` on the
 Galois group with values in `(O / a) ^ n` and in its character module. The pairing `⟨u, f⟩` is the
-character `t ↦ f (t • u)` of `O`; this is the value of `Ψ(h, h')` at `t`. -/
-def mirrorForm (z : Gal(Ω/E) → n → QuotSpan a) (y : Gal(Ω/E) → CharacterModule (n → QuotSpan a))
-    (t : O) (h h' : Gal(Ω/E)) : AddCircle (1 : ℚ) :=
+character `t ↦ f (t • u)` of `O`; this is the value of `Ψ(h, h')` at `t`.
+-/
+def mirrorForm
+    (z : Gal(Ω/E) → n → QuotSpan a) (y : Gal(Ω/E) → CharacterModule (n → QuotSpan a)) (t : O)
+    (h h' : Gal(Ω/E))
+    : AddCircle (1 : ℚ) :=
   y h' (t • z h) - y (conjGal h) (t • z (conjGal h'))
 
 open scoped Classical in
-/-- The functions `z` with `ev_φ z ∈ ev_γ (Sel^𝔮(J))` modulo `a`. Here `𝔮 = P` is a new prime with
+/--
+The functions `z` with `ev_φ z ∈ ev_γ (Sel^𝔮(J))` modulo `a`. Here `𝔮 = P` is a new prime with
 Frobenius element `φ = l.frob` and tame generator `γ = l.tameGenerator`, `ev_g` (`evalConjPair g`)
 takes the values at `g` and `g^{-c}`, and `Sel^𝔮(J)` is the tied Selmer group with ramification also
-allowed at `𝔮, 𝔮̄`. -/
-abbrev frobInTameImage (J : Finset (FinPlace E))
-    (x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)) (i : ι) (a : O) (P : FinPlace E)
-    (l : AuxPrimeData E (ℓ ^ N)) : Submodule O (Gal(Ω/E) → n → QuotSpan a) :=
+allowed at `𝔮, 𝔮̄`.
+-/
+abbrev frobInTameImage
+    (J : Finset (FinPlace E)) (x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)) (i : ι) (a : O)
+    (P : FinPlace E) (l : AuxPrimeData E (ℓ ^ N))
+    : Submodule O (Gal(Ω/E) → n → QuotSpan a) :=
   ((T.tiedSelmer (insert P J) J x i a).map (evalConjPair l.tameGenerator)).comap
     (evalConjPair l.frob)
 
@@ -658,48 +672,53 @@ lemma mem_conjDualHom_of_apply_eq {hp : IsTiedPrimes ℓ S₀ V W N P₀ J x}
 
 end Steps
 
-/-- The dual Selmer group has length at most the global term of the Selmer datum `T`, the supremum
+/--
+The dual Selmer group has length at most the global term of the Selmer datum `T`, the supremum
 over `b ≠ 0` of the lengths of the modules of Galois equivariant maps from `(O / b) ^ n` to its dual
 twisted by complex conjugation (`globalTerm`). The hypotheses concern a member `z` of the tied
 Selmer group, some value of which has a unit coordinate, and ask that at every new auxiliary prime
 `P` for datum `i` the values of `z` at `φ, φ^{-c}` are the values at `γ, γ^{-c}` of a member of the
 tied Selmer group with ramification also allowed at `P, P̄` (`frobInTameImage`); here `φ` is the
 Frobenius element and `γ` the tame generator at `P`, and `g^{-c} = (conjGal g)⁻¹` is the inverse of
-the conjugate of `g` by complex conjugation. -/
-theorem length_dualSelmer_le (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
-    (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1) (hN : M < N) (ha : a ∣ ℓ ^ M)
-    (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v}) (R : Finset (FinPlace E))
-    {z : Gal(Ω/E) → n → QuotSpan a} (hz : z ∈ T.tiedSelmer J J x i a)
-    (hz_unit : ∃ (g : Gal(Ω/E)) (j : n), IsUnit (z g j))
+the conjugate of `g` by complex conjugation.
+-/
+theorem length_dualSelmer_le
+    (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x) (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1)
+    (hN : M < N) (ha : a ∣ ℓ ^ M) (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v})
+    (R : Finset (FinPlace E))
+    {z : Gal(Ω/E) → n → QuotSpan a}
+    (hz : z ∈ T.tiedSelmer J J x i a) (hz_unit : ∃ (g : Gal(Ω/E)) (j : n), IsUnit (z g j))
     (hz_frobInTameImage : ∀ (P : FinPlace E) (l : AuxPrimeData E (ℓ ^ N)),
-      IsNewAuxiliaryPrime ℓ V S₀ J P₀ x i P l →
-      z ∈ T.frobInTameImage J x i a P l) :
-    length O (T.dualSelmer hp hV hN ha A R) ≤ T.globalTerm := by
-  have hz_coc : ∀ g g' : Gal(Ω/E), z (g * g') = z g + T.ρ g • z g' :=
-    (mem_selmerModule_iff.1 hz).1
+      IsNewAuxiliaryPrime ℓ V S₀ J P₀ x i P l → z ∈ T.frobInTameImage J x i a P l)
+    : length O (T.dualSelmer hp hV hN ha A R) ≤ T.globalTerm := by
+  have hz_coc : ∀ g g' : Gal(Ω/E), z (g * g') = z g + T.ρ g • z g' := (mem_selmerModule_iff.1 hz).1
   have h_span : Submodule.span O (z '' T.sahGroup) = ⊤ :=
     span_image_sahGroup_eq_top hz_coc (T.apply_γ_eq_zero hz) hz_unit
-  have h_map (y : T.dualSelmer hp hV hN ha A R) :
-      ∃ η : (n → QuotSpan a) →ₗ[O] CharacterModule (n → QuotSpan a),
-        ∀ h ∈ T.sahGroup, η (z h) = y.val (conjGal h) :=
+  have h_map (y : T.dualSelmer hp hV hN ha A R)
+      : ∃ η : (n → QuotSpan a) →ₗ[O] CharacterModule (n → QuotSpan a), ∀ h ∈ T.sahGroup,
+        η (z h) = y.val (conjGal h) :=
     exists_linearMap_apply_eq_dualSelmer_conj y.property hz hz_frobInTameImage h_span
   choose η hη using h_map
-  let Φ : T.dualSelmer hp hV hN ha A R →ₗ[O] conjDualHom ℓ T.ρ a :=
-    { toFun y := ⟨η y, mem_conjDualHom_of_apply_eq y.property hz_coc h_span (hη y)⟩
-      map_add' y y' := Subtype.ext <| LinearMap.ext_on h_span <|
+  let Φ : T.dualSelmer hp hV hN ha A R →ₗ[O] conjDualHom ℓ T.ρ a := {
+    toFun y := ⟨η y, mem_conjDualHom_of_apply_eq y.property hz_coc h_span (hη y)⟩
+    map_add' y y' :=
+      Subtype.ext <| LinearMap.ext_on h_span <|
         Set.forall_mem_image.2 fun h hh ↦ by simp [hη _ h hh]
-      map_smul' t y := Subtype.ext <| LinearMap.ext_on h_span <|
-        Set.forall_mem_image.2 fun h hh ↦ by simp [hη _ h hh] }
+    map_smul' t y :=
+      Subtype.ext <| LinearMap.ext_on h_span <|
+        Set.forall_mem_image.2 fun h hh ↦ by simp [hη _ h hh]
+  }
   -- If `η y = 0`, then `y` vanishes on `T.sahGroup`, so `y = 0`.
   have hΦ : Function.Injective Φ := by
     refine (injective_iff_map_eq_zero Φ).2 fun y hy ↦
       Subtype.ext (eq_zero_of_mem_dualSelmer_of_forall_sahGroup y.property fun h hh ↦ ?_)
     rw [← conjGal_conjGal h, ← hη y _ (conjGal_mem_sahGroup hh),
       show η y = 0 from congrArg Subtype.val hy, LinearMap.zero_apply]
-  calc length O (T.dualSelmer hp hV hN ha A R) ≤ length O (conjDualHom ℓ T.ρ a) :=
-        length_le_of_injective Φ hΦ
+  calc
+    length O (T.dualSelmer hp hV hN ha A R)
+      ≤ length O (conjDualHom ℓ T.ρ a) := length_le_of_injective Φ hΦ
     _ ≤ ⨆ (b : O) (_ : b ≠ 0), length O (conjDualHom ℓ T.ρ b) :=
-        le_iSup₂_of_le a (ne_zero_of_dvd_ne_zero (NeZero.ne _) ha) le_rfl
+      le_iSup₂_of_le a (ne_zero_of_dvd_ne_zero (NeZero.ne _) ha) le_rfl
     _ = T.globalTerm := rfl
 
 end SelmerDatum

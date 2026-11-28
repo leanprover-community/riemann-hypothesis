@@ -44,14 +44,16 @@ See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 namespace New.Floors.Gauge
 
 open Matrix MeasureTheory BesselIndex ENNReal Fintype FloorGroups ProbabilityTheory Size Set
-  PlaceData U
-  Place Finset
+  PlaceData U Place Finset
 
-variable {A ι : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  {𝔰 : Shape} [Fintype ι] [DecidableEq ι] {m j : ℕ}
-  {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
-  {F : PlaceData ι T m} (Γ : Gauge F) {x t q : T.G} {b : Fin 𝔰.n} (a : Fin 𝔰.ϱ) {k : T.G → T.G → ℂ}
-  {d : T.G} {p : ℕ → Aˣ}
+variable
+  {A ι : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  {𝔰 : Shape} [Fintype ι] [DecidableEq ι]
+  {m j : ℕ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
+  {F : PlaceData ι T m} (Γ : Gauge F)
+  {x t q : T.G} {b : Fin 𝔰.n}
+  (a : Fin 𝔰.ϱ)
+  {k : T.G → T.G → ℂ} {d : T.G} {p : ℕ → Aˣ}
 
 /-! ### Masses on the floors and Fourier kernels -/
 

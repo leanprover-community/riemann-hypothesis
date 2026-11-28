@@ -65,8 +65,10 @@ lemma exists_isCoprime_mul_of_not_irreducible {F : Type} [Field F] {R : F[X]} (h
 
 namespace Space
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  (V : Space E n s) {B : ℕ} {k : GInf E s → ℂ}
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} (V : Space E n s)
+  {B : ℕ} {k : GInf E s → ℂ}
 
 /-- Let `γ` be a rational point of the space `V`, embedded by `V.ratEmbed` in the adelic group, and
 `x` an adelic point. At a finite place `w`, the characteristic polynomial of the component of
@@ -124,13 +126,15 @@ lemma integrable_tsum_polyTerm (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCusp
   exact .of_bound (V.measurable_tsum_polyTerm he.continuous.measurable φ S).aestronglyMeasurable D
     (.of_forall fun x ↦ hD x S)
 
-/-- The part of the geometric side given by the polynomials in `S`: the integral over `[G]` of the
+/--
+The part of the geometric side given by the polynomials in `S`: the integral over `[G]` of the
 sum of the values of `k ⊗ φ` at `x⁻¹ γ x`, over the rational points `γ` whose characteristic
 polynomial lies in `S`. Here `k` is a cusp kernel of order `B ≥ 13 * card n ^ 3`, so the sum is
 integrable. It is a linear form in the test function `φ : TestFunction (Gf E n)`, which has an
-underlying function `φ.1 : Gf E n → ℂ`. -/
-def geometricSide (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKernel B k) (S : Set E[X]) :
-    TestFunction (Gf E n) →ₗ[ℂ] ℂ where
+underlying function `φ.1 : Gf E n → ℂ`.
+-/
+def geometricSide (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKernel B k) (S : Set E[X])
+    : TestFunction (Gf E n) →ₗ[ℂ] ℂ where
   toFun φ := ∫ x : G E s, ∑' γ : U V.J, V.polyTerm k φ S γ x ∂V.quotMeasure
   map_add' φ ψ := by
     rw [← integral_add (V.integrable_tsum_polyTerm hB he φ S)
@@ -138,8 +142,7 @@ def geometricSide (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKernel B k) (
     congr with x
     rw [← (V.summable_polyTerm hB φ he.decay S x).tsum_add (V.summable_polyTerm hB ψ he.decay S x)]
     simp [kernelTerm, mul_add]
-  map_smul' c φ := by
-    simp [← integral_const_mul, ← tsum_mul_left, kernelTerm, mul_left_comm _ c]
+  map_smul' c φ := by simp [← integral_const_mul, ← tsum_mul_left, kernelTerm, mul_left_comm _ c]
 
 /-- The value of the linear form `geometricSide` at `φ`, as an integral over `[G]`. -/
 lemma geometricSide_apply (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKernel B k)
@@ -161,24 +164,27 @@ lemma geometricSide_coe_finset (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCusp
   rw [← Summable.tsum_finsetSum fun R _ ↦ V.summable_polyTerm hB φ he.decay {R} x]
   exact tsum_congr fun γ ↦ by simp [kernelTerm, Set.indicator_apply]
 
-/-- Let `V` be a hermitian space with a point over the CM field `E`, and let `φ` be a test function
+/--
+Let `V` be a hermitian space with a point over the CM field `E`, and let `φ` be a test function
 on `G_f`. Let `k` be a cusp kernel of order `B ≥ 13 * card n ^ 3` on `G_∞`: a minimal idempotent for
 which `‖x‖^(B+1) k(x)` is integrable, `‖x‖^B k(x)` is bounded, and `α ∗ k = k` for some continuous
 compactly supported `α`. The geometric side, which is the integral over `[G]` of the sum of the
 values of `k ⊗ φ` at `x⁻¹ γ x` over all rational points `γ`, is the convergent sum over the
-polynomials `R` of its parts given by the `γ` with characteristic polynomial `R`. -/
-theorem hasSum_geometricSide (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKernel B k)
-    (φ : TestFunction (Gf E n)) :
-    HasSum (fun R : E[X] ↦ V.geometricSide hB he {R} φ) (V.geometricSide hB he .univ φ) := by
+polynomials `R` of its parts given by the `γ` with characteristic polynomial `R`.
+-/
+theorem hasSum_geometricSide
+    (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKernel B k) (φ : TestFunction (Gf E n))
+    : HasSum (fun R : E[X] ↦ V.geometricSide hB he {R} φ) (V.geometricSide hB he .univ φ) := by
   classical
   -- Let `F` increase through the finite sets of polynomials. The sums over the `γ` with
   -- polynomial in `F` converge at each point and are uniformly bounded.
   have : Countable E[X] := (AddMonoidAlgebra.coeff_injective.comp Function.injective_id).countable
-  have h_pointwise (x : G E s) :
-      Tendsto (fun F : Finset E[X] ↦ ∑' γ : U V.J, V.polyTerm k φ F γ x) atTop
-        (𝓝 (∑' γ : U V.J, V.polyTerm k φ .univ γ x)) := by
+  have h_pointwise (x : G E s) : Tendsto
+      (fun F : Finset E[X] ↦ ∑' γ : U V.J, V.polyTerm k φ F γ x)
+      atTop (𝓝 (∑' γ : U V.J, V.polyTerm k φ .univ γ x)) := by
     refine tendsto_tsum_of_dominated_convergence (V.summable_polyTerm hB φ he.decay .univ x).norm
-      (fun γ ↦ tendsto_const_nhds.congr' ?_) (.of_forall fun F γ ↦ ?_)
+      (fun γ ↦ tendsto_const_nhds.congr' ?_)
+      (.of_forall fun F γ ↦ ?_)
     · filter_upwards [eventually_finset_mem_atTop (γ : Matrix n n E).charpoly] with F hF
       simp [kernelTerm, hF]
     · -- Each term is dominated by the term for the set of all polynomials.
@@ -186,8 +192,9 @@ theorem hasSum_geometricSide (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKe
       gcongr
       exact norm_indicator_le_of_subset (Set.subset_univ _) 1 _
   obtain ⟨D, hD⟩ := V.exists_norm_tsum_polyTerm_le hB φ he
-  have h_limit : Tendsto (fun F : Finset E[X] ↦ V.geometricSide hB he F φ) atTop
-      (𝓝 (V.geometricSide hB he .univ φ)) :=
+  have h_limit : Tendsto
+      (fun F : Finset E[X] ↦ V.geometricSide hB he F φ)
+      atTop (𝓝 (V.geometricSide hB he .univ φ)) :=
     tendsto_integral_filter_of_norm_le_const
       (.of_forall fun F ↦ (V.integrable_tsum_polyTerm hB he φ F).aestronglyMeasurable)
       ⟨D, .of_forall fun F ↦ .of_forall fun x ↦ hD x F⟩ (.of_forall h_pointwise)
@@ -229,40 +236,44 @@ lemma geometricSide_singleton_eq_zero_of_forall (hB : 13 * Fintype.card n ^ 3 �
     · simp [kernelTerm, hγ]
   simp [geometricSide_apply, h_term]
 
-/-- Let `k` be a cusp kernel of order `B ≥ 13 * card n ^ 3`. Let the test function `φ` be cuspidal
+/--
+Let `k` be a cusp kernel of order `B ≥ 13 * card n ^ 3`. Let the test function `φ` be cuspidal
 at the split place `w` (the sums of its translates over the unipotent radicals of the proper
 parabolic subgroups over the residue field vanish), and let each point of the support of `φ` be
 integral at `w'` with `0` a simple root of its characteristic polynomial modulo `w'`
 (`HasSimpleZero`). If the polynomial `R` is not irreducible, then the part of the geometric side
 given by `R`, the integral of the sum over the rational points with characteristic polynomial `R`,
-is `0`. -/
-theorem geometricSide_singleton_eq_zero (hB : 13 * Fintype.card n ^ 3 ≤ B)
-    (hk : IsCuspKernel B k) {w w' : FinPlace E} {hw : w.IsSplit} {φ : TestFunction (Gf E n)}
-    (h_cusp : IsCuspidalAt hw φ)
-    (h_supp : ∀ g : Gf E n, φ.val g ≠ 0 → HasSimpleZero (g.atPlace w')) {R : E[X]}
-    (hR : ¬Irreducible R) : V.geometricSide hB hk {R} φ = 0 := by
+is `0`.
+-/
+theorem geometricSide_singleton_eq_zero
+    (hB : 13 * Fintype.card n ^ 3 ≤ B) (hk : IsCuspKernel B k)
+    {w w' : FinPlace E} {hw : w.IsSplit} {φ : TestFunction (Gf E n)}
+    (h_cusp : IsCuspidalAt hw φ) (h_supp : ∀ g : Gf E n, φ.val g ≠ 0 → HasSimpleZero (g.atPlace w'))
+    {R : E[X]} (hR : ¬ Irreducible R)
+    : V.geometricSide hB hk {R} φ = 0 := by
   by_contra h_ne
   -- Some point of the support has the image of `R` as its polynomial at `w'`.
   -- Hence `R` is not a proper power.
-  obtain ⟨y, hy_charpoly, hy_ne⟩ : ∃ y : Gf E n,
-      (y.atPlace w').val.charpoly = R.map (algebraMap E (LocField w')) ∧ φ.val y ≠ 0 := by
+  obtain ⟨y, hy_charpoly, hy_ne⟩
+      : ∃ y : Gf E n,
+        (y.atPlace w').val.charpoly = R.map (algebraMap E (LocField w')) ∧ φ.val y ≠ 0 := by
     by_contra! h_zero
     exact h_ne (V.geometricSide_singleton_eq_zero_of_forall hB hk w' h_zero)
-  have h_monic : R.Monic := monic_map_iff.1 <| by
-    simpa only [hy_charpoly] using charpoly_monic (y.atPlace w' : Matrix n n (LocField w'))
+  have h_monic : R.Monic :=
+    monic_map_iff.1 <| by
+      simpa only [hy_charpoly] using charpoly_monic (y.atPlace w' : Matrix n n (LocField w'))
   have h_pow (Q : E[X]) (j : ℕ) (hj : 1 < j) : R ≠ Q ^ j := fun hQ ↦
     (h_supp y hy_ne).charpoly_ne_pow (Q.map (algebraMap E _)) hj (by simp [hy_charpoly, hQ])
-  obtain ⟨A, C, h_coprime, hA, hC, rfl⟩ :=
-    exists_isCoprime_mul_of_not_irreducible h_monic hR h_pow
+  obtain ⟨A, C, h_coprime, hA, hC, rfl⟩ := exists_isCoprime_mul_of_not_irreducible h_monic hR h_pow
   -- The part of `R = A * C` is an invariant linear form that only sees the fibre of `R` at `w`.
   set f : E →+* LocField w := algebraMap E (LocField w)
-  have h_fibre (ψ : TestFunction (Gf E n))
-      (h_zero : ∀ y : Gf E n, (y.atPlace w).val.charpoly = A.map f * C.map f → ψ.val y = 0) :
-      V.geometricSide hB hk {A * C} ψ = 0 :=
+  have h_fibre
+      (ψ : TestFunction (Gf E n))
+      (h_zero : ∀ y : Gf E n, (y.atPlace w).val.charpoly = A.map f * C.map f → ψ.val y = 0)
+      : V.geometricSide hB hk {A * C} ψ = 0 :=
     V.geometricSide_singleton_eq_zero_of_forall hB hk w (by rwa [Polynomial.map_mul])
-  exact h_ne (eq_zero_of_coprime_factors hw (h_coprime.map (mapRingHom f))
-    (mt (isUnit_map f).1 hA) (mt (isUnit_map f).1 hC) _ (V.geometricSide_translate hB hk _)
-    h_fibre h_cusp)
+  exact h_ne (eq_zero_of_coprime_factors hw (h_coprime.map (mapRingHom f)) (mt (isUnit_map f).1 hA)
+    (mt (isUnit_map f).1 hC) _ (V.geometricSide_translate hB hk _) h_fibre h_cusp)
 
 end Space
 

@@ -64,7 +64,8 @@ end Basis
 
 section Gram
 
-variable {W H S : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [Module.Finite ℂ W]
+variable
+  {W H S : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [Module.Finite ℂ W]
   [NormedAddCommGroup H] [InnerProductSpace ℂ H] [Fintype S] [DecidableEq S]
 
 /-- For a linear map `u` and a family `x` of `dim W` vectors of `W`, the Gram determinant of

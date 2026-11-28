@@ -87,32 +87,41 @@ section FilteredColimits
 open CategoryTheory Limits Function Functor AddCommGrpCat MorphismProperty colimit Arrow
   LongExactSeq H Comparison
 
-variable {C : Type 1} [Category C] {F : AbFunctor C}
-  {J : Type} [SmallCategory.{0} J] [IsFiltered J] {D : Jᵒᵖ ⥤ C ⥤ Type 1} {T : Type*} [Category* T]
+variable
+  {C : Type 1} [Category C]
+  {F : AbFunctor C} {J : Type} [SmallCategory.{0} J] [IsFiltered J]
+  {D : Jᵒᵖ ⥤ C ⥤ Type 1} {T : Type*} [Category* T]
 
-/-- A cocone of abelian groups is a filtered colimit elementwise: an element mapping to 0 in the
-vertex dies at a later stage, and every element of the vertex comes from some stage. -/
+/--
+A cocone of abelian groups is a filtered colimit elementwise: an element mapping to 0 in the
+vertex dies at a later stage, and every element of the vertex comes from some stage.
+-/
 def IsFilteredColimit {X : J ⥤ Ab} (c : Cocone X) : Prop :=
-  (∀ (j : J) (x : X.obj j), c.ι j x = 0 → ∃ i : J, ∃ f : j ⟶ i, X.map f x = 0) ∧
-  ∀ y : c.pt, ∃ (j : J) (x : X.obj j), c.ι j x = y
+  (∀ (j : J) (x : X.obj j), c.ι j x = 0 → ∃ i : J, ∃ f : j ⟶ i, X.map f x = 0)
+    ∧ ∀ y : c.pt, ∃ (j : J) (x : X.obj j), c.ι j x = y
 
 -- Built by hand rather than from Mathlib's `extFunctor`, with which the kernel check of
 -- `ContinuousUpTo.of_cech` is much heavier.
-/-- The contravariant functor sending Φ: T → (functors from C to abelian groups) to the
+/--
+The contravariant functor sending Φ: T → (functors from C to abelian groups) to the
 contravariant functor t ↦ Ext^n(Φ(t),F) from T to abelian groups. For Φ = `freeAb` its value
-`(cohomologyFunctor F n).obj ⟨freeAb⟩` is Y ↦ Hⁿ(Y) = Ext^n(ℤ[Y],F). -/
+`(cohomologyFunctor F n).obj ⟨freeAb⟩` is Y ↦ Hⁿ(Y) = Ext^n(ℤ[Y],F).
+-/
 abbrev cohomologyFunctor (F : AbFunctor C) (n : ℕ) : (T ⥤ AbFunctor C)ᵒᵖ ⥤ Tᵒᵖ ⥤ AddCommGrpCat :=
-  opHom T (AbFunctor C) ⋙ (whiskeringRight (Tᵒᵖ) ((AbFunctor C)ᵒᵖ) AddCommGrpCat).obj
-    { obj N := .of (H N.unop F n)
-      map α := ofHom (map F α.unop n)
-      map_id _ := ext H.map_id
-      map_comp _ _ := ext (map_comp _ _) }
+  opHom T (AbFunctor C) ⋙ (whiskeringRight (Tᵒᵖ) ((AbFunctor C)ᵒᵖ) AddCommGrpCat).obj {
+    obj N := .of (H N.unop F n)
+    map α := ofHom (map F α.unop n)
+    map_id _ := ext H.map_id
+    map_comp _ _ := ext (map_comp _ _)
+  }
 
-/-- Continuity of cohomology up to a level. For a cone `c` over a cofiltered system `D j` of
+/--
+Continuity of cohomology up to a level. For a cone `c` over a cofiltered system `D j` of
 set-valued functors, `ContinuousUpTo F c : ℕ → Prop` is a predicate on the level `r`:
 `ContinuousUpTo F c r` says that the canonical maps colim_j Extⁿ(ℤ[D j], F) → Extⁿ(ℤ[c.pt], F)
 satisfy the first `r` of the conditions of `New.Variety.BijectiveUpTo` (injective in degree 0,
-surjective in degree 0, injective in degree 1, …). -/
+surjective in degree 0, injective in degree 1, …).
+-/
 def ContinuousUpTo (F : AbFunctor C) (c : Cone D) : ℕ → Prop :=
   BijectiveUpTo fun n : ℕ ↦
     desc _ (((cohomologyFunctor F n).obj ⟨freeAb⟩).mapCocone (coconeRightOpOfCone c))
@@ -247,9 +256,11 @@ section AcyclicTests
 open CategoryTheory Limits colimit Concrete Function Abelian.Ext LocallyConstant PrimeSpectrum
   Comparison ULift IsFiltered
 
-variable {Λ : Ab} {J : Type _}
-  {B B' : CommRingCat} {T T' : TestRing ⥤ Type 1} (q : T ⟶ testIncl ⋙ reprBy B)
-  {q' : T' ⟶ testIncl ⋙ reprBy B'} [SmallCategory J] [IsFiltered J] {L : J ⥤ CommRingCat}
+variable
+  {Λ : Ab} {J : Type _} {B B' : CommRingCat} {T T' : TestRing ⥤ Type 1}
+  (q : T ⟶ testIncl ⋙ reprBy B)
+  {q' : T' ⟶ testIncl ⋙ reprBy B'} [SmallCategory J] [IsFiltered J]
+  {L : J ⥤ CommRingCat}
 
 /-- Locally constant `Λ`-valued functions on the prime spectrum commute with filtered colimits of
 rings: if the cocone `c` of rings over `L` is a colimit on elements (every element of `c.pt` comes
@@ -288,16 +299,21 @@ lemma isFilteredColimit_locConstSpec {c : Cocone L}
     obtain ⟨j, x, rfl⟩ := colimit_exists_rep _ z
     exact ⟨j, x, by simpa using hz⟩
 
-/-- For q: T → h_B on test rings, the map from locally constant functions Spec B → Λ to
-Hⁿ(T, Λ): pull-back along q for n = 0, zero for n > 0. -/
+/--
+For q: T → h_B on test rings, the map from locally constant functions Spec B → Λ to
+Hⁿ(T, Λ): pull-back along q for n = 0, zero for n > 0.
+-/
 noncomputable def locConstClass : ∀ n : ℕ, locConstSpec Λ B →+ H (freeAb T) (locConstCoeff Λ) n
-  | 0 => (AddMonoidHom.mk' (mk₀ (X := freeAb T) (Y := locConstCoeff Λ)) mk₀_add).comp
+  | 0 =>
+    (AddMonoidHom.mk' (mk₀ (X := freeAb T) (Y := locConstCoeff Λ)) mk₀_add).comp
       ((homOfValue ⟨testIncl, 𝟙 (testIncl ⋙ liftCoeff (locConstSpec Λ))⟩ q).comp
         (AddMonoidHom.mk' up (by tauto)))
   | _ => 0
 
-/-- Property of q: T → h_B on tests: pull-back of locally constant functions Spec B → Λ is a
-bijection onto H⁰(T, Λ), and Hⁿ(T, Λ) = 0 for n > 0 (there `locConstClass` is zero and onto). -/
+/--
+Property of q: T → h_B on tests: pull-back of locally constant functions Spec B → Λ is a
+bijection onto H⁰(T, Λ), and Hⁿ(T, Λ) = 0 for n > 0 (there `locConstClass` is zero and onto).
+-/
 def IsAcyclicOver (Λ : Ab) : Prop :=
   Function.Injective (locConstClass (Λ := Λ) q 0) ∧ ∀ n : ℕ, Surjective (locConstClass (Λ := Λ) q n)
 
@@ -407,8 +423,10 @@ lemma IsAcyclicOver.of_bijective (hB : IsTest B) (hq : ∀ {C : TestRing}, Bijec
   | zero => exact h_zero.surjective
   | succ n => exact fun x ↦ ⟨0, (h_van n).elim _ x⟩ -- the target group is trivial
 
-/-- The functor restricting a set-valued functor on commutative rings to the full subcategory of
-test rings, by precomposition with the inclusion. -/
+/--
+The functor restricting a set-valued functor on commutative rings to the full subcategory of
+test rings, by precomposition with the inclusion.
+-/
 abbrev onTests : (CommRingCat ⥤ Type 1) ⥤ TestRing ⥤ Type 1 := restrictAlong (D := Type 1) testIncl
 
 /-- Let `L` be a filtered diagram of test rings A_j, and A its colimit as a ring (a test ring by
@@ -485,28 +503,37 @@ variable (B : Type _) {W V J : Type} [CommRing B] [CommRing W] [CommRing V] (g :
 
 namespace New.Variety.Envelope
 
-/-- x solves equation number o with coefficients a.
+/--
+x solves equation number o with coefficients a.
 * o = 0: x is idempotent, a₀ ∣ xa₁ and a₁ ∣ (1 − x)a₀.
 * o = 1: a₀ⁿ ∣ a_{n+1} − x for all n.
-* o = n + 2: Σ_{k<n} a_k x^k = 0. -/
+* o = n + 2: Σ_{k<n} a_k x^k = 0.
+-/
 def IsSolution (a : ℕ → V) (x : V) : ℕ → Prop
   | 0 => IsIdempotentElem x ∧ a 0 ∣ x * a 1 ∧ a 1 ∣ (1 - x) * a 0
   | 1 => ∀ n : ℕ, a 0 ^ n ∣ a (n + 1) - x
   | n + 2 => ∑ k ∈ Finset.range n, a k * x ^ k = 0
 
-/-- Formal names for solutions over B: a term is an equation number o with a sequence of
-coefficients, each a polynomial over B in finitely many earlier terms. -/
+/--
+Formal names for solutions over B: a term is an equation number o with a sequence of
+coefficients, each a polynomial over B in finitely many earlier terms.
+-/
 inductive SolutionName
-  /-- Builds a solution name from an equation number `o` and, for each `k`, a polynomial `P k` over
-  `B` in `n k` variables together with the `n k` solution names `t k` substituted into it. -/
-  | op (o : ℕ) (n : ℕ → ℕ) (P : ∀ k : ℕ, MvPolynomial (Fin (n k)) B)
-      (t : ∀ k : ℕ, Fin (n k) → SolutionName)
+  /--
+  Builds a solution name from an equation number `o` and, for each `k`, a polynomial `P k` over
+  `B` in `n k` variables together with the `n k` solution names `t k` substituted into it.
+  -/
+  | op
+    (o : ℕ)
+    (n : ℕ → ℕ) (P : ∀ k : ℕ, MvPolynomial (Fin (n k)) B) (t : ∀ k : ℕ, Fin (n k) → SolutionName)
 
-/-- g: W → V is injective, and every equation `New.Variety.Envelope.IsSolution` with coefficients in
-g(W) that has a solution in V has one in g(W). -/
+/--
+g: W → V is injective, and every equation `New.Variety.Envelope.IsSolution` with coefficients in
+g(W) that has a solution in V has one in g(W).
+-/
 def IsSolutionClosed : Prop :=
-  (⇑g).Injective ∧
-  ∀ (o : ℕ) (a : ℕ → W), (∃ x : V, IsSolution (g ∘ a) x o) → ∃ x : W, IsSolution (g ∘ a) (g x) o
+  (⇑g).Injective
+    ∧ ∀ (o : ℕ) (a : ℕ → W), (∃ x : V, IsSolution (g ∘ a) x o) → ∃ x : W, IsSolution (g ∘ a) (g x) o
 
 variable {B g}
 
@@ -615,11 +642,14 @@ namespace New.Variety
 
 open CategoryTheory CommRingCat IsLocalization Ideal Quotient
 
-variable {X Y W V : PointFunctor} {p : X ⟶ Y} {u : W ⟶ Y} {q : V ⟶ W} {v : V ⟶ X} {R : CommRingCat}
+variable
+  {X Y W V : PointFunctor} {p : X ⟶ Y} {u : W ⟶ Y} {q : V ⟶ W} {v : V ⟶ X} {R : CommRingCat}
   (s : X ⟶ reprBy R) (I : Set R)
 
-/-- The property of a map X → Y of set-valued functors on rings that its pull-back along every
-point h_A → Y is representable, of the form h_B → h_A. -/
+/--
+The property of a map X → Y of set-valued functors on rings that its pull-back along every
+point h_A → Y is representable, of the form h_B → h_A.
+-/
 abbrev IsRelAffine : MorphismProperty PointFunctor := reprFunctor.relativelyRepresentable
 
 /-- Relative representability is stable under pull-back: if `p : X ⟶ Y` is relatively
@@ -728,56 +758,64 @@ lemma baseChangeOf.ext {A R : CommRingCat} {s : X ⟶ reprBy R} {φ : R ⟶ A} {
   exact Subtype.ext
     (Prod.ext h_pt (ULift.down_injective (CommRingCat.hom_ext (RingHom.ext h_hom))))
 
-
-/-- For s: X → Y, the base change functor from functors over Y to functors over X, sending E → Y
-to X ×_Y E → X. -/
+/--
+For s: X → Y, the base change functor from functors over Y to functors over X, sending E → Y
+to X ×_Y E → X.
+-/
 def pullbackOver : Over Y ⥤ Over X where
   obj Z := Over.mk (fiberProd.fst s Z.hom)
   map {Z Z'} f :=
-    homMk
-      { app B := ↾fun x ↦ ⟨(x.val.1, f.left.app B x.val.2), congr(($f.w) B _) ▸ x.property⟩
-        naturality B B' g := by
-          ext x
-          apply Subtype.ext
-          refine Prod.ext rfl ?_
-          change f.left.app B' (Z.left.map g x.val.2) = Z'.left.map g (f.left.app B x.val.2)
-          exact ConcreteCategory.congr_hom (f.left.naturality g) x.val.2 }
+    homMk {
+      app B := ↾fun x ↦ ⟨(x.val.1, f.left.app B x.val.2), congr(($f.w) B _) ▸ x.property⟩
+      naturality B B' g := by
+        ext x
+        apply Subtype.ext
+        refine Prod.ext rfl ?_
+        change f.left.app B' (Z.left.map g x.val.2) = Z'.left.map g (f.left.app B x.val.2)
+        exact ConcreteCategory.congr_hom (f.left.naturality g) x.val.2
+    }
 
 instance pullbackOver_isRightAdjoint : (pullbackOver s).IsRightAdjoint where
-  exists_leftAdjoint :=
-    ⟨_,
-      ⟨(mapPullbackAdj s).ofNatIsoRight
-        (NatIso.ofComponents (fun Z ↦
+  exists_leftAdjoint := ⟨
+    _,
+    ⟨(mapPullbackAdj s).ofNatIsoRight
+      (NatIso.ofComponents
+        (fun Z ↦
           let h := isPullback_fiberProd (u := s) (p := Z.hom)
           isoMk h.isoPullback h.isoPullback_hom_snd)
-          fun {Z Z'} f ↦ OverMorphism.ext (by
+        fun {Z Z'} f ↦
+          OverMorphism.ext (by
             let m : fiberProd s Z.hom ⟶ fiberProd s Z'.hom := ((pullbackOver s).map f).left
             let h := isPullback_fiberProd (u := s) (p := Z.hom)
             let h' := isPullback_fiberProd (u := s) (p := Z'.hom)
-            change m ≫ h'.isoPullback.hom =
-              h.isoPullback.hom ≫
-                pullback.lift (pullback.fst Z.hom s ≫ f.left) (pullback.snd Z.hom s) _
+            change m ≫ h'.isoPullback.hom
+              = h.isoPullback.hom
+                ≫ pullback.lift (pullback.fst Z.hom s ≫ f.left) (pullback.snd Z.hom s) _
             apply pullback.hom_ext
-            · rw [Category.assoc, h'.isoPullback_hom_fst, Category.assoc,
-                pullback.lift_fst, ← Category.assoc, h.isoPullback_hom_fst]
+            · rw [Category.assoc, h'.isoPullback_hom_fst, Category.assoc, pullback.lift_fst,
+                ← Category.assoc, h.isoPullback_hom_fst]
               rfl
-            · rw [Category.assoc, h'.isoPullback_hom_snd, Category.assoc,
-                pullback.lift_snd, h.isoPullback_hom_snd]
-              rfl)).symm⟩⟩
+            · rw [Category.assoc, h'.isoPullback_hom_snd, Category.assoc, pullback.lift_snd,
+                h.isoPullback_hom_snd]
+              rfl)).symm⟩
+  ⟩
 
 /-! ### Continuity and its first consequences -/
 
-/-- Continuity over X: for every filtered inverse system of functors relatively representable
+/--
+Continuity over X: for every filtered inverse system of functors relatively representable
 (affine) over X, the cohomology on test rings with locally constant Λ-valued coefficients of the
-limit is the colimit of the cohomologies. -/
+limit is the colimit of the cohomologies.
+-/
 def IsCohomContinuous (Λ : Ab) (X : PointFunctor) : Prop :=
   ∀ ⦃J : Type⦄ [SmallCategory J] [IsFiltered J] ⦃D : Jᵒᵖ ⥤ Over X⦄ ⦃c : Cone D⦄,
-    IsLimit ((Over.forget X).mapCone c) →
-    (∀ j : Jᵒᵖ, IsRelAffine (D j).hom) →
-    ∀ r : ℕ, ContinuousUpTo (locConstCoeff Λ) ((Over.forget X ⋙ onTests).mapCone c) r
+    IsLimit ((Over.forget X).mapCone c) → (∀ j : Jᵒᵖ, IsRelAffine (D j).hom)
+      → ∀ r : ℕ, ContinuousUpTo (locConstCoeff Λ) ((Over.forget X ⋙ onTests).mapCone c) r
 
-variable {Λ : Ab} {R : CommRingCat} {S : CommRingCat} (s : X ⟶ reprBy R) {T : CommRingCat}
-  {α : Type*} [Preorder α] {V : α → Subfunctor Y} (hV : Antitone V)
+variable
+  {Λ : Ab} {R : CommRingCat} {S : CommRingCat} (s : X ⟶ reprBy R)
+  {T : CommRingCat} {α : Type*} [Preorder α]
+  {V : α → Subfunctor Y} (hV : Antitone V)
 
 /-- If q: X → Y is relatively representable (affine) and Λ-cohomology is continuous over Y, that is,
 turns filtered limits of functors affine over Y into colimits (`New.Variety.IsCohomContinuous`),
@@ -789,11 +827,13 @@ lemma IsCohomContinuous.of_isRelAffine {q : X ⟶ Y} (h : IsRelAffine q)
   -- the same system, seen over `Y` through `q`, is affine over `Y`
   exact hY (c := (map q).mapCone c) hc fun j ↦ (hD j).comp h
 
-/-- For a decreasing family V of subfunctors of Y, the direct system a ↦ H^n(V_a, Λ) with
-restriction maps, computed on test rings with locally constant Λ-valued coefficients. -/
+/--
+For a decreasing family V of subfunctors of Y, the direct system a ↦ H^n(V_a, Λ) with
+restriction maps, computed on test rings with locally constant Λ-valued coefficients.
+-/
 noncomputable abbrev TestCohomology.antitoneFamily (Λ : Ab) (n : ℕ) : α ⥤ AddCommGrpCat :=
-  CategoryTheory.Functor.mk (fun a ↦ Opposite.op (V a).toFunctor)
-    (fun g ↦ (homOfLe (hV g.le)).op) ⋙ onTests.op ⋙ cohomologyFunctor (locConstCoeff Λ) n ⟨freeAb⟩
+  CategoryTheory.Functor.mk (fun a ↦ Opposite.op (V a).toFunctor) (fun g ↦ (homOfLe (hV g.le)).op)
+    ⋙ onTests.op ⋙ cohomologyFunctor (locConstCoeff Λ) n ⟨freeAb⟩
 
 /-- Let V be a decreasing family of subfunctors of Y, indexed by a preorder, whose inclusions are
 relatively representable, and let cohomology be continuous over Y. If D is a filtered diagram of
@@ -817,17 +857,21 @@ lemma IsCohomContinuous.isFilteredColimit_antitoneFamily (hV : Antitone V) {J : 
   exact isFilteredColimit_iff_bijective.mpr
     (allBijective_iff_forall_bijectiveUpTo.mpr (h h_lim fun j ↦ h_rep (D.obj j.unop)) n)
 
-/-- For s: X → h_R, the contravariant functor sending an R-algebra S to the functor X ×_{h_R}
-h_S, forgetting its projection to X. -/
+/--
+For s: X → h_R, the contravariant functor sending an R-algebra S to the functor X ×_{h_R}
+h_S, forgetting its projection to X.
+-/
 def baseChangeFunctor : (Under R)ᵒᵖ ⥤ PointFunctor :=
   ((opEquivOpUnder R).inverse ⋙ Over.post uliftCoyoneda ⋙ pullbackOver s) ⋙ Over.forget X
 
-/-- For X over h_R and a homomorphism f: S → T of R-algebras, the induced map of base changes
-X_T → X_S. -/
-abbrev baseChangeTransition {a : R ⟶ S} {b : R ⟶ T} (f : S ⟶ T) (h : a ≫ f = b) :
-    baseChangeOf s b ⟶ baseChangeOf s a := by
-  change (baseChangeFunctor s).obj (Opposite.op (Under.mk b)) ⟶
-    (baseChangeFunctor s).obj (Opposite.op (Under.mk a))
+/--
+For X over h_R and a homomorphism f: S → T of R-algebras, the induced map of base changes
+X_T → X_S.
+-/
+abbrev baseChangeTransition {a : R ⟶ S} {b : R ⟶ T} (f : S ⟶ T) (h : a ≫ f = b)
+    : baseChangeOf s b ⟶ baseChangeOf s a := by
+  change (baseChangeFunctor s).obj (Opposite.op (Under.mk b))
+    ⟶ (baseChangeFunctor s).obj (Opposite.op (Under.mk a))
   exact (baseChangeFunctor s).map (Under.homMk f h : Under.mk a ⟶ Under.mk b).op
 
 /-- Let s : X → h_R, let Λ-cohomology be continuous over X (`New.Variety.IsCohomContinuous`), let a

@@ -67,7 +67,8 @@ namespace New.Variety
 open CategoryTheory TensorProduct Functor Period AlgebraTensorModule AlgebraicGeometry TotalH
   Function PadicTest Abelian.Ext ConcreteCategory Comparison DirectSum ULift CommRingCat Over
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {M : ModuleCat OFlat} {R : CommRingCat}
   (Ω : Type) [Field.{0} Ω] [Algebra R Ω] [Algebra Ω ℂ_[p]]
 
@@ -152,19 +153,24 @@ lemma PadicTest.bijective_generic_points {Y : Over (Spec R)} [IsProper Y.hom] (c
       Spec.map (ofHom (φ i)) ≫ z.down.left
     rw [(sq i).w_assoc, hx_eq, hl_left]
 
-/-- For a scheme Y over R, the map Y(S) → Y(S[1/p]), natural in the p-adic test S; `he` says that
-R → Ω → ℂ_p agrees with R → O_C → ℂ_p. -/
-noncomputable def toGenericPoints [Algebra R OC]
-    (he : ∀ r : R, algebraMap Ω ℂ_[p] (algebraMap R Ω r) = algebraMap R OC r) (Y : Over (Spec R)) :
-    testPoints Y ⟶ genericTestOver Ω ⋙ ObjectProperty.ι _ ⋙ algPointsOf Ω R Y :=
+/--
+For a scheme Y over R, the map Y(S) → Y(S[1/p]), natural in the p-adic test S; `he` says that
+R → Ω → ℂ_p agrees with R → O_C → ℂ_p.
+-/
+noncomputable def toGenericPoints
+    [Algebra R OC]
+    (he : ∀ r : R, algebraMap Ω ℂ_[p] (algebraMap R Ω r) = algebraMap R OC r) (Y : Over (Spec R))
+    : testPoints Y ⟶ genericTestOver Ω ⋙ ObjectProperty.ι _ ⋙ algPointsOf Ω R Y :=
   whiskerRight (H := genericAlg ⋙ restrictAlg Ω (ℂ_[p]) ⋙ restrictAlg R Ω)
-    { app c :=
+    {
+      app c :=
         CommAlg.homOfRingHom (algebraMap c.ProdRing c.GenericRing) fun r ↦
           (he r ▸ c.genericStructureMap_coe ((algebraMap R OC) r)).symm
       naturality := by
         intros
         ext
-        exact (mapGeneric_algebraMap ..).symm }
+        exact (mapGeneric_algebraMap ..).symm
+    }
     (algPointsOf R R Y)
 
 /-- Let `Ω` be a field in which `ℓ` is invertible and `D` a compared theory on tests over `Ω`
@@ -216,24 +222,29 @@ lemma hasFlatBaseChange_geomPoints (Y : Over (Spec R)) [IsProper Y.hom] :
       (by simpa using! isBijective_algToBaseChange ..)).2
     (hasFlatBaseChange_algPointsOf Ω Y ..)
 
-/-- The functors `S ↦ Hom(O^♭, S^♭)` (maps of `O^♭`-algebras) and `S ↦ Hom(Ω, S[1/p])` (maps of
+/--
+The functors `S ↦ Hom(O^♭, S^♭)` (maps of `O^♭`-algebras) and `S ↦ Hom(Ω, S[1/p])` (maps of
 tests over `Ω`) on `p`-adic tests are isomorphic: each value is a single point, since `O^♭` and
-`Ω` are initial. -/
-noncomputable def tiltReprIsoGenericRepr [IsAbsIntegrallyClosedLocal Ω] :
-    tilt ⋙ reprBy (.of OFlat OFlat) ≅ genericTestOver Ω ⋙ reprBy (.ofSelf Ω) :=
+`Ω` are initial.
+-/
+noncomputable def tiltReprIsoGenericRepr [IsAbsIntegrallyClosedLocal Ω]
+    : tilt ⋙ reprBy (.of OFlat OFlat) ≅ genericTestOver Ω ⋙ reprBy (.ofSelf Ω) :=
   -- at each test there is exactly one map of `O^♭`-algebras out of `O^♭`
   have h_init (A : PadicTest) : Bijective ((toUnit (tilt ⋙ reprBy (.of OFlat OFlat))).app A) :=
     ⟨fun _ _ _ ↦ congrArg ULift.up (CommAlgCat.hom_ext (by ext)), fun _ ↦ ⟨⟨structureMap⟩, rfl⟩⟩
-  isoOfAppBijective _ h_init ≪≫ isoWhiskerLeft _
-    (isoOfAppBijective _ pointMap_ofSelf_bijective).symm
+  isoOfAppBijective _ h_init
+    ≪≫ isoWhiskerLeft _ (isoOfAppBijective _ pointMap_ofSelf_bijective).symm
 
-/-- The locally constant functions on `Spec Ω`, tensored with `O^♭` (`oFlatLocConst` at the test
+/--
+The locally constant functions on `Spec Ω`, tensored with `O^♭` (`oFlatLocConst` at the test
 `Ω`), are `O^♭` itself: on the spectrum of a field the locally constant functions are
-constant. -/
-noncomputable def oFlatLocConstOfSelfIso [IsAbsIntegrallyClosedLocal Ω] :
-    CommAlgCat.of OFlat OFlat ≅ (TestOver.toTest Ω ⋙ oFlatLocConst).obj (.ofSelf Ω) :=
-  CommAlgCat.isoMk (.ofBijective _ (Algebra.TensorProduct.includeLeft_bijective
-    ((bijective_const_of_isDomain (B := .of Ω)).of_comp_left up_injective)))
+constant.
+-/
+noncomputable def oFlatLocConstOfSelfIso [IsAbsIntegrallyClosedLocal Ω]
+    : CommAlgCat.of OFlat OFlat ≅ (TestOver.toTest Ω ⋙ oFlatLocConst).obj (.ofSelf Ω) :=
+  CommAlgCat.isoMk (.ofBijective _
+    (Algebra.TensorProduct.includeLeft_bijective
+      ((bijective_const_of_isDomain (B := .of Ω)).of_comp_left up_injective)))
 
 /-- Primitive comparison. Let `Ω` be algebraically closed with a map to `ℂ_p`, `Y` proper over `R`
 and charted over `Ω` (`IsCharted`), and `M` an `O^♭`-module. Assume `ac`: for each perfect
@@ -380,7 +391,8 @@ open CategoryTheory ModuleCat.Algebra
 
 namespace New.Variety
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {R : CommRingCat} [Algebra R Ω]
   {Y : Over (AlgebraicGeometry.Spec R)} [IsCharted (R := R) Y Ω] [AlgebraicGeometry.IsProper Y.hom]
 
@@ -397,8 +409,10 @@ lemma finite_padic_cohomology (n : ℕ) :
     finite_and_primitive_comparison Ω (isAcyclicOnPerfect_almostCoeff (N := Unit) (by simp)) Y
   exact finite_H_ellAdicCoeff (h_finite_mod_p n)
 
-/-- For `Y` proper over `R` and charted over `Ω`, the `p`-adic cohomology `ℚ_p ⊗ Hⁿ(Y_Ω, ℤ_p)` is
-finite-dimensional over `ℚ_p`. -/
+/--
+For `Y` proper over `R` and charted over `Ω`, the `p`-adic cohomology `ℚ_p ⊗ Hⁿ(Y_Ω, ℤ_p)` is
+finite-dimensional over `ℚ_p`.
+-/
 instance {n : ℕ} : Module.Finite ℚ_[p] (ellAdicCohom R Ω n ⟨Y⟩) :=
   (finite_padic_cohomology n).base_change ℤ_[p] ℚ_[p] _
 

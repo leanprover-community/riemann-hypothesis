@@ -257,22 +257,26 @@ lemma New.Variety.trace_definiteForms_rep_eq_zero_of_isNullHecke {E : Type} [Fie
   exact map_prod_rootCoeffEval_eq_zero h_degree algebraicIndependent_embedding_two_mul h_card L
     h_sum
 
-/-- `φ` is a definite form of level `𝔑` with coefficients in `ξ`, a test vector, and an
-eigenvector of the Hecke operators at the safe places with eigenvalues `θ`. -/
-structure New.Variety.IsTestEigenform {E : Type} [Field E] [CMBase E] {a d₀ : ℕ}
-    [HasQuadSubfield d₀ E] {W : Type} [AddCommGroup W] [Module ℂ W] (𝔑 : 𝓞 E)
-    (ξ : Representation ℂ (GL (Fin a) E) W) (φ : GL (Fin a) (𝔸f E) → W)
-    (θ : SafePlace 𝔑 → ℕ → ℂ) : Prop where
+/--
+`φ` is a definite form of level `𝔑` with coefficients in `ξ`, a test vector, and an
+eigenvector of the Hecke operators at the safe places with eigenvalues `θ`.
+-/
+structure New.Variety.IsTestEigenform
+    {E : Type} [Field E] [CMBase E]
+    {a d₀ : ℕ} [HasQuadSubfield d₀ E]
+    {W : Type} [AddCommGroup W] [Module ℂ W]
+    (𝔑 : 𝓞 E)
+    (ξ : Representation ℂ (GL (Fin a) E) W) (φ : GL (Fin a) (𝔸f E) → W) (θ : SafePlace 𝔑 → ℕ → ℂ)
+    : Prop where
   /-- `φ` is a form on the definite frames. -/
   mem_definiteForms : φ ∈ definiteForms 𝔑 ξ
   /-- `φ` is a test vector at some split places `w₀`, `w₁`, for some type `(J, χ)` at `w₀`. -/
-  exists_isTestVector : ∃ (w₀ w₁ : SplitFinPlace E)
-    (J : Subgroup (GL (Fin a) (LocField w₀.val))) (χ : J →* ℂ),
-    IsTestVector 𝔑 (rightRegular ℂ (GL (Fin a) (𝔸f E)) W) φ w₀ w₁ χ
+  exists_isTestVector
+    : ∃ (w₀ w₁ : SplitFinPlace E) (J : Subgroup (GL (Fin a) (LocField w₀.val))) (χ : J →* ℂ),
+      IsTestVector 𝔑 (rightRegular ℂ (GL (Fin a) (𝔸f E)) W) φ w₀ w₁ χ
   /-- The `j`-th Hecke operator at `w` multiplies `φ` by `θ w j`. -/
-  heckeSum_apply (w : SafePlace 𝔑) (j : ℕ) :
-    (rightRegular ℂ (GL (Fin a) (𝔸f E)) W).asAlgebraHom (heckeSum (Fin a) ℂ w.val j) φ =
-      θ w j • φ
+  heckeSum_apply (w : SafePlace 𝔑) (j : ℕ)
+    : (rightRegular ℂ (GL (Fin a) (𝔸f E)) W).asAlgebraHom (heckeSum (Fin a) ℂ w.val j) φ = θ w j • φ
 
 /-- Let `a` be odd and `𝔑` neat. Suppose the trace of `ξ y⁻¹` at regular `y` is the product over `σ`
 of the values of `q σ` at the eigenvalues of `σ y`, where `q` is the Schur polynomial of `l` at
@@ -480,26 +484,31 @@ lemma New.Variety.apply_eq_ite_comp_eq {E : Type} [Field E] {d₀ : ℕ} [Fact (
   · simp [h_self]
 
 open scoped Classical in
-/-- An extension to `GL (Fin a) E` of the embedding of the unitary group at the infinite places:
-`z` goes to `Φ v z` if `p v` holds, and to the inverse transpose of its conjugate if not. -/
-noncomputable def New.Variety.extendedEmbedding {E : Type} [Field E] [CMType E] {a : ℕ}
-    (p : InfinitePlace E → Prop) : GL (Fin a) E →* InfinitePlace E → GL (Fin a) ℂ :=
-  MonoidHom.mk' (fun z v ↦ if p v then z.map (Φ v) else transposeGL (z⁻¹.map (star (Φ v))))
-    (by simp +contextual [funext_iff, apply_ite, Units.ext_iff])
+/--
+An extension to `GL (Fin a) E` of the embedding of the unitary group at the infinite places:
+`z` goes to `Φ v z` if `p v` holds, and to the inverse transpose of its conjugate if not.
+-/
+noncomputable def New.Variety.extendedEmbedding
+    {E : Type} [Field E] [CMType E] {a : ℕ} (p : InfinitePlace E → Prop)
+    : GL (Fin a) E →* InfinitePlace E → GL (Fin a) ℂ :=
+  MonoidHom.mk' (fun z v ↦ if p v then z.map (Φ v) else transposeGL (z⁻¹.map (star (Φ v)))) (by
+    simp +contextual [funext_iff, apply_ite, Units.ext_iff])
 
-/-- The matrices of weight `κ` along `extendedEmbedding p`, twisted by the `-m`-th power of the
-norm of the determinant. -/
-noncomputable def New.Variety.twistedWeylMatrix {E : Type} [Field E] [CMType E] {a : ℕ}
-    (κ : Weight E) (p : InfinitePlace E → Prop) (m : ℕ) :
-    GL (Fin a) E →* Matrix (WeylIndex (Fin a) κ.1) (WeylIndex (Fin a) κ.1) ℂ where
+/--
+The matrices of weight `κ` along `extendedEmbedding p`, twisted by the `-m`-th power of the
+norm of the determinant.
+-/
+noncomputable def New.Variety.twistedWeylMatrix
+    {E : Type} [Field E] [CMType E] {a : ℕ} (κ : Weight E) (p : InfinitePlace E → Prop) (m : ℕ)
+    : GL (Fin a) E →* Matrix (WeylIndex (Fin a) κ.1) (WeylIndex (Fin a) κ.1) ℂ where
   toFun z := (∏ σ : E →+* ℂ, σ z⁻¹.val.det) ^ m • weylRep κ.1 κ.2 (extendedEmbedding p z)
   map_one' := by simp
   map_mul' := by simp [prod_mul_distrib, smul_smul, mul_pow]
 
 /-- The representation given by the matrices `twistedWeylMatrix κ p m`. -/
-noncomputable def New.Variety.twistedWeylRep {E : Type} [Field E] [CMType E] {a : ℕ}
-    (κ : Weight E) (p : InfinitePlace E → Prop) (m : ℕ) :
-    Representation ℂ (GL (Fin a) E) (WeylIndex (Fin a) κ.1 → ℂ) :=
+noncomputable def New.Variety.twistedWeylRep
+    {E : Type} [Field E] [CMType E] {a : ℕ} (κ : Weight E) (p : InfinitePlace E → Prop) (m : ℕ)
+    : Representation ℂ (GL (Fin a) E) (WeylIndex (Fin a) κ.1 → ℂ) :=
   toLinAlgEquiv'.toMonoidHom.comp (twistedWeylMatrix κ p m)
 
 /-- For unitary `y`, `twistedWeylRep κ p m y` is the action of `ȳ` in weight `κ`. -/
@@ -565,34 +574,45 @@ lemma New.Variety.exists_twistedWeylRep_scalar {E : Type} [Field E] [CMType E] {
     OneHom.coe_mk, p, h_weight, h_twist, smul_smul, h_exponent]
   simp
 
-/-- Let `i` embed the imaginary quadratic field `QuadField d₀` in `E`, and let `s₀` be a complex
+/--
+Let `i` embed the imaginary quadratic field `QuadField d₀` in `E`, and let `s₀` be a complex
 embedding of `QuadField d₀`. The representation `ξ` extends the weight `κ` to `GL (Fin a) E`. The
 centre acts through the exponents `A`, with `A s₀ = μ`. The eigenvalues of the test eigenforms with
 coefficients in `ξ` occur in the weights `z + μ`, for `z` a jump of `κ` at an embedding over `s₀`
-(`New.Variety.OccursInWeight` with the parameter `N + 1`). -/
-structure New.Variety.IsCoefficientSystem {E : Type} [Field E] [CMType E] {a d₀ : ℕ}
-    [HasQuadSubfield d₀ E] (i : QuadField d₀ →+* E) (s₀ : QuadField d₀ →+* ℂ) (κ : Weight E)
-    (ξ : Representation ℂ (GL (Fin a) E) (WeylIndex (Fin a) κ.1 → ℂ)) (μ N : ℕ)
-    (A : (QuadField d₀ →+* ℂ) → ℤ) : Prop where
+(`New.Variety.OccursInWeight` with the parameter `N + 1`).
+-/
+structure New.Variety.IsCoefficientSystem
+    {E : Type} [Field E] [CMType E]
+    {a d₀ : ℕ} [HasQuadSubfield d₀ E]
+    (i : QuadField d₀ →+* E) (s₀ : QuadField d₀ →+* ℂ)
+    (κ : Weight E) (ξ : Representation ℂ (GL (Fin a) E) (WeylIndex (Fin a) κ.1 → ℂ))
+    (μ N : ℕ) (A : (QuadField d₀ →+* ℂ) → ℤ)
+    : Prop where
   /-- The central exponent at `s₀` is `μ`. -/
   exponent_self : A s₀ = μ
   /-- For unitary `y`, `ξ y` is the action of `ȳ` in weight `κ`. -/
-  weightRep_entryConj (y : U (1 : Matrix (Fin a) (Fin a) E)) :
-    (stdSpace E (Fin a)).weightRep κ.1 κ.2 (entryConj y) = ξ y.val
+  weightRep_entryConj (y : U (1 : Matrix (Fin a) (Fin a) E))
+    : (stdSpace E (Fin a)).weightRep κ.1 κ.2 (entryConj y) = ξ y.val
   /-- For `x` in `(QuadField d₀)ˣ`, the scalar `x̄` acts by `∏ s, s x ^ (-A s)`. -/
-  map_scalar (x : (QuadField d₀)ˣ) :
-    ξ (GeneralLinearGroup.scalar (Fin a) (star (x.map i))) =
-      (∏ s : QuadField d₀ →+* ℂ, s x ^ (-A s)) • 1
+  map_scalar (x : (QuadField d₀)ˣ)
+    : ξ (GeneralLinearGroup.scalar (Fin a) (star (x.map i)))
+      = (∏ s : QuadField d₀ →+* ℂ, s x ^ (-A s)) • 1
   /-- The jumps of `κ` at embeddings over `s₀` are at least `-μ`. -/
   jump_add_nonneg {σ : E →+* ℂ} (hσ : σ.comp i = s₀) {z : ℤ} (hz : z ∈ jumps κ a σ) : 0 ≤ z + μ
-  /-- Let `z` be a jump of `κ` at `σ` over `s₀`, for the given CM type. Let `Ψ` be any CM type with
+  /--
+  Let `z` be a jump of `κ` at `σ` over `s₀`, for the given CM type. Let `Ψ` be any CM type with
   base place `v₀` whose only embedding over `s₀` is `σ`, at `v₀`. Then the eigenvalues of every
-  test eigenform of neat level for `Ψ` occur in weight `z + μ`. -/
-  occursInWeight {σ : E →+* ℂ} (hσ : σ.comp i = s₀) {z : ℤ} (hz : z ∈ jumps κ a σ)
-    [Ψ : CMBase E] (hv₀ : Ψ.Φ v₀ = σ) (hΨ : ∀ v : InfinitePlace E, v ≠ v₀ → (Ψ.Φ v).comp i ≠ s₀)
-    {𝔑 : 𝓞 E} (hN : IsNeat (Fin a) 𝔑) {φ : GL (Fin a) (𝔸f E) → WeylIndex (Fin a) κ.1 → ℂ}
-    {θ : SafePlace 𝔑 → ℕ → ℂ} (h_form : IsTestEigenform 𝔑 ξ φ θ) :
-    OccursInWeight a (N + 1) θ (z + μ).toNat
+  test eigenform of neat level for `Ψ` occur in weight `z + μ`.
+  -/
+  occursInWeight
+    {σ : E →+* ℂ} (hσ : σ.comp i = s₀)
+    {z : ℤ} (hz : z ∈ jumps κ a σ)
+    [Ψ : CMBase E]
+    (hv₀ : Ψ.Φ v₀ = σ) (hΨ : ∀ v : InfinitePlace E, v ≠ v₀ → (Ψ.Φ v).comp i ≠ s₀)
+    {𝔑 : 𝓞 E} (hN : IsNeat (Fin a) 𝔑)
+    {φ : GL (Fin a) (𝔸f E) → WeylIndex (Fin a) κ.1 → ℂ} {θ : SafePlace 𝔑 → ℕ → ℂ}
+    (h_form : IsTestEigenform 𝔑 ξ φ θ)
+    : OccursInWeight a (N + 1) θ (z + μ).toNat
 
 open scoped Classical in
 /-- The trace of `twistedWeylRep κ p m` at `y⁻¹` is the left side of

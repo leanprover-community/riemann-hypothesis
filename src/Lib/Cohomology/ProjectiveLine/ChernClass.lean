@@ -51,10 +51,13 @@ Known; see `Lib.Cohomology.ProjectiveLine.ConstantLineFormula` and
 
 noncomputable section
 
-/-- For an additive map χ from ℚ and a nonzero natural number n, n times the map x ↦ χ(x / n) is
-χ. -/
-theorem AddMonoidHom.nsmul_comp_mulRight_inv_natCast {G : Type*} [AddCommGroup G] (χ : ℚ →+ G)
-    (n : ℕ) [NeZero n] : n • χ.comp (AddMonoidHom.mulRight (n : ℚ)⁻¹) = χ := by
+/--
+For an additive map χ from ℚ and a nonzero natural number n, n times the map x ↦ χ(x / n) is
+χ.
+-/
+theorem AddMonoidHom.nsmul_comp_mulRight_inv_natCast
+    {G : Type*} [AddCommGroup G] (χ : ℚ →+ G) (n : ℕ) [NeZero n]
+    : n • χ.comp (AddMonoidHom.mulRight (n : ℚ)⁻¹) = χ := by
   ext
   simp [← map_nsmul, mul_left_comm]
 
@@ -72,26 +75,31 @@ section TateModule
 open CategoryTheory AddCommGrpCat Polynomial Module TotalH Function TensorProduct NeZero
   AddCommGroup
 
-variable {C C' : Type _} [Category C] [Category C'] {ℓ : ℕ} {A : Type} [CommRing A]
-  (g : C ⥤ TestOver A)
+variable
+  {C C' : Type _} [Category C] [Category C'] {ℓ : ℕ} {A : Type} [CommRing A] (g : C ⥤ TestOver A)
 
 /-! ### The Kummer sequence and the Tate module -/
 
-/-- The Kummer short complex 𝕋 → Hom(ℚ, G_m) → G_m of functors along g, formed by evaluation at
-1 and its kernel 𝕋, the Tate module. -/
+/--
+The Kummer short complex 𝕋 → Hom(ℚ, G_m) → G_m of functors along g, formed by evaluation at
+1 and its kernel 𝕋, the Tate module.
+-/
 abbrev kummerSeq : ShortComplex (AbFunctor C) :=
   -- the kernel sequence of evaluation at 1 on homomorphisms from `ℚ` to the units
   kerComplex
     (M :=
-      CategoryTheory.Functor.mk (fun c ↦ of (ℚ →+ (ringOf g ⋙ Gm) c)) fun f ↦
-        ofHom (AddMonoidHom.compHom ((ringOf g ⋙ Gm).map f).hom))
-    (G := ringOf g ⋙ Gm) {app _ := ofHom (AddMonoidHom.eval 1)}
+      CategoryTheory.Functor.mk
+        (fun c ↦ of (ℚ →+ (ringOf g ⋙ Gm) c))
+        fun f ↦ ofHom (AddMonoidHom.compHom ((ringOf g ⋙ Gm).map f).hom))
+    (G := ringOf g ⋙ Gm) { app _ := ofHom (AddMonoidHom.eval 1) }
 
-/-- The Tate module 𝕋 of the multiplicative group along g: its value at c is the group of
+/--
+The Tate module 𝕋 of the multiplicative group along g: its value at c is the group of
 homomorphisms χ from ℚ to the units of g(c) with χ(1) = 1. It is the first term `X₁` of the
 Kummer complex `New.Variety.kummerSeq`, that is, the kernel of evaluation at 1,
 Hom(ℚ, G_m) → G_m. A member χ is a compatible system χ(1/n) of n-th roots of unity for all
-n ≥ 1, so all primes are included, not only ℓ. -/
+n ≥ 1, so all primes are included, not only ℓ.
+-/
 abbrev tateModule : AbFunctor C := (kummerSeq g).X₁
 
 instance : HasFlatValues (tateModule g) where
@@ -118,13 +126,14 @@ variable [u : InvertsPrime A ℓ]
 
 /-! ### A generator of the Tate module modulo ℓ -/
 
-/-- For a prime ℓ invertible in a local, absolutely integrally closed ring A, there is a
+/--
+For a prime ℓ invertible in a local, absolutely integrally closed ring A, there is a
 homomorphism χ from ℚ to A^× with χ(1) = 1 such that χ(1/ℓ) is a root of the ℓ-th cyclotomic
-polynomial. -/
-def compatibleRootsOfUnity :
-    {χ : Multiplicative ℚ →* Aˣ //
-      χ (Multiplicative.ofAdd 1) = 1 ∧
-      (cyclotomic ℓ A).IsRoot (χ (Multiplicative.ofAdd (1 / ℓ)))} :=
+polynomial.
+-/
+def compatibleRootsOfUnity
+    : {χ : Multiplicative ℚ →* Aˣ // χ (Multiplicative.ofAdd 1) = 1
+      ∧ (cyclotomic ℓ A).IsRoot (χ (Multiplicative.ofAdd (1 / ℓ)))} :=
   Nonempty.some <| by
     -- Take a root ζ of the cyclotomic polynomial; it is a unit with ζ ^ ℓ = 1. Choose a compatible
     -- system of roots χ of ζ, with χ 1 = ζ, and rescale it to s ↦ χ (ℓ * s).
@@ -132,8 +141,8 @@ def compatibleRootsOfUnity :
       IsAbsIntegrallyClosed.exists_root _ (cyclotomic.monic ℓ A)
         (by simp [natDegree_cyclotomic, pos])
     have hζ_pow : ζ ^ ℓ = 1 := isRoot_of_unity_of_root_cyclotomic (by aesop) hζ
-    obtain ⟨χ, hχ⟩ :
-        ∃ χ : ℚ →+ Additive Aˣ, χ 1 = Additive.ofMul (Units.ofPowEqOne ζ ℓ hζ_pow (ne ℓ)) :=
+    obtain ⟨χ, hχ⟩
+        : ∃ χ : ℚ →+ Additive Aˣ, χ 1 = Additive.ofMul (Units.ofPowEqOne ζ ℓ hζ_pow (ne ℓ)) :=
       exists_compatible_roots _
     exact ⟨(ℓ • χ).toMultiplicativeLeft, by simp [hχ], by simpa [← map_nsmul, hχ] using hζ⟩
 
@@ -146,19 +155,23 @@ lemma isRoot_cyclotomic_compatibleRootsOfUnity :
       ((compatibleRootsOfUnity (A := A) (ℓ := ℓ)).val (Multiplicative.ofAdd (1 / ℓ))) :=
   compatibleRootsOfUnity.property.right
 
-/-- The section ε of the Tate module `New.Variety.tateModule` along g, as a map from the constant
+/--
+The section ε of the Tate module `New.Variety.tateModule` along g, as a map from the constant
 functor ℤ (the free abelian group on the one-point functor). At c it is the homomorphism
 `New.Variety.compatibleRootsOfUnity` χ: ℚ → Aˣ, with χ(1) = 1 and χ(1/ℓ) a root of the ℓ-th
-cyclotomic polynomial, followed by the structure map A → g(c). -/
+cyclotomic polynomial, followed by the structure map A → g(c).
+-/
 def tateGen : freeAb (onePointFunctor C) ⟶ tateModule g :=
   -- at `c`, the image of `compatibleRootsOfUnity` under the structure map of `g c`, which still
   -- sends 1 to 1
   freeAb.desc
-    (fun c _ ↦
-      ⟨AddMonoidHom.comp (AddMonoidHom.mk' ULift.up fun _ _ ↦ rfl)
-          ((Units.map (algebraMap A (g c).1).1).comp compatibleRootsOfUnity.1).toAdditiveRight,
-        Gm.ext.2 ((congrArg (fun x : Aˣ ↦ algebraMap A (g c).obj x)
-          compatibleRootsOfUnity_ofAdd_one).trans (map_one _))⟩)
+    (fun c _ ↦ ⟨
+      AddMonoidHom.comp (AddMonoidHom.mk' ULift.up fun _ _ ↦ rfl)
+        ((Units.map (algebraMap A (g c).1).1).comp compatibleRootsOfUnity.1).toAdditiveRight,
+      Gm.ext.2
+        ((congrArg (fun x : Aˣ ↦ algebraMap A (g c).obj x) compatibleRootsOfUnity_ofAdd_one).trans
+          (map_one _))
+    ⟩)
     (by
       intros
       congr
@@ -172,8 +185,11 @@ section TateAction
 open CategoryTheory AddCommGrpCat Polynomial Module TotalH Function TensorProduct NeZero
   AddCommGroup
 
-variable {C C' : Type _} [Category C] [Category C'] {ℓ : ℕ} {A : Type} [CommRing A]
-  {g : C ⥤ TestOver A} [u : InvertsPrime A ℓ] {S S' P F : AbFunctor C}
+variable
+  {C C' : Type _} [Category C] [Category C']
+  {ℓ : ℕ} {A : Type} [CommRing A]
+  {g : C ⥤ TestOver A} [u : InvertsPrime A ℓ]
+  {S S' P F : AbFunctor C}
 
 /-- For t in the Tate module at c, the value t(1/ℓ) is an ℓ-th root of unity of the ring g(c):
 ℓ • t(1/ℓ) = t(1), which is the unit 1 (written 0, as the group of units is written additively). -/
@@ -187,10 +203,12 @@ private lemma tateModule_apply_inv_mem_rootsOfUnity {c : C} (t : tateModule g c)
       _ = 0 := t.property
   exact congrArg ULift.down h_pow
 
-/-- For a ring map ψ from g(c) to K, the additive map t ↦ ψ(t(1/ℓ)) from the Tate module at c to
-the ℓ-th roots of unity of K, written additively. -/
-private def tateRoot {c : C} {K : Type} [CommRing K] (ψ : (ringOf g).obj c →+* K) :
-    tateModule g c →+ Additive (rootsOfUnity ℓ K) :=
+/--
+For a ring map ψ from g(c) to K, the additive map t ↦ ψ(t(1/ℓ)) from the Tate module at c to
+the ℓ-th roots of unity of K, written additively.
+-/
+private def tateRoot {c : C} {K : Type} [CommRing K] (ψ : (ringOf g).obj c →+* K)
+    : tateModule g c →+ Additive (rootsOfUnity ℓ K) :=
   (restrictRootsOfUnity ψ ℓ).toAdditive.comp
     (.mk' (fun t ↦ ⟨(t.val (1 / ℓ)).down, tateModule_apply_inv_mem_rootsOfUnity t⟩) fun _ _ ↦ rfl)
 
@@ -302,11 +320,14 @@ lemma isCohomEquiv_tensorPoint_tateGen (hS : ∀ (c : C) (x : S c), ℓ • x = 
 
 /-! ### The action on coefficients and the product with a class -/
 
-variable (M K : TorsionCoeff g) (φ : C' ⥤ C) (M' : TorsionCoeff (φ ⋙ g))
-  (T : TotalH (φ ⋙ K.functor) M'.functor)
+variable
+  (M K : TorsionCoeff g) (φ : C' ⥤ C)
+  (M' : TorsionCoeff (φ ⋙ g)) (T : TotalH (φ ⋙ K.functor) M'.functor)
 
-/-- The action of the Tate module 𝕋 on a coefficient M: the class in Ext⁰(M ⊗ 𝕋, M) whose
-pull-back along x ↦ x ⊗ ε, ε = `New.Variety.tateGen`, is the identity. -/
+/--
+The action of the Tate module 𝕋 on a coefficient M: the class in Ext⁰(M ⊗ 𝕋, M) whose
+pull-back along x ↦ x ⊗ ε, ε = `New.Variety.tateGen`, is the identity.
+-/
 def TorsionCoeff.tateAction : H ((abTensor.flip.obj (tateModule g)).obj M.functor) M.functor 0 :=
   surjInv (isCohomEquiv_tensorPoint_tateGen M.prime_smul_eq_zero M.zariski_descent 0).2
     (Abelian.Ext.mk₀ (𝟙 ((𝟭 (AbFunctor C)).obj M.functor)))
@@ -369,12 +390,14 @@ lemma TorsionCoeff.tateAction_comm :
         rw [h_restricted]
         exact TotalH.pullbackAlong_id
 
-/-- The product with a class ξ in total Ext(P, 𝕋), 𝕋 the Tate module `New.Variety.tateModule`. For
+/--
+The product with a class ξ in total Ext(P, 𝕋), 𝕋 the Tate module `New.Variety.tateModule`. For
 S with flat values it is the additive map y ↦ y · ξ from total Ext(S, M) to total Ext(S ⊗ P, M),
 where y · ξ is the Yoneda composite S ⊗ P → S ⊗ 𝕋 → M ⊗ 𝕋 → M of S ⊗ ξ, y ⊗ 𝕋 and
-`New.Variety.TorsionCoeff.tateAction`. -/
-def TorsionCoeff.mulClass [HasFlatValues S] (ξ : TotalH P (tateModule g)) :
-    TotalH S M.functor →+ TotalH ((abTensor.obj S).obj P) M.functor :=
+`New.Variety.TorsionCoeff.tateAction`.
+-/
+def TorsionCoeff.mulClass [HasFlatValues S] (ξ : TotalH P (tateModule g))
+    : TotalH S M.functor →+ TotalH ((abTensor.obj S).obj P) M.functor :=
   (ξ.map (abTensor S)).comp.comp (mapThenComp (abTensor.flip (tateModule g)) M.tateAction.toTotalH)
 
 lemma TorsionCoeff.mulClass_apply [HasFlatValues S] (ξ : TotalH P (tateModule g))
@@ -528,21 +551,25 @@ section LineChernClass
 
 open CategoryTheory AddCommGrpCat Abelian TotalH FreeAddCommGroup Ideal
 
-variable {C C' : Type _} [Category C] [Category C'] {ℓ : ℕ} {A : Type} [CommRing A]
-  (g : C ⥤ TestOver A)
+variable
+  {C C' : Type _} [Category C] [Category C'] {ℓ : ℕ} {A : Type} [CommRing A] (g : C ⥤ TestOver A)
 
 /-! ### The projective line and the cocycle of `O(1)` -/
 
-/-- The relation on pairs `(u, v)` whose classes are the points of the projective line. The pair
+/--
+The relation on pairs `(u, v)` whose classes are the points of the projective line. The pair
 `(u, v)` stands for the row `(1 + u v, v)`; two pairs are related if the determinant of their rows
-is zero. This gives the points `(a : v)` with a representative such that `a ≡ 1 mod v`. -/
+is zero. This gives the points `(a : v)` with a representative such that `a ≡ 1 mod v`.
+-/
 def projLineSetoid (B : Type) [CommRing.{0} B] : Setoid (B × B) where
   r (x y : B × B) := (1 + x.1 * x.2) * y.2 = x.2 * (1 + y.1 * y.2)
   iseqv := by grind [Equivalence.mk]
 
-/-- The projective line as a functor (`PointFunctor`) from commutative rings (`CommRingCat`) to
+/--
+The projective line as a functor (`PointFunctor`) from commutative rings (`CommRingCat`) to
 `Type 1`: B goes to the set of points (1 + uv : v) with u, v in B, that is, pairs (u, v) modulo
-`New.Variety.projLineSetoid`. -/
+`New.Variety.projLineSetoid`.
+-/
 def projLine : PointFunctor where
   obj B := ULift (Quotient (projLineSetoid B))
   map f :=
@@ -562,10 +589,12 @@ def projLinePow (ι : Type) : PointFunctor where
   obj B := ι → projLine B
   map f := ↾fun q i ↦ projLine.map f (q i)
 
-/-- For a functor of points X, the projection (c, x) ↦ c from pairs of a test c over A and
-x ∈ X(c) to tests over A. -/
-abbrev testOfPoint (A : Type) [CommRing A] (X : CommRingCat ⥤ Type 1) :
-    (ringOf (𝟭 (TestOver A)) ⋙ X).Elements ⥤ TestOver A :=
+/--
+For a functor of points X, the projection (c, x) ↦ c from pairs of a test c over A and
+x ∈ X(c) to tests over A.
+-/
+abbrev testOfPoint (A : Type) [CommRing A] (X : CommRingCat ⥤ Type 1)
+    : (ringOf (𝟭 (TestOver A)) ⋙ X).Elements ⥤ TestOver A :=
   elementsProj (ringOf (𝟭 (TestOver A)) ⋙ X) ⋙ 𝟭 (TestOver A)
 
 /-- The projective line over the tests of `g`. -/
@@ -617,8 +646,10 @@ lemma eq_and_eq_of_smul_unimodularRow_eq {q q' : projLine.obj B} {a b : Bˣ}
   -- ideal, so `a = b`.
   exact ⟨Units.ext (by linear_combination h_fst - q.down.out.fst * h_snd), rfl⟩
 
-/-- The unit by which `f` rescales the row of a point (`unimodularRow_map`), extended additively
-to the free abelian group on the points. -/
+/--
+The unit by which `f` rescales the row of a point (`unimodularRow_map`), extended additively
+to the free abelian group on the points.
+-/
 def rowUnit : FreeAddCommGroup (projLine B) →+ Gm B' :=
   lift fun q : projLine B ↦ ⟨(exists_unit_smul_unimodularRow (q.down.out.map f f)).choose⟩
 
@@ -697,13 +728,17 @@ def affineChart : Subfunctor projLine where
   obj _ := {q | IsUnit (unimodularRow q).1}
   map f q h_unit := isUnit_fst_unimodularRow_map f q (IsUnit.map f.hom h_unit)
 
-/-- The section of the projective line along g whose value at every object c is the base point
-(1 : 1) over the ring g(c). -/
+/--
+The section of the projective line along g whose value at every object c is the base point
+(1 : 1) over the ring g(c).
+-/
 def basePt : (projLineAlong g).sections :=
   ⟨fun _ : C ↦ affinePt 1, fun {c d : C} (_ : c ⟶ d) ↦ by simp [map_affinePt]⟩
 
-/-- The 1-cocycle from ℤ[P¹] to G_m along g sending a morphism f and a point q to the transition
-unit `New.Variety.projLine.rowUnit` of the chosen rows. -/
+/--
+The 1-cocycle from ℤ[P¹] to G_m along g sending a morphism f and a point q to the transition
+unit `New.Variety.projLine.rowUnit` of the chosen rows.
+-/
 def cocycle : Cocycle (freeAb (projLineAlong g)) (ringOf g ⋙ Gm) where
   component f := ofHom (rowUnit ((ringOf g).map f))
   cocycle_comp f h := by
@@ -713,17 +748,19 @@ def cocycle : Cocycle (freeAb (projLineAlong g)) (ringOf g ⋙ Gm) where
     let F := (ringOf g).map f
     let H := (ringOf g).map h
     let q' := projLine.map F q
-    change Gm.map H (rowUnit F (.of q)) + rowUnit H (.of q') =
-      rowUnit ((ringOf g).map (f ≫ h)) (.of q)
+    change Gm.map H (rowUnit F (.of q)) + rowUnit H (.of q')
+      = rowUnit ((ringOf g).map (f ≫ h)) (.of q)
     let K := (ringOf g).map (f ≫ h)
     apply add_rowUnit_eq (q' := projLine.map K q)
-    change ((rowUnit F (.of q)).down.toMul.val • unimodularRow (projLine.map F q)).map H H =
-      (rowUnit K (.of q)).down.toMul.val • unimodularRow (projLine.map K q)
+    change ((rowUnit F (.of q)).down.toMul.val • unimodularRow (projLine.map F q)).map H H
+      = (rowUnit K (.of q)).down.toMul.val • unimodularRow (projLine.map K q)
     rw [← unimodularRow_map F q, ← unimodularRow_map K q]
     ext <;> simp [F, H, K]
 
-/-- The determinant `a v' - v a'` of the rows `(a, v)` and `(a', v')` of two points `p`, `p'` of the
-projective line. -/
+/--
+The determinant `a v' - v a'` of the rows `(a, v)` and `(a', v')` of two points `p`, `p'` of the
+projective line.
+-/
 private def rowDet (p p' : projLine B) : B :=
   (unimodularRow p).fst * (unimodularRow p').snd - (unimodularRow p).snd * (unimodularRow p').fst
 
@@ -760,20 +797,24 @@ open projLine
 
 /-! ### The class `η` -/
 
-/-- The class `η` in `Ext²(ℤ[ℙ¹], T)`, with `T` the Tate module: the product of the extension class
-of the cocycle of `O(1)` and the extension class of the Kummer sequence. -/
+/--
+The class `η` in `Ext²(ℤ[ℙ¹], T)`, with `T` the Tate module: the product of the extension class
+of the cocycle of `O(1)` and the extension class of the Kummer sequence.
+-/
 @[irreducible]
 def etaClass : H (freeAb (projLineAlong g)) (tateModule g) 2 :=
   (cocycle g).shortExact_extension.extClass.comp (shortExact_kummerSeq g).extClass rfl
 
 /-! ### The product with `η` on a coefficient, and the line formula -/
 
-/-- A family of classes in `Ext²(S ⊗ ℤ[ℙ¹], S ⊗ T)`, with `T` the Tate module, one for each functor
+/--
+A family of classes in `Ext²(S ⊗ ℤ[ℙ¹], S ⊗ T)`, with `T` the Tate module, one for each functor
 `φ` to tests over `A` and each functor `S` from `D` to abelian groups, not only torsion
 coefficients. It is chosen by `exists_isTensorClass` for the class `η` on the category of all tests
-over `A`. -/
-abbrev TorsionCoeff.etaTensor (D : Type 1) [Category.{0} D] (φ : D ⥤ TestOver A) (S : AbFunctor D) :
-    H (abTensor.flip (φ ⋙ freeAb (projLineAlong (𝟭 (TestOver A)))) S)
+over `A`.
+-/
+abbrev TorsionCoeff.etaTensor (D : Type 1) [Category.{0} D] (φ : D ⥤ TestOver A) (S : AbFunctor D)
+    : H (abTensor.flip (φ ⋙ freeAb (projLineAlong (𝟭 (TestOver A)))) S)
       (abTensor.flip (φ ⋙ tateModule (𝟭 (TestOver A))) S) 2 :=
   (exists_isTensorClass (etaClass (𝟭 (TestOver A)))).choose D φ S
 
@@ -783,11 +824,13 @@ lemma TorsionCoeff.isTensorClass_etaTensor :
     IsTensorClass (etaClass (𝟭 (TestOver A))) TorsionCoeff.etaTensor :=
   (exists_isTensorClass (etaClass (𝟭 (TestOver A)))).choose_spec
 
-/-- The class `S ⊗ η` in `Ext²(S ⊗ ℤ[ℙ¹], S ⊗ T)`, defined for every coefficient `S`, flat or not.
+/--
+The class `S ⊗ η` in `Ext²(S ⊗ ℤ[ℙ¹], S ⊗ T)`, defined for every coefficient `S`, flat or not.
 It is used through `etaTensorClass_naturality`, `etaTensorClass_of_hasFlatValues` and
-`map_restrictAlong_etaTensorClass`. -/
-def etaTensorClass (S : AbFunctor C) :
-    H (abTensor.flip (freeAb (projLineAlong g)) S) (abTensor.flip (tateModule g) S) 2 :=
+`map_restrictAlong_etaTensorClass`.
+-/
+def etaTensorClass (S : AbFunctor C)
+    : H (abTensor.flip (freeAb (projLineAlong g)) S) (abTensor.flip (tateModule g) S) 2 :=
   TorsionCoeff.etaTensor C g S
 
 end LineChernClass
@@ -796,8 +839,11 @@ section EtaProduct
 
 open CategoryTheory AddCommGrpCat Abelian TotalH FreeAddCommGroup Ideal projLine
 
-variable {C C' : Type _} [Category C] [Category C'] {ℓ : ℕ} {A : Type} [CommRing A]
-  {g : C ⥤ TestOver A} {S : AbFunctor C} {Y : C ⥤ Type 1} (φ : C' ⥤ C)
+variable
+  {C C' : Type _} [Category C] [Category C']
+  {ℓ : ℕ} {A : Type} [CommRing A]
+  {g : C ⥤ TestOver A} {S : AbFunctor C} {Y : C ⥤ Type 1}
+  (φ : C' ⥤ C)
 
 /-- The class `etaTensorClass g S` is natural in the coefficient `S`, for classes of every
 degree. -/
@@ -934,20 +980,24 @@ lemma exists_etaClass_supported_diagonal (q q' : (projLineAlong g).sections) :
 
 namespace TorsionCoeff
 
-variable [InvertsPrime A ℓ]
+variable
+  [InvertsPrime A ℓ]
   (M K : TorsionCoeff g) (M' : TorsionCoeff (φ ⋙ g)) (T : TotalH (φ ⋙ K.functor) M'.functor)
 
-/-- The product with `η` at `b : ℤ[pt] ⟶ ℤ[ℙ¹]`, an additive map in `b`: the class in `Ext²(M, M)`
+/--
+The product with `η` at `b : ℤ[pt] ⟶ ℤ[ℙ¹]`, an additive map in `b`: the class in `Ext²(M, M)`
 of the composite `M → M ⊗ ℤ[ℙ¹] → (M ⊗ T)[2] → M[2]` of `x ↦ x ⊗ b` (`tensorPoint b`), of `M ⊗ η`
-(`etaTensorClass`) and of the action `M.tateAction` of the Tate module `T`. -/
+(`etaTensorClass`) and of the action `M.tateAction` of the Tate module `T`.
+-/
 @[irreducible]
 def etaAt : (freeAb (onePointFunctor C) ⟶ freeAb (projLineAlong g)) →+ H M.functor M.functor 2 :=
   AddMonoidHom.mk'
-    (fun b ↦ H.map M.functor (tensorPoint b M.functor) 2
-      ((etaTensorClass g M.functor).comp M.tateAction rfl))
+    (fun b ↦
+      H.map M.functor (tensorPoint b M.functor) 2
+        ((etaTensorClass g M.functor).comp M.tateAction rfl))
     fun a b ↦ by
-      have h_add : tensorPoint (a + b) M.functor = tensorPoint a M.functor + tensorPoint b
-        M.functor := by
+      have h_add
+          : tensorPoint (a + b) M.functor = tensorPoint a M.functor + tensorPoint b M.functor := by
         ext
         apply TensorProduct.tmul_add
       simp [H.map, h_add, Ext.mk₀_add]
@@ -1059,10 +1109,12 @@ lemma comp_etaAt_basePt [HasFlatValues S] (y : TotalH S M.functor) :
       (𝟙 (freeAb (onePointFunctor C))) pullbackAlong_id y,
     h_zero, h_mul_zero, map_zero]
 
-/-- The product with `η` on the category of points of the line: `etaAt` at the tautological
-point. -/
-abbrev cupClass :
-    H (M.onElements (X := projLineAlong g)).functor (M.onElements (X := projLineAlong g)).functor
+/--
+The product with `η` on the category of points of the line: `etaAt` at the tautological
+point.
+-/
+abbrev cupClass
+    : H (M.onElements (X := projLineAlong g)).functor (M.onElements (X := projLineAlong g)).functor
       2 :=
   M.onElements.etaAt (freeAb.map (tautologicalSection (X := projLineAlong g)))
 
@@ -1071,18 +1123,23 @@ abbrev lineDegree : Bool → ℕ
   | true => 0
   | false => 2
 
-/-- The two classes `1` (index `true`, degree 0) and `η` (index `false`, degree 2) on the category
-of points of the line. -/
-def lineBasis : ∀ i : Bool, H (restrictAlong (elementsProj (projLineAlong g)) M.functor)
-    (elementsProj (projLineAlong g) ⋙ M.functor) (lineDegree i)
+/--
+The two classes `1` (index `true`, degree 0) and `η` (index `false`, degree 2) on the category
+of points of the line.
+-/
+def lineBasis
+    : ∀ i : Bool,
+      H (restrictAlong (elementsProj (projLineAlong g)) M.functor)
+        (elementsProj (projLineAlong g) ⋙ M.functor) (lineDegree i)
   | true => Ext.mk₀ (𝟙 (elementsProj (projLineAlong g) ⋙ M.functor))
   | false => M.cupClass
 
-
 lemma lineBasis_false : M.lineBasis false = M.cupClass := rfl
 
-/-- The projective line formula `H(ℙ¹ × S) = H(S) ⊕ η H(S)`: the classes `1` and `η` are a basis
-over the cohomology of every `S`. -/
+/--
+The projective line formula `H(ℙ¹ × S) = H(S) ⊕ η H(S)`: the classes `1` and `η` are a basis
+over the cohomology of every `S`.
+-/
 def HasLineFormula : Prop := ∀ S : AbFunctor C, IsLerayHirschBasis M.lineBasis S
 
 /-- Restricting `M.etaAt b` to the category of points of `X` gives `etaAt` of the restrictions. -/

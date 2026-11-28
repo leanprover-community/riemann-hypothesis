@@ -140,9 +140,11 @@ variable (E : Type*) [Field E] [NumberField E]
 lemma fourierChar_eq_one_iff {t : ℝ} : 𝐞 t = 1 ↔ ∃ n : ℤ, t = n :=
   Circle.exp_eq_one.trans (by field_simp)
 
-/-- The number 2^{r₂}/√|disc E|, where r₂ is the number of complex places of E. When E is totally
+/--
+The number 2^{r₂}/√|disc E|, where r₂ is the number of complex places of E. When E is totally
 complex and the infinite places carry Lebesgue measure, it is the volume of the integral finite
-adeles for which the quotient of the adeles by E has total mass one. -/
+adeles for which the quotient of the adeles by E has total mass one.
+-/
 def volÔ : NNReal := 2 ^ InfinitePlace.nrComplexPlaces E / ‖NumberField.discr E‖₊.sqrt
 
 /-- Every class of finite adeles modulo `Ô` contains an element of `E`. -/
@@ -156,23 +158,28 @@ lemma fourierChar_trace_eq_one {a : E} (ha : IsIntegral ℤ a) : 𝐞 (trace ℚ
   -- the trace of an algebraic integer is an integer
   fourierChar_eq_one_iff.mpr ⟨trace ℤ (𝓞 E) ⟨a, ha⟩, mod_cast (coe_trace_int ⟨a, ha⟩).symm⟩
 
-/-- The standard additive character of the finite adeles: ψ_f(x) = exp(2πi Tr_{E/ℚ}(a)) for any
-a in E with x − a integral. -/
+/--
+The standard additive character of the finite adeles: ψ_f(x) = exp(2πi Tr_{E/ℚ}(a)) for any
+a in E with x − a integral.
+-/
 def ψf : AddChar (𝔸f E) Circle :=
   -- `𝐞 ∘ tr` on `E` kills the algebraic integers, so it descends along the surjection
   -- `E → 𝔸f E ⧸ Ô E`; compose with the quotient map `𝔸f E → 𝔸f E ⧸ Ô E`.
-  toAddMonoidHomEquiv.symm <|
-    AddMonoidHom.comp
-      (((mk' (Ô E).toAddSubgroup).comp (algebraMap E (𝔸f E))).liftOfSurjective
-        (mk_algebraMap_surjective E)
-        ⟨AddMonoidHom.mk' (fun a : E ↦ 𝐞 (trace ℚ E a)) (by aesop (add simp map_add_eq_mul)),
-          fun a ha ↦ fourierChar_trace_eq_one E (algebraMap_mem_Ô.1 (by aesop))⟩)
-      (mk' (Ô E).toAddSubgroup)
+  toAddMonoidHomEquiv.symm <| AddMonoidHom.comp
+    (((mk' (Ô E).toAddSubgroup).comp (algebraMap E (𝔸f E))).liftOfSurjective
+      (mk_algebraMap_surjective E)
+      ⟨
+        AddMonoidHom.mk' (fun a : E ↦ 𝐞 (trace ℚ E a)) (by aesop (add simp map_add_eq_mul)),
+        fun a ha ↦ fourierChar_trace_eq_one E (algebraMap_mem_Ô.1 (by aesop))
+      ⟩)
+    (mk' (Ô E).toAddSubgroup)
 
-/-- The standard additive character of `New.𝔸 E` (the adele ring when E is totally complex): the
-product of exp(−2πi ∑_w 2 Re x_w) over the infinite places and ψ_f of the finite part. -/
+/--
+The standard additive character of `New.𝔸 E` (the adele ring when E is totally complex): the
+product of exp(−2πi ∑_w 2 Re x_w) over the infinite places and ψ_f of the finite part.
+-/
 def stdAddChar : AddChar (𝔸 E) Circle where
-  toFun x := 𝐞 (-∑ w : InfinitePlace E, 2 * (x.1 w).re) * ψf E x.2
+  toFun x := 𝐞 (- ∑ w : InfinitePlace E, 2 * (x.1 w).re) * ψf E x.2
   map_zero_eq_one' := by simp
   map_add_eq_mul' := by
     simp [mul_add, Finset.sum_add_distrib, map_add_eq_mul]
@@ -187,8 +194,10 @@ instance : LocallyCompactSpace (U J) := inferInstance
 instance : MeasureSpace (LocField w) where
   -- the Haar measure that gives the local ring of integers mass one
   volume :=
-    addHaarMeasure ⟨⟨LocInt w, isCompact_LocInt w⟩,
-      (Valued.isOpen_integer (LocField w)).interior_eq.substr (by simp)⟩
+    addHaarMeasure ⟨
+      ⟨LocInt w, isCompact_LocInt w⟩,
+      (Valued.isOpen_integer (LocField w)).interior_eq.substr (by simp)
+    ⟩
 
 instance : IsAddHaarMeasure (volume (α := LocField w)) := isAddHaarMeasure_addHaarMeasure _
 
@@ -236,12 +245,15 @@ deriving instance T2Space for 𝔸f E
 deriving instance SecondCountableTopology, T2Space for 𝔸 E
 
 deriving instance PolishSpace, LocallyCompactSpace, BorelSpace, IsTopologicalRing,
-  MeasurableSingletonClass for 𝔸 E
+    MeasurableSingletonClass
+  for 𝔸 E
 
 instance : SigmaFinite (volume (α := 𝔸 E)) := inferInstance
 
-/-- The measure `volume` on `New.𝔸 E` (the adeles, when E is totally complex) is an additive Haar
-measure. -/
+/--
+The measure `volume` on `New.𝔸 E` (the adeles, when E is totally complex) is an additive Haar
+measure.
+-/
 instance isAddHaarMeasure_𝔸 : IsAddHaarMeasure (volume (α := 𝔸 E)) :=
   prod.instIsAddHaarMeasure volume volume
 
@@ -263,33 +275,44 @@ lemma Φ_mk_eq_or_star_eq {E : Type*} [Field E] [PlaceEmbedding E] (φ : E →+*
     Φ (InfinitePlace.mk φ) = φ ∨ star (Φ (InfinitePlace.mk φ)) = φ :=
   mk_eq_iff.mp (mk_Φ _)
 
-variable (E : Type*) [Field E] [PlaceEmbedding E] [NumberField E] (m n : Type*)
+variable
+  (E : Type*) [Field E] [PlaceEmbedding E] [NumberField E]
+  (m n : Type*)
   {B I : Type*} [AddCommGroup B] [AddCommGroup I] [TopologicalSpace B]
-  (f : I →+ B) (C : Set B) [MeasureSpace B]
+  (f : I →+ B) (C : Set B)
+  [MeasureSpace B]
 
 /-! ### Rational points, fundamental domains and lattices -/
 
 /-- The image of E in its adeles under the diagonal embedding, as an additive subgroup. -/
 def ratAdeles : AddSubgroup (𝔸 E) := (toAdele (E := E)).toAddMonoidHom.range
 
-/-- The additive subgroup of adelic vectors indexed by n that is the image of E^n under the
-coordinatewise diagonal embedding. -/
+/--
+The additive subgroup of adelic vectors indexed by n that is the image of E^n under the
+coordinatewise diagonal embedding.
+-/
 def ratVectors : AddSubgroup (n → 𝔸 E) := ((toAdele (E := E)).toAddMonoidHom.compLeft n).range
 
-/-- The additive subgroup of m×n adelic matrices that is the image of the m×n matrices over E
-under the entrywise diagonal embedding. -/
+/--
+The additive subgroup of m×n adelic matrices that is the image of the m×n matrices over E
+under the entrywise diagonal embedding.
+-/
 def ratMatrices : AddSubgroup (Matrix m n (𝔸 E)) :=
   (toAdele (E := E)).toAddMonoidHom.mapMatrix (m := m) (n := n).range
 
-/-- For an additive map `f : I →+ B` and a set `C` in `B`: `C` is compact and contains a measurable
-set `D` of volume one such that every `x` in `B` has exactly one `a` in `I` with `f a + x ∈ D`. -/
+/--
+For an additive map `f : I →+ B` and a set `C` in `B`: `C` is compact and contains a measurable
+set `D` of volume one such that every `x` in `B` has exactly one `a` in `I` with `f a + x ∈ D`.
+-/
 def HasFundDomain : Prop :=
   IsCompact C ∧ ∃ D ⊆ C, MeasurableSet D ∧ volume D = 1 ∧ ∀ x : B, ∃! a : I, f a + x ∈ D
 
-/-- A lattice of covolume one: a discrete subgroup `Λ` of `B` with `B ⧸ Λ` compact and of quotient
-measure one, such that the translates of one compact set by `Λ` cover `B`. -/
-class IsCovolOneLattice (Λ : AddSubgroup B) extends DiscreteTopology Λ, CompactSpace (B ⧸ Λ),
-  IsProbabilityMeasure Λ.quotMeasure where
+/--
+A lattice of covolume one: a discrete subgroup `Λ` of `B` with `B ⧸ Λ` compact and of quotient
+measure one, such that the translates of one compact set by `Λ` cover `B`.
+-/
+class IsCovolOneLattice (Λ : AddSubgroup B)
+    extends DiscreteTopology Λ, CompactSpace (B ⧸ Λ), IsProbabilityMeasure Λ.quotMeasure where
   /-- Some compact set meets every coset of `Λ`. -/
   exists_compact_cover (Λ) : Λ.IsCocompact
 
@@ -310,9 +333,9 @@ lemma toAdele_half_add_half : toAdele (2⁻¹ : E) + toAdele (2⁻¹ : E) = 1 :=
 lemma toAdele_inv_mul_cancel {x : E} (hx : x ≠ 0) : toAdele x⁻¹ * toAdele x = 1 := by
   simp [← map_mul, hx]
 
-variable [IsTotallyComplex E] [Fintype n] [IsTopologicalAddGroup B]
-  [SecondCountableTopology B] [T2Space B] [LocallyCompactSpace B]
-  [(volume (α := B)).IsAddHaarMeasure]
+variable
+  [IsTotallyComplex E] [Fintype n] [IsTopologicalAddGroup B] [SecondCountableTopology B] [T2Space B]
+  [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure]
 
 /-! ### From a fundamental domain to a lattice -/
 
@@ -437,20 +460,26 @@ lemma exists_hasFundDomain_toAdele :
   let ⟨e, he, h_emb⟩ := exists_mixedEquiv (E := E)
   exact exists_hasFundDomain (RingHom.pi Φ : E →+* (InfinitePlace E → ℂ)) e he h_emb
 
-/-- For totally complex `E` the rational points `New.ratAdeles E` form a lattice of covolume one in
-the adeles of `E`: a discrete subgroup whose compact quotient has measure one. -/
+/--
+For totally complex `E` the rational points `New.ratAdeles E` form a lattice of covolume one in
+the adeles of `E`: a discrete subgroup whose compact quotient has measure one.
+-/
 instance isCovolOneLattice_ratAdeles : IsCovolOneLattice (ratAdeles E) := by
   obtain ⟨R, -, h_dom⟩ := exists_hasFundDomain_toAdele (E := E)
   exact h_dom.isCovolOneLattice
 
-/-- For totally complex `E` and finite `n` the rational vectors `New.ratVectors E n` form a lattice
-of covolume one in the adelic vectors indexed by `n`. -/
+/--
+For totally complex `E` and finite `n` the rational vectors `New.ratVectors E n` form a lattice
+of covolume one in the adelic vectors indexed by `n`.
+-/
 instance isCovolOneLattice_ratVectors : IsCovolOneLattice (ratVectors E n) := by
   obtain ⟨R, -, h_dom⟩ := exists_hasFundDomain_toAdele (E := E)
   exact h_dom.pi.isCovolOneLattice
 
-/-- For totally complex `E` and finite `m`, `n` the rational matrices `New.ratMatrices E m n` form
-a lattice of covolume one in the adelic `m × n` matrices. -/
+/--
+For totally complex `E` and finite `m`, `n` the rational matrices `New.ratMatrices E m n` form
+a lattice of covolume one in the adelic `m × n` matrices.
+-/
 instance isCovolOneLattice_ratMatrices [Fintype m] : IsCovolOneLattice (ratMatrices E m n) := by
   obtain ⟨R, -, h_dom⟩ := exists_hasFundDomain_toAdele (E := E)
   -- a matrix is by definition a family of rows, so the power is taken twice
@@ -466,7 +495,7 @@ lemma finite_preimage_of_discreteTopology_range {B I : Type*} [AddCommGroup B] [
   simpa using f.tendsto_coe_cofinite_of_isDiscrete hf_inj ⟨h_disc⟩ hC.compl_mem_cocompact
 
 omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure]
-    [T2Space B] in
+  [T2Space B] in
 /-- Let `f : I →+ B` be an injective additive map whose image is a lattice of covolume one in `B`
 (discrete, with compact quotient of measure one). Then for every compact set `C`, only finitely many
 `a` in `I` have `f a ∈ C`. -/

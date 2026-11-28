@@ -60,35 +60,37 @@ open MeasureTheory Matrix NumberField Submodule Set Function
 
 universe u_1 u_2
 
-variable {E : Type u_1} {ι : Type u_2} [Field E] [CMType E]
-  [WeilData E] [Fintype ι] [DecidableEq ι]
+variable {E : Type u_1} {ι : Type u_2} [Field E] [CMType E] [WeilData E] [Fintype ι] [DecidableEq ι]
 
-/-- The matrix action of the finite unitary group on the finite Heisenberg datum (β x y = ψ₀(y*
+/--
+The matrix action of the finite unitary group on the finite Heisenberg datum (β x y = ψ₀(y*
 x / 2); vacuum `finVac` = ψ₀(c₀ x* x / 2) on Ô^ι and `0` off it; `latticeMeasure` the Haar measure
 giving Ô^ι mass one), with multiplier `New.finMultiplier`, paired with its cocycle
-`finProjAction.1`, for which the cocycle identity holds by definition. -/
-noncomputable def finProjAction :
-    Σ c : Gf E ι → Gf E ι → ℂ,
+`finProjAction.1`, for which the cocycle identity holds by definition.
+-/
+noncomputable def finProjAction
+    : Σ c : Gf E ι → Gf E ι → ℂ,
       (finHeisenberg E ι).MultiplierAction (latticeMeasure E ι) finVac (Gf E ι) c where
   fst g h :=
-    finMultiplier g * finMultiplier h * finMultiplier (g * h)⁻¹ *
-      ∫ x : ι → 𝔸f E, ∫ y : ι → 𝔸f E, finVac (h • x) * finVac ((g * h) • y) * (finHeisenberg E ι).β
-        x y *
-        finVac (x + y) ∂latticeMeasure E ι ∂latticeMeasure E ι
-  snd :=
-    { beta_smul := by simp [finHeisenberg, HSMul.hSMul, SMul.smul]
-      -- `g` scales Haar measure by the inverse idele norm of its determinant, which is `1`.
-      measurePreserving g :=
-        ⟨by fun_prop, (map_mulVec_haar_finAdele ..).trans (by simp [g.finIdeleAbs_det])⟩
-      Δ := finMultiplier
-      continuous_delta := by
-        -- `finMultiplier` is invariant under right translation by the open subgroup `stdLevel E ι`.
-        refine (isLocallyConstant_of_eventually_mul
-          ((isOpen_stdLevel.eventually_mem (one_mem _)).mono fun k hk g ↦ ?_)).continuous
-        simpa using! glMultiplier_mul_of_mem g (one_mem _) hk
-      Δ_one := finMultiplier_eq_one_of_mem (one_mem (stdLevel E ι))
-      Δ_inv := finMultiplier_inv
-      cocycle _ _ := rfl }
+    finMultiplier g * finMultiplier h * finMultiplier (g * h)⁻¹
+      * ∫ x : ι → 𝔸f E, ∫ y : ι → 𝔸f E, finVac (h • x) * finVac ((g * h) • y) * (finHeisenberg E ι).β
+          x y *
+          finVac (x + y) ∂latticeMeasure E ι ∂latticeMeasure E ι
+  snd := {
+    beta_smul := by simp [finHeisenberg, HSMul.hSMul, SMul.smul]
+    -- `g` scales Haar measure by the inverse idele norm of its determinant, which is `1`.
+    measurePreserving g :=
+      ⟨by fun_prop, (map_mulVec_haar_finAdele ..).trans (by simp [g.finIdeleAbs_det])⟩
+    Δ := finMultiplier
+    continuous_delta := by
+      -- `finMultiplier` is invariant under right translation by the open subgroup `stdLevel E ι`.
+      refine (isLocallyConstant_of_eventually_mul ((isOpen_stdLevel.eventually_mem (one_mem _)).mono
+        fun k hk g ↦ ?_)).continuous
+      simpa using! glMultiplier_mul_of_mem g (one_mem _) hk
+    Δ_one := finMultiplier_eq_one_of_mem (one_mem (stdLevel E ι))
+    Δ_inv := finMultiplier_inv
+    cocycle _ _ := rfl
+  }
 
 open scoped Classical in
 /-- The integrand of the double integral in the cocycle at `(g, s)`, made of the vacuum `finVac`
@@ -142,13 +144,15 @@ lemma selfDualAddChar_traceOne_dot_congr (g s : Gf E ι) {x₁ x₂ y₁ y₂ : 
       (sub_mem (star_dotProduct_mem hx hd₂) h_snd'))) ?_
   rw [h_diff, mul_add, star_zero, add_zero, add_zero]
 
-/-- The pairs `(x, y)` of finite adelic vectors such that `x + y`, `s x` and `g s y` lie in the
+/--
+The pairs `(x, y)` of finite adelic vectors such that `x + y`, `s x` and `g s y` lie in the
 lattice `Ô^ι`, as an `Ô E`-submodule. The integrand of the cocycle at `(g, s)` lives on it
-(`New.stdLattice.cocycleIntegrand_eq`). -/
-def cocycleSubmodule {E : Type u_1} [Field E] [NumberField E] [IsCMField E]
-    (g s : Gf E ι) : Submodule (Ô E) ((ι → 𝔸f E) × (ι → 𝔸f E)) :=
-  (intVectors (Ô E) ι).comap (.coprod 1 1) ⊓
-    ((intVectors (Ô E) ι).comap (s.1.1 • .id)).prod ((intVectors (Ô E) ι).comap ((g * s).1 • .id))
+(`New.stdLattice.cocycleIntegrand_eq`).
+-/
+def cocycleSubmodule {E : Type u_1} [Field E] [NumberField E] [IsCMField E] (g s : Gf E ι)
+    : Submodule (Ô E) ((ι → 𝔸f E) × (ι → 𝔸f E)) :=
+  (intVectors (Ô E) ι).comap (.coprod 1 1)
+    ⊓ ((intVectors (Ô E) ι).comap (s.1.1 • .id)).prod ((intVectors (Ô E) ι).comap ((g * s).1 • .id))
 
 /-- For the square of the Haar measure `latticeMeasure E ι`, which gives Ô^ι mass one, the pairs
 `(x, y)` in `Ô^ι × Ô^ι` that lie in `cocycleSubmodule g s` (that is, `x + y`, `s x` and `g s y` are
@@ -470,11 +474,15 @@ lemma mem_cocycleRadical ⦃s : Gf E ι⦄ :
   exact eq_one_of_gauss_sum_of_inert hw (fun t q ↦ (h_smul t q).1) h_kill hr_sq hr_mod
     (norm_cocycle_eq_one (a * b) s) h_sum
 
-/-- The matrix action of the finite adelic unitary group on the finite Heisenberg datum with
-multiplier `New.finMultiplier`, together with the fact that its cocycle is identically 1. -/
-def _root_.New.finAction : (finHeisenberg E ι).MultiplierAction (latticeMeasure E ι) finVac
-  (Gf E ι) :=
-  { finProjAction.2 with cocycle g _ := mem_cocycleRadical g }
+/--
+The matrix action of the finite adelic unitary group on the finite Heisenberg datum with
+multiplier `New.finMultiplier`, together with the fact that its cocycle is identically 1.
+-/
+def _root_.New.finAction
+    : (finHeisenberg E ι).MultiplierAction (latticeMeasure E ι) finVac (Gf E ι) := {
+  finProjAction.2 with
+  cocycle g _ := mem_cocycleRadical g
+}
 
 end FiniteCocycleTrivial
 

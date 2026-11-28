@@ -58,9 +58,11 @@ open NumberField (InfinitePlace)
 
 section Frame
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r : Type} [Fintype n] [DecidableEq n]
-  [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] {s : n → ℤˣ} {s' : n' → ℤˣ}
-  {W : Space E n s} {W' : Space E n' s'} {D : W.Splitting W' r}
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n n' r : Type}
+  [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r]
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {W : Space E n s} {W' : Space E n' s'} {D : W.Splitting W' r}
 
 variable {b : GL r (𝔸 E)}
 
@@ -95,10 +97,14 @@ lemma posProj_eq : posProj s = (2⁻¹ : ℂ) • (1 + signMatrix s) := by
   rw [signMatrix_eq_posProj_sub]
   module
 
-/-- The vector `L a + I z + K c` with coordinates `a`, `z`, `c` in the directions `L`, `I`, `K` of
-the real mixed model of a splitting `D` adapted at `1` to `b`. -/
-def framePoint (h : D.IsAdapted 1 b) (a : InfinitePlace E × r → ℂ) (z : InfinitePlace E × n' → ℂ)
-    (c : InfinitePlace E × r → ℂ) : InfinitePlace E × n → ℂ :=
+/--
+The vector `L a + I z + K c` with coordinates `a`, `z`, `c` in the directions `L`, `I`, `K` of
+the real mixed model of a splitting `D` adapted at `1` to `b`.
+-/
+def framePoint
+    (h : D.IsAdapted 1 b) (a : InfinitePlace E × r → ℂ) (z : InfinitePlace E × n' → ℂ)
+    (c : InfinitePlace E × r → ℂ)
+    : InfinitePlace E × n → ℂ :=
   h.mixedModel.L *ᵥ a + h.mixedModel.I *ᵥ z + h.mixedModel.K *ᵥ c
 
 /-- Let `D.frameAt 1 b` be an adapted frame. The point `framePoint h a z c`, which is
@@ -263,8 +269,9 @@ end Frame
 
 section LinearAlgebra
 
-variable {r r' : Type} [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r'] {t : r → ℤˣ}
-  {t' : r' → ℤˣ}
+variable
+  {r r' : Type} [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r']
+  {t : r → ℤˣ} {t' : r' → ℤˣ}
 
 /-- The determinant of a matrix with rows and columns indexed by `Unit ⊕ Unit`. -/
 lemma det_unit_sum_unit (N : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ) :
@@ -339,36 +346,48 @@ end LinearAlgebra
 
 section DetVector
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n r : Type} [Fintype n] [DecidableEq n]
-  [Fintype r] [DecidableEq r]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n r : Type} [Fintype n] [DecidableEq n] [Fintype r] [DecidableEq r]
 
-/-- The square matrix `u₊ F` at the infinite place `w`: the positive part of the point `u` of
-`Hom(W, V)`, an `r × n` matrix at each place, times the `n × r` matrix `F w`. -/
-def posCoordMatrix (s : n → ℤˣ) (t : r → ℤˣ) (F : InfinitePlace E → Matrix n r ℂ)
-    (u : InfinitePlace E × r × n → ℂ) (w : InfinitePlace E) : Matrix r r ℂ :=
+/--
+The square matrix `u₊ F` at the infinite place `w`: the positive part of the point `u` of
+`Hom(W, V)`, an `r × n` matrix at each place, times the `n × r` matrix `F w`.
+-/
+def posCoordMatrix
+    (s : n → ℤˣ) (t : r → ℤˣ) (F : InfinitePlace E → Matrix n r ℂ) (u : InfinitePlace E × r × n → ℂ)
+    (w : InfinitePlace E)
+    : Matrix r r ℂ :=
   (of fun i j ↦ (posProj (realSigns E (homSigns s t)) *ᵥ u) (w, i, j)) * F w
 
-/-- The matrix of linear forms in the positive variables, with rows and columns indexed by the
+/--
+The matrix of linear forms in the positive variables, with rows and columns indexed by the
 basis vectors of sign `σ` of `V`, whose value at a point `u` is the block of sign `σ` of the
-conjugate transpose of `posCoordMatrix s t F u w`. -/
-def detPolyMatrix (s : n → ℤˣ) (t : r → ℤˣ) (F : InfinitePlace E → Matrix n r ℂ)
-    (w : InfinitePlace E) (σ : ℤˣ) : Matrix {i : r // t i = σ} {i : r // t i = σ}
+conjugate transpose of `posCoordMatrix s t F u w`.
+-/
+def detPolyMatrix
+    (s : n → ℤˣ) (t : r → ℤˣ) (F : InfinitePlace E → Matrix n r ℂ) (w : InfinitePlace E) (σ : ℤˣ)
+    : Matrix {i : r // t i = σ} {i : r // t i = σ}
       (MvPolynomial {c : InfinitePlace E × r × n // realSigns E (homSigns s t) c = 1} ℂ) :=
-  of fun l i ↦ ∑ j : {j : n // s j = σ},
-    C (star (F w j l)) * X ⟨(w, i, j), by simp [pairSign, i.property, j.property]⟩
+  of fun l i ↦
+    ∑ j : {j : n // s j = σ},
+      C (star (F w j l)) * X ⟨(w, i, j), by simp [pairSign, i.property, j.property]⟩
 
-/-- The determinant polynomial: the product over the infinite places `w` of the `m w`-th power of
+/--
+The determinant polynomial: the product over the infinite places `w` of the `m w`-th power of
 the determinant of `detPolyMatrix` on the positive block and the `(m w + 2 k)`-th power of that on
-the negative block. -/
-def detPoly (s : n → ℤˣ) (t : r → ℤˣ) (k : ℕ) (m : InfinitePlace E → ℕ)
-    (F : InfinitePlace E → Matrix n r ℂ) :
-    MvPolynomial {c : InfinitePlace E × r × n // realSigns E (homSigns s t) c = 1} ℂ :=
+the negative block.
+-/
+def detPoly
+    (s : n → ℤˣ) (t : r → ℤˣ) (k : ℕ) (m : InfinitePlace E → ℕ) (F : InfinitePlace E → Matrix n r ℂ)
+    : MvPolynomial {c : InfinitePlace E × r × n // realSigns E (homSigns s t) c = 1} ℂ :=
   ∏ w : InfinitePlace E, (detPolyMatrix s t F w 1).det ^ m w *
     (detPolyMatrix s t F w (-1)).det ^ (m w + 2 * k)
 
 /-- The determinant vector: the Fock vector of the determinant polynomial. -/
-def detVector (s : n → ℤˣ) (t : r → ℤˣ) (k : ℕ) (m : InfinitePlace E → ℕ)
-    (F : InfinitePlace E → Matrix n r ℂ) : PairFock E s t :=
+def detVector
+    (s : n → ℤˣ) (t : r → ℤˣ) (k : ℕ) (m : InfinitePlace E → ℕ) (F : InfinitePlace E → Matrix n r ℂ)
+    : PairFock E s t :=
   polyVector (realSigns E (homSigns s t)) (rename Subtype.val (detPoly s t k m F))
 
 variable {s : n → ℤˣ} {t : r → ℤˣ}
@@ -498,11 +517,13 @@ end DetVector
 
 section ConeIntegral
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} [Fintype n]
-  [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r']
-  [DecidableEq r'] {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s}
-  {W' : Space E n' s'} {V : Space E r t} {V' : Space E r' t'} (A : W'.Splitting W Unit)
-  (X : V'.Splitting V Unit) [IsBaseAdapted A] [IsBaseAdapted X]
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n n' r r' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r]
+  [DecidableEq r] [Fintype r'] [DecidableEq r']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
+  {V : Space E r t} {V' : Space E r' t'} (A : W'.Splitting W Unit) (X : V'.Splitting V Unit)
+  [IsBaseAdapted A] [IsBaseAdapted X]
 
 omit [WeilData E] in
 /-- The component at an infinite place of a product of adelic matrices is the product of the
@@ -512,8 +533,10 @@ lemma atRealPlace_mul {a b c : Type} [Fintype b] (M : Matrix a b (𝔸 E)) (N : 
   ext i j
   simp [Matrix.mul_apply, Prod.fst_sum]
 
-/-- The point of the real mixed model of `lineTermSplitting` with coordinate `a w` on the line at
-each infinite place `w` and `0` elsewhere. -/
+/--
+The point of the real mixed model of `lineTermSplitting` with coordinate `a w` on the line at
+each infinite place `w` and `0` elsewhere.
+-/
 def lineCoord (n r : Type) (a : InfinitePlace E → ℂ) : InfinitePlace E × LineIndex n r → ℂ :=
   fun p ↦ a p.1 * p.2.isRight.toNat
 
@@ -533,12 +556,13 @@ lemma framePoint_lineTermSplitting_apply (β : Bool) (a : InfinitePlace E → �
   cases β <;> simp [lineCoord, realMatrix, mulVec, dotProduct, blockDiagonal, sum_prod_type,
     vecToMatrix, add_comm] <;> ring
 
-/-- The matrices `G w` of the determinant vector one floor up: minus the identification of the two
-hyperbolic planes, plus `F w` between the images of `W` and `V`. -/
+/--
+The matrices `G w` of the determinant vector one floor up: minus the identification of the two
+hyperbolic planes, plus `F w` between the images of `W` and `V`.
+-/
 def liftFrame (F : InfinitePlace E → Matrix n r ℂ) (w : InfinitePlace E) : Matrix n' r' ℂ :=
-  -(atRealPlace (A.lAdelic.fromCols A.kAdelic) w *
-      (atRealPlace (X.lAdelic.fromCols X.kAdelic) w)ᴴ) +
-    atRealPlace A.iAdelic w * F w * (atRealPlace X.iAdelic w)ᴴ
+  -(atRealPlace (A.lAdelic.fromCols A.kAdelic) w * (atRealPlace (X.lAdelic.fromCols X.kAdelic) w)ᴴ)
+    + atRealPlace A.iAdelic w * F w * (atRealPlace X.iAdelic w)ᴴ
 
 /-- At the point `-L x + I u - K x` of the mixed model of `lineTermSplitting A X β`, with `x` equal
 to `a` on the line, the matrix `posCoordMatrix` of `liftFrame A X F` is, in the adapted frame of
@@ -650,21 +674,26 @@ lemma lineTermReal_detVector (β : Bool) (a : InfinitePlace E → ℂ) (k : ℕ)
       simp only [h_minor, h_prod, h_vac, star_mul', star_prod, star_pow]
       ring
 
-/-- Let `card n' = 2 (k + q')`, with `q'` the number of negative signs of `s'`, and `μ w = k + m w`.
+/--
+Let `card n' = 2 (k + q')`, with `q'` the number of negative signs of `s'`, and `μ w = k + m w`.
 The cone integrand at `p = (κ, a)` of the determinant vector of `liftFrame A X F`, in either model
 `β` and for every real exponent `z`, is the determinant vector of `F` times the positive number
-`exp (-∑ |a w|²) |a| ^ z ∏ |a w| ^ (2 (k + m w))`. -/
-theorem coneIntegrand_detVector (β : Bool) (z : ℝ) {k : ℕ}
-    (hn : card n' = 2 * (k + negCount s')) (m : InfinitePlace E → ℕ) {μ : InfinitePlace E → ℤ}
-    (hμ : ∀ w : InfinitePlace E, μ w = k + m w) (F : InfinitePlace E → Matrix n r ℂ)
-    (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) :
-    coneIntegrand A X μ β z (detVector s' t' k m (liftFrame A X F)) p =
-      (Real.exp (-∑ w : InfinitePlace E, ‖p.2.val w‖ ^ 2) * ideleAbs (realIdele p.2) ^ z *
-        ∏ w : InfinitePlace E, normSq (p.2.val w) ^ (k + m w)) • detVector s t k m F := by
+`exp (-∑ |a w|²) |a| ^ z ∏ |a w| ^ (2 (k + m w))`.
+-/
+theorem coneIntegrand_detVector
+    (β : Bool) (z : ℝ)
+    {k : ℕ} (hn : card n' = 2 * (k + negCount s'))
+    (m : InfinitePlace E → ℕ)
+    {μ : InfinitePlace E → ℤ} (hμ : ∀ w : InfinitePlace E, μ w = k + m w)
+    (F : InfinitePlace E → Matrix n r ℂ) (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ)
+    : coneIntegrand A X μ β z (detVector s' t' k m (liftFrame A X F)) p
+      = (Real.exp (- ∑ w : InfinitePlace E, ‖p.2.val w‖ ^ 2) * ideleAbs (realIdele p.2) ^ z
+          * ∏ w : InfinitePlace E, normSq (p.2.val w) ^ (k + m w))
+        • detVector s t k m F := by
   obtain ⟨κ, a⟩ := p
-  have h_phase (w : InfinitePlace E) :
-      (a.val w / ‖a.val w‖) ^ (2 * μ w) * star (a.val w) ^ (2 * (k + m w)) =
-        (normSq (a.val w) ^ (k + m w) : ℝ) := by
+  have h_phase (w : InfinitePlace E)
+      : (a.val w / ‖a.val w‖) ^ (2 * μ w) * star (a.val w) ^ (2 * (k + m w))
+        = (normSq (a.val w) ^ (k + m w) : ℝ) := by
     have h_sq : (a.val w / ‖a.val w‖) ^ 2 * star (a.val w) ^ 2 = normSq (a.val w) := by
       rw [← mul_pow, div_mul_eq_mul_div, star_def, mul_conj', normSq_eq_norm_sq, ofReal_pow]
       field_simp [piUnits_val_apply_ne_zero]
@@ -691,37 +720,46 @@ lemma detVector_of_isEmpty [IsEmpty r] (k : ℕ) (m : InfinitePlace E → ℕ)
     (F : InfinitePlace E → Matrix n r ℂ) : detVector s t k m F = vacVector := by
   simp [detVector, detPoly]
 
-/-- Determinant vectors are cone integrals of determinant vectors one floor up. Let
+/--
+Determinant vectors are cone integrals of determinant vectors one floor up. Let
 `card n' = 2 (k + q')`, with `q'` the number of negative signs of `s'`, let `μ w = k + m w` and
 `0 < z`. In either model `β` of the summation formula on the line, every multiple of a determinant
 vector of `(W, V)` is the integral of the cone integrand of a multiple of a determinant vector of
-`(W', V')`. -/
-theorem exists_integral_coneIntegrand_detVector (β : Bool) {z : ℝ} (hz : 0 < z) {k : ℕ}
-    (hn : card n' = 2 * (k + negCount s')) (m : InfinitePlace E → ℕ) {μ : InfinitePlace E → ℤ}
-    (hμ : ∀ w : InfinitePlace E, μ w = k + m w) (F : InfinitePlace E → Matrix n r ℂ) (c : ℂ) :
-    ∃ c' : ℂ, ∫ p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ,
-      coneIntegrand A X μ β z (c' • detVector s' t' k m (liftFrame A X F)) p
-        ∂Measure.haar.prod Measure.haar = c • detVector s t k m F := by
-  have h_smul (c' : ℂ) (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) :
-      coneIntegrand A X μ β z (c' • detVector s' t' k m (liftFrame A X F)) p =
-        c' • coneIntegrand A X μ β z (detVector s' t' k m (liftFrame A X F)) p := by
+`(W', V')`.
+-/
+theorem exists_integral_coneIntegrand_detVector
+    (β : Bool)
+    {z : ℝ} (hz : 0 < z)
+    {k : ℕ} (hn : card n' = 2 * (k + negCount s'))
+    (m : InfinitePlace E → ℕ)
+    {μ : InfinitePlace E → ℤ} (hμ : ∀ w : InfinitePlace E, μ w = k + m w)
+    (F : InfinitePlace E → Matrix n r ℂ) (c : ℂ)
+    : ∃ c' : ℂ,
+      ∫ p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ,
+          coneIntegrand A X μ β z (c' • detVector s' t' k m (liftFrame A X F)) p
+            ∂Measure.haar.prod Measure.haar
+        = c • detVector s t k m F := by
+  have h_smul (c' : ℂ) (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ)
+      : coneIntegrand A X μ β z (c' • detVector s' t' k m (liftFrame A X F)) p
+        = c' • coneIntegrand A X μ β z (detVector s' t' k m (liftFrame A X F)) p := by
     simp only [coneIntegrand, map_smul]
     rw [smul_comm]
   by_cases h_zero : detVector s t k m F = 0
   · exact ⟨0, by simp_rw [h_smul, zero_smul, integral_zero, h_zero, smul_zero]⟩
   -- The cone integrand is a positive function `ρ` times the determinant vector of `F`.
   let ρ (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) : ℝ :=
-    Real.exp (-∑ w : InfinitePlace E, ‖p.2.val w‖ ^ 2) * ideleAbs (realIdele p.2) ^ z *
-      ∏ w : InfinitePlace E, normSq (p.2.val w) ^ (k + m w)
+    Real.exp (- ∑ w : InfinitePlace E, ‖p.2.val w‖ ^ 2) * ideleAbs (realIdele p.2) ^ z
+      * ∏ w : InfinitePlace E, normSq (p.2.val w) ^ (k + m w)
   have hρ_pos (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) : 0 < ρ p :=
     mul_pos (mul_pos (Real.exp_pos _) (Real.rpow_pos_of_pos ideleAbs_pos _))
       (Finset.prod_pos fun w _ ↦ pow_pos (normSq_pos.2 (piUnits_val_apply_ne_zero _ _)) _)
-  have h_integrand : coneIntegrand A X μ β z (detVector s' t' k m (liftFrame A X F)) =
-      fun p ↦ ρ p • detVector s t k m F :=
+  have h_integrand
+      : coneIntegrand A X μ β z (detVector s' t' k m (liftFrame A X F))
+        = fun p ↦ ρ p • detVector s t k m F :=
     funext fun p ↦ coneIntegrand_detVector A X β z hn m hμ F p
   have h_integrable : Integrable ρ (Measure.haar.prod Measure.haar) := by
-    have h_schwartz : IsSchwartzVector (detVector s' t' k m (liftFrame A X F)) :=
-      fun N ↦ fockMoment_polyVector_ne_top N _
+    have h_schwartz : IsSchwartzVector (detVector s' t' k m (liftFrame A X F)) := fun N ↦
+      fockMoment_polyVector_ne_top N _
     have h_cone := (integrable_coneIntegrand A X μ β hz h_schwartz).1
     rw [h_integrand] at h_cone
     exact (integrable_smul_const h_zero).1 h_cone

@@ -76,31 +76,38 @@ section MainSummandWeights
 variable {E : Type*} [Field E] {P : Parameters} (D : Data P)
 
 open scoped Classical in
-/-- The sign of a complex embedding σ of E: 1 if σ is the embedding the CM type chooses at its
-place, and −1 otherwise. -/
+/--
+The sign of a complex embedding σ of E: 1 if σ is the embedding the CM type chooses at its
+place, and −1 otherwise.
+-/
 def cmSign [c : PlaceEmbedding E] (σ : E →+* ℂ) : ℤˣ :=
   if σ = c.Φ (NumberField.InfinitePlace.mk σ) then 1 else -1
 
 /-- The complex embedding ι⁻¹ ∘ g⁻¹ ∘ e of E, for e: E → ℚ̄_ℓ and g in G_ℓ. -/
-def complexEmbeddingOf {ℓ : ℕ} [Fact ℓ.Prime] [PadicIso ℓ] (e : E →+* PadicAlgCl ℓ) (g : Gp ℓ) :
-    E →+* ℂ :=
+def complexEmbeddingOf {ℓ : ℕ} [Fact ℓ.Prime] [PadicIso ℓ] (e : E →+* PadicAlgCl ℓ) (g : Gp ℓ)
+    : E →+* ℂ :=
   ιℓ.symm.toRingHom.comp (g⁻¹.toRingHom.comp (α := E) e)
 
-/-- The conditions on the jumps `J σ` (a multiset of integers for each complex embedding `σ`) of a
+/--
+The conditions on the jumps `J σ` (a multiset of integers for each complex embedding `σ`) of a
 main summand of rank `r` with a string of length `t`, for admissible data `D`: each jump is low or
 near `∓w_j(σ)`, where `w_j = D.liftWeight j` is the weight of the `j`-th lift, `j ≤ D.m`; few jumps
-have `|u| ≤ 2 halfGap²`, and at most `r` jumps at `σ` and `σ̄` together are negative. -/
+have `|u| ≤ 2 halfGap²`, and at most `r` jumps at `σ` and `σ̄` together are negative.
+-/
 structure IsMainSummandWeights (r t : ℕ) (J : (D.E →+* ℂ) → Multiset ℤ) where
   /-- The rank `r` lies between `1` and `D.r`. -/
   rank_mem : r ∈ Set.Icc 1 D.r
   /-- The length `t` of the string is at most `D.t`. -/
   t_le : t ≤ D.t
-  /-- For one `j ≤ m`, each jump `u` at an embedding `σ` is low, `Δ / 4 ≤ |u| ≤ 2 m Δ` with
+  /--
+  For one `j ≤ m`, each jump `u` at an embedding `σ` is low, `Δ / 4 ≤ |u| ≤ 2 m Δ` with
   `Δ = D.gap = 2 halfGap`, or high: within `D.t` of `-w_j(σ)` if `σ` is in the CM type, of `w_j(σ)`
-  otherwise. -/
-  low_or_high : ∃ j ≤ D.m, ∀ σ : D.E →+* ℂ, ∀ u ∈ J σ,
-    D.gap ≤ 4 * u.natAbs ∧ u.natAbs ≤ 2 * D.m * D.gap ∨
-    |cmSign σ * u + D.liftWeight j (NumberField.InfinitePlace.mk σ)| ≤ D.t
+  otherwise.
+  -/
+  low_or_high
+    : ∃ j ≤ D.m, ∀ σ : D.E →+* ℂ, ∀ u ∈ J σ,
+      D.gap ≤ 4 * u.natAbs ∧ u.natAbs ≤ 2 * D.m * D.gap
+        ∨ |cmSign σ * u + D.liftWeight j (NumberField.InfinitePlace.mk σ)| ≤ D.t
   /-- At most `r m / k` jumps `u` at `σ` are small: `|u| ≤ 2 halfGap²`. -/
   card_small_le (σ : D.E →+* ℂ) : (J σ).countP (·.natAbs ≤ 2 * D.halfGap ^ 2) * D.k ≤ r * D.m
   /-- At most `r` jumps at `σ` and `σ̄` together are negative. -/
@@ -119,17 +126,21 @@ lemma lt_natAbs_of_abs_add_liftWeight_le {D : Data P} {j B : ℕ} {σ : D.E →+
   obtain hσ | hσ := Int.units_eq_one_or (cmSign σ) <;>
     simp only [hσ, Units.val_neg, Units.val_one] at h_near <;> omega
 
-/-- The crystalline loss of three natural numbers h, b, l: the l-adic valuation of the product of
+/--
+The crystalline loss of three natural numbers h, b, l: the l-adic valuation of the product of
 (2b)! and P^(h³), where P is the product of the natural numbers k with
-max(b − 30h³, 0) < k ≤ b + 30h³. -/
+max(b − 30h³, 0) < k ≤ b + 30h³.
+-/
 @[irreducible]
 def crystallineLoss (h b l : ℕ) : ℕ :=
   padicValNat l
     ((2 * b).factorial * (∏ k ∈ Finset.Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3), k) ^ h ^ 3)
 
-/-- The unit at `l` of the bound on the loss of a lift, for the data `D`:
+/--
+The unit at `l` of the bound on the loss of a lift, for the data `D`:
 `10⁶ (m/k) (natB v_l(M) + crystallineLoss halfGap natB l)`, where `v_l` is the `l`-adic valuation
-and `M = D.M` is the product of the two level primes. -/
+and `M = D.M` is the product of the two level primes.
+-/
 def defectBound (l : ℕ) : NNReal :=
   10 ^ 6 * (D.m / D.k * (D.natB * padicValNat l D.M + crystallineLoss D.halfGap D.natB l))
 
@@ -358,15 +369,19 @@ open scoped Pointwise
 
 section Cocycles
 
-variable {O X G σ d : Type*} [CommRing O] [Group G] [Fintype σ] [DecidableEq σ] [Fintype d]
-  [DecidableEq d] (u : X → G →* Matrix σ σ O) (ρ : G →* Matrix d d O)
+variable
+  {O X G σ d : Type*} [CommRing O] [Group G] [Fintype σ] [DecidableEq σ] [Fintype d] [DecidableEq d]
+  (u : X → G →* Matrix σ σ O) (ρ : G →* Matrix d d O)
 
-/-- The cocycles `c : G → B ^ d` for `ρ`, with values in any `O`-module `B`, that obey the linear
+/--
+The cocycles `c : G → B ^ d` for `ρ`, with values in any `O`-module `B`, that obey the linear
 relations among the families `(u x g - 1)_x`: for finitely supported `θ : G → O`, if
-`∑ θ g • (u x g - 1) = 0` for all `x`, then `∑ θ g • c g = 0`. -/
+`∑ θ g • (u x g - 1) = 0` for all `x`, then `∑ θ g • c g = 0`.
+-/
 def ribetCocyclesIn (B : Type*) [AddCommGroup B] [Module O B] : Submodule O (G → d → B) where
-  carrier := {c ∈ obeying (cocycleRelations ρ) B | ∀ θ : G →₀ O,
-    linearCombination O (fun (g : G) (x : X) ↦ u x g - 1) θ = 0 → linearCombination O c θ = 0}
+  carrier :=
+    {c ∈ obeying (cocycleRelations ρ) B | ∀ θ : G →₀ O,
+      linearCombination O (fun (g : G) (x : X) ↦ u x g - 1) θ = 0 → linearCombination O c θ = 0}
   zero_mem' := by simp
   add_mem' := by
     rintro c c' ⟨h_coc, h_rel⟩ ⟨h_coc', h_rel'⟩
@@ -377,10 +392,11 @@ def ribetCocyclesIn (B : Type*) [AddCommGroup B] [Module O B] : Submodule O (G �
     refine ⟨smul_mem _ s h_coc, fun θ hθ ↦ ?_⟩
     exact ((bilinearCombination O O).map_smul₂ s c θ).trans (smul_eq_zero_of_right s (h_rel θ hθ))
 
-/-- The cocycles `c : G → (O / a) ^ d` for `ρ` that obey the linear relations among the families
-`(u x g - 1)_x`: the case `B = O / a` of `ribetCocyclesIn`. -/
-abbrev ribetCocycles (a : O) : Submodule O (G → d → QuotSpan a) :=
-  ribetCocyclesIn u ρ (QuotSpan a)
+/--
+The cocycles `c : G → (O / a) ^ d` for `ρ` that obey the linear relations among the families
+`(u x g - 1)_x`: the case `B = O / a` of `ribetCocyclesIn`.
+-/
+abbrev ribetCocycles (a : O) : Submodule O (G → d → QuotSpan a) := ribetCocyclesIn u ρ (QuotSpan a)
 
 variable {u ρ} in
 lemma mem_ribetCocycles {a : O} {c : G → d → QuotSpan a} :
@@ -446,31 +462,38 @@ lemma ribetCocycles.exists_graph_subrepresentation [Finite X] [IsNoetherianRing 
 
 end Cocycles
 
-/-- The index sets of the summands of a lift: `r` for the main summand, and one point for each of
-the `t` characters, which are `1 × 1` summands. -/
+/--
+The index sets of the summands of a lift: `r` for the main summand, and one point for each of
+the `t` characters, which are `1 × 1` summands.
+-/
 def SummandCoordIndex (r : Type) {t : ℕ} : Option (Fin t) → Type
   | none => r
   | .some _ => Unit
 
 /-- Each index set `SummandCoordIndex r i` is finite if `r` is. -/
-instance {r : Type} [inst : Fintype r] {t : ℕ} :
-    ∀ i : Option (Fin t), Fintype (SummandCoordIndex r i)
+instance {r : Type} [inst : Fintype r] {t : ℕ}
+    : ∀ i : Option (Fin t), Fintype (SummandCoordIndex r i)
   | none => inst
   | .some _ => PUnit.fintype
 
 /-- Each index set `SummandCoordIndex r i` has decidable equality if `r` has. -/
-instance {r : Type} [inst : DecidableEq r] {t : ℕ} :
-    ∀ i : Option (Fin t), DecidableEq (SummandCoordIndex r i)
+instance {r : Type} [inst : DecidableEq r] {t : ℕ}
+    : ∀ i : Option (Fin t), DecidableEq (SummandCoordIndex r i)
   | none => inst
   | .some _ => instDecidableEqPUnit
 
-variable {d : Type} [Fintype d] [DecidableEq d] {t ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E]
-  [EmbeddedNumberField E] {O : CoeffRing ℓ} (T : Gal(Ω/E) →* Matrix d d O)
+variable
+  {d : Type} [Fintype d] [DecidableEq d]
+  {t ℓ : ℕ} [ThePrime ℓ]
+  {E : Type} [Field E] [EmbeddedNumberField E]
+  {O : CoeffRing ℓ} (T : Gal(Ω/E) →* Matrix d d O)
 
-/-- The summands of a lift: `T` on the main summand, and on the summand of `e : Fin t` the Tate
-twist `O(-e)`, the `e`-th power of the inverse cyclotomic character. -/
-def summandRep : ∀ i : Option (Fin t), Gal(Ω/E) →* Matrix (SummandCoordIndex d i)
-  (SummandCoordIndex d i) O
+/--
+The summands of a lift: `T` on the main summand, and on the summand of `e : Fin t` the Tate
+twist `O(-e)`, the `e`-th power of the inverse cyclotomic character.
+-/
+def summandRep
+    : ∀ i : Option (Fin t), Gal(Ω/E) →* Matrix (SummandCoordIndex d i) (SummandCoordIndex d i) O
   | none => T
   | Option.some e => tateTwist ℓ E O e
 
@@ -491,12 +514,18 @@ functions with values in `Bⁿ` that obey the relations `R`, and `New.relLength 
 
 section CrystallineConditions
 
-variable (ℓ : ℕ) [ThePrime ℓ] {n : Type*} [Fintype n] [DecidableEq n]
-  (E : Type) [Field E] [EmbeddedNumberField E] (v : placesDividing E ℓ) {O : CoeffRing ℓ}
+variable
+  (ℓ : ℕ) [ThePrime ℓ]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  (E : Type) [Field E] [EmbeddedNumberField E]
+  (v : placesDividing E ℓ)
+  {O : CoeffRing ℓ}
 
-/-- A chosen embedding Ω → ℚ̄_ℓ that induces the chosen place of Ω above v, together with the
+/--
+A chosen embedding Ω → ℚ̄_ℓ that induces the chosen place of Ω above v, together with the
 homomorphism to Gal(ℚ̄_ℓ over ℚ_ℓ) from the decomposition group of that place that goes with it in
-the sense of `New.GaloisRep.InducesPlace`. -/
+the sense of `New.GaloisRep.InducesPlace`.
+-/
 instance localChart : GaloisRep.PadicPlaceEmbedding E (placeOver v.val) ℓ :=
   -- Membership of `v` in `placesDividing E ℓ` implies that `ℓ` has valuation less than 1
   -- at `placeOver v.1`. First choose an embedding inducing exactly that place, then use
@@ -504,38 +533,47 @@ instance localChart : GaloisRep.PadicPlaceEmbedding E (placeOver v.val) ℓ :=
   -- Both chosen maps are read off the type of `loc`.
   have loc :=
     (exists_inducesPlace E _
-      (exists_comap_intQpBar_eq
-        (v.1.isPlaceOver_placeOver.valuation_natCast_lt_one_iff.2 v.2)).choose_spec).choose_spec
+      (exists_comap_intQpBar_eq (v.1.isPlaceOver_placeOver.valuation_natCast_lt_one_iff.2
+        v.2)).choose_spec).choose_spec
   { isOpen_range := ⟨loc.2.1.isOpen_range⟩, inducesPlace := loc, .. }
 
 variable {ℓ E} (u : Gal(Ω/E) →* Matrix n n O)
 
-/-- For g in Gal(ℚ̄_ℓ over ℚ_ℓ), the embedding of the coefficient ring O in ℂ_ℓ sending x to
-g(x). -/
+/--
+For g in Gal(ℚ̄_ℓ over ℚ_ℓ), the embedding of the coefficient ring O in ℂ_ℓ sending x to
+g(x).
+-/
 def coefficientEmbedding (O : CoeffRing ℓ) (g : Gp ℓ) : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ] :=
   IsScalarTower.toAlgHom ℤ_[ℓ] (PadicAlgCl ℓ) ℂ_[ℓ]
     |>.comp (g.toAlgHom.restrictScalars ℤ_[ℓ])
     |>.comp O.val.val
 
-/-- The O-module Z_f at v: crystalline cocycles (`New.Period.crysCocycles`) of the decomposition
-group of the chosen place above v, with values in O^n acted on through u. -/
+/--
+The O-module Z_f at v: crystalline cocycles (`New.Period.crysCocycles`) of the decomposition
+group of the chosen place above v, with values in O^n acted on through u.
+-/
 def crysCocyclesAt : Submodule O (decompGroup Gal(Ω/E) (placeOver v.val) → n → ↑O) :=
-  Period.crysCocycles
-    (actionRep O (n → ↑O) (u.comp (decompGroup Gal(Ω/E) (placeOver v.val)).subtype))
+  Period.crysCocycles (actionRep O (n → ↑O)
+    (u.comp (decompGroup Gal(Ω/E) (placeOver v.val)).subtype))
 
-/-- The linear relations that hold on the crystalline cocycles `New.Selmer.crysCocyclesAt v u` for
+/--
+The linear relations that hold on the crystalline cocycles `New.Selmer.crysCocyclesAt v u` for
 some v above ℓ, extended by zero from the decomposition group to relations on functions on
-Gal(Ω/E). -/
+Gal(Ω/E).
+-/
 def crysRelations : Set (Gal(Ω/E) →₀ Matrix n n O) :=
   ⋃ v : placesDividing E ℓ, Finsupp.mapDomain Subtype.val '' relationsOn (crysCocyclesAt v u)
 
-/-- The crystalline colength of the summand `u` modulo `ℓ ^ M`, with respect to a family `w` of
+/--
+The crystalline colength of the summand `u` modulo `ℓ ^ M`, with respect to a family `w` of
 matrix representations of Gal(Ω/E): the length of the module of cocycles for `u` with values in
 `(O/ℓ^M)^n` that obey every linear relation among the `(w x g - 1)_x` (`New.Selmer.ribetCocycles`),
 modulo those that also obey the relations `New.Selmer.crysRelations u` of the crystalline cocycles
-above `ℓ`. -/
-abbrev crystallineColength {X σ : Type*} [Fintype σ] [DecidableEq σ]
-    (w : X → Gal(Ω/E) →* Matrix σ σ O) (M : ℕ) : ℕ∞ :=
+above `ℓ`.
+-/
+abbrev crystallineColength
+    {X σ : Type*} [Fintype σ] [DecidableEq σ] (w : X → Gal(Ω/E) →* Matrix σ σ O) (M : ℕ)
+    : ℕ∞ :=
   relLength (ribetCocycles w u (ℓ ^ M)) (obeying (crysRelations u) (QuotSpan ((ℓ : ↑O) ^ M)))
 
 /-- Let `E` be an embedded number field, `O` the ring of integers of a finite Galois extension
@@ -565,7 +603,9 @@ section LocalEmbeddings
 
 open Period IsAlgClosed GaloisRep Set Algebra.IsAlgebraic Setoid QuotientGroup
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E Γ : Type _} [Field E] [Group Γ] [TopologicalSpace Γ]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E Γ : Type _} [Field E] [Group Γ] [TopologicalSpace Γ]
   {e : E →+* PadicAlgCl ℓ} {j : Γ →* Gp ℓ}
 
 /-- Every `ℤ_ℓ`-algebra map `O → ℂ_ℓ` is the restriction of an element of `Gp ℓ`, the Galois

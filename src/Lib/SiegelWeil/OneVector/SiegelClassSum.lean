@@ -84,12 +84,15 @@ open NumberField Real Matrix MeasureTheory Complex Finset Function New SiegelWei
 
 /-! ### The Siegel–Weil formula for the hyperbolic plane -/
 
-/-- The splitting of the hyperbolic plane with basis `l`, `k` in which the first frame is
+/--
+The splitting of the hyperbolic plane with basis `l`, `k` in which the first frame is
 `l + j⁻¹ a k`, which spans an isotropic line for `a` in `E⁺`, and the second is `k`. The complement
 of the two frames is `stdSpace E Empty`, of rank 0, so its embedding `i` is `0`. Here `j` is the
-purely imaginary element of the Weil data. -/
-noncomputable def New.SiegelWeil.shearSplitting {E : Type} [Field E] [CMType E] [WeilData E]
-    (a : maximalRealSubfield E) : (hyperbolicSpace E Unit).Splitting (stdSpace E Empty) Unit where
+purely imaginary element of the Weil data.
+-/
+noncomputable def New.SiegelWeil.shearSplitting
+    {E : Type} [Field E] [CMType E] [WeilData E] (a : maximalRealSubfield E)
+    : (hyperbolicSpace E Unit).Splitting (stdSpace E Empty) Unit where
   k := (hyperbolicSplitting E Unit).l + (j⁻¹ * a : E) • (hyperbolicSplitting E Unit).k
   l := (hyperbolicSplitting E Unit).k
   i := 0
@@ -277,10 +280,13 @@ lemma New.exists_fundamentalDomain_real {E : Type} [Field E] [CMType E] [WeilDat
     sqrt_sq_eq_abs,
     coeIdeal_absNorm, absNorm_differentIdeal R, measureReal_def, discr_ne_zero]
 
-/-- An adele of the real subfield `E⁺`, given by its real components and its finite part, as a
-self-adjoint adele of `E`. -/
-noncomputable def New.realAdele {E : Type} [Field E] [CMType E]
-    (z : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) : 𝔸 E :=
+/--
+An adele of the real subfield `E⁺`, given by its real components and its finite part, as a
+self-adjoint adele of `E`.
+-/
+noncomputable def New.realAdele
+    {E : Type} [Field E] [CMType E] (z : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E))
+    : 𝔸 E :=
   (fun v ↦ z.1 v, z.2)
 
 open scoped Classical in
@@ -495,12 +501,15 @@ lemma New.SiegelWeil.siegel_weil_fourierCoeff {E κ : Type} [Field E] [CMType E]
 
 /-! ### The factors at the infinite places and the class sum -/
 
-/-- The density of `Φ₀` at `α`: the condition `x* x = α` is detected by the phase
+/--
+The density of `Φ₀` at `α`: the condition `x* x = α` is detected by the phase
 `ψ_f(z (x* x - α) / 2)`, integrated over the self-adjoint finite adeles `z`. The measure of `z`
 gives the codifferent the volume `1`, and that of each coordinate of `x` gives `Ô` the volume
-`volÔ E`. -/
-noncomputable def New.normDensity {E κ : Type} [Field E] [CMType E] [Fintype κ]
-    (Φ₀ : (κ → 𝔸f E) → NNReal) (α : 𝔸f E) : ℂ :=
+`volÔ E`.
+-/
+noncomputable def New.normDensity
+    {E κ : Type} [Field E] [CMType E] [Fintype κ] (Φ₀ : (κ → 𝔸f E) → NNReal) (α : 𝔸f E)
+    : ℂ :=
   ∫ z : selfAdjoint (𝔸f E), ∫ x : κ → 𝔸f E,
     (ψf E ((2⁻¹ : E) * (z.val * (star x ⬝ᵥ x - α))) : ℂ) ∂volume.withDensity fun x ↦ Φ₀ x
 

@@ -55,14 +55,16 @@ The group algebra `Λ[G]`, `Λ = O[X j]`, acts through every representation and 
 
 section SetUp
 
-variable {O L Y G J σ W : Type} [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ]
-  [Group G] (u : Y → G →* Matrix σ σ O) {S : Subalgebra O (Y → MvPolynomial J L)}
-  (𝒥 : Submodule S (Y → MvPolynomial J L))
+variable
+  {O L Y G J σ W : Type}
+  [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ] [Group G]
+  (u : Y → G →* Matrix σ σ O)
+  {S : Subalgebra O (Y → MvPolynomial J L)} (𝒥 : Submodule S (Y → MvPolynomial J L))
 
 /-- The action of `O[X j][G]` that extends a representation `ρ` of `G` over `O`. -/
-noncomputable def polyAction (J : Type) {n : Type} [Fintype n] [DecidableEq n]
-    (ρ : G →* Matrix n n O) :
-    (MvPolynomial J O)[G] →ₐ[MvPolynomial J O] Matrix n n (MvPolynomial J O) :=
+noncomputable def polyAction
+    (J : Type) {n : Type} [Fintype n] [DecidableEq n] (ρ : G →* Matrix n n O)
+    : (MvPolynomial J O)[G] →ₐ[MvPolynomial J O] Matrix n n (MvPolynomial J O) :=
   lift (MvPolynomial J O) (Matrix n n (MvPolynomial J O)) G
     ((Algebra.ofId O (MvPolynomial J O)).mapMatrix.toMonoidHom.comp ρ)
 
@@ -85,8 +87,8 @@ lemma polyAction_aeval {n : Type} [Fintype n] [DecidableEq n] (ρ : G →* Matri
     aeval_algHom_apply, AlgHom.restrictScalars_apply]
 
 /-- The action of `O[X j][G]` that extends a character `ξ` of `G` over `O`. -/
-noncomputable def polyChar (J : Type) (ξ : G →* O) :
-    (MvPolynomial J O)[G] →ₐ[MvPolynomial J O] MvPolynomial J O :=
+noncomputable def polyChar (J : Type) (ξ : G →* O)
+    : (MvPolynomial J O)[G] →ₐ[MvPolynomial J O] MvPolynomial J O :=
   lift (MvPolynomial J O) (MvPolynomial J O) G
     ((Algebra.ofId O (MvPolynomial J O)).toMonoidHom.comp ξ)
 
@@ -101,9 +103,9 @@ noncomputable def coordRows (J ι : Type) : (ι → O) →ₗ[O] ι → (MvPolyn
     (MonoidAlgebra.of (MvPolynomial J O) G 1)).compLeft ι
 
 /-- The action of `O[X j][G]` through `ρ` at `X j = 0`: an `O`-algebra map to matrices over `O`. -/
-noncomputable def polyActionAtZero (J : Type) {n : Type} [Fintype n] [DecidableEq n]
-    (ρ : G →* Matrix n n O) :
-    (MvPolynomial J O)[G] →ₐ[O] Matrix n n O :=
+noncomputable def polyActionAtZero
+    (J : Type) {n : Type} [Fintype n] [DecidableEq n] (ρ : G →* Matrix n n O)
+    : (MvPolynomial J O)[G] →ₐ[O] Matrix n n O :=
   (MvPolynomial.aeval (0 : J → O)).mapMatrix.comp ((polyAction J ρ).restrictScalars O)
 
 /-- The entry `i` of the row of `m` is `m i` times the unit of `O[X j][G]`. -/
@@ -137,31 +139,36 @@ lemma polyActionAtZero_coordRows {n ι : Type} [Fintype n] [DecidableEq n] (ρ :
   rw [coordRows_apply, map_smul, map_one]
 
 /-- The row `r` as the element `∑ r i (gen i - 1)` of `O[X j][G]`. -/
-noncomputable def rowValue (J : Type) {ι : Type} [Fintype ι] (gen : ι → G) :
-    (ι → (MvPolynomial J O)[G]) →ₗ[(MvPolynomial J O)[G]] (MvPolynomial J O)[G] :=
+noncomputable def rowValue (J : Type) {ι : Type} [Fintype ι] (gen : ι → G)
+    : (ι → (MvPolynomial J O)[G]) →ₗ[(MvPolynomial J O)[G]] (MvPolynomial J O)[G] :=
   Fintype.linearCombination (MvPolynomial J O)[G] (MonoidAlgebra.of (MvPolynomial J O) G ∘ gen - 1)
 
 lemma rowValue_apply {ι : Type} [Fintype ι] (gen : ι → G) (r : ι → (MvPolynomial J O)[G]) :
     rowValue J gen r = ∑ i : ι, r i * (MonoidAlgebra.single (gen i) 1 - 1) :=
   rfl
-/-- A row over `O[X j][G]` on `W' ⊕ ι'` read on the character `ξ`, with the coordinates in `W'`
-(those of the `δ w`) forgotten. -/
-noncomputable def evalRowAtChar (J : Type) (ξ : G →* O) (W' ι' : Type) :
-    (W' ⊕ ι' → (MvPolynomial J O)[G]) →ₗ[MvPolynomial J O] ι' → MvPolynomial J O :=
-  LinearMap.funLeft (MvPolynomial J O) (MvPolynomial J O) inr ∘ₗ
-    (polyChar J ξ).toLinearMap.compLeft (W' ⊕ ι')
+/--
+A row over `O[X j][G]` on `W' ⊕ ι'` read on the character `ξ`, with the coordinates in `W'`
+(those of the `δ w`) forgotten.
+-/
+noncomputable def evalRowAtChar (J : Type) (ξ : G →* O) (W' ι' : Type)
+    : (W' ⊕ ι' → (MvPolynomial J O)[G]) →ₗ[MvPolynomial J O] ι' → MvPolynomial J O :=
+  LinearMap.funLeft (MvPolynomial J O) (MvPolynomial J O) inr
+    ∘ₗ (polyChar J ξ).toLinearMap.compLeft (W' ⊕ ι')
 
 lemma evalRowAtChar_apply (ξ : G →* O) {W' ι' : Type} (w : W' ⊕ ι' → (MvPolynomial J O)[G])
     (i : ι') :
     evalRowAtChar J ξ W' ι' w i = polyChar J ξ (w (inr i)) :=
   rfl
 
-/-- The left ideal of `O[X j][G]` spanned by the elements `r` such that, for every `g`, the family
-over `x` of the traces of `r g` under `u x` lies in `𝒥`. -/
+/--
+The left ideal of `O[X j][G]` spanned by the elements `r` such that, for every `g`, the family
+over `x` of the traces of `r g` under `u x` lies in `𝒥`.
+-/
 noncomputable def traceLeftIdeal : Submodule (MvPolynomial J O)[G] (MvPolynomial J O)[G] :=
-  span (MvPolynomial J O)[G] {r : (MvPolynomial J O)[G] | ∀ g : G,
-    (fun x : Y ↦ algebraMap (MvPolynomial J O) (MvPolynomial J L)
-      (polyAction J (u x) r * polyAction J (u x) (MonoidAlgebra.single g 1)).trace) ∈ 𝒥}
+  span (MvPolynomial J O)[G]
+    {r : (MvPolynomial J O)[G] | ∀ g : G,
+      (fun x : Y ↦ algebraMap (MvPolynomial J O) (MvPolynomial J L)
+        (polyAction J (u x) r * polyAction J (u x) (MonoidAlgebra.single g 1)).trace) ∈ 𝒥}
 
 /-- An element `r` lies in `traceLeftIdeal` if for every `g` the family of the traces of `r g` under
 the `u x` lies in `𝒥`. -/
@@ -172,22 +179,26 @@ lemma mem_traceLeftIdeal_of_forall {r : (MvPolynomial J O)[G]}
   subset_span h_trace
 
 /-- The augmentation ideal of `O[X j][G]`: the kernel of the trivial character. -/
-noncomputable abbrev augmentationIdeal (J : Type) :
-    Submodule (MvPolynomial J O)[G] (MvPolynomial J O)[G] :=
+noncomputable abbrev augmentationIdeal (J : Type)
+    : Submodule (MvPolynomial J O)[G] (MvPolynomial J O)[G] :=
   RingHom.ker (polyChar J (1 : G →* O))
 
-/-- The tie ideal: the left ideal of `O[X j][G]` spanned by the elements that every `u x` kills, by
+/--
+The tie ideal: the left ideal of `O[X j][G]` spanned by the elements that every `u x` kills, by
 `p` times the augmentation ideal `I`, by the ties `τ k - 1 - X j * (ε j)(φ k) * (φ k - 1)` for
-`k = (j, b)`, and by `I ρ₀`. -/
-noncomputable def tieIdeal (p : O) (τ φ : J × Bool → G) (ε : J → O[X])
-    (ρ₀ : (MvPolynomial J O)[G]) : Submodule (MvPolynomial J O)[G] (MvPolynomial J O)[G] :=
-  (⨅ x : Y, RingHom.ker (polyAction J (u x))) ⊔
-    (augmentationIdeal (O := O) (G := G) J).map (.mulRight (MvPolynomial J O)[G] (p • 1)) ⊔
-    span (MvPolynomial J O)[G] (Set.range fun k : J × Bool ↦
-      MonoidAlgebra.single (τ k) 1 - 1 - (MvPolynomial.X k.1 : MvPolynomial J O) •
-        (aeval (MonoidAlgebra.of (MvPolynomial J O) G (φ k)) (ε k.1) *
-          (MonoidAlgebra.single (φ k) 1 - 1))) ⊔
-    (augmentationIdeal (O := O) (G := G) J).map (.mulRight (MvPolynomial J O)[G] ρ₀)
+`k = (j, b)`, and by `I ρ₀`.
+-/
+noncomputable def tieIdeal (p : O) (τ φ : J × Bool → G) (ε : J → O[X]) (ρ₀ : (MvPolynomial J O)[G])
+    : Submodule (MvPolynomial J O)[G] (MvPolynomial J O)[G] :=
+  (⨅ x : Y, RingHom.ker (polyAction J (u x)))
+    ⊔ (augmentationIdeal (O := O) (G := G) J).map (.mulRight (MvPolynomial J O)[G] (p • 1))
+    ⊔ span (MvPolynomial J O)[G]
+      (Set.range fun k : J × Bool ↦
+        MonoidAlgebra.single (τ k) 1 - 1
+          - (MvPolynomial.X k.1 : MvPolynomial J O)
+            • (aeval (MonoidAlgebra.of (MvPolynomial J O) G (φ k)) (ε k.1)
+              * (MonoidAlgebra.single (φ k) 1 - 1)))
+    ⊔ (augmentationIdeal (O := O) (G := G) J).map (.mulRight (MvPolynomial J O)[G] ρ₀)
 
 /-- What every `u x` kills lies in the tie ideal. -/
 lemma ker_le_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : J → O[X]} {ρ₀ : (MvPolynomial J O)[G]} :
@@ -217,9 +228,10 @@ lemma mul_mem_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : J → O[X]} {ρ�
   mem_sup_right (mem_map_of_mem hr)
 
 /-- The tied rows: the rows `r` whose element `∑ r i (gen i - 1)` lies in the tie ideal. -/
-noncomputable def tiedRows {ι : Type} [Fintype ι] (gen : ι → G) (p : O) (τ φ : J × Bool → G)
-    (ε : J → O[X]) (ρ₀ : (MvPolynomial J O)[G]) :
-    Submodule (MvPolynomial J O)[G] (ι → (MvPolynomial J O)[G]) :=
+noncomputable def tiedRows
+    {ι : Type} [Fintype ι]
+    (gen : ι → G) (p : O) (τ φ : J × Bool → G) (ε : J → O[X]) (ρ₀ : (MvPolynomial J O)[G])
+    : Submodule (MvPolynomial J O)[G] (ι → (MvPolynomial J O)[G]) :=
   comap (rowValue J gen) (tieIdeal u p τ φ ε ρ₀)
 
 lemma mem_tiedRows {ι : Type} [Fintype ι] {gen : ι → G} {p : O} {τ φ : J × Bool → G}
@@ -227,19 +239,21 @@ lemma mem_tiedRows {ι : Type} [Fintype ι] {gen : ι → G} {p : O} {τ φ : J 
     r ∈ tiedRows u gen p τ φ ε ρ₀ ↔ rowValue J gen r ∈ tieIdeal u p τ φ ε ρ₀ :=
   Iff.rfl
 
-/-- The row `c₁ z γ + (1 - e) z a` with `e = c₁ (γ - 1)`. If the `z g` are coordinates of the
+/--
+The row `c₁ z γ + (1 - e) z a` with `e = c₁ (γ - 1)`. If the `z g` are coordinates of the
 `u · g - 1`, its element is `e + (1 - e) (a - 1)` up to elements that every `u x` kills
-(`polyAction_rowValue_normalizerRow`). -/
-noncomputable def normalizerRow {ι : Type} (z : G → ι → O) (γ a : G) (c₁ : O) :
-    ι → (MvPolynomial J O)[G] :=
-  c₁ • coordRows J ι (z γ) +
-    (1 - c₁ • (MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1)) • coordRows J ι (z a)
+(`polyAction_rowValue_normalizerRow`).
+-/
+noncomputable def normalizerRow {ι : Type} (z : G → ι → O) (γ a : G) (c₁ : O)
+    : ι → (MvPolynomial J O)[G] :=
+  c₁ • coordRows J ι (z γ)
+    + (1 - c₁ • (MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1)) • coordRows J ι (z a)
 
 /-- The element `ρ₀ = e + (1 - e) (a - 1)` that Ribet's method uses, with `e = c₁ (γ - 1)`. -/
 noncomputable def tiedNormalizer (J : Type) (γ a : G) (c₁ : O) : (MvPolynomial J O)[G] :=
-  c₁ • (MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1) +
-    (1 - c₁ • (MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1)) *
-      (MonoidAlgebra.single a (1 : MvPolynomial J O) - 1)
+  c₁ • (MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1)
+    + (1 - c₁ • (MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1))
+      * (MonoidAlgebra.single a (1 : MvPolynomial J O) - 1)
 
 /-- The trace of a matrix over `O`, read in `MvPolynomial J L`, is the trace of its image over
 `O[X j]`. -/
@@ -252,21 +266,26 @@ lemma C_algebraMap_trace (A : Matrix σ σ O) :
 abbrev ribetGenerators {W' : Type} (δ : W' → G) (s₀ s : Finset G) : W' ⊕ s₀ ⊕ s → G :=
   δ ⊕ᵥ ((↑) ⊕ᵥ (↑))
 
-/-- The `z g` are coordinates of the `u · g - 1` in the `u · gen i - 1`: for all `g` and `x`,
-`u x g - 1 = ∑ z g i (u x (gen i) - 1)`. -/
+/--
+The `z g` are coordinates of the `u · g - 1` in the `u · gen i - 1`: for all `g` and `x`,
+`u x g - 1 = ∑ z g i (u x (gen i) - 1)`.
+-/
 abbrev AreCoordinates {ι : Type} [Fintype ι] (gen : ι → G) (z : G → ι → O) : Prop :=
-  ∀ g : G, Fintype.linearCombination O (fun (i : ι) (x : Y) ↦ u x (gen i) - 1) (z g) =
-    fun x : Y ↦ u x g - 1
+  ∀ g : G,
+    Fintype.linearCombination O (fun (i : ι) (x : Y) ↦ u x (gen i) - 1) (z g)
+      = fun x : Y ↦ u x g - 1
 
 end SetUp
 
 section TiedRows
 
-variable {O Y G J σ : Type} [CommRing O] [Fintype σ] [DecidableEq σ] [Group G]
-  (u : Y → G →* Matrix σ σ O)
+variable
+  {O Y G J σ : Type} [CommRing O] [Fintype σ] [DecidableEq σ] [Group G] (u : Y → G →* Matrix σ σ O)
 
-variable {ι : Type} [Fintype ι] {gen : ι → G} {z : G → ι → O} {p : O} {τ φ : J × Bool → G}
-  {ε : J → O[X]} {ρ₀ : (MvPolynomial J O)[G]}
+variable
+  {ι : Type} [Fintype ι]
+  {gen : ι → G} {z : G → ι → O} {p : O} {τ φ : J × Bool → G} {ε : J → O[X]}
+  {ρ₀ : (MvPolynomial J O)[G]}
 
 /-- Under `u x`, the element `∑ m i (gen i - 1)` of the row of a vector `m` over `O` acts as the
 combination of the matrices `u x (gen i) - 1` with coefficients `m i`. -/
@@ -348,9 +367,10 @@ end TiedRows
 
 section TiedRelations
 
-variable {O L Y G J σ : Type} [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ]
-  [Group G] (u : Y → G →* Matrix σ σ O) {S : Subalgebra O (Y → MvPolynomial J L)}
-  (𝒥 : Submodule S (Y → MvPolynomial J L))
+variable
+  {O L Y G J σ : Type} [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ] [Group G]
+  (u : Y → G →* Matrix σ σ O)
+  {S : Subalgebra O (Y → MvPolynomial J L)} (𝒥 : Submodule S (Y → MvPolynomial J L))
 
 variable {p : O} {τ φ : J × Bool → G} {ε : J → O[X]} {ρ₀ : (MvPolynomial J O)[G]}
 
@@ -494,9 +514,11 @@ end TiedRelations
 
 section Steps
 
-variable {O L Y G J σ W : Type} [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ]
-  [Group G] (u : Y → G →* Matrix σ σ O) {S : Subalgebra O (Y → MvPolynomial J L)}
-  (𝒥 : Submodule S (Y → MvPolynomial J L))
+variable
+  {O L Y G J σ W : Type}
+  [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ] [Group G]
+  (u : Y → G →* Matrix σ σ O)
+  {S : Subalgebra O (Y → MvPolynomial J L)} (𝒥 : Submodule S (Y → MvPolynomial J L))
 
 variable {p : O} {τ φ : J × Bool → G} {ε : J → O[X]}
 
@@ -729,17 +751,21 @@ lemma det_map_polyChar_tame_rows {κ : Type} [Fintype κ] [DecidableEq κ] [Fint
     · rfl
   rw [h_blocks, det_fromBlocks_zero₁₂, det_diagonal, map_prod]
 
-/-- The matrices for the characters `ξ e`: weights `w e i` (`coeff`) and matrices `B e i`
+/--
+The matrices for the characters `ξ e`: weights `w e i` (`coeff`) and matrices `B e i`
 (`charMatrix`) over `O[X j]` whose weighted determinants add up to `d e` (`detSum`); matrices `M i`
 (`tiedMatrix`) of tied rows with `det (M i on ξ e) = c₀ det (B e (i e))`, where `c₀` is `C ^ #s`
 times the product of the values at `1` of the polynomials `o`; and `d e + ζ e = Γ e ∏ X j`
 (`ty j = e`), with `ζ e` (`correction`) in the colon ideal `(𝔫 : ∏ X j)` (`ty j < e`,
 `𝔫 = nonDivisorIdeal O J`) and `Γ e` (`multiplier`) of constant term of valuation at most
-`b e + (#{ty j = e} + #s) * addVal O C`. -/
-structure CharacterRows [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G] {t : ℕ}
-    (ξ : Fin t → G →* O) [Fintype W] [DecidableEq W] (δ : W → G) (o : W → O[X])
-    (s₀ s : Finset G) (γ a : G) (c₁ C p : O) (τ φ : J × Bool → G) (ε : J → O[X]) (ty : J →o Fin t)
-    (b : Fin t → ℕ∞) where
+`b e + (#{ty j = e} + #s) * addVal O C`.
+-/
+structure CharacterRows
+    [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G]
+    {t : ℕ} (ξ : Fin t → G →* O)
+    [Fintype W] [DecidableEq W]
+    (δ : W → G) (o : W → O[X]) (s₀ s : Finset G) (γ a : G) (c₁ C p : O) (τ φ : J × Bool → G)
+    (ε : J → O[X]) (ty : J →o Fin t) (b : Fin t → ℕ∞) where
   /-- The number of matrices on each character. -/
   count : Fin t → ℕ
   /-- The weights `w e i`. -/
@@ -755,23 +781,31 @@ structure CharacterRows [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G] {t :
   /-- The parts `ζ e` in the colon ideals. -/
   correction : Fin t → MvPolynomial J O
   /-- The rows of the `M i` are tied. -/
-  tied : ∀ (i : ∀ e : Fin t, Fin (count e)) (j : W ⊕ s₀ ⊕ s),
-    tiedMatrix i j ∈ tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormalizer J γ a c₁)
+  tied
+    : ∀ (i : ∀ e : Fin t, Fin (count e)) (j : W ⊕ s₀ ⊕ s),
+      tiedMatrix i j ∈ tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormalizer J γ a c₁)
   /-- On `ξ e`, `M i` has determinant `c₀ det (B e (i e))`. -/
-  det_map : ∀ (i : ∀ e : Fin t, Fin (count e)) (e : Fin t),
-    ((tiedMatrix i).map (polyChar J (ξ e))).det =
-    .C ((∏ v : W, (o v).eval 1) * C ^ #s) * (charMatrix e (i e)).det
+  det_map
+    : ∀ (i : ∀ e : Fin t, Fin (count e)) (e : Fin t),
+      ((tiedMatrix i).map (polyChar J (ξ e))).det
+        = .C ((∏ v : W, (o v).eval 1) * C ^ #s) * (charMatrix e (i e)).det
   /-- The weighted determinants on `ξ e` add up to `d e`. -/
   sum_det : ∀ e : Fin t, ∑ i : Fin (count e), coeff e i * (charMatrix e i).det = detSum e
   /-- The bound for the constant term of `Γ e`. -/
-  addVal_constantCoeff_le : ∀ e : Fin t,
-    addVal O (constantCoeff (multiplier e)) ≤ b e + (#{j : J | ty j = e} + #s) * addVal O C
+  addVal_constantCoeff_le
+    : ∀ e : Fin t,
+      addVal O (constantCoeff (multiplier e)) ≤ b e + (# {j : J | ty j = e} + #s) * addVal O C
   /-- `ζ e` times the product of the variables of earlier types lies in `nonDivisorIdeal`. -/
-  correction_mem_colon : ∀ e : Fin t,
-    correction e ∈ (nonDivisorIdeal O J).colon {∏ j : J with ty j < e, MvPolynomial.X j}
+  correction_mem_colon
+    : ∀ e : Fin t,
+      correction e ∈ (nonDivisorIdeal O J).colon {∏ j : J with ty j < e, MvPolynomial.X j}
   /-- `d e + ζ e = Γ e ∏ X j` over the `j` of type `e`. -/
-  add_eq_mul_prod : ∀ e : Fin t, detSum e + correction e = multiplier e * ∏ j : J with ty j = e,
-    MvPolynomial.X j
+  add_eq_mul_prod
+    : ∀ e : Fin t,
+      detSum e + correction e
+        = multiplier e
+          * ∏ j : J with ty j = e,
+            MvPolynomial.X j
 
 /-- Let `u x` (`x : Y`) be matrix representations of the group `G` over `O`, and let `gen` list the
 `δ w` and the members of `s₀` and of `s` (`ribetGenerators`), with

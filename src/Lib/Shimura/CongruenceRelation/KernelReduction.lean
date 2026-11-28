@@ -281,26 +281,31 @@ point.
 namespace New.Variety
 
 open CategoryTheory AlgebraicGeometry CartesianMonoidalCategory NumberField Over Category Submodule
-  CommRingCat RingHom Finset TrivSqZeroExt DualNumber AddMonObj Module specOver
-  Matrix
+  CommRingCat RingHom Finset TrivSqZeroExt DualNumber AddMonObj Module specOver Matrix
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {E : Type} [Field E] [CMBase E]
+variable
+  {E : Type} [Field E] [CMBase E]
   {D : PEL E} {V : ValuationSubring ℂ} {k : Type} [Field k]
   {φ : V →+* k} {Z : Scheme} {τ : Z ⟶ Spec (CommRingCat.of (𝓞 E))} {X : ThetaFamily D Z τ}
-  {x : ThetaObject X (Spec (CommRingCat.of k))}
-  {y : ThetaObject X (Spec (CommRingCat.of V))} (e : y.FullLevelStructure)
-  {C C' : Type} [CommRing C] [Algebra k C] [CommRing C'] [Algebra k C'] (G : C →ₐ[k] C')
+  {x : ThetaObject X (Spec (CommRingCat.of k))} {y : ThetaObject X (Spec (CommRingCat.of V))}
+  (e : y.FullLevelStructure)
+  {C C' : Type} [CommRing C] [Algebra k C] [CommRing C'] [Algebra k C']
+  (G : C →ₐ[k] C')
 
 variable (x C) in
-/-- For an object `x` over a field `k` and a `k`-algebra `C`, the `𝓞 E`-module of `C`-points of
-`x.groupScheme` killed by the kernel of `x.baseHom`. -/
+/--
+For an object `x` over a field `k` and a `k`-algebra `C`, the `𝓞 E`-module of `C`-points of
+`x.groupScheme` killed by the kernel of `x.baseHom`.
+-/
 noncomputable abbrev placeTorsion : Submodule (𝓞 E) (specOver k C ⟶ x.groupScheme) :=
   torsionBySet (𝓞 E) (specOver k C ⟶ x.groupScheme) (ker x.baseHom)
 
-/-- The map from `placeTorsion x C` to `placeTorsion x C'` induced by a homomorphism `G : C → C'` of
-`k`-algebras: a point `Spec C ⟶ x.groupScheme` is composed with `Spec G : Spec C' ⟶ Spec C`. -/
+/--
+The map from `placeTorsion x C` to `placeTorsion x C'` induced by a homomorphism `G : C → C'` of
+`k`-algebras: a point `Spec C ⟶ x.groupScheme` is composed with `Spec G : Spec C' ⟶ Spec C`.
+-/
 noncomputable def placeTorsionMap : placeTorsion x C →ₗ[𝓞 E] placeTorsion x C' where
   toFun := fun ⟨y, hy⟩ ↦ ⟨specOver.map G ≫ y, by simp_all [← ModuleObj.comp_smul]⟩
   map_add' := by simp [comp_add]
@@ -342,13 +347,18 @@ lemma ker_factors_of_torsionPoint {A : Over (Spec (.of V))} [IsAbelianScheme A]
   obtain ⟨l, hl⟩ := hr t (bijective_restrict_genericPt.injective hs)
   exact ⟨ValuativeArc.genericPt ≫ l, by simp [hl, ValuativeArc.genericPt_eq]⟩
 
-/-- Let `x` be an object over `R` and `k` an `R`-algebra. A tangent vector at `0` is a point of
+/--
+Let `x` be an object over `R` and `k` an `R`-algebra. A tangent vector at `0` is a point of
 `x.groupScheme` over `k[ε]` that reduces to `0` over `k`. The map `L` is a line of tangent vectors
 on which `𝓞 E` acts through `ρ`, and into which `star β - b` maps all tangent vectors. Here `β` is
 `D.β` and `b` is an integer; in `exists_isLieLine`, `ρ` is `x.baseHom` followed by `R → k`, with
-`ρ (D.β - b) = 0`. -/
-structure IsLieLine {R : Type} [CommRing R] [Algebra R k] (x : ThetaObject X (Spec (.of R)))
-    (ρ : 𝓞 E →+* k) (b : ℤ) (L : k →+ (specOver R k[ε] ⟶ x.groupScheme)) : Prop where
+`ρ (D.β - b) = 0`.
+-/
+structure IsLieLine
+    {R : Type} [CommRing R] [Algebra R k]
+    (x : ThetaObject X (Spec (.of R)))
+    (ρ : 𝓞 E →+* k) (b : ℤ) (L : k →+ (specOver R k[ε] ⟶ x.groupScheme))
+    : Prop where
   /-- The generator `L 1` is not zero. -/
   apply_one_ne_zero : L 1 ≠ 0
   /-- Each `L m` is a tangent vector at `0`. -/
@@ -356,11 +366,11 @@ structure IsLieLine {R : Type} [CommRing R] [Algebra R k] (x : ThetaObject X (Sp
   /-- The ring `𝓞 E` acts on the line through `ρ`. -/
   smul_apply (a : 𝓞 E) (m : k) : a • L m = L (ρ a * m)
   /-- The substitution `ε ↦ m ε` takes `L 1` to `L m`. -/
-  scale_comp (m : k) :
-    specOver.map ((TrivSqZeroExt.map (m • LinearMap.id)).restrictScalars R) ≫ L 1 = L m
+  scale_comp (m : k)
+    : specOver.map ((TrivSqZeroExt.map (m • LinearMap.id)).restrictScalars R) ≫ L 1 = L m
   /-- The element `star β - b` maps every tangent vector at `0` into the line. -/
-  exists_smul_eq (v : specOver R k[ε] ⟶ x.groupScheme)
-    (hv : specOver.map (fstHom R k k) ≫ v = 0) : ∃ m : k, (star D.β - b) • v = L m
+  exists_smul_eq (v : specOver R k[ε] ⟶ x.groupScheme) (hv : specOver.map (fstHom R k k) ≫ v = 0)
+    : ∃ m : k, (star D.β - b) • v = L m
 
 /-- Let `x` be a theta object of the family `X` over a local ring `R`, that is, a point of the base
 of `X`. Its group scheme `x.groupScheme` is the pulled-back abelian scheme with its `𝓞 E`-action,
@@ -500,11 +510,16 @@ lemma exists_detecting_tangent_vectors {R S : Type} [CommRing R] [IsLocalRing R]
   exact hL.exists_detects_tangent h_pow h_coprime.pow_left ι (by simpa using ι_ker)
     (fun W w hw ↦ ι_lift w (by simp [hw])) o
 
-/-- A point `p` of a group scheme `A` over `R`, with values in a ring `B`, vanishes along the ring
-map `G : B →+* B'`: the point of `A` with values in `B'` induced by `G` is zero. -/
-def VanishesAlong {R B B' : Type} [CommRing R] [CommRing B] [CommRing B']
-    {A : Over (Spec (.of R))} [AddObj A] {s : Spec (.of B) ⟶ Spec (.of R)} (p : Over.mk s ⟶ A)
-    (G : B →+* B') : Prop :=
+/--
+A point `p` of a group scheme `A` over `R`, with values in a ring `B`, vanishes along the ring
+map `G : B →+* B'`: the point of `A` with values in `B'` induced by `G` is zero.
+-/
+def VanishesAlong
+    {R B B' : Type} [CommRing R] [CommRing B] [CommRing B']
+    {A : Over (Spec (.of R))} [AddObj A]
+    {s : Spec (.of B) ⟶ Spec (.of R)} (p : Over.mk s ⟶ A)
+    (G : B →+* B')
+    : Prop :=
   (homMk (specMap G) : Over.mk (specMap G ≫ s) ⟶ Over.mk s) ≫ p = 0
 
 /-- Vanishing along `G` may be tested on any morphism `a` over `R` given by `G`. -/
@@ -515,30 +530,51 @@ lemma vanishesAlong_iff {R B B' : Type} [CommRing R] [CommRing B] [CommRing B']
     VanishesAlong p G ↔ a ≫ p = 0 := by
   simp [VanishesAlong, eq_zero_iff_factors_zero_section, ha]
 
-/-- For a full structure `e` on the object `y` over `V`, a family `c` of torsion vectors and a
+/--
+For a full structure `e` on the object `y` over `V`, a family `c` of torsion vectors and a
 point `p` of `y.groupScheme`, the number of indices `i` for which the torsion section
-`e.torsionPoint (c i)` passes through `p`. -/
-noncomputable def sectionCount {J : Type} (c : J → AdelicTorsion E D.Index)
-    {T : Over (Spec (.of V))} (p : T ⟶ y.groupScheme) : ℕ :=
+`e.torsionPoint (c i)` passes through `p`.
+-/
+noncomputable def sectionCount
+    {J : Type} (c : J → AdelicTorsion E D.Index) {T : Over (Spec (.of V))} (p : T ⟶ y.groupScheme)
+    : ℕ :=
   Nat.card {i : J // toUnit T ≫ e.torsionPoint (c i) = p}
 
-/-- Let `e` be a full structure on the object `y` over `V` and `z` a point of `y.groupScheme` with
+/--
+Let `e` be a full structure on the object `y` over `V` and `z` a point of `y.groupScheme` with
 values in a ring `B`. The element `f` of `B` is a local equation at `z` for the closure of the
 torsion sections `e.torsionPoint (c i)`, as seen by isogenies `ψ` out of `y.groupScheme` and ring
-maps `G` out of `B`. -/
-structure IsLocalEquation {J : Type} (c : J → AdelicTorsion E D.Index) {B : Type} [CommRing B]
-    {s : Spec (.of B) ⟶ Spec (.of V)} (z : Over.mk s ⟶ y.groupScheme) (f : B) : Prop where
-  /-- If `υ` maps `u` to `z` and the torsion of `ker ψ` into the family `c`, and `ψ u` vanishes
-  along `G`, then `G f = 0`. -/
-  map_eq_zero {A : Over (Spec (.of V))} [IsAbelianScheme A] (ψ : y.groupScheme ⟶ A) [IsIsogeny ψ]
+maps `G` out of `B`.
+-/
+structure IsLocalEquation
+    {J : Type} (c : J → AdelicTorsion E D.Index)
+    {B : Type} [CommRing B]
+    {s : Spec (.of B) ⟶ Spec (.of V)} (z : Over.mk s ⟶ y.groupScheme)
+    (f : B)
+    : Prop where
+  /--
+  If `υ` maps `u` to `z` and the torsion of `ker ψ` into the family `c`, and `ψ u` vanishes
+  along `G`, then `G f = 0`.
+  -/
+  map_eq_zero
+    {A : Over (Spec (.of V))} [IsAbelianScheme A]
+    (ψ : y.groupScheme ⟶ A) [IsIsogeny ψ]
     {υ : 𝓞 E} {u : Over.mk s ⟶ y.groupScheme} (hu : υ • u = z)
     (hυ : ∀ t : AdelicTorsion E D.Index, e.torsionPoint t ≫ ψ = 0 → υ • t ∈ Set.range c)
-    {B' : Type} [CommRing B'] {G : B →+* B'} (hG : VanishesAlong (u ≫ ψ) G) : G f = 0
-  /-- If `ψ` kills the sections `e.torsionPoint (c i)` and `G f = 0`, then `ψ z` vanishes along
-  `G`. -/
-  vanishesAlong {A : Over (Spec (.of V))} [IsAbelianScheme A] (ψ : y.groupScheme ⟶ A)
-    [IsIsogeny ψ] (hψ : ∀ i : J, e.torsionPoint (c i) ≫ ψ = 0) {B' : Type} [CommRing B']
-    {G : B →+* B'} (hG : G f = 0) : VanishesAlong (z ≫ ψ) G
+    {B' : Type} [CommRing B']
+    {G : B →+* B'} (hG : VanishesAlong (u ≫ ψ) G)
+    : G f = 0
+  /--
+  If `ψ` kills the sections `e.torsionPoint (c i)` and `G f = 0`, then `ψ z` vanishes along
+  `G`.
+  -/
+  vanishesAlong
+    {A : Over (Spec (.of V))} [IsAbelianScheme A]
+    (ψ : y.groupScheme ⟶ A) [IsIsogeny ψ]
+    (hψ : ∀ i : J, e.torsionPoint (c i) ≫ ψ = 0)
+    {B' : Type} [CommRing B']
+    {G : B →+* B'} (hG : G f = 0)
+    : VanishesAlong (z ≫ ψ) G
 
 /-- Let `O` be a domain and `θ j` distinct sections of a finite type `O`-algebra `S` through a point
 `o`, and let `T` have nonzero derivative along every nonzero tangent vector at `o`. Let `χ` send the
@@ -774,16 +810,22 @@ lemma exists_isLocalEquation_pow_sectionCount (e : y.FullLevelStructure)
     intro A hA ψ hψ h_ker B' hB' G h_pow
     exact vanishesAlong_of_map_pow_card_eq_zero e hθ θ_inj hT hz' γ_unit γ_t ψ h_ker h_pow
 
-/-- Reduction of torsion sections. Let `x` over `k` be the pull-back of `y` over `V` along `φ`
+/--
+Reduction of torsion sections. Let `x` over `k` be the pull-back of `y` over `V` along `φ`
 (`ho`), and let `e` be a full structure on `y`. A `w`-torsion vector `s`, for `w = ker x.baseHom`,
-goes to the `w`-torsion `k`-point of `x` that corresponds to the section `e.torsionPoint s`. -/
-private noncomputable def torsionReduction (e : y.FullLevelStructure)
-    (ho : x.IsPullbackAlong (specMap φ) y) :
-    torsionBySet (𝓞 E) (AdelicTorsion E D.Index) (ker x.baseHom) →+ placeTorsion x k :=
-  .mk' (fun s ↦ ⟨ho.isGroupBaseChange.pointEquiv.symm
-      (toUnit ((Over.map (specMap φ)).obj (specOver k k)) ≫ e.torsionPoint s), by
-    refine (mem_torsionBySet_iff _ _).2 fun a ↦ ?_
-    simp [← ModuleObj.comp_smul, (mem_torsionBySet_iff _ _).1 s.property a, ← map_smul]⟩)
+goes to the `w`-torsion `k`-point of `x` that corresponds to the section `e.torsionPoint s`.
+-/
+private noncomputable def torsionReduction
+    (e : y.FullLevelStructure) (ho : x.IsPullbackAlong (specMap φ) y)
+    : torsionBySet (𝓞 E) (AdelicTorsion E D.Index) (ker x.baseHom) →+ placeTorsion x k :=
+  .mk'
+    (fun s ↦ ⟨
+      ho.isGroupBaseChange.pointEquiv.symm
+        (toUnit ((Over.map (specMap φ)).obj (specOver k k)) ≫ e.torsionPoint s),
+      by
+        refine (mem_torsionBySet_iff _ _).2 fun a ↦ ?_
+        simp [← ModuleObj.comp_smul, (mem_torsionBySet_iff _ _).1 s.property a, ← map_smul]
+    ⟩)
     (by simp [comp_add])
 
 /-- The reduction of the torsion vector `s` is the point `w` exactly when the section

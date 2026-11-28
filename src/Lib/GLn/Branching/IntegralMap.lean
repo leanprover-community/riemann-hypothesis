@@ -63,24 +63,31 @@ open MvPolynomial Finset Fintype Matrix ComplexOrder Norms.L2Operator RingHom
 
 namespace New.GL
 
-variable {Φ : Type} [Fintype Φ] [DecidableEq Φ]
+variable
+  {Φ : Type} [Fintype Φ] [DecidableEq Φ]
   {n N : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (N τ)]
-  [∀ τ : Φ, DecidableEq (N τ)] (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ N τ) {κ κ₀ γ κ' : Φ → ℕ → ℕ}
+  [∀ τ : Φ, DecidableEq (N τ)]
+  (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ N τ)
+  {κ κ₀ γ κ' : Φ → ℕ → ℕ}
 
-/-- `New.SpansBranchingMaps ι e₀ e A` says that `A` spans the complex maps that are equivariant for
+/--
+`New.SpansBranchingMaps ι e₀ e A` says that `A` spans the complex maps that are equivariant for
 the unitary points of the block group: let `T` be a complex matrix such that, for every tuple `g`
 of unitary matrices (`(g τ)ᴴ * g τ = 1`), some `x` with blocks `x τ = diag(g τ, 1)` along `ι`
 satisfies `T * ρ_{κ,e}(x) = ρ_{κ₀,e₀}(g) * T`; then `T` is a multiple of `A`. Here `ρ_{κ,e}` is
 `New.weylRep κ e`, the Schur matrix times the powers `e τ` of the determinants, and
-`New.GL.blockScalar ι g 1` is the block matrix `diag(g τ, 1)`. -/
-def _root_.New.SpansBranchingMaps (e₀ e : Φ → ℤ)
-    (A : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N κ) ℂ) : Prop :=
+`New.GL.blockScalar ι g 1` is the block matrix `diag(g τ, 1)`.
+-/
+def _root_.New.SpansBranchingMaps
+    (e₀ e : Φ → ℤ) (A : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N κ) ℂ)
+    : Prop :=
   ∀ T : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N κ) ℂ,
-    (∀ g : ∀ τ : Φ, GL (n τ) ℂ, (∀ τ : Φ, (g τ).valᴴ * (g τ).val = 1) →
-      ∃ x : (τ : Φ) → GL (N τ) ℂ,
-        (∀ τ : Φ, (x τ).val = blockScalar ι (fun τ : Φ ↦ (g τ).val) 1 τ) ∧
-        T * weylRep κ e x = weylRep κ₀ e₀ g * T) →
-    ∃ a : ℂ, T = a • A
+    (∀ g : ∀ τ : Φ, GL (n τ) ℂ,
+        (∀ τ : Φ, (g τ).valᴴ * (g τ).val = 1)
+          → ∃ x : (τ : Φ) → GL (N τ) ℂ,
+            (∀ τ : Φ, (x τ).val = blockScalar ι (fun τ : Φ ↦ (g τ).val) 1 τ)
+              ∧ T * weylRep κ e x = weylRep κ₀ e₀ g * T)
+      → ∃ a : ℂ, T = a • A
 
 /-- There is a complex vector `v` whose images `schur κ (diag(g, 1)) *ᵥ v`, for `g` ranging over
 tuples of lower triangular matrices on the rows `n τ`, span the whole space: a row vector `r`
@@ -183,19 +190,25 @@ lemma exists_cyclic_lower_triangular (κ : Φ → ℕ → ℕ) :
   refine (dotProductEquiv ℂ (WeylIndexFamily N κ)).injective (ext_schur_weylEval E fun g ↦ ?_)
   simpa [v] using h_zero fun τ : Φ ↦ (g τ).val
 
-/-- The kernel of the branching map: for arrays `x` (rows `n`) and `y` (rows `N`) over a commutative
+/--
+The kernel of the branching map: for arrays `x` (rows `n`) and `y` (rows `N`) over a commutative
 ring `S`, the value of `branchVector S ι γ κ'` at `diag(xᵀ, 1) y`, where `xᵀ` is the transposed
-square part of `x` in the row order `rowEquivFin`. -/
-private def branchKernel (γ κ' : Φ → ℕ → ℕ) {S : Type} [CommRing S] (x : Sigma n × ℕ → S)
-    (y : Sigma N × ℕ → S) : S :=
-  eval y (rowSubst (blockScalar ι (fun τ : Φ ↦ (squarePart (rowEquivFin n) x τ)ᵀ) 1)
-    (branchVector S ι γ κ'))
+square part of `x` in the row order `rowEquivFin`.
+-/
+private def branchKernel
+    (γ κ' : Φ → ℕ → ℕ) {S : Type} [CommRing S] (x : Sigma n × ℕ → S) (y : Sigma N × ℕ → S)
+    : S :=
+  eval y
+    (rowSubst (blockScalar ι (fun τ : Φ ↦ (squarePart (rowEquivFin n) x τ)ᵀ) 1)
+      (branchVector S ι γ κ'))
 
 variable (n) in
-/-- The linear map `θ ↦ toPoly n κ₀ θ * detPow S n d` with `d τ = κ' τ (rankAt n τ)`: the
-polynomial of the coordinate vector `θ` times the powers `d τ` of the determinants. -/
-private def detPowToPoly (κ₀ κ' : Φ → ℕ → ℕ) (S : Type) [CommRing S] :
-    (WeylIndexFamily n κ₀ → S) →ₗ[S] MatrixPoly (Sigma n) S :=
+/--
+The linear map `θ ↦ toPoly n κ₀ θ * detPow S n d` with `d τ = κ' τ (rankAt n τ)`: the
+polynomial of the coordinate vector `θ` times the powers `d τ` of the determinants.
+-/
+private def detPowToPoly (κ₀ κ' : Φ → ℕ → ℕ) (S : Type) [CommRing S]
+    : (WeylIndexFamily n κ₀ → S) →ₗ[S] MatrixPoly (Sigma n) S :=
   .mulRight S (detPow S n fun τ : Φ ↦ κ' τ (rankAt n τ)) ∘ₗ toPoly n κ₀
 
 omit [DecidableEq Φ] [∀ τ : Φ, DecidableEq (N τ)] [∀ τ : Φ, DecidableEq (n τ)] in

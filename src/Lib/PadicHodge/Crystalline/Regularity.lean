@@ -70,19 +70,22 @@ potentially crystalline (`New.Period.IsPotentiallyCrystalline`) for `F = nearOne
 
 namespace New.Period
 
-open TensorProduct Filter Submodule Finsupp Module LinearMap Function Polynomial Lift Free
-  Bmax Multiplicative IsPrincipal Multiset
+open TensorProduct Filter Submodule Finsupp Module LinearMap Function Polynomial Lift Free Bmax
+  Multiplicative IsPrincipal Multiset
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {p : ℕ} [ThePrime p]
+variable
+  {p : ℕ} [ThePrime p]
   {Γ R' : Type*} [Group Γ] [CommRing R'] [Algebra ℤ_[p] R'] [𝒥 : OverGp Γ p]
-  {F : Filter Γ} (hF : nearOne Γ ≤ F) {s t : Γ} {m k : ℕ} {R T T' : Type _}
-  {T'' : Type} [CommRing R] [AddCommGroup T] [Module R T] [Algebra ℤ_[p] R] [Module ℤ_[p] T]
-  [IsScalarTower ℤ_[p] R T] [AddCommGroup T'] [Module R' T'] [Module ℤ_[p] T']
-  [IsScalarTower ℤ_[p] R' T']
+  {F : Filter Γ} (hF : nearOne Γ ≤ F)
+  {s t : Γ} {m k : ℕ} {R T T' : Type _} {T'' : Type} [CommRing R] [AddCommGroup T] [Module R T]
+  [Algebra ℤ_[p] R] [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [AddCommGroup T'] [Module R' T']
+  [Module ℤ_[p] T'] [IsScalarTower ℤ_[p] R' T']
   {ρ σ : Representation R Γ T} {ρ' : Representation R' Γ T'} {ι κ : Type*}
-  (h : IsPotentiallyCrystalline ρ) (hs : IsWeilPair (𝒥.toGp s) m) [Finite κ]
+  (h : IsPotentiallyCrystalline ρ)
+  (hs : IsWeilPair (𝒥.toGp s) m)
+  [Finite κ]
   {S : κ → Type _} [∀ i, AddCommGroup (S i)] [∀ i, Module R (S i)] [∀ i, Module ℤ_[p] (S i)]
   [∀ i, IsScalarTower ℤ_[p] R (S i)]
   {τ : ∀ i : κ, Representation R Γ (S i)} {P : R[X]} (hA : ∀ i : κ, IsAdmissible (τ i) F)
@@ -541,9 +544,11 @@ lemma IsCrystalline.linearFrob_eq_one (h : IsCrystalline ρ) (hs : IsWeilPair (t
   have hd_near : d ∈ Dpcris ρ := Eventually.of_forall (f := nearOne Γ) hd_all
   rw [linearFrob_zero_apply h.isPotentiallyCrystalline hs hd_near, hd_all, one_apply_eq_self]
 
-variable [AddCommGroup T''] [Module R T''] [Module ℤ_[p] T''] [IsScalarTower ℤ_[p] R T''] (c : ℤ)
-  {σ : Representation R Γ T''}
-  (v : IsPotentiallyCrystalline σ) (B : (T'' →ₗ[ℤ_[p]] T →ₗ[ℤ_[p]] T' : Type))
+variable
+  [AddCommGroup T''] [Module R T''] [Module ℤ_[p] T''] [IsScalarTower ℤ_[p] R T'']
+  (c : ℤ)
+  {σ : Representation R Γ T''} (v : IsPotentiallyCrystalline σ)
+  (B : (T'' →ₗ[ℤ_[p]] T →ₗ[ℤ_[p]] T' : Type))
   (hB_equiv : ∀ (g : Γ) (x : T'') (y : T), B (σ g x) (ρ g y) = ρ' g (B x y))
 
 /-- Let `T` be finite and free over `R` and `ρ` potentially crystalline. Then for all `g` with

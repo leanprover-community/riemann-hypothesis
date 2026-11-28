@@ -78,8 +78,10 @@ attribute [local instance low] Fintype.ofFinite
 
 section
 
-variable (k : Type*) [Field k] [Finite k]
-  {K : Type*} [Field K] [Algebra k K] (T : MulChar K ℂ)
+variable
+  (k : Type*) [Field k] [Finite k]
+  {K : Type*} [Field K] [Algebra k K]
+  (T : MulChar K ℂ)
   {n : Type _} [Fintype n] [DecidableEq n]
   (Q r : ℕ) (P c : k[X]) (χ : MulChar k ℂ)
 
@@ -88,32 +90,40 @@ def monicsOfDegree : Finset k[X] :=
   @Set.toFinset k[X] {c : k[X] | c.Monic ∧ c.natDegree = r}
     (Fintype.ofEquiv (Fin r → k) ((monicEquivDegreeLT r).trans (degreeLTEquiv k r).toEquiv).symm)
 
-/-- A chosen injective multiplicative character from the algebraic closure of `k` to `ℂ`
+/--
+A chosen injective multiplicative character from the algebraic closure of `k` to `ℂ`
 (arbitrary if there is none). For finite `k` one exists (`New.exists_injective_mulChar`), so the
-chosen character is injective (the instance `New.faithfulChar_injective`). -/
+chosen character is injective (the instance `New.faithfulChar_injective`).
+-/
 def faithfulChar : MulChar (AlgebraicClosure k) ℂ :=
   Classical.epsilon fun T : MulChar (AlgebraicClosure k) ℂ ↦ Injective T
 
-/-- The field K is algebraically closed and the multiplicative character T : K → ℂ is injective,
-so it embeds K^× in ℂ^×. -/
-class IsFaithfulMulChar (K : Type*) [Field K] (T : outParam (MulChar K ℂ)) :
-    Prop extends IsAlgClosed K where
+/--
+The field K is algebraically closed and the multiplicative character T : K → ℂ is injective,
+so it embeds K^× in ℂ^×.
+-/
+class IsFaithfulMulChar (K : Type*) [Field K] (T : outParam (MulChar K ℂ)) : Prop
+    extends IsAlgClosed K where
   /-- The character T is injective. -/
   injective : Injective T
 
 variable {k}
 
-/-- A chosen natural number `j` with `T x = exp (2πi / (Q - 1)) ^ j` (arbitrary if there is
-none). -/
+/--
+A chosen natural number `j` with `T x = exp (2πi / (Q - 1)) ^ j` (arbitrary if there is
+none).
+-/
 def thetaExponent (x : K) : ℕ :=
   Classical.epsilon fun j : ℕ ↦ T x = Complex.exp (2 * π * Complex.I / (Q - 1 : ℕ)) ^ j
 
-/-- Let `T` be a multiplicative character `K → ℂ`. Suppose `2 ≤ Q` and `x` is a `(Q - 1)`-th root of
+/--
+Let `T` be a multiplicative character `K → ℂ`. Suppose `2 ≤ Q` and `x` is a `(Q - 1)`-th root of
 unity. Then `T x = exp (2πi / (Q - 1)) ^ thetaExponent T Q x`, where `thetaExponent T Q x` is a
 chosen natural number `j` with `T x = exp (2πi / (Q - 1)) ^ j` (arbitrary if none exists). So such
-an exponent exists. -/
-theorem apply_eq_exp_pow_thetaExponent {Q : ℕ} {x : K} (hQ : 2 ≤ Q) (hx : x ^ (Q - 1) = 1) :
-    T x = Complex.exp (2 * π * Complex.I / (Q - 1 : ℕ)) ^ thetaExponent T Q x := by
+an exponent exists.
+-/
+theorem apply_eq_exp_pow_thetaExponent {Q : ℕ} {x : K} (hQ : 2 ≤ Q) (hx : x ^ (Q - 1) = 1)
+    : T x = Complex.exp (2 * π * Complex.I / (Q - 1 : ℕ)) ^ thetaExponent T Q x := by
   -- `T x` is a `(Q - 1)`-th root of unity in `ℂ`, so a power of the primitive one.
   have hQ_sub_ne : NeZero (Q - 1) := ⟨Nat.sub_ne_zero_of_lt hQ⟩
   have h_root : T x ^ (Q - 1) = 1 := by rw [← map_pow, hx, map_one]
@@ -129,8 +139,7 @@ variable (K) in
 def chosenRoot : K := Classical.epsilon fun x : K ↦ P.aeval x = 0
 
 omit [Finite k] in
-theorem aeval_chosenRoot {P : k[X]} {x : K} (hx : P.aeval x = 0) :
-    P.aeval (chosenRoot K P) = 0 :=
+theorem aeval_chosenRoot {P : k[X]} {x : K} (hx : P.aeval x = 0) : P.aeval (chosenRoot K P) = 0 :=
   Classical.epsilon_spec (p := fun x : K ↦ P.aeval x = 0) ⟨x, hx⟩
 
 omit [Finite k] in
@@ -139,16 +148,20 @@ theorem chosenRoot_X_sub_C (a : k) : chosenRoot K (X - C a) = algebraMap k K a :
     aeval_chosenRoot (x := algebraMap k K a) (by simp)
   simpa [sub_eq_zero] using h_root
 
-/-- Green's class function `τ_P`: `(-1) ^ d` times the rank `d` part of `greenCuspidal k θ_x`,
-where `d = deg P`, `x = chosenRoot K P` and `θ_x` is formed with `Q = |k| ^ d`. -/
+/--
+Green's class function `τ_P`: `(-1) ^ d` times the rank `d` part of `greenCuspidal k θ_x`,
+where `d = deg P`, `x = chosenRoot K P` and `θ_x` is formed with `Q = |k| ^ d`.
+-/
 def greenTau : Hall k :=
-  (-1 : ℂ) ^ P.natDegree •
-    (greenCuspidal k (thetaChar T (Nat.card k ^ P.natDegree) (chosenRoot K P))).rankPart
+  (-1 : ℂ) ^ P.natDegree
+    • (greenCuspidal k (thetaChar T (Nat.card k ^ P.natDegree) (chosenRoot K P))).rankPart
       P.natDegree
 
 open scoped Classical in
-/-- The multiplicative map c ↦ Ξ_c: the product, by parabolic induction, of τ_P over the monic
-irreducible factors P of c with multiplicity; Ξ_0 = 0. -/
+/--
+The multiplicative map c ↦ Ξ_c: the product, by parabolic induction, of τ_P over the monic
+irreducible factors P of c with multiplicity; Ξ_0 = 0.
+-/
 def labelChar : k[X] →* Hall k where
   toFun c := if c = 0 then 0 else ((normalizedFactors c).map (greenTau T)).prod
   map_one' := by simp
@@ -159,17 +172,23 @@ def labelChar : k[X] →* Hall k where
     · simp [hd]
     simp [hc, hd, normalizedFactors_mul hc hd]
 
-/-- `c` is a label of degree `r`: a monic squarefree polynomial over `k` of degree `r` with nonzero
-constant term. -/
+/--
+`c` is a label of degree `r`: a monic squarefree polynomial over `k` of degree `r` with nonzero
+constant term.
+-/
 def IsLabel : Prop := c.Monic ∧ Squarefree c ∧ c.natDegree = r ∧ c.coeff 0 ≠ 0
 
-/-- The class function χ∘det on endomorphisms of every dimension, written through the constant
-term of the characteristic polynomial. -/
+/--
+The class function χ∘det on endomorphisms of every dimension, written through the constant
+term of the characteristic polynomial.
+-/
 def detChar : Hall k := fun c : SimClass k ↦ χ ((-1) ^ c.dim * c.charpoly.coeff 0)
 
 open scoped Classical in
-/-- For a vector `l : n → k`, the element ∑ χ(det h)⁻¹ h of ℂ[GL_n(k)], summed over the invertible
-h of the form 1 + u lᵀ with u a column vector. -/
+/--
+For a vector `l : n → k`, the element ∑ χ(det h)⁻¹ h of ℂ[GL_n(k)], summed over the invertible
+h of the form 1 + u lᵀ with u a column vector.
+-/
 def hyperplaneSum (l : n → k) : MonoidAlgebra ℂ (GL n k) :=
   groupAlgElem fun h : GL n k ↦
     if ∃ u : n → k, h.val = 1 + Matrix.vecMulVec u l then χ⁻¹ h.val.det else 0
@@ -177,8 +196,10 @@ def hyperplaneSum (l : n → k) : MonoidAlgebra ℂ (GL n k) :=
 variable (n)
 
 open scoped Classical in
-/-- The element e_c = ∑ (Ξ_c(1)/|G|)·conj Ξ_c(g)·g of ℂ[G], G = GL_n(k), Ξ_c formed with
-`New.faithfulChar`, if c is a label of degree |n|; zero otherwise. -/
+/--
+The element e_c = ∑ (Ξ_c(1)/|G|)·conj Ξ_c(g)·g of ℂ[G], G = GL_n(k), Ξ_c formed with
+`New.faithfulChar`, if c is a label of degree |n|; zero otherwise.
+-/
 def labelIdem : MonoidAlgebra ℂ (GL n k) :=
   let Ξ := (labelChar (faithfulChar k) c).evalGL (n := n)
   if IsLabel (Fintype.card n) c then
@@ -203,7 +224,9 @@ character θ_x = T^e, where T(x) = exp(2πi/(Q−1))^e.
 
 section ThetaCharacters
 
-variable {k K : Type*} [Field k] [Finite k] [Field K] [Algebra k K] (T : MulChar K ℂ)
+variable
+  {k K : Type*} [Field k] [Finite k] [Field K] [Algebra k K]
+  (T : MulChar K ℂ)
   {Q Q' m : ℕ} {x y z : K}
 
 open Complex MulChar Finite Nat Units
@@ -295,30 +318,32 @@ lemma eq_one_of_thetaChar_algebraMap_eq_one {a : kˣ}
   rw [(h_prim.pow_eq_one_iff_dvd e).mpr h_dvd] at hTa
   exact val_eq_one.mp (h_one hTa)
 
-/-- For `T` faithful (`New.IsFaithfulMulChar`), the group isomorphism χ ↦ x_χ from the
+/--
+For `T` faithful (`New.IsFaithfulMulChar`), the group isomorphism χ ↦ x_χ from the
 multiplicative characters of `k` to `kˣ`, inverse to a ↦ θ_a restricted to `k`, with θ_a formed
-with Q = |k|. -/
+with Q = |k|.
+-/
 noncomputable def charName : MulChar k ℂ ≃* kˣ :=
   -- `R a` is the restriction of θ_a to `k`.
   let R : kˣ →* MulChar k ℂ :=
     MonoidHom.mk'
-      (fun a ↦ ⟨(thetaChar T (Nat.card k) (algebraMap k K a)).toMonoidHom.comp (algebraMap k K),
-        by simp⟩)
-      (fun a b ↦ MulChar.ext fun y ↦ by
-        -- At `y`, this is θ_{ab} = θ_a θ_b on the (|k| - 1)-th roots of unity.
-        change thetaChar T (Nat.card k) (algebraMap k K ↑(a * b)) (algebraMap k K y) =
-          thetaChar T (Nat.card k) (algebraMap k K a) (algebraMap k K y) *
-            thetaChar T (Nat.card k) (algebraMap k K b) (algebraMap k K y)
-        simp [thetaChar_mul T one_lt_card, algebraMap_pow_card_pred_eq_one])
-  MulEquiv.symm
-    (MulEquiv.ofBijective R (by
-      -- `R` is injective, and `kˣ` has as many elements as its character group.
-      have h_inj : Function.Injective R :=
-        (injective_iff_map_eq_one R).mpr fun a ha ↦
-          eq_one_of_thetaChar_algebraMap_eq_one T fun y ↦
-            -- `R a y` is by definition the value of θ_a at `y`.
-            (DFunLike.congr_fun ha (y : k)).trans (MulChar.one_apply_coe y)
-      exact h_inj.bijective_of_nat_card_le (card_eq_card_units_of_hasEnoughRootsOfUnity k ℂ).le))
+      (fun a ↦
+        ⟨(thetaChar T (Nat.card k) (algebraMap k K a)).toMonoidHom.comp (algebraMap k K), by simp⟩)
+      (fun a b ↦
+        MulChar.ext fun y ↦ by
+          -- At `y`, this is θ_{ab} = θ_a θ_b on the (|k| - 1)-th roots of unity.
+          change thetaChar T (Nat.card k) (algebraMap k K ↑(a * b)) (algebraMap k K y)
+            = thetaChar T (Nat.card k) (algebraMap k K a) (algebraMap k K y)
+              * thetaChar T (Nat.card k) (algebraMap k K b) (algebraMap k K y)
+          simp [thetaChar_mul T one_lt_card, algebraMap_pow_card_pred_eq_one])
+  MulEquiv.symm (MulEquiv.ofBijective R (by
+    -- `R` is injective, and `kˣ` has as many elements as its character group.
+    have h_inj : Function.Injective R :=
+      (injective_iff_map_eq_one R).mpr fun a ha ↦
+        eq_one_of_thetaChar_algebraMap_eq_one T fun y ↦
+          -- `R a y` is by definition the value of θ_a at `y`.
+          (DFunLike.congr_fun ha (y : k)).trans (MulChar.one_apply_coe y)
+    exact h_inj.bijective_of_nat_card_le (card_eq_card_units_of_hasEnoughRootsOfUnity k ℂ).le))
 
 /-- Let `T` be faithful (`K` algebraically closed, `T : K → ℂ` injective), and let θ_a = T^j
 (j = `thetaExponent`) be formed with Q = |k|. Let x_χ = `charName T χ` ∈ kˣ be the element attached
@@ -622,9 +647,11 @@ section LabelDegree
 
 open Module Matrix Finset Complex Hall Fintype ComplexOrder LinearMap GeneralLinearGroup
 
-variable {k n : Type*} {r : ℕ}
+variable
+  {k n : Type*} {r : ℕ}
   (K : Type*) [Field k] [Finite k] [Field K] [Algebra k K]
-  {T : MulChar K ℂ} [IsFaithfulMulChar K T] [Fintype n] {c : Polynomial k}
+  {T : MulChar K ℂ} [IsFaithfulMulChar K T] [Fintype n]
+  {c : Polynomial k}
 
 omit [Finite k] in
 /-- Induction on labels: start from `1` and multiply by monic irreducible polynomials other than
@@ -682,8 +709,10 @@ private def powerBasisOne : PowerBasis k k := ⟨1, 1, .singleton (Fin 1) k, by 
 
 variable (k) in
 open Classical in
-/-- The indicator function of the classes of identity maps, in every dimension: for a class `c`,
-`c.out.2` is a chosen endomorphism in it. -/
+/--
+The indicator function of the classes of identity maps, in every dimension: for a class `c`,
+`c.out.2` is a chosen endomorphism in it.
+-/
 private def identityIndicator : Hall k := fun c : SimClass k ↦ if ∀ x, c.out.2 x = x then 1 else 0
 
 /-- The pointwise product `mulMoebius` with `moebius` of Green's cuspidal function

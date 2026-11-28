@@ -185,17 +185,22 @@ lemma New.monomial_mul_bind₁_mem_of_weight_le {K ι : Type} [Field K] [Fintype
   have h_lt : cost (δ + β) < 1 + cost β := by simpa using hg u δ hδ
   simpa [b, ← mul_assoc] using ih (δ + β) h_lt γ (by linarith)
 
-/-- Combinatorial Nullstellensatz with multiplicity. Give the variable `u` the cost `1 / κ u`; the
+/--
+Combinatorial Nullstellensatz with multiplicity. Give the variable `u` the cost `1 / κ u`; the
 cost of a monomial is its `weight`. Take at least `∏ κ u` distinct points `z t` at which each
 `X u ^ κ u` agrees with a polynomial `g u` whose monomials cost less than `1`. Then every `f ≠ 0`
-that vanishes to order `d` at these points has a monomial of cost at least `d`. -/
-theorem New.exists_le_weight_of_mem_vanishingIdeal_pow {K ι S : Type} [Field K] [Fintype ι]
-    [Fintype S] (κ : ι → ℕ) (hκ : ∀ u : ι, 0 < κ u) (z : S → ι → K) (hz_inj : z.Injective)
-    (h_card : ∏ u : ι, κ u ≤ Fintype.card S) (g : ι → MvPolynomial ι K)
+that vanishes to order `d` at these points has a monomial of cost at least `d`.
+-/
+theorem New.exists_le_weight_of_mem_vanishingIdeal_pow
+    {K ι S : Type} [Field K] [Fintype ι] [Fintype S]
+    (κ : ι → ℕ) (hκ : ∀ u : ι, 0 < κ u)
+    (z : S → ι → K) (hz_inj : z.Injective)
+    (h_card : ∏ u : ι, κ u ≤ Fintype.card S)
+    (g : ι → MvPolynomial ι K)
     (hg_cost : ∀ u : ι, ∀ α ∈ (g u).support, weight (fun u : ι ↦ (κ u : ℝ))⁻¹ α < 1)
     (hg_eval : ∀ (u : ι) (t : S), eval (z t) (g u) = z t u ^ κ u)
-    (d : ℕ) (f : MvPolynomial ι K) (hf_ne : f ≠ 0) (hf : ∀ t : S, f ∈ vanishingIdeal K {z t} ^ d) :
-    ∃ α ∈ f.support, (d : ℝ) ≤ weight (fun u : ι ↦ (κ u : ℝ))⁻¹ α := by
+    (d : ℕ) (f : MvPolynomial ι K) (hf_ne : f ≠ 0) (hf : ∀ t : S, f ∈ vanishingIdeal K {z t} ^ d)
+    : ∃ α ∈ f.support, (d : ℝ) ≤ weight (fun u : ι ↦ (κ u : ℝ))⁻¹ α := by
   classical
   -- Put `ψ u = X u ^ κ u - g u`, which vanishes at the points. The products `X ^ α * ψ ^ γ` with
   -- `α < κ`, `|γ| < d` span modulo the kernel of the jet map `J` and are at most as many as the
@@ -210,18 +215,18 @@ theorem New.exists_le_weight_of_mem_vanishingIdeal_pow {K ι S : Type} [Field K]
     LinearMap.mem_ker.2 <| funext fun (t, γ) ↦
       New.coeff_translate_eq_zero_of_mem_vanishingIdeal_pow (hp t) ((hΓ γ).1 γ.property)
   have J_surj : Function.Surjective J := fun y ↦
-    (New.exists_forall_coeff_translate_eq hz_inj (fun γ ↦ (hΓ γ).1) y).imp
-      fun p hp ↦ funext fun (t, γ) ↦ hp t γ
+    (New.exists_forall_coeff_translate_eq hz_inj (fun γ ↦ (hΓ γ).1) y).imp fun p hp ↦
+      funext fun (t, γ) ↦ hp t γ
   -- The products `b α γ = X ^ α * ψ ^ γ`; they vanish to order `|γ|` at the points.
   let b (α γ : ι →₀ ℕ) : MvPolynomial ι K :=
     monomial α 1 * aeval (R := K) (fun u : ι ↦ X u ^ κ u - g u) (monomial γ 1)
   let v : univ.finsupp (range ∘ κ) × Γ → MvPolynomial ι K := fun (α, γ) ↦ b α γ
-  have b_span (α γ : ι →₀ ℕ) (hα : ∀ u : ι, α u < κ u) (hγ : γ.degree < d) :
-      b α γ ∈ span K (Set.range v) :=
+  have b_span (α γ : ι →₀ ℕ) (hα : ∀ u : ι, α u < κ u) (hγ : γ.degree < d)
+      : b α γ ∈ span K (Set.range v) :=
     subset_span ⟨(⟨α, by simpa [mem_finsupp_iff]⟩, ⟨γ, (hΓ γ).2 hγ⟩), rfl⟩
   have b_ker (α γ : ι →₀ ℕ) (hγ : d ≤ γ.degree) : b α γ ∈ J.ker :=
-    mem_ker fun t ↦ mul_mem_left _ _
-      (New.bind₁_monomial_mem_vanishingIdeal_pow (fun u ↦ by simp [hg_eval]) hγ)
+    mem_ker fun t ↦
+      mul_mem_left _ _ (New.bind₁_monomial_mem_vanishingIdeal_pow (fun u ↦ by simp [hg_eval]) hγ)
   -- By division, every polynomial lies in the span of the `v x` modulo the kernel of `J`.
   have mem_sup (p : MvPolynomial ι K) : p ∈ span K (Set.range v) ⊔ J.ker := by
     refine New.mem_of_forall_monomial_mem fun α _ ↦ ?_
@@ -232,22 +237,23 @@ theorem New.exists_le_weight_of_mem_vanishingIdeal_pow {K ι S : Type} [Field K]
     · exact mem_sup_right (b_ker β γ hγ)
   have h_span : ⊤ ≤ span K (Set.range (J ∘ v)) := fun y _ ↦ by
     obtain ⟨p, rfl⟩ := J_surj y
-    simpa only [Set.range_comp, span_image, ← Submodule.mem_comap, Submodule.comap_map_eq]
-      using mem_sup p
+    simpa only [Set.range_comp, span_image, ← Submodule.mem_comap, Submodule.comap_map_eq] using
+      mem_sup p
   have h_indep : LinearIndependent K (J ∘ v) :=
     linearIndependent_of_top_le_span_of_card_le_finrank h_span
       (by simpa using Nat.mul_le_mul_right Γ.card h_card)
   -- If all monomials of `f` cost less than `d`, division stays in the span of the `v x`.
   by_contra! h_low
-  have hf_span : f ∈ span K (Set.range v) := New.mem_of_forall_monomial_mem fun α hα ↦ by
-    suffices b α 0 ∈ span K (Set.range v) by simpa [b]
-    refine New.monomial_mul_bind₁_mem_of_weight_le hκ hg_cost (fun β γ hβ h_le ↦ ?_) α 0 le_rfl
-    have h_nonneg : 0 ≤ weight (fun u : ι ↦ (κ u : ℝ))⁻¹ β := by
-      simp only [weight_eq_sum, Pi.inv_apply]
-      positivity
-    simp only [map_zero, Nat.cast_zero, zero_add] at h_le
-    have h_degree : (γ.degree : ℝ) < d := by linarith [h_low α hα]
-    exact b_span β γ hβ (Nat.cast_lt.1 h_degree)
+  have hf_span : f ∈ span K (Set.range v) :=
+    New.mem_of_forall_monomial_mem fun α hα ↦ by
+      suffices b α 0 ∈ span K (Set.range v) by simpa [b]
+      refine New.monomial_mul_bind₁_mem_of_weight_le hκ hg_cost (fun β γ hβ h_le ↦ ?_) α 0 le_rfl
+      have h_nonneg : 0 ≤ weight (fun u : ι ↦ (κ u : ℝ))⁻¹ β := by
+        simp only [weight_eq_sum, Pi.inv_apply]
+        positivity
+      simp only [map_zero, Nat.cast_zero, zero_add] at h_le
+      have h_degree : (γ.degree : ℝ) < d := by linarith [h_low α hα]
+      exact b_span β γ hβ (Nat.cast_lt.1 h_degree)
   exact hf_ne ((range_ker_disjoint h_indep).le_bot ⟨hf_span, mem_ker hf⟩)
 
 end ZerosCostDegree

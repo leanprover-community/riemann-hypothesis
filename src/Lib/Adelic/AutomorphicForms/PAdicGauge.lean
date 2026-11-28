@@ -73,9 +73,11 @@ namespace New
 open NormedField Space IsUltrametricDist Matrix Function
 open NumberField (InfinitePlace)
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ} {p : ℕ} [Fact p.Prime]
-  (g d : Gf E n) {k : Gf E n}
+  (g d : Gf E n)
+  {k : Gf E n}
 
 /-! ### Weak approximation above `p` and properties of the gauge -/
 
@@ -176,22 +178,28 @@ lemma weylGauge_sum_le {α : Type*} {s : Finset α} {C : ℝ} {f : α → WeylIn
 
 /-! ### Integral forms -/
 
-/-- The algebraic form `φ` (with `φ.val (γ g)` equal to `γ` acting on `φ.val g` for rational `γ`) is
-bounded by `c` at `d`: for every `g`, the gauge of `φ g` at `g * d` is at most `c`. -/
+/--
+The algebraic form `φ` (with `φ.val (γ g)` equal to `γ` acting on `φ.val g` for rational `γ`) is
+bounded by `c` at `d`: for every `g`, the gauge of `φ g` at `g * d` is at most `c`.
+-/
 def GaugeLe (c : ℝ) (φ : AlgForm (E := E) n κ e) : Prop :=
   ∀ g : Gf E n, weylGauge κ e (g * d) (φ.val g) ≤ c
 
-/-- The O_ι-module of forms φ in S that are integral at d: the value φ(g) has gauge at most 1 at
-gd for every g. -/
-noncomputable def integralFormsAt (S : Submodule ℂ (AlgForm n κ e)) (d : Gf E n) :
-    Submodule embValRing (AlgForm (E := E) n κ e) :=
-  S.restrictScalars embValRing ⊓
-    { carrier := Set.ofPred (GaugeLe d 1)
-      add_mem' {φ ψ} hφ hψ g := by
-        simpa [weylGauge, mulVec_add] using (norm_add_le_max _ _).trans (max_le (hφ g) (hψ g))
-      zero_mem' := by simp [GaugeLe, weylGauge]
-      smul_mem' a φ hφ g := (weylGauge_smul (g * d) a).trans_le
-        ((mul_le_of_le_one_left (norm_nonneg _) a.property).trans (hφ g)) }
+/--
+The O_ι-module of forms φ in S that are integral at d: the value φ(g) has gauge at most 1 at
+gd for every g.
+-/
+noncomputable def integralFormsAt (S : Submodule ℂ (AlgForm n κ e)) (d : Gf E n)
+    : Submodule embValRing (AlgForm (E := E) n κ e) :=
+  S.restrictScalars embValRing ⊓ {
+    carrier := Set.ofPred (GaugeLe d 1)
+    add_mem' {φ ψ} hφ hψ g := by
+      simpa [weylGauge, mulVec_add] using (norm_add_le_max _ _).trans (max_le (hφ g) (hψ g))
+    zero_mem' := by simp [GaugeLe, weylGauge]
+    smul_mem' a φ hφ g :=
+      (weylGauge_smul (g * d) a).trans_le
+        ((mul_le_of_le_one_left (norm_nonneg _) a.property).trans (hφ g))
+  }
 
 /-- The stabiliser of the standard lattice is integral at every set `S` of finite places. -/
 lemma stdLevel_le_localLevel {S : Set (FinPlace E)} : stdLevel E n ≤ localLevel n S := fun _ hk ↦
@@ -228,8 +236,11 @@ open NumberField DoubleCoset
 
 namespace New
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ} (K : Subgroup (Gf E n)) {χ : K →* ℂ}
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ}
+  (K : Subgroup (Gf E n))
+  {χ : K →* ℂ}
 
 variable {K}
 
@@ -339,14 +350,16 @@ open Matrix NumberField MvPolynomial ComplexConjugate ComplexOrder Subgroup Real
 section
 section
 
-variable {E r n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype r] [Fintype n]
-  [DecidableEq n]
+variable
+  {E r n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype r] [Fintype n] [DecidableEq n]
 
 /-! ### Places and letters -/
 
 variable (E) in
-/-- Two finite families of finite places of E, called the chosen places and the places of the
-twist, all distinct, none of them conjugate to itself or to another. -/
+/--
+Two finite families of finite places of E, called the chosen places and the places of the
+twist, all distinct, none of them conjugate to itself or to another.
+-/
 structure LevelPlaces where
   /-- The index set of the chosen places. -/
   ChosenIndex : Type
@@ -372,16 +385,21 @@ lemma maxCompactAt_le_levelOf {ι : Type*} {u : ι → FinPlace E} {w : FinPlace
   (inf_le_inf_left _ ((Gf.supportedOn_mono (Set.singleton_subset_iff.2 hw)).trans_eq
     Gf.supportedOn_compl)).trans inf_trivialOn_le_levelOf
 
-/-- The algebra map sending the variable (τ, i, h) to the sum of the variables (τ, i, a) over
-the indices a with sign s(a) = c and ord(a) = h. -/
-def fockLetters {Φ : Type} (s : r → ℤˣ) (ord : r → ℕ) (c : ℤˣ) :
-    MatrixPoly (Σ _ : Φ, n) ℂ →ₐ[ℂ] MvPolynomial (Φ × n × r) ℂ :=
+/--
+The algebra map sending the variable (τ, i, h) to the sum of the variables (τ, i, a) over
+the indices a with sign s(a) = c and ord(a) = h.
+-/
+def fockLetters {Φ : Type} (s : r → ℤˣ) (ord : r → ℕ) (c : ℤˣ)
+    : MatrixPoly (Σ _ : Φ, n) ℂ →ₐ[ℂ] MvPolynomial (Φ × n × r) ℂ :=
   aeval fun x : (Σ _ : Φ, n) × ℕ ↦ ∑ a : r with s a = c ∧ ord a = x.2, X (x.1.1, x.1.2, a)
 
-/-- The linear map sending ξ of weight κ to its polynomial `New.toPoly` ξ, with each variable
-(τ, i, h) replaced by ∑ X(τ, i, a) over s(a) = c, ord(a) = h. -/
-def letterPoly {Φ : Type} [Fintype Φ] [DecidableEq Φ] (s : r → ℤˣ) (ord : r → ℕ) (c : ℤˣ)
-    (κ : Φ → ℕ → ℕ) : (WeylIndexFamily (fun _ : Φ ↦ n) κ → ℂ) →ₗ[ℂ] MvPolynomial (Φ × n × r) ℂ :=
+/--
+The linear map sending ξ of weight κ to its polynomial `New.toPoly` ξ, with each variable
+(τ, i, h) replaced by ∑ X(τ, i, a) over s(a) = c, ord(a) = h.
+-/
+def letterPoly
+    {Φ : Type} [Fintype Φ] [DecidableEq Φ] (s : r → ℤˣ) (ord : r → ℕ) (c : ℤˣ) (κ : Φ → ℕ → ℕ)
+    : (WeylIndexFamily (fun _ : Φ ↦ n) κ → ℂ) →ₗ[ℂ] MvPolynomial (Φ × n × r) ℂ :=
   (fockLetters (r := r) (n := n) (Φ := Φ) s ord c).toLinearMap ∘ₗ toPoly (fun _ ↦ n) κ
 
 end
@@ -390,10 +408,12 @@ variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
 
 /-! ### Forms of a level and the class sum metric -/
 
-/-- The class sum on the standard definite space: for a subgroup K and a function f on the finite
-points, the sum of f(g_c) / #Aut(g_c) over the double cosets c of the rational points and K. -/
-abbrev stdClassSum {X : Type*} [AddCommMonoid X] [Module ℚ X] :
-    Subgroup (Gf E n) → (Gf E n → X) → X :=
+/--
+The class sum on the standard definite space: for a subgroup K and a function f on the finite
+points, the sum of f(g_c) / #Aut(g_c) over the double cosets c of the rational points and K.
+-/
+abbrev stdClassSum {X : Type*} [AddCommMonoid X] [Module ℚ X]
+    : Subgroup (Gf E n) → (Gf E n → X) → X :=
   classSum (stdSpace E n).Γf
 
 /-- The Cauchy–Schwarz inequality for class sums of any level `K`. Let `σ` be an automorphism of
@@ -448,8 +468,10 @@ instance isConjApart_chosenPlace : IsConjApart P.chosenPlace where
   injective := P.apart.injective.comp Sum.inl_injective
   star_ne _ _ := P.apart.star_ne (.inl _) (.inl _)
 
-/-- The family of all places of `P`: the chosen places and the places of the twist, indexed by the
-disjoint union of the two index sets. -/
+/--
+The family of all places of `P`: the chosen places and the places of the twist, indexed by the
+disjoint union of the two index sets.
+-/
 abbrev placeAt : P.ChosenIndex ⊕ P.TwistIndex → FinPlace E := P.chosenPlace ⊕ᵥ P.twistPlace
 
 /-- The set of the chosen places and the places of the twist of `P`. -/
@@ -459,24 +481,30 @@ end
 
 section Defs
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] (S : LevelPlaces E)
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  (S : LevelPlaces E)
   (H : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i)))) (χ : H →* ℂ)
   (κ : InfinitePlace E → ℕ → ℕ) (e : InfinitePlace E → ℤ)
 
-/-- The space of algebraic forms of weight (κ, e) on the standard definite space on which the level
-cut out by H at the places of S acts through the character χ. -/
+/--
+The space of algebraic forms of weight (κ, e) on the standard definite space on which the level
+cut out by H at the places of S acts through the character χ.
+-/
 def LevelForm : Type :=
   levelSpace (algFormRep κ e) (levelOf S.placeAt H) (χ.comp (levelOf.reduction S.placeAt H))
-  deriving AddCommGroup, Module ℂ, Module ℚ
+deriving AddCommGroup, Module ℂ, Module ℚ
 
 -- An algebraic form is read as a function on the finite adelic points.
 instance : CoeFun (S.LevelForm H χ κ e) fun _ ↦ Gf E n → WeylIndex n κ → ℂ := ⟨(·.val.val)⟩
 
 end Defs
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {S : LevelPlaces E}
-  {H : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i)))} {χ : H →* ℂ}
-  {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ}
+variable
+  {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {S : LevelPlaces E}
+  {H : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i)))}
+  {χ : H →* ℂ} {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ}
 
 section InnerProduct
 
@@ -503,26 +531,30 @@ def _root_.New.Rows.evalForm (g : Gf E n) : S.LevelForm H χ κ e →ₗ[ℂ] We
 
 lemma _root_.New.Rows.apply_eq_evalForm (g : Gf E n) : φ g = Rows.evalForm g φ := rfl
 
-/-- An algebraic form of level H on the standard definite space, viewed as a smooth form, that is, a
-form with open stabiliser under right translation. -/
+/--
+An algebraic form of level H on the standard definite space, viewed as a smooth form, that is, a
+form with open stabiliser under right translation.
+-/
 def LevelForm.toSmoothForm : S.LevelForm H χ κ e →ₗ[ℂ] (stdSpace E n).forms (κ, e) :=
   Submodule.subtype _
 
-/-- For an automorphism σ of ℂ, the pairing sending (φ, φ') to σ⁻¹ of the class sum of
-conj(σ φ(g))ᵀ G (σ φ'(g)), with G the integral Gram matrix of weight κ. -/
+/--
+For an automorphism σ of ℂ, the pairing sending (φ, φ') to σ⁻¹ of the class sum of
+conj(σ φ(g))ᵀ G (σ φ'(g)), with G the integral Gram matrix of weight κ.
+-/
 @[irreducible]
-def LevelForm.innerAt :
-    S.LevelForm H χ κ e →ₛₗ[(↑σ⁻¹ : ℂ →+* ℂ).comp ((starRingEnd ℂ).comp (↑σ : ℂ →+* ℂ))]
-      S.LevelForm H χ κ e →ₗ[ℂ] ℂ :=
+def LevelForm.innerAt
+    : S.LevelForm H χ κ e →ₛₗ[(↑σ⁻¹ : ℂ →+* ℂ).comp ((starRingEnd ℂ).comp (↑σ : ℂ →+* ℂ))]
+        S.LevelForm H χ κ e →ₗ[ℂ] ℂ :=
   -- the Gram form with `σ⁻¹ ∘ conj ∘ σ` as conjugation is invariant by `gramForm_map_weightRep`
-  ((stdLevelIndex (levelOf S.placeAt H) : ℂ) •
-      smoothPairing
-        (toLinearMapₛₗ₂' ℂ (RingHom.comp ↑σ⁻¹ ((starRingEnd ℂ).comp σ)) (RingHom.id ℂ)
-          (weylGramOver (κ := κ)))
-        fun γ u v ↦
-          σ.injective (by simpa [Int.cast_comm, toLinearMapₛₗ₂'_apply, gramForm_apply, dotProduct,
-            mulVec, mul_sum] using gramForm_map_weightRep σ γ u v)).compl₂
-    (toSmoothForm (χ := χ)) ∘ₛₗ toSmoothForm (χ := χ) (e := e)
+  ((stdLevelIndex (levelOf S.placeAt H) : ℂ) • smoothPairing
+      (toLinearMapₛₗ₂' ℂ (RingHom.comp ↑σ⁻¹ ((starRingEnd ℂ).comp σ)) (RingHom.id ℂ)
+        (weylGramOver (κ := κ)))
+      fun γ u v ↦
+        σ.injective (by
+          simpa [Int.cast_comm, toLinearMapₛₗ₂'_apply, gramForm_apply, dotProduct, mulVec, mul_sum]
+            using gramForm_map_weightRep σ γ u v)).compl₂ (toSmoothForm (χ := χ))
+    ∘ₛₗ toSmoothForm (χ := χ) (e := e)
 
 /-- An element `k` of the level acts on a form, by right translation, through the character `χ`. -/
 lemma LevelForm.apply_mul_eq_smul {k : Gf E n} (hk : k ∈ levelOf S.placeAt H) (g : Gf E n) :
@@ -584,19 +616,21 @@ lemma LevelForm.eq_zero_of_innerAt_self (h_zero : φ.innerAt σ φ = 0) : φ = 0
 
 instance : NormedAddCommGroup (S.LevelForm H χ κ e) :=
   InnerProductSpace.Core.toNormedAddCommGroup
-    (cd :=
-      { inner := (·.innerAt 1)
-        conj_inner_symm := LevelForm.conj_innerAt 1
-        re_inner_nonneg := fun φ ↦ by
-          have h_class : RCLike.re (φ.innerAt 1 φ) =
-              classSum stdRatPoints (levelOf S.placeAt H) fun g : Gf E n ↦ weylNormSq (φ g) := by
-            simp [LevelForm.innerAt_eq_stdClassSum, ← Complex.reLm_coe, map_classSum,
-              gramForm_apply, weylNormSq]
-          rw [h_class, classSum, finsum_eq_sum_of_fintype]
-          exact sum_nonneg fun c _ ↦ by simp [Rat.smul_def, mul_nonneg]
-        add_left := by simp
-        smul_left := by simp
-        definite := LevelForm.eq_zero_of_innerAt_self 1 })
+    (cd := {
+      inner := (·.innerAt 1)
+      conj_inner_symm := LevelForm.conj_innerAt 1
+      re_inner_nonneg := fun φ ↦ by
+        have h_class
+            : RCLike.re (φ.innerAt 1 φ)
+              = classSum stdRatPoints (levelOf S.placeAt H) fun g : Gf E n ↦ weylNormSq (φ g) := by
+          simp [LevelForm.innerAt_eq_stdClassSum, ← Complex.reLm_coe, map_classSum, gramForm_apply,
+            weylNormSq]
+        rw [h_class, classSum, finsum_eq_sum_of_fintype]
+        exact sum_nonneg fun c _ ↦ by simp [Rat.smul_def, mul_nonneg]
+      add_left := by simp
+      smul_left := by simp
+      definite := LevelForm.eq_zero_of_innerAt_self 1
+    })
 
 instance : InnerProductSpace ℂ (S.LevelForm H χ κ e) := .ofCore _
 
@@ -614,12 +648,15 @@ lemma isOfFinOrder_level_char (k : levelOf S.placeAt H) :
     IsOfFinOrder (χ.comp (levelOf.reduction S.placeAt H) k) :=
   χ.isOfFinOrder (isMulTorsion_of_finite _)
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {S : LevelPlaces E}
+variable
+  {E : Type} [Field E] [NumberField E] [IsCMField E]
+  {S : LevelPlaces E}
   {H : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i)))} {χ : H →* ℂ} in
 instance : Fact (χ.comp (levelOf.reduction S.placeAt H) =ᶠ[nhds 1] 1) := by
   -- The character is trivial on the open level of the trivial subgroup.
-  refine ⟨.mono (((isOpen_levelOf (w := S.placeAt) (H := ⊥)).preimage
-    continuous_subtypeVal).mem_nhds (by simp)) fun k hk ↦ ?_⟩
+  refine ⟨.mono
+    (((isOpen_levelOf (w := S.placeAt) (H := ⊥)).preimage continuous_subtypeVal).mem_nhds (by simp))
+    fun k hk ↦ ?_⟩
   simp [show levelOf.reduction S.placeAt H k = 1 from Subtype.ext (mem_levelOf.mp hk).2]
 
 /-- Let φ, ψ be forms of the level cut out by H, σ ∈ Aut ℂ, p a permutation of the infinite places
@@ -662,8 +699,10 @@ variable (φ φ' : S.LevelForm H χ κ e) (σ : ℂ ≃+* ℂ) {l : ℕ} [Fact l
 
 /-! ### Archimedean and l-adic sizes of inner products -/
 
-/-- For σ ∈ Aut ℂ, the number ‖φ‖²_σ: the class sum of the squared Gram norms of the vectors
-σ(φ(g)). -/
+/--
+For σ ∈ Aut ℂ, the number ‖φ‖²_σ: the class sum of the squared Gram norms of the vectors
+σ(φ(g)).
+-/
 def normSqAt : ℝ :=
   classSum stdRatPoints (levelOf S.placeAt H) fun g : Gf E n ↦ weylNormSq (σ ∘ φ g)
 
@@ -740,12 +779,15 @@ lemma _root_.New.gramForm_mem_embValRing {g : Gf E n} {u v : WeylIndex n κ → 
   exact sum_mem fun i _ ↦ mul_mem ((norm_le_pi_norm x i).trans hx)
     (sum_mem fun k _ ↦ mul_mem (by simp [G]) ((norm_le_pi_norm y k).trans hy))
 
-/-- The forms integral at j : ℂ → ℂ_l: the module, over the valuation ring `New.embValRing` of j, of
-the forms φ whose value φ(g) has gauge `New.weylGauge` at most 1 for every g. -/
+/--
+The forms integral at j : ℂ → ℂ_l: the module, over the valuation ring `New.embValRing` of j, of
+the forms φ whose value φ(g) has gauge `New.weylGauge` at most 1 for every g.
+-/
 def integralForms : Submodule embValRing (S.LevelForm H χ κ e) :=
   -- the preimage of `integralFormsAt ⊤ 1` under `toSmoothForm`, with a plainer carrier
   Submodule.copy ((integralFormsAt ⊤ 1).comap (toSmoothForm.restrictScalars embValRing))
-    {φ : S.LevelForm H χ κ e | ∀ g : Gf E n, weylGauge κ e g (φ g) ≤ 1} (by
+    {φ : S.LevelForm H χ κ e | ∀ g : Gf E n, weylGauge κ e g (φ g) ≤ 1}
+    (by
       ext φ
       change _ ↔ True ∧ ∀ g : Gf E n, weylGauge κ e (g * 1) (φ g) ≤ 1
       simp)
@@ -767,10 +809,14 @@ end Sizes
 
 /-! ### Coordinates of a form -/
 
-/-- The index set of the coordinates of a form: pairs of a class and an index of the standard basis
-of the Weyl module. -/
-abbrev ValueIndex (H : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i))))
-    (κ : InfinitePlace E → ℕ → ℕ) : Type :=
+/--
+The index set of the coordinates of a form: pairs of a class and an index of the standard basis
+of the Weyl module.
+-/
+abbrev ValueIndex
+    (H : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i))))
+    (κ : InfinitePlace E → ℕ → ℕ)
+    : Type :=
   StdClasses (levelOf S.placeAt H) × WeylIndex n κ
 
 /-- The coordinates of the values of a form at fixed representatives of the classes. -/
@@ -779,8 +825,10 @@ def valueCoord : S.LevelForm H χ κ e →ₗ[ℂ] ValueIndex H κ → ℂ :=
 
 open scoped Classical Kronecker in
 /-- The block diagonal matrix with one copy of the Gram matrix of the Weyl module for each class. -/
-def valueMetric (H : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i))))
-    (κ : InfinitePlace E → ℕ → ℕ) : Matrix (ValueIndex H κ) (ValueIndex H κ) ℚ :=
+def valueMetric
+    (H : Subgroup (∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i))))
+    (κ : InfinitePlace E → ℕ → ℕ)
+    : Matrix (ValueIndex H κ) (ValueIndex H κ) ℚ :=
   1 ⊗ₖ weylGramOver
 
 open scoped Classical Kronecker in
@@ -848,9 +896,12 @@ namespace New.Rows
 
 open NumberField HasFiniteType Nat
 
-variable {E V : Type} [Field E] [CMType E] [Fintype V] [DecidableEq V] {p : ℕ} [Fact p.Prime]
-  {κ : InfinitePlace E → ℕ → ℕ} {G : Type*} [Group G] [TopologicalSpace G] {Γ K : Subgroup G}
-  [HasFiniteType Γ K] {B : ℝ} {f : G → WeylIndex V κ → ℂ}
+variable
+  {E V : Type} [Field E] [CMType E] [Fintype V] [DecidableEq V]
+  {p : ℕ} [Fact p.Prime]
+  {κ : InfinitePlace E → ℕ → ℕ} {G : Type*} [Group G] [TopologicalSpace G]
+  {Γ K : Subgroup G} [HasFiniteType Γ K]
+  {B : ℝ} {f : G → WeylIndex V κ → ℂ}
 
 /-- The gauge satisfies the ultrametric inequality. -/
 lemma weylGauge_add_le_max (g : Gf E V) {e : InfinitePlace E → ℤ} [PadicPlace p]

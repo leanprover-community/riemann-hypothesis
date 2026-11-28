@@ -70,10 +70,12 @@ open Matrix Fintype Function Finset Exchange
 
 variable {P : Parameters}
 
-/-- The nodes at a turn of a path. The old path has the edges `V' → W₁` and `Ṽ' → W₂`, the new one
+/--
+The nodes at a turn of a path. The old path has the edges `V' → W₁` and `Ṽ' → W₂`, the new one
 has `W₁ → V` and `W₂ → Ṽ`. A node (`GridNode`) is a place `(z, a, b)` in one of the two grids, and
 `D.NodeIndex` is the index set of its basis. The type `T` indexes what `Ṽ'` has beyond `V'` and
-`Ṽ` beyond `V`: in the use off the diagonal it is empty, and on the diagonal it indexes one line. -/
+`Ṽ` beyond `V`: in the use off the diagonal it is empty, and on the diagonal it indexes one line.
+-/
 structure Corner (D : Data P) (B T : Type) where
   /-- The node `V'` that the turn removes. -/
   low : GridNode
@@ -98,8 +100,10 @@ namespace Corner
 
 section Definitions
 
-variable {D : Data P} {B T : Type} [Fintype B] [DecidableEq B] [Fintype T] [DecidableEq T]
-  (c : D.Corner B T) {ϑ : D.MFoldTwist}
+variable
+  {D : Data P} {B T : Type} [Fintype B] [DecidableEq B] [Fintype T] [DecidableEq T]
+  (c : D.Corner B T)
+  {ϑ : D.MFoldTwist}
 
 /-- The edges of the old path, `w` being those that the turn preserves. -/
 abbrev oldEdges (w : Finset (GridNode × GridNode)) : Finset (GridNode × GridNode) :=
@@ -109,16 +113,20 @@ abbrev oldEdges (w : Finset (GridNode × GridNode)) : Finset (GridNode × GridNo
 abbrev newEdges (w : Finset (GridNode × GridNode)) : Finset (GridNode × GridNode) :=
   insert (c.snd, c.highExt) (insert (c.fst, c.high) w)
 
-/-- The character `χ` for which the data on the two sides of the square are matched: the inverse of
+/--
+The character `χ` for which the data on the two sides of the square are matched: the inverse of
 the product of the characters `edgeChar` of the two old edges. It lives on the residue ring modulo
-`gridModulus ϑ`, the modulus of the twist `ϑ` times a power of the chosen places. -/
+`gridModulus ϑ`, the modulus of the twist `ϑ` times a power of the chosen places.
+-/
 def char (ϑ : D.MFoldTwist) : MulChar (gridModulus ϑ).ResidueRing ℂ :=
   (edgeChar ϑ (c.low, c.fst) * edgeChar ϑ (c.lowExt, c.snd))⁻¹
 
-/-- The conditions under which the corner is a turn of a path whose other edges are `w`, for the
+/--
+The conditions under which the corner is a turn of a path whose other edges are `w`, for the
 twist `ϑ`. A family `g` of invertible matrices, one for each node, is admissible
 (`IsAdmissibleFamily`) if it lies in the level at the two starting nodes and is `g ⊕ 1` on the
-diagonal of the second grid, for its element `g` at the same place of the first. -/
+diagonal of the second grid, for its element `g` at the same place of the first.
+-/
 structure IsTurn (ϑ : D.MFoldTwist) (w : Finset (GridNode × GridNode)) : Prop where
   /-- The two kept nodes differ. -/
   fst_ne_snd : c.fst ≠ c.snd
@@ -127,20 +135,23 @@ structure IsTurn (ϑ : D.MFoldTwist) (w : Finset (GridNode × GridNode)) : Prop 
   /-- The other edges avoid the removed nodes and do not end at the added ones. -/
   endpoints_notMem : ∀ e ∈ w, e.1 ∉ [c.low, c.lowExt] ∧ e.2 ∉ [c.low, c.lowExt, c.high, c.highExt]
   /-- One old edge is vertical, and the new edge at the same kept node is not. -/
-  vertical : IsVerticalEdge c.low c.fst ∧ ¬IsVerticalEdge c.fst c.high ∨
-    IsVerticalEdge c.lowExt c.snd ∧ ¬IsVerticalEdge c.snd c.highExt
+  vertical
+    : IsVerticalEdge c.low c.fst ∧ ¬ IsVerticalEdge c.fst c.high
+      ∨ IsVerticalEdge c.lowExt c.snd ∧ ¬ IsVerticalEdge c.snd c.highExt
   /-- Opposite edges have the same character. -/
   edgeChar_fst : edgeChar ϑ (c.fst, c.high) = edgeChar ϑ (c.lowExt, c.snd)
   /-- Opposite edges have the same character. -/
   edgeChar_snd : edgeChar ϑ (c.snd, c.highExt) = edgeChar ϑ (c.low, c.fst)
   /-- Only the group of `V` acts at `Ṽ`. -/
-  apply_highExt (g : NodeFamily ϑ) (hg : IsAdmissibleFamily g) :
-    g c.highExt = blockInlGL c.highEquiv (g c.high)
+  apply_highExt (g : NodeFamily ϑ) (hg : IsAdmissibleFamily g)
+    : g c.highExt = blockInlGL c.highEquiv (g c.high)
   /-- The node `V'` is inner: any element `k` may act there, through `k ⊕ 1` at `Ṽ'`. -/
-  exists_eq_low (g : NodeFamily ϑ) (hg : IsAdmissibleFamily g)
-      (k : GL (D.NodeIndex c.low) (gridModulus ϑ).ResidueRing) :
-    ∃ g' : NodeFamily ϑ, IsAdmissibleFamily g' ∧ g' c.low = k ∧
-      g' c.lowExt = blockInlGL c.lowEquiv k ∧ ∀ q : GridNode, q ≠ c.low → q ≠ c.lowExt → g' q = g q
+  exists_eq_low
+    (g : NodeFamily ϑ) (hg : IsAdmissibleFamily g)
+    (k : GL (D.NodeIndex c.low) (gridModulus ϑ).ResidueRing)
+    : ∃ g' : NodeFamily ϑ,
+      IsAdmissibleFamily g' ∧ g' c.low = k ∧ g' c.lowExt = blockInlGL c.lowEquiv k
+        ∧ ∀ q : GridNode, q ≠ c.low → q ≠ c.lowExt → g' q = g q
 
 variable (S : EdgeTuple ϑ)
 
@@ -161,30 +172,42 @@ def newRow : Matrix T B (gridModulus ϑ).ResidueRing :=
   ((S (c.snd, c.highExt)).submatrix c.highEquiv c.sndEquiv).toRows₂
 
 /-- The tuple with `y` and `v` on the old edges and the matrices of `S` elsewhere. -/
-def oldTuple (y : Matrix (D.NodeIndex c.fst ⊕ B) (D.NodeIndex c.low) (gridModulus ϑ).ResidueRing)
-    (v : Matrix B T (gridModulus ϑ).ResidueRing) : EdgeTuple ϑ :=
+def oldTuple
+    (y : Matrix (D.NodeIndex c.fst ⊕ B) (D.NodeIndex c.low) (gridModulus ϑ).ResidueRing)
+    (v : Matrix B T (gridModulus ϑ).ResidueRing)
+    : EdgeTuple ϑ :=
   update (update S (c.low, c.fst) y.toRows₁) (c.lowExt, c.snd)
     ((fromCols y.toRows₂ v).submatrix c.sndEquiv.symm c.lowEquiv.symm)
 
 /-- The tuple with `x` and `v'` on the new edges and the matrices of `S` elsewhere. -/
-def newTuple (x : Matrix (D.NodeIndex c.high) (D.NodeIndex c.fst ⊕ B) (gridModulus ϑ).ResidueRing)
-    (v' : Matrix T B (gridModulus ϑ).ResidueRing) : EdgeTuple ϑ :=
+def newTuple
+    (x : Matrix (D.NodeIndex c.high) (D.NodeIndex c.fst ⊕ B) (gridModulus ϑ).ResidueRing)
+    (v' : Matrix T B (gridModulus ϑ).ResidueRing)
+    : EdgeTuple ϑ :=
   update (update S (c.fst, c.high) x.toCols₁) (c.snd, c.highExt)
     ((fromRows x.toCols₂ v').submatrix c.highEquiv.symm c.sndEquiv.symm)
 
-/-- The column Fourier transform `Ψ̂'(y, v') = ∑ v, ψ(v' v) Ψ'(y, v)` in the column `v` of the line,
+/--
+The column Fourier transform `Ψ̂'(y, v') = ∑ v, ψ(v' v) Ψ'(y, v)` in the column `v` of the line,
 where `ψ(v' v)` is the additive character `ψ` at the trace of `v' v` and the matrices on the other
-edges are those of `S`. -/
-def columnFourier (ψ : AddChar (gridModulus ϑ).ResidueRing ℂ) (Ψ' : EdgeTuple ϑ → ℂ)
-    (S : EdgeTuple ϑ) (v' : Matrix T B (gridModulus ϑ).ResidueRing)
-    (y : Matrix (D.NodeIndex c.fst ⊕ B) (D.NodeIndex c.low) (gridModulus ϑ).ResidueRing) : ℂ :=
+edges are those of `S`.
+-/
+def columnFourier
+    (ψ : AddChar (gridModulus ϑ).ResidueRing ℂ) (Ψ' : EdgeTuple ϑ → ℂ) (S : EdgeTuple ϑ)
+    (v' : Matrix T B (gridModulus ϑ).ResidueRing)
+    (y : Matrix (D.NodeIndex c.fst ⊕ B) (D.NodeIndex c.low) (gridModulus ϑ).ResidueRing)
+    : ℂ :=
   ∑ v : Matrix B T (gridModulus ϑ).ResidueRing, ψ (v' * v).trace * Ψ' (c.oldTuple S y v)
 
-/-- The datum on the new path: the match for the character `c.char ϑ` of the column Fourier
+/--
+The datum on the new path: the match for the character `c.char ϑ` of the column Fourier
 transform of `Ψ'`, taken at the row `v'` and the matrix `x` that are read on the new edges of `S`.
-The bijection `ε` identifies the indices of `V'` and `V` with those of `W₁ ⊕ W₂`. -/
-def turned (ε : D.NodeIndex c.low ⊕ D.NodeIndex c.high ≃ D.NodeIndex c.fst ⊕ B)
-    (ψ : AddChar (gridModulus ϑ).ResidueRing ℂ) (Ψ' : EdgeTuple ϑ → ℂ) (S : EdgeTuple ϑ) : ℂ :=
+The bijection `ε` identifies the indices of `V'` and `V` with those of `W₁ ⊕ W₂`.
+-/
+def turned
+    (ε : D.NodeIndex c.low ⊕ D.NodeIndex c.high ≃ D.NodeIndex c.fst ⊕ B)
+    (ψ : AddChar (gridModulus ϑ).ResidueRing ℂ) (Ψ' : EdgeTuple ϑ → ℂ) (S : EdgeTuple ϑ)
+    : ℂ :=
   matchOf (c.char ϑ) ε (c.columnFourier ψ Ψ' S (c.newRow S)) (c.newMatrix S)
 
 /-- The element of a family at `W₂`, in the basis of the square. -/
@@ -197,13 +220,15 @@ abbrev sumGL (g : NodeFamily ϑ) : GL (D.NodeIndex c.fst ⊕ B) (gridModulus ϑ)
 
 end Definitions
 
-variable {D : Data P} {B T : Type} [Fintype T] [DecidableEq T]
+variable
+  {D : Data P} {B T : Type} [Fintype T] [DecidableEq T]
   {c : D.Corner B T} {ϑ : D.MFoldTwist} {w : Finset (GridNode × GridNode)} {N : ℕ}
   {Ψ' : EdgeTuple ϑ → ℂ}
 
 section Tuples
 
-variable {S : EdgeTuple ϑ}
+variable
+  {S : EdgeTuple ϑ}
   (y : Matrix (D.NodeIndex c.fst ⊕ B) (D.NodeIndex c.low) (gridModulus ϑ).ResidueRing)
   (v : Matrix B T (gridModulus ϑ).ResidueRing)
   (x : Matrix (D.NodeIndex c.high) (D.NodeIndex c.fst ⊕ B) (gridModulus ϑ).ResidueRing)
@@ -509,21 +534,25 @@ lemma isSumOfRootsOfUnity_turned (hc : c.IsTurn ϑ w) (hΨ' : IsPathDatum N (c.o
 
 end Turned
 
-/-- Turning a path datum: let the corner be a turn and let `Ψ'` be a path datum on the old path,
+/--
+Turning a path datum: let the corner be a turn and let `Ψ'` be a path datum on the old path,
 with at most `N` roots of unity in a value. Hold fixed the matrices of the preserved edges and take
 the Fourier transform of `Ψ'` in the column of the line (`columnFourier`). For each row `v'` the
 match of the transform is `Ψ(·, v')` for a path datum `Ψ` on the new path, and the bound for the
-number of roots of unity in a value is multiplied by the number of column matrices `v`. -/
-theorem exists_isPathDatum (hc : c.IsTurn ϑ w) (hΨ' : IsPathDatum N (c.oldEdges w) Ψ')
+number of roots of unity in a value is multiplied by the number of column matrices `v`.
+-/
+theorem exists_isPathDatum
+    (hc : c.IsTurn ϑ w) (hΨ' : IsPathDatum N (c.oldEdges w) Ψ')
     (ε : D.NodeIndex c.low ⊕ D.NodeIndex c.high ≃ D.NodeIndex c.fst ⊕ B)
-    (ψ : AddChar (gridModulus ϑ).ResidueRing ℂ) :
-    ∃ Ψ : EdgeTuple ϑ → ℂ,
-      IsPathDatum (card (Matrix B T (gridModulus ϑ).ResidueRing) * N) (c.newEdges w) Ψ ∧
-      ∀ (S : EdgeTuple ϑ) (v' : Matrix T B (gridModulus ϑ).ResidueRing),
-        AreMatched ⊤ ε (c.char ϑ)
-          (fun x : Matrix (D.NodeIndex c.high) (D.NodeIndex c.fst ⊕ B) (gridModulus ϑ).ResidueRing ↦
-            Ψ (c.newTuple S x v'))
-          (c.columnFourier ψ Ψ' S v') := by
+    (ψ : AddChar (gridModulus ϑ).ResidueRing ℂ)
+    : ∃ Ψ : EdgeTuple ϑ → ℂ,
+      IsPathDatum (card (Matrix B T (gridModulus ϑ).ResidueRing) * N) (c.newEdges w) Ψ
+        ∧ ∀ (S : EdgeTuple ϑ) (v' : Matrix T B (gridModulus ϑ).ResidueRing),
+          AreMatched ⊤ ε (c.char ϑ)
+            (fun x
+                : Matrix (D.NodeIndex c.high) (D.NodeIndex c.fst ⊕ B) (gridModulus ϑ).ResidueRing ↦
+              Ψ (c.newTuple S x v'))
+            (c.columnFourier ψ Ψ' S v') := by
   -- The datum is the turned one; it depends only on the matrices of the new edges.
   have h_dep : DependsOn (c.turned ε ψ Ψ') (c.newEdges w : Set (GridNode × GridNode)) := by
     intro S S' h_agree
@@ -531,11 +560,19 @@ theorem exists_isPathDatum (hc : c.IsTurn ϑ w) (hΨ' : IsPathDatum N (c.oldEdge
       hc.columnFourier_congr hΨ' fun e he ↦ h_agree e (by simp [he])
     simp only [turned, newRow, newMatrix, h_agree (c.snd, c.highExt) (by simp),
       h_agree (c.fst, c.high) (by simp), h_fourier]
-  refine ⟨c.turned ε ψ Ψ', ⟨h_dep, fun g hg ↦ hc.turned_tupleAction hΨ' ε hg,
-    fun S ↦ hc.hasLeftInv_of_turned_ne_zero hΨ' ε, hc.isSumOfRootsOfUnity_turned hΨ' ε⟩,
-    fun S v' ↦ ?_⟩
-  have h_turned : (fun x ↦ c.turned ε ψ Ψ' (c.newTuple S x v')) =
-      matchOf (c.char ϑ) ε (c.columnFourier ψ Ψ' S v') := by
+  refine ⟨
+    c.turned ε ψ Ψ',
+    ⟨
+      h_dep,
+      fun g hg ↦ hc.turned_tupleAction hΨ' ε hg,
+      fun S ↦ hc.hasLeftInv_of_turned_ne_zero hΨ' ε,
+      hc.isSumOfRootsOfUnity_turned hΨ' ε
+    ⟩,
+    fun S v' ↦ ?_
+  ⟩
+  have h_turned
+      : (fun x ↦ c.turned ε ψ Ψ' (c.newTuple S x v'))
+        = matchOf (c.char ϑ) ε (c.columnFourier ψ Ψ' S v') := by
     funext x
     rw [turned, newRow_newTuple, hc.newMatrix_newTuple,
       hc.columnFourier_congr hΨ' fun e he ↦ hc.newTuple_apply_of_mem x v' he]
@@ -596,16 +633,20 @@ open Fintype Exchange
 variable {P : Parameters} {D : Data P} {a b : ℕ}
 
 variable (D) in
-/-- The ratio of the turn at `(i, j)`: the product over `1 ≤ s ≤ D.t` of the ratios of Hecke values
+/--
+The ratio of the turn at `(i, j)`: the product over `1 ≤ s ≤ D.t` of the ratios of Hecke values
 at `s` of the character `untwistedLiftChar (i + 1) * untwistedLiftChar (j + 1)` at the twist
-`ϑ ^ (j + 1)`. -/
+`ϑ ^ (j + 1)`.
+-/
 noncomputable def turnRatio (i j : ℕ) (ϑ : D.MFoldTwist) : ℝ :=
   D.lRatioProd (D.untwistedLiftChar (i + 1) * D.untwistedLiftChar (j + 1)) D.t (ϑ.pow (j + 1))
 
-/-- The critical pair of a square: the character `ν = untwistedLiftChar (a + 1) * untwistedLiftChar
+/--
+The critical pair of a square: the character `ν = untwistedLiftChar (a + 1) * untwistedLiftChar
 (b + 1)`, of weight `-(D.liftWeight (a + 1) + D.liftWeight (b + 1))`, with its tame part `tamePart`
 and the integer `z = D.t`. In a critical pair (`D.CriticalPair`) minus the weight is at least `z`
-and at most `4 * D.b` at every infinite place. -/
+and at most `4 * D.b` at every infinite place.
+-/
 noncomputable def squarePair (ha : a < D.m) (hb : b < D.m) : D.CriticalPair where
   character := D.untwistedLiftChar (a + 1) * D.untwistedLiftChar (b + 1)
   negWeight := D.liftWeight (b + 1) + D.liftWeight (a + 1)
@@ -613,8 +654,8 @@ noncomputable def squarePair (ha : a < D.m) (hb : b < D.m) : D.CriticalPair wher
   z := D.t
   hasWeight := by
     -- the weights add, and the tame parts multiply
-    simpa [← zpow_add] using! (D.untwistedLiftChar_hasWeight a.succ).mul
-      (D.untwistedLiftChar_hasWeight b.succ)
+    simpa [← zpow_add] using!
+      (D.untwistedLiftChar_hasWeight a.succ).mul (D.untwistedLiftChar_hasWeight b.succ)
   tamePart_eq_one := by simp_all
   z_mem := by grind
   le_negWeight := by grind [Pi.add_apply]
@@ -789,20 +830,22 @@ open Fintype Finset Matrix Function Exchange
 
 variable {P : Parameters} {D : Data P} {a b : ℕ}
 
-/-- The property of turns and their composites, for any two paths `Γ'`, `Γ`: path data `Ψ'` on `Γ'`
+/--
+The property of turns and their composites, for any two paths `Γ'`, `Γ`: path data `Ψ'` on `Γ'`
 give path data `Ψ` on `Γ` with the bound for the number of roots of unity in a value multiplied by
 `k`, and if `Ψ` is proportional to `Ξ`, then `Ψ'` is proportional to `Ξ / c`. A triple
 (`D.PeriodTriple`) is a twist and two forms, one at the start of each half of a path; `Ψ` is
 proportional to `Ξ` (`IsProportional`) if at each real point its period, a function of the
-triples, is a multiple of `Ξ` by a number independent of the triple. -/
-def TransfersPeriods (Γ' Γ : TwoGridPath D.m) (k : D.MFoldTwist → ℕ) (c : D.MFoldTwist → ℂˣ) :
-    Prop :=
+triples, is a multiple of `Ξ` by a number independent of the triple.
+-/
+def TransfersPeriods (Γ' Γ : TwoGridPath D.m) (k : D.MFoldTwist → ℕ) (c : D.MFoldTwist → ℂˣ)
+    : Prop :=
   ∀ (N : D.MFoldTwist → ℕ) (Ψ' : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ),
-    (∀ ϑ : D.MFoldTwist, IsPathDatum (N ϑ) Γ'.edges (Ψ' ϑ)) →
-    ∃ Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ,
-      (∀ ϑ : D.MFoldTwist, IsPathDatum (k ϑ * N ϑ) Γ.edges (Ψ ϑ)) ∧
-      ∀ Ξ : D.PeriodTriple → ℂ, IsProportional Γ Ψ Ξ →
-        IsProportional Γ' Ψ' fun x : D.PeriodTriple ↦ Ξ x / c x.1
+    (∀ ϑ : D.MFoldTwist, IsPathDatum (N ϑ) Γ'.edges (Ψ' ϑ))
+      → ∃ Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ → ℂ,
+        (∀ ϑ : D.MFoldTwist, IsPathDatum (k ϑ * N ϑ) Γ.edges (Ψ ϑ))
+          ∧ ∀ Ξ : D.PeriodTriple → ℂ,
+            IsProportional Γ Ψ Ξ → IsProportional Γ' Ψ' fun x : D.PeriodTriple ↦ Ξ x / c x.1
 
 lemma TransfersPeriods.refl (Γ : TwoGridPath D.m) : TransfersPeriods Γ Γ 1 1 :=
   fun N Ψ hΨ ↦ ⟨Ψ, by simpa using hΨ, by simp⟩

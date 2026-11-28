@@ -60,11 +60,17 @@ In this section, `a` is a character of `[U(1)]` (`New.AutChar`), `n` is a finite
 cardinality `N`, and `w` is a finite place.
 -/
 
-/-- The complex number χ(ϖ_w)·q_w^{N/2}, where N is the cardinality of n,
+/--
+The complex number χ(ϖ_w)·q_w^{N/2}, where N is the cardinality of n,
 χ = `New.AutChar.spaceChar` a N is the Hecke character x ↦ a(x/x̄)υ(x)^{−N} and ϖ_w the chosen
-uniformiser at w. -/
-noncomputable def New.AutChar.frobValue {E : Type} [Field E] [CMType E] [WeilData E] (a : AutChar E)
-    (n : Type*) [Fintype n] (w : FinPlace E) : ℂ :=
+uniformiser at w.
+-/
+noncomputable def New.AutChar.frobValue
+    {E : Type} [Field E] [CMType E] [WeilData E]
+    (a : AutChar E)
+    (n : Type*) [Fintype n]
+    (w : FinPlace E)
+    : ℂ :=
   (a.spaceChar (Fintype.card n)).atUniformizer w * √w.q ^ Fintype.card n
 
 /-!
@@ -88,8 +94,9 @@ open Finset hiding card
 
 section Transfer
 
-variable {E n m W Z : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype m]
-  [DecidableEq m] {w : FinPlace E} [AddCommGroup W] [Module ℂ W] [AddCommGroup Z] [Module ℂ Z]
+variable
+  {E n m W Z : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {w : FinPlace E} [AddCommGroup W] [Module ℂ W] [AddCommGroup Z] [Module ℂ Z]
   {π : Representation ℂ (Gf E n) W} {a b : AutChar E} {k : ℕ}
 
 /-! ### Hecke polynomials as sums over subspaces of the residue space -/
@@ -211,7 +218,8 @@ lemma matrixToVec_mem_integralBox_singleton (y : Matrix m n (𝔸f E)) :
     matrixToVec y ∈ integralBox (m × n) {w} ↔ ∀ (i : m) (j : n), v (y.map (evalAt w) i j) ≤ 1 := by
   simp [mem_integralBox, idem_mul_mem_Ô, matrixToVec, evalAt_apply]
 
-variable [WeilData E]
+variable
+  [WeilData E]
   {s : n → ℤˣ} {t : m → ℤˣ} {S : Space E n s} {T : Space E m t} {f : 𝒮 (S.hom T)} {p : ℂ → ℂ}
 
 omit [DecidableEq n] in
@@ -382,17 +390,21 @@ lemma sum_heckePolyCoeff_smul_pairWeil_inv
         f :=
   (sum_heckePolyCoeff_smul_pairWeil ha hb hw hf X).right
 
-/-- The Weil representation `New.pairWeil S T a b` restricted to the finite adelic points of the
-unitary group of S. -/
-noncomputable def pairWeilSource (S : Space E n s) (T : Space E m t) (a b : AutChar E) :
-    Representation ℂ (Gf E n) (𝒮 (S.hom T)) :=
+/--
+The Weil representation `New.pairWeil S T a b` restricted to the finite adelic points of the
+unitary group of S.
+-/
+noncomputable def pairWeilSource (S : Space E n s) (T : Space E m t) (a b : AutChar E)
+    : Representation ℂ (Gf E n) (𝒮 (S.hom T)) :=
   ContinuousLinearMap.toLinearMapRingHom.toMonoidHom.comp <| (pairWeil S T a b).comp <|
     (MonoidHom.inl (G E s) (G E t)).comp (MonoidHom.inr (GInf E s) (Gf E n))
 
-/-- The Weil representation `New.pairWeil S T a b` restricted to the finite adelic points of the
-unitary group of T. -/
-noncomputable def pairWeilTarget (S : Space E n s) (T : Space E m t) (a b : AutChar E) :
-    Representation ℂ (Gf E m) (𝒮 (S.hom T)) :=
+/--
+The Weil representation `New.pairWeil S T a b` restricted to the finite adelic points of the
+unitary group of T.
+-/
+noncomputable def pairWeilTarget (S : Space E n s) (T : Space E m t) (a b : AutChar E)
+    : Representation ℂ (Gf E m) (𝒮 (S.hom T)) :=
   ContinuousLinearMap.toLinearMapRingHom.toMonoidHom.comp <| (pairWeil S T a b).comp <|
     (MonoidHom.inr (G E s) (G E t)).comp (MonoidHom.inr (GInf E t) (Gf E m))
 

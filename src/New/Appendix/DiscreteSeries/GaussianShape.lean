@@ -44,8 +44,9 @@ open Matrix MeasureTheory Finset Fintype Ring Complex ComplexConjugate
 
 namespace New.DiscreteSeries
 
-variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {l : HCParam ε} {δ T q : ℝ}
-  {h L A : ℕ} {a b : ℤ} {w : n → ℤ}
+variable
+  {n : Type} [Fintype n] [DecidableEq n]
+  {ε : n → ℤˣ} {l : HCParam ε} {δ T q : ℝ} {h L A : ℕ} {a b : ℤ} {w : n → ℤ}
 
 section Dimension
 

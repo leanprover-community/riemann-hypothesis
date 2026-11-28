@@ -57,21 +57,28 @@ section OddRank
 
 open Matrix Polynomial Filter Finset Metric Nat New.Gf
 
-/-- The finite place `x` of `E` is induced by the `ℓ`-adic embedding `θ`, lies over the same split
+/--
+The finite place `x` of `E` is induced by the `ℓ`-adic embedding `θ`, lies over the same split
 place of `QuadField D` as `z`, and is apart from `y` and `u` up to conjugation. The infinite place
 of the complex embedding `ιℓ⁻¹ ∘ θ` of `E` induces `x` or its conjugate, and induces neither `u` nor
-its conjugate (`New.InducesPlacePair`). -/
-structure New.GaloisRep.IsPlaceApart {ℓ : ℕ} {E : Type} (D : ℕ) [ThePrime ℓ] [PadicIso ℓ]
-    [Field E] [CMType E] [EmbeddedNumberField E] [HasQuadSubfield D E]
-    (z y u x : FinPlace E) (θ : Ω →+* PadicAlgCl ℓ) : Prop where
+its conjugate (`New.InducesPlacePair`).
+-/
+structure New.GaloisRep.IsPlaceApart
+    {ℓ : ℕ} {E : Type}
+    (D : ℕ)
+    [ThePrime ℓ] [PadicIso ℓ] [Field E] [CMType E] [EmbeddedNumberField E] [HasQuadSubfield D E]
+    (z y u x : FinPlace E) (θ : Ω →+* PadicAlgCl ℓ)
+    : Prop where
   /-- The restriction of `θ` to `E` induces `x`. -/
   placeOfEmb_eq : placeOfEmb (θ.comp (algebraMap E Ω)) = x
   /-- The infinite place of `ιℓ⁻¹ ∘ θ` induces `x` or its conjugate. -/
-  inducesPlacePair : InducesPlacePair (l := ℓ) x
-    (NumberField.InfinitePlace.mk (RingHom.comp ιℓ.symm (θ.comp (algebraMap E Ω))))
+  inducesPlacePair
+    : InducesPlacePair (l := ℓ) x
+      (NumberField.InfinitePlace.mk (RingHom.comp ιℓ.symm (θ.comp (algebraMap E Ω))))
   /-- The infinite place of `ιℓ⁻¹ ∘ θ` induces neither `u` nor its conjugate. -/
-  not_inducesPlacePair : ¬InducesPlacePair (l := ℓ) u
-    (NumberField.InfinitePlace.mk (RingHom.comp ιℓ.symm (θ.comp (algebraMap E Ω))))
+  not_inducesPlacePair
+    : ¬ InducesPlacePair (l := ℓ) u
+      (NumberField.InfinitePlace.mk (RingHom.comp ιℓ.symm (θ.comp (algebraMap E Ω))))
   /-- The place of `QuadField D` below `x` is split and prime to `D`. -/
   isSplitPrimeToDisc : IsSplitPrimeToDisc (x.below (QuadField D))
   /-- The places `x` and `z` lie over the same place of `QuadField D`. -/
@@ -388,36 +395,44 @@ private lemma New.GaloisRep.exists_inf_trivialOn_le_offPartComap {E : Type} {a :
   have g_x : atPlace x g = 1 := by simp [mem_supportedOn.1 hg.2 x, x_ne, star_ne]
   simpa [g_x, offPartComap] using le_H hg
 
-/-- The level `K` with its character `χ` has the type `ϑ` at the split place `v`, lies in `H` away
-from `v` and `x`, and is spherical off the finite set `U`, which contains `v` and avoids `x`. -/
-private structure New.GaloisRep.IsTypeLevel {E : Type} {a : ℕ} [Field E] [CMType E]
-    {v : FinPlace E} (v_split : v.IsSplit) (ϑ : localCongruence (Fin a) v 0 →* ℂ) (x : FinPlace E)
-    (H : Subgroup (Gf E (Fin a))) (K : Subgroup (Gf E (Fin a))) (χ : K →* ℂ)
-    (U : Finset (FinPlace E)) : Prop where
+/--
+The level `K` with its character `χ` has the type `ϑ` at the split place `v`, lies in `H` away
+from `v` and `x`, and is spherical off the finite set `U`, which contains `v` and avoids `x`.
+-/
+private structure New.GaloisRep.IsTypeLevel
+    {E : Type} {a : ℕ} [Field E] [CMType E]
+    {v : FinPlace E} (v_split : v.IsSplit) (ϑ : localCongruence (Fin a) v 0 →* ℂ)
+    (x : FinPlace E) (H : Subgroup (Gf E (Fin a)))
+    (K : Subgroup (Gf E (Fin a))) (χ : K →* ℂ)
+    (U : Finset (FinPlace E))
+    : Prop where
   /-- The subgroup `K` is open and consists of integral points. -/
   isLevel : IsLevel K
   /-- The character `χ` is trivial near `1`. -/
   eventuallyEq_one : χ =ᶠ[nhds 1] 1
   /-- The matrices `≡ 1` modulo `v`, placed at `v`, lie in `K`, and `χ` is `ϑ` on them. -/
-  exists_eq_ofSplitPlace (j : localCongruence (Fin a) v 0) :
-    ∃ k : K, k.val = ofSplitPlace v_split j.val ∧ χ k = ϑ j
+  exists_eq_ofSplitPlace (j : localCongruence (Fin a) v 0)
+    : ∃ k : K, k.val = ofSplitPlace v_split j.val ∧ χ k = ϑ j
   /-- An element of `K` that is `1` at `v` and at `x` lies in `H` and is killed by `χ`. -/
-  mem_of_atPlace_eq_one (k : K) (k_v : atPlace v k.val = 1) (k_x : atPlace x k.val = 1) :
-    k.val ∈ H ∧ χ k = 1
+  mem_of_atPlace_eq_one (k : K) (k_v : atPlace v k.val = 1) (k_x : atPlace x k.val = 1)
+    : k.val ∈ H ∧ χ k = 1
   /-- The integral points trivial at `U` lie in `K` and are killed by `χ`. -/
-  exists_mem_of_trivialOn (k : Gf E (Fin a)) (hk : k ∈ stdLevel E (Fin a) ⊓ trivialOn (Fin a) U) :
-    ∃ k_mem : k ∈ K, χ ⟨k, k_mem⟩ = 1
+  exists_mem_of_trivialOn (k : Gf E (Fin a)) (hk : k ∈ stdLevel E (Fin a) ⊓ trivialOn (Fin a) U)
+    : ∃ k_mem : k ∈ K, χ ⟨k, k_mem⟩ = 1
   /-- The place `v` is in `U`. -/
   mem : v ∈ U
   /-- The place `x` is not in `U`. -/
   notMem : x ∉ U
   /-- The conjugate of `x` is not in `U`. -/
   star_notMem : star x ∉ U
-  /-- A place `w` apart from `v`, `x` and their conjugates, at which `H` contains the integral
-  points, is off `U` with its conjugate. -/
-  notMem_of_maxCompactAt_le (w : FinPlace E) (v_ne : v ≠ w) (star_v_ne : star v ≠ w)
-    (x_ne : x ≠ w) (star_x_ne : star x ≠ w) (le_H : maxCompactAt (Fin a) w ≤ H) :
-    w ∉ U ∧ star w ∉ U
+  /--
+  A place `w` apart from `v`, `x` and their conjugates, at which `H` contains the integral
+  points, is off `U` with its conjugate.
+  -/
+  notMem_of_maxCompactAt_le
+    (w : FinPlace E) (v_ne : v ≠ w) (star_v_ne : star v ≠ w) (x_ne : x ≠ w) (star_x_ne : star x ≠ w)
+    (le_H : maxCompactAt (Fin a) w ≤ H)
+    : w ∉ U ∧ star w ∉ U
 
 /-- Let `v` and `x` be split places with `v` apart from `x` and its conjugate, `H` an open subgroup,
 and `ϑ` a character of the matrices `≡ 1` modulo `v` that is trivial on those `≡ 1` modulo `v ^ 2`.

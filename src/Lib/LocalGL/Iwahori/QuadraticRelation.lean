@@ -52,7 +52,8 @@ open Matrix WithZero Valued Equiv Finset IsLocalRing Function Units
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {F W : Type*} [Field F] [Valued F ℤᵐ⁰] [AddCommGroup W] [Module ℂ W]
+variable
+  {F W : Type*} [Field F] [Valued F ℤᵐ⁰] [AddCommGroup W] [Module ℂ W]
   {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)}
   {x : ρ} {c : ℕ → ℕ} {d : ℕ → ℕ} {g : GL (Fin N) F} {a b : Fin N} {φ : ρ →ₗ[ℂ] W}
 
@@ -277,8 +278,10 @@ open WithZero Valued Finset Equiv OrderDual
 
 namespace New
 
-variable {F : Type*} [Field F] [Valued F ℤᵐ⁰]
-  {N : ℕ} {ϖ : Fˣ} (ρ : Rep ℂ (GL (Fin N) F)) [IsSmoothRep ρ.ρ] (hϖ : v ϖ.val = exp (-1))
+variable
+  {F : Type*} [Field F] [Valued F ℤᵐ⁰]
+  {N : ℕ} {ϖ : Fˣ} (ρ : Rep ℂ (GL (Fin N) F)) [IsSmoothRep ρ.ρ]
+  (hϖ : v ϖ.val = exp (-1))
 
 /-- A diagonal matrix whose entries are units of the ring of integers conjugates every element of
 `New.proIwahori` into `New.proIwahori`. -/
@@ -363,7 +366,8 @@ lemma exists_iwahoriHeckeHom_injective [CompactSpace 𝒪[F]] (hϖ : v ϖ.val = 
 
 variable [CompactSpace 𝒪[F]]
 
-variable {ρ} {y z : ρ} {ξ : (Fin N → Fˣ) →* ℂˣ} {l : ρ →ₗ[ℂ] ℂ} {t : Fin N → Fˣ}
+variable
+  {ρ} {y z : ρ} {ξ : (Fin N → Fˣ) →* ℂˣ} {l : ρ →ₗ[ℂ] ℂ} {t : Fin N → Fˣ}
   {K : Subgroup (GL (Fin N) F)} {c : ℕ → ℕ}
 
 /-! ### Exponents -/

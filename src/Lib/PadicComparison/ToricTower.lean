@@ -81,11 +81,15 @@ open CategoryTheory Function FreeAddCommGroup AddCommGrpCat
 
 namespace New.Variety
 
-variable (C : Type 1) {C' : Type 1} [Category C] [Category C'] {F : AbFunctor C} {F' : AbFunctor C'}
-  {U : C ⥤ Type 1}
+variable
+  (C : Type 1)
+  {C' : Type 1} [Category C] [Category C']
+  {F : AbFunctor C} {F' : AbFunctor C'} {U : C ⥤ Type 1}
 
-/-- For a category C, the product category C × Bℕ, where Bℕ is the one-object category whose
-endomorphism monoid is the additive natural numbers. -/
+/--
+For a category C, the product category C × Bℕ, where Bℕ is the one-object category whose
+endomorphism monoid is the additive natural numbers.
+-/
 abbrev TimesBNat : Type 1 := C × SingleObj (Multiplicative ℕ)
 
 /-- The projection functor from the product category C × Bℕ to its first factor C. -/
@@ -101,21 +105,27 @@ open TimesBNat Abelian.Ext Comparison freeAb ShortComplex LongExactSeq MonoidalC
 
 variable {C} (Y : TimesBNat C ⥤ Type 1)
 
-/-- The set-valued functor on C × Bℕ with value ℕ at every object, on which morphisms of C act
-trivially and k in Bℕ acts by adding k. -/
+/--
+The set-valued functor on C × Bℕ with value ℕ at every object, on which morphisms of C act
+trivially and k in Bℕ acts by adding k.
+-/
 abbrev TimesBNat.natWithShift : TimesBNat C ⥤ Type 1 :=
   { obj X := X.2, map f := f.2 } ⋙ uliftCoyoneda ⟨⟨⟩⟩
 
-/-- For a set-valued functor Y on C × Bℕ, the additive character of ℕ sending k to the endomorphism
-of the restriction of Y to C given at A by Y(id_A, k). -/
+/--
+For a set-valued functor Y on C × Bℕ, the additive character of ℕ sending k to the endomorphism
+of the restriction of Y to C given at A by Y(id_A, k).
+-/
 def TimesBNat.shiftEnd : AddChar ℕ (End (incl C ⋙ Y)) :=
   toMonoidHomEquiv.invFun ((Y.curryObj.flip.mapEnd _).comp (SingleObj.toEnd _).toMonoidHom)
 
 /-! ### Criteria for a bijection on cohomology -/
 
 variable {Y} (F) in
-/-- For Y on C × Bℕ, U on C and a map a from Y to U (with ℕ acting trivially on U), the property
-that Hⁿ(U, F) → Hⁿ(Y, F) is bijective for all n, the coefficients F being pulled back to C × Bℕ. -/
+/--
+For Y on C × Bℕ, U on C and a map a from Y to U (with ℕ acting trivially on U), the property
+that Hⁿ(U, F) → Hⁿ(Y, F) is bijective for all n, the coefficients F being pulled back to C × Bℕ.
+-/
 abbrev IsLine (a : Y ⟶ TimesBNat.fst C ⋙ U) : Prop := IsBijective (.restrict _ F) (freeAbMap a)
 
 /-- For a set-valued functor X on C, the projection X(A) × ℕ → X(A) induces bijections from
@@ -137,8 +147,10 @@ lemma TimesBNat.isLine_fst {X : C ⥤ Type 1} :
   · -- the coefficients are pulled back along the identity of `A`
     simpa [Function.id_def] using bijective_id
 
-/-- The retraction in the Wang sequence at one object, for a map `t` of a set `X` to itself: it
-sends `(x, 0)` to `0` and `(x, k + 1)` to its value at `(t x, k)` minus `(x, k)`. -/
+/--
+The retraction in the Wang sequence at one object, for a map `t` of a set `X` to itself: it
+sends `(x, 0)` to `0` and `(x, k + 1)` to its value at `(t x, k)` minus `(x, k)`.
+-/
 private def wangRetraction {X : Type 1} (t : X → X) : ℕ → X → FreeAddCommGroup (X × ULift.{1} ℕ)
   | 0, _ => 0
   | k + 1, x => wangRetraction t k (t x) - of (x, ⟨k⟩)
@@ -205,28 +217,37 @@ lemma TimesBNat.shortExact_induced :
   exact shortExact_of_app (fun A ↦ (h_short A.1).ab_injective_f)
     (fun A ↦ exact_of_shortComplex_exact (h_short A.1).exact) fun A ↦ (h_short A.1).ab_surjective_g
 
-/-- The first map of the Wang sequence, ℤ[Y × ℕ] → ℤ[Y × ℕ], `(x, k) ↦ (γ x, k) - (x, k + 1)` with
+/--
+The first map of the Wang sequence, ℤ[Y × ℕ] → ℤ[Y × ℕ], `(x, k) ↦ (γ x, k) - (x, k + 1)` with
 `γ = shiftEnd Y 1`. Here Y × ℕ is the restriction of Y to C, pulled back to C × Bℕ, times
-`New.Variety.TimesBNat.natWithShift`. -/
-def TimesBNat.wangSub :
-    freeAb.obj ((fst C ⋙ incl C ⋙ Y) ⊗ natWithShift) ⟶
-      freeAb.obj ((fst C ⋙ incl C ⋙ Y) ⊗ natWithShift) :=
-  freeAb.map ((fst C).whiskerLeft (shiftEnd Y 1).asHom ▷ natWithShift) -
-    freeAb.map ((fst C ⋙ incl C ⋙ Y) ◁ ({ app _ := ↾ULift.map.{_, _, 1, 1} Nat.succ } :
-      (natWithShift : TimesBNat C ⥤ Type 1) ⟶ natWithShift))
+`New.Variety.TimesBNat.natWithShift`.
+-/
+def TimesBNat.wangSub
+    : freeAb.obj ((fst C ⋙ incl C ⋙ Y) ⊗ natWithShift)
+      ⟶ freeAb.obj ((fst C ⋙ incl C ⋙ Y) ⊗ natWithShift) :=
+  freeAb.map ((fst C).whiskerLeft (shiftEnd Y 1).asHom ▷ natWithShift) - freeAb.map
+    ((fst C ⋙ incl C ⋙ Y)
+      ◁ ({ app _ := ↾ULift.map.{_, _, 1, 1} Nat.succ }
+        : (natWithShift : TimesBNat C ⥤ Type 1) ⟶ natWithShift))
 
-/-- The second map of the Wang sequence, ℤ[Y × ℕ] → ℤ[Y], `(x, k) ↦ γ^k x` with
-`γ = shiftEnd Y 1`. -/
+/--
+The second map of the Wang sequence, ℤ[Y × ℕ] → ℤ[Y], `(x, k) ↦ γ^k x` with
+`γ = shiftEnd Y 1`.
+-/
 def TimesBNat.wangPow : freeAb.obj ((fst C ⋙ incl C ⋙ Y) ⊗ natWithShift) ⟶ freeAb.obj Y :=
-  freeAb.map ⟨fun D ↦ ↾fun x ↦ (shiftEnd Y x.2.down).asHom.app D.1 x.1,
-    fun _ _ f ↦ by exact shiftEnd_naturality Y f⟩
+  freeAb.map ⟨
+    fun D ↦ ↾fun x ↦ (shiftEnd Y x.2.down).asHom.app D.1 x.1,
+    fun _ _ f ↦ by exact shiftEnd_naturality Y f
+  ⟩
 
 /-- The two maps of the Wang sequence compose to zero, as `γ^k (γ x) = γ^(k + 1) x`. -/
 lemma TimesBNat.wangSub_comp_wangPow : wangSub Y ≫ wangPow Y = 0 :=
   (shortExact_induced Y).fst
 
-/-- The Wang sequence ℤ[Y × ℕ] → ℤ[Y × ℕ] → ℤ[Y] (`wangSub`, then `wangPow`), a short complex of
-functors from C × Bℕ to abelian groups. -/
+/--
+The Wang sequence ℤ[Y × ℕ] → ℤ[Y × ℕ] → ℤ[Y] (`wangSub`, then `wangPow`), a short complex of
+functors from C × Bℕ to abelian groups.
+-/
 abbrev TimesBNat.wangComplex : ShortComplex (TimesBNat C ⥤ AddCommGrpCat.{1}) :=
   .mk (wangSub Y) (wangPow Y) (wangSub_comp_wangPow Y)
 
@@ -353,25 +374,32 @@ open TimesBNat CategoryTheory Period PreTilt MonoidHom SingleObj
 
 variable {p : ℕ} [ThePrime p]
 
-/-- The character s ↦ ε^s of ℚ≥0 with values in O^♭, the restriction of the chosen character
-`New.Period.epsPow` of ℚ. -/
+/--
+The character s ↦ ε^s of ℚ≥0 with values in O^♭, the restriction of the chosen character
+`New.Period.epsPow` of ℚ.
+-/
 abbrev epsPowNNRat : Multiplicative ℚ≥0 →* OFlat :=
   epsPow.comp NNRat.coeHom.toAddMonoidHom.toMultiplicative
 
-/-- The functor sending a commutative O_C-algebra to its underlying set, lifted to an arbitrary
-universe. -/
+/--
+The functor sending a commutative O_C-algebra to its underlying set, lifted to an arbitrary
+universe.
+-/
 abbrev underlyingSet.{u} : CommAlg OC ⥤ Type u := forget (CommAlg OC) ⋙ uliftFunctor.{u}
 
-/-- The functor on (O_C-algebras) × Bℕ sending A to the monoid homomorphisms χ from (ℚ≥0, +) to
+/--
+The functor on (O_C-algebras) × Bℕ sending A to the monoid homomorphisms χ from (ℚ≥0, +) to
 (A, ·). A map (f, k) from A to B sends χ to η^k · (f ∘ χ), where η is the character s ↦ (ε^s)^♯
-read in B. -/
+read in B.
+-/
 def compatibleRoots : TimesBNat (CommAlg OC) ⥤ Type 1 where
   obj A := ULift (Multiplicative ℚ≥0 →* A.1)
   -- a map `(f, k)` pushes a character forward along `f`, then multiplies it `k` times by
   -- the character `a ↦ (ε ^ a)^♯`
-  map {_ B} f := ↾fun χ ↦
-    ⟨(fun φ ↦ (algebraMap OC B.1).toMonoidHom.comp (untilt.comp epsPowNNRat) * φ)^[f.2.toAdd]
-      (MonoidHom.comp f.1.hom χ.down)⟩
+  map {_ B} f :=
+    ↾fun χ ↦
+      ⟨(fun φ ↦ (algebraMap OC B.1).toMonoidHom.comp (untilt.comp epsPowNNRat) * φ)^[f.2.toAdd]
+        (MonoidHom.comp f.1.hom χ.down)⟩
   map_id _ := by
     ext
     simp [id_as_one]
@@ -386,27 +414,31 @@ def compatibleRoots.atOne : compatibleRoots ⟶ TimesBNat.fst (CommAlg OC) ⋙ u
     -- the twist `η` does not change the value at `1`: there it is the untilt of `ε`, which is `1`
     ext χ
     let η : Multiplicative ℚ≥0 →* B.1 := (algebraMap OC B.1).1.comp (untilt.comp epsPowNNRat)
-    change ULift.up ((η * ·)^[f.2.toAdd] (MonoidHom.comp f.1.hom χ.down) (.ofAdd 1)) =
-      ⟨f.1.hom (χ.down (.ofAdd 1))⟩
+    change ULift.up ((η * ·)^[f.2.toAdd] (MonoidHom.comp f.1.hom χ.down) (.ofAdd 1))
+      = ⟨f.1.hom (χ.down (.ofAdd 1))⟩
     simp [η]
 
 variable {C : Type 1} [Category C] (F : AbFunctor C) (ψ : C ⥤ CommAlg OC)
 
-/-- Let ψ be a functor from C to O_C-algebras and y a point of ψ(A). This is the functor on C × Bℕ,
+/--
+Let ψ be a functor from C to O_C-algebras and y a point of ψ(A). This is the functor on C × Bℕ,
 the fibre product (`fiberProd`) of `compatibleRoots.atOne` along ψ with the point `pointMap y`,
 sending B to the pairs of a character w : ℚ≥0 → ψ(B) and a map f : A → B with w(1) = ψ(f)(y). Such a
-w is a system of roots of the image of y. -/
-abbrev compatibleRootsAt {A : C} (y : (ψ ⋙ underlyingSet).obj A) :
-    C × SingleObj (Multiplicative ℕ) ⥤ Type 1 :=
+w is a system of roots of the image of y.
+-/
+abbrev compatibleRootsAt {A : C} (y : (ψ ⋙ underlyingSet).obj A)
+    : C × SingleObj (Multiplicative ℕ) ⥤ Type 1 :=
   fiberProd ((ψ.prod (𝟭 (SingleObj (Multiplicative ℕ)))).whiskerLeft compatibleRoots.atOne)
     ((TimesBNat.fst C).whiskerLeft (pointMap (Y := ψ ⋙ underlyingSet) (A := A) y))
 
-/-- For every object A and unit y of ψ(A), the root systems of y (`New.Variety.compatibleRootsAt`)
+/--
+For every object A and unit y of ψ(A), the root systems of y (`New.Variety.compatibleRootsAt`)
 form a line over Hom(A, −). That is, the projection to Hom(A, −) is bijective on cohomology with
-coefficients F. -/
+coefficients F.
+-/
 abbrev CompatibleRootsAreLines : Prop :=
-  ∀ (A : C) (y : (ψ ⋙ underlyingSet) A), IsUnit y.down →
-    IsLine F (Y := compatibleRootsAt ψ y) (fiberProd.snd ..)
+  ∀ (A : C) (y : (ψ ⋙ underlyingSet) A),
+    IsUnit y.down → IsLine F (Y := compatibleRootsAt ψ y) (fiberProd.snd ..)
 
 end RootSystems
 
@@ -430,9 +462,11 @@ open CategoryTheory Function CommAlgCat Filter Period Finset Pi IsScalarTower Fi
 
 variable {p : ℕ} [ThePrime p] (R : Type _) [CommRing R] [Algebra OFlat R]
 
-/-- The `R`-algebra of periodic sequences `ℕ → R`. A sequence has a positive period if and only
+/--
+The `R`-algebra of periodic sequences `ℕ → R`. A sequence has a positive period if and only
 if `n !` is a period for all large `n`; the latter form is the one that is visibly closed under
-sums and products. -/
+sums and products.
+-/
 def periodicSeq : Subalgebra R (ℕ → R) where
   carrier := {f : ℕ → R | ∀ᶠ n : ℕ in atTop, Periodic f n !}
   mul_mem' hf hg := (hf.and hg).mono fun _ h ↦ h.1.mul h.2
@@ -616,10 +650,12 @@ lemma injective_of_isCell {T : Type} [CommRing T] [IsCell p T] (g : OC →+* T) 
   rw [ha, zero_dvd_iff] at h_dvd
   exact pow_ne_zero n p_ne_zero h_dvd
 
-/-- The map of tests `c ⟶ D` whose tilt agrees on constant sequences with the `O^♭`-algebra map `ϕ`
-from the periodic sequences over the tilt of `c` to the tilt of `D`. -/
-private def PadicTest.baseOfHom {c D : PadicTest}
-    (ϕ : periodicSeq c.TiltRing →ₐ[OFlat] D.TiltRing) : c ⟶ D :=
+/--
+The map of tests `c ⟶ D` whose tilt agrees on constant sequences with the `O^♭`-algebra map `ϕ`
+from the periodic sequences over the tilt of `c` to the tilt of `D`.
+-/
+private def PadicTest.baseOfHom {c D : PadicTest} (ϕ : periodicSeq c.TiltRing →ₐ[OFlat] D.TiltRing)
+    : c ⟶ D :=
   tilt.preimage (X := c) (ofHom (ϕ.comp (toAlgHom OFlat c.TiltRing (periodicSeq c.TiltRing))))
 
 /-- The tilt of `PadicTest.baseOfHom ϕ` is `ϕ` on constant sequences. -/

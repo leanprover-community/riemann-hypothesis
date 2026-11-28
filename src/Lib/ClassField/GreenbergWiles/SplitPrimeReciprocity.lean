@@ -62,20 +62,26 @@ open Function QuotientGroup MulAction Quotient Set Nat AddSubgroup
 
 namespace New.DiscreteModule
 
-variable {R G : Type} [CommRing R] [Group G] [TopologicalSpace G] (X : Type) [MulAction G X]
-  (I : Set G) (V : DiscreteModule R G) {A B C : DiscreteModule R G} {ι : A.Hom B} {π : B.Hom C}
+variable
+  {R G : Type} [CommRing R] [Group G] [TopologicalSpace G]
+  (X : Type) [MulAction G X]
+  (I : Set G) (V : DiscreteModule R G)
+  {A B C : DiscreteModule R G} {ι : A.Hom B} {π : B.Hom C}
 
-/-- Trivialised cocycles: pairs of f : X → V and continuous z : G → V vanishing on I, with
-g f(x) = f(gx) + z(g) for all g, x. -/
+/--
+Trivialised cocycles: pairs of f : X → V and continuous z : G → V vanishing on I, with
+g f(x) = f(gx) + z(g) for all g, x.
+-/
 def trivializedCocycles : AddSubgroup ((X → V) × (G → V)) :=
   AddSubgroup.ofSub
-    {p : (X → V.V) × (G → V.V) | Continuous p.2 ∧
-      (∀ (g : G) (x : X), V.ρ g (p.1 x) = p.1 (g • x) + p.2 g) ∧ ∀ g ∈ I, p.2 g = 0}
-    ⟨0, continuous_zero, by simp, by simp⟩ <| by
-    rintro p ⟨hp, hp_triv, hp_zero⟩ q ⟨hq, hq_triv, hq_zero⟩
-    refine ⟨hp.add hq.neg, fun g x ↦ ?_, fun g hg ↦ by simp [hp_zero g hg, hq_zero g hg]⟩
-    simp [hp_triv, hq_triv]
-    abel
+      {p : (X → V.V) × (G → V.V) | Continuous p.2 ∧
+        (∀ (g : G) (x : X), V.ρ g (p.1 x) = p.1 (g • x) + p.2 g) ∧ ∀ g ∈ I, p.2 g = 0}
+      ⟨0, continuous_zero, by simp, by simp⟩ <|
+    by
+      rintro p ⟨hp, hp_triv, hp_zero⟩ q ⟨hq, hq_triv, hq_zero⟩
+      refine ⟨hp.add hq.neg, fun g x ↦ ?_, fun g hg ↦ by simp [hp_zero g hg, hq_zero g hg]⟩
+      simp [hp_triv, hq_triv]
+      abel
 
 variable {X I V} in
 /-- Membership in `New.DiscreteModule.trivializedCocycles`, written out. -/
@@ -90,16 +96,21 @@ abbrev HasFewCocycles (k : ℕ) : Prop :=
 
 namespace trivializedCocycles
 
-/-- For an equivariant map u : A → B, the additive map between the groups
+/--
+For an equivariant map u : A → B, the additive map between the groups
 `New.DiscreteModule.trivializedCocycles` of A and B that composes both components of a pair of
-functions with u. -/
+functions with u.
+-/
 def map (u : A.Hom B) : A.trivializedCocycles X I →+ B.trivializedCocycles X I :=
   AddMonoidHom.mk'
-    (fun p ↦ ⟨p.val.map (Function.comp u) (Function.comp u), by
-      obtain ⟨⟨f, z⟩, h_cont, h_triv, h_zero⟩ := p
-      refine ⟨by dsimp only [Prod.map_snd]; fun_prop, fun g x ↦ ?_, fun g hg ↦ ?_⟩
-      · simpa [u.isIntertwining] using congrArg u (h_triv g x)
-      · simpa using congrArg u (h_zero g hg)⟩)
+    (fun p ↦ ⟨
+      p.val.map (Function.comp u) (Function.comp u),
+      by
+        obtain ⟨⟨f, z⟩, h_cont, h_triv, h_zero⟩ := p
+        refine ⟨by dsimp only [Prod.map_snd]; fun_prop, fun g x ↦ ?_, fun g hg ↦ ?_⟩
+        · simpa [u.isIntertwining] using congrArg u (h_triv g x)
+        · simpa using congrArg u (h_zero g hg)
+    ⟩)
     (by simp)
 
 /-- For a discrete `G`-module `V` over `R`, a `G`-set `X` and `I ⊆ G`, the trivialised cocycles
@@ -294,10 +305,12 @@ is `ζ ^ a` for a fixed primitive `m`-th root of unity `ζ`, and `cyclotomicChar
 
 namespace New
 
-variable {G K R : Type} [Group G] [TopologicalSpace G] [Field K] [EmbeddedNumberField K]
-  [MulSemiringAction G Ω] [IsProGalois G K Ω] [CommRing R] {m N : ℕ} [NeZero m]
-  {ι : Type} {U : OpenNormalSubgroup G} {A : ClosurePlace} {v : FinPlace K}
-  {V : DiscreteModule R G} [Module (ZMod m) V]
+variable
+  {G K R : Type} [Group G] [TopologicalSpace G] [Field K] [EmbeddedNumberField K]
+  [MulSemiringAction G Ω] [IsProGalois G K Ω] [CommRing R]
+  {m N : ℕ} [NeZero m]
+  {ι : Type} {U : OpenNormalSubgroup G} {A : ClosurePlace} {v : FinPlace K} {V : DiscreteModule R G}
+  [Module (ZMod m) V]
   {I : Set G} (s : IsLargeLevel.SplitPlaces m N I U ι)
 
 open NumberField DiscreteModule trivializedCocycles Cohomology DiscreteUnits NeZero Subgroup
@@ -453,27 +466,37 @@ lemma exists_kummer_root (h_cyc : ∀ g : G, cyclotomicCharMod Ω m g = 1) (χ :
   obtain ⟨x, hx⟩ := (ofBase_bijective G (K := K)).surjective ⟨m • r, hr_fix⟩
   exact ⟨r, x, (congrArg Subtype.val hx).symm, hr⟩
 
-/-- A Kummer map for `U`: an additive map `κ` from the `U`-invariants of `Ωˣ` to the characters
-`U → ℤ/m` with `ζ ^ κ x q = q r / r` whenever `r ^ m = x`. -/
-private def IsKummerMap (κ : (unitsModule U.toOpenSubgroup.toSubgroup).H0 →+
-      Z1 (Representation.trivial ℤ U.toOpenSubgroup.toSubgroup (ZMod m))) : Prop :=
-  ∀ (x : ↥(unitsModule U.toOpenSubgroup.toSubgroup).H0) (r : DiscreteUnits Ω), m • r = ↑x →
-    ∀ q : ↥U.toOpenSubgroup.toSubgroup, (rootPowHom Ω m).val ((κ x).val q) = unitsRep q r - r
+/--
+A Kummer map for `U`: an additive map `κ` from the `U`-invariants of `Ωˣ` to the characters
+`U → ℤ/m` with `ζ ^ κ x q = q r / r` whenever `r ^ m = x`.
+-/
+private def IsKummerMap
+    (κ : (unitsModule U.toOpenSubgroup.toSubgroup).H0
+      →+ Z1 (Representation.trivial ℤ U.toOpenSubgroup.toSubgroup (ZMod m)))
+    : Prop :=
+  ∀ (x : ↥(unitsModule U.toOpenSubgroup.toSubgroup).H0) (r : DiscreteUnits Ω),
+    m • r = ↑x
+      → ∀ q : ↥U.toOpenSubgroup.toSubgroup, (rootPowHom Ω m).val ((κ x).val q) = unitsRep q r - r
 
-/-- The split family `s` over the field of `U`: the index `(i, g)` names the place
+/--
+The split family `s` over the field of `U`: the index `(i, g)` names the place
 `g⁻¹ • s.valuationSubring i`, the prime of the field of `U` below it, and the Frobenius
-`g⁻¹ (s.φ i) g`, where `g` is the chosen representative of the coset. -/
-private noncomputable abbrev liftToFixedField :
-    IsLargeLevel.SplitPlaces m N ((↑) ⁻¹' I : Set U.toOpenSubgroup.toSubgroup) ⟨⊤, normal_top⟩
+`g⁻¹ (s.φ i) g`, where `g` is the chosen representative of the coset.
+-/
+private noncomputable abbrev liftToFixedField
+    : IsLargeLevel.SplitPlaces m N ((↑) ⁻¹' I : Set U.toOpenSubgroup.toSubgroup) ⟨⊤, normal_top⟩
       (ι × G ⧸ U.toOpenSubgroup.toSubgroup) :=
-  s.liftToSubgroup U.1 ⟨⊤, normal_top⟩ le_rfl le_top (fun g _ ↦ s.cyclotomicCharMod_eq_one _ g.2) _
-    out_eq'
+  s.liftToSubgroup U.1 ⟨⊤, normal_top⟩ le_rfl le_top
+    (fun g _ ↦ s.cyclotomicCharMod_eq_one _ g.2)
+    _ out_eq'
 
-private noncomputable abbrev conjugateTameGenerator {γ : ι → G}
-    (hγ : ∀ i, IsTameGeneratorFor m (s.valuationSubring i) (γ i))
-    (θ : ι × G ⧸ U.toOpenSubgroup.toSubgroup) : U.toOpenSubgroup.toSubgroup :=
-  ⟨θ.snd.out⁻¹ * γ θ.fst * θ.snd.out⁻¹⁻¹,
-    U.isNormal'.conj_mem _ (s.decompGroup_le (s.isPlaceOver _) (hγ _).1.1) _⟩
+private noncomputable abbrev conjugateTameGenerator
+    {γ : ι → G} (hγ : ∀ i, IsTameGeneratorFor m (s.valuationSubring i) (γ i))
+    (θ : ι × G ⧸ U.toOpenSubgroup.toSubgroup)
+    : U.toOpenSubgroup.toSubgroup := ⟨
+  θ.snd.out⁻¹ * γ θ.fst * θ.snd.out⁻¹⁻¹,
+  U.isNormal'.conj_mem _ (s.decompGroup_le (s.isPlaceOver _) (hγ _).1.1) _
+⟩
 
 /-- For `θ = (i, g)`, the Kummer character of an element `x` of the field of `U` takes at
 `g⁻¹ (γ i) g` the value `cyclotomicCharMod Ω m g⁻¹` times the order of `x` at the prime
@@ -837,46 +860,63 @@ private lemma IsLargeLevel.SplitPlaces.exists_mem_trivializedCocycles_of_sum_sym
     fun u hN h_new ↦ by simp [← h_val u hN, Ne.symm (h_new ⟨_, ·⟩)]
   exact s.exists_mem_trivializedCocycles_of_valuation hγ h_triv hκ f a x hx_pow hx_unit val_S
 
-/-- Power residue symbols `b` of the `N`-units of the field of `U` at the split primes of `s`, with
+/--
+Power residue symbols `b` of the `N`-units of the field of `U` at the split primes of `s`, with
 what they say about the values `z (γ i)` at tame generators `γ i` of the cocycles `z = P.snd` of
-the pairs `P` trivialised above `N` and infinity. -/
-structure IsLargeLevel.SplitPlaces.PowerResidueSymbols [Fintype ι] (γ : ι → G)
-    (b : IsLargeLevel.fixedSUnits N U →+ ι → ZMod m) : Prop where
+the pairs `P` trivialised above `N` and infinity.
+-/
+structure IsLargeLevel.SplitPlaces.PowerResidueSymbols
+    [Fintype ι] (γ : ι → G) (b : IsLargeLevel.fixedSUnits N U →+ ι → ZMod m)
+    : Prop where
   /-- `ζ ^ b y i = s.φ i r / r` whenever `r ^ m = y`. -/
-  rootPowHom_apply (y : ↥(fixedSUnits N U)) (r : DiscreteUnits Ω) (hr : m • r = ↑y) (i : ι) :
-    (rootPowHom Ω m).val (b y i) = unitsRep (s.φ i) r - r
+  rootPowHom_apply (y : ↥(fixedSUnits N U)) (r : DiscreteUnits Ω) (hr : m • r = ↑y) (i : ι)
+    : (rootPowHom Ω m).val (b y i) = unitsRep (s.φ i) r - r
   /-- A trivialised cocycle that vanishes at every `γ i` vanishes on `U`. -/
-  snd_eq_zero_of_forall_snd_eq_zero (P : (PlaceAboveLevel N → V) × (G → V))
+  snd_eq_zero_of_forall_snd_eq_zero
+    (P : (PlaceAboveLevel N → V) × (G → V))
     (hP : P ∈ V.trivializedCocycles (PlaceAboveLevel N) I) (h_zero : ∀ i : ι, P.snd (γ i) = 0)
-    (g : G) (hg : g ∈ U) : P.snd g = 0
-  /-- Each `N`-unit `y` gives the relation `∑ b (g y) i • g⁻¹ z (γ i) = 0`, over `i` and
-  `g ∈ G / U`. -/
-  sum_smul_eq_zero (P : (PlaceAboveLevel N → V) × (G → V))
-    (hP : P ∈ V.trivializedCocycles (PlaceAboveLevel N) I) (y : ↥(fixedSUnits N U)) :
-    ∑ θ : ι × G ⧸ U.toOpenSubgroup.toSubgroup,
-      b (fixedSUnitsRep N U θ.snd y) θ.fst • V.ρ θ.snd.out⁻¹ (P.snd (γ θ.fst)) = 0
-  /-- Over a totally complex field of `U`, a solution `f` of the relations gives, for each `a`, a
-  trivialised cocycle with `z (γ i) = ∑ g, g (f (i, g) • a)`. -/
+    (g : G) (hg : g ∈ U)
+    : P.snd g = 0
+  /--
+  Each `N`-unit `y` gives the relation `∑ b (g y) i • g⁻¹ z (γ i) = 0`, over `i` and
+  `g ∈ G / U`.
+  -/
+  sum_smul_eq_zero
+    (P : (PlaceAboveLevel N → V) × (G → V)) (hP : P ∈ V.trivializedCocycles (PlaceAboveLevel N) I)
+    (y : ↥(fixedSUnits N U))
+    : ∑ θ : ι × G ⧸ U.toOpenSubgroup.toSubgroup,
+        b (fixedSUnitsRep N U θ.snd y) θ.fst • V.ρ θ.snd.out⁻¹ (P.snd (γ θ.fst))
+      = 0
+  /--
+  Over a totally complex field of `U`, a solution `f` of the relations gives, for each `a`, a
+  trivialised cocycle with `z (γ i) = ∑ g, g (f (i, g) • a)`.
+  -/
   exists_mem_trivializedCocycles
     (h_complex : IsTotallyComplex (fixedFieldOf U.toOpenSubgroup.toSubgroup))
     (f : ι × G ⧸ U.toOpenSubgroup.toSubgroup → ZMod m)
-    (hf : ∀ y : ↥(fixedSUnits N U), ∑ θ : ι × G ⧸ U.toOpenSubgroup.toSubgroup,
-      b (fixedSUnitsRep N U θ.snd y) θ.fst * f θ = 0) (a : V.V) :
-    ∃ P ∈ V.trivializedCocycles (PlaceAboveLevel N) I, ∀ i : ι,
+    (hf : ∀ y : ↥(fixedSUnits N U),
+      ∑ θ : ι × G ⧸ U.toOpenSubgroup.toSubgroup,
+          b (fixedSUnitsRep N U θ.snd y) θ.fst * f θ
+        = 0)
+    (a : V.V)
+    : ∃ P ∈ V.trivializedCocycles (PlaceAboveLevel N) I, ∀ i : ι,
       P.snd (γ i) = ∑ δ : G ⧸ (U.toOpenSubgroup : Subgroup G), V.ρ δ.out (f (i, δ) • a)
 
-/-- Power residue reciprocity at split primes. Let `U` act trivially on the `ℤ/m`-module `V`, and
+/--
+Power residue reciprocity at split primes. Let `U` act trivially on the `ℤ/m`-module `V`, and
 let `γ i` be tame generators of inertia at `s.valuationSubring i`. Then some power residue symbols
 `b` have the properties of `New.IsLargeLevel.SplitPlaces.PowerResidueSymbols`. Cosets act on `V`
 through their representatives `out`. The proof is by Kummer theory (`New.exists_kummer_chars`) and
 Artin's law.
 
 The Greenberg–Wiles bounds on cocycle counts in this development use this statement in place of
-Poitou–Tate duality. -/
-theorem IsLargeLevel.SplitPlaces.exists_powerResidueSymbols (γ : ι → G)
-    (hγ : ∀ i : ι, IsTameGeneratorFor m (s.valuationSubring i) (γ i))
-    [Fintype ι] (h_triv : V.TrivialOn U.toOpenSubgroup.toSubgroup) :
-    ∃ b : IsLargeLevel.fixedSUnits N U →+ ι → ZMod m, s.PowerResidueSymbols (V := V) γ b := by
+Poitou–Tate duality.
+-/
+theorem IsLargeLevel.SplitPlaces.exists_powerResidueSymbols
+    (γ : ι → G) (hγ : ∀ i : ι, IsTameGeneratorFor m (s.valuationSubring i) (γ i))
+    [Fintype ι]
+    (h_triv : V.TrivialOn U.toOpenSubgroup.toSubgroup)
+    : ∃ b : IsLargeLevel.fixedSUnits N U →+ ι → ZMod m, s.PowerResidueSymbols (V := V) γ b := by
   -- Work over the fixed field `F` of `U`, which contains the `m`-th roots of unity, with the Kummer
   -- characters `κ x` of `U`. The relations are Artin's law for a symbol `(κ y, x)`
   -- (`sum_ord_smul_kummer_frob_eq_zero`); conversely a family `f` that satisfies them gives the
@@ -893,17 +933,30 @@ theorem IsLargeLevel.SplitPlaces.exists_powerResidueSymbols (γ : ι → G)
   have h_fix (y : ↥(fixedSUnits N U)) : y.val ∈ (unitsModule Q).H0 :=
     (Submodule.mem_inf.mp y.prop).right
   let b : IsLargeLevel.fixedSUnits N U →+ ι → ZMod m :=
-    .mk' (fun y i ↦ (κ ⟨y, h_fix y⟩).val ⟨s.φ i, (s.isFrob i).right⟩) fun y y' ↦ funext fun i ↦
-      congrArg (fun c ↦ c.val ⟨s.φ i, (s.isFrob i).right⟩)
-        (κ.map_add ⟨y, h_fix y⟩ ⟨y', h_fix y'⟩)
-  have hb : ∀ (y : ↥(fixedSUnits N U)) (r : DiscreteUnits Ω), m • r = ↑y → ∀ i : ι,
-      (rootPowHom Ω m).val (b y i) = unitsRep (s.φ i) r - r :=
+    .mk'
+      (fun y i ↦ (κ ⟨y, h_fix y⟩).val ⟨s.φ i, (s.isFrob i).right⟩)
+      fun y y' ↦
+        funext fun i ↦
+          congrArg
+            (fun c ↦ c.val ⟨s.φ i, (s.isFrob i).right⟩)
+            (κ.map_add ⟨y, h_fix y⟩ ⟨y', h_fix y'⟩)
+  have hb
+      : ∀ (y : ↥(fixedSUnits N U)) (r : DiscreteUnits Ω),
+        m • r = ↑y → ∀ i : ι, (rootPowHom Ω m).val (b y i) = unitsRep (s.φ i) r - r :=
     fun y r hr i ↦ hκ _ r hr _
-  refine ⟨b, hb, fun P hP ↦ snd_eq_zero_of_snd_generators_eq_zero s hγ h_triv hP,
-    fun P hP ↦ sum_symbol_smul_snd_generators_eq_zero s hγ h_triv hκ hb hP, fun h_complex ↦ ?_⟩
+  refine ⟨
+    b,
+    hb,
+    fun P hP ↦ snd_eq_zero_of_snd_generators_eq_zero s hγ h_triv hP,
+    fun P hP ↦ sum_symbol_smul_snd_generators_eq_zero s hγ h_triv hκ hb hP,
+    fun h_complex ↦ ?_
+  ⟩
   exact exists_mem_trivializedCocycles_of_sum_symbol_mul_eq_zero s hγ h_triv hκ
-    (fun α hα ↦ h_idele (finite_natCast_mem _) (s.principal_sup_idelesUnitOff F le_rfl)
-      (fun u ↦ u.asIdeal.mem_of_dvd s.dvd_level.natCast) α hα) hb
+    (fun α hα ↦
+      h_idele (finite_natCast_mem _) (s.principal_sup_idelesUnitOff F le_rfl)
+        (fun u ↦ u.asIdeal.mem_of_dvd s.dvd_level.natCast)
+        α hα)
+    hb
 
 /-- `New.IsLargeLevel.SplitPlaces.exists_powerResidueSymbols` as one conjunction: its clauses
 (a)–(d) are the four fields of `New.IsLargeLevel.SplitPlaces.PowerResidueSymbols`, in order. Here

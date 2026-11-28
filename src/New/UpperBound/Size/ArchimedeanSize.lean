@@ -210,16 +210,20 @@ lemma rowMainLength_add_rowSlack_le {P : Parameters} (D : Data P) (τ : D.Φ) (i
     split_ifs <;> omega
   omega
 
-/-- The sum of `s_∞ = D.jetSize` over the lengths of the first `n_j = D.n j` rows, at all infinite
+/--
+The sum of `s_∞ = D.jetSize` over the lengths of the first `n_j = D.n j` rows, at all infinite
 places `τ`, of the Young diagrams of the weight of the lift from `X_j` to `X_{j+1}`. The diagram at
-`τ` has `D.columnCount τ h` columns of height `h`. -/
+`τ` has `D.columnCount τ h` columns of height `h`.
+-/
 noncomputable def rowSizeSum {P : Parameters} (D : Data P) (j : ℕ) : ℝ :=
   ∑ τ : D.Φ, ∑ i ∈ range (D.n j),
     D.jetSize (diagramWeight (rankAt fun _ : D.Φ ↦ D.X (j + 1)) D.columnCount (τ, i))
 
-/-- The main term `m (#Φ_a s_∞(a) + k ∑ τ, s_∞(κ(τ)))` of the size of the chain of `m` lifts, where
+/--
+The main term `m (#Φ_a s_∞(a) + k ∑ τ, s_∞(κ(τ)))` of the size of the chain of `m` lifts, where
 `s_∞ = D.jetSize`, `κ = D.weight`, `k` is the rank of the source and `Φ_a = D.aPlaces` is the set of
-`a`-places, the places at which the diagrams have `a` columns of height `1`. -/
+`a`-places, the places at which the diagrams have `a` columns of height `1`.
+-/
 noncomputable def chainSize {P : Parameters} (D : Data P) : ℝ :=
   D.m * (#D.aPlaces * D.jetSize D.a + D.k * ∑ τ : D.Φ, D.jetSize (D.weight τ))
 
@@ -442,7 +446,8 @@ lemma weylNormSq_restrictedChain_le {P : Parameters} {D : Data P} {Ψ : D.Transl
       push_cast
       linarith [D.sum_rowSizeSum_le, D.chainSize_sub_le]
 
-/-- **Size of the composite lift.** Let `Ψ` be a chain datum for the trivial twist and `σ` an
+/--
+**Size of the composite lift.** Let `Ψ` be a chain datum for the trivial twist and `σ` an
 automorphism of `ℂ`. `compositeLift TameChar.one Ψ φ` lifts the form `φ` from the hermitian space
 `X_0` over `E = D.E` to `X_m` by `m = D.m` theta lifts, with the glued tensor as Schwartz data, and
 restricts to `Y_m`; `Gf` denotes finite adelic points. If the values of `σ φ` have squared norm at
@@ -451,16 +456,23 @@ where `β = h_main - m rem + 2 ∑ gain_p log p + f a log³ b`. Here `h_main = D
 difference of archimedean sizes and prime sums, and `rem = D.totalRemainder` one of prime sums and
 their expected mean `D.mainPrimeSum`, `gain_p` is the divisibility asked at a prime `p < D.x₁` that
 does not split in `ℚ(√-d)`, `f` is the number of infinite places of `E`, and `a = x b` for the
-scales `x`, `b`. -/
-theorem weylNormSq_compositeLift_le {P : Parameters} {D : Data P}
-    {Ψ : D.Translations →₀ ℂ} (hΨ : D.IsChainDatum 1 Ψ) {σ : ℂ ≃+* ℂ} {φ : D.SourceForm} {B : ℝ}
+scales `x`, `b`.
+-/
+theorem weylNormSq_compositeLift_le
+    {P : Parameters} {D : Data P} {Ψ : D.Translations →₀ ℂ} (hΨ : D.IsChainDatum 1 Ψ)
+    {σ : ℂ ≃+* ℂ} {φ : D.SourceForm} {B : ℝ}
     (hB : ∀ g : Gf D.E (D.X 0), weylNormSq (σ ∘ (φ : D.FormX 0).val g) ≤ exp B)
-    (y : Gf D.E (D.Y D.m)) :
-    weylNormSq (σ ∘ (compositeLift TameChar.one Ψ φ).val y) ≤
-      exp (B + (D.mainAmount - D.m * D.totalRemainder +
-        2 * ∑ p ∈ D.smallNonsplitPrimes, D.gain p * log p + D.errorUnit)) := by
-  obtain ⟨Ψ', h_weak, h_eq⟩ : ∃ Ψ' : D.Translations →₀ ℂ, D.IsWeakChainDatum 1 Ψ' ∧
-      ∀ φ : D.SourceForm, compositeLift TameChar.one Ψ φ = restrictedChain TameChar.one Ψ' φ :=
+    (y : Gf D.E (D.Y D.m))
+    : weylNormSq (σ ∘ (compositeLift TameChar.one Ψ φ).val y)
+      ≤ exp
+        (B
+          + (D.mainAmount - D.m * D.totalRemainder
+            + 2 * ∑ p ∈ D.smallNonsplitPrimes, D.gain p * log p + D.errorUnit)) := by
+  obtain ⟨Ψ', h_weak, h_eq⟩
+      : ∃ Ψ' : D.Translations →₀ ℂ,
+        D.IsWeakChainDatum 1 Ψ'
+          ∧ ∀ φ : D.SourceForm,
+            compositeLift TameChar.one Ψ φ = restrictedChain TameChar.one Ψ' φ :=
     hΨ.exists_isWeakChainDatum_compositeLift_eq
   rw [h_eq φ]
   exact weylNormSq_restrictedChain_le h_weak hB y

@@ -82,10 +82,11 @@ section PairBasic
 
 open Fintype Matrix Prod Kronecker RingHom Space G
 
-variable {E m m' l l' R : Type*} [Field E] [CMType E]
+variable
+  {E m m' l l' R : Type*} [Field E] [CMType E]
   {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
-  {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s') (a b : AutChar E)
-  (p : G E s × G E s') (g : G E s)
+  {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
+  (a b : AutChar E) (p : G E s × G E s') (g : G E s)
 
 /-! ### Matrices as vectors on pairs of indices -/
 
@@ -135,8 +136,8 @@ section
 
 section
 
-variable {E : Type*} [Field E] [NumberField E] [NumberField.IsCMField E] (p : G E s × G E s')
-  (g : G E s)
+variable
+  {E : Type*} [Field E] [NumberField E] [NumberField.IsCMField E] (p : G E s × G E s') (g : G E s)
 
 @[simp]
 lemma G.adeleMatrix_onHom : (onHom p).adeleMatrix = p.2.adeleMatrix ⊗ₖ p.1⁻¹.adeleMatrixᵀ := rfl
@@ -298,36 +299,44 @@ section PairReal
 
 section
 
-variable {E : Type} [Field E] [NumberField E]
+variable
+  {E : Type} [Field E] [NumberField E]
   {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
-  {s : n → ℤˣ} {s' : n' → ℤˣ} (γ γ' : NumberField.InfinitePlace E → ℤ)
+  {s : n → ℤˣ} {s' : n' → ℤˣ}
+  (γ γ' : NumberField.InfinitePlace E → ℤ)
 
-open Matrix Kronecker
-  Fock Fintype Finset Space MvPolynomial Heisenberg.IsVacuum AutChar
+open Matrix Kronecker Fock Fintype Finset Space MvPolynomial Heisenberg.IsVacuum AutChar
 
 /-- The Fock space for the signs s′_i s_j of Hom(S,T), repeated at every infinite place. -/
-abbrev PairFock (E : Type) [Field E] [NumberField E] {n n' : Type} [Fintype n] [DecidableEq n]
-    [Fintype n'] [DecidableEq n'] (s : n → ℤˣ) (s' : n' → ℤˣ) : Type :=
+abbrev PairFock
+    (E : Type) [Field E] [NumberField E]
+    {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+    (s : n → ℤˣ) (s' : n' → ℤˣ)
+    : Type :=
   fockSpace (realSigns E (homSigns s s'))
 
-/-- The homomorphism sending real points (x, y) to the action z ↦ y_w z x_w⁻¹ on matrices at each
+/--
+The homomorphism sending real points (x, y) to the action z ↦ y_w z x_w⁻¹ on matrices at each
 infinite place w, as one block diagonal unitary matrix (`blockU`), in `USign` for the signs of
-`Hom(S, T)` repeated at every infinite place. -/
-def pairHomInf :
-    GInf E s × GInf E s' →*
-      USign fun (p : NumberField.InfinitePlace E × n' × n) ↦ homSigns s s' p.2 :=
+`Hom(S, T)` repeated at every infinite place.
+-/
+def pairHomInf
+    : GInf E s × GInf E s'
+      →* USign fun (p : NumberField.InfinitePlace E × n' × n) ↦ homSigns s s' p.2 :=
   blockU.comp
     (MonoidHom.pi fun w ↦
-      (pairHom s' s).comp ((Pi.evalMonoidHom _ w).prodMap (Pi.evalMonoidHom _ w)) :
-      GInf E s × GInf E s' →* GInf E (homSigns s s'))
+        (pairHom s' s).comp ((Pi.evalMonoidHom _ w).prodMap (Pi.evalMonoidHom _ w))
+      : GInf E s × GInf E s' →* GInf E (homSigns s s'))
 
-/-- The real Weil representation of the pair with weights γ, γ′: (x, y) acts by
-∏_w (det y_w)^{γ_w} (det x_w)^{−γ′_w} times the Fock operator of z ↦ y z x⁻¹. -/
+/--
+The real Weil representation of the pair with weights γ, γ′: (x, y) acts by
+∏_w (det y_w)^{γ_w} (det x_w)^{−γ′_w} times the Fock operator of z ↦ y z x⁻¹.
+-/
 @[simps! -isSimp apply_apply]
 def realPairWeil : GInf E s × GInf E s' →* PairFock E s s' →L[ℂ] PairFock E s s' where
   toFun p :=
-    (∏ w : NumberField.InfinitePlace E, (p.2 w).val.val.det ^ γ w * (p.1 w).val.val.det ^ (-γ' w)) •
-      realWeil (pairHomInf p)
+    (∏ w : NumberField.InfinitePlace E, (p.2 w).val.val.det ^ γ w * (p.1 w).val.val.det ^ (-γ' w))
+      • realWeil (pairHomInf p)
   map_one' := by simp
   map_mul' p q := by
     simp [mul_zpow, prod_mul_distrib]
@@ -517,16 +526,19 @@ lemma realPairWeil_polyVector {x : GInf E s} {y : GInf E s'}
 
 end
 
-open Matrix Kronecker
-  Fock Fintype Finset Space MvPolynomial Heisenberg.IsVacuum AutChar
+open Matrix Kronecker Fock Fintype Finset Space MvPolynomial Heisenberg.IsVacuum AutChar
 
-variable {E : Type} [Field E] [CMType E] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} {γ γ' : NumberField.InfinitePlace E → ℤ} [WeilData E]
+variable
+  {E : Type} [Field E] [CMType E]
+  {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+  {s : n → ℤˣ} {s' : n' → ℤˣ} {γ γ' : NumberField.InfinitePlace E → ℤ} [WeilData E]
   (S : Space E n s) (T : Space E n' s') (a b : AutChar E)
   {ψ ψ' : (w : FinPlace E) → MulChar (ResField w) ℂ}
 
-/-- The theta kernel of the pair: the action `New.pairWeil S T a b` with the theta functional. It is
-continuous and left invariant under the rational points of both groups. -/
+/--
+The theta kernel of the pair: the action `New.pairWeil S T a b` with the theta functional. It is
+continuous and left invariant under the rational points of both groups.
+-/
 @[simps]
 abbrev pairThetaKer : ThetaKernel (𝒮 (S.hom T)) S T where
   ω := pairWeil S T a b
@@ -655,30 +667,39 @@ open Matrix Prod
 
 section HomAtPoint
 
-variable {E ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
-  [DecidableEq ι'] {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} (V : Space E ι ε)
-  (V' : Space E ι' ε') [A : WeilData E] (x y : Matrix ι' ι (𝔸 E))
+variable
+  {E ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
+  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} (V : Space E ι ε) (V' : Space E ι' ε')
+  [A : WeilData E]
+  (x y : Matrix ι' ι (𝔸 E))
 
-/-- The additive map sending an adelic matrix w : V → V' in rational coordinates to x'⁻¹wx, its
-vector in the adelic coordinates of Hom(V,V'); here x = `V.x` and x' = `V'.x` are the points. -/
+/--
+The additive map sending an adelic matrix w : V → V' in rational coordinates to x'⁻¹wx, its
+vector in the adelic coordinates of Hom(V,V'); here x = `V.x` and x' = `V'.x` are the points.
+-/
 def homAtPoint : Matrix ι' ι (𝔸 E) →+ ι' × ι → 𝔸 E :=
-  show Matrix ι' ι (𝔸 E) →+ ι' × ι → 𝔸 E from AddMonoidHom.mk'
-    (matrixToVec <| V'.x⁻¹.val * · * V.x.val) (by simp [Matrix.mul_add, Matrix.add_mul])
+  show Matrix ι' ι (𝔸 E) →+ ι' × ι → 𝔸 E from
+    AddMonoidHom.mk' (matrixToVec <| V'.x⁻¹.val * · * V.x.val)
+      (by simp [Matrix.mul_add, Matrix.add_mul])
 
-/-- The Heisenberg bicharacter β of Hom(V,V') evaluated at two adelic matrices x, y given in
-rational coordinates. -/
+/--
+The Heisenberg bicharacter β of Hom(V,V') evaluated at two adelic matrices x, y given in
+rational coordinates.
+-/
 abbrev homBicharacter : ℂ :=
   (adelicHeisenberg E (homSigns ε ε')).β (V.homAtPoint V' x) (V.homAtPoint V' y)
 
 end HomAtPoint
 
-variable {E ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
-  [DecidableEq ι'] {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {V : Space E ι ε}
-  {V' : Space E ι' ε'} [A : WeilData E]
+variable
+  {E ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
+  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {V : Space E ι ε} {V' : Space E ι' ε'} [A : WeilData E]
   (x y : Matrix ι' ι (𝔸 E)) (a : ∀ (n : Type) [Fintype n], AutChar E)
 
-/-- The representation `New.pairWeil` of U(V) × U(V′) on 𝒮(Hom(V, V′)) with the characters `a ι` and
-`a ι′`, where ι, ι′ index the bases of V, V′. -/
+/--
+The representation `New.pairWeil` of U(V) × U(V′) on 𝒮(Hom(V, V′)) with the characters `a ι` and
+`a ι′`, where ι, ι′ index the bases of V, V′.
+-/
 abbrev twistedPairWeil : G E ε × G E ε' →* 𝒮 (V.hom V') →L[ℂ] 𝒮 (V.hom V') :=
   pairWeil V V' (a ι) (a ι')
 
@@ -702,30 +723,38 @@ lemma finCoord_homAtPoint :
   funext c
   simp [homAtPoint, matrixToVec, xFin, Matrix.mul_apply, snd_sum, ← map_inv]
 
-/-- The Heisenberg operator ϱ on 𝒮(Hom(V, V′)) at `New.Space.homAtPoint` of an adelic matrix x :
-V → V′ given in rational coordinates. -/
+/--
+The Heisenberg operator ϱ on 𝒮(Hom(V, V′)) at `New.Space.homAtPoint` of an adelic matrix x :
+V → V′ given in rational coordinates.
+-/
 abbrev homHeisenbergOp : 𝒮 (V.hom V') →L[ℂ] 𝒮 (V.hom V') := (V.hom V').ϱ (V.homAtPoint V' x)
 
-/-- A family of maps `k`, indexed by `O`, computes the theta lifts between the standard positive
+/--
+A family of maps `k`, indexed by `O`, computes the theta lifts between the standard positive
 spaces on ι and ι′. For every polynomial `P` and every linear functional `t` on `WeylIndex ι κ → ℂ`,
 there is a linear functional `t'` on `WeylIndex ι' κ → ℂ` with the following property. For every
 `o`, `Φ`, `φ` and `h`, take the integral over `g` of θ of `twistedPairWeil (a o) (g, h)` applied to
 `P` tensored with `Φ`, times the coefficient of `φ` at `g` taken with `t`. This integral is the
-coefficient of `k o Φ φ` at `h` taken with `t'`. -/
-def IsThetaLift {O : Type*} (κ : NumberField.InfinitePlace E → ℕ → ℕ)
-    (e e' : NumberField.InfinitePlace E → ℤ) (a : O → (n : Type) → [Fintype n] → AutChar E)
-    (k : O → ((stdSpace E ι).hom (stdSpace E ι')).finitePart →ₗ[ℂ]
-        AlgForm (E := E) ι κ e →ₗ[ℂ] AlgForm ι' κ e') : Prop :=
+coefficient of `k o Φ φ` at `h` taken with `t'`.
+-/
+def IsThetaLift
+    {O : Type*}
+    (κ : NumberField.InfinitePlace E → ℕ → ℕ) (e e' : NumberField.InfinitePlace E → ℤ)
+    (a : O → (n : Type) → [Fintype n] → AutChar E)
+    (k : O
+      → ((stdSpace E ι).hom (stdSpace E ι')).finitePart →ₗ[ℂ]
+        AlgForm (E := E) ι κ e →ₗ[ℂ] AlgForm ι' κ e')
+    : Prop :=
   ∀ (P : MvPolynomial (NumberField.InfinitePlace E × ι' × ι) ℂ) (t : (WeylIndex ι κ → ℂ) →ₗ[ℂ] ℂ),
     ∃ t' : (WeylIndex ι' κ → ℂ) →ₗ[ℂ] ℂ,
-    ∀ (o : O) (Φ : ↥((stdSpace E ι).hom (stdSpace E ι')).finitePart)
-      (φ : ↥(AlgForm ι κ e)) (h : G E 1),
-    ∫ g : G E 1, θ ((stdSpace E ι).hom (stdSpace E ι'))
-          (twistedPairWeil (a o) (g, h)
-            (integrated ((stdSpace E ι).hom (stdSpace E ι'))
-              (Fock.polyVector (realSigns E (homSigns 1 1)) P) Φ.val)) *
-        algFormCoeff 1 t φ g ∂(stdSpace E ι).quotMeasure =
-      algFormCoeff 1 t' (k o Φ φ) h
+      ∀ (o : O) (Φ : ↥((stdSpace E ι).hom (stdSpace E ι')).finitePart) (φ : ↥(AlgForm ι κ e))
+          (h : G E 1),
+        ∫ g : G E 1, θ ((stdSpace E ι).hom (stdSpace E ι'))
+              (twistedPairWeil (a o) (g, h)
+                (integrated ((stdSpace E ι).hom (stdSpace E ι'))
+                  (Fock.polyVector (realSigns E (homSigns 1 1)) P) Φ.val)) *
+            algFormCoeff 1 t φ g ∂(stdSpace E ι).quotMeasure
+          = algFormCoeff 1 t' (k o Φ φ) h
 
 end New.Space
 

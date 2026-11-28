@@ -166,20 +166,23 @@ section Gram
 
 open MvPolynomial Module New «GL» ComplexOrder Sigma Function Fintype Equiv Finset Matrix
 
-variable {Φ : Type}
-  {R S : Type _} [CommRing R] [CommRing S] [Fintype Φ] [DecidableEq Φ]
-  {n n' : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
-  [∀ τ : Φ, Fintype (n' τ)] [∀ τ : Φ, DecidableEq (n' τ)] {κ : Φ → ℕ → ℕ}
-  (e : ∀ τ : Φ, n τ ≃ Fin (rankAt n τ)) (φ : R →+* S)
-  (N : Φ → ℕ) (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ n' τ) (g : ∀ τ : Φ, Matrix (n τ) (n τ) R)
-  (ξ η : WeylIndexFamily n κ → R) (s : Φ → R) (y : (Σ τ : Φ, n τ) × ℕ → R)
+variable
+  {Φ : Type} {R S : Type _} [CommRing R] [CommRing S] [Fintype Φ] [DecidableEq Φ]
+  {n n' : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (n' τ)]
+  [∀ τ : Φ, DecidableEq (n' τ)]
+  {κ : Φ → ℕ → ℕ}
+  (e : ∀ τ : Φ, n τ ≃ Fin (rankAt n τ)) (φ : R →+* S) (N : Φ → ℕ) (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ n' τ)
+  (g : ∀ τ : Φ, Matrix (n τ) (n τ) R) (ξ η : WeylIndexFamily n κ → R) (s : Φ → R)
+  (y : (Σ τ : Φ, n τ) × ℕ → R)
 
 namespace New.GL
 
 /-! ### Evaluation vectors and the kernel -/
 
-/-- For an array `y` and enumerations `e τ` of the rows, the square matrix at the place `τ` with
-`(a, b)` entry `y((τ, a), e τ b)`: the columns of block `τ` numbered below `|n τ|`. -/
+/--
+For an array `y` and enumerations `e τ` of the rows, the square matrix at the place `τ` with
+`(a, b)` entry `y((τ, a), e τ b)`: the columns of block `τ` numbered below `|n τ|`.
+-/
 def squarePart (τ : Φ) : Matrix (n τ) (n τ) R := of fun a b : n τ ↦ y (⟨τ, a⟩, e τ b)
 
 /-- Every evaluation vector `ev_y` is the image of the evaluation vector at the permutation array
@@ -291,8 +294,10 @@ omit [(τ : Φ) → DecidableEq (n τ)] in
 lemma nablaCombination_weylGramOver_mulVec :
     nablaCombination κ (weylGramOver *ᵥ ξ) = toPoly n κ ξ := rfl
 
-/-- For square matrices `g τ` and scalars `s τ`, the block diagonal matrix `diag(g τ, s τ)`,
-reindexed by `n' τ` through the bijection `ι τ : n τ ⊕ Unit ≃ n' τ`. -/
+/--
+For square matrices `g τ` and scalars `s τ`, the block diagonal matrix `diag(g τ, s τ)`,
+reindexed by `n' τ` through the bijection `ι τ : n τ ⊕ Unit ≃ n' τ`.
+-/
 noncomputable def blockScalar (τ : Φ) : Matrix (n' τ) (n' τ) R :=
   ((g τ).fromBlocks 0 0 (diagonal fun _ ↦ s τ)).reindex (ι τ) (ι τ)
 
@@ -591,8 +596,10 @@ namespace New
 
 open MvPolynomial Matrix «GL» RingHom Function
 
-variable {Φ : Type} {K : Type _} [Field K] [CharZero K] [Fintype Φ]
-  {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] {κ : Φ → ℕ → ℕ}
+variable
+  {Φ : Type} {K : Type _} [Field K] [CharZero K] [Fintype Φ]
+  {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
+  {κ : Φ → ℕ → ℕ}
 
 section Density
 

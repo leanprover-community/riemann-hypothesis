@@ -82,15 +82,19 @@ open CategoryTheory TensorProduct Period
 
 variable {p : ℕ} [ThePrime p]
 
-/-- For an O^♭-module M, the functor B ↦ B ⊗_{O^♭} M from commutative O^♭-algebras to
-O^♭-modules. -/
+/--
+For an O^♭-module M, the functor B ↦ B ⊗_{O^♭} M from commutative O^♭-algebras to
+O^♭-modules.
+-/
 noncomputable abbrev tensorCoeff (M : ModuleCat OFlat) : CommAlg OFlat ⥤ ModuleCat OFlat :=
   asModules (𝟭 (CommAlg OFlat)) ⋙ MonoidalCategory.tensorRight M
 
-/-- For an O^♭-module N, the functor b ↦ b ⊗ N ⊗ 𝔪 from commutative O^♭-algebras to O^♭-modules,
-𝔪 the maximal ideal of O^♭ and tensor products over O^♭. -/
-noncomputable abbrev almostCoeff (N : Type) [AddCommGroup N] [Module OFlat N] :
-    CommAlg OFlat ⥤ ModuleCat OFlat :=
+/--
+For an O^♭-module N, the functor b ↦ b ⊗ N ⊗ 𝔪 from commutative O^♭-algebras to O^♭-modules,
+𝔪 the maximal ideal of O^♭ and tensor products over O^♭.
+-/
+noncomputable abbrev almostCoeff (N : Type) [AddCommGroup N] [Module OFlat N]
+    : CommAlg OFlat ⥤ ModuleCat OFlat :=
   tensorCoeff (ModuleCat.of OFlat (N ⊗[OFlat] MaxIdealFlat))
 
 /-- For m in the maximal ideal 𝔪 of O^♭ and t ≠ 0 in O^♭, one can write m = s·k with k in 𝔪 and
@@ -123,8 +127,10 @@ noncomputable instance : Algebra Ainf b := .compHom _ constantCoeff
 
 instance : IsScalarTower Ainf OFlat b := .of_compHom ..
 
-/-- For an O^♭-algebra b, the A_inf-linear map W(b) → b sending a Witt vector to its zeroth
-coefficient. -/
+/--
+For an O^♭-algebra b, the A_inf-linear map W(b) → b sending a Witt vector to its zeroth
+coefficient.
+-/
 noncomputable def wittConstCoeff : wittFunctor.obj b →ₗ[Ainf] b :=
   AlgHom.toLinearMap { toRingHom := constantCoeff, commutes' _ := rfl }
 
@@ -175,25 +181,30 @@ open TensorProduct Ideal Quotient Function Period ValuationRing Module NeZero Al
   Comparison HasBaseChange Filter Localization MonoidalCategory Flat WittVector AlgHom
 open ModuleCat hiding ofHom
 
-variable {p : ℕ} [ThePrime p] {S M : Type}
-  {M' M'' V A : Type _} [CommRing S] [AddCommGroup M] [AddCommGroup M'] [AddCommGroup M'']
-  [CommRing V] [CommRing A]
-  (N : Type) [AddCommGroup N] [Module OFlat N] [Algebra OFlat S] [Module S M] [Module S M']
-  [Module S M''] {a b d : PerfectAlg p S} (φ : b ⟶ d) {C : Type 1} [Category C]
-  {K : AbFunctor C} {n : ℕ} {Φ : C ⥤ ModuleCat S} {z : H K (moduleCoeff (Φ ⋙ tensorWith S M)) n}
-  {f : M →ₗ[S] M'} {g : M' →ₗ[S] M''}
+variable
+  {p : ℕ} [ThePrime p]
+  {S M : Type} {M' M'' V A : Type _}
+  [CommRing S] [AddCommGroup M] [AddCommGroup M'] [AddCommGroup M''] [CommRing V] [CommRing A]
+  (N : Type)
+  [AddCommGroup N] [Module OFlat N] [Algebra OFlat S] [Module S M] [Module S M'] [Module S M'']
+  {a b d : PerfectAlg p S} (φ : b ⟶ d)
+  {C : Type 1} [Category C]
+  {K : AbFunctor C} {n : ℕ} {Φ : C ⥤ ModuleCat S}
+  {z : H K (moduleCoeff (Φ ⋙ tensorWith S M)) n} {f : M →ₗ[S] M'} {g : M' →ₗ[S] M''}
 
 /-! ### Two facts of commutative algebra over O^♭ -/
 
-/-- For a reduced commutative O^♭-algebra S, the O^♭-module 𝔪 ⊗_{O^♭} S is torsion-free, where
-𝔪 is the maximal ideal of O^♭. -/
-instance MaxIdealTensor.isTorsionFree_of_isReduced [IsReduced S] :
-    IsTorsionFree OFlat (MaxIdealFlat ⊗[OFlat] S) := by
+/--
+For a reduced commutative O^♭-algebra S, the O^♭-module 𝔪 ⊗_{O^♭} S is torsion-free, where
+𝔪 is the maximal ideal of O^♭.
+-/
+instance MaxIdealTensor.isTorsionFree_of_isReduced [IsReduced S]
+    : IsTorsionFree OFlat (MaxIdealFlat ⊗[OFlat] S) := by
   refine ⟨fun t ht ↦ ?_⟩
   -- `m ⊗ x = 0` for `t`-torsion `x`: write `m = s • k` with `k ∈ 𝔪` and `t ∣ s ^ n`; then `s • x`
   -- is nilpotent, so zero.
-  have h_ker :
-      LinearMap.lTensor MaxIdealFlat (LinearMap.ker (LinearMap.lsmul OFlat S t)).subtype = 0 := by
+  have h_ker
+      : LinearMap.lTensor MaxIdealFlat (LinearMap.ker (LinearMap.lsmul OFlat S t)).subtype = 0 := by
     refine ext' fun m ⟨x, (htx : t • x = 0)⟩ ↦ ?_
     obtain ⟨s, k, rfl, n, d, hd : s ^ n = t * d⟩ := m.exists_smul_eq ht.ne_zero
     have h_nilpotent : (s • x) ^ (n + 1) = 0 := by grind [smul_pow, Algebra.smul_def]
@@ -201,10 +212,10 @@ instance MaxIdealTensor.isTorsionFree_of_isReduced [IsReduced S] :
     rw [LinearMap.lTensor_tmul, Submodule.subtype_apply, smul_tmul, hsx, tmul_zero,
       LinearMap.zero_apply]
   -- As `𝔪` is flat, the kernel of `t` on `𝔪 ⊗ S` is the image of the map in `h_ker`.
-  have h_inj :
-      Function.Injective (LinearMap.lTensor MaxIdealFlat (DistribSMul.toLinearMap OFlat S t)) :=
-    (injective_iff_eq_zero_of_exact
-      (lTensor_exact MaxIdealFlat (lsmul OFlat S t).exact_subtype_ker_map)).mpr h_ker
+  have h_inj
+      : Function.Injective (LinearMap.lTensor MaxIdealFlat (DistribSMul.toLinearMap OFlat S t)) :=
+    (injective_iff_eq_zero_of_exact (lTensor_exact MaxIdealFlat
+      (lsmul OFlat S t).exact_subtype_ker_map)).mpr h_ker
   rwa [lTensor_smul_action] at h_inj
 
 /-- Let V be a perfect O^♭-algebra that is a valuation domain, in which p^♭ is neither zero nor a
@@ -288,16 +299,20 @@ lemma exists_faithfullyFlat_padicTest (V : CommAlg OFlat) [IsDomain V] [Valuatio
     rw [hφv, zero_dvd_iff] at h_img_dvd
     exact absurd ((hφ_alg pFlat).symm.trans h_img_dvd) h_tilt_ne
 
-/-- For a functor Φ from C to S-modules, a functor K from C to abelian groups and a degree n: the
+/--
+For a functor Φ from C to S-modules, a functor K from C to abelian groups and a degree n: the
 additive map that sends an S-linear map f: M → M' to the induced homomorphism
-H^n(K, M ⊗_S Φ) → H^n(K, M' ⊗_S Φ). -/
-def tensorPush :
-    (M →ₗ[S] M') →+ H K (moduleCoeff (Φ ⋙ tensorWith S M)) n →+
-      H K (moduleCoeff (Φ ⋙ tensorWith S M')) n :=
+H^n(K, M ⊗_S Φ) → H^n(K, M' ⊗_S Φ).
+-/
+def tensorPush
+    : (M →ₗ[S] M') →+ H K (moduleCoeff (Φ ⋙ tensorWith S M)) n
+      →+ H K (moduleCoeff (Φ ⋙ tensorWith S M')) n :=
   (pushHom K (moduleCoeff (Φ ⋙ tensorWith S M)) (moduleCoeff (Φ ⋙ tensorWith S M')) n).comp <|
     AddMonoidHom.mk'
-      (fun f ↦ coeffMap (Φ.whiskerLeft ((curriedTensor (ModuleCat S)).map (↟f)) :
-        Φ ⋙ tensorWith S M ⟶ Φ ⋙ tensorWith S M'))
+      (fun f ↦
+        coeffMap
+          (Φ.whiskerLeft ((curriedTensor (ModuleCat S)).map (↟f))
+            : Φ ⋙ tensorWith S M ⟶ Φ ⋙ tensorWith S M'))
       (by aesop)
 
 /-- The coefficient map of a composite of natural maps is the composite of the coefficient maps. -/
@@ -308,10 +323,12 @@ private lemma coeffMap_comp {Ψ Θ : C ⥤ ModuleCat S} (β : Φ ⟶ Ψ) (β' : 
 private lemma coeffMap_id : coeffMap (𝟙 Φ) = 𝟙 (moduleCoeff Φ) :=
   rfl
 
-/-- For a functor Φ to S-modules, the natural map M ⊗ Φ → M' ⊗ Φ induced by an S-linear map
-f: M → M'. -/
-def tensorCoeffMap (Φ : C ⥤ ModuleCat S) (f : M →ₗ[S] M') :
-    Φ ⋙ tensorWith S M ⟶ Φ ⋙ tensorWith S M' :=
+/--
+For a functor Φ to S-modules, the natural map M ⊗ Φ → M' ⊗ Φ induced by an S-linear map
+f: M → M'.
+-/
+def tensorCoeffMap (Φ : C ⥤ ModuleCat S) (f : M →ₗ[S] M')
+    : Φ ⋙ tensorWith S M ⟶ Φ ⋙ tensorWith S M' :=
   Φ.whiskerLeft ((curriedTensor (ModuleCat S)).map (↟f))
 
 private lemma tensorCoeffMap_comp :
@@ -370,8 +387,10 @@ lemma exists_repr_cech (m : ℕ) :
     apply eq_desc_of_comp_eq
     exacts [fun _ ↦ rfl, (arrow_ι_assoc _ 0 g.down).symm]
 
-/-- For a map φ: b → d of perfect S-algebras, the functor D ↦ ℤ[Hom(b,D)]/ℤ[maps that factor
-through φ] from perfect S-algebras to abelian groups. -/
+/--
+For a map φ: b → d of perfect S-algebras, the functor D ↦ ℤ[Hom(b,D)]/ℤ[maps that factor
+through φ] from perfect S-algebras to abelian groups.
+-/
 abbrev relFreeAbOfHom : PerfectAlg p S ⥤ Ab := relFreeAb (Subfunctor.range (reprMap φ))
 
 /-- Let S be an O^♭-algebra, φ: b → d a map of perfect S-algebras, and Q the functor
@@ -425,8 +444,10 @@ instance (priority := low) [Algebra V S] : Algebra V a.obj := .compHom _ (algebr
 
 instance [Algebra V S] : IsScalarTower V S a.obj := .of_compHom ..
 
-/-- The functor sending a perfect S-algebra D to D ⊗ N ⊗ 𝔪, tensor products over O^♭ with 𝔪 its
-maximal ideal, regarded as an S-module. -/
+/--
+The functor sending a perfect S-algebra D to D ⊗ N ⊗ 𝔪, tensor products over O^♭ with 𝔪 its
+maximal ideal, regarded as an S-module.
+-/
 def perfectAlmostCoeff : PerfectAlg p S ⥤ ModuleCat S where
   obj D := ModuleCat.of S (D.obj ⊗[OFlat] (N ⊗[OFlat] MaxIdealFlat))
   map f := ↟(rTensor OFlat (N ⊗[OFlat] MaxIdealFlat) f.hom.hom'.toLinearMap)
@@ -685,8 +706,10 @@ lemma faithfullyFlat_descent [hS : PerfectRing S p] [Algebra S V] (ρ : V →ₐ
   ext D ⟨y⟩
   exact congrArg _ (LinearMap.congr_fun (h_factor D) y)
 
-/-- For a map φ: b → d of perfect S-algebras, the ring d regarded as a perfect b-algebra through
-φ. -/
+/--
+For a map φ: b → d of perfect S-algebras, the ring d regarded as a perfect b-algebra through
+φ.
+-/
 def perfectAlgAlong {b d : PerfectAlg p S} (φ : b ⟶ d) : PerfectAlg p b.obj :=
   letI : Algebra b.obj d.obj := φ.hom.hom.toRingHom.toAlgebra
   ⟨CommAlgCat.of b.obj d.obj, d.property⟩
@@ -866,7 +889,8 @@ section AlmostAcyclic
 open CategoryTheory ObjectProperty TensorProduct Function Period Comparison freeAb Category
   PadicTest IsCohomEquiv Eqv
 
-variable {C C' D : Type 1} [Category C] [Category C'] [Category D]
+variable
+  {C C' D : Type 1} [Category C] [Category C'] [Category D]
   {F : AbFunctor C} {F' : AbFunctor C'} {G : AbFunctor D} {p : ℕ} [ThePrime p]
   {N : Type} [AddCommGroup N] [Module OFlat N]
 
@@ -887,8 +911,10 @@ lemma Comparison.IsBijective.transfer {Y : D ⥤ Type 1} {B : C} {B' : C'}
     funext fun x ↦ hom_ext (by simp [homOfValue_app, h_compat])
   rwa [isBijective_reprBy_iff, h_sec, hγ.of_comp_iff, ← isBijective_reprBy_iff] at hc
 
-/-- For every perfect O^♭-algebra b, the functor S ↦ Hom(b, S^♭) on p-adic tests, with coefficients
-S ↦ F(S^♭), has cohomology F(b), in degree 0. -/
+/--
+For every perfect O^♭-algebra b, the functor S ↦ Hom(b, S^♭) on p-adic tests, with coefficients
+S ↦ F(S^♭), has cohomology F(b), in degree 0.
+-/
 abbrev IsAcyclicOnPerfect (F : AbFunctor (CommAlg OFlat)) : Prop :=
   ∀ (b : CommAlg OFlat) [PerfectRing b p], IsAcyclicAt tilt F b
 

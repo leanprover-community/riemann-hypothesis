@@ -62,18 +62,25 @@ section QuotientMeasureDefs
 
 open MeasureTheory Measure
 
-variable {H X G : Type*} [MeasurableSpace H] [MeasurableSpace X] [SMul H X] (ν : Measure H)
-  (μ : Measure X) [Group G] (N : Subgroup G)
+variable
+  {H X G : Type*} [MeasurableSpace H] [MeasurableSpace X] [SMul H X]
+  (ν : Measure H) (μ : Measure X)
+  [Group G]
+  (N : Subgroup G)
 
-/-- The subgroup N of G is cocompact: there is a compact C ⊂ G such that every g has a translate
-γg in C with γ ∈ N. -/
+/--
+The subgroup N of G is cocompact: there is a compact C ⊂ G such that every g has a translate
+γg in C with γ ∈ N.
+-/
 @[to_additive /-- The additive subgroup N of G is cocompact: there is a compact C ⊂ G such that
 every g has a translate γ + g in C with γ ∈ N. -/]
 abbrev Subgroup.IsCocompact [TopologicalSpace G] : Prop :=
   ∃ C : Set G, IsCompact C ∧ ∀ g : G, ∃ γ ∈ N, γ * g ∈ C
 
-/-- The function F on G is left invariant under the subgroup N: F(γg) = F(g) for all γ ∈ N and g
-∈ G. -/
+/--
+The function F on G is left invariant under the subgroup N: F(γg) = F(g) for all γ ∈ N and g
+∈ G.
+-/
 @[simp]
 abbrev Subgroup.FixesLeft {W : Sort*} (F : G → W) : Prop := ∀ γ ∈ N, ∀ g : G, F (γ * g) = F g
 
@@ -84,23 +91,29 @@ namespace New
 ∫_H β(h +ᵥ x) dν(h) = 1 for every x in X, for an additive action of H on X. -/]
 def IsCutoff (β : X → ENNReal) : Prop := Measurable β ∧ ∀ x : X, ∫⁻ h : H, β (h • x) ∂ν = 1
 
-/-- A chosen weight for the action of `H`, with measure `ν`, on `X`. It is a cutoff when the action
-has one (`New.isCutoff_chosenCutoff`); otherwise it is an unspecified function. -/
+/--
+A chosen weight for the action of `H`, with measure `ν`, on `X`. It is a cutoff when the action
+has one (`New.isCutoff_chosenCutoff`); otherwise it is an unspecified function.
+-/
 @[to_additive chosenAddCutoff /-- A chosen weight for the additive action of `H`, with measure
 `ν`, on `X`. It is a cutoff when the action has one (`New.isAddCutoff_chosenAddCutoff`); otherwise
 it is an unspecified function. -/]
 noncomputable abbrev chosenCutoff : X → ENNReal := Classical.epsilon (IsCutoff ν)
 
-/-- The measure βμ on X for the weight β = `New.chosenCutoff ν`. When a cutoff exists
+/--
+The measure βμ on X for the weight β = `New.chosenCutoff ν`. When a cutoff exists
 (`New.HasCutoff`), ν is inversion invariant and μ is H-invariant, both s-finite, integrating an
-H-invariant function against it gives the integral over H\X, for every choice of cutoff. -/
+H-invariant function against it gives the integral over H\X, for every choice of cutoff.
+-/
 @[to_additive addOrbitMeasure /-- The measure βμ on X for the weight
 β = `New.chosenAddCutoff ν`, for an additive action of H on X; the additive version of
 `New.orbitMeasure`. -/]
 noncomputable abbrev orbitMeasure : Measure X := μ.withDensity (chosenCutoff ν)
 
-/-- The hypothesis that the action of H, with measure ν, on X admits a cutoff: a measurable
-weight with integral one over each orbit. -/
+/--
+The hypothesis that the action of H, with measure ν, on X admits a cutoff: a measurable
+weight with integral one over each orbit.
+-/
 @[to_additive HasAddCutoff /-- The hypothesis that the additive action of H, with measure ν, on X
 admits a cutoff: a measurable weight with integral one over each orbit. -/]
 abbrev HasCutoff (X : Type*) [MeasurableSpace X] [SMul H X] : Prop :=
@@ -120,15 +133,18 @@ instance (priority := high) mulActionSubgroupSelf : MulAction N G := inferInstan
 @[to_additive]
 instance (priority := high) smulSubgroupSelf : SMul N G := inferInstance
 
-/-- The measure on G that computes integrals over N\G, when N with counting measure has a cutoff
+/--
+The measure on G that computes integrals over N\G, when N with counting measure has a cutoff
 (for example when N is discrete) and μ is invariant under N. It is μ weighted by a cutoff chosen for
-the action of N, with counting measure, on G. By default μ is `volume`. -/
+the action of N, with counting measure, on G. By default μ is `volume`.
+-/
 @[to_additive /-- The measure on G that computes integrals over the quotient of G by the additive
 subgroup N, when N with counting measure has a cutoff (for example when N is discrete) and μ is
 invariant under N. It is μ weighted by a cutoff chosen for the action of N, with counting measure,
 on G. By default μ is `volume`. -/]
-noncomputable abbrev _root_.Subgroup.quotMeasure [MeasurableSpace G]
-    (μ : Measure G := by volume_tac) : Measure G :=
+noncomputable abbrev _root_.Subgroup.quotMeasure
+    [MeasurableSpace G] (μ : Measure G := by volume_tac)
+    : Measure G :=
   orbitMeasure (@count N _) μ
 
 end New
@@ -146,8 +162,9 @@ section QuotientMeasure
 
 open MeasureTheory Measure ProbabilityTheory
 
-variable {H X W Y : Type*} [MeasurableSpace H] [MeasurableSpace X] [MeasurableSpace W]
-  [MeasurableSpace Y] [NormedAddCommGroup W] [NormedSpace ℝ W] [BorelSpace W]
+variable
+  {H X W Y : Type*} [MeasurableSpace H] [MeasurableSpace X] [MeasurableSpace W] [MeasurableSpace Y]
+  [NormedAddCommGroup W] [NormedSpace ℝ W] [BorelSpace W]
   {F : X → Y} {f : X → W}
 
 namespace New
@@ -185,9 +202,11 @@ lemma identDistrib_orbitMeasure_of_unfold [SMul H X] [MeasurableSMul₂ H X] {ν
     _ = ∫⁻ z, f (F (T z)) ∂m := by simp (disch := fun_prop) [lintegral_mul_const, h_orbit]
     _ = ∫⁻ y, f y ∂m.map (F ∘ T) := (lintegral_map hf (hF.comp hT)).symm
 
-variable [Group H] [MulAction H X] [MeasurableInv H] [MeasurableSMul₂ H X]
+variable
+  [Group H] [MulAction H X] [MeasurableInv H] [MeasurableSMul₂ H X]
   {ν : Measure H} [SFinite (α := H) ν]
-  {μ : Measure X} [SFinite μ] [SMulInvariantMeasure H X μ] {β : X → ENNReal}
+  {μ : Measure X} [SFinite μ] [SMulInvariantMeasure H X μ]
+  {β : X → ENNReal}
 
 @[to_additive]
 instance {S : Subgroup H} : MeasurableSMul₂ S X := ⟨.smul (by fun_prop) measurable_snd⟩
@@ -318,7 +337,8 @@ open MeasureTheory Measure Set ENNReal
 
 namespace New
 
-variable {I H X G : Type*} [MeasurableSpace I] [MeasurableSpace H] [Countable I] [Group G]
+variable
+  {I H X G : Type*} [MeasurableSpace I] [MeasurableSpace H] [Countable I] [Group G]
   [MeasurableSingletonClass I] [MeasurableSingletonClass H] [MeasurableSpace X] [TopologicalSpace G]
 
 /-! ### Counting measure and sums of weights -/
@@ -343,20 +363,24 @@ lemma tsum_toReal_smul_of_tsum_eq_one {I : Type*} {f : I → ℝ≥0∞} (h : �
     rw [← tsum_toReal_eq h_fin, h, toReal_one]
   simp [tsum_mul_right, ← Complex.ofReal_tsum, h_real]
 
-variable (Γ N : Subgroup G) [DiscreteTopology Γ] [Group H] [MulAction H X] [MeasurableMul H]
-  [MeasurableSMul₂ H X]
+variable
+  (Γ N : Subgroup G)
+  [DiscreteTopology Γ] [Group H] [MulAction H X] [MeasurableMul H] [MeasurableSMul₂ H X]
   {ν : Measure H} [SFinite (α := H) ν] [IsMulRightInvariant ν] [TopologicalSpace H]
 
 /-! ### Existence of cutoffs -/
 
 open scoped Classical in
-/-- A proper action of `H` on a σ-compact Hausdorff space `X` has a cutoff (a measurable weight with
+/--
+A proper action of `H` on a σ-compact Hausdorff space `X` has a cutoff (a measurable weight with
 integral one over each orbit) for every nonzero s-finite right-invariant measure `ν` on `H` that is
-finite on compact sets. -/
+finite on compact sets.
+-/
 @[to_additive hasAddCutoff_of_proper]
-instance hasCutoff_of_proper [TopologicalSpace X] [c : SigmaCompactSpace X] [T2Space X]
-    [OpensMeasurableSpace X] [ProperSMul H X] [IsFiniteMeasureOnCompacts ν] [NeZero ν] :
-    HasCutoff ν X := by
+instance hasCutoff_of_proper
+    [TopologicalSpace X] [c : SigmaCompactSpace X] [T2Space X] [OpensMeasurableSpace X]
+    [ProperSMul H X] [IsFiniteMeasureOnCompacts ν] [NeZero ν]
+    : HasCutoff ν X := by
   -- Exhaust `X` by compact sets `K n` and let `t n x = ν {h | h • x ∈ K n}`, finite by properness
   -- and constant on orbits. On the orbit of `x` take the least `n` with `t n x > 0`; the cutoff is
   -- `(t n x)⁻¹` on `K n` and `0` elsewhere.
@@ -375,8 +399,8 @@ instance hasCutoff_of_proper [TopologicalSpace X] [c : SigmaCompactSpace X] [T2S
   have h_fin (n : ℕ) (x : X) : t n x ≠ ∞ := by
     -- properness: the elements of `H` that move `x` into a compact set form a compact set
     have h_compact : IsCompact {h : H | h • x ∈ K n} := by
-      simpa using ProperSMul.isCompact_setOfPred_inter_nonempty (G := H)
-        (isCompact_singleton (x := x)) (hK n)
+      simpa using
+        ProperSMul.isCompact_setOfPred_inter_nonempty (G := H) (isCompact_singleton (x := x)) (hK n)
     exact h_compact.measure_ne_top
   have h_inv (n : ℕ) (x : X) (g : H) : t n (g • x) = t n x := by
     simpa [mul_smul] using measure_preimage_mul_right ν g {h | h • x ∈ K n}
@@ -384,12 +408,13 @@ instance hasCutoff_of_proper [TopologicalSpace X] [c : SigmaCompactSpace X] [T2S
     measurable_measure_prodMk_right (measurable_smul (hK n).measurableSet)
   let β (x : X) : ℝ≥0∞ := (K (Nat.find (h_pos x))).indicator (t (Nat.find (h_pos x)))⁻¹ x
   have hβ_meas : Measurable β :=
-    .find (fun n ↦ (h_meas n).inv.indicator (hK n).measurableSet)
-      (fun n ↦ h_meas n measurableSet_Ioi) h_pos
+    .find
+      (fun n ↦ (h_meas n).inv.indicator (hK n).measurableSet)
+      (fun n ↦ h_meas n measurableSet_Ioi)
+      h_pos
   refine ⟨β, hβ_meas, fun x ↦ ?_⟩
   set n : ℕ := Nat.find (h_pos x) with hn
-  have hβ (h : H) : β (h • x) =
-      ((fun g : H ↦ g • x) ⁻¹' K n).indicator (fun _ ↦ (t n x)⁻¹) h := by
+  have hβ (h : H) : β (h • x) = ((fun g : H ↦ g • x) ⁻¹' K n).indicator (fun _ ↦ (t n x)⁻¹) h := by
     simp [β, indicator, h_inv, hn]
   simp only [hβ]
   rw [lintegral_indicator_const (measurable_smul_const x (hK n).measurableSet)]
@@ -405,9 +430,11 @@ instance [DiscreteTopology H] : IsHaarMeasure (count (α := H)) where
 
 /-! ### Cosets of a subgroup and subgroups of discrete subgroups -/
 
-/-- For a subgroup `N` of `G`, the bijection `(G ⧸ N) × N ≃ G` sending `(q, u)` to `u * r⁻¹`,
+/--
+For a subgroup `N` of `G`, the bijection `(G ⧸ N) × N ≃ G` sending `(q, u)` to `u * r⁻¹`,
 where `r = q.out` is the chosen representative of the left coset `q`. The elements `r⁻¹`
-represent the right cosets of `N`. -/
+represent the right cosets of `N`.
+-/
 noncomputable abbrev cosetProdEquiv : (G ⧸ N) × N ≃ G where
   toFun := fun (q, u) ↦ u * q.out⁻¹
   invFun γ :=
@@ -423,10 +450,12 @@ instance : DiscreteTopology (Γ.subgroupOf N) :=
 instance : DiscreteTopology ↥(Γ ⊓ N) :=
   .of_subset (s := (Γ : Set G)) (inferInstanceAs (DiscreteTopology Γ)) (by simp)
 
-variable [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
+variable
+  [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
   [MeasurableSpace G] [BorelSpace G]
-  {S X : Type*} [TopologicalSpace X] [SecondCountableTopology X] [LocallyCompactSpace X]
-  [SetLike S X] {N : S} {μ : Measure G} [IsHaarMeasure μ]
+  {S X : Type*}
+  [TopologicalSpace X] [SecondCountableTopology X] [LocallyCompactSpace X] [SetLike S X]
+  {N : S} {μ : Measure G} [IsHaarMeasure μ]
 
 @[to_additive]
 instance : Countable Γ := countable_of_Lindelof_of_discrete
@@ -438,8 +467,10 @@ instance locallyCompactSpace_of_isClosed [hN : IsClosed (X := X) N] : LocallyCom
   hN.locallyCompactSpace
 /-! ### Discrete subgroups of a locally compact group -/
 
-/-- A discrete subgroup `Γ` of `G`, with counting measure, acting on `G` by left translation has a
-cutoff. -/
+/--
+A discrete subgroup `Γ` of `G`, with counting measure, acting on `G` by left translation has a
+cutoff.
+-/
 @[to_additive addCutoff]
 instance hasCutoff_count : HasCutoff (count (α := Γ)) G := inferInstance
 
@@ -499,9 +530,11 @@ section QuotientTransport
 
 open MeasureTheory ProbabilityTheory New
 
-variable {H X H' Y Z : Type*} [MeasurableSpace H] [MeasurableSpace X] [MeasurableSpace H']
-  [MeasurableSpace Y] [MeasurableSpace Z] [Group H] [MulAction H X] [MeasurableInv H]
-  [MeasurableSMul₂ H X] {ν : Measure H} [SFinite (α := H) ν] [ν.IsInvInvariant]
+variable
+  {H X H' Y Z : Type*}
+  [MeasurableSpace H] [MeasurableSpace X] [MeasurableSpace H'] [MeasurableSpace Y]
+  [MeasurableSpace Z] [Group H] [MulAction H X] [MeasurableInv H] [MeasurableSMul₂ H X]
+  {ν : Measure H} [SFinite (α := H) ν] [ν.IsInvInvariant]
   {μ : Measure X} [SFinite μ] [SMulInvariantMeasure H X μ] [HasCutoff ν X]
 
 /-- Change of variables on quotients. Let `σ : H → H'` and `T : X → Y` preserve the measures, with
@@ -547,7 +580,8 @@ open MeasureTheory Set Measure NeZero
 
 namespace New
 
-variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
+variable
+  {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
   [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
   {μ : Measure G} [IsHaarMeasure μ]
   {Γ : Subgroup G} [DiscreteTopology Γ]
@@ -600,7 +634,8 @@ instance [IsMulRightInvariant μ] : IsInvInvariant μ := by
   have h_mass : μ.inv K = μ K := by simp [K, union_comm, ← Set.inv_preimage, preimage_preimage]
   constructor
   calc
-    μ.inv = μ.inv K • haarMeasure K := haarMeasure_unique _ K
+    μ.inv
+      = μ.inv K • haarMeasure K := haarMeasure_unique _ K
     _ = μ K • haarMeasure K := by rw [h_mass]
     _ = μ := (haarMeasure_unique μ K).symm
 
@@ -668,15 +703,22 @@ chosen representatives `q.out`.
 -/
 
 section PeriodicMean
-/- `B₀` and `A₀` are subgroups with compact quotient, `F` is a function on `B` and `φ` is a
-homomorphism from `A` to `B`. -/
-variable {B A : Type*} [AddCommGroup B] [TopologicalSpace B] [IsTopologicalAddGroup B]
+/-
+`B₀` and `A₀` are subgroups with compact quotient, `F` is a function on `B` and `φ` is a
+homomorphism from `A` to `B`.
+-/
+variable
+  {B A : Type*} [AddCommGroup B] [TopologicalSpace B] [IsTopologicalAddGroup B]
   (B₀ : AddSubgroup B) [CompactSpace (B ⧸ B₀)]
-  (F : B → ℂ) [AddCommGroup A] [TopologicalSpace A] [IsTopologicalAddGroup A]
-  (A₀ : AddSubgroup A) [CompactSpace (A ⧸ A₀)] (φ : A →+ B)
+  (F : B → ℂ)
+  [AddCommGroup A] [TopologicalSpace A] [IsTopologicalAddGroup A]
+  (A₀ : AddSubgroup A) [CompactSpace (A ⧸ A₀)]
+  (φ : A →+ B)
 
-/-- The property that a function F on a topological abelian group B is continuous and satisfies
-F(γ+x)=F(x) for all γ in the subgroup B₀ and all x. -/
+/--
+The property that a function F on a topological abelian group B is continuous and satisfies
+F(γ+x)=F(x) for all γ in the subgroup B₀ and all x.
+-/
 def IsContPeriodic : Prop := Continuous F ∧ ∀ γ ∈ B₀, ∀ x : B, F (γ + x) = F x
 
 /-- The Borel σ-algebra on the quotient B/B₀ of a topological abelian group B by a subgroup B₀. -/
@@ -689,9 +731,11 @@ instance : BorelSpace (B ⧸ B₀) := ⟨rfl⟩
 instance : IsProbabilityMeasure (α := B ⧸ B₀) (Measure.addHaarMeasure ⊤) :=
   ⟨Measure.addHaarMeasure_self⟩
 
-/-- The mean of a complex-valued function `F` over the compact quotient `B ⧸ B₀`. It is the integral
+/--
+The mean of a complex-valued function `F` over the compact quotient `B ⧸ B₀`. It is the integral
 of `F q.out` against the Haar probability measure, where `q.out` is a chosen coset
-representative. -/
+representative.
+-/
 noncomputable def quotMean : ℂ := ∫ q : B ⧸ B₀, F q.out ∂Measure.addHaarMeasure ⊤
 
 /-- A bound for `F` bounds its mean, the measure being a probability measure. -/
@@ -808,10 +852,11 @@ section PeriodicUnfolding
 
 open MeasureTheory Measure QuotientAddGroup IsDualFamily
 
-variable {B : Type*} [AddCommGroup B] [TopologicalSpace B] [IsTopologicalAddGroup B]
-  [MeasurableSpace B] [BorelSpace B] [PolishSpace B] [LocallyCompactSpace B] (B₀ : AddSubgroup B)
-  (μ : Measure B) [CompactSpace (B ⧸ B₀)] [DiscreteTopology B₀] [μ.IsAddHaarMeasure]
-  [IsFiniteMeasure (B₀.quotMeasure μ)]
+variable
+  {B : Type*} [AddCommGroup B] [TopologicalSpace B] [IsTopologicalAddGroup B] [MeasurableSpace B]
+  [BorelSpace B] [PolishSpace B] [LocallyCompactSpace B]
+  (B₀ : AddSubgroup B) (μ : Measure B) [CompactSpace (B ⧸ B₀)] [DiscreteTopology B₀]
+  [μ.IsAddHaarMeasure] [IsFiniteMeasure (B₀.quotMeasure μ)]
 
 /-- Here `B₀.quotMeasure μ` is μ weighted by a cutoff for the action of B₀, a measure on B that
 computes integrals over B ⧸ B₀. `quotMean B₀ F` is the integral of F over B ⧸ B₀ against the Haar

@@ -105,14 +105,18 @@ open RestrictedProduct
 
 variable {E : Type} [Field E] [NumberField E] (P : Finset (FinPlace E))
 
-/-- The ring homomorphism sending a finite adele to its components at the places of the finite
-set `P`. -/
+/--
+The ring homomorphism sending a finite adele to its components at the places of the finite
+set `P`.
+-/
 @[simps!]
 noncomputable def evalPlaces : 𝔸f E →+* LocProd P := RingHom.pi fun w ↦ evalAt w.val
 
 open scoped Classical in
-/-- Extension by zero: the additive and multiplicative map from the product of the completions
-`E_w`, `w ∈ P`, to the finite adeles, with component `0` outside `P`. -/
+/--
+Extension by zero: the additive and multiplicative map from the product of the completions
+`E_w`, `w ∈ P`, to the finite adeles, with component `0` outside `P`.
+-/
 noncomputable def adeleOfLocal : LocProd P →ₙ+* 𝔸f E where
   toFun y :=
     inclusion _ _ (𝓖 := Filter.principal Pᶜ) (by simp)
@@ -387,12 +391,15 @@ lemma star_mem_of_starStable [IsCMField E] [hS : S.StarStable] {w : FinPlace E} 
 
 variable [IsCMField E] [S.StarStable]
 
-/-- The involution of `LocProd S`: the component of `star x` at `w` is the conjugate of the
-component of `x` at `star w`. -/
+/--
+The involution of `LocProd S`: the component of `star x` at `w` is the conjugate of the
+component of `x` at `star w`.
+-/
 instance : StarRing (LocProd S) :=
   starRingOfInvolution
-    (.pi fun w ↦ (conjLoc (star_star w.val)).comp
-      (evalRingHom _ (⟨star w.val, star_mem_of_starStable w.prop⟩ : S)))
+    (.pi fun w ↦
+      (conjLoc (star_star w.val)).comp
+        (evalRingHom _ (⟨star w.val, star_mem_of_starStable w.prop⟩ : S)))
     fun x ↦ by
       obtain ⟨y, rfl⟩ : ∃ y : 𝔸f E, evalPlaces S y = x := ⟨_, evalPlaces_adeleOfLocal S x⟩
       simp [funext_iff, ← finAdele_star_apply]
@@ -410,8 +417,10 @@ lemma adeleOfLocal_star (x : LocProd S) : adeleOfLocal S (star x) = star (adeleO
   rw [star_evalPlaces, adeleOfLocal_evalPlaces, adeleOfLocal_evalPlaces, star_mul', star_idem, hS]
 
 instance : ContinuousStar (LocProd S) where
-  continuous_star := continuous_pi fun w ↦ (continuous_locMap (starRingEnd E)
-    (star_eq_iff_star_eq.mp (star_star w.val))).comp (continuous_apply _)
+  continuous_star :=
+    continuous_pi fun w ↦
+      (continuous_locMap (starRingEnd E) (star_eq_iff_star_eq.mp (star_star w.val))).comp
+        (continuous_apply _)
 
 -- `O` is the image of `Ô E` under `evalPlaces S`, which commutes with `star`; the witnesses for
 -- `Ô E` project to witnesses for `O`.
@@ -424,13 +433,22 @@ instance [HasPrimitiveRoot5040 E] : IsAdelic (O : Subring (LocProd S)) where
     exact ⟨star a, IsStarStable.star_mem ha, (star_evalPlaces S a).symm⟩
   exists_skew_unit := by
     obtain ⟨i, hi, τ, hτ, hi_sq, hi_star, hτ_trace⟩ := (isAdelic_Ô (E := E)).exists_skew_unit
-    exact ⟨evalPlaces S i, ((mem_Ô_iff S).1 hi).left, evalPlaces S τ, ((mem_Ô_iff S).1 hτ).left,
-      by rw [← map_neg, ← map_mul, hi_sq, map_one], by rw [star_evalPlaces, hi_star, map_neg],
-      by rw [star_evalPlaces, ← map_add, hτ_trace, map_one]⟩
+    exact ⟨
+      evalPlaces S i,
+      ((mem_Ô_iff S).1 hi).left,
+      evalPlaces S τ,
+      ((mem_Ô_iff S).1 hτ).left,
+      by rw [← map_neg, ← map_mul, hi_sq, map_one],
+      by rw [star_evalPlaces, hi_star, map_neg],
+      by rw [star_evalPlaces, ← map_add, hτ_trace, map_one]
+    ⟩
   exists_norm_neg_one := by
     obtain ⟨c, hc, hc_norm⟩ := (isAdelic_Ô (E := E)).exists_norm_neg_one
-    exact ⟨evalPlaces S c, ((mem_Ô_iff S).1 hc).left,
-      by rw [star_evalPlaces, ← map_mul, hc_norm, map_neg, map_one]⟩
+    exact ⟨
+      evalPlaces S c,
+      ((mem_Ô_iff S).1 hc).left,
+      by rw [star_evalPlaces, ← map_mul, hc_norm, map_neg, map_one]
+    ⟩
 
 end SemilocalPlace
 

@@ -67,7 +67,8 @@ lemma exists_auxiliary_place {K : Subgroup (Gf E n)} (hK : K.IsOpen) (a : ℂ[Gf
 
 variable [Nonempty n] {s s' : n → ℤˣ}
 
-/-- Comparison of traces without the condition at a second place. Let the CM field `E` contain the
+/--
+Comparison of traces without the condition at a second place. Let the CM field `E` contain the
 5040th roots of unity and have an even number of infinite places, let `V`, `V'` be hermitian spaces
 of rank `N = card n ≥ 2` over `E` with signs `s`, `s'`, and let `l = 2λ` be a doubled Harish-Chandra
 parameter whose `toHCParam s (l v)` and `toHCParam s' (l v)` have gap at least `500 N³ + 10 N⁵` at
@@ -76,22 +77,27 @@ so `K` is open and compact), let `a` keep the `K`-fixed vectors in every represe
 (`universalLevelAlgebra K`), and let the test function `a ⋆ 1_K` (`convIndicator`) be cuspidal at a
 split place `w`. Then operators that act as `a` on the forms of parameter `l` and level `K`
 (`levelSpace` of `formRep` at `typeKernel l s`, resp. `typeKernel l s'`, which the gap bound makes a
-cusp kernel by `isCuspKernel_typeKernel`) on `V` and on `V'` have the same trace. -/
-theorem trace_eq_of_isCuspidalAt (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ card n)
-    (V : Space E n s) (V' : Space E n s') {l : InfinitePlace E → n → ℤ}
+cusp kernel by `isCuspKernel_typeKernel`) on `V` and on `V'` have the same trace.
+-/
+theorem trace_eq_of_isCuspidalAt
+    (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ card n)
+    (V : Space E n s)
+    (V' : Space E n s')
+    {l : InfinitePlace E → n → ℤ}
     (h_gap : ∀ v : InfinitePlace E, (toHCParam s (l v)).HasLargeGap (10 * card n ^ 5))
     (h_gap' : ∀ v : InfinitePlace E, (toHCParam s' (l v)).HasLargeGap (10 * card n ^ 5))
-    {K : Subgroup (Gf E n)} [hK : IsLevel K] {a : ℂ[Gf E n]} (ha : a ∈ universalLevelAlgebra K)
-    {w : FinPlace E} (hw : w.IsSplit)
-    (h_cusp : IsCuspidalAt hw (convIndicator hK.isOpen hK.isCompact a))
+    {K : Subgroup (Gf E n)} [hK : IsLevel K]
+    {a : ℂ[Gf E n]} (ha : a ∈ universalLevelAlgebra K)
+    {w : FinPlace E}
+    (hw : w.IsSplit) (h_cusp : IsCuspidalAt hw (convIndicator hK.isOpen hK.isCompact a))
     {T : End ℂ (levelSpace (V.formRep (typeKernel l s)) K)}
     (hT : ∀ y : levelSpace (V.formRep (typeKernel l s)) K,
       (T y).val = (V.formRep (typeKernel l s)).asAlgebraHom a y.val)
     {T' : End ℂ (levelSpace (V'.formRep (typeKernel l s')) K)}
     (hT' : ∀ y : levelSpace (V'.formRep (typeKernel l s')) K,
-      (T' y).val = (V'.formRep (typeKernel l s')).asAlgebraHom a y.val) :
-    trace ℂ (levelSpace (V.formRep (typeKernel l s)) K) T =
-      trace ℂ (levelSpace (V'.formRep (typeKernel l s')) K) T' := by
+      (T' y).val = (V'.formRep (typeKernel l s')).asAlgebraHom a y.val)
+    : trace ℂ (levelSpace (V.formRep (typeKernel l s)) K) T
+      = trace ℂ (levelSpace (V'.formRep (typeKernel l s')) K) T' := by
   -- Cut the level at an auxiliary split place `v` down to the stabiliser of a line. There the
   -- positive powers of `T⁺ = lineHecke v i` make `0` a simple root modulo `v` of the
   -- characteristic polynomial on the support, so `trace_comparison` applies.
@@ -103,7 +109,8 @@ theorem trace_eq_of_isCuspidalAt (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ c
   have : Module.Finite ℂ (levelSpace (V'.formRep (typeKernel l s')) K'.toSubgroup) :=
     V'.finite_levelSpace (isCuspKernel_typeKernel h_gap') K'
   refine trace_eq_of_trace_cutLevel_eq hv h_max i V.inner_formRep V'.inner_formRep ha h_int
-    (fun j m S S' hS hS' ↦ ?_) hT hT'
+    (fun j m S S' hS hS' ↦ ?_)
+    hT hT'
   refine trace_comparison hE hn V V' h_gap h_gap' (w' := v) hw ?_ (fun g hg ↦ ?_) hS hS'
   · -- Cuspidality at `w` survives the cut at `v` and convolution on the left.
     obtain ⟨h_ne, h_star_ne⟩ : v ≠ w ∧ star v ≠ w := not_or.1 hv_ne
@@ -111,11 +118,14 @@ theorem trace_eq_of_isCuspidalAt (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ c
     exact (h_cusp.convIndicator_offPlace hv h_ne h_star_ne h_max h_int).convIndicator_mul _
   · -- At `v` an element of the support is `x * k` with `k` in the stabiliser of a line and `x` in
     -- a set that carries the positive powers of `T⁺` and on which `x * k` has a simple zero.
-    obtain ⟨x, hx, k, hk, h_eq⟩ : ∃ x ∈ {x : GL n (LocField v) |
-        ∀ k ∈ lineStabilizer v i, HasSimpleZero (x * k)},
-        ∃ k ∈ lineStabilizer v i, g.atPlace v = x * k :=
-      exists_atPlace_eq_of_convIndicator_ne_zero hv
-        (lineHecke_pow_mem_spanOn v i m.succ_pos) (a ^ (j + 1)) hg
+    obtain ⟨x, hx, k, hk, h_eq⟩
+        : ∃ x
+            ∈ {x : GL n (LocField v) |
+              ∀ k ∈ lineStabilizer v i, HasSimpleZero (x * k)},
+          ∃ k ∈ lineStabilizer v i,
+            g.atPlace v = x * k :=
+      exists_atPlace_eq_of_convIndicator_ne_zero hv (lineHecke_pow_mem_spanOn v i m.succ_pos)
+        (a ^ (j + 1)) hg
     rw [h_eq]
     exact hx k hk
 

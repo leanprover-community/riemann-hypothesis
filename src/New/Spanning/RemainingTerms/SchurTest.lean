@@ -40,30 +40,38 @@ namespace New.Filling
 
 variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {𝔰 : Shape}
 
-/-- The cutoff of the class `c` at the infinite places, restricted to the boxed points: the reduced
-points with every component in the cut. -/
-def boxCutoff (S : Filling E 𝔰) (c : S.Classes) :
-    (NumberField.InfinitePlace E → 𝔰.G₁) → ENNReal :=
+/--
+The cutoff of the class `c` at the infinite places, restricted to the boxed points: the reduced
+points with every component in the cut.
+-/
+def boxCutoff (S : Filling E 𝔰) (c : S.Classes) : (NumberField.InfinitePlace E → 𝔰.G₁) → ENNReal :=
   S.boxedPoints.indicator (S.classCutoff c)
 
-/-- The squared norm of the cut Bessel function at a point `y` at the infinite places: the product
-over the places `v` of the squared norms of the local cut Bessel functions at `y v`. -/
+/--
+The squared norm of the cut Bessel function at a point `y` at the infinite places: the product
+over the places `v` of the squared norms of the local cut Bessel functions at `y v`.
+-/
 def besselCutNormSq (S : Filling E 𝔰) (y : NumberField.InfinitePlace E → 𝔰.G₁) : ENNReal :=
   ∏ v : NumberField.InfinitePlace E, ‖(S.besselSystem v).besselFn .cut (y v)‖ₑ ^ 2
 
-/-- The weight of Schur's test for the class `c` and the rational element `γ`: the product over the
+/--
+The weight of Schur's test for the class `c` and the rational element `γ`: the product over the
 places `v` of `ν_v ^ (-(k + i))`, where `ν_v` is the ratio of the volumes of the projections of
 the frame of `γ` and of the standard frame to the negative space of `y v`, times the boxed cutoff of
-`c` at `γ⁻¹ y`. The natural number `i`, the shift, only changes this exponent. -/
-def schurWeight (S : Filling E 𝔰) (c : S.Classes) (γ : S.G E) (i : ℕ)
-    (y : NumberField.InfinitePlace E → 𝔰.G₁) : ENNReal :=
-  S.boxCutoff c ((S.ratToInf γ)⁻¹ * y) *
-    ∏ v : NumberField.InfinitePlace E,
-      ENNReal.ofReal ((volumeRatio (S.ratToInf γ v) (y v))⁻¹ ^ (𝔰.k + i))
+`c` at `γ⁻¹ y`. The natural number `i`, the shift, only changes this exponent.
+-/
+def schurWeight
+    (S : Filling E 𝔰) (c : S.Classes) (γ : S.G E) (i : ℕ) (y : NumberField.InfinitePlace E → 𝔰.G₁)
+    : ENNReal :=
+  S.boxCutoff c ((S.ratToInf γ)⁻¹ * y)
+    * ∏ v : NumberField.InfinitePlace E,
+        ENNReal.ofReal ((volumeRatio (S.ratToInf γ v) (y v))⁻¹ ^ (𝔰.k + i))
 
-/-- One of the two factors that the Cauchy–Schwarz inequality gives in Schur's test: the integral
+/--
+One of the two factors that the Cauchy–Schwarz inequality gives in Schur's test: the integral
 of the boxed cutoff of `c`, the squared norm of the cut Bessel function and the weight for `c'`
-and `γ` with shift `i`. -/
+and `γ` with shift `i`.
+-/
 def schurIntegral (S : Filling E 𝔰) (c c' : S.Classes) (γ : S.G E) (i : ℕ) : ENNReal :=
   ∫⁻ y : NumberField.InfinitePlace E → 𝔰.G₁,
     S.boxCutoff c y * S.besselCutNormSq y * S.schurWeight c' γ i y

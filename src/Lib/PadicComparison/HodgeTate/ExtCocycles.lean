@@ -54,7 +54,6 @@ open CategoryTheory Limits Abelian.Ext AddCommGrpCat ShortComplex LinearMap Tota
 
 variable {C : Type 1} [Category C] {F G F' G' : AbFunctor C}
 
-
 /-! ### The sign rule for connecting classes -/
 
 /-- Let `S` be a short exact sequence of functors, `α : A ⟶ B` a monomorphism, and `a : S.X₁ ⟶ A`,
@@ -192,9 +191,11 @@ lemma abTensor_shortExact [HasFlatValues G] {E : AbFunctor C} {f : G' ⟶ E} {g 
   · exact lTensor_exact (K.obj c) (h_exact c) (h_surj c)
   · exact lTensor_surjective (K.obj c) (h_surj c)
 
-/-- The multiplicative group: the functor sending a commutative ring R to its unit group R^×,
+/--
+The multiplicative group: the functor sending a commutative ring R to its unit group R^×,
 written additively. `liftCoeff` wraps each value in `ULift`, so for `u : Gm A` the underlying unit
-is `u.down`. -/
+is `u.down`.
+-/
 def Gm : AbFunctor CommRingCat :=
   liftCoeff (forget₂ CommRingCat CommMonCat ⋙ CommMonCat.units ⋙ CommGrpCat.toAddCommGrp)
 
@@ -203,65 +204,72 @@ lemma Gm.ext {A : CommRingCat} {u v : Gm A} : u = v ↔ u.down.val = v.down.val 
 
 /-! ### Cocycles and their extension classes -/
 
-/-- A 1-cocycle from F to G: homomorphisms D(f): F(c) → G(d) for f: c → d, with
-D(gf) = G(g)D(f) + D(g)F(f). -/
+/--
+A 1-cocycle from F to G: homomorphisms D(f): F(c) → G(d) for f: c → d, with
+D(gf) = G(g)D(f) + D(g)F(f).
+-/
 structure Cocycle (F G : AbFunctor C) where
   /-- The homomorphism `F(c) → G(d)` attached to a morphism `c ⟶ d`. -/
   component {c d : C} : (c ⟶ d) → (F.obj c ⟶ G.obj d)
   /-- The cocycle rule `D(gf) = G(g) D(f) + D(g) F(f)`. -/
-  cocycle_comp {c d e : C} (f : c ⟶ d) (g : d ⟶ e) :
-      component (f ≫ g) = component f ≫ G.map g + F.map f ≫ component g
+  cocycle_comp {c d e : C} (f : c ⟶ d) (g : d ⟶ e)
+    : component (f ≫ g) = component f ≫ G.map g + F.map f ≫ component g
 
 namespace Cocycle
 
 variable (D : Cocycle F G)
 
-/-- For a cocycle D, the sequence G → E → F with E(c) = G(c) × F(c), where f acts by (y,x) ↦
-(G(f)y + D(f)x, F(f)x). -/
+/--
+For a cocycle D, the sequence G → E → F with E(c) = G(c) × F(c), where f acts by (y,x) ↦
+(G(f)y + D(f)x, F(f)x).
+-/
 @[local simp]
 def extension : ShortComplex (AbFunctor C) where
   X₁ := G
-  X₂ :=
-    { obj c := AddCommGrpCat.of (G.obj c × F.obj c)
-      map f :=
-        ofHom (((G.map f).hom.coprod (D.component f).hom).prod
-          ((F.map f).hom.comp (AddMonoidHom.snd ..)))
-      map_id c := by
-        -- the cocycle rule at `𝟙 c ≫ 𝟙 c` reads `D(𝟙) = D(𝟙) + D(𝟙)`
-        have h_zero : D.component (𝟙 c) = 0 := by
-          have h := D.cocycle_comp (𝟙 c) (𝟙 c)
-          rw [Category.id_comp, G.map_id, F.map_id, Category.comp_id, Category.id_comp] at h
-          exact (add_left_cancel ((add_zero _).trans h)).symm
-        ext ⟨y, x⟩
-        · change G.map (𝟙 c) y + D.component (𝟙 c) x = y
-          rw [G.map_id, h_zero]
-          exact add_zero y
-        · change F.map (𝟙 c) x = x
-          rw [F.map_id]
-          rfl
-      map_comp f g := by
-        ext ⟨y, x⟩
-        · change G.map (f ≫ g) y + D.component (f ≫ g) x =
-            G.map g (G.map f y + D.component f x) + D.component g (F.map f x)
-          rw [G.map_comp, D.cocycle_comp, (G.map g).hom.map_add]
-          exact (add_assoc _ _ _).symm
-        · change F.map (f ≫ g) x = F.map g (F.map f x)
-          rw [F.map_comp]
-          rfl }
+  X₂ := {
+    obj c := AddCommGrpCat.of (G.obj c × F.obj c)
+    map f :=
+      ofHom (((G.map f).hom.coprod (D.component f).hom).prod
+        ((F.map f).hom.comp (AddMonoidHom.snd ..)))
+    map_id c := by
+      -- the cocycle rule at `𝟙 c ≫ 𝟙 c` reads `D(𝟙) = D(𝟙) + D(𝟙)`
+      have h_zero : D.component (𝟙 c) = 0 := by
+        have h := D.cocycle_comp (𝟙 c) (𝟙 c)
+        rw [Category.id_comp, G.map_id, F.map_id, Category.comp_id, Category.id_comp] at h
+        exact (add_left_cancel ((add_zero _).trans h)).symm
+      ext ⟨y, x⟩
+      · change G.map (𝟙 c) y + D.component (𝟙 c) x = y
+        rw [G.map_id, h_zero]
+        exact add_zero y
+      · change F.map (𝟙 c) x = x
+        rw [F.map_id]
+        rfl
+    map_comp f g := by
+      ext ⟨y, x⟩
+      · change G.map (f ≫ g) y + D.component (f ≫ g) x
+          = G.map g (G.map f y + D.component f x) + D.component g (F.map f x)
+        rw [G.map_comp, D.cocycle_comp, (G.map g).hom.map_add]
+        exact (add_assoc _ _ _).symm
+      · change F.map (f ≫ g) x = F.map g (F.map f x)
+        rw [F.map_comp]
+        rfl
+  }
   X₃ := F
-  f :=
-    { app _ := ofHom (AddMonoidHom.inl ..)
-      naturality _ _ f := by
-        ext y
-        · change G.map f y = G.map f y + D.component f 0
-          rw [(D.component f).hom.map_zero, add_zero]
-        · change 0 = F.map f 0
-          exact (F.map f).hom.map_zero.symm }
-  g :=
-    { app _ := ofHom (AddMonoidHom.snd ..)
-      naturality _ _ _ := by
-        ext ⟨_, _⟩
-        rfl }
+  f := {
+    app _ := ofHom (AddMonoidHom.inl ..)
+    naturality _ _ f := by
+      ext y
+      · change G.map f y = G.map f y + D.component f 0
+        rw [(D.component f).hom.map_zero, add_zero]
+      · change 0 = F.map f 0
+        exact (F.map f).hom.map_zero.symm
+  }
+  g := {
+    app _ := ofHom (AddMonoidHom.snd ..)
+    naturality _ _ _ := by
+      ext ⟨_, _⟩
+      rfl
+  }
   zero := NatTrans.ext (funext fun _ ↦ AddCommGrpCat.hom_ext (AddMonoidHom.ext fun _ ↦ rfl))
 
 lemma shortExact_extension : D.extension.ShortExact := by
@@ -272,8 +280,10 @@ lemma shortExact_extension : D.extension.ShortExact := by
     exact ⟨fun h ↦ ⟨y, Prod.ext rfl h.symm⟩, fun ⟨_, h⟩ ↦ (congrArg Prod.snd h).symm⟩
   · exact fun x ↦ ⟨(0, x), rfl⟩
 
-/-- For a cocycle D from F to G, the class in Ext^1(F,G) of its extension G → E → F, viewed in
-the total Ext group. -/
+/--
+For a cocycle D from F to G, the class in Ext^1(F,G) of its extension G → E → F, viewed in
+the total Ext group.
+-/
 noncomputable abbrev cohomClass : TotalH F G := toTotalH D.shortExact_extension.extClass
 
 /-- The class of a cocycle `D` compared with that of a short exact sequence `S`. Let
@@ -367,8 +377,10 @@ open ExteriorAlgebra CliffordAlgebra
 
 namespace New.Variety
 
-variable {T T' M M' : Type} [CommRing T] [CommRing T'] [AddCommGroup M] [AddCommGroup M']
-  [Module T M] [Module T' M'] {a : T →+* T'} (φ : M →ₛₗ[a] T' × M')
+variable
+  {T T' M M' : Type}
+  [CommRing T] [CommRing T'] [AddCommGroup M] [AddCommGroup M'] [Module T M] [Module T' M']
+  {a : T →+* T'} (φ : M →ₛₗ[a] T' × M')
 
 /-- The map `exteriorMap m` acts on the scalar (degree zero) part through the ring map `a`. -/
 lemma algebraMapInv_exteriorMap (m : M →ₛₗ[a] M') (x : ExteriorAlgebra T M) :
@@ -386,13 +398,15 @@ lemma algebraMapInv_exteriorMap (m : M →ₛₗ[a] M') (x : ExteriorAlgebra T M
       ExteriorAlgebra.lift_ι_apply, ExteriorAlgebra.lift_ι_apply, LinearMap.zero_apply,
       LinearMap.zero_apply, zero_mul, zero_mul, a.map_zero]
 
-/-- Contraction with `φ₀` for a semilinear map `φ = (φ₀, φ₁) : M → T' × M'`. It is the map
+/--
+Contraction with `φ₀` for a semilinear map `φ = (φ₀, φ₁) : M → T' × M'`. It is the map
 `⋀ M → ⋀ (T' × M')` induced by `φ`, followed by contraction with the first projection and then the
-map to `⋀ M'`. -/
+map to `⋀ M'`.
+-/
 noncomputable def contraction : ExteriorAlgebra T M →ₛₗ[a] ExteriorAlgebra T' M' where
   toFun :=
-    ExteriorAlgebra.map (LinearMap.snd T' T' M') ∘
-      CliffordAlgebra.contractLeft (LinearMap.fst T' T' M') ∘ exteriorMap φ
+    ExteriorAlgebra.map (LinearMap.snd T' T' M')
+      ∘ CliffordAlgebra.contractLeft (LinearMap.fst T' T' M') ∘ exteriorMap φ
   map_add' x y := by
     dsimp only [Function.comp_apply]
     rw [(exteriorMap φ).map_add, map_add, map_add]
@@ -405,8 +419,10 @@ lemma contraction_one : contraction φ 1 = 0 := by
   dsimp only [contraction, LinearMap.coe_mk, AddHom.coe_mk, Function.comp_apply]
   rw [(exteriorMap φ).map_one, contractLeft_one, map_zero]
 
-/-- For semilinear φ: M→T'×M', the map of exterior algebras ΛM→ΛM' induced by the second
-component M→M' of φ. -/
+/--
+For semilinear φ: M→T'×M', the map of exterior algebras ΛM→ΛM' induced by the second
+component M→M' of φ.
+-/
 noncomputable abbrev exteriorMapSnd : ExteriorAlgebra T M →+* ExteriorAlgebra T' M' :=
   exteriorMap (LinearMap.snd T' T' M' ∘ₛₗ φ)
 

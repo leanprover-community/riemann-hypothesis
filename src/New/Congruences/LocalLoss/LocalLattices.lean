@@ -50,8 +50,9 @@ namespace New.Selmer
 
 open Period Lift Polynomial GaloisRep Multiset minpoly Pi Filter Function
 
-variable {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] {O : CoeffRing ℓ}
-  {n : Type} [Fintype n] [DecidableEq n]
+variable
+  {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ]
+  {O : CoeffRing ℓ} {n : Type} [Fintype n] [DecidableEq n]
 
 /-- Let M be a multiset of at most N elements of ℚ̄_ℓ, each a root of X^(ℓ^a − 1) − 1 for some
 1 ≤ a ≤ r, and K a property of polynomials over O that holds for all those vanishing on M. Then
@@ -90,9 +91,9 @@ lemma isTameType_of_roots {N r : ℕ} {K : O[X] → Prop} {M : Multiset (PadicAl
   · simpa [q, map_multiset_prod] using ⟨y, hy, minpoly.aeval ℤ_[ℓ] y⟩
 
 /-- The lattice of `ρ` restricted to the decomposition group at the place `v` above `ℓ`. -/
-noncomputable abbrev localLattice {m : Type} [Fintype m] [DecidableEq m]
-    (ρ : AbsGal D →* Matrix m m O) (v : placesDividing D.E ℓ) :
-    Lift.GalLattice O (decompGroup (AbsGal D) (placeOver v.val)) :=
+noncomputable abbrev localLattice
+    {m : Type} [Fintype m] [DecidableEq m] (ρ : AbsGal D →* Matrix m m O) (v : placesDividing D.E ℓ)
+    : Lift.GalLattice O (decompGroup (AbsGal D) (placeOver v.val)) :=
   matrixLattice (ρ.comp (decompGroup (AbsGal D) (placeOver v.val)).subtype)
 
 /-- Let u be a lattice in R, that is, conjugate to R over ℚ̄_ℓ. Then there is an injective map F
@@ -175,30 +176,42 @@ lemma IsConjSelfDualOfLevel.eq_one_of_mem_inertiaAbove {τ : (D.E →+* ℂ) →
   obtain ⟨h_unramified, -⟩ := h_good hvM
   exact h_unramified h_unit g hg
 
-/-- The complex embedding ι⁻¹ ∘ g⁻¹ ∘ e of E, where e : E → ℚ̄_ℓ is the embedding attached to the
-place w above ℓ, g is in Gal(ℚ̄_ℓ/ℚ_ℓ), and ι is the isomorphism ℂ ≅ ℚ̄_ℓ of `PadicIso ℓ`. -/
+/--
+The complex embedding ι⁻¹ ∘ g⁻¹ ∘ e of E, where e : E → ℚ̄_ℓ is the embedding attached to the
+place w above ℓ, g is in Gal(ℚ̄_ℓ/ℚ_ℓ), and ι is the isomorphism ℂ ≅ ℚ̄_ℓ of `PadicIso ℓ`.
+-/
 noncomputable abbrev complexEmbeddingAt (w : placesDividing D.E ℓ) (g : Gp ℓ) : D.E →+* ℂ :=
   complexEmbeddingOf ((localChart ℓ D.E w).e.comp (algebraMap D.E Ω)) g
 
-/-- The filter `⊥` if the place w above ℓ lies above p₀ or p₁, and `⊤` otherwise. A conjugate
+/--
+The filter `⊥` if the place w above ℓ lies above p₀ or p₁, and `⊤` otherwise. A conjugate
 self-dual representation of given level is admissible at w along its supremum with the filter near
-1: potentially crystalline in the first case, crystalline in the second. -/
-noncomputable def crystallinityFilter (w : placesDividing D.E ℓ) :
-    Filter (decompGroup (AbsGal D) (placeOver w.val)) :=
+1: potentially crystalline in the first case, crystalline in the second.
+-/
+noncomputable def crystallinityFilter (w : placesDividing D.E ℓ)
+    : Filter (decompGroup (AbsGal D) (placeOver w.val)) :=
   ⨅ _ : w.val ∈ placesAboveM D, ⊥
 
-/-- The place w lies above one of the primes p₀, p₁ of the data, and the polynomial Q over O kills
+/--
+The place w lies above one of the primes p₀, p₁ of the data, and the polynomial Q over O kills
 the pair (s, 0) on every representation in the class 𝓡, restricted to the decomposition group at w
-(`New.Period.IsKilledBy`). -/
-def KillsAboveM (𝓡 : GalRep ℓ D.E n → Prop) (w : placesDividing D.E ℓ)
-    (s : decompGroup (AbsGal D) (placeOver w.val)) (Q : O[X]) : Prop :=
-  w.val ∈ placesAboveM D ∧
-    ∀ R : GalRep ℓ D.E n, 𝓡 R → IsKilledBy (decompRep R (placeOver w.val)) s 0 (Q.map O.val.val)
+(`New.Period.IsKilledBy`).
+-/
+def KillsAboveM
+    (𝓡 : GalRep ℓ D.E n → Prop)
+    (w : placesDividing D.E ℓ) (s : decompGroup (AbsGal D) (placeOver w.val))
+    (Q : O[X])
+    : Prop :=
+  w.val ∈ placesAboveM D
+    ∧ ∀ R : GalRep ℓ D.E n, 𝓡 R → IsKilledBy (decompRep R (placeOver w.val)) s 0 (Q.map O.val.val)
 
-/-- The set of members of τ at `complexEmbeddingAt w g`, for a chosen g in Gal(ℚ̄_ℓ/ℚ_ℓ) that
-induces the embedding γ of O. -/
-noncomputable def jumpSetAt (τ : (D.E →+* ℂ) → Multiset ℤ) (w : placesDividing D.E ℓ)
-    (γ : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) : Finset ℤ :=
+/--
+The set of members of τ at `complexEmbeddingAt w g`, for a chosen g in Gal(ℚ̄_ℓ/ℚ_ℓ) that
+induces the embedding γ of O.
+-/
+noncomputable def jumpSetAt
+    (τ : (D.E →+* ℂ) → Multiset ℤ) (w : placesDividing D.E ℓ) (γ : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ])
+    : Finset ℤ :=
   (τ (complexEmbeddingAt w (surjInv coefficientEmbedding_surjective γ))).toFinset
 
 /-- Fix an isomorphism ι : ℂ ≅ ℚ̄_ℓ (`PadicIso ℓ`). Let R be a conjugate self-dual representation of

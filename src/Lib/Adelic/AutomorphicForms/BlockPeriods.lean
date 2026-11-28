@@ -80,8 +80,9 @@ lemma map_conj_mem_uSign_one {g : GL X ℂ} (hg : g.valᴴ * g.val = 1) :
   simp [mem_unitaryGroupOf_iff, star_eq_conjTranspose,
       ← conjTranspose_map (⇑(starRingEnd ℂ)) fun _ ↦ rfl, ← Matrix.map_mul, hg]
 
-variable {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ}
-  {κ₀ : InfinitePlace E → ℕ → ℕ} {e₀ : InfinitePlace E → ℤ}
+variable
+  {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ} {κ₀ : InfinitePlace E → ℕ → ℕ}
+  {e₀ : InfinitePlace E → ℤ}
 
 /-- Let `ψ` be an algebraic form, `t` a linear functional and `ψ_t = algFormCoeff 1 t ψ` the
 function `(x, g) ↦ t (ρ(x⁻¹) ψ(g))`. For a finite point `u` of rank one, the restriction

@@ -50,8 +50,10 @@ variable {ℓ : ℕ} [ThePrime ℓ]
 /-! ### The radii `ρ_h` and the harmonic sum -/
 
 variable (ℓ) in
-/-- The number `ρ_h = 1 / φ(ℓ ^ h)`, where `φ` is Euler's totient. For `h ≥ 1` it is the valuation
-`v(ζ - 1)`, normalised by `v ℓ = 1`, for `ζ` of order `ℓ ^ h`. -/
+/--
+The number `ρ_h = 1 / φ(ℓ ^ h)`, where `φ` is Euler's totient. For `h ≥ 1` it is the valuation
+`v(ζ - 1)`, normalised by `v ℓ = 1`, for `ζ` of order `ℓ ^ h`.
+-/
 def rootRadius (h : ℕ) : ℚ≥0 := (Nat.totient (ℓ ^ h) : ℚ≥0)⁻¹
 
 lemma totient_pow_pos (h : ℕ) : 0 < Nat.totient (ℓ ^ h) :=
@@ -122,9 +124,11 @@ lemma exists_lt_mul_sum_radiusExponents {ρ : ℚ≥0} {δ : ℝ≥0} (hρ : 0 <
 /-! ### One variable -/
 
 open Classical in
-/-- The multiset of roots of `g` in `ℤ̄_ℓ = intQpBar ℓ` of valuation `r`, counted with multiplicity,
+/--
+The multiset of roots of `g` in `ℤ̄_ℓ = intQpBar ℓ` of valuation `r`, counted with multiplicity,
 where the valuation `ellVal` is normalised by `v ℓ = 1`. For `r = ρ_h` it is written `R_h` in the
-docstrings. -/
+docstrings.
+-/
 def rootsOfValuation (g : (intQpBar ℓ)[X]) (r : ℚ≥0) : Multiset (intQpBar ℓ) :=
   g.roots.filter fun α : intQpBar ℓ ↦ ellVal α.val = (r : ℝ≥0)
 
@@ -300,23 +304,27 @@ lemma isUnit_one_add_of_ellVal_pos {α : intQpBar ℓ} (hα : 0 < ellVal α.val)
   rw [← ellVal_eq_zero_iff_isUnit, ellVal_add_eq_min_of_ne (h_one.trans_ne hα.ne), h_one,
     min_eq_left hα.le]
 
-/-- Write `v = ellVal` for the valuation on `ℚ̄_ℓ` with `v ℓ = 1`, and
+/--
+Write `v = ellVal` for the valuation on `ℚ̄_ℓ` with `v ℓ = 1`, and
 `v_r(g) = gaussVal r g = min_i (v(y_i) + r i)` for the Gauss valuation of a polynomial
 `g = ∑ y_i Y ^ i` over the ring `ℤ̄_ℓ = intQpBar ℓ` of integral elements. Let `δ < 1`, and let `δ`
 times the sum of `1 / (h + 1)` over the exponents `1 ≤ h ≤ h₀` with `ρ_h ≤ ρ` exceed `B`, where
 `ρ_h = rootRadius ℓ h = 1 / φ(ℓ ^ h)`. If `v_ρ(g) ≤ B`, then for one of these exponents `h` and some
-`ζ` of order `ℓ ^ h` we have `v(g(ζ - 1)) ≤ v_{ρ_h}(g) + δ`. -/
-theorem exists_rootOfUnity_eval_le_gaussVal_add {ρ : ℚ≥0} {h₀ : ℕ} {B δ : ℝ≥0} (hδ : δ < 1)
-    (h_harmonic : B < δ * ∑ h ∈ radiusExponents ℓ ρ h₀, ((h : ℝ≥0) + 1)⁻¹)
-    {g : (intQpBar ℓ)[X]} (hg : gaussVal ρ g ≤ B) :
-    ∃ h ∈ radiusExponents ℓ ρ h₀, ∃ ζ : intQpBar ℓ, IsPrimitiveRoot ζ (ℓ ^ h) ∧
-      ellVal (g.eval (ζ - 1)).val ≤ gaussVal (rootRadius ℓ h) g + δ := by
+`ζ` of order `ℓ ^ h` we have `v(g(ζ - 1)) ≤ v_{ρ_h}(g) + δ`.
+-/
+theorem exists_rootOfUnity_eval_le_gaussVal_add
+    {ρ : ℚ≥0} {h₀ : ℕ} {B δ : ℝ≥0}
+    (hδ : δ < 1) (h_harmonic : B < δ * ∑ h ∈ radiusExponents ℓ ρ h₀, ((h : ℝ≥0) + 1)⁻¹)
+    {g : (intQpBar ℓ)[X]} (hg : gaussVal ρ g ≤ B)
+    : ∃ h ∈ radiusExponents ℓ ρ h₀, ∃ ζ : intQpBar ℓ,
+      IsPrimitiveRoot ζ (ℓ ^ h)
+        ∧ ellVal (g.eval (ζ - 1)).val ≤ gaussVal (rootRadius ℓ h) g + δ := by
   -- Choose `h` with few roots `α` of valuation `ρ_h`, then `ζ` with `ζ - 1` far from them.
   obtain ⟨h, hh, h_few⟩ := exists_card_rootsOfValuation_mul_le h_harmonic hg
   obtain ⟨h_one, -, -⟩ := mem_radiusExponents.1 hh
   set R : Multiset (intQpBar ℓ) := rootsOfValuation g (rootRadius ℓ h)
-  have h_unit : ∀ α ∈ R, IsUnit (1 + α) := fun α hα ↦ isUnit_one_add_of_ellVal_pos <| by
-    simp [ellVal_of_mem_rootsOfValuation hα, coe_rootRadius]
+  have h_unit : ∀ α ∈ R, IsUnit (1 + α) := fun α hα ↦
+    isUnit_one_add_of_ellVal_pos <| by simp [ellVal_of_mem_rootsOfValuation hα, coe_rootRadius]
   obtain ⟨ζ, hζ, h_average⟩ := exists_sum_min_ellVal_sub_le h h_unit
   have h_min : (R.map fun α ↦ min (ellVal (ζ - 1 - α).val) 1).sum ≤ δ :=
     h_average.trans (mod_cast (le_div_iff₀ (by positivity)).1 h_few)
@@ -329,12 +337,13 @@ theorem exists_rootOfUnity_eval_le_gaussVal_add {ρ : ℚ≥0} {h₀ : ℕ} {B �
       simpa using h_le.trans_lt (ENNReal.coe_lt_one_iff.2 hδ)
     exact (min_eq_left h_lt.le).symm
   refine ⟨h, hh, ζ, hζ, ?_⟩
-  calc ellVal (g.eval (ζ - 1)).val
+  calc
+    ellVal (g.eval (ζ - 1)).val
       ≤ ellVal (g.eval (ζ - 1)).val + R.card * ((rootRadius ℓ h : ℝ≥0) : ℝ≥0∞) := le_self_add
     _ = gaussVal (rootRadius ℓ h) g + (R.map fun α ↦ ellVal (ζ - 1 - α).val).sum :=
-        ellVal_eval_add_card_mul g (ellVal_sub_one_eq_rootRadius h_one hζ)
+      ellVal_eval_add_card_mul g (ellVal_sub_one_eq_rootRadius h_one hζ)
     _ = gaussVal (rootRadius ℓ h) g + (R.map fun α ↦ min (ellVal (ζ - 1 - α).val) 1).sum := by
-        rw [Multiset.map_congr rfl h_not_one]
+      rw [Multiset.map_congr rfl h_not_one]
     _ ≤ gaussVal (rootRadius ℓ h) g + δ := add_le_add_right h_min _
 
 /-! ### Several variables -/
@@ -352,10 +361,12 @@ lemma le_add_of_sum_le_sum_add [Fintype ι] {a b : ι → ℝ≥0∞} {c : ℝ�
       sum_congr rfl fun k _ ↦ add_tsub_cancel_of_le (hba k)]
   exact tsub_le_iff_left.1 ((single_le_sum_of_canonicallyOrdered (mem_univ i)).trans h_excess)
 
-/-- For a point `x` with coordinates in `ℤ̄_ℓ = intQpBar ℓ` and a coordinate index `j`, the
-polynomial `P` at `x` with one variable `Y` in place of `x j`. -/
-def freeCoordinate [DecidableEq σ] (x : σ → intQpBar ℓ) (j : σ)
-    (P : MvPolynomial σ (intQpBar ℓ)) : (intQpBar ℓ)[X] :=
+/--
+For a point `x` with coordinates in `ℤ̄_ℓ = intQpBar ℓ` and a coordinate index `j`, the
+polynomial `P` at `x` with one variable `Y` in place of `x j`.
+-/
+def freeCoordinate [DecidableEq σ] (x : σ → intQpBar ℓ) (j : σ) (P : MvPolynomial σ (intQpBar ℓ))
+    : (intQpBar ℓ)[X] :=
   MvPolynomial.aeval (Function.update (fun k : σ ↦ C (x k)) j X) P
 
 /-- The value of `freeCoordinate x j P` at `y` is the value of `P` at the point `x` with its
@@ -467,23 +478,25 @@ lemma exists_ellVal_eval_piecewise_le_add [DecidableEq σ] [Fintype σ] [Fintype
     · simp only [h_point, h_card_insert, ← add_assoc]
       exact h_sum_step.trans (add_le_add_left h_sum _)
 
-/-- Let a natural number `s₀`, a rational `ρ > 0`, `β ≥ 0` and `ε > 0` be given. There is an `h₀`
+/--
+Let a natural number `s₀`, a rational `ρ > 0`, `β ≥ 0` and `ε > 0` be given. There is an `h₀`
 with the following property. Let `P i` be finitely many polynomials over `ℤ̄_ℓ = intQpBar ℓ` in one
 set of at most `s₀` variables, and `x i` points whose coordinates have valuation at least `ρ`, with
 `∑ i, v(P i (x i)) ≤ β`. Then there are roots of unity `ζ j` of orders dividing `ℓ ^ h₀` with
-`v(ζ j - 1) ≤ ρ` for all `j` and `v(P i ((ζ j - 1)_j)) ≤ v(P i (x i)) + ε` for all `i`. -/
-theorem exists_rootsOfUnity_ellVal_eval_le_add (s₀ : ℕ) {ρ : ℚ≥0} (hρ : 0 < ρ) (β : ℝ≥0) {ε : ℝ≥0}
-    (hε : 0 < ε) :
-    ∃ h₀ : ℕ, ∀ (σ ι : Type) [Fintype σ] [Fintype ι] (P : ι → MvPolynomial σ (intQpBar ℓ))
-      (x : ι → σ → intQpBar ℓ),
-      Fintype.card σ ≤ s₀ →
-      (∀ (i : ι) (j : σ), (ρ : ℝ≥0) ≤ ellVal (x i j).val) →
-      ∑ i : ι, ellVal (MvPolynomial.eval (x i) (P i)).val ≤ β →
-      ∃ ζ : σ → intQpBar ℓ,
-        (∀ j : σ, ζ j ^ ℓ ^ h₀ = 1) ∧
-        (∀ j : σ, ellVal (ζ j - 1).val ≤ (ρ : ℝ≥0)) ∧
-        ∀ i : ι, ellVal (MvPolynomial.eval (fun j : σ ↦ ζ j - 1) (P i)).val ≤
-          ellVal (MvPolynomial.eval (x i) (P i)).val + ε := by
+`v(ζ j - 1) ≤ ρ` for all `j` and `v(P i ((ζ j - 1)_j)) ≤ v(P i (x i)) + ε` for all `i`.
+-/
+theorem exists_rootsOfUnity_ellVal_eval_le_add
+    (s₀ : ℕ) {ρ : ℚ≥0} (hρ : 0 < ρ) (β : ℝ≥0) {ε : ℝ≥0} (hε : 0 < ε)
+    : ∃ h₀ : ℕ,
+      ∀ (σ ι : Type) [Fintype σ] [Fintype ι] (P : ι → MvPolynomial σ (intQpBar ℓ))
+          (x : ι → σ → intQpBar ℓ),
+        Fintype.card σ ≤ s₀ → (∀ (i : ι) (j : σ), (ρ : ℝ≥0) ≤ ellVal (x i j).val)
+          → ∑ i : ι, ellVal (MvPolynomial.eval (x i) (P i)).val ≤ β
+          → ∃ ζ : σ → intQpBar ℓ,
+            (∀ j : σ, ζ j ^ ℓ ^ h₀ = 1) ∧ (∀ j : σ, ellVal (ζ j - 1).val ≤ (ρ : ℝ≥0))
+              ∧ ∀ i : ι,
+                ellVal (MvPolynomial.eval (fun j : σ ↦ ζ j - 1) (P i)).val
+                  ≤ ellVal (MvPolynomial.eval (x i) (P i)).val + ε := by
   classical
   -- Take `h₀` from the harmonic sum and move all coordinates, each with the loss
   -- `δ = min ε 1 / (s₀ + 2)`, so that `δ < 1` and the total loss is at most `min ε 1`.
@@ -491,21 +504,22 @@ theorem exists_rootsOfUnity_ellVal_eval_le_add (s₀ : ℕ) {ρ : ℚ≥0} (hρ 
   have h_pos : (0 : ℝ≥0) < s₀ + 2 := by positivity
   have hδ_lt : δ < 1 :=
     (div_lt_one h_pos).2 ((min_le_right ε 1).trans_lt (one_lt_two.trans_le le_add_self))
-  obtain ⟨h₀, h_harmonic⟩ :
-      ∃ h₀ : ℕ, β + 1 < δ * ∑ h ∈ radiusExponents ℓ ρ h₀, ((h : ℝ≥0) + 1)⁻¹ :=
+  obtain ⟨h₀, h_harmonic⟩ : ∃ h₀ : ℕ, β + 1 < δ * ∑ h ∈ radiusExponents ℓ ρ h₀, ((h : ℝ≥0) + 1)⁻¹ :=
     exists_lt_mul_sum_radiusExponents hρ (β + 1) (by positivity)
   refine ⟨h₀, fun σ ι _ _ P x hσ_card hx hP ↦ ?_⟩
   have h_loss : (Fintype.card σ * δ : ℝ≥0) ≤ min ε 1 :=
-    calc (Fintype.card σ * δ : ℝ≥0) ≤ (s₀ + 2) * δ :=
-          mul_le_mul_left (le_add_right (mod_cast hσ_card)) δ
+    calc
+      (Fintype.card σ * δ : ℝ≥0)
+        ≤ (s₀ + 2) * δ := mul_le_mul_left (le_add_right (mod_cast hσ_card)) δ
       _ = min ε 1 := mul_div_cancel₀ (min ε 1) h_pos.ne'
   obtain ⟨h_loss_ε, h_loss_one⟩ := le_min_iff.1 h_loss
   obtain ⟨ζ, h_pow, h_val, h_each, -⟩ :=
     exists_ellVal_eval_piecewise_le_add hδ_lt h_harmonic h_loss_one P hx hP univ
   refine ⟨ζ, fun j ↦ h_pow j (mem_univ j), fun j ↦ h_val j (mem_univ j), fun i ↦ ?_⟩
-  calc ellVal (MvPolynomial.eval (fun j : σ ↦ ζ j - 1) (P i)).val
-      = ellVal (MvPolynomial.eval (univ.piecewise (fun j : σ ↦ ζ j - 1) (x i)) (P i)).val := by
-        rw [piecewise_univ]
+  calc
+    ellVal (MvPolynomial.eval (fun j : σ ↦ ζ j - 1) (P i)).val
+        = ellVal (MvPolynomial.eval (univ.piecewise (fun j : σ ↦ ζ j - 1) (x i)) (P i)).val := by
+      rw [piecewise_univ]
     _ ≤ ellVal (MvPolynomial.eval (x i) (P i)).val + Fintype.card σ * δ := h_each i
     _ ≤ ellVal (MvPolynomial.eval (x i) (P i)).val + ε := add_le_add_right (mod_cast h_loss_ε) _
 

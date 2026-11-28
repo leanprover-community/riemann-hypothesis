@@ -96,24 +96,30 @@ lemma norm_jet_jetSeries_le_one {P : Parameters} {s : ℕ} {n : Type} [Fintype n
   rw [map_jet, h_scaled, MvPolynomial.map_map]
   exact P.cmCurve.norm_jet_thetaProd_pow_mul_le_one hν m N hH' (fun x : embValRing ↦ x.property) Q
 
-/-- **Integrality at all primes.** Let `V` be a standard hermitian space over `E = P.E s`, and let
+/--
+**Integrality at all primes.** Let `V` be a standard hermitian space over `E = P.E s`, and let
 `f` be standard data of level `δ ≠ 0` at `p` on it (`standardData V δ`): a `p`-integral combination
 of the translates of the integral vacuum by the points that `δ` makes integral above `p`. Let
 `jetScale = periodFactor * √(2π / √d) / Ω₀`, where `P.K = ℚ(√-d)`, `Ω₀ 𝓞_K` is the lattice of its CM
 curve and `periodFactor` is a normalising constant attached to `E`. Let `Q` be a homogeneous
 polynomial of degree `l` with `p`-integral coefficients (in `embValRing`). Then the derivative
 `Q(∂)` at `0` (`jet`) of the Taylor series (`jetSeries`) of the theta function of `f` at
-`c * jetScale * z` has valuation in `ℂ_[p]` at least `l` times that of `c / (conj δ * d)`. -/
-theorem norm_jet_jetSeries_le_pow {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n]
-    {ε : n → ℤˣ} {V : Space (E P s) n ε} [V.IsStd] {p : ℕ} [Fact p.Prime] [PadicPlace p]
-    {δ : 𝓞 P.K} (hδ : δ ≠ 0) {f : 𝒮 V} (hf : f ∈ standardData V δ) (c : ℂ)
-    {Q : MvPolynomial (InfinitePlace (P.E s) × n) embValRing} {l : ℕ} (hQ : Q.IsHomogeneous l) :
-    ‖ιₚ (jet ℂ (Q.map embValRing.subtype) (V.jetSeries (c * P.jetScale s) f))‖ ≤
-      ‖ιₚ (c / (star (δ : ℂ) * P.d))‖ ^ l := by
+`c * jetScale * z` has valuation in `ℂ_[p]` at least `l` times that of `c / (conj δ * d)`.
+-/
+theorem norm_jet_jetSeries_le_pow
+    {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n]
+    {ε : n → ℤˣ} {V : Space (E P s) n ε} [V.IsStd]
+    {p : ℕ} [Fact p.Prime] [PadicPlace p]
+    {δ : 𝓞 P.K} (hδ : δ ≠ 0)
+    {f : 𝒮 V} (hf : f ∈ standardData V δ)
+    (c : ℂ)
+    {Q : MvPolynomial (InfinitePlace (P.E s) × n) embValRing} {l : ℕ} (hQ : Q.IsHomogeneous l)
+    : ‖ιₚ (jet ℂ (Q.map embValRing.subtype) (V.jetSeries (c * P.jetScale s) f))‖
+      ≤ ‖ιₚ (c / (star (δ : ℂ) * P.d))‖ ^ l := by
   -- Scaling the variables by `c / (conj δ * d)` multiplies the derivative by the `l`-th power.
   have h_ne : star (δ : ℂ) * P.d ≠ 0 := mul_ne_zero (star_ne_zero.2 (mod_cast hδ)) (NeZero.ne _)
-  have h_scale : c * P.jetScale s =
-      c / (star (δ : ℂ) * P.d) * (star (δ : ℂ) * P.d * P.jetScale s) := by
+  have h_scale
+      : c * P.jetScale s = c / (star (δ : ℂ) * P.d) * (star (δ : ℂ) * P.d * P.jetScale s) := by
     rw [← mul_assoc, div_mul_cancel₀ _ h_ne]
   rw [h_scale, V.jetSeries_mul_eq_rescale, jet_rescale (hQ.map _), map_mul, map_pow, norm_mul,
     norm_pow]
@@ -160,7 +166,8 @@ lemma isIntegralAbove_of_finiteImage_mem (hp_not_dvd : ¬p ∣ P.q₁ s) {y : n 
         simpa using congrArg (fun x : 𝔸f (P.E s) ↦ Valued.v (x w)) h_global
     _ ≤ 1 := mul_le_one' hα (by simpa using hy i w hw)
 
-/-- **Normal form at a non-split prime.** Let `V` be a standard hermitian space over the cyclotomic
+/--
+**Normal form at a non-split prime.** Let `V` be a standard hermitian space over the cyclotomic
 extension `E = P.E s` of `ℚ(√-d)` (`IsStd`: all signs are `+1` and the adelic point is the identity
 matrix), and let `p` be non-split: the character `chiK` of `ℚ(√-d)` is not `1` at `p`. Let `f` be
 standard data of level one, a `p`-integral combination of the translates of the integral vacuum by
@@ -173,36 +180,43 @@ has coefficients in the valuation ring `valRingCp p` of `ℂ_[p]`, as are all `l
 over `partnerExponents P.d p` (`e` odd, or any `e` if `p = d`), the coupling `Γ_e` is the sum of all
 `z_(τ,i) ^ p ^ e * z_(τ',i)` with `τ' = P.partner s p e τ` the place `τ` moved by the class of
 `-p ^ e`, and `ϖ` has valuation `varpiValuation P.d p`, which is `1 / (p² - 1)` if `p` is inert and
-`1 / (2 p - 2)` if `p = d`. -/
-theorem exists_hasNormalForm_jetSeries [Fintype n] [DecidableEq n] {ε : n → ℤˣ}
-    {V : Space (E P s) n ε} [V.IsStd] [PadicPlace p] (hp_nonsplit : chiK P.d p ≠ 1) {f : 𝒮 V}
-    (hf : f ∈ standardData V 1) {c : ℂ} (hc : ‖ιₚ c‖ ≤ 1) :
-    ∃ (ϖ : ℂ_[p]) (l : ℕ → ℕ → valRingCp p), ‖ϖ‖ = p ^ (-varpiValuation P.d p) ∧
-      HasNormalForm (partnerExponents P.d p) (P.partner s p) ϖ l
-        ((V.jetSeries (c * P.jetScale s) f).map ιₚ) := by
+`1 / (2 p - 2)` if `p = d`.
+-/
+theorem exists_hasNormalForm_jetSeries
+    [Fintype n] [DecidableEq n]
+    {ε : n → ℤˣ} {V : Space (E P s) n ε} [V.IsStd] [PadicPlace p]
+    (hp_nonsplit : chiK P.d p ≠ 1)
+    {f : 𝒮 V} (hf : f ∈ standardData V 1)
+    {c : ℂ} (hc : ‖ιₚ c‖ ≤ 1)
+    : ∃ (ϖ : ℂ_[p]) (l : ℕ → ℕ → valRingCp p),
+      ‖ϖ‖ = p ^ (- varpiValuation P.d p) ∧ HasNormalForm (partnerExponents P.d p) (P.partner s p) ϖ
+        l ((V.jetSeries (c * P.jetScale s) f).map ιₚ) := by
   -- A resolution writes the series as a theta product times an integral series; such series have
   -- the normal form, and scaling by a `p`-integral number keeps it.
-  have hp_not_dvd : ¬p ∣ P.q₁ s := fun h_dvd ↦
-    hp_nonsplit (P.chiK_eq_one_of_dvd Fact.out h_dvd)
+  have hp_not_dvd : ¬ p ∣ P.q₁ s := fun h_dvd ↦ hp_nonsplit (P.chiK_eq_one_of_dvd Fact.out h_dvd)
   obtain ⟨ϖ, l, hϖ, -, h_normalForm_thetaProd⟩ := P.exists_hasNormalForm s hp_nonsplit
   obtain ⟨J, _, u, m, h_resolution, hu, H, hH, h_theta⟩ :=
     exists_jetSeries_map_eq_thetaProd_pow_mul (N := 1) one_ne_zero (by simp) hf
   have h_integral (j : J) : ∀ i : n, IsIntegralAbove p (u j i) :=
     isIntegralAbove_of_finiteImage_mem hp_not_dvd (hu j)
-  have h_series : (V.jetSeries (P.areaScale / P.cmPeriod) f).map ιₚ =
-      P.cmCurve.thetaProd (daggerForms u) m * H := by simpa using h_theta
+  have h_series
+      : (V.jetSeries (P.areaScale / P.cmPeriod) f).map ιₚ
+        = P.cmCurve.thetaProd (daggerForms u) m * H := by
+    simpa using h_theta
   have h_scale : ‖ιₚ (c * P.periodFactor s)‖ ≤ 1 := by
     rwa [map_mul, norm_mul, P.norm_iota_periodFactor_eq_one s hp_not_dvd, mul_one]
   have h_factor : c * P.jetScale s = c * P.periodFactor s * (P.areaScale / P.cmPeriod) := by
     rw [jetScale, mul_assoc, mul_div_assoc]
   rw [h_factor, V.jetSeries_mul_eq_rescale, map_rescale, h_series]
-  exact ⟨ϖ, _, hϖ,
-    (h_normalForm_thetaProd u m h_resolution h_integral H hH).rescale ⟨_, h_scale⟩⟩
+  exact ⟨ϖ, _, hϖ, (h_normalForm_thetaProd u m h_resolution h_integral H hH).rescale ⟨_, h_scale⟩⟩
 
-variable [Fintype n] [DecidableEq n] [PadicPlace p] {n' : Type} [Fintype n'] [DecidableEq n']
+variable
+  [Fintype n] [DecidableEq n] [PadicPlace p]
+  {n' : Type} [Fintype n'] [DecidableEq n']
   {κ : P.Φ s → ℕ → ℕ}
 
-/-- **Divisibility at non-split primes.** Let `f` be standard data of level one on the space of
+/--
+**Divisibility at non-split primes.** Let `f` be standard data of level one on the space of
 `n' × n` matrices (`hom` of the spaces `stdSpace`, whose forms are sums of norms of coordinates).
 Let `c` be `p`-integral and `F` the Taylor series in `ℂ_[p]` of the theta function of `f` at
 `c * jetScale * z`, where `jetScale = periodFactor * √(2π / √d) / Ω₀` (`Ω₀` the CM period,
@@ -218,21 +232,26 @@ is `v ∑_e ∑_τ ((a_τ / p ^ e - a_τ' - a'_τ')⁺ + (l_τ / p ^ e - l_τ')�
 heights below `N`, `a_τ` counts the columns of height one at `τ`, `a'_τ` the others and `l_τ` their
 boxes; `τ'` is the place `-p ^ e τ`, `v = piPrimeValuation P.d p`, and `e` runs over the odd numbers
 (all `e ≥ 1` if `p = d`). If `p = d`, half of `∑_τ (min (a_τ, a_τ' + a'_τ') + a'_τ + min (l_τ,
-l_τ'))`, with `e = 0`, is subtracted from it. -/
+l_τ'))`, with `e = 0`, is subtracted from it.
+-/
 theorem norm_jet_minorProd_jetSeries_le
-    {f : 𝒮 ((stdSpace (E P s) n).hom (stdSpace (E P s) n'))} {c : ℂ} (hp_nonsplit : chiK P.d p ≠ 1)
+    {f : 𝒮 ((stdSpace (E P s) n).hom (stdSpace (E P s) n'))} {c : ℂ}
+    (hp_nonsplit : chiK P.d p ≠ 1)
     (hf : f ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) 1) (hc : ‖ιₚ c‖ ≤ 1)
-    (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p) :
-    let N : ℕ := card n'
-    ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p]))
-        ((((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries
-          (c * P.jetScale s) f).map ιₚ)‖ ≤
-      p ^ (-(predictedDivisibility P.d p (P.partner s p) κ N -
-        card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max (boxes κ N) 1 : ℕ))) : ℝ) := by
+    (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p)
+    : let N : ℕ := card n'
+      ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p]))
+          ((((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries
+            (c * P.jetScale s) f).map ιₚ)‖
+        ≤ p
+          ^ (-(predictedDivisibility P.d p (P.partner s p) κ N
+              - card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max (boxes κ N) 1 : ℕ)))
+            : ℝ) := by
   obtain ⟨ϖ, l, hϖ, h_form⟩ := exists_hasNormalForm_jetSeries hp_nonsplit hf hc
   exact P.norm_jet_minorProd_le_of_hasNormalForm s hp_nonsplit hϖ h_form i' y
 
-/-- **Divisibility of Schur entries at a non-split prime `p`.** Let `f` be standard data of level
+/--
+**Divisibility of Schur entries at a non-split prime `p`.** Let `f` be standard data of level
 one on the space `Hom(stdSpace n, stdSpace n')` of `n' × n` matrices, and `c` a `p`-integral number.
 Let `F` be the Taylor series of the theta function of `f` at `c * jetScale * z`, where
 `jetScale = periodFactor * √(2π / √d) / Ω₀` (`Ω₀` the CM period, `periodFactor` a normalising
@@ -249,33 +268,37 @@ and `τ' ∈ erasedPlaces`, then `chargeExp τ 1 b` or `chargeExp τ' h b` is no
 below `N`. Then the sum `fillingCharge chargeExp i'` of the exponents over the boxes of the filling
 `i'`, plus the valuation of the derivative, is at least the predicted divisibility of the remaining
 diagrams, plus the gain `gammaPrime P.d p` for each removed box among these `B`, less
-`f₀ * N ^ 3 * (1 + log_p max (B, 1))`, where `f₀` is the number of infinite places. -/
+`f₀ * N ^ 3 * (1 + log_p max (B, 1))`, where `f₀` is the number of infinite places.
+-/
 theorem norm_schurJet_jetSeries_le_of_charges
     {f : 𝒮 ((stdSpace (E P s) n).hom (stdSpace (E P s) n'))} {c : ℂ}
     (hp_nonsplit : chiK P.d p ≠ 1) (hκ : FitsRanks (fun _ : P.Φ s ↦ n) (fun _ : P.Φ s ↦ n') κ)
     (hf : f ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) 1) (hc : ‖ιₚ c‖ ≤ 1)
     (erasedPlaces : Finset (P.Φ s)) (chargeExp : P.Φ s → ℕ → n' → ℕ)
-    (h_charge : ∀ e ∈ partnerExponents P.d p,
-      IsChargeExponent (P.partner s p e) erasedPlaces chargeExp)
-    (i' : WeylIndex n' κ) (i : WeylIndex n κ) :
-    let N : ℕ := card n'
-    let B : ℕ := boxes κ N
-    ‖ιₚ (schurJet κ (((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries
-        (c * P.jetScale s) f) i' i)‖ ≤
-      p ^ (fillingCharge chargeExp i' -
-        (predictedDivisibility P.d p (P.partner s p) (eraseHeightOne κ erasedPlaces) N +
-          gammaPrime P.d p * (B - boxes (eraseHeightOne κ erasedPlaces) N) -
-          card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max B 1 : ℕ))) : ℝ) := by
+    (h_charge
+      : ∀ e ∈ partnerExponents P.d p, IsChargeExponent (P.partner s p e) erasedPlaces chargeExp)
+    (i' : WeylIndex n' κ) (i : WeylIndex n κ)
+    : let N : ℕ := card n'
+      let B : ℕ := boxes κ N
+      ‖ιₚ (schurJet κ (((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries
+          (c * P.jetScale s) f) i' i)‖
+        ≤ p
+          ^ (fillingCharge chargeExp i'
+              - (predictedDivisibility P.d p (P.partner s p) (eraseHeightOne κ erasedPlaces) N
+                + gammaPrime P.d p * (B - boxes (eraseHeightOne κ erasedPlaces) N)
+                - card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max B 1 : ℕ)))
+            : ℝ) := by
   -- Bound the Schur entry by a derivative along a product of minors, then use the normal form.
   obtain ⟨ϖ, l, hϖ, h_form⟩ := exists_hasNormalForm_jetSeries hp_nonsplit hf hc
   set F : MvPowerSeries (P.Φ s × n' × n) ℂ :=
     ((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries (c * P.jetScale s) f
-  obtain ⟨y, h_le_minorProd⟩ :=
-    exists_norm_schurJet_le_norm_jet_minorProd hκ (F.map ιₚ) i' i
+  obtain ⟨y, h_le_minorProd⟩ := exists_norm_schurJet_le_norm_jet_minorProd hκ (F.map ιₚ) i' i
   rw [show ιₚ (schurJet κ F i' i) = schurJet κ (F.map ιₚ) i' i by
     simp [schurJet, map_jet, map_schur hκ]]
   exact h_le_minorProd.trans (P.norm_jet_minorProd_le_of_charges s hp_nonsplit hϖ h_form
-    erasedPlaces chargeExp (fun e he τ h b _ _ ↦ h_charge e he τ h b) i' y)
+    erasedPlaces chargeExp
+    (fun e he τ h b _ _ ↦ h_charge e he τ h b)
+    i' y)
 
 end New.Parameters
 

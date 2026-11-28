@@ -63,17 +63,23 @@ variable {𝔰 : Shape}
 /-- For a (ϱ+1)×(ϱ+1) complex matrix Z, the last diagonal entry ξ(Z) of its inverse. -/
 def invCorner (Z : 𝔰.FrameMatrix) : ℂ := Z⁻¹ 𝔰.top 𝔰.top
 
-/-- The set Ω of invertible (ϱ+1)×(ϱ+1) complex matrices whose inverse has last diagonal entry of
-absolute value less than 1. -/
+/--
+The set Ω of invertible (ϱ+1)×(ϱ+1) complex matrices whose inverse has last diagonal entry of
+absolute value less than 1.
+-/
 def _root_.New.Shape.openCell : Set 𝔰.FrameMatrix :=
   {Z : 𝔰.FrameMatrix | det Z ≠ 0 ∧ ‖invCorner Z‖ < 1}
 
-/-- For a (ϱ+1)×(ϱ+1) complex matrix Z, the real number ν(Z)² = 1 − |ξ|², ξ the last diagonal
-entry of Z⁻¹. -/
+/--
+For a (ϱ+1)×(ϱ+1) complex matrix Z, the real number ν(Z)² = 1 − |ξ|², ξ the last diagonal
+entry of Z⁻¹.
+-/
 def oneSubNormSqInvCorner (Z : 𝔰.FrameMatrix) : ℝ := 1 - ‖invCorner Z‖ ^ 2
 
-/-- Z lies in Ω (`New.Shape.openCell`), and ‖Z⁻¹‖, ‖Z‖ (operator norms) and 1/ν(Z) are at most P,
-where ν(Z)² = 1 − |ξ|², ξ the last diagonal entry of Z⁻¹. -/
+/--
+Z lies in Ω (`New.Shape.openCell`), and ‖Z⁻¹‖, ‖Z‖ (operator norms) and 1/ν(Z) are at most P,
+where ν(Z)² = 1 − |ξ|², ξ the last diagonal entry of Z⁻¹.
+-/
 structure IsBoundedInCell (Z : 𝔰.FrameMatrix) (P : ℝ) : Prop where
   /-- The matrix lies in Ω. -/
   mem_openCell : Z ∈ 𝔰.openCell
@@ -87,34 +93,43 @@ structure IsBoundedInCell (Z : 𝔰.FrameMatrix) (P : ℝ) : Prop where
 /-- For a complex number x, the (ϱ+1)×(ϱ+1) diagonal matrix diag(1, …, 1, x). -/
 def diagLast (x : ℂ) : 𝔰.FrameMatrix := diagonal (snoc 1 x)
 
-/-- For matrices Z and W, the matrix Y(Z, W) with last row (0, …, 0, −1) and other entries
+/--
+For matrices Z and W, the matrix Y(Z, W) with last row (0, …, 0, −1) and other entries
 −(W⁻¹)_{a,last}(Z⁻¹)_{last,b}, halved unless b is last. For W = Zᴴ its columns are the coefficients
 of the frame F = (e₁, …, e_ϱ, z) in a family F^∨(Z) that is dual to F and has the Gram matrix −ζᴴζ,
-with ζ the last row of Z⁻¹. -/
+with ζ the last row of Z⁻¹.
+-/
 def sectionCoeff (Z W : 𝔰.FrameMatrix) : 𝔰.FrameMatrix :=
-  diagLast (𝔰 := 𝔰) 0 - 1 -
-    diagLast (𝔰 := 𝔰) 0 * W⁻¹ * (1 - diagLast (𝔰 := 𝔰) 2⁻¹) * Z⁻¹ * diagLast (𝔰 := 𝔰) 2
+  diagLast (𝔰 := 𝔰) 0 - 1
+    - diagLast (𝔰 := 𝔰) 0 * W⁻¹ * (1 - diagLast (𝔰 := 𝔰) 2⁻¹) * Z⁻¹ * diagLast (𝔰 := 𝔰) 2
 
-/-- The matrix (F·Y + F'·diag(1, …, 1, s))·Z, with F the frame, F' = (e*₁, …, e*_ϱ, x_{k₀}),
+/--
+The matrix (F·Y + F'·diag(1, …, 1, s))·Z, with F the frame, F' = (e*₁, …, e*_ϱ, x_{k₀}),
 Y = `New.RealPlace.sectionCoeff Z W` and s = (1 − ξ(Z) ξ(W))^{1/2}, ξ = `invCorner`. For Z in Ω
 and W = Zᴴ the first factor is the family F^∨(Z) dual to F, and the columns of F^∨(Z)·Z are the
 images of the frame under γ_Z. The rows are indexed by the basis e_a, x_i (i in κ), z, e*_a
-(`BesselIndex`), and k₀ = `𝔰.k₀` is the distinguished index in κ. -/
+(`BesselIndex`), and k₀ = `𝔰.k₀` is the distinguished index in κ.
+-/
 def sectionFrame (Z W : 𝔰.FrameMatrix) : Matrix 𝔰.BesselIndex (Fin (𝔰.ϱ + 1)) ℂ :=
-  (𝔰.frameCols * sectionCoeff Z W +
-      𝔰.dualFrameCols * diagLast (𝔰 := 𝔰) (1 - invCorner Z * invCorner W).sqrt) * Z
+  (𝔰.frameCols * sectionCoeff Z W
+      + 𝔰.dualFrameCols * diagLast (𝔰 := 𝔰) (1 - invCorner Z * invCorner W).sqrt)
+    * Z
 
-/-- The matrix 1 − FFᴴ − F'F'ᴴ + SFᴴ + (FW⁻¹ − S·Y(W, Z))·diag(1, …, 1, s⁻¹)·F'ᴴ, with F the
+/--
+The matrix 1 − FFᴴ − F'F'ᴴ + SFᴴ + (FW⁻¹ − S·Y(W, Z))·diag(1, …, 1, s⁻¹)·F'ᴴ, with F the
 frame, F' = (e*₁, …, e*_ϱ, x_{k₀}), S = `New.RealPlace.sectionFrame Z W`,
 Y = `New.RealPlace.sectionCoeff` and s = (1 − ξ(Z) ξ(W))^{1/2}, ξ = `invCorner`. For Z in Ω and
 W = Zᴴ it is the matrix of γ_Z, and s = ν(Z). In that case it sends F to F^∨(Z)·Z and F^∨(Zᴴ) to
 F·(Zᴴ)⁻¹, and it fixes the x_i with i ≠ k₀; here F^∨(Z) = F·Y(Z, Zᴴ) + F'·diag(1, …, 1, s) is dual
 to the frame. Rows and columns are indexed by the basis e_a, x_i (i in κ), z, e*_a (`BesselIndex`),
-and k₀ = `𝔰.k₀` is the distinguished index in κ. -/
+and k₀ = `𝔰.k₀` is the distinguished index in κ.
+-/
 def sectionMatrix (Z W : 𝔰.FrameMatrix) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ :=
-  1 + (sectionFrame Z W - 𝔰.frameCols) * 𝔰.frameColsᴴ +
-    ((𝔰.frameCols * W⁻¹ - sectionFrame Z W * sectionCoeff W Z) *
-      diagLast (𝔰 := 𝔰) (1 - invCorner Z * invCorner W).sqrt⁻¹ - 𝔰.dualFrameCols) * 𝔰.dualFrameColsᴴ
+  1 + (sectionFrame Z W - 𝔰.frameCols) * 𝔰.frameColsᴴ
+    + ((𝔰.frameCols * W⁻¹ - sectionFrame Z W * sectionCoeff W Z)
+          * diagLast (𝔰 := 𝔰) (1 - invCorner Z * invCorner W).sqrt⁻¹
+        - 𝔰.dualFrameCols)
+      * 𝔰.dualFrameColsᴴ
 
 /-! ### The open set `Ω` -/
 
@@ -458,34 +473,41 @@ lemma IsBoundedInCell.gramDiscReal_div_two_le {Z : 𝔰.FrameMatrix} {T : ℝ} {
 
 end Perturbation
 
-/-- Let `T ≥ 4` and let `𝔰` be a shape (ϱ, κ, k₀). Let `Z` be a complex `(ϱ+1) × (ϱ+1)` matrix in Ω,
+/--
+Let `T ≥ 4` and let `𝔰` be a shape (ϱ, κ, k₀). Let `Z` be a complex `(ϱ+1) × (ϱ+1)` matrix in Ω,
 with `‖Z⁻¹‖`, `‖Z‖` and `1 / ν(Z)` at most `T` (`IsBoundedInCell`). Then `sectionMatrix Z Zᴴ` has
-operator norm at most `T ^ 18`, and its real derivative in `Z` has norm at most `T ^ 25`. -/
-theorem IsBoundedInCell.norm_sectionMatrix_le {Z : 𝔰.FrameMatrix} {T : ℝ}
-    (hZ : IsBoundedInCell Z T) (hT : 4 ≤ T) :
-    ‖sectionMatrix Z Zᴴ‖ ≤ T ^ 18 ∧
-      ‖fderiv ℝ (fun Y : 𝔰.FrameMatrix ↦ sectionMatrix Y Yᴴ) Z‖ ≤ T ^ 25 := by
+operator norm at most `T ^ 18`, and its real derivative in `Z` has norm at most `T ^ 25`.
+-/
+theorem IsBoundedInCell.norm_sectionMatrix_le
+    {Z : 𝔰.FrameMatrix} {T : ℝ} (hZ : IsBoundedInCell Z T) (hT : 4 ≤ T)
+    : ‖sectionMatrix Z Zᴴ‖ ≤ T ^ 18
+      ∧ ‖fderiv ℝ (fun Y : 𝔰.FrameMatrix ↦ sectionMatrix Y Yᴴ) Z‖ ≤ T ^ 25 := by
   obtain ⟨h_value, h_deriv⟩ :=
     RealPlace.norm_sectionMatrix_le_and_norm_fderiv_le (by positivity) (by linarith) fun Y hY ↦
       hZ.of_mem_ball hT hY
   have h_two : (2 * T) ^ 12 ≤ T ^ 18 :=
-    calc (2 * T) ^ 12 = 4 ^ 6 * T ^ 12 := by ring
+    calc
+      (2 * T) ^ 12
+        = 4 ^ 6 * T ^ 12 := by ring
       _ ≤ T ^ 6 * T ^ 12 := by gcongr
       _ = T ^ 18 := by ring
   refine ⟨h_value.trans h_two, h_deriv.trans ?_⟩
-  calc 2 * (2 * T) ^ 12 / (T ^ 6)⁻¹ ≤ T * T ^ 18 * T ^ 6 := by
-        grw [div_inv_eq_mul, h_two, show 2 ≤ T by linarith]
+  calc
+    2 * (2 * T) ^ 12 / (T ^ 6)⁻¹
+      ≤ T * T ^ 18 * T ^ 6 := by grw [div_inv_eq_mul, h_two, show 2 ≤ T by linarith]
     _ = T ^ 25 := by ring
 
 /-! ## The Gram section and double cosets over the open cell -/
 
 open IsHermitianInvolution
 
-/-- The matrix `sectionMatrix Z Zᴴ` sends the frame `F = (e₁, …, e_ϱ, z)` to the columns of
+/--
+The matrix `sectionMatrix Z Zᴴ` sends the frame `F = (e₁, …, e_ϱ, z)` to the columns of
 `sectionFrame Z Zᴴ = (F Y + F' diag(1, …, 1, s)) Z`. Here `F' = (e*₁, …, e*_ϱ, x_{k₀})`,
-`Y = sectionCoeff Z Zᴴ` and `s = (1 - ξ(Z) ξ(Zᴴ)) ^ (1 / 2)` with `ξ = invCorner`. -/
-theorem sectionMatrix_mul_frameCols {Z : 𝔰.FrameMatrix} :
-    sectionMatrix Z Zᴴ * 𝔰.frameCols = sectionFrame Z Zᴴ := by
+`Y = sectionCoeff Z Zᴴ` and `s = (1 - ξ(Z) ξ(Zᴴ)) ^ (1 / 2)` with `ξ = invCorner`.
+-/
+theorem sectionMatrix_mul_frameCols {Z : 𝔰.FrameMatrix}
+    : sectionMatrix Z Zᴴ * 𝔰.frameCols = sectionFrame Z Zᴴ := by
   simp [sectionMatrix, inclMatrix, Matrix.sub_mul, diagLast, Matrix.mul_assoc, Matrix.add_mul,
     ← ext_iff, Matrix.one_apply, Matrix.mul_apply, sum_univ_castSucc, diagonal_apply, Fin.ne_of_gt,
     forall_fin_succ']
@@ -505,36 +527,46 @@ lemma frameCols_gram_dualFrameCols : 𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.dualFr
   simp [splitGram, middleGram, diagLast, ← ext_iff, Matrix.one_apply, diagonal_apply,
     forall_fin_succ', Fin.ne_of_gt]
 
-/-- Let `Z` be any complex `(ϱ+1) × (ϱ+1)` matrix, not necessarily in the set Ω, and let
-`M = sectionMatrix Z Zᴴ`. Then `Fᴴ J₁ M F = Z`. -/
-theorem frameCols_gram_sectionMatrix {Z : 𝔰.FrameMatrix} :
-    𝔰.frameColsᴴ * 𝔰.J₁ * (sectionMatrix Z Zᴴ * 𝔰.frameCols) = Z := by
+/--
+Let `Z` be any complex `(ϱ+1) × (ϱ+1)` matrix, not necessarily in the set Ω, and let
+`M = sectionMatrix Z Zᴴ`. Then `Fᴴ J₁ M F = Z`.
+-/
+theorem frameCols_gram_sectionMatrix {Z : 𝔰.FrameMatrix}
+    : 𝔰.frameColsᴴ * 𝔰.J₁ * (sectionMatrix Z Zᴴ * 𝔰.frameCols) = Z := by
   -- The factor `diagLast 0 - 1` keeps only the last row `(0, …, 0, -1)` of `sectionCoeff Z Zᴴ` and
   -- negates it; the factor `diagLast 0` keeps the other rows of `diag(1, …, 1, s)`.
   have h_one (s : ℂ) : (diagLast 0 - 1) * sectionCoeff Z Zᴴ + diagLast 0 * diagLast s = 1 := by
     simp [sectionCoeff, diagLast, ← ext_iff, Matrix.mul_apply, Matrix.one_apply, diagonal_apply,
       sum_univ_castSucc, forall_fin_succ', Fin.ne_of_gt]
   set s : ℂ := (1 - invCorner Z * invCorner Zᴴ).sqrt
-  calc _ = (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.frameCols * sectionCoeff Z Zᴴ +
-          𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.dualFrameCols * diagLast s) * Z := by
-        simp only [sectionMatrix_mul_frameCols, sectionFrame, Matrix.mul_assoc, Matrix.mul_add,
-          Matrix.add_mul, s]
+  calc
+    _ = (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.frameCols * sectionCoeff Z Zᴴ
+          + 𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.dualFrameCols * diagLast s)
+        * Z := by
+      simp only [sectionMatrix_mul_frameCols, sectionFrame, Matrix.mul_assoc, Matrix.mul_add,
+        Matrix.add_mul, s]
     _ = Z := by rw [frameCols_gram_frameCols, frameCols_gram_dualFrameCols, h_one, Matrix.one_mul]
 
-/-- Let `C` be a matrix with orthonormal columns, its rows indexed by the basis `e_a`, `x_i`, `z`,
+/--
+Let `C` be a matrix with orthonormal columns, its rows indexed by the basis `e_a`, `x_i`, `z`,
 `e*_a` (`BesselIndex`). Then `actOnCols C A = 1 - C Cᴴ + C A Cᴴ`, which acts by `A` on the span of
 the columns and fixes its orthogonal complement, is compatible with congruence:
-`(actOnCols C A)ᴴ * actOnCols C J * actOnCols C A = actOnCols C (Aᴴ J A)`. -/
-theorem conjTranspose_actOnCols_mul_mul {m : Type} [Fintype m] [DecidableEq m]
-    {C : Matrix 𝔰.BesselIndex m ℂ} (hC : Cᴴ * C = 1) (A J : Matrix m m ℂ) :
-    (actOnCols C A)ᴴ * actOnCols C J * actOnCols C A = actOnCols C (Aᴴ * J * A) := by
+`(actOnCols C A)ᴴ * actOnCols C J * actOnCols C A = actOnCols C (Aᴴ J A)`.
+-/
+theorem conjTranspose_actOnCols_mul_mul
+    {m : Type} [Fintype m] [DecidableEq m]
+    {C : Matrix 𝔰.BesselIndex m ℂ} (hC : Cᴴ * C = 1)
+    (A J : Matrix m m ℂ)
+    : (actOnCols C A)ᴴ * actOnCols C J * actOnCols C A = actOnCols C (Aᴴ * J * A) := by
   simp [actOnCols, mul_mul_eq_of_mul_eq hC, Matrix.mul_assoc, Matrix.mul_add, Matrix.mul_sub,
     Matrix.add_mul, Matrix.sub_mul]
 
-/-- For `Z ∈ 𝔰.openCell`, the matrix `sectionMatrix Z Zᴴ`, which is the matrix of γ_Z, preserves the
-hermitian form with Gram matrix `𝔰.J₁`: `Mᴴ * 𝔰.J₁ * M = 𝔰.J₁`. -/
-theorem sectionMatrix_isometry {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell) :
-    (sectionMatrix Z Zᴴ)ᴴ * 𝔰.J₁ * sectionMatrix Z Zᴴ = 𝔰.J₁ := by
+/--
+For `Z ∈ 𝔰.openCell`, the matrix `sectionMatrix Z Zᴴ`, which is the matrix of γ_Z, preserves the
+hermitian form with Gram matrix `𝔰.J₁`: `Mᴴ * 𝔰.J₁ * M = 𝔰.J₁`.
+-/
+theorem sectionMatrix_isometry {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell)
+    : (sectionMatrix Z Zᴴ)ᴴ * 𝔰.J₁ * sectionMatrix Z Zᴴ = 𝔰.J₁ := by
   -- All happens in the span of the orthonormal columns `C = (F | F')`, where the form has the
   -- matrix `J`. There `sectionMatrix Z Zᴴ` acts by `y * x⁻¹`. The columns of `x` are `F Z⁻¹` and
   -- the family dual to `F` for `Zᴴ`; those of `y` are the family dual to `F` for `Z` and `F Zᴴ⁻¹`
@@ -552,62 +584,70 @@ theorem sectionMatrix_isometry {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell)
   have hC : Cᴴ * C = 1 := by
     have h_symm (i j : Fin 𝔰.ϱ) : (if j = i then (1 : ℂ) else 0) = if i = j then 1 else 0 := by lia
     simpa [ι, C, ← ext_iff, inclMatrix, Matrix.one_apply, Matrix.mul_apply, forall_fin_succ',
-      Fin.ne_of_gt] using h_symm
+        Fin.ne_of_gt]
+      using h_symm
   have hJ : 𝔰.J₁ = actOnCols C J := by
     simp [ι, C, J, ← ext_iff, splitGram, middleGram, actOnCols, inclMatrix, Matrix.one_apply,
       Matrix.mul_apply, sum_univ_castSucc]
   have h_sec : sectionMatrix Z Zᴴ = actOnCols C (y * x⁻¹) := by
     simp [ι, x, y, C, Δ, inv_fromBlocks_zero₂₁_of_isUnit_iff, hZ, hdet, sectionMatrix, sectionFrame,
       conjTranspose_fromCols_eq_fromRows_conjTranspose, fromCols_mul_fromBlocks, inclMatrix,
-      diagLast, Matrix.add_mul, Matrix.mul_assoc, Matrix.sub_mul, actOnCols,
-      fromCols_mul_fromRows, isUnit_iff_isUnit_det, fromBlocks_multiply, Matrix.mul_add]
+      diagLast, Matrix.add_mul, Matrix.mul_assoc, Matrix.sub_mul, actOnCols, fromCols_mul_fromRows,
+      isUnit_iff_isUnit_det, fromBlocks_multiply, Matrix.mul_add]
     abel
-  have hν_sq : (oneSubNormSqInvCorner Z : ℂ) =
-      1 - starRingEnd ℂ (Z⁻¹ (last 𝔰.ϱ) (last 𝔰.ϱ)) * Z⁻¹ (last 𝔰.ϱ) (last 𝔰.ϱ) := by
+  have hν_sq
+      : (oneSubNormSqInvCorner Z : ℂ)
+        = 1 - starRingEnd ℂ (Z⁻¹ (last 𝔰.ϱ) (last 𝔰.ϱ)) * Z⁻¹ (last 𝔰.ϱ) (last 𝔰.ϱ) := by
     simp [oneSubNormSqInvCorner, invCorner, conj_mul']
   have h_gram : yᴴ * J * y = xᴴ * J * x := by
     -- Entry by entry these are polynomial identities in the entries of `Z⁻¹`, given `hν_sq`.
-    simp [ι, x, y, J, C, Δ, ← ext_iff, sectionCoeff, map_ofNat, ← ofReal_pow, hν_pos.le,
-      hν_pos.ne', ← conjTranspose_nonsing_inv, field, diagLast,
-      Matrix.mul_sub, Matrix.mul_assoc, Matrix.sub_mul, fromBlocks_conjTranspose, inclMatrix,
-      splitGram, middleGram, Matrix.mul_apply, Matrix.one_apply, sum_univ_castSucc,
-      diagonal_apply, forall_fin_succ', Fin.ne_of_gt]
+    simp [ι, x, y, J, C, Δ, ← ext_iff, sectionCoeff, map_ofNat, ← ofReal_pow, hν_pos.le, hν_pos.ne',
+      ← conjTranspose_nonsing_inv, field, diagLast, Matrix.mul_sub, Matrix.mul_assoc,
+      Matrix.sub_mul, fromBlocks_conjTranspose, inclMatrix, splitGram, middleGram, Matrix.mul_apply,
+      Matrix.one_apply, sum_univ_castSucc, diagonal_apply, forall_fin_succ', Fin.ne_of_gt]
     grind
   have h_iso : (y * x⁻¹)ᴴ * J * (y * x⁻¹) = J :=
-    calc _ = x⁻¹ᴴ * (yᴴ * J * y) * x⁻¹ := by simp only [conjTranspose_mul, Matrix.mul_assoc]
+    calc
+      _ = x⁻¹ᴴ * (yᴴ * J * y) * x⁻¹ := by simp only [conjTranspose_mul, Matrix.mul_assoc]
       _ = (x * x⁻¹)ᴴ * J * (x * x⁻¹) := by simp only [h_gram, conjTranspose_mul x, Matrix.mul_assoc]
       _ = J := by simp [mul_nonsing_inv x (by simp [ι, x, hdet])]
   rw [h_sec, hJ, conjTranspose_actOnCols_mul_mul hC, h_iso]
 
 open scoped Classical in
-/-- The section `γ_Z`. For `Z ∈ Ω` it is the element of `G₁` whose matrix is `sectionMatrix Z Zᴴ`
-(see `New.RealPlace.coe_gramSection`). Off `Ω` it is the identity. -/
+/--
+The section `γ_Z`. For `Z ∈ Ω` it is the element of `G₁` whose matrix is `sectionMatrix Z Zᴴ`
+(see `New.RealPlace.coe_gramSection`). Off `Ω` it is the identity.
+-/
 noncomputable def gramSection (Z : 𝔰.FrameMatrix) : 𝔰.G₁ :=
   U.of isUnit (if Z ∈ 𝔰.openCell then sectionMatrix Z Zᴴ else 1) <| by
     split_ifs with hZ
     · exact sectionMatrix_isometry hZ
     · simp
 
-/-- The section `Z ↦ γ_Z` (`gramSection`), from the complex `(ϱ+1) × (ϱ+1)` matrices to the unitary
+/--
+The section `Z ↦ γ_Z` (`gramSection`), from the complex `(ϱ+1) × (ϱ+1)` matrices to the unitary
 group `G₁` of the form `𝔰.J₁`, is measurable. Here `γ_Z` has the matrix `sectionMatrix Z Zᴴ` for `Z`
-in the open set Ω (`openCell`) and is the identity off Ω. -/
+in the open set Ω (`openCell`) and is the identity off Ω.
+-/
 @[fun_prop]
 theorem measurable_gramSection : Measurable (gramSection : 𝔰.FrameMatrix → 𝔰.G₁) := by
   classical
   -- `sectionMatrix` is continuous on the open set `𝔰.openCell`; off it `gramSection` is constant.
   have h_cont : ContinuousOn (fun Z : 𝔰.FrameMatrix ↦ sectionMatrix Z Zᴴ) 𝔰.openCell := fun _ hZ ↦
     (differentiableAt_sectionMatrix hZ).continuousAt.continuousWithinAt
-  have h_meas : Measurable fun Z : 𝔰.FrameMatrix ↦
-    if Z ∈ 𝔰.openCell then sectionMatrix Z Zᴴ else 1 :=
+  have h_meas
+      : Measurable fun Z : 𝔰.FrameMatrix ↦ if Z ∈ 𝔰.openCell then sectionMatrix Z Zᴴ else 1 :=
     h_cont.measurable_piecewise continuousOn_const isOpen_openCell.measurableSet
   -- The σ-algebra of `𝔰.G₁` is the pullback of that of the matrices.
   exact .subtype_mk (measurable_comap_iff.2 h_meas)
 
-/-- For `Z` in the open cell Ω (`𝔰.openCell`), the matrix of the section γ_Z = `gramSection Z` ∈ G₁
-is the explicit matrix `sectionMatrix Z Zᴴ`. -/
-theorem coe_gramSection {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell) :
-    ((gramSection Z : GL 𝔰.BesselIndex ℂ) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) =
-      sectionMatrix Z Zᴴ :=
+/--
+For `Z` in the open cell Ω (`𝔰.openCell`), the matrix of the section γ_Z = `gramSection Z` ∈ G₁
+is the explicit matrix `sectionMatrix Z Zᴴ`.
+-/
+theorem coe_gramSection {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell)
+    : ((gramSection Z : GL 𝔰.BesselIndex ℂ) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)
+      = sectionMatrix Z Zᴴ :=
   ite_eq_left hZ
 
 /-- Near each `Z` in Ω, the matrix of `γ_Y` agrees with `New.RealPlace.sectionMatrix Y Yᴴ`. -/
@@ -617,10 +657,12 @@ lemma gramSection_eventuallyEq {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell)
         sectionMatrix Y Yᴴ :=
   .mono (isOpen_openCell.mem_nhds hZ) fun _ ↦ coe_gramSection
 
-/-- On Ω the map `Z ↦ γ_Z` is a section of `γ ↦ Z(γ) = Fᴴ J₁ γ F` (`realFrameGram`, with `F` the
-frame): `Z(γ_Z) = Z`. -/
-theorem realFrameGram_gramSection {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell) :
-    realFrameGram (gramSection Z) = Z := by
+/--
+On Ω the map `Z ↦ γ_Z` is a section of `γ ↦ Z(γ) = Fᴴ J₁ γ F` (`realFrameGram`, with `F` the
+frame): `Z(γ_Z) = Z`.
+-/
+theorem realFrameGram_gramSection {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell)
+    : realFrameGram (gramSection Z) = Z := by
   rw [realFrameGram_eq_conjTranspose_mul, coe_gramSection hZ, frameCols_gram_sectionMatrix]
 
 /-- For `γ ∈ G₁` the family `framePair γ = (F | γ F)` of the frame `F` and its image has, for the

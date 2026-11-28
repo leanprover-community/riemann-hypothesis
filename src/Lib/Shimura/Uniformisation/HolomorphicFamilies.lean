@@ -81,10 +81,12 @@ open CategoryTheory AlgebraicGeometry MonoidalCategory PointFn
 
 /-! ### Valuation rings of `ℂ` and sections over them -/
 
-/-- A valuation ring O with fraction field ℂ, given with its algebra map O → ℂ, together with the
-generic point Spec ℂ → Spec O, which is the morphism induced by O → ℂ. -/
-class ValuativeArc (O : Type) [CommRing.{0} O] extends
-    Algebra O ℂ, IsDomain O, ValuationRing O, IsFractionRing O ℂ where
+/--
+A valuation ring O with fraction field ℂ, given with its algebra map O → ℂ, together with the
+generic point Spec ℂ → Spec O, which is the morphism induced by O → ℂ.
+-/
+class ValuativeArc (O : Type) [CommRing.{0} O]
+    extends Algebra O ℂ, IsDomain O, ValuationRing O, IsFractionRing O ℂ where
   /-- The generic point `Spec ℂ ⟶ Spec O`. -/
   genericPt : Spec ⟨ℂ⟩ ⟶ Spec ⟨O⟩
   /-- The generic point is the morphism induced by the algebra map `O → ℂ`. -/
@@ -142,8 +144,10 @@ lemma bijective_restrict_genericPt [IsProper A.hom] :
         _ = t.left := l.fac_left
     exact ⟨homMk l.l l.fac_right, ext h_fac⟩
 
-/-- For a family s of sections of A over Spec O, O a valuation ring of ℂ, the complex point of A
-given by s(z) at the generic point. -/
+/--
+For a family s of sections of A over Spec O, O a valuation ring of ℂ, the complex point of A
+given by s(z) at the generic point.
+-/
 def atGeneric {Z : Sort*} (s : Z → (𝟙_ (Over (Spec ⟨O⟩)) ⟶ A)) (z : Z) : Spec ⟨ℂ⟩ ⟶ A.left :=
   (toUnit (Over.mk genericPt) ≫ s z).left
 
@@ -152,51 +156,70 @@ def atGeneric {Z : Sort*} (s : Z → (𝟙_ (Over (Spec ⟨O⟩)) ⟶ A)) (z : Z
 lemma atGeneric_eq {A : Over (Spec (CommRingCat.of ℂ))} {Z : Sort*} (s : Z → ComplexPoint A) :
     atGeneric s = fun z : Z ↦ (s z).left := rfl
 
-variable (A) [AddObj A] {X : Scheme} {ι P : Type} {T M : Type _} [FinComplexSpace.{0} P]
-  (V : Type) [FinComplexSpace.{0} V] [AddCommGroup M] [Module ℂ M] [Module ℂᵐᵒᵖ M]
-  [IsCentralScalar ℂ M] (L : Submodule ℤ P) (φ : P → (Spec ⟨ℂ⟩ ⟶ X)) (w₀ : P)
+variable
+  (A) [AddObj A]
+  {X : Scheme} {ι P : Type} {T M : Type _} [FinComplexSpace.{0} P]
+  (V : Type)
+  [FinComplexSpace.{0} V] [AddCommGroup M] [Module ℂ M] [Module ℂᵐᵒᵖ M] [IsCentralScalar ℂ M]
+  (L : Submodule ℤ P) (φ : P → (Spec ⟨ℂ⟩ ⟶ X)) (w₀ : P)
 
 /-! ### Holomorphic families of points and their jets -/
 
-/-- For a family φ : T → X(ℂ) of complex points of the scheme X, a point w₀ of the space T and a
+/--
+For a family φ : T → X(ℂ) of complex points of the scheme X, a point w₀ of the space T and a
 property Q of functions T → ℂ: for each open U of X containing φ(w₀) and each function f on the
 points of X that is regular on U (at the points landing in U, f is given by a section over U), φ(w)
-lies in U for w near w₀, and the function f ∘ φ satisfies Q. -/
+lies in U for w near w₀, and the function f ∘ φ satisfies Q.
+-/
 def HasGermAt [TopologicalSpace T] (Q : (T → ℂ) → Prop) (φ : T → (Spec ⟨ℂ⟩ ⟶ X)) (w₀ : T) : Prop :=
-  ∀ ⦃U : X.Opens⦄ ⦃f : PointFn X⦄, f.IsRegularOn U → LandsIn (φ w₀) U →
-    (∀ᶠ w : T in nhds w₀, LandsIn (φ w) U) ∧ Q fun w : T ↦ f ⟨ℂ⟩ (φ w)
+  ∀ ⦃U : X.Opens⦄ ⦃f : PointFn X⦄,
+    f.IsRegularOn U → LandsIn (φ w₀) U
+      → (∀ᶠ w : T in nhds w₀, LandsIn (φ w) U) ∧ Q fun w : T ↦ f ⟨ℂ⟩ (φ w)
 
-/-- The family φ : P → X(ℂ) of complex points of the scheme X, P a finite-dimensional complex
-space, is holomorphic at w₀: functions regular near φ(w₀) pull back to functions analytic at w₀. -/
+/--
+The family φ : P → X(ℂ) of complex points of the scheme X, P a finite-dimensional complex
+space, is holomorphic at w₀: functions regular near φ(w₀) pull back to functions analytic at w₀.
+-/
 abbrev HolomorphicAt : Prop := HasGermAt (fun g : P → ℂ ↦ AnalyticAt ℂ g w₀) φ w₀
 
-/-- τ is a jet of the family φ at w₀ for ℓ. Here τ : Spec(ℂ ⊕ M) → X is a point of X over the
+/--
+τ is a jet of the family φ at w₀ for ℓ. Here τ : Spec(ℂ ⊕ M) → X is a point of X over the
 trivial square-zero extension ℂ ⊕ M of ℂ by the ℂ-module M, and ℓ sends differentials on P to M. The
 condition: τ lands in every open U that contains φ(w₀), and s(τ) = s(φ w₀) + ℓ(d(s ∘ φ) at w₀) for
-every section s of the structure sheaf over U. -/
+every section s of the structure sheaf over U.
+-/
 def IsJet (ℓ : (P →ₗ[ℂ] ℂ) →ₗ[ℂ] M) (τ : Spec ⟨TrivSqZeroExt ℂ M⟩ ⟶ X) : Prop :=
-  ∀ (U : X.Opens) (s : Γ(X, U)), LandsIn (φ w₀) U → LandsIn τ U ∧
-    PointFn.ofSection s ⟨TrivSqZeroExt ℂ M⟩ τ = .inl (PointFn.ofSection s ⟨ℂ⟩ (φ w₀)) +
-      .inr (ℓ (fderiv ℂ (fun w : P ↦ PointFn.ofSection s ⟨ℂ⟩ (φ w)) w₀))
+  ∀ (U : X.Opens) (s : Γ(X, U)),
+    LandsIn (φ w₀) U
+      → LandsIn τ U
+        ∧ PointFn.ofSection s ⟨TrivSqZeroExt ℂ M⟩ τ
+          = .inl (PointFn.ofSection s ⟨ℂ⟩ (φ w₀))
+            + .inr (ℓ (fderiv ℂ (fun w : P ↦ PointFn.ofSection s ⟨ℂ⟩ (φ w)) w₀))
 
-/-- φ is constant to first order at w₀ in the direction v: the constant point φ(w₀), seen over the
+/--
+φ is constant to first order at w₀ in the direction v: the constant point φ(w₀), seen over the
 dual numbers, is the jet of φ for evaluation of differentials at v. Equivalently
 (`New.isFirstOrderConst_iff`), d(s ∘ φ)(v) = 0 at w₀ for every section s over an open that contains
-φ(w₀). -/
+φ(w₀).
+-/
 abbrev IsFirstOrderConst (v : P) : Prop :=
   IsJet φ w₀ (LinearMap.applyₗ v) (specMap (algebraMap ℂ (TrivSqZeroExt ℂ ℂ)) ≫ φ w₀)
 
-/-- φ is a holomorphic immersion at w₀: it is holomorphic there, and constant to first order
-only in the direction 0. -/
+/--
+φ is a holomorphic immersion at w₀: it is holomorphic there, and constant to first order
+only in the direction 0.
+-/
 def IsHolomorphicImmersionAt : Prop :=
   HolomorphicAt φ w₀ ∧ ∀ v : P, IsFirstOrderConst φ w₀ v → v = 0
 
 /-! ### Uniformisations and theta coordinates -/
 
-/-- A uniformisation of A by V, for a commutative group object A over Spec O (`New.AddObj`), O a
+/--
+A uniformisation of A by V, for a commutative group object A over Spec O (`New.AddObj`), O a
 valuation ring of ℂ, and a finite-dimensional complex space V: a surjective homomorphism from V to
 the sections of A over O whose kernel is a full-rank lattice, which is a holomorphic immersion on
-complex points, and through which every homomorphism holomorphic at 0 factors ℂ-linearly. -/
+complex points, and through which every homomorphism holomorphic at 0 factors ℂ-linearly.
+-/
 structure Uniformisation where
   /-- The uniformising map, an additive map from `V` to the sections of `A` over `O`. -/
   expMap : V →+ (𝟙_ (Over (Spec ⟨O⟩)) ⟶ A)
@@ -210,21 +233,25 @@ structure Uniformisation where
   eq_zero_iff (z : V) : z ∈ lattice ↔ expMap z = 0
   /-- On complex points the uniformising map is a holomorphic immersion at every point. -/
   immersive (z : V) : IsHolomorphicImmersionAt (atGeneric expMap) z
-  /-- Every additive map `γ` to the sections that is holomorphic at `0` factors through the
-  uniformising map by a continuous `ℂ`-linear map. -/
-  universal {W : Type} [FinComplexSpace W] (γ : W →+ (𝟙_ (Over (Spec ⟨O⟩)) ⟶ A)) :
-      HolomorphicAt (atGeneric γ) 0 → ∃ F : W →L[ℂ] V, ∀ z : W, expMap (F z) = γ z
+  /--
+  Every additive map `γ` to the sections that is holomorphic at `0` factors through the
+  uniformising map by a continuous `ℂ`-linear map.
+  -/
+  universal {W : Type} [FinComplexSpace W] (γ : W →+ (𝟙_ (Over (Spec ⟨O⟩)) ⟶ A))
+    : HolomorphicAt (atGeneric γ) 0 → ∃ F : W →L[ℂ] V, ∀ z : W, expMap (F z) = γ z
 
 attribute [instance] Uniformisation.isFullRankLattice
 
 attribute [simp, grind =] Uniformisation.eq_zero_iff
 
-/-- Theta coordinates for a family φ : P → X(ℂ) of complex points and a lattice L in P: the line
+/--
+Theta coordinates for a family φ : P → X(ℂ) of complex points and a lattice L in P: the line
 bundle N is a linear system (`New.LineBundle.IsLinearSystem`), (B, χ) are Appell–Humbert data
 for L, with B a form on P, and θ(z) gives homogeneous coordinates of φ(z), each θ_i being a theta
-function of type (B, χ). -/
-structure HasThetaCoords (N : LineBundle X ι) (B : ThetaTori.LatticeForm L) (χ : P → ℂ)
-    (θ : P → ι → ℂ) where
+function of type (B, χ).
+-/
+structure HasThetaCoords
+    (N : LineBundle X ι) (B : ThetaTori.LatticeForm L) (χ : P → ℂ) (θ : P → ι → ℂ) where
   /-- `N` is a linear system. -/
   isLinearSystem : N.IsLinearSystem
   /-- `(B, χ)` are Appell–Humbert data for the lattice `L`. -/
@@ -265,21 +292,30 @@ attribute [local instance low] Fintype.ofFinite
 
 section Germs
 
-variable {X Y : Scheme} {ι : Type} {T : Type*} {U : X.Opens} {Q : (T → ℂ) → Prop}
-  {N : LineBundle X ι} [TopologicalSpace T] {φ : T → (Spec (CommRingCat.of ℂ) ⟶ X)} {w₀ : T}
+variable
+  {X Y : Scheme} {ι : Type} {T : Type*} {U : X.Opens} {Q : (T → ℂ) → Prop} {N : LineBundle X ι}
+  [TopologicalSpace T]
+  {φ : T → (Spec (CommRingCat.of ℂ) ⟶ X)} {w₀ : T}
 
-/-- Every function in `Q` is continuous at `w₀`. `Q` also contains every function that near `w₀` is
-an analytic function of finitely many functions in `Q`. -/
+/--
+Every function in `Q` is continuous at `w₀`. `Q` also contains every function that near `w₀` is
+an analytic function of finitely many functions in `Q`.
+-/
 class GermClass (Q : (T → ℂ) → Prop) (w₀ : T) where
-  /-- A finite family `p` of functions in the class is continuous at `w₀`, and the class contains
-  every function that agrees near `w₀` with `g ∘ p` for some `g` analytic at `p w₀`. -/
-  comp {ι : Type} [Fintype ι] {p : T → ι → ℂ} : (∀ i : ι, Q (p · i)) →
-    ContinuousAt p w₀ ∧
-      ∀ {g : (ι → ℂ) → ℂ} {f : T → ℂ}, AnalyticAt ℂ g (p w₀) → g ∘ p =ᶠ[𝓝 w₀] f → Q f
+  /--
+  A finite family `p` of functions in the class is continuous at `w₀`, and the class contains
+  every function that agrees near `w₀` with `g ∘ p` for some `g` analytic at `p w₀`.
+  -/
+  comp {ι : Type} [Fintype ι] {p : T → ι → ℂ}
+    : (∀ i : ι, Q (p · i))
+      → ContinuousAt p w₀
+        ∧ ∀ {g : (ι → ℂ) → ℂ} {f : T → ℂ}, AnalyticAt ℂ g (p w₀) → g ∘ p =ᶠ[𝓝 w₀] f → Q f
 
 instance : GermClass (ContinuousAt · w₀) w₀ where
-  comp h_cont := ⟨continuousAt_pi.mpr h_cont,
-    fun hg h_eq ↦ (hg.continuousAt.comp (continuousAt_pi.mpr h_cont)).congr h_eq⟩
+  comp h_cont := ⟨
+    continuousAt_pi.mpr h_cont,
+    fun hg h_eq ↦ (hg.continuousAt.comp (continuousAt_pi.mpr h_cont)).congr h_eq
+  ⟩
 
 namespace HasGermAt
 
@@ -415,12 +451,13 @@ end HasGermAt
 
 end Germs
 
-variable {X Y S : Scheme} {P : Type _} [FinComplexSpace P] {s : X ⟶ S}
-  {φ ψ : P → (Spec (CommRingCat.of ℂ) ⟶ X)} {w₀ : P} {V M : Type}
+variable
+  {X Y S : Scheme} {P : Type _} [FinComplexSpace P]
+  {s : X ⟶ S} {φ ψ : P → (Spec (CommRingCat.of ℂ) ⟶ X)} {w₀ : P} {V M : Type}
   {A : Over (Spec (CommRingCat.of ℂ))} [FinComplexSpace V] [AddObj A]
-  (u : Uniformisation (O := ℂ) A V) [AddCommGroup M] [Module ℂ M] [Module ℂᵐᵒᵖ M]
-  [IsCentralScalar ℂ M] {ℓ : (P →ₗ[ℂ] ℂ) →ₗ[ℂ] M}
-  {τ τ' : Spec (CommRingCat.of (TrivSqZeroExt ℂ M)) ⟶ X} {v₀ : V}
+  (u : Uniformisation (O := ℂ) A V)
+  [AddCommGroup M] [Module ℂ M] [Module ℂᵐᵒᵖ M] [IsCentralScalar ℂ M]
+  {ℓ : (P →ₗ[ℂ] ℂ) →ₗ[ℂ] M} {τ τ' : Spec (CommRingCat.of (TrivSqZeroExt ℂ M)) ⟶ X} {v₀ : V}
   {b : Spec (CommRingCat.of ℂ) ⟶ S} {g : V → P}
 
 instance : GermClass (AnalyticAt ℂ · w₀) w₀ where
@@ -751,9 +788,11 @@ open Int Complex AddSubgroup LinearMap ComplexConjugate CategoryTheory MonoidalC
 
 namespace New
 
-variable {O : Type} [CommRing O] [ValuativeArc O]
-  {A : Over (AlgebraicGeometry.Spec (CommRingCat.of O))} [AddObj A] {V : Type} {V' : Type*}
-  [FinComplexSpace V] [FinComplexSpace V'] (u : Uniformisation (O := O) A V)
+variable
+  {O : Type} [CommRing O] [ValuativeArc O]
+  {A : Over (AlgebraicGeometry.Spec (CommRingCat.of O))} [AddObj A]
+  {V : Type} {V' : Type*} [FinComplexSpace V] [FinComplexSpace V']
+  (u : Uniformisation (O := O) A V)
 
 /-- Two continuous ℂ-linear maps into the uniformising space are equal if they agree after the
 uniformisation `u.expMap`. -/
@@ -848,12 +887,15 @@ namespace New
 
 open CategoryTheory Complex Finset LineBundle Submodule
 
-variable {O : Type} [CommRing O] [ValuativeArc O]
+variable
+  {O : Type} [CommRing O] [ValuativeArc O]
   {X : Over (AlgebraicGeometry.Spec (CommRingCat.of O))} {ι κ V : Type} {V' : Type}
-  [FinComplexSpace V] [FinComplexSpace V'] {L : Submodule ℤ V}
-  {B B' : ThetaTori.LatticeForm L} {χ χ' : V → ℂ} {θ : V → ι → ℂ} {θ' : V → κ → ℂ}
-  {S : AlgebraicGeometry.Scheme} {e : V → (AlgebraicGeometry.Spec (CommRingCat.of ℂ) ⟶ S)}
-  {N : LineBundle S ι} {M : LineBundle S κ} [AddObj X] (u : Uniformisation (O := O) X V)
+  [FinComplexSpace V] [FinComplexSpace V']
+  {L : Submodule ℤ V} {B B' : ThetaTori.LatticeForm L} {χ χ' : V → ℂ} {θ : V → ι → ℂ}
+  {θ' : V → κ → ℂ} {S : AlgebraicGeometry.Scheme}
+  {e : V → (AlgebraicGeometry.Spec (CommRingCat.of ℂ) ⟶ S)} {N : LineBundle S ι}
+  {M : LineBundle S κ} [AddObj X]
+  (u : Uniformisation (O := O) X V)
 
 /-- On complex points, the uniformising map at `z + a` is its value at `z` followed by the
 translation by the section `u.expMap a`. -/

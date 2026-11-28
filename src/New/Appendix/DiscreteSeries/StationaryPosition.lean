@@ -47,8 +47,10 @@ open Polynomial
 
 variable {L L' d : ℕ} {μ : Fin L → ℝ} {μ' : Fin L' → ℝ} {D : ℝ}
 
-/-- The reals `μ 0 > μ 1 > …`, the roots of `p = nodal univ μ`, lie below the reals
-`μ' 0 < μ' 1 < …`, the roots of `q = nodal univ μ'`. -/
+/--
+The reals `μ 0 > μ 1 > …`, the roots of `p = nodal univ μ`, lie below the reals
+`μ' 0 < μ' 1 < …`, the roots of `q = nodal univ μ'`.
+-/
 structure AreOppositeNodes (μ : Fin L → ℝ) (μ' : Fin L' → ℝ) : Prop where
   /-- The roots of `p` decrease. -/
   strictAnti : StrictAnti μ
@@ -57,20 +59,23 @@ structure AreOppositeNodes (μ : Fin L → ℝ) (μ' : Fin L' → ℝ) : Prop wh
   /-- Each root of `p` is below each root of `q`. -/
   lt (i : Fin L) (j : Fin L') : μ i < μ' j
 
-/-- The vector `[F]` of a real polynomial `F`, with the coordinates
+/--
+The vector `[F]` of a real polynomial `F`, with the coordinates
 `F (μ i) |p' (μ i) q (μ i)| ^ (-1 / 2)`, where `p` and `q` are the monic polynomials with the roots
-`μ i` and `μ' j`. -/
+`μ i` and `μ' j`.
+-/
 def polyVec (μ : Fin L → ℝ) (μ' : Fin L' → ℝ) (F : ℝ[X]) (i : Fin L) : ℝ :=
-  F.eval (μ i) / √|(derivative (nodal univ μ)).eval (μ i) * (nodal univ μ').eval (μ i)|
+  F.eval (μ i) / √ |(derivative (nodal univ μ)).eval (μ i) * (nodal univ μ').eval (μ i)|
 
-/-- The factor `|p (μ' j) / q' (μ' j)| ^ (1 / 2)`, where `p` and `q` are the monic polynomials with
-the roots `μ i` and `μ' j`. It is chosen to normalize the vector `[q / (t - μ' j)]`. -/
+/--
+The factor `|p (μ' j) / q' (μ' j)| ^ (1 / 2)`, where `p` and `q` are the monic polynomials with
+the roots `μ i` and `μ' j`. It is chosen to normalize the vector `[q / (t - μ' j)]`.
+-/
 def isometryScale (μ : Fin L → ℝ) (μ' : Fin L' → ℝ) (j : Fin L') : ℝ :=
-  √|(nodal univ μ).eval (μ' j) / (derivative (nodal univ μ')).eval (μ' j)|
+  √ |(nodal univ μ).eval (μ' j) / (derivative (nodal univ μ')).eval (μ' j)|
 
 /-- The bilinear form `x₀ y₀ - x₁ y₁ + …` with the alternating signs `+, -, …` on real vectors. -/
-def alternatingSignForm (x y : Fin L → ℝ) : ℝ :=
-  ∑ i : Fin L, (-1) ^ (i : ℕ) * (x i * y i)
+def alternatingSignForm (x y : Fin L → ℝ) : ℝ := ∑ i : Fin L, (-1) ^ (i : ℕ) * (x i * y i)
 
 lemma mul_polyVec (F : ℝ[X]) (i : Fin L) : μ i * polyVec μ μ' F i = polyVec μ μ' (X * F) i := by
   rw [polyVec, polyVec, eval_mul, eval_X, mul_div_assoc]
@@ -267,8 +272,10 @@ lemma isometryScale_mul_alternatingSignForm (h : AreOppositeNodes μ μ') (hL : 
 
 end AreOppositeNodes
 
-/-- Any two of the reals `μ i` and `μ' j`, the roots of `p = nodal univ μ` and `q = nodal univ μ'`,
-differ by at least `1`, and each `μ i` is within `D ≥ 1` of `0` and of every `μ' j`. -/
+/--
+Any two of the reals `μ i` and `μ' j`, the roots of `p = nodal univ μ` and `q = nodal univ μ'`,
+differ by at least `1`, and each `μ i` is within `D ≥ 1` of `0` and of every `μ' j`.
+-/
 structure AreSeparatedNodes (μ : Fin L → ℝ) (μ' : Fin L' → ℝ) (D : ℝ) : Prop where
   /-- The bound is at least `1`. -/
   one_le : 1 ≤ D
@@ -383,26 +390,34 @@ section Matrices
 
 open Matrix ComplexConjugate
 
-variable {n m X : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X]
+variable
+  {n m X : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X]
   {ε : n → ℤˣ} {η : m → ℤˣ} {l : HCParam ε} {k : HCParam η} {L L' d : ℕ}
   {e : X ⊕ Fin L ≃ n} {e' : X ⊕ Fin L' ≃ m} {B D : ℝ} {μ : Fin L → ℝ} {μ' : Fin L' → ℝ}
 
-/-- The matrix with the columns `v_{a + 1} = [t ^ a q]`, `a ≤ d`, where `q = nodal univ μ'` and
+/--
+The matrix with the columns `v_{a + 1} = [t ^ a q]`, `a ≤ d`, where `q = nodal univ μ'` and
 `[F] = polyVec μ μ' F`: through `e : X ⊕ Fin L ≃ n` the column has these coordinates on `Fin L` and
-vanishes on `X`. -/
-def positionVec (e : X ⊕ Fin L ≃ n) (μ : Fin L → ℝ) (μ' : Fin L' → ℝ) (d : ℕ) :
-    Matrix n (Fin (d + 1)) ℂ :=
-  (fromRows 0 (of fun (i : Fin L) (a : Fin (d + 1)) ↦
-    (polyVec μ μ' (Polynomial.X ^ a.val * nodal univ μ') i : ℂ))).submatrix e.symm id
+vanishes on `X`.
+-/
+def positionVec (e : X ⊕ Fin L ≃ n) (μ : Fin L → ℝ) (μ' : Fin L' → ℝ) (d : ℕ)
+    : Matrix n (Fin (d + 1)) ℂ :=
+  (fromRows 0
+    (of fun (i : Fin L) (a : Fin (d + 1)) ↦
+      (polyVec μ μ' (Polynomial.X ^ a.val * nodal univ μ') i : ℂ))).submatrix e.symm id
 
-/-- The matrix `i₀` that, through `e` and `e'`, is `1` on `ℂ^X` and sends the `j`th of the other
+/--
+The matrix `i₀` that, through `e` and `e'`, is `1` on `ℂ^X` and sends the `j`th of the other
 basis vectors to the vector `[q_j]`, where `q_j = nodal (univ.erase j) μ'` and
-`[F] = polyVec μ μ' F`, scaled by `isometryScale μ μ' j`. -/
-def positionIsometry [DecidableEq X] (e : X ⊕ Fin L ≃ n) (e' : X ⊕ Fin L' ≃ m) (μ : Fin L → ℝ)
-    (μ' : Fin L' → ℝ) : Matrix n m ℂ :=
-  (fromBlocks 1 0 0 (of fun (i : Fin L) (j : Fin L') ↦
-    (↑(isometryScale μ μ' j * polyVec μ μ' (nodal (univ.erase j) μ') i) : ℂ))).submatrix
-    e.symm e'.symm
+`[F] = polyVec μ μ' F`, scaled by `isometryScale μ μ' j`.
+-/
+def positionIsometry
+    [DecidableEq X] (e : X ⊕ Fin L ≃ n) (e' : X ⊕ Fin L' ≃ m) (μ : Fin L → ℝ) (μ' : Fin L' → ℝ)
+    : Matrix n m ℂ :=
+  (fromBlocks 1 0 0
+      (of fun (i : Fin L) (j : Fin L') ↦
+        (↑(isometryScale μ μ' j * polyVec μ μ' (nodal (univ.erase j) μ') i) : ℂ))).submatrix e.symm
+    e'.symm
 
 omit [Fintype n] [DecidableEq n] [Fintype X] in
 /-- The columns of `positionVec e μ μ' d` vanish on the coordinates in `X`. -/
@@ -689,60 +704,73 @@ lemma IsPosition.formAdjoint_mul_mul_eq {v : Matrix n (Fin (d + 1)) ℂ} {i₀ :
       simp only [formAdjoint, Matrix.mul_assoc, hC, Matrix.mul_add]
     _ = M' := by simp [h.isometry, h.orthogonal, signMatrix_mul_self]
 
-/-- **The stationary position.** Let `l` be steep for `(X, L, B)` with `B ≥ 1`: on `X` the signs `ε`
+/--
+**The stationary position.** Let `l` be steep for `(X, L, B)` with `B ≥ 1`: on `X` the signs `ε`
 are `+1` and the weight `μ` of its lowest `K`-type is `0`, and on the other `L` coordinates the
 signs are `+, -, …` and `μ` decreases strictly in `[-3 B, -B]`. Let the weight `μ'` of the lowest
 `K`-type of `k` vanish on `X`, where the signs `η` are `+1`, and increase strictly in `[0, B']` on
 the other `L'` coordinates, where the signs are `+, -, …`. Let `B' ≥ 0` and `L = L' + 2 d + 1`. Then
 there is a stationary position `(v, i₀)` with `j₀ = d + 1` vectors. Moreover `v_{j₀}` has the norm
 `(-1) ^ L'`, and the entries of the `v_j`, of `i₀` and of `μ ^ a v₁` for `a ≤ 2 d` have modulus at
-most `(3 B + B') ^ L`. -/
-theorem IsSteep.exists_isStationary {l : HCParam ε} {k : HCParam η} {L L' d : ℕ}
-    {e : X ⊕ Fin L ≃ n} {e' : X ⊕ Fin L' ≃ m} {B B' : ℝ} (hl : IsSteep l B e) (hB : 1 ≤ B)
-    (hL : L = L' + 2 * d + 1) (hX_sign : ∀ x : X, η (e' (Sum.inl x)) = 1)
+most `(3 B + B') ^ L`.
+-/
+theorem IsSteep.exists_isStationary
+    {l : HCParam ε} {k : HCParam η} {L L' d : ℕ} {e : X ⊕ Fin L ≃ n} {e' : X ⊕ Fin L' ≃ m}
+    {B B' : ℝ} (hl : IsSteep l B e) (hB : 1 ≤ B) (hL : L = L' + 2 * d + 1)
+    (hX_sign : ∀ x : X, η (e' (Sum.inl x)) = 1)
     (hX_zero : ∀ x : X, k.lowestKType (e' (Sum.inl x)) = 0)
     (h_alt : ∀ j : Fin L', η (e' (Sum.inr j)) = (-1) ^ j.val)
     (h_mono : StrictMono fun j : Fin L' ↦ k.lowestKType (e' (Sum.inr j))) (hB' : 0 ≤ B')
-    (h_mem : ∀ j : Fin L', (k.lowestKType (e' (Sum.inr j)) : ℝ) ∈ Set.Icc 0 B') :
-    ∃ (v : Matrix n (Fin (d + 1)) ℂ) (i₀ : Matrix n m ℂ),
-      IsStationary l k e e' d v i₀ ∧
-      (vᴴ * signMatrix ε * v) (Fin.last d) (Fin.last d) = (-1) ^ L' ∧
-      (∀ (i : n) (a : Fin (d + 1)), ‖v i a‖ ≤ (3 * B + B') ^ L) ∧
-      (∀ (i : n) (j : m), ‖i₀ i j‖ ≤ (3 * B + B') ^ L) ∧
-      ∀ a : ℕ, a ≤ 2 * d → ∀ i : n,
-        ‖(intDiagonal l.lowestKType ^ a *ᵥ v.col 0) i‖ ≤ (3 * B + B') ^ L := by
+    (h_mem : ∀ j : Fin L', (k.lowestKType (e' (Sum.inr j)) : ℝ) ∈ Set.Icc 0 B')
+    : ∃ (v : Matrix n (Fin (d + 1)) ℂ) (i₀ : Matrix n m ℂ),
+      IsStationary l k e e' d v i₀ ∧ (vᴴ * signMatrix ε * v) (Fin.last d) (Fin.last d) = (-1) ^ L'
+        ∧ (∀ (i : n) (a : Fin (d + 1)), ‖v i a‖ ≤ (3 * B + B') ^ L)
+        ∧ (∀ (i : n) (j : m), ‖i₀ i j‖ ≤ (3 * B + B') ^ L)
+        ∧ ∀ a : ℕ,
+          a ≤ 2 * d
+            → ∀ i : n, ‖(intDiagonal l.lowestKType ^ a *ᵥ v.col 0) i‖ ≤ (3 * B + B') ^ L := by
   let μ (i : Fin L) : ℝ := l.lowestKType (e (Sum.inr i))
   let μ' (j : Fin L') : ℝ := k.lowestKType (e' (Sum.inr j))
   have hμ (i : Fin L) : -3 * B ≤ μ i ∧ μ i ≤ -B := Set.mem_Icc.1 (hl.weight_mem i)
   have hμ' (j : Fin L') : 0 ≤ μ' j ∧ μ' j ≤ B' := Set.mem_Icc.1 (h_mem j)
-  have h_opposite : AreOppositeNodes μ μ' :=
-    { strictAnti := Int.cast_strictMono.comp_strictAnti hl.weight_strictAnti
-      strictMono := Int.cast_strictMono.comp h_mono
-      lt i j := by linarith [hμ i, hμ' j] }
+  have h_opposite : AreOppositeNodes μ μ' := {
+    strictAnti := Int.cast_strictMono.comp_strictAnti hl.weight_strictAnti
+    strictMono := Int.cast_strictMono.comp h_mono
+    lt i j := by linarith [hμ i, hμ' j]
+  }
   -- The roots of `p q` are distinct integers, so they differ by at least `1`.
   have h_one_le {a b : ℤ} (hab : a ≠ b) : 1 ≤ |(a : ℝ) - b| :=
     mod_cast Int.one_le_abs (sub_ne_zero.2 hab)
-  have h_separated : AreSeparatedNodes μ μ' (3 * B + B') :=
-    { one_le := by linarith
-      pairwise_left i j hij := h_one_le (hl.weight_strictAnti.injective.ne hij)
-      pairwise_right i j hij := h_one_le (h_mono.injective.ne hij)
-      one_le_abs_sub i j := h_one_le (Int.cast_lt.1 (h_opposite.lt i j)).ne
-      abs_sub_le i j := abs_le.2 ⟨by linarith [hμ i, hμ' j], by linarith [hμ i, hμ' j]⟩
-      abs_le i := abs_le.2 ⟨by linarith [hμ i], by linarith [hμ i]⟩ }
+  have h_separated : AreSeparatedNodes μ μ' (3 * B + B') := {
+    one_le := by linarith
+    pairwise_left i j hij := h_one_le (hl.weight_strictAnti.injective.ne hij)
+    pairwise_right i j hij := h_one_le (h_mono.injective.ne hij)
+    one_le_abs_sub i j := h_one_le (Int.cast_lt.1 (h_opposite.lt i j)).ne
+    abs_sub_le i j := abs_le.2 ⟨by linarith [hμ i, hμ' j], by linarith [hμ i, hμ' j]⟩
+    abs_le i := abs_le.2 ⟨by linarith [hμ i], by linarith [hμ i]⟩
+  }
   let v : Matrix n (Fin (d + 1)) ℂ := positionVec e μ μ' d
   let i₀ : Matrix n m ℂ := positionIsometry e e' μ μ'
   have h_position : IsPosition ε η d v i₀ := hl.isPosition h_opposite hL hX_sign h_alt
-  obtain ⟨C, hC⟩ : ∃ C : Matrix (Fin (d + 1)) m ℂ,
-      intDiagonal l.lowestKType * i₀ = i₀ * intDiagonal k.lowestKType + v * C :=
+  obtain ⟨C, hC⟩
+      : ∃ C : Matrix (Fin (d + 1)) m ℂ,
+        intDiagonal l.lowestKType * i₀ = i₀ * intDiagonal k.lowestKType + v * C :=
     exists_intDiagonal_mul_positionIsometry hl.weight_eq_zero hX_zero (fun i ↦ rfl) fun j ↦ rfl
-  have h_stationary : IsStationary l k e e' d v i₀ :=
-    { h_position with
-      shift := intDiagonal_mul_positionVec fun i ↦ rfl
-      adjoint_weight_mul_eq := h_position.formAdjoint_mul_mul_eq hC
-      apply_inl := positionIsometry_apply_inl }
-  refine ⟨v, i₀, h_stationary, ?_, h_separated.norm_positionVec_le hL,
+  have h_stationary : IsStationary l k e e' d v i₀ := {
+    h_position with
+    shift := intDiagonal_mul_positionVec fun i ↦ rfl
+    adjoint_weight_mul_eq := h_position.formAdjoint_mul_mul_eq hC
+    apply_inl := positionIsometry_apply_inl
+  }
+  refine ⟨
+    v,
+    i₀,
+    h_stationary,
+    ?_,
+    h_separated.norm_positionVec_le hL,
     h_separated.norm_positionIsometry_le hL,
-    fun a ha ↦ h_separated.norm_pow_mulVec_positionVec_le hL (fun i ↦ rfl) ha⟩
+    fun a ha ↦ h_separated.norm_pow_mulVec_positionVec_le hL (fun i ↦ rfl) ha
+  ⟩
   rw [hl.gram_positionVec h_opposite hL, Fin.val_last, ite_eq_left (two_mul d).symm]
 
 end Matrices

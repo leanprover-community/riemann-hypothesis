@@ -315,19 +315,24 @@ lemma mem_span_monomialSection {f : ℂ → ℂ} {m : ℕ} (hf : f ∈ C.section
   rw [C.eq_of_mem_sections_of_eq_off_translate hf (hg₀_diff.add hg₁_diff) h_off]
   exact add_mem hg₀_mem hg₁_mem
 
-/-- The polynomial `R` is an integral expansion of `f` in degree `m` in the monomials
-`θ ^ (m - 2 i) σ ^ (2 i)`, which are `θ ^ m x ^ i` off `t + Λ`, where `x = translatedX`. -/
+/--
+The polynomial `R` is an integral expansion of `f` in degree `m` in the monomials
+`θ ^ (m - 2 i) σ ^ (2 i)`, which are `θ ^ m x ^ i` off `t + Λ`, where `x = translatedX`.
+-/
 structure IsIntegralEvenExpansion (m : ℕ) (f : ℂ → ℂ) (R : Polynomial ℂ) : Prop where
   /-- The coefficients of `R` are integral in `ℂ_p`. -/
   norm_coeff_le_one : ∀ i : ℕ, ‖ιₚ (R.coeff i)‖ ≤ 1
   /-- The degree of `R` is at most `m / 2`. -/
   two_mul_natDegree_le : 2 * R.natDegree ≤ m
   /-- The function `f` is `∑ Rᵢ θ ^ (m - 2 i) σ ^ (2 i)`, the sum being over `i ≤ m / 2`. -/
-  eq_sum : ∀ z : ℂ, f z = ∑ i ∈ Finset.range (m / 2 + 1),
-    R.coeff i * C.monomialSection (m - 2 * i, i, 0) z
+  eq_sum
+    : ∀ z : ℂ,
+      f z
+        = ∑ i ∈ Finset.range (m / 2 + 1),
+          R.coeff i * C.monomialSection (m - 2 * i, i, 0) z
   /-- The Taylor series of `f` at `0`, with `ιₚ` applied to the coefficients, is `θ ^ m R(x)`. -/
-  taylorVia_eq :
-    taylorVia ιₚ f = taylorVia ιₚ C.θ ^ m * (R.map ιₚ).aeval (taylorVia ιₚ C.translatedX)
+  taylorVia_eq
+    : taylorVia ιₚ f = taylorVia ιₚ C.θ ^ m * (R.map ιₚ).aeval (taylorVia ιₚ C.translatedX)
 
 /-- Let `C` be a CM lattice for a prime `d ≡ 7 mod 8`, with point `t` of order two, and let `ιₚ` be
 a `p`-adic place. Let `f` be an even section of degree `m` (a theta function for `Λ` with hermitian

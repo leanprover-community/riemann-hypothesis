@@ -74,27 +74,34 @@ namespace New.Exchange
 open Matrix MeasureTheory Measure Units MulAction Space Splitting Submodule Pointwise Function Equiv
   WeilData
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} [Fintype n] [DecidableEq n]
-  [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r']
+variable
+  {E : Type} [Field E] [CMType E] [WeilData E]
+  {n n' r r' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r]
+  [DecidableEq r] [Fintype r'] [DecidableEq r']
   {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
   {V : Space E r t} {V' : Space E r' t'} (A : W'.Splitting W Unit) (X : V'.Splitting V Unit)
   (a b : AutChar E)
 
-/-- The probability measure on the parameters of `lineRadical`: the product of the measures of
+/--
+The probability measure on the parameters of `lineRadical`: the product of the measures of
 adelic matrices modulo rational matrices. Integration against it is the mean over the radical of
-the stabiliser of the line modulo its rational points, that is, the constant term. -/
+the stabiliser of the line modulo its rational points, that is, the constant term.
+-/
 abbrev radicalMeasure : Measure (Matrix n Unit (𝔸 E) × Matrix Unit Unit (𝔸 E)) :=
   (ratMatrices E n Unit).quotMeasure.prod (ratMatrices E Unit Unit).quotMeasure
 
 open scoped Classical in
-/-- The term of the rational vector `x` of `V` in the constant term along the line of `A`: zero
+/--
+The term of the rational vector `x` of `V` in the constant term along the line of `A`: zero
 unless `x` is isotropic, and then the mean of the term of `x` in the theta kernel of `f` over the
-radical modulo its centre and its rational points. -/
+radical modulo its centre and its rational points.
+-/
 def constTermAt (x : Matrix r Unit E) (f : 𝒮 (W'.hom V)) : ℂ :=
   if xᴴ * V.J * x = 0 then
     ⨍ y : Matrix n Unit (𝔸 E), A.thetaTerm V 1 1 f (lineRadical A (y, 0)) x 1
       ∂(ratMatrices E n Unit).quotMeasure
-  else 0
+  else
+    0
 
 /-- The term of the rational vector `x` in the theta kernel at the point `lineRadical A q` of the
 radical: the central coordinate `q.2` acts by the character `ψ (tr (xᴴ J x q.2))`, where `ψ` is the
@@ -286,8 +293,10 @@ lemma radicalPoint_mul (x q : RadicalCoord E r) :
     match_scalars <;> grind
   rw [h_part, radicalPoint_hermitianPart, radicalPoint, radicalPoint, radicalElement_mul]
 
-/-- The radical of the stabiliser of the line of `X`, as a subgroup of the adelic unitary group of
-`V'`: the range of the coordinates `radicalPoint X`. -/
+/--
+The radical of the stabiliser of the line of `X`, as a subgroup of the adelic unitary group of
+`V'`: the range of the coordinates `radicalPoint X`.
+-/
 def radicalSubgroup : Subgroup (G E t') :=
   Subgroup.ofDiv (Set.range (radicalPoint X)) (Set.range_nonempty (radicalPoint X)) <| by
     rintro _ ⟨p, rfl⟩ _ ⟨q, rfl⟩
@@ -314,8 +323,7 @@ def radicalHomeomorph : RadicalCoord E r ≃ₜ radicalSubgroup X :=
   (isClosedEmbedding_radicalPoint X).toHomeomorph
 
 /-- The measure on the radical that corresponds to the additive Haar measure on its coordinates. -/
-def radicalHaar : Measure (radicalSubgroup X) :=
-  (volume.prod addHaar).map (radicalHomeomorph X)
+def radicalHaar : Measure (radicalSubgroup X) := (volume.prod addHaar).map (radicalHomeomorph X)
 
 /-- The measure `radicalHaar X` is a left Haar measure on the radical. -/
 instance isHaarMeasure_radicalHaar : IsHaarMeasure (radicalHaar X) := by
@@ -326,13 +334,15 @@ instance isHaarMeasure_radicalHaar : IsHaarMeasure (radicalHaar X) := by
     let T (q : RadicalCoord E r) : RadicalCoord E r :=
       (x.1 + q.1, x.2 + hermitianPart (toAdele (j : E) • x.1ᴴ * stdForm E t * q.1) + q.2)
     have hT : MeasurePreserving T (volume.prod addHaar) (volume.prod addHaar) :=
-      (measurePreserving_add_left _ x.1).skew_product (g := fun c b ↦ (T (c, b)).2)
+      (measurePreserving_add_left _ x.1).skew_product
+        (g := fun c b ↦ (T (c, b)).2)
         (Continuous.measurable (by fun_prop [hermitianPart]))
         (by simp [T, map_add_left_eq_self, Matrix.mul_assoc])
     refine ((e.measurable.measurePreserving _).of_semiconj hT (fun q ↦ ?_) (by fun_prop)).map_eq
     exact Subtype.ext (radicalPoint_mul X x q).symm
-  exact { IsFiniteMeasureOnCompacts.map _ e, h_inv,
-    e.continuous.isOpenPosMeasure_map e.surjective with }
+  exact {
+    IsFiniteMeasureOnCompacts.map _ e, h_inv, e.continuous.isOpenPosMeasure_map e.surjective with
+  }
 
 /-- An integral over the radical, written in the coordinates `radicalPoint X`. -/
 lemma lintegral_radicalHaar (f : G E t' → ENNReal) :
@@ -421,10 +431,11 @@ lemma lintegral_levi_unfold (f : (𝔸 E)ˣ × G E t → ENNReal) (hf : Measurab
 /-- The rational isotropic line of the splitting `X`: the span of the vector `X.k`. -/
 def splittingLine : Submodule E (r' → E) := E ∙ X.k.col ()
 
-/-- The rational points of the stabiliser of the isotropic line `splittingLine X`, as a subgroup of
-the adelic unitary group of `V'`. -/
-def lineStabilizer : Subgroup (G E t') :=
-  (stabilizer (U V'.J) (splittingLine X)).map V'.ratEmbed
+/--
+The rational points of the stabiliser of the isotropic line `splittingLine X`, as a subgroup of
+the adelic unitary group of `V'`.
+-/
+def lineStabilizer : Subgroup (G E t') := (stabilizer (U V'.J) (splittingLine X)).map V'.ratEmbed
 
 /-- The rational stabiliser of the isotropic line of `X` consists of the rational points (`V'.Γ`)
 that multiply the vector `X.kAdelic` spanning the line by a unit of `E`. -/
@@ -452,8 +463,8 @@ lemma mem_lineStabilizer_iff (g : G E t') :
 
 /-- The rational stabiliser of the line is discrete, as a subset of the rational points. -/
 instance : DiscreteTopology (lineStabilizer X) :=
-  DiscreteTopology.of_subset (inferInstance : DiscreteTopology V'.Γ)
-    fun g hg ↦ ((mem_lineStabilizer_iff X g).1 hg).1
+  DiscreteTopology.of_subset (inferInstance : DiscreteTopology V'.Γ) fun g hg ↦
+    ((mem_lineStabilizer_iff X g).1 hg).1
 
 /-- The embedding `lineLevi X` of the Levi factor is continuous. -/
 lemma continuous_lineLevi : Continuous (lineLevi X) := by
@@ -571,8 +582,10 @@ section Lines
 
 variable (f : 𝒮 (W'.hom V')) (g : G E s')
 
-/-- The sum of the terms `constTermAt` of the datum `f` moved by `(g, h)`, over the rational
-vectors that span `y`. -/
+/--
+The sum of the terms `constTermAt` of the datum `f` moved by `(g, h)`, over the rational
+vectors that span `y`.
+-/
 def lineSum (y : Submodule E (r' → E)) (h : G E t') : ℂ :=
   ∑' x : (fun x : r' → E ↦ E ∙ x) ⁻¹' {y},
     constTermAt A (replicateCol Unit x.val) (pairWeil W' V' a b (g, h) f)

@@ -68,8 +68,10 @@ open MeasureTheory Measure Matrix Real Fintype Set Complex ComplexConjugate Real
 
 variable {κ : Type} [Fintype κ] [DecidableEq κ]
 
-/-- The place `ℂ`: `τ = 1/2`, `δ = i/2`, `ν` the image of Lebesgue measure under `r ↦ r i`,
-modulus `‖x‖ ^ 2`, character `x ↦ exp (x - x̄)` and constant `c = π ^ 2`. -/
+/--
+The place `ℂ`: `τ = 1/2`, `δ = i/2`, `ν` the image of Lebesgue measure under `r ↦ r i`,
+modulus `‖x‖ ^ 2`, character `x ↦ exp (x - x̄)` and constant `c = π ^ 2`.
+-/
 @[simps]
 instance complexPlace : Place ℂ := by
   -- The kernel is the Gaussian `exp (-‖x‖²)`, and `gauss` says that its integral is `π`.
@@ -82,13 +84,14 @@ instance complexPlace : Place ℂ := by
     (skewMeasure := volume.map fun r : ℝ ↦ ⟨r * I, by simp [skewAdjoint.mem_iff]⟩)
     (modulus := ⟨⟨(‖·‖ₑ ^ 2), by norm_num⟩, by norm_num [mul_pow]⟩)
     (ψ := ⟨wave, by norm_num [wave], by simp [← Complex.exp_add, sub_add_sub_comm, wave]⟩)
-    (kernelBound := .ofReal (π ^ 2))
-    (haar := ?haar) (continuous_psi := show Continuous wave by fun_prop [wave])
+    (kernelBound := .ofReal (π ^ 2)) (haar := ?haar)
+    (continuous_psi := show Continuous wave by fun_prop [wave])
     (measurable_modulus := show Measurable fun x : ℂ ↦ ‖x‖ₑ ^ 2 by fun_prop)
     (star_skewUnit := by norm_num [neg_div]) (measurePreserving_split := ⟨by fun_prop, ?split⟩)
     (modulus_star_and_neg := by norm_num)
-    (map_mulVec_volume := by norm_num +contextual
-                               [Fock.map_mulVec_addHaar_eq_smul, ENNReal.inv_pow])
+    (map_mulVec_volume := by
+      norm_num +contextual
+        [Fock.map_mulVec_addHaar_eq_smul, ENNReal.inv_pow])
     (ae_isUnit := by simpa using ae_ne volume 0)
     (exists_locallyIntegrable_bound := ⟨(‖·‖⁻¹), ?int, by norm_num [ENNReal.inv_pow]⟩)
     (norm_psi := by norm_num)
@@ -96,10 +99,17 @@ instance complexPlace : Place ℂ := by
       ⟨_, by fun_prop, integrable, fun _ ↦ (exp_pos _).le, by norm_num, ?ker⟩)
   case haar =>
     -- `r ↦ r * I` is a bicontinuous additive isomorphism onto the skew elements
-    refine AddEquiv.isAddHaarMeasure_map _ ⟨⟨_, (·.val.im), by
-      norm_num [LeftInverse], by
-      simp_all [RightInverse, Complex.ext_iff, self_eq_neg, LeftInverse, skewAdjoint.mem_iff]⟩,
-      by norm_num [add_mul]⟩ ?_ ?_
+    refine AddEquiv.isAddHaarMeasure_map _
+      ⟨
+        ⟨
+          _,
+          (·.val.im),
+          by norm_num [LeftInverse],
+          by simp_all [RightInverse, Complex.ext_iff, self_eq_neg, LeftInverse, skewAdjoint.mem_iff]
+        ⟩,
+        by norm_num [add_mul]
+      ⟩
+      ?_ ?_
     all_goals
       norm_num
       fun_prop
@@ -110,31 +120,33 @@ instance complexPlace : Place ℂ := by
     simp [Complex.ext_iff, funext_iff]
   -- the bound `‖x‖⁻¹` is locally integrable, ℂ having real dimension 2
   case int =>
-    refine locallyIntegrable_of_norm_le_rpow (C := 1) (α := 1) ?_ ?_ ?_ (by fun_prop) <;>
-      norm_num [rpow_neg_one]
+    refine locallyIntegrable_of_norm_le_rpow (C := 1) (α := 1) ?_ ?_ ?_ (by fun_prop)
+      <;> norm_num [rpow_neg_one]
   case ker =>
     -- by `fourier` the inner integral is `π exp (-‖z‖²)`, whose integral is `π ^ 2`
-    simp_all [← Complex.exp_add, ↓sub_conj, mul_right_comm _ _ I, ← sub_eq_add_neg, sq,
+    simp_all [← Complex.exp_add, ↓ sub_conj, mul_right_comm _ _ I, ← sub_eq_add_neg, sq,
       ← ofReal_norm, abs_of_pos pi_pos, neg_add_eq_sub, integral_const_mul, wave, norm_exp]
     grind
 
-/-- For the fixed index k₀ of κ (`𝔰.k₀`), the basis of V_ϱ = X₀ ⊕ ℂz made of the hyperbolic pair
-(1+i)/2·(x_{k₀} ± z) and the orthonormal vectors x_i, i ≠ k₀. -/
-def complexBasis (𝔰 : Shape) : HyperbolicBasis {i // i ≠ 𝔰.k₀} (𝔰.middleGram (1 : ℂ)) 0 :=
-  { basisMatrix :=
-      of fun i ↦
-        (fun a ↦
-          (1 + I) / 2 *
-            (Pi.single 𝔰.k₀ 1 ⊕ᵥ ![1, -1] a) i) ⊕ᵥ (0 ⊕ᵥ (inclMatrix ℂ (inl ·.val) i ⊕ᵥ 0))
-    gram_eq := by
-      -- entry by entry, the products of the columns are those of a plane and an orthonormal family
-      simp [← ext_iff, middleGram, map_ofNat, inclMatrix, Matrix.mul_apply, Pi.single_apply,
-        Matrix.one_apply]
-      grind [I_sq]
-    card_eq := by
-      simp
-      grind [card_pos_iff.2 ⟨𝔰.k₀⟩]
-    modulus_det := by simp [middleGram] }
+/--
+For the fixed index k₀ of κ (`𝔰.k₀`), the basis of V_ϱ = X₀ ⊕ ℂz made of the hyperbolic pair
+(1+i)/2·(x_{k₀} ± z) and the orthonormal vectors x_i, i ≠ k₀.
+-/
+def complexBasis (𝔰 : Shape) : HyperbolicBasis {i // i ≠ 𝔰.k₀} (𝔰.middleGram (1 : ℂ)) 0 := {
+  basisMatrix :=
+    of fun i ↦
+      (fun a ↦ (1 + I) / 2 * (Pi.single 𝔰.k₀ 1 ⊕ᵥ ![1, -1] a) i)
+        ⊕ᵥ (0 ⊕ᵥ (inclMatrix ℂ (inl ·.val) i ⊕ᵥ 0))
+  gram_eq := by
+    -- entry by entry, the products of the columns are those of a plane and an orthonormal family
+    simp [← ext_iff, middleGram, map_ofNat, inclMatrix, Matrix.mul_apply, Pi.single_apply,
+      Matrix.one_apply]
+    grind [I_sq]
+  card_eq := by
+    simp
+    grind [card_pos_iff.2 ⟨𝔰.k₀⟩]
+  modulus_det := by simp [middleGram]
+}
 
 /-- Polar coordinates on `ℂ^κ`, with `m = |κ|`: for an index `k` in `κ` and measurable
 `g : ℂ^κ → [0, ∞]`, `∫ g(ω) dω = ∫₀^∞ π^m r^(m-1) / (m-1)! ∫_{U(m)} g(h (√r x)) dh dr`, where `x` is
@@ -165,13 +177,15 @@ lemma lintegral_eq_polar (k : κ) {g : (κ → ℂ) → ENNReal} (hg : Measurabl
         (f := fun r : ℝ ↦ ∫⁻ h : U 1, g (h.val.val *ᵥ √r • Pi.single k 1)) (by fun_prop)).trans ?_
       exact lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)
 
-/-- The boost in the plane of k₀ and z with parameter a, for 1 ≤ |a|. With s = √(|a|² - 1) it acts
+/--
+The boost in the plane of k₀ and z with parameter a, for 1 ≤ |a|. With s = √(|a|² - 1) it acts
 on that plane by the matrix with rows (conj a, s) and (-s, -a), and it fixes the other basis
-vectors. -/
+vectors.
+-/
 def cellBoost (𝔰 : Shape) (a : ℂ) (ha : 1 ≤ ‖a‖) : 𝔰.G₁ :=
   let s : 𝔰.κ → ℂ := √(‖a‖ ^ 2 - 1) • Pi.single 𝔰.k₀ 1
   let boost : Matrix (𝔰.κ ⊕ Unit) (𝔰.κ ⊕ Unit) ℂ :=
-    fromBlocks (diagonal (update 1 𝔰.k₀ (conj a))) (replicateCol Unit s) (-replicateRow Unit s)
+    fromBlocks (diagonal (update 1 𝔰.k₀ (conj a))) (replicateCol Unit s) (- replicateRow Unit s)
       (of fun _ _ ↦ -a)
   U.of IsHermitianUnit.isUnit (fromBlocks 1 0 0 (fromBlocks boost 0 0 1)) <| by
     simp [boost, s, splitGram, middleGram, ← ext_iff, diagonal_apply, update_apply, apply_ite conj,
@@ -193,15 +207,21 @@ lemma one_le_norm_div_min {a : ℂ} (ha : a ≠ 0) : 1 ≤ ‖a / (min 1 ‖a‖
   have h_pos : 0 < min 1 ‖a‖ := lt_min one_pos (norm_pos_iff.2 ha)
   simp [abs_of_pos h_pos, one_le_div h_pos]
 
-/-- The chart of the big cell of floor l. On the top floor and for c ≠ 0 it is the boost at
+/--
+The chart of the big cell of floor l. On the top floor and for c ≠ 0 it is the boost at
 c / min(1, |c|), which is c if 1 ≤ |c| and c / |c| otherwise. In all other cases it is
-`floorWeyl l c`. -/
+`floorWeyl l c`.
+-/
 def cellChart (𝔰 : Shape) (l : ℕ) (c : ℂ) : 𝔰.G₁ :=
-  if h : l = 𝔰.ϱ ∧ c ≠ 0 then cellBoost 𝔰 (c / (min 1 ‖c‖ : ℝ)) (one_le_norm_div_min h.2)
-  else floorWeyl l c
+  if h : l = 𝔰.ϱ ∧ c ≠ 0 then
+    cellBoost 𝔰 (c / (min 1 ‖c‖ : ℝ)) (one_le_norm_div_min h.2)
+  else
+    floorWeyl l c
 
-/-- The density of floor l at c: |c|^{2(k−1)+4(ϱ−l)} for l < ϱ; otherwise
-2π^k((|c|²−1)⁺)^{k−1}/(k−1)!; k = |κ|. For l ≥ ϱ and |c| ≤ 1 this is 0 if and only if k > 1. -/
+/--
+The density of floor l at c: |c|^{2(k−1)+4(ϱ−l)} for l < ϱ; otherwise
+2π^k((|c|²−1)⁺)^{k−1}/(k−1)!; k = |κ|. For l ≥ ϱ and |c| ≤ 1 this is 0 if and only if k > 1.
+-/
 def cellDensity (𝔰 : Shape) (l : ℕ) (c : ℂ) : ENNReal :=
   if l < 𝔰.ϱ then
     ‖c‖ₑ ^ (2 * (𝔰.k - 1) + 4 * (𝔰.ϱ - l))
@@ -210,8 +230,10 @@ def cellDensity (𝔰 : Shape) (l : ℕ) (c : ℂ) : ENNReal :=
 
 variable {𝔰 : Shape}
 
-/-- The measure on G₁ that is the image of the density `New.Floors.cellDensity` of floor l times dc
-on ℂ under c ↦ w_l(c)⁻¹ (`New.Floors.cellChart`). -/
+/--
+The measure on G₁ that is the image of the density `New.Floors.cellDensity` of floor l times dc
+on ℂ under c ↦ w_l(c)⁻¹ (`New.Floors.cellChart`).
+-/
 abbrev cellLaw (l : ℕ) : Measure 𝔰.G₁ :=
   (volume.withDensity (cellDensity 𝔰 l)).map fun c ↦ (cellChart 𝔰 l c)⁻¹
 
@@ -298,15 +320,19 @@ lemma cartan_decomposition {c : ℂ} {σ : (𝔰.middleGram (1 : ℂ)).G} (hσ :
     exists_eq_toBesselH (partialUnitriangularGroup_inf_floorGroup_last.le h_mem) isUnit_one
   exact ⟨u, k', eq_mul_of_inv_mul_eq hk'⟩
 
-/-- The point √(Γ + |c|²) h x + c z of X₀ ⊕ ℂz, in the coordinates `BesselIndex` of the whole space
+/--
+The point √(Γ + |c|²) h x + c z of X₀ ⊕ ℂz, in the coordinates `BesselIndex` of the whole space
 (`definiteCols` puts X₀ into them), for a real level Γ and a pair (c, h), x being the basis vector
-at k₀. For Γ + |c|² ≥ 0 it lies on the hyperboloid h(v, v) = Γ. -/
+at k₀. For Γ + |c|² ≥ 0 it lies on the hyperboloid h(v, v) = Γ.
+-/
 abbrev hyperboloidPoint (Γ : ℝ) (p : ℂ × U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) : 𝔰.BesselIndex → ℂ :=
   update (𝔰.definiteCols *ᵥ (√(Γ + ‖p.1‖ ^ 2) * p.2.val.val · 𝔰.k₀)) 𝔰.z p.1
 
-/-- The image of S((Γ + |c|²)⁺) dc dh under `hyperboloidPoint Γ`, where S is `sphereDensity k`,
+/--
+The image of S((Γ + |c|²)⁺) dc dh under `hyperboloidPoint Γ`, where S is `sphereDensity k`,
 S(r) = 2π^k r^(k−1)/(k−1)! with k = |κ|, and dh is the Haar probability measure of U(X₀). For k > 1
-it is a measure on the hyperboloid h(v, v) = Γ of V_ϱ, written in polar coordinates. -/
+it is a measure on the hyperboloid h(v, v) = Γ of V_ϱ, written in polar coordinates.
+-/
 abbrev hyperboloidMeasure (Γ : ℝ) : Measure (𝔰.BesselIndex → ℂ) :=
   map (hyperboloidPoint Γ)
     (volume.withDensity fun p : ℂ × U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) ↦

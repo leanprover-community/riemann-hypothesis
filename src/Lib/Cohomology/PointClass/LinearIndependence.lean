@@ -65,13 +65,21 @@ open CategoryTheory Function CommAlgCat New.Variety CutsOutLocus IsCoordsWithUni
 
 attribute [local instance] FractionRing.liftAlgebra FormallyEtale.of_isSeparable
 
-/-- The chart `c` with coordinates `w`, embedded in a field by `κ`, is a generic point of the
-component of the `k`-point `z` (coordinates `v`), with a Noether normalisation `Λ` of `κ ∘ w`. -/
-structure New.Variety.IsGenericChart {k : Type} [Field k] {R : CommRingCat} [Algebra R k]
-    {Y : Over (AlgebraicGeometry.Spec R)} {d : ℕ} {ι : Type} [Finite ι] (L : LineBundle Y.left ι)
-    (z : PointsIn Y (of k k)) (c : EtaleChart d (algPointsOf k R Y)) {F : Type} [Field F]
-    [Algebra k F] (κ : c.coordRing ⟶ of k F) (w : ι → c.coordRing) {n : ℕ}
-    (Λ : Fin (n + 1) → homogeneousSubmodule ι k 1) (v : ι → k) : Prop where
+/--
+The chart `c` with coordinates `w`, embedded in a field by `κ`, is a generic point of the
+component of the `k`-point `z` (coordinates `v`), with a Noether normalisation `Λ` of `κ ∘ w`.
+-/
+structure New.Variety.IsGenericChart
+    {k : Type} [Field k]
+    {R : CommRingCat} [Algebra R k]
+    {Y : Over (AlgebraicGeometry.Spec R)} {d : ℕ} {ι : Type} [Finite ι]
+    (L : LineBundle Y.left ι) (z : PointsIn Y (of k k))
+    (c : EtaleChart d (algPointsOf k R Y))
+    {F : Type} [Field F] [Algebra k F]
+    (κ : c.coordRing ⟶ of k F) (w : ι → c.coordRing)
+    {n : ℕ} (Λ : Fin (n + 1) → homogeneousSubmodule ι k 1)
+    (v : ι → k)
+    : Prop where
   /-- `κ` is injective. -/
   injective : Function.Injective κ
   /-- `w` are homogeneous coordinates of the point of the chart, with a unit entry. -/
@@ -246,13 +254,20 @@ lemma New.Variety.EtaleChart.apply_mem_of_coords_mem {k : Type} [Field k] {R : C
   rw [← hφκ]
   exact (φ.hom' r).prop
 
-/-- `U` is an étale projection chart for `Λ` on the cone of `g`: its étale coordinates are the
-values of `Λ 1`, …, `Λ n`, and it contains the field points of the cone over `[1 : q]`. -/
-structure New.Variety.IsEtaleProjection {k : Type} [Field k] {R : CommRingCat} [Algebra R k]
-    {Y : Over (AlgebraicGeometry.Spec R)} {ι : Type} [Finite ι] (L : LineBundle Y.left ι)
-    {F : Type} [Field F] [Algebra k F] (g : ι → F) {n : ℕ}
-    (Λ : Fin (n + 1) → homogeneousSubmodule ι k 1) (U : EtaleChart n (algPointsOf k R Y))
-    (w' : ι → U.coordRing) (q : Fin n → k) : Prop where
+/--
+`U` is an étale projection chart for `Λ` on the cone of `g`: its étale coordinates are the
+values of `Λ 1`, …, `Λ n`, and it contains the field points of the cone over `[1 : q]`.
+-/
+structure New.Variety.IsEtaleProjection
+    {k : Type} [Field k]
+    {R : CommRingCat} [Algebra R k]
+    {Y : Over (AlgebraicGeometry.Spec R)} {ι : Type} [Finite ι]
+    (L : LineBundle Y.left ι)
+    {F : Type} [Field F] [Algebra k F]
+    (g : ι → F)
+    {n : ℕ} (Λ : Fin (n + 1) → homogeneousSubmodule ι k 1) (U : EtaleChart n (algPointsOf k R Y))
+    (w' : ι → U.coordRing) (q : Fin n → k)
+    : Prop where
   /-- `w'` are homogeneous coordinates of the point of `U`, with a unit entry. -/
   isCoordsWithUnit : IsCoordsWithUnit L U.point w'
   /-- `w'` lies on the cone cut out by the homogeneous equations of `g`. -/
@@ -262,9 +277,13 @@ structure New.Variety.IsEtaleProjection {k : Type} [Field k] {R : CommRingCat} [
   /-- The étale coordinates of `U` are the values of `Λ 1`, …, `Λ n` at `w'`. -/
   coordinate_eq : U.coordinate = evalForms Λ w' ∘ succ
   /-- `U` contains the field points on the cone of `g` that `Λ` sends to `[1 : q]`. -/
-  mem_locus : ∀ K : CommAlg k, IsField K → ∀ (x : PointsIn Y K) (v : ι → K),
-    IsHomogeneousSolution k g v → evalForms Λ v = structureMap ∘ Fin.cons 1 q →
-    IsCoordsWithUnit L x v → x ∈ U.locus.obj K
+  mem_locus
+    : ∀ K : CommAlg k,
+      IsField K
+        → ∀ (x : PointsIn Y K) (v : ι → K),
+          IsHomogeneousSolution k g v → evalForms Λ v = structureMap ∘ Fin.cons 1 q
+            → IsCoordsWithUnit L x v
+            → x ∈ U.locus.obj K
 
 /-- Let `k` have characteristic zero and let `Y` over Spec `R` be embedded in projective space by
 `L`. Let `c` be an étale chart of `Y` (a `k`-algebra `c.coordRing` with `d` étale coordinates and a

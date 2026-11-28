@@ -55,26 +55,38 @@ namespace New
 
 open NumberField Filter Module End Gf Submodule Set
 
-variable {E E' n : Type _} [Field E] [CMType E] [Field E'] [Algebra E E'] [CMTypeOver E E']
-  [Fintype n] [DecidableEq n]
+variable
+  {E E' n : Type _}
+  [Field E] [CMType E] [Field E'] [Algebra E E'] [CMTypeOver E E'] [Fintype n] [DecidableEq n]
 
-/-- `f'` is a weak base change of `f` off the set `Z` of places of `E`: `Z` is finite, and for every
+/--
+`f'` is a weak base change of `f` off the set `Z` of places of `E`: `Z` is finite, and for every
 place `w` of `E` outside `Z ∪ Z̄` and every place `u` of `E'` above `w`,
 * if `w` is unramified in the step (`New.IsStepUnramifiedAt`) and `f` is spherical at `w`, then
 `f'` is spherical at `u`;
 * if `w` is matched (`New.IsMatched`: `μ` is trivial on `E_w^×`, and each place above `w` has the
   norm of `w` and is moved by every `σ ≠ 1`) and split, then for every Hecke polynomial `P` of `f`
   at `w` (`New.HasHeckePolyAt`) the place `u` is split and `P` is a Hecke polynomial of `f'` at
-  `u`. -/
-def IsWeakBaseChange (μ : (𝔸f E)ˣ →* ℂˣ) {M M' : Type} (Z : Set (FinPlace E))
-    (f : Gf E n → M → ℂ) (f' : Gf E' n → M' → ℂ) : Prop :=
-  Z.Finite ∧ ∀ w : FinPlace E, w ∉ Z.conjClosure → ∀ u : FinPlace E', u.below E = w →
-    (IsStepUnramifiedAt E' μ w → f ∈ sphericalAt (rightRegular ℂ (Gf E n) (M → ℂ)) w →
-      f' ∈ sphericalAt (rightRegular ℂ (Gf E' n) (M' → ℂ)) u) ∧
-    (IsMatched E' μ w → ∀ (hw : w.IsSplit) (P : Polynomial ℂ), HasHeckePolyAt f w hw P →
-      ∃ hu : u.IsSplit, HasHeckePolyAt f' u hu P)
+  `u`.
+-/
+def IsWeakBaseChange
+    (μ : (𝔸f E)ˣ →* ℂˣ)
+    {M M' : Type}
+    (Z : Set (FinPlace E)) (f : Gf E n → M → ℂ) (f' : Gf E' n → M' → ℂ)
+    : Prop :=
+  Z.Finite
+    ∧ ∀ w : FinPlace E,
+      w ∉ Z.conjClosure
+        → ∀ u : FinPlace E',
+          u.below E = w
+            → (IsStepUnramifiedAt E' μ w → f ∈ sphericalAt (rightRegular ℂ (Gf E n) (M → ℂ)) w
+                → f' ∈ sphericalAt (rightRegular ℂ (Gf E' n) (M' → ℂ)) u)
+              ∧ (IsMatched E' μ w
+                → ∀ (hw : w.IsSplit) (P : Polynomial ℂ),
+                  HasHeckePolyAt f w hw P → ∃ hu : u.IsSplit, HasHeckePolyAt f' u hu P)
 
-/-- Matching local data above a set `Z` of places of `E`, for groups `G`, `G'` mapped into the
+/--
+Matching local data above a set `Z` of places of `E`, for groups `G`, `G'` mapped into the
 finite adelic unitary groups over `E` and `E'` by `a`, `a'`. There are `σ ≠ 1` in `Gal(E'/E)` and
 retractions `r`, `r'` (`New.IsLocalRetraction`: `a` lands in the elements supported on `Z ∪ Z̄`,
 `r ∘ a = id`, and the kernel of `r` is the elements trivial on `Z`; likewise for `a'`, `r'` and the
@@ -85,21 +97,22 @@ places of `E'` above `Z`) such that
   of `L` in `Gf E n`;
 * some level `K` between the preimage of `L'` and the integral level above `Z` has split
   `σ`-cocycles (`New.CocyclesSplit`), and for `j ∈ P` the pair `(F j ∘ r, F' j ∘ r')` matches above
-  `Z` at level `K`. -/
-def IsLocalMatching (μ : (𝔸f E)ˣ →* ℂˣ) (Z : Set (FinPlace E)) {G G' J : Type*} [Group G]
-    [Group G'] (a : G →* Gf E n) (a' : G' →* Gf E' n) (L : Subgroup G) (L' : Subgroup G')
-    (P : Set J) (F : J → G → ℂ) (F' : J → G' → ℂ) : Prop :=
+  `Z` at level `K`.
+-/
+def IsLocalMatching
+    (μ : (𝔸f E)ˣ →* ℂˣ) (Z : Set (FinPlace E))
+    {G G' J : Type*} [Group G] [Group G']
+    (a : G →* Gf E n) (a' : G' →* Gf E' n) (L : Subgroup G) (L' : Subgroup G') (P : Set J)
+    (F : J → G → ℂ) (F' : J → G' → ℂ)
+    : Prop :=
   ∃ σ ≠ (1 : Gal(E'/E)), ∃ (r : Gf E n →* G) (r' : Gf E' n →* G'),
-    ((∀ j : J, IsHeckeFunction L (F j) ∧ IsHeckeFunction L' (F' j)) ∧
-      IsLocalRetraction a r Z ∧
-      IsLocalRetraction a' r' (placesAbove E' Z) ∧
-      Z.Finite ∧
-      ∀ k : Gf E' n, r' (galoisGf σ k) ∈ L' ↔ r' k ∈ L') ∧
-    (L'.comap r').comap baseChangeGf = L.comap r ∧
-    (L'.comap r').IsOpen ∧
-    ∃ K ∈ Icc (L'.comap r') (localLevel n (placesAbove E' Z)),
-      CocyclesSplit (finrank E E') (idem (placesAbove E' Z)) K (galoisGf σ) ∧
-      P ⊆ {j : J | IsMatchingPairAbove σ μ Z K (F j ∘ r) (F' j ∘ r')}
+    ((∀ j : J, IsHeckeFunction L (F j) ∧ IsHeckeFunction L' (F' j)) ∧ IsLocalRetraction a r Z
+        ∧ IsLocalRetraction a' r' (placesAbove E' Z) ∧ Z.Finite
+        ∧ ∀ k : Gf E' n, r' (galoisGf σ k) ∈ L' ↔ r' k ∈ L')
+      ∧ (L'.comap r').comap baseChangeGf = L.comap r ∧ (L'.comap r').IsOpen
+      ∧ ∃ K ∈ Icc (L'.comap r') (localLevel n (placesAbove E' Z)),
+        CocyclesSplit (finrank E E') (idem (placesAbove E' Z)) K (galoisGf σ)
+          ∧ P ⊆ {j : J | IsMatchingPairAbove σ μ Z K (F j ∘ r) (F' j ∘ r')}
 
 variable {μ : (𝔸f E)ˣ →* ℂˣ}
 
@@ -200,10 +213,11 @@ section LocalOperators
 
 variable {G M ι : Type*} [Group G] [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ G M)
 
-/-- The `L`-fixed vectors that are generalised eigenvectors of the Hecke operator of `F i` for
-the eigenvalue `θ i`, for every `i`. -/
-noncomputable def heckeGenEigenspace (L : Subgroup G) (F : ι → G → ℂ) (θ : ι → ℂ) :
-    Submodule ℂ M :=
+/--
+The `L`-fixed vectors that are generalised eigenvectors of the Hecke operator of `F i` for
+the eigenvalue `θ i`, for every `i`.
+-/
+noncomputable def heckeGenEigenspace (L : Subgroup G) (F : ι → G → ℂ) (θ : ι → ℂ) : Submodule ℂ M :=
   levelSpace ρ L ⊓ ⨅ i : ι, (heckeFun ρ L (F i)).maxGenEigenspace (θ i)
 
 @[simp]
@@ -213,15 +227,20 @@ lemma mem_heckeGenEigenspace {ρ : Representation ℂ G M} {L : Subgroup G} {F :
       x ∈ levelSpace ρ L ∧ ∀ i : ι, x ∈ (heckeFun ρ L (F i)).maxGenEigenspace (θ i) := by
   simp only [heckeGenEigenspace, Submodule.mem_inf, Submodule.mem_iInf]
 
-/-- `T` has non-zero trace on `Y ⊓ W` for every subrepresentation `W` containing `f` such that
-`Y ⊓ W` is finite-dimensional and preserved by `T`. -/
+/--
+`T` has non-zero trace on `Y ⊓ W` for every subrepresentation `W` containing `f` such that
+`Y ⊓ W` is finite-dimensional and preserved by `T`.
+-/
 def HasNonzeroTraceAround (T : Module.End ℂ M) (Y : Submodule ℂ M) (f : M) : Prop :=
-  ∀ W : Subrepresentation ρ, f ∈ W → Module.Finite ℂ ↥(Y ⊓ W.toSubmodule) →
-    ∀ h_maps : ∀ x ∈ Y ⊓ W.toSubmodule, T x ∈ Y ⊓ W.toSubmodule,
-      (T.restrict h_maps).trace ℂ ↥(Y ⊓ W.toSubmodule) ≠ 0
+  ∀ W : Subrepresentation ρ,
+    f ∈ W → Module.Finite ℂ ↥(Y ⊓ W.toSubmodule)
+      → ∀ h_maps : ∀ x ∈ Y ⊓ W.toSubmodule, T x ∈ Y ⊓ W.toSubmodule,
+        (T.restrict h_maps).trace ℂ ↥(Y ⊓ W.toSubmodule) ≠ 0
 
-/-- `g` is fixed by `L`, and the Hecke operator of each `F i` multiplies it by `θ i`. The vector
-`g` may be zero. -/
+/--
+`g` is fixed by `L`, and the Hecke operator of each `F i` multiplies it by `θ i`. The vector
+`g` may be zero.
+-/
 structure IsHeckeEigenvector (L : Subgroup G) (F : ι → G → ℂ) (θ : ι → ℂ) (g : M) : Prop where
   /-- `g` is fixed by `L`. -/
   mem_levelSpace : g ∈ levelSpace ρ L
@@ -230,10 +249,12 @@ structure IsHeckeEigenvector (L : Subgroup G) (F : ι → G → ℂ) (θ : ι �
 
 end LocalOperators
 
-/-- A group `G` with a map `a` to the finite adelic unitary group acts on the forms of weight `κ`
-by right translation through `a`. -/
-noncomputable abbrev localFormTranslation (κ : Weight E) {G : Type*} [Group G]
-    (a : G →* Gf E n) : Representation ℂ G ((stdSpace E n).forms κ) :=
+/--
+A group `G` with a map `a` to the finite adelic unitary group acts on the forms of weight `κ`
+by right translation through `a`.
+-/
+noncomputable abbrev localFormTranslation (κ : Weight E) {G : Type*} [Group G] (a : G →* Gf E n)
+    : Representation ℂ G ((stdSpace E n).forms κ) :=
   ((stdSpace E n).formTranslation κ).comp a
 
 /-- Let `w` be a place of `E` off `Z ∪ Z̄`, let `M` contain the elements trivial above `Z ∪ Z̄`, and
@@ -452,14 +473,18 @@ private lemma IsBaseChangeLevel.eq_localIntGL_of_mem_sphericalAt {σ : Gal(E'/E)
   refine hm.eq_localIntGL w hw_unram ?_
   simpa [LE.le, funext_iff] using mem_levelSpace_formTranslation_iff.mp hf
 
-/-- Facts about a level `𝓛` over `E'` used in the proof of
+/--
+Facts about a level `𝓛` over `E'` used in the proof of
 `New.exists_isWeakBaseChange_of_matching`, for a form `f` over `E` and sets `Z`, `X` of places of
 `E`. The level `𝓛` is `L₁` intersected with the maximal level above the split matched places of
 `X` and with a subgroup `C` for the remaining places, and `𝓛 ≤ K₁ ≤ New.stdLevel E' n`; matching
-pairs above `Z` have level `K`. -/
-private structure IsTransferLevel (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ) {κ : Weight E}
-    (f : (stdSpace E n).forms κ) (Z X : Set (FinPlace E)) (K L₁ K₁ C 𝓛 : Subgroup (Gf E' n)) :
-    Prop where
+pairs above `Z` have level `K`.
+-/
+private structure IsTransferLevel
+    (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ)
+    {κ : Weight E} (f : (stdSpace E n).forms κ)
+    (Z X : Set (FinPlace E)) (K L₁ K₁ C 𝓛 : Subgroup (Gf E' n))
+    : Prop where
   /-- `K₁` consists of integral elements. -/
   le_stdLevel : K₁ ≤ stdLevel E' n
   /-- `𝓛` lies in `K₁`. -/
@@ -469,8 +494,9 @@ private structure IsTransferLevel (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ)
   /-- `𝓛` is stable under `σ`. -/
   comap_galoisGf : 𝓛.comap (galoisGf σ) = 𝓛
   /-- The elements of `K₁` of twisted norm `1` are coboundaries in `K₁`. -/
-  exists_coboundary (s : Gf E' n) (hs : s ∈ K₁)
-    (hs_norm : twistedNorm (galoisGf σ) (finrank E E') s = 1) : ∃ t ∈ K₁, galoisGf σ t = s⁻¹ * t
+  exists_coboundary
+    (s : Gf E' n) (hs : s ∈ K₁) (hs_norm : twistedNorm (galoisGf σ) (finrank E E') s = 1)
+    : ∃ t ∈ K₁, galoisGf σ t = s⁻¹ * t
   /-- `𝓛` is `L₁`, intersected with the maximal level above `X` and with `C`. -/
   eq_inf : 𝓛 = L₁ ⊓ (localLevel n (placesAbove E' X) ⊓ C)
   /-- Elements supported above `Z ∪ Z̄` lie in the maximal level above `X` and in `C`. -/
@@ -484,28 +510,35 @@ private structure IsTransferLevel (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ)
   /-- The places of `X` lie off `Z ∪ Z̄`. -/
   notMem_conjClosure (w : FinPlace E) (hw : w ∈ X) : w ∉ Z.conjClosure
   /-- For `w ∈ X`, `𝓛` contains the integral elements supported above `w` and `w̄`. -/
-  kf_inf_supportedOn_le (w : FinPlace E) (hw : w ∈ X) {S : Set (FinPlace E')}
-    (hS : S ⊆ placesAbove E' {w}) : stdLevel E' n ⊓ supportedOn n S ≤ 𝓛
-  /-- A product of a matching pair above `Z` of level `K`, a matching pair above `X` of maximal
-  level and the indicator function of `C` is a matching pair of level `K₁`. -/
-  isMatchingPair_mul {f₁ f₂ : Gf E n → ℂ} {φ₁ φ₂ : Gf E' n → ℂ}
-    (h₁ : IsMatchingPairAbove σ μ Z K f₁ φ₁)
-    (h₂ : IsMatchingPairAbove σ μ X (localLevel n (placesAbove E' X)) f₂ φ₂) :
-    IsMatchingPair (adeleMap_star σ) (finrank E E') 1 (kerCompNorm E' μ) baseChangeGf K₁
+  kf_inf_supportedOn_le
+    (w : FinPlace E) (hw : w ∈ X) {S : Set (FinPlace E')} (hS : S ⊆ placesAbove E' {w})
+    : stdLevel E' n ⊓ supportedOn n S ≤ 𝓛
+  /--
+  A product of a matching pair above `Z` of level `K`, a matching pair above `X` of maximal
+  level and the indicator function of `C` is a matching pair of level `K₁`.
+  -/
+  isMatchingPair_mul
+    {f₁ f₂ : Gf E n → ℂ} {φ₁ φ₂ : Gf E' n → ℂ} (h₁ : IsMatchingPairAbove σ μ Z K f₁ φ₁)
+    (h₂ : IsMatchingPairAbove σ μ X (localLevel n (placesAbove E' X)) f₂ φ₂)
+    : IsMatchingPair (adeleMap_star σ) (finrank E E') 1 (kerCompNorm E' μ) baseChangeGf K₁
       (f₁ * (f₂ * (indicator C 1 ∘ baseChangeGf (E' := E')))) (φ₁ * (φ₂ * indicator C 1))
   /-- `f` is fixed by the elements of `𝓛` over `E` that are trivial on `Z`. -/
-  mem_levelSpace :
-    f ∈ levelSpace ((stdSpace E n).formTranslation κ) (trivialOn n Z ⊓ 𝓛.comap baseChangeGf)
-  /-- For a place `w` off `Z ∪ Z̄` that is unramified in the step and at which `f` is spherical,
-  `𝓛` contains the integral elements supported above `w` and `w̄`. -/
-  kf_inf_supportedOn_le_of_mem_sphericalAt (w : FinPlace E) (hw : w ∉ Z.conjClosure)
-    (hw_unram : IsStepUnramifiedAt E' μ w)
-    (hf : f ∈ sphericalAt ((stdSpace E n).formTranslation κ) w) {S : Set (FinPlace E')}
-    (hS : S ⊆ placesAbove E' {w}) : stdLevel E' n ⊓ supportedOn n S ≤ 𝓛
+  mem_levelSpace
+    : f ∈ levelSpace ((stdSpace E n).formTranslation κ) (trivialOn n Z ⊓ 𝓛.comap baseChangeGf)
+  /--
+  For a place `w` off `Z ∪ Z̄` that is unramified in the step and at which `f` is spherical,
+  `𝓛` contains the integral elements supported above `w` and `w̄`.
+  -/
+  kf_inf_supportedOn_le_of_mem_sphericalAt
+    (w : FinPlace E) (hw : w ∉ Z.conjClosure) (hw_unram : IsStepUnramifiedAt E' μ w)
+    (hf : f ∈ sphericalAt ((stdSpace E n).formTranslation κ) w)
+    {S : Set (FinPlace E')} (hS : S ⊆ placesAbove E' {w})
+    : stdLevel E' n ⊓ supportedOn n S ≤ 𝓛
   /-- A split matched place off `Z ∪ Z̄` at which `f` is spherical lies in `X`. -/
-  mem_of_isMatched (w : FinPlace E) (hw : w ∉ Z.conjClosure) (hw_split : w.IsSplit)
-    (hw_matched : IsMatched E' μ w) (hf : f ∈ sphericalAt ((stdSpace E n).formTranslation κ) w) :
-    w ∈ X
+  mem_of_isMatched
+    (w : FinPlace E) (hw : w ∉ Z.conjClosure) (hw_split : w.IsSplit) (hw_matched : IsMatched E' μ w)
+    (hf : f ∈ sphericalAt ((stdSpace E n).formTranslation κ) w)
+    : w ∈ X
 
 /-- Let `σ ≠ 1`, let `f` be a form of weight `κ` over `E`, and let `Z` be a set of places of `E`.
 Let `L₁` be an open `σ`-stable subgroup over `E'` that contains the elements trivial above
@@ -588,8 +621,9 @@ private lemma exists_isTransferLevel [hμ : IsStep (E := E) E' μ]
 
 section TransferLevel
 
-variable {σ : Gal(E'/E)} {κ : Weight E} {f : (stdSpace E n).forms κ} {Z X : Set (FinPlace E)}
-  {K L₁ K₁ C 𝓛 : Subgroup (Gf E' n)}
+variable
+  {σ : Gal(E'/E)} {κ : Weight E}
+  {f : (stdSpace E n).forms κ} {Z X : Set (FinPlace E)} {K L₁ K₁ C 𝓛 : Subgroup (Gf E' n)}
 
 /-- Let `G` be a retract at `Z` whose level `L` has preimage the pull-back of `L₁` to `E`, and let
 `F j` be `L`-bi-invariant functions with commuting operators. At the pull-back of `𝓛` to `E`, the

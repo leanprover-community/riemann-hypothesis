@@ -193,13 +193,17 @@ lemma ideleAbs_det_mkAdelicGL (a : InfinitePlace E → GL n ℂ) (b : GL n (𝔸
       (∏ w : InfinitePlace E, ‖(a w).val.det‖ ^ 2) * finIdeleAbs b.det := by
   simp [finIdeleAbs, ideleAbs, det_apply, fst_sum, fst_prod, snd_sum, snd_prod]
 
-/-- For an integer vector `x`, the diagonal adelic matrix whose `i`-th entry is `2 ^ x i` at the
-infinite places and `1` at the finite places. -/
-def dyadicDiag {E : Type _} [Field E] [NumberField E]
-    (x : n → ℤ) : GL n (𝔸 E) := diagGL fun i : n ↦ twoAtInfinity E ^ x i
+/--
+For an integer vector `x`, the diagonal adelic matrix whose `i`-th entry is `2 ^ x i` at the
+infinite places and `1` at the finite places.
+-/
+def dyadicDiag {E : Type _} [Field E] [NumberField E] (x : n → ℤ) : GL n (𝔸 E) :=
+  diagGL fun i : n ↦ twoAtInfinity E ^ x i
 
-/-- The set of `Y` in `GL n E` with `y⁻¹ Y D⁻¹` in `M`, where `D = dyadicDiag x` is diagonal with
-entries `2 ^ x i` at infinity and `1` at the finite places. -/
+/--
+The set of `Y` in `GL n E` with `y⁻¹ Y D⁻¹` in `M`, where `D = dyadicDiag x` is diagonal with
+entries `2 ^ x i` at infinity and `1` at the finite places.
+-/
 def profileBases (M : Set (GL n (𝔸 E))) (x : n → ℤ) (y : GL n (𝔸 E)) : Set (GL n E) :=
   {Y : GL n E | y⁻¹ * Y.map toAdele * (dyadicDiag x)⁻¹ ∈ M}
 
@@ -297,13 +301,17 @@ lemma exists_successive_minima {K V : Type*} [Field K] [AddCommGroup V] [Module 
       exact fun u hu_mem hu_out ↦ hv_least u ⟨hu_mem, hu_out⟩
     | cast j => simpa [← Fin.image_castSucc_Iio, h_image] using hy_least j
 
-/-- The lattice `E ^ n ∩ z_f Ô ^ n` of an adelic frame `z`: the rational vectors `ξ` such that
-`z⁻¹ ξ` is integral at the finite places. -/
+/--
+The lattice `E ^ n ∩ z_f Ô ^ n` of an adelic frame `z`: the rational vectors `ξ` such that
+`z⁻¹ ξ` is integral at the finite places.
+-/
 def frameLattice (z : GL n (𝔸 E)) : Set (n → E) :=
   {ξ : n → E | ∀ i : n, ((z⁻¹.val *ᵥ toAdele ∘ ξ) i).2 ∈ Ô E}
 
-/-- The length of a rational vector `ξ` at an adelic frame `z`: the Euclidean norm of the
-coordinates of `z⁻¹ ξ` at all infinite places together. -/
+/--
+The length of a rational vector `ξ` at an adelic frame `z`: the Euclidean norm of the
+coordinates of `z⁻¹ ξ` at all infinite places together.
+-/
 def frameLength (z : GL n (𝔸 E)) (ξ : n → E) : ℝ :=
   ‖WithLp.toLp 2 fun p : InfinitePlace E × n ↦ ((z⁻¹.val *ᵥ toAdele ∘ ξ) p.2).1 p.1‖
 
@@ -528,25 +536,27 @@ lemma ideleAbs_det_mul_prod_le_of_le_frameLength (g : GL n (𝔸 E)) {ι : Type*
           ((2 * rootDiscr E) ^ numInfPlaces E) ^ card n := by gcongr
     _ = (2 * (numInfPlaces E * card n) * rootDiscr E) ^ (numInfPlaces E * card n) := by ring
 
-/-- Minkowski's second theorem over `E`. For `z` in `GL n (𝔸 E)` the lattice `frameLattice z`, of
+/--
+Minkowski's second theorem over `E`. For `z` in `GL n (𝔸 E)` the lattice `frameLattice z`, of
 the rational `ξ` with `z⁻¹ ξ` integral at the finite places, contains a basis `y 0, …, y (n - 1)`
 of `E ^ n`, ordered by length, with `|det z| * ∏ j, ‖y j‖ ^ (2 f) ≤ (2 f n rd) ^ (f n)`. Here
 `‖ξ‖ = frameLength z ξ` is the Euclidean norm of `z⁻¹ ξ` at all infinite places together, `f` is
 the number of infinite places, `n` stands for `card n`, `rd` is the root discriminant and
-`|det z|` the adelic absolute value. Only the upper bound of the theorem is proved. -/
-theorem minkowski_second_theorem (z : GL n (𝔸 E)) :
-    ∃ y : Fin (Fintype.card n) → n → E,
-      LinearIndependent E y ∧
-      (∀ j : Fin (Fintype.card n), y j ∈ frameLattice z) ∧
-      (Monotone fun j : Fin (Fintype.card n) ↦ frameLength z (y j)) ∧
-      ideleAbs z.det * ∏ j : Fin (Fintype.card n), frameLength z (y j) ^ (2 * numInfPlaces E) ≤
-        (2 * (numInfPlaces E * Fintype.card n) * rootDiscr E) ^
-          (numInfPlaces E * Fintype.card n) := by
+`|det z|` the adelic absolute value. Only the upper bound of the theorem is proved.
+-/
+theorem minkowski_second_theorem (z : GL n (𝔸 E))
+    : ∃ y : Fin (Fintype.card n) → n → E,
+      LinearIndependent E y ∧ (∀ j : Fin (Fintype.card n), y j ∈ frameLattice z)
+        ∧ (Monotone fun j : Fin (Fintype.card n) ↦ frameLength z (y j))
+        ∧ ideleAbs z.det * ∏ j : Fin (Fintype.card n), frameLength z (y j) ^ (2 * numInfPlaces E)
+          ≤ (2 * (numInfPlaces E * Fintype.card n) * rootDiscr E)
+            ^ (numInfPlaces E * Fintype.card n) := by
   -- Choose the `y j` in turn, each of least length outside the span of the earlier ones.
-  obtain ⟨y, hy_mem, hy_indep, hy_least⟩ : ∃ y : Fin (card n) → n → E,
-      (∀ j : Fin (card n), y j ∈ frameLattice z) ∧ LinearIndependent E y ∧
-        ∀ j : Fin (card n), ∀ v ∈ frameLattice z, v ∉ Submodule.span E (y '' Set.Iio j) →
-          frameLength z (y j) ≤ frameLength z v :=
+  obtain ⟨y, hy_mem, hy_indep, hy_least⟩
+      : ∃ y : Fin (card n) → n → E,
+        (∀ j : Fin (card n), y j ∈ frameLattice z) ∧ LinearIndependent E y
+          ∧ ∀ j : Fin (card n), ∀ v ∈ frameLattice z,
+            v ∉ Submodule.span E (y '' Set.Iio j) → frameLength z (y j) ≤ frameLength z v :=
     exists_successive_minima (span_frameLattice z) (frameLength z)
       (finite_frameLattice_of_frameLength_le z) (Module.finrank_fintype_fun_eq_card E).ge
   have h_mono : Monotone fun j : Fin (card n) ↦ frameLength z (y j) := fun i j hij ↦
@@ -564,7 +574,8 @@ theorem minkowski_second_theorem (z : GL n (𝔸 E)) :
   have h_abs : ideleAbs z.det = ideleAbs g.det := by simp [g]
   rw [h_abs, ← e.prod_comp]
   refine ideleAbs_det_mul_prod_le_of_le_frameLength g e
-    (fun a ↦ frameLength_pos z (hy_indep.ne_zero (e a))) (fun _ _ h_le ↦ h_mono h_le)
+    (fun a ↦ frameLength_pos z (hy_indep.ne_zero (e a)))
+    (fun _ _ h_le ↦ h_mono h_le)
     fun c hc j hj j_last ↦ ?_
   -- The lattice vector `Y c` lies outside the span of the `y i` with `i < e j`, as `c j ≠ 0`.
   have h_mem : Y.val *ᵥ c ∈ frameLattice z := by
@@ -584,21 +595,21 @@ theorem minkowski_second_theorem (z : GL n (𝔸 E)) :
     exact hy_indep.notMem_span_image (by simp)
   simpa only [frameLength, h_coord] using hy_least (e j) _ h_mem h_out
 
-/-- Minkowski's second theorem with dyadic bounds. For `y` in `GL n (𝔸 E)` there are an invertible
+/--
+Minkowski's second theorem with dyadic bounds. For `y` in `GL n (𝔸 E)` there are an invertible
 matrix `Y` over `E` and integers `x j` such that each row `Y j` lies in `frameLattice y` (the
 vectors `ξ ∈ Eⁿ` with `y⁻¹ ξ` integral at all finite places) and has `frameLength` at most
 `2 ^ x j`, and `|det y| * (2 ^ (2 f)) ^ ∑ j, x j ≤ (8 f n rd) ^ (f n)`. Here `frameLength y ξ` is
 the Euclidean norm of the coordinates of `y⁻¹ ξ` at all infinite places together, `f` is the number
 of infinite places, `n` stands for `card n`, `rd` is the root discriminant and `|det y|` is the
-adelic absolute value. -/
-theorem _root_.New.exists_basis_frameLength_le_two_zpow (y : GL n (𝔸 E)) :
-    ∃ (Y : Matrix n n E) (x : n → ℤ),
-      Y.det ≠ 0 ∧
-      (∀ j : n, Y j ∈ frameLattice y) ∧
-      (∀ j : n, frameLength y (Y j) ≤ 2 ^ x j) ∧
-      ideleAbs y.det * (2 ^ (2 * numInfPlaces E)) ^ ∑ j : n, x j ≤
-        (8 * (numInfPlaces E * Fintype.card n) * rootDiscr E) ^
-          (numInfPlaces E * Fintype.card n) := by
+adelic absolute value.
+-/
+theorem _root_.New.exists_basis_frameLength_le_two_zpow (y : GL n (𝔸 E))
+    : ∃ (Y : Matrix n n E) (x : n → ℤ),
+      Y.det ≠ 0 ∧ (∀ j : n, Y j ∈ frameLattice y) ∧ (∀ j : n, frameLength y (Y j) ≤ 2 ^ x j)
+        ∧ ideleAbs y.det * (2 ^ (2 * numInfPlaces E)) ^ ∑ j : n, x j
+          ≤ (8 * (numInfPlaces E * Fintype.card n) * rootDiscr E)
+            ^ (numInfPlaces E * Fintype.card n) := by
   -- Round the lengths of the basis of `minkowski_second_theorem` up to powers of `2`; this
   -- at most doubles each of them.
   obtain ⟨v, h_indep, h_mem, -, h_prod⟩ := minkowski_second_theorem y
@@ -610,22 +621,30 @@ theorem _root_.New.exists_basis_frameLength_le_two_zpow (y : GL n (𝔸 E)) :
       mod_cast zpow_pred_clog_lt_self one_lt_two (len_pos j)
     rw [zpow_sub_one₀ two_ne_zero] at h_lt
     linarith
-  have h_det : det (of fun j ↦ v (e j)) ≠ 0 := ((isUnit_iff_isUnit_det _).1
-    (linearIndependent_row_iff_isUnit.1 (h_indep.comp e e.injective))).ne_zero
-  refine ⟨of fun j ↦ v (e j), fun j ↦ clog 2 (len j), h_det, fun j ↦ h_mem (e j),
-    fun j ↦ mod_cast self_le_zpow_clog one_lt_two (len j), ?_⟩
+  have h_det : det (of fun j ↦ v (e j)) ≠ 0 :=
+    ((isUnit_iff_isUnit_det _).1
+      (linearIndependent_row_iff_isUnit.1 (h_indep.comp e e.injective))).ne_zero
+  refine ⟨
+    of fun j ↦ v (e j),
+    fun j ↦ clog 2 (len j),
+    h_det,
+    fun j ↦ h_mem (e j),
+    fun j ↦ mod_cast self_le_zpow_clog one_lt_two (len j),
+    ?_
+  ⟩
   set f : ℕ := numInfPlaces E
-  calc ideleAbs y.det * (2 ^ (2 * f)) ^ ∑ j : n, clog 2 (len j)
-      = ideleAbs y.det * ∏ j : n, ((2 : ℝ) ^ clog 2 (len j)) ^ (2 * f) := by
-        rw [prod_pow, ← DiscreteSeries.zpow_sum_of_ne_zero two_ne_zero, ← zpow_natCast,
-          ← zpow_natCast, zpow_comm]
+  calc
+    ideleAbs y.det * (2 ^ (2 * f)) ^ ∑ j : n, clog 2 (len j)
+        = ideleAbs y.det * ∏ j : n, ((2 : ℝ) ^ clog 2 (len j)) ^ (2 * f) := by
+      rw [prod_pow, ← DiscreteSeries.zpow_sum_of_ne_zero two_ne_zero, ← zpow_natCast,
+        ← zpow_natCast, zpow_comm]
     _ ≤ ideleAbs y.det * ∏ j : n, (2 * len j) ^ (2 * f) := by
-        gcongr with j
-        exacts [ideleAbs_pos.le, pow_le j]
+      gcongr with j
+      exacts [ideleAbs_pos.le, pow_le j]
     _ = 4 ^ (f * card n) * (ideleAbs y.det * ∏ j, frameLength y (v j) ^ (2 * f)) := by
-        simp only [mul_pow, prod_mul_distrib, prod_const, card_univ, len, ← e.prod_comp]
-        rw [pow_mul 2, ← pow_mul]
-        ring
+      simp only [mul_pow, prod_mul_distrib, prod_const, card_univ, len, ← e.prod_comp]
+      rw [pow_mul 2, ← pow_mul]
+      ring
     _ ≤ 4 ^ (f * card n) * (2 * (f * card n) * rootDiscr E) ^ (f * card n) := by gcongr
     _ = (8 * (f * card n) * rootDiscr E) ^ (f * card n) := by rw [← mul_pow]; ring
 

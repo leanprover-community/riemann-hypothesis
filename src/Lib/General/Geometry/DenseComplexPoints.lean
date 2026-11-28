@@ -71,10 +71,12 @@ lemma New.exists_lift_of_dense_preimage {X Y Z : Scheme} [IsReduced X] (i : Y �
 abbrev New.IsDenseFamily {Z : Type} {X : Scheme} (ξ : Z → (Spec (CommRingCat.of ℂ) ⟶ X)) : Prop :=
   DenseRange fun z : Z ↦ ξ z (closedPoint ℂ)
 
-/-- `X` is reduced and the complex points `ξ z` are dense in it, so that regular functions are
-determined by their values at these points. -/
-def New.IsSeparatingFamily {Z : Type} {X : Scheme} (ξ : Z → (Spec (CommRingCat.of ℂ) ⟶ X)) :
-    Prop := AlgebraicGeometry.IsReduced X ∧ IsDenseFamily ξ
+/--
+`X` is reduced and the complex points `ξ z` are dense in it, so that regular functions are
+determined by their values at these points.
+-/
+def New.IsSeparatingFamily {Z : Type} {X : Scheme} (ξ : Z → (Spec (CommRingCat.of ℂ) ⟶ X)) : Prop :=
+  AlgebraicGeometry.IsReduced X ∧ IsDenseFamily ξ
 
 /-- Reduced closure: complex points `ξ z : Spec ℂ ⟶ X` factor as `ξ z = i ∘ e z` through a closed
 immersion `i : Y ⟶ X`, with `Y` reduced and the points `e z` dense in `Y`

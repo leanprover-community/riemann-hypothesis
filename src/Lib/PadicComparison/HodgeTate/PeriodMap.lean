@@ -71,27 +71,33 @@ namespace New.Variety
 open CategoryTheory TensorProduct Function AlgebraicGeometry Functor AlgebraTensorModule Period
   Comparison PadicTest ModuleCat.Algebra Module
 
-variable {p : ℕ} [ThePrime p] {R : CommRingCat} [Algebra R OC] [Algebra R Ω]
+variable
+  {p : ℕ} [ThePrime p]
+  {R : CommRingCat} [Algebra R OC] [Algebra R Ω]
   {e : Ω →+* PadicAlgCl p} (he : ∀ r : R, e (algebraMap R Ω r) = (algebraMap R OC r : ℂ_[p]))
   {S : Type} [CommRing S] [Algebra Ainf S]
-  (K : Type) [CommRing K] [Algebra S K] [Algebra ℚ_[p] K] [Algebra ℤ_[p] K]
-  [IsScalarTower ℤ_[p] ℚ_[p] K] {Ψ : PadicTest ⥤ ModuleCat K}
-  (θ : asModules (tilt ⋙ periodAlg S) ⋙ tensorWith K K ≅ Ψ) (n : ℕ)
+  (K : Type)
+  [CommRing K] [Algebra S K] [Algebra ℚ_[p] K] [Algebra ℤ_[p] K] [IsScalarTower ℤ_[p] ℚ_[p] K]
+  {Ψ : PadicTest ⥤ ModuleCat K} (θ : asModules (tilt ⋙ periodAlg S) ⋙ tensorWith K K ≅ Ψ)
+  (n : ℕ)
   {Γ : Type*} [Group Γ] [MulSemiringAction Γ Ω] [SMulCommClass Γ R Ω]
   {j : Γ → Gp p} (hj : ∀ (g : Γ) (x : Ω), j g (e x) = e (g • x))
 
-/-- The identity of a test is a map of `R`-algebras to its twist by `j g`. Here
+/--
+The identity of a test is a map of `R`-algebras to its twist by `j g`. Here
 `algFunctor ⋙ restrictAlg R OC` sends a test `c` to the ring `c.ProdRing`, made an `R`-algebra
-through `R → O_C`. -/
-noncomputable def toTwistAlg (g : Γ) :
-    algFunctor ⋙ restrictAlg R OC ⟶ PadicTest.twist (j g) ⋙ algFunctor ⋙ restrictAlg R OC where
+through `R → O_C`.
+-/
+noncomputable def toTwistAlg (g : Γ)
+    : algFunctor ⋙ restrictAlg R OC ⟶ PadicTest.twist (j g) ⋙ algFunctor ⋙ restrictAlg R OC where
   -- `g` fixes the image of `R` in `Ω`, so `j g` fixes its image in `OC`.
-  app c := CommAlg.homOfRingHom (RingHom.id ((algFunctor ⋙ restrictAlg R OC).obj c)) fun z ↦
-    congrArg c.structureMap (Subtype.ext (by simp [← he, hj]))
+  app c :=
+    CommAlg.homOfRingHom (RingHom.id ((algFunctor ⋙ restrictAlg R OC).obj c)) fun z ↦
+      congrArg c.structureMap (Subtype.ext (by simp [← he, hj]))
 
 /-- A point of `Y` in a test is a point of `Y` in the twist of the test by `j g`. -/
-noncomputable def toTwistPoints (g : Γ) (Y : Over (Spec R)) :
-    testPoints.obj Y ⟶ PadicTest.twist (j g) ⋙ testPoints.obj Y :=
+noncomputable def toTwistPoints (g : Γ) (Y : Over (Spec R))
+    : testPoints.obj Y ⟶ PadicTest.twist (j g) ⋙ testPoints.obj Y :=
   whiskerRight (toTwistAlg he hj g) (algPointsOf R R Y)
 
 /-- `ℚ_p` is a localization of `ℤ_p`, so the two scalar actions on `K ⊗ M` agree. -/
@@ -102,36 +108,47 @@ section
 
 variable {K n}
 
-/-- The element `θ (a ⊗ 1 ⊗ w)` of `Ψ c`, for `a` in `K` and a Witt vector `w` over the tilt of
-the test `c`. -/
+/--
+The element `θ (a ⊗ 1 ⊗ w)` of `Ψ c`, for `a` in `K` and a Witt vector `w` over the tilt of
+the test `c`.
+-/
 noncomputable abbrev periodTmul (c : PadicTest) (a : K) (w : WittVector p c.TiltRing) : Ψ.obj c :=
   θ.hom.app c (a ⊗ₜ AdicCompletion.of _ _ (1 ⊗ₜ w))
 
-/-- The map of coefficients `β`, from the twist of `Ψ` by `g` to `Ψ`, acts as `σ` on the elements
+/--
+The map of coefficients `β`, from the twist of `Ψ` by `g` to `Ψ`, acts as `σ` on the elements
 `θ (a ⊗ 1 ⊗ w)`, where `w` is a Witt vector whose coordinates are fixed by Frobenius.
-`moduleCoeff Ψ` is `Ψ` with values lifted by `ULift`, and `⟨_⟩` wraps an element of `Ψ c`. -/
-def ActsAsOnFrobeniusFixed (g : Gp p) (β : PadicTest.twist g ⋙ moduleCoeff Ψ ⟶ moduleCoeff Ψ)
-    (σ : K → K) : Prop :=
-  ∀ (c : PadicTest) (a : K) (w : WittVector p c.TiltRing), (∀ i : ℕ, w.coeff i ^ p = w.coeff i) →
-    β.app c ⟨periodTmul θ ((PadicTest.twist g).obj c) a w⟩ = ⟨periodTmul θ c (σ a) w⟩
+`moduleCoeff Ψ` is `Ψ` with values lifted by `ULift`, and `⟨_⟩` wraps an element of `Ψ c`.
+-/
+def ActsAsOnFrobeniusFixed
+    (g : Gp p) (β : PadicTest.twist g ⋙ moduleCoeff Ψ ⟶ moduleCoeff Ψ) (σ : K → K)
+    : Prop :=
+  ∀ (c : PadicTest) (a : K) (w : WittVector p c.TiltRing),
+    (∀ i : ℕ, w.coeff i ^ p = w.coeff i)
+      → β.app c ⟨periodTmul θ ((PadicTest.twist g).obj c) a w⟩ = ⟨periodTmul θ c (σ a) w⟩
 
-/-- A `p`-adic period map: `K`-linear maps `J Y` from `K ⊗ V^n(Y)` to `H^n` of the points of `Y`
+/--
+A `p`-adic period map: `K`-linear maps `J Y` from `K ⊗ V^n(Y)` to `H^n` of the points of `Y`
 in tests, with coefficients `Ψ`, that are natural, Galois equivariant and bijective on proper
-charted `Y`. Here `V^n(Y)` is the geometric `p`-adic cohomology `ellAdicCohom R Ω n` of `Y`. -/
+charted `Y`. Here `V^n(Y)` is the geometric `p`-adic cohomology `ellAdicCohom R Ω n` of `Y`.
+-/
 structure IsPadicPeriodMap
-    (J : ∀ Y : Over (Spec R), K ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩ →ₗ[K]
-      H (freeAb.obj (testPoints.obj Y)) (moduleCoeff Ψ) n) : Prop where
+    (J : ∀ Y : Over (Spec R),
+      K ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩ →ₗ[K]
+        H (freeAb.obj (testPoints.obj Y)) (moduleCoeff Ψ) n)
+    : Prop where
   /-- `J` commutes with the pull-back along `f : W ⟶ Y`. -/
-  natural (W Y : Over (Spec R)) (f : W ⟶ Y) (x : K ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩) :
-    J W ((((ellAdicCohom R Ω n).map f.op).hom.restrictScalars ℤ_[p]).baseChange K x) =
-      H.map (moduleCoeff Ψ) (freeAb.map (testPoints.map f)) n (J Y x)
+  natural (W Y : Over (Spec R)) (f : W ⟶ Y) (x : K ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩)
+    : J W ((((ellAdicCohom R Ω n).map f.op).hom.restrictScalars ℤ_[p]).baseChange K x)
+      = H.map (moduleCoeff Ψ) (freeAb.map (testPoints.map f)) n (J Y x)
   /-- `J` carries `σ ⊗ g` to the pull-back along `β` and the twist by `j g`, if `β` acts as `σ`. -/
-  equivariant (Y : Over (Spec R)) (g : Γ) (σ : K →ₗ[ℤ_[p]] K)
-    (β : PadicTest.twist (j g) ⋙ moduleCoeff Ψ ⟶ moduleCoeff Ψ)
-    (hβ : ActsAsOnFrobeniusFixed θ (j g) β σ) (x : K ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩) :
-    J Y (TensorProduct.map σ
-        ((ellAdicCohom.galoisAction R Ω Γ Y n g).restrictScalars ℤ_[p]) x) =
-      (Comparison.of (PadicTest.twist (j g)) β).pull (freeAbMap (toTwistPoints he hj g Y)) n
+  equivariant
+    (Y : Over (Spec R))
+    (g : Γ) (σ : K →ₗ[ℤ_[p]] K) (β : PadicTest.twist (j g) ⋙ moduleCoeff Ψ ⟶ moduleCoeff Ψ)
+    (hβ : ActsAsOnFrobeniusFixed θ (j g) β σ)
+    (x : K ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩)
+    : J Y (TensorProduct.map σ ((ellAdicCohom.galoisAction R Ω Γ Y n g).restrictScalars ℤ_[p]) x)
+      = (Comparison.of (PadicTest.twist (j g)) β).pull (freeAbMap (toTwistPoints he hj g Y)) n
         (J Y x)
   /-- `J Y` is bijective if `Y` is proper and charted over `Ω`. -/
   bijective (Y : Over (Spec R)) [IsCharted Y Ω] [IsProper Y.hom] : Bijective (J Y)

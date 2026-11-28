@@ -429,15 +429,20 @@ lemma New.GaloisRep.centralChar_mem_algHeckeChars_and_charUnramifiedAt {E : Type
       h_unit.imp adeleNorm_mem_Ô adeleNorm_mem_Ô
 
 open Classical in
-/-- The place `w₁` together with the places `u` of `S` or conjugate to a place of `S` such that
+/--
+The place `w₁` together with the places `u` of `S` or conjugate to a place of `S` such that
 the conjugate of the place of `QuadField d` below `u` is neither the place below `w₀` nor the
 place below `w'`. The seed construction takes a level that lies exactly in these places and in the
-places that contain an integer `N`. -/
-private noncomputable def New.GaloisRep.levelPlaces {E : Type} [Field E] [NumberField E]
-    [IsCMField E] (d : ℕ) [HasQuadSubfield d E] (S : Finset (FinPlace E)) (w₀ w₁ w' : FinPlace E) :
-    Finset (FinPlace E) :=
-  insert w₁ {u ∈ S ∪ S.image star |
-    star (u.below (QuadField d)) ∉ [w₀.below (QuadField d), w'.below (QuadField d)]}
+places that contain an integer `N`.
+-/
+private noncomputable def New.GaloisRep.levelPlaces
+    {E : Type} [Field E] [NumberField E] [IsCMField E]
+    (d : ℕ) [HasQuadSubfield d E]
+    (S : Finset (FinPlace E)) (w₀ w₁ w' : FinPlace E)
+    : Finset (FinPlace E) :=
+  insert w₁
+    {u ∈ S ∪ S.image star |
+      star (u.below (QuadField d)) ∉ [w₀.below (QuadField d), w'.below (QuadField d)]}
 
 open Classical in
 /-- Each place in `insert w₁ S` or its conjugate lies in `levelPlaces d S w₀ w₁ w'`, written out:

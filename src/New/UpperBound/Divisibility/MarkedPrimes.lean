@@ -51,15 +51,19 @@ section MarkedDefs
 
 open Finset
 
-variable {P : Parameters} {D : Data P} {p : ℕ} [Fact p.Prime] [PadicPlace p]
-  (Λ : Finset (FinPlace D.E))
+variable
+  {P : Parameters} {D : Data P} {p : ℕ} [Fact p.Prime] [PadicPlace p] (Λ : Finset (FinPlace D.E))
 
-/-- The prime of `E` above `p` induced by the embedding `ι ∘ σ` of `E` into `ℂ_p`, where the
-infinite place `σ` is read as the embedding of `E` into `ℂ` that the CM type selects. -/
+/--
+The prime of `E` above `p` induced by the embedding `ι ∘ σ` of `E` into `ℂ_p`, where the
+infinite place `σ` is read as the embedding of `E` into `ℂ` that the CM type selects.
+-/
 def inducedPlace (σ : D.Φ) : FinPlace D.E := placeOfEmb (ιₚ.comp (Φ σ))
 
-/-- A marked set of primes of `E` at `ι`: `Λ` is disjoint from its complex conjugate, and each prime
-of `Λ` is induced by an a-place. Moreover `p` is exceptional and below `x₁`. -/
+/--
+A marked set of primes of `E` at `ι`: `Λ` is disjoint from its complex conjugate, and each prime
+of `Λ` is induced by an a-place. Moreover `p` is exceptional and below `x₁`.
+-/
 structure IsMarked where
   /-- `Λ` is disjoint from its complex conjugate. -/
   star_notMem : ∀ l ∈ Λ, star l ∉ Λ
@@ -70,8 +74,10 @@ structure IsMarked where
   /-- `p` is below `x₁` and `χ_K(p) ≠ 1`. -/
   isSmallNonsplit : D.IsSmallNonsplit p
 
-/-- A full mark: a marked set that contains, for each a-place `τ`, the prime induced by `τ` or its
-conjugate. -/
+/--
+A full mark: a marked set that contains, for each a-place `τ`, the prime induced by `τ` or its
+conjugate.
+-/
 structure IsFullMark extends D.IsMarked Λ where
   /-- For each a-place, `Λ` contains its induced prime or the conjugate of that prime. -/
   mem_or_star_mem : ∀ τ ∈ D.aPlaces, inducedPlace τ ∈ Λ ∨ star (inducedPlace τ) ∈ Λ
@@ -81,19 +87,25 @@ abbrev integralSourceForms : Submodule embValRing D.SourceForm :=
   (integralFormsAt D.SourceForm 1).comap (D.SourceForm.subtype.restrictScalars embValRing)
 
 open scoped Classical in
-/-- The places inducing a prime of `Λ`: the infinite places of `E` whose induced prime above `p`
-lies in `Λ`. -/
+/--
+The places inducing a prime of `Λ`: the infinite places of `E` whose induced prime above `p`
+lies in `Λ`.
+-/
 abbrev placesInducing : Finset D.Φ := {σ : D.Φ | inducedPlace σ ∈ Λ}
 
 open scoped Classical in
-/-- The places inducing the conjugate of a prime of `Λ`: the infinite places of `E` whose induced
-prime above `p` is conjugate to a prime of `Λ`. -/
+/--
+The places inducing the conjugate of a prime of `Λ`: the infinite places of `E` whose induced
+prime above `p` is conjugate to a prime of `Λ`.
+-/
 abbrev placesInducingConj : Finset D.Φ := {σ : D.Φ | star (inducedPlace σ) ∈ Λ}
 
 open scoped Classical in
-/-- The number `A_𝔩`: the integer `D.a` times the number of a-places (places of class `1` modulo
-`q₀`) that induce the prime `𝔩` at `ι`. -/
-def heckeScalingExponent (l : FinPlace D.E) : ℕ := D.a * #{τ ∈ D.aPlaces | inducedPlace τ = l}
+/--
+The number `A_𝔩`: the integer `D.a` times the number of a-places (places of class `1` modulo
+`q₀`) that induce the prime `𝔩` at `ι`.
+-/
+def heckeScalingExponent (l : FinPlace D.E) : ℕ := D.a * # {τ ∈ D.aPlaces | inducedPlace τ = l}
 
 /-- The numbers `A_𝔩` for `𝔩 ∈ Λ` add up to `a` times the number of a-places whose induced prime
 lies in `Λ`. -/
@@ -136,8 +148,10 @@ lemma ceilLogLifts_le_l₀ : D.ceilLogLifts p ≤ l₀ D.towerExp := by
     _ ≤ 2 ^ l₀ D.towerExp := D.m_pow_le_two_pow_l₀
     _ ≤ p ^ l₀ D.towerExp := Nat.pow_le_pow_left hq.out.two_le _
 
-/-- The number `ceilLogLifts p`, the least `𝔯` with `m ≤ p ^ 𝔯`, is bounded in order of magnitude by
-`log (log x₁)`: it is at most `s` (`ceilLogLifts_le_towerExp`). -/
+/--
+The number `ceilLogLifts p`, the least `𝔯` with `m ≤ p ^ 𝔯`, is bounded in order of magnitude by
+`log (log x₁)`: it is at most `s` (`ceilLogLifts_le_towerExp`).
+-/
 instance : D.HasLogUpper (D.ceilLogLifts p) (Real.log D.logX₁) :=
   D.hasLogUpper_of_le (A := D.towerExp) ceilLogLifts_le_towerExp
 
@@ -255,9 +269,11 @@ lemma inducedPlace_eq_or_star_iff (h_inert : chiK P.d p = -1) (σ τ : D.Φ) :
     smul_eq_star_iff_of_inert (D.p_mem_inducedPlace τ) h_inert]
   grind [Nat.even_or_odd, div_eq_iff_eq_mul]
 
-/-- The properties of the orbits of the place named by `-p` that hold at an exceptional prime `p`.
+/--
+The properties of the orbits of the place named by `-p` that hold at an exceptional prime `p`.
 Write `o₀ = D.o₀ p` for the order of `-p` modulo `q₀`, `o` for the order of the place named by `-p`
-and `r = D.ceilLogLifts p` for the least number with `m ≤ p ^ r`. -/
+and `r = D.ceilLogLifts p` for the least number with `m ≤ p ^ r`.
+-/
 structure HasExceptionalOrbits (D : Data P) (p : ℕ) [Fact p.Prime] [PadicPlace p] : Prop where
   /-- `o₀` is odd. -/
   odd_o₀ : Odd (D.o₀ p)
@@ -266,12 +282,13 @@ structure HasExceptionalOrbits (D : Data P) (p : ℕ) [Fact p.Prime] [PadicPlace
   /-- `m` divides `o`. -/
   m_dvd_orderOf : D.m ∣ orderOf (D.placeOfInt (-p))
 
-/-- Let `p` be an exceptional prime: `(p/d) = -1`, `p ≢ ±1` modulo `m`, and the order `o₀` of `-p`
+/--
+Let `p` be an exceptional prime: `(p/d) = -1`, `p ≢ ±1` modulo `m`, and the order `o₀` of `-p`
 modulo `q₀` is odd and at most `r = ceilLogLifts p`, the least number with `m ≤ p ^ r`. Then the
 properties of `New.Data.HasExceptionalOrbits` hold: `o₀` is odd, `o₀ ≤ r`, and the order `o` of
-the place named by `-p` is a multiple of `m`. -/
-theorem IsExceptional.hasExceptionalOrbits (h : D.IsExceptional p) :
-    D.HasExceptionalOrbits p where
+the place named by `-p` is a multiple of `m`.
+-/
+theorem IsExceptional.hasExceptionalOrbits (h : D.IsExceptional p) : D.HasExceptionalOrbits p where
   odd_o₀ := h.odd_o₀
   o₀_le_ceilLogLifts := by grind [IsExceptional]
   m_dvd_orderOf := h.m_dvd_orderOf
@@ -427,20 +444,20 @@ lemma IsMarked.maxCompactAt_le_levelX (h : D.IsMarked Λ) (hl : l ∈ Λ) :
       h_notMem (star w) (by simpa [mem_star_place] using h.natCast_mem_asIdeal hl)⟩
   exact h_le.trans (D.principalLevel_le_levelX 0)
 
-/-- The operator `p ^ A_𝔩 • T_{𝔩,𝔯}` on `D.SourceForm`, as an endomorphism over `embValRing`; here
+/--
+The operator `p ^ A_𝔩 • T_{𝔩,𝔯}` on `D.SourceForm`, as an endomorphism over `embValRing`; here
 `T_{𝔩,𝔯}` is the Hecke operator at the marked prime `𝔩` of index `𝔯 = D.ceilLogLifts p`, which
-preserves `D.SourceForm`. -/
-noncomputable def IsMarked.scaledHeckeOperator (h : D.IsMarked Λ) (l : Λ) :
-    Module.End embValRing D.SourceForm :=
+preserves `D.SourceForm`.
+-/
+noncomputable def IsMarked.scaledHeckeOperator (h : D.IsMarked Λ) (l : Λ)
+    : Module.End embValRing D.SourceForm :=
   LinearMap.restrictScalars embValRing <|
-    (p : ℂ) ^ heckeScalingExponent l.val •
-      (heckeSplit (algFormRep D.columnCount (D.lastEntry 0)) (h.isSplit l.property)
-        (D.ceilLogLifts p)).restrict
-        fun _ hv ↦
-          -- a vector of level `D.levelX 0` is spherical at `l`, by
-          -- `maxCompactAt_le_levelX`
-          heckeSplit_mem_levelSpace _ (D.ceilLogLifts p)
-            (levelSpace_anti (h.maxCompactAt_le_levelX l.property) hv) IsLevel.le hv
+    (p : ℂ) ^ heckeScalingExponent l.val • (heckeSplit (algFormRep D.columnCount (D.lastEntry 0))
+        (h.isSplit l.property) (D.ceilLogLifts p)).restrict fun _ hv ↦
+      -- a vector of level `D.levelX 0` is spherical at `l`, by
+      -- `maxCompactAt_le_levelX`
+      heckeSplit_mem_levelSpace _ (D.ceilLogLifts p)
+        (levelSpace_anti (h.maxCompactAt_le_levelX l.property) hv) IsLevel.le hv
 
 /-! ### Collisions and full marks -/
 

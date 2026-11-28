@@ -58,9 +58,13 @@ section LevelGauge
 open Matrix MeasureTheory Measure BesselIndex ENNReal Fintype FloorGroups Place TraceOne Function
   Filter
 
-variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
-  (ι : Type) [Fintype ι] [DecidableEq ι] {𝔰 : Shape} (T : 𝔰.Form A) (m : ℕ)
-  [IsHermitianUnit T.splitGram] {l i j : ℕ}
+variable
+  {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
+  (ι : Type) [Fintype ι] [DecidableEq ι]
+  {𝔰 : Shape} (T : 𝔰.Form A)
+  (m : ℕ)
+  [IsHermitianUnit T.splitGram]
+  {l i j : ℕ}
 
 /-!
 ## Place data, floor measures and their invariance
@@ -69,25 +73,33 @@ variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace
 `New.Floors.Place.heisenbergMeasure l`.
 -/
 
-/-- The data of a place: a basis of hyperbolic pairs and orthonormal vectors, the measures of the
+/--
+The data of a place: a basis of hyperbolic pairs and orthonormal vectors, the measures of the
 top floor and of H, the level M (the field `levelUnit`), the close pairs of vectors, the compact set
-K of the group and the set of positions. -/
+K of the group and the set of positions.
+-/
 structure PlaceData extends HyperbolicBasis ι T m where
   /-- The measure of the top floor, on G^(ϱ) = `floorGroup 𝔰.ϱ`. -/
   topFloorMeasure : Measure T.G
-  /-- A right invariant measure carried by H = `besselH`; see
-  `measureH_mem_and_invariant_and_le_one`. -/
+  /--
+  A right invariant measure carried by H = `besselH`; see
+  `measureH_mem_and_invariant_and_le_one`.
+  -/
   measureH : Measure T.G
   /-- The level M, a unit by which differences of vectors and frequencies are divided. -/
   levelUnit : Aˣ
-  /-- The close pairs (ω₁, ω₂) of vectors. In the place data that are used they are the pairs with
+  /--
+  The close pairs (ω₁, ω₂) of vectors. In the place data that are used they are the pairs with
   |ω₁|² + |ω₂|² < 1 at a real place, and those with ω₁ in the lattice and ω₂ ≡ ω₁ modulo M at the
-  finite places. -/
+  finite places.
+  -/
   closePairs : Set ((𝔰.BesselIndex → A) × (𝔰.BesselIndex → A))
   /-- The compact set K in the unitary group G. -/
   boxSet : Set T.G
-  /-- The positions: the elements of G by which the second point of a pair differs from the
-  first. -/
+  /--
+  The positions: the elements of G by which the second point of a pair differs from the
+  first.
+  -/
   positions : Set T.G
   /-- The measure `topFloorMeasure` is s-finite. -/
   [sFinite_topFloorMeasure : SFinite topFloorMeasure]
@@ -95,27 +107,32 @@ structure PlaceData extends HyperbolicBasis ι T m where
   [sFinite_measureH : SFinite measureH]
   /-- The measure of H is not zero. -/
   [neZero_measureH : NeZero measureH]
-  /-- `topFloorMeasure` is carried by G^(ϱ), and σ ↦ σ⁻¹ f_ϱ maps it to the measure of the top
-  quadric. -/
-  topFloorMeasure_mem_and_map_eq :
-      (∀ᵐ x : T.G ∂topFloorMeasure, x ∈ floorGroup 𝔰.ϱ) ∧
-      topFloorMeasure.map (orbitPoint 𝔰.top) = toHyperbolicBasis.floorQuadricMeasure 𝔰.top
-  /-- The measure of H is carried by H, is invariant under right translation by H, and for every g
-  gives mass at most 1 to the h with h g ∈ U K. -/
-  measureH_mem_and_invariant_and_le_one :
-      (∀ᵐ x : T.G ∂measureH, x ∈ besselH) ∧
-      (∀ s ∈ besselH, measureH ∗ₘ dirac s = measureH) ∧
-      ∀ g : T.G, measureH {h : T.G | ∃ u ∈ besselU, u * (h * g) ∈ boxSet} ≤ 1
+  /--
+  `topFloorMeasure` is carried by G^(ϱ), and σ ↦ σ⁻¹ f_ϱ maps it to the measure of the top
+  quadric.
+  -/
+  topFloorMeasure_mem_and_map_eq
+    : (∀ᵐ x : T.G ∂topFloorMeasure, x ∈ floorGroup 𝔰.ϱ)
+      ∧ topFloorMeasure.map (orbitPoint 𝔰.top) = toHyperbolicBasis.floorQuadricMeasure 𝔰.top
+  /--
+  The measure of H is carried by H, is invariant under right translation by H, and for every g
+  gives mass at most 1 to the h with h g ∈ U K.
+  -/
+  measureH_mem_and_invariant_and_le_one
+    : (∀ᵐ x : T.G ∂measureH, x ∈ besselH) ∧ (∀ s ∈ besselH, measureH ∗ₘ dirac s = measureH)
+      ∧ ∀ g : T.G, measureH {h : T.G | ∃ u ∈ besselU, u * (h * g) ∈ boxSet} ≤ 1
   /-- The level is fixed by the involution. -/
   star_levelUnit : star levelUnit.val = levelUnit
   /-- The set of close pairs is open, contains 0 and has compact closure. -/
-  isOpen_closePairs_and_zero_mem_and_isCompact_closure :
-    IsOpen closePairs ∧ 0 ∈ closePairs ∧ IsCompact (closure closePairs)
+  isOpen_closePairs_and_zero_mem_and_isCompact_closure
+    : IsOpen closePairs ∧ 0 ∈ closePairs ∧ IsCompact (closure closePairs)
   /-- The set K is compact and the set of positions is measurable. -/
   isCompact_boxSet_and_measurableSet_positions : IsCompact boxSet ∧ MeasurableSet positions
 
-variable {ι T m} {ν ρ : Measure T.G} [SFinite ν] [SFinite ρ]
-  {s : T.G} {S : Subgroup T.G} {f Φ : T.G → ℝ≥0∞} (F : PlaceData ι T m) (b : Fin 𝔰.n)
+variable
+  {ι T m} {ν ρ : Measure T.G} [SFinite ν] [SFinite ρ]
+  {s : T.G} {S : Subgroup T.G} {f Φ : T.G → ℝ≥0∞}
+  (F : PlaceData ι T m) (b : Fin 𝔰.n)
 
 namespace PlaceData
 
@@ -151,54 +168,76 @@ lemma measureH_setOf_mul_mem_boxSet_le_one (g : T.G) :
   obtain ⟨-, -, h_mass⟩ := F.measureH_mem_and_invariant_and_le_one
   exact h_mass g
 
-/-- The measure θ_l of floor l on G^(l). For l ≤ ϱ the map `orbitPoint l` carries it to the quadric
+/--
+The measure θ_l of floor l on G^(l). For l ≤ ϱ the map `orbitPoint l` carries it to the quadric
 measure `F.floorQuadricMeasure l`, and for l < ϱ it lives on the big cell. Floor n = ϱ + 1 carries
-the measure of H, and higher floors a unit mass at 1. -/
+the measure of H, and higher floors a unit mass at 1.
+-/
 def floorMeasure (l : ℕ) : Measure T.G :=
-  if l < 𝔰.ϱ then weylLaw l ∗ₘ heisenbergMeasure l
-  else if l = 𝔰.ϱ then F.topFloorMeasure
-  else if l = 𝔰.n then F.measureH
-  else dirac 1
+  if l < 𝔰.ϱ then
+    weylLaw l ∗ₘ heisenbergMeasure l
+  else if l = 𝔰.ϱ then
+    F.topFloorMeasure
+  else if l = 𝔰.n then
+    F.measureH
+  else
+    dirac 1
 
 /-- Every floor measure is s-finite. -/
 instance : SFinite (F.floorMeasure l) := by
   fun_cases floorMeasure
   all_goals infer_instance
 
-/-- `partialGroupMeasure l i` convolves the Heisenberg and floor measures of the i floors from l on.
+/--
+`partialGroupMeasure l i` convolves the Heisenberg and floor measures of the i floors from l on.
 For l + i = ϱ + 2 it is invariant under right translation by G^(l)
-(`partialGroupMeasure_mconv_dirac`). -/
+(`partialGroupMeasure_mconv_dirac`).
+-/
 abbrev partialGroupMeasure : ℕ → ℕ → Measure T.G :=
   descConv fun a : ℕ ↦ heisenbergMeasure a ∗ₘ F.floorMeasure a
 
-/-- The measure (η_{ϱ+1}∗θ_{ϱ+1}) ∗ ⋯ ∗ (η₀∗θ₀) on the unitary group, the convolution over all
-floors, where η_a = `heisenbergMeasure a` and θ_a = `F.floorMeasure a`. -/
+/--
+The measure (η_{ϱ+1}∗θ_{ϱ+1}) ∗ ⋯ ∗ (η₀∗θ₀) on the unitary group, the convolution over all
+floors, where η_a = `heisenbergMeasure a` and θ_a = `F.floorMeasure a`.
+-/
 abbrev groupMeasure : Measure T.G := F.partialGroupMeasure 0 (𝔰.ϱ + 2)
 
-/-- The convolution θ_(ϱ+1) ∗ ⋯ ∗ θ_l of the floor measures from l on. It serves to integrate
-functions on G^(l) that are left invariant under U ∩ G^(l). -/
+/--
+The convolution θ_(ϱ+1) ∗ ⋯ ∗ θ_l of the floor measures from l on. It serves to integrate
+functions on G^(l) that are left invariant under U ∩ G^(l).
+-/
 @[simp]
 abbrev quotientMeasureFrom (l : ℕ) : Measure T.G := descConv F.floorMeasure l (𝔰.ϱ + 2 - l)
 
-/-- A point g is near at j if R^(j) g meets K = `F.boxSet`, where R^(j) =
-`partialUnitriangularGroup j`. -/
+/--
+A point g is near at j if R^(j) g meets K = `F.boxSet`, where R^(j) =
+`partialUnitriangularGroup j`.
+-/
 def IsNear (j : ℕ) (g : T.G) : Prop := ∃ ξ ∈ T.partialUnitriangularGroup j, ξ * g ∈ F.boxSet
 
-/-- The rank 2 m + 2 of a block of orthonormal basis vectors in which the equation of a quadric is
-solved. -/
+/--
+The rank 2 m + 2 of a block of orthonormal basis vectors in which the equation of a quadric is
+solved.
+-/
 abbrev blockRank (_ : PlaceData ι T m) : ℕ := 2 * m + 2
 
-/-- The indices of the orthonormal basis vectors that remain when two blocks are set aside. These
-vectors span the space X'. -/
+/--
+The indices of the orthonormal basis vectors that remain when two blocks are set aside. These
+vectors span the space X'.
+-/
 abbrev FreeIndex : Type := Fin (card ι - 2 * F.blockRank)
 
-/-- The index in ι of a basis vector of X'. These are the first `card ι - 2 * F.blockRank`
-orthonormal basis vectors in a fixed numbering of ι. -/
+/--
+The index in ι of a basis vector of X'. These are the first `card ι - 2 * F.blockRank`
+orthonormal basis vectors in a fixed numbering of ι.
+-/
 def freeIndex (i : F.FreeIndex) : ι :=
   (equivFin ι).symm (i.castLE (Nat.sub_le (card ι) (2 * F.blockRank)))
 
-/-- The matrix whose columns are the basis vectors of X'; it embeds X' into the space. For a vector
-y, we write y_X for the vector of the products of these columns with y. -/
+/--
+The matrix whose columns are the basis vectors of X'; it embeds X' into the space. For a vector
+y, we write y_X for the vector of the products of these columns with y.
+-/
 abbrev orthonormalPart : Matrix 𝔰.BesselIndex F.FreeIndex A :=
   fromRows 0 ((F.basisMatrix.toCols₂.toCols₂.toCols₁.submatrix id F.freeIndex).fromRows 0)
 
@@ -206,80 +245,99 @@ abbrev orthonormalPart : Matrix 𝔰.BesselIndex F.FreeIndex A :=
 abbrev IsShortFrom (g g' : T.G) (ω : 𝔰.BesselIndex → A) : Prop :=
   (g⁻¹.val.val *ᵥ ω, g'⁻¹.val.val *ᵥ ω) ∈ F.closePairs
 
-/-- The class of ω in Y^(l) is stable at g and g', with ω as its lift at g: the vector ω is
+/--
+The class of ω in Y^(l) is stable at g and g', with ω as its lift at g: the vector ω is
 orthogonal to the e_b, b < l, and (g⁻¹ ω, g'⁻¹ ω') is a close pair for some ω' that agrees with ω
-at all indices k with l ≤ `level k` (for l ≤ ϱ, another lift of the class). -/
+at all indices k with l ≤ `level k` (for l ≤ ϱ, another lift of the class).
+-/
 def IsStable (l : ℕ) (g g' : T.G) (ω : 𝔰.BesselIndex → A) : Prop :=
-  IsOrthogonalBelow l ω ∧ ∃ ω' : 𝔰.BesselIndex → A,
-    CongrBelow l ω ω' ∧ (g⁻¹.val.val *ᵥ ω, g'⁻¹.val.val *ᵥ ω') ∈ F.closePairs
+  IsOrthogonalBelow l ω
+    ∧ ∃ ω' : 𝔰.BesselIndex → A,
+      CongrBelow l ω ω' ∧ (g⁻¹.val.val *ᵥ ω, g'⁻¹.val.val *ᵥ ω') ∈ F.closePairs
 
-/-- The set 𝔡_a at the points x and x y: the products ⟨e_a, ω⟩ with the vectors ω of Y^(a) that are
+/--
+The set 𝔡_a at the points x and x y: the products ⟨e_a, ω⟩ with the vectors ω of Y^(a) that are
 stable at x and x y. In the place data that are used it is a disc at a real place, and at the finite
-places a fractional ideal, contained in the integers if x is near at a + 1. -/
+places a fractional ideal, contained in the integers if x is near at a + 1.
+-/
 def stableProducts (a : Fin 𝔰.ϱ) (x y : T.G) : Set A :=
-  (fun ω : 𝔰.BesselIndex → A ↦ ω (eStar a)) ''
-    {ω : 𝔰.BesselIndex → A | F.IsStable a x (x * y) ω}
+  (fun ω : 𝔰.BesselIndex → A ↦ ω (eStar a)) '' {ω : 𝔰.BesselIndex → A | F.IsStable a x (x * y) ω}
 
-/-- The depth of the vector e_a at the points x and x y: the inverse of the volume of 𝔡_a. In the
+/--
+The depth of the vector e_a at the points x and x y: the inverse of the volume of 𝔡_a. In the
 place data that are used it is as follows. At the finite places it is the index of the ideal 𝔡_a if
 x is near at a + 1. At a real
 place it is 1 / π times the infimum of |ζ|² at x plus |ζ|² at x y over the duals ζ of e_a in Y^(a)
-(`New.Floors.RealPlaceSizes.depth_eq`). -/
+(`New.Floors.RealPlaceSizes.depth_eq`).
+-/
 def depth (a : Fin 𝔰.ϱ) (x y : T.G) : ℝ≥0∞ := (volume (F.stableProducts a x y))⁻¹
 
 /-- The exponent s of the depths in `depthWeight`: the rank of X' minus (3 n + 1 + m). -/
 abbrev volumeExponent : ℕ := card F.FreeIndex - (3 * 𝔰.n + 1 + m)
 
-/-- The weight of length j at the points x and x y: the product of the powers depth^(-s),
-s = `F.volumeExponent`, over the first j vectors e_a. -/
+/--
+The weight of length j at the points x and x y: the product of the powers depth^(-s),
+s = `F.volumeExponent`, over the first j vectors e_a.
+-/
 def depthWeight (j : ℕ) (x y : T.G) : ℝ≥0∞ :=
   ∏ a : Fin 𝔰.ϱ with a.val < j, (F.depth a x y)⁻¹ ^ F.volumeExponent
 
-/-- The common vectors: the ω in X' that are killed by the rows of v and are short from g
-and g z. -/
+/--
+The common vectors: the ω in X' that are killed by the rows of v and are short from g
+and g z.
+-/
 def commonVectors (g z : T.G) (v : Matrix (Fin 𝔰.ϱ) F.FreeIndex A) : Set (F.FreeIndex → A) :=
   {ω : F.FreeIndex → A | v *ᵥ ω = 0 ∧ F.IsShortFrom g (g * z) (F.orthonormalPart *ᵥ ω)}
 
-/-- The numbers (⟨ω₁, ω'₁⟩ - ⟨ω₂, ω'₂⟩) / M for two pairs (ω₁, ω₂), (ω'₁, ω'₂) in `closePairs`. In
+/--
+The numbers (⟨ω₁, ω'₁⟩ - ⟨ω₂, ω'₂⟩) / M for two pairs (ω₁, ω₂), (ω'₁, ω'₂) in `closePairs`. In
 the place data that are used they lie in the disc of radius 1 at a real place and are integral at
-the finite places. -/
+the finite places.
+-/
 def productDifferences : Set A :=
   {c : A | ∃ z ∈ F.closePairs, ∃ z' ∈ F.closePairs,
     c = F.levelUnit⁻¹ * (star z.1 ⬝ᵥ T.splitGram *ᵥ z'.1 - star z.2 ⬝ᵥ T.splitGram *ᵥ z'.2)}
 
-/-- The function φ on X' controls the products with the set W of vectors, and its s-th power,
+/--
+The function φ on X' controls the products with the set W of vectors, and its s-th power,
 s = `F.volumeExponent`, has integral at most Λ^(99 n (j+1)) over the vectors of size j for the
-scale `S`. -/
-structure IsCommonBound (S : Size T) (Λ : ℝ≥0∞) (W : Set (F.FreeIndex → A))
-    (φ : (F.FreeIndex → A) → ℝ≥0∞) : Prop where
+scale `S`.
+-/
+structure IsCommonBound
+    (S : Size T) (Λ : ℝ≥0∞) (W : Set (F.FreeIndex → A)) (φ : (F.FreeIndex → A) → ℝ≥0∞)
+    : Prop where
   /-- The function φ is measurable. -/
   measurable : Measurable φ
   /-- φ(u) bounds 1 / vol ⟨u, W⟩. -/
-  inv_volume_le (u : F.FreeIndex → A) :
-    (volume ((fun ω : F.FreeIndex → A ↦ star u ⬝ᵥ ω) '' W))⁻¹ ≤ φ u
+  inv_volume_le (u : F.FreeIndex → A)
+    : (volume ((fun ω : F.FreeIndex → A ↦ star u ⬝ᵥ ω) '' W))⁻¹ ≤ φ u
   /-- φ(u) bounds the volume of the numbers c with ⟨c u, W⟩ inside `productDifferences`. -/
-  volume_le (u : F.FreeIndex → A) :
-    volume {c : A | ∀ ω ∈ W, star (c • u) ⬝ᵥ ω ∈ F.productDifferences} ≤ φ u
+  volume_le (u : F.FreeIndex → A)
+    : volume {c : A | ∀ ω ∈ W, star (c • u) ⬝ᵥ ω ∈ F.productDifferences} ≤ φ u
   /-- The integral of φ^s over the vectors of size j is at most Λ^(99 n (j+1)). -/
-  lintegral_le (j : ℕ) :
-    ∫⁻ u : F.FreeIndex → A in S.vecsOfSize j, φ u ^ F.volumeExponent ≤ Λ ^ (99 * 𝔰.n * (j + 1))
+  lintegral_le (j : ℕ)
+    : ∫⁻ u : F.FreeIndex → A in S.vecsOfSize j, φ u ^ F.volumeExponent ≤ Λ ^ (99 * 𝔰.n * (j + 1))
 
-/-- The number |g|^(r+1/2), where r = k + 1 + 2 (ϱ - (l + 1)) is the rank of the vector part of the
-Heisenberg group of floor l; by default g is the level M. -/
+/--
+The number |g|^(r+1/2), where r = k + 1 + 2 (ϱ - (l + 1)) is the rank of the vector part of the
+Heisenberg group of floor l; by default g is the level M.
+-/
 def floorModulus (l : ℕ) (g := F.levelUnit) : ℝ≥0∞ :=
   P.modulus g ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (l + 1))) * P.modulus g ^ (2⁻¹ : ℝ)
 
 variable {F}
 
-/-- The enumeration of the basis of V_a, the span of the basis vectors of floor at least a: first
-the hyperbolic pair e_a, e*_a, then the basis vectors of the higher floors. -/
-def floorIndexEnum (a : Fin 𝔰.ϱ) :
-    Fin 2 ⊕ {i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} → 𝔰.BesselIndex :=
+/--
+The enumeration of the basis of V_a, the span of the basis vectors of floor at least a: first
+the hyperbolic pair e_a, e*_a, then the basis vectors of the higher floors.
+-/
+def floorIndexEnum (a : Fin 𝔰.ϱ)
+    : Fin 2 ⊕ {i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} → 𝔰.BesselIndex :=
   ![.inl a, eStar a] ⊕ᵥ Subtype.val
 
 /-- The Gram matrix of the basis vectors of floor at least l. -/
-def upperGram (l : ℕ) :
-    Matrix {i : 𝔰.BesselIndex // l ≤ floorOf i} {i : 𝔰.BesselIndex // l ≤ floorOf i} A :=
+def upperGram (l : ℕ)
+    : Matrix {i : 𝔰.BesselIndex // l ≤ floorOf i} {i : 𝔰.BesselIndex // l ≤ floorOf i} A :=
   T.splitGram.submatrix Subtype.val Subtype.val
 
 /-- The enumeration `floorIndexEnum a` of the basis of V_a has no repetitions. -/

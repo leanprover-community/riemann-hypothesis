@@ -256,10 +256,12 @@ lemma leFiberMeasure_frameVector (b : Fin 𝔰.n) :
   rw [h_orth, h_level]
   exact h_linear.trans (leFiberMeasure_floorQuadric b _) (by fun_prop)
 
-/-- The vector `e*_a + v + μ e_a`, for `p = (μ, v)` with `v` in the span `V_(a+1)` of the basis
-vectors of floor greater than `a`. -/
-noncomputable def dualPoint (a : Fin 𝔰.ϱ)
-    (p : ℂ × ({i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} → ℂ)) : 𝔰.BesselIndex → ℂ :=
+/--
+The vector `e*_a + v + μ e_a`, for `p = (μ, v)` with `v` in the span `V_(a+1)` of the basis
+vectors of floor greater than `a`.
+-/
+noncomputable def dualPoint (a : Fin 𝔰.ϱ) (p : ℂ × ({i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} → ℂ))
+    : 𝔰.BesselIndex → ℂ :=
   Pi.single (eStar a) 1 + inclMatrix ℂ Subtype.val *ᵥ p.2 + p.1 • Pi.single (.inl a) 1
 
 @[fun_prop]
@@ -432,8 +434,10 @@ lemma inv_mconv {G : Type*} [Group G] [MeasurableSpace G] [MeasurableMul₂ G] [
   simp (disch := fun_prop) only [Measure.inv, lintegral_map, _root_.mul_inv_rev]
   rw [lintegral_map (by fun_prop) measurable_inv]
 
-/-- The Haar measure of the unitary group of the span of the vectors `x_i`, carried into `G₁` by
-`embedH`, is invariant under inversion. -/
+/--
+The Haar measure of the unitary group of the span of the vectors `x_i`, carried into `G₁` by
+`embedH`, is invariant under inversion.
+-/
 instance : (volume.map (embedH (𝔰 := 𝔰))).IsInvInvariant where
   inv_eq_self := by
     have h_comm : Inv.inv ∘ embedH (𝔰 := 𝔰) = embedH ∘ Inv.inv :=
@@ -441,8 +445,10 @@ instance : (volume.map (embedH (𝔰 := 𝔰))).IsInvInvariant where
     rw [Measure.inv, Measure.map_map measurable_inv (by fun_prop), h_comm,
       ← Measure.map_map (by fun_prop) measurable_inv, map_inv_eq_self]
 
-/-- The measure of the Heisenberg group of floor `l` in `G₁` (the unit mass at `1` for `l ≥ ϱ`) is
-invariant under inversion. -/
+/--
+The measure of the Heisenberg group of floor `l` in `G₁` (the unit mass at `1` for `l ≥ ϱ`) is
+invariant under inversion.
+-/
 instance (l : ℕ) : (complexPlace.heisenbergMeasure l : Measure 𝔰.G₁).IsInvInvariant := by
   refine ⟨?_⟩
   by_cases hl : l < 𝔰.ϱ

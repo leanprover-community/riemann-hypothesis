@@ -42,16 +42,21 @@ section CompositionChain
 
 variable {R n : Type _} [CommRing R] [Fintype n] [DecidableEq n]
 
-/-- For linear maps `L i : M i → M (i + 1)`, the composite `L (j-1) ∘ ⋯ ∘ L 0 : M 0 → M j`; the
-identity for `j = 0`. -/
-def New.compUpTo {M : ℕ → Type _} [∀ j : ℕ, AddCommGroup (M j)] [∀ j : ℕ, Module R (M j)]
-    (L : ∀ j : ℕ, M j →ₗ[R] M (j + 1)) : ∀ j : ℕ, M 0 →ₗ[R] M j
+/--
+For linear maps `L i : M i → M (i + 1)`, the composite `L (j-1) ∘ ⋯ ∘ L 0 : M 0 → M j`; the
+identity for `j = 0`.
+-/
+def New.compUpTo
+    {M : ℕ → Type _} [∀ j : ℕ, AddCommGroup (M j)] [∀ j : ℕ, Module R (M j)]
+    (L : ∀ j : ℕ, M j →ₗ[R] M (j + 1))
+    : ∀ j : ℕ, M 0 →ₗ[R] M j
   | 0 => LinearMap.id
   | j + 1 => L j ∘ₗ compUpTo L j
 
 section
 
-variable {M : ℕ → Type*} [∀ j : ℕ, AddCommGroup (M j)] [∀ j : ℕ, Module R (M j)]
+variable
+  {M : ℕ → Type*} [∀ j : ℕ, AddCommGroup (M j)] [∀ j : ℕ, Module R (M j)]
   (L : ∀ j : ℕ, M j →ₗ[R] M (j + 1))
 
 lemma New.compUpTo_zero_apply (x : M 0) : compUpTo L 0 x = x :=
@@ -96,13 +101,16 @@ section TensorChain
 
 open TensorProduct LinearMap Finset
 
-variable (S : ℕ → Type)
+variable
+  (S : ℕ → Type)
   {M : ℕ → Type*} [∀ j : ℕ, AddCommGroup (S j)] [∀ j : ℕ, Module ℂ (S j)]
   [∀ j : ℕ, AddCommGroup (M j)] [∀ j : ℕ, Module ℂ (M j)]
   (b : ∀ j : ℕ, S j →ₗ[ℂ] M j →ₗ[ℂ] M (j + 1)) (t : ∀ j : ℕ, S j →ₗ[ℂ] S j) (f : ∀ j : ℕ, S j)
 
-/-- The complex tensor product `S (j-1) ⊗ (⋯ ⊗ (S 0 ⊗ ℂ))`, equal to `ℂ` for `j = 0`. Below it is
-written `S (j-1) ⊗ ⋯ ⊗ S 0`, the last factor `ℂ` (and `1` in pure tensors) being left out. -/
+/--
+The complex tensor product `S (j-1) ⊗ (⋯ ⊗ (S 0 ⊗ ℂ))`, equal to `ℂ` for `j = 0`. Below it is
+written `S (j-1) ⊗ ⋯ ⊗ S 0`, the last factor `ℂ` (and `1` in pure tensors) being left out.
+-/
 def New.TensorChain : ℕ → ModuleCat ℂ
   | 0 => ModuleCat.of ℂ ℂ
   | j + 1 => ModuleCat.of ℂ (S j ⊗[ℂ] TensorChain j)
@@ -111,11 +119,15 @@ namespace New.TensorChain
 
 variable {S}
 
-/-- For a family of vectors `f i` in `S i`, the pure tensor `f (j-1) ⊗ ⋯ ⊗ f 0` in
-`S (j-1) ⊗ ⋯ ⊗ S 0`; it is `1 : ℂ` for `j = 0`. -/
+/--
+For a family of vectors `f i` in `S i`, the pure tensor `f (j-1) ⊗ ⋯ ⊗ f 0` in
+`S (j-1) ⊗ ⋯ ⊗ S 0`; it is `1 : ℂ` for `j = 0`.
+-/
 def pure (j : ℕ) : TensorChain S j :=
-  compUpTo (M := fun i : ℕ ↦ TensorChain S i)
-    (fun i : ℕ ↦ TensorProduct.mk ℂ (S i) (TensorChain S i) (f i)) j (1 : ℂ)
+  compUpTo
+    (M := fun i : ℕ ↦ TensorChain S i)
+    (fun i : ℕ ↦ TensorProduct.mk ℂ (S i) (TensorChain S i) (f i))
+    j (1 : ℂ)
 
 lemma pure_zero : pure f 0 = (1 : ℂ) :=
   rfl
@@ -123,15 +135,19 @@ lemma pure_zero : pure f 0 = (1 : ℂ) :=
 lemma pure_succ (j : ℕ) : pure f (j + 1) = f j ⊗ₜ[ℂ] pure f j :=
   rfl
 
-/-- Two steps at once: the linear map from `S (2 * i) ⊗ S (2 * i + 1)` to
-`Hom (M (2 * i), M (2 * i + 2))` sending `s ⊗ s'` to `b (2 * i + 1) s' ∘ b (2 * i) s`. -/
+/--
+Two steps at once: the linear map from `S (2 * i) ⊗ S (2 * i + 1)` to
+`Hom (M (2 * i), M (2 * i + 2))` sending `s ⊗ s'` to `b (2 * i + 1) s' ∘ b (2 * i) s`.
+-/
 def liftInPairs (i : ℕ) : S (2 * i) ⊗[ℂ] S (2 * i + 1) →ₗ[ℂ] M (2 * i) →ₗ[ℂ] M (2 * (i + 1)) :=
   lift ((llcomp ℂ (M (2 * i)) (M (2 * i + 1)) (M (2 * i + 1 + 1))).compl₁₂ (b (2 * i + 1))
     (b (2 * i))).flip
 
-/-- For bilinear maps `b i : S i → M i → M (i + 1)` and `x` in `M 0`, the linear map from
+/--
+For bilinear maps `b i : S i → M i → M (i + 1)` and `x` in `M 0`, the linear map from
 `S (j-1) ⊗ ⋯ ⊗ S 0` to `M j` that sends `f (j-1) ⊗ ⋯ ⊗ f 0` to
-`(b (j-1) (f (j-1)) ∘ ⋯ ∘ b 0 (f 0)) x`. -/
+`(b (j-1) (f (j-1)) ∘ ⋯ ∘ b 0 (f 0)) x`.
+-/
 def lift (x : M 0) : ∀ j : ℕ, TensorChain S j →ₗ[ℂ] M j
   | 0 => toSpanSingleton ℂ (M 0) x
   | j + 1 => TensorProduct.lift ((b j).compl₂ (lift x j))
@@ -165,11 +181,15 @@ lemma lift_sub (x y : M 0) (m : ℕ) (s : TensorChain S m) :
     change b m u (lift b (x - y) m r) = b m u (lift b x m r) - b m u (lift b y m r)
     rw [ih r, map_sub]
 
-/-- For endomorphisms `t i` of `S i`, the endomorphism `t (j-1) ⊗ ⋯ ⊗ t 0` of
-`S (j-1) ⊗ ⋯ ⊗ S 0`; the identity of `ℂ` for `j = 0`. -/
+/--
+For endomorphisms `t i` of `S i`, the endomorphism `t (j-1) ⊗ ⋯ ⊗ t 0` of
+`S (j-1) ⊗ ⋯ ⊗ S 0`; the identity of `ℂ` for `j = 0`.
+-/
 def map : (j : ℕ) → TensorChain S j →ₗ[ℂ] TensorChain S j :=
-  lift (M := fun i : ℕ ↦ TensorChain S i)
-    (fun i : ℕ ↦ TensorProduct.mk ℂ (S i) (TensorChain S i) ∘ₗ t i) (1 : ℂ)
+  lift
+    (M := fun i : ℕ ↦ TensorChain S i)
+    (fun i : ℕ ↦ TensorProduct.mk ℂ (S i) (TensorChain S i) ∘ₗ t i)
+    (1 : ℂ)
 
 /-- The map `t (j-1) ⊗ ⋯ ⊗ t 0` sends the pure tensor `f (j-1) ⊗ ⋯ ⊗ f 0` to the pure tensor
 with factors `t i (f i)`. -/
@@ -235,12 +255,19 @@ lemma compUpTo_liftInPairs_tmul (p : ℕ) (x : M 0) :
     rw [compUpTo_succ_apply, ih, liftInPairs_tmul]
     rfl
 
-/-- For data `τ i` in `S (2 * i) ⊗ S (2 * i + 1)` of `p` double steps, the tensor
-`τ (p-1) ⊗ ⋯ ⊗ τ 0` regrouped into `2 * p` single factors. -/
+/--
+For data `τ i` in `S (2 * i) ⊗ S (2 * i + 1)` of `p` double steps, the tensor
+`τ (p-1) ⊗ ⋯ ⊗ τ 0` regrouped into `2 * p` single factors.
+-/
 def ofPairs (τ : ∀ i : ℕ, S (2 * i) ⊗[ℂ] S (2 * i + 1)) (p : ℕ) : TensorChain S (2 * p) :=
-  compUpTo (M := fun i : ℕ ↦ TensorChain S (2 * i))
-    (fun i : ℕ ↦ liftInPairs (M := fun j : ℕ ↦ TensorChain S j)
-      (fun j : ℕ ↦ TensorProduct.mk ℂ (S j) (TensorChain S j)) i (τ i)) p (1 : ℂ)
+  compUpTo
+    (M := fun i : ℕ ↦ TensorChain S (2 * i))
+    (fun i : ℕ ↦
+      liftInPairs
+        (M := fun j : ℕ ↦ TensorChain S j)
+        (fun j : ℕ ↦ TensorProduct.mk ℂ (S j) (TensorChain S j))
+        i (τ i))
+    p (1 : ℂ)
 
 /-- The chain of `2 * p` steps with the regrouped tensor `ofPairs τ p` as data is the composite of
 the `p` double steps with data `τ i`. -/

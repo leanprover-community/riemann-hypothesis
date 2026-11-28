@@ -82,10 +82,10 @@ section ReciprocityLaw
 open DiscreteUnits Finset Subgroup QZ MonoidHom NeZero Fact Pointwise Submodule IsLocalRing
   IsPlaceOver
 
-variable {O M : Type} [CommRing O]
+variable
+  {O M : Type} [CommRing O]
   {N l m e q ν : ℕ} [NeZero N] [NeZero m] [Fact l.Prime] [Fact q.Prime] [PadicIntegerRing O l]
-  {ψ : DirichletCharacter O N} {g τ φ : Gal(Ω/ℚ)}
-  {B : ClosurePlace} [AddCommGroup M] [Module O M]
+  {ψ : DirichletCharacter O N} {g τ φ : Gal(Ω/ℚ)} {B : ClosurePlace} [AddCommGroup M] [Module O M]
   {χ : Gal(Ω/ℚ) →* Oˣ} {s : Set Gal(Ω/ℚ)} {z : Gal(Ω/ℚ) → M} (hz : z ∈ vanishingCocycles χ M s)
 
 /-- A map `z` in `vanishingCocycles χ M s` satisfies the cocycle rule
@@ -115,8 +115,10 @@ lemma cyclotomicPowDirichlet_smul_eq_self (hg : g ∈ cycloGalGroup (N * m)) {y 
     simpa using cyclotomicPowDirichlet_smul (a := 1) (by simp [mem_ker.1 hσ]) hy
   exact ⟨h_fix hg, by simpa using h_fix (inv_mem hg)⟩
 
-/-- The open subgroup `{g | z g = 0}` of zeros of a map `z` in `vanishingCocycles χ M s` (given by
-`hz`): it is a subgroup by the cocycle rule, and open since `z` is locally constant. -/
+/--
+The open subgroup `{g | z g = 0}` of zeros of a map `z` in `vanishingCocycles χ M s` (given by
+`hz`): it is a subgroup by the cocycle rule, and open since `z` is locally constant.
+-/
 noncomputable def openCocycleKer : OpenSubgroup Gal(Ω/ℚ) :=
   OpenSubgroup.mk (cocycleKer χ hz.2.1) (hz.1 {0})
 
@@ -519,8 +521,10 @@ section ComponentBound
 
 open NeZero ZMod Selmer Ideal.Quotient Function QZ Finset Nat HasEnoughRootsOfUnity
 
-variable {O : Type} [CommRing O]
-  {N l e X ν : ℕ} [NeZero N] [L : Fact l.Prime] [PadicIntegerRing O l] {ψ : DirichletCharacter O N}
+variable
+  {O : Type} [CommRing O]
+  {N l e X ν : ℕ} [NeZero N] [L : Fact l.Prime] [PadicIntegerRing O l]
+  {ψ : DirichletCharacter O N}
 
 /-- If neither of the open subgroups `U`, `V` contains the Galois group over `ℚ(ζ_m)`, then some
 Frobenius element at a place above a prime `q ≡ 1 mod m` lies outside both. -/
@@ -544,8 +548,10 @@ lemma exists_place_above (r : Primes) : ∃ A : ClosurePlace, A.valuation (r : �
   have : Fact (r : ℕ).Prime := ⟨r.prop⟩
   ⟨_, valuation_comap_intQpBar_lt_one (IsAlgClosed.lift : Ω →ₐ[ℚ] PadicAlgCl r).toRingHom⟩
 
-/-- The function `x` on the Galois group vanishes on the decomposition group of every place above
-the prime `r`. -/
+/--
+The function `x` on the Galois group vanishes on the decomposition group of every place above
+the prime `r`.
+-/
 def IsTrivialAbove {M : Type} [Zero M] (x : Gal(Ω/ℚ) → M) (r : Primes) : Prop :=
   ∀ A : ClosurePlace, A.valuation (r : Ω) < 1 → ∀ g ∈ decompGroup Gal(Ω/ℚ) A, x g = 0
 
@@ -976,15 +982,19 @@ lemma apply_eq_zero_of_mem_inertiaGroup {M : Type} [AddCommGroup M] [Module O M]
     ⟨A, mem_cycloGalGroup_and_valuation_eq_one hr hA hι, nofun⟩
 
 variable (l e ψ) in
-/-- A finite set `T` of primes is tight at level `m` when its primes are `≡ 1 mod N l` and every
+/--
+A finite set `T` of primes is tight at level `m` when its primes are `≡ 1 mod N l` and every
 cocycle for the dual character `cyc ^ (e + 1) ψ` with values in `O / l ^ m` that is killed by `l`
 and vanishes on `inertiaOff N l T` (unramified over `ℚ(ζ_N)` off `l` and `T`) also vanishes on
-`inertiaOff N l ∅` (unramified off `l`). -/
+`inertiaOff N l ∅` (unramified off `l`).
+-/
 private def IsTight (m : ℕ) (T : Finset Primes) : Prop :=
-  (∀ r ∈ T, r ≡ 1 [MOD N * l]) ∧
-    ∀ y ∈ vanishingCocycles (cyclotomicPowDirichlet l (e + 1) ψ) (QuotSpan (l ^ m : O))
-        (inertiaOff N l T), l • y = 0 →
-        y ∈ vanishingCocycles (cyclotomicPowDirichlet l (e + 1) ψ) (QuotSpan (l ^ m : O))
+  (∀ r ∈ T, r ≡ 1 [MOD N * l])
+    ∧ ∀ y
+        ∈ vanishingCocycles (cyclotomicPowDirichlet l (e + 1) ψ) (QuotSpan (l ^ m : O))
+          (inertiaOff N l T),
+      l • y = 0
+        → y ∈ vanishingCocycles (cyclotomicPowDirichlet l (e + 1) ψ) (QuotSpan (l ^ m : O))
           (inertiaOff N l ∅)
 
 private lemma IsTight.modEq_one {m : ℕ} {T : Finset Primes} (hT : IsTight l e ψ m T) :

@@ -48,8 +48,10 @@ section MatchedPlacePairs
 
 open Set Matrix RingHom Polynomial Gf Variety Module
 
-variable {E E' n W : Type _} [Field E] [CMType E] [Field E'] [CMType E'] [Algebra E E'] [Fintype n]
-  [DecidableEq n] {σ : Gal(E'/E)} [AddCommGroup W] [Module ℂ W]
+variable
+  {E E' n W : Type _}
+  [Field E] [CMType E] [Field E'] [CMType E'] [Algebra E E'] [Fintype n] [DecidableEq n]
+  {σ : Gal(E'/E)} [AddCommGroup W] [Module ℂ W]
   {π : Representation ℂ (Gf E' n) W} {u : FinPlace E'}
 
 attribute [-simp] evalAt_apply in
@@ -212,30 +214,40 @@ lemma heckeSplit_comp_baseChangeGf (hu : u.IsSplit) (hw : (u.below E).IsSplit)
     simp [φ, basicDoubleCoset, indicator_apply, ← map_inv, -coe_units_inv, ← map_det,
       ← mapMatrix_apply, h_val]
 
-/-- A set `St` of pairs `(f, φ)` of functions on the finite adelic unitary groups over `E` and `E'`
+/--
+A set `St` of pairs `(f, φ)` of functions on the finite adelic unitary groups over `E` and `E'`
 is stable under the Hecke operators `(T_{w,j}, T_{u,j})` for every `j`: for each pair, the pair
 `(T_{w,j} f, T_{u,j} φ)` lies in `St`, the groups acting by left translation; `T_{u,j}` is
 `heckeSplit`, the Hecke operator of the indicator of `basicDoubleCoset n u j` at level
-`localIntGL n u`. The condition is empty unless `w` and `u` are both split. -/
-def IsHeckeStableAt (St : Set ((Gf E n → ℂ) × (Gf E' n → ℂ))) (w : FinPlace E)
-    (u : FinPlace E') : Prop :=
+`localIntGL n u`. The condition is empty unless `w` and `u` are both split.
+-/
+def IsHeckeStableAt (St : Set ((Gf E n → ℂ) × (Gf E' n → ℂ))) (w : FinPlace E) (u : FinPlace E')
+    : Prop :=
   ∀ x ∈ St, ∀ (hw : w.IsSplit) (hu : u.IsSplit) (j : ℕ),
     (heckeSplit leftTranslation hw j x.1, heckeSplit leftTranslation hu j x.2) ∈ St
 
-/-- A set `St` of pairs of functions on the finite adelic unitary groups over `E` and `E'`, all of
+/--
+A set `St` of pairs of functions on the finite adelic unitary groups over `E` and `E'`, all of
 them matching pairs of level `B` above `S` for `σ` and `μ` (`New.IsMatchingPairAbove`). It contains
 the indicator function of `B`, paired with its composition with `baseChangeGf`, and for each
-place `w` of `S` it is stable under the Hecke operators at `w` and at some place above `w`. -/
-structure IsHeckeStableMatching (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ) (S : Set (FinPlace E))
-    (B : Subgroup (Gf E' n)) (St : Set ((Gf E n → ℂ) × (Gf E' n → ℂ))) : Prop where
-  /-- `St` contains the indicator function of `B`, paired with its composition with
-  `baseChangeGf`. -/
-  indicator_mem :
-    ((B : Set (Gf E' n)).indicator 1 ∘ baseChangeGf, (B : Set (Gf E' n)).indicator 1) ∈ St
+place `w` of `S` it is stable under the Hecke operators at `w` and at some place above `w`.
+-/
+structure IsHeckeStableMatching
+    (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ) (S : Set (FinPlace E)) (B : Subgroup (Gf E' n))
+    (St : Set ((Gf E n → ℂ) × (Gf E' n → ℂ)))
+    : Prop where
+  /--
+  `St` contains the indicator function of `B`, paired with its composition with
+  `baseChangeGf`.
+  -/
+  indicator_mem
+    : ((B : Set (Gf E' n)).indicator 1 ∘ baseChangeGf, (B : Set (Gf E' n)).indicator 1) ∈ St
   /-- Every member of `St` is a matching pair of level `B` above `S`. -/
   isMatchingPairAbove : ∀ x ∈ St, IsMatchingPairAbove σ μ S B x.1 x.2
-  /-- Above each `w` in `S` there is a place `u` such that `St` is stable under
-  `(T_{w,j}, T_{u,j})`. -/
+  /--
+  Above each `w` in `S` there is a place `u` such that `St` is stable under
+  `(T_{w,j}, T_{u,j})`.
+  -/
   exists_isHeckeStableAt : ∀ w ∈ S, ∃ u : FinPlace E', u.below E = w ∧ IsHeckeStableAt St w u
 
 variable (E) in
@@ -331,16 +343,19 @@ variable (E) in
 def otherConjugates (V : Set (FinPlace E')) : Set (FinPlace E') :=
   FinPlace.below E ⁻¹' FinPlace.below E '' V \ V
 
-/-- `F` is invariant on both sides under the elements `k` that are integral at `V`:
-`F (k⁻¹ * g) = F g` (left translation) and `F (g * k) = F g` for every `g`. -/
+/--
+`F` is invariant on both sides under the elements `k` that are integral at `V`:
+`F (k⁻¹ * g) = F g` (left translation) and `F (g * k) = F g` for every `g`.
+-/
 def IsBiInvariantAt (V : Set (FinPlace E')) (F : Gf E' n → ℂ) : Prop :=
   ∀ k ∈ localLevel n V, leftTranslation k F = F ∧ ∀ g : Gf E' n, F (g * k) = F g
 
 variable (E n) in
-/-- The pairs `(F ∘ baseChangeGf, 1_K * F)`, where `F` is bi-invariant at `V` and `K` is the
-group of elements integral at `otherConjugates E V`. -/
-noncomputable def biInvariantPairs (V : Set (FinPlace E')) :
-    Set ((Gf E n → ℂ) × (Gf E' n → ℂ)) :=
+/--
+The pairs `(F ∘ baseChangeGf, 1_K * F)`, where `F` is bi-invariant at `V` and `K` is the
+group of elements integral at `otherConjugates E V`.
+-/
+noncomputable def biInvariantPairs (V : Set (FinPlace E')) : Set ((Gf E n → ℂ) × (Gf E' n → ℂ)) :=
   {(F ∘ baseChangeGf, indicator (localLevel n (otherConjugates E V)) 1 * F) |
     (F : Gf E' n → ℂ) (_ : IsBiInvariantAt V F)}
 

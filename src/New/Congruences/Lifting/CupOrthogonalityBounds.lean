@@ -78,33 +78,44 @@ namespace New.Lift
 open Period Polynomial Module Finset KummerChart JumpLattice Function IsLocalRing Topology Selmer
   Filter
 
-variable {p : ℕ} [l : ThePrime p] [Γ : GroupOverGp p] {O : Type} [CommRing O] {r N : ℕ}
-  [PadicIntegerRing O p] {L : GalLattice O Γ}
-  {U U' : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ} (k : KummerChart Γ) (ζ : k.LetterRoot O)
+variable
+  {p : ℕ} [l : ThePrime p] [Γ : GroupOverGp p]
+  {O : Type} [CommRing O]
+  {r N : ℕ} [PadicIntegerRing O p]
+  {L : GalLattice O Γ} {U U' : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ}
+  (k : KummerChart Γ) (ζ : k.LetterRoot O)
 
 variable (p r N) in
-/-- `K` holds for `X ^ e - 1`, with `e` the least common multiple of the `p ^ i - 1` for
-`1 ≤ i ≤ r`, and for some monic polynomial over `ℤ_[p]` of degree at most `N`. -/
+/--
+`K` holds for `X ^ e - 1`, with `e` the least common multiple of the `p ^ i - 1` for
+`1 ≤ i ≤ r`, and for some monic polynomial over `ℤ_[p]` of degree at most `N`.
+-/
 def IsTameType (K : O[X] → Prop) : Prop :=
-  K (X ^ ((Icc 1 r).lcm fun i ↦ p ^ i - 1) - 1) ∧
-  ∃ q : ℤ_[p][X], q.Monic ∧ q.natDegree ≤ N ∧ K (q.map (algebraMap ℤ_[p] O))
+  K (X ^ ((Icc 1 r).lcm fun i ↦ p ^ i - 1) - 1)
+    ∧ ∃ q : ℤ_[p][X], q.Monic ∧ q.natDegree ≤ N ∧ K (q.map (algebraMap ℤ_[p] O))
 
 open scoped Classical in
-/-- The jump set at the letter `i`: the union of `{0}` and the sets `U g` for the embeddings `g` of
-`O` with `g ζ = θ(ω(i))`, where `ω(i)` is the Teichmüller lift `k.letterTeich i`. -/
-noncomputable def KummerChart.letterJumps (U : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ) (i : k.Letter) :
-    Finset ℤ :=
+/--
+The jump set at the letter `i`: the union of `{0}` and the sets `U g` for the embeddings `g` of
+`O` with `g ζ = θ(ω(i))`, where `ω(i)` is the Teichmüller lift `k.letterTeich i`.
+-/
+noncomputable def KummerChart.letterJumps (U : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ) (i : k.Letter)
+    : Finset ℤ :=
   insert 0 (Finset.biUnion {g : O →ₐ[ℤ_[p]] ℂ_[p] | g ζ = (theta (k.letterTeich i) : ℂ_[p])} U)
 
-/-- Let the sets of the filter F contain the subgroup `k.subgroup` of the chart, and let L lie in
+/--
+Let the sets of the filter F contain the subgroup `k.subgroup` of the chart, and let L lie in
 the class (`New.Lift.InClass`) along F with jump sets U. The side (a lattice with jump sets at the
 letters and a parametrised module of cocycles) is formed by L, the parameter lattice Z_f(L) of all
 crystalline cocycles, and the jump sets `New.Lift.KummerChart.letterJumps` of U at the letters.
-Membership in the class makes L potentially crystalline, so Z_f(L) is finitely generated. -/
-noncomputable abbrev KummerChart.universalSide {F : Filter Γ}
-    (hF : Filter.map k.subgroup.subtype ⊤ ≤ F) (h : InClass F ⊥ U L) : PairingSide ⟨O, ζ⟩ :=
+Membership in the class makes L potentially crystalline, so Z_f(L) is finitely generated.
+-/
+noncomputable abbrev KummerChart.universalSide
+    {F : Filter Γ} (hF : Filter.map k.subgroup.subtype ⊤ ≤ F) (h : InClass F ⊥ U L)
+    : PairingSide ⟨O, ζ⟩ :=
   have : Module.Finite O (crysCocycles L.ρ) := crysCocycles.fg h.isPotentiallyCrystalline
-  { toGalLattice := L
+  {
+    toGalLattice := L
     jumpSet := k.letterJumps ζ U
     embJumps := U
     inClass := ⟨h.isAdmissible.mono (by gcongr), h.mem_of_jump_ne_zero, h.isKilledBy_of_isWeilPair⟩
@@ -113,7 +124,8 @@ noncomputable abbrev KummerChart.universalSide {F : Filter Γ}
     -- the module of all crystalline cocycles, with the trivial action
     paramLattice := ⟨crysCocycles L.ρ, 1⟩
     cocycleMap := LinearMap.id
-    zero_mem := by simp [letterJumps] }
+    zero_mem := by simp [letterJumps]
+  }
 
 /-- The jumps at the letter `i` are `0` and the elements of the sets `U g` of the embeddings `g`
 with `g ζ = theta (k.letterTeich i)`, the image under `theta` of the Teichmüller lift of `i`. -/

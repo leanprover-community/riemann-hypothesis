@@ -51,25 +51,30 @@ namespace New.Variety.ellAdicCohom
 
 open CategoryTheory AlgebraicGeometry CommRingCat ellAdicPull Comparison
 
-variable {ℓ : ℕ} [ThePrime ℓ]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
   {R : CommRingCat} [Algebra R Ω]
   {Γ : Type*} [Group Γ] [MulSemiringAction Γ Ω] [SMulCommClass Γ R Ω]
   {A : ClosurePlace} (hR : ∀ r : R, algebraMap R Ω r ∈ A) (hℓ : IsUnit (ℓ : A))
   {W Y : Over (Spec R)} [IsCharted Y R] [IsProper Y.hom]
-  {n p f : ℕ} [Fact p.Prime] (hp : A.valuation p < 1)
-  {U : PointFunctor} (hU_char : ∀ B : CommRingCat, U B → (p : B) = 0) (j : ℕ)
+  {n p f : ℕ} [Fact p.Prime]
+  (hp : A.valuation p < 1)
+  {U : PointFunctor} (hU_char : ∀ B : CommRingCat, U B → (p : B) = 0)
+  (j : ℕ)
 
-/-- For a functor U on rings with points only in rings where p = 0, the endomorphism sending x
-in U(B) to its image under b ↦ b^(p^j). -/
+/--
+For a functor U on rings with points only in rings where p = 0, the endomorphism sending x
+in U(B) to its image under b ↦ b^(p^j).
+-/
 def frobEnd : U ⟶ U where
   app B := ↾fun x ↦ U.map (ofHom (frobPow (hU_char B x) j)) x
   naturality X Y f := by
     ext x
-    change U.map (ofHom (frobPow (hU_char Y (U.map f x)) j)) (U.map f x) =
-      U.map f (U.map (ofHom (frobPow (hU_char X x) j)) x)
+    change U.map (ofHom (frobPow (hU_char Y (U.map f x)) j)) (U.map f x)
+      = U.map f (U.map (ofHom (frobPow (hU_char X x) j)) x)
     rw [← U.map_comp_apply, ← U.map_comp_apply]
-    have h_hom : f ≫ ofHom (frobPow (hU_char Y (U.map f x)) j) =
-        ofHom (frobPow (hU_char X x) j) ≫ f :=
+    have h_hom
+        : f ≫ ofHom (frobPow (hU_char Y (U.map f x)) j) = ofHom (frobPow (hU_char X x) j) ≫ f :=
       CommRingCat.hom_ext <| RingHom.ext fun b ↦ (map_pow f.hom b (p ^ j)).symm
     rw [h_hom]
 

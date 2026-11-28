@@ -88,18 +88,21 @@ section FiniteZeroTerm
 
 open Matrix Prod Space Splitting stdLattice Fock
 
-variable {E n n₀ p : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n₀]
-  [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₀ : n₀ → ℤˣ} {V : Space E n s}
-  {V₀ : Space E n₀ s₀} [WeilData E]
+variable
+  {E n n₀ p : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n₀] [DecidableEq n₀]
+  [Fintype p] [DecidableEq p]
+  {s : n → ℤˣ} {s₀ : n₀ → ℤˣ} {V : Space E n s} {V₀ : Space E n₀ s₀} [WeilData E]
 
-/-- The finite part of the zero term along the splitting `D` of `V` over `V₀`. It is the map
+/--
+The finite part of the zero term along the splitting `D` of `V` over `V₀`. It is the map
 `f ↦ D.zeroTerm (v ⊗ f)`, where `⊗` is `V.integrated` and `v` is the Fock vacuum moved by the real
 part of a chosen point `g` of the unitary group with `D.IsAdapted g 1` (the frame of `D` moved by
-`g⁻¹` is orthonormal at the infinite places and integral at the finite places). -/
+`g⁻¹` is orthonormal at the infinite places and integral at the finite places).
+-/
 @[local simp]
 noncomputable def zeroTermFin (D : V.Splitting V₀ p) : 𝒮 V →L[ℂ] 𝒮 V₀ :=
-  D.zeroTerm ∘L
-    V.integrated (realWeil (blockU (D.exists_isAdapted_and_frame_eq 1).choose.1) Fock.vacVector)
+  D.zeroTerm
+    ∘L V.integrated (realWeil (blockU (D.exists_isAdapted_and_frame_eq 1).choose.1) Fock.vacVector)
 
 /-- With `g` the adapted point chosen in the definition, `zeroTermFin D` undoes the finite part
 `g.2` of `g`, projects on the real vacuum (`V.projReal`), applies the Weil operator `V.ω g` and
@@ -244,22 +247,26 @@ lemma exists_sub_orthogonal_of_zeroTermFin_ne_zero (D : V.Splitting V₀ p) (M M
   simp only [mulVec_sub, ← hv, h_solve, sub_self, mulVec_zero]
 
 /-- The finite part of the embedding of `V₀` in `V`, in the coordinates of the lattices. -/
-noncomputable abbrev _root_.New.Space.Splitting.iFin (D : V.Splitting V₀ p) :
-    Matrix n n₀ (𝔸f E) :=
+noncomputable abbrev _root_.New.Space.Splitting.iFin (D : V.Splitting V₀ p) : Matrix n n₀ (𝔸f E) :=
   D.iAdelic.map snd
 
-/-- The finite part of the isotropic frame, in the coordinates of the lattice. Its columns span the
-isotropic subspace `I`. -/
-noncomputable abbrev _root_.New.Space.Splitting.isotropicBasisFin (D : V.Splitting V₀ p) :
-    Matrix n p (𝔸f E) :=
+/--
+The finite part of the isotropic frame, in the coordinates of the lattice. Its columns span the
+isotropic subspace `I`.
+-/
+noncomputable abbrev _root_.New.Space.Splitting.isotropicBasisFin (D : V.Splitting V₀ p)
+    : Matrix n p (𝔸f E) :=
   D.kAdelic.map snd
 
-/-- The lattice `L'` of `V₀ = I^⊥ / I`: the image of `L ∩ I^⊥`, where `L` is the standard lattice
+/--
+The lattice `L'` of `V₀ = I^⊥ / I`: the image of `L ∩ I^⊥`, where `L` is the standard lattice
 of `V` and `I` is spanned by the columns of `k = D.isotropicBasisFin`. A vector of `I^⊥` is written
-`i w + k b` with `i = D.iFin`, and `w` is its class. -/
+`i w + k b` with `i = D.iFin`, and `w` is its class.
+-/
 noncomputable def zeroTermLattice (D : V.Splitting V₀ p) : AddSubgroup (n₀ → 𝔸f E) where
-  carrier := {w : n₀ → 𝔸f E |
-    ∃ b : p → 𝔸f E, D.iFin *ᵥ w + D.isotropicBasisFin *ᵥ b ∈ stdLattice E n}
+  carrier :=
+    {w : n₀ → 𝔸f E |
+      ∃ b : p → 𝔸f E, D.iFin *ᵥ w + D.isotropicBasisFin *ᵥ b ∈ stdLattice E n}
   add_mem' := fun ⟨b, hb⟩ ⟨b', hb'⟩ ↦
     ⟨b + b', by simpa [mulVec_add, add_add_add_comm] using add_mem hb hb'⟩
   zero_mem' := ⟨0, by simp⟩
@@ -596,16 +603,20 @@ section EdgePair
 
 open Matrix Kronecker Space Fintype Function Exchange Grading Splitting
 
-variable {E ι ι' ι'' X X' X'' X₀ q : Type} [Field E] [CMType E] [WeilData E] [Fintype ι]
-  [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] [Fintype ι''] [DecidableEq ι''] [Fintype X]
-  [DecidableEq X] [Fintype X'] [DecidableEq X'] [Fintype X''] [DecidableEq X''] [Fintype X₀]
-  [DecidableEq X₀] [Fintype q] [DecidableEq q] {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ}
-  {s s' s'' : ℕ} {V : Space E ι ε} {V' : Space E ι' ε'} {V'' : Space E ι'' ε''} {N p : E}
+variable
+  {E ι ι' ι'' X X' X'' X₀ q : Type}
+  [Field E] [CMType E] [WeilData E] [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
+  [Fintype ι''] [DecidableEq ι''] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X']
+  [Fintype X''] [DecidableEq X''] [Fintype X₀] [DecidableEq X₀] [Fintype q] [DecidableEq q]
+  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ} {s s' s'' : ℕ} {V : Space E ι ε} {V' : Space E ι' ε'}
+  {V'' : Space E ι'' ε''} {N p : E}
   (Y : Grading V N X s) (Y' : Grading V' N X' s') (Y'' : Grading V'' N X₀ s'')
 
 variable (V V'') in
-/-- For integer weights (grades) on the basis of `V`, with `V.J` pairing only opposite weights: a
-rational isometry from `V''` onto the span of the basis vectors of weight zero. -/
+/--
+For integer weights (grades) on the basis of `V`, with `V.J` pairing only opposite weights: a
+rational isometry from `V''` onto the span of the basis vectors of weight zero.
+-/
 structure GradeZeroPart (wt : ι → ℤ) where
   /-- An injection that labels the indices of grade zero by the basis indices of `V''`. -/
   index : ι'' ↪ ι
@@ -672,10 +683,11 @@ lemma GradeZeroPart.card_pos_eq_card_neg (Z : GradeZeroPart V V'' w) :
 
 end
 
-/-- The splitting of `V` over its weight-zero part `V''` whose isotropic frame `k` consists of the
-basis vectors of positive weight; `inclMatrix E u` has the basis vectors `e_{u j}` as columns. -/
-def GradeZeroPart.splitting (Z : GradeZeroPart V V'' w) :
-    V.Splitting V'' {i : ι // 0 < w i} where
+/--
+The splitting of `V` over its weight-zero part `V''` whose isotropic frame `k` consists of the
+basis vectors of positive weight; `inclMatrix E u` has the basis vectors `e_{u j}` as columns.
+-/
+def GradeZeroPart.splitting (Z : GradeZeroPart V V'' w) : V.Splitting V'' {i : ι // 0 < w i} where
   k := inclMatrix E (Subtype.val : {i : ι // 0 < w i} → ι)
   l := V.J⁻¹ * inclMatrix E (Subtype.val : {i // 0 < w i} → ι)
   i := Z.incl
@@ -684,7 +696,8 @@ def GradeZeroPart.splitting (Z : GradeZeroPart V V'' w) :
     grind [→ Z.grade_add_eq_zero]
   gram_ll := by
     simpa [Matrix.mul_assoc, V.isHermitian_J.inv.eq, ← ext_iff, inclMatrix, Matrix.mul_apply,
-      Matrix.one_apply] using fun a ha b hb ↦ Z.inv_J_apply_eq_zero_of_pos ha hb
+        Matrix.one_apply]
+      using fun a ha b hb ↦ Z.inv_J_apply_eq_zero_of_pos ha hb
   gram_lk := by
     simp [Matrix.mul_assoc, V.isHermitian_J.inv.eq, inclMatrix, ← Matrix.ext_iff, Matrix.mul_apply,
       Matrix.one_apply]
@@ -697,8 +710,10 @@ def GradeZeroPart.splitting (Z : GradeZeroPart V V'' w) :
     grind [Z.incl_eq_zero]
   card_eq := by
     -- Count the indices by the sign of their weight.
-    have h_total : Fintype.card ι = Fintype.card {i : ι // w i = 0} +
-        (Fintype.card {i : ι // w i < 0} + Fintype.card {i : ι // 0 < w i}) := by
+    have h_total
+        : Fintype.card ι
+          = Fintype.card {i : ι // w i = 0}
+            + (Fintype.card {i : ι // w i < 0} + Fintype.card {i : ι // 0 < w i}) := by
       simp [SignType.univ_eq, sign_eq_one_iff, sign_eq_neg_one_iff, card_subtype,
         ← card_congr (.sigmaFiberEquiv (SignType.sign ∘ w))]
     have h_zero : Fintype.card {i : ι // w i = 0} = Fintype.card ι'' := by
@@ -707,10 +722,13 @@ def GradeZeroPart.splitting (Z : GradeZeroPart V V'' w) :
       Z.card_pos_eq_card_neg
     omega
 
-/-- If `V''` is the weight-zero part of `V`, all weights are even and `Y'` has a string of even
-length, then `Hom(X', V'')` is the weight-zero part of `Hom(V', V)`. -/
-def GradeZeroPart.hom (Z : GradeZeroPart V V'' w) (hs' : Even s') (hw : ∀ i : ι, Even (w i)) :
-    GradeZeroPart (V'.hom V) ((stdSpace E X').hom V'') fun r : ι × ι' ↦ w r.1 - Y'.gradeOf r.2 where
+/--
+If `V''` is the weight-zero part of `V`, all weights are even and `Y'` has a string of even
+length, then `Hom(X', V'')` is the weight-zero part of `Hom(V', V)`.
+-/
+def GradeZeroPart.hom (Z : GradeZeroPart V V'' w) (hs' : Even s') (hw : ∀ i : ι, Even (w i))
+    : GradeZeroPart (V'.hom V) ((stdSpace E X').hom V'') fun r : ι × ι' ↦
+      w r.1 - Y'.gradeOf r.2 where
   index := Z.index.prodMap (.trans .inl Y'.indexEquiv.toEmbedding)
   mem_range_index := by
     -- On the string of `V'` the weights are odd, as `s'` is even, so they differ from those of `V`.
@@ -729,13 +747,17 @@ def GradeZeroPart.hom (Z : GradeZeroPart V V'' w) (hs' : Even s') (hw : ∀ i : 
 
 /-! ### Pairs of consecutive edges -/
 
-/-- The adelic map (T*, T') from V' to V⁻ ⊕ V'', where T* is the adjoint of
-`T = Y.stringMap Y' : V → V'` and `T' = Y'.stringMap Y'' : V' → V''`. -/
+/--
+The adelic map (T*, T') from V' to V⁻ ⊕ V'', where T* is the adjoint of
+`T = Y.stringMap Y' : V → V'` and `T' = Y'.stringMap Y'' : V' → V''`.
+-/
 def stackedStringMap : Matrix (ι ⊕ ι'') ι' (𝔸 E) :=
   fromRows (V.formAdjoint V' (Y.stringMap Y')) (Y'.stringMap Y'')
 
-/-- The finite part of `New.Seesaw.stackedStringMap`, in the frame coordinates of Hom(V', V⁻ ⊕ V''),
-multiplied by α⁻¹. -/
+/--
+The finite part of `New.Seesaw.stackedStringMap`, in the frame coordinates of Hom(V', V⁻ ⊕ V''),
+multiplied by α⁻¹.
+-/
 def stackedStringMapFin : (ι ⊕ ι'') × ι' → 𝔸f E :=
   finCoord (V'.homAtPoint (flipSum V V'') (stackedStringMap Y Y' Y''))
 
@@ -748,10 +770,13 @@ lemma inclX_mul_stringMap_mul_inclX_inv (g : G E (1 : X → ℤˣ)) (g' : G E (1
   simp [← map_inv, stringMap, reindex_equiv Y.indexEquiv, reindex_equiv Y'.indexEquiv,
     ratCoordMatrix_inclX, ← Matrix.ext_iff, Matrix.mul_apply, Matrix.one_apply]
 
-/-- The strings of `Y`, `Y'`, `Y''` have lengths `s`, `s - 1` and `s - 1 - 1` (truncated
-subtraction) with `s` odd, and `Y` and `Y'` have the same constant `genericConst`. -/
-structure HasConsecutiveStrings (Y : Grading V N X s) (Y' : Grading V' N X' s')
-    (Y'' : Grading V'' N X₀ s'') : Prop where
+/--
+The strings of `Y`, `Y'`, `Y''` have lengths `s`, `s - 1` and `s - 1 - 1` (truncated
+subtraction) with `s` odd, and `Y` and `Y'` have the same constant `genericConst`.
+-/
+structure HasConsecutiveStrings
+    (Y : Grading V N X s) (Y' : Grading V' N X' s') (Y'' : Grading V'' N X₀ s'')
+    : Prop where
   /-- The string of `Y` has odd length. -/
   odd_length : Odd s
   /-- The string of `Y'` is one shorter than that of `Y`. -/
@@ -761,36 +786,47 @@ structure HasConsecutiveStrings (Y : Grading V N X s) (Y' : Grading V' N X' s')
   /-- The gradings `Y` and `Y'` have the same constant for the generic character. -/
   c_eq : Y'.genericConst = Y.genericConst
 
-/-- Data for two consecutive lifts Y → Y' → Y'' with consecutive strings
+/--
+Data for two consecutive lifts Y → Y' → Y'' with consecutive strings
 (`New.Seesaw.HasConsecutiveStrings`) and `card ι + card ι''` even. It identifies the grade-zero part
 of V⁻ ⊕ V'' with X⁻ ⊕ X'' plus q hyperbolic planes, compatibly with U(X) × U(X₀) and with
-`stackedStringMap`. -/
+`stackedStringMap`.
+-/
 structure DoubleLiftData extends HasConsecutiveStrings Y Y' Y'' where
-  /-- The part of grade zero of `V⁻ ⊕ V''` is the sum of hyperbolic planes indexed by `q` and of
-  `I_X⁻ ⊕ I_{X''}`. -/
-  zeroPart : GradeZeroPart (flipSum V V'')
-    (hyperbolicSum q (flipSum (stdSpace E X) (stdSpace E X''))) (Y.gradeOf ⊕ᵥ Y''.gradeOf)
+  /--
+  The part of grade zero of `V⁻ ⊕ V''` is the sum of hyperbolic planes indexed by `q` and of
+  `I_X⁻ ⊕ I_{X''}`.
+  -/
+  zeroPart
+    : GradeZeroPart (flipSum V V'') (hyperbolicSum q (flipSum (stdSpace E X) (stdSpace E X'')))
+      (Y.gradeOf ⊕ᵥ Y''.gradeOf)
   /-- The dimensions of `V` and `V''` have even sum. -/
   even_card_add : Even (card ι + card ι'')
   /-- A homomorphism from the adelic unitary group of `I_{X₀}` to that of `I_{X''}`. -/
   embX : G (n := X₀) E 1 →* G (n := X'') E 1
   /-- The homomorphism preserves determinants. -/
   det_embX (k : G E (1 : X₀ → ℤˣ)) : (embX k).det = k.det
-  /-- The inclusion of the part of grade zero intertwines `(g, k)`, acting on `V⁻ ⊕ V''` through `X`
+  /--
+  The inclusion of the part of grade zero intertwines `(g, k)`, acting on `V⁻ ⊕ V''` through `X`
   and `X₀`, with the element that is `1` on the planes, `g` on `X` and the image of `k` under the
-  homomorphism on `X''`. -/
-  intertwines (g : G E (1 : X → ℤˣ)) (k : G E (1 : X₀ → ℤˣ)) :
-    fromBlocks (V.ratCoordMatrix (Y.inclX g)) 0 0 (V''.ratCoordMatrix (Y''.inclX k)) *
-        zeroPart.incl.map toAdele = zeroPart.incl.map toAdele *
-      (G.sum (s := hyperbolicSigns q) (1, G.sum (g.neg, embX k))).adeleMatrix
+  homomorphism on `X''`.
+  -/
+  intertwines (g : G E (1 : X → ℤˣ)) (k : G E (1 : X₀ → ℤˣ))
+    : fromBlocks (V.ratCoordMatrix (Y.inclX g)) 0 0 (V''.ratCoordMatrix (Y''.inclX k))
+        * zeroPart.incl.map toAdele
+      = zeroPart.incl.map toAdele
+        * (G.sum (s := hyperbolicSigns q) (1, G.sum (g.neg, embX k))).adeleMatrix
   /-- An injection of `q` into the basis indices of `V'` of grade one. -/
   gradeOne : q ↪ {l // Y'.gradeOf l = 1}
-  /-- In the rows of grade zero, column `gradeOne k` of `stackedStringMap Y Y' Y''` is
+  /--
+  In the rows of grade zero, column `gradeOne k` of `stackedStringMap Y Y' Y''` is
   `Y'.genericConst` times the included second basis vector of the `k`-th plane. The columns outside
-  the image of `gradeOne` vanish. -/
-  stackedStringMap_apply (a : (q ⊕ q) ⊕ X ⊕ X'') (l : ι') :
-    stackedStringMap Y Y' Y'' (zeroPart.index a) l = ∑ k : q, if l = gradeOne k then
-      toAdele (zeroPart.incl (zeroPart.index a) (Sum.inl (Sum.inr k)) * Y'.genericConst) else 0
+  the image of `gradeOne` vanish.
+  -/
+  stackedStringMap_apply (a : (q ⊕ q) ⊕ X ⊕ X'') (l : ι')
+    : stackedStringMap Y Y' Y'' (zeroPart.index a) l
+      = ∑ k : q, if l = gradeOne k then
+        toAdele (zeroPart.incl (zeroPart.index a) (Sum.inl (Sum.inr k)) * Y'.genericConst) else 0
 
 variable {X'' q Y Y' Y''}
 
@@ -814,30 +850,38 @@ lemma even_gradeOf (D : DoubleLiftData X'' q Y Y' Y'') (i : ι ⊕ ι'') :
   simp [reindex_equiv Y.indexEquiv, reindex_equiv Y''.indexEquiv]
   grind
 
-/-- For a pair `D` of consecutive lifts, `Hom(X', Z)` is the part of grade zero of
-`Hom(V', V⁻ ⊕ V'')`, where `Z` is the part of grade zero of `V⁻ ⊕ V''`. -/
-def homZeroPart (D : DoubleLiftData X'' q Y Y' Y'') :
-    GradeZeroPart (V'.hom (flipSum V V''))
+/--
+For a pair `D` of consecutive lifts, `Hom(X', Z)` is the part of grade zero of
+`Hom(V', V⁻ ⊕ V'')`, where `Z` is the part of grade zero of `V⁻ ⊕ V''`.
+-/
+def homZeroPart (D : DoubleLiftData X'' q Y Y' Y'')
+    : GradeZeroPart (V'.hom (flipSum V V''))
       ((stdSpace E X').hom (hyperbolicSum q (flipSum (stdSpace E X) (stdSpace E X''))))
       fun r : (ι ⊕ ι'') × ι' ↦ (Y.gradeOf ⊕ᵥ Y''.gradeOf) r.1 - Y'.gradeOf r.2 :=
   D.zeroPart.hom Y' D.even_length_middle D.even_gradeOf
 
-/-- The splitting of Hom(V', V⁻ ⊕ V'') that removes first the maps of nonzero degree, then the
-maps into the hyperbolic planes, leaving Hom(X', X⁻ ⊕ X''). -/
-def splitting (D : DoubleLiftData X'' q Y Y' Y'') : (V'.hom (flipSum V V'')).Splitting
-    ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))
-    ({i : (ι ⊕ ι'') × ι' // 0 < (Y.gradeOf ⊕ᵥ Y''.gradeOf) i.1 - Y'.gradeOf i.2} ⊕ q × X') :=
+/--
+The splitting of Hom(V', V⁻ ⊕ V'') that removes first the maps of nonzero degree, then the
+maps into the hyperbolic planes, leaving Hom(X', X⁻ ⊕ X'').
+-/
+def splitting (D : DoubleLiftData X'' q Y Y' Y'')
+    : (V'.hom (flipSum V V'')).Splitting
+      ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))
+      ({i : (ι ⊕ ι'') × ι' // 0 < (Y.gradeOf ⊕ᵥ Y''.gradeOf) i.1 - Y'.gradeOf i.2} ⊕ q × X') :=
   D.homZeroPart.splitting.comp ((removePlanes q _).homTarget (stdSpace E X'))
 
 open scoped TensorProduct in
-/-- The linear map on joined finite data for `Hom(V, V')` and `Hom(V', V'')`. It translates by (T*,
+/--
+The linear map on joined finite data for `Hom(V, V')` and `Hom(V', V'')`. It translates by (T*,
 T'), takes the finite constant term along `New.Seesaw.DoubleLiftData.splitting`, and splits the
-result by a left inverse of `arrowTensor` into data for `Hom(X, X')` and `Hom(X', X'')`. -/
-def finEval (D : DoubleLiftData X'' q Y Y' Y'') : 𝒮 (V'.hom (flipSum V V'')) →ₗ[ℂ]
-    ((stdSpace E X).hom (stdSpace E X')).finitePart ⊗[ℂ]
-      ((stdSpace E X').hom (stdSpace E X'')).finitePart :=
-  arrowTensor.leftInverse ∘ₗ
-    (zeroTermFin D.splitting ∘L finHeisenbergOp _ (stackedStringMapFin Y Y' Y'')).toLinearMap
+result by a left inverse of `arrowTensor` into data for `Hom(X, X')` and `Hom(X', X'')`.
+-/
+def finEval (D : DoubleLiftData X'' q Y Y' Y'')
+    : 𝒮 (V'.hom (flipSum V V'')) →ₗ[ℂ]
+      ((stdSpace E X).hom (stdSpace E X')).finitePart ⊗[ℂ]
+        ((stdSpace E X').hom (stdSpace E X'')).finitePart :=
+  arrowTensor.leftInverse
+    ∘ₗ (zeroTermFin D.splitting ∘L finHeisenbergOp _ (stackedStringMapFin Y Y' Y'')).toLinearMap
 
 /-- `arrowTensor` applied to `D.finEval (arrowProduct Φ.val Ψ.val)` equals `zeroTermFin D.splitting`
 of `arrowProduct Φ.val Ψ.val` after the finite Heisenberg operator of `stackedStringMapFin Y Y' Y''`
@@ -1015,11 +1059,14 @@ variable (Y Y' Y'')
 
 /-! ### The two kinds of pairs -/
 
-/-- The pair data for strings of lengths s (odd, s ≠ 1), s − 1 and s − 2, with
+/--
+The pair data for strings of lengths s (odd, s ≠ 1), s − 1 and s − 2, with
 `Y'.genericConst = Y.genericConst` and `card ι + card ι''` even: one hyperbolic plane, spanned by
-the middle vectors z of Y and z' of Y'', is removed. -/
-def middleDoubleLift (h_string : HasConsecutiveStrings Y Y' Y'') (h_card : Even (card ι + card ι''))
-    (hs : s ≠ 1) : DoubleLiftData X₀ Unit Y Y' Y'' :=
+the middle vectors z of Y and z' of Y'', is removed.
+-/
+def middleDoubleLift
+    (h_string : HasConsecutiveStrings Y Y' Y'') (h_card : Even (card ι + card ι'')) (hs : s ≠ 1)
+    : DoubleLiftData X₀ Unit Y Y' Y'' :=
   have h_odd : Odd s := h_string.odd_length
   have h_middle : s' = s - 1 := h_string.length_middle
   have h_last : s'' = s' - 1 := h_string.length_last
@@ -1028,89 +1075,108 @@ def middleDoubleLift (h_string : HasConsecutiveStrings Y Y' Y'') (h_card : Even 
   let z (_ : Unit) : ι ⊕ ι'' := Sum.inl (Y.indexEquiv (Sum.inr ⟨s / 2, by grind⟩))
   let z' (_ : Unit) : ι ⊕ ι'' := Sum.inr (Y''.indexEquiv (Sum.inr ⟨s'' / 2, by grind⟩))
   let j := Sum.map (Y.indexEquiv ∘ Sum.inl) (Y''.indexEquiv ∘ Sum.inl)
-  { zeroPart :=
-      { index := ⟨z ⊕ᵥ z' ⊕ᵥ j, by simp [j, z, z', Injective]⟩
-        mem_range_index := by
-          simp [j, z, z', ↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv, Fin.ext_iff,
-            ← Embedding.toFun_eq_coe, sub_eq_zero]
-          grind
-        -- The hyperbolic plane has the basis `(z - z') / (2 N)`, `z + z'`.
-        incl := fromCols (fromCols ((2 * N)⁻¹ • (inclMatrix E z - inclMatrix E z'))
-          (inclMatrix E z + inclMatrix E z')) (inclMatrix E j)
-        incl_eq_zero := by
-          simp [j, z, z', ↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv, inclMatrix,
-            Matrix.one_apply, sub_eq_zero]
-          grind
-        -- `z` has norm `N` in `V⁻` and `z'` has norm `-N`.
-        gram_incl := by
-          simp [j, z, z', Y.gram_eq, Y''.gram_eq, inclMatrix,
-            conjTranspose_fromCols_eq_fromRows_conjTranspose, flipSpace, gradedGram, hyperbolicSum,
-            ← Matrix.ext_iff, Matrix.mul_apply, Matrix.one_apply]
-          grind [Y.N_ne_zero_and_star_eq]
-        grade_add_eq_zero := by
-          simp [↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv, Y.gram_eq, Y''.gram_eq,
-            flipSpace, gradedGram]
-          grind }
+  {
+    zeroPart := {
+      index := ⟨z ⊕ᵥ z' ⊕ᵥ j, by simp [j, z, z', Injective]⟩
+      mem_range_index := by
+        simp [j, z, z', ↓ reindex_equiv Y.indexEquiv, ↓ reindex_equiv Y''.indexEquiv, Fin.ext_iff,
+          ← Embedding.toFun_eq_coe, sub_eq_zero]
+        grind
+      -- The hyperbolic plane has the basis `(z - z') / (2 N)`, `z + z'`.
+      incl :=
+        fromCols
+          (fromCols ((2 * N)⁻¹ • (inclMatrix E z - inclMatrix E z'))
+            (inclMatrix E z + inclMatrix E z'))
+          (inclMatrix E j)
+      incl_eq_zero := by
+        simp [j, z, z', ↓ reindex_equiv Y.indexEquiv, ↓ reindex_equiv Y''.indexEquiv, inclMatrix,
+          Matrix.one_apply, sub_eq_zero]
+        grind
+      -- `z` has norm `N` in `V⁻` and `z'` has norm `-N`.
+      gram_incl := by
+        simp [j, z, z', Y.gram_eq, Y''.gram_eq, inclMatrix,
+          conjTranspose_fromCols_eq_fromRows_conjTranspose, flipSpace, gradedGram, hyperbolicSum,
+          ← Matrix.ext_iff, Matrix.mul_apply, Matrix.one_apply]
+        grind [Y.N_ne_zero_and_star_eq]
+      grade_add_eq_zero := by
+        simp [↓ reindex_equiv Y.indexEquiv, ↓ reindex_equiv Y''.indexEquiv, Y.gram_eq, Y''.gram_eq,
+          flipSpace, gradedGram]
+        grind
+    }
     toHasConsecutiveStrings := h_string
     even_card_add := h_card
     embX := MonoidHom.id (G E (1 : X₀ → ℤˣ))
     det_embX := by simp
     intertwines := by
-      simp [j, z, z', ↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv,
+      simp [j, z, z', ↓ reindex_equiv Y.indexEquiv, ↓ reindex_equiv Y''.indexEquiv,
         ratCoordMatrix_inclX, inclMatrix, fromCols_map, ← Matrix.ext_iff, Matrix.mul_apply,
         Matrix.one_apply]
-    gradeOne := ⟨fun _ ↦ ⟨Y'.indexEquiv (Sum.inr ⟨s'' / 2, by grind⟩), by grind [gradeOf]⟩,
-      by simp [Injective]⟩
+    gradeOne := ⟨
+      fun _ ↦ ⟨Y'.indexEquiv (Sum.inr ⟨s'' / 2, by grind⟩), by grind [gradeOf]⟩,
+      by simp [Injective]
+    ⟩
     stackedStringMap_apply := by
-      simp [j, z, z', ↓reindex_equiv Y'.indexEquiv, ↓Y.formAdjoint_apply Y', apply_ite star,
+      simp [j, z, z', ↓ reindex_equiv Y'.indexEquiv, ↓ Y.formAdjoint_apply Y', apply_ite star,
         stackedStringMap, stringMap, ← Embedding.toFun_eq_coe, inclMatrix, Matrix.one_apply,
         gradedGram, stringReversal]
-      grind [Y.N_ne_zero_and_star_eq] }
+      grind [Y.N_ne_zero_and_star_eq]
+  }
 
-/-- The pair data for s = 1 (so Y' and Y'' have no string), N = pp̄,
+/--
+The pair data for s = 1 (so Y' and Y'' have no string), N = pp̄,
 `Y'.genericConst = Y.genericConst` and `card ι + card ι''` even: no plane is removed, and z/p, z the
-string vector of Y, is adjoined to X₀ as last basis vector of X''. -/
-def lastDoubleLift (h_string : HasConsecutiveStrings Y Y' Y'') (h_card : Even (card ι + card ι''))
-    (hp : p * star p = N) (hs : s = 1) : DoubleLiftData (X₀ ⊕ Unit) Empty Y Y' Y'' :=
+string vector of Y, is adjoined to X₀ as last basis vector of X''.
+-/
+def lastDoubleLift
+    (h_string : HasConsecutiveStrings Y Y' Y'') (h_card : Even (card ι + card ι''))
+    (hp : p * star p = N) (hs : s = 1)
+    : DoubleLiftData (X₀ ⊕ Unit) Empty Y Y' Y'' :=
   have h_middle : s' = s - 1 := h_string.length_middle
   have h_last : s'' = s' - 1 := h_string.length_last
   -- All indices have weight zero here: those of `X`, those of `X₀` and the string vector of `V`.
-  let j := isEmptyElim ⊕ᵥ (Sum.inl ∘ Y.indexEquiv ∘ Sum.inl ⊕ᵥ (Sum.inr ∘
-    Y''.indexEquiv ∘ Sum.inl ⊕ᵥ fun _ : Unit ↦ Sum.inl (Y.indexEquiv (Sum.inr ⟨0, hs.ge⟩))))
-  { zeroPart :=
-      { index := ⟨j, by simp [j, Injective]⟩
-        mem_range_index := by
-          simp [j, ↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv,
-            ← Embedding.toFun_eq_coe, sub_eq_zero]
-          grind
-        incl :=
-          of fun a b ↦ if a = j b then if b = Sum.inr (Sum.inr (Sum.inr ())) then p⁻¹ else 1 else 0
-        incl_eq_zero := by
-          simp [j, ↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv, sub_eq_zero]
-          grind
-        -- The string vector has norm `N = p * star p` in `V⁻`; divided by `p` it has norm `1`.
-        gram_incl := by
-          simp [j, Y.gram_eq, Y''.gram_eq, apply_ite star, flipSpace, gradedGram, hyperbolicSum,
-            ← Matrix.ext_iff, Matrix.mul_apply, Matrix.one_apply]
-          grind [Y.N_ne_zero_and_star_eq]
-        grade_add_eq_zero := by
-          simp [↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv, Y.gram_eq, Y''.gram_eq,
-            flipSpace, gradedGram]
-          grind }
+  let j :=
+    isEmptyElim
+      ⊕ᵥ (Sum.inl ∘ Y.indexEquiv ∘ Sum.inl
+        ⊕ᵥ (Sum.inr ∘ Y''.indexEquiv ∘ Sum.inl
+          ⊕ᵥ fun _ : Unit ↦ Sum.inl (Y.indexEquiv (Sum.inr ⟨0, hs.ge⟩))))
+  {
+    zeroPart := {
+      index := ⟨j, by simp [j, Injective]⟩
+      mem_range_index := by
+        simp [j, ↓ reindex_equiv Y.indexEquiv, ↓ reindex_equiv Y''.indexEquiv,
+          ← Embedding.toFun_eq_coe, sub_eq_zero]
+        grind
+      incl :=
+        of fun a b ↦ if a = j b then if b = Sum.inr (Sum.inr (Sum.inr ())) then p⁻¹ else 1 else 0
+      incl_eq_zero := by
+        simp [j, ↓ reindex_equiv Y.indexEquiv, ↓ reindex_equiv Y''.indexEquiv, sub_eq_zero]
+        grind
+      -- The string vector has norm `N = p * star p` in `V⁻`; divided by `p` it has norm `1`.
+      gram_incl := by
+        simp [j, Y.gram_eq, Y''.gram_eq, apply_ite star, flipSpace, gradedGram, hyperbolicSum,
+          ← Matrix.ext_iff, Matrix.mul_apply, Matrix.one_apply]
+        grind [Y.N_ne_zero_and_star_eq]
+      grade_add_eq_zero := by
+        simp [↓ reindex_equiv Y.indexEquiv, ↓ reindex_equiv Y''.indexEquiv, Y.gram_eq, Y''.gram_eq,
+          flipSpace, gradedGram]
+        grind
+    }
     toHasConsecutiveStrings := h_string
     even_card_add := h_card
     -- `k` acts on `X₀` and fixes the last basis vector.
-    embX := MonoidHom.comp (G.blockEmb (e := Equiv.refl (X₀ ⊕ Unit)) Sum.elim_one_one.symm)
-      (MonoidHom.inl (G E (1 : X₀ → ℤˣ)) (G E (1 : Unit → ℤˣ)))
+    embX :=
+      MonoidHom.comp (G.blockEmb (e := Equiv.refl (X₀ ⊕ Unit)) Sum.elim_one_one.symm)
+        (MonoidHom.inl (G E (1 : X₀ → ℤˣ)) (G E (1 : Unit → ℤˣ)))
     det_embX := by simp [G.blockEmb, Subtype.ext_iff]
     intertwines := by
-      simp [j, ↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv, Finset.univ_eq_empty,
+      simp [j, ↓ reindex_equiv Y.indexEquiv, ↓ reindex_equiv Y''.indexEquiv, Finset.univ_eq_empty,
         ratCoordMatrix_inclX, G.blockEmb, ← Matrix.ext_iff, Matrix.mul_apply, Matrix.one_apply]
     gradeOne := .ofIsEmpty
     stackedStringMap_apply := by
-      simp [j, ↓reindex_equiv Y'.indexEquiv, ↓Y.formAdjoint_apply Y', Finset.univ_eq_empty,
+      simp [j, ↓ reindex_equiv Y'.indexEquiv, ↓ Y.formAdjoint_apply Y', Finset.univ_eq_empty,
         stackedStringMap, stringMap, ← Embedding.toFun_eq_coe, gradedGram, stringReversal]
-      grind }
+      grind
+  }
 
 end EdgePair
 
@@ -1124,33 +1190,43 @@ open Seesaw WeilData NeZero
 
 variable {P : Parameters} {D : Data P}
 
-/-- The grading of `Y_k` as `X_k` plus a string of length `2 ϱ + 1 - k`, indexed by
+/--
+The grading of `Y_k` as `X_k` plus a string of length `2 ϱ + 1 - k`, indexed by
 `D.indexEquivY k`. As `D.m = 2 ϱ + 2`, the hypothesis says `k < D.m` and the length is
 `D.m - 1 - k`. The constant of the generic character, `-(j * (D.M * P.deltaE D.towerExp))⁻¹` with
-`j` the purely imaginary element of `New.WeilData`, does not depend on `k`. -/
-def gradingY (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1 := by omega) :
-    Grading (D.spaceY k) D.N (D.X k) (2 * D.ϱ + 1 - k) where
+`j` the purely imaginary element of `New.WeilData`, does not depend on `k`.
+-/
+def gradingY (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1 := by omega)
+    : Grading (D.spaceY k) D.N (D.X k) (2 * D.ϱ + 1 - k) where
   indexEquiv := D.indexEquivY k (by grind)
   gram_eq := D.spaceY_gram_eq k (by grind)
   N_ne_zero_and_star_eq := by simp [ne]
   -- `genericConst` is nonzero as `P.deltaE D.towerExp` generates the different, and fixed by
   -- conjugation as `j` and `P.deltaE D.towerExp` are both purely imaginary
-  genericConst := ⟨-(j * (D.M * P.deltaE D.towerExp) : D.E)⁻¹, by
-               simp [ne, ne_zero_of_differentIdeal_eq_span P.differentIdeal_eq_span_deltaE,
-                 ← coe_star_ringOfIntegers, P.star_deltaE, j_ne_zero]⟩
+  genericConst := ⟨
+    -(j * (D.M * P.deltaE D.towerExp) : D.E)⁻¹,
+    by
+      simp [ne, ne_zero_of_differentIdeal_eq_span P.differentIdeal_eq_span_deltaE,
+        ← coe_star_ringOfIntegers, P.star_deltaE, j_ne_zero]
+  ⟩
 
-/-- For `M = D.m`, the grading of `Y_M` (whose Gram matrix is `1`) as `D.InitIndex M`, a set of
-`n_M - 1` indices in grade 0, plus a string of length 0. -/
+/--
+For `M = D.m`, the grading of `Y_M` (whose Gram matrix is `1`) as `D.InitIndex M`, a set of
+`n_M - 1` indices in grade 0, plus a string of length 0.
+-/
 def lastGrading {M : ℕ} (e : D.m = M) : Grading (D.spaceY M) D.N (D.InitIndex M) 0 :=
-  e ▸ { indexEquiv := (Equiv.sumEmpty (D.InitIndex D.m) (Fin 0)).trans D.lastIndexEquiv.symm
-        gram_eq := D.isStd_spaceY_last.std_induction
-          (funext₂ (by simp [gradedGram, Matrix.one_apply]))
-        N_ne_zero_and_star_eq := by simp [ne]
-        genericConst := ⟨1, by simp⟩ }
+  e ▸ {
+    indexEquiv := (Equiv.sumEmpty (D.InitIndex D.m) (Fin 0)).trans D.lastIndexEquiv.symm
+    gram_eq := D.isStd_spaceY_last.std_induction (funext₂ (by simp [gradedGram, Matrix.one_apply]))
+    N_ne_zero_and_star_eq := by simp [ne]
+    genericConst := ⟨1, by simp⟩
+  }
 
-/-- The finite evaluation `New.Seesaw.DoubleLiftData.finEval` of the double lift
+/--
+The finite evaluation `New.Seesaw.DoubleLiftData.finEval` of the double lift
 Y_{2i} → Y_{2i+1} → Y_{2i+2}: for the middle double lift if i < ϱ, the last double lift if i = ϱ,
-and 0 beyond. -/
+and 0 beyond.
+-/
 def doubleLiftEvalY (i : ℕ) :=
   if _ : i < D.ϱ then
     (middleDoubleLift (D.gradingY (2 * i)) (D.gradingY (2 * i + 1)) (D.gradingY (2 * i + 2))
@@ -1158,23 +1234,29 @@ def doubleLiftEvalY (i : ℕ) :=
   else if _ : D.ϱ = i then
     -- the last pair, which ends in the space with the trivial grading
     (lastDoubleLift (p := (D.piN : D.E)) (D.gradingY (2 * i)) (D.gradingY (2 * i + 1))
-      (D.lastGrading (M := 2 * i + 2) (by grind))
-      ⟨by grind, by grind, by grind, by simp [gradingY]⟩ (by simp; grind)
-      (by exact_mod_cast D.piN_mul_star) (by grind)).finEval
-  else 0
+      (D.lastGrading (M := 2 * i + 2) (by grind)) ⟨by grind, by grind, by grind, by simp [gradingY]⟩
+      (by simp; grind) (by exact_mod_cast D.piN_mul_star) (by grind)).finEval
+  else
+    0
 
-/-- The natural number `M ^ (f n²)`, with `M = p₀ p₁`, `f` the number of infinite places of `E` and
-`n = n_m` the rank `D.n D.m`. -/
+/--
+The natural number `M ^ (f n²)`, with `M = p₀ p₁`, `f` the number of infinite places of `E` and
+`n = n_m` the rank `D.n D.m`.
+-/
 abbrev residueMatrixCount : ℕ := D.M ^ (D.f * D.n D.m ^ 2)
 
-/-- For finite adelic points `y k` of the unitary groups, the datum `New.Data.pointDatumY ϑ k` on
+/--
+For finite adelic points `y k` of the unitary groups, the datum `New.Data.pointDatumY ϑ k` on
 Hom(Y_k, Y_{k+1}) moved by `(y k, y (k + 1))` under the finite Weil representation
-`New.Seesaw.liftWeilFin` with the character `D.chainChar ϑ (k + 1)` of lift `k + 1`. -/
+`New.Seesaw.liftWeilFin` with the character `D.chainChar ϑ (k + 1)` of lift `k + 1`.
+-/
 def translatedPointDatumY (ϑ : D.TameChar) (y : ∀ _ : ℕ, _) (k : ℕ) :=
   liftWeilFin (D.chainChar ϑ (k + 1)) (y k, y (k + 1)) (pointDatumY ϑ k)
 
-/-- The finite evaluation `New.Data.doubleLiftEvalY` of pair i on the data of lifts 2i+1 and 2i+2,
-moved by (y_{2i}, y_{2i+1}) and (y_{2i+1}, y_{2i+2}) as in `New.Data.translatedPointDatumY`. -/
+/--
+The finite evaluation `New.Data.doubleLiftEvalY` of pair i on the data of lifts 2i+1 and 2i+2,
+moved by (y_{2i}, y_{2i+1}) and (y_{2i+1}, y_{2i+2}) as in `New.Data.translatedPointDatumY`.
+-/
 def evaluatedDatum (ϑ : D.TameChar) y (i : ℕ) :=
   D.doubleLiftEvalY i
     (arrowProduct (translatedPointDatumY ϑ y (2 * i)).1 (translatedPointDatumY ϑ y (2 * i + 1)).1)

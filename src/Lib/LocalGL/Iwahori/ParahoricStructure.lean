@@ -88,8 +88,10 @@ variable {n R : Type*} [Fintype n] [DecidableEq n] [CommRing R] (σ : Perm n) {O
 
 /-! ### Permutation matrices and residues -/
 
-/-- The homomorphism sending a permutation σ to the permutation matrix in GL_n(R) that maps e_i
-to e_{σ(i)}. -/
+/--
+The homomorphism sending a permutation σ to the permutation matrix in GL_n(R) that maps e_i
+to e_{σ(i)}.
+-/
 abbrev permGL : Perm n →* GL n R := permMatrixHom.toHomUnits
 
 lemma permGL_mem_intGL : permGL σ ∈ intGL n O := ⟨permGL σ, by aesop⟩
@@ -123,13 +125,16 @@ instance : Finite 𝓀[F] := by
 
 /-! ### Parahoric and pro-`p` Iwahori subgroups -/
 
-/-- Let `H` be a subgroup of `GL_n` of the residue field, and let `P` be a property of matrices
+/--
+Let `H` be a subgroup of `GL_n` of the residue field, and let `P` be a property of matrices
 that on `GL_n(𝒪)` says exactly that the reduction modulo the maximal ideal lies in `H`
 (hypothesis `e`). This is the open subgroup of the `g` in `GL_n(𝒪)` with `P g`, that is, the
-preimage of `H` under reduction. -/
-def residuePreimage (H : Subgroup (GL n (IsLocalRing.ResidueField 𝒪[F])))
-    (e : ∀ k : intGL n 𝒪[F], intGL.map (residue 𝒪[F]) k ∈ H ↔ P k) :
-    OpenSubgroup (GL n F) where
+preimage of `H` under reduction.
+-/
+def residuePreimage
+    (H : Subgroup (GL n (IsLocalRing.ResidueField 𝒪[F])))
+    (e : ∀ k : intGL n 𝒪[F], intGL.map (residue 𝒪[F]) k ∈ H ↔ P k)
+    : OpenSubgroup (GL n F) where
   toSubgroup :=
     ((H.comap (intGL.map (residue 𝒪[F]))).map (intGL n 𝒪[F]).subtype).copy {g ∈ intGL n 𝒪[F] | P g}
       (by aesop)
@@ -141,16 +146,20 @@ def residuePreimage (H : Subgroup (GL n (IsLocalRing.ResidueField 𝒪[F])))
       -- after unfolding, hence `using!`.
       simpa using! isOpen_ball F 1
     refine Subgroup.isOpen_mono (H₁ := congruenceGL (v.ltSubmodule 1) id)
-      (fun g ⟨hg_int, hg_cong⟩ ↦ ?_) (isOpen_congruenceGL (isOpen_integer F) h_ball_open)
+      (fun g ⟨hg_int, hg_cong⟩ ↦ ?_)
+      (isOpen_congruenceGL (isOpen_integer F) h_ball_open)
     have h_residue : intGL.map (residue 𝒪[F]) ⟨g, hg_int⟩ = 1 := by
       -- `-map_sub` keeps the residue of `g i j - 1 i j` as one residue, as in `hg_cong`
       simpa [intGL.map_eq_one, -_root_.map_sub] using hg_cong
     exact ⟨hg_int, (e ⟨g, hg_int⟩).mp (by simp only [h_residue, one_mem])⟩
 
-/-- For a level function `b` on the indices, the parahoric subgroup of the `g` in `GL_N(𝒪)` whose
-entry `g i j` lies in the maximal ideal (`v (g i j) < 1`) whenever `b j < b i`. -/
+/--
+For a level function `b` on the indices, the parahoric subgroup of the `g` in `GL_N(𝒪)` whose
+entry `g i j` lies in the maximal ideal (`v (g i j) < 1`) whenever `b j < b i`.
+-/
 def blockParahoric {N : ℕ} (b : ℕ → ℕ) : Subgroup (GL (Fin N) F) :=
-  (residuePreimage (fun g : GL (Fin N) F ↦ ∀ i j : Fin N, b j < b i → v (g i j) < 1)
+  (residuePreimage
+    (fun g : GL (Fin N) F ↦ ∀ i j : Fin N, b j < b i → v (g i j) < 1)
     (parabolic fun i : Fin N ↦ b i.val) (by simp [parabolic, BlockTriangular])).toSubgroup
 
 /-- Dominant elements of the diagonal torus: the `t` with `v (t i) ≤ v (t j)` for `i ≤ j`. -/
@@ -176,12 +185,15 @@ lemma isCompact_residuePreimage {H : Subgroup (GL n (IsLocalRing.ResidueField �
 instance {N : ℕ} {b : ℕ → ℕ} : CompactSpace (blockParahoric (F := F) (N := N) b) :=
   isCompact_iff_compactSpace.1 isCompact_residuePreimage
 
-/-- The pro-p Iwahori subgroup I₁ of GL_n(𝒪): matrices that are upper triangular with
-ones on the diagonal modulo the maximal ideal. -/
+/--
+The pro-p Iwahori subgroup I₁ of GL_n(𝒪): matrices that are upper triangular with
+ones on the diagonal modulo the maximal ideal.
+-/
 def proIwahori : Subgroup (GL n F) :=
   (residuePreimage
     (fun g : GL n F ↦ (∀ i j : n, j < i → v (g i j) < 1) ∧ ∀ i : n, v (g i i - 1) < 1)
-    (unitriangular id (IsLocalRing.ResidueField 𝒪[F])) (by
+    (unitriangular id (IsLocalRing.ResidueField 𝒪[F]))
+    (by
       simp [apply_ite, Matrix.one_apply, mem_intGL_iff_det]
       grind)).toSubgroup
 
@@ -194,35 +206,43 @@ lemma isOpen_proIwahori : (proIwahori : Subgroup (GL n F)).IsOpen := (residuePre
 
 /-! ### Eigenforms, eigenvectors and characters of the torus -/
 
-/-- The linear form `l` is an eigenform, with eigenvalue `ξ`, of the maps
+/--
+The linear form `l` is an eigenform, with eigenvalue `ξ`, of the maps
 `x ↦ ρ(t) (mean of x over I₁)` for dominant diagonal `t`. The single equation holds two facts:
 for `t = 1` it says that `l` factors through the mean, so is I₁-invariant; for `x` fixed by
-I₁ it says `l (ρ(t) x) = ξ(t) l(x)`. -/
+I₁ it says `l (ρ(t) x) = ξ(t) l(x)`.
+-/
 abbrev IsExponent : Prop :=
-  ∀ ⦃t : n → Fˣ⦄, t ∈ dominantTorus →
-    ∀ x : ρ, l (ρ (diagGL t) (compactMean ρ.ρ proIwahori x)) = ξ t * l x
+  ∀ ⦃t : n → Fˣ⦄,
+    t ∈ dominantTorus → ∀ x : ρ, l (ρ (diagGL t) (compactMean ρ.ρ proIwahori x)) = ξ t * l x
 
-/-- `x` is a non-zero vector fixed by the pro-`p` Iwahori subgroup `I₁` with `U_t x = ξ(t) x` for
-all dominant `t`, where `U_t = (mean over I₁) ∘ ρ(t)`. -/
+/--
+`x` is a non-zero vector fixed by the pro-`p` Iwahori subgroup `I₁` with `U_t x = ξ(t) x` for
+all dominant `t`, where `U_t = (mean over I₁) ∘ ρ(t)`.
+-/
 structure IsIwahoriEigen (x : ρ) : Prop where
   /-- The vector is non-zero. -/
   ne_zero : x ≠ 0
   /-- The vector is fixed by the pro-`p` Iwahori subgroup. -/
   mem_levelSpace : x ∈ levelSpace ρ.ρ proIwahori
   /-- `U_t x = ξ(t) x` for every dominant diagonal `t`. -/
-  compactMean_eq_smul : ∀ t ∈ dominantTorus,
-    compactMean ρ.ρ proIwahori (ρ (diagGL t) x) = (ξ t).val • x
+  compactMean_eq_smul
+    : ∀ t ∈ dominantTorus, compactMean ρ.ρ proIwahori (ρ (diagGL t) x) = (ξ t).val • x
 
-/-- The normalised absolute value on F^×, as a character with complex values: x ↦ q^{−ord x}, q
-the order of the residue field. -/
+/--
+The normalised absolute value on F^×, as a character with complex values: x ↦ q^{−ord x}, q
+the order of the residue field.
+-/
 def normAbsChar : Fˣ →* ℂˣ :=
-  MonoidHom.mk' (fun x ↦ Units.mk0 (Nat.card 𝓀[F] : ℂ) NeZero.out ^ (v x.val).log)
-    (by simp [_root_.zpow_add])
+  MonoidHom.mk' (fun x ↦ Units.mk0 (Nat.card 𝓀[F] : ℂ) NeZero.out ^ (v x.val).log) (by
+    simp [_root_.zpow_add])
 
-/-- The bijection from families `(θ i)`, `0 ≤ i < N`, of characters of `Fˣ` to characters of the
+/--
+The bijection from families `(θ i)`, `0 ≤ i < N`, of characters of `Fˣ` to characters of the
 diagonal torus that sends `θ` to `t ↦ ∏ i, θ i (t i) * |t i| ^ (N - 1 - i)`, with
 `|·| = normAbsChar`: multiply `θ i` by `normAbsChar ^ (N - 1 - i)`, then take the product over `i`.
-See `torusChar_mulSingle` for the value on one coordinate. -/
+See `torusChar_mulSingle` for the value on one coordinate.
+-/
 def torusChar {N : ℕ} : (Fin N → Fˣ →* ℂˣ) ≃ ((Fin N → Fˣ) →* ℂˣ) :=
   (Equiv.mulRight fun i : Fin N ↦ normAbsChar (F := F) ^ i.rev.val).trans
     (Pi.monoidHomMulEquiv (fun _ ↦ Fˣ) (ℂˣ)).symm.toEquiv
@@ -528,10 +548,12 @@ lemma compactMean_diagGL_compactMean_diagGL (ht : t ∈ dominantTorus) (ht' : t'
 
 variable (ρ)
 
-/-- The monoid homomorphism `t ↦ U_t`, `U_t = compactMean ρ.ρ proIwahori ∘ ρ (diagGL t)`, from
-dominant diagonal elements to endomorphisms of the vectors fixed by the pro-`p` Iwahori subgroup. -/
-def iwahoriHeckeHom :
-    dominantTorus (n := n) (F := F) →* Module.End ℂ (levelSpace ρ.ρ proIwahori) where
+/--
+The monoid homomorphism `t ↦ U_t`, `U_t = compactMean ρ.ρ proIwahori ∘ ρ (diagGL t)`, from
+dominant diagonal elements to endomorphisms of the vectors fixed by the pro-`p` Iwahori subgroup.
+-/
+def iwahoriHeckeHom
+    : dominantTorus (n := n) (F := F) →* Module.End ℂ (levelSpace ρ.ρ proIwahori) where
   toFun t :=
     (compactMean ρ.ρ proIwahori * ρ (diagGL t)).restrict fun _ _ ↦ compactMean_mem_levelSpace _
   map_one' := by
@@ -584,7 +606,9 @@ end New
 
 namespace New
 
-variable {G V : Type*} [Group G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V)
+variable
+  {G V : Type*} [Group G] [AddCommGroup V] [Module ℂ V]
+  (ρ : Representation ℂ G V)
   [TopologicalSpace G] [IsTopologicalGroup G]
 
 /-- The smooth vectors of `ρ`: the `x` fixed by all `g` in some neighbourhood of `1`. -/
@@ -631,11 +655,14 @@ open Matrix WithZero Valued GeneralLinearGroup DoubleCoset Filter
 
 namespace New
 
-variable {F F' : Type*} {N : ℕ} [Field F] [Valued F ℤᵐ⁰] [Field F']
-  [Valued F' ℤᵐ⁰] {g : GL (Fin N) F} {t : Fin N → Fˣ}
+variable
+  {F F' : Type*} {N : ℕ} [Field F] [Valued F ℤᵐ⁰] [Field F'] [Valued F' ℤᵐ⁰]
+  {g : GL (Fin N) F} {t : Fin N → Fˣ}
 
-/-- The double coset `I₁ diag(t) I₁` in `GL (Fin N) F`, where `I₁ = New.proIwahori` is the pro-`p`
-Iwahori subgroup and `t` is a family of units of `F`. -/
+/--
+The double coset `I₁ diag(t) I₁` in `GL (Fin N) F`, where `I₁ = New.proIwahori` is the pro-`p`
+Iwahori subgroup and `t` is a family of units of `F`.
+-/
 abbrev iwahoriDoubleCoset (t : Fin N → Fˣ) : Set (GL (Fin N) F) :=
   doubleCoset (diagGL t) (proIwahori : Subgroup (GL (Fin N) F))
     (proIwahori : Subgroup (GL (Fin N) F))
@@ -686,15 +713,20 @@ lemma eventually_pow_mul_mem_dominantTorus (ht : StrictMono fun i : Fin N ↦ v 
   filter_upwards [eventually_v_mul_pow_le_one ht fun i j ↦ s i / s j] with k hk
   simpa [dominantTorus, monotone_iff_forall_lt, field, pos_iff_ne_zero] using hk
 
-/-- For a diagonal `t` and an integer `j`, the subgroup `diag(t)⁻ʲ I₁ diag(t)ʲ` of the `x` with
-`diag(t) ^ j * x * diag(t) ^ (-j)` in the pro-`p` Iwahori subgroup `I₁`. -/
+/--
+For a diagonal `t` and an integer `j`, the subgroup `diag(t)⁻ʲ I₁ diag(t)ʲ` of the `x` with
+`diag(t) ^ j * x * diag(t) ^ (-j)` in the pro-`p` Iwahori subgroup `I₁`.
+-/
 private abbrev conjProIwahori (t : Fin N → Fˣ) (j : ℤ) : Subgroup (GL (Fin N) F) :=
   (MulAut.conj (diagGL t) ^ j).comapSubgroup proIwahori
 
-/-- For `k` in the pro-`p` Iwahori subgroup, the twisted conjugate `k⁻¹ * g * σ(k)` of `g`, divided
-on the left by `diag(t)`. -/
-private abbrev twistedConj (t : Fin N → Fˣ) (g : GL (Fin N) F) (σ : F →+* F)
-    (k : (proIwahori : Subgroup (GL (Fin N) F))) : GL (Fin N) F :=
+/--
+For `k` in the pro-`p` Iwahori subgroup, the twisted conjugate `k⁻¹ * g * σ(k)` of `g`, divided
+on the left by `diag(t)`.
+-/
+private abbrev twistedConj
+    (t : Fin N → Fˣ) (g : GL (Fin N) F) (σ : F →+* F) (k : (proIwahori : Subgroup (GL (Fin N) F)))
+    : GL (Fin N) F :=
   (diagGL t)⁻¹ * ((k : GL (Fin N) F)⁻¹ * g * GeneralLinearGroup.map σ (k : GL (Fin N) F))
 
 /-- If `σ` keeps the valuation, then applying `σ` entrywise keeps `x` in `diag(t)⁻ʲ I₁ diag(t)ʲ` and

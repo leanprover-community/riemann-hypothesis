@@ -61,8 +61,10 @@ lemma norm_LSeries_char_le {A : ℝ} (hA : 0 < A) (hs : 1 + 1 / A ≤ s.re) :
       (TauCeti.riemannZeta_re_lt_one_add_one_div_sub_one (zero_lt_one.trans hs_one) hs_one.ne').le
     _ ≤ 1 + A := by linarith [(one_div_le hA (sub_pos.2 hs_one)).1 (by linarith)]
 
-/-- `𝖿_χ(s)` is `L(s, χ)`, times `(s - 1) / s` if `χ` is principal. The entire function `entireL χ`
-has the factor `s - 1` in that case; dividing by `s` keeps the size of `L(s, χ)` for large `|s|`. -/
+/--
+`𝖿_χ(s)` is `L(s, χ)`, times `(s - 1) / s` if `χ` is principal. The entire function `entireL χ`
+has the factor `s - 1` in that case; dividing by `s` keeps the size of `L(s, χ)` for large `|s|`.
+-/
 def regularL (s : ℂ) : ℂ := entireL χ s / if χ = 1 then s else 1
 
 /-- `𝖿_χ` (`regularL χ`: `L(s, χ)`, times `(s - 1) / s` if `χ` is principal) is holomorphic in

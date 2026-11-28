@@ -64,13 +64,14 @@ section UniversalTwist
 
 open Finset
 
-variable {G R σ : Type} [Monoid G] [CommRing R] [Fintype σ] {q : ℕ}
-  (h : σ → G →* Multiplicative (ZMod q))
+variable
+  {G R σ : Type} [Monoid G] [CommRing R] [Fintype σ] {q : ℕ} (h : σ → G →* Multiplicative (ZMod q))
 
-/-- The polynomial `ψ_X(g) = ∏ (1 + X_j) ^ (h_j g)` attached to homomorphisms `h_j : G → ℤ / q`;
-for `q ≠ 0` the exponents are taken in the interval `[0, q)`. -/
-def universalChar (g : G) : MvPolynomial σ R :=
-  ∏ j : σ, (1 + X j) ^ (h j g).toAdd.val
+/--
+The polynomial `ψ_X(g) = ∏ (1 + X_j) ^ (h_j g)` attached to homomorphisms `h_j : G → ℤ / q`;
+for `q ≠ 0` the exponents are taken in the interval `[0, q)`.
+-/
+def universalChar (g : G) : MvPolynomial σ R := ∏ j : σ, (1 + X j) ^ (h j g).toAdd.val
 
 lemma aeval_universalChar {A : Type*} [CommRing A] [Algebra R A] (x : σ → A) (g : G) :
     aeval x (universalChar (R := R) h g) = ∏ j : σ, (1 + x j) ^ (h j g).toAdd.val := by
@@ -88,8 +89,9 @@ lemma aeval_sub_one_universalChar [NeZero q] {A : Type} [CommRing A] [Algebra R 
     aeval (fun j : σ ↦ ζ j - 1) (universalChar (R := R) h g) = pointChar h ζ hζ g := by
   simp [aeval_universalChar]
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E ι O : Type} [Field E]
-  [EmbeddedNumberField E] [NumberField.IsCMField E] [CommRing O]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E ι O : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E] [CommRing O]
   {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)} {N : ℕ} {P₀ : FinPlace E}
   {S₀ J : Finset (FinPlace E)} {d : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
 
@@ -143,8 +145,9 @@ end UniversalTwist
 
 section Relations
 
-variable {Γ 𝒢 n Λ O B : Type} [Fintype 𝒢] [Fintype n] [DecidableEq n] [CommRing Λ] [CommRing O]
-  [AddCommGroup B] [Module O B]
+variable
+  {Γ 𝒢 n Λ O B : Type}
+  [Fintype 𝒢] [Fintype n] [DecidableEq n] [CommRing Λ] [CommRing O] [AddCommGroup B] [Module O B]
 
 lemma mapRel_single (ev : Λ →+* O) (g : Γ) (m : Matrix n n Λ) :
     mapRel ev (.single g m) = .single g (m.map ev) := Finsupp.mapRange_single
@@ -164,9 +167,11 @@ lemma mapRel_image_cocycleRelations [Mul Γ] (ev : Λ →+* O) (ρ : Γ → Matr
   simp only [Set.ext_iff, Set.mem_image, cocycleRelations, Set.mem_ofPred_eq]
   aesop
 
-/-- The linear equations that a set `R` of relations imposes on the functions on `Γ` that factor
+/--
+The linear equations that a set `R` of relations imposes on the functions on `Γ` that factor
 through `π : Γ → 𝒢`. The unknowns are the coordinates of the values on `𝒢`, and there is one
-equation for each relation and each coordinate. -/
+equation for each relation and each coordinate.
+-/
 def relationMatrix (π : Γ → 𝒢) (R : Set (Γ →₀ Matrix n n Λ)) : Matrix (R × n) (𝒢 × n) Λ :=
   .of fun (f, i) (c, j) ↦ f.val.mapDomain π c i j
 
@@ -204,8 +209,10 @@ lemma mem_matrixKernel_relationMatrix (π : Γ → 𝒢) (R : Set (Γ →₀ Mat
 
 end Relations
 
-variable {E G n σ Λ O O' : Type} [Field E] [EmbeddedNumberField E] [Monoid G] [Fintype n]
-  [DecidableEq n] [Fintype σ] [CommRing Λ] [CommRing O] [CommRing O'] {q : ℕ} {S : Set (FinPlace E)}
+variable
+  {E G n σ Λ O O' : Type} [Field E] [EmbeddedNumberField E] [Monoid G] [Fintype n] [DecidableEq n]
+  [Fintype σ] [CommRing Λ] [CommRing O] [CommRing O']
+  {q : ℕ} {S : Set (FinPlace E)}
 
 /-- Let `B` be an abelian group killed by `m ≠ 0`. An element of `B` that is killed by every
 homomorphism `B → ℤ / m` is zero. -/
@@ -272,21 +279,24 @@ lemma exists_openNormalSubgroup_forall_eq_zero (G' : OpenSubgroup Gal(Ω/E)) (m 
   obtain ⟨hg_mem, h_const⟩ : ∃ hg : g ∈ H, ∀ y ∈ Y, y ⟨g, hg⟩ = y 1 := hG'' g hg
   simpa only [Subgroup.coe_one, hz_one, map_zero] using h_const _ h_mem
 
-/-- Let `ρ` be a function from `Gal(Ω/E)` to matrices over a ring `Λ`, let `L` be a set of relations
+/--
+Let `ρ` be a function from `Gal(Ω/E)` to matrices over a ring `Λ`, let `L` be a set of relations
 `∑ γ, f γ • c γ = 0` with matrix coefficients over `Λ`, let `G'` be an open subgroup, let `m ≠ 0`
 and let `S` be a finite set of primes of `E`. There is one matrix `A` over `Λ`, with columns indexed
 by a finite type `k`, such that for every `ev : Λ → O'` and every `O'`-module `B` killed by `m`, if
 `G'` acts trivially on `B ^ n` through `ev ρ`, the Selmer module of `ev ρ` in `B ^ n` is isomorphic
-to the kernel of `ev A` on `B ^ k`. -/
-theorem exists_matrix_selmerModule_equiv (ρ : Gal(Ω/E) → Matrix n n Λ)
-    (G' : OpenSubgroup Gal(Ω/E)) (m : ℕ) [NeZero m] (hS : S.Finite)
-    (L : Set (Gal(Ω/E) →₀ Matrix n n Λ)) :
-    ∃ (r k : Type) (_ : Fintype k) (A : Matrix r k Λ),
+to the kernel of `ev A` on `B ^ k`.
+-/
+theorem exists_matrix_selmerModule_equiv
+    (ρ : Gal(Ω/E) → Matrix n n Λ) (G' : OpenSubgroup Gal(Ω/E))
+    (m : ℕ) [NeZero m]
+    (hS : S.Finite) (L : Set (Gal(Ω/E) →₀ Matrix n n Λ))
+    : ∃ (r k : Type) (_ : Fintype k) (A : Matrix r k Λ),
       ∀ (O' : Type) [CommRing O'] (ev : Λ →+* O') (B : Type) [AddCommGroup B] [Module O' B],
-        (∀ b : B, m • b = 0) →
-        (∀ g ∈ G', ∀ b : n → B, (ρ g).map ev • b = b) →
-        Nonempty (selmerModule (fun g : Gal(Ω/E) ↦ (ρ g).map ev) S (mapRel ev '' L) B ≃ₗ[O']
-          matrixKernel (A.map ev) B) := by
+        (∀ b : B, m • b = 0) → (∀ g ∈ G', ∀ b : n → B, (ρ g).map ev • b = b)
+          → Nonempty
+            (selmerModule (fun g : Gal(Ω/E) ↦ (ρ g).map ev) S (mapRel ev '' L) B ≃ₗ[O']
+              matrixKernel (A.map ev) B) := by
   -- The cocycles factor through one finite quotient `𝒢` of `Gal(Ω/E)`, and `A` is the matrix of
   -- the equations that define the Selmer module among the functions on `𝒢`.
   obtain ⟨G'', h_zero⟩ := exists_openNormalSubgroup_forall_eq_zero G' m hS
@@ -301,32 +311,35 @@ theorem exists_matrix_selmerModule_equiv (ρ : Gal(Ω/E) → Matrix n n Λ)
   let Sel := selmerModule (fun g ↦ (ρ g).map ev) S (mapRel ev '' L) B
   let Ker : Submodule O' (𝒢 × n → B) := matrixKernel ((relationMatrix π R).map ev) B
   -- The members of `Sel` are additive on `G'`, so they vanish on `G''` and are functions on `𝒢`.
-  have h_inv (z : Gal(Ω/E) → n → B) (hz : z ∈ Sel) (g : Gal(Ω/E)) (g'' : H) :
-      z (g * g'') = z g := by
+  have h_inv (z : Gal(Ω/E) → n → B) (hz : z ∈ Sel) (g : Gal(Ω/E)) (g'' : H)
+      : z (g * g'') = z g := by
     obtain ⟨h_cocycle, h_unr, -, h_const⟩ := mem_selmerModule_iff.1 hz
-    have h_add : ∀ u ∈ G', ∀ u' ∈ G', z (u * u') = z u + z u' :=
-      fun u hu u' _ ↦ by rw [h_cocycle, h_triv u hu]
+    have h_add : ∀ u ∈ G', ∀ u' ∈ G', z (u * u') = z u + z u' := fun u hu u' _ ↦ by
+      rw [h_cocycle, h_triv u hu]
     have h_vanish : z g'' = 0 :=
       h_zero (n → B) (fun b ↦ funext fun i ↦ hm (b i)) z h_const h_add h_unr g'' g''.property
     rw [h_cocycle, h_vanish, smul_zero, add_zero]
   -- A function on `𝒢` is a vector `w` with coordinates in `B`; it gives a member of `Sel` if and
   -- only if it satisfies the equations.
   let pull : (𝒢 × n → B) →ₗ[O'] Gal(Ω/E) → n → B := .pi fun g ↦ .pi fun i ↦ .proj (π g, i)
-  have h_rel : mapRel ev '' R = cocycleRelations (fun g ↦ (ρ g).map ev) ∪
-      (fun g ↦ Finsupp.single g 1) '' inertiaAbove Sᶜ ∪ mapRel ev '' L := by
+  have h_rel
+      : mapRel ev '' R
+        = cocycleRelations (fun g ↦ (ρ g).map ev) ∪ (fun g ↦ Finsupp.single g 1) '' inertiaAbove Sᶜ
+          ∪ mapRel ev '' L := by
     simp [R, Set.image_union, mapRel_image_cocycleRelations, Set.image_image, mapRel_single]
   have h_mem (w : 𝒢 × n → B) : w ∈ Ker ↔ pull w ∈ Sel := by
     have h_const : IsLocallyConstant (pull w) :=
       (IsLocallyConstant.of_discrete w.curry).comp_continuous QuotientGroup.continuous_mk
-    have h_Sel : pull w ∈ Sel ↔
-        pull w ∈ obeying (mapRel ev '' R) B ∧ IsLocallyConstant (pull w) := by
+    have h_Sel
+        : pull w ∈ Sel ↔ pull w ∈ obeying (mapRel ev '' R) B ∧ IsLocallyConstant (pull w) := by
       rw [h_rel]
       exact Submodule.mem_inf
     rw [h_Sel, and_iff_left h_const]
     exact mem_matrixKernel_relationMatrix π R ev w
-  have h_inj : Function.Injective pull := fun w w' h_eq ↦ funext fun (c, i) ↦ by
-    obtain ⟨g, rfl⟩ : ∃ g : Gal(Ω/E), π g = c := QuotientGroup.mk_surjective c
-    exact congr_fun₂ h_eq g i
+  have h_inj : Function.Injective pull := fun w w' h_eq ↦
+    funext fun (c, i) ↦ by
+      obtain ⟨g, rfl⟩ : ∃ g : Gal(Ω/E), π g = c := QuotientGroup.mk_surjective c
+      exact congr_fun₂ h_eq g i
   have h_map : Ker.map pull = Sel := by
     refine le_antisymm (Submodule.map_le_iff_le_comap.2 fun w hw ↦ (h_mem w).1 hw) fun z hz ↦ ?_
     have h_pull : pull (fun (c, i) ↦ z c.out i) = z := by
@@ -337,11 +350,15 @@ theorem exists_matrix_selmerModule_equiv (ρ : Gal(Ω/E) → Matrix n n Λ)
     exact ⟨_, (h_mem _).2 (by rwa [h_pull]), h_pull⟩
   exact ⟨((Submodule.equivMapOfInjective pull h_inj Ker).trans (.ofEq _ Sel h_map)).symm⟩
 
-/-- The matrices `ψ_x(g) ρ(g)` over `O'`, where `ψ_x(g)` is the value of
+/--
+The matrices `ψ_x(g) ρ(g)` over `O'`, where `ψ_x(g)` is the value of
 `ψ_X(g) = universalChar h g` at the point `x` and `ρ(g)` is mapped by `e`. The function `ψ_x` need
-not be multiplicative. -/
-def pointTwist (h : σ → G →* Multiplicative (ZMod q)) (x : σ → O') (e : O →+* O')
-    (ρ : G → Matrix n n O) (g : G) : Matrix n n O' :=
+not be multiplicative.
+-/
+def pointTwist
+    (h : σ → G →* Multiplicative (ZMod q)) (x : σ → O') (e : O →+* O') (ρ : G → Matrix n n O)
+    (g : G)
+    : Matrix n n O' :=
   eval x (universalChar h g) • (ρ g).map e
 
 /-- Let `h j : G → ℤ / q` be finitely many homomorphisms, `ρ` a representation of `G` by matrices
@@ -362,36 +379,45 @@ lemma pointTwist_smul_eq_self {ℓ M : ℕ} {h : σ → G →* Multiplicative (Z
   rw [pointTwist, h_char, one_smul, ← map_mk_smul, h_red, hg_red,
     Matrix.map_one ē ē.map_zero ē.map_one, one_smul]
 
-/-- The module `Sel(x)`: the locally constant cocycles in `(O' / ℓ ^ M) ^ n` for the twist
+/--
+The module `Sel(x)`: the locally constant cocycles in `(O' / ℓ ^ M) ^ n` for the twist
 `pointTwist h x e ρ` of `ρ` by `ψ_x` that are unramified outside `S` and obey the relations `L`,
-with coefficients mapped by `e`. -/
-def selmerAtPoint (ℓ M : ℕ) (h : σ → Gal(Ω/E) →* Multiplicative (ZMod q))
-    (ρ : Gal(Ω/E) → Matrix n n O) (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O))
-    (e : O →+* O') (x : σ → O') : Submodule O' (Gal(Ω/E) → n → QuotSpan (ℓ ^ M : O')) :=
+with coefficients mapped by `e`.
+-/
+def selmerAtPoint
+    (ℓ M : ℕ) (h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)) (ρ : Gal(Ω/E) → Matrix n n O)
+    (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O)) (e : O →+* O') (x : σ → O')
+    : Submodule O' (Gal(Ω/E) → n → QuotSpan (ℓ ^ M : O')) :=
   selmerModule (pointTwist h x e ρ) S (mapRel e '' L) (QuotSpan (ℓ ^ M : O'))
 
-variable {ℓ M : ℕ} [NeZero ℓ] {h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)}
-  {ρ : Gal(Ω/E) →* Matrix n n O}
+variable
+  {ℓ M : ℕ} [NeZero ℓ] {h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)} {ρ : Gal(Ω/E) →* Matrix n n O}
 
-/-- Let `ℓ ≠ 0` and `q` be natural numbers, let `h j : Gal(Ω/E) → ℤ / q` be finitely many locally
+/--
+Let `ℓ ≠ 0` and `q` be natural numbers, let `h j : Gal(Ω/E) → ℤ / q` be finitely many locally
 constant homomorphisms, and let `ρ` be a representation of `Gal(Ω/E)` by matrices over `O` that is
 locally constant modulo `ℓ ^ M`. Let `S` be a finite set of finite places of `E`. There is a matrix
 `A` over `MvPolynomial σ O`, with finitely many columns and possibly infinitely many rows, such that
 `Sel(x)` is isomorphic to the kernel of `A` evaluated at `x` on a power of `O' / ℓ ^ M`. This holds
-for all `e : O → O'` and all points `x : σ → O'`. -/
-theorem exists_matrix_selmerAtPoint_equiv (h_char_const : ∀ j : σ, IsLocallyConstant (h j))
-    (hρ : IsLocallyConstant (reduceModPow ℓ M ρ)) (hS : S.Finite)
-    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) :
-    ∃ (r k : Type) (_ : Fintype k) (A : Matrix r k (MvPolynomial σ O)),
+for all `e : O → O'` and all points `x : σ → O'`.
+-/
+theorem exists_matrix_selmerAtPoint_equiv
+    (h_char_const : ∀ j : σ, IsLocallyConstant (h j)) (hρ : IsLocallyConstant (reduceModPow ℓ M ρ))
+    (hS : S.Finite) (L : Set (Gal(Ω/E) →₀ Matrix n n O))
+    : ∃ (r k : Type) (_ : Fintype k) (A : Matrix r k (MvPolynomial σ O)),
       ∀ (O' : Type) [CommRing O'] (e : O →+* O') (x : σ → O'),
-        Nonempty (selmerAtPoint ℓ M h ρ S L e x ≃ₗ[O']
-          matrixKernel (A.map (eval₂Hom e x)) (QuotSpan (ℓ ^ M : O'))) := by
+        Nonempty
+          (selmerAtPoint ℓ M h ρ S L e x ≃ₗ[O']
+            matrixKernel (A.map (eval₂Hom e x)) (QuotSpan (ℓ ^ M : O'))) := by
   -- On the open subgroup `G'` the characters `h j` are trivial, and so is `ρ` modulo `ℓ ^ M`.
-  let G' : OpenSubgroup Gal(Ω/E) := ⟨(⨅ j : σ, (h j).ker) ⊓ (reduceModPow ℓ M ρ).ker, by
-    change IsOpen (((⨅ j : σ, (h j).ker : Subgroup Gal(Ω/E)) : Set Gal(Ω/E)) ∩ _)
-    rw [Subgroup.coe_iInf]
-    exact (isOpen_iInter_of_finite fun j ↦ (h_char_const j).isOpen_fiber 1).inter
-      (hρ.isOpen_fiber 1)⟩
+  let G' : OpenSubgroup Gal(Ω/E) := ⟨
+    (⨅ j : σ, (h j).ker) ⊓ (reduceModPow ℓ M ρ).ker,
+    by
+      change IsOpen (((⨅ j : σ, (h j).ker : Subgroup Gal(Ω/E)) : Set Gal(Ω/E)) ∩ _)
+      rw [Subgroup.coe_iInf]
+      exact (isOpen_iInter_of_finite fun j ↦ (h_char_const j).isOpen_fiber 1).inter
+        (hρ.isOpen_fiber 1)
+  ⟩
   let ρX (g : Gal(Ω/E)) : Matrix n n (MvPolynomial σ O) := universalChar (R := O) h g • (ρ g).map C
   obtain ⟨r, k, _, A, hA⟩ := exists_matrix_selmerModule_equiv ρX G' (ℓ ^ M) hS (mapRel C '' L)
   refine ⟨r, k, inferInstance, A, fun O' _ e x ↦ ?_⟩
@@ -406,15 +432,17 @@ theorem exists_matrix_selmerAtPoint_equiv (h_char_const : ∀ j : σ, IsLocallyC
   obtain ⟨hg_char, hg_red⟩ := Subgroup.mem_inf.1 hg
   rw [h_twist, pointTwist_smul_eq_self (Subgroup.mem_iInf.1 hg_char) (MonoidHom.mem_ker.1 hg_red)]
 
-/-- Let `ℓ ≠ 0`, let the homomorphisms `h j : Gal(Ω/E) → ℤ / q` and the representation `ρ` over `O`,
+/--
+Let `ℓ ≠ 0`, let the homomorphisms `h j : Gal(Ω/E) → ℤ / q` and the representation `ρ` over `O`,
 taken modulo `ℓ ^ M`, be locally constant, let `S` be a finite set of primes of `E` and let `L` be
 any set of relations `∑ γ, f γ • c γ = 0` on cocycles `c`. There is a set `𝓜` of polynomials over
 `O` such that, at every point `x` over a discrete valuation ring `O'` of characteristic zero, the
-length of `Sel(x)` is the least valuation of a value `P(x)`, `P ∈ 𝓜`. -/
-theorem exists_isLeast_length_selmerAtPoint (h_char_const : ∀ j : σ, IsLocallyConstant (h j))
-    (hρ : IsLocallyConstant (reduceModPow ℓ M ρ)) (hS : S.Finite)
-    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) :
-    ∃ 𝓜 : Set (MvPolynomial σ O),
+length of `Sel(x)` is the least valuation of a value `P(x)`, `P ∈ 𝓜`.
+-/
+theorem exists_isLeast_length_selmerAtPoint
+    (h_char_const : ∀ j : σ, IsLocallyConstant (h j)) (hρ : IsLocallyConstant (reduceModPow ℓ M ρ))
+    (hS : S.Finite) (L : Set (Gal(Ω/E) →₀ Matrix n n O))
+    : ∃ 𝓜 : Set (MvPolynomial σ O),
       ∀ (O' : Type) [CommRing O'] [DVR O'] [CharZero O'] (e : O →+* O') (x : σ → O'),
         IsLeast ((fun P : MvPolynomial σ O ↦ addVal O' (eval₂ e x P)) '' 𝓜)
           (length O' (selmerAtPoint ℓ M h ρ S L e x)) := by
@@ -425,20 +453,23 @@ theorem exists_isLeast_length_selmerAtPoint (h_char_const : ∀ j : σ, IsLocall
   rw [φ.length_eq, ← show eval₂Hom e x (ℓ ^ M : MvPolynomial σ O) = ℓ ^ M by simp]
   exact isLeast_length_matrixKernel A (ℓ ^ M) (eval₂Hom e x) (by simp [NeZero.ne])
 
-/-- Let `ℓ ≠ 0`, let the homomorphisms `h j : Gal(Ω/E) → ℤ / q` and the representation `ρ` over `O`,
+/--
+Let `ℓ ≠ 0`, let the homomorphisms `h j : Gal(Ω/E) → ℤ / q` and the representation `ρ` over `O`,
 taken modulo `ℓ ^ M`, be locally constant, let `S` be a finite set of primes of `E` and let `L` be
 any set of relations `∑ γ, f γ • c γ = 0` on cocycles `c`. Let `x₀` be a point over a discrete
 valuation ring `O₀` of characteristic zero, with `e₀ : O → O₀`. There is a polynomial `P` over `O`
 such that the valuation of `P(x₀)` is the length of `Sel(x₀)`, and the valuation of `P(x)` is at
-least the length of `Sel(x)` at every point `x` over a ring of the same kind. -/
-theorem exists_sharp_polynomial (h_char_const : ∀ j : σ, IsLocallyConstant (h j))
-    (hρ : IsLocallyConstant (reduceModPow ℓ M ρ)) (hS : S.Finite)
-    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) {O₀ : Type} [CommRing O₀] [DVR O₀] [CharZero O₀]
-    (e₀ : O →+* O₀) (x₀ : σ → O₀) :
-    ∃ P : MvPolynomial σ O,
-      addVal O₀ (eval₂ e₀ x₀ P) = length O₀ (selmerAtPoint ℓ M h ρ S L e₀ x₀) ∧
-      ∀ (O' : Type) [CommRing O'] [DVR O'] [CharZero O'] (e : O →+* O') (x : σ → O'),
-        length O' (selmerAtPoint ℓ M h ρ S L e x) ≤ addVal O' (eval₂ e x P) := by
+least the length of `Sel(x)` at every point `x` over a ring of the same kind.
+-/
+theorem exists_sharp_polynomial
+    (h_char_const : ∀ j : σ, IsLocallyConstant (h j)) (hρ : IsLocallyConstant (reduceModPow ℓ M ρ))
+    (hS : S.Finite) (L : Set (Gal(Ω/E) →₀ Matrix n n O))
+    {O₀ : Type} [CommRing O₀] [DVR O₀] [CharZero O₀]
+    (e₀ : O →+* O₀) (x₀ : σ → O₀)
+    : ∃ P : MvPolynomial σ O,
+      addVal O₀ (eval₂ e₀ x₀ P) = length O₀ (selmerAtPoint ℓ M h ρ S L e₀ x₀)
+        ∧ ∀ (O' : Type) [CommRing O'] [DVR O'] [CharZero O'] (e : O →+* O') (x : σ → O'),
+          length O' (selmerAtPoint ℓ M h ρ S L e x) ≤ addVal O' (eval₂ e x P) := by
   obtain ⟨𝓜, h_least⟩ := exists_isLeast_length_selmerAtPoint h_char_const hρ hS L
   obtain ⟨P, hP, h_sharp⟩ := (h_least O₀ e₀ x₀).1
   exact ⟨P, h_sharp, fun O' _ _ _ e x ↦ (h_least O' e x).2 (Set.mem_image_of_mem _ hP)⟩

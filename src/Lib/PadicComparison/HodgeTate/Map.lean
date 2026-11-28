@@ -78,13 +78,14 @@ section HodgeTatePairs
 open CategoryTheory HodgeTest TrivSqZeroExt ExteriorAlgebra AddCommGrpCat TotalH thickeningOver
   CommAlgCat CliffordAlgebra
 
-
 variable {p : ℕ} {k : Type} [Field k] [EmbeddedInQpBar p k]
 
 /-! ### The category of pairs -/
 
-/-- A pair (S, M) of a p-adic test S and the free module M = T^n over T = S[1/p], given by S and
-the rank n. -/
+/--
+A pair (S, M) of a p-adic test S and the free module M = T^n over T = S[1/p], given by S and
+the rank n.
+-/
 structure HodgeTatePair where
   /-- The `p`-adic test `S`. -/
   test : PadicTest
@@ -95,49 +96,65 @@ variable (X : HodgeTatePair)
 
 namespace HodgeTatePair
 
-/-- For a pair (S, M), the k-algebra T = S[1/p]: `New.Variety.genericOver` of the test S, its ring
-with p inverted. -/
+/--
+For a pair (S, M), the k-algebra T = S[1/p]: `New.Variety.genericOver` of the test S, its ring
+with p inverted.
+-/
 abbrev GenericRing : CommAlg k := genericOver X.test
 
-/-- Morphisms of pairs. A morphism (S, M) ⟶ (S', M') is a pair (f, φ) of a map of tests
+/--
+Morphisms of pairs. A morphism (S, M) ⟶ (S', M') is a pair (f, φ) of a map of tests
 f : S ⟶ S' and a map φ = (φ₀, φ₁) : M → T' × M' that is semilinear over the ring map T → T'
 induced by f. The identity is (𝟙, m ↦ (0, m)), and (f, φ) followed by (g, ψ) is
-(f ≫ g, m ↦ (g(φ₀ m), 0) + ψ(φ₁ m)). -/
-@[simps] instance : Category HodgeTatePair := by
-  refine' @Category.mk _ {
-    Hom X Y := Σ f : X.test ⟶ Y.test, (Fin X.rank → X.GenericRing)
-      →ₛₗ[((genericOver.map f).hom : X.GenericRing →+* Y.GenericRing)] Y.GenericRing ×
-      (Fin Y.rank → Y.GenericRing),
-    id _ := ⟨𝟙 _, ⟨(0, ·), by simp⟩, by simp⟩
-    comp f g := ⟨f.1 ≫ g.1, ⟨fun m ↦ (genericOver.map g.1 (f.2 m).1, 0) + g.2 (f.2 m).2, by
-      simp [add_add_add_comm]⟩, by simp⟩} ..
+(f ≫ g, m ↦ (g(φ₀ m), 0) + ψ(φ₁ m)).
+-/
+@[simps]
+instance : Category HodgeTatePair := by
+  refine' @Category.mk _
+    {
+      Hom X Y :=
+        Σ f : X.test ⟶ Y.test,
+          (Fin X.rank → X.GenericRing)
+            →ₛₗ[((genericOver.map f).hom : X.GenericRing →+* Y.GenericRing)] Y.GenericRing ×
+            (Fin Y.rank → Y.GenericRing)
+      id _ := ⟨𝟙 _, ⟨(0, ·), by simp⟩, by simp⟩
+      comp f g := ⟨
+        f.1 ≫ g.1,
+        ⟨fun m ↦ (genericOver.map g.1 (f.2 m).1, 0) + g.2 (f.2 m).2, by simp [add_add_add_comm]⟩,
+        by simp
+      ⟩
+    }
+    ..
   all_goals
     intros
-    exact congr(⟨_, $(by
-      ext m : 1
-      apply Prod.ext
-      · simp [add_assoc]
-        rfl
-      · simp
-        first
-        | rfl
-        | change _ = 0 + (0 + _)
-          simp only [zero_add])⟩)
+    exact
+      congr(⟨_, $(by
+        ext m : 1
+        apply Prod.ext
+        · simp [add_assoc]
+          rfl
+        · simp
+          first
+          | rfl
+          | change _ = 0 + (0 + _)
+            simp only [zero_add])⟩)
 
 /-- The map of tests `S ⟶ S'` of a morphism of pairs `(S, M) ⟶ (S', M')`. -/
 abbrev testMap {X Y : HodgeTatePair} (f : X ⟶ Y) : X.test ⟶ Y.test := f.1
 
 /-- The map `φ = (φ₀, φ₁) : M → T' × M'` of a morphism of pairs, semilinear over `T → T'`. -/
-abbrev moduleMap {X Y : HodgeTatePair} (f : X ⟶ Y) :
-    (Fin X.rank → X.GenericRing) →ₛₗ[((genericOver.map (testMap f)).hom :
-      X.GenericRing →+* Y.GenericRing)] Y.GenericRing × (Fin Y.rank → Y.GenericRing) :=
+abbrev moduleMap {X Y : HodgeTatePair} (f : X ⟶ Y)
+    : (Fin X.rank → X.GenericRing) →ₛₗ[((genericOver.map (testMap f)).hom :
+        X.GenericRing →+* Y.GenericRing)] Y.GenericRing × (Fin Y.rank → Y.GenericRing) :=
   f.2
 
 /-- The forgetful functor from pairs (S,M) to p-adic tests, sending (f,φ) to f. -/
 def toTest : HodgeTatePair ⥤ PadicTest := CategoryTheory.Functor.mk test (·.1)
 
-/-- The functor (S,M) ↦ (T,M) to the tests of Hodge cohomology, sending (f,φ) to the ring map
-induced by f and the second component of φ. -/
+/--
+The functor (S,M) ↦ (T,M) to the tests of Hodge cohomology, sending (f,φ) to the ring map
+induced by f and the second component of φ.
+-/
 def toHodgeTest : HodgeTatePair ⥤ HodgeTest k := by
   refine ⟨(⟨·.GenericRing, _⟩), (⟨_, .snd .. ∘ₛₗ ·.2⟩), ?_, ?_⟩
   all_goals
@@ -146,11 +163,14 @@ def toHodgeTest : HodgeTatePair ⥤ HodgeTest k := by
 
 /-! ### The rings `B_{S,M}` -/
 
-/-- For a pair (S,M), the k-algebra B_S ×_T (T ⊕ M), with B_S as in `New.Variety.thickeningOver`
-and T ⊕ M the trivial square-zero extension. -/
-abbrev PairRing :
-    Subalgebra k (thickeningOver.obj X.test ×
-      TrivSqZeroExt (genericOver.obj X.test) (Fin X.rank → X.GenericRing)) :=
+/--
+For a pair (S,M), the k-algebra B_S ×_T (T ⊕ M), with B_S as in `New.Variety.thickeningOver`
+and T ⊕ M the trivial square-zero extension.
+-/
+abbrev PairRing
+    : Subalgebra k
+      (thickeningOver.obj X.test
+        × TrivSqZeroExt (genericOver.obj X.test) (Fin X.rank → X.GenericRing)) :=
   (thickeningOver.proj X.test).hom'.pullback
     (fstHom k (genericOver.obj X.test) (Fin X.rank → X.GenericRing))
 
@@ -158,8 +178,8 @@ abbrev PairRing :
 abbrev PairRing.base {X : HodgeTatePair} (x : X.PairRing) : thickeningOver.obj X.test := x.val.1
 
 /-- The `T ⊕ M` component `(s, m)` of a point `x = (b, (s, m))` of `B_S ×_T (T ⊕ M)`. -/
-abbrev PairRing.sqZero {X : HodgeTatePair} (x : X.PairRing) :
-    TrivSqZeroExt (genericOver.obj X.test) (Fin X.rank → X.GenericRing) :=
+abbrev PairRing.sqZero {X : HodgeTatePair} (x : X.PairRing)
+    : TrivSqZeroExt (genericOver.obj X.test) (Fin X.rank → X.GenericRing) :=
   x.val.2
 
 /-- Let `f : X ⟶ Y` be a morphism of pairs and `x = (b, (s, m))` a point of `B_S ×_T (T ⊕ M)`, so
@@ -211,23 +231,28 @@ lemma map_fst_add_mulMu_add {X Y : HodgeTatePair} (f : X ⟶ Y) (x y : X.PairRin
       (PairRing.sqZero x).snd + (PairRing.sqZero y).snd := rfl
   rw [h_base, h_snd, map_add, map_add, Prod.fst_add, map_add, add_add_add_comm]
 
-/-- The functor (S, M) ↦ B_{S,M} = B_S ×_T (T ⊕ M) to k-algebras. A morphism (f, (φ₀, φ₁)) acts by
+/--
+The functor (S, M) ↦ B_{S,M} = B_S ×_T (T ⊕ M) to k-algebras. A morphism (f, (φ₀, φ₁)) acts by
 (b, (s, m)) ↦ (f(b) + μ·φ₀(m), (f(s), φ₁(m))), where μ·_ is `thickeningOver.mulMu`; the first
-component is additive and multiplicative by `map_fst_add_mulMu_add` and `map_base_add_mulMu_mul`. -/
+component is additive and multiplicative by `map_fst_add_mulMu_add` and `map_base_add_mulMu_mul`.
+-/
 def pairAlg : HodgeTatePair ⥤ CommAlg k where
   obj X := CommAlgCat.of k X.PairRing
-  map {X Y} f := CommAlgCat.ofHom <| AlgHom.codRestrict
-    (AlgHom.prod
-      { toFun (x : X.PairRing) :=
-          thickeningOver.map f.1 x.val.1 + thickeningOver.mulMu Y.test (f.2 x.val.2.snd).fst
-        map_one' := by simp
-        map_mul' := map_base_add_mulMu_mul f
-        map_zero' := by simp
-        map_add' := map_fst_add_mulMu_add f
-        commutes' r := by simp [algebraMap_eq_inl'] }
-      (((toHodgeTest ⋙ HodgeTest.sqZeroExt).map f).hom'.comp (AlgHom.pullbackSnd ..)))
-    Y.PairRing
-    fun x ↦ (map_add ..).trans ((add_eq_left.2 (proj_mulMu ..)).trans (proj_map_fst f x))
+  map {X Y} f :=
+    CommAlgCat.ofHom <| AlgHom.codRestrict
+      (AlgHom.prod
+        {
+          toFun (x : X.PairRing) :=
+            thickeningOver.map f.1 x.val.1 + thickeningOver.mulMu Y.test (f.2 x.val.2.snd).fst
+          map_one' := by simp
+          map_mul' := map_base_add_mulMu_mul f
+          map_zero' := by simp
+          map_add' := map_fst_add_mulMu_add f
+          commutes' r := by simp [algebraMap_eq_inl']
+        }
+        (((toHodgeTest ⋙ HodgeTest.sqZeroExt).map f).hom'.comp (AlgHom.pullbackSnd ..)))
+      Y.PairRing
+      fun x ↦ (map_add ..).trans ((add_eq_left.2 (proj_mulMu ..)).trans (proj_map_fst f x))
   map_id X := by ext : 4 <;> simp <;> rfl
   map_comp f g := by
     ext : 4
@@ -242,52 +267,67 @@ def pairAlg : HodgeTatePair ⥤ CommAlg k where
 def toSqZero : pairAlg ⟶ toHodgeTest ⋙ HodgeTest.sqZeroExt where
   app _ := CommAlgCat.ofHom (AlgHom.pullbackSnd ..)
 
-/-- The natural map of k-algebras B_S ×_T (T ⊕ M) → T: `toSqZero` followed by the projection
-T ⊕ M → T, (s, m) ↦ s. -/
-def toGeneric : pairAlg ⟶ toTest ⋙ genericOver := toSqZero ≫ {app _ := baseProj _}
+/--
+The natural map of k-algebras B_S ×_T (T ⊕ M) → T: `toSqZero` followed by the projection
+T ⊕ M → T, (s, m) ↦ s.
+-/
+def toGeneric : pairAlg ⟶ toTest ⋙ genericOver := toSqZero ≫ { app _ := baseProj _ }
 
 /-! ### Coefficients, the contraction cocycle and its powers -/
 
-/-- The functor sending a pair (S,M) to the abelian group ⋀_T M, the restriction of the
-coefficients of Hodge cohomology. -/
+/--
+The functor sending a pair (S,M) to the abelian group ⋀_T M, the restriction of the
+coefficients of Hodge cohomology.
+-/
 abbrev formCoeff : HodgeTatePair ⥤ AddCommGrpCat := toHodgeTest ⋙ hodgeCoeff
 
-/-- The coefficient functor `New.Variety.genericCoeff` (S ↦ T = S[1/p]) on p-adic tests, restricted
-to pairs along (S,M) ↦ S. -/
+/--
+The coefficient functor `New.Variety.genericCoeff` (S ↦ T = S[1/p]) on p-adic tests, restricted
+to pairs along (S,M) ↦ S.
+-/
 abbrev scalarCoeff : HodgeTatePair ⥤ AddCommGrpCat := toTest ⋙ genericCoeff
 
-/-- The field k acts on F = `scalarCoeff`, (S, M) ↦ T, by natural endomorphisms `CoeffAction.act t`,
-here multiplication by t on T, through its action on `New.Variety.genericCoeff`. -/
+/--
+The field k acts on F = `scalarCoeff`, (S, M) ↦ T, by natural endomorphisms `CoeffAction.act t`,
+here multiplication by t on T, through its action on `New.Variety.genericCoeff`.
+-/
 instance : CoeffAction k scalarCoeff :=
   ⟨.comp ⟨(restrictAlong _).mapEnd _, rfl, by tauto⟩ CoeffAction.act⟩
 
-/-- The cocycle from Λ = ⋀_T M (`formCoeff`) to itself that assigns to a morphism (f, φ) with
+/--
+The cocycle from Λ = ⋀_T M (`formCoeff`) to itself that assigns to a morphism (f, φ) with
 φ = (φ₀, φ₁) the map `New.Variety.contraction φ` : ⋀M → ⋀M', which contracts with φ₀ and applies
-φ₁ to the remaining factors. -/
+φ₁ to the remaining factors.
+-/
 def contractionCocycle : Cocycle formCoeff formCoeff where
   component f := uliftFunctor.map (AddCommGrpCat.ofHom (contraction f.2).toAddMonoidHom)
   cocycle_comp f g := by
     -- The cocycle identity is the chain rule for contractions. It is proved by induction on the
     -- form, together with the functoriality of `exteriorMapSnd`.
-    have h_chain x :
-        contraction (f ≫ g).2 x =
-          exteriorMapSnd g.2 (contraction f.2 x) + contraction g.2 (exteriorMapSnd f.2 x) ∧
-        exteriorMapSnd (f ≫ g).2 x = exteriorMapSnd g.2 (exteriorMapSnd f.2 x) := by
-      induction x using left_induction <;> simp_all [Algebra.algebraMap_eq_smul_one,
-        mul_add] <;> module
+    have h_chain x
+        : contraction (f ≫ g).2 x
+            = exteriorMapSnd g.2 (contraction f.2 x) + contraction g.2 (exteriorMapSnd f.2 x)
+          ∧ exteriorMapSnd (f ≫ g).2 x = exteriorMapSnd g.2 (exteriorMapSnd f.2 x) := by
+      induction x using left_induction <;> simp_all [Algebra.algebraMap_eq_smul_one, mul_add]
+        <;> module
     exact ext fun x ↦ congrArg ULift.up (h_chain x.down).1
 
-/-- For h : ℕ, the class in total Ext(Λ, F) given by the h-th Yoneda power of the class of
+/--
+For h : ℕ, the class in total Ext(Λ, F) given by the h-th Yoneda power of the class of
 `contractionCocycle` in Ext¹(Λ, Λ), followed by the projection of ⋀M onto its degree-zero part T.
-Here Λ = `formCoeff`, (S, M) ↦ ⋀_T M, and F = `scalarCoeff`, (S, M) ↦ T. -/
+Here Λ = `formCoeff`, (S, M) ↦ ⋀_T M, and F = `scalarCoeff`, (S, M) ↦ T.
+-/
 def contractionPow : ℕ → TotalH formCoeff scalarCoeff
   -- In degree zero: the projection of the exterior algebra onto its scalar part.
-  | 0 => TotalH.homClass
-      { app X := uliftFunctor.map <| AddCommGrpCat.ofHom
-          (@algebraMapInv (toHodgeTest.obj X).baseAlg _
-            ((toHodgeTest.obj X).Index → X.GenericRing) ..).toAddMonoidHom
-        naturality _ _ f := AddCommGrpCat.ext fun x ↦
-          congrArg ULift.up (algebraMapInv_exteriorMap (toHodgeTest.map f).2 x.down) }
+  | 0 =>
+    TotalH.homClass {
+      app X :=
+        uliftFunctor.map <| AddCommGrpCat.ofHom (@algebraMapInv (toHodgeTest.obj X).baseAlg _
+          ((toHodgeTest.obj X).Index → X.GenericRing) ..).toAddMonoidHom
+      naturality _ _ f :=
+        AddCommGrpCat.ext fun x ↦
+          congrArg ULift.up (algebraMapInv_exteriorMap (toHodgeTest.map f).2 x.down)
+    }
   | h + 1 => TotalH.comp contractionCocycle.cohomClass (contractionPow h)
 
 /-- The natural map Λ ⊗ Λ → Λ given by the wedge product in ⋀_T M. -/
@@ -390,18 +430,25 @@ open CategoryTheory Abelian TensorProduct AddCommGrpCat TotalH HodgeTatePair Fin
 
 variable {p : ℕ} {k : Type} [Field k] [EmbeddedInQpBar p k] {N N' : AbFunctor (CommAlg k)}
 
-/-- For a functor `N` from `k`-algebras to abelian groups, the total cohomology on pairs `(S, M)`
+/--
+For a functor `N` from `k`-algebras to abelian groups, the total cohomology on pairs `(S, M)`
 of `(S, M) ↦ N(B_{S,M})` with coefficients `scalarCoeff`, `(S, M) ↦ T = S[1/p]`; the target of
-`λ_h`. -/
+`λ_h`.
+-/
 abbrev PairH (N : CommAlg k ⥤ AddCommGrpCat) : Type 2 := TotalH (pairAlg ⋙ N) scalarCoeff
 
-/-- The Hodge–Tate map `λ_h` on the degree-`q` Hodge cohomology of `N`. A class `x` is pulled back
+/--
+The Hodge–Tate map `λ_h` on the degree-`q` Hodge cohomology of `N`. A class `x` is pulled back
 along `B_{S,M} → T ⊕ M` to the cohomology on pairs, put in total degree `q`, and composed with
 `contractionPow h`: the `h`-th power of the class of the contraction cocycle, followed by the
-projection of `⋀ M` to degree zero. -/
+projection of `⋀ M` to degree zero.
+-/
 def hodgeTateMap {q : ℕ} (h : ℕ) : HodgeH N q →ₗ[k] PairH N where
-  toFun x := comp ((Comparison.restrict toHodgeTest hodgeCoeff).pull
-    (Functor.whiskerRight toSqZero N) q x).toTotalH (contractionPow h)
+  toFun x :=
+    comp
+      ((Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N) q
+        x).toTotalH
+      (contractionPow h)
   map_add' := by simp
   -- the scalar acts through the coefficients, and `act_comp_contractionPow` moves it past
   -- `contractionPow h`
@@ -410,18 +457,23 @@ def hodgeTateMap {q : ℕ} (h : ℕ) : HodgeH N q →ₗ[k] PairH N where
       Comparison.pull, H.map, H.push, Functor.mapExtAddHom, H.smul_eq_push,
       Ext.mapExactFunctor_comp, Ext.mapExactFunctor_mk₀]
 
-/-- For `α : N' ⟶ N`, the `k`-linear pull-back from `PairH N` to `PairH N'` along the natural map
-`N'(B_{S,M}) → N(B_{S,M})` induced by `α`. -/
+/--
+For `α : N' ⟶ N`, the `k`-linear pull-back from `PairH N` to `PairH N'` along the natural map
+`N'(B_{S,M}) → N(B_{S,M})` induced by `α`.
+-/
 def PairH.map (α : N' ⟶ N) : PairH N →ₗ[k] PairH N' where
   toAddHom := (pullbackAlong (pairAlg.whiskerLeft α)).toAddHom
   map_smul' := comp_smul
 
-/-- The `k`-linear map from the degree-`n` cohomology on `p`-adic tests `S` of `S ↦ N(T)`,
+/--
+The `k`-linear map from the degree-`n` cohomology on `p`-adic tests `S` of `S ↦ N(T)`,
 `T = S[1/p]` (`genericOver`), with coefficients `genericCoeff` (`S ↦ T`), to `PairH N`: pull back
-along `B_{S,M} → T` and include as the degree-`n` summand. -/
+along `B_{S,M} → T` and include as the degree-`n` summand.
+-/
 def restrictToPairs {n : ℕ} : H (genericOver ⋙ N) genericCoeff n →ₗ[k] PairH N where
-  toFun := Ext.toTotalH ∘
-    (Comparison.restrict toTest genericCoeff).pull (Functor.whiskerRight toGeneric N) n
+  toFun :=
+    Ext.toTotalH
+      ∘ (Comparison.restrict toTest genericCoeff).pull (Functor.whiskerRight toGeneric N) n
   map_add' := by simp
   map_smul' t x := by
     -- both scalar actions are composition with the action of `t` on the coefficients
@@ -487,13 +539,14 @@ lemma hodgeTateMap_scale {q h : ℕ} (t : k) (x : HodgeH N q) :
   simp [hodgeTateMap, comp_assoc_of_eq, of_comp_homClass, Comparison.pull, H.map, H.push,
     Functor.mapExtAddHom, Ext.mapExactFunctor_comp, Ext.mapExactFunctor_mk₀]
 
-/-- For functors `M`, `L` on pairs (`M` with flat values) and `y` in the total cohomology of `L`
+/--
+For functors `M`, `L` on pairs (`M` with flat values) and `y` in the total cohomology of `L`
 with coefficients `scalarCoeff` (`(S, M) ↦ T`), the `k`-linear map `x ↦ x × y` to the total
 cohomology of `M ⊗ L` (`abTensor`, the objectwise tensor product): the external product
-`x.cup y` followed by the multiplication `T ⊗ T → T`. -/
-def HodgeTatePair.cross {M L : AbFunctor HodgeTatePair} [HasFlatValues M]
-    (y : TotalH L scalarCoeff) :
-    TotalH M scalarCoeff →ₗ[k] TotalH (abTensor M L) scalarCoeff where
+`x.cup y` followed by the multiplication `T ⊗ T → T`.
+-/
+def HodgeTatePair.cross {M L : AbFunctor HodgeTatePair} [HasFlatValues M] (y : TotalH L scalarCoeff)
+    : TotalH M scalarCoeff →ₗ[k] TotalH (abTensor M L) scalarCoeff where
   toFun x :=
     (x.cup y).comp
       (TotalH.homClass (toTest.whiskerLeft
@@ -506,18 +559,18 @@ def HodgeTatePair.cross {M L : AbFunctor HodgeTatePair} [HasFlatValues M]
     refine (homClass_comp ..).symm.trans ((congrArg TotalH.homClass ?_).trans (homClass_comp ..))
     exact abTensor_hom_ext fun _ _ _ ↦ congrArg _ (smul_mul_assoc ..)
 
-
-/-- The cocycle on `formCoeff ⊗ formCoeff` (`Λ ⊗ Λ`, `Λ = ⋀ M`) with values in two copies of it.
+/--
+The cocycle on `formCoeff ⊗ formCoeff` (`Λ ⊗ Λ`, `Λ = ⋀ M`) with values in two copies of it.
 At a morphism `f`, its `true` component is `D(f) ⊗ Λ(f)` and its `false` component is
-`Λ(f) ⊗ D(f)`, where `D` is `contractionCocycle`. -/
-def HodgeTatePair.tensorContractionCocycle :
-    Cocycle (abTensor formCoeff formCoeff)
+`Λ(f) ⊗ D(f)`, where `D` is `contractionCocycle`.
+-/
+def HodgeTatePair.tensorContractionCocycle
+    : Cocycle (abTensor formCoeff formCoeff)
       (piAbFunctor fun _ : Bool ↦ abTensor formCoeff formCoeff) where
   component f :=
-    ofHom <|
-      .pi fun b ↦
-        (cond b (abTensorMap (contractionCocycle.component f) (formCoeff.map f))
-          (abTensorMap (formCoeff.map f) (contractionCocycle.component f))).hom
+    ofHom <| .pi fun b ↦
+      (cond b (abTensorMap (contractionCocycle.component f) (formCoeff.map f))
+        (abTensorMap (formCoeff.map f) (contractionCocycle.component f))).hom
   cocycle_comp f g :=
     addCommGrp_tensor_hom_ext fun a b ↦ by
       let F := formCoeff (p := p) (k := k)
@@ -526,20 +579,20 @@ def HodgeTatePair.tensorContractionCocycle :
       have h_cocycle := C.cocycle_comp f g
       funext i
       cases i
-      · change (F.map (f ≫ g)).hom a ⊗ₜ (C.component (f ≫ g)).hom b =
-          (F.map g).hom ((F.map f).hom a) ⊗ₜ (F.map g).hom ((C.component f).hom b) +
-            (F.map g).hom ((F.map f).hom a) ⊗ₜ (C.component g).hom ((F.map f).hom b)
+      · change (F.map (f ≫ g)).hom a ⊗ₜ (C.component (f ≫ g)).hom b
+          = (F.map g).hom ((F.map f).hom a) ⊗ₜ (F.map g).hom ((C.component f).hom b)
+            + (F.map g).hom ((F.map f).hom a) ⊗ₜ (C.component g).hom ((F.map f).hom b)
         rw [h_map, h_cocycle]
         exact tmul_add _ _ _
-      · change (C.component (f ≫ g)).hom a ⊗ₜ (F.map (f ≫ g)).hom b =
-          (F.map g).hom ((C.component f).hom a) ⊗ₜ (F.map g).hom ((F.map f).hom b) +
-            (C.component g).hom ((F.map f).hom a) ⊗ₜ (F.map g).hom ((F.map f).hom b)
+      · change (C.component (f ≫ g)).hom a ⊗ₜ (F.map (f ≫ g)).hom b
+          = (F.map g).hom ((C.component f).hom a) ⊗ₜ (F.map g).hom ((F.map f).hom b)
+            + (C.component g).hom ((F.map f).hom a) ⊗ₜ (F.map g).hom ((F.map f).hom b)
         rw [h_map, h_cocycle]
         exact add_tmul _ _ _
 
 /-- The objectwise splitting of the contraction extension. -/
-private def contractionSection (c : HodgeTatePair) :
-    contractionCocycle.extension.X₃.obj c ⟶ contractionCocycle.extension.X₂.obj c :=
+private def contractionSection (c : HodgeTatePair)
+    : contractionCocycle.extension.X₃.obj c ⟶ contractionCocycle.extension.X₂.obj c :=
   ofHom (.inr _ (formCoeff c))
 
 /-- The cocycle measures the failure of the objectwise splitting to be natural. -/
@@ -668,7 +721,6 @@ lemma HodgeTatePair.contractionPow_cup {a : ℕ} {M L : AbFunctor HodgeTatePair}
       rw [show a + 1 + h = a + (h + 1) by omega]
       rw [← hz, comp_assoc (x := x.toTotalH) contractionCocycle.cohomClass (contractionPow h)]
 
-
 /-- Product formula: let `N`, `N'` be functors from `k`-algebras to abelian groups, `x` a Hodge
 class of degree `a` on `N` (with flat values) and `y` one of degree `b` on `N'`. Their product
 `x ∧ y = cup exteriorAlg.mulPairing x y e`, through the wedge product, is a Hodge class of degree
@@ -712,9 +764,11 @@ open CategoryTheory Function TrivSqZeroExt Pi thickeningOver EtaleChart HodgeTat
 
 variable {p : ℕ} {k : Type} [Field k] [EmbeddedInQpBar p k]
 
-/-- For a functor `N` from `k`-algebras to abelian groups: pull-back along `B_{S,M} → T`, from the
+/--
+For a functor `N` from `k`-algebras to abelian groups: pull-back along `B_{S,M} → T`, from the
 cohomology of `S ↦ N(T)` on `p`-adic tests `S` to that of `(S, M) ↦ N(B_{S,M})` on pairs `(S, M)`,
-both with coefficients `T = S[1/p]`, is bijective in every degree. -/
+both with coefficients `T = S[1/p]`, is bijective in every degree.
+-/
 def PairRestrictBijective (N : CommAlg k ⥤ AddCommGrpCat) : Prop :=
   (Comparison.restrict HodgeTatePair.toTest genericCoeff).IsBijective (N := genericOver ⋙ N)
     (Functor.whiskerRight toGeneric N)

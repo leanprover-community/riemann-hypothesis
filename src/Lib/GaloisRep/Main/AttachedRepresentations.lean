@@ -67,54 +67,70 @@ Known; see `Lib.GaloisRep.Main.OddRank` for sources.
 
 namespace New.GaloisRep
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E n : Type} [Field E] [NumberField E] [Algebra E Ω]
-  [Fintype n] [DecidableEq n]
+variable
+  {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+  {E n : Type} [Field E] [NumberField E] [Algebra E Ω] [Fintype n] [DecidableEq n]
 
-/-- The representation `ρ` of `H`, read in the Galois group through a map `j`, is attached to the
+/--
+The representation `ρ` of `H`, read in the Galois group through a map `j`, is attached to the
 system `P` of complex polynomials indexed by the finite places of `E`: `ρ` is continuous with
 non-degenerate trace form, `j` is open, and for every `η > 0` the coefficients of
 `det (X - ρ x) - ιℓ (P w)` have norm at most `η` for most Frobenius data `(w, A, s)` and all `x`
-with `j x = s`. When `j` is omitted, `H` is the Galois group itself and `j` is the identity. -/
-structure Attached (P : FinPlace E → Polynomial ℂ) {H : Type} [Group H] [TopologicalSpace H]
-    (ρ : H →* GL n (PadicAlgCl ℓ)) (j : H → Gal(Ω/E) := by exact id) : Prop where
+with `j x = s`. When `j` is omitted, `H` is the Galois group itself and `j` is the identity.
+-/
+structure Attached
+    (P : FinPlace E → Polynomial ℂ)
+    {H : Type} [Group H] [TopologicalSpace H]
+    (ρ : H →* GL n (PadicAlgCl ℓ))
+    (j : H → Gal(Ω/E) := by exact id)
+    : Prop where
   /-- The representation is continuous. -/
   continuous : Continuous ρ
   /-- The trace form of the representation is non-degenerate. -/
   isTraceNondeg : IsTraceNondeg ρ
   /-- The map to the Galois group is open. -/
   isOpenMap : IsOpenMap j
-  /-- Let `η > 0`. For most Frobenius data, with place `w` and Frobenius element `s`, and all `x`
-  with `j x = s`, all coefficients of `det (X - ρ x) - ιℓ (P w)` have norm at most `η`. -/
-  eventually_norm_coeff_le ⦃η : ℝ⦄ (hη : 0 < η) :
-    ∀ᶠ y : FrobeniusDatum E in mostFrobenii E, ∀ x : H, j x = y.frob →
-      ∀ i : ℕ, ‖((ρ x).val.charpoly - (P y.place).map ιℓ.toRingHom).coeff i‖ ≤ η
+  /--
+  Let `η > 0`. For most Frobenius data, with place `w` and Frobenius element `s`, and all `x`
+  with `j x = s`, all coefficients of `det (X - ρ x) - ιℓ (P w)` have norm at most `η`.
+  -/
+  eventually_norm_coeff_le ⦃η : ℝ⦄ (hη : 0 < η)
+    : ∀ᶠ y : FrobeniusDatum E in mostFrobenii E, ∀ x : H, j x = y.frob →
+        ∀ i : ℕ, ‖((ρ x).val.charpoly - (P y.place).map ιℓ.toRingHom).coeff i‖ ≤ η
 
 variable {E : Type} [Field E] [CMType E] [Algebra E Ω] in
-/-- The local conditions on the Galois representation `r` at a place `A` of `Ω` over `w`, for a
+/--
+The local conditions on the Galois representation `r` at a place `A` of `Ω` over `w`, for a
 function `f` of weight `κ` on the unitary group, with values in the space `WeylIndex n κ.1 → ℂ` of
 the weight-`κ` representation, and the rank `N`: `r` is unramified or crystalline at `A`; it has the
 Hodge–Tate jumps of `κ` in rank `N`; and if `w` is split and `f` has Hecke polynomial `Q` at `w`,
 then `ιℓ Q` kills the action through `r` of every geometric Frobenius element `s` at `A`
-(`PolyKillsAt`). -/
-def IsCompatibleAt {κ : Weight E} (f : Gf E n → WeylIndex n κ.1 → ℂ) (N : ℕ)
-    (w : FinPlace E) (r : GalRep ℓ E n) (A : ValuationSubring Ω) : Prop :=
-  IsGoodAt r A ∧ HasJumpsAt r A (jumps κ N) ∧
-  ∀ (hw : star w ≠ w) (Q : Polynomial ℂ), HasHeckePolyAt f w hw Q →
-    ∀ s : Gal(Ω/E), IsFrob A w.q s⁻¹ → PolyKillsAt r A s (Q.map ιℓ.toRingHom)
+(`PolyKillsAt`).
+-/
+def IsCompatibleAt
+    {κ : Weight E} (f : Gf E n → WeylIndex n κ.1 → ℂ)
+    (N : ℕ) (w : FinPlace E) (r : GalRep ℓ E n) (A : ValuationSubring Ω)
+    : Prop :=
+  IsGoodAt r A ∧ HasJumpsAt r A (jumps κ N)
+    ∧ ∀ (hw : star w ≠ w) (Q : Polynomial ℂ),
+      HasHeckePolyAt f w hw Q
+        → ∀ s : Gal(Ω/E), IsFrob A w.q s⁻¹ → PolyKillsAt r A s (Q.map ιℓ.toRingHom)
 
 variable (E n : Type) [Field E] [CMType E] [Algebra E Ω] [Fintype n] [DecidableEq n] in
-/-- Every eigenform `f` of any weight `κ` on the standard definite unitary group
+/--
+Every eigenform `f` of any weight `κ` on the standard definite unitary group
 (`f ∈ (stdSpace E n).forms κ`: the right stabiliser of `f` is open, and `f (γ g)` is the weight-`κ`
 action of a global `γ` on `f g`), with system of Hecke polynomials `P`, has an attached Galois
 representation; and if `f` is spherical at `w`, every representation attached to `P` satisfies the
-local conditions `IsCompatibleAt` in rank `N` at every place of `Ω` over `w`. -/
+local conditions `IsCompatibleAt` in rank `N` at every place of `Ω` over `w`.
+-/
 def SphericalCompat (N : ℕ) (w : FinPlace E) : Prop :=
   ∀ ⦃P : FinPlace E → Polynomial ℂ⦄ ⦃κ : Weight E⦄ ⦃f : Gf E n → WeylIndex n κ.1 → ℂ⦄,
-    f ∈ (stdSpace E n).forms κ → IsEigenform f P →
-      (∃ r : GalRep ℓ E n, Attached P r) ∧
-      ∀ ⦃r : GalRep ℓ E n⦄, Attached P r →
-        f ∈ sphericalAt (rightRegular ℂ (Gf E n) (WeylIndex n κ.1 → ℂ)) w →
-        ∀ A : ValuationSubring Ω, IsPlaceOver A w → IsCompatibleAt f N w r A
+    f ∈ (stdSpace E n).forms κ → IsEigenform f P
+      → (∃ r : GalRep ℓ E n, Attached P r)
+        ∧ ∀ ⦃r : GalRep ℓ E n⦄,
+          Attached P r → f ∈ sphericalAt (rightRegular ℂ (Gf E n) (WeylIndex n κ.1 → ℂ)) w
+            → ∀ A : ValuationSubring Ω, IsPlaceOver A w → IsCompatibleAt f N w r A
 
 section
 variable {E : Type} [Field E] [CMType E] [Algebra E Ω]
@@ -200,9 +216,11 @@ end New.GaloisRep
 namespace New
 
 open Matrix Polynomial Filter Topology Metric IsUltrametricDist Units
-variable {ℓ : ℕ} [ThePrime ℓ] {E n H : Type} [Field E] [EmbeddedNumberField E] [Fintype n]
-  [DecidableEq n] [Group H] [TopologicalSpace H] {P : FinPlace E → ℂ[X]} {j : H → Gal(Ω/E)}
-  {ρ : H →* GL n (PadicAlgCl ℓ)}
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E n H : Type}
+  [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n] [Group H] [TopologicalSpace H]
+  {P : FinPlace E → ℂ[X]} {j : H → Gal(Ω/E)} {ρ : H →* GL n (PadicAlgCl ℓ)}
 
 /-- For polynomials `D`, `R` over the algebraic closure of `ℚ_ℓ` with `R` monic, if all coefficients
 of `D * R` have absolute value at most `η`, then so do all coefficients of `D`. -/
@@ -351,27 +369,38 @@ lemma New.HasHeckePolyAt.rightRegular_ofSplitPlace_scalar {M : Type} {f : Gf E (
     _ = -(heckePoly w.q (card (Fin 1)) t).coeff 0 • f := by simp [ht, coeff_heckePoly]
 
 open scoped Classical in
-/-- The algebraic Hecke character `θ` (character `θ.val.1` of the finite ideles, infinity type
+/--
+The algebraic Hecke character `θ` (character `θ.val.1` of the finite ideles, infinity type
 `θ.val.2`) matches a function `f` on `U(1)` whose weight is the power `κ` of the determinant: its
 infinity type is `± κ`, and at a split place `w` its value at `locIdele w x`, the idele with
 component `x` at `w` and `1` elsewhere, is the scalar by which `x` acts on `f`, when there is
-one. -/
-structure New.IsRankOneCharacter (κ : InfinitePlace E → ℤ)
-    (f : Gf E (Fin 1) → WeylIndex (Fin 1) (0 : InfinitePlace E → ℕ → ℕ) → ℂ)
-    (θ : AlgHeckeChar E) : Prop where
-  /-- The exponent at `σ` is `± κ v` for the place `v` of `σ`, with `+` when `σ` is the embedding
-  `Φ v` of the CM type. -/
+one.
+-/
+structure New.IsRankOneCharacter
+    (κ : InfinitePlace E → ℤ)
+    (f : Gf E (Fin 1) → WeylIndex (Fin 1) (0 : InfinitePlace E → ℕ → ℕ) → ℂ) (θ : AlgHeckeChar E)
+    : Prop where
+  /--
+  The exponent at `σ` is `± κ v` for the place `v` of `σ`, with `+` when `σ` is the embedding
+  `Φ v` of the CM type.
+  -/
   type_eq (σ : E →+* ℂ) : θ.val.2.toAdd σ = (if σ = Φ (.mk σ) then 1 else -1) * κ (.mk σ)
-  /-- If right translation by `x`, embedded at the split place `w`, multiplies `f` by `c`, then
-  `θ_w(x) = c`. -/
-  apply_locIdele {w : FinPlace E} (hw : w.IsSplit) (x : (LocField w)ˣ) {c : ℂ}
-    (hc : (fun g : Gf E (Fin 1) ↦ f (g * ofSplitPlace hw (.scalar (Fin 1) x))) = c • f) :
-    θ.val.1 (locIdele w x) = c
-  /-- If `f` has the Hecke polynomial `Q` at the split place `w`, then `θ_w(x) = -Q(0)` for every
-  uniformiser `x`. -/
-  apply_uniformizer {w : FinPlace E} (hw : w.IsSplit) (x : (LocField w)ˣ)
-    (hx : Valued.v x.val = WithZero.exp (-1)) {Q : Polynomial ℂ} (hQ : HasHeckePolyAt f w hw Q) :
-    θ.val.1 (locIdele w x) = -Q.coeff 0
+  /--
+  If right translation by `x`, embedded at the split place `w`, multiplies `f` by `c`, then
+  `θ_w(x) = c`.
+  -/
+  apply_locIdele
+    {w : FinPlace E} (hw : w.IsSplit) (x : (LocField w)ˣ)
+    {c : ℂ} (hc : (fun g : Gf E (Fin 1) ↦ f (g * ofSplitPlace hw (.scalar (Fin 1) x))) = c • f)
+    : θ.val.1 (locIdele w x) = c
+  /--
+  If `f` has the Hecke polynomial `Q` at the split place `w`, then `θ_w(x) = -Q(0)` for every
+  uniformiser `x`.
+  -/
+  apply_uniformizer
+    {w : FinPlace E} (hw : w.IsSplit) (x : (LocField w)ˣ) (hx : Valued.v x.val = WithZero.exp (-1))
+    {Q : Polynomial ℂ} (hQ : HasHeckePolyAt f w hw Q)
+    : θ.val.1 (locIdele w x) = - Q.coeff 0
 
 /-- Let `r` be attached to the Hecke polynomials `P` of an eigenform `f` on `U(1)` whose weight is
 the power `κ` of the determinant (`Attached`: their characteristic polynomials approximate `ιℓ P`

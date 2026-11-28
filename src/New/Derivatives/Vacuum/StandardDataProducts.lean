@@ -66,8 +66,10 @@ namespace New
 section Frames
 variable {E I n : Type} [DecidableEq n] [Field E] [CMType E]
 
-/-- The vectors `w i / ν`, placed in each copy of `E` in `Eⁿ`: the vector of index `(i, c)` has
-`w i / ν` in the coordinate `c` and `0` elsewhere. -/
+/--
+The vectors `w i / ν`, placed in each copy of `E` in `Eⁿ`: the vector of index `(i, c)` has
+`w i / ν` in the coordinate `c` and `0` elsewhere.
+-/
 noncomputable def resolutionVectors (w : I → E) (ν : ℕ) (j : I × n) : n → E :=
   Pi.single j.2 (w j.1 / ν)
 
@@ -247,7 +249,8 @@ lemma mul_neg_sum_mul_conj_mem_cmCurve_lattice {P : Parameters} {s : ℕ} {δ : 
   simpa only [h_eq] using neg_mem (nsmul_mem ht l)
 
 section VacuumExpansion
-variable {P : Parameters} {s : ℕ} {n : Type} {p : ℕ} [Fact p.Prime] [Fintype n] [DecidableEq n]
+variable
+  {P : Parameters} {s : ℕ} {n : Type} {p : ℕ} [Fact p.Prime] [Fintype n] [DecidableEq n]
   {ε : n → ℤˣ}
 
 /-- A vector of `𝒮 V` is evaluated as its theta function, here at `finVec (x i)`. If
@@ -280,15 +283,22 @@ lemma exists_finHeisenbergOp_rho_eq_smul (x y : n → 𝔸f (P.E s)) (F : 𝒮 V
     ← AddChar.map_add_eq_mul, Subring.smul_def]
 
 variable (V p) in
-/-- An expansion of the integral vacuum of a standard space `V` (of rank `n`, with signs `ε` at the
+/--
+An expansion of the integral vacuum of a standard space `V` (of rank `n`, with signs `ε` at the
 infinite places) along a tight frame in `E = P.E s`. The frame `w` has length `b²` with `b` prime
 to `p`. The integral vacuum is a combination, with `ιₚ`-integral coefficients `a j`, of the
 translates of a vector `F` of the Weil model `𝒮 V` by the points `y j`. The vector `F` lies in the
 finite part `V.finitePart`, spanned by the images of the vacuum under finite Heisenberg operators,
 and the theta functions of its rational translates are products of translates of `θ` along the
-frame. -/
-structure IsVacuumExpansion (b : ℕ) {I : Type} [Fintype I] (w : I → P.E s) (F : 𝒮 V)
-    {J : Type} [Fintype J] (y : J → n → 𝔸f (P.E s)) (a : J → embValRing) : Prop where
+frame.
+-/
+structure IsVacuumExpansion
+    (b : ℕ)
+    {I : Type} [Fintype I]
+    (w : I → P.E s) (F : 𝒮 V)
+    {J : Type} [Fintype J]
+    (y : J → n → 𝔸f (P.E s)) (a : J → embValRing)
+    : Prop where
   /-- The number `b` is prime to `p`. -/
   coprime : p.Coprime b
   /-- The vectors `w i`, each taken once, are a tight frame of length `b²`. -/
@@ -299,16 +309,18 @@ structure IsVacuumExpansion (b : ℕ) {I : Type} [Fintype I] (w : I → P.E s) (
   nsmul_mem_stdLattice (j : J) : b • y j ∈ stdLattice (P.E s) n
   /-- The integral vacuum is the sum of the translates of `F` by `y j` with coefficients `a j`. -/
   intVacuum_eq_sum : intVacuum V = ∑ j : J, a j • V.ϱ (finVec (y j)) F
-  /-- For rational `γ` and complex `c`, the Taylor series of the theta function of the translate of
+  /--
+  For rational `γ` and complex `c`, the Taylor series of the theta function of the translate of
   `F` by `γ`, taken at `c (areaScale / cmPeriod) z` with `areaScale = √(2π / √d)` and `cmPeriod`
   the period `Ω₀` of `K = ℚ(√-d)`, is a product of twisted translates of the function `θ` of the
   curve `ℂ / Ω₀ 𝓞_K` along the forms `c u† z`, over the vectors `u` of
-  `resolutionVectors w b`. -/
-  jetSeries_eq_prod (γ : n → P.E s) (c : ℂ) :
-    V.jetSeries (c * (P.areaScale / P.cmPeriod)) (V.ϱ (finVec (finiteImage γ)) F) =
-      ∏ i : I × n, (taylorAtZero (P.cmCurve.twistedTranslate 1
-        (-(P.cmPeriod / b * ∑ τ : InfinitePlace (P.E s), Φ τ (γ i.2) * conj (Φ τ (w i.1))))
-        P.cmCurve.θ)).subst (linearSeries (c • dagger (resolutionVectors w b i)))
+  `resolutionVectors w b`.
+  -/
+  jetSeries_eq_prod (γ : n → P.E s) (c : ℂ)
+    : V.jetSeries (c * (P.areaScale / P.cmPeriod)) (V.ϱ (finVec (finiteImage γ)) F)
+      = ∏ i : I × n, (taylorAtZero (P.cmCurve.twistedTranslate 1
+          (-(P.cmPeriod / b * ∑ τ : InfinitePlace (P.E s), Φ τ (γ i.2) * conj (Φ τ (w i.1))))
+          P.cmCurve.θ)).subst (linearSeries (c • dagger (resolutionVectors w b i)))
 
 open scoped Pointwise in
 /-- Let `V` be a standard space, `b` a number prime to `p`, and `F` a vector of its Weil model on
@@ -403,17 +415,23 @@ lemma exists_isVacuumExpansion {P : Parameters} {s : ℕ} {n : Type} (p : ℕ) [
   rw [h_form]
   simp [monomialSection, resolutionShift]
 
-variable {P : Parameters} {s : ℕ} {n : Type} {p : ℕ} [Fact p.Prime] [Fintype n] [DecidableEq n]
+variable
+  {P : Parameters} {s : ℕ} {n : Type} {p : ℕ} [Fact p.Prime] [Fintype n] [DecidableEq n]
   {ε : n → ℤˣ} {V : Space (E P s) n ε} [V.IsStd] [PadicPlace p]
 
 variable (V) in
-/-- Let `V` be a space of rank `n` over `E = P.E s` with signs `ε`, and `μ` a family of linear
+/--
+Let `V` be a space of rank `n` over `E = P.E s` with signs `ε`, and `μ` a family of linear
 forms. These are the vectors `g` of its Weil model `𝒮 V` such that the Taylor series of the theta
 function of `g` at `c z`, read in `ℂ_p`, is `Θ` times an integral series in the parameters of the
 curve `P.cmCurve`, which is `ℂ / cmPeriod 𝓞_K`, at the forms `μ` (an element of
-`multiSeriesRing μ`). -/
-def thetaMultiples {J : Type} [Fintype J] (μ : J → InfinitePlace (P.E s) × n → ℂ_[p]) (c : ℂ)
-    (Θ : MvPowerSeries (InfinitePlace (P.E s) × n) ℂ_[p]) : Submodule embValRing (𝒮 V) where
+`multiSeriesRing μ`).
+-/
+def thetaMultiples
+    {J : Type} [Fintype J]
+    (μ : J → InfinitePlace (P.E s) × n → ℂ_[p]) (c : ℂ)
+    (Θ : MvPowerSeries (InfinitePlace (P.E s) × n) ℂ_[p])
+    : Submodule embValRing (𝒮 V) where
   carrier := {g : 𝒮 V | ∃ H ∈ P.cmCurve.multiSeriesRing μ, (V.jetSeries c g).map ιₚ = Θ * H}
   zero_mem' := ⟨0, zero_mem (P.cmCurve.multiSeriesRing μ), by simp⟩
   add_mem' := by
@@ -423,8 +441,8 @@ def thetaMultiples {J : Type} [Fintype J] (μ : J → InfinitePlace (P.E s) × n
     rintro a g ⟨H, hH, hg⟩
     refine ⟨ιₚ a • H, P.cmCurve.smul_mem_multiSeriesRing a.property hH, ?_⟩
     rw [mul_smul_comm, ← hg]
-    change MvPowerSeries.map ιₚ (V.jetSeries c ((a : ℂ) • g)) =
-      ιₚ a • MvPowerSeries.map ιₚ (V.jetSeries c g)
+    change MvPowerSeries.map ιₚ (V.jetSeries c ((a : ℂ) • g))
+      = ιₚ a • MvPowerSeries.map ιₚ (V.jetSeries c g)
     simp [MvPowerSeries.smul_eq_C_mul]
 
 /-- For `k ≠ 0` the form `c̄ (w i / b)† z`, read in `ℂ_p`, is `k c̄` times the form

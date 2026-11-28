@@ -83,11 +83,16 @@ open CategoryTheory TensorProduct Function Ideal Period ConcreteCategory Perfect
 
 variable {p : ℕ} [ThePrime p] (c : PadicTest)
 
-/-- For ring maps y_i from an O_C-algebra B to a non-empty family of cells W_i, this is the p-adic
-test ∏ W_i with structure map O_C → B → ∏ W_i, together with the point (y_i) : B → ∏ W_i. -/
-def cellPoint (B : CommAlg OC) {I : Type} [n : Nonempty I] {W : I → Type} [∀ i, CommRing (W i)]
-    [∀ i, IsCell p (W i)] (y : ∀ i : I, B.carrier →+* W i) :
-    Sigma (PadicTest.algFunctor ⋙ reprBy B) where
+/--
+For ring maps y_i from an O_C-algebra B to a non-empty family of cells W_i, this is the p-adic
+test ∏ W_i with structure map O_C → B → ∏ W_i, together with the point (y_i) : B → ∏ W_i.
+-/
+def cellPoint
+    (B : CommAlg OC)
+    {I : Type} [n : Nonempty I]
+    {W : I → Type} [∀ i, CommRing (W i)] [∀ i, IsCell p (W i)]
+    (y : ∀ i : I, B.carrier →+* W i)
+    : Sigma (PadicTest.algFunctor ⋙ reprBy B) where
   fst := { Index := I, Cell := W, structureMap := (RingHom.pi y).comp (algebraMap OC B) }
   snd := ⟨ofHom { toRingHom := RingHom.pi y, commutes' := fun _ ↦ rfl }⟩
 
@@ -105,18 +110,20 @@ instance : IsAbsIntegrallyClosed c.ProdRing := c.isTest.toIsAbsIntegrallyClosed
 lemma isLeftRegular_p : IsLeftRegular (p : c.ProdRing) :=
   Pi.isLeftRegular_iff.2 fun i ↦ by simp [isRegular_iff_ne_zero, IsCell.p_ne_zero]
 
-/-- For a p-adic test with cells W_i, the ring isomorphism from the tilt of ∏ W_i to the product
-of the tilts W_i^♭ induced by the projections. -/
-def tiltPiEquiv :
-    Perfection (((i : c.Index) → c.Cell i) ⧸ span {(p : (i : c.Index) → c.Cell i)}) p ≃+*
-      ((a : c.Index) → Perfection (c.Cell a ⧸ span {(p : c.Cell a)}) p) :=
+/--
+For a p-adic test with cells W_i, the ring isomorphism from the tilt of ∏ W_i to the product
+of the tilts W_i^♭ induced by the projections.
+-/
+def tiltPiEquiv
+    : Perfection (((i : c.Index) → c.Cell i) ⧸ span {(p : (i : c.Index) → c.Cell i)}) p
+      ≃+* ((a : c.Index) → Perfection (c.Cell a ⧸ span {(p : c.Cell a)}) p) :=
   RingEquiv.ofBijective (RingHom.pi fun i ↦ tiltMap (p := p) (Pi.evalRingHom c.Cell i)) <|
     -- The tilt of a complete ring is the set of its sequences of compatible `p`-th roots
     -- (`quotientMulEquiv`), and such a sequence in a product is a family of such sequences.
     ((quotientMulEquiv ..).bijective_comp _).1 <|
       let split : Perfection (∀ i : c.Index, c.Cell i) p ≃ ∀ i : c.Index, Perfection (c.Cell i) p :=
         ((Equiv.piComm fun _ ↦ c.Cell).subtypeEquiv
-            (by simp [funext_iff, forall_comm (α := ℕ)])).trans Equiv.subtypePiEquivPi
+          (by simp [funext_iff, forall_comm (α := ℕ)])).trans Equiv.subtypePiEquivPi
       (split.trans (Equiv.piCongrRight fun _ ↦ (quotientMulEquiv ..).toEquiv)).bijective
 
 /-- Divisibility in the tilt of a test can be checked after untilting. -/
@@ -196,16 +203,20 @@ lemma exists_isQuotientByElem (e : c.ProdRing) (he : IsIdempotentElem e) (he_ne 
     ⟨_, f.liftOfSurjective_comp hf_surj g (hf_ker.trans ((span_singleton_le_iff_mem _).mpr hg))⟩
   exact ⟨g₀, h_fac, fun g' hg' ↦ (AlgHom.cancel_right hf_surj).mp (hg'.trans h_fac.symm)⟩
 
-/-- The natural isomorphism O_C ⊗_{A_inf} W(S^♭) ≅ S of O_C-algebras on p-adic tests S, induced
-by Fontaine's map θ. -/
+/--
+The natural isomorphism O_C ⊗_{A_inf} W(S^♭) ≅ S of O_C-algebras on p-adic tests S, induced
+by Fontaine's map θ.
+-/
 def thetaIso : tilt ⋙ wittFunctor ⋙ algBaseChange OC ≅ algFunctor :=
   isoOfAppBijective
-    ((baseChangeTranspose (tilt ⋙ wittFunctor) algFunctor).invFun
-      { app c :=
-          ofHom
-            { toRingHom := fontaineTheta c.ProdRing p,
-              commutes' := fontaineTheta_map_tiltMap c.structureMap }
-        naturality _ _ f := ext_apply (fontaineTheta_map_tiltMap f.toRingHom) })
+    ((baseChangeTranspose (tilt ⋙ wittFunctor) algFunctor).invFun {
+      app c :=
+        ofHom {
+          toRingHom := fontaineTheta c.ProdRing p
+          commutes' := fontaineTheta_map_tiltMap c.structureMap
+        }
+      naturality _ _ f := ext_apply (fontaineTheta_map_tiltMap f.toRingHom)
+    })
     fun c ↦ by
       constructor
       · -- As `theta` is onto, every element is some `1 ⊗ x`. If `θ x = 0` then `x = ξ • y`
@@ -277,16 +288,18 @@ lemma theta_comp_bijective {R : Type*} {c : PadicTest} [CommRing R] [CharP R p] 
     rw [fontaineTheta_teichmuller]
     exact teichmuller_spec fun n ↦ ⟨_, rfl, by simp [← map_pow]⟩
 
-/-- For a perfect algebra `b` over the tilt `OFlat` of `OC`: algebra maps `b → c.TiltRing` over
+/--
+For a perfect algebra `b` over the tilt `OFlat` of `OC`: algebra maps `b → c.TiltRing` over
 `OFlat` correspond to algebra maps `OC ⊗ W(b) → c.ProdRing` over `OC` (tensor product over
 `W(OFlat)`), naturally in the `p`-adic test `c`. The map `f` goes to the map induced by
-`θ ∘ W(f)`. -/
-noncomputable def homTiltIso {b : CommAlg OFlat} [PerfectRing b p] :
-    tilt ⋙ reprBy b ≅ algFunctor ⋙ reprBy ((wittFunctor ⋙ algBaseChange OC) b) :=
+`θ ∘ W(f)`.
+-/
+noncomputable def homTiltIso {b : CommAlg OFlat} [PerfectRing b p]
+    : tilt ⋙ reprBy b ≅ algFunctor ⋙ reprBy ((wittFunctor ⋙ algBaseChange OC) b) :=
   isoOfAppBijective
     (whiskerLeft tilt
-        (pointMap (Y := wittFunctor (WittVector p OFlat) ⋙ algBaseChange OC ⋙ reprBy _) ⟨𝟙 _⟩) ≫
-      whiskerRight thetaIso.hom (reprBy _))
+        (pointMap (Y := wittFunctor (WittVector p OFlat) ⋙ algBaseChange OC ⋙ reprBy _) ⟨𝟙 _⟩)
+      ≫ whiskerRight thetaIso.hom (reprBy _))
     fun c ↦ by
       -- By the adjunction `algBaseChangeAdj` a map from `OC ⊗ W(b)` is an algebra map
       -- `g : W(b) → c.ProdRing`; in these terms the transformation sends `f` to `θ ∘ W(f)`.
@@ -300,13 +313,14 @@ noncomputable def homTiltIso {b : CommAlg OFlat} [PerfectRing b p] :
       obtain ⟨f, rfl, h_unique⟩ := theta_comp_bijective.existsUnique g
       -- `f` is a map of algebras, since that may be tested after applying `θ ∘ W(–)`.
       have h_alg : f.comp (algebraMap OFlat b) = tiltMap c.structureMap :=
-        theta_comp_bijective.injective
-          (RingHom.ext fun x ↦ (hg x).trans (fontaineTheta_map_tiltMap c.structureMap x).symm)
+        theta_comp_bijective.injective (RingHom.ext fun x ↦
+          (hg x).trans (fontaineTheta_map_tiltMap c.structureMap x).symm)
       refine ⟨⟨ofHom ⟨f, (f.comp _).congr_fun h_alg⟩⟩, ?_, fun ⟨f'⟩ hf' ↦ ?_⟩
       · exact ext_apply fun _ ↦ c.thetaIso_hom_one_tmul _
       · -- `f'` and `f` have the same image under `θ ∘ W(–)`, read off from `hf'` at `1 ⊗ x`.
-        have h_eq : f'.hom.toRingHom = f := h_unique _ <| RingHom.ext fun x ↦
-          (c.thetaIso_hom_one_tmul _).symm.trans (congrArg (fun φ ↦ φ.hom x) hf')
+        have h_eq : f'.hom.toRingHom = f :=
+          h_unique _ <| RingHom.ext fun x ↦
+            (c.thetaIso_hom_one_tmul _).symm.trans (congrArg (fun φ ↦ φ.hom x) hf')
         exact congrArg _ (ext_apply (RingHom.congr_fun h_eq))
 
 /-- Tilting is full: every map between the tilts of two tests is the tilt of a map of tests. -/
@@ -316,12 +330,15 @@ instance : tilt.Full where
     -- and `f` have the same image under the bijection `homTiltIso`.
     let g : X ⟶ Y :=
       (thetaIso.inv.app X ≫ (wittFunctor ⋙ algBaseChange _).map f ≫ thetaIso.hom.app Y).hom
-    have h_same_image :
-        (wittFunctor ⋙ algBaseChange OC).map (tilt.map g) ≫ thetaIso.hom.app Y =
-          (wittFunctor ⋙ algBaseChange OC).map f ≫ thetaIso.hom.app Y :=
+    have h_same_image
+        : (wittFunctor ⋙ algBaseChange OC).map (tilt.map g) ≫ thetaIso.hom.app Y
+          = (wittFunctor ⋙ algBaseChange OC).map f ≫ thetaIso.hom.app Y :=
       (thetaIso.hom.naturality g).trans (thetaIso.hom_inv_id_app_assoc ..)
-    exact ⟨g, congrArg ULift.down <| (homTiltIso (b := .of OFlat (PreTilt X.ProdRing p))).app Y
-      |>.toEquiv.injective (congrArg ULift.up h_same_image)⟩
+    exact ⟨
+      g,
+      congrArg ULift.down <| (homTiltIso (b := .of OFlat (PreTilt X.ProdRing p))).app Y
+        |>.toEquiv.injective (congrArg ULift.up h_same_image)
+    ⟩
 
 instance : algFunctor.Faithful := ⟨congrArg hom⟩
 
@@ -471,18 +488,20 @@ lemma isCell_of_isSolutionClosed {W V : Type} [CommRing W] [CommRing V] {g : W �
 
 variable [ThePrime p]
 
-/-- Universal cover by a test: `New.Variety.PadicTest.algFunctor` has covering points
+/--
+Universal cover by a test: `New.Variety.PadicTest.algFunctor` has covering points
 (`New.Variety.HasCoveringPoints`). If the O_C-algebra B has a point (an O_C-algebra map to the ring
 of the test) in some p-adic test, then there are a test c and a point y of B in c through which
-every point of B in any test d factors by a map of tests c → d. -/
+every point of B in any test d factors by a map of tests c → d.
+-/
 instance hasCoveringPoints_padic : HasCoveringPoints algFunctor :=
   .mk fun B c z₀ ↦ by
     -- Every map from `B` to a cell factors through a cell that is a quotient of one fixed
     -- polynomial ring over `B`. The product of all such quotients is the covering test. `φ d z j`
     -- extends the `j`-th component of the point `z` to the polynomial ring (`hφ`), and its image
     -- holds solutions of all equations solvable in the cell (`hφ_clo`)
-    have h_ext (d : PadicTest) (z : B →+* PadicTest.ProdRing d) (j : d.Index) :
-        ∃ g : MvPolynomial (SolutionName B) B →+* d.Cell j,
+    have h_ext (d : PadicTest) (z : B →+* PadicTest.ProdRing d) (j : d.Index)
+        : ∃ g : MvPolynomial (SolutionName B) B →+* d.Cell j,
           g.comp MvPolynomial.C = (evalRingHom d.Cell j).comp z ∧ IsSolutionClosed g.kerLift :=
       exists_isSolutionClosed ((evalRingHom d.Cell j).comp z)
     choose φ hφ hφ_clo using h_ext
@@ -490,20 +509,26 @@ instance hasCoveringPoints_padic : HasCoveringPoints algFunctor :=
     let idx (d : PadicTest) (z : B →+* d.ProdRing) (j : d.Index) : Idx :=
       ⟨RingHom.ker (φ d z j), isCell_of_isSolutionClosed (hφ_clo d z j) (hV := d.isCell j)⟩
     have h_cell (q : Idx) : IsCell p (MvPolynomial (SolutionName B) B ⧸ q.val) := q.property
-    let y := cellPoint B (n := ⟨idx c z₀.down.hom.toRingHom c.nonempty.some⟩)
-      fun q : Idx ↦ algebraMap B (_ ⧸ q.val)
+    let y :=
+      cellPoint B (n := ⟨idx c z₀.down.hom.toRingHom c.nonempty.some⟩) fun q : Idx ↦
+        algebraMap B (_ ⧸ q.val)
     refine ⟨y.fst, y.snd, fun d z ↦ ?_⟩
     -- the map to the `j`-th cell of `d`: project to the quotient by `ker (φ d z j)`, then embed
     let ψ : y.fst.ProdRing →+* d.ProdRing :=
-      .pi fun j ↦ (φ d z.down.hom.toRingHom j).kerLift.comp
-        (evalRingHom (fun q : Idx ↦ _ ⧸ q.val) (idx d z.down.hom.toRingHom j))
+      .pi fun j ↦
+        (φ d z.down.hom.toRingHom j).kerLift.comp
+          (evalRingHom (fun q : Idx ↦ _ ⧸ q.val) (idx d z.down.hom.toRingHom j))
     have hψ (x : B) : ψ (y.snd.down.hom x) = z.down.hom x :=
       funext fun j ↦ RingHom.congr_fun (hφ d z.down.hom.toRingHom j) x
-    exact ⟨⟨⟨ψ, fun a ↦ (hψ _).trans (z.down.hom.commutes a)⟩⟩,
-      congrArg ULift.up (ConcreteCategory.ext_apply hψ)⟩
+    exact ⟨
+      ⟨⟨ψ, fun a ↦ (hψ _).trans (z.down.hom.commutes a)⟩⟩,
+      congrArg ULift.up (ConcreteCategory.ext_apply hψ)
+    ⟩
 
-/-- The functor `New.Variety.PadicTest.algFunctor` is full: maps of tests are by definition the
-`O_C`-algebra maps between their product rings. -/
+/--
+The functor `New.Variety.PadicTest.algFunctor` is full: maps of tests are by definition the
+`O_C`-algebra maps between their product rings.
+-/
 instance : algFunctor.Full := ⟨by tauto⟩
 
 variable {C : Type _} [Category C] {A : Type} [CommRing A] {ι : C ⥤ CommAlg A}

@@ -71,7 +71,8 @@ namespace New.Grading
 
 open Space Matrix MeasureTheory Measure Subgroup Fintype
 
-variable {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
+variable
+  {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
   {s : ℕ} {ε : ι → ℤˣ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
 
 /-- A matrix over `E` can be defined by downward recursion on a level `w : ι → ℤ`. Let `n - 1`
@@ -268,26 +269,35 @@ lemma exists_ratCoordMatrix_eq_eichlerMap (x y : ι → 𝔸 E) (k : ℤ)
         zero_mul]
   rw [Matrix.sub_apply, vecMulVec_apply, vecMulVec_apply, first_term, second_term, sub_zero]
 
-/-- The measure on the Bessel (Fourier–Jacobi) subgroup B of Y that computes integrals over the
-quotient of B by its rational points: Haar measure times a chosen cutoff. -/
+/--
+The measure on the Bessel (Fourier–Jacobi) subgroup B of Y that computes integrals over the
+quotient of B by its rational points: Haar measure times a chosen cutoff.
+-/
 noncomputable abbrev besselMeasure : Measure Y.besselGroup :=
   (Y.ratBessel.subgroupOf Y.besselGroup).quotMeasure haar
 
-/-- The measure `New.Grading.besselMeasure` is finite, since the rational points are cocompact in
-`B`. -/
+/--
+The measure `New.Grading.besselMeasure` is finite, since the rational points are cocompact in
+`B`.
+-/
 instance isFiniteMeasure_besselMeasure : IsFiniteMeasure Y.besselMeasure :=
   isFiniteMeasure_quotMeasure_of_cocompact _ Y.isCocompact_ratBessel
 
-/-- The left Haar measure of the adelic Bessel group `B` is right invariant, that is, `B` is
-unimodular, since its rational points have finite covolume. -/
+/--
+The left Haar measure of the adelic Bessel group `B` is right invariant, that is, `B` is
+unimodular, since its rational points have finite covolume.
+-/
 instance isMulRightInvariant_haar_besselGroup : IsMulRightInvariant (G := Y.besselGroup) haar :=
   isMulRightInvariant_of_finite_covolume Y.isFiniteMeasure_besselMeasure
 
-/-- The row of `n` over which the integral over the Bessel group is averaged: at `(j, x)` it is
+/--
+The row of `n` over which the integral over the Bessel group is averaged: at `(j, x)` it is
 `Y.genericConst` times the entry of `n - 1`, in rational coordinates, in the row of the grade-1
-index `v j` and the column of the basis vector `x` of `X`. -/
-private noncomputable def besselRow {q : Type*} (v : q ↪ {l : ι // Y.gradeOf l = 1}) (n : G E ε)
-    (p : q × X) : 𝔸 E :=
+index `v j` and the column of the basis vector `x` of `X`.
+-/
+private noncomputable def besselRow
+    {q : Type*} (v : q ↪ {l : ι // Y.gradeOf l = 1}) (n : G E ε) (p : q × X)
+    : 𝔸 E :=
   ↑Y.genericConst * (V.ratCoordMatrix n - 1) (v p.fst) (Y.indexEquiv (.inl p.snd))
 
 omit [Fintype X] in
@@ -522,22 +532,26 @@ namespace New.Grading
 
 open Matrix WeilData Finset Space Finite
 
-variable {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
+variable
+  {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
   [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X']
   {s : ℕ} {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
-  (Y : Grading V N X s) (Y' : Grading V' N X' (s - 1)) [WeilData E]
+  (Y : Grading V N X s) (Y' : Grading V' N X' (s - 1))
+  [WeilData E]
 
-/-- The term at the rational map `w` survives the unipotent twists, for target weights `D`. Let `T`
+/--
+The term at the rational map `w` survives the unipotent twists, for target weights `D`. Let `T`
 be `Y.stringMap Y'`, and take any `u` in `Y.unipotent` such that `u - 1` has degree at least `2` and
 `w (u - 1)` has degree at least `1` (weights `D` on the target), with `u` written in rational
 coordinates. Then `New.Space.homBicharacter` takes the same value at `(T u, T)` and at
-`(w u, w)`. -/
+`(w u, w)`.
+-/
 abbrev Survives (D : ι' → ℤ) (w : Matrix ι' ι (𝔸 E)) : Prop :=
   ∀ u ∈ Y.unipotent,
-    HasDegreeGe Y.gradeOf Y.gradeOf 2 (V.ratCoordMatrix u - 1) ∧
-    HasDegreeGe D Y.gradeOf 1 (w * (V.ratCoordMatrix u - 1)) →
-    V.homBicharacter V' (Y.stringMap Y' * V.ratCoordMatrix u) (Y.stringMap Y') =
-      V.homBicharacter V' (w * V.ratCoordMatrix u) w
+    HasDegreeGe Y.gradeOf Y.gradeOf 2 (V.ratCoordMatrix u - 1)
+        ∧ HasDegreeGe D Y.gradeOf 1 (w * (V.ratCoordMatrix u - 1))
+      → V.homBicharacter V' (Y.stringMap Y' * V.ratCoordMatrix u) (Y.stringMap Y')
+        = V.homBicharacter V' (w * V.ratCoordMatrix u) w
 
 omit [Fintype X'] in
 /-- Let `T` be `Y.stringMap Y'`, the rational map V → V' that kills `X` and the last string vector

@@ -52,9 +52,9 @@ Kottwitz, Points on some Shimura varieties over finite fields, JAMS 5 (1992), §
 
 @[expose] public section
 
-open NumberField CategoryTheory AlgebraicGeometry IsLocalRing CommRingCat New.Variety Spec
-  ULift QuotientGroup Category Function ReducedClosure Finset IncidenceAlgebra Filter Algebra
-  RingHom Over Finsupp ModuliPoint UniversalFamily
+open NumberField CategoryTheory AlgebraicGeometry IsLocalRing CommRingCat New.Variety Spec ULift
+  QuotientGroup Category Function ReducedClosure Finset IncidenceAlgebra Filter Algebra RingHom Over
+  Finsupp ModuliPoint UniversalFamily
 
 /-- The Möbius coefficients `(-1) ^ r * q ^ (r.choose 2)`, with `r = Module.finrank (ResField w) A`
 the dimension of `A`, of the subspaces `A` of `k ^ n`, `k` the residue field of `w`, cancel along
@@ -185,7 +185,6 @@ lemma New.Variety.UniversalFamily.GraphClosure.congruenceRelation {E : Type} [Fi
   simp only [← Spec.map_comp_assoc, ← ofHom_comp, ← iterateFrobenius_comm] at hAB ⊢
   simp only [ofHom_comp, Spec.map_comp, assoc] at hAB ⊢
   exact congrArg (Spec.map (ofHom ρ) ≫ ·) ((cancel_epi (Spec.map (ofHom ρ'))).mp hAB)
-
 
 /-- The tangent map at a fixed point. Let `c` send the complex point of `a` in the closure `C` to
 that of `a` in the base (`U.datumPoint 1 a`), and let `v` send it to that of the translate
@@ -366,8 +365,9 @@ namespace New.Variety
 
 section TowerHelpers
 
-variable {E : Type} [Field E] [CMBase E] {R : Subalgebra (𝓞 E) E}
-  {D : PEL E} {U : UniversalFamily D R} {ν : ℕ}
+variable
+  {E : Type} [Field E] [CMBase E]
+  {R : Subalgebra (𝓞 E) E} {D : PEL E} {U : UniversalFamily D R} {ν : ℕ}
 
 private lemma ModuliPoint.act_eq_self {n : Type} [Fintype n] [DecidableEq n]
     (a : ModuliPoint E n ν) {g : GUPlus E n} (hg : g.val = 1) : a.act g = a := by
@@ -378,20 +378,24 @@ private lemma ModuliPoint.act_mul {n : Type} [Fintype n] [DecidableEq n]
     (a : ModuliPoint E n ν) (g h : GUPlus E n) : (a.act g).act h = a.act (g * h) := by
   simp only [act, Submonoid.coe_mul, mul_assoc, Pi.one_apply, map_one, one_smul]
 
-/-- The finite quotient of `levelGU D.Index D.level` by the normal core of its subgroup of level
-`M`: the deck group of a cover of the tower in `New.Variety.exists_model`. -/
+/--
+The finite quotient of `levelGU D.Index D.level` by the normal core of its subgroup of level
+`M`: the deck group of a cover of the tower in `New.Variety.exists_model`.
+-/
 private abbrev TowerQuot (D : PEL E) (M : nonZeroDivisors (𝓞 E)) : Type :=
   levelGU D.Index D.level ⧸ ((levelGU D.Index (M : 𝓞 E)).subgroupOf
     (levelGU D.Index D.level)).normalCore
 
 open scoped Classical in
-/-- The pairs `(𝔪, κ * g)` that define the cover of level `i` in `New.Variety.exists_model`: `κ`
+/--
+The pairs `(𝔪, κ * g)` that define the cover of level `i` in `New.Variety.exists_model`: `κ`
 runs over `New.Variety.TowerQuot D M` (through the chosen representative `out`) and `(𝔪, g)` over
-`i`, `(1, 1)` and `(M, 1)`. -/
-private noncomputable abbrev towerPairs (D : PEL E) (M : nonZeroDivisors (𝓞 E))
-    (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E D.Index))
-    (j : TowerQuot D M × ↥(insert (M, 1) (insert 1 i))) :
-    nonZeroDivisors (𝓞 E) × GUPlus E D.Index :=
+`i`, `(1, 1)` and `(M, 1)`.
+-/
+private noncomputable abbrev towerPairs
+    (D : PEL E) (M : nonZeroDivisors (𝓞 E)) (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E D.Index))
+    (j : TowerQuot D M × ↥(insert (M, 1) (insert 1 i)))
+    : nonZeroDivisors (𝓞 E) × GUPlus E D.Index :=
   (j.2.val.1, ⟨_, mem_GUPlus_of_mem_levelGU j.1.out.property⟩ * j.2.val.2)
 
 open scoped Classical in

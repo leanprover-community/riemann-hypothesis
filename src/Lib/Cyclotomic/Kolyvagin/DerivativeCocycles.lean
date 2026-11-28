@@ -60,13 +60,15 @@ open QZ Finset MulAut Function ZMod NeZero DiscreteUnits Cohomology Representati
 
 section
 
-variable {O : Type} [CommRing O] {B : ClosurePlace} {g : Gal(Ω/ℚ)} {u : DiscreteUnits Ω}
-  {m a M N l n e : ℕ} [NeZero m] [NeZero N] [Fact l.Prime] [Algebra ℤ_[l] O]
+variable
+  {O : Type} [CommRing O]
+  {B : ClosurePlace} {g : Gal(Ω/ℚ)} {u : DiscreteUnits Ω} {m a M N l n e : ℕ}
+  [NeZero m] [NeZero N] [Fact l.Prime] [Algebra ℤ_[l] O]
   {ψ : DirichletCharacter O N} [Algebra (ZMod (l ^ n)) (QuotSpan (l ^ n : O))]
-  {L : ∀ q : Nat.Primes, (ZMod q)ˣ →* Multiplicative (ZMod (l ^ n))}
-  {S : Finset Nat.Primes} {d f : Nat.Primes → ZMod (l ^ n)} {G G' : QZ → ZMod (l ^ n)}
-  {γ : Gal(Ω/ℚ)} {q : Nat.Primes} {τ φ : Gal(Ω/ℚ)} {Y : ZMod q → DiscreteUnits Ω}
-  {y : DiscreteUnits Ω} {v : (ZMod q)ˣ} {lg : (ZMod q)ˣ → ℤ}
+  {L : ∀ q : Nat.Primes, (ZMod q)ˣ →* Multiplicative (ZMod (l ^ n))} {S : Finset Nat.Primes}
+  {d f : Nat.Primes → ZMod (l ^ n)} {G G' : QZ → ZMod (l ^ n)} {γ : Gal(Ω/ℚ)} {q : Nat.Primes}
+  {τ φ : Gal(Ω/ℚ)}
+  {Y : ZMod q → DiscreteUnits Ω} {y : DiscreteUnits Ω} {v : (ZMod q)ˣ} {lg : (ZMod q)ˣ → ℤ}
 
 private lemma mem_principalUnits_iff {x : DiscreteUnits Ω} :
     x ∈ principalUnits B ↔ B.valuation ((x.toMul : Ω) - 1) < 1 :=
@@ -187,16 +189,18 @@ lemma galUnitsRep_conj_of_nsmul_eq_zero (γ g : Gal(Ω/ℚ)) {u : DiscreteUnits 
 section Derivative
 
 variable (ψ e L S d) in
-/-- Kolyvagin's derivative followed by the character sum, with values in `O/lⁿ`
+/--
+Kolyvagin's derivative followed by the character sum, with values in `O/lⁿ`
 (`QuotSpan (l ^ n : O)`). For each `q ∈ S`, a function on `ℚ/ℤ` is translated by `u/q` with weight
 `L q u - d q` and summed over the units `u` mod `q`; the values of the result at `a / N lⁿ` are
-then summed against `aᵉ ψ(a)` over the units `a` mod `N lⁿ`. -/
+then summed against `aᵉ ψ(a)` over the units `a` mod `N lⁿ`.
+-/
 noncomputable def derivativeSum : (QZ → ZMod (l ^ n)) →ₗ[ZMod (l ^ n)] QuotSpan (l ^ n : O) :=
   (∑ a : (ZMod (N * l ^ n))ˣ,
       LinearMap.smulRight
         ((a : ZMod (N * l ^ n)).val ^ e • LinearMap.proj (ofZMod (N * l ^ n) a))
-        (ψ (a : ZMod (N * l ^ n)).val : QuotSpan (l ^ n : O))) ∘ₗ
-    asAlgebraHom (ofDistribMulAction (ZMod (l ^ n)) (Multiplicative QZ)ᵈᵐᵃ (QZ → ZMod (l ^ n)))
+        (ψ (a : ZMod (N * l ^ n)).val : QuotSpan (l ^ n : O)))
+    ∘ₗ asAlgebraHom (ofDistribMulAction (ZMod (l ^ n)) (Multiplicative QZ)ᵈᵐᵃ (QZ → ZMod (l ^ n)))
       (∏ q ∈ S, ∑ u : (ZMod q)ˣ,
         MonoidAlgebra.single (DomMulAct.mk (ofAdd (ofZMod q u))) ((L q u).toAdd - d q))
 
@@ -329,11 +333,14 @@ end Derivative
 
 section CommutatorLog
 
-/-- The exponent `t` with `γ y / (g γ g⁻¹) y = ζᵗ`, for the fixed primitive `m`-th root of unity
+/--
+The exponent `t` with `γ y / (g γ g⁻¹) y = ζᵗ`, for the fixed primitive `m`-th root of unity
 `ζ` of `New.rootPowHom`, when this quotient is an `m`-th root of unity (otherwise some value that
-is of no use). -/
-noncomputable def commutatorLog (m : ℕ) [NeZero m] (γ : Gal(Ω/ℚ)) (y : DiscreteUnits Ω)
-    (g : Gal(Ω/ℚ)) : ZMod m :=
+is of no use).
+-/
+noncomputable def commutatorLog
+    (m : ℕ) [NeZero m] (γ : Gal(Ω/ℚ)) (y : DiscreteUnits Ω) (g : Gal(Ω/ℚ))
+    : ZMod m :=
   invFun (rootPowHom Ω m).val (galUnitsRep γ y - galUnitsRep (g * γ * g⁻¹) y)
 
 /-- `commutatorLog m γ y g` is locally constant in `g`, since the orbit map `g ↦ (g γ g⁻¹) y` is. -/
@@ -490,28 +497,42 @@ end
 
 section Cocycles
 
-variable {O : Type} [CommRing O] {B : ClosurePlace} {M N l n e : ℕ} [NeZero N] [Fact l.Prime]
-  [Algebra ℤ_[l] O] {ψ : DirichletCharacter O N} [Algebra (ZMod (l ^ n)) (QuotSpan (l ^ n : O))]
-  {L : ∀ q : Nat.Primes, (ZMod q)ˣ →* Multiplicative (ZMod (l ^ n))}
-  {p : Nat.Primes} {c : ℕ} {γ : Gal(Ω/ℚ)} {y : QZ → DiscreteUnits Ω} [NeZero M]
+variable
+  {O : Type} [CommRing O]
+  {B : ClosurePlace} {M N l n e : ℕ} [NeZero N] [Fact l.Prime] [Algebra ℤ_[l] O]
+  {ψ : DirichletCharacter O N} [Algebra (ZMod (l ^ n)) (QuotSpan (l ^ n : O))]
+  {L : ∀ q : Nat.Primes, (ZMod q)ˣ →* Multiplicative (ZMod (l ^ n))} {p : Nat.Primes} {c : ℕ}
+  {γ : Gal(Ω/ℚ)} {y : QZ → DiscreteUnits Ω} [NeZero M]
 
-/-- A Kolyvagin system for the character `χ`, the element `γ`, the prime `p` and the set of primes
+/--
+A Kolyvagin system for the character `χ`, the element `γ`, the prime `p` and the set of primes
 `P`: cocycles `κ S`, one for each `S ⊆ P`, that are unramified over `ℚ(ζ_N)` away from `l`, `p` and
 `S`, vanish at `γ`, and are linked by the relation between Frobenius and inertia at the primes of
-`P`. -/
-structure IsKolyvaginSystem {V : Type} [AddCommGroup V] [Module O V] (χ : Gal(Ω/ℚ) →* Oˣ)
-    (γ : Gal(Ω/ℚ)) (N l : ℕ) [NeZero N] (p : Nat.Primes) (P : Finset Nat.Primes)
-    (κ : Finset Nat.Primes → Gal(Ω/ℚ) → V) : Prop where
-  /-- `κ S` is a locally constant `χ`-cocycle that vanishes on inertia over `ℚ(ζ_N)` at the places
-  above neither `l`, `p` nor a prime of `S`. -/
+`P`.
+-/
+structure IsKolyvaginSystem
+    {V : Type} [AddCommGroup V] [Module O V]
+    (χ : Gal(Ω/ℚ) →* Oˣ) (γ : Gal(Ω/ℚ))
+    (N l : ℕ) [NeZero N]
+    (p : Nat.Primes) (P : Finset Nat.Primes) (κ : Finset Nat.Primes → Gal(Ω/ℚ) → V)
+    : Prop where
+  /--
+  `κ S` is a locally constant `χ`-cocycle that vanishes on inertia over `ℚ(ζ_N)` at the places
+  above neither `l`, `p` nor a prime of `S`.
+  -/
   mem_vanishingCocycles : ∀ S ⊆ P, κ S ∈ vanishingCocycles χ V (inertiaOff N l (insert p S))
   /-- `κ S` vanishes at `γ`. -/
   apply_eq_zero : ∀ S ⊆ P, κ S γ = 0
-  /-- For `q ∈ P ∖ S` and a Frobenius `φ` at a place `A` above `q`, `κ S φ` is a value of
-  `κ (S ∪ {q})` on inertia at `A`. -/
-  exists_mem_inertiaGroup_eq : ∀ S ⊆ P, ∀ q ∈ P, q ∉ S →
-    ∀ (A : ClosurePlace) (φ : Gal(Ω/ℚ)), IsFrob A q φ → A.valuation (q : Ω) < 1 →
-    ∃ τ ∈ inertiaGroup Gal(Ω/ℚ) A, κ (insert q S) τ = κ S φ
+  /--
+  For `q ∈ P ∖ S` and a Frobenius `φ` at a place `A` above `q`, `κ S φ` is a value of
+  `κ (S ∪ {q})` on inertia at `A`.
+  -/
+  exists_mem_inertiaGroup_eq
+    : ∀ S ⊆ P, ∀ q ∈ P,
+      q ∉ S
+        → ∀ (A : ClosurePlace) (φ : Gal(Ω/ℚ)),
+          IsFrob A q φ → A.valuation (q : Ω) < 1
+            → ∃ τ ∈ inertiaGroup Gal(Ω/ℚ) A, κ (insert q S) τ = κ S φ
 
 /-!
 ## The cocycles at one level

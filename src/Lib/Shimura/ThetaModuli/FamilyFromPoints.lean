@@ -58,14 +58,22 @@ section LinearSystemExtension
 
 open AlgebraicGeometry New PointFn LineBundle Finset CategoryTheory
 
-/-- The family `w` is a local combination of the family `m`: for every index `j` and every point
+/--
+The family `w` is a local combination of the family `m`: for every index `j` and every point
 `s` of `Z` there are an open `U` containing `s`, indices `e : Q → J` and a function `c` regular
 on `U` such that `w a j = c (ξ a) * ∑ q, m a (e q)` at every complex point `ξ a` that lands in `U`.
-Here `w a` and `m a` are vectors of complex coordinates attached to the point `ξ a`. -/
-def New.Variety.ThetaNull.IsLocalCombination {Z : Scheme} {J X : Type} (Q : Type*) [Fintype Q]
-    (ξ : X → (Spec (CommRingCat.of ℂ) ⟶ Z)) (w m : X → J → ℂ) : Prop :=
-  ∀ (j : J) (s : Z), ∃ U : Z.Opens, s ∈ U ∧ ∃ (e : Q → J) (c : PointFn Z), IsRegularOn c U ∧
-    ∀ a : X, LandsIn (ξ a) U → c (CommRingCat.of ℂ) (ξ a) * ∑ q : Q, m a (e q) = w a j
+Here `w a` and `m a` are vectors of complex coordinates attached to the point `ξ a`.
+-/
+def New.Variety.ThetaNull.IsLocalCombination
+    {Z : Scheme} {J X : Type}
+    (Q : Type*) [Fintype Q]
+    (ξ : X → (Spec (CommRingCat.of ℂ) ⟶ Z)) (w m : X → J → ℂ)
+    : Prop :=
+  ∀ (j : J) (s : Z), ∃ U : Z.Opens,
+    s ∈ U
+      ∧ ∃ (e : Q → J) (c : PointFn Z),
+        IsRegularOn c U
+          ∧ ∀ a : X, LandsIn (ξ a) U → c (CommRingCat.of ℂ) (ξ a) * ∑ q : Q, m a (e q) = w a j
 
 /-- Let the points `ξ a` separate `Z`, with homogeneous coordinates `m a` for the linear system
 `M`. If each of the families `w` and `m` is a local combination of the other, then the `w a` are
@@ -173,8 +181,10 @@ open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalC
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {V ι κ : Type} [FinComplexSpace V] {S : Scheme} [IsReduced S] [IsLocallyNoetherian S]
-  [Finite ι] {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)}
+variable
+  {V ι κ : Type} [FinComplexSpace V]
+  {S : Scheme} [IsReduced S] [IsLocallyNoetherian S] [Finite ι]
+  {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)}
 
 omit [Finite ι] in
 /-- Homogeneous coordinates for a product of line bundles: if for each factor `l : K` the values
@@ -337,20 +347,27 @@ section LevelCoordinates
 
 variable {E : Type} [Field E] [CMBase E] {D : PEL E}
 
-/-- The index `a` of the subgroup `D.dualTorsion` of level torsion does not vanish at the point `t`
+/--
+The index `a` of the subgroup `D.dualTorsion` of level torsion does not vanish at the point `t`
 of `S`: `c` gives a line bundle on `S` with charts indexed by `D.dualTorsion` for each level torsion
 point, and for all `l k : D.dualTorsion` with `l + k = a` the point `t` lies in chart `k` of the
-bundle `c l`. -/
-def Variety.ThetaNull.IsNonvanishingIndex {S : Scheme}
-    (c : D.levelTorsion → LineBundle S D.dualTorsion) (t : S) (a : D.dualTorsion) : Prop :=
+bundle `c l`.
+-/
+def Variety.ThetaNull.IsNonvanishingIndex
+    {S : Scheme} (c : D.levelTorsion → LineBundle S D.dualTorsion) (t : S) (a : D.dualTorsion)
+    : Prop :=
   ∀ l k : D.dualTorsion, l + k = a → t ∈ (c ⟨l, D.dualTorsion_le_levelTorsion l.property⟩).opens k
 
-/-- The fibre of the theta family `X` at the complex point `t` is modelled on the theta torus `x`:
+/--
+The fibre of the theta family `X` at the complex point `t` is modelled on the theta torus `x`:
 it has a torus model (a uniformisation by `V` along `t` with theta coordinates) for the period map
-of `x`, whose theta coordinates are the theta functions of `x`. -/
-def ThetaFamily.IsModelledOn {S : Scheme} {τ : S ⟶ Spec (CommRingCat.of (𝓞 E))}
-    (X : ThetaFamily D S τ) (t : Spec (CommRingCat.of ℂ) ⟶ S) {g : GL D.Index (𝔸f E)}
-    {ℓ : Matrix D.Index D.Index ℂ} (x : ThetaTorus D g ℓ V) : Prop :=
+of `x`, whose theta coordinates are the theta functions of `x`.
+-/
+def ThetaFamily.IsModelledOn
+    {S : Scheme} {τ : S ⟶ Spec (CommRingCat.of (𝓞 E))}
+    (X : ThetaFamily D S τ) (t : Spec (CommRingCat.of ℂ) ⟶ S)
+    {g : GL D.Index (𝔸f E)} {ℓ : Matrix D.Index D.Index ℂ} (x : ThetaTorus D g ℓ V)
+    : Prop :=
   ∃ m : TorusModel (X := X) t x.toPeriodMap, m.θ = fun z k ↦ x.thetaCoord k z
 
 section Torus
@@ -533,8 +550,9 @@ lemma PEL.hasClassLaws_of_riemann_relation {S : Scheme} {A : Over S} [AddObj A]
     rw [Pic.pairing, add_comm (D.β • z) z]
     linear_combination (norm := abel) -h_ev
 
-variable {S : Scheme} {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)} {R : CommRingCat}
-  {g : κ → GL D.Index (𝔸f E)} {ℓ : κ → Matrix D.Index D.Index ℂ}
+variable
+  {S : Scheme} {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)} {R : CommRingCat} {g : κ → GL D.Index (𝔸f E)}
+  {ℓ : κ → Matrix D.Index D.Index ℂ}
   {x : ∀ k : κ, ThetaTorus D (g k) (ℓ k) V} {c : D.levelTorsion → LineBundle S D.dualTorsion}
 
 /-- Suppose `c` attaches to each class `ω` in `D.levelTorsion` a linear system on `S` with charts
@@ -594,10 +612,12 @@ lemma Variety.exists_isRegularOn_bicharacter
   choose r hr hr_val using h_cocycle
   exact ⟨W, r, hW, hr, hr_val⟩
 
-variable {V κ : Type} [FinComplexSpace V] {E : Type} [Field E] [CMBase E] {D : PEL E} {S : Scheme}
-  {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)} {R : CommRingCat} {g : κ → GL D.Index (𝔸f E)}
-  {ℓ : κ → Matrix D.Index D.Index ℂ} {x : ∀ k : κ, ThetaTorus D (g k) (ℓ k) V}
-  {c : D.levelTorsion → LineBundle S D.dualTorsion}
+variable
+  {V κ : Type} [FinComplexSpace V]
+  {E : Type} [Field E] [CMBase E]
+  {D : PEL E} {S : Scheme} {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)} {R : CommRingCat}
+  {g : κ → GL D.Index (𝔸f E)} {ℓ : κ → Matrix D.Index D.Index ℂ}
+  {x : ∀ k : κ, ThetaTorus D (g k) (ℓ k) V} {c : D.levelTorsion → LineBundle S D.dualTorsion}
 
 /-- Riemann's relation has regular coefficients near every point `t` of `S`. Let `c` have
 nonvanishing indices, let `#D.dualTorsion` be a unit in `R`, and let `p`, `q` be Riemann tuples (`q`
@@ -958,11 +978,15 @@ lemma Variety.exists_linearMap_coe_eq_of_comp_eq_torsionLift {E : Type} [Field E
     exact he_lattice i _ ⟨_, by simp, rfl⟩
   exact ⟨⟨⟨σ, hσ_add⟩, hσ_smul⟩, rfl⟩
 
-/-- The points of `A` over a point `η` of `S`, seen as points of the fibre of `A` over `η`; the map
-is `𝓞 E`-linear. -/
-noncomputable def Variety.fibrePointMap {E : Type} [Field E] {S : Scheme}
-    (A : Over S) [AddObj A] [ModuleObj (𝓞 E) A] (η : Spec (CommRingCat.of ℂ) ⟶ S) :
-    (Over.mk η ⟶ A) →ₗ[𝓞 E] (𝟙_ (Over (Spec (CommRingCat.of ℂ))) ⟶ (Over.pullback η).obj A) :=
+/--
+The points of `A` over a point `η` of `S`, seen as points of the fibre of `A` over `η`; the map
+is `𝓞 E`-linear.
+-/
+noncomputable def Variety.fibrePointMap
+    {E : Type} [Field E]
+    {S : Scheme} (A : Over S) [AddObj A] [ModuleObj (𝓞 E) A]
+    (η : Spec (CommRingCat.of ℂ) ⟶ S)
+    : (Over.mk η ⟶ A) →ₗ[𝓞 E] (𝟙_ (Over (Spec (CommRingCat.of ℂ))) ⟶ (Over.pullback η).obj A) :=
   ((isGroupBaseChange_counit (O := 𝓞 E) (A := A) η).pointEquiv (T := 𝟙_ _)).symm.toLinearMap
 
 /-- The point of the fibre given by `fibrePointMap A η u` is the pair of `u` and the point `η`. -/
@@ -1044,51 +1068,62 @@ lemma Variety.exists_isLieChart_hasSignature (j : ι → κ) (hη : IsDenseFamil
   · simpa [← assoc] using hβ.map (preimage (S.fromSpecStalk (s (closedPoint _)) ≫ π)).hom
 
 unseal ThetaObject.groupScheme ThetaObject.toFamily in
-/-- A theta family from dense complex points: if `S` is embedded by the linear systems `c ω` whose
+/--
+A theta family from dense complex points: if `S` is embedded by the linear systems `c ω` whose
 coordinates at the complex points `η i` are the theta functions of the theta tori `x i`, then `S`
 is, under the further hypotheses of the statement, the base of a theta family whose object at each
 `η i` is modelled on `x i`. Here `S` is reduced and locally noetherian, `V` is a finite-dimensional
-complex space, and `Φ v₀` is the embedding of `E` into `ℂ` at the base place `v₀`. -/
-theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamily fun i : ι ↦ η (j i))
-    {E : Type} [Field E] [CMBase E] {D : PEL E} {R : CommRingCat} {π : S ⟶ Spec R}
-    {φ : 𝓞 E →+* R} (hφ : Mono (specMap φ))
+complex space, and `Φ v₀` is the embedding of `E` into `ℂ` at the base place `v₀`.
+-/
+theorem Variety.exists_thetaFamily_of_points
+    (j : ι → κ) (hη : IsDenseFamily fun i : ι ↦ η (j i))
+    {E : Type} [Field E] [CMBase E]
+    {D : PEL E} {R : CommRingCat} {π : S ⟶ Spec R} {φ : 𝓞 E →+* R} (hφ : Mono (specMap φ))
     (hη_base : ∀ (i : κ) (d : 𝓞 E), (preimage (η i ≫ π ≫ specMap φ)).hom d = Φ v₀ d.val)
     {g : κ → GL D.Index (𝔸f E)} {ℓ : κ → Matrix D.Index D.Index ℂ}
     {c : D.levelTorsion → LineBundle S D.dualTorsion} {x : ∀ k : κ, ThetaTorus D (g k) (ℓ k) V}
-    (hc : ∀ ω : D.levelTorsion, (c ω).IsLinearSystem) [Fintype D.levelTorsion]
+    (hc : ∀ ω : D.levelTorsion, (c ω).IsLinearSystem)
+    [Fintype D.levelTorsion]
     (hπ : (LineBundle.pi c).IsProjEmbedding π)
     (hx : ∀ (i : κ) (ω : D.levelTorsion),
       (c ω).IsHomogeneousCoords (η i) fun k : D.dualTorsion ↦
         (x i).thetaCoord k ((x i).torsionLift ω))
     (hβ : IsUnit (φ (star D.β - D.β))) (hT : IsUnit (Nat.card D.dualTorsion : R))
     (h_closed : AllSpecializeTo S fun {k : Type} [Field k] (t : Spec (CommRingCat.of k) ⟶ S) ↦
-      ∃ Z : Set (D.dualTorsion → k), IsCutOutAt D.paddedNorm D.exponentBound
-        (thetaRanks D.dualTorsion D.paddedNorm) c t Z)
+      ∃ Z : Set (D.dualTorsion → k),
+        IsCutOutAt D.paddedNorm D.exponentBound (thetaRanks D.dualTorsion D.paddedNorm) c t Z)
     (h_index : ∀ (t : S) (s : D.dualTorsion), ∃ a : D.dualTorsion,
-      IsNonvanishingIndex c t a ∧ IsNonvanishingIndex c t (-a) ∧ IsNonvanishingIndex c t (s - a)) :
-    ∃ X : ThetaFamily D S (π ≫ specMap φ), ∀ i : κ, X.IsModelledOn (η i) (x i) := by
+      IsNonvanishingIndex c t a ∧ IsNonvanishingIndex c t (-a) ∧ IsNonvanishingIndex c t (s - a))
+    : ∃ X : ThetaFamily D S (π ≫ specMap φ), ∀ i : κ, X.IsModelledOn (η i) (x i) := by
   -- `A` is the closure of the theta points over `S`. Riemann's relation extends the maps
   -- `(z, y) ↦ a z + b y` from the theta points to `A ⊗ A`; this makes `A` an abelian scheme with
   -- an action of `𝓞 E` and gives the class identities. The other fields of `ThetaFamily` are
   -- mostly identities of regular functions, checked at the dense complex points.
-  obtain ⟨A, N, e, h_closure⟩ : ∃ (A : Over S) (N : LineBundle A.left D.dualTorsion)
-      (e : ∀ i, V → (Over.mk (η i) ⟶ A)), IsFlatClosure (fun i z k ↦ (x i).thetaCoord k z) N e :=
+  obtain ⟨A, N, e, h_closure⟩
+      : ∃ (A : Over S) (N : LineBundle A.left D.dualTorsion) (e : ∀ i, V → (Over.mk (η i) ⟶ A)),
+        IsFlatClosure (fun i z k ↦ (x i).thetaCoord k z) N e :=
     exists_isFlatClosure j hη hc (Nat.le_of_lt D.three_le_paddedNorm) D.isCutDegree
       (fun i ↦ (x i).thetaCoord_vector_ne_zero)
-      (fun i ↦ (x i).isCutOutAt_range_thetaCoord (hx i)) h_closed
+      (fun i ↦ (x i).isCutOutAt_range_thetaCoord (hx i))
+      h_closed
   obtain ⟨hN, h_flat, he_coords, he_fibre, h_reduced, he_sep⟩ := h_closure
-  replace he_fibre (i : κ) :
-      IsSeparatingFamily fun z : V ↦ (lift (e i z) (𝟙 (Over.mk (η i)))).left := he_fibre i
+  replace he_fibre (i : κ)
+      : IsSeparatingFamily fun z : V ↦ (lift (e i z) (𝟙 (Over.mk (η i)))).left :=
+    he_fibre i
   have h_proper : IsProper A.hom := hN.isProper
   have hη_sep : IsSeparatingFamily fun i : κ ↦ (toUnit (Over.mk (η i))).left :=
     ⟨(inferInstance : IsReduced S), hη.of_comp⟩
-  have he_pairs :
-      IsSeparatingFamily fun s : (κ × V) × V ↦ (lift (e s.1.1 s.2) (e s.1.1 s.1.2)).left :=
-    he_sep.prod (y := fun s : κ × V ↦ e s.1 s.2) (e := fun s ↦ e s.1) hη he_sep.1
+  have he_pairs
+      : IsSeparatingFamily fun s : (κ × V) × V ↦ (lift (e s.1.1 s.2) (e s.1.1 s.1.2)).left :=
+    he_sep.prod
+      (y := fun s : κ × V ↦ e s.1 s.2)
+      (e := fun s ↦ e s.1)
+      hη he_sep.1
       fun s ↦ (he_fibre s.1).right
   -- The linear systems `c l` are the coordinates of sections `σ l` of `A`.
-  have h_section (l : D.levelTorsion) : ∃ σ : 𝟙_ (Over S) ⟶ A,
-      (∀ i : κ, toUnit (Over.mk (η i)) ≫ σ = e i ((x i).torsionLift l)) ∧ N.pull σ.left = c l :=
+  have h_section (l : D.levelTorsion)
+      : ∃ σ : 𝟙_ (Over S) ⟶ A,
+        (∀ i : κ, toUnit (Over.mk (η i)) ≫ σ = e i ((x i).torsionLift l)) ∧ N.pull σ.left = c l :=
     hη_sep.exists_map_of_coords (hc l) hN (fun i ↦ hx i l) fun i ↦ he_coords i _
   choose σ hσ hσ_pull using h_section
   -- The group law and the action of `𝓞 E`; from here on the `e i` are homomorphisms.
@@ -1107,9 +1142,9 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
   -- `σ` is linear: the lifts `(x i).torsionLift l` are linear in `l` modulo the lattice.
   obtain ⟨ς, rfl⟩ := exists_linearMap_coe_eq_of_comp_eq_torsionLift hη_sep he_smul he_lattice hσ
   -- `e i` uniformises the fibre over `η i`, and this forces the dimension.
-  have h_unif (i : κ) := exists_uniformisation_pullback_of_isSeparatingFamily (x i) hN h_class.1
-    (he_coords i)
-    (he_fibre i) (he_lattice i)
+  have h_unif (i : κ) :=
+    exists_uniformisation_pullback_of_isSeparatingFamily (x i) hN h_class.1 (he_coords i)
+      (he_fibre i) (he_lattice i)
   have h_dim : SmoothOfRelativeDimension (abelianDim E D.Index) A.hom := by
     refine smoothOfRelativeDimension_of_fibres he_sep.2 fun s d h_smooth ↦ ?_
     obtain ⟨-, -, -, -, hd⟩ := h_unif s.1 d h_smooth
@@ -1118,13 +1153,21 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
   choose u hu_theta hu_e hu_L _ using fun i : κ ↦
     h_unif i _ ((smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback
       (isGroupBaseChange_counit (O := 𝓞 E) (A := A) (η i)).isPullback h_dim)
-  refine ⟨{ total := A, lineBundle := N, embeds := hN, levelPoints := ς, class_laws := h_class
-            relative_dim := h_dim
-            theta_law t T _ _ q hq :=
-              exists_isThetaStructure hc hx h_index π hT hη_sep hN he_coords he_sep hσ t hq
-            signature b _ s _ :=
-              exists_isLieChart_hasSignature j hη hη_base hβ h_dim he_smul hu_e b s
-            eq_of_level_coords_eq t t' h_base h_coord := ?ext }, fun i ↦ ?model⟩
+  refine ⟨
+    {
+      total := A
+      lineBundle := N
+      embeds := hN
+      levelPoints := ς
+      class_laws := h_class
+      relative_dim := h_dim
+      theta_law t T _ _ q hq :=
+        exists_isThetaStructure hc hx h_index π hT hη_sep hN he_coords he_sep hσ t hq
+      signature b _ s _ := exists_isLieChart_hasSignature j hη hη_base hβ h_dim he_smul hu_e b s
+      eq_of_level_coords_eq t t' h_base h_coord := ?ext
+    },
+    fun i ↦ ?model
+  ⟩
   case ext =>
     -- The lists agree, so do the pull-backs of the product of the `c l`.
     exact hπ.ext (by simpa [← hσ_pull, pull_pi] using congrArg pi (funext h_coord))

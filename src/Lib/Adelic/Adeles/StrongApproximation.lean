@@ -80,13 +80,16 @@ namespace New
 
 open NumberField Matrix Function Subtype
 
-variable {E : Type*} [Field E] [CMType E]
-  {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ} (V : Space E n s)
+variable
+  {E : Type*} [Field E] [CMType E]
+  {n : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ} (V : Space E n s)
 
 /-- The ring of finite adeles is nontrivial, since it maps to the completion at a finite place. -/
 instance {E : Type*} [Field E] [NumberField E] : Nontrivial (𝔸f E) := by
-  obtain ⟨w⟩ : Nonempty (FinPlace E) := (IsDedekindDomain.HeightOneSpectrum.equivMaximalSpectrum
-    (RingOfIntegers.not_isField E)).nonempty
+  obtain ⟨w⟩ : Nonempty (FinPlace E) :=
+    (IsDedekindDomain.HeightOneSpectrum.equivMaximalSpectrum (RingOfIntegers.not_isField
+      E)).nonempty
   exact (evalAt w).domain_nontrivial
 
 namespace Space
@@ -122,16 +125,21 @@ instance fact_embFin_injective : Fact (Injective V.embFin) :=
 lemma ratEmbed_injective : Injective V.ratEmbed :=
   .of_comp (f := Prod.snd) V.fact_embFin_injective.out
 
-/-- The group `V.Γ = x⁻¹ U(J)(E) x` of rational points of a space `V = (J, x)` is discrete, because
-the rational matrices are discrete among the adelic ones. -/
+/--
+The group `V.Γ = x⁻¹ U(J)(E) x` of rational points of a space `V = (J, x)` is discrete, because
+the rational matrices are discrete among the adelic ones.
+-/
 instance discreteTopology_Gamma : DiscreteTopology V.Γ := by
   -- `V.toRatCoords : g ↦ x g x⁻¹` is a continuous injection of `V.Γ` into the rational matrices
   have h_mem (g : V.Γ) : (V.toRatCoords g : GL n (𝔸 E)).val ∈ ratMatrices E n n := by
     obtain ⟨γ, hγ⟩ : ∃ γ : U V.J, V.ratEmbed γ = g := g.prop
     exact ⟨(γ : GL n E), by simp [← hγ, ratEmbed, U.map]⟩
   let f (g : V.Γ) : ratMatrices E n n := ⟨(V.toRatCoords g : GL n (𝔸 E)), h_mem g⟩
-  have hf_cont : Continuous f := .subtype_mk ((continuous_const.matrix_mul
-    (G.continuous_adeleMatrix.comp continuous_subtypeVal)).matrix_mul continuous_const) h_mem
+  have hf_cont : Continuous f :=
+    .subtype_mk
+      ((continuous_const.matrix_mul (G.continuous_adeleMatrix.comp
+        continuous_subtypeVal)).matrix_mul continuous_const)
+      h_mem
   exact .of_continuous_injective hf_cont (by simp [f, Injective, Units.val_inj])
 
 /-- The image in the adelic group of any subgroup of the rational points is discrete. -/
@@ -385,30 +393,35 @@ lemma stdAddChar_inv_two_mul_add_star {E : Type*} [Field E] [CMType E] (x : 𝔸
 
 variable [IsTotallyComplex E] [PlaceEmbedding E] [Fintype m] [Fintype n]
 
-/-- A totally complex field `E` is its own annihilator in its adeles (Tate). Let
+/--
+A totally complex field `E` is its own annihilator in its adeles (Tate). Let
 `ψ = stdAddChar E`. The characters `x ↦ ψ (a x)`, `a : E`, form a dual family (`IsDualFamily`): they
 are continuous, unitary and trivial on the image `ratAdeles E` of `E`; they depend additively and
-injectively on `a`; and an adele killed by all of them lies in `ratAdeles E`. -/
-instance isDualFamily_ratAdeles :
-    IsDualFamily (ratAdeles E) (fun (a : E) (x : 𝔸 E) ↦ stdAddChar E (toAdele a * x)) where
-  periodic a := ⟨.subtypeVal (by fun_prop),
-    by simp [ratAdeles, mul_add, AddChar.map_add_eq_mul, ← map_mul]⟩
+injectively on `a`; and an adele killed by all of them lies in `ratAdeles E`.
+-/
+instance isDualFamily_ratAdeles
+    : IsDualFamily (ratAdeles E) (fun (a : E) (x : 𝔸 E) ↦ stdAddChar E (toAdele a * x)) where
+  periodic a :=
+    ⟨.subtypeVal (by fun_prop), by simp [ratAdeles, mul_add, AddChar.map_add_eq_mul, ← map_mul]⟩
   add_left := by simp [add_mul, AddChar.map_add_eq_mul]
   add_right := by simp [mul_add, AddChar.map_add_eq_mul]
   norm_eq_one := by simp [norm_coe]
   -- the annihilator of `E` lies in `E`, and the pairing is nondegenerate
   mem_of_forall_eq_one x hx := mem_ratAdeles_of_stdAddChar_eq_one fun a ↦ coe_eq_one.1 (hx a)
-  eq_zero_of_forall_eq_one a ha := (map_eq_zero toAdele).1 <|
-    eq_zero_of_forall_stdAddChar_eq_one fun u ↦ by simpa [mul_comm u, coe_eq_one] using ha u
+  eq_zero_of_forall_eq_one a ha :=
+    (map_eq_zero toAdele).1 <|
+      eq_zero_of_forall_stdAddChar_eq_one fun u ↦ by simpa [mul_comm u, coe_eq_one] using ha u
 
 open scoped Classical in
-/-- Self-duality for matrices. Let `ψ = stdAddChar E` be the standard character of the adeles. For
+/--
+Self-duality for matrices. Let `ψ = stdAddChar E` be the standard character of the adeles. For
 an `n × m` matrix `a` over `E`, consider the character `x ↦ ψ (tr (a x))` of the `m × n` adelic
 matrices. These characters form a dual family (continuous unitary characters depending additively
 and injectively on `a`) for the image `ratMatrices E m n` of the `m × n` matrices over `E`: they are
-trivial on it, and their common kernel lies in it. -/
-instance isDualFamily_ratMatrices :
-    IsDualFamily (ratMatrices E m n) (fun (a : Matrix n m E) (x : Matrix m n (𝔸 E)) ↦
+trivial on it, and their common kernel lies in it.
+-/
+instance isDualFamily_ratMatrices
+    : IsDualFamily (ratMatrices E m n) (fun (a : Matrix n m E) (x : Matrix m n (𝔸 E)) ↦
       stdAddChar E (trace (a.map toAdele * x))) where
   periodic a := by
     refine ⟨(continuous_stdAddChar.comp (by fun_prop)).subtypeVal, ?_⟩
@@ -422,13 +435,15 @@ instance isDualFamily_ratMatrices :
   norm_eq_one := by simp [norm_coe]
   -- Both claims reduce to one entry: the trace pairing with a matrix supported at `(j, i)`
   -- picks out the entry `(i, j)`.
-  mem_of_forall_eq_one x hx := mem_ratMatrices.2 fun i j ↦
-    mem_ratAdeles_of_stdAddChar_eq_one fun a ↦ by
-    simpa [Matrix.mul_apply, trace, Matrix.single_apply, ite_and, coe_eq_one] using
-      hx (.single j i a)
-  eq_zero_of_forall_eq_one a ha := Matrix.ext fun i j ↦
-    isDualFamily_ratAdeles.eq_zero_of_forall_eq_one (a i j) fun x ↦ by
-      simpa [Matrix.mul_apply, trace, Matrix.single_apply, ite_and] using ha (.single j i x)
+  mem_of_forall_eq_one x hx :=
+    mem_ratMatrices.2 fun i j ↦
+      mem_ratAdeles_of_stdAddChar_eq_one fun a ↦ by
+        simpa [Matrix.mul_apply, trace, Matrix.single_apply, ite_and, coe_eq_one] using
+          hx (.single j i a)
+  eq_zero_of_forall_eq_one a ha :=
+    Matrix.ext fun i j ↦
+      isDualFamily_ratAdeles.eq_zero_of_forall_eq_one (a i j) fun x ↦ by
+        simpa [Matrix.mul_apply, trace, Matrix.single_apply, ite_and] using ha (.single j i x)
 
 end New
 
@@ -447,10 +462,13 @@ open Set QuotientAddGroup Rat MeasureTheory IsDualFamily
 
 variable {E : Type*} [Field E] [NumberField E] [NumberField.IsTotallyComplex E] [PlaceEmbedding E]
 
-/-- The idempotent adele with component `1` at the finite places in `S`, and `0` at the other finite
-places and at all infinite places. -/
-noncomputable abbrev Exchange.idemAdele (S : Set (FinPlace E)) :
-    (NumberField.InfinitePlace E → ℂ) × 𝔸f E := ((0, idem S) : 𝔸 E)
+/--
+The idempotent adele with component `1` at the finite places in `S`, and `0` at the other finite
+places and at all infinite places.
+-/
+noncomputable abbrev Exchange.idemAdele (S : Set (FinPlace E))
+    : (NumberField.InfinitePlace E → ℂ) × 𝔸f E :=
+  ((0, idem S) : 𝔸 E)
 
 /-- If `S` is a nonempty set of finite places and the character `y ↦ ψ (r y)`, with `r : E` and `ψ`
 the standard character, is trivial on all adeles `idemAdele S * u` supported on `S`, then
@@ -723,9 +741,11 @@ open NumberField AddSubgroup AddChar MeasureTheory Measure New Ideal
 
 variable (E : Type*) [Field E] [NumberField E] [IsCMField E]
 
-/-- The additive group of self-adjoint (conjugation-invariant) finite adeles `z` of `E` with
+/--
+The additive group of self-adjoint (conjugation-invariant) finite adeles `z` of `E` with
 `ψf E (M * z * x) = 1` for all integral finite adeles `x ∈ Ô E`, that is, with `M * z` in the
-inverse different. Here `ψf E` is the finite part of the standard additive character. -/
+inverse different. Here `ψf E` is the finite part of the standard additive character.
+-/
 def New.selfAdjointCodifferent (M : 𝔸f E) : AddSubgroup (selfAdjoint (𝔸f E)) where
   carrier := {z : selfAdjoint (𝔸f E) | ∀ x ∈ Ô E, ψf E (M * z * x) = 1}
   add_mem' := by simp +contextual [mul_add, add_mul, map_add_eq_mul]
@@ -760,12 +780,16 @@ lemma New.isCompact_selfAdjointCodifferent {M : 𝔸f E} (hM : IsUnit M) :
   have h_dual (u : 𝔸f E) (hu : u ∈ Ô E) : ψf E (u * (M * z)) = 1 := by rw [mul_comm, hz u hu]
   simpa [d, mul_assoc] using forall_ψf_mul_eq_one_iff.1 h_dual _ (absNorm_mem _)
 
-/-- The Haar measure on the self-adjoint finite adeles that gives `New.selfAdjointCodifferent E 1`
-mass one. -/
+/--
+The Haar measure on the self-adjoint finite adeles that gives `New.selfAdjointCodifferent E 1`
+mass one.
+-/
 noncomputable instance : MeasureSpace (selfAdjoint (𝔸f E)) where
-  volume := addHaarMeasure ⟨⟨selfAdjointCodifferent E 1,
-    isCompact_selfAdjointCodifferent E isUnit_one⟩,
-    by simp [(isOpen_selfAdjointCodifferent E 1).interior_eq]⟩
+  volume :=
+    addHaarMeasure ⟨
+      ⟨selfAdjointCodifferent E 1, isCompact_selfAdjointCodifferent E isUnit_one⟩,
+      by simp [(isOpen_selfAdjointCodifferent E 1).interior_eq]
+    ⟩
 
 /-- The volume on the self-adjoint finite adeles is an additive Haar measure. -/
 instance : IsAddHaarMeasure (volume : Measure (selfAdjoint (𝔸f E))) :=

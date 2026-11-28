@@ -69,8 +69,10 @@ section Levi
 variable {n k : Type} [Fintype n] [DecidableEq n] [CommRing k] {ε : Matrix n n k} {O : Subring k}
 
 variable (ε) in
-/-- The invertible matrices that commute with `ε`: for an idempotent `ε`, the block diagonal group
-of the decomposition into the image and the kernel of `ε`. -/
+/--
+The invertible matrices that commute with `ε`: for an idempotent `ε`, the block diagonal group
+of the decomposition into the image and the kernel of `ε`.
+-/
 def blockDiagonalGroup : Subgroup (GL n k) where
   carrier := {h : GL n k | Commute h.val ε}
   one_mem' := Commute.one_left ε
@@ -190,8 +192,10 @@ section ColumnSpace
 
 variable {n k : Type} [Fintype n] [DecidableEq n] [CommRing k] {a b : Matrix n n k}
 
-/-- The matrices whose columns lie in the image of `a`. This set stands for the image of `a`, and
-`GL n k` acts on such sets by left multiplication. -/
+/--
+The matrices whose columns lie in the image of `a`. This set stands for the image of `a`, and
+`GL n k` acts on such sets by left multiplication.
+-/
 def columnSpace (a : Matrix n n k) : Set (Matrix n n k) := Set.range fun M : Matrix n n k ↦ a * M
 
 /-- If `a u = g b` with `u` and `g` invertible, then `g` moves the image of `b` onto that of `a`. -/
@@ -430,13 +434,16 @@ end Topology
 
 section Place
 
-variable {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
+variable
+  {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
   {w : FinPlace E} (hw : w.IsSplit)
 
 open New.TestFunction
 
-/-- The embedding of `GL_n(E_w)` into `Gf E n` at the split place `w`, as a continuous
-homomorphism. -/
+/--
+The embedding of `GL_n(E_w)` into `Gf E n` at the split place `w`, as a continuous
+homomorphism.
+-/
 noncomputable def atSplitContinuous : GL n (LocField w) →ₜ* Gf E n :=
   ⟨ofSplitPlace hw, continuous_ofSplitPlace hw⟩
 
@@ -472,10 +479,12 @@ lemma mem_charpolyLocus {P : (LocField w)[X]} {y : Gf E n} :
   Iff.rfl
 
 variable (n) in
-/-- The elements `y` with characteristic polynomial `P` at `w` and `p(y_w) = ε`. If `p(y_w)` is the
+/--
+The elements `y` with characteristic polynomial `P` at `w` and `p(y_w) = ε`. If `p(y_w)` is the
 projection that belongs to a coprime factorisation of `P` and `ε` is a coordinate projector, these
 are the `y` for which `y_w` is block diagonal and the two blocks have the two factors as their
-characteristic polynomials, up to scalars. -/
+characteristic polynomials, up to scalars.
+-/
 def blockLocus (P p : (LocField w)[X]) (ε : Matrix n n (LocField w)) : Set (Gf E n) :=
   {y ∈ charpolyLocus n P | aeval (y.atPlace w).val p = ε}
 
@@ -759,34 +768,40 @@ lemma integral_indicator_iwasawaSet_eq_zero (μ : Measure (GL n (LocField w))) [
 
 /-! ### The three steps together -/
 
-/-- **Coprime factors.** Let `A, B` be coprime non-units of `E_w[X]` for a split place `w`, and let
+/--
+**Coprime factors.** Let `A, B` be coprime non-units of `E_w[X]` for a split place `w`, and let
 `I` be a linear form on the test functions on the finite adelic group `Gf E n` that is invariant
 under conjugation (`translate (g, g) f` is `x ↦ f (g⁻¹ x g)`) and depends only on the restriction to
 the set of elements with characteristic polynomial `A B` at `w`. Then `I` kills every `φ` that is
 cuspidal at `w`, that is, whose sums of translates over the unipotent radicals of the proper
-coordinate parabolic subgroups over the residue field at `w` vanish. -/
-theorem eq_zero_of_coprime_factors (hAB : IsCoprime A B) (hA : ¬IsUnit A) (hB : ¬IsUnit B)
+coordinate parabolic subgroups over the residue field at `w` vanish.
+-/
+theorem eq_zero_of_coprime_factors
+    (hAB : IsCoprime A B) (hA : ¬ IsUnit A) (hB : ¬ IsUnit B)
     (I : TestFunction (Gf E n) →ₗ[ℂ] ℂ)
     (h_conj : ∀ (g : Gf E n) (f : TestFunction (Gf E n)), I (translate (g, g) f) = I f)
     (h_supp : ∀ f : TestFunction (Gf E n),
       (∀ y : Gf E n, (y.atPlace w).val.charpoly = A * B → f.val y = 0) → I f = 0)
-    {φ : TestFunction (Gf E n)} (hφ : IsCuspidalAt hw φ) : I φ = 0 := by
+    {φ : TestFunction (Gf E n)} (hφ : IsCuspidalAt hw φ)
+    : I φ = 0 := by
   obtain ⟨u, v, huv⟩ := hAB
-  have hI : IsInvariantDistribution (atSplitContinuous hw) (charpolyLocus n (A * B)) I :=
-    { map_conjugate := fun g ↦ h_conj (ofSplitPlace hw g), eq_zero := h_supp }
+  have hI : IsInvariantDistribution (atSplitContinuous hw) (charpolyLocus n (A * B)) I := {
+    map_conjugate := fun g ↦ h_conj (ofSplitPlace hw g)
+    eq_zero := h_supp
+  }
   obtain h_empty | ⟨y₀, hy₀⟩ := (charpolyLocus n (A * B)).eq_empty_or_nonempty
   · exact hI.eq_zero φ (by simp [h_empty])
   obtain ⟨T, hT_empty, hT_univ, hT_card⟩ := exists_finset_card_eq_natDegree hA hB hy₀
   obtain ⟨ι, _, _, κ, hκ⟩ := hφ.exists_sum_translate_eq_zero hT_empty hT_univ
   -- Replace `φ` by the mean `ψ` of its conjugates under `GL_n(O_w)`.
   set ψ : TestFunction (Gf E n) := compactMean (conjugate (atSplitContinuous hw)) (localIntGL n w) φ
-  have h_inv (k : GL n (LocField w)) (hk : k ∈ localIntGL n w) (x : Gf E n) :
-      ψ.val (ofSplitPlace hw k * x * (ofSplitPlace hw k)⁻¹) = ψ.val x := by
+  have h_inv (k : GL n (LocField w)) (hk : k ∈ localIntGL n w) (x : Gf E n)
+      : ψ.val (ofSplitPlace hw k * x * (ofSplitPlace hw k)⁻¹) = ψ.val x := by
     have h_fixed : conjugate (atSplitContinuous hw) k⁻¹ ψ = ψ := apply_compactMean (inv_mem hk) φ
     simpa [conjugate_apply, atSplitContinuous_apply] using congrFun (congrArg Subtype.val h_fixed) x
-  have h_sum (x : Gf E n) :
-      ∑ i : ι, ψ.val (x * ofSplitPlace hw (radicalHom (isIdempotentElem_coordProjector T) (κ i))) =
-        0 :=
+  have h_sum (x : Gf E n)
+      : ∑ i : ι, ψ.val (x * ofSplitPlace hw (radicalHom (isIdempotentElem_coordProjector T) (κ i)))
+        = 0 :=
     sum_compactMean_conjugate_eq_zero (j := atSplitContinuous hw) hκ x
   -- Step 1: the block diagonal elements `X` form a slice for the block diagonal group `H`.
   let H : Subgroup (GL n (LocField w)) := blockDiagonalGroup (coordProjector T)
@@ -796,14 +811,14 @@ theorem eq_zero_of_coprime_factors (hAB : IsCoprime A B) (hA : ¬IsUnit A) (hB :
   have : LocallyCompactSpace H := h_slice.isClosed_subgroup.locallyCompactSpace
   -- Step 3: a non-zero multiple of `ψ` is the image of a function `Ψ`, equal to `ψ (g y g⁻¹)` on
   -- `GL_n(O_w) N × X` and to `0` on the rest of `GL_n(E_w) × X`, whose integrals over `g` vanish.
-  obtain ⟨Ψ, hΨ⟩ := exists_testFunction_eq_indicator hw (isIdempotentElem_coordProjector T) (v * B)
-    h_inv
+  obtain ⟨Ψ, hΨ⟩ :=
+    exists_testFunction_eq_indicator hw (isIdempotentElem_coordProjector T) (v * B) h_inv
   let vol : ℝ := (Measure.haar : Measure H).real ((localIntGL n w).subgroupOf H)
   have h_vol : vol ≠ 0 := measureReal_subgroupOf_localIntGL_ne_zero h_slice.isClosed_subgroup _
   have h_image : IsImage (atSplitContinuous hw) (Measure.haar : Measure H) X Ψ ((vol : ℂ) • ψ) :=
     isImage_blockLocus_smul hw Measure.haar hΨ
-  have h_integral (y : Gf E n) (hy : y ∈ X) :
-      ∫ g : GL n (LocField w), Ψ.val (g, y) ∂Measure.haar = 0 := by
+  have h_integral (y : Gf E n) (hy : y ∈ X)
+      : ∫ g : GL n (LocField w), Ψ.val (g, y) ∂Measure.haar = 0 := by
     simp only [hΨ y hy.2]
     exact integral_indicator_iwasawaSet_eq_zero hw _ _ h_inv h_sum hy.2
       (by simpa only [hΨ y hy.2] using integrable_prodMk_left Ψ Measure.haar y)

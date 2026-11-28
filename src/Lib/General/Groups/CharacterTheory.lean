@@ -67,30 +67,40 @@ namespace New
 
 variable {G : Type*} [Group G] [Finite G] (f h : G → ℂ)
 
-/-- The average of a complex function f on a finite type G: the sum of its values divided by the
-cardinality of G. -/
+/--
+The average of a complex function f on a finite type G: the sum of its values divided by the
+cardinality of G.
+-/
 def finMean : ℂ := finsum f / Nat.card G
 
-/-- The inner product ⟨f, h⟩ of complex functions on a finite set: the average over g of conj
-f(g) · h(g). -/
+/--
+The inner product ⟨f, h⟩ of complex functions on a finite set: the average over g of conj
+f(g) · h(g).
+-/
 def classInner : ℂ := finMean fun g ↦ starRingEnd ℂ (f g) * h g
 
-/-- For a complex function f on a finite group G, the element Σ f(g)·g of the group algebra
-ℂ[G]. -/
+/--
+For a complex function f on a finite group G, the element Σ f(g)·g of the group algebra
+ℂ[G].
+-/
 @[simps]
 def groupAlgElem : MonoidAlgebra ℂ G := ⟨Finsupp.equivFunOnFinite.symm f⟩
 
-/-- The function f : G → ℂ is the character of a finite-dimensional complex representation
-of G. -/
+/--
+The function f : G → ℂ is the character of a finite-dimensional complex representation
+of G.
+-/
 def IsChar : Prop := ∃ V : FDRep ℂ G, V.character = f
 
 /-- The function f : G → ℂ is a class function: f(xgx⁻¹) = f(g) for all g, x in G. -/
 @[simp]
 abbrev IsClassFunction : Prop := ∀ g x : G, f (x * g * x⁻¹) = f g
 
-/-- The function `f` is an irreducible character: the character of a simple finite-dimensional
+/--
+The function `f` is an irreducible character: the character of a simple finite-dimensional
 complex representation of `G`. `New.IsClassFunction.isIrreducibleChar_of_classInner_eq_intCast`
-gives a criterion. -/
+gives a criterion.
+-/
 def IsIrreducibleChar : Prop := ∃ V : FDRep ℂ G, CategoryTheory.Simple V ∧ V.character = f
 
 end New
@@ -165,8 +175,7 @@ open ComplexConjugate Submodule LinearMap Finset
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {S : Type*} [CommSemiring S] [Algebra S ℂ]
-  {G : Type*} [Group G] {χ ψ f : G → ℂ}
+variable {S : Type*} [CommSemiring S] [Algebra S ℂ] {G : Type*} [Group G] {χ ψ f : G → ℂ}
 
 /-! ### The algebra spanned by the characters -/
 
@@ -181,8 +190,10 @@ lemma isChar_monoidHom (l : G →* ℂ) : IsChar l :=
   ⟨.of (.comp MonoidHom.smulOneHom l), funext fun g ↦ Algebra.trace_self_apply (l g)⟩
 
 variable (S G) in
-/-- For a group G and a commutative semiring S with ℂ an S-algebra, the S-subalgebra of functions
-G → ℂ spanned over S by the characters of G. -/
+/--
+For a group G and a commutative semiring S with ℂ an S-algebra, the S-subalgebra of functions
+G → ℂ spanned over S by the characters of G.
+-/
 def virtualChars : Subalgebra S (G → ℂ) :=
   (span S {f : G → ℂ | IsChar f}).toSubalgebra
     -- the constant `1` is the trivial character
@@ -304,10 +315,13 @@ open MonoidAlgebra Finset Finsupp Representation Function
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {ι : Type _} [Fintype ι] [DecidableEq ι]
-  {G : ι → Type _} [∀ i : ι, Group (G i)] [∀ i : ι, Finite (G i)] {H : Type*} [Group H]
+variable
+  {ι : Type _} [Fintype ι] [DecidableEq ι]
+  {G : ι → Type _} [∀ i : ι, Group (G i)] [∀ i : ι, Finite (G i)]
+  {H : Type*} [Group H]
   {x : ∀ i : ι, ℂ[G i]} {V : Type*} [AddCommGroup V] [Module ℂ V]
-  (σ : Representation ℂ H V) {e : ℂ[H]} {ρ : Representation ℂ (∀ i : ι, G i) V}
+  (σ : Representation ℂ H V)
+  {e : ℂ[H]} {ρ : Representation ℂ (∀ i : ι, G i) V}
 
 lemma IsClassFunction.commute (he : IsClassFunction e.coeff) (x : ℂ[H]) : Commute x e := by
   have h_swap (t g : H) : e.coeff (g * t⁻¹) = e.coeff (t⁻¹ * g) := by
@@ -315,8 +329,10 @@ lemma IsClassFunction.commute (he : IsClassFunction e.coeff) (x : ℂ[H]) : Comm
   ext g
   simp only [coeff_mul_apply_left x e, coeff_mul_apply_right e x, h_swap, mul_comm]
 
-/-- `e` is a central idempotent of the complex group algebra `ℂ[H]` of a group `H`: it is
-idempotent and its coefficients form a class function. -/
+/--
+`e` is a central idempotent of the complex group algebra `ℂ[H]` of a group `H`: it is
+idempotent and its coefficients form a class function.
+-/
 def IsCentralProj (e : ℂ[H]) : Prop := IsIdempotentElem e ∧ IsClassFunction e.coeff
 
 lemma IsCentralProj.isIdempotentElem (h : IsCentralProj e) : IsIdempotentElem e := h.left
@@ -324,9 +340,11 @@ lemma IsCentralProj.isIdempotentElem (h : IsCentralProj e) : IsIdempotentElem e 
 lemma IsCentralProj.isClassFunction (h : IsCentralProj e) : IsClassFunction e.coeff := h.right
 
 open scoped Classical in
-/-- The multiplicative map sending a family `x i ∈ ℂ[G i]` to its tensor product in the group
+/--
+The multiplicative map sending a family `x i ∈ ℂ[G i]` to its tensor product in the group
 algebra of the product of the `G i`: the coefficient at `s` is the product over `i` of the
-coefficients of `x i` at `s i`. -/
+coefficients of `x i` at `s i`.
+-/
 @[simps!]
 noncomputable def piTensorElem : (∀ i : ι, ℂ[G i]) →* ℂ[∀ i : ι, G i] where
   toFun x := groupAlgElem fun s : ∀ i : ι, G i ↦ ∏ i : ι, (x i).coeff (s i)
@@ -409,8 +427,10 @@ open MonoidAlgebra Finset LinearMap ComplexConjugate Matrix Algebra Representati
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {G H V : Type*} [Group G] [Finite G] [Group H] {χ f : G → ℂ}
-  [AddCommGroup V] [Module ℂ V] {ρ : Representation ℂ G V}
+variable
+  {G H V : Type*} [Group G] [Finite G] [Group H]
+  {χ f : G → ℂ} [AddCommGroup V] [Module ℂ V]
+  {ρ : Representation ℂ G V}
   (Z : Type*) [CommSemiring Z] [Algebra Z ℂ]
 
 omit [Group G] in
@@ -485,8 +505,10 @@ lemma IsIrreducibleChar.mul_classInner_translate (hχ : IsIrreducibleChar χ) {�
   rw [classInner, finMean_eq, finMean_eq, h_translate y, h_one]
   ring
 
-/-- A finite family `χ i` of irreducible characters of a finite group `G` in which every class
-function expands. The brackets `⟨ , ⟩` denote the inner product `New.classInner`. -/
+/--
+A finite family `χ i` of irreducible characters of a finite group `G` in which every class
+function expands. The brackets `⟨ , ⟩` denote the inner product `New.classInner`.
+-/
 structure IsExpansionFamily {ι : Type*} [Fintype ι] (χ : ι → G → ℂ) : Prop where
   /-- Each `χ i` is an irreducible character. -/
   isIrreducibleChar (i : ι) : IsIrreducibleChar (χ i)

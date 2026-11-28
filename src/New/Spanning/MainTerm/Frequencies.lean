@@ -118,12 +118,16 @@ lemma sum_absNorm_inv_sq_le (s : Finset (Ideal (𝓞 E))) :
     _ ≤ ‖ζ‖ := Complex.re_le_norm ζ
     _ ≤ _ := Real.le_exp_of_log_le h_log
 
-/-- The lower left corner `m.1 / 2 + (m.2 / 2) * I` of the square of side `1 / 2` with index
-`m`. -/
+/--
+The lower left corner `m.1 / 2 + (m.2 / 2) * I` of the square of side `1 / 2` with index
+`m`.
+-/
 def squareCorner (m : ℤ × ℤ) : ℂ := ⟨m.1 / 2, m.2 / 2⟩
 
-/-- The index `(⌊2 * z.re⌋, ⌊2 * z.im⌋)` of the square of side `1 / 2` that contains `z`. The
-square with index `(a, b)` is `[a / 2, (a + 1) / 2) × [b / 2, (b + 1) / 2)`. -/
+/--
+The index `(⌊2 * z.re⌋, ⌊2 * z.im⌋)` of the square of side `1 / 2` that contains `z`. The
+square with index `(a, b)` is `[a / 2, (a + 1) / 2) × [b / 2, (b + 1) / 2)`.
+-/
 def squareIndex (z : ℂ) : ℤ × ℤ := (⌊2 * z.re⌋, ⌊2 * z.im⌋)
 
 lemma norm_lt_one_of_abs_lt {z : ℂ} (h_re : |z.re| < 1 / 2) (h_im : |z.im| < 1 / 2) : ‖z‖ < 1 := by
@@ -250,13 +254,15 @@ lemma sum_weight_filter_denominator_eq_le [IsTotallyComplex E] [DecidableEq (Ide
       exact h_label ν ν' h_den.ge h_den'.ge (h_class.trans h_class'.symm)
     _ = _ := by simp
 
-/-- Let `E` be a totally complex number field with `f = Core.numInfPlaces E` infinite places. For a
+/--
+Let `E` be a totally complex number field with `f = Core.numInfPlaces E` infinite places. For a
 finite set `X ⊂ E`, the sum of `∏_v [ν]_v ^ (-3)` over `ν ∈ X` is at most
-`(64 * 38 * e ^ 4) ^ f`. -/
-theorem sum_height_inv_cube_le [IsTotallyComplex E] (X : Finset E) :
-    ∑ ν ∈ X, (∏ v : InfinitePlace E, (max 1 ‖Φ v ν‖)⁻¹ ^ 6) *
-      (Ideal.absNorm (denominator ν) : ℝ)⁻¹ ^ 3 ≤
-      (64 * 38 * Real.exp 4) ^ Core.numInfPlaces E := by
+`(64 * 38 * e ^ 4) ^ f`.
+-/
+theorem sum_height_inv_cube_le [IsTotallyComplex E] (X : Finset E)
+    : ∑ ν ∈ X, (∏ v : InfinitePlace E, (max 1 ‖Φ v ν‖)⁻¹ ^ 6) *
+        (Ideal.absNorm (denominator ν) : ℝ)⁻¹ ^ 3
+      ≤ (64 * 38 * Real.exp 4) ^ Core.numInfPlaces E := by
   -- Group the numbers by denominator. Those with denominator `𝔟` give at most `N 𝔟` sums over
   -- cosets, and what remains is the sum of `N 𝔟 ^ (-2)`.
   calc

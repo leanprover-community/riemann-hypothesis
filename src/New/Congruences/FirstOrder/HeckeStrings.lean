@@ -309,8 +309,9 @@ lemma normalizingAvatar_eq_of_isFrob [PadicIso ℓ] {P : Parameters} {D : Data P
     (normalizingAvatar O s).val = ιℓ (O.charW.frobValue r w)⁻¹ := by
   simpa using normalizingAvatar_eq_of_isFrob_inv (O := O) hA hℓ 1 (s := s) (by rwa [pow_one])
 
-variable {P : Parameters} {D : Data P} {r n : Type} [Fintype n] [DecidableEq n] [PadicIso ℓ]
-  [Fintype r] [DecidableEq r] [Nonempty n]
+variable
+  {P : Parameters} {D : Data P} {r n : Type}
+  [Fintype n] [DecidableEq n] [PadicIso ℓ] [Fintype r] [DecidableEq r] [Nonempty n]
 
 /-- Let `f` be a nonzero form on the definite space V of highest weight `(O.columnCount, O.detExp)`:
 column numbers and a power of the determinant at each infinite place. Let `f` lie in the isotypic

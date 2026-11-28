@@ -44,7 +44,8 @@ open Module MeasureTheory Measure Metric
 
 namespace New
 
-variable {V I : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+variable
+  {V I : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   {f : I → V} {m R A c : ℝ}
 
 /-- Packing bound: in a finite-dimensional real normed space `V`, if the points `f i`, for `i` in

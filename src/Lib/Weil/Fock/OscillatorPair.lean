@@ -82,8 +82,10 @@ open Matrix MvPolynomial Finset Int Heisenberg.IsVacuum
 
 variable {ι : Type _} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ} (u : USign ε)
 
-/-- For u in U(diag ε), the matrix P₊ u P₊ + P₋ ū P₋, with P₊, P₋ the projections `New.Fock.posProj`
-on the positive and negative coordinates and ū the entrywise conjugate of u (written `uᴴᵀ`). -/
+/--
+For u in U(diag ε), the matrix P₊ u P₊ + P₋ ū P₋, with P₊, P₋ the projections `New.Fock.posProj`
+on the positive and negative coordinates and ū the entrywise conjugate of u (written `uᴴᵀ`).
+-/
 noncomputable def complexLinearPart : Matrix ι ι ℂ :=
   posProj ε * u * posProj ε + posProj (-ε) * (u : Matrix ι ι ℂ)ᴴᵀ * posProj (-ε)
 
@@ -121,8 +123,10 @@ lemma realMultiplier_ne_zero : realMultiplier u ≠ 0 := fun h_zero ↦ by
 /-- The matrix `complexLinearPart u` is invertible, since both diagonal blocks of u are. -/
 noncomputable instance : Invertible (complexLinearPart u) :=
   invertibleOfIsUnitDet (complexLinearPart u) <| by
-    have h_pos : principalMinor (u : Matrix ι ι ℂ) (fun i : ι ↦ ¬ε i = -1) =
-        (u : Matrix ι ι ℂ).det * realMultiplier u := U.principalMinor_compl u
+    have h_pos
+        : principalMinor (u : Matrix ι ι ℂ) (fun i : ι ↦ ¬ ε i = -1)
+          = (u : Matrix ι ι ℂ).det * realMultiplier u :=
+      U.principalMinor_compl u
     rw [det_complexLinearPart, h_pos]
     simp [realMultiplier_ne_zero, GeneralLinearGroup.det_ne_zero]
 
@@ -316,14 +320,16 @@ namespace New.Fock
 open MvPolynomial Matrix ComplexOrder Kronecker MatrixOrder Fintype Norms.L2Operator
   Algebra.TensorProduct NonUnitalStarAlgHom Heisenberg.IsVacuum
 
-variable {R C : Type} [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] (ε : R → ℤˣ)
-  (ε' : C → ℤˣ)
+variable
+  {R C : Type} [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] (ε : R → ℤˣ) (ε' : C → ℤˣ)
 
 /-! ### The twisted Weil representation -/
 
-/-- The Kronecker homomorphism (not injective) from the dual pair U(ε′) × U(ε) to the unitary group
+/--
+The Kronecker homomorphism (not injective) from the dual pair U(ε′) × U(ε) to the unitary group
 for the signs ε_r ε′_c on `R × C`: the pair `(g, h)` goes to `h ⊗ₖ g⁻¹ᵀ`, which is the action x ↦ h
-x g⁻¹ on `R × C` matrices. -/
+x g⁻¹ on `R × C` matrices.
+-/
 noncomputable def pairHom : USign ε' × USign ε →* USign (pairSign 1 ε ε') :=
   U.kroneckerHom IsHermitianInvolution.mul_self
     (by simp [signMatrix, pairSign, diagonal_kronecker_diagonal])
@@ -357,9 +363,12 @@ lemma norm_pairHom_le (g : USign ε') (h : USign ε) :
 
 variable {ε : R → ℤˣ} {ε' : C → ℤˣ} (f : USign ε →* USign ε') (γ : ℤ)
 
-/-- The Weil representation `realWeil` of U(ε′) on the Fock space, pulled back along a homomorphism
-`f` from U(ε) to U(ε′) and twisted by `det ^ γ`: `g` acts by `det g ^ γ • realWeil (f g)`. -/
-@[simps] noncomputable def detTwist : USign ε →* fockSpace ε' →L[ℂ] fockSpace ε' where
+/--
+The Weil representation `realWeil` of U(ε′) on the Fock space, pulled back along a homomorphism
+`f` from U(ε) to U(ε′) and twisted by `det ^ γ`: `g` acts by `det g ^ γ • realWeil (f g)`.
+-/
+@[simps]
+noncomputable def detTwist : USign ε →* fockSpace ε' →L[ℂ] fockSpace ε' where
   toFun g := (g : Matrix R R ℂ).det ^ γ • realWeil (f g)
   map_one' := by simp
   map_mul' := by simp [mul_zpow, mul_comm, smul_smul]
@@ -474,35 +483,48 @@ lemma fockInner_detTwist_pos {κ : Sort*} (d : C → κ) {P : MvPolynomial C ℂ
   exact mul_pos (inv_pos.2 (hfz_pos.submatrix Subtype.val_injective).det_pos)
     (fockPairing_star_self_pos h_subst_ne)
 
-variable {ι : Type} [Fintype ι] [DecidableEq ι] {η : ι → ℤˣ} (T : FockDualPair ε ε' ι)
-  (π : USign ε →* fockSpace η →L[ℂ] fockSpace η)
+variable
+  {ι : Type} [Fintype ι] [DecidableEq ι]
+  {η : ι → ℤˣ}
+  (T : FockDualPair ε ε' ι) (π : USign ε →* fockSpace η →L[ℂ] fockSpace η)
 
 /-! ### Oscillator pairs -/
 
-/-- π is a strongly continuous representation of U(ε) on the Fock space with variables ι, which
+/--
+π is a strongly continuous representation of U(ε) on the Fock space with variables ι, which
 preserves the form `New.Fock.fockInner` and has norm O(‖g‖ ^ |ι|). Its derivative on polynomials is
 the row action `New.FockDualPair.oscRows` of the dual pair data `T` (a sign, two constants and a
 bijection of R × C with ι), and ⟨v_P, π(z) v_P⟩ > 0 for z positive definite and P ≠ 0 satisfying
-`New.FockDualPair.IsTermwiseHarmonic`. -/
+`New.FockDualPair.IsTermwiseHarmonic`.
+-/
 structure _root_.New.OscillatorRep where
-  /-- π is strongly continuous, preserves the positive definite hermitian form `fockInner`, and has
-  norm O(‖g‖ ^ |ι|). -/
+  /--
+  π is strongly continuous, preserves the positive definite hermitian form `fockInner`, and has
+  norm O(‖g‖ ^ |ι|).
+  -/
   unitary_rep : IsUnitaryRep (card ι) π fockInner
-  /-- On the vectors v_P of polynomials P, the derivative of π is the action `oscRows` on the
-  rows. -/
+  /--
+  On the vectors v_P of polynomials P, the derivative of π is the action `oscRows` on the
+  rows.
+  -/
   derives : IsDerivedAction π (polyVector η) T.oscRows
-  /-- ⟨v_P, π(z) v_P⟩ > 0 for z positive definite and P ≠ 0 satisfying `IsTermwiseHarmonic`: no
-  monomial of P has two variables of one column from rows of opposite signs. -/
-  inner_pos (P : MvPolynomial ι ℂ) (z : USign ε) (hP_ne : P ≠ 0)
-    (hP_harmonic : T.IsTermwiseHarmonic P) (hz_pos : (z : Matrix R R ℂ).PosDef) :
-    0 < fockInner (polyVector η P) (π z (polyVector η P))
+  /--
+  ⟨v_P, π(z) v_P⟩ > 0 for z positive definite and P ≠ 0 satisfying `IsTermwiseHarmonic`: no
+  monomial of P has two variables of one column from rows of opposite signs.
+  -/
+  inner_pos
+    (P : MvPolynomial ι ℂ) (z : USign ε)
+    (hP_ne : P ≠ 0) (hP_harmonic : T.IsTermwiseHarmonic P) (hz_pos : (z : Matrix R R ℂ).PosDef)
+    : 0 < fockInner (polyVector η P) (π z (polyVector η P))
 
-/-- π of U(ε) and π′ of U(ε′) are commuting representations on one Fock space, each a
+/--
+π of U(ε) and π′ of U(ε′) are commuting representations on one Fock space, each a
 `New.OscillatorRep`. π acts on the rows, with the data `T`, whose sign is `T.globalSign` and whose
 constant on the rows is `T.rowShift`, and π′ acts on the columns, with the data `T.swap`, whose
-sign is `-T.globalSign` and whose constant on the rows is `T.columnShift`. -/
-structure _root_.New.OscillatorPair (π' : USign ε' →* fockSpace η →L[ℂ] fockSpace η) extends
-    OscillatorRep T π where
+sign is `-T.globalSign` and whose constant on the rows is `T.columnShift`.
+-/
+structure _root_.New.OscillatorPair (π' : USign ε' →* fockSpace η →L[ℂ] fockSpace η)
+    extends OscillatorRep T π where
   /-- π' has the same properties for `T.swap`, the columns read as rows. -/
   column_rep : OscillatorRep T.swap π'
   /-- π and π' commute. -/
@@ -510,8 +532,8 @@ structure _root_.New.OscillatorPair (π' : USign ε' →* fockSpace η →L[ℂ]
 
 /-! ### The left and right actions on matrices -/
 
-variable {R C : Type} [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] {ε : R → ℤˣ}
-  {ε' : C → ℤˣ}
+variable
+  {R C : Type} [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] {ε : R → ℤˣ} {ε' : C → ℤˣ}
 
 /-- Let η be signs on the R × C matrix entries, and `weilDeriv η` the derivative of the Weil
 representation on polynomials. It sends `E_ab ⊗ 1`, with `E_ab = single a b 1` a matrix unit in the

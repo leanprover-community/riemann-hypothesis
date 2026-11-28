@@ -69,7 +69,8 @@ variable {S S' : PairingSide O} {c : S.paramLattice} {i : k.Letter}
 
 section Points
 
-variable {c' : S'.paramLattice} {l κ s e e' : ℕ} {o o' o₁ o₂ o₃ : ℕ → ℤ → ℤ}
+variable
+  {c' : S'.paramLattice} {l κ s e e' : ℕ} {o o' o₁ o₂ o₃ : ℕ → ℤ → ℤ}
   {x w : S.extensionLattice.Ambient} {y : S'.extensionLattice.Ambient} {P : S.SidePairing S'}
 
 /-! ### Safe pairs and the walk -/
@@ -247,7 +248,6 @@ lemma eq_ite_add_one_of_isLeast_cut {cut : k.Letter → Prop} {l : k.Letter → 
   exact Nat.succ_le_succ (prev_min ⟨m_pos, by rwa [stepBack_succ]⟩)
 
 end Points
-
 
 /-- A point of the side `S` over `p ^ e c` at the letter `i` satisfies `LiesOver`: it is in the
 part at `i` and projects to `p ^ e` times the constant of `c`. -/

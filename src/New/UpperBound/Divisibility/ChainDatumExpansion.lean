@@ -152,15 +152,18 @@ lemma gluedDoubleLiftDatum_translateDatum {t : D.Translations}
     D.heisenbergFinPart_translateDatum_of_disjoint ht _ _
       fun k w _ hw_star ↦ poleRow_apply_eq_zero _ k w hw_star]
 
-/-- The index set of the gluing: for each of the `ϱ + 1 = m / 2` double lifts, a vector on the
-middle space `X_{2 i + 1}` modulo `N` at each place `w ∣ π`. -/
-abbrev GluingClasses : Type :=
-  ∀ i : Fin (D.ϱ + 1), D.X (2 * (i : ℕ) + 1) → D.piNPlaces → ZMod D.N
+/--
+The index set of the gluing: for each of the `ϱ + 1 = m / 2` double lifts, a vector on the
+middle space `X_{2 i + 1}` modulo `N` at each place `w ∣ π`.
+-/
+abbrev GluingClasses : Type := ∀ i : Fin (D.ϱ + 1), D.X (2 * (i : ℕ) + 1) → D.piNPlaces → ZMod D.N
 
 variable {D} in
-/-- The tuple of translations `z` attached to the classes `y`: in the `i`-th double lift, `z (2 i)`
+/--
+The tuple of translations `z` attached to the classes `y`: in the `i`-th double lift, `z (2 i)`
 has last column `-y i / N` and the last row of `z (2 i + 1)` is its conjugate; all other entries
-are `0`. -/
+are `0`.
+-/
 noncomputable def gluingTuple (y : D.GluingClasses) : D.Translations :=
   ∑ i : Fin (D.ϱ + 1), (Pi.single (2 * (i : ℕ)) (poleColumn (D.InitIndex (2 * i)) (y i)) +
     Pi.single (2 * (i : ℕ) + 1) (poleRow (D.InitIndex (2 * i + 1 + 1)) (y i)))
@@ -221,8 +224,10 @@ lemma card_gluingClasses_le : Fintype.card D.GluingClasses ≤ D.N ^ (D.f * D.m 
     _ = D.N ^ (D.f * D.m * D.n D.m / 2) := by
       rw [h_exponent, Nat.mul_div_cancel _ two_pos, ← pow_mul]
 
-/-- The tensor `⊗ⱼ translateDatum t j` of the translates of the integral vacuum by `t`, grouped by
-double lifts and not glued. -/
+/--
+The tensor `⊗ⱼ translateDatum t j` of the translates of the integral vacuum by `t`, grouped by
+double lifts and not glued.
+-/
 noncomputable def ungluedVacuum (t : D.Translations) : D.ChainTensor :=
   pure (fun i : ℕ ↦ D.translateDatum t (2 * i) ⊗ₜ D.translateDatum t (2 * i + 1)) (D.ϱ + 1)
 

@@ -128,8 +128,8 @@ namespace New
 
 open Matrix «GL»
 
-variable {T n : Type} [Fintype T] [DecidableEq T] [Fintype n] [DecidableEq n] {κ : T → ℕ → ℕ}
-  (σ : ℂ ≃+* ℂ)
+variable
+  {T n : Type} [Fintype T] [DecidableEq T] [Fintype n] [DecidableEq n] {κ : T → ℕ → ℕ} (σ : ℂ ≃+* ℂ)
 
 /-- Duality for the Gram norm `ξ ↦ √(weylNormSq ξ)` after an automorphism `σ` of `ℂ`, on vectors
 indexed by `WeylIndex n κ` (families of basis tableaux): here `weylNormSq ξ` is `Re (ξ* G ξ)` for

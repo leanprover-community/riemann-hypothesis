@@ -64,11 +64,13 @@ section Parameters
 open NumberField Polynomial IsCyclotomicExtension jacobiSym InfinitePlace IsAlgClosed cyclotomic
   NeZero IsMulCommutative
 
-/-- The fixed parameters: a multiple `q₀` of `18480 = 16 · 3 · 5 · 7 · 11` and a prime `d` with
+/--
+The fixed parameters: a multiple `q₀` of `18480 = 16 · 3 · 5 · 7 · 11` and a prime `d` with
 `d ≡ q₀/2 - 1 mod q₀`. The congruence is stated as: `q₀` divides `2 (d + 1)` but not `d + 1`.
 The first part forces `q₀ ≠ 0`; as `q₀` is even, it says that `q₀/2` divides `d + 1`, and the
 second part says that the quotient is odd. The exponent `ε` of the scales is not a field: it enters
-only the existence of admissible data (`New.eventually_exists_data`). -/
+only the existence of admissible data (`New.eventually_exists_data`).
+-/
 @[local grind]
 structure New.Parameters where
   /-- The modulus `q₀`. -/
@@ -80,7 +82,7 @@ structure New.Parameters where
   /-- `d` is prime. -/
   d_prime : d.Prime
   /-- `d ≡ q₀/2 - 1 mod q₀`, stated as: `q₀` divides `2 (d + 1)` but not `d + 1`. -/
-  q₀_dvd_and_not_dvd : q₀ ∣ 2 * (d + 1) ∧ ¬q₀ ∣ d + 1
+  q₀_dvd_and_not_dvd : q₀ ∣ 2 * (d + 1) ∧ ¬ q₀ ∣ d + 1
 
 namespace New.Parameters
 
@@ -88,8 +90,10 @@ variable (P : Parameters) (s : ℕ)
 
 instance : NeZero P.q₀ := ⟨by grind [zero_dvd_iff]⟩
 
-/-- The prime `d` is congruent to 7 modulo 8: `d + 1` is an odd multiple of `q₀/2`, and `16` divides
-`q₀`. -/
+/--
+The prime `d` is congruent to 7 modulo 8: `d + 1` is an odd multiple of `q₀/2`, and `16` divides
+`q₀`.
+-/
 @[local grind! .]
 instance instPrimeSevenModEight : PrimeSevenModEight P.d where
   out := P.d_prime
@@ -110,7 +114,7 @@ lemma _root_.New.l₀_le_mul {s : ℕ} (hs : s ≠ 0) : l₀ s ≤ 81 * s := by
 
 /-- The ratio `q₁ / q₀ = 3 l₀ 2 ^ s`; see `towerDeg_eq`. -/
 def _root_.New.towerDeg : ℕ := 3 ^ (Nat.log 3 s + 5) * 2 ^ s
-  deriving NeZero
+deriving NeZero
 
 lemma _root_.New.towerDeg_eq (s : ℕ) : towerDeg s = 3 * l₀ s * 2 ^ s := by
   rw [towerDeg, l₀, ← pow_succ']
@@ -179,10 +183,12 @@ lemma thirteen_le_of_chiK_ne_one {p : ℕ} (hp : p.Prime) (h_ne : chiK P.d p ≠
 /-- The imaginary quadratic field K = ℚ(i√d), as a subfield of ℂ. -/
 abbrev K : IntermediateField ℚ ℂ := QuadField P.d
 
-/-- The number `q₂ = (q₀ d) ^ (s + 6)`, a multiple of `q₁ d`; the three primes of the data are `≡ 1`
-modulo its square. -/
+/--
+The number `q₂ = (q₀ d) ^ (s + 6)`, a multiple of `q₁ d`; the three primes of the data are `≡ 1`
+modulo its square.
+-/
 def q₂ : ℕ := (P.q₀ * P.d) ^ (s + 6)
-  deriving NeZero
+deriving NeZero
 
 /-- Let `P` consist of the modulus `q₀` and the prime `d`. The product `q₁ d`, where
 `q₁ = q₀ * towerDeg s = q₀ * 3 ^ (⌊log₃ s⌋ + 5) * 2 ^ s` is the order of `ζ`, divides
@@ -199,17 +205,23 @@ lemma coprime_q₁_d : (P.q₁ s).Coprime P.d := by
   refine (P.d_prime.coprime_iff_not_dvd.2 fun h_dvd ↦ ?_).symm
   simpa [chiK, ZMod.natCast_self] using P.chiK_eq_one_of_dvd P.d_prime h_dvd
 
-/-- The field E = K(ζ) obtained from K by adjoining a primitive root of unity ζ of order q₁ = 3^c
-2^s q₀. -/
+/--
+The field E = K(ζ) obtained from K by adjoining a primitive root of unity ζ of order q₁ = 3^c
+2^s q₀.
+-/
 def E : Type := CyclotomicField (P.q₁ s) P.K
-  deriving Field, Algebra P.K, NumberField
+deriving Field, Algebra P.K, NumberField
 
-/-- The infinite places of the field E = K(ζ) at level s; they carry the group structure of
-Gal(E/K) (`New.Parameters.galOfPlace`). -/
+/--
+The infinite places of the field E = K(ζ) at level s; they carry the group structure of
+Gal(E/K) (`New.Parameters.galOfPlace`).
+-/
 protected abbrev Φ : Type := InfinitePlace (P.E s)
 
-/-- The real number exp(γ − Re L′/L(1, χ_K))·2π/rd_E, with γ Euler's constant and rd_E the
-root discriminant of E. -/
+/--
+The real number exp(γ − Re L′/L(1, χ_K))·2π/rd_E, with γ Euler's constant and rd_E the
+root discriminant of E.
+-/
 def bigOmega : ℝ := Real.exp (chowlaSelbergConst P.d) * (2 * Real.pi / rootDiscr (P.E s))
 
 instance : IsCyclotomicExtension {P.q₁ s} P.K (P.E s) := CyclotomicField.isCyclotomicExtension ..
@@ -234,15 +246,17 @@ lemma irreducible_cyclotomic : Irreducible (cyclotomic (P.q₁ s) P.K) := by
   simpa using IsCyclotomicExtension.irreducible_cyclotomic_of_totient_le_finrank M L
     (Nat.le_of_mul_le_mul_left h_deg (Nat.totient_pos.2 (NeZero.pos P.d)))
 
-/-- A chosen ℚ-algebra embedding of E = K(ζ), ζ of order q₁, into the cyclotomic field
-ℚ(ζ_{q₁d}). -/
+/--
+A chosen ℚ-algebra embedding of E = K(ζ), ζ of order q₁, into the cyclotomic field
+ℚ(ζ_{q₁d}).
+-/
 def toCycloField {P : Parameters} {s : ℕ} : E P s →ₐ[ℚ] cycloField (P.q₁ s * P.d) :=
   have hζ := zeta_spec (P.q₁ s * P.d) ℚ (cycloField (P.q₁ s * P.d))
   -- `ζ ^ q₁` is a primitive `d`-th root of unity, so the Gauss sum embeds `K`.
   let := (QuadField.embOfPrimitiveRoot P.d (hζ.pow NeZero.one_le rfl)).toAlgebra
   -- `ζ ^ d` is a primitive `q₁`-th root of unity: the cyclotomic polynomial of order `q₁` splits.
-  (SplittingField.lift _ (by
-    simp [cyclotomic_eq_prod_X_sub_primitiveRoots (hζ.pow one_le (mul_comm ..))])).toRatAlgHom
+  (SplittingField.lift _
+    (by simp [cyclotomic_eq_prod_X_sub_primitiveRoots (hζ.pow one_le (mul_comm ..))])).toRatAlgHom
 
 instance : IsAbelianGalois ℚ (P.E s) := (isAbelianGalois {P.q₁ s * P.d} ..).of_algHom toCycloField
 
@@ -262,44 +276,57 @@ lemma algHom_eq_of_mk_eq {φ ψ : P.E s →ₐ[P.K] ℂ}
       simpa using RingHom.congr_fun h_conj (algebraMap P.K (P.E s) x)
     exact absurd h_real (IsTotallyComplex.complexEmbedding_not_isReal _)
 
-/-- The infinite places of E form a commutative group. The law is transported from Gal(E/K) along
-the bijection that sends g to the place of a fixed embedding of E over K composed with g. -/
+/--
+The infinite places of E form a commutative group. The law is transported from Gal(E/K) along
+the bijection that sends g to the place of a fixed embedding of E over K composed with g.
+-/
 instance : CommGroup (P.Φ s) :=
-  (Equiv.ofBijective (fun g : Gal(P.E s/P.K) ↦ InfinitePlace.mk (lift.comp g.toAlgHom).toRingHom)
+  (Equiv.ofBijective
+    (fun g : Gal(P.E s/P.K) ↦ InfinitePlace.mk (lift.comp g.toAlgHom).toRingHom)
     (by
       refine ⟨fun g g' h ↦ AlgEquiv.ext fun x ↦ ?_, fun w ↦ ?_⟩
       · exact lift.injective (AlgHom.congr_fun (P.algHom_eq_of_mk_eq s h) x)
       · -- All infinite places of `E` lie above the one infinite place of `K`, so they are
         -- conjugate, and `g` sends the place of an embedding `φ` to that of `φ ∘ g⁻¹`.
-        obtain ⟨g, hg⟩ : ∃ g : Gal(P.E s/P.K),
-            g • InfinitePlace.mk (lift : P.E s →ₐ[P.K] ℂ).toRingHom = w :=
+        obtain ⟨g, hg⟩
+            : ∃ g : Gal(P.E s/P.K), g • InfinitePlace.mk (lift : P.E s →ₐ[P.K] ℂ).toRingHom = w :=
           exists_smul_eq_of_comap_eq (k := P.K) (by subsingleton)
         exact ⟨g⁻¹, hg⟩)).symm.commGroup
 
-/-- The isomorphism v ↦ σ_v from the group of infinite places of E to Gal(E/K). The place that
-corresponds to a in (ℤ/q₁)^× goes to the automorphism ζ ↦ ζ^a. -/
+/--
+The isomorphism v ↦ σ_v from the group of infinite places of E to Gal(E/K). The place that
+corresponds to a in (ℤ/q₁)^× goes to the automorphism ζ ↦ ζ^a.
+-/
 def galOfPlace : P.Φ s ≃* Gal(P.E s/P.K) := Equiv.mulEquiv _
 
-/-- The group isomorphism from the group of infinite places of E to (ℤ/q₁)^×. It is the composite of
-`New.Parameters.galOfPlace` with the isomorphism Gal(E/K) ≅ (ℤ/q₁)^× given by the action on ζ. -/
+/--
+The group isomorphism from the group of infinite places of E to (ℤ/q₁)^×. It is the composite of
+`New.Parameters.galOfPlace` with the isomorphism Gal(E/K) ≅ (ℤ/q₁)^× given by the action on ζ.
+-/
 def placeMulEquiv : P.Φ s ≃* (ZMod (P.q₁ s))ˣ :=
   (P.galOfPlace s).trans (autEquivPow (P.E s) (P.irreducible_cyclotomic s))
 
-/-- The infinite place of E named by the class of the integer ν modulo q₁ if ν is prime to q₁, and
-the identity place otherwise. -/
+/--
+The infinite place of E named by the class of the integer ν modulo q₁ if ν is prime to q₁, and
+the identity place otherwise.
+-/
 def placeOfInt (ν : ℤ) : P.Φ s :=
   if h : IsUnit (Int.cast ν) then (P.placeMulEquiv s).symm h.unit else 1
 
-/-- For a divisor m of q₁, the homomorphism from the group of infinite places of E, identified with
-(ℤ/q₁)^×, to (ℤ/m)^× given by reduction modulo m. -/
+/--
+For a divisor m of q₁, the homomorphism from the group of infinite places of E, identified with
+(ℤ/q₁)^×, to (ℤ/m)^× given by reduction modulo m.
+-/
 def placeClass {s m : ℕ} (d : m ∣ P.q₁ s) : P.Φ s →* (ZMod m)ˣ :=
   (ZMod.unitsMap d).comp (P.placeMulEquiv s).toMonoidHom
 
 /-- A chosen primitive q₁-th root of unity ζ in E. -/
 def ζ : P.E s := zeta (P.q₁ s) P.K (P.E s)
 
-/-- The CM type of E: the embedding at the place v is a fixed embedding of E over K composed with
-the automorphism `New.Parameters.galOfPlace` s v. -/
+/--
+The CM type of E: the embedding at the place v is a fixed embedding of E over K composed with
+the automorphism `New.Parameters.galOfPlace` s v.
+-/
 instance : CMType (P.E s) where
   Φ v := (lift.comp (P.galOfPlace s v).toAlgHom).toRingHom
   mk_Φ := (P.galOfPlace s).left_inv

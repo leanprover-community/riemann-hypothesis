@@ -41,27 +41,32 @@ namespace New.Variety
 open CategoryTheory AlgebraicGeometry CommRingCat LocallyConstant WittVector Function AddCommGrpCat
   TensorProduct Pi
 
-variable {ℓ : ℕ} [ThePrime ℓ] {n : ℕ} (R : CommRingCat)
-  (Ω : Type) [CommRing Ω] [Algebra R Ω]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {n : ℕ}
+  (R : CommRingCat) (Ω : Type) [CommRing Ω] [Algebra R Ω]
   (Γ : Type*) [Group Γ] [MulSemiringAction Γ Ω] [SMulCommClass Γ R Ω]
 
 /-! ### Definitions -/
 
-/-- The coefficient `ℤ_ℓ`: a test ring `A` goes to the Witt vectors of the ring of locally constant
-functions `Spec A → 𝔽_ℓ`. -/
+/--
+The coefficient `ℤ_ℓ`: a test ring `A` goes to the Witt vectors of the ring of locally constant
+functions `Spec A → 𝔽_ℓ`.
+-/
 abbrev ellAdicCoeff : AbFunctor TestRing :=
   moduleCoeff (asModules ((testIncl ⋙ locConstAlg) ⋙ wittFunctor ℤ_[ℓ]))
 
 /-- Pull-back along `α : M ⟶ N` on `ℚ_ℓ ⊗ Ext^n(-, ℤ_ℓ)`, as an additive function of `α`. -/
-def ellAdicPull (n : ℕ) {M N : AbFunctor TestRing} :
-    (M ⟶ N) →+ ℚ_[ℓ] ⊗[ℤ_[ℓ]] H N ellAdicCoeff n →ₗ[ℚ_[ℓ]] ℚ_[ℓ] ⊗[ℤ_[ℓ]] H M ellAdicCoeff n :=
-  AddMonoidHom.mk' (fun α : M ⟶ N ↦ (H.mapₗ ℤ_[ℓ] ellAdicCoeff α n).baseChange ℚ_[ℓ])
-    fun α β ↦ LinearMap.restrictScalars_injective ℤ_[ℓ] <| TensorProduct.ext' fun r x ↦ by
-      change r ⊗ₜ H.map ellAdicCoeff (α + β) n x =
-        r ⊗ₜ H.map ellAdicCoeff α n x + r ⊗ₜ H.map ellAdicCoeff β n x
-      rw [← tmul_add]
-      exact congrArg (r ⊗ₜ ·)
-        (DFunLike.congr_fun ((H.mapHom ellAdicCoeff M N n).map_add α β) x)
+def ellAdicPull (n : ℕ) {M N : AbFunctor TestRing}
+    : (M ⟶ N) →+ ℚ_[ℓ] ⊗[ℤ_[ℓ]] H N ellAdicCoeff n →ₗ[ℚ_[ℓ]] ℚ_[ℓ] ⊗[ℤ_[ℓ]] H M ellAdicCoeff n :=
+  AddMonoidHom.mk'
+    (fun α : M ⟶ N ↦ (H.mapₗ ℤ_[ℓ] ellAdicCoeff α n).baseChange ℚ_[ℓ])
+    fun α β ↦
+      LinearMap.restrictScalars_injective ℤ_[ℓ] <| TensorProduct.ext' fun r x ↦ by
+        change r ⊗ₜ H.map ellAdicCoeff (α + β) n x
+          = r ⊗ₜ H.map ellAdicCoeff α n x + r ⊗ₜ H.map ellAdicCoeff β n x
+        rw [← tmul_add]
+        exact congrArg (r ⊗ₜ ·) (DFunLike.congr_fun ((H.mapHom ellAdicCoeff M N n).map_add α β) x)
 
 /-- Pulling back along `β` and then along `α` is pulling back along `α ≫ β`. -/
 lemma ellAdicPull.comp {M N K : AbFunctor TestRing} (α : M ⟶ N) (β : N ⟶ K)
@@ -71,22 +76,25 @@ lemma ellAdicPull.comp {M N K : AbFunctor TestRing} (α : M ⟶ N) (β : N ⟶ K
   | tmul r y => simp [ellAdicPull, H.mapₗ, H.map_comp]
   | add x y hx hy => simp [hx, hy]
 
-/-- The functor of points (a functor from commutative rings to types, `PointFunctor`) of the base
-change `X ×_R Ω` of a scheme `X` over `R`. -/
+/--
+The functor of points (a functor from commutative rings to types, `PointFunctor`) of the base
+change `X ×_R Ω` of a scheme `X` over `R`.
+-/
 def geomPoints : Over (Spec R) ⥤ PointFunctor where
   obj X := baseChangeOf (pointsToBase X.hom) (ofHom (algebraMap R Ω))
   -- a point is a pair (point of `X`, ring map out of `Ω`); compose the first with `f`
-  map {X Y} f :=
-    { app B :=
-        ↾fun x ↦
-          ⟨(ULift.up (x.1.1.1 ≫ f.1), x.1.2), by
-            -- `f` is a map over `Spec R`, so the new point lies over the same map out of `R`
-            have h_over : (x.1.1.1 ≫ f.1) ≫ Y.hom = x.1.1.1 ≫ X.hom :=
-              (Category.assoc ..).trans (congrArg (x.val.1.down ≫ ·) f.w)
-            exact (congrArg (fun h ↦ ULift.up (Spec.preimage h)) h_over).trans x.property⟩
-      naturality _ _ _ := by
-        ext x
-        exact baseChangeOf.ext (congrArg ULift.up (Category.assoc ..)) fun _ ↦ rfl }
+  map {X Y} f := {
+    app B :=
+      ↾fun x ↦
+        ⟨(ULift.up (x.1.1.1 ≫ f.1), x.1.2), by
+          -- `f` is a map over `Spec R`, so the new point lies over the same map out of `R`
+          have h_over : (x.1.1.1 ≫ f.1) ≫ Y.hom = x.1.1.1 ≫ X.hom :=
+            (Category.assoc ..).trans (congrArg (x.val.1.down ≫ ·) f.w)
+          exact (congrArg (fun h ↦ ULift.up (Spec.preimage h)) h_over).trans x.property⟩
+    naturality _ _ _ := by
+      ext x
+      exact baseChangeOf.ext (congrArg ULift.up (Category.assoc ..)) fun _ ↦ rfl
+  }
   map_id _ := by
     ext B x
     exact baseChangeOf.ext (congrArg ULift.up (Category.comp_id _)) fun _ ↦ rfl
@@ -96,44 +104,52 @@ def geomPoints : Over (Spec R) ⥤ PointFunctor where
 
 /-- Geometric `ℓ`-adic cohomology in degree `n`: `X ↦ ℚ_ℓ ⊗ H^n(X ×_R Ω, ℤ_ℓ)`. -/
 def ellAdicCohom (n : ℕ) : (Over (Spec R))ᵒᵖ ⥤ ModuleCat ℚ_[ℓ] :=
-  (geomPoints R Ω).op ⋙
-    { obj X := ModuleCat.of ℚ_[ℓ] (ℚ_[ℓ] ⊗[ℤ_[ℓ]] H (freeAb.obj (testIncl ⋙ X.unop)) ellAdicCoeff n)
-      map u := ModuleCat.ofHom (ellAdicPull n (freeAb.map (mapOnTests u.unop)))
-      map_id X := ModuleCat.hom_ext <| LinearMap.restrictScalars_injective ℤ_[ℓ] <|
+  (geomPoints R Ω).op ⋙ {
+    obj X := ModuleCat.of ℚ_[ℓ] (ℚ_[ℓ] ⊗[ℤ_[ℓ]] H (freeAb.obj (testIncl ⋙ X.unop)) ellAdicCoeff n)
+    map u := ModuleCat.ofHom (ellAdicPull n (freeAb.map (mapOnTests u.unop)))
+    map_id X :=
+      ModuleCat.hom_ext <| LinearMap.restrictScalars_injective ℤ_[ℓ] <|
         TensorProduct.ext' fun r x ↦ by
           change r ⊗ₜ H.map ellAdicCoeff (freeAb.map (mapOnTests (𝟙 X.unop))) n x = r ⊗ₜ x
-          rw [show mapOnTests (𝟙 X.unop) = 𝟙 _ from Functor.whiskerLeft_id testIncl,
-            freeAb.map_id, H.map_id]
-      map_comp f g := ModuleCat.hom_ext <| LinearMap.ext fun x ↦
+          rw [show mapOnTests (𝟙 X.unop) = 𝟙 _ from Functor.whiskerLeft_id testIncl, freeAb.map_id,
+            H.map_id]
+    map_comp f g :=
+      ModuleCat.hom_ext <| LinearMap.ext fun x ↦
         (congrArg (fun u ↦ ellAdicPull n u x) <| by
-          dsimp only [mapOnTests]
-          rw [unop_comp, Functor.whiskerLeft_comp, freeAb.map_comp]).trans
-          (ellAdicPull.comp _ _ x).symm }
+            dsimp only [mapOnTests]
+            rw [unop_comp, Functor.whiskerLeft_comp, freeAb.map_comp]).trans
+          (ellAdicPull.comp _ _ x).symm
+  }
 
 /-- The action on `H^n(X ×_R Ω)` of a group `Γ` acting on `Ω` by `R`-algebra automorphisms. -/
-def ellAdicCohom.galoisAction (X : Over (Spec R)) (n : ℕ) :
-    Representation ℚ_[ℓ] Γ (ellAdicCohom R Ω n ⟨X⟩) :=
+def ellAdicCohom.galoisAction (X : Over (Spec R)) (n : ℕ)
+    : Representation ℚ_[ℓ] Γ (ellAdicCohom R Ω n ⟨X⟩) :=
   -- an `R`-automorphism `g` of `Ω` acts on the points over `Ω`, hence on their cohomology
   MonoidHom.comp
-    { toFun (g : Ω ≃ₐ[R] Ω) :=
-        ellAdicPull n (freeAb.map (mapOnTests (baseChangeTransition _ (CommRingCat.ofHom g)
-          (by ext r; exact g.commutes r))))
+    {
+      toFun (g : Ω ≃ₐ[R] Ω) :=
+        ellAdicPull n
+          (freeAb.map (mapOnTests (baseChangeTransition _ (CommRingCat.ofHom g)
+            (by ext r; exact g.commutes r))))
       map_one' := congr($((ellAdicCohom R Ω n).map_id (Opposite.op X)).hom)
-      map_mul' g g' := LinearMap.ext fun x ↦ by
-        let tr (h : Ω ≃ₐ[R] Ω) :
-            ((geomPoints R Ω).op.obj ⟨X⟩).unop ⟶ ((geomPoints R Ω).op.obj ⟨X⟩).unop :=
-          baseChangeTransition (pointsToBase X.hom) (CommRingCat.ofHom h)
-            (by ext r; exact h.commutes r)
-        have h_tr : tr g ≫ tr g' = tr (g * g') := by
-          ext B z
-          exact baseChangeOf.ext rfl fun _ ↦ rfl
-        have h_free : freeAb.map (mapOnTests (tr (g * g'))) =
-            freeAb.map (mapOnTests (tr g)) ≫ freeAb.map (mapOnTests (tr g')) := by
-          dsimp only [mapOnTests]
-          rw [← freeAb.map_comp, ← Functor.whiskerLeft_comp, h_tr]
-        exact (congrArg (fun u ↦ ellAdicPull n u x) h_free).trans
-          (ellAdicPull.comp (freeAb.map (mapOnTests (tr g)))
-            (freeAb.map (mapOnTests (tr g'))) x).symm }
+      map_mul' g g' :=
+        LinearMap.ext fun x ↦ by
+          let tr (h : Ω ≃ₐ[R] Ω)
+              : ((geomPoints R Ω).op.obj ⟨X⟩).unop ⟶ ((geomPoints R Ω).op.obj ⟨X⟩).unop :=
+            baseChangeTransition (pointsToBase X.hom) (CommRingCat.ofHom h)
+              (by ext r; exact h.commutes r)
+          have h_tr : tr g ≫ tr g' = tr (g * g') := by
+            ext B z
+            exact baseChangeOf.ext rfl fun _ ↦ rfl
+          have h_free
+              : freeAb.map (mapOnTests (tr (g * g')))
+                = freeAb.map (mapOnTests (tr g)) ≫ freeAb.map (mapOnTests (tr g')) := by
+            dsimp only [mapOnTests]
+            rw [← freeAb.map_comp, ← Functor.whiskerLeft_comp, h_tr]
+          exact (congrArg (fun u ↦ ellAdicPull n u x) h_free).trans
+            (ellAdicPull.comp (freeAb.map (mapOnTests (tr g))) (freeAb.map (mapOnTests (tr g')))
+              x).symm
+    }
     (MulSemiringAction.toAlgAut Γ R Ω)
 
 /-- Pull-back along a map `f : X ⟶ Y` of `R`-schemes commutes with the action of `Γ`. -/

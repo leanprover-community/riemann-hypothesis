@@ -149,9 +149,11 @@ lemma deriv_theta_sq {z : ℂ} (hz : z + C.t ∉ C.Λ) : deriv C.θ z ^ 2 =
 
 variable {p : ℕ} [Fact p.Prime] [PadicPlace p]
 
-/-- The power series `g = -log θ` with `g(0) = 0`: the negative logarithm of the Taylor series of
-`θ`, read in `ℂ_p`. -/
-noncomputable def negLogTheta : ℂ_[p]⟦X⟧ := -logOf (taylorVia ιₚ C.θ)
+/--
+The power series `g = -log θ` with `g(0) = 0`: the negative logarithm of the Taylor series of
+`θ`, read in `ℂ_p`.
+-/
+noncomputable def negLogTheta : ℂ_[p]⟦X⟧ := - logOf (taylorVia ιₚ C.θ)
 
 lemma constantCoeff_taylorVia_theta : constantCoeff (taylorVia ιₚ C.θ) = 1 := by
   rw [constantCoeff_taylorVia, C.theta_zero, map_one]
@@ -446,13 +448,15 @@ end LinearForms
 section AdditionFormula
 variable {A : Type} [CommRing A] (a x₀ y₀ x₁ y₁ u : A)
 
-/-- Euler's formula for the `y`-coordinate of the sum of two points `(x₀, y₀)` and `(x₁, y₁)` on
+/--
+Euler's formula for the `y`-coordinate of the sum of two points `(x₀, y₀)` and `(x₁, y₁)` on
 the cubic `y² + a x y = x³ + x` with origin `(0, 0)`; here `u` stands for `1 / (1 - x₀ x₁)`.
 The factor `1 + x₀ x₁ u` then equals `u`; in this form the value at `x₀ = y₀ = 0` is `y₁` for every
-`u`. -/
+`u`.
+-/
 def eulerAddition : A :=
-  (1 + x₀ * x₁ * u) ^ 2 * ((1 + x₀ * x₁) * (y₀ + y₁) - a * (y₀ * y₁)) +
-    u ^ 3 * ((3 + x₀ * x₁) * (x₀ + x₁) + a ^ 2 * (x₀ * x₁)) * (x₀ * y₁ + x₁ * y₀ + a * (x₀ * x₁))
+  (1 + x₀ * x₁ * u) ^ 2 * ((1 + x₀ * x₁) * (y₀ + y₁) - a * (y₀ * y₁))
+    + u ^ 3 * ((3 + x₀ * x₁) * (x₀ + x₁) + a ^ 2 * (x₀ * x₁)) * (x₀ * y₁ + x₁ * y₀ + a * (x₀ * x₁))
 
 variable {a x₀ y₀ x₁ y₁ u}
 
@@ -483,8 +487,11 @@ end AdditionFormula
 
 namespace CMLattice
 
-variable {d : ℕ} (C : CMLattice d) {p : ℕ} [Fact p.Prime] [PadicPlace p]
-  {I X : Type} [Fintype I] [Fintype X] {μ : I → X → ℂ_[p]} {H : MvPowerSeries X ℂ_[p]}
+variable
+  {d : ℕ} (C : CMLattice d)
+  {p : ℕ} [Fact p.Prime] [PadicPlace p]
+  {I X : Type} [Fintype I] [Fintype X]
+  {μ : I → X → ℂ_[p]} {H : MvPowerSeries X ℂ_[p]}
 
 /-- For a linear form `c z` (`linearSeries c`), the series `y(c z)` has constant term zero; here
 `y(z)` is the Taylor series of `translatedY` at the origin, read in `ℂ_[p]` through `ιₚ`. -/
@@ -501,9 +508,11 @@ lemma hasSubst_translatedY_subst (μ : I → X → ℂ_[p]) :
   hasSubst_of_constantCoeff_zero fun i : I ↦
     C.constantCoeff_translatedY_subst_linearSeries (μ i)
 
-/-- The ring `𝒪[[y(μ_i z)]]` of integral power series in the series `y(μ_i z)`, for a family of
+/--
+The ring `𝒪[[y(μ_i z)]]` of integral power series in the series `y(μ_i z)`, for a family of
 linear forms `μ_i` and `y = translatedY`: the image of the series over `valRingCp p`, mapped into
-`ℂ_[p]` by `seriesToCp`, under the substitution of the `y(μ_i z)`. -/
+`ℂ_[p]` by `seriesToCp`, under the substitution of the `y(μ_i z)`.
+-/
 noncomputable def multiSeriesRing (μ : I → X → ℂ_[p]) : Subring (MvPowerSeries X ℂ_[p]) :=
   ((substAlgHom (a := (taylorVia ιₚ C.translatedY).subst ∘ linearSeries ∘ μ)
     (C.hasSubst_translatedY_subst μ)).toRingHom.comp (seriesToCp (p := p))).range

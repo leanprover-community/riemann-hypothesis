@@ -36,15 +36,17 @@ variable (E : Type*) {ι : Type*} [Field E] [CMType E]
 noncomputable def principalAdeleUnits : Subgroup (𝔸 E)ˣ :=
   (Units.map (toAdele (E := E)).toMonoidHom).range
 
-/-- For a CM field E, the principal ideles, that is the image of E^× in the units of the adele ring,
+/--
+For a CM field E, the principal ideles, that is the image of E^× in the units of the adele ring,
 form a discrete subgroup: they map into the discrete set `New.ratAdeles E`, the image of E in the
-adeles. -/
+adeles.
+-/
 instance : DiscreteTopology (principalAdeleUnits E) := by
   -- The principal ideles lie in the preimage of the discrete set of rational adeles.
   have h_rat : IsDiscrete (ratAdeles E : Set (𝔸 E)) :=
     ⟨isCovolOneLattice_ratAdeles.toDiscreteTopology⟩
-  have h_subset :
-      (principalAdeleUnits E : Set (𝔸 E)ˣ) ⊆ Units.val ⁻¹' (ratAdeles E : Set (𝔸 E)) := by
+  have h_subset
+      : (principalAdeleUnits E : Set (𝔸 E)ˣ) ⊆ Units.val ⁻¹' (ratAdeles E : Set (𝔸 E)) := by
     simp [principalAdeleUnits, ratAdeles, Set.range_subset_iff]
   have h_discrete : IsDiscrete (Units.val ⁻¹' (ratAdeles E : Set (𝔸 E))) :=
     h_rat.preimage (by fun_prop) Units.val_injective

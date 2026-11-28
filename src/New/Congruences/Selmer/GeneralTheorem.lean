@@ -44,40 +44,50 @@ open Finset Filter Module MvPolynomial IsDiscreteValuationRing IsLocalRing
 
 open scoped NNReal ENNReal NNRat
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-  {S₀ : Finset (FinPlace E)}
-  {g₀ : Gal(Ω/E)} {ι κ : Type} {n : ι → Type} [∀ i : ι, Fintype (n i)] [∀ i : ι, DecidableEq (n i)]
+variable
+  {ℓ : ℕ} [ThePrime ℓ]
+  {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+  {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} {ι κ : Type} {n : ι → Type}
+  [∀ i : ι, Fintype (n i)] [∀ i : ι, DecidableEq (n i)]
   {O : CoeffRing ℓ} (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i))
   (Y : κ → StickelbergerSystem ℓ S₀ g₀)
 
 open scoped Classical in
-/-- The conclusions of the general twisting theorem for Selmer data `T i`, Stickelberger systems
+/--
+The conclusions of the general twisting theorem for Selmer data `T i`, Stickelberger systems
 `Y k`, a bound `ε`, a set of primes `Q` and one character `ψ`. The datum `T i` is a lattice
 `O ^ n i` with a Galois action unramified outside `S₀`, local conditions above `ℓ` and a finite
 number `β_T = (T i).β`, a sum of lengths of `O`-modules. The system `Y k` has elements
 `Θ_Q = (Y k).element Q` of the group rings of class groups `Cl_Q` and a finite number
 `β = (Y k).β`, a sum of valuations. The element `g₀` enters the bounds through `β_T` and `β`.
-Below, `v` is the valuation `ellVal` with `v(ℓ) = 1`. -/
-structure IsSmallTwist (ε : ℝ≥0) (Q : Finset (FinPlace E)) (ψ : Gal(Ω/E) →* PadicAlgCl ℓ) :
-    Prop where
-  /-- `ψ` comes by `y ↦ y / ȳ` from an idele class character of tame level `Q` trivial above `ℓ`;
+Below, `v` is the valuation `ellVal` with `v(ℓ) = 1`.
+-/
+structure IsSmallTwist (ε : ℝ≥0) (Q : Finset (FinPlace E)) (ψ : Gal(Ω/E) →* PadicAlgCl ℓ)
+    : Prop where
+  /--
+  `ψ` comes by `y ↦ y / ȳ` from an idele class character of tame level `Q` trivial above `ℓ`;
   so it is locally constant, anticyclotomic, unramified outside `Q ∪ Q̄` and trivial on the
-  decomposition groups above `ℓ`. -/
+  decomposition groups above `ℓ`.
+  -/
   isFromU1 : IsFromU1 (placesDividing E ℓ) Q ψ
   /-- `ψ` is ramified at every prime of `Q`. -/
   ramified : ∀ v ∈ Q, ∃ g ∈ inertiaAbove {v}, ψ g ≠ 1
-  /-- (a) `len Sel_Q(T ψ) ≤ β_T + ε` for each datum, with lengths scaled so that
-  `len (O / ℓ) = 1`. -/
+  /--
+  (a) `len Sel_Q(T ψ) ≤ β_T + ε` for each datum, with lengths scaled so that
+  `len (O / ℓ) = 1`.
+  -/
   length_le (i : ι) : (T i).TwistedLengthLe Q ψ (O.normLength (T i).β + ε)
   /-- (b) `v(ψ(Θ_Q)) ≤ β + ε` for each system. -/
   ellVal_value_le (k : κ) : ellVal (groupRingEval ψ ((Y k).element Q)) ≤ (Y k).β + ε
-  /-- (c) `∑ v(ψ(γ_w) - 1) ≤ ε`, over `w ∈ Q ∪ Q̄`, for any tame generators `γ_w` at any places
-  `A w` above `w`. -/
-  sum_le_of_isTameGenerator (A : FinPlace E → ClosurePlace)
-    (hA : ∀ w : FinPlace E, IsPlaceOver (A w) w)
+  /--
+  (c) `∑ v(ψ(γ_w) - 1) ≤ ε`, over `w ∈ Q ∪ Q̄`, for any tame generators `γ_w` at any places
+  `A w` above `w`.
+  -/
+  sum_le_of_isTameGenerator
+    (A : FinPlace E → ClosurePlace) (hA : ∀ w : FinPlace E, IsPlaceOver (A w) w)
     (γ : ∀ w : FinPlace E, inertiaGroup Gal(Ω/E) (A w))
-    (hγ : ∀ w : FinPlace E, IsTameGenerator (γ w)) :
-    ∑ w ∈ Q ∪ Q.image star, ellVal (ψ (γ w) - 1) ≤ ε
+    (hγ : ∀ w : FinPlace E, IsTameGenerator (γ w))
+    : ∑ w ∈ Q ∪ Q.image star, ellVal (ψ (γ w) - 1) ≤ ε
 
 /-- If `ψ` satisfies `IsSmallTwist T Y ε Q ψ` (the conclusions of the general twisting theorem with
 bound `ε`), then it satisfies `IsSmallTwist T Y ε' Q ψ` for every `ε' ≥ ε`. -/
@@ -150,13 +160,15 @@ namespace TwistPolynomials
 
 variable {T Y} {s₀ N : ℕ} {r : ℚ≥0} (X : TwistPolynomials T Y s₀ r N) {ζ : X.auxPrimes → intQpBar ℓ}
 
-/-- The character `ψ = ∏ ζ_𝔮 ^ λ_𝔮`, a product over the primes `𝔮` of `X.auxPrimes`, for twist
+/--
+The character `ψ = ∏ ζ_𝔮 ^ λ_𝔮`, a product over the primes `𝔮` of `X.auxPrimes`, for twist
 polynomials `X` with homomorphisms `λ_𝔮 = X.primeChar 𝔮` to `ℤ / ℓ ^ N`, and for roots of unity
 `ζ_𝔮` of order dividing `ℓ ^ N` in the ring `intQpBar ℓ` of integers of `PadicAlgCl ℓ`. The
 parameters `s₀` (at least twice the number of primes) and `r` (a lower bound for the valuations of
-the points of `X`) play no part in the definition. -/
-abbrev twist (hζ : ∀ v : X.auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1) :
-    Gal(Ω/E) →* PadicAlgCl ℓ :=
+the points of `X`) play no part in the definition.
+-/
+abbrev twist (hζ : ∀ v : X.auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1)
+    : Gal(Ω/E) →* PadicAlgCl ℓ :=
   pointChar X.primeChar (fun v ↦ (ζ v : PadicAlgCl ℓ)) hζ
 
 /-- The value of the twist at `g` is `∏ ζ_𝔮 ^ λ_𝔮(g)`, with `λ_𝔮(g)` read in `[0, ℓ ^ N)`. -/
@@ -367,7 +379,8 @@ lemma exists_rootsOfUnity_ellVal_eval_le (s₀ : ℕ) {m : ℕ} (hm : 1 ≤ m) {
   refine ⟨ζ, hζ, hζ_far, fun i j hj ↦ ?_⟩
   simpa only [h_eq, eval_Ppow, add_sub_cancel] using hζ_val (i, ⟨j, hj⟩)
 
-/-- The twisting theorem, general form. Let `E` be a CM number field inside the algebraic closure
+/--
+The twisting theorem, general form. Let `E` be a CM number field inside the algebraic closure
 `Ω` of `ℚ`, let `ℓ` be a prime, `v` the valuation of `PadicAlgCl ℓ` with `v(ℓ) = 1`, and `O` the
 ring of integers of a finite Galois extension of `ℚ_ℓ`; lengths are scaled so that
 `len (O / ℓ) = 1`. Let `S₀` be a finite set of places of `E` that contains those above `ℓ`, and let
@@ -391,11 +404,15 @@ every prime of `Q`, and
 * the Selmer group of each `T i` twisted by `χ` has length at most `β_T + ε`;
 * `v(χ(Θ_Q)) ≤ β + ε` for each `Y k`;
 * `∑ v(χ(γ_w) - 1) ≤ ε`, over the primes `w` of `Q` and their conjugates, for any generators `γ_w`
-  of tame inertia above `w`. -/
-theorem exists_anticyclotomic_twist [Finite ι] [Finite κ] (hS₀ : placesDividing E ℓ ⊆ S₀)
-    (hg₀ : g₀ ∈ inertiaAbove (S₀ \ placesDividing E ℓ)) {M : ℕ} (hM : IsTorsionLevel T M)
-    {m : ℕ} (hm : 1 ≤ m) {ε : ℝ≥0} (hε : 0 < ε) :
-    ∃ (Q : Finset (FinPlace E)) (ψ : Gal(Ω/E) →* PadicAlgCl ℓ),
+  of tame inertia above `w`.
+-/
+theorem exists_anticyclotomic_twist
+    [Finite ι] [Finite κ]
+    (hS₀ : placesDividing E ℓ ⊆ S₀) (hg₀ : g₀ ∈ inertiaAbove (S₀ \ placesDividing E ℓ))
+    {M : ℕ} (hM : IsTorsionLevel T M)
+    {m : ℕ} (hm : 1 ≤ m)
+    {ε : ℝ≥0} (hε : 0 < ε)
+    : ∃ (Q : Finset (FinPlace E)) (ψ : Gal(Ω/E) →* PadicAlgCl ℓ),
       IsAuxiliary S₀ Q ∧ ∀ j ∈ Set.Icc 1 m, IsSmallTwist T Y ε Q (ψ ^ j) := by
   -- The polynomials of the twists come with points at which they have small valuation. Roots of
   -- unity `ζ` are found such that, for all data, systems and exponents `j ≤ m` at once, the
@@ -404,8 +421,11 @@ theorem exists_anticyclotomic_twist [Finite ι] [Finite κ] (hS₀ : placesDivid
   · obtain ⟨Q, ψ, hQ, hψ⟩ := h_small one_half_pos one_half_lt_one
     exact ⟨Q, ψ, hQ, fun j hj ↦ (hψ j hj).mono T Y (one_half_lt_one.le.trans (not_lt.1 hε_one))⟩
   -- Choose `s₀`, then `r`, then `h₀`, and only then the level `N ≥ h₀` and the polynomials.
-  obtain ⟨s₀, hs₀, h_eventually⟩ : ∃ s₀ : ℕ, 1 ≤ s₀ ∧ ∀ r : ℚ≥0, 0 < r → s₀ * r < 1 →
-      ∀ᶠ N : ℕ in atTop, Nonempty (TwistPolynomials T Y s₀ r N) :=
+  obtain ⟨s₀, hs₀, h_eventually⟩
+      : ∃ s₀ : ℕ,
+        1 ≤ s₀
+          ∧ ∀ r : ℚ≥0,
+            0 < r → s₀ * r < 1 → ∀ᶠ N : ℕ in atTop, Nonempty (TwistPolynomials T Y s₀ r N) :=
     exists_twistPolynomials T Y hg₀ hM
   obtain ⟨r, hr_pos, hr_ε⟩ : ∃ r : ℚ≥0, 0 < r ∧ s₀ * (r : ℝ≥0) ≤ ε / 2 :=
     exists_nnrat_mul_le s₀ (half_pos hε)
@@ -413,8 +433,11 @@ theorem exists_anticyclotomic_twist [Finite ι] [Finite κ] (hS₀ : placesDivid
   let β : ι ⊕ κ → ℝ≥0∞ := Sum.elim (fun i ↦ O.normLength (T i).β) fun k ↦ (Y k).β
   have hβ : ∀ s : ι ⊕ κ, β s ≠ ⊤ :=
     Sum.forall.2 ⟨fun i ↦ normLength_ne_top (T i).β_ne_top, fun k ↦ (Y k).β_ne_top⟩
-  obtain ⟨h₀, h_roots⟩ := exists_rootsOfUnity_ellVal_eval_le (ℓ := ℓ) s₀ hm hr_pos
-    (β := fun s ↦ β s + 1) (fun s ↦ ENNReal.add_ne_top.2 ⟨hβ s, ENNReal.one_ne_top⟩) (half_pos hε)
+  obtain ⟨h₀, h_roots⟩ :=
+    exists_rootsOfUnity_ellVal_eval_le (ℓ := ℓ) s₀ hm hr_pos
+      (β := fun s ↦ β s + 1)
+      (fun s ↦ ENNReal.add_ne_top.2 ⟨hβ s, ENNReal.one_ne_top⟩)
+      (half_pos hε)
   obtain ⟨N, ⟨X⟩, hN⟩ : ∃ N : ℕ, Nonempty (TwistPolynomials T Y s₀ r N) ∧ h₀ ≤ N :=
     ((h_eventually r hr_pos hr_one).and (eventually_ge_atTop h₀)).exists
   let P : ι ⊕ κ → MvPolynomial X.auxPrimes (intQpBar ℓ) := Sum.elim X.datumPoly X.systemPoly
@@ -427,20 +450,22 @@ theorem exists_anticyclotomic_twist [Finite ι] [Finite κ] (hS₀ : placesDivid
     simpa using (Nat.le_mul_of_pos_left _ two_pos).trans X.two_mul_card_le
   have hP_one (s : ι ⊕ κ) : ellVal (eval (x s) (P s)).val ≤ β s + 1 :=
     (hP s).trans (add_le_add_right (mod_cast hr_one.le) (β s))
-  obtain ⟨ζ, hζ, hζ_far, hζ_val⟩ : ∃ ζ : X.auxPrimes → intQpBar ℓ,
-      (∀ v : X.auxPrimes, ζ v ^ ℓ ^ h₀ = 1) ∧
-      (∀ v : X.auxPrimes, ellVal (ζ v - 1).val ≤ (↑(r / m) : ℝ≥0)) ∧
-      ∀ s : ι ⊕ κ, ∀ j ∈ Set.Icc 1 m, ellVal (eval (fun v : X.auxPrimes ↦ ζ v ^ j - 1) (P s)).val ≤
-        ellVal (eval (x s) (P s)).val + (ε / 2 : ℝ≥0) :=
+  obtain ⟨ζ, hζ, hζ_far, hζ_val⟩
+      : ∃ ζ : X.auxPrimes → intQpBar ℓ,
+        (∀ v : X.auxPrimes, ζ v ^ ℓ ^ h₀ = 1)
+          ∧ (∀ v : X.auxPrimes, ellVal (ζ v - 1).val ≤ (↑(r / m) : ℝ≥0))
+          ∧ ∀ s : ι ⊕ κ, ∀ j ∈ Set.Icc 1 m,
+            ellVal (eval (fun v : X.auxPrimes ↦ ζ v ^ j - 1) (P s)).val
+              ≤ ellVal (eval (x s) (P s)).val + (ε / 2 : ℝ≥0) :=
     h_roots X.auxPrimes P x h_card hx hP_one
   have hζ_N (v : X.auxPrimes) : (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1 := by
     rw [← Nat.add_sub_of_le hN, pow_add, pow_mul, ← SubmonoidClass.coe_pow, hζ]
     simp
-  have h_value (s : ι ⊕ κ) {j : ℕ} (hj : j ∈ Set.Icc 1 m) :
-      ellVal (eval (fun v ↦ (ζ ^ j) v - 1) (P s)).val ≤ β s + ε :=
+  have h_value (s : ι ⊕ κ) {j : ℕ} (hj : j ∈ Set.Icc 1 m)
+      : ellVal (eval (fun v ↦ (ζ ^ j) v - 1) (P s)).val ≤ β s + ε :=
     calc
       ellVal (eval (fun v ↦ (ζ ^ j) v - 1) (P s)).val
-          ≤ ellVal (eval (x s) (P s)).val + (ε / 2 : ℝ≥0) := hζ_val s j hj
+        ≤ ellVal (eval (x s) (P s)).val + (ε / 2 : ℝ≥0) := hζ_val s j hj
       _ ≤ β s + s₀ * (r : ℝ≥0) + (ε / 2 : ℝ≥0) := by grw [hP]
       _ ≤ β s + (ε / 2 : ℝ≥0) + (ε / 2 : ℝ≥0) := by
         gcongr
@@ -448,11 +473,12 @@ theorem exists_anticyclotomic_twist [Finite ι] [Finite κ] (hS₀ : placesDivid
       _ = β s + ε := by rw [add_assoc, ← ENNReal.coe_add, add_halves]
   have hr_lt : r < 1 := (le_mul_of_one_le_left hr_pos.le (mod_cast hs₀)).trans_lt hr_one
   refine ⟨X.auxPrimes, X.twist hζ_N, X.auxiliary, fun j hj ↦ ?_⟩
-  have h_far : ∀ v : X.auxPrimes, ellVal ((ζ ^ j) v - 1).val ≤ (r : ℝ≥0) :=
-    fun v ↦ ellVal_pow_sub_one_le hr_lt hj (hζ v) (hζ_far v)
+  have h_far : ∀ v : X.auxPrimes, ellVal ((ζ ^ j) v - 1).val ≤ (r : ℝ≥0) := fun v ↦
+    ellVal_pow_sub_one_le hr_lt hj (hζ v) (hζ_far v)
   rw [X.twist_pow hζ_N j]
   exact X.isSmallTwist_twist _ hS₀ hε_one (hr_ε.trans (half_le_self hε.le)) h_far
-    (fun i ↦ h_value (.inl i) hj) fun k ↦ h_value (.inr k) hj
+    (fun i ↦ h_value (.inl i) hj)
+    fun k ↦ h_value (.inr k) hj
 
 end New.Selmer
 

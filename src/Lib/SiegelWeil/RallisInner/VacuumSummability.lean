@@ -119,13 +119,15 @@ lemma summable_norm_vacuumCoeff_univ (h_rank : 2 * card n < card m) :
     exact ⟨norm_ne_zero_iff.2 hg, hg_L⟩
   exact (summable_mul_right_iff h_pos.ne').1 (h_sum.congr_fun fun q ↦ (h_terms q).symm).summable
 
-/-- For `2 * card n < card m`, consider the numbers `vacuumCoeff (card m) b g = (b(det g) *
+/--
+For `2 * card n < card m`, consider the numbers `vacuumCoeff (card m) b g = (b(det g) *
 finMultiplier g ^ card m)⁻¹`. This is the factor by which `g` changes the vacuum matrix coefficient
 when the second space has rank `m`. These numbers are absolutely summable over the representatives
-`cosetRep q` of the cosets `q` of `Gf E n` modulo `localLevel n A`, the points integral at `A`. -/
-theorem summable_norm_vacuumCoeff (h_rank : 2 * card n < card m) (b : AutChar E)
-    (A : Set (FinPlace E)) :
-    Summable fun q : Gf E n ⧸ localLevel n A ↦ ‖vacuumCoeff (card m) b (cosetRep q).val‖ := by
+`cosetRep q` of the cosets `q` of `Gf E n` modulo `localLevel n A`, the points integral at `A`.
+-/
+theorem summable_norm_vacuumCoeff
+    (h_rank : 2 * card n < card m) (b : AutChar E) (A : Set (FinPlace E))
+    : Summable fun q : Gf E n ⧸ localLevel n A ↦ ‖vacuumCoeff (card m) b (cosetRep q).val‖ := by
   classical
   -- The norms do not see `b`, and the cosets at `A` inject into the cosets at all places.
   let ι (q : Gf E n ⧸ localLevel n A) : Gf E n ⧸ localLevel n Set.univ := ((cosetRep q).val : _)

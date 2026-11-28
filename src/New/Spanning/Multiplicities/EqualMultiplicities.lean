@@ -276,61 +276,83 @@ lemma trace_mul_tupleIdem_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasG
   exact trace_eq_of_isCuspidalAt D.f_even h_rank V V' (fun v ↦ (hs v).mono h_gap)
     (fun v ↦ (hs' v).mono h_gap) hf_mem _ h_cusp (hf_acts V) (hf_acts V')
 
-/-- Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. Then a spherical
-Hecke operator away from `M` has the same trace on the good forms of `V` and of `V'`. -/
-theorem trace_heckeOnGood_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
-    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap] (T : D.heckeAlgebra) :
-    trace ℂ (D.goodForms V) (D.heckeOnGood V T) =
-      trace ℂ (D.goodForms V') (D.heckeOnGood V' T) := by
+/--
+Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. Then a spherical
+Hecke operator away from `M` has the same trace on the good forms of `V` and of `V'`.
+-/
+theorem trace_heckeOnGood_eq
+    [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
+    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap]
+    (T : D.heckeAlgebra)
+    : trace ℂ (D.goodForms V) (D.heckeOnGood V T)
+      = trace ℂ (D.goodForms V') (D.heckeOnGood V' T) := by
   simp only [trace_heckeOnGood_eq_sum]
   exact Finset.sum_congr rfl fun c hc ↦ D.trace_mul_tupleIdem_eq V V' T hc
 
-/-- Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. Then a spherical
+/--
+Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. Then a spherical
 Hecke operator away from `M` has the same characteristic polynomial on the good forms of `V` and of
-`V'`, as the traces of all its powers agree. -/
-theorem charpoly_heckeOnGood_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
-    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap] (T : D.heckeAlgebra) :
-    (D.heckeOnGood V T).charpoly = (D.heckeOnGood V' T).charpoly := by
+`V'`, as the traces of all its powers agree.
+-/
+theorem charpoly_heckeOnGood_eq
+    [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
+    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap]
+    (T : D.heckeAlgebra)
+    : (D.heckeOnGood V T).charpoly = (D.heckeOnGood V' T).charpoly := by
   refine LinearMap.charpoly_eq_of_trace_pow_eq (Nat.cast_injective (R := ℂ) ?_) fun l _ _ ↦ by
     rw [← map_pow, ← map_pow, D.trace_heckeOnGood_eq V V']
   -- The dimensions agree, being the traces of the identity.
   simpa using D.trace_heckeOnGood_eq V V' 1
 
-/-- Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. Then a spherical
-Hecke operator away from `M` has the same determinant on the good forms of `V` and of `V'`. -/
-theorem det_heckeOnGood_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
-    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap] (T : D.heckeAlgebra) :
-    (D.heckeOnGood V T).det = (D.heckeOnGood V' T).det := by
+/--
+Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. Then a spherical
+Hecke operator away from `M` has the same determinant on the good forms of `V` and of `V'`.
+-/
+theorem det_heckeOnGood_eq
+    [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
+    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap]
+    (T : D.heckeAlgebra)
+    : (D.heckeOnGood V T).det = (D.heckeOnGood V' T).det := by
   rw [det_eq_sign_charpoly_coeff, det_eq_sign_charpoly_coeff, ← charpoly_natDegree,
     ← charpoly_natDegree, D.charpoly_heckeOnGood_eq V V']
 
-/-- Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. One spherical
+/--
+Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. One spherical
 Hecke operator acts on the forms of principal level of both spaces as `D.rallisOperator ϑ j`, the
 operator whose matrix coefficient `⟪z, R y⟫` is the series of Rallis' formula for the tame
 character `ϑ` and the descent pair `D.descentPair ϑ j` without its normalisation: the sum over the
 cosets `i` of `N` times `D.rallisTerm ϑ j V z y i`, where `N` is the number of matrices over the
-residue ring of `D.twistModulus ϑ 1` with rows `D.Y 1` and columns `D.RowIndex`. -/
-theorem exists_hecke_eq_rallisOperator [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
-    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap] (ϑ : D.TameChar) (j : ℕ) :
-    ∃ p : D.heckeAlgebra,
+residue ring of `D.twistModulus ϑ 1` with rows `D.Y 1` and columns `D.RowIndex`.
+-/
+theorem exists_hecke_eq_rallisOperator
+    [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
+    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap]
+    (ϑ : D.TameChar) (j : ℕ)
+    : ∃ p : D.heckeAlgebra,
       p.val V = D.rallisOperator ϑ j V ∧ p.val V' = D.rallisOperator ϑ j V' := by
   let N : ℂ := Fintype.card (D.Y 1 × D.RowIndex → (D.twistModulus ϑ 1).ResidueRing)
   -- The terms `rallisTerm` are those of the series divided by `N`.
-  have h_sum {s : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex s) (z y : D.principalForms W) :
-      HasSum (fun i ↦ N * D.rallisTerm ϑ j W z y i) (inner ℂ z (D.rallisOperator ϑ j W y)) :=
+  have h_sum {s : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex s) (z y : D.principalForms W)
+      : HasSum (fun i ↦ N * D.rallisTerm ϑ j W z y i) (inner ℂ z (D.rallisOperator ϑ j W y)) :=
     (D.hasSum_inner_rallisOperator ϑ j W z y).congr_fun fun i ↦ mul_div_cancel₀ _ NeZero.out
-  obtain ⟨p, hp, hp'⟩ := D.exists_heckeAlgebra_eq_mul_inner_of_hasSum_rallisTerm V V' ϑ j (h_sum V)
-    (h_sum V')
-  refine ⟨N • p, LinearMap.ext fun y ↦ ext_inner_left ℂ fun z ↦ ?_,
-    LinearMap.ext fun y ↦ ext_inner_left ℂ fun z ↦ ?_⟩
+  obtain ⟨p, hp, hp'⟩ :=
+    D.exists_heckeAlgebra_eq_mul_inner_of_hasSum_rallisTerm V V' ϑ j (h_sum V) (h_sum V')
+  refine ⟨
+    N • p,
+    LinearMap.ext fun y ↦ ext_inner_left ℂ fun z ↦ ?_,
+    LinearMap.ext fun y ↦ ext_inner_left ℂ fun z ↦ ?_
+  ⟩
   · exact (inner_smul_right z (p.val V y) N).trans (hp z y).symm
   · exact (inner_smul_right z (p.val V' y) N).trans (hp' z y).symm
 
-/-- Let the parameter `D.paramW` have gap `D.gap` for the signs of `V`. The series of Rallis'
+/--
+Let the parameter `D.paramW` have gap `D.gap` for the signs of `V`. The series of Rallis'
 formula (`New.Data.rallisOperator`) preserves the good forms of `V`, as it acts as a spherical Hecke
-operator. This is its restriction to the good forms. -/
-noncomputable def rallisOnGood [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
-    (ϑ : D.TameChar) (j : ℕ) : End ℂ (D.goodForms V) :=
+operator. This is its restriction to the good forms.
+-/
+noncomputable def rallisOnGood
+    [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap] (ϑ : D.TameChar) (j : ℕ)
+    : End ℂ (D.goodForms V) :=
   (D.rallisOperator ϑ j V).restrict fun y hy ↦ by
     obtain ⟨p, hp, -⟩ := D.exists_hecke_eq_rallisOperator V V ϑ j
     rw [← hp]
@@ -341,17 +363,23 @@ lemma coe_rallisOnGood_apply [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasG
     (D.rallisOnGood V ϑ j y : D.principalForms V) = D.rallisOperator ϑ j V y :=
   rfl
 
-/-- Let `V`, `V'` be hermitian spaces with signs `s`, `s'`, and let the parameter `D.paramW` have
+/--
+Let `V`, `V'` be hermitian spaces with signs `s`, `s'`, and let the parameter `D.paramW` have
 gap `D.gap` for both. Let `D.rallisOnGood V ϑ j` be the series of Rallis' formula for the tame
 character `ϑ` and the descent pair `D.descentPair ϑ j`, restricted to the good forms of `V`. It has
-the same determinant as the corresponding operator on the good forms of `V'`. -/
-theorem det_rallisOnGood_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
-    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap] (ϑ : D.TameChar) (j : ℕ) :
-    (D.rallisOnGood V ϑ j).det = (D.rallisOnGood V' ϑ j).det := by
+the same determinant as the corresponding operator on the good forms of `V'`.
+-/
+theorem det_rallisOnGood_eq
+    [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
+    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap]
+    (ϑ : D.TameChar) (j : ℕ)
+    : (D.rallisOnGood V ϑ j).det = (D.rallisOnGood V' ϑ j).det := by
   obtain ⟨p, hp, hp'⟩ := D.exists_hecke_eq_rallisOperator V V' ϑ j
-  have h_good {t : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex t)
+  have h_good
+      {t : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex t)
       [ht : ∀ v : D.Φ, (toHCParam t (D.paramW v)).HasGap D.gap]
-      (hW : p.val W = D.rallisOperator ϑ j W) : D.rallisOnGood W ϑ j = D.heckeOnGood W p := by
+      (hW : p.val W = D.rallisOperator ϑ j W)
+      : D.rallisOnGood W ϑ j = D.heckeOnGood W p := by
     ext y : 2
     rw [coe_rallisOnGood_apply, coe_heckeOnGood_apply, hW]
   rw [h_good V hp, h_good V' hp', D.det_heckeOnGood_eq V V']
@@ -379,14 +407,17 @@ lemma trace_heckeOnGood_eq_finrank [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)
     rw [coe_heckeOnGood_apply, hT q y hy_eigen, ite_eq_left rfl]
   rw [h_proj.trace, (comapSubtypeEquivOfLe inf_le_left).finrank_eq]
 
-/-- Let `V`, `V'` be hermitian spaces with signs `s`, `s'`, which may differ, and let the parameter
+/--
+Let `V`, `V'` be hermitian spaces with signs `s`, `s'`, which may differ, and let the parameter
 `D.paramW` have gap `D.gap` for both. For each eigensystem `q`, the good forms with eigensystem `q`
-on `V` and on `V'` make up spaces of the same dimension. -/
+on `V` and on `V'` make up spaces of the same dimension.
+-/
 theorem finrank_goodForms_inf_eigenPart_eq
     [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
-    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap] (q : FinPlace D.E × ℕ → ℂ) :
-    finrank ℂ (D.goodForms V ⊓ D.eigenPart V q : Submodule ℂ (D.principalForms V)) =
-      finrank ℂ (D.goodForms V' ⊓ D.eigenPart V' q : Submodule ℂ (D.principalForms V')) := by
+    [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap]
+    (q : FinPlace D.E × ℕ → ℂ)
+    : finrank ℂ (D.goodForms V ⊓ D.eigenPart V q : Submodule ℂ (D.principalForms V))
+      = finrank ℂ (D.goodForms V' ⊓ D.eigenPart V' q : Submodule ℂ (D.principalForms V')) := by
   classical
   -- Finitely many eigensystems occur for `V` or `V'`, and one Hecke operator projects both spaces
   -- of forms onto their `q`-parts.
@@ -395,15 +426,17 @@ theorem finrank_goodForms_inf_eigenPart_eq
       (D.finite_setOf_inf_eigenPart_ne_bot V' ⊤)).toFinset
   obtain ⟨T, hT⟩ := D.exists_hecke_proj_eigenPart q F
   -- `T` acts as the projection also on the eigenparts outside `F`, as these are zero.
-  have h_proj {s : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex s)
-      (hF : ∀ d ∉ F, D.eigenPart W d = ⊥) (d : FinPlace D.E × ℕ → ℂ) :
-      ∀ y ∈ D.eigenPart W d, T.val W y = if d = q then y else 0 := fun y hy ↦ by
+  have h_proj
+      {s : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex s) (hF : ∀ d ∉ F, D.eigenPart W d = ⊥)
+      (d : FinPlace D.E × ℕ → ℂ)
+      : ∀ y ∈ D.eigenPart W d, T.val W y = if d = q then y else 0 := fun y hy ↦ by
     by_cases hd : d ∈ F
     · exact hT d (Finset.mem_insert_of_mem hd) y hy
     · simp [(Submodule.mem_bot ℂ).1 ((hF d hd).le hy)]
   have h_trace := D.trace_heckeOnGood_eq V V' T
   rw [D.trace_heckeOnGood_eq_finrank V (h_proj V (by simp +contextual [F, top_inf_eq])),
-    D.trace_heckeOnGood_eq_finrank V' (h_proj V' (by simp +contextual [F, top_inf_eq]))] at h_trace
+      D.trace_heckeOnGood_eq_finrank V' (h_proj V' (by simp +contextual [F, top_inf_eq]))]
+    at h_trace
   exact_mod_cast h_trace
 
 /-- Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. An eigensystem
@@ -414,10 +447,12 @@ lemma goodForms_inf_eigenPart_eq_bot_of_eq_bot
     (h_bot : D.goodForms V' ⊓ D.eigenPart V' q = ⊥) : D.goodForms V ⊓ D.eigenPart V q = ⊥ := by
   rw [← finrank_eq_zero, D.finrank_goodForms_inf_eigenPart_eq V V', h_bot, finrank_bot]
 
-/-- For `1 ≤ j ≤ m` the good forms on `W_j = D.spaceW j` have dimension `D.targetDim`, which is the
-dimension of the good forms on `Y_0 = D.spaceY 0`: the identity has the same trace on both. -/
-theorem targetDim_eq_finrank_goodForms_spaceW (j : D.LiftIndex) :
-    D.targetDim = finrank ℂ (D.goodForms (D.spaceW j)) := by
+/--
+For `1 ≤ j ≤ m` the good forms on `W_j = D.spaceW j` have dimension `D.targetDim`, which is the
+dimension of the good forms on `Y_0 = D.spaceY 0`: the identity has the same trace on both.
+-/
+theorem targetDim_eq_finrank_goodForms_spaceW (j : D.LiftIndex)
+    : D.targetDim = finrank ℂ (D.goodForms (D.spaceW j)) := by
   simpa [trace_one] using D.trace_heckeOnGood_eq (D.spaceY 0) (D.spaceW j) 1
 
 end Data

@@ -89,8 +89,7 @@ lemma map_inclMatrix (f : R →+* S) (u : r → n) [DecidableEq n] :
     (inclMatrix R u).map f = inclMatrix S u := by
   rw [inclMatrix, ← submatrix_map, Matrix.map_one f f.map_zero f.map_one, inclMatrix]
 
-variable {E : Type*} [Field E] [NumberField E]
-  {T : Matrix n n' R} [Fintype n] [DecidableEq n]
+variable {E : Type*} [Field E] [NumberField E] {T : Matrix n n' R} [Fintype n] [DecidableEq n]
 
 /-- For an embedding u of index sets, multiplying T on the left by the transpose of
 `inclMatrix R u` selects the rows of T indexed by u. -/
@@ -113,28 +112,35 @@ lemma inclMatrix_transpose_mul_cancel_left [DecidableEq r] (u : r ↪ n) (A : Ma
   rw [← Matrix.mul_assoc, inclMatrix_transpose_mul_self, Matrix.one_mul]
 
 open scoped Classical in
-/-- For a family of places `w i` of E, the function on finite adelic matrices x
+/--
+For a family of places `w i` of E, the function on finite adelic matrices x
 (given as vectors on index pairs) equal to f of the family of the reductions of x at the places
-`w i` if x is integral at all of them, and 0 otherwise. -/
-def residueDatum (w : ι → FinPlace E) (f : ((i : ι) → Matrix n' n (ResField (w i))) → ℂ)
-    (x : n' × n → 𝔸f E) : ℂ :=
+`w i` if x is integral at all of them, and 0 otherwise.
+-/
+def residueDatum
+    (w : ι → FinPlace E) (f : ((i : ι) → Matrix n' n (ResField (w i))) → ℂ) (x : n' × n → 𝔸f E)
+    : ℂ :=
   if ∀ (i : ι) (p : n' × n), x p (w i) ∈ LocInt (w i) then
     f fun i ↦ (vecToMatrix x : Matrix n' n (𝔸f E)).map (residueOrZero ∘ evalAt (w i))
-  else 0
+  else
+    0
 
-/-- For an embedding u of index sets, the homomorphism GL_r(R) → GL_n(R), g ↦ diag(g, 1), with g
-acting on the indices in the image of u. -/
+/--
+For an embedding u of index sets, the homomorphism GL_r(R) → GL_n(R), g ↦ diag(g, 1), with g
+acting on the indices in the image of u.
+-/
 @[local simp]
 def extendGL [DecidableEq r] (u : r ↪ n) : GL r R →* GL n R :=
-  Units.map
-    { toFun g := 1 + inclMatrix R u * (g - 1) * (inclMatrix R u)ᵀ
-      map_one' := by simp
-      map_mul' g h := by
-        -- With `P = inclMatrix R u`, the product is `1 + P * X * Pᵀ` for this `X = g * h - 1`.
-        have h_sum : g * h - 1 = (g - 1) + (h - 1) + (g - 1) * (h - 1) := by noncomm_ring
-        rw [h_sum]
-        simp [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, add_assoc,
-          inclMatrix_transpose_mul_cancel_left] }
+  Units.map {
+    toFun g := 1 + inclMatrix R u * (g - 1) * (inclMatrix R u)ᵀ
+    map_one' := by simp
+    map_mul' g h := by
+      -- With `P = inclMatrix R u`, the product is `1 + P * X * Pᵀ` for this `X = g * h - 1`.
+      have h_sum : g * h - 1 = (g - 1) + (h - 1) + (g - 1) * (h - 1) := by noncomm_ring
+      rw [h_sum]
+      simp [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, add_assoc,
+        inclMatrix_transpose_mul_cancel_left]
+  }
 
 /-- For the embedding g ↦ diag(g, 1), the columns indexed by u of the image of g are the columns
 of g, extended by zero. -/
@@ -203,8 +209,10 @@ lemma mem_parabolic_iff_mul_inclMatrix [DecidableEq r] (u : r ↪ n) {x : GL n R
   obtain ⟨⟨j, rfl⟩, hi⟩ := notMem_lt_notMem_iff.1 hij
   exact hx i hi j
 
-/-- The opposite parabolic: the image under g ↦ (gᵀ)⁻¹ of the block upper triangular group
-`New.parabolic` for the level function that is false on the image of u and true elsewhere. -/
+/--
+The opposite parabolic: the image under g ↦ (gᵀ)⁻¹ of the block upper triangular group
+`New.parabolic` for the level function that is false on the image of u and true elsewhere.
+-/
 def rangeParabolic (u : r ↪ n) : Subgroup (GL n R) :=
   (parabolic (· ∉ range u)).map invTransposeGL.toMonoidHom
 
@@ -351,12 +359,14 @@ end New
 `a ↦ diag(a, 1)`.
 -/
 
-/-- The block embedding a ↦ diag(a, 1) of U(diag ε) into the unitary group of the concatenated
-signs (ε, η). -/
+/--
+The block embedding a ↦ diag(a, 1) of U(diag ε) into the unitary group of the concatenated
+signs (ε, η).
+-/
 @[simps! apply_coe_val]
-noncomputable def New.U.inl {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
-    (ε : n → ℤˣ) (η : m → ℤˣ) :
-    U (signMatrix ε) →* U (signMatrix (Sum.elim ε η)) :=
+noncomputable def New.U.inl
+    {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] (ε : n → ℤˣ) (η : m → ℤˣ)
+    : U (signMatrix ε) →* U (signMatrix (Sum.elim ε η)) :=
   (sum (signMatrix_sum ε η)).comp (MonoidHom.inl (U (signMatrix ε)) (U (signMatrix η)))
 
 /-!
@@ -367,21 +377,23 @@ section BlockEmbeddingNorm
 
 open Matrix Norms.L2Operator
 
-variable {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] {ε : n → ℤˣ}
-  {ε' : m → ℤˣ}
+variable
+  {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] {ε : n → ℤˣ} {ε' : m → ℤˣ}
 
-/-- For families of signs ε and ε', the embedding a ↦ diag(a, 1) of U(diag ε) into
-U(diag(ε, ε')) is a proper map. -/
+/--
+For families of signs ε and ε', the embedding a ↦ diag(a, 1) of U(diag ε) into
+U(diag(ε, ε')) is a proper map.
+-/
 @[fun_prop]
 theorem New.DiscreteSeries.isProperMap_inl : IsProperMap (U.inl ε ε') := by
   -- Followed by the continuous map "upper left block", `U.inl` is the closed embedding of the
   -- unitary group in the matrices.
-  have h_val (g : U (signMatrix ε)) : (U.inl ε ε' g).val.val = fromBlocks g.val.val 0 0 1 := by
-    simp
+  have h_val (g : U (signMatrix ε)) : (U.inl ε ε' g).val.val = fromBlocks g.val.val 0 0 1 := by simp
   have h_cont : Continuous (U.inl ε ε') := by
     simp only [continuous_U_iff_matrix, h_val]
     fun_prop
-  exact isProperMap_of_comp_of_t2 h_cont (g := fun g ↦ g.val.val.submatrix .inl .inl)
+  exact isProperMap_of_comp_of_t2 h_cont
+    (g := fun g ↦ g.val.val.submatrix .inl .inl)
     (by fun_prop) isClosedEmbedding_U.isProperMap
 
 end BlockEmbeddingNorm

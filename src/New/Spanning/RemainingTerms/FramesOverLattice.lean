@@ -108,17 +108,20 @@ private lemma HasCellRank.mul_of_mem_classUnipotent₀ {j : Fin (𝔰.ϱ + 2)}
 end Moves
 
 variable (S) in
-/-- A frame set for the class `c`: a set of near terms `(c', γ)` over blocks `(c, s, c')`, for any
+/--
+A frame set for the class `c`: a set of near terms `(c', γ)` over blocks `(c, s, c')`, for any
 `s`, whose frames are different modulo moves, the elements of the unipotent group of level `M`
-that fix the standard frame. -/
+that fix the standard frame.
+-/
 structure IsFrameSet (c : S.Classes) (B : Set (S.Classes × S.G E)) : Prop where
   /-- The terms are near. -/
   near : ∀ p ∈ B, S.IsNear p.2
   /-- The terms lie over blocks with the first class `c`. -/
   mem_termsOver : ∀ p ∈ B, ∃ s : S.ResidueGL, p.2 ∈ S.termsOver c s p.1
   /-- Terms whose frames agree after moves are equal. -/
-  separated : ∀ p ∈ B, ∀ q ∈ B, ∀ u ∈ S.classUnipotent₀ c, ∀ u' ∈ S.classUnipotent₀ c,
-    frameImage (u * p.2).val.val = frameImage (u' * q.2).val.val → p = q
+  separated
+    : ∀ p ∈ B, ∀ q ∈ B, ∀ u ∈ S.classUnipotent₀ c, ∀ u' ∈ S.classUnipotent₀ c,
+      frameImage (u * p.2).val.val = frameImage (u' * q.2).val.val → p = q
 
 /-- A subset of a frame set is a frame set. -/
 lemma IsFrameSet.mono {c : S.Classes} {B : Set (S.Classes × S.G E)} (hB : S.IsFrameSet c B)
@@ -171,12 +174,14 @@ private lemma varrho_add_two_le_b_pow : ((𝔰.ϱ + 2 : ℕ) : ℝ) ≤ S.b ^ (2
 
 end FrameSets
 
-variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {𝔰 : Shape} {S : Filling E 𝔰}
-  [S.IsAdmissible]
+variable
+  {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E]
+  {𝔰 : Shape} {S : Filling E 𝔰} [S.IsAdmissible]
 
 section Rounds
 
-variable {j : Fin (𝔰.ϱ + 2)} {c : S.Classes} {B : Set (S.Classes × S.G E)}
+variable
+  {j : Fin (𝔰.ϱ + 2)} {c : S.Classes} {B : Set (S.Classes × S.G E)}
   {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E} {r l : ℕ} {y : Matrix 𝔰.κ (Fin r) E}
 
 omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
@@ -482,7 +487,6 @@ lemma IsFrameSet.encard_le_of_le_termLattice (hB : S.IsFrameSet c B)
     (fun p hp ↦ hZ p (hD hp)) hp₁ hy h_rank hu
     (fun p hp ↦ (h_eq p hp).trans (h_eq p₁ hp₁).symm) hd hd'
 
-
 /-- The terms of a frame set with one cell rank `j` and one matrix of products `Z`, whose lattices
 `L_γ^M` contain a lattice `L` of corank `l` and discriminant at most `b ^ (n³ f)`, number at most
 `b ^ ((366 n⁴ + 2 n³ (ϱ + l n + n ϱ)) f)`; here `n = ϱ + 1` is the length of the frame and `f` the
@@ -522,60 +526,81 @@ private lemma IsFrameSet.encard_le_of_frameProducts_eq (hB : S.IsFrameSet c B)
   simp only [N, ← pow_mul, ← pow_add]
   exact le_of_eq (by ring_nf)
 
-/-- **Frames over a lattice.** Let `L ⊆ Λ ∩ X₀` be a lattice of corank `l` and discriminant at most
+/--
+**Frames over a lattice.** Let `L ⊆ Λ ∩ X₀` be a lattice of corank `l` and discriminant at most
 `b ^ (n³ f)`, and `B` a frame set for the class `c`: near terms `(c', γ)` with `γ` over some block
 `(c, s, c')` (that is, `h_c⁻¹ γ h_c'` is integral with reduction `s`), whose frames are different
 modulo moves. Suppose that each term has a cell rank `j` and that `L ⊆ L_γ^M`. Then `B` has at most
 `b ^ (2000 n⁶ (l + 1) f)` elements. Here `L_γ^M` is the lattice of the `v ∈ Λ ∩ X₀` such that some
 vector of `v + M (Λ ∩ X)` is orthogonal to the frame of `γ`, where `Λ` is the lattice of `c`, `X`
 the isotropic and `X₀` the anisotropic space; `b = S.b` is the size parameter, `n` the length of the
-frame and `f` the number of infinite places. -/
-theorem IsFrameSet.encard_le (hB : S.IsFrameSet c B)
-    (h_cellRank : ∀ p ∈ B, ∃ j : Fin (𝔰.ϱ + 2), S.HasCellRank j p.2)
-    (h_rank : r + l = 𝔰.k) {L : Submodule (Ô E) (𝔰.κ → 𝔸f E)} (hL : IsLatticeOfRank r L)
+frame and `f` the number of infinite places.
+-/
+theorem IsFrameSet.encard_le
+    (hB : S.IsFrameSet c B) (h_cellRank : ∀ p ∈ B, ∃ j : Fin (𝔰.ϱ + 2), S.HasCellRank j p.2)
+    (h_rank : r + l = 𝔰.k)
+    {L : Submodule (Ô E) (𝔰.κ → 𝔸f E)} (hL : IsLatticeOfRank r L)
     (h_le_classLattice : L ≤ S.classLatticeX₀ c) (h_disc : discriminant r L ≤ S.discriminantBound)
-    (h_le_termLattice : ∀ p ∈ B, L ≤ S.termLattice c p.1 p.2) :
-    B.encard ≤ ENNReal.ofReal (S.b ^ (2000 * 𝔰.n ^ 6 * (l + 1) * numInfPlaces E)) := by
+    (h_le_termLattice : ∀ p ∈ B, L ≤ S.termLattice c p.1 p.2)
+    : B.encard ≤ ENNReal.ofReal (S.b ^ (2000 * 𝔰.n ^ 6 * (l + 1) * numInfPlaces E)) := by
   -- Fix the cell rank and the matrix of products; then sort in three rounds.
   have hb : 1 ≤ S.b := S.one_le_b
-  obtain ⟨y, a, hy, rfl⟩ : ∃ (y : Matrix 𝔰.κ (Fin r) E) (a : GL (Fin r) (𝔸f E)),
-      HasLeftInv y ∧ colLattice (Ô E) (finAdeleMatrix y * a.val) = L := hL
+  obtain ⟨y, a, hy, rfl⟩
+      : ∃ (y : Matrix 𝔰.κ (Fin r) E) (a : GL (Fin r) (𝔸f E)),
+        HasLeftInv y ∧ colLattice (Ô E) (finAdeleMatrix y * a.val) = L :=
+    hL
   choose! rankOf h_rankOf using h_cellRank
-  have h_ranks : (Set.range fun p : B ↦ rankOf p).encard ≤
-      ENNReal.ofReal (S.b ^ (2 * numInfPlaces E)) := by
+  have h_ranks
+      : (Set.range fun p : B ↦ rankOf p).encard ≤ ENNReal.ofReal (S.b ^ (2 * numInfPlaces E)) := by
     grw [Set.encard_le_card, ← varrho_add_two_le_b_pow, ofReal_natCast]
     simp
-  let count : ℝ≥0∞ := ENNReal.ofReal (S.b ^ ((366 * 𝔰.n ^ 4 +
-    2 * 𝔰.n ^ 3 * (𝔰.ϱ + l * 𝔰.n + 𝔰.n * 𝔰.ϱ)) * numInfPlaces E))
-  have h_one_rank (j : Fin (𝔰.ϱ + 2)) (D : Set (S.Classes × S.G E)) (hD : D ⊆ B)
-      (h_cellRank : ∀ p ∈ D, S.HasCellRank j p.2) :
-      D.encard ≤ ENNReal.ofReal (S.b ^ (270 * 𝔰.n ^ 3 * numInfPlaces E)) * count := by
-    refine encard_le_of_encard_range_le (fun p : D ↦ S.frameProducts p.val.2)
+  let count : ℝ≥0∞ :=
+    ENNReal.ofReal
+      (S.b ^ ((366 * 𝔰.n ^ 4 + 2 * 𝔰.n ^ 3 * (𝔰.ϱ + l * 𝔰.n + 𝔰.n * 𝔰.ϱ)) * numInfPlaces E))
+  have h_one_rank
+      (j : Fin (𝔰.ϱ + 2)) (D : Set (S.Classes × S.G E))
+      (hD : D ⊆ B) (h_cellRank : ∀ p ∈ D, S.HasCellRank j p.2)
+      : D.encard ≤ ENNReal.ofReal (S.b ^ (270 * 𝔰.n ^ 3 * numInfPlaces E)) * count := by
+    refine encard_le_of_encard_range_le
+      (fun p : D ↦ S.frameProducts p.val.2)
       (hB.mono hD).encard_range_frameProducts_le
-      (R := fun p q ↦ S.frameProducts p.2 = S.frameProducts q.2) (fun _ _ h ↦ h) ?_
+      (R := fun p q ↦ S.frameProducts p.2 = S.frameProducts q.2)
+      (fun _ _ h ↦ h)
+      ?_
     intro C hC p₀ hp₀ hZ
     exact (hB.mono (hC.trans hD)).encard_le_of_frameProducts_eq
-      (fun p hp ↦ h_cellRank p (hC hp)) hp₀ (fun p hp ↦ hZ p hp p₀ hp₀) hy h_rank
-      h_le_classLattice h_disc fun p hp ↦ h_le_termLattice p (hD (hC hp))
-  calc (B.encard : ℝ≥0∞)
-      ≤ ENNReal.ofReal (S.b ^ (2 * numInfPlaces E)) *
-          (ENNReal.ofReal (S.b ^ (270 * 𝔰.n ^ 3 * numInfPlaces E)) * count) := by
-        refine encard_le_of_encard_range_le (fun p : B ↦ rankOf p) h_ranks
-          (R := fun p q ↦ rankOf p = rankOf q) (fun _ _ h ↦ h) ?_
-        intro D hD p₀ hp₀ h_same
-        refine h_one_rank (rankOf p₀) D hD fun p hp ↦ ?_
-        rw [← h_same p hp p₀ hp₀]
-        exact h_rankOf p (hD hp)
-    _ = ENNReal.ofReal (S.b ^ ((2 + 270 * 𝔰.n ^ 3 + (366 * 𝔰.n ^ 4 +
-          2 * 𝔰.n ^ 3 * (𝔰.ϱ + l * 𝔰.n + 𝔰.n * 𝔰.ϱ))) * numInfPlaces E)) := by
-        simp (disch := positivity) only [count, ← ofReal_mul, ← pow_add]
-        ring_nf
+      (fun p hp ↦ h_cellRank p (hC hp))
+      hp₀
+      (fun p hp ↦ hZ p hp p₀ hp₀)
+      hy h_rank h_le_classLattice h_disc
+      fun p hp ↦ h_le_termLattice p (hD (hC hp))
+  calc
+    (B.encard : ℝ≥0∞)
+        ≤ ENNReal.ofReal (S.b ^ (2 * numInfPlaces E))
+          * (ENNReal.ofReal (S.b ^ (270 * 𝔰.n ^ 3 * numInfPlaces E)) * count) := by
+      refine encard_le_of_encard_range_le
+        (fun p : B ↦ rankOf p)
+        h_ranks
+        (R := fun p q ↦ rankOf p = rankOf q)
+        (fun _ _ h ↦ h)
+        ?_
+      intro D hD p₀ hp₀ h_same
+      refine h_one_rank (rankOf p₀) D hD fun p hp ↦ ?_
+      rw [← h_same p hp p₀ hp₀]
+      exact h_rankOf p (hD hp)
+    _ = ENNReal.ofReal
+        (S.b
+          ^ ((2 + 270 * 𝔰.n ^ 3 + (366 * 𝔰.n ^ 4 + 2 * 𝔰.n ^ 3 * (𝔰.ϱ + l * 𝔰.n + 𝔰.n * 𝔰.ϱ)))
+            * numInfPlaces E)) := by
+      simp (disch := positivity) only [count, ← ofReal_mul, ← pow_add]
+      ring_nf
     _ ≤ ENNReal.ofReal (S.b ^ (2000 * 𝔰.n ^ 6 * (l + 1) * numInfPlaces E)) :=
-        ofReal_le_ofReal (pow_le_pow_right₀ hb (Nat.mul_le_mul_right _ (by lia)))
+      ofReal_le_ofReal (pow_le_pow_right₀ hb (Nat.mul_le_mul_right _ (by lia)))
 
 end Rounds
 
-/-- Let `E` be a CM field with a primitive 5040-th root of unity and `S` admissible filling data
+/--
+Let `E` be a CM field with a primitive 5040-th root of unity and `S` admissible filling data
 over `E`, of level `M = p₀ p₁` (`S.M`) and size parameter `b = S.b`. Let `Λ` be the lattice of the
 class `c`, `X₀` the anisotropic space (of dimension `𝔰.k`), `X` the isotropic space, `n` the length
 of the frame and `f` the number of infinite places. Let `L ⊆ Λ ∩ X₀` be a lattice of rank `r`, with
@@ -586,14 +611,15 @@ representative picked in its double coset. Second, `γ` has some cell rank `j`: 
 on, the flags of the standard frame and of `γ`'s frame share vectors, and the leading minor of order
 `j` of their matrix of products is nonzero. Third, `γ` has label `t`, the position of its reduction
 in its coset of `S.reducedImage besselS`, the image in `S.ResidueGL` of the integral points of the
-Bessel group. -/
-theorem encard_setOf_isNearTermAt_and_le_termLattice_le {c : S.Classes} {r l : ℕ}
-    (t : S.reducedImage besselS)
-    (h_rank : r + l = 𝔰.k) {L : Submodule (Ô E) (𝔰.κ → 𝔸f E)} (hL : IsLatticeOfRank r L)
-    (h_le_classLattice : L ≤ S.classLatticeX₀ c)
-    (h_disc : discriminant r L ≤ S.discriminantBound) :
-    {p : S.Classes × S.G E | S.IsNearTermAt c t p ∧ L ≤ S.termLattice c p.1 p.2}.encard ≤
-      ENNReal.ofReal (S.b ^ (2000 * 𝔰.n ^ 6 * (l + 1) * numInfPlaces E)) := by
+Bessel group.
+-/
+theorem encard_setOf_isNearTermAt_and_le_termLattice_le
+    {c : S.Classes} {r l : ℕ}
+    (t : S.reducedImage besselS) (h_rank : r + l = 𝔰.k)
+    {L : Submodule (Ô E) (𝔰.κ → 𝔸f E)} (hL : IsLatticeOfRank r L)
+    (h_le_classLattice : L ≤ S.classLatticeX₀ c) (h_disc : discriminant r L ≤ S.discriminantBound)
+    : {p : S.Classes × S.G E | S.IsNearTermAt c t p ∧ L ≤ S.termLattice c p.1 p.2}.encard
+      ≤ ENNReal.ofReal (S.b ^ (2000 * 𝔰.n ^ 6 * (l + 1) * numInfPlaces E)) := by
   let B : Set (S.Classes × S.G E) :=
     {p : S.Classes × S.G E | S.IsNearTermAt c t p ∧ L ≤ S.termLattice c p.1 p.2}
   have h_near : ∀ p ∈ B, S.IsNear p.2 := by

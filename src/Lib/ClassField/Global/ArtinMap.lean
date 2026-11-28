@@ -50,11 +50,16 @@ private lemma QZChar.mem_ker_iff_abelianLift_eq_one [IsTopologicalGroup Γ] (χ 
 
 namespace IsPlaceOver
 
-/- `A` is a place of `Ω` over the finite place `v` of `K` (hypothesis `h`), `χ` a character of
-`Γ`, `L ⊂ Ω` a finite Galois extension of `K`, and `U` the subgroup Gal(Ω/L) of `Γ`. -/
-variable {A : ClosurePlace} {v : FinPlace K} (χ : QZChar Γ)
+/-
+`A` is a place of `Ω` over the finite place `v` of `K` (hypothesis `h`), `χ` a character of
+`Γ`, `L ⊂ Ω` a finite Galois extension of `K`, and `U` the subgroup Gal(Ω/L) of `Γ`.
+-/
+variable
+  {A : ClosurePlace} {v : FinPlace K}
+  (χ : QZChar Γ)
   {L : Type*} [Field L] [EmbeddedNumberField L] [Algebra K L]
-  (h : IsPlaceOver A v) [MulSemiringAction Γ Ω] [G : IsProGalois Γ K Ω]
+  (h : IsPlaceOver A v)
+  [MulSemiringAction Γ Ω] [G : IsProGalois Γ K Ω]
   (U : Subgroup Γ) [IsGalois K L] [IsScalarTower K L Ω] [Fact U.IsOpen] [IsProGalois U L Ω]
 
 include h
@@ -182,8 +187,10 @@ end IsPlaceOver
 /-! ### The global Artin map -/
 
 /- `χ` is a character of `Γ` and `L` a number field over `K`. -/
-variable (χ : QZChar Γ) {L : Type} [Field L] [EmbeddedNumberField L] [Algebra K L]
-  [MulSemiringAction Γ Ω] [G : IsProGalois Γ K Ω]
+variable
+  (χ : QZChar Γ)
+  {L : Type}
+  [Field L] [EmbeddedNumberField L] [Algebra K L] [MulSemiringAction Γ Ω] [G : IsProGalois Γ K Ω]
 
 /-- Let `χ` be a character of the Galois group `Γ` of `Ω` over the number field `K`. A finite idele
 `a` of `K` close enough to `1` is a unit at every place, and `χ` kills all local symbols of `a`. -/
