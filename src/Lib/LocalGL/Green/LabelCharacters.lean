@@ -370,15 +370,7 @@ lemma hyperplaneSum_mul_labelIdem {c : Polynomial k} {χ : MulChar k ℂ}
   obtain hc | hc := em' (IsLabel (Fintype.card n) c)
   · -- If `c` is not a label of degree `|n|`, then `e_c = 0`.
     simp [hc, labelIdem]
-  let N : Submonoid (GL n k) :=
-    { carrier := {g : GL n k | ∃ u : n → k, g.val = 1 + vecMulVec u l}
-      mul_mem' := by
-        simp_all [mul_add, mul_vecMulVec, add_assoc, ← add_vecMulVec, add_mulVec]
-        tauto
-      one_mem' := by simp }
-  -- A finite submonoid of a group is a group: `N` inherits left cancellation from `GL n k`.
-  let inst_cancel : LeftCancelMonoid N := {}
-  let inst_group : Group N := LeftCancelMonoid.groupOfFinite
+  let N := hyperplaneGroup l
   -- Split `n → k` as `k` times a copy of the hyperplane `l ⬝ᵥ u = 0`.
   obtain ⟨L, hL⟩ := (ker (dotProductEquiv k n l)).exists_isCompl
   have h_range_dot : LinearMap.range (dotProductEquiv k n l) = ⊤ := by
@@ -403,12 +395,13 @@ lemma hyperplaneSum_mul_labelIdem {c : Polynomial k} {χ : MulChar k ℂ}
     · rintro ⟨g, x⟩ ⟨g', x'⟩ h_param_eq
       have h_vecMulVec_eq :
           vecMulVec (E.symm (g.val - 1, x)) l = vecMulVec (E.symm (g'.val - 1, x')) l := by
-        simpa [param, Units.ext_iff] using h_param_eq
+        simpa [param, Units.ext_iff] using congrArg Subtype.val h_param_eq
       have h_zero : vecMulVec (E.symm (g.val - 1, x) - E.symm (g'.val - 1, x')) l = 0 := by
         rw [sub_vecMulVec, h_vecMulVec_eq, sub_self]
       simpa [Units.ext_iff] using E.symm.injective
         (sub_eq_zero.mp ((vecMulVec_eq_zero.mp h_zero).resolve_right hl))
-    · simp_all [param, E, Units.smul_def, Units.ext_iff]
+    · apply Subtype.ext
+      simp_all [param, E, Units.smul_def, Units.ext_iff]
   -- `ρ` is the one-dimensional representation `χ⁻¹ ∘ det` of `N`.
   let ρ : Representation ℂ N ℂ :=
     .comp .smulOneHom { toFun g := χ⁻¹ g.val.det, map_one' := by simp, map_mul' := by simp }

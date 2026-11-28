@@ -167,6 +167,21 @@ def IsLabel : Prop := c.Monic ∧ Squarefree c ∧ c.natDegree = r ∧ c.coeff 0
 term of the characteristic polynomial. -/
 def detChar : Hall k := fun c : SimClass k ↦ χ ((-1) ^ c.dim * c.charpoly.coeff 0)
 
+open Matrix in
+/-- The group of the invertible matrices `1 + v λ`, for a given row `λ = l` and all columns `v`. -/
+def hyperplaneGroup {k r : Type*} [Field k] [Fintype r] [DecidableEq r]
+    (l : r → k) : Subgroup (GL r k) where
+  carrier := {s : GL r k | ∃ v : r → k, s.val = 1 + vecMulVec v l}
+  one_mem' := ⟨0, by simp⟩
+  mul_mem' := by
+    rintro s t ⟨v, hv⟩ ⟨v', hv'⟩
+    refine ⟨v + s.val *ᵥ v', ?_⟩
+    rw [Units.val_mul, hv', mul_add, mul_one, mul_vecMulVec, add_vecMulVec, ← add_assoc, ← hv]
+  inv_mem' := by
+    rintro s ⟨v, hv⟩
+    refine ⟨-(s⁻¹.val *ᵥ v), ?_⟩
+    rw [neg_vecMulVec, ← mul_vecMulVec, eq_add_neg_iff_add_eq, ← s.inv_mul, hv, mul_add, mul_one]
+
 open scoped Classical in
 /-- For a vector `l : n → k`, the element ∑ χ(det h)⁻¹ h of ℂ[GL_n(k)], summed over the invertible
 h of the form 1 + u lᵀ with u a column vector. -/

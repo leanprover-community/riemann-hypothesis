@@ -197,19 +197,6 @@ section Hyperplane
 
 variable {k r : Type} [Field k] [Fintype r] [DecidableEq r]
 
-/-- The group of the invertible matrices `1 + v λ`, for a given row `λ = l` and all columns `v`. -/
-def hyperplaneGroup (l : r → k) : Subgroup (GL r k) where
-  carrier := {s : GL r k | ∃ v : r → k, s.val = 1 + vecMulVec v l}
-  one_mem' := ⟨0, by simp⟩
-  mul_mem' := by
-    rintro s t ⟨v, hv⟩ ⟨v', hv'⟩
-    refine ⟨v + s.val *ᵥ v', ?_⟩
-    rw [Units.val_mul, hv', mul_add, mul_one, mul_vecMulVec, add_vecMulVec, ← add_assoc, ← hv]
-  inv_mem' := by
-    rintro s ⟨v, hv⟩
-    refine ⟨-(s⁻¹.val *ᵥ v), ?_⟩
-    rw [neg_vecMulVec, ← mul_vecMulVec, eq_add_neg_iff_add_eq, ← s.inv_mul, hv, mul_add, mul_one]
-
 lemma mem_hyperplaneGroup {l : r → k} {s : GL r k} :
     s ∈ hyperplaneGroup l ↔ ∃ v : r → k, (s : Matrix r r k) = 1 + vecMulVec v l := .rfl
 
