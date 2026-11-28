@@ -618,16 +618,23 @@ abbrev enlargedPoint (i : ChoiceIndex j) (g : New.G D.E (D.signsW j)) :
     New.G D.E (n := FirstFactorIndex j) (padSigns j ⊕ᵥ 1) :=
   .sum (.sum (g, 1), (1, i.rowChoice.classRep))
 
+/-- The map placing the positive, then negative basis vectors of `W = E^{3m} ⊕ W'` is
+bijective. -/
+lemma bijective_signOrder : Bijective (regroupEquiv j ∘
+    Sum.map (D.rowIndexOfNumber ∘ (Fin.val : Fin (D.posRank j) → ℕ)) inr ⊕ᵥ
+      inr ∘ inl ∘ negIndex j) := by
+  refine (bijective_iff_injective_and_card _).2 ⟨?_, ?_⟩
+  · simp [Injective, rowIndexOfNumber, negIndex, regroupEquiv]
+    -- different basis numbers give different vectors
+    grind [Equiv.injective]
+  · -- `↓` counts the indices before they are unfolded
+    simp [↓card_rowIndex]
+    grind
+
 /-- The list of the positive, then the negative basis vectors of `W = E^{3m} ⊕ W'`. -/
 def signOrder : (Fin (D.posRank j) ⊕ AddedIndex j) ⊕ Fin D.m ≃ D.CarrierIndex ⊕ FirstFactorIndex
   j :=
-  .ofBijective
-    (regroupEquiv j ∘ Sum.map (D.rowIndexOfNumber ∘ Fin.val) inr ⊕ᵥ inr ∘ inl ∘ negIndex j) <| by
-    -- an injection between sets of equal size; `↓` counts the indices before they are unfolded
-    simp [↓card_rowIndex, ↓bijective_iff_injective_and_card, Injective, rowIndexOfNumber, negIndex,
-      regroupEquiv]
-    -- different basis numbers give different vectors
-    grind [Equiv.injective]
+  .ofBijective _ (bijective_signOrder j)
 
 /-- The left side lists the signs of `W = E^{3m} ⊕ W'` with `W' = W_j ⊕ (E^j)⁻ ⊕ E^{3m-j} ⊕ W♭`:
 sign `1` on the `3m` indices `D.CarrierIndex` of `E^{3m}`, the signs `padSigns j` on the first three
@@ -917,7 +924,7 @@ lemma stdClassSum_thirdExchangeKernel_productDatum {a : Type}
     simp only [← modKernelBilin_apply]
     rw [← map_sum, modKernelBilin_apply]
   -- compare the two kernels argument by argument
-  congr! 1
+  congr 1
   · -- the first spaces
     ext1
     simp [GeneralLinearGroup.ext_iff, Space.reindex, Space.sum, regroupEquiv, Matrix.one_apply]
@@ -1017,8 +1024,8 @@ lemma stdClassSum_thirdExchangeKernel_productDatum {a : Type}
           (1 : Matrix (Fin (2 * D.m + (D.m - j))) (Fin (2 * D.m + (D.m - j))) (𝔸 D.E)) a b
          simp only [Matrix.one_apply, inr.injEq])
 
--- Keeps definitional checks from unfolding `Finset.prod`.
-seal Finset.prod in
+-- Keeps definitional checks from unfolding `Finset.prod` and `Finset.univ`.
+seal Finset.prod Finset.univ in
 /-- Let `D` be admissible data, `ϑ` a twist, `j` a lift index, `W_j = D.spaceW j`, and `V″` the
 standard definite space on `FirstFactorIndex j`, which contains the indices of `W_j`. Let `i` be a
 choice with matrix `Λ = i.matrix` modulo `ϖ²` (`ϖ` the product of the chosen places), and `w` rows
@@ -1054,6 +1061,8 @@ lemma stdClassSum_thirdExchangeKernel_eq_productDatum {a : Type} [Fintype a]
   -- the real group of `V″` fixes the polynomial of the kernel
   simpa using! realPairWeil_stackedDetProd (signOrder j) _ rfl (constantRows j i.rowChoice _) 1
 
+-- Keeps definitional checks from unfolding `Finset.prod` and `Finset.univ`.
+seal Finset.prod Finset.univ in
 /-- If `u * w` is the matrix `Λ` of `i`, the left side of the third exchange is the theta
 series `kernelClassSum` on `U(W_j)`: the class sum, at the level cut out by the rows `w`, of kernels
 with the vectors `leftSideSeries ϑ j i h`. -/
