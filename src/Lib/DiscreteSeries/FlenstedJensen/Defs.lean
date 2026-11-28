@@ -406,6 +406,18 @@ variable {n Φ : Type} [Fintype n] [DecidableEq n] (ε : n → ℤˣ) (o w : n �
 entries b_ii raised to the power w_i. -/
 def diagChar : ℂ := ∏ i : n, b i i ^ w i
 
+omit [DecidableEq n] in
+/-- On a matrix with nonzero diagonal, adding weights multiplies their diagonal characters. -/
+theorem diagChar_add (u v : n → ℤ) {b : Matrix n n ℂ} (hb : ∀ i, b i i ≠ 0) :
+    diagChar (u + v) b = diagChar u b * diagChar v b := by
+  simp [diagChar, zpow_add₀, hb, Finset.prod_mul_distrib]
+
+omit [DecidableEq n] in
+/-- A diagonal character is nonzero when all diagonal entries are nonzero. -/
+theorem diagChar_ne_zero (w : n → ℤ) {b : Matrix n n ℂ} (hb : ∀ i, b i i ≠ 0) :
+    diagChar w b ≠ 0 :=
+  Finset.prod_ne_zero_iff.2 fun i _ ↦ zpow_ne_zero _ (hb i)
+
 /-- The matrix b is invertible and block upper triangular for o: b_ij = 0 whenever o_j < o_i. For
 injective o it is upper triangular in the order given by o. -/
 def IsBorelMatrix : Prop := b.BlockTriangular o ∧ b.det ≠ 0

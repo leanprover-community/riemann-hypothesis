@@ -179,12 +179,12 @@ theorem isHolOfWeight_holMinorsPi (ho : IsPosFirstOrder ε o)
       G₂ z = (∏ τ : Φ, diagChar (c τ) (b τ)) * ∏ τ : Φ, weightMinors (c τ) (h τ) :=
     hG₂ h b hb h_block
   -- Both factors of the denominator `G₂ (h * b)` are nonzero.
-  have h_char_ne : ∏ τ : Φ, diagChar (c τ) (b τ) ≠ 0 := by
-    simp [diagChar, (hb _).diag_ne_zero ho.1, prod_ne_zero_iff, zpow_ne_zero]
+  have h_char_ne : ∏ τ : Φ, diagChar (c τ) (b τ) ≠ 0 :=
+    prod_ne_zero_iff.2 fun τ _ ↦ diagChar_ne_zero _ ((hb τ).diag_ne_zero ho.1)
   -- The characters of weights `u + c` and `c` divide to the character of weight `u`.
   have h_char : ∏ τ : Φ, diagChar ((u + c) τ) (b τ) =
       (∏ τ : Φ, diagChar (u τ) (b τ)) * ∏ τ : Φ, diagChar (c τ) (b τ) := by
-    simp [diagChar, (hb _).diag_ne_zero ho.1, prod_mul_distrib, zpow_add₀]
+    simp only [Pi.add_apply, diagChar_add _ _ ((hb _).diag_ne_zero ho.1), prod_mul_distrib]
   refine ⟨h_an₁.div h_an₂ (h_eq₂.trans_ne (mul_ne_zero h_char_ne (shiftMinors_ne_zero u h))), ?_⟩
   rw [Pi.div_apply, h_eq₁, h_eq₂, h_char, holMinorsPi_eq_div u h]
   field_simp
@@ -464,20 +464,16 @@ theorem holMinors_oppBorel_mul_mul_borel (ho : IsPosFirstOrder ε o) {w : n → 
     holMinors ε w (b' * y * b) = diagChar w b' * diagChar w b * holMinors ε w y := by
   -- Numerator and denominator obey this rule, with the weights `w + c` and `c`.
   let c (i : n) : ℤ := if ε i = 1 then 2 * ∑ j : n, |w j| else 0
-  obtain ⟨h_num, h_den⟩ : IsKDominant 1 o (fun i ↦ w i + c i) ∧ IsKDominant 1 o c :=
+  obtain ⟨h_num, h_den⟩ : IsKDominant 1 o (w + c) ∧ IsKDominant 1 o c :=
     ho.isKDominant_shift (u := fun _ : Unit ↦ w) (fun _ ↦ hw) ()
-  have h_add {z : Matrix n n ℂ} (hz : ∀ i : n, z i i ≠ 0) :
-      diagChar (fun i ↦ w i + c i) z = diagChar w z * diagChar c z := by
-    simp [diagChar, zpow_add₀, hz, prod_mul_distrib]
-  have h_ne {z : Matrix n n ℂ} (hz : ∀ i : n, z i i ≠ 0) : diagChar c z ≠ 0 :=
-    prod_ne_zero_iff.2 fun i _ ↦ zpow_ne_zero _ (hz i)
   have hb'_diag : ∀ i : n, b' i i ≠ 0 := hb'.diag_ne_zero (neg_injective.comp ho.1)
   have hb_diag : ∀ i : n, b i i ≠ 0 := hb.diag_ne_zero ho.1
-  change weightMinors (fun i ↦ w i + c i) (b' * y * b) / weightMinors c (b' * y * b) =
-    diagChar w b' * diagChar w b * (weightMinors (fun i ↦ w i + c i) y / weightMinors c y)
+  change weightMinors (w + c) (b' * y * b) / weightMinors c (b' * y * b) =
+    diagChar w b' * diagChar w b * (weightMinors (w + c) y / weightMinors c y)
   rw [h_num.weightMinors_mul_mul_of_isBorelMatrix ho.1 hb' hy hb,
-    h_den.weightMinors_mul_mul_of_isBorelMatrix ho.1 hb' hy hb, h_add hb'_diag, h_add hb_diag]
-  field_simp [h_ne hb'_diag, h_ne hb_diag]
+    h_den.weightMinors_mul_mul_of_isBorelMatrix ho.1 hb' hy hb,
+    diagChar_add w c hb'_diag, diagChar_add w c hb_diag]
+  field_simp [diagChar_ne_zero c hb'_diag, diagChar_ne_zero c hb_diag]
 
 open Norms.L2Operator in
 /-- With `c = 2 * ∑ j, |w j|` on the indices of sign `1` and zero elsewhere, `holMinors ε w` is the

@@ -298,9 +298,10 @@ theorem splittingIntegrand_mul_borel {h : ℕ} (hl : l.HasGap h) {g p r y b : Ma
   -- The characters combine because `Λ = (λ + ρ) - 2 ρ_c` with `λ + ρ = paramAddRho l`.
   have h_char : diagChar l.lowestKType b =
       diagChar (paramAddRho l) b * diagChar (-twoRho l fun i j ↦ ε i = ε j) b := by
-    simp [lowestKType, zpow_sub₀, hb.diag_ne_zero h_inj, div_eq_mul_inv, prod_mul_distrib, diagChar]
+    change diagChar (paramAddRho l - twoRho l _) b = _
+    rw [sub_eq_add_neg, diagChar_add _ _ (hb.diag_ne_zero h_inj)]
   have h_ne : diagChar (paramAddRho l) b ≠ 0 :=
-    prod_ne_zero_iff.2 fun i _ ↦ zpow_ne_zero _ (hb.diag_ne_zero h_inj i)
+    diagChar_ne_zero _ (hb.diag_ne_zero h_inj)
   simp only [HCParam.splittingIntegrand, h_p_factor, h_r_factor, h_denom, h_char, map_mul,
     ← Complex.mul_conj']
   field_simp [h_ne, (map_ne_zero conj).2 h_ne]

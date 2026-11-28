@@ -253,8 +253,8 @@ theorem IsHolOfWeight.mul {Φ : Type} [Fintype Φ] {u v : Φ → n → ℤ} {F G
   obtain ⟨hG_an, hG_eq⟩ := hG' h b hb_borel hb_mem
   refine ⟨hF_an.mul hG_an, ?_⟩
   have h_char (τ : Φ) :
-      diagChar ((u + v) τ) (b τ) = diagChar (u τ) (b τ) * diagChar (v τ) (b τ) := by
-    simp [diagChar, zpow_add₀, (hb_borel τ).diag_ne_zero ho, prod_mul_distrib]
+      diagChar ((u + v) τ) (b τ) = diagChar (u τ) (b τ) * diagChar (v τ) (b τ) :=
+    diagChar_add _ _ ((hb_borel τ).diag_ne_zero ho)
   simp_rw [Pi.mul_apply, hF_eq, hG_eq, h_char, prod_mul_distrib]
   ring
 
