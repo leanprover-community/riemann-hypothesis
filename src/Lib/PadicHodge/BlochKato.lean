@@ -777,6 +777,186 @@ lemma rank_comap_frob_sub_prod_eq {ι : Type} {k : ι → ℤ}
     h_prod, rank_eq_of_surjective fst_surjective, ker_fst,
     rank_range_of_injective _ inr_injective]
 
+omit [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] in
+/-- An equivariant algebra map `B₁ → B₂` of period rings commutes with the action of `Γ` on vectors
+through the basis `ε` of `T` (`New.Period.coordAction`). -/
+lemma algebraMap_comp_coordAction {ι B₁ B₂ : Type*} [Fintype ι] [DecidableEq ι] [CommRing B₁]
+    [Algebra ℤ_[p] B₁] [MulSemiringAction (Gp p) B₁] [SMulCommClass (Gp p) ℤ_[p] B₁]
+    [CommRing B₂] [Algebra ℤ_[p] B₂] [MulSemiringAction (Gp p) B₂]
+    [SMulCommClass (Gp p) ℤ_[p] B₂] [Algebra B₁ B₂] [IsScalarTower ℤ_[p] B₁ B₂]
+    [SMulDistribClass (Gp p) B₁ B₂] (ε : Basis ι ℤ_[p] T) (g : Γ) (y : ι → B₁) :
+    algebraMap B₁ B₂ ∘ coordAction ρ ε g y = coordAction ρ ε g (algebraMap B₁ B₂ ∘ y) := by
+  funext j
+  change algebraMap B₁ B₂ (∑ l, algebraMap ℤ_[p] B₁ (repMatrix ρ ε g j l) * toGp g • y l) =
+    ∑ l, algebraMap ℤ_[p] B₂ (repMatrix ρ ε g j l) * toGp g • algebraMap B₁ B₂ (y l)
+  rw [map_sum]
+  refine Finset.sum_congr rfl fun l _ ↦ ?_
+  have h_y : algebraMap B₁ B₂ (toGp g • y l) = toGp g • algebraMap B₁ B₂ (y l) :=
+    (smul_algebraMap_eq_algebraMap_smul (toGp g) (y l)).symm
+  rw [map_mul, ← IsScalarTower.algebraMap_apply, h_y]
+
+omit [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] in
+/-- Let `N` turn the action of `Γ` on `ι → BdR` through the basis `ε` of `T` into the plain Galois
+action, as in (b) of `New.Period.IsPotentiallyCrystalline.exists_hodge_basis`. For a vector `y`
+over a period ring `B` with an equivariant algebra map to `BdR`, `N` carries the coboundary of `y`,
+read in `BdR`, to the Galois coboundary `g ↦ g • N y - N y`. -/
+lemma map_algebraMap_comp_coboundaryMap {ι B : Type*} [Fintype ι] [DecidableEq ι] [CommRing B]
+    [Algebra ℤ_[p] B] [MulSemiringAction (Gp p) B] [SMulCommClass (Gp p) ℤ_[p] B] [Algebra B BdR]
+    [IsScalarTower ℤ_[p] B BdR] [SMulDistribClass (Gp p) B BdR] {ε : Basis ι ℤ_[p] T}
+    {N : (ι → BdR) ≃ₗ[ℤ_[p]] ι → BdR}
+    (hN : ∀ (g : Γ) (y : ι → BdR), N (coordAction ρ ε g y) = toGp g • N y) (y : ι → B) (g : Γ) :
+    N (algebraMap B BdR ∘ coboundaryMap (coordAction ρ ε) y g) =
+      toGp g • N (algebraMap B BdR ∘ y) - N (algebraMap B BdR ∘ y) := by
+  rw [← hN, ← map_sub, ← algebraMap_comp_coordAction]
+  exact congrArg N (funext fun i ↦ map_sub (algebraMap B BdR) (coordAction ρ ε g y i) (y i))
+
+omit [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] in
+/-- With `N` as in `New.Period.map_algebraMap_comp_coboundaryMap`, let `y` be a vector over `Bmax`
+such that the `i`-th entries of `N` of its coboundary, read in `BdR`, lie in `S i`. Then `N y` lies
+over `K = localFieldOf Γ` modulo `∏ S i`. -/
+lemma exists_sub_mem_of_map_coboundaryMap_mem {ι : Type} [Fintype ι] [DecidableEq ι]
+    {ε : Basis ι ℤ_[p] T} {N : (ι → BdR) ≃ₗ[ℤ_[p]] ι → BdR}
+    (hN : ∀ (g : Γ) (y : ι → BdR), N (coordAction ρ ε g y) = toGp g • N y) {y : ι → Bmax}
+    (S : ι → Submodule BdRPlus BdR)
+    (hy : ∀ (g : Γ) (i : ι),
+      N (algebraMap Bmax BdR ∘ coboundaryMap (coordAction ρ ε) y g) i ∈ S i) :
+    ∃ a : ι → localFieldOf Γ, ∀ i : ι,
+      N (algebraMap Bmax BdR ∘ y) i - ((a i : PadicAlgCl p) : BdR) ∈ S i :=
+  Classical.skolem.1 fun i ↦ BdR.exists_sub_mem_of_smul_sub_mem Γ (S i) fun g ↦ by
+    simpa only [map_algebraMap_comp_coboundaryMap hN, Pi.sub_apply, Pi.smul_apply] using hy g i
+
+omit [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] in
+/-- The coboundary map on vectors over `Bmax`, for the action of `Γ` through the basis `ε` of `T`,
+commutes with the Frobenius `φ` acting entrywise: `φ` fixes the entries of `repMatrix`, which lie
+in `ℤ_[p]`. -/
+lemma coboundaryMap_frobEnd_comp {ι : Type} [Fintype ι] [DecidableEq ι] (ε : Basis ι ℤ_[p] T)
+    (y : ι → Bmax) :
+    coboundaryMap (coordAction (B := Bmax) ρ ε) (frobEnd ∘ y) =
+      fun g ↦ frobEnd ∘ coboundaryMap (coordAction (B := Bmax) ρ ε) y g := by
+  funext g i
+  change (∑ j, algebraMap ℤ_[p] Bmax (repMatrix ρ ε g i j) * toGp g • frobEnd (y j)) -
+      frobEnd (y i) =
+    frobEnd ((∑ j, algebraMap ℤ_[p] Bmax (repMatrix ρ ε g i j) * toGp g • y j) - y i)
+  rw [map_sub, map_sum]
+  refine congrArg (· - frobEnd (y i)) (Finset.sum_congr rfl fun j _ ↦ ?_)
+  rw [map_mul, frobEnd_algebraMap_padicInt, smul_frobEnd]
+
+omit [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] in
+/-- Bounded denominators. With `N` as in `New.Period.map_algebraMap_comp_coboundaryMap`, let `y` be
+a vector over `Bmax` whose coboundary has entries fixed by `φ`, with `N y = w + N x` for a vector
+`w` fixed by `Γ` and a vector `x` over `BdRPlus`. Then one power `p ^ s` makes all entries of the
+coboundary of `y` integral `p`-adic numbers. -/
+lemma exists_padicInt_eq_pow_smul_coboundaryMap {ι : Type} [Fintype ι] [DecidableEq ι]
+    {ε : Basis ι ℤ_[p] T} {N : (ι → BdR) ≃ₗ[ℤ_[p]] ι → BdR}
+    (hN : ∀ (g : Γ) (y : ι → BdR), N (coordAction ρ ε g y) = toGp g • N y) {y : ι → Bmax}
+    (h_fixed : ∀ (g : Γ) (i : ι),
+      frobEnd (coboundaryMap (coordAction ρ ε) y g i) = coboundaryMap (coordAction ρ ε) y g i)
+    {w : ι → BdR} (hw : ∀ g : Γ, toGp g • w = w) {x : ι → BdRPlus}
+    (hx : N ((↑) ∘ x) = N (algebraMap Bmax BdR ∘ y) - w) :
+    ∃ s : ℕ, ∀ (g : Γ) (i : ι),
+      ∃ t : ℤ_[p], (t : Bmax) = (p : ℤ_[p]) ^ s • coboundaryMap (coordAction ρ ε) y g i := by
+  -- The entries of the coboundary of `y` are those of the coboundary of `x`, which lie in
+  -- `BdRPlus`; being fixed by `φ`, they are `p`-adic numbers with bounded denominators.
+  have h_eq (g : Γ) : N (algebraMap Bmax BdR ∘ coboundaryMap (coordAction ρ ε) y g) =
+      N ((↑) ∘ coboundaryMap (coordAction ρ ε) x g) := by
+    have h_lhs : toGp g • (N (algebraMap Bmax BdR ∘ y) - w) - (N (algebraMap Bmax BdR ∘ y) - w) =
+        N (algebraMap Bmax BdR ∘ coboundaryMap (coordAction ρ ε) y g) := by
+      rw [smul_sub, hw, sub_sub_sub_cancel_right, map_algebraMap_comp_coboundaryMap hN]
+    exact h_lhs.symm.trans ((congrArg (fun b : ι → BdR ↦ toGp g • b - b) hx.symm).trans
+      (map_algebraMap_comp_coboundaryMap hN x g).symm)
+  have hD (g : Γ) (i : ι) :
+      (coboundaryMap (coordAction ρ ε) y g i : BdR) = coboundaryMap (coordAction ρ ε) x g i :=
+    congrFun (N.injective (h_eq g)) i
+  exact exists_padicInt_eq_pow_smul_of_frobEnd_eq h_fixed hD
+
+omit [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] in
+/-- The comparison in the rank count of `New.Period.crysCocycles.finrank_eq`, with `D` and `incl` as
+in `New.Period.rank_comap_coboundary_eq`, and `P`, `u`, `w` and `Φ` as in
+`New.Period.rank_comap_frob_sub_prod_eq` for `N` and `k` as in
+`New.Period.IsPotentiallyCrystalline.exists_hodge_basis`. The vectors `y` whose coboundary `D y`
+comes from a function `Γ → T` lie in the preimage of `ker D × (range of w mod P)` under `Φ`, and
+every vector of this preimage has a nonzero multiple among them; so the two have the same rank. -/
+lemma rank_comap_coboundary_eq_rank_comap_frob_sub_prod {ι : Type} [Fintype ι] [DecidableEq ι]
+    {ε : Basis ι ℤ_[p] T} {k : ι → ℤ} {N : (ι → BdR) ≃ₗ[ℤ_[p]] ι → BdR}
+    (hN : ∀ (g : Γ) (y : ι → BdR), N (coordAction ρ ε g y) = toGp g • N y)
+    (hP : ∀ b : ι → BdR, (∃ x : ι → BdRPlus, N ((↑) ∘ x) = b) ↔ ∀ i : ι, b i ∈ hodgeFil (-k i)) :
+    let D : (ι → Bmax) →ₗ[ℤ_[p]] Γ → ι → Bmax := coboundaryMap (coordAction (B := Bmax) ρ ε)
+    let incl : (Γ → T) →ₗ[ℤ_[p]] Γ → ι → Bmax :=
+      ((Algebra.linearMap ℤ_[p] Bmax).compLeft ι ∘ₗ ε.equivFun.toLinearMap).compLeft Γ
+    let P : Submodule ℤ_[p] (ι → BdR) :=
+      (N.toLinearMap ∘ₗ (toAlgHom ℤ_[p] BdRPlus BdR).toLinearMap.compLeft ι).range
+    let u : (ι → Bmax) →ₗ[ℤ_[p]] ι → BdR :=
+      N.toLinearMap ∘ₗ (toAlgHom ℤ_[p] Bmax BdR).toLinearMap.compLeft ι
+    let w : (ι → localFieldOf Γ) →ₗ[ℤ_[p]] ι → BdR :=
+      ((toAlgHom ℤ_[p] (PadicAlgCl p) BdR).comp
+        ((localFieldOf Γ).val.restrictScalars ℤ_[p])).toLinearMap.compLeft ι
+    let Φ : (ι → Bmax) →ₗ[ℤ_[p]] (ι → Bmax) × ((ι → BdR) ⧸ P) :=
+      (actionRep ℤ_[p] (ι → Bmax) (.id FrobGal) ⟨.ofAdd 1, 1⟩ - 1).prod (P.mkQ ∘ₗ u)
+    Module.rank ℤ_[p] (incl.range.comap D) =
+      Module.rank ℤ_[p] ((D.ker.prod (P.mkQ ∘ₗ w).range).comap Φ) := by
+  intro D incl P u w Φ
+  let A : Submodule ℤ_[p] (ι → Bmax) := incl.range.comap D
+  let B : Submodule ℤ_[p] (ι → Bmax) := (D.ker.prod (P.mkQ ∘ₗ w).range).comap Φ
+  -- A vector that is invariant modulo `∏ S i` lies over `K` modulo `∏ S i`.
+  have h_fil (y : ι → Bmax) (S : ι → Submodule BdRPlus BdR)
+      (hy : ∀ (g : Γ) (i : ι), u (D y g) i ∈ S i) :
+      ∃ a : ι → localFieldOf Γ, ∀ i : ι, (u y - w a) i ∈ S i :=
+    exists_sub_mem_of_map_coboundaryMap_mem hN S hy
+  -- `D` commutes with `φ`, so `φ y - y` is invariant iff `φ` fixes the entries of `D y`.
+  have hφ (y : ι → Bmax) : frobEnd ∘ y - y ∈ D.ker ↔ (fun g ↦ frobEnd ∘ D y g) = D y := by
+    rw [mem_ker, map_sub, sub_eq_zero, coboundaryMap_frobEnd_comp]
+  have hAB : A ≤ B := by
+    -- Entries in `ℤ_[p]` are fixed by `φ` and lie in `BdRPlus`, so `h_fil` applies to `y`.
+    rintro y ⟨c, hc⟩
+    have h_fixed : (fun g ↦ frobEnd ∘ D y g) = D y := by
+      funext g i
+      rw [← hc]
+      exact frobEnd_algebraMap_padicInt (ε.repr (c g) i)
+    obtain ⟨a, ha⟩ := h_fil y _ fun g ↦ (hP _).1 ⟨fun i ↦ ε.repr (c g) i, by
+      rw [← hc]
+      refine congrArg N (funext fun i ↦ ?_)
+      exact (IsScalarTower.algebraMap_apply ℤ_[p] BdRPlus BdR _).symm.trans
+        (IsScalarTower.algebraMap_apply ℤ_[p] Bmax BdR _)⟩
+    exact ⟨(hφ y).2 h_fixed, a, (eq_iff_sub_mem.2 ((hP _).2 ha)).symm⟩
+  -- Conversely `B / A` is torsion, so `A` and `B` have the same rank.
+  have h_tors (y : ι → Bmax) (hy : y ∈ B) : ∃ t ≠ (0 : ℤ_[p]), t • y ∈ A := by
+    -- Write `u y = w a + N x` with `x` over `BdRPlus`. Here `w a` is fixed by `Γ` and the entries
+    -- of `D y` are fixed by `φ`, so they are `p`-adic numbers with bounded denominators.
+    obtain ⟨hy_inv, a, ha⟩ := hy
+    obtain ⟨x, hx⟩ := eq_iff_sub_mem.1 ha.symm
+    have hwa (g : Γ) : toGp g • w a = w a := funext fun i ↦
+      (BdR.smul_algebraMap_padicAlgCl (toGp g) (a i : PadicAlgCl p)).trans
+        (congrArg (algebraMap (PadicAlgCl p) BdR) (mem_localFieldOf.1 (a i).property g))
+    obtain ⟨s, h_int⟩ : ∃ s : ℕ, ∀ (g : Γ) (i : ι),
+        ∃ t : ℤ_[p], (t : Bmax) = (p : ℤ_[p]) ^ s • D y g i :=
+      exists_padicInt_eq_pow_smul_coboundaryMap hN
+        (fun g i ↦ congrFun (congrFun ((hφ y).1 hy_inv) g) i) hwa hx
+    exact ⟨p ^ s, NeZero.ne _, by simpa [A, incl, range_compLeft, ↓map_smul] using h_int⟩
+  exact rank_eq_of_le_of_torsion hAB h_tors
+
+omit [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] in
+/-- With `N` as in `New.Period.map_algebraMap_comp_coboundaryMap`, the vectors over `Bmax` fixed by
+the action of `Γ` through the basis `ε` of `T` form a ℤ_p-module of finite rank: `N` maps them to
+vectors over `K = localFieldOf Γ`. -/
+lemma rank_ker_coboundaryMap_lt_aleph0 {ι : Type} [Fintype ι] [DecidableEq ι]
+    {ε : Basis ι ℤ_[p] T} {N : (ι → BdR) ≃ₗ[ℤ_[p]] ι → BdR}
+    (hN : ∀ (g : Γ) (y : ι → BdR), N (coordAction ρ ε g y) = toGp g • N y) :
+    Module.rank ℤ_[p] (coboundaryMap (coordAction (B := Bmax) ρ ε)).ker < Cardinal.aleph0 := by
+  let u : (ι → Bmax) →ₗ[ℤ_[p]] ι → BdR :=
+    N.toLinearMap ∘ₗ (toAlgHom ℤ_[p] Bmax BdR).toLinearMap.compLeft ι
+  let w : (ι → localFieldOf Γ) →ₗ[ℤ_[p]] ι → BdR :=
+    ((toAlgHom _ _ BdR).comp ((localFieldOf Γ).val.restrictScalars ℤ_[p])).toLinearMap.compLeft ι
+  have h_le : (coboundaryMap (coordAction (B := Bmax) ρ ε)).ker.map u ≤ w.range := by
+    rintro _ ⟨y, hy : coboundaryMap (coordAction ρ ε) y = 0, rfl⟩
+    have hy' (g : Γ) (i : ι) :
+        u (coboundaryMap (coordAction ρ ε) y g) i ∈ (⊥ : Submodule BdRPlus BdR) := by
+      rw [hy]
+      simp
+    obtain ⟨a, ha⟩ := exists_sub_mem_of_map_coboundaryMap_mem hN ⊥ hy'
+    exact ⟨a, funext fun i ↦ (sub_eq_zero.1 (ha i)).symm⟩
+  grw [← rank_map_eq (f := u) fun _ ↦ by simp [u, funext_iff],
+    (rank_mono h_le).trans (rank_range_le w), ← rank_right_eq _ ℚ_[p], rank_lt_aleph0]
+
 /-- Bloch–Kato: for a potentially crystalline lattice `T` with Hodge–Tate jumps `J` (`hJ`: the jumps
 with multiplicity of `T` over ℤ_p, `overZp ρ`, at the inclusion `ofId ℤ_[p] ℂ_[p]`), the crystalline
 cocycles are finitely generated over ℤ_p of rank `d + n d⁻`. Here `d` is the rank of `T`, `n` is the
@@ -808,85 +988,9 @@ lemma crysCocycles.finrank_eq (h : IsPotentiallyCrystalline ρ) {J : Multiset �
     (actionRep ℤ_[p] (ι → Bmax) (.id FrobGal) ⟨.ofAdd 1, 1⟩ - 1).prod (P.mkQ ∘ₗ u)
   let A : Submodule ℤ_[p] (ι → Bmax) := incl.range.comap D
   let B : Submodule ℤ_[p] (ι → Bmax) := (D.ker.prod (P.mkQ ∘ₗ w).range).comap Φ
-  have hu (y : ι → Bmax) (g : Γ) : u (D y g) = toGp g • u y - u y := by
-    change u (coordAction (B := Bmax) ρ ε g y - y) = toGp g • u y - u y
-    rw [map_sub]
-    refine congrArg (· - u y) ?_
-    have h_map : (fun j ↦ algebraMap Bmax BdR (coordAction (B := Bmax) ρ ε g y j)) =
-        coordAction (B := BdR) ρ ε g (fun l ↦ algebraMap Bmax BdR (y l)) := by
-      funext j
-      change algebraMap Bmax BdR
-          (∑ l, algebraMap ℤ_[p] Bmax (repMatrix ρ ε g j l) * toGp g • y l) =
-        ∑ l, algebraMap ℤ_[p] BdR (repMatrix ρ ε g j l) * toGp g • algebraMap Bmax BdR (y l)
-      rw [map_sum]
-      refine Finset.sum_congr rfl fun l _ ↦ ?_
-      have h_y : algebraMap Bmax BdR (toGp g • y l) = toGp g • algebraMap Bmax BdR (y l) :=
-        (smul_algebraMap_eq_algebraMap_smul (toGp g) (y l)).symm
-      rw [map_mul, ← IsScalarTower.algebraMap_apply, h_y]
-    exact (congrArg N h_map).trans (hN g _)
-  -- A vector that is invariant modulo `∏ S i` lies over `K` modulo `∏ S i`.
-  have h_fil (y : ι → Bmax) (S : ι → Submodule BdRPlus BdR)
-      (hy : ∀ (g : Γ) (i : ι), u (D y g) i ∈ S i) :
-      ∃ a : ι → localFieldOf Γ, ∀ i : ι, (u y - w a) i ∈ S i :=
-    Classical.skolem.1 fun i ↦ BdR.exists_sub_mem_of_smul_sub_mem Γ (S i) fun g ↦ by
-      simpa only [hu, Pi.sub_apply, Pi.smul_apply] using hy g i
-  -- `D` commutes with `φ`, so `φ y - y` is invariant iff `φ` fixes the entries of `D y`.
-  have hφ (y : ι → Bmax) : frobEnd ∘ y - y ∈ D.ker ↔ (fun g ↦ frobEnd ∘ D y g) = D y := by
-    -- In coordinates; `φ` fixes the entries of `repMatrix`, which lie in `ℤ_[p]`.
-    have hD_frob : D (frobEnd ∘ y) = fun g ↦ frobEnd ∘ D y g := by
-      funext g i
-      change (∑ j, algebraMap ℤ_[p] Bmax (repMatrix ρ ε g i j) * toGp g • frobEnd (y j)) -
-          frobEnd (y i) =
-        frobEnd ((∑ j, algebraMap ℤ_[p] Bmax (repMatrix ρ ε g i j) * toGp g • y j) - y i)
-      rw [map_sub, map_sum]
-      refine congrArg (· - frobEnd (y i)) (Finset.sum_congr rfl fun j _ ↦ ?_)
-      rw [map_mul, frobEnd_algebraMap_padicInt, smul_frobEnd]
-    rw [mem_ker, map_sub, sub_eq_zero, hD_frob]
-  have hAB : A ≤ B := by
-    -- Entries in `ℤ_[p]` are fixed by `φ` and lie in `BdRPlus`, so `h_fil` applies to `y`.
-    rintro y ⟨c, hc⟩
-    have h_fixed : (fun g ↦ frobEnd ∘ D y g) = D y := by
-      funext g i
-      rw [← hc]
-      exact frobEnd_algebraMap_padicInt (ε.repr (c g) i)
-    obtain ⟨a, ha⟩ := h_fil y _ fun g ↦ (hP _).1 ⟨fun i ↦ ε.repr (c g) i, by
-      rw [← hc]
-      refine congrArg N (funext fun i ↦ ?_)
-      exact (IsScalarTower.algebraMap_apply ℤ_[p] BdRPlus BdR _).symm.trans
-        (IsScalarTower.algebraMap_apply ℤ_[p] Bmax BdR _)⟩
-    exact ⟨(hφ y).2 h_fixed, a, (eq_iff_sub_mem.2 ((hP _).2 ha)).symm⟩
-  -- Conversely `B / A` is torsion, so `A` and `B` have the same rank.
-  have h_tors (y : ι → Bmax) (hy : y ∈ B) : ∃ t ≠ (0 : ℤ_[p]), t • y ∈ A := by
-    -- Write `u y = w a + N x` with `x` over `BdRPlus`. The entries of `D y` are fixed by `φ` and
-    -- lie in `BdRPlus`, so they are `p`-adic numbers with bounded denominators.
-    obtain ⟨hy_inv, a, ha⟩ := hy
-    obtain ⟨x, hx⟩ := eq_iff_sub_mem.1 ha.symm
-    have h_eq (g : Γ) : u (D y g) = N ((↑) ∘ coboundaryMap (coordAction ρ ε) x g) := by
-      have hwa : toGp g • w a = w a := funext fun i ↦
-        (BdR.smul_algebraMap_padicAlgCl (toGp g) (a i : PadicAlgCl p)).trans
-          (congrArg (algebraMap (PadicAlgCl p) BdR) (mem_localFieldOf.1 (a i).property g))
-      have h_lhs : toGp g • (u y - w a) - (u y - w a) = u (D y g) := by
-        rw [smul_sub, hwa, sub_sub_sub_cancel_right, hu]
-      have h_rhs : toGp g • N ((↑) ∘ x) - N ((↑) ∘ x) =
-          N ((↑) ∘ coboundaryMap (coordAction ρ ε) x g) := by
-        rw [← hN g ((↑) ∘ x), ← map_sub]
-        refine congrArg N (funext fun i ↦ ?_)
-        change (∑ j, algebraMap ℤ_[p] BdR (repMatrix ρ ε g i j) *
-            toGp g • algebraMap BdRPlus BdR (x j)) - algebraMap BdRPlus BdR (x i) =
-          algebraMap BdRPlus BdR
-            ((∑ j, algebraMap ℤ_[p] BdRPlus (repMatrix ρ ε g i j) * toGp g • x j) - x i)
-        rw [map_sub, map_sum]
-        refine congrArg (· - algebraMap BdRPlus BdR (x i)) (Finset.sum_congr rfl fun j _ ↦ ?_)
-        have h_x : algebraMap BdRPlus BdR (toGp g • x j) = toGp g • algebraMap BdRPlus BdR (x j) :=
-          (smul_algebraMap_eq_algebraMap_smul (toGp g) (x j)).symm
-        rw [map_mul, ← IsScalarTower.algebraMap_apply, h_x]
-      exact h_lhs.symm.trans ((congrArg (fun b : ι → BdR ↦ toGp g • b - b) hx.symm).trans h_rhs)
-    have hD (g : Γ) (i : ι) : (D y g i : BdR) = coboundaryMap (coordAction ρ ε) x g i :=
-      congrFun (N.injective (h_eq g)) i
-    have h_fixed (g : Γ) (i : ι) : frobEnd (D y g i) = D y g i :=
-      congrFun (congrFun ((hφ y).1 hy_inv) g) i
-    obtain ⟨s, h_int⟩ := exists_padicInt_eq_pow_smul_of_frobEnd_eq h_fixed hD
-    exact ⟨p ^ s, NeZero.ne _, by simpa [A, incl, range_compLeft, ↓map_smul] using h_int⟩
+  -- `A ≤ B` with torsion quotient, by bounded denominators, so `A` and `B` have the same rank.
+  have h_rank_AB : Module.rank ℤ_[p] A = Module.rank ℤ_[p] B :=
+    rank_comap_coboundary_eq_rank_comap_frob_sub_prod hN hP
   -- `A` contains `D.ker`, and its image under `D` is `crysCocycles ρ` in coordinates.
   have h_rank_A : Module.rank ℤ_[p] A =
       Module.rank ℤ_[p] (crysCocycles ρ) + Module.rank ℤ_[p] D.ker := rank_comap_coboundary_eq ε
@@ -895,13 +999,7 @@ lemma crysCocycles.finrank_eq (h : IsPotentiallyCrystalline ρ) {J : Multiset �
       Module.rank ℤ_[p] ({i // k i < 0} → localFieldOf Γ) + Module.rank ℤ_[p] (ι → ℚ_[p]) :=
     rank_comap_frob_sub_prod_eq hP D.ker
   -- The invariants `D.ker` embed in the image of `w`; their rank is finite and cancels.
-  have h_fin : Module.rank ℤ_[p] D.ker < Cardinal.aleph0 := by
-    have h_le : D.ker.map u ≤ w.range := by
-      rintro _ ⟨y, hy : D y = 0, rfl⟩
-      obtain ⟨a, ha⟩ := h_fil y ⊥ (by simp [hy])
-      exact ⟨a, funext fun i ↦ (sub_eq_zero.1 (ha i)).symm⟩
-    grw [← rank_map_eq (f := u) fun _ ↦ by simp [u, funext_iff],
-      (rank_mono h_le).trans (rank_range_le w), ← rank_right_eq _ ℚ_[p], rank_lt_aleph0]
+  have h_fin : Module.rank ℤ_[p] D.ker < Cardinal.aleph0 := rank_ker_coboundaryMap_lt_aleph0 hN
   have hJ_eq : J = Finset.univ.val.map k := ext' fun u ↦ (hJ u).symm.trans (hk u)
   refine Cardinal.eq_of_add_eq_add_right ?_ h_fin
   -- `localFieldOf Γ` has degree `n = toGp.range.index` over `ℚ_[p]`, and `d⁻` jumps are negative.
@@ -912,7 +1010,7 @@ lemma crysCocycles.finrank_eq (h : IsPotentiallyCrystalline ρ) {J : Multiset �
     rfl
   have h_rank_ι : Module.rank ℤ_[p] (ι → ℚ_[p]) = (finrank ℤ_[p] T : Cardinal) := by
     rw [← rank_right_eq _ ℚ_[p], ← finrank_eq_rank, Module.finrank_pi, Fintype.card_fin]
-  rw [← h_rank_A, rank_eq_of_le_of_torsion hAB h_tors, h_rank_B, h_rank_neg, h_rank_ι]
+  rw [← h_rank_A, h_rank_AB, h_rank_B, h_rank_neg, h_rank_ι]
   push_cast
   ring
 
