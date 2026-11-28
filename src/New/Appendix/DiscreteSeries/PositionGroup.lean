@@ -610,10 +610,10 @@ lemma IsPosition.exists_conj_inl_eq {v : Matrix (n ⊕ Unit) (Fin 1) ℂ} {i₀ 
     ((conj_inl_sub_one_mul w y).trans ((mul_frame_blocks_iff hw).mpr ⟨h_image, h_vec⟩).symm)
 
 omit [Fintype X] [DecidableEq n] in
-/-- If `l` is steep (so its weight is `0` on `X` and in `[-3 B, -B]` elsewhere) and has a large gap,
+/-- If `l` has gap `h` and is steep (its weight is `0` on `X` and in `[-3 B, -B]` elsewhere),
 the weight of the lowest `K`-type of `-l` lies in `[0, 3 B]`. -/
 lemma IsSteep.lowestKType_neg_mem {B : ℝ} {l : HCParam ε} {M h : ℕ} {e : X ⊕ Fin M ≃ n}
-    (h_steep : IsSteep l B e) (hl_gap : l.HasLargeGap h) (hB : 0 ≤ B) (i : n) :
+    (h_steep : IsSteep l B e) (hl_gap : l.HasGap h) (hB : 0 ≤ B) (i : n) :
     ((-l).lowestKType i : ℝ) ∈ Set.Icc 0 (3 * B) := by
   obtain ⟨x | a, rfl⟩ := e.surjective i
   · simpa [h_steep.weight_eq_zero] using hB
@@ -637,7 +637,7 @@ lemma sq_norm_fromCols_le {v : Matrix (n ⊕ Unit) (Fin 1) ℂ} {i₀ : Matrix (
 /-- Let the integer vectors `l = 2 λ` for `U(ε)` and `-l'` for `U(ε ⊕ 1)` be steep with `B ≥ 1`: on
 `X` the signs are `+1` and the weight of the lowest `K`-type is `0`; on the other `M`, resp.
 `M + 1`, coordinates the signs are `+, -, +, …` and the weight decreases strictly in `[-3 B, -B]`.
-Let `M` be even and let `λ` be a Harish-Chandra parameter with gap `500 (card n)³ + h` between
+Let `M` be even and let `λ` be a Harish-Chandra parameter with gap at least `h` between
 entries of opposite signs. Then `-l'`, `-l` have a stationary position with one vector `v`: an
 isometry `i₀` of `(ℂ^n, ε)` into the orthogonal complement of `v`, the identity on `ℂ^X`, with
 `i₀† μ' i₀ = μ` for the weights `μ'`, `μ` of `-l'`, `-l` as diagonal matrices. The form of signs
@@ -646,7 +646,7 @@ isometry `i₀` of `(ℂ^n, ε)` into the orthogonal complement of `v`, the iden
 lemma IsSteep.exists_isStationary_conjTranspose_mul_mul_eq_one {B : ℝ} {l : HCParam ε}
     {l' : HCParam (Sum.elim ε (1 : Unit → ℤˣ))} {M h : ℕ} {e : X ⊕ Fin M ≃ n}
     {e' : X ⊕ Fin (M + 1) ≃ n ⊕ Unit} (hM : Even M) (h_steep : IsSteep l B e)
-    (h_steep' : IsSteep (-l') B e') (hB : 1 ≤ B) (hl_gap : l.HasLargeGap h) :
+    (h_steep' : IsSteep (-l') B e') (hB : 1 ≤ B) (hl_gap : l.HasGap h) :
     ∃ (v : Matrix (n ⊕ Unit) (Fin 1) ℂ) (i₀ : Matrix (n ⊕ Unit) n ℂ),
       IsStationary (-l') (-l) e' e 0 v i₀ ∧
       (vᴴ * signMatrix (Sum.elim ε (1 : Unit → ℤˣ)) * v) 0 0 = 1 ∧
