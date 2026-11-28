@@ -262,10 +262,9 @@ lemma New.Selmer.eventually_exists_lettersReadThick {P : Parameters} {D : Data P
     fun z ↦ cmSign (complexEmbeddingOf e (Classical.epsilon (reads z))),
     ⟨h_index, ?_, fun g hg ↦ ?_, fun g hg ↦ ?_, ?_, ?_⟩⟩
   · -- The index `e f` counts the embeddings in an orbit, so it is at most the degree of `E`.
-    have h_card : Nat.card (D.E →+* ℂ) ≤ D.halfGap := by
-      simpa [Embeddings.card, finrank_eq_two_mul_card_infinitePlace] using D.nat_le_of_hasLogBound
-    grw [Nat.le_mul_of_pos_right k.e k.f.pos, h_index, h_group.index_eq_card_range,
-      Finite.card_subtype_le, h_card]
+    have h_degree : finrank ℚ D.E ≤ D.halfGap := by
+      simpa [finrank_eq_two_mul_card_infinitePlace] using D.nat_le_of_hasLogBound
+    grw [Nat.le_mul_of_pos_right k.e k.f.pos, h_index, h_group.index_le_finrank, h_degree]
   · -- The letters read whether `g` is a b-place: a `g` that is not a b-place has `Q < ℓ`, so its
     -- letter determines its embedding.
     refine ⟨fun h_thick ↦ ⟨g, h_thick, rfl⟩, fun ⟨g', h_thick, h_letter⟩ ↦ ?_⟩

@@ -740,15 +740,9 @@ lemma sum_index_mul_defectBound_le (hr : 1 ≤ card r) (ht : t ≤ D.t) :
       card r * localDefectBound D ℓ := by
   classical
   -- The local degree at `v` counts the embeddings of `E` that belong to `v`, out of `2 f`.
-  have h_degrees : ∑ v : placesDividing D.E ℓ, (localChart ℓ D.E v).toGp.range.index ≤ 2 * D.f :=
-    calc
-      _ = ∑ v : placesDividing D.E ℓ, ∑ σ : D.E →+* ℂ with
-            ∃ g : Gp ℓ, complexEmbeddingOf ((localChart ℓ D.E v).e.comp (algebraMap D.E Ω)) g = σ,
-              1 := by
-        simp [(localChart ℓ D.E _).inducesPlace.2.index_eq_card_range, Fintype.card_subtype]
-      _ ≤ 2 * D.f := by
-        simpa [Embeddings.card, finrank_eq_two_mul_card_infinitePlace] using
-          sum_complexEmbeddingOf_le fun _ : D.E →+* ℂ ↦ 1
+  have h_degrees : ∑ v : placesDividing D.E ℓ, (localChart ℓ D.E v).toGp.range.index ≤ 2 * D.f := by
+    simpa [finrank_eq_two_mul_card_infinitePlace] using
+      sum_localChart_index_le_finrank (ℓ := ℓ) (E := D.E)
   -- The main summand costs `r' defectBound`, and the characters together cost at most as much.
   have h_blocks : ∑ i : Option (Fin t),
       (card (SummandCoordIndex r i) * (defectBound D ℓ / (if i = none then 1 else D.t : ℕ)) :

@@ -616,6 +616,15 @@ lemma IsCompletionGroup.index_eq_card_range (hj : IsCompletionGroup e j) :
     ((Quotient.congr (Equiv.inv (Gp ℓ)) h_left).trans
       (quotientKerEquivRange (complexEmbeddingOf e)))
 
+/-- The index of a completion group is at most the degree of the number field, since its orbit
+is a subset of the complex embeddings. -/
+lemma IsCompletionGroup.index_le_finrank [NumberField E] (hj : IsCompletionGroup e j) :
+    j.range.index ≤ Module.finrank ℚ E := by
+  rw [hj.index_eq_card_range]
+  calc
+    _ ≤ Nat.card (E →+* ℂ) := Finite.card_subtype_le _
+    _ = _ := by simp [NumberField.Embeddings.card]
+
 /-- Let `E` be an embedded number field, and `ι : ℂ ≃ ℚ̄_ℓ` the isomorphism fixed by `PadicIso ℓ`.
 Let `v` and `w` be places of `E`
 above the prime `ℓ`, and `e_v`, `e_w` the restrictions to `E` of the embeddings `Ω → ℚ̄_ℓ` of their
@@ -664,6 +673,14 @@ lemma sum_complexEmbeddingOf_le [EmbeddedNumberField E] (a : (E →+* ℂ) → �
       hvw (eq_of_complexEmbeddingOf_localChart_eq (hg.trans hg'.symm))
   rw [← Finset.sum_biUnion h_disj]
   exact Finset.sum_le_sum_of_subset (Finset.subset_univ _)
+
+/-- The sum of the local chart indices over the places above `ℓ` is at most the degree of `E`
+over `ℚ`, since distinct places contribute disjoint sets of complex embeddings. -/
+lemma sum_localChart_index_le_finrank [EmbeddedNumberField E] :
+    ∑ v : placesDividing E ℓ, (localChart ℓ E v).toGp.range.index ≤ Module.finrank ℚ E := by
+  classical
+  simpa [(localChart ℓ E _).inducesPlace.2.index_eq_card_range, Fintype.card_subtype,
+    NumberField.Embeddings.card] using sum_complexEmbeddingOf_le (ℓ := ℓ) fun _ : E →+* ℂ ↦ 1
 
 end LocalEmbeddings
 
