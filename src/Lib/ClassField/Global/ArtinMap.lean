@@ -202,31 +202,34 @@ lemma QZChar.eventually_artinAt_eq_one :
       (hv _ v.isPlaceOver_placeOver) _ (mem_idelesUnitOff.1 hu v (notMem_empty v))
   · exact mem_iInter₂.1 hr v hv
 
+/-- For a finite idele `a`, the character `χ` kills its local Artin symbols outside a finite
+set of places. At almost all places, `χ` is unramified and the component of `a` is a unit. -/
+lemma QZChar.finite_mulSupport_artinAt (a : (𝔸f K)ˣ) :
+    (Function.mulSupport fun v : FinPlace K ↦
+      abelianLift χ (artinAt Γ v (ideleAt v a))).Finite := by
+  have h_unr : ∀ᶠ v : FinPlace K in .cofinite, inertiaGroup Γ (placeOver v) ≤ ker χ :=
+    (finite_ramified (isOpen_ker χ)).mono fun v hv ↦ hv _ (FinPlace.isPlaceOver_placeOver v)
+  exact (h_unr.and (finite_setOf_valued_val_ne_one a)).mono fun v ⟨hv, h_unit⟩ ↦
+    (v.isPlaceOver_placeOver.artinAt_units_trivial_iff_inertiaGroup_le χ).mpr hv _ h_unit
+
 /-- A character `χ` of `Γ` takes the global Artin symbol of a finite idele `a` to the product over
 the finite places `v` of its values on the local symbols of the components of `a`. -/
 @[local simp]
 lemma abelianLift_artinMap_eq_finprod (χ : QZChar Γ) (a : (𝔸f K)ˣ) :
     abelianLift χ (artinMap Γ a) =
       ∏ᶠ v : FinPlace K, abelianLift χ (artinAt Γ v (ideleAt v a)) := by
-  -- Almost all factors are `1`: those where `χ` is unramified and `a` is a unit.
-  have h_fin (χ : QZChar Γ) (a : (𝔸f K)ˣ) :
-      ∀ᶠ v : FinPlace K in .cofinite, abelianLift χ (artinAt Γ v (ideleAt v a)) = 1 := by
-    filter_upwards [finite_ramified (Ω := Ω) (isOpen_ker χ),
-      (Filter.eventually_cofinite.2 (finite_setOf_valued_val_ne_one a) :
-        ∀ᶠ v : FinPlace K in .cofinite, Valued.v (a.val v) = 1)]
-      with v h_unr (hv : Valued.v (a.val v) = 1)
-    exact (v.isPlaceOver_placeOver.artinAt_units_trivial_iff_inertiaGroup_le χ).2
-      (h_unr _ v.isPlaceOver_placeOver) _ hv
   -- The product is multiplicative in `χ` and in `a`, so by Pontryagin duality
   -- (`exists_hom_abelianLift_eq`) it comes from a homomorphism.
   let F (a : (𝔸f K)ˣ) (χ : QZChar Γ) : Multiplicative QZ :=
     ∏ᶠ v : FinPlace K, abelianLift χ (artinAt Γ v (ideleAt v a))
   have h_add (a : (𝔸f K)ˣ) (χ ξ : QZChar Γ) : F a (χ + ξ) = F a χ * F a ξ := by
-    refine (finprod_congr fun v ↦ ?_).trans (finprod_mul_distrib (h_fin χ a) (h_fin ξ a))
+    refine (finprod_congr fun v ↦ ?_).trans
+      (finprod_mul_distrib (finite_mulSupport_artinAt χ a) (finite_mulSupport_artinAt ξ a))
     -- On the class of `g` both sides are `χ g + ξ g`, by definition.
     exact (artinAt Γ v _).inductionOn fun _ ↦ rfl
   have h_mul (a b : (𝔸f K)ˣ) (χ : QZChar Γ) : F (a * b) χ = F a χ * F b χ := by
-    simpa [F] using finprod_mul_distrib (h_fin χ a) (h_fin χ b)
+    simpa [F] using finprod_mul_distrib (finite_mulSupport_artinAt χ a)
+      (finite_mulSupport_artinAt χ b)
   have h_hom : ∃ f : (𝔸f K)ˣ →* TopologicalAbelianization Γ,
       ∀ (χ : QZChar Γ) (a : (𝔸f K)ˣ), abelianLift χ (f a) = F a χ :=
     exists_hom_abelianLift_eq

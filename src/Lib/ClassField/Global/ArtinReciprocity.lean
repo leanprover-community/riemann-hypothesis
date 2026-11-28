@@ -342,12 +342,8 @@ lemma exists_reciprocity_character {A : ClosurePlace} {v : FinPlace K} (hA : IsP
 is a unit. -/
 lemma finite_mulSupport_abelianLift_artinAt (χ : QZChar Γ) (x : Kˣ) :
     (Function.mulSupport fun v : FinPlace K ↦
-      abelianLift χ (artinAt Γ v (ideleAt v (principalIdele x)))).Finite := by
-  have h_unr : ∀ᶠ v : FinPlace K in .cofinite, inertiaGroup Γ (placeOver v) ≤ ker χ :=
-    (finite_ramified (isOpen_ker χ)).mono fun v hv ↦ hv _ (FinPlace.isPlaceOver_placeOver v)
-  exact (h_unr.and (finite_setOf_valued_val_ne_one (principalIdele x))).mono fun v hv ↦
-    ((FinPlace.isPlaceOver_placeOver v).artinAt_units_trivial_iff_inertiaGroup_le χ).mpr hv.left _
-      hv.right
+      abelianLift χ (artinAt Γ v (ideleAt v (principalIdele x)))).Finite :=
+  finite_mulSupport_artinAt χ (principalIdele x)
 
 /-- Let `c` be an element of an additive monoid whose order divides `i`. If, for every prime
 `l ∣ n`, no `a • n • c` with `a` prime to `l` vanishes, then `n ∣ i`. -/
