@@ -39,6 +39,10 @@ name: build
 
 on:
   pull_request:
+    # `closed` builds nothing: a merged or closed pull request needs no build. Its run is in the
+    # pull request's concurrency group, so GitHub cancels the build that is still waiting for a
+    # runner, or running, and the job below is skipped.
+    types: [opened, synchronize, reopened, closed]
     branches: [main]
   merge_group:
   push:
@@ -56,6 +60,7 @@ concurrency:
 jobs:
   build:
     name: lake build
+    if: github.event_name != 'pull_request' || github.event.action != 'closed'
     # Pull requests from forks run on the rh-pr-fork runners. (GitHub does not pass repository
     # variables to pull requests from forks, so this cannot be a variable; replacing that
     # fromJSON with '"ubuntu-latest"' sends them back to GitHub-hosted runners.) Other pull
