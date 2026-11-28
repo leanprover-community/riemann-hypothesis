@@ -159,6 +159,11 @@ lemma Selmer.nsmul_quot_eq_zero {ℓ M : ℕ} (h_dvd : a ∣ (ℓ : O) ^ M) :
     ∀ x : QuotSpan a, ℓ ^ M • x = 0 :=
   mod_cast smul_quot_eq_zero_of_dvd h_dvd
 
+/-- A natural-number power annihilating the quotient also annihilates every vector in it. -/
+lemma Selmer.nsmul_pi_quot_eq_zero {ℓ M : ℕ} {ι : Type*} (h_dvd : a ∣ (ℓ : O) ^ M)
+    (x : ι → QuotSpan a) : ℓ ^ M • x = 0 :=
+  funext fun i ↦ nsmul_quot_eq_zero h_dvd (x i)
+
 lemma relEval_apply (f : Γ →₀ Matrix n n O) (c : Γ → n → B) :
     relEval B f c = f.sum fun (γ : Γ) (x : Matrix n n O) ↦ x • c γ :=
   rfl

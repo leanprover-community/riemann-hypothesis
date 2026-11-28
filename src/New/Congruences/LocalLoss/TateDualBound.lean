@@ -146,7 +146,7 @@ lemma New.Selmer.relLength_le_of_comesFromClass {ℓ : ℕ} [ThePrime ℓ] {R Γ
   have cont_red {Y : GalLattice R Γ} (hY : InClass F K U Y) (q : Y →ₗ[R] L) {a : Γ → Y}
       (ha : a ∈ crysCocycles Y.ρ) : Continuous ((τ ∘ₗ q) ∘ a) :=
     continuous_comp h_emb hY.isPotentiallyCrystalline (τ ∘ₗ q).toAddMonoidHom
-      (fun y ↦ funext fun i ↦ nsmul_quot_eq_zero dvd_rfl (τ (q y) i)) ha
+      (fun y ↦ nsmul_pi_quot_eq_zero dvd_rfl (τ (q y))) ha
   -- So `L / ℓ ^ m` is a discrete `Γ`-module: `g ↦ g • τ x` is a coboundary plus a constant.
   let V : DiscreteModule ℤ_[ℓ] Γ := .of (actionRep ℤ_[ℓ] (d → QuotSpan (ℓ ^ m : R)) σ) <| by
     suffices ∀ x : L, Continuous fun g : Γ ↦ σ g • τ x by

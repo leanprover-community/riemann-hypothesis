@@ -243,7 +243,7 @@ lemma New.Selmer.eq_zero_of_forall_mem_Z1_of_mem_evenClasses {ℓ : ℕ} [ThePri
   -- Characters with values in `ℚ/ℤ` separate points, and on an `ℓ ^ ν`-torsion group each of them
   -- factors through `ℤ/ℓ ^ ν`. So it is enough that `u b = 0` for all `u` to `ℤ/ℓ ^ ν`.
   have h_torsion (x : Unit → QuotSpan (ℓ ^ ν : ↑O)) : ℓ ^ ν • x = 0 :=
-    funext fun j ↦ nsmul_quot_eq_zero dvd_rfl (x j)
+    nsmul_pi_quot_eq_zero dvd_rfl x
   obtain ⟨h_cocycle, -, -, h_const⟩ := mem_selmerModule_iff.1 hc.1
   refine QZ.eq_zero_of_forall_hom_eq_zero fun v ↦ ?_
   obtain ⟨u, rfl⟩ := (QZ.bijective_ofZMod_comp h_torsion).2 v

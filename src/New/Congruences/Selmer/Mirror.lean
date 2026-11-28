@@ -238,7 +238,7 @@ lemma exists_apply_pair_eq_nsmul (hN : M < N) (ha : a ∣ ℓ ^ M) {P : FinPlace
     (hz : ∀ g h : Gal(Ω/E), z (g * h) = z g + T.ρ g • z h) (hz_lc : IsLocallyConstant z) :
     ∃ k : ℕ, z τ = k • z δ ∧ z (conjGal τ)⁻¹ = k • z (conjGal δ)⁻¹ := by
   have h_tors (b : n → QuotSpan a) : ℓ ^ N • b = 0 :=
-    funext fun j ↦ nsmul_quot_eq_zero (ha.trans (pow_dvd_pow _ hN.le)) (b j)
+    nsmul_pi_quot_eq_zero (ha.trans (pow_dvd_pow _ hN.le)) b
   let : Module (ZMod (ℓ ^ N)) (n → QuotSpan a) := AddCommGroup.zmodModule h_tors
   have hℓ : ↑(ℓ ^ N) ∉ P.asIdeal := fun h_mem ↦ hP <| T.subset <| T.placesDividing_subset
     (P.isPrime.mem_of_pow_mem N (by simpa using h_mem))

@@ -672,7 +672,7 @@ lemma exists_apply_eq_nsmul_of_mem_evenClasses {ν e : ℕ} {w : FrobeniusDatum 
   have h_notMem : ↑(ℓ ^ ν) ∉ (primeBelowPlus w.place).asIdeal :=
     fun h ↦ hℓ (w.place.isPrime.mem_of_pow_mem ν (by simpa using h))
   let : Module (ZMod (ℓ ^ ν)) (Unit → QuotSpan (ℓ ^ ν : ↑O)) :=
-    AddCommGroup.zmodModule fun _ ↦ funext fun _ ↦ nsmul_quot_eq_zero rfl.dvd _
+    AddCommGroup.zmodModule (nsmul_pi_quot_eq_zero dvd_rfl)
   obtain ⟨h_coc, -, -, h_locallyConstant⟩ := mem_selmerModule_iff.1 hz.1
   have h_add : ∀ g ∈ inertiaGroup Gal(Ω/maximalRealSubfield E) w.valuationSubring,
       ∀ k ∈ inertiaGroup Gal(Ω/maximalRealSubfield E) w.valuationSubring,
@@ -715,7 +715,7 @@ theorem IsKummerMap.nsmul_apply_tameGenerator_eq_zero {ν e : ℕ} {I : Type} [F
     exists_apply_eq_nsmul_of_mem_evenClasses (hw j).1 (hγ j) (w j).isPlaceOver.tameGenerator.2 hz
   -- The values of `z` form a module over `ℤ/ℓ^ν`, in which `n = 2 ψ(φ_j) a`.
   let : Module (ZMod (ℓ ^ ν)) (Unit → QuotSpan (ℓ ^ ν : ↑O)) :=
-    AddCommGroup.zmodModule fun _ ↦ funext fun _ ↦ nsmul_quot_eq_zero rfl.dvd _
+    AddCommGroup.zmodModule (nsmul_pi_quot_eq_zero dvd_rfl)
   obtain ⟨a, ha⟩ : ∃ a : ZMod (ℓ ^ ν), (n : ZMod (ℓ ^ ν)) = 2 * ψ (w j).frob * a := hn
   have h_kill : (2 * ψ (w j).frob) • z (γ j) = 0 := by
     rwa [← Nat.cast_smul_eq_nsmul (ZMod (ℓ ^ ν)), ZMod.natCast_zmod_val,

@@ -213,7 +213,7 @@ def tiedSetting (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
     (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1) (hN : M < N) (ha : a ∣ ℓ ^ M)
     (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v}) :
     RelationSetting (T.reductionModule ha) (ℓ ^ N) where
-  nsmul_eq_zero b := funext fun j ↦ nsmul_quot_eq_zero (ha.trans (pow_dvd_pow _ hN.le)) (b j)
+  nsmul_eq_zero := nsmul_pi_quot_eq_zero (ha.trans (pow_dvd_pow _ hN.le))
   subgroup := T.reductionKer M N
   apply_eq_of_mem _ hg := T.smul_eq_self_of_mem_reductionKer ha hg
   cyclotomicCharMod_eq_one _ hg := (T.mem_reductionKer.1 hg).2
