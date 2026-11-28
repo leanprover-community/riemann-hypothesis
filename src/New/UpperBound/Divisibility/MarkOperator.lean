@@ -50,6 +50,8 @@ supersingularities, 2019; Liu–Truong–Xiao–Zhao, Slopes of modular forms an
 
 @[expose] public section
 
+open TauCeti.OneSidedBound (l₀)
+
 namespace New.Data
 
 open Finset ZMod Nat Columns Parameters RingHom Module Real IsLocalization AtPrime NumberField

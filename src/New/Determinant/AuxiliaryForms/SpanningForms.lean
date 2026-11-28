@@ -62,6 +62,8 @@ Notions from other files:
 
 noncomputable section
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New.Data
 
 open Real Matrix Fintype Submodule LevelPlaces.LevelForm Space Rows Finset Function

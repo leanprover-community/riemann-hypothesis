@@ -20,7 +20,8 @@ covered by `v(B)` for a product `B` of consecutive integers.
 Notions from other files:
 * `New.Data P`: the data over the parameters `P = (q₀, d)`, with the size parameters `b`, `x`, `x₁`,
   `k`, the exponent `s` and the group `D.Φ` of infinite places of the field `E`.
-* `l₀ = New.l₀ D.towerExp`: the least power of `3` above `27 s`, where `2 ^ s = m ^ 22`.
+* `l₀ = TauCeti.OneSidedBound.l₀ D.towerExp`: the least power of `3` above `27 s`, where
+  `2 ^ s = m ^ 22`.
 * `D.bPlaces`, `D.weight`: the set of `b`-places and the weight `κ` of a place, equal to `b` at the
   `b`-places and to `a / x₁` elsewhere, where `a = x b`.
 * `D.placeOfInt ν`: the place named by the integer `ν`; the partner of `τ` at the exponent `e` is
@@ -52,6 +53,8 @@ Legendre's formula for `v(n!)` is classical.
 @[expose] public section
 
 open Finset Real Nat New.Parameters
+
+open TauCeti.OneSidedBound (l₀ towerDeg)
 
 namespace New.Data
 
@@ -395,7 +398,7 @@ lemma tsum_partnerMinTerm_add_le (D : Data P) {p : ℕ} [hp : Fact p.Prime] (τ 
     ∑' e : ℕ, D.partnerMinTerm p τ (e + n) ≤ 2 * D.b / (D.k * p) := by
   have hp2 : (2 : ℝ) ≤ p := mod_cast hp.out.two_le
   have hk_pos : (0 : ℝ) < D.k := mod_cast D.k_pos
-  have h_towerExp_lt : D.towerExp < n := by linarith [mul_lt_l₀ D.towerExp]
+  have h_towerExp_lt : D.towerExp < n := by linarith [TauCeti.OneSidedBound.lt_l₀ D.towerExp]
   obtain ⟨n', rfl⟩ : ∃ n' : ℕ, n = n' + 1 := exists_eq_succ_of_ne_zero h_towerExp_lt.ne_bot
   have hk_le : (D.k : ℝ) ≤ p ^ n' :=
     calc (D.k : ℝ) ≤ 2 ^ D.towerExp := D.le_of_hasLogBound
@@ -467,7 +470,7 @@ lemma error_le_padicValNat_lossProduct (D : Data P) {p : ℕ} [hp : Fact p.Prime
     one_le_mul_of_one_le_of_one_le (by simp) D.le_of_hasLogBound
   have h_gap : (l₀ D.towerExp + 1) * (D.a / D.x₁) ≤ D.b / (D.k * p) :=
     calc (l₀ D.towerExp + 1) * (D.a / D.x₁) ≤ (81 * D.towerExp + 1) * (D.a / D.x₁) := by
-          grw [l₀_le_mul D.towerExp_ne_zero, cast_mul, cast_ofNat]
+          grw [TauCeti.OneSidedBound.l₀_le D.towerExp_ne_zero, cast_mul, cast_ofNat]
       _ ≤ D.b / (D.k * D.k) := D.le_of_hasLogBound
       _ ≤ D.b / (D.k * p) := by grw [hk]
   have h_length : 6 * (D.b / (D.k * p)) ≤ D.lossFactorCount / p := by

@@ -59,6 +59,8 @@ See `Lib.PadicHodge.BlochKato` and `Lib.ClassField.Places.LocalFields` for sourc
 
 noncomputable section
 
+open TauCeti.OneSidedBound (l₀ towerDeg)
+
 namespace New.Selmer
 
 /-!

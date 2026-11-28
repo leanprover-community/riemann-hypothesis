@@ -74,6 +74,8 @@ lifts), k, x, x₁, b and the long order a = xb (`New.Data.a`) are those of `New
   up.
 -/
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New.Data
 
 variable {P : Parameters} (D : Data P) (p : ℕ)
@@ -122,9 +124,9 @@ def transferExponent : ℕ := D.ceilLogLifts p * D.f * (D.n D.m + D.ceilLogLifts
 def collisionExponent : ℕ := ⌈(D.m * (2 * D.f * D.a / p) : ℝ)⌉₊
 
 /-- The order o₀ in (ℤ/q₀)^× of the class of the infinite place named by −p
-(`New.Data.placeOfInt`). The places form the group (ℤ/q₁)^×, where q₁ = q₀ · `New.towerDeg` s and
-s = `D.towerExp`, and `New.Parameters.placeClass` reduces modulo the divisor q₀ of q₁. For p prime
-to q₀, o₀ is the order of −p in (ℤ/q₀)^×. -/
+(`New.Data.placeOfInt`). The places form the group (ℤ/q₁)^×, where
+q₁ = q₀ · `TauCeti.OneSidedBound.towerDeg` s and s = `D.towerExp`, and `New.Parameters.placeClass`
+reduces modulo the divisor q₀ of q₁. For p prime to q₀, o₀ is the order of −p in (ℤ/q₀)^×. -/
 def o₀ : ℕ := orderOf (P.placeClass ⟨towerDeg D.towerExp, rfl⟩ (D.placeOfInt (-p)))
 
 /-- p is exceptional if χ_K(p) = −1, p is not ±1 modulo the number m of lifts, and the order

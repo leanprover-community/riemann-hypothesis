@@ -57,6 +57,8 @@ noncomputable section
 
 /-! ## Chosen places and characters of given weight -/
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New.Data
 
 open Ideal NumberField Finset MulChar Parameters NeZero AutChar Nat

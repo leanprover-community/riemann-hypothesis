@@ -36,6 +36,8 @@ noncomputable section
 
 open Real Finset
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New
 
 variable {d : ℕ} [Fact d.Prime] {q : ℕ}

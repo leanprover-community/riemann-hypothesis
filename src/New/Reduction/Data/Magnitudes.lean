@@ -44,6 +44,8 @@ noncomputable section
 
 open Real Set Finset Nat NeZero
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New.Data
 
 variable {P : Parameters} (D : Data P) {F G l l' c : ℝ} {A B : ℕ} {u : Bool}
@@ -565,7 +567,7 @@ instance :
   have h_pow : D.HasLogUpper (3 ^ Nat.log 3 D.towerExp : ℕ) (max (Real.log D.logX₁) 1 + 1) :=
     D.hasLogUpper_of_le (pow_log_le_add_one 3 D.towerExp)
   -- so instance search has an exponent for each factor of `3 ^ (Nat.log 3 s + 5) * 2 ^ s`
-  rw [towerDeg, pow_add]
+  rw [TauCeti.OneSidedBound.towerDeg_eq, pow_add]
   exact .of_lower_of_upper (by cases u <;> scale_arith D)
 
 /-- `x¹¹ ≤ f ≤ exp P.constantBound * x¹¹ (log b)^{1/5}` for the number `f` of infinite places of

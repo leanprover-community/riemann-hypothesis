@@ -38,6 +38,8 @@ Notions from other files:
 
 noncomputable section
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New.Parameters
 
 /-!
@@ -145,7 +147,8 @@ lemma star_betaKInE (P : Parameters) (s : ℕ) : star (betaKInE P s) = 1 - P.bet
 instance : HasPrimitiveRoot5040 (P.E s) where
   exists_primitive_root := by
     -- `5040` divides `18480 * 3`, hence `q₁`; take the power `q₁ / 5040` of `ζ`
-    have h_three : 3 ∣ towerDeg s := (dvd_pow_self 3 (Nat.succ_ne_zero _)).mul_right _
+    have h_three : 3 ∣ towerDeg s :=
+      TauCeti.OneSidedBound.towerDeg_eq s ▸ (dvd_pow_self 3 (Nat.succ_ne_zero _)).mul_right _
     have h_dvd : 5040 ∣ P.q₁ s := .trans (by norm_num) (mul_dvd_mul P.dvd_q₀ h_three)
     exact ⟨P.ζ s ^ (P.q₁ s / 5040), isPrimitiveRoot_zeta.pow one_le (Nat.div_mul_cancel h_dvd).symm⟩
 

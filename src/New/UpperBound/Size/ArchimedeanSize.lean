@@ -67,6 +67,8 @@ section SizeBound
 
 open Finset Real
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New.Data
 
 open Parameters Stirling

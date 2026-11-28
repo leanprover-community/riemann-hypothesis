@@ -39,6 +39,8 @@ Notions from other files:
 
 noncomputable section
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New.Data
 
 section DivisibilityBound

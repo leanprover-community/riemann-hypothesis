@@ -214,6 +214,8 @@ lemma New.Parameters.norm_multiplierRatio {P : Parameters} {s : ℕ} {n : Type} 
   rw [← pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero, ← norm_pow, multiplierRatio_sq]
   simp [upsilonU1_hasWeight.norm_map_eq_one, funext_iff, Circle.norm_coe]
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New.Parameters.IsJetConjugation
 
 /-- On a standard space `V` (all signs `+1`, the point the identity matrix), a map `L` that

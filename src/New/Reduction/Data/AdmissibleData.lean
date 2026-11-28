@@ -36,8 +36,9 @@ Letters used in comments, and the names in the code:
 Notions from other files:
 * `New.Parameters`: a multiple `q₀` of `18480 = 16 · 3 · 5 · 7 · 11` and a prime `d` with
   `d ≡ q₀/2 - 1 mod q₀`; they determine the field `P.K = ℚ(√-d)`.
-* `New.towerDeg s`: the number `3 l₀ 2 ^ s`, where `l₀ = New.l₀ s` is, for `s ≥ 1`, the least power
-  of `3` above `27 s`. The modulus `P.q₁ s` is `q₀ * towerDeg s`.
+* `TauCeti.OneSidedBound.towerDeg s`: the number `3 l₀ 2 ^ s`, where
+  `l₀ = TauCeti.OneSidedBound.l₀ s` is, for `s ≥ 1`, the least power of `3` above `27 s`. The
+  modulus `P.q₁ s` is `q₀ * towerDeg s`.
 * `P.E s`, `P.Φ s`: the field `E = K(ζ)`, with `ζ` a primitive `q₁`-th root of unity, and its
   infinite places, which form a group isomorphic to `(ℤ/q₁)ˣ`.
 * `P.q₂ s`: the number `(q₀ d) ^ (s + 6)`.
@@ -49,6 +50,7 @@ noncomputable section
 
 open NumberField Set
 open Real (exp log)
+open TauCeti.OneSidedBound (l₀ towerDeg)
 
 /-- A bound for the constants that depend on `q₀` and `d` only. It is the sum of the constant
 `P.vacuumBoundConst` in the bound for the conjugates of the integral vacuum, `2 d + 6`, `q₀`, the
@@ -191,7 +193,7 @@ abbrev b : ℝ := exp D.logB
 protected abbrev Φ : Type := InfinitePlace D.E
 
 /-- The order `q₁ = 3 l₀ m ^ 22 q₀` of the root of unity that generates `E` over `K`; here
-`l₀ = New.l₀ D.towerExp` and `m ^ 22 = 2 ^ D.towerExp`. -/
+`l₀ = TauCeti.OneSidedBound.l₀ D.towerExp` and `m ^ 22 = 2 ^ D.towerExp`. -/
 abbrev q₁ : ℕ := P.q₁ D.towerExp
 
 /-- The number `f` of infinite places of `E`. -/

@@ -43,6 +43,8 @@ Notions from other files:
 
 noncomputable section
 
+open TauCeti.OneSidedBound (l₀)
+
 namespace New.Data
 
 /-! ## Induced primes and marked sets -/

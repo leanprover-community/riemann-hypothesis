@@ -34,7 +34,8 @@ Notions from other files:
   odd numbers if `p` is inert, all numbers if `p = d`); `I_p` consists of its positive elements.
 * `D.weight τ`, `P.partner D.towerExp p e τ`: the weight `κ(τ)` and the partner `-p ^ e * τ` of a
   place `τ`.
-* `l₀ = New.l₀ D.towerExp`: the range of exponents in which the `b`-places are sparse.
+* `l₀ = TauCeti.OneSidedBound.l₀ D.towerExp`: the range of exponents in which the `b`-places are
+  sparse.
 * `D.localPrimeSumTotal p`, `D.lossProduct l_τ`: the predicted valuation
   `S_p = ∑ D.localPrimeSum p κ(τ) τ`, and the product `B_τ` of the `n♯ = D.lossFactorCount` integers
   after `(l_τ - n♯)₊`.
@@ -48,6 +49,8 @@ Notions from other files:
 
 A prime that does not split in `K` does not divide `q₁ M`, where `q₁ = D.q₁`.
 -/
+
+open TauCeti.OneSidedBound (l₀)
 
 section SharpnessFrame
 

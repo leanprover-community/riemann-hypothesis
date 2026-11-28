@@ -8,6 +8,7 @@ public import Lib.ClassField.Places.DecompositionCyclotomic
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 public import Lib.General.NumberTheory.EmbeddingsAndDifferent
 import Lib.ClassField.Places.ProfiniteGalois
+public import TauCeti.NumberTheory.LFunctions.Zeros.OneSidedBound.Parameters
 
 /-!
 # The parameters q₀ and d, the field E = K(ζ), its infinite places and its roots of unity
@@ -59,6 +60,8 @@ noncomputable section
   constant built from `L'/L(1, χ_K)` and the root discriminant of `E`.
 -/
 
+open TauCeti.OneSidedBound (towerDeg)
+
 section Parameters
 
 open NumberField Polynomial IsCyclotomicExtension jacobiSym InfinitePlace IsAlgClosed cyclotomic
@@ -95,25 +98,9 @@ instance instPrimeSevenModEight : PrimeSevenModEight P.d where
   out := P.d_prime
   mod_eight := by grind [→ dvd_trans]
 
-/-- The number `l₀`: for `s ≥ 1`, the least power of `3` above `27 s`. -/
-def _root_.New.l₀ (s : ℕ) : ℕ := 3 ^ (Nat.log 3 s + 4)
-
-lemma _root_.New.mul_lt_l₀ (s : ℕ) : 27 * s < l₀ s := by
-  have h_log : s < 3 ^ (Nat.log 3 s + 1) := Nat.lt_pow_succ_log_self (by norm_num) s
-  rw [l₀, pow_add] at *
-  omega
-
-lemma _root_.New.l₀_le_mul {s : ℕ} (hs : s ≠ 0) : l₀ s ≤ 81 * s := by
-  have h_log : 3 ^ Nat.log 3 s ≤ s := Nat.pow_log_le_self 3 hs
-  rw [l₀, pow_add]
-  omega
-
-/-- The ratio `q₁ / q₀ = 3 l₀ 2 ^ s`; see `towerDeg_eq`. -/
-def _root_.New.towerDeg : ℕ := 3 ^ (Nat.log 3 s + 5) * 2 ^ s
-  deriving NeZero
-
-lemma _root_.New.towerDeg_eq (s : ℕ) : towerDeg s = 3 * l₀ s * 2 ^ s := by
-  rw [towerDeg, l₀, ← pow_succ']
+/-- The ratio `q₁ / q₀ = towerDeg s = 3 l₀ 2 ^ s` is not zero. -/
+instance _root_.New.neZero_towerDeg : NeZero (towerDeg s) :=
+  ⟨(TauCeti.OneSidedBound.towerDeg_pos s).ne'⟩
 
 /-- The order `q₁ = q₀ * towerDeg s` of the root of unity `ζ` that generates `E` over `K`. -/
 abbrev q₁ : ℕ := P.q₀ * towerDeg s
@@ -129,7 +116,8 @@ lemma dvd_d_add_one_div_four_of_dvd_q₁ {p s : ℕ} (hp : p.Prime) (hp_dvd : p 
     p ∣ (P.d + 1) / 4 := by
   -- The primes of `towerDeg s` are among `2` and `3`, and both divide `q₀`.
   have h_dvd_q₀ : p ∣ P.q₀ := by
-    obtain h_left | h_three | h_two := (hp.dvd_mul.1 hp_dvd).imp_right hp.dvd_mul.1
+    obtain h_left | h_three | h_two := (hp.dvd_mul.1 hp_dvd).imp_right fun h ↦
+      hp.dvd_mul.1 (by rwa [TauCeti.OneSidedBound.towerDeg_eq] at h)
     · exact h_left
     · exact (hp.dvd_of_dvd_pow h_three).trans P.three_dvd_q₀
     · exact (hp.dvd_of_dvd_pow h_two).trans P.two_dvd_q₀
@@ -189,7 +177,8 @@ def q₂ : ℕ := (P.q₀ * P.d) ^ (s + 6)
 `q₂ = (q₀ d) ^ (s + 6)`. -/
 lemma q₁_mul_d_dvd_q₂ {P : Parameters} {s : ℕ} : q₁ P s * P.d ∣ P.q₂ s := by
   have h_six : 3 * 2 ∣ P.q₀ * P.d := ((by norm_num : 3 * 2 ∣ 18480).trans P.dvd_q₀).mul_right _
-  calc P.q₁ s * P.d = P.q₀ * P.d * (3 ^ (Nat.log 3 s + 5) * 2 ^ s) := mul_right_comm ..
+  calc P.q₁ s * P.d = P.q₀ * P.d * (3 ^ (Nat.log 3 s + 5) * 2 ^ s) := by
+        rw [q₁, TauCeti.OneSidedBound.towerDeg_eq, mul_right_comm]
     _ ∣ P.q₀ * P.d * (3 ^ (s + 5) * 2 ^ (s + 5)) := by grw [Nat.log_le_self, ← s.le_add_right 5]
     _ ∣ P.q₀ * P.d * (P.q₀ * P.d) ^ (s + 5) := by grw [← mul_pow, h_six]
     _ = P.q₂ s := (pow_succ' ..).symm
@@ -348,11 +337,13 @@ lemma expand_pow_cyclotomic {p N : ℕ} (hp : p.Prime) (hpN : p ∣ N) (k : ℕ)
 lemma expand_towerDeg_cyclotomic :
     expand ℂ (towerDeg s) (cyclotomic P.q₀ ℂ) = cyclotomic (P.q₁ s) ℂ := by
   -- `towerDeg s` is a power of 3 times a power of 2, and both primes divide `q₀`.
-  rw [q₁, towerDeg, expand_mul, expand_pow_cyclotomic Nat.prime_two P.two_dvd_q₀,
+  rw [q₁, TauCeti.OneSidedBound.towerDeg_eq, expand_mul,
+    expand_pow_cyclotomic Nat.prime_two P.two_dvd_q₀,
     expand_pow_cyclotomic Nat.prime_three (P.three_dvd_q₀.mul_right _), mul_right_comm, mul_assoc]
 
 /-- The number of infinite places `Core.numInfPlaces` of E = K(ζ), ζ of order q₁ = 3^c 2^s q₀, is
-3^c 2^s φ(q₀), where 3^c 2^s = `New.towerDeg` s and φ is Euler's totient function. -/
+3^c 2^s φ(q₀), where 3^c 2^s = `TauCeti.OneSidedBound.towerDeg` s and φ is Euler's totient
+function. -/
 lemma numInfPlaces_E (s : ℕ) : Core.numInfPlaces (P.E s) = towerDeg s * P.q₀.totient := by
   -- The places correspond to `(ZMod q₁)ˣ`; compare degrees in `expand_towerDeg_cyclotomic`.
   have h_deg : (P.q₁ s).totient = P.q₀.totient * towerDeg s := by
@@ -394,7 +385,8 @@ lemma galOfPlace_zeta (v : P.Φ s) :
   exact autEquivPow_spec _ (P.irreducible_cyclotomic s) _
 
 lemma two_pow_dvd_q₁ : 2 ^ (s + 1) ∣ P.q₁ s :=
-  (dvd_of_eq (pow_succ' 2 s)).trans (mul_dvd_mul P.two_dvd_q₀ (dvd_mul_left _ _))
+  (dvd_of_eq (pow_succ' 2 s)).trans
+    (mul_dvd_mul P.two_dvd_q₀ (TauCeti.OneSidedBound.towerDeg_eq s ▸ dvd_mul_left _ _))
 
 /-- The `i`-th power of the place named by `ν` is the place named by `ν ^ i`. This holds also for
 `ν` not prime to `q₁`, when both sides are the identity place. -/
@@ -412,8 +404,8 @@ lemma placeMulEquiv_placeOfInt {ν : ℤ} (h_cop : IsCoprime ν P.q₀) :
   have h_two : IsCoprime 2 ν := h_cop.symm.mono (mod_cast P.two_dvd_q₀) dvd_rfl
   have h_three : IsCoprime 3 ν := h_cop.symm.mono (mod_cast P.three_dvd_q₀) dvd_rfl
   have h_unit : IsUnit (ν : ZMod (P.q₁ s)) := by
-    simp [towerDeg, isUnit_intCast_iff_isCoprime, IsCoprime.mul_left_iff, IsCoprime.pow_left,
-      h_cop.symm, h_two, h_three]
+    simp [TauCeti.OneSidedBound.towerDeg_eq, isUnit_intCast_iff_isCoprime, IsCoprime.mul_left_iff,
+      IsCoprime.pow_left, h_cop.symm, h_two, h_three]
   simp [placeOfInt, h_unit]
 
 /-- For `ν` prime to `q₀`, the place named by `ν` (`New.Parameters.placeOfInt`) has class `ν` modulo

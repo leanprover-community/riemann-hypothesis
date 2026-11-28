@@ -210,7 +210,7 @@ lemma New.Selmer.notMem_bPlaces_of_coefficientEmbedding_eq_pow {P : Parameters} 
   exact notMem_bPlaces_of_short_arc h_mem₀ h_mem₂
     (smul_eq_pow_of_coefficientEmbedding_eq_pow hζ hg₂ ξ hξ)
     (smul_eq_pow_of_coefficientEmbedding_eq_pow hζ hg₂₁ ξ hξ) hℓ hb_pos hb_lt
-    (h_short.trans_lt (mul_lt_l₀ D.towerExp))
+    (h_short.trans_lt (TauCeti.OneSidedBound.lt_l₀ D.towerExp))
 
 /-- Let `𝒥.toGp : Γ → G_ℓ` be an open embedding onto the elements of `G_ℓ = Gal(ℚ̄_ℓ / ℚ_ℓ)` that
 fix `e E`, where `E = D.E`, and put `Q = D.k * D.t`. For `O` large there are a Kummer chart of `Γ`

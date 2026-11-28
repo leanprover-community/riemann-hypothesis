@@ -40,6 +40,8 @@ Notions from other files:
 
 @[expose] public section
 
+open TauCeti.OneSidedBound (l₀ towerDeg)
+
 namespace New.Data
 
 open Real Set Parameters
@@ -58,7 +60,8 @@ lemma towerExp_ne_zero : D.towerExp ≠ 0 := by
 /-- The scales `x₁` and `b` of admissible data satisfy `x₁ ^ (3 l₀²) ≤ √b`, where `l₀` is the least
 power of `3` above `27 s` and `s` is the exponent of the tower. -/
 lemma x₁_pow_le_sqrt_b : D.x₁ ^ (3 * l₀ D.towerExp ^ 2) ≤ √D.b := by
-  have hl₀_le : (l₀ D.towerExp : ℝ) ≤ 81 * D.towerExp := mod_cast l₀_le_mul D.towerExp_ne_zero
+  have hl₀_le : (l₀ D.towerExp : ℝ) ≤ 81 * D.towerExp :=
+    mod_cast TauCeti.OneSidedBound.l₀_le D.towerExp_ne_zero
   have h_logX₁_pos : 0 < D.logX₁ := HasLogBound.pos D
   rw [x₁, b, ← exp_natCast_mul, ← exp_half, exp_le_exp]
   push_cast
@@ -84,7 +87,8 @@ the least power of `3` above `27 s`. -/
 lemma m_pow_le_two_pow_l₀ : D.m ^ 594 ≤ 2 ^ l₀ D.towerExp :=
   calc D.m ^ 594 = (D.m ^ 22) ^ 27 := by rw [← pow_mul]
     _ = 2 ^ (27 * D.towerExp) := by rw [m_pow_eq_two_pow_towerExp, ← pow_mul, mul_comm]
-    _ ≤ 2 ^ l₀ D.towerExp := Nat.pow_le_pow_right two_pos (mul_lt_l₀ D.towerExp).le
+    _ ≤ 2 ^ l₀ D.towerExp :=
+      Nat.pow_le_pow_right two_pos (TauCeti.OneSidedBound.lt_l₀ D.towerExp).le
 
 /-- The number `f` of infinite places of the field `E = K(ζ_{q₁})`, `K = ℚ(√-d)`, satisfies
 `m ^ 22 ≤ f ≤ q₁`. Here `m` is the number of successive theta lifts, a power of `2` with
@@ -94,14 +98,16 @@ lemma f_mem_Icc : D.f ∈ Icc (D.m ^ 22) D.q₁ := by
   rw [show D.f = towerDeg D.towerExp * P.q₀.totient from P.numInfPlaces_E D.towerExp]
   constructor
   · calc D.m ^ 22 = 2 ^ D.towerExp := D.m_pow_eq_two_pow_towerExp
-      _ ≤ towerDeg D.towerExp := Nat.le_mul_of_pos_left _ (by positivity)
+      _ ≤ towerDeg D.towerExp := by
+        rw [TauCeti.OneSidedBound.towerDeg_eq]
+        exact Nat.le_mul_of_pos_left _ (by positivity)
       _ ≤ towerDeg D.towerExp * P.q₀.totient := Nat.le_mul_of_pos_right _ (NeZero.pos _)
   · rw [q₁, Parameters.q₁, mul_comm P.q₀]
     exact Nat.mul_le_mul_left _ (Nat.totient_le _)
 
 /-- The number `f` of infinite places of the field `E` of the data is even. -/
 lemma f_even : Even D.f := by
-  rw [f, P.numInfPlaces_E, towerDeg]
+  rw [f, P.numInfPlaces_E, TauCeti.OneSidedBound.towerDeg_eq]
   simp [Nat.even_pow, D.towerExp_ne_zero]
 
 /-- The modulus `q₂ s = (q₀ d) ^ (s + 6)` is at most `x ^ (33 q₀ d)`. Here `q₀`, a multiple of

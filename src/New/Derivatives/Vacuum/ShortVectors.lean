@@ -43,6 +43,8 @@ Notions from other files:
 
 open Polynomial Finset ComplexConjugate NumberField
 
+open TauCeti.OneSidedBound (towerDeg)
+
 namespace New
 
 section Families

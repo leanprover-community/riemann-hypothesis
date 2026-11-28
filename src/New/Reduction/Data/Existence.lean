@@ -65,6 +65,8 @@ Siegel–Walfisz theorem. That lemma needs an upper bound for the start of a win
 bound for `log N₋` is used as well.
 -/
 
+open TauCeti.OneSidedBound (l₀ towerDeg)
+
 namespace New
 
 open Finset Behrend Real Filter NumberField ClassGroup NeZero QuadField
@@ -142,11 +144,12 @@ lemma Parameters.exists_orderOf_placeClass_eq (P : Parameters) (s : ℕ) :
   have h_two_le : 2 ≤ v := (Nat.pow_dvd_pow_iff_le_right one_lt_two).1
     ((hu.coprime_two_left.pow_left 2).dvd_of_dvd_mul_right h_four)
   set a : ℕ := 3 * l₀ s * u with ha
-  have ha_odd : Odd a := by simp [ha, l₀, Nat.odd_mul, Nat.odd_pow_iff, hu, Nat.odd_iff.2]
+  have ha_odd : Odd a := by
+    simp [ha, TauCeti.OneSidedBound.l₀_def, Nat.odd_mul, Nat.odd_pow_iff, hu, Nat.odd_iff.2]
   have h_order : orderOf (1 + 2 ^ v * (a : ℤ) : ZMod (2 ^ (s + v))) = 2 ^ s :=
     ZMod.orderOf_one_add_mul_prime_pow Nat.prime_two v (by omega) a
       (mod_cast ha_odd.not_two_dvd_nat) s
-  refine ⟨v, ⟨a, by grind [towerDeg_eq]⟩, ?_⟩
+  refine ⟨v, ⟨a, by grind [TauCeti.OneSidedBound.towerDeg_def]⟩, ?_⟩
   rw [← orderOf_units, P.placeClass_placeOfInt (by simp [isCoprime_one_left]), ← h_order, hq₀, ha]
   push_cast
   ring_nf
@@ -195,7 +198,7 @@ lemma Parameters.exists_large_isSparse (P : Parameters) {s n H L : ℕ}
   let ψ : P.Φ s →* (ZMod (2 ^ (s + v)))ˣ := P.placeClass hv
   -- Behrend's set `S` of exponents below the order of `ψ g`, for the weights up to `2 l₀`
   obtain ⟨S, h_lt, h_card, h_free⟩ := exists_three_term_free (o := orderOf (ψ g))
-    (by linarith [mul_lt_l₀ s]) (h_room.trans h_order_g.ge)
+    (by linarith [TauCeti.OneSidedBound.lt_l₀ s]) (h_room.trans h_order_g.ge)
   -- the places `-g ^ e` are distinct modulo `2 ^ (s + v)`, and `≡ -1` modulo `3 l₀ q₀`
   let place (e : ℕ) : P.Φ s := P.placeOfInt s (-1) * g ^ e
   have h_inj : Set.InjOn place S := fun e he e' he' h ↦
@@ -217,14 +220,17 @@ lemma Parameters.exists_large_isSparse (P : Parameters) {s n H L : ℕ}
   obtain rfl | h_odd := hℓ.eq_two_or_odd'
   · -- `ℓ = 2`: modulo `3 l₀ = 3 ^ c` the ratio is `1`, so `4 ^ i ≡ 1`; but `4` has order `l₀ > i`
     set c : ℕ := Nat.log 3 s + 5
-    have h_dvd : 3 ^ c ∣ P.q₁ s := Dvd.dvd.mul_left (dvd_mul_right ..) P.q₀
-    have h_dvd' : 3 ^ c ∣ 3 * l₀ s * P.q₀ := ⟨P.q₀, by rw [l₀, ← pow_succ']⟩
+    have h_dvd : 3 ^ c ∣ P.q₁ s :=
+      Dvd.dvd.mul_left (by rw [TauCeti.OneSidedBound.towerDeg_eq]; exact dvd_mul_right ..) P.q₀
+    have h_dvd' : 3 ^ c ∣ 3 * l₀ s * P.q₀ :=
+      ⟨P.q₀, by rw [TauCeti.OneSidedBound.l₀_def, ← pow_succ']⟩
     have h_four : (1 + 3 : ZMod (3 ^ c)) ^ i = 1 := by
       have h_sq := P.placeClass_sq_eq hℓ h_ratio_i h_dvd (.pow_right c (by norm_num))
       norm_num [map_div, h_class h_dvd h_dvd', pow_mul] at h_sq ⊢
       exact h_sq.symm
-    have h_order : orderOf (1 + 3 : ZMod (3 ^ c)) = l₀ s :=
-      ZMod.orderOf_one_add_prime Nat.prime_three (by norm_num) _
+    have h_order : orderOf (1 + 3 : ZMod (3 ^ c)) = l₀ s := by
+      rw [TauCeti.OneSidedBound.l₀_def]
+      exact ZMod.orderOf_one_add_prime Nat.prime_three (by norm_num) _
     linarith [orderOf_le_of_pow_eq_one hi h_four]
   · -- `ℓ` odd: modulo `2 ^ (s + v)`, the `2 j`-th power of the first ratio and the `2 i`-th
     -- power of the second are both `ℓ ^ (2 i j)`
@@ -279,7 +285,7 @@ lemma Parameters.exists_isSparse (P : Parameters) {s n L : ℕ} {W : ℝ} (hn : 
   obtain ⟨T, h_class, h_card, h_sparse⟩ := P.exists_large_isSparse h_fit hL
   refine ⟨T, h_class, ?_, h_sparse⟩
   push_cast at h_card
-  calc (towerDeg s : ℝ) = 3 * l₀ s * 2 ^ s := by simp [towerDeg_eq]
+  calc (towerDeg s : ℝ) = 3 * l₀ s * 2 ^ s := by simp [TauCeti.OneSidedBound.towerDeg_def]
     _ ≤ 3 * l₀ s * (2 ^ n * (2 ^ k) ^ n * W) := by grw [hk_upper]
     _ = (2 ^ k) ^ n / (n * (2 ^ k) ^ 2) * (3 * l₀ s * n * 2 ^ n * W * (2 ^ k) ^ 2) := by field
     _ ≤ #T * (W ^ 3 * W * W ^ 2) := by gcongr
@@ -513,7 +519,8 @@ lemma Parameters.exists_isSparse_of_ranks (P : Parameters) {m r s n : ℕ} {y W 
     calc W ≤ m ^ 22 := (hW.trans hm).trans (le_self_pow₀ (by linarith) (by norm_num))
       _ = 2 ^ s := mod_cast h_pow.symm
   have hs_ne : s ≠ 0 := fun h ↦ by simp [h, hW_one.not_ge] at h_lower
-  have hl : l₀ s ≤ 2592 * y := by linarith [show (l₀ s : ℝ) ≤ 81 * s from mod_cast l₀_le_mul hs_ne]
+  have hl : l₀ s ≤ 2592 * y := by
+    linarith [show (l₀ s : ℝ) ≤ 81 * s from mod_cast TauCeti.OneSidedBound.l₀_le hs_ne]
   have h_exp : 1e6 * y ≤ exp y := (h_large.trans hW).trans (exp_le_exp.2 (by linarith))
   refine P.exists_isSparse hn hW_one.le h_lower h_upper ?_ ?_
     (mul_rank_lt_two_pow (by linarith) h_exp hm hr h_pow hl)
