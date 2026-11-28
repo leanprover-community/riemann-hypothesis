@@ -117,27 +117,35 @@ section
 
 /-! ### Roots of unity modulo a valuation -/
 
-/-- Let `A` be a valuation subring of a field `Ω` and `x`, `y` in `Ω` with `x ^ N = y ^ N = 1`. If
-the multiplicative `A`-valuation of `x - y` is strictly smaller than that of `N`, then `x = y`. -/
-lemma eq_of_pow_eq_one_of_val_sub_lt {x y : Ω} (hx : x ^ N = 1) (hy : y ^ N = 1)
-    (h_val_lt : A.valuation (x - y) < A.valuation N) : x = y := by
-  -- Write `x = y + a N` with `a, y` in `A`. The binomial expansion of `x ^ (N + 1)` to second order
-  -- gives `-(x - y) N = (x - y) ^ 2 b` with `b` in `A`, so `x - y` divides `N` if `x ≠ y`.
-  have hN_ne : N ≠ 0 := fun h ↦ by simp [h] at h_val_lt
-  lift y to A using by
-    rw [← A.valuation_le_one_iff, ← pow_le_one_iff hN_ne, ← map_pow, hy, map_one]
+private lemma root_eq_one_of_val_sub_lt {x : Ω} (hx : x ^ N = 1)
+    (h_val_lt : A.valuation (x - 1) < A.valuation N) : x = 1 := by
+  -- The binomial expansion of x ^ (N + 1) gives N * (x - 1) = -(x - 1)^2 * b.
   obtain ⟨a, ha⟩ := (A.valuation_le_iff _ _).mp h_val_lt.le
-  obtain ⟨b, hb⟩ := sq_dvd_add_pow_sub_sub (a * N) y (N + 1)
+  obtain ⟨b, hb⟩ := sq_dvd_add_pow_sub_sub (a * N) (1 : A) (N + 1)
   contrapose! h_val_lt
   refine (A.valuation_le_iff _ _).mpr ⟨-b, ?_⟩
   simp_all [Subtype.ext_iff]
   grind
 
+/-- If `x` and `y` have the same `N`-th power and that power is a unit of `A`, then
+`A.valuation (x - y) < A.valuation N` forces `x = y`. -/
+lemma eq_of_pow_eq_of_val_sub_lt {x y : Ω} (h_pow : x ^ N = y ^ N)
+    (h_unit : A.valuation (y ^ N) = 1) (h_val_lt : A.valuation (x - y) < A.valuation N) :
+    x = y := by
+  have hN : N ≠ 0 := fun h ↦ by simp [h] at h_val_lt
+  have hy : A.valuation y = 1 :=
+    (pow_eq_one_iff_of_nonneg zero_le hN).mp (by simpa only [map_pow] using h_unit)
+  have hy_ne : y ≠ 0 := by aesop
+  have h_root : (x / y) ^ N = 1 := by rw [div_pow, h_pow, div_self (pow_ne_zero _ hy_ne)]
+  have h_close : A.valuation (x / y - 1) < A.valuation N := by
+    simpa [div_sub_one hy_ne, hy] using h_val_lt
+  exact eq_of_div_eq_one (root_eq_one_of_val_sub_lt h_root h_close)
+
 /-- If `N` is a unit of `A` (`hN`), two `N`-th roots of unity that are congruent modulo the maximal
 ideal are equal. -/
 lemma eq_of_val_sub_lt_one (hN : A N = 1) {x y : Ω} (hx : x ^ N = 1) (hy : y ^ N = 1)
     (h_lt : A (x - y) < 1) : x = y :=
-  eq_of_pow_eq_one_of_val_sub_lt hx hy (h_lt.trans_eq hN.symm)
+  eq_of_pow_eq_of_val_sub_lt (hx.trans hy.symm) (by rw [hy, map_one]) (h_lt.trans_eq hN.symm)
 
 end
 

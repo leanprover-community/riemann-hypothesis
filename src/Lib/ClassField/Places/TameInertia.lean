@@ -86,12 +86,11 @@ of `A` fixed by `s`, then `s` fixes `w`. -/
 lemma inertia_fixes_root_of_unit (hs : s ∈ inertiaGroup Γ A) {n : ℕ} (hn : A.valuation n = 1)
     {w u : Ω} (hw : w ^ n = u) (hu : A.valuation u = 1) (h_fix : s • u = u) :
     s • w = w := by
-  -- `s • w / w` is an `n`-th root of unity congruent to `1`, and `n` is a unit, so it is `1`.
   subst hw
   have w_unit : A.valuation w = 1 := by simpa [show n ≠ 0 by aesop] using hu
-  have root : (s • w / w) ^ n = 1 := by simp [div_pow, ← smul_pow', h_fix, show w ≠ 0 by aesop]
-  exact eq_of_div_eq_one
-    (eq_of_val_sub_lt_one hn root (one_pow n) (valuation_smul_div_sub_one_lt_one hs w_unit))
+  have h_pow : (s • w) ^ n = w ^ n := by simpa only [smul_pow'] using h_fix
+  obtain ⟨-, h_cong⟩ := hs
+  exact eq_of_pow_eq_of_val_sub_lt h_pow hu (by simpa [hn] using h_cong w w_unit.le)
 
 /-- If `n` is a unit of `A` and `y ^ n = π`, then `y ≠ 0` and `n ≠ 0`. -/
 lemma ne_zero_of_tame_root {n : ℕ} (hn : A.valuation n = 1) {y : Ω}

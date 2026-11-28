@@ -91,18 +91,15 @@ lemma New.exists_local_root_near_one (Γ : Type*) {L Ω : Type} [Group Γ] [Topo
   obtain ⟨z, hz_pow, hz⟩ := exists_root_near_one A hr ha
   have val_z : A.valuation z = 1 := by
     simpa using map_eq_of_sub_lt _ ((hz.trans_lt hr_lt).trans_le (by simp))
-  have hz_ne : z ≠ 0 := by simp [← A.valuation.zero_iff, val_z]
-  -- `g • z / z` is an `l`-th root of unity closer to `1` than `|l|`, so it is `1`.
+  -- Both roots are within `r` of `1`, so their difference has valuation less than `|l|`.
   have h_fixed : ∀ g : Γ, g • z = z := by
     intro g
     have h_smul : A.valuation (g • (z - 1)) ≤ r :=
       (decompGroup.val_smul (hLocal.mem_decompGroup g) _).trans_le hz
-    have h_close : A.valuation (g • z / z - 1) < A.valuation l := by
-      simpa [val_z, hz_ne, smul_sub, div_sub_one] using (map_sub_le _ h_smul hz).trans_lt hr_lt
-    have h_ratio_pow : (g • z / z) ^ l = 1 := by
-      rw [div_pow, ← smul_pow', show g • z ^ l = z ^ l by simp [← hz_pow],
-        div_self (pow_ne_zero _ hz_ne)]
-    exact eq_of_div_eq_one (eq_of_pow_eq_one_of_val_sub_lt h_ratio_pow (one_pow l) h_close)
+    have h_close : A.valuation (g • z - z) < A.valuation l := by
+      simpa [smul_sub] using (map_sub_le _ h_smul hz).trans_lt hr_lt
+    have h_pow : (g • z) ^ l = z ^ l := by rw [← smul_pow']; simp [← hz_pow]
+    exact eq_of_pow_eq_of_val_sub_lt h_pow (by simp [val_z]) h_close
   obtain ⟨x, rfl⟩ : ∃ a : L, algebraMap L Ω a = z := hLocal.isInvariant.isInvariant z h_fixed
   exact ⟨x, (algebraMap L Ω).injective (by simp [hz_pow]), hz⟩
 
@@ -125,8 +122,8 @@ lemma New.IsLocalGalois.finite_quotient_span_singleton {Γ L Ω : Type} [Group �
 lemma New.eq_one_of_pow_eq_one_of_valuation_sub_lt {L Ω : Type} [Field L] [Field Ω] [Algebra L Ω]
     {A : ValuationSubring Ω} {l : ℕ} {u : L} (h_pow : u ^ l = 1)
     (h_close : A.valuation (algebraMap L Ω u - 1) < A.valuation l) : u = 1 := by
-  simpa using eq_of_pow_eq_one_of_val_sub_lt (x := algebraMap L Ω u)
-    (by rw [← map_pow, h_pow, map_one]) (one_pow l) h_close
+  simpa using eq_of_pow_eq_of_val_sub_lt (x := algebraMap L Ω u)
+    (by rw [← map_pow, h_pow, map_one, one_pow]) (by simp) h_close
 
 /-- The order at the maximal ideal as an additive map. Let `L` be a local field
 (`New.IsLocalGalois Γ L A`) with absolute value `|x| = A.valuation x`, `π` a uniformiser and `Y` an
