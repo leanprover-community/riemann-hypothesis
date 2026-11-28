@@ -284,9 +284,8 @@ lemma Lift.lift_constOne : Lift Z (constOne : Hall k) (constOne : Hall k') := by
 @[simp]
 lemma Lift.one : Lift (k := k) (k' := k') Z 1 1 := rankPart_of_hasCommonLift (lift_constOne 0)
 
-variable [Finite k] [Finite k']
+variable [Finite k']
 
-omit [Finite k] in
 /-- If `F` lifts to `G` with coefficients in `Z` (`New.Lift`, here with both functions over
 `k`, so along the trivial extension `k/k`), then the restriction of `F` to `GL_n(k)` is a
 `Z`-combination of characters of `GL_n(k)`. -/
@@ -295,6 +294,8 @@ lemma Lift.evalGL_mem_virtualChars (h : Lift Z F G) : F.evalGL ∈ virtualChars 
   -- The restriction of `Φ` to `GL n k` is `F.evalGL`.
   rw [← DescendsTo.iff_comp_inl_eq_evalGL.mp hF]
   exact comp_mem_virtualChars hΦ inl
+
+variable [Finite k]
 
 /-- If F lifts to F' and G lifts to G' with coefficients in a commutative ring R (`New.Lift`), then
 F - G lifts to F' - G'. -/

@@ -52,9 +52,37 @@ open Matrix WithZero Valued Equiv Finset IsLocalRing Function Units
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {F W : Type*} [Field F] [Valued F ℤᵐ⁰] [AddCommGroup W] [Module ℂ W]
+variable {F W : Type*} [Field F] [AddCommGroup W] [Module ℂ W]
   {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)}
   {x : ρ} {c : ℕ → ℕ} {d : ℕ → ℕ} {g : GL (Fin N) F} {a b : Fin N} {φ : ρ →ₗ[ℂ] W}
+
+private lemma conj_monomial_apply (t : Fin N → Fˣ) (σ : Perm (Fin N)) (a b : Fin N) :
+    ((permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) : GL (Fin N) F) a b =
+      (t a).val⁻¹ * g (σ a) (σ b) * (t b).val := by
+  simp [← map_inv, Matrix.mul_apply, symm_apply_eq, diagonal, mul_assoc]
+
+/-- The diagonal entries of `m⁻¹ g m`, for `m = σ diag(t)`, are those of `g`, permuted by `σ`; so
+they lie in every set `S` that holds the diagonal entries of `g`. -/
+lemma conj_monomial_apply_self_mem (t : Fin N → Fˣ) (σ : Perm (Fin N)) {S : Set F}
+    (hgS : ∀ i : Fin N, g i i ∈ S) (i : Fin N) :
+    ((permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) : GL (Fin N) F) i i ∈ S := by
+  rw [conj_monomial_apply, mul_right_comm, inv_mul_cancel₀ (t i).ne_zero, one_mul]
+  exact hgS (σ i)
+
+/-- The factorisation `s (1 + u E_ab) = (1 + u⁻¹ E_ab) d (1 + u⁻¹ E_ba)`, for `s` the transposition
+of `a` and `b` and `d` diagonal with `-u⁻¹` at `a`, `u` at `b` and `1` elsewhere. -/
+@[local simp]
+lemma swap_mul_transvectionGL (h : a ≠ b) (u : Fˣ) :
+    permGL (Equiv.swap a b) * transvectionGL h u.val =
+      transvectionGL h u.val⁻¹ * diagGL (Pi.mulSingle a (-u⁻¹) * Pi.mulSingle b u) *
+        transvectionGL h.symm u.val⁻¹ := by
+  -- Compare entries: after unfolding, the entry `(i, j)` is a case split on `i, j ∈ {a, b}`.
+  ext i j
+  simp [PEquiv.toMatrix_mul_apply, transvection, mul_add, add_mul, single_apply, Matrix.one_apply,
+    diagonal_apply, apply_ite Units.val, Pi.mulSingle_apply]
+  grind
+
+variable [Valued F ℤᵐ⁰]
 
 /-- An element `g` lies in `New.blockParahoric c` iff it lies in `GL_N` of the valuation ring and
 its entry `g i j` has valuation less than 1 whenever `c j < c i`. -/
@@ -68,12 +96,6 @@ every diagonal entry is congruent to 1 modulo the maximal ideal. -/
 lemma mem_proIwahori_iff_blockParahoric :
     g ∈ proIwahori ↔ g ∈ blockParahoric id ∧ ∀ i : Fin N, g i i ∈ {x : F | v (x - 1) < 1} :=
   and_assoc.symm
-
-omit [Valued F ℤᵐ⁰] in
-private lemma conj_monomial_apply (t : Fin N → Fˣ) (σ : Perm (Fin N)) (a b : Fin N) :
-    ((permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) : GL (Fin N) F) a b =
-      (t a).val⁻¹ * g (σ a) (σ b) * (t b).val := by
-  simp [← map_inv, Matrix.mul_apply, symm_apply_eq, diagonal, mul_assoc]
 
 /-- Let `c` and `d` be level functions `ℕ → ℕ` (see `New.blockParahoric`), and let `g` lie in the
 parahoric of level function `d`. Let `m = σ diag(t)`, with `σ` a permutation matrix. Suppose that
@@ -98,15 +120,6 @@ lemma conj_monomial_mem_blockParahoric_of_mem (t : Fin N → Fˣ) (σ : Perm (Fi
   refine ⟨⟨fun a b ↦ ?_, hg_det⟩, fun i j hij ↦ ?_⟩ <;>
     grind [Units.ne_zero, =_ log_le_log, =_ log_lt_log, map_eq_zero, log_mul, log_inv, mul_eq_zero,
       one_pos]
-
-omit [Valued F ℤᵐ⁰] in
-/-- The diagonal entries of `m⁻¹ g m`, for `m = σ diag(t)`, are those of `g`, permuted by `σ`; so
-they lie in every set `S` that holds the diagonal entries of `g`. -/
-lemma conj_monomial_apply_self_mem (t : Fin N → Fˣ) (σ : Perm (Fin N)) {S : Set F}
-    (hgS : ∀ i : Fin N, g i i ∈ S) (i : Fin N) :
-    ((permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) : GL (Fin N) F) i i ∈ S := by
-  rw [conj_monomial_apply, mul_right_comm, inv_mul_cancel₀ (t i).ne_zero, one_mul]
-  exact hgS (σ i)
 
 /-- Let `g` lie in the parahoric of level function `d`, with diagonal entries in `S`, and let
 `m = σ diag(t)` satisfy the condition of `New.conj_monomial_mem_blockParahoric_of_mem`. Then
@@ -146,20 +159,6 @@ lemma proIwahori_le_blockParahoric {c : ℕ → ℕ} (hc : ∀ i j : ℕ, c j < 
   exact mem_blockParahoric.mpr ⟨h_int, fun i j hij ↦ h_below i j (hc i j hij)⟩
 
 /-! ### The quadratic relation -/
-
-omit [Valued F ℤᵐ⁰] in
-/-- The factorisation `s (1 + u E_ab) = (1 + u⁻¹ E_ab) d (1 + u⁻¹ E_ba)`, for `s` the transposition
-of `a` and `b` and `d` diagonal with `-u⁻¹` at `a`, `u` at `b` and `1` elsewhere. -/
-@[local simp]
-lemma swap_mul_transvectionGL (h : a ≠ b) (u : Fˣ) :
-    permGL (Equiv.swap a b) * transvectionGL h u.val =
-      transvectionGL h u.val⁻¹ * diagGL (Pi.mulSingle a (-u⁻¹) * Pi.mulSingle b u) *
-        transvectionGL h.symm u.val⁻¹ := by
-  -- Compare entries: after unfolding, the entry `(i, j)` is a case split on `i, j ∈ {a, b}`.
-  ext i j
-  simp [PEquiv.toMatrix_mul_apply, transvection, mul_add, add_mul, single_apply, Matrix.one_apply,
-    diagonal_apply, apply_ite Units.val, Pi.mulSingle_apply]
-  grind
 
 /-- For adjacent indices (`h : a ⋖ b`, that is `b = a + 1`) and `g` in `New.proIwahori` there is an
 integral `c` such that the transposition of `a` and `b` conjugates `g (1 + c E_ab)` into

@@ -162,6 +162,17 @@ private lemma div_stepTorus_mem_dominantTorus (hϖ : v ϖ.val = exp (-1)) {i j :
   have h_to_i (a : Fin N) (ha : a ≤ i) : (v (t a).val).log ≤ (v (t i).val).log := ht' ha
   grind
 
+/-- Let `s` be strictly dominant. Every torus element `t` becomes dominant when multiplied by a
+power of `s`: `t * s ^ k` is dominant for some `k`, in the form that
+`MonoidHom.toLocalizationMap` asks for. -/
+private lemma exists_mul_powers_eq_of_strictMono {s : Fin N → Fˣ}
+    (hs : StrictMono fun i : Fin N ↦ v (s i).val) (t : Fin N → Fˣ) :
+    ∃ p : dominantTorus (n := Fin N) (F := F) ×
+        Submonoid.powers (⟨s, hs.monotone⟩ : dominantTorus),
+      t * (p.2.val : Fin N → Fˣ) = (p.1 : Fin N → Fˣ) := by
+  obtain ⟨k, hk⟩ := (eventually_pow_mul_mem_dominantTorus hs t).exists
+  exact ⟨(⟨s ^ k * t, hk⟩, ⟨⟨s, hs.monotone⟩ ^ k, k, rfl⟩), mul_comm t (s ^ k)⟩
+
 variable [CompactSpace 𝒪[F]]
 
 /-- Let `l` be an exponent and `j = i + 1`. On a vector `z` fixed by the transvections `1 + a E_ij`
@@ -458,18 +469,6 @@ private lemma IsExponent.eventually_apply_diagGL_pow_eq_zero (hl : IsExponent ρ
         hl.apply_monomial_translate hϖ hx mem_proIwahori_iff_blockParahoric.2 σ
           fun a b hab ↦ .inl (h_dom hab.le)
       _ = 0 := by rw [h_perm, mul_zero]
-
-omit [CompactSpace 𝒪[F]] in
-/-- Let `s` be strictly dominant. Every torus element `t` becomes dominant when multiplied by a
-power of `s`: `t * s ^ k` is dominant for some `k`, in the form that
-`MonoidHom.toLocalizationMap` asks for. -/
-private lemma exists_mul_powers_eq_of_strictMono {s : Fin N → Fˣ}
-    (hs : StrictMono fun i : Fin N ↦ v (s i).val) (t : Fin N → Fˣ) :
-    ∃ p : dominantTorus (n := Fin N) (F := F) ×
-        Submonoid.powers (⟨s, hs.monotone⟩ : dominantTorus),
-      t * (p.2.val : Fin N → Fˣ) = (p.1 : Fin N → Fˣ) := by
-  obtain ⟨k, hk⟩ := (eventually_pow_mul_mem_dominantTorus hs t).exists
-  exact ⟨(⟨s ^ k * t, hk⟩, ⟨⟨s, hs.monotone⟩ ^ k, k, rfl⟩), mul_comm t (s ^ k)⟩
 
 /-- An eigenvector gives an exponent. Let `ρ` be a smooth representation of `GL_N(F)` with a
 positive definite invariant form `B` (`hB`), and suppose the I₁-invariants (`New.proIwahori`) in the

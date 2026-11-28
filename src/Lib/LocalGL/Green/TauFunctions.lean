@@ -623,10 +623,9 @@ section LabelDegree
 open Module Matrix Finset Complex Hall Fintype ComplexOrder LinearMap GeneralLinearGroup
 
 variable {k n : Type*} {r : ℕ}
-  (K : Type*) [Field k] [Finite k] [Field K] [Algebra k K]
+  (K : Type*) [Field k] [Field K] [Algebra k K]
   {T : MulChar K ℂ} [IsFaithfulMulChar K T] [Fintype n] {c : Polynomial k}
 
-omit [Finite k] in
 /-- Induction on labels: start from `1` and multiply by monic irreducible polynomials other than
 `X`. -/
 @[elab_as_elim]
@@ -650,6 +649,8 @@ lemma IsLabel.induction_irreducible_mul [IsAlgClosed K] {p : ℕ → Polynomial 
     exact h_step P _ c ξ hP_monic hP_irred h_coeff.left hξ
       (ih _ (Nat.lt_add_of_pos_left hP_irred.natDegree_pos)
         ⟨hc_monic, h_sqfree.of_mul_right, rfl, h_coeff.right⟩)
+
+variable [Finite k]
 
 /-- A label stays a label over an extension field, as a finite field is perfect. -/
 lemma IsLabel.map (hc : IsLabel r c) : IsLabel r (c.map (algebraMap k K)) := by

@@ -502,7 +502,7 @@ section LabelTwist
 
 open Polynomial Hall Matrix Finset Finite Nat Function
 
-variable {k K n : Type*} {r : ℕ} [Field k] [Finite k] [Field K] [Fintype n]
+variable {k K n : Type*} {r : ℕ} [Field k] [Field K] [Fintype n]
   {T : MulChar K ℂ} [IsFaithfulMulChar K T] {c : k[X]} (a : kˣ)
 
 /-- For nonzero a in k, the multiplicative bijection of k[X] to itself scaling the roots of a
@@ -514,7 +514,6 @@ noncomputable def scaleRootsEquiv : k[X] ≃* k[X] where
   right_inv P := by simp [← scaleRoots_mul]
   map_mul' P Q := mul_scaleRoots_of_noZeroDivisors P Q a
 
-omit [Finite k] in
 /-- Scaling the roots of a label `c` of degree `r` (`New.IsLabel`: monic, squarefree, of degree `r`,
 with nonzero constant term) by a unit `a` of `k` gives a label of degree `r`. -/
 lemma IsLabel.scaleRoots (hc : IsLabel r c) : IsLabel r (c.scaleRoots a) := by
@@ -524,6 +523,8 @@ lemma IsLabel.scaleRoots (hc : IsLabel r c) : IsLabel r (c.scaleRoots a) := by
   refine (scaleRootsEquiv a).surjective.forall.mpr fun x hx ↦ (h_sqfree x ?_).map _
   rw [← map_dvd_iff (scaleRootsEquiv a), map_mul]
   exact hx
+
+variable [Finite k]
 
 /-- Let `q = Nat.card k ≡ 1 mod 9` (`h_nine`), `r = 3 ^ (e + 1)`, `ξ` a primitive `(q ^ r - 1)`-th
 root of unity in `K` and `l` a prime. Then `ξ ^ l ^ a` has `r` distinct conjugates: its `q ^ i`-th

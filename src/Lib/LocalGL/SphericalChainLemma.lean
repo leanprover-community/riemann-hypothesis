@@ -52,11 +52,10 @@ P(dX) equals (X − 1)(X − q)⋯(X − q^{t−1}) times a divisor of the polyn
 def New.Patching.HasRootChain (P e : ℂ[X]) (q d : ℂ) (t : ℕ) : Prop :=
   ∃ S : ℂ[X], P.comp (C d * X) = (∏ i ∈ range t, (X - C (q ^ i))) * S ∧ S ∣ e
 
-variable {E : Type _} [Field E] [NumberField E] {w : FinPlace E} {N : ℕ} [NeZero N]
-  {ρ : Rep ℂ (GL (Fin N) (LocField w))} [IsSmoothRep ρ.ρ]
+variable {E : Type _} [Field E] [NumberField E] {w : FinPlace E} {N : ℕ}
+  {ρ : Rep ℂ (GL (Fin N) (LocField w))}
   {B : ρ →ₗ⋆[ℂ] ρ →ₗ[ℂ] ℂ} {x : ρ} {P : ℂ[X]} {t : ℕ → ℂ}
 
-omit [NeZero N] [IsSmoothRep ρ.ρ] in
 /-- If `U'` is adjoint to `U` on a set `S` that `U` keeps, then on `S` the conjugate of `G`,
 evaluated at `U'`, is adjoint to `G (U)`. -/
 lemma New.Patching.adjoint_aeval_map_starRingEnd {U U' : End ℂ ρ} (S : Set ρ)
@@ -67,7 +66,6 @@ lemma New.Patching.adjoint_aeval_map_starRingEnd {U U' : End ℂ ρ} (S : Set ρ
   | MC G c _ _ ih => simp_all
   | MX G _ ih => simp_all [mul_comm]
 
-omit [NeZero N] [IsSmoothRep ρ.ρ] in
 /-- Let `x` be fixed by `GL_N(O_w)` and `ϖ` a uniformiser. Then `x` is the translate by
 `diag(ϖ⁻¹, …, ϖ⁻¹)` of the top partial Hecke sum `partialHecke ρ 0 N x`. -/
 private lemma New.Patching.eq_apply_partialHecke_zero_top
@@ -81,6 +79,42 @@ private lemma New.Patching.eq_apply_partialHecke_zero_top
       partialHecke ρ' 0 0 x = ρ.ρ (diagGL fun _ : Fin N ↦ ϖ⁻¹) (partialHecke ρ.ρ 0 N x) := by
     simpa [ρ'] using partialHecke_dual hϖ hx N h_sum
   rw [← h_dual, partialHecke_zero_right hx']
+
+/-- Let `x` be fixed by `GL_N(O_w)` and `ϖ` a uniformiser. The top partial Hecke sum
+`partialHecke ρ 0 N x` vanishes only for `x = 0`. -/
+lemma New.Patching.eq_zero_of_partialHecke_zero_top
+    (hx : x ∈ levelSpace ρ.ρ (localIntGL (Fin N) w)) {ϖ : (LocField w)ˣ}
+    (hϖ : v ϖ.val = WithZero.exp (-1))
+    (h_top : partialHecke ρ.ρ 0 N x = 0) : x = 0 := by
+  rw [eq_apply_partialHecke_zero_top hx hϖ, h_top, map_zero]
+
+section
+
+variable [NeZero N]
+
+/-- Let `x` be fixed by `GL_N(O_w)` and `ϖ` a uniformiser. The inverse of `ρ(diag(ϖ, 1, …, 1))`
+carries the top partial Hecke sum `partialHecke ρ 0 N x` to `partialHecke ρ 1 (N - 1) x`. -/
+lemma New.Patching.apply_inv_partialHecke_zero_top
+    (hx : x ∈ levelSpace ρ.ρ (localIntGL (Fin N) w)) {ϖ : (LocField w)ˣ}
+    (hϖ : v ϖ.val = WithZero.exp (-1)) :
+    ρ.ρ (diagGL (mulSingle 0 ϖ))⁻¹ (partialHecke ρ.ρ 0 N x) = partialHecke ρ.ρ 1 (N - 1) x := by
+  -- both sides are translates of `x`
+  let c₀ (_ : Fin N) : (LocField w)ˣ := ϖ⁻¹
+  let c₁ (i : Fin N) : (LocField w)ˣ := if i = 0 then 1 else ϖ⁻¹
+  have single_eq : mulSingle 0 ϖ = c₀⁻¹ * c₁ := by aesop
+  have h_top : ρ.ρ (diagGL c₀) (partialHecke ρ.ρ 0 N x) =
+      ρ.ρ (diagGL c₁) (partialHecke ρ.ρ 1 (N - 1) x) := by
+    rw [← eq_apply_partialHecke_zero_top hx hϖ]
+    let ρ' := ρ.ρ.comp invTransposeGL.toMonoidHom
+    have hx' : x ∈ levelSpace ρ' (localIntGL (Fin N) w) := by simp_all [ρ']
+    have h_sum : 1 + (N - 1 + 0) = N := by grind [NeZero.ne N]
+    have h_dual : partialHecke ρ' 1 0 x = ρ.ρ (diagGL c₁) (partialHecke ρ.ρ 1 (N - 1) x) := by
+      simpa [ρ', c₁, Nat.lt_one_iff, Fin.val_eq_zero_iff] using
+        partialHecke_dual hϖ hx (N - 1) h_sum
+    rw [← h_dual, partialHecke_zero_right hx']
+  simpa [single_eq, ρ.ρ.inv_apply_eq_iff] using h_top
+
+variable [IsSmoothRep ρ.ρ]
 
 /-- Let `x` be fixed by `GL_N(O_w)`, let `ϖ` be a uniformiser (valuation `exp (-1)`), and let `a` be
 the inverse of `ρ(diag(ϖ, 1, …, 1))`. Write `M(y)` for the mean of `ρ` over `proIwahori` applied to
@@ -144,38 +178,6 @@ lemma New.Patching.compactMean_apply_inv_partialHecke_one_succ
       (partialHecke_mem_levelSpace hx))
   simpa [φ, ρ', single_eq, inv_diag, h_fixed] using h_count
 
-omit [IsSmoothRep ρ.ρ] in
-/-- Let `x` be fixed by `GL_N(O_w)` and `ϖ` a uniformiser. The inverse of `ρ(diag(ϖ, 1, …, 1))`
-carries the top partial Hecke sum `partialHecke ρ 0 N x` to `partialHecke ρ 1 (N - 1) x`. -/
-lemma New.Patching.apply_inv_partialHecke_zero_top
-    (hx : x ∈ levelSpace ρ.ρ (localIntGL (Fin N) w)) {ϖ : (LocField w)ˣ}
-    (hϖ : v ϖ.val = WithZero.exp (-1)) :
-    ρ.ρ (diagGL (mulSingle 0 ϖ))⁻¹ (partialHecke ρ.ρ 0 N x) = partialHecke ρ.ρ 1 (N - 1) x := by
-  -- both sides are translates of `x`
-  let c₀ (_ : Fin N) : (LocField w)ˣ := ϖ⁻¹
-  let c₁ (i : Fin N) : (LocField w)ˣ := if i = 0 then 1 else ϖ⁻¹
-  have single_eq : mulSingle 0 ϖ = c₀⁻¹ * c₁ := by aesop
-  have h_top : ρ.ρ (diagGL c₀) (partialHecke ρ.ρ 0 N x) =
-      ρ.ρ (diagGL c₁) (partialHecke ρ.ρ 1 (N - 1) x) := by
-    rw [← eq_apply_partialHecke_zero_top hx hϖ]
-    let ρ' := ρ.ρ.comp invTransposeGL.toMonoidHom
-    have hx' : x ∈ levelSpace ρ' (localIntGL (Fin N) w) := by simp_all [ρ']
-    have h_sum : 1 + (N - 1 + 0) = N := by grind [NeZero.ne N]
-    have h_dual : partialHecke ρ' 1 0 x = ρ.ρ (diagGL c₁) (partialHecke ρ.ρ 1 (N - 1) x) := by
-      simpa [ρ', c₁, Nat.lt_one_iff, Fin.val_eq_zero_iff] using
-        partialHecke_dual hϖ hx (N - 1) h_sum
-    rw [← h_dual, partialHecke_zero_right hx']
-  simpa [single_eq, ρ.ρ.inv_apply_eq_iff] using h_top
-
-omit [NeZero N] [IsSmoothRep ρ.ρ] in
-/-- Let `x` be fixed by `GL_N(O_w)` and `ϖ` a uniformiser. The top partial Hecke sum
-`partialHecke ρ 0 N x` vanishes only for `x = 0`. -/
-lemma New.Patching.eq_zero_of_partialHecke_zero_top
-    (hx : x ∈ levelSpace ρ.ρ (localIntGL (Fin N) w)) {ϖ : (LocField w)ˣ}
-    (hϖ : v ϖ.val = WithZero.exp (-1))
-    (h_top : partialHecke ρ.ρ 0 N x = 0) : x = 0 := by
-  rw [eq_apply_partialHecke_zero_top hx hϖ, h_top, map_zero]
-
 variable (hx : x ∈ levelSpace ρ.ρ (localIntGL (Fin N) w)) in
 include hx in
 /-- Let x be fixed by GL_N(O_w) (`hx`) and ϖ a uniformiser, and let a be the inverse of ρ(diag(ϖ, 1,
@@ -200,7 +202,8 @@ lemma New.Patching.partialHecke_hyperplane_count_dual {ϖ : (LocField w)ˣ}
   exact ⟨fun i j h_sum ↦ compactMean_apply_inv_partialHecke_one_succ hx hϖ h_sum,
     apply_inv_partialHecke_zero_top hx hϖ, eq_zero_of_partialHecke_zero_top hx hϖ⟩
 
-omit [NeZero N] [IsSmoothRep ρ.ρ] in
+end
+
 /-- Suppose that `P (U)` kills `y`, and that `(P / (X - c)) (U)` still kills `y` for every root
 `c ≠ 0` of `P` for which `q * c` is also a root. Let `P = (∏ i < k, (d X - q ^ i)) * R`. If
 `q ^ k / d` is a root of `P`, then `R (U)` kills `y`: the chain `q ^ i / d`, `i < k`, cancels. -/
@@ -231,7 +234,6 @@ lemma New.Patching.aeval_cofactor_eq_zero {U : End ℂ ρ} {y : ρ} {P : ℂ[X]}
         (pow_lt_pow_right₀ hq _).ne']
     rwa [End.aeval_apply_of_mem_apply_eq_smul eigen_R, smul_eq_zero_iff_right eval_ne] at killed
 
-omit [NeZero N] [IsSmoothRep ρ.ρ] in
 /-- If `R (U)` kills every `T j` and the adjoint `U'` of `U` keeps the span of `T 0, …, T n`, then
 the conjugate of `R`, evaluated at `U'`, kills `T 0`. -/
 lemma New.Patching.aeval_conj_eq_zero {U U' : End ℂ ρ} {T : ℕ → ρ} {R : ℂ[X]} {n : ℕ} {a : ℂ}
@@ -262,7 +264,6 @@ private lemma New.Patching.heckePoly_succ (q m : ℕ) :
   | zero => simp
   | succ k => simp [coeff_one]
 
-omit [NeZero N] [IsSmoothRep ρ.ρ] in
 /-- Let `U (T j) = q ^ j • (t (j + 1) • T 0 - T (j + 1))` for all `j`, and `t 0 • T 0 = T 0`. Then
 the Hecke polynomial of degree `m`, evaluated at `U`, sends `T 0` to
 `(-1) ^ m * q ^ (m.choose 2)` times `T m`. -/
@@ -281,7 +282,6 @@ private lemma New.Patching.aeval_heckePoly_apply (U : End ℂ ρ) (T : ℕ → �
       simpa [heckePoly_succ, ih, rec_U, Nat.choose] using h_lin
     module
 
-omit [NeZero N] [IsSmoothRep ρ.ρ] in
 /-- The action of `U'` on the quotient of a Hecke polynomial by `X - c`. Let `p m` be the Hecke
 polynomial of degree `m`, with `p m (U) (T 0) = (-1) ^ m * q ^ (m.choose 2) • T m`, let
 `T (n + 1) = 0`, and let `U' (T (i + 1)) = q ^ (n - i - 1) • ((t (i + 1) / q ^ n) • U' (T 0) - T i)`
@@ -317,7 +317,6 @@ private lemma New.Patching.exists_mul_eq_sub_eval_and_apply (U U' : End ℂ ρ) 
       · simp [heckePoly_succ, rec_U' m hm, aeval_p, Nat.choose, pow_sub₀ _ q_ne hm] at hU' ⊢
         linear_combination (norm := match_scalars <;> field) c • hU'
 
-omit [NeZero N] [IsSmoothRep ρ.ρ] in
 /-- The root bound behind `New.Patching.chain_lemma_of_adjoint`. Let `B` be positive definite, `U'`
 adjoint to `U`, `x ≠ 0`, `1 < q` and `a ≠ 0`. Let `z` be an eigenvector of `U` for `c` with
 `c • U' z = (a / q ^ (n + 1)) • U' x + (q ^ n / q) • z` and
@@ -346,7 +345,6 @@ private lemma New.Patching.le_norm_sq_of_pairing {U U' : End ℂ ρ} {x z : ρ} 
   have gap_nonneg : 0 ≤ (‖c‖ ^ 2 - q ^ (n + 1) / q ^ 2 : ℂ) := gap.ge.trans' (by positivity)
   exact real_le_real.mp (by simpa using gap_nonneg)
 
-omit [NeZero N] [IsSmoothRep ρ.ρ] in
 /-- The linear algebra of the chain lemma. Let `B` be a positive definite sesquilinear form, and let
 `U`, `U'` be mutually adjoint for `B`. Let `P = heckePoly q (n+1) t` with `1 < q`, `T 0 ≠ 0`,
 `t 0 • T 0 = T 0` and `t (n+1) ≠ 0`, and suppose `U (T j) = q^j • (t (j+1) • T 0 - T (j+1))`, `U' (T
@@ -430,6 +428,8 @@ lemma New.Patching.chain_lemma_of_adjoint (U U' : End ℂ ρ) (T : ℕ → ρ)
   -- `T j` is a multiple of `p j (U) x` for the Hecke polynomial `p j` of degree `j`, and `R (U)`
   -- commutes with `p j (U)`.
   simpa [aeval_p, kills_x, q_ne] using congrArg (aeval U · x) (mul_comm R (heckePoly q j t))
+
+variable [NeZero N] [IsSmoothRep ρ.ρ]
 
 /-- Let x ≠ 0 be a spherical eigenvector with Hecke polynomial P in a smooth unitary representation
 of GL_N(E_w), q the norm of w, ϖ a uniformiser.

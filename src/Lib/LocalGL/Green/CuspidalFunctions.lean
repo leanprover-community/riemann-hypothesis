@@ -270,10 +270,9 @@ section CuspidalSupport
 
 open Polynomial Hall LinearMap Module Multiset Submodule StableSubspace
 
-variable {k K V : Type*} [Field k] [Finite k] [Field K] [Algebra k K]
-  (η η' : K → ℂ) [AddCommGroup V] [Module k V] [Module.Finite k V] {g : End k V}
+variable {k K V : Type*} [Field k] [AddCommGroup V] [Module k V] [Module.Finite k V]
+  {g : End k V}
 
-omit [Finite k] in
 /-- If `P(g)` is nilpotent, with `P` monic irreducible, the characteristic polynomial of `g` is a
 power of `P`. -/
 lemma charpoly_eq_pow_of_isNilpotent {P : k[X]} (hP_irred : Irreducible P) (hP_monic : Monic P)
@@ -292,6 +291,8 @@ lemma charpoly_eq_pow_of_isNilpotent {P : k[X]} (hP_irred : Irreducible P) (hP_m
   have h_deg : finrank k V = j * P.natDegree := by
     rw [← charpoly_natDegree g, h_eq, natDegree_pow]
   rw [h_eq, h_deg, Nat.mul_div_cancel _ hP_irred.natDegree_pos]
+
+variable [Finite k] [Field K] [Algebra k K] (η η' : K → ℂ)
 
 /-- Let `F` be a cuspidal element of `Hall k`, the complex-valued functions on similarity classes of
 endomorphisms of finite-dimensional `k`-spaces. Cuspidal means that the average of `F` over block
@@ -608,9 +609,8 @@ open Polynomial Finset Hall Module LinearMap minpoly IntermediateField
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {k : Type*} [Field k] [Finite k] {K : Type*} [Field K] [Algebra k K] (η : K → ℂ)
+variable {k : Type*} [Field k]
 
-omit [Finite k] in
 /-- Let `L` be a finite field that is a `k`-algebra, and `g` a semisimple `k`-linear endomorphism of
 `L` whose characteristic polynomial is a power `P ^ j` of an irreducible `P`. Then `g` is conjugate
 to a multiplication: there are a `k`-linear automorphism `e` of `L` and `y ∈ L` with
@@ -637,6 +637,8 @@ lemma exists_conj_mulLeft_eq {L : Type*} [Field L] [Finite L] [Algebra k L] {g :
     mul_left_cancel₀ finrank_pos.ne' (tower_V.trans (finrank_mul_finrank k (AdjoinRoot P) L).symm)
   exact ⟨t.symm.restrictScalars k, algebraMap _ L (AdjoinRoot.root P),
     ext fun x ↦ (t.symm_apply_eq.mpr (t.map_smul _ x).symm).trans (AEval'.X_smul_of g x)⟩
+
+variable [Finite k] {K : Type*} [Field K] [Algebra k K] (η : K → ℂ)
 
 /-- Let k be a finite field, K a field over k, η : K → ℂ, and C_η = `greenCuspidal k η` = (β_η·μ)
 ∗ 𝟙. Here β_η is the eigenvalue sum of η, μ (`moebius`) is the inverse of the constant class

@@ -585,8 +585,21 @@ section MackeyFormula
 
 open Module Submodule.Quotient StableSubspace Free LinearMap Fintype QuotientAddGroup
 
-variable {k V W : Type*} [Field k] [Finite k] [AddCommGroup V] [Module k V] [Module.Finite k V]
-  [AddCommGroup W] [Module k W] [Module.Finite k W]
+variable {k V W : Type*} [Field k] [AddCommGroup V] [Module k V] [AddCommGroup W] [Module k W]
+
+/-- Any maps `B → A` and `W ⧸ B → V ⧸ A` are induced by one map `W → V` that takes `B` into `A`. -/
+lemma exists_restrict_eq_and_mapQ_eq {A : Submodule k V} {B : Submodule k W} (α : B →ₗ[k] A)
+    (β : W ⧸ B →ₗ[k] V ⧸ A) :
+    ∃ (y : W →ₗ[k] V) (hy : ∀ w ∈ B, y w ∈ A), y.restrict hy = α ∧ B.mapQ A y hy = β := by
+  -- Extend `α` to `c : W → A`, lift `β` to `r : W ⧸ B → V`, and add.
+  obtain ⟨c, rfl⟩ : ∃ g : W →ₗ[k] A, g ∘ₗ B.subtype = α := α.exists_extend
+  obtain ⟨r, rfl⟩ := projective_lifting_property _ β A.mkQ_surjective
+  refine ⟨A.subtype ∘ₗ c + r ∘ₗ B.mkQ, fun w hw ↦ by simp [(mk_eq_zero _).mpr hw], ?_, ?_⟩
+  all_goals
+    ext w
+    simp [(mk_eq_zero _).mpr]
+
+variable [Finite k] [Module.Finite k V] [Module.Finite k W]
   (F H : Hall k) (a : End k V) (b : End k W)
 
 /-- The block average of `F` at the classes of `a` and `b` is the average of `F` over the block maps
@@ -603,19 +616,6 @@ lemma blockAverage_simClassOf :
       ∀ x, f ((simClassOf b).out.2 x) = b (f x) := exists_equiv_simClassOf_out b
   refine finMean_equiv (f.arrowCongr e).symm.toEquiv fun x ↦ congrArg F ?_
   exact simClassOf_eq_of_equiv (f.prodCongr e) (by simp [he, hf])
-
-omit [Finite k] [Module.Finite k V] [Module.Finite k W] in
-/-- Any maps `B → A` and `W ⧸ B → V ⧸ A` are induced by one map `W → V` that takes `B` into `A`. -/
-lemma exists_restrict_eq_and_mapQ_eq {A : Submodule k V} {B : Submodule k W} (α : B →ₗ[k] A)
-    (β : W ⧸ B →ₗ[k] V ⧸ A) :
-    ∃ (y : W →ₗ[k] V) (hy : ∀ w ∈ B, y w ∈ A), y.restrict hy = α ∧ B.mapQ A y hy = β := by
-  -- Extend `α` to `c : W → A`, lift `β` to `r : W ⧸ B → V`, and add.
-  obtain ⟨c, rfl⟩ : ∃ g : W →ₗ[k] A, g ∘ₗ B.subtype = α := α.exists_extend
-  obtain ⟨r, rfl⟩ := projective_lifting_property _ β A.mkQ_surjective
-  refine ⟨A.subtype ∘ₗ c + r ∘ₗ B.mkQ, fun w hw ↦ by simp [(mk_eq_zero _).mpr hw], ?_, ?_⟩
-  all_goals
-    ext w
-    simp [(mk_eq_zero _).mpr]
 
 /-- The right side of Mackey's formula written out: a sum over the pairs `P = (A, B)` of stable
 subspaces of `a` and `b` of the mean, over the maps `B → A` and `W ⧸ B → V ⧸ A`, of `F` at the block
@@ -799,15 +799,16 @@ open Module Pointwise LinearMap GeneralLinearGroup StableSubspace Submodule Fins
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {k V ι : Type*} [Field k] [Finite k] [AddCommGroup V] [Module k V] [Module.Finite k V]
-  {F H : Hall k} {a : End k V} (n : ℕ) (X A B : Hall k) [Fintype ι]
+variable {k V ι : Type*} [Field k] [AddCommGroup V] [Module k V] [Module.Finite k V]
+  {F H : Hall k} {a : End k V}
 
-omit [Finite k] in
 /-- The chosen representative of the class of `a` is the identity if and only if `a` is. -/
 lemma simClassOf_out_eq_one_iff :
     (∀ x : Fin (Quot.out (simClassOf a)).fst → k, (simClassOf a).out.2 x = x) ↔ a = 1 := by
   obtain ⟨e, he⟩ := exists_equiv_simClassOf_out a
   simp [e.surjective.forall, ← he, LinearMap.ext_iff]
+
+variable [Finite k] (n : ℕ) (X A B : Hall k) [Fintype ι]
 
 /-- The pairing `New.Hall.rankInner` in rank `dim V` is the mean over the automorphisms of `V`. -/
 lemma rankInner_eq_classInner_simClassOf :
@@ -934,8 +935,16 @@ section SkewOperator
 
 open Module Finset
 
-variable {k : Type*} [Field k] [Finite k]
-  {F H c f : Hall k} {d n : ℕ} {o : SimClass k} (hc : c.IsCuspidal) (hd : d ≠ 0)
+variable {k : Type*} [Field k] {F H c f : Hall k} {d n : ℕ} {o : SimClass k}
+
+/-- The only class of dimension `0` is that of the zero map of the zero space. -/
+lemma eq_simClassOf_zero_of_dim_eq_zero (h_dim : o.dim = 0) :
+    o = simClassOf (0 : End k (Fin 0 → k)) := by
+  -- Both spaces are zero, so any isomorphism intertwines the maps.
+  rw [← simClassOf_out o]
+  exact simClassOf_eq_of_equiv (.funCongrLeft k k (finCongr h_dim.symm)) (by subsingleton)
+
+variable [Finite k] (hc : c.IsCuspidal) (hd : d ≠ 0)
 
 /-- Here `rankInner m F₁ F₂` is the average over g ∈ GL_m(k) of conj F₁(g)·F₂(g), and `skew d f F`
 sends a class a to the average over b ∈ GL_d(k) of conj f(b) times the block average
@@ -950,14 +959,6 @@ lemma rankInner_mul_eq_rankInner_skew (hf : ∀ c : SimClass k, c.dim ≠ d → 
   intro p hp hne
   have h_size : p.2 ≠ d := by grind [HasAntidiagonal.mem_antidiagonal]
   simp [hf, h_size, rankInner, skew]
-
-omit [Finite k] in
-/-- The only class of dimension `0` is that of the zero map of the zero space. -/
-lemma eq_simClassOf_zero_of_dim_eq_zero (h_dim : o.dim = 0) :
-    o = simClassOf (0 : End k (Fin 0 → k)) := by
-  -- Both spaces are zero, so any isomorphism intertwines the maps.
-  rw [← simClassOf_out o]
-  exact simClassOf_eq_of_equiv (.funCongrLeft k k (finCongr h_dim.symm)) (by subsingleton)
 
 @[simp]
 lemma mul_apply_of_dim_zero (h_dim : o.dim = 0) : (F * H) o = F o * H o := by
