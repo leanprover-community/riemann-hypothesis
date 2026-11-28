@@ -606,6 +606,151 @@ theorem HCParam.IsKHighest.differentiableAt_coeffMap_expU (ho : o.Injective) {ρ
     simpa only [D_apply, v_smul] using hc h (v Y) x t
   exact (hasFDerivAt_of_rays (fun Z ↦ c (h * expU (v Z)) x) D D_cont ray).differentiableAt
 
+/-- The character `diagChar w`, the product `∏ i, b i i ^ w i` of powers of the diagonal entries,
+is analytic at every matrix `b` whose diagonal entries are nonzero. -/
+theorem analyticAt_diagChar (w : n → ℤ) {b : Matrix n n ℂ} (hb : ∀ i : n, b i i ≠ 0) :
+    AnalyticAt ℂ (diagChar w) b := by
+  have h_entry (i : n) : AnalyticAt ℂ (fun Z : Matrix n n ℂ ↦ Z i i) b :=
+    (ContinuousLinearMap.mk
+      ({ toFun Z := Z i i
+         map_add' _ _ := rfl
+         map_smul' _ _ := rfl } : Matrix n n ℂ →ₗ[ℂ] ℂ)
+      ((continuous_apply i).comp (continuous_apply i))).analyticAt b
+  exact Finset.analyticAt_fun_prod univ fun i _ ↦ (h_entry i).zpow (hb i)
+
+/-- A chart for the factorisation near a factored point. Let `h` in `U(diag ε)` and an invertible
+`b` be block diagonal for `ε'`, and let the block diagonal part of `y` be `h * b`. Then there is
+`φ`, complex differentiable at `y` with `φ y = 0`, such that the block diagonal part of each `y'`
+near `y` is `(h * exp (v (φ y'))) * ((1 + (1 - v) (φ y')) * b)`, where `v = lowerLiePart ε ε' o 0`
+and `1 + (1 - v) (φ y')` is block diagonal and invertible triangular for `o`. -/
+theorem exists_chart_of_blockDiagPart_eq_mul {h : USign ε} {b y : Matrix n n ℂ} (hb : b.det ≠ 0)
+    (h_mem : (h : Matrix n n ℂ) ∈ blockDiagAlg ε') (b_mem : b ∈ blockDiagAlg ε')
+    (y_eq : blockDiagPart ε' y = h * b) :
+    ∃ φ : Matrix n n ℂ → Matrix n n ℂ, DifferentiableAt ℂ φ y ∧ φ y = 0 ∧
+      ∀ᶠ y' in 𝓝 y, IsBorelMatrix o (1 + (1 - lowerLiePart ε ε' o 0) (φ y')) ∧
+        1 + (1 - lowerLiePart ε ε' o 0) (φ y') ∈ blockDiagAlg ε' ∧
+        blockDiagPart ε' y' = ((h * expU ⟨lowerLiePart ε ε' o 0 (φ y'),
+          lowerLiePart_mem_unitaryLie ε ε' o 0 (φ y')⟩ : USign ε) : Matrix n n ℂ) *
+            ((1 + (1 - lowerLiePart ε ε' o 0) (φ y')) * b) := by
+  -- Compose the local inverse `ψ` of the chart `Z ↦ exp (v Z) * (1 + Z - v Z)` at `1` with `shift`.
+  obtain ⟨ψ, ⟨ψ_deriv, ψ_one⟩, chart⟩ := exists_borel_chart ε' o (lowerLiePart ε ε' o 0)
+    hasStrictFDerivAt_exp_zero NormedSpace.exp_zero exp_lowerLiePart_zero_mem_blockDiagAlg
+    lowerMask_lowerLiePart_zero
+  -- the real derivative of `ψ` at `1` is the identity, which is complex linear
+  have ψ_complex : HasFDerivAt ψ (ContinuousLinearMap.id ℂ (Matrix n n ℂ)) 1 :=
+    .of_isLittleO ψ_deriv.isLittleO
+  -- `shift` takes the block diagonal part of `h⁻¹ * y' * b⁻¹`, so sends `y` to `1`.
+  let shift : Matrix n n ℂ →L[ℂ] Matrix n n ℂ :=
+    blockDiagPart ε' ∘L mulLeftRight ℂ (Matrix n n ℂ) (h : Matrix n n ℂ)⁻¹ b⁻¹
+  have h_det : IsUnit (h : Matrix n n ℂ).det :=
+    isUnit_iff_ne_zero.2 (GeneralLinearGroup.det_ne_zero h.val)
+  have b_det : IsUnit b.det := isUnit_iff_ne_zero.2 hb
+  have shift_y : shift y = 1 := by
+    change blockDiagPart ε' ((h : Matrix n n ℂ)⁻¹ * y * b⁻¹) = 1
+    rw [blockDiagPart_mul_right (blockDiagAlg.inv_mem b_mem),
+      blockDiagPart_mul_left (blockDiagAlg.inv_mem h_mem), y_eq,
+      ← Matrix.mul_assoc, nonsing_inv_mul _ h_det, Matrix.one_mul, mul_nonsing_inv _ b_det]
+  refine ⟨fun y' ↦ ψ (shift y'), ?_, by dsimp only; rw [shift_y, ψ_one], ?_⟩
+  · refine DifferentiableAt.comp (g := ψ) y ?_ shift.differentiableAt
+    rw [shift_y]
+    exact ψ_complex.differentiableAt
+  filter_upwards [shift.cont.tendsto' y 1 shift_y chart] with y' hy'
+  obtain ⟨tri_borel, ⟨-, tri_mem⟩, shift_eq⟩ := hy' (blockDiagPart_mem _)
+  refine ⟨tri_borel, tri_mem, ?_⟩
+  have h_mul := congrArg (fun z : Matrix n n ℂ ↦ (h : Matrix n n ℂ) * z * b) shift_eq
+  change (h : Matrix n n ℂ) * blockDiagPart ε' ((h : Matrix n n ℂ)⁻¹ * y' * b⁻¹) * b =
+    (h : Matrix n n ℂ) * (NormedSpace.exp (lowerLiePart ε ε' o 0 (ψ (shift y'))) *
+      (1 + (1 - lowerLiePart ε ε' o 0) (ψ (shift y')))) * b at h_mul
+  rw [blockDiagPart_mul_right (blockDiagAlg.inv_mem b_mem),
+    blockDiagPart_mul_left (blockDiagAlg.inv_mem h_mem),
+    ← Matrix.mul_assoc (h : Matrix n n ℂ), ← Matrix.mul_assoc (h : Matrix n n ℂ),
+    mul_nonsing_inv _ h_det, Matrix.one_mul, Matrix.mul_assoc, nonsing_inv_mul _ b_det,
+    Matrix.mul_one] at h_mul
+  rw [h_mul, Subgroup.coe_mul, Units.val_mul]
+  change (h : Matrix n n ℂ) * (NormedSpace.exp (lowerLiePart ε ε' o 0 (ψ (shift y'))) *
+      (1 + (1 - lowerLiePart ε ε' o 0) (ψ (shift y')))) * b =
+    (h : Matrix n n ℂ) * NormedSpace.exp (lowerLiePart ε ε' o 0 (ψ (shift y'))) *
+      ((1 + (1 - lowerLiePart ε ε' o 0) (ψ (shift y'))) * b)
+  rw [Matrix.mul_assoc, Matrix.mul_assoc, Matrix.mul_assoc]
+
+/-- Let `x` be highest of weight `u` for the order `-o` and the blocks of `ε'`, with `o` injective,
+and let `c` be a continuous coefficient map for `ρ`. Let `F` be a function on matrices with
+`F y = diagChar u b • c h x` whenever the block diagonal part of `y` is a product `h * b` of `h` in
+`U(diag ε)` and an invertible triangular `b`, both block diagonal for `ε'`. Then `F` is complex
+differentiable at each such `y`. -/
+theorem HCParam.IsKHighest.differentiableAt_of_blockDiagPart_eq_mul (ho : o.Injective)
+    {ρ : GlModule n M} {u : n → ℤ} {x : M} {c : USign ε → M →ₗ[ℂ] X}
+    (hx : (toHCParam ε' (-o)).IsKHighest ρ u x) (hc : ρ.IsCoeffMap c)
+    (hc_cont : ∀ y : M, Continuous fun h : USign ε ↦ c h y) {F : Matrix n n ℂ → X}
+    (hF : ∀ (y : Matrix n n ℂ) (h : USign ε) (b : Matrix n n ℂ), IsBorelMatrix o b →
+      (h : Matrix n n ℂ) ∈ blockDiagAlg ε' → b ∈ blockDiagAlg ε' → blockDiagPart ε' y = h * b →
+      F y = diagChar u b • c h x)
+    {y : Matrix n n ℂ} {h : USign ε} {b : Matrix n n ℂ} (hb : IsBorelMatrix o b)
+    (h_mem : (h : Matrix n n ℂ) ∈ blockDiagAlg ε') (b_mem : b ∈ blockDiagAlg ε')
+    (y_eq : blockDiagPart ε' y = h * b) :
+    DifferentiableAt ℂ F y := by
+  obtain ⟨φ, φ_diff, φ_y, factor⟩ :=
+    exists_chart_of_blockDiagPart_eq_mul (o := o) hb.2 h_mem b_mem y_eq
+  let unit (Z : Matrix n n ℂ) : USign ε :=
+    h * expU ⟨lowerLiePart ε ε' o 0 Z, lowerLiePart_mem_unitaryLie ε ε' o 0 Z⟩
+  let inChart (Z : Matrix n n ℂ) : X := (diagChar u (1 + Z) * diagChar u b) • c (unit Z) x
+  have comp_diff : DifferentiableAt ℂ (inChart ∘ φ) y := by
+    refine .comp y ?_ φ_diff
+    rw [φ_y]
+    have one_diag (i : n) : (1 : Matrix n n ℂ) i i ≠ 0 := by
+      rw [Matrix.one_apply_eq]; exact one_ne_zero
+    have h_char : DifferentiableAt ℂ
+        (fun Z : Matrix n n ℂ ↦ diagChar u (1 + Z) * diagChar u b) 0 :=
+      (((analyticAt_diagChar u one_diag).comp_of_eq (analyticAt_const.add analyticAt_id)
+        (add_zero 1)).mul analyticAt_const).differentiableAt
+    exact .smul h_char (hx.differentiableAt_coeffMap_expU ho hc hc_cont h)
+  -- Near `y` we have `F = inChart ∘ φ`, because `lowerLiePart ε ε' o 0 Z` has zero diagonal.
+  have tri_diag (Z : Matrix n n ℂ) (i : n) :
+      (1 + (1 - lowerLiePart ε ε' o 0) Z) i i = (1 + Z) i i := by
+    rw [Matrix.add_apply, Matrix.add_apply, sub_apply, one_apply_eq_self, Matrix.sub_apply,
+      lowerLiePart_zero_eq, Matrix.sub_apply, signMatrix_mul_conjTranspose_mul_apply,
+      lowerMask_apply]
+    simp only [lt_irrefl, false_and, ↓reduceIte, map_zero, mul_zero, zero_mul, sub_zero]
+  refine comp_diff.congr_of_eventuallyEq (factor.mono fun y' ⟨tri_borel, tri_mem, y'_eq⟩ ↦ ?_)
+  rw [hF y' (unit (φ y')) _ (tri_borel.mul hb)
+    (mul_mem h_mem (exp_lowerLiePart_zero_mem_blockDiagAlg _)) (mul_mem tri_mem b_mem) y'_eq]
+  simp only [Function.comp_apply, inChart, diagChar, tri_borel.mul_apply_diag ho hb, tri_diag,
+    mul_zpow, prod_mul_distrib]
+
+/-- Let `x` be highest of weight `u` for the order `-o` and the blocks of `ε'`, with `o` injective,
+and let `c` be a continuous coefficient map for `ρ`. Then `h ↦ c h x` extends to a function `F` on
+matrices with `F (h * b) = diagChar u b • c h x`, complex differentiable near `h * b`, for all `h`
+in `U(diag ε)` and invertible triangular `b` that are block diagonal for `ε'`. -/
+theorem HCParam.IsKHighest.exists_extension_coeffMap (ho : o.Injective) {ρ : GlModule n M}
+    {u : n → ℤ} {x : M} {c : USign ε → M →ₗ[ℂ] X} (hx : (toHCParam ε' (-o)).IsKHighest ρ u x)
+    (hc : ρ.IsCoeffMap c) (hc_cont : ∀ y : M, Continuous fun h : USign ε ↦ c h y) :
+    ∃ F : Matrix n n ℂ → X, ∀ (h : USign ε) (b : Matrix n n ℂ), IsBorelMatrix o b →
+      (h : Matrix n n ℂ) ∈ blockDiagAlg ε' → b ∈ blockDiagAlg ε' →
+      (∀ᶠ y in 𝓝 (h * b : Matrix n n ℂ), DifferentiableAt ℂ F y) ∧
+        F (h * b) = diagChar u b • c h x := by
+  -- Define `F y` through the factorisations of the block diagonal part of `y`, which make up
+  -- `factors y` and all give the same value.
+  let factors (y : Matrix n n ℂ) : Set (USign ε × Matrix n n ℂ) := {(h, b) |
+    IsBorelMatrix o b ∧ (↑h ∈ blockDiagAlg ε' ∧ b ∈ blockDiagAlg ε') ∧ blockDiagPart ε' y = h * b}
+  have well_defined (y : Matrix n n ℂ) :
+      ∃ z : X, ∀ p ∈ factors y, diagChar u p.2 • c p.1 x = z := by
+    refine ((factors y).pairwise_eq_iff_exists_eq _).1 ?_
+    rintro ⟨h', b'⟩ ⟨hb', -, y_eq'⟩ ⟨h, b⟩ ⟨hb, -, y_eq⟩ -
+    exact hx.diagChar_smul_coeffMap_eq ho hc hb hb' (y_eq'.symm.trans y_eq)
+  choose F F_eq using well_defined
+  have hF (y : Matrix n n ℂ) (h : USign ε) (b : Matrix n n ℂ) (hb : IsBorelMatrix o b)
+      (h_mem : (h : Matrix n n ℂ) ∈ blockDiagAlg ε') (b_mem : b ∈ blockDiagAlg ε')
+      (y_eq : blockDiagPart ε' y = h * b) : F y = diagChar u b • c h x :=
+    (F_eq y (h, b) ⟨hb, ⟨h_mem, b_mem⟩, y_eq⟩).symm
+  refine ⟨F, fun h b hb h_mem b_mem ↦ ⟨?_, hF _ h b hb h_mem b_mem
+    (blockDiagPart_of_mem (mul_mem h_mem b_mem))⟩⟩
+  -- Near `h * b` the block diagonal part still factors, by the chart.
+  obtain ⟨φ, -, -, factor⟩ := exists_chart_of_blockDiagPart_eq_mul (o := o) hb.2 h_mem b_mem
+    (blockDiagPart_of_mem (mul_mem h_mem b_mem))
+  exact factor.mono fun y ⟨tri_borel, tri_mem, y_eq⟩ ↦
+    hx.differentiableAt_of_blockDiagPart_eq_mul ho hc hc_cont hF (tri_borel.mul hb)
+      (mul_mem h_mem (exp_lowerLiePart_zero_mem_blockDiagAlg _)) (mul_mem tri_mem b_mem) y_eq
+
 /-- Let `o` be injective. For each `τ` let `x τ` be a `K`-highest vector of weight `u τ` in the
 `gl n`-module `ρ τ` for the parameter `-o` and signs `ε'`: each `E a a` acts on it by `u τ a`, and
 `E a b` kills it when `ε' a = ε' b` and `o a < o b`. Let `c τ` be a continuous coefficient map for
@@ -620,100 +765,14 @@ theorem HCParam.IsKHighest.isHolOfWeight_coeffMap (ho : o.Injective) {ρ : Φ �
     (hc : ∀ τ : Φ, (ρ τ).IsCoeffMap (c τ)) (ℓ : ContinuousMultilinearMap ℂ (fun _ : Φ ↦ X) ℂ)
     (hc_cont : ∀ (τ : Φ) (y : M), Continuous fun h : USign ε ↦ c τ h y) :
     IsHolOfWeight ε o u (fun h : Φ → USign ε ↦ ℓ fun τ : Φ ↦ c τ (h τ) (x τ)) ε' := by
-  -- Extend `h ↦ c τ h (x τ)` by `extend τ (h * b) = diagChar (u τ) b • c τ h (x τ)`, show that this
-  -- is well defined and complex differentiable (in the chart of `exists_borel_chart`), and compose
-  -- with `ℓ`. The set `factors y` holds the factorisations of the block diagonal part of `y`.
-  let factors (y : Matrix n n ℂ) : Set (USign ε × Matrix n n ℂ) := {(h, b) |
-    IsBorelMatrix o b ∧ (↑h ∈ blockDiagAlg ε' ∧ b ∈ blockDiagAlg ε') ∧ blockDiagPart ε' y = h * b}
-  have well_defined (τ : Φ) (y : Matrix n n ℂ) :
-      ∃ z : X, ∀ p ∈ factors y, diagChar (u τ) p.2 • c τ p.1 (x τ) = z := by
-    refine ((factors y).pairwise_eq_iff_exists_eq _).1 ?_
-    rintro ⟨h', b'⟩ ⟨hb', -, y_eq'⟩ ⟨h, b⟩ ⟨hb, -, y_eq⟩ -
-    exact (hx τ).diagChar_smul_coeffMap_eq ho (hc τ) hb hb' (y_eq'.symm.trans y_eq)
-  choose extend extend_eq using well_defined
-  -- The chart `Z ↦ exp (v Z) * (1 + Z - v Z)` at `1`, with local inverse `ψ`.
-  let v : Matrix n n ℂ →L[ℝ] Matrix n n ℂ := lowerLiePart ε ε' o 0
-  obtain ⟨ψ, ⟨ψ_deriv, ψ_one⟩, chart⟩ := exists_borel_chart ε' o v hasStrictFDerivAt_exp_zero
-    NormedSpace.exp_zero exp_lowerLiePart_zero_mem_blockDiagAlg lowerMask_lowerLiePart_zero
-  -- the real derivative of `ψ` at `1` is the identity, which is complex linear
-  have ψ_complex : HasFDerivAt ψ (ContinuousLinearMap.id ℂ (Matrix n n ℂ)) 1 :=
-    .of_isLittleO ψ_deriv.isLittleO
-  have differentiable (τ : Φ) (y : Matrix n n ℂ) (hy : (factors y).Nonempty) :
-      DifferentiableAt ℂ (extend τ) y ∧ ∀ᶠ y' in 𝓝 y, (factors y').Nonempty := by
-    obtain ⟨⟨h, b⟩, hb : IsBorelMatrix o b, ⟨h_mem, b_mem⟩, y_eq : blockDiagPart ε' y = h * b⟩ := hy
-    -- `shift` takes the block diagonal part of `h⁻¹ * y' * b⁻¹`, so sends `y` to `1`.
-    let shift : Matrix n n ℂ →L[ℂ] Matrix n n ℂ :=
-      blockDiagPart ε' ∘L mulLeftRight ℂ (Matrix n n ℂ) (h : Matrix n n ℂ)⁻¹ b⁻¹
-    have h_det : IsUnit (h : Matrix n n ℂ).det :=
-      isUnit_iff_ne_zero.2 (GeneralLinearGroup.det_ne_zero h.val)
-    have b_det : IsUnit b.det := isUnit_iff_ne_zero.2 hb.2
-    have shift_y : shift y = 1 := by
-      change blockDiagPart ε' ((h : Matrix n n ℂ)⁻¹ * y * b⁻¹) = 1
-      rw [blockDiagPart_mul_right (blockDiagAlg.inv_mem b_mem),
-        blockDiagPart_mul_left (blockDiagAlg.inv_mem h_mem), y_eq,
-        ← Matrix.mul_assoc, nonsing_inv_mul _ h_det, Matrix.one_mul, mul_nonsing_inv _ b_det]
-    let unit (Z : Matrix n n ℂ) : USign ε := h * expU ⟨v Z, lowerLiePart_mem_unitaryLie ε ε' o 0 Z⟩
-    let tri (Z : Matrix n n ℂ) : Matrix n n ℂ := 1 + (1 - v) Z
-    have factor : ∀ᶠ y' in 𝓝 y, IsBorelMatrix o (tri (ψ (shift y'))) ∧
-        (unit (ψ (shift y')), tri (ψ (shift y')) * b) ∈ factors y' := by
-      filter_upwards [shift.cont.tendsto' y 1 shift_y chart] with y' hy'
-      obtain ⟨tri_borel, ⟨exp_mem, tri_mem⟩, shift_eq⟩ := hy' (blockDiagPart_mem _)
-      refine ⟨tri_borel, tri_borel.mul hb, ⟨mul_mem h_mem exp_mem, mul_mem tri_mem b_mem⟩, ?_⟩
-      have h_mul := congrArg (fun z : Matrix n n ℂ ↦ (h : Matrix n n ℂ) * z * b) shift_eq
-      change (h : Matrix n n ℂ) * blockDiagPart ε' ((h : Matrix n n ℂ)⁻¹ * y' * b⁻¹) * b =
-        (h : Matrix n n ℂ) *
-          (NormedSpace.exp (v (ψ (shift y'))) * tri (ψ (shift y'))) * b at h_mul
-      rw [blockDiagPart_mul_right (blockDiagAlg.inv_mem b_mem),
-        blockDiagPart_mul_left (blockDiagAlg.inv_mem h_mem),
-        ← Matrix.mul_assoc (h : Matrix n n ℂ), ← Matrix.mul_assoc (h : Matrix n n ℂ),
-        mul_nonsing_inv _ h_det, Matrix.one_mul, Matrix.mul_assoc, nonsing_inv_mul _ b_det,
-        Matrix.mul_one] at h_mul
-      rw [h_mul]
-      dsimp only [unit]
-      rw [Subgroup.coe_mul, Units.val_mul]
-      change (h : Matrix n n ℂ) * (NormedSpace.exp (v (ψ (shift y'))) * tri (ψ (shift y'))) * b =
-        (h : Matrix n n ℂ) * NormedSpace.exp (v (ψ (shift y'))) * (tri (ψ (shift y')) * b)
-      rw [Matrix.mul_assoc, Matrix.mul_assoc, Matrix.mul_assoc]
-    refine ⟨?_, factor.mono fun y' hy' ↦ Set.nonempty_of_mem hy'.2⟩
-    let inChart (Z : Matrix n n ℂ) : X :=
-      (diagChar (u τ) (1 + Z) * diagChar (u τ) b) • c τ (unit Z) (x τ)
-    have comp_diff : DifferentiableAt ℂ (inChart ∘ ψ) (shift y) := by
-      rw [shift_y]
-      refine .comp 1 ?_ ψ_complex.differentiableAt
-      rw [ψ_one]
-      have h_entry (i : n) : AnalyticAt ℂ (fun Z : Matrix n n ℂ ↦ (1 + Z) i i) 0 :=
-        analyticAt_const.add
-          ((ContinuousLinearMap.mk
-            ({ toFun Z := Z i i
-               map_add' _ _ := rfl
-               map_smul' _ _ := rfl } : Matrix n n ℂ →ₗ[ℂ] ℂ)
-            ((continuous_apply i).comp (continuous_apply i))).analyticAt 0)
-      have h_char : DifferentiableAt ℂ
-          (fun Z : Matrix n n ℂ ↦ diagChar (u τ) (1 + Z) * diagChar (u τ) b) 0 :=
-        ((Finset.analyticAt_fun_prod univ fun i _ ↦
-          (h_entry i).zpow (by rw [add_zero, Matrix.one_apply_eq]; exact one_ne_zero)).mul
-            analyticAt_const).differentiableAt
-      exact .smul h_char ((hx τ).differentiableAt_coeffMap_expU ho (hc τ) (hc_cont τ) h)
-    -- Near `y` we have `extend τ = inChart ∘ ψ ∘ shift`, because `v Z` has zero diagonal.
-    have tri_diag (Z : Matrix n n ℂ) (i : n) : tri Z i i = (1 + Z) i i := by
-      dsimp only [tri, v]
-      rw [Matrix.add_apply, Matrix.add_apply, sub_apply, one_apply_eq_self, Matrix.sub_apply,
-        lowerLiePart_zero_eq, Matrix.sub_apply, signMatrix_mul_conjTranspose_mul_apply,
-        lowerMask_apply]
-      simp only [lt_irrefl, false_and, ↓reduceIte, map_zero, mul_zero, zero_mul, sub_zero]
-    refine (comp_diff.comp y shift.differentiableAt).congr_of_eventuallyEq (factor.mono ?_)
-    rintro y' ⟨tri_borel, h_factor⟩
-    change extend τ y' = inChart (ψ (shift y'))
-    simp only [← extend_eq τ y' _ h_factor, inChart, diagChar, tri_borel.mul_apply_diag ho hb,
-      tri_diag, mul_zpow, prod_mul_distrib]
-  refine ⟨fun z ↦ ℓ fun τ ↦ extend τ (z τ), fun h b hb h_block ↦ ?_⟩
-  have mem (τ : Φ) : (h τ, b τ) ∈ factors (h τ * b τ) :=
-    ⟨hb τ, h_block τ, blockDiagPart_of_mem (mul_mem (h_block τ).1 (h_block τ).2)⟩
+  -- Extend each `h ↦ c τ h (x τ)` to products `h * b` by
+  -- `HCParam.IsKHighest.exists_extension_coeffMap`, and compose with `ℓ`.
+  choose F F_diff F_eq using fun τ ↦ (hx τ).exists_extension_coeffMap ho (hc τ) (hc_cont τ)
+  refine ⟨fun z ↦ ℓ fun τ ↦ F τ (z τ), fun h b hb h_block ↦ ?_⟩
   refine ⟨analyticAt_of_eventually_differentiableAt ?_, by
-    simp only [← extend_eq _ _ (h _, b _) (mem _), ℓ.map_smul_univ, smul_eq_mul]⟩
-  have all_near : ∀ᶠ y in 𝓝 (fun τ ↦ h τ * b τ), ∀ τ, DifferentiableAt ℂ (extend τ) (y τ) :=
-    nhds_pi.le (eventually_pi fun τ ↦
-      (differentiable τ _ ⟨_, mem τ⟩).2.mono fun y hy ↦ (differentiable τ y hy).1)
+    simp only [F_eq _ _ _ (hb _) (h_block _).1 (h_block _).2, ℓ.map_smul_univ, smul_eq_mul]⟩
+  have all_near : ∀ᶠ y in 𝓝 (fun τ ↦ h τ * b τ), ∀ τ, DifferentiableAt ℂ (F τ) (y τ) :=
+    nhds_pi.le (eventually_pi fun τ ↦ F_diff τ _ _ (hb τ) (h_block τ).1 (h_block τ).2)
   exact all_near.mono fun y hy ↦ ℓ.analyticAt.differentiableAt.comp y
     (differentiableAt_pi.2 fun τ ↦
       (hy τ).comp y (proj (R := ℂ) (φ := fun _ : Φ ↦ Matrix n n ℂ) τ).differentiableAt)
