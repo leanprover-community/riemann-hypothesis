@@ -913,6 +913,25 @@ lemma isFiniteLerayHirsch_of_integrate_params (β : ι → TotalH (relFreeAb I.t
     apply h_sum_eq_foldr t.consTautologicalPoint ((elementsProj _).sectionsPrecomp q')
 
 seal Abelian.Ext Abelian.Ext.instAddCommGroup in
+/-- Extending a class to the zeros of `I` at the section `t.points` and then pulling it back along
+the kernel `I.constToZeros` is the same as restricting the class to the section and pulling it back
+along `I.atSection t.points`. -/
+private lemma pullbackAlong_extendToZeros_eq
+    (t : LineStage A m)
+    (w : TotalH (t.toTestOver ⋙ abCoker (ℓ • 𝟙 (relFreeAb I.topPoints))) t.theory.functor) :
+    pullbackAlong ((sectionLift (X := ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin m)) t.toTestOver
+        t.points).whiskerLeft (abCoker.π _))
+      (pullbackAlong ((sectionLift (X := ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin m)) t.toTestOver
+        t.points).whiskerLeft I.constToZeros)
+        (I.extendToZeros t.theory t.points w)) =
+    pullbackAlong (I.atSection t.points)
+      (pullbackAlong (t.toTestOver.whiskerLeft (abCoker.π _)) w) := by
+  refine ((congrArg (pullbackAlong _) (I.zerosEquiv_extendToZeros t.theory t.points w)).trans
+    (pullbackAlong_pullbackAlong ..)).trans ?_
+  exact (pullbackAlong_pullbackAlong (f := I.atSection t.points)
+    (t.toTestOver.whiskerLeft (abCoker.π _)) w).symm
+
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Let I be a compatible family of ideals on points of (P¹)^m, U the locus where I is the unit
 ideal, and Q = ℤ[(P¹)^m]/ℤ[U]. Let `θ i` be classes of degree `d i`, over the points of (P¹)^m, from
 N to the locally constant ℤ/ℓ-valued functions modulo those dying where I = 0 (`I.zerosCoeff`).
@@ -937,16 +956,8 @@ lemma isFiniteLerayHirsch_topPoints_of_surjective {J : Type*} {d : J → ℕ}
   let X := ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin m)
   -- Pulled back along `I.constToZeros`, the extension of `w` is the restriction of `w` to `points`.
   have h_ext (t : LineStage A m)
-      (w : TotalH (t.toTestOver ⋙ abCoker (ℓ • 𝟙 (relFreeAb I.topPoints))) t.theory.functor) :
-      pullbackAlong ((sectionLift (X := X) t.toTestOver t.points).whiskerLeft (abCoker.π _))
-          (pullbackAlong ((sectionLift (X := X) t.toTestOver t.points).whiskerLeft I.constToZeros)
-            (I.extendToZeros t.theory t.points w)) =
-        pullbackAlong (I.atSection t.points)
-          (pullbackAlong (t.toTestOver.whiskerLeft (abCoker.π _)) w) := by
-    refine ((congrArg (pullbackAlong _) (I.zerosEquiv_extendToZeros t.theory t.points w)).trans
-      (pullbackAlong_pullbackAlong ..)).trans ?_
-    exact (pullbackAlong_pullbackAlong (f := I.atSection t.points)
-      (t.toTestOver.whiskerLeft (abCoker.π _)) w).symm
+      (w : TotalH (t.toTestOver ⋙ abCoker (ℓ • 𝟙 (relFreeAb I.topPoints))) t.theory.functor) :=
+    pullbackAlong_extendToZeros_eq (t := t) (w := w)
   let T (i : J) : NaturalOp m (abCoker (ℓ • 𝟙 (relFreeAb I.topPoints))) N :=
     { app t :=
         (comp (map (restrictAlong (sectionLift (X := X) t.toTestOver t.points)) (θ i).toTotalH
