@@ -1,10 +1,6 @@
 module
 
 public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-public import Mathlib.Order.CompletePartialOrder
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.RingTheory.PiTensorProduct
 public import Lib.DiscreteSeries.FlenstedJensen.Defs
 
 /-!
