@@ -401,10 +401,8 @@ lemma length_selmerCocycles_le_crystallineSelmerLength {n : Type} [Fintype n] [D
         (crysRelations ρ ∪ {Finsupp.single γ 1}) (QuotSpan (ℓ ^ M : ↑O)) := by
     rintro z ⟨⟨hz_obey, hz_const⟩, hzγ⟩
     refine ⟨mem_obeying.2 ?_, hz_const⟩
-    rintro f (hf | hf | rfl)
-    · exact mem_obeying.1 hz_obey f (.inl hf)
-    · exact mem_obeying.1 hz_obey f (.inr hf)
-    · simpa using hzγ
+    rw [← Set.union_assoc, Set.forall_mem_union]
+    exact ⟨mem_obeying.1 hz_obey, by simpa using hzγ⟩
   exact (length_mono h_sub).trans (length_le_divisibleSelmerLength (NeZero.ne _))
 
 omit [PadicIso ℓ] in
