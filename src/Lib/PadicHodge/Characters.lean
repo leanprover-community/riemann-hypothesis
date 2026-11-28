@@ -235,8 +235,11 @@ lemma IsFiniteTypeAt.aeval_eq_zero_of_roots (hr : IsFiniteTypeAt r A) (hA : A.va
   -- Powers of `s` come arbitrarily close to `1` and stay in inertia, so `r s` has finite order.
   obtain ⟨n, hn, h_one⟩ : ∃ n ≥ 1, s ^ n ∈ inertiaGroup Gal(Ω/E) A → r (s ^ n) = 1 :=
     ((mapClusterPt_one_atTop_pow s).frequently (hr.1 hA)).forall_exists_of_atTop 1
-  -- Hence a polynomial kills `r s` as soon as it vanishes at the roots of one that does.
-  refine map_eq_zero_of_roots _ ⟨n, hn, ?_⟩ (hP.1 hA) h_roots
+  -- The split separable polynomial `X ^ n - 1` annihilates `r s`, so one can test on roots.
+  have h_sep : ((X ^ n - 1 : (PadicAlgCl ℓ)[X])).Separable :=
+    X_pow_sub_one_separable_iff.mpr (by exact_mod_cast (show n ≠ 0 by omega))
+  refine map_eq_zero_of_roots _ ?_ h_sep (IsAlgClosed.splits _) (hP.1 hA) h_roots
+  simp only [map_sub, map_pow, map_one, sub_eq_zero]
   simpa [Units.ext_iff] using h_one (pow_mem hs n)
 
 /-- Above `ℓ`, inertia acts on the Weil–Deligne representation through a finite group. So if `P`
@@ -259,7 +262,10 @@ lemma PolyKillsAt.isKilledBy_of_roots [L : PadicPlaceEmbedding E A ℓ]
   -- Evaluation at `linearFrob` is a ring homomorphism, as it commutes with the coefficients.
   let φ : (PadicAlgCl ℓ)[X] →+* Module.End Bmax (TensorProduct ℤ_[ℓ] Bmax (m → PadicAlgCl ℓ)) :=
     eval₂RingHom' _ _ (commute_coeffEnd_linearFrob h_pcr hs)
-  exact ⟨h_pcr, map_eq_zero_of_roots φ ⟨N, hN, by simpa [φ] using h_order⟩ h_kill h_roots⟩
+  have h_sep : ((X ^ N - 1 : (PadicAlgCl ℓ)[X])).Separable :=
+    X_pow_sub_one_separable_iff.mpr (by exact_mod_cast (show N ≠ 0 by omega))
+  exact ⟨h_pcr, map_eq_zero_of_roots φ (by simp [φ, h_order]) h_sep
+    (IsAlgClosed.splits _) h_kill h_roots⟩
 
 /-- If `P` kills `s` for `r` at `A`, so does every multiple of `P`. -/
 lemma PolyKillsAt.of_dvd {s : Gal(Ω/E)} {P Q : (PadicAlgCl ℓ)[X]} (hP : PolyKillsAt r A s P)
