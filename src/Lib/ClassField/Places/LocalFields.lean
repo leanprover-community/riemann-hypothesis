@@ -242,6 +242,11 @@ variable {Γ k Ω : Type*} [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω]
 lemma IsUniformizer.valuationVia_lt_one {π : k} (h : IsUniformizer A π) : valuationVia k A π < 1 :=
   (h π).mpr le_rfl
 
+/-- Two uniformisers of `k` for the same valuation subring `A` have equal valuation. -/
+lemma IsUniformizer.valuationVia_eq {π π' : k} (hπ : IsUniformizer A π)
+    (hπ' : IsUniformizer A π') : valuationVia k A π = valuationVia k A π' :=
+  ((hπ' π).mp hπ.valuationVia_lt_one).antisymm ((hπ π').mp hπ'.valuationVia_lt_one)
+
 lemma dvd_iff_valuationVia_le {x y : valRingBelow k A} :
     x ∣ y ↔ valuationVia k A y ≤ valuationVia k A x :=
   (integer.integers _).dvd_iff_le
@@ -374,9 +379,7 @@ lemma IsUniformizer.exists_addMonoidHom_valuation_pow_eq_iff (L : IsLocalGalois 
     -- both sides now compare powers of `v(π)`
     simp [zpow_mul, mul_comm]
   -- Any two uniformisers have the same valuation, so `f` has the property for every uniformiser.
-  have h_unif (p : kˣ) (hp : IsUniformizer A p.val) : valuationVia k A π = valuationVia k A p :=
-    ((hp π).mp h.valuationVia_lt_one).antisymm ((h p).mp hp.valuationVia_lt_one)
-  exact ⟨f, fun p hp ↦ by simpa only [← h_unif p hp] using hf⟩
+  exact ⟨f, fun p hp ↦ by simpa only [← h.valuationVia_eq hp] using hf⟩
 
 /-- Let k be a henselian local field with uniformiser π. For x ∈ Ω^×, n ∈ ℕ and a ∈ ℤ, x^n and π^a
 have equal A-valuation if and only if n·ord(x) = a, where ord is the order normalised on k. -/

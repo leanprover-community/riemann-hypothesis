@@ -670,7 +670,7 @@ lemma ordRat_fixedFieldOf_decompGroup (h : IsPlaceOver A v) :
   · -- A uniformiser `π` of the fixed field has the same valuation as the uniformiser `π₀` of `K`.
     intro hf π hπ
     have h_val : valuationVia K A π₀ = valuationVia (fixedFieldOf (decompGroup Γ A)) A π :=
-      ((hπ _).mp hπ₀.valuationVia_lt_one).antisymm ((hπ₀ _).mp hπ.valuationVia_lt_one)
+      hπ₀.valuationVia_eq hπ
     rw [← h_val]
     exact hf π₀ (h.isUniformizer_iff.mpr hπ₀_val)
 
