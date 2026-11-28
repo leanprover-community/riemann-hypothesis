@@ -96,8 +96,6 @@ lemma finrank_crysCocycles_eq_add_neg_jumps {E : Type*} [Field E] [CMFieldWithRo
   choose s hs using coefficientEmbedding_surjective (O := O)
   choose K hK using fun φ : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ] ↦
     (h_crys.exists_hasJumps φ).imp fun _ h_jumps ↦ h_jumps.2
-  -- `r σ` is an element of the Galois group with `complexEmbeddingOf e (r σ) = σ`.
-  let r : range (complexEmbeddingOf e) → Gp ℓ := rangeSplitting (complexEmbeddingOf e)
   -- Over `ℤ_ℓ` the jumps are those at all the embeddings of `O` together.
   have jumps_sum : HasJumps (overZp L.ρ) (Algebra.ofId ℤ_[ℓ] ℂ_[ℓ]) (∑ φ, K φ) := fun u ↦ by
     simpa [← h_crys.sum_jump_eq_jump_overZp.1 u, count_sum'] using
@@ -110,20 +108,22 @@ lemma finrank_crysCocycles_eq_add_neg_jumps {E : Type*} [Field E] [CMFieldWithRo
     -- Both sides are `g` applied to the values of `s φ` and `s ψ`, and `g` is injective.
     rw [← hs φ, ← hs ψ]
     simpa [coefficientEmbedding, ext_iff] using h_eq
-  -- `σ ↦ complexEmbeddingOf e (r σ * g)` permutes the embeddings of the place.
+  -- Left translation by `g⁻¹` permutes the cosets. Under the embedding equivalence this
+  -- sends the embedding represented by `q.out⁻¹` to the one represented by `q.out⁻¹ * g`.
+  let emb := h_group.cosetEquivEmbeddings
+  let := Fintype.ofEquiv _ emb.symm
   have sum_J (g : Gp ℓ) :
-      ∑ σ, J (complexEmbeddingOf e (r σ * g)) = ∑ σ : range (complexEmbeddingOf e), J σ := by
-    let perm (σ : range (complexEmbeddingOf e)) : range (complexEmbeddingOf e) :=
-      ⟨complexEmbeddingOf e (r σ * g), r σ * g, rfl⟩
-    refine (Function.Injective.bijective_of_finite (f := perm) fun σ τ ↦ ?_).sum_comp (J ·)
-    simp [perm, r, Subtype.ext_iff, ← apply_rangeSplitting, h_group.complexEmbeddingOf_eq_iff]
-  -- Sum the jumps at `coefficientEmbedding O (r σ * s φ)` first over `φ`, then over `σ`; there are
-  -- `𝒥.toGp.range.index` embeddings `σ` and `finrank ℤ_[ℓ] O` embeddings `φ`.
+      ∑ q : Gp ℓ ⧸ 𝒥.toGp.range, J (complexEmbeddingOf e (q.out⁻¹ * g)) =
+        ∑ σ : range (complexEmbeddingOf e), J σ := by
+    refine Fintype.sum_equiv ((MulAction.toPerm g⁻¹).trans emb) _ _ fun q ↦ ?_
+    change _ = J (emb (g⁻¹ • q))
+    simp [emb, h_group.cosetEquivEmbeddings_smul]
+  -- Sum over the coefficient embeddings first, then over the cosets.
   have double_count :
       𝒥.toGp.range.index • ∑ φ, K φ = finrank ℤ_[ℓ] O • ∑ σ : range (complexEmbeddingOf e), J σ :=
-    calc _ = ∑ σ, ∑ φ, K (coefficientEmbedding O (r σ * s φ)) := by
-          simp [sum_K, h_group.index_eq_card_range]
-      _ = ∑ φ, ∑ σ, K (coefficientEmbedding O (r σ * s φ)) := sum_comm
+    calc _ = ∑ q : Gp ℓ ⧸ 𝒥.toGp.range, ∑ φ, K (coefficientEmbedding O (q.out⁻¹ * s φ)) := by
+          simp [sum_K, Subgroup.index]
+      _ = ∑ φ, ∑ q : Gp ℓ ⧸ 𝒥.toGp.range, K (coefficientEmbedding O (q.out⁻¹ * s φ)) := sum_comm
       _ = _ := by simp [K_eq, sum_J, card_algHom_eq_finrank]
   -- Multiplied by `[O : ℤ_ℓ]`, the ranks become ranks over `ℤ_ℓ`. There `crysCocycles.finrank_eq`
   -- gives the rank of `L` plus the index times the number of negative jumps, which `double_count`

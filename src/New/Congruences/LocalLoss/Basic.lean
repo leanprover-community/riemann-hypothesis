@@ -604,17 +604,30 @@ lemma IsCompletionGroup.complexEmbeddingOf_eq_iff (hj : IsCompletionGroup e j) {
   -- the left side says that `g⁻¹` and `g'⁻¹` agree on `e E`, the right that `g * g'⁻¹` fixes it
   simp [complexEmbeddingOf, g.symm_apply_eq, eq_comm, RingHom.ext_iff, h_range]
 
+/-- Inversion identifies the left cosets of a completion group with the complex embeddings
+at its place. The coset of `g` corresponds to `complexEmbeddingOf e g⁻¹`. -/
+noncomputable def IsCompletionGroup.cosetEquivEmbeddings (hj : IsCompletionGroup e j) :
+    Gp ℓ ⧸ j.range ≃ range (complexEmbeddingOf e) := by
+  -- Two elements give the same embedding iff their inverses lie in one coset of `j.range`.
+  have h_left (g g' : Gp ℓ) : leftRel j.range g g' ↔ ker (complexEmbeddingOf e) g⁻¹ g'⁻¹ := by
+    change leftRel j.range g g' ↔ complexEmbeddingOf e g⁻¹ = complexEmbeddingOf e g'⁻¹
+    rw [hj.complexEmbeddingOf_eq_iff, leftRel_eq, inv_inv]
+  exact (Quotient.congr (Equiv.inv (Gp ℓ)) h_left).trans (quotientKerEquivRange _)
+
+/-- Translating a coset by `g` right-multiplies its inverse representative by `g⁻¹`. -/
+lemma IsCompletionGroup.cosetEquivEmbeddings_smul (hj : IsCompletionGroup e j)
+    (g : Gp ℓ) (q : Gp ℓ ⧸ j.range) :
+    (hj.cosetEquivEmbeddings (g • q) : E →+* ℂ) = complexEmbeddingOf e (q.out⁻¹ * g⁻¹) := by
+  conv_lhs => rw [← q.out_eq]
+  change complexEmbeddingOf e (g * q.out)⁻¹ = _
+  rw [mul_inv_rev]
+
 /-- Let `j : Γ → Gp ℓ` be an open embedding whose image is the group of elements that fix `e E`
 pointwise. The index of this image is the number of distinct complex embeddings
 `complexEmbeddingOf e g = ι⁻¹ ∘ g⁻¹ ∘ e`, for `g` in `Gp ℓ`. -/
 lemma IsCompletionGroup.index_eq_card_range (hj : IsCompletionGroup e j) :
-    j.range.index = Nat.card (range (complexEmbeddingOf e)) := by
-  -- Two elements give the same embedding iff their inverses lie in one coset of `j.range`.
-  have h_left (g g' : Gp ℓ) : leftRel j.range g g' ↔ ker (complexEmbeddingOf e) g⁻¹ g'⁻¹ := by
-    simp [hj.complexEmbeddingOf_eq_iff, leftRel_eq]
-  exact Nat.card_congr
-    ((Quotient.congr (Equiv.inv (Gp ℓ)) h_left).trans
-      (quotientKerEquivRange (complexEmbeddingOf e)))
+    j.range.index = Nat.card (range (complexEmbeddingOf e)) :=
+  Nat.card_congr hj.cosetEquivEmbeddings
 
 /-- Let `E` be an embedded number field, and `ι : ℂ ≃ ℚ̄_ℓ` the isomorphism fixed by `PadicIso ℓ`.
 Let `v` and `w` be places of `E`
