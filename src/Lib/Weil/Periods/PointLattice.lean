@@ -97,7 +97,6 @@ lemma mem_lattice : y ∈ V.lattice x ↔ ∀ i : ι, ((V.xFin * x.val)⁻¹.val
 
 /-- The lattice of `x` consists of the images of the integral vectors in the frame
 `V.xFin * x`. -/
-/-- The framed basis product belongs to `V.lattice x` iff `y` has integral components. -/
 lemma mulVec_mem_lattice : (V.xFin * x.val).val *ᵥ y ∈ V.lattice x ↔ ∀ i : ι, y i ∈ Ô E := by
   rw [mem_lattice, mulVec_mulVec, Units.inv_mul, one_mulVec]
 
@@ -236,7 +235,8 @@ def stringMapFin {X' ι' : Type} [Fintype ι'] [DecidableEq ι'] [DecidableEq X'
 
 variable {Y} {x x' : Gf E ι} {y z : ι → 𝔸f E} {c : 𝔸f E}
 
-/-- Evaluating the string projection operator on left-sum components of an adelic vector. -/
+/-- The projection `Y.stringProj` to `X^⊥` vanishes at the indices
+`Y.indexEquiv (.inl a)` coming from `X`. -/
 lemma stringProj_apply_inl (y : ι → 𝔸f E) (a : X) :
     Y.stringProj y (Y.indexEquiv (.inl a)) = 0 := by
   simp [stringProj, mulVec_diagonal]
