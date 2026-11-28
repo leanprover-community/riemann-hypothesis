@@ -6,6 +6,7 @@ import Mathlib.RingTheory.PicardGroup
 import Mathlib.Topology.Algebra.Group.Matrix
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.Unitary.Defs
 public import Lib.DiscreteSeries.FlenstedJensen.Defs
 public import Lib.GLn.SchurModule.SchurMatrix
 import Lib.Adelic.Witt.WittTheorem
@@ -31,6 +32,7 @@ hermitian Gram form, which is invariant when all signs are `1` (`New.gramForm_co
 
 * `New.conjWeylMatrix`, `New.conjWeylRep`: the conjugate action of weight `(κ, e)`, as matrices and
   as a representation: `g` acts by `New.weylRep κ e` at the entrywise complex conjugate of `g`.
+  `New.Space.weightRep` restricts this action to the rational points of a unitary group.
 * `New.gramForm`: the hermitian form `ξ* G η` of the Gram matrix `G = weylGramOver`.
 * `New.decreasingPosition`, `New.highestVector`: the order that a vector `l` puts on the rows, and
   the evaluation vector at the frame of that order.
@@ -89,6 +91,16 @@ abbrev conjWeylMatrix :
 s on coordinate vectors of weight κ, acting by the matrices `New.conjWeylMatrix`. -/
 def conjWeylRep : Representation ℂ (Φ → USign s) (WeylIndex n κ → ℂ) :=
   toLinAlgEquiv'.toMonoidHom.comp (conjWeylMatrix κ e)
+
+open NumberField Space in
+/-- The representation of the rational unitary group U(J)(E) on coordinate vectors of weight
+(κ, e), through its components at the infinite places and `New.conjWeylRep`. A component acts
+through its entrywise conjugate, which for signs all 1 is its inverse transpose. -/
+@[simps! -isSimp apply]
+def Space.weightRep {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+    (κ : InfinitePlace E → ℕ → ℕ) (e : InfinitePlace E → ℤ) {s : n → ℤˣ}
+    (V : Space E n s) : Representation ℂ (U V.J) (WeylIndex n κ → ℂ) :=
+  (conjWeylRep κ e).comp ((MonoidHom.fst (InfinitePlace E → USign s) (Gf E n)).comp V.ratEmbed)
 
 /-! ### Highest vector and Harish-Chandra parameter -/
 

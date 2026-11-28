@@ -108,13 +108,6 @@ variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   (κ : InfinitePlace E → ℕ → ℕ) (e : InfinitePlace E → ℤ) {s : n → ℤˣ}
   {p : ℕ} [Fact p.Prime] [ι : PadicPlace p]
 
-/-- The representation of the rational unitary group U(J)(E) on coordinate vectors of weight
-(κ, e), through its components at the infinite places and `New.conjWeylRep`. A component acts
-through its entrywise conjugate, which for signs all 1 is its inverse transpose. -/
-@[simps! -isSimp apply]
-def Space.weightRep (V : Space E n s) : Representation ℂ (U V.J) (WeylIndex n κ → ℂ) :=
-  (conjWeylRep κ e).comp ((MonoidHom.fst (InfinitePlace E → USign s) (Gf E n)).comp V.ratEmbed)
-
 variable (n) in
 /-- Smooth algebraic forms of weight (κ, e) on the standard space `New.stdSpace E n`: functions φ on
 the finite adelic unitary group with φ(γg) = ρ(γ)φ(g) for rational γ whose stabiliser under right
