@@ -821,6 +821,64 @@ open Valuation
 /-! ### The tame symbol, the tame generator and tame inertia -/
 
 omit h in
+/-- Kummer reciprocity for a local Artin map `F`. Suppose the `n`-th roots of unity in `E` are
+fixed by the local Galois group `G`. If `F u = g` and `F v = h⁻¹`, the action of `g` on an
+`n`-th root of `v` gives the same ratio as the action of `h` on an `n`-th root of `u`.
+The inverse in `F v = h⁻¹` accounts for the sign in the skew-symmetry of the cup product. -/
+lemma _root_.New.IsLocalArtin.kummer_ratio_eq_of_localArtin_inv
+    {G k E : Type} [Group G] [TopologicalSpace G] [Field k] [Field E] [Algebra k E]
+    [MulSemiringAction G E] {B : ValuationSubring E} [L : IsLocalGalois G k B]
+    {F : kˣ →* TopologicalAbelianization G} (hF : IsLocalArtin G k B F)
+    {n : ℕ} [NeZero n] (h_cyc : ∀ g : G, cyclotomicCharMod E n g = 1)
+    {u v : kˣ} {g h : G} (hg : F u = g) (hh : F v = h⁻¹)
+    {r s : Eˣ} (hr : (r : E) ^ n = algebraMap k E u) (hs : (s : E) ^ n = algebraMap k E v) :
+    g • (s : E) / s = h • (r : E) / r := by
+  -- For `x` in `kˣ`, `a x` is an `n`-th root of `x` and `f x : G → ZMod n` its Kummer character.
+  let ι (x : kˣ) : unitsRep.invariants := DiscreteUnits.ofBase G E (Additive.ofMul x)
+  choose a f ha hf using fun x : kˣ ↦ exists_kummer_cocycle h_cyc (ι x)
+  -- `c` is the cup product for the pairing `(i, j) ↦ μ (i * j)` into the `n`-th roots of unity;
+  -- `c (f x) ξ` is minus the class `δξ ∪ x` that defines the Artin map.
+  let μ : ZMod n →+ DiscreteUnits E := (rootPowHom E n).val
+  let T : DiscreteModule ℤ G := .of (.trivial ℤ G (ZMod n))
+  have equiv (g : G) (i j : T) : μ (T.ρ g i * T.ρ g j) = (unitsModule G).ρ g (μ (i * j)) := by
+    simp [T, ← map_cyclotomicCharMod_mul, h_cyc]
+  let c : ↥(Z1 T.ρ) →+ ↥(Z1 T.ρ) →+ (unitsModule G).H2 :=
+    cupProduct (unitsModule G) T T (.compr₂ .mul μ) equiv
+  have h_cup (x : kˣ) (ξ : ↥(Z1 T.ρ)) :
+      c (f x) ξ = -cyclicClass unitsRep (ofZModCocycle n ξ) (ι x) :=
+    mk_eq_neg_cyclicClass_ofZModCocycle (ha x) ξ _ fun g₁ g₂ ↦ by
+      simp [μ, T, ← hf x (a x) (ha x), ← map_nsmul, mul_comm]
+  -- The cup product is anticommutative. Through `h_cup` and the definition of the Artin map this
+  -- says that `f v` at `g` equals `f u` at `h`.
+  have h_anti : c (f u) (f v) = -c (f v) (f u) := by
+    rw [← cupProduct_flip (W := unitsModule G) (M := T) (N := T) (.compr₂ .mul μ) equiv]
+    -- The flipped pairing `(i, j) ↦ μ (j * i)` is the pairing itself, as `ZMod n` is commutative.
+    have h_flip : (AddMonoidHom.compr₂ .mul μ : T →+ T →+ DiscreteUnits E).flip =
+        .compr₂ .mul μ := by
+      ext i j
+      simp [mul_comm]
+    simp only [c, h_flip]
+  have h_symbol : (f v).val g = (f u).val h := by
+    -- By `h_cup` and the defining formula `hF` at `F u = g` and `F v = h⁻¹`, `h_anti` says that two
+    -- invariants agree; `classOfInvariant` and `QZ.ofZMod` are injective.
+    have h_inv :
+        classOfInvariant G k B (abelianLift (ofZModCocycle n (f v)) g).toAdd =
+          -classOfInvariant G k B (abelianLift (ofZModCocycle n (f u)) (h⁻¹ : G)).toAdd := by
+      rw [← hg, ← hh, hF, hF, ← h_cup, ← h_cup, h_anti]
+    obtain ⟨h_inj, -⟩ := L.isClassOfInvariant_classOfInvariant
+    simpa [h_inj.eq_iff, QZ.ofZMod_injective.eq_iff] using h_inv
+  -- Read the equality in `ZMod n` on the two chosen roots.
+  have hr' : n • (Additive.ofMul r : DiscreteUnits E) = ι u := DiscreteUnits.ext hr
+  have hs' : n • (Additive.ofMul s : DiscreteUnits E) = ι v := DiscreteUnits.ext hs
+  have h_r := hf u (.ofMul r) hr' h
+  have h_s := hf v (.ofMul s) hs' g
+  rw [h_symbol, h_r] at h_s
+  have h_ratios := DiscreteUnits.ext_iff.mp h_s.symm
+  change ((unitsRep g (Additive.ofMul s)).toMul / s : Eˣ).val =
+    ((unitsRep h (Additive.ofMul r)).toMul / r : Eˣ).val at h_ratios
+  simpa only [Units.val_div_eq_div_val, DiscreteUnits.val_unitsRep, toMul_ofMul] using h_ratios
+
+omit h in
 /-- The tame formula for a local field `k`, whose Galois group `G` acts on `E` with valuation ring
 `B`, and a local Artin map `F` for it (`New.IsLocalArtin`). Let `q` be the number of residues of
 `k`. If the unit `u` of `k` has symbol `F u = g` and `y ^ (q - 1) = π` for a uniformiser `π` of `k`,
@@ -848,57 +906,20 @@ lemma valuation_smul_div_sub_lt_one {G k E : Type} [Group G] [TopologicalSpace G
     refine (h_dense hφ).eq ?_ (.of_isOpen_ker _ isOpen_ker_cyclotomicCharMod.out)
     simp [cyclotomicCharMod_eq_one_of_mem_inertiaGroup _ hn_unit, hφ.cyclotomicCharMod_eq hn_unit,
       hq, ← val_inj, ZMod.natCast_self]
-  -- For `x` in `kˣ`, `a x` is an `n`-th root of `x` and `f x : G → ZMod n` its Kummer character.
-  let ι (x : kˣ) : unitsRep.invariants := DiscreteUnits.ofBase G E (Additive.ofMul x)
-  have h_kummer_exists (x : kˣ) :
-      ∃ (a : (unitsModule G).V) (f : Z1 (Representation.trivial ℤ G (ZMod n))), n • a = ι x ∧
-        ∀ b : (unitsModule G).V, n • b = ι x → ∀ g : G,
-          (rootPowHom E n).val (f.val g) = unitsRep g b - b :=
-    exists_kummer_cocycle h_cyc (ι x)
-  choose a f ha hf using h_kummer_exists
-  -- `c` is the cup product for the pairing `(i, j) ↦ μ (i * j)` into the `n`-th roots of unity;
-  -- `c (f x) ξ` is minus the class `δξ ∪ x` that defines the Artin map.
-  let μ : ZMod n →+ DiscreteUnits E := (rootPowHom E n).val
-  let T : DiscreteModule ℤ G := .of (.trivial ℤ G (ZMod n))
-  have equiv (g : G) (i j : T) : μ (T.ρ g i * T.ρ g j) = (unitsModule G).ρ g (μ (i * j)) := by
-    simp [T, ← map_cyclotomicCharMod_mul, h_cyc]
-  let c : ↥(Z1 T.ρ) →+ ↥(Z1 T.ρ) →+ (unitsModule G).H2 :=
-    cupProduct (unitsModule G) T T (.compr₂ .mul μ) equiv
-  have h_cup (x : kˣ) (ξ : ↥(Z1 T.ρ)) :
-      c (f x) ξ = -cyclicClass unitsRep (ofZModCocycle n ξ) (ι x) :=
-    mk_eq_neg_cyclicClass_ofZModCocycle (ha x) ξ _ fun g₁ g₂ ↦ by
-      simp [μ, T, ← hf x (a x) (ha x), ← map_nsmul, mul_comm]
-  -- The cup product is anticommutative. Through `h_cup` and the definition of the Artin map this
-  -- says that `f π` at `g` equals `f u` at `φ`.
-  have h_anti : c (f u) (f π) = -c (f π) (f u) := by
-    rw [← cupProduct_flip (W := unitsModule G) (M := T) (N := T) (.compr₂ .mul μ) equiv]
-    -- The flipped pairing `(i, j) ↦ μ (j * i)` is the pairing itself, as `ZMod n` is commutative.
-    have h_flip : (AddMonoidHom.compr₂ .mul μ : T →+ T →+ DiscreteUnits E).flip =
-        .compr₂ .mul μ := by
-      ext i j
-      simp [mul_comm]
-    simp only [c, h_flip]
-  have h_symbol : (f π).val g = (f u).val φ := by
-    -- By `h_cup` and the defining formula `hF` at `F u = g` and `F π = φ⁻¹`, `h_anti` says that two
-    -- invariants agree; `classOfInvariant` and `QZ.ofZMod` are injective.
-    have h_inv :
-        classOfInvariant G k B (abelianLift (ofZModCocycle n (f π)) g).toAdd =
-          -classOfInvariant G k B (abelianLift (ofZModCocycle n (f u)) (φ⁻¹ : G)).toAdd := by
-      rw [← hg, ← hFπ, hF, hF, ← h_cup, ← h_cup, h_anti]
-    obtain ⟨h_inj, -⟩ := L.isClassOfInvariant_classOfInvariant
-    simpa [h_inj.eq_iff, QZ.ofZMod_injective.eq_iff] using h_inv
-  -- In terms of the root `r = a u` of `u` in `E` this is `g • y / y = φ • r / r`.
-  let r : E := (Additive.toMul (α := Eˣ) (a u)).val
-  have hr_pow : r ^ n = algebraMap k E u := by simpa [ι, DiscreteUnits.ext_iff] using ha u
+  -- Choose an `n`-th root of `u` and compare its Frobenius action with the Kummer ratio at `y`.
+  obtain ⟨rUnit, hr⟩ := DiscreteUnits.exists_nsmul
+    (DiscreteUnits.ofBase G E (Additive.ofMul u)).val hn.out
+  let r := (rUnit.toMul : E)
+  have hr_pow : r ^ n = algebraMap k E u := by
+    simpa [r, DiscreteUnits.ext_iff] using hr
   have hr_unit : B.valuation r = 1 := by simpa [← hr_pow, hn.out] using hu
-  have h_kummer : g • y / y = φ • r / r := by
-    let Y : DiscreteUnits E := Additive.ofMul (mk0 y hy_ne)
-    have h_Y : (rootPowHom E n).val ((f π).val g) = unitsRep g Y - Y := hf π Y (ext hy) g
-    simpa [Y, r, DiscreteUnits.ext_iff, h_symbol, hf u (a u) (ha u)] using h_Y.symm
+  have h_kummer : g • y / y = φ • r / r :=
+    hF.kummer_ratio_eq_of_localArtin_inv h_cyc hg hFπ
+      (r := rUnit.toMul) hr_pow (s := mk0 y hy_ne) hy
   -- `φ • r / r` is congruent to `r ^ n = u`, as `φ` is a Frobenius and `r` is a unit.
   have h_frob : B.valuation (φ • r - r ^ (n + 1)) < 1 := by simpa [hq] using hφ.right r hr_unit.le
   have h_eq : φ • r / r - algebraMap k E u = (φ • r - r ^ (n + 1)) / r := by
-    rw [← hr_pow, sub_div, pow_succ, mul_div_cancel_right₀ _ (Units.ne_zero _)]
+    rw [← hr_pow, sub_div, pow_succ, mul_div_cancel_right₀ _ (Units.ne_zero rUnit.toMul)]
   simpa only [h_kummer, h_eq, map_div₀, hr_unit, div_one] using h_frob
 
 /-- Let `A` lie over `w`, let `π` in `K` be a uniformiser for `A` and `y ^ (w.q - 1) = π`, where
