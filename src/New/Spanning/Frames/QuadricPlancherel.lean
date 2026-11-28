@@ -78,29 +78,23 @@ lemma floorMassLe_of_chart {f : T.G → ℝ≥0∞} {C : ℝ≥0∞}
   refine (lintegral_indicator (measurable_mul_const g measurableSet_isNear) _).ge.trans ?_
   change ∫⁻ σ, Φ (σ * g) ∂F.floorMeasure b ≤ C
   obtain h_far | ⟨ξ, hξ, h_box⟩ := em' (F.IsNear b g)
-  · have h_zero (σ : T.G) (hσ : σ ∈ floorGroup b) : Φ (σ * g) = 0 :=
+  · have h_zero : ∀ᵐ σ ∂F.floorMeasure b, Φ (σ * g) = 0 := ae_floorMeasure_mem.mono fun σ hσ ↦
       ite_eq_right fun h_near ↦ h_far (IsNear.of_floorGroup_mul h_near hσ le_self_add)
-    grw [lintegral_le_of_ae_imp ae_floorMeasure_mem (g := 0) fun σ hσ ↦ (h_zero σ hσ).le]
-    simp
-  obtain ⟨Ψ, hΨ_int, hΨ_meas, hΨ_le⟩ : ∃ Ψ : (𝔰.BesselIndex → A) → ℝ≥0∞,
-      ∫⁻ v in Γ.vecsOfSize 7, Ψ v ∂F.floorQuadricMeasure b ≤ C ∧ Measurable Ψ ∧
-      ∀ σ ∈ floorGroup b, f (σ * (ξ * g)) ≤ Ψ (orbitPoint b σ) :=
-    h_chart (ξ * g) h_box
+    simp [lintegral_eq_zero_of_ae_eq_zero h_zero]
+  obtain ⟨Ψ, hΨ_int, hΨ_meas, hΨ_le⟩ := h_chart (ξ * g) h_box
   have hΦ_inv : (partialUnitriangularGroup (b + 1) ⊓ ⊤).FixesLeft fun σ : T.G ↦ Φ (σ * g) := by
     simp +contextual [Φ, indicator, hf_inv, mul_assoc]
   have hΦ_le (σ : T.G) (hσ : σ ∈ floorGroup b) :
       Φ (σ * ξ * g) ≤ (Γ.vecsOfSize 7).indicator Ψ (orbitPoint b σ) := by
     rw [mul_assoc]
     refine indicator_apply_le' (fun h_near ↦ ?_) fun _ ↦ zero_le
-    have h_size : orbitPoint b σ ∈ Γ.vecsOfSize 7 :=
-      orbitPoint_mem_vecsOfSize hσ (Γ.hasMatrixSize_boxSet h_box) h_near
-    rw [indicator_of_mem h_size]
+    rw [indicator_of_mem (orbitPoint_mem_vecsOfSize hσ (Γ.hasMatrixSize_boxSet h_box) h_near)]
     exact hΨ_le σ hσ
   calc ∫⁻ σ, Φ (σ * g) ∂F.floorMeasure b
     _ = ∫⁻ σ, Φ (σ * ξ * g) ∂F.floorMeasure b :=
       (lintegral_floorMeasure_mul_right le_top hΦ_inv ⟨hξ, Subgroup.mem_top ξ⟩).symm
     _ ≤ ∫⁻ σ, (Γ.vecsOfSize 7).indicator Ψ (orbitPoint b σ) ∂F.floorMeasure b :=
-      lintegral_le_of_ae_imp ae_floorMeasure_mem hΦ_le
+      lintegral_mono_ae (ae_floorMeasure_mem.mono hΦ_le)
     _ = ∫⁻ v, (Γ.vecsOfSize 7).indicator Ψ v ∂F.floorQuadricMeasure b :=
       (measurePreserving_orbitPoint b).lintegral_comp (hΨ_meas.indicator measurableSet_vecsOfSize)
     _ ≤ C := (lintegral_indicator_le Ψ (Γ.vecsOfSize 7)).trans hΨ_int
@@ -126,10 +120,8 @@ lemma floorMassLe_one (b : Fin 𝔰.n) :
     F.FloorMassLe b
       (Γ.loss ^ (99 * 𝔰.n * (7 + 6)) * volume (Γ.ofSize 11) ^ Fintype.card F.FreeIndex) 1 := by
   refine Γ.floorMassLe_of_chart (by simp) fun _ _ ↦ ⟨1, ?_, measurable_one, by simp⟩
-  have h_vol : ∫⁻ _ : F.FreeIndex → A in Γ.vecsOfSize (7 + 4), 1 ≤
-      volume (Γ.ofSize 11) ^ Fintype.card F.FreeIndex :=
-    (setLIntegral_one _).le.trans (volume_coordinateBox F.FreeIndex (Γ.ofSize 11)).le
-  exact setLIntegral_orthonormalPart_le (φ := 1) (.inr rfl) h_vol measurable_one
+  refine setLIntegral_orthonormalPart_le (φ := 1) (.inr rfl) ?_ measurable_one
+  exact (setLIntegral_one _).le.trans (volume_coordinateBox F.FreeIndex (Γ.ofSize 11)).le
 
 /-- Let ρ be the volume `floorVolume b` of Y^(b) or the measure of the quadric of floor b. The
 kernel ψ(ξ ⟨v, y⟩), from the vectors y of size j on the quadric to the vectors v of size i with the
@@ -144,8 +136,7 @@ lemma fourierSqNormLe_floorQuadricMeasure (ξ : Aˣ) {ρ : Measure (𝔰.BesselI
   -- In the coordinates of the basis `F.floorBasis b`, solve for `v` and `y` in different blocks.
   obtain ⟨ρ', rfl, h_solved'⟩ := Γ.exists_isSolvedIn hρ
   obtain ⟨ρ₀, h_eq, h_solved⟩ := Γ.exists_isSolvedIn (b := b) (.inr rfl)
-  obtain ⟨blk', blk, h_inj⟩ : ∃ blk' blk : Fin F.blockRank → ι,
-      Function.Injective (F.freeIndex ⊕ᵥ (blk' ⊕ᵥ blk)) := Γ.exists_blocks
+  obtain ⟨blk', blk, h_inj⟩ := Γ.exists_blocks
   have h_inj' : Function.Injective blk' := h_inj.comp (Sum.inr_injective.comp Sum.inl_injective)
   have h_inj₀ : Function.Injective blk := h_inj.comp (Sum.inr_injective.comp Sum.inr_injective)
   have h_phase (v y : Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m → A) :
@@ -212,29 +203,25 @@ lemma correlation_plancherel (ht : t ∈ floorGroup b)
         ∫⁻ σ : T.G, ‖F.partialCorrelation (b + 1) k (σ * x) (σ * y)‖ₑ ^ 2 ∂F.floorMeasure b := by
   -- On `G^(b)` the correlation is a measurable function `f₀` of `σ⁻¹ f_b`, so a function `f` of
   -- `t σ⁻¹ f_b` that vanishes off size `j + 6`. The shift by `v₀` multiplies `f` by a phase.
-  let κ (σ : T.G) : ℂ := F.partialCorrelation (b + 1) k (σ * x) (σ * y)
-  have hκ_inv : (partialUnitriangularGroup (b + 1) ⊓ floorGroup b).FixesLeft κ := by
-    simp +contextual [κ, hk.partialCorrelation_mul_left, mul_assoc]
-  obtain ⟨f₀, hf₀_meas, hf₀⟩ : ∃ f₀ : (𝔰.BesselIndex → A) → ℂ, Measurable f₀ ∧
-      ∀ σ ∈ floorGroup b, F.partialCorrelation (b + 1) k (σ * x) (σ * y) = f₀ (orbitPoint b σ) :=
-    exists_factor_orbitPoint b (Φ := κ) (by fun_prop) hκ_inv
+  have h_inv : (partialUnitriangularGroup (b + 1) ⊓ floorGroup b).FixesLeft
+      fun σ ↦ F.partialCorrelation (b + 1) k (σ * x) (σ * y) := by
+    simp +contextual [hk.partialCorrelation_mul_left, mul_assoc]
+  obtain ⟨f₀, hf₀_meas, hf₀⟩ := exists_factor_orbitPoint b (by fun_prop) h_inv
   let f : (𝔰.BesselIndex → A) → ℂ := (Γ.vecsOfSize (j + 6)).indicator fun w ↦ f₀ (t⁻¹ *ᵥ w)
   let φ (w : 𝔰.BesselIndex → A) : ℂ := ψ (ξ * star v₀ ⬝ᵥ T.splitGram *ᵥ w) * f w
   have hf_meas : Measurable f := .indicator (by fun_prop) measurableSet_vecsOfSize
   have hφ_meas : Measurable φ := by
     unfold φ
     fun_prop
-  have h_law : MeasurePreserving (fun σ ↦ t *ᵥ orbitPoint b σ) (F.floorMeasure b)
-      (F.floorQuadricMeasure b) :=
-    measurePreserving_mulVec_orbitPoint b ht
+  have h_law := measurePreserving_mulVec_orbitPoint (F := F) b ht
   have h_eq : ∀ᵐ σ ∂F.floorMeasure b,
       F.partialCorrelation (b + 1) k (σ * x) (σ * y) = f (t *ᵥ orbitPoint b σ) := by
     filter_upwards [Γ.correlation_support ht h_size hk y hq, ae_floorMeasure_mem] with σ h_supp hσ
     revert h_supp
     simp +contextual [f, indicator, not_imp_comm, hf₀ σ hσ]
-  have hκ_int : Integrable κ (F.floorMeasure b) := hk.integrable_partialCorrelation_succ
   have hf_int : Integrable f (F.floorQuadricMeasure b) :=
-    (h_law.integrable_comp hf_meas.aestronglyMeasurable).1 (hκ_int.congr h_eq)
+    (h_law.integrable_comp hf_meas.aestronglyMeasurable).1
+      (hk.integrable_partialCorrelation_succ.congr h_eq)
   have hφ_int : Integrable φ (F.floorQuadricMeasure b) :=
     hf_int.bdd_mul (c := 1) (by fun_prop) (by simp)
   have hφ_supp (w : 𝔰.BesselIndex → A) (hw : φ w ≠ 0) : w ∈ Γ.vecsOfSize (j + 6) :=
@@ -323,9 +310,8 @@ lemma partialCorrelation_weylRatio_heisenbergElem {q : ℕ → Aˣ} {ε : ℕ} (
           F.partialCorrelation (a + 1 + 1) k (σ * x) (σ * y) ∂F.floorMeasure (a + 1) := by
   refine partialCorrelation_heisenbergElem_eq_integral a hk (fun s hs ↦ ?_) t x y
   have h_pow : simpleRootSum (s ^ ε) = ε * simpleRootSum s := by
-    obtain rfl | rfl := Nat.le_one_iff_eq_zero_or_eq_one.1 hε
-    · simp [simpleRootSum_eq_zero_of_mem_besselH]
-    · simp
+    obtain rfl | rfl := Nat.le_one_iff_eq_zero_or_eq_one.1 hε <;>
+      simp [simpleRootSum_eq_zero_of_mem_besselH]
   rw [simpleRootSum_weylRatio_conj a hs hj, h_pow]
   ring
 
@@ -408,16 +394,11 @@ lemma parseval_heisenbergMeasure_le {S : Set T.G} {i : ℕ} {Φ : T.G → ℝ≥
     (Γ.correlation_plancherel (b := a.succ) ht h_size hk y h_unip (-ξ * star u)
       (u⁻¹.val • t.val.val *ᵥ inclMatrix A Subtype.val *ᵥ z.1) (.inl rfl))
     fun v h_ne ↦ ?_
-  obtain ⟨h_mem, h_le⟩ :
-      N v ∈ S ∧ Φ (N v) ≤ C * ‖F.partialCorrelation (a + 1) k (N v ^ ε * x) (N v * y)‖ₑ ^ 2 :=
-    hΦ (N v) (hN v) h_ne
+  obtain ⟨h_mem, h_le⟩ := hΦ (N v) (hN v) h_ne
   have h_inv : t * P.heisenbergElem a w * P.heisenbergElem a z *
       (t * P.heisenbergElem a w * N v)⁻¹ = (P.heisenbergElem a v)⁻¹ := by
     simp only [N]
     group
-  rw [h_fourier v] at h_le
-  refine ⟨?_, h_le⟩
-  rw [← h_inv]
-  exact h_close (N v) h_mem
+  exact ⟨h_inv ▸ h_close (N v) h_mem, h_fourier v ▸ h_le⟩
 
 end New.Floors.Gauge
