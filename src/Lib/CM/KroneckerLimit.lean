@@ -33,6 +33,39 @@ Kronecker limit formula and a formula of Ramanujan, Ramanujan J. (2022), Prop. 3
 
 open Complex Nat Equiv MeasureTheory Set Real Function Periodic ModularForm Filter Topology
 
+/-- If the lattice of `L` is `a (ℤ τ + ℤ)`, enumerated by `e`, then the logarithmic period of `τ` is
+`log A - log π + log |g₂³ - 27 g₃²| / 6`, `A` being the area of `L`. This uses
+`g₂³ - 27 g₃² = (2 π / a)^12 * q * ∏ (1 - q^(j+1))^24` and `|q| = exp (-2 π Im τ)`. -/
+private lemma New.logPeriod_eq_of_eq_mul_tau {L : PeriodPair} {a : ℂ} {τ : UpperHalfPlane}
+    {e : ℤ × ℤ ≃ L.lattice} (hL : ∀ p : ℤ × ℤ, (e p : ℂ) = a * (p.1 * τ + p.2)) (ha : a ≠ 0)
+    (h_area : L.area = ‖a‖ ^ 2 * τ.im) :
+    UpperHalfPlane.logPeriod τ =
+      Real.log L.area - Real.log π + Real.log ‖L.g₂ ^ 3 - 27 * L.g₃ ^ 2‖ / 6 := by
+  have hy := τ.im_pos
+  let P : ℂ := ∏' j : ℕ, (1 - eta_q j (τ : ℂ))
+  have hP : P ≠ 0 := eta_tprod_ne_zero hy
+  have h_disc : Real.log ‖L.g₂ ^ 3 - 27 * L.g₃ ^ 2‖ =
+      12 * (Real.log 2 + Real.log π - Real.log ‖a‖) - 2 * π * τ.im + 24 * Real.log ‖P‖ := by
+    rw [g₂_pow_three_sub_g₃_sq_eq_discriminant hL]
+    norm_num [discriminant, ModularForm.eta, P, hP, norm_exp, qParam, Real.log_mul, log_div, ha]
+    ring
+  rw [UpperHalfPlane.logPeriod_eq_log_tprod, h_disc, h_area,
+    Real.log_mul (by positivity) hy.ne', Real.log_pow, Real.log_mul (by norm_num) pi_ne_zero,
+    show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+  push_cast
+  ring
+
+/-- If the lattice of `L` is `a (ℤ τ + ℤ)`, enumerated by `e`, the factor `‖a‖ ^ 2` cancels between
+`‖e p‖ ^ 2` and the area: `‖e p‖ ^ 2 / k / A = (k Im τ / |p₁ τ + p₂|²)⁻¹`. -/
+private lemma New.norm_sq_div_area_eq_inv {L : PeriodPair} {a : ℂ} {τ : UpperHalfPlane}
+    {e : ℤ × ℤ ≃ L.lattice} (hL : ∀ p : ℤ × ℤ, (e p : ℂ) = a * (p.1 * τ + p.2)) (ha : a ≠ 0)
+    (h_area : L.area = ‖a‖ ^ 2 * τ.im) {k : ℝ} (hk : k ≠ 0) (p : ℤ × ℤ) :
+    ‖(e p : ℂ)‖ ^ 2 / k / L.area = (k * (τ.im / ‖(p.1 : ℂ) * τ + p.2‖ ^ 2))⁻¹ := by
+  rw [hL, norm_mul, mul_pow, h_area]
+  by_cases hw : ‖(p.1 : ℂ) * τ + p.2‖ = 0
+  · simp [hw]
+  field_simp
+
 /-- **Kronecker's first limit formula.** Let `L` be a lattice of area `A` and discriminant
 `Δ = g₂³ - 27 g₃²`, and let `k > 0`. There is a real function `F` with (a) `F 1 = π k`, (b) right
 derivative `F 1 * (2 γ - log (A / (k π²)) - (log |Δ|) / 6)` at `1`, `γ` being Euler's constant, and
@@ -54,25 +87,9 @@ lemma New.kronecker_limit (L : PeriodPair) (k : ℝ) (hk : 0 < k) :
       ∀ s ∈ Ioo 1 2,
         HasSum (fun l : L.lattice ↦ (s - 1) * (‖l.val‖ ^ 2 / k / L.area) ^ (-s)) (F s) := by
   obtain ⟨a, τ, e, hL, ha, h_area⟩ := exists_lattice_eq_mul_tau L
-  have hy := τ.im_pos
   have hA : 0 < L.area := area_pos L
   let E := UpperHalfPlane.epsteinZeta τ
-  -- The logarithmic period of `τ` through the area and the discriminant: with
-  -- `g₂³ - 27 g₃² = (2 π / a)^12 * q * ∏ (1 - q^(j+1))^24` and `|q| = exp (-2 π y)`.
-  have h_period : UpperHalfPlane.logPeriod τ =
-      Real.log L.area - Real.log π + Real.log ‖L.g₂ ^ 3 - 27 * L.g₃ ^ 2‖ / 6 := by
-    let P : ℂ := ∏' j : ℕ, (1 - eta_q j (τ : ℂ))
-    have hP : P ≠ 0 := eta_tprod_ne_zero hy
-    have h_disc : Real.log ‖L.g₂ ^ 3 - 27 * L.g₃ ^ 2‖ =
-        12 * (Real.log 2 + Real.log π - Real.log ‖a‖) - 2 * π * τ.im + 24 * Real.log ‖P‖ := by
-      rw [g₂_pow_three_sub_g₃_sq_eq_discriminant hL]
-      norm_num [discriminant, ModularForm.eta, P, hP, norm_exp, qParam, Real.log_mul, log_div, ha]
-      ring
-    rw [UpperHalfPlane.logPeriod_eq_log_tprod, h_disc, h_area,
-      Real.log_mul (by positivity) hy.ne', Real.log_pow, Real.log_mul (by norm_num) pi_ne_zero,
-      show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
-    push_cast
-    ring
+  have h_period := logPeriod_eq_of_eq_mul_tau hL ha h_area
   let F : ℝ → ℝ := Function.update (fun s ↦ k ^ s * ((s - 1) * E s)) 1 (π * k)
   have hF (s : ℝ) (hs : 1 < s) : F s = k ^ s * ((s - 1) * E s) :=
     Function.update_of_ne hs.ne' _ _
@@ -98,13 +115,7 @@ lemma New.kronecker_limit (L : PeriodPair) (k : ℝ) (hk : 0 < k) :
     rw [hF s hs.1, show k ^ s * ((s - 1) * E s) = (s - 1) * k ^ s * E s by ring]
     refine ((UpperHalfPlane.hasSum_epsteinZeta τ hs.1).mul_left ((s - 1) * k ^ s)).congr_fun
       fun p ↦ ?_
-    have h_base : ‖(e p : ℂ)‖ ^ 2 / k / L.area =
-        (k * (τ.im / ‖(p.1 : ℂ) * τ + p.2‖ ^ 2))⁻¹ := by
-      rw [hL, norm_mul, mul_pow, h_area]
-      by_cases hw : ‖(p.1 : ℂ) * τ + p.2‖ = 0
-      · simp [hw]
-      field_simp
     change (s - 1) * (‖(e p : ℂ)‖ ^ 2 / k / L.area) ^ (-s) = _
-    rw [h_base, rpow_neg (by positivity), Real.inv_rpow (by positivity), inv_inv,
-      Real.mul_rpow hk.le (by positivity)]
+    rw [norm_sq_div_area_eq_inv hL ha h_area hk.ne', rpow_neg (by positivity),
+      Real.inv_rpow (by positivity), inv_inv, Real.mul_rpow hk.le (by positivity)]
     ring
