@@ -605,26 +605,16 @@ lemma HolomorphicAt.isFirstOrderConst_of_nsmul {v : P} {𝒜 : Over X} [AddObj �
   have y_eq : y = y₀ := sub_eq_zero.mp (h_inj h_unit h_nsmul_sub)
   rwa [show τ = τ₀ from congrArg CommaMorphism.left y_eq] at hτ
 
-/-- The signature condition read on a uniformisation. Let `u` uniformise `A`, a group scheme over
-`ℂ` on which `O` acts, by a space `V` of dimension `d`, and let `A` be the fibre at the complex
-point `s` of the group scheme `𝒜`, with `p` the map of the fibre square, compatible with the action
-of `O` (`h_bc`). Let `a : O` act on `V` by `F a`, compatibly with `u.expMap` (`hF`), and let `z` be
-a Lie chart of `𝒜` over `s` (`h_lieChart`): étale coordinates on an open set `U` around the zero
-section, in which `a` acts on tangent vectors by the matrix `m a`. Then `HasSignature ρ b c m` (the
-`m a` have a common eigenvector with eigenvalues `ρ a` and a unit coordinate, and `m b - ρ c` maps
-into its line) holds iff some `Y ≠ 0` in `V` has `F a Y = ρ a • Y` for all `a`, and `F b - ρ c` maps
-`V` into the line of `Y`. -/
-lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleObj O A]
-    {F : O → V →L[ℂ] V} (hF : ∀ (a : O) (w : V), u.expMap (F a w) = a • u.expMap w) {𝒜 : Over S}
+/-- The derivative linear equivalence `V ≃ₗ[ℂ] Fin d → ℂ` of a uniformisation `u` along a
+Lie chart `h_lieChart` on `𝒜`, intertwining `F a` with left-multiplication by `m a` (`m a *ᵥ ·`). -/
+private noncomputable def Uniformisation.chartLinearEquivOfIsLieChart {O : Type} {d : ℕ}
+    [CommRing O] [ModuleObj O A] {F : O → V →L[ℂ] V}
+    (hF : ∀ (a : O) (w : V), u.expMap (F a w) = a • u.expMap w) {𝒜 : Over S}
     [AddObj 𝒜] [ModuleObj O 𝒜] {s : Spec (CommRingCat.of ℂ) ⟶ S} {U : 𝒜.left.Opens}
     {z : Fin d → Γ(𝒜.left, U)} {m : O → Matrix (Fin d) (Fin d) ℂ}
     {p : (Over.map s).obj A ⟶ 𝒜} (h_lieChart : IsLieChart (ι := Fin d) 𝒜 s U z m)
-    (h_bc : IsGroupBaseChange (R := O) s p) (hd : Module.finrank ℂ V = d) {ρ : O →+* ℂ} {b c : O} :
-    HasSignature ρ b c m ↔
-      ∃ Y ≠ (0 : V), (∀ a : O, F a Y = ρ a • Y) ∧
-        ∃ ξ : V →ₗ[ℂ] ℂ, ∀ w : V, F b w - ρ c • w = ξ w • Y := by
-  -- The derivative `D` at `0` of the coordinates `z` along the uniformisation is an isomorphism
-  -- `V ≃ ℂ ^ d` that carries `F a` to the matrix `m a`; both sides then say the same.
+    (h_bc : IsGroupBaseChange (R := O) s p) (hd : Module.finrank ℂ V = d) :
+    { D : V ≃ₗ[ℂ] Fin d → ℂ // ∀ (a : O) (v : V), D (F a v) = m a *ᵥ D v } := by
   -- `τ v` is the tangent vector at `0` in the direction `v`, a point over the dual numbers.
   obtain ⟨h_hol₀, -⟩ := u.immersive 0
   obtain ⟨h_etale, h_chart⟩ := h_lieChart
@@ -696,11 +686,20 @@ lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleO
     exact h_jet_smul
   -- Take the `ε`-part of the equation `tangentCoords z (a • y) = m a *ᵥ tangentCoords z y` of the
   -- chart, for the image `y` of `τ v` in `𝒜`.
-  have D_F (a : O) (v : V) : D (F a v) = m a *ᵥ D v := by
-    obtain ⟨h_act, -⟩ := (h_chart rfl).right (h_infinitesimal v)
-    have hD_apply (w : V) : D w = D₀ w := rfl
-    simpa [dv_eq, mulVec_eq_sum, snd_sum, ← map_smul, ← τ_F, funext_iff, hD_apply,
-      algebraMap_eq_inl] using congrArg (fun c ↦ snd ∘ c) (h_act a)
+  refine ⟨D, fun a v ↦ ?_⟩
+  obtain ⟨h_act, -⟩ := (h_chart rfl).right (h_infinitesimal v)
+  have hD_apply (w : V) : D w = D₀ w := rfl
+  simpa [dv_eq, mulVec_eq_sum, snd_sum, ← map_smul, ← τ_F, funext_iff, hD_apply,
+    algebraMap_eq_inl] using congrArg (fun c ↦ snd ∘ c) (h_act a)
+
+/-- Transport `HasSignature ρ b c m` across a linear equivalence `D : V ≃ₗ[ℂ] Fin d → ℂ` that
+intertwines `F a` with `m a *ᵥ ·`. -/
+private lemma hasSignature_iff_of_linearEquiv {O : Type} {d : ℕ} [CommRing O]
+    {F : O → V →L[ℂ] V} {m : O → Matrix (Fin d) (Fin d) ℂ} (D : V ≃ₗ[ℂ] Fin d → ℂ)
+    (hD_F : ∀ (a : O) (v : V), D (F a v) = m a *ᵥ D v) {ρ : O →+* ℂ} {b c : O} :
+    HasSignature ρ b c m ↔
+      ∃ Y ≠ (0 : V), (∀ a : O, F a Y = ρ a • Y) ∧
+        ∃ ξ : V →ₗ[ℂ] ℂ, ∀ w : V, F b w - ρ c • w = ξ w • Y := by
   -- Transport vectors along `D` and linear forms along its dual.
   constructor
   · rintro ⟨X, ξ, k, hXk, h_eig, h_mat⟩
@@ -711,8 +710,8 @@ lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleO
         map_add' u v := by rw [map_add, dotProduct_add]
         map_smul' r v := by rw [map_smul, dotProduct_smul, RingHom.id_apply] },
       fun w ↦ D.injective ?_⟩
-    · rw [D_F, map_smul, D.apply_symm_apply, h_eig a]
-    · rw [map_sub, D_F, map_smul, map_smul, D.apply_symm_apply]
+    · rw [hD_F, map_smul, D.apply_symm_apply, h_eig a]
+    · rw [map_sub, hD_F, map_smul, map_smul, D.apply_symm_apply]
       have h_app := congrArg (· *ᵥ D w) h_mat
       rw [sub_mulVec, smul_mulVec, one_mulVec, vecMulVec_mulVec, op_smul_eq_smul] at h_app
       exact h_app
@@ -720,13 +719,36 @@ lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleO
     have hDY_ne : D Y ≠ 0 := fun h0 ↦ hY (D.injective (h0.trans (map_zero D).symm))
     obtain ⟨k, hk⟩ := Function.ne_iff.mp hDY_ne
     refine ⟨D Y, fun j ↦ ξ (D.symm (Pi.single j 1)), k, hk.isUnit, fun a ↦ ?_, ?_⟩
-    · rw [← D_F, h_eig a, map_smul]
+    · rw [← hD_F, h_eig a, map_smul]
     · ext i j
       have h_col := congrFun (congrArg D (h_mat (D.symm (Pi.single j 1)))) i
-      rw [map_sub, D_F, map_smul, map_smul, D.apply_symm_apply, mulVec_single_one] at h_col
+      rw [map_sub, hD_F, map_smul, map_smul, D.apply_symm_apply, mulVec_single_one] at h_col
       simp only [Pi.sub_apply, Pi.smul_apply, Matrix.col_apply, smul_eq_mul, Matrix.sub_apply,
         Matrix.smul_apply, Matrix.one_apply, vecMulVec_apply, Pi.single_apply] at h_col ⊢
       exact h_col.trans (mul_comm _ _)
+
+/-- The signature condition read on a uniformisation. Let `u` uniformise `A`, a group scheme over
+`ℂ` on which `O` acts, by a space `V` of dimension `d`, and let `A` be the fibre at the complex
+point `s` of the group scheme `𝒜`, with `p` the map of the fibre square, compatible with the action
+of `O` (`h_bc`). Let `a : O` act on `V` by `F a`, compatibly with `u.expMap` (`hF`), and let `z` be
+a Lie chart of `𝒜` over `s` (`h_lieChart`): étale coordinates on an open set `U` around the zero
+section, in which `a` acts on tangent vectors by the matrix `m a`. Then `HasSignature ρ b c m` (the
+`m a` have a common eigenvector with eigenvalues `ρ a` and a unit coordinate, and `m b - ρ c` maps
+into its line) holds iff some `Y ≠ 0` in `V` has `F a Y = ρ a • Y` for all `a`, and `F b - ρ c` maps
+`V` into the line of `Y`. -/
+lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleObj O A]
+    {F : O → V →L[ℂ] V} (hF : ∀ (a : O) (w : V), u.expMap (F a w) = a • u.expMap w) {𝒜 : Over S}
+    [AddObj 𝒜] [ModuleObj O 𝒜] {s : Spec (CommRingCat.of ℂ) ⟶ S} {U : 𝒜.left.Opens}
+    {z : Fin d → Γ(𝒜.left, U)} {m : O → Matrix (Fin d) (Fin d) ℂ}
+    {p : (Over.map s).obj A ⟶ 𝒜} (h_lieChart : IsLieChart (ι := Fin d) 𝒜 s U z m)
+    (h_bc : IsGroupBaseChange (R := O) s p) (hd : Module.finrank ℂ V = d) {ρ : O →+* ℂ} {b c : O} :
+    HasSignature ρ b c m ↔
+      ∃ Y ≠ (0 : V), (∀ a : O, F a Y = ρ a • Y) ∧
+        ∃ ξ : V →ₗ[ℂ] ℂ, ∀ w : V, F b w - ρ c • w = ξ w • Y := by
+  -- The derivative `D` at `0` of the coordinates `z` along the uniformisation is an isomorphism
+  -- `V ≃ ℂ ^ d` that carries `F a` to the matrix `m a`; both sides then say the same.
+  obtain ⟨D, hD_F⟩ := u.chartLinearEquivOfIsLieChart hF h_lieChart h_bc hd
+  exact hasSignature_iff_of_linearEquiv D hD_F
 
 end HolomorphicFamily
 
