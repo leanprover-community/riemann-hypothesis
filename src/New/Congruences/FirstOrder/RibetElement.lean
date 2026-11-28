@@ -273,6 +273,84 @@ lemma exists_length_le_loss_add_crystallineSelmerLength {ν : ℕ} {w : K → Fi
   exact ⟨b₀, lossT, length_ribetCocyclesVanishingOn_divisibleQuot_le u T _ γ hℓ_ne hℓ_unit
     h_main, hb₀, h_loc⟩
 
+omit [Fintype Y] in
+/-- Models with the Selmer bound at `π`. Let each `R x`, `x ∈ 𝓧`, have models over all large
+coefficient rings (`HasTwistedLattice`), and let `R π` have such models whose twisted lattices have
+Selmer length at most `sel` (`HasDivisibleSelmerLengthLe`). Then over all large `O` each `R x` has
+a model `u`, `ψ'`, `ζ'` (`IsTwistedLattice`) whose twisted lattice `ψ' u` has Selmer length at most
+`sel` if `x = π`. -/
+private lemma eventually_exists_isTwistedLattice_and_normLength_le
+    {ψ : AbsGal D →* PadicAlgCl ℓ} {𝓧 : Set Y} {R : 𝓧 → GalRep ℓ D.E r} {γ : 𝓧 → AbsGal D}
+    (h_lat : ∀ x : 𝓧, HasTwistedLattice ψ (R x) (γ x)) {Q : Finset (FinPlace D.E)} {π : 𝓧}
+    {sel : ℝ≥0∞} (h_sel : HasDivisibleSelmerLengthLe ψ (R π) Q (γ π) sel) (x : 𝓧) :
+    ∀ᶠ O : CoeffRing ℓ in atTop,
+      ∃ (u : AbsGal D →* Matrix r r O) (ψ' : AbsGal D →* O) (ζ' : ↑O),
+        IsTwistedLattice ψ (R x) (γ x) u ψ' ζ' ∧
+        (x = π → O.normLength (crystallineSelmerLength (twistRep (.id O) ψ' u) Q (γ x)) ≤ sel) := by
+  -- the models: at `π` the one of `h_sel`, with its Selmer bound; elsewhere those of `h_lat`
+  obtain rfl | hx := eq_or_ne x π
+  · exact Eventually.mono h_sel fun _ ⟨u, ψ', ζ', h_tw, h_le⟩ ↦ ⟨u, ψ', ζ', h_tw, fun _ ↦ h_le⟩
+  · exact Eventually.mono (h_lat x) fun _ ⟨u, ψ', ζ', h_tw⟩ ↦ ⟨u, ψ', ζ', h_tw, hx.elim⟩
+
+/-- Let `R₀`, `ψ'`, `ζ'` be a model of `R` and `ψ` (`IsTwistedLattice`), where `ψ` comes from the
+norm-one torus (`IsFromU1`). Then the twisted lattice `ψ' R₀` agrees with `R₀` on the
+decomposition groups above `ℓ`, where `ψ` is trivial. -/
+lemma IsTwistedLattice.twistRep_apply_eq_of_mem_decompGroup {O : CoeffRing ℓ}
+    {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalRep ℓ D.E r} {γ : AbsGal D}
+    {R₀ : AbsGal D →* Matrix r r O} {ψ' : AbsGal D →* O} {ζ' : ↑O}
+    (h_tw : IsTwistedLattice ψ R γ R₀ ψ' ζ') {I : Set (FinPlace D.E)}
+    (hψ : IsFromU1 (placesDividing D.E ℓ) I ψ) {v : FinPlace D.E} (hv : v ∈ placesDividing D.E ℓ)
+    {g : AbsGal D} (hg : g ∈ decompGroup (AbsGal D) (placeOver v)) :
+    twistRep (.id O) ψ' R₀ g = R₀ g :=
+  h_tw.twistRep_apply_eq_of_eq_one (hψ.eq_one_of_mem_decompGroup hv v.isPlaceOver_placeOver hg)
+
+/-- The test points of a triangle of primes for `a` (`IsPrimeTriangle`), together with `a`, form a
+finite set `s` with `(card K + #s) h ≤ c` that detects (`IsDetectedBy`) the cocycles in
+`O/ℓ^ν(-e)` unramified off `ℓ`, for every coefficient ring `O` and every `e`. -/
+lemma IsPrimeTriangle.exists_isDetectedBy [Fintype K] [LinearOrder K] {ν : ℕ}
+    {w : K → FinPlace D.E} {τ φ : K → AbsGal D} {a : AbsGal D} {t : ℕ}
+    {ty : K →o {e : Fin t // 0 < e.val}} {h c : ℕ} (h_tri : IsPrimeTriangle ν w τ φ a t ty h c) :
+    ∃ s : Finset (AbsGal D), (card K + #s) * h ≤ c ∧ ∀ (O : CoeffRing ℓ) (e : ℕ),
+      IsDetectedBy (selmerModule (tateTwist ℓ D.E O e) (placesDividing D.E ℓ) ∅
+        (QuotSpan (ℓ ^ ν : ↑O))) s := by
+  classical
+  obtain ⟨s, -, hs_card, hs, -⟩ := h_tri.exists_test_points
+  refine ⟨insert a s, ?_, fun O e z hz h_zero ↦
+    hs O e z hz (h_zero a (by simp)) fun g hg ↦ h_zero g (by simp [hg])⟩
+  grw [card_insert_le]
+  exact hs_card
+
+/-- In a triangle of primes for `a` up to `ℓ ^ h` (`IsPrimeTriangle`), the element `a` separates
+the characters `cyclotomicInv ^ e`, `e < t`, with values in any coefficient ring `O`: the product
+over `e' ≠ e` of the differences of their values at `a` divides `ℓ ^ h`. -/
+lemma IsPrimeTriangle.prod_cyclotomicInv_sub_dvd [Fintype K] [LinearOrder K] {ν : ℕ}
+    {w : K → FinPlace D.E} {τ φ : K → AbsGal D} {a : AbsGal D} {t : ℕ}
+    {ty : K →o {e : Fin t // 0 < e.val}} {h c : ℕ} (h_tri : IsPrimeTriangle ν w τ φ a t ty h c)
+    (O : CoeffRing ℓ) (e : Fin t) :
+    ∏ e' ∈ ({e}ᶜ : Finset (Fin t)),
+      ((cyclotomicInv ℓ D.E O ^ e.val) a - (cyclotomicInv ℓ D.E O ^ e'.val) a) ∣ (ℓ ^ h : ↑O) := by
+  simpa [cyclotomicInv] using map_dvd (algebraMap ℤ_[ℓ] O) (h_tri.prod_dvd e)
+
+omit [Fintype Y] in
+/-- Let `c` be the coefficient of `∏ X j` at `π` of one Ribet element over a coefficient ring `O`
+(`IsCommonRibetElement`) for the determinants of all combinations `∑ ω g (u' x g - 1)` of lattices
+`u' x` in the `u x`. Then `c` is such a coefficient for the determinants `det (1 - u x g)`. -/
+lemma IsCommonRibetElement.det_one_sub_of_isLatticeIn [Fintype K] {O : CoeffRing ℓ}
+    {u : Y → GalRep ℓ D.E n} {u' : Y → AbsGal D →* Matrix n n O}
+    (hu' : ∀ x : Y, IsLatticeIn (u x) (u' x))
+    {S : Subalgebra (intQpBar ℓ) (Y → MvPolynomial K (PadicAlgCl ℓ))}
+    {𝒥 : Submodule S (Y → MvPolynomial K (PadicAlgCl ℓ))} {𝓧 : Set Y} {π : 𝓧} {c : PadicAlgCl ℓ}
+    (h : IsCommonRibetElement (S := restrictToCoeffRing S O) 𝒥
+      (fun (ω : AbsGal D →₀ O) (x : Y) ↦
+        algebraMap O (PadicAlgCl ℓ) (Finsupp.linearCombination O (fun g ↦ u' x g - 1) ω).det)
+      π c) :
+    IsCommonRibetElement 𝒥 (fun (g : AbsGal D) (x : Y) ↦ (1 - (u x g).val).det) π c := by
+  obtain ⟨h_mem, h_zero, f, hf_mem, hf_low, hf_top⟩ := h
+  -- `det (1 - u x g)` is the determinant of the combination `∑ ω g' (u' x g' - 1)`, where the
+  -- coefficient function `ω` is `-1` at `g` and `0` elsewhere
+  simp only [(hu' _).det_one_sub]
+  exact ⟨fun g ↦ h_mem _, fun g x ↦ h_zero _ x, f, fun g ↦ hf_mem _, hf_low, hf_top⟩
+
 /-- Ribet's element for conjugate self-dual representations, with `t' = V.rankDiff`, the difference
 `card n - card r` of the ranks of the descent pair `V`, and `r' = card r`. Let `V` with type
 polynomials `c i` over the residue fields at its chosen places above `p₀`, `p₁` form a lift setting
@@ -338,19 +416,12 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
   let ϵ : Sigma (SummandCoordIndex r (t := V.rankDiff)) ≃ n :=
     equivOfCardEq (by simp! [V.rank_lt.le])
   have h_dual (x : Y) : IsConjSelfDual V.rankDiff (u x) := (h_type x).toIsConjSelfDual
-  -- the models: at `π` the one of `h_sel`, with its Selmer bound; elsewhere those of `h_lat`
-  have h_lat' (x : 𝓧) : ∀ᶠ O : CoeffRing ℓ in atTop,
-      ∃ (u : AbsGal D →* Matrix r r O) (ψ' : AbsGal D →* O) (ζ' : ↑O),
-        IsTwistedLattice ψ (R x) (γ x) u ψ' ζ' ∧
-        (x = π → O.normLength (crystallineSelmerLength (twistRep (.id O) ψ' u) Q (γ x)) ≤ sel) := by
-    obtain rfl | hx := eq_or_ne x π
-    · exact Eventually.mono h_sel fun _ ⟨u, ψ', ζ', h_tw, h_le⟩ ↦ ⟨u, ψ', ζ', h_tw, fun _ ↦ h_le⟩
-    · exact Eventually.mono (h_lat x) fun _ ⟨u, ψ', ζ', h_tw⟩ ↦ ⟨u, ψ', ζ', h_tw, hx.elim⟩
   obtain ⟨O, h_def, h_odd, ⟨H', hH', hH'_one⟩, R₀, ψ', ζ', u', h_model, hT_span, hu', hu'_block⟩ :=
     (eventually_exists_inClass_sum_dualDefect_le hc (h_summand π) h_type ϵ π |>.and <|
       eventually_length_shaOdd_le D ℓ |>.and <|
       eventually_exists_map_eq_and_eval_one hH |>.and <|
-      eventually_exists_twistedLattice_and_block_lattices h_dual h_summand h_trace h_lat' ϵ).exists
+      eventually_exists_twistedLattice_and_block_lattices h_dual h_summand h_trace
+        (eventually_exists_isTwistedLattice_and_normLength_le h_lat h_sel) ϵ).exists
   choose h_tw h_selT using h_model
   -- the main summands `T x` of the lattices `u' x`, `x ∈ 𝓧`
   let T (x : 𝓧) : AbsGal D →* Matrix r r O := twistRep (.id O) (ψ' x) (R₀ x)
@@ -359,32 +430,23 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
       (.conjClosure Q ∪ (Set.range w).conjClosure))ᶜ) (x : Y) : u' x g = 1 :=
     (hu' x).eq_one ((h_type x).eq_one_of_mem_inertiaAbove g hg)
   -- the classes of local lattices above `ℓ`, and the losses and the Selmer group at the lift
-  have hT_loc : ∀ v ∈ placesDividing D.E ℓ, ∀ g ∈ decompGroup (AbsGal D) (placeOver v),
-      T π g = R₀ π g := fun v hv g hg ↦ (h_tw π).twistRep_apply_eq_of_eq_one
-    (hψ.eq_one_of_mem_decompGroup hv v.isPlaceOver_placeOver hg)
-  obtain ⟨F, C, U, hu_cl, hT_cl, h_sum⟩ :=
-    h_def (T π) (R₀ π) u' (hu'_block π) hu' (h_tw π).isLatticeIn hT_loc
+  obtain ⟨F, C, U, hu_cl, hT_cl, h_sum⟩ := h_def (T π) (R₀ π) u' (hu'_block π) hu'
+    (h_tw π).isLatticeIn fun v hv g hg ↦ (h_tw π).twistRep_apply_eq_of_mem_decompGroup hψ hv hg
   replace h_selT : O.normLength (crystallineSelmerLength (T π) Q (γ π)) ≤ sel := h_selT π rfl
   have hw : IsTameGeneratorFamily ν w τ φ := h_tri.isTameGeneratorFamily
   obtain ⟨b₀, lossT, hb₀, hb₀_eq, h_loc⟩ :=
     exists_length_le_loss_add_crystallineSelmerLength hw hu_cl hT_cl h_sum hu'_cont hu'_unr
       ((h_tw π).twistRep_eq_one_of_mem_inertiaAbove hψ (h_summand π)) (γ π) h_selT h_fin
-  -- the tame places, and the test points `s`, which detect cocycles together with `g₀`
+  -- the tame places, and the test points `s` together with `g₀`, which detect cocycles
   obtain ⟨W, _, q, δ, o, hq, hq_cover, hδ, ho⟩ :=
     exists_tame_relations hc h_twist h_type h_quad hu' (h_tw π).twist_eq
-  obtain ⟨s, -, hs_card : (card K + (#s + 1)) * (D.halfGap * h) ≤ D.halfGap ^ 22 * h, hs, -⟩ :=
-    h_tri.exists_test_points
-  have h_detect (e : ℕ) : IsDetectedBy (selmerModule (tateTwist ℓ D.E O e) (placesDividing D.E ℓ) ∅
-      (QuotSpan (ℓ ^ ν : ↑O))) (insert g₀ s) :=
-    fun z hz h_zero ↦ hs O e z hz (h_zero g₀ (by simp)) fun g hg ↦ h_zero g (by simp [hg])
-  let s' : Finset (AbsGal D) := insert g₀ s ∪ image (withConjInv τ) univ
-  have hs'_card : #s' ≤ 2 * (card K + (#s + 1)) := by
-    grw [card_union_le, card_insert_le, card_image_le, card_univ, card_prod, card_bool]
+  obtain ⟨s, hs_card, hs⟩ := h_tri.exists_isDetectedBy
+  let s' : Finset (AbsGal D) := s ∪ image (withConjInv τ) univ
+  have hs'_card : #s' ≤ 2 * (card K + #s) := by
+    grw [card_union_le, card_image_le, card_univ, card_prod, card_bool]
     omega
   -- the characters `χ e`, which `g₀` separates up to `ℓ ^ (halfGap h)`
   let χ (e : Fin V.rankDiff) : AbsGal D →* O := cyclotomicInv ℓ D.E O ^ e.val
-  have h_sep (e : Fin V.rankDiff) : ∏ e' ∈ {e}ᶜ, (χ e g₀ - χ e' g₀) ∣ ℓ ^ (D.halfGap * h) := by
-    simpa [χ, cyclotomicInv] using map_dvd (algebraMap ℤ_[ℓ] O) (h_tri.prod_dvd e)
   let ϵ' : r ⊕ Fin V.rankDiff ≃ n := (summandCoordIndexEquiv r V.rankDiff).trans ϵ
   have h_block (x : 𝓧) (g : AbsGal D) :
       u' x g = reindex ϵ' ϵ' (fromBlocks (T x g) 0 0 (diagonal fun e ↦ χ e g)) := by
@@ -406,21 +468,18 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
       HasTriangleCost Z τ (fun j ↦ (conjGal (τ j))⁻¹) φ (fun j ↦ (conjGal (φ j))⁻¹)
         {j : K | (ty j).val = e} (ℓ ^ (D.halfGap * h)) (cost e) ∧ IsDetectedBy Z s' :=
     hasTriangleCost_of_isCharacterCocycle h_tri hu'_cont hq hq_cover hu'_unr e
-      (h_tw π).mem_inertiaAbove (h_detect e) hZ
-  obtain ⟨d, ⟨h_mem, h_zero, f, hf_mem, hf_low, hf_top⟩, hd_le⟩ :=
+      (h_tw π).mem_inertiaAbove (hs O e) hZ
+  obtain ⟨d, h_ribet, hd_le⟩ :=
     exists_isCommonRibetElement_addVal_le u' _ ϵ' π T
       (hξ₀ := by simp [χ]) (hu_block := h_block) (hρ_span := hT_span π)
       (hργ := fun x ↦ (h_tw x).apply_eq_smul) (hy_unit := fun x ↦ (h_tw x).isUnit_sub_one)
-      (hξγ := hχγ) (hp := NeZero.ne _) (h𝒥 := h𝒥') (hε := hH'_dvd) (a := g₀) (hC_dvd := h_sep)
-      (ty := ⟨fun j ↦ ty j, ty.mono⟩) (hb₀ := hb₀) (hξδ := hχδ) (hδ_poly := hδ) (hb := h_cost)
+      (hξγ := hχγ) (hp := NeZero.ne _) (h𝒥 := h𝒥') (hε := hH'_dvd) (a := g₀)
+      (hC_dvd := h_tri.prod_cyclotomicInv_sub_dvd O) (ty := ⟨fun j ↦ ty j, ty.mono⟩) (hb₀ := hb₀)
+      (hξδ := hχδ) (hδ_poly := hδ) (hb := h_cost)
   rw [hb₀_eq] at hd_le
   have ht' : V.rankDiff ≤ D.t := (h_summand π).t_le
-  refine ⟨d, ?_, ellVal_add_le_of_addVal_le ht' h_le hs_card hs'_card h_loc h_selT
-    (fun e ↦ h_odd e (e.isLt.trans_le ht') ν) ho hd_le⟩
-  -- `det (1 - u x g)` is the determinant of the combination `∑ ω g' (u' x g' - 1)`, where the
-  -- coefficient function `ω` is `-1` at `g` and `0` elsewhere
-  simp only [(hu' _).det_one_sub]
-  exact ⟨fun g ↦ h_mem _, fun g x ↦ h_zero _ x, f, fun g ↦ hf_mem _, hf_low, hf_top⟩
+  exact ⟨d, h_ribet.det_one_sub_of_isLatticeIn hu', ellVal_add_le_of_addVal_le ht' h_le hs_card
+    hs'_card h_loc h_selT (fun e ↦ h_odd e (e.isLt.trans_le ht') ν) ho hd_le⟩
 
 end RibetColumns
 
