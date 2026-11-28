@@ -411,40 +411,6 @@ lemma Selmer.det_comp_map_eq_mul_prod {R A ι r : Type*} [CommRing R] [Fintype �
     ext1 (a | a) (b | b) <;> simp [blockEquiv', hχ, blockDiagonal, diagonal]
   rw [← det_submatrix_equiv_self blockEquiv', h_blocks, det_fromBlocks_zero₂₁, det_blockDiagonal]
 
-private lemma Selmer.det_mem_of_coeff_mem_aux {A : Type*} [CommRing A] [Algebra A (Y → L)]
-    (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ : O →+* A)
-    (hκ : (algebraMap A (Y → L)).comp κ = algebraMap O (Y → L))
-    (h_coeff : ∀ (g : G) (k : ℕ),
-      (fun x : Y ↦ ((u x (.single g 1)).map (algebraMap O L)).charpoly.coeff k) ∈
-        (algebraMap A (Y → L)).range)
-    (w : O[G]) :
-    (fun x : Y ↦ algebraMap O L (u x w).det) ∈ (algebraMap A (Y → L)).range := by
-  obtain ⟨ρ, hρ, h_charpoly⟩ := exists_family_algHom_charpoly_mem u κ hκ h_coeff
-  have h_det : (fun x : Y ↦ algebraMap O L (u x w).det) = (ρ (mapRingHom G κ w)).det := by
-    funext x
-    change algebraMap O L (u x w).det = Pi.evalRingHom (fun _ : Y ↦ L) x (ρ (mapRingHom G κ w)).det
-    rw [RingHom.map_det, RingHom.map_det, RingHom.mapMatrix_apply, RingHom.mapMatrix_apply]
-    congr 1
-    ext i j
-    exact (hρ x w i j).symm
-  obtain ⟨-, D, hD, -, -⟩ := exists_adjugate_of_charpoly_mem ρ h_charpoly (mapRingHom G κ w)
-  exact ⟨D, (h_det.trans hD).symm⟩
-
-/-- Let `u x` (`x : Y`) be representations of `O[G]`, and let `κ : O → S` send an element of `O` to
-the constant function. If the coefficients of the characteristic polynomials of the group elements,
-as functions `Y → L` of `x`, lie in the subalgebra `S`, then so does the determinant of every
-`w : O[G]`. -/
-lemma Selmer.det_mem_of_coeff_mem (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ : O →+* S)
-    (hκ : (algebraMap S (Y → L)).comp κ = algebraMap O (Y → L))
-    (h_coeff : ∀ (g : G) (k : ℕ),
-      (fun x : Y ↦ ((u x (.single g 1)).map (algebraMap O L)).charpoly.coeff k) ∈ S)
-    (w : O[G]) :
-    (fun x : Y ↦ algebraMap O L (u x w).det) ∈ S := by
-  obtain ⟨D, hD⟩ :=
-    Selmer.det_mem_of_coeff_mem_aux u κ hκ (fun g k ↦ ⟨⟨_, h_coeff g k⟩, rfl⟩) w
-  rw [← hD]
-  exact D.property
-
 /-- The elements of `Λ` whose traces against every element of `Λ`, through `ρ`, lie in `𝒥`. They
 form a two-sided ideal, as traces are cyclic. -/
 def Selmer.traceIdeal (ρ : Λ →ₐ[R] Matrix σ σ L) (𝒥 : Submodule R L) : TwoSidedIdeal Λ :=
@@ -546,6 +512,34 @@ lemma Selmer.exists_mul_eq_algebraMap_det {A Λ : Type*} [CommRing A] [Ring Λ]
     ext i j
     exact hρw x i j
   · rw [algHom_map_mul ρ, hv, Algebra.algebraMap_eq_smul_one]
+
+private lemma Selmer.det_mem_of_coeff_mem_aux {A : Type*} [CommRing A] [Algebra A (Y → L)]
+    (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ : O →+* A)
+    (hκ : (algebraMap A (Y → L)).comp κ = algebraMap O (Y → L))
+    (h_coeff : ∀ (g : G) (k : ℕ),
+      (fun x : Y ↦ ((u x (.single g 1)).map (algebraMap O L)).charpoly.coeff k) ∈
+        (algebraMap A (Y → L)).range)
+    (w : O[G]) :
+    (fun x : Y ↦ algebraMap O L (u x w).det) ∈ (algebraMap A (Y → L)).range := by
+  obtain ⟨ρ, hρ, h_charpoly⟩ := exists_family_algHom_charpoly_mem u κ hκ h_coeff
+  obtain ⟨D, hD, -⟩ := Selmer.exists_mul_eq_algebraMap_det u ρ h_charpoly w (mapRingHom G κ w)
+    (fun x i j ↦ hρ x w i j)
+  exact ⟨D, hD⟩
+
+/-- Let `u x` (`x : Y`) be representations of `O[G]`, and let `κ : O → S` send an element of `O` to
+the constant function. If the coefficients of the characteristic polynomials of the group elements,
+as functions `Y → L` of `x`, lie in the subalgebra `S`, then so does the determinant of every
+`w : O[G]`. -/
+lemma Selmer.det_mem_of_coeff_mem (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ : O →+* S)
+    (hκ : (algebraMap S (Y → L)).comp κ = algebraMap O (Y → L))
+    (h_coeff : ∀ (g : G) (k : ℕ),
+      (fun x : Y ↦ ((u x (.single g 1)).map (algebraMap O L)).charpoly.coeff k) ∈ S)
+    (w : O[G]) :
+    (fun x : Y ↦ algebraMap O L (u x w).det) ∈ S := by
+  obtain ⟨D, hD⟩ :=
+    Selmer.det_mem_of_coeff_mem_aux u κ hκ (fun g k ↦ ⟨⟨_, h_coeff g k⟩, rfl⟩) w
+  rw [← hD]
+  exact D.property
 
 /-- A ring homomorphism `f` sends the left ideal spanned by the `y i` into the left ideal spanned by
 the `f (y i)`. -/
