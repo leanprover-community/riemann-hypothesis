@@ -39,6 +39,8 @@ by its local components. Source: O'Meara, Introduction to Quadratic Forms, §81.
 
 @[expose] public section
 
+open IsDedekindDomain (FiniteAdeleRing)
+
 open Matrix Pointwise Valued
 
 noncomputable section
@@ -97,7 +99,7 @@ lemma smul_idem_smul_mem_lattice {c : 𝔸f E} (hc : ∀ w ∈ T, v (c w) = 1) :
     c • idem T • y ∈ V.lattice x ↔ idem T • y ∈ V.lattice x := by
   rw [smul_comm]
   simp +contextual only [idem_smul_mem_lattice, mulVec_smul, Pi.smul_apply, smul_eq_mul,
-    finAdele_mul_apply, map_mul, hc, one_mul]
+    FiniteAdeleRing.mul_apply, map_mul, hc, one_mul]
 
 /-- A vector lies in a lattice if and only if its parts at the places of `T` and off `T` do. -/
 lemma mem_lattice_iff_idem_smul (T : Set (FinPlace E)) :

@@ -683,9 +683,6 @@ lemma exists_mem_nhds_isIntegral_sub_div {E : Type*} [Field E] [NumberField E] (
   rw [(isUnit_natCast_finAdele hc).mul_left_cancel h_mul]
   exact sub_mem hz hz'
 
-@[simp]
-lemma finAdele_mul_apply (x y : 𝔸f E) (w : HeightOneSpectrum (𝓞 E)) : (x * y) w = x w * y w := rfl
-
 /-- A finite adele x equals c y for some y in `Ô E`, that is, integral at every finite place, if and
 only if v (x w) ≤ v (c w) at every finite place w. -/
 lemma exists_eq_mul_iff_v_le {x c : 𝔸f E} :
@@ -785,28 +782,19 @@ namespace New
 
 variable {E : Type*} [Field E] [NumberField E] (S : Set (FinPlace E)) (x y : 𝔸f E) (w : FinPlace E)
 
-/-! ### Components of finite adeles -/
+/-! ### Components of finite adeles
 
-@[simp]
-lemma finAdele_add_apply : (x + y) w = x w + y w := rfl
-
-@[simp]
-lemma finAdele_sub_apply : (x - y) w = x w - y w := rfl
+Tau Ceti's `FiniteAdeleRing.zero_apply`, `one_apply`, `add_apply`, `sub_apply` and `mul_apply`
+cover the other ring operations. -/
 
 @[simp]
 lemma finAdele_neg_apply : (-x) w = -x w := rfl
-
-@[simp]
-lemma finAdele_one_apply : (1 : 𝔸f E) w = 1 := rfl
 
 @[simp]
 lemma finAdele_pow_apply (k : ℕ) : (x ^ k) w = x w ^ k := rfl
 
 @[simp]
 lemma finAdele_natCast_apply (k : ℕ) : (k : 𝔸f E) w = k := rfl
-
-@[simp]
-lemma finAdele_zero_apply : (0 : 𝔸f E) w = 0 := rfl
 
 /-- The component of the inverse of a finite idele is the inverse of its component, which is
 nonzero. -/

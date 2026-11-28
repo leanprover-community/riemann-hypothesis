@@ -42,6 +42,8 @@ Notions from other files:
 
 @[expose] public section
 
+open IsDedekindDomain (FiniteAdeleRing)
+
 noncomputable section
 
 namespace New.Parameters
@@ -314,7 +316,8 @@ lemma v_alpha_mul_star_mul_relDifferentGen (w : FinPlace (P.E s)) :
   have ht_ne : t ≠ 0 := by simp [ht]
   suffices h_cases : (if P.betaKInE s ∈ w.asIdeal then t⁻¹ else 1) *
       (if star (P.betaKInE s) ∈ w.asIdeal then t⁻¹ else 1) * t = 1 by
-    rw [finAdele_mul_apply, finAdele_mul_apply, map_mul, map_mul, v_alpha_apply, v_star_alpha_apply]
+    rw [FiniteAdeleRing.mul_apply, FiniteAdeleRing.mul_apply, map_mul, map_mul, v_alpha_apply,
+      v_star_alpha_apply]
     simpa [ht] using h_cases
   -- No place divides both `betaKInE` and its conjugate `1 - betaKInE`. At a place dividing one of
   -- them, one of `α`, `star α` cancels `relDifferentGen`; elsewhere `relDifferentGen` is a unit.
@@ -336,7 +339,7 @@ lemma q₁_mul_alpha_mem : P.q₁ s * (P.α s).val ∈ Ô (P.E s) := by
   have h_adele : (P.q₁ s : 𝔸f (P.E s)) = (P.relDifferentGen s).val * c.val := by
     simpa using congrArg (fun x : 𝓞 (P.E s) ↦ algebraMap (P.E s) (𝔸f (P.E s)) x.val) hc
   refine mem_Ô.2 fun w ↦ ?_
-  rw [h_adele, finAdele_mul_apply, map_mul, v_alpha_apply]
+  rw [h_adele, FiniteAdeleRing.mul_apply, map_mul, v_alpha_apply]
   split_ifs
   · -- the component is `c`
     simpa [field] using valuation_le_one (K := P.E s) w c
@@ -418,8 +421,8 @@ lemma v_neg_inv_sqrtNegDInE_mul_alpha_mul_star (w : FinPlace (P.E s)) :
     eq_inv_of_mul_eq_one_left (by simpa using v_alpha_mul_star_mul_relDifferentGen w)
   have h_sqrt : Valued.v (algebraMap (P.E s) (𝔸f (P.E s)) (-(P.sqrtNegDInE s).val⁻¹) w) =
       (w.valuation (P.E s) (P.sqrtNegDInE s).val)⁻¹ := by simp
-  rw [finAdele_mul_apply, finAdele_mul_apply, map_mul, map_mul, h_sqrt, mul_assoc, h_unit,
-    ← mul_inv, mul_comm, h_different, WithZero.exp_neg, inv_inv]
+  rw [FiniteAdeleRing.mul_apply, FiniteAdeleRing.mul_apply, map_mul, map_mul, h_sqrt, mul_assoc,
+    h_unit, ← mul_inv, mul_comm, h_different, WithZero.exp_neg, inv_inv]
 
 /-- `-1/√(-d)`, the idele `α` and a splitting character `υ` are Weil data for `E`. The character
 `υ` exists because every root of unity is `δ / δ̄` for a unit `δ` of norm `1` over `K`. -/

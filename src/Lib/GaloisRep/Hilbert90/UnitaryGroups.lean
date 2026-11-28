@@ -43,6 +43,8 @@ Known; see `Lib.GaloisRep.Hilbert90.TameActions` for sources.
 
 @[expose] public section
 
+open IsDedekindDomain (FiniteAdeleRing)
+
 /-!
 ## Hilbert 90 for unitary groups over profinite rings
 -/
@@ -381,8 +383,8 @@ lemma exists_dvd_dvd_mul_adeleMap_eq {a b : 𝔸f L} (ha : u * adeleMap (σ : L 
   have ha_le (w : FinPlace L) : v (a w) ≤ v (c w) := by grind
   have hb_le (w : FinPlace L) : v (b w) ≤ v (c w) := by simp [c_apply, apply_ite]
   refine ⟨c, dvd_of_le ha_le, dvd_of_le hb_le, DFunLike.ext _ _ fun w ↦ ?_⟩
-  have haw : u w * adeleMap (σ : L →+* L) a w = a w := by rw [← finAdele_mul_apply, ha]
-  have hbw : u w * adeleMap (σ : L →+* L) b w = b w := by rw [← finAdele_mul_apply, hb]
+  have haw : u w * adeleMap (σ : L →+* L) a w = a w := by rw [← FiniteAdeleRing.mul_apply, ha]
+  have hbw : u w * adeleMap (σ : L →+* L) b w = b w := by rw [← FiniteAdeleRing.mul_apply, hb]
   change u w * adeleMap (σ : L →+* L) c w = c w
   by_cases hw : u w = 0
   · -- both `a` and `b`, hence `c`, vanish at a zero of `u`

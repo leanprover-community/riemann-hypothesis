@@ -46,6 +46,8 @@ See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 
 @[expose] public section
 
+open IsDedekindDomain (FiniteAdeleRing)
+
 open Matrix Pointwise Valued
 
 noncomputable section
@@ -124,7 +126,7 @@ of `P` conjugate to a place of `P`. Then `N` is a uniformiser at the places of `
 conjugates, and a unit elsewhere. -/
 lemma Seesaw.IsSplitSquarefree.v_algebraMap (hπ : IsSplitSquarefree P N π) (w : FinPlace E) :
     v (algebraMap E (𝔸f E) N w) = if w ∈ P ∨ star w ∈ P then WithZero.exp (-1) else 1 := by
-  rw [hπ.algebraMap_eq_mul_star, finAdele_mul_apply, map_mul, v_star_apply, hπ.v_apply,
+  rw [hπ.algebraMap_eq_mul_star, FiniteAdeleRing.mul_apply, map_mul, v_star_apply, hπ.v_apply,
     hπ.v_apply]
   by_cases hw : w ∈ P <;> simp +contextual [hw, hπ.star_notMem w]
 
@@ -159,7 +161,7 @@ lemma Grading.lineIdele_inv_mul_stringSum_mem_iff
       v (((if 2 * b.val < s then 1 else algebraMap E (𝔸f E) N) * ((a * star a) ^ n).val) w) := by
     have h_unit : ((a * star a) ^ n).val w = (a.val * star a.val) w ^ n :=
       map_zpow ((evalAt w).toMonoidHom.comp (Units.coeHom (𝔸f E))) (a * star a) n
-    rw [finAdele_mul_apply, h_unit, map_mul, map_zpow₀, ← hc]
+    rw [FiniteAdeleRing.mul_apply, h_unit, map_mul, map_zpow₀, ← hc]
     split_ifs with hb <;> simp [powerCoeff, hn, hb]
   -- At each place the valuation of `(a ā) ^ n` cancels.
   have h_cancel (w : FinPlace E) :
@@ -167,8 +169,8 @@ lemma Grading.lineIdele_inv_mul_stringSum_mem_iff
           (algebraMap E (𝔸f E) (Y.powerCoeff b) * t b))) w) =
         v ((r * (if 2 * b.val < s then 1 else algebraMap E (𝔸f E) N) *
           ((powerIdele a s b)⁻¹.val * t b)) w) := by
-    simp only [finAdele_mul_apply, map_mul, h_val, idele_inv_apply_and_ne_zero, Units.val_mul,
-      map_inv₀]
+    simp only [FiniteAdeleRing.mul_apply, map_mul, h_val, idele_inv_apply_and_ne_zero,
+      Units.val_mul, map_inv₀]
     have h_ne : v (((a * star a) ^ n).val w) ≠ 0 := by simp [idele_inv_apply_and_ne_zero]
     field_simp
   simp only [mem_Ô, h_cancel]
@@ -457,7 +459,7 @@ lemma exists_pole_of_notMem_latticeMinus {y : ι → 𝔸f E} (hL : Y.SpansLatti
   have h_mem := mem_Ô.1 (hy_line m) w
   have hm : m = m.rev := by_contra fun hm ↦ h_pole.not_ge (by simpa [hm] using h_mem)
   refine ⟨m, w, hm, by_contra fun hw ↦ h_pole.not_ge ?_, h_pole⟩
-  simpa only [ite_eq_left hm, finAdele_mul_apply (algebraMap E (𝔸f E) N), map_mul,
+  simpa only [ite_eq_left hm, FiniteAdeleRing.mul_apply (algebraMap E (𝔸f E) N), map_mul,
     hπ.v_algebraMap, ite_eq_right hw, one_mul] using h_mem
 
 /-- Let `Λ⁻ = Y.latticeMinus 1` and `Λ⁺ = Y.latticePlus 1` be the intersection with and the
@@ -493,7 +495,7 @@ lemma exists_place_generates_of_notMem_latticeMinus {y : ι → 𝔸f E} (hL : Y
   obtain ⟨hz_string, hz_line⟩ := (h_plus z).1 hz
   -- The pole of the middle coordinate of `z` at `w` is at most simple.
   have hz_bound : WithZero.exp (-1) * v (coord z m w) ≤ 1 := by
-    simpa only [ite_eq_left hm, finAdele_mul_apply (algebraMap E (𝔸f E) N), map_mul,
+    simpa only [ite_eq_left hm, FiniteAdeleRing.mul_apply (algebraMap E (𝔸f E) N), map_mul,
       hπ.v_algebraMap, ite_eq_left hw] using mem_Ô.1 (hz_line m) w
   have h_le_pole : v (coord z m w) ≤ v (coord y m w) :=
     calc v (coord z m w)
@@ -503,7 +505,7 @@ lemma exists_place_generates_of_notMem_latticeMinus {y : ι → 𝔸f E} (hL : Y
   obtain ⟨c, hc, h_quot⟩ : ∃ c ∈ Ô E, idem {w} * coord z m = coord y m * c := by
     refine exists_eq_mul_iff_v_le.2 fun w' ↦ ?_
     obtain rfl | hw' := eq_or_ne w' w
-    · simpa [finAdele_mul_apply] using h_le_pole
+    · simpa [FiniteAdeleRing.mul_apply] using h_le_pole
     · simp [hw']
   refine ⟨c, hc, hL.mem_latticeMinus_iff.2 ⟨by simp [hy_string, hz_string], fun b ↦ ?_⟩⟩
   suffices idem {w} * (coord z b - c * coord y b) ∈ Ô E by

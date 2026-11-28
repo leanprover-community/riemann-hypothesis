@@ -27,6 +27,8 @@ of `Ô` (`New.stdLattice.forall_selfDualAddChar_mul_eq_one_iff`) then forces `g�
 
 @[expose] public section
 
+open IsDedekindDomain (FiniteAdeleRing)
+
 noncomputable section
 
 open Matrix Kronecker
@@ -75,9 +77,9 @@ lemma exists_skew_adele {A : Set (FinPlace E)} (hA : A.Finite) :
     let φ : E →+* LocField w := algebraMap E (LocField w)
     have h_coe (y : E) : (algebraMap E (𝔸f E) y) w = φ y := rfl
     have h_w := mem_Ô.1 (h_int ⟨w, hw⟩) w
-    rw [finAdele_mul_apply, finAdele_mul_apply, finAdele_natCast_apply, singleAdele_same, h_coe,
-      map_inv₀, map_mul, map_mul, map_inv₀, map_inv₀, ← mul_inv] at h_w
-    rw [finAdele_mul_apply, idem_of_mem hw, one_mul, h_coe, map_div₀, map_natCast]
+    rw [FiniteAdeleRing.mul_apply, FiniteAdeleRing.mul_apply, finAdele_natCast_apply,
+      singleAdele_same, h_coe, map_inv₀, map_mul, map_mul, map_inv₀, map_inv₀, ← mul_inv] at h_w
+    rw [FiniteAdeleRing.mul_apply, idem_of_mem hw, one_mul, h_coe, map_div₀, map_natCast]
     have hJ : v (φ j) ≠ 0 := (Valuation.ne_zero_iff _).2 ((map_ne_zero φ).2 j_ne_zero)
     have hN' : v (N : LocField w) ≠ 0 := (Valuation.ne_zero_iff _).2 (by
       rw [← map_natCast φ]; exact (map_ne_zero φ).2 (Nat.cast_ne_zero.2 hN))
@@ -123,7 +125,7 @@ lemma isotropicShear_mem_supportedOn {A : Set (FinPlace E)} {z : 𝔸f E} (hz : 
   rw [Gf.mem_supportedOn]
   intro w hw hw_star
   have hzw : z w = 0 := by
-    rw [← hz_supp, finAdele_mul_apply, idem_apply,
+    rw [← hz_supp, FiniteAdeleRing.mul_apply, idem_apply,
       ite_eq_right (by simp [Set.conjClosure, hw, hw_star]), zero_mul]
   refine Units.ext (Matrix.ext fun i k ↦ ?_)
   simp [Gf.atPlace, coe_isotropicShear, hzw, Matrix.one_apply, apply_ite (fun y : 𝔸f E ↦ y w)]
@@ -356,7 +358,7 @@ theorem exists_dualDatum (b : AutChar E) (h_rank : 2 * card n ≤ card m) {f : �
         at h_split
       exact h_split
     have h_le := (hσ _).1 h_mem
-    rw [finAdele_mul_apply, map_mul, hμ] at h_le
+    rw [FiniteAdeleRing.mul_apply, map_mul, hμ] at h_le
     exact (max_lt (lt_mul_of_one_lt_right (zero_lt_one.trans hz_w) h_il)
       (lt_mul_of_one_lt_left (zero_lt_one.trans h_il) hz_w)).not_ge h_le
 

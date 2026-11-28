@@ -36,6 +36,8 @@ See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 
 @[expose] public section
 
+open IsDedekindDomain (FiniteAdeleRing)
+
 /-! ## Scaling factors and the evaluation of a pair of edges -/
 
 namespace New.Data
@@ -83,7 +85,7 @@ lemma v_star_piM_mul_chosenRatio (w : FinPlace D.E) :
   calc Valued.v ((star β * D.chosenRatio) w)
     _ = Valued.v ((star β * star (↑D.chosenIdele⁻¹ : 𝔸f D.E)) w) *
           Valued.v ((D.chosenIdele : 𝔸f D.E) w) := by
-      rw [chosenRatio, ← mul_assoc, finAdele_mul_apply, map_mul]
+      rw [chosenRatio, ← mul_assoc, FiniteAdeleRing.mul_apply, map_mul]
     _ = Valued.v (β w) := by rw [h_conj, one_mul, hβ]
 
 /-- Let `η = normNegOne` be the chosen unit of norm `-1`, `α` the idele of the Weil data and
@@ -222,7 +224,7 @@ lemma mulVec_mem_translations (hg : g ∈ localLevel n {w : FinPlace E | ↑q �
   rw [h_cols]
   refine sum_mem fun j _ i w hw ↦ ?_
   calc v ((d * (M i j * x j)) w)
-    _ = v (M i j w) * v ((d * x j) w) := by rw [mul_left_comm, finAdele_mul_apply, map_mul]
+    _ = v (M i j w) * v ((d * x j) w) := by rw [mul_left_comm, FiniteAdeleRing.mul_apply, map_mul]
     _ ≤ 1 := mul_le_one' ((hg w hw).isIntMatrix i j) (hx j w hw)
 
 omit [Fintype n] [DecidableEq n] in

@@ -568,7 +568,8 @@ lemma exists_level_tate_integral (h : IsHeckeOfType ψ n) :
     h_fin.exists_finset
   let f (x : (𝔸f K)ˣ) : ℂ := adelicTent 1 d (1, x.val)
   have h_mem (x : 𝔸f K) : d.val * (x - 1) ∈ Ô K ↔ ∀ w, v (d.val w) * v (x w - 1) ≤ 1 := by
-    simp only [mem_Ô, finAdele_mul_apply, finAdele_sub_apply, finAdele_one_apply, map_mul]
+    simp only [mem_Ô, FiniteAdeleRing.mul_apply, FiniteAdeleRing.sub_apply,
+      FiniteAdeleRing.one_apply, map_mul]
   have h_supp (x : (𝔸f K)ˣ) (hx : f x ≠ 0) :
       (∀ w : FinPlace K, w ∉ T → v (x.val w) ≤ 1) ∧ ∀ w : FinPlace K, w ∈ T → v (x.val w) = 1 := by
     obtain ⟨_, hx_mem⟩ := (adelicTent_ne_zero_iff 1 d).mp (ofReal_ne_zero.mp hx)
