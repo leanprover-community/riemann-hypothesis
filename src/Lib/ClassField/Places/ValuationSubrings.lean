@@ -1,10 +1,11 @@
 module
 
 import TauCeti.NumberTheory.NumberField.Ideal.DegreeOne
+import TauCeti.RingTheory.Valuation.Center
+import TauCeti.RingTheory.Valuation.NontrivialComap
 public import Mathlib.RingTheory.Valuation.Extension
 import Mathlib.NumberTheory.RamificationInertia.Galois
 import Mathlib.RingTheory.Invariant.Profinite
-import Mathlib.RingTheory.Valuation.IsTrivialOn
 import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
@@ -277,16 +278,15 @@ instance : IsGaloisGroup Γ (𝓞 K) (𝓞 Ω) := by
 lies over a prime of `K`. -/
 lemma exists_isPlaceOver_of_val_ne_one {x : Ω} (hx : x ≠ 0) (hx_val : A x ≠ 1) :
     ∃ v : FinPlace K, IsPlaceOver A v := by
-  -- The place is the centre of `A`, once that prime is known to be nonzero.
-  refine ⟨{ asIdeal := centerPrime K A, isPrime := inferInstance, ne_bot := fun h_cen ↦ ?_ },
-    .of_le_centerPrime le_rfl⟩
-  -- If the centre is zero, every nonzero integer is a unit of `A`; a valuation trivial on `𝓞 K`
-  -- is `1` on nonzero algebraic elements.
-  have h_trivial : A.valuation.IsTrivialOn (𝓞 K) := ⟨fun y hy ↦ by
-    have hy_unit : IsUnit (⟨algebraMap K Ω y, algebraMap_ringOfIntegers_mem A y⟩ : A) :=
-      by_contra fun hy_cen ↦ hy (h_cen.le hy_cen)
-    exact (A.valuation_eq_one_iff _).mp hy_unit⟩
-  exact transcendental_of_ne_one (𝓞 K) x hx hx_val (IsAlgebraic.isAlgebraic x)
+  -- The restriction of the valuation to `K` is nontrivial, so its centre is a finite place.
+  have h_nontrivial : A.valuation.IsNontrivial := ⟨x, by simpa using hx, hx_val⟩
+  let w := A.valuation.comap (algebraMap K Ω)
+  have h_w : w.IsNontrivial := A.valuation.isNontrivial_comap_algebraMap
+  have h_integral (y : 𝓞 K) : w (algebraMap (𝓞 K) K y) ≤ 1 :=
+    A.valuation_le_one ⟨_, algebraMap_ringOfIntegers_mem A y⟩
+  refine ⟨Valuation.heightOneSpectrum (𝓞 K) w h_integral, fun y ↦ ?_⟩
+  rw [Valuation.asIdeal_heightOneSpectrum, Valuation.mem_centerIdeal]
+  rfl
 
 variable {K}
 
