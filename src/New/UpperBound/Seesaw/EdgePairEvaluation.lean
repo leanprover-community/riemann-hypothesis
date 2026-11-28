@@ -92,20 +92,27 @@ variable {E n n₀ p : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [F
   [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₀ : n₀ → ℤˣ} {V : Space E n s}
   {V₀ : Space E n₀ s₀} [WeilData E]
 
+/-- A point `g` of the unitary group adapted to the splitting `D` of `V` over `V₀`, chosen by
+`New.Space.Splitting.exists_isAdapted_and_frame_eq`: `D.IsAdapted g 1`, that is, the frame of `D`
+moved by `g⁻¹` is orthonormal at the infinite places and integral at the finite places
+(`isAdapted_adaptedPoint`). -/
+def adaptedPoint (D : V.Splitting V₀ p) : G E s := (D.exists_isAdapted_and_frame_eq 1).choose
+
+/-- The point `adaptedPoint D` is adapted to the splitting `D`. -/
+lemma isAdapted_adaptedPoint (D : V.Splitting V₀ p) : D.IsAdapted (adaptedPoint D) 1 :=
+  (D.exists_isAdapted_and_frame_eq 1).choose_spec.1
+
 /-- The finite part of the zero term along the splitting `D` of `V` over `V₀`. It is the map
 `f ↦ D.zeroTerm (v ⊗ f)`, where `⊗` is `V.integrated` and `v` is the Fock vacuum moved by the real
-part of a chosen point `g` of the unitary group with `D.IsAdapted g 1` (the frame of `D` moved by
-`g⁻¹` is orthonormal at the infinite places and integral at the finite places). -/
+part of the adapted point `adaptedPoint D`. -/
 @[local simp]
 noncomputable def zeroTermFin (D : V.Splitting V₀ p) : 𝒮 V →L[ℂ] 𝒮 V₀ :=
-  D.zeroTerm ∘L
-    V.integrated (realWeil (blockU (D.exists_isAdapted_and_frame_eq 1).choose.1) Fock.vacVector)
+  D.zeroTerm ∘L V.integrated (realWeil (blockU (adaptedPoint D).1) Fock.vacVector)
 
-/-- With `g` the adapted point chosen in the definition, `zeroTermFin D` undoes the finite part
-`g.2` of `g`, projects on the real vacuum (`V.projReal`), applies the Weil operator `V.ω g` and
-takes the zero term. -/
-lemma zeroTermFin_eq (D : V.Splitting V₀ p) {g : G E s}
-    (hg : g = (D.exists_isAdapted_and_frame_eq 1).choose) (f : 𝒮 V) :
+/-- With `g = adaptedPoint D`, the adapted point of the definition, `zeroTermFin D` undoes the
+finite part `g.2` of `g`, projects on the real vacuum (`V.projReal`), applies the Weil operator
+`V.ω g` and takes the zero term. -/
+lemma zeroTermFin_eq (D : V.Splitting V₀ p) {g : G E s} (hg : g = adaptedPoint D) (f : 𝒮 V) :
     zeroTermFin D f = D.zeroTerm (V.ω g (V.projReal (V.ω (1, g⁻¹.2) f))) := by
   simp [zeroTermFin, hg, omega_integrated, rep_apply_apply, mk_one_one]
 
@@ -116,8 +123,8 @@ of the finite Heisenberg translates of the vacuum. -/
 lemma exists_zeroTermFin_ne_zero (D : V.Splitting V₀ p) :
     ∃ f ∈ V.finitePart, zeroTermFin D f ≠ 0 := by
   -- At `ω (1, g_f) vacElem` it is the zero term of `ω g vacElem`, a nonzero multiple of the vacuum.
-  set g : G E s := (D.exists_isAdapted_and_frame_eq 1).choose with hg_def
-  have hg : D.IsAdapted g 1 := (D.exists_isAdapted_and_frame_eq 1).choose_spec.1
+  set g : G E s := adaptedPoint D with hg_def
+  have hg : D.IsAdapted g 1 := isAdapted_adaptedPoint D
   obtain ⟨c, hc_ne, hc⟩ : ∃ c ≠ (0 : ℂ), ∀ x : p → 𝔸 E,
       D.slice x (V.ω g V.vacElem) = (c * ‖vacuumFn x‖ ^ 2) • V₀.vacElem := by
     simpa using hg.slice_omega_vacElem
@@ -135,8 +142,8 @@ lemma zeroTermFin_mem_finitePart (D : V.Splitting V₀ p) {f : 𝒮 V} (hf : f �
     zeroTermFin D f ∈ V₀.finitePart := by
   -- For the adapted point `g`, the mixed model of `ω g vacElem` is a multiple of `vacElem`. So the
   -- zero term of `ω g` of a finite translate of `vacElem` is a multiple of such a translate.
-  set g : G E s := (D.exists_isAdapted_and_frame_eq 1).choose with hg_def
-  have hg : D.IsAdapted g 1 := (D.exists_isAdapted_and_frame_eq 1).choose_spec.1
+  set g : G E s := adaptedPoint D with hg_def
+  have hg : D.IsAdapted g 1 := isAdapted_adaptedPoint D
   obtain ⟨c, -, hc⟩ := hg.slice_omega_vacElem
   have h_translate (x : n → 𝔸f E) :
       D.zeroTerm (V.ω g (V.finHeisenbergOp x V.vacElem)) ∈ V₀.finitePart := by
@@ -163,8 +170,8 @@ lemma exists_zeroTerm_rho_integrated_eq (D : V.Splitting V₀ p) (y : n → 𝔸
   -- of another pure tensor. As `g` is adapted, there is a bounded map `L` of Fock spaces
   -- such that the zero term of `ω g (integrated v f)` is `integrated (L v)` of the zero term of
   -- `ω g (projReal f)`.
-  set g : G E s := (D.exists_isAdapted_and_frame_eq 1).choose with hg_def
-  have hg : D.IsAdapted g 1 := (D.exists_isAdapted_and_frame_eq 1).choose_spec.1
+  set g : G E s := adaptedPoint D with hg_def
+  have hg : D.IsAdapted g 1 := isAdapted_adaptedPoint D
   obtain ⟨w, hw⟩ := V.exists_rho_integrated_eq y v
   obtain ⟨L, hL⟩ := hg.exists_apply_zero_omega_integrated_eq D.isMixedLaw_slice
   refine ⟨L (realWeil (blockU g⁻¹.1) w), fun f ↦ ?_⟩
