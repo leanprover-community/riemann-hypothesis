@@ -237,10 +237,12 @@ lemma exists_isDepthStep (a : ℕ) {n : ℤ} (hn : n ≠ 0) :
     simp [ω', mul_comm]
   · -- it is enough that `g z ≡ z`, and `[ε] ^ p ^ a = φ ^ a [ε] ≡ 1` modulo `p_a`
     have hz_dvd : (k.frobE a).val ∣ toGp g.val • k.z.val - k.z.val := by
-      simp [hz, frobE_dvd_iff, ← iterate_frobEnd_teichmuller, ← phi_pow_smul]
+      rw [hz, frobE_dvd_iff, map_sub, map_mul, ← iterate_frobEnd_teichmuller, ← phi_pow_smul,
+        thetaPhiInv_phi_pow, theta_teichmuller, untilt_epsTilt, one_mul, sub_self]
     rw [hg']
     exact k.dvd_smul_sub_of_fixesLambda hz_dvd (fixes g).1 s
-  · simp [frobE_dvd_iff, hυ, mul_comm]
+  · rw [frobE_dvd_iff, map_sub, map_mul, thetaPhiInv_phi_pow, mul_comm (theta υ), ← hυ,
+      map_pow, map_natCast, sub_self]
   · simp [ω', ← hX, smul_sub, ← map_zpow]
 
 /-- The statement of `exists_isDepthStep` with the four fields of `IsDepthStep` written out: for
@@ -299,7 +301,11 @@ lemma exists_frobE_dvd_smul_sum_sub_sum (a : ℕ) :
   rintro ⟨_, g, rfl⟩ s
   obtain ⟨w, hw⟩ : ∃ w : Fin (p ^ a * k.e) → WittFq k.f,
       thetaPhiInv a s = ∑ m : Fin (p ^ a * k.e), thetaPhiInv a (w m • k.z.val ^ m.val) := by
-    simpa [frobE_dvd_iff, k.dvd_iff_coe_dvd, sub_eq_zero] using k.exists_dvd_sub_sum_z_pow a rfl s
+    obtain ⟨w, hw⟩ := k.exists_dvd_sub_sum_z_pow a rfl s
+    refine ⟨w, ?_⟩
+    rw [k.dvd_iff_coe_dvd, frobE_dvd_iff] at hw
+    push_cast at hw
+    rwa [map_sub, map_sum, sub_eq_zero] at hw
   let avg (y : OC) : OC := ∑ l : Fin (p ^ cost a 0), toGp (t l).val • y
   let term (m : Fin (p ^ a * k.e)) : OC := thetaPhiInv a (w m • k.z.val ^ m.val)
   suffices h_term : ∀ m : Fin (p ^ a * k.e), toGp g.val • avg (term m) = avg (term m) by
@@ -309,20 +315,29 @@ lemma exists_frobE_dvd_smul_sum_sub_sum (a : ℕ) :
       simp only [h_avg, smul_sum, h_term]
     simpa [avg, frobE_dvd_iff, sub_eq_zero] using h_fix
   intro m
+  have h_smul_term (γ : k.subgroup) (r : Ainf) :
+      toGp γ.val • thetaPhiInv a (w m • r) = thetaPhiInv a (w m • (toGp γ.val • r)) := by
+    rw [← thetaPhiInv_smul, smul_def', smul_def', smul_mul', (fixes γ).1 (w m)]
   by_cases h_dvd : p ^ a ∣ m
   · -- `z ^ p ^ a = φ ^ a z` has image `θ z`, which all of `k.galMonoid` fixes
     obtain ⟨n, hn⟩ := h_dvd
-    simp only [avg, term, hn, pow_mul, ← phi_pow_smul_z]
-    simp [smul_def', ← thetaPhiInv_smul, fixes]
+    have h_fix_term (γ : k.subgroup) : toGp γ.val • term m = term m := by
+      dsimp only [term]
+      rw [h_smul_term, hn, pow_mul, ← phi_pow_smul_z, smul_pow', smul_def', map_mul, map_pow,
+        thetaPhiInv_smul, thetaPhiInv_phi_pow, (fixes γ).2, ← thetaPhiInv_phi_pow a k.z.val,
+        ← map_pow, ← map_mul, ← smul_def']
+    simp only [avg, smul_sum, h_fix_term]
   · -- `ζ ^ m ≠ 1` and `a ≤ cost a 0`, so the geometric sum vanishes, and both sides with it
     let ζ : OC := thetaPhiInv a (WittVector.teichmuller p epsTilt)
     have h_geom : ∑ l : Fin (p ^ cost a 0), (ζ ^ m.val) ^ l.val = 0 :=
       sum_pow_eq_zero_of_isPrimitiveRoot (isPrimitiveRoot_thetaPhiInv_teichmuller_epsTilt a)
         (pow_dvd_pow p (by simp +arith [cost])) h_dvd
     have h_eigen (l : ℕ) : toGp (t l).val • term m = (ζ ^ m.val) ^ l * term m := by
-      simp [ht, ζ, term, pow_right_comm _ _ m.val, ← thetaPhiInv_smul, mul_pow, smul_def', fixes,
-        mul_left_comm]
-    simp [avg, h_eigen, ← sum_mul, h_geom]
+      dsimp only [term, ζ]
+      rw [h_smul_term, smul_pow', ht l, mul_pow, smul_def', smul_def', map_mul, map_mul,
+        map_mul, map_pow, map_pow, map_pow]
+      ring
+    simp only [avg, h_eigen, ← sum_mul, h_geom, zero_mul, smul_zero]
 
 namespace JumpLattice
 
@@ -689,7 +704,10 @@ lemma span_kisinLoc : span Ainf (L.kisinLoc : Set L.Ambient) = L.kisinLocAinf :=
     let f : L.Ambient →ₗ[Ainf] L.Ambient := k.frobEUnit a ^ (-1 : ℤ) • LinearMap.id
     have h_maps : MapsTo f L.kisinLoc L.kisinLoc :=
       fun z hz ↦ frobEUnit_zpow_smul_mem_kisinLoc_iff.2 hz
-    simpa [f, ← frobEUnit_smul] using mapsTo_span h_maps hy
+    have h_mem := mapsTo_span h_maps hy
+    dsimp only [f] at h_mem
+    rwa [LinearMap.smul_apply, LinearMap.id_apply, ← frobEUnit_smul, zpow_neg_one,
+      inv_smul_smul] at h_mem
   exact span_eq_of_le _ (fun x ↦ mem_kisinLocAinf_of_mem_kisinLoc)
     fun x hx ↦ saturateBy_induction hx h_base h_step
 
@@ -721,10 +739,10 @@ lemma valueAt_mem_valueField {a : ℕ} {μ : L.Functional} {x : L.Ambient} (hμ 
   -- be solved for `valueAt a μ x` in the field `valueField a`.
   obtain ⟨r, hr, hrx⟩ : ∃ r ∈ nonZeroDivisors Ainf, r • (φ ^ a)⁻¹ • x ∈ L.ainfLattice :=
     smul_mem_fracSpan (φ ^ a)⁻¹ (kisinLocAinf_le_fracSpan (mem_kisinLocAinf_of_mem_kisinLoc hx))
-  obtain ⟨n, t, v, hv⟩ : ∃ (n : ℕ) (t : Fin n → Ainf) (v : Fin n → L.kisinLoc),
-      ∑ l : Fin n, t l • (v l).val = tau ^ L.jumpBound • r • (φ ^ a)⁻¹ • x :=
-    mem_span_set'.1 (span_kisinLoc.ge
-      (mem_saturateBy_of_mem (tau_pow_jumpBound_smul_mem_kisinAinf_of_mem_ainfLattice hrx)))
+  have h_mem : tau ^ L.jumpBound • r • (φ ^ a)⁻¹ • x ∈ L.kisinLocAinf :=
+    mem_saturateBy_of_mem (tau_pow_jumpBound_smul_mem_kisinAinf_of_mem_ainfLattice hrx)
+  rw [← span_kisinLoc] at h_mem
+  obtain ⟨n, t, v, hv⟩ := mem_span_set'.1 h_mem
   let ρ : Ainf := φ ^ a • (tau ^ L.jumpBound * r)
   have hρx : ρ • x = ∑ l : Fin n, (φ ^ a • t l) • φ ^ a • (v l).val := by
     simpa [ρ, smul_sum, frobGroup_smul_smul, smul_smul] using
@@ -738,13 +756,23 @@ lemma valueAt_mem_valueField {a : ℕ} {μ : L.Functional} {x : L.Ambient} (hμ 
     let b : Option (Fin n) → Ainf := fun l ↦ l.elim (-ρ) fun l ↦ φ ^ a • t l
     have hw : ∀ l : Option (Fin n), w l ∈ L.kisinLoc :=
       Option.forall.2 ⟨hx, fun l ↦ phi_pow_smul_mem_kisinLoc (v l).prop⟩
-    have h_zero : ∑ l, b l • w l = 0 := by simpa [b, w, neg_add_eq_zero] using hρx
-    simpa [b, w, neg_add_eq_zero] using sum_map_smul_eq_zero_of_mem_kisinLoc f hw h_zero
+    have h_zero : ∑ l, b l • w l = 0 := by
+      rw [Fintype.sum_option]
+      dsimp only [b, w, Option.elim]
+      rw [neg_smul, neg_add_eq_zero]
+      exact hρx
+    have h_map := sum_map_smul_eq_zero_of_mem_kisinLoc f hw h_zero
+    rw [Fintype.sum_option] at h_map
+    dsimp only [b, w, Option.elim] at h_map
+    rwa [map_neg, neg_smul, neg_add_eq_zero] at h_map
   have h_val : valueAt a μ x =
       (phiInvToBdR a (f ρ))⁻¹ * ∑ l : Fin n, phiInvToBdR a (f (φ ^ a • t l)) * μ (v l) := by
-    have h_phi (y : L.Ambient) : valueAt a μ (φ ^ a • y) = μ y := by simp [valueAt]
+    have h_phi (y : L.Ambient) : valueAt a μ (φ ^ a • y) = μ y := by rw [valueAt_def, inv_smul_smul]
     rw [eq_inv_mul_iff_mul_eq₀ (by simpa using hf)]
-    simpa [smul_eq_val_smul, h_phi] using congrArg (valueAt a μ) h_rel
+    have h_eq := congrArg (valueAt a μ) h_rel
+    rw [smul_eq_val_smul, map_smulₛₗ, map_sum, smul_eq_mul] at h_eq
+    refine h_eq.trans (Finset.sum_congr rfl fun l _ ↦ ?_)
+    rw [smul_eq_val_smul, map_smulₛₗ, smul_eq_mul, h_phi]
   have h_field (l : Fin n) : μ (v l) ∈ valueField a := by
     obtain ⟨-, h_values⟩ := (v l).prop
     exact valueField_zero_le (h_values μ hμ)
