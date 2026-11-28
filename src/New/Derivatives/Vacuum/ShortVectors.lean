@@ -217,13 +217,10 @@ lemma exists_cyclotomic_different_factor {R : Type*} [CommRing R] [IsDomain R] [
 
 /-- Every prime factor of `q₁ = P.q₁ s` divides `n = (d + 1) / 4`, so `q₁ ∣ n ^ q₁`. -/
 private lemma q₁_dvd_pow_q₁ : P.q₁ s ∣ ((P.d + 1) / 4) ^ P.q₁ s := by
-  refine (Nat.dvd_iff_prime_pow_dvd_dvd _ _).2 fun p k hp h_dvd ↦ ?_
-  obtain rfl | hk_pos := k.eq_zero_or_pos
-  · exact one_dvd _
-  have hk_le : k ≤ P.q₁ s :=
-    (Nat.lt_pow_self hp.one_lt).le.trans (Nat.le_of_dvd (NeZero.pos _) h_dvd)
-  exact pow_dvd_pow_of_dvd_of_le
-    (P.dvd_d_add_one_div_four_of_dvd_q₁ hp ((dvd_pow_self p hk_pos.ne').trans h_dvd)) hk_le
+  have hn : (P.d + 1) / 4 ≠ 0 := by grind [P.sixty_four_lt_d]
+  refine (Nat.dvd_pow_self_iff (NeZero.ne _) hn).2 fun p hp ↦ ?_
+  obtain ⟨h_prime, h_dvd, -⟩ := Nat.mem_primeFactors.1 hp
+  exact h_prime.mem_primeFactors (P.dvd_d_add_one_div_four_of_dvd_q₁ h_prime h_dvd) hn
 
 /-- Since `n = (d + 1) / 4` is nilpotent modulo `q₁`, the quadratic polynomial `n y² + y + 1` has
 a root `z < q₁` modulo `q₁`. -/
@@ -231,12 +228,13 @@ private lemma exists_quad_congr_mod_q₁ :
     ∃ z < P.q₁ s, ∃ e : ℕ, ((P.d + 1) / 4) * z ^ 2 + z + 1 = P.q₁ s * e := by
   set N : ℕ := P.q₁ s
   set n : ℕ := (P.d + 1) / 4
+  have hn : IsNilpotent (n : ZMod N) :=
+    ⟨N, by rw [← Nat.cast_pow, (ZMod.natCast_eq_zero_iff _ N).2 q₁_dvd_pow_q₁]⟩
   -- The map `y ↦ n * y ^ 2 + y` on `ZMod N` is injective because `1 + n * (a + b)` is a unit.
   have h_inj : Function.Injective fun y : ZMod N ↦ (n : ZMod N) * y ^ 2 + y := by
     intro a b hab
-    have h_nilp : IsNilpotent ((n : ZMod N) * (a + b)) :=
-      ⟨N, by rw [mul_pow, ← Nat.cast_pow, (ZMod.natCast_eq_zero_iff _ N).2 q₁_dvd_pow_q₁, zero_mul]⟩
-    have h_unit : IsUnit ((n : ZMod N) * (a + b) + 1) := h_nilp.isUnit_add_one
+    have h_unit : IsUnit ((n : ZMod N) * (a + b) + 1) :=
+      ((Commute.all _ _).isNilpotent_mul_right hn).isUnit_add_one
     have h_fac : ((n : ZMod N) * (a + b) + 1) * (a - b) = 0 := by linear_combination hab
     exact sub_eq_zero.1 (h_unit.mul_left_cancel (by simpa using h_fac))
   obtain ⟨y, hy⟩ := Finite.surjective_of_injective h_inj (-1 : ZMod N)
