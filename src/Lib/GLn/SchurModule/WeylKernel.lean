@@ -316,24 +316,19 @@ lemma rowSubst_weylKernel_permArray (hg_tri : ∀ τ : Φ, (g τ)ᵀ.BlockTriang
   -- Substituting `g` multiplies the array on the right by the triangular array `t` of the entries
   -- of `g` in the numbering `e`; by `weylKernel_borelMul` this scales the kernel by a monomial in
   -- the diagonal entries. In the product defining `t` the condition selects at most one factor.
-  set w : (Σ τ : Φ, n τ) × ℕ → R := permArray fun (τ : Φ) (i : n τ) ↦ (e τ i : ℕ)
-  let t (x : Φ × ℕ × ℕ) : R :=
-    ∏ τ : Φ, ∏ a : n τ, ∏ b : n τ, if x = (τ, (e τ a : ℕ), (e τ b : ℕ)) then g τ b a else 1
-  have h_sub : rowSubst g (weylKernel n κ w) = weylKernel n κ (borelMul fst t w) := by
-    have h_tri (τ : Φ) (a b : n τ) (hab : e τ a < e τ b) : g τ a b = 0 := hg_tri τ hab
-    rw [weylKernel, rowSubst_rowSubst, weylKernel]
+  let t x := ∏ τ, ∏ a, ∏ b, if x = (τ, (e τ a : ℕ), (e τ b : ℕ)) then g τ b a else 1
+  trans weylKernel n κ (borelMul fst t (permArray fun τ i ↦ (e τ i : ℕ)))
+  · rw [weylKernel, rowSubst_rowSubst, weylKernel]
     congr 2
     -- Entrywise, `borelMul` keeps only the entries on one side of the diagonal; the others vanish.
-    simpa +instances [t, w, funext_iff, ← ext_iff, (e _).surjective.forall, borelMul, permArray,
-      Fin.val_inj, ite_and, Matrix.mul_apply] using h_tri
-  have h_diag : ((diagramWeight (rankAt n) κ).prod fun p k ↦ t (p.1, p.2, p.2) ^ k) =
-      ∏ τ, ∏ a, g τ a a ^ diagramWeight (rankAt n) κ (τ, e τ a) := by
+    simpa +instances [t, funext_iff, ← ext_iff, (e _).surjective.forall, borelMul, permArray,
+      Fin.val_inj, ite_and, Matrix.mul_apply] using fun τ a b (hab : e τ a < e τ b) ↦ hg_tri τ hab
+  · rw [weylKernel_borelMul]
+    congr 1
     simp [t, ← prod_pow, Finsupp.prod_finsetProd_comm, ← and_assoc,
       ← Prod.ext_iff (y := (_, _)), ite_and, Fin.val_inj]
     -- Outside the support of the weight the exponent is zero.
-    exact prod_congr rfl fun τ _ ↦ prod_congr rfl fun a _ ↦
-      ite_eq_right_iff.2 fun h_zero ↦ by rw [h_zero, pow_zero]
-  rw [h_sub, weylKernel_borelMul, h_diag]
+    exact prod_congr rfl fun τ _ ↦ prod_congr rfl fun a _ ↦ ite_eq_right_iff.2 fun h ↦ by simp [h]
 
 omit [Fintype Φ] [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, DecidableEq (n' τ)] in
 lemma rankAt_eq_succ (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ n' τ) (τ : Φ) : rankAt n' τ = rankAt n τ + 1 := by
@@ -622,17 +617,14 @@ lemma GL.zariski_dense_unitary (x : (τ : Φ) → Matrix (n τ) (n τ) ℂ)
   have h_entire : AnalyticOnNhd ℂ (fun s : ℂ ↦ evalMatrix (NormedSpace.exp (path s)) P) Set.univ :=
     analyticOnNhd_evalMatrix.comp (fun _ _ ↦ .comp (exp_analytic _) (f := path) (by fun_prop))
       (by simp)
-  have h_real (t : ℝ) : evalMatrix (NormedSpace.exp (path t)) P = 0 := by
-    -- at real `s` the exponent is skew-adjoint, so its exponential is unitary
-    have h_unitary : star (NormedSpace.exp (path t)) * NormedSpace.exp (path t) = 1 :=
-      Unitary.star_mul_self_of_mem (selfAdjoint.expUnitary (t • -ℜ y + ℑ y)).prop
-    exact hP _ (congrFun h_unitary)
+  -- at real `s` the exponent is skew-adjoint, so its exponential is unitary
+  have h_real (t : ℝ) : evalMatrix (NormedSpace.exp (path t)) P = 0 :=
+    hP _ (congrFun (Unitary.star_mul_self_of_mem (selfAdjoint.expUnitary (t • -ℜ y + ℑ y)).prop))
   -- The real points accumulate at `0`, so the identity theorem applies.
   have h_zero : (fun s : ℂ ↦ evalMatrix (NormedSpace.exp (path s)) P) = fun _ ↦ 0 :=
     h_entire.eq_of_frequently_eq analyticOnNhd_const
       (((hasDerivAt_id 0).ofReal_comp.tendsto_nhdsNE one_ne_zero).frequently (.of_forall h_real))
-  have h_path_I : path I = y := by simp [path, smul_smul, realPart_add_I_smul_imaginaryPart]
-  simpa [h_path_I] using congrFun h_zero I
+  simpa [path, smul_smul, realPart_add_I_smul_imaginaryPart] using congrFun h_zero I
 
 end Density
 

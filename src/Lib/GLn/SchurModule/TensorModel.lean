@@ -253,21 +253,15 @@ variable (R n κ) in
 lemma span_fillingPoly :
     Submodule.span R (Set.range fun T : ColumnFilling n κ ↦ fillingPoly R T) =
       nablaFamily R n κ := by
-  apply le_antisymm
-  · exact Submodule.span_le.2 <| Set.range_subset_iff.2 fun T ↦
-      prod_tableauPoly_mem_nabla (T := fillingRows T)
-  · rw [← range_nablaCombination, Fintype.range_linearCombination, Submodule.span_le,
-      Set.range_subset_iff]
-    intro i
-    -- Substituting the identity matrices into a basis element, a product of minors with rows in
-    -- any order, expands it in the products with increasing rows.
-    have h_expand : nablaBasis R n κ i =
-        ∑ T : ColumnFilling n κ, (∏ τ : Φ, ∏ h : Fin (rankAt n τ), ∏ j : Fin (κ τ h),
-          ((1 : Matrix (n τ) (n τ) R).submatrix ((i τ).val h j) (fillingRows T τ h j)).det) •
-            fillingPoly R T :=
-      (rowSubst_one _).symm.trans (rowSubst_prod_tableauPoly (fun _ ↦ 1) fun τ : Φ ↦ (i τ).val)
-    rw [h_expand]
-    exact Submodule.sum_mem _ fun T _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨T, rfl⟩)
+  refine le_antisymm (Submodule.span_le.2 <| Set.range_subset_iff.2 fun T ↦
+    prod_tableauPoly_mem_nabla (T := fillingRows T)) ?_
+  rw [← range_nablaCombination, Fintype.range_linearCombination, Submodule.span_le]
+  refine Set.range_subset_iff.2 fun i ↦ ?_
+  -- Substituting the identity matrices into a basis element, a product of minors with rows in
+  -- any order, expands it in the products with increasing rows.
+  rw [(rowSubst_one (nablaBasis R n κ i)).symm.trans <|
+    rowSubst_prod_tableauPoly (fun τ ↦ (1 : Matrix (n τ) (n τ) R)) fun τ ↦ (i τ).val]
+  exact Submodule.sum_mem _ fun T _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨T, rfl⟩)
 
 /-- The integral matrix `fillingMatrix`, which embeds the Weyl module of the diagram `κ` (with basis
 indexed by `WeylIndexFamily n κ`) into tensors (with basis indexed by column fillings), has an

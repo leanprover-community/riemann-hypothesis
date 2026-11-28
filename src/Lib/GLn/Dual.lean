@@ -916,8 +916,8 @@ lemma weylNormSq_cartanProduct (hkp : HasColumnsBelow n N kp) (hkm : HasColumnsB
     simp [weylNormSq, star_mulVec_dotProduct, schur_conjTranspose_weylGram_schur hκ.fitsRanks,
       hκ.schurDetExp_eq_zero, h_incl, schur_one]
   calc weylNormSq c
-      = (star c ⬝ᵥ (Mᴴ * G * M) *ᵥ c).re := by rw [weylNormSq, h_gram]
-    _ = (star (M *ᵥ c) ⬝ᵥ G *ᵥ M *ᵥ c).re := by
+      = (star (M *ᵥ c) ⬝ᵥ G *ᵥ M *ᵥ c).re := by
+        rw [weylNormSq, h_gram]
         simp only [star_mulVec_dotProduct, mulVec_mulVec, Matrix.mul_assoc]
     _ = (star (vecMulVec a b)ᵀ.vec ⬝ᵥ G *ᵥ (vecMulVec a b)ᵀ.vec).re := by
         rw [mixedCartan_mulVec_cartanProduct hkp hkm]
