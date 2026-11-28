@@ -373,18 +373,11 @@ variable {T T' M M' : Type} [CommRing T] [CommRing T'] [AddCommGroup M] [AddComm
 /-- The map `exteriorMap m` acts on the scalar (degree zero) part through the ring map `a`. -/
 lemma algebraMapInv_exteriorMap (m : M →ₛₗ[a] M') (x : ExteriorAlgebra T M) :
     algebraMapInv (exteriorMap m x) = a (algebraMapInv x) := by
-  induction x using left_induction with
-  | algebraMap r =>
-    rw [algebraMap_leftInverse, Algebra.algebraMap_eq_smul_one, exteriorMap_smul,
-      (exteriorMap m).map_one, ← Algebra.algebraMap_eq_smul_one, algebraMap_leftInverse]
-  | add x x' ih ih' =>
-    rw [(exteriorMap m).map_add, map_add, map_add, a.map_add, ih, ih']
-  | ι_mul x m' _ =>
-    change algebraMapInv (exteriorMap m (ExteriorAlgebra.ι T m' * x)) =
-      a (algebraMapInv (ExteriorAlgebra.ι T m' * x))
-    rw [(exteriorMap m).map_mul, exteriorMap_iota, map_mul, map_mul, algebraMapInv, algebraMapInv,
-      ExteriorAlgebra.lift_ι_apply, ExteriorAlgebra.lift_ι_apply, LinearMap.zero_apply,
-      LinearMap.zero_apply, zero_mul, zero_mul, a.map_zero]
+  have h : (algebraMapInv (R := T') (M := M')).toRingHom.comp (exteriorMap m) =
+      a.comp (algebraMapInv (R := T) (M := M)).toRingHom :=
+    exteriorRingHom_ext (fun _ ↦ by simp [Algebra.algebraMap_eq_smul_one])
+      (fun _ ↦ by simp [algebraMapInv])
+  exact DFunLike.congr_fun h x
 
 /-- Contraction with `φ₀` for a semilinear map `φ = (φ₀, φ₁) : M → T' × M'`. It is the map
 `⋀ M → ⋀ (T' × M')` induced by `φ`, followed by contraction with the first projection and then the
@@ -416,21 +409,14 @@ contraction of `x`. -/
 lemma contraction_ι_mul (m : M) (x : ExteriorAlgebra T M) :
     contraction φ (ExteriorAlgebra.ι T m * x) =
       (φ m).1 • exteriorMapSnd φ x - ExteriorAlgebra.ι T' (φ m).2 * contraction φ x := by
-  have h_snd :
-      ExteriorAlgebra.map (LinearMap.snd T' T' M') (exteriorMap φ x) = exteriorMapSnd φ x := by
-    induction x using left_induction with
-    | algebraMap r =>
-      rw [Algebra.algebraMap_eq_smul_one, exteriorMap_smul, exteriorMap_smul,
-        (exteriorMap φ).map_one, (exteriorMapSnd φ).map_one, map_smul, map_one]
-    | add x x' ih ih' =>
-      rw [(exteriorMap φ).map_add, map_add, (exteriorMapSnd φ).map_add, ih, ih']
-    | ι_mul x m ih =>
-      rw [(exteriorMap φ).map_mul, map_mul, (exteriorMapSnd φ).map_mul, exteriorMap_iota,
-        ExteriorAlgebra.map_apply_ι, exteriorMap_iota, ih]
-      rfl
+  have h_snd : (ExteriorAlgebra.map (LinearMap.snd T' T' M')).toRingHom.comp (exteriorMap φ) =
+      exteriorMapSnd φ :=
+    exteriorRingHom_ext (fun _ ↦ by simp [Algebra.algebraMap_eq_smul_one]) (fun _ ↦ by simp)
+  have h_snd_x : ExteriorAlgebra.map (LinearMap.snd T' T' M') (exteriorMap φ x) =
+      exteriorMapSnd φ x := DFunLike.congr_fun h_snd x
   dsimp only [contraction, LinearMap.coe_mk, AddHom.coe_mk, Function.comp_apply]
   rw [(exteriorMap φ).map_mul, exteriorMap_iota, contractLeft_ι_mul, map_sub, map_smul, map_mul,
-    ExteriorAlgebra.map_apply_ι, h_snd]
+    ExteriorAlgebra.map_apply_ι, h_snd_x]
   rfl
 
 /-- The graded Leibniz rule for `contraction φ` along the ring map `exteriorMapSnd φ`. The sign
