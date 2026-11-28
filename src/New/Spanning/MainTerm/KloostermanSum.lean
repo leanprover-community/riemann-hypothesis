@@ -76,6 +76,8 @@ lemma New.integral_comp_quotientMk {G E : Type*} [Group G] [TopologicalSpace G]
   rw [← integral_map h_meas.aemeasurable measurable_from_top.aestronglyMeasurable, h_map,
     integral_smul_measure, h_count, Measure.real]
 
+/-- Given an element `y` of a group `G` and a subgroup `J`, the product `y⁻¹ * (y : G ⧸ J).out`
+lies in `J`. -/
 lemma New.inv_mul_out_coe_mem {G : Type*} [Group G] (J : Subgroup G) (y : G) :
     y⁻¹ * (y : G ⧸ J).out ∈ J :=
   QuotientGroup.eq.1 (y : G ⧸ J).out_eq'.symm
@@ -109,6 +111,8 @@ def PlaceData.kloostermanSum (x s : T.G) : ℂ :=
 
 variable {F}
 
+/-- The product of `u⁻¹` and the chosen representative of the unipotent coset of `u` lies in
+`F.congruenceSubgroup`. -/
 lemma PlaceData.inv_mul_out_mem (u : T.besselU) :
     (u : T.G)⁻¹ * ((u : F.UnipotentCosets).out : T.G) ∈ F.congruenceSubgroup :=
   Subgroup.mem_subgroupOf.1 (inv_mul_out_coe_mem (F.congruenceSubgroup.subgroupOf T.besselU) u)
