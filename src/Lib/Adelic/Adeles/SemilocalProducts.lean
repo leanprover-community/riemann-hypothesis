@@ -128,10 +128,12 @@ noncomputable def adeleOfLocal : LocProd P →ₙ+* 𝔸f E where
     by_cases h : w ∈ P <;> simp [h]
 
 open scoped Classical in
+/-- Component evaluation of the adele embedding `adeleOfLocal P y` at a finite place `w`. -/
 lemma adeleOfLocal_apply (y : LocProd P) (w : FinPlace E) :
     adeleOfLocal P y w = if h : w ∈ P then y ⟨w, h⟩ else 0 :=
   rfl
 
+/-- The semilocal adele inclusion map `adeleOfLocal P` is continuous. -/
 @[fun_prop]
 lemma continuous_adeleOfLocal : Continuous (adeleOfLocal P) := by
   classical
@@ -142,6 +144,7 @@ lemma continuous_adeleOfLocal : Continuous (adeleOfLocal P) := by
   exact (continuous_inclusion (R := LocField) (by simp)).comp
     (continuous_rng_of_principal.2 h_components)
 
+/-- Evaluation across the chosen finite places `evalPlaces P` is continuous. -/
 @[fun_prop]
 lemma continuous_evalPlaces : Continuous (evalPlaces P) :=
   continuous_pi fun w ↦ continuous_evalAt w.val
