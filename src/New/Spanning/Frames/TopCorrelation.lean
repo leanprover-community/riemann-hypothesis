@@ -121,11 +121,8 @@ lemma exists_unit_forall_apply_eq_of_inv_smul_sub_mem {A n : Type} [SemilocalFie
     (dense_of_ae P.ae_isUnit).inter_nhds_nonempty
       (eventually_forall_apply_add_smul_eq hC hL h_loc)
   refine ⟨u, fun x hx y ⟨hyC, hyQ⟩ hxy ↦ ?_⟩
-  have h_point : y + (u : A) • (u⁻¹ • (x - y)) = x := by simp [← Units.smul_def]
-  have h_step : y + (u : A) • (u⁻¹ • (x - y)) ∈ Q → φ (y + (u : A) • (u⁻¹ • (x - y))) = φ y :=
-    hu (y, u⁻¹ • (x - y)) ⟨hyC, hxy⟩ hyQ
-  rw [h_point] at h_step
-  exact h_step hx
+  -- Take `b = u` and `v = u⁻¹ • (x - y)`, so that `y + b • v = x`.
+  simpa [← Units.smul_def, hx] using hu (y, u⁻¹ • (x - y)) ⟨hyC, hxy⟩ hyQ
 
 /-- Let `φ` be a function on vectors over a finite place `A`, supported in `C ∩ Q` with `C` compact,
 locally constant along `Q` at the points of `C`, and invariant on its support under a group `H` of
@@ -145,13 +142,8 @@ theorem exists_step_function_extension {A n : Type} [SemilocalField A] [StarRing
   classical
   -- Let `L = R ^ n`. For a small unit `u`, `φ` is constant on `(y + u • L) ∩ Q` for `y` in `C ∩ Q`.
   -- Give `Φ` this value on the class `y + u • L` if `φ y ≠ 0`, and `0` on the other classes.
-  obtain ⟨hL_open, hL_compact, -⟩ : IsOpen (intVectors P.integers n : Set (n → A)) ∧
-      IsCompact (intVectors P.integers n : Set (n → A)) ∧ volume
-        (intVectors P.integers n : Set (n → A)) = 1 :=
-    P.isOpen_isCompact_volume_intVectors
-  obtain ⟨u, hu⟩ : ∃ u : Aˣ, ∀ x ∈ Q, ∀ y ∈ C ∩ Q,
-    u⁻¹ • (x - y) ∈ intVectors P.integers n → φ x = φ y :=
-    exists_unit_forall_apply_eq_of_inv_smul_sub_mem hC hL_compact h_loc
+  obtain ⟨hL_open, hL_compact, -⟩ := P.isOpen_isCompact_volume_intVectors (ι := n)
+  obtain ⟨u, hu⟩ := exists_unit_forall_apply_eq_of_inv_smul_sub_mem hC hL_compact h_loc
   let Near (x y : n → A) : Prop := φ y ≠ 0 ∧ u⁻¹ • (x - y) ∈ intVectors P.integers n
   have const (x y : n → A) (hx : x ∈ Q) (hy : Near x y) : φ x = φ y :=
     hu x hx y (h_supp y hy.1) hy.2
@@ -168,8 +160,8 @@ theorem exists_step_function_extension {A n : Type} [SemilocalField A] [StarRing
   have Φ_congr (x x' : n → A) (h : ∀ y : n → A, Near x y → ∃ y' : n → A, Near x' y' ∧ φ y' = φ y)
       (h' : ∀ y' : n → A, Near x' y' → ∃ y : n → A, Near x y) : Φ x' = Φ x := by
     by_cases hx : ∃ y : n → A, Near x y
-    · obtain ⟨y, hy⟩ : ∃ y : n → A, Near x y := hx
-      obtain ⟨y', hy', h_eq⟩ : ∃ y' : n → A, Near x' y' ∧ φ y' = φ y := h y hy
+    · obtain ⟨y, hy⟩ := hx
+      obtain ⟨y', hy', h_eq⟩ := h y hy
       rw [Φ_eq x y hy, Φ_eq x' y' hy', h_eq]
     · rw [Φ_zero x hx, Φ_zero x' fun ⟨y', hy'⟩ ↦ hx (h' y' hy')]
   have move (k : G) (hk : k ∈ H) (x y : n → A) (hy : Near x y) :
@@ -201,7 +193,7 @@ theorem exists_step_function_extension {A n : Type} [SemilocalField A] [StarRing
       (move k⁻¹ (inv_mem hk) ((k : GL n A).val *ᵥ x) y hy).1
     exact ⟨((k⁻¹ : G) : GL n A).val *ᵥ y, by simpa using h_back⟩
   · by_cases h_near : ∃ y : n → A, Near x y
-    · obtain ⟨y, hy⟩ : ∃ y : n → A, Near x y := h_near
+    · obtain ⟨y, hy⟩ := h_near
       rw [Φ_eq x y hy, const x y hx hy]
     · have h_zero : φ x = 0 := by_contra fun h_ne ↦ h_near ⟨x, h_ne, by simp⟩
       rw [Φ_zero x h_near, h_zero]
@@ -323,11 +315,7 @@ lemma frameGram_top_eq_of_mem_besselH {g k : T.G} (hg : g ∈ T.besselH) (hk : k
     T.frameGram (g * x * k : T.G) 𝔰.top 𝔰.top = T.frameGram x 𝔰.top 𝔰.top := by
   have h_le : T.besselH ≤ T.partialUnitriangularGroup (𝔰.top + 1) ⊓ T.floorGroup 𝔰.top :=
     partialUnitriangularGroup_inf_floorGroup_last.ge
-  have h_left (y : T.G) : T.frameGram (g * y : T.G) 𝔰.top 𝔰.top = T.frameGram y 𝔰.top 𝔰.top :=
-    (frameGram_diag_mul (h_le hg) y).1
-  have h_right (y : T.G) : T.frameGram (y * k : T.G) 𝔰.top 𝔰.top = T.frameGram y 𝔰.top 𝔰.top :=
-    (frameGram_diag_mul (h_le hk) y).2
-  rw [h_right, h_left]
+  rw [(frameGram_diag_mul (h_le hk) _).2, (frameGram_diag_mul (h_le hg) x).1]
 
 /-- For `s` in the floor group `T.floorGroup 𝔰.ϱ`, which commutes with the Weyl element
 `weylElem 𝔰.ϱ r` (written `w_r`), one has `(w_r * (a * s⁻¹)⁻¹)⁻¹ * (s * x) = a * w_r⁻¹ * x` for all
@@ -378,8 +366,7 @@ lemma eventually_scaledOrbitalIntegral_mul_eq_self {F : PlaceData ι T (m + 1)}
   -- For heads of a gauge, the integrand defining `scaledOrbitalIntegral` vanishes off the compact
   -- set `C` (`Gauge.hasMatrixSize_of_ne_zero`). For `z` near `(p, 1)` the argument changes, for all
   -- `y` in `C`, by a right translation from `F.congruenceSubgroup`.
-  obtain ⟨Γ, head_p, -⟩ : ∃ Γ : Gauge F, (∀ᶠ r : ℕ → Aˣ in nhds p, Γ.IsHead 𝔰.ϱ r) ∧
-      ∀ᶠ r : ℕ → Aˣ in nhds p, Γ.IsHead 𝔰.ϱ r := h.exists_gauge_isHead p p
+  obtain ⟨Γ, head_p, -⟩ := h.exists_gauge_isHead p p
   let C : Set T.G := {y : T.G | Γ.HasMatrixSize (60 * 𝔰.n ^ 2) (y : GL 𝔰.BesselIndex A).val}
   have cong_open : IsOpen (F.congruenceSubgroup : Set T.G) := unitaryLevel_open_compact.1
   have near_cong : ∀ᶠ z : (ℕ → Aˣ) × T.G in nhds (p, 1), ∀ y ∈ C,
@@ -404,8 +391,7 @@ lemma eventually_scaledOrbitalIntegral_mul_eq_self {F : PlaceData ι T (m + 1)}
     by_contra h_ne
     -- One of the two values is nonzero; with `Z.besselVector y ≠ 0` this puts `y` in `C`.
     have hC : y ∈ C := by
-      obtain h_r | h_p : Z.besselVector ((weylElem 𝔰.ϱ r * (l * s)⁻¹)⁻¹ * y) ≠ 0 ∨
-          Z.besselVector ((weylElem 𝔰.ϱ p * l⁻¹)⁻¹ * y) ≠ 0 := Ne.ne_or_ne 0 h_ne
+      obtain h_r | h_p := Ne.ne_or_ne 0 h_ne
       · exact Γ.hasMatrixSize_of_ne_zero (isCut_besselVector Z) head_r (inv_mem (mul_mem hl hs)) hy
           h_r
       · exact Γ.hasMatrixSize_of_ne_zero (isCut_besselVector Z) head_p.self_of_nhds (inv_mem hl) hy
@@ -433,8 +419,7 @@ lemma exists_isCompact_scaledOrbitalIntegral_support {F : PlaceData ι T (m + 1)
   have hS : IsCompact S := Γ.isCompact_hasMatrixSize
   refine ⟨(fun (y, y') ↦ y' * y⁻¹ * weylElem 𝔰.ϱ p) '' S ×ˢ S,
     (hS.prod hS).image (by fun_prop), fun l hl h_ne ↦ ?_⟩
-  obtain ⟨y, hy, hy'⟩ : ∃ y : T.G, Z.besselVector y ≠ 0 ∧
-      Z.besselVector ((weylElem 𝔰.ϱ p * l⁻¹)⁻¹ * y) ≠ 0 :=
+  obtain ⟨y, hy, hy'⟩ :=
     exists_ne_zero_of_besselOrbitalIntegral_ne_zero (right_ne_zero_of_smul h_ne)
   have y_mem : y ∈ S := Γ.hasMatrixSize_of_ne_zero h_cut hp (inv_mem hl) hy hy'
   set y' : T.G := (weylElem 𝔰.ϱ p * l⁻¹)⁻¹ * y
@@ -451,8 +436,7 @@ lemma inner_scaledOrbitalIntegral {F : PlaceData ι T (m + 1)} (Z : F.Intermedia
     (p q : ℕ → Aˣ) [h : P.IsLargeLatticeData F] {l : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ) :
     ⟪scaledOrbitalIntegral Z p l, scaledOrbitalIntegral Z q l⟫_ℂ = (F.headDensity 𝔰.ϱ p q).toReal *
       ∫ y : T.G × T.G, unfoldedPairing Z p q l y ∂F.groupMeasure.prod F.groupMeasure := by
-  obtain ⟨Γ, hp, hq⟩ : ∃ Γ : Gauge F, (∀ᶠ r : ℕ → Aˣ in nhds p, Γ.IsHead 𝔰.ϱ r) ∧
-      ∀ᶠ r : ℕ → Aˣ in nhds q, Γ.IsHead 𝔰.ϱ r := h.exists_gauge_isHead p q
+  obtain ⟨Γ, hp, hq⟩ := h.exists_gauge_isHead p q
   have h_density : ((F.headDensity 𝔰.ϱ p q).toReal : ℂ) =
       (F.headDensity 𝔰.ϱ p 1).toReal * (F.headDensity 𝔰.ϱ q 1).toReal := by
     simp [headDensity, mul_rpow_of_nonneg, mul_pow, prod_mul_distrib]
@@ -463,8 +447,7 @@ lemma inner_scaledOrbitalIntegral {F : PlaceData ι T (m + 1)} (Z : F.Intermedia
       Γ.inner_besselOrbitalIntegral (μ := F.groupMeasure) (isCut_besselVector Z)
         (continuous_besselVector Z) hp.self_of_nhds hq.self_of_nhds (inv_mem hl)
   rw [scaledOrbitalIntegral, scaledOrbitalIntegral, inner_smul_left_eq_smul,
-    inner_smul_right_eq_smul, h_inner,
-    h_density]
+    inner_smul_right_eq_smul, h_inner, h_density]
   simp [mul_assoc]
 
 /-- Let `p` and `q` be heads for a gauge `Γ` of a large lattice datum, and let `l` lie in the floor
@@ -479,14 +462,9 @@ lemma hasMatrixSize_of_unfoldedPairing_ne_zero {F : PlaceData ι T (m + 1)} (Z :
       Γ.HasMatrixSize (60 * 𝔰.n ^ 2) (y₂ : GL 𝔰.BesselIndex A).val := by
   -- Both inner products in the integrand are nonzero, hence so are all four vectors.
   have h_cut : F.IsCut Z.besselVector := isCut_besselVector Z
-  have h₁ : Z.besselVector y₁ ≠ 0 := fun h_zero ↦ h_ne (by simp [unfoldedPairing, h_zero])
-  have h₂ : Z.besselVector y₂ ≠ 0 := fun h_zero ↦ h_ne (by simp [unfoldedPairing, h_zero])
-  have h₁' : Z.besselVector ((weylElem 𝔰.ϱ p * l⁻¹)⁻¹ * y₁) ≠ 0 := fun h_zero ↦
-    h_ne (by simp only [unfoldedPairing, h_zero, inner_zero_right, mul_zero])
-  have h₂' : Z.besselVector ((weylElem 𝔰.ϱ q * l⁻¹)⁻¹ * y₂) ≠ 0 := fun h_zero ↦
-    h_ne (by simp only [unfoldedPairing, h_zero, inner_zero_left, mul_zero])
-  exact ⟨Γ.hasMatrixSize_of_ne_zero h_cut hp (inv_mem hl) h₁ h₁',
-    Γ.hasMatrixSize_of_ne_zero h_cut hq (inv_mem hl) h₂ h₂'⟩
+  refine ⟨Γ.hasMatrixSize_of_ne_zero h_cut hp (inv_mem hl) ?_ ?_,
+    Γ.hasMatrixSize_of_ne_zero h_cut hq (inv_mem hl) ?_ ?_⟩ <;> refine fun h_zero ↦ h_ne ?_ <;>
+    simp only [unfoldedPairing, h_zero, inner_zero_left, inner_zero_right, zero_mul, mul_zero]
 
 /-- At a large lattice datum `F` there is a finite constant `C` such that the integral over `k` of
 the norm of the integrand `unfoldedPairing Z p q (k * l) (y₁, y₂)` is at most `C` times the norm of
@@ -500,8 +478,7 @@ lemma exists_lintegral_enorm_unfoldedPairing_le {F : PlaceData ι T (m + 1)}
   obtain ⟨Γ, -⟩ := h.exists_gauge_isHead p q
   let W : T.G → EuclideanSpace ℂ Z.Cosets := Z.besselVector
   -- The integrals `∫ ‖⟪W (k * a), W (k * b)⟫_ℂ‖` over these floors are at most `C < ∞`.
-  obtain ⟨C, hC, h_bd⟩ : ∃ C : ℝ≥0∞, C < ∞ ∧ ∀ a b : T.G,
-      ∫⁻ k, ‖frameCorrelation W 1 (k * a) (k * b)‖ₑ ∂F.quotientMeasureFrom i ≤ C :=
+  obtain ⟨C, hC, h_bd⟩ :=
     (Γ.isPairingKernel_frameCorrelation_one (isCut_besselVector Z) 0).exists_lintegral_le i
   refine ⟨C, hC, fun l y₁ y₂ ↦ ?_⟩
   let a : T.G := l * ((weylElem 𝔰.ϱ q)⁻¹ * y₂)
@@ -524,11 +501,9 @@ lemma integrable_unfoldedPairing {F : PlaceData ι T (m + 1)} (Z : F.Intermediat
       ((F.quotientMeasureFrom i).prod (F.groupMeasure.prod F.groupMeasure)) := by
   -- The integral of the norm over `k` is bounded by a continuous function of the two group
   -- variables, and it vanishes off a compact set.
-  obtain ⟨Γ, hp, hq⟩ : ∃ Γ : Gauge F, (∀ᶠ r : ℕ → Aˣ in nhds p, Γ.IsHead 𝔰.ϱ r) ∧
-      ∀ᶠ r : ℕ → Aˣ in nhds q, Γ.IsHead 𝔰.ϱ r := h.exists_gauge_isHead p q
+  obtain ⟨Γ, hp, hq⟩ := h.exists_gauge_isHead p q
   let Φ (k : T.G) (y : T.G × T.G) : ℂ := unfoldedPairing Z p q (k * l) y
   let B (y : T.G × T.G) : ℂ := ⟪Z.besselVector y.1, Z.besselVector y.2⟫_ℂ
-  have : BorelSpace (T.G × T.G) := Prod.borelSpace
   have hΦ : Measurable (uncurry Φ) := Continuous.measurable (by fun_prop)
   have hB : Continuous B := by fun_prop
   let M₂ : Measure (T.G × T.G) := F.groupMeasure.prod F.groupMeasure
