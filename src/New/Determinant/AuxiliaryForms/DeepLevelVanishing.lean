@@ -185,7 +185,7 @@ lemma New.Exchange.HasDeepLevelSizes.pow_places_le_div
   have hA : 8 * (card n + 1) ^ 2 < A := h_size.rank_sq_lt
   have hN : N < A := h_size.exponent_lt
   have hβ₁₆ : 16 ≤ β := h_size.sixteen_le
-  have exponent_le : 1 + 2 * card n ^ 2 + 2 * A + (N + 2 * (3 * A)) ≤ 20 * A := by nlinarith
+  have exponent_le : 1 + 2 * card n ^ 2 + 2 * A + (N + 2 * (3 * A)) ≤ 20 * A := by grind
   rw [le_div_iff₀ (by positivity), le_div_iff₀ (by positivity)]
   calc
     _ ≤ (β * β ^ (2 * card n ^ 2) * β ^ (2 * A)) ^ D.f * (β ^ N * (β * β) ^ (3 * A)) ^ D.f *

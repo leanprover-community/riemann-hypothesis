@@ -459,7 +459,7 @@ theorem HCParam.IsKHighest.sum_card_sq_add_mul_nonneg {x : H} (h_unitary : IsUni
       linear_combination (l.lowestKType a + ν a) * two_mul_lowestKType hg a
     have h_twoRho_sq : twoRho l ⊤ a ^ 2 ≤ Fintype.card n ^ 2 := by
       grw [(sq_abs _).ge, abs_twoRho_le]
-    nlinarith [sq_nonneg (l a - 2 * l.lowestKType a), sq_nonneg (Fintype.card n : ℤ)]
+    linarith [sq_nonneg (l a - 2 * l.lowestKType a), sq_nonneg (Fintype.card n : ℤ)]
   rify at h_entry_le ⊢
   calc (0 : ℝ) ≤ ∑ a : n, (c a : ℝ) - l.casimirValue := sub_nonneg.2 h_value_le
     _ ≤ ∑ a : n, ((Fintype.card n : ℝ) ^ 2 + ν a * (ν a + l a)) := by
