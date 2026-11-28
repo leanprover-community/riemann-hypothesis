@@ -175,28 +175,23 @@ lemma isProfiniteRing_intAdeles {E : Type*} [Field E] [NumberField E] : IsProfin
     simp [dvd_def, Subtype.ext_iff, eq_comm]
   simpa only [key] using existsUnique_eq'
 
+/-- An additive map preserves eventual congruence to a fixed value modulo a natural number. -/
+private lemma eventually_natCast_dvd_map_sub {α : Type*} {l : Filter α} (f : R →+ B)
+    {u : α → R} {x : R} {M : ℕ} (h : ∀ᶠ i in l, (M : R) ∣ u i - x) :
+    ∀ᶠ i in l, (M : B) ∣ f (u i) - f x := by
+  filter_upwards [h] with i ⟨c, hc⟩
+  exact ⟨f c, by simpa [← nsmul_eq_mul] using congrArg f hc⟩
+
 /-- If `R` is profinite (`New.IsProfiniteRing`) and `B` is an additive retract of `R`, through
 additive maps `i : B → R` and `r : R → B` with `r (i x) = x`, then `B` is profinite. -/
 lemma IsProfiniteRing.of_retract (hR : IsProfiniteRing R) (i : B →+ R) (r : R →+ B)
     (hri : ∀ x : B, r (i x) = x) : IsProfiniteRing B := by
-  -- The limit of `x` in `B` is `r` of the limit of `i ∘ x` in `R`. Both maps are additive, so they
-  -- preserve divisibility by a natural number.
   intro x
   obtain ⟨L, hL, h_unique⟩ := hR (i ∘ x)
-  -- `r` carries `M ∣ i (x N) - L` to `M ∣ x N - r L`
-  have h_dvd_r (M N : ℕ) (h_dvd : (M : R) ∣ i (x N) - L) : (M : B) ∣ x N - r L := by
-    obtain ⟨c, hc⟩ := h_dvd
-    refine ⟨r c, ?_⟩
-    simpa [hri, ← nsmul_eq_mul] using congrArg r hc
-  -- `i` carries `M ∣ x N - y` to `M ∣ i (x N) - i y`
-  have h_dvd_i (M N : ℕ) (y : B) (h_dvd : (M : B) ∣ x N - y) : (M : R) ∣ i (x N) - i y := by
-    obtain ⟨c, hc⟩ := h_dvd
-    refine ⟨i c, ?_⟩
-    simpa [← nsmul_eq_mul] using congrArg i hc
-  refine ⟨r L, fun M hM ↦ (hL M hM).mono fun N ↦ h_dvd_r M N, fun y hy ↦ ?_⟩
-  -- a limit `y` of `x` gives the limit `i y` of `i ∘ x`
-  have hiy : i y = L := h_unique (i y) fun M hM ↦ (hy M hM).mono fun N ↦ h_dvd_i M N y
-  rw [← hiy, hri y]
+  refine ⟨r L, fun M hM ↦ ?_, fun y hy ↦ ?_⟩
+  · simpa only [Function.comp_apply, hri] using eventually_natCast_dvd_map_sub r (hL M hM)
+  · have hiy : i y = L := h_unique (i y) fun M hM ↦ eventually_natCast_dvd_map_sub i (hy M hM)
+    rw [← hiy, hri]
 
 omit [DecidableEq n] in
 /-- If `R` is profinite (`New.IsProfiniteRing`), so is every ring `B` that is isomorphic as an
