@@ -447,7 +447,6 @@ lemma powerDegree_add_partnerDegree_le_of_isNearPair (D : Data P) {p : ℕ} [hp 
     {Φ₀ : Finset D.Φ} {e j : D.Φ → ℕ} (he : ∀ τ ∈ Φ₀, D.IsNearPair p τ (e τ))
     (hj : ∀ τ ∈ Φ₀, j τ = l (τ, ()) / p ^ e τ) :
     powerDegree p Φ₀ e j + partnerDegree (P.partner D.towerExp p) Φ₀ e j ≤ l := by
-  classical
   rintro ⟨t, ⟨⟩⟩
   rw [Finsupp.add_apply, partnerDegree_apply]
   set ends : Finset D.Φ := {τ ∈ Φ₀ | P.partner D.towerExp p (e τ) τ = t}
@@ -489,7 +488,6 @@ lemma powerDegree_add_partnerDegree_le_of_k_lt (D : Data P) {p : ℕ}
     (hj : ∀ τ : D.Φ, j τ = min ((l (τ, ()) - D.lossFactorCount) / p)
       (l (P.partner D.towerExp p 1 τ, ()))) :
     powerDegree p univ 1 j + partnerDegree (P.partner D.towerExp p) univ 1 j ≤ l := by
-  classical
   -- At `t = -p τ` the two degrees add up to `p j_t + j_τ ≤ (l_t - n♯)₊ + min n♯ l_t = l_t`.
   rintro ⟨t, ⟨⟩⟩
   obtain ⟨τ, rfl⟩ := (D.partner_bijective p 1).surjective t

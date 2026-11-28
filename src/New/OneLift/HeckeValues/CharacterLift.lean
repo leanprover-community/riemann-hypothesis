@@ -535,7 +535,6 @@ under the block rule to `paramV`, twice the Harish-Chandra parameter of the weig
 parameter. The partitions `colsPlus` and `colsMinus` have no column higher than the number of basis
 vectors of `W` with sign `1` and `-1`. -/
 lemma LValueData.fitsParams_descentPair (X : LValueData E n) : X.descentPair.FitsParams 0 := by
-  classical
   -- Both spaces are definite, and the weight `0` on the line goes up to the weight on `V`.
   have h_correspond :
       ParamsCorrespond X.descentPair.detExp (-X.rowLength ·) 0 X.descentPair.paramV 1 1 :=

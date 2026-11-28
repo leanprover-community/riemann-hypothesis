@@ -508,7 +508,6 @@ lemma _root_.New.mvPowerSeries_eq_of_forall_line {σ : Type*} [Fintype σ] {S T 
       rename (fun _ : σ ↦ ()) (rescale v T)) : S = T := by
   -- The homogeneous component of degree `|α|`, evaluated at `v`, is a coefficient of the
   -- restriction to the line; a polynomial over `ℂ` is determined by its values.
-  classical
   ext α
   let deg : (σ →₀ ℕ) → Unit →₀ ℕ := Finsupp.mapDomain fun _ ↦ ()
   -- The exponents of the same total degree as `α`.

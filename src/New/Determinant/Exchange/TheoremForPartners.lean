@@ -855,7 +855,6 @@ lemma spaceChar_mul_spaceChar_eq_iff {E : Type} [Field E] [CMType E] [WeilData E
     {N : Type} [Fintype N] {α α' ν : AutChar E} {p q : ℕ}
     (h_card : card N = p + q) (h_even : 2 ∣ card N) :
     α.spaceChar p * α'.spaceChar q = ν.baseChange⁻¹ ↔ α * α' = rankTwist ν⁻¹ N := by
-  classical
   have h_mul : α.spaceChar p * α'.spaceChar q = (α * α').spaceChar (card N) := by
     rw [h_card, AutChar.spaceChar_mul]
   rw [h_mul, ← map_inv, ← spaceChar_rankTwist h_even]

@@ -517,7 +517,6 @@ lemma apply_invLastRows_eq_of_isPrimitiveMatrix {R a b n : Type} [CommRing R] [F
     {i j : GL n R} (hi : i ∈ intGL n O) (h_rows : invLastRows e j = invLastRows e i)
     (hj_prim : IsPrimitiveMatrix O (firstCols e j)) :
     Φ (invLastRows e j) = χ j.val.det * Ψ (firstCols e j) := by
-  classical
   -- Both blocks of columns span the kernel of the common rows, so they differ by some `g`.
   have h_span {k l : GL n R} (hkl : invLastRows e l = invLastRows e k) :
       firstCols e l * (invFirstRows e l * firstCols e k) = firstCols e k :=

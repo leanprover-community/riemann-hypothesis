@@ -441,7 +441,6 @@ lemma integral_thetaSmall_lineRadical_eq_mul_thetaSmall (U : Space E b u) (A : W
         (lineRadical A q * A.levi (1, g)) ∂radicalMeasure =
       (vacuumFactor (isAdapted_homSource A U)).val *
         thetaSmall W U 𝔠 (realSlice A U 0 y) (stdColDatum 𝔠.semilocalChar z) g := by
-  classical
   -- The constant term is a sum over rational vectors `x` of `U`, of which only the isotropic ones
   -- contribute. The term `x = 0` is the right side; the others vanish, since the standard datum
   -- lives on matrices of full rank. Both sides are integrals over `[U(U)]`; compare at `h`.

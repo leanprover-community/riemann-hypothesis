@@ -733,7 +733,6 @@ theorem exists_stdClassSum_eq_mul_integral_modKernel (j : m ⊕ l ≃ n) (W : Sp
   -- The exchange identity for the polynomial `Q₀` of `exists_stdClassSum_eq_of_exchange` gives `C`,
   -- a real datum `v` and `c`. That lemma moves it from `v`, `Q₀` to the products of determinants,
   -- at the cost of the factor `c'`.
-  classical
   have h_card : card n = card b + card a := by rw [← card_congr σ, card_sum]
   have h_neg : negCount (blockSigns j) = card l := by simp [negCount]
   have h_nonempty : Nonempty a := card_pos_iff.1 (by omega)

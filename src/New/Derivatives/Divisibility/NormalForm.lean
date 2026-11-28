@@ -294,7 +294,6 @@ lemma dvd_pderiv_pow_pow {σ : Type} (G : MvPowerSeries σ (valRingCp p)) {e : �
 `x = (τ, i)` whose partner `(pr e τ, i)` is `y`. -/
 lemma dvd_pderiv_coupling_sub {e : ℕ} (he : e ≠ 0) (y : Φ × c) :
     C (p : valRingCp p) ∣ pderiv y (coupling pr e) - partnerPowerSum pr e y := by
-  classical
   rw [coupling, map_sum, partnerPowerSum, Finset.sum_filter, ← Finset.sum_sub_distrib]
   refine Finset.dvd_sum fun x _ ↦ ?_
   have h_linear : X x ^ p ^ e * pderiv y (X (pr e x.1, x.2)) =
@@ -307,7 +306,6 @@ lemma dvd_pderiv_coupling_sub {e : ℕ} (he : e ≠ 0) (y : Φ × c) :
 `partnerPowerSum pr e y`. -/
 lemma coeff_partnerPowerSum_self (e : ℕ) (x : Φ × c) :
     coeff (.single x (p ^ e)) (partnerPowerSum (p := p) pr e (pr e x.1, x.2)) = 1 := by
-  classical
   simp [partnerPowerSum, coeff_X_pow,
     Finsupp.single_left_inj (pow_ne_zero e (Fact.out : p.Prime).ne_zero)]
 
@@ -316,7 +314,6 @@ lemma coeff_partnerPowerSum_self (e : ℕ) (x : Φ × c) :
 lemma exists_single_of_coeff_partnerPowerSum_ne_zero {e : ℕ} {y : Φ × c} {d : Φ × c →₀ ℕ}
     (h_ne : coeff d (partnerPowerSum (p := p) pr e y) ≠ 0) :
     ∃ x : Φ × c, (pr e x.1, x.2) = y ∧ d = .single x (p ^ e) := by
-  classical
   rw [partnerPowerSum, map_sum] at h_ne
   obtain ⟨x, hx, h_coeff⟩ := Finset.exists_ne_zero_of_sum_ne_zero h_ne
   exact ⟨x, (Finset.mem_filter.1 hx).2, by simpa [coeff_X_pow] using h_coeff⟩

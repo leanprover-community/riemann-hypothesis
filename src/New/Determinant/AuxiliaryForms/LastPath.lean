@@ -132,7 +132,6 @@ lemma boxes_le_boxes_of_interlace {n n' : Type} [Fintype n] [Fintype n'] (hn : c
         Icc (e w + diagramWeight (fun _ : Φ ↦ card n') κ (w, q + 1) : ℤ)
           (e w + diagramWeight (fun _ : Φ ↦ card n') κ (w, q))) :
     boxes κ₀ (card n) ≤ boxes κ (card n') := by
-  classical
   -- No height lies strictly between `#n` and `#n + 1`.
   have h_fits : FitsRanks (fun _ : Φ ↦ n) (fun _ : Φ ↦ n') κ := by grind
   rw [← FitsRanks.refl.sum_diagramWeight_eq_boxes, ← h_fits.sum_diagramWeight_eq_boxes]

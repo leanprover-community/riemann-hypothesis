@@ -759,7 +759,6 @@ lemma exists_mul_glueMatrix_eq (V : DividedSplitting N m a O z) {B D : Matrix N 
     (hBD : B * D = O.genIntAdele • 1) :
     ∃ C : Matrix (N ⊕ m) (N ⊕ m) (Ô E),
       C * glueMatrix O z V.fixedEmb D = O.genIntAdele • 1 := by
-  classical
   -- `C` has the blocks `B`, `ι_e ι_zᵀ`, `0` and the diagonal matrix with `ϖ` off the range of `z`.
   refine ⟨fromBlocks B (inclMatrix (Ô E) V.fixedEmb * (inclMatrix (Ô E) z)ᵀ) 0
     (.diagonal fun i ↦ if i ∈ range z then 1 else O.genIntAdele), ?_⟩
@@ -793,7 +792,6 @@ the right, vanish modulo `ϖ` outside the range of `V.dividedEmb : a ↪ N`. -/
 lemma exists_isGlued (V : DividedSplitting N m a O z)
     (s : Matrix a N O.chosenModulusSq.ResidueRing) :
     ∃ L : DividedLattice O, V.IsGlued s L := by
-  classical
   -- Take a Hermite form `D` of `V.stackOverGenScalar s`. At the chosen places `ϖ γ⁻¹` will be
   -- `glueMatrix` for `D`, up to the order of the rows, and `γ` the matrix `C` below, up to the
   -- order of the columns.

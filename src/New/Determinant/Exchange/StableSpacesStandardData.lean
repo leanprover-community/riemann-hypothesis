@@ -127,7 +127,6 @@ lemma match_mul_stdColDatum_translate (hΦΨ : AreMatched V.O e χ Φ Ψ) {p : M
     (k : intGL n V.O) (y : Matrix n b F) :
     Ψ ((↑k⁻¹ : GL n F).val * x) * p ((d * k : GL n F).val * y) =
       ‖p ((d * k : GL n F).val * y)‖ * Ψ y := by
-  classical
   set z : Matrix n b F := (d * k : GL n F).val * y with hz
   set k' : Matrix n n F := (↑k⁻¹ : GL n F).val with hk'
   by_cases h_zero : stdColDatum χ s z = 0
@@ -166,7 +165,6 @@ lemma match_mem_of_stdColDatum
     {p : Matrix n b F → ℂ} {x : Matrix n b F} {s : Matrix b n F} (hp : p ∈ P)
     (hx : IsIntMatrix O x) (hs : IsIntMatrix O s) (hsx : s * x = 1) (r : Matrix n b F → ℕ)
     (hp_eq : ∀ y : Matrix n b F, p y = r y • stdColDatum χ s y) (hr : r x ≠ 0) : Ψ ∈ P := by
-  classical
   -- Average the translates `p (d * k * ·)` over `k` in `intGL n O` with weights `Ψ (k⁻¹ * x)`. Here
   -- `d` fixes `x` and expands the kernel of `s` by `ϖ ^ (-c)`, where `Ψ` is invariant mod `ϖ ^ c`.
   -- The average lies in `P` and is a positive multiple of `Ψ`.

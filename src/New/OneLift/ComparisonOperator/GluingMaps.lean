@@ -913,7 +913,6 @@ lemma sum_slice_eq_zero_of_mem_falseLiftsAt {w : FinPlace D.E} {hw : star w ≠ 
       (cartanProduct (splittingV j ϑ).ε 1 y (star (kernelVector (D.descentPair ϑ j) b
         (D.descentPair ϑ j).chosenModulusSq Ψ (D.descentPair ϑ j).colsMinus g c.out)))
       (Ξ (U.block (splittingV j ϑ).ε (h, c.out) * L.point)) = 0 := by
-  classical
   obtain ⟨⟨hΞ_range, hΞ_ker⟩, hΞ_orth⟩ := hΞ
   have h_gap : 2 * card D.RowIndex + 2 * card (FirstFactorIndex j) + 3 < card
     (D.RowIndex ⊕ Fin D.t) := by

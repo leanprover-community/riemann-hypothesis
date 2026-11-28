@@ -373,7 +373,6 @@ lemma IsCouplingFamily.norm_coeff_pairExponent {pr : ℕ → Φ → Φ} {Φ₀ :
         ‖coeff (pairExponent (powerDegree p Φ₀ e j) (partnerDegree pr Φ₀ e j))
           (∏ c : Fin (n + 1), copySubst (couplingSubst δ c) F)‖ =
       ‖κ‖ ^ ∑ τ ∈ Φ₀, j τ := by
-  classical
   -- Differentiating `G` in `z''` gives `κ ^ |j| g G` with `g ≡ ∏ (∂Ξ / ∂z_(τ⁺)) ^ j τ` at
   -- `z'' = 0`, where `G = U`; the coefficient of `z' ^ ν'` in `g U` is a unit.
   set ν' : Φ × Unit →₀ ℕ := powerDegree p Φ₀ e j
@@ -520,7 +519,6 @@ lemma leastValLE_partnerDegree_of_isCouplingFamily [PadicPlace p] {J Φ : Type}
       ((∑ τ ∈ Φ₀, (j τ : ℝ)) / (p - 1) - ∑ τ ∈ Φ₀, (j τ : ℝ) -
         varpiValuation d p * (powerDegree p Φ₀ e j + partnerDegree pr Φ₀ e j).degree -
         ∑ x : Φ × Unit, (padicValNat p (partnerDegree pr Φ₀ e j x)! : ℝ)) := by
-  classical
   -- Substitute `z_0 = z' + z''` and `z_c = δ_c z'` in `∏ Θ(z_c)` and scale by `ϖ`; the coefficient
   -- of `z' ^ ν' * z'' ^ ν''` is given by `norm_coeff_pairExponent`.
   set ν' : Φ × Unit →₀ ℕ := powerDegree p Φ₀ e j
