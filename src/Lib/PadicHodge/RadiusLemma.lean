@@ -406,27 +406,21 @@ private lemma exists_mul_eq_one_add_z_smul {Z Z' : Matrix d d BPlus} {h : ℕ}
       (c.extendedCoord_mem_bicommutant c.oneIndex (u ^ h * Z' i j))).exists
   let B : Matrix d d BPlus := of fun i j ↦ u ^ m i j * ainfToBPlus (algebraMap _ _ (w i j))
   let W : Matrix d d BPlus := (u ^ h * ainfToBPlus q) • 1 - (of fun i j ↦ u ^ m i j * y i j) * Z
-  have hW_mem (i j : d) : W i j ∈ c.bicommutant := by
-    simp (maxDischargeDepth := 5) [W, Matrix.mul_apply, sub_mem, _root_.sum_mem, mul_mem, hu, hy,
+  refine ⟨B, W, fun g hg i j ↦ by simp [B, hg, hu_fix], fun i j ↦ ?_, ?_⟩
+  · simp (maxDischargeDepth := 5) [W, Matrix.mul_apply, sub_mem, _root_.sum_mem, mul_mem, hu, hy,
       hZ, Matrix.one_apply, ite_mem, pow_mem]
-  refine ⟨B, W, fun g hg i j ↦ ?_, hW_mem, ?_⟩
-  · simp [B, hg, hu_fix]
   · -- Project `Z' Z = E ^ h` to `S_B`, multiply by `u ^ h`, and insert `hq` and `h_dec`.
     ext i j
-    have h_proj :
-        u ^ h * (c.extendedCoord c.oneIndex ((Z' * Z) i j) +
-            ainfToBPlus (c.E ^ h - p ^ h : c.S) * row 1 i j) =
-          u ^ h * (c.extendedCoord c.oneIndex ((c.E ^ h • (1 : Matrix d d BPlus)) i j) +
-            ainfToBPlus (c.z * q : c.S) * row 1 i j) :=
-      by rw [hZ', hq]
+    have h_proj : u ^ h * (c.extendedCoord c.oneIndex ((Z' * Z) i j) +
+          ainfToBPlus (c.E ^ h - p ^ h : c.S) * row 1 i j) =
+        u ^ h * (c.extendedCoord c.oneIndex ((c.E ^ h • (1 : Matrix d d BPlus)) i j) +
+          ainfToBPlus (c.z * q : c.S) * row 1 i j) := by rw [hZ', hq]
     linear_combination (norm :=
       (simp [B, W, Matrix.mul_apply, ← sub_eq_of_eq_add (h_dec _ _), mul_sub, mul_add, ← mul_assoc,
          ← mul_pow, hup, mul_sum, hu, hZ, mul_comm (Z' _ _), smul_def (A := BPlus),
          mul_right_comm _ (Z _ _), pow_mem, extendToBPlus_mul, sub_mul, Matrix.one_apply,
        Subalgebra.algebraMap_def, ite_mem, extendedCoord_oneIndex_eq_self, sub_eq_zero]
-       split
-       · ring_nf
-       · ring_nf) )
+       split <;> ring_nf))
       h_proj
 
 /-- The conclusion of the radius lemma for a matrix `Z` over `BPlus`, exponents `l` and `b`, a

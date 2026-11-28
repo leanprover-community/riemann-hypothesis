@@ -296,11 +296,9 @@ lemma Lift.Chart.exists_wittFq_mul_eq_of_eq_mul {a : PadicAlgCl p} {γ : Fin 2 �
       (a : BdR) * algebraMap Ainf BdR (algebraMap (WittFq c.f) Ainf w₁) =
         algebraMap Ainf BdR (algebraMap (WittFq c.f) Ainf w₀) := by
   -- reduce modulo `z`: `p ^ m * γ l = w l + z * u l` with `w l` in `WittFq c.f`
-  obtain ⟨m, hm⟩ : ∃ m : ℕ, ∀ l : Fin 2, ∃ w : WittFq c.f, ∃ u ∈ c.bicommutant,
-      p ^ m * γ l =
-        Chart.ainfToBPlus (algebraMap (WittFq c.f) Ainf w) + Chart.ainfToBPlus c.z * u :=
+  obtain ⟨m, hm⟩ :=
     (Filter.eventually_all.mpr fun l ↦ c.eventually_exists_pow_mul_eq_add_z_mul (hγ_mem l)).exists
-  choose w u hu_mem h_dec using hm
+  choose w u _ h_dec using hm
   have hw_int (v : WittFq c.f) : IsIntegral ℚ_[p] ((v : Ainf) : BdR) :=
     (IsIntegral.of_finite ℤ_[p] _).algebraMap.algebraMap.tower_top
   have ha_int : IsIntegral ℚ_[p] (a : BdR) := (isIntegral ℚ_[p] a).algebraMap
@@ -326,10 +324,8 @@ lemma Lift.Chart.exists_wittFq_mul_eq_of_eq_mul {a : PadicAlgCl p} {γ : Fin 2 �
   -- `w 1 ≠ 0`: otherwise `w 0 = 0` too, and `z` would divide `p ^ m * γ l`, hence `γ`
   refine ⟨w 0, w 1, fun hw₁_zero ↦ h_not_dvd ?_, h_aw⟩
   have hw₀_zero : algebraMap (WittFq c.f) Ainf (w 0) = 0 := by simpa [hw₁_zero] using h_aw.symm
-  have h_pγ : (fun _ : Fin 2 ↦ (p : BPlus) ^ m) * γ = (fun _ ↦ Chart.ainfToBPlus c.z) * u := by
-    simp [funext_iff, h_dec, hw₀_zero, hw₁_zero]
-  have h_unit : IsUnit fun _ : Fin 2 ↦ (p : BPlus) ^ m := Pi.isUnit_iff.mpr fun _ ↦ isUnit_p.pow m
-  exact h_unit.dvd_mul_left.mp ⟨u, h_pγ⟩
+  exact (Pi.isUnit_iff.mpr fun _ : Fin 2 ↦ isUnit_p.pow m).dvd_mul_left.mp
+    ⟨u, by simp [funext_iff, h_dec, hw₀_zero, hw₁_zero]⟩
 
 /-- Let `j = 𝒥.toGp : Γ → G_p` have open image, and let `c` be a chart for j (`c.IsChartOf`: every g
 that fixes θ(S) pointwise lies in j Γ), S the ring of the chart over W(F_{p^f}), f = `c.f`. If b,
@@ -388,7 +384,7 @@ lemma Period.exists_pow_mul_eq_wittFq_mul_of_isChartOf (hc : c.IsChartOf 𝒥.to
     exact hc.extendedCoord_eq_mul_of_eq_mul ha hBC i
   rw [map_mul, map_mul, mul_left_comm, mul_right_inj' (by simpa using hzn)] at h_coord
   -- reduce `p ^ m γ l` modulo `z`: `a w₁ = w₀` with `w₀, w₁` in `WittFq c.f`, `w₁ ≠ 0`
-  obtain ⟨w₀, w₁, hw₁, h_mul⟩ := Chart.exists_wittFq_mul_eq_of_eq_mul hγ_mem h_not_dvd h_coord
+  obtain ⟨_, _, hw₁, h_mul⟩ := Chart.exists_wittFq_mul_eq_of_eq_mul hγ_mem h_not_dvd h_coord
   exact exists_pow_mul_eq_wittFq_mul_of_mul_eq hab hw₁ h_mul
 
 /-- If a, b ∈ B, b ≠ 0 and g(a)b = a·g(b) for all g near 1 in G_p, then p^n a = wb for some n, some
