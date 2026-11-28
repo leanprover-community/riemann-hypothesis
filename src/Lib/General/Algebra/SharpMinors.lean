@@ -196,7 +196,7 @@ lemma isLeast_length_quotient_rowLattice (A : Matrix r k O) {a : O} (ha : a ≠ 
     · simp [v, h0]
     have h_le : span O (Set.range (M.submatrix f id).row) ≤ rowLattice A a :=
       span_mono (Set.range_comp_subset_range f M.row)
-    simpa only [h_len _ h0] using length_le_of_surjective _ (factor_surjective h_le)
+    simpa only [h_len _ h0] using TauCeti.length_quotient_anti h_le
   -- The length is the valuation of `det N`, for a matrix `N` whose rows span the lattice. These
   -- rows are combinations of the rows of `M`, so `det N` is a combination of minors, and the
   -- minor of least valuation `v (Function.argmin v)` divides it.
