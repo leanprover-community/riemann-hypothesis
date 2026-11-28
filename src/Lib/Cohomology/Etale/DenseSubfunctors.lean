@@ -254,8 +254,8 @@ variable {C : Type _} [Category C] {Y W : C ⥤ Type 1} {F} {n : ℕ} {ι : Type
 /-- For finitely many f_i: W → Y and integers c_i, the subfunctor of W of the points x ∈ W(A) with ∑
 c_i [f_i(x)] = 0 in ℤ[Y(A)], expressed by `New.Variety.Cancels`. -/
 def relationLocus : Subfunctor W :=
-  Subfunctor.mk (fun A ↦ {x : W.obj A | Cancels c fun i ↦ f i A x}) fun _ _ hx ↦
-    hx.mono fun _ ↦ by simp_all
+  Subfunctor.mk (fun A ↦ {x : W.obj A | Cancels c fun i ↦ f i A x}) fun g _ hx ↦
+    hx.mono fun i j h ↦ by simp only [NatTrans.naturality_apply]; exact congrArg _ h
 
 /-- On the relation locus, the sum `∑ c i • ℤ[f i]` vanishes. -/
 lemma relationLocus_sum_eq_zero :
@@ -345,9 +345,9 @@ lemma exists_dvd_idempotent_of_notMem {E B : Type*} [Mul E] [CommRing B] {f : E 
 (the maps out of `A`) of the maps `f : A ⟶ B` with `ι.map f e = 0`. -/
 abbrev elemKillingMaps : Subfunctor (reprBy A) where
   obj _ := {f | ι.map f.down e = 0}
-  map := by
-    delta reprBy reprFunctor
-    simp_all
+  map f x hx := by
+    change ι.map (x.down ≫ f) e = 0
+    rw [Functor.map_comp, ConcreteCategory.comp_apply, hx, map_zero]
 
 /-- The preimage of the maps that kill `e` or `1 - e` under the point `k : A ⟶ B` is the subfunctor
 of the maps out of `B` that kill `ι k e` or `1 - ι k e`. -/
@@ -395,8 +395,10 @@ lemma bijective_map_prod_map_of_idempotent {B E : C} {π : A ⟶ B} {ρ : A ⟶ 
     linear_combination (-(a + b)) * he.eq - e * hb - (1 - e) * ha
   · -- `x + e * (y - x)` goes to `x` under `π`, which kills `e`, and to `y` under `ρ`, which kills
     -- `1 - e`
-    refine (π_surj.prodMap ρ_surj).forall.mpr fun (x, y) ↦ ⟨x + e * (y - x), ?_⟩
-    grind
+    refine (π_surj.prodMap ρ_surj).forall.mpr fun (x, y) ↦ ⟨x + e * (y - x), Prod.ext ?_ ?_⟩
+    · simp [π_kill]
+    · rw [show x + e * (y - x) = y - (1 - e) * (y - x) by ring]
+      simp [ρ_kill]
 
 /-- Let F satisfy `New.Variety.HasPartitions` for the rings ι(A). For an idempotent e of ι(A), the
 maps out of A that kill e or kill 1 − e form a dense subfunctor of `reprBy A` for F. -/
@@ -412,7 +414,8 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
   intro A e he
   by_cases h_trivial : e = 1 ∨ e = 0
   · -- for `e = 1` or `e = 0` every map kills `e` or `1 - e`
-    exact isCohomEquiv (of_top_le (by aesop))
+    exact isCohomEquiv (of_top_le fun _ _ _ ↦
+      h_trivial.elim (fun h ↦ .inr (by simp [h])) (fun h ↦ .inl (by simp [h])))
   obtain ⟨he_ne_one, he_ne_zero⟩ := not_or.mp h_trivial
   -- The two pieces are represented by the cuts `π` and `ρ`: they give projective functors, and a
   -- section on a piece is determined by its value at the cut. Here `π` kills `e` (`π_kill`),
@@ -448,9 +451,10 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
     -- the sum of the two pieces maps onto the union, and a section on a piece is read at its cut
     refine h_mv.epi_g.left_cancellation _ _
       (Limits.biprod.hom_ext' _ _ (hπ_rep.injective ?_) (hρ_rep.injective ?_))
-    -- `aesop` reads `freeAb.map` of the inclusion on a generator and uses `h_π`, `h_ρ`
-    · aesop
-    · aesop
+    · simp only [← Category.assoc, Limits.biprod.inl_desc]
+      exact h_π
+    · simp only [← Category.assoc, Limits.biprod.inr_desc]
+      exact h_ρ
   -- `isBijective_reprBy_iff`: it suffices that `F A` be the sections on the union, and that the
   -- union have no cohomology in positive degrees.
   refine IsBijective.eqv
@@ -485,7 +489,8 @@ lemma HasPartitions.hasZariskiDescent (hF : HasPartitions ι F) {κ : C ⥤ Comm
   let U_y : Subfunctor (reprBy A) := U.preimage (pointMap y)
   -- The `a` in the ring `κ.obj A` such that `U_y` together with the maps that kill `a` is dense
   -- form an ideal, since density passes to intersections and larger subfunctors.
-  have h_zero_top : ⊤ ≤ elemKillingMaps (0 : κ.obj A) ⊔ U_y := by aesop
+  have h_zero_top : ⊤ ≤ elemKillingMaps (0 : κ.obj A) ⊔ U_y :=
+    fun _ _ _ ↦ .inl (map_zero _)
   let I : Ideal (κ.obj A) :=
     .ofLinearComb {a | IsCohomDense F (elemKillingMaps a ⊔ U_y)} ⟨0, of_top_le h_zero_top⟩
       fun a₁ ha₁ a₂ ha₂ c₁ c₂ ↦ (ha₁.inf ha₂).mono fun _ _ ↦ by simp +contextual [or_imp]
