@@ -90,9 +90,9 @@ RECENT_PULLS = """query($owner: String!, $name: String!, $count: Int!) {
     }
   }
 }"""
-OPEN = """query($owner: String!, $name: String!, $after: String) {
+OPEN = """query($owner: String!, $name: String!, $after: String, $labels: [String!]) {
   repository(owner: $owner, name: $name) {
-    pullRequests(states: OPEN, first: 100, after: $after) {
+    pullRequests(states: OPEN, first: 100, after: $after, labels: $labels) {
       pageInfo { hasNextPage endCursor }
       nodes {
         number headRefOid headRefName headRepository { nameWithOwner }
@@ -190,12 +190,12 @@ class GitHub(_rest.GitHub):
                 return status, commits
             page += 1
 
-    def open_pulls(self):
-        """Every open pull request, as {"number", "head", "batch", "labels"}. `batch` says whether
-        it holds a batch."""
+    def open_pulls(self, labels=None):
+        """Open pull requests, optionally filtered by label, as {"number", "head", "batch", "labels"}.
+        `batch` says whether the pull request holds a batch."""
         found, after = [], None
         while True:
-            page = self.graphql(OPEN, owner=self.owner, name=self.name, after=after)
+            page = self.graphql(OPEN, owner=self.owner, name=self.name, after=after, labels=labels)
             page = page["repository"]["pullRequests"]
             for node in page["nodes"]:
                 home = (node.get("headRepository") or {}).get("nameWithOwner")
@@ -300,7 +300,8 @@ def sync(gh, now=None, log=None, changed=None):
         log.append(f"stopped before changing anything, because {short}: the next run carries on")
         return log
 
-    pulls = gh.open_pulls()
+    # With no batch being built, only pull requests already carrying the label can need a change.
+    pulls = gh.open_pulls(labels=None if built else [MEMBER])
     labelled = gh.labelled()
     adds, removes = [], []
     for pr in pulls:
@@ -315,8 +316,8 @@ def sync(gh, now=None, log=None, changed=None):
     members = sum(pr["member"] for pr in pulls)
     listed = {pr["number"] for pr in pulls}
     for number, state in sorted(labelled.items()):
-        # An open pull request the list of open ones does not have was opened or closed while the
-        # run read them: the next run looks at it again.
+        # A search result marked open may have changed state or lost its label while the list
+        # was being read. Leave it to the next run.
         if state != "OPEN" and number not in listed:
             removes.append((number, f"it is {state.lower()}"))
 

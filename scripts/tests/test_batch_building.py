@@ -119,9 +119,12 @@ class Fake(building.GitHub):
         if "states: OPEN" in query:
             # Two to a page, so that the pages are followed.
             start = int(variables["after"] or 0)
-            page = self.pulls_[start:start + 2]
+            pulls = self.pulls_
+            if variables.get("labels"):
+                pulls = [p for p in pulls if all(label in p["labels"] for label in variables["labels"])]
+            page = pulls[start:start + 2]
             return {"repository": {"pullRequests": {
-                "pageInfo": {"hasNextPage": start + 2 < len(self.pulls_), "endCursor": str(start + 2)},
+                "pageInfo": {"hasNextPage": start + 2 < len(pulls), "endCursor": str(start + 2)},
                 "nodes": [{"number": p["number"], "headRefOid": p["head"], "headRefName": p["ref"],
                            "headRepository": {"nameWithOwner": p["home"]} if p["home"] else None,
                            "labels": {"nodes": [{"name": name} for name in p["labels"]]}}
@@ -134,6 +137,16 @@ def sync(gh, changed=None):
 
 
 class Membership(unittest.TestCase):
+    def test_without_a_batch_only_labelled_open_pulls_are_paged(self):
+        gh = Fake(pulls=[pull(n, f"c{n}", labels=[MEMBER] if n % 2 == 0 else ["other"])
+                         for n in range(1, 7)])
+        with mock.patch.object(gh, "graphql", wraps=gh.graphql) as graphql:
+            sync(gh)
+        pages = [(call.kwargs.get("labels"), call.kwargs["after"]) for call in graphql.call_args_list
+                 if call.args[0] == building.OPEN]
+        self.assertEqual(pages, [([MEMBER], None), ([MEMBER], "2")])
+        self.assertEqual(gh.writes, [("remove", 2), ("remove", 4), ("remove", 6)])
+
     def test_pull_requests_whose_head_commit_is_in_a_batch_are_labelled(self):
         gh = Fake([branch("batch/m1", commits=["m1", "a", "b", "tip"], pulls=[(10, "OPEN")])],
                   [pull(1, "a"), pull(2, "b"), pull(3, "c")])
