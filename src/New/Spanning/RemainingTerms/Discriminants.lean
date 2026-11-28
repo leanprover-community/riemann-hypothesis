@@ -537,10 +537,8 @@ rank `r`. -/
 lemma IsLatticeOfRank.map_of_hasLeftInv {L : Submodule (Ô E) (κ → 𝔸f E)}
     (hL : IsLatticeOfRank r L) {η : Matrix κ κ E} (hη : HasLeftInv η) :
     IsLatticeOfRank r (L.map ((finAdeleMatrix η).mulVecLin.restrictScalars (Ô E))) := by
-  obtain ⟨x, a, ⟨xInv, hxInv⟩, rfl⟩ := hL
-  obtain ⟨ηInv, hηInv⟩ := hη
-  refine ⟨η * x, a, ⟨xInv * ηInv, ?_⟩, (map_colLattice_finAdeleMatrix_mul η x a.val).symm⟩
-  rw [Matrix.mul_assoc, ← Matrix.mul_assoc ηInv, hηInv, Matrix.one_mul, hxInv]
+  obtain ⟨x, a, hx, rfl⟩ := hL
+  exact ⟨η * x, a, hη.mul hx, (map_colLattice_finAdeleMatrix_mul η x a.val).symm⟩
 
 /-- An isometry `η` of the standard hermitian form over `E` (`ηᴴ * η = 1`) keeps the discriminant
 of a lattice of rank `r`, that is, the square root of the generalised index of the Gram determinant
@@ -550,16 +548,15 @@ lemma IsLatticeOfRank.discriminant_map_of_unitary {L : Submodule (Ô E) (κ → 
     discriminant r (L.map ((finAdeleMatrix η).mulVecLin.restrictScalars (Ô E))) =
       discriminant r L := by
   -- The basis `x a` is moved to `(η x) a`, which has the same Gram matrix.
-  obtain ⟨x, a, ⟨xInv, hxInv⟩, rfl⟩ := hL
-  have h_inv : xInv * ηᴴ * (η * x) = 1 := by
-    rw [Matrix.mul_assoc, ← Matrix.mul_assoc ηᴴ, hη, Matrix.one_mul, hxInv]
+  obtain ⟨x, a, hx, rfl⟩ := hL
+  have h_inv : HasLeftInv (η * x) := HasLeftInv.mul ⟨ηᴴ, hη⟩ hx
   have hη_adelic : (finAdeleMatrix η)ᴴ * finAdeleMatrix η = 1 := by
     simp [← finAdeleMatrix_conjTranspose, ← Matrix.map_mul, hη]
   have h_gram : (finAdeleMatrix (η * x) * a.val)ᴴ * (finAdeleMatrix (η * x) * a.val) =
       (finAdeleMatrix x * a.val)ᴴ * (finAdeleMatrix x * a.val) := by
     simp [Matrix.mul_assoc, ← Matrix.mul_assoc (finAdeleMatrix η)ᴴ, hη_adelic]
-  rw [map_colLattice_finAdeleMatrix_mul, discriminant_colLattice ⟨xInv * ηᴴ, h_inv⟩,
-    discriminant_colLattice ⟨xInv, hxInv⟩, h_gram]
+  rw [map_colLattice_finAdeleMatrix_mul, discriminant_colLattice h_inv,
+    discriminant_colLattice hx, h_gram]
 
 /-- An isometry `η` of the standard hermitian form over `E` (`ηᴴ * η = 1`) maps a lattice of rank
 `r` to a lattice of rank `r` with the same discriminant. -/

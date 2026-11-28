@@ -583,6 +583,14 @@ lemma HasLeftInv.map {S : Type*} [CommRing S] {X : Matrix n k R} (hX : HasLeftIn
 /-- The submodule of R^n spanned by the columns of the matrix X. -/
 abbrev colSpan [Fintype k] : Submodule R (n → R) := X.mulVecLin.range
 
+/-- The product of two rectangular matrices with left inverses has a left inverse. -/
+lemma HasLeftInv.mul {m : Type*} [Fintype k] [DecidableEq m] {X : Matrix n k R}
+    {Y : Matrix k m R} (hX : HasLeftInv X) (hY : HasLeftInv Y) : HasLeftInv (X * Y) := by
+  obtain ⟨L, hL⟩ := hX
+  obtain ⟨M, hM⟩ := hY
+  refine ⟨M * L, ?_⟩
+  rw [Matrix.mul_assoc, ← Matrix.mul_assoc L, hL, Matrix.one_mul, hM]
+
 /-- The matrix X has entries in the subring O and a left inverse with entries in O. -/
 def IsPrimitiveMatrix : Prop := IsIntMatrix O X ∧ ∃ L : Matrix k n R, IsIntMatrix O L ∧ L * X = 1
 
