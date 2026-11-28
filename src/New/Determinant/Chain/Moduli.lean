@@ -407,9 +407,8 @@ lemma CriticalPair.isTameFor_inv_mul_pow (p : D.CriticalPair) (hp : p.IsRamified
     (n : D.LiftIndex) (ϑ : D.MFoldTwist) :
     IsTameFor (D.twistModulus ϑ e) (p.character * ϑ.toAutChar ^ n.val)⁻¹
       (fun τ : NumberField.InfinitePlace D.E ↦ p.negWeight τ)
-      (charOfTamePart (D.twistModulus ϑ e) (p.tamePart * ϑ.tamePart ^ n.val))⁻¹ := by
-  obtain ⟨-, h_inv, -⟩ := p.isTameFor_mul_and_lValueProd_eq hp (ϑ.powTwist n) e
-  exact h_inv
+      (charOfTamePart (D.twistModulus ϑ e) (p.tamePart * ϑ.tamePart ^ n.val))⁻¹ :=
+  p.isTameFor_mul_inv hp (ϑ.powTwist n) e
 
 end New.Data
 
