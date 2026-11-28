@@ -461,38 +461,32 @@ lemma isCohomEquiv_tensorCoeff_gluing (c : PadicTest)
       simp [H.map]
       congr
       apply freeAb.hom_ext
-      rintro A ⟨⟨_ | _⟩, ⟨t⟩⟩
+      rintro A ⟨b, ⟨t⟩⟩
+      have h_disc (b : ULift.{1} Bool) (s : ψc (monoidAlg ℚ≥0) ⟶ tilt A) :
+          (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A (ofDisc b s) =
+            G.map s (U.map (pairProj b.down) x) :=
+        freeAb.desc_of (Y := twoDiscs ψc) _ _ A ⟨b, ⟨s⟩⟩
+      have h_glue (b : ULift.{1} Bool) (s : ψc (pointOrTorus b) ⟶ tilt A) :
+          (sectionOfMaps pointOrTorus glueLinear x).app A (FreeAddCommGroup.of ⟨b, ⟨s⟩⟩) =
+            G.map s (U.map (glueLinear b) x) :=
+        freeAb.desc_of (Y := tiltPointsSum pointOrTorus ψc) _ _ A ⟨b, ⟨s⟩⟩
+      rcases b with ⟨_ | _⟩
       · let t' : ψc (CommAlgCat.of OFlat OFlat) ⟶ tilt A := t
-        have h_disc (s : ψc (monoidAlg ℚ≥0) ⟶ tilt A) :
-            (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A (ofDisc ⟨false⟩ s) =
-              G.map s (U.map (pairProj false) x) :=
-          freeAb.desc_of (Y := twoDiscs ψc) _ _ A ⟨⟨false⟩, ⟨s⟩⟩
-        have h_point :
-            (sectionOfMaps pointOrTorus glueLinear x).app A (ofPoint t') =
-              G.map t' (U.map (glueLinear ⟨false⟩) x) :=
-          freeAb.desc_of (Y := tiltPointsSum pointOrTorus ψc) _ _ A ⟨⟨false⟩, ⟨t'⟩⟩
         change (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A
           ((gluing ψc).app A (ofPoint t')) =
           (sectionOfMaps pointOrTorus glueLinear x).app A (ofPoint t')
-        rw [gluing_ofPoint, h_disc, h_point, G.map_comp, h_GU]
+        rw [gluing_ofPoint, h_disc, ofPoint, h_glue ⟨false⟩ t', G.map_comp, h_GU]
         change G.map t' (U.map (L.map (evalZero (CommAlgCat.of OFlat OFlat)))
             (U.map (pairProj false) x)) =
           G.map t' (U.map (pairProj false ≫ L.map (evalZero (CommAlgCat.of OFlat OFlat))) x)
         rw [U.map_comp]
         rfl
       · let t' : ψc (monoidAlg ℚ) ⟶ tilt A := t
-        have h_disc (b : ULift.{1} Bool) (s : ψc (monoidAlg ℚ≥0) ⟶ tilt A) :
-            (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A (ofDisc b s) =
-              G.map s (U.map (pairProj b.down) x) :=
-          freeAb.desc_of (Y := twoDiscs ψc) _ _ A ⟨b, ⟨s⟩⟩
-        have h_torus :
-            (sectionOfMaps pointOrTorus glueLinear x).app A (ofTorus t') =
-              G.map t' (U.map (glueLinear ⟨true⟩) x) :=
-          freeAb.desc_of (Y := tiltPointsSum pointOrTorus ψc) _ _ A ⟨⟨true⟩, ⟨t'⟩⟩
         change (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A
           ((gluing ψc).app A (ofTorus t')) =
           (sectionOfMaps pointOrTorus glueLinear x).app A (ofTorus t')
-        rw [gluing_ofTorus, map_sub, h_disc, h_disc, h_torus, G.map_comp, G.map_comp, h_GU, h_GU]
+        rw [gluing_ofTorus, map_sub, h_disc, h_disc, ofTorus, h_glue ⟨true⟩ t',
+          G.map_comp, G.map_comp, h_GU, h_GU]
         change G.map t' (U.map (L.map (discToTorus (-coeHom))) (U.map (pairProj false) x)) -
             G.map t' (U.map (L.map (discToTorus coeHom)) (U.map (pairProj true) x)) =
           G.map t' (U.map (pairProj false ≫ L.map (discToTorus (-coeHom)) -
