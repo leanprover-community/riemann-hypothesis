@@ -231,12 +231,15 @@ def ofEnd (T : End ℂ (D.formsOfLevel L)) : D.FormEnd L := T
 lemma ext {a b : D.FormEnd L} (h : ∀ y, a y = b y) : a = b :=
   DFunLike.ext a b h
 
+/-- Evaluation of an endomorphism constructed via `ofEnd`. -/
 @[simp]
 lemma ofEnd_apply (T : End ℂ (D.formsOfLevel L)) (y : D.formsOfLevel L) : ofEnd T y = T y := rfl
 
+/-- Evaluation of the zero endomorphism on automorphic forms. -/
 @[simp]
 lemma zero_apply (y : D.formsOfLevel L) : (0 : D.FormEnd L) y = 0 := rfl
 
+/-- Evaluation of the identity endomorphism on automorphic forms. -/
 @[simp]
 lemma one_apply (y : D.formsOfLevel L) : (1 : D.FormEnd L) y = y := rfl
 
