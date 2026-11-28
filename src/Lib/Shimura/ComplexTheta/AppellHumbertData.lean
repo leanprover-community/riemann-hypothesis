@@ -141,7 +141,6 @@ class IsAppellHumbert (B : ThetaTori.LatticeForm L) (χ : V → ℂ) where
   semicharacter : ∀ l ∈ L, ∀ m ∈ L, χ (l + m) = χ l * χ m * exp (π * I * B.riemannForm m l)
 
 /-- The Riemann form E of B is positive: E(u, iu) > 0 for every u ≠ 0. -/
-@[mk_iff pr_iff]
 class IsPosRiemann : Prop where
   /-- E(u, iu) > 0 for every u ≠ 0. -/
   riemannForm_pos : ∀ u ≠ (0 : V), 0 < B.riemannForm u (I • u)

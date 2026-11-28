@@ -477,8 +477,6 @@ def locConstAlg : CommRingCat ⥤ CommAlg (ZMod p) where
 
 instance : Algebra (ZMod p) OFlat := algebra ..
 
-deriving instance Algebra (ZMod p), IsScalarTower (ZMod p) OFlat for @CFlat p _
-
 /-- For every commutative ring A, the algebra of locally constant functions Spec A → ℤ/p
 (`New.Variety.locConstAlg`) is perfect. -/
 instance perfectRing_locConstAlg (A : CommRingCat) : PerfectRing (locConstAlg A) p := by

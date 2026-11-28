@@ -471,8 +471,6 @@ lemma G.continuous_adeleMatrix : Continuous (adeleMatrix : G E s → Matrix n n 
   · change Continuous fun g : G E s ↦ g.2.val i j
     fun_prop
 
-instance : PolishSpace (GL n (𝔸f E)) where
-
 deriving instance LocallyCompactSpace, BorelSpace, IsTopologicalGroup for Gf E n, G E s
 
 /-- A level is compact: it is an open, hence closed, subgroup contained in the compact group K_0. -/

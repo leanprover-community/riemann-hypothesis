@@ -118,8 +118,6 @@ def WittFq : Type := WittVector p (flatFq f)
 
 instance : Algebra (WittFq f) Ainf := inferInstance
 
-deriving instance Algebra (WittFq f) for @WittCFlat p _
-
 /-! ### Charts and their existence -/
 
 /-- A chart is a Λ-algebra map Λ[[X]] → A_inf, with Λ = W(F_{p^f}) = `WittFq f`. It sends X to a
