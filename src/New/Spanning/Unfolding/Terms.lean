@@ -351,6 +351,14 @@ lemma ratToInf_mem_besselU0 (hu : u ∈ besselU0) (v : InfinitePlace E) :
     S.ratToInf u v ∈ besselU0 :=
   ⟨hu.left.ratToInf_mem_agreeWithOneOn v, hu.right.ratToInf_mem_agreeWithOneOn v⟩
 
+/-- Dividing each coordinate by its basis scale intertwines the rational and infinite frame maps. -/
+lemma frameImage_ratToInf_mulVec_div (γ : S.G E) (v : InfinitePlace E) (x : Fin (𝔰.ϱ + 1) → E) :
+    frameImage (S.ratToInf γ v).val.val *ᵥ (fun k ↦ Φ v (x k) / S.basisScale v (𝔰.besselFrame k)) =
+      fun i ↦ Φ v ((frameImage γ *ᵥ x) i) / S.basisScale v i := by
+  funext i
+  simp only [mulVec, dotProduct, submatrix_apply, id_eq, ratToInf_apply, map_sum, map_mul, sum_div]
+  exact sum_congr rfl fun k _ ↦ by field_simp [basisScale_ne_zero]
+
 /-- The image of γ at v is the conjugate of Φ_v γ by the diagonal `S.basisScale v`, so applied to
 frame coordinates rescaled relative to a reference index a it gives the rescaled value of γf · y. -/
 lemma frameImage_ratToInf_mulVec (γ : S.G E) (v : InfinitePlace E) (a i : 𝔰.BesselIndex)
@@ -358,14 +366,10 @@ lemma frameImage_ratToInf_mulVec (γ : S.G E) (v : InfinitePlace E) (a i : 𝔰.
     (frameImage (S.ratToInf γ v).val.val *ᵥ fun l : Fin (𝔰.ϱ + 1) ↦
         S.basisScale v a / S.basisScale v (𝔰.besselFrame l) * Φ v (y l)) i =
       S.basisScale v a / S.basisScale v i * Φ v ((frameImage γ.val.val *ᵥ y) i) := by
-  simp only [mulVec, dotProduct, map_sum, map_mul, mul_sum]
-  refine Finset.sum_congr rfl fun l _ ↦ ?_
-  suffices Φ v (γ.val.val i (𝔰.besselFrame l)) *
-      (S.basisScale v (𝔰.besselFrame l) / S.basisScale v i) *
-        (S.basisScale v a / S.basisScale v (𝔰.besselFrame l) * Φ v (y l)) =
-      S.basisScale v a / S.basisScale v i * (Φ v (γ.val.val i (𝔰.besselFrame l)) * Φ v (y l)) by
-    simpa
-  field [basisScale_ne_zero]
+  have h := congrFun (congrArg (fun z : 𝔰.BesselIndex → ℂ ↦ S.basisScale v a • z)
+    (frameImage_ratToInf_mulVec_div γ v y)) i
+  rw [← Matrix.mulVec_smul] at h
+  simpa [Pi.smul_def, smul_eq_mul, div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using h
 
 /-- The property that a norm-one pair occurs from `j` passes from a rational element γ to its
 rescaled image `S.ratToInf γ v` at any infinite place `v`. -/

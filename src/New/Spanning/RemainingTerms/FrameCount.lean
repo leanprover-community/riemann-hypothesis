@@ -256,18 +256,9 @@ lemma sum_smul_frameVector_eq (γ : S.G E) (y : InfinitePlace E → 𝔰.G₁) (
         frameVector (((S.ratToInf γ)⁻¹ * y) v) k =
       .toLp 2 ((((y v)⁻¹ : 𝔰.G₁) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) *ᵥ
         fun i : 𝔰.BesselIndex ↦ Φ v ((frameImage γ *ᵥ x) i) / S.basisScale v i) := by
+  rw [← frameImage_ratToInf_mulVec_div γ v x, mulVec_mulVec]
   ext i
-  calc _ = ∑ k, ∑ m, Φ v (x k) / S.basisScale v (𝔰.besselFrame k) * ((y v)⁻¹.val i m *
-          (Φ v (γ.val m (𝔰.besselFrame k)) *
-            (S.basisScale v (𝔰.besselFrame k) / S.basisScale v m))) := by
-        simp [frameVector, Matrix.mul_apply, mul_sum, -Fintype.sum_sum_type]
-    _ = ∑ m, ∑ k, (y v)⁻¹.val i m *
-          (Φ v (γ.val m (𝔰.besselFrame k)) * Φ v (x k) / S.basisScale v m) := by
-      rw [sum_comm]
-      refine sum_congr rfl fun m _ ↦ sum_congr rfl fun k _ ↦ ?_
-      have h_ne : S.basisScale v (𝔰.besselFrame k) ≠ 0 := S.basisScale_ne_zero v _
-      field_simp
-    _ = _ := by simp [mulVec, dotProduct, mul_sum, Finset.sum_div, -Fintype.sum_sum_type]
+  simp [frameVector, mulVec, dotProduct, Matrix.mul_apply, mul_comm, -Fintype.sum_sum_type]
 
 /-- Let `S` satisfy the standing hypotheses `S.IsAdmissible`, which give `1 ≤ |κ_v| ≤ b ^ 23` for
 `κ_v = S.realM v` and `b = S.b`. At the infinite place `v` of the CM field `E`, the scale factors
