@@ -385,6 +385,22 @@ end
 
 attribute [simp high] gram_kk gram_ll gram_lk gram_kl gram_ii gram_ik gram_il gram_ki gram_li
 
+omit [WeilData E] in
+/-- The two isotropic frames and the middle space resolve the identity in rational coordinates.
+The coordinates on the middle space use the inverse of its Gram matrix. -/
+lemma sum_rat_frame_mul_coord_eq_one :
+    D.k * (D.lᴴ * V.J) + D.i * (V₀.J⁻¹ * D.iᴴ * V.J) + D.l * (D.kᴴ * V.J) = 1 := by
+  let middle := V₀.J⁻¹ * D.iᴴ * V.J
+  have h_card : card ((p ⊕ n₀) ⊕ p) = card n := by simp +arith [D.card_eq]
+  -- Pairing the coordinate rows with the frame columns gives the identity block matrix.
+  have h_coord_frame : ((D.lᴴ * V.J).fromRows middle).fromRows (D.kᴴ * V.J) *
+      (D.k.fromCols D.i).fromCols D.l = 1 := by
+    rw [fromRows_mul_fromCols, fromRows_mul_fromCols, fromRows_mul, mul_fromCols]
+    simp [middle, Matrix.mul_assoc V₀.J⁻¹,
+      nonsing_inv_mul _ ((isUnit_iff_isUnit_det _).1 V₀.isUnit_J)]
+  rwa [mul_eq_one_comm_of_card_eq _ _ _ h_card, fromCols_mul_fromRows,
+    fromCols_mul_fromRows] at h_coord_frame
+
 /-- For a splitting, the adelic `p × n` matrix `lAdelicᴴ ε`, with `ε = stdForm E s`; it sends
 `lAdelic a + iAdelic w + kAdelic b` to `b`. -/
 def kCoord : Matrix p n (𝔸 E) := D.lAdelicᴴ * stdForm E s
@@ -1175,9 +1191,8 @@ variable (D)
 /-- In a splitting without middle part every vector is the sum of its components along the frames
 `k` and `l`. -/
 lemma k_mul_add_l_mul_eq_one : D.k * (D.lᴴ * V.J) + D.l * (D.kᴴ * V.J) = 1 := by
-  have h_card : Fintype.card n = Fintype.card (p ⊕ p) := by simp [D.card_eq, two_mul]
-  rw [← fromCols_mul_fromRows, mul_eq_one_comm_of_card_eq _ _ _ h_card, fromRows_mul_fromCols,
-    D.gram_lk, D.gram_ll, D.gram_kk, D.gram_kl, fromBlocks_one]
+  have h_middle : D.i = 0 := Subsingleton.elim _ _
+  simpa [h_middle] using D.sum_rat_frame_mul_coord_eq_one
 
 /-- Let `D` be a splitting of `V` without middle part. The stabilizers of the spans of the two
 isotropic frames `D.k` and `D.l` generate the rational unitary group of `V`. -/

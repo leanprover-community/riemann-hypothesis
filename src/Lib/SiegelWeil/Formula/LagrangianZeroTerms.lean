@@ -129,24 +129,15 @@ lemma forall_colSpan_dot_eq_zero_iff {y : n → E} :
   rintro h _ ⟨a, rfl⟩
   simp [star_mulVec_dotProduct, h]
 
+omit [WeilData E] in
 /-- Let `D₁` be a splitting of `S` over `S₁`, with isotropic frame `k` and embedding `i` of `S₁`.
 Every vector orthogonal to the columns of `k` has the form `k a + i w`. -/
 lemma exists_mulVec_add_mulVec_of_orthogonal (y : n → E) (hy : D₁.kᴴ *ᵥ S.J *ᵥ y = 0) :
     ∃ (a : r → E) (w : n₁ → E), D₁.k *ᵥ a + D₁.i *ᵥ w = y := by
-  -- The frame `(l, k, i)` has an invertible Gram matrix and is square, so it spans. Write
-  -- `y = l b + k a + i w`; orthogonality to `k` gives `b = 0`.
-  let M : Matrix n ((r ⊕ r) ⊕ n₁) E := fromCols (fromCols D₁.l D₁.k) D₁.i
-  have h_gram : IsUnit (Mᴴ * S.J * M) := by simp only [M, D₁.gram_eq_hyperbolicSum, isUnit_J]
-  obtain ⟨X, hXM⟩ : HasLeftInv M := .of_isUnit_gram h_gram
-  have hMX : M * X = 1 :=
-    (mul_eq_one_comm_of_card_eq _ _ _ (by simp +arith [D₁.card_eq])).1 hXM
-  obtain ⟨b, a, w, rfl⟩ :
-      ∃ (b a : r → E) (w : n₁ → E), D₁.l *ᵥ b + D₁.k *ᵥ a + D₁.i *ᵥ w = y := by
-    have h_span : M *ᵥ X *ᵥ y = y := by rw [mulVec_mulVec, hMX, one_mulVec]
-    rw [fromCols_mulVec, fromCols_mulVec] at h_span
-    exact ⟨(X *ᵥ y) ∘ .inl ∘ .inl, (X *ᵥ y) ∘ .inl ∘ .inr, (X *ᵥ y) ∘ .inr, h_span⟩
-  have hb : b = 0 := by simpa [mulVec_add, ← Matrix.mul_assoc] using hy
-  exact ⟨a, w, by simp [hb]⟩
+  refine ⟨(D₁.lᴴ * S.J) *ᵥ y, (S₁.J⁻¹ * D₁.iᴴ * S.J) *ᵥ y, ?_⟩
+  -- The component along `l` vanishes because `y` is orthogonal to `k`.
+  simpa [add_mulVec, ← mulVec_mulVec, hy] using
+    congrArg (· *ᵥ y) D₁.sum_rat_frame_mul_coord_eq_one
 
 variable (P : CompleteSplitting S p) (L : Lagrangian S) (γ : U S.J) (x : p → ℕ)
 
@@ -285,6 +276,7 @@ lemma exists_isometry_orthogonal (hA : HasLeftInv A) (h_isotropic : Aᴴ * S.J *
     S.witt ⟨_, h_linv⟩ hA (h_gram.trans h_isotropic.symm)
   exact ⟨γ, by rw [← hγ, U.gram_invariant, h_orth]⟩
 
+omit [WeilData E] in
 /-- Let `D₁` split `S` over `S₁`, and let `L` be a Lagrangian of `S` that contains the columns of
 `D₁.k`. The preimage of `L` under the embedding `D₁.i` is its own orthogonal complement in `S₁`. -/
 lemma mem_comap_iff_forall_dot_eq_zero {L : Lagrangian S} (hL : colSpan D₁.k ≤ L) (y : n₁ → E) :
