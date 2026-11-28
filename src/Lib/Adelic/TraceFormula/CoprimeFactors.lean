@@ -6,6 +6,7 @@ import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.LocallyConstant.Algebra
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.LinearAlgebra.Matrix.Charpoly.Roots
 import TauCeti.LinearAlgebra.Trace.Idempotent
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
@@ -319,15 +320,6 @@ lemma exists_mul_mem_iwasawaSet {O : Subring F} (hO : IsValuationPair O) (T : Fi
   obtain ⟨u, hu, hu_semiconj⟩ := exists_mem_iwasawaSet_semiconjBy hO h_idem h_rank
   exact ⟨g⁻¹ * u, h_semiconj.units_inv_symm_left.mul_left hu_semiconj, by simpa using hu⟩
 
-/-- Over an algebraically closed field the trace of `p(y)` is the sum of `p` over the roots of the
-characteristic polynomial of `y`, with multiplicity. -/
-lemma trace_aeval_eq_sum_roots [IsAlgClosed F] (y : Matrix n n F) (p : F[X]) :
-    (aeval y p).trace = (y.charpoly.roots.map p.eval).sum := by
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq => simp [hp, hq, Multiset.sum_map_add]
-  | monomial m c =>
-    simp [aeval_monomial, ← Algebra.smul_def, trace_pow_eq_sum_roots, Multiset.sum_map_mul_left]
-
 variable {A B u v : F[X]} {y : Matrix n n F}
 
 /-- If `u A + v B = 1` and `y` has characteristic polynomial `A B`, then `(v B)(y)` is
@@ -353,7 +345,8 @@ lemma trace_aeval_eq_natDegree (huv : u * A + v * B = 1) (hy : y.charpoly = A * 
   apply f.injective
   calc f (aeval y (v * B)).trace
       = ((A.map f * B.map f).roots.map ((v * B).map f).eval).sum := by
-        rw [AddMonoidHom.map_trace, map_aeval_matrix, trace_aeval_eq_sum_roots, charpoly_map, hy,
+        rw [AddMonoidHom.map_trace, map_aeval_matrix,
+          trace_aeval_eq_sum_roots_charpoly_of_splits (IsAlgClosed.splits _), charpoly_map, hy,
           Polynomial.map_mul (p := A)]
     _ = ((A.map f).roots.map fun _ ↦ 1).sum + ((B.map f).roots.map fun _ ↦ 0).sum := by
         rw [roots_mul hAB, Multiset.map_add, Multiset.sum_add, Multiset.map_congr rfl hA,
