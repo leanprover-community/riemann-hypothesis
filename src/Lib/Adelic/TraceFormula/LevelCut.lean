@@ -105,15 +105,12 @@ lemma asAlgebraHom_offRep_apply {a : ℂ[Gf E n]}
     (ha : a ∈ spanOn ℂ {g : Gf E n | g.atPlace w ∈ localIntGL n w}) {y : M}
       (hy : y ∈ sphericalAt ρ w) :
     (offRep hw ρ).asAlgebraHom a y = ρ.asAlgebraHom a y := by
-  induction ha using Submodule.span_induction with
-  | mem a ha =>
-    obtain ⟨g, hg, rfl⟩ := ha
-    have h_fixed : localRep hw ρ (g.atPlace w) y = y :=
-      ((mem_sphericalAt_iff hw).1 hy ⟨g.atPlace w, hg⟩).trans (one_smul ℂ y)
-    simp only [Representation.asAlgebraHom_of, apply_eq_offRep_localRep hw ρ g, h_fixed]
-  | zero => simp
-  | add a b _ _ ha hb => simp [ha, hb]
-  | smul c a _ ha => simp [ha]
+  refine eqOn_span (f := (applyₗ y).comp (offRep hw ρ).asAlgebraHom.toLinearMap)
+    (g := (applyₗ y).comp ρ.asAlgebraHom.toLinearMap) ?_ ha
+  rintro _ ⟨g, hg, rfl⟩
+  simp only [comp_apply, applyₗ_apply_apply, AlgHom.toLinearMap_apply,
+    Representation.asAlgebraHom_of, apply_eq_offRep_localRep hw ρ g,
+    apply_of_mem_levelSpace ((mem_sphericalAt_iff hw).1 hy) hg]
 
 /-- The inclusion of the vectors of level `K` in those of the level that is cut down to the
 stabiliser of the `i`-th coordinate line at `w`. -/
@@ -137,7 +134,7 @@ lemma mem_levelSpace_cutLevel_iff (hK : maxCompactAt n w ≤ K) (hJ : J ≤ loca
     exact hy ⟨ofSplitPlace hw x, ofSplitPlace_mem_of_maxCompactAt_le hw hK (hJ hx),
       by simpa [atPlace_ofSplitPlace] using hx⟩
   · rintro ⟨h_off, h_local⟩ ⟨k, hk, hk_local⟩
-    rw [apply_eq_offRep_localRep hw, h_local ⟨k.atPlace w, hk_local⟩, MonoidHom.one_apply, one_smul]
+    rw [apply_eq_offRep_localRep hw, apply_of_mem_levelSpace h_local hk_local]
     exact h_off ⟨k, hk⟩
 
 /-- If `K` is maximal at `w`, a vector is fixed by `K` exactly when it is fixed by the part of `K`
