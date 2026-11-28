@@ -66,8 +66,8 @@ open PowerSeries WithPiTopology ComplexConjugate
 namespace New
 
 /-- The series `f(a z)` depends continuously on `a`, coefficient by coefficient. -/
-lemma continuous_rescale {p : ℕ} [Fact p.Prime] (f : ℂ_[p]⟦X⟧) :
-    Continuous fun a : ℂ_[p] ↦ rescale a f := by
+lemma continuous_rescale {R : Type*} [CommRing R] [TopologicalSpace R] [IsTopologicalRing R]
+    (f : R⟦X⟧) : Continuous fun a : R ↦ rescale a f := by
   refine continuous_iff_continuousAt.2 fun a ↦ (tendsto_iff_coeff_tendsto _ _ _ _).2 fun n ↦ ?_
   simp only [coeff_rescale]
   exact ((continuous_pow n).mul continuous_const).tendsto a
@@ -92,7 +92,7 @@ lemma IsSeriesGenerator.isClosed {p : ℕ} [Fact p.Prime] {B : Subring ℂ_[p]�
 
 /-- If `T(0) = 0`, then the coefficient of `X²` in `f(T)` is `f₁ T₂ + f₂ T₁²`, where `f_n` and
 `T_n` are the coefficients of `X ^ n` in `f` and `T`. -/
-lemma coeff_two_subst {p : ℕ} [Fact p.Prime] {T f : ℂ_[p]⟦X⟧} (hT₀ : constantCoeff T = 0) :
+lemma coeff_two_subst {R : Type*} [CommRing R] {T f : R⟦X⟧} (hT₀ : constantCoeff T = 0) :
     coeff 2 (f.subst T) = coeff 1 f * coeff 2 T + coeff 2 f * coeff 1 T ^ 2 := by
   rw [coeff_subst_eq_sum_range f hT₀]
   simp [Finset.sum_range_succ, coeff_one, sq, coeff_mul, Finset.Nat.antidiagonal_succ, hT₀]
