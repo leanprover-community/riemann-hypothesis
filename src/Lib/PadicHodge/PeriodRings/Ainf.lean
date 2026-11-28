@@ -467,14 +467,6 @@ coordinate is a unit in k. -/
 lemma Ainf.isUnit_iff_isUnit_constantCoeff : IsUnit a ↔ IsUnit (constantCoeff a) :=
   ⟨fun h ↦ h.map constantCoeff, fun h ↦ ⟨mkUnit h.unit_spec.symm, rfl⟩⟩
 
-/-- Let `F`, `G` be ring endomorphisms of a perfect ring `k` of characteristic `p` and `s₀` the
-reduction of `s ∈ W(k)` modulo `p`. If `x ↦ F x - s₀ * G x` is onto `k`, then
-`b ↦ W(F) b - s * W(G) b` is onto `W(k)`. -/
-lemma Witt.exists_map_sub_mul_map_eq (F G : k →+* k) (s : WittVector p k)
-    (h_surj : Function.Surjective fun x : k ↦ F x - constantCoeff s * G x) :
-    ∃ b : WittVector p k, map F b - s * map G b = a :=
-  WittVector.surjective_map_sub_mul_map s F G h_surj a
-
 open Ideal Period.Witt Function RingHom PadicComplex Pi OFlat NeZero Fact SModEq IsUltrametricDist
 
 /-- Artin–Schreier–Witt equations: let k be a non-zero perfect, absolutely integrally closed ring of
@@ -485,7 +477,8 @@ lemma Witt.artin_schreier_witt [Nontrivial k] [h : IsAbsIntegrallyClosed k] (s a
   -- Modulo `p` the left side is `x ↦ x ^ p - s₀ * x`, with `s₀` the reduction of `s`; this map is
   -- onto since `k` is absolutely integrally closed.
   rw [frobenius_eq_map_frobenius]
-  exact exists_map_sub_mul_map_eq _ 1 s (h.exists_pow_sub_mul_eq p _)
+  exact WittVector.surjective_map_sub_mul_map s (_root_.frobenius k p) 1
+    (h.exists_pow_sub_mul_eq p _) a
 
 /-- In W(k), the power p ^ m divides `a - c` if and only if `a` and `c` have the same first
 `m` Witt coordinates. -/
@@ -938,9 +931,8 @@ lemma dvd_of_forall_exists_sub_mem_span_pow (ha : ¬IsUnit a) (hc : ¬IsUnit c) 
 
 /-- For a non-unit `a`, the map `(x j) ↦ (x j - a * x (j + 1))` on sequences in `A_inf` is onto. -/
 lemma Ainf.shiftDiff_surjective (h : ¬IsUnit a) : Surjective (shiftDiff Ainf a) := by
-  -- View sequences in `Ainf` as Witt vectors over `ℕ → OFlat` and apply
-  -- `Witt.exists_map_sub_mul_map_eq` with the identity and the shift: modulo `p` the equation is
-  -- the one solved in `OFlat.shiftDiff_surjective_of_not_isUnit`.
+  -- View sequences in `Ainf` as Witt vectors over `ℕ → OFlat`. TauCeti lifts the solution of
+  -- the shift equation modulo `p` from `OFlat.shiftDiff_surjective_of_not_isUnit`.
   intro b
   have h_perfect : PerfectRing (ℕ → OFlat) p := ⟨(bijective_frobenius _ p).comp_left⟩
   let shift : (ℕ → OFlat) →+* (ℕ → OFlat) := .pi fun n ↦ evalRingHom _ (n + 1)
@@ -948,8 +940,8 @@ lemma Ainf.shiftDiff_surjective (h : ¬IsUnit a) : Surjective (shiftDiff Ainf a)
     OFlat.shiftDiff_surjective_of_not_isUnit (mt isUnit_iff_isUnit_constantCoeff.mpr h)
   -- the Witt vector over `ℕ → O^♭` whose `i`-th coordinate is `n ↦ (b n).coeff i`
   let B : WittVector p (ℕ → OFlat) := WittVector.mk p fun i n ↦ (b n).coeff i
-  obtain ⟨y, hy⟩ := exists_map_sub_mul_map_eq (a := B) 1 shift
-    (algebraMap Ainf (WittVector p (ℕ → OFlat)) a) h_mod_p
+  obtain ⟨y, hy⟩ := WittVector.surjective_map_sub_mul_map
+    (algebraMap Ainf (WittVector p (ℕ → OFlat)) a) 1 shift h_mod_p B
   -- the components of the solution `y` form the required sequence
   refine ⟨fun n ↦ y.map (evalRingHom _ n), funext fun n ↦ ?_⟩
   -- the `n`-th component of `hy` is the `n`-th equation `y n - a * y (n + 1) = b n`; the two sides
