@@ -531,7 +531,8 @@ def consume(root, cache, record, identity, workers=24, fetcher=fetch, baseline=N
     jobs = unpack_jobs(root, cache, modules, baseline is not None)
     for directory in dict.fromkeys(base for job in jobs for base in job["base"]):
         Path(directory).mkdir(parents=True, exist_ok=True)
-    clear_output_hashes(root, modules)
+    restored_inputs = {job["hash"] for job in jobs}
+    clear_output_hashes(root, [module for module in modules if module[1] in restored_inputs])
     lean = Path(subprocess.check_output(["elan", "which", "lean"], cwd=root, env=env, text=True).strip())
     print(f"Unpacking {len(jobs)} modules with stock leantar ({workers} workers)...", flush=True)
     subprocess.run([str(lean.with_name("leantar")), "--jobs", str(workers), "-f", "-x", "-j", "-"],

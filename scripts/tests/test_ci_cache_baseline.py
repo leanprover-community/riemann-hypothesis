@@ -12,6 +12,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 SCRIPT = Path(__file__).resolve().parents[1] / "ci-cache-get.py"
 spec = importlib.util.spec_from_file_location("ci_cache_get", SCRIPT)
@@ -136,6 +137,70 @@ class Baseline(unittest.TestCase):
         cache.BASELINE_FILE.write_text(json.dumps({**identity, "input_fingerprint": "0" * 64}))
         with self.assertRaises(ValueError):
             cache.pinned_identity(cache.BASELINE_FILE)
+
+
+class Restoration(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.root = (Path(self.directory.name) / "project").resolve()
+        (self.root / "src").mkdir(parents=True)
+        (self.root / "lakefile.toml").write_text(LAKEFILE)
+        self.artifacts = self.root / "cache" / "artifacts"
+        self.artifacts.mkdir(parents=True)
+        self.identity = {"toolchain": "leanprover/lean4:v4.37.0-rc1"}
+
+    def tearDown(self):
+        self.directory.cleanup()
+
+    def restore(self, names):
+        modules = [(name, f"{index:016x}", f"{index:016x}.ltar")
+                   for index, name in enumerate(names)]
+        for _, _, artifact in modules:
+            (self.artifacts / artifact).write_bytes(b"archive")
+        contents = (json.dumps(cache.SCHEMA) + "\n" + "".join(
+            json.dumps([input_hash, artifact]) + "\n" for _, input_hash, artifact in modules)).encode()
+        with patch.object(cache, "validated_blobs", return_value=(contents, {}, modules)), \
+                patch.object(cache, "current_identity", return_value=self.identity), \
+                patch.object(cache.subprocess, "Popen") as downloader, \
+                patch.object(cache.subprocess, "check_output", return_value=str(self.root / "lean")), \
+                patch.object(cache.subprocess, "run"):
+            downloader.return_value.wait.return_value = 0
+            cache.consume(self.root, self.artifacts.parent, {"candidate_head": "0" * 40},
+                          self.identity, baseline=self.identity)
+
+    def output_hash(self, name):
+        path = self.root / ".lake/build/lib/lean" / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("saved hash")
+        return path
+
+    def test_baseline_keeps_hashes_for_removed_modules(self):
+        (self.root / "src/Kept.lean").write_text("-- source\n")
+        kept_hash = self.output_hash("Kept.olean.hash")
+        output_hash = self.output_hash("Removed.olean.hash")
+        self.restore(["Kept", "Removed"])
+        self.assertFalse(kept_hash.exists())
+        self.assertEqual(output_hash.read_text(), "saved hash")
+
+    def test_baseline_clears_hashes_for_restored_modules(self):
+        (self.root / "src/Kept.lean").write_text("-- source\n")
+        output_hash = self.output_hash("Kept.olean.hash")
+        self.restore(["Kept"])
+        self.assertFalse(output_hash.exists())
+
+    def test_removed_baseline_module_does_not_follow_output_symlink(self):
+        target = Path(self.directory.name) / "outside-project"
+        target.mkdir()
+        output_hash = target / "Module.olean.hash"
+        output_hash.write_text("saved hash")
+        link = self.root / ".lake/build/lib/lean/Removed"
+        link.parent.mkdir(parents=True)
+        try:
+            link.symlink_to(target, target_is_directory=True)
+        except OSError as error:
+            self.skipTest(f"directory symlinks are not available: {error}")
+        self.restore(["Removed.Module"])
+        self.assertEqual(output_hash.read_text(), "saved hash")
 
 
 if __name__ == "__main__":
