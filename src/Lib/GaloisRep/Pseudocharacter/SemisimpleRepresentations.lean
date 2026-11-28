@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Algebra.Subalgebra.Matrix
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+public import Mathlib.LinearAlgebra.Matrix.Rank
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly

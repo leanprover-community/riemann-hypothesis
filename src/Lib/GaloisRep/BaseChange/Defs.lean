@@ -14,7 +14,9 @@ extension `E'/E` of CM fields.
 
 * `New.twistedNorm`: the twisted norm `δ · τ δ ⋯ τ^(p-1) δ` in a monoid. `New.twistedNorm_conj`
   shows that twisted conjugation of `δ` conjugates the norm. `New.twistedNorm_mem` and
-  `New.map_twistedNorm` show that it respects stable subgroups and equivariant maps.
+  `New.map_twistedNorm` show that it respects stable subgroups and equivariant maps, and
+  `New.twistedNorm_map_eq_prod` and `New.twistedNorm_diagGL` evaluate it on polynomials and
+  diagonal matrices.
 * `New.IsTameAtLevel`: the conditions on a ring endomorphism `σ` and a level `m` under which descent
   works.
 * `New.IsRootQuotient`, `New.IsNormRoot`: a polynomial `z`, depending only on the characteristic
@@ -122,6 +124,44 @@ lemma twistedNorm_succ' (δ : M) : twistedNorm τ (p + 1) δ = δ * τ (twistedN
   rw [h_tail, map_twistedNorm τ (fun x : M ↦ rfl) p δ]
 
 end TwistedNorm
+
+section TwistedNormEval
+
+open Matrix Polynomial GeneralLinearGroup Finset
+
+variable {R n : Type*} [CommRing R] [Fintype n] [DecidableEq n]
+
+/-- The `i`-th power of `Polynomial.mapRingHom f` maps the coefficients by `f ^ i`. -/
+theorem _root_.Polynomial.mapRingHom_pow_apply {R : Type*} [Semiring R] (f : R →+* R) (i : ℕ)
+    (p : R[X]) : (mapRingHom f ^ i) p = p.map (f ^ i) :=
+  let F : (R →+* R) →* R[X] →+* R[X] :=
+    ⟨⟨mapRingHom, mapRingHom_id⟩, fun f g ↦ (mapRingHom_comp f g).symm⟩
+  DFunLike.congr_fun (map_pow F f i).symm p
+
+/-- The twisted norm `z · σ(z) ⋯ σ^(p-1)(z)` of a polynomial `z`, with `σ` acting on coefficients,
+is the product of the polynomials `z.map (σ ^ i)` for `i < p`. -/
+lemma twistedNorm_map_eq_prod {σ : R →+* R} (p : ℕ) (z : R[X]) :
+    twistedNorm (Polynomial.map σ) p z = ∏ i ∈ range p, z.map (σ ^ i) := by
+  rw [twistedNorm, ← List.prod_toFinset _ List.nodup_range, List.toFinset_range]
+  exact Finset.prod_congr rfl fun i _ ↦ Polynomial.mapRingHom_pow_apply σ i z
+
+/-- Let `δ = diagGL d` be the invertible diagonal matrix with unit entries `d i`. Its twisted norm
+`δ · σ(δ) ⋯ σ^(p-1)(δ)`, with `σ` acting on entries, is diagonal with entries
+`∏ l ∈ range p, (σ ^ l) (d i)`. -/
+@[simp]
+lemma twistedNorm_diagGL {σ : R →+* R} (d : n → Rˣ) (p : ℕ) :
+    ((twistedNorm (GeneralLinearGroup.map σ) p (diagGL d) : GL n R) : Matrix n n R) =
+      diagonal fun i : n ↦ ∏ l ∈ range p, (σ ^ l) (d i : R) := by
+  induction p with
+  | zero => simp [twistedNorm]
+  | succ p ih =>
+    have h_prod (a : R) : ∏ l ∈ range (p + 1), (σ ^ l) a = a * σ (∏ l ∈ range p, (σ ^ l) a) := by
+      simp [prod_range_succ', Function.iterate_succ_apply', mul_comm]
+    rw [twistedNorm_succ', Units.val_mul, GeneralLinearGroup.val_map_apply, ih, coe_diagGL,
+      diagonal_map (map_zero σ), diagonal_mul_diagonal]
+    simp only [h_prod]
+
+end TwistedNormEval
 
 /-!
 ## Matching pairs and split cocycles

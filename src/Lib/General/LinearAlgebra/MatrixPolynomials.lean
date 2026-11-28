@@ -1,12 +1,19 @@
 module
 
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Data.Finsupp.Weight
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic
+public import Mathlib.LinearAlgebra.Matrix.Trace
+public import Mathlib.RingTheory.MvPolynomial.Basic
+import Mathlib.LinearAlgebra.Dual.Lemmas
+import Mathlib.LinearAlgebra.PiTensorProduct.Generators
 import TauCeti.LinearAlgebra.Matrix.Charpoly.Resultant
 import TauCeti.LinearAlgebra.Matrix.Polynomial
-import Mathlib.LinearAlgebra.PiTensorProduct.Generators
-public import Lib.GaloisRep.BaseChange.Defs
 
 /-!
-# Minors, polynomials of matrices and twisted norms
+# Minors and polynomials of matrices
 
 This file contains general lemmas on matrices over commutative rings, and three definitions used
 elsewhere: a minor of a matrix of variables, a non-degeneracy condition on a trace form and a
@@ -27,9 +34,6 @@ freeness condition on a family of integers.
   coprime to the characteristic polynomial of `Y`.
 * `New.exists_gl_map_eq_of_fixed`: an invertible matrix fixed by `σ` lifts along any injective
   ring map whose image contains the fixed points of `σ`.
-
-Notions from other files:
-* `New.twistedNorm τ p δ`: the product `δ · τ(δ) ⋯ τ^(p-1)(δ)` in a monoid `M`, for `τ : M → M`.
 -/
 
 @[expose] public section
@@ -103,19 +107,11 @@ lemma New.det_eval_eq_zero_iff_not_linearIndependent {X : Type*} {v : n → X �
 end TraceFormDefs
 
 /-!
-## Polynomials evaluated at matrices, fixed matrices and twisted norms
+## Polynomials evaluated at matrices and fixed matrices
 
 `New.star_aeval`, `New.map_aeval_matrix` and `New.aeval_semiconj` say that `z(Y)` is compatible
 with star, with ring maps and with intertwining matrices.
 -/
-
-open Polynomial in
-/-- The `i`-th power of `Polynomial.mapRingHom f` maps the coefficients by `f ^ i`. -/
-theorem Polynomial.mapRingHom_pow_apply {R : Type*} [Semiring R] (f : R →+* R) (i : ℕ)
-    (p : R[X]) : (mapRingHom f ^ i) p = p.map (f ^ i) :=
-  let F : (R →+* R) →* R[X] →+* R[X] :=
-    ⟨⟨mapRingHom, mapRingHom_id⟩, fun f g ↦ (mapRingHom_comp f g).symm⟩
-  DFunLike.congr_fun (map_pow F f i).symm p
 
 namespace New
 
@@ -139,13 +135,6 @@ the polynomial `z.map ψ`. -/
 lemma map_aeval_matrix (ψ : R →+* S) (Y : Matrix n n R) (z : R[X]) :
     (aeval Y z).map ψ = aeval (Y.map ψ) (z.map ψ) :=
   (aeval_map Y ψ z).symm
-
-/-- The twisted norm `z · σ(z) ⋯ σ^(p-1)(z)` of a polynomial `z`, with `σ` acting on coefficients,
-is the product of the polynomials `z.map (σ ^ i)` for `i < p`. -/
-lemma twistedNorm_map_eq_prod {σ : R →+* R} (p : ℕ) (z : R[X]) :
-    twistedNorm (Polynomial.map σ) p z = ∏ i ∈ range p, z.map (σ ^ i) := by
-  rw [twistedNorm, ← List.prod_toFinset _ List.nodup_range, List.toFinset_range]
-  exact Finset.prod_congr rfl fun i _ ↦ Polynomial.mapRingHom_pow_apply σ i z
 
 /-- If `c` intertwines the square matrices `x` and `y`, then it intertwines `q(x)` and `q(y)`. -/
 lemma aeval_semiconj [DecidableEq m] {y : Matrix m m R} (h_semiconj : c * x = y * c) (q : R[X]) :
@@ -196,21 +185,5 @@ lemma exists_gl_map_eq_of_fixed (hψ_inj : Function.Injective ψ)
   obtain ⟨M, hM⟩ := h_lift (u := g⁻¹) (by rw [map_inv, hg])
   have h_inv : N * M = 1 := map_injective hψ_inj (by simp [hN, hM])
   exact ⟨.mkOfMulEqOne N M h_inv, Units.ext hN⟩
-
-/-- Let `δ = diagGL d` be the invertible diagonal matrix with unit entries `d i`. Its twisted norm
-`δ · σ(δ) ⋯ σ^(p-1)(δ)`, with `σ` acting on entries, is diagonal with entries
-`∏ l ∈ range p, (σ ^ l) (d i)`. -/
-@[simp]
-lemma twistedNorm_diagGL {σ : R →+* R} (d : n → Rˣ) (p : ℕ) :
-    ((twistedNorm (GeneralLinearGroup.map σ) p (diagGL d) : GL n R) : Matrix n n R) =
-      diagonal fun i : n ↦ ∏ l ∈ range p, (σ ^ l) (d i : R) := by
-  induction p with
-  | zero => simp [twistedNorm]
-  | succ p ih =>
-    have h_prod (a : R) : ∏ l ∈ range (p + 1), (σ ^ l) a = a * σ (∏ l ∈ range p, (σ ^ l) a) := by
-      simp [prod_range_succ', Function.iterate_succ_apply', mul_comm]
-    rw [twistedNorm_succ', Units.val_mul, GeneralLinearGroup.val_map_apply, ih, coe_diagGL,
-      diagonal_map (map_zero σ), diagonal_mul_diagonal]
-    simp only [h_prod]
 
 end New
