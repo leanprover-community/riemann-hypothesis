@@ -142,7 +142,8 @@ abbrev Pairing.tateDualSide : PairingSide O :=
     jumpSet i := insert 0 ((T.jumpSet i).image fun u ↦ -u - 1)
     embJumps g := (T.embJumps g).image fun u ↦ -u - 1
     inClass := T.inClass.dual
-    embJumps_subset h := by grind [T.embJumps_subset h]
+    embJumps_subset h :=
+      (Finset.image_subset_image (T.embJumps_subset h)).trans (Finset.subset_insert 0 _)
     paramLattice := ⟨O, 1⟩
     cocycleMap := LinearMap.toSpanSingleton O _ P.cocycle
     zero_mem := by simp }
@@ -205,7 +206,8 @@ lemma wittFst_smul (x : S.extensionLattice.Ambient) :
         LinearMap.inr O.O S.Carrier S.trivialLattice.Carrier) (n • S.projTrivial.wittMap x) := by
   -- Both sides are additive in `x`; on a pure tensor this is the formula for `extensionRep`.
   revert x
-  refine diagTensor_induction fun a t ↦ ?_
+  refine diagTensor_induction (fun a t ↦ ?_) (fun x y hx hy ↦ by
+    simp only [smul_add, map_add, hx, hy]; abel)
   have h_fst : (extensionRep S.cocycleMap (FrobGroup.snd n) t).1 = S.ρ (FrobGroup.snd n) t.1 +
       (extensionRep S.cocycleMap (FrobGroup.snd n) (0, t.2)).1 := by simp [extensionRep]
   simp [h_fst]
@@ -1192,8 +1194,9 @@ lemma exists_p_pow_mul_z_pow_mem_liftIdeal_and_le {S : PairingSide O} {r a ω J 
   | succ J ih =>
     -- Come back to `k.letterFrob i` from the `J` letters after it, then to `i` by one more step.
     have h_later : ∀ t ∈ Finset.Icc 1 J, ∀ u ∈ S.jumpSet ((k.letterFrob ^ t) (k.letterFrob i)),
-      u ≤ ω :=
-      fun t ht ↦ h_next (t + 1) (by grind)
+      u ≤ ω := fun t ht ↦ by
+      rw [← Equiv.Perm.mul_apply, ← pow_succ]
+      exact h_next (t + 1) (Finset.mem_Icc.2 (by rw [Finset.mem_Icc] at ht; omega))
     have h_first : ∀ u ∈ S.jumpSet (k.letterFrob i), u ≤ ω := h_next 1 (by simp)
     obtain ⟨c, n, h_mem, hc_le, hn_le⟩ := ih h_later
     refine ⟨c + k.differentBound * ω + padicValNat p ω.factorial, (n + ω) / p,
