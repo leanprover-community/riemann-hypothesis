@@ -250,6 +250,8 @@ lemma norm_realConv_mul_sub_le (hF : IsBoundedMeasurable F) (hα : Integrable α
 real point u tends to 1. -/
 lemma tendsto_integral_norm_translate_sub (hα : Integrable α) :
     Filter.Tendsto (fun u : GInf E s ↦ ∫ x : GInf E s, ‖α (u⁻¹ * x) - α x‖) (nhds 1) (nhds 0) := by
+  have _ : MeasurableConstSMul (GInf E s) (GInf E s) := ⟨measurable_const_mul⟩
+  have _ : ContinuousSMul (GInf E s) (GInf E s) := ⟨continuous_mul⟩
   have : SMulInvariantMeasure (GInf E s) (GInf E s) volume :=
     Measure.IsMulLeftInvariant.smulInvariantMeasure
   let T (u : GInf E s) : Lp ℂ 1 (volume : Measure (GInf E s)) := DomMulAct.mk u⁻¹ • hα.toL1
@@ -430,6 +432,7 @@ lemma integral_comp_mul_right (x : G E s) (h_rat : V.Γ.FixesLeft F)
     (hF : Continuous F := by fun_prop) :
     ∫ g : G E s, F (g * x) ∂V.quotMeasure = ∫ g : G E s, F g ∂V.quotMeasure ∧
     (Integrable (fun g : G E s ↦ F (g * x)) V.quotMeasure ↔ Integrable F V.quotMeasure) := by
+  have _ : IsScalarTower V.Γ (G E s) (G E s) := ⟨fun γ x y ↦ mul_assoc (γ : G E s) x y⟩
   have h : ProbabilityTheory.IdentDistrib (fun g ↦ F (g * x)) F V.quotMeasure V.quotMeasure :=
     identDistrib_orbitMeasure_mul_right x fun γ ↦ h_rat γ γ.property
   exact ⟨h.integral_eq, h.integrable_iff⟩
@@ -443,10 +446,10 @@ lemma IsAutomorphic.petersson_comp_mul_right (hF : V.IsAutomorphic F) (hF' : V.I
     V.petersson (fun g : G E s ↦ F (g * x)) F' = V.petersson F (fun g : G E s ↦ F' (g * x⁻¹)) := by
   have h_inv : V.Γ.FixesLeft fun g : G E s ↦ conj (F g) * F' (g * x⁻¹) := fun γ hγ g ↦ by
     simp [mul_assoc γ, hF.rat_mul γ hγ, hF'.rat_mul γ hγ]
-  have := hF.continuous
-  have := hF'.continuous
   -- Translate the integrand `conj (F g) * F' (g * x⁻¹)` by `x`.
-  simpa [petersson] using (integral_comp_mul_right x h_inv).1
+  simpa [petersson] using (integral_comp_mul_right x h_inv
+    ((Complex.continuous_conj.comp hF.continuous).mul
+      (hF'.continuous.comp (continuous_mul_const x⁻¹)))).1
 
 /-- The finite points act on forms of type `e` by isometries of the Petersson product. -/
 theorem inner_formRep (k : Gf E n) (y y' : V.Form e) :
@@ -603,7 +606,8 @@ theorem New.Space.exists_form_eq_tsum_of_fixesLeft (he : IsIdempotentKernel e)
           rw [lintegral_mul_const' _ _ hM]
           exact mul_lt_top he.integrable.hasFiniteIntegral hM.lt_top
   simp only [h_termwise]
-  exact exists_form_eq_realConv K ⟨by fun_prop, M.toReal, h_bounded⟩ h_invariant h_level he
+  exact exists_form_eq_realConv K
+    ⟨(Measurable.tsum hW_meas).stronglyMeasurable, M.toReal, h_bounded⟩ h_invariant h_level he
 
 /-- **Poincaré series.** Let the sum of countably many measurable `W i`, with `∑ i, ‖W i‖` bounded,
 be the sum over `V.Γ` of the left translates of one function `c` that is right invariant under the
