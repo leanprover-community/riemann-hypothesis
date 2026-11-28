@@ -79,22 +79,25 @@ variable {P : Parameters} (D : Data P)
 
 lemma card_X₀ : Fintype.card (D.X 0) = D.k := by grind [card_X, n]
 
-/-- An orthonormal frame with the signs of `Y₀`. -/
-noncomputable instance unitarySignFrameY : UnitarySignFrame D.shape (D.signsY 0 ·) :=
-  Nonempty.some <|
+/-- Existence of an orthonormal frame with the signs of `Y₀`. -/
+lemma nonempty_unitarySignFrameY : Nonempty (UnitarySignFrame D.shape (D.signsY 0 ·)) := by
   -- For a string of length `2 ϱ + 1`, `exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix` asks
   -- for `ϱ + 1` minus signs.
-  have ⟨p, hp_form, hp_unitary⟩ := Seesaw.exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix
+  obtain ⟨p, hp_form, hp_unitary⟩ := Seesaw.exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix
     D.shape.besselIndexEquiv (.id ℂ)
     one_pos ((D.negCount_gridSigns false 0 0).trans (by grind))
-  ⟨{ matrix := (.mkOfMulEqOne _ _ (hp_unitary rfl))⁻¹
-     gram_eq := by
-       -- The two Gram matrices agree entry by entry.
-       convert! hp_form
-       simp [← ext_iff, gradedGram, Shape.besselIndexEquiv, splitGram, middleGram, Fin.rev,
-         Matrix.one_apply]
-       lia
-     mem_unitary := ⟨hp_unitary rfl, Units.inv_mul _⟩ }⟩
+  exact ⟨{ matrix := (.mkOfMulEqOne _ _ (hp_unitary rfl))⁻¹
+           gram_eq := by
+             -- The two Gram matrices agree entry by entry.
+             convert! hp_form
+             simp [← ext_iff, gradedGram, Shape.besselIndexEquiv, splitGram, middleGram,
+               Fin.rev, Matrix.one_apply]
+             lia
+           mem_unitary := ⟨hp_unitary rfl, Units.inv_mul _⟩ }⟩
+
+/-- An orthonormal frame with the signs of `Y₀`. -/
+noncomputable instance unitarySignFrameY : UnitarySignFrame D.shape (D.signsY 0 ·) :=
+  D.nonempty_unitarySignFrameY.some
 
 /-- The Schur matrices of weight `w`, written in an orthonormal basis for their Gram form, give a
 continuous unitary representation of U(n), with n = `𝔰.κ`, which is conjugate to the transposed
@@ -469,6 +472,24 @@ instance : D.HasLogLower (ofNat(2) ^ D.ϱ) (10 * D.logB) where
     norm_num
     exact D.le_of_hasLogBound
 
+/-- The product `D.levelPrime 0 * D.levelPrime 1` divides an integral finite adele `r` iff `r`
+has valuation less than 1 at every chosen place and its conjugate above both primes. -/
+lemma natCast_mul_levelPrime_dvd_iff (r : Ô D.E) :
+    ↑(D.levelPrime 0 * D.levelPrime 1) ∣ r ↔
+      ∀ p : Σ i : Fin 2, {w | D.piM ∈ w.asIdeal ∧ ↑(D.levelPrime i) ∈ w.asIdeal},
+        reduceAt p.2.val r = 0 ∧ reduceAt p.2.val (star r) = 0 := by
+  -- The primes `D.levelPrime 0` and `D.levelPrime 1` are distinct, so their product divides `r`
+  -- iff both do.
+  have h_prod : ↑(D.levelPrime 0 * D.levelPrime 1) ∣ r ↔ ∀ i : Fin 2, ↑(D.levelPrime i) ∣ r := by
+    have h_cop : (D.levelPrime 0).Coprime (D.levelPrime 1) :=
+      (coprime_primes (D.levelPrime_prime 0) (D.levelPrime_prime 1)).2
+        (D.levelPrime_injective.ne (by decide))
+    simpa using ⟨fun h ↦ ⟨dvd_of_mul_right_dvd h, dvd_of_mul_left_dvd h⟩,
+      fun ⟨h₀, h₁⟩ ↦ h_cop.cast.mul_dvd h₀ h₁⟩
+  rw [h_prod, Sigma.forall]
+  exact forall_congr' fun i ↦ (D.natCast_levelPrime_dvd_iff i r).trans
+    (forall_congr' fun w ↦ by simp)
+
 /-- The filling data `New.Filling` attached to the admissible data D. They record the prime N, the
 idele of π (in the field `piN`), the primes p₀, p₁ with chosen places, `deltaE`, and Bessel systems
 chosen from `New.Data.exists_besselSystem`. The type of the chosen systems is stated in
@@ -484,7 +505,7 @@ noncomputable def filling : Filling D.E D.shape where
   sourceLevel := D.levelX 0
   classAut_eq_bot := D.classAut_levelX_zero_eq_bot
   besselSystem v := (D.exists_besselSystem v).choose
-  piN_mul_star := mod_cast D.isSplitSquarefree_piNIdele.algebraMap_eq_mul_star.symm
+  piN_mul_star := D.isSplitSquarefree_piNIdele.algebraMap_eq_mul_star.symm.trans (map_natCast _ _)
   N_prime := D.N_prime
   N_split w := by
     by_cases hw : w ∈ D.piNPlaces
@@ -499,16 +520,7 @@ noncomputable def filling : Filling D.E D.shape where
   chosenPlaces_q i w hw := D.q_eq_levelPrime hw.2
   chosenPlaces_injective := D.isConjApart_chosenPlace.injective
   star_notMem_chosenPlaces hw hw' := IsChosen.not_star hw.1 hw'.1
-  M_dvd_iff r := by
-    -- The primes `D.levelPrime 0` and `D.levelPrime 1` are distinct, so their product divides `r`
-    -- iff both do.
-    have h_prod : ↑(D.levelPrime 0 * D.levelPrime 1) ∣ r ↔ ∀ i : Fin 2, ↑(D.levelPrime i) ∣ r := by
-      have h_cop : (D.levelPrime 0).Coprime (D.levelPrime 1) := by grind [coprime_primes, Data]
-      simpa using ⟨fun h ↦ ⟨dvd_of_mul_right_dvd h, dvd_of_mul_left_dvd h⟩,
-        fun ⟨h₀, h₁⟩ ↦ h_cop.cast.mul_dvd h₀ h₁⟩
-    rw [h_prod, Sigma.forall]
-    exact forall_congr' fun i ↦ (D.natCast_levelPrime_dvd_iff i r).trans
-      (forall_congr' fun w ↦ by simp)
+  M_dvd_iff := D.natCast_mul_levelPrime_dvd_iff
   card_chosenPlaces := D.card_chosenPlace
   star_deltaE := P.star_deltaE
   span_deltaE := P.differentIdeal_eq_span_deltaE
