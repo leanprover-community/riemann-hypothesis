@@ -152,7 +152,7 @@ The class `D.HasLogBound u F l` of `New/Reduction/Data/Magnitudes` states |F| â‰
 
 ## 5. Global settings
 
-`Lib/Speed`, imported through `Lib/Base`, holds the main settings that apply to the whole development. They steer instance search and `simp`. They add no axiom. With `Lib/Speed` emptied, every file still compiled on Lean v4.33.1. They can influence which instance a statement inside the development picks up, but not the five theorems: their types are constants of Mathlib and of `Statements.lean`, which does not import the settings. Apart from these, `lakefile.toml` sets options for all files: no automatic implicit variables, `maxHeartbeats`, `maxSynthPendingDepth`, the thread stack and one printing option.
+`Lib/Speed`, imported through `Lib/Base`, holds the main settings that apply to the whole development. They steer instance search and `simp`. They add no axiom. With `Lib/Speed` emptied, every file still compiled on Lean v4.33.1; on the current toolchain a few files rely on it (see its module note). They can influence which instance a statement inside the development picks up, but not the five theorems: their types are constants of Mathlib and of `Statements.lean`, which does not import the settings. Apart from these, `lakefile.toml` sets options for all files: no automatic implicit variables, `maxHeartbeats`, `maxSynthPendingDepth`, the thread stack and one printing option.
 
 | Setting | Effect on what you read |
 |---|---|
