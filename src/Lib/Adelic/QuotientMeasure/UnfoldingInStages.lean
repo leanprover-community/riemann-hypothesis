@@ -158,8 +158,7 @@ lemma New.dense_eq_zero_of_integral_cosetMeasure_eq_zero [ν.IsMulRightInvariant
   have : SMulInvariantMeasure H G μ := ⟨by simp [compHom_smul_def]⟩
   have : ProperSMul H G := properSMul_of_isClosedEmbedding i hi fun _ _ ↦ rfl
   have : HasCutoff ν G := hasCutoff_of_proper
-  exact dense_of_ae_orbitMeasure (fun a g hg ↦ (hρ_inv a g).trans hg)
-    ((integral_eq_zero_iff_of_nonneg hρ_nonneg hρ_int).1 h_zero)
+  exact dense_eq_zero_of_integral_orbitMeasure_eq_zero hρ_nonneg hρ_inv hρ_int h_zero
 
 /-- Let `i : H → G` be a closed embedding of a unimodular group and `ρ ≥ 0` a continuous function
 on `G`, invariant under left translation by `i(H)` and integrable for the quotient measure

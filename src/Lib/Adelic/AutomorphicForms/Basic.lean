@@ -182,15 +182,14 @@ lemma IsAutomorphic.comp_mul_right (hF : V.IsAutomorphic F) (a : G E s) :
 lemma IsAutomorphic.eq_zero_of_petersson_self (h : V.IsAutomorphic F)
     (hF : MemLp F 2 V.quotMeasure) (h_pet : V.petersson F F = 0) :
     F = 0 := by
-  -- `∫ ‖F‖ ^ 2 = 0`, so `F` vanishes almost everywhere on the quotient
+  -- The invariant nonnegative function `‖F‖ ^ 2` has integral zero on the quotient.
   have h_int : ∫ g, ‖F g‖ ^ 2 ∂V.quotMeasure = 0 := by
     simpa [RCLike.conj_mul, ← Complex.ofReal_pow, integral_complex_ofReal, petersson] using h_pet
-  have h_ae : ∀ᵐ g ∂V.quotMeasure, F g = 0 := by
-    simpa [Filter.EventuallyEq] using
-      (integral_eq_zero_iff_of_nonneg (fun g ↦ sq_nonneg _) hF.norm.integrable_sq).1 h_int
-  -- the zero set of `F` is stable under `V.Γ`, hence dense; and `F` is continuous
-  have h_dense : Dense {g | F g = 0} :=
-    dense_of_ae_orbitMeasure (fun (γ : V.Γ) g hg ↦ (h.rat_mul γ γ.property g).trans hg) h_ae
+  have h_dense : Dense {g | F g = 0} := by
+    simpa using dense_eq_zero_of_integral_orbitMeasure_eq_zero (ρ := fun g ↦ ‖F g‖ ^ 2)
+      (fun g ↦ sq_nonneg _) (fun (γ : V.Γ) g ↦ congrArg (fun z : ℂ ↦ ‖z‖ ^ 2)
+        (h.rat_mul γ γ.property g))
+      hF.norm.integrable_sq h_int
   exact h.continuous.ext_on h_dense continuous_zero fun _ hg ↦ hg
 
 lemma IsForm.isBoundedMeasurable (hF : V.IsForm e F) : IsBoundedMeasurable F :=

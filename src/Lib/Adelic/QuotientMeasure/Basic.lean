@@ -288,6 +288,16 @@ lemma dense_of_ae_orbitMeasure [IsInvInvariant ν] [c : HasCutoff ν X] [Topolog
     exact h_ae_prod.mono fun z hz ↦ subset_closure (h_stable z.2 z.1 hz)
   exact .of_closure (dense_of_ae h_full)
 
+/-- A nonnegative integrable invariant function with zero integral for the orbit measure
+vanishes on a dense set if the original measure is positive on nonempty open sets. -/
+lemma dense_eq_zero_of_integral_orbitMeasure_eq_zero [IsInvInvariant ν] [HasCutoff ν X]
+    [TopologicalSpace X] [BorelSpace X] [μ.IsOpenPosMeasure] {ρ : X → ℝ}
+    (hρ_nonneg : 0 ≤ ρ) (hρ_inv : ∀ (a : H) (x : X), ρ (a • x) = ρ x)
+    (hρ_int : Integrable ρ (orbitMeasure ν μ)) (h_zero : ∫ x, ρ x ∂orbitMeasure ν μ = 0) :
+    Dense {x | ρ x = 0} :=
+  dense_of_ae_orbitMeasure (fun a x hx ↦ (hρ_inv a x).trans hx)
+    ((integral_eq_zero_iff_of_nonneg hρ_nonneg hρ_int).1 h_zero)
+
 /-- Unfolding for `lintegral`: let `ν` be an s-finite, inversion-invariant measure on `H`, and `μ`
 an s-finite, `H`-invariant measure on `X`. Suppose the action has a cutoff, meaning a measurable
 weight on `X` whose `ν`-integral over each orbit is one. Then for measurable `f : X → [0, ∞]`,
