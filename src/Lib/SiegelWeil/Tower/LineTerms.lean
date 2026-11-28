@@ -1,7 +1,7 @@
 module
 
 public import Lib.Weil.MixedModel.AdaptedSplitting
-import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+import Lib.ClassField.HeckeCharacter.SplittingCharacters
 public import Lib.Weil.DualPair.WeilAction -- shake: keep (needed public by an exposed definition)
 
 /-!
@@ -107,14 +107,11 @@ omit [WeilData E]
 is `g`. -/
 lemma iCoord_levi_iAdelic (m : GL Unit (𝔸 E)) (g : G E s) :
     A.iCoord * ((A.levi (m, g)).adeleMatrix * A.iAdelic) = g.adeleMatrix := by
-  simp [Splitting.levi, Matrix.mul_assoc, G.adeleMatrix_ofMatrix, Matrix.add_mul, coord_mul_frame,
-    coord_mul_frame_mul]
+  simp [levi_mul_iAdelic, coord_mul_frame_mul]
 
 private lemma lineLevi_inv (c : (𝔸 E)ˣ) (h : G E t) :
     (lineLevi X (c, h))⁻¹ = X.levi (GeneralLinearGroup.scalar Unit c, h⁻¹) := by
-  rw [← map_inv]
-  change X.levi (GeneralLinearGroup.scalar Unit ((c⁻¹)⁻¹), h⁻¹) = _
-  rw [inv_inv]
+  simp [lineLevi, ← map_inv]
 
 /-- The Levi element of `A` acting by the scalar `u` on its line, on the right, and the inverse of
 `lineLevi X (c, h)`, on the left, scale the rank-one map `X.kAdelic * A.kCoord` by `c * u`. -/
@@ -122,12 +119,9 @@ lemma lineLevi_inv_mul_kAdelic_mul_levi (u c : (𝔸 E)ˣ) (g : G E s) (h : G E 
     (lineLevi X (c, h))⁻¹.adeleMatrix *
         (X.kAdelic * (A.kCoord * (A.levi (GeneralLinearGroup.scalar Unit u, g)).adeleMatrix)) =
       (↑(c * u) : 𝔸 E) • (X.kAdelic * A.kCoord) := by
-  rw [lineLevi_inv, ← Matrix.mul_assoc, X.actsOnFrame_levi _ _]
-  simp only [GeneralLinearGroup.coe_scalar, scalar_apply, Splitting.levi, Matrix.mul_assoc,
-    coe_units_inv, inv_subsingleton, diagonal_conjTranspose, MonoidHom.mk'_apply,
-    ← smul_eq_diagonal_mul, Matrix.mul_smul, diagonal_apply_eq, Ring.inverse_invertible,
-    invOf_units, G.adeleMatrix_ofMatrix, Matrix.mul_add, coord_mul_frame_mul, add_zero, smul_smul,
-    mul_comm, Units.val_mul]
+  rw [lineLevi_inv, ← Matrix.mul_assoc, X.actsOnFrame_levi]
+  simp [Splitting.levi, Matrix.mul_assoc, Matrix.mul_add, ← smul_eq_diagonal_mul, smul_smul,
+    mul_comm]
 
 /-- The Levi element of `A` acting by the scalar `u` on its line, on the right, and the inverse of
 `lineLevi X (c, h)`, on the left, scale the rank-one map `X.lAdelic * A.lCoord` by the conjugate of
@@ -136,12 +130,9 @@ lemma lineLevi_inv_mul_lAdelic_mul_levi (u c : (𝔸 E)ˣ) (g : G E s) (h : G E 
     (lineLevi X (c, h))⁻¹.adeleMatrix *
         (X.lAdelic * (A.lCoord * (A.levi (GeneralLinearGroup.scalar Unit u, g)).adeleMatrix)) =
       star (↑(c * u)⁻¹ : 𝔸 E) • (X.lAdelic * A.lCoord) := by
-  rw [lineLevi_inv, ← Matrix.mul_assoc, X.levi_mul_lAdelic _ _,
+  rw [lineLevi_inv, ← Matrix.mul_assoc, X.levi_mul_lAdelic,
     A.lCoord_mul_adeleMatrix (A.actsOnFrame_levi _ _)]
-  simp only [coe_units_inv, GeneralLinearGroup.coe_scalar, scalar_apply, inv_subsingleton,
-    diagonal_apply_eq, Ring.inverse_invertible, invOf_units, diagonal_conjTranspose, Pi.star_def,
-    ← smul_eq_diagonal_mul, Matrix.mul_smul, Matrix.mul_assoc, smul_smul, mul_comm,
-    _root_.mul_inv_rev, Units.val_mul, star_mul']
+  simp [← map_inv, Pi.star_def, ← smul_eq_diagonal_mul, Matrix.mul_assoc, smul_smul, mul_comm]
 
 end
 
@@ -179,8 +170,9 @@ lemma lineTerm_pairWeil_levi {u : (𝔸 E)ˣ} (hu : u = 1 ∨ card r = card n) (
           pairWeil W T b b' (g, k) ((A.homSource T).zeroTerm φ) := by
     simpa using A.homSource_zeroTerm_pairWeil T b b' _ g _
       (A.actsOnFrame_levi (.scalar _ u) g) (iCoord_levi_iAdelic A _ g) k φ
-  -- The scalars given by the two laws agree with the stated one: if `u = 1` or the ranks are equal,
-  -- the powers of the splitting character and of the norm at `u` match, by field arithmetic.
+  -- The scalars given by the two laws agree with the stated one: adding a hyperbolic plane leaves
+  -- `spaceChar` unchanged (`spaceChar_add_two_mul`), and if `u = 1` or the ranks are equal, the
+  -- powers of the character and of the norm at `u` match by field arithmetic.
   obtain ⟨h_scalar_k, h_scalar_l⟩ :
       (((a * upsilonU1).spaceChar (card r')).val u : ℂ)⁻¹ * √(ideleAbs u) ^ card r' *
         (((a.spaceChar (card n)).val c : ℂ)⁻¹ * (√(ideleAbs c) ^ card n : ℂ)⁻¹) =
@@ -189,35 +181,17 @@ lemma lineTerm_pairWeil_levi {u : (𝔸 E)ˣ} (hu : u = 1 ∨ card r = card n) (
         (((a.spaceChar (card r)).val u : ℂ)⁻¹ * √(ideleAbs u) ^ card r) =
       √(ideleAbs u) ^ (2 * card r + 2) /
         ((a.spaceChar (card n)).val x * √(ideleAbs x) ^ (card n + 2)) := by
-    have h_abs (y : (𝔸 E)ˣ) : (√(ideleAbs y) : ℂ) ≠ 0 :=
-      Complex.ofReal_ne_zero.mpr
-        ((Real.sqrt_ne_zero ideleAbs_nonneg_and_ne_zero.1).mpr ideleAbs_nonneg_and_ne_zero.2)
-    obtain hu | hu := hu
-    · simp only [AutChar.spaceChar, map_mul, baseChange_upsilonU1, X.card_eq, card_unique, mul_one,
-        pow_add, inv_pow, Subgroup.coe_mul, SubmonoidClass.coe_pow, InvMemClass.coe_inv, hu,
-        ContinuousMonoidHom.mul_apply, map_one, ContinuousMonoidHom.pow_apply, one_pow,
-        circleChar_inv_apply, inv_one, Circle.coe_one, Real.sqrt_one, Complex.ofReal_one,
-        Circle.coe_mul, Circle.coe_inv, Circle.coe_pow, _root_.mul_inv_rev, inv_inv, one_mul,
-        one_div, A.card_eq, x]
-      exact ⟨by ring, by field_simp [Circle.coe_ne_zero, h_abs]⟩
-    · simp only [AutChar.spaceChar, map_mul, baseChange_upsilonU1, X.card_eq, hu, card_unique,
-        mul_one, pow_add, inv_pow, Subgroup.coe_mul, SubmonoidClass.coe_pow, InvMemClass.coe_inv,
-        ContinuousMonoidHom.mul_apply, ContinuousMonoidHom.pow_apply, circleChar_inv_apply,
-        Circle.coe_mul, Circle.coe_pow, Circle.coe_inv, _root_.mul_inv_rev, inv_inv, pow_mul',
-        mul_pow, ideleAbs_nonneg_and_ne_zero, Real.sqrt_mul, Complex.ofReal_mul, A.card_eq, x]
+    have h_abs (y : (𝔸 E)ˣ) : (√(ideleAbs y) : ℂ) ≠ 0 := by simp
+    have h_char (k : ℕ) : (a * upsilonU1).spaceChar (k + 2) = a.spaceChar k := by
+      simpa using a.spaceChar_add_two_mul (k := k) (l := 1)
+    obtain hu | hu := hu <;>
+      simp [x, X.card_eq, A.card_eq, h_char, hu, Real.sqrt_mul, pow_add, pow_mul', mul_pow] <;>
       exact ⟨by field_simp [Circle.coe_ne_zero, h_abs], by field_simp [Circle.coe_ne_zero, h_abs]⟩
   -- In each model move `ϱ` across `pairWeil`, which rescales `ξ`, then apply the two laws.
-  cases β
-  · simp only [lineTerm, Bool.false_eq_true, ↓reduceIte, smul_mul, ContinuousLinearMap.comp_apply,
-    rho_pairWeil, vecToMatrix_matrixToVec, Matrix.mul_smul, Matrix.mul_assoc,
-    lineLevi_inv_mul_lAdelic_mul_levi, _root_.mul_inv_rev, Units.val_mul, star_mul', smul_smul,
-    h_target, map_smul, h_source, h_scalar_l, map_mul, Circle.coe_mul, ideleAbs_nonneg_and_ne_zero,
-    Real.sqrt_mul, Complex.ofReal_mul, x]
-  · simp only [lineTerm, ↓reduceIte, homSlice, smul_mul, ContinuousLinearMap.comp_apply,
-    rho_pairWeil, vecToMatrix_matrixToVec, Matrix.mul_smul, Matrix.mul_assoc,
-    lineLevi_inv_mul_kAdelic_mul_levi, Units.val_mul, smul_smul, h_source, map_smul, h_target,
-    h_scalar_k, map_mul, Circle.coe_mul, ideleAbs_nonneg_and_ne_zero, Real.sqrt_mul,
-    Complex.ofReal_mul, add_zero, x]
+  cases β <;>
+    simp [lineTerm, homSlice, rho_pairWeil, vecToMatrix_matrixToVec, -matrixToVec_smul, smul_mul,
+      Matrix.mul_smul, Matrix.mul_assoc, lineLevi_inv_mul_lAdelic_mul_levi,
+      lineLevi_inv_mul_kAdelic_mul_levi, h_target, h_source, h_scalar_l, h_scalar_k, smul_smul, x]
 
 /-- The index set of the isotropic frames that split `W'.hom V'` over `W.hom V`. The right summand
 indexes one line of the hyperbolic plane `Hom(A, B) ⊕ Hom(A*, B*)`, where `A`, `A*` are the lines
@@ -359,24 +333,16 @@ lemma frameAt_lineTermSplitting (β : Bool) :
   simp only [Splitting.frameAt, inv_one, G.adeleMatrix_one, Matrix.one_mul, fromCols_ext_iff]
   -- Open `hom` only after rewriting with `hom_point_inv_mul_kronecker`.
   cases β <;>
-    simp only [lAdelic, lineTermSplitting, Splitting.comp, planeSplitting, Matrix.mul_assoc,
-      mul_inv_cancel_left_of_invertible, planeModel, removePlanes, Splitting.symm, cond_eq_ite,
-      Bool.false_eq_true, ↓reduceIte, fromCols_mul_fromRows, Matrix.mul_one, Matrix.mul_zero,
-      add_zero, zero_add, fromCols_map, mul_fromCols, hom_point_inv_mul_kronecker, fromRows_map,
-      Matrix.map_mul, map_J_inv, Space.map_J, fromRows_mul, Units.inv_mul_cancel_right,
-      lineTermBasis,
-      Matrix.GeneralLinearGroup.kronecker, Units.val_one, transposeGL, star, val_blockGL_apply,
-      ← map_inv, Prod.inv_mk,
-      Units.inv_mk, inv_one, adaptedHomBasis, inv_inv, fromBlocks_conjTranspose,
-      conjTranspose_kronecker, conjTranspose_one,
-      conjTranspose_transpose_eq_transpose_conjTranspose,
-      conjTranspose_conjTranspose, conjTranspose_zero, fromCols_mul_fromBlocks, ← mul_kronecker_mul,
-      ← transpose_mul, iCoord, iAdelic, ratMap, conjTranspose_mul, conjTranspose_map_toAdele,
-      kCoord, kAdelic, lCoord]
-    <;> simp only [coe_units_inv, conjTranspose_nonsing_inv, fromBlocks_mul_fromRows,
-        isUnits_det_units, nonsing_inv_mul_cancel_left, Matrix.zero_mul, add_zero, Matrix.one_mul,
-        zero_add, transpose_fromRows, det_conjTranspose, isUnit_star, mul_nonsing_inv, mul_one,
-        and_self, hom, ← mul_kronecker_mul, Matrix.mul_assoc, ← transpose_mul]
+    simp [lAdelic, kAdelic, iAdelic, kCoord, lCoord, iCoord, ratMap, lineTermSplitting,
+      Splitting.comp, planeSplitting, planeModel, removePlanes, Splitting.symm, lineTermBasis,
+      adaptedHomBasis, Matrix.GeneralLinearGroup.kronecker, transposeGL, star, fromCols_map,
+      fromRows_map, mul_fromCols, hom_point_inv_mul_kronecker, map_J_inv, Space.map_J,
+      conjTranspose_map_toAdele, fromCols_mul_fromRows, fromCols_mul_fromBlocks,
+      fromBlocks_conjTranspose, conjTranspose_kronecker,
+      conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul, ← transpose_mul,
+      ← map_inv, Matrix.mul_assoc, -coe_units_inv] <;>
+    simp [hom, fromBlocks_mul_fromRows, transpose_fromRows, conjTranspose_nonsing_inv,
+      ← mul_kronecker_mul, ← transpose_mul, Matrix.mul_assoc]
 
 /-- If the frames of `A` and `X` are orthonormal at the infinite places and integral at the finite
 ones, so is the frame of `lineTermSplitting` in the basis `lineTermBasis`. -/
@@ -395,39 +361,24 @@ lemma isAdapted_lineTermSplitting [hA : IsBaseAdapted A] [hX : IsBaseAdapted X] 
       (1 ⊕ᵥ (fun p : r × Unit ↦ t p.1) ⊕ᵥ 1) ⊕ᵥ fun p : r × n ↦ s p.2
   let cols : (LineIndex n r ⊕ LineIndex n r) ⊕ r × n → ((Unit ⊕ Unit) ⊕ r) × ((Unit ⊕ Unit) ⊕ n) :=
     colMap .inl ⊕ᵥ colMap .inr ⊕ᵥ Prod.map .inr .inr
-  let inv : ((Unit ⊕ Unit) ⊕ r) × ((Unit ⊕ Unit) ⊕ n) →
-      (LineIndex n r ⊕ LineIndex n r) ⊕ r × n
-    | (.inl (.inl ()), .inr i) => .inl (.inl (.inl (.inl ((), .inl i))))
-    | (.inl (.inr ()), .inr i) => .inl (.inr (.inl (.inl ((), .inl i))))
-    | (.inr j, .inl (.inl ())) => .inl (.inl (.inl (.inr (j, ()))))
-    | (.inr j, .inl (.inr ())) => .inl (.inr (.inl (.inr (j, ()))))
-    | (.inr j, .inr i) => .inr (j, i)
-    | (.inl (.inl ()), .inl (.inl ())) => .inl (.inl (.inl (.inl ((), .inr ()))))
-    | (.inl (.inr ()), .inl (.inr ())) => .inl (.inr (.inl (.inl ((), .inr ()))))
-    | (.inl (.inl ()), .inl (.inr ())) =>
-        cond β (.inl (.inr (.inr ((), ()))) ) (.inl (.inl (.inr ((), ()))))
-    | (.inl (.inr ()), .inl (.inl ())) =>
-        cond β (.inl (.inl (.inr ((), ()))) ) (.inl (.inr (.inr ((), ()))))
   have h_cols : Injective cols := by
-    refine LeftInverse.injective (g := inv) fun a ↦ ?_
+    intro a b h
     cases β <;>
-      rcases a with (⟨⟨⟨_, _ | _⟩ | _⟩ | _⟩ | ⟨⟨⟨_, _ | _⟩ | _⟩ | _⟩) | ⟨_, _⟩ <;> rfl
+      rcases a with (⟨⟨⟨⟨⟩, _ | ⟨⟩⟩ | ⟨_, ⟨⟩⟩⟩ | ⟨⟨⟩, ⟨⟩⟩⟩ |
+        ⟨⟨⟨⟨⟩, _ | ⟨⟩⟩ | ⟨_, ⟨⟩⟩⟩ | ⟨⟨⟩, ⟨⟩⟩⟩) | ⟨_, _⟩ <;>
+      rcases b with (⟨⟨⟨⟨⟩, _ | ⟨⟩⟩ | ⟨_, ⟨⟩⟩⟩ | ⟨⟨⟩, ⟨⟩⟩⟩ |
+        ⟨⟨⟨⟨⟩, _ | ⟨⟩⟩ | ⟨_, ⟨⟩⟩⟩ | ⟨⟨⟩, ⟨⟩⟩⟩) | ⟨_, _⟩ <;>
+      simp_all [cols, colMap]
   refine .of_eq_submatrix_mul (.mul (.of_stdForm fun p ↦ s' p.2)
     (hX.isOrthoIntegral.kronecker hA.isOrthoIntegral)) cols (.of_stdForm signs) ?_ h_cols
   rw [frameAt_lineTermSplitting]
   -- The matrix identity, block by block: every entry is a signed product of entries of the frames.
-  clear hA hX h_cols inv
+  clear hA hX h_cols
+  ext ⟨i, j⟩ c : 1
   cases β <;>
-    simp only [iCoord, stdForm, iAdelic, Matrix.mul_assoc, transpose_mul, diagonal_transpose,
-      kCoord, lCoord, cond_eq_ite, Bool.false_eq_true, ↓reduceIte,
-      conjTranspose_fromCols_eq_fromRows_conjTranspose, Sum.swap_inl, Sum.swap_inr, ← ext_iff,
-      mul_diagonal, submatrix_apply, id_eq, diagonal_mul, kroneckerMap_apply, transpose_apply,
-      Sum.forall, fromCols_apply_inl, Sum.elim_inl, Prod.forall, conjTranspose_apply,
-      fromRows_apply_inr, fromCols_apply_inr, fromRows_apply_inl, Sum.elim_inr, Pi.one_apply,
-      Units.val_one, Int.cast_one, Subsingleton.forall₂_iff, Prod.map_fst, Prod.map_snd, cols,
-      colMap, signs]
-    <;> ac_nf
-    <;> simp only [eq_self, and_self, implies_true]
+    rcases c with (⟨⟨⟨_, _ | _⟩ | _⟩ | _⟩ | ⟨⟨⟨_, _ | _⟩ | _⟩ | _⟩) | ⟨_, _⟩ <;>
+    simp [iCoord, kCoord, lCoord, stdForm, cols, colMap, signs, ← Pi.one_def, Prod.mk_one_one,
+      conjTranspose_fromCols_eq_fromRows_conjTranspose, mul_comm, mul_left_comm, mul_assoc]
 
 end TwoLineTerms
 
