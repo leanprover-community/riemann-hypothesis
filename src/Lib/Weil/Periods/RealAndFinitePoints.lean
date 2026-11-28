@@ -92,30 +92,31 @@ def besselProdEquiv : Y.besselReal × Y.besselFin ≃ₜ* Y.besselGroup where
   continuous_toFun := by fun_prop
   continuous_invFun := by fun_prop
 
-/-- The image of the product of the Haar measures of `R(F_∞)` and `R(𝔸_fin)` is a Haar measure
-on `R(𝔸)`. -/
-lemma isHaarMeasure_map_besselProdEquiv :
-    ((haar.prod haar).map Y.besselProdEquiv : Measure Y.besselGroup).IsHaarMeasure :=
+/-- For a positive scalar `c`, the isomorphism `Y.besselProdEquiv` is measure preserving from the
+product Haar measure on `R(F_∞) × R(𝔸_fin)` to `c • haar` on `R(𝔸)`. -/
+lemma exists_measurePreserving_besselProdEquiv :
+    ∃ c : NNReal, 0 < c ∧
+      MeasurePreserving Y.besselProdEquiv (haar.prod haar) (c • (haar : Measure Y.besselGroup)) :=
   have : (haar.prod haar : Measure (Y.besselReal × Y.besselFin)).IsHaarMeasure :=
     prod.instIsHaarMeasure haar haar
-  Y.besselProdEquiv.isHaarMeasure_map _
+  let ν : Measure Y.besselGroup := (haar.prod haar).map Y.besselProdEquiv
+  have : ν.IsHaarMeasure := Y.besselProdEquiv.isHaarMeasure_map _
+  ⟨haarScalarFactor ν haar, haarScalarFactor_pos_of_isHaarMeasure ν haar,
+    Y.besselProdEquiv.continuous.measurable, isMulLeftInvariant_eq_smul ν haar⟩
 
 /-- The group `R(F_∞)` of real points of the Bessel subgroup `R` is unimodular: its left Haar
 measure is right invariant. -/
 theorem isMulRightInvariant_haar_besselReal [Fintype X] :
     (haar : Measure Y.besselReal).IsMulRightInvariant := by
-  -- The group `R(𝔸)` is unimodular and is the product of the two groups.
-  let ν : Measure Y.besselGroup := (haar.prod haar).map Y.besselProdEquiv
-  have : ν.IsHaarMeasure := Y.isHaarMeasure_map_besselProdEquiv
-  have h_right : ν.IsMulRightInvariant := by
-    rw [isMulLeftInvariant_eq_smul ν haar]
-    infer_instance
-  -- Pulling `ν` back along the isomorphism gives the product measure.
+  -- `R(𝔸)` is unimodular and `Y.besselProdEquiv` identifies `haar.prod haar` with `c • haar`.
+  obtain ⟨c, -, h_mp⟩ := Y.exists_measurePreserving_besselProdEquiv
+  -- Pulling `c • haar` back along the isomorphism gives the product measure.
   have h_emb : MeasurableEmbedding Y.besselProdEquiv :=
     Y.besselProdEquiv.toHomeomorph.measurableEmbedding
   have h_prod : (haar.prod haar : Measure (Y.besselReal × Y.besselFin)).IsMulRightInvariant := by
-    rw [← h_emb.comap_map (haar.prod haar)]
-    exact IsMulRightInvariant.comap ν (f := Y.besselProdEquiv.toMulEquiv.toMonoidHom) h_emb
+    rw [← h_emb.comap_map (haar.prod haar), h_mp.map_eq]
+    exact IsMulRightInvariant.comap (c • haar)
+      (f := Y.besselProdEquiv.toMulEquiv.toMonoidHom) h_emb
   exact (isMulRightInvariant_of_prod h_prod).1
 
 /-- Let `K` be a level and `J = R(𝔸_fin) ∩ K`. There is a constant `c ≠ 0`, the volume of `J`
@@ -129,11 +130,8 @@ lemma exists_integral_eq_mul_integral_besselReal (K : Subgroup (Gf E ι)) [hK : 
       Integrable f haar →
         Integrable a haar ∧
         ∫ r : Y.besselGroup, f r ∂haar = c * ∫ s : Y.besselReal, a s ∂haar := by
-  -- The image `ν` of the product Haar measure is a Haar measure on `R(𝔸)`, so a multiple of `haar`.
-  let ν : Measure Y.besselGroup := (haar.prod haar).map Y.besselProdEquiv
-  have : ν.IsHaarMeasure := Y.isHaarMeasure_map_besselProdEquiv
-  obtain ⟨c, hc_pos, h_haar⟩ : ∃ c : NNReal, 0 < c ∧ haar = c • ν := ⟨haarScalarFactor haar ν,
-    haarScalarFactor_pos_of_isHaarMeasure haar ν, isMulLeftInvariant_eq_smul haar ν⟩
+  -- `besselProdEquiv` carries the product Haar measure to `c • haar`.
+  obtain ⟨c, hc_pos, h_mp⟩ := Y.exists_measurePreserving_besselProdEquiv
   have h_emb : MeasurableEmbedding Y.besselProdEquiv :=
     Y.besselProdEquiv.toHomeomorph.measurableEmbedding
   let J : Set Y.besselFin := Subtype.val ⁻¹' K
@@ -141,7 +139,7 @@ lemma exists_integral_eq_mul_integral_besselReal (K : Subgroup (Gf E ι)) [hK : 
   have hJ_compact : IsCompact J :=
     (IsClosed.isClosedEmbedding_subtypeVal inferInstance).isCompact_preimage hK.isCompact
   have hJ_pos : haar J ≠ 0 := hJ_open.measure_ne_zero haar ⟨1, one_mem K⟩
-  refine ⟨c * haar.real J, ?_, fun t₀ f a h_eq hf ↦ ?_⟩
+  refine ⟨c⁻¹ * haar.real J, ?_, fun t₀ f a h_eq hf ↦ ?_⟩
   · simp [hc_pos.ne', Measure.real, ENNReal.toReal_eq_zero_iff, hJ_pos, hJ_compact.measure_ne_top]
   -- Translate by `t₀`; in the coordinates `(s, t)` the function is a product.
   let τ : Y.besselGroup := Y.besselProdEquiv (1, t₀)
@@ -151,20 +149,18 @@ lemma exists_integral_eq_mul_integral_besselReal (K : Subgroup (Gf E ι)) [hK : 
     rfl
   have h_int : Integrable (fun p : Y.besselReal × Y.besselFin ↦ a p.1 * J.indicator 1 p.2)
       (haar.prod haar) := by
-    have hf_τ : Integrable (fun r : Y.besselGroup ↦ f (τ * r)) (c • ν) := by
-      simpa only [← h_haar] using hf.comp_mul_left τ
-    rw [ENNReal.smul_def, integrable_smul_measure (mod_cast hc_pos.ne') ENNReal.coe_ne_top,
-      h_emb.integrable_map_iff] at hf_τ
-    simpa only [Function.comp_def, h_prod] using hf_τ
-  obtain ⟨t, ht, h_slice⟩ :
-      ∃ t ∈ J, Integrable (fun s : Y.besselReal ↦ a s * J.indicator 1 t) haar :=
+    simpa only [Function.comp_def, h_prod] using
+      (h_mp.integrable_comp_emb h_emb).2 (hf.comp_mul_left τ).smul_measure_nnreal
+  obtain ⟨t, ht, h_slice⟩ :=
     exists_mem_of_measure_ne_zero_of_ae hJ_pos (ae_restrict_of_ae h_int.prod_left_ae)
   refine ⟨by simpa [ht] using h_slice, ?_⟩
-  calc ∫ r, f r ∂haar = ∫ r, f (τ * r) ∂c • ν := by rw [← h_haar, integral_mul_left_eq_self]
-    _ = c * ∫ p : Y.besselReal × Y.besselFin, a p.1 * J.indicator 1 p.2 ∂haar.prod haar := by
-        simp only [integral_smul_nnreal_measure, ν, h_emb.integral_map, h_prod, NNReal.smul_def,
-          Complex.real_smul]
-    _ = (c * haar.real J : ℝ) * ∫ s : Y.besselReal, a s ∂haar := by
+  calc ∫ r, f r ∂haar = ∫ r, f (τ * r) ∂haar := (integral_mul_left_eq_self f τ).symm
+    _ = (c⁻¹ : NNReal) * ∫ p : Y.besselReal × Y.besselFin,
+          a p.1 * J.indicator 1 p.2 ∂haar.prod haar := by
+        rw [← inv_smul_smul₀ hc_pos.ne' (haar : Measure _), integral_smul_nnreal_measure,
+          ← h_mp.integral_comp h_emb]
+        simp [h_prod, NNReal.smul_def, Complex.real_smul]
+    _ = ((c⁻¹ : NNReal) * haar.real J : ℝ) * ∫ s : Y.besselReal, a s ∂haar := by
         simp [integral_prod_mul, integral_indicator hJ_open.measurableSet, Set.univ_inter,
           mul_assoc, mul_comm]
 
