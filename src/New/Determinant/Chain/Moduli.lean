@@ -317,12 +317,9 @@ lemma isPrimitiveMulChar_of_isTameFor {ϑ : D.TameChar} {ν : AutChar D.E}
   obtain ⟨-, ψ, -, hψ, hχ⟩ := h_tame
   obtain ⟨w, hw, ha'⟩ : ∃ w : FinPlace D.E, ∃ hw : w ∈ (D.twistModulus ϑ 1).places,
       modulusResidue (D.twistModulus ϑ 1) hw a ≠ 0 := by
-    -- The modulus is a product of distinct primes: Chinese remainder theorem, for `a` as a
-    -- `1 × 1` matrix.
-    by_contra! h_zero
-    simpa [← Matrix.ext_iff, ha, h_zero] using
-      matrix_eq_iff_map_modulusResidue_eq (x := !![a]) (y := 0) (D.levelPlaces ϑ).apart.injective
-        (D.levelPlaces ϑ).ideal_levelModulus_one
+    contrapose! ha
+    exact (eq_iff_modulusResidue_eq (D.levelPlaces ϑ).apart.injective
+      (D.levelPlaces ϑ).ideal_levelModulus_one).2 fun i ↦ by simp [ha]
   obtain ⟨x, hx⟩ : ∃ x : (ResField w)ˣ, ψ w x ≠ 1 := ne_one_iff.1 ((hψ w).2 hw)
   obtain ⟨b, hb⟩ : ∃ b : NumberField.RingOfIntegers D.E,
       modulusResidue (D.twistModulus ϑ 1) hw (Ideal.Quotient.mk (D.twistModulus ϑ 1).ideal b) =

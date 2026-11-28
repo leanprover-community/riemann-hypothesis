@@ -125,6 +125,17 @@ lemma Modulus.mem_places_of_ideal_eq_prod {𝔪 : Modulus E}
     (h𝔪 : 𝔪.ideal = ∏ i : ι, (u i).asIdeal) (i : ι) : u i ∈ 𝔪.places :=
   h𝔪.trans_le (prod_places_le_iff.2 ⟨i, rfl⟩)
 
+/-- Residues at the distinct prime factors determine a class modulo their product. -/
+lemma Modulus.eq_iff_modulusResidue_eq {𝔪 : Modulus E} (hu : u.Injective)
+    (h𝔪 : 𝔪.ideal = ∏ i : ι, (u i).asIdeal) {x y : 𝔪.ResidueRing} :
+    x = y ↔ ∀ i, modulusResidue 𝔪 (mem_places_of_ideal_eq_prod h𝔪 i) x =
+      modulusResidue 𝔪 (mem_places_of_ideal_eq_prod h𝔪 i) y := by
+  obtain ⟨c, rfl⟩ := Ideal.Quotient.mk_surjective x
+  obtain ⟨d, rfl⟩ := Ideal.Quotient.mk_surjective y
+  change _ ↔ ∀ i, algebraMap (𝓞 E) (ResField (u i)) c = algebraMap (𝓞 E) (ResField (u i)) d
+  simp_rw [Ideal.Quotient.eq, h𝔪, mem_prod_finPlace_iff hu,
+    ← algebraMap_ResField_eq_zero, map_sub, sub_eq_zero]
+
 /-- The injectivity in the Chinese remainder theorem: if the ideal of 𝔪 is the product of the
 distinct primes u i, two matrices over O_E/𝔪 are equal if and only if their reductions at every
 u i are equal. -/
@@ -134,17 +145,8 @@ lemma Modulus.matrix_eq_iff_map_modulusResidue_eq {𝔪 : Modulus E} (hu : u.Inj
       ∀ i : ι,
         x.map (modulusResidue 𝔪 (mem_places_of_ideal_eq_prod h𝔪 i)) =
           y.map (modulusResidue 𝔪 (mem_places_of_ideal_eq_prod h𝔪 i)) := by
-  -- Reduce to one pair of entries, with representatives `c`, `d` in the ring of integers.
   simp only [← ext_iff, Matrix.map_apply, forall_comm (α := ι)]
-  refine forall₂_congr fun i j ↦ ?_
-  obtain ⟨⟨c, hc⟩, ⟨d, hd⟩⟩ :=
-    And.intro (Ideal.Quotient.mk_surjective (x i j)) (Ideal.Quotient.mk_surjective (y i j))
-  have h_red (k : ι) (hk : u k ∈ 𝔪.places) (e : 𝓞 E) :
-      modulusResidue 𝔪 hk (Ideal.Quotient.mk 𝔪.ideal e) = algebraMap (𝓞 E) (ResField (u k)) e :=
-    rfl
-  -- `c - d` lies in the product of the distinct primes `u k` iff it lies in each of them.
-  simp_rw [← hc, ← hd, h_red, Ideal.Quotient.eq, h𝔪, mem_prod_finPlace_iff hu,
-    ← algebraMap_ResField_eq_zero, map_sub, sub_eq_zero]
+  exact forall₂_congr fun _ _ ↦ eq_iff_modulusResidue_eq hu h𝔪
 
 end LevelModulus
 
