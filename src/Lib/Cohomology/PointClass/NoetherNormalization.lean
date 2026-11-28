@@ -83,12 +83,6 @@ def IsHomogeneousSolution : Prop :=
 /-- The tuple of values of the polynomials `Λ j` at `v`. -/
 noncomputable abbrev evalForms (v : ι → A) (j : Fin (d + 1)) : A := ((Λ j).val.aeval v : A)
 
-/-- A homogeneous polynomial of degree `n` takes at `u • v` the value `u ^ n` times that at `v`. -/
-@[grind =>]
-lemma aeval_smul_of_isHomogeneous {n : ℕ} (hF : F.IsHomogeneous n) :
-    aeval (u • v) F = u ^ n * aeval v F :=
-  hF.eval₂_const_mul (algebraMap k A) v u
-
 /-- If `χ` kills the kernel of `φ` and `φ ∘ v` lies on the cone of `g`, then so does `χ ∘ v`. -/
 lemma IsHomogeneousSolution.of_ker {D : Type} [CommRing D] [Algebra k D] (χ : A →ₐ[k] D)
     (h_ker : ∀ r : A, φ r = 0 → χ r = 0) (h_sol : IsHomogeneousSolution k g (φ ∘ v)) :
@@ -103,7 +97,7 @@ lemma IsHomogeneousSolution.smul (u : C) (h : IsHomogeneousSolution k g v) :
     IsHomogeneousSolution k g (u • φ ∘ v) := by
   intro n F hF h_g
   have h_map : aeval (φ ∘ v) F = 0 := h.map φ hF h_g
-  rw [aeval_smul_of_isHomogeneous hF, h_map, mul_zero]
+  rw [hF.aeval_smul_of_algebra, h_map, smul_zero]
 
 @[simp]
 lemma evalForms_map (v : ι → A) : evalForms Λ (φ ∘ v) = φ ∘ evalForms Λ v := by
@@ -111,7 +105,7 @@ lemma evalForms_map (v : ι → A) : evalForms Λ (φ ∘ v) = φ ∘ evalForms 
 
 @[simp]
 lemma evalForms_smul : evalForms Λ (u • v) = u • evalForms Λ v := by
-  simp [funext_iff, aeval_smul_of_isHomogeneous (Λ _).prop]
+  simp [funext_iff, IsHomogeneous.aeval_smul_of_algebra (Λ _).prop]
 
 /-- If `t` is transcendental over the ring `B` of the entries of `g`, every polynomial that
 vanishes at `t • g`, homogeneous or not, vanishes at each point `v` of the cone of `g`. -/
@@ -128,7 +122,7 @@ lemma IsHomogeneousSolution.aeval_eq_zero_of_transcendental [Algebra B L] [IsSca
   have h_sum : P.aeval t = ∑ n ∈ range (F.totalDegree + 1),
       aeval (t • algebraMap B L ∘ g) (homogeneousComponent n F) := by
     simp [P, Polynomial.aeval_monomial, mul_comm, aeval_algebraMap_apply,
-      aeval_smul_of_isHomogeneous (homogeneousComponent_mem _ F)]
+      IsHomogeneous.aeval_smul_of_algebra (homogeneousComponent_mem _ F)]
   have hP : P = 0 := transcendental_iff.mp ht P (h_sum.trans h_zero)
   refine sum_eq_zero fun n hn ↦ h_sol (homogeneousComponent_mem n F) ?_
   -- the value `F_n(g)` is the `n`-th coefficient of `P = 0`
@@ -230,7 +224,7 @@ lemma aeval_eq_zero_of_eliminated_forms {m : ℕ} {f : MvPolynomial (Fin (d + 1)
     simpa [ha₀, algebraMap_eq_smul_one, smul_smul, div_eq_mul_inv, sub_eq_zero] using h_zero
   -- by homogeneity `c ^ m * f a = 0`, so `c = 0`
   have h_pow : c ^ m * algebraMap k K (MvPolynomial.eval a f) = 0 := by
-    simpa [h_prop, aeval_smul_of_isHomogeneous hf, aeval_algebraMap_apply] using h_relx
+    simpa [h_prop, hf.aeval_smul_of_algebra, aeval_algebraMap_apply] using h_relx
   have hc : c = 0 :=
     eq_zero_of_pow_eq_zero ((mul_eq_zero.mp h_pow).resolve_right (by simpa using hfa))
   simpa [hc] using congrFun h_prop j
@@ -319,9 +313,10 @@ lemma exists_isNoetherNormalization [CharZero k] [Finite ι] (hg : g ≠ 0) :
       have h_ne : evalForms Λ g 0 ≠ 0 := by simpa using h_ind (isHomogeneous_X k 0)
       refine ⟨n, Λ, h_ne, fun u ↦ ⟨fun m F hF h_rel ↦ h_ind hF ?_, fun φ p v hv ↦ ?_⟩⟩
       · -- no relation at `u • g` either: it would be one at `g`, up to a power of `u`
-        simpa [u.smul_def, aeval_smul_of_isHomogeneous hF] using h_rel
+        simpa [u.smul_def, hF.aeval_smul_of_algebra] using h_rel
       · -- a point of the cone of `u • g` lies on the cone of `g`
-        have hv_g : IsHomogeneousSolution k g v := by grind [IsHomogeneousSolution, Units.smul_def]
+        have hv_g : IsHomogeneousSolution k g v := fun _ F hF h_g ↦
+          hv hF (by rw [Units.smul_def, hF.aeval_smul_of_algebra, h_g, smul_zero])
         exact isIntegralElem_of_no_common_zero h_base φ p v hv_g
     · obtain ⟨m, f, hf, h_rel, hf₀⟩ : ∃ (m : ℕ) (f : MvPolynomial (Fin (n + 1)) k),
           f.IsHomogeneous m ∧ aeval (evalForms Λ g) f = 0 ∧ f ≠ 0 := by
@@ -738,7 +733,7 @@ lemma IsCoordsWithUnit.exists_universal_chart (hξ : IsCoordsWithUnit L ξ g)
       ∃ φ : MvPolynomial ι k →ₐ[k] C,
         w i • φ ∘ X = w ∧ ∀ P, Associated ((homog P).aeval w) (φ P) := by
     refine ⟨aeval (u.unit⁻¹.val • w), by simp [← mul_assoc, funext_iff], fun P ↦ ?_⟩
-    simp [← h_chart P, aeval_smul_of_isHomogeneous (h_homog_deg _), associated_unit_mul_right,
+    simp [← h_chart P, (h_homog_deg _).aeval_smul_of_algebra, associated_unit_mul_right,
       IsUnit.pow]
   -- (`@` keeps `C` and `w` implicit in the chosen functions)
   choose φ hφX hφG using @h_eval
