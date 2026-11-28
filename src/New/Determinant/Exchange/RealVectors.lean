@@ -274,45 +274,32 @@ lemma isSchwartzVector_realBoxProd {ι ι₁ ι₂ : Type*} [Fintype ι] [Decida
     {e : ι₁ ⊕ ι₂ ≃ ι}
     (he : ε ∘ e = ε₁ ⊕ᵥ ε₂) {v : fockSpace ε₁} {w : fockSpace ε₂} (hv : IsSchwartzVector v)
     (hw : IsSchwartzVector w) : IsSchwartzVector (realBoxProd he v w) := by
-  -- `realBoxProd he v w` is an iterated integral of translates of the vacuum, against `w` and then
-  -- `v`; padding a vector with zeros does not increase its maximum norm.
+  -- In product coordinates the tensor is the product of the two functions, and its moment
+  -- weight is at most the product of their weights.
   intro N
-  have pad_left (x : ι₁ → ℂ) : ‖(realCoordSum he).equiv (x, 0)‖ₑ ≤ ‖x‖ₑ := by
-    rw [eNorm_eq_nnNorm, eNorm_eq_nnNorm, ENNReal.coe_le_coe, pi_nnNorm_le_iff]
-    refine e.surjective.forall.2 (Sum.forall.2 ⟨fun i ↦ ?_, fun i ↦ ?_⟩)
-    · change ‖(x ⊕ᵥ (0 : ι₂ → ℂ)) (e.symm (e (Sum.inl i)))‖₊ ≤ ‖x‖₊
-      rw [e.symm_apply_apply, Sum.elim_inl]
-      exact nnNorm_le_pi_nnNorm x i
-    · change ‖(x ⊕ᵥ (0 : ι₂ → ℂ)) (e.symm (e (Sum.inr i)))‖₊ ≤ ‖x‖₊
-      rw [e.symm_apply_apply, Sum.elim_inr, Pi.zero_apply, nnNorm_zero]
-      exact bot_le
-  have pad_right (y : ι₂ → ℂ) : ‖(realCoordSum he).equiv (0, y)‖ₑ ≤ ‖y‖ₑ := by
-    rw [eNorm_eq_nnNorm, eNorm_eq_nnNorm, ENNReal.coe_le_coe, pi_nnNorm_le_iff]
-    refine e.surjective.forall.2 (Sum.forall.2 ⟨fun i ↦ ?_, fun i ↦ ?_⟩)
-    · change ‖((0 : ι₁ → ℂ) ⊕ᵥ y) (e.symm (e (Sum.inl i)))‖₊ ≤ ‖y‖₊
-      rw [e.symm_apply_apply, Sum.elim_inl, Pi.zero_apply, nnNorm_zero]
-      exact bot_le
-    · change ‖((0 : ι₁ → ℂ) ⊕ᵥ y) (e.symm (e (Sum.inr i)))‖₊ ≤ ‖y‖₊
-      rw [e.symm_apply_apply, Sum.elim_inr]
-      exact nnNorm_le_pi_nnNorm y i
-  let inner : fockSpace ε := ∫ y, w y • realHeisenbergOp ((realCoordSum he).equiv (0, y))
-    Fock.vacVector
-    ∂normalizedVolume ι₂
-  have inner_le : fockMoment N inner ≤
-      fockMoment N (Fock.vacVector : fockSpace ε) * fockMoment N w := by
-    refine (fockMoment_integral_le _).trans (lintegral_fockMoment_smul_le fun y ↦ ?_)
-    exact ((fockMoment_realHeisenbergOp_le _ _ _).trans
-      (mul_le_mul_left (pow_le_pow_left' (add_le_add_right (pad_right y) 1) N) _)).trans_eq
-      (mul_comm _ _)
-  have outer_le : fockMoment N (realBoxProd he v w) ≤
-      fockMoment N (Fock.vacVector : fockSpace ε) * fockMoment N w * fockMoment N v := by
-    refine (fockMoment_integral_le _).trans (lintegral_fockMoment_smul_le fun x ↦ ?_)
-    change fockMoment N (realHeisenbergOp ((realCoordSum he).equiv (x, 0)) inner) ≤ _
-    exact ((fockMoment_realHeisenbergOp_le _ _ _).trans
-      (mul_le_mul' (pow_le_pow_left' (add_le_add_right (pad_left x) 1) N) inner_le)).trans_eq
-      (mul_comm _ _)
-  exact ne_top_of_le_ne_top (mul_ne_top (mul_ne_top (isSchwartzVector_vacVector N) (hw N)) (hv N))
-    outer_le
+  let S := realCoordSum he
+  have h_weight (p : (ι₁ → ℂ) × (ι₂ → ℂ)) :
+      (1 + ‖S.equiv p‖ₑ) ^ N ≤ (1 + ‖p.1‖ₑ) ^ N * (1 + ‖p.2‖ₑ) ^ N := by
+    have h_norm : ‖S.equiv p‖ₑ ≤ ‖p.1‖ₑ + ‖p.2‖ₑ := by
+      rw [eNorm_eq_nnNorm, eNorm_eq_nnNorm, eNorm_eq_nnNorm, ← ENNReal.coe_add,
+        ENNReal.coe_le_coe, pi_nnNorm_le_iff]
+      refine e.surjective.forall.2 ?_
+      change ∀ i, ‖(p.1 ⊕ᵥ p.2) (e.symm (e i))‖₊ ≤ _
+      simp only [e.symm_apply_apply]
+      rintro (i | i)
+      · exact (nnNorm_le_pi_nnNorm p.1 i).trans le_self_add
+      · exact (nnNorm_le_pi_nnNorm p.2 i).trans le_add_self
+    rw [← mul_pow]
+    refine pow_le_pow_left' ((add_le_add_right h_norm 1).trans ?_) N
+    calc
+      _ ≤ 1 + (‖p.1‖ₑ + ‖p.2‖ₑ) + ‖p.1‖ₑ * ‖p.2‖ₑ := le_self_add
+      _ = _ := by ring
+  rw [fockMoment, ← S.measurePreserving_equiv.lintegral_comp (by fun_prop)]
+  refine ne_top_of_le_ne_top (mul_ne_top (hv N) (hw N)) ?_
+  rw [fockMoment, fockMoment, ← lintegral_prod_mul (by fun_prop) (by fun_prop)]
+  refine lintegral_mono fun p ↦ ?_
+  rw [realBoxProd, Heisenberg.OrthogonalSum.tmul_apply, S.equiv.symm_apply_apply, eNorm_mul]
+  exact (mul_le_mul_left (h_weight p) _).trans_eq (by ac_rfl)
 
 /-- Matrix inversion agrees, near a matrix `A₀` of nonzero determinant, with a function that is
 smooth on all matrices. -/
