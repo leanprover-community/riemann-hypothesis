@@ -442,9 +442,7 @@ lemma Space.height_reindex (e : n ≃ m) (he : s ∘ e.symm = t) (g : G E s) :
   let V' := (S.reindex e he).move (G.reindex (t := t) e he g)
   have h_sub (M : Matrix n n (𝔸 E)) (v : n → 𝔸 E) :
       M.submatrix e.symm e.symm *ᵥ (v ∘ e.symm) = (M *ᵥ v) ∘ e.symm := by
-    funext j
-    simp only [mulVec, dotProduct, submatrix_apply, Function.comp_apply]
-    exact e.symm.sum_comp fun i ↦ M (e.symm j) i * v i
+    simp [submatrix_mulVec_equiv, Function.comp_assoc]
   have h_vec (ξ : n → E) : V'.vecAtPoint (ξ ∘ e.symm) = V.vecAtPoint ξ ∘ e.symm := by
     rw [vecAtPoint_move, vecAtPoint_move, ← map_inv (G.reindex (t := t) e he),
       G.adeleMatrix_reindex]
@@ -462,13 +460,11 @@ lemma Space.height_reindex (e : n ≃ m) (he : s ∘ e.symm = t) (g : G E s) :
     exact ⟨fun h i ↦ by simpa only [Function.comp_apply, Equiv.symm_apply_apply] using h (e i),
       fun h j ↦ h (e.symm j)⟩
   have h_norm (ξ : n → E) : ‖V'.archCoords (ξ ∘ e.symm)‖ = ‖V.archCoords ξ‖ := by
-    rw [PiLp.norm_eq_of_L2, PiLp.norm_eq_of_L2, sum_prod_type, sum_prod_type]
+    let e_arch := Equiv.prodCongr (Equiv.refl (NumberField.InfinitePlace E)) e
+    rw [← (LinearIsometryEquiv.piLpCongrLeft 2 ℂ ℂ e_arch).norm_map (V.archCoords ξ)]
     congr 1
-    refine Finset.sum_congr rfl fun w _ ↦ ?_
-    change ∑ j : m, ‖(V'.vecAtPoint (ξ ∘ e.symm) j).1 w‖ ^ 2 =
-      ∑ i : n, ‖(V.vecAtPoint ξ i).1 w‖ ^ 2
-    rw [h_vec]
-    exact e.symm.sum_comp fun i ↦ ‖(V.vecAtPoint ξ i).1 w‖ ^ 2
+    ext ⟨w, j⟩
+    exact congrArg (fun f : m → 𝔸 E ↦ (f j).1 w) (h_vec ξ)
   suffices h_min : V'.firstMinimum = V.firstMinimum from congrArg (·⁻¹) h_min
   simp only [firstMinimum]
   congr 2
