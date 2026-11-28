@@ -177,13 +177,10 @@ lemma exists_map_of_coords {Z ι : Type} {S : Scheme} {η : Z → (Spec (CommRin
     (he_coords : ∀ z : Z, W.IsHomogeneousCoords (e z).left (v z))
     (hp_coords : ∀ z : Z, M.IsHomogeneousCoords (p z).left (v z)) :
     ∃ d : X ⟶ G, (∀ z : Z, e z ≫ d = p z) ∧ M.pull d.left = W := by
-  -- `W` is the pull-back of the hyperplane bundle `H` along a map `f : X ⟶ ℙ × S` over `S`, and
-  -- `M` along a closed immersion `j : G ⟶ ℙ × S` over `S`.
-  let H : LineBundle (ProjSpace ι ⨯ S) ι := (ProjSpace.hyperplaneBundle ι).pull prod.fst
-  obtain ⟨f, hf_over, rfl⟩ : ∃ f : X.left ⟶ ProjSpace ι ⨯ S,
-      f ≫ prod.snd = X.hom ∧ H.pull f = W := hW.exists_hom_projSpace X.hom
-  obtain ⟨j, hj_closed, hj_over, rfl⟩ : ∃ j : G.left ⟶ ProjSpace ι ⨯ S,
-      IsClosedImmersion j ∧ j ≫ prod.snd = G.hom ∧ H.pull j = M := hM.exists_isClosedImmersion
+  -- `W` is the pull-back of the hyperplane bundle along a map `f : X ⟶ ℙ × S` over `S`, and `M`
+  -- along a closed immersion `j : G ⟶ ℙ × S` over `S`.
+  obtain ⟨f, hf_over, rfl⟩ := hW.exists_hom_projSpace X.hom
+  obtain ⟨j, hj_closed, hj_over, rfl⟩ := hM.exists_isClosedImmersion
   obtain ⟨h_red, h_dense⟩ := he
   -- Equal homogeneous coordinates give equal points of projective space.
   have h_pt (z : Z) : (p z).left ≫ j = (e z).left ≫ f :=
@@ -360,8 +357,7 @@ lemma New.exists_nnreal_valuation_le_comap_maximalIdeal {A : Type*} (K : Type*) 
   let e : MvPolynomial t A ≃+* (Algebra.adjoin A (range (Subtype.val : t → K))).toSubring :=
     ht.1.aevalEquiv.toRingEquiv
   obtain ⟨U, f, hf, h_centre⟩ := exists_valuationSubring_comap_maximalIdeal_eq e P
-  obtain ⟨q, ⟨⟨hq_prime, hPq⟩, hq_min⟩, hq_le⟩ :
-      ∃ q ∈ (P.map f).minimalPrimes, q ≤ maximalIdeal U :=
+  obtain ⟨q, ⟨⟨hq_prime, hPq⟩, hq_min⟩, hq_le⟩ :=
     exists_minimalPrimes_le (map_le_of_le_comap h_centre.ge)
   let V : ValuationSubring K := U.ofPrime q
   let g : MvPolynomial t A →+* V := (algebraMap U V).comp f
@@ -391,10 +387,8 @@ lemma New.exists_nnreal_valuation_le_comap_maximalIdeal {A : Type*} (K : Type*) 
       map_le_iff_le_comap.2 (hJ_eq.ge.trans_eq h_comap)
     exact hq_min ⟨hJ.comap _, hPJ⟩ hJq
   obtain ⟨v, hv⟩ := exists_nnreal_valuation V h_rank
-  refine ⟨v, ?_⟩
-  rw [hv]
-  refine ⟨g.comp C, fun a ↦ (hg (C a)).trans (aeval_C _ a), fun a ha ↦ ?_⟩
-  exact (under_maximalIdeal V q).ge (hPq (mem_map_of_mem f (mem_map_of_mem C ha)))
+  exact ⟨v, hv ▸ ⟨g.comp C, fun a ↦ (hg (C a)).trans (aeval_C _ a),
+    fun a ha ↦ (under_maximalIdeal V q).ge (hPq (mem_map_of_mem f (mem_map_of_mem C ha)))⟩⟩
 
 /-- Let `S` be a locally noetherian scheme with finitely many complex points `η i` whose images are
 dense. For every point `s` of `S` there are an index `i`, a valuation `v` of `ℂ` with values in
@@ -412,17 +406,11 @@ lemma New.exists_valuative_arc_of_isDenseFamily {S : Scheme} {ι : Type} [IsLoca
     simpa [← iUnion_singleton_eq_range, ← specializes_iff_mem_closure] using hη s
   let O : CommRingCat := S.presheaf.stalk s
   let θ : O ⟶ of ℂ := S.presheaf.stalkSpecializes h_spec ≫ stalkClosedPointTo (η i)
-  obtain ⟨W, hW, hW_local⟩ : ∃ (W : ValuationSubring ℂ) (hW : ∀ a : O, θ.hom a ∈ W.toSubring),
-      IsLocalHom (θ.hom.codRestrict W.toSubring hW) := exists_factor_valuationRing θ.hom
+  obtain ⟨W, hW, hW_local⟩ := exists_factor_valuationRing θ.hom
   let : Algebra O W := (θ.hom.codRestrict W hW).toAlgebra
   have : IsLocalHom (algebraMap O W) := hW_local
-  obtain ⟨A, x, p, hA, hp, h_max_le⟩ : ∃ (A : Subalgebra O W) (x : A) (p : Ideal A),
-      IsNoetherianRing A ∧ p ∈ (span {x} : Ideal A).minimalPrimes ∧
-        maximalIdeal O ≤ p.comap (algebraMap O A) :=
-    exists_subalgebra_minimalPrimes_span_singleton O W
-  obtain ⟨v, ψ, hψ, hp_le⟩ : ∃ (v : Valuation ℂ NNReal) (ψ : A →+* v.valuationSubring),
-      (∀ a : A, (ψ a : ℂ) = algebraMap A ℂ a) ∧ p ≤ (maximalIdeal v.valuationSubring).comap ψ :=
-    exists_nnreal_valuation_le_comap_maximalIdeal ℂ hp
+  obtain ⟨A, x, p, hA, hp, h_max_le⟩ := exists_subalgebra_minimalPrimes_span_singleton O W
+  obtain ⟨v, ψ, hψ, hp_le⟩ := exists_nnreal_valuation_le_comap_maximalIdeal ℂ hp
   -- The arc is `Spec V → Spec O → S`, with `V` the ring of `v`.
   let φ : O →+* v.valuationSubring := ψ.comp (algebraMap O A)
   have hφ : ofHom φ ≫ ofHom v.valuationSubring.subtype = θ :=
@@ -432,8 +420,8 @@ lemma New.exists_valuative_arc_of_isDenseFamily {S : Scheme} {ι : Type} [IsLoca
   · -- `φ` is local, so the closed point goes to the closed point.
     have h_local : maximalIdeal O ≤ (maximalIdeal v.valuationSubring).comap φ :=
       fun y hy ↦ hp_le (h_max_le hy)
-    have h_closed : Spec.map (ofHom φ) (closedPoint (of v.valuationSubring)) = closedPoint O :=
-      PrimeSpectrum.ext ((maximalIdeal.isMaximal O).eq_of_le (IsPrime.ne_top') h_local).symm
-    exact (congrArg (S.fromSpecStalk s) h_closed).trans fromSpecStalk_closedPoint
+    -- in `local_hom_tfae`, item 4 (`maximalIdeal ≤ comap`) implies item 1 (`IsLocalHom`)
+    have : IsLocalHom φ := ((local_hom_tfae φ).out 4 1).1 h_local
+    exact (congrArg (S.fromSpecStalk s) Spec_closedPoint).trans fromSpecStalk_closedPoint
 
 end ArcExistence
