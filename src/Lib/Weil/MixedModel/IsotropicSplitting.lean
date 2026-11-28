@@ -417,15 +417,14 @@ lemma kCoord_mul_iAdelic : D.kCoord * D.iAdelic = 0 := by
   rw [kCoord, lAdelic, iAdelic, ratMap, ← Matrix.mul_assoc, V.gram_at_point_eq_map, D.gram_li]
   simp
 
-lemma lCoord_mul_kAdelic : D.lCoord * D.kAdelic = 0 := by
-  simpa [lCoord, kAdelic, D.gram_kk] using V.gram_at_point_eq_map D.k D.k
+lemma lCoord_mul_kAdelic : D.lCoord * D.kAdelic = 0 :=
+  D.symm.kCoord_mul_lAdelic
 
-lemma lCoord_mul_lAdelic : D.lCoord * D.lAdelic = 1 := by
-  simpa [lCoord, kAdelic, lAdelic, D.gram_kl] using V.gram_at_point_eq_map D.k D.l
+lemma lCoord_mul_lAdelic : D.lCoord * D.lAdelic = 1 :=
+  D.symm.kCoord_mul_kAdelic
 
-lemma lCoord_mul_iAdelic : D.lCoord * D.iAdelic = 0 := by
-  rw [lCoord, kAdelic, iAdelic, ratMap, ← Matrix.mul_assoc, V.gram_at_point_eq_map, D.gram_ki]
-  simp
+lemma lCoord_mul_iAdelic : D.lCoord * D.iAdelic = 0 :=
+  D.symm.kCoord_mul_iAdelic
 
 lemma iCoord_mul_kAdelic : D.iCoord * D.kAdelic = 0 := by
   simp [iCoord, kAdelic, iAdelic, ratMap, ← V.gram_point, conjTranspose_nonsing_inv,
@@ -433,11 +432,8 @@ lemma iCoord_mul_kAdelic : D.iCoord * D.kAdelic = 0 := by
   rw [← Matrix.mul_assoc D.iᴴ V.J, D.gram_ik]
   simp
 
-lemma iCoord_mul_lAdelic : D.iCoord * D.lAdelic = 0 := by
-  simp [iCoord, lAdelic, iAdelic, ratMap, ← V.gram_point, conjTranspose_nonsing_inv,
-    Matrix.mul_assoc, ← Matrix.map_mul]
-  rw [← Matrix.mul_assoc D.iᴴ V.J, D.gram_il]
-  simp
+lemma iCoord_mul_lAdelic : D.iCoord * D.lAdelic = 0 :=
+  D.symm.iCoord_mul_kAdelic
 
 lemma iCoord_mul_iAdelic : D.iCoord * D.iAdelic = 1 := by
   have h_point₀ : V₀.x.valᴴ * (V₀.J.map toAdele * V₀.x.val) = stdForm E s₀ := by
