@@ -238,15 +238,16 @@ namespace Variety
 
 open Pic
 
-variable {R : CommRingCat} {A : Over (Spec R)} [IsLocalRing R] [AddObj A] {c : Pic A.left}
+variable {R : CommRingCat} {A : Over (Spec R)} [IsLocalRing R] {c : Pic A.left}
 
-omit [AddObj A] in
 /-- Over a local ring, a class pulls back to zero along a point that comes from a section. -/
 @[simp]
 lemma atPoint_toUnit_comp_eq_zero {T : Over (Spec R)} (z : 𝟙_ (Over (Spec R)) ⟶ A) :
     c.atPoint (toUnit T ≫ z) = 0 := by
   rw [Pic.atPoint, Over.comp_left, Pic.pull_comp, eq_zero_of_isLocalRing (c.pull z.left)]
   exact (Pic.pull (toUnit T).left).map_zero
+
+variable [AddObj A]
 
 @[simp]
 lemma atPoint_zero {T : Over (Spec R)} : c.atPoint (T := T) 0 = 0 := atPoint_toUnit_comp_eq_zero _
@@ -399,9 +400,8 @@ open CategoryTheory AlgebraicGeometry Spec Over MorphismProperty AddMonObj
 
 namespace New.Variety
 
-variable {R : Type} [CommRing R] {A B : Over (Spec ⟨R⟩)} [AddObj B] {f : A ⟶ B}
+variable {R : Type} [CommRing R] {A B : Over (Spec ⟨R⟩)} {f : A ⟶ B}
 
-omit [AddObj B] in
 /-- If `A` is locally of finite presentation over `Spec R` and `B` is locally of finite type over
 `Spec R`, then every morphism `f : A ⟶ B` over `Spec R` is locally of finite presentation. -/
 @[stacks 02FV "first assertion, over an affine base"]
@@ -433,6 +433,8 @@ lemma exists_isPullback_SpecMap {X Y : Scheme} (f : X ⟶ Y) [IsAffineHom.{0} f]
   exact .of_iso_pullback
     ⟨by rw [Category.assoc, Limits.pullback.condition, ← Category.assoc, Spec.map_preimage]⟩
     e rfl (Spec.map_preimage _).symm
+
+variable [AddObj B]
 
 open MonoidalCategory in
 /-- A morphism `f : A ⟶ B` over `Spec R` is zero exactly when, as a morphism of schemes, it factors

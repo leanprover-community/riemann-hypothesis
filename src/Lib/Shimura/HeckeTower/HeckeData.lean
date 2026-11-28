@@ -552,14 +552,17 @@ end
 
 variable {E : Type} [Field.{0} E] [Ψ : CMBase E] {n : Type} [Fintype.{0} n] [DecidableEq n]
   {x : GL n (𝔸f E)} {ℓ : Matrix n n ℂ} {y : GL n E} {β : Matrix n n E} {x' : GL n (𝔸f E)}
-  {ℓ' : Matrix n n ℂ} {β' : Matrix n n E} {𝔑 : 𝓞 E} [Nonempty n] {c : ℚ} {ι : Type*} [Fintype ι]
+  {ℓ' : Matrix n n ℂ} {β' : Matrix n n E} {𝔑 : 𝓞 E} {c : ℚ} {ι : Type*} [Fintype ι]
 
-omit [Nonempty n] in
 /-- A point `g` of the finite adelic unitary group `Gf E n` (so `gᴴ g = 1`) is a signed frame for
 the identity form, with `ℓ = 1` at the base place. -/
 lemma isSignedFrameFor_one (g : Gf E n) : IsSignedFrameFor g.val 1 1 :=
   ⟨⟨1, by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 g.property⟩,
       by simp [PosDef.one]⟩
+
+section
+
+variable [Nonempty n]
 
 /-- If `x` is a similitude whose inverse has integral entries (`x ∈ GUPlus E n`) and `x` is a frame
 for the scalar form `c • 1`, then the rational number `c` is an integer. -/
@@ -705,8 +708,10 @@ lemma IsSignedFrameFor.similitude_and_root_norm (h : IsSignedFrameFor x ℓ β)
     _ = c * (star u ⬝ᵥ (β.map (Φ w) * J) *ᵥ u) := by
         simp [map_smul', ← dotProduct_mulVec, smul_mulVec]
 
+end
+
 variable {E : Type} [Field.{0} E] [NumberField E] {x : GL n (𝔸f E)} {y : GL n E} in
-omit [Nonempty n] Ψ in
+omit Ψ in
 /-- If `x⁻¹ y x` is congruent to `1` modulo the ideal `J` of `Ô E`, and `J` meets `𝓞 E` inside the
 ideal `I`, then the trace of `y - 1` is an algebraic integer `t` that lies in `I`. -/
 private lemma exists_eq_trace_sub_one_mem_of_mem_congruenceGL {I : Ideal (𝓞 E)} {J : Ideal (Ô E)}
@@ -725,7 +730,6 @@ private lemma exists_eq_trace_sub_one_mem_of_mem_congruenceGL {I : Ideal (𝓞 E
   obtain ⟨⟨a, ha_int⟩, ha_mem, ⟨⟩⟩ := h_mem
   exact ⟨⟨(y.val - 1).trace, algebraMap_mem_Ô.1 ha_int⟩, rfl, hJI ha_mem⟩
 
-omit [Nonempty n] in
 /-- If every complex eigenvalue `r` of `y` at the infinite place `v` has `r * star r = 1`, then the
 image of the trace of `y - 1` under `Φ v` has modulus at most `2 * card n`. -/
 private lemma norm_trace_sub_one_le_of_mul_star_eq_one (v : InfinitePlace E)
@@ -758,7 +762,7 @@ private lemma abs_norm_le_pow_finrank_of_forall_norm_le {E : Type} [Field.{0} E]
     _ = B ^ finrank ℚ E := by
         simp [finrank_eq_two_mul_card_infinitePlace, pow_mul]
 
-omit [Nonempty n] Ψ in
+omit Ψ in
 /-- Let `x⁻¹ y x` be congruent to `1` modulo the ideal `J` of `Ô E`, where `J` meets `𝓞 E` inside an
 ideal `I` of norm above `(2 * card n) ^ [E : ℚ]`. If the images of the trace of `y - 1` under all
 the embeddings `Φ v` have modulus at most `2 * card n`, then the trace of `y` is `card n`. -/
@@ -780,7 +784,7 @@ private lemma trace_eq_card_of_mem_congruenceGL {E : Type} [Field.{0} E] [CMType
     (Int.eq_zero_of_abs_lt_dvd (absNorm_dvd_norm_of_mem ht_mem) h_norm_lt)
   simpa [h_zero, sub_eq_zero] using ht_eq.symm
 
-omit [Nonempty n] Ψ in
+omit Ψ in
 /-- Let `β` be positive definite at the infinite place `w`. If `y` preserves `β` (`yᴴ β y = β`) and
 the trace of `y` is `card n`, then `y = 1`: the positive definite form `A ↦ tr (β⁻¹ Aᴴ β A)` at
 `w` takes the value `n - n - n + n = 0` at `A = y - 1`. -/
@@ -798,6 +802,7 @@ private lemma eq_one_of_conjTranspose_mul_mul_eq_of_trace_eq {E : Type} [Field.{
 
 end
 
+variable [Nonempty n] in
 /-- Let `(x, ℓ, β)` be a signed frame, let `y ∈ GL_n(E)` fix `ℓ` under `ratConj`, and let
 `(x⁻¹ y x)⁻¹` be a frame for the identity form (so `y` is an automorphism of the object given by
 `x`). If `x⁻¹ y x` is congruent to `1` modulo an ideal `J` of `Ô E`, and `J` meets `𝓞 E`
@@ -834,11 +839,9 @@ def IsNeat : Prop :=
   ∀ {x : GL n (𝔸f E)} {ℓ : Matrix n n ℂ} {y : GL n E}, IsSignedFrame x ℓ →
     x⁻¹ * toFinGL y * x ∈ levelGU n 𝔑 → ratConj y ℓ = ℓ → y = 1
 
-omit [Nonempty n] in
 lemma IsNeat.ne_zero (h_neat : IsNeat n 𝔑) : 𝔑 ≠ 0 :=
   h_neat.1
 
-omit [Nonempty n] in
 /-- On a neat level automorphisms are trivial: if `x` is a signed frame with `ℓ`, and `y ∈ GL_n(E)`
 has `x⁻¹ y x` in `levelGU n 𝔑` and fixes `ℓ` under `ratConj`, then `y = 1`. -/
 lemma IsNeat.eq_one_of_mem_levelGU (h_neat : IsNeat n 𝔑) {x : GL n (𝔸f E)}
@@ -846,6 +849,7 @@ lemma IsNeat.eq_one_of_mem_levelGU (h_neat : IsNeat n 𝔑) {x : GL n (𝔸f E)}
     (h_level : x⁻¹ * toFinGL y * x ∈ levelGU n 𝔑) (hℓ : ratConj y ℓ = ℓ) : y = 1 :=
   h_neat.2 hx h_level hℓ
 
+variable [Nonempty n] in
 /-- Let `E` have a base place (`CMBase`, so at least two infinite places) and let `n` be nonempty.
 For all but finitely many finite places `w` of `E`, every nonzero `𝔑 : 𝓞 E` that lies in `w` is a
 neat level (`IsNeat n 𝔑`). -/
@@ -872,7 +876,7 @@ lemma eventually_isNeat :
   exact hx.eq_one_of_congr_large_norm J (levelGU.isScalarFrame_inv_one h_level) h_cong hℓ hw_large
     hJI
 
-omit [Nonempty n] Ψ
+omit Ψ
 
 /-- Freeness for the definite space `stdSpace E n`: let `E` be a CM field with at least two infinite
 places, and let the `w i` be distinct finite places whose norms have product above

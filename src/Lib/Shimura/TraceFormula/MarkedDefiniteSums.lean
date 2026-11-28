@@ -669,7 +669,7 @@ end Reducible
 
 section Irreducible
 
-variable {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n] {𝔑 : 𝓞 E}
+variable {E n : Type} [Field E] [CMBase E] [DecidableEq n] {𝔑 : 𝓞 E}
 
 open Classical in
 /-- The signs of `eigenReflection ε y μ` at the roots of `y`, place by place: `-1` at the place
@@ -677,10 +677,11 @@ open Classical in
 def reflectionSigns (ε : Prop) (μ : n) (v : InfinitePlace E) (i : n) : ℤˣ :=
   if v = v₀ ∧ ε ∧ i ≠ μ then -1 else 1
 
-omit [Fintype n] in
 /-- In the definite case all signs are `1`. -/
 lemma reflectionSigns_false (μ : n) : reflectionSigns (E := E) False μ = 1 :=
   funext₂ fun v i ↦ by simp [reflectionSigns]
+
+variable [Fintype n]
 
 /-- In odd rank the marked signs have product one: `-1` occurs `card n - 1` times. -/
 lemma prod_reflectionSigns (hn : Odd (Fintype.card n)) (μ : n) :

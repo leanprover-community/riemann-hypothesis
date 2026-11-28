@@ -173,10 +173,9 @@ open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalC
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {V ι κ : Type} [FinComplexSpace V] {S : Scheme} [IsReduced S] [IsLocallyNoetherian S]
-  [Finite ι] {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)}
+variable {V ι κ : Type} [FinComplexSpace V] {S : Scheme} [IsLocallyNoetherian S]
+  {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)}
 
-omit [Finite ι] in
 /-- Homogeneous coordinates for a product of line bundles: if for each factor `l : K` the values
 `θ k (w l)`, `k : ι`, are homogeneous coordinates of `t` for `M l`, then the products
 `∏ l, θ (μ l) (w l)`, indexed by `μ : K → ι`, are homogeneous coordinates of `t` for the product
@@ -188,7 +187,6 @@ lemma LineBundle.IsHomogeneousCoords.pi {K : Type} {X : Scheme} {t : Spec (CommR
   simp_all [IsHomogeneousCoords, landsIn_iInf, Finset.prod_ne_zero_iff, Finset.prod_mul_distrib]
 
 open HasRingHomProperty MorphismProperty Hom in
-omit [IsReduced S] in
 /-- A flat proper commutative group scheme A over a locally noetherian S is smooth if every point of
 S specialises to the image of a point over an algebraically closed field along which the fibre of A
 is reduced. -/
@@ -252,6 +250,8 @@ lemma smooth_of_allSpecializeTo_isReduced {A : Over S} [AddObj A] [Flat A.hom] [
         (isPullback_fiberToSpecResidueField_of_isPullback (.of_horiz_isIso_mono ⟨id_comp _⟩)
           (Spec.map (π.appLE U W hWU) _))) h_fibre))
   exact h_alg_smooth.formallySmooth
+
+variable [IsReduced S] [Finite ι]
 
 /-- Group and module laws by density. Let `V` be a finite-dimensional complex space, `O` a
 commutative ring and `S` reduced and locally noetherian with complex points `η i`, the finite

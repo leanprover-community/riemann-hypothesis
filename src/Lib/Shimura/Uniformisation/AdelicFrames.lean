@@ -440,20 +440,19 @@ lemma frameTorsionClass_surjective : Surjective (frameTorsionClass g) := fun t �
 
 end
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {g g' : GL n (𝔸f E)}
-  {V : Type} {S : AddSubgroup (AdelicTorsion E n)} {A : Matrix n n E} {y : n → E}
-  [FinComplexSpace V] {Q : RealVectors E n ≃L[ℝ] V}
+variable {E n : Type} [Field E] [CMType E] {V : Type} {S : AddSubgroup (AdelicTorsion E n)}
+  {A : Matrix n n E} {y : n → E} [FinComplexSpace V] {Q : RealVectors E n ≃L[ℝ] V}
 
 /-! ### The embedding by the CM type and the lattices -/
 
-omit [Fintype n] [DecidableEq n] in
 lemma toRealVectors_injective : Injective (toRealVectors (E := E) (n := n)) :=
   (cmEmbedding (E := E)).injective.comp_left
 
-omit [Fintype n] [DecidableEq n] in
 @[simp]
 lemma toRealVectors_smul (c : 𝓞 E) : toRealVectors (c • y) = cmEmbedding c.val • toRealVectors y :=
   funext fun i ↦ cmEmbedding.map_mul _ (y i)
+
+variable [Fintype n] [DecidableEq n] {g g' : GL n (𝔸f E)}
 
 /-- `x` lies in `classLattice g S Q` if and only if it is `Q` of the CM embedding of a rational
 vector `y` whose class lies in `S`. -/
@@ -565,14 +564,13 @@ abbrev BallBase : Type := Fin (card n - 1) → ℂ
 `v` of `E` other than `v₀`. -/
 abbrev BallFibre : Type _ := (ℂ × BallBase n) × ({v : InfinitePlace E // v ≠ v₀} → n → ℂ)
 
-variable {E n} [DecidableEq n] {V V' : Type} [FinComplexSpace V] [FinComplexSpace V']
+variable {E n} {V V' : Type} [FinComplexSpace V] [FinComplexSpace V']
   {ℓ : Matrix n n ℂ} {Q : RealVectors E n ≃L[ℝ] V}
 
 lemma smul_eq_re_smul_add_im_smul (a : ℂ) (z : V) : a • z = a.re • z + a.im • Complex.I • z := by
   match_scalars
   simp
 
-omit [DecidableEq n] in
 /-- If `(E ⊗ ℝ)ⁿ` is isomorphic over `ℝ` to the complex vector space `V`, the complex dimension of
 `V` is `abelianDim E n`, the number of indices times the number of infinite places of `E`. -/
 lemma finrank_eq_abelianDim (Q : RealVectors E n ≃L[ℝ] V) : finrank ℂ V = abelianDim E n := by
@@ -581,6 +579,8 @@ lemma finrank_eq_abelianDim (Q : RealVectors E n ≃L[ℝ] V) : finrank ℂ V = 
     simpa [finrank_real_of_complex, finrank_pi_fintype] using Q.symm.finrank_eq
   rw [abelianDim]
   linarith
+
+variable [DecidableEq n]
 
 /-- Let `Q` and `R` be period maps for the matrices `ℓ` and `J` (hypotheses `hQ`, `hR`). If a
 complex linear map `F` corresponds under them to a matrix `z ∈ GL n E` (hypothesis `hF`), then

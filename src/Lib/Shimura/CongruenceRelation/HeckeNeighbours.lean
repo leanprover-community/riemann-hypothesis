@@ -115,11 +115,10 @@ lemma exists_residue_torsion_emb (w : HeightOneSpectrum (𝓞 E)) :
 
 end
 
-variable {E n : Type} [Field E] [CMBase E] [Fintype n] [DecidableEq n] {D : PEL E} {d₀ : ℕ}
+variable {E n : Type} [Field E] [CMBase E] {D : PEL E} {d₀ : ℕ}
   [HasQuadSubfield d₀ E] {v : n → 𝔸f E} {w : SplitFinPlace E}
   {C : Submodule (ResField w.val) (n → ResField w.val)}
 
-omit [Fintype n] [DecidableEq n] in
 /-- An integer `a` of `E` kills the class of `v` in `(𝔸_f / Ô)ⁿ` exactly when
 `|a|_u · |v i|_u ≤ 1` for every coordinate `i` and every finite place `u`. -/
 lemma smul_torsionClass_eq_zero_iff {a : 𝓞 E} :
@@ -129,6 +128,8 @@ lemma smul_torsionClass_eq_zero_iff {a : 𝓞 E} :
   have h_component (u : HeightOneSpectrum (𝓞 E)) :
       (algebraMap (𝓞 E) (𝔸f E) a) u = algebraMap E (LocField u) (a : E) := rfl
   simp [mem_Ô, Algebra.smul_def, ← v_algebraMap_eq_intValuation, h_component]
+
+variable [Fintype n] [DecidableEq n]
 
 /-- If `w` is safe for `I`, then at `w` the inverse of the Hecke element `invHeckeIsogeny w C` is
 the matrix `basicCosetRep C`. -/

@@ -70,13 +70,9 @@ open FourierTransform Complex Module MeasureTheory QuotientAddGroup Fintype Quot
 
 variable {V : Type} [FinComplexSpace V]
   {L : Submodule ℤ V} [IsFullRankLattice L] {B : ThetaTori.LatticeForm L}
-  {χ f : V → ℂ} [hB : IsAppellHumbert B χ] [hp : IsPosRiemann B] (hf : f ∈ B.thetaSpace χ)
+  {χ f : V → ℂ} [hB : IsAppellHumbert B χ]
 
-include hB hf
-
-omit hp
-
-omit hf
+include hB
 
 /-! ### Convergence of theta series -/
 
@@ -228,6 +224,7 @@ lemma IsAppellHumbert.linearPart_symm (u v : V) :
     B (I • u) v + I * B u v = B (I • v) u + I * B v u := by
   simpa [Complex.ext_iff, hB.re_symm, add_comm] using hB.re_symm (I • u) (I • v)
 
+variable [hp : IsPosRiemann B]
 include hp
 
 /-- For Appell–Humbert data (B, χ) (instance `hB`) whose Riemann form is positive (instance `hp`)

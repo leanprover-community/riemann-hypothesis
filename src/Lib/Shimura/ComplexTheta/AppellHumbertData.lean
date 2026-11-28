@@ -222,26 +222,21 @@ lemma IsPosRiemann.nsmul (h_pos : IsPosRiemann B) {n : ℕ} (hn : n ≠ 0) : IsP
 
 instance [h : IsPosRiemann B] [NeZero n] : IsPosRiemann (n • B) := h.nsmul NeZero.out
 
-variable {B B' : ThetaTori.LatticeForm L} {χ} {χ' : V → ℂ} {l : V} {m : ℕ}
-  {a : V} [hB : IsAppellHumbert B χ]
+variable {B B' : ThetaTori.LatticeForm L} {χ} {χ' : V → ℂ} {l : V} {m : ℕ} {a : V}
 
-omit hB in
 variable (B χ) in
 /-- The term exp(B(x, y − x + l) − B(l,y) − B(l,l)/2)/χ(l) of the Poincaré series at (x, y), for
 l in L. -/
 def ThetaTori.LatticeForm.poincareTerm (x y : V) (l : L) : ℂ :=
   Complex.exp (B x (y - x + l) - B l y - B l l / 2) / χ l
 
-omit hB in
 variable (B χ) in
 /-- The Poincaré series K(x, y) = ∑_{l ∈ L} exp(B(x, y − x + l) − B(l,y) − B(l,l)/2)/χ(l) of
 Appell–Humbert data (B, χ). -/
 def ThetaTori.LatticeForm.poincareSeries (x y : V) : ℂ := tsum (B.poincareTerm χ x y)
 
-omit hB in
 lemma differentiable_of_mem_thetaSpace (hf : f ∈ B.thetaSpace χ) : Differentiable ℂ f := hf.1
 
-omit hB in
 /-- The automorphy law of a theta function of type (B, χ) at `z + l`, for `l` in `L`. -/
 lemma apply_add_of_mem_thetaSpace (hf : f ∈ B.thetaSpace χ) (hl : l ∈ L) (z : V) :
     f (z + l) = χ l * exp (B l z + B l l / 2) * f z :=
@@ -250,6 +245,7 @@ lemma apply_add_of_mem_thetaSpace (hf : f ∈ B.thetaSpace χ) (hl : l ∈ L) (z
 lemma ThetaTori.mem_dualLattice_nsmul : a ∈ (m • B).dualLattice ↔ m • a ∈ B.dualLattice :=
   forall_congr' (by simp)
 
+variable [hB : IsAppellHumbert B χ]
 include hB
 
 /-! ### Consequences of the Appell–Humbert conditions -/
