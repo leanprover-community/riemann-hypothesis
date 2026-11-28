@@ -5,6 +5,7 @@ import Mathlib.AlgebraicGeometry.AffineSpace
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
 import Mathlib.RingTheory.Henselian
+import TauCeti.LinearAlgebra.QuadraticForm.OfParallelogram
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.Geometry.ProjectiveSpace
 public import Lib.Shimura.AbelianScheme.Basic
@@ -205,18 +206,9 @@ satisfies the parallelogram law `New.Pic.ParallelogramLaw`. Then the pull-back o
 multiplication by a natural number `m` is `m² c`. -/
 lemma pull_nsmul_eq_sq_smul (hc : c.ParallelogramLaw) (m : ℕ) :
     Pic.pull (m • 𝟙 A).left c = m ^ 2 • c := by
-  change c.atPoint (m • 𝟙 A) = m ^ 2 • c
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    -- As `0^* c = 0`, `pairing_nsmul_left` at `x = y = 𝟙 A` reads
-    -- `(m + 1)^* c - m^* c - c = m • (2^* c - 2 • c)`; the parallelogram law gives `2^* c = 4 • c`.
-    have h_id : c.atPoint (𝟙 A) = c := by simp [Pic.atPoint]
-    have h_two : c.atPoint (𝟙 A + 𝟙 A) = 4 • c := by
-      simpa [h_id, ← two_smul ℕ c, smul_smul] using hc (𝟙 A) (𝟙 A)
-    have h_pair : c.atPoint ((m + 1) • 𝟙 A) - c.atPoint (m • 𝟙 A) - c = m • (4 • c - c - c) := by
-      simpa [pairing, h_id, h_two, ← succ_nsmul] using hc.pairing_nsmul_left (𝟙 A) (𝟙 A) m
-    linear_combination (norm := module) h_pair + ih
+  simpa [Pic.atPoint, pow_two] using
+    TauCeti.QuadraticMap.map_nsmul_of_parallelogram (f := fun x : A ⟶ A ↦ c.atPoint x)
+      (by simp) (fun x y ↦ by simpa [smul_add] using hc x y) m (𝟙 A)
 
 end Variety
 
