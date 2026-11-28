@@ -94,6 +94,7 @@ deriving instance PolishSpace for mixedSpace K
 
 /-! ### Continuity, scaling and supports -/
 
+/-- The idele norm module `ideleModule a` is strictly positive for any idele `a`. -/
 @[simp]
 lemma ideleModule_pos : 0 < ideleModule a := mul_pos (a.fst.map (norm ℝ)).norm_pos ideleAbs_pos
 
@@ -107,6 +108,7 @@ lemma continuous_ideleModule : Continuous (ideleModule (K := K)) := by
     continuous_ideleAbs.comp (units_map _ (prodMk_right _))
   exact h_inf.fst'.mul h_fin.snd'
 
+/-- The adelic tent function `adelicTent r d` is continuous. -/
 @[fun_prop]
 lemma continuous_adelicTent : Continuous (adelicTent r d) := by
   -- The condition on the finite part cuts out a clopen set, on which the tent is continuous.
