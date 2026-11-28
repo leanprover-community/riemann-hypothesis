@@ -284,7 +284,7 @@ lemma lintegral_boxCutoff_le_of_average {X : Type*} [MeasurableSpace X] [S.IsAdm
   let i : Γ →* G :=
     MonoidHom.mk' (fun k v ↦ ⟨S.ratToInf ((k : S.classUnipotent c) : S.G E) v,
         ratToInf_mem_besselU0 (Subgroup.mem_inf.1 (mem_subgroupOf.1 k.property)).2 v⟩)
-      fun k k' ↦ funext fun v ↦ Subtype.ext <| congrFun (map_mul S.ratToInf _ _) v
+      fun k k' ↦ funext fun v ↦ Subtype.ext <| congrFun (S.ratToInf.map_mul _ _) v
   let ι (u : G) : NumberField.InfinitePlace E → 𝔰.G₁ := fun v ↦ u v
   have ι_mul (k : Γ) (u : G) : ι (i k * u) = S.ratToInf k * ι u := rfl
   -- The `p`-weighted integral over an orbit is bounded by averaging over the translations `s x`.
