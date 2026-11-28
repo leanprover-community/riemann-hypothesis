@@ -19,11 +19,13 @@ embedding.
 * `New.ThetaTori.exists_pow_eq_span_inv_lt`: for an ideal of norm greater than 1, some power is
   principal with a non-unit generator of arbitrarily large absolute value at every complex
   embedding.
-* `New.SUnit.dirichlet_unit_theorem`: for a finite set `S` of finite places of a number field `K`,
-  the `S`-units are finitely generated of rank `#S + #(infinite places) - 1`. This follows from
-  Mathlib's unit theorem and the finiteness of the class number, in the form
-  `New.exists_valuation_eq_exp_mul`. Valuations are multiplicative, with values in `ℤᵐ⁰`, and a
+* `New.exists_valuation_eq_exp_mul`: for a finite set `S` of finite places of a number field `K`,
+  there is `n ≠ 0` such that any family of valuations `exp (n * e v)`, `v ∈ S`, is attained by an
+  `S`-unit; `n` is the class number. Valuations are multiplicative, with values in `ℤᵐ⁰`, and a
   uniformiser has valuation `exp (-1)`.
+* `New.SUnit.dirichlet_unit_theorem`: the `S`-units are finitely generated of rank
+  `#S + #(infinite places) - 1`. This is Tau Ceti's rank formula
+  `TauCeti.finrank_sUnits_numberField` combined with Mathlib's unit rank `NumberField.Units.rank`.
 * `New.eq_zero_of_forall_norm_lt_one`: an algebraic integer of absolute value below `1` at every
   infinite place is `0`. Here `Φ v`, from an instance of `New.PlaceEmbedding`, is a chosen complex
   embedding that induces the infinite place `v`.
@@ -37,7 +39,7 @@ This follows from Tau Ceti's effective class number bound `NumberField.classNumb
 
 ## Relation to the literature
 
-Dirichlet's `S`-unit theorem is deduced from the unit theorem in Mathlib, and the class number bound
+Dirichlet's `S`-unit theorem is Tau Ceti's rank formula for `S`-units, and the class number bound
 is a crude form of Tau Ceti's effective bound on the class number.
 -/
 
