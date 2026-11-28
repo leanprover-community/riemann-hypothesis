@@ -672,11 +672,8 @@ lemma extendedBesselChar_eq_prod_toFibers (hψ : P.ψ = S.charOnPlaces T)
       exact hx (exists_besselU_of_extendedBesselChar_ne_zero h_ne)
     rw [h_zero, eq_comm, prod_eq_zero_iff]
     contrapose! hx
-    have h_fiber (i : ι) : ∃ u ∈ besselU, u⁻¹ * S.toFibers T blk x i ∈
-        unitaryLevel integers (a.map (evalFiber T blk i))
-          (S.latticeMiddle (LocProd (placeFiber T blk i))).splitGram :=
+    choose u hu hux using fun i : ι ↦
       exists_besselU_of_extendedBesselChar_ne_zero (hx i (mem_univ i))
-    choose u hu hux using h_fiber
     -- The elements `u i` of the fibres are the components of one element `v` over `T`.
     obtain ⟨(v : (S.latticeMiddle (LocProd T)).G), rfl⟩ := toFibers_surjective blk u
     have h_level : v⁻¹ * x ∈ unitaryLevel integers a (S.latticeMiddle (LocProd T)).splitGram :=
@@ -859,21 +856,12 @@ theorem IsFillingData.exists_intermediateGroup_places [WeilData E] {S : Filling 
     rintro w rfl j
     simp [hblk]
   -- A filling datum `F' i` and a group `Z i` on each block.
-  have h_levels (i : Option Sg) : ∃ (P' : IntegralPlace (LocProd (placeFiber T blk i)))
-      (F' : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd (placeFiber T blk i)))
-        (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)), S.IsFillingData (placeFiber T blk i) F' :=
-    S.exists_isFillingData (placeFiber T blk i)
-  choose P' F' h' using h_levels
+  choose P' F' h' using fun i : Option Sg ↦ S.exists_isFillingData (placeFiber T blk i)
   let K' (i : Option Sg) : Subgroup (S.latticeMiddle (LocProd (placeFiber T blk i))).G :=
     unitaryLevel integers 1 (S.latticeMiddle (LocProd (placeFiber T blk i))).splitGram
   let B : ℝ≥0∞ := ENNReal.ofReal (S.b ^ (6 * 𝔰.k))
-  have h_groups (i : Option Sg) : ∃ Z : (F' i).IntermediateGroup,
-      (∀ k : S.latticeStabilizer, S.reduction k ∈ S.fixer Sg d →
-        S.toPlaces (placeFiber T blk i) k ∈ Z.val) ∧
-      (F' i).massIntegral Z * (F' i).groupMeasure (K' i) * i.elim 1 (fun _ ↦ B) ≤
-        (F' i).massIntegral (K' i) * (F' i).groupMeasure Z :=
+  choose Z hZ_mem hZ_le using fun i ↦
     (h' i).exists_intermediateGroup_one_place Sg i d hT (h_places i)
-  choose Z hZ_mem hZ_le using h_groups
   -- `Q Y` is the product of the groups `Y i`, read in the group over `T`.
   let Q (Y : ∀ i : Option Sg, Subgroup (S.latticeMiddle (LocProd (placeFiber T blk i))).G) :
       Subgroup (S.latticeMiddle (LocProd T)).G :=
