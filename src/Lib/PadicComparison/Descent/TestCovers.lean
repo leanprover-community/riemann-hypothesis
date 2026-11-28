@@ -524,11 +524,8 @@ lemma isAffinelyCovered_reprBy (B : CommAlg A) : IsAffinelyCovered ι (reprBy B)
   refine ⟨⨆ a, span {x.down.hom a - y.down.hom a}, fun _ _ ↦ ULift.up_inj.trans ?_⟩
   simp [ConcreteCategory.hom_ext_iff, sub_eq_zero]
 
-variable [ι.Full] [ι.Faithful] [HasCoveringPoints ι] {Y : CommAlg A ⥤ Type 1}
-
 open Limits CommAlgCat Quotient Subfunctor ShortComplex
 
-omit [ι.Full] [ι.Faithful] [HasCoveringPoints ι] in
 /-- Let `ι` be any functor from `C` to `A`-algebras, and let `X` be a separated functor on
 `A`-algebras, meaning that for any two points of X(B) there is an ideal J of B such that a map φ :
 B → B' makes them equal exactly when φ kills J. Let `y` be a point of `X` over `B` and `η : B ⟶ T`.
@@ -567,6 +564,8 @@ lemma isAffinelyCovered_cech {X : CommAlg A ⥤ Type 1} (hX : IsSeparatedFunctor
   -- coordinate `i` of the factored tuple is `Sigma.ι i ≫ σ`, which is `x.val i`
   exact ⟨⟨ofHom (liftₐ _ _ h_kill)⟩, Subtype.ext <| funext fun i ↦
     congrArg ULift.up (Sigma.ι_comp_desc (fun i ↦ (x.val i).down) i)⟩
+
+variable [ι.Full] [ι.Faithful] [HasCoveringPoints ι] {Y : CommAlg A ⥤ Type 1}
 
 /-- Let ι from C to A-algebras be fully faithful, and suppose that each A-algebra B with a point in
 some ι(c) has one point through which all its points factor (`New.Variety.HasCoveringPoints`). Let
