@@ -237,8 +237,26 @@ lemma integralAfter.stdLattice_le {S : FinPlace (P.E s) → Prop} :
   intro x hx i w _
   exact mem_Ô.1 (mul_mem (coe_mem_Ô (algebraMap (𝓞 P.K) (𝓞 (P.E s)) δ)) (hx i)) w
 
-variable [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {V : Space (P.E s) n ε} {p : ℕ} [Fact p.Prime]
-  [PadicPlace p] {f : 𝒮 V}
+variable [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {V : Space (P.E s) n ε} {p : ℕ} {f : 𝒮 V}
+
+/-- Let `g` be a finite unitary point in `integralAbove n p`, that is, integral at the places above
+`p`. If `δ x` is integral above `p`, then so is `δ g x`. -/
+lemma mulVec_mem_integralAfter {g : Gf (P.E s) n} (hg : g ∈ integralAbove n p)
+    {x : n → 𝔸f (P.E s)} (hx : x ∈ integralAfter δ fun w : FinPlace (P.E s) ↦ ↑p ∈ w.asIdeal) :
+    (g : Matrix n n (𝔸f (P.E s))) *ᵥ x ∈
+      integralAfter δ fun w : FinPlace (P.E s) ↦ ↑p ∈ w.asIdeal := by
+  intro i w hw
+  -- At the place `w`, the vector `δ g x` is the integral matrix `g` applied to `δ x`.
+  let a : 𝔸f (P.E s) := algebraMap (P.E s) (𝔸f (P.E s)) (algebraMap P.K (P.E s) δ)
+  have h_eq : evalAt w (a * ((g : Matrix n n (𝔸f (P.E s))) *ᵥ x) i) =
+      ((Gf.atPlace w g).val *ᵥ fun j : n ↦ evalAt w (a * x j)) i := by
+    have h_entry (j : n) :
+        (Gf.atPlace w g).val i j = evalAt w ((g : Matrix n n (𝔸f (P.E s))) i j) := rfl
+    simp [mulVec, dotProduct, mul_sum, mul_left_comm a, h_entry]
+  rw [h_eq]
+  exact (mulVec_mem_intVectors_iff (hg w hw)).2 (fun j ↦ hx j w hw) i
+
+variable [Fact p.Prime] [PadicPlace p]
 
 /-- Standard data are a submodule of the space `𝒮 V` of the Weil representation of the hermitian
 space `V` over `embValRing`, the ring of complex numbers whose image under `ιₚ` has norm at most
@@ -274,24 +292,6 @@ lemma finHeisenbergOp_mem_standardData {x : n → 𝔸f (P.E s)}
   | zero => simp
   | add f f' _ _ hf hf' => simpa using add_mem hf hf'
   | smul c f _ hf => simpa using smul_mem _ c hf
-
-omit [Fact p.Prime] [PadicPlace p] in
-/-- Let `g` be a finite unitary point in `integralAbove n p`, that is, integral at the places above
-`p`. If `δ x` is integral above `p`, then so is `δ g x`. -/
-lemma mulVec_mem_integralAfter {g : Gf (P.E s) n} (hg : g ∈ integralAbove n p)
-    {x : n → 𝔸f (P.E s)} (hx : x ∈ integralAfter δ fun w : FinPlace (P.E s) ↦ ↑p ∈ w.asIdeal) :
-    (g : Matrix n n (𝔸f (P.E s))) *ᵥ x ∈
-      integralAfter δ fun w : FinPlace (P.E s) ↦ ↑p ∈ w.asIdeal := by
-  intro i w hw
-  -- At the place `w`, the vector `δ g x` is the integral matrix `g` applied to `δ x`.
-  let a : 𝔸f (P.E s) := algebraMap (P.E s) (𝔸f (P.E s)) (algebraMap P.K (P.E s) δ)
-  have h_eq : evalAt w (a * ((g : Matrix n n (𝔸f (P.E s))) *ᵥ x) i) =
-      ((Gf.atPlace w g).val *ᵥ fun j : n ↦ evalAt w (a * x j)) i := by
-    have h_entry (j : n) :
-        (Gf.atPlace w g).val i j = evalAt w ((g : Matrix n n (𝔸f (P.E s))) i j) := rfl
-    simp [mulVec, dotProduct, mul_sum, mul_left_comm a, h_entry]
-  rw [h_eq]
-  exact (mulVec_mem_intVectors_iff (hg w hw)).2 (fun j ↦ hx j w hw) i
 
 /-- The Weil operator `ω(1, g)` takes the translate by `x` of the integral vacuum `intVacuum V` to
 `(finMultiplier g⁻¹)⁻¹` times the translate by `g x` of the sum of the translates of the integral

@@ -131,13 +131,8 @@ namespace Parameters
 open Space Fintype QuadField CMLattice
 
 section RationalTranslates
-variable {P : Parameters} {s : ℕ} {n : Type} {p : ℕ} [Fact p.Prime]
+variable {P : Parameters} {s : ℕ} {n : Type} {p : ℕ}
 
-lemma ne_zero_of_prime_coprime {k : ℕ} (hk : p.Coprime k) : k ≠ 0 := by
-  rintro rfl
-  simp [(Fact.out : p.Prime).ne_one] at hk
-
-omit [Fact p.Prime] in
 /-- Let `ν` be prime to `p` and `ν y` lie in the standard lattice `Ô E ^ n`, where `E = P.E s`. For
 every integer `δ` of `K` the vector `y` lies in `integralAfter δ` of the places above `p`, that is,
 the coordinates of `δ y` are integral at these places. -/
@@ -150,6 +145,12 @@ lemma mem_integralAfter_of_nsmul_mem {δ : 𝓞 P.K} {ν : ℕ} (hν : p.Coprime
   have h_int : ν • y ∈ integralAfter δ fun u : FinPlace (P.E s) ↦ ↑p ∈ u.asIdeal :=
     integralAfter.stdLattice_le hy
   simpa [h_unit] using h_int c u hu
+
+variable [Fact p.Prime]
+
+lemma ne_zero_of_prime_coprime {k : ℕ} (hk : p.Coprime k) : k ≠ 0 := by
+  rintro rfl
+  simp [(Fact.out : p.Prime).ne_one] at hk
 
 /-- If the `w i` lie in the lattice `𝔞₀` (their finite images are integral) and `ν` is prime to
 `p`, the finite images of the vectors `w i / ν` of `Eⁿ` are integral at all places above `p`. -/
@@ -263,9 +264,8 @@ lemma intVacuum_eq_sum_smul_vacElem {V : Space (E P s) n ε} {Y : Type} [Fintype
     module
   simp only [h_term, ← Finset.sum_smul, ← Finset.mul_sum, h_sum, inv_mul_cancel₀ hM, one_smul]
 
-variable {V : Space (E P s) n ε} [V.IsStd] [PadicPlace p]
+variable {V : Space (E P s) n ε} [PadicPlace p]
 
-omit [V.IsStd] in
 /-- Let `V` be a hermitian space over `E = P.E s` with signs `ε`, and `F` a vector of its Weil model
 `𝒮 V`. The operator `V.finHeisenbergOp x` takes the translate of `F` by `y` to a multiple of the
 translate of `F` by `x + y`, and the scalar lies in the valuation ring `embValRing` of the embedding
@@ -278,6 +278,8 @@ lemma exists_finHeisenbergOp_rho_eq_smul (x y : n → 𝔸f (P.E s)) (F : 𝒮 V
   rw [finHeisenbergOp, stdLattice.semichar, _root_.smul_apply, rho_finVec_rho_finVec,
     smul_smul,
     ← AddChar.map_add_eq_mul, Subring.smul_def]
+
+variable [V.IsStd]
 
 variable (V p) in
 /-- An expansion of the integral vacuum of a standard space `V` (of rank `n`, with signs `ε` at the

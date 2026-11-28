@@ -122,19 +122,35 @@ noncomputable def minorProd (i' : WeylIndex n' κ) (y : Φ → n → ℕ → R) 
 end Minors
 
 section Directions
-variable {Φ n n' R : Type} [Fintype Φ] [Fintype n] [Fintype n'] [DecidableEq n']
-  [CommRing R] {κ : Φ → ℕ → ℕ}
+variable {Φ n n' R : Type} [CommRing R] {κ : Φ → ℕ → ℕ}
 
 /-- The index type of the new variables `s_(τ h k b)`: an index `(⟨h, k⟩, τ, b)` consists of a
 height `h < N`, a direction `k < h` of that height, a place `τ` and a row `b`. -/
 abbrev DirectionVar (Φ n' : Type) (N : ℕ) : Type := (Σ h : Fin N, Fin h) × Φ × n'
 
-omit [DecidableEq n'] in
+/-- The determinant of the `h × h` matrix of the variables `s_(τ h k b) = X (⟨h, k⟩, τ, I b)` of
+`MvPolynomial (DirectionVar Φ n' N) R`, with rows `I b` and directions `k < h`, is homogeneous of
+degree `h`. -/
+lemma isHomogeneous_det_directionVar {N : ℕ} (τ : Φ) (h : Fin N) (I : Fin h → n') :
+    IsHomogeneous (of fun b k : Fin h ↦
+      (X (⟨h, k⟩, τ, I b) : MvPolynomial (DirectionVar Φ n' N) R)).det h := by
+  have h_term (σ : Equiv.Perm (Fin h)) : IsHomogeneous
+      (∏ k : Fin h, (X (⟨h, k⟩, τ, I (σ k)) : MvPolynomial (DirectionVar Φ n' N) R)) h := by
+    simpa using IsHomogeneous.prod univ _ (fun _ ↦ 1) fun k _ ↦
+      isHomogeneous_X R ((⟨h, k⟩, τ, I (σ k)) : DirectionVar Φ n' N)
+  rw [det_apply']
+  refine IsHomogeneous.sum univ _ h fun σ _ ↦ ?_
+  simpa only [map_intCast, of_apply] using (h_term σ).C_mul ((Equiv.Perm.sign σ : ℤ) : R)
+
+variable [Fintype Φ] [Fintype n']
+
 lemma card_directionVar_le : card (DirectionVar Φ n' (card n')) ≤ card Φ * card n' ^ 3 := by
   have h_pairs : card (Σ h : Fin (card n'), Fin h) ≤ card n' * card n' := by
     simpa using sum_le_card_nsmul univ (fun h : Fin (card n') ↦ (h : ℕ)) _ fun h _ ↦ h.isLt.le
   rw [card_prod, card_prod]
   exact (Nat.mul_le_mul_right _ h_pairs).trans_eq (by ring)
+
+variable [Fintype n] [DecidableEq n']
 
 /-- The matrix of the linear substitution `z(s)` with row factors `c` and directions `β`: row `b`
 of `z_τ(s)` is `∑_(h, k) c_(τ h b) s_(τ h k b) β_(τ h k)`. So the entry at `x = (τ, b, a)` and
@@ -169,21 +185,6 @@ noncomputable def columnDetProd (i' : WeylIndex n' κ) :
 lemma map_columnDetProd {R' : Type} [CommRing R'] (φ : R →+* R') (i' : WeylIndex n' κ) :
     (columnDetProd R i').map φ = columnDetProd R' i' := by
   simp [columnDetProd, RingHom.map_det, Matrix.map]
-
-omit [Fintype Φ] [Fintype n'] [DecidableEq n'] in
-/-- The determinant of the `h × h` matrix of the variables `s_(τ h k b) = X (⟨h, k⟩, τ, I b)` of
-`MvPolynomial (DirectionVar Φ n' N) R`, with rows `I b` and directions `k < h`, is homogeneous of
-degree `h`. -/
-lemma isHomogeneous_det_directionVar {N : ℕ} (τ : Φ) (h : Fin N) (I : Fin h → n') :
-    IsHomogeneous (of fun b k : Fin h ↦
-      (X (⟨h, k⟩, τ, I b) : MvPolynomial (DirectionVar Φ n' N) R)).det h := by
-  have h_term (σ : Equiv.Perm (Fin h)) : IsHomogeneous
-      (∏ k : Fin h, (X (⟨h, k⟩, τ, I (σ k)) : MvPolynomial (DirectionVar Φ n' N) R)) h := by
-    simpa using IsHomogeneous.prod univ _ (fun _ ↦ 1) fun k _ ↦
-      isHomogeneous_X R ((⟨h, k⟩, τ, I (σ k)) : DirectionVar Φ n' N)
-  rw [det_apply']
-  refine IsHomogeneous.sum univ _ h fun σ _ ↦ ?_
-  simpa only [map_intCast, of_apply] using (h_term σ).C_mul ((Equiv.Perm.sign σ : ℤ) : R)
 
 /-- The product `columnDetProd R i'` of the determinants of the columns of `κ` is homogeneous. Its
 degree `boxes κ (card n')` is the number of boxes in the columns of height below `card n'`. -/

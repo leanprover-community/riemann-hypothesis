@@ -67,7 +67,7 @@ lemma isIntegralAbove_of_isIntegral_mul {E : Type} [Field E] [CMType E] {N : ℕ
   have h_val : v.valuation E (N * y) ≤ 1 := v.valuation_le_one (⟨N * y, hy⟩ : 𝓞 E)
   rwa [map_mul, hN_val, one_mul] at h_val
 
-variable [PadicPlace p] {J : Type} [Fintype J]
+variable [PadicPlace p] {J : Type}
 
 /-- For a family `w` in the field `E = P.E s`, the linear forms `μ_i z = ∑ μ_(i τ) z_τ` with the
 coefficients `μ_(i τ) = periodFactor * conj (τ (w i))` at the places `τ`, read in `ℂ_p` by the
@@ -98,10 +98,22 @@ lemma piMBar_mul_conj (D : Data P) : D.piMBar * conj (D.piMBar : ℂ) = D.M := b
 lemma coe_piMBar_ne_zero (D : Data P) : (D.piMBar : ℂ) ≠ 0 :=
   left_ne_zero_of_mul (D.piMBar_mul_conj.trans_ne (cast_ne_zero.2 (NeZero.ne D.M)))
 
-omit [Fintype J] in
 lemma phi_resolutionVectors (D : Data P) {w : J → D.E} (τ : D.Φ) (i : J) :
     New.Φ τ (D.resolutionVectors w i ()) = New.Φ τ (w i) / D.piMBar := by
   rw [resolutionVectors, map_div₀, P.phi_algebraMap]
+
+/-- The forms of `w` are the scale `𝔰 = D.taylorScale` times the forms `z ↦ u† z` of the vectors
+`u_i = w_i / π̄_M`. -/
+lemma resolutionForms_eq_smul (D : Data P) {w : J → D.E} :
+    P.resolutionForms D.towerExp w = (D.taylorScale : ℂ_[p]) • daggerForms
+      (D.resolutionVectors w) := by
+  ext i ⟨τ, ⟨⟩⟩
+  simp only [Parameters.resolutionForms, taylorScale, daggerForms, dagger, Pi.smul_apply,
+    smul_eq_mul,
+    phi_resolutionVectors, ← map_mul ιₚ, map_div₀ (starRingEnd ℂ)]
+  rw [mul_assoc, mul_div_cancel₀ _ ((map_ne_zero _).2 D.coe_piMBar_ne_zero)]
+
+variable [Fintype J]
 
 /-- Let `D` be admissible data for the parameters `P`, with the CM field `E = D.E`, a cyclotomic
 extension of the imaginary quadratic field `K = ℚ(√-d)` (`d = P.d`), and the places `τ ∈ D.Φ` of
@@ -121,18 +133,6 @@ lemma isResolution_resolutionVectors (D : Data P) {w : J → D.E} {c : J → ℕ
         simp only [sum_div, dagger, phi_resolutionVectors, map_div₀, _root_.div_mul_div_comm,
           piMBar_mul_conj, mul_div_assoc]
     _ = if (σ, ()) = (τ, ()) then 1 else 0 := by simp [h_gram, ite_div, NeZero.ne D.M]
-
-omit [Fintype J] in
-/-- The forms of `w` are the scale `𝔰 = D.taylorScale` times the forms `z ↦ u† z` of the vectors
-`u_i = w_i / π̄_M`. -/
-lemma resolutionForms_eq_smul (D : Data P) {w : J → D.E} :
-    P.resolutionForms D.towerExp w = (D.taylorScale : ℂ_[p]) • daggerForms
-      (D.resolutionVectors w) := by
-  ext i ⟨τ, ⟨⟩⟩
-  simp only [Parameters.resolutionForms, taylorScale, daggerForms, dagger, Pi.smul_apply,
-    smul_eq_mul,
-    phi_resolutionVectors, ← map_mul ιₚ, map_div₀ (starRingEnd ℂ)]
-  rw [mul_assoc, mul_div_cancel₀ _ ((map_ne_zero _).2 D.coe_piMBar_ne_zero)]
 
 /-- A prime `p` that does not split in `K` (`χ_K(p) ≠ 1`) does not divide `q₁ M`, where `q₁ = D.q₁`
 is the order of the root of unity that generates `E` over `K` and the level `M = D.M` is the
