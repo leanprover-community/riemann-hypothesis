@@ -220,22 +220,11 @@ lemma LValueData.hasLiftHeckePolynomial_trivialLift [WeilData E] :
 
 /-! ### Indices, masses and the real integral -/
 
-/-- Let `F` be the residue field at `w` and `i : n` the index given by the embedding
-`X.descentPair.incl : Unit ↪ n`. The subgroup `rangeParabolic` of `GL n F`, the stabiliser of the
-hyperplane spanned by the basis vectors other than the `i`-th, has index
-`1 + q + ⋯ + q ^ (card n - 1)`, where `q = #F`. -/
-lemma LValueData.index_rangeParabolic_incl (w : FinPlace E) :
-    (rangeParabolic (R := ResField w) X.descentPair.incl).index =
-      ∑ j ∈ range (card n), Nat.card (ResField w) ^ j := by
-  -- The inverse transpose takes it to the block triangular group, the stabiliser of a line.
-  rw [index_rangeParabolic]
-  refine index_stabilizer_line (X.descentPair.incl ()) fun g ↦ forall_congr' fun j ↦ ?_
-  -- `False < True` in `Prop`, so the block condition concerns the entries in column `incl ()`.
-  have h_lt (k : n) : (k ∉ Set.range X.descentPair.incl) < (j ∉ Set.range X.descentPair.incl) ↔
-      k = X.descentPair.incl () ∧ j ≠ X.descentPair.incl () := by
-    simp only [Set.mem_range, lt_iff_le_not_ge, le_Prop_eq]
-    grind
-  simp only [h_lt, and_imp, forall_eq]
+/-- The group `GL Unit (ResField w)` of invertible 1×1 matrices over the residue field `ResField w`
+at `w` has as many elements as the unit group `(ResField w)ˣ` of this field. -/
+lemma natCard_GL_unit_resField (w : FinPlace E) :
+    Nat.card (GL Unit (ResField w)) = Nat.card (ResField w)ˣ :=
+  Nat.card_congr (Units.mapEquiv uniqueRingEquiv.toMulEquiv).toEquiv
 
 /-- Let `F` be the residue field at `w`. The matrix `inclMatrix F X.descentPair.incl` has one
 column, a standard basis vector of `F ^ n`. The index of its stabiliser in `GL n F` is the number
@@ -243,10 +232,21 @@ column, a standard basis vector of `F ^ n`. The index of its stabiliser in `GL n
 lemma LValueData.index_stabilizer_inclMatrix_col (w : FinPlace E) :
     (stabilizer (GL n (ResField w)) (inclMatrix (ResField w) X.descentPair.incl).col).index =
       Nat.card (ResField w) ^ Fintype.card n - 1 := by
-  set A : Matrix n Unit (ResField w) := inclMatrix (ResField w) X.descentPair.incl
-  have h_stab : stabilizer (GL n (ResField w)) A.col = stabilizer (GL n (ResField w)) (A.col ()) :=
-    ext fun _ ↦ funext_iff.trans Unique.forall_iff
-  rw [h_stab, index_stabilizer_GL_vector (by simp [A, inclMatrix, funext_iff, Matrix.one_apply])]
+  simpa using index_stabilizer_inclMatrix (k := ResField w) X.descentPair.incl
+
+/-- Let `F` be the residue field at `w` and `i : n` the index given by the embedding
+`X.descentPair.incl : Unit ↪ n`. The subgroup `rangeParabolic` of `GL n F`, the stabiliser of the
+hyperplane spanned by the basis vectors other than the `i`-th, has index
+`1 + q + ⋯ + q ^ (card n - 1)`, where `q = #F`. -/
+lemma LValueData.index_rangeParabolic_incl (w : FinPlace E) :
+    (rangeParabolic (R := ResField w) X.descentPair.incl).index =
+      ∑ j ∈ range (card n), Nat.card (ResField w) ^ j := by
+  -- Each line contains exactly `q - 1` nonzero vectors.
+  rw [card_ResField]
+  apply Nat.eq_of_mul_eq_mul_right w.q_sub_one_pos
+  rw [geom_sum_mul_of_one_le w.one_le_q]
+  simpa only [natCard_GL_unit_resField, Nat.card_units, X.index_stabilizer_inclMatrix_col,
+    card_ResField] using index_rangeParabolic_mul_card_GL (R := ResField w) X.descentPair.incl
 
 /-- The pairing `fockPairing ℂ P Q = P(∂) Q (0)` of two polynomials is unchanged when the variables
 are renamed along an injective map. -/
@@ -284,11 +284,6 @@ lemma LValueData.fockPairing_fockPoly_highestVector :
     X.toPoly_eq_rename_fockPoly η
   rwa [h_unit, mul_one, ← map_toPoly, h_rename, MvPolynomial.map_rename,
     fockPairing_rename_rename] at h_gram
-/-- The group `GL Unit (ResField w)` of invertible 1×1 matrices over the residue field `ResField w`
-at `w` has as many elements as the unit group `(ResField w)ˣ` of this field. -/
-lemma natCard_GL_unit_resField (w : FinPlace E) :
-    Nat.card (GL Unit (ResField w)) = Nat.card (ResField w)ˣ :=
-  Nat.card_congr (Units.mapEquiv uniqueRingEquiv.toMulEquiv).toEquiv
 
 omit [DecidableEq n] in
 /-- The index of the level `X.chosenLevel` in the integral points of `U(1)` is the product of the
