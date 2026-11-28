@@ -228,6 +228,29 @@ lemma pow_transition_apply {X : Scheme} {ι : Type} (L : LineBundle X ι) {m : �
     (L.pow m).transition c d B ξ = ∏ a : Fin m, L.transition (c a) (d a) B ξ := by
   simp [LineBundle.pow]
 
+open scoped Pointwise in
+/-- In the chart of `L.pow m` indexed by the constant tuple `i`, the coordinate sections evaluate
+at `ξ` to the degree-`m` monomials in the affine coordinates of `ξ` in the chart `i` of `L`. -/
+private lemma span_eval_coordSection_pow_eq_formSpan {k ι : Type} [CommRing k]
+    {X : Over (Spec (CommRingCat.of k))} {L : LineBundle X.left ι} {m : ℕ}
+    (h : (L.pow m).IsLinearSystem) {B : CommRingCat} [Algebra k B] (ξ : Spec B ⟶ X.left) (i : ι) :
+    span k (range fun c ↦ (coordSection (R := k) h c).val (fun _ ↦ i) B ξ) =
+      formSpan k (fun j ↦ L.transition i j B ξ) m := by
+  let x (j : ι) : B := L.transition i j B ξ
+  have h_eval (c : Fin m → ι) :
+      (coordSection (R := k) h c).val (fun _ ↦ i) B ξ = ∏ a : Fin m, x (c a) :=
+    pow_transition_apply _ _ c ξ
+  rw [show formSpan k x m = span k (range x ^ m) from span_pow ..]
+  congr 1
+  ext y
+  rw [mem_pow_iff_prod]
+  constructor
+  · rintro ⟨c, rfl⟩
+    exact ⟨fun a ↦ x (c a), fun a ↦ mem_range_self (c a), (h_eval c).symm⟩
+  · rintro ⟨g, hg, rfl⟩
+    choose c hc using hg
+    exact ⟨c, by simp [h_eval, hc]⟩
+
 /-- Let `L` be a projective embedding (finitely many coordinates) of a scheme `X` over a ring `k`,
 let `t` be a section of `L ^ m`, given as a value `t c` at `B`-valued points in each chart `c` (an
 `m`-tuple of indices), regular and compatible with the transition functions (`IsSection`), and let
@@ -333,13 +356,9 @@ lemma eventually_span_coordSection {k F ι : Type} [CommRing k] [IsNoetherianRin
   -- Since `ξ` is scheme-theoretically dominant, a section vanishing at `ξ` is zero.
   have ev_inj : Function.Injective ev := (injective_iff_map_eq_zero _).2
     (eq_zero_of_apply_eq_zero_of_dominant ξ ((landsIn_iInf ξ).2 fun _ ↦ hi))
-  -- The coordinate indexed by an `m`-tuple evaluates to the corresponding monomial in `x`.
   have h_forms : formSpan k x m ≤ span k (ev '' range (coordSection h)) := by
-    refine (span_pow ..).le.trans (span_mono fun y hy ↦ ?_)
-    obtain ⟨g, hg, rfl⟩ := mem_pow_iff_prod.1 hy
-    choose c hc using hg
-    have h_monomial : ev (coordSection h c) = ∏ a : Fin m, x (c a) := pow_transition_apply _ _ c ξ
-    exact ⟨coordSection h c, mem_range_self c, by simp [h_monomial, hc]⟩
+    rw [← range_comp']
+    exact (span_eval_coordSection_pow_eq_formSpan h ξ i).ge
   refine eq_top_iff'.2 fun ⟨t, ht, _⟩ ↦ ?_
   suffices h_form : t (fun _ ↦ i) B ξ ∈ formSpan k x m from
     (apply_mem_span_image_iff_mem_span ev_inj).1 (h_forms h_form)
