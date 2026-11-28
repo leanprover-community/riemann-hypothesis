@@ -104,8 +104,6 @@ def padicComponents : Gf E n →ₜ* NumberField.InfinitePlace E → GL n (Padic
   continuous_toFun := continuous_pi fun v ↦ (continuous_adeleExtension
     (weightEmbedding (toRingHom ιℓ) v)).generalLinearGroup_map.continuousOn.domRestrict
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- The ι-semilinear map sending f to the l-adic function g ↦ M ρ_{κ'}(z(g))⁻¹ ι(f(g)), with
 z = `New.padicComponents`, viewed as a function of g and a coordinate. -/
 def padicModel (M : Matrix (WeylIndex n κ.1) (WeylIndexFamily (fun _ ↦ n) κ'.1) (PadicAlgCl l)) :
@@ -113,7 +111,10 @@ def padicModel (M : Matrix (WeylIndex n κ.1) (WeylIndexFamily (fun _ ↦ n) κ'
       Gf E n × WeylIndex n κ.1 → PadicAlgCl l where
   toFun f x := (M *ᵥ weylRep κ'.1 κ'.2 (padicComponents x.1)⁻¹ *ᵥ ιℓ ∘ f x.1) x.2
   map_add' f g := funext fun x ↦ by
-    simp [mulVec_add]
+    have h_add : ιℓ ∘ (f + g) x.1 = ιℓ ∘ f x.1 + ιℓ ∘ g x.1 :=
+      funext fun i ↦ map_add ιℓ (f x.1 i) (g x.1 i)
+    rw [h_add, mulVec_add, mulVec_add]
+    rfl
   map_smul' c f := funext fun x ↦ by
     have h_smul : ιℓ ∘ (c • f) x.1 = ιℓ c • ιℓ ∘ f x.1 := funext fun i ↦ map_mul ιℓ c (f x.1 i)
     rw [h_smul, mulVec_smul, mulVec_smul]

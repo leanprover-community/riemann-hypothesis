@@ -642,8 +642,6 @@ lemma isFiniteLerayHirsch_principal_open
         (shortExact_nsmul_abCoker (N := relFreeAb _)).2 L).1 L)
   exact h_descent.2 (D.isFiniteLerayHirsch_topPoints_of_surjective W lh_rel.2 hG)
 
--- Keeps definitional checks from unfolding the Ext groups.
-seal CategoryTheory.Abelian.Ext in
 /-- Assume `L`: the pair of the point and its part away from the special fibre is good for `D`.
 Let `e` present `R[X]` as the polynomial ring in `d` variables over `A`, and let `P = (f, g)` be
 a standard étale pair over `R`. In `Spec R[X][1 / g]`, let `U` be the union of the part where `f`
@@ -681,9 +679,10 @@ lemma isFiniteLerayHirsch_offClosedFiber_sup_testUnitLocus_preimage
       · exact .inr h
       · exact .inl ⟨ψ, ⟨hψg, hψf⟩, rfl⟩
   rw [← h_pre]
-  exact D.isFiniteLerayHirsch_of_shortExact (relFreeAb.shortExact_triple (j P.g) (W (P.g * P.f))).2
+  -- Elaborated without the goal, whose unification with the result unfolds the cokernels.
+  exact (D.isFiniteLerayHirsch_of_shortExact (relFreeAb.shortExact_triple (j P.g) (W (P.g * P.f))).2
     (D.isFiniteLerayHirsch_principal_open e L (P.g * P.f))
-    (by simpa only [h_sup, W] using D.isFiniteLerayHirsch_principal_open e L P.g)
+    (by simpa only [h_sup, W] using D.isFiniteLerayHirsch_principal_open e L P.g) :)
 
 /-- Standard étale charts are good. A pair `U ⊆ Y` is good for the compared theory `D` if
 `D.IsFiniteLerayHirsch` holds for `ℤ[Y]/ℤ[U]`: in particular

@@ -148,8 +148,6 @@ theorem isIdempotentKernel_typeKernel [Nonempty n] {l : NumberField.InfinitePlac
       convolution_eq := by simp [typeKernel, mul_assoc, ← prod_mul_distrib, ← prod_div_distrib,
         ← integral_fintype_prod_volume_eq_prod, ← (h_loc _).convolution_eq] }
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Let E be a CM field, n nonempty and s a family of signs. Suppose every l_w = 2λ_w is a
 Harish-Chandra parameter whose entries λ_i, λ_j of different signs s are at least 500|n|³ + B apart.
 Then `New.typeKernel` l s, the product over the infinite places of the discrete series kernels
@@ -166,7 +164,8 @@ theorem isCuspKernel_typeKernel [Nonempty n] {l : NumberField.InfinitePlace E �
       ‖typeKernel l s x‖ * (∏ w, ‖(x w).val.val‖) ^ (B + 1) := by
     have h_loc : Integrable fun x : GInf E s ↦
         ∏ w, e w (x w) * (‖(x w).val.val‖ : ℂ) ^ (B + 1) :=
-      .fintype_prod fun w ↦ (h w).integrable_dsKernel_mul_norm_pow (B + 1) le_rfl
+      -- `(… :)`: matching `∏ i, ?f i (x i)` against the statement would unfold the product
+      (Integrable.fintype_prod fun w ↦ (h w).integrable_dsKernel_mul_norm_pow (B + 1) le_rfl :)
     simpa [h_prod, prod_mul_distrib, prod_pow] using h_loc.norm
   have h_bump (w : NumberField.InfinitePlace E) : ∃ α : DiscreteSeries.Bumps s,
       ∀ g : USign s, ∫ x : USign s, α.val.val x⁻¹ * e w (x⁻¹ * g) = e w g :=

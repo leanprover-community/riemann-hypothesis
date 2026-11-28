@@ -429,8 +429,6 @@ lemma exists_mul_abs_gaussianMonomial_mul_le {A : ℝ} (hA : 0 < A) :
         mul_rpow]
       ring
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- For `σ > 1/2` and a positive integer `k`, the terms `(k n m) ^ (-σ)` of the pairs `(n, m)` of
 positive integers with `k n m` a square have a nonnegative summable majorant. -/
 lemma exists_summable_ge_of_isSquare {σ : ℝ} (hσ : 1 / 2 < σ) (k : ℕ+) :
@@ -441,7 +439,9 @@ lemma exists_summable_ge_of_isSquare {σ : ℝ} (hσ : 1 / 2 < σ) (k : ℕ+) :
   have h_zeta : Summable fun a : ℕ ↦ ‖(a : ℝ) ^ (2 * -σ)‖ :=
     (summable_nat_rpow.mpr (by linarith)).norm
   let f (x : ℕ × ℕ × ℕ) : ℝ := x.1 ^ (2 * -σ) * (x.2.1 ^ (2 * -σ) * x.2.2 ^ (2 * -σ))
-  have hf : Summable f := summable_mul_of_summable_norm h_zeta (h_zeta.mul_norm h_zeta)
+  -- Elaborated without the expected type: matching `?f x.1 * ?g x.2` against `f` unfolds
+  -- `Finset.sum`.
+  have hf : Summable f := (summable_mul_of_summable_norm h_zeta (h_zeta.mul_norm h_zeta) :)
   have hf_nonneg (x : ℕ × ℕ × ℕ) : 0 ≤ f x := by positivity
   let pair (x : ℕ × ℕ × ℕ) : ℕ+ × ℕ+ := ((x.1 * x.2.1 ^ 2 / k).toPNat', (x.1 * x.2.2 ^ 2).toPNat')
   refine ⟨fun p ↦ ∑' x : pair ⁻¹' {p}, f x, (hf.hasSum.tsum_fiberwise pair).summable,
@@ -488,8 +488,6 @@ lemma exists_summable_ge_of_isSquare_ordCompl {σ : ℝ} (hσ : 1 / 2 < σ) :
     rw [rpow_neg zero_le_two, inv_mul_le_iff₀ (by positivity)] at h_two
     exact le_add_of_nonneg_of_le (hW_nonneg 1 _) h_two
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let `w = gaussianMonomial j` be the weight `z ^ j e^(-π z²)` and `n°` the odd part of `n`. For
 `δ > 0` there is a summable `M`, depending only on `δ` and `j`, such that for `T > 0` and
 `u ≥ 1 / T` we have `u |w(n u)| |w(m u)| |∑_{v ≤ T²} (-v/(n m)°)| ≤ M (n, m) T² u ^ (-2 δ)`. This
@@ -506,7 +504,8 @@ lemma exists_summable_mul_norm_sum_jacobiSym_le (j : Fin 2) {δ : ℝ} (hδ : 0 
   obtain ⟨W, hW, hW_nonneg, hW_ge⟩ :=
     exists_summable_ge_of_isSquare_ordCompl (σ := 1 / 2 + δ) (by linarith)
   have h_zeta : Summable fun n : ℕ+ ↦ ‖(n : ℝ) ^ (-1 - δ / 2)‖ :=
-    summable_pnat_iff_summable_nat.2 (summable_nat_rpow.2 (by linarith)).norm
+    (summable_pnat_iff_summable_nat (f := fun n : ℕ ↦ ‖(n : ℝ) ^ (-1 - δ / 2)‖)).2
+      (summable_nat_rpow.2 (by linarith)).norm
   let C₃ : ℝ := C₂ * (2 * (1 + 2 / δ))
   refine ⟨fun p ↦ C₁ * W p + C₃ * ((p.1 : ℝ) ^ (-1 - δ / 2) * (p.2 : ℝ) ^ (-1 - δ / 2)),
     (hW.mul_left C₁).add ((summable_mul_of_summable_norm h_zeta h_zeta).mul_left C₃),

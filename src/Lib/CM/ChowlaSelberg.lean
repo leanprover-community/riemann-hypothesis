@@ -196,8 +196,6 @@ lemma eulerFactor_mul_eq_prod_inv {p : ℕ} [hp : Fact p.Prime] {w J : FinPlace 
     have hwJ_ne : w ≠ J := by grind [eq_d_of_span_eq_sq hp w.asIdeal, sq]
     simp [h_chi.resolve_right (hq.1 hwq), hwJ_ne, hwq, hJq]
 
--- Keeps definitional checks from unfolding the finite products.
-seal Finset.prod in
 /-- The Euler product over the primes of `K = ℚ(√-d)` with all coefficients `1`, that is, the
 Dedekind zeta function of `K`, is `ζ(s) L(s, χ)` for real `s > 1`. Here `quadTwist (N := 1) 1 d` is
 the trivial character modulo `1` twisted by the Legendre symbol, that is, the character
@@ -216,7 +214,8 @@ lemma eulerProd_one_eq_zeta_mul {s : ℝ} (hs : 1 < s) :
   have h_left : HasProd (fun x : Σ p, {v // below v = p} ↦
       (1 - (1 : FinPlace (QuadField d) → ℂ) x.2 * ((x.2 : FinPlace (QuadField d)).q : ℂ) ^
         (-s : ℂ))⁻¹) (eulerProd 1 s) :=
-    (Equiv.sigmaFiberEquiv below).hasProd_iff.2 (hasProd_eulerProd (a := 1) (by simp) hs)
+    -- elaborated without the expected type, which `?f ∘ e` would only match by unfolding `HasProd`
+    ((Equiv.sigmaFiberEquiv below).hasProd_iff.2 (hasProd_eulerProd (a := 1) (by simp) hs) :)
   have h_right : HasProd (fun p : Nat.Primes ↦ (1 - (p : ℂ) ^ (-s : ℂ))⁻¹ *
       (1 - quadTwist (N := 1) 1 d p * (p : ℂ) ^ (-s : ℂ))⁻¹)
       (riemannZeta s * LSeries (fun n : ℕ ↦ quadTwist (N := 1) 1 d n) s) :=
@@ -241,7 +240,9 @@ lemma eulerProd_one_eq_zeta_mul {s : ℝ} (hs : 1 < s) :
   have h_fibre_prod : HasProd
       (fun v : {v // below v = ⟨p, hp⟩} ↦ ((1 : ℂ) - v.val.q ^ (-s : ℂ))⁻¹)
       (∏ v ∈ {w, J}, ((1 : ℂ) - v.q ^ (-s : ℂ))⁻¹) :=
-    (Equiv.subtypeEquivRight h_fibre).hasProd_iff.2 (Finset.hasProd {w, J} _)
+    -- as in `h_left`, elaborated without the expected type
+    ((Equiv.subtypeEquivRight h_fibre).hasProd_iff.2
+      (Finset.hasProd {w, J} fun v ↦ ((1 : ℂ) - v.q ^ (-s : ℂ))⁻¹) :)
   simpa [h_char, h_factor] using h_fibre_prod
 
 end New.QuadField
