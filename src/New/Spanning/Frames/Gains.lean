@@ -100,6 +100,8 @@ theorem Gauge.sq_lintegral_le_mul_lintegral (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead
     rw [h_weight hB.2, h_weight hB'.2]
     ring
   -- In the first integral put `w_p g` for `g`.
+  have hΦ_meas : Measurable fun g ↦ B' g * F.invDepthWeight j x (weylElem j p * g) :=
+    hB'_meas.mul (F.measurable_invDepthWeight.comp (continuous_const_mul _).measurable)
   have h_first : ∫⁻ g, B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g ∂F.partialGroupMeasure 0 j
     ≤
       D * ∫⁻ g, B' g ∂descConv F.floorMeasure 0 j := by
@@ -109,11 +111,13 @@ theorem Gauge.sq_lintegral_le_mul_lintegral (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead
     calc ∫⁻ g, B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g ∂F.partialGroupMeasure 0 j
         = ∫⁻ g, Φ ((weylElem j p)⁻¹ * g) ∂F.partialGroupMeasure 0 j := by simp [Φ]
       _ = ∫⁻ g, Φ g ∂F.partialGroupMeasure 0 j :=
-          lintegral_partialGroupMeasure_weylElem_inv_mul p (by fun_prop) hΦ_inv
+          lintegral_partialGroupMeasure_weylElem_inv_mul p hΦ_meas hΦ_inv (by omega)
       _ ≤ D * ∫⁻ g, B' g ∂descConv F.floorMeasure 0 j := by
           rw [partialGroupMeasure_zero_eq]
           exact Γ.lintegral_mul_invDepthWeight_le hj hp hx .refl hB' hB'_meas
   -- In the second, `w_p⁻¹` is the Weyl element of the head `star p`.
+  have h_meas_rhs : Measurable fun g ↦ B g * F.invDepthWeight j x ((weylElem j p)⁻¹ * g) :=
+    hB_meas.mul (F.measurable_invDepthWeight.comp (continuous_const_mul _).measurable)
   have h_second : ∫⁻ g, B g * F.invDepthWeight j x ((weylElem j p)⁻¹ * g) ∂F.partialGroupMeasure 0 j
     ≤
       D * ∫⁻ g, B g ∂descConv F.floorMeasure 0 j := by
@@ -124,10 +128,13 @@ theorem Gauge.sq_lintegral_le_mul_lintegral (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead
       ≤ (∫⁻ g, B' ((weylElem j p)⁻¹ * g) * F.invDepthWeight j x g ∂F.partialGroupMeasure 0 j) *
           ∫⁻ g, K * (B g * F.invDepthWeight j x ((weylElem j p)⁻¹ * g)) ∂F.partialGroupMeasure 0
             j :=
-        sq_lintegral_le (by fun_prop) (by fun_prop) h_cross
+        sq_lintegral_le
+          ((hB'_meas.comp (continuous_const_mul _).measurable).mul
+            F.measurable_invDepthWeight).aemeasurable
+          (h_meas_rhs.const_mul K).aemeasurable h_cross
     _ ≤ (D * ∫⁻ g, B' g ∂descConv F.floorMeasure 0 j) *
           (K * (D * ∫⁻ g, B g ∂descConv F.floorMeasure 0 j)) := by
-        grw [lintegral_const_mul _ (by fun_prop), h_first, h_second]
+        grw [lintegral_const_mul _ h_meas_rhs, h_first, h_second]
     _ = _ := by ring
 
 /-- The separation of the frames for the weighted squares of the two correlations ⟨W g, W y⟩ and ⟨W
@@ -195,13 +202,13 @@ theorem PlaceData.IsPairingKernel.pivotL1Norm_le_sum_deepModulus {k : T.G → T.
     have h_vanish : ¬∃ σ ∈ floorGroup l, k (σ * g) (σ * (g * x)) ≠ 0 := by
       rintro ⟨σ, hσ, h_ne⟩
       obtain ⟨a, hla, -⟩ : ∃ a : Fin 𝔰.ϱ, l ≤ a ∧ D ≤ F.depth a (σ * g) x := h_deep σ hσ h_ne
-      lia
+      omega
     have h_zero : F.pivotL1Norm l k g (g * x) = 0 := by
       by_contra h_ne
       exact h_vanish (exists_ne_zero_of_pivotL1Norm_ne_zero h_ne)
     simp [h_zero]
   | succ i ih =>
-    lift l to Fin 𝔰.ϱ using (by lia)
+    lift l to Fin 𝔰.ϱ using (by omega)
     -- Each piece is an integral over floor `l` of an integral over the floors from `l + 1` to `a`.
     have h_piece (a : Fin 𝔰.ϱ) :
         ∫⁻ σ, F.deepModulus x D k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1) =
@@ -227,13 +234,14 @@ theorem PlaceData.IsPairingKernel.pivotL1Norm_le_sum_deepModulus {k : T.G → T.
           simpa only [mul_assoc] using h_deep (τ * σ) h_mem (by simpa only [mul_assoc] using h_ne)
         refine ⟨a, Nat.lt_of_le_of_ne hla fun h_eq ↦ h_first ?_, h_depth⟩
         rwa [← Fin.ext h_eq, h_same] at h_depth
-      have h_len (a : Fin 𝔰.ϱ) (ha : l.val + 1 ≤ a) : a.val - (l + 1) + 1 = a - l := by lia
+      have h_len (a : Fin 𝔰.ϱ) (ha : l.val + 1 ≤ a) : a.val - (l + 1) + 1 = a - l := by
+        omega
       calc ‖F.partialCorrelation (l + 1) k (σ * g) (σ * (g * x))‖ₑ
           ≤ F.pivotL1Norm (l + 1) k (σ * g) (σ * g * x) := by
             grw [hK.enorm_partialCorrelation_le, mul_assoc]
         _ ≤ ∑ a : Fin 𝔰.ϱ with l.val + 1 ≤ a.val, ∫⁻ τ, F.deepModulus x D k a (τ * (σ * g))
               ∂descConv F.floorMeasure (l + 1) (a - l) :=
-            (ih h_later (by lia)).trans_eq
+            (ih h_later (by omega)).trans_eq
               (Finset.sum_congr rfl fun a ha ↦ by rw [h_len a (mem_filter.1 ha).2])
         _ ≤ ∑ a : Fin 𝔰.ϱ with l.val ≤ a.val, ∫⁻ τ, F.deepModulus x D k a (τ * (σ * g))
               ∂descConv F.floorMeasure (l + 1) (a - l) :=
@@ -275,25 +283,28 @@ lemma Gauge.lintegral_deepModulus_sq_le {x : T.G} (Γ : Gauge F) {k : T.G → T.
           ring
   -- Write `a = l + i`, so that the integrals run over `i + 1` floors.
   obtain ⟨i, hi⟩ : ∃ i : ℕ, a.val = l + i := Nat.exists_eq_add_of_le hla
-  have h_len : a.val - l = i := by lia
+  have h_len : a.val - l = i := by omega
   have h_weight : ∫⁻ σ, F.invDepthWeight (a + 1) x (σ * g) ∂descConv F.floorMeasure l (i + 1) ≤
       (Γ.loss ^ (10 ^ 4 * 𝔰.n)) ^ 𝔰.ϱ * (F.depthWeight l g x)⁻¹ := by
     have h_pow : (Γ.loss ^ (10 ^ 4 * 𝔰.n)) ^ (i + 1) ≤ (Γ.loss ^ (10 ^ 4 * 𝔰.n)) ^ 𝔰.ϱ :=
-      pow_le_pow_right₀ (one_le_pow₀ Γ.one_le_loss) (by lia)
+      pow_le_pow_right₀ (one_le_pow₀ Γ.one_le_loss) (by omega)
     have h_inv : F.invDepthWeight l x g ≤ (F.depthWeight l g x)⁻¹ := Set.indicator_le_self _ _ g
-    grw [hi, add_assoc, Γ.lintegral_invDepthWeight_descConv_le hx (by lia), h_pow, h_inv]
+    grw [hi, add_assoc, Γ.lintegral_invDepthWeight_descConv_le hx (by omega), h_pow, h_inv]
   have h_square : ∫⁻ σ, F.weightedSquare a k x (σ * g) ∂descConv F.floorMeasure l (i + 1) ≤
       F.weightedSquareSum k x l g := by
-    grw [hi, hK.lintegral_weightedSquare_le_weightedSquareSum (by lia)]
+    grw [hi, hK.lintegral_weightedSquare_le_weightedSquareSum (by omega)]
   calc (∫⁻ σ, F.deepModulus x ε⁻¹ k a (σ * g) ∂descConv F.floorMeasure l (a - l + 1)) ^ 2
       ≤ (∫⁻ σ, ε ^ F.volumeExponent * F.invDepthWeight (a + 1) x (σ * g)
             ∂descConv F.floorMeasure l (i + 1)) *
           ∫⁻ σ, F.weightedSquare a k x (σ * g) ∂descConv F.floorMeasure l (i + 1) := by
         rw [h_len]
-        exact sq_lintegral_le (by fun_prop) (by fun_prop) fun σ ↦ h_point (σ * g)
+        exact sq_lintegral_le (by fun_prop) (by fun_prop : Measurable _).aemeasurable
+          fun σ ↦ h_point (σ * g)
     _ ≤ ε ^ F.volumeExponent * ((Γ.loss ^ (10 ^ 4 * 𝔰.n)) ^ 𝔰.ϱ * (F.depthWeight l g x)⁻¹) *
           F.weightedSquareSum k x l g := by
-        grw [lintegral_const_mul _ (by fun_prop), h_weight, h_square]
+        have h_inv_meas : Measurable fun σ ↦ F.invDepthWeight (a + 1) x (σ * g) :=
+          F.measurable_invDepthWeight.comp (continuous_mul_const g).measurable
+        grw [lintegral_const_mul _ h_inv_meas, h_weight, h_square]
     _ = _ := by
         rw [div_eq_mul_inv]
         ring
@@ -329,7 +340,12 @@ theorem Gauge.pivotL1Norm_sq_le_of_deep {k : T.G → T.G → ℂ} {d g : T.G} {�
     grw [← Γ.two_le_loss]
     exact_mod_cast 𝔰.ϱ.lt_two_pow_self.le
   have h_const : (Γ.loss ^ 𝔰.ϱ) ^ 2 * (Γ.loss ^ (10 ^ 4 * 𝔰.n)) ^ 𝔰.ϱ ≤ Γ.floorsConst := by
-    have h_exp : 𝔰.ϱ * 2 + 10 ^ 4 * 𝔰.n * 𝔰.ϱ ≤ 10 ^ 6 * 𝔰.n ^ 3 := by lia
+    have h_exp : 𝔰.ϱ * 2 + 10 ^ 4 * 𝔰.n * 𝔰.ϱ ≤ 10 ^ 6 * 𝔰.n ^ 3 := by
+      have h_le : 𝔰.ϱ ≤ 𝔰.n := Nat.le_succ _
+      have h_sq : 𝔰.n ≤ 𝔰.n ^ 2 := Nat.le_self_pow two_ne_zero _
+      have h_cu : 𝔰.n ^ 2 ≤ 𝔰.n ^ 3 :=
+        Nat.pow_le_pow_right (Nat.succ_pos 𝔰.ϱ) (by decide)
+      grw [h_le]; simp only [mul_assoc, ← sq]; omega
     rw [← pow_mul, ← pow_mul, ← pow_add]
     exact pow_le_pow_right₀ Γ.one_le_loss h_exp
   calc F.pivotL1Norm l k g (g * x) ^ 2
@@ -466,7 +482,7 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
   -- times the conjugate of a Fourier transform `G` of `f'`. Cauchy–Schwarz in `σ` and the
   -- Plancherel bound of `Gauge.correlation_plancherel` conclude.
   refine Γ.sq_lintegral_le_weightedSquareProduct hk hj hp hx fun g h_ne ↦ ?_
-  lift j to Fin 𝔰.n using (by lia)
+  lift j to Fin 𝔰.n using (by show j < 𝔰.ϱ + 1; omega)
   grw [← lintegral_partialCorrelation_sq_le hj, ← lintegral_partialCorrelation_sq_le hj]
   have ker₁ : F.IsPairingKernel j (frameCorrelation W 1) 1 :=
     Γ.isPairingKernel_frameCorrelation_one hk j
@@ -480,9 +496,8 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
         ∫ σ, ∫ τ, ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) *
           (f σ * conj (f' τ)) ∂F.floorMeasure j ∂F.floorMeasure j := by
     -- The Gram entry is rewritten before `simp` distributes the coercion over `σ * τ⁻¹`.
-    simp [Matrix.diag, ↓frameGram_eq_form_orbitPoint, formIntegrand, partialCorrelationProduct,
-      mul_assoc,
-      f, f']
+    simp only [Matrix.diag, ↓frameGram_eq_form_orbitPoint, formIntegrand, partialCorrelationProduct,
+      Fin.eta, _root_.mul_inv_rev, inv_inv, inv_mul_cancel_left, mul_assoc, f, f']
   rw [h_form] at h_ne ⊢
   -- The double integral is not zero, so `g` and `(weylElem j p)⁻¹ * g` are near at `j`, and one
   -- `t` moves both to a bounded size.
@@ -492,8 +507,8 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
       integral_eq_zero_of_ae (ae_floorMeasure_mem.mono fun τ hτ ↦ ?_)))
     exact mul_eq_zero_of_right _ (by simpa [or_iff_not_imp_left] using h_zero σ hσ τ hτ)
   obtain ⟨t, ht, h_size, h_size'⟩ := Γ.exists_hasMatrixSize_of_isNear hj hp
-    ((ker₁.isNear_of_partialCorrelation_ne_zero hfσ).of_floorGroup_mul hσ)
-    ((ker₂.isNear_of_partialCorrelation_ne_zero hfτ).of_floorGroup_mul hτ)
+    ((ker₁.isNear_of_partialCorrelation_ne_zero hfσ).of_floorGroup_mul hσ (Nat.le_succ _))
+    ((ker₂.isNear_of_partialCorrelation_ne_zero hfτ).of_floorGroup_mul hτ (Nat.le_succ _))
   let S : Set T.G := {σ | t.val.val *ᵥ orbitPoint j σ ∈ Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6)}
   let S' : Set T.G := {τ | t.val.val *ᵥ orbitPoint j τ ∈ Γ.vecsOfSize (99 * 𝔰.n ^ 2 + 6)}
   have h_supp : ∀ᵐ σ ∂F.floorMeasure j, f σ ≠ 0 → σ ∈ S :=
@@ -508,13 +523,26 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
     rw [← U.form_mulVec_mulVec t]
     exact hφ _ (Γ.mem_ofSize_mono (Γ.dotProduct_mem_ofSize
       (fun a _ ↦ Γ.neg_mem_iff_and_star_mem_iff.2.2 (hσ a))
-      (Size.HasMatrixSize.mulVec Γ.splitGram_and_inv_mem.1 hτ)))
+      (Size.HasMatrixSize.mulVec Γ.splitGram_and_inv_mem.1 hτ))
+      (by have h1 : 1 ≤ 𝔰.n := Nat.succ_pos _
+          have h2 : 𝔰.n ≤ 𝔰.n ^ 2 := Nat.le_self_pow two_ne_zero _; omega))
   let G (v : 𝔰.BesselIndex → A) : ℂ :=
     ∫ τ, ψ ((-ξ).val * star (v + 0) ⬝ᵥ T.splitGram *ᵥ t *ᵥ orbitPoint j τ) * f' τ
       ∂F.floorMeasure j
-  have hG : Measurable G := by
-    unfold G f'
-    fun_prop
+  have hf' : Measurable f' := by
+    have h := (ker₂.stronglyMeasurable_partialCorrelation (l := j + 1)).measurable.comp
+      ((continuous_mul_const ((weylElem j p)⁻¹ * g)).prodMk
+        (continuous_mul_const ((weylElem j p)⁻¹ * (g * x)))).measurable
+    exact h
+  have h_tv : Continuous fun σ : T.G ↦ t.val.val *ᵥ orbitPoint j σ :=
+    continuous_const.matrix_mulVec (continuous_orbitPoint (b := j))
+  have h_ker : Continuous fun q : (𝔰.BesselIndex → A) × T.G ↦
+      ψ ((-ξ).val * star (q.1 + 0) ⬝ᵥ T.splitGram *ᵥ t *ᵥ orbitPoint j q.2) :=
+    P.continuous_psi.comp (continuous_const.mul
+      (((continuous_fst.add continuous_const).star).dotProduct
+        (continuous_const.matrix_mulVec (h_tv.comp continuous_snd))))
+  have hG : Measurable G :=
+    New.measurable_integral (h_ker.measurable.mul (hf'.comp measurable_snd))
   have h_inner : ∀ᵐ σ ∂F.floorMeasure j,
       ∫ τ, ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) *
         (f σ * conj (f' τ)) ∂F.floorMeasure j = f σ * conj (G (t *ᵥ orbitPoint j σ)) := by
@@ -523,9 +551,9 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
     refine integral_congr_ae ?_
     filter_upwards [h_supp'] with τ hτ
     by_cases hfσ : f σ = 0
-    · simp [hfσ]
+    · simp only [hfσ, zero_mul, mul_zero]
     by_cases hfτ : f' τ = 0
-    · simp [hfτ]
+    · simp only [hfτ, map_zero, mul_zero]
     rw [h_char (hσ hfσ) (hτ hfτ)]
     simp [P.ψ.map_neg_eq_inv, inv_eq_conj, mul_left_comm _ (ψ _)]
   have h_const : Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) *
@@ -539,28 +567,33 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
     calc ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j
         = ∫⁻ v in Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6), ‖G v‖ₑ ^ 2 ∂F.floorQuadricMeasure j :=
           (measurePreserving_mulVec_orbitPoint j ht).setLIntegral_comp_preimage
-            (f := fun v ↦ ‖G v‖ₑ ^ 2) measurableSet_vecsOfSize (by fun_prop)
+            (f := fun v ↦ ‖G v‖ₑ ^ 2) measurableSet_vecsOfSize (hG.eNorm.pow_const 2)
       _ ≤ Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) * Γ.loss ^ (99 * 𝔰.n * (99 * 𝔰.n ^ 2 + 12)) *
             (P.kernelBound / P.modulus (-ξ).val) ^ card F.FreeIndex *
             ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j :=
-          Γ.correlation_plancherel ht h_size' ker₂ ((weylElem j p)⁻¹ * (g * x)) (by simp) (-ξ) 0
-            (.inr rfl)
+          Γ.correlation_plancherel ht h_size' ker₂ ((weylElem j p)⁻¹ * (g * x))
+            (by rw [inv_mul_cancel]; exact one_mem _) (-ξ) 0 (.inr rfl)
       _ ≤ _ := by
-          grw [h_const]
-          simp
+          rw [Units.val_neg, (P.modulus_star_and_neg _).2]
+          exact mul_le_mul' (mul_le_mul' h_const le_rfl) le_rfl
   have h_off : ∀ᵐ σ ∂F.floorMeasure j, σ ∉ S → f σ * conj (G (t *ᵥ orbitPoint j σ)) = 0 :=
     h_supp.mono fun σ hσ h_out ↦ mul_eq_zero_of_left (of_not_not (mt hσ h_out)) _
+  have hf : Measurable f := by
+    have h := (ker₁.stronglyMeasurable_partialCorrelation (l := j + 1)).measurable.comp
+      ((continuous_mul_const g).prodMk (continuous_mul_const (g * x))).measurable
+    exact h
   rw [integral_congr_ae h_inner, ← setIntegral_eq_integral_of_ae_compl_eq_zero h_off]
   calc ‖∫ σ in S, f σ * conj (G (t *ᵥ orbitPoint j σ)) ∂F.floorMeasure j‖ₑ ^ 2
-      ≤ (∫⁻ σ in S, ‖f σ * conj (G (t *ᵥ orbitPoint j σ))‖ₑ ∂F.floorMeasure j) ^ 2 := by
-        grw [eNorm_integral_le_lintegral_eNorm]
+      ≤ (∫⁻ σ in S, ‖f σ * conj (G (t *ᵥ orbitPoint j σ))‖ₑ ∂F.floorMeasure j) ^ 2 :=
+        pow_le_pow_left' (eNorm_integral_le_lintegral_eNorm _) 2
     _ ≤ (∫⁻ σ in S, ‖f σ‖ₑ ^ 2 ∂F.floorMeasure j) *
           ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j :=
-        sq_lintegral_le (by fun_prop) (by fun_prop) (by simp [mul_pow])
+        sq_lintegral_le (hf.eNorm.pow_const 2).aemeasurable
+          ((hG.comp h_tv.measurable).eNorm.pow_const 2).aemeasurable
+          fun σ ↦ by rw [eNorm_mul, eNorm_conj, mul_pow]
     _ ≤ (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * Γ.floorsConst *
-          (∫⁻ σ, ‖f σ‖ₑ ^ 2 ∂F.floorMeasure j) * ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j := by
-        grw [h_bound, setLIntegral_le_lintegral]
-        exact le_of_eq (by ring)
+          (∫⁻ σ, ‖f σ‖ₑ ^ 2 ∂F.floorMeasure j) * ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j :=
+        (mul_le_mul' (setLIntegral_le_lintegral _ _) h_bound).trans_eq (by ring)
     _ = _ := by simp only [f, f', mul_assoc]
 
 /-- Let `t₀`, `t` lie in `floorGroup (a + 1)`, and let the matrices `t₀ n₀ g` and `t n g` have size
@@ -574,17 +607,23 @@ lemma Gauge.sub_one_mulVec_eStar_mem_vecsOfSize {a : Fin 𝔰.ϱ} {s : ℕ} {t�
       Γ.vecsOfSize (2 * s + 6) := by
   -- The inverses of `t₀` and `t` fix `eStar a`, so the column can be read off
   -- `(t₀ n₀ g) (t n g)⁻¹ - 1`.
-  have h_fix (r : T.G) (hr : r ∈ floorGroup (a + 1)) (b : 𝔰.BesselIndex) :
-      r.val.val⁻¹ b (eStar a) = if b = eStar a then 1 else 0 := by
-    simpa [Matrix.one_apply] using mem_floorGroup.1 (inv_mem hr) b (eStar a) (by simp)
+  have h_fix (r : T.G) (hr : r ∈ floorGroup (a + 1)) :
+      r.val.val⁻¹ *ᵥ Pi.single (eStar a) 1 = Pi.single (eStar a) 1 := by
+    ext b
+    simpa [mulVec_single, Matrix.one_apply, Pi.single_apply] using
+      mem_floorGroup.1 (inv_mem hr) b (eStar a) (by simp)
   have h_prod : Γ.HasMatrixSize (s + (s + 4) + 1 + 1)
       ((t₀ * n₀ * g).val.val * (t * n * g)⁻¹.val.val - 1) := (h_size₀.mul h_size.inv).sub .one
+  have h_eq : ((t₀ * n₀ * (t₀ * n)⁻¹).val.val - 1) *ᵥ Pi.single (eStar a) 1 =
+      ((t₀ * n₀ * g).val.val * (t * n * g)⁻¹.val.val - 1) *ᵥ Pi.single (eStar a) 1 := by
+    have h1 : t₀ * n₀ * g * (t * n * g)⁻¹ = t₀ * n₀ * n⁻¹ * t⁻¹ := by group
+    have h2 : t₀ * n₀ * (t₀ * n)⁻¹ = t₀ * n₀ * n⁻¹ * t₀⁻¹ := by group
+    rw [← Units.val_mul, ← Subgroup.coe_mul, h1, h2]
+    simp only [sub_mulVec, Subgroup.coe_mul, Units.val_mul, ← mulVec_mulVec,
+      Subgroup.coe_inv, coe_units_inv, h_fix t ht, h_fix t₀ ht₀]
   intro c
-  have h_col : ((t₀ * n₀ * (t₀ * n)⁻¹).val.val - 1) c (eStar a) ∈
-      Γ.ofSize (s + (s + 4) + 1 + 1) := by
-    simpa [Matrix.mul_apply, Matrix.one_apply, h_fix t ht, h_fix t₀ ht₀, mul_assoc] using
-      h_prod c (eStar a)
-  exact Γ.mem_ofSize_mono (by simpa using h_col)
+  rw [h_eq, mulVec_single, MulOpposite.op_one, one_smul]
+  exact Γ.mem_ofSize_mono (h_prod c (eStar a)) (by omega)
 
 /-- Parseval's inequality along the last vector of two heads. Let `W` be a cut Bessel function, `p`
 a head of length i + 1 ≤ ϱ, `q` a second sequence of units, and
@@ -659,6 +698,8 @@ lemma Gauge.lintegral_heisenbergMeasure_le_of_heads (hk : F.IsCut W) {i : ℕ} (
     refine ⟨v, fun _ _ ↦ rfl, fun c ↦ ?_⟩
     rw [inv_inv]
     exact Γ.mem_ofSize_mono (Γ.mul_mem_ofSize (h_head n hn) (hv c))
+      (by have h1 : 1 ≤ 𝔰.n ^ 2 := Nat.pow_pos (Nat.succ_pos _)
+          have h2 : 𝔰.n ≤ 𝔰.n ^ 2 := Nat.le_self_pow two_ne_zero _; omega)
   have h_modulus : P.modulus (↑(-ξ * p i) * ↑(p i)⁻¹) = P.modulus ξ := by simp
   have h_exp : 100 * 𝔰.n * (99 * 𝔰.n ^ 2 + 999 * 𝔰.n ^ 2 + 31) ≤ 10 ^ 6 * 𝔰.n ^ 3 := by
     have h_cube : 𝔰.n ≤ 𝔰.n ^ 3 := Nat.le_self_pow three_ne_zero _
@@ -743,14 +784,17 @@ lemma Gauge.lintegral_indicator_le_of_section (hx : x ∈ F.positions)
   have hp_short : Γ.IsHead i p := fun l hl ↦ hp l hl.step
   -- Shift by `w`, integrate over floor `i`, then over the unipotent group of the floors below.
   let ν : Measure T.G := ascConv heisenbergMeasure i ∗ₘ descConv F.floorMeasure 0 (i + 1)
+  have h_meas_b : Measurable fun g ↦ B g * F.invDepthWeight i x (weylElem i p * g) :=
+    hB_meas.mul (F.measurable_invDepthWeight.comp (continuous_const_mul _).measurable)
   calc ∫⁻ g, u (w⁻¹ * g) ∂F.partialGroupMeasure 0 (i + 1)
       = ∫⁻ g, ∫⁻ n, u (n * g) ∂heisenbergMeasure i ∂ν := by
-        rw [lintegral_partialGroupMeasure_weylElem_inv_mul p hu_meas h_inv,
+        rw [lintegral_partialGroupMeasure_weylElem_inv_mul p hu_meas h_inv (by omega),
           partialGroupMeasure_zero_eq,
           ascConv_heisenbergMeasure_succ, mconv_assoc, lintegral_mconv_symm hu_meas]
     _ ≤ C * ∫⁻ g, B g * F.invDepthWeight i x (weylElem i p * g) ∂ν := by
-        grw [lintegral_mono h_heisenberg, lintegral_const_mul _ (by fun_prop)]
-    _ ≤ _ := by grw [Γ.lintegral_mul_invDepthWeight_le (by lia) hp_short hx i.le_succ hB hB_meas]
+        grw [lintegral_mono h_heisenberg, lintegral_const_mul _ h_meas_b]
+    _ ≤ _ := by
+        grw [Γ.lintegral_mul_invDepthWeight_le (by omega) hp_short hx i.le_succ hB hB_meas]
 
 /-- **Separating the frames when one pivot runs over a section.** Let `p` be a head of length
 i + 1 ≤ ϱ with Weyl element w_p = `weylElem (i + 1) p`, let `x` be a position and `F.groupMeasure`
@@ -964,8 +1008,9 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_heads (hk : F.IsCut W) (hj : j ≤ �
     rw [Γ.partialCorrelation_mul_eq_integral_sectionPoint hk (i := ⟨i, hj⟩) hξ hn]
   have h_energy : ∫⁻ g, F.weightedSquare i k₁ x g ∂descConv F.floorMeasure 0 (i + 1) ≤
       F.weightedSquareIntegral 0 k₁ x := by
-    grw [← ker₁.weightedSquareIntegral_le_weightedSquareIntegral_zero (by lia : i ≤ 𝔰.n),
-      ker₁.weightedSquareIntegral_eq_add_succ (by lia),
+    grw [← ker₁.weightedSquareIntegral_le_weightedSquareIntegral_zero
+        (by show i ≤ 𝔰.ϱ + 1; omega),
+      ker₁.weightedSquareIntegral_eq_add_succ (by omega),
       ← le_self_add]
   calc F.formIntegrandL1Norm (i + 1) p q W x 1 ^ 2
       ≤ (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex *
