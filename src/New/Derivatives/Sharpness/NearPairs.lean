@@ -349,14 +349,13 @@ lemma mul_sum_weight_sub_localPrimeSumTotal (D : Data P) (p : ℕ) [Fact p.Prime
   rw [localPrimeSumTotal, mul_sum, mul_sum, ← sum_sub_distrib]
   refine sum_congr rfl fun τ _ ↦ ?_
   have h_geom := hasSum_div_pow_positivePartnerExponents P.d p (D.weight τ : ℝ)
-  have h_sub_posPart (y z : ℝ) : y - (y - z)⁺ = min y z := by grind [posPart_def]
-  have h_min : D.partnerMinSum p τ = D.weight τ * gammaPrime P.d p / piPrimeValuation P.d p -
-      ∑' e : ℕ, if e ∈ positivePartnerExponents P.d p then
-        (D.weight τ / p ^ e - D.weight (D.placeOfInt (-p ^ e) * τ) : ℝ)⁺ else 0 := by
-    rw [← h_geom.tsum_eq, ← h_geom.summable.tsum_sub (D.summable_posPart_sub_weight p _ τ)]
-    exact tsum_congr fun e ↦ by simp [partnerMinTerm, partner, ite_sub_ite, h_sub_posPart]
-  rw [h_min, localPrimeSum]
-  field [(piPrimeValuation_pos P.d p).ne']
+  have h_sub : D.weight τ * gammaPrime P.d p / piPrimeValuation P.d p -
+      D.localPrimeSum p (D.weight τ) τ / piPrimeValuation P.d p = D.partnerMinSum p τ := by
+    rw [localPrimeSum, mul_div_cancel_left₀ _ (piPrimeValuation_pos P.d p).ne', ← h_geom.tsum_eq,
+      ← h_geom.summable.tsum_sub (D.summable_posPart_sub_weight p _ τ)]
+    exact tsum_congr fun _ ↦ by
+      simp [partnerMinTerm, partner, ite_sub_ite, ← inf_eq_sub_posPart_sub]
+  rw [← h_sub]; field [(piPrimeValuation_pos P.d p).ne']
 
 /-- Off the `b`-places the weight of a place is `a / x₁`. -/
 lemma weight_of_notMem (D : Data P) {τ : D.Φ} (hτ : τ ∉ D.bPlaces) :
