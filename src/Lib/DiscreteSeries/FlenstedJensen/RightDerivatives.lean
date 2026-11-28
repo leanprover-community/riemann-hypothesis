@@ -119,7 +119,7 @@ abbrev smoothMatrixFunctions.restrictU : smoothMatrixFunctions n E →ₗ[ℂ] U
 
 /-- Smooth functions on `U(diag ε)`: the restrictions to the group of the smooth functions on all
 matrices. -/
-abbrev SmoothU : Submodule ℂ (USign ε → E) := LinearMap.range (restrictU ε E)
+def SmoothU : Submodule ℂ (USign ε → E) := LinearMap.range (restrictU ε E)
 
 /-! ### The action induced on the range of a linear map -/
 
