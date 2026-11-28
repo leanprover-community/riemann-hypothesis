@@ -2,6 +2,7 @@ module
 
 import TauCeti.NumberTheory.EffectiveBounds.ClassNumber.Basic
 import TauCeti.NumberTheory.NumberField.Units.SUnit.Basic
+import TauCeti.RingTheory.ClassGroup.Basic
 public import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.NormLeOne
 import Mathlib.NumberTheory.NumberField.House
@@ -10,9 +11,8 @@ public import Lib.General.NumberTheory.ImaginaryQuadraticField
 /-!
 # Principal ideal powers, S-units and a class number bound
 
-For every ideal `I` of a ring of integers of a number field some power `I ^ n` with `n ≠ 0` is
-principal. For ideals of norm greater than 1 the generators can be chosen large at every complex
-embedding.
+Raising an ideal of a ring of integers to the order of the class group gives a principal ideal.
+For ideals of norm greater than 1 the generators can be chosen large at every complex embedding.
 
 ## Main definitions and results
 
@@ -43,20 +43,6 @@ is a crude form of Tau Ceti's effective bound on the class number.
 
 @[expose] public section
 
-/-! ## Principal powers of ideals of a ring of integers -/
-
-open NumberField in
-/-- For every ideal `I` of the ring of integers of a number field, some power `I ^ n` with
-`n ≠ 0` is principal. -/
-lemma New.exists_ideal_pow_eq_span_singleton {F : Type*} [Field F] [NumberField F]
-    (I : Ideal (𝓞 F)) : ∃ n ≠ (0 : ℕ), ∃ y : 𝓞 F, I ^ n = Ideal.span {y} := by
-  rcases eq_or_ne I 0 with rfl | hI
-  · exact ⟨1, one_ne_zero, 0, by simp⟩
-  -- the class of `I` has trivial `n`-th power, where `n` is the class number
-  let J : nonZeroDivisors (Ideal (𝓞 F)) := ⟨I, mem_nonZeroDivisors_of_ne_zero hI⟩
-  have h_one : ClassGroup.mk0 (J ^ classNumber F) = 1 := by simp [classNumber]
-  exact ⟨_, classNumber_ne_zero F, ((ClassGroup.mk0_eq_one_iff _).mp h_one).principal⟩
-
 /-! ## Generators of ideal powers large at every complex embedding -/
 
 open NumberField mixedEmbedding fundamentalCone Ideal Algebra in
@@ -75,7 +61,10 @@ lemma New.ThetaTori.exists_pow_eq_span_inv_lt {K : Type*} [Field K] [NumberField
     simpa only [norm_eq_sup'_normAtPlace, Finset.sup'_lt_iff, Finset.mem_univ, true_imp_iff]
       using (isBounded_normLeOne K).exists_pos_norm_lt
   obtain ⟨m, hm⟩ := pow_unbounded_of_one_lt ⌈|C / r| ^ Module.finrank ℚ K⌉₊ hI
-  obtain ⟨k, hk, a, ha⟩ := exists_ideal_pow_eq_span_singleton (I ^ m)
+  let k := Nat.card (ClassGroup (𝓞 K))
+  have hk : k ≠ 0 := Nat.card_pos.ne'
+  obtain ⟨a, ha⟩ : ∃ a : 𝓞 K, (I ^ m) ^ k = span {a} :=
+    (I ^ m).isPrincipal_pow_natCard_classGroup.principal
   have h_big : ⌈|C / r| ^ Module.finrank ℚ K⌉₊ < absNorm (span {a}) := by
     grw [hm, ← ha, map_pow, map_pow, ← Nat.le_self_pow hk]
   have ha_ne : a ≠ 0 := fun ha_zero ↦ by simp [ha_zero] at h_big

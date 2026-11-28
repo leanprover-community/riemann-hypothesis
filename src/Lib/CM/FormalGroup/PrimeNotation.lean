@@ -1,12 +1,12 @@
 module
 
+import TauCeti.RingTheory.ClassGroup.Basic
 public import Aesop.BuiltinRules
 public import TauCeti.Analysis.Normed.Ring.Ultra
 import Mathlib.Algebra.Order.Star.Real
 public import Lib.General.Algebra.AdicCompletion
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 import Lib.General.NumberTheory.PadicLimitsValuation
-import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Notation at a prime, and elements of prime-power norm at split primes
@@ -395,8 +395,10 @@ lemma exists_mul_conj_eq_pow {d p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] [
   let σ : QuadField d →+* ℂ_[p] := ιₚ.domRestrict (QuadField d)
   let w : FinPlace (QuadField d) := placeOfEmb σ
   have hw : (p : 𝓞 (QuadField d)) ∈ w.asIdeal := natCast_mem_placeOfEmb σ
-  obtain ⟨h, h_ne, a, ha⟩ : ∃ h ≠ 0, ∃ a : 𝓞 (QuadField d), w.asIdeal ^ h = .span {a} :=
-    exists_ideal_pow_eq_span_singleton w.asIdeal
+  let h := Nat.card (ClassGroup (𝓞 (QuadField d)))
+  have h_ne : h ≠ 0 := Nat.card_pos.ne'
+  obtain ⟨a, ha⟩ : ∃ a : 𝓞 (QuadField d), w.asIdeal ^ h = .span {a} :=
+    w.asIdeal.isPrincipal_pow_natCard_classGroup.principal
   have hq : w.asIdeal.absNorm = p := (QuadField.q_eq_iff_chiK_ne_neg_one w hw).2 (by simp [hp])
   have h_norm : a * star a = p ^ h := by
     rw [← QuadField.absNorm_span_eq_mul_star, ← ha, map_pow, hq, Nat.cast_pow]
