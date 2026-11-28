@@ -587,7 +587,7 @@ lemma coefficientEmbedding_surjective {O : CoeffRing ℓ} : (coefficientEmbeddin
 `emb.toGp` from the decomposition group of `A` to `Gp ℓ = Gal(ℚ̄_ℓ/ℚ_ℓ)`. An element `g` of this
 group acts on `O` through the Tate twist `tateTwist ℓ E O c`, the `c`-th power of the inverse
 cyclotomic character, as the power `-c` of the local cyclotomic character at `emb.toGp g`. -/
-lemma tateTwist_smul [CMFieldWithRoot5040 E] {O : CoeffRing ℓ} {A : ClosurePlace}
+lemma tateTwist_smul [EmbeddedNumberField E] {O : CoeffRing ℓ} {A : ClosurePlace}
     {emb : PadicPlaceEmbedding E A ℓ} (c : ℕ) (g : decompGroup Gal(Ω/E) A) (x : Unit → ↑O) :
     tateTwist ℓ E O c g.val • x = cyclotomicGp (emb.toGp g) ^ (-c : ℤ) • x := by
   simp [funext_iff, emb.cyclotomicGp_eq_cyclotomicChar, tateTwist, cyclotomicInv, Units.smul_def,
