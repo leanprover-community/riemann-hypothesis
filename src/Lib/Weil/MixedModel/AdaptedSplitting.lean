@@ -64,23 +64,10 @@ lemma Matrix.submatrix_conjTranspose_mul_mul {α m k l : Type*} [Fintype m]
 /-- The splitting of hyperbolic space of rank 2p over the zero space. Here l is the first p basis
 vectors and k is the last p basis vectors. -/
 noncomputable def New.hyperbolicSplitting (E p : Type*) [Field E] [CMType E] [WeilData E]
-    [Fintype p] [DecidableEq p] : (hyperbolicSpace E p).Splitting (stdSpace E Empty) p where
-  k := Matrix.fromRows 0 1
-  l := Matrix.fromRows 1 0
-  i := 0
-  gram_kk := by
+    [Fintype p] [DecidableEq p] : (hyperbolicSpace E p).Splitting (stdSpace E Empty) p :=
+  Space.Splitting.ofDualFrames (Matrix.fromRows 0 1) (Matrix.fromRows 1 0) (by
     simp [Matrix.conjTranspose_fromRows_eq_fromCols_conjTranspose, Matrix.fromCols_mul_fromBlocks,
-      Matrix.fromCols_mul_fromRows]
-  gram_ll := by
-    simp [Matrix.conjTranspose_fromRows_eq_fromCols_conjTranspose, Matrix.fromCols_mul_fromBlocks,
-      Matrix.fromCols_mul_fromRows]
-  gram_lk := by
-    simp [Matrix.conjTranspose_fromRows_eq_fromCols_conjTranspose, Matrix.fromCols_mul_fromBlocks,
-      Matrix.fromCols_mul_fromRows]
-  gram_ii := Subsingleton.elim ..
-  gram_ik := by simp
-  gram_il := by simp
-  card_eq := by simp +arith
+      Matrix.fromCols_mul_fromRows])
 
 namespace New.Exchange
 

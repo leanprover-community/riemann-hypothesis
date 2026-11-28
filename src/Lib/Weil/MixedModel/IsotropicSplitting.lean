@@ -301,6 +301,23 @@ structure Space.Splitting (p : Type*) [Fintype p] [DecidableEq p] where
   /-- The rank of V is the rank of V₀ plus twice the number of columns of k. -/
   protected card_eq : card n = card n₀ + 2 * card p
 
+/-- On a space indexed by two copies of `p`, dual isotropic frames give a splitting over the
+zero space. The empty frame and its Gram identities are then forced. -/
+@[simps] def Space.Splitting.ofDualFrames {t : p ⊕ p → ℤˣ} {W : Space E (p ⊕ p) t}
+    (k l : Matrix (p ⊕ p) p E)
+    (h : kᴴ * W.J * k = 0 ∧ lᴴ * W.J * l = 0 ∧ lᴴ * W.J * k = 1) :
+    W.Splitting (stdSpace E Empty) p where
+  k := k
+  l := l
+  i := 0
+  gram_kk := h.1
+  gram_ll := h.2.1
+  gram_lk := h.2.2
+  gram_ii := Subsingleton.elim ..
+  gram_ik := by simp
+  gram_il := by simp
+  card_eq := by simp [two_mul]
+
 variable (p) in
 /-- The orthogonal sum of hyperbolic space of rank 2p and V₀. -/
 def Exchange.hyperbolicSum : Space E ((p ⊕ p) ⊕ n₀) (hyperbolicSigns p ⊕ᵥ s₀) :=

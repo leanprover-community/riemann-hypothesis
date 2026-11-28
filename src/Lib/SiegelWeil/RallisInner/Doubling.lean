@@ -94,23 +94,10 @@ def doubleDatum : 𝒮 (S.hom T) →L⋆[ℂ] 𝒮 (S.hom T) →L[ℂ] 𝒮 ((S.
 Lagrangian is the graph `{(δ y, -y)}`; the dual frame spans `{(δ y, y)}`. Here `k` is the isotropic
 frame, `l` the dual frame (`lᴴ J k = 1`), and the anisotropic part `i` is empty. -/
 @[simp]
-def graphSplitting (S : Space E n s) (δ : U S.J) : CompleteSplitting (S.sum S.neg) n where
-  k := fromRows δ (-1)
-  l := fromRows (δ : Matrix n n E) 1 * (2⁻¹ : E) • S.J⁻¹
-  i := 0
-  gram_kk := by
-    simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
-      fromCols_mul_fromRows, ← U.form_mul_inv_eq, mul_assoc]
-  gram_ll := by
-    simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
-      fromCols_mul_fromRows, ← U.form_mul_inv_eq, S.isHermitian_J.inv.eq, mul_assoc]
-  gram_lk := by
-    simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
-      fromCols_mul_fromRows, ← U.form_mul_inv_eq, S.isHermitian_J.inv.eq, ← two_smul E, mul_assoc]
-  gram_ii := by ext ⟨⟩
-  gram_ik := by simp
-  gram_il := by simp
-  card_eq := by simp [two_mul]
+def graphSplitting (S : Space E n s) (δ : U S.J) : CompleteSplitting (S.sum S.neg) n :=
+  Space.Splitting.ofDualFrames (fromRows δ (-1)) (fromRows (δ : Matrix n n E) 1 * (2⁻¹ : E) • S.J⁻¹)
+    (by simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
+      fromCols_mul_fromRows, ← U.form_mul_inv_eq, S.isHermitian_J.inv.eq, ← two_smul E, mul_assoc])
 
 /-- The term `ρ(g) ⟨y', g y⟩` of a coset `γ` of the finite points integral at `A`. Here
 `g = cosetRep γ` is the representative of `γ` supported above `A` and its conjugate,

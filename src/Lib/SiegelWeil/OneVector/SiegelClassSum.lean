@@ -89,21 +89,15 @@ open NumberField Real Matrix MeasureTheory Complex Finset Function New SiegelWei
 of the two frames is `stdSpace E Empty`, of rank 0, so its embedding `i` is `0`. Here `j` is the
 purely imaginary element of the Weil data. -/
 noncomputable def New.SiegelWeil.shearSplitting {E : Type} [Field E] [CMType E] [WeilData E]
-    (a : maximalRealSubfield E) : (hyperbolicSpace E Unit).Splitting (stdSpace E Empty) Unit where
-  k := (hyperbolicSplitting E Unit).l + (j⁻¹ * a : E) • (hyperbolicSplitting E Unit).k
-  l := (hyperbolicSplitting E Unit).k
-  i := 0
-  gram_kk := by
-    simp [-hyperbolicSpace_J, mem_maximalRealSubfield_iff_star_eq.1, Matrix.add_mul,
-      Matrix.smul_mul, Matrix.mul_add, Matrix.mul_smul]
-  gram_ll := (hyperbolicSplitting E Unit).gram_kk
-  gram_lk := by
-    rw [Matrix.mul_add, Matrix.mul_smul, (hyperbolicSplitting E Unit).gram_kl,
-      (hyperbolicSplitting E Unit).gram_kk, smul_zero, add_zero]
-  gram_ii := by simp [← ext_iff]
-  gram_ik := by simp
-  gram_il := by simp
-  card_eq := by simp
+    (a : maximalRealSubfield E) : (hyperbolicSpace E Unit).Splitting (stdSpace E Empty) Unit :=
+  Space.Splitting.ofDualFrames
+    ((hyperbolicSplitting E Unit).l + (j⁻¹ * a : E) • (hyperbolicSplitting E Unit).k)
+    (hyperbolicSplitting E Unit).k (by
+      refine ⟨?_, (hyperbolicSplitting E Unit).gram_kk, ?_⟩
+      · simp [-hyperbolicSpace_J, mem_maximalRealSubfield_iff_star_eq.1, Matrix.add_mul,
+          Matrix.smul_mul, Matrix.mul_add, Matrix.mul_smul]
+      · rw [Matrix.mul_add, Matrix.mul_smul, (hyperbolicSplitting E Unit).gram_kl,
+          (hyperbolicSplitting E Unit).gram_kk, smul_zero, add_zero])
 
 /-- A Lagrangian of the hyperbolic plane, that is, an isotropic line, that is none of the lines of
 the `l + j⁻¹ a k` with `a ∈ E⁺` (the first frames of the `shearSplitting a`) is the line of `k`. -/

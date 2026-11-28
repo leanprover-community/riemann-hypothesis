@@ -541,24 +541,11 @@ lemma theta_omega_ratEmbed_of_splitting (γ : U V.J) [DecidableEq p]
 variable (V) in
 /-- The splitting without middle part of `V ⊕ V⁻`, with `V⁻` the space of the negative form, whose
 frame `k` spans the diagonal `{(v, v)}` and whose frame `l` spans the antidiagonal `{(v, -v)}`. -/
-noncomputable def diagonalSplitting : (V.sum V.neg).Splitting (stdSpace E Empty) n where
-  k := fromRows 1 1
-  l := fromRows ((2⁻¹ : E) • V.J⁻¹) (-((2⁻¹ : E) • V.J⁻¹))
-  i := 0
-  gram_kk := by
-    simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
-      fromCols_mul_fromRows]
-  gram_ll := by
-    simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
-      fromCols_mul_fromRows, V.isHermitian_J.inv.eq]
-  gram_lk := by
+noncomputable def diagonalSplitting : (V.sum V.neg).Splitting (stdSpace E Empty) n :=
+  Splitting.ofDualFrames (fromRows 1 1) (fromRows ((2⁻¹ : E) • V.J⁻¹) (-((2⁻¹ : E) • V.J⁻¹))) (by
     simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
       fromCols_mul_fromRows, V.isHermitian_J.inv.eq, ← two_smul E,
-      nonsing_inv_mul _ ((isUnit_iff_isUnit_det _).1 V.isUnit_J)]
-  gram_ii := Subsingleton.elim _ _
-  gram_ik := by simp
-  gram_il := by simp
-  card_eq := by simp [two_mul]
+      nonsing_inv_mul _ ((isUnit_iff_isUnit_det _).1 V.isUnit_J)])
 
 variable {m : Type*} [Fintype m] [DecidableEq m] {t : m → ℤˣ} {V' : Space E m t}
 
