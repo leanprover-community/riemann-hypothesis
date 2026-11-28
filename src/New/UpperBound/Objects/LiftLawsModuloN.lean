@@ -156,26 +156,29 @@ def psiN (y : P → ZMod N) : ℂ := stdLattice.selfDualAddChar E (-residueOverN
 /-- The last basis vector modulo `N`. -/
 abbrev lastBasisVector : n ⊕ Unit → P → ZMod N := Pi.single (.inr ()) 1
 
-/-- A vector whose last entry is a unit is both the last column and the last row of an invertible
-matrix. -/
-lemma exists_GL_last_col_and_row {R : Type*} [CommRing R] :
-    ∃ k : (n ⊕ Unit → R) → GL (n ⊕ Unit) R, ∀ y : n ⊕ Unit → R, IsUnit (y (.inr ())) →
-      (k y).val.col (.inr ()) = y ∧ (k y).val.row (.inr ()) = y := by
-  classical
-  -- For `y` with unit last entry `u`, multiply the identity with last column `y` by the identity
-  -- with last row `u⁻¹ • y`; the determinants are `u` and `1`.
-  have det_unit (y : n ⊕ Unit → R) (h : IsUnit (y (.inr ()))) :
-      IsUnit (updateCol 1 (Sum.inr ()) y * updateRow 1 (Sum.inr ()) (h.unit⁻¹.val • y)).det := by
-    simp [← cramer_apply, ← cramer_transpose_apply, h]
-  refine ⟨fun y ↦ if h : IsUnit (y (.inr ())) then mk'' _ (det_unit y h) else 1, fun y h ↦ ?_⟩
+open scoped Classical in
+/-- An invertible matrix whose last column and last row are `y` (`glOfLastColRow_col_and_row`) if
+the last entry `u` of `y` is a unit: the identity with last column `y` times the identity with last
+row `u⁻¹ • y`, whose determinants are `u` and `1`. It is `1` if `u` is not a unit. -/
+def glOfLastColRow {R : Type*} [CommRing R] (y : n ⊕ Unit → R) : GL (n ⊕ Unit) R :=
+  if h : IsUnit (y (.inr ())) then
+    mk'' (updateCol 1 (.inr ()) y * updateRow 1 (.inr ()) (h.unit⁻¹.val • y))
+      (by simp [← cramer_apply, ← cramer_transpose_apply, h])
+  else 1
+
+/-- A vector whose last entry is a unit is both the last column and the last row of
+`glOfLastColRow y`. -/
+lemma glOfLastColRow_col_and_row {R : Type*} [CommRing R] {y : n ⊕ Unit → R}
+    (hy : IsUnit (y (.inr ()))) :
+    (glOfLastColRow y).val.col (.inr ()) = y ∧ (glOfLastColRow y).val.row (.inr ()) = y := by
   -- The second factor has the last basis vector as its last column, and the last row of the first
   -- factor is `u` times that vector.
-  constructor <;> ext a <;> simp [h, Matrix.mul_apply, ← mul_assoc]
+  constructor <;> ext a <;> simp [glOfLastColRow, hy, Matrix.mul_apply, ← mul_assoc]
 
 /-- For `y` with unit last entry, an integral invertible matrix whose last column and last row are
-both `y` modulo `N`. -/
+both `y` modulo `N`: the lift of `glOfLastColRow y`. -/
 def lastRowColGL (y : n ⊕ Unit → P → ZMod N) : GL (n ⊕ Unit) (O (F := LocProd P)) :=
-  Λ.liftGL (exists_GL_last_col_and_row.choose y)
+  Λ.liftGL (glOfLastColRow y)
 
 section
 
@@ -186,7 +189,7 @@ omit [WeilData E]
 lemma lastRowColGL_col_and_row {y : n ⊕ Unit → P → ZMod N} (hy : IsUnit (y (.inr ()))) :
     (reductionGL (Λ.lastRowColGL y)).val.col (.inr ()) = y ∧
       (reductionGL (Λ.lastRowColGL y)).val.row (.inr ()) = y := by
-  simpa only [lastRowColGL, reductionGL_liftGL] using exists_GL_last_col_and_row.choose_spec y hy
+  simpa only [lastRowColGL, reductionGL_liftGL] using glOfLastColRow_col_and_row hy
 
 /-- If the last entry of `y` is a unit, then `lastRowColGL y` takes the last basis vector to `y`
 modulo `N`. -/
