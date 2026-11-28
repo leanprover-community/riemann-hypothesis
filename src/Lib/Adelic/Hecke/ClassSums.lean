@@ -4,6 +4,10 @@ import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
+import TauCeti.Algebra.BigOperators.Finprod
+import TauCeti.Data.Setoid.Basic
+import TauCeti.GroupTheory.DoubleCoset.Map
+import TauCeti.GroupTheory.DoubleCoset.Mass
 public import Lib.Adelic.Hecke.Basic
 public import Lib.Adelic.QuotientMeasure.Basic
 
@@ -22,7 +26,7 @@ smooth representations over compact subgroups.
 * `New.classIntegral`: the class sum at the level `rightStabilizer f ⊓ K`, divided by its index in
   `K`.
 * `New.HasFiniteType`: finitely many classes and finite stabilisers, with `K` open and compact.
-* `New.classSum_eq_relIndex_smul`: change of level, by double counting.
+* `New.classSum_eq_relIndex_smul`: change of level, by the index formula for orbit weights.
 * `New.classIntegral_eq_classSum_mul`, `New.classIntegral_eq_inv_smul_classSum`: for left
   Γ-invariant f, the mean can be computed at a smaller open level that fixes f, or one whose
   conjugate by some a lies in K and fixes f (then for the right translate of f by a).
@@ -252,16 +256,6 @@ variable [IsTopologicalGroup G]
 
 /-! ### Change of level -/
 
-/-- For `k ∈ K`, exactly one coset `q` in `K / (L ∩ K)` has `q.out⁻¹ * k ∈ L`. -/
-lemma card_filter_out_inv_mul_mem_eq_one {G : Type*} [Group G] (K L : Subgroup G)
-    [Fintype (K ⧸ L.subgroupOf K)] [DecidablePred (· ∈ L)] (k : K) :
-    #{q : K ⧸ L.subgroupOf K | (q.out⁻¹ * k : G) ∈ L} = 1 := by
-  classical
-  have h_iff (q : K ⧸ L.subgroupOf K) : (q.out⁻¹ * k : G) ∈ L ↔ q = k := by
-    conv_rhs => rw [← q.out_eq', QuotientGroup.eq, mem_subgroupOf]
-    rfl
-  simp only [h_iff, filter_eq', mem_univ, ite_true, card_singleton]
-
 /-- Change of level and of variable in a class sum, for `(Γ, K)` and `(Γ, K')` of finite type. Let
 `L = a⁻¹ K' a ≤ K`, and let `F g` be the value of `f` at the representative of the class
 `Γ (g a) K`. Then the class sum `∑ F g / #(Γ ∩ g K' g⁻¹)` over `Γ \ G / K'` is the index `[K : L]`
@@ -271,61 +265,50 @@ lemma classSum_eq_relIndex_smul [H : HasFiniteType Γ K] [J : HasFiniteType Γ K
     (hfF : ∀ g : G, f (mk Γ K (g * a)).out = F g) :
     classSum Γ K' F = (L.relIndex K : ℚ) • classSum Γ K f := by
   classical
-  -- Double counting. `T K g h` is the finite set of `γ ∈ Γ` with `g⁻¹ * γ * h ∈ K`; it has
-  -- `#classAut Γ K g` elements if `g` and `h` lie in the same class and is empty otherwise.
-  subst hL
-  set L : Subgroup G := K'.comap (conj a) with hL
-  have h_finite : Finite (K ⧸ L.subgroupOf K) := Nat.finite_of_card_ne_zero
-    (H.isCompact.relIndex_ne_zero (J.isOpen.preimage (continuous_conj a)))
-  have h_transporter (U : Subgroup G) [HasFiniteType Γ U] (g h : G) : ∃ T : Finset G,
-      (∀ γ : G, γ ∈ T ↔ γ ∈ Γ ∧ g⁻¹ * γ * h ∈ U) ∧
-      #T = if mk Γ U g = mk Γ U h then Nat.card (classAut Γ U g) else 0 :=
-    exists_transporter Γ injective_id (by simp) U g h
-  choose T hT card_T using h_transporter
-  -- Sort `γ ∈ T K y (x * a)` by the coset `q` of `y⁻¹ * γ * (x * a) ∈ K`; as `L = a⁻¹ * K' * a`,
-  -- the part belonging to `q` is `T K' (y * q.out * a⁻¹) x`.
-  have h_split (x y : G) :
-      #(T K y (x * a)) = ∑ q : K ⧸ L.subgroupOf K, #(T K' (y * q.out * a⁻¹) x) :=
-    calc _ = ∑ γ ∈ T K y (x * a),
-            #{q : K ⧸ L.subgroupOf K | q.out⁻¹ * (y⁻¹ * γ * (x * a)) ∈ L} := by
-          rw [card_eq_sum_ones]
-          exact sum_congr rfl fun γ hγ ↦
-            (card_filter_out_inv_mul_mem_eq_one K L ⟨_, ((hT K y (x * a) γ).1 hγ).2⟩).symm
-      _ = _ := by
-        simp_rw [card_eq_sum_ones]
-        refine sum_comm' fun γ q ↦ ?_
-        have h_mem : q.out⁻¹ * (y⁻¹ * γ * (x * a)) ∈ L → γ ∈ Γ → y⁻¹ * γ * (x * a) ∈ K :=
-          fun h_mem_L _ ↦ (K.mul_mem_cancel_left (K.inv_mem q.out.property)).1 (hLK h_mem_L)
-        simpa [hT, hL, mul_assoc] using h_mem
-  -- Only the class of `x * a` contributes to this class sum, and its weight cancels.
-  have hF (x : G) : F x = classSum Γ K fun y ↦ (#(T K y (x * a)) : ℚ) • f y := by
-    rw [classSum, finsum_eq_single _ (mk Γ K (x * a))]
-    · rw [card_T, out_eq', ite_eq_left rfl, inv_smul_smul₀
-        (Nat.cast_ne_zero.2 Nat.card_pos.ne'), hfF]
-    · exact fun c hc ↦ by simp [card_T, out_eq', hc]
-  -- Likewise at level `K'`, where `g` and the representative of its class have stabilisers of
-  -- the same order.
-  have h_point (g y : G) : classSum Γ K' (fun x ↦ (#(T K' g x) : ℚ) • f y) = f y := by
-    rw [classSum, finsum_eq_single _ (mk Γ K' g)]
-    · rw [card_T, out_eq', ite_eq_left rfl, card_classAut_out g,
-        inv_smul_smul₀ (Nat.cast_ne_zero.2 Nat.card_pos.ne')]
-    · exact fun c hc ↦ by simp [card_T, out_eq', hc.symm]
-  -- Insert `hF` and `h_split` and sum over the classes of `K'` first: each coset `q` gives `f y`.
-  calc classSum Γ K' F
-      = classSum Γ K' fun x ↦ classSum Γ K fun y ↦ ∑ q : K ⧸ L.subgroupOf K,
-          (#(T K' (y * q.out * a⁻¹) x) : ℚ) • f y := by
-        simp only [funext hF, h_split, Nat.cast_sum, sum_smul]
-    _ = classSum Γ K fun y ↦ classSum Γ K' fun x ↦ ∑ q : K ⧸ L.subgroupOf K,
-          (#(T K' (y * q.out * a⁻¹) x) : ℚ) • f y := by
-        -- Interchange the two finite sums over classes; their weights commute.
-        simp only [classSum, finsum_eq_sum_of_fintype, smul_sum, smul_smul]
-        rw [sum_comm]
-        simp only [mul_left_comm]
-    _ = classSum Γ K fun y ↦ ∑ _q : K ⧸ L.subgroupOf K, f y := by simp only [classSum_sum, h_point]
-    _ = classSum Γ K fun y ↦ (L.relIndex K : ℚ) • f y := by
-        simp [relIndex, index_eq_card, Nat.cast_smul_eq_nsmul]
-    _ = (L.relIndex K : ℚ) • classSum Γ K f :=
-        (map_classSum (DistribSMul.toAddMonoidHom W (L.relIndex K : ℚ)) f).symm
+  set L₀ := K'.map ((conj a).symm : G →* G)
+  have h_map : L₀ = L := (Subgroup.map_equiv_eq_comap_symm (conj a).symm K').trans hL
+  subst h_map
+  -- Identify double cosets with orbits on `G ⧸ Γ`, translating the finer level by `a`.
+  let orbitEquiv (U : Subgroup G) := TauCeti.doubleCosetQuotientEquivOrbitRelQuotient Γ U
+  let fineEquiv := (quotientConjRight Γ K' a).trans (orbitEquiv L₀)
+  let π := Setoid.map_of_le (TauCeti.MulAction.orbitRel_le_of_subgroup_le (X := G ⧸ Γ) hLK)
+  let value (p : MulAction.orbitRel.Quotient K (G ⧸ Γ)) := f ((orbitEquiv K).symm p).out
+  let weight {U : Subgroup G} (p : MulAction.orbitRel.Quotient U (G ⧸ Γ)) : ℚ :=
+    (TauCeti.cardStabilizerOnOrbit p : ℚ)⁻¹
+  have : L₀.IsFiniteRelIndex K := by
+    rw [← hL]
+    exact ⟨H.isCompact.relIndex_ne_zero (J.isOpen.preimage (continuous_conj a))⟩
+  have : Finite (MulAction.orbitRel.Quotient L₀ (G ⧸ Γ)) := Finite.of_equiv _ fineEquiv
+  have weight_mk (U : Subgroup G) (g : G) :
+      weight (orbitEquiv U (mk Γ U g)) = (Nat.card (classAut Γ U g) : ℚ)⁻¹ := by
+    simp only [weight, orbitEquiv,
+      TauCeti.cardStabilizerOnOrbit_doubleCosetQuotientEquivOrbitRelQuotient_mk,
+      TauCeti.natCard_mackeySubgroup_inv_subgroupOf]
+    rw [show classAut Γ U g = TauCeti.mackeySubgroup g U Γ from Subgroup.ext (by simp)]
+  have translate_aut (g : G) : classAut Γ L₀ (g * a) = classAut Γ K' g :=
+    Subgroup.ext (by simp [mem_classAut, ← hL, conj_apply, mul_assoc])
+  calc classSum Γ K' F = ∑ᶠ q, weight q • value (π q) := by
+        rw [classSum, ← finsum_comp_equiv fineEquiv]
+        refine finsum_congr fun q ↦ ?_
+        have hq : fineEquiv q = orbitEquiv L₀ (mk Γ L₀ (q.out * a)) := by
+          conv_lhs => rw [← out_eq' q]
+          simp only [fineEquiv, Equiv.trans_apply, quotientConjRight_apply_mk, L₀]
+        rw [hq, weight_mk, translate_aut]
+        simp [value, orbitEquiv, π, TauCeti.doubleCosetQuotientEquivOrbitRelQuotient_mk,
+          TauCeti.Setoid.map_of_le_mk, ← hfF]
+    _ = ∑ᶠ p, ((L₀.relIndex K : ℚ) * weight p) • value p := by
+        -- The weights above each coarse orbit sum to its weight times the index.
+        rw [← TauCeti.finsum_fiberwise π _ (Set.toFinite _)]
+        refine finsum_congr fun p ↦ ?_
+        rw [← TauCeti.finsum_mem_inv_cardStabilizerOnOrbit_preimage hLK p,
+          ← finsum_set_coe_eq_finsum_mem, finsum_smul]
+        exact finsum_congr fun q ↦ by rw [show π q = p from q.property]
+    _ = (L₀.relIndex K : ℚ) • classSum Γ K f := by
+        rw [classSum, smul_finsum, ← finsum_comp_equiv (orbitEquiv K)]
+        refine finsum_congr fun p ↦ ?_
+        have hp := weight_mk K p.out
+        rw [out_eq'] at hp
+        simp [hp, value, mul_smul]
 
 /-- For `K' ≤ K` with `(Γ, K)` and `(Γ, K')` of finite type, the class sum of `1` at level `K'` is
 `[K : K']` times that at level `K`. -/
@@ -347,20 +330,18 @@ lemma classIntegral_eq_classSum_mul [H : HasFiniteType Γ K] [J : HasFiniteType 
   have HS : HasFiniteType Γ S := H.of_le inf_le_right (isOpen_mono h_le hL_open)
   have h_sum : classSum Γ K' (fun g ↦ f (g * a)) = (L.relIndex S : ℚ) • classSum Γ S f :=
     classSum_eq_relIndex_smul h_le a rfl fun _ ↦ apply_doubleCoset_out hl inf_le_left _
-  -- The indices satisfy `[K : K'] = [S : L] [K : S]`: compute the mass `classSum Γ K' 1` directly
-  -- and through `S`, then cancel the positive mass at level `K`.
-  have h_index : K'.relIndex K = L.relIndex S * S.relIndex K := by
-    have h_mass :
-        (K'.relIndex K : ℝ) * classSum Γ K 1 = L.relIndex S * S.relIndex K * classSum Γ K 1 :=
-      calc _ = classSum Γ K' 1 := (classSum_one_of_le hK').symm
-        _ = (L.relIndex S : ℚ) • classSum Γ S 1 := classSum_eq_relIndex_smul h_le a rfl fun _ ↦ rfl
-        _ = _ := by rw [classSum_one_of_le inf_le_right, Rat.smul_def, Rat.cast_natCast, mul_assoc]
-    exact_mod_cast mul_right_cancel₀ classSum_one_pos.ne' h_mass
+  -- Comparing the two class sums of `1` gives `[K : L] = [K : K']`.
+  have h_mass := classSum_eq_relIndex_smul (Γ := Γ) (f := (1 : G → ℝ)) (F := 1)
+    (h_le.trans inf_le_right) a rfl (fun _ ↦ rfl)
+  rw [classSum_one_of_le hK', Rat.smul_def, Rat.cast_natCast] at h_mass
+  have h_index : K'.relIndex K = L.relIndex K := by
+    exact_mod_cast mul_right_cancel₀ (classSum_one_pos (Γ := Γ) (K := K)).ne' h_mass
   have h_ne : (L.relIndex S : ℚ) ≠ 0 := Nat.cast_ne_zero.2 (HS.isCompact.relIndex_ne_zero hL_open)
   calc classIntegral Γ K f = (S.relIndex K : ℚ)⁻¹ • classSum Γ S f := by
         rw [classIntegral, hS, inf_relIndex_right]
     _ = (K'.relIndex K : ℚ)⁻¹ • classSum Γ K' fun g : G ↦ f (g * a) := by
-        rw [h_index, h_sum, Nat.cast_mul, mul_inv_rev, mul_smul, inv_smul_smul₀ h_ne]
+        rw [h_index, ← relIndex_mul_relIndex _ S _ h_le inf_le_right, h_sum, Nat.cast_mul,
+          mul_inv_rev, mul_smul, inv_smul_smul₀ h_ne]
 
 /-- For left `Γ`-invariant `f`, the integral is `[K : K']⁻¹` times the class sum at a level
 `K' ≤ K` that fixes `f`, for `(Γ, K)` and `(Γ, K')` of finite type. -/
