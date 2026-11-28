@@ -11,20 +11,19 @@ Let `p = (ν, z)` be a critical pair and `ϑ` a tame character of modulus `Q`. F
 `algPart` and `integralAlgebraicPart` assume `z ≥ 2` and fix an index set with `2 z` elements
 (`New.Data.CriticalPair.HasLiftRank`). The number `New.Data.CriticalPair.algPart` is the normalised
 squared norm of the lift `New.Data.CriticalPair.trivialLift` of `ν ϑ`. It is positive and equals a
-constant independent of `ϑ` times an `L`-value of `ν ϑ`, so the ratio of the absolute values of the
-twisted and untwisted `L`-values, which is nonzero, is a ratio of values of `algPart`.
+constant independent of `ϑ` times an `L`-value of `(ν ϑ)⁻¹`, so the ratio of the absolute values of
+the twisted and untwisted `L`-values, which is nonzero, is a ratio of values of `algPart`.
 
 ## Main definitions and results
 
 * `New.Data.CriticalPair.algPart_pos`, `New.Data.CriticalPair.exists_ne_zero_algPart_eq_mul_L`: the
   number `New.Data.CriticalPair.algPart` is positive, and it is a nonzero constant independent of
-  `ϑ` times an `L`-value of `ν ϑ`. `New.Data.CriticalPair.exists_algPart_eq_mul_L` states the value
-  with the positivity.
+  `ϑ` times an `L`-value of `(ν ϑ)⁻¹`.
 * `New.Data.CriticalPair.ratio_eq_algPart_div`: the ratio `New.Data.CriticalPair.ratio` of the
   absolute values of twisted and untwisted `L`-values is a ratio of values of `algPart`.
 * `New.Data.CriticalPair.exists_integralAlgebraicPart_eq_mul_L`,
   `New.Data.CriticalPair.ratio_eq_integralAlgebraicPart_div`: the same value and ratio for the
-  multiple `New.Data.CriticalPair.integralAlgebraicPart`, with the `L`-value of `(ν ϑ)⁻¹`.
+  multiple `New.Data.CriticalPair.integralAlgebraicPart`.
 * `New.LValueData.formAction_trivialLift`: the finite group of rank one at the chosen places fixes
   the lift `New.LValueData.trivialLift`, a multiple of the theta lift of the constant function `1`.
 * `New.Data.CriticalPair.lValueProd_eq_mul_prod_ratio_sq`: the product `New.Exchange.lValueProd` of
@@ -136,13 +135,14 @@ lemma neg_negWeight_ne_zero (p : D.CriticalPair) : (fun v : D.Φ ↦ -(p.negWeig
   refine Function.ne_iff.2 ⟨1, ?_⟩
   simpa [Nat.one_le_iff_ne_zero] using p.z_mem.left.trans (p.le_negWeight 1)
 
-/-- Let `p = (ν, z)` be a pair and `ϑ` a tame character. The `L`-function of `ν ϑ`, without the
-Euler factors at the chosen places, the modulus `ϑ.Q` and their conjugates, is not zero at `z`. -/
-lemma L_mul_ne_zero (p : D.CriticalPair) (ϑ : D.TameChar) :
-    (p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) p.z ≠ 0 := by
-  -- As `ϑ` has weight zero, `ν ϑ` has the weight `-c` of `ν`, which is not zero.
-  refine (p.hasWeight.mul ϑ.hasWeight).L_ne_zero (D.finite_isChosen.union ϑ.Q.finite_toSet)
-    ?_ p.one_le_cast_z
+/-- Let `p = (ν, z)` be a pair, `ϑ` a tame character and `s` an integer. The `L`-function of
+`(ν ϑ ^ s)⁻¹`, without the Euler factors at the chosen places, the modulus `ϑ.Q` and their
+conjugates, is not zero at `z`. -/
+lemma L_mul_zpow_inv_ne_zero (p : D.CriticalPair) (ϑ : D.TameChar) (s : ℤ) :
+    (p.character * ϑ.toAutChar ^ s)⁻¹.L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) p.z ≠ 0 := by
+  -- As `ϑ` has weight zero, `(ν ϑ ^ s)⁻¹` has weight `c ≠ 0`.
+  refine (p.hasWeight.mul (ϑ.hasWeight.zpow s)).inv.L_ne_zero
+    (D.finite_isChosen.union ϑ.Q.finite_toSet) ?_ p.one_le_cast_z
   simpa using p.neg_negWeight_ne_zero
 
 /-- Let `p = (ν, z)` be a critical pair with `z ≥ 2` and `ϑ` a tame character. The lift
@@ -152,8 +152,9 @@ lemma trivialLift_ne_zero (H : p.HasLiftRank n) (ϑ : D.TameChar) : trivialLift 
   obtain ⟨C, hC, h_norm_sq⟩ := exists_norm_sq_trivialLift_eq_mul_L H
   -- The squared norm of the unscaled lift is a product of nonzero numbers.
   have h_ne : (‖(lValueData H ϑ).trivialLift‖ : ℂ) ^ 2 ≠ 0 := by
-    rw [h_norm_sq, p.L_mul_inv]
-    simp [hC, p.L_mul_ne_zero ϑ, Finset.prod_eq_zero_iff, IsDedekindDomain.HeightOneSpectrum.ne_bot]
+    rw [h_norm_sq]
+    simpa [hC, Finset.prod_eq_zero_iff, IsDedekindDomain.HeightOneSpectrum.ne_bot, -mul_inv_rev]
+      using p.L_mul_zpow_inv_ne_zero ϑ 1
   rw [trivialLift]
   exact smul_ne_zero (p.vacuumScale_pow_mul_pow_rowLengthSum_ne_zero (card n)) (by simpa using h_ne)
 
@@ -170,14 +171,14 @@ lemma algPart_pos (H : p.HasLiftRank n) (ϑ : D.TameChar) : 0 < algPart H ϑ := 
 
 /-- Let `p = (ν, z)` be a critical pair and `H : p.HasLiftRank n` the hypothesis that the index set
 `n` has `2 z` elements, with `z ≥ 2`. For a tame character `ϑ` of modulus `Q`, `algPart H ϑ` is the
-algebraic part of the `L`-value of `ν ϑ` at `z`, defined as `‖φ‖ ^ 2 / N(Q) ^ (card n - 1)`. Here
-`φ = trivialLift H ϑ` is the scaled lift of `ν ϑ` to `U(n)`, and `N(Q)` is the product of the norms
-of the places of `Q`. There is a constant `A ≠ 0` such that, for every `ϑ`, this number is `A` times
-the `L`-value of `ν ϑ` at `z`, without the Euler factors at the chosen places, the modulus `Q` and
-their conjugates. -/
+algebraic part of the `L`-value of `(ν ϑ)⁻¹` at `z`, defined as `‖φ‖ ^ 2 / N(Q) ^ (card n - 1)`.
+Here `φ = trivialLift H ϑ` is the scaled lift of `ν ϑ` to `U(n)`, and `N(Q)` is the product of the
+norms of the places of `Q`. There is a constant `A ≠ 0` such that, for every `ϑ`, this number is `A`
+times the `L`-value of `(ν ϑ)⁻¹` at `z`, without the Euler factors at the chosen places, the modulus
+`Q` and their conjugates. -/
 theorem exists_ne_zero_algPart_eq_mul_L (H : p.HasLiftRank n) :
     ∃ A ≠ (0 : ℂ), ∀ ϑ : D.TameChar,
-      algPart H ϑ = A * (p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q)
+      algPart H ϑ = A * (p.character * ϑ.toAutChar)⁻¹.L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q)
         p.z := by
   -- The constant is that of the unscaled lift times the squared absolute value of the scale.
   obtain ⟨C, hC, h_norm_sq⟩ := exists_norm_sq_trivialLift_eq_mul_L H
@@ -191,21 +192,8 @@ theorem exists_ne_zero_algPart_eq_mul_L (H : p.HasLiftRank n) :
       = ‖scale‖ ^ 2 * (‖(lValueData H ϑ).trivialLift‖ ^ 2 / ϑ.normQ ^ (card n - 1)) := by
         rw [algPart, trivialLift, norm_smul, Complex.ofReal_mul]
         ring
-    _ = ‖scale‖ ^ 2 * C * (p.character * ϑ.toAutChar).L ({w | D.IsChosen w} ∪ ϑ.Q) p.z := by
-        rw [h_norm_sq, p.L_mul_inv, mul_div_cancel_right₀ _ (pow_ne_zero _ h_level), ← mul_assoc]
-
-open scoped ComplexOrder in
-/-- For every tame character `ϑ` of modulus `Q`, the algebraic part `algPart H ϑ = ‖trivialLift H ϑ‖
-^ 2 / N(Q) ^ (card n - 1)`, the normalised squared norm of the lift of `ν ϑ`, is positive. It is the
-`L`-value of `ν ϑ` at `z`, without the factors at the chosen places, the modulus and their
-conjugates, times a number `A` that depends neither on `ϑ` nor on its modulus. -/
-theorem exists_algPart_eq_mul_L (H : p.HasLiftRank n) :
-    ∃ A : ℂ, ∀ ϑ : D.TameChar,
-      algPart H ϑ = A * (p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) p.z
-        ∧
-      0 < algPart H ϑ := by
-  obtain ⟨A, -, h_value⟩ := exists_ne_zero_algPart_eq_mul_L H
-  exact ⟨A, fun ϑ ↦ ⟨h_value ϑ, algPart_pos H ϑ⟩⟩
+    _ = ‖scale‖ ^ 2 * C * (p.character * ϑ.toAutChar)⁻¹.L ({w | D.IsChosen w} ∪ ϑ.Q) p.z := by
+        rw [h_norm_sq, mul_div_cancel_right₀ _ (pow_ne_zero _ h_level), ← mul_assoc]
 
 open scoped ComplexOrder in
 /-- The sign in `p.ratio ϑ` is the default `1`, so this is the ratio of the absolute values of the
@@ -214,22 +202,18 @@ open scoped ComplexOrder in
 divided by the same number for the trivial character. -/
 theorem ratio_eq_algPart_div (H : p.HasLiftRank n) (ϑ : D.TameChar) :
     p.ratio ϑ = algPart H ϑ / algPart H TameChar.one := by
-  obtain ⟨A, hA⟩ := exists_algPart_eq_mul_L H
-  obtain ⟨h_value, h_pos⟩ := hA ϑ
-  obtain ⟨h_value_one, h_pos_one⟩ := hA TameChar.one
-  -- The constant `A` is a factor of a positive number, so it cancels in the quotient.
-  have hA_ne : A ≠ 0 := left_ne_zero_of_mul (h_value.symm.trans_ne h_pos.ne')
+  obtain ⟨A, hA_ne, h_value⟩ := exists_ne_zero_algPart_eq_mul_L H
   have h_div : algPart H ϑ / algPart H TameChar.one =
       (p.character * ϑ.toAutChar)⁻¹.L ({w | D.IsChosen w} ∪ ϑ.Q) p.z / p.character⁻¹.L
         {w | D.IsChosen w} p.z := by
-    rw [h_value, h_value_one, mul_div_mul_left _ _ hA_ne, ← p.L_mul_inv, ← p.L_mul_inv]
+    rw [h_value ϑ, h_value TameChar.one, mul_div_mul_left _ _ hA_ne]
     simp [toAutChar_one_and_toTwist_one_and_Q_one]
   -- The quotient is a positive real number, so it is equal to its norm.
   calc p.ratio ϑ = ‖algPart H ϑ / algPart H TameChar.one‖ := by
         rw [h_div]
         simp [ratio]
     _ = algPart H ϑ / algPart H TameChar.one :=
-        Complex.norm_of_nonneg' (div_pos h_pos h_pos_one).le
+        Complex.norm_of_nonneg' (div_pos (algPart_pos H ϑ) (algPart_pos H TameChar.one)).le
 
 open scoped ComplexOrder in
 /-- Let `p = (ν, z)` be a critical pair with `z ≥ 2` and `ϑ` a tame character. The number
@@ -251,7 +235,7 @@ lemma exists_integralAlgebraicPart_eq_mul_L (H : p.HasLiftRank n) :
   obtain ⟨A, hA, h_value⟩ := exists_ne_zero_algPart_eq_mul_L H
   let N : ℂ := (D.chosenGroupOrder * p.denomBound ^ 2 : ℕ)
   refine ⟨N * A, mul_ne_zero p.cast_chosenGroupOrder_mul_denomBound_sq_ne_zero hA, fun ϑ ↦ ?_⟩
-  rw [integralAlgebraicPart, h_value ϑ, p.L_mul_inv, mul_assoc]
+  rw [integralAlgebraicPart, h_value ϑ, mul_assoc]
 
 /-- Let `p = (ν, z)` be a critical pair, `H : p.HasLiftRank n` and `ϑ` a tame character. The ratio
 `p.ratio ϑ` of the absolute values of the `L`-values at `z` of `(ν ϑ)⁻¹` and of `ν⁻¹` equals
@@ -264,15 +248,9 @@ lemma ratio_eq_integralAlgebraicPart_div (H : p.HasLiftRank n) (ϑ : D.TameChar)
 /-- For a pair `p = (ν, z)`, a tame character `ϑ` and a sign `s = ±1`, the ratio `p.ratio ϑ s` of
 the absolute values of the `L`-values at `z` of `(ν ϑ ^ s)⁻¹` and of `ν⁻¹` is nonzero. -/
 lemma ratio_ne_zero (p : D.CriticalPair) (ϑ : D.TameChar) (s : ℤˣ) : p.ratio ϑ s ≠ 0 := by
-  -- The weight `-c` of `ν` is not zero and `ϑ` has weight zero, so neither `L`-value vanishes.
-  have h_num : (p.character * ϑ.toAutChar ^ (s : ℤ))⁻¹.L ({w | D.IsChosen w} ∪ ϑ.Q) p.z ≠ 0 := by
-    refine (p.hasWeight.mul (ϑ.hasWeight.zpow s)).inv.L_ne_zero
-      (D.finite_isChosen.union ϑ.Q.finite_toSet) ?_ p.one_le_cast_z
-    simpa using p.neg_negWeight_ne_zero
-  have h_den : p.character⁻¹.L {w | D.IsChosen w} p.z ≠ 0 :=
-    p.hasWeight.inv.L_ne_zero D.finite_isChosen (neg_ne_zero.2 p.neg_negWeight_ne_zero)
-      p.one_le_cast_z
-  simpa [ratio] using And.intro h_num h_den
+  have h_den : p.character⁻¹.L {w | D.IsChosen w} p.z ≠ 0 := by
+    simpa [toAutChar_one_and_toTwist_one_and_Q_one] using p.L_mul_zpow_inv_ne_zero .one 0
+  simpa [ratio, -mul_inv_rev] using ⟨p.L_mul_zpow_inv_ne_zero ϑ s, h_den⟩
 
 /-- For a pair `p`, a tame character `ϑ` and a sign `s = ±1`, the ratio `p.ratio ϑ s`, a quotient
 of absolute values, is real: complex conjugation fixes it. -/
@@ -306,12 +284,6 @@ lemma LValueData.formAction_trivialLift (s : X.descentPair.ChosenGL Unit) :
       h_fix]
 
 end
-
-namespace Data.CriticalPair
-
-variable {P : Parameters} {D : Data P} {p : D.CriticalPair} {n : Type} [Fintype n] [DecidableEq n]
-
-end Data.CriticalPair
 
 end New
 
