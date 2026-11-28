@@ -348,7 +348,7 @@ def Variety.ThetaNull.IsNonvanishingIndex {S : Scheme}
 /-- The fibre of the theta family `X` at the complex point `t` is modelled on the theta torus `x`:
 it has a torus model (a uniformisation by `V` along `t` with theta coordinates) for the period map
 of `x`, whose theta coordinates are the theta functions of `x`. -/
-def ThetaFamily.IsModelledOn {S : Scheme} {τ : S ⟶ Spec (CommRingCat.of (𝓞 E))}
+def ThetaFamily.IsModeledOn {S : Scheme} {τ : S ⟶ Spec (CommRingCat.of (𝓞 E))}
     (X : ThetaFamily D S τ) (t : Spec (CommRingCat.of ℂ) ⟶ S) {g : GL D.Index (𝔸f E)}
     {ℓ : Matrix D.Index D.Index ℂ} (x : ThetaTorus D g ℓ V) : Prop :=
   ∃ m : TorusModel (X := X) t x.toPeriodMap, m.θ = fun z k ↦ x.thetaCoord k z
@@ -960,26 +960,26 @@ lemma Variety.exists_linearMap_coe_eq_of_comp_eq_torsionLift {E : Type} [Field E
 
 /-- The points of `A` over a point `η` of `S`, seen as points of the fibre of `A` over `η`; the map
 is `𝓞 E`-linear. -/
-noncomputable def Variety.fibrePointMap {E : Type} [Field E] {S : Scheme}
+noncomputable def Variety.fiberPointMap {E : Type} [Field E] {S : Scheme}
     (A : Over S) [AddObj A] [ModuleObj (𝓞 E) A] (η : Spec (CommRingCat.of ℂ) ⟶ S) :
     (Over.mk η ⟶ A) →ₗ[𝓞 E] (𝟙_ (Over (Spec (CommRingCat.of ℂ))) ⟶ (Over.pullback η).obj A) :=
   ((isGroupBaseChange_counit (O := 𝓞 E) (A := A) η).pointEquiv (T := 𝟙_ _)).symm.toLinearMap
 
-/-- The point of the fibre given by `fibrePointMap A η u` is the pair of `u` and the point `η`. -/
-lemma Variety.fibrePointMap_left {E : Type} [Field E] {S : Scheme}
+/-- The point of the fibre given by `fiberPointMap A η u` is the pair of `u` and the point `η`. -/
+lemma Variety.fiberPointMap_left {E : Type} [Field E] {S : Scheme}
     {η : Spec (CommRingCat.of ℂ) ⟶ S} (A : Over S) [AddObj A] [ModuleObj (𝓞 E) A]
     (u : Over.mk η ⟶ A) :
-    (fibrePointMap (E := E) A η u).left = (lift u (𝟙 (Over.mk η))).left :=
-  -- `using!`: `fibrePointMap` is the pull-back lift only after unfolding `pointEquiv`.
+    (fiberPointMap (E := E) A η u).left = (lift u (𝟙 (Over.mk η))).left :=
+  -- `using!`: `fiberPointMap` is the pull-back lift only after unfolding `pointEquiv`.
   pullback.hom_ext (by simpa [pullback.lift_fst] using!
       (isGroupBaseChange_counit (O := 𝓞 E) (A := A) η).isPullback.lift_fst ..)
-    (by simpa [pullback.lift_snd] using (fibrePointMap (E := E) A η u).w)
+    (by simpa [pullback.lift_snd] using (fiberPointMap (E := E) A η u).w)
 
 /-- The torus `x` uniformises the fibre of `A` over the complex point `η`: the fibre has a
-uniformisation `u` with exponential map `e` followed by `fibrePointMap A η`, lattice the period
+uniformisation `u` with exponential map `e` followed by `fiberPointMap A η`, lattice the period
 lattice of `x`, and the theta functions of `x` as theta coordinates of the pull-back of `N`; and
 its relative dimension `d` is `abelianDim E D.Index`. -/
-lemma Variety.exists_uniformisation_pullback_of_isSeparatingFamily {E : Type} [Field E] [CMBase E]
+lemma Variety.exists_uniformization_pullback_of_isSeparatingFamily {E : Type} [Field E] [CMBase E]
     {D : PEL E} {S : Scheme} {η : Spec (CommRingCat.of ℂ) ⟶ S} {g : GL D.Index (𝔸f E)}
     {ℓ : Matrix D.Index D.Index ℂ} (x : ThetaTorus D g ℓ V)
     {A : Over S} [IsAbelianScheme A] [ModuleObj (𝓞 E) A] {N : LineBundle A.left D.dualTorsion}
@@ -988,21 +988,21 @@ lemma Variety.exists_uniformisation_pullback_of_isSeparatingFamily {E : Type} [F
     (he_fibre : IsSeparatingFamily fun z : V ↦ (lift (e z) (𝟙 (Over.mk η))).left)
     (he_lattice : ∀ l : V, l ∈ x.periodLattice → e l = 0)
     (d : ℕ) (h_smooth : SmoothOfRelativeDimension d ((Over.pullback η).obj A).hom) :
-    ∃ u : Uniformisation ((Over.pullback η).obj A) V,
+    ∃ u : Uniformization ((Over.pullback η).obj A) V,
       HasThetaCoords u.lattice (atGeneric u.expMap) (N.pull ((mapPullbackAdj η).counit.app A).left)
         x.automorphyForm x.multiplier (flip x.thetaCoord) ∧
-      u.expMap = .comp (fibrePointMap (E := E) A η) e ∧ u.lattice = x.periodLattice ∧
+      u.expMap = .comp (fiberPointMap (E := E) A η) e ∧ u.lattice = x.periodLattice ∧
       d = abelianDim E D.Index := by
   have h_fibre := isGroupBaseChange_counit (O := 𝓞 E) (A := A) η
-  refine x.exists_uniformisation_of_isSeparatingFamily d h_smooth
+  refine x.exists_uniformization_of_isSeparatingFamily d h_smooth
     (hN.of_isPullback h_fibre.isPullback) ?_ _ ?_
     ?_ ?_
   · -- the pull-back of `N` to the fibre satisfies the parallelogram law
     simp [Pic.ParallelogramLaw, ↓h_fibre.atPoint_picClass_pull, h_par _]
   · -- the points of `e` separate the fibre
-    simpa [fibrePointMap_left] using he_fibre
+    simpa [fiberPointMap_left] using he_fibre
   · -- the theta functions of `x` are homogeneous coordinates along `e`
-    simp [fibrePointMap_left, he_coords, IsHomogeneousCoords.pull_iff]
+    simp [fiberPointMap_left, he_coords, IsHomogeneousCoords.pull_iff]
   · -- `e` kills the period lattice
     simp +contextual [he_lattice]
 
@@ -1022,8 +1022,8 @@ lemma Variety.exists_isLieChart_hasSignature (j : ι → κ) (hη : IsDenseFamil
     (h_dim : SmoothOfRelativeDimension (abelianDim E D.Index) A.hom)
     {e : ∀ i : κ, V →+ (Over.mk (η i) ⟶ A)}
     (he_smul : ∀ (d : 𝓞 E) (i : κ) (z : V), d • e i z = e i ((x i).intAction d z))
-    {u : ∀ i : κ, Uniformisation ((Over.pullback (η i)).obj A) V}
-    (hu_e : ∀ i : κ, (u i).expMap = .comp (fibrePointMap (E := E) A (η i)) (e i))
+    {u : ∀ i : κ, Uniformization ((Over.pullback (η i)).obj A) V}
+    (hu_e : ∀ i : κ, (u i).expMap = .comp (fiberPointMap (E := E) A (η i)) (e i))
     (b : ℤ) {B : CommRingCat} (s : Spec B ⟶ S) [IsLocalRing B] :
     ∃ (U : A.left.Opens) (z : Fin (abelianDim E D.Index) → Γ(A.left, U))
       (m : 𝓞 E → Matrix (Fin (abelianDim E D.Index)) (Fin (abelianDim E D.Index)) B),
@@ -1066,7 +1066,7 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
         (thetaRanks D.dualTorsion D.paddedNorm) c t Z)
     (h_index : ∀ (t : S) (s : D.dualTorsion), ∃ a : D.dualTorsion,
       IsNonvanishingIndex c t a ∧ IsNonvanishingIndex c t (-a) ∧ IsNonvanishingIndex c t (s - a)) :
-    ∃ X : ThetaFamily D S (π ≫ specMap φ), ∀ i : κ, X.IsModelledOn (η i) (x i) := by
+    ∃ X : ThetaFamily D S (π ≫ specMap φ), ∀ i : κ, X.IsModeledOn (η i) (x i) := by
   -- `A` is the closure of the theta points over `S`. Riemann's relation extends the maps
   -- `(z, y) ↦ a z + b y` from the theta points to `A ⊗ A`; this makes `A` an abelian scheme with
   -- an action of `𝓞 E` and gives the class identities. The other fields of `ThetaFamily` are
@@ -1107,7 +1107,7 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
   -- `σ` is linear: the lifts `(x i).torsionLift l` are linear in `l` modulo the lattice.
   obtain ⟨ς, rfl⟩ := exists_linearMap_coe_eq_of_comp_eq_torsionLift hη_sep he_smul he_lattice hσ
   -- `e i` uniformises the fibre over `η i`, and this forces the dimension.
-  have h_unif (i : κ) := exists_uniformisation_pullback_of_isSeparatingFamily (x i) hN h_class.1
+  have h_unif (i : κ) := exists_uniformization_pullback_of_isSeparatingFamily (x i) hN h_class.1
     (he_coords i)
     (he_fibre i) (he_lattice i)
   have h_dim : SmoothOfRelativeDimension (abelianDim E D.Index) A.hom := by
@@ -1131,9 +1131,9 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
       (hφ.right_cancellation _ _ h_base)
   case model =>
     refine ⟨⟨hη_base i, u i, _, _, hu_theta i, fun d w ↦ ?_, fun l ↦ ?_, hu_L i⟩, rfl⟩
-    -- `using!`: the exponential map `u i` matches `fibrePointMap A (η i)` only up to unfolding.
+    -- `using!`: the exponential map `u i` matches `fiberPointMap A (η i)` only up to unfolding.
     · simpa [hu_e, he_smul, intAction] using!
-        (fibrePointMap (E := E) A (η i)).map_smul d (e i ((x i).realEquiv w))
-    · simpa [hu_e] using! congr(fibrePointMap (E := E) A (η i) $(hσ l i))
+        (fiberPointMap (E := E) A (η i)).map_smul d (e i ((x i).realEquiv w))
+    · simpa [hu_e] using! congr(fiberPointMap (E := E) A (η i) $(hσ l i))
 
 end New

@@ -563,7 +563,7 @@ abbrev BallBase : Type := Fin (card n - 1) → ℂ
 
 /-- The complex vector space `ℂ × ℂ ^ (n − 1) × ∏_v ℂ ^ n`, the product over the infinite places
 `v` of `E` other than `v₀`. -/
-abbrev BallFibre : Type _ := (ℂ × BallBase n) × ({v : InfinitePlace E // v ≠ v₀} → n → ℂ)
+abbrev BallFiber : Type _ := (ℂ × BallBase n) × ({v : InfinitePlace E // v ≠ v₀} → n → ℂ)
 
 variable {E n} [DecidableEq n] {V V' : Type} [FinComplexSpace V] [FinComplexSpace V']
   {ℓ : Matrix n n ℂ} {Q : RealVectors E n ≃L[ℝ] V}

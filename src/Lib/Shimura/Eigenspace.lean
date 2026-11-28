@@ -75,7 +75,7 @@ finite counts replaces the description of automorphic forms on unitary groups vi
 No moduli functor is represented, nothing is transferred to `GL_n`, and no dimension is computed
 here.
 
-1. `ComplexTheta`, `AbelianScheme`, `ThetaGroup`, `Uniformisation`: theta functions and the complex
+1. `ComplexTheta`, `AbelianScheme`, `ThetaGroup`, `Uniformization`: theta functions and the complex
    uniformisation.
 2. `GoodReduction`, `ThetaNormality`, `ArcExtension`: good reduction along a valuation ring of `ℂ`.
 3. `ThetaModuli`, `Deformation`: the closure of the theta-null points of the PEL abelian varieties

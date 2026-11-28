@@ -20,7 +20,7 @@ import Lib.Shimura.ThetaNormality.NormalGeneration
 # Uniformisations over an arc: theta coordinates, Weil pairing and extension of maps
 
 Let `A` be an abelian scheme over an arc `O` (`New.ValuativeArc`, a valuation ring with fraction
-field `ℂ`). Let `u : V / Λ ≅ A(O)` be a uniformisation (`New.Uniformisation`) with `Λ = u.lattice`,
+field `ℂ`). Let `u : V / Λ ≅ A(O)` be a uniformisation (`New.Uniformization`) with `Λ = u.lattice`,
 and let `L` be a linear system whose coordinates are theta functions (`New.HasThetaCoords`).
 Sections of `L` are read as functions on `V`. Lifts of translations then act by twisted
 translations, and their commutators are given by the Weil pairing. With these tools, an additive map
@@ -182,7 +182,7 @@ lemma thetaEval_coordSection (h : HasThetaCoords Λ (atGeneric s) L B χ θ) (i 
 end ThetaEval
 
 variable [IsAbelianScheme A]
-  {L : LineBundle A.left κ} (u : Uniformisation A V) {B : ThetaTori.LatticeForm u.lattice}
+  {L : LineBundle A.left κ} (u : Uniformization A V) {B : ThetaTori.LatticeForm u.lattice}
   {χ : V → ℂ} {θ : V → κ → ℂ} (h : HasThetaCoords u.lattice (atGeneric u.expMap) L B χ θ)
 
 /-- Along a uniformisation, `thetaEval h` is injective: the points `atGeneric u.expMap z` are
@@ -231,7 +231,7 @@ lemma exists_theta_evaluation {Λ : Submodule ℤ V}
       (∀ i : κ, T (coordSection h.isLinearSystem i) = fun z : V ↦ θ z i) ∧
       -- (c) along a uniformisation `T` is injective and turns lifts of translations into multiples
       -- of shifts
-      ∀ u : Uniformisation A V, Λ = u.lattice → s = u.expMap →
+      ∀ u : Uniformization A V, Λ = u.lattice → s = u.expMap →
         Function.Injective T ∧
         ∀ (a : V) (Φ : Module.End O ↥(L.H0 O)),
           IsTranslationLift L (s a) Φ →
@@ -392,7 +392,7 @@ variable {V ι κ O : Type} [FinComplexSpace V] [CommRing O] [ValuativeArc O]
   {A A' : Over (Spec ⟨O⟩)} [AddObj A']
   {s' : V →+ (MonoidalCategoryStruct.tensorUnit (Over (Spec (CommRingCat.of O))) ⟶ A')} [Finite κ]
   [IsAbelianScheme A] [Finite ι]
-  (u : Uniformisation A V) {N : LineBundle A.left ι} {B : ThetaTori.LatticeForm u.lattice}
+  (u : Uniformization A V) {N : LineBundle A.left ι} {B : ThetaTori.LatticeForm u.lattice}
   {χ : V → ℂ} {θ : V → ι → ℂ}
   (h : HasThetaCoords u.lattice (atGeneric u.expMap) N B χ θ) [IsPosRiemann B]
   (hs' : ∀ l ∈ u.lattice, s' l = 0) {n : ℕ} (hn : IsUnit (n : O))

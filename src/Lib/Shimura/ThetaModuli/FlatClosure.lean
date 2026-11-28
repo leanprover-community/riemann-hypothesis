@@ -554,7 +554,7 @@ structure IsFlatClosure {J W κ : Type} {S : Scheme} {η : κ → (Spec (CommRin
   /-- The point `e n z` has homogeneous coordinates `θ n z`. -/
   isHomogeneousCoords (n : κ) (z : W) : IsHomogeneousCoords N (e n z).left (θ n z)
   /-- The fibre over `η n` is reduced, and the points `e n z` are dense in it. -/
-  isSeparatingFamily_fibre (n : κ) :
+  isSeparatingFamily_fiber (n : κ) :
     IsSeparatingFamily (X := pullback A.hom (η n)) fun z : W ↦
       pullback.lift (e n z).left (𝟙 (Spec (CommRingCat.of ℂ))) (e n z).w
   /-- Every point of `S` specialises to a geometric point over which the fibre is reduced. -/
@@ -944,7 +944,7 @@ lemma exists_isFlatClosure {J W ι I κ : Type} {S : Scheme} {r i : ℕ} {σ : �
     { isProjEmbedding := h_emb
       flat := h_flat
       isHomogeneousCoords := hx
-      isSeparatingFamily_fibre := fun n ↦ ⟨h_reduced (h_fib n), h_fibre_dense n⟩
+      isSeparatingFamily_fiber := fun n ↦ ⟨h_reduced (h_fib n), h_fibre_dense n⟩
       allSpecializeTo_isReduced := h_specialize
       isSeparatingFamily := ⟨hA_red, h_dense.mono ?_⟩ }⟩
   have h_eq (a : ι) (v : W) : x₀ (a, v) = (x (j a) v).left :=

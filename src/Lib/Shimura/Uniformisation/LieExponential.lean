@@ -35,7 +35,7 @@ such group, and it gives a uniformisation of A by ℂᵈ, where d is the dimensi
 * `New.exists_holomorphic_chart`: a smooth scheme has a holomorphic chart at every complex point.
 * `New.LineBundle.IsProjEmbedding.compactSpace_complexPoint`: the complex points of a projective
   variety are compact.
-* `New.LineBundle.IsProjEmbedding.nonempty_uniformisation`: an abelian variety of dimension d is
+* `New.LineBundle.IsProjEmbedding.nonempty_uniformization`: an abelian variety of dimension d is
   uniformised by ℂᵈ.
 
 Notions from other files:
@@ -43,7 +43,7 @@ Notions from other files:
   `V` is a `FinComplexSpace`, that is, a finite-dimensional complex normed space.
 * `New.IsAbelianScheme`: a commutative group scheme A over S is abelian if it is smooth and proper
   over S and multiplication by every m ≠ 0 is surjective.
-* `New.Uniformisation`: a surjective homomorphism from a complex vector space V to the complex
+* `New.Uniformization`: a surjective homomorphism from a complex vector space V to the complex
   points of A, with kernel a lattice, holomorphic and immersive, through which homomorphisms
   holomorphic at 0 factor ℂ-linearly.
 * `New.LineBundle.IsProjEmbedding`: The linear system N embeds the proper scheme X in projective
@@ -720,9 +720,9 @@ private lemma holomorphicAt_of_analyticAt_chart_comp [IsAbelianScheme A]
 /-- Uniformisation: an abelian variety A over ℂ, smooth of relative dimension d and embedded in
 projective space by a linear system N, admits a uniformisation ℂ^d/L ≅ A(ℂ), with L a lattice in
 ℂ^d. -/
-lemma LineBundle.IsProjEmbedding.nonempty_uniformisation [IsAbelianScheme A]
+lemma LineBundle.IsProjEmbedding.nonempty_uniformization [IsAbelianScheme A]
     (hN : N.IsProjEmbedding A.hom) (hd : SmoothOfRelativeDimension d A.hom) :
-    Nonempty (Uniformisation A (Fin d → ℂ)) := by
+    Nonempty (Uniformization A (Fin d → ℂ)) := by
   -- `A(ℂ)` is a compact commutative topological group with a holomorphic chart at `0` in which
   -- addition is analytic, so it has an exponential map `e` (`exists_lie_exponential`). It remains
   -- to see that `e` is onto, holomorphic and immersive; translations carry the last two from `0` to

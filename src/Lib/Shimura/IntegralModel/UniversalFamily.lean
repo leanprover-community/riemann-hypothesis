@@ -101,15 +101,15 @@ lemma New.ThetaObject.TorusModel.exists_torusModel_of_isPullbackAlong {E V : Typ
       (j s).left ≫ h_pull.schemeMap.left = genericPt ≫ s.left :=
     h_pull.isGroupBaseChange.pullSection_comp s
   let e : V →+ (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme) :=
-    j.symm.toAddMonoidHom.comp m.uniformisation.expMap
+    j.symm.toAddMonoidHom.comp m.uniformization.expMap
   -- on complex points, `e` is the old uniformisation followed by the map of `h_pull`
   have h_atGeneric_e :
-      atGeneric e = fun w : V ↦ atGeneric m.uniformisation.expMap w ≫ h_pull.schemeMap.left := by
+      atGeneric e = fun w : V ↦ atGeneric m.uniformization.expMap w ≫ h_pull.schemeMap.left := by
     funext w
-    have h_comp : (m.uniformisation.expMap w).left ≫ h_pull.schemeMap.left =
+    have h_comp : (m.uniformization.expMap w).left ≫ h_pull.schemeMap.left =
         genericPt ≫ (e w).left := by simp [← hj, e]
     exact h_comp.symm
-  -- the universal property: restrict `γ` to the generic fibre and use that of `m.uniformisation`
+  -- the universal property: restrict `γ` to the generic fibre and use that of `m.uniformization`
   have h_universal {W : Type} [FinComplexSpace W]
       (γ : W →+ (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme))
       (hγ : HolomorphicAt (atGeneric γ) 0) : ∃ F : W →L[ℂ] V, ∀ z : W, e (F z) = γ z := by
@@ -122,25 +122,25 @@ lemma New.ThetaObject.TorusModel.exists_torusModel_of_isPullbackAlong {E V : Typ
       rw [h_pull.lineBundle_eq_pull, LineBundle.IsHomogeneousCoords.pull_iff]
       change y.lineBundle.IsHomogeneousCoords ((j (γ w)).left ≫ h_pull.schemeMap.left) (q w)
       rwa [hj]
-    obtain ⟨F, hF⟩ : ∃ F : W →L[ℂ] V, ∀ z : W, m.uniformisation.expMap (F z) = j (γ z) :=
-      m.uniformisation.universal (j.toAddMonoidHom.comp γ)
+    obtain ⟨F, hF⟩ : ∃ F : W →L[ℂ] V, ∀ z : W, m.uniformization.expMap (F z) = j (γ z) :=
+      m.uniformization.universal (j.toAddMonoidHom.comp γ)
         (.of_isHomogeneousCoords x.isProjEmbedding hq_analytic hq_coords_x fun _ ↦ Over.w _)
     exact ⟨F, fun z ↦ by simp [e, hF]⟩
-  let u : Uniformisation y.groupScheme V :=
-    { m.uniformisation with
+  let u : Uniformization y.groupScheme V :=
+    { m.uniformization with
       expMap := e
-      surjective := j.symm.surjective.comp m.uniformisation.surjective
-      eq_zero_iff := by simp [e, Uniformisation.eq_zero_iff]
+      surjective := j.symm.surjective.comp m.uniformization.surjective
+      eq_zero_iff := by simp [e, Uniformization.eq_zero_iff]
       immersive z := by
         rw [h_atGeneric_e]
-        exact m.uniformisation.isHolomorphicImmersionAt_of_isPullback
+        exact m.uniformization.isHolomorphicImmersionAt_of_isPullback
           h_pull.isGroupBaseChange.isPullback z
       universal := h_universal }
   have h_spec : x.IsPullbackAlong (specMap (algebraMap O ℂ)) y := by
     rwa [← ValuativeArc.genericPt_eq]
   -- `x.lineBundle` is the pull-back of `y.lineBundle` along `h_pull.schemeMap`, so the theta
   -- coordinates are unchanged
-  have h_theta : HasThetaCoords m.uniformisation.lattice (atGeneric e) y.lineBundle Y.automorphyForm
+  have h_theta : HasThetaCoords m.uniformization.lattice (atGeneric e) y.lineBundle Y.automorphyForm
     m.χ m.θ :=
     { m.hasThetaCoords with
       isLinearSystem := y.isProjEmbedding.isLinearSystem
@@ -149,12 +149,12 @@ lemma New.ThetaObject.TorusModel.exists_torusModel_of_isPullbackAlong {E V : Typ
         exact m.hasThetaCoords.hasFieldCoords z }
   refine ⟨{ m with
     baseHom_eq c := by simp [← m.baseHom_eq c, IsPullbackAlong.baseHom_eq_comp h_spec]
-    uniformisation := u
+    uniformization := u
     hasThetaCoords := h_theta
     equivariant := by simp [u, e, m.equivariant]
     level_eq l := ?_ }, fun w ↦ congrFun h_atGeneric_e (Y.realEquiv w)⟩
   -- the level points of `x` are the pull-backs of those of `y`
-  have h_level : j (y.levelPoints l) = m.uniformisation.expMap (Y.torsionLift l) :=
+  have h_level : j (y.levelPoints l) = m.uniformization.expMap (Y.torsionLift l) :=
     (h_pull.levelPoints_eq_pullSection l).symm.trans (m.level_eq l)
   exact j.eq_symm_apply.mpr h_level
 
@@ -183,9 +183,9 @@ variable {E O W : Type} [Field E] [CMBase E] [CommRing O] [ValuativeArc O] [FinC
 complex point of `v z` to that of `expMap z`. -/
 private lemma atGeneric_comp_nsmul (a : y.TorusModel Y) {c : ℕ} (hc0 : c ≠ 0)
     (v : W → (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme))
-    (hv_eq : ∀ z : W, v z = a.uniformisation.expMap ((c : ℂ)⁻¹ • z)) (z : W) :
-    atGeneric v z ≫ (c • 𝟙 y.groupScheme).left = atGeneric a.uniformisation.expMap z := by
-  have hv : c • v z = a.uniformisation.expMap z := by
+    (hv_eq : ∀ z : W, v z = a.uniformization.expMap ((c : ℂ)⁻¹ • z)) (z : W) :
+    atGeneric v z ≫ (c • 𝟙 y.groupScheme).left = atGeneric a.uniformization.expMap z := by
+  have hv : c • v z = a.uniformization.expMap z := by
     simp [hv_eq, ← cast_smul_eq_nsmul ℂ, hc0, ← map_nsmul]
   simp [atGeneric, ← hv, ← Over.comp_left, comp_nsmul]
 
@@ -197,21 +197,21 @@ function `f` for the Hermitian form `Y.automorphyForm` of the period map and the
 `a.χ`. -/
 lemma New.ThetaObject.TorusModel.exists_mem_thetaSpace_of_periodic (a : y.TorusModel Y) {c : ℕ}
     (hc0 : c ≠ 0) (v : W → (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme))
-    (hv_eq : ∀ z : W, v z = a.uniformisation.expMap ((c : ℂ)⁻¹ • z))
+    (hv_eq : ∀ z : W, v z = a.uniformization.expMap ((c : ℂ)⁻¹ • z))
     (ω : (y.lineBundle.pull (c • 𝟙 y.groupScheme).left).H0 O)
-    (h_per : ∀ l ∈ a.uniformisation.lattice, ∀ (z : W) (i : D.dualTorsion),
+    (h_per : ∀ l ∈ a.uniformization.lattice, ∀ (z : W) (i : D.dualTorsion),
       ω.val i (CommRingCat.of ℂ) (atGeneric v (z + l)) =
         ω.val i (CommRingCat.of ℂ) (atGeneric v z)) :
-    ∃ f ∈ Y.automorphyForm.thetaSpace (L := a.uniformisation.lattice) a.χ,
+    ∃ f ∈ Y.automorphyForm.thetaSpace (L := a.uniformization.lattice) a.χ,
       ∀ (i : D.dualTorsion) (z : W), a.θ z i ≠ 0 →
       ω.val i (CommRingCat.of ℂ) (atGeneric v z) = f z / a.θ z i := by
   -- Along `v` the bundle `[c]^* N` has the theta coordinates that `N` has along `expMap`.
-  have hθv : HasThetaCoords a.uniformisation.lattice (atGeneric v)
+  have hθv : HasThetaCoords a.uniformization.lattice (atGeneric v)
       (y.lineBundle.pull (c • 𝟙 y.groupScheme).left) Y.automorphyForm a.χ a.θ :=
     a.hasThetaCoords.pull 1 (fun z ↦ (atGeneric_comp_nsmul a hc0 v hv_eq z).symm) fun l hl ↦ hl
   have hv_hol (z : W) : HolomorphicAt (atGeneric v) z := by
     rw [funext hv_eq]
-    exact (a.uniformisation.holomorphicAt _).comp (by fun_prop)
+    exact (a.uniformization.holomorphicAt _).comp (by fun_prop)
   have hω_sec : ((y.lineBundle.pull (c • 𝟙 y.groupScheme).left).mul
       (((y.lineBundle.pull (c • 𝟙 y.groupScheme).left).pow 0).inv)).IsSection
         fun q : D.dualTorsion × (Fin 0 → D.dualTorsion) ↦ ω.val q.fst := by
@@ -227,23 +227,23 @@ given by `f` along `v`, that is, `ω_i (v z) = f z / θ_i z` where `θ_i z ≠ 0
 by `c` is `β • ω`: the two agree at the points `v z`, which are dense. -/
 lemma New.ThetaObject.TorusModel.pullSections_eq_smul_of_theta (a : y.TorusModel Y) {c : ℕ}
     (hc0 : c ≠ 0) (v : W → (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme))
-    (hv_eq : ∀ z : W, v z = a.uniformisation.expMap ((c : ℂ)⁻¹ • z))
+    (hv_eq : ∀ z : W, v z = a.uniformization.expMap ((c : ℂ)⁻¹ • z))
     (ω : (y.lineBundle.pull (c • 𝟙 y.groupScheme).left).H0 O)
     {f : W → ℂ} (hωf : ∀ (i : D.dualTorsion) (z : W), a.θ z i ≠ 0 →
       ω.val i (CommRingCat.of ℂ) (atGeneric v z) = f z / a.θ z i)
     (w : y.lineBundle.H0 O) (β : O)
     (hw : ∀ (i : D.dualTorsion) (z : W), a.θ z i ≠ 0 →
-      w.val i (CommRingCat.of ℂ) (atGeneric a.uniformisation.expMap z) =
+      w.val i (CommRingCat.of ℂ) (atGeneric a.uniformization.expMap z) =
         algebraMap O ℂ β * f z / a.θ z i) :
     (pullSections (RingHom.id O) (by simp) rfl :
       y.lineBundle.H0 O →ₗ[O] (y.lineBundle.pull (c • 𝟙 y.groupScheme).left).H0 O) w = β • ω := by
   -- Along `v` the bundle `[c]^* N` has the theta coordinates that `N` has along `expMap`.
-  have hθv : HasThetaCoords a.uniformisation.lattice (atGeneric v)
+  have hθv : HasThetaCoords a.uniformization.lattice (atGeneric v)
       (y.lineBundle.pull (c • 𝟙 y.groupScheme).left) Y.automorphyForm a.χ a.θ :=
     a.hasThetaCoords.pull 1 (fun z ↦ (atGeneric_comp_nsmul a hc0 v hv_eq z).symm) fun l hl ↦ hl
   have hv_surj : Function.Surjective v := by
     rw [funext hv_eq]
-    exact a.uniformisation.surjective.comp (MulAction.surjective₀ (by simpa using hc0))
+    exact a.uniformization.surjective.comp (MulAction.surjective₀ (by simpa using hc0))
   -- compare the two sides at the dense points `atGeneric v z` that land in the chart `i`
   have h_dense : IsSeparatingFamily (atGeneric v) :=
     isSeparatingFamily_atGeneric_of_surjective hv_surj
@@ -251,7 +251,7 @@ lemma New.ThetaObject.TorusModel.pullSections_eq_smul_of_theta (a : y.TorusModel
   have hθ_ne : a.θ z i ≠ 0 := ((hθv.hasFieldCoords z i).left.mp hz_lands).ne_zero
   calc (pullSections (RingHom.id O) (by simp) rfl w :
           (y.lineBundle.pull (c • 𝟙 y.groupScheme).left).H0 O).val i (.of ℂ) (atGeneric v z)
-      = w.val i (CommRingCat.of ℂ) (atGeneric a.uniformisation.expMap z) := by
+      = w.val i (CommRingCat.of ℂ) (atGeneric a.uniformization.expMap z) := by
         simp [atGeneric_comp_nsmul a hc0 v hv_eq]
     _ = algebraMap O ℂ β * (f z / a.θ z i) := by rw [hw i z hθ_ne, mul_div_assoc]
     _ = algebraMap O ℂ β * ω.val i (CommRingCat.of ℂ) (atGeneric v z) := by rw [hωf i z hθ_ne]
@@ -270,9 +270,9 @@ lemma New.ThetaObject.TorusModel.mem_map_span_of_periodic {E O W : Type} [Field 
     {y : ThetaObject X (Spec (CommRingCat.of O))} {g : GL D.Index (𝔸f E)}
     {ℓ : Matrix D.Index D.Index ℂ} {Y : ThetaTori.PeriodMap D g ℓ W} (a : y.TorusModel Y) {c : ℕ}
     (hc0 : c ≠ 0) (v : W → (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme))
-    (hv_eq : ∀ z : W, v z = a.uniformisation.expMap ((c : ℂ)⁻¹ • z))
+    (hv_eq : ∀ z : W, v z = a.uniformization.expMap ((c : ℂ)⁻¹ • z))
     (ω : (y.lineBundle.pull (c • 𝟙 y.groupScheme).left).H0 O)
-    (h_per : ∀ l ∈ a.uniformisation.lattice, ∀ (z : W) (i : D.dualTorsion),
+    (h_per : ∀ l ∈ a.uniformization.lattice, ∀ (z : W) (i : D.dualTorsion),
       ω.val i (CommRingCat.of ℂ) (atGeneric v (z + l)) =
         ω.val i (CommRingCat.of ℂ) (atGeneric v z)) :
     ω ∈ Submodule.map (pullSections (RingHom.id O) (by simp) rfl :
@@ -285,9 +285,9 @@ lemma New.ThetaObject.TorusModel.mem_map_span_of_periodic {E O W : Type} [Field 
   set Λ : y.lineBundle.H0 O →ₗ[O] (y.lineBundle.pull (c • 𝟙 y.groupScheme).left).H0 O :=
     pullSections (RingHom.id O) (by simp) rfl
   by_contra hω
-  have hv (z : W) : c • v z = a.uniformisation.expMap z := by
+  have hv (z : W) : c • v z = a.uniformization.expMap z := by
     simp [hv_eq, ← cast_smul_eq_nsmul ℂ, hc0, ← map_nsmul]
-  obtain ⟨f, hf, hωf⟩ : ∃ f ∈ Y.automorphyForm.thetaSpace (L := a.uniformisation.lattice) a.χ,
+  obtain ⟨f, hf, hωf⟩ : ∃ f ∈ Y.automorphyForm.thetaSpace (L := a.uniformization.lattice) a.χ,
       ∀ (i : D.dualTorsion) (z : W), a.θ z i ≠ 0 → ω.val i (.of ℂ) (atGeneric v z) = f z / a.θ z
         i :=
     a.exists_mem_thetaSpace_of_periodic hc0 v hv_eq ω h_per
@@ -302,7 +302,7 @@ lemma New.ThetaObject.TorusModel.mem_map_span_of_periodic {E O W : Type} [Field 
   -- By `exists_sections_of_translation_stable`, some `γ • f` comes from a `w` in the span of the
   -- coordinates that vanishes on no orbit of a field-valued point under the dual lattice.
   -- (`hw`: `w` has the theta function `γ • f`; `h_orbit`: it vanishes on no such orbit)
-  obtain ⟨γ, hγ, w, hw, h_orbit⟩ := exists_sections_of_translation_stable a.uniformisation
+  obtain ⟨γ, hγ, w, hw, h_orbit⟩ := exists_sections_of_translation_stable a.uniformization
     a.hasThetaCoords y.isThetaStructure.isUnit_card
     (fun b hb ↦ (a.exists_isTranslationLift_of_dualLattice b hb).left)
     (fun b hb ↦ (a.exists_isTranslationLift_of_dualLattice b hb).right)
@@ -313,15 +313,15 @@ lemma New.ThetaObject.TorusModel.mem_map_span_of_periodic {E O W : Type} [Field 
   · -- `γ = β` lies in the maximal ideal, so `w` vanishes at the reductions of all the `expMap z`,
     -- in particular on the orbit of the reduction of `expMap 0`.
     have hw_β (i : D.dualTorsion) (z : W) (hz : a.θ z i ≠ 0) :
-        (w () : y.lineBundle.H0 O).val i (.of ℂ) (atGeneric a.uniformisation.expMap z) =
+        (w () : y.lineBundle.H0 O).val i (.of ℂ) (atGeneric a.uniformization.expMap z) =
           algebraMap O ℂ β * f z / a.θ z i := by rw [hw () i z hz, hβ]
     have h_eq : Λ (w ()) = β • ω :=
       a.pullSections_eq_smul_of_theta hc0 v hv_eq ω hωf (w ()) β hw_β
-    obtain ⟨b, -, _j, i, h_ne⟩ := h_orbit _ (specMap (residue O) ≫ (a.uniformisation.expMap 0).left)
+    obtain ⟨b, -, _j, i, h_ne⟩ := h_orbit _ (specMap (residue O) ≫ (a.uniformization.expMap 0).left)
     refine h_ne ?_
     -- the translate of the reduction of `expMap 0 = 0` by `expMap b` is `[c]` of that of `v b`
-    have h_point : (specMap (residue O) ≫ (a.uniformisation.expMap 0).left) ≫
-          (translation (a.uniformisation.expMap b)).left =
+    have h_point : (specMap (residue O) ≫ (a.uniformization.expMap 0).left) ≫
+          (translation (a.uniformization.expMap b)).left =
         (specMap (residue O) ≫ (v b).left) ≫ (c • 𝟙 y.groupScheme).left := by
       simp [hv, ← Over.comp_left, comp_add, comp_nsmul]
     -- `β` reduces to `0` in the residue field
@@ -332,7 +332,7 @@ lemma New.ThetaObject.TorusModel.mem_map_span_of_periodic {E O W : Type} [Field 
     simp [Λ]
   · -- `γ⁻¹ = β`: then `β • w` has theta function `1 • f`, so `1` would be no unit.
     have hw_one (i : D.dualTorsion) (z : W) (hz : a.θ z i ≠ 0) :
-        (β • w () : y.lineBundle.H0 O).val i (.of ℂ) (atGeneric a.uniformisation.expMap z) =
+        (β • w () : y.lineBundle.H0 O).val i (.of ℂ) (atGeneric a.uniformization.expMap z) =
           algebraMap O ℂ 1 * f z / a.θ z i :=
       calc _ = algebraMap O ℂ β * (γ * f z / a.θ z i) := by
             simp [← hw () i z hz, H0_smul, atGeneric, ValuativeArc.genericPt_eq]
@@ -356,12 +356,12 @@ lemma New.ThetaObject.TorusModel.sum_pullSections_translation_mem_map_span
         (span O (range (coordSection y.isProjEmbedding.isLinearSystem))) := by
   -- The trace is periodic along `z ↦ expMap (z / c)`: adding a period `l` there adds the
   -- `c`-torsion section `expMap (l / c)`, which permutes the terms of the sum.
-  refine a.mem_map_span_of_periodic hc0 (fun z ↦ a.uniformisation.expMap ((c : ℂ)⁻¹ • z))
+  refine a.mem_map_span_of_periodic hc0 (fun z ↦ a.uniformization.expMap ((c : ℂ)⁻¹ • z))
     (fun _ ↦ rfl) _ fun l hl z i ↦ ?_
-  have hl_tors : c • a.uniformisation.expMap ((c : ℂ)⁻¹ • l) = 0 := by
-    simpa [← cast_smul_eq_nsmul ℂ, hc0, a.uniformisation.eq_zero_iff, ← map_nsmul] using hl
+  have hl_tors : c • a.uniformization.expMap ((c : ℂ)⁻¹ • l) = 0 := by
+    simpa [← cast_smul_eq_nsmul ℂ, hc0, a.uniformization.eq_zero_iff, ← map_nsmul] using hl
   let shift : Equiv.Perm {t : 𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme // c • t = 0} :=
-    (Equiv.addLeft (a.uniformisation.expMap ((c : ℂ)⁻¹ • l))).subtypeEquiv
+    (Equiv.addLeft (a.uniformization.expMap ((c : ℂ)⁻¹ • l))).subtypeEquiv
       (by simp [smul_add, hl_tors])
   simp only [translation, LinearMap.coe_sum, Finset.sum_apply, AddSubmonoidClass.coe_finsetSum,
     pullSections_apply_coe]
@@ -441,7 +441,7 @@ lemma New.ThetaObject.TorusModel.span_coordSection_eq_top_of_isPullbackAlong
   -- Enumerate the `c`-torsion sections over `O` by `F`. The trace `trace j` is the sum of the
   -- translations by their images under a homomorphism `j`.
   let Tors : Type := {z : 𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme // c • z = 0}
-  have h_card : Nat.card Tors = c ^ (Module.finrank ℂ W * 2) := a.uniformisation.card_torsion hc0
+  have h_card : Nat.card Tors = c ^ (Module.finrank ℂ W * 2) := a.uniformization.card_torsion hc0
   obtain ⟨F⟩ : Nonempty (Fin (Nat.card Tors) ≃ Tors) :=
     ⟨(equivFinOfCardPos (h_card.trans_ne (pow_ne_zero _ hc0))).symm⟩
   -- `M x` is invariant under translation by the image of a `c`-torsion section.
@@ -574,10 +574,10 @@ structure Variety.UniversalFamily (D : PEL E) (R : Subalgebra (𝓞 E) E) where
     TorusModel (X := family) (obj a).left (a.1.torus a.2).toPeriodMap
   /-- The uniformisations give complex points of 𝒜 that are holomorphic in `(b, z)`, for `b` in the
   domain of the family. -/
-  holomorphic (f : AnalyticFamily D) : ∀ b ∈ f.domain, ∀ z : BallFibre E D.Index,
+  holomorphic (f : AnalyticFamily D) : ∀ b ∈ f.domain, ∀ z : BallFiber E D.Index,
     HolomorphicAt
       (fun q ↦
-        atGeneric (model (f, q.1)).uniformisation.expMap q.2 ≫ (toFamily (obj (f, q.1)).left).left)
+        atGeneric (model (f, q.1)).uniformization.expMap q.2 ≫ (toFamily (obj (f, q.1)).left).left)
       (b, z)
   /-- The points `obj a` are dense in S. -/
   dense : IsDenseFamily (obj · |>.left)
@@ -593,18 +593,18 @@ variable {D : PEL E} {R : Subalgebra (𝓞 E) E} {κ : Sort _} {ν : ℕ} [Finit
 
 /-- For a finite set κ, the κ-fold fibre power of the abelian scheme `X.total` over its base, as a
 scheme over the base. -/
-abbrev ThetaFamily.fibrePower (κ : Type) [Finite.{1} κ] : Over Z := ∏ᶜ fun _ : κ ↦ X.total
+abbrev ThetaFamily.fiberPower (κ : Type) [Finite.{1} κ] : Over Z := ∏ᶜ fun _ : κ ↦ X.total
 
 /-- For i in κ, the i-th projection from the κ-fold fibre power of `X.total` to `X.total`, as a
 morphism of underlying schemes. -/
 abbrev ThetaFamily.proj (i : κ) : (∏ᶜ fun (_ : κ) ↦ X.total).left ⟶ X.total.left :=
-  (Pi.π _ i : X.fibrePower κ ⟶ X.total).left
+  (Pi.π _ i : X.fiberPower κ ⟶ X.total).left
 
 /-- Let y be an object of the family X over T, and Q i, for i in κ, sections of its group scheme
 `y.groupScheme` over T. This is the T-point of the κ-fold fibre power of `X.total` whose i-th factor
 is the section Q i followed by the map of y to the family. -/
 def ThetaObject.pointOf (y : ThetaObject X T) (Q : κ → (𝟙_ (Over T) ⟶ y.groupScheme)) :
-    T ⟶ (X.fibrePower κ).left :=
+    T ⟶ (X.fiberPower κ).left :=
   (Pi.lift fun i ↦ y.isGroupBaseChange.pointEquiv (Q i)).left
 
 /-- Let a = (x, ℓ, P) be a point at infinite level with ν marked vectors, and t an O-point, over the
@@ -614,7 +614,7 @@ model (`TorusModel`) on a period map for the frame x and the reflection ℓ: its
 torsion points of the model at the non-zero 𝔪-torsion classes and the images of the vectors P i. -/
 @[mk_iff]
 inductive ThetaFamily.IsPointOf (𝔪 : (𝓞 E)⁰) (a : ModuliPoint E D.Index ν)
-    (t : Spec ⟨O⟩ ⟶ (X.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left) : Prop
+    (t : Spec ⟨O⟩ ⟶ (X.fiberPower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left) : Prop
   /-- Builds `ThetaFamily.IsPointOf` from a torus model `m` of an object `x` over the arc on a
   period map `Y` for `a.frame` and `a.reflection`. It requires a proof that `t` is the point of `x`
   given by the torsion points of `m.fullStructure` and the images under `m.π` of the vectors
@@ -626,7 +626,7 @@ inductive ThetaFamily.IsPointOf (𝔪 : (𝓞 E)⁰) (a : ModuliPoint E D.Index 
 
 /-- The point `y.pointOf Q` lies over the base point of y. -/
 @[reassoc (attr := simp)]
-lemma ThetaObject.pointOf_hom : y.pointOf Q ≫ hom (fibrePower κ) = y := by simp [pointOf]
+lemma ThetaObject.pointOf_hom : y.pointOf Q ≫ hom (fiberPower κ) = y := by simp [pointOf]
 
 /-- The i-th factor of `y.pointOf Q` is the section Q i followed by the map of y to the family. -/
 @[reassoc (attr := simp)]
@@ -639,7 +639,7 @@ lemma Variety.UniversalFamily.exists_isPointOf (U : UniversalFamily D R) (𝔪 :
     (a : ModuliPoint E D.Index ν) :
     ∃ t :
           specOver R ℂ ⟶
-            (Over.map U.base.hom) (U.family.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)),
+            (Over.map U.base.hom) (U.family.fiberPower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)),
       U.family.IsPointOf 𝔪 a t.left := by
   -- The point a is the member at the parameter 0 of some analytic family f, and the universal
   -- family carries a model of the fibre at (f, 0).
@@ -650,27 +650,27 @@ lemma Variety.UniversalFamily.exists_isPointOf (U : UniversalFamily D R) (𝔪 :
 the family that is the point of a with its 𝔪-torsion (`New.ThetaFamily.IsPointOf`): an object
 modelled on (x, ℓ), with its non-zero 𝔪-torsion points and the images of the vectors P i. -/
 def Variety.UniversalFamily.datumPoint (𝔪 : (𝓞 E)⁰) (a : ModuliPoint E D.Index ν) :
-    specOver R ℂ ⟶ (Over.map U.base.hom) (U.family.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)) :=
+    specOver R ℂ ⟶ (Over.map U.base.hom) (U.family.fiberPower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)) :=
   (U.exists_isPointOf 𝔪 a).choose
 
 /-- Two T-points of the κ-fold fibre power of `X.total` are equal if and only if they have the same
 image in the base Z and the same projection to `X.total` for every i in κ. -/
-lemma fibrePower_ext_iff {t t' : T ⟶ (X.fibrePower κ).left} :
+lemma fiberPower_ext_iff {t t' : T ⟶ (X.fiberPower κ).left} :
     t = t' ↔
-      t ≫ (X.fibrePower κ).hom = t' ≫ (X.fibrePower κ).hom ∧ ∀ i : κ, t ≫ proj i = t' ≫ proj i := by
+      t ≫ (X.fiberPower κ).hom = t' ≫ (X.fiberPower κ).hom ∧ ∀ i : κ, t ≫ proj i = t' ≫ proj i := by
   refine ⟨fun h ↦ by simp [h], ?_⟩
   rintro ⟨h_hom, h_proj⟩
   -- Maps with the same base point are maps over the base into a product, which agree when all
   -- their projections agree.
   have h_over :
-      (homMk t h_hom : Over.mk (t' ≫ (X.fibrePower κ).hom) ⟶ X.fibrePower κ) = homMk t' :=
+      (homMk t h_hom : Over.mk (t' ≫ (X.fiberPower κ).hom) ⟶ X.fiberPower κ) = homMk t' :=
     Pi.hom_ext _ _ fun i ↦ OverMorphism.ext (by simpa using h_proj i)
   exact congrArg (fun f ↦ f.left) h_over
 
-variable {t : Spec ⟨O⟩ ⟶ (X.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
+variable {t : Spec ⟨O⟩ ⟶ (X.fiberPower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
   {b : ModuliPoint E D.Index ν} {J : Sort _} [Finite J] {γ : J → (𝓞 E)⁰ × GUPlus E D.Index}
-  {s : Spec (CommRingCat.of ℂ) ⟶ (X.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
-  {u : Spec (CommRingCat.of ℂ) ⟶ (U.family.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
+  {s : Spec (CommRingCat.of ℂ) ⟶ (X.fiberPower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
+  {u : Spec (CommRingCat.of ℂ) ⟶ (U.family.fiberPower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
 
 /-- Let t be an O-point of the fibre power of `X.total` over the arc O. If its generic point
 `genericPt ≫ t` is the point of a with its 𝔪-torsion (`New.ThetaFamily.IsPointOf`), then so is t. -/
@@ -688,7 +688,7 @@ lemma ThetaFamily.IsPointOf.of_generic (h_generic : IsPointOf 𝔪 a (genericPt 
   refine ⟨m', ext_of_isDominant_of_isSeparated (hom _) (by simp) genericPt ?_⟩
   -- Compare the base points and then each factor; torsion sections are values of `π` by
   -- definition, so `hm'` covers both kinds of factor.
-  refine fibrePower_ext_iff.mpr ⟨by simp, ?_⟩
+  refine fiberPower_ext_iff.mpr ⟨by simp, ?_⟩
   rintro (s | i) <;> simp [h_pt, reassoc_of% hm', h_gen.comp_toFamily, fullStructure, ← π.eq_1]
 
 /-- A matrix over the finite adeles that sends every vector with entries in Ô to a vector with
@@ -739,9 +739,9 @@ lemma torsionClass_mulVec_eq_of_mem_levelGU {n : Type} [Fintype n] [DecidableEq 
 /-- The polarisation form of the PEL data D determines its matrix: matrices β, β' over E with the
 same polarisation form are equal. The proof compares the forms on the vectors c eⱼ and (ξ⁻¹)* eᵢ,
 and uses that the trace form of E is non-degenerate and that ξ ≠ 0. -/
-lemma eq_of_polarisationForm_eq {β β' : Matrix D.Index D.Index E}
+lemma eq_of_polarizationForm_eq {β β' : Matrix D.Index D.Index E}
     (h_form : ∀ y w : RealVectors E D.Index,
-      polarisationForm D β y w = polarisationForm D β' y w) :
+      polarizationForm D β y w = polarizationForm D β' y w) :
     β = β' := by
   have hξ : D.ξ ≠ 0 := fun hξ_zero ↦ by
     simpa [hξ_zero] using D.xi_im_pos_and_re_eq_zero v₀
@@ -802,7 +802,7 @@ lemma ThetaObject.TorusModel.eq_and_comp_toFamily_eq_of_mem_levelGU
 with their 𝔪-torsion (`New.ThetaFamily.IsPointOf`). Then s = u exactly when some z in GL_n(E) is an
 isomorphism from a to b at level K(𝔑) ∩ K(𝔪), where 𝔑 is the level of D. -/
 lemma ThetaFamily.IsPointOf.eq_iff
-    {u : Spec (CommRingCat.of ℂ) ⟶ (X.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
+    {u : Spec (CommRingCat.of ℂ) ⟶ (X.fiberPower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν)).left}
     (hs : X.IsPointOf 𝔪 a s) (hu : X.IsPointOf 𝔪 b u) :
     s = u ↔ ∃ z : GL D.Index E, a.IsLevelIso (levelGU D.Index D.level ⊓ levelGU D.Index 𝔪) z b := by
   classical
@@ -814,7 +814,7 @@ lemma ThetaFamily.IsPointOf.eq_iff
   obtain @⟨x, V, hV, Y, m, rfl⟩ := hs
   obtain @⟨x', V', hV', Y', m', rfl⟩ := hu
   have h_lat (w : RealVectors E D.Index) :
-    w ∈ frameLattice b.frame ↔ Y'.realEquiv w ∈ m'.uniformisation.lattice := by
+    w ∈ frameLattice b.frame ↔ Y'.realEquiv w ∈ m'.uniformization.lattice := by
     simp [m'.lattice_eq, mem_classLattice, frameLattice]
   -- s = u says: same base point, same points at the non-zero 𝔪-torsion classes, same marked
   -- points; the level condition says: two level groups, the reflection, the marked points.
@@ -831,7 +831,7 @@ lemma ThetaFamily.IsPointOf.eq_iff
           b.frame⁻¹ * toFinGL z * a.frame ∈ levelGU D.Index 𝔪) ∧
         ratConj z a.reflection = b.reflection ∧
         ∀ i : Fin ν, m'.π (realVecAction z (a.markedPoint i)) = m'.π (b.markedPoint i) by
-    simpa [h_lat, ← π.eq_1, fibrePower_ext_iff, isLevelIso_iff, sub_eq_zero] using h_iff
+    simpa [h_lat, ← π.eq_1, fiberPower_ext_iff, isLevelIso_iff, sub_eq_zero] using h_iff
   constructor
   · rintro ⟨rfl, h_tor, hP⟩
     -- A section of the object is determined by its image in the family.
@@ -850,7 +850,7 @@ lemma ThetaFamily.IsPointOf.eq_iff
     -- Equal forms have equal matrices, so k is a similitude: `a.frame` is a frame for
     -- `Y.formMatrix = zᴴ Y'.formMatrix z`, and `b.frame` one for `Y'.formMatrix`.
     have hβ : Y.formMatrix = z.valᴴ * Y'.formMatrix * z :=
-      eq_of_polarisationForm_eq fun y w ↦ by simpa using hz_form y w
+      eq_of_polarizationForm_eq fun y w ↦ by simpa using hz_form y w
     have h_sim : k ∈ GU E D.Index := by
       refine ⟨(1 : ℚ), one_pos, ?_⟩
       have h_bx_k : b.frame * k = toFinGL z * a.frame := by simp [k, mul_assoc]
@@ -922,7 +922,7 @@ lemma datumPoint_eq_iff :
 instance : HasProjEmbedding X.total.hom := ⟨X.embeds⟩
 
 /-- A fibre power of the abelian scheme of a theta family is projective over the base. -/
-instance : HasProjEmbedding (X.fibrePower κ).hom := .of_isClosedImmersion_pi (𝟙 _)
+instance : HasProjEmbedding (X.fiberPower κ).hom := .of_isClosedImmersion_pi (𝟙 _)
 
 /-- The closure `C.scheme` is projective over the base, as a closed subscheme of a product of fibre
 powers. -/
@@ -953,8 +953,8 @@ lemma GraphClosure.exists_level_point_eq (C : U.GraphClosure γ ν) :
 
 /-- For κ with m elements, the κ-fold fibre power of the abelian scheme 𝒜 over the base S is smooth
 over S of relative dimension m times the dimension of 𝒜 (`New.Variety.abelianDim`). -/
-lemma smooth_fibrePower {m : ℕ} (e : κ ≃ Fin m) :
-    SmoothOfRelativeDimension (m * abelianDim E D.Index) (U.family.fibrePower κ).hom := by
+lemma smooth_fiberPower {m : ℕ} (e : κ ≃ Fin m) :
+    SmoothOfRelativeDimension (m * abelianDim E D.Index) (U.family.fiberPower κ).hom := by
   -- Build one `m`-fold product by induction, one binary product at a time.
   obtain ⟨F, hF⟩ : ∃ F : LimitCone (Discrete.functor fun _ : Fin m ↦ U.family.total),
       SmoothOfRelativeDimension (m * abelianDim E D.Index) F.cone.pt.hom := by
@@ -971,27 +971,27 @@ lemma smooth_fibrePower {m : ℕ} (e : κ ≃ Fin m) :
         SmoothOfRelativeDimension (abelianDim E D.Index + m * abelianDim E D.Index)
           (pullback.snd U.family.total.hom F.cone.pt.hom ≫ F.cone.pt.hom))
   -- The chosen product is isomorphic to it over the base.
-  let i : U.family.fibrePower κ ≅ F.cone.pt :=
+  let i : U.family.fiberPower κ ≅ F.cone.pt :=
     Pi.reindex e (fun _ ↦ U.family.total) ≪≫ limit.isoLimitCone F
   simpa using smoothOfRelativeDimension_comp 0 (f := i.hom.left) (hg := hF)
 
 /-- At level `1` there is no non-zero torsion class, so the fibre power with one factor for each
 of `ν` marked vectors is smooth of relative dimension `ν` times that of 𝒜. -/
-private lemma smoothOfRelativeDimension_fibrePower_one (ν : ℕ) :
+private lemma smoothOfRelativeDimension_fiberPower_one (ν : ℕ) :
   SmoothOfRelativeDimension (ν * abelianDim E D.Index)
-    (U.family.fibrePower (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν)).hom := by
+    (U.family.fiberPower (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν)).hom := by
   have h_empty : IsEmpty (NonzeroTorsion (E := E) 1 D.Index) := ⟨by simp⟩
-  exact smooth_fibrePower (Equiv.emptySum _ _)
+  exact smooth_fiberPower (Equiv.emptySum _ _)
 
 /-- The fibre power of 𝒜 with one factor for each of `ν` marked vectors is smooth over `R` of
 relative dimension `card D.Index - 1 + ν * abelianDim`. -/
-lemma smoothOfRelativeDimension_fibrePower (ν : ℕ) :
+lemma smoothOfRelativeDimension_fiberPower (ν : ℕ) :
     SmoothOfRelativeDimension (card D.Index - 1 + ν * abelianDim E D.Index)
       ((Over.map U.base.hom)
-        (U.family.fibrePower (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))).hom := by
+        (U.family.fiberPower (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))).hom := by
   -- relative dimensions add up in the composite with the structure map of the base
   rw [Nat.add_comm]
-  exact smoothOfRelativeDimension_comp (hf := smoothOfRelativeDimension_fibrePower_one ν)
+  exact smoothOfRelativeDimension_comp (hf := smoothOfRelativeDimension_fiberPower_one ν)
     (hg := U.smooth) ..
 
 /-- The points `datumPoint 1 a` of the points `a` at infinite level with `ν` marked vectors are
@@ -1001,16 +1001,16 @@ lemma isDenseFamily_datumPoint (ν : ℕ) :
   -- The base points from `U.dense`, indexed by pairs `(f, p)`, are dense. A point `y` above the
   -- base point of `(f, p)` is a tuple of points of its fibre, each the image of a vector `P i`.
   have h_empty : IsEmpty (NonzeroTorsion (E := E) 1 D.Index) := ⟨by simp⟩
-  refine U.dense.of_fibres _ (s := (smoothOfRelativeDimension_fibrePower_one ν).smooth) fun ⟨f, p⟩ y
+  refine U.dense.of_fibres _ (s := (smoothOfRelativeDimension_fiberPower_one ν).smooth) fun ⟨f, p⟩ y
     hy ↦ ?_
-  obtain ⟨P, hP⟩ : ∃ P : Fin ν → BallFibre E D.Index, ∀ i : Fin ν,
-      (U.model (f, p)).uniformisation.expMap (P i) =
+  obtain ⟨P, hP⟩ : ∃ P : Fin ν → BallFiber E D.Index, ∀ i : Fin ν,
+      (U.model (f, p)).uniformization.expMap (P i) =
         (ThetaObject.isGroupBaseChange _).pointEquiv.symm (homMk (y ≫ U.family.proj (.inr i))) :=
-    Classical.skolem.mp fun i ↦ (U.model (f, p)).uniformisation.surjective _
+    Classical.skolem.mp fun i ↦ (U.model (f, p)).uniformization.surjective _
   -- `y` is the point of the datum `f.ballPoint 0 (p, P)`: it lies over the base point of
   -- `(f, p)`, there is no non-zero 1-torsion class, and its `i`-th factor is the image of `P i`
   have h_pt : U.family.IsPointOf 1 (f.ballPoint 0 (p, P)) y := by
-    refine ⟨U.model (f, p), fibrePower_ext_iff.mpr ⟨by rwa [pointOf_hom], ?_⟩⟩
+    refine ⟨U.model (f, p), fiberPower_ext_iff.mpr ⟨by rwa [pointOf_hom], ?_⟩⟩
     rintro (s | i)
     · exact isEmptyElim s
     · simp [π, IsGroupBaseChange.pointEquiv, hP i]
@@ -1021,8 +1021,8 @@ with one factor for each of `ν` marked vectors that sends `datumPoint 1 (a.act 
 `datumPoint 1 (a.act g α)`. -/
 lemma exists_comp_datumPoint_act (ν : ℕ) :
     ∃ m : (Fin ν → 𝓞 E) →
-        ((Over.map U.base.hom) (U.family.fibrePower (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν)) ⟶
-          (Over.map U.base.hom) (U.family.fibrePower (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))),
+        ((Over.map U.base.hom) (U.family.fiberPower (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν)) ⟶
+          (Over.map U.base.hom) (U.family.fiberPower (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))),
       ∀ (g : GUPlus E D.Index) (α : Fin ν → 𝓞 E) (a : ModuliPoint E D.Index ν),
         U.datumPoint 1 (ModuliPoint.act a g) ≫ m α = U.datumPoint 1 (a.act g α) := by
   -- `m α` multiplies the factor of the `i`-th marked point by `α i` and the other factors by `1`.
@@ -1041,7 +1041,7 @@ lemma exists_comp_datumPoint_act (ν : ℕ) :
 `card D.Index - 1 + ν * abelianDim`; (b) the points `c a` are dense in Z; (c) for each family α of
 integers of E a self-map `m α` of Z sends `c (a.act g)` to `c (a.act g α)`. -/
 lemma smooth_and_isDenseFamily_and_exists_comp_eq_act (ν : ℕ) :
-    let Z := (Over.map U.base.hom) (fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν))
+    let Z := (Over.map U.base.hom) (fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin ν))
     let c : ModuliPoint E D.Index ν → (specOver R ℂ ⟶ Z) := datumPoint 1
     -- (a)
     SmoothOfRelativeDimension (card D.Index - 1 + ν * abelianDim E D.Index) Z.hom ∧
@@ -1051,7 +1051,7 @@ lemma smooth_and_isDenseFamily_and_exists_comp_eq_act (ν : ℕ) :
     ∃ m : (Fin ν → 𝓞 E) → (Z ⟶ Z), ∀ (g : GUPlus E D.Index) (α : Fin ν → 𝓞 E)
         (a : ModuliPoint E D.Index ν),
       c (ModuliPoint.act a g) ≫ m α = c (a.act g α) :=
-  ⟨smoothOfRelativeDimension_fibrePower ν, isDenseFamily_datumPoint ν, exists_comp_datumPoint_act ν⟩
+  ⟨smoothOfRelativeDimension_fiberPower ν, isDenseFamily_datumPoint ν, exists_comp_datumPoint_act ν⟩
 
 end Variety.UniversalFamily
 

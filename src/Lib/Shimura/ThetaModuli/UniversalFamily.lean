@@ -201,7 +201,7 @@ abbrev FamilyParameter (D : PEL E) : Type := AnalyticFamily D × BallBase D.Inde
 
 /-- The theta torus of the family `a.1` at the point `a.2`. -/
 abbrev FamilyParameter.torus (a : FamilyParameter D) :
-    ThetaTorus D a.1.frame (a.1.reflection a.2) (BallFibre E D.Index) :=
+    ThetaTorus D a.1.frame (a.1.reflection a.2) (BallFiber E D.Index) :=
   a.1.torus a.2
 
 /-- The theta coordinates of the level point `ω` of the theta torus at the parameter `a`. -/
@@ -310,8 +310,8 @@ lemma exists_arc_isGoodAt (hR_good : IsGoodOver D R)
 
 /-- The family `X` over the closure has the theta tori as fibres: at each point `b` there is a model
 of the fibre on the torus at `y b` whose theta coordinates are those of the torus. -/
-def HasThetaFibres (X : ThetaFamily D C.scheme.left C.toIntegers) : Prop :=
-  ∀ b : B, X.IsModelledOn (C.complexPoint b) (y b).torus
+def HasThetaFibers (X : ThetaFamily D C.scheme.left C.toIntegers) : Prop :=
+  ∀ b : B, X.IsModeledOn (C.complexPoint b) (y b).torus
 
 /-- Let `R` be a noetherian `𝓞 E`-subalgebra of the CM field `E`, the localisation of `𝓞 E` at `M`,
 with the PEL data `D` good at its maximal ideals. Let `C` be the reduced closure, in a product over
@@ -320,9 +320,9 @@ parameters `y b`. If the complex points of `C` at finitely many parameters `y (j
 there is a theta family `X` over `C` (via its structure map to `Spec 𝓞 E`) such that for every `b`
 the fibre at the complex point `b` has a model on the theta torus at `y b` with the same theta
 coordinates. -/
-lemma exists_hasThetaFibres (M : Submonoid (𝓞 E)) [IsLocalization M R] (hR_good : IsGoodOver D R)
+lemma exists_hasThetaFibers (M : Submonoid (𝓞 E)) [IsLocalization M R] (hR_good : IsGoodOver D R)
     (h_dense : IsDenseFamily fun i : κ ↦ C.complexPoint (j i)) :
-    ∃ X : ThetaFamily D C.scheme.left C.toIntegers, C.HasThetaFibres X := by
+    ∃ X : ThetaFamily D C.scheme.left C.toIntegers, C.HasThetaFibers X := by
   -- Apply `exists_thetaFamily_of_points`, using good reduction along the arcs `α z`, whose closed
   -- points are `t z`.
   have h_noeth : IsLocallyNoetherian C.scheme.left :=
@@ -384,15 +384,15 @@ lemma holomorphicAt_complexPoint {F : AnalyticFamily D} ⦃b : BallBase D.Index�
 
 /-- Let `m a` be a model of the fibre of `X` at the parameter `a` on the theta torus at `a`, whose
 theta functions `(m a).θ` are those of the torus (`hθ`). Then for a point `b` of the domain of an
-analytic family `F`, the uniformisations `(m (F, b')).uniformisation` of the fibres, followed by the
+analytic family `F`, the uniformisations `(m (F, b')).uniformization` of the fibres, followed by the
 maps to the total space, are holomorphic in the parameter `b'` and the fibre variable together. -/
-lemma holomorphicAt_uniformisation {X : ThetaFamily D C.scheme.left C.toIntegers}
+lemma holomorphicAt_uniformization {X : ThetaFamily D C.scheme.left C.toIntegers}
     (m : ∀ a : FamilyParameter D, TorusModel (X := X) (C.complexPoint a) a.torus.toPeriodMap)
     (hθ : ∀ a : FamilyParameter D,
-      (m a).θ = fun (z : BallFibre E D.Index) (μ : D.dualTorsion) ↦ a.torus.thetaCoord μ z)
-    (F : AnalyticFamily D) (b : BallBase D.Index) (hb : b ∈ F.domain) (z : BallFibre E D.Index) :
-    HolomorphicAt (fun q : BallBase D.Index × BallFibre E D.Index ↦
-      atGeneric (m (F, q.1)).uniformisation.expMap q.2 ≫
+      (m a).θ = fun (z : BallFiber E D.Index) (μ : D.dualTorsion) ↦ a.torus.thetaCoord μ z)
+    (F : AnalyticFamily D) (b : BallBase D.Index) (hb : b ∈ F.domain) (z : BallFiber E D.Index) :
+    HolomorphicAt (fun q : BallBase D.Index × BallFiber E D.Index ↦
+      atGeneric (m (F, q.1)).uniformization.expMap q.2 ≫
         (ThetaObject.toFamily (X := X) (C.complexPoint (F, q.1))).left) (b, z) := by
   -- Both the theta coordinates on the fibre and the coordinates of the base point are holomorphic.
   obtain ⟨u, hu, hu_ne⟩ := F.exists_analytic_thetaCoord hb
@@ -423,7 +423,7 @@ lemma point_eq_of_isLevelIso (hR_good : IsGoodOver D R) {x x' : FamilyParameter 
     C.point x = C.point x' := by
   -- Compare the models of the two fibres in the family over the closure of these two parameters.
   obtain ⟨C'⟩ : Nonempty (ThetaClosure R ![x, x']) := inferInstance
-  obtain ⟨X, hX⟩ := C'.exists_hasThetaFibres (j := id) M hR_good C'.isSeparatingFamily.right
+  obtain ⟨X, hX⟩ := C'.exists_hasThetaFibers (j := id) M hR_good C'.isSeparatingFamily.right
   choose m _ using hX
   have h_eq : C'.point 0 = C'.point 1 := by
     -- `h_pt`: by the level isomorphism, the models `m 0` and `m 1` give the same point of the
@@ -470,7 +470,7 @@ generic point is the complex point at `a` and whose closed point lies over a pri
 Then some open `U` through which `α` factors is smooth of relative dimension `card D.Index - 1`
 over `Spec R`. -/
 lemma exists_smooth_near_arc {X : ThetaFamily D C.scheme.left C.toIntegers}
-    (hX : C.HasThetaFibres X)
+    (hX : C.HasThetaFibers X)
     {a : FamilyParameter D} (ha : C.IsGenericParameter a.fst a.snd) {v : Valuation ℂ NNReal}
     {α : Spec (.of v.valuationSubring) ⟶ C.scheme.left}
     (hα : specMap v.valuationSubring.subtype ≫ α = C.complexPoint a)
@@ -485,7 +485,7 @@ lemma exists_smooth_near_arc {X : ThetaFamily D C.scheme.left C.toIntegers}
   choose m hθ using hX
   have h_imm : IsHolomorphicImmersionAt (fun b' : BallBase D.Index ↦ C.complexPoint (F, b')) b :=
     F.isHolomorphicImmersionAt_of_holomorphicAt (fun b' ↦ m (F, b')) hb
-      (C.holomorphicAt_uniformisation m hθ F b hb)
+      (C.holomorphicAt_uniformization m hθ F b hb)
   -- near `b`, the points along `F` are specialisations of the point at `b` (`h_generic`)
   refine exists_landsIn_smoothOfRelativeDimension (ϑ := residue _) C.scheme.hom h_imm hα
     (fun _ ↦ Over.w _)
@@ -519,7 +519,7 @@ theorem nonempty_universalFamily {M : Submonoid (𝓞 E)} [IsLocalization M R]
   have := IsLocalization.isDedekindDomain (𝓞 E) hM_le R
   obtain ⟨C⟩ : Nonempty (ThetaClosure (D := D) R id) := inferInstance
   obtain ⟨ι, hι, a, h_generic, h_dense⟩ := C.exists_finite_isDenseFamily M hR_good
-  obtain ⟨X, hX⟩ := C.exists_hasThetaFibres M hR_good h_dense
+  obtain ⟨X, hX⟩ := C.exists_hasThetaFibers M hR_good h_dense
   choose i v α hα h_spec h_good using C.exists_arc_isGoodAt hR_good h_dense
   choose U hU hU_smooth using fun z ↦
     C.exists_smooth_near_arc hX (h_generic (i z)) (hα z) (h_good z)
@@ -527,7 +527,7 @@ theorem nonempty_universalFamily {M : Submonoid (𝓞 E)} [IsLocalization M R]
   exact ⟨{
     isDedekindDomain := inferInstance, base := C.scheme, family := X
     hasProjEmbedding := C.hasProjEmbedding, obj := C.point, model := m
-    holomorphic := C.holomorphicAt_uniformisation m hθ, dense := C.isSeparatingFamily.right
+    holomorphic := C.holomorphicAt_uniformization m hθ, dense := C.isSeparatingFamily.right
     smooth := HasRingHomProperty.instIsZariskiLocalAtSource.of_iSup_eq_top U
       (top_unique fun z _ ↦ le_iSup U z ((h_spec z).mem_open (U z).isOpen (hU z ⟨⟩)))
       hU_smooth }⟩

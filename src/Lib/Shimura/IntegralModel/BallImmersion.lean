@@ -26,7 +26,7 @@ reflection (1 on a line, −1 on a complement) and marked vectors.
   `New.Variety.UniversalFamily.GraphClosure.holomorphicAt_point`: the points of an analytic family
   depend holomorphically, and immersively, on the parameter.
 * `New.Variety.UniversalFamily.GraphClosure.exists_arc`,
-  `New.Variety.UniversalFamily.GraphClosure.exists_arc_centre_eq`: every point of `C.scheme`, and
+  `New.Variety.UniversalFamily.GraphClosure.exists_arc_center_eq`: every point of `C.scheme`, and
   every complex point, is the centre of an arc of objects.
 * `New.Variety.UniversalFamily.GraphClosure.point_surjective`: suppose some map `c` sends each
   `C.point a` to `U.datumPoint 1 a`. Then every complex point of `C.scheme` is some `C.point a`.
@@ -118,9 +118,9 @@ lemma AnalyticFamily.isHolomorphicImmersionAt_of_holomorphicAt {f : AnalyticFami
     {X : ThetaFamily D Z τ} {x : BallBase D.Index → ThetaObject X (Spec (CommRingCat.of ℂ))}
     (m : ∀ b : BallBase D.Index, (x b).TorusModel (f.torus b).toPeriodMap) {b : BallBase D.Index}
     (hb : b ∈ f.domain) :
-    let ψ (q : BallBase D.Index × BallFibre E D.Index) :=
-      atGeneric (m q.1).uniformisation.expMap q.2 ≫ (x q.1).toFamily.left
-    (∀ z : BallFibre E D.Index, HolomorphicAt ψ (b, z)) → IsHolomorphicImmersionAt x b := by
+    let ψ (q : BallBase D.Index × BallFiber E D.Index) :=
+      atGeneric (m q.1).uniformization.expMap q.2 ≫ (x q.1).toFamily.left
+    (∀ z : BallFiber E D.Index, HolomorphicAt ψ (b, z)) → IsHolomorphicImmersionAt x b := by
   intro ψ h_hol
   refine ⟨?_, fun v hv ↦ ?_⟩
   · -- The point `x b'` of the base is the image of `ψ (b', 0)`.
@@ -128,14 +128,14 @@ lemma AnalyticFamily.isHolomorphicImmersionAt_of_holomorphicAt {f : AnalyticFami
   -- Let the base point be still in the direction `v`. Follow `y` along the family as
   -- `T y b' = Q_b' Q_b⁻¹ y`, with derivative `T' y` along `v`. By `f.eq_zero_of_linear` it is
   -- enough that `T'` commutes with `I`.
-  let T (y : BallFibre E D.Index) (b' : BallBase D.Index) : BallFibre E D.Index :=
+  let T (y : BallFiber E D.Index) (b' : BallBase D.Index) : BallFiber E D.Index :=
     (f.torus b').realEquiv ((f.torus b).realEquiv.symm y)
-  let T' (y : BallFibre E D.Index) : BallFibre E D.Index := fderiv ℂ (T y) b v
+  let T' (y : BallFiber E D.Index) : BallFiber E D.Index := fderiv ℂ (T y) b v
   have h_an (w : RealVectors E D.Index) : AnalyticAt ℂ (fun b' ↦ (f.torus b').realEquiv w) b :=
     f.analyticAt b hb w
   -- The torsion sections `b' ↦ ψ (b', k⁻¹ • T l b')`, `l` in the lattice, are still: their `k`-th
   -- multiple is the zero section over the base point, and multiplication by `k` is an immersion.
-  have h_torsion (l : BallFibre E D.Index) (hl : l ∈ (m b).uniformisation.lattice) (k : ℕ)
+  have h_torsion (l : BallFiber E D.Index) (hl : l ∈ (m b).uniformization.lattice) (k : ℕ)
     (hk : k ≠ 0) :
       IsFirstOrderConst ψ (b, (k : ℂ)⁻¹ • T l b) (v, (k : ℂ)⁻¹ • T' l) := by
     have h_curve : HasFDerivAt (fun b' : BallBase D.Index ↦ (b', (k : ℂ)⁻¹ • T l b'))
@@ -144,7 +144,7 @@ lemma AnalyticFamily.isHolomorphicImmersionAt_of_holomorphicAt {f : AnalyticFami
         ((h_an ((f.torus b).realEquiv.symm l)).differentiableAt.hasFDerivAt.const_smul (k : ℂ)⁻¹)
     -- `T l b'` lies in the lattice of the member `b'`: the period maps carry the lattices onto
     -- each other.
-    have h_lattice (b' : BallBase D.Index) : T l b' ∈ (m b').uniformisation.lattice := by
+    have h_lattice (b' : BallBase D.Index) : T l b' ∈ (m b').uniformization.lattice := by
       simp_all [T, TorusModel.lattice_eq, mem_classLattice, (f.torus _).realEquiv.eq_symm_apply]
     -- So the `k`-th multiple of the section is the zero section over `x b'`.
     have h_mul_eq (b' : BallBase D.Index) :
@@ -159,7 +159,7 @@ lemma AnalyticFamily.isHolomorphicImmersionAt_of_holomorphicAt {f : AnalyticFami
   -- On the fibre over `b`, `ψ` is a uniformisation, hence an immersion; so it is enough to test
   -- `T' (I • y) - I • T' y` on functions `r` regular near `ψ (b, 0)`.
   obtain ⟨-, h_fibre_still⟩ :=
-    (m b).uniformisation.isHolomorphicImmersionAt_of_isPullback (x b).isGroupBaseChange.isPullback 0
+    (m b).uniformization.isHolomorphicImmersionAt_of_isPullback (x b).isGroupBaseChange.isPullback 0
   refine f.eq_zero_of_linear b hb v fun y ↦ sub_eq_zero.mp (h_fibre_still _ ?_)
   refine (isJet_comp_iff (hasFDerivAt_prodMk_right b 0) (h_hol 0)).mpr
     (isFirstOrderConst_iff.mpr fun U r hU ↦ ?_)
@@ -168,12 +168,12 @@ lemma AnalyticFamily.isHolomorphicImmersionAt_of_holomorphicAt {f : AnalyticFami
       AnalyticAt ℂ (fun w ↦ PointFn.ofSection r (CommRingCat.of ℂ) (ψ w)) (b, 0) :=
     h_hol 0 (PointFn.isRegularOn_ofSection r) hU
   obtain ⟨D₂, hD₂⟩ := h_analytic.fderiv.differentiableAt
-  set i : BallFibre E D.Index →L[ℂ] BallBase D.Index × BallFibre E D.Index := .inr ℂ _ _
+  set i : BallFiber E D.Index →L[ℂ] BallBase D.Index × BallFiber E D.Index := .inr ℂ _ _
   -- The derivative of `r ∘ ψ` along `T' y` is given by the second derivative `D₂`, linearly in `y`.
-  have h_fderiv_T'_eq (y : BallFibre E D.Index) :
+  have h_fderiv_T'_eq (y : BallFiber E D.Index) :
       fderiv ℂ (fun q ↦ PointFn.ofSection r _ (ψ q)) (b, 0) (i (T' y)) = -D₂ (i y) (v, 0) := by
     -- Both sides are real-linear in `y`, and the lattice spans.
-    have h_span : y ∈ span ℝ ((m b).uniformisation.lattice : Set (BallFibre E D.Index)) := by
+    have h_span : y ∈ span ℝ ((m b).uniformization.lattice : Set (BallFiber E D.Index)) := by
       simp [IsZLattice.span_top]
     induction h_span using span_induction with
     | mem l hl =>
@@ -244,16 +244,16 @@ of `f` at `p`, with its non-zero `𝔪`-torsion points and the points `P` transl
 holomorphic immersion at every `p` whose base coordinate `p.1` lies in the domain of `f`. -/
 lemma UniversalFamily.isHolomorphicImmersionAt_datumPoint {f : AnalyticFamily D}
     {P : Fin ν → RealVectors E D.Index} {𝔪 : nonZeroDivisors (𝓞 E)}
-    (p : BallBase D.Index × (Fin ν → BallFibre E D.Index)) (hp : p.1 ∈ f.domain) :
+    (p : BallBase D.Index × (Fin ν → BallFiber E D.Index)) (hp : p.1 ∈ f.domain) :
     IsHolomorphicImmersionAt (fun q ↦ (U.datumPoint 𝔪 (f.ballPoint P q)).left) p := by
   obtain ⟨h_base_hol, h_base_imm⟩ : IsHolomorphicImmersionAt (fun b ↦ (U.obj (f, b)).left) p.1 :=
     f.isHolomorphicImmersionAt_of_holomorphicAt (U.model ⟨f, ·⟩) hp (U.holomorphic f _ hp)
   have h_an (w : RealVectors E D.Index) : ContDiffAt ℂ ⊤ (fun q ↦ (f.torus q.1).realEquiv w) p :=
     (f.analyticAt _ hp w).contDiffAt.fst''
   -- The uniformisation of the family at an analytic fibre coordinate `k` is holomorphic.
-  have h_unif (k : BallBase D.Index × (Fin ν → BallFibre E D.Index) → BallFibre E D.Index)
+  have h_unif (k : BallBase D.Index × (Fin ν → BallFiber E D.Index) → BallFiber E D.Index)
       (hk : ContDiffAt ℂ ⊤ k p) :
-      HolomorphicAt (fun q ↦ atGeneric (U.model (f, q.1)).uniformisation.expMap (k q) ≫
+      HolomorphicAt (fun q ↦ atGeneric (U.model (f, q.1)).uniformization.expMap (k q) ≫
         (ThetaObject.toFamily (U.obj (f, q.1)).left).left) p :=
     (U.holomorphic f _ hp _).comp (v₀ := p) (g := fun q ↦ (q.1, k q))
       (ContDiffAt.analyticAt (by fun_prop))
@@ -262,7 +262,7 @@ lemma UniversalFamily.isHolomorphicImmersionAt_datumPoint {f : AnalyticFamily D}
   have h_hol : HolomorphicAt (fun q ↦ (U.datumPoint 𝔪 (f.ballPoint P q)).left) p := by
     simp_rw [← IsPointOf.eq_datumPoint (a := f.ballPoint P _) ⟨U.model (f, _), rfl⟩]
     refine HasGermAt.of_jointly_mono (fun l ↦ (Over.map U.base.hom).map (Limits.Pi.π _ l))
-      (fun h_eq ↦ ext (fibrePower_ext_iff.mpr ⟨?_, fun l ↦ congrArg (·.left) (h_eq l)⟩)) ?_
+      (fun h_eq ↦ ext (fiberPower_ext_iff.mpr ⟨?_, fun l ↦ congrArg (·.left) (h_eq l)⟩)) ?_
       -- over the base point: `simp` leaves `Spec.map _ = ?b`, and `rfl` fixes the implicit `b`
       (by simp; rfl)
     · -- The projections separate points: there is at least one factor, and it sees the base.
@@ -277,10 +277,10 @@ lemma UniversalFamily.isHolomorphicImmersionAt_datumPoint {f : AnalyticFamily D}
   refine ⟨h_hol, fun (v, y) hv ↦ ?_⟩
   -- Project to the base to get `v = 0`, then to the `i`-th marked point to get `y i = 0`.
   have h_base_still : IsFirstOrderConst (fun b ↦ (U.obj (f, b)).left) p.1
-      (ContinuousLinearMap.fst ℂ (BallBase D.Index) (Fin ν → BallFibre E D.Index) (v, y)) := by
+      (ContinuousLinearMap.fst ℂ (BallBase D.Index) (Fin ν → BallFiber E D.Index) (v, y)) := by
     refine (isJet_comp_iff hasFDerivAt_fst h_base_hol).mp ?_
     simp_rw [← IsPointOf.eq_datumPoint (a := f.ballPoint P _) ⟨U.model (f, _), rfl⟩] at hv
-    simpa using hv.comp_hom (U.family.fibrePower _).hom
+    simpa using hv.comp_hom (U.family.fiberPower _).hom
   obtain rfl : v = 0 := h_base_imm v h_base_still
   suffices h_fibre_zero : ∀ i, y i = 0 by simpa [funext_iff] using h_fibre_zero
   intro i
@@ -292,7 +292,7 @@ lemma UniversalFamily.isHolomorphicImmersionAt_datumPoint {f : AnalyticFamily D}
         (U.family.proj (.inr i))
   simp_rw [← IsPointOf.eq_datumPoint (a := f.ballPoint P _) ⟨U.model (f, _), rfl⟩] at h_fibre
   obtain ⟨h_fibre_hol, h_imm⟩ := (U.model
-    (f, p.1)).uniformisation.isHolomorphicImmersionAt_of_isPullback
+    (f, p.1)).uniformization.isHolomorphicImmersionAt_of_isPullback
       (ThetaObject.isGroupBaseChange (X := U.family) _).isPullback
         (p.2 i + (f.torus p.1).realEquiv (P i))
   refine h_imm (y i) ((isJet_comp_iff
@@ -307,16 +307,16 @@ sending a parameter `p` to the complex point `C.point (f.ballPoint P p)` of `C` 
 every `p` whose base coordinate `p.1` lies in the domain of `f`. -/
 lemma holomorphicAt_point (C : U.GraphClosure γ ν) {f : AnalyticFamily D}
     (P : Fin ν → RealVectors E D.Index)
-    (p : BallBase D.Index × (Fin ν → BallFibre E D.Index)) (hp : p.1 ∈ f.domain) :
+    (p : BallBase D.Index × (Fin ν → BallFiber E D.Index)) (hp : p.1 ∈ f.domain) :
     HolomorphicAt (fun q ↦ (C.point (f.ballPoint P q)).left) p := by
   -- Test on the components of the cover; each is given by a translated family, so
   -- `isHolomorphicImmersionAt_datumPoint` applies.
   refine .of_jointly_mono _ C.hom_ext (fun j ↦ ?_) fun q ↦ Over.w (C.point (f.ballPoint P q))
   -- The translate by `(γ j).2` of a point of `f` is the point of the translated family.
-  have h_act (q : BallBase D.Index × (Fin ν → BallFibre E D.Index)) :
+  have h_act (q : BallBase D.Index × (Fin ν → BallFiber E D.Index)) :
       (f.ballPoint P q).act (γ j).2 = (f.heckeTranslate (γ j).2).ballPoint P q := by
     simp [act, AnalyticFamily.heckeTranslate, funext_iff]
-  have h_component (q : BallBase D.Index × (Fin ν → BallFibre E D.Index)) :
+  have h_component (q : BallBase D.Index × (Fin ν → BallFiber E D.Index)) :
       (C.point (f.ballPoint P q)).left ≫ (ReducedClosure.proj C j).left =
         (U.datumPoint (γ j).1 ((f.heckeTranslate (γ j).2).ballPoint P q)).left := by
     rw [← comp_left, C.point_comp_proj, h_act]
@@ -338,7 +338,7 @@ lemma exists_arc (C : U.GraphClosure γ ν) (z : C.scheme.left) :
       -- (b)
       ∀ {𝔪 : nonZeroDivisors (𝓞 E)}
         {u : C.scheme ⟶
-          (Over.map U.base.hom).obj (ThetaFamily.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν))}
+          (Over.map U.base.hom).obj (ThetaFamily.fiberPower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν))}
         {a : ModuliPoint E D.Index ν},
         C.point b ≫ u = U.datumPoint 𝔪 a → U.family.IsPointOf 𝔪 a (α ≫ u.left) := by
   have := U.isDedekindDomain
@@ -381,7 +381,7 @@ point `b` and a ring map `φ` from the residue field of `V` to `ℂ` with two pr
 closed point of `α`, seen through `φ`, is `t`. (b) Whenever `C.point b ≫ u` is the point
 `U.datumPoint 𝔪 a`, the composite of `α` and `u` is a point of the universal family for `a` at level
 `𝔪`. -/
-lemma exists_arc_centre_eq (C : U.GraphClosure γ ν)
+lemma exists_arc_center_eq (C : U.GraphClosure γ ν)
     (t : Over.mk (Spec.map (CommRingCat.ofHom (algebraMap R ℂ))) ⟶ C.scheme) :
     ∃ (V : ValuationSubring ℂ), ∃ (α : Spec (CommRingCat.of V) ⟶ C.scheme.left),
       ∃ (b : ModuliPoint E D.Index ν), ∃ (φ : ResidueField V →+* ℂ),
@@ -389,7 +389,7 @@ lemma exists_arc_centre_eq (C : U.GraphClosure γ ν)
       specMap (φ.comp (residue V)) ≫ α = t.left ∧
       -- (b)
       ∀ {𝔪 : nonZeroDivisors (𝓞 E)} {u : C.scheme ⟶
-          (Over.map U.base.hom).obj (ThetaFamily.fibrePower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν))}
+          (Over.map U.base.hom).obj (ThetaFamily.fiberPower (NonzeroTorsion 𝔪 D.Index ⊕ Fin ν))}
         {a : ModuliPoint E D.Index ν},
         C.point b ≫ u = U.datumPoint 𝔪 a → U.family.IsPointOf 𝔪 a (α ≫ u.left) := by
   -- Take an arc `α` over a valuation ring `V` centred at the image `s` of `t`. The residue field of
@@ -417,13 +417,13 @@ point given by an object modelled on (x, ℓ) with the images of the P i. Then e
 over `R` of `C.scheme` is `C.point a` for some a. -/
 lemma point_surjective (C : U.GraphClosure γ ν)
     {c : C.scheme ⟶
-      (Over.map U.base.hom).obj (ThetaFamily.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν))}
+      (Over.map U.base.hom).obj (ThetaFamily.fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin ν))}
     (hc : ∀ a : ModuliPoint E D.Index ν, C.point a ≫ c = U.datumPoint 1 a) :
     C.point.Surjective := by
   -- Follow an arc from a point `C.point b` to `t`; at its centre the object has a model `(g, ℓ)`,
   -- and the isogenies between components identify `t` with `C.point (g, ℓ, P ∘ b.markedPoint)`.
   intro t
-  obtain ⟨V, α, b, φ, h_centre, h_arc⟩ := C.exists_arc_centre_eq t
+  obtain ⟨V, α, b, φ, h_centre, h_arc⟩ := C.exists_arc_center_eq t
   -- Along the arc `α ≫ c` is the point of an object `y` with a model `e`.
   obtain @⟨y, V_y, h_V_y, Y_y, e, he⟩ := h_arc (hc b)
   -- Pull objects and full structures back to the centre; there `y` is modelled on some `(g, ℓ)`.
@@ -438,7 +438,7 @@ lemma point_surjective (C : U.GraphClosure γ ν)
       -- The embedding of `R` in `ℂ` is `Φ v₀` by definition.
       _ = Φ v₀ r.val := rfl
   obtain ⟨g, ℓ, d, Y, m, hm, h_refl⟩ := exists_torusModel (f y e.fullStructure) h_struct
-  have h_onto : m.π.Surjective := m.uniformisation.surjective.comp Y.realEquiv.surjective
+  have h_onto : m.π.Surjective := m.uniformization.surjective.comp Y.realEquiv.surjective
   choose P hP using fun w : RealVectors E D.Index ↦
     h_onto ((h_pb y).isGroupBaseChange.pullSection (e.π w))
   -- The candidate is `(g, ℓ, P ∘ b.markedPoint)`; compare it with `t` on each component `i`.
@@ -488,7 +488,7 @@ lemma point_surjective (C : U.GraphClosure γ ν)
     refine ⟨m', ?_⟩
     rw [comp_left, ← reassoc_of% h_centre, he']
     -- `↓`: `hz_π` must rewrite before the other lemmas
-    simp [fibrePower_ext_iff, ← (h_pb _).comp_toFamily, ↓← hz_π, pullSection_comp_assoc, act,
+    simp [fiberPower_ext_iff, ← (h_pb _).comp_toFamily, ↓← hz_π, pullSection_comp_assoc, act,
       hm', hf, hP, hψ_sec, hχ, h_pb]
   refine (C.point_comp_proj _ i).trans (ext ((isPointOf_datumPoint.eq_iff h_pt).mpr ⟨z, ?_⟩))
   exact isLevelIso_act_of_inv_eq _ h_matrix hz_ℓ fun j ↦ rfl

@@ -959,13 +959,13 @@ lemma New.Variety.UniversalFamily.exists_ne_bot_factorsThrough_sup {E k : Type} 
     (hβ : D.β = algebraMap (𝓞 (QuadField d₀)) (𝓞 E) (betaK d₀))
     -- a point of level one over a valuation subring of `ℂ`
     {V : ValuationSubring ℂ} {z : ModuliPoint E D.Index d}
-    {s : Spec (CommRingCat.of V) ⟶ (U.family.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin d)).left}
+    {s : Spec (CommRingCat.of V) ⟶ (U.family.fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin d)).left}
     (h_point : U.family.IsPointOf 1 z s)
     -- the reduction `x₀` of the object under `s` to an algebraically closed field
     {w : SplitFinPlace E} [Field k] [IsAlgClosed k] {π : V →+* k} (hπ : Function.Surjective π)
     {x₀ : ThetaObject U.family (Spec (CommRingCat.of k))}
     (hx₀ : x₀.IsPullbackAlong (specMap π)
-      (s ≫ (U.family.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin d)).hom))
+      (s ≫ (U.family.fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin d)).hom))
     -- the place lies below the reduction map, and is good and safe
     (h_ker : w.val.asIdeal = RingHom.ker x₀.baseHom) (h_good : D.IsGoodAt w.val.asIdeal)
     (h_safe : IsSafe D.level w.val)
@@ -973,7 +973,7 @@ lemma New.Variety.UniversalFamily.exists_ne_bot_factorsThrough_sup {E k : Type} 
     {l : ℕ} [Fact l.Prime] [CharP k l]
     {m : Submodule (ResField w.val) (D.Index → ResField w.val) → ℕ}
     {α : Submodule (ResField w.val) (D.Index → ResField w.val) →
-      (Spec (CommRingCat.of V) ⟶ (U.family.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin d)).left)}
+      (Spec (CommRingCat.of V) ⟶ (U.family.fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin d)).left)}
     (h_exp : ∀ A : Submodule (ResField w.val) (D.Index → ResField w.val),
       l ^ m A = w.val.q ^ (D.rank - finrank (ResField w.val) A))
     (h_nbr : ∀ A : Submodule (ResField w.val) (D.Index → ResField w.val),
@@ -1052,7 +1052,7 @@ lemma New.Variety.UniversalFamily.exists_ne_bot_factorsThrough_sup {E k : Type} 
   have hψ_π_one : ∀ (B : Submodule (ResField w.val) (D.Index → ResField w.val))
       (r : RealVectors E D.Index), e.π r ≫ ψ B = (e' B).π r := by simpa using hψ_π
   -- `↓`: `hψ_π_one` must rewrite the sections before `simp` splits the composites
-  simp [fibrePower_ext_iff, hα_eq, ModuliPoint.act, ↓← hψ_π_one, -comp_left,
+  simp [fiberPower_ext_iff, hα_eq, ModuliPoint.act, ↓← hψ_π_one, -comp_left,
     ← comp_left_assoc, ← (hx _).isGroupBaseChange.pullSection_comp_assoc,
     ← (hg _).pullSection_comp, (hx _).comp_toFamily, ← h_proj, hj, hx, h_base]
 

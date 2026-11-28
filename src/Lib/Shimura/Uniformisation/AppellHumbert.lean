@@ -11,7 +11,7 @@ import Lib.PadicComparison.Descent.TestCategory
 The existence half of the Appell–Humbert theorem, for a projective embedding N of a uniformised
 group A(ℂ) = V/L whose class satisfies the parallelogram law.
 
-* `New.Uniformisation.appell_humbert`: the coordinates of N are theta functions for some
+* `New.Uniformization.appell_humbert`: the coordinates of N are theta functions for some
   Appell–Humbert data (L, B, χ) with positive Riemann form.
 * `New.exists_analyticAt_double_eq`, `New.exists_extension_double`, `New.induction_on_double`: the
   doubling equation near 0, and its continuation to the whole space by halving.
@@ -21,7 +21,7 @@ multiplying c by exp q(z, z) for a suitable quadratic form q, the doubling equat
 σ(2z) = σ(z)⁴c(z) is solved near 0 and continued to V by halving. Then σ trivialises the pullback of
 N.
 
-`New.Uniformisation` A V is a surjective homomorphism e = `u.expMap` : V → A(ℂ), holomorphic and
+`New.Uniformization` A V is a surjective homomorphism e = `u.expMap` : V → A(ℂ), holomorphic and
 immersive, with kernel the lattice L = `u.lattice`. `New.HasThetaCoords` says that θ(z) gives
 homogeneous coordinates of e(z), each θ_i a theta function of type (B, χ): entire, with
 θ_i(z + l) = χ(l)·exp(B l z + B l l / 2)·θ_i(z) for l in L.
@@ -336,9 +336,9 @@ private lemma New.isAppellHumbert_of_double_eq {V : Type*} [FinComplexSpace V] {
 
 /-- If theta functions of type (B, χ) are homogeneous coordinates of a projective embedding of a
 uniformised group, then the Riemann form of B is positive. -/
-private lemma New.Uniformisation.isPosRiemann_of_hasThetaCoords
+private lemma New.Uniformization.isPosRiemann_of_hasThetaCoords
     {A : Over (AlgebraicGeometry.Spec (CommRingCat.of ℂ))} [AddObj A] {ι V : Type}
-    [FinComplexSpace V] (u : Uniformisation (O := ℂ) A V) {N : LineBundle A.left ι}
+    [FinComplexSpace V] (u : Uniformization (O := ℂ) A V) {N : LineBundle A.left ι}
     (hN : IsProjEmbedding (ι := ι) N A.hom) {B : ThetaTori.LatticeForm u.lattice} {χ : V → ℂ}
     {θ : V → ι → ℂ} (h_theta : HasThetaCoords u.lattice (atGeneric u.expMap) N B χ θ) :
     IsPosRiemann B := by
@@ -480,8 +480,8 @@ kernel L, and N a linear system that embeds A, whose class satisfies the paralle
 `New.Pic.ParallelogramLaw`. Then there are Appell–Humbert data (L, B, χ) with positive Riemann form
 and theta functions θ_i of type (B, χ) such that θ(z) is a vector of homogeneous coordinates of e(z)
 for N, for all z in V. -/
-lemma New.Uniformisation.appell_humbert {A : Over (AlgebraicGeometry.Spec (CommRingCat.of ℂ))}
-    [AddObj A] {ι V : Type} [Finite ι] [FinComplexSpace V] (u : Uniformisation (O := ℂ) A V)
+lemma New.Uniformization.appell_humbert {A : Over (AlgebraicGeometry.Spec (CommRingCat.of ℂ))}
+    [AddObj A] {ι V : Type} [Finite ι] [FinComplexSpace V] (u : Uniformization (O := ℂ) A V)
     {N : LineBundle A.left ι} (hN : IsProjEmbedding (ι := ι) N A.hom)
     (h_par : N.picClass.ParallelogramLaw) :
     ∃ (B : ThetaTori.LatticeForm u.lattice) (χ : V → ℂ) (θ : V → ι → ℂ),

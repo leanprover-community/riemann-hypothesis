@@ -823,7 +823,7 @@ lemma ThetaObject.exists_apply_eq_of_torsion
   -- `f` embeds the `m`-torsion of `AdelicTorsion E D.Index` into the `m`-torsion of
   -- `x.groupScheme`; both have `m ^ (2 * abelianDim E D.Index)` elements.
   obtain ⟨m, hm, hy⟩ := hy_torsion
-  obtain ⟨u⟩ := x.isProjEmbedding.nonempty_uniformisation x.smoothOfRelativeDimension
+  obtain ⟨u⟩ := x.isProjEmbedding.nonempty_uniformization x.smoothOfRelativeDimension
   have := finite_of_card_ne_zero ((u.card_torsion hm).trans_ne (pow_ne_zero _ hm))
   exact (((Subtype.map_injective (q := (m • · = 0))
     (p := (· ∈ torsionBySet (𝓞 E) _ (span {(m : 𝓞 E)} : Ideal (𝓞 E))))

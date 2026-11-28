@@ -68,7 +68,7 @@ each `y` in `Eⁿ`. Then there is a unit `ε` (from the Weil pairing of `e`) suc
 `(a, b) ↦ D.ξ · bᴴ a` on adelic vectors (`y` enters as `frameCoords 1 y`), with the matrix
 `ε mᴴ m`. -/
 lemma exists_fourierChar_riemannForm_eq_ψf_xiForm {V : Type} [FinComplexSpace V]
-    {m : Matrix D.Index D.Index (𝔸f E)} (u : Uniformisation x.groupScheme V)
+    {m : Matrix D.Index D.Index (𝔸f E)} (u : Uniformization x.groupScheme V)
     (Q : RealVectors E D.Index ≃L[ℝ] V)
     (h_ev : ∀ y : D.Index → E,
       e.torsionPoint (torsionClass (m *ᵥ frameCoords 1 y)) = u.expMap (Q (toRealVectors y)))
@@ -119,12 +119,12 @@ that `𝐞 (R y z) = ψf (ξ · zᴴ M y)` for all `y`, `z` in `Eⁿ`, where `ψ
 character of the finite adeles and `ξ = D.ξ`, with `Φ v₀ ξ` of zero real part and positive imaginary
 part. Then `M` is the image of a matrix `β` over `E`, and `R` is the polarisation form of `β`,
 namely `(y, z) ↦ Σ_v 2 Re(Φ_v(ξ) z_vᴴ Φ_v(β) y_v)` summed over the infinite places `v`. -/
-lemma exists_map_eq_and_eq_polarisationForm_of_fourierChar_eq
+lemma exists_map_eq_and_eq_polarizationForm_of_fourierChar_eq
     (R : LinearMap.BilinForm ℝ (RealVectors E D.Index)) (M : Matrix D.Index D.Index (𝔸f E))
     (h_weil : ∀ y z : D.Index → E,
       𝐞 (R (toRealVectors y) (toRealVectors z)) =
         ψf E (xiForm D.ξ (M *ᵥ frameCoords 1 y) (frameCoords 1 z))) :
-    ∃ β : D.Index → D.Index → E, (of β).map (↑) = M ∧ R = polarisationForm D (of β) := by
+    ∃ β : D.Index → D.Index → E, (of β).map (↑) = M ∧ R = polarizationForm D (of β) := by
   -- Values of `ψf` are `𝐞` of rational numbers, so `R` is rational on `Eⁿ`: `r z y` is the
   -- rational value of `R y z`.
   have h_rat (z y : D.Index → E) : ∃ q : ℚ, q = R (toRealVectors y) (toRealVectors z) := by
@@ -154,9 +154,9 @@ lemma exists_map_eq_and_eq_polarisationForm_of_fourierChar_eq
         mul_comm (M i j), ← mul_assoc, hξ, h_tr, hr, h_weil, Pi.single_apply]
     exact eq_of_forall_ψf_mul_eq (denseRange_algebraMap_finAdele.eq fun t ↦ h_dense t)
   -- By density take `y` in `Eⁿ`. By `h_weil`, `𝐞` of the linear form
-  -- `R y - polarisationForm D β y` is `1` on the dense set `Eⁿ`, hence everywhere, so the form
+  -- `R y - polarizationForm D β y` is `1` on the dense set `Eⁿ`, hence everywhere, so the form
   -- is `0`.
-  have hR : R = polarisationForm D (of β) := by
+  have hR : R = polarizationForm D (of β) := by
     refine ext (isClosed_property denseRange_toRealVectors
       (R.eqLocus _).isClosed_of_finiteDimensional fun y ↦ ?_)
     refine sub_eq_zero.mp (eq_zero_of_forall_fourierChar_eq_one _ (denseRange_toRealVectors.eq ?_))
@@ -171,7 +171,7 @@ polarised period map `Y` for `(g, ℓ)` on `V` has a model `M` of `x` with `e`'s
 lemma exists_torusModel_of_isPeriodMap
     (hρ : ∀ c : 𝓞 E, x.baseHom c = Φ v₀ c.val) {V : Type} [FinComplexSpace V]
     {ℓ : Matrix D.Index D.Index ℂ} {m : Matrix D.Index D.Index (𝔸f E)}
-    (u : Uniformisation x.groupScheme V) (Q : RealVectors E D.Index ≃L[ℝ] V)
+    (u : Uniformization x.groupScheme V) (Q : RealVectors E D.Index ≃L[ℝ] V)
     (h_per : IsPeriodMap ℓ Q)
     (h_smul : ∀ (c : 𝓞 E) (w : RealVectors E D.Index),
       u.expMap (Q (cmEmbedding c.val • w)) = c • u.expMap (Q w))
@@ -190,7 +190,7 @@ lemma exists_torusModel_of_isPeriodMap
   obtain ⟨ε, h_weil⟩ := exists_fourierChar_riemannForm_eq_ψf_xiForm e u Q h_ev h_theta
   let R : LinearMap.BilinForm ℝ (RealVectors E D.Index) := congr Q.toLinearEquiv.symm B.riemannForm
   let M : Matrix D.Index D.Index (𝔸f E) := finAdeleIncl ℚ E ε • mᴴ * m
-  obtain ⟨β, hβ, hR⟩ := exists_map_eq_and_eq_polarisationForm_of_fourierChar_eq R M h_weil
+  obtain ⟨β, hβ, hR⟩ := exists_map_eq_and_eq_polarizationForm_of_fourierChar_eq R M h_weil
   -- The Riemann form is nondegenerate, so `β`, then `M` and its right factor `m`, are invertible.
   have hβ_inj : Function.Injective (of β).mulVec := by
     intro y z h_mulVec
@@ -213,7 +213,7 @@ lemma exists_torusModel_of_isPeriodMap
       gram_inv_of_gram_eq h_gram⟩
       isPeriodMap := h_per, re_symm := h_theta.isAppellHumbert.re_symm
       riemannForm_eq := congr_fun₂ hR, isPosRiemann := h_pos },
-    { baseHom_eq := hρ, uniformisation := u, χ := χ, θ := θ, hasThetaCoords := h_theta
+    { baseHom_eq := hρ, uniformization := u, χ := χ, θ := θ, hasThetaCoords := h_theta
       equivariant := h_smul, level_eq := ?_, lattice_eq := ?_ }, ?_⟩
   · simp [e.levelPoints_eq, ThetaTori.PeriodMap.torsionLift, ← h_ev]
   · -- a vector of `u.lattice` is a `Q (toRealVectors y)` by `h_lat`, and `e.torsionPoint` is
@@ -232,7 +232,7 @@ lemma exists_torusModel_of_isPeriodMap
 `e` on the vectors of `½ (𝓞 E)ⁿ`: for `y` in `Eⁿ` with `2 y` integral, `u.expMap (P y)` is the
 torsion point of `e` at the class of `y`. Then `P (Eⁿ)` contains the lattice `u.lattice`. -/
 lemma lattice_subset_range_of_expMap_eq_torsionPoint {V : Type} [FinComplexSpace V]
-    (u : Uniformisation x.groupScheme V) (P : RealVectors E D.Index →ₗ[ℝ] V)
+    (u : Uniformization x.groupScheme V) (P : RealVectors E D.Index →ₗ[ℝ] V)
     (hP : ∀ y : D.Index → E,
       2 • y ∈ (frameTorsionClass 1).ker →
       u.expMap (P (toRealVectors y)) = e.torsionPoint (frameTorsionClass 1 y)) :
@@ -268,7 +268,7 @@ basis of `E ⊗ ℝ` (as `InfinitePlace E → ℂ`) given by an integral basis o
 `𝓞 E` on `x.groupScheme` lifts through `u` to an `ℝ`-linear map `G` from `E ⊗ ℝ` to the
 complex-linear maps of that space: `u.expMap (G c z) = c • u.expMap z` for `c` in `𝓞 E`. -/
 lemma exists_expMap_apply_cmEmbedding_eq_smul
-    (u : Uniformisation x.groupScheme (Fin (abelianDim E D.Index) → ℂ))
+    (u : Uniformization x.groupScheme (Fin (abelianDim E D.Index) → ℂ))
     (d : Module.Basis (Module.Free.ChooseBasisIndex ℤ (𝓞 E)) ℝ (InfinitePlace E → ℂ))
     (hd : ∀ i : Module.Free.ChooseBasisIndex ℤ (𝓞 E), d i = cmEmbedding (basis E i).val) :
     ∃ G : (InfinitePlace E → ℂ) →ₗ[ℝ]
@@ -298,7 +298,7 @@ lemma exists_expMap_apply_cmEmbedding_eq_smul
 Then there is an adelic matrix `m` such that `u.expMap (Q y)` is the torsion point of `e` at the
 class of `m *ᵥ y` for every `y` in `Eⁿ`. -/
 lemma exists_matrix_torsionPoint_eq_expMap {V : Type} [FinComplexSpace V]
-    (u : Uniformisation x.groupScheme V) (Q : RealVectors E D.Index ≃L[ℝ] V)
+    (u : Uniformization x.groupScheme V) (Q : RealVectors E D.Index ≃L[ℝ] V)
     (h_half : ∀ y : D.Index → E, 2 • y ∈ (frameTorsionClass 1).ker →
       u.expMap (Q (toRealVectors y)) = e.torsionPoint (frameTorsionClass 1 y))
     (h_smul : ∀ (c : 𝓞 E) (w : RealVectors E D.Index),
@@ -329,7 +329,7 @@ The real-linear map `P = ∑ j, (w ↦ G (w j) (2 l j))` lifts the torsion point
 vectors of `½ (𝓞 E)ⁿ`: for `y` in `Eⁿ` with `2 y` integral, `u.expMap (P y)` is the torsion
 point of `e` at the class of `y`. -/
 lemma expMap_apply_toRealVectors_eq_torsionPoint_of_two_smul_mem_ker
-    (u : Uniformisation x.groupScheme (Fin (abelianDim E D.Index) → ℂ))
+    (u : Uniformization x.groupScheme (Fin (abelianDim E D.Index) → ℂ))
     (G : (InfinitePlace E → ℂ) →ₗ[ℝ]
       (Fin (abelianDim E D.Index) → ℂ) →L[ℂ] Fin (abelianDim E D.Index) → ℂ)
     (hG : ∀ (c : 𝓞 E) (z : Fin (abelianDim E D.Index) → ℂ),
@@ -353,7 +353,7 @@ lemma expMap_apply_toRealVectors_eq_torsionPoint_of_two_smul_mem_ker
 `P` from `(E ⊗ ℝ)ⁿ` to `V` whose image of `Eⁿ` contains the lattice `u.lattice` is bijective: the
 lattice spans `V`, and the two real dimensions agree. -/
 lemma bijective_of_lattice_subset_range
-    (u : Uniformisation x.groupScheme (Fin (abelianDim E D.Index) → ℂ))
+    (u : Uniformization x.groupScheme (Fin (abelianDim E D.Index) → ℂ))
     (P : RealVectors E D.Index →ₗ[ℝ] Fin (abelianDim E D.Index) → ℂ)
     (h_lat : ∀ z ∈ u.lattice, ∃ y : D.Index → E, P (toRealVectors y) = z) :
     Function.Bijective P := by
@@ -416,7 +416,7 @@ lemma exists_torusModel
   -- `G`-equivariant isomorphism `Q : (E ⊗ ℝ)ⁿ → V`. By `X.signature`, the complex structure pulled
   -- back by `Q` is given by a reflection at `v₀`; then `exists_torusModel_of_isPeriodMap` gives the
   -- model.
-  obtain ⟨u⟩ := x.isProjEmbedding.nonempty_uniformisation x.smoothOfRelativeDimension
+  obtain ⟨u⟩ := x.isProjEmbedding.nonempty_uniformization x.smoothOfRelativeDimension
   -- an integral basis of `E` is a real basis of `E ⊗ ℝ`
   obtain ⟨d, hd⟩ :
       ∃ d : Module.Basis (Module.Free.ChooseBasisIndex ℤ (𝓞 E)) ℝ (InfinitePlace E → ℂ),

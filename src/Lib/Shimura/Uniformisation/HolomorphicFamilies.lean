@@ -17,7 +17,7 @@ import Lib.Cohomology.Etale.Basic
 /-!
 # Holomorphic families of complex points, jets, uniformisations and theta coordinates
 
-Except in `New.Uniformisation.hasSignature_iff`, where `O` is any commutative ring acting on `A`,
+Except in `New.Uniformization.hasSignature_iff`, where `O` is any commutative ring acting on `A`,
 `O` is a valuation ring with fraction field `ℂ` (`New.ValuativeArc`), for example `ℂ` itself. This
 file develops calculus for families of complex points of schemes over `O` without an
 analytification: holomorphic families, jets and a chain rule. These notions are applied to a
@@ -31,11 +31,11 @@ their behaviour under operations on line bundles.
   unique, and they obey the chain rule.
 * `New.HolomorphicAt.isFirstOrderConst_of_nsmul`: on a smooth commutative group scheme, if `n • φ`
   is constant to first order in a direction, for some `n ≠ 0`, then so is `φ`.
-* `New.Uniformisation.hasSignature_iff`: the condition `New.HasSignature` on the matrices of the
+* `New.Uniformization.hasSignature_iff`: the condition `New.HasSignature` on the matrices of the
   action of `O` in algebraic coordinates holds iff the space `V` of a uniformisation has a common
   eigenvector `Y ≠ 0` of the maps `F a`, with eigenvalues `ρ a`, such that `F b - ρ c` maps `V` into
   the line of `Y`.
-* `New.Uniformisation.card_torsion`: A(O) has m^(2 dim V) points killed by m ≠ 0.
+* `New.Uniformization.card_torsion`: A(O) has m^(2 dim V) points killed by m ≠ 0.
 * `New.HasThetaCoords.pull`, `New.HasThetaCoords.pow`, `New.HasThetaCoords.pull_translate`,
   `New.HasThetaCoords.mul`: pull-back, power, translation and tensor product.
 * `New.HasThetaCoords.riemannForm_eq_of_isFrame`: if `N ⊗ M⁻¹` has a frame, the Riemann forms and
@@ -75,7 +75,7 @@ The analytic vocabulary for schemes over a valuation ring `O` with fraction fiel
 (`New.ValuativeArc`; the case `O = ℂ` is included).
 -/
 
-section Uniformisation
+section Uniformization
 
 open CategoryTheory AlgebraicGeometry MonoidalCategory PointFn
 
@@ -197,7 +197,7 @@ def IsHolomorphicImmersionAt : Prop :=
 valuation ring of ℂ, and a finite-dimensional complex space V: a surjective homomorphism from V to
 the sections of A over O whose kernel is a full-rank lattice, which is a holomorphic immersion on
 complex points, and through which every homomorphism holomorphic at 0 factors ℂ-linearly. -/
-structure Uniformisation where
+structure Uniformization where
   /-- The uniformising map, an additive map from `V` to the sections of `A` over `O`. -/
   expMap : V →+ (𝟙_ (Over (Spec ⟨O⟩)) ⟶ A)
   /-- The period lattice. -/
@@ -215,9 +215,9 @@ structure Uniformisation where
   universal {W : Type} [FinComplexSpace W] (γ : W →+ (𝟙_ (Over (Spec ⟨O⟩)) ⟶ A)) :
       HolomorphicAt (atGeneric γ) 0 → ∃ F : W →L[ℂ] V, ∀ z : W, expMap (F z) = γ z
 
-attribute [instance] Uniformisation.isFullRankLattice
+attribute [instance] Uniformization.isFullRankLattice
 
-attribute [simp, grind =] Uniformisation.eq_zero_iff
+attribute [simp, grind =] Uniformization.eq_zero_iff
 
 /-- Theta coordinates for a family φ : P → X(ℂ) of complex points and a lattice L in P: the line
 bundle N is a linear system (`New.LineBundle.IsLinearSystem`), (B, χ) are Appell–Humbert data
@@ -234,7 +234,7 @@ structure HasThetaCoords (N : LineBundle X ι) (B : ThetaTori.LatticeForm L) (χ
   /-- `θ z` is a vector of homogeneous coordinates of the point `φ z`. -/
   hasFieldCoords (z : P) : N.IsHomogeneousCoords (φ z) (θ z)
 
-end Uniformisation
+end Uniformization
 
 /-!
 ## Germs, jets and tangent vectors of families of complex points
@@ -248,7 +248,7 @@ along `φ`. For `New.HolomorphicAt`, `Q` is analyticity at `w₀`.
   maps that separate points.
 * `New.HolomorphicAt.exists_isJet`, `New.IsJet.unique`, `New.isJet_comp_iff`: a holomorphic
   family has exactly one jet for each linear map on differentials, and jets obey the chain rule.
-* `New.HolomorphicAt.isFirstOrderConst_of_nsmul`, `New.Uniformisation.hasSignature_iff`: on a
+* `New.HolomorphicAt.isFirstOrderConst_of_nsmul`, `New.Uniformization.hasSignature_iff`: on a
   smooth commutative group scheme, if `n • φ` is constant to first order in a direction for some
   `n ≠ 0`, so is `φ`; and the signature condition on the tangent action can be read on the space
   of a uniformisation.
@@ -418,7 +418,7 @@ end Germs
 variable {X Y S : Scheme} {P : Type _} [FinComplexSpace P] {s : X ⟶ S}
   {φ ψ : P → (Spec (CommRingCat.of ℂ) ⟶ X)} {w₀ : P} {V M : Type}
   {A : Over (Spec (CommRingCat.of ℂ))} [FinComplexSpace V] [AddObj A]
-  (u : Uniformisation (O := ℂ) A V) [AddCommGroup M] [Module ℂ M] [Module ℂᵐᵒᵖ M]
+  (u : Uniformization (O := ℂ) A V) [AddCommGroup M] [Module ℂ M] [Module ℂᵐᵒᵖ M]
   [IsCentralScalar ℂ M] {ℓ : (P →ₗ[ℂ] ℂ) →ₗ[ℂ] M}
   {τ τ' : Spec (CommRingCat.of (TrivSqZeroExt ℂ M)) ⟶ X} {v₀ : V}
   {b : Spec (CommRingCat.of ℂ) ⟶ S} {g : V → P}
@@ -560,7 +560,7 @@ lemma isFirstOrderConst_iff {v : P} :
 /-- Let `A` be the fibre of `s : X ⟶ S` at the complex point `c` of `S`, with `p : A ⟶ X` the map
 of the fibre square `h_pb`. Then the uniformisation of `A` followed by `p` is still a holomorphic
 immersion at every `z : V`. -/
-lemma Uniformisation.isHolomorphicImmersionAt_of_isPullback {p : A.left ⟶ X}
+lemma Uniformization.isHolomorphicImmersionAt_of_isPullback {p : A.left ⟶ X}
     {c : Spec (CommRingCat.of ℂ) ⟶ S} (h_pb : IsPullback p A.hom s c) (z : V) :
     IsHolomorphicImmersionAt (atGeneric u.expMap · ≫ p) z := by
   obtain ⟨h_hol, h_imm⟩ := u.immersive z
@@ -614,7 +614,7 @@ section, in which `a` acts on tangent vectors by the matrix `m a`. Then `HasSign
 `m a` have a common eigenvector with eigenvalues `ρ a` and a unit coordinate, and `m b - ρ c` maps
 into its line) holds iff some `Y ≠ 0` in `V` has `F a Y = ρ a • Y` for all `a`, and `F b - ρ c` maps
 `V` into the line of `Y`. -/
-lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleObj O A]
+lemma Uniformization.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleObj O A]
     {F : O → V →L[ℂ] V} (hF : ∀ (a : O) (w : V), u.expMap (F a w) = a • u.expMap w) {𝒜 : Over S}
     [AddObj 𝒜] [ModuleObj O 𝒜] {s : Spec (CommRingCat.of ℂ) ⟶ S} {U : 𝒜.left.Opens}
     {z : Fin d → Γ(𝒜.left, U)} {m : O → Matrix (Fin d) (Fin d) ℂ}
@@ -735,14 +735,14 @@ end New
 /-!
 ## Linear lifts, lattice indices and counting torsion points
 
-A uniformisation (`New.Uniformisation`) identifies the sections of A with V modulo its period
+A uniformisation (`New.Uniformization`) identifies the sections of A with V modulo its period
 lattice `lattice`, the kernel of `expMap`.
 
-* `New.Uniformisation.linear_ext`: a continuous ℂ-linear map into V is determined by its composite
+* `New.Uniformization.linear_ext`: a continuous ℂ-linear map into V is determined by its composite
   with the uniformising map.
 * `New.relIndex_comap_eq_det_mul_conj_det`: for an injective ℂ-linear F preserving a lattice L, the
   index of L in F⁻¹(L) is |det F|².
-* `New.Uniformisation.card_torsion`: A(O) has m^(2 dim V) points killed by m ≠ 0.
+* `New.Uniformization.card_torsion`: A(O) has m^(2 dim V) points killed by m ≠ 0.
 -/
 
 section TorsionOfTorus
@@ -753,11 +753,11 @@ namespace New
 
 variable {O : Type} [CommRing O] [ValuativeArc O]
   {A : Over (AlgebraicGeometry.Spec (CommRingCat.of O))} [AddObj A] {V : Type} {V' : Type*}
-  [FinComplexSpace V] [FinComplexSpace V'] (u : Uniformisation (O := O) A V)
+  [FinComplexSpace V] [FinComplexSpace V'] (u : Uniformization (O := O) A V)
 
 /-- Two continuous ℂ-linear maps into the uniformising space are equal if they agree after the
 uniformisation `u.expMap`. -/
-lemma Uniformisation.linear_ext {F G : V' →L[ℂ] V} (h : ∀ z : V', u.expMap (F z) = u.expMap (G z)) :
+lemma Uniformization.linear_ext {F G : V' →L[ℂ] V} (h : ∀ z : V', u.expMap (F z) = u.expMap (G z)) :
     F = G := by
   -- `F - G` is a continuous map from the connected space `V'` to the discrete lattice `u.lattice`,
   -- so it is constant, with value `(F - G) 0 = 0`.
@@ -800,7 +800,7 @@ lemma relIndex_comap_eq_det_mul_conj_det {L : Submodule ℤ V} [IsFullRankLattic
 /-- Let O be a valuation ring with fraction field ℂ, A a commutative group scheme over O, and u a
 uniformisation, with V / u.lattice ≅ A(O) and dim V = d. For m ≠ 0, exactly m^{2d} points of A(O)
 are killed by m. -/
-lemma Uniformisation.card_torsion (u : Uniformisation A V) {m : ℕ} (hm : m ≠ 0) :
+lemma Uniformization.card_torsion (u : Uniformization A V) {m : ℕ} (hm : m ≠ 0) :
     Nat.card {y : 𝟙_ (Over (AlgebraicGeometry.Spec (CommRingCat.of O))) ⟶ A // m • y = 0} =
       m ^ (finrank ℂ V * 2) := by
   -- The `m`-torsion is the image under `u.expMap` of `F⁻¹ L`, for `F` the multiplication by `m` on
@@ -835,7 +835,7 @@ end TorsionOfTorus
 Line bundles `New.LineBundle` are given by a cover and a cocycle; a section `w` is a family of
 functions on points, one for each chart, and a frame is a section that vanishes nowhere.
 
-* `New.Uniformisation.atGeneric_add`, `New.Uniformisation.atGeneric_add_of_mem`: on complex
+* `New.Uniformization.atGeneric_add`, `New.Uniformization.atGeneric_add_of_mem`: on complex
   points the uniformising map turns addition into translation and is periodic for its lattice.
 * `New.HasThetaCoords.pull`, `New.HasThetaCoords.pow`, `New.HasThetaCoords.pull_translate`,
   `New.HasThetaCoords.mul`: theta coordinates under pull-back, powers, translation and tensor
@@ -853,11 +853,11 @@ variable {O : Type} [CommRing O] [ValuativeArc O]
   [FinComplexSpace V] [FinComplexSpace V'] {L : Submodule ℤ V}
   {B B' : ThetaTori.LatticeForm L} {χ χ' : V → ℂ} {θ : V → ι → ℂ} {θ' : V → κ → ℂ}
   {S : AlgebraicGeometry.Scheme} {e : V → (AlgebraicGeometry.Spec (CommRingCat.of ℂ) ⟶ S)}
-  {N : LineBundle S ι} {M : LineBundle S κ} [AddObj X] (u : Uniformisation (O := O) X V)
+  {N : LineBundle S ι} {M : LineBundle S κ} [AddObj X] (u : Uniformization (O := O) X V)
 
 /-- On complex points, the uniformising map at `z + a` is its value at `z` followed by the
 translation by the section `u.expMap a`. -/
-lemma Uniformisation.atGeneric_add (a z : V) :
+lemma Uniformization.atGeneric_add (a z : V) :
     atGeneric u.expMap (z + a) = atGeneric u.expMap z ≫ (translation (u.expMap a)).1 := by
   simp [← Over.comp_left, atGeneric, comp_add]
 
@@ -869,11 +869,11 @@ lemma atGeneric_add_of_map_eq_zero
     (z : V) : atGeneric s (z + l) = atGeneric s z := by simp [hl, atGeneric]
 
 /-- On complex points the uniformising map is periodic for its lattice `u.lattice`. -/
-lemma Uniformisation.atGeneric_add_of_mem (l : V) (hl : l ∈ u.lattice) (z : V) :
+lemma Uniformization.atGeneric_add_of_mem (l : V) (hl : l ∈ u.lattice) (z : V) :
     atGeneric u.expMap (z + l) = atGeneric u.expMap z :=
   atGeneric_add_of_map_eq_zero u.expMap ((u.eq_zero_iff l).mp hl) z
 
-lemma Uniformisation.holomorphicAt (z : V) : HolomorphicAt (atGeneric u.expMap) z :=
+lemma Uniformization.holomorphicAt (z : V) : HolomorphicAt (atGeneric u.expMap) z :=
   (u.immersive z).1
 
 namespace HasThetaCoords

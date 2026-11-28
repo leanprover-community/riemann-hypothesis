@@ -25,8 +25,8 @@ groups of torsion classes and canonical theta coordinates `θ_t` for `t ∈ T`.
   conditions. `New.PEL.levelTorsion` is the torsion of the level.
 * `New.PEL.HasClassLaws`: the laws required of the class of the embedding line bundle.
 * `New.ThetaTori.PeriodMap`: a period map onto a complex vector space, with a polarisation whose
-  Riemann form pulls back to `New.Variety.polarisationForm`.
-* `New.Variety.fourierChar_polarisationForm`: if `gᴴ β g = a · 1`, its exponential is a value of
+  Riemann form pulls back to `New.Variety.polarizationForm`.
+* `New.Variety.fourierChar_polarizationForm`: if `gᴴ β g = a · 1`, its exponential is a value of
   `New.ψf` in the coordinates of `g`.
 * `New.ThetaTori.PeriodMap.latticeOver`: the lattice in `V` over a group `S` of torsion classes.
   `New.ThetaTori.PeriodMap.periodLattice` is the lattice for `S = 0`, and its dual for the Riemann
@@ -226,7 +226,7 @@ end New
 /-!
 ## The Riemann form on rational vectors and its adelic character value
 
-* `New.Variety.polarisationForm`: the form `(y, z) ↦ Σ_v 2 Re(Φ_v(ξ) z_vᴴ Φ_v(β) y_v)`.
+* `New.Variety.polarizationForm`: the form `(y, z) ↦ Σ_v 2 Re(Φ_v(ξ) z_vᴴ Φ_v(β) y_v)`.
 -/
 
 section RiemannFormAdelic
@@ -240,7 +240,7 @@ variable {E : Type} [Field E] [CMBase E] (D : PEL E)
 /-- For a matrix β over E, the real bilinear form (y, z) ↦ Σ_v 2 Re(Φ_v(ξ)·z_vᴴ Φ_v(β) y_v) on
 (E ⊗ ℝ)ⁿ, with ξ from the datum D: a map
 `RealVectors E D.Index →ₗ[ℝ] RealVectors E D.Index →ₗ[ℝ] ℝ`. -/
-noncomputable def polarisationForm (β : Matrix D.Index D.Index E) :
+noncomputable def polarizationForm (β : Matrix D.Index D.Index E) :
     RealVectors E D.Index →ₗ[ℝ] RealVectors E D.Index →ₗ[ℝ] ℝ := by
   apply LinearMap.mk₂ ℝ fun y z : RealVectors E D.Index ↦
     ∑ v, 2 * (Φ v D.ξ * star (z · v) ⬝ᵥ β.map (Φ v) *ᵥ (y · v)).re
@@ -252,7 +252,7 @@ noncomputable def polarisationForm (β : Matrix D.Index D.Index E) :
 /-- A polarised period map for the frame `g` and the matrix `ℓ`: a period map Q = `realEquiv` onto
 `V`, a matrix β = `formMatrix` over `E` with gᴴ β g a scalar unit of Ẑ, and a form
 B = `automorphyForm` with symmetric real part whose Riemann form is positive and pulls back under Q
-to `New.Variety.polarisationForm D formMatrix`. -/
+to `New.Variety.polarizationForm D formMatrix`. -/
 structure _root_.New.ThetaTori.PeriodMap (g : GL D.Index (𝔸f E)) (ℓ : Matrix D.Index D.Index ℂ)
     (V : Type) [FinComplexSpace V] where
   /-- The matrix over E of the form that polarises the torus. -/
@@ -270,7 +270,7 @@ structure _root_.New.ThetaTori.PeriodMap (g : GL D.Index (𝔸f E)) (ℓ : Matri
   re_symm (u v : V) : (automorphyForm u v).re = (automorphyForm v u).re
   /-- Through Q, the Riemann form of B is the trace form tr(ξ zᴴ β y) on (E ⊗ ℝ)ⁿ. -/
   riemannForm_eq (y z : RealVectors E D.Index) :
-      automorphyForm.riemannForm (realEquiv y) (realEquiv z) = polarisationForm D formMatrix y z
+      automorphyForm.riemannForm (realEquiv y) (realEquiv z) = polarizationForm D formMatrix y z
   /-- The Riemann form of B is positive: its value at (u, i u) is positive for u ≠ 0. -/
   isPosRiemann : IsPosRiemann automorphyForm
 
@@ -295,27 +295,27 @@ lemma ψf_unit_mul_eq_one_iff (ν : (Ô ℚ)ˣ) {a : 𝔸f E} :
   rw [← h_cancel]
   exact h_mul_eq_one (ν⁻¹ : (Ô ℚ)ˣ) h_unit
 
-/-- On rational vectors y, z in Eⁿ, `New.Variety.polarisationForm D β` is the trace from E to ℚ of
+/-- On rational vectors y, z in Eⁿ, `New.Variety.polarizationForm D β` is the trace from E to ℚ of
 ξ·zᴴβy. Here ξ comes from the datum D. -/
 @[simp]
-lemma polarisationForm_toRealVectors (y z : D.Index → E) :
-    polarisationForm D β (toRealVectors y) (toRealVectors z) =
+lemma polarizationForm_toRealVectors (y z : D.Index → E) :
+    polarizationForm D β (toRealVectors y) (toRealVectors z) =
       Algebra.trace ℚ E (D.ξ * star z ⬝ᵥ β *ᵥ y) := by
-  simp [polarisationForm, trace_eq_sum_Φ, mulVec, dotProduct]
+  simp [polarizationForm, trace_eq_sum_Φ, mulVec, dotProduct]
 
 private lemma frameCoords_eq_mulVec (y : D.Index → E) :
     frameCoords g y = (g⁻¹).val *ᵥ (algebraMap E (𝔸f E) ∘ y) :=
   rfl
 
 /-- If `gᴴ β g = a • 1` for a finite adele `a` of `E`, then for rational vectors `y, z` in `Eⁿ` the
-value of `𝐞` at `polarisationForm D β y z`, that is exp(2πi Tr_{E/ℚ}(ξ zᴴ β y)), is
+value of `𝐞` at `polarizationForm D β y z`, that is exp(2πi Tr_{E/ℚ}(ξ zᴴ β y)), is
 ψ_f(a ξ (g⁻¹z)ᴴ (g⁻¹y)). Here ξ comes from the datum `D`. -/
-lemma fourierChar_polarisationForm {a : 𝔸f E}
+lemma fourierChar_polarizationForm {a : 𝔸f E}
     (h_gram : g.valᴴ * β.map (algebraMap E (𝔸f E)) * g.val = a • 1) (y z : D.Index → E) :
-    𝐞 (polarisationForm D β (toRealVectors y) (toRealVectors z)) =
+    𝐞 (polarizationForm D β (toRealVectors y) (toRealVectors z)) =
       ψf E (a * xiForm D.ξ (frameCoords g y) (frameCoords g z)) := by
   -- Both sides are values of `ψf E`; compare their arguments in the finite adeles.
-  rw [polarisationForm_toRealVectors, ← ψf_coe]
+  rw [polarizationForm_toRealVectors, ← ψf_coe]
   congr 1
   rw [xiForm, frameCoords_eq_mulVec, frameCoords_eq_mulVec, star_mulVec_dotProduct, mulVec_mulVec]
   simp [dotProduct, RingHom.map_mulVec, ← gram_inv_of_gram_eq h_gram, smul_mulVec,
@@ -384,7 +384,7 @@ def PeriodMap.intAction : 𝓞 E →+* V →L[ℂ] V :=
 
 variable (D g ℓ V) in
 /-- A theta torus is a polarised period map in which ℓ is a reflection and multiplication by c̄ is
-adjoint to multiplication by c for B. Also, some isomorphism V ≅ `New.Variety.BallFibre` makes each
+adjoint to multiplication by c for B. Also, some isomorphism V ≅ `New.Variety.BallFiber` makes each
 a ∈ O_E act by Φ_{v₀}(a) on the line, by its conjugate on the complement, and by Φ_w(a) at each
 place w ≠ v₀. -/
 structure ThetaTorus extends PeriodMap D g ℓ V where
@@ -397,7 +397,7 @@ structure ThetaTorus extends PeriodMap D g ℓ V where
         (toPeriodMap.intAction (star c) z)
   /-- In suitable coordinates `a ∈ 𝓞 E` acts diagonally: at `v₀` by `Φ v₀ a` on the line and by its
   conjugate on the complement, and by `Φ w a` at each place `w ≠ v₀`. -/
-  exists_std_equiv : ∃ e : V ≃ₗ[ℂ] BallFibre E D.Index, ∀ a : 𝓞 E,
+  exists_std_equiv : ∃ e : V ≃ₗ[ℂ] BallFiber E D.Index, ∀ a : 𝓞 E,
     e.toLinearMap ∘ₗ toPeriodMap.intAction a ∘ₗ e.symm.toLinearMap =
       .prodMap (.prodMap (Φ v₀ a.val • 1) (star (Φ v₀ a.val) • 1)) (.piMap (Φ ·.val a • 1))
 
@@ -463,7 +463,7 @@ lemma dualLattice_inf_latticeOver_top
   have h_riem (a b : D.Index → E) :
       Real.fourierChar (x.automorphyForm.riemannForm (x.periodPoint a) (x.periodPoint b)) = 1 ↔
         ψf E (xiForm D.ξ (frameCoords g a) (frameCoords g b)) = 1 := by
-    rw [x.riemannForm_eq, fourierChar_polarisationForm x.isFrameFor.choose_spec,
+    rw [x.riemannForm_eq, fourierChar_polarizationForm x.isFrameFor.choose_spec,
       ψf_unit_mul_eq_one_iff]
   -- Both sides consist of images `x.periodPoint a` of rational vectors `a`; compare the conditions.
   constructor
@@ -572,7 +572,7 @@ lemma riemannForm_intAction_rescaledBeta (u w : V) :
   -- Stated for all vectors, so that `reindex_equiv x.realEquiv` can move it to the real vectors.
   have h_adj : ∀ u w : V, x.automorphyForm.riemannForm (x.intAction D.rescaledBeta u) w =
       x.automorphyForm.riemannForm u (x.intAction (star D.rescaledBeta) w) := by
-    simp [reindex_equiv x.realEquiv, intAction, riemannForm_eq, polarisationForm,
+    simp [reindex_equiv x.realEquiv, intAction, riemannForm_eq, polarizationForm,
       ← map_star_complex,
       ← Pi.smul_def, -smul_eq_mul, ← coe_star_ringOfIntegers, -mul_re, Matrix.mulVec_smul]
   rw [h_adj u w, h_star, map_sub, map_one, _root_.sub_apply, one_apply_eq_self, map_sub]

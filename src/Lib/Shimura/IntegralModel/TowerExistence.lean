@@ -128,13 +128,13 @@ lemma New.Variety.UniversalFamily.GraphClosure.congruenceRelation {E : Type} [Fi
     {ν : ℕ} [NeZero ν] {J : Type} [Finite J] {γ : J → nonZeroDivisors (𝓞 E) × GUPlus E D.Index}
     (C : U.GraphClosure γ ν)
     {c : C.scheme ⟶ (Over.map U.base.hom).obj
-      (ThetaFamily.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν))}
+      (ThetaFamily.fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin ν))}
     (hc : ∀ a : ModuliPoint E D.Index ν, C.point a ≫ c = U.datumPoint 1 a) {w : SplitFinPlace E}
     (hw : IsSafe D.level w.val) (hD : D.IsGoodAt w.val.asIdeal) {𝔭 : Set R}
     (h𝔭 : ∀ a ∈ w.val.asIdeal, algebraMap (𝓞 E) R a ∈ 𝔭)
     {u : Submodule (ResField (E := E) w) (D.Index → ResField (E := E) w) →
       (C.scheme ⟶ (Over.map U.base.hom).obj
-        (ThetaFamily.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν)))}
+        (ThetaFamily.fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin ν)))}
     (hu : ∀ (A : Submodule (ResField (E := E) w) (D.Index → ResField (E := E) w))
         (a : ModuliPoint E D.Index ν),
       C.point a ≫ u A = U.datumPoint 1 (a.act
@@ -162,15 +162,15 @@ lemma New.Variety.UniversalFamily.GraphClosure.congruenceRelation {E : Type} [Fi
       (fun A ↦ by dsimp only [r]; rw [pow_mul', ← hq, Fintype.card_fin]) fun A ↦ along (hu A b)
     -- the centre of the arc lies above `w`
     refine w.val.isMaximal.eq_of_le (ker_ne_top _) fun a ha ↦ ?_
-    have hcw : c.left ≫ (U.family.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν)).hom ≫
+    have hcw : c.left ≫ (U.family.fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin ν)).hom ≫
         U.base.hom = C.scheme.hom := c.w
     have hmap : (specMap (residue V) ≫ (α ≫ c.left) ≫
-        (U.family.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν)).hom) ≫
+        (U.family.fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin ν)).hom) ≫
         U.base.hom ≫ specMap (algebraMap (𝓞 E) R) =
         (specMap ρ' ≫ C.scheme.left.fromSpecResidueField z ≫ C.scheme.hom) ≫
         specMap (algebraMap (𝓞 E) R) := by
       rw [assoc, assoc, assoc, ← assoc (specMap (residue V)), ← centre, assoc, assoc,
-        ← assoc (U.family.fibrePower _).hom, ← assoc c.left, hcw, assoc]
+        ← assoc (U.family.fiberPower _).hom, ← assoc c.left, hcw, assoc]
     rw [RingHom.mem_ker, ThetaObject.baseHom, hmap, preimage_comp, preimage_comp]
     have h0 := hx _ (h𝔭 a ha)
     rw [assoc, preimage_comp] at h0
@@ -200,7 +200,7 @@ lemma New.Variety.UniversalFamily.GraphClosure.isTangentPoly_localTerm_of_transl
     {D : PEL E} {U : UniversalFamily D R} {ν : ℕ} [NeZero ν] {J : Type} [Finite J]
     {γ : J → nonZeroDivisors (𝓞 E) × GUPlus E D.Index} (C : U.GraphClosure γ ν)
     {c v : C.scheme ⟶ (Over.map U.base.hom).obj
-      (ThetaFamily.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν))}
+      (ThetaFamily.fiberPower (NonzeroTorsion 1 D.Index ⊕ Fin ν))}
     (hc : ∀ a : ModuliPoint E D.Index ν, C.point a ≫ c = U.datumPoint 1 a) {g : GUPlus E D.Index}
     {α : Fin ν → 𝓞 E} (hv : ∀ a : ModuliPoint E D.Index ν,
       C.point a ≫ v = U.datumPoint 1 (a.act g α))
@@ -217,10 +217,10 @@ lemma New.Variety.UniversalFamily.GraphClosure.isTangentPoly_localTerm_of_transl
   obtain ⟨K, hK, hdet⟩ := hf.exists_linear_isLevelIso hz h_reflection hrel
   obtain ⟨σ, hσ⟩ := (C.holomorphicAt_point a.markedPoint 0 hf.zero_mem).exists_isJet .id
   -- `τ x` is the jet `σ` in the direction `x`
-  let τ (x : BallBase D.Index × (Fin ν → BallFibre E D.Index)) :
+  let τ (x : BallBase D.Index × (Fin ν → BallFiber E D.Index)) :
       Spec (of (TrivSqZeroExt ℂ ℂ)) ⟶ C.scheme.left :=
     specMap (TrivSqZeroExt.map (.applyₗ x)).toRingHom ≫ σ
-  have jet (x : BallBase D.Index × (Fin ν → BallFibre E D.Index)) :
+  have jet (x : BallBase D.Index × (Fin ν → BallFiber E D.Index)) :
       IsJet (fun q ↦ (C.point (f.ballPoint a.markedPoint q)).left) 0 (LinearMap.applyₗ x) (τ x) :=
     fun V s hV ↦ by
       obtain ⟨hland, hval⟩ := hσ V s hV
@@ -231,13 +231,13 @@ lemma New.Variety.UniversalFamily.GraphClosure.isTangentPoly_localTerm_of_transl
       simp only [map_add, TrivSqZeroExt.map_inl, TrivSqZeroExt.map_inr, LinearMap.id_apply,
         LinearMap.applyₗ_apply_apply]
   -- followed by `c`, it is the jet of the family in the base (`hc`)
-  have jet_c (x : BallBase D.Index × (Fin ν → BallFibre E D.Index)) :
+  have jet_c (x : BallBase D.Index × (Fin ν → BallFiber E D.Index)) :
       IsJet (fun q ↦ (U.datumPoint 1 (f.ballPoint a.markedPoint q)).left) 0 (LinearMap.applyₗ x)
         (τ x ≫ c.left) :=
     ((jet x).comp_hom c.left).congr
       (.of_forall fun q ↦ congrArg Hom.left (hc (f.ballPoint a.markedPoint q)))
   -- followed by `v`, it is the jet of the family moved by `K` (`hv`, and `z` near `0` by `hK`)
-  have jet_v (x : BallBase D.Index × (Fin ν → BallFibre E D.Index)) :
+  have jet_v (x : BallBase D.Index × (Fin ν → BallFiber E D.Index)) :
       IsJet (fun q ↦ (U.datumPoint 1 (f.ballPoint a.markedPoint (K q))).left) 0 (LinearMap.applyₗ x)
         (τ x ≫ v.left) :=
     ((jet x).comp_hom v.left).congr <| hK.mono fun q hq ↦ by
@@ -309,20 +309,20 @@ lemma New.Variety.UniversalFamily.GraphClosure.exists_forall_eq_apply_mk_of_tran
     {J : Type} [Finite J] {γ : J → nonZeroDivisors (𝓞 E) × GUPlus E D.Index}
     (C : U.GraphClosure γ ν)
     (c : C.scheme ⟶ (Over.map U.base.hom).obj
-      (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))) :
+      (ThetaFamily.fiberPower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))) :
     ∃ u : (GL D.Index (𝔸f E) ⧸ levelGU D.Index D.level) →
         (C.scheme ⟶ (Over.map U.base.hom).obj
-          (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))),
+          (ThetaFamily.fiberPower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))),
       ∀ {g : GL D.Index (𝔸f E)}
         {f : C.scheme ⟶ (Over.map U.base.hom).obj
-          (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))}
+          (ThetaFamily.fiberPower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))}
         (hg : g ∈ GUPlus E D.Index),
       (∀ a : ModuliPoint E D.Index ν, C.point a ≫ f = U.datumPoint 1 (a.act ⟨g, hg⟩)) →
       f = u ⟦g⟧ := by
   -- the legs: maps `f` that translate complex points by some `g`
   let Leg := Σ' (g : GUPlus E D.Index)
     (f : C.scheme ⟶ (Over.map U.base.hom).obj
-      (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))),
+      (ThetaFamily.fiberPower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))),
     ∀ a : ModuliPoint E D.Index ν, C.point a ≫ f = U.datumPoint 1 (a.act g)
   -- two legs whose `g` have the same coset agree on all complex points, hence are equal
   have factors :
@@ -346,7 +346,7 @@ lemma New.Variety.UniversalFamily.GraphClosure.exists_forall_eq_apply_mk_of_tran
       exact hmem
     exact (hf a).trans (hpt.trans (hf' a).symm)
   have h_nonempty : Nonempty (C.scheme ⟶ (Over.map U.base.hom).obj
-      (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))) := ⟨c⟩
+      (ThetaFamily.fiberPower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))) := ⟨c⟩
   obtain ⟨u, hu⟩ := (factorsThrough_iff _).mp factors
   exact ⟨u, fun hg h ↦ congrFun hu ⟨⟨_, hg⟩, _, h⟩⟩
 
