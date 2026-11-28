@@ -3,6 +3,7 @@ module
 import Mathlib.RingTheory.TwoSidedIdeal.Instances
 public import Lib.Speed
 import Lib.General.LinearAlgebra.Eigenvalues
+import TauCeti.LinearAlgebra.Matrix.Charpoly.Amitsur
 
 /-!
 # Amitsur's formula and Ribet's method for matrices over an algebra
@@ -93,7 +94,9 @@ lemma amitsur_charpoly_comp_coeff_mem_range (ρ : Λ →ₐ[R] Matrix σ σ L)
     (blockFlattenAlgEquiv N).toAlgHom.comp ρ.mapMatrix
   suffices h_row : ∀ (Q : Matrix N N Λ) (q : N) (m : ℕ),
       (φ (∑ j, single q j (Q q j))).charpoly.coeff m ∈ (algebraMap R L).range by
-    refine amitsur_charpoly_mem_of_span φ (top_unique fun Q _ ↦ ?_) P k
+    refine φ.charpoly_coeff_mem_range_of_span
+      (S := {M | ∀ m, (φ M).charpoly.coeff m ∈ (algebraMap R L).range})
+      (top_unique fun Q _ ↦ ?_) (fun _ hM ↦ hM) P k
     rw [matrix_eq_sum_single Q]
     exact sum_mem fun q _ ↦ subset_span (h_row Q q)
   intro Q q m
@@ -162,17 +165,18 @@ lemma Selmer.exists_adjugate_polynomial (ρ : Λ →ₐ[R] Matrix σ σ L)
     rw [map_C, matPolyEquiv_symm_C]
     rfl
   have h_coeffX : ∀ (p : Λ[X]) (k : ℕ), (ρX p).charpoly.coeff k ∈ (algebraMap R[X] L[X]).range := by
-    refine amitsur_charpoly_mem_of_span ρX (top_unique fun p _ ↦ ?_)
-    rw [p.as_sum_support]
-    refine sum_mem fun i _ ↦ ?_
-    have h_monomial : monomial i (p.coeff i) = (X ^ i : R[X]) • C (p.coeff i) := by
-      rw [← C_mul_X_pow_eq_monomial, Algebra.smul_def]
-      change C (p.coeff i) * X ^ i = (X ^ i : R[X]).map (algebraMap R Λ) * C (p.coeff i)
-      rw [Polynomial.map_pow, map_X, X_pow_mul]
-    rw [h_monomial]
-    refine smul_mem _ _ (subset_span fun k ↦ ?_)
-    obtain ⟨c, hc⟩ : ∃ c : R, algebraMap R L c = (ρ (p.coeff i)).charpoly.coeff k :=
-      h_coeff (p.coeff i) k
+    -- The constants `C w` span `Λ[X]` over `R[X]`.
+    refine ρX.charpoly_coeff_mem_range_of_span (S := Set.range C) (top_unique fun p _ ↦ ?_) ?_
+    · rw [p.as_sum_support]
+      refine sum_mem fun i _ ↦ ?_
+      have h_monomial : monomial i (p.coeff i) = (X ^ i : R[X]) • C (p.coeff i) := by
+        rw [← C_mul_X_pow_eq_monomial, Algebra.smul_def]
+        change C (p.coeff i) * X ^ i = (X ^ i : R[X]).map (algebraMap R Λ) * C (p.coeff i)
+        rw [Polynomial.map_pow, map_X, X_pow_mul]
+      rw [h_monomial]
+      exact smul_mem _ _ (subset_span ⟨p.coeff i, rfl⟩)
+    rintro _ ⟨w, rfl⟩ k
+    obtain ⟨c, hc⟩ : ∃ c : R, algebraMap R L c = (ρ w).charpoly.coeff k := h_coeff w k
     refine ⟨C c, ?_⟩
     rw [hρX_C, charpoly_map, Polynomial.coeff_map, ← hc]
     exact map_C (algebraMap R L)
@@ -180,7 +184,8 @@ lemma Selmer.exists_adjugate_polynomial (ρ : Λ →ₐ[R] Matrix σ σ L)
   let φX : Matrix N N Λ[X] →ₐ[R[X]] Matrix (N × σ) (N × σ) L[X] :=
     (blockFlattenAlgEquiv N).toAlgHom.comp ρX.mapMatrix
   obtain ⟨B', P, hP, hB', -⟩ :=
-    exists_adjugate_of_charpoly_mem φX (amitsur_charpoly_comp_coeff_mem_range ρX h_coeffX) B
+    φX.exists_mul_eq_smul_one_of_charpoly_coeff_mem_range
+      (amitsur_charpoly_comp_coeff_mem_range ρX h_coeffX B)
   have h_mul : φX (B' * B) = φX (P • 1) := by rw [map_mul, hB', map_smul, map_one]
   have hφX (M : Matrix N N Λ[X]) (i j : N) (a b : σ) : φX M (i, a) (j, b) = ρX (M i j) a b := rfl
   have h_entry (i j : N) : ρX ((B' * B) i j) = ρX ((P • (1 : Matrix N N Λ[X])) i j) :=
@@ -292,7 +297,7 @@ lemma Selmer.exists_ribet_polynomial [Nonempty σ] (ρ : Λ →ₐ[R] Matrix σ 
   -- Write `B y = B₁ y ρ₀` modulo `𝔞`. Then `B_X = B - X B₁` kills `y` in `Λ / 𝔞`, where `X` acts as
   -- right multiplication with `ρ₀`. As `B' B_X = P` after applying `ρ`, `P` kills `y` too.
   have h_coeff : ∀ (w : Λ) (k : ℕ), (ρ w).charpoly.coeff k ∈ (algebraMap R L).range :=
-    amitsur_charpoly_mem_of_span ρ hρ_span
+    ρ.charpoly_coeff_mem_range_of_span hρ_span fun _ hs ↦ hs
   have h_rows : ∀ i : N, ∃ a ∈ 𝔞, ∃ c : N → Λ, (B *ᵥ y) i = a + (c ⬝ᵥ y) * ρ₀ := by
     intro i
     obtain ⟨a, ha, z, hz, h_split⟩ := hB i
@@ -361,7 +366,7 @@ lemma exists_family_algHom_charpoly_mem {A : Type*} [CommRing A] [Algebra A (Y �
     rfl
   have hκ_apply (c : O) (x : Y) : algebraMap A (Y → L) (κ c) x = algebraMap O L c :=
     congrFun (RingHom.congr_fun hκ c) x
-  refine ⟨ρ, fun x r i j ↦ ?_, amitsur_charpoly_mem_of_span ρ ?_⟩
+  refine ⟨ρ, fun x r i j ↦ ?_, ρ.charpoly_coeff_mem_range_of_span (basis G A).span_eq ?_⟩
   · induction r using induction_on with
     | of g =>
       change ρ (mapRingHom G κ (.single g 1)) i j x = algebraMap O L (u x (.single g 1) i j)
@@ -379,8 +384,8 @@ lemma exists_family_algHom_charpoly_mem {A : Type*} [CommRing A] [Algebra A (Y �
       rw [h_smul, algHom_map_smul ρ, Matrix.smul_apply, Algebra.smul_def, Pi.mul_apply, hκ_apply,
         hr, algHom_map_smul (u x), Matrix.smul_apply, smul_eq_mul,
         ringHom_map_mul (algebraMap O L)]
-  · -- The group elements span `A[G]`.
-    refine eq_top_mono (span_mono ?_) (basis G A).span_eq
+  · -- The group elements span `A[G]`, and their characteristic polynomials have coefficients
+    -- in the image of `A`.
     rintro _ ⟨g, rfl⟩ k
     obtain ⟨c, hc⟩ := h_coeff g k
     refine ⟨c, hc.trans (funext fun x ↦ ?_)⟩
@@ -427,7 +432,8 @@ private lemma Selmer.det_mem_of_coeff_mem_aux {A : Type*} [CommRing A] [Algebra 
     congr 1
     ext i j
     exact (hρ x w i j).symm
-  obtain ⟨-, D, hD, -, -⟩ := exists_adjugate_of_charpoly_mem ρ h_charpoly (mapRingHom G κ w)
+  obtain ⟨-, D, hD, -, -⟩ := ρ.exists_mul_eq_smul_one_of_charpoly_coeff_mem_range
+    (h_charpoly (mapRingHom G κ w))
   exact ⟨D, (h_det.trans hD).symm⟩
 
 /-- Let `u x` (`x : Y`) be representations of `O[G]`, and let `κ : O → S` send an element of `O` to
@@ -538,7 +544,8 @@ lemma Selmer.exists_mul_eq_algebraMap_det {A Λ : Type*} [CommRing A] [Ring Λ]
     ∃ D : A, (algebraMap A (Y → L) D = fun x : Y ↦ algebraMap O L (u x w).det) ∧
       ∃ v : Λ, ρ (v * w') = algebraMap A (Matrix σ σ (Y → L)) D := by
   let _ := instAL
-  obtain ⟨v, D, hD, hv, -⟩ := exists_adjugate_of_charpoly_mem ρ h_charpoly w'
+  obtain ⟨v, D, hD, hv, -⟩ :=
+    ρ.exists_mul_eq_smul_one_of_charpoly_coeff_mem_range (h_charpoly w')
   refine ⟨D, funext fun x ↦ ?_, v, ?_⟩
   · change Pi.evalRingHom (fun _ : Y ↦ L) x (algebraMap A (Y → L) D) = algebraMap O L (u x w).det
     rw [← hD, RingHom.map_det, RingHom.map_det, RingHom.mapMatrix_apply, RingHom.mapMatrix_apply]
