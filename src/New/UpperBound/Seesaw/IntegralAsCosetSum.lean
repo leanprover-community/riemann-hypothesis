@@ -342,19 +342,11 @@ lemma lintegral_besselGroup_cutoff_mul {β : G E ε → ENNReal} (hβ_meas : Mea
       ∫⁻ u : Y.besselFin, φ ((u : Gf E ι)⁻¹ * t.2) ∂η := by
   -- Substitute `r ↦ (1, u⁻¹) * r`, then `u ↦ r.2 * u`: this moves `r` from `φ` to `β`, whose orbit
   -- integral is one.
-  have h_mul : Measurable fun r : Y.besselGroup ↦ (r : G E ε) * t :=
-    measurable_subtypeVal.mul_const t
   calc
     _ = ∫⁻ u : Y.besselFin, ∫⁻ r : Y.besselGroup,
         β ((r * t : G E ε).1, u) * φ (r * t : G E ε).2 ∂haar ∂η := by
-      have h1 : Measurable fun p : Y.besselGroup × Y.besselFin ↦
-          β ((p.1.val * t).1, p.2.val) * φ (p.1.val * t).2 :=
-        (hβ_meas.comp ((measurable_fst.comp (h_mul.comp measurable_fst)).prodMk
-          (measurable_subtypeVal.comp measurable_snd))).mul
-          (hφ.comp (measurable_snd.comp (h_mul.comp measurable_fst)))
-      rw [← lintegral_lintegral_swap h1.aemeasurable]
-      exact lintegral_congr fun r ↦
-        (lintegral_mul_const _ (hβ_meas.comp (measurable_const.prodMk measurable_subtypeVal))).symm
+      rw [← lintegral_lintegral_swap (by fun_prop)]
+      exact lintegral_congr fun r ↦ (lintegral_mul_const _ (by fun_prop)).symm
     _ = ∫⁻ u : Y.besselFin, ∫⁻ r : Y.besselGroup,
         β ((r * t : G E ε).1, u) * φ ((u : Gf E ι)⁻¹ * (r * t : G E ε).2) ∂haar ∂η := by
       refine lintegral_congr fun ⟨u, hu⟩ ↦ ?_
@@ -362,27 +354,14 @@ lemma lintegral_besselGroup_cutoff_mul {β : G E ε → ENNReal} (hβ_meas : Mea
       simp only [coe_mul, Prod.mul_def, one_mul, mul_assoc]
     _ = ∫⁻ r : Y.besselGroup, ∫⁻ u : Y.besselFin,
         β (r * (t.1, (u : Gf E ι))) * φ ((u : Gf E ι)⁻¹ * t.2) ∂η ∂haar := by
-      have h3 : Measurable fun p : Y.besselFin × Y.besselGroup ↦
-          β ((p.2.val * t).1, p.1.val) * φ ((p.1 : Gf E ι)⁻¹ * (p.2.val * t).2) :=
-        (hβ_meas.comp ((measurable_fst.comp (h_mul.comp measurable_snd)).prodMk
-          (measurable_subtypeVal.comp measurable_fst))).mul
-          (hφ.comp ((measurable_subtypeVal.comp measurable_fst).inv.mul
-            (measurable_snd.comp (h_mul.comp measurable_snd))))
-      rw [lintegral_lintegral_swap h3.aemeasurable]
+      rw [lintegral_lintegral_swap (by fun_prop)]
       refine lintegral_congr fun ⟨r, hr⟩ ↦ ?_
       rw [← lintegral_mul_left_eq_self _ (⟨r.2, Y.snd_mem_besselFin hr⟩ : Y.besselFin)]
       simp only [coe_mul, Prod.mul_def, mul_inv_rev, mul_assoc, inv_mul_cancel_left]
     _ = _ := by
-      have h4 : Measurable fun p : Y.besselGroup × Y.besselFin ↦
-          β (p.1.val * (t.1, (p.2 : Gf E ι))) * φ ((p.2 : Gf E ι)⁻¹ * t.2) :=
-        (hβ_meas.comp ((measurable_subtypeVal.comp measurable_fst).mul
-          (measurable_const.prodMk (measurable_subtypeVal.comp measurable_snd)))).mul
-          (hφ.comp ((measurable_subtypeVal.comp measurable_snd).inv.mul_const t.2))
-      rw [lintegral_lintegral_swap h4.aemeasurable]
+      rw [lintegral_lintegral_swap (by fun_prop)]
       refine lintegral_congr fun u ↦ ?_
-      have hβ_r : Measurable fun r : Y.besselGroup ↦ β (r * (t.1, (u : Gf E ι))) :=
-        hβ_meas.comp (measurable_subtypeVal.mul_const _)
-      rw [lintegral_mul_const _ hβ_r, hβ, one_mul]
+      rw [lintegral_mul_const _ (by fun_prop), hβ, one_mul]
 
 /-- Let `Y` be a grading of the hermitian space `V`, `Y.besselGroup` its Bessel subgroup of the
 adelic unitary group `G E ε = GInf E ε × Gf E ι`, and `Y.ratBessel` the rational points of that
