@@ -12,6 +12,7 @@ import Lib.Adelic.AutomorphicForms.RealConvolution
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Adelic.TraceFormula.Stretch
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
 import Lib.DiscreteSeries.Haar.GramPolar
 import Lib.DiscreteSeries.Haar.TotalMass
 
@@ -283,12 +284,9 @@ seal Finset.univ in
 the adelic group as soon as its exponent `A` exceeds `8 n²`. -/
 lemma integrable_majorant (φ : TestFunction (Gf E n)) {A : ℕ} (hA : 8 * card n ^ 2 < A) :
     Integrable fun y : G E s ↦ majorant φ A y := by
-  have h_place : Integrable fun z : USign s ↦ (‖z.val.val‖ ^ A)⁻¹ := by
-    have h_decay : Integrable fun z : USign s ↦ (2 / ‖z.val.val‖) ^ A := by
-      obtain ⟨h_integrable, -⟩ :=
-        DiscreteSeries.integral_decay_le volume IsProperMap.monoidHom_id hA (1 : USign s)
-      simpa using h_integrable
-    exact (h_decay.const_mul (2 ^ A)⁻¹).congr (.of_forall fun z ↦ by simp [div_eq_mul_inv, mul_pow])
+  have h_place : Integrable fun z : USign s ↦ (‖z.val.val‖ ^ A)⁻¹ :=
+    ((integrable_two_div_norm_pow (ε := s) hA).const_mul (2 ^ A)⁻¹).congr
+      (.of_forall fun z ↦ by simp [div_eq_mul_inv, mul_pow])
   have h_inf : Integrable fun z : GInf E s ↦ ∏ w : InfinitePlace E, (‖(z w).val.val‖ ^ A)⁻¹ :=
     .fintype_prod fun _ ↦ h_place
   obtain ⟨h_const, h_compact, -⟩ := φ.property
