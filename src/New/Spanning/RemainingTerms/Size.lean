@@ -764,8 +764,7 @@ theorem enorm_amplitudeSum_le_tsum_termSize (hT : S.IsStable T) (h_sub : T ⊆ S
     intro u hu u' hu' γ
     have h_iff (i : Fin (𝔰.ϱ + 2)) : S.HasCellRank i (u⁻¹ * γ * u') ↔ S.HasCellRank i γ :=
       S.isStable_hasCellRank i u hu u' hu' γ
-    have cellRank_eq : S.cellRank (u⁻¹ * γ * u') = S.cellRank γ := by
-      simp only [cellRank, h_iff]
+    have cellRank_eq : S.cellRank (u⁻¹ * γ * u') = S.cellRank γ := cellRank_congr h_iff
     simp [part, cellRank_eq, hT u hu u' hu' γ]
   have h_cell : ∀ γ ∈ part, S.HasCellRank j γ := by
     rintro γ ⟨hγT, rfl : S.cellRank γ = j⟩

@@ -119,6 +119,13 @@ lemma HasCellRank.hasCellRank_cellRank {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
   Classical.epsilon_spec (p := fun i : Fin (𝔰.ϱ + 2) ↦ S.HasCellRank i γ) ⟨j, h⟩
 
 omit [HasPrimitiveRoot5040 E] in
+/-- The chosen cell rank depends only on the cells that contain the element: two rational elements
+that lie in the same cells `j` (`S.HasCellRank j`) have the same cell rank. -/
+lemma cellRank_congr {γ γ' : S.G E} (h : ∀ j, S.HasCellRank j γ ↔ S.HasCellRank j γ') :
+    S.cellRank γ = S.cellRank γ' := by
+  simp only [cellRank, h]
+
+omit [HasPrimitiveRoot5040 E] in
 /-- Vectors of `Λ ∩ X₀`, for the lattice `Λ` of the class `c` in the definite space `X₀`, have
 integral products. Here `S.classCoordX₀ c` changes from an orthonormal basis of `X₀` to the
 coordinates of `Λ`, and integral means with entries in the ring `Ô E` of integral elements of the
