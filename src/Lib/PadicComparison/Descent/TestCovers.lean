@@ -513,9 +513,14 @@ variable {C : Type _} [Category C] {A : Type} [CommRing A] {ι : C ⥤ CommAlg A
 /-- Flat base change (`New.Variety.HasFlatBaseChange`) defines a closed class of functors from C to
 abelian groups: it contains 0, and for M' ⊂ M with M' in the class, M is in it exactly when M/M'
 is. -/
-lemma HasFlatBaseChange.isClosedClass : IsClosedClass (D := C) HasFlatBaseChange := by
-  simp_all [IsClosedClass, HasFlatBaseChange, AllBijective, devissage.isClosedClass.1,
-    devissage.isClosedClass.2]
+lemma HasFlatBaseChange.isClosedClass :
+    ObjectProperty.IsClosedClass (HasFlatBaseChange (C := C)) where
+  prop_of_isZero hN := by simp_all [HasFlatBaseChange, devissage.isClosedClass.prop_of_isZero hN _]
+  prop_X₂_iff_prop_X₃ hS h₁ := by
+    -- for each `S`, `T`, `M` and `Φ` this is two out of three for the maps of `devissage`
+    refine ⟨fun h₂ S T M _ _ _ _ _ _ _ _ Φ ↦ ?_, fun h₃ S T M _ _ _ _ _ _ _ _ Φ ↦ ?_⟩
+    · exact (devissage.isClosedClass.prop_X₂_iff_prop_X₃ hS (h₁ S T M Φ)).1 (h₂ S T M Φ)
+    · exact (devissage.isClosedClass.prop_X₂_iff_prop_X₃ hS (h₁ S T M Φ)).2 (h₃ S T M Φ)
 
 /-- The functor of points of an A-algebra B in the algebras ι(c) is affinely covered. -/
 lemma isAffinelyCovered_reprBy (B : CommAlg A) : IsAffinelyCovered ι (reprBy B) := by
@@ -589,7 +594,8 @@ lemma IsAffinelyCovered.devissage_bijective {M N : C ⥤ Ab → ℕ → Type _}
     · -- without points, `freeAb.obj (ι ⋙ Y)` is zero
       have h_id_zero : 𝟙 (freeAb.obj (ι ⋙ Y)) = 0 :=
         freeAb.hom_ext fun d w ↦ (h_empty ⟨d, ⟨w⟩⟩).elim
-      exact allBijective_iff_forall_bijectiveUpTo.mp (h.isClosedClass.1 _ h_id_zero) _
+      exact allBijective_iff_forall_bijectiveUpTo.mp
+        (h.isClosedClass.prop_of_isZero ((IsZero.iff_id_eq_zero _).2 h_id_zero)) _
     -- cover `ι ⋙ Y` by a representable functor
     obtain ⟨hY_sep, B, y, hy⟩ := hY
     obtain ⟨c, ⟨η⟩, hη⟩ := HasCoveringPoints.exists_surjective_point B (hy d w).choose
@@ -609,7 +615,7 @@ lemma IsAffinelyCovered.devissage_bijective {M N : C ⥤ Ab → ℕ → Type _}
         fun m ↦ ih (isAffinelyCovered_cech hY_sep η y m)
     -- pass along the isomorphism from the image, whose kernel is zero
     have h_ker : AllBijective (f (kernel (freeAb.map Q.ι))) :=
-      h.isClosedClass.1 _ ((isZero_kernel_of_mono _).eq_of_src _ _)
+      h.isClosedClass.prop_of_isZero (isZero_kernel_of_mono _)
     exact h.bijectiveUpTo_quotient ⟨exact_kernel (freeAb.map Q.ι)⟩ h_range
       (allBijective_iff_forall_bijectiveUpTo.mp h_ker _)
 

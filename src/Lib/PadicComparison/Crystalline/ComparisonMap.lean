@@ -732,18 +732,19 @@ open CategoryTheory AddMonoidAlgebra CommRingCat RingHom TensorProduct Function
 
 variable {p : ℕ} [ThePrime p]
 
-/-- Let P be a closed class of functors from C × Bℕ to abelian groups (`IsClosedClass`: P holds
-for zero objects, and along a short exact sequence whose first term is in P, the middle term is in
-P exactly when the last one is). If P holds for the free abelian group functor of Y × ℕ (Y
-restricted to C, times ℕ with its shift), then it holds for that of Y: the short exact sequence
-`TimesBNat.shortExact_induced` resolves ℤ[Y] by two copies of ℤ[Y × ℕ]. -/
-lemma IsClosedClass.of_prod_nat {C : Type 1} [Category C] {P : (TimesBNat C ⥤ Ab) → Prop}
-    (hP : IsClosedClass P) {Y : TimesBNat C ⥤ Type 1}
+/-- Let P be a closed class of functors from C × Bℕ to abelian groups
+(`CategoryTheory.ObjectProperty.IsClosedClass`: P holds for zero objects, and along a short exact
+sequence whose first term is in P, the middle term is in P exactly when the last one is). If P
+holds for the free abelian group functor of Y × ℕ (Y restricted to C, times ℕ with its shift), then
+it holds for that of Y: the short exact sequence `TimesBNat.shortExact_induced` resolves ℤ[Y] by two
+copies of ℤ[Y × ℕ]. -/
+lemma _root_.CategoryTheory.ObjectProperty.IsClosedClass.of_prod_nat {C : Type 1} [Category C]
+    {P : (TimesBNat C ⥤ Ab) → Prop} (hP : ObjectProperty.IsClosedClass P)
+    {Y : TimesBNat C ⥤ Type 1}
     (h : P (freeAb (MonoidalCategory.tensorObj (TimesBNat.fst C ⋙ incl C ⋙ Y) natWithShift))) :
     P (freeAb Y) := by
-  obtain ⟨-, h_two_of_three⟩ := hP
   obtain ⟨w, h_exact⟩ := shortExact_induced Y
-  exact (h_two_of_three _ h_exact h).mp h
+  exact (hP.prop_X₂_iff_prop_X₃ h_exact h).mp h
 
 variable {C C' : Type 1} [Category C] [Category C']
   {F : AbFunctor C} {F' : AbFunctor C'} {c : Comparison (C := C) (C' := C') F F'}

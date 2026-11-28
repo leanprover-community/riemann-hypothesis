@@ -25,8 +25,9 @@ along idempotents are dense. Locally constant coefficients on test rings satisfy
 
 * `New.Variety.mayer_vietoris_shortExact`: 0 → ℤ[U ∩ V] → ℤ[U] ⊕ ℤ[V] → ℤ[U ∪ V] → 0 is short exact.
 * `New.Variety.IsCohomDense.isCohomEquiv`: the inclusion of a dense subfunctor is an equivalence.
-* `New.Variety.IsClosedClass.freeAb_iSup`: if a closed class contains ℤ[V] for all V in a set of
-  subfunctors closed under intersection, it contains ℤ[-] of their finite unions (Mayer–Vietoris).
+* `CategoryTheory.ObjectProperty.IsClosedClass.freeAb_iSup`: if a closed class contains ℤ[V] for
+  all V in a set of subfunctors closed under intersection, it contains ℤ[-] of their finite unions
+  (Mayer–Vietoris).
 * `New.Variety.HasPartitions.isCohomDense_partition`: for an idempotent `e`, the maps that kill `e`
   or `1 - e` are dense.
 * `New.Variety.HasPartitions.hasZariskiDescent`: Zariski descent for rings `κ` that receive an
@@ -38,9 +39,9 @@ along idempotents are dense. Locally constant coefficients on test rings satisfy
 Notions from other files:
 * `New.Variety.freeAb`: The functor sending a set-valued functor Y to ℤ[Y], whose value at A is the
   free abelian group on Y(A).
-* `New.Variety.IsClosedClass`: a class of functors C → Ab that contains every zero functor and, for
-  a short exact sequence whose first term lies in it, contains the middle term exactly when it
-  contains the last.
+* `CategoryTheory.ObjectProperty.IsClosedClass` (Tau Ceti): a class of objects of an abelian
+  category that contains every zero object and, for a short exact sequence whose first term lies in
+  it, contains the middle term exactly when it contains the last.
 * `New.Variety.HasPartitions`: Each idempotent e ≠ 1 of ι(A) has a `New.Variety.IsQuotientByElem`
   A → B, and ι(A) ≅ ι(B₁) × ι(B₂) via maps A → B₁, B₂ implies F(A) ≅ F(B₁) × F(B₂).
 
@@ -170,8 +171,8 @@ end New.Variety
 /-!
 ## Closed classes of functors
 
-Properties of closed classes of functors C → Ab (`New.Variety.IsClosedClass`), used to prove a
-property of ℤ[Y] for many set-valued functors Y by cutting them up.
+Properties of closed classes of functors C → Ab (`CategoryTheory.ObjectProperty.IsClosedClass`),
+used to prove a property of ℤ[Y] for many set-valued functors Y by cutting them up.
 -/
 
 section ClosedClasses
@@ -186,25 +187,25 @@ variable {C : Type 1}
 
 /-- Let P be a closed class and `g : E ⟶ Y` a map of set-valued functors that is bijective at every
 object. If ℤ[E] lies in P, then so does ℤ[Y]. -/
-lemma IsClosedClass.freeAb_of_bijective (hP : IsClosedClass P) (g : E ⟶ Y)
+lemma _root_.CategoryTheory.ObjectProperty.IsClosedClass.freeAb_of_bijective
+    (hP : ObjectProperty.IsClosedClass P) (g : E ⟶ Y)
     (h : AllBijective fun A : C ↦ g.app A) (h_E : P (freeAb E)) :
     P (freeAb Y) :=
   (hP.iff_of_isIso (freeAb.map (isoOfAppBijective g h).hom)).mp h_E
 
-/-- Let P satisfy `New.Variety.IsClosedClass` and S be a set of subfunctors of Y closed under
-intersection (`hS`), with ℤ[V] in P for all V in S (`hPS`). Then ℤ[⋃ U_i] is in P for every finite
-family U_i in S. -/
-lemma IsClosedClass.freeAb_iSup (hP : IsClosedClass P) (S : Set (Subfunctor Y))
+/-- Let P be a closed class (`CategoryTheory.ObjectProperty.IsClosedClass`) and S be a set of
+subfunctors of Y closed under intersection (`hS`), with ℤ[V] in P for all V in S (`hPS`). Then
+ℤ[⋃ U_i] is in P for every finite family U_i in S. -/
+lemma _root_.CategoryTheory.ObjectProperty.IsClosedClass.freeAb_iSup
+    (hP : ObjectProperty.IsClosedClass P) (S : Set (Subfunctor Y))
     (hPS : ∀ V ∈ S, P (freeAb V.toFunctor)) (hS : ∀ V ∈ S, ∀ W ∈ S, V ⊓ W ∈ S) {ι : Type}
     [Finite ι] {U : ι → Subfunctor Y} (hU : ∀ i : ι, U i ∈ S) :
     P (freeAb (iSup U).toFunctor) := by
-  obtain ⟨h_zero, h_ses⟩ : (∀ N : AbFunctor C, 𝟙 N = 0 → P N) ∧
-      ∀ S : ShortComplex (AbFunctor C), ShortExact S → P S.X₁ → (P S.X₂ ↔ P S.X₃) := hP
   induction ι using Finite.induction_empty_option with
   | of_equiv e ih => simpa only [iSup_comp e] using ih fun i ↦ hU (e i)
   | h_empty =>
     -- the empty union has no points, so its free abelian functor is zero
-    exact h_zero _ (freeAb.hom_ext nofun)
+    exact hP.prop_of_isZero ((Limits.IsZero.iff_id_eq_zero _).2 (freeAb.hom_ext nofun))
   | h_option ih =>
     -- Write the union as V ∪ W with V the union of the `U (some i)` and W = `U none`.
     -- By induction `P` holds for ℤ[V] and for ℤ[V ∩ W], as V ∩ W is the union of the Uᵢ ∩ W.
@@ -213,21 +214,20 @@ lemma IsClosedClass.freeAb_iSup (hP : IsClosedClass P) (S : Set (Subfunctor Y))
       simpa only [iSup_min] using ih fun i ↦ hS _ (hU (some i)) _ (hU none)
     -- the split sequence ℤ[V] → ℤ[V] ⊕ ℤ[W] → ℤ[W] gives `P` for the direct sum
     have h_sum : P (freeAb.obj (⨆ i, U (some i)).toFunctor ⊞ freeAb.obj (U none).toFunctor) :=
-      (h_ses _ (ofHasBinaryBiproduct _ _).shortExact h_union).mpr (hPS (U none) (hU none))
+      (hP.prop_X₂_iff_prop_X₃ (ofHasBinaryBiproduct _ _).shortExact h_union).mpr
+        (hPS (U none) (hU none))
     -- Mayer–Vietoris: ℤ[V ∩ W] → ℤ[V] ⊕ ℤ[W] → ℤ[V ∪ W] is short exact
     obtain ⟨h_mv_comp, h_mv⟩ := mayer_vietoris_shortExact (U := ⨆ i, U (some i)) (V := U none)
     rw [iSup_option, sup_comm]
-    exact (h_ses _ h_mv h_inter).mp h_sum
+    exact (hP.prop_X₂_iff_prop_X₃ h_mv h_inter).mp h_sum
 
 /-- If P is a closed class of functors C → Ab and Φ is an exact functor from functors D → Ab to
 functors C → Ab, then the class of all N with Φ(N) in P is closed. -/
-lemma IsClosedClass.comap (h : IsClosedClass P) (Φ : AbFunctor D ⥤ AbFunctor C) [IsExactFunctor Φ] :
-    IsClosedClass fun N : D ⥤ Ab ↦ P (Φ N) := by
+lemma _root_.CategoryTheory.ObjectProperty.IsClosedClass.comap
+    (h : ObjectProperty.IsClosedClass P) (Φ : AbFunctor D ⥤ AbFunctor C) [IsExactFunctor Φ] :
+    ObjectProperty.IsClosedClass fun N : D ⥤ Ab ↦ P (Φ N) :=
   -- `Φ` sends zero functors to zero functors and short exact sequences to short exact sequences
-  obtain ⟨h_zero, h_ses⟩ : (∀ N : AbFunctor C, 𝟙 N = 0 → P N) ∧
-      ∀ S : ShortComplex (AbFunctor C), ShortExact S → P S.X₁ → (P S.X₂ ↔ P S.X₃) := h
-  refine ⟨fun N hN ↦ h_zero (Φ N) ?_, fun S hS ↦ h_ses (S.map Φ) (hS.map_of_exact Φ)⟩
-  rw [← Φ.map_id, hN, Φ.map_zero]
+  ⟨fun hN ↦ h.prop_of_isZero (Φ.map_isZero hN), fun hS ↦ h.prop_X₂_iff_prop_X₃ (hS.map_of_exact Φ)⟩
 
 end New.Variety
 

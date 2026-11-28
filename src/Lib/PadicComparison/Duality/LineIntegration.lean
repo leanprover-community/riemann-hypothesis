@@ -651,21 +651,22 @@ seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- `D.IsFiniteLerayHirsch` is a closed class (`IsClosedClass`): it holds for zero functors, and in
 a short exact sequence `0 → X₁ → X₂ → X₃ → 0` with `D.IsFiniteLerayHirsch X₁` it holds for `X₂` if
 and only if for `X₃`. -/
-lemma isClosedClass_isFiniteLerayHirsch : IsClosedClass D.IsFiniteLerayHirsch := by
+lemma isClosedClass_isFiniteLerayHirsch : ObjectProperty.IsClosedClass D.IsFiniteLerayHirsch := by
   classical
   -- The bijectivity half of `IsFiniteLerayHirsch` is `isClosedClass_isLerayHirschBasis`; it remains
   -- to treat finiteness.
   let L : AbFunctor (TestOver A) := locConstAlong (𝟭 (TestOver A))
-  obtain ⟨h_LH_zero, h_LH_ses⟩ : IsClosedClass fun S ↦ IsLerayHirschBasis D.comparison S :=
+  obtain ⟨h_LH_zero, h_LH_ses⟩ :
+      ObjectProperty.IsClosedClass fun S ↦ IsLerayHirschBasis D.comparison S :=
     isClosedClass_isLerayHirschBasis
-  refine ⟨fun N hN ↦ ⟨h_LH_zero N hN, ?_⟩, fun X hX hX₁ ↦ ?_⟩
+  refine ⟨fun {N} hN ↦ ⟨h_LH_zero hN, ?_⟩, fun {X} hX hX₁ ↦ ?_⟩
   · -- The cohomology of a zero functor is trivial in every degree.
     have h_zero : ∀ (F : AbFunctor (TestOver A)) (n : ℕ), Subsingleton (H N F n) :=
-      H.subsingleton_of_id_eq_zero hN
+      H.subsingleton_of_id_eq_zero (hN.eq_of_src _ _)
     infer_instance
   obtain ⟨h_bij₁, h_fin₁⟩ := hX₁
   have h_bij_iff : IsLerayHirschBasis D.comparison X.X₂ ↔ IsLerayHirschBasis D.comparison X.X₃ :=
-    h_LH_ses X hX h_bij₁
+    h_LH_ses hX h_bij₁
   -- In the exact triangle, each of the groups of `X.X₂` and `X.X₃` lies between the other one
   -- and that of `X.X₁`.
   obtain ⟨h_exact_mid, -, h_exact_quot⟩ := exact_triangle hX L

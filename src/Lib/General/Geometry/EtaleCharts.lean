@@ -34,8 +34,8 @@ the calculus of charts and shows that an atlas yields a cover by pieces étale o
   that is, of pieces étale over a torus.
 * `New.Variety.Comparison.isClosedClass`: for a comparison of cohomologies on categories over `D`,
   the functors on `D` for which it is bijective form a closed class
-  (`New.Variety.IsClosedClass`: contains `0` and, given a short exact sequence whose first term is
-  in it, contains the second term iff the third).
+  (`CategoryTheory.ObjectProperty.IsClosedClass`: contains `0` and, given a short exact sequence
+  whose first term is in it, contains the second term iff the third).
 * `New.Variety.IsCharted`: a scheme is charted if its functor of points has a subfunctor satisfying
   `New.Variety.IsCharting`.
 
@@ -941,11 +941,11 @@ lemma IsChartCovered.comap [IsChartCovered d X] (hu : IsOpenSubfunctor (Subfunct
 (a) `V` is locally everything: for each `y ∈ X(A)` and maximal ideal `m` of `A` there is an
 `a ∉ m` such that `y` maps into `V` along every `A → B` that makes `a` a unit.
 (b) `ℤ[V]` lies in every class `P` of functors to abelian groups that satisfies
-`New.Variety.IsClosedClass` and contains `ℤ[Hom(R, -)]` for the ring `R` of each chart of `X` (of
-any dimension) whose coordinates are all units, that is, étale over a torus. -/
+`CategoryTheory.ObjectProperty.IsClosedClass` and contains `ℤ[Hom(R, -)]` for the ring `R` of each
+chart of `X` (of any dimension) whose coordinates are all units, that is, étale over a torus. -/
 def IsCharting (V : Subfunctor X) : Prop :=
   IsZariskiLocallyTop (forget₂ (CommAlg k) CommRingCat) V ∧
-  ∀ P : CommAlg k ⥤ Ab → Prop, IsClosedClass P →
+  ∀ P : CommAlg k ⥤ Ab → Prop, ObjectProperty.IsClosedClass P →
     (∀ {d : ℕ} (b : EtaleChart d X),
       (∀ j : Fin d, IsUnit (b.coordinate j)) → P (freeAb (reprBy b.coordRing))) →
     P (freeAb V.toFunctor)
@@ -967,8 +967,8 @@ are units. Let `P` be a closed class of functors to abelian groups (it contains 
 short exact sequence whose first term is in it, contains the second term iff the third). If `P`
 contains the free abelian functor `ℤ[Hom(b.coordRing, -)]` for each chart `b` whose coordinates are
 units, it contains `ℤ[⋃ (u p).locus]`. -/
-lemma IsClosedClass.freeAb_iSup_locus [IsSeparatedFunctor X] {P : CommAlg k ⥤ Ab → Prop}
-    (hP : IsClosedClass P)
+lemma _root_.CategoryTheory.ObjectProperty.IsClosedClass.freeAb_iSup_locus [IsSeparatedFunctor X]
+    {P : CommAlg k ⥤ Ab → Prop} (hP : ObjectProperty.IsClosedClass P)
     (h_unit : ∀ b : EtaleChart d X, (∀ j : Fin d, IsUnit (b.coordinate j)) →
       P (freeAb (reprBy b.coordRing)))
     {ι : Type} [Finite ι] (u : ι → EtaleChart d X)
@@ -1058,7 +1058,7 @@ variable {C C' : Type 1} {D : Type*} [Category C] [Category C'] [Category D]
 class: it contains `0` and, given a short exact sequence whose first term is in it, contains the
 second term iff the third. -/
 lemma Comparison.isClosedClass :
-    IsClosedClass fun N : D ⥤ Ab ↦ c.IsBijective (N := ψ ⋙ N) (whiskerRight η N) :=
+    ObjectProperty.IsClosedClass fun N : D ⥤ Ab ↦ c.IsBijective (N := ψ ⋙ N) (whiskerRight η N) :=
   -- Precomposition with `ψ` and with `ψ'` is exact and `η` gives the map between the two results:
   -- use `Comparison.devissage`.
   (c.devissage ((whiskeringLeft C D Ab).obj ψ) ((whiskeringLeft C' D Ab).map η)).isClosedClass

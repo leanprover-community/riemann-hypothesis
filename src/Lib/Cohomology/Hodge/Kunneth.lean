@@ -233,12 +233,13 @@ private lemma cross_comp_eq_comp_cross {C : Type 1} [Category C] {M N F : AbFunc
   exact congrArg _ (of_comp_homClass _).symm
 
 /-- The first factor of the Künneth formula, for a represented second factor. Let `N` be a functor
-that lies in every closed class (`New.Variety.IsClosedClass`) containing the represented functors
-(`h_devissage`), and let `θ` be the products with a basis of the classes of each degree on `N`.
-Then the Leray–Hirsch map of `θ` for `Φ = N ⊗ –` is bijective at every represented functor. -/
+that lies in every closed class (`CategoryTheory.ObjectProperty.IsClosedClass`) containing the
+represented functors (`h_devissage`), and let `θ` be the products with a basis of the classes of
+each degree on `N`. Then the Leray–Hirsch map of `θ` for `Φ = N ⊗ –` is bijective at every
+represented functor. -/
 private lemma bijective_lerayHirsch_reprBy {k : Type} [Field k] [CharZero k]
     {N : AbFunctor (HodgeTest k)} [HasFlatValues N]
-    (h_devissage : ∀ {P : AbFunctor (HodgeTest k) → Prop}, IsClosedClass P →
+    (h_devissage : ∀ {P : AbFunctor (HodgeTest k) → Prop}, ObjectProperty.IsClosedClass P →
       (∀ c : HodgeTest k, P (freeAb (reprBy c))) → P N)
     (c : HodgeTest k) :
     Bijective (lerayHirsch (Φ := abTensor N)
@@ -312,7 +313,7 @@ lemma kunneth {k : Type} [Field k] [CharZero k] {X : CommAlg k ⥤ Type 1} {d n 
   -- Dévissage: a class closed in the sense of `IsClosedClass` that contains the represented
   -- functors contains `N = ℤ[U]`, as the charts from which `V` is built are represented on
   -- `HodgeTest k` (`exists_univPoint`).
-  have h_devissage {P : AbFunctor (HodgeTest k) → Prop} (hP : IsClosedClass P)
+  have h_devissage {P : AbFunctor (HodgeTest k) → Prop} (hP : ObjectProperty.IsClosedClass P)
       (h : ∀ c : HodgeTest k, P (freeAb (reprBy c))) : P N := by
     refine hV_built _ (hP.comap (restrictAlong _)) fun b _ ↦ ?_
     obtain ⟨u, -, h_rep⟩ := b.exists_univPoint

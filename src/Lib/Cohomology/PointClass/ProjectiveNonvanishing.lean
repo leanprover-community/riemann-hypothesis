@@ -332,9 +332,10 @@ lemma pairRestrictBijective_relFreeAb_of_isOpenSubfunctor {V : CommAlg k ⥤ Typ
   -- Two out of three in the sequence `0 → ℤ[U] → ℤ[V] → relFreeAb U → 0`: the property holds for
   -- `ℤ[V]`, and for `ℤ[U]` since `U` is again covered by charts.
   have hU_charts : IsChartCovered 1 U.toFunctor := hV.comap U.ι (by simpa using hU)
-  have h_closed : IsClosedClass fun N : CommAlg k ⥤ AddCommGrpCat ↦ PairRestrictBijective N :=
+  have h_closed :
+      ObjectProperty.IsClosedClass fun N : CommAlg k ⥤ AddCommGrpCat ↦ PairRestrictBijective N :=
     (Comparison.restrict HodgeTatePair.toTest genericCoeff).isClosedClass HodgeTatePair.toGeneric
-  exact (h_closed.right _ (relFreeAb.shortExact U).2 hU_charts.pairRestrictBijective).mp
+  exact (h_closed.prop_X₂_iff_prop_X₃ (relFreeAb.shortExact U).2 hU_charts.pairRestrictBijective).mp
     hV.pairRestrictBijective
 
 /-- On the chart `0` of the projective line (the points `[1 : x]`), the coordinate `X` cuts out the

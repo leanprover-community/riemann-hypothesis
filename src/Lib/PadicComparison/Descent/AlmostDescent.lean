@@ -393,7 +393,7 @@ lemma one_tmul_eq_zero_of_tensorPush {Φ : PerfectAlg p S ⥤ ModuleCat S} [Alge
     exact devissage.isClosedClass.freeAb_of_bijective _ hD (baseChangeMap_bijective_freeAb_reprBy D)
   have h_rel : AllBijective fun n ↦ baseChangeMap A A (relFreeAbOfHom φ) (Φ ⋙ tensorWith V V) n :=
     -- the five lemma for `0 → ℤ[im h_d] → ℤ[h_b] → Q → 0`
-    (devissage.isClosedClass.right _ (relFreeAb.shortExact _).2
+    (devissage.isClosedClass.prop_X₂_iff_prop_X₃ (relFreeAb.shortExact _).2
       (devissage.allBijective_freeAb_range_of_cech _ h_cech)).mp
         (baseChangeMap_bijective_freeAb_reprBy b)
   -- The image of `1 ⊗ x` is the push-forward of `x` along `V ⊗ Φ → A ⊗ Φ ≅ A ⊗ (V ⊗ Φ)`.

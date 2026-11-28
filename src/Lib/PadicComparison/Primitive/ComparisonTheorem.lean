@@ -185,14 +185,14 @@ lemma ComparedTheory.isFiniteLerayHirsch_freeAb_iff_relFreeAb {ℓ : ℕ} {Ω : 
   have h_sub : D.IsFiniteLerayHirsch (freeAb (offClosedFiber X).toFunctor) := by
     -- The empty subfunctor is locally everything: a ring with a point `y` has no maximal ideal.
     refine (D.isFiniteLerayHirsch_iff_of_isCohomEquiv (freeAb.map (Subfunctor.ι ⊥))
-      fun _ zar ↦ ?_).mp (h_zero _ (freeAb.hom_ext nofun))
+      fun _ zar ↦ ?_).mp (h_zero ((Limits.IsZero.iff_id_eq_zero _).2 (freeAb.hom_ext nofun)))
     refine (zar (U := .whisker (Y := (offClosedFiber X).toFunctor) ⊥ _)
       fun _ y _ hm ↦ ?_).isCohomEquiv
     refine (hm.ne_top (eq_top_mono ?_ y.prop)).elim
     simp only [IdealFamily.ofMaximalIdeal, IsLocalRing.maximalIdeal_eq_bot]
     exact Ideal.map_le_iff_le_comap.2 bot_le
   obtain ⟨w, h_exact⟩ := relFreeAb.shortExact (offClosedFiber X)
-  exact h_ses ⟨_, _, w⟩ h_exact h_sub
+  exact h_ses h_exact h_sub
 
 omit [ThePrime p] [Algebra Ω ℂ_[p]] in
 /-- The points of a proper `Y` over `R` on tests over `Ω` have flat base change: the functor is

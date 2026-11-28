@@ -205,9 +205,10 @@ lemma HasBaseChange.devissage [Flat S M] :
     { comm_f := fun n x ↦ baseChangeMap_lTensor_precompₗ (mk₀ X.g) n.zero_add x
       comm_g := fun n x ↦ baseChangeMap_lTensor_precompₗ (mk₀ X.f) n.zero_add x
       comm_delta := fun n x ↦ baseChangeMap_lTensor_precompₗ hX.extClass n.one_add x }
-  refine ⟨⟨fun hX ↦ (h_hom _ hX).four_lemma⟩, fun N hN ↦ ?_, fun X hX ↦ (h_hom X hX).five_lemma⟩
+  refine ⟨⟨fun hX ↦ (h_hom _ hX).four_lemma⟩, fun {N} hN ↦ ?_, fun {X} hX ↦ (h_hom X hX).five_lemma⟩
   -- For the zero functor both sides are trivial.
-  have (F : AbFunctor C) (n : ℕ) : Subsingleton (H N F n) := subsingleton_of_id_eq_zero hN F n
+  have (F : AbFunctor C) (n : ℕ) : Subsingleton (H N F n) :=
+    subsingleton_of_id_eq_zero (hN.eq_of_src _ _) F n
   simp [nontriviality, AllBijective, Bijective, Surjective]
 
 /-- `IsAcyclicAt φ F B` says that restriction along φ (the comparison `Comparison.restrict φ F`,

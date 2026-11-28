@@ -248,9 +248,10 @@ lemma lerayHirsch.devissage :
   refine
     { bijectiveUpTo_quotient := fun hX ↦ (longExact_hom hX).four_lemma
       isClosedClass :=
-        ⟨fun S hS ↦ isLerayHirschBasis_iff_allBijective_truncMap.mp ?_, fun X hX ↦
+        ⟨fun {S} hS ↦ isLerayHirschBasis_iff_allBijective_truncMap.mp ?_, fun hX ↦
           (longExact_hom hX).five_lemma⟩ }
   -- If `S = 0`, then `Φ S = 0` too, and both sides of `lerayHirsch θ S` are trivial.
+  replace hS : 𝟙 S = 0 := hS.eq_of_src _ _
   have h_src : ∀ (G : A ⥤ Ab) (n : ℕ), Subsingleton (H S G n) := subsingleton_of_id_eq_zero hS
   have h_id_zero : 𝟙 (Φ.obj S) = 0 := by simpa using Φ.congr_map hS
   have h_tgt : ∀ n : ℕ, Subsingleton (H (Φ S) F n) := subsingleton_of_id_eq_zero h_id_zero F
@@ -259,9 +260,11 @@ lemma lerayHirsch.devissage :
 
 omit [DecidableEq I] in
 /-- The functors `S` at which `θ` is a Leray–Hirsch basis form a closed class
-(`New.Variety.IsClosedClass`): the class contains the zero functors, and along a short exact
-sequence whose subobject is in it, the middle term is in it exactly when the quotient is. -/
-lemma isClosedClass_isLerayHirschBasis : IsClosedClass fun S : A ⥤ Ab ↦ IsLerayHirschBasis θ S := by
+(`CategoryTheory.ObjectProperty.IsClosedClass`): the class contains the zero functors, and along a
+short exact sequence whose subobject is in it, the middle term is in it exactly when the quotient
+is. -/
+lemma isClosedClass_isLerayHirschBasis :
+    ObjectProperty.IsClosedClass fun S : A ⥤ Ab ↦ IsLerayHirschBasis θ S := by
   classical
   simp [isLerayHirschBasis_iff_allBijective_truncMap, lerayHirsch.devissage.isClosedClass]
 

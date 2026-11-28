@@ -10,6 +10,7 @@ import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.CategoryTheory.Monoidal.Cartesian.FunctorCategory
 import Mathlib.CategoryTheory.Subfunctor.Equalizer
 public import Lib.General.Algebra.LongExactSequences
+public import TauCeti.CategoryTheory.ObjectProperty.Extensions
 
 /-!
 # Criteria for comparison maps of Ext cohomology of functors of points to be bijective
@@ -403,8 +404,10 @@ end WitnessCocycles
 /-!
 ## Closed classes, dévissage, Čech descent and covers
 
-* `New.Variety.IsClosedClass`: the class P of functors D → Ab contains 0 and, along a short exact
-  sequence whose subobject is in P, contains the middle term exactly when it contains the quotient.
+* `CategoryTheory.ObjectProperty.IsClosedClass.iff_of_isIso`: a closed class (Tau Ceti's
+  `CategoryTheory.ObjectProperty.IsClosedClass`: it contains 0 and, along a short exact sequence
+  whose subobject is in it, contains the middle term exactly when it contains the quotient) is
+  invariant under isomorphism.
 * `New.Variety.Devissage`: the five and four lemmas for a family of maps f_{N,n};
   `New.Variety.Comparison.devissage` shows that comparison maps of Ext groups have them.
 
@@ -422,20 +425,13 @@ variable {C C' D : Type _} [Category C] [Category C'] [Category D] {Y E : D ⥤ 
 
 /-! ### Closed classes -/
 
-/-- A closed class P of functors D → Ab: (a) P contains every zero functor N (written `𝟙 N = 0`);
-(b) for a short exact sequence 0 → X₁ → X₂ → X₃ → 0 with X₁ in P, the middle term X₂ is in P exactly
-when the quotient X₃ is. Nothing is asked about X₁ when X₂ and X₃ are in P. -/
-def IsClosedClass (P : (D ⥤ Ab.{1}) → Prop) : Prop :=
-  (∀ N : D ⥤ Ab, 𝟙 N = 0 → P N) ∧
-  ∀ S : ShortComplex (CategoryTheory.Functor.{_, 1, _, 2} D Ab),
-    ShortExact S → P S.X₁ → (P S.X₂ ↔ P S.X₃)
-
-/-- A closed class P is invariant under isomorphism: for an isomorphism g : M → N, P holds for M
-exactly when it holds for N. Proof: apply (b) to 0 → ker g → M → N → 0, whose kernel is zero. -/
-lemma IsClosedClass.iff_of_isIso (hP : IsClosedClass P) {M N : D ⥤ Ab} (g : M ⟶ N) [IsIso g] :
-    P M ↔ P N := by
-  obtain ⟨h_zero, h_short⟩ := hP
-  exact h_short _ ⟨exact_kernel g⟩ (h_zero _ ((isZero_kernel_of_mono g).eq_of_src (𝟙 _) 0))
+/-- A closed class `P` is invariant under isomorphism: for an isomorphism `g : M ⟶ N`, `P` holds for
+`M` exactly when it holds for `N`. Proof: apply two out of three to `0 → ker g → M → N → 0`, whose
+kernel is zero. -/
+lemma _root_.CategoryTheory.ObjectProperty.IsClosedClass.iff_of_isIso {𝒜 : Type*} [Category* 𝒜]
+    [Abelian 𝒜] {P : ObjectProperty 𝒜} (hP : P.IsClosedClass) {M N : 𝒜} (g : M ⟶ N) [IsIso g] :
+    P M ↔ P N :=
+  hP.prop_X₂_iff_prop_X₃ ⟨exact_kernel g⟩ (hP.prop_of_isZero (isZero_kernel_of_mono g))
 
 /-- If N is a zero object (its identity is zero), then every group Extⁿ(N, F) has at most one
 element. -/
@@ -462,7 +458,7 @@ D → Ab and degrees n, as for a map of contravariant δ-functors. In `bijective
 is subtraction of natural numbers; for r = 0 there is no condition. -/
 structure Devissage extends StepwiseFourLemma f where
   /-- Five lemma: the functors on which `f` is bijective in all degrees form a closed class. -/
-  isClosedClass : IsClosedClass (AllBijective <| f ·)
+  isClosedClass : ObjectProperty.IsClosedClass (AllBijective <| f ·)
 
 /-- For a comparison (φ,β) from F to F', exact functors Φ, Φ' and a natural map η: Φ'N → (ΦN)∘φ,
 the induced maps Ext^n(ΦN,F) → Ext^n(Φ'N,F') have the five- and four-lemma properties
@@ -481,8 +477,9 @@ lemma Comparison.devissage {F : AbFunctor C} {F' : AbFunctor C'} (c : Comparison
     c.pull_hom_contravariant (hX.map_of_exact Φ) (hX.map_of_exact Φ') (mapNatTrans X η)
   refine
     { bijectiveUpTo_quotient := fun hX ↦ (ladder _ hX).four_lemma
-      isClosedClass := ⟨fun N hN n ↦ ?_, fun X hX ↦ (ladder X hX).five_lemma⟩ }
+      isClosedClass := ⟨fun {N} hN n ↦ ?_, fun {X} hX ↦ (ladder X hX).five_lemma⟩ }
   -- For `N = 0` both cohomology groups are trivial.
+  replace hN : 𝟙 N = 0 := hN.eq_of_src _ _
   have h_sub : Subsingleton (H (Φ.obj N) F n) :=
     H.subsingleton_of_id_eq_zero (by simp [← Φ.map_id, hN]) F n
   have h_sub' : Subsingleton (H (Φ'.obj N) F' n) :=

@@ -633,12 +633,13 @@ lemma isFiniteLerayHirsch_principal_open
         (lh_qc (isAffinelyCovered_reprBy _))
   have lh_lines : IsLerayHirschBasis θ (freeAb X) := (lh_qc isAffinelyCovered_projLinePow :)
   have lh_rel : IsLerayHirschBasis θ (relFreeAb W.topPoints) :=
-    (isClosedClass_isLerayHirschBasis.2 _ (relFreeAb.shortExact _).2 lh_open).1 lh_lines
+    (isClosedClass_isLerayHirschBasis.prop_X₂_iff_prop_X₃ (relFreeAb.shortExact _).2 lh_open).1
+      lh_lines
   -- `G` is equivalent to `(ℤ[pt] / ℤ[Q.topLocus]) / ℓ`, which is good by `L`.
   have hG : D.IsFiniteLerayHirsch G :=
     (D.isFiniteLerayHirsch_iff_of_isCohomEquiv Q.constToZeros fun g ↦
       Q.isCohomEquiv_constToZeros g .locallyConstant rfl).1
-      ((D.isClosedClass_isFiniteLerayHirsch.2 _
+      ((D.isClosedClass_isFiniteLerayHirsch.prop_X₂_iff_prop_X₃
         (shortExact_nsmul_abCoker (N := relFreeAb _)).2 L).1 L)
   exact h_descent.2 (D.isFiniteLerayHirsch_topPoints_of_surjective W lh_rel.2 hG)
 

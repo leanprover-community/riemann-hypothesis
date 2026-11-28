@@ -29,9 +29,9 @@ which the maximal ideal of `A` generates the unit ideal.
 Notions from other files:
 * `New.Variety.freeAb`: The functor sending a set-valued functor Y to Z[Y], whose value at A is the
   free abelian group on Y(A).
-* `New.Variety.IsClosedClass`: A closed class P of functors D → Ab: (a) P contains every zero
-  functor N (written `𝟙 N = 0`); (b) for a short exact sequence 0 → X₁ → X₂ → X₃ → 0 with X₁ in P,
-  the middle term X₂ is in P exactly when the quotient X₃ is.
+* `CategoryTheory.ObjectProperty.IsClosedClass` (Tau Ceti): a closed class P of objects of an
+  abelian category: (a) P contains every zero object; (b) for a short exact sequence
+  0 → X₁ → X₂ → X₃ → 0 with X₁ in P, the middle term X₂ is in P exactly when the quotient X₃ is.
 * `New.Variety.geomPoints`: The functor of points of the base change `X ×_R Ω` of a scheme `X` over
   `R`.
 
