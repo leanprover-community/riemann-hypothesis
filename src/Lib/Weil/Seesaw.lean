@@ -92,18 +92,38 @@ variable {l} {l' : InfinitePlace E → n' → ℤ} {s} (S : Space E n s) (T : Sp
   {𝔪 : Modulus E} (P : MvPolynomial (InfinitePlace E × n' × n) ℂ)
     (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
 
+/-- The theta lift of forms of type `e` on `S` to forms of type `e'` on `T`, for characters
+`a`, `b` (entering as a(det h) b(det g)⁻¹ for g on `S`, h on `T`) and the datum of the polynomial
+`P` and the function `Ψ` modulo `𝔪`.
+It is a chosen linear map (`formLift`) that equals the lift integral along an edge
+(`New.Exchange.IsPairEdge.isArrow_lift`). -/
+abbrev pairLift (S : Space E n s) (T : Space E n' s') (a b : AutChar E)
+    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
+    (e : GInf E s → ℂ) (e' : GInf E s' → ℂ) : S.Form e →ₗ[ℂ] T.Form e' :=
+  formLift (pairThetaKer S T a b) e e'
+    (modDatum S T 𝔪 Ψ (polyVector (realSigns E (homSigns s s')) P))
+
+/-- The transposed lift of forms of type `e'` on `T` to forms of type `e` on `S`, for the kernel
+and the datum of `New.Exchange.pairLift`. No complex conjugation enters. It equals the integral
+along an edge between the conjugate types (`New.Exchange.IsPairEdge.isArrow_swap`). -/
+abbrev pairTransposedLift (S : Space E n s) (T : Space E n' s') (a b : AutChar E)
+    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
+    (e' : GInf E s' → ℂ) (e : GInf E s → ℂ) : T.Form e' →ₗ[ℂ] S.Form e :=
+  formLift (pairThetaKer S T a b).swap e' e
+    (modDatum S T 𝔪 Ψ (polyVector (realSigns E (homSigns s s')) P))
+
 /-- The theta lift of forms of type e on S to type e′ on T, for the characters `a n`, `a n'` and the
 datum of the polynomial P and Ψ mod 𝔪. It is a chosen linear map (`formLift`) that equals the lift
 integral whenever the lifts are forms of type e′. -/
 abbrev modLift (e : GInf E s → ℂ) (e' : GInf E s' → ℂ) : S.Form e →ₗ[ℂ] T.Form e' :=
-  formLift (pairThetaKer S T (a n) (a n')) e e'
-    (modDatum S T 𝔪 Ψ (polyVector (realSigns E (homSigns s s')) P))
+  -- Elaborate through to `formLift` so unfolding exposes the finite datum.
+  delta% pairLift S T (a n) (a n') P Ψ e e'
 
 /-- The transposed lift of forms of type e′ on T to forms of type e on S, for the same kernel and
 datum as `New.Exchange.modLift`. No complex conjugation enters. -/
 abbrev modTransposedLift (e' : GInf E s' → ℂ) (e : GInf E s → ℂ) : T.Form e' →ₗ[ℂ] S.Form e :=
-  formLift (pairThetaKer S T (a n) (a n')).swap e' e
-    (modDatum S T 𝔪 Ψ (polyVector (realSigns E (homSigns s s')) P))
+  -- Unfold to `formLift` with the transposed finite datum.
+  delta% pairTransposedLift S T (a n) (a n') P Ψ e' e
 
 variable {S T P Ψ} {I : Type*} (a : I → ∀ (n : Type) [Fintype n], AutChar E)
   (k : Bool → GInf E s → ℂ) (k' : Bool → GInf E s' → ℂ)
@@ -190,26 +210,6 @@ theorem isEdgeFamily_of_paramsCorrespond [Nonempty n] [Nonempty n'] {γ γ' : In
 /-! ### Pairs with two separately given characters -/
 
 section Pair
-
-/-- The theta lift of forms of type `e` on `S` to forms of type `e'` on `T`, for characters
-`a`, `b` (entering as a(det h) b(det g)⁻¹ for g on `S`, h on `T`) and the datum of the polynomial
-`P` and the function `Ψ` modulo `𝔪`.
-It is a chosen linear map (`formLift`) that equals the lift integral along an edge
-(`New.Exchange.IsPairEdge.isArrow_lift`). -/
-abbrev pairLift (S : Space E n s) (T : Space E n' s') (a b : AutChar E)
-    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (e : GInf E s → ℂ) (e' : GInf E s' → ℂ) : S.Form e →ₗ[ℂ] T.Form e' :=
-  formLift (pairThetaKer S T a b) e e'
-    (modDatum S T 𝔪 Ψ (polyVector (realSigns E (homSigns s s')) P))
-
-/-- The transposed lift of forms of type `e'` on `T` to forms of type `e` on `S`, for the kernel
-and the datum of `New.Exchange.pairLift`. No complex conjugation enters. It equals the integral
-along an edge between the conjugate types (`New.Exchange.IsPairEdge.isArrow_swap`). -/
-abbrev pairTransposedLift (S : Space E n s) (T : Space E n' s') (a b : AutChar E)
-    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (e' : GInf E s' → ℂ) (e : GInf E s → ℂ) : T.Form e' →ₗ[ℂ] S.Form e :=
-  formLift (pairThetaKer S T a b).swap e' e
-    (modDatum S T 𝔪 Ψ (polyVector (realSigns E (homSigns s s')) P))
 
 /-- Characters `a i`, `b i` over one real edge: each `a i` has weight `γ` and each `b i` has weight
 `γ'`, with some tame parts that may depend on `i`, and the types `e`, `e'` with the Fock vector of
