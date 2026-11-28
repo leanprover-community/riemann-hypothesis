@@ -91,9 +91,45 @@ lemma eichler_apply_eq_zero_of_level_le {m : Type} [Fintype m] {p : m → Fin �
     ∀ i j : 𝔰.BesselIndex, BesselIndex.level j ≤ BesselIndex.level i →
       (x * (uᴴ * S.ratGram) - (u + x * (τ • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram)) i j =
         0 := by
-  simp [← hx, splitGram, BesselIndex.level, inclMatrix, Matrix.mul_sub,
-    Matrix.add_mul, Matrix.sub_mul, Matrix.one_apply, Matrix.mul_apply, sub_eq_zero]
-  grind [Finset.sum_eq_zero, star_zero]
+  subst hx
+  intro i j hij
+  set x := inclMatrix E (fun b : m ↦ (Sum.inl (p b) : 𝔰.BesselIndex))
+  set W := τ • (uᴴ * S.ratGram * u) - s
+  have h1 : (x * (uᴴ * S.ratGram)) i j = 0 := by
+    rw [Matrix.mul_apply]
+    refine Finset.sum_eq_zero fun b _ ↦ ?_
+    rcases i with a | a
+    · by_cases ha : a = p b
+      · rcases ha with rfl
+        rcases j with c | c | c
+        · have hcp : c ≤ p b := by simpa [BesselIndex.level] using hij
+          have h_col : (uᴴ * S.ratGram) b (Sum.inl c) = 0 := by
+            simp [Matrix.mul_apply, splitGram, Matrix.one_apply, hu_zero c b b hcp]
+          simp [h_col]
+        · have := (p b).isLt; simp [BesselIndex.level] at hij; omega
+        · have := c.isLt; have := (p b).isLt; simp [BesselIndex.level] at hij; omega
+      · simp [x, inclMatrix, ha]
+    · simp [x, inclMatrix]
+  have h2 : ((u + x * W) * (xᴴ * S.ratGram)) i j = 0 := by
+    rw [Matrix.mul_apply]
+    refine Finset.sum_eq_zero fun b _ ↦ ?_
+    have h_col : (xᴴ * S.ratGram) b j = S.ratGram (Sum.inl (p b)) j := by
+      simp [x, conjTranspose_inclMatrix_mul]
+    rw [h_col]
+    rcases j with c | c | c
+    · simp
+    · simp
+    · by_cases hpc : p b = c
+      · rcases hpc with rfl
+        rcases i with a | a | a
+        · have := a.isLt; have := (p b).isLt; simp [BesselIndex.level] at hij; omega
+        · have := (p b).isLt; simp [BesselIndex.level] at hij; omega
+        · have hap : a ≤ p b := by simp [BesselIndex.level] at hij; omega
+          have h_row : (u + x * W) (eStar a) b = 0 := by
+            simp [Matrix.add_apply, hu_zero a b b hap, Matrix.mul_apply, x, inclMatrix]
+          simp [h_row]
+      · simp [hpc]
+  rw [Matrix.sub_apply, h1, h2, sub_self]
 
 /-- Eichler maps have level `M = S.M`. Let `J = S.ratGram` be the Gram matrix. Let the columns of
 `x` and `u` lie in the lattice of the class `c`, let the matrix `s` and the number `τ` be integral,
@@ -254,15 +290,45 @@ lemma exists_eichler_classUnipotent [HasPrimitiveRoot5040 E] (c : S.Classes) (a 
   obtain ⟨γ, hγ, -, τ, h_val⟩ :=
     exists_mem_classUnipotent_eq_one_add_smul c ![a] (of ![u])ᴴ !![s.val] h_zero h_skew hu h_int rfl
   refine ⟨⟨γ, hγ⟩, ?_⟩
-  -- read off the rows `e_b` of `γ`
-  simp [h_val, splitGram, vecMul_eq_sum, funext_iff, Matrix.one_apply, inclMatrix, Matrix.add_mul,
-    Matrix.mul_assoc, Matrix.mul_apply]
-  intro b b' h_case
-  obtain h_ne | h_row := h_case
-  · obtain rfl | hb := eq_or_ne b a <;> simp [*, Ne.symm h_ne]
-  · obtain ⟨h_dual, ⟨h_X₀, h_z⟩, h_isotropic⟩ := h_row
-    simp [h_dual, h_X₀, h_z, h_isotropic]
-    aesop
+  -- read off the rows `e_b` of `γ` without unfolding `τ • (_ * S.ratGram * _) - !![s.val]`
+  let x := inclMatrix E (fun i : Fin 1 ↦ (Sum.inl (![a] i) : 𝔰.BesselIndex))
+  have hT1 (b : Fin 𝔰.ϱ) (j : 𝔰.BesselIndex) :
+      (x * ((of ![u])ᴴᴴ * S.ratGram)) (Sum.inl b) j =
+        if b = a then (u ᵥ* S.ratGram) j else 0 := by
+    rw [Matrix.mul_apply, Fin.sum_univ_one, conjTranspose_conjTranspose]
+    have h_entry : (of ![u] * S.ratGram) 0 j = (u ᵥ* S.ratGram) j := by
+      simp [Matrix.mul_apply, vecMul, dotProduct]
+    simp [x, inclMatrix, Matrix.one_apply, h_entry]
+  have h_xJ (j : 𝔰.BesselIndex) : (xᴴ * S.ratGram) 0 j = if j = eStar a then 1 else 0 := by
+    rw [conjTranspose_inclMatrix_mul]
+    rcases j with c | c | c <;> simp [splitGram, Matrix.one_apply, eq_comm]
+  intro b j h_case
+  rw [h_val]
+  rcases h_case with h_ne | h_row
+  · have hT2 : (((of ![u])ᴴ + x * (τ • ((of ![u])ᴴᴴ * S.ratGram * (of ![u])ᴴ) -
+        !![(s.val : E)])) * (xᴴ * S.ratGram)) (Sum.inl b) j = 0 := by
+      rw [Matrix.mul_apply, Fin.sum_univ_one, h_xJ]
+      simp [h_ne]
+    rw [Matrix.add_apply, Matrix.one_apply, Matrix.smul_apply, Matrix.sub_apply, hT1, hT2,
+      sub_zero, smul_eq_mul]
+    simp [h_ne]
+  · have hu0 : u = 0 := S.ratGram.vecMul_injective_iff_isUnit.2 IsHermitianUnit.isUnit (by
+      simpa using h_row)
+    have hu_mat : of ![u] = 0 := by ext i k; simp [hu0]
+    have h_lhs :
+        (x * ((of ![u])ᴴᴴ * S.ratGram) -
+          ((of ![u])ᴴ + x * (τ • ((of ![u])ᴴᴴ * S.ratGram * (of ![u])ᴴ) -
+            !![(s.val : E)])) * (xᴴ * S.ratGram)) (Sum.inl b) j =
+        if b = a then if j = eStar a then (s.val : E) else 0 else 0 := by
+      simp only [hu_mat, conjTranspose_zero, Matrix.zero_mul, Matrix.mul_zero, smul_zero, zero_sub,
+        zero_add, Matrix.mul_neg, Matrix.neg_mul, sub_neg_eq_add]
+      rw [Matrix.mul_apply, Fin.sum_univ_one, Matrix.mul_apply, Fin.sum_univ_one, h_xJ]
+      rcases eq_or_ne b a with rfl | hb
+      · simp [x, inclMatrix, Matrix.one_apply]
+      · simp [x, inclMatrix, hb]
+    rw [Matrix.add_apply, Matrix.one_apply, Matrix.smul_apply, h_lhs, hu0]
+    dsimp only
+    rw [zero_vecMul, Pi.zero_apply, zero_add, smul_eq_mul]
 
 /-- For each vector `f_b` of the frame `e_1, …, e_ϱ, z` there is a rational linear form that is
 integral on the lattice of the class `c`, spanned over `Ô` by the columns of `classBasis c`, takes
@@ -440,8 +506,10 @@ lemma submoduleIndex_smul_intVectors (hc : ↑c ∈ Ô E) :
   classical
   -- `c Ô^ι` is the lattice spanned by the columns of the scalar matrix `c • 1`, whose determinant
   -- is `c ^ card ι`.
+  have hM : IsIntMatrix (Ô E) (c • (1 : GL ι (𝔸f E))).val :=
+    IsIntMatrix.smul hc .one
   simpa [colLattice, c.smul_def] using!
-    submoduleIndex_colLattice_intVectors (n := ι) (M := c • 1) (.smul hc .one)
+    submoduleIndex_colLattice_intVectors (n := ι) (M := c • 1) hM
 
 /-- For a unit `c` of the finite adeles that lies in `Ô`, the index of `c Ô^ι` in `Ô^ι` is not
 zero. -/
@@ -598,7 +666,8 @@ theorem IsResidueDomain.exists_mul_mem_reducedPoints_iff_rightCoset [HasPrimitiv
         of (S.ratTriangle (S.ratToInf u * y)) * (frameMatrix u.val).map φ := by
       ext a b v
       simpa [φ, Matrix.mul_apply] using ratTriangle_eq_sum u.property.left y a b v
-    rw [map_inv, mul_inv_eq_iff_eq_mul]
+    refine mul_right_cancel (b := θ u) ?_
+    rw [mul_assoc, ← θ.map_mul, inv_mul_cancel, θ.map_one, mul_one]
     exact Subtype.ext (Units.ext h_sum)
   have hφ (x : 𝓞 E) : φ (S.M * (x : E)) = fun v : InfinitePlace E ↦ Φ v (S.M * (x : E)) := rfl
   have h_elementary : ∀ a b : Fin (𝔰.ϱ + 1), a < b → ∀ l ∈ S.levelMultiples,
@@ -628,7 +697,12 @@ theorem IsResidueDomain.exists_mul_mem_reducedPoints_iff_rightCoset [HasPrimitiv
       ∀ a b : Fin (𝔰.ϱ + 1), a < b → (triangle y * θ u⁻¹).val.val a b ∈ D := by
     rw [h_move, reducedPoints, mem_ofPred_eq]
     rfl -- the entries of `triangle z` are those of `S.ratTriangle z`
-  rw [h_iff, ← h_ker, inv_inv, map_mul, mul_eq_one_iff_inv_eq, ← map_inv]
+  have h_eq : θ (u * (u₀⁻¹)⁻¹) = 1 ↔ θ u⁻¹ = θ u₀ := by
+    rw [inv_inv, θ.map_mul]
+    exact ⟨fun h ↦ mul_left_cancel (a := θ u)
+        (by rw [← θ.map_mul, mul_inv_cancel, θ.map_one, h]),
+      fun h ↦ by rw [← h, ← θ.map_mul, mul_inv_cancel, θ.map_one]⟩
+  rw [h_iff, ← h_ker, h_eq]
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
   · exact congrArg Subtype.val (h_only ⟨θ u⁻¹, u⁻¹, rfl⟩ h)
   · rw [h]
