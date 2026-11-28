@@ -638,7 +638,8 @@ each coordinate. It then multiplies by the matrix `New.Period.repMatrix ρ e g`,
 noncomputable def coordAction : Representation ℤ_[p] Γ (ι → B) where
   toFun g := ((repMatrix ρ e g).map (algebraMap ℤ_[p] B)).mulVecLin ∘ₗ
     actionRep ℤ_[p] (ι → B) toGp g
-  map_one' := by aesop
+  map_one' := by
+    simp only [map_one, map_zero, Matrix.map_one, mulVecLin_one, restrictScalars_id, id_comp]
   -- `Gp p` fixes the entries of `repMatrix ρ e g`, which come from `ℤ_[p]`
   map_mul' := by simp [LinearMap.ext_iff, mul_smul, mulVec_eq_sum, Finset.smul_sum]
 
