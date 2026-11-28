@@ -301,17 +301,14 @@ lemma exists_kType_multiplicity [Nonempty n] [hg : l.HasLargeGap A] (hν : IsKDo
   obtain ⟨s, hs⟩ := exists_nat_ge (l.casimirKValue ν - l.casimirKValue l.lowestKType : ℝ)
   have h_fin := (isKHighest_dsGenerator hg).finite_filtration hg.isUnitaryCasimirGe s
   let V : Submodule ℂ l.DsModule :=
-    .ofLinearComb {v | l.IsKHighest l.dsAction ν v}
-      ⟨0, by simp only [IsKHighest, IsCompactPrimitive, Set.mem_ofPred_eq, map_zero, smul_zero,
-        implies_true, and_self]⟩
-      (by simp +contextual only [IsKHighest, IsCompactPrimitive, Set.mem_ofPred_eq, map_add,
-        map_smul, smul_smul, smul_add, mul_comm, implies_true, smul_zero, add_zero, and_self]) ⊓
+    (⨅ a : n, (l.dsAction.E a a).eigenspace (ν a : ℂ)) ⊓
+      (⨅ a, ⨅ b, ⨅ (_ : ε a = ε b), ⨅ (_ : l b < l a), LinearMap.ker (l.dsAction.E a b)) ⊓
       l.dsAction.filtration ε l.dsGenerator s
   let b : OrthonormalBasis (Fin (Module.finrank ℂ V)) ℂ V := stdOrthonormalBasis ℂ V
   let S (g : USign ε) : ℂ := ∑ i, (b i).val.val.val g * conj ((b i).val.val.val g)
   have key (x : USign ε) : (ν.kTypeNormSq : ℂ)⁻¹ * ∫ k : maxCompactU ε,
       conj (weightMinors ν k) * l.dsCoeff (x * k.val * x⁻¹ :) ∂haarK ε = S x :=
-    mean_coefficient_eq_sum_norm_sq hν hs (fun _ ↦ .rfl) b x
+    mean_coefficient_eq_sum_norm_sq hν hs (by simp [V, IsKHighest]) b x
   have h_int (y : l.DsModule) : Integrable fun g : USign ε ↦ y.val.val g * conj (y.val.val g) := by
     simpa [Pi.mul_def] using (hg.memLp y).integrable_mul (hg.memLp y).star
   have b_norm (i : Fin (Module.finrank ℂ V)) : ‖hg.toL2 (b i)‖ = 1 := b.norm_eq_one i
