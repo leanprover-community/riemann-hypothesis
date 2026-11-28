@@ -1,7 +1,5 @@
 module
 
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Valuation.LocalSubring
 public import Lib.Cohomology.ProperBaseChange.LineCharts
 
@@ -108,7 +106,6 @@ instance : Algebra S T := (inclusion h.out).toAlgebra
 /-- The inclusions of subrings `S ≤ T ≤ U` of `K` form a scalar tower. -/
 instance [Fact (T ≤ U)] [Fact (S ≤ U)] : IsScalarTower S T U := .of_algebraMap_eq' rfl
 
-variable [IsAlgClosed K] in
 /-- An absolutely integrally closed subring of `K` is integrally closed in `K`. -/
 local instance [a : IsAbsIntegrallyClosed S] : IsIntegrallyClosedIn S K :=
   isIntegrallyClosedIn_iff.mpr ⟨S.subtype_injective, a.mem_range_of_isIntegralElem⟩
