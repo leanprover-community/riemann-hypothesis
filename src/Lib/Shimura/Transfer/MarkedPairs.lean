@@ -1,7 +1,6 @@
 module
 
 public import Lib.Shimura.HeckeTower.HeckeData
-import Lib.Adelic.TraceFormula.ChangingSigns
 import Lib.General.LinearAlgebra.Eigenvalues
 
 /-!

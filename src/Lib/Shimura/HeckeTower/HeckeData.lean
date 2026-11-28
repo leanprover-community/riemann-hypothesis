@@ -249,6 +249,35 @@ lemma roots_map_eq_map_numberedRoots {t : E →+* ℂ} {P : E[X]}
     (P.map t).roots = Finset.univ.val.map (numberedRoots t P : n ↪ ℂ) :=
   Classical.epsilon_spec h_exists
 
+section
+
+open Equiv Matrix Polynomial Finset Lagrange IsAlgClosed Function
+
+variable {E n : Type} [Field E] [Fintype n] [DecidableEq n] {y : GL n E}
+
+/-- For y in GL_n(E) with separable characteristic polynomial P and an embedding t of E into ℂ,
+the numbering `New.Variety.numberedRoots` lists the complex roots of t(P), each once. -/
+lemma roots_eq_map_numberedRoots (h_sep : y.val.charpoly.Separable) (t : E →+* ℂ) :
+    (y.val.charpoly.map t).roots = (univ : Finset n).val.map (numberedRoots t y.val.charpoly) := by
+  -- A separable polynomial of degree `card n` has `card n` distinct complex roots, so they can be
+  -- numbered by `n`, and `roots_map_eq_map_numberedRoots` applies.
+  obtain ⟨r, hr⟩ : ∃ r : n ↪ ℂ,
+      univ.map r = ⟨(y.val.charpoly.map t).roots, nodup_roots h_sep.map⟩ :=
+    Embedding.exists_of_card_eq_finset (by simp [card_roots_eq_natDegree])
+  exact roots_map_eq_map_numberedRoots ⟨r, (congrArg Finset.val hr).symm⟩
+
+/-- If the characteristic polynomial of y is separable, then each numbered root of its image under t
+is a root of the characteristic polynomial of the image of y under t. -/
+lemma isRoot_numberedRoots (h_sep : y.val.charpoly.Separable) (t : E →+* ℂ) (i : n) :
+    (y.map t).val.charpoly.IsRoot (numberedRoots t y.val.charpoly i) :=
+  isRoot_of_mem_roots (by simp [roots_eq_map_numberedRoots h_sep, charpoly_map])
+
+lemma eval_interpolate_univ_node (r : n ↪ ℂ) (f : n → ℂ) (i : n) :
+    (interpolate univ r f).eval (r i) = f i :=
+  eval_interpolate_at_node _ r.injective.injOn (mem_univ i)
+
+end
+
 open scoped Classical in
 /-- The matrix that describes the signature at `v₀`, written as a polynomial in `Φ v₀ (y)`. The
 proposition `ε` chooses the case. In the marked case (`ε` holds) it is `markedReflection y i`. In
