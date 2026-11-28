@@ -383,8 +383,7 @@ section Matrices
 
 open Matrix ComplexConjugate
 
-variable {n m X : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X]
-  {ε : n → ℤˣ} {η : m → ℤˣ} {l : HCParam ε} {k : HCParam η} {L L' d : ℕ}
+variable {n m X : Type} {ε : n → ℤˣ} {η : m → ℤˣ} {L L' d : ℕ}
   {e : X ⊕ Fin L ≃ n} {e' : X ⊕ Fin L' ≃ m} {B D : ℝ} {μ : Fin L → ℝ} {μ' : Fin L' → ℝ}
 
 /-- The matrix with the columns `v_{a + 1} = [t ^ a q]`, `a ≤ d`, where `q = nodal univ μ'` and
@@ -404,12 +403,10 @@ def positionIsometry [DecidableEq X] (e : X ⊕ Fin L ≃ n) (e' : X ⊕ Fin L' 
     (↑(isometryScale μ μ' j * polyVec μ μ' (nodal (univ.erase j) μ') i) : ℂ))).submatrix
     e.symm e'.symm
 
-omit [Fintype n] [DecidableEq n] [Fintype X] in
 /-- The columns of `positionVec e μ μ' d` vanish on the coordinates in `X`. -/
 lemma positionVec_apply_inl (x : X) (a : Fin (d + 1)) :
     positionVec e μ μ' d (e (Sum.inl x)) a = 0 := by simp [positionVec]
 
-omit [Fintype n] [DecidableEq n] [Fintype X] in
 /-- At the coordinate `e (Sum.inr i)`, the column of index `a` of `positionVec e μ μ' d` equals the
 `i`th entry of the real vector `polyVec μ μ' (X ^ a * q)`, where `q = nodal univ μ'`. -/
 lemma positionVec_apply_inr (i : Fin L) (a : Fin (d + 1)) :
@@ -417,20 +414,17 @@ lemma positionVec_apply_inr (i : Fin L) (a : Fin (d + 1)) :
       (polyVec μ μ' (Polynomial.X ^ a.val * nodal univ μ') i : ℂ) := by
   simp [positionVec]
 
-omit [Fintype n] [Fintype m] [DecidableEq m] [Fintype X] in
 /-- The matrix `i₀ = positionIsometry e e' μ μ'` is the identity on `ℂ^X`: its column of index
 `e' (Sum.inl x)` is the basis vector of index `e (Sum.inl x)`. -/
-lemma positionIsometry_apply_inl [DecidableEq X] (i : n) (x : X) :
+lemma positionIsometry_apply_inl [DecidableEq X] [DecidableEq n] (i : n) (x : X) :
     positionIsometry e e' μ μ' i (e' (Sum.inl x)) = if i = e (Sum.inl x) then 1 else 0 := by
   obtain ⟨x' | i, rfl⟩ := e.surjective i <;> simp [positionIsometry, Matrix.one_apply]
 
-omit [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X] in
 /-- For `j : Fin L'`, the column of index `e' (Sum.inr j)` of `positionIsometry e e' μ μ'` vanishes
 on the coordinates `e (Sum.inl x)` with `x` in `X`. -/
 lemma positionIsometry_apply_inl_inr [DecidableEq X] (x : X) (j : Fin L') :
     positionIsometry e e' μ μ' (e (Sum.inl x)) (e' (Sum.inr j)) = 0 := by simp [positionIsometry]
 
-omit [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X] in
 /-- For `i : Fin L` and `j : Fin L'`, the entry of `positionIsometry e e' μ μ'` at
 `(e (Sum.inr i), e' (Sum.inr j))` is `isometryScale μ μ' j` times the `i`th coordinate of
 `polyVec μ μ' (nodal (univ.erase j) μ')`. -/
@@ -447,7 +441,6 @@ lemma alternatingSignForm_const_mul_right (c : ℝ) (x y : Fin L → ℝ) :
     alternatingSignForm x (fun i : Fin L ↦ c * y i) = c * alternatingSignForm x y := by
   simp [alternatingSignForm, mul_sum, mul_left_comm]
 
-omit [Fintype n] [DecidableEq n] [Fintype X] in
 /-- Let the nodes differ by at least `1`, with each `μ i` within `D ≥ 1` of `0` and of the `μ' j`,
 and let `L = L' + 2 d + 1`. The columns `[t ^ a q]`, `a ≤ d`, of `positionVec` have entries of norm
 at most `D ^ L`. -/
@@ -457,7 +450,6 @@ lemma AreSeparatedNodes.norm_positionVec_le (h : AreSeparatedNodes μ μ' D)
   · simpa [positionVec_apply_inl] using pow_nonneg (zero_le_one.trans h.one_le) L
   · simpa [positionVec_apply_inr] using h.abs_polyVec_le hL (a := a.val) (by lia) i
 
-omit [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype X] in
 /-- Let the nodes differ by at least `1`, with each `μ i` within `D ≥ 1` of `0` and of the `μ' j`,
 and let `L = L' + 2 d + 1`. The matrix `positionIsometry`, which is `1` on `ℂ^X` and has the scaled
 vectors `[q_j]` as its other columns, has entries of norm at most `D ^ L`. -/
@@ -472,6 +464,24 @@ lemma AreSeparatedNodes.norm_positionIsometry_le [DecidableEq X] (h : AreSeparat
   · obtain ⟨x | i, rfl⟩ := e.surjective i
     · rwa [positionIsometry_apply_inl_inr, norm_zero]
     · simpa [positionIsometry_apply_inr_inr] using h.abs_isometryScale_mul_le hL j i
+
+/-- If the nodes are opposite and `d < L`, the columns of `positionVec e μ μ' d` are linearly
+independent over `ℂ`. -/
+lemma AreOppositeNodes.linearIndependent_positionVec (h : AreOppositeNodes μ μ') (hd : d < L) :
+    LinearIndependent ℂ (positionVec e μ μ' d).col := by
+  refine Fintype.linearIndependent_iff.2 fun c hc ↦ ?_
+  suffices h_zero : c = 0 from congrFun h_zero
+  let node (j : Fin (d + 1)) : Fin L := j.castLE hd
+  have h_inj : Function.Injective fun j : Fin (d + 1) ↦ (μ (node j) : ℂ) :=
+    Complex.ofReal_injective.comp (h.strictAnti.injective.comp (Fin.castLE_injective hd))
+  refine eq_zero_of_forall_index_sum_mul_pow_eq_zero h_inj fun j ↦ ?_
+  have h_entry : (∑ a : Fin (d + 1), c a * (μ (node j) : ℂ) ^ a.val) *
+      polyVec μ μ' (nodal univ μ') (node j) = 0 := by
+    simpa [positionVec_apply_inr, ← pow_mul_polyVec, sum_mul, mul_assoc] using
+      congrFun hc (e (Sum.inr (node j)))
+  exact eq_zero_of_ne_zero_of_mul_right_eq_zero (mod_cast h.polyVec_nodal_ne_zero _) h_entry
+
+variable [Fintype n] [DecidableEq n] [Fintype X] {l : HCParam ε}
 
 /-- If `l` is steep, so that the signs `ε` are `+1` on `X` and alternate on `Fin L`, the hermitian
 form with the matrix `signMatrix ε = diag ε`, taken on a column of `A` and a column of `A'`, is the
@@ -498,23 +508,6 @@ lemma IsSteep.conjTranspose_mul_signMatrix_mul_apply_of_real {α β : Type} (hl 
   rw [hl.conjTranspose_mul_signMatrix_mul_apply]
   simp [alternatingSignForm, hA_inl, hA_inr, hA'_inr]
 
-omit [Fintype n] [Fintype X] [DecidableEq n] in
-/-- If the nodes are opposite and `d < L`, the columns of `positionVec e μ μ' d` are linearly
-independent over `ℂ`. -/
-lemma AreOppositeNodes.linearIndependent_positionVec (h : AreOppositeNodes μ μ') (hd : d < L) :
-    LinearIndependent ℂ (positionVec e μ μ' d).col := by
-  refine Fintype.linearIndependent_iff.2 fun c hc ↦ ?_
-  suffices h_zero : c = 0 from congrFun h_zero
-  let node (j : Fin (d + 1)) : Fin L := j.castLE hd
-  have h_inj : Function.Injective fun j : Fin (d + 1) ↦ (μ (node j) : ℂ) :=
-    Complex.ofReal_injective.comp (h.strictAnti.injective.comp (Fin.castLE_injective hd))
-  refine eq_zero_of_forall_index_sum_mul_pow_eq_zero h_inj fun j ↦ ?_
-  have h_entry : (∑ a : Fin (d + 1), c a * (μ (node j) : ℂ) ^ a.val) *
-      polyVec μ μ' (nodal univ μ') (node j) = 0 := by
-    simpa [positionVec_apply_inr, ← pow_mul_polyVec, sum_mul, mul_assoc] using
-      congrFun hc (e (Sum.inr (node j)))
-  exact eq_zero_of_ne_zero_of_mul_right_eq_zero (mod_cast h.polyVec_nodal_ne_zero _) h_entry
-
 /-- Let `l` be steep, so that the signs `ε` are `+1` on `X` and `+, -, …` on `Fin L`, let the
 decreasing nodes `μ` lie below the increasing nodes `μ'`, and let `L = L' + 2 d + 1`. For the form
 with the matrix `signMatrix ε = diag ε`, the products of the vectors `[t ^ a q]`, `a ≤ d`, vanish,
@@ -531,7 +524,6 @@ lemma IsSteep.gram_positionVec (hl : IsSteep l B e) (h : AreOppositeNodes μ μ'
   rw [h_real, h.alternatingSignForm_polyVec_X_pow_mul_X_pow_mul hL (by lia)]
   simp [apply_ite Complex.ofReal]
 
-omit [Fintype m] [DecidableEq m] in
 /-- If `l` is steep, the nodes are opposite and `L = L' + 2 d + 1`, the columns outside `X` of
 `positionIsometry`, which are the scaled `[q_j] = polyVec μ μ' (q / (t - μ' j))`, are orthogonal
 with the norms `+1, -1, …` for the form with the matrix `signMatrix ε`. -/
@@ -549,6 +541,8 @@ lemma IsSteep.gram_positionIsometry_inr [DecidableEq X]
   rw [h_real, alternatingSignForm_const_mul_left, alternatingSignForm_const_mul_right, ← mul_assoc,
     h.isometryScale_mul_alternatingSignForm hL]
   simp [apply_ite Complex.ofReal]
+
+variable [Fintype m] [DecidableEq m] {k : HCParam η}
 
 /-- Let `l` be steep with respect to `B` and `e` (`IsSteep l B e`): the signs `ε` are `+1` on `X`,
 where the weight of the lowest `K`-type is `0`, and `+, -, …` on `Fin L`, where that weight

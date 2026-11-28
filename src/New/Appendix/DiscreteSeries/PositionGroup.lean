@@ -47,14 +47,15 @@ open Finset Matrix MeasureTheory ComplexConjugate Norms.L2Operator
 
 namespace New.DiscreteSeries
 
-variable {n m X : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] {ε : n → ℤˣ}
+variable {n m X : Type} [Fintype n] [Fintype m] [DecidableEq m] {ε : n → ℤˣ}
   {η : m → ℤˣ} {d : ℕ} {v : Matrix n (Fin (d + 1)) ℂ} {i₀ : Matrix n m ℂ}
 
-omit [DecidableEq n] in
 /-- Multiplying on the left commutes with taking the first `d` columns. -/
 lemma mul_initCols {p : Type} (A : Matrix p n ℂ) (v : Matrix n (Fin (d + 1)) ℂ) :
     A * initCols v = (A * v).submatrix id Fin.castSucc :=
   rfl
+
+variable [DecidableEq n]
 
 /-- Let `initCols` take the first `d` of `d + 1` columns. If `g - 1` maps the columns of `v` into
 the span of the first `d` columns with the matrix `N`, then `g` maps this span into itself, with
