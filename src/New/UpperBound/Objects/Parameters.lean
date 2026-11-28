@@ -294,6 +294,9 @@ lemma max_min_succ_sub_max_min_mem_Icc (x : ℤ) {n c low high : ℤ} (hn : 0 �
     (h_low : low ≤ c - n) (h_high : c + n ≤ high) :
     max 0 (min (n + 1) ((c + n + 1 - x) / 2)) - max 0 (min n ((c + n - x) / 2)) ∈
       Icc (if x < low then 1 else 0 : ℤ) (if x < high then 1 else 0) := by
+  -- Merge the alternating blocks from `c + n` down to `c - n`, with the longer block first.
+  -- The entries strictly above `x` form a prefix. Complete pairs cancel, so the excess is
+  -- the parity of its length.
   grind
 
 /-- The base case of `gridParam_interlace`. Let `λ_n = D.targetParameter τ n` be the entries of the
