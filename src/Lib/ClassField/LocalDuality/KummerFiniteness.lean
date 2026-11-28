@@ -156,6 +156,111 @@ lemma New.IsLocalGalois.exists_surjective_ord {Γ L Ω : Type} [Group Γ] [Topol
   · rintro rfl
     exact h_ord a
 
+/-- Let `L` be a local field (`New.IsLocalGalois Γ L A`) with absolute value `|x| = A.valuation x`
+and uniformiser `π`, let `l ≠ 0`, let `Y` be an additive group isomorphic to `Lˣ` (by `y`), and let
+`f : Y → ℤ` vanish exactly on the units. The subgroup `V = 1 + l π O` of the units `ker f`, given
+by `|a - 1| ≤ |l π|`, has finite index: reduction modulo `l π` embeds the quotient into
+`O / l π`. -/
+private lemma New.IsLocalGalois.finite_quotient_ker_of_mem_iff {Γ L Ω : Type} [Group Γ]
+    [TopologicalSpace Γ] [Field L] [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω]
+    {A : ValuationSubring Ω} (hLocal : IsLocalGalois Γ L A) {π : Lˣ} (hπ : IsUniformizer A π.val)
+    {l : ℕ} [NeZero l] {Y : Type} [AddCommGroup Y] {y : Y ≃+ Additive Lˣ} {f : Y →ₗ[ℤ] ℤ}
+    (h_ker : ∀ a : Y, f a = 0 ↔ A.valuation.comap (algebraMap L Ω) (y a).toMul = 1)
+    {V : Submodule ℤ (ker f)}
+    (hV : ∀ a : ker f, a ∈ V ↔ A.valuation.comap (algebraMap L Ω) ((y a).toMul.val - 1) ≤
+      A.valuation.comap (algebraMap L Ω) (l * π)) :
+    Finite (ker f ⧸ V) := by
+  set w : Valuation L A.ValueGroup := A.valuation.comap (algebraMap L Ω)
+  have h_fields := hLocal
+  obtain ⟨⟩ := h_fields
+  have h_char : CharZero L := (algebraMap L Ω).charZero
+  have val_ker (a : ker f) : w (y a).toMul = 1 := (h_ker a).mp a.property
+  refine (hLocal.finite_quotient_span_singleton (x := l * ⟨π, hπ.valuationVia_lt_one.le⟩)
+    (by simpa [Subtype.ext_iff] using NeZero.ne l)).of_injective
+    (fun a ↦ Ideal.Quotient.mk _ ⟨(y a.out).toMul, (val_ker a.out).le⟩) fun a b hab ↦ ?_
+  -- Equal residues mod `l π` of representatives put their quotient in `V`.
+  have h_quot : w (((y (a.out - b.out : ker f)).toMul : L) - 1) ≤ w (l * π) := by
+    simpa [mk_span_eq_iff_dvd_sub, dvd_iff_valuationVia_le, val_ker, w, div_sub_one,
+      valuationVia] using hab
+  exact out_equiv_out.mp (V.quotientRel_def.mpr ((hV _).mpr h_quot))
+
+/-- In the setting of `New.IsLocalGalois.finite_quotient_ker_of_mem_iff`, multiplication by `l` is
+injective on `V = 1 + l π O`: an `l`-th root of unity closer to `1` than `|l|` is `1`. -/
+private lemma New.IsLocalGalois.ker_natCast_eq_bot_of_mem_iff {Γ L Ω : Type} [Group Γ]
+    [TopologicalSpace Γ] [Field L] [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω]
+    {A : ValuationSubring Ω} (hLocal : IsLocalGalois Γ L A) {π : Lˣ} (hπ : IsUniformizer A π.val)
+    {l : ℕ} [NeZero l] {Y : Type} [AddCommGroup Y] {y : Y ≃+ Additive Lˣ} {f : Y →ₗ[ℤ] ℤ}
+    {V : Submodule ℤ (ker f)}
+    (hV : ∀ a : ker f, a ∈ V ↔ A.valuation.comap (algebraMap L Ω) ((y a).toMul.val - 1) ≤
+      A.valuation.comap (algebraMap L Ω) (l * π)) :
+    LinearMap.ker (l : End ℤ V) = ⊥ := by
+  have h_fields := hLocal
+  obtain ⟨⟩ := h_fields
+  have h_char : CharZero L := (algebraMap L Ω).charZero
+  have lπ_lt : A.valuation.comap (algebraMap L Ω) (l * π) < A.valuation l := by
+    simp [hπ.valuationVia_lt_one, pos_iff, NeZero.ne]
+  refine LinearMap.ker_eq_bot'.mpr fun a ha ↦ ?_
+  have h_pow : (y a).toMul.val ^ l = 1 := by
+    simpa using congrArg (fun v : V ↦ ((y v).toMul : L)) ha
+  have h_close : A.valuation (algebraMap L Ω (y a).toMul - 1) < A.valuation l := by
+    simpa using ((hV a).mp a.property).trans_lt lπ_lt
+  simpa using eq_one_of_pow_eq_one_of_valuation_sub_lt h_pow h_close
+
+/-- In the setting of `New.IsLocalGalois.finite_quotient_ker_of_mem_iff`, the class of
+`(a - 1) / (l π)` in `O / l` is an additive map `red` on `V = 1 + l π O`. It is onto, and its
+kernel is the image of multiplication by `l` (by Hensel's lemma). -/
+private lemma New.IsLocalGalois.exists_surjective_exact_of_mem_iff {Γ L Ω : Type} [Group Γ]
+    [TopologicalSpace Γ] [Field L] [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω]
+    {A : ValuationSubring Ω} (hLocal : IsLocalGalois Γ L A) {π : Lˣ} (hπ : IsUniformizer A π.val)
+    {l : ℕ} [NeZero l] {Y : Type} [AddCommGroup Y] {y : Y ≃+ Additive Lˣ} {f : Y →ₗ[ℤ] ℤ}
+    (h_ker : ∀ a : Y, f a = 0 ↔ A.valuation.comap (algebraMap L Ω) (y a).toMul = 1)
+    {V : Submodule ℤ (ker f)}
+    (hV : ∀ a : ker f, a ∈ V ↔ A.valuation.comap (algebraMap L Ω) ((y a).toMul.val - 1) ≤
+      A.valuation.comap (algebraMap L Ω) (l * π)) :
+    ∃ red : V →ₗ[ℤ] valRingBelow L A ⧸ span {(l : valRingBelow L A)},
+      Function.Surjective red ∧ Function.Exact (l : End ℤ V) red := by
+  have h_fields := hLocal
+  obtain ⟨⟩ := h_fields
+  have h_char : CharZero L := (algebraMap L Ω).charZero
+  set w : Valuation L A.ValueGroup := A.valuation.comap (algebraMap L Ω)
+  have lπ_lt : w (l * π) < A.valuation l := by simp [w, hπ.valuationVia_lt_one, pos_iff, NeZero.ne]
+  have div_mem {x : L} : x / (l * π) ∈ valRingBelow L A ↔ w x ≤ w (l * π) := by
+    simp [div_le_one₀, w, pos_iff, NeZero.ne]
+  -- The element `1 + x` of `V`, for `x ∈ l π O`.
+  let oneAdd (x : L) (hx : w x ≤ w (l * π)) : V :=
+    have h_val : w (1 + x) = 1 := w.map_one_add_of_lt ((hx.trans_lt lπ_lt).trans_le (by simp))
+    have h_ne : 1 + x ≠ 0 := fun h_zero ↦ by simp [h_zero] at h_val
+    have h_unit : f (y.symm (.ofMul (.mk0 (1 + x) h_ne))) = 0 := (h_ker _).mpr (by simpa using h_val)
+    ⟨⟨y.symm (.ofMul (.mk0 (1 + x) h_ne)), h_unit⟩, (hV _).mpr (by simp_all)⟩
+  -- `red a` is the class of `(a - 1) / (l π)` in `O / l`; it is additive by `h_defect`.
+  have h_defect (s t : L) : (s * t - 1) / (l * π) - ((s - 1) / (l * π) + (t - 1) / (l * π)) =
+      l * ((s - 1) / (l * π) * ((t - 1) / (l * π)) * π) := by field
+  let red : V →ₗ[ℤ] valRingBelow L A ⧸ span {(l : valRingBelow L A)} :=
+    (AddMonoidHom.mk' (fun a : V ↦ Ideal.Quotient.mk (span {(l : valRingBelow L A)})
+      ⟨_, div_mem.mpr ((hV a).mp a.property)⟩) fun a b ↦ by
+      refine mk_span_eq_iff_dvd_sub.mpr
+        ⟨⟨_, div_mem.mpr ((hV a).mp a.property)⟩ * ⟨_, div_mem.mpr ((hV b).mp b.property)⟩ *
+          ⟨π, hπ.valuationVia_lt_one.le⟩, Subtype.ext ?_⟩
+      simpa using h_defect _ _).toIntLinearMap
+  refine ⟨red, Quot.ind fun x ↦ ?_, .of_comp_of_mem_range ?_ fun a ha ↦ ?_⟩
+  · -- `x` is the image of `1 + x l π`.
+    have h_le : w ((x : L) * (l * π)) ≤ w (l * π) := div_mem.mp (by simp [NeZero.ne])
+    refine ⟨oneAdd ((x : L) * (l * π)) h_le, congrArg (Ideal.Quotient.mk _) (Subtype.ext ?_)⟩
+    simp [oneAdd, NeZero.ne]
+  · ext
+    simpa using mul_eq_zero_of_left (mk_singleton_self _) _
+  · -- If `l ∣ (a - 1) / (l π)`, Hensel's lemma gives an `l`-th root of `a` in `V`.
+    -- `ha`: `l` divides `(a - 1) / (l π)` in `O`, that is, `|(a - 1) / (l π)| ≤ |l|`.
+    have h_near :
+        A.valuation (algebraMap L Ω (y a).toMul.val - 1) ≤ A.valuation l * w (l * π) := by
+      simpa [w, div_le_iff₀, NeZero.ne, valuationVia, pos_iff] using
+        dvd_iff_valuationVia_le.mp ((eq_zero_iff_dvd (l : valRingBelow L A) _).mp ha)
+    obtain ⟨x, hx_pow, hx⟩ :=
+      exists_local_root_near_one Γ A (by simp [NeZero.ne]) lπ_lt h_near
+    refine ⟨oneAdd (x - 1) (by simpa [w] using hx), Subtype.ext (Subtype.ext (y.injective ?_))⟩
+    ext
+    simp [oneAdd, hx_pow]
+
 /-- The index of `l`-th powers in a field `L`, where `Γ = Gal(Ω/L)` with `Ω` algebraically closed of
 characteristic 0 and `O = New.valRingBelow L A` a discrete valuation ring with finite residue field
 (`New.IsLocalGalois Γ L A`). Let `l ≠ 0` and let `Y` be an additive group isomorphic to `Lˣ` (by
@@ -182,14 +287,15 @@ lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpac
   set w : Valuation L A.ValueGroup := A.valuation.comap (algebraMap L Ω)
   have h_finite_l : Finite (valRingBelow L A ⧸ span {(l : valRingBelow L A)}) :=
     hLocal.finite_quotient_span_singleton (by simpa using NeZero.ne l)
-  have lπ_lt : w (l * π) < A.valuation l := by simp [w, hπ.valuationVia_lt_one, pos_iff, NeZero.ne]
   have div_mem {x : L} : x / (l * π) ∈ valRingBelow L A ↔ w x ≤ w (l * π) := by
     simp [div_le_one₀, w, pos_iff, NeZero.ne]
   -- The order `f : Y → ℤ`, whose kernel is the unit group.
   obtain ⟨f₀, f_surj, h_ord⟩ := hLocal.exists_surjective_ord hπ y
   let f := f₀.toIntLinearMap
-  have val_ker (a : f.ker) : w (y a).toMul = 1 := by
-    simpa [w] using (h_ord a 0).mpr a.property
+  have h_ker (a : Y) : f a = 0 ↔ w (y a).toMul = 1 := by
+    rw [← zpow_zero (w π)]
+    exact (h_ord a 0).symm
+  have val_ker (a : f.ker) : w (y a).toMul = 1 := (h_ker a).mp a.property
   -- `V` is the subgroup `1 + l π O` of the unit group.
   let V : Submodule ℤ f.ker :=
     (AddSubgroup.ofSub {a : f.ker | ((y a).toMul.val - 1) / (l * π) ∈ valRingBelow L A}
@@ -197,67 +303,17 @@ lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpac
         -- As `|b| = 1`, `a / b - 1` has the absolute value of `(a - 1) - (b - 1)`.
         simpa [val_ker, div_mem, ← division_def, ← sub_div, div_sub_one] using
           sub_mem ha.out hb.out).toIntSubmodule
-  -- The element `1 + x` of `V`, for `x ∈ l π O`.
-  let oneAdd (x : L) (hx : w x ≤ w (l * π)) : V :=
-    have h_val : w (1 + x) = 1 := w.map_one_add_of_lt ((hx.trans_lt lπ_lt).trans_le (by simp))
-    have h_ne : 1 + x ≠ 0 := fun h_zero ↦ by simp [h_zero] at h_val
-    have h_ker : f (y.symm (.ofMul (.mk0 (1 + x) h_ne))) = 0 :=
-      (h_ord _ 0).mp (by simpa [w] using h_val)
-    ⟨⟨y.symm (.ofMul (.mk0 (1 + x) h_ne)), h_ker⟩, div_mem.mpr (by simp_all)⟩
-  -- Reduction modulo `l π` embeds `Oˣ / V` into the finite ring `O / l π`.
-  have h_finite_index : Finite (f.ker ⧸ V) := by
-    refine (hLocal.finite_quotient_span_singleton (x := l * ⟨π, hπ.valuationVia_lt_one.le⟩)
-      (by simpa [Subtype.ext_iff] using NeZero.ne l)).of_injective
-      (fun a ↦ mk _ ⟨(y a.out).toMul, (val_ker a.out).le⟩) fun a b hab ↦ ?_
-    -- Equal residues mod `l π` of representatives put their quotient in `V`.
-    have h_quot : w (((y (a.out - b.out : f.ker)).toMul : L) - 1) ≤ w (l * π) := by
-      simpa [mk_span_eq_iff_dvd_sub, dvd_iff_valuationVia_le, val_ker, w, div_sub_one,
-        valuationVia] using hab
-    exact out_equiv_out.mp (V.quotientRel_def.mpr (div_mem.mpr h_quot))
-  -- An `l`-th root of unity closer to `1` than `|l|` is `1`.
-  have ker_pow : LinearMap.ker (l : End ℤ V) = ⊥ := by
-    refine LinearMap.ker_eq_bot'.mpr fun a ha ↦ ?_
-    have h_pow : (y a).toMul.val ^ l = 1 := by
-      simpa using congrArg (fun v : V ↦ ((y v).toMul : L)) ha
-    have h_close : A.valuation (algebraMap L Ω (y a).toMul - 1) < A.valuation l := by
-      simpa [w] using (div_mem.mp a.property).trans_lt lπ_lt
-    simpa using eq_one_of_pow_eq_one_of_valuation_sub_lt h_pow h_close
-  -- `red a` is the class of `(a - 1) / (l π)` in `O / l`; it is additive by `h_defect`.
-  have h_defect (s t : L) : (s * t - 1) / (l * π) - ((s - 1) / (l * π) + (t - 1) / (l * π)) =
-      l * ((s - 1) / (l * π) * ((t - 1) / (l * π)) * π) := by field
-  let red : V →ₗ[ℤ] valRingBelow L A ⧸ span {(l : valRingBelow L A)} :=
-    (AddMonoidHom.mk' (fun a : V ↦ mk (span {(l : valRingBelow L A)}) ⟨_, a.property⟩) fun a b ↦ by
-      refine mk_span_eq_iff_dvd_sub.mpr
-        ⟨⟨_, a.property⟩ * ⟨_, b.property⟩ * ⟨π, hπ.valuationVia_lt_one.le⟩, Subtype.ext ?_⟩
-      simpa using h_defect _ _).toIntLinearMap
-  have red_surj : Function.Surjective red := by
-    refine Quot.ind fun x ↦ ?_
-    -- `x` is the image of `1 + x l π`.
-    have h_le : w ((x : L) * (l * π)) ≤ w (l * π) := div_mem.mp (by simp [NeZero.ne])
-    refine ⟨oneAdd ((x : L) * (l * π)) h_le, congrArg (Ideal.Quotient.mk _) (Subtype.ext ?_)⟩
-    simp [oneAdd, NeZero.ne]
-  have red_exact : Function.Exact (l : End ℤ V) red := by
-    refine .of_comp_of_mem_range ?_ fun a ha ↦ ?_
-    · ext
-      simpa using mul_eq_zero_of_left (mk_singleton_self _) _
-    · -- If `l ∣ (a - 1) / (l π)`, Hensel's lemma gives an `l`-th root of `a` in `V`.
-      -- `ha`: `l` divides `(a - 1) / (l π)` in `O`, that is, `|(a - 1) / (l π)| ≤ |l|`.
-      have h_near :
-          A.valuation (algebraMap L Ω (y a).toMul.val - 1) ≤ A.valuation l * w (l * π) := by
-        simpa [w, div_le_iff₀, NeZero.ne, valuationVia, pos_iff] using
-          dvd_iff_valuationVia_le.mp ((eq_zero_iff_dvd (l : valRingBelow L A) _).mp ha)
-      obtain ⟨x, hx_pow, hx⟩ :=
-        exists_local_root_near_one Γ A (by simp [NeZero.ne]) lπ_lt h_near
-      refine ⟨oneAdd (x - 1) (by simpa [w] using hx), Subtype.ext (Subtype.ext (y.injective ?_))⟩
-      ext
-      simp [oneAdd, hx_pow]
+  have hV (a : f.ker) : a ∈ V ↔ w ((y a).toMul.val - 1) ≤ w (l * π) := div_mem
+  have h_finite_index : Finite (f.ker ⧸ V) := hLocal.finite_quotient_ker_of_mem_iff hπ h_ker hV
+  obtain ⟨red, red_surj, red_exact⟩ := hLocal.exists_surjective_exact_of_mem_iff hπ h_ker hV
   -- Pass from `f.ker` to `V` (the inclusion has finite kernel and cokernel), and read off the
   -- kernel and the cokernel on `V`.
   have idx_units :
       cokerKerIndex (l : End ℤ f.ker) =
         Nat.card (valRingBelow L A ⧸ span {(l : valRingBelow L A)}) := by
     rw [← cokerKerIndex_natCast_eq_of_ne_zero V.subtype (by simp [ne_of_gt, cokerKerIndex]),
-      cokerKerIndex, ker_pow, card_congr (red_exact.linearEquivOfSurjective red_surj).toEquiv]
+      cokerKerIndex, hLocal.ker_natCast_eq_bot_of_mem_iff hπ hV,
+      card_congr (red_exact.linearEquivOfSurjective red_surj).toEquiv]
     simp
   -- Split off `ℤ`, where the index is `l`.
   rw [cokerKerIndex_mul_of_exact _ f (by simp) f.exact_subtype_ker_map f_surj
