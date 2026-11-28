@@ -3,7 +3,7 @@ module
 import TauCeti.Analysis.ExteriorPower.Plucker
 import TauCeti.Analysis.InnerProductSpace.Gram.Hadamard
 import TauCeti.Analysis.Matrix.GramFactorization
-import TauCeti.Analysis.Matrix.OstrowskiTaussky
+import TauCeti.Analysis.Matrix.PosSemidef.Determinant
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Mathlib.Order.Hom.PowersetCard
 import Mathlib.Algebra.Order.Star.Int
@@ -253,15 +253,13 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 theorem New.fischer_det_inequality {m : Type*} [Fintype m] [DecidableEq m]
     {z : Matrix (m ⊕ n) (m ⊕ n) ℂ} (hz : z.PosSemidef) :
     ‖z.det‖ ≤ ‖z.toBlocks₁₁.det‖ * ‖z.toBlocks₂₂.det‖ := by
-  -- Write `z = (A B; Bᴴ D)` and put `Θ = (A 2B; 0 D)`, so that `Θ + Θᴴ = z + z`. The
-  -- Ostrowski–Taussky inequality bounds `‖det (z + z)‖` by `2 ^ card * ‖det A‖ * ‖det D‖`, and
-  -- the factor `2 ^ card` cancels against `det (z + z) = 2 ^ card * det z`.
-  let Θ := fromBlocks z.toBlocks₁₁ (z.toBlocks₁₂ + z.toBlocks₁₂) 0 z.toBlocks₂₂
-  have hΘ_add : Θ + Θᴴ = z + z := by
-    ext (i | i) (j | j) <;> simp [Θ, hz.1.apply, toBlocks₁₁, toBlocks₁₂, toBlocks₂₂]
-  have h_bound : ‖(z + z).det‖ ≤ 2 ^ Fintype.card (m ⊕ n) * ‖Θ.det‖ :=
-    (hz.add hz).norm_det_le_two_pow_mul (by simp [hΘ_add, PosSemidef.zero])
-  simpa [← two_smul ℂ z, Θ] using h_bound
+  have h₂₁ : z.toBlocks₁₂ᴴ = z.toBlocks₂₁ := congrArg toBlocks₂₁ hz.isHermitian.eq
+  have hblocks : (fromBlocks z.toBlocks₁₁ z.toBlocks₁₂ z.toBlocks₁₂ᴴ z.toBlocks₂₂).PosSemidef := by
+    rwa [h₂₁, fromBlocks_toBlocks]
+  have hdet : z.det ≤ z.toBlocks₁₁.det * z.toBlocks₂₂.det := by
+    simpa only [h₂₁, fromBlocks_toBlocks] using hblocks.det_fromBlocks_le
+  rw [← norm_mul, ← Complex.re_eq_norm.mpr hz.det_nonneg]
+  exact (Complex.le_def.mp hdet).1.trans (Complex.re_le_norm _)
 
 /-- **Fischer's inequality.** Let `z` be positive semidefinite and let the index set `r` be the
 disjoint union of `p` and `q`. Then the principal minor of `z` on `r` has norm at most the product
