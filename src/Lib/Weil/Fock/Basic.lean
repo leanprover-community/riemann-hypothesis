@@ -18,7 +18,6 @@ public import Lib.Weil.Construction.WeilOperators
 public import Lib.General.Analysis.GaussianIntegral
 import Lib.Base
 import Lib.General.Analysis.HolomorphicIntegrals
-import Lib.General.Measure.HaarModulus
 import Lib.General.Measure.IntegralOperators
 import Lib.General.Topology
 
