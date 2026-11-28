@@ -1,9 +1,6 @@
 module
 
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Data.Rat.Cast.OfScientific
-import Mathlib.Tactic.PNatToNat
 public import New.OneLift.HeckeValues.AlgebraicPartIntegrality
 public import New.Determinant.Twist.FitTwists
 import Lib.ClassField.HeckeL.ContinuationAtOne
