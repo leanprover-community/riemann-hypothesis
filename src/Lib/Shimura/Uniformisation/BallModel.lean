@@ -206,20 +206,18 @@ private lemma eventually_isUnit_of_analyticAt_of_apply_ne_zero {c : BallBase D.I
     h_an.curry_left.continuousAt.eventually_ne h_ne
   exact h_near.mono fun b hb ↦ (left_ne_zero_of_smul (b := φ b w) hb).isUnit
 
-/-- Let f be an analytic family of theta tori, b₀ in its domain, and θ_t(b, ·) (t ∈ T) the theta
-coordinates of the member b, functions on V. There is a function c of b such that
-(a) for each t, the function (b, z) ↦ c(b)·θ_t(b, z) is analytic at every point (b₀, z);
-(b) c(b) ≠ 0 for b near b₀.
-The factor is the same for all t and z, so the projective point (θ_t(b, z))_t is unchanged. -/
-lemma AnalyticFamily.exists_analytic_thetaCoord (f : AnalyticFamily D) {b₀ : BallBase D.Index}
-    (hb₀ : b₀ ∈ f.domain) :
-    ∃ c : BallBase D.Index → ℂ,
-      (∀ (z : BallFibre E D.Index) (t : D.dualTorsion),
+/-- For an analytic family `f` of theta tori and `b₀ ∈ f.domain`, there are scalars `c b`
+and a point `w` such that `(b, z) ↦ (c b • (f.torus b).lagrangianTheta) z` is analytic at `(b₀, z)`
+and its value at `(b₀, w)` is nonzero. -/
+private lemma AnalyticFamily.exists_analytic_smul_lagrangianTheta (f : AnalyticFamily D)
+    {b₀ : BallBase D.Index} (hb₀ : b₀ ∈ f.domain) :
+    ∃ (c : BallBase D.Index → ℂ) (w : BallFibre E D.Index),
+      (∀ z : BallFibre E D.Index,
         AnalyticAt ℂ
           (fun p : BallBase D.Index × BallFibre E D.Index ↦
-            (c p.1 • fun s : D.dualTorsion ↦ (f.torus p.1).thetaCoord s p.2) t)
+            (c p.1 • (f.torus p.1).lagrangianTheta) p.2)
           (b₀, z)) ∧
-      ∀ᶠ b : BallBase D.Index in nhds b₀, IsUnit (c b) := by
+      (c b₀ • (f.torus b₀).lagrangianTheta) w ≠ 0 := by
   -- The theta functions of the member `b` are multiples of its generator `φ b`. So a Poincaré
   -- series of `b` is `c b • φ b`; moved to the fixed lattice of `b₀` it is a series with
   -- parameters analytic in `b`, and it is not zero at `b₀`.
@@ -242,10 +240,6 @@ lemma AnalyticFamily.exists_analytic_thetaCoord (f : AnalyticFamily D) {b₀ : B
         (f.re_pos b)
     exact (f.torus b).exists_smul_lagrangianTheta_eq (h_theta (Q b w))
   choose c hc using h_mult
-  have hQ_an (y : RealVectors E D.Index) (z : BallFibre E D.Index) :
-      AnalyticAt ℂ (fun p : BallBase D.Index × BallFibre E D.Index ↦ (f.torus p.1).realEquiv y)
-        (b₀, z) :=
-    (f.analyticAt b₀ hb₀ y).comp_of_eq analyticAt_fst rfl
   -- The comparison map `Q b` carries the lattice of `b₀` onto that of `b`.
   have h_latt (b : BallBase D.Index) (x : BallFibre E D.Index) :
       x ∈ (f.torus b₀).latticeOver D.lagrangian ↔
@@ -295,26 +289,47 @@ lemma AnalyticFamily.exists_analytic_thetaCoord (f : AnalyticFamily D) {b₀ : B
           (L := (f.torus p.1).latticeOver D.lagrangian) (f.torus p.1).multiplier (Q p.1 w) p.2 := by
         rw [tsum_congr h_term, Equiv.tsum_eq, ThetaTori.LatticeForm.poincareSeries]
       _ = _ := by rw [hc]
-  have h_lift_an (z : BallFibre E D.Index) : AnalyticAt ℂ (fun p ↦ (c p.1 • φ p.1) p.2) (b₀, z) :=
-    (h_series_an z).congr (.of_forall h_series_eq)
+  have h_ne : (c b₀ • φ b₀) w ≠ 0 := by
+    rw [hc]
+    simpa [Q] using hw
+  exact ⟨c, w, fun z ↦ (h_series_an z).congr (.of_forall h_series_eq), h_ne⟩
+
+/-- Let f be an analytic family of theta tori, b₀ in its domain, and θ_t(b, ·) (t ∈ T) the theta
+coordinates of the member b, functions on V. There is a function c of b such that
+(a) for each t, the function (b, z) ↦ c(b)·θ_t(b, z) is analytic at every point (b₀, z);
+(b) c(b) ≠ 0 for b near b₀.
+The factor is the same for all t and z, so the projective point (θ_t(b, z))_t is unchanged. -/
+lemma AnalyticFamily.exists_analytic_thetaCoord (f : AnalyticFamily D) {b₀ : BallBase D.Index}
+    (hb₀ : b₀ ∈ f.domain) :
+    ∃ c : BallBase D.Index → ℂ,
+      (∀ (z : BallFibre E D.Index) (t : D.dualTorsion),
+        AnalyticAt ℂ
+          (fun p : BallBase D.Index × BallFibre E D.Index ↦
+            (c p.1 • fun s : D.dualTorsion ↦ (f.torus p.1).thetaCoord s p.2) t)
+          (b₀, z)) ∧
+      ∀ᶠ b : BallBase D.Index in nhds b₀, IsUnit (c b) := by
+  obtain ⟨c, w, h_lift_an, h_ne⟩ := f.exists_analytic_smul_lagrangianTheta hb₀
+  have hQ_an (y : RealVectors E D.Index) (z : BallFibre E D.Index) :
+      AnalyticAt ℂ (fun p : BallBase D.Index × BallFibre E D.Index ↦ (f.torus p.1).realEquiv y)
+        (b₀, z) :=
+    (f.analyticAt b₀ hb₀ y).comp_of_eq analyticAt_fst rfl
   refine ⟨c, fun z t ↦ ?_, ?_⟩
-  · -- `thetaCoord t` is a translate of `φ b` by a vector analytic in `b`, times a constant and an
-    -- exponential.
+  · -- `thetaCoord t` is a translate of `lagrangianTheta b` by a vector analytic in `b`, times a
+    -- constant and an exponential.
     simp only [thetaCoord, normalizedShift, canonicalMultiplier, intAction, ne_eq, RingHom.coe_comp,
       Function.comp_apply, torsionLift, IsPeriodMap.complexMul_apply_apply,
       ContinuousLinearEquiv.symm_apply_apply, riemannForm_eq, f.form_const b₀, thetaShift,
       neg_add_rev, LinearMap.smul_apply, smul_eq_mul, Pi.smul_apply, Pi.mul_apply,
       LinearMap.funLeft_apply, mul_left_comm (c _)]
-    -- The goal is a constant times an exponential in `p` times `c p.1 • φ p.1` at a translate.
+    -- The goal is a constant times an exponential in `p` times `c p.1 • lagrangianTheta p.1` at a
+    -- translate.
     refine AnalyticAt.mul ?_ (AnalyticAt.mul ?_ ?_)
     · fun_prop
     · fun_prop
     · exact (h_lift_an _).comp₂ analyticAt_fst (analyticAt_snd.add (hQ_an _ z))
-  · -- The value of `c b • φ b` at `w` is continuous in `b` and not zero at `b₀`.
-    have h_ne : (c b₀ • φ b₀) w ≠ 0 := by
-      rw [hc]
-      simpa [Q] using hw
-    exact eventually_isUnit_of_analyticAt_of_apply_ne_zero (h_lift_an w) h_ne
+  · -- The value of `c b • lagrangianTheta b` at `w` is continuous in `b` and nonzero at `b₀`.
+    exact eventually_isUnit_of_analyticAt_of_apply_ne_zero
+      (φ := fun b ↦ (f.torus b).lagrangianTheta) (h_lift_an w) h_ne
 
 end New.Variety
 
