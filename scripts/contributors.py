@@ -68,9 +68,12 @@ def counts(pull_requests):
 
 def pending(numbers):
     for number in numbers:
-        out = subprocess.run(["gh", "pr", "view", str(number), "-R", REPO, "--json",
-                              "number,title,author"], check=True, capture_output=True, text=True)
+        out = subprocess.run(["gh", "pr", "view", str(number), "-R", REPO,
+                              "--json", "number,title,author,state"],
+                             check=True, capture_output=True, text=True)
         pr = json.loads(out.stdout)
+        if pr["state"] == "CLOSED":
+            continue
         login = pr["author"]["login"]
         bot = pr["author"].get("is_bot") or login.endswith("[bot]") or login.startswith("app/")
         yield {"number": pr["number"], "title": pr["title"],
