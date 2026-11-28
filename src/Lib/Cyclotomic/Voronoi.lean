@@ -323,9 +323,7 @@ lemma exists_isStickelbergerBound (he : e ≠ 0) :
       (k := e + 1) (by omega) (χ.ringHomComp ι) hχ_K
     have hx_range : x ∈ ι.range := by
       let : Algebra ℤ K := Ring.toIntAlgebra K
-      refine Algebra.adjoin_induction ?_ (fun r ↦ ⟨r, map_intCast ι r⟩)
-        (fun _ _ _ _ ha hb ↦ ι.range.add_mem ha hb)
-        (fun _ _ _ _ ha hb ↦ ι.range.mul_mem ha hb) hx_mem
+      refine Algebra.adjoin_le (S := ι.toIntAlgHom.range) ?_ hx_mem
       rintro _ ⟨a, rfl⟩
       exact ⟨χ a, rfl⟩
     obtain ⟨u₀, hu₀⟩ := hx_range
