@@ -5,11 +5,9 @@ import Mathlib.Analysis.Calculus.Deriv.Star
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 public import Lib.GLn.SchurModule.Basic
 public import Lib.Weil.Fock.Basic
-import Lib.Cohomology.Etale.Basic
 import Lib.DiscreteSeries.Theta.FockDualPair
 import Lib.General.Analysis.HolomorphicIntegrals
 import Lib.General.LinearAlgebra.MatricesNearIdentity
-import Lib.General.Measure.HaarModulus
 import Lib.Weil.Fock.WeightedNorms
 
 /-!
@@ -166,17 +164,11 @@ has the complex conjugate coefficients of P. -/
 lemma fockInner_polyVector (P Q : MvPolynomial ι ℂ) :
     fockInner P (polyVector ε Q) = fockPairing ℂ (MvPolynomial.map conj P) Q := by
   induction P using MvPolynomial.induction_on generalizing Q with
-  | C a =>
-    have h_C : polyVector ε (C a) = a • vacVector := by rw [C_eq_smul_one, map_smul, polyVector_one]
-    simp [fockPairing_C, realVac, h_C]
+  | C a => rw [map_C, fockPairing_C, C_eq_smul_one]; simp [realVac]
   | add P P' hP hP' => simp [hP, hP']
   | mul_X P i hP =>
-    calc fockInner (polyVector ε (P * X i)) (polyVector ε Q)
-        = fockInner (polyVector ε P) (polyVector ε (pderiv i Q)) := by
-          rw [mul_comm P (X i), fockInner_X_mul]
-      _ = fockPairing ℂ (MvPolynomial.map conj P) (pderiv i Q) := hP (pderiv i Q)
-      _ = fockPairing ℂ (MvPolynomial.map conj (P * X i)) Q := by
-          rw [map_mul, MvPolynomial.map_X, fockPairing_mul_X]
+    rw [map_mul (MvPolynomial.map conj), MvPolynomial.map_X, fockPairing_mul_X, ← hP,
+      ← fockInner_X_mul, mul_comm]
 
 /-- The Fock vectors v_P of the polynomials P are dense in the Fock space with signs ε. -/
 lemma denseRange_polyVector : DenseRange (polyVector ε) := by
@@ -187,10 +179,9 @@ lemma denseRange_polyVector : DenseRange (polyVector ε) := by
   -- found by instance search for the quotient by `V` below
   have V_closed : IsClosed (V : Set (fockSpace ε)) := V.isClosed'
   have translate_mem (y : ι → ℂ) : realHeisenbergOp y vacVector ∈ V := by
-    have h_rapid : Exchange.IsSchwartzVector (realHeisenbergOp y vacVector : fockSpace ε) := fun N ↦
+    obtain ⟨P, hP⟩ := exists_tendsto_fockMoment (v := realHeisenbergOp y vacVector) fun N ↦
       ne_top_of_le_ne_top (ENNReal.mul_ne_top (by simp) (isSchwartzVector_vacVector N))
         (fockMoment_realHeisenbergOp_le N vacVector y)
-    obtain ⟨P, hP⟩ := exists_tendsto_fockMoment h_rapid
     have h_tendsto : Filter.Tendsto (fun n : ℕ ↦ polyVector ε (P n)) Filter.atTop
         (nhds (realHeisenbergOp y vacVector)) := by
       simpa [fockMoment_zero, eNorm_sub_rev, tendsto_iff_eNorm_sub_tendsto_zero] using hP 0
