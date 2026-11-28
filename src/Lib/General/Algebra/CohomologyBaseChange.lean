@@ -172,6 +172,25 @@ lemma HasBaseChange.baseChangeMap_lTensor_precompₗ {N N' : AbFunctor C} {a n n
   | add => simp [*]
   | tmul m x => simp [precompₗ, H.push]
 
+/-- M ⊗ (composition with a class e, `precompₗ`), as a map of abelian groups
+M ⊗_S H^n(N, Φ) → M ⊗_S H^(a+n)(N', Φ): the maps of `tensoredSeq`. -/
+noncomputable def HasBaseChange.lTensorPrecomp (M : Type) [AddCommGroup M] [Module S M]
+    (Φ : C ⥤ ModuleCat S) {N N' : AbFunctor C} {a n n' : ℕ} (e : H N' N a) (h : a + n = n') :
+    AddCommGrpCat.of (M ⊗[S] H N (moduleCoeff Φ) n) →+
+      AddCommGrpCat.of (M ⊗[S] H N' (moduleCoeff Φ) n') :=
+  -- Stated once for all N and n, with `exact_lTensorPrecomp`: applying `lTensor_exact` directly in
+  -- each field of `tensoredSeq` made the kernel unfold the group and module structures of the Ext
+  -- groups there each time.
+  ((precompₗ Φ e h).lTensor M).toAddMonoidHom
+
+/-- For M flat, `lTensorPrecomp` preserves exactness. -/
+lemma HasBaseChange.exact_lTensorPrecomp (M : Type) [AddCommGroup M] [Module S M] [Flat S M]
+    (Φ : C ⥤ ModuleCat S) {N₁ N₂ N₃ : AbFunctor C} {a b n₁ n₂ n₃ : ℕ} (e : H N₂ N₁ a)
+    (e' : H N₃ N₂ b) (h : a + n₁ = n₂) (h' : b + n₂ = n₃)
+    (hex : Exact (precompₗ Φ e h) (precompₗ Φ e' h')) :
+    Exact (lTensorPrecomp M Φ e h) (lTensorPrecomp M Φ e' h') :=
+  lTensor_exact M hex
+
 /-- For M flat, the long exact sequence of Ext(–, Φ) of a short exact sequence X, tensored
 with M. -/
 noncomputable def HasBaseChange.tensoredSeq (M : Type) [AddCommGroup M] [Module S M] [Flat S M]
@@ -179,15 +198,17 @@ noncomputable def HasBaseChange.tensoredSeq (M : Type) [AddCommGroup M] [Module 
   A n := .of (M ⊗[S] H X.X₃ (moduleCoeff Φ) n)
   B n := .of (M ⊗[S] H X.X₂ (moduleCoeff Φ) n)
   C n := .of (M ⊗[S] H X.X₁ (moduleCoeff Φ) n)
-  f n := ((precompₗ Φ (mk₀ X.g) n.zero_add).lTensor M).toAddMonoidHom
-  g n := ((precompₗ Φ (mk₀ X.f) n.zero_add).lTensor M).toAddMonoidHom
-  δ n := ((precompₗ Φ hX.extClass n.one_add).lTensor M).toAddMonoidHom
+  f n := lTensorPrecomp M Φ (mk₀ X.g) n.zero_add
+  g n := lTensorPrecomp M Φ (mk₀ X.f) n.zero_add
+  δ n := lTensorPrecomp M Φ hX.extClass n.one_add
   injective_f :=
     lTensor_preserves_injective_linearMap (precompₗ Φ (mk₀ X.g) _)
       (contravariant hX (moduleCoeff Φ)).injective_f
-  exact_f_g n := lTensor_exact M ((contravariant hX (moduleCoeff Φ)).exact_f_g n)
-  exact_g_delta n := lTensor_exact M ((contravariant hX (moduleCoeff Φ)).exact_g_delta n)
-  exact_delta_f n := lTensor_exact M ((contravariant hX (moduleCoeff Φ)).exact_delta_f n)
+  exact_f_g n := exact_lTensorPrecomp M Φ _ _ _ _ ((contravariant hX (moduleCoeff Φ)).exact_f_g n)
+  exact_g_delta n :=
+    exact_lTensorPrecomp M Φ _ _ _ _ ((contravariant hX (moduleCoeff Φ)).exact_g_delta n)
+  exact_delta_f n :=
+    exact_lTensorPrecomp M Φ _ _ _ _ ((contravariant hX (moduleCoeff Φ)).exact_delta_f n)
 
 /-- For M flat over S, with M a module over the S-algebra T, the maps M ⊗_S H^n(N, Φ) → H^n(N,
 M ⊗ Φ) admit dévissage in N (`New.Variety.Devissage`): the four and five lemmas apply to them along
