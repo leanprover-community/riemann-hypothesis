@@ -70,8 +70,9 @@ which one proof uses as such.
 
 -- Instance search tries these instances late (the default priority is 1000). They give the
 -- grade-zero part `A 0` of a graded ring its algebraic structure, and unifying `A 0` with an
--- arbitrary subtype is expensive. Without them `New.Derivatives.Divisibility.NormalForm` times out
--- and `Lib.GaloisRep.Hilbert90.UnitaryGroups` fails.
+-- arbitrary subtype is expensive. Without them `New.Derivatives.Divisibility.NormalForm` times out,
+-- and `Lib.GaloisRep.Hilbert90.UnitaryGroups`, `Lib.Shimura.HeckeTower.Model` and
+-- `New.Spanning.Frames.RealPlaceGauge` fail.
 attribute [instance 20] SetLike.GradeZero.instMonoid SetLike.GradeZero.instCommMonoid
   SetLike.GradeZero.instSemiring SetLike.GradeZero.instCommSemiring SetLike.GradeZero.instRing
   SetLike.GradeZero.instCommRing
