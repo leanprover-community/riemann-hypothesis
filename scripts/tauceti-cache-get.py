@@ -24,13 +24,11 @@ It only reads from Tau Ceti's cache; it never uploads. It verifies nothing about
 import json
 import os
 from pathlib import Path
-import re
 import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-# An import line may end in a comment, such as `-- shake: keep`.
-IMPORT = re.compile(r"^\s*(?:(?:public|private|meta)\s+)*import\s+(?:all\s+)?(TauCeti(?:\.[\w']+)+)\s*(?:--.*)?$")
+CACHE_IMPORTS = ROOT / "scripts" / "CacheImports.lean"
 
 
 def say(message):
@@ -64,40 +62,51 @@ def check_mathlib_pin():
 TRUSTED_FILES = ("src/Statements.lean", "src/Main.lean", "Challenge.lean")
 
 
-def check_trusted_files():
-    for name in TRUSTED_FILES:
-        for line in (ROOT / name).read_text(encoding="utf-8").splitlines():
-            if IMPORT.match(line):
-                raise ValueError(f"{name} imports a Tau Ceti module: {line.strip()}")
-
-
-def tauceti_imports(path):
-    imports = set()
-    for line in path.read_text(encoding="utf-8").splitlines():
-        match = IMPORT.match(line)
-        if match:
-            imports.add(match.group(1))
+def import_headers(root=ROOT):
+    """Parse source headers, `Challenge.lean`, and reachable Tau Ceti headers with Lean."""
+    result = subprocess.run(["lean", "--run", str(CACHE_IMPORTS), str(root)], cwd=ROOT,
+                            check=True, capture_output=True, text=True, encoding="utf-8")
+    rows = json.loads(result.stdout)
+    imports = {}
+    root_resolved = root.resolve()
+    for row in rows:
+        if row["error"] is not None:
+            raise ValueError(f"could not parse Lean imports in {row['path']}: {row['error']}")
+        path = Path(row["path"]).resolve()
+        imports[path.relative_to(root_resolved).as_posix()] = row["imports"]
     return imports
 
 
-def imported_modules():
+def check_trusted_files(imports):
+    for name in TRUSTED_FILES:
+        if name not in imports:
+            raise ValueError(f"{name} is missing")
+        if imports[name]:
+            raise ValueError(f"{name} imports a Tau Ceti module: {', '.join(imports[name])}")
+
+
+def imported_modules(imports, root=ROOT):
     """The Tau Ceti modules imported under `src`, closed under Tau Ceti's own imports (public,
     private and `meta` alike)."""
-    pending = set()
-    for path in (ROOT / "src").rglob("*.lean"):
-        pending |= tauceti_imports(path)
+    pending = {
+        module
+        for path, modules in imports.items()
+        if path.startswith("src/")
+        for module in modules
+    }
     direct = len(pending)
-    source = ROOT / ".lake" / "packages" / "TauCeti"
+    source = root / ".lake" / "packages" / "TauCeti"
     modules = set()
     while pending:
         module = pending.pop()
         if module in modules:
             continue
         modules.add(module)
-        path = source.joinpath(*module.split(".")).with_suffix(".lean")
-        if not path.is_file():
+        rel = Path(".lake", "packages", "TauCeti", *module.split(".")).with_suffix(".lean").as_posix()
+        if rel not in imports:
+            path = source.joinpath(*module.split(".")).with_suffix(".lean")
             raise ValueError(f"{module} is imported but {path} is missing")
-        pending |= tauceti_imports(path) - modules
+        pending |= set(imports[rel]) - modules
     say(f"{direct} Tau Ceti module(s) imported under src, {len(modules)} with their imports")
     return sorted(modules)
 
@@ -107,7 +116,8 @@ def run_lake(args, env):
 
 
 def main():
-    check_trusted_files()
+    imports = import_headers()
+    check_trusted_files(imports)
     check_mathlib_pin()
     env = os.environ.copy()
     for key in list(env):
@@ -123,7 +133,7 @@ def main():
     if code:
         say("fetching the mappings failed; Lake would compile Tau Ceti modules from source")
         return code
-    modules = imported_modules()
+    modules = imported_modules(imports)
     if not modules:
         say("no Tau Ceti module is imported under src; nothing more to fetch")
         return 0
