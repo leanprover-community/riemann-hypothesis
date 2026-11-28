@@ -227,9 +227,8 @@ private lemma averagedPullback_normShift_of_mem_dualLattice (hd : star c = d)
   calc h.averagedPullback c d (h.normShift a t)
     _ = h.averagedPullback c d (h.normShift (F c a) t) := by rw [shift_eq _ (hc_dual a ha) ht]
     _ = h.normShift (F d a) (h.averagedPullback c d t) := by
-      rw [averagedPullback_apply, averagedPullback_apply, LinearMap.sum_apply, LinearMap.sum_apply,
-        map_sum, pull]
-      exact Finset.sum_congr rfl fun z _ ↦ term_comm z
+      simp only [averagedPullback_apply, LinearMap.sum_apply, map_sum, pull, term_comm]
+      rfl
     _ = h.normShift a (h.averagedPullback c d t) :=
       shift_eq _ (hd_dual a ha) (h.averagedPullback_mem_thetaSpace hd ht)
 
@@ -247,14 +246,9 @@ private lemma exists_averagedPullback_eq_smul (hd : star c = d)
     refine LinearMap.ext fun t ↦ Subtype.ext ?_
     change B.thetaShift a (h.averagedPullback c d t) = h.averagedPullback c d (B.thetaShift a t)
     have shift_eq_smul (s : V → ℂ) : h.normShift a s = (h.multiplier a)⁻¹ • B.thetaShift a s := rfl
-    have multiplier_ne : (h.multiplier a)⁻¹ ≠ 0 := by simp [canonicalMultiplier]
-    have scaled : (h.multiplier a)⁻¹ • h.averagedPullback c d (B.thetaShift a t) =
-        (h.multiplier a)⁻¹ • B.thetaShift a (h.averagedPullback c d t) := by
-      have commutes : h.averagedPullback c d (h.normShift a t) =
-          h.normShift a (h.averagedPullback c d t) :=
-        h.averagedPullback_normShift_of_mem_dualLattice hd hc_dual hd_dual ha t.prop
-      rwa [shift_eq_smul, shift_eq_smul, map_smul] at commutes
-    exact (smul_right_injective (V → ℂ) multiplier_ne scaled).symm
+    have scaled := h.averagedPullback_normShift_of_mem_dualLattice hd hc_dual hd_dual ha t.prop
+    rw [shift_eq_smul, shift_eq_smul, map_smul] at scaled
+    exact (smul_right_injective (V → ℂ) (by simp [canonicalMultiplier]) scaled).symm
   obtain ⟨μ, hμ⟩ : ∃ μ : ℂ, Q = μ • 1 :=
     h.isAppellHumbert.schur_lemma (hp := h.isAmpleType.isPosRiemann) Q_commute
   refine ⟨μ, fun t ht ↦ ?_⟩
@@ -439,17 +433,14 @@ lemma exists_theta_identity (hd : star c = d)
   -- `μ = δ * a` with `a = m * conj δ`; `a * conj a = 1` and `a ^ 4` is real, so `a ^ 8 = 1`
   have conj_pow_four_eq : starRingEnd ℂ m ^ 4 * δ ^ 4 = (m * starRingEnd ℂ δ) ^ 4 := by
     simpa [IsSelfAdjoint, mul_pow] using h.isSelfAdjoint_quotMean_pow c rfl
-  have a_mul_conj : m * starRingEnd ℂ δ * starRingEnd ℂ (m * starRingEnd ℂ δ) = 1 := by
-    rw [← conj_m_mul_μ, μ_eq, map_mul, Complex.conj_conj]
-    ring
+  have h1 : m * starRingEnd ℂ δ * (starRingEnd ℂ m * δ) = 1 := by
+    linear_combination conj_m_mul_μ - starRingEnd ℂ m * μ_eq
   calc μ ^ 8
     _ = δ ^ 8 * ((m * starRingEnd ℂ δ) ^ 4 * (starRingEnd ℂ m ^ 4 * δ ^ 4)) := by
       rw [conj_pow_four_eq, μ_eq]
       ring
-    _ = δ ^ 8 * (m * starRingEnd ℂ δ * starRingEnd ℂ (m * starRingEnd ℂ δ)) ^ 4 := by
-      rw [map_mul, Complex.conj_conj]
-      ring
-    _ = δ ^ 8 := by rw [a_mul_conj, one_pow, mul_one]
+    _ = δ ^ 8 * (m * starRingEnd ℂ δ * (starRingEnd ℂ m * δ)) ^ 4 := by ring
+    _ = δ ^ 8 := by rw [h1, one_pow, mul_one]
 
 omit h in
 /-- Let `v` be a valuation on `ℂ` with values in `ℝ≥0`, let `p` be a prime and `ζ` a `p ^ n`-th root
@@ -562,15 +553,13 @@ lemma hasShiftBound_one_of_ker {A : LatticeForm L} {w : torsionPoints L} (hd : s
       calc v (h.normShift (F c q) (h.normShift (F c z.out) f) 0)
         _ = φ (h.torsionAction c q + cz) := (h.sizeAt_add (h.torsionAction c q) cz).symm
         _ ≤ iSup φ := le_iSup_of_mem_sizes hφ _
-    have h_sub : ((T q + w : torsionPoints L) : V) - (T q + T g : torsionPoints L) ∈ L := by
-      simpa using g_eq
     calc φ (T q)
       _ = v (μ * h.normShift (F d q) f 0) := by simp [φ_def, h.sizeAt_eq_normShift, v_μ, T]
       _ ≤ max (v (μ * h.normShift (F d q) (h.normShift (F d g) f) 0)) (ρ * iSup φ) := by
         grw [diff, v.map_sub, error]
       _ = max (φ (T q + w)) (ρ * iSup φ) := by
         rw [factorsThrough_mkQ_of_mem_sizes hφ (a := T q + w) (b := T q + T g)
-            (SModEq.sub_mem.mpr h_sub), φ_def, h.sizeAt_add]
+            (SModEq.sub_mem.mpr (by simpa using g_eq)), φ_def, h.sizeAt_add]
         simp [v_μ, T]
   -- Every torsion point is of the form `d q`, so `step` bounds the supremum; in the case
   -- `φ (T q) ≤ φ (T q + w)` use `φ (T q) ^ 2 ≤ φ (T q) * φ (T q + w)`.
@@ -723,20 +712,17 @@ lemma eventually_hasShiftBound
       refine eq_zero_of_small_mesh (L := L) (hf_diff.continuous.comp (by fun_prop [midpoint]))
         (h_frequently.mono fun e ⟨c, hc_ne, h_inv, h_one⟩ ↦ ⟨F c, h_inv, fun z hz ↦ ?_⟩)
       have hc_inst : NeZero c := ⟨hc_ne⟩
-      have h_sum : (w : V) + z ∈ torsionPoints L := add_mem w.property (h.mem_torsionPoints ⟨z, hz⟩)
-      have mid_tors : midpoint ℝ (w : V) z ∈ torsionPoints L := by
-        refine h_sum.imp' (fun n ↦ n * 2) fun n hn ↦ ?_
-        simpa [two_smul, mul_smul] using hn
-      let m : torsionPoints L := ⟨midpoint ℝ (w : V) z, mid_tors⟩
-      exact hf_zero ⟨m, h_one _ _ (by simpa [m] using hz)⟩
+      have mid_tors : midpoint ℝ (w : V) z ∈ torsionPoints L :=
+        (add_mem w.property (h.mem_torsionPoints ⟨z, hz⟩)).imp' (· * 2) fun n hn ↦ by
+          simpa [two_smul, mul_smul] using hn
+      exact hf_zero ⟨⟨midpoint ℝ (w : V) z, mid_tors⟩, h_one _ _ (by simpa using hz)⟩
     simpa [ev] using congrFun hf_mid (-w)
   obtain ⟨g, hg⟩ : ∃ g : Y →₀ ℂ, (g.sum fun y a ↦ a • ev y) = ev 0 :=
     Finsupp.mem_span_range_iff_exists_finsupp.mp (mem_span_of_iInf_ker_le_ker h_ker)
   filter_upwards [mem_atTop (g.support.sup (v ∘ g))] with C hC φ hφ x
   obtain @⟨χ, f, h_ample, hf⟩ := hφ
   have hφ : B.sizeAt v f ∈ B.sizes v := .of_mem_thetaSpace h_ample hf
-  obtain ⟨hf_diff, hf_per⟩ : Differentiable ℂ f ∧
-      ∀ l ∈ L, ∀ z : V, f (z + l) = χ l * Complex.exp (B l z + B l l / 2) * f z := hf
+  obtain ⟨hf_diff, hf_per⟩ := hf
   -- `y ↦ f (x - y) f (x + y)` lies in `Θ` whatever the multiplier of `f`, and once normalised its
   -- size at `y` is `φ (x - y) φ (x + y)`, where `φ` is the size of `f`.
   have hP_mem : (fun y : V ↦ (-B x x).exp * f (x - y) * f (x + y)) ∈ Θ := by
@@ -751,13 +737,12 @@ lemma eventually_hasShiftBound
     simp [LatticeForm.sizeAt, ev, P, ← map_mul, mul_mul_mul_comm _ (f _), ← exp_add, ← mul_assoc,
       thetaShift_apply]
     ring_nf
-  calc B.sizeAt v f x ^ 2 = v (ev 0 P) := by simpa [sq] using (hP 0).symm
-    _ = v (∑ y ∈ g.support, g y * ev y P) := by simp [← hg, Finsupp.sum]
-    _ ≤ C * ⨆ z, B.sizeAt v f z * B.sizeAt v f (z + w) := by
-      refine v.map_sum_le fun y hy ↦ ?_
-      rw [map_mul, hP]
-      exact mul_le_mul' ((le_sup hy).trans hC)
-        (mul_le_iSup_of_hasShiftBound hφ hφ (by simpa using y.property))
+  calc B.sizeAt v f x ^ 2 = v (∑ y ∈ g.support, g y * ev y P) := by
+        simpa [sq, ← hg, Finsupp.sum] using (hP 0).symm
+    _ ≤ C * ⨆ z, B.sizeAt v f z * B.sizeAt v f (z + w) := v.map_sum_le fun y hy ↦ by
+        rw [map_mul, hP]
+        exact mul_le_mul' ((le_sup hy).trans hC)
+          (mul_le_iSup_of_hasShiftBound hφ hφ (by simpa using y.property))
 
 /-- The contraction. Suppose that arbitrarily close to `0` there are linear maps `e` with (a) `e`
 right inverse to the action `F c` of some `c ≠ 0` in `R`, and (b) every torsion point `y` with
@@ -776,10 +761,7 @@ lemma hasMultiplicativeNorm_of_frequently_hasShiftBound
     refine Continuous.tendsto' ?_ 0 0 (by aesop)
     simp only [continuous_clm_apply, pullForm_apply_apply, add_apply]
     fun_prop
-  obtain ⟨e, ⟨c, hc_ne, hce, h_ker⟩, h_pos⟩ : ∃ e : V →L[ℂ] V,
-      (∃ c : R, c ≠ 0 ∧ (∀ x : V, F c (e x) = x) ∧
-        ∀ (A : LatticeForm L) (y : torsionPoints L), F c y ∈ L → A.HasShiftBound v y 1) ∧
-      IsPosRiemann (B + -pullForm e (B + B)) :=
+  obtain ⟨e, ⟨c, hc_ne, hce, h_ker⟩, h_pos⟩ :=
     (h_frequently.and_eventually
       (h_tendsto.eventually h.isAmpleType.isPosRiemann.eventually_add_neg)).exists
   have hc_inst : NeZero c := ⟨hc_ne⟩
@@ -823,9 +805,8 @@ lemma hasMultiplicativeNorm_of_frequently_hasShiftBound
         (hD ⟨h.torsionAction c y, by simpa [W] using h.map_mem c _ y.property⟩)
   -- A constant valid in all degrees improves to `1`, by `LatticeForm.HasShiftBound.of_doubling` for
   -- the family of all degrees.
-  have h_one (w : torsionPoints L) (A : LatticeForm L) : A.HasShiftBound v w 1 := by
-    exact .of_doubling (fun A ↦ A) (fun _ ↦ w) ⟨C, h_const w⟩
-      (fun D hD A ↦ by simpa using hD (A + A)) A
+  have h_one (w : torsionPoints L) (A : LatticeForm L) : A.HasShiftBound v w 1 :=
+    .of_doubling id (fun _ ↦ w) ⟨C, h_const w⟩ (fun D hD A ↦ by simpa using hD (A + A)) A
   -- One inequality is general; the other is `mul_le_iSup_of_hasShiftBound` with `w = 0`.
   intro A A' φ ψ hφ hψ
   refine (ciSup_mul_le_ciSup_mul_ciSup (bddAbove_of_mem_sizes hφ)
@@ -990,12 +971,8 @@ lemma New.ThetaTori.ThetaTorus.hasGoodReduction_and_val_card_eq_one {E : Type} [
     fun_prop
   refine (h_cont.tendsto' 0 _ (map_zero _)).frequently
     (Metric.nhds_basis_ball.frequently_iff.mpr fun r hr_pos ↦ ?_)
-  obtain ⟨a, ⟨k, ha⟩, ha_unit, ha_large⟩ :
-      ∃ a : 𝓞 E, (∃ k : ℕ, w.asIdeal ^ k = span {a}) ∧ ¬IsUnit a ∧ ∀ σ : E →+* ℂ, ‖σ a‖⁻¹ < r :=
-    exists_pow_eq_span_inv_lt w.one_lt_q hr_pos
-  have ha_ne : a ≠ 0 := by
-    intro ha_zero
-    exact pow_ne_zero k w.ne_bot (by simpa [ha_zero] using ha)
+  obtain ⟨a, ⟨k, ha⟩, ha_unit, ha_large⟩ := exists_pow_eq_span_inv_lt w.one_lt_q hr_pos
+  have ha_ne : a ≠ 0 := fun ha_zero ↦ pow_ne_zero k w.ne_bot (by simpa [ha_zero] using ha)
   have dvd_pow {y : 𝓞 E} (hy : y ∈ w.asIdeal) : a ∣ y ^ k := by
     simpa [ha, mem_span_singleton] using pow_mem_pow hy k
   -- If `w` contains a unit at `σ`, then `a` divides a unit among `v`-integers, so it is a unit.
@@ -1006,10 +983,8 @@ lemma New.ThetaTori.ThetaTorus.hasGoodReduction_and_val_card_eq_one {E : Type} [
     have h_prod : 1 ≤ v (σ a) * v (σ c) := by
       simpa [hvy] using (congrArg (fun z : 𝓞 E ↦ v (σ z)) hc).le
     exact eq_one_of_one_le_mul_left (v_le a) (v_le c) h_prod
-  have h_star_nonunit : ¬IsUnit (star a) := by simpa using ha_unit
-  have h_star_dvd : star a ∣ (p : 𝓞 E) ^ k := by simpa using map_dvd starRingAut (dvd_pow hp_w)
   refine ⟨fun u ↦ (Φ u (star a))⁻¹, by simp [pi_norm_lt_iff, hr_pos, ha_large], star a, k, ?_,
-    h_star_nonunit, ?_, h_star_dvd, ?_⟩
+    by simpa using ha_unit, ?_, by simpa using map_dvd starRingAut (dvd_pow hp_w), ?_⟩
   · simp [intAction, ← x.realEquiv.eq_symm_apply, funext_iff, ha_ne]
   · -- `a` divides a power of `β - b`, and `star a` a power of its conjugate.
     have h_star : star a ∣ (star D.β - b) ^ k := by simpa using map_dvd starRingAut (dvd_pow hb_w)
