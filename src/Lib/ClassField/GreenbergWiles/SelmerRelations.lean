@@ -1,6 +1,5 @@
 module
 
-import Mathlib.Data.Set.Finite.Monad
 import Mathlib.FieldTheory.Galois.Profinite
 public import Lib.ClassField.GreenbergWiles.SplitPrimeReciprocity
 import Lib.ClassField.Global.AlbertBrauerHasseNoether
@@ -297,51 +296,30 @@ lemma exists_splitPlaces_frob_mem_coset {m : ℕ} [NeZero m] {U : OpenNormalSubg
   -- `r c ∈ U` represents the coset `c` whenever `c` meets `U`.
   let r : ι → U := invFun fun g : U ↦ ((g : Gal(Ω/K)) : ι)
   have hr (g : U) : (r g : ι) = g := apply_invFun_apply (f := fun g : U ↦ (g : ι)) (a := g)
-  -- Chebotarev gives primes outside any finite set with a Frobenius element in `U` and the coset.
-  have cheb (c : ι) {T : Set (FinPlace K)} (hT : T.Finite) :
-      ∃ v : FinPlace K,
-        ((↑q ∉ v.asIdeal ∧ ↑p ∉ v.asIdeal) ∧ v ∉ T) ∧
-        ∃ (B : ClosurePlace) (φ : Gal(Ω/K)),
-          IsPlaceOver B v ∧ (IsFrob B v.q φ ∧ φ ∈ U) ∧ (φ : ι) = (r c).val := by
-    have h_open : IsOpen ((U : Set Gal(Ω/K)) ∩ (↑) ⁻¹' {((r c).val : ι)}) :=
-      U.toOpenSubgroup.isOpen'.inter (isOpen_discrete {((r c).val : ι)})
-    obtain ⟨v, hv, -, B, hB, φ, ⟨φ_mem, φ_coset⟩, hφ, -⟩ :=
-      chebotarev h_open ⟨r c, (r c).prop, rfl⟩
-        (((finite_natCast_mem q).union (finite_natCast_mem p)).union hT)
-    exact ⟨v, (not_or.mp hv).imp_left not_or.mp, B, φ, hB, ⟨hφ, φ_mem⟩, φ_coset⟩
-  -- To get distinct primes, choose a sequence `u n` of families, each avoiding the earlier ones,
-  -- and take the prime for `c` from the family number `e c`.
-  obtain ⟨e, he⟩ := exists_injective_nat ι
-  obtain ⟨u, hu⟩ : ∃ u : ℕ → ι → FinPlace K, ∀ n c,
-      ((↑q ∉ (u n c).asIdeal ∧ ↑p ∉ (u n c).asIdeal) ∧ u n c ∉ (u '' Set.Iio n).seq Set.univ) ∧
-        ∃ (B : ClosurePlace) (φ : Gal(Ω/K)),
-          IsPlaceOver B (u n c) ∧ (IsFrob B (u n c).q φ ∧ φ ∈ U) ∧ (φ : ι) = (r c).val :=
-    seq_of_forall_finite_exists fun (t : Set (ι → FinPlace K)) ht ↦
-      Classical.skolem.mp fun c ↦ cheb c (ht.seq finite_univ)
-  choose hv B φ hB hφ φ_coset using fun c : ι ↦ hu (e c) c
-  -- By the choice of `u`, the prime of `c` differs from those of all families with number below
-  -- `e c`, so distinct cosets get distinct primes.
-  have avoid (c : ι) : ∀ n < e c, ∀ c' : ι, u n c' ≠ u (e c) c := by
-    simpa [Set.mem_seq_iff] using (hv c).2
-  have u_inj : Injective fun c : ι ↦ u (e c) c := by grind [Injective]
-  have hv_off (c : ι) : ↑q ∉ (u (e c) c).asIdeal ∧ ↑p ∉ (u (e c) c).asIdeal := (hv c).1
+  let W (c : ι) : Set Gal(Ω/K) := (U : Set Gal(Ω/K)) ∩ (↑) ⁻¹' {((r c).val : ι)}
+  have hW_open (c : ι) : IsOpen (W c) :=
+    U.toOpenSubgroup.isOpen'.inter (isOpen_discrete {((r c).val : ι)})
+  obtain ⟨v, B, φ, v_inj, hv⟩ := chebotarev_family hW_open
+    (fun c ↦ ⟨r c, (r c).prop, rfl⟩) ((finite_natCast_mem q).union (finite_natCast_mem p))
+  choose hv hB hφ_mem hφ using hv
+  have hv_off (c : ι) : ↑q ∉ (v c).asIdeal ∧ ↑p ∉ (v c).asIdeal := not_or.mp (hv c)
   let I : Set Gal(Ω/K) := {g | ∃ w : FinPlace K, ↑q ∉ w.asIdeal ∧
-    w ∉ Set.range (fun c ↦ u (e c) c) ∧
+    w ∉ Set.range v ∧
     ∃ B : ClosurePlace, IsPlaceOver B w ∧ g ∈ inertiaGroup Gal(Ω/K) B}
   let s : SplitPlaces m q I U ι :=
     { cyclotomicCharMod_eq_one := hU
       dvd_level := hm
-      v := fun c ↦ u (e c) c
-      v_injective := u_inj
+      v := v
+      v_injective := v_inj
       level_notMem := fun c ↦ (hv_off c).left
       valuationSubring := B
       isPlaceOver := hB
       φ := φ
-      isFrob := hφ
+      isFrob c := ⟨hφ c, (hφ_mem c).1⟩
       mem_inertia_iff := fun _ ↦ Iff.rfl
       inertiaGroup_le := h_unr
       principal_sup_idelesUnitOff := h_class }
-  exact ⟨I, s, fun c ↦ (hv_off c).right, fun g hg ↦ (φ_coset g).trans (hr ⟨g, hg⟩)⟩
+  exact ⟨I, s, fun c ↦ (hv_off c).right, fun g hg ↦ (hφ_mem g).2.trans (hr ⟨g, hg⟩)⟩
 
 /-- Let `M` be a `ZMod m`-module fixed by `U`, let `U` contain no complex conjugation, and let `s`
 be split places for `U` (`SplitPlaces`) with Frobenius elements `s.φ`; `I` is the union of the

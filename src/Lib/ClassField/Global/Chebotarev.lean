@@ -1,6 +1,7 @@
 module
 
 public import Aesop.BuiltinRules
+import Mathlib.Data.Set.Finite.Monad
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Algebra.Group.Units
@@ -121,3 +122,29 @@ lemma New.chebotarev {K : Type} [Field K] [NumberField K] [Algebra K Ω] {W : Se
     simpa using h_mem
   exact ⟨w.below K, hw_notMem, hw_prime, placeOver w, hA, ((σ : H) : Gal(Ω/K)), h_all _ hσ_frob,
     hσ_frob, h_all⟩
+
+/-- Choose distinct finite primes outside `S` whose Frobenius elements lie in prescribed nonempty
+open subsets of the absolute Galois group, one prime for each index in a finite family. -/
+lemma New.chebotarev_family {K ι : Type} [Field K] [NumberField K] [Algebra K Ω] [Finite ι]
+    {W : ι → Set Gal(Ω/K)} (hW : ∀ i, IsOpen (W i)) (hW_ne : ∀ i, (W i).Nonempty)
+    {S : Set (FinPlace K)} (hS : S.Finite) :
+    ∃ (v : ι → FinPlace K) (A : ι → ClosurePlace) (σ : ι → Gal(Ω/K)),
+      Function.Injective v ∧ ∀ i, v i ∉ S ∧ IsPlaceOver (A i) (v i) ∧ σ i ∈ W i ∧
+        IsFrob (A i) (v i).q (σ i) := by
+  classical
+  -- Make a sequence of choices, each avoiding every prime in the earlier families.
+  have h_choose (T : Set (ι → FinPlace K)) (hT : T.Finite) :
+      ∃ v : ι → FinPlace K, ∀ i,
+        (v i ∉ S ∧ v i ∉ T.seq Set.univ) ∧
+          ∃ A : ClosurePlace, IsPlaceOver A (v i) ∧ ∃ σ ∈ W i, IsFrob A (v i).q σ := by
+    choose v hv _hprime A hA σ hσ hfrob _hall using fun i ↦
+      chebotarev (hW i) (hW_ne i) (hS.union (hT.seq Set.finite_univ))
+    exact ⟨v, fun i ↦ ⟨not_or.mp (hv i), A i, hA i, σ i, hσ i, hfrob i⟩⟩
+  obtain ⟨u, hu⟩ := Set.seq_of_forall_finite_exists h_choose
+  -- Take each index from a different family in the sequence.
+  obtain ⟨e, he⟩ := exists_injective_nat ι
+  choose hv A hA σ hσ hfrob using fun i : ι ↦ hu (e i) i
+  have h_avoid (i : ι) : ∀ n < e i, ∀ j : ι, u n j ≠ u (e i) i := by
+    simpa [Set.mem_seq_iff] using (hv i).2
+  exact ⟨fun i ↦ u (e i) i, A, σ, by grind [Function.Injective],
+    fun i ↦ ⟨(hv i).1, hA i, hσ i, hfrob i⟩⟩
