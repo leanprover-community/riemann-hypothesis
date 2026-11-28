@@ -85,25 +85,16 @@ lemma lintegral_enorm_integral_kernel_sq_le {f : W × Z → ℂ} (hf : Measurabl
       fun z ↦ h_supp (w, z)
   grw [h_cs, h_fibre w, setLIntegral_le_lintegral]
 
-/-- The integral over the fibres of an integrable function is integrable. -/
-lemma integrable_integral_kernel {f : W × Z → ℂ} (hf_meas : Measurable f)
-    (hf_int : Integrable f (ν ⊗ₘ ζ)) : Integrable (fun w : W ↦ ∫ z : Z, f (w, z) ∂ζ w) ν := by
-  obtain ⟨-, h_norm⟩ :=
-    (Measure.integrable_compProd_iff hf_int.aestronglyMeasurable).1 hf_int
-  exact h_norm.mono' hf_meas.stronglyMeasurable.integral_kernel_prod_right'.aestronglyMeasurable
-    (.of_forall fun _ ↦ norm_integral_le_integral_norm _)
-
 /-- Cauchy–Schwarz in the first of three variables (y, w, z). If f vanishes unless y lies in S, then
 the square of its integral is at most μ(S) times the integral over y of the square of its integral
 over w and z. -/
 lemma enorm_integral_prod_compProd_sq_le {Y : Type*} [MeasurableSpace Y] {μ : Measure Y} [SFinite μ]
     {η : Kernel (Y × W) Z} [IsSFiniteKernel η] {f : (Y × W) × Z → ℂ} {S : Set Y}
-    (hf_meas : Measurable f) (hf_int : Integrable f ((μ.prod ν) ⊗ₘ η))
-    (h_supp : ∀ p : (Y × W) × Z, f p ≠ 0 → p.1.1 ∈ S) :
+    (hf_int : Integrable f ((μ.prod ν) ⊗ₘ η)) (h_supp : ∀ p : (Y × W) × Z, f p ≠ 0 → p.1.1 ∈ S) :
     ‖∫ p : (Y × W) × Z, f p ∂(μ.prod ν) ⊗ₘ η‖ₑ ^ 2 ≤
       μ S * ∫⁻ y : Y, ‖∫ w : W, ∫ z : Z, f ((y, w), z) ∂η (y, w) ∂ν‖ₑ ^ 2 ∂μ := by
   have h_fibre : Integrable (fun q : Y × W ↦ ∫ z : Z, f (q, z) ∂η q) (μ.prod ν) :=
-    integrable_integral_kernel hf_meas hf_int
+    hf_int.integral_compProd
   have h_supp' (y : Y) (hy : ∫ w : W, ∫ z : Z, f ((y, w), z) ∂η (y, w) ∂ν ≠ 0) : y ∈ S := by
     obtain ⟨w, hw⟩ := exists_ne_zero_of_integral_ne_zero hy
     obtain ⟨z, hz⟩ := exists_ne_zero_of_integral_ne_zero hw
@@ -203,7 +194,7 @@ lemma lintegral_lintegral_fourier_integral_kernel_le [DecidableEq ι] {Y Z : Typ
         (M * ∫⁻ p : (Y × (ι → A)) × Z, ‖f p‖ₑ ^ 2 ∂(μ.prod volume) ⊗ₘ ζ) := by
   grw [lintegral_lintegral_fourier_le ξ
       hf_meas.stronglyMeasurable.integral_kernel_prod_right'.measurable
-      (integrable_integral_kernel hf_meas hf_int),
+      hf_int.integral_compProd,
     lintegral_enorm_integral_kernel_sq_le hf_meas h_supp h_fibre]
 
 /-- The vector with outer coordinates p.1.1, inner coordinates p.1.2 and coordinates p.2 in the
@@ -296,7 +287,7 @@ lemma enorm_integral_fourier_sq_le {Y Z : Type} [MeasurableSpace Y] [MeasurableS
     (h_chart.integrable_comp_of_integrable hφ_int).bdd_mul (c := 1)
       (Measurable.aestronglyMeasurable (by fun_prop)) (by simp [norm_psi])
   rw [← h_chart.map_eq, integral_map h_meas.aemeasurable (by fun_prop)]
-  grw [enorm_integral_prod_compProd_sq_le (by fun_prop) h_int
+  grw [enorm_integral_prod_compProd_sq_le h_int
     fun p hp ↦ h_supp p (right_ne_zero_of_mul hp)]
   simp only [term, h_phase, mul_add, AddChar.map_add_eq_mul, mul_assoc, integral_const_mul,
     enorm_psi_mul, le_refl]
