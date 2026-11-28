@@ -318,6 +318,23 @@ private lemma IsExponent.apply_permGL_swap_compactMean_ne_zero {ξ : (Fin N → 
 attribute [-simp] WithZero.inv_exp
 attribute [local simp] WithZero.exp_neg
 
+/-- Let `x` be fixed by `New.proIwahori`, let `i ≠ j`, and suppose that swapping the values `σ i`
+and `σ j` acts on `x` by a scalar. Then `ρ (permGL (σ * swap i j)⁻¹) x` is fixed by every
+transvection `ρ (transvectionGL h c)` at a pair `(a, b)` which is ordered by `σ` or by
+`σ * swap i j`. -/
+private lemma transvectionGL_apply_permGL_swap_inv_eq {a b : Fin N} (h : a ≠ b)
+    (hx : x ∈ levelSpace ρ.ρ proIwahori) {σ : Perm (Fin N)} {i j : Fin N} {c : ℂ}
+    (hc : ρ (permGL (Equiv.swap (σ i) (σ j))) x = c • x)
+    (hσ : σ a < σ b ∨ (σ * Equiv.swap i j) a < (σ * Equiv.swap i j) b) (d : F) (hd : v d ≤ 1) :
+    ρ (transvectionGL h d) (ρ (permGL (σ * Equiv.swap i j)⁻¹) x) =
+      ρ (permGL (σ * Equiv.swap i j)⁻¹) x := by
+  -- `swap (σ i) (σ j) = σ * swap i j * σ⁻¹`, so `ρ (permGL (σ * swap i j)⁻¹) x` is a scalar
+  -- multiple of `ρ (permGL σ⁻¹) x`, which is fixed by `hx`
+  obtain h₁ | h₂ := hσ
+  · -- (`map_inv` is kept out so that `ρ (permGL σ⁻¹)` stays in the form of the lemma)
+    simp [mul_swap_eq_swap_mul σ, -map_inv, transvectionGL_apply_permGL_inv hx h₁, hc, hd]
+  · exact transvectionGL_apply_permGL_inv hx h₂ d hd
+
 /-- Sorting an exponent. Let `ϖ` be a uniformiser, let `x` be fixed by `New.proIwahori` (`hx`), let
 the integral torus act on `x` by `τ` (`hτ`), and let every permutation matrix whose permutation
 preserves `τ` on units act on `x` by a scalar (`hP`). Let `l` be an exponent for `torusChar θ` with
@@ -400,11 +417,8 @@ lemma IsExponent.exists_sorted (hϖ : v ϖ.val = exp (-1)) (hx : x ∈ levelSpac
     simp [h_eq] at hf
   -- Hence `y` is also a multiple of `ρ (permGL σ⁻¹) x`, so both transvections at `i`, `j` fix it.
   have tv_y {a b : Fin N} (hab : σ a < σ b ∨ π a < π b) (h : a ≠ b) (d : F) (hd : v d ≤ 1) :
-      ρ (transvectionGL h d) y = y := by
-    obtain hab | hab := hab
-    · -- (`map_inv` is kept out so that `ρ (permGL σ⁻¹)` stays in the form of the lemma)
-      simp [y, π, mul_swap_eq_swap_mul σ, -map_inv, transvectionGL_apply_permGL_inv hx hab, hc, hd]
-    · exact transvectionGL_apply_permGL_inv hx hab d hd
+      ρ (transvectionGL h d) y = y :=
+    transvectionGL_apply_permGL_swap_inv_eq (h := h) hx hc hab d hd
   -- By `swap_mul_transvectionGL`, `l (ρ d (U w y)) = ξ w * s y` for the torus elements `d` of the
   -- quadratic relation.
   have hκ : ∀ u : Fˣ, v u.val = 1 → letI d := mulSingle i (-u⁻¹) * mulSingle j u
