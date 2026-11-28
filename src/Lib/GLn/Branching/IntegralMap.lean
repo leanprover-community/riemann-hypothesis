@@ -446,6 +446,56 @@ lemma exists_int_branching_of_weylKernel {c : ℤ} {η : WeylIndexFamily n κ₀
     LinearMap.smul_apply, detPowToPoly_smul_schur_mulVec g, smul_eval, eval_rowSubst,
     mul_left_comm]
 
+/-- The equivariance defect operator for branching maps at a tuple `g` of matrices: it sends `T` to
+`T * schur (γ + κ') (diag(g, 1)) - (∏ τ, det (g τ) ^ κ' τ (rankAt n τ)) • (schur κ₀ g * T)`. -/
+private def branchingDefect {R : Type} [CommRing R] (κ₀ γ κ' : Φ → ℕ → ℕ)
+    (g : (τ : Φ) → Matrix (n τ) (n τ) R) :
+    Module.End R (Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N (γ + κ')) R) :=
+  mulRightLinearMap _ R (schur (γ + κ') (blockScalar (R := R) ι g 1)) -
+    (∏ τ, (g τ).det ^ κ' τ (rankAt n τ)) • mulLeftLinearMap _ R (schur κ₀ g)
+
+/-- By Zariski density of the unitary group, a complex matrix `T` that intertwines `weylRep` on
+unitary block matrices `diag(g, 1)` (with `e₀ τ = e τ + κ' τ (rankAt n τ)`) has zero
+`branchingDefect` at every tuple `g` of complex matrices. -/
+private lemma branchingDefect_eq_zero_of_unitary {e e₀ : Φ → ℤ}
+    (he₀ : ∀ τ : Φ, e₀ τ = e τ + κ' τ (rankAt n τ))
+    {T : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N (γ + κ')) ℂ}
+    (hT : ∀ g : ∀ τ : Φ, GL (n τ) ℂ, (∀ τ : Φ, (g τ).valᴴ * (g τ).val = 1) →
+      ∃ x : (τ : Φ) → GL (N τ) ℂ,
+        (∀ τ : Φ, (x τ).val = blockScalar ι (fun τ : Φ ↦ (g τ).val) 1 τ) ∧
+        T * weylRep (γ + κ') e x = weylRep κ₀ e₀ g * T)
+    (g : (τ : Φ) → Matrix (n τ) (n τ) ℂ) :
+    branchingDefect ι κ₀ γ κ' g T = 0 := by
+  -- An entry of the defect is a polynomial in `g` (`h_eval`), and at a unitary `g` the factor
+  -- `det ^ e` cancels from `hT` (`h_unitary`).
+  ext i j
+  have h_eval (z : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ) :
+      evalMatrix z (branchingDefect ι κ₀ γ κ' (genericMatrixAt ℂ n) (T.map C) i j) =
+        branchingDefect ι κ₀ γ κ' z T i j := by
+    simp only [branchingDefect, Pi.add_apply, blockScalar.eq_unfold, reindex_apply, Pi.one_apply,
+      diagonal_one, LinearMap.sub_apply, mulRightLinearMap_apply, LinearMap.smul_apply,
+      mulLeftLinearMap_apply, Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, map_sub,
+      map_matrix_mul, Matrix.map_map, Function.comp_def, eval_C, map_id', FitsRanks.refl,
+      ← schur_map, ← submatrix_map, fromBlocks_map, genericMatrixAt_map_evalMatrix, map_zero,
+      Matrix.map_zero, map_one, Matrix.map_one, map_mul, map_prod, map_pow, map_det,
+      mapMatrix_apply]
+  have h_unitary (z : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ) (hz : ∀ τ : Φ, (z τ)ᴴ * z τ = 1) :
+      branchingDefect ι κ₀ γ κ' z T i j = 0 := by
+    obtain ⟨y, hy, h_equiv⟩ := hT (fun τ ↦ ⟨z τ, (z τ)ᴴ, mul_eq_one_symm (hz τ), hz τ⟩) hz
+    simpa only [branchingDefect, Pi.add_apply, blockScalar.eq_unfold, reindex_apply, Pi.one_apply,
+      diagonal_one, LinearMap.sub_apply, mulRightLinearMap_apply, LinearMap.smul_apply,
+      mulLeftLinearMap_apply, Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, sub_eq_zero,
+      weylRep, Units.smul_def, Units.coe_prod, Units.val_zpow_eq_zpow_val,
+      GeneralLinearGroup.val_det_apply, MonoidHom.coe_mk, OneHom.coe_mk, hy,
+      det_submatrix_equiv_self, det_fromBlocks_one₂₂, Matrix.mul_zero, sub_zero, Matrix.mul_smul,
+      he₀, _root_.zpow_add, zpow_natCast, prod_mul_distrib, Units.val_mul,
+      Units.val_pow_eq_pow_val, smul_mul, mul_assoc, mul_eq_mul_left_iff, prod_eq_zero_iff,
+      mem_univ, ne_eq, det_ne_zero_of_left_inverse (hz _), not_false_eq_true, zpow_ne_zero,
+      and_false, exists_false, or_false]
+      using congrFun₂ h_equiv i j
+  rw [← h_eval]
+  exact zariski_dense_unitary g _ fun z hz ↦ (h_eval z).trans (h_unitary z hz)
+
 /-- Let `v` be the Gram matrix `weylGramOver` times the evaluation vector at the permutation array
 of `rowEquivFin`. Let `B` be an integral matrix such that `nablaCombination` (ξ ↦ Σ ξ_i b_i over the
 basis products of minors) sends the row vector `v ᵥ* B` to `c • branchVector ℂ ι γ κ'` with `c ≠ 0`.
@@ -479,18 +529,15 @@ lemma spansBranchingMaps_of_equivariant {c : ℤ} (hc : c ≠ 0) {e e₀ : Φ �
         r ⬝ᵥ schur (γ + κ') (blockScalar ι g 1) *ᵥ v = 0) →
       r = 0 :=
     exists_cyclic_lower_triangular ι (γ + κ')
-  let D {R : Type} [CommRing R] (g : (τ : Φ) → Matrix (n τ) (n τ) R) :
-      Module.End R (Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N (γ + κ')) R) :=
-    mulRightLinearMap _ R (schur (γ + κ') (blockScalar (R := R) ι g 1)) -
-      (∏ τ, (g τ).det ^ κ' τ (rankAt n τ)) • mulLeftLinearMap _ R (schur κ₀ g)
+  let D := branchingDefect (R := ℂ) ι κ₀ γ κ'
   have eq_zero (T' : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N (γ + κ')) ℂ)
       (hT' : ∀ g : (τ : Φ) → Matrix (n τ) (n τ) ℂ, D g T' = 0) (h_value_zero : x ᵥ* T' ⬝ᵥ v = 0) :
       T' = 0 := by
     have h_row (g : (τ : Φ) → Matrix (n τ) (n τ) ℂ) :
         x ᵥ* T' ᵥ* schur (γ + κ') (blockScalar ι g 1) = d g • x ᵥ* schur κ₀ g ᵥ* T' := by
-      simpa only [D, d, vecMul_vecMul, Pi.add_apply, LinearMap.sub_apply, mulRightLinearMap_apply,
-        LinearMap.smul_apply, mulLeftLinearMap_apply, vecMul_sub, vecMul_smul, vecMul_zero,
-        sub_eq_zero] using congrArg (x ᵥ* ·) (hT' g)
+      simpa only [D, branchingDefect, d, vecMul_vecMul, Pi.add_apply, LinearMap.sub_apply,
+        mulRightLinearMap_apply, LinearMap.smul_apply, mulLeftLinearMap_apply, vecMul_sub,
+        vecMul_smul, vecMul_zero, sub_eq_zero] using congrArg (x ᵥ* ·) (hT' g)
     -- `x` is an eigenvector of the lower triangular group, under which `v` is cyclic.
     have x_mul_T : x ᵥ* T' = 0 := by
       refine v_cyclic _ fun g hg ↦ ?_
@@ -512,33 +559,8 @@ lemma spansBranchingMaps_of_equivariant {c : ℤ} (hc : c ≠ 0) {e e₀ : Φ �
         IsUnit.smul_eq_zero] using (h_row fun τ ↦ (g τ).valᵀ).symm
     let G₀_invertible : Invertible G₀ := weylGramOver_posDef.isUnit.invertible (a := G₀)
     simpa using congrArg (fun M ↦ M * ⅟G₀) T_mul_gram
-  -- `T` is equivariant for unitary `g`, hence for all `g` by Zariski density: an entry of the
-  -- defect is a polynomial in `g`, and at a unitary `g` the factor `det ^ e` cancels from `hT`.
-  have T_equiv (g : (τ : Φ) → Matrix (n τ) (n τ) ℂ) : D g T = 0 := by
-    ext i j
-    have h_eval (z : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ) :
-        evalMatrix z (D (genericMatrixAt ℂ n) (T.map C) i j) = D z T i j := by
-      simp only [Pi.add_apply, blockScalar.eq_unfold, reindex_apply, Pi.one_apply, diagonal_one,
-        LinearMap.sub_apply, mulRightLinearMap_apply, LinearMap.smul_apply, mulLeftLinearMap_apply,
-        Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, map_sub, map_matrix_mul, Matrix.map_map,
-        Function.comp_def, eval_C, map_id', FitsRanks.refl, ← schur_map, ← submatrix_map,
-        fromBlocks_map, genericMatrixAt_map_evalMatrix, map_zero, Matrix.map_zero, map_one,
-        Matrix.map_one, map_mul, map_prod, map_pow, map_det, mapMatrix_apply, D]
-    have h_unitary (z : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ) (hz : ∀ τ : Φ, (z τ)ᴴ * z τ = 1) :
-        D z T i j = 0 := by
-      obtain ⟨y, hy, h_equiv⟩ := hT (fun τ ↦ ⟨z τ, (z τ)ᴴ, mul_eq_one_symm (hz τ), hz τ⟩) hz
-      simpa only [D, Pi.add_apply, blockScalar.eq_unfold, reindex_apply, Pi.one_apply, diagonal_one,
-        LinearMap.sub_apply, mulRightLinearMap_apply, LinearMap.smul_apply, mulLeftLinearMap_apply,
-        Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, sub_eq_zero, weylRep, Units.smul_def,
-        Units.coe_prod, Units.val_zpow_eq_zpow_val, GeneralLinearGroup.val_det_apply,
-        MonoidHom.coe_mk, OneHom.coe_mk, hy, det_submatrix_equiv_self, det_fromBlocks_one₂₂,
-        Matrix.mul_zero, sub_zero, Matrix.mul_smul, he₀, _root_.zpow_add, zpow_natCast,
-        prod_mul_distrib, Units.val_mul, Units.val_pow_eq_pow_val, smul_mul, mul_assoc,
-        mul_eq_mul_left_iff, prod_eq_zero_iff, mem_univ, ne_eq, det_ne_zero_of_left_inverse (hz _),
-        not_false_eq_true, zpow_ne_zero, and_false, exists_false, or_false]
-        using congrFun₂ h_equiv i j
-    rw [← h_eval]
-    exact zariski_dense_unitary g _ fun z hz ↦ (h_eval z).trans (h_unitary z hz)
+  have T_equiv (g : (τ : Φ) → Matrix (n τ) (n τ) ℂ) : D g T = 0 :=
+    branchingDefect_eq_zero_of_unitary ι he₀ hT g
   have B_defect (g : (τ : Φ) → Matrix (n τ) (n τ) ℂ) : D g (B.map (Int.cast : ℤ → ℂ)) = 0 :=
     sub_eq_zero.mpr (B_block g)
   -- `B ≠ 0` because `c • branchVector ℂ ι γ κ' ≠ 0`, so `x ᵥ* B ⬝ᵥ v ≠ 0`.
