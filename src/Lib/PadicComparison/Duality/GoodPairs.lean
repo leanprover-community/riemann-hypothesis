@@ -342,12 +342,26 @@ lemma isFiniteLerayHirsch_of_prod_projLine
   refine (congrArg _ map_pullbackAlong).trans ?_
   -- Write the product with `eta` as `sliceEquiv` of the product with `etaClass`, and `etaClass` in
   -- terms of `ξ`.
-  -- `erw`: the cup class of the theory on elements matches the goal only after unfolding.
-  conv_rhs =>
-    erw [map_zero, add_zero, ← TorsionCoeff.sliceEquiv_mulClass,
-      ← map_restrictAlong_etaClass (g := 𝟭 _), ← hξ, map_pullbackAlong, map_comp_assoc,
-      map_homClass, sliceEquiv, AddEquiv.ofBijective_apply, AddMonoidHom.comp_apply,
-      map_pullbackAlong]
+  rw [map_zero, add_zero]
+  refine .trans ?_ (t.theory.toTorsionCoeff.sliceEquiv_mulClass _)
+  let ξt : TotalH (t.toTestOver ⋙ relFreeAb S') (tateModule t.toTestOver) :=
+    TotalH.map (restrictAlong t.toTestOver) ξ
+  let y := pullbackAlong (t.toTestOver.whiskerLeft (abCoker.π (ℓ • 𝟙 (relFreeAb V)))) x
+  have hη : (etaClass t.toTestOver).toTotalH =
+      pullbackAlong ((restrictAlong t.toTestOver).map (π S')) ξt :=
+    (map_restrictAlong_etaClass (g := 𝟭 (TestOver A)) t.toTestOver).symm.trans
+      ((congrArg (TotalH.map (restrictAlong t.toTestOver)) hξ.symm).trans map_pullbackAlong)
+  have h_mul : t.theory.mulClass (etaClass t.toTestOver).toTotalH y =
+      pullbackAlong ((abTensor _).map ((restrictAlong t.toTestOver).map (π S')))
+        (t.theory.mulClass ξt y) :=
+    (congrArg (t.theory.mulClass · y) hη).trans
+      ((congrArg (comp · _) map_pullbackAlong).trans (TotalH.comp_assoc ..))
+  refine .trans ?_ (congrArg sliceEquiv h_mul.symm)
+  have h_res := map_pullbackAlong (Φ := restrictAlong (elementsProj (projLineAlong t.toTestOver)))
+    (f := (abTensor _).map ((restrictAlong t.toTestOver).map (π S')))
+    (x := t.theory.mulClass ξt y)
+  refine .trans ?_ (congrArg
+    (fun z ↦ comp (homClass ((tensorPoint (freeAbMap tautologicalSection)).app _)) z) h_res.symm)
   refine TotalH.comp_assoc_of_sq ?_ _
   -- What remains is a square of morphisms of functors, which commutes on generators.
   exact (homClass_comp ..).symm.trans
