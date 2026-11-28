@@ -170,9 +170,6 @@ lemma norm_trace_paramAddRho_sub_trace_lowestKType_le (l : HCParam ε) (Z : Matr
 is the sum of the compact roots (`ε i = ε j`) positive for `l`. -/
 lemma gapWeightedNormSq_neg_paramAddRho_le (l : HCParam ε) (k : maxCompactU ε) :
     gapWeightedNormSq (-paramAddRho l) k ≤ gapWeightedNormSq l.lowestKType k + 2 * card n ^ 2 := by
-  have h_norm : ‖(k : Matrix n n ℂ)‖ ^ 2 = card n := by
-    rw [← ofReal_inj, ← trace_star_mul_self_eq_norm_sq, maxCompactU_conjTranspose_mul_self,
-      trace_one, ofReal_natCast]
   have h_diff (i j : n) : |(-paramAddRho l) i - (-paramAddRho l) j| ≤
       |l.lowestKType i - l.lowestKType j| + 2 * card n := by
     simp only [Pi.neg_apply, lowestKType]
@@ -185,7 +182,9 @@ lemma gapWeightedNormSq_neg_paramAddRho_le (l : HCParam ε) (k : maxCompactU ε)
     _ = gapWeightedNormSq l.lowestKType k + 2 * card n * ‖(k : Matrix n n ℂ)‖ ^ 2 := by
         simp [gapWeightedNormSq, frobenius_norm_sq_eq_sum_norm_sq, add_mul, mul_sum,
           sum_add_distrib]
-    _ = gapWeightedNormSq l.lowestKType k + 2 * card n ^ 2 := by rw [h_norm, mul_assoc, ← sq]
+    _ = gapWeightedNormSq l.lowestKType k + 2 * card n ^ 2 := by
+        rw [frobenius_norm_sq_of_mem_unitaryGroup (k : Matrix n n ℂ)
+          (U_one_mem_unitaryGroup ⟨_, k.property⟩), mul_assoc, ← sq]
 
 /-- Let `l = 2λ` be a parameter of gap `h` and let `g` in `USign ε` satisfy
 `‖g - 1‖ ≤ δ ≤ 10 ^ (-12)` (Frobenius norm). Put `λ^ρ = paramAddRho l`, `μ = l.lowestKType`,
