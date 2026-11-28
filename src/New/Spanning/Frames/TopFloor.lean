@@ -684,14 +684,11 @@ lemma sum_lastEntryDensity_nonneg {F : PlaceData ι (latticeMiddleGram 𝔰 N) (
     {R : Matrix j j ℂ} (hR : R.PosSemidef) (ω : j → ℕ → Aˣ)
     {t : Aˣ} (ht : ∀ a : j, ω a 𝔰.ϱ = t) :
     0 ≤ ∑ a : j, ∑ b : j, R a b * lastEntryDensity π Z (ω a) (ω b) := by
-  have h_sphere : 0 ≤ ∑ a : j, ∑ b : j, R a b * ∫ x : 𝔰.κ → A,
-      fiberPairing Z (ω a) (ω b) (vectorOfLastEntry π t x) ∂P.normFiberMeasure 𝔰.κ
-        (lastEntrySphereIndex π t) :=
-    sum_sum_mul_integral_nonneg (fun a b ↦
-      integrable_fiberPairing_vectorOfLastEntry Z (ω a) (ω b) hN t)
-      fun x ↦ sum_fiberPairing_nonneg Z hR ω (vectorOfLastEntry π t x)
   rw [sum_lastEntryDensity_eq Z R ω ht]
-  exact mul_nonneg (Complex.zero_le_real.2 toReal_nonneg) h_sphere
+  apply mul_nonneg (Complex.zero_le_real.2 toReal_nonneg)
+  exact sum_sum_mul_integral_nonneg
+    (fun a b ↦ integrable_fiberPairing_vectorOfLastEntry Z (ω a) (ω b) hN t)
+    (fun x ↦ sum_fiberPairing_nonneg Z hR ω (vectorOfLastEntry π t x))
 
 /-- Let `π * star π = N`, and let `F` be a large lattice datum of `latticeMiddleGram 𝔰 N`. Take
 heads `ω a` (sequences of units) with a common last entry `ω a 𝔰.ϱ = t` and a positive semidefinite
