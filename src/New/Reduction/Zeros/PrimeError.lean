@@ -419,12 +419,11 @@ lemma tendsto_logDerivMean_residue (κ : ℂ) {ρ : ℂ} (hρ₀ : ρ ≠ 0) (h�
     field [sub_ne_zero.2 hρ₁, sub_ne_zero.2 hρ₁.symm]
 
 /-- **Poles.** Let `d ≡ 7 mod 8` be a prime coprime to `q ≥ 1`, `χ_K = (·/d)` the character of
-`K = ℚ(√-d)`, and `R_q = primeRemainder d q`. The conclusion `IsPolar` says three things. The
-function `v ↦ R_q(e ^ v)` is measurable. There is a constant `C` with `|R_q(e ^ v)| ≤ C e ^ v` for
-`v ≥ 0`. The transform `∫₀^∞ R_q(e ^ v) e ^ ((1 - s) v) dv` continues from `re s > 2` to a
-meromorphic function on `ℂ` with at most simple poles in `re s > 0` and the following residues
-there. It has no pole at `1`, where the formula below is a division by zero, of value `0`. The
-residue at `s ≠ 1` is `∑_ψ (ord_s E_ψ - ord_s E_{ψ χ_K}) / (φ(q) s (1 - s))`, summed over the
+`K = ℚ(√-d)`, and `R_q = primeRemainder d q`. The conclusion `IsPolar` says that the transform
+`∫₀^∞ R_q(e ^ v) e ^ ((1 - s) v) dv` converges absolutely for `re s > 2` and continues from there to
+a function meromorphic on `re s > 0` with at most simple poles there and the following residues.
+It has no pole at `1`, where the formula below is a division by zero, of value `0`. The residue at
+`s ≠ 1` is `∑_ψ (ord_s E_ψ - ord_s E_{ψ χ_K}) / (φ(q) s (1 - s))`, summed over the
 characters `ψ` mod `q`, where `quadTwist ψ d = ψ χ_K` and `E_χ = entireL χ` is `L(s, χ)`, times
 `s - 1` if `χ` is principal. -/
 lemma isPolar_primeRemainder (hd : d % 8 = 7) (h_cop : q.Coprime d) :
@@ -444,7 +443,7 @@ lemma isPolar_primeRemainder (hd : d % 8 = 7) (h_cop : q.Coprime d) :
     (integral_primeRemainder hd_ne h_cop hs).symm
   have h_growth (v : ℝ) (hv : 0 ≤ v) : |primeRemainder d q (rexp v)| ≤ (|c| + 5) * rexp v :=
     abs_primeRemainder_exp_le d q hv
-  refine ⟨h_meas, |c| + 5, fun s ↦ F s / (s - 1), h_mero, h_growth, h_transform, fun ρ hρ ↦ ?_⟩
+  refine isPolar_of_tendsto h_meas h_growth (fun z _ ↦ h_mero z) h_transform fun ρ hρ ↦ ?_
   obtain rfl | hρ₁ := eq_or_ne ρ 1
   · have hF : AnalyticAt ℂ F 1 := ((analyticAt_logDerivMean_of_one_le_re d q one_re.ge).div
       analyticAt_id one_ne_zero).sub analyticAt_const

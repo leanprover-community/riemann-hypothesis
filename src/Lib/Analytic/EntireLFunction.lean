@@ -6,6 +6,9 @@ public import Mathlib.Analysis.Meromorphic.Basic
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.NumberTheory.LSeries.Nonvanishing
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
+public import TauCeti.Analysis.LaplaceTransform.Basic
+public import Mathlib.Analysis.Meromorphic.TrailingCoefficient
+import TauCeti.Analysis.Contour.Residue.SimplePole
 
 /-!
 # Quadratic twists, polar functions and logarithmic derivatives of Dirichlet L-functions
@@ -21,9 +24,10 @@ zeros of `New.entireL χ`.
 
 * `New.quadTwist_ne_one`: the twist of a character modulo `N` by the Legendre symbol `(·/d)`, for an
   odd prime `d` prime to `N`, is not principal.
-* `New.IsPolar`: `E` is measurable, `|E v| ≤ C e^v` for `v ≥ 0`, and `∫₀^∞ E(v) e^{(1-s)v} dv`
-  continues to a meromorphic function of `s` with at most simple poles of residue `r ρ` in
-  `re ρ > 0`.
+* `New.IsPolar`: `∫₀^∞ E(v) e^{(1-s)v} dv` (the Laplace transform `TauCeti.HasLaplace` of
+  `E(v) e^v`) converges for `re s > 2` and continues to a function of `s` meromorphic on `re s > 0`
+  with at most simple poles of residue (trailing coefficient) `r ρ` there.
+* `New.isPolar_of_tendsto`: `IsPolar` from the limits of `(z - ρ) Φ(z)`.
 * `New.LSeriesHasSum_mul_vonMangoldt`: `∑ χ(n) Λ(n) n^{-s}` in terms of the logarithmic derivative
   of `New.entireL χ`.
 * `New.tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt`: the residues of that logarithmic
@@ -78,20 +82,18 @@ lemma quadTwist_ne_one (hd : d ≠ 2) (hN : N.Coprime d) : quadTwist χ d ≠ 1 
 
 /-! ### Polar functions and Laplace integrals -/
 
-/-- `E` is measurable, `|E v| ≤ C e^v` for all `v ≥ 0`, and its transform
-`∫₀^∞ E(v) e^{(1-s)v} dv` continues from `re s > 2` to a meromorphic function on `ℂ` whose poles in
-`re s > 0` are at most simple; for `re ρ > 0`, `r ρ` is the residue at `ρ`, and `0` where there is
-no pole. For `E(v) = R(e^v)` the transform is `∫₁^∞ R(y) y^{-s} dy`. -/
+/-- The transform `∫₀^∞ E(v) e^{(1-s)v} dv`, the Laplace transform of `E(v) e^v`, converges
+absolutely for `re s > 2` and continues from there to a function `Φ` meromorphic on `re s > 0`
+whose poles there are at most simple (order at least `-1`); for `re ρ > 0`, `r ρ` is the residue at
+`ρ`, which is the trailing coefficient at a pole and `0` where there is no pole. For `E(v) = R(e^v)`
+the transform is `∫₁^∞ R(y) y^{-s} dy`. -/
 def IsPolar (E : ℝ → ℝ) (r : ℂ → ℂ) : Prop :=
-  Measurable E ∧
-  ∃ (C : ℝ) (Φ : ℂ → ℂ),
-    Meromorphic Φ ∧
-    -- (a) exponential growth
-    (∀ v ≥ (0 : ℝ), |E v| ≤ C * Real.exp v) ∧
-    -- (b) `Φ` is the transform of `E` far to the right
-    (∀ s : ℂ, 2 < re s → Φ s = ∫ v : ℝ in Ioi 0, E v * Complex.exp ((1 - s) * v)) ∧
-    -- (c) at most simple poles in `re ρ > 0`, with residues `r ρ`
-    ∀ ρ : ℂ, 0 < re ρ → Tendsto (fun z ↦ (z - ρ) * Φ z) (𝓝[≠] ρ) (𝓝 (r ρ))
+  ∃ Φ : ℂ → ℂ, MeromorphicOn Φ {s | 0 < s.re} ∧
+    -- (a) `Φ` is the transform of `E` far to the right
+    (∀ s : ℂ, 2 < s.re → TauCeti.HasLaplace (fun v ↦ ((E v * Real.exp v : ℝ) : ℂ)) s (Φ s)) ∧
+    -- (b) at most simple poles in `re ρ > 0`, with residues `r ρ`
+    ∀ ρ : ℂ, 0 < ρ.re → -1 ≤ meromorphicOrderAt Φ ρ ∧
+      r ρ = if meromorphicOrderAt Φ ρ < 0 then meromorphicTrailingCoeffAt Φ ρ else 0
 
 variable {E : ℝ → ℝ} [NeZero N] {s : ℂ}
 
@@ -109,6 +111,42 @@ lemma integrableOn_laplace_of_abs_le {C : ℝ} (hE : Measurable E)
     _ = C * ((2 - s.re) * v).exp := by
       rw [mul_assoc, ← Real.exp_add]
       ring_nf
+
+/-- `IsPolar E r` from the residues, the constructor from the hypotheses that defined `IsPolar`
+before it was stated in Tau Ceti's terms: let `E` be measurable with `|E v| ≤ C e^v` for `v ≥ 0`,
+and let `Φ`, meromorphic on `re s > 0`, be the transform `∫₀^∞ E(v) e^{(1-s)v} dv` for `re s > 2`.
+If `(z - ρ) Φ(z) → r ρ` at every `ρ` with `re ρ > 0`, then `IsPolar E r`. (`TauCeti.HasLaplace`
+includes the integrability of the integrand, so in `IsPolar` measurability and the growth bound
+are weakened to integrability of `E(v) e^{(1-s)v}` on `(0, ∞)` for `re s > 2`, not dropped.) -/
+lemma isPolar_of_tendsto {C : ℝ} {r Φ : ℂ → ℂ} (hE : Measurable E)
+    (hE_growth : ∀ v ≥ (0 : ℝ), |E v| ≤ C * Real.exp v) (hΦ : MeromorphicOn Φ {s | 0 < s.re})
+    (hΦ_eq : ∀ s : ℂ, 2 < re s → Φ s = ∫ v : ℝ in Ioi 0, E v * Complex.exp ((1 - s) * v))
+    (hΦ_res : ∀ ρ : ℂ, 0 < re ρ → Tendsto (fun z ↦ (z - ρ) * Φ z) (𝓝[≠] ρ) (𝓝 (r ρ))) :
+    IsPolar E r := by
+  have h_integrand (s : ℂ) (v : ℝ) :
+      Complex.exp (-s * v) • ((E v * Real.exp v : ℝ) : ℂ) = E v * Complex.exp ((1 - s) * v) := by
+    push_cast
+    rw [smul_eq_mul, show (1 - s) * v = -s * v + v by ring, Complex.exp_add]
+    ring
+  refine ⟨Φ, hΦ, fun s hs ↦ ?_, fun ρ hρ ↦ ?_⟩
+  · simp only [TauCeti.hasLaplace_iff, h_integrand]
+    exact ⟨integrableOn_laplace_of_abs_le hE hE_growth hs, (hΦ_eq s hs).symm⟩
+  -- Tau Ceti's residue API: the limit bounds the order below by `-1` and is the residue.
+  have h_order : -1 ≤ meromorphicOrderAt Φ ρ :=
+    TauCeti.Contour.neg_one_le_meromorphicOrderAt_of_tendsto_sub_mul (hΦ_res ρ hρ)
+  have h_res := TauCeti.Contour.residue_eq_of_tendsto_sub_mul (hΦ ρ hρ) (hΦ_res ρ hρ)
+  refine ⟨h_order, ?_⟩
+  rw [← h_res]
+  split_ifs with h_neg
+  · -- A pole of order at least `-1` is simple, and there the residue is the trailing coefficient.
+    obtain ⟨n, hn⟩ := WithTop.ne_top_iff_exists.1 h_neg.ne_top
+    have h_one : meromorphicOrderAt Φ ρ = (-1 : ℤ) := by
+      rw [← hn] at h_neg h_order ⊢
+      have h_lt : n < 0 := by exact_mod_cast h_neg
+      have h_ge : (-1 : ℤ) ≤ n := WithTop.coe_le_coe.1 h_order
+      exact congrArg _ (show n = -1 by omega)
+    exact TauCeti.Contour.residue_eq_meromorphicTrailingCoeffAt_of_order_eq_neg_one h_one
+  · exact TauCeti.Contour.residue_eq_zero_of_meromorphicOrderAt_nonneg (not_lt.1 h_neg)
 
 /-- For `re s > 0`, the Laplace transform of `t ^ k` at `s` is `k! / s ^ (k + 1)`. -/
 lemma laplace_pow {s : ℂ} (hs : 0 < s.re) (k : ℕ) :
