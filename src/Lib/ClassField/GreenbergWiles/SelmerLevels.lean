@@ -158,6 +158,16 @@ def selmerZ1 (S : Set (FinPlace K)) (A : FinPlace K → ClosurePlace)
       -- (c) the values at complex conjugations are zero
       Submodule.pi {c : Gal(Ω/K) | IsComplexConj c} ⊥)
 
+/-- Selmer cocycles remain Selmer cocycles when additional primes are allowed to ramify. -/
+lemma selmerZ1.mono (S : Set (FinPlace K)) (A : FinPlace K → ClosurePlace)
+    (L : ∀ v : FinPlace K, Submodule R (decompGroup Gal(Ω/K) (A v) → V)) :
+    Monotone (selmerZ1 V S A L) := by
+  rintro P Q hPQ x ⟨⟨hz, hunr⟩, hlocal⟩
+  refine ⟨⟨hz, ?_⟩, hlocal⟩
+  rintro g ⟨v, hv, hg⟩
+  have hv' : v ∉ S ∪ P := Set.notMem_subset (Set.union_subset_union_right S hPQ) hv
+  exact hunr g ⟨v, hv', hg⟩
+
 /-- Let `G` be a Galois group of `Ω` over a number field `K`, for instance an open subgroup of
 another such group, and `S` a finite set of primes of `K`. For a finite discrete `G`-module, only
 finitely many continuous cocycles vanish on the inertia group of every valuation subring of `Ω`

@@ -205,9 +205,8 @@ instance finite_relations [Finite M] (T : Finset (FinPlace K)) : Finite (D.relat
     · exact congrFun h ⟨g, hg⟩
     · rw [hy.eq_zero_of_notMem g hg, hy'.eq_zero_of_notMem g hg]
 
-lemma cocycles_mono : Monotone D.cocycles := fun _ _ hP _ ⟨⟨hz_cocycle, hz_unram⟩, hz_local⟩ ↦
-  ⟨⟨hz_cocycle, fun τ ⟨v, hv, hτ⟩ ↦
-    hz_unram τ ⟨v, fun h ↦ hv (Set.union_subset_union_right _ hP h), hτ⟩⟩, hz_local⟩
+lemma cocycles_mono : Monotone D.cocycles :=
+  selmerZ1.mono M D.localPrimes D.place D.allowed
 
 include D in
 lemma val_one_nsmul (a : M) : (1 : ZMod m).val • a = a := by
@@ -606,7 +605,7 @@ theorem exists_card_cocycles_le {ℓ r : ℕ} [Fact ℓ.Prime] [IsTotallyComplex
   have h_count : Nat.card (D.cocycles ∅) * Nat.card M ^ (#D.localPrimes + card (InfinitePlace K)) ≤
       Nat.card F * Nat.card M * ∏ v ∈ D.localPrimes, Nat.card (D.localCocycles v) :=
     selmerZ1.card_relations_ge D.unramified D.isPlaceOver D.allowed D.coboundary_le
-      D.ρ_eq_one_of_isComplexConj s γ hS h_few (D.cocycles_mono (Set.empty_subset _))
+      D.ρ_eq_one_of_isComplexConj s γ hS h_few
       fun z hz i ↦ D.apply_eq_zero_of_notMem hS s (hγ i) hz (Set.notMem_empty _)
   -- Every form is the restriction of a relation to the Frobenius elements.
   have h_le : Nat.card F ≤ Nat.card (D.relations T) := by

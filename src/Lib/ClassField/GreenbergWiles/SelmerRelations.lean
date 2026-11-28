@@ -441,8 +441,8 @@ the union of inertia groups above the other primes not dividing `q`. Let `M` be 
 `S`, let complex conjugations act trivially on `M`, let `A v` lie over `v`, and let `L v` contain
 the local coboundaries for `v ∈ S`. Assume that `q` lies in every prime of `S`, that at most
 `#M ^ (#ι + 1)` cocycles zero on `I` are trivialised above `q` and infinity, and that the Selmer
-cocycles without extra ramification lie among those that may ramify at the `s.v i` and vanish at all
-`γ i`. Then the number of families `n` of maps into `QZ` (ℚ/ℤ) with `∑ i, n i (x (γ i)) = 0` for all
+cocycles without extra ramification vanish at all `γ i`.
+Then the number of families `n` of maps into `QZ` (ℚ/ℤ) with `∑ i, n i (x (γ i)) = 0` for all
 Selmer cocycles `x` that may ramify at the `s.v i`, times `#M` and the orders of the groups of local
 cocycles in `L v`, `v ∈ S`, is at least `#M ^ (#S + #(infinite places of K))` times the number of
 Selmer cocycles without extra ramification. -/
@@ -454,7 +454,6 @@ lemma card_relations_ge (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
     {q : ℕ} {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
     {ι : Type} [NeZero q] [Fintype ι] (s : SplitPlaces m q I U ι) (γ : ι → Gal(Ω/K))
     (hS : ∀ v ∈ S, ↑q ∈ v.asIdeal) (h_few : M.HasFewCocycles (PlaceAboveLevel q) I (card ι + 1))
-    (h_le : selmerZ1 M S A L ∅ ≤ selmerZ1 M S A L (range s.v))
     (h_zero : ∀ x ∈ selmerZ1 M S A L ∅, ∀ i : ι, x (γ i) = 0) :
     Nat.card (selmerZ1 M S A L ∅) * Nat.card M ^ (#S + card (InfinitePlace K)) ≤
       Nat.card {n : ι → M →+ QZ | ∀ x ∈ selmerZ1 M S A L (range s.v), ∑ i : ι, n i (x (γ i)) = 0} *
@@ -473,7 +472,8 @@ lemma card_relations_ge (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
     have ker_finite : (↑(pair.ker ⊓ Z) : Set (Gal(Ω/K) → M)).Finite :=
       (finite_unramified_cocycles M (S.finite_toSet.union (finite_range s.v))).subset
         fun _ ⟨_, h_unr, _⟩ ↦ h_unr
-    refine Nat.card_mono (s := selmerZ1 M S A L ∅) ker_finite fun x hx ↦ ⟨?_, h_le hx⟩
+    refine Nat.card_mono (s := selmerZ1 M S A L ∅) ker_finite fun x hx ↦
+      ⟨?_, selmerZ1.mono M S A L (Set.empty_subset _) hx⟩
     ext
     simp [pair, h_zero x hx]
   have perp : ann * Nat.card Z = Nat.card M ^ card ι * Nat.card ↥(pair.ker ⊓ Z) := by

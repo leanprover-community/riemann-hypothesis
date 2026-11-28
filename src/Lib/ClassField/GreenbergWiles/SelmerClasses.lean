@@ -262,14 +262,13 @@ theorem card_relations_ge {S : Finset (FinPlace K)}
     {ι : Type} [NeZero q] [Fintype ι] (s : IsLargeLevel.SplitPlaces m q I U ι)
     (γ : ι → Gal(Ω/K)) (hS : ∀ v ∈ S, ↑q ∈ v.asIdeal)
     (h_few : M.HasFewCocycles (PlaceAboveLevel q) I (Fintype.card ι + 1))
-    (h_le : selmerZ1 M S A L ∅ ≤ selmerZ1 M S A L (Set.range s.v))
     (h_zero : ∀ x ∈ selmerZ1 M S A L ∅, ∀ i : ι, x (γ i) = 0) :
     Nat.card (selmerH1 M S A L ∅) * Nat.card M ^ Fintype.card (InfinitePlace K) *
         ∏ v ∈ S, Nat.card (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ.invariants ≤
       Nat.card {n : ι → M →+ QZ | ∀ x ∈ selmerZ1 M S A L (Set.range s.v),
           ∑ i : ι, n i (x (γ i)) = 0} *
         Nat.card M.ρ.invariants * ∏ v ∈ S, Nat.card (classCondition M (L v)) := by
-  have h_cocycles := selmerZ1.card_relations_ge hu hA L hL hcM s γ hS h_few h_le h_zero
+  have h_cocycles := selmerZ1.card_relations_ge hu hA L hL hcM s γ hS h_few h_zero
   rw [card_selmerZ1_eq hu hL hcM, prod_congr rfl fun v hv ↦ card_localCocycles_eq (hL v hv)]
     at h_cocycles
   have h := mul_pow_le_of_le S (card_B1_mul_card_invariants M.continuous_orbit)
