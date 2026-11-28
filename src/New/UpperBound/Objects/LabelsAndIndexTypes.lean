@@ -1,5 +1,6 @@
 module
 
+public import Lib.General.Groups.BesselGroups
 public import Lib.LocalGL.Green.LabelCharacters
 public import New.Reduction.Data.LevelAndTwists
 import Lib.General.NumberTheory.FrobeniusOrbits
@@ -30,6 +31,7 @@ X_j, Y_j and W_j.
   `l ≠ 0`, `χ ^ q₂ = 1`.
 
 Notions from other files:
+* `New.BlockIndex` and `New.blockNumber` are defined in `Lib.General.Groups.BesselGroups`.
 * `New.Data`: the data D, with m lifts, block size t and ranks k, n_j = k + j (t + 1) and
   r = k + m − 1; s is its parameter `D.towerExp`, and q₂ = q₂(s) the integer `New.Parameters.q₂`.
 * `New.Data.ChosenPlace`: the chosen places above the level prime p_i (i = 0, 1), the finite places
@@ -178,12 +180,6 @@ variable {S T α : Type}
 
 /-! ### A block followed by j equal blocks -/
 
-/-- The disjoint union of S and j copies of T, the index type of Y_j. -/
-@[instance_reducible]
-def BlockIndex (S T : Type) : ℕ → Type
-  | 0 => S
-  | j + 1 => BlockIndex S T j ⊕ T
-
 /-- The inclusion of the first block S into the union of S and j copies of T. -/
 def BlockIndex.firstBlock : ∀ j : ℕ, S ↪ BlockIndex S T j
   | 0 => Function.Embedding.refl S
@@ -214,19 +210,6 @@ for `j > 0` it is an arbitrary such bijection, chosen from
 def BlockIndex.equivSum (ν : S ≃ α) : (j : ℕ) → BlockIndex S T j ≃ α ⊕ Fin j × T
   | 0 => ν.trans (Equiv.sumEmpty α (Fin 0 × T)).symm
   | j + 1 => (nonempty_equiv_sum ν (j + 1)).some
-
-variable [Fintype S] [Fintype T]
-
-/-- The index type `BlockIndex S T j` is finite. -/
-instance instFintypeBlockIndex : ∀ j : ℕ, Fintype (BlockIndex S T j)
-  | 0 => ‹Fintype S›
-  | j + 1 => @instFintypeSum (BlockIndex S T j) T (instFintypeBlockIndex j) ‹Fintype T›
-
-/-- Equality in `BlockIndex S T j` is decidable if it is in `S` and `T`, by recursion on `j`. -/
-instance decEqBlockIndex [DecidableEq S] [DecidableEq T] :
-    ∀ j : ℕ, DecidableEq (BlockIndex S T j)
-  | 0 => ‹DecidableEq S›
-  | j + 1 => @instDecidableEqSum (BlockIndex S T j) T (decEqBlockIndex j) ‹DecidableEq T›
 
 /-- The union of `S` and `j` copies of `T` has `|S| + j |T|` elements. -/
 @[simp]

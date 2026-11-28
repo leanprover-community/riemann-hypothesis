@@ -6,6 +6,7 @@ public import New.Spanning.Multiplicities.EqualMultiplicities
 public import New.Determinant.Chain.Moduli
 public import New.Determinant.Chain.TriangleLifts
 public import New.Determinant.Chain.TriangleNorms
+public import New.UpperBound.Objects.RowChain
 import Lib.PadicComparison.Descent.TestCategory
 import New.Determinant.Chain.ChainNorms
 

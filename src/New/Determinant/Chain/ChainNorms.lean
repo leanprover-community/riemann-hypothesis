@@ -6,6 +6,7 @@ import Std.Tactic.BVDecide.Normalize.Bool
 public import New.Determinant.Chain.Moduli
 public import New.Determinant.Chain.TriangleLifts
 public import New.Determinant.Chain.TriangleNorms
+public import New.UpperBound.Objects.RowChain
 import Lib.General.Groups.IndexOfProduct
 import New.Determinant.Exchange.OneSquare
 

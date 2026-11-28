@@ -889,7 +889,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 - `Lib/General/Groups/CongruenceSubgroups` (254): Integral, congruence and unitary matrix groups over a ring, with their topology
 - `Lib/General/Groups/IndexOfProduct` (9): The index of a product of subgroups is the product of the indices
-- `Lib/General/Groups/BesselGroups` (138): Block triangular groups, unipotent Bessel groups, Levi and parahoric subgroups
+- `Lib/General/Groups/BesselGroups` (138): Block indices, block triangular groups, unipotent Bessel groups, Levi and parahoric subgroups
 - `Lib/General/Groups/ProfiniteCharacters` (234): ℚ/ℤ, characters of profinite groups, and extension of homomorphisms
 - `Lib/General/Groups/CharacterTheory` (495): Characters of finite groups: averages, virtual characters and central projections
 

@@ -40,12 +40,6 @@ section RowChain
 
 open New Space LevelPlaces Matrix Fin Units
 
-/-- The number, from 0 to j, of the block containing an index: 0 on R and l on the l-th copy of
-T. -/
-def New.blockNumber {R T : Type} : ∀ j : ℕ, BlockIndex R T j → Fin (j + 1)
-  | 0 => 0
-  | j + 1 => castSucc ∘ blockNumber j ⊕ᵥ fun _ ↦ last (j + 1)
-
 /-- An index has block number 0 if and only if it lies in the image of the first block R. -/
 lemma New.blockNumber_eq_zero_iff {R T : Type} (j : ℕ) :
     ∀ i : BlockIndex R T j, blockNumber j i = 0 ↔ i ∈ Set.range (BlockIndex.firstBlock j) := by

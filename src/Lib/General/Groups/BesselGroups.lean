@@ -5,7 +5,7 @@ public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
-# Block triangular groups, unipotent Bessel groups, Levi and parahoric subgroups
+# Block indices, block triangular groups, unipotent Bessel groups, Levi and parahoric subgroups
 
 This file treats matrix groups over a commutative ring `R`, with an involution where unitary groups
 are concerned. The space has the basis `e₁, …, e_ϱ`, then a middle block, then `e*₁, …, e*_ϱ`; the
@@ -16,6 +16,8 @@ more vector `z`.
 The file also defines the Kronecker product of a finite family of matrices and the character
 `New.wave` of `ℂ`.
 
+* `New.BlockIndex` indexes an initial block followed by copies of a second block.
+  `New.blockNumber` gives the block containing an index.
 * `New.BesselIndex.level`, `New.Shape.besselFrame`, `New.Shape.Form.frameGram`: the levels of the
   basis vectors, the frame `(e₁, …, e_ϱ, z)`, and the products of the frame with its image under
   a matrix `γ`.
@@ -87,6 +89,39 @@ def wave (c : ℂ) : ℂ := Complex.exp (c - starRingEnd ℂ c)
 
 @[simp]
 lemma norm_wave (c : ℂ) : ‖wave c‖ = 1 := by simp [wave, Complex.norm_exp]
+
+/-! ### Block index types -/
+
+section
+
+variable {S T : Type}
+
+/-- The disjoint union of S and j copies of T. -/
+@[instance_reducible]
+def BlockIndex (S T : Type) : ℕ → Type
+  | 0 => S
+  | j + 1 => BlockIndex S T j ⊕ T
+
+variable [Fintype S] [Fintype T]
+
+/-- The index type `BlockIndex S T j` is finite. -/
+instance instFintypeBlockIndex : ∀ j : ℕ, Fintype (BlockIndex S T j)
+  | 0 => ‹Fintype S›
+  | j + 1 => @instFintypeSum (BlockIndex S T j) T (instFintypeBlockIndex j) ‹Fintype T›
+
+/-- Equality in `BlockIndex S T j` is decidable if it is in `S` and `T`, by recursion on `j`. -/
+instance decEqBlockIndex [DecidableEq S] [DecidableEq T] :
+    ∀ j : ℕ, DecidableEq (BlockIndex S T j)
+  | 0 => ‹DecidableEq S›
+  | j + 1 => @instDecidableEqSum (BlockIndex S T j) T (decEqBlockIndex j) ‹DecidableEq T›
+
+/-- The number, from 0 to j, of the block containing an index: 0 on R and l on the l-th copy of
+T. -/
+def blockNumber {R T : Type} : ∀ j : ℕ, BlockIndex R T j → Fin (j + 1)
+  | 0 => 0
+  | j + 1 => castSucc ∘ blockNumber j ⊕ᵥ fun _ ↦ last (j + 1)
+
+end
 
 /-! ### The basis, its levels, the form and the frame -/
 

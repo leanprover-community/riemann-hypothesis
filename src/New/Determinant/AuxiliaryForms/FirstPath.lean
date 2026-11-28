@@ -3,6 +3,7 @@ module
 public import New.Determinant.AuxiliaryForms.GridFirstColumns
 public import New.Determinant.Chain.TriangleLifts
 public import New.Determinant.Chain.TriangleNorms
+public import New.UpperBound.Objects.RowChain
 import New.Determinant.AuxiliaryForms.DeepLevelVanishing
 import New.Determinant.Chain.ChainNorms
 import New.OneLift.ComparisonOperator.ExchangeData
