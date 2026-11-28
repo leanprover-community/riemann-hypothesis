@@ -179,8 +179,6 @@ lemma colengthDvd_integralFormsAt_diagPointN :
         star_inducedPlace_mem_nonInducedPlaces, -coe_units_inv]
     _ ≤ 1 := (pi_norm_le_iff_of_nonempty _).2 fun w ↦ (y (c, w)).prop
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- The operator `Up = upOperator (D.formRepAtN 0)`, a sum of right translates with roots of unity
 as coefficients (see `upOperator_mem_sourceForm`), maps `𝒜^L`, the source forms integral at
 `D.diagPointN 0`, to `𝒜^∨`, those integral at `D.dualPointN 0`. -/
@@ -191,7 +189,8 @@ lemma upOperator_mem_integralFormsAt {φ : D.FormX 0}
   refine ⟨D.upOperator_mem_sourceForm hφ.1, fun g ↦ ?_⟩
   -- The value at `g` is a sum of roots of unity times values `φ (g g')`, where `g' δ_0` and `δ_0^∨`
   -- differ on the right by an element `k` that is integral above `N`.
-  let k (y : D.X 0 → D.nonInducedPlaces → ZMod D.N) := embedGL (inclGL (lastRowColGL y))
+  let k (y : D.X 0 → D.nonInducedPlaces → ZMod D.N) : Gf D.E (D.X 0) :=
+    embedGL (inclGL (lastRowColGL y))
   let g' y := D.dualPointN 0 * k y * (D.diagPointN 0)⁻¹
   rw [show (upOperator (D.formRepAtN 0) φ).val g =
       ∑ y with IsUnit (y (.inr ())), psiN (y (.inr ())) • φ.val (g * g' y) by
