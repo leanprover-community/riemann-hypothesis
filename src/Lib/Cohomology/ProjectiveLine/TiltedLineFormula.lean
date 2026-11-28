@@ -937,6 +937,317 @@ private lemma exists_isTodaCancellation_etaClass_of_squares [Algebra A ℂ_[ℓ]
   rw [← h_eta, ← h_gen]
   exact h_toda
 
+/-! ### Frames and untilted powers on the cover of the perfect projective line
+
+The maps `discFrames`, `torusUnits` and `discTateGen` that
+`exists_isTodaCancellation_etaClass_of_squares` needs, and its three squares, each checked on the
+generators of a free functor. -/
+
+section DiscFrames
+
+open AddMonoidAlgebra Period freeAb
+
+/-- The untilt of a test `c`, as a multiplicative map from the tilt of `c` to the generic ring of
+`c`: the Teichmüller map followed by the algebra map to the generic ring. -/
+noncomputable def genericUntilt {p : ℕ} [ThePrime p] (c : PadicTest) :
+    PadicTest.tilt c →*₀ c.GenericRing :=
+  .comp (.ofClass (algebraMap ..)) (Perfection.teichmuller₀ ..)
+
+/-- The untilt `genericUntilt` is natural in the test. -/
+lemma map_genericUntilt [Algebra A ℂ_[ℓ]] {c d : PadicTest} (f : c ⟶ d) (x : PadicTest.tilt c) :
+    (ringOf (genericTestOver A)).map f (genericUntilt c x) =
+      genericUntilt d (tiltMap f.toRingHom x) := by
+  -- These lemmas match `(ringOf _).map f` and `genericUntilt` only up to unfolding definitions.
+  exact (c.mapGeneric_algebraMap _ _).trans (congrArg _ (untilt_tiltMap ..).symm)
+
+/-- The untilt `genericUntilt` sends a constant `s` from `O^♭` to the untilt of `s`. -/
+lemma genericUntilt_algebraMap {p : ℕ} [ThePrime p] (c : PadicTest) (s : OFlat) :
+    genericUntilt c (algebraMap _ _ s) = c.genericStructureMap s.untilt := by
+  -- As for `map_genericUntilt`, these lemmas match only up to unfolding definitions.
+  exact ((c.genericStructureMap_coe _).trans (congrArg _ (untilt_tiltMap c.structureMap s).symm)).symm
+
+variable (A) in
+/-- The frame of a pair `x = (u, v)` over the generic ring of a test `c`, in the middle term of the
+extension of `cocycle`: the unit that rescales the chosen row of the point `⟦x⟧` of `ℙ¹` to
+`(1 + u v, v)` (`projLine.exists_unit_smul_unimodularRow`), together with that point. -/
+noncomputable def rowFrame [Algebra A ℂ_[ℓ]] (c : PadicTest)
+    (x : (ringOf (genericTestOver A)).obj c × (ringOf (genericTestOver A)).obj c) :
+    (cocycle (genericTestOver A)).extension.X₂ c :=
+  (⟨(exists_unit_smul_unimodularRow x).choose⟩, .of ⟨⟦x⟧⟩)
+
+/-- The frames `rowFrame` are natural in the test. -/
+lemma map_rowFrame [Algebra A ℂ_[ℓ]] {c d : PadicTest} (f : c ⟶ d)
+    (x : (ringOf (genericTestOver A)).obj c × (ringOf (genericTestOver A)).obj c) :
+    (cocycle (genericTestOver A)).extension.X₂.map f (rowFrame A c x) =
+      rowFrame A d ((ringOf (genericTestOver A)).map f x.1,
+        (ringOf (genericTestOver A)).map f x.2) := by
+  let R : PadicTest ⥤ CommRingCat := ringOf (genericTestOver A)
+  -- `R.map f` sends the unit of the frame times the row of `⟦x⟧`, that is
+  -- `(1 + x.1 * x.2, x.2)`, to the row of the image pair.
+  have h_image : Prod.map (R.map f) (R.map f)
+      ((exists_unit_smul_unimodularRow x).choose.val • unimodularRow ⟨⟦x⟧⟩) =
+        (1 + R.map f x.1 * R.map f x.2, R.map f x.2) := by
+    rw [← (exists_unit_smul_unimodularRow x).choose_spec]
+    simp only [Prod.map_apply, RingHom.map_add, RingHom.map_one, RingHom.map_mul]
+  have h_row := (exists_unit_smul_unimodularRow (R.map f x.1, R.map f x.2)).choose_spec
+  exact Prod.ext (add_rowUnit_eq (R.map f) _ (h_image.trans h_row)) rfl
+
+variable (A) in
+/-- The frames on the two discs of the perfect projective line, valued in the middle term of the
+extension of `cocycle`. With `X` the untilt of the coordinate, the point of a disc goes to
+`[(1, 0)] - [(X, 1)]` on the disc `true` and to `[(1, 0)] - [(1, X)]` on the other one, where `[r]`
+is the frame `rowFrame` with row `r`. -/
+noncomputable def discFrames [Algebra A ℂ_[ℓ]] :
+    freeAb twoDiscs ⟶ (cocycle (genericTestOver A)).extension.X₂ := desc
+  (fun c y ↦ rowFrame A c (0, 0) -
+    rowFrame A c (cond y.fst.down (fun X ↦ (X - 1, 1)) (fun X ↦ (0, X))
+      (genericUntilt c (y.snd.down.hom (single 1 1)))))
+  (by
+    -- On each disc, `twoDiscs.map` keeps the disc and composes the point, by definition.
+    let R : PadicTest ⥤ CommRingCat := ringOf (genericTestOver A)
+    rintro c d j ⟨⟨_ | _⟩, y⟩
+    · let x := y.down.hom (single 1 1)
+      change rowFrame A d (0, 0) - rowFrame A d (0, genericUntilt d (tiltMap j.toRingHom x)) =
+        ((cocycle _).extension.X₂.map j).hom
+          (rowFrame A c (0, 0) - rowFrame A c (0, genericUntilt c x))
+      rw [_root_.map_sub, map_rowFrame j (0, 0), map_rowFrame j (0, genericUntilt c x),
+        map_genericUntilt]
+      simp
+    · let x := y.down.hom (single 1 1)
+      let xc : R c := genericUntilt c x
+      let xd : R d := genericUntilt d (tiltMap j.toRingHom x)
+      change rowFrame A d (0, 0) - rowFrame A d (xd - 1, 1) =
+        ((cocycle _).extension.X₂.map j).hom (rowFrame A c (0, 0) - rowFrame A c (xc - 1, 1))
+      rw [_root_.map_sub, map_rowFrame j (0, 0), map_rowFrame j (xc - 1, 1)]
+      simp [xc, xd]
+      have h_coordinate :
+          R.map j (xc - 1) = xd - 1 :=
+        (map_sub (R.map j).hom _ _).trans
+          (congrArg₂ (· - ·) (map_genericUntilt j x) (map_one (R.map j).hom))
+      exact congrArg (fun a : R d ↦ rowFrame A d (a, 1)) h_coordinate.symm)
+
+/-- The value of `discFrames` at a point of a disc. -/
+lemma discFrames_app_of [Algebra A ℂ_[ℓ]] (c : PadicTest) (y : twoDiscs.obj c) :
+    ((discFrames A).app c).hom (FreeAddCommGroup.of y) = rowFrame A c (0, 0) -
+      rowFrame A c (cond y.fst.down (fun X ↦ (X - 1, 1)) (fun X ↦ (0, X))
+        (genericUntilt c (y.snd.down.hom (single 1 1)))) :=
+  freeAb.desc_of ..
+
+variable (A) in
+/-- The untilts of the powers of the coordinate at a point `t` of the torus, as the homomorphism
+`s ↦ X^s` from `ℚ` to the units of the generic ring of `c`: an element of the middle term of the
+Kummer sequence. -/
+noncomputable def torusPow [Algebra A ℂ_[ℓ]] (c : PadicTest)
+    (t : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c) : (kummerSeq (genericTestOver A)).X₂ c :=
+  .comp (.mk' ULift.up fun _ _ ↦ rfl)
+    ((genericUntilt c).toMonoidHom.comp
+      (t.down.hom.toRingHom.toMonoidHom.comp (of OFlat ℚ))).toHomUnits.toAdditiveRight
+
+variable (A) in
+/-- The untilted powers of the coordinate on the source of the gluing, valued in the middle term
+of the Kummer sequence: a point `t` of the torus goes to `torusPow A c t`, the point to `0`. -/
+noncomputable def torusUnits [Algebra A ℂ_[ℓ]] :
+    freeAb (tiltPointsSum pointOrTorus) ⟶ (kummerSeq (genericTestOver A)).X₂ :=
+  projFirst ≫ desc (torusPow A) fun _ _ φ _ ↦ AddMonoidHom.ext fun _ ↦
+    Gm.ext.2 (map_genericUntilt φ _).symm
+
+/-- The value of `torusUnits` at a point of the torus. -/
+lemma torusUnits_app_of_true [Algebra A ℂ_[ℓ]] (c : PadicTest)
+    (q : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c) :
+    ((torusUnits A).app c).hom
+        (FreeAddCommGroup.of (⟨⟨true⟩, q⟩ : (tiltPointsSum pointOrTorus).obj c)) =
+      torusPow A c q := by
+  let r : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, q⟩
+  change FreeAddCommGroup.lift (torusPow A c)
+    (((projFirst (B := pointOrTorus)).app c).hom (FreeAddCommGroup.of r)) = _
+  exact (congrArg (FreeAddCommGroup.lift (torusPow A c))
+    (projFirst_true (B := pointOrTorus) c q)).trans (FreeAddCommGroup.lift_apply_of ..)
+
+variable (A) in
+/-- The generator `tateGen` of the Tate module on the disc `true`, and `0` on the other disc, as a
+map to the first term of the Kummer sequence. -/
+noncomputable def discTateGen [Algebra A ℂ_[ℓ]] :
+    freeAb twoDiscs ⟶ (kummerSeq (genericTestOver A)).X₁ :=
+  projFirst ≫ freeAb.map (toUnit _) ≫ tateGen _
+
+variable (A) in
+/-- On the source of the gluing, the frames on the two discs differ by the untilted powers of the
+coordinate: the gluing followed by `discFrames` is `torusUnits` followed by evaluation at `1` and
+the inclusion of the units into the extension of `cocycle`. On the torus the frames `(X, 1)` and
+`(1, X⁻¹)` differ by the unit `X`. -/
+lemma gluing_comp_discFrames [Algebra A ℂ_[ℓ]] :
+    gluing ≫ discFrames A = (torusUnits A ≫ (kummerSeq (genericTestOver A)).g) ≫
+      (cocycle (genericTestOver A)).extension.f := by
+  symm
+  have hε (B : CommRingCat) (x : B × B) := (exists_unit_smul_unimodularRow x).choose_spec
+  have h_f_app := discFrames_app_of (A := A)
+  have h_alpha := torusUnits_app_of_true (A := A)
+  refine hom_ext ?_
+  rintro c ⟨⟨_ | _⟩, y⟩
+  · let y₀ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨false⟩, y⟩
+    let z : twoDiscs.obj c := ⟨⟨false⟩, ⟨evalZero (PadicTest.tilt.obj c)⟩⟩
+    have h_glue : (gluing.app c).hom (FreeAddCommGroup.of y₀) = FreeAddCommGroup.of z := by
+      simpa only [y₀, z, evalZero_comp] using gluing_apply_point c y
+    have h_a : ((torusUnits A).app c).hom (FreeAddCommGroup.of y₀) = 0 := by
+      change FreeAddCommGroup.lift (torusPow A c)
+        (((projFirst (B := pointOrTorus)).app c).hom (FreeAddCommGroup.of y₀)) = 0
+      exact (congrArg (FreeAddCommGroup.lift (torusPow A c))
+        (projFirst_false (B := pointOrTorus) c y)).trans (map_zero _)
+    change ((cocycle _).extension.f.app c).hom
+        (((kummerSeq (genericTestOver A)).g.app c).hom
+          (((torusUnits A).app c).hom (FreeAddCommGroup.of y₀))) =
+      ((discFrames A).app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₀))
+    rw [h_a, h_glue, h_f_app]
+    simp [z, evalZero]
+    exact (map_zero ((cocycle (genericTestOver A)).extension.f.app c).hom).trans
+      (sub_self _).symm
+  · let X : (ringOf (genericTestOver A)).obj c := genericUntilt c (y.down.hom (single 1 1))
+    let X' : (ringOf (genericTestOver A)).obj c := genericUntilt c (y.down.hom (single (-1) 1))
+    let v : (cocycle (genericTestOver A)).extension.X₂ c :=
+      ((cocycle (genericTestOver A)).extension.f.app c).hom
+        (((kummerSeq (genericTestOver A)).g.app c).hom (torusPow A c y))
+    -- The first component of `v` is the unit `X`, with inverse `X'`.
+    have h_rows : (v + rowFrame A c (0, X')).1.down.val •
+        unimodularRow (B := (ringOf (genericTestOver A)).obj c) ⟨⟦(0, X')⟧⟩ =
+          (rowFrame A c (X - 1, 1)).1.down.val •
+            unimodularRow (B := (ringOf (genericTestOver A)).obj c) ⟨⟦(X - 1, 1)⟧⟩ := by
+      -- `erw`: the rows of the two frames match `hε` only up to unfolding definitions.
+      erw [mul_smul, ← hε, ← hε]
+      simpa only [zero_mul, add_zero, Prod.smul_mk, smul_eq_mul, mul_one, add_sub_cancel,
+        Prod.mk.injEq] using ⟨rfl, Units.mul_inv _⟩
+    obtain ⟨h_unit, h_point⟩ := eq_and_eq_of_smul_unimodularRow_eq h_rows
+    have h_frame : v + rowFrame A c (0, X') = rowFrame A c (X - 1, 1) :=
+      Prod.ext (ULift.down_injective h_unit)
+        ((zero_add _).trans (congrArg FreeAddCommGroup.of h_point))
+    let y₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, y⟩
+    let z₀ : twoDiscs.obj c := ⟨⟨false⟩, ⟨discToTorus (-NNRat.coeHom) ≫ y.down⟩⟩
+    let z₁ : twoDiscs.obj c := ⟨⟨true⟩, ⟨discToTorus NNRat.coeHom ≫ y.down⟩⟩
+    have h_glue := gluing_apply_torus c y
+    change ((cocycle _).extension.f.app c).hom
+        (((kummerSeq (genericTestOver A)).g.app c).hom
+          (((torusUnits A).app c).hom (FreeAddCommGroup.of y₁))) =
+      ((discFrames A).app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₁))
+    erw [h_alpha, h_glue, _root_.map_sub, h_f_app, h_f_app]
+    have h_coord (g : ℚ≥0 →+ ℚ) :
+        (discToTorus g ≫ y.down).hom (single 1 1) = y.down.hom (single (g 1) 1) := by
+      change y.down.hom (mapDomain g (single 1 1)) = _
+      exact congrArg y.down.hom (AddMonoidAlgebra.mapDomain_single ..)
+    simp only [Bool.cond_false, Bool.cond_true, h_coord]
+    change v = (rowFrame A c (0, 0) - rowFrame A c (0, X')) -
+      (rowFrame A c (0, 0) - rowFrame A c (X - 1, 1))
+    simpa only [sub_sub_sub_cancel_left, eq_sub_iff_add_eq] using h_frame
+
+/-- Let `χ` be a character of `ℚ` with values in `O^♭` that lifts the roots of unity
+`compatibleRootsOfUnity`. Then the frames on the discs are invariant under the twist
+`discTwist χ`: `charTwist χ` fixes the untilt `X` of the coordinate, as the roots of unity are
+trivial at `1` and `-1`. -/
+lemma oneSub_discTwist_comp_discFrames [Algebra A ℂ_[ℓ]] (χ : Multiplicative ℚ →* OFlat)
+    (hχ : ∀ s : Multiplicative ℚ, ((χ s).untilt : ℂ_[ℓ]) =
+      algebraMap A ℂ_[ℓ] ((compatibleRootsOfUnity (ℓ := ℓ) (A := A)).val s : A)) :
+    oneSub (discTwist χ) ≫ discFrames A = 0 := by
+  have h_root : (compatibleRootsOfUnity (ℓ := ℓ) (A := A)).val (.ofAdd 1) = 1 :=
+    (compatibleRootsOfUnity (ℓ := ℓ) (A := A)).property.left
+  refine freeAb.hom_ext fun c y ↦ ?_
+  let y' : twoDiscs.obj c := ⟨y.fst, ⟨discTwist χ y.fst ≫ y.snd.down⟩⟩
+  change ((discFrames A).app c).hom (((oneSub (discTwist χ)).app c).hom (.of y)) = 0
+  have h_sub : ((oneSub (discTwist χ)).app c).hom (.of y) = .of y - .of y' :=
+    freeAb.desc_of ..
+  refine (congrArg ((discFrames A).app c).hom h_sub).trans ?_
+  refine (_root_.map_sub ((discFrames A).app c).hom _ _).trans ?_
+  refine (congrArg₂ (· - ·) (discFrames_app_of c y) (discFrames_app_of c y')).trans ?_
+  rcases y with ⟨⟨_ | _⟩, y⟩ <;>
+    simp [y', discTwist, charTwist, genericUntilt_algebraMap, hχ, h_root, -coe_algebraMap,
+      -Functor.comp_obj]
+
+/-- Let `χ` be a character of `ℚ` with values in `O^♭` that lifts the roots of unity
+`compatibleRootsOfUnity`. Then `1 - pointOrTorusTwist χ` followed by `torusUnits` is the gluing
+followed by `discTateGen` and the inclusion of the Tate module into the Kummer sequence:
+`charTwist χ` multiplies the untilted powers by the roots of unity of `tateGen`. -/
+lemma oneSub_pointOrTorusTwist_comp_torusUnits [Algebra A ℂ_[ℓ]] (χ : Multiplicative ℚ →* OFlat)
+    (hχ : ∀ s : Multiplicative ℚ, ((χ s).untilt : ℂ_[ℓ]) =
+      algebraMap A ℂ_[ℓ] ((compatibleRootsOfUnity (ℓ := ℓ) (A := A)).val s : A)) :
+    oneSub (pointOrTorusTwist χ) ≫ torusUnits A =
+      gluing ≫ discTateGen A ≫ (kummerSeq (genericTestOver A)).f := by
+  let ρ (c : PadicTest) : PadicTest.tilt c →*₀ c.GenericRing := genericUntilt c
+  have ρ_const (c : PadicTest) (s : OFlat) :
+      ρ c (algebraMap _ _ s) = c.genericStructureMap s.untilt :=
+    genericUntilt_algebraMap c s
+  have h_alpha := torusUnits_app_of_true (A := A)
+  refine hom_ext ?_
+  rintro c ⟨⟨_ | _⟩, y⟩
+  · let y₀ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨false⟩, y⟩
+    let z : twoDiscs.obj c := ⟨⟨false⟩, ⟨evalZero (PadicTest.tilt.obj c)⟩⟩
+    have h_twist : ((oneSub (pointOrTorusTwist χ)).app c).hom
+        (FreeAddCommGroup.of y₀) = 0 := by
+      change FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₀) = _
+      rw [FreeAddCommGroup.lift_apply_of]
+      change Sub.sub (FreeAddCommGroup.of y₀)
+        (FreeAddCommGroup.of (⟨⟨false⟩, ⟨𝟙 _ ≫ y.down⟩⟩ : (tiltPointsSum pointOrTorus).obj c)) = 0
+      rw [Category.id_comp]
+      exact sub_self _
+    have h_glue : (gluing.app c).hom (FreeAddCommGroup.of y₀) = FreeAddCommGroup.of z := by
+      simpa only [y₀, z, evalZero_comp] using gluing_apply_point c y
+    change ((torusUnits A).app c).hom
+        (((oneSub (pointOrTorusTwist χ)).app c).hom (FreeAddCommGroup.of y₀)) =
+      ((kummerSeq (genericTestOver A)).f.app c).hom
+        (((discTateGen A).app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₀)))
+    rw [h_twist, h_glue]
+    change _ = ((kummerSeq (genericTestOver A)).f.app c).hom
+      (((tateGen (genericTestOver A)).app c).hom ((freeAb.map (toUnit _)).app c
+        (((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom (FreeAddCommGroup.of z))))
+    rw [projFirst_false (B := fun _ ↦ monoidAlg ℚ≥0) c z.snd]
+    simp only [map_zero]
+  · let y₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, y⟩
+    let t : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c :=
+      ⟨charTwist χ (AddMonoidHom.id ℚ) ≫ y.down⟩
+    let z₀ : twoDiscs.obj c := ⟨⟨false⟩, ⟨discToTorus (-NNRat.coeHom) ≫ y.down⟩⟩
+    let z₁ : twoDiscs.obj c := ⟨⟨true⟩, ⟨discToTorus NNRat.coeHom ≫ y.down⟩⟩
+    have h_glue := gluing_apply_torus c y
+    let π := (freeAb.map (toUnit (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ≥0)))).app c
+    let τ := ((tateGen (genericTestOver A)).app c).hom
+    have h_zero : ((discTateGen A).app c).hom (FreeAddCommGroup.of z₀) = 0 := by
+      change τ (π (((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom
+        (FreeAddCommGroup.of z₀))) = 0
+      rw [projFirst_false (B := fun _ ↦ monoidAlg ℚ≥0) c z₀.snd]
+      simp only [map_zero]
+    have h_one : ((discTateGen A).app c).hom (FreeAddCommGroup.of z₁) =
+        τ (FreeAddCommGroup.of PUnit.unit) := by
+      change τ (π (((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom
+        (FreeAddCommGroup.of z₁))) = _
+      rw [projFirst_true (B := fun _ ↦ monoidAlg ℚ≥0) c z₁.snd]
+      change τ ((freeAb.map (toUnit (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ≥0)))).app c
+        (FreeAddCommGroup.of z₁.snd)) = _
+      rw [freeAb.map_of]
+      rfl
+    change ((torusUnits A).app c).hom
+        (((oneSub (pointOrTorusTwist χ)).app c).hom (FreeAddCommGroup.of y₁)) =
+      ((kummerSeq (genericTestOver A)).f.app c).hom
+        (((discTateGen A).app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₁)))
+    change ((torusUnits A).app c).hom (FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₁)) = _
+    rw [FreeAddCommGroup.lift_apply_of]
+    let t₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, t⟩
+    change ((torusUnits A).app c).hom (FreeAddCommGroup.of y₁ - FreeAddCommGroup.of t₁) = _
+    erw [_root_.map_sub, h_alpha, h_alpha, h_glue, _root_.map_sub, h_zero, h_one, zero_sub, map_neg]
+    apply neg_injective
+    rw [neg_sub, neg_neg]
+    refine sub_eq_of_eq_add (AddMonoidHom.ext fun s ↦ Gm.ext.2 ?_)
+    -- The twist sends the power `X^s` to `χ s · X^s`, whose untilt is the root of unity at `s`
+    -- times the untilt of `X^s`.
+    have h_twist : ρ c (y.down.hom (lift OFlat OFlat[ℚ] ℚ
+          (((algebraMap OFlat OFlat[ℚ] : OFlat →* OFlat[ℚ])).comp χ * of OFlat ℚ)
+          (of OFlat ℚ (.ofAdd s)))) =
+        c.genericStructureMap (algebraMap A ℂ_[ℓ]
+            ((compatibleRootsOfUnity (ℓ := ℓ) (A := A)).val (.ofAdd s) : A)) *
+          ρ c (y.down.hom (of OFlat ℚ (.ofAdd s))) := by
+      erw [lift_of, MonoidHom.mul_apply, map_mul, map_mul, ← hχ, ← ρ_const]
+      exact congrArg (fun z ↦ ρ c z * _) (y.down.hom.commutes _)
+    refine h_twist.trans ?_
+    -- `erw` and `rfl`: `tateGen` is the family of these roots of unity by definition.
+    erw [desc_of]
+    rfl
+
+end DiscFrames
+
 open AddMonoidAlgebra Period freeAb in
 /-- On the cover of the perfect projective line by two discs glued along the torus (`gluing`), the
 class `η` is cancelled, with `ε` the generator `tateGen` of the Tate module. That is, some `δ`, `q`,
@@ -950,230 +1261,14 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
       IsTodaCancellation gluing δ q (etaClass (genericTestOver A)) (tateGen (genericTestOver A))
         j y ω := by
   -- The gluing map commutes with the operators `1 - charTwist χ _` (`oneSub_comp_gluing`); read `η`
-  -- on this square by `exists_isTodaCancellation_etaClass_of_squares`. First, the character `χ` of
-  -- `ℚ` with values in the tilt that lifts the roots of unity `compatibleRootsOfUnity`, which are
-  -- `1` at `1`.
-  have h_root : (compatibleRootsOfUnity (ℓ := ℓ) (A := A)).val (.ofAdd 1) = 1 :=
-    (compatibleRootsOfUnity (ℓ := ℓ) (A := A)).property.left
+  -- on this square by `exists_isTodaCancellation_etaClass_of_squares`, with the frames
+  -- `discFrames`, the untilted powers `torusUnits` and the generator `discTateGen`. First, the
+  -- character `χ` of `ℚ` with values in the tilt that lifts the roots of unity
+  -- `compatibleRootsOfUnity`.
   obtain ⟨χ, hχ⟩ := exists_tilt_lift_compatibleRootsOfUnity (A := A)
-  -- The row `(1 + x.1 * x.2, x.2)` is the unit `ε x` times the chosen row of its class. `F c x` is
-  -- this frame, a unit and a point of `ℙ¹`; it is natural in `c`.
-  let R : PadicTest ⥤ CommRingCat := ringOf (genericTestOver A)
-  have h_row : ∀ (B : CommRingCat) (x : B × B),
-      ∃ ε : Bˣ, (1 + x.1 * x.2, x.2) = ε.val • unimodularRow ⟨⟦x⟧⟩ :=
-    fun _ x ↦ exists_unit_smul_unimodularRow x
-  choose ε hε using h_row
-  let F (c : PadicTest) (x : R c × R c) : (cocycle (genericTestOver A)).extension.X₂ c :=
-    (⟨ε (R.obj c) x⟩, .of ⟨⟦x⟧⟩)
-  have F_nat (c d : PadicTest) (f : c ⟶ d) (x : R c × R c) :
-      (cocycle _).extension.X₂.map f (F c x) = F d (R.map f x.1, R.map f x.2) := by
-    -- `R.map f` sends `ε x` times the row of `⟦x⟧`, that is `(1 + x.1 * x.2, x.2)`, to the row of
-    -- the image pair.
-    have h_image : Prod.map (R.map f) (R.map f) ((ε (R.obj c) x).val • unimodularRow ⟨⟦x⟧⟩) =
-        (1 + R.map f x.1 * R.map f x.2, R.map f x.2) := by
-      rw [← hε (R.obj c) x]
-      simp only [Prod.map_apply, RingHom.map_add, RingHom.map_one, RingHom.map_mul]
-    have h_row := hε (R.obj d) (R.map f x.1, R.map f x.2)
-    exact Prod.ext (add_rowUnit_eq (R.map f) _ (h_image.trans h_row)) rfl
-  -- The untilt `ρ` is natural, and it sends a constant `s` from `OFlat` to the untilt of `s`.
-  let ρ (c : PadicTest) : PadicTest.tilt c →*₀ c.GenericRing :=
-    .comp (.ofClass (algebraMap ..)) (Perfection.teichmuller₀ ..)
-  have ρ_nat (c d : PadicTest) (f : c ⟶ d) (x : PadicTest.tilt c) :
-      R.map f (ρ c x) = ρ d (tiltMap f.toRingHom x) := by
-    -- These lemmas match `R.map f` and `ρ` only up to unfolding definitions.
-    exact (c.mapGeneric_algebraMap _ _).trans (congrArg _ (untilt_tiltMap ..).symm)
-  have ρ_const (c : PadicTest) (s : OFlat) :
-      ρ c (algebraMap _ _ s) = c.genericStructureMap s.untilt := by
-    -- As for `ρ_nat`, these lemmas match only up to unfolding definitions.
-    exact ((c.genericStructureMap_coe _).trans (congrArg _ (untilt_tiltMap c.structureMap s).symm)).symm
-  -- With `X` the untilt of the coordinate, `f` is `[(1, 0)] - [(X, 1)]` on the disc `true` and
-  -- `[(1, 0)] - [(1, X)]` on the other one.
-  let f : freeAb twoDiscs ⟶ (cocycle (genericTestOver A)).extension.X₂ := desc
-    (fun c y ↦ F c (0, 0) -
-      F c (cond y.fst.down (fun X ↦ (X - 1, 1)) (fun X ↦ (0, X))
-        (ρ c (y.snd.down.hom (single 1 1)))))
-    (by
-      -- On each disc, `twoDiscs.map` keeps the disc and composes the point, by definition.
-      rintro c d j ⟨⟨_ | _⟩, y⟩
-      · let x := y.down.hom (single 1 1)
-        change F d (0, 0) - F d (0, ρ d (tiltMap j.toRingHom x)) =
-          ((cocycle _).extension.X₂.map j).hom (F c (0, 0) - F c (0, ρ c x))
-        rw [_root_.map_sub, F_nat c d j (0, 0), F_nat c d j (0, ρ c x)]
-        simp [ρ_nat]
-      · let x := y.down.hom (single 1 1)
-        let xc : R c := ρ c x
-        let xd : R d := ρ d (tiltMap j.toRingHom x)
-        change F d (0, 0) - F d (xd - 1, 1) =
-          ((cocycle _).extension.X₂.map j).hom (F c (0, 0) - F c (xc - 1, 1))
-        rw [_root_.map_sub, F_nat c d j (0, 0), F_nat c d j (xc - 1, 1)]
-        simp [xc, xd]
-        have h_coordinate :
-            R.map j (xc - 1) = xd - 1 :=
-          (map_sub (R.map j).hom _ _).trans
-            (congrArg₂ (· - ·) (ρ_nat c d j x) (map_one (R.map j).hom))
-        exact congrArg (fun a : R d ↦ F d (a, 1)) h_coordinate.symm)
-  -- `α` sends a point `t` of the torus to `pow c t`, the untilts of the powers of the coordinate.
-  let pow (c : PadicTest) (t : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c) :
-      (kummerSeq (genericTestOver A)).X₂ c :=
-    .comp (.mk' ULift.up fun _ _ ↦ rfl)
-      ((ρ c).toMonoidHom.comp
-        (t.down.hom.toRingHom.toMonoidHom.comp (of OFlat ℚ))).toHomUnits.toAdditiveRight
-  let α : freeAb (tiltPointsSum pointOrTorus) ⟶ (kummerSeq (genericTestOver A)).X₂ :=
-    projFirst ≫ desc pow fun c d φ t ↦ AddMonoidHom.ext fun s ↦ Gm.ext.2 (ρ_nat c d φ _).symm
-  let κ : freeAb twoDiscs ⟶ (kummerSeq (genericTestOver A)).X₁ :=
-    projFirst ≫ freeAb.map (toUnit _) ≫ tateGen _
-  -- The three squares that `exists_isTodaCancellation_etaClass_of_squares` needs, each checked on
-  -- the generators of a free functor.
-  have h_f_app (c : PadicTest) (y : twoDiscs.obj c) :
-      (f.app c).hom (FreeAddCommGroup.of y) = F c (0, 0) -
-        F c (cond y.fst.down (fun X ↦ (X - 1, 1)) (fun X ↦ (0, X))
-          (ρ c (y.snd.down.hom (single 1 1)))) := freeAb.desc_of ..
-  have h_alpha (c : PadicTest) (q : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c) :
-      (α.app c).hom (FreeAddCommGroup.of (⟨⟨true⟩, q⟩ : (tiltPointsSum pointOrTorus).obj c)) =
-        pow c q := by
-    let r : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, q⟩
-    change FreeAddCommGroup.lift (pow c)
-      (((projFirst (B := pointOrTorus)).app c).hom (FreeAddCommGroup.of r)) = _
-    exact (congrArg (FreeAddCommGroup.lift (pow c))
-      (projFirst_true (B := pointOrTorus) c q)).trans (FreeAddCommGroup.lift_apply_of ..)
-  have h_torus : (α ≫ (kummerSeq (genericTestOver A)).g) ≫
-      (cocycle (genericTestOver A)).extension.f = gluing ≫ f := by
-    -- On the torus the frames `(X, 1)` and `(1, X⁻¹)` differ by the unit `X`.
-    refine hom_ext ?_
-    rintro c ⟨⟨_ | _⟩, y⟩
-    · let y₀ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨false⟩, y⟩
-      let z : twoDiscs.obj c := ⟨⟨false⟩, ⟨evalZero (PadicTest.tilt.obj c)⟩⟩
-      have h_glue : (gluing.app c).hom (FreeAddCommGroup.of y₀) = FreeAddCommGroup.of z := by
-        simpa only [y₀, z, evalZero_comp] using gluing_apply_point c y
-      have h_a : (α.app c).hom (FreeAddCommGroup.of y₀) = 0 := by
-        change FreeAddCommGroup.lift (pow c)
-          (((projFirst (B := pointOrTorus)).app c).hom (FreeAddCommGroup.of y₀)) = 0
-        exact (congrArg (FreeAddCommGroup.lift (pow c))
-          (projFirst_false (B := pointOrTorus) c y)).trans (map_zero _)
-      change ((cocycle _).extension.f.app c).hom
-          (((kummerSeq (genericTestOver A)).g.app c).hom ((α.app c).hom (FreeAddCommGroup.of y₀))) =
-        (f.app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₀))
-      rw [h_a, h_glue, h_f_app]
-      simp [z, evalZero]
-      exact (map_zero ((cocycle (genericTestOver A)).extension.f.app c).hom).trans
-        (sub_self _).symm
-    · let X : R c := ρ c (y.down.hom (single 1 1))
-      let X' : R c := ρ c (y.down.hom (single (-1) 1))
-      let v : (cocycle (genericTestOver A)).extension.X₂ c :=
-        ((cocycle (genericTestOver A)).extension.f.app c).hom
-          (((kummerSeq (genericTestOver A)).g.app c).hom (pow c y))
-      -- The first component of `v` is the unit `X`, with inverse `X'`.
-      have h_rows : (v + F c (0, X')).1.down.val • unimodularRow (B := R c) ⟨⟦(0, X')⟧⟩ =
-          (F c (X - 1, 1)).1.down.val • unimodularRow (B := R c) ⟨⟦(X - 1, 1)⟧⟩ := by
-        -- `erw`: the rows of the two frames match `hε` only up to unfolding definitions.
-        erw [mul_smul, ← hε, ← hε]
-        simpa only [zero_mul, add_zero, Prod.smul_mk, smul_eq_mul, mul_one, add_sub_cancel,
-          Prod.mk.injEq] using ⟨rfl, Units.mul_inv _⟩
-      obtain ⟨h_unit, h_point⟩ := eq_and_eq_of_smul_unimodularRow_eq h_rows
-      have h_frame : v + F c (0, X') = F c (X - 1, 1) :=
-        Prod.ext (ULift.down_injective h_unit)
-          ((zero_add _).trans (congrArg FreeAddCommGroup.of h_point))
-      let y₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, y⟩
-      let z₀ : twoDiscs.obj c := ⟨⟨false⟩, ⟨discToTorus (-NNRat.coeHom) ≫ y.down⟩⟩
-      let z₁ : twoDiscs.obj c := ⟨⟨true⟩, ⟨discToTorus NNRat.coeHom ≫ y.down⟩⟩
-      have h_glue := gluing_apply_torus c y
-      change ((cocycle _).extension.f.app c).hom
-          (((kummerSeq (genericTestOver A)).g.app c).hom ((α.app c).hom (FreeAddCommGroup.of y₁))) =
-        (f.app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₁))
-      erw [h_alpha, h_glue, _root_.map_sub, h_f_app, h_f_app]
-      have h_coord (g : ℚ≥0 →+ ℚ) :
-          (discToTorus g ≫ y.down).hom (single 1 1) = y.down.hom (single (g 1) 1) := by
-        change y.down.hom (mapDomain g (single 1 1)) = _
-        exact congrArg y.down.hom (AddMonoidAlgebra.mapDomain_single ..)
-      simp only [Bool.cond_false, Bool.cond_true, h_coord]
-      change v = (F c (0, 0) - F c (0, X')) - (F c (0, 0) - F c (X - 1, 1))
-      simpa only [sub_sub_sub_cancel_left, eq_sub_iff_add_eq] using h_frame
-  have h_disc : oneSub (discTwist χ) ≫ f = 0 := by
-    -- `charTwist χ` fixes `X`, as the roots of unity are trivial at `1` and `-1`.
-    refine freeAb.hom_ext fun c y ↦ ?_
-    let y' : twoDiscs.obj c := ⟨y.fst, ⟨discTwist χ y.fst ≫ y.snd.down⟩⟩
-    change (f.app c).hom (((oneSub (discTwist χ)).app c).hom (.of y)) = 0
-    have h_sub : ((oneSub (discTwist χ)).app c).hom (.of y) = .of y - .of y' :=
-      freeAb.desc_of ..
-    refine (congrArg (f.app c).hom h_sub).trans ?_
-    refine (_root_.map_sub (f.app c).hom _ _).trans ?_
-    refine (congrArg₂ (· - ·) (h_f_app c y) (h_f_app c y')).trans ?_
-    rcases y with ⟨⟨_ | _⟩, y⟩ <;>
-      simp [y', discTwist, charTwist, ρ_const, hχ, h_root, -coe_algebraMap, -Functor.comp_obj]
-  have h_kummer : oneSub (pointOrTorusTwist χ) ≫ α =
-      gluing ≫ κ ≫ (kummerSeq (genericTestOver A)).f := by
-    -- `charTwist χ` multiplies the untilted powers by the roots of unity of `tateGen`.
-    refine hom_ext ?_
-    rintro c ⟨⟨_ | _⟩, y⟩
-    · let y₀ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨false⟩, y⟩
-      let z : twoDiscs.obj c := ⟨⟨false⟩, ⟨evalZero (PadicTest.tilt.obj c)⟩⟩
-      have h_twist : ((oneSub (pointOrTorusTwist χ)).app c).hom
-          (FreeAddCommGroup.of y₀) = 0 := by
-        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₀) = _
-        rw [FreeAddCommGroup.lift_apply_of]
-        change Sub.sub (FreeAddCommGroup.of y₀)
-          (FreeAddCommGroup.of (⟨⟨false⟩, ⟨𝟙 _ ≫ y.down⟩⟩ : (tiltPointsSum pointOrTorus).obj c)) = 0
-        rw [Category.id_comp]
-        exact sub_self _
-      have h_glue : (gluing.app c).hom (FreeAddCommGroup.of y₀) = FreeAddCommGroup.of z := by
-        simpa only [y₀, z, evalZero_comp] using gluing_apply_point c y
-      change (α.app c).hom (((oneSub (pointOrTorusTwist χ)).app c).hom (FreeAddCommGroup.of y₀)) =
-        ((kummerSeq (genericTestOver A)).f.app c).hom
-          ((κ.app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₀)))
-      rw [h_twist, h_glue]
-      change _ = ((kummerSeq (genericTestOver A)).f.app c).hom
-        (((tateGen (genericTestOver A)).app c).hom ((freeAb.map (toUnit _)).app c
-          (((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom (FreeAddCommGroup.of z))))
-      rw [projFirst_false (B := fun _ ↦ monoidAlg ℚ≥0) c z.snd]
-      simp only [map_zero]
-    · let y₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, y⟩
-      let t : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c :=
-        ⟨charTwist χ (AddMonoidHom.id ℚ) ≫ y.down⟩
-      let z₀ : twoDiscs.obj c := ⟨⟨false⟩, ⟨discToTorus (-NNRat.coeHom) ≫ y.down⟩⟩
-      let z₁ : twoDiscs.obj c := ⟨⟨true⟩, ⟨discToTorus NNRat.coeHom ≫ y.down⟩⟩
-      have h_glue := gluing_apply_torus c y
-      let π := (freeAb.map (toUnit (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ≥0)))).app c
-      let τ := ((tateGen (genericTestOver A)).app c).hom
-      have h_zero : (κ.app c).hom (FreeAddCommGroup.of z₀) = 0 := by
-        change τ (π (((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom
-          (FreeAddCommGroup.of z₀))) = 0
-        rw [projFirst_false (B := fun _ ↦ monoidAlg ℚ≥0) c z₀.snd]
-        simp only [map_zero]
-      have h_one : (κ.app c).hom (FreeAddCommGroup.of z₁) = τ (FreeAddCommGroup.of PUnit.unit) := by
-        change τ (π (((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom
-          (FreeAddCommGroup.of z₁))) = _
-        rw [projFirst_true (B := fun _ ↦ monoidAlg ℚ≥0) c z₁.snd]
-        change τ ((freeAb.map (toUnit (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ≥0)))).app c
-          (FreeAddCommGroup.of z₁.snd)) = _
-        rw [freeAb.map_of]
-        rfl
-      change (α.app c).hom (((oneSub (pointOrTorusTwist χ)).app c).hom (FreeAddCommGroup.of y₁)) =
-        ((kummerSeq (genericTestOver A)).f.app c).hom
-          ((κ.app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₁)))
-      change (α.app c).hom (FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₁)) = _
-      rw [FreeAddCommGroup.lift_apply_of]
-      let t₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, t⟩
-      change (α.app c).hom (FreeAddCommGroup.of y₁ - FreeAddCommGroup.of t₁) = _
-      erw [_root_.map_sub, h_alpha, h_alpha, h_glue, _root_.map_sub, h_zero, h_one, zero_sub, map_neg]
-      apply neg_injective
-      rw [neg_sub, neg_neg]
-      refine sub_eq_of_eq_add (AddMonoidHom.ext fun s ↦ Gm.ext.2 ?_)
-      -- The twist sends the power `X^s` to `χ s · X^s`, whose untilt is the root of unity at `s`
-      -- times the untilt of `X^s`.
-      have h_twist : ρ c (y.down.hom (lift OFlat OFlat[ℚ] ℚ
-            (((algebraMap OFlat OFlat[ℚ] : OFlat →* OFlat[ℚ])).comp χ * of OFlat ℚ)
-            (of OFlat ℚ (.ofAdd s)))) =
-          c.genericStructureMap (algebraMap A ℂ_[ℓ]
-              ((compatibleRootsOfUnity (ℓ := ℓ) (A := A)).val (.ofAdd s) : A)) *
-            ρ c (y.down.hom (of OFlat ℚ (.ofAdd s))) := by
-        erw [lift_of, MonoidHom.mul_apply, map_mul, map_mul, ← hχ, ← ρ_const]
-        exact congrArg (fun z ↦ ρ c z * _) (y.down.hom.commutes _)
-      refine h_twist.trans ?_
-      -- `erw` and `rfl`: `tateGen` is the family of these roots of unity by definition.
-      erw [desc_of]
-      rfl
-  have h_gen : origin ⟨true⟩ ≫ κ = tateGen (genericTestOver A) := hom_ext fun _ _ ↦ rfl
-  exact exists_isTodaCancellation_etaClass_of_squares χ f α κ h_torus h_disc h_kummer h_gen
+  exact exists_isTodaCancellation_etaClass_of_squares χ (discFrames A) (torusUnits A)
+    (discTateGen A) (gluing_comp_discFrames A).symm (oneSub_discTwist_comp_discFrames χ hχ)
+    (oneSub_pointOrTorusTwist_comp_torusUnits χ hχ) (hom_ext fun _ _ ↦ rfl)
 
 open Period in
 /-- Let `O^♭` be the inverse limit of `O_C/ℓ` along `x ↦ x^ℓ`, `M` an `O^♭`-module, and `ℂ_ℓ` an
