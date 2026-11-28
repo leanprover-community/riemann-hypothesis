@@ -815,6 +815,19 @@ theorem singleLift_injective (ϑ : D.TameChar) {j : D.LiftIndex} :
   rw [hy]
   exact map_zero _
 
+/-- The factor of the chosen places does not depend on the tame character. -/
+lemma chosenFactor_descentPair (ϑ ϑ' : D.TameChar) (j : ℕ) :
+    (D.descentPair ϑ j).chosenFactor = (D.descentPair ϑ' j).chosenFactor :=
+  rfl
+
+/-- The Fock polynomial of the highest vector does not depend on the tame character. -/
+lemma fockPoly_highestVector_descentPair (ϑ ϑ' : D.TameChar) (j : ℕ) :
+    (D.descentPair ϑ j).fockPoly
+      (highestVector (D.descentPair ϑ j).columnCount (D.descentPair ϑ j).paramV) =
+    (D.descentPair ϑ' j).fockPoly
+      (highestVector (D.descentPair ϑ' j).columnCount (D.descentPair ϑ' j).paramV) :=
+  rfl
+
 /-- For `1 ≤ j ≤ m` there is a constant `A ≠ 0` such that for every tame character `ϑ` the Gram form
 `⟨Θ_j x, Θ_j y⟩` of the theta lift `Θ_j = D.singleLift ϑ j` on the forms of level `J_M` on `W_j` is
 `A` times `gramFactor` times the sum over `γ` of `mc(γ)⟨x, γ y⟩ / #matrices`. Here
@@ -845,6 +858,9 @@ theorem exists_hasSum_rallisTerm_inner_singleLift (j : D.LiftIndex) :
   let term : Gf D.E D.RowIndex ⧸ localLevel D.RowIndex (D.twistModulus ϑ 1).places.conjClosureᶜ →
     ℂ :=
     cosetTerm (card (D.Y 1)) O.charV (D.twistModulus ϑ 1).places.conjClosureᶜ x.val y.val
+  -- The Fock vector of the trivial character is that of `ϑ`, which does not enter the real data.
+  -- Rewriting it first spares the unifier from comparing the two vectors by evaluating them.
+  rw [fockPoly_highestVector_descentPair D .one ϑ j] at h_rallis
   have h_gram : HasSum (fun γ ↦ C * O.blockMass * term γ) (V.petersson (L x.val) (L y.val)) :=
     (h_rallis O.charW O.charV (O.isSharp_blockDatum (.inr nonempty_modulus_places)) y.val
       (mem_levelSpace_formRep_iff.1 y.property)).right x.val
@@ -882,8 +898,9 @@ theorem exists_adjoint_singleLift_comp_eq (j : D.LiftIndex) :
   rw [LinearMap.comp_apply, LinearMap.adjoint_inner_right, LinearMap.smul_apply, inner_smul_right]
   have h_factor : (D.descentPair ϑ j).gramFactor /
       card (D.Y 1 × D.RowIndex → (D.twistModulus ϑ 1).ResidueRing) =
-      (D.descentPair .one j).chosenFactor * (D.descentPair ϑ j).twistFactor :=
-    (D.descentPair ϑ j).gramFactor_div_card
+      (D.descentPair .one j).chosenFactor * (D.descentPair ϑ j).twistFactor := by
+    rw [chosenFactor_descentPair D .one ϑ j]
+    exact (D.descentPair ϑ j).gramFactor_div_card
   refine (h_gram ϑ x y).unique
     (((D.hasSum_inner_rallisOperator ϑ j (D.spaceW j) x y).mul_left _).congr_fun fun γ ↦ ?_)
   rw [mul_assoc A (D.descentPair .one j).chosenFactor, ← h_factor, rallisTerm]
