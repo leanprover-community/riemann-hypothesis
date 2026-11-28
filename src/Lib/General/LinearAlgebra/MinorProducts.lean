@@ -51,17 +51,18 @@ namespace New
 
 open Matrix Finset Complex ComplexConjugate Norms.L2Operator DiscreteSeries
 
-variable {n : Type} [Fintype n] [DecidableEq n]
+variable {n : Type} [Fintype n]
   {w o : n → ℤ} {x b b' : Matrix n n ℂ} {p : n → Prop} {c : ℤ} {d : n → ℂ} [DecidablePred p]
 
 /-! ### The functions `New.weightMinors w` -/
 
-omit [DecidableEq n] in
 /-- Every entry `w i` of an integer vector lies between `-∑ j, |w j|` and `∑ j, |w j|`, so these
 two sums can serve as the bounds `a`, `b` in `New.weightMinors_eq_det_zpow_mul_prod`. -/
 theorem DiscreteSeries.neg_sum_abs_le_and_le_sum_abs (w : n → ℤ) (i : n) :
     -∑ j : n, |w j| ≤ w i ∧ w i ≤ ∑ j : n, |w j| :=
   abs_le.1 (single_le_sum (fun j _ ↦ abs_nonneg (w j)) (mem_univ i))
+
+variable [DecidableEq n]
 
 theorem weightMinors_transpose : weightMinors w xᵀ = weightMinors w x := by simp [weightMinors]
 

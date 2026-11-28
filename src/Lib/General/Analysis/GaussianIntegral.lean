@@ -74,13 +74,14 @@ section GaussianIntegral
 
 open MeasureTheory Matrix Complex Finset ComplexOrder MatrixOrder PiLp CStarAlgebra NNReal WithLp
 
-variable {ι : Type _} [Fintype ι] (x : ι → ℂ) {A : Matrix ι ι ℂ}
+variable {ι : Type _} {A : Matrix ι ι ℂ}
 
 /-- A complex square matrix `A` is (strictly) accretive if `A + Aᴴ` is positive definite. -/
 def Matrix.IsAccretive (A : Matrix ι ι ℂ) : Prop := (A + Aᴴ).PosDef
 
-omit [Fintype ι] in
 lemma Matrix.PosDef.isAccretive (hA : A.PosDef) : A.IsAccretive := hA.add hA.conjTranspose
+
+variable [Fintype ι] (x : ι → ℂ)
 
 lemma Matrix.IsAccretive.det_ne_zero [DecidableEq ι]
     (hA : A.IsAccretive) : A.det ≠ 0 := fun h_det ↦ by

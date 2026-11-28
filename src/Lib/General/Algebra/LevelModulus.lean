@@ -222,10 +222,8 @@ open Space stdLattice Ideal
 
 variable {n n' E : Type} [Field E] [CMType E] {ι : Type*} [Fintype ι] {w : ι → FinPlace E}
   (f : ((i : ι) → Matrix n' n (ResField (w i))) → ℂ) [Fintype n] [DecidableEq n] [Fintype n']
-  [DecidableEq n'] {x : n' × n → 𝔸f E} {𝔪 : Modulus E} [WeilData E] {s : n → ℤˣ} {s' : n' → ℤˣ}
-  (V : Space E n s) (V' : Space E n' s')
+  [DecidableEq n'] {x : n' × n → 𝔸f E} {𝔪 : Modulus E}
 
-omit [WeilData E] in
 /-- If no `w i` is conjugate to a `w j`, then `New.residueDatum w f` (`f` of the reductions at the
 `w i` on matrices integral there, `0` elsewhere) is Schwartz–Bruhat at the places `w i`: it depends
 only on the components there and, as a function of these, is locally constant of compact support. -/
@@ -234,6 +232,8 @@ lemma isSchwartzBruhat_residueDatum (hw : ∀ i j : ι, star (w i) ≠ w j) :
   obtain ⟨𝔪, h𝔪, -⟩ := exists_modulus_places_eq hw
   rw [← h𝔪, ← liftFn_eq_residueDatum h𝔪 f]
   exact isSchwartzBruhat_liftFn 𝔪 _
+
+variable [WeilData E] {s : n → ℤˣ} {s' : n' → ℤˣ} (V : Space E n s) (V' : Space E n' s')
 
 /-- The datum `New.modDatum` of a function `Ψ` on matrices modulo `𝔪` with the Gaussian
 `Fock.vacVector` as real part is what the operator `schrodingerOp` of the lift of `Ψ` (`vecToMatrix`

@@ -31,11 +31,10 @@ namespace New
 
 open MeasureTheory Measure Filter Topology Set ENNReal
 
-variable {X X' B B' P : Type*} [TopologicalSpace X] [MeasurableSpace X] [TopologicalSpace X']
-  [MeasurableSpace X'] [TopologicalSpace B] [MeasurableSpace B] [TopologicalSpace B']
-  [MeasurableSpace B'] [MeasurableSpace P]
+variable {X X' B B' P : Type*} [TopologicalSpace X] [TopologicalSpace X'] [MeasurableSpace X']
+  [TopologicalSpace B] [MeasurableSpace B] [TopologicalSpace B'] [MeasurableSpace B']
+  [MeasurableSpace P]
 
-omit [MeasurableSpace X] in
 /-- Fatou's lemma with a parameter: if `F x` is measurable for every `x` and `F · p` is lower
 semicontinuous at `x₀` for almost every `p`, then `x ↦ ∫ F x dρ` is lower semicontinuous at
 `x₀`. -/
@@ -47,6 +46,8 @@ theorem lowerSemicontinuousAt_lintegral [FirstCountableTopology X] {ρ : Measure
   calc ∫⁻ p, F x₀ p ∂ρ ≤ ∫⁻ p, liminf (F · p) (𝓝 x₀) ∂ρ :=
         lintegral_mono_ae (h_lsc.mono fun _ ↦ lowerSemicontinuousAt_iff_le_liminf.1)
     _ ≤ liminf (fun x ↦ ∫⁻ p, F x p ∂ρ) (𝓝 x₀) := lintegral_liminf_le h_meas
+
+variable [MeasurableSpace X]
 
 /-- Let `ν` be locally finite and positive on nonempty open sets. A function that is lower
 semicontinuous at `b`, and whose mean for `ν` over every open set contained in some fixed

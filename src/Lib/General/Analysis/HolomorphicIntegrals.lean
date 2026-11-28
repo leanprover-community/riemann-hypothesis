@@ -147,7 +147,7 @@ namespace New
 
 open MeasureTheory Metric ContinuousMap Module Real Finset
 
-variable {E F K : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E]
+variable {E F K : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
   {p : E} [NormedAddCommGroup F] [NormedSpace ℂ F] [TopologicalSpace K] [CompactSpace K]
   {f : E → K → ℂ}
 
@@ -164,7 +164,6 @@ at a. -/
 def DiscreteSeries.IsAnalyticFamily (f : E → K → ℂ) (a : E) : Prop :=
   ∃ g : E → C(K, ℂ), AnalyticAt ℂ g a ∧ ∀ᶠ x : E in nhds a, g x = f x
 
-omit [FiniteDimensional ℂ E] in
 /-- Let E be a complex normed space, K a compact space and μ a finite Borel
 measure on K. If x ↦ f(x, ·) is analytic at p ∈ E as a map to C(K, ℂ) (`IsAnalyticFamily f p`), then
 its integral against μ is an analytic function of x at p. -/
@@ -176,6 +175,8 @@ lemma DiscreteSeries.IsAnalyticFamily.analyticAt_integral {mK : MeasurableSpace 
   refine (((strongIntegral μ (evalCLM ℂ)).analyticAt (g p)).comp hg).congr
     (h_eq.mono fun x hx ↦ ?_)
   simp [strongIntegral_eval, hx]
+
+variable [FiniteDimensional ℂ E]
 
 /-- Let E be a finite-dimensional complex normed space and K a compact space. If, for all x near
 p ∈ E and all k ∈ K, f : E → K → ℂ is jointly continuous at (x, k) and f(·, k) is complex

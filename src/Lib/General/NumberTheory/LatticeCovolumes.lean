@@ -68,13 +68,12 @@ section LatticeComplement
 open Matrix Fintype AddSubgroup Submodule
 
 variable {A : Type*} [CommRing A] {R : Subring A}
-  {π σ τ ρ : Type} [Fintype π] [DecidableEq π] [Fintype σ] [DecidableEq σ]
-  [DecidableEq τ] [Fintype ρ] {M D : Submodule R (τ → A)} {K K' : Submodule R (σ → A)}
+  {π σ τ ρ : Type} [Fintype π] [DecidableEq π] [Fintype ρ] {M D : Submodule R (τ → A)}
+  {K K' : Submodule R (σ → A)}
   {H J : Matrix π π A} {m F : Matrix π σ A} {n : Matrix π τ A} (P : (τ → A) →ₗ[R] σ → A)
 
 /-! ### Indices under a linear map and divisibility -/
 
-omit [Fintype σ] [DecidableEq σ] [DecidableEq τ] in
 /-- If `P` maps `D` into `K` and `K'` lies in `P M + K`, then the index of `K` in `K'` divides the
 index of `D` in `M` (indices in the sense of `New.submoduleIndex`). -/
 lemma Filling.submoduleIndex_dvd_of_le (hD : D ≤ K.comap P) (hK' : K' ≤ M.map P ⊔ K) :
@@ -88,6 +87,8 @@ lemma Filling.submoduleIndex_dvd_of_le (hD : D ≤ K.comap P) (hK' : K' ≤ M.ma
     _ ∣ (AddSubgroup.comap (P : (τ → A) →+ σ → A) K.toAddSubgroup).relIndex M.toAddSubgroup := by
       simp [submoduleIndex, sup_toAddSubgroup, map_toAddSubgroup, ← relIndex_comap]
     _ ∣ submoduleIndex D M := relIndex_dvd_of_le_left _ (toAddSubgroup_mono hD)
+
+variable [Fintype σ] [DecidableEq σ] [DecidableEq τ]
 
 lemma ne_zero_and_le_of_dvd {a b : ℕ} (hb : b ≠ 0) (hab : a ∣ b) : a ≠ 0 ∧ a ≤ b :=
   ⟨ne_zero_of_dvd_ne_zero hb hab, Nat.le_of_dvd hb.pos hab⟩
@@ -358,9 +359,8 @@ section Quotient
 open Matrix Fintype Sum
 
 variable {A : Type*} {π σ μ : Type} [CommRing A] [StarRing A] {R : Subring A} [Fintype π]
-  [Fintype σ] [Fintype μ] [DecidableEq π] [DecidableEq σ] [DecidableEq μ]
+  [Fintype σ] [Fintype μ] [DecidableEq μ]
 
-omit [DecidableEq π] in
 /-- Orthogonality for a hermitian form `J` is symmetric. -/
 lemma orthogonal_symm {J : Matrix π π A} (hJ : Jᴴ = J) {ρ ρ' : Type} {x : Matrix π ρ A}
     {y : Matrix π ρ' A} (h : xᴴ * J * y = 0) : yᴴ * J * x = 0 := by
@@ -393,7 +393,6 @@ namespace IsQuotientBasis
 variable {J : Matrix π π A} {ι : Matrix π σ A} {B : Matrix π μ A} {q : Matrix μ π A}
   {ρ ρ' : Type} {x : Matrix π ρ A} {y : Matrix π ρ' A}
 
-omit [DecidableEq π] [DecidableEq σ] in
 /-- The product of two vectors of `I^⊥` depends only on the class of the second. -/
 lemma mul_basis_mul_coord (h : IsQuotientBasis R J ι B q) (hx : xᴴ * J * ι = 0)
     (hy : ιᴴ * J * y = 0) : xᴴ * J * B * (q * y) = xᴴ * J * y := by
@@ -401,7 +400,6 @@ lemma mul_basis_mul_coord (h : IsQuotientBasis R J ι B q) (hx : xᴴ * J * ι =
   conv_rhs => rw [hl hy]
   rw [Matrix.mul_add, ← Matrix.mul_assoc _ ι, hx, Matrix.zero_mul, zero_add, Matrix.mul_assoc _ B]
 
-omit [DecidableEq π] [DecidableEq σ] in
 /-- The form `Bᴴ J B` on the quotient is induced by `J`: on the coordinates of the classes of two
 vectors of `I^⊥` it takes the value of `J` on the vectors themselves, for hermitian `J`. -/
 lemma gram_coord (h : IsQuotientBasis R J ι B q) (hJ : Jᴴ = J) (hx : ιᴴ * J * x = 0)
@@ -411,7 +409,8 @@ lemma gram_coord (h : IsQuotientBasis R J ι B q) (hJ : Jᴴ = J) (hx : ιᴴ * 
   simpa [hJ, Matrix.mul_assoc] using
     congrArg conjTranspose (h.mul_basis_mul_coord (orthogonal_symm hJ hy) hx)
 
-omit [DecidableEq σ] in
+variable [DecidableEq π]
+
 /-- Let `Λ = R^π` carry the form `J`, let the columns of `ι` be a basis of `Λ ∩ I` for an isotropic
 space `I`, and let `B` represent a basis of `(Λ ∩ I^⊥)/(Λ ∩ I)` (`IsQuotientBasis`). If `R` is
 stable under `star` and `J` is unimodular over `R` (hermitian and in GL(R)), then so is the Gram
@@ -429,6 +428,8 @@ lemma isUnimodular [IsStarStable R] (h : IsQuotientBasis R J ι B q) (hJ : IsUni
       (by simpa [Matrix.mul_assoc] using congrArg conjTranspose h.coord_mul_basis)⟩⟩
 
 end IsQuotientBasis
+
+variable [DecidableEq π] [DecidableEq σ]
 
 /-- Let `R` be an adelic ring and `Λ = R ^ π` unimodular for `J`. Let the columns of `ι₀` span an
 isotropic space `I`, and let those of `(ι₀ | y)` be a basis of `I^⊥`: they have a left inverse, are
