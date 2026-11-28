@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.NumberTheory.Padics.Cardinality
 import TauCeti.RingTheory.WittVector.ArtinSchreier
 import TauCeti.RingTheory.WittVector.Complete
 public import Mathlib.FieldTheory.IsAlgClosed.Classification
@@ -11,12 +12,10 @@ public import TauCeti.RingTheory.Perfectoid.Integral.Basic
 public import TauCeti.RingTheory.WittVector.Cyclotomic
 import Mathlib.Algebra.CharP.Pi
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.RingTheory.Algebraic.Cardinality
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Topology.Algebra.Module.Cardinality
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import TauCeti.RingTheory.Perfectoid.Cyclotomic.Basic
@@ -79,13 +78,8 @@ open MulSemiringAction Variety Polynomial PreTilt IsOfFinOrder nonZeroDivisors W
   NeZero Ideal.Quotient Fact ZMod ValuationRing Cardinal Complex IsPrimitiveRoot
 
 /-- The complex numbers and the algebraic closure of ℚ_p have the same cardinality. -/
-lemma _root_.New.mk_complex_eq_mk_padicAlgCl {p : ℕ} [Fact p.Prime] : #ℂ = #(PadicAlgCl p) := by
-  -- `PadicAlgCl p` is algebraic over `ℚ_[p]`, a quotient of a set of rational sequences, so it has
-  -- at most continuum many elements
-  have h_padic : #ℚ_[p] ≤ continuum := mk_quotient_le.trans ((mk_subtype_le _).trans (by simp))
-  refine mk_complex.trans ((continuum_le_cardinal_of_module ℚ_[p] _).antisymm ?_)
-  exact (Algebra.IsAlgebraic.cardinalMk_le_max ℚ_[p] (PadicAlgCl p)).trans
-    (max_le h_padic aleph0_le_continuum)
+lemma _root_.New.mk_complex_eq_mk_padicAlgCl {p : ℕ} [Fact p.Prime] : #ℂ = #(PadicAlgCl p) :=
+  mk_complex.trans (TauCeti.Padic.cardinalMk_eq_continuum_of_isAlgebraic p (PadicAlgCl p)).symm
 
 variable {p : ℕ} [ThePrime p]
 
@@ -170,14 +164,11 @@ lemma exists_tilt_lift_of_character (a : Multiplicative ℚ →* ℂ_[p])
 /-- The map s ↦ ε^s: a chosen homomorphism from ℚ to the multiplicative monoid of O^♭ with
 (ε^s)^♯ a primitive root of unity of order the denominator of s. -/
 def epsPow : Multiplicative ℚ →* OFlat :=
-  -- `ℂ` and `PadicAlgCl p` are uncountable algebraically closed fields of characteristic zero and
-  -- of the same cardinality, so they are isomorphic
+  -- Transport the complex roots of unity along a chosen abstract field isomorphism.
+  let ι : ℂ ≃+* PadicAlgCl p :=
+    (TauCeti.Padic.nonempty_ringEquiv_complex p (PadicAlgCl p)).some.symm
   (exists_tilt_lift_of_character
-    { toFun s :=
-        algebraMap (PadicAlgCl p) ℂ_[p] <|
-          (IsAlgClosed.ringEquiv_of_equiv_of_charZero (mk_complex ▸ cantor ℵ₀)
-              (Quotient.exact (mk_complex_eq_mk_padicAlgCl (p := p)))).some
-            (exp (2 * Real.pi * I * s.toAdd))
+    { toFun s := algebraMap (PadicAlgCl p) ℂ_[p] (ι (exp (2 * Real.pi * I * s.toAdd)))
       map_one' := by simp
       map_mul' := by simp [mul_add, exp_add] }
     (by simp)).choose
