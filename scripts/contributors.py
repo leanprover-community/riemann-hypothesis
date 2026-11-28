@@ -16,6 +16,7 @@ from collections import Counter
 import json
 import subprocess
 import sys
+from urllib.parse import quote_plus
 
 REPO = "leanprover-community/riemann-hypothesis"
 # Accounts that act for a person ("Bot of @x" on their profile): their pull requests are credited
@@ -77,6 +78,15 @@ def pending(numbers):
                "author": {"__typename": "Bot" if bot else "User", "login": login}}
 
 
+def merged_pr_link(login):
+    logins = [login, *sorted(alias for alias, owner in ALIASES.items() if owner == login)]
+    authors = " OR ".join(f"author:{name}" for name in logins)
+    if len(logins) > 1:
+        authors = f"({authors})"
+    query = quote_plus(f"is:pr is:merged {authors}")
+    return f"https://github.com/{REPO}/pulls?q={query}"
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--pending", nargs="*", type=int, default=[])
@@ -98,7 +108,7 @@ def main():
         "",
     ]
     for login, count in sorted(tally.items(), key=lambda item: (-item[1], item[0].lower())):
-        link = f"https://github.com/{REPO}/pulls?q=is%3Apr+is%3Amerged+author%3A{login}"
+        link = merged_pr_link(login)
         lines.append(f"- [{login}](https://github.com/{login}): [{count} merged]({link})")
     sys.stdout.write("\n".join(lines) + "\n")
 
