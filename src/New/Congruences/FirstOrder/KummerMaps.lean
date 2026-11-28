@@ -111,9 +111,7 @@ lemma toGalPlus_conjGal (g : Gal(Ω/E)) :
 
 /-- No complex conjugation lies in `Gal(Ω/E)`, because `E` is totally complex. -/
 lemma notMem_range_toGalPlus {c : Gal(Ω/maximalRealSubfield E)} (hc : IsComplexConj c) :
-    c ∉ (toGalPlus E).range := by
-  rintro ⟨s, rfl⟩
-  exact hc.false_of_isTotallyComplex (c := s)
+    c ∉ (toGalPlus E).range := fun ⟨s, hs⟩ ↦ (hs.symm ▸ hc).false_of_isTotallyComplex (c := s)
 
 open Classical in
 /-- Let `F` be the maximal real subfield of `E` and `G_F = Gal(Ω/F)`. For `σ ∈ G_F`, either `σ` or
@@ -271,8 +269,7 @@ lemma cyclotomicPlusMod_apply (ν : ℕ) (g : Gal(Ω/maximalRealSubfield E)) :
   simp [cyclotomicPlusMod, cyclotomicCharMod_prime_pow_eq, cyclotomicPlus_apply]
 
 lemma cyclotomicKerPlus_le_ker (ν : ℕ) :
-    (cyclotomicKerPlus ℓ E ν).toSubgroup ≤ (cyclotomicPlusMod ℓ E ν).ker := by
-  intro g hg
+    (cyclotomicKerPlus ℓ E ν).toSubgroup ≤ (cyclotomicPlusMod ℓ E ν).ker := fun _ hg ↦ by
   obtain ⟨s, rfl⟩ := (mem_inf.1 hg).left
   simpa [cyclotomicPlusMod_apply] using toGalPlus_mem_cyclotomicKerPlus_iff.1 hg
 
@@ -387,11 +384,8 @@ def kummerSetting [Finite I] {x : I → FrobeniusDatum E} (hx : ∀ i : I, IsNuS
     tateTwistPlus_ρ_eq_one e (cyclotomicPlusMod_eq_one ν
       (cyclotomicPlus_eq_one_of_isComplexConj hc))
   localPrimes := familyPrimes ℓ x
-  unramified := by
-    rintro g ⟨u, hu, hg⟩
-    exact tateTwistPlus_ρ_eq_one e (cyclotomicPlusMod_eq_one ν
-      (cyclotomicPlus_eq_one_of_mem_inertiaAbove
-      ⟨u, fun hℓ ↦ hu (mem_familyPrimes.2 (.inl hℓ)), hg⟩))
+  unramified := fun _ ⟨u, hu, hg⟩ ↦ tateTwistPlus_ρ_eq_one e <| cyclotomicPlusMod_eq_one ν <|
+    cyclotomicPlus_eq_one_of_mem_inertiaAbove ⟨u, fun hℓ ↦ hu (mem_familyPrimes.2 (.inl hℓ)), hg⟩
   place := familyPlace x
   isPlaceOver := isPlaceOver_familyPlace
   allowed u := .pi {g | (ℓ : 𝓞 (maximalRealSubfield E)) ∈ u.asIdeal → cyclotomicPlus ℓ E g = 1} ⊥

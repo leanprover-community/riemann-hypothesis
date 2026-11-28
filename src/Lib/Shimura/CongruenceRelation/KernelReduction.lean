@@ -199,10 +199,9 @@ lemma ker_factors_of_points [ValuativeArc V] [IsSeparated B.hom] (ψ : A ⟶ B) 
       obtain ⟨o', rfl⟩ := map_bijective.surjective u
       exact ⟨o', hu⟩
     exact (hI o.toRingHom).mpr (hr _ h_fin (by simp [hι]))
-  have hI_zero : I ≤ RingHom.ker (RingHom.id S) := fun s hs ↦ by
-    by_contra hs_ne
-    obtain ⟨o, ho⟩ := cartier ℂ (mono_of_mono_left ι) h_coset hs_ne
-    exact ho (h_pts o hs)
+  have hI_zero : I ≤ RingHom.ker (RingHom.id S) := fun s hs ↦ Classical.byContradiction fun hs_ne ↦
+    let ⟨o, ho⟩ := cartier ℂ (mono_of_mono_left ι) h_coset hs_ne
+    ho (h_pts o hs)
   obtain ⟨l, hl⟩ := (hI _).mp hI_zero
   exact ⟨z'.left ≫ l, by simp [hl, ← hz']⟩
 
@@ -250,9 +249,7 @@ lemma New.Variety.ringChar_prime_and_exists_isCoprime_of_isGoodAt_ker {E : Type}
   -- `c` is a uniformiser: it generates `ker ρ` modulo its square.
   obtain ⟨c, hc⟩ : ∃ c : NumberField.RingOfIntegers E, ker ρ • ker ρ ⊔ span {c} = ker ρ :=
     IsDedekindDomain.exists_sup_span_eq (ker ρ).smul_le_right (by simpa using ker_ne_bot)
-  have hc_ne_zero : c ≠ 0 := by
-    rintro rfl
-    simp_all [ker_ne_top]
+  have hc_ne_zero : c ≠ 0 := fun h ↦ by simp_all [ker_ne_top]
   refine ⟨c, hc.le (mem_sup_right (mem_span_singleton_self c)), hc_ne_zero, ?_⟩
   -- Nakayama: some `t ≡ 1` modulo `ker ρ` multiplies `ker ρ` into `(c)`.
   exact Submodule.exists_sub_one_mem_and_smul_le_of_fg_of_le_sup .of_finite le_rfl (by order)
@@ -474,10 +471,8 @@ lemma IsLieLine.exists_detects_tangent {R : Type} [CommRing R] [Algebra R k]
       cancel_mono, Spec.map_inj, CommRingCat.hom_ext_iff, RingHom.ext_iff, TrivSqZeroExt.ext_iff,
       ← Spec.map_comp_assoc, sub_eq_zero_of_eq, -Spec.map_comp] using h_v_eq
   -- `m * (v₀ T).snd = 0`, so either `m = 0` or `v₀` is the zero tangent vector
-  obtain ⟨-, hT_snd⟩ := h_scale T
-  obtain ⟨-, ha_snd⟩ := h_scale a
-  rw [hT_snd, mul_eq_zero] at hvT
-  rw [ha_snd, mul_eq_zero]
+  rw [(h_scale T).2, mul_eq_zero] at hvT
+  rw [(h_scale a).2, mul_eq_zero]
   exact hvT.imp_right fun h ↦ hT h a
 
 /-- Let `y` be an object over a local ring `R`, and let `ρ : 𝓞 E → k` be `y.baseHom` followed by
@@ -606,12 +601,12 @@ lemma exists_dvd_pow_card_of_sections {O S B J : Type*} [CommRing O] [CommRing S
     · obtain ⟨a, ha⟩ := not_forall.mp hj
       exact ⟨algebraMap O S (θ j a) - a, by simp, (hχ _ (by simpa [sub_eq_zero] using ha)).dvd⟩
   choose f hf_zero hf_dvd using h_factor
-  refine ⟨∏ j, f j, fun j ↦ ?_, ?_⟩
-  · exact (map_prod (θ j) f univ).trans (prod_eq_zero (mem_univ j) (hf_zero j))
-  · calc χ (∏ j, f j) = ∏ j, χ (f j) := map_prod χ f univ
-      _ ∣ ∏ j, if ∀ a : S, algebraMap O k (θ j a) = o a then g else 1 :=
-        univ.prod_dvd_prod_of_dvd _ _ fun j _ ↦ hf_dvd j
-      _ = _ := by simp [prod_ite, Fintype.card_subtype]
+  refine ⟨∏ j, f j,
+    fun j ↦ (map_prod (θ j) f univ).trans (prod_eq_zero (mem_univ j) (hf_zero j)), ?_⟩
+  calc χ (∏ j, f j) = ∏ j, χ (f j) := map_prod χ f univ
+    _ ∣ ∏ j, if ∀ a : S, algebraMap O k (θ j a) = o a then g else 1 :=
+      univ.prod_dvd_prod_of_dvd _ _ fun j _ ↦ hf_dvd j
+    _ = _ := by simp [prod_ite, Fintype.card_subtype]
 
 /-- Density of the torsion sections, read on functions on `Spec S`. Let each section
 `e.torsionPoint (κ i)` factor through the closed immersion `ι : Spec S ⟶ y.groupScheme` as the point
@@ -718,10 +713,8 @@ lemma exists_isLocalEquation_pow_sectionCount (e : y.FullLevelStructure)
   -- `o T - T` read on `z`.
   algebraize [φ]
   -- if `β = b` then `star β = b` too, against coprimality
-  have h_ne : D.β - b ≠ 0 := by
-    intro h_eq
-    have h_star : star D.β - b = 0 := by simp [sub_eq_zero.mp h_eq]
-    exact not_isCoprime_zero_zero (by rwa [h_eq, h_star] at h_coprime)
+  have h_ne : D.β - b ≠ 0 := fun h_eq ↦
+    not_isCoprime_zero_zero (by simpa [sub_eq_zero.mp h_eq] using h_coprime)
   have h_isog : IsIsogeny ((D.β - b) ^ (M + 1) • 𝟙 y.groupScheme) :=
     y.isIsogeny_smul_id (pow_ne_zero (M + 1) h_ne)
   obtain ⟨S, ι, hS_finite, hS_flat, hι_closed, ι_ker, ι_lift⟩ :=
