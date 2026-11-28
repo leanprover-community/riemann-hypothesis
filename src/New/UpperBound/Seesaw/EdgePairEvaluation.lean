@@ -1015,6 +1015,14 @@ variable (Y Y' Y'')
 
 /-! ### The two kinds of pairs -/
 
+omit [Fintype X] [Fintype X₀] in
+/-- The Gram matrix of `V⁻ ⊕ V''` pairs two basis vectors only if their grades add up to zero. -/
+lemma flipSum_grade_add_eq_zero : ∀ a b : ι ⊕ ι'', (flipSum V V'').J a b ≠ 0 →
+    (Y.gradeOf ⊕ᵥ Y''.gradeOf) a + (Y.gradeOf ⊕ᵥ Y''.gradeOf) b = 0 := by
+  simp [↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv, Y.gram_eq, Y''.gram_eq,
+    flipSpace, gradedGram]
+  grind
+
 /-- The pair data for strings of lengths s (odd, s ≠ 1), s − 1 and s − 2, with
 `Y'.genericConst = Y.genericConst` and `card ι + card ι''` even: one hyperbolic plane, spanned by
 the middle vectors z of Y and z' of Y'', is removed. -/
@@ -1047,10 +1055,7 @@ def middleDoubleLift (h_string : HasConsecutiveStrings Y Y' Y'') (h_card : Even 
             conjTranspose_fromCols_eq_fromRows_conjTranspose, flipSpace, gradedGram, hyperbolicSum,
             ← Matrix.ext_iff, Matrix.mul_apply, Matrix.one_apply]
           grind [Y.N_ne_zero_and_star_eq]
-        grade_add_eq_zero := by
-          simp [↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv, Y.gram_eq, Y''.gram_eq,
-            flipSpace, gradedGram]
-          grind }
+        grade_add_eq_zero := flipSum_grade_add_eq_zero Y Y'' }
     toHasConsecutiveStrings := h_string
     even_card_add := h_card
     embX := MonoidHom.id (G E (1 : X₀ → ℤˣ))
@@ -1093,10 +1098,7 @@ def lastDoubleLift (h_string : HasConsecutiveStrings Y Y' Y'') (h_card : Even (c
           simp [j, Y.gram_eq, Y''.gram_eq, apply_ite star, flipSpace, gradedGram, hyperbolicSum,
             ← Matrix.ext_iff, Matrix.mul_apply, Matrix.one_apply]
           grind [Y.N_ne_zero_and_star_eq]
-        grade_add_eq_zero := by
-          simp [↓reindex_equiv Y.indexEquiv, ↓reindex_equiv Y''.indexEquiv, Y.gram_eq, Y''.gram_eq,
-            flipSpace, gradedGram]
-          grind }
+        grade_add_eq_zero := flipSum_grade_add_eq_zero Y Y'' }
     toHasConsecutiveStrings := h_string
     even_card_add := h_card
     -- `k` acts on `X₀` and fixes the last basis vector.
