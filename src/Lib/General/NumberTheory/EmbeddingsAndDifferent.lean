@@ -5,6 +5,8 @@ public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 public import Mathlib.RingTheory.DedekindDomain.Different
 import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.RingTheory.Ideal.Int
+import TauCeti.NumberTheory.NumberField.ComplexConjugation.MaximalRealSubfield
+import TauCeti.RingTheory.Norm.Quadratic
 public import Lib.Adelic.Adeles.AdditiveCharacter
 
 /-!
@@ -122,31 +124,15 @@ variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
 lemma mem_maximalRealSubfield_iff_star_eq {x : E} : x ∈ maximalRealSubfield E ↔ star x = x :=
   (complexConj_eq_self_iff E x).symm
 
-open scoped Classical in
-/-- The automorphisms of a CM field over its maximal real subfield are the identity and complex
-conjugation. -/
-lemma pair_complexConj_eq_univ :
-    ({1, complexConj E} : Finset (E ≃ₐ[maximalRealSubfield E] E)) = univ :=
-  eq_univ_of_card _ <| by rw [card_pair (complexConj_ne_one E).symm, ← Nat.card_eq_fintype_card,
-    IsGalois.card_aut_eq_finrank, IsQuadraticExtension.finrank_eq_two]
-
-lemma complexConj_apply_eq_star (x : E) : complexConj E x = star x := rfl
-
 /-- The trace from a CM field `E` to its maximal real subfield is `x + x̄`. -/
 lemma trace_maximalRealSubfield_eq_add_star (x : E) :
-    (trace (maximalRealSubfield E) E x : E) = x + star x := by
-  classical
-  refine (trace_eq_sum_automorphisms (K := maximalRealSubfield E) x).trans ?_
-  rw [← pair_complexConj_eq_univ, sum_pair (complexConj_ne_one E).symm, AlgEquiv.one_apply,
-    complexConj_apply_eq_star]
+    (trace (maximalRealSubfield E) E x : E) = x + star x :=
+  IsQuadraticExtension.algebraMap_trace_eq_add _ E (complexConj_ne_one E) x
 
 /-- The norm from a CM field `E` to its maximal real subfield is `x * x̄`. -/
 lemma norm_maximalRealSubfield_eq_mul_star (x : E) :
-    (Algebra.norm (maximalRealSubfield E) x : E) = x * star x := by
-  classical
-  refine (norm_eq_prod_automorphisms (maximalRealSubfield E) x).trans ?_
-  rw [← pair_complexConj_eq_univ, prod_pair (complexConj_ne_one E).symm, AlgEquiv.one_apply,
-    complexConj_apply_eq_star]
+    (Algebra.norm (maximalRealSubfield E) x : E) = x * star x :=
+  algebraMap_norm_eq_mul_complexConj x
 
 /-- If `x` lies in the trace dual of the integers of the CM field `E` over those of its maximal
 real subfield, then `(y - ȳ) * x` is an algebraic integer for every integer `y` of `E`. -/
