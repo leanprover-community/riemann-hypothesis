@@ -1,5 +1,6 @@
 module
 
+import TauCeti.AlgebraicGeometry.IdealSheaf.VanishingIdeal
 public import Mathlib.AlgebraicGeometry.Noetherian
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.AlgebraicGeometry.Morphisms.Immersion
@@ -90,11 +91,7 @@ lemma New.exists_reduced_closure {Z : Type} {X : Scheme}
     exists_lift_of_dense_preimage I.subschemeι (ξ z)
       (dense_indiscrete ⟨_, ⟨ξ z (closedPoint ℂ), subset_closure ⟨z, rfl⟩⟩, rfl⟩)
   choose e he using h_lift
-  -- On each affine chart the ideal is a vanishing ideal, hence radical.
-  have (U : I.subschemeCover.cover.I₀) : IsReduced (I.subschemeCover.cover.X U) :=
-    (affine_isReduced_iff _).2
-      ((Ideal.isRadical_iff_quotient_reduced _).1 (PrimeSpectrum.isRadical_vanishingIdeal _))
-  have h_red : IsReduced I.subscheme := IsReduced.of_openCover _ I.subschemeCover.cover
+  have h_red : IsReduced I.subscheme := isReduced_subscheme_vanishingIdeal _
   -- The image of a point of the subscheme lies in the closure of the images of the `e z`.
   have h_dense : IsDenseFamily e := by
     have h_pt (z : Z) (x : Spec (CommRingCat.of ℂ)) : I.subschemeι (e z x) = ξ z x := by
