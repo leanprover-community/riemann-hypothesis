@@ -1,8 +1,9 @@
 module
 
 public import New.UpperBound.Objects.LabelsAndIndexTypes
-import Lib.Analytic.Primes
-import Lib.General.NumberTheory.FrobeniusOrbits
+import TauCeti.Data.Nat.Totient.LowerBound
+import TauCeti.FieldTheory.Finite.PrimitivePolynomial
+import TauCeti.NumberTheory.SecondMoment.AllowedLabel
 
 /-!
 # The share of non-allowed polynomials and the bad share
@@ -39,9 +40,15 @@ arXiv 0806.1345, 2008; Lidl–Niederreiter, Finite Fields, ch. 3, 1983.
 
 section BadShare
 
-open Finset Fintype Real Polynomial minpoly Nat ComplexOrder AlgebraicClosure
+open Finset Fintype Real Polynomial Nat ComplexOrder
 
 attribute [local instance low] Fintype.ofFinite
+
+private lemma New.isAllowedPolynomial_iff {k : Type*} [Field k] {M r : ℕ} {c : k[X]} :
+    IsAllowedPolynomial M r c ↔ c.natDegree = r ∧ TauCeti.SecondMoment.IsAllowedLabel M c := by
+  simp only [IsAllowedPolynomial, IsLabel, TauCeti.SecondMoment.isAllowedLabel_iff,
+    TauCeti.SecondMoment.isLabel_iff]
+  tauto
 
 open scoped Classical in
 /-- Over a field `k` with `q` elements, at most `(1 + M + r) q ^ (r - 1)` monic polynomials of
@@ -51,52 +58,14 @@ lemma New.card_not_isAllowedPolynomial_le (k : Type*) [Field k] [Finite k] (M : 
     (r : ℕ) :
     #{c ∈ monicsOfDegree k r | ¬IsAllowedPolynomial M r c} ≤
       (1 + M + r) * Nat.card k ^ (r - 1) := by
-  -- Such a polynomial has a root `a` with `a = 0` or `a ^ M = 1`,
-  -- or is `P ^ 2 * B` with `P`, `B` monic and `d = B.natDegree < r`.
-  let R : Finset k := insert 0 (nthRoots M (1 : k)).toFinset
-  let withRoot : Finset k[X] := R.image₂ (fun a B ↦ (X - C a) * B) (monicsOfDegree k (r - 1))
-  let withSquare (d : ℕ) : Finset k[X] :=
-    (monicsOfDegree k ((r - d) / 2)).image₂ (fun P B ↦ P ^ 2 * B) (monicsOfDegree k d)
-  have mem_monics (d : ℕ) (c : k[X]) : c ∈ monicsOfDegree k d ↔ c.Monic ∧ c.natDegree = d := by
-    simp [monicsOfDegree]
-  have card_monics (d : ℕ) : #(monicsOfDegree k d) = Nat.card k ^ d := by
-    simp [monicsOfDegree, ofEquiv_card]
-  have cover : {c ∈ monicsOfDegree k r | ¬IsAllowedPolynomial M r c} ⊆
-      withRoot ∪ (range r).biUnion withSquare := by
-    intro c hc
-    obtain ⟨hc_mem, not_allowed⟩ := mem_filter.mp hc
-    obtain ⟨monic, rfl⟩ := (mem_monics r c).mp hc_mem
-    by_contra not_covered
-    obtain ⟨not_withRoot, not_withSquare⟩ := notMem_union.mp not_covered
-    have no_root (a : k) (ha : a ∈ R) (root : c.IsRoot a) : False := by
-      obtain ⟨B, rfl⟩ : X - C a ∣ c := dvd_iff_isRoot.mpr root
-      have hB : B.Monic := (monic_X_sub_C a).of_mul_monic_left monic
-      exact not_withRoot (mem_image₂_of_mem ha
-        ((mem_monics _ B).mpr ⟨hB, by simp [(monic_X_sub_C a).natDegree_mul hB]⟩))
-    have sqfree : Squarefree c := by
-      intro Q hQ
-      by_contra not_unit
-      obtain ⟨P, hP, irred, hPQ⟩ := Q.exists_monic_irreducible_factor not_unit
-      obtain ⟨B, rfl⟩ : P ^ 2 ∣ c := by simpa [sq] using (mul_dvd_mul hPQ hPQ).trans hQ
-      have hB : B.Monic := (hP.pow 2).of_mul_monic_left monic
-      have deg : (P ^ 2 * B).natDegree = 2 * P.natDegree + B.natDegree := by
-        simp [(hP.pow 2).natDegree_mul hB]
-      have hP_pos : 0 < P.natDegree := irred.natDegree_pos
-      have h_image : P ^ 2 * B ∈ withSquare B.natDegree :=
-        mem_image₂_of_mem ((mem_monics _ P).mpr ⟨hP, by lia⟩) ((mem_monics _ B).mpr ⟨hB, rfl⟩)
-      exact not_withSquare (mem_biUnion.mpr ⟨B.natDegree, mem_range.mpr (by lia), h_image⟩)
-    have label : IsLabel c.natDegree c :=
-      ⟨monic, sqfree, rfl, zero_isRoot_iff_coeff_zero_eq_zero.not.mp (no_root 0 (by simp [R]))⟩
-    exact not_allowed ⟨label, fun a ha ↦ no_root a (by simp [R, NeZero.pos, ha])⟩
-  have card_withRoot : #withRoot ≤ (1 + M) * Nat.card k ^ (r - 1) := by
-    grw [card_image₂_le, card_insert_le, Multiset.toFinset_card_le, card_nthRoots, card_monics,
-      add_comm M 1]
-  have card_withSquare (d : ℕ) (hd : d ∈ range r) : #(withSquare d) ≤ Nat.card k ^ (r - 1) := by
-    have deg_le : (r - d) / 2 + d ≤ r - 1 := by grind
-    grw [card_image₂_le, card_monics, card_monics, ← pow_add]
-    exact Nat.pow_le_pow_right Nat.card_pos deg_le
-  grw [card_le_card cover, card_union_le, card_withRoot,
-    card_biUnion_le_card_mul (range r) withSquare _ card_withSquare, Finset.card_range, ← add_mul]
+  have hset : (({c ∈ monicsOfDegree k r | ¬IsAllowedPolynomial M r c} : Finset k[X]) : Set k[X]) =
+      {c : k[X] | c.Monic ∧ c.natDegree = r ∧ ¬TauCeti.SecondMoment.IsAllowedLabel M c} := by
+    ext c
+    simp only [coe_filter, Set.mem_ofPred_eq, monicsOfDegree, Set.mem_toFinset,
+      isAllowedPolynomial_iff]
+    tauto
+  rw [← Set.ncard_coe_finset, hset]
+  exact TauCeti.SecondMoment.ncard_monic_not_isAllowedLabel_le (NeZero.ne M) r
 
 open scoped Classical in
 /-- Over a field `k` with `q` elements and for `r ≠ 0`, there are at least `φ (q ^ r - 1) / r`
@@ -105,27 +74,22 @@ vanishing at `0`, with a root of order `q ^ r - 1`. -/
 lemma New.totient_le_mul_card_isPrimitivePolynomial (k : Type*) [Field k] [Finite k] {r : ℕ}
     (hr : r ≠ 0) :
     φ (Nat.card k ^ r - 1) ≤ r * #{c ∈ monicsOfDegree k r | IsPrimitivePolynomial r c} := by
-  have hq : 1 < Nat.card k := Finite.one_lt_card
-  have hqr : 1 < Nat.card k ^ r := one_lt_pow₀ hq hr
-  have : NeZero ((Nat.card k ^ r - 1 : ℕ) : k) := ⟨by simp [Ne.pos, hr]⟩
-  rw [← (hasEnoughRootsOfUnity k _).prim.choose_spec.card_primitiveRoots]
-  refine card_le_mul_card_image_of_maps_to (f := minpoly k) (fun ξ hξ ↦ ?_) r fun c hc ↦ ?_
-  · rw [mem_primitiveRoots (by lia)] at hξ
-    obtain ⟨ξ_ne, ξ_fixed⟩ := (pow_pred_eq_one_iff hqr).mp hξ.pow_eq_one
-    have int := Algebra.IsIntegral.isIntegral (R := k) ξ
-    have irr := irreducible int
-    -- `q ^ r - 1` and `q ^ d - 1` divide each other, so `d = r`.
-    obtain ⟨h1, h2⟩ := root_pow_card_pow_pred_eq_one irr (coeff_zero_ne_zero int ξ_ne) (aeval k ξ)
-    have := (hξ.dvd_of_pow_eq_one _ h1).antisymm (pow_sub_one_dvd_pow_sub_one _
-      ((root_pow_card_pow_eq_self_iff irr (aeval k ξ)).mp ξ_fixed))
-    have deg : (minpoly k ξ).natDegree = r := Nat.pow_right_injective hq (by lia)
-    exact mem_filter.mpr ⟨by simp [monicsOfDegree, monic int, deg],
-      ⟨monic int, irr.squarefree, deg, coeff_zero_ne_zero int ξ_ne⟩, irr, ξ, aeval k ξ, hξ⟩
-  · -- The `ξ` with minimal polynomial `c` are roots of `c`, which has degree `r`.
-    obtain ⟨⟨monic, -, rfl, -⟩, -⟩ := (mem_filter.mp hc).2
-    grw [← natDegree_map_le (f := algebraMap k (AlgebraicClosure k))]
-    refine card_le_degree_of_subset_roots fun ξ hξ ↦ ?_
-    simpa [(mem_filter.mp hξ).2, monic.ne_zero] using aeval k ξ
+  have hsub : {c : k[X] | c.IsPrimitivePolynomial ∧ c.natDegree = r} ⊆
+      ({c ∈ monicsOfDegree k r | New.IsPrimitivePolynomial r c} : Finset k[X]) := by
+    rintro c ⟨hc, hdeg⟩
+    have hdeg_ne : c.degree ≠ 0 := by
+      rw [degree_eq_natDegree hc.monic.ne_zero, hdeg]
+      exact_mod_cast hr
+    obtain ⟨ξ, hξ⟩ := IsAlgClosed.exists_aeval_eq_zero (AlgebraicClosure k) c hdeg_ne
+    have hord := ((Polynomial.isPrimitivePolynomial_iff_orderOf_eq hξ).mp hc).2.2
+    rw [hdeg] at hord
+    have hprim : IsPrimitiveRoot ξ (Nat.card k ^ r - 1) := IsPrimitiveRoot.iff_orderOf.mpr hord
+    exact mem_coe.mpr (mem_filter.mpr ⟨by simp [monicsOfDegree, hc.monic, hdeg],
+      ⟨hc.monic, hc.irreducible.squarefree, hdeg, hc.coeff_zero_ne_zero⟩, hc.irreducible, ξ, hξ,
+      hprim⟩)
+  refine (Polynomial.totient_le_mul_ncard_isPrimitivePolynomial (K := k) r).trans ?_
+  rw [← Set.ncard_coe_finset]
+  exact Nat.mul_le_mul_left r (Set.ncard_le_ncard hsub (Finset.finite_toSet _))
 
 open scoped Classical in
 /-- Over a field with `q` elements and for `1 < r < q`, weight every polynomial by
@@ -133,25 +97,19 @@ open scoped Classical in
 or at an `M`-th root of unity in the field) weigh at least `1 - ε` in total if
 `(1 + M + 2 r) / q ≤ ε`. -/
 lemma New.one_sub_le_card_allowed_mul (k : Type*) [Field k] [Finite k] {q M r : ℕ} [NeZero M]
-    {ε : ℝ} (hq : Nat.card k = q) (hr_one_lt : 1 < r) (hrq : r < q)
+    {ε : ℝ} (hq : Nat.card k = q) (_hr_one_lt : 1 < r) (_hrq : r < q)
     (hε_ge : (1 + M + 2 * r) / q ≤ ε) :
     1 - ε ≤ #{c ∈ monicsOfDegree k r | IsAllowedPolynomial M r c} * ((1 - r / q) / q ^ r) := by
-  have hq_pos : 0 < (q : ℝ) := mod_cast (by lia : 0 < q)
-  have weight_nonneg : 0 ≤ (1 - r / q : ℝ) / q ^ r := by bound [(mod_cast hrq.le : (r : ℝ) ≤ q)]
-  have card_split : (#{c ∈ monicsOfDegree k r | IsAllowedPolynomial M r c} : ℝ) +
-      #{c ∈ monicsOfDegree k r | ¬IsAllowedPolynomial M r c} = q ^ r := by
-    simp [← cast_add, card_filter_add_card_filter_not, monicsOfDegree, ofEquiv_card, ← hq]
-  have card_bad : (#{c ∈ monicsOfDegree k r | ¬IsAllowedPolynomial M r c} : ℝ) ≤
-      (1 + M + r) * q ^ (r - 1) := by
-    rw [← hq]
-    exact_mod_cast card_not_isAllowedPolynomial_le k M r
-  calc 1 - ε ≤ 1 - (1 + M + 2 * r) / q := by linarith
-    _ ≤ (1 - (1 + M + r) / q) * (1 - r / q : ℝ) := by
-      linear_combination (by positivity : 0 ≤ (1 + M + r : ℝ) / q * (r / q))
-    _ = (q ^ r - (1 + M + r) * q ^ (r - 1)) * ((1 - r / q) / q ^ r) := by
-      rw [pow_sub₀ _ hq_pos.ne' hr_one_lt.le]
-      field_simp
-    _ ≤ _ := mul_le_mul_of_nonneg_right (by linarith) weight_nonneg
+  subst hq
+  have hset : (({c ∈ monicsOfDegree k r | IsAllowedPolynomial M r c} : Finset k[X]) : Set k[X]) =
+      {c : k[X] | c.natDegree = r ∧ TauCeti.SecondMoment.IsAllowedLabel M c} := by
+    ext c
+    simp only [coe_filter, Set.mem_ofPred_eq, monicsOfDegree, Set.mem_toFinset,
+      isAllowedPolynomial_iff]
+    refine ⟨fun h ↦ h.2, fun h ↦ ⟨⟨?_, h.1⟩, h⟩⟩
+    exact (TauCeti.SecondMoment.isLabel_iff.mp (TauCeti.SecondMoment.isAllowedLabel_iff.mp h.2).1).1
+  rw [← Set.ncard_coe_finset, hset]
+  exact TauCeti.SecondMoment.one_sub_le_ncard_isAllowedLabel_mul (NeZero.ne M) hε_ge
 
 open scoped Classical in
 /-- Over a field `k` with `q` elements and for `1 < r < q`, weight every polynomial by
@@ -161,30 +119,27 @@ lemma New.card_not_primitive_mul_le (k : Type*) [Field k] [Finite k] {q r : ℕ}
     (hq : Nat.card k = q) (hr_one_lt : 1 < r) (hrq : r < q) :
     #{c ∈ monicsOfDegree k r | ¬IsPrimitivePolynomial r c} * ((1 - r / q) / q ^ r : ℝ) ≤
       exp (-(1 / (2 * r * (2 * (r * Real.log q) + 1)))) := by
-  -- `φ (q ^ r - 1)` is at most `r` times the number of primitive polynomials, and
-  -- `N ≤ φ N * (2 log N + 1)`.
-  set A : ℝ := 2 * r * (2 * (r * Real.log q) + 1)
   set nPrim : ℕ := #{c ∈ monicsOfDegree k r | IsPrimitivePolynomial r c}
-  have hqr : 1 < q ^ r := one_lt_pow hr_one_lt.ne_bot (hr_one_lt.trans hrq)
-  have hqr_pos : 0 < (q : ℝ) ^ r := mod_cast (by lia : 0 < q ^ r)
-  have totient_le : (φ (q ^ r - 1) : ℝ) ≤ r * nPrim := by
-    rw [← hq]
-    exact_mod_cast totient_le_mul_card_isPrimitivePolynomial k hr_one_lt.ne_zero
-  have prim_ge : (q : ℝ) ^ r ≤ A * nPrim := by
-    have : (q : ℝ) ^ r ≤ (q ^ r - 1 : ℕ) * 2 := mod_cast (by lia : q ^ r ≤ (q ^ r - 1) * 2)
-    grw [this, le_totient_mul_log (by lia), totient_le, sub_le, cast_pow, Real.log_pow]
-    · exact le_of_eq (by ring)
-    · exact_mod_cast (by lia : 0 < q ^ r - 1)
+  have hr_pos : (0 : ℝ) < r := mod_cast (by lia : 0 < r)
+  have hqr_pos : 0 < (q : ℝ) ^ r := pow_pos (mod_cast (by lia : 0 < q)) r
+  have totient_le : (φ (q ^ r - 1) : ℝ) / (r * (q : ℝ) ^ r) ≤ (nPrim : ℝ) / (q : ℝ) ^ r := by
+    rw [div_le_div_iff₀ (by positivity) hqr_pos]
+    have h := totient_le_mul_card_isPrimitivePolynomial k hr_one_lt.ne_zero
+    rw [hq] at h
+    have h' : (φ (q ^ r - 1) : ℝ) ≤ r * nPrim := by exact_mod_cast h
+    nlinarith
   have card_split :
       (nPrim : ℝ) + #{c ∈ monicsOfDegree k r | ¬IsPrimitivePolynomial r c} = q ^ r := by
     simp [nPrim, ← cast_add, card_filter_add_card_filter_not, monicsOfDegree, ofEquiv_card, ← hq]
-  have h1 : (q ^ r - nPrim : ℝ) * (1 / (q : ℝ) ^ r) ≤ 1 - 1 / A := by
-    rw [mul_one_div, sub_div, div_self hqr_pos.ne', sub_le_sub_iff_left,
-      div_le_div_iff₀ (by positivity) hqr_pos]
-    linarith
-  refine le_trans ?_ (h1.trans (one_sub_le_exp_neg (1 / A)))
-  rw [← card_split, add_sub_cancel_left]
-  bound [(by positivity : 0 ≤ (r : ℝ) / q)]
+  have h_notPrim : (#{c ∈ monicsOfDegree k r | ¬IsPrimitivePolynomial r c} : ℝ) / (q : ℝ) ^ r =
+      1 - (nPrim : ℝ) / (q : ℝ) ^ r := by
+    rw [eq_sub_iff_add_eq, ← add_div, add_comm, card_split, div_self hqr_pos.ne']
+  calc _ ≤ #{c ∈ monicsOfDegree k r | ¬IsPrimitivePolynomial r c} * (1 / (q : ℝ) ^ r) := by
+        bound [(by positivity : 0 ≤ (r : ℝ) / q)]
+    _ = 1 - (nPrim : ℝ) / (q : ℝ) ^ r := by rw [mul_one_div, h_notPrim]
+    _ ≤ 1 - (φ (q ^ r - 1) : ℝ) / (r * (q : ℝ) ^ r) := by linarith
+    _ ≤ exp (-(1 / (2 * r * (2 * (r * Real.log q) + 1)))) := by
+        simpa [mul_assoc] using TauCeti.Nat.one_sub_totient_pow_sub_one_div_le_exp (by lia) r
 
 /-- Let `k w` be finitely many fields with `q` elements, `r = card n < q`, and `c w` a label of
 degree `r` over `k w`: a monic squarefree polynomial of degree `r` that does not vanish at `0`. The
