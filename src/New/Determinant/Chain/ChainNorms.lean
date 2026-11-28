@@ -428,7 +428,7 @@ lemma exists_inner_triangleTransposedLift_eq {P : Parameters} (D : Data P) {i n 
   have h_conj (g : New.G D.E (D.gridSigns false (i + 1) 0 n)) :
       conj ((D.triangleTransposedLift false ϑ i n Φ Ψ x).val g) = turn ϑ * L (g * (1, u)) := by
     refine (congrArg conj (hΦ.modTransposedLift_apply _ _ ϑ Ψ x g)).trans ?_
-    simp [L, Q, u, lift_modDatum_apply, ← integral_conj, h_turn, mul_assoc, integral_const_mul]
+    simp [L, Q, u, lift_modDatum_apply, conj_integral_mul (h_turn ϑ Ψ Φ g)]
   have h_trade : (D.gridSpace (i + 1) false 0 n).petersson y'.val (star L) =
       κ * ⟪D.triangleReversedLift false ϑ i n Φ' (D.fourierDatum false ϑ Ψ) y', x⟫ :=
     hκ ϑ _ _ (triangleModulus false ϑ) (D.fourierDatum false ϑ Ψ) x y'
@@ -478,7 +478,7 @@ lemma exists_inner_triangleReversedLift_eq {P : Parameters} (D : Data P) {i n : 
       conj (L h) = turn ϑ * A.val h := by
     -- write both sides as integrals, conjugate under the integral and reverse the kernel
     refine .trans ?_ (congrArg _ (hΦ'.modTransposedLift_formRep_inv_apply _ _ ϑ _ _ y h).symm)
-    simp [L, lift_modDatum_apply, ← integral_conj, h_turn, hQ, mul_assoc, integral_const_mul]
+    simp [L, lift_modDatum_apply, conj_integral_mul (fun g ↦ h_turn ϑ Ψ Q g h), hQ]
   rw [Pi.mul_apply, Pi.inv_apply, mul_assoc, eq_inv_mul_iff_mul_eq₀ (h_turn_ne ϑ)]
   calc turn ϑ * ⟪x, A⟫ = (D.gridSpace i false 0 (n + 1)).petersson x.val (star L) := by
         simp [inner_eq_petersson, petersson, h_conj, mul_left_comm _ (turn ϑ), integral_const_mul]
