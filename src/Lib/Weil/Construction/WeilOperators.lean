@@ -2,9 +2,9 @@ module
 
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.MeasureTheory.Measure.Haar.IntegralUnique
 public import Lib.Weil.Construction.HeisenbergModel
 import Lib.General.Analysis.HolomorphicIntegrals
-import Lib.General.Measure.HaarNormalisation
 
 /-!
 # Weil operators, orthogonal sums and transport of the reproducing model
@@ -546,8 +546,9 @@ lemma OrthogonalSum.isVacuum [LocallyCompactSpace W₁] [LocallyCompactSpace W�
 lemma OrthogonalSum.measurePreserving_equiv [LocallyCompactSpace W] [LocallyCompactSpace W₁]
     [LocallyCompactSpace W₂] : MeasurePreserving S.equiv (μ₁.prod μ₂) μ where
   measurable := by fun_prop
-  map_eq :=
-    addHaar_eq_of_integral_eq_one he.integral_norm_sq_eq_one S.isVacuum.integral_norm_sq_eq_one
+  map_eq := eq_addHaar_of_integral_eq
+    (S.isVacuum.integral_norm_sq_eq_one.trans he.integral_norm_sq_eq_one.symm)
+    (by rw [he.integral_norm_sq_eq_one]; exact one_ne_zero)
 
 omit [CompleteSpace X] in
 lemma OrthogonalSum.integral_eq_integral_prod [LocallyCompactSpace W] [LocallyCompactSpace W₁]
@@ -759,7 +760,9 @@ lemma measurePreserving_equiv (hφ : ∀ x : W', e (φ x) = e' x) : MeasurePrese
         = ∫ x : W', ‖e (φ x)‖ ^ 2 ∂μ' := φ.isClosedEmbedding.integral_map _
       _ = ∫ x : W', ‖e' x‖ ^ 2 ∂μ' := by simp_rw [hφ]
       _ = 1 := he'.integral_norm_sq_eq_one
-  have h_map : map φ μ' = μ := addHaar_eq_of_integral_eq_one he.integral_norm_sq_eq_one h_one
+  have h_map : map φ μ' = μ := eq_addHaar_of_integral_eq
+    (h_one.trans he.integral_norm_sq_eq_one.symm)
+    (by rw [he.integral_norm_sq_eq_one]; exact one_ne_zero)
   exact ⟨by fun_prop, h_map⟩
 
 variable (H H') in
