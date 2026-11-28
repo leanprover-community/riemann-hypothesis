@@ -50,18 +50,14 @@ the string vector `i`, and `0` for `s ≤ i`. -/
 def stringPower (i : ℕ) (k : ι) : E :=
   (Y.indexEquiv.symm k).elim 0 fun b : Fin s ↦ if b.val = i then Y.powerCoeff i else 0
 
-/-- For a grading `Y` whose string has length `s`, the vector `𝔢 ^ i` is `Y.powerCoeff i` times the
-`i`-th string vector. If that vector has nonnegative grade `s − 1 − 2i` (`2 * i < s`), this
-coefficient is `c ^ n` for `n = i - s / 2`, where `c` is the constant `Y.genericConst`. -/
-lemma powerCoeff_of_lt {i : ℕ} {n : ℤ} (hi : 2 * i < s) (hn : n = i - s / 2) :
-    Y.powerCoeff i = Y.genericConst.val ^ n := by
-  rw [powerCoeff, ite_eq_left hi, hn]
-
-/-- In negative grade (`s ≤ 2 * i`) the coefficient of `𝔢 ^ i` is `-N * c ^ n` for
-`n = i - (s - 1) / 2`. -/
-lemma powerCoeff_of_le {i : ℕ} {n : ℤ} (hi : s ≤ 2 * i) (hn : n = i - (s - 1) / 2) :
-    Y.powerCoeff i = -N * Y.genericConst.val ^ n := by
-  rw [powerCoeff, ite_eq_right hi.not_gt, hn]
+/-- For a grading `Y` of string length `s` and constant `c = Y.genericConst`, the scalar
+`Y.powerCoeff i` (the coefficient of `𝔢 ^ i` at the `i`-th string vector when `i < s`) factors for
+every `i` as `(if 2 * i < s then 1 else -N)` times `c ^ (i - m / 2)`, where `m : ℤ` is `s` if
+`2 * i < s` and `s - 1` otherwise. -/
+lemma powerCoeff_eq_mul_zpow (i : ℕ) :
+    Y.powerCoeff i = (if 2 * i < s then 1 else -N) *
+      Y.genericConst.val ^ ((i : ℤ) - (if 2 * i < s then (s : ℤ) else (s : ℤ) - 1) / 2) := by
+  by_cases hi : 2 * i < s <;> simp [powerCoeff, hi]
 
 /-- The coefficient `Y.powerCoeff i` of `𝔢 ^ i` is nonzero, as `c` and `N` are. -/
 lemma powerCoeff_ne_zero (i : ℕ) : Y.powerCoeff i ≠ 0 := by
@@ -88,30 +84,20 @@ lemma stringMap_factor_mul_powerCoeff (Y' : Grading V' N X' (s - 1))
     (hc : Y'.genericConst = Y.genericConst) (i : ℕ) :
     (if Odd s ↔ 2 * i + 1 < s then 1 else Y.genericConst.val) * (if 2 * i + 1 = s then -N else 1) *
       Y.powerCoeff i = Y'.powerCoeff i := by
-  have hc_ne : Y.genericConst.val ≠ 0 := Y.genericConst.property.left
-  -- The exponent of `c` in the factor.
-  set e : ℤ := if s % 2 = 1 ↔ 2 * i + 1 < s then 0 else 1
-  have h_factor : (if Odd s ↔ 2 * i + 1 < s then 1 else Y.genericConst.val) = Y.genericConst.val ^
-    e := by
-    simp [e, Nat.odd_iff]
-  rw [h_factor]
-  have h_nonneg (hi : 2 * i < s) : Y.powerCoeff i = Y.genericConst.val ^ (i - s / 2 : ℤ) :=
-    Y.powerCoeff_of_lt hi rfl
-  -- The grade of `𝔢 ^ i` is positive, `0` or negative.
-  obtain h | h | h := lt_trichotomy (2 * i + 1) s
-  · have h_right : Y'.powerCoeff i = Y'.genericConst.val ^ (e + (i - s / 2) : ℤ) :=
-      Y'.powerCoeff_of_lt (by omega) (by omega)
-    rw [ite_eq_right h.ne, mul_one, h_nonneg (by omega), h_right, hc, zpow_add₀ hc_ne]
-  · have h_right : Y'.powerCoeff i = -N * Y'.genericConst.val ^ (e + (i - s / 2) : ℤ) :=
-      Y'.powerCoeff_of_le (by omega) (by omega)
-    rw [ite_eq_left h, h_nonneg (by omega), h_right, hc, zpow_add₀ hc_ne]
-    ring
-  · have h_left : Y.powerCoeff i = -N * Y.genericConst.val ^ (i - (s - 1) / 2 : ℤ) :=
-      Y.powerCoeff_of_le (by omega) rfl
-    have h_right : Y'.powerCoeff i = -N * Y'.genericConst.val ^ (e + (i - (s - 1) / 2) : ℤ) :=
-      Y'.powerCoeff_of_le (by omega) (by omega)
-    rw [ite_eq_right h.ne', h_left, h_right, hc, zpow_add₀ hc_ne]
-    ring
+  have h_sign : (if 2 * i + 1 = s then -N else 1) * (if 2 * i < s then 1 else -N) =
+      if 2 * i < s - 1 then (1 : E) else -N := by
+    split_ifs <;> grind
+  have h_exp : (if Odd s ↔ 2 * i + 1 < s then (0 : ℤ) else 1) +
+      ((i : ℤ) - (if 2 * i < s then (s : ℤ) else (s : ℤ) - 1) / 2) =
+      (i : ℤ) - (if 2 * i < s - 1 then ((s - 1 : ℕ) : ℤ) else ((s - 1 : ℕ) : ℤ) - 1) / 2 := by
+    simp only [Nat.odd_iff]
+    split_ifs <;> lia
+  have h_c : (if Odd s ↔ 2 * i + 1 < s then 1 else Y.genericConst.val) =
+      Y.genericConst.val ^ (if Odd s ↔ 2 * i + 1 < s then (0 : ℤ) else 1) := by
+    split_ifs <;> simp
+  rw [h_c, Y.powerCoeff_eq_mul_zpow, Y'.powerCoeff_eq_mul_zpow, hc, ← h_sign, ← h_exp,
+    zpow_add₀ Y.genericConst.property.left]
+  ring
 
 /-- Let `Y'` be a grading of a second space `V'` with the same `N` and string length `s - 1`. Assume
 `Y'` carries the same constant `c` as `Y`, where `c = c̄ ≠ 0` is the element of `E` that each
