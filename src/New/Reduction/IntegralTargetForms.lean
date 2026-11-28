@@ -75,7 +75,7 @@ def targetLattice : TwistedLattice D.targetForms D.MFoldTwist where
   lattice (_ : D.MFoldTwist) (ι : PrimePadicIso) := integralForms ι.place
   norm_inner_le_one {ϑ} ι _ φ hφ φ' hφ' := by
     -- The place of `ῑ` is that of `ι` composed with complex conjugation.
-    have hφ_conj : φ ∈ integralForms ⟨ι.place.ιₚ.comp (starRingEnd ℂ)⟩ := hφ
+    have hφ_conj : φ ∈ integralForms ι.place.conj := hφ
     have h_card (g : Gf D.E (D.Y D.m)) : Nat.card (classAut stdRatPoints
         (levelOf (D.levelPlaces ϑ.toTameChar).placeAt (lastResidueLevel ϑ.toTameChar)) g) ∣ 1 := by
       rw [classAut_lastResidueLevel_eq_bot, Subgroup.card_bot]

@@ -1233,7 +1233,7 @@ theorem exists_operator_det_clearingBound {P : Parameters} {D : Data P} {ℓ : �
         →
         (Λ (Z.orthogonalProjectionOnto y') : O.FormV) ∈ integralForms (PadicPlace.ofIso ιℓ)) ∧
       ∀ y y' : O.FormV,
-        y ∈ integralForms ({ ιₚ := (PadicPlace.ofIso ιℓ).ιₚ.comp (starRingEnd ℂ) } : PadicPlace ℓ) →
+        y ∈ integralForms (PadicPlace.ofIso ιℓ).conj →
         y' ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y' →
         ‖ιℓ (inner ℂ y (Λ (Z.orthogonalProjectionOnto y') : O.FormV))‖ ≤ 1 := by
   -- If no generator is nonzero, then `Z = ⊥` and the identity serves. Otherwise some generator

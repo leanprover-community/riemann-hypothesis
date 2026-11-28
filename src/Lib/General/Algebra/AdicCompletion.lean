@@ -96,6 +96,10 @@ class PadicPlace (p : outParam ℕ) [Fact p.Prime] where
 
 export PadicPlace (ιₚ)
 
+/-- The conjugate of a p-adic place of ℂ: precompose its embedding with complex conjugation. -/
+abbrev PadicPlace.conj {l : ℕ} [Fact l.Prime] (j : PadicPlace l) : PadicPlace l :=
+  ⟨j.ιₚ.comp (starRingEnd ℂ)⟩
+
 /-- The valuation ring O_ι ⊂ ℂ of complex numbers whose image under ι : ℂ → ℂ_p has absolute
 value at most 1. -/
 noncomputable abbrev embValRing {p : ℕ} [Fact p.Prime] [ι : PadicPlace p] : ValuationSubring ℂ :=

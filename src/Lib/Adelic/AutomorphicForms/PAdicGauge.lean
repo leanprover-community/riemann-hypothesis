@@ -711,7 +711,7 @@ lemma _root_.New.map_inv_weightEmbedding_comp_conj (g : Gf E n) (τ : InfinitePl
 at `g` for `j`, then the Gram pairing of `u` and `v` lies in the valuation ring `embValRing` of `j`.
 -/
 lemma _root_.New.gramForm_mem_embValRing {g : Gf E n} {u v : WeylIndex n κ → ℂ}
-    (hu : weylGauge (ι := ⟨j.ιₚ.comp conj⟩) κ e g u ≤ 1)
+    (hu : weylGauge (ι := j.conj) κ e g u ≤ 1)
     (hv : weylGauge (ι := j) κ e g v ≤ 1) : gramForm (n := n) u v ∈ embValRing (ι := j) := by
   -- For `j ∘ conj` the point `g⁻¹` acts by the transposes of the matrices `a τ` of `g` at `j`, and
   -- a matrix and its transpose are adjoint for the integral Gram matrix `G`.
@@ -756,7 +756,7 @@ K = `levelOf S.placeAt H`. If the level form φ is integral at j ∘ conj and φ
 (their values have gauge `weylGauge` at most 1), then |j(A·⟨φ, φ'⟩)| ≤ 1. -/
 lemma norm_nsmul_inner_le_one {A : ℕ}
     (hA : ∀ g : Gf E n, Nat.card (classAut stdRatPoints (levelOf S.placeAt H) g) ∣ A)
-    (hφ : φ ∈ integralForms ⟨j.ιₚ.comp conj⟩) (hφ' : φ' ∈ integralForms j) :
+    (hφ : φ ∈ integralForms j.conj) (hφ' : φ' ∈ integralForms j) :
     ‖j.ιₚ (A • inner ℂ φ φ')‖ ≤ 1 := by
   -- Every term of the class sum is integral, and `A` clears the weights `1 / #classAut`.
   rw [inner_eq_stdClassSum]
