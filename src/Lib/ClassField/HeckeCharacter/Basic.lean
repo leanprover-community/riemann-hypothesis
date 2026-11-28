@@ -63,6 +63,7 @@ namespace New
 variable (E : Type*) [Field E] [CMType E]
   (G : Type*) [Monoid G] [TopologicalSpace G]
 
+/-- The inverse of a continuous circle character evaluated at `x` is the inverse of its value. -/
 @[simp]
 lemma circleChar_inv_apply (χ : G →ₜ* Circle) (x : G) : χ⁻¹ x = (χ x)⁻¹ := rfl
 
@@ -105,6 +106,7 @@ def divStar : Rˣ →ₜ* unitary R where
       grind
   continuous_toFun := by exact Continuous.subtype_mk (by fun_prop) _
 
+/-- The underlying value of `divStar x` is `x * x̄⁻¹`. -/
 lemma coe_divStar (x : Rˣ) : (divStar x).val = x * star ↑x⁻¹ := rfl
 
 /-- If `μ` is trivial on the rational points of `U(1)`, then `x ↦ μ(x / x̄)` is trivial on the
