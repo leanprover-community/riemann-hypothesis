@@ -1,5 +1,7 @@
 module
 
+import TauCeti.NumberTheory.Padics.PadicNormProductFormula
+
 public import Aesop.BuiltinRules
 public import Mathlib.NumberTheory.Padics.Complex
 import Mathlib.Algebra.Ring.IsFormallyReal
@@ -21,7 +23,7 @@ A height for families of complex numbers indexed by the pairs `ι` of a prime `l
 * `New.HeightLe.of_mul_le`, `New.HeightLe.of_le`, `New.HeightLe.mono`, `New.HeightLe.mul`,
   `New.HeightLe.prod`, `New.HeightLe.pow`: the calculus of heights.
 * `New.HeightLe.nonneg_of_one`: the constant family `1` has height at least `0`, by the product
-  formula (`New.log_product_formula`) for the norm of `H`.
+  formula (`Rat.log_abs_add_sum_log_padicNorm_eq_zero`) for the norm of `H`.
 
 ## Relation to the literature
 
@@ -56,26 +58,6 @@ def HeightLe (c : ℝ) (y : PrimePadicIso → ℂ) : Prop :=
     (∀ ι : PrimePadicIso, ‖ι.iso (H * y ι)‖ ≤ ((ι.prime : ℕ) : ℝ) ^ h ι.prime) ∧
     -- `h_∞ + ∑ h_l log l ≤ c`, for the sum over every finite set of primes
     ∀ T : Finset ℕ, (∀ l ∈ T, l.Prime) → α + ∑ l ∈ T, h l * log l ≤ c
-
-/-- The product formula for `ℚ`, in logarithms: `log |q| + ∑ log |q|_p = 0` (`log q` is `log |q|`
-and `log 0 = 0`), the sum taken over the primes below any bound `M` that exceeds the absolute value
-of the numerator of `q` and the denominator of `q`. -/
-lemma log_product_formula {M : ℕ} {q : ℚ} (h_num_lt : q.num.natAbs < M) (h_den_lt : q.den < M) :
-    log q + ∑ p ∈ range M with p.Prime, log (padicNorm p q) = 0 := by
-  -- Factor the numerator and the denominator into primes and take logarithms; the term of `p`
-  -- in `log |q|` is `v_p(q) * log p`, which cancels `log |q|_p = -v_p(q) * log p`.
-  obtain rfl | hq := eq_or_ne q 0
-  · simp
-  have log_nat {n : ℕ} (hn : n ≠ 0) (hnM : n < M) :
-      log n = ∑ p ∈ range M with p.Prime, padicValNat p n * log p := by
-    conv_lhs => rw [← Nat.prod_pow_prime_multiplicity n hn M hnM]
-    simp +contextual [log_prod, Nat.Prime.ne_zero, Nat.padicValNat_def]
-  have log_q : log q = log q.num.natAbs - log q.den := by simp [q.cast_def, log_div, hq]
-  have log_norm (p : ℕ) :
-      log (padicNorm p q) = (padicValNat p q.den - padicValNat p q.num.natAbs) * log p := by
-    simp [padicNorm.eq_zpow_of_ne_zero hq, padicValRat, padicValInt, Nat.padicValNat_def]
-  rw [log_q, log_nat (by simpa using hq) h_num_lt, log_nat q.den_nz h_den_lt]
-  simp [log_norm, sub_mul]
 
 namespace HeightLe
 
@@ -224,7 +206,8 @@ lemma nonneg_of_one (h_one : HeightLe c 1) : 0 ≤ c := by
   let N : ℕ := q.num.natAbs + q.den + 1
   refine nonneg_of_mul_nonneg_right ?_ (Nat.cast_pos.2 (finrank_pos : 0 < n))
   calc 0 = log q + ∑ l ∈ range N with l.Prime, log (padicNorm l q) :=
-      (log_product_formula (by omega) (by omega)).symm
+      by simpa only [Real.log_abs] using
+        (Rat.log_abs_add_sum_log_padicNorm_eq_zero q (B := N) (by omega) (by omega)).symm
     _ ≤ n * α + ∑ l ∈ range N with l.Prime, n * (e l * log l) :=
       add_le_add h_inf (sum_le_sum fun l hl ↦ h_fin l (mem_filter.1 hl).2)
     _ = n * (α + ∑ l ∈ range N with l.Prime, e l * log l) := by rw [mul_add, mul_sum]
