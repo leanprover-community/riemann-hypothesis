@@ -97,6 +97,7 @@ this says that multiplication by a is an isogeny of degree N from L to M. -/
 
 namespace New
 
+/-- The fundamental period parallelogram area `L.area` of a lattice is strictly positive. -/
 @[simp]
 lemma area_pos : 0 < L.area := by
   -- The area is the absolute value of the determinant of the basis `ω₁, ω₂` against `1, I`.
@@ -106,6 +107,7 @@ open scoped Classical in
 /-- The multiplier of the sigma function: `1` on twice the lattice, `-1` elsewhere. -/
 def sigmaSign (w : ℂ) : ℂ := if w / 2 ∈ L.lattice then 1 else -1
 
+/-- The sigma multiplier sign is an even function: `sigmaSign L (-w) = sigmaSign L w`. -/
 lemma sigmaSign_neg (w : ℂ) : sigmaSign L (-w) = sigmaSign L w := by
   classical
   simp [sigmaSign, neg_div]
@@ -114,6 +116,7 @@ lemma sigmaSign_neg (w : ℂ) : sigmaSign L (-w) = sigmaSign L w := by
     L.hermitianForm l z = Real.pi / L.area * (z * conj l) := by
   simp [hermitianForm, field]
 
+/-- Scalar scaling by 2 on the lattice hermitian form evaluates to twice its value. -/
 lemma two_nsmul_hermitianForm_apply (l z : ℂ) :
     (2 • L.hermitianForm) l z = 2 * L.hermitianForm l z := by
   simp [-hermitianForm_apply]
@@ -135,6 +138,7 @@ lemma exists_riemannForm_periods_eq_sign :
   have abs_im : |(conj L.ω₁ * L.ω₂).im| = L.area := rfl
   simpa [riemannForm_hermitianForm, div_eq_iff (area_pos L).ne'] using eq_or_eq_neg_of_abs_eq abs_im
 
+/-- A half-lattice vector `(m ω₁ + n ω₂)/2` lies in `L.lattice` iff both `m` and `n` are even. -/
 lemma half_mem_lattice_iff_even (m n : ℤ) :
     (m * L.ω₁ + n * L.ω₂) / 2 ∈ L.lattice ↔ Even m ∧ Even n := by
   have split : (m * L.ω₁ + n * L.ω₂) / 2 = (m / 2 : ℚ) * L.ω₁ + (n / 2 : ℚ) * L.ω₂ := by
