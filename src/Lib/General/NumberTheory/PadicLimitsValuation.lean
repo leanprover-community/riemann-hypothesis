@@ -13,7 +13,7 @@ public import Lib.GaloisRep.Main.SelmerModules
 public import Lib.General.NumberTheory.CoefficientRings
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
-import Lib.General.Geometry.GaloisCovers
+import Lib.General.Algebra.ComplexEmbeddings
 import Lib.PadicComparison.Descent.TestCategory
 import Lib.PadicHodge.Crystalline.Basic
 
@@ -74,7 +74,7 @@ lemma New.isAlgebraic_of_norm_complexToCp_le {ℓ : ℕ} [Fact ℓ.Prime] {x : �
     ((Algebraic.countable ℚ (PadicAlgCl ℓ)).dense_compl ℚ_[ℓ]).exists_mem_open
       (isOpen_Ioi.preimage continuous_norm) (NormedField.exists_lt_norm _ c)
   -- Transcendence is precisely injectivity of the two evaluations on `ℚ[X]`.
-  -- Relative Steinitz (`Lib.General.Geometry.GaloisCovers`) extends their identification to
+  -- Relative Steinitz (`Lib.General.Algebra.ComplexEmbeddings`) extends their identification to
   -- a field isomorphism, since the two ambient fields have the same uncountable cardinality.
   have : Countable (Polynomial ℚ) := (Polynomial.basisMonomials ℚ).repr.injective.countable
   rw [isAlgebraic_iff_not_injective, not_not] at hx hy

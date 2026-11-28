@@ -5,6 +5,7 @@ import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.Shimura.IntegralModel.UniversalFamily
 import Lib.Adelic.Adeles.StrongApproximation
+import Lib.General.Algebra.ComplexEmbeddings
 import Lib.General.Geometry.SerreTheorem
 import Lib.Shimura.TraceFormula.DefiniteTrace
 import Lib.Shimura.Uniformisation.ModelExists

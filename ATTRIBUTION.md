@@ -48,6 +48,7 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/GaloisRep/KillingPolynomials.lean` | `New.powMinor_diagonal_X_mul_eq_zero` | `Matrix.charpoly.optionEquivLeft_symm_univ_isHomogeneous` | `Mathlib/LinearAlgebra/Matrix/Charpoly/Univ.lean` |
 | `src/Lib/GaloisRep/Pseudocharacter/SemisimpleRepresentations.lean` | `New.blockDiagonalAlgHom` | `Matrix.blockDiagonal'RingHom` | `Mathlib/Data/Matrix/Block.lean` |
 | `src/Lib/GaloisRep/Pseudocharacter/SemisimpleRepresentations.lean` | `New.trace_of_idempotent` | `LinearMap.IsIdempotentElem.trace_eq_zero_iff` | `Mathlib/LinearAlgebra/Trace.lean` |
+| `src/Lib/General/Algebra/ComplexEmbeddings.lean` | `New.exists_ringEquiv_extend` | `IsAlgClosed.equivOfTranscendenceBasis`, `IsAlgClosed.ringEquiv_of_equiv_of_charZero` | `Mathlib/FieldTheory/IsAlgClosed/Classification.lean` |
 | `src/Lib/General/Algebra/FittingIdealsAndLengths.lean` | `New.exists_matrix_addVal_det_le_length` | `Submodule.finiteQuotient_iff` | `Mathlib/LinearAlgebra/FreeModule/Finite/Quotient.lean` |
 | `src/Lib/General/Algebra/IntegralPowerSeries.lean` | `New.jet_subst_linearSeries` | `MvPowerSeries.constantCoeff_subst_eq_zero` | `Mathlib/RingTheory/MvPowerSeries/Substitution.lean` |
 | `src/Lib/General/Algebra/LongExactSequences.lean` | `New.Variety.H.sigma_bijective` | `CategoryTheory.Functor.mapExt_bijective_of_preservesInjectiveObjects`, `CategoryTheory.hasExt_of_enoughInjectives` | `Mathlib/Algebra/Homology/DerivedCategory/Ext/EnoughInjectives.lean`, `Mathlib/Algebra/Homology/DerivedCategory/Ext/MapBijective.lean` |
@@ -66,7 +67,6 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/General/Geometry/DenseComplexPoints.lean` | `New.exists_valuative_arc_of_isDenseFamily` | `AlgebraicGeometry.ValuativeCriterion.Existence.specializingMap` | `Mathlib/AlgebraicGeometry/ValuativeCriterion.lean` |
 | `src/Lib/General/Geometry/DenseComplexPoints.lean` | `New.height_map_C_le_one` | `Ideal.map_height_le_one_of_mem_minimalPrimes` | `Mathlib/RingTheory/Ideal/KrullsHeightTheorem.lean` |
 | `src/Lib/General/Geometry/GaloisCovers.lean` | `New.Variety.IsGaloisCovering.etale_of_isPullback` | `Algebra.FormallyEtale.equivPiOfIsSepClosed` | `Mathlib/RingTheory/Etale/Field.lean` |
-| `src/Lib/General/Geometry/GaloisCovers.lean` | `New.exists_ringEquiv_extend` | `IsAlgClosed.equivOfTranscendenceBasis`, `IsAlgClosed.ringEquiv_of_equiv_of_charZero` | `Mathlib/FieldTheory/IsAlgClosed/Classification.lean` |
 | `src/Lib/General/Geometry/GeometricPoints.lean` | `New.dense_smoothLocus_of_isDenseFamily` | `AlgebraicGeometry.Scheme.Hom.genericPoint_mem_smoothLocus_of_perfectField` | `Mathlib/AlgebraicGeometry/Morphisms/Smooth.lean` |
 | `src/Lib/General/Geometry/GeometricPoints.lean` | `New.stalkMap_injective_of_flat` | `AlgebraicGeometry.Flat.epi_of_flat_of_surjective` | `Mathlib/AlgebraicGeometry/Morphisms/Flat.lean` |
 | `src/Lib/General/Geometry/GeometricPoints.lean` | instance `Flat (fromSpecStalk Z s)` | `AlgebraicGeometry.IsAffineOpen.fromSpecStalk_isPreimmersion` | `Mathlib/AlgebraicGeometry/Stalk.lean` |

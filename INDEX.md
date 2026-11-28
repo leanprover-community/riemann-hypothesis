@@ -253,13 +253,14 @@ The prime number theorem in this table is known (Montgomery and Vaughan, Multipl
 | The Gauss norm equals the supremum norm on the unit polydisc over an algebraically closed valued field | `Lib/General/Algebra/SeriesBounds` |  | Bosch, Güntzer and Remmert, *Non-Archimedean Analysis* |
 | The integrality of the `p`-adic exponential and logarithm on series of large enough valuation, and of the binomial series with exponent in `ℤ_p` | `Lib/General/Algebra/SeriesBounds` |  |  |
 | Length of a matrix kernel modulo `a` over a discrete valuation ring via maximal minors | `Lib/General/Algebra/SharpMinors` |  |  |
+| Extension of embeddings of countable rings into ℂ | `Lib/General/Algebra/ComplexEmbeddings` |  | Steinitz's theorem |
 | The complex Gaussian integral | `Lib/General/Analysis/GaussianIntegral` |  |  |
 | Stone–Weierstrass for monoids of functions; Fourier inversion on compact quotients; Fourier decay | `Lib/General/Analysis/FourierTransforms` |  |  |
 | An upper bound for Hua's determinant integral | `Lib/General/Analysis/HolomorphicIntegrals` |  | Hua, Harmonic Analysis of Functions of Several Complex Variables in the Classical Domains, AMS 1963 |
 | Mean value property of holomorphic functions; entire function determined by its Taylor series at 0 | `Lib/General/Analysis/MeanValueAndTaylor` |  |  |
 | Line bundles and faithfully flat descent via ring-valued points | `Lib/General/Geometry/LineBundles` |  |  |
 | A case of the surjectivity half of Serre's theorem on sections of powers of a projective embedding | `Lib/General/Geometry/SerreTheorem` |  |  |
-| Extension of embeddings of countable rings into ℂ, Zariski generic members and Galois/étale covering criteria | `Lib/General/Geometry/GaloisCovers` |  | Steinitz's theorem; Chase–Harrison–Rosenberg |
+| Zariski generic members and Galois/étale covering criteria | `Lib/General/Geometry/GaloisCovers` |  | Chase–Harrison–Rosenberg |
 | The index of a product of subgroups in a finite product of groups is the product of the indices | `Lib/General/Groups/IndexOfProduct` |  |  |
 | Amitsur's theorem that integral characteristic polynomials on a spanning set give them on the whole algebra | `Lib/General/LinearAlgebra/Eigenvalues` |  | S. A. Amitsur, On the characteristic polynomial of a sum of matrices, Linear and Multilinear Algebra 8 (1980), no. 3, 177-182; G. Chenevier, The p-adic analytic space of pseudocharacters of a profinite group and pseudorepresentations over arbitrary rings, LMS Lecture Note Ser. 414 (2014), (1.5) |
 | Commutativity of the spherical Hecke algebra of GL_n | `Lib/General/LinearAlgebra/IntegralLattices` | `Lib/Weil/Unramified/SplitHecke` | J. Tits, Reductive groups over local fields, Corvallis 1979, 3.3.3; T. Tamagawa, On the zeta functions of a division algebra, Ann. Math. 77 (1963) |

@@ -5,7 +5,7 @@ public import Mathlib.NumberTheory.Padics.Complex
 import Mathlib.Algebra.Ring.IsFormallyReal
 import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
-import Lib.General.Geometry.GaloisCovers
+import Lib.General.Algebra.ComplexEmbeddings
 import Lib.General.NumberTheory.PadicLimitsValuation
 import Lib.PadicComparison.Descent.TestCategory
 
