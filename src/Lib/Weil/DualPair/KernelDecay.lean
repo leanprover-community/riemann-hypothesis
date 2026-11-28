@@ -3,7 +3,6 @@ module
 public import Lib.Weil.DualPair.ShortIsotropicVectors
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Base
-import Lib.General.LinearAlgebra.PartnerAlgebra
 import Lib.Weil.DualPair.ThetaLiftConvergence
 import Lib.Weil.DualPair.WeilAction
 
@@ -487,29 +486,25 @@ lemma Rows.isPrimitiveMatrix_of_liftFn_ne_zero {ι : Type*} {Ψ : (ι → 𝔪.R
     (e : Matrix n' n ι) (h_inv : ∀ y : ι → 𝔪.ResidueRing, Ψ y ≠ 0 → HasLeftInv (e.map y))
     ⦃w : FinPlace E⦄ ⦃x : ι → 𝔸f E⦄ (hw : w ∈ 𝔪.places) (h_ne : 𝔪.liftFn Ψ x ≠ 0) :
     IsPrimitiveMatrix (LocInt w).toSubring ((e.map x).map (evalAt w)) := by
-  -- Reduce a left inverse `L` modulo `𝔪` to the residue field at `w` and lift it to the local ring:
-  -- the lift times the matrix is invertible, since it is `1` in the residue field.
+  -- Reduce the left inverse modulo `𝔪` to the residue field at `w`, then lift it to the local ring.
   obtain ⟨h_int, hΨ⟩ :
       ∃ h : ∀ i : ι, idem 𝔪.places * x i ∈ Ô E, Ψ (fun i ↦ 𝔪.reduction ⟨_, h i⟩) ≠ 0 := by
     simpa only [Modulus.liftFn_apply, dite_ne_right_iff] using h_ne
-  obtain ⟨L, hL⟩ := h_inv _ hΨ
   let r : 𝔪.ResidueRing →+* ResidueField (LocInt w) := modulusResidue 𝔪 hw
-  let L' : Matrix n n' (LocInt w) := L.map (surjInv residue_surjective ∘ r)
   let Y : Matrix n' n (LocInt w) := e.map fun i ↦ ⟨_, mem_Ô.1 (h_int i) w⟩
-  have hL' : L'.map (residue _) = L.map r := Matrix.ext fun _ _ ↦ surjInv_eq ..
   have hY : Y.map (residue _) = (e.map fun i ↦ 𝔪.reduction ⟨_, h_int i⟩).map r :=
     Matrix.ext fun _ _ ↦ (modulusResidue_reduction 𝔪 hw ⟨_, h_int _⟩).symm
-  have h_unit : IsUnit (L' * Y) := isUnit_of_mapMatrix (residue _) <| by
-    rw [RingHom.mapMatrix_apply, Matrix.map_mul, hL', hY, ← Matrix.map_mul, hL]
-    simp
-  obtain ⟨U, hU⟩ : ∃ U : Matrix n n (LocInt w), U * (L' * Y) = 1 := h_unit.exists_left_inv
+  obtain ⟨L, hL⟩ : HasLeftInv Y := by
+    apply (hasLeftInv_map_iff_of_surjective (residue _) residue_surjective).1
+    rw [hY]
+    exact (h_inv _ hΨ).map r
   -- The idempotent `idem 𝔪.places` in the entries of `Y` is `1` at `w`.
   have hY_coe : Y.map (LocInt w).subtype = (e.map x).map (evalAt w) := by
     ext
     simp [Y, hw]
-  refine ⟨fun _ _ ↦ idem_mul_mem_Ô.1 (h_int _) w hw, (U * L').map (LocInt w).subtype,
+  refine ⟨fun _ _ ↦ idem_mul_mem_Ô.1 (h_int _) w hw, L.map (LocInt w).subtype,
     by simp [IsIntMatrix], ?_⟩
-  rw [← hY_coe, ← Matrix.map_mul, Matrix.mul_assoc, hU, Matrix.map_one _ (map_zero _) (map_one _)]
+  rw [← hY_coe, ← Matrix.map_mul, hL, Matrix.map_one _ (map_zero _) (map_one _)]
 
 /-- The height on the orthogonal sum of `S` and `T` is at most the product of the heights. -/
 lemma Space.height_sum_le (g : G E s) (h : G E s') :

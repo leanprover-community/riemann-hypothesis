@@ -4,6 +4,8 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.LinearAlgebra.Matrix.Swap
 import Mathlib.RingTheory.PiTensorProduct
 import TauCeti.LinearAlgebra.Matrix.Range
+import TauCeti.LinearAlgebra.Matrix.Defs
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
 public import Lib.Adelic.Hecke.Basic
 public import Lib.General.Groups.BesselGroups
 
@@ -579,6 +581,26 @@ lemma HasLeftInv.map {S : Type*} [CommRing S] {X : Matrix n k R} (hX : HasLeftIn
     (φ : R →+* S) : HasLeftInv (X.map φ) := by
   obtain ⟨L, hL⟩ := hX
   exact ⟨L.map φ, by rw [← Matrix.map_mul, hL, Matrix.map_one _ φ.map_zero φ.map_one]⟩
+
+/-- If the image of `L` is a left inverse of the image of `X` under a local ring homomorphism,
+then `L * X` is invertible. Multiplying `L` on the left by its inverse undoes `X`. -/
+lemma HasLeftInv.of_map_mul_eq_one {S : Type*} [CommRing S] [Fintype k]
+    (f : R →+* S) [IsLocalHom f] {X : Matrix n k R} (L : Matrix k n R)
+    (h : L.map f * X.map f = 1) : HasLeftInv X := by
+  have hu : IsUnit (L * X) := (Matrix.isUnit_map_iff f _).1 <| by
+    rw [Matrix.map_mul, h]
+    exact isUnit_one
+  exact ⟨hu.unit⁻¹.val * L, by rw [Matrix.mul_assoc, hu.val_inv_mul]⟩
+
+/-- A rectangular matrix has a left inverse exactly when its image under a surjective local ring
+homomorphism does. Surjectivity lifts the entries of the proposed inverse. -/
+lemma hasLeftInv_map_iff_of_surjective {S : Type*} [CommRing S] [Fintype k]
+    (f : R →+* S) [IsLocalHom f] (hf : Function.Surjective f) {X : Matrix n k R} :
+    HasLeftInv (X.map f) ↔ HasLeftInv X := by
+  refine ⟨?_, fun h ↦ h.map f⟩
+  rintro ⟨L, hL⟩
+  obtain ⟨M, rfl⟩ := Matrix.map_surjective hf L
+  exact HasLeftInv.of_map_mul_eq_one f M hL
 
 /-- The submodule of R^n spanned by the columns of the matrix X. -/
 abbrev colSpan [Fintype k] : Submodule R (n → R) := X.mulVecLin.range

@@ -495,16 +495,10 @@ inclusion modulo `𝔪₀ = triangleModulus false ϑ`, then `y` has a left inver
 lemma hasLeftInv_of_edgePointDatum_ne_zero {ϑ : D.MFoldTwist} {b : ℕ}
     {y : Matrix (D.NodeIndex (false, 0, b + 1)) (D.NodeIndex (false, 0, b))
       (gridModulus ϑ).ResidueRing} (hy : edgePointDatum false b y ≠ 0) : HasLeftInv y := by
-  -- The transposed inclusion times `y` reduces to `1`, so it is invertible.
   let u : D.NodeIndex (false, 0, b) ↪ D.NodeIndex (false, 0, b + 1) := .inl
-  let J : Matrix (D.NodeIndex (false, 0, b + 1)) (D.NodeIndex (false, 0, b))
-      (gridModulus ϑ).ResidueRing := inclMatrix _ u
   have h_red : y.map (reduceToTriangle ϑ false) = inclMatrix _ u := Pi.support_single_subset hy
-  have h_unit : IsUnit (Jᵀ * y) := isUnit_of_mapMatrix (reduceToTriangle ϑ false) <| by
-    simp only [J, RingHom.mapMatrix_apply, Matrix.map_mul, transpose_map]
-    rw [h_red, map_inclMatrix, inclMatrix_transpose_mul_self u]
-    exact isUnit_one
-  exact ⟨_ * Jᵀ, (Matrix.mul_assoc ..).trans h_unit.val_inv_mul⟩
+  refine HasLeftInv.of_map_mul_eq_one (reduceToTriangle ϑ false) (inclMatrix _ u)ᵀ ?_
+  rw [transpose_map, map_inclMatrix, h_red, inclMatrix_transpose_mul_self u]
 
 /-! ### The period -/
 
