@@ -220,6 +220,22 @@ lemma exists_idempotent_mod (P : F[X]) :
 /-- A fixed choice of the idempotent modulo `P` of `exists_idempotent_mod`. -/
 def splittingPoly (P : F[X]) : F[X] := (exists_idempotent_mod P).choose
 
+/-- The polynomial `splittingPoly P` is idempotent modulo `P`. -/
+lemma dvd_splittingPoly_mul_self_sub (P : F[X]) :
+    P ∣ splittingPoly P * splittingPoly P - splittingPoly P :=
+  (exists_idempotent_mod P).choose_spec.1
+
+/-- If `P` is separable, not irreducible and not a unit, `1 - splittingPoly P` is not coprime to
+`P`. -/
+lemma not_isCoprime_one_sub_splittingPoly {P : F[X]} (h_sep : P.Separable)
+    (h_red : ¬Irreducible P) (h_unit : ¬IsUnit P) : ¬IsCoprime P (1 - splittingPoly P) :=
+  ((exists_idempotent_mod P).choose_spec.2 h_sep h_red h_unit).1
+
+/-- If `P` is separable, not irreducible and not a unit, `splittingPoly P` is not coprime to `P`. -/
+lemma not_isCoprime_splittingPoly {P : F[X]} (h_sep : P.Separable) (h_red : ¬Irreducible P)
+    (h_unit : ¬IsUnit P) : ¬IsCoprime P (splittingPoly P) :=
+  ((exists_idempotent_mod P).choose_spec.2 h_sep h_red h_unit).2
+
 /-- The idempotent `p(g)`, where `p` is the chosen idempotent modulo the characteristic polynomial
 of `g`. -/
 def splittingIdempotent (g : GL n F) : Matrix n n F := aeval g.val (splittingPoly g.val.charpoly)
@@ -227,7 +243,7 @@ def splittingIdempotent (g : GL n F) : Matrix n n F := aeval g.val (splittingPol
 /-- The matrix `splittingIdempotent g = p(g)` is idempotent, by the Cayley-Hamilton theorem. -/
 lemma isIdempotentElem_splittingIdempotent (g : GL n F) :
     IsIdempotentElem (splittingIdempotent g) := by
-  have h_dvd := aeval_dvd g.val (exists_idempotent_mod g.val.charpoly).choose_spec.1
+  have h_dvd := aeval_dvd g.val (dvd_splittingPoly_mul_self_sub g.val.charpoly)
   rwa [aeval_self_charpoly, zero_dvd_iff, map_sub, map_mul, sub_eq_zero] at h_dvd
 
 /-- If the characteristic polynomial of `g` is separable and not irreducible, the idempotent
@@ -238,7 +254,8 @@ lemma splittingIdempotent_ne_zero_and_ne_one [Nonempty n] {g : GL n F}
   have h_unit : ¬IsUnit g.val.charpoly := not_isUnit_of_natDegree_pos _ (by simp [Fintype.card_pos])
   obtain ⟨h_one_sub, h_self⟩ : ¬IsCoprime g.val.charpoly (1 - splittingPoly g.val.charpoly) ∧
       ¬IsCoprime g.val.charpoly (splittingPoly g.val.charpoly) :=
-    (exists_idempotent_mod g.val.charpoly).choose_spec.2 h_sep h_red h_unit
+    ⟨not_isCoprime_one_sub_splittingPoly h_sep h_red h_unit,
+      not_isCoprime_splittingPoly h_sep h_red h_unit⟩
   rw [splittingIdempotent]
   exact ⟨fun h ↦ h_one_sub (isUnit_aeval_iff_isCoprime.1 (by simp [h])),
     fun h ↦ h_self (isUnit_aeval_iff_isCoprime.1 (by simp [h]))⟩

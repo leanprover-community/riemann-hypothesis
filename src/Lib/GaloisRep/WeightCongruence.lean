@@ -98,8 +98,7 @@ complex conjugate of x), read in GL_n(Q̄_l). -/
 @[simps! -isSimp toFun]
 def padicComponents : Gf E n →ₜ* NumberField.InfinitePlace E → GL n (PadicAlgCl l) where
   toMonoidHom := MonoidHom.pi fun v ↦
-    (GeneralLinearGroup.map
-        (exists_placeOfEmb_extension (weightEmbedding (toRingHom ιℓ) v)).choose).comp
+    (GeneralLinearGroup.map (placeOfEmbExtension (weightEmbedding (toRingHom ιℓ) v))).comp
       (Gf.atPlace (placeOfEmb (weightEmbedding (toRingHom ιℓ) v)))
   continuous_toFun := continuous_pi fun v ↦ (continuous_adeleExtension
     (weightEmbedding (toRingHom ιℓ) v)).generalLinearGroup_map.continuousOn.domRestrict
@@ -628,9 +627,7 @@ private lemma padicComponents_apply_mem_iSup_adjoin (T : Set (InfinitePlace E)) 
     padicComponents (l := l) x τ i j ∈
       (⨆ τ : T, .adjoin ℚ_[l] (.range (weightEmbedding ιℓ.toRingHom τ.val)) :
         IntermediateField ℚ_[l] (PadicAlgCl l)) := by
-  obtain ⟨-, -, h_image, -⟩ :=
-    (exists_placeOfEmb_extension (weightEmbedding ιℓ.toRingHom τ.val)).choose_spec
-  exact mem_of_le_of_mem (le_iSup _ τ) (h_image _)
+  exact mem_of_le_of_mem (le_iSup _ τ) (placeOfEmbExtension_mem_adjoin _ _)
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in

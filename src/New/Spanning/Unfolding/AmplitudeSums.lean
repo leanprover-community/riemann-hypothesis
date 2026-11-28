@@ -90,7 +90,7 @@ density, a chosen cutoff for `ν`, is almost everywhere finite. -/
 instance sigmaFinite_orbitMeasure
     {A : Subgroup 𝔰.G₁} (ν : Measure A) [h : RealPlace.IsUnimodularHaar ν] :
     SigmaFinite (orbitMeasure ν (@volume 𝔰.G₁ _)) :=
-  have h_cutoff : IsCutoff ν (chosenCutoff ν) := Classical.epsilon_spec h.out
+  have h_cutoff : IsCutoff ν (chosenCutoff ν) := isCutoff_chosenCutoff ..
   .withDensity_of_ne_top (h_cutoff.ae_cutoff_lt_top.mono fun _ hy ↦ hy.ne)
 
 /-- Unfolding at several places: if `ν` is a unimodular Haar measure on a subgroup of `G₁`, then

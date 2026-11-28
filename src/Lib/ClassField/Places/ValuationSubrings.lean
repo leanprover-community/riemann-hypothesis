@@ -526,6 +526,16 @@ lemma valuation_comap_placeOfEmbExtension_isEquiv :
   let ⟨_, _, _, h_equiv⟩ := (exists_placeOfEmb_extension σ).choose_spec
   h_equiv
 
+/-- `New.placeOfEmbExtension σ` extends `σ`. -/
+lemma placeOfEmbExtension_algebraMap (x : E) :
+    placeOfEmbExtension σ (algebraMap E (LocField (placeOfEmb σ)) x) = σ x :=
+  (exists_placeOfEmb_extension σ).choose_spec.2.1 x
+
+/-- The values of `New.placeOfEmbExtension σ` lie in the field `ℚ_p(σ E)`. -/
+lemma placeOfEmbExtension_mem_adjoin (x : LocField (placeOfEmb σ)) :
+    placeOfEmbExtension σ x ∈ adjoin ℚ_[p] (Set.range σ) :=
+  (exists_placeOfEmb_extension σ).choose_spec.2.2.1 x
+
 /-- The extension of `σ` to the finite adeles of `E`: take the component at the prime
 `New.placeOfEmb σ`, then apply `New.placeOfEmbExtension σ`. -/
 def adeleExtension : 𝔸f E →+* F :=
@@ -533,8 +543,7 @@ def adeleExtension : 𝔸f E →+* F :=
 
 @[simp]
 lemma adeleExtension_algebraMap (x : E) : adeleExtension σ x = σ x :=
-  let ⟨_, h_ext, _⟩ := (exists_placeOfEmb_extension σ).choose_spec
-  h_ext x
+  placeOfEmbExtension_algebraMap σ x
 
 @[fun_prop]
 lemma continuous_adeleExtension : Continuous (adeleExtension σ) :=
