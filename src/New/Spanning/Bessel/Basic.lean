@@ -726,7 +726,9 @@ lemma gram_framePair (N : R) (hN : star N = N) (γ : (𝔰.middleGram N).G) :
         (castSucc_ne_last _).symm]
   have h_herm : (𝔰.middleGram N).splitGramᴴ = (𝔰.middleGram N).splitGram := by
     simp [Shape.Form.splitGram, Shape.middleGram, ← Matrix.ext_iff, hN, Matrix.one_apply,
-      apply_ite star, @eq_comm (Fin 𝔰.ϱ), @eq_comm 𝔰.κ]
+      apply_ite star]
+    exact ⟨fun _ _ ↦ if_congr eq_comm rfl rfl, fun _ _ ↦ if_congr eq_comm rfl rfl,
+      fun _ _ ↦ if_congr eq_comm rfl rfl⟩
   have h_block (x y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) :
       (frameImage x)ᴴ * (𝔰.middleGram N).splitGram * frameImage y =
         (xᴴ * (𝔰.middleGram N).splitGram * y).submatrix 𝔰.besselFrame 𝔰.besselFrame := rfl

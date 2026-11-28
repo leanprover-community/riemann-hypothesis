@@ -322,8 +322,7 @@ lemma sq_lt_norm_sq_last_frameProducts {σ : S.G E} (hσ : σ ∈ floorGroup �
     mul_star_dotProduct_eq_last_frameProducts hσ
   have h_nonneg : 0 ≤ Φ v (θ * star θ - S.N ^ 2) := by
     rw [← h_norm]
-    simp only [dotProduct, Pi.star_apply, map_mul, map_natCast, _root_.map_sum, map_star_complex,
-      star_def, conj_mul']
+    simp [dotProduct, conj_mul']
     -- The goal is `0 ≤ N ∑ j, ‖ω j‖²` at the place `v`.
     positivity
   have h_pos : 0 < Φ v (θ * star θ - S.N ^ 2) := ((map_ne_zero (Φ v)).2 hθ).lt_of_le' h_nonneg

@@ -205,8 +205,7 @@ lemma IsFillingData.norm_floorForm_zero_div_massRatio_le {E : Type} {𝔰 : Shap
   -- clear the denominators and multiply by `vol K`, which is finite and nonzero
   rwa [ofReal_div_of_pos (by positivity), IntermediateGroup.massRatio,
     ← ENNReal.mul_div_mul_comm (by simp) (by simp),
-    ENNReal.le_div_iff_mul_le (.inl (mul_ne_zero (by simp) (ofReal_pos.2 (by positivity)).ne'))
-      (by simp [mul_eq_top]),
+    ENNReal.le_div_iff_mul_le (by simp; left; positivity) (by simp [mul_eq_top]),
     ← ENNReal.mul_le_mul_iff_left (P.unitaryLevel_open_compact.1.measure_ne_zero _ (by simp))
       (hF.groupMeasure_ne_top le_rfl : vol K ≠ ∞), ← mul_assoc, ofReal_pow (by positivity)]
 

@@ -589,8 +589,7 @@ lemma exists_isSchwartzVector_exchangeSection (D : X.Splitting W₁ b) [IsBaseAd
     have w_eq (x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) : w x = fun p ↦
         signMatrix (t' ⊕ᵥ s) * (S (z (x p)))ᴴ * signMatrix (t' ⊕ᵥ s) * x p :=
       funext fun p ↦ congrArg (· * x p) (U.coe_inv IsHermitianInvolution.mul_self _)
-    simp only [τ, w_eq, comp_def, det_apply, Matrix.mul_assoc, toRows₁_apply, star_sum, star_smul,
-      star_prod, star_def]
+    simp [τ, w_eq, comp_def, det_apply, -real_smul, Matrix.mul_assoc]
     fun_prop
   -- On the support, `x = k y * w x` with `y = z ∘ x` and `w x` in the support of `σ`.
   have τ_cpt : HasCompactSupport (τ ∘ C) := by

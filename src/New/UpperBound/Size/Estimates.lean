@@ -269,8 +269,7 @@ lemma card_stdClasses_le_exp_mul_log {n : Type} [Fintype n] [DecidableEq n]
     relIndex_principalLevel_le NeZero.out, Ideal.absNorm_span_natCast, RingOfIntegers.rank,
     finrank_eq_two_mul_card_infinitePlace, card_stdClasses_le P.conductor_mem_differentIdeal,
     shortBasisConst, hn, hn, ← le_exp_of_log_le] <;>
-    simp only [← mul_assoc, cast_mul, cast_pow, ne_eq, ne, not_false_eq_true, log_mul,
-      Real.log_pow, mul_add, mul_one, NeZero.pos]
+    simp [-cast_add, NeZero.pos, ne, log_mul, mul_add, ← mul_assoc]
   -- The remaining logarithmic terms are controlled by the admissible data.
   gcongr <;> exact D.le_of_hasLogBound
 

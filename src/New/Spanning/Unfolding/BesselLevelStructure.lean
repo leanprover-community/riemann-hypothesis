@@ -668,8 +668,7 @@ function of its parameter `p`, a pair of a vector and a skew element. -/
 lemma New.continuous_heisenbergElem_finAdele {T : 𝔰.Form (𝔸f E)} [IsHermitianUnit T.splitGram]
     (a : Fin 𝔰.ϱ) : Continuous (heisenbergElem (T := T) a) := by
   rw [(Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit).continuous_iff]
-  simp only [comp_def, heisenbergElem, eichlerMap, star_neg, mulVec_mulVec, Pi.star_single,
-    star_one, single_vecMul, one_smul, U.val_of_coe]
+  simp [comp_def, heisenbergElem, eichlerMap]
   fun_prop
 
 /-- The skew elements `t - t̄` with `t ∈ E` are dense in the skew finite adeles. -/

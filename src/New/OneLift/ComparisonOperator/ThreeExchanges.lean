@@ -834,6 +834,9 @@ lemma exists_mul_thirdExchangeLeftSide_eq_choiceFn : ∃ (C : ℂ) (c : D.Twist 
   refine ⟨C₃ * (C₁₂ / N ^ 2),
     fun ϑ ↦ c₃ (h_tame₃ ϑ) * (c₁₂ (h_tame ϑ) / N), fun ϑ ↦ ⟨?_, fun i g ↦ ?_⟩⟩
   · -- the three products of Hecke values are the three factors of `heckeValueProd`
+    simp [← Complex.ofReal_pow, mul_pow, div_pow, heckeValueProd, places_twistModulus,
+      exchangePair,
+      hc₃_norm, hc₁₂_norm, signPoint, ← division_def, div_right_comm _ (_ * _), div_mul_div_comm]
     -- what is left are the characters of the three pairs
     have h_inv : (twistedChiMPow ϑ.toTameChar j)⁻¹ * upsilonU1 ^ D.m =
         ϑ.toAutChar⁻¹ / ((upsilonU1 ^ D.m)⁻¹ * D.chiM ^ j.val) := by
@@ -843,10 +846,7 @@ lemma exists_mul_thirdExchangeLeftSide_eq_choiceFn : ∃ (C : ℂ) (c : D.Twist 
         ϑ.toAutChar / ((upsilonU1 ^ (D.m / 2))⁻¹ / D.chiM ^ j.val) := by
       rw [twistedChiMPow, div_eq_mul_inv ϑ.toAutChar, inv_div, div_inv_eq_mul, mul_left_comm,
         mul_assoc]
-    simp [← Complex.ofReal_pow, mul_pow, div_pow, heckeValueProd, places_twistModulus,
-      exchangePair,
-      hc₃_norm, hc₁₂_norm, signPoint, ← division_def, div_right_comm _ (_ * _), div_mul_div_comm,
-      carrierChar_inv_div_twistedChiMPow_mul_upsilonU1_pow, h_inv, h_half]
+    rw [carrierChar_inv_div_twistedChiMPow_mul_upsilonU1_pow, h_inv, h_half]
   · have hN : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.2 card_ne_zero
     suffices h_mul : c₃ (h_tame₃ ϑ) * c₁₂ (h_tame ϑ) * thirdExchangeLeftSide ϑ j i g =
         N * choiceFn j i g by

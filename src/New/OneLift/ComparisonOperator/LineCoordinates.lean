@@ -475,33 +475,29 @@ lemma hasWeightNormSqLeIf_stackedDet (j : D.LiftIndex) (i : D.RowChoice)
         (inFirstCols (stackedDet τ (constantRows j i Y τ l) (posEquiv j)))) =
       (((fromRows 0 (of fun u (c : Fin h) ↦ x (⟨τ, u⟩, c))).fromCols Z).submatrix id
         ((posEquiv j).trans colSplit)).det := by
-    simp only [stackedDet, constantRows, inclMatrix, transpose_submatrix, transpose_one,
-      AlgHom.map_det, AlgHom.mapMatrix_apply, RingHom.map_det, RingHom.mapMatrix_apply,
-      Matrix.map_map, Equiv.coe_trans]
+    simp [stackedDet, AlgHom.map_det, RingHom.map_det, ↓ constantRows, ↓ inclMatrix]
     -- The two matrices differ by the unipotent factor (1 0; T 1), where T holds the cleared
     -- variables: it adds multiples of the upper rows.
     let T : Matrix (FirstFactorIndex j) (Fin (2 * D.m)) ℂ :=
       of fun u a ↦ if h + a < D.posRank j then x (⟨τ, u⟩, h + a) else 0
     refine det_eq_of_eq_det_one_mul (fromBlocks 1 0 T 1) (by simp)
       (ext fun a ↦ ((posEquiv j).trans colSplit).forall_congr_left.mpr ?_)
-    -- in a cleared column the sum over the upper rows has a single nonzero term
-    have h_single (u : FirstFactorIndex j) (b : Fin (D.posRank j - h)) :
-        ∑ a : Fin (2 * D.m), (if h + a < D.posRank j then
-          if (a : ℕ) = b then x (⟨τ, u⟩, h + b) else 0 else 0) = x (⟨τ, u⟩, h + b) := by
+    -- Compare entries, by the kind of the factor and of the row.
+    cases l <;> cases a
+    all_goals
+      simp [T, Z, Matrix.one_apply, ↓ Matrix.mul_apply, ↓ constantRows, ↓ inclMatrix,
+        fromCols_map] at h_height ⊢
+      simp +contextual [colSplit, firstCols, inFirstCols, h_height, Fin.cast]
+    · -- an upper row vanishes in the first `h` columns
+      lia
+    · -- in a cleared column the sum over the upper rows has a single nonzero term
+      intro b
       have hb_lt : (b : ℕ) < 2 * D.m := by grind
       have hb_pos : h + b < D.posRank j := by lia
       rw [Fintype.sum_eq_single ⟨b, hb_lt⟩]
       · simp [hb_pos]
       · intro a ha
         simp [Fin.val_ne_of_ne ha]
-    -- Compare entries, by the kind of the factor and of the row.
-    cases l <;> cases a
-    all_goals
-      simp [T, Z, Matrix.one_apply, ↓ Matrix.mul_apply, ↓ constantRows, ↓ inclMatrix,
-        fromCols_map] at h_height ⊢
-      simp +contextual [colSplit, firstCols, inFirstCols, h_height, Fin.cast, h_single]
-    · -- an upper row vanishes in the first `h` columns
-      lia
     · -- if `h = posRank j` there is no cleared column
       lia
   obtain ⟨ξ, h_eval, h_norm⟩ := exists_toPoly_eq_det_and_weylNormSq_le τ h_lt
