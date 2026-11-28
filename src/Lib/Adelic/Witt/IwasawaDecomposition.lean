@@ -452,15 +452,9 @@ lemma exists_eq_radicalElement_mul_levi_mul_isAdapted {E n n₀ p : Type} [Field
   obtain ⟨h₁, h_adapted : H.IsAdapted h₁ 1, -⟩ := H.exists_isAdapted_and_frame_eq 1
   obtain ⟨κ, hκ, a, -, ha⟩ := H.exists_mem_maxCompact_actsOnFrame g (wt := 0)
   obtain ⟨κ₁, hκ₁, a₁, -, ha₁⟩ := H.exists_mem_maxCompact_actsOnFrame h₁ (wt := 0)
-  have h_inv : H.ActsOnFrame (h₁ * κ₁)⁻¹ a₁⁻¹.val :=
-    calc (h₁ * κ₁)⁻¹.adeleMatrix * H.kAdelic
-        = (h₁ * κ₁)⁻¹.adeleMatrix * (H.kAdelic * a₁.val) * a₁⁻¹.val := by simp [Matrix.mul_assoc]
-      _ = H.kAdelic * a₁⁻¹.val := by
-        rw [← ha₁, ← Matrix.mul_assoc, ← G.adeleMatrix_mul, inv_mul_cancel, G.adeleMatrix_one,
-          Matrix.one_mul]
   have h_parabolic : H.ActsOnFrame (g * κ * (h₁ * κ₁)⁻¹) (a.val * a₁⁻¹.val) := by
-    rw [ActsOnFrame, G.adeleMatrix_mul, Matrix.mul_assoc, h_inv, ← Matrix.mul_assoc, ha,
-      Matrix.mul_assoc]
+    rw [ActsOnFrame, G.adeleMatrix_mul, Matrix.mul_assoc, ActsOnFrame.inv H ha₁,
+      ← Matrix.mul_assoc, ha, Matrix.mul_assoc]
   obtain ⟨c, b, t, g₀, h_eq : g * κ * (h₁ * κ₁)⁻¹ = H.radicalElement c b * H.levi (t, g₀), -⟩ :=
     H.exists_eq_radicalElement_mul_levi h_parabolic
   refine ⟨c, b, t, g₀, h₁ * (κ₁ * κ⁻¹),

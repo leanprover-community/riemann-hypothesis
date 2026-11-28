@@ -305,12 +305,9 @@ lemma homSource_zeroTerm_pairWeil (g : G E s) (g₀ : G E s₀) (m : GL p (𝔸 
   -- `T.dualFrame`).
   let M : Matrix (n' × p) (n' × p) (𝔸 E) :=
     (T.dualFrame.val * h.adeleMatrix * T.dualFrame⁻¹.val) ⊗ₖ m.valᴴᵀ
-  have h_lCoord_inv : D.lCoord * g⁻¹.adeleMatrix = m.valᴴ * D.lCoord := by
-    have h_adj : (g.adeleMatrix * D.kAdelic)ᴴ = (D.kAdelic * m.val)ᴴ := congrArg conjTranspose hk
-    simpa [lCoord, adeleMatrix_inv, Matrix.mul_assoc] using congrArg (· * stdForm E s) h_adj
   have h_onHom_kAdelic :
       (G.onHom (g, h)).adeleMatrix * (D.homSource T).kAdelic = (D.homSource T).kAdelic * M := by
-    simp [M, h_lCoord_inv, homSource_kAdelic, ← mul_kronecker_mul,
+    simp [M, D.lCoord_mul_inv_adeleMatrix hk, homSource_kAdelic, ← mul_kronecker_mul,
       ← transpose_mul, Matrix.mul_assoc]
   have h_onHom_iAdelic :
       (D.homSource T).iCoord * ((G.onHom (g, h)).adeleMatrix * (D.homSource T).iAdelic) =

@@ -580,20 +580,28 @@ coordinates. -/
 abbrev ActsOnFrame (g : G E s) (c : Matrix p p (𝔸 E)) : Prop :=
   g.adeleMatrix * D.kAdelic = D.kAdelic * c
 
+/-- If a group element acts on the frame by an invertible matrix, its inverse acts by the
+inverse matrix. -/
+lemma ActsOnFrame.inv {a : GL p (𝔸 E)} (hk : D.ActsOnFrame g a.val) :
+    D.ActsOnFrame g⁻¹ a⁻¹.val := by
+  calc g⁻¹.adeleMatrix * D.kAdelic
+      = g⁻¹.adeleMatrix * (D.kAdelic * a.val) * a⁻¹.val := by simp [Matrix.mul_assoc]
+    _ = D.kAdelic * a⁻¹.val := by
+      rw [← hk, ← Matrix.mul_assoc, ← G.adeleMatrix_mul, inv_mul_cancel,
+        G.adeleMatrix_one, Matrix.one_mul]
+
+/-- Taking adjoints of the action on the frame gives the action of the inverse on its dual
+coordinate. -/
+lemma lCoord_mul_inv_adeleMatrix (hk : D.ActsOnFrame g a) :
+    D.lCoord * g⁻¹.adeleMatrix = aᴴ * D.lCoord := by
+  simpa [lCoord, adeleMatrix_inv, Matrix.mul_assoc] using
+    congrArg (fun M ↦ Mᴴ * stdForm E s) hk
+
 /-- If an element `g` of `G E s` acts on the adelic frame `kAdelic` by an invertible `a`
 (`g k = k a`), then `g` multiplies the `l`-coordinate by `a⁻ᴴ`: `lCoord g = a⁻ᴴ lCoord`. -/
 lemma lCoord_mul_adeleMatrix {a : GL p (𝔸 E)} (hk : D.ActsOnFrame g a.val) :
     D.lCoord * g.adeleMatrix = a⁻¹.valᴴ * D.lCoord := by
-  -- As `g k = k a`, the frame `k` is `g k a⁻¹`; take the adjoint and use that `g` preserves the
-  -- standard form.
-  have h_k : D.kAdelic = g.adeleMatrix * D.kAdelic * a⁻¹.val := by simp [hk]
-  calc D.lCoord * g.adeleMatrix
-    _ = (g.adeleMatrix * D.kAdelic * a⁻¹.val)ᴴ * stdForm E s * g.adeleMatrix := by
-      rw [← h_k, lCoord]
-    _ = a⁻¹.valᴴ * D.kAdelicᴴ * (g.adeleMatrixᴴ * stdForm E s * g.adeleMatrix) := by
-      simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = a⁻¹.valᴴ * D.lCoord := by
-      rw [g.conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix, lCoord, Matrix.mul_assoc]
+  simpa only [inv_inv] using D.lCoord_mul_inv_adeleMatrix (ActsOnFrame.inv D hk)
 
 /-- If an element `g` of `G E s` acts on the adelic frame `kAdelic` by a matrix `a`
 (`g k = k a`), then `a` is invertible. -/
