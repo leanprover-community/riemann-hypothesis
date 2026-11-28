@@ -402,6 +402,69 @@ lemma integral_mul_liftY_poincareAt (ϑ : D.TameChar)
       rw [← mul_assoc, ← Nat.cast_mul, h_index, mul_sum]
       exact sum_congr rfl fun c _ ↦ period_eq c.out
 
+/-- Taking cosets modulo `levelY ϑ` commutes with updating one coordinate of a tuple of finite
+adelic points. -/
+private lemma mk_update_levelY (ϑ : D.TameChar) (y : ∀ i : ℕ, Gf D.E (D.Y i)) (j : ℕ)
+    (x : Gf D.E (D.Y j)) :
+    (fun i ↦ (update y j x i : Gf D.E (D.Y i) ⧸ levelY ϑ i)) =
+      update (fun i ↦ ↑(y i)) j ↑x :=
+  funext (apply_update (fun i ↦ QuotientGroup.mk (s := levelY ϑ i)) y j x)
+
+/-- One step of the iterated unfolding: if `unfoldedPeriod` at step `k + 1` factors as `a ξ` times
+`S` at the classes of `y`, then descending `z` by `transposedLiftY ϑ (k + 1)` yields a period at
+step `k` that factors as `a' ξ` times `cutSumAt ϑ (k + 1) hk S` at the classes of `y`, with `a'`
+independent of `ϑ`, `φ`, `z` and `S`. -/
+private lemma exists_unfoldedPeriod_transposedLiftY_eq
+    (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ)
+    (k : ℕ) (hk : k + 1 ≤ 2 * D.ϱ + 1) {X : Type} [Fintype X] [DecidableEq X]
+    (Y : Grading (D.spaceY (k + 2)) D.N X (2 * D.ϱ + 1 - (k + 2)))
+    (a : (∀ i : ℕ, GInf D.E (D.signsY i)) → ℂ) :
+    ∃ a' : (∀ i : ℕ, GInf D.E (D.signsY i)) → ℂ,
+      ∀ (ϑ : D.TameChar) (φ : D.ramifiedSourceForms) (z : D.ConjFormY (k + 2))
+        (S : (∀ i : ℕ, Gf D.E (D.Y i) ⧸ levelY ϑ i) → ℂ)
+        (_h_period : ∀ (ξ : ∀ i : ℕ, GInf D.E (D.signsY i)) (y : ∀ i : ℕ, Gf D.E (D.Y i)),
+          y 0 ∈ D.chosenLevel → y (2 * D.ϱ + 2) = 1 →
+            unfoldedPeriod ϑ t φ ξ y (k + 1) hk Y z = a ξ * S fun i : ℕ ↦ y i)
+        (ξ : ∀ i : ℕ, GInf D.E (D.signsY i)) (y : ∀ i : ℕ, Gf D.E (D.Y i)),
+        y 0 ∈ D.chosenLevel → y (2 * D.ϱ + 2) = 1 →
+          unfoldedPeriod ϑ t φ ξ y k (by omega) (D.gradingY (k + 1) hk)
+              (transposedLiftY ϑ (k + 1) z) =
+            a' ξ * cutSumAt ϑ (k + 1) hk S fun i : ℕ ↦ y i := by
+  let Y₀ : Grading (D.spaceY (k + 1)) D.N (D.X (k + 1)) (2 * D.ϱ + 1 - (k + 1)) :=
+    D.gradingY (k + 1) hk
+  -- `a' ξ` is what the real part of the outer variable of index `k + 1` contributes.
+  choose a' integral_eq using fun ξ : ∀ i : ℕ, GInf D.E (D.signsY i) ↦
+    Y₀.exists_integral_eq_sum_over_cut (stdLevel D.E (D.Y (k + 1))) fun x ↦ a (update ξ (k + 1) x)
+  refine ⟨a', fun ϑ φ z S h_period ξ y hy_zero hy_top ↦ ?_⟩
+  let z' : D.ConjFormY (k + 1) := transposedLiftY ϑ (k + 1) z
+  have hz' : (D.spaceY (k + 1)).IsAutomorphic z' := z'.property.toIsAutomorphic
+  let f : New.G D.E (D.signsY (k + 1)) → ℂ := unfoldStage ϑ t φ ξ y k (by omega) Y₀ * z'.val
+  have h_cut : IsStageCut ϑ (k + 1) hk (cutPoints ϑ (k + 1) hk) := isStageCut_cutPoints ϑ k hk
+  have h_fix : Y₀.ratBessel.FixesLeft f := fun γ hγ x ↦ by
+    simp only [f, Pi.mul_apply, fixesLeft_ratBessel_unfoldStage ϑ t φ ξ y k _ Y₀ γ hγ,
+      hz'.rat_mul γ hγ.1]
+  have h_cover_ne_zero (x : New.G D.E (D.signsY (k + 1))) (hx : f x ≠ 0) :
+      coverMultiplicity Y₀.besselFin (stdLevel D.E (D.Y (k + 1))) (cutPoints ϑ (k + 1) hk) x.2 ≠
+        0 :=
+    h_cut.ne_zero_of_hasBoundedOrbit x.2 <| .of_forall fun r ↦
+      hasLatticeBounds_of_unfoldStage_ne_zero ϑ t φ ξ y φ.property hy_zero k hk x.1 x.2
+        (left_ne_zero_of_mul hx)
+  -- The recursion, with `x` as the outer variable of index `k + 1`.
+  have h_step (x : New.G D.E (D.signsY (k + 1))) :
+      ∫ r : Y₀.besselGroup, f (r * x) ∂Y₀.besselMeasure =
+        stdLevelIndex (levelY ϑ (k + 1)) *
+          (a (update ξ (k + 1) x.1) * S (update (fun i : ℕ ↦ ↑(y i)) (k + 1) ↑x.2)) := by
+    have h_next := h_period (update ξ (k + 1) x.1) (update y (k + 1) x.2)
+      (by rwa [update_of_ne (by omega)]) (by rwa [update_of_ne (by omega)])
+    rw [← mk_update_levelY, ← h_next, ← integral_unfoldStageOn_mul_transposedLiftY]
+    congr with r
+    rw [unfoldStageOn_succ, unfoldStage_update (hkl := k.lt_succ_self), update_self, update_self]
+    rfl
+  exact integral_eq ξ (fun q ↦ S (update (fun i : ℕ ↦ ↑(y i)) (k + 1) q))
+    ((continuous_unfoldStage ..).mul hz'.continuous) h_fix
+    (integrable_unfoldStage_mul ϑ t φ ξ y _ Y₀ z') h_cut.mem_iff_smul_mem h_cover_ne_zero
+    fun x _ ↦ h_step x
+
 /-- The outer integrals of the seesaw, one at a time. Let `t` be a linear form on the values of
 forms on `X_0`, `g` an archimedean point of `U(Y_0)`, `k ≤ 2 ϱ + 1`, `Y` a grading of `Y_{k+1}`
 with a string of `s = 2 ϱ + 1 - (k + 1)` vectors, and `a` a function of tuples `ξ` of archimedean
@@ -429,9 +492,6 @@ lemma exists_integral_mul_lowerChainUpTo_eq_cutSum
         c * cutSum ϑ (k + 1) (Nat.succ_le_succ hk) S := by
   -- Induction on `k`, for all `a` and `S`: the step passes from `S` to its sum over `Ω_{k+1}`.
   subst hs
-  have mk_update {ϑ : D.TameChar} (y : ∀ i, Gf D.E (D.Y i)) (j : ℕ) (x : Gf D.E (D.Y j)) :
-      (fun i ↦ (update y j x i : Gf D.E (D.Y i) ⧸ levelY ϑ i)) = update (fun i ↦ ↑(y i)) j ↑x :=
-    funext (apply_update (fun i ↦ QuotientGroup.mk (s := levelY ϑ i)) y j x)
   induction k generalizing X a with
   | zero =>
     refine ⟨stdLevelIndex (D.chosenLevel (n := D.Y 0)) * a (update 1 0 g),
@@ -442,51 +502,17 @@ lemma exists_integral_mul_lowerChainUpTo_eq_cutSum
           a (update 1 0 g) * (cutMultiplicity ϑ 0 hk c : ℂ)⁻¹ •
             S (update (fun i : ℕ ↦ ↑(1 : Gf D.E (D.Y i))) 0 c) := by
       rw [h_period _ _ ((mk_mem_cutPoints_zero ϑ).1 (by rwa [update_self, QuotientGroup.out_eq']))
-        rfl, mk_update, QuotientGroup.out_eq']
+        rfl, mk_update_levelY, QuotientGroup.out_eq']
       simp [cutMultiplicity]
     refine (integral_mul_liftY_poincareAt ϑ t φ g Y z).trans ?_
     rw [mul_assoc, cutSum, cutSum, cutSumAt, mul_sum _ _ (a _)]
     exact congrArg _ (sum_congr rfl h_term)
   | succ k ih =>
-    let Y₀ : Grading (D.spaceY (k + 1)) D.N (D.X (k + 1)) (2 * D.ϱ + 1 - (k + 1)) :=
-      D.gradingY (k + 1) hk
-    -- `a' ξ` is what the real part of the outer variable of index `k + 1` contributes.
-    choose a' integral_eq using fun ξ : ∀ i : ℕ, GInf D.E (D.signsY i) ↦
-      Y₀.exists_integral_eq_sum_over_cut (stdLevel D.E (D.Y (k + 1))) fun x ↦ a (update ξ (k + 1) x)
-    obtain ⟨c, hc⟩ := ih (by omega) a' Y₀
-    refine ⟨c, fun ϑ φ z S h_period ↦ ?_⟩
-    let z' : D.ConjFormY (k + 1) := transposedLiftY ϑ (k + 1) z
-    have hz' : (D.spaceY (k + 1)).IsAutomorphic z' := z'.property.toIsAutomorphic
-    -- Descend `z`. It remains to show that the period of `z'` at step `k` is `a' ξ` times the
-    -- weighted sum of `S` over `cutPoints ϑ (k + 1) _`.
-    refine (integral_mul_liftY ϑ (lt_m_of_le hk) z _).trans
-      (hc ϑ φ z' _ fun ξ y hy_zero hy_top ↦ ?_)
-    let f : New.G D.E (D.signsY (k + 1)) → ℂ := unfoldStage ϑ t φ ξ y k (by omega) Y₀ * z'.val
-    have h_cut : IsStageCut ϑ (k + 1) hk (cutPoints ϑ (k + 1) hk) := isStageCut_cutPoints ϑ k hk
-    have h_fix : Y₀.ratBessel.FixesLeft f := fun γ hγ x ↦ by
-      simp only [f, Pi.mul_apply, fixesLeft_ratBessel_unfoldStage ϑ t φ ξ y k _ Y₀ γ hγ,
-        hz'.rat_mul γ hγ.1]
-    have h_cover_ne_zero (x : New.G D.E (D.signsY (k + 1))) (hx : f x ≠ 0) :
-        coverMultiplicity Y₀.besselFin (stdLevel D.E (D.Y (k + 1))) (cutPoints ϑ (k + 1) hk) x.2 ≠
-          0 :=
-      h_cut.ne_zero_of_hasBoundedOrbit x.2 <| .of_forall fun r ↦
-        hasLatticeBounds_of_unfoldStage_ne_zero ϑ t φ ξ y φ.property hy_zero k hk x.1 x.2
-          (left_ne_zero_of_mul hx)
-    -- The recursion, with `x` as the outer variable of index `k + 1`.
-    have h_step (x : New.G D.E (D.signsY (k + 1))) :
-        ∫ r : Y₀.besselGroup, f (r * x) ∂Y₀.besselMeasure =
-          stdLevelIndex (levelY ϑ (k + 1)) *
-            (a (update ξ (k + 1) x.1) * S (update (fun i : ℕ ↦ ↑(y i)) (k + 1) ↑x.2)) := by
-      have h_next := h_period (update ξ (k + 1) x.1) (update y (k + 1) x.2)
-        (by rwa [update_of_ne (by omega)]) (by rwa [update_of_ne (by omega)])
-      rw [← mk_update, ← h_next, ← integral_unfoldStageOn_mul_transposedLiftY]
-      congr with r
-      rw [unfoldStageOn_succ, unfoldStage_update (hkl := k.lt_succ_self), update_self, update_self]
-      rfl
-    exact integral_eq ξ (fun q ↦ S (update (fun i : ℕ ↦ ↑(y i)) (k + 1) q))
-      ((continuous_unfoldStage ..).mul hz'.continuous) h_fix
-      (integrable_unfoldStage_mul ϑ t φ ξ y _ Y₀ z') h_cut.mem_iff_smul_mem h_cover_ne_zero
-      fun x _ ↦ h_step x
+    -- Descend `z` by one step (`exists_unfoldedPeriod_transposedLiftY_eq`), then apply `ih`.
+    obtain ⟨a', ha'⟩ := exists_unfoldedPeriod_transposedLiftY_eq t k hk Y a
+    obtain ⟨c, hc⟩ := ih (by omega) a' (D.gradingY (k + 1) hk)
+    refine ⟨c, fun ϑ φ z S h_period ↦ (integral_mul_liftY ϑ (lt_m_of_le hk) z _).trans ?_⟩
+    exact hc ϑ φ (transposedLiftY ϑ (k + 1) z) (cutSumAt ϑ (k + 1) hk S) (ha' ϑ φ z S h_period)
 
 /-! ### The tensor `φ_ξ` and the seesaw identity -/
 
