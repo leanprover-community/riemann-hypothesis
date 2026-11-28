@@ -524,31 +524,26 @@ lemma norm_sq_eq_of_norm_add_le_one (h_add : ‖x + y‖ ≤ 1) (h_mul : 1 < ‖
     exact h_mul.not_ge ((mul_le_of_le_one_left (norm_nonneg y) h_add.1).trans h_add.2)
   simp [h_eq, sq]
 
-/-- Let `s, s', s₀` be functions with values in `ℂ_[p]` on a finite group such that, for all `c`,
-`s(c) + s'(c) + s₀(c)` and `s(c) s'(g c)` are integral and `s(g c) s₀(g c) = -s(c)`. Then `s` is
-integral: a norm `‖s(c)‖ > 1` would be replaced by its square root at each step `c ↦ g c`, and the
-steps return to `c`. -/
-lemma norm_le_one_of_cycle {G : Type*} [Group G] [Finite G] (g : G) {s s' s₀ : G → ℂ_[p]}
-    (h_sum : ∀ c : G, ‖s c + s' c + s₀ c‖ ≤ 1) (h_dual : ∀ c : G, ‖s c * s' (g * c)‖ ≤ 1)
-    (h_step : ∀ c : G, s (g * c) * s₀ (g * c) = -s c) (c : G) : ‖s c‖ ≤ 1 := by
-  have halve (c : G) (hc : 1 < ‖s c‖) : ‖s (g * c)‖ ^ 2 = ‖s c‖ := by
-    have hs' : ‖s' (g * c)‖ ≤ 1 := by
-      nlinarith [norm_mul (s c) (s' (g * c)), h_dual c, norm_nonneg (s' (g * c))]
-    have h_add : ‖s (g * c) + s₀ (g * c)‖ ≤ 1 := by
-      simpa [add_right_comm _ (s' _)] using norm_sub_le_one (h_sum (g * c)) hs'
-    have h_mul : 1 < ‖s (g * c) * s₀ (g * c)‖ := by rwa [h_step, norm_neg]
+/-- For functions on a finite type, the integral sums and products below force each `s c` to
+have norm at most one. Otherwise the successor of a point with the least norm above one
+would have a smaller norm still above one. -/
+lemma norm_le_one_of_finite_descent {ι : Type*} [Finite ι] (next : ι → ι) {s s' s₀ : ι → ℂ_[p]}
+    (h_sum : ∀ c : ι, ‖s c + s' c + s₀ c‖ ≤ 1) (h_dual : ∀ c : ι, ‖s c * s' (next c)‖ ≤ 1)
+    (h_step : ∀ c : ι, s (next c) * s₀ (next c) = -s c) (c : ι) : ‖s c‖ ≤ 1 := by
+  have halve (c : ι) (hc : 1 < ‖s c‖) : ‖s (next c)‖ ^ 2 = ‖s c‖ := by
+    have hs' : ‖s' (next c)‖ ≤ 1 := by
+      nlinarith [norm_mul (s c) (s' (next c)), h_dual c, norm_nonneg (s' (next c))]
+    have h_add : ‖s (next c) + s₀ (next c)‖ ≤ 1 := by
+      simpa [add_right_comm _ (s' _)] using norm_sub_le_one (h_sum (next c)) hs'
+    have h_mul : 1 < ‖s (next c) * s₀ (next c)‖ := by rwa [h_step, norm_neg]
     rw [norm_sq_eq_of_norm_add_le_one h_add h_mul, h_step, norm_neg]
   by_contra! hc
-  have iterate (i : ℕ) : ‖s (g ^ i * c)‖ ^ 2 ^ i = ‖s c‖ := by
-    induction i with
-    | zero => simp
-    | succ i ih =>
-      have h_gt : 1 < ‖s (g ^ i * c)‖ :=
-        lt_of_pow_lt_pow_left₀ (2 ^ i) (norm_nonneg _) (by rwa [one_pow, ih])
-      rw [pow_succ' g, mul_assoc, pow_succ' 2, pow_mul, halve _ h_gt, ih]
-  -- At `i = orderOf g` this says `‖s c‖ ^ 2 ^ i = ‖s c‖`.
-  exact (lt_self_pow₀ hc (Nat.one_lt_two_pow (orderOf_pos g).ne')).ne'
-    (by simpa only [pow_orderOf_eq_one, one_mul] using iterate (orderOf g))
+  obtain ⟨i, hi, hmin⟩ := Set.exists_min_image {j | 1 < ‖s j‖} (fun j ↦ ‖s j‖)
+    (Set.toFinite _) ⟨c, hc⟩
+  have hsq := halve i hi
+  have hnext : 1 < ‖s (next i)‖ :=
+    lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) (by rwa [one_pow, hsq])
+  exact (hmin _ hnext).not_gt (hsq ▸ lt_self_pow₀ hnext (by decide : 1 < 2))
 
 namespace CMLattice
 variable {d : ℕ} (C : CMLattice d) {D : CMLattice d} {b : ℂ}
@@ -748,7 +743,7 @@ lemma norm_scaledDisc_le_one {p : ℕ} [Fact p.Prime] {d : ℕ} [PrimeSevenModEi
       simpa only [s, ← map_mul, (h𝔤 (hD 𝒞') (hD _)).1] using h2
     have h_step (𝒞') : s b (𝔤 * 𝒞') * s₀ (𝔤 * 𝒞') = -s b 𝒞' := by
       simp only [s, s₀, ← map_mul, (h𝔤 (hD 𝒞') (hD _)).2, map_neg]
-    exact norm_le_one_of_cycle 𝔤 h_sum h_dual h_step 𝒞
+    exact norm_le_one_of_finite_descent (𝔤 * ·) h_sum h_dual h_step 𝒞
   have hω : quadGen d = quadGen d ∨ quadGen d = conj (quadGen d) := .inl rfl
   -- `s(t) = -48 - s(ω t) - s((1 - ω) t)`
   rw [eq_sub_of_add_eq' ((D 𝒞).scaledDisc_sum_prod hω).1, ← sub_sub, map_sub, map_sub]
