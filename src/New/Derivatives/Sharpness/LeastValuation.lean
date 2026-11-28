@@ -5,6 +5,7 @@ import Mathlib.NumberTheory.SumFourSquares
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import TauCeti.RingTheory.MvPowerSeries.Derivative
+import TauCeti.RingTheory.MvPowerSeries.Rescale
 import TauCeti.RingTheory.PowerSeries.Rescale
 public import Lib.CM.FormalGroup.PrimeNotation
 public import New.Derivatives.FormalGroup.Resolution
@@ -169,16 +170,12 @@ lemma killCompl_copySubst (a : K → R) (F : MvPowerSeries X R) (k : K) :
 lemma rescale_copySubst (a : K → R) (r : R) (F : MvPowerSeries X R) :
     rescale (fun _ : X × K ↦ r) (copySubst a F) = copySubst a (rescale (fun _ : X ↦ r) F) := by
   have ha := hasSubst_sum_smul_X (X := X) a
-  have hr := HasSubst.smul_X (σ := X × K) (fun _ ↦ r)
-  rw [copySubst_apply, copySubst_apply, rescale_eq_subst, rescale_eq_subst,
-    subst_comp_subst_apply ha hr, subst_comp_subst_apply (HasSubst.smul_X _) ha]
+  rw [copySubst_apply, copySubst_apply, MvPowerSeries.rescale_subst _ ha,
+    MvPowerSeries.subst_rescale _ _ ha]
   congr 1
   funext x
-  -- both sides are the linear form `∑ r a_k z_k`
-  trans ∑ k : K, r • a k • (MvPowerSeries.X (x, k) : MvPowerSeries (X × K) R)
-  · simp only [← coe_substAlgHom hr, map_sum, map_smul, substAlgHom_X, Pi.smul_apply', smul_comm r]
-  · symm
-    rw [Pi.smul_apply', ← coe_substAlgHom ha, map_smul, substAlgHom_X, smul_sum]
+  simp only [← rescaleAlgHom_apply, map_sum, map_smul, rescaleAlgHom_X, ← smul_eq_C_mul,
+    Pi.smul_apply', smul_sum, smul_smul, mul_comm r]
 
 /-- The exponent `γ.mapDomain Prod.fst` adds up the copies of each variable in `γ`. -/
 lemma mapDomain_fst_apply (γ : X × K →₀ ℕ) (x : X) :

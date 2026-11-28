@@ -2,6 +2,7 @@ module
 
 public import Mathlib.RingTheory.PowerSeries.Log
 import TauCeti.RingTheory.MvPowerSeries.Derivative
+import TauCeti.RingTheory.MvPowerSeries.Rescale
 import TauCeti.RingTheory.PowerSeries.Log
 import TauCeti.RingTheory.PowerSeries.Rescale
 public import Lib.General.NumberTheory.PadicLimitsValuation
@@ -434,12 +435,13 @@ lemma pderiv_subst_linearSeries (c : X → R) (g : PowerSeries R) (x : X) :
 /-- Scaling the variables of `g(c z)` scales the coefficients of the linear form. -/
 lemma rescale_subst_linearSeries_eq_mul (a c : X → R) (g : PowerSeries R) :
     rescale a (g.subst (linearSeries c)) = g.subst (linearSeries (a * c)) := by
-  have ha : HasSubst (a • (MvPowerSeries.X : X → MvPowerSeries X R)) := .smul_X a
-  have h_linear : (linearSeries c).subst (a • MvPowerSeries.X) = linearSeries (a * c) := by
-    simp only [linearSeries, ← coe_substAlgHom ha, map_sum, map_smul, substAlgHom_X,
-      Pi.smul_apply', Pi.mul_apply, smul_smul, mul_comm]
-  rw [rescale_eq_subst, PowerSeries.subst_def,
-    subst_comp_subst_apply (hasSubst_linearSeries c).const ha, h_linear, PowerSeries.subst_def]
+  have h_linear : rescale a (linearSeries c) = linearSeries (a * c) := by
+    simp only [linearSeries, ← rescaleAlgHom_apply, map_sum, map_smul, rescaleAlgHom_X,
+      ← smul_eq_C_mul, smul_smul, Pi.mul_apply]
+    exact Finset.sum_congr rfl fun x _ ↦ by rw [mul_comm (c x) (a x)]
+  rw [PowerSeries.subst_def, MvPowerSeries.rescale_subst a (hasSubst_linearSeries c).const,
+    PowerSeries.subst_def]
+  simp [h_linear]
 
 end LinearForms
 

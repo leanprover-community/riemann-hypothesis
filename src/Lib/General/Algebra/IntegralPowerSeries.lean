@@ -104,6 +104,28 @@ end New
 
 end IntegralSeries
 
+/-! ## Rescaling after substitution -/
+
+/-- Rescaling the result of a substitution rescales every image of a variable. -/
+lemma MvPowerSeries.rescale_subst {σ τ R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (a : τ → S) {v : σ → MvPowerSeries τ S} (hv : MvPowerSeries.HasSubst v)
+    (f : MvPowerSeries σ R) :
+    MvPowerSeries.rescale a (f.subst v) = f.subst (fun i ↦ MvPowerSeries.rescale a (v i)) := by
+  rw [MvPowerSeries.rescale_eq_subst,
+    MvPowerSeries.subst_comp_subst_apply hv (MvPowerSeries.HasSubst.smul_X a)]
+  congr 1
+  funext i
+  rw [← MvPowerSeries.rescale_eq_subst]
+
+open PowerSeries in
+/-- Substituting `a X` in `f(T)` gives `f(T(a X))`, if `T(0) = 0`. -/
+lemma New.rescale_subst {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    {a : S} {T : S⟦X⟧} (hT₀ : T.constantCoeff = 0) {f : R⟦X⟧} :
+    rescale a (f.subst T) = f.subst (rescale a T) := by
+  have hT : PowerSeries.HasSubst T := .of_constantCoeff_zero' hT₀
+  simpa only [PowerSeries.rescale_eq, PowerSeries.subst_def] using
+    MvPowerSeries.rescale_subst (fun _ : Unit ↦ a) hT.const f
+
 /-! ## The chain rule and jets of linear substitutions -/
 
 section JetChainRule

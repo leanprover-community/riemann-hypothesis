@@ -99,12 +99,6 @@ lemma constantCoeff_subst_eq {T : ℂ_[p]⟦X⟧} (hT₀ : T.constantCoeff = 0) 
     constantCoeff (f.subst T) = f.constantCoeff :=
   PowerSeries.constantCoeff_subst_of_constantCoeff_zero hT₀ f
 
-/-- Substituting `a X` in `f(T)` gives `f(T(a X))`, if `T(0) = 0`. -/
-lemma rescale_subst {a : ℂ_[p]} {T : ℂ_[p]⟦X⟧} (hT₀ : T.constantCoeff = 0) {f : ℂ_[p]⟦X⟧} :
-    rescale a (f.subst T) = f.subst (rescale a T) := by
-  rw [rescale_eq_subst, rescale_eq_subst,
-    subst_comp_subst_apply (.of_constantCoeff_zero' hT₀) (.of_constantCoeff_zero' (by simp))]
-
 /-- For integral series `F`, `G` and a series `T` with `F(0) = T(0) = 0`, the composite `G ∘ F`
 formed over `𝔬` satisfies `(G ∘ F)(T) = G(F(T))`. -/
 lemma subst_seriesToCp_subst {T : ℂ_[p]⟦X⟧} (hT₀ : constantCoeff T = 0) {F : (valRingCp p)⟦X⟧}
