@@ -295,7 +295,158 @@ lemma lagrangian_isometrySplitting_comp_eq (L : Lagrangian S) {γ δ : U S.J} {y
   rw [← congrArg Subtype.val L.lagrangian_chosenSplitting]
   exact forall_colSpan_dot_eq_zero_iff.2 h_dot
 
+/-- Normal form of the Lagrangians of `S`: there is a compact set `Ω` such that every Lagrangian is
+spanned by the columns of `δ k`, with `k` the isotropic frame of `P`, for a rational `δ` with
+`δ⁻¹ = n(ν) a_x⁻¹ κ`, where `x : p → ℤ` and `(ν, κ) ∈ Ω`. Here `n(ν) = P.radicalElement 0 ν`,
+`a_x = P.levi (Core.dyadicDiag x, 1)`, and the Lagrangian spanned by `δ k` is that of
+`(isometrySplitting δ).comp P`. -/
+lemma exists_compact_lagrangian_normal_form :
+    ∃ Ω : Set (Matrix p p (𝔸 E) × G E s),
+      IsCompact Ω ∧
+      ∀ L : Lagrangian S, ∃ (δ : U S.J) (x : p → ℤ) (ν : Matrix p p (𝔸 E)),
+        CompleteSplitting.lagrangian ((isometrySplitting δ).comp P) = L ∧
+        (ν, P.levi (dyadicDiag x, 1) * (P.radicalElement 0 ν)⁻¹ * S.ratEmbed δ⁻¹) ∈ Ω := by
+  obtain ⟨Ω, hΩ, normal⟩ := exists_compact_parabolic_normal_form P
+  refine ⟨Ω, hΩ, fun L ↦ ?_⟩
+  -- The columns of `γ * k` are orthogonal to `L`; take the normal form of `γ` at `g = 1`.
+  obtain ⟨γ, hγ⟩ := exists_isometry_orthogonal P ⟨_, gram_lk _⟩ L.chosenSplitting.gram_kk
+  obtain ⟨δ, x, y, ν, hκ, hy⟩ := normal 1 γ
+  refine ⟨δ, x, ν, lagrangian_isometrySplitting_comp_eq P L hγ (y := y) ?_,
+    by rwa [mul_one] at hκ⟩
+  -- Restate `hy` with matrices over `E`.
+  simpa [kAdelic, -map_inv, adeleMatrix_ratEmbed, coe_units_inv,
+    inv_mul_eq_iff_eq_mul_of_invertible, (map_injective (toAdele (E := E)).injective).eq_iff,
+    Matrix.mul_assoc, ↓ ← Matrix.map_mul] using hy
+
+/-- Let `Ω` be compact. The exponents `x` of the normal forms `δ⁻¹ = n(ν) a_x⁻¹ κ` with `δ`
+rational and `(ν, κ) ∈ Ω` are bounded below, where `n(ν) = P.radicalElement 0 ν` and
+`a_x = P.levi (Core.dyadicDiag x, 1)`. -/
+lemma bddBelow_normal_form_exponents {Ω : Set (Matrix p p (𝔸 E) × G E s)} (hΩ : IsCompact Ω) :
+    BddBelow {x : p → ℤ | ∃ (δ : U S.J) (ν : Matrix p p (𝔸 E)),
+      (ν, P.levi (dyadicDiag x, 1) * (P.radicalElement 0 ν)⁻¹ * S.ratEmbed δ⁻¹) ∈ Ω} := by
+  -- `d j` is a threshold below which a scaled rational entry in column `j` must vanish.
+  let column (j : p) : Set (𝔸 E) := ⋃ i : n,
+    (fun q : Matrix p p (𝔸 E) × _ ↦ (S.x.val * q.2⁻¹.adeleMatrix * P.kAdelic) i j) '' Ω
+  choose d hd using fun j : p ↦ exists_eq_zero_of_zpow_mul_mem (B := column j) <|
+    isCompact_iUnion fun i ↦ hΩ.image_of_continuous _
+  -- Column `j` of `δ * k` is rational, not zero, and `2 ^ x j` times a bounded vector.
+  refine ⟨d, ?_⟩
+  rintro x ⟨δ, ν, hκ⟩ j
+  refine not_lt.1 fun hlt ↦ ?_
+  obtain ⟨i, hi⟩ := exists_mul_k_apply_ne_zero P δ j
+  refine hi (hd j (x j) hlt ⟨_, ⟨i, rfl⟩, _, hκ, ?_⟩)
+  simp [← (adeleMatrix _).mul_assoc, ← map_inv, adeleMatrix_ratEmbed, dyadicDiag,
+    Matrix.mul_assoc, actsOnFrame_levi, actsOnFrame_radicalElement]
+  simp [kAdelic, ← Matrix.mul_assoc, mul_comm, ↓ ← Matrix.map_mul]
+
 open Pointwise in
+/-- Siegel sets for the Lagrangians of `S`: there are compact sets `K` and `B` such that every
+Lagrangian is spanned by the columns of `δ k`, with `k` the isotropic frame of `P`, for a rational
+`δ` with `n(b) a_u δ⁻¹ ∈ K`, where `u : p → ℕ` and `b` is a rational matrix such that `b + bᴴ` lies
+in `B` after its entry `(i, j)` is scaled by `2 ^ (-(u i + u j))` at the infinite places. Here
+`n(b) = P.radicalElement 0 b` and `a_u = P.levi (Core.dyadicDiag u, 1)`. -/
+lemma exists_lagrangian_siegel_set :
+    ∃ (K : Set (G E s)) (B : Set (Matrix p p (𝔸 E))),
+      IsCompact K ∧ IsCompact B ∧
+      ∀ L : Lagrangian S, ∃ (δ : U S.J) (u : p → ℕ) (b : Matrix p p E),
+        CompleteSplitting.lagrangian ((isometrySplitting δ).comp P) = L ∧
+        P.radicalElement 0 (b.map toAdele) * P.levi (dyadicDiag (u ·), 1) * S.ratEmbed δ⁻¹ ∈ K ∧
+        (of fun i j : p ↦ ↑(twoAtInfinity E ^ (-((u i : ℤ) + u j))) * toAdele ((b + bᴴ) i j)) ∈
+          B := by
+  -- Write `δ⁻¹ = n(ν) a_x⁻¹ κ` with `(ν, κ) ∈ Ω` (`exists_compact_lagrangian_normal_form`), and
+  -- `x = d + u` with `u ∈ ℕ^p` for a lower bound `d` of the exponents. With `D = dyadicDiag u`, a
+  -- rational `b` with `c = b + D ν Dᴴ ∈ N` moves `a_u δ⁻¹ = n(D ν Dᴴ) a_d⁻¹ κ` into `K`, and the
+  -- scaled `b + bᴴ`, that is `D⁻¹ (b + bᴴ) D⁻ᴴ = D⁻¹ (c + cᴴ) D⁻ᴴ - (ν + νᴴ)`, lies in `B`.
+  obtain ⟨Ω, hΩ, normal⟩ := exists_compact_lagrangian_normal_form P
+  obtain ⟨d, hd⟩ := bddBelow_normal_form_exponents P hΩ
+  obtain ⟨N, hN, hN_cover⟩ := IsCovolOneLattice.exists_compact_cover (ratMatrices E p p)
+  refine ⟨P.radicalElement 0 '' N * (fun q ↦ (P.levi (dyadicDiag d, 1))⁻¹ * q.2) '' Ω, _,
+    (hN.image_of_continuous _).mul (hΩ.image_of_continuous _),
+    ((isCompact_closedBall_prod_integral (E := E)).matrix.prod (hN.prod hΩ)).image_of_continuous
+      fun (a, c, v, _) ↦ a * (c + cᴴ) * aᴴ - (v + vᴴ), fun L ↦ ?_⟩
+  obtain ⟨δ, x, ν, lag_eq, hκ⟩ := normal L
+  choose u hu using fun j : p ↦ le.dest (hd ⟨δ, ν, hκ⟩ j)
+  obtain rfl : (fun j ↦ d j + u j : p → ℤ) = x := funext hu
+  obtain ⟨b, b_mem⟩ : ∃ b : Matrix p p E, b.map toAdele +
+      (dyadicDiag (u ·) : GL p (𝔸 E)).val * ν * (dyadicDiag (u ·) : GL p (𝔸 E)).valᴴ ∈ N := by
+    simpa [ratMatrices] using
+      hN_cover ((dyadicDiag (u ·) : GL p (𝔸 E)).val * ν * (dyadicDiag (u ·) : GL p (𝔸 E)).valᴴ)
+  refine ⟨δ, u, b, lag_eq, ⟨_, ⟨_, b_mem, rfl⟩, _, ⟨_, hκ, rfl⟩, ?_⟩,
+    ⟨(_, _, _), ⟨dyadicDiag_inv_mem u, b_mem, hκ⟩, ?_⟩⟩
+  · simp [← inl_apply, -coe_diagGL, ↓ ← radicalElement_zero_mul, dyadicDiag, mul_assoc,
+      _root_.zpow_add, ↓ ← Pi.mul_def]
+  · ext <;> simp [← map_inv, add_sub_add_comm, mul_add, twoAtInfinity, field, dyadicDiag,
+      _root_.zpow_add]
+
+open Pointwise in
+/-- Let `K` and `B` be compact. There are `C ≠ ∞` and `F` such that, for every `x : p → ℕ`, at most
+`C * (2 ^ f) ^ (∑ i, ∑ j, (x i + x j)) * F` Lagrangians, with `f` the number of infinite places,
+are spanned by the columns of `δ k` for a rational `δ` with `n(b) a_x δ⁻¹ ∈ K`, where `b` is a
+rational matrix such that `b + bᴴ` lies in `B` after its entry `(i, j)` is scaled by
+`2 ^ (-(x i + x j))` at the infinite places. Here `k` is the isotropic frame of `P`,
+`n(b) = P.radicalElement 0 b` and `a_x = P.levi (Core.dyadicDiag x, 1)`. -/
+lemma exists_encard_lagrangian_le {K : Set (G E s)} {B : Set (Matrix p p (𝔸 E))}
+    (hK : IsCompact K) (hB : IsCompact B) :
+    ∃ (C : ℝ≥0∞) (F : ℕ), C ≠ ∞ ∧ ∀ (x : p → ℕ) (X : Set (Lagrangian S)),
+      (∀ L ∈ X, ∃ (δ : U S.J) (b : Matrix p p E),
+        CompleteSplitting.lagrangian ((isometrySplitting δ).comp P) = L ∧
+        P.radicalElement 0 (b.map toAdele) * P.levi (dyadicDiag (x ·), 1) * S.ratEmbed δ⁻¹ ∈ K ∧
+        (of fun i j : p ↦ ↑(twoAtInfinity E ^ (-((x i : ℤ) + x j))) * toAdele ((b + bᴴ) i j)) ∈
+          B) →
+      (X.encard : ℝ≥0∞) ≤
+        C * .ofReal ((2 ^ Core.numInfPlaces E) ^ ∑ i : p, ∑ j : p, (x i + x j : ℤ).toNat) * F := by
+  -- Two uniform bounds: on rational points of `K⁻¹ * K`, and on rational hermitian matrices in a
+  -- scaled compact set.
+  obtain ⟨F, hF⟩ : ∃ F : ℕ, (S.ratEmbed ⁻¹' (K⁻¹ * K)).encard = F :=
+    (tendsto_cofinite_cocompact_iff.1 (tendsto_coe_cofinite_of_isDiscrete S.ratEmbed_injective
+      ⟨S.discreteTopology_Gamma⟩) _ (hK.inv.mul hK)).exists_encard_eq_coe
+  obtain ⟨C, hC, herm_le⟩ := encard_hermitian_le hB
+  refine ⟨C, F, hC, fun x X hX ↦ (mul_le_mul_left (herm_le fun i ↦ x i) F).trans' ?_⟩
+  rw_mod_cast [← hF, ← encard_prod]
+  -- Counting: `InK L ρ` says `n(b L) a_x ρ⁻¹ ∈ K`, as for `ρ = δ L`. It depends only on
+  -- `b L + (b L)ᴴ`, so `L` is determined by that hermitian matrix and the rational point
+  -- `epsilon (InK L) * (δ L)⁻¹` of `K⁻¹ * K`.
+  choose! δ b lag_eq h_inK h_herm using hX
+  let InK (L : Lagrangian S) (ρ : U S.J) : Prop :=
+    P.radicalElement 0 ((b L).map toAdele) * P.levi (dyadicDiag (x ·), 1) * S.ratEmbed ρ⁻¹ ∈ K
+  refine encard_le_encard_of_injOn
+    (f := fun L ↦ (b L + (b L)ᴴ, Classical.epsilon (InK L) * (δ L)⁻¹))
+    (fun L hL ↦ ⟨⟨by simp [add_comm], h_herm L hL⟩, ?_⟩) fun L hL M hM ↦ ?_
+  · exact ⟨_, inv_mem_inv.2 (Classical.epsilon_spec (p := InK L) ⟨_, h_inK L hL⟩), _,
+      h_inK L hL, by simp [mul_assoc]⟩
+  · simp +contextual [InK, radicalElement, ← Matrix.map_add,
+      ← (lag_eq L hL).congr (lag_eq M hM)]
+
+/-- Let `K` be compact. There is `R` such that, if `δ` is rational and `n(b) a_u δ⁻¹ ∈ K` for some
+`u : p → ℕ` and an adelic matrix `b`, then for every `x` the zero term along the Lagrangian spanned
+by the columns of `δ k`, composed with `normalisedTorus T P x`, has norm at most
+`R / ((2 ^ f) ^ ∑ i, u i) ^ card m`. Here `k` is the isotropic frame of `P`,
+`n(b) = P.radicalElement 0 b`, `a_u = P.levi (Core.dyadicDiag u, 1)`, `f` is the number of
+infinite places and `card m` is the rank of `T`. -/
+lemma exists_norm_zeroTerm_comp_normalisedTorus_le {K : Set (G E s)} (hK : IsCompact K) :
+    ∃ R : NNReal, ∀ (δ : U S.J) (u : p → ℕ) (b : Matrix p p (𝔸 E)),
+      P.radicalElement 0 b * P.levi (dyadicDiag (u ·), 1) * S.ratEmbed δ⁻¹ ∈ K →
+      ∀ x : p → ℕ,
+        ‖Lagrangian.zeroTerm T (CompleteSplitting.lagrangian ((isometrySplitting δ).comp P)) ∘L
+            normalisedTorus T P x‖ ≤ R / ((2 ^ Core.numInfPlaces E) ^ ∑ i : p, u i) ^ card m := by
+  obtain ⟨R, hR⟩ := exists_zeroTerm_normalisedTorus_le T P P P.kCoord (by simp) hK
+  refine ⟨R, fun δ u b h_inK x ↦ (_ ∘L _).opNorm_le_bound (by positivity) fun f ↦ ?_⟩
+  -- The term along the Lagrangian of `δ k` is the term of `P.lagrangian` after `δ⁻¹`; the factors
+  -- `radicalElement` and `levi` of the point of `K` multiply its norm by `1` and by
+  -- `√|det (dyadicDiag u)| ^ card m` (`norm_zeroTerm_parabolic_mul`).
+  have h_norm (g : 𝒮 (S.hom T)) : ‖P.lagrangian.zeroTerm T (splitWeil S T
+      (P.radicalElement 0 b * P.levi (dyadicDiag (u ·), 1) * S.ratEmbed δ⁻¹, 1) g)‖ =
+      √(ideleAbs (dyadicDiag (u ·) : GL p (𝔸 E)).det) ^ card m *
+        ‖(CompleteSplitting.lagrangian ((isometrySplitting δ).comp P)).zeroTerm T g‖ := by
+    rw [mul_assoc, norm_zeroTerm_parabolic_mul (a := 1) (by simp [actsOnFrame_radicalElement]),
+      norm_zeroTerm_parabolic_mul (actsOnFrame_levi ..), zeroTerm_lagrangian_isometrySplitting_comp]
+    simp
+  have h_bound : √(ideleAbs (dyadicDiag (u ·) : GL p (𝔸 E)).det) ^ card m *
+      ‖(CompleteSplitting.lagrangian ((isometrySplitting δ).comp P)).zeroTerm T
+        (normalisedTorus T P x f)‖ ≤ R * ‖f‖ := by
+    simpa [← h_norm] using hR _ h_inK x x rfl f
+  simpa [field, mul_comm, ideleAbs_det_dyadicDiag_natCast, Real.sqrt_sq_eq_abs] using h_bound
+
 /-- Let `P` be a complete splitting of `S` into `p` hyperbolic planes and let `T` have rank greater
 than `2 p`. There is a summable function `c` on the Lagrangians `L` of `S` such that, for every
 `x : p → ℕ`, the operator norm of `Lagrangian.zeroTerm T L` composed with `normalisedTorus T P x` is
@@ -309,103 +460,21 @@ lemma exists_summable_zeroTerm_bound (hm : 2 * Fintype.card p < Fintype.card m) 
       Summable c ∧
       ∀ (x : p → ℕ) (L : Lagrangian S),
         ‖Lagrangian.zeroTerm T L ∘L normalisedTorus T P x‖ ≤ c L := by
-  -- Put each `L` in the normal form `exists_compact_parabolic_normal_form` at `g = 1`, with torus
-  -- exponents `d + t L`, `t L ∈ ℕ^p`. Then the term of `L` is `O(2 ^ (-f ∑ t L i * card m))` with
+  -- Each `L` is spanned by the columns of `δ L * k`, with torus exponents `t L ∈ ℕ^p`
+  -- (`exists_lagrangian_siegel_set`). Then the term of `L` is `O(2 ^ (-f ∑ t L i * card m))` with
   -- `f = Core.numInfPlaces E`, while only `O(2 ^ (2 f ∑ t i * card p))` Lagrangians have a given
   -- `t`; the geometric series converges as `2 * card p < card m`.
-  obtain ⟨Ω, hΩ, normal⟩ := exists_compact_parabolic_normal_form P
-  obtain ⟨N, hN, hN_cover⟩ := IsCovolOneLattice.exists_compact_cover (ratMatrices E p p)
-  -- The columns of `γ L * k` are orthogonal to `L`.
-  choose γ hγ using fun L : Lagrangian S ↦
-    exists_isometry_orthogonal P ⟨_, gram_lk _⟩ L.chosenSplitting.gram_kk
-  choose δ x y ν hκ hy using fun L ↦ normal 1 (γ L)
-  -- `d j` is a threshold below which a scaled rational entry in column `j` must vanish.
-  let column (j : p) : Set (𝔸 E) := ⋃ i : n,
-    (fun q : Matrix p p (𝔸 E) × _ ↦ (S.x.val * q.2⁻¹.adeleMatrix * P.kAdelic) i j) '' Ω
-  choose d hd using fun j : p ↦ exists_eq_zero_of_zpow_mul_mem (B := column j) <|
-    isCompact_iUnion fun i ↦ hΩ.image_of_continuous _
-  -- Column `j` of `δ L * k` is rational, not zero, and `2 ^ x L j` times a bounded vector.
-  have d_le (L : Lagrangian S) (j : p) : d j ≤ x L j := by
-    refine not_lt.1 fun hlt ↦ ?_
-    obtain ⟨i, hi⟩ := exists_mul_k_apply_ne_zero P (δ L) j
-    refine hi (hd j (x L j) hlt ⟨_, ⟨i, rfl⟩, _, hκ L, ?_⟩)
-    simp [← (adeleMatrix _).mul_assoc, ← map_inv, adeleMatrix_ratEmbed, dyadicDiag,
-      Matrix.mul_assoc, actsOnFrame_levi, actsOnFrame_radicalElement]
-    simp [kAdelic, ← Matrix.mul_assoc, mul_comm, ↓ ← Matrix.map_mul]
-  choose t ht using fun (L : Lagrangian S) (j : p) ↦ le.dest (d_le L j)
-  obtain rfl : (fun L j ↦ d j + t L j : Lagrangian S → p → ℤ) = x := funext₂ ht
-  let K : Set (G E s) :=
-    P.radicalElement 0 '' N * (fun q ↦ (P.levi (dyadicDiag d, 1))⁻¹ * q.2) '' Ω
-  have hK : IsCompact K := (hN.image_of_continuous _).mul (hΩ.image_of_continuous _)
-  -- Three uniform bounds: on the operators attached to points of `K`, on rational points of
-  -- `K⁻¹ * K`, and on rational hermitian matrices in a scaled compact set.
-  obtain ⟨R, hR⟩ := exists_zeroTerm_normalisedTorus_le T P P P.kCoord (by simp) hK
-  obtain ⟨F, hF⟩ : ∃ F : ℕ, (S.ratEmbed ⁻¹' (K⁻¹ * K)).encard = F :=
-    (tendsto_cofinite_cocompact_iff.1 (tendsto_coe_cofinite_of_isDiscrete S.ratEmbed_injective
-      ⟨S.discreteTopology_Gamma⟩) _ (hK.inv.mul hK)).exists_encard_eq_coe
-  obtain ⟨C, hC, herm_le⟩ := encard_hermitian_le <|
-    ((isCompact_closedBall_prod_integral (E := E)).matrix.prod (hN.prod hΩ)).image_of_continuous
-    fun (a, u, v, _) ↦ a * (u + uᴴ) * aᴴ - (v + vᴴ)
-  -- Restate `hy` with matrices over `E`.
-  replace hy (L : Lagrangian S) :
-      (γ L).val.val * P.k = (δ L).val.val * (P.k * (y L).val) := by
-    simpa [kAdelic, -map_inv, adeleMatrix_ratEmbed, coe_units_inv,
-      inv_mul_eq_iff_eq_mul_of_invertible,
-      (map_injective (toAdele (E := E)).injective).eq_iff, Matrix.mul_assoc,
-      ↓ ← Matrix.map_mul] using hy L
-  -- The unipotent of a rational `b L` moves `P.levi (dyadicDiag (t L), 1) * (δ L)⁻¹` into `K`;
-  -- `InK L ρ` says this with `ρ` for `δ L`.
-  let diagT (L : Lagrangian S) : GL p (𝔸 E) := dyadicDiag fun i ↦ t L i
-  choose b b_mem using fun L ↦ show ∃ a : Matrix p p E,
-      a.map toAdele + (diagT L).val * ν L * (diagT L).valᴴ ∈ N by
-    simpa [ratMatrices] using hN_cover ((diagT L).val * ν L * (diagT L).valᴴ)
-  let InK (L : Lagrangian S) (ρ : U S.J) : Prop :=
-    P.radicalElement 0 ((b L).map toAdele) * P.levi (diagT L, 1) * S.ratEmbed ρ⁻¹ ∈ K
-  have h_inK (L : Lagrangian S) : InK L (δ L) :=
-    ⟨_, ⟨_, b_mem L, rfl⟩, _, ⟨_, hκ L, rfl⟩, by simp [diagT, ← inl_apply, -coe_diagGL,
-      ↓ ← radicalElement_zero_mul, dyadicDiag, mul_assoc, _root_.zpow_add, ↓ ← Pi.mul_def]⟩
-  have lag_eq (L : Lagrangian S) :
-      CompleteSplitting.lagrangian ((isometrySplitting (δ L)).comp P) = L :=
-    lagrangian_isometrySplitting_comp_eq P L (hγ L) (hy L)
-  -- Counting: on a fibre of `t`, `InK L` depends only on `b L + (b L)ᴴ`, so `L` is determined by
-  -- that hermitian matrix and the rational point `epsilon (InK L) * (δ L)⁻¹` of `K⁻¹ * K`.
-  have fibre_le (x : p → ℕ) : ((t ⁻¹' {x}).encard : ℝ≥0∞) ≤
-      C * .ofReal ((2 ^ Core.numInfPlaces E) ^ ∑ i : p, ∑ j : p, (x i + x j : ℤ).toNat) * F := by
-    refine (mul_le_mul_left (herm_le fun i ↦ x i) F).trans' ?_
-    rw_mod_cast [← hF, ← encard_prod]
-    refine encard_le_encard_of_injOn
-      (f := fun L ↦ (b L + (b L)ᴴ, Classical.epsilon (InK L) * (δ L)⁻¹))
-      (fun L hL ↦ ⟨⟨by simp [add_comm], ?_⟩, ?_⟩) fun L hL M hM ↦ ?_
-    · refine ⟨(_, _, _), ⟨dyadicDiag_inv_mem x, b_mem L, hκ L⟩, ?_⟩
-      ext <;> simp [diagT, hL.symm, ← map_inv, add_sub_add_comm, mul_add, twoAtInfinity, field,
-        dyadicDiag, _root_.zpow_add]
-    · exact ⟨_, inv_mem_inv.2 (Classical.epsilon_spec ⟨_, h_inK L⟩), _, h_inK L,
-        by simp [mul_assoc]⟩
-    · simp +contextual [InK, diagT, radicalElement, ← Matrix.map_add, hL.trans hM.symm,
-        ← (lag_eq L).congr (lag_eq M)]
+  obtain ⟨K, B, hK, hB, h_siegel⟩ := exists_lagrangian_siegel_set P
+  choose δ t b lag_eq h_inK h_herm using h_siegel
+  obtain ⟨C, F, hC, h_count⟩ := exists_encard_lagrangian_le P hK hB
+  obtain ⟨R, hR⟩ := exists_norm_zeroTerm_comp_normalisedTorus_le T P hK
   let bound (L : Lagrangian S) : ℝ≥0∞ :=
     R / ((2 ^ Core.numInfPlaces E) ^ ∑ i : p, t L i) ^ card m
   have h_finite : ∑' L : Lagrangian S, bound L < ∞ :=
-    tsum_div_two_pow_lt_top R (by simp) hm hC fibre_le
-  refine ⟨fun L ↦ (bound L).toReal, summable_toReal h_finite.ne,
-    fun x L ↦ (_ ∘L _).opNorm_le_bound toReal_nonneg fun f ↦ ?_⟩
-  -- The term of `L` is the term of `P.lagrangian` after `(δ L)⁻¹`; the factors `radicalElement` and
-  -- `levi` of the point of `K` multiply its norm by `1` and by
-  -- `√|det (dyadicDiag (t L))| ^ card m` (`norm_zeroTerm_parabolic_mul`).
-  have h_term (g : 𝒮 (S.hom T)) : L.zeroTerm T g =
-      P.lagrangian.zeroTerm T (splitWeil S T (S.ratEmbed (δ L)⁻¹, 1) g) := by
-    rw [← zeroTerm_lagrangian_isometrySplitting_comp, lag_eq L]
-  have h_norm (g : 𝒮 (S.hom T)) : ‖P.lagrangian.zeroTerm T (splitWeil S T
-      (P.radicalElement 0 ((b L).map toAdele) * P.levi (diagT L, 1) * S.ratEmbed (δ L)⁻¹, 1) g)‖ =
-      √(ideleAbs (diagT L).det) ^ card m * ‖L.zeroTerm T g‖ := by
-    rw [mul_assoc, norm_zeroTerm_parabolic_mul (a := 1) (by simp [actsOnFrame_radicalElement]),
-      norm_zeroTerm_parabolic_mul (actsOnFrame_levi ..), h_term]
-    simp
-  have h_bound : √(ideleAbs (diagT L).det) ^ card m *
-      ‖L.zeroTerm T (normalisedTorus T P x f)‖ ≤ R * ‖f‖ := by
-    simpa [← h_norm] using hR _ (h_inK L) x x rfl f
-  simpa [bound, diagT, field, mul_comm, ideleAbs_det_dyadicDiag_natCast,
-    Real.sqrt_sq_eq_abs] using h_bound
+    tsum_div_two_pow_lt_top R (by simp) hm hC fun x ↦ h_count x _ fun L (hL : t L = x) ↦
+      hL ▸ ⟨δ L, b L, lag_eq L, h_inK L, h_herm L⟩
+  refine ⟨fun L ↦ (bound L).toReal, summable_toReal h_finite.ne, fun x L ↦ ?_⟩
+  simpa [bound, ENNReal.toReal_div, lag_eq L] using hR (δ L) (t L) _ (h_inK L) x
 
 end New.SiegelWeil
 
