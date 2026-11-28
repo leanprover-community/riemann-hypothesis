@@ -296,7 +296,7 @@ This section treats any family `T` of maps that obeys the law of a mixed Schröd
 splitting `V = l Eᵖ ⊕ V₀ ⊕ k Eᵖ` (`New.Space.Splitting.IsMixedLaw`), at a point `g` adapted to `t`
 (`New.Space.Splitting.IsAdapted`). The slices `New.Space.Splitting.slice` are such a family.
 
-* `New.Space.Splitting.IsAdapted.omega_projOn_adelic_of_isMixedLaw`: the values of `T` on a
+* `New.Space.Splitting.IsAdapted.omega_projOn_of_isMixedLaw`: the values of `T` on a
   vector that is a vacuum above a set `S` of finite places and its conjugate.
 * `New.Space.Splitting.IsAdapted.exists_omega_vacElem_of_isMixedLaw`: the law determines the values
   of `T` on ω(g) vac up to a constant.
@@ -485,51 +485,6 @@ lemma IsAdapted.omega_projOn_of_isMixedLaw
     by_contra h_ne
     refine hx (mem_stdLattice_iff_selfDualAddChar.2 fun b hb ↦ smul_left_injective ℂ h_ne ?_)
     simpa using (h_character b hb).symm
-
-/-- For a splitting `D` of `V` as `(l E^p ⊕ k E^p) ⊥ ι V₀`, a set `S` of finite places, `g` adapted
-to `t` (`g⁻¹ (l (t⁻¹)ᴴ, k t, ι)` has orthonormal columns at every infinite place and integral finite
-entries) and `T` obeying the law of a mixed Schrödinger model (`D.IsMixedLaw`), let `F = ω(g) P f`,
-where `P = V.projOn S` is the mean of the finite Heisenberg operators over `Ô^n` above `S ∪ S̄` and
-`S̄` is the set of conjugate places. For an adelic point `y`, the value `T (t⁻¹ᴴ y) F` vanishes
-unless the finite coordinate `α⁻¹ y_f` (`New.finCoord`) is integral at every place of `S ∪ S̄`. In
-that case it equals `V₀.projOn S (T (t⁻¹ᴴ y') F)`, where `y'` is `y` with its finite part above
-`S ∪ S̄` removed. -/
-lemma IsAdapted.omega_projOn_adelic_of_isMixedLaw {E : Type u_1} {n : Type u_2} {n₀ : Type u_3}
-    {p : Type u_4} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-    [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p] {s₀ : n₀ → ℤˣ} {V : Space E n s}
-    {V₀ : Space E n₀ s₀} {D : V.Splitting V₀ p}
-    {S : Set (FinPlace E)} {g : G E s} {t : GL p (𝔸 E)} {T : (p → 𝔸 E) → 𝒮 V →L[ℂ] 𝒮 V₀}
-    (h_adapted : D.IsAdapted g t) (hT : D.IsMixedLaw T) (y : p → 𝔸 E) (f : 𝒮 V) :
-    T (t.val⁻¹ᴴ *ᵥ y) (V.ω g (V.projOn S f)) =
-      boxIndicator p S.conjClosure (finCoord y) •
-        V₀.projOn S (T (t.val⁻¹ᴴ *ᵥ (y - finVec (idem S.conjClosure • finCoord y)))
-          (V.ω g (V.projOn S f))) := by
-  -- Split `y` into its real part `realVec a` and its finite part `finVec z`. The translation by
-  -- the real part is moved into the vector as `ϱ r`, which commutes with `P`; then the case of a
-  -- finite point, `IsAdapted.omega_projOn_of_isMixedLaw`, applies.
-  set a : NumberField.InfinitePlace E × p → ℂ := realCoord y
-  set z : p → 𝔸f E := finCoord y
-  have h_split : y = realVec a + finVec z := by
-    simpa [z, finVec, finCoord, funext_iff] using (realVec_realCoord_add y).symm
-  let r : n → 𝔸 E := g⁻¹.adeleMatrix *ᵥ (D.lAdelic *ᵥ (t.val⁻¹ᴴ *ᵥ realVec a))
-  have h_real : ∀ i : n, ∀ w ∈ S.conjClosure, (r i).2 w = 0 := by
-    simp [r, Matrix.mulVec, dotProduct, realVec, snd_sum]
-  have h_back : g.adeleMatrix *ᵥ r = D.lAdelic *ᵥ (t.val⁻¹ᴴ *ᵥ realVec a) := by
-    simp [r, mulVec_mulVec, ← Matrix.mul_assoc, ← G.adeleMatrix_mul]
-  have h_shift (x : p → 𝔸f E) :
-      T (t.val⁻¹ᴴ *ᵥ (realVec a + finVec x)) (V.ω g (V.projOn S f)) =
-        T (t.val⁻¹ᴴ *ᵥ finVec x) (V.ω g (V.projOn S (V.ϱ r f))) := by
-    rw [projOn_rho _ h_real, omega_rho, h_back, hT.apply_rho_lAdelic_mulVec, mulVec_add, add_comm]
-  have h_rest : y - finVec (idem S.conjClosure • z) =
-      realVec a + finVec (idem S.conjClosureᶜ • z) := by
-    rw [h_split, add_sub_assoc, idem_compl]
-    simp [finVec, funext_iff, sub_mul, mul_sub]
-  calc T (t.val⁻¹ᴴ *ᵥ y) (V.ω g (V.projOn S f))
-    _ = T (t.val⁻¹ᴴ *ᵥ finVec z) (V.ω g (V.projOn S (V.ϱ r f))) := by rw [h_split, h_shift]
-    _ = boxIndicator p S.conjClosure z • V₀.projOn S
-          (T (t.val⁻¹ᴴ *ᵥ finVec (idem S.conjClosureᶜ • z)) (V.ω g (V.projOn S (V.ϱ r f)))) :=
-      h_adapted.omega_projOn_of_isMixedLaw hT z _
-    _ = _ := by rw [h_rest, h_shift]
 
 /-- Let `D` split `V` as `V₀ ⊥ (l E^p ⊕ k E^p)` via `ι`, let `g` be adapted to `t`
 (`g⁻¹ (l (t⁻¹)ᴴ, k t, ι)` has orthonormal columns at every infinite place and integral finite

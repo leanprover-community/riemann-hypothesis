@@ -126,10 +126,8 @@ namely the zero term of `φ` along the isotropic frame. -/
 lemma projOn_homSlice_zero (D : W'.Splitting W p) [IsBaseAdapted D] {S : Set (FinPlace E)}
     {φ : 𝒮 (W'.hom V)} (hφ : ((W'.hom V).projOn S) φ = φ) :
     projOn (W.hom V) S (D.homSlice V 0 φ) = D.homSlice V 0 φ := by
-  have h_coord : finCoord (0 : n × p → 𝔸 E) = 0 := by simp [finCoord, funext_iff]
-  simpa [hφ, slice_zero, homSlice, boxIndicator, h_coord] using
-    ((isAdapted_homSource D V).omega_projOn_adelic_of_isMixedLaw isMixedLaw_slice 0 φ
-      (S := S)).symm
+  simpa [hφ, slice_zero, homSlice, boxIndicator] using
+    ((isAdapted_homSource D V).omega_projOn_of_isMixedLaw isMixedLaw_slice 0 φ (S := S)).symm
 
 /-- Let `D` split `W'` into `W` and `card p` hyperbolic planes, with adelic frames that are
 orthonormal at the infinite and integral at the finite places (`IsBaseAdapted`). Suppose that the
