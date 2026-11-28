@@ -263,6 +263,20 @@ private lemma mem_range_of_valuation_lt_one {v : FinPlace ℚ}
   have h_over : IsPlaceOver ((s u)⁻¹ • B) t := by simpa [← hσ, smul_smul] using h_over_g
   exact ⟨u, (hw u).unique h_over⟩
 
+/-- A cocycle `x ∈ component l e ψ ν` killed by `m` satisfies `2 • x σ = 0` at every complex
+conjugation `σ` that fixes the `N m`-th roots of unity. -/
+private lemma two_smul_apply_eq_zero_of_isComplexConj
+    {x : Gal(Ω/ℚ) → QuotSpan ((l : O) ^ ν)}
+    (hx : x ∈ component l e ψ ν) (hx_tors : ∀ g : Gal(Ω/ℚ), m • x g = 0)
+    {σ : cycloGalGroup (N * m)} (hσ : IsComplexConj σ) :
+    (2 : O) • x σ = 0 := by
+  -- The cocycle rule evaluates `x (σ * (σ * σ)) = x σ` as `3 • x σ = x σ`, and the cocycle
+  -- character acts trivially since `σ` fixes the roots of unity and `m` kills `x`.
+  have hσ_sq : (σ : Gal(Ω/ℚ)) * σ = 1 := by simp [← Subgroup.coe_mul, hσ.mul_self]
+  have h_val : x (σ * (σ * σ) : Gal(Ω/ℚ)) = x σ := by rw [hσ_sq, mul_one]
+  simpa [apply_mul_of_mem_vanishingCocycles hx, hx_tors, two_smul,
+    cyclotomicPowDirichlet_smul_eq_self σ.prop] using h_val
+
 /-- Artin reciprocity over `K = ℚ(μ_{N m})` at a prime `q ≡ 1 mod N m`, with `φ` a Frobenius at `B`
 above `q`. The space `component l e ψ ν` consists of cocycles `Gal(Ω/ℚ) → O/l^ν` for `(cyc^e ψ)⁻¹`
 under local conditions, including vanishing at `cmConj` and on inertia over `ℚ(μ_N)` away from `l`.
@@ -322,13 +336,8 @@ lemma artin_reciprocity_of_mem_component {a : ℕ} (ha : l.Coprime a) (ha_one : 
     simp [χ, ← map_nsmul, smul_comm, hx_tors]
   -- `χ` kills complex conjugations `σ`, since `2 • x σ = 0` and `2 ∣ d`.
   have conj_zero (σ : G) (hσ : IsComplexConj σ) : χ.val σ = 0 := by
-    have hσ_sq : (σ : Gal(Ω/ℚ)) * σ = 1 := by simp [← Subgroup.coe_mul, hσ.mul_self]
-    -- The cocycle rule evaluates `x (σ * (σ * σ)) = x σ` as `3 • x σ = x σ`.
-    have h_val : x (σ * (σ * σ) : Gal(Ω/ℚ)) = x σ := by rw [hσ_sq, mul_one]
-    have h_two : (2 : O) • x σ = 0 := by
-      simpa [apply_mul_of_mem_vanishingCocycles hx, hx_tors, two_smul,
-        cyclotomicPowDirichlet_smul_eq_self σ.prop] using h_val
-    simp [χ, d, mul_comm (2 : O), mul_smul, h_two]
+    simp [χ, d, mul_comm (2 : O), mul_smul,
+      two_smul_apply_eq_zero_of_isComplexConj hx hx_tors hσ]
   -- Above `l`, `χ` kills the decomposition group, since `(a ^ e - 1) • x g = 0` there.
   have dec_zero (A : ClosurePlace) (hA : A.valuation l < 1) (g : G)
       (hg : (g : Gal(Ω/ℚ)) ∈ decompGroup Gal(Ω/ℚ) A) : χ.val g = 0 := by
