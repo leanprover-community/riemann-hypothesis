@@ -354,8 +354,8 @@ lemma HasParahoricType.hasProductLabel {f : Gf E n → M → ℂ} {hw : w.IsSpli
   -- Extend by the identity outside block `0` to see that the projection `π` is onto.
   have h_surj : Surjective π := by
     intro x
-    refine ⟨⟨extendGL e x, fun _ ↦ ?_⟩, Units.ext (submatrix_extendGL e x)⟩
-    grind [one_apply_ne, extendGL_apply_of_notMem_range]
+    refine ⟨⟨e.extendGL _ x, fun _ ↦ ?_⟩, Units.ext (submatrix_extendGL e x)⟩
+    grind [one_apply_ne, Function.Embedding.coe_extendGL_apply_of_notMem_left]
   have h_mean : finMean Φ = finMean fun p : parabolic b ↦ Φ (π p) :=
     (finMean_comp_surjective π.toAdditive h_surj Φ).symm
   have h_sum_Φ : ∑ x : GL ρ (ResField w), Φ x = 0 := by

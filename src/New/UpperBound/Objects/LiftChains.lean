@@ -479,7 +479,7 @@ lemma card_GL_dvd_chosenGroupOrder (hn : Fintype.card n ≤ D.r * D.t) :
       D.chosenGroupOrder := by
   -- `g ↦ diag (g, 1)` embeds `GL n` in `GL (Fin (r * t))` at every chosen place.
   obtain ⟨u⟩ : Nonempty (n ↪ Fin (D.r * D.t)) := nonempty_of_card_le (by simpa)
-  exact card_dvd_of_injective (.piMap fun _ ↦ extendGL u) (.piMap fun _ ↦ extendGL_injective u)
+  exact card_dvd_of_injective (.piMap fun _ ↦ u.extendGL _) (.piMap fun _ ↦ u.extendGL_injective _)
 
 /-- The chosen places, indexed by the pairs (i, w) with w a chosen place above p_i, are pairwise
 distinct, and none is the conjugate of one of them. -/

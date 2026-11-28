@@ -106,7 +106,7 @@ places of M and 1 at those of Q. -/
 def firstBlockHom :
     S.ChosenGL r →* ∀ i : S.ChosenIndex ⊕ S.TwistIndex, GL n (ResField (S.placeAt i)) :=
   MonoidHom.pi fun
-    | .inl i => (extendGL u).comp (Pi.evalMonoidHom _ i)
+    | .inl i => (u.extendGL _).comp (Pi.evalMonoidHom _ i)
     | .inr _ => 1
 
 /-- At a place of Q the component of `firstBlockHom S u g` is 1. -/
@@ -154,7 +154,7 @@ lemma firstBlockHom_conj_mem_descentResidueLevel (s : S.ChosenGL r)
   refine (mem_descentResidueLevel_iff S u).2 ⟨fun i ↦ ?_,
     fun i ↦ by simpa only [firstBlockHom_conj_apply_inr] using h_parabolic i⟩
   let t : GL r (ResField (S.placeAt (inl i))) := s i
-  change ((extendGL u t)⁻¹ * x (inl i) * extendGL u t).val * inclMatrix _ u = inclMatrix _ u
+  change ((u.extendGL _ t)⁻¹ * x (inl i) * u.extendGL _ t).val * inclMatrix _ u = inclMatrix _ u
   simp only [Units.val_mul, Matrix.mul_assoc, extendGL_mul_inclMatrix]
   rw [← Matrix.mul_assoc (x (inl i)).val, h_fix i, ← extendGL_mul_inclMatrix,
     ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
@@ -581,7 +581,7 @@ lemma DescentPair.residueBlockDatum_inv_mul_mul
     {k : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, GL n (ResField (O.placeAt i))}
     {k' : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, GL n' (ResField (O.placeAt i))}
     {j : descentResidueLevel O.toLevelPlaces O.incl}
-    (h_chosen : ∀ i : O.ChosenIndex, k' (.inl i) = extendGL O.incl (k (.inl i)) * j.val (.inl i))
+    (h_chosen : ∀ i : O.ChosenIndex, k' (.inl i) = O.incl.extendGL _ (k (.inl i)) * j.val (.inl i))
     (h_twist : ∀ i : O.TwistIndex, k' (.inr i) = j.val (.inr i))
     (X : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n' n (ResField (O.placeAt i))) :
     O.residueBlockDatum (fun i : O.ChosenIndex ⊕ O.TwistIndex ↦ (k' i)⁻¹.val * X i * (k i).val) =
@@ -630,7 +630,7 @@ lemma DescentPair.omega_blockDatum_eq_smul (k : stdLevel E n) (k' : stdLevel E n
         O.residueLevelChar j) • O.blockDatum := by
   -- The reductions of `k'` at the places of `M` and of `Q`.
   have h_chosen (i : O.ChosenIndex) : reduceFamily O.placeAt k' (.inl i) =
-      extendGL O.incl (reduceFamily O.placeAt k (.inl i)) * j.val (.inl i) :=
+      O.incl.extendGL _ (reduceFamily O.placeAt k (.inl i)) * j.val (.inl i) :=
     congrFun h_reduction (.inl i)
   have h_twist (i : O.TwistIndex) : reduceFamily O.placeAt k' (.inr i) = j.val (.inr i) :=
     (congrFun h_reduction (.inr i)).trans (one_mul _)

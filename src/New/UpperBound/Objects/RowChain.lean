@@ -432,7 +432,9 @@ lemma lowerChain_principalRep (ϑ : D.TameChar) (s : D.chosenGL)
   have h_row (x : (D.levelPlaces ϑ).ChosenIndex ⊕ (D.levelPlaces ϑ).TwistIndex) (a b : D.Y D.m)
       (ha : blockNumber D.m a ≠ 0) : g x a b = if a = b then 1 else 0 := by
     cases x with
-    | inl x => exact extendGL_apply_of_notMem_range _ (s x) (by rwa [← blockNumber_eq_zero_iff]) b
+    | inl x =>
+        exact (BlockIndex.firstBlock D.m).coe_extendGL_apply_of_notMem_left (s x)
+          (by rwa [← blockNumber_eq_zero_iff]) b
     | inr x => rfl
   have h_first (x : (D.levelPlaces ϑ).ChosenIndex) :
       (g (Sum.inl x)).val.submatrix (BlockIndex.firstBlock D.m) (BlockIndex.firstBlock D.m) =

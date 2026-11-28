@@ -2,6 +2,7 @@ module
 
 import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 import Mathlib.RingTheory.PicardGroup
+public import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Elementary
 public import Lib.Weil.DualPair.Defs
 public import Lib.Weil.Unramified.HeckeGL
 
@@ -16,8 +17,7 @@ diagonal matrix is the larger of those of its blocks, for the L² operator norm.
 
 ## Main definitions and results
 
-* `New.extendGL`: the embedding g ↦ diag(g, 1); `New.submatrix_extendGL` and
-  `New.extendGL_apply_of_notMem_range` give its block g and its rows outside that block.
+* `Function.Embedding.extendGL`: the embedding g ↦ diag(g, 1), supplied by Tau Ceti.
 * `New.rangeParabolic`, `New.mem_rangeParabolic_iff`: the opposite parabolic for the two blocks, and
   its description in entries.
 * `New.index_rangeParabolic_mul_card_GL`, `New.index_stabilizer_inclMatrix`: the index of the
@@ -122,44 +122,27 @@ def residueDatum (w : ι → FinPlace E) (f : ((i : ι) → Matrix n' n (ResFiel
     f fun i ↦ (vecToMatrix x : Matrix n' n (𝔸f E)).map (residueOrZero ∘ evalAt (w i))
   else 0
 
-/-- For an embedding u of index sets, the homomorphism GL_r(R) → GL_n(R), g ↦ diag(g, 1), with g
-acting on the indices in the image of u. -/
-@[local simp]
-def extendGL [DecidableEq r] (u : r ↪ n) : GL r R →* GL n R :=
-  Units.map
-    { toFun g := 1 + inclMatrix R u * (g - 1) * (inclMatrix R u)ᵀ
-      map_one' := by simp
-      map_mul' g h := by
-        -- With `P = inclMatrix R u`, the product is `1 + P * X * Pᵀ` for this `X = g * h - 1`.
-        have h_sum : g * h - 1 = (g - 1) + (h - 1) + (g - 1) * (h - 1) := by noncomm_ring
-        rw [h_sum]
-        simp [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, add_assoc,
-          inclMatrix_transpose_mul_cancel_left] }
-
 /-- For the embedding g ↦ diag(g, 1), the columns indexed by u of the image of g are the columns
 of g, extended by zero. -/
 @[simp]
 lemma extendGL_mul_inclMatrix [DecidableEq r] (u : r ↪ n) (g : GL r R) :
-    (extendGL u g).val * inclMatrix R u = inclMatrix R u * g.val := by
-  simp [Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_sub]
+    (u.extendGL _ g).val * inclMatrix R u = inclMatrix R u * g.val := by
+  ext i j
+  rcases em (i ∈ range u) with ⟨k, rfl⟩ | hi
+  · simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply]
+  · have h_ne (k : r) : i ≠ u k := fun h ↦ hi ⟨k, h.symm⟩
+    rw [Matrix.mul_apply, Finset.sum_eq_single (u j)]
+    · simp [inclMatrix, Matrix.one_apply, Matrix.mul_apply, h_ne,
+        u.coe_extendGL_apply_of_notMem_left g hi]
+    · intro k _ hk
+      simp [inclMatrix, hk]
+    · simp
 
 /-- The block of diag(g, 1) with rows and columns in the image of u is g. -/
 lemma submatrix_extendGL [DecidableEq r] (u : r ↪ n) (g : GL r R) :
-    (extendGL u g).val.submatrix u u = g.val := by
+    (u.extendGL _ g).val.submatrix u u = g.val := by
   ext i j
-  simp [extendGL, inclMatrix, Matrix.mul_apply, Matrix.one_apply]
-
-/-- Outside the image of u, the rows of diag(g, 1) are those of the identity matrix. -/
-lemma extendGL_apply_of_notMem_range [DecidableEq r]
-    (u : r ↪ n) (g : GL r R) {i : n} (hi : i ∉ range u) (j : n) :
-    extendGL u g i j = (1 : Matrix n n R) i j := by
-  have h_ne (k : r) : i ≠ u k := fun h ↦ hi ⟨k, h.symm⟩
-  simp [extendGL, inclMatrix, Matrix.mul_apply, Matrix.one_apply, h_ne]
-
-lemma extendGL_injective [DecidableEq r]
-    (u : r ↪ n) : Function.Injective (extendGL (R := R) u) := by
-  intro g h h_eq
-  rw [Units.ext_iff, ← submatrix_extendGL u g, h_eq, submatrix_extendGL]
+  exact u.coe_extendGL_apply_apply g i j
 
 /-- An invertible matrix x fixes every column of T, seen as the family `T.col`, if and only if
 xT = T. -/
@@ -265,10 +248,10 @@ lemma index_rangeParabolic_mul_card_GL [DecidableEq r] (u : r ↪ n) :
           inclMatrix_transpose_mul_cancel_left]
         simp only [Matrix.mul_assoc] }
   have h_onto : Function.Surjective block.toHomUnits := fun g ↦ by
-    have h_block : Aᵀ * ((extendGL u g).val * A) = g := by
+    have h_block : Aᵀ * ((u.extendGL _ g).val * A) = g := by
       rw [extendGL_mul_inclMatrix, inclMatrix_transpose_mul_cancel_left]
-    have hg : extendGL u g ∈ P := by rw [h_mem, h_block, extendGL_mul_inclMatrix]
-    exact ⟨⟨extendGL u g, hg⟩, Units.ext h_block⟩
+    have hg : u.extendGL _ g ∈ P := by rw [h_mem, h_block, extendGL_mul_inclMatrix]
+    exact ⟨⟨u.extendGL _ g, hg⟩, Units.ext h_block⟩
   have h_le : MulAction.stabilizer (GL n R) A.col ≤ P := fun x hx ↦ by
     rw [h_mem, mem_stabilizer_col_iff.1 hx, inclMatrix_transpose_mul_self, Matrix.mul_one]
   have h_ker : (MulAction.stabilizer (GL n R) A.col).subgroupOf P = block.toHomUnits.ker := by
