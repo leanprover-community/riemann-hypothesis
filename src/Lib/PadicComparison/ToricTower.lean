@@ -659,28 +659,28 @@ private lemma PadicTest.untilt_map_eq_mul_of_forall {c D : PadicTest}
     simpa [ev_j, untilt_tiltMap, ← tiltMap_baseOfHom_apply] using congrArg untilt hy
   rw [Pi.mul_apply, h_at_k w (hk 0), h_at_k w' (hk 1), hw, map_mul, Pi.mul_apply]
 
-/-- Let `ζ` be the character `a ↦ (ε ^ a)^♯`, `r` a character of `ℚ≥0` with `r 1` a unit, and let
-the periodic sequences `x n` over the tilt of `c` have untilts `k ↦ ζ n ^ k * r n`. For a map of
-tests `f : c ⟶ D` and a character `u` in the ring of `D` with `u 1 = f (r 1)`, exactly one `ϕ`
-from the periodic sequences to the tilt of `D` has `baseOfHom ϕ = f` and `(ϕ (x n))^♯ = u n`. -/
+/-- The character `a ↦ (ε ^ a)^♯` of `ℚ≥0` valued in the ring of a `p`-adic test `c`. -/
+private def PadicTest.epsChar (c : PadicTest) : Multiplicative ℚ≥0 →* c.ProdRing :=
+  c.structureMap.toMonoidHom.comp (untilt.comp epsPowNNRat)
+
+/-- Let `r` be a character of `ℚ≥0` in `c.ProdRing` with `r 1` a unit, and let the periodic
+sequences `x n` over the tilt of `c` have untilts `k ↦ c.epsChar n ^ k * r n`. For a map of tests
+`f : c ⟶ D` and a character `u` in the ring of `D` with `u 1 = f (r 1)`, exactly one `ϕ` from the
+periodic sequences to the tilt of `D` has `baseOfHom ϕ = f` and `(ϕ (x n))^♯ = u n`. -/
 private lemma PadicTest.existsUnique_baseOfHom_eq_and_untilt_eq {c D : PadicTest}
-    (ζ r : Multiplicative ℚ≥0 →* c.ProdRing)
-    (hζ_def : ζ = c.structureMap.toMonoidHom.comp (untilt.comp epsPowNNRat))
-    (hr_unit : IsUnit (r (ofAdd 1)))
+    (r : Multiplicative ℚ≥0 →* c.ProdRing) (hr_unit : IsUnit (r (ofAdd 1)))
     (x : Multiplicative ℚ≥0 → periodicSeq c.TiltRing)
-    (hx : ∀ (n : Multiplicative ℚ≥0) (k : ℕ), ((x n).val k).untilt = ζ n ^ k * r n)
+    (hx : ∀ (n : Multiplicative ℚ≥0) (k : ℕ), ((x n).val k).untilt = c.epsChar n ^ k * r n)
     (f : c ⟶ D) (u : Multiplicative ℚ≥0 →* D.ProdRing) (hu : u (ofAdd 1) = f.1 (r (ofAdd 1))) :
     ∃! ϕ : periodicSeq c.TiltRing →ₐ[OFlat] D.TiltRing,
       baseOfHom ϕ = f ∧ ∀ n : Multiplicative ℚ≥0, (ϕ (x n)).untilt = u n := by
-  subst hζ_def
-  -- On one cell this is `existsUnique_hom`; `ζ` stays faithful as `OC` embeds in the cell.
+  -- On one cell this is `existsUnique_hom`; `c.epsChar` stays faithful as `OC` embeds in the cell.
   have h_cell (j : D.Index) : ∃! ϕ : periodicSeq c.TiltRing →+* PreTilt (D.Cell j) p,
       ϕ.comp (algebraMap c.TiltRing (periodicSeq c.TiltRing)) =
           tiltMap ((Pi.evalRingHom D.Cell j).comp f.toRingHom) ∧
         ∀ n : Multiplicative ℚ≥0, (ϕ (x n)).untilt = u n j := by
     let g : c.ProdRing →+* D.Cell j := (Pi.evalRingHom D.Cell j).comp f.toRingHom
-    let ζ_j : Multiplicative ℚ≥0 →* D.Cell j :=
-      g.toMonoidHom.comp (c.structureMap.toMonoidHom.comp (untilt.comp epsPowNNRat))
+    let ζ_j : Multiplicative ℚ≥0 →* D.Cell j := g.toMonoidHom.comp c.epsChar
     have h_inj : Injective (g.comp c.structureMap) := injective_of_isCell _
     have hx_j (n : Multiplicative ℚ≥0) (k : ℕ) :
         untilt (tiltMap g ((x n).val k)) = (ζ_j ^ k * g.toMonoidHom.comp r) n := by
@@ -721,15 +721,14 @@ private lemma PadicTest.existsUnique_baseOfHom_eq_and_untilt_eq {c D : PadicTest
     exact AlgHom.ext fun y ↦
       D.tiltPiEquiv.eq_symm_apply.mpr (funext fun j ↦ RingHom.congr_fun (h_eq j) y)
 
-/-- Let `v` be a unit of the ring of the test `c`, and `ζ` the character `a ↦ (ε ^ a)^♯` of `ℚ≥0`
-in that ring. There are a root system `r` of `v` (a character of `ℚ≥0` with `r 1 = v`) and periodic
-sequences `x n` over the tilt of `c` whose untilts are `k ↦ ζ n ^ k * r n`. -/
+/-- Let `v` be a unit of the ring of the test `c`. There are a root system `r` of `v` (a character
+of `ℚ≥0` with `r 1 = v`) and periodic sequences `x n` over the tilt of `c` whose untilts are
+`k ↦ c.epsChar n ^ k * r n`. -/
 private lemma PadicTest.exists_rootSystem_periodicSeq (c : PadicTest) {v : c.ProdRing}
     (hv : IsUnit v) :
     ∃ (r : Multiplicative ℚ≥0 →* c.ProdRing) (x : Multiplicative ℚ≥0 → periodicSeq c.TiltRing),
       r (ofAdd 1) = v ∧ ∀ (n : Multiplicative ℚ≥0) (k : ℕ),
-        ((x n).val k).untilt =
-          (c.structureMap.toMonoidHom.comp (untilt.comp epsPowNNRat)) n ^ k * r n := by
+        ((x n).val k).untilt = c.epsChar n ^ k * r n := by
   have h_untilt_surj : ∀ y : c.ProdRing, ∃ b : c.TiltRing, b.untilt = y :=
     untilt_surjective_of_isAbsIntegrallyClosed (R := c.ProdRing) (p := p)
   choose σ hσ using h_untilt_surj
@@ -743,20 +742,39 @@ private lemma PadicTest.exists_rootSystem_periodicSeq (c : PadicTest) {v : c.Pro
     have h_r : r (ofAdd 1) = ((Additive.toMul hv.unit : c.ProdRingˣ) : c.ProdRing) := by
       simp [r, hs]
     exact h_r.trans hv.unit_spec
-  -- `ζ n` is a root of unity of order dividing the denominator of `n`, a period of `x n`.
-  let ζ : Multiplicative ℚ≥0 →* c.ProdRing :=
-    c.structureMap.toMonoidHom.comp (untilt.comp epsPowNNRat)
-  have hζ (n : Multiplicative ℚ≥0) : ζ n ^ n.toAdd.den = 1 := by
+  -- `c.epsChar n` is a root of unity of order dividing the denominator of `n`, a period of `x n`.
+  have hζ (n : Multiplicative ℚ≥0) : c.epsChar n ^ n.toAdd.den = 1 := by
     -- `(ε ^ n)^♯` is a primitive root of unity of order the denominator of `n`
     have h_root : c.structureMap ((epsPow (ofAdd (n.toAdd : ℚ))).untilt ^ (n.toAdd : ℚ).den) =
         c.structureMap 1 :=
       congrArg c.structureMap (isPrimitiveRoot_untilt_epsPow (ofAdd (n.toAdd : ℚ))).pow_eq_one
-    simpa [ζ, NNRat.den_coe] using h_root
-  have h_periodic (n : Multiplicative ℚ≥0) : Periodic (fun k ↦ σ ((ζ ^ k * r) n)) n.toAdd.den := by
+    simpa [epsChar, NNRat.den_coe] using h_root
+  have h_periodic (n : Multiplicative ℚ≥0) :
+      Periodic (fun k ↦ σ ((c.epsChar ^ k * r) n)) n.toAdd.den := by
     simp [pow_add, hζ]
   let x (n : Multiplicative ℚ≥0) : periodicSeq c.TiltRing :=
-    ⟨fun k ↦ σ ((ζ ^ k * r) n), mem_of_periodic n.toAdd.den n.toAdd.den_pos (h_periodic n)⟩
+    ⟨fun k ↦ σ ((c.epsChar ^ k * r) n), mem_of_periodic n.toAdd.den n.toAdd.den_pos (h_periodic n)⟩
   exact ⟨r, x, h_r_one, fun n k ↦ hσ _⟩
+
+/-- Given periodic sequences `x n` lifting `k ↦ c.epsChar n ^ k * r n`, an `OFlat`-algebra map
+`ϕ : periodicSeq c.TiltRing →ₐ[OFlat] D.TiltRing` induces the character `n ↦ (ϕ (x n))^♯` of `ℚ≥0`
+in `D.ProdRing`. -/
+private def PadicTest.rootSystemOfHom {c D : PadicTest} {r : Multiplicative ℚ≥0 →* c.ProdRing}
+    {x : Multiplicative ℚ≥0 → periodicSeq c.TiltRing}
+    (hx : ∀ (n : Multiplicative ℚ≥0) (k : ℕ), ((x n).val k).untilt = c.epsChar n ^ k * r n)
+    (ϕ : periodicSeq c.TiltRing →ₐ[OFlat] D.TiltRing) : Multiplicative ℚ≥0 →* D.ProdRing where
+  toFun := untilt ∘ ϕ ∘ x
+  map_one' := by
+    have h_x_one (k : ℕ) :
+        ((x 1).val k).untilt = 1 * ((1 : periodicSeq c.TiltRing).val k).untilt := by
+      simp [hx]
+    simpa using untilt_map_eq_mul_of_forall ϕ 1 (x 1) 1 h_x_one
+  map_mul' a b := by
+    have h_x_mul (k : ℕ) :
+        ((x (a * b)).val k).untilt = 1 * ((x a * x b).val k).untilt := by
+      rw [one_mul, Subalgebra.coe_mul, Pi.mul_apply, map_mul, hx, hx, hx, map_mul, map_mul,
+        mul_pow, mul_mul_mul_comm]
+    simpa using untilt_map_eq_mul_of_forall ϕ 1 (x (a * b)) (x a * x b) h_x_mul
 
 /-- Let the coefficients `B ↦ B^♭ ⊗ M` make `Hom(b, (-)^♭)` acyclic for every perfect `b`, and let
 `v` be a unit of the ring of a test `c`. The root systems of `v` (pairs of a character `u` of `ℚ≥0`
@@ -773,51 +791,37 @@ lemma PadicTest.isLine_compatibleRoots
     IsLine (tilt ⋙ moduleCoeff (tensorCoeff M)) (Y := compatibleRootsAt algFunctor v)
       (fiberProd.snd ..) := by
   -- The functor of root systems of `v` is `Hom(periodicSeq c.TiltRing, (-)^♭)`: choose one system
-  -- `r`; the periodic sequences `x n` lifting `k ↦ (ζ ^ k * r) n` along the untilt give the
+  -- `r`; the periodic sequences `x n` lifting `k ↦ (c.epsChar ^ k * r) n` along the untilt give the
   -- universal system. As `periodicSeq c.TiltRing` is perfect, both claims follow, `shift` acting as
-  -- multiplication by the character `ζ : a ↦ (ε ^ a)^♯`.
+  -- multiplication by the character `c.epsChar : a ↦ (ε ^ a)^♯`.
   obtain ⟨r, x, hr_one, hx⟩ := exists_rootSystem_periodicSeq c hv
   obtain rfl : (⟨r (ofAdd 1)⟩ : (algFunctor ⋙ underlyingSet).obj c) = v := congrArg ULift.up hr_one
   have h_perfect : PerfectRing (periodicSeq c.TiltRing) p := perfectRing
-  let ζ : Multiplicative ℚ≥0 →* c.ProdRing :=
-    c.structureMap.toMonoidHom.comp (untilt.comp epsPowNNRat)
   -- The maps `ϕ` from `periodicSeq c.TiltRing` to the tilt of `D`; on constants each restricts to
-  -- the map of tests `baseOfHom ϕ`.
+  -- the map of tests `baseOfHom ϕ`, and `sys ϕ` is the character `n ↦ (ϕ (x n))^♯`.
   let Hom (D : PadicTest) := periodicSeq c.TiltRing →ₐ[OFlat] D.TiltRing
-  -- So `n ↦ (ϕ (x n))^♯` is a character, a system of roots of the image of `v`.
-  let sys {D : PadicTest} (ϕ : Hom D) : Multiplicative ℚ≥0 →* D.ProdRing :=
-    { toFun := untilt ∘ ϕ ∘ x
-      map_one' := by
-        have h_x_one (k : ℕ) :
-            ((x 1).val k).untilt = 1 * ((1 : periodicSeq c.TiltRing).val k).untilt := by
-          simp [hx]
-        simpa using untilt_map_eq_mul_of_forall ϕ 1 (x 1) 1 h_x_one
-      map_mul' a b := by
-        have h_x_mul (k : ℕ) :
-            ((x (a * b)).val k).untilt = 1 * ((x a * x b).val k).untilt := by
-          rw [one_mul, Subalgebra.coe_mul, Pi.mul_apply, map_mul, hx, hx, hx, map_mul, map_mul,
-            mul_pow, mul_mul_mul_comm]
-        simpa using untilt_map_eq_mul_of_forall ϕ 1 (x (a * b)) (x a * x b) h_x_mul }
+  let sys {D : PadicTest} (ϕ : Hom D) : Multiplicative ℚ≥0 →* D.ProdRing := rootSystemOfHom hx ϕ
   have h_sys_one {D : PadicTest} (ϕ : Hom D) : sys ϕ (ofAdd 1) = (baseOfHom ϕ).1 (r (ofAdd 1)) := by
-    -- `ζ 1 = 1`, so the sequence `x 1` lifts the constant `r 1`
+    -- `c.epsChar 1 = 1`, so the sequence `x 1` lifts the constant `r 1`
     have h_x_one (k : ℕ) : ((x (ofAdd 1)).val k).untilt =
         r (ofAdd 1) * ((1 : periodicSeq c.TiltRing).val k).untilt := by
-      simp [hx]
+      simp [hx, epsChar]
     change (ϕ (x (ofAdd 1))).untilt = _
     simpa using untilt_map_eq_mul_of_forall ϕ (r (ofAdd 1)) (x (ofAdd 1)) 1 h_x_one
   -- The shift multiplies each root `(ϕ (x n))^♯` by `(ε ^ n)^♯`, read in `D`.
   have h_shift {D : PadicTest} (ϕ : Hom D) (n : Multiplicative ℚ≥0) :
       (ϕ (shift _ (x n))).untilt = algebraMap OC D.ProdRing (untilt (epsPowNNRat n)) * sys ϕ n := by
     have h_x_succ (k : ℕ) :
-        ((shift c.TiltRing (x n)).val k).untilt = ζ n * ((x n).val k).untilt := by
-      simp [hx, ζ, _root_.pow_succ', mul_assoc]
-    exact (untilt_map_eq_mul_of_forall ϕ (ζ n) (shift c.TiltRing (x n)) (x n) h_x_succ).trans
+        ((shift c.TiltRing (x n)).val k).untilt = c.epsChar n * ((x n).val k).untilt := by
+      simp [hx, _root_.pow_succ', mul_assoc]
+    exact (untilt_map_eq_mul_of_forall ϕ (c.epsChar n) (shift c.TiltRing (x n)) (x n)
+      h_x_succ).trans
       (congrArg (· * sys ϕ n) ((baseOfHom ϕ).commutes (untilt (epsPowNNRat n))))
   -- Universality: a map `f` of tests and a system `u` of roots of `f v` come from one `ϕ`.
   have h_univ {D : PadicTest} (f : c ⟶ D) (u : Multiplicative ℚ≥0 →* D.ProdRing)
       (hu : u (ofAdd 1) = f.1 (r (ofAdd 1))) : ∃! ϕ : Hom D, baseOfHom ϕ = f ∧ sys ϕ = u := by
     have h_sys_eq (ϕ : Hom D) : sys ϕ = u ↔ ∀ n, (ϕ (x n)).untilt = u n := MonoidHom.ext_iff
-    simpa only [h_sys_eq] using existsUnique_baseOfHom_eq_and_untilt_eq ζ r rfl hv x hx f u hu
+    simpa only [h_sys_eq] using existsUnique_baseOfHom_eq_and_untilt_eq r hv x hx f u hu
   -- So `ϕ ↦ (sys ϕ, baseOfHom ϕ)` is a bijection onto the pairs of the statement.
   let Fib : PadicTest ⥤ Type 1 :=
     TimesBNat.incl PadicTest ⋙ compatibleRootsAt algFunctor ⟨r (ofAdd 1)⟩
