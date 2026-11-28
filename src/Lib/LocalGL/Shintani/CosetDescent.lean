@@ -89,6 +89,16 @@ variable (k₀) in
 fixed by σ. -/
 abbrev HasFixedField (σ : Gal(k'/k)) : Prop := Set.range (algebraMap k₀ k') = fixedPoints σ
 
+/-- An automorphism fixes all of `L` exactly when it is the identity. -/
+private lemma hasFixedField_self_iff {K L : Type*} [Field K] [Field L] [Algebra K L]
+    (σ : Gal(L/K)) : HasFixedField L σ ↔ σ = 1 := by
+  constructor
+  · intro hσ
+    exact σ.ext fun x ↦ hσ.le ⟨x, rfl⟩
+  · rintro rfl
+    ext x
+    simp [Function.IsFixedPt]
+
 /-- For each σ ∈ Gal(k'/k) with fixed field k₀ and each s over σ in GL_n(k')⋊Gal(k'/k) whose
 power s^{ord σ} is γ ∈ GL_n(k₀), Φ(s) = X(γ). -/
 def DescendsTo : Prop :=
@@ -215,18 +225,13 @@ GL_n(k'). -/
 @[simp]
 lemma DescendsTo.iff_comp_inl_eq_evalGL :
     DescendsTo Φ F' ↔ (fun g : GL n k' ↦ Φ (inl g)) = F'.evalGL := by
+  simp only [DescendsTo, hasFixedField_self_iff, forall_eq]
   constructor
-  · -- The fixed field of `σ = 1` is `k'`, and `inl g` is its own root over `1`.
-    intro h_desc
+  · intro h_desc
     funext g
-    have h_fix : HasFixedField k' (1 : Gal(k'/k)) := by
-      ext x
-      simp [Function.IsFixedPt]
-    exact h_desc 1 h_fix (inl g) g (by simp) (by simp)
-  · -- The only automorphism whose fixed field is `k'` is `σ = 1`, of order one, so
-    -- `s ^ orderOf σ = inl γ` says that `s` is `inl γ`.
-    intro h_eq σ hσ s γ hs hγ
-    obtain rfl : σ = 1 := σ.ext fun x ↦ hσ.le ⟨x, rfl⟩
+    exact h_desc (inl g) g (by simp) (by simp)
+  · intro h_eq s γ _ hγ
+    -- Since `σ = 1` has order one, `hγ` identifies `s` with `inl` of the image of `γ`.
     have hs_eq : s = inl (γ.map (algebraMap k' k')) := by simpa using hγ
     simp [hs_eq, ← h_eq]
 
@@ -649,7 +654,7 @@ private lemma descendsTo_induceClassFn_of_rankInner_eq (φ : k' ⊗[k] L →ₐ[
   let : Fintype (k' ⊗[k] L) := fintypeOfFintype B
   -- Here `σ = 1`, and every unit of `k' ⊗[k] L` is its own root.
   intro σ hσ
-  obtain rfl : σ = 1 := σ.ext fun x ↦ hσ.le ⟨x, rfl⟩
+  obtain rfl := (hasFixedField_self_iff σ).mp hσ
   obtain ⟨r_GL, hr_GL, -⟩ := exists_isRootChoice_GL (n := Fin m) hσ
   have hr_units : IsRootChoice (rightHom.comp ρ) 1 inl inl :=
     { injective := inl_injective
