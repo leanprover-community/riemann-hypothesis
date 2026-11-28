@@ -147,10 +147,13 @@ abbrev FinPlace.q : ℕ := w.asIdeal.absNorm
 
 @[simp] lemma FinPlace.one_lt_q : 1 < w.q := one_lt_absNorm w
 
+/-- For any finite place `w`, `w.q - 1` is strictly positive. -/
 lemma FinPlace.q_sub_one_pos : 0 < w.q - 1 := Nat.sub_pos_of_lt w.one_lt_q
 
+/-- For any finite place `w`, `w.q` is at least 1. -/
 lemma FinPlace.one_le_q : 1 ≤ w.q := w.one_lt_q.le
 
+/-- For any finite place `w`, the cardinality `w.q` of the residue field is strictly positive. -/
 lemma FinPlace.q_pos : 0 < w.q := zero_lt_one.trans w.one_lt_q
 
 lemma FinPlace.q_ne_zero : w.q ≠ 0 := w.q_pos.ne'
