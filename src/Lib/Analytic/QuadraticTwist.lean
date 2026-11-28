@@ -9,6 +9,7 @@ import Mathlib.Tactic.PNatToNat
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.NumberTheory.DirichletCharacter.Conductor
 public import Lib.Analytic.DirichletTheta
+public import TauCeti.NumberTheory.LSeries.Quadratic.ThetaTail
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 import Lib.Analytic.EntireLFunction
 import Lib.Analytic.PolyaVinogradov
@@ -25,28 +26,31 @@ follows from the large sieve inequality for real characters; the proof here need
 Pólya–Vinogradov inequality, because theta series keep all sums short.
 
 1. For a primitive character `χ ≠ 1` of conductor `q ≤ T²` let `J(χ, T)` be the integral over
-   `u ≥ 1 / T` of `|θ_χ(u)| + |θ_{μχ}(u)|` against `du / u` (`thetaTailIntegral`). If `χ` has parity
-   `j`, the Mellin transform of `θ_χ` at `s - 1/2` is `Γ_j L`, and by the functional equation the
-   integral of `|θ_χ(u)| du / u` over `u < q ^ (-1/2)` equals that over `u > q ^ (-1/2)`. The
-   truncated transform `𝓜` of `θ_{μχ}` (`mollifier`) approximates `Γ_j / L` on `re s = 2`.
+   `u ≥ 1 / T` of `|θ_χ(u)| + |θ_{μχ}(u)|` against `du / u`
+   (`quadraticTwistGaussianThetaTailIntegral`). If `χ` has parity `j`, the Mellin transform of
+   `θ_χ` at `s - 1/2` is `Γ_j L`, and by the functional equation the integral of `|θ_χ(u)| du / u`
+   over `u < q ^ (-1/2)` equals that over `u > q ^ (-1/2)`. The truncated transform `𝓜` of
+   `θ_{μχ}` (`mollifier`) approximates `Γ_j / L` on `re s = 2`.
 2. For large `T` a zero in the box forces `J(χ, T) > T ^ (2 δ)`
-   (`eventually_rpow_lt_thetaTailIntegral`). Otherwise `Γ_j L 𝓜 - Γ_j²` is `≪ T ^ (4 δ)` on
-   `re s = 1/2` and `≪ 1 / T` on `re s = 2`, so it is small at the zero by the three-lines theorem,
-   while it equals `-Γ_j²` there.
+   (`eventually_rpow_lt_quadraticTwistGaussianThetaTailIntegral`). Otherwise `Γ_j L 𝓜 - Γ_j²` is
+   `≪ T ^ (4 δ)` on `re s = 1/2` and `≪ 1 / T` on `re s = 2`, so it is small at the zero by the
+   three-lines theorem, while it equals `-Γ_j²` there.
 3. In the mean over `v ≤ T²` the theta series with coefficients `αₙ (-v/n°)`, where `n°` is the odd
-   part of `n`, are small (`sum_sq_thetaSeries_jacobiSym_le`): expand the square, bound the pairs
-   with `(n n')°` a square trivially and the others by Pólya–Vinogradov. So the sum of the `J` is
-   `≪ T ^ (2 + δ)`.
+   part of `n`, are small (`sum_sq_gaussianThetaSeries_jacobiSym_le`): expand the square, bound the
+   pairs with `(n n')°` a square trivially and the others by Pólya–Vinogradov. So the sum of the `J`
+   is `≪ T ^ (2 + δ)`.
 4. By reciprocity `(n/d) = (-d/n°)`, so 2 and 3 give the count, with `T² = N X`, after passing from
    `ξ` to the primitive character that induces it.
 5. If all primes of an invertible class were bad, the sum of `log p / p` over the class would
    converge; it diverges, so some prime of the class is not bad
    (`exists_entireL_quadTwist_ne_zero`).
 
-Notions from other files:
+Notions from Tau Ceti and from other files:
 * `gaussianMonomial j` is the weight `w(z) = z ^ j e^(-π z²)` of parity `j`, and `gaussianMellin j`
   is its Mellin transform `Γ_j(s) = ∫_0^∞ w(z) z ^ s dz / z`.
-* `thetaSeries j c u` is `θ_c(u) = u ^ (1/2) ∑_{n ≥ 1} c(n) w(n u)`.
+* `gaussianThetaSeries j c u` is `θ_c(u) = u ^ (1/2) ∑_{n ≥ 1} c(n) w(n u)`.
+* `quadraticTwistGaussianThetaTailIntegral j c T` is the measure of cancellation
+  `J(c, T) = ∫_{1/T}^∞ (|θ_c(u)| + |θ_{μc}(u)|) du / u` of a sequence `c`.
 * `quadTwist χ d` is the character `χ (·/d)` modulo `N d`, for `χ` modulo `N` and a prime `d`.
 
 ## Relation to the literature
@@ -62,6 +66,8 @@ Jacobi symbol sums.
 
 open ArithmeticFunction DirichletCharacter Complex Moebius Finset Real ZMod vonMangoldt LSeries
   Filter jacobiSym legendreSym MeasureTheory Nat NumberTheorySymbols
+open TauCeti (gaussianMonomial gaussianTheta gaussianThetaSeries gaussianMellin
+  quadraticTwistGaussianThetaTailIntegral)
 
 namespace New
 
@@ -71,30 +77,29 @@ section ThreeLines
 
 open Set HadamardThreeLines
 
-/-- The measure of cancellation `J(c, T) = ∫_{1/T}^∞ (|θ_c(u)| + |θ_{μc}(u)|) du / u` of a sequence
-`c`, where `θ_c` is its theta series of parity `j`. -/
-noncomputable def thetaTailIntegral (c : ℕ → ℂ) (T : ℝ) : ℝ :=
-  ∫ u : ℝ in Ioi T⁻¹, (‖thetaSeries j c u‖ + ‖thetaSeries j (fun n : ℕ ↦ c n * μ n) u‖) / u
-
 /-- The mollifier `𝓜(s) = ∫_{1/T}^∞ θ_{μc}(u) u ^ (s - 1/2) du / u`, where `θ_{μc}` is the theta
 series with the coefficients `c(n) μ(n)`. For a character `c = χ` it is the truncated integral for
 `Γ_j / L`. -/
 noncomputable def mollifier (c : ℕ → ℂ) (T : ℝ) (s : ℂ) : ℂ :=
-  ∫ u : ℝ in Ioi T⁻¹, (u : ℂ) ^ (s - 2⁻¹ - 1) • thetaSeries j (fun n : ℕ ↦ c n * μ n) u
+  ∫ u : ℝ in Ioi T⁻¹, (u : ℂ) ^ (s - 2⁻¹ - 1) • gaussianThetaSeries j (fun n : ℕ ↦ c n * μ n) u
 
 variable {j} {c : ℕ → ℂ} {T : ℝ} {z : ℂ}
 
-/-- For `|c(n)| ≤ 1` and `T > 0` the tail integral `J(c, T)` (`thetaTailIntegral`) is the sum of
-the tail integrals of `|θ_c(u)| / u` and `|θ_{μc}(u)| / u`. -/
-lemma thetaTailIntegral_eq_add (hc : ∀ n : ℕ, ‖c n‖ ≤ 1) (hT : 0 < T) :
-    thetaTailIntegral j c T = (∫ u : ℝ in Ioi T⁻¹, ‖thetaSeries j c u‖ / u) +
-      ∫ u : ℝ in Ioi T⁻¹, ‖thetaSeries j (fun n : ℕ ↦ c n * μ n) u‖ / u := by
-  simp_rw [thetaTailIntegral, add_div]
-  exact integral_add (integrableOn_norm_thetaSeries_div hc (inv_pos.2 hT))
-    (integrableOn_norm_thetaSeries_div (norm_mul_moebius_le_one hc) (inv_pos.2 hT))
+/-- For `|c(n)| ≤ 1` and `T > 0` the tail integral `J(c, T)`
+(`quadraticTwistGaussianThetaTailIntegral`) is the sum of the tail integrals of `|θ_c(u)| / u` and
+`|θ_{μc}(u)| / u`. -/
+lemma quadraticTwistGaussianThetaTailIntegral_eq_add (hc : ∀ n : ℕ, ‖c n‖ ≤ 1) (hT : 0 < T) :
+    quadraticTwistGaussianThetaTailIntegral j c T =
+      (∫ u : ℝ in Ioi T⁻¹, ‖gaussianThetaSeries j c u‖ / u) +
+        ∫ u : ℝ in Ioi T⁻¹, ‖gaussianThetaSeries j (fun n : ℕ ↦ c n * μ n) u‖ / u := by
+  simp_rw [TauCeti.quadraticTwistGaussianThetaTailIntegral_def, add_div]
+  exact integral_add
+    (TauCeti.integrableOn_norm_gaussianThetaSeries_div (fun n ↦ hc n) (inv_pos.2 hT))
+    (TauCeti.integrableOn_norm_gaussianThetaSeries_div (fun n ↦ norm_mul_moebius_le_one hc n)
+      (inv_pos.2 hT))
 
-lemma integral_norm_thetaSeries_div_nonneg {r : ℝ} (hr : 0 ≤ r) :
-    0 ≤ ∫ u : ℝ in Ioi r, ‖thetaSeries j c u‖ / u :=
+lemma integral_norm_gaussianThetaSeries_div_nonneg {r : ℝ} (hr : 0 ≤ r) :
+    0 ≤ ∫ u : ℝ in Ioi r, ‖gaussianThetaSeries j c u‖ / u :=
   setIntegral_nonneg measurableSet_Ioi fun _ hu ↦ div_nonneg (norm_nonneg _) (hr.trans hu.out.le)
 
 /-- For `|c(n)| ≤ 1` and `T > 0` the mollifier `𝓜` of `c`, the transform of the theta series of
@@ -108,23 +113,24 @@ lemma mollifier_differentiableOn_and_bounded (hc : ∀ n : ℕ, ‖c n‖ ≤ 1)
   have h_mellin : mollifier j c T = mellin f := by
     ext s
     rw [mellin, ← indicator_smul, setIntegral_indicator measurableSet_Ioi, inter_eq_right.2 h_sub]
-    exact setIntegral_congr_fun measurableSet_Ioi fun u hu ↦ cpow_smul_thetaSeries s (h_sub hu)
+    exact setIntegral_congr_fun measurableSet_Ioi fun u hu ↦
+      cpow_smul_gaussianThetaSeries s (h_sub hu)
   have hf (u : ℝ) (hu : 0 < u) : ‖f u‖ ≤ 3 * T * rexp (-u) := by
     by_cases h_cut : u ∈ Ioi T⁻¹
     · calc ‖f u‖ ≤ 3 * rexp (-u) / u := by
             simpa only [f, indicator_of_mem h_cut] using
-              (summable_and_norm_gaussianTheta_le (norm_mul_moebius_le_one hc) hu).2
+              TauCeti.norm_gaussianTheta_le (fun n ↦ norm_mul_moebius_le_one hc n) hu
         _ ≤ 3 * rexp (-u) / T⁻¹ := by gcongr; exact h_cut.out.le
         _ = 3 * T * rexp (-u) := by field
     · simpa [f, h_cut] using by positivity
   simpa only [h_mellin] using mellin_differentiableOn_and_bounded hf
-    (measurable_gaussianTheta.indicator measurableSet_Ioi)
+    (TauCeti.measurable_gaussianTheta.indicator measurableSet_Ioi)
 
 /-- On `re z = 1/2` we have `|∫_r^∞ θ(u) u ^ (z - 1/2) du / u| ≤ ∫_r^∞ |θ(u)| du / u` for `r ≥ 0`,
 as `u ^ (z - 1/2)` has modulus `1`; here `θ` is the theta series of `c`. -/
-lemma norm_integral_cpow_smul_thetaSeries_le (hz : z.re = 2⁻¹) {r : ℝ} (hr : 0 ≤ r) :
-    ‖∫ u : ℝ in Ioi r, (u : ℂ) ^ (z - 2⁻¹ - 1) • thetaSeries j c u‖ ≤
-      ∫ u : ℝ in Ioi r, ‖thetaSeries j c u‖ / u := by
+lemma norm_integral_cpow_smul_gaussianThetaSeries_le (hz : z.re = 2⁻¹) {r : ℝ} (hr : 0 ≤ r) :
+    ‖∫ u : ℝ in Ioi r, (u : ℂ) ^ (z - 2⁻¹ - 1) • gaussianThetaSeries j c u‖ ≤
+      ∫ u : ℝ in Ioi r, ‖gaussianThetaSeries j c u‖ / u := by
   refine (norm_integral_le_integral_norm _).trans_eq
     (setIntegral_congr_fun measurableSet_Ioi fun u (hu : r < u) ↦ ?_)
   simp [norm_cpow_eq_rpow_re_of_pos (hr.trans_lt hu), hz, rpow_neg_one, div_eq_inv_mul]
@@ -132,18 +138,20 @@ lemma norm_integral_cpow_smul_thetaSeries_le (hz : z.re = 2⁻¹) {r : ℝ} (hr 
 /-- For `|c(n)| ≤ 1` and `T > 0`, on `re z = 1/2` the mollifier `𝓜` is at most the tail integral
 `J(c, T)` in absolute value. -/
 lemma norm_mollifier_le (hc : ∀ n : ℕ, ‖c n‖ ≤ 1) (hT : 0 < T) (hz : z.re = 2⁻¹) :
-    ‖mollifier j c T z‖ ≤ thetaTailIntegral j c T := by
-  rw [thetaTailIntegral_eq_add hc hT]
-  exact le_add_of_nonneg_of_le (integral_norm_thetaSeries_div_nonneg (inv_pos.2 hT).le)
-    (norm_integral_cpow_smul_thetaSeries_le hz (inv_pos.2 hT).le)
+    ‖mollifier j c T z‖ ≤ quadraticTwistGaussianThetaTailIntegral j c T := by
+  rw [quadraticTwistGaussianThetaTailIntegral_eq_add hc hT]
+  exact le_add_of_nonneg_of_le (integral_norm_gaussianThetaSeries_div_nonneg (inv_pos.2 hT).le)
+    (norm_integral_cpow_smul_gaussianThetaSeries_le hz (inv_pos.2 hT).le)
 
 /-- For `|c(n)| ≤ 1`, `re z = 2` and `u > 0`, the trivial bound on the theta series `θ` of `c`
 gives `|u ^ (z - 1/2) θ(u) / u| ≤ 3 e^(-u)`. -/
-lemma norm_cpow_smul_thetaSeries_le (hc : ∀ n : ℕ, ‖c n‖ ≤ 1) (hz : z.re = 2) {u : ℝ} (hu : 0 < u) :
-    ‖(u : ℂ) ^ (z - 2⁻¹ - 1) • thetaSeries j c u‖ ≤ 3 * rexp (-u) := by
+lemma norm_cpow_smul_gaussianThetaSeries_le (hc : ∀ n : ℕ, ‖c n‖ ≤ 1) (hz : z.re = 2) {u : ℝ}
+    (hu : 0 < u) :
+    ‖(u : ℂ) ^ (z - 2⁻¹ - 1) • gaussianThetaSeries j c u‖ ≤ 3 * rexp (-u) := by
   have h_pow : ‖(u : ℂ) ^ (z - 2⁻¹ - 1)‖ = √u := by
     norm_num [norm_cpow_eq_rpow_re_of_pos hu, sqrt_eq_rpow, hz]
-  grw [norm_smul, h_pow, norm_thetaSeries_le hc hu, mul_div_cancel₀ _ (sqrt_pos.2 hu).ne']
+  grw [norm_smul, h_pow, TauCeti.norm_gaussianThetaSeries_le (fun n ↦ hc n) u,
+    mul_div_cancel₀ _ (sqrt_pos.2 hu).ne']
 
 variable {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
 
@@ -161,15 +169,16 @@ lemma norm_mul_mollifier_sub_le (hT : 0 < T) (hz : z.re = 2) :
   have hχ (n : ℕ) : ‖χ n‖ ≤ 1 := χ.norm_le_one n
   have h_exp : IntegrableOn (fun u : ℝ ↦ 3 * rexp (-u)) (Ioi 0) :=
     (integrableOn_exp_neg_Ioi 0).const_mul 3
-  let F (u : ℝ) : ℂ := (u : ℂ) ^ (z - 2⁻¹ - 1) • thetaSeries j (fun n : ℕ ↦ χ n * μ n) u
+  let F (u : ℝ) : ℂ := (u : ℂ) ^ (z - 2⁻¹ - 1) • gaussianThetaSeries j (fun n : ℕ ↦ χ n * μ n) u
   have hF (u : ℝ) (hu : 0 < u) : ‖F u‖ ≤ 3 * rexp (-u) :=
-    norm_cpow_smul_thetaSeries_le (norm_mul_moebius_le_one hχ) hz hu
+    norm_cpow_smul_gaussianThetaSeries_le (norm_mul_moebius_le_one hχ) hz hu
   have hF_int : IntegrableOn F (Ioi 0) := h_exp.mono'
-    ((measurable_ofReal.pow_const _).smul measurable_thetaSeries).aestronglyMeasurable
+    ((measurable_ofReal.pow_const _).smul
+      TauCeti.measurable_gaussianThetaSeries).aestronglyMeasurable
     (ae_restrict_of_forall_mem measurableSet_Ioi hF)
   have h_head : gaussianMellin j z / χ.LFunction z - mollifier j (χ ·) T z =
       ∫ u : ℝ in Ioc 0 T⁻¹, F u := by
-    rw [← mellin_thetaSeries_moebius χ hz_one, mellin, mollifier, ← Ioi_sdiff_Ioi,
+    rw [← mellin_gaussianThetaSeries_moebius χ hz_one, mellin, mollifier, ← Ioi_sdiff_Ioi,
       setIntegral_sdiff measurableSet_Ioi hF_int (Ioi_subset_Ioi (inv_pos.2 hT).le)]
   have h_head_le : ‖∫ u : ℝ in Ioc 0 T⁻¹, F u‖ ≤ 3 * T⁻¹ := by
     refine (norm_setIntegral_le_of_norm_le_const (C := 3) measure_Ioc_lt_top fun u hu ↦ ?_).trans_eq
@@ -177,10 +186,11 @@ lemma norm_mul_mollifier_sub_le (hT : 0 < T) (hz : z.re = 2) :
     grw [hF u hu.1, exp_le_one_iff.2 (neg_nonpos.2 hu.1.le), mul_one]
   -- By Riemann's formula and the trivial bound, `|Γ_j L| ≤ ∫_0^∞ 3 e^(-u) du = 3`.
   have h_prod : ‖gaussianMellin j z * χ.LFunction z‖ ≤ 3 :=
-    calc _ = ‖mellin (thetaSeries j (χ ·)) (z - 2⁻¹)‖ := by
-          rw [χ.LFunction_eq_LSeries hz_one, mellin_thetaSeries hχ hz_one]
+    calc _ = ‖mellin (gaussianThetaSeries j (χ ·)) (z - 2⁻¹)‖ := by
+          rw [χ.LFunction_eq_LSeries hz_one, mellin_gaussianThetaSeries hχ hz_one]
       _ ≤ ∫ u : ℝ in Ioi 0, 3 * rexp (-u) := norm_integral_le_of_norm_le h_exp
-        (ae_restrict_of_forall_mem measurableSet_Ioi fun _ ↦ norm_cpow_smul_thetaSeries_le hχ hz)
+        (ae_restrict_of_forall_mem measurableSet_Ioi fun _ ↦
+          norm_cpow_smul_gaussianThetaSeries_le hχ hz)
       _ = 3 := by rw [integral_const_mul, integral_exp_neg_Ioi_zero, mul_one]
   have hL : χ.LFunction z ≠ 0 :=
     χ.LFunction_ne_zero_of_one_le_re (.inr (ne_of_apply_ne re hz_one.ne')) hz_one.le
@@ -190,38 +200,42 @@ lemma norm_mul_mollifier_sub_le (hT : 0 < T) (hz : z.re = 2) :
     _ = 9 / T := by ring
 
 /-- Let `χ ≠ 1` be primitive of parity `j` and conductor `q ≤ T²`. On `re z = 1/2` we have
-`|Γ_j L| ≤ 2 J` for `T > 0`, where `Γ_j` is `gaussianMellin` and `J` is `thetaTailIntegral`: the
-integral of `|θ_χ(u)| / u` over `u > 0` folds at `q ^ (-1/2) ≥ 1 / T`. -/
+`|Γ_j L| ≤ 2 J` for `T > 0`, where `Γ_j` is `gaussianMellin` and `J` is
+`quadraticTwistGaussianThetaTailIntegral`: the integral of `|θ_χ(u)| / u` over `u > 0` folds at
+`q ^ (-1/2) ≥ 1 / T`. -/
 lemma norm_gaussianMellin_mul_LFunction_le (hχ : χ.IsPrimitive) (hχ_ne : χ ≠ 1)
     (h_parity : χ (-1) = (-1) ^ j.val) (hT : 0 < T) (hq : q ≤ T ^ 2) (hz : z.re = 2⁻¹) :
-    ‖gaussianMellin j z * χ.LFunction z‖ ≤ 2 * thetaTailIntegral j (χ ·) T := by
+    ‖gaussianMellin j z * χ.LFunction z‖ ≤
+      2 * quadraticTwistGaussianThetaTailIntegral j (χ ·) T := by
   have hχ_le (n : ℕ) : ‖χ n‖ ≤ 1 := χ.norm_le_one n
   have h_fix : T⁻¹ ≤ (√q)⁻¹ := inv_anti₀ (by simp [NeZero.pos]) (sqrt_le_iff.2 ⟨hT.le, hq⟩)
-  calc ‖gaussianMellin j z * χ.LFunction z‖ ≤ ∫ u : ℝ in Ioi 0, ‖thetaSeries j (χ ·) u‖ / u := by
-        rw [← (hasMellin_thetaSeries_char hχ_ne h_parity (by norm_num [hz])).2]
-        exact norm_integral_cpow_smul_thetaSeries_le hz le_rfl
-    _ = 2 * ∫ u : ℝ in Ioi (√q)⁻¹, ‖thetaSeries j (χ ·) u‖ / u :=
-      integral_norm_thetaSeries_div hχ_ne h_parity hχ
-    _ ≤ 2 * ∫ u : ℝ in Ioi T⁻¹, ‖thetaSeries j (χ ·) u‖ / u := by
+  calc ‖gaussianMellin j z * χ.LFunction z‖
+    _ ≤ ∫ u : ℝ in Ioi 0, ‖gaussianThetaSeries j (χ ·) u‖ / u := by
+      rw [← (hasMellin_gaussianThetaSeries_char hχ_ne h_parity (by norm_num [hz])).2]
+      exact norm_integral_cpow_smul_gaussianThetaSeries_le hz le_rfl
+    _ = 2 * ∫ u : ℝ in Ioi (√q)⁻¹, ‖gaussianThetaSeries j (χ ·) u‖ / u :=
+      integral_norm_gaussianThetaSeries_div hχ_ne h_parity hχ
+    _ ≤ 2 * ∫ u : ℝ in Ioi T⁻¹, ‖gaussianThetaSeries j (χ ·) u‖ / u := by
       gcongr
       exacts [ae_restrict_of_forall_mem measurableSet_Ioi fun u hu ↦ div_nonneg (norm_nonneg _)
-        ((inv_pos.2 hT).trans hu).le, integrableOn_norm_thetaSeries_div hχ_le (inv_pos.2 hT)]
-    _ ≤ 2 * thetaTailIntegral j (χ ·) T := by
-      grw [thetaTailIntegral_eq_add hχ_le hT,
-        ← le_add_of_nonneg_right (integral_norm_thetaSeries_div_nonneg (inv_pos.2 hT).le)]
+        ((inv_pos.2 hT).trans hu).le,
+        TauCeti.integrableOn_norm_gaussianThetaSeries_div (fun n ↦ hχ_le n) (inv_pos.2 hT)]
+    _ ≤ 2 * quadraticTwistGaussianThetaTailIntegral j (χ ·) T := by
+      grw [quadraticTwistGaussianThetaTailIntegral_eq_add hχ_le hT,
+        ← le_add_of_nonneg_right (integral_norm_gaussianThetaSeries_div_nonneg (inv_pos.2 hT).le)]
 
 variable (j) in
 /-- For each parity `j` there is a constant `C` with the following property. Let `δ, T > 0`, and let
 `χ ≠ 1` be a primitive character of conductor `q ≤ T²` with `χ(-1) = (-1)^j` and
 `J(χ, T) ≤ T ^ (2 δ)`, where `J(χ, T) = ∫_{1/T}^∞ (|θ_χ(u)| + |θ_{μχ}(u)|) du / u`
-(`thetaTailIntegral`) and `θ_c` is the parity-`j` theta series of `c`. Then every zero `s` of
-`L(s, χ)` with `1/2 + 9 δ ≤ re s ≤ 1` satisfies `|Γ_j(s)|² ≤ C T ^ (-2 δ)`, where
+(`quadraticTwistGaussianThetaTailIntegral`) and `θ_c` is the parity-`j` theta series of `c`. Then
+every zero `s` of `L(s, χ)` with `1/2 + 9 δ ≤ re s ≤ 1` satisfies `|Γ_j(s)|² ≤ C T ^ (-2 δ)`, where
 `Γ_j(s) = ∫_0^∞ w(z) z ^ s dz / z` (`gaussianMellin`) is the Mellin transform of the parity-`j`
 weight `w`. -/
 theorem three_lines_bound_of_LFunction_eq_zero :
     ∃ C : ℝ, ∀ {δ T : ℝ} {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q} {s : ℂ}, 0 < δ →
       χ.IsPrimitive → χ ≠ 1 → χ (-1) = (-1) ^ j.val → 0 < T → q ≤ T ^ 2 →
-      thetaTailIntegral j (χ ·) T ≤ T ^ (2 * δ) →
+      quadraticTwistGaussianThetaTailIntegral j (χ ·) T ≤ T ^ (2 * δ) →
       χ.LFunction s = 0 → 1 / 2 + 9 * δ ≤ s.re → s.re ≤ 1 →
       ‖gaussianMellin j s‖ ^ 2 ≤ C * T ^ (-(2 * δ)) := by
   -- Apply the three-lines theorem on `1/2 ≤ re z ≤ 2` to `Ψ = Γ_j L 𝓜 - Γ_j²`, which is `-Γ_j²`
@@ -253,7 +267,7 @@ theorem three_lines_bound_of_LFunction_eq_zero :
   obtain ⟨G₁, hG₁⟩ : ∃ G₁ : ℝ, ∀ z : ℂ,
       z.re ∈ Set.Icc 2⁻¹ 2 → ‖mellin (gaussianTheta j (χ ·)) z‖ ≤ G₁ :=
     (mellin_differentiableOn_and_bounded (fun _ ↦ norm_gaussianTheta_char_le hχ_ne h_parity)
-      measurable_gaussianTheta).2
+      TauCeti.measurable_gaussianTheta).2
   have h_pos {x : ℝ} (hx : x ∈ Set.Icc 2⁻¹ 2) : 0 < x := lt_of_lt_of_le (by norm_num) hx.1
   have h_diff : DifferentiableOn ℂ Ψ (closure (verticalStrip 2⁻¹ 2)) := by
     have hΨ : DifferentiableOn ℂ Ψ {z : ℂ | 0 < z.re} := by fun_prop
@@ -285,12 +299,12 @@ variable (j) in
 /-- **Three lines.** Let `δ > 0`, let `T` be large in terms of `δ` and the height `H`, and let
 `χ ≠ 1` be primitive of conductor `q ≤ T²`, with `χ(-1) = (-1) ^ j`. If `L(s, χ)` has a zero in the
 box `re s ≥ 1/2 + 9 δ`, `|im s| ≤ H`, then the integral `J(χ, T)` of `(|θ_χ(u)| + |θ_{μχ}(u)|) / u`
-over `u > 1 / T` (`thetaTailIntegral`) exceeds `T ^ (2 δ)`. -/
-theorem eventually_rpow_lt_thetaTailIntegral (hδ : 0 < δ) (H : ℝ) :
+over `u > 1 / T` (`quadraticTwistGaussianThetaTailIntegral`) exceeds `T ^ (2 δ)`. -/
+theorem eventually_rpow_lt_quadraticTwistGaussianThetaTailIntegral (hδ : 0 < δ) (H : ℝ) :
     ∀ᶠ T : ℝ in atTop, ∀ {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q} {s : ℂ},
       χ.IsPrimitive → χ ≠ 1 → χ (-1) = (-1) ^ j.val → q ≤ T ^ 2 →
       1 / 2 + 9 * δ ≤ s.re → |s.im| ≤ H → χ.LFunction s = 0 →
-      T ^ (2 * δ) < thetaTailIntegral j (χ ·) T := by
+      T ^ (2 * δ) < quadraticTwistGaussianThetaTailIntegral j (χ ·) T := by
   obtain ⟨C, hC⟩ := three_lines_bound_of_LFunction_eq_zero j -- `|Γ_j(s)|² ≤ C T ^ (-2 δ)`
   -- `|Γ_j|` has a positive lower bound on the rectangle `1/2 ≤ re s ≤ 1`, `|im s| ≤ H`.
   obtain ⟨c, hc_pos, hc⟩ :
@@ -541,24 +555,27 @@ lemma exists_summable_mul_norm_sum_jacobiSym_le (j : Fin 2) {δ : ℝ} (hδ : 0 
 
 /-- **Mean value.** Let `n°` be the odd part of `n`, `w(z) = z ^ j e^(-π z²)` and `δ > 0`. For
 `T > 0`, `u ≥ 1 / T` and `|αₙ| ≤ 1`, the theta series `θ_v(u) = u ^ (1/2) ∑ₙ αₙ (-v/n°) w(n u)`
-(`thetaSeries`) satisfy `∑_{1 ≤ v ≤ T²} |θ_v(u)|² ≪_δ T² u ^ (-2 δ)`. This is a form of an estimate
-of Elliott.
+(`gaussianThetaSeries`) satisfy `∑_{1 ≤ v ≤ T²} |θ_v(u)|² ≪_δ T² u ^ (-2 δ)`. This is a form of
+an estimate of Elliott.
 
 It replaces Heath-Brown's quadratic large sieve: here the coefficients are bounded by `1`, the
 weight is fixed, and the effective length `1 / u` of the sums is at most `T`, the square root of the
 range of `v`. -/
-theorem sum_sq_thetaSeries_jacobiSym_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
+theorem sum_sq_gaussianThetaSeries_jacobiSym_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
     ∃ C : ℝ, ∀ T > (0 : ℝ), ∀ u ≥ T⁻¹, ∀ α : ℕ → ℂ, (∀ n : ℕ, ‖α n‖ ≤ 1) →
-      ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖thetaSeries j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) u‖ ^ 2 ≤
+      ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊,
+          ‖gaussianThetaSeries j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) u‖ ^ 2 ≤
         C * (T ^ 2 * u ^ (-2 * δ)) := by
   -- Expand the square into a sum over pairs `(n, m)` with the inner sum `∑_v (-v / (n m)°)`.
   obtain ⟨M, hM, hM_ge⟩ := exists_summable_mul_norm_sum_jacobiSym_le j hδ
   refine ⟨∑' p, M p, fun T hT u hu α hα ↦ ?_⟩
   have hu_pos : 0 < u := (inv_pos.2 hT).trans_le hu
   let a (v : ℕ) (n : ℕ+) : ℂ := √u * (α n * J(-v | ordCompl[2] n) * gaussianMonomial j (n * u))
-  let θ (v : ℕ) : ℂ := thetaSeries j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) u
-  have ha (v : ℕ) : HasSum (a v) (θ v) := (summable_and_norm_gaussianTheta_le (j := j)
-    (norm_mul_jacobiSym_le_one hα v) hu_pos).1.hasSum.mul_left (√u : ℂ)
+  let θ (v : ℕ) : ℂ := gaussianThetaSeries j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) u
+  have ha (v : ℕ) : HasSum (a v) (θ v) := by
+    simpa only [θ, TauCeti.gaussianThetaSeries_def, TauCeti.gaussianTheta_def] using
+      (TauCeti.summable_gaussianTheta (j := j) (c := fun n : ℕ ↦ α n * J(-v | ordCompl[2] n))
+        (fun n ↦ norm_mul_jacobiSym_le_one hα v n) hu_pos).hasSum.mul_left (√u : ℂ)
   have h_expand : HasSum (fun p : ℕ+ × ℕ+ ↦ ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, a v p.1 * star (a v p.2))
       (∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, θ v * star (θ v)) :=
     hasSum_sum fun v _ ↦ (ha v).mul (g := star (a v)) (ha v).star
@@ -584,21 +601,24 @@ theorem sum_sq_thetaSeries_jacobiSym_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
         _ ≤ M (n, m) * (T ^ 2 * u ^ (-2 * δ)) := by
           grw [hα, hα, one_mul, one_mul, hM_ge T hT u hu n m]
 
-/-- For `|αₙ| ≤ 1` let `θ_v(u) = u ^ (1/2) ∑_{n ≥ 1} αₙ (-v/n°) w(n u)` be the `thetaSeries` with
-the weight `w` of index `j`. Here `(-v/n°)` is the Jacobi symbol and `n°` is the odd part of `n`.
-For `δ > 0` there is a `C` such that for all `T > 0` and all such `α` we have `∑_{0 < v ≤ T²}
-∫_{1/T}^∞ |θ_v(u)| du / u ≤ C T ^ (2 + δ)`, the sum being over all `v`, prime or not: by
-Cauchy–Schwarz and the mean value estimate, `∑_{v ≤ T²} |θ_v(u)| ≪ T² u ^ (-δ)` for `u ≥ 1 / T`. -/
-lemma sum_integral_norm_thetaSeries_div_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
+/-- For `|αₙ| ≤ 1` let `θ_v(u) = u ^ (1/2) ∑_{n ≥ 1} αₙ (-v/n°) w(n u)` be the
+`gaussianThetaSeries` with the weight `w` of index `j`. Here `(-v/n°)` is the Jacobi symbol and `n°`
+is the odd part of `n`. For `δ > 0` there is a `C` such that for all `T > 0` and all such `α` we
+have `∑_{0 < v ≤ T²} ∫_{1/T}^∞ |θ_v(u)| du / u ≤ C T ^ (2 + δ)`, the sum being over all `v`, prime
+or not: by Cauchy–Schwarz and the mean value estimate, `∑_{v ≤ T²} |θ_v(u)| ≪ T² u ^ (-δ)` for
+`u ≥ 1 / T`. -/
+lemma sum_integral_norm_gaussianThetaSeries_div_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
     ∃ C : ℝ, ∀ T > (0 : ℝ), ∀ α : ℕ → ℂ, (∀ n : ℕ, ‖α n‖ ≤ 1) →
       ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊,
-          ∫ u : ℝ in Set.Ioi T⁻¹, ‖thetaSeries j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) u‖ / u ≤
+          ∫ u : ℝ in Set.Ioi T⁻¹,
+            ‖gaussianThetaSeries j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) u‖ / u ≤
         C * T ^ (2 + δ) := by
-  obtain ⟨C, hC⟩ := sum_sq_thetaSeries_jacobiSym_le j hδ
+  obtain ⟨C, hC⟩ := sum_sq_gaussianThetaSeries_jacobiSym_le j hδ
   refine ⟨√C / δ, fun T hT α hα ↦ ?_⟩
-  let θ (v : ℕ) : ℝ → ℂ := thetaSeries j fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)
+  let θ (v : ℕ) : ℝ → ℂ := gaussianThetaSeries j fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)
   have h_int (v : ℕ) : IntegrableOn (fun u ↦ ‖θ v u‖ / u) (Set.Ioi T⁻¹) :=
-    integrableOn_norm_thetaSeries_div (norm_mul_jacobiSym_le_one hα v) (inv_pos.2 hT)
+    TauCeti.integrableOn_norm_gaussianThetaSeries_div (fun n ↦ norm_mul_jacobiSym_le_one hα v n)
+      (inv_pos.2 hT)
   have h_mean (u : ℝ) (hu : T⁻¹ < u) :
       ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖θ v u‖ ≤ √C * T ^ 2 * u ^ (-δ) := by
     have hu_pos : 0 < u := (inv_pos.2 hT).trans hu
@@ -623,18 +643,20 @@ lemma sum_integral_norm_thetaSeries_div_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ)
       rw [integral_const_mul, integral_Ioi_rpow_of_lt (by linarith) (inv_pos.2 hT)]
       simp [field, inv_rpow hT.le, rpow_neg hT.le, rpow_add hT]
 
-/-- For `δ, T > 0` and `|αₙ| ≤ 1`, the sum over `v ≤ T²` of `thetaTailIntegral` (the integral over
-`u > 1 / T` of `|θ_c(u)| + |θ_{μc}(u)|` against `du / u`) for the coefficients `cₙ = αₙ (-v/n°)` is
-`≪_δ T ^ (2 + δ)`, where `n°` is the odd part of `n`. -/
-lemma sum_thetaTailIntegral_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
+/-- For `δ, T > 0` and `|αₙ| ≤ 1`, the sum over `v ≤ T²` of
+`quadraticTwistGaussianThetaTailIntegral` (the integral over `u > 1 / T` of `|θ_c(u)| + |θ_{μc}(u)|`
+against `du / u`) for the coefficients `cₙ = αₙ (-v/n°)` is `≪_δ T ^ (2 + δ)`, where `n°` is the odd
+part of `n`. -/
+lemma sum_quadraticTwistGaussianThetaTailIntegral_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
     ∃ C : ℝ, ∀ T > (0 : ℝ), ∀ α : ℕ → ℂ, (∀ n : ℕ, ‖α n‖ ≤ 1) →
-      ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, thetaTailIntegral j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) T ≤
+      ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊,
+          quadraticTwistGaussianThetaTailIntegral j (fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)) T ≤
         C * T ^ (2 + δ) := by
-  obtain ⟨C, hC⟩ := sum_integral_norm_thetaSeries_div_le j hδ
+  obtain ⟨C, hC⟩ := sum_integral_norm_gaussianThetaSeries_div_le j hδ
   refine ⟨C + C, fun T hT α hα ↦ ?_⟩
   -- The coefficients of `θ_{μc}` are those of `θ_c` with `α` replaced by `α μ`.
-  simp_rw [thetaTailIntegral_eq_add (norm_mul_jacobiSym_le_one hα _) hT, mul_right_comm (α _),
-    sum_add_distrib, add_mul]
+  simp_rw [quadraticTwistGaussianThetaTailIntegral_eq_add (norm_mul_jacobiSym_le_one hα _) hT,
+    mul_right_comm (α _), sum_add_distrib, add_mul]
   exact add_le_add (hC T hT α hα) (hC T hT _ (norm_mul_moebius_le_one hα))
 
 /-- For a prime `d ≡ 7 mod 8` and `n ≠ 0`, `(2/d) = 1` and reciprocity give `(n/d) = (-d/n°)`, with
@@ -680,7 +702,8 @@ open scoped Classical in
 /-- Let `ψ` be primitive modulo `M`, `δ > 0` and `H` real. Then only `O(T ^ (2 - δ))` primes
 `d ≡ 7 mod 8` with `M d ≤ T²` and prime to `M` have a twist `ψ (·/d)` whose `L`-function has a zero
 in the box `re s ≥ 1/2 + 9 δ`, `|im s| ≤ H` (`IsPrimeWithTwistZero`): each has
-`thetaTailIntegral > T ^ (2 δ)`, and the sum of these integrals is `≪ T ^ (2 + δ)`. -/
+`quadraticTwistGaussianThetaTailIntegral > T ^ (2 δ)`, and the sum of these integrals is
+`≪ T ^ (2 + δ)`. -/
 lemma exists_card_zero_quadTwist_le {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {M : ℕ} [NeZero M]
     {ψ : DirichletCharacter ℂ M} (hψ : ψ.IsPrimitive) :
     ∃ C : ℝ, ∀ᶠ T : ℝ in atTop,
@@ -689,11 +712,12 @@ lemma exists_card_zero_quadTwist_le {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {M : ℕ
   -- The parity `j` of the twists does not depend on `d`: it is opposite to that of `ψ`.
   obtain ⟨j, hj⟩ : ∃ j : Fin 2, ψ (-1) = -(-1) ^ j.val := ψ.even_or_odd.elim
     (fun h ↦ ⟨1, h.trans (by norm_num)⟩) fun h ↦ ⟨0, h.trans (by norm_num)⟩
-  obtain ⟨C, hC⟩ := sum_thetaTailIntegral_le j hδ
+  obtain ⟨C, hC⟩ := sum_quadraticTwistGaussianThetaTailIntegral_le j hδ
   refine ⟨C, ?_⟩
-  filter_upwards [eventually_rpow_lt_thetaTailIntegral j hδ H, eventually_gt_atTop 0]
-    with T h_lines hT
-  let F (v : ℕ) : ℝ := thetaTailIntegral j (fun n : ℕ ↦ ψ n * J(-v | ordCompl[2] n)) T
+  filter_upwards [eventually_rpow_lt_quadraticTwistGaussianThetaTailIntegral j hδ H,
+    eventually_gt_atTop 0] with T h_lines hT
+  let F (v : ℕ) : ℝ :=
+    quadraticTwistGaussianThetaTailIntegral j (fun n : ℕ ↦ ψ n * J(-v | ordCompl[2] n)) T
   have h_large (d : ℕ) (h8 : d % 8 = 7) (hM : M.Coprime d) (hd : M * d ≤ T ^ 2)
       (h_twist : IsPrimeWithTwistZero ψ (1 / 2 + 9 * δ) H d) : T ^ (2 * δ) < F d := by
     have : Fact d.Prime := h_twist.prime
@@ -703,11 +727,11 @@ lemma exists_card_zero_quadTwist_le {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {M : ℕ
         χ₄_nat_three_mod_four (show d % 4 = 3 by omega)] using quadTwist_apply ψ d (-1)
     have h_coeff (n : ℕ+) : quadTwist ψ d n = ψ n * J(-d | ordCompl[2] (n : ℕ)) := by
       simpa [legendreSym_eq_jacobiSym_ordCompl h8 n.ne_zero] using quadTwist_apply ψ d (n : ℕ)
-    simpa only [F, thetaTailIntegral, thetaSeries, gaussianTheta, h_coeff] using
+    simpa only [F, TauCeti.quadraticTwistGaussianThetaTailIntegral_def,
+      TauCeti.gaussianThetaSeries_def, TauCeti.gaussianTheta_def, h_coeff] using
       h_lines (isPrimitive_quadTwist hψ (by omega) hM) (quadTwist_ne_one ψ d (by omega) hM)
         h_par (mod_cast hd) h_re h_im h_zero
-  have hF (v : ℕ) : 0 ≤ F v := setIntegral_nonneg measurableSet_Ioi fun u hu ↦
-    div_nonneg (by positivity) ((inv_pos.2 hT).trans hu).le
+  have hF (v : ℕ) : 0 ≤ F v := TauCeti.quadraticTwistGaussianThetaTailIntegral_nonneg T
   -- The number of these primes times `T ^ (2 δ)` is at most `∑ F v`.
   refine le_of_mul_le_mul_right ?_ (rpow_pos_of_pos hT (2 * δ))
   let S : Finset ℕ := {d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d % 8 = 7 ∧ M.Coprime d ∧ M * d ≤ T ^ 2 ∧
