@@ -1,6 +1,8 @@
 module
 
 import Mathlib.Data.Rat.Cast.OfScientific
+import TauCeti.LinearAlgebra.Dimension.Submodule
+import TauCeti.LinearAlgebra.Spreading
 import TauCeti.NumberTheory.Padics.Complex.Basic
 public import New.Reduction.IntegralTargetForms
 public import New.Spanning.SecondMoment.SpanningTheorem
@@ -369,8 +371,8 @@ theorem exists_le_finrank_iSup_range_normalizedPoincare :
       #t * finrank ℂ D.SourceForm ≤ 5 / 2 * (1 + log (16 * (8 * D.b ^ 2)⁻¹)⁻¹) * D.targetDim ∧
       (1 - 16 * (8 * D.b ^ 2)⁻¹ : ℝ) * D.targetDim ≤
         finrank ℂ ↥(⨆ s ∈ t, (D.goodPoincare s).range) :=
-    D.isSpread_goodPoincare.exists_few_le_finrank_iSup_range D.targetDim_pos (HasLogBound.pos D)
-      D.lt_of_hasLogBound
+    D.isSpread_goodPoincare.exists_card_mul_finrank_le_and_le_finrank_biSup_range
+      finrank_pos (HasLogBound.pos D) D.lt_of_hasLogBound
   have h_few : #t * finrank ℂ D.SourceForm ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2) := by
     grw [h_count, D.five_halves_mul_one_add_log_le, mul_right_comm]
   refine ⟨t, by grw [D.ramifiedSourceForms.finrank_le, h_few], ?_⟩
@@ -385,11 +387,10 @@ theorem exists_le_finrank_iSup_range_normalizedPoincare :
       _ ≤ (D.b ^ 8)⁻¹ * (5 * D.targetDim * log (1 + 2 * D.b ^ 2)) := by grw [mul_left_comm, h_few]
       _ = (D.b ^ 8)⁻¹ * (5 * log (1 + 2 * D.b ^ 2)) * D.targetDim := by ring
       _ ≤ 2 / D.b ^ 2 * D.targetDim := by grw [h_small]
+  have h_range := TauCeti.finrank_biSup_range_le D.goodPoincare t D.ramifiedSourceForms
+  rify [D.ramifiedSourceForms.finrank_le] at h_range
   rw [iSup_congr fun s ↦ iSup_congr fun _ ↦ D.range_normalizedPoincare s]
-  calc (1 - 4 / D.b ^ 2) * D.targetDim
-      = (1 - 16 * (8 * D.b ^ 2)⁻¹) * D.targetDim - 2 / D.b ^ 2 * D.targetDim := by ring
-    _ ≤ (finrank ℂ ↥(⨆ s ∈ t, D.ramifiedSourceForms.map (D.goodPoincare s)) : ℝ) := by
-        linarith [finrank_biSup_range_le D.goodPoincare t D.ramifiedSourceForms, h_span, h_loss]
+  linear_combination h_span + h_range + h_loss
 
 /-- **Theorem B**, the bound on the dimension spanned by few translates. The target has dimension
 `d_T = D.targetDim ≥ 1`, and there is a set `t` of elements of the finite group `D.chosenGL` with

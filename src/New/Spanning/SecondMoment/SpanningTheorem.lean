@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Data.Rat.Cast.OfScientific
+public import TauCeti.LinearAlgebra.Spreading
 public import New.Spanning.Unfolding.Moments
 public import New.Spanning.Unfolding.SeriesPeriod
 import Lib.DiscreteSeries.Character.FormalDegree
@@ -336,11 +337,11 @@ lemma comap_scaledPoincare_eq_comap_goodPoincare (s : D.chosenGL) (F : Submodule
 /-- **One translate.** For `s` in the finite group `Ḡ = D.chosenGL`, the map `D.goodPoincare s` is
 `#Ḡ · e₀ s Π`: the unscaled Poincaré map `Π = D.poincare` from the source forms `D.SourceForm` to
 the forms on `Y₀`, then the translation by `s`, then the projector `e₀ = D.e₀` onto the target
-forms. These maps spread (`IsSpread`): for every space `F` of target forms, with share `α` of the
-dimension of the target, the preimage of `F` under one of them has dimension at most
+forms. These maps spread (`TauCeti.IsSpread`): for every space `F` of target forms, with share `α`
+of the dimension of the target, the preimage of `F` under one of them has dimension at most
 `(1 + α + 3 ε₀) / 2 · D_X`, where `ε₀ = b⁻² / 8`. Here `b = D.b` is the weight at the places
 `D.bPlaces`, and `D_X` is the dimension of `D.SourceForm`. -/
-theorem isSpread_goodPoincare : IsSpread D.goodPoincare (3 / 2 * (8 * D.b ^ 2)⁻¹) := by
+theorem isSpread_goodPoincare : TauCeti.IsSpread D.goodPoincare (3 / 2 * (8 * D.b ^ 2)⁻¹) := by
   let : Fintype D.chosenGL := .ofFinite D.chosenGL
   let ρ : Representation ℂ D.chosenGL (D.principalForms (D.spaceY 0)) := D.principalRep (D.spaceY 0)
   have h_unitary (s : D.chosenGL) (x y : D.principalForms (D.spaceY 0)) :
@@ -361,9 +362,9 @@ theorem isSpread_goodPoincare : IsSpread D.goodPoincare (3 / 2 * (8 * D.b ^ 2)�
     exact D.targetDim_mul_sum_hilbertSchmidtNorm_sq_le
   -- Apply the abstract spreading theorem to the scaled map, then transport its conclusion.
   -- Neither the coordinates nor the nonzero factors change the dimension of a preimage.
-  intro F α
-  obtain ⟨s, hs⟩ := isSpread_of_second_moment h_unitary
-    (D.isCentralProj_e₀.isSymmetricProjection h_unitary) h_comm (by positivity) h_isom h_moment F
+  refine TauCeti.isSpread_iff.2 fun F ↦ ?_
+  obtain ⟨s, hs⟩ := TauCeti.isSpread_iff.1 (isSpread_of_second_moment h_unitary
+    (D.isCentralProj_e₀.isSymmetricProjection h_unitary) h_comm (by positivity) h_isom h_moment) F
   refine ⟨s, ?_⟩
   rwa [D.comap_scaledPoincare_eq_comap_goodPoincare s F,
     (D.sourceFormCoords.symm.ofSubmodule' _).finrank_eq,
