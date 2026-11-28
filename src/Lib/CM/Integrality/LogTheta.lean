@@ -153,12 +153,15 @@ variable {p : ℕ} [Fact p.Prime] [PadicPlace p]
 `θ`, read in `ℂ_p`. -/
 noncomputable def negLogTheta : ℂ_[p]⟦X⟧ := -logOf (taylorVia ιₚ C.θ)
 
+/-- The constant coefficient of the Taylor expansion of the theta series `C.θ` is 1. -/
 lemma constantCoeff_taylorVia_theta : constantCoeff (taylorVia ιₚ C.θ) = 1 := by
   rw [constantCoeff_taylorVia, C.theta_zero, map_one]
 
+/-- The constant coefficient of the Taylor expansion of `translatedX` is zero. -/
 lemma constantCoeff_taylorVia_translatedX : constantCoeff (taylorVia ιₚ C.translatedX) = 0 := by
   rw [constantCoeff_taylorVia, translatedX, zero_add, sub_self, map_zero]
 
+/-- The constant coefficient of the negative log-theta series is zero. -/
 lemma constantCoeff_negLogTheta : constantCoeff C.negLogTheta = 0 := by
   rw [negLogTheta, map_neg, constantCoeff_logOf C.constantCoeff_taylorVia_theta, neg_zero]
 
