@@ -878,8 +878,11 @@ lemma idem_mul_mem_Ô : idem S * x ∈ Ô E ↔ ∀ w ∈ S, v (x w) ≤ 1 := by
 has valuation less than 1. -/
 @[simp]
 lemma reduceAt_eq_zero {x : Ô E} : reduceAt w x = 0 ↔ v (x.val w) < 1 := by
-  have h_residue : reduceAt w x = 0 ↔ v (x.val w - 0) < 1 := residue_eq_iff_valuation_sub_lt_one
-  rwa [sub_zero] at h_residue
+  -- Unfolding `reduceAt` first lets `residue_eq_iff_valuation_sub_lt_one` match directly.
+  have h_residue : reduceAt w x = reduceAt w 0 ↔ v (x.val w - (0 : Ô E).val w) < 1 := by
+    rw [reduceAt, RingHom.comp_apply, RingHom.comp_apply]
+    exact residue_eq_iff_valuation_sub_lt_one
+  simpa using h_residue
 
 /-- An element `x` of `Ô E`, the ring of finite adeles integral at every finite place, is a unit of
 `Ô E` if and only if its component has valuation 1 at every finite place. -/
