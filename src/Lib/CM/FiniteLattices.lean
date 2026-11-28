@@ -1,6 +1,7 @@
 module
 
 import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.Analysis.SpecialFunctions.Elliptic.AdditionTheorem
 public import Lib.CM.GoodReduction
 import Lib.CM.Sigma.ThetaSections
 import Lib.General.NumberTheory.SUnitsAndClassNumber

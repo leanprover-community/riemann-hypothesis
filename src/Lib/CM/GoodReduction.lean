@@ -4,6 +4,7 @@ public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.Analysis.SpecialFunctions.Elliptic.AdditionTheorem
 public import Lib.CM.Sigma.Basic
 import Lib.CM.Sigma.ThetaSections
 import Lib.General.NumberTheory.SUnitsAndClassNumber
@@ -343,7 +344,7 @@ lemma weierstrassP_congr (h_sub : u₁ - u₂ ∈ L.lattice) : ℘[L] u₁ = ℘
 lemma scaledDisc_congr (hu₁ : u₁ ∉ L.lattice) (h_sub : u₁ - u₂ ∈ L.lattice) :
     L.scaledDisc u₁ = L.scaledDisc u₂ := by
   have hu₂ : u₂ ∉ L.lattice := fun h ↦ hu₁ (by simpa using add_mem h_sub h)
-  simp [scaledDisc, deriv_derivWeierstrassP, hu₁, hu₂, weierstrassP_congr h_sub]
+  simp [scaledDisc, hu₁, hu₂, weierstrassP_congr h_sub]
 
 lemma IsOrderTwo.weierstrassP_cubic_eq_zero (hu : L.IsOrderTwo u) :
     4 * ℘[L] u ^ 3 - L.g₂ * ℘[L] u - L.g₃ = 0 := by

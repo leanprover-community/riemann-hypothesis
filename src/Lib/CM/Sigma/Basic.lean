@@ -556,7 +556,10 @@ end SigmaFunction
 /-!
 ## Points of the Weierstrass cubic and derivatives of ℘
 
-* `New.deriv_derivWeierstrassP`: `℘'' = 6 ℘² - g₂/2` off the lattice.
+* `PeriodPair.exists_weierstrassP_eq_of_cubic`: every point of `y² = 4x³ - g₂x - g₃` is
+  `(℘ z, ℘' z)`.
+* `New.sigma_two_mul`, `New.derivWeierstrassP_eq_zero_iff`: `σ(2z) = -℘'(z) σ(z)⁴`, so off the
+  lattice `℘'(z) = 0` exactly when `2z` lies in it.
 -/
 
 section WeierstrassP
@@ -602,12 +605,6 @@ lemma New.derivWeierstrassP_eq_zero_iff (L : PeriodPair) {z : ℂ} (hz : z ∉ L
     ℘'[L] z = 0 ↔ z + z ∈ L.lattice := by
   rw [← sigma_eq_zero_iff (L := L), ← two_mul, sigma_two_mul L hz]
   simp [hz]
-
-/-- The second derivative of the Weierstrass function ℘ of L: for z outside the lattice,
-℘′′(z) = 6℘(z)² − g₂/2. -/
-lemma New.deriv_derivWeierstrassP (L : PeriodPair) {z : ℂ} (hz : z ∉ L.lattice) :
-    deriv ℘'[L] z = 6 * ℘[L] z ^ 2 - L.g₂ / 2 :=
-  L.deriv_derivWeierstrassP hz
 
 end WeierstrassP
 
