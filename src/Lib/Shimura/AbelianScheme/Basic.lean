@@ -401,25 +401,6 @@ namespace New.Variety
 
 variable {R : Type} [CommRing R] {A B : Over (Spec ⟨R⟩)} [AddObj B] {f : A ⟶ B}
 
-omit [AddObj B] in
-/-- If `A` is locally of finite presentation over `Spec R` and `B` is locally of finite type over
-`Spec R`, then every morphism `f : A ⟶ B` over `Spec R` is locally of finite presentation. -/
-@[stacks 02FV "first assertion, over an affine base"]
-lemma locallyOfFinitePresentation_left [hB : LocallyOfFiniteType B.hom]
-    [h : LocallyOfFinitePresentation A.hom] :
-    LocallyOfFinitePresentation f.left := by
-  -- On affine opens `V ≤ f ⁻¹ U`: `Γ(V)` is finitely presented and `Γ(U)` of finite type over `R`,
-  -- so `Γ(V)` is finitely presented over `Γ(U)`.
-  rw [← f.w] at h
-  refine ⟨fun {U} hU {V} hV hVU ↦ ?_⟩
-  have hV_pres : ((f.left ≫ B.hom).appLE ⊤ V le_top).hom.FinitePresentation :=
-    LocallyOfFinitePresentation.finitePresentation_appLE (f.left ≫ B.hom) (isAffineOpen_top _) hV
-      le_top
-  have hU_type : (B.hom.appLE ⊤ U le_top).hom.FiniteType :=
-    LocallyOfFiniteType.finiteType_appLE B.hom (isAffineOpen_top _) hU le_top
-  rw [← f.left.appLE_comp_appLE B.hom ⊤ U V le_top hVU] at hV_pres
-  exact hV_pres.of_comp_finiteType _ hU_type
-
 /-- The pull-back of an affine morphism `f` along a point `Spec C ⟶ Y` is `Spec` of a ring map
 `C ⟶ P`. -/
 lemma exists_isPullback_SpecMap {X Y : Scheme} (f : X ⟶ Y) [IsAffineHom.{0} f] {C : CommRingCat}

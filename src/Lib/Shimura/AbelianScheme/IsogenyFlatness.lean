@@ -1,5 +1,6 @@
 module
 
+import TauCeti.AlgebraicGeometry.Morphisms.FinitePresentation.Basic
 import TauCeti.AlgebraicGeometry.Morphisms.Flat.Descent
 import TauCeti.RingTheory.Ideal.MinimalPrime.Localization
 public import Aesop.BuiltinRules
@@ -218,8 +219,12 @@ lemma flat_of_isPullback_of_map_maximalIdeal_eq {R D : Type} [CommRing R] [IsLoc
     (h_pb : IsPullback j (Spec.map φ) f.left u.left) : φ.hom.Flat := by
   algebraize [φ.hom, φ.hom.comp (algebraMap R D)]
   -- `P` is finitely presented over the local ring `D`, so free once `𝔪_D ⊗ P → P` is injective.
+  have : LocallyOfFinitePresentation (f.left ≫ B.hom) := by
+    rw [f.w]
+    infer_instance
+  have h_f_pres := locallyOfFinitePresentation_of_comp f.left B.hom
   apply_rules +allowSynthFailures [of_free, free_of_maximalIdeal_rTensor_injective,
-    locallyOfFinitePresentation_left, FinitePresentation.of_finite_of_finitePresentation,
+    h_f_pres, FinitePresentation.of_finite_of_finitePresentation,
     (IsFinite.SpecMap_iff φ).1, of_isPullback, (LocallyOfFinitePresentation.SpecMap_iff φ).1]
   -- `P` is flat over `R`: `j` is a base change of the flat `u`, and `A` is flat over `R`
   have P_flat : Flat (Spec.map (ofHom (algebraMap R D) ≫ φ)) := by

@@ -1,5 +1,6 @@
 module
 
+import TauCeti.AlgebraicGeometry.Morphisms.FinitePresentation.Basic
 public import Aesop.BuiltinRules
 public import Mathlib.Algebra.TrivSqZeroExt.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
@@ -538,8 +539,10 @@ lemma New.Variety.eq_zero_of_nsmul_eq_zero_of_comp_eq_zero {R K : Type} {g : ℕ
   -- `hI`: a ring map `γ` kills `I` exactly when `x` pulled back along `γ` factors through the
   -- zero section `ζ[B]`; `I` is finitely generated since `ζ[B]` is of finite presentation.
   obtain ⟨I, hI_fg, hI⟩ := exists_ideal_le_ker_iff_factors ζ[B].left x.left
-  have h_fg : I.FG := hI_fg (locallyOfFinitePresentation_left
-    (h := inferInstanceAs (LocallyOfFinitePresentation (𝟙 (Spec ⟨R⟩)))))
+  have : LocallyOfFinitePresentation (ζ[B].left ≫ B.hom) := by
+    rw [Over.w ζ[B]]
+    exact inferInstanceAs (LocallyOfFinitePresentation (𝟙 (Spec ⟨R⟩)))
+  have h_fg : I.FG := hI_fg (locallyOfFinitePresentation_of_comp ζ[B].left B.hom)
   -- `R ⧸ I² → R ⧸ I` is onto, and its kernel `I / I²` has square zero.
   have h_sq : IsSqZeroExt (CommRingCat.ofHom (factor (mul_le_right : I * I ≤ I))) := by
     refine ⟨factor_surjective mul_le_right, fun {a b} ↦ ?_⟩
