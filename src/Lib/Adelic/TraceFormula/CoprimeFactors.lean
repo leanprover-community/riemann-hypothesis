@@ -1,5 +1,18 @@
-import Lib.Adelic.TraceFormula.FibreIntegral
+module
+
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.LocallyConstant.Algebra
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.LinearAlgebra.Trace.Idempotent
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.TraceFormula.FibreIntegral
+public import Lib.LocalGL.Iwahori.ParahoricStructure
 import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # Coprime factors
@@ -43,6 +56,8 @@ not elliptic vanish (Deligne and Kazhdan). The proof here is a descent of invari
 the block diagonal subgroup.
 -/
 
+@[expose] public section
+
 open NumberField Polynomial Matrix Topology Filter Pointwise Multiplicative MeasureTheory
 
 namespace New
@@ -57,7 +72,7 @@ variable (ε) in
 /-- The invertible matrices that commute with `ε`: for an idempotent `ε`, the block diagonal group
 of the decomposition into the image and the kernel of `ε`. -/
 def blockDiagonalGroup : Subgroup (GL n k) where
-  carrier := {h : GL n k | Commute h.1 ε}
+  carrier := {h : GL n k | Commute h.val ε}
   one_mem' := Commute.one_left ε
   mul_mem' ha hb := Commute.mul_left ha hb
   inv_mem' ha := Commute.units_inv_left ha
@@ -67,8 +82,8 @@ lemma mem_blockDiagonalGroup {h : GL n k} : h ∈ blockDiagonalGroup ε ↔ h.1 
 /-- The radical of the idempotent `ε` consists of the `u` for which `u - 1` is an upper right
 block. -/
 lemma mem_range_radicalHom (hε : IsIdempotentElem ε) {u : GL n k} :
-    u ∈ (radicalHom hε).range ↔ u.1 - 1 ∈ upperBlocks ε := by
-  refine ⟨?_, fun hu ↦ ⟨ofAdd (u.1 - 1), Units.ext ?_⟩⟩
+    u ∈ (radicalHom hε).range ↔ u.val - 1 ∈ upperBlocks ε := by
+  refine ⟨?_, fun hu ↦ ⟨ofAdd (u.val - 1), Units.ext ?_⟩⟩
   · rintro ⟨Y, rfl⟩
     simpa [coe_radicalHom] using mul_mul_one_sub_mem_upperBlocks hε Y.toAdd
   · rw [coe_radicalHom_of_mem hε hu, add_sub_cancel]
@@ -77,9 +92,9 @@ lemma mem_range_radicalHom (hε : IsIdempotentElem ε) {u : GL n k} :
 lemma conj_mem_range_radicalHom (hε : IsIdempotentElem ε) {h u : GL n k}
     (hh : h ∈ blockDiagonalGroup ε) (hu : u ∈ (radicalHom hε).range) :
     h⁻¹ * u * h ∈ (radicalHom hε).range := by
-  have h_keeps {g : GL n k} (hg : g ∈ blockDiagonalGroup ε) : ε * (g.1 * ε) = g.1 * ε := by
+  have h_keeps {g : GL n k} (hg : g ∈ blockDiagonalGroup ε) : ε * (g.val * ε) = g.val * ε := by
     rw [← mul_assoc, ← mem_blockDiagonalGroup.1 hg, mul_assoc, hε.eq]
-  have h_eq : (h⁻¹ * u * h).1 - 1 = h⁻¹.1 * (u.1 - 1) * h.1 := by simp [mul_sub, sub_mul]
+  have h_eq : (h⁻¹ * u * h).val - 1 = h⁻¹.val * (u.val - 1) * h.val := by simp [mul_sub, sub_mul]
   rw [mem_range_radicalHom, h_eq]
   exact mul_mem_upperBlocks_right (h_keeps hh)
     (mul_mem_upperBlocks_left (h_keeps (inv_mem hh)) ((mem_range_radicalHom hε).1 hu))
@@ -88,16 +103,16 @@ lemma conj_mem_range_radicalHom (hε : IsIdempotentElem ε) {h u : GL n k}
 `h u` add up to `h`. -/
 lemma diagonal_blocks_mul_radical (hε : IsIdempotentElem ε) {h u : GL n k}
     (hh : h ∈ blockDiagonalGroup ε) (hu : u ∈ (radicalHom hε).range) :
-    ε * (h * u).1 * ε + (1 - ε) * (h * u).1 * (1 - ε) = h.1 := by
-  obtain ⟨h_left, h_right⟩ : ε * (u.1 - 1) = u.1 - 1 ∧ (u.1 - 1) * ε = 0 :=
+    ε * (h * u).val * ε + (1 - ε) * (h * u).val * (1 - ε) = h.val := by
+  obtain ⟨h_left, h_right⟩ : ε * (u.val - 1) = u.val - 1 ∧ (u.val - 1) * ε = 0 :=
     (mem_range_radicalHom hε).1 hu
-  have h_comm : h.1 * ε = ε * h.1 := mem_blockDiagonalGroup.1 hh
-  have h_fix : u.1 * ε = ε := by linear_combination (norm := noncomm_ring) h_right
-  have h_first : ε * (h.1 * u.1) * ε = h.1 * ε := by
+  have h_comm : h.val * ε = ε * h.val := mem_blockDiagonalGroup.1 hh
+  have h_fix : u.val * ε = ε := by linear_combination (norm := noncomm_ring) h_right
+  have h_first : ε * (h.val * u.val) * ε = h.val * ε := by
     rw [mul_assoc, mul_assoc, h_fix, h_comm, ← mul_assoc, hε.eq]
-  have h_second : (1 - ε) * (h.1 * u.1) = h.1 * (1 - ε) := by
-    linear_combination (norm := noncomm_ring) h_comm * u.1 - h.1 * h_left
-  simp [h_first, h_second, mul_assoc h.1, hε.one_sub.eq, ← mul_add]
+  have h_second : (1 - ε) * (h.val * u.val) = h.val * (1 - ε) := by
+    linear_combination (norm := noncomm_ring) h_comm * u.val - h.val * h_left
+  simp [h_first, h_second, mul_assoc h.val, hε.one_sub.eq, ← mul_add]
 
 /-- Let the idempotent `ε` have entries in the subring `O`. If `h u` lies in `GL_n(O)`, with `h`
 block diagonal and `u` in the radical, then `h` lies in `GL_n(O)`. -/
@@ -105,7 +120,7 @@ lemma mem_intGL_of_mul_radical (hε : IsIdempotentElem ε) (hε_int : ε ∈ O.m
     (hh : h ∈ blockDiagonalGroup ε) (hu : u ∈ (radicalHom hε).range)
     (h_int : h * u ∈ intGL n O) : h ∈ intGL n O := by
   have h_entries {g v : GL n k} (hg : g ∈ blockDiagonalGroup ε) (hv : v ∈ (radicalHom hε).range)
-      (hgv : (g * v).1 ∈ O.matrix) : g.1 ∈ O.matrix := by
+      (hgv : (g * v).val ∈ O.matrix) : g.val ∈ O.matrix := by
     have h_compl : 1 - ε ∈ O.matrix := sub_mem (one_mem _) hε_int
     rw [← diagonal_blocks_mul_radical hε hg hv]
     apply_rules [add_mem, mul_mem]
@@ -147,7 +162,7 @@ lemma mul_mem_iwasawaSet_iff (hε : IsIdempotentElem ε) (hε_int : ε ∈ O.mat
 the radical conjugates `ε` to `e`. -/
 lemma semiconjBy_radicalHom_sub (hε : IsIdempotentElem ε) {e : Matrix n n k}
     (h_range : ε * e = e) (h_fix : e * ε = ε) :
-    SemiconjBy (radicalHom hε (ofAdd (ε - e))).1 ε e := by
+    SemiconjBy (radicalHom hε (ofAdd (ε - e))).val ε e := by
   have h_mem : ε - e ∈ upperBlocks ε :=
     ⟨by rw [mul_sub, hε.eq, h_range], by rw [sub_mul, hε.eq, h_fix, sub_self]⟩
   have h_idem : e * e = e := by rw [← h_range, mul_assoc, ← mul_assoc e, h_fix, ← mul_assoc, hε.eq]
@@ -158,12 +173,12 @@ lemma semiconjBy_radicalHom_sub (hε : IsIdempotentElem ε) {e : Matrix n n k}
 /-- An element `u` of the radical is recovered from the idempotent `e = u ε u⁻¹` as
 `1 + (ε - e)`. -/
 lemma radicalHom_sub_eq (hε : IsIdempotentElem ε) {u : GL n k} (hu : u ∈ (radicalHom hε).range)
-    {e : Matrix n n k} (he : SemiconjBy u.1 ε e) : radicalHom hε (ofAdd (ε - e)) = u := by
-  obtain ⟨h_left, h_right⟩ : ε * (u.1 - 1) = u.1 - 1 ∧ (u.1 - 1) * ε = 0 :=
+    {e : Matrix n n k} (he : SemiconjBy u.val ε e) : radicalHom hε (ofAdd (ε - e)) = u := by
+  obtain ⟨h_left, h_right⟩ : ε * (u.val - 1) = u.val - 1 ∧ (u.val - 1) * ε = 0 :=
     (mem_range_radicalHom hε).1 hu
-  have h_fix : u.1 * ε = ε := by linear_combination (norm := noncomm_ring) h_right
+  have h_fix : u.val * ε = ε := by linear_combination (norm := noncomm_ring) h_right
   have h_sq : (u.1 - 1) * (u.1 - 1) = 0 := mul_eq_zero_of_mem_upperBlocks ⟨h_left, h_right⟩ h_left
-  have h_sub : ε - e = u.1 - 1 := u.isUnit.mul_right_cancel <| by
+  have h_sub : ε - e = u.val - 1 := u.isUnit.mul_right_cancel <| by
     linear_combination (norm := noncomm_ring) he.eq - h_fix + h_left - h_sq
   exact Units.ext (by rw [h_sub, coe_radicalHom_of_mem hε ⟨h_left, h_right⟩, add_sub_cancel])
 
@@ -180,14 +195,14 @@ variable {n k : Type} [Fintype n] [DecidableEq n] [CommRing k] {a b : Matrix n n
 def columnSpace (a : Matrix n n k) : Set (Matrix n n k) := Set.range fun M : Matrix n n k ↦ a * M
 
 /-- If `a u = g b` with `u` and `g` invertible, then `g` moves the image of `b` onto that of `a`. -/
-lemma columnSpace_eq_smul (g u : GL n k) (h_eq : a * u.1 = g.1 * b) :
+lemma columnSpace_eq_smul (g u : GL n k) (h_eq : a * u.val = g.val * b) :
     columnSpace a = g • columnSpace b := by
   ext M
   constructor
   · rintro ⟨N, rfl⟩
-    exact ⟨b * (u⁻¹.1 * N), Set.mem_range_self _, by simp [← mul_assoc, ← h_eq]⟩
+    exact ⟨b * (u⁻¹.val * N), Set.mem_range_self _, by simp [← mul_assoc, ← h_eq]⟩
   · rintro ⟨M', ⟨N, rfl⟩, rfl⟩
-    exact ⟨u.1 * N, by simp [← mul_assoc, h_eq]⟩
+    exact ⟨u.val * N, by simp [← mul_assoc, h_eq]⟩
 
 /-- An idempotent fixes the columns of every matrix with the same image. -/
 lemma mul_eq_of_columnSpace_eq (ha : IsIdempotentElem a) (h_col : columnSpace b = columnSpace a) :
@@ -199,8 +214,8 @@ lemma mul_eq_of_columnSpace_eq (ha : IsIdempotentElem a) (h_col : columnSpace b 
 lemma columnSpace_coordProjector_map (T : Finset n) (σ : Equiv.Perm n) :
     columnSpace (coordProjector (k := k) (T.map σ.toEmbedding)) =
       permGL (R := k) σ • columnSpace (coordProjector T) := by
-  have h_comm : coordProjector (T.map σ.toEmbedding) * (permGL (R := k) σ).1 =
-      (permGL (R := k) σ).1 * coordProjector T := by
+  have h_comm : coordProjector (T.map σ.toEmbedding) * (permGL (R := k) σ).val =
+      (permGL (R := k) σ).val * coordProjector T := by
     ext i j
     obtain rfl | hij := eq_or_ne (σ.symm i) j <;>
       simp [coordProjector, permMatrixHom, PEquiv.toMatrix_apply, Equiv.Perm.inv_def, *]
@@ -218,12 +233,12 @@ lemma isConj_mul_self_of_mem_range_radicalHom [CharZero F] {ε : Matrix n n F}
     (hε : IsIdempotentElem ε) {m : GL n F} (hm : m ∈ (radicalHom hε).range) : IsConj m (m * m) := by
   have h_inv : (1 + ε) * (1 - (2⁻¹ : F) • ε) = 1 := by
     simp [mul_sub, add_mul, hε.eq, ← two_smul F, smul_smul]
-  obtain ⟨h_left, h_right⟩ : ε * (m.1 - 1) = m.1 - 1 ∧ (m.1 - 1) * ε = 0 :=
+  obtain ⟨h_left, h_right⟩ : ε * (m.val - 1) = m.val - 1 ∧ (m.val - 1) * ε = 0 :=
     (mem_range_radicalHom hε).1 hm
   have h_sq : (m.1 - 1) * (m.1 - 1) = 0 := mul_eq_zero_of_mem_upperBlocks ⟨h_left, h_right⟩ h_left
   -- With `m = 1 + z`, both sides equal `1 + ε + 2 z`.
-  have h_semiconj : (1 + ε) * m.1 = m.1 * m.1 * (1 + ε) := by
-    linear_combination (norm := noncomm_ring) h_left - h_sq - (m.1 + 1) * h_right
+  have h_semiconj : (1 + ε) * m.val = m.val * m.val * (1 + ε) := by
+    linear_combination (norm := noncomm_ring) h_left - h_sq - (m.val + 1) * h_right
   exact isConj_iff.2 ⟨⟨1 + ε, 1 - (2⁻¹ : F) • ε, h_inv, mul_eq_one_comm.1 h_inv⟩,
     mul_inv_eq_iff_eq_mul.2 (Units.ext h_semiconj)⟩
 
@@ -232,7 +247,7 @@ lemma columnSpace_diagonal {d : n → F} {T : Finset n} (hT : ∀ i : n, i ∈ T
     columnSpace (diagonal d) = columnSpace (coordProjector T) := by
   classical
   let t : n → Fˣ := fun i ↦ if h : d i = 0 then 1 else Units.mk0 (d i) h
-  have h_factor : coordProjector T * (diagGL t).1 = (1 : GL n F).1 * diagonal d := by
+  have h_factor : coordProjector T * (diagGL t).val = (1 : GL n F).val * diagonal d := by
     rw [Units.val_one, one_mul, coordProjector, coe_diagGL, diagonal_mul_diagonal]
     refine congrArg diagonal (funext fun i ↦ ?_)
     by_cases hi : d i = 0 <;> simp [t, hT, hi]
@@ -272,11 +287,11 @@ coordinate projector of `T`, for some `g` in `GL_n(O) N`, where `N` is the radic
 lemma exists_mem_iwasawaSet_semiconjBy {O : Subring F} (hO : IsValuationPair O) {e : Matrix n n F}
     (he : IsIdempotentElem e) {T : Finset n} (hT : T.card = e.rank) :
     ∃ g ∈ iwasawaSet (isIdempotentElem_coordProjector T) O,
-      SemiconjBy g.1 (coordProjector T) e := by
+      SemiconjBy g.val (coordProjector T) e := by
   -- An integral `a` matches the images; then `a⁻¹ e a` projects onto the coordinate subspace.
   obtain ⟨a, ha, h_col⟩ := exists_columnSpace_eq_smul_coordProjector hO e hT
-  set e' : Matrix n n F := a⁻¹.1 * e * a.1 with he'
-  have h_semiconj : SemiconjBy a.1 e' e := by simp [SemiconjBy, he', mul_assoc]
+  set e' : Matrix n n F := a⁻¹.val * e * a.val with he'
+  have h_semiconj : SemiconjBy a.val e' e := by simp [SemiconjBy, he', mul_assoc]
   have h_idem : IsIdempotentElem e' := by
     simp [IsIdempotentElem, he', mul_assoc, ← mul_assoc e, he.eq]
   have h_col' : columnSpace e' = columnSpace (coordProjector T) := by
@@ -293,8 +308,8 @@ block diagonal group of the coordinate projector of `T`. -/
 lemma exists_mul_mem_iwasawaSet {O : Subring F} (hO : IsValuationPair O) (T : Finset n)
     (g : GL n F) : ∃ h ∈ blockDiagonalGroup (coordProjector T),
       g * h ∈ iwasawaSet (isIdempotentElem_coordProjector T) O := by
-  set e : Matrix n n F := g.1 * coordProjector T * g⁻¹.1 with he
-  have h_semiconj : SemiconjBy g.1 (coordProjector T) e := by simp [SemiconjBy, he]
+  set e : Matrix n n F := g.val * coordProjector T * g⁻¹.val with he
+  have h_semiconj : SemiconjBy g.val (coordProjector T) e := by simp [SemiconjBy, he]
   have h_idem : IsIdempotentElem e := by
     simp [IsIdempotentElem, he, mul_assoc, ← mul_assoc (coordProjector T),
       (isIdempotentElem_coordProjector T).eq]
@@ -349,7 +364,7 @@ lemma trace_aeval_eq_natDegree (huv : u * A + v * B = 1) (hy : y.charpoly = A * 
 projection `(v B)(y)` onto the kernel of `A(y)` has rank `deg A`. -/
 lemma rank_aeval_eq_natDegree [CharZero F] (huv : u * A + v * B = 1) (hy : y.charpoly = A * B) :
     (aeval y (v * B)).rank = A.natDegree := by
-  rw [← Nat.cast_inj (R := F), ← trace_eq_rank_of_isIdempotentElem
+  rw [← Nat.cast_inj (R := F), ← IsIdempotentElem.trace_eq_rank
     (isIdempotentElem_aeval_of_charpoly_eq huv hy), trace_aeval_eq_natDegree huv hy]
 
 /-- If `A B` is a characteristic polynomial and neither factor is a unit, some proper non-empty set
@@ -378,22 +393,15 @@ variable {n F : Type} [Fintype n] [DecidableEq n]
 closed set. -/
 lemma isClosed_setOf_charpoly_eq [CommRing F] [TopologicalSpace F] [IsTopologicalRing F] [T2Space F]
     (P : F[X]) : IsClosed {M : Matrix n n F | M.charpoly = P} := by
-  -- Each coefficient of the characteristic polynomial is a polynomial in the entries.
-  have h_eval (i : ℕ) (M : Matrix n n F) :
-      MvPolynomial.eval (fun p : n × n ↦ M p.1 p.2) ((charpoly.univ F n).coeff i) =
-        M.charpoly.coeff i :=
-    charpoly.univ_coeff_eval₂Hom n (RingHom.id F) (fun p : n × n ↦ M p.1 p.2) i
-  have h_coeff (i : ℕ) : Continuous fun M : Matrix n n F ↦ M.charpoly.coeff i :=
-    ((MvPolynomial.continuous_eval _).comp (by fun_prop)).congr (h_eval i)
-  simp only [Polynomial.ext_iff, Set.ofPred_forall]
-  exact isClosed_iInter fun i ↦ isClosed_eq (h_coeff i) continuous_const
+  simp only [AddMonoidAlgebra.ext_iff, Finsupp.ext_iff, Set.ofPred_forall]
+  exact isClosed_iInter fun i ↦ isClosed_eq (Matrix.continuous_charpoly_coeff i) continuous_const
 
 variable [NormedField F]
 
 open scoped Matrix.Norms.Operator in
 /-- Over a complete normed field `GL_n` is open in the space of matrices. -/
 lemma isOpenEmbedding_coe_generalLinearGroup [CompleteSpace F] :
-    IsOpenEmbedding fun g : GL n F ↦ g.1 := by
+    IsOpenEmbedding fun g : GL n F ↦ g.val := by
   -- `Units.isOpenEmbedding_val` asks for completeness in the uniform structure of the norm.
   let _ : UniformSpace (Matrix n n F) := PseudoMetricSpace.toUniformSpace
   have : CompleteSpace (Matrix n n F) := Pi.complete _
@@ -406,7 +414,7 @@ lemma eventually_exists_semiconjBy_of_isIdempotentElem [CompleteSpace F] {Y : Ty
     {e : Y → Matrix n n F} {e₀ : Matrix n n F} (h_lim : Tendsto e l (𝓝 e₀))
     (h_idem₀ : IsIdempotentElem e₀) (h_idem : ∀ᶠ y : Y in l, IsIdempotentElem (e y))
     {O : Set (GL n F)} (hO : O ∈ 𝓝 (1 : GL n F)) :
-    ∀ᶠ y : Y in l, ∃ g ∈ O, SemiconjBy g.1 e₀ (e y) := by
+    ∀ᶠ y : Y in l, ∃ g ∈ O, SemiconjBy g.val e₀ (e y) := by
   -- The matrix `e e₀ + (1 - e) (1 - e₀)` intertwines `e₀` and `e`, and tends to `1` as `e → e₀`.
   have h_tendsto : Tendsto (fun y : Y ↦ e y * e₀ + (1 - e y) * (1 - e₀)) l (𝓝 (1 : GL n F).1) := by
     simpa [h_idem₀.eq, h_idem₀.one_sub.eq] using
@@ -414,9 +422,9 @@ lemma eventually_exists_semiconjBy_of_isIdempotentElem [CompleteSpace F] {Y : Ty
   filter_upwards [h_idem, h_tendsto.eventually
     (isOpenEmbedding_coe_generalLinearGroup.image_mem_nhds.2 hO)] with y hy ⟨g, hg, hg_val⟩
   refine ⟨g, hg, ?_⟩
-  calc g.1 * e₀ = e y * e₀ := by
+  calc g.val * e₀ = e y * e₀ := by
         simp [hg_val, add_mul, mul_assoc, h_idem₀.eq, h_idem₀.one_sub_mul_self]
-    _ = e y * g.1 := by simp [hg_val, mul_add, ← mul_assoc, hy.eq, hy.mul_one_sub_self]
+    _ = e y * g.val := by simp [hg_val, mul_add, ← mul_assoc, hy.eq, hy.mul_one_sub_self]
 
 end Topology
 
@@ -469,13 +477,13 @@ projection that belongs to a coprime factorisation of `P` and `ε` is a coordina
 are the `y` for which `y_w` is block diagonal and the two blocks have the two factors as their
 characteristic polynomials, up to scalars. -/
 def blockLocus (P p : (LocField w)[X]) (ε : Matrix n n (LocField w)) : Set (Gf E n) :=
-  {y ∈ charpolyLocus n P | aeval (y.atPlace w).1 p = ε}
+  {y ∈ charpolyLocus n P | aeval (y.atPlace w).val p = ε}
 
 /-- For `g` embedded at `w` and a polynomial `p`, the matrix `g` conjugates `p((g⁻¹ x g)_w)` to
 `p(x_w)`. -/
 lemma semiconjBy_aeval_atPlace_conj (g : GL n (LocField w)) (x : Gf E n) (p : (LocField w)[X]) :
-    SemiconjBy g.1 (aeval (((ofSplitPlace hw g)⁻¹ * x * ofSplitPlace hw g).atPlace w).1 p)
-      (aeval (x.atPlace w).1 p) :=
+    SemiconjBy g.val (aeval (((ofSplitPlace hw g)⁻¹ * x * ofSplitPlace hw g).atPlace w).val p)
+      (aeval (x.atPlace w).val p) :=
   aeval_semiconj (by simp [atPlace_ofSplitPlace, ← mul_assoc]) p
 
 /-- The conjugate `g⁻¹ x g` has characteristic polynomial `P` and `p`-value `ε` at `w` exactly if
@@ -483,13 +491,13 @@ lemma semiconjBy_aeval_atPlace_conj (g : GL n (LocField w)) (x : Gf E n) (p : (L
 lemma conj_mem_blockLocus_iff {P p : (LocField w)[X]} {ε : Matrix n n (LocField w)}
     {g : GL n (LocField w)} {x : Gf E n} :
     (ofSplitPlace hw g)⁻¹ * x * ofSplitPlace hw g ∈ blockLocus n P p ε ↔
-      x ∈ charpolyLocus n P ∧ SemiconjBy g.1 ε (aeval (x.atPlace w).1 p) := by
+      x ∈ charpolyLocus n P ∧ SemiconjBy g.val ε (aeval (x.atPlace w).val p) := by
   refine and_congr ?_ ?_
   · simp [mem_charpolyLocus, atPlace_ofSplitPlace, charpoly_units_conj']
   · rw [SemiconjBy, ← (semiconjBy_aeval_atPlace_conj hw g x p).eq, Units.mul_right_inj, eq_comm]
 
 lemma continuous_aeval_atPlace (p : (LocField w)[X]) :
-    Continuous fun y : Gf E n ↦ aeval (y.atPlace w).1 p :=
+    Continuous fun y : Gf E n ↦ aeval (y.atPlace w).val p :=
   p.continuous_aeval.comp (Units.continuous_val.comp (Gf.continuous_atPlace w))
 
 variable {A B u v : (LocField w)[X]}
@@ -513,11 +521,11 @@ lemma isSlice_blockLocus (huv : u * A + v * B = 1) {T : Finset n} (hT : T.card =
     rw [atSplitContinuous_apply, conj_mem_blockLocus_iff, hy.2, and_iff_right hy.1,
       mem_blockDiagonalGroup, SemiconjBy]
   eventually_exists_conj_mem O hO y hy := by
-    have h_lim : Tendsto (fun x : Gf E n ↦ aeval (x.atPlace w).1 (v * B))
+    have h_lim : Tendsto (fun x : Gf E n ↦ aeval (x.atPlace w).val (v * B))
         (𝓝[charpolyLocus n (A * B)] y) (𝓝 (coordProjector T)) :=
       (continuous_aeval_atPlace (v * B)).continuousWithinAt.tendsto.mono_right (by rw [hy.2])
     have h_idem : ∀ᶠ x : Gf E n in 𝓝[charpolyLocus n (A * B)] y,
-        IsIdempotentElem (aeval (x.atPlace w).1 (v * B)) :=
+        IsIdempotentElem (aeval (x.atPlace w).val (v * B)) :=
       eventually_mem_nhdsWithin.mono fun x hx ↦ isIdempotentElem_aeval_of_charpoly_eq huv hx
     filter_upwards [eventually_mem_nhdsWithin, eventually_exists_semiconjBy_of_isIdempotentElem
       h_lim (isIdempotentElem_coordProjector T) h_idem hO] with x hx ⟨g, hg, hg_semiconj⟩
@@ -530,14 +538,13 @@ lemma isSlice_blockLocus (huv : u * A + v * B = 1) {T : Finset n} (hT : T.card =
 lemma exists_testFunction_eq_indicator_of_isCompact {V : Set (GL n (LocField w))}
     (hV_open : IsOpen V) (hV_compact : IsCompact V) (φ : TestFunction (Gf E n)) :
     ∃ Ψ : TestFunction (GL n (LocField w) × Gf E n), ∀ (g : GL n (LocField w)) (y : Gf E n),
-      Ψ.1 (g, y) = V.indicator 1 g * φ.1 (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹) := by
-  obtain ⟨hφ_const, hφ_compact, -⟩ := φ.2
-  have h_cont : Continuous (ofSplitPlace (n := n) hw) := continuous_ofSplitPlace hw
+      Ψ.val (g, y) = V.indicator 1 g * φ.val (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹) := by
+  obtain ⟨hφ_const, hφ_compact, -⟩ := φ.property
   have hV_const : IsLocallyConstant (V.indicator (1 : GL n (LocField w) → ℂ)) :=
     (LocallyConstant.indicator 1 ⟨hV_compact.isClosed, hV_open⟩).isLocallyConstant
   have h_shear : Continuous fun z : GL n (LocField w) × Gf E n ↦
       (z.1, (ofSplitPlace hw z.1)⁻¹ * z.2 * ofSplitPlace hw z.1) := by fun_prop
-  refine ⟨⟨fun z ↦ V.indicator 1 z.1 * φ.1 (ofSplitPlace hw z.1 * z.2 * (ofSplitPlace hw z.1)⁻¹),
+  refine ⟨⟨fun z ↦ V.indicator 1 z.1 * φ.val (ofSplitPlace hw z.1 * z.2 * (ofSplitPlace hw z.1)⁻¹),
     (hV_const.comp_continuous continuous_fst).mul (hφ_const.comp_continuous (by fun_prop)),
     .of_support_subset_isCompact ((hV_compact.prod hφ_compact).image h_shear) fun z hz ↦ ?_,
     Set.subset_univ _⟩, fun _ _ ↦ rfl⟩
@@ -555,31 +562,31 @@ acting through `ofSplitPlace hw`). -/
 lemma exists_testFunction_eq_indicator {ε : Matrix n n (LocField w)} (hε : IsIdempotentElem ε)
     (p : (LocField w)[X]) {φ : TestFunction (Gf E n)}
     (h_inv : ∀ k ∈ localIntGL n w, ∀ x : Gf E n,
-      φ.1 (ofSplitPlace hw k * x * (ofSplitPlace hw k)⁻¹) = φ.1 x) :
-    ∃ Ψ : TestFunction (GL n (LocField w) × Gf E n), ∀ y : Gf E n, aeval (y.atPlace w).1 p = ε →
-      ∀ g : GL n (LocField w), Ψ.1 (g, y) = (iwasawaSet hε (LocInt w).toSubring).indicator
-        (fun g : GL n (LocField w) ↦ φ.1 (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹)) g := by
+      φ.val (ofSplitPlace hw k * x * (ofSplitPlace hw k)⁻¹) = φ.val x) :
+    ∃ Ψ : TestFunction (GL n (LocField w) × Gf E n), ∀ y : Gf E n, aeval (y.atPlace w).val p = ε →
+      ∀ g : GL n (LocField w), Ψ.val (g, y) = (iwasawaSet hε (LocInt w).toSubring).indicator
+        (fun g : GL n (LocField w) ↦ φ.val (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹)) g := by
   -- If `g = k r` with `r ∈ N` and `x = r y r⁻¹` lies in the support of `φ`, then `r = ρ x` for a
   -- continuous `ρ`, so `g` lies in a fixed compact open set `V`.
-  let ρ (x : Gf E n) : GL n (LocField w) := radicalHom hε (ofAdd (ε - aeval (x.atPlace w).1 p))
+  let ρ (x : Gf E n) : GL n (LocField w) := radicalHom hε (ofAdd (ε - aeval (x.atPlace w).val p))
   have hρ : Continuous ρ := (continuous_radicalHom hε).comp
     (continuous_ofAdd.comp (continuous_const.sub (continuous_aeval_atPlace p)))
-  obtain ⟨-, hφ_compact, -⟩ := φ.2
+  obtain ⟨-, hφ_compact, -⟩ := φ.property
   let V : Set (GL n (LocField w)) := (localIntGL n w : Set (GL n (LocField w))) * ρ '' tsupport φ.1
   obtain ⟨Ψ, hΨ⟩ := exists_testFunction_eq_indicator_of_isCompact hw (V := V)
     (isOpen_localIntGL w).mul_right ((isCompact_localIntGL w).mul (hφ_compact.isCompact.image hρ)) φ
   refine ⟨Ψ, fun y hy g ↦ ?_⟩
   rw [hΨ]
-  by_cases h_zero : φ.1 (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹) = 0
+  by_cases h_zero : φ.val (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹) = 0
   · rw [h_zero, mul_zero, Set.indicator_apply_eq_zero.2]
     exact fun _ ↦ h_zero
   by_cases hg : g ∈ iwasawaSet hε (LocInt w).toSubring
   · obtain ⟨k, hk, r, hr, rfl⟩ := hg
     set x : Gf E n := ofSplitPlace hw r * y * (ofSplitPlace hw r)⁻¹ with hx
-    have hx_supp : φ.1 x ≠ 0 := by
+    have hx_supp : φ.val x ≠ 0 := by
       rw [← h_inv k hk x]
       simpa [hx, mul_assoc] using h_zero
-    have h_semiconj : SemiconjBy r.1 ε (aeval (x.atPlace w).1 p) := by
+    have h_semiconj : SemiconjBy r.val ε (aeval (x.atPlace w).val p) := by
       simpa [hx, mul_assoc, hy] using semiconjBy_aeval_atPlace_conj hw r x p
     have h_mem : k * r ∈ V :=
       Set.mul_mem_mul hk ⟨x, subset_tsupport _ hx_supp, radicalHom_sub_eq hε hr h_semiconj⟩
@@ -609,7 +616,7 @@ lemma integral_indicator_iwasawaSet_mul (T : Finset n)
       (isOpen_localIntGL w)).measurableSet]
   classical
   refine integral_congr_ae (.of_forall fun h ↦ ?_)
-  simp [Set.indicator_apply, ← mul_assoc, mul_mem_iwasawaSet_iff _ h_int hg h.2,
+  simp [Set.indicator_apply, ← mul_assoc, mul_mem_iwasawaSet_iff _ h_int hg h.property,
     Subgroup.mem_subgroupOf]
 
 /-- Let `Ψ (g, y)` be `φ (g y g⁻¹)` for `g` in `GL_n(O_w) N` and `0` otherwise, for all `y` with
@@ -619,9 +626,9 @@ lemma isImage_blockLocus_smul {T : Finset n} {P p : (LocField w)[X]}
     (ν : Measure (blockDiagonalGroup (coordProjector T : Matrix n n (LocField w))))
     [ν.IsMulLeftInvariant] {φ : TestFunction (Gf E n)}
     {Ψ : TestFunction (GL n (LocField w) × Gf E n)}
-    (hΨ : ∀ y : Gf E n, aeval (y.atPlace w).1 p = coordProjector T → ∀ g : GL n (LocField w),
-      Ψ.1 (g, y) = (iwasawaSet (isIdempotentElem_coordProjector T) (LocInt w).toSubring).indicator
-        (fun g : GL n (LocField w) ↦ φ.1 (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹)) g) :
+    (hΨ : ∀ y : Gf E n, aeval (y.atPlace w).val p = coordProjector T → ∀ g : GL n (LocField w),
+      Ψ.val (g, y) = (iwasawaSet (isIdempotentElem_coordProjector T) (LocInt w).toSubring).indicator
+        (fun g : GL n (LocField w) ↦ φ.val (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹)) g) :
     IsImage (atSplitContinuous hw) ν (blockLocus n P p (coordProjector T)) Ψ
       ((ν.real ((localIntGL n w).subgroupOf (blockDiagonalGroup (coordProjector T))) : ℂ) • φ) := by
   intro g y hy
@@ -631,7 +638,7 @@ lemma isImage_blockLocus_smul {T : Finset n} {P p : (LocField w)[X]}
   have h_mem : (ofSplitPlace hw h)⁻¹ * y * ofSplitPlace hw h ∈ blockLocus n P p
     (coordProjector T) := by
     rw [conj_mem_blockLocus_iff, hy.2]
-    exact ⟨hy.1, h.2⟩
+    exact ⟨hy.1, h.property⟩
   classical
   simp only [atSplitContinuous_apply, hΨ _ h_mem.2]
   simp [Set.indicator_apply, mul_assoc]
@@ -664,13 +671,13 @@ lemma map_mul_right_eq_self_of_mem_range_radicalHom (μ : Measure (GL n (LocFiel
 /-- If `p(y_w)` is the idempotent `ε`, the conjugates of `y` under the radical `N` of `ε` fill the
 coset `y N`. -/
 lemma exists_conj_eq_mul_radicalHom {ε : Matrix n n (LocField w)} (hε : IsIdempotentElem ε)
-    {p : (LocField w)[X]} {y : Gf E n} (hy : aeval (y.atPlace w).1 p = ε)
+    {p : (LocField w)[X]} {y : Gf E n} (hy : aeval (y.atPlace w).val p = ε)
     (Z : Multiplicative (Matrix n n (LocField w))) :
     ∃ m ∈ (radicalHom hε).range,
       ofSplitPlace hw m * y * (ofSplitPlace hw m)⁻¹ = y * ofSplitPlace hw (radicalHom hε Z) := by
   set x : GL n (LocField w) := y.atPlace w * radicalHom hε Z with hx
   have h_semiconj : SemiconjBy
-      (radicalHom hε (ofAdd (aeval x.1 p - aeval (y.atPlace w).1 p))) x (y.atPlace w) :=
+      (radicalHom hε (ofAdd (aeval x.val p - aeval (y.atPlace w).val p))) x (y.atPlace w) :=
     semiconjBy_radicalHom_aeval_sub hε (by rw [hy, hε.eq]) (by rw [hy, hε.eq]) 1 Z (by simp [hx])
   exact ⟨_, inv_mem ⟨_, rfl⟩, by rw [map_inv, inv_inv, ofSplitPlace_conj_eq_mul hw h_semiconj]⟩
 
@@ -724,7 +731,7 @@ lemma integral_indicator_iwasawaSet_eq_zero (μ : Measure (GL n (LocField w))) [
     (h_inv : ∀ k ∈ localIntGL n w, ∀ x : Gf E n,
       φ (ofSplitPlace hw k * x * (ofSplitPlace hw k)⁻¹) = φ x)
     (h_sum : ∀ x : Gf E n, ∑ i : ι, φ (x * ofSplitPlace hw (radicalHom hε (κ i))) = 0)
-    {y : Gf E n} (hy : aeval (y.atPlace w).1 p = ε)
+    {y : Gf E n} (hy : aeval (y.atPlace w).val p = ε)
     (h_int : Integrable ((iwasawaSet hε (LocInt w).toSubring).indicator
       fun g : GL n (LocField w) ↦ φ (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹)) μ) :
     ∫ g : GL n (LocField w), (iwasawaSet hε (LocInt w).toSubring).indicator
@@ -762,7 +769,7 @@ theorem eq_zero_of_coprime_factors (hAB : IsCoprime A B) (hA : ¬IsUnit A) (hB :
     (I : TestFunction (Gf E n) →ₗ[ℂ] ℂ)
     (h_conj : ∀ (g : Gf E n) (f : TestFunction (Gf E n)), I (translate (g, g) f) = I f)
     (h_supp : ∀ f : TestFunction (Gf E n),
-      (∀ y : Gf E n, (y.atPlace w).1.charpoly = A * B → f.1 y = 0) → I f = 0)
+      (∀ y : Gf E n, (y.atPlace w).val.charpoly = A * B → f.val y = 0) → I f = 0)
     {φ : TestFunction (Gf E n)} (hφ : IsCuspidalAt hw φ) : I φ = 0 := by
   obtain ⟨u, v, huv⟩ := hAB
   have hI : IsInvariantDistribution (atSplitContinuous hw) (charpolyLocus n (A * B)) I :=
@@ -774,11 +781,11 @@ theorem eq_zero_of_coprime_factors (hAB : IsCoprime A B) (hA : ¬IsUnit A) (hB :
   -- Replace `φ` by the mean `ψ` of its conjugates under `GL_n(O_w)`.
   set ψ : TestFunction (Gf E n) := compactMean (conjugate (atSplitContinuous hw)) (localIntGL n w) φ
   have h_inv (k : GL n (LocField w)) (hk : k ∈ localIntGL n w) (x : Gf E n) :
-      ψ.1 (ofSplitPlace hw k * x * (ofSplitPlace hw k)⁻¹) = ψ.1 x := by
+      ψ.val (ofSplitPlace hw k * x * (ofSplitPlace hw k)⁻¹) = ψ.val x := by
     have h_fixed : conjugate (atSplitContinuous hw) k⁻¹ ψ = ψ := apply_compactMean (inv_mem hk) φ
     simpa [conjugate_apply, atSplitContinuous_apply] using congrFun (congrArg Subtype.val h_fixed) x
   have h_sum (x : Gf E n) :
-      ∑ i : ι, ψ.1 (x * ofSplitPlace hw (radicalHom (isIdempotentElem_coordProjector T) (κ i))) =
+      ∑ i : ι, ψ.val (x * ofSplitPlace hw (radicalHom (isIdempotentElem_coordProjector T) (κ i))) =
         0 :=
     sum_compactMean_conjugate_eq_zero (j := atSplitContinuous hw) hκ x
   -- Step 1: the block diagonal elements `X` form a slice for the block diagonal group `H`.
@@ -796,7 +803,7 @@ theorem eq_zero_of_coprime_factors (hAB : IsCoprime A B) (hA : ¬IsUnit A) (hB :
   have h_image : IsImage (atSplitContinuous hw) (Measure.haar : Measure H) X Ψ ((vol : ℂ) • ψ) :=
     isImage_blockLocus_smul hw Measure.haar hΨ
   have h_integral (y : Gf E n) (hy : y ∈ X) :
-      ∫ g : GL n (LocField w), Ψ.1 (g, y) ∂Measure.haar = 0 := by
+      ∫ g : GL n (LocField w), Ψ.val (g, y) ∂Measure.haar = 0 := by
     simp only [hΨ y hy.2]
     exact integral_indicator_iwasawaSet_eq_zero hw _ _ h_inv h_sum hy.2
       (by simpa only [hΨ y hy.2] using integrable_prodMk_left Ψ Measure.haar y)

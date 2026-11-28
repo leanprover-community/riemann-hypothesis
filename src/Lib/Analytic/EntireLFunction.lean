@@ -1,4 +1,11 @@
-import Lib.General.NumberTheory.ImaginaryQuadraticField
+module
+
+import TauCeti.Analysis.Contour.Residue.LogDeriv
+import TauCeti.Analysis.LaplaceTransform.Elementary
+public import Mathlib.Analysis.Meromorphic.Basic
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.NumberTheory.LSeries.Nonvanishing
+public import Lib.General.NumberTheory.ImaginaryQuadraticField
 
 /-!
 # Quadratic twists, polar functions and logarithmic derivatives of Dirichlet L-functions
@@ -30,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.Analytic.Landau` for sources.
 -/
+
+@[expose] public section
 
 open ArithmeticFunction DirichletCharacter Complex Set Filter MeasureTheory Metric ProbabilityTheory
   Nat Topology ComplexOrder AnalyticOnNhd Real
@@ -104,19 +113,7 @@ lemma integrableOn_laplace_of_abs_le {C : ℝ} (hE : Measurable E)
 /-- For `re s > 0`, the Laplace transform of `t ^ k` at `s` is `k! / s ^ (k + 1)`. -/
 lemma laplace_pow {s : ℂ} (hs : 0 < s.re) (k : ℕ) :
     ∫ t : ℝ in Ioi 0, t ^ k * Complex.exp (-s * t) = k ! / s ^ (k + 1) := by
-  -- Differentiate `∫₀^∞ exp (z t) dt = -1 / z` (for `re z < 0`) `k` times under the integral sign,
-  -- reading the integral as a moment generating function, and put `z = -s`.
-  let μ : Measure ℝ := volume.restrict (Ioi (0 : ℝ))
-  have hs_neg : (-s).re < 0 := neg_neg_of_pos hs
-  have h_int : (-s).re ∈ interior (integrableExpSet id μ) :=
-    interior_maximal (fun a ha ↦ integrableOn_exp_mul_Ioi ha 0) isOpen_Iio hs_neg
-  have h_eq : EqOn (complexMGF id μ) (fun z ↦ -z⁻¹) {z | z.re < 0} :=
-    fun z hz ↦ (integral_exp_mul_complex_Ioi hz 0).trans (by simp [neg_div])
-  rw [show ∫ t : ℝ in Ioi 0, t ^ k * Complex.exp (-s * t) = iteratedDeriv k (complexMGF id μ) (-s)
-      from (iteratedDeriv_complexMGF h_int k).symm,
-    h_eq.iteratedDeriv_of_isOpen (isOpen_re_lt 0) k hs_neg]
-  simp [iteratedDeriv_eq_iterate, zpow_sub₀ (neg_ne_zero.2 (ne_zero_of_re_pos hs)), neg_pow s,
-    field, pow_succ]
+  simpa only [smul_eq_mul, mul_comm] using (TauCeti.hasLaplace_pow k hs).integral_eq
 
 /-! ### The logarithmic derivative of a Dirichlet L-function -/
 
@@ -127,15 +124,23 @@ lemma analyticAt_entireL (s : ℂ) : AnalyticAt ℂ (entireL χ) s := by
   split_ifs with hχ
   exacts [differentiable_LFunctionTrivChar₁ N, differentiable_LFunction hχ]
 
-/-- `entireL χ` has no zero in `re s ≥ 1`. -/
-lemma entireL_ne_zero (hs : 1 ≤ s.re) : entireL χ s ≠ 0 := by
+/-- Away from `s = 1`, removing the possible pole preserves nonvanishing. -/
+lemma entireL_ne_zero_iff (hs : s ≠ 1) : entireL χ s ≠ 0 ↔ χ.LFunction s ≠ 0 := by
   rw [entireL]
   split_ifs with hχ
-  · obtain rfl | hs_ne := eq_or_ne s 1
+  · subst χ
+    rw [LFunctionTrivChar₁, Function.update_of_ne hs, mul_ne_zero_iff]
+    exact and_iff_right (sub_ne_zero.2 hs)
+  · rfl
+
+/-- `entireL χ` has no zero in `re s ≥ 1`. -/
+lemma entireL_ne_zero (hs : 1 ≤ s.re) : entireL χ s ≠ 0 := by
+  obtain rfl | hs_ne := eq_or_ne s 1
+  · rw [entireL]
+    split_ifs with hχ
     · exact LFunctionTrivChar₁_apply_one_ne_zero N
-    · rw [LFunctionTrivChar₁, Function.update_of_ne hs_ne]
-      exact mul_ne_zero (sub_ne_zero.2 hs_ne) (LFunction_ne_zero_of_one_le_re 1 (.inr hs_ne) hs)
-  · exact LFunction_ne_zero_of_one_le_re χ (.inl hχ) hs
+    · exact LFunction_ne_zero_of_one_le_re χ (.inl hχ) hs
+  · exact (entireL_ne_zero_iff χ hs_ne).2 (LFunction_ne_zero_of_one_le_re χ (.inr hs_ne) hs)
 
 /-- For `re s > 1`, the series `∑ χ(n) Λ(n) n^{-s}` has the sum `-L'/L(s, χ)`, written through
 `entireL χ`, which is `L(s, χ)`, or `(s - 1) L(s, χ)` for principal `χ`. The term `1 / (s - 1)` is
@@ -155,8 +160,7 @@ lemma LSeriesHasSum_mul_vonMangoldt (hs : 1 < s.re) :
   obtain rfl | hχ := eq_or_ne χ 1
   · rw [ite_eq_left rfl, ite_eq_left rfl, deriv_LFunctionTrivChar₁_apply_of_ne_one N hs_ne,
       LFunctionTrivChar₁, Function.update_of_ne hs_ne, LFunctionTrivChar]
-    field_simp [sub_ne_zero.2 hs_ne]
-    ring
+    field [sub_ne_zero.2 hs_ne]
   · simp [hχ, neg_div]
 
 /-- A function continuous at `s` has residue zero there. -/
@@ -180,30 +184,15 @@ principal `χ`, has at most a simple pole at `s`. Its residue is the order of va
 lemma tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt (s : ℂ) :
     Tendsto (fun z : ℂ ↦ (z - s) * logDeriv (entireL χ) z) (𝓝[≠] s)
       (𝓝 (analyticOrderNatAt (entireL χ) s : ℂ)) := by
-  -- Near `s` the function `entireL χ` is `(z - s) ^ n • g z` with `g s ≠ 0`.
-  set n : ℕ := analyticOrderNatAt (entireL χ) s
-  obtain ⟨g, hg, hg_ne, h_eq⟩ :
-      ∃ g : ℂ → ℂ, AnalyticAt ℂ g s ∧ g s ≠ 0 ∧ entireL χ =ᶠ[𝓝 s] fun z ↦ (z - s) ^ n • g z :=
-    (analyticAt_entireL χ s).analyticOrderAt_ne_top.1 (analyticOrderAt_entireL_ne_top χ s)
-  -- The logarithmic derivative is `n / (z - s) + g' / g`, and `g' / g` is continuous at `s`.
-  have h_lim : Tendsto (fun z : ℂ ↦ n + (z - s) * logDeriv g z) (𝓝[≠] s) (𝓝 (n : ℂ)) := by
-    have h_cont : ContinuousAt (logDeriv g) s := (hg.deriv.div hg hg_ne).continuousAt
-    simpa using (tendsto_sub_mul_of_continuousAt h_cont).const_add (n : ℂ)
-  refine h_lim.congr' ?_
-  filter_upwards [nhdsWithin_le_nhds h_eq.deriv, nhdsWithin_le_nhds h_eq,
-    nhdsWithin_le_nhds (hg.continuousAt.eventually_ne hg_ne),
-    nhdsWithin_le_nhds hg.eventually_analyticAt, self_mem_nhdsWithin]
-    with z hz_deriv hz hgz hg_an (hzs : z ≠ s)
-  symm
-  calc
-    (z - s) * logDeriv (entireL χ) z = (z - s) * logDeriv (fun w : ℂ ↦ (w - s) ^ n * g w) z := by
-      simp only [logDeriv_apply, hz, hz_deriv, smul_eq_mul]
-    _ = (z - s) * (n / (z - s) + logDeriv g z) := by
-      have h_mul : logDeriv (fun w : ℂ ↦ (w - s) ^ n * g w) z =
-          logDeriv (fun w : ℂ ↦ (w - s) ^ n) z + logDeriv g z :=
-        logDeriv_mul z (pow_ne_zero n (sub_ne_zero.2 hzs)) hgz (by fun_prop) hg_an.differentiableAt
-      rw [h_mul, logDeriv_fun_pow (by fun_prop)]
-      simp [logDeriv_apply, div_eq_mul_inv]
-    _ = n + (z - s) * logDeriv g z := by field_simp [sub_ne_zero.2 hzs]
+  let n := analyticOrderNatAt (entireL χ) s
+  have h_ord : meromorphicOrderAt (entireL χ) s = ((n : ℤ) : WithTop ℤ) := by
+    rw [(analyticAt_entireL χ s).meromorphicOrderAt_eq,
+      ← Nat.cast_analyticOrderNatAt (analyticOrderAt_entireL_ne_top χ s)]
+    rfl
+  have h_meromorphic := (analyticAt_entireL χ s).meromorphicAt
+  rw [← Int.cast_natCast,
+    ← TauCeti.Contour.residue_logDeriv_eq_meromorphicOrderAt h_meromorphic h_ord]
+  exact TauCeti.Contour.tendsto_sub_mul_nhds_residue h_meromorphic.logDeriv
+    (TauCeti.Contour.neg_one_le_meromorphicOrderAt_logDeriv h_meromorphic)
 
 end New

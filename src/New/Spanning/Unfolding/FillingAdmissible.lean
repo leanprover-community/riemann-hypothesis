@@ -1,9 +1,14 @@
+module
+
+import Mathlib.Algebra.Order.Antidiag.FinsuppEquiv
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.Spanning.Unfolding.FrameMass
+public import New.Spanning.Unfolding.PoincareSeries
+public import New.UpperBound.Seesaw.EdgePairEvaluation
+public import New.UpperBound.Size.ShortColumns
 import Lib.General.Groups.IndexOfProduct
-import New.Spanning.Unfolding.FrameMass
-import New.Spanning.Unfolding.PoincareSeries
+import New.Spanning.Unfolding.Climbing
 import New.Spanning.Unfolding.ReducedGroups
-import New.UpperBound.Seesaw.EdgePairEvaluation
-import New.UpperBound.Size.ShortColumns
 
 /-!
 # Filling data for admissible data: fit to Y₀, Bessel bounds, standing hypotheses
@@ -27,8 +32,7 @@ general filling theorem applies.
   the Bessel systems.
 * `New.Data.card_mul_card_classes_mul_prod_le`, `New.Data.card_sq_mul_mass_mul_prod_le`: two
   products built from group orders, class number, masses, dimensions and degrees are at most
-  `(1 + b⁻⁹)` times `New.Filling.mainSecondMoment`. `New.Data.card_mul_prod_frameMass_le` states
-  both.
+  `(1 + b⁻⁹)` times `New.Filling.mainSecondMoment`.
 
 Notions from other files:
 * `New.Data.spaceY`: for an index `j`, the hermitian space `Y_j` with its adelic frame, hence its
@@ -42,6 +46,8 @@ Notions from other files:
 * `New.Data.logLevelTarget`: a number `λ`, built from the mean of the `log (D.weight v)`, from
   `log (M rootDisc / 2π)` and from `log b`, with `λ ≤ log N ≤ λ + √(log b)`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -60,65 +66,35 @@ lemma filling_fits :
       (scalarFin D.shape.κ (D.latticeScale 0))⁻¹ := by
   -- The finite frame of `Y₀` is `gradedLatticeBasis` times an integral `γ` that is `≡ 1` at the
   -- chosen places, by the choice of `D.spaceY`.
-  obtain ⟨γ, hγ_red, (hγ : (D.spaceY 0).xFin.1 =
+  obtain ⟨γ, hγ_red, (hγ : (D.spaceY 0).xFin.val =
       gradedLatticeBasis D.shape.besselIndexEquiv D.ideleA D.piNIdele (D.latticeScale 0) *
-        γ.1.1)⟩ :=
+        γ.val.val)⟩ :=
     D.exists_spaceY_xFin_eq 0 D.nat_le_of_hasLogBound
   -- `gradedLatticeBasis` scales only the string by `u = D.latticeScale 0`. So it is the lattice
   -- basis of the filling data scaled by `u` on the whole space and then by `u⁻¹` on `X₀`.
   have h_lat :
       gradedLatticeBasis D.shape.besselIndexEquiv D.ideleA D.piNIdele (D.latticeScale 0) =
         (Unitary.toUnits (D.latticeScale 0) •
-            (toBesselH D.shape (D.N : 𝔸f D.E) (scalarFin D.shape.κ (D.latticeScale 0))⁻¹).1 *
-          D.filling.latticeBasis).1 := by
-    let u : 𝔸f D.E := (D.latticeScale 0).1
-    -- `u⁻¹ = star u` multiplies only the `X₀` rows of the lattice basis.
-    have h_prod :
-        (toBesselH D.shape (D.N : 𝔸f D.E) (scalarFin D.shape.κ (D.latticeScale 0))⁻¹).1.1 *
-            D.filling.latticeBasis.1 =
-          fromBlocks 1 0 0 (fromBlocks
-            (fromBlocks (star u • Filling.scaleAt (star D.piNIdele⁻¹.1) D.shape.k₀) 0
-              (of fun (_ : Unit) (j : D.shape.κ) ↦
-                if j = D.shape.k₀ then (D.piNIdele * star D.piNIdele)⁻¹.1 else 0) 1)
-            0 0 1) := by
-      have h_embed (a : Gf D.E D.shape.κ) : (toBesselH D.shape (D.N : 𝔸f D.E) a).1.1 =
-          fromBlocks 1 0 0 (fromBlocks (fromBlocks a.1.1 0 0 1) 0 0 1) := rfl
-      rw [h_embed, ← map_inv]
-      simp [u, filling, besselLatticeBasis, fromBlocks_multiply, scalarFin,
-        ← Unitary.star_eq_inv, smul_eq_diagonal_mul]
-    have h_unit (c : 𝔸f D.E) : u * (star u * c) = c := by simp [u, ← mul_assoc]
-    rw [Units.val_mul, Units.val_smul, smul_mul_assoc, h_prod]
+            (toBesselH D.shape (D.N : 𝔸f D.E) (scalarFin D.shape.κ (D.latticeScale 0))⁻¹).val *
+          D.filling.latticeBasis).val := by
+    have h_embed (a : Gf D.E D.shape.κ) : (toBesselH D.shape (D.N : 𝔸f D.E) a).val.val =
+        fromBlocks 1 0 0 (fromBlocks (fromBlocks a.val.val 0 0 1) 0 0 1) := rfl
+    have h_unit (c : 𝔸f D.E) : (D.latticeScale 0).val * (star (D.latticeScale 0).val * c) = c := by
+      simp [← mul_assoc]
+    rw [Units.val_mul, Units.val_smul, smul_mul_assoc, h_embed, ← map_inv]
     -- Compare the entries: equal indices give the scalars, by `h_unit`. Otherwise both are 0, as
     -- the string indices `a`, `ϱ`, `2 ϱ - b` for `a, b < ϱ` are different.
-    simp [u, h_unit, ← ext_iff, besselIndexEquiv, gradedLatticeBasis, diagonal_apply, smul_def,
+    simp [h_unit, ← ext_iff, filling, besselLatticeBasis, fromBlocks_multiply, scalarFin,
+      ← Unitary.star_eq_inv, besselIndexEquiv, gradedLatticeBasis, diagonal_apply, smul_def,
       fromBlocks_smul, Matrix.one_apply, Fin.ext_iff, Fin.val_rev]
     and_intros <;> grind
   rw [h_lat] at hγ
   exact
     { isDiscreteSeriesBessel := D.isDiscreteSeriesBessel_filling_besselSystem
       index_eq := rfl
-      isIdempotentKernel := D.isCuspKernel_typeKernel_paramW.1
+      isIdempotentKernel := D.isCuspKernel_typeKernel_paramW.toIsIdempotentKernel
       exists_point_eq := ⟨γ, fun i w ↦ hγ_red ⟨i, w⟩, toUnits (D.latticeScale 0), ext hγ⟩
       central a := (Seesaw.commute_scalarFin a).inv_left }
-
-/-- A finite adelic point of U(X₀) preserves the lattice of Y₀ if and only if it is integral and
-its last row is that of 1 modulo π. In the coordinates of the filling data this is
-`New.Filling.inclHFin_mem_latticeStabilizer_iff`. -/
-lemma inclXFin_zero_mem_stdLevel_iff {a : Gf D.E (D.X 0)} :
-    (D.gradingY 0).inclXFin a ∈ stdLevel D.E (D.Y 0) ↔
-      a.val ∈ congruenceGL (Ô D.E ∙ D.piNIdele.val) Sum.inr :=
-  -- Both sides say that `D.filling.inclHFin a` lies in `D.filling.latticeStabilizer`.
-  (D.filling_fits.inclXFin_mem_stdLevel_iff a).trans D.filling.inclHFin_mem_latticeStabilizer_iff
-
-/-- The finite adelic points of U(X₀) that lie in the principal level of Y₀ at the chosen places
-form the level `New.Data.levelX` of X₀. In the coordinates of the filling data this is
-`New.Data.levelX_zero_eq_comap`. -/
-lemma comap_inclXFin_zero_chosenLevel :
-    (D.chosenLevel (n := D.Y 0)).comap (D.gradingY 0).inclXFin = D.levelX 0 := by
-  ext a
-  rw [levelX_zero_eq_comap]
-  -- `D.chosenLevel` is the standard principal level of the filling data.
-  exact D.filling_fits.inclXFin_mem_stdPrincipalLevel_iff a
 
 /-- The isomorphism that applies the central translation by `D.latticeScale 0` to a source form on
 X₀ and takes its values at the class representatives, in the coordinates of the Bessel systems. -/
@@ -163,7 +139,7 @@ lemma card_besselSystem_le_add_pow (v : D.Φ) :
     v).exists_conj_rep_eq_schur
   have h_degree : D.columnCount v 1 ≤ D.a := by by_cases hv : v ∈ D.aPlaces <;>
                                                   simp [columnCount, hv]
-  have one_lt_k : 1 < D.k := (D.nat_le_of_hasLogBound : 2 ≤ D.k)
+  have one_lt_k : 1 < D.k := D.nat_le_of_hasLogBound
   have h_row (i : ℕ) (_ : 0 < i) (hi_lt : i < Fintype.card (D.X 0)) :
       D.columnCount v i = if i = 1 then D.columnCount v 1 else 0 := by
     rw [D.card_X₀] at hi_lt
@@ -241,31 +217,21 @@ lemma filling_besselDegree_eq_exp_sum :
     D.filling.besselDegree = exp (∑ v : D.Φ, ∑ l ∈ Ico (D.k - 1) D.r,
       (∑ i ∈ range l, log (D.targetParameter v i - D.targetParameter v l) - Real.log l !)) := by
   push_cast [Filling.besselDegree, (D.filling_fits.isDiscreteSeriesBessel _).deg_eq, ↓card_rowIndex,
-    exp_sum,
-    exp_sub, weylDimensionPoly, ↓paramW_lt_iff, paramW]
+    exp_sum, exp_sub, weylDimensionPoly, ↓paramW_lt_iff, paramW]
   congr! with v
   -- Index the pairs by their numbers under `basisNumber`.
-  suffices h_ranges : ∏ l ∈ range D.r, (∏ i ∈ range (min D.r l),
-        (2 * (D.targetParameter v i : ℝ) - 2 * D.targetParameter v l) / 2) / l ! =
-      ∏ l ∈ Ico (D.k - 1) D.r,
-        (∏ i ∈ range l, exp (log (D.targetParameter v i - D.targetParameter v l : ℝ))) /
-          exp (log (l ! : ℝ)) by
-    simpa [prod_comm, prod_filter, reindex_equiv D.basisNumber.symm, prod_fin_eq_prod_range,
-      ← mem_range, ← prod_div_distrib] using h_ranges
-  apply prod_congr_of_eq_on_inter
-  · -- `l < k - 1`: the differences are `l - i`, with product `l!`.
-    intro l hl hl'
-    field_simp
+  simp [prod_comm, prod_filter, reindex_equiv D.basisNumber.symm, prod_fin_eq_prod_range,
+    ← mem_range, ← prod_div_distrib]
+  refine prod_congr_of_eq_on_inter (fun l hl hl' ↦ ?_)
+    (fun l hl hl' ↦ absurd (mem_range.2 (mem_Ico.1 hl).2) hl') (fun l hl _ ↦ ?_)
+  -- `l < k - 1`: the differences are `l - i`, with product `l!`.
+  · field_simp
     norm_cast
-    have h_diff (i : ℕ) (hi : i ∈ range l) :
-        D.targetParameter v i - D.targetParameter v l = (l - 1 - i : ℕ) + 1 := by
-          grind [targetParameter_eq]
-    simp [min_eq_right (mem_range.1 hl).le, prod_congr rfl h_diff,
-      prod_range_reflect (fun i : ℕ ↦ (i : ℤ) + 1), ← prod_range_add_one_eq_factorial]
-  · exact fun l hl hl' ↦ absurd (mem_range.2 (mem_Ico.1 hl).2) hl' -- the left range is larger
-  · -- `k - 1 ≤ l < r`: the numbers under `log` are positive by `targetParameter_sub_mem_Icc`.
-    intro l hl _
-    rw [min_eq_right (mem_range.1 hl).le, exp_log (mod_cast l.factorial_pos)]
+    rw [min_eq_right (mem_range.1 hl).le, prod_congr rfl (g := fun i ↦ ((l - 1 - i : ℕ) : ℤ) + 1)
+      fun i hi ↦ by grind [targetParameter_eq]]
+    simp [prod_range_reflect (fun i : ℕ ↦ (i : ℤ) + 1), ← prod_range_add_one_eq_factorial]
+  -- `k - 1 ≤ l < r`: the numbers under `log` are positive by `targetParameter_sub_mem_Icc`.
+  · rw [min_eq_right (mem_range.1 hl).le, exp_log (mod_cast l.factorial_pos)]
     refine congrArg (· / (l ! : ℝ)) (prod_congr rfl fun i hi ↦ ?_)
     rw [exp_log (one_pos.trans_le (D.targetParameter_sub_mem_Icc v (mem_range.1 hi)).1)]
     ring
@@ -341,37 +307,38 @@ lemma relIndex_latticeStabilizer :
   -- An integral x lies in this preimage iff its row `k₀` is the unit vector modulo every place
   -- of `D.piNPlaces`; each such stabiliser has index N ^ k - 1, and there are f places.
   -- `H w` fixes the unit vector under the inverse transpose: row `k₀` is the unit vector.
-  let H (w : D.piNPlaces) : Subgroup (GL (D.X 0) (ResField w.1)) :=
+  let H (w : D.piNPlaces) : Subgroup (GL (D.X 0) (ResField w.val)) :=
     (stabilizer _ (Pi.single D.shape.k₀ 1 : D.X 0 → ResField w.1)).comap invTransposeGL.toMonoidHom
   have h_level :
       D.filling.latticeStabilizer.comap D.filling.inclHFin = levelOf Subtype.val (pi ⊤ H) := by
     ext x
     rw [Subgroup.mem_comap, mem_levelOf, D.filling.inclHFin_mem_latticeStabilizer_iff]
     -- Both sides say that `x` is integral, with a condition on its row `k₀`.
-    change (x.1 ∈ intGL D.shape.κ (Ô D.E) ∧ ∀ (_ : Unit) (j : D.shape.κ),
-      (x.1.1 - 1) D.shape.k₀ j ∈ Ô D.E ∙ D.piNIdele.val) ↔ _
-    refine exists_prop.symm.trans (exists_congr fun hx : x.1 ∈ intGL D.shape.κ (Ô D.E) ↦ ?_)
+    change (x.val ∈ intGL D.shape.κ (Ô D.E) ∧ ∀ (_ : Unit) (j : D.shape.κ),
+      (x.val.val - 1) D.shape.k₀ j ∈ Ô D.E ∙ D.piNIdele.val) ↔ _
+    refine exists_prop.symm.trans (exists_congr fun hx : x.val ∈ intGL D.shape.κ (Ô D.E) ↦ ?_)
     -- π divides an integral adele iff it reduces to zero at every place of `D.piNPlaces`, and `H w`
     -- says that the entries `r j` of row `k₀` of `x - 1` reduce to zero at `w`.
     let r (j : D.shape.κ) : Ô D.E :=
-      ⟨x.1.1 D.shape.k₀ j, hx.isIntMatrix D.shape.k₀ j⟩ - if j = D.shape.k₀ then 1 else 0
-    have h_mem (j : D.shape.κ) : (x.1.1 - 1) D.shape.k₀ j ∈ Ô D.E ∙ D.piNIdele.val ↔
+      ⟨x.val.val D.shape.k₀ j, hx.isIntMatrix D.shape.k₀ j⟩ - if j = D.shape.k₀ then 1 else 0
+    have h_mem (j : D.shape.κ) : (x.val.val - 1) D.shape.k₀ j ∈ Ô D.E ∙ D.piNIdele.val ↔
         algebraMap (RingOfIntegers D.E) (Ô D.E) D.piN ∣ r j := by
       by_cases hj : j = D.shape.k₀ <;>
         simp [hj, Ne.symm, r, Submodule.mem_span_singleton, dvd_def, Subtype.ext_iff,
-          Subring.smul_def, piNIdele, mul_comm, eq_comm]
+          Subring.smul_def, piNIdele] <;>
+        exact exists_congr fun _ ↦ and_congr_right' (by rw [mul_comm, eq_comm])
     have h_fix (w : D.piNPlaces) : stdLevel.reduceFamily Subtype.val ⟨x, hx⟩ w ∈ H w ↔
-        ∀ j : D.shape.κ, reduceAt w.1 (r j) = 0 := by
+        ∀ j : D.shape.κ, reduceAt w.val (r j) = 0 := by
       -- The inverse transpose fixes the unit vector iff row `k₀` of the reduction is that vector.
-      have h_mem_H (M : GL (D.X 0) (ResField w.1)) : M ∈ H w ↔
-          (transposeGL M)⁻¹ ∈ stabilizer _ (Pi.single D.shape.k₀ 1 : D.X 0 → ResField w.1) := .rfl
+      have h_mem_H (M : GL (D.X 0) (ResField w.val)) : M ∈ H w ↔
+          (transposeGL M)⁻¹ ∈ stabilizer _ (Pi.single D.shape.k₀ 1 : D.X 0 → ResField w.val) := .rfl
       rw [h_mem_H]
       have h_entry (j : D.shape.κ) : (stdLevel.reduceFamily Subtype.val ⟨x, hx⟩ w).1 D.shape.k₀ j =
-          reduceAt w.1 ⟨x.1.1 D.shape.k₀ j, hx.isIntMatrix D.shape.k₀ j⟩ := rfl
+          reduceAt w.val ⟨x.val.val D.shape.k₀ j, hx.isIntMatrix D.shape.k₀ j⟩ := rfl
       simp [r, h_entry, funext_iff, Units.smul_def, -reduceAt_eq_zero, sub_eq_zero]
     simp only [Subgroup.mem_pi, h_mem, dvd_iff_reduceAt_eq_zero D.intValuation_piN, h_fix,
       forall_const, ← mem_piNPlaces]
-    exact ⟨fun h w _ j ↦ h j w.1 w.2, fun h j w hw ↦ h ⟨w, hw⟩ trivial j⟩
+    exact ⟨fun h w _ j ↦ h j w.val w.property, fun h j w hw ↦ h ⟨w, hw⟩ trivial j⟩
   -- The index of a preimage under reduction is the product of the indices of the stabilisers.
   rw [h_level, relIndex_levelOf (h := ⟨by simp, by simp [D.isSplitLevel_piNPlaces.star_notMem]⟩)]
   simp [Seesaw.index_pi_univ, H, index_comap, index_stabilizer_GL_vector, card_ResField,
@@ -387,19 +354,13 @@ lemma card_classes_eq_card_mul_pow_mul_mass :
   -- The classes have trivial automorphism groups, so their number is the index of `D.levelX 0`
   -- in `stdLevel` times the mass; the index splits along
   -- `D.levelX 0 ≤ (preimage of latticeStabilizer) ≤ stdLevel`.
-  have h_card : (card D.filling.Classes : ℝ) =
-      (D.levelX 0).relIndex (stdLevel D.E D.shape.κ) * mass D.E D.k := by
-    erw [card_eq_nat_card, card_classes_eq_classSum D.classAut_levelX_zero_eq_bot,
-      classSum_one_of_le IsLevel.le, classSum_stdRatPoints_eq_mass, card_X₀]
-  -- `D.levelX 0` is the preimage of the principal congruence subgroup.
-  have relIndex_levelX_eq_card_image :
-      (D.levelX 0).relIndex (D.filling.latticeStabilizer.comap D.filling.inclHFin) =
-        Nat.card (D.filling.reducedImage besselH) := by
-    rw [levelX_zero_eq_comap]
-    exact D.filling.relIndex_comap_principalLevel
-  rw [h_card, ← relIndex_mul_relIndex _ _ _
-    (D.levelX_zero_eq_comap.trans_le (comap_mono (map_subtype_le _)))
-    fun x hx ↦ (D.filling.inclHFin_mem_latticeStabilizer_iff.1 hx).1, relIndex_levelX_eq_card_image]
+  rw [card_eq_nat_card]
+  refine (card_classes_eq_classSum D.classAut_levelX_zero_eq_bot).trans ?_
+  rw [classSum_one_of_le IsLevel.le, classSum_stdRatPoints_eq_mass, card_X₀,
+    ← relIndex_mul_relIndex _ (D.filling.latticeStabilizer.comap D.filling.inclHFin) _
+      (D.levelX_zero_eq_comap.trans_le (comap_mono (map_subtype_le _)))
+      fun x hx ↦ (D.filling.inclHFin_mem_latticeStabilizer_iff.1 hx).1,
+    levelX_zero_eq_comap, D.filling.relIndex_comap_principalLevel]
   simp [D.relIndex_latticeStabilizer]
 
 /-- With `fr_v` the frame mass, and `d_v`, `deg_v` the dimension and the degree of the Bessel system
@@ -507,25 +468,6 @@ theorem card_mul_card_classes_mul_prod_le :
       rw [← D.prod_unitSphereMass_mul_div_eq]
       exact D.card_sq_mul_mass_mul_prod_le
 
-/-- **Mean values.** For the filling data of admissible data `D`, let `H̄` be the reduced image of
-`besselH`, `n_X` the number of classes, `d_v` and `deg_v` the dimension and the degree of the Bessel
-system at `v`, `fr_v` the frame mass, `sph_k` the mass of the unit sphere in rank `k`, `mass_l` the
-mass `New.mass` in rank `l` and `c_v = fr_v N ^ k d_v ^ 2 / (sph_k deg_v)`. The numbers
-`|H̄| n_X ∏ fr_v d_v ^ 2 / deg_v` and `|H̄| ^ 2 mass_k ∏ sph_k c_v`, which bound mean values, are at
-most `(1 + b⁻⁹)` times the main second moment `(n_X ∏ d_v) ^ 2 / (mass_r ∏ deg_v)`. Here `N` is the
-prime level, `k`, `r` are the ranks of `X₀`, `Y₀`, and `b = D.b` is the weight at the `b`-places. -/
-theorem card_mul_prod_frameMass_le :
-    Nat.card (D.filling.reducedImage besselH) * Fintype.card D.filling.Classes *
-        ∏ v : D.Φ, D.frameMass v * Fintype.card (D.filling.besselSystem v).Index ^ 2 /
-          (D.filling.besselSystem v).deg ≤
-      (1 + D.b⁻¹ ^ 9) * D.filling.mainSecondMoment ∧
-    Nat.card (D.filling.reducedImage besselH) ^ 2 * mass D.E D.k *
-        ∏ v : D.Φ, D.unitSphereMass D.k v * (D.frameMass v * D.N ^ D.k *
-          Fintype.card (D.filling.besselSystem v).Index ^ 2 /
-            (D.unitSphereMass D.k v * (D.filling.besselSystem v).deg)) ≤
-      (1 + D.b⁻¹ ^ 9) * D.filling.mainSecondMoment :=
-  ⟨D.card_mul_card_classes_mul_prod_le, D.card_sq_mul_mass_mul_prod_le⟩
-
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
 /-- For the filling data of admissible data `D`, the scaled Siegel constant `|S̄| |Ū| n_X c_S` is at
@@ -562,11 +504,11 @@ lemma scaledSiegelConst_le : D.filling.scaledSiegelConst ≤
     have h_order : ((D.filling.M : ℝ) ^ (2 * (D.ϱ * (D.ϱ + D.k)) + D.ϱ)) ^ D.f =
         D.filling.unipotentOrder := by
       rw [← pow_mul, unipotentOrder, Shape.k, card_X₀, Nat.cast_pow]
-      ring_nf
+      ring
     -- The factor `frameScaleProd` cancels from the definition of the covolume.
     rw [Filling.unipotentCovolume, div_mul_cancel₀ _ D.filling.frameScaleProd_pos.ne', Shape.k,
       card_X₀, h_rank, div_pow]
-    erw [h_order]
+    rw [h_order]
     rfl
   have h_siegel : D.filling.siegelConst = (∏ v : D.Φ, D.frameMass v) *
       (D.shape.openCellConst ^ D.f * (√√|NumberField.discr D.E| ^ D.ϱ) ^ 2) /
@@ -580,8 +522,7 @@ lemma scaledSiegelConst_le : D.filling.scaledSiegelConst ≤
       rw [prod_frameMass_mul_div_eq, scaledSiegelConst, card_reducedImage_besselS, h_siegel]
       simp only [scale, h_covolume, Shape.n]
       push_cast
-      field_simp
-      ring
+      field
     _ ≤ (1 + D.b⁻¹ ^ 9) * D.filling.mainSecondMoment * scale :=
       mul_le_mul_of_nonneg_right D.card_mul_card_classes_mul_prod_le (by positivity)
     _ = _ := by ring
@@ -592,9 +533,9 @@ lemma filling_reduction_surjective : Function.Surjective D.filling.reduction := 
   intro x
   -- A preimage is the lift of the residues of `x`, written in the lattice basis of the filling.
   let lift : stdLevel D.E D.shape.BesselIndex := liftResidue (w := D.chosenPlace) (Sigma.uncurry x)
-  obtain ⟨h_mem, h_reduction⟩ := (D.filling_fits.reduction_finiteEquiv_iff lift.1 x).mpr
-    ⟨lift.2, reduceFamily_liftResidue (w := D.chosenPlace) (Sigma.uncurry x)⟩
-  exact ⟨⟨D.filling_fits.finiteEquiv lift.1, h_mem⟩, h_reduction⟩
+  obtain ⟨h_mem, h_reduction⟩ := (D.filling_fits.reduction_finiteEquiv_iff lift.val x).mpr
+    ⟨lift.property, reduceFamily_liftResidue (w := D.chosenPlace) (Sigma.uncurry x)⟩
+  exact ⟨⟨D.filling_fits.finiteEquiv lift.val, h_mem⟩, h_reduction⟩
 
 /-- The main second moment of the filling data, divided by their identity second moment, is
 `d (N ^ k - 1) ^ f mass_k / (deg mass_r |Ū|)`. Here `d` and `deg` are the number of coordinates and
@@ -609,7 +550,7 @@ lemma mainSecondMoment_div_identitySecondMoment_eq :
   have card_image_ne_zero : (Nat.card (D.filling.reducedImage besselH) : ℝ) ≠ 0 :=
     Nat.cast_ne_zero.2 Nat.card_pos.ne'
   have h_dim : (D.filling.sourceDim : ℝ) ≠ 0 :=
-    Nat.cast_ne_zero.2 D.filling_fits.finrank_levelSpace_eq_sourceDim.2.2.ne'
+    Nat.cast_ne_zero.2 (Nat.mul_pos Fintype.card_pos Fintype.card_pos).ne'
   calc
     _ = D.filling.sourceDim / (Nat.card (D.filling.reducedImage besselS) *
         (D.filling.besselDegree * mass D.E D.r)) := by
@@ -672,20 +613,7 @@ lemma abs_log_mainSecondMoment_div_identitySecondMoment_sub_le :
       |D.f * (D.m - 1) * (D.ϱ * log (D.M * D.rootDisc / 2 / π) + log (√D.rootDisc / 2 / π)) -
       D.m * ∑ v : D.Φ, log (D.weight v)| ≤ D.f * D.k * D.logB / 4 - (log (1 + D.b⁻¹ ^ 9) +
         D.m * (D.m * ∑ v : D.Φ, log (D.weight v) + D.f * D.r * D.x⁻¹) + D.f * D.k * √D.logB) :=
-    -- The default `h_exp` tactic (`scale_arith`) splits all the `max` cases and times out here.
-    le_sub_iff_add_le.mpr (D.le_of_hasLogBound (h_exp := by
-      clear_aux_decl
-      clear * - D
-      repeat clear ‹_›
-      obtain ⟨⟨_, _, _, _⟩, _, _, _, _, _⟩ := New.Data.scale_inequalities' D
-      simp only [Bool.false_eq_true, ↓reduceIte, ← max_add_add_right, ← max_add_add_left,
-        ← max_sub_sub_right, ← max_div_div_right (zero_le_two (α := ℝ)), Nat.cast_ofNat,
-        max_lt_iff]
-      and_intros
-      all_goals
-        try simp only [max_def]
-        try split_ifs
-      all_goals linarith))
+    le_sub_iff_add_le.mpr D.le_of_hasLogBound
   rw [mainSecondMoment_div_identitySecondMoment_eq, h_order]
   simp only [eq_tsub_of_add_eq D.r_add_one] at *
   -- Expand the logarithms and the sums: `sum_range_sub` telescopes the mass terms, and
@@ -693,8 +621,8 @@ lemma abs_log_mainSecondMoment_div_identitySecondMoment_sub_le :
   -- the sums of `log i!` and in `log b`.
   simp (disch := intros; first | positivity | omega) only [log_div, log_mul, log_pow, log_sqrt,
     sum_add_distrib, sum_const, Finset.card_range, nsmul_eq_mul, sum_range_id,
-    ← Nat.choose_two_right, card_univ, logLevelTarget, abs_le, ↓sum_Ico_eq_sub, Set.mem_Icc,
-    sum_sub_distrib, ← mul_sum,
+    ← Nat.choose_two_right, card_univ, logLevelTarget, New.Parameters.logLevelMin,
+    abs_le, ↓sum_Ico_eq_sub, Set.mem_Icc, sum_sub_distrib, ← mul_sum,
     sum_singleton, ← sum_mul, ← Nat.cast_sum _ (·), ↓sum_range_sub (log <| mass D.E ·)] at *
   push_cast (disch := apply D.nat_le_of_hasLogBound) [Nat.cast_choose_two, ← add_assoc,
     m_eq_two_mul_varrho_add_two] at *
@@ -724,7 +652,6 @@ theorem mainSecondMoment_div_identitySecondMoment_mem_Icc :
     gcongr
     simpa using log_le_log (by positivity) (D.le_of_hasLogBound : D.b ^ 19 ≤ D.M)
   have one_le_logB : 1 ≤ D.logB := D.le_of_hasLogBound
-  have f_k_logB_nonneg : (0 : ℝ) ≤ D.f * D.k * D.logB := by positivity
   obtain ⟨h_lower, h_upper⟩ := abs_le.1 D.abs_log_mainSecondMoment_div_identitySecondMoment_sub_le
   constructor
   · rw [← log_le_log_iff (by positivity) ratio_pos, log_pow, log_exp]
@@ -757,7 +684,7 @@ is the preimage of the principal level, reduction is onto, and the size inequali
 instance : D.filling.IsAdmissible := by
   have h_energy : 0 < D.filling.identitySecondMoment :=
     mul_pos (Nat.cast_pos.2 Nat.card_pos)
-      (Nat.cast_pos.2 D.filling_fits.finrank_levelSpace_eq_sourceDim.2.2)
+      (Nat.cast_pos.2 (Nat.mul_pos Fintype.card_pos Fintype.card_pos))
   have h_rank : D.shape.k = D.k := D.card_X₀
   have h_b : D.filling.b = D.b := rfl
   have h_varpi (v : InfinitePlace D.E) : ‖Φ v D.filling.deltaE.val‖ = v

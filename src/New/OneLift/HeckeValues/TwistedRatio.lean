@@ -1,5 +1,8 @@
-import Lib.SiegelWeil.Tower.FiniteTateIntegral
-import New.Determinant.Twist.FitTwists
+module
+
+public import Lib.SiegelWeil.Tower.FiniteTateIntegral
+public import New.Determinant.Twist.FitTwists
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # The algebraic part as a Hecke L-value, and products of L-values of twists
@@ -22,9 +25,8 @@ twisted and untwisted `L`-values, which is nonzero, is a ratio of values of `alg
 * `New.Data.CriticalPair.exists_integralAlgebraicPart_eq_mul_L`,
   `New.Data.CriticalPair.ratio_eq_integralAlgebraicPart_div`: the same value and ratio for the
   multiple `New.Data.CriticalPair.integralAlgebraicPart`, with the `L`-value of `(ν ϑ)⁻¹`.
-* `New.Data.CriticalPair.exists_ofAlgForm_trivialLift_eq_smul_lift`,
-  `New.Data.CriticalPair.formAction_trivialLift`: the lift is a nonzero multiple of the theta lift
-  of the constant function `1`, and the finite group of rank one at the chosen places fixes it.
+* `New.LValueData.formAction_trivialLift`: the finite group of rank one at the chosen places fixes
+  the lift `New.LValueData.trivialLift`, a multiple of the theta lift of the constant function `1`.
 * `New.Data.CriticalPair.lValueProd_eq_mul_prod_ratio_sq`: the product `New.Exchange.lValueProd` of
   squared L-values for the twist is the untwisted one times a power of the norm of `Q` and the
   squared ratios at `1, …, p.z`.
@@ -50,6 +52,8 @@ Notions from other files:
 
 Known; see `Lib.SiegelWeil.RallisInner.SharpData` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## The algebraic part as a multiple of a Hecke L-value
@@ -116,7 +120,7 @@ lemma vacuumScale_pow_mul_pow_rowLengthSum_ne_zero (p : D.CriticalPair) (k : ℕ
 /-- Let `p = (ν, z)` be a pair and `ϑ` a tame character. Without the Euler factors at the chosen
 places, the modulus `ϑ.Q` and their conjugates, the `L`-functions of `ν ϑ` and of its inverse
 agree. -/
-lemma L_inv_mul (ϑ : D.TameChar) :
+lemma L_mul_inv (p : D.CriticalPair) (ϑ : D.TameChar) :
     (p.character * ϑ.toAutChar)⁻¹.L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) =
       (p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) := by
   refine (p.hasWeight.mul ϑ.hasWeight).L_inv fun w hw ↦ ?_
@@ -148,7 +152,7 @@ lemma trivialLift_ne_zero (H : p.HasLiftRank n) (ϑ : D.TameChar) : trivialLift 
   obtain ⟨C, hC, h_norm_sq⟩ := exists_norm_sq_trivialLift_eq_mul_L H
   -- The squared norm of the unscaled lift is a product of nonzero numbers.
   have h_ne : (‖(lValueData H ϑ).trivialLift‖ : ℂ) ^ 2 ≠ 0 := by
-    rw [h_norm_sq, L_inv_mul]
+    rw [h_norm_sq, p.L_mul_inv]
     simp [hC, p.L_mul_ne_zero ϑ, Finset.prod_eq_zero_iff, IsDedekindDomain.HeightOneSpectrum.ne_bot]
   rw [trivialLift]
   exact smul_ne_zero (p.vacuumScale_pow_mul_pow_rowLengthSum_ne_zero (card n)) (by simpa using h_ne)
@@ -188,7 +192,7 @@ theorem exists_ne_zero_algPart_eq_mul_L (H : p.HasLiftRank n) :
         rw [algPart, trivialLift, norm_smul, Complex.ofReal_mul]
         ring
     _ = ‖scale‖ ^ 2 * C * (p.character * ϑ.toAutChar).L ({w | D.IsChosen w} ∪ ϑ.Q) p.z := by
-        rw [h_norm_sq, L_inv_mul, mul_div_cancel_right₀ _ (pow_ne_zero _ h_level), ← mul_assoc]
+        rw [h_norm_sq, p.L_mul_inv, mul_div_cancel_right₀ _ (pow_ne_zero _ h_level), ← mul_assoc]
 
 open scoped ComplexOrder in
 /-- For every tame character `ϑ` of modulus `Q`, the algebraic part `algPart H ϑ = ‖trivialLift H ϑ‖
@@ -218,7 +222,7 @@ theorem ratio_eq_algPart_div (H : p.HasLiftRank n) (ϑ : D.TameChar) :
   have h_div : algPart H ϑ / algPart H TameChar.one =
       (p.character * ϑ.toAutChar)⁻¹.L ({w | D.IsChosen w} ∪ ϑ.Q) p.z / p.character⁻¹.L
         {w | D.IsChosen w} p.z := by
-    rw [h_value, h_value_one, mul_div_mul_left _ _ hA_ne, ← L_inv_mul, ← L_inv_mul]
+    rw [h_value, h_value_one, mul_div_mul_left _ _ hA_ne, ← p.L_mul_inv, ← p.L_mul_inv]
     simp [toAutChar_one_and_toTwist_one_and_Q_one]
   -- The quotient is a positive real number, so it is equal to its norm.
   calc p.ratio ϑ = ‖algPart H ϑ / algPart H TameChar.one‖ := by
@@ -247,7 +251,7 @@ lemma exists_integralAlgebraicPart_eq_mul_L (H : p.HasLiftRank n) :
   obtain ⟨A, hA, h_value⟩ := exists_ne_zero_algPart_eq_mul_L H
   let N : ℂ := (D.chosenGroupOrder * p.denomBound ^ 2 : ℕ)
   refine ⟨N * A, mul_ne_zero p.cast_chosenGroupOrder_mul_denomBound_sq_ne_zero hA, fun ϑ ↦ ?_⟩
-  rw [integralAlgebraicPart, h_value ϑ, L_inv_mul, mul_assoc]
+  rw [integralAlgebraicPart, h_value ϑ, p.L_mul_inv, mul_assoc]
 
 /-- Let `p = (ν, z)` be a critical pair, `H : p.HasLiftRank n` and `ϑ` a tame character. The ratio
 `p.ratio ϑ` of the absolute values of the `L`-values at `z` of `(ν ϑ)⁻¹` and of `ν⁻¹` equals
@@ -275,12 +279,6 @@ of absolute values, is real: complex conjugation fixes it. -/
 lemma star_ratio (p : D.CriticalPair) (ϑ : D.TameChar) (s : ℤˣ) :
     star (p.ratio ϑ s) = p.ratio ϑ s := by
   simp [ratio]
-
-/-- For a pair `p = (ν, z)`, a tame character `ϑ` and a sign `s = ±1`, the ratio `p.ratio ϑ s` of
-the absolute values of the `L`-values at `z` of `(ν ϑ ^ s)⁻¹` and of `ν⁻¹` is nonzero and real. -/
-lemma ratio_ne_zero_and_real (p : D.CriticalPair) (ϑ : D.TameChar) (s : ℤˣ) :
-    p.ratio ϑ s ≠ 0 ∧ star (p.ratio ϑ s) = p.ratio ϑ s :=
-  ⟨p.ratio_ne_zero ϑ s, p.star_ratio ϑ s⟩
 
 end New.Data.CriticalPair
 
@@ -312,38 +310,6 @@ end
 namespace Data.CriticalPair
 
 variable {P : Parameters} {D : Data P} {p : D.CriticalPair} {n : Type} [Fintype n] [DecidableEq n]
-
-/-- Let `p = (ν, z)` be a critical pair with `z ≥ 2` and `ϑ` a tame character. Let `O` be the
-descent pair `(lValueData H ϑ).descentPair` of the lift from U(1) to `U(2 z)`, with weight
-`O.columnCount`. The function on the adelic group `U(2 z)(𝔸)` attached by `ofAlgForm` to the
-algebraic form `trivialLift H ϑ` (its matrix coefficient against the highest vector for the
-parameter `O.paramV`, all signs being `1`) is a nonzero multiple of the theta lift, by the theta
-kernel `O.pairThetaKernel`, of the constant function `1` on the adelic group `New.G` of U(1), taken
-at the Schwartz function `O.fockDatum` made from that highest vector. -/
-theorem exists_ofAlgForm_trivialLift_eq_smul_lift (H : p.HasLiftRank n) (ϑ : D.TameChar) :
-    ∃ c : ℂ, c ≠ 0 ∧
-      ofAlgForm (lValueData H ϑ).descentPair.paramV 1 (trivialLift H ϑ).val =
-        c • lift (lValueData H ϑ).descentPair.pairThetaKernel
-          ((lValueData H ϑ).descentPair.fockDatum
-            (highestVector (lValueData H ϑ).descentPair.columnCount
-              (lValueData H ϑ).descentPair.paramV))
-          fun _ : New.G D.E (lValueData H ϑ).descentPair.signs ↦ 1 := by
-  let scale : ℂ := P.vacuumScale D.towerExp ^ card n * (star (D.piMBar : ℂ) * P.jetScale D.towerExp)
-    ^ p.rowLengthSum
-  have h_scale : scale ≠ 0 := p.vacuumScale_pow_mul_pow_rowLengthSum_ne_zero (card n)
-  have h_index : (stdLevelIndex (lValueData H ϑ).chosenLevel : ℂ) ≠ 0 := by simp
-  refine ⟨scale * stdLevelIndex (lValueData H ϑ).chosenLevel, mul_ne_zero h_scale h_index, ?_⟩
-  rw [mul_smul, (lValueData H ϑ).lift_fockDatum_const_one, smul_inv_smul₀ h_index, trivialLift]
-  exact map_smul _ scale _
-
-/-- Let `p = (ν, z)` be a critical pair, with `H` saying that `n` has `2 z` elements and `z ≥ 2`,
-and let `ϑ` be a tame character. The product of the groups `GL₁` over the residue fields at the
-chosen places of `lValueData H ϑ` acts by `formAction`, and it fixes the lift `trivialLift H ϑ` of
-`ν ϑ`. -/
-theorem formAction_trivialLift (H : p.HasLiftRank n) (ϑ : D.TameChar)
-    (s : (lValueData H ϑ).descentPair.ChosenGL Unit) :
-    (lValueData H ϑ).descentPair.formAction s (trivialLift H ϑ) = trivialLift H ϑ := by
-  rw [trivialLift, map_smul, LValueData.formAction_trivialLift]
 
 end Data.CriticalPair
 

@@ -1,3 +1,7 @@
+module
+
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.UpperBound.Objects.Columns
 import New.UpperBound.Divisibility.ChainValuation
 
 /-!
@@ -34,6 +38,8 @@ Notions from other files:
 
 See `New.UpperBound.Divisibility.LocalDivisibility` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Data
 
@@ -74,7 +80,7 @@ lemma eq_zero_of_poleColumn_mem_integralBox {j : ℕ} {y : D.X (j + 1) → D.piN
     D.isSplitLevel_piNPlaces.reduction_eq_iff]
   intro w
   have h_entry : Valued.v (poleColumn (D.InitIndex j) y (k, Sum.inr ()) w) ≤ 1 :=
-    idem_mul_mem_Ô.1 (mem_integralBox.1 hy (k, Sum.inr ())) w (.inl w.2)
+    idem_mul_mem_Ô.1 (mem_integralBox.1 hy (k, Sum.inr ())) w (.inl w.property)
   simpa [poleColumn] using h_entry
 
 /-- Let `t` be a tuple of translations that is admissible for `ϑ.normQ`, the product of the norms of

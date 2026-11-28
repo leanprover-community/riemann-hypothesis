@@ -1,4 +1,11 @@
-import Lib.General.Algebra.SharpMinors
+module
+
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Connected.Separation
+public import Lib.General.Algebra.SharpMinors
+public import New.Congruences.Selmer.AuxiliaryPrimes
 import New.Congruences.Selmer.SelmerData
 
 /-!
@@ -12,8 +19,6 @@ other conditions are linear equations over `O[X]` for their values.
 * `New.Selmer.universalChar`, `New.Selmer.IsTiedPrimes.universalChar_frob`,
   `New.Selmer.IsTiedPrimes.universalChar_tame_gen`: the polynomial `ψ_X` and its values at the
   auxiliary primes.
-* `New.Selmer.finite_selmerModule`: for finite `S` and `ρ` locally constant modulo `ℓ ^ M`, the
-  Selmer module with coefficients in a finite `O / a`, `a ∣ ℓ ^ M`, is finite.
 * `New.Selmer.exists_matrix_selmerAtPoint_equiv`: there is one matrix `A` over `O[X]` such that each
   `Sel(x)` is isomorphic to the kernel of `A(x)` on a power of `O' / ℓ ^ M`.
 * `New.Selmer.exists_isLeast_length_selmerAtPoint`, `New.Selmer.exists_sharp_polynomial`: the
@@ -38,6 +43,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -134,36 +141,6 @@ lemma IsTiedPrimes.universalChar_tame_gen (hJ : IsTiedPrimes ℓ S₀ V W N P₀
 
 end UniversalTwist
 
-section Finite
-
-variable {E n O : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n] [CommRing O]
-  {ℓ M : ℕ} {ρ : Gal(Ω/E) →* Matrix n n O} {S : Set (FinPlace E)}
-
-/-- Let `E` be a number field embedded in the algebraic closure `Ω` of `ℚ`, let `ρ` be a
-representation of `Gal(Ω/E)` by matrices over `O` that is locally constant modulo `ℓ ^ M`, and let
-`S` be a finite set of primes of `E`. Let `a ∣ ℓ ^ M` with `QuotSpan a = O / a` finite, and let `L`
-be a set of relations `∑ γ, f γ • c γ = 0` on functions `c`. Then the Selmer module of `ρ` with
-coefficients in `O / a` is finite. -/
-theorem finite_selmerModule {a : O} [Finite (QuotSpan a)] (ha : a ∣ ℓ ^ M)
-    (hρ : IsLocallyConstant (reduceModPow ℓ M ρ)) (hS : S.Finite)
-    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) : Finite (selmerModule ρ S L (QuotSpan a)) := by
-  let : TopologicalSpace (QuotSpan a) := ⊥
-  have : DiscreteTopology (QuotSpan a) := ⟨rfl⟩
-  -- The ring `O / ℓ ^ M` acts on `O / a`, so `ρ` acts through its reduction, hence continuously.
-  let : Module (QuotSpan (ℓ ^ M : O)) (QuotSpan a) :=
-    Module.IsTorsionBy.module (smul_quot_eq_zero_of_dvd ha)
-  have h_cont (b : n → QuotSpan a) : IsLocallyConstant fun g : Gal(Ω/E) ↦ ρ g • b :=
-    hρ.comp fun m : Matrix n n (QuotSpan (ℓ ^ M : O)) ↦ m • b
-  let V : DiscreteModule O Gal(Ω/E) := .of (actionRep O (n → QuotSpan a) ρ)
-    (continuous_prod_of_discrete_right.2 fun b ↦ (h_cont b).continuous)
-  -- The Selmer module lies in the finite set of cocycles in `V` unramified outside `S`.
-  change (selmerModule ρ S L (QuotSpan a) : Set (Gal(Ω/E) → n → QuotSpan a)).Finite
-  refine (finite_cocycles_unramified_outside V hS).subset fun z hz ↦ ?_
-  obtain ⟨h_cocycle, h_unr, -, h_const⟩ := mem_selmerModule_iff.1 hz
-  exact ⟨⟨h_const.continuous, h_cocycle⟩, fun v hv A hA g hg ↦ h_unr g ⟨v, hv, A, hA, hg⟩⟩
-
-end Finite
-
 section Relations
 
 variable {Γ 𝒢 n Λ O B : Type} [Fintype 𝒢] [Fintype n] [DecidableEq n] [CommRing Λ] [CommRing O]
@@ -185,13 +162,13 @@ lemma mapRel_image_cocycleRelations [Mul Γ] (ev : Λ →+* O) (ρ : Γ → Matr
       .single (g * g') 1 - .single g 1 - .single g' ((ρ g).map ev) := by
     simp [mapRel, Finsupp.mapRange_sub']
   simp only [Set.ext_iff, Set.mem_image, cocycleRelations, Set.mem_ofPred_eq]
-  grind
+  aesop
 
 /-- The linear equations that a set `R` of relations imposes on the functions on `Γ` that factor
 through `π : Γ → 𝒢`. The unknowns are the coordinates of the values on `𝒢`, and there is one
 equation for each relation and each coordinate. -/
 def relationMatrix (π : Γ → 𝒢) (R : Set (Γ →₀ Matrix n n Λ)) : Matrix (R × n) (𝒢 × n) Λ :=
-  .of fun (f, i) (c, j) ↦ f.1.mapDomain π c i j
+  .of fun (f, i) (c, j) ↦ f.val.mapDomain π c i j
 
 lemma relationMatrix_apply {Γ 𝒢 n Λ : Type} [CommRing Λ] (π : Γ → 𝒢)
     (R : Set (Γ →₀ Matrix n n Λ)) (f : R) (i : n) (c : 𝒢 × n) :
@@ -247,7 +224,7 @@ lemma exists_openNormalSubgroup_forall_apply_eq_apply_one (G' : OpenSubgroup Gal
   have h_nhds : {u : G'.toSubgroup | ∀ y ∈ Y, y u = y 1} ∈ nhds 1 :=
     hY.eventually_all.2 fun y hy ↦ (hY_const y hy).eventually_eq 1
   obtain ⟨W, hW_sub, hW_open, hW_one⟩ :=
-    mem_nhds_iff.1 (G'.isOpen.isOpenMap_subtype_val.image_mem_nhds h_nhds)
+    mem_nhds_iff.1 (G'.isOpen.isOpenMap_subtypeVal.image_mem_nhds h_nhds)
   obtain ⟨G'', hG''⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hW_open hW_one
   refine ⟨G'', fun g hg ↦ ?_⟩
   obtain ⟨u, hu, rfl⟩ := hW_sub (hG'' hg)
@@ -287,15 +264,13 @@ lemma exists_openNormalSubgroup_forall_eq_zero (G' : OpenSubgroup Gal(Ω/E)) (m 
   -- The homomorphisms `χ : B → ℤ / m` separate the points of `B`, and `χ ∘ z` lies in `Y`.
   refine eq_zero_of_forall_hom_zmod_eq_zero hm fun χ ↦ ?_
   have h_cocycle : (fun u : H ↦ χ (z u)) ∈ Z1 V.ρ := by
-    refine ⟨(hz_const.comp χ).continuous.comp continuous_subtype_val, fun u u' ↦ ?_⟩
+    refine ⟨(hz_const.comp χ).continuous.comp continuous_subtypeVal, fun u u' ↦ ?_⟩
     simp [V, hz_add u u.property u' u'.property]
   have h_mem : (fun u : H ↦ χ (z u)) ∈ Y := by
     refine ⟨h_cocycle, fun w hw A hA u hu ↦ ?_⟩
-    have hz_zero : z u = 0 := hz_unr u ⟨w.below E, hw, A, hA.isPlaceOver_below, hu⟩
-    simp [hz_zero]
+    simp [hz_unr u ⟨w.below E, hw, A, hA.isPlaceOver_below, hu⟩]
   obtain ⟨hg_mem, h_const⟩ : ∃ hg : g ∈ H, ∀ y ∈ Y, y ⟨g, hg⟩ = y 1 := hG'' g hg
-  have h_value : χ (z g) = χ (z 1) := h_const _ h_mem
-  rw [h_value, hz_one, map_zero]
+  simpa only [Subgroup.coe_one, hz_one, map_zero] using h_const _ h_mem
 
 /-- Let `ρ` be a function from `Gal(Ω/E)` to matrices over a ring `Λ`, let `L` be a set of relations
 `∑ γ, f γ • c γ = 0` with matrix coefficients over `Λ`, let `G'` be an open subgroup, let `m ≠ 0`

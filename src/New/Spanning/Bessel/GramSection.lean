@@ -1,5 +1,13 @@
+module
+
+import TauCeti.Analysis.Matrix.L2OpNorm
+public import Mathlib.Analysis.RCLike.Sqrt
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.FDeriv.Star
+import Mathlib.Analysis.Complex.SqrtDeriv
+public import New.Spanning.Bessel.Basic
+import Lib.General.Analysis.GaussianIntegral
 import Lib.General.Analysis.HolomorphicIntegrals
-import New.Spanning.Bessel.Basic
 
 /-!
 # The Gram section γ_Z of the frame Gram matrix map on the unitary group G₁
@@ -34,6 +42,8 @@ Notions from other files:
   basis vectors `(e₁, …, e_ϱ, z)` and `(e*₁, …, e*_ϱ, x_{k₀})`.
 * `New.Shape.FrameMatrix`: the complex `(ϱ+1) × (ϱ+1)` matrices; `New.Shape.top` is the last index.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -188,8 +198,8 @@ lemma differentiableAt_sectionMatrix_uncurry {Z W : 𝔰.FrameMatrix} (hZ : Z �
   have h_diag := differentiable_diagLast_apply (𝔰 := 𝔰)
   refine differentiableAt_pi.2 fun i ↦ differentiableAt_pi.2 fun j ↦ ?_
   simp only [uncurry_def, sectionMatrix, sectionFrame, sectionCoeff, invCorner,
-    nonsing_inv_eq_ringInverse, Matrix.mul_apply, Matrix.add_apply, Matrix.sub_apply]
-    at h_slit hs_ne ⊢
+    nonsing_inv_eq_ringInverse] at h_slit hs_ne ⊢
+  dsimp only [Matrix.mul_apply, Matrix.add_apply, Matrix.sub_apply]
   fun_prop (disch := assumption)
 
 /-- The matrix `sectionMatrix Y Yᴴ` of the section γ_Y (`gramSection`) is a real differentiable
@@ -243,7 +253,7 @@ lemma norm_inv_sqrt_one_sub_invCorner_mul_le {Z W : 𝔰.FrameMatrix} (hZ : Z �
     ‖(1 - invCorner Z * invCorner W).sqrt⁻¹‖ ≤ 2 * (√(oneSubNormSqInvCorner Z))⁻¹ := by
   have h_lower : oneSubNormSqInvCorner Z / 2 ^ 2 ≤ ‖1 - invCorner Z * invCorner W‖ := by
     grw [← norm_sub_norm_le, norm_mul, (mem_openCell.1 hW).2, norm_one, oneSubNormSqInvCorner]
-    nlinarith [(mem_openCell.1 hZ).2]
+    nlinarith only [(mem_openCell.1 hZ).2]
   have hν_pos : 0 < oneSubNormSqInvCorner Z := oneSubNormSqInvCorner_pos hZ
   grw [norm_inv, norm_complex_sqrt_eq_sqrt_norm, ← h_lower]
   simp [div_eq_mul_inv]
@@ -312,7 +322,7 @@ lemma norm_fderiv_sectionMatrix_le {Z : 𝔰.FrameMatrix} {P r : ℝ} (hr : 0 < 
   choose h_hol h_bound using h_pair
   refine norm_fderiv_le_of_lip' ℝ (by positivity) ?_
   filter_upwards [ball_mem_nhds Z hr] with y hy
-  show ‖sectionMatrix y yᴴ - sectionMatrix Z Zᴴ‖ ≤ 2 * P ^ 12 / r * ‖y - Z‖
+  change ‖sectionMatrix y yᴴ - sectionMatrix Z Zᴴ‖ ≤ 2 * P ^ 12 / r * ‖y - Z‖
   have hy_pair : (y, yᴴ) ∈ ball (Z, Zᴴ) r := by
     simpa [← conjTranspose_sub, dist_eq_norm, l2_opNorm_conjTranspose] using hy
   simpa [← conjTranspose_sub, l2_opNorm_conjTranspose] using norm_sub_le_of_holomorphic_bdd
@@ -379,7 +389,7 @@ lemma IsBoundedInCell.mul_oneSubNormSqInvCorner_le {Z : 𝔰.FrameMatrix} {T : �
   obtain ⟨-, -, h_diff⟩ := hZ.isUnit_det_and_norm_inv_le hT hY
   have h_corner : ‖invCorner Y‖ ≤ ‖invCorner Z‖ + 2 * T⁻¹ ^ 4 := by
     grw [norm_le_insert' (invCorner Y) (invCorner Z), ← h_diff]
-    exact add_le_add_right (norm_apply_le_l2_opNorm (A := Y⁻¹ - Z⁻¹) 𝔰.top 𝔰.top) _
+    exact add_le_add_right (norm_apply_le_l2_opNorm (Y⁻¹ - Z⁻¹) 𝔰.top 𝔰.top) _
   have h_sq : ‖invCorner Y‖ ^ 2 ≤ ‖invCorner Z‖ ^ 2 + 8 * T⁻¹ ^ 4 := by
     have h_pow_le : T⁻¹ ^ 4 ≤ 1 := pow_le_one₀ (by positivity) (inv_le_one_of_one_le₀ (by linarith))
     grw [h_corner]
@@ -428,7 +438,7 @@ lemma IsBoundedInCell.gramDiscReal_div_two_le {Z : 𝔰.FrameMatrix} {T : ℝ} {
     norm_num
   have h_pow : (x + 1) ^ 𝔰.n ≤ 9 / 8 :=
     calc (x + 1) ^ 𝔰.n ≤ Real.exp x ^ 𝔰.n := by grw [Real.add_one_le_exp x]
-      _ ≤ Real.exp (1 / 9) := by grw [← Real.exp_nat_mul, h_small]
+      _ ≤ Real.exp (1 / 9) := by grw [← Real.exp_natCast_mul, h_small]
       _ ≤ 1 / (1 - 1 / 9) := Real.exp_bound_div_one_sub_of_interval (by norm_num) (by norm_num)
       _ = 9 / 8 := by norm_num
   have h_det : ‖Z.det‖ ≤ 9 / 8 * ‖Y.det‖ := by
@@ -443,7 +453,7 @@ lemma IsBoundedInCell.gramDiscReal_div_two_le {Z : 𝔰.FrameMatrix} {T : ℝ} {
   calc gramDiscReal Z / 2 ≤ (9 / 8 * ‖Y.det‖) ^ 2 * oneSubNormSqInvCorner Z / 2 := by
         grw [gramDiscReal_eq_norm_det_sq_mul (RealPlace.mem_openCell.1 hZ.mem_openCell).1, h_det]
     _ ≤ ‖Y.det‖ ^ 2 * (7 / 8 * oneSubNormSqInvCorner Z) := by
-        nlinarith [mul_nonneg (sq_nonneg ‖Y.det‖) hνZ_pos.le]
+        linarith [mul_nonneg (sq_nonneg ‖Y.det‖) hνZ_pos.le]
     _ ≤ gramDiscReal Y := by grw [hν_ratio, gramDiscReal_eq_norm_det_sq_mul hY_unit.ne_zero]
 
 end Perturbation
@@ -479,14 +489,6 @@ theorem sectionMatrix_mul_frameCols {Z : 𝔰.FrameMatrix} :
   simp [sectionMatrix, inclMatrix, Matrix.sub_mul, diagLast, Matrix.mul_assoc, Matrix.add_mul,
     ← ext_iff, Matrix.one_apply, Matrix.mul_apply, sum_univ_castSucc, diagonal_apply, Fin.ne_of_gt,
     forall_fin_succ']
-
-/-- For index maps `u`, `v`, multiplying `M` by the matrices of basis vectors `(inclMatrix ℂ u)ᴴ`
-on the left and `inclMatrix ℂ v` on the right selects the rows `u` and the columns `v` of `M`. -/
-lemma conjTranspose_inclMatrix_mul_mul_inclMatrix {l m n : Type*} [Fintype n] [DecidableEq n]
-    (M : Matrix n n ℂ) (u : l → n) (v : m → n) :
-    (inclMatrix ℂ u)ᴴ * M * inclMatrix ℂ v = M.submatrix u v := by
-  ext i j
-  simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply]
 
 /-- The Gram matrix of the frame `F = (e₁, …, e_ϱ, z)` for the form `𝔰.J₁` is
 `diagLast 0 - 1 = diag(0, …, 0, -1)`. -/
@@ -615,14 +617,6 @@ lemma gramSection_eventuallyEq {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell)
         sectionMatrix Y Yᴴ :=
   .mono (isOpen_openCell.mem_nhds hZ) fun _ ↦ coe_gramSection
 
-/-- For `γ ∈ G₁`, the matrix `Z(γ) = realFrameGram γ` equals `Fᴴ J₁ γ F`, with `F = 𝔰.frameCols` the
-frame (e₁, …, e_ϱ, z) and `J₁ = 𝔰.J₁`. -/
-lemma realFrameGram_eq_conjTranspose_mul (γ : 𝔰.G₁) :
-    realFrameGram γ = 𝔰.frameColsᴴ * 𝔰.J₁ *
-      (((γ : GL 𝔰.BesselIndex ℂ) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) * 𝔰.frameCols) := by
-  rw [← Matrix.mul_assoc, Matrix.mul_assoc 𝔰.frameColsᴴ,
-    conjTranspose_inclMatrix_mul_mul_inclMatrix, realFrameGram, frameGram]
-
 /-- On Ω the map `Z ↦ γ_Z` is a section of `γ ↦ Z(γ) = Fᴴ J₁ γ F` (`realFrameGram`, with `F` the
 frame): `Z(γ_Z) = Z`. -/
 theorem realFrameGram_gramSection {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell) :
@@ -646,7 +640,9 @@ lemma conjTranspose_framePair_mul_mul (γ : 𝔰.G₁) :
   -- The Gram matrix of `γ F` is that of `F` because `γ` is an isometry.
   have h_last : (g * 𝔰.frameCols)ᴴ * 𝔰.J₁ * (g * 𝔰.frameCols) = diagLast 0 - 1 :=
     calc _ = 𝔰.frameColsᴴ * (gᴴ * 𝔰.J₁ * g) * 𝔰.frameCols := by simp [Matrix.mul_assoc]
-      _ = diagLast 0 - 1 := by rw [γ.property, frameCols_gram_frameCols]
+      _ = diagLast 0 - 1 := by
+        rw [show gᴴ * 𝔰.J₁ * g = 𝔰.J₁ from mem_unitaryGroupOf_iff.1 γ.property,
+            frameCols_gram_frameCols]
   rw [h_pair, conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul,
     fromRows_mul_fromCols, frameCols_gram_frameCols, h_upper, h_lower, h_last]
 

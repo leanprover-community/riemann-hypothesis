@@ -1,3 +1,16 @@
+module
+
+public import TauCeti.Analysis.Matrix.MeasurableSpace
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Analysis.Calculus.FDeriv.Star
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.Topology.Instances.Matrix
+public import Lib.General.LinearAlgebra.HermitianMatrices
 import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
@@ -22,6 +35,8 @@ Notions from other files:
 * `New.skewCoords`: the real-linear left inverse of `New.skewOfReal`, inverse to it on
   skew-hermitian matrices.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -116,18 +131,12 @@ theorem measurePreserving_joinCol [Fintype ι] [Fintype n] [Fintype n₁] (e : n
     MeasurePreserving (joinCol (ι := ι) e) :=
   (measurePreserving_joinCols e).comp ((MeasurePreserving.id _).prod (measurePreserving_toCol ι ℂ))
 
-theorem mul_toCol {l : Type} [Fintype ι] (A : Matrix l ι ℂ) (v : ι → ℂ) :
-    A * toCol ι ℂ v = toCol l ℂ (A *ᵥ v) := rfl
-
 /-- Left multiplication by a matrix acts separately on the given columns and on the adjoined
 one. -/
 theorem mul_joinCol {l : Type} [Fintype ι] (e : n₁ ⊕ Unit ≃ n) (A : Matrix l ι ℂ)
     (Y : Matrix ι n₁ ℂ) (v : ι → ℂ) : A * joinCol e (Y, v) = joinCol e (A * Y, A *ᵥ v) := by
-  simp only [joinCol, mul_joinCols, mul_toCol]
-
-/-- The inverse of `toCorner` reads off the column and the single entry of the corner. -/
-theorem toCorner_symm_apply {κ : Type} (B : Matrix κ Unit ℂ) (D : Matrix Unit Unit ℝ) :
-    (toCorner κ).symm (B, D) = (fun a : κ ↦ B a (), D () ()) := rfl
+  rw [joinCol, mul_joinCols]
+  rfl
 
 /-- On the matrices without columns, which form a single point, the volume is the unit mass. -/
 theorem volume_eq_dirac_of_isEmpty [Fintype ι] [Fintype n] {R : Type} [MeasureSpace R]
@@ -152,6 +161,7 @@ variable [Fintype ι] [DecidableEq n]
 
 /-! ### Measurability and linear changes of variables -/
 
+omit [DecidableEq n] in
 /-- The product of two measurable families of complex matrices is measurable. -/
 @[fun_prop]
 theorem _root_.Measurable.matrix_mul [Fintype n] {X : Type} [MeasurableSpace X] [Fintype n₁]
@@ -162,11 +172,6 @@ theorem _root_.Measurable.matrix_mul [Fintype n] {X : Type} [MeasurableSpace X] 
 @[fun_prop]
 theorem measurable_matrix_det [Fintype n] : Measurable fun Z : Matrix n n ℂ ↦ Z.det :=
   continuous_id.matrix_det.measurable
-
-@[fun_prop]
-theorem measurable_matrix_inv [Fintype n] : Measurable fun Z : Matrix n n ℂ ↦ Z⁻¹ := by
-  simp only [Matrix.inv_def, Ring.inverse_eq_inv']
-  fun_prop
 
 /-- Substitution by an invertible real linear map `T` in an integral against an additive Haar
 measure: the Jacobian is `|det T|`. -/
@@ -439,7 +444,7 @@ theorem exists_measurePreserving_hermCorner [Fintype n] [Fintype n₁] [Decidabl
   obtain ⟨φ, φ_vol, φ_apply⟩ := exists_measurePreserving_hermBlocks e
   refine ⟨φ.trans ((Homeomorph.refl _).prodCongr (toCorner n₁).symm), ((MeasurePreserving.id _).prod
     (measurePreserving_toCorner.symm (toCorner n₁).toMeasurableEquiv)).comp φ_vol, fun t ↦ ?_⟩
-  simp [φ_apply, toCorner_symm_apply]
+  simp [φ_apply]; rfl
 
 end New
 

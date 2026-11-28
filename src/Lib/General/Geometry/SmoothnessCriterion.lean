@@ -1,5 +1,19 @@
+module
+
+public import Mathlib.RingTheory.Etale.StandardEtale
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.DualNumber
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.Unramified.LocalStructure
+import TauCeti.RingTheory.MvPolynomial.IntegrallyClosed
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import Lib.Cohomology.Etale.Basic
 import Lib.General.Analysis.HolomorphicIntegrals
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Smoothness near an arc from an immersive generic family and a bound on the tangent space
@@ -22,6 +36,8 @@ Notions from other files:
 * `New.PointFn.ofSection`: The function on ring-valued points given by a section s over U: its value
   at t is t*s if t lands in U, and 0 otherwise.
 -/
+
+@[expose] public section
 
 open CategoryTheory AlgebraicGeometry Spec Set IsLocalRing CommRingCat TrivSqZeroExt Algebra Module
   TensorProduct MvPolynomial KaehlerDifferential IsLocalization.Away Localization LinearMap RingHom
@@ -108,13 +124,6 @@ lemma New.Variety.isUnramifiedAt_of_span_differentials {R A B k : Type*} {ι : S
   have pr_zero : pr = 0 := ext_on_range hx (by simp [pr])
   exact ne_zero_of_surjective (baseChange_surjective k (map_surjective R A B)) pr_zero
 
-/-- A polynomial ring in finitely many variables over a normal domain is normal. -/
-lemma New.Variety.isIntegrallyClosed_mvPolynomial_fin {R : Type*} [CommRing R] [IsDomain R]
-    [IsIntegrallyClosed R] (n : ℕ) : IsIntegrallyClosed (MvPolynomial (Fin n) R) := by
-  induction n with
-  | zero => exact .of_equiv (isEmptyRingEquiv R (Fin 0)).symm
-  | succ n ih => exact .of_equiv (finSuccEquiv R n).symm.toRingEquiv
-
 /-- An algebra that is standard smooth of relative dimension `0` over the polynomial ring in `d`
 variables over `R` is standard smooth of relative dimension `d` over `R`. -/
 lemma New.Variety.isStandardSmoothOfRelativeDimension_of_mvPolynomial {R S : Type*} {d : ℕ}
@@ -143,7 +152,6 @@ lemma New.Variety.exists_isStandardSmoothOfRelativeDimension_away {R S V : Type*
       Algebra.IsStandardSmoothOfRelativeDimension d R (Away g) := by
   have : FaithfulSMul (MvPolynomial (Fin d) R) V :=
     (faithfulSMul_iff_algebraMap_injective _ V).2 h_inj
-  have : IsIntegrallyClosed (MvPolynomial (Fin d) R) := isIntegrallyClosed_mvPolynomial_fin d
   obtain ⟨g, g_unit, g_etale⟩ := exists_etale_away_of_faithful (V := V) C π hπ
   rw [Etale.iff_isStandardSmoothOfRelativeDimension_zero] at g_etale
   exact ⟨g, g_unit, isStandardSmoothOfRelativeDimension_of_mvPolynomial⟩
@@ -294,7 +302,7 @@ lemma New.Variety.ofSection_eq_zero_of_specializes {X : Scheme} {U : X.Opens} {q
     (hxy : x (closedPoint ℂ) ⤳ y (closedPoint ℂ))
     (hq : PointFn.ofSection q (of ℂ) x = 0) : PointFn.ofSection q (of ℂ) y = 0 := by
   have generise : LandsIn y (X.basicOpen q) → LandsIn x (X.basicOpen q) := by
-    simpa [landsIn_iff_mem] using hxy.mem_open (X.basicOpen q).2
+    simpa [landsIn_iff_mem] using hxy.mem_open (X.basicOpen q).is_open'
   simpa [landsIn_basicOpen, hx, hy, hq] using generise
 
 /-- Let `Spec ρ` be the structure map of an affine chart `W` of `X` over `Spec R`, and let the

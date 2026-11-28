@@ -1,7 +1,12 @@
+module
+
+public import Mathlib.NumberTheory.DirichletCharacter.Basic
+public import Lib.General.Algebra.FittingIdealsAndLengths
+public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+public import Lib.ClassField.Local.ArtinMap
 import Lib.Adelic.Adeles.LocalFactors
-import Lib.ClassField.Global.AlbertBrauerHasseNoether
+public import Lib.ClassField.Global.AlbertBrauerHasseNoether -- shake: keep (needed public by an exposed definition)
 import Lib.Cyclotomic.Voronoi
-import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
 # Selmer modules, Tate twists, components of cocycles and places above a prime
@@ -41,6 +46,8 @@ Known; see `Lib.Cyclotomic.OddSha`, `Lib.ClassField.Global.CMSplittingCharacters
 `Lib.ClassField.GaloisCohomology.KummerCyclicClasses` and `Lib.ClassField.Places.LocalFields` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -163,11 +170,6 @@ def cyclotomicInv : Gal(Ω/E) →* Λ :=
 def tateTwist : Gal(Ω/E) →* Matrix Unit Unit Λ :=
   (Matrix.scalar Unit).toMonoidHom.comp (cyclotomicInv ℓ E Λ ^ e)
 
-/-- The single entry of the matrix `tateTwist ℓ E Λ e g` is `cyclotomicInv ℓ E Λ g ^ e`. -/
-lemma tateTwist_apply (ℓ : ℕ) [Fact ℓ.Prime] (E : Type) [Field E] [EmbeddedNumberField E]
-    (Λ : Type) [CommRing Λ] [Algebra ℤ_[ℓ] Λ] (e : ℕ) (g : Gal(Ω/E)) :
-    tateTwist ℓ E Λ e g () () = cyclotomicInv ℓ E Λ g ^ e := by
-  simp [tateTwist]
 /-- The elements of `Gal(Ω/E)` on which the local condition above `ℓ` is imposed. For `e = 0` they
 form the union of the inertia groups at the places `A` of `Ω` above `ℓ`. For `e ≠ 0` they are the
 elements of the decomposition groups at these places with trivial cyclotomic character. -/
@@ -238,7 +240,7 @@ def vanishingCocycles (χ : Gal(Ω/ℚ) →* Oˣ) (B : Type*) [AddCommGroup B] [
         (∀ g h : Gal(Ω/ℚ), x (g * h) = x g + (χ g).val • x h) ∧ ∀ g ∈ s, x g = 0}
       add_mem' := by simp_all [add_add_add_comm]
       zero_mem' := by simp
-      smul_mem' := by simp_all [smul_comm (χ _).1] }
+      smul_mem' := by simp_all [smul_comm (χ _).val] }
 
 /-- The elements of Gal(Ω/ℚ(μ_N)) lying in the inertia group of some place above neither l nor
 any prime of T. -/

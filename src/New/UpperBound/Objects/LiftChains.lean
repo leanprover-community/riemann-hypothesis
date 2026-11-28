@@ -1,9 +1,13 @@
+module
+
+import Mathlib.Data.Rat.Cast.OfScientific
+public import Lib.Adelic.Reduction.DefiniteClassSums
+public import Lib.Weil.CompactLift.ThetaKernelDefs
+public import New.UpperBound.Objects.LabelsAndIndexTypes
+public import Lib.General.LinearAlgebra.TensorChains
 import Lib.General.LinearAlgebra.BlockEmbeddings
 import Lib.Shimura.HeckeTower.HeckeData
-import Lib.Weil.CompactLift.ThetaKernelDefs
 import New.Reduction.Data.Sizes
-import New.UpperBound.Objects.LabelsAndIndexTypes
-import New.UpperBound.Objects.LiftLawsModuloN
 
 /-!
 # Chains of theta lifts, jointly invariant combinations, and free levels
@@ -34,6 +38,8 @@ Notions from other files:
   inside the finite adelic group.
 * `New.Data.n`: The rank 𝗇_j = k + j(t + 1) of X_j.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -75,7 +81,7 @@ first `m` lifts in turn to a form `φ`, using the factors of a tensor `t` of dat
 `Gf E (n j)` for every `j`, and move each factor `j` of `t` by `(k j).ω (a j, a (j + 1))`. The chain
 with the moved data, applied to the right translate of `φ` by `a 0`, is the right translate by `a m`
 of the chain with the data `t` applied to `φ`. -/
-theorem TensorChain.lift_kernelLift_map_omega [WeilData E] (a : ∀ j : ℕ, Gf E (n j))
+theorem TensorChain.lift_kernelLift_map_omega (a : ∀ j : ℕ, Gf E (n j))
     (φ : AlgForm (n 0) κ (e 0)) (m : ℕ) (t : TensorChain S m) :
     lift (fun i : ℕ ↦ (k i).lift) (algFormRep κ (e 0) (a 0) φ) m
         (map (fun i : ℕ ↦ (k i).ω (a i, a (i + 1))) m t) =
@@ -106,7 +112,7 @@ with `ω(z i, z (i + 1)) = 1` for every lift, let `t` be any tensor of the data 
 lifts, and let `j < m`. If `ω(1, z (j + 1))`, acting alone on the factor of the lift from stage
 `j` to stage `j + 1`, fixes `t`, then the chain with data `t` has the same value at `φ` and at
 the right translate of `φ` by `z 0`. -/
-theorem TensorChain.lift_algFormRep_of_map_eq [WeilData E] {z : ∀ i : ℕ, Gf E (n i)}
+theorem TensorChain.lift_algFormRep_of_map_eq {z : ∀ i : ℕ, Gf E (n i)}
     (hz : ∀ i : ℕ, (k i).ω (z i, z (i + 1)) = 1) {m j : ℕ} (hj : j < m) {t : TensorChain S m}
     (h_fix : map (fun i : ℕ ↦ if i = j then (k i).ω (1, z (i + 1)) else 1) m t = t)
     (φ : AlgForm (n 0) κ (e 0)) :
@@ -133,7 +139,7 @@ theorem TensorChain.lift_algFormRep_of_map_eq [WeilData E] {z : ∀ i : ℕ, Gf 
 /-- Let `φ` be fixed by the level `K 0`, and let each `a j` lie in `K j`. Acting on each datum `Φ i`
 by `(a i, a (i + 1))` and applying the chain to `φ` gives the right translate by `a j` of the chain
 applied to `φ`. -/
-lemma chain_equivariant [WeilData E] {φ : AlgForm (n 0) κ (e 0)}
+lemma chain_equivariant {φ : AlgForm (n 0) κ (e 0)}
     (hφ : φ ∈ levelSpace (algFormRep κ (e 0)) (K 0)) (a : ∀ j : ℕ, K j)
     (Φ : (j : ℕ) → S j) (j : ℕ) :
     chain k (fun i : ℕ ↦ (k i).ω (a i, (a (i + 1)).val) (Φ i)) j φ =
@@ -189,13 +195,6 @@ def kernelProduct (Φ : (j : ℕ) → S j) (φ : AlgForm (n 0) κ (e 0)) (g : �
     (m : ℕ) : WeylIndex (n m) κ → ℂ :=
   compUpTo (fun j ↦ (k j).jetMap ((k j).ω (g j, g (j + 1)) (Φ j))) m (φ.val (g 0))
 
-omit [∀ j, IsLevel (K j)] in
-/-- The product of `m + 1` kernels is the last kernel applied to the product of the first `m`. -/
-lemma kernelProduct_succ (Φ : ∀ j : ℕ, S j) (φ : AlgForm (n 0) κ (e 0))
-    (g : ∀ j : ℕ, Gf E (n j)) (m : ℕ) :
-    kernelProduct k Φ φ g (m + 1) =
-      (k m).jetMap ((k m).ω (g m, g (m + 1)) (Φ m)) (kernelProduct k Φ φ g m) := rfl
-
 omit [Module ℚ M] [Module ℂ M] in
 /-- A sum over tuples of `m + 1` double cosets, sorted by the last one. For a tuple `c` of classes
 `c j` in `StdClasses (K j)`, the family `classPoints c g` lists their chosen representatives and
@@ -222,7 +221,7 @@ each datum `Φ x j` by `ω(a j, a (j + 1))`, with `a m = 1`. Let the levels `K j
 trivial stabilisers `classAut`. Then ∑_x L_x(value at `g m` of the chain with data `Φ x` applied to
 `φ`) is the sum, over tuples `c` of double cosets `StdClasses (K j)`, `j < m`, of ∑_x
 L_x(`kernelProduct`). -/
-theorem IsJointlyInvariant.sum_chain_eq_sum_kernelProduct [WeilData E]
+theorem IsJointlyInvariant.sum_chain_eq_sum_kernelProduct
     {X : Type*} {m : ℕ} {s : Finset X}
     {L : X → (WeylIndex (n m) κ → ℂ) →ₗ[ℂ] M} {Φ : X → ∀ j : ℕ, S j}
     (h_inv : IsJointlyInvariant k m s L Φ)
@@ -261,7 +260,7 @@ theorem IsJointlyInvariant.sum_chain_eq_sum_kernelProduct [WeilData E]
       obtain ⟨β, hβ⟩ := exists_linearMap_chain_eq_apply_pure k j φ a
       have h_eq := h_inv (Pi.mulSingle j ⟨b, hb⟩) (by simp +contextual [ne_of_gt]) (T a β)
       simp only [hT, ← hβ, chain_equivariant k hφ] at h_eq
-      simpa [F, integrand, omega_omega] using h_eq
+      simpa [integrand, omega_omega] using h_eq
     have h_classes : classIntegral stdRatPoints (K j) F = ∑ r : StdClasses (K j), F r.out := by
       rw [classIntegral_eq_classSum h_const, classSum, finsum_eq_sum_of_fintype]
       exact sum_congr rfl fun r _ ↦ by simp [h_free j]
@@ -320,7 +319,7 @@ lemma apply_kernelProduct_le_prod_mul (size : ∀ j : ℕ, Gf E (n j) → (WeylI
 pure tensors of the data `Φ x` under one linear map. Then the value at `p` of the combination of the
 chains applied to `φ` is a sum of elements of `A`, one for each tuple of double cosets in
 `StdClasses (K j)`, `j < m`. -/
-lemma IsJointlyInvariant.sum_chain_mem_nsmul [WeilData E] {X : Type*} {m : ℕ} {s : Finset X}
+lemma IsJointlyInvariant.sum_chain_mem_nsmul {X : Type*} {m : ℕ} {s : Finset X}
     {L : X → (WeylIndex (n m) κ → ℂ) →ₗ[ℂ] M} {Φ : X → ∀ j : ℕ, S j}
     (h_inv : IsJointlyInvariant k m s L Φ)
     (h_free : ∀ j < m, ∀ g : Gf E (n j), classAut stdRatPoints (K j) g = ⊥)
@@ -438,10 +437,10 @@ lemma card_GL_resField_eq_card_GL_zmod (w : D.ChosenPlace i) (l : ℕ) :
     Nat.card (GL (Fin l) (ResField w.val)) = Nat.card (GL (Fin l) (ZMod (D.levelPrime i))) := by
   -- The residue field has p_i elements, and p_i is prime, so it is isomorphic to
   -- `ZMod (D.levelPrime i)`.
-  have : Fintype (ResField w.val) := Fintype.ofFinite _
+  let : Fintype (ResField w.val) := Fintype.ofFinite _
   have h_card : Fintype.card (ResField w.val) = D.levelPrime i := by
     rw [Fintype.card_eq_nat_card, card_ResField, D.q_eq_levelPrime w.property.right]
-  have e : ZMod (D.levelPrime i) ≃+* ResField w.val :=
+  let e : ZMod (D.levelPrime i) ≃+* ResField w.val :=
     ZMod.ringEquivOfPrime _ (D.levelPrime_prime i) h_card
   exact Nat.card_congr (Units.mapEquiv e.symm.mapMatrix.toMulEquiv).toEquiv
 
@@ -517,7 +516,7 @@ elements reduce to `1` at the chosen places above the prime `D.levelPrime i`. If
 `4 * D.n D.m` elements, four times the rank of the last stage, the stabiliser of each coset gK in
 the rational unitary group is trivial. -/
 theorem classAut_eq_bot_of_le_levelOf_chosenPlace (i : Fin 2)
-    (hK : K ≤ levelOf (n := n) (fun w : D.ChosenPlace i ↦ w.1) ⊥)
+    (hK : K ≤ levelOf (n := n) (fun w : D.ChosenPlace i ↦ w.val) ⊥)
     (hn : Fintype.card n ≤ 4 * D.n D.m) (g : Gf D.E n) : classAut stdRatPoints K g = ⊥ := by
   -- `Variety.classAut_eq_bot` asks that the norms of the places multiply to more than
   -- `(2 * card n) ^ [E : ℚ]`. The `f` places have norm p_i, and `[E : ℚ] = 2 * f`.
@@ -535,7 +534,7 @@ theorem classAut_eq_bot_of_le_levelOf_chosenPlace (i : Fin 2)
 sufficiently small: the stabiliser of each point gK in the rational unitary group is trivial. -/
 lemma classAut_eq_bot_of_le_chosenLevel (hK : K ≤ D.chosenLevel)
     (hn : Fintype.card n ≤ 2 * D.n D.m) : ∀ g : Gf D.E n, classAut stdRatPoints K g = ⊥ := by
-  have h_le : D.chosenLevel ≤ levelOf (n := n) (fun w : D.ChosenPlace 0 ↦ w.1) ⊥ := by
+  have h_le : D.chosenLevel ≤ levelOf (n := n) (fun w : D.ChosenPlace 0 ↦ w.val) ⊥ := by
     intro k hk
     obtain ⟨hk_int, hk_red⟩ := mem_levelOf.1 hk
     exact mem_levelOf.2 ⟨hk_int, mem_bot.2 (funext fun w ↦ congrFun (mem_bot.1 hk_red) ⟨0, w⟩)⟩
@@ -593,7 +592,7 @@ characters `D.chiMLocal w` at the chosen places, is at most `exp (log b / 9)`, w
 `log b = D.logB`. -/
 instance : D.HasLogUpper (P.q₂ D.towerExp) (D.logB / 9) := by
   -- `q₂` is at most a fixed power of `x`, and `log x ≤ log x₁` is negligible against `log b`.
-  have h_scale : D.logX ≤ D.logX₁ := by scale_arith D
+  have h_scale : D.logX ≤ D.logX₁ := by grind [D.scale_inequalities]
   have h_pow : D.x ^ (33 * (P.q₀ * P.d)) ≤ exp (D.logB / 9) := by
     rw [← exp_natCast_mul, exp_le_exp]
     calc _ ≤ (33 * (P.q₀ * P.d) : ℕ) * D.logX₁ := by gcongr

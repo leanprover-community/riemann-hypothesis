@@ -1,5 +1,13 @@
+module
+
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Topology.Sheaves.Presheaf
+public import New.Appendix.DiscreteSeries.SteepParameters
+public import Lib.General.LinearAlgebra.IntegralLattices
 import Lib.Adelic.Witt.WittTheorem
-import New.Appendix.DiscreteSeries.SteepParameters
 
 /-!
 # Positions of a smaller unitary group, and the two traces
@@ -18,6 +26,8 @@ Notions from other files:
 * `l.phase k (Y, Y')` is `tr μ Y - tr μ' Y'` for the weights `μ`, `μ'` of the lowest `K`-types of
   `l` and `k`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -138,7 +148,7 @@ lemma formAdjoint_inclMatrix [Fintype X] [DecidableEq X] {τ : X → n} (hτ : �
   ext x i
   rcases eq_or_ne i (τ x) with rfl | hi
   · simp [formAdjoint, signMatrix, inclMatrix, Matrix.one_apply, hτ]
-  · simp [formAdjoint, signMatrix, inclMatrix, Matrix.one_apply, hi, hi.symm]
+  · simp [formAdjoint, signMatrix, inclMatrix, hi, hi.symm]
 
 end Adjoint
 
@@ -191,7 +201,7 @@ lemma exists_mul_eq_zero_and_mul_initCols_eq_one (hP : IsPosition ε η d v i₀
     ∃ Z : Matrix (Fin d) n ℂ, Z * i₀ = 0 ∧ Z * initCols v = 1 := by
   obtain ⟨Z, hZ_zero, hZ_one⟩ := hP.exists_mul_eq_zero_and_mul_eq_one
   refine ⟨Z.submatrix Fin.castSucc id, congrArg (·.submatrix Fin.castSucc id) hZ_zero, ?_⟩
-  show (Z * v).submatrix Fin.castSucc Fin.castSucc = 1
+  change (Z * v).submatrix Fin.castSucc Fin.castSucc = 1
   rw [hZ_one, submatrix_one _ (Fin.castSucc_injective d)]
 
 /-- The columns of `i₀` and the vectors `v₁, …, v_{j₀}` of a position are independent. -/
@@ -210,36 +220,28 @@ lemma exists_eq_of_orthogonal (hP : IsPosition ε η d v i₀) {p : Type} {M : M
     (hM : (initCols v)ᴴ * signMatrix ε * M = 0) :
     ∃ T : Matrix (m ⊕ Fin (d + 1)) p ℂ, M = fromCols i₀ v * T := by
   -- The span of the columns lies in the kernel of the pairing with `A`, and the dimensions agree.
-  obtain ⟨W, hW⟩ : ∃ W : Matrix (m ⊕ Fin (d + 1)) n ℂ, W * fromCols i₀ v = 1 := hP.hasLeftInv
-  obtain ⟨Z, -, hZ⟩ : ∃ Z : Matrix (Fin d) n ℂ, Z * i₀ = 0 ∧ Z * initCols v = 1 :=
-    hP.exists_mul_eq_zero_and_mul_initCols_eq_one
-  set combination : (m ⊕ Fin (d + 1) → ℂ) →ₗ[ℂ] n → ℂ := (fromCols i₀ v).mulVecLin
-  set pairing : (n → ℂ) →ₗ[ℂ] Fin d → ℂ := ((initCols v)ᴴ * signMatrix ε).mulVecLin
-  have h_inj : Function.Injective combination :=
-    Function.LeftInverse.injective (g := W.mulVec) fun x ↦ by
-      rw [mulVecLin_apply, mulVec_mulVec, hW, one_mulVec]
-  have h_right : (initCols v)ᴴ * signMatrix ε * (signMatrix ε * Zᴴ) = 1 := by
-    rw [Matrix.mul_assoc, ← Matrix.mul_assoc (signMatrix ε), signMatrix_mul_self, Matrix.one_mul,
-      ← conjTranspose_mul, hZ, conjTranspose_one]
+  obtain ⟨W, hW⟩ := hP.hasLeftInv
+  obtain ⟨Z, -, hZ⟩ := hP.exists_mul_eq_zero_and_mul_initCols_eq_one
+  set combination := (fromCols i₀ v).mulVecLin
+  set pairing := ((initCols v)ᴴ * signMatrix ε).mulVecLin
+  have h_inj : Function.Injective combination := Function.LeftInverse.injective (g := W.mulVec)
+    fun x ↦ by rw [mulVecLin_apply, mulVec_mulVec, hW, one_mulVec]
   have h_surj : Function.Surjective pairing :=
     Function.RightInverse.surjective (g := (signMatrix ε * Zᴴ).mulVec) fun x ↦ by
-      rw [mulVecLin_apply, mulVec_mulVec, h_right, one_mulVec]
+      rw [mulVecLin_apply, mulVec_mulVec, Matrix.mul_assoc, ← Matrix.mul_assoc (signMatrix ε),
+        signMatrix_mul_self, Matrix.one_mul, ← conjTranspose_mul, hZ, conjTranspose_one,
+        one_mulVec]
   have h_eq : LinearMap.range combination = LinearMap.ker pairing := by
     refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
     · rw [LinearMap.range_le_ker_iff, ← mulVecLin_mul, mul_fromCols, hP.initCols_orthogonal,
         hP.initCols_isotropic, fromCols_zero, mulVecLin_zero]
-    · have h_combination_rank :
-          Module.finrank ℂ (LinearMap.range combination) = Fintype.card m + (d + 1) := by
-        simp [LinearMap.finrank_range_of_inj h_inj]
-      have h_pairing_rank : Module.finrank ℂ (LinearMap.range pairing) = d := by
-        rw [LinearMap.range_eq_top.2 h_surj, finrank_top, Module.finrank_fin_fun]
-      have h_rank : d + Module.finrank ℂ (LinearMap.ker pairing) = Fintype.card m + 2 * d + 1 := by
-        simpa [h_pairing_rank, hP.card_eq] using pairing.finrank_range_add_finrank_ker
+    · have h_rk := pairing.finrank_range_add_finrank_ker
+      rw [LinearMap.range_eq_top.2 h_surj, finrank_top, Module.finrank_fin_fun] at h_rk
+      simp [LinearMap.finrank_range_of_inj h_inj, hP.card_eq] at h_rk ⊢
       omega
-  have h_col (j : p) : ∃ x : m ⊕ Fin (d + 1) → ℂ, combination x = Mᵀ j := by
+  choose T hT using fun j : p ↦ show ∃ x, combination x = Mᵀ j by
     rw [← LinearMap.mem_range, h_eq, LinearMap.mem_ker]
     exact funext fun a ↦ congrFun₂ hM a j
-  choose T hT using h_col
   exact ⟨(of T)ᵀ, Matrix.ext fun i j ↦ (congrFun (hT j) i).symm⟩
 
 /-- Let `(v, i₀)` be a position (`IsPosition`): the columns `v₁, …, v_{j₀}` of `v`, where
@@ -464,20 +466,6 @@ lemma IsStationary.phase_eq (hP : IsStationary l k e e' d v i₀) {Y : Matrix n 
       hN hN'
   rw [HCParam.phase, h_split, hP.adjoint_weight_mul_eq, hσ, hσ']
   ring
-
-/-- **Two traces.** Let `μ`, `μ'` be the weights of the lowest `K`-types of the parameters `l` of
-`U(ε)` and `k` of `U(η)`, as diagonal matrices. Let `(v, i₀)` be a stationary position
-(`IsStationary`): the columns `v₁, …, v_{j₀}` of `v`, where `j₀ = d + 1`, and an isometry `i₀`
-into their orthogonal complement, with `μ v_j = v_{j + 1}` for `j < j₀` and `i₀† μ i₀ = μ'`. Let
-`Y` and its adjoint `Y†` lower the flag of the `v_j` (`LowersFlag`), with sums `σ` and `σ'` of the
-coefficients next to the diagonal, and let `Y` induce `Y'` on the image of `i₀` modulo the span of
-`v₁, …, v_{j₀ - 1}` (`InducesOn`). Then `Y` and `Y'` have the same trace, and the phase
-`tr μ Y - tr μ' Y'` is `σ + conj σ'`. -/
-theorem IsStationary.trace_eq_and_phase_eq (hP : IsStationary l k e e' d v i₀) {Y : Matrix n n ℂ}
-    {Y' : Matrix m m ℂ} {σ σ' : ℂ} (hY : LowersFlag d v Y σ) (hY' : InducesOn d v i₀ Y Y')
-    (hYadj : LowersFlag d v (formAdjoint ε ε Y) σ') :
-    Y.trace = Y'.trace ∧ l.phase k (Y, Y') = σ + conj σ' :=
-  ⟨hP.trace_eq hY hY' hYadj, hP.phase_eq hY hY' hYadj⟩
 
 end New.DiscreteSeries
 

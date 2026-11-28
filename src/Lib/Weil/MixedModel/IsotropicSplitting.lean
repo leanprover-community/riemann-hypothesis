@@ -1,5 +1,11 @@
+module
+
+public import Lib.Weil.Construction.AdelicRepresentation
+public import Lib.Adelic.Unitary.GramMatrix
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.RationalPoints
+public import Lib.Adelic.Unitary.WeakApproximation -- shake: keep (needed public by an exposed definition)
 import Lib.General.LinearAlgebra.Eigenvalues
-import Lib.Weil.Construction.AdelicRepresentation
 
 /-!
 # Hyperbolic space and splittings of a hermitian space along isotropic subspaces
@@ -47,6 +53,8 @@ Notions from other files:
 Known; see `Lib.Adelic.Witt.IwasawaDecomposition` and `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-! ## Hyperbolic space; matrices orthonormal at infinity and integral -/
@@ -70,37 +78,40 @@ the finite places, with `c` the integral unit `New.Weil.normNegOne` (`c̄ c = �
 noncomputable def hyperbolicSpace : Space E (p ⊕ p) (hyperbolicSigns p) :=
   -- The identities at the finite places use `star c * c = -1` and `ϵ + star ϵ = 1`, for the chosen
   -- integral adeles `c` of norm `-1` and `ϵ` of trace `1`.
-  let c := normNegOne.1.1
+  let c := normNegOne.val.val
   let ϵ : 𝔸f E := stdLattice.traceOneAdele
   { J := fromBlocks 0 1 1 0
     x := mkAdelicGL
-      (fun _ ↦
-        { val := (√2 : ℂ)⁻¹ • fromBlocks 1 (-1) 1 1
-          inv := (√2 : ℂ)⁻¹ • fromBlocks 1 1 (-1) 1
-          val_inv := by
-            simp [fromBlocks_multiply, ← ext_iff, ← mul_assoc, ← mul_inv, ← Complex.ofReal_mul,
-              Matrix.one_apply]
-            grind
-          inv_val := by
-            simp [fromBlocks_multiply, ← ext_iff, ← mul_assoc, ← mul_inv, ← Complex.ofReal_mul,
-              Matrix.one_apply]
-            grind },
-        { val := fromBlocks 1 (-c • 1) (ϵ • 1) ((c * star ϵ) • 1)
-          inv := fromBlocks (star ϵ • 1) 1 ((star c * ϵ) • 1) (-star c • 1)
-          val_inv := by
-            simp [fromBlocks_multiply, ← ext_iff, Matrix.one_apply, ← mul_assoc]
-            grind [star_normNegOne_mul_self]
-          inv_val := by
-            simp [fromBlocks_multiply, ← ext_iff, Matrix.one_apply, ← mul_assoc]
-            grind [star_normNegOne_mul_self] })
+      (fun _ ↦ Units.mkOfMulEqOne
+        ((√2 : ℂ)⁻¹ • fromBlocks 1 (-1) 1 1) ((√2 : ℂ)⁻¹ • fromBlocks 1 1 (-1) 1) (by
+          simp [fromBlocks_multiply, ← ext_iff, ← mul_assoc, ← mul_inv, ← Complex.ofReal_mul,
+            Matrix.one_apply]
+          grind),
+        Units.mkOfMulEqOne
+          (fromBlocks 1 (-c • 1) (ϵ • 1) ((c * star ϵ) • 1))
+          (fromBlocks (star ϵ • 1) 1 ((star c * ϵ) • 1) (-star c • 1)) (by
+            -- Block by block the product is a scalar matrix; compare the scalars.
+            have hc : star c * c = -1 := star_normNegOne_mul_self
+            have hϵ : ϵ + star ϵ = 1 := traceOneAdele_add_star
+            simp only [fromBlocks_multiply, Matrix.mul_one, Matrix.mul_smul, ← fromBlocks_one]
+            congr 1 <;> match_scalars
+            · linear_combination hϵ - ϵ * hc
+            · linear_combination hc
+            · linear_combination ϵ * star ϵ * hc
+            · linear_combination hϵ - star ϵ * hc))
     gram_point := by
       refine gram_mkAdelicGL ?_ ?_
       · simp [signMatrix, fromBlocks_conjTranspose, fromBlocks_map, fromBlocks_multiply, ← ext_iff,
           ← mul_assoc, ← mul_inv, ← Complex.ofReal_mul, diagonal_apply, Matrix.one_apply]
         grind
-      · simp [fromBlocks_conjTranspose, fromBlocks_map, fromBlocks_multiply, ← ext_iff,
-          Matrix.one_apply, ← mul_assoc]
-        grind [star_normNegOne_mul_self] }
+      · -- With `b` the finite part of the frame, `bᴴ * J` is the inverse of `b` given above, so
+        -- the claim is `b⁻¹ * b = 1`.
+        have h_inv : (fromBlocks 1 (-c • 1) (ϵ • 1) ((c * star ϵ) • 1) :
+            Matrix (p ⊕ p) (p ⊕ p) (𝔸f E))ᴴ *
+              (fromBlocks 0 1 1 0 : Matrix (p ⊕ p) (p ⊕ p) E).map (algebraMap E (𝔸f E)) =
+            fromBlocks (star ϵ • 1) 1 ((star c * ϵ) • 1) (-star c • 1) := by
+          simp [fromBlocks_conjTranspose, fromBlocks_map, fromBlocks_multiply]
+        exact (congrArg (· * _) h_inv).trans (Units.inv_mul ⟨_, _, _, _⟩) }
 
 variable {E p}
 
@@ -130,10 +141,10 @@ lemma Exchange.isOrthoIntegral_hyperbolicSpace_x_inv :
     IsOrthoIntegral (hyperbolicSpace E p).x⁻¹.val := by
   have h_half : (2⁻¹ : ℂ) + 2⁻¹ = 1 := by norm_num
   refine ⟨fun w ↦ ?_, ?_⟩
-  · simp [hyperbolicSpace, ← map_inv, ← ext_iff, Matrix.mul_apply, Matrix.one_apply, ← mul_inv,
-      ← Complex.ofReal_mul, ite_add_ite, h_half, eq_comm]
-  · simp [hyperbolicSpace, ← map_inv, ite_mem, star_mem_Ô, traceOneAdele_mem, mul_mem,
-      Matrix.one_apply]
+  · simp [hyperbolicSpace, Units.mkOfMulEqOne, ← map_inv, ← ext_iff, Matrix.mul_apply,
+      Matrix.one_apply, ← mul_inv, ← Complex.ofReal_mul, ite_add_ite, h_half, eq_comm]
+  · simp [hyperbolicSpace, Units.mkOfMulEqOne, ← map_inv, ite_mem, star_mem_Ô, traceOneAdele_mem,
+      mul_mem, Matrix.one_apply]
 
 /-- For the hyperbolic space `hyperbolicSpace E p` of rank `2 p` (Gram matrix with blocks
 `(0, 1; 1, 0)`), consider its adelic frame `x`, which carries the Gram matrix to the signed standard
@@ -193,25 +204,19 @@ lemma block_diag {B : Matrix p q (𝔸 E)} (hB : IsOrthoIntegral B) :
     simp [Sum.forall, hA.snd_mem_Ô, hB.snd_mem_Ô]
 
 /-- If `B = A.submatrix id e * C`, that is, the matrix of the columns `e j` of `A` times `C`, where
-`e` is injective, and `A` and `C` are orthonormal at infinity and integral, then so is `B`. -/
-lemma of_eq_submatrix_mul_of_injective {C : Matrix p q (𝔸 E)} (e : p → n)
-    (h_injective : e.Injective) (hC : IsOrthoIntegral C) {B : Matrix m q (𝔸 E)}
-    (h_eq : B = A.submatrix id e * C) : IsOrthoIntegral B := by
+`e` is injective, and `A` and `C` are orthonormal at infinity and integral, then so is `B`. When
+`he` is not given, `simp` proves that `e` is injective. -/
+lemma of_eq_submatrix_mul {C : Matrix p q (𝔸 E)} (e : p → n) (hC : IsOrthoIntegral C)
+    {B : Matrix m q (𝔸 E)} (h_eq : B = A.submatrix id e * C)
+    (he : e.Injective := by simp [Function.Injective]) : IsOrthoIntegral B := by
   -- Selecting distinct columns of `A` keeps them orthonormal and integral: at `w` the Gram matrix
   -- of the chosen columns is the `(e, e)` block of that of `A`, which is `1` as `e` is injective.
   have h_cols : IsOrthoIntegral (A.submatrix id e) := by
     refine ⟨fun w ↦ ?_, fun i j ↦ hA.snd_mem_Ô i (e j)⟩
     rw [← submatrix_map, conjTranspose_submatrix, ← submatrix_mul _ _ e id e Function.bijective_id,
-      hA.conjTranspose_map_mul_map w, submatrix_one e h_injective]
+      hA.conjTranspose_map_mul_map w, submatrix_one e he]
   subst h_eq
   exact h_cols.mul hC
-
-/-- `of_eq_submatrix_mul_of_injective`, where `simp` proves that `e` is injective when `he` is not
-given. -/
-lemma of_eq_submatrix_mul {C : Matrix p q (𝔸 E)} (e : p → n) (hC : IsOrthoIntegral C)
-    {B : Matrix m q (𝔸 E)} (h_eq : B = A.submatrix id e * C)
-    (he : e.Injective := by simp [Function.Injective]) : IsOrthoIntegral B :=
-  hA.of_eq_submatrix_mul_of_injective e he hC h_eq
 
 end
 
@@ -235,7 +240,8 @@ variable {E : Type*} [Field E] [NumberField E] [IsCMField E] {n n₁ : Type*} [F
 /-- An element `g` of the adelic unitary group preserves the standard form: `gᴴ S g = S`, with
 `S = stdForm E s`. -/
 lemma G.conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix :
-    g.adeleMatrixᴴ * stdForm E s * g.adeleMatrix = stdForm E s := g.toUnitary.prop
+    g.adeleMatrixᴴ * stdForm E s * g.adeleMatrix = stdForm E s :=
+  mem_unitaryGroupOf_iff.1 g.toUnitary.prop
 
 omit [IsCMField E] in
 /-- The standard form `S = stdForm E s` is its own inverse: `S (S a) = a`. -/
@@ -265,19 +271,6 @@ lemma Space.gram_at_point_eq_map {a b : Type*} (A : Matrix n a E) (B : Matrix n 
     (V.x⁻¹.val * A.map toAdele)ᴴ * stdForm E s * (V.x⁻¹.val * B.map toAdele) =
       (Aᴴ * V.J * B).map toAdele := by
   simp [map_J, Matrix.mul_assoc]
-
-/-- A Gram matrix `Aᴴ J B` of `V`, mapped to the adeles, in the right-bracketed form of a product
-of the mapped factors. -/
-private lemma Space.map_conjTranspose_mul_map_J_mul_map {a b : Type*} (A : Matrix n a E)
-    (B : Matrix n b E) :
-    Aᴴ.map toAdele * (V.J.map toAdele * B.map toAdele) = (Aᴴ * V.J * B).map toAdele := by
-  simp [Matrix.mul_assoc]
-
-/-- `Space.map_conjTranspose_mul_map_J_mul_map` followed by a further factor `X`. -/
-private lemma Space.map_conjTranspose_mul_map_J_mul_map_mul {a b c : Type*} [Fintype b]
-    (A : Matrix n a E) (B : Matrix n b E) (X : Matrix b c (𝔸 E)) :
-    Aᴴ.map toAdele * (V.J.map toAdele * (B.map toAdele * X)) = (Aᴴ * V.J * B).map toAdele * X := by
-  simp [Matrix.mul_assoc]
 
 variable [WeilData E] {n₀ p q : Type*} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
   {s₀ : n₀ → ℤˣ} (V₀ : Space E n₀ s₀)
@@ -436,17 +429,26 @@ lemma lCoord_mul_iAdelic : D.lCoord * D.iAdelic = 0 := by
 
 lemma iCoord_mul_kAdelic : D.iCoord * D.kAdelic = 0 := by
   simp [iCoord, kAdelic, iAdelic, ratMap, ← V.gram_point, conjTranspose_nonsing_inv,
-    Matrix.mul_assoc, V.map_conjTranspose_mul_map_J_mul_map]
+    Matrix.mul_assoc, ← Matrix.map_mul]
+  rw [← Matrix.mul_assoc D.iᴴ V.J, D.gram_ik]
+  simp
 
 lemma iCoord_mul_lAdelic : D.iCoord * D.lAdelic = 0 := by
   simp [iCoord, lAdelic, iAdelic, ratMap, ← V.gram_point, conjTranspose_nonsing_inv,
-    Matrix.mul_assoc, V.map_conjTranspose_mul_map_J_mul_map]
+    Matrix.mul_assoc, ← Matrix.map_mul]
+  rw [← Matrix.mul_assoc D.iᴴ V.J, D.gram_il]
+  simp
 
 lemma iCoord_mul_iAdelic : D.iCoord * D.iAdelic = 1 := by
   have h_point₀ : V₀.x.valᴴ * (V₀.J.map toAdele * V₀.x.val) = stdForm E s₀ := by
     rw [← Matrix.mul_assoc, V₀.gram_point]
-  simp [iCoord, iAdelic, ratMap, ← V.gram_point, conjTranspose_nonsing_inv, Matrix.mul_assoc,
-    V.map_conjTranspose_mul_map_J_mul_map_mul, h_point₀]
+  suffices h : stdForm E s₀ * (V₀.x.valᴴ * (D.iᴴ.map toAdele *
+      (V.J.map toAdele * (D.i.map toAdele * V₀.x.val)))) = 1 by
+    simpa [iCoord, iAdelic, ratMap, ← V.gram_point, conjTranspose_nonsing_inv, Matrix.mul_assoc]
+      using h
+  rw [← Matrix.mul_assoc (V.J.map toAdele), ← Matrix.mul_assoc (D.iᴴ.map toAdele),
+    ← Matrix.map_mul, ← Matrix.map_mul, ← Matrix.mul_assoc D.iᴴ V.J, D.gram_ii]
+  simp [h_point₀]
 
 /-- For a splitting, the three coordinate matrices along k, l and V₀ are dual to the adelic frames
 k, l, ι: each times its own frame is the identity, and times either other frame is zero. -/
@@ -621,6 +623,8 @@ def levi : GL p (𝔸 E) × G E s₀ →* G E s :=
       simp [↓conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix, Matrix.mul_assoc,
         eq_sub_of_add_eq' D.sum_frame_mul_coord_eq_one, Matrix.mul_sub, Matrix.mul_add])
     fun x y ↦ ext_adeleMatrix <| by
+      -- Pass to the matrices first, so that `simp` does not rewrite inside `ofMatrix`.
+      simp only [G.adeleMatrix_mul, adeleMatrix_ofMatrix]
       simp [Matrix.mul_assoc, conjTranspose_nonsing_inv, Matrix.mul_add, Matrix.add_mul]
 
 section
@@ -630,15 +634,19 @@ omit [WeilData E]
 /-- The Levi element of `(a, g)` sends the adelic frame `l` to `l (a⁻¹)ᴴ`. -/
 lemma levi_mul_lAdelic (a : GL p (𝔸 E)) (g : G E s₀) :
     (D.levi (a, g)).adeleMatrix * D.lAdelic = D.lAdelic * a⁻¹.valᴴ := by
+  -- Unfold the Levi element to its matrix first, so that `simp` does not rewrite inside `levi`.
+  simp only [levi, MonoidHom.mk'_apply, adeleMatrix_ofMatrix]
   simp [Matrix.mul_assoc, Matrix.add_mul]
 
 /-- The Levi element of `(a, g)` sends the embedded copy `ι` of `V₀` to `ι g`. -/
 lemma levi_mul_iAdelic (a : GL p (𝔸 E)) (g : G E s₀) :
     (D.levi (a, g)).adeleMatrix * D.iAdelic = D.iAdelic * g.adeleMatrix := by
+  simp only [levi, MonoidHom.mk'_apply, adeleMatrix_ofMatrix]
   simp [Matrix.mul_assoc, Matrix.add_mul]
 
 /-- The Levi element of `(a, g)` acts on the adelic frame `k` by `a`. -/
 lemma actsOnFrame_levi (a : GL p (𝔸 E)) (g : G E s₀) : D.ActsOnFrame (D.levi (a, g)) a.val := by
+  simp only [ActsOnFrame, levi, MonoidHom.mk'_apply, adeleMatrix_ofMatrix]
   simp [Matrix.mul_assoc, Matrix.add_mul]
 
 end
@@ -681,7 +689,8 @@ def radicalElement : G E s :=
     -- `cᴴ * c` as `2⁻¹ + 2⁻¹ = 1`.
     simp [↓coord_mul_frame_mul, iCoord, lCoord, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul,
       Matrix.sub_mul, Matrix.mul_sub]
-    match_scalars <;> grind
+    -- Each coefficient identity is a ring identity, except the one for `cᴴ * c`.
+    match_scalars <;> first | ring1 | linear_combination -(toAdele_half_add_half (E := E))
 
 /-- The unipotent element `radicalElement c b` depends continuously on the pair `(c, b)`. -/
 @[fun_prop]
@@ -714,7 +723,11 @@ lemma radicalElement_mul (c' : Matrix n₀ p (𝔸 E)) (b' : Matrix p p (𝔸 E)
   -- Expand both sides in the frames and coordinates, then compare the scalar coefficients of each
   -- term.
   simp [Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul]
-  match_scalars <;> grind
+  -- The coefficients agree by `j⁻¹ j = 1` and `2⁻¹ + 2⁻¹ = 1`.
+  have hj : toAdele (j⁻¹ : E) * toAdele (j : E) = 1 := by
+    rw [← toAdele.map_mul, inv_mul_cancel₀ j_ne_zero, toAdele.map_one]
+  match_scalars <;>
+    simp only [hj, mul_one, (toAdele_half_add_half (E := E)), neg_add_cancel, neg_zero]
 
 lemma radicalElement_inv : (D.radicalElement c b)⁻¹ = D.radicalElement (-c) (-b) :=
   inv_eq_of_mul_eq_one_right (ext_adeleMatrix (by simp [Matrix.mul_assoc]))
@@ -725,9 +738,16 @@ lemma levi_conj_radicalElement (a : GL p (𝔸 E)) (g : G E s₀) :
     D.levi (a, g) * D.radicalElement c b =
       D.radicalElement (g.adeleMatrix * c * a.valᴴ) (a.val * b * a.valᴴ) * D.levi (a, g) := by
   refine ext_adeleMatrix ?_
+  -- `g` preserves the standard form of `V₀`; this removes `gᴴ ε₀ g` from the right side.
+  have h_pres (X : Matrix n₀ n (𝔸 E)) :
+      g.adeleMatrixᴴ * (stdForm E s₀ * (g.adeleMatrix * X)) = stdForm E s₀ * X := by
+    rw [← Matrix.mul_assoc, ← Matrix.mul_assoc,
+      g.conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix]
+  -- Unfold both elements to their matrices first, so that `simp` does not rewrite inside `levi`.
+  simp only [levi, radicalElement, MonoidHom.mk'_apply, G.adeleMatrix_mul, adeleMatrix_ofMatrix]
   -- Both sides expand to the same sum of products of frames and coordinates.
-  simp [adeleMatrix, ofMatrix, ← U.form_mul_inv_eq, Matrix.mul_assoc, Matrix.mul_add,
-    Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul, conjTranspose_nonsing_inv]
+  simp [h_pres, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul,
+    conjTranspose_nonsing_inv]
   abel
 
 /-- Every `radicalElement c b` is a commutator of a Levi element `m = levi (a, 1)` with a unipotent
@@ -744,11 +764,14 @@ lemma exists_levi_mul_radicalElement_eq :
   refine ⟨two, toAdele (3⁻¹ : E) • b, ?_⟩
   rw [levi_conj_radicalElement, radicalElement_mul]
   -- Both sides are a unipotent element times `levi (two, 1)`; compare the unipotent factors.
-  refine congrArg (· * D.levi (two, 1)) ?_
-  refine ext_adeleMatrix ?_
+  refine congrArg (· * D.levi (two, 1)) (ext_adeleMatrix ?_)
   -- Expand both matrices and compare the scalar coefficients of each term.
   simp [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, two]
-  match_scalars <;> norm_num [mul_two, ← map_add, ← map_mul] <;> ring_nf
+  -- The coefficients of `b` and of `bᴴ` agree as `3 * 3⁻¹ = 1`; the others are ring identities.
+  have h_third : 3 * toAdele (3⁻¹ : E) = 1 := by
+    rw [← map_ofNat toAdele 3, ← toAdele.map_mul, mul_inv_cancel₀ three_ne_zero, toAdele.map_one]
+  match_scalars <;>
+    first | ring1 | linear_combination toAdele (2⁻¹ : E) * toAdele (j⁻¹ : E) * h_third
 
 /-- For two unipotent elements, the first with `c = 0`, the product adds the parameters `b`. -/
 lemma radicalElement_zero_mul (b' : Matrix p p (𝔸 E)) :
@@ -801,20 +824,29 @@ lemma exists_eq_radicalElement_mul_levi (hk : D.ActsOnFrame g a) :
     ofMatrix (Y * D.iAdelic) (by simp [h_form_i, Matrix.mul_assoc, Matrix.mul_sub])
   refine ⟨-Y * D.lAdelic * a.valᴴ, -toAdele (j : E) • X * D.lAdelic * a.valᴴ, a, g₀,
     ext_adeleMatrix ?_, rfl, ?_⟩
-  · -- Compare both sides on the frames `k`, `i` and `l`.
+  · -- Compare both sides on the frames `k`, `i` and `l`. On each frame the Levi factor acts
+    -- first, by `actsOnFrame_levi`, `levi_mul_iAdelic` and `levi_mul_lAdelic`.
+    rw [G.adeleMatrix_mul]
     refine D.eq_of_mul_kAdelic_of_mul_iAdelic_of_mul_lAdelic ?_ ?_ ?_
     · -- On `k` both act by `a`.
-      simp [hk, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.sub_mul]
+      rw [Matrix.mul_assoc, D.actsOnFrame_levi, ← Matrix.mul_assoc, D.actsOnFrame_radicalElement,
+        Matrix.mul_one]
+      exact hk
     · -- On `i`: by `h_form_i`, the `k`-part of the right side is `X i`, as on the left.
-      simp [hg, g₀, h_form_i, Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_add, Matrix.sub_mul,
-        Matrix.mul_sub]
+      rw [Matrix.mul_assoc, D.levi_mul_iAdelic, ← Matrix.mul_assoc, D.radicalElement_mul_iAdelic]
+      simp [hg, g₀, h_form_i, Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_sub]
       abel
     · -- On `l`: `h_form_l` removes `Xᴴ`, which enters the right side through `bᴴ`.
-      simp [hg, g₀, h_form_l, Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_add, Matrix.sub_mul,
+      rw [Matrix.mul_assoc, D.levi_mul_lAdelic, ← Matrix.mul_assoc]
+      simp [hg, h_form_l, Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_add, Matrix.sub_mul,
         Matrix.mul_sub, conjTranspose_nonsing_inv]
       -- The coefficients of `k X l` and `k a lᴴ Yᴴ ε₀ Y l` agree as `j⁻¹ j = 1` and
       -- `2⁻¹ + 2⁻¹ = 1`.
-      match_scalars <;> grind
+      have hj : toAdele (j⁻¹ : E) * toAdele (j : E) = 1 := by
+        rw [← toAdele.map_mul, inv_mul_cancel₀ j_ne_zero, toAdele.map_one]
+      match_scalars <;>
+        simp only [hj, mul_one, ← neg_add, neg_neg, (toAdele_half_add_half (E := E)),
+          neg_add_cancel, neg_zero]
   · -- The matrix of `g₀` is the `V₀`-block of `g`.
     simp [g₀, hg, Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_add]
 
@@ -905,7 +937,7 @@ lemma exists_isAdapted_and_frame_eq :
     rw [gram_mul, gram_frameAt]
     simp [← stdForm_sum, ← (hyperbolicSpace E p).gram_point, fromBlocks_conjTranspose,
       fromBlocks_multiply, fromBlocks_map]
-  have σ : n ≃ (p ⊕ p) ⊕ n₀ := equivOfCardEq (by simp +arith [D.card_eq])
+  let σ : n ≃ (p ⊕ p) ⊕ n₀ := equivOfCardEq (by simp +arith [D.card_eq])
   let w : InfinitePlace E := Classical.ofNonempty
   have h_gram_w : (m.map (evalInf w))ᴴ * signMatrix s * m.map (evalInf w) =
       signMatrix (hyperbolicSigns p ⊕ᵥ s₀) := by
@@ -932,8 +964,8 @@ lemma exists_isAdapted_and_frame_eq :
     rw [← h_cancel]
     simp [frameAt, m, fromCols_mul_fromBlocks, Matrix.mul_assoc]
   refine ⟨γ, ?_, e, h_sign, hγ⟩
-  exact .of_eq_submatrix_mul_of_injective .one e e.injective
-    (isOrthoIntegral_hyperbolicSpace_x_inv.block_diag .one) h_frame
+  exact .of_eq_submatrix_mul .one e
+    (isOrthoIntegral_hyperbolicSpace_x_inv.block_diag .one) h_frame e.injective
 
 /-! ### Rational elements -/
 
@@ -954,7 +986,7 @@ lemma levi_mem_Gamma (a : GL p E) {g₀ : G E s₀} (hg₀ : g₀ ∈ V₀.Γ) :
     simp [adeleMatrix_ratEmbed, ← map_inv, map_J, map_J_inv, Matrix.map_add, -coe_units_inv,
       kAdelic, lAdelic, iAdelic, kCoord, lCoord, iCoord, ratMap, Matrix.mul_assoc, Matrix.mul_add,
       Matrix.add_mul, h_cancel]
-  exact V.mem_Gamma_iff_range.mpr fun i j ↦ ⟨_, (congrFun₂ h_rat i j).symm⟩
+  exact V.mem_Gamma_iff_range.2 (mem_ratMatrices.1 ⟨_, h_rat.symm⟩)
 
 /-- The unipotent element `radicalElement (x₀⁻¹ c) b`, for a matrix `c` over `E`, `x₀` the adelic
 frame of `V₀` and `b` an adelic matrix with entries in `E` (hypothesis `hb`), lies in the rational
@@ -971,7 +1003,7 @@ lemma radicalElement_mem_Gamma (c : Matrix n₀ p E) {b : Matrix p p (𝔸 E)}
     simp [map_J, Matrix.map_add, Matrix.map_sub, Matrix.map_smul', iAdelic, ratMap,
       Matrix.mul_assoc, lCoord, kAdelic, conjTranspose_nonsing_inv, iCoord, Matrix.mul_add,
       Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul]
-  exact V.mem_Gamma_iff_range.mpr fun i j ↦ ⟨_, (congrFun₂ h_rat i j).symm⟩
+  exact V.mem_Gamma_iff_range.2 (mem_ratMatrices.1 ⟨_, h_rat.symm⟩)
 
 /-- The rational points of the unipotent radical are cocompact. For a splitting `D` of `V` over
 `V₀` along an isotropic subspace of any rank, there is a compact set `K` such that every element
@@ -1129,20 +1161,14 @@ lemma exists_mul_mem_siegelParabolic (hg : g.val.val * D.k = D.k * a + D.l * c) 
     ∃ v ∈ D.symm.siegelParabolic, v * g ∈ D.siegelParabolic := by
   -- Take the translation `l ↦ l`, `k ↦ k - l c a⁻¹`.
   obtain ⟨a, rfl⟩ := ha
-  have h_iso : cᴴ * a = -(a.valᴴ * c) :=
-    eq_neg_of_add_eq_zero_right (conjTranspose_mul_add_eq_zero hg)
-  have h_skew : (-(c * a⁻¹.val))ᴴ = -(-(c * a⁻¹.val)) :=
-    calc (-(c * a⁻¹.val))ᴴ
-      _ = -(a⁻¹.valᴴ * (cᴴ * a) * a⁻¹.val) := by simp [Matrix.mul_assoc]
-      _ = -(-(c * a⁻¹.val)) := by simp [h_iso, ← Matrix.mul_assoc, ← conjTranspose_mul]
-  obtain ⟨v, hv, hv_l, hv_k⟩ : ∃ v ∈ D.symm.siegelParabolic,
-      v.val.val * D.l = D.l ∧ v.val.val * D.k = D.k + D.l * -(c * a⁻¹.val) :=
-    D.symm.exists_mem_siegelParabolic_mul_l_eq h_skew
+  obtain ⟨v, hv, hv_l, hv_k⟩ := D.symm.exists_mem_siegelParabolic_mul_l_eq (b := -(c * a⁻¹.val)) (by
+    rw [show (-(c * a⁻¹.val))ᴴ = -(a⁻¹.valᴴ * (cᴴ * a) * a⁻¹.val) by simp [Matrix.mul_assoc]]
+    simp [eq_neg_of_add_eq_zero_right (conjTranspose_mul_add_eq_zero hg),
+      ← Matrix.mul_assoc, ← conjTranspose_mul])
   refine ⟨v, hv, a, ?_⟩
-  calc (v * g).val.val * D.k
-    _ = v.val.val * D.k * a.val + v.val.val * D.l * c := by
-      simp [hg, Matrix.mul_assoc, Matrix.mul_add]
-    _ = D.k * a.val := by simp [hv_k, hv_l, Matrix.add_mul, Matrix.mul_assoc]
+  rw [Subgroup.coe_mul, Units.val_mul, Matrix.mul_assoc, hg, Matrix.mul_add, ← Matrix.mul_assoc,
+    ← Matrix.mul_assoc, show v.val.val * D.k = _ from hv_k, show v.val.val * D.l = _ from hv_l]
+  simp [symm, Matrix.add_mul, Matrix.mul_assoc]
 
 variable (D)
 

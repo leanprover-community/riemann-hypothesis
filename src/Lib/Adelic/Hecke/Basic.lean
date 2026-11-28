@@ -1,4 +1,11 @@
-import Lib.Base
+module
+
+import TauCeti.RepresentationTheory.Induction.Mackey.Subgroup
+public import Mathlib.GroupTheory.DoubleCoset
+public import Mathlib.RepresentationTheory.Coinduced
+import Mathlib.Algebra.FiniteSupport.Basic
+import Mathlib.CategoryTheory.Shift.Basic
+public import Lib.Speed
 
 /-!
 # Level spaces, Hecke operators, stabilisers and class sums
@@ -28,6 +35,8 @@ this condition, the value at `v` does not depend on the choice of representative
 
 Known; see `Lib.Adelic.Hecke.ClassSums` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -128,35 +137,18 @@ lemma eq_and_eq_one_of_doubleCoset_rep {e : Δ →* G}
 
 /-- The class sum of f: the sum over the double cosets c in Γ\G/K of f(g_c)/#(Γ ∩ g_c K g_c⁻¹), g_c
 a chosen representative. For f left invariant under Γ and right invariant under K the choice of
-representatives does not matter (`New.classSum_eq_finsum_of_rep`). -/
+representatives does not matter. -/
 def classSum [Module ℚ W] (Γ K : Subgroup G) (f : G → W) : W :=
   ∑ᶠ c : DoubleCoset.Quotient (Γ : Set G) K, (Nat.card (classAut Γ K c.out) : ℚ)⁻¹ • f c.out
 
 /-- The order of the stabiliser Γ ∩ gKg⁻¹ depends only on the double coset ΓgK. -/
 lemma card_classAut_mul_mul {γ k : G} (hγ : γ ∈ Γ) (hk : k ∈ K) (g : G) :
     Nat.card (classAut Γ K (γ * g * k)) = Nat.card (classAut Γ K g) := by
-  -- Conjugation `δ ↦ γ⁻¹ * δ * γ` carries the first stabiliser onto the second.
-  refine Nat.card_congr ((MulAut.conj γ⁻¹).toEquiv.subtypeEquiv fun δ ↦ ?_)
-  change δ ∈ classAut Γ K (γ * g * k) ↔ γ⁻¹ * δ * γ⁻¹⁻¹ ∈ classAut Γ K g
-  have h_left : γ⁻¹ * δ * γ ∈ Γ ↔ δ ∈ Γ := by
-    rw [mul_mem_cancel_right hγ, mul_mem_cancel_left (inv_mem hγ)]
-  have h_conj : (γ * g * k)⁻¹ * δ * (γ * g * k) = k⁻¹ * (g⁻¹ * (γ⁻¹ * δ * γ) * g) * k := by group
-  rw [inv_inv, mem_classAut, mem_classAut, h_left, h_conj, mul_mem_cancel_right hk,
-    mul_mem_cancel_left (inv_mem hk)]
-
-/-- For f left invariant under Γ and right invariant under K, the class sum can be computed with
-any system of representatives r of Γ\G/K. -/
-lemma classSum_eq_finsum_of_rep [Module ℚ W] {f : G → W}
-    (hf_left : ∀ γ ∈ Γ, ∀ g : G, f (γ * g) = f g) (hf_right : ∀ k ∈ K, ∀ g : G, f (g * k) = f g)
-    {r : DoubleCoset.Quotient (Γ : Set G) K → G}
-    (hr : ∀ c : DoubleCoset.Quotient (Γ : Set G) K, DoubleCoset.mk Γ K (r c) = c) :
-    classSum Γ K f = ∑ᶠ c : DoubleCoset.Quotient (Γ : Set G) K,
-      (Nat.card (classAut Γ K (r c)) : ℚ)⁻¹ • f (r c) := by
-  refine finsum_congr fun c ↦ ?_
-  -- The chosen representative of `c` lies in the double coset of `r c`.
-  obtain ⟨γ, hγ, k, hk, h_out⟩ : ∃ γ ∈ Γ, ∃ k ∈ K, c.out = γ * r c * k :=
-    (DoubleCoset.eq ..).1 (by rw [hr c, out_eq'])
-  rw [h_out, card_classAut_mul_mul hγ hk, hf_right k hk, hf_left γ hγ]
+  have hAut (x : G) : classAut Γ K x = TauCeti.mackeySubgroup x K Γ := by
+    ext δ
+    simp [mem_classAut]
+  rw [hAut, hAut]
+  exact Nat.card_congr (TauCeti.mackeySubgroupCongr hγ hk g).symm.toEquiv
 
 variable [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -196,7 +188,7 @@ lemma relIndex_mul_measure_inf (hK : IsCompact (K : Set G)) (hH : IsOpen (H : Se
     H.relIndex K * μ ↑(H ⊓ K) = μ K := by
   -- Pull `μ` back to the group `K`; there `H ⊓ K` is a measurable subgroup of finite index,
   -- and its cosets, all of the same measure, partition `K`.
-  have h_emb : MeasurableEmbedding K.subtype := .subtype_coe hK.measurableSet
+  have h_emb : MeasurableEmbedding K.subtype := .subtypeVal hK.measurableSet
   have : (H.subgroupOf K).FiniteIndex := ⟨hK.relIndex_ne_zero hH⟩
   have : (μ.comap K.subtype).IsMulLeftInvariant := .comap _ h_emb
   have h_index :
@@ -242,7 +234,7 @@ abbrev HasFiniteCosets : Prop := (support fun q : G ⧸ K ↦ f q.out).Finite
 
 /-- The function f on G is left and right K-invariant and supported on finitely many cosets gK. -/
 abbrev IsHeckeFunction : Prop :=
-  HasFiniteCosets K f ∧ ∀ᵉ (g : G) (k ∈ K), f (g * k) = f g ∧ f (k * g) = f g
+  HasFiniteCosets K f ∧ ∀ g : G, ∀ k ∈ K, f (g * k) = f g ∧ f (k * g) = f g
 
 variable {K K' f}
 
@@ -260,7 +252,7 @@ lemma map_heckeFun (L : W →ₗ[A] W') (h : HasFiniteCosets K f)
     L (heckeFun π K f v) = heckeFun π' K f (L v) := by simp [heckeFun_eq_sum_toFinset h, hL]
 
 lemma levelSpace_anti (hK : K ≤ K') : levelSpace π K' ≤ levelSpace π K :=
-  fun v hv k ↦ by simpa using hv ⟨k, hK k.2⟩
+  fun v hv k ↦ by simpa using hv ⟨k, hK k.property⟩
 
 /-- For a compact open subgroup K of a topological group G and g in G, the indicator function of KgK
 is K-invariant on both sides and supported on finitely many left cosets of K. -/
@@ -294,7 +286,7 @@ lemma heckeFun_eq_sum (hf : ∀ (g : G) (k : K), f (g * k) = f g)
   -- The chosen representative of `g K` is some `g * k`, and `k` does not change `f g • π g v`.
   have term (g : G) : f (g : G ⧸ K).out • π (g : G ⧸ K).out v = f g • π g v := by
     obtain ⟨k, hk⟩ := mk_out_eq_mul K g
-    rw [hk, hf, map_mul, Module.End.mul_apply, mem_levelSpace.1 hv k, MonoidHom.one_apply, one_smul]
+    rw [hk, hf, map_mul, mul_apply_eq_comp, mem_levelSpace.1 hv k, MonoidHom.one_apply, one_smul]
   have h_support : support (fun q : G ⧸ K ↦ f q.out • π q.out) ⊆
       s.image fun i ↦ (r i : G ⧸ K) :=
     fun q hq ↦ support_subset q (left_ne_zero_of_smul hq)
@@ -381,7 +373,6 @@ lemma heckeFun_heckeFun (hf_fin : HasFiniteCosets K f) (hf : ∀ (g : G) (k : K)
       heckeFun π K (fun x : G ↦ ∑ q ∈ h'.toFinset, f' q.out * f (q.out⁻¹ * x)) v := by
   -- Each `π q.out (heckeFun π K f v)` is the operator of a left translate of `f` applied to `v`;
   -- then exchange the two sums.
-
   have h_linear : heckeFun π K (fun x : G ↦ ∑ q ∈ h'.toFinset, f' q.out * f (q.out⁻¹ * x)) =
       ∑ q ∈ h'.toFinset, f' q.out • heckeFun π K (fun x : G ↦ f (q.out⁻¹ * x)) := by
     simp [heckeFun, sum_smul, finsum_sum_comm, fun_smul_left (hf_fin.comp_inv_mul hf _),
@@ -410,8 +401,8 @@ vectors fixed by `K`. -/
 lemma IsHeckeFunction.heckeFun_mem (hv : v ∈ levelSpace (A := A) π K) (hb : IsHeckeFunction K f) :
     heckeFun π K f v ∈ levelSpace π K := by
   obtain ⟨h_finite, h_inv⟩ := hb
-  exact heckeFun_mem_levelSpace h_finite (fun g k ↦ (h_inv g k k.2).1)
-    (fun g k ↦ by simp [(h_inv g k k.2).2]) hv
+  exact heckeFun_mem_levelSpace h_finite (fun g k ↦ (h_inv g k k.property).1)
+    (fun g k ↦ by simp [(h_inv g k k.property).2]) hv
 
 end HeckeBasic
 

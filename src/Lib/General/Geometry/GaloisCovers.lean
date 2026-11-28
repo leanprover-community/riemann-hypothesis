@@ -1,6 +1,27 @@
+module
+
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Module.Card
+import Mathlib.Algebra.MvPolynomial.Cardinal
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.RingTheory.Algebraic.Cardinality
+import Mathlib.RingTheory.Artinian.Instances
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Localization.Cardinality
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Topology.Baire.BaireMeasurable
+public import Lib.LocalGL.Green.TauFunctions
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import Lib.Cohomology.Etale.Basic
+public import Lib.General.Geometry.DenseComplexPoints
 import Lib.General.Geometry.GeometricPoints
-import Lib.LocalGL.Green.TauFunctions
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.General.Geometry.PointsOfProperSchemes
+import Lib.LocalGL.Green.CuspidalFunctions
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Complex points over countable rings, Zariski generic members and Galois coverings
@@ -48,6 +69,8 @@ The isomorphisms of fields come from Steinitz's theorem, and the étaleness crit
 Chase–Harrison–Rosenberg.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-! ## Steinitz's theorem relative to a countable ring -/
@@ -66,8 +89,9 @@ lemma New.exists_ringEquiv_extend {L : Type} {K : Type*} [Field L] [IsAlgClosed 
     [Countable K] (h_mk : #ℂ = #L) (f : K →+* ℂ) (g : K →+* L)
     (hf : Function.Injective f) (hg : Function.Injective g) :
     ∃ σ : ℂ ≃+* L, ∀ a : K, σ (f a) = g a := by
-  -- Both fields are algebraic closures of `K` adjoined a transcendence basis, and, `K` being
-  -- countable, the two bases have the cardinality of the uncountable fields.
+  -- Use the two embeddings to regard the ambient fields as faithful `K`-algebras.
+  -- Countability of `K` and uncountability of the fields ensure that the transcendence
+  -- bases have the cardinalities of their respective ambient fields.
   algebraize [f, g]
   have : FaithfulSMul K ℂ := (faithfulSMul_iff_algebraMap_injective K ℂ).2 hf
   have : FaithfulSMul K L := (faithfulSMul_iff_algebraMap_injective K L).2 hg
@@ -82,8 +106,9 @@ lemma New.exists_ringEquiv_extend {L : Type} {K : Type*} [Field L] [IsAlgClosed 
     simpa using cardinal_eq_cardinal_transcendence_basis_of_aleph0_lt _ ht mk_le_aleph0
       (h_uncountable.trans_eq h_mk)
   obtain ⟨e⟩ : Nonempty (s ≃ t) := Cardinal.eq.1 (by rw [← hs_card, ← ht_card, h_mk])
-  -- The bijection of the bases gives a `K`-algebra isomorphism `K[s] ≃ K[t]`, which extends to
-  -- the algebraic closures.
+  -- Algebraic independence identifies the two generated subalgebras with polynomial rings.
+  -- Renaming variables along the bijection gives the isomorphism over `K` that extends to
+  -- the algebraic closures. Compatibility with the embeddings follows from `K`-linearity.
   let Ks : Subalgebra K ℂ := Algebra.adjoin K (Set.range (Subtype.val : s → ℂ))
   let Kt : Subalgebra K L := Algebra.adjoin K (Set.range (Subtype.val : t → L))
   let φ : Ks ≃ₐ[K] Kt :=
@@ -219,7 +244,7 @@ map `φ` (written `specMap φ`) followed by the canonical map to `X`, and this r
 countable. -/
 lemma exists_countable_residue_point {X : Scheme} {R : CommRingCat} (s : X ⟶ Spec R) [Countable R]
     [LocallyOfFiniteType s] {K : Type} [Field K] (t : Spec (CommRingCat.of K) ⟶ X) :
-    ∃ᵉ (z : X) (φ : X.residueField z →+* K),
+    ∃ z : X, ∃ φ : X.residueField z →+* K,
       specMap φ ≫ X.fromSpecResidueField z = t ∧ Countable (X.residueField z) := by
   let z : X := t (closedPoint K)
   refine ⟨z, (X.SpecToEquivOfField K t).2.hom, (X.SpecToEquivOfField K).left_inv t, ?_⟩
@@ -479,7 +504,7 @@ surjective and invariant under an action `s` of a finite group `Δ` on `W` that 
 on the fibres of `c` on complex points (`specOver R ℂ` is `Spec ℂ` over `Spec R`). Then `c` is a
 Galois covering with group `Δ` in the sense of `New.Variety.IsGaloisCovering`: simple transitivity
 holds for points with values in any field of characteristic 0. -/
-lemma isGaloisCovering_of_complex_points {R : CommRingCat} [IsDomain R] {W Z : Over (Spec R)}
+lemma isGaloisCovering_of_complex_points {R : CommRingCat} {W Z : Over (Spec R)}
     [IsProper W.hom] [IsSeparated Z.hom] {c : W ⟶ Z} {Δ : FiniteGrp}
     {s : Δ →* CategoryTheory.End W} [Countable R] [Algebra R ℂ]
     (hR : ∀ (k : Type) [Field k] [CharZero k] (f : R →+* k), Function.Injective f)
@@ -633,7 +658,7 @@ end ProductOfFields
 
 /-- If `A` is a smooth algebra over a normal domain `P`, then `A` is integrally closed in
 `A ⊗[P] Frac P`. -/
-lemma exists_algebraMap_eq_of_isIntegral_of_smooth {P A : Type} [CommRing P] [IsDomain P]
+lemma exists_algebraMap_eq_of_isIntegral_of_smooth {P A : Type} [CommRing P]
     [IsIntegrallyClosed P] [CommRing A] [Algebra P A] [Algebra.Smooth P A]
     {v : A ⊗[P] FractionRing P} (hv : IsIntegral A v) :
     ∃ x : A, algebraMap A (A ⊗[P] FractionRing P) x = v := by
@@ -721,7 +746,7 @@ lemma IsGaloisCovering.etale_of_isPullback {R : CommRingCat} {W Z : Over (Spec R
   have h_point (m : MaximalSpectrum N) : Nonempty (B →ₐ[A] Ω m) := by
     obtain ⟨y, hy⟩ : ∃ y : Spec (of (Ω m)) ⟶ W.left,
         y ≫ c.left = specMap (algebraMap A (Ω m)) ≫ u :=
-      exists_point_over c.left (hG.surjective.surj _)
+      (Scheme.Hom.exists_comp_eq_iff_mem_range c.left _).2 (hG.surjective.surj _)
     exact (exists_algHom_specMap_comp_eq hp (Ω m) y hy).nonempty
   let χ : B →ₐ[A] ∀ m : MaximalSpectrum N, Ω m := .pi fun m ↦ (h_point m).some
   have hχ (x : A) : χ (algebraMap A B x) = algebraMap N _ (algebraMap A N x) := χ.commutes x
@@ -748,15 +773,6 @@ lemma IsGaloisCovering.etale_of_isPullback {R : CommRingCat} {W Z : Over (Spec R
   have h_bot : (RingHom.ker χ).comap (algebraMap A B) = ⊥ := comap_bot_of_injective _ hA_inj
   exact ⟨x, sub_eq_zero.mp (hG.isNilpotent_of_forall_mem h_char hp hσ h_bot h_ker).eq_zero⟩
 
-/-- The base change of a reduced scheme along a flat preimmersion is reduced: its stalks are those
-of the scheme. -/
-lemma isReduced_pullback_of_flat {X Y T : Scheme} (f : X ⟶ T) (g : Y ⟶ T)
-    [IsReduced X] [Flat g] [IsPreimmersion g] : IsReduced (pullback f g) := by
-  have (x : ↥(pullback f g)) : IsReduced ((pullback f g).presheaf.stalk x) := ⟨fun a ha ↦ by
-    obtain ⟨b, rfl⟩ := (fst f g).stalkMap_surjective x a
-    simp [((IsNilpotent.map_iff (stalkMap_injective_of_flat _ _)).1 ha).eq_zero]⟩
-  exact isReduced_of_isReduced_stalk _
-
 /-- If the base change of `c : W ⟶ Z` to the fibre product `Z ×_T E` is smooth of relative dimension
 `0` and `Z ×_T E ⟶ E` of relative dimension `d`, then the base change of `c ≫ f : W ⟶ T` along any
 map factoring through `i : E ⟶ T` is smooth of relative dimension `d`. -/
@@ -768,7 +784,7 @@ lemma smoothOfRelativeDimension_pullback_snd_comp (d : ℕ) {W Z T E K : Scheme}
     simpa using smoothOfRelativeDimension_comp 0 d (snd c (fst f i)) (snd f i)
   have h_square : IsPullback (fst c (fst f i)) (snd c (fst f i) ≫ snd f i) (c ≫ f) i :=
     .paste_vert (.of_hasPullback _ _) (.of_hasPullback _ _)
-  exact (smoothOfRelativeDimension_isStableUnderBaseChange d).1
+  exact (smoothOfRelativeDimension_isStableUnderBaseChange d).of_isPullback
     ((IsPullback.of_hasPullback (c ≫ f) (ψ ≫ i)).of_right' h_square) h_comp
 
 /-- Let `c : W ⟶ Z` be a Galois covering over `Spec R` for a domain `R`: `c` is surjective, and a

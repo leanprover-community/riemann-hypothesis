@@ -1,7 +1,11 @@
-import Lib.General.LinearAlgebra.PolarDecomposition
-import Lib.Shimura.ComplexTheta.DimensionFormula
-import Lib.Weil.DualPair.Defs
-import Lib.Weil.MixedModel.RealTheta
+module
+
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Lib.General.LinearAlgebra.PolarDecomposition
+public import Lib.Shimura.ComplexTheta.DimensionFormula
+public import Lib.Weil.DualPair.Defs
+public import Lib.Weil.MixedModel.RealTheta
 
 /-!
 # Jet series of theta functions and translation by rational vectors
@@ -44,6 +48,8 @@ unitary group and the invariant theta functional. See `Lib.Weil.MixedModel.ZeroT
 
 See also `Lib.Weil.CompactLift.DefiniteThetaLift` and `Lib.Weil.DualPair.KernelLaws`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -231,7 +237,7 @@ lemma entireTheta_translate_finiteImage (V : Space E n ε)
     -- Unfolded, both sides are exponentials; the exponents agree as polynomials in the four
     -- inner products of `y` and `r`.
     simp [IsStd.signs_eq_one (V := V), hB, realHeisenberg, realVac, signMatrix, ← exp_add,
-      ← exp_sub, ← exp_neg, dotProduct_add, add_dotProduct, mul_comm, fieldEq]
+      ← exp_sub, ← exp_neg, dotProduct_add, add_dotProduct, fieldEq]
     ring_nf
   rw [thetaShift_apply, entireTheta, entireTheta, h_translate, h_period]
   linear_combination -(f ((adelicSum E ε).equiv (y, z))) * h_exp
@@ -241,7 +247,7 @@ lemma entireTheta_translate_finiteImage (V : Space E n ε)
 omit [Fintype n] [DecidableEq n] in
 lemma realImage_smul_apply (c : E) (p : InfinitePlace E × n) :
     realImage (c • γ) p = Φ p.1 c * realImage γ p := by
-  simp [realImage, realCoord, val_scaleIdele_fst, fieldEq]
+  simp [realImage, realCoord, fieldEq]
 
 omit [Fintype n] [DecidableEq n] in
 lemma finiteImage_smul_apply (c : E) (j : n) :
@@ -274,8 +280,7 @@ lemma semichar_finiteImage {b : (InfinitePlace E × n → ℂ) →L[ℂ] Infinit
         (S - conj S) / 2 := by
       rw [riemannForm_def, h_left, h_right, sub_im, conj_im, sub_conj]
       push_cast
-      field_simp
-      ring
+      field
     rw [canonicalMultiplier, h_form]
     simp [hS, realHeisenberg, dotProduct, signMatrix, realImage_smul_apply, mul_assoc, mul_comm,
       mul_left_comm]

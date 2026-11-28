@@ -1,6 +1,13 @@
+module
+
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+public import Lib.Shimura.ThetaNormality.RiemannRelation
+public import Lib.Shimura.Uniformisation.TorusModel
+public import Lib.Adelic.Hecke.ClassSums
 import Lib.General.Geometry.SerreTheorem
-import Lib.Shimura.ThetaNormality.RiemannRelation
-import Lib.Shimura.Uniformisation.TorusModel
+import Lib.Shimura.AbelianScheme.Pairings
 
 /-!
 # Linear systems and theta families from dense complex points carrying theta tori
@@ -42,6 +49,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.ThetaModuli.UniversalFamily` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Linear systems from coordinates at dense points -/
 
@@ -207,8 +216,7 @@ lemma smooth_of_allSpecializeTo_isReduced {A : Over S} [AddObj A] [Flat A.hom] [
     simp [π, ← smoothLocus_eq_top_iff, ← preimage_smoothLocus_eq]
   obtain ⟨U, hU, htU⟩ : ∃ V : S.Opens, IsAffineOpen V ∧ LandsIn t V := exists_isAffineOpen_landsIn t
   have hxU : π x ∈ U := by
-    rw [hx]
-    exact landsIn_iff_mem.mp htU
+    simpa only [hx] using landsIn_iff_mem.mp htU
   obtain ⟨W, hW, hxW, hWU⟩ : ∃ W : A.left.Opens, IsAffineOpen W ∧ x ∈ W ∧ W ≤ π ⁻¹ᵁ U :=
     exists_isAffineOpen_mem_and_subset (π.mem_preimage.mpr hxU)
   -- Smoothness descends from k to the residue field of the image of t.
@@ -230,10 +238,12 @@ lemma smooth_of_allSpecializeTo_isReduced {A : Over S} [AddObj A] [Flat A.hom] [
   -- Restate the fibre through Spec Γ(W) → Spec Γ(U), at the prime under the prime of x.
   have h_point :
       hU.fromSpec (Spec.map (π.appLE U W hWU) (hW.primeIdealOf ⟨x, hxW⟩)) = t (closedPoint k) := by
-    -- `erw`: `primeIdealOf` is a point of the prime spectrum, which is the carrier of
-    -- `Spec Γ(A.left, W)` only after unfolding.
-    erw [← Hom.comp_apply, hU.SpecMap_appLE_fromSpec _ hW, Hom.comp_apply, hW.fromSpec_primeIdealOf,
-      hx]
+    -- `primeIdealOf` is a point of the prime spectrum, which is the carrier of `Spec Γ(A.left, W)`
+    -- only after unfolding, so `Hom.comp_apply` is used as an equation.
+    refine (Hom.comp_apply ..).symm.trans ?_
+    rw [hU.SpecMap_appLE_fromSpec _ hW]
+    refine (Hom.comp_apply ..).trans ?_
+    rw [hW.fromSpec_primeIdealOf, hx]
   rw [← h_point, ← hU.SpecMap_appLE_fromSpec π hW hWU] at h_fibre
   -- The ring-theoretic fibre at that prime is isomorphic to it, so it is smooth.
   have h_alg_smooth : Algebra.Smooth 𝔭.ResidueField (𝔭.Fiber Γ(A.left, W)) :=
@@ -276,8 +286,14 @@ lemma exists_isAbelianScheme (j : ι → κ) (hη : IsDenseFamily fun i : ι ↦
       (lift (e z.1.1.1 z.2) (lift (e z.1.1.1 z.1.2) (e z.1.1.1 z.1.1.2))).left :=
     h_pairs.prod (y := fun s : (κ × V) × V ↦ lift (e s.1.1 s.2) (e s.1.1 s.1.2))
       (e := fun s : (κ × V) × V ↦ e s.1.1) hη h_red fun s : (κ × V) × V ↦ (he_sep s.1.1).right
-  have h_left : (λ_ A).inv = lift (toUnit A) (𝟙 A) := by aesop
-  have h_right : (ρ_ A).inv = lift (𝟙 A) (toUnit A) := by aesop
+  have h_left : (λ_ A).inv = lift (toUnit A) (𝟙 A) := by
+    apply hom_ext
+    · simp only [leftUnitor_inv_fst, lift_fst]
+    · simp only [leftUnitor_inv_snd, lift_snd]
+  have h_right : (ρ_ A).inv = lift (𝟙 A) (toUnit A) := by
+    apply hom_ext
+    · simp only [rightUnitor_inv_fst, lift_fst]
+    · simp only [rightUnitor_inv_snd, lift_snd]
   let _ : AddGrpObj A :=
     { zero := o
       add := m
@@ -407,7 +423,7 @@ lemma ThetaTori.ThetaTorus.exists_eigenline (b : ℤ) {ρ : 𝓞 E →+* ℂ}
   obtain ⟨ε, hε⟩ := x.exists_std_equiv
   have h_std (d : 𝓞 E) (z : V) : ε (x.intAction d z) =
       ((Φ v₀ d.val * (ε z).fst.fst, star (Φ v₀ d.val) • (ε z).fst.snd),
-        fun w ↦ Φ w.1 d.val • (ε z).snd w) := by
+        fun w ↦ Φ w.val d.val • (ε z).snd w) := by
     -- `using!`: the last component comes out as `Pi.map` of the diagonal maps, which is the
     -- stated function only after unfolding.
     simpa using! LinearMap.congr_fun (hε d) (ε z)
@@ -803,15 +819,28 @@ lemma Variety.hasClassLaws_picClass
     (fun l ↦ ψ (doubledCoeffs (paddingTuple 1 0) (paddingTuple a d) l)) fun l ↦ hψ _
   have hGψ (l) : G l = ψ (doubledCoeffs (paddingTuple a d) (paddingTuple 1 0) l) :=
     he_pairs.hom_ext (by simp [hG, hψ])
-  -- Pull the identity of classes back along the point `(y, z)` of `A ⊗ A`.
-  let cl (u : T ⟶ A) : Pic T.left := N.picClass.atPoint u
-  have h_sum : ∑ l, cl (lift y z ≫ ψ (doubledCoeffs (paddingTuple a d) (paddingTuple 1 0) l)) =
-      ∑ l, cl (lift y z ≫ ψ (doubledCoeffs (paddingTuple 1 0) (paddingTuple a d) l)) := by
-    simpa [-lift_left, ← pull_comp, cl, Pic.atPoint, hGψ] using
-      congrArg (Pic.pull (lift y z).left) hG_class
-  -- Term by term this is the required relation, with the same extra terms on both sides.
-  simp [cl, ψ, doubledCoeffs, paddingTuple, comp_add, ← sub_eq_add_neg] at h_sum
-  linear_combination (norm := abel) h_sum
+  -- Pull the identity of classes back along the point `(y, z)` of `A ⊗ A`, keeping the relation
+  -- in terms of `(q.1 • y + q.2 • z)` so cancellation runs over an abstract additive group.
+  have h_lift_ψ (q : 𝓞 E × 𝓞 E) : lift y z ≫ ψ q = q.1 • y + q.2 • z := by
+    simp [ψ, comp_add]
+  have h_pi {ι : Type} [Fintype ι] (g : ι → (A ⊗ A ⟶ A)) :
+      Pic.pull (lift y z).left (pi fun l : ι ↦ N.pull (g l).left).picClass =
+        ∑ l : ι, N.picClass.atPoint (lift y z ≫ g l) := by
+    simp [-lift_left, ← pull_comp, Pic.atPoint]
+  let f (q : 𝓞 E × 𝓞 E) : Pic T.left := N.picClass.atPoint (q.1 • y + q.2 • z)
+  have h_sum := congrArg (Pic.pull (lift y z).left) hG_class
+  rw [h_pi, h_pi] at h_sum
+  simp_rw [hGψ, h_lift_ψ] at h_sum
+  have h_cancel {G : Type 1} [AddCommGroup G] (g : 𝓞 E × 𝓞 E → G)
+      (h : ∑ l, g (doubledCoeffs (paddingTuple a d) (paddingTuple 1 0) l) =
+           ∑ l, g (doubledCoeffs (paddingTuple 1 0) (paddingTuple a d) l)) :
+      g (d, 1) + g (1, -star d) + ∑ l : Fin (D.paddedNorm - 3), g (a l, 0) + g (0, 0) =
+        g (0, 1) + g (0, -star d) + g (1, 0) + (D.paddedNorm - 3) • g (1, 0) := by
+    simp [doubledCoeffs, paddingTuple] at h
+    linear_combination (norm := abel) h
+  simpa only [f, one_smul, zero_smul, add_zero, zero_add, neg_smul, ← sub_eq_add_neg,
+    zero_sub] using
+    h_cancel f h_sum
 
 /-- The theta law on base changes to local rings. Assume the following: the linear systems `c ω` on
 `S` have, at the separating complex points `η i`, the theta coordinates of `x i` at lifts of `ω`;
@@ -864,8 +893,9 @@ lemma Variety.exists_isThetaStructure
   · exact h_ext (hr s _) (hr m s) (by simp +contextual [hr_val, bicharacter_neg_eq_swap])
   · refine exists_isSectionLift_coordSection _ _ fun l m _ y hl hm ↦
       ⟨⟨(ε : ℤ) • l - s, ?_⟩, fun k ↦ ?_⟩
-    · simp [N.transition_self, landsIn_preimage.1 hl, ↓H0_smul, smul_smul, AddChar.val_isUnit,
-        IsUnit.map, -AddChar.coe_mk, coordSection]
+    · simp only [↓H0_smul, map_obj_left, coordSection, add_sub_cancel, smul_smul,
+        Int.units_coe_mul_self, one_smul, pull_transition, PointFn.pull, landsIn_preimage.1 hl,
+        N.transition_self, mul_one, AddChar.val_isUnit, IsUnit.map]
     -- The map `y ↦ ε y + σ s` of `T` is the base change of `(ε • 𝟙 A) ≫ tr`.
     let s' : D.levelTorsion := ⟨s, D.dualTorsion_le_levelTorsion s.property⟩
     let tr : A ⟶ A := translation (σ s')
@@ -930,13 +960,13 @@ lemma Variety.exists_linearMap_coe_eq_of_comp_eq_torsionLift {E : Type} [Field E
 
 /-- The points of `A` over a point `η` of `S`, seen as points of the fibre of `A` over `η`; the map
 is `𝓞 E`-linear. -/
-noncomputable def Variety.fibrePointMap {E : Type} [Field E] [CMBase E] {S : Scheme}
+noncomputable def Variety.fibrePointMap {E : Type} [Field E] {S : Scheme}
     (A : Over S) [AddObj A] [ModuleObj (𝓞 E) A] (η : Spec (CommRingCat.of ℂ) ⟶ S) :
     (Over.mk η ⟶ A) →ₗ[𝓞 E] (𝟙_ (Over (Spec (CommRingCat.of ℂ))) ⟶ (Over.pullback η).obj A) :=
   ((isGroupBaseChange_counit (O := 𝓞 E) (A := A) η).pointEquiv (T := 𝟙_ _)).symm.toLinearMap
 
 /-- The point of the fibre given by `fibrePointMap A η u` is the pair of `u` and the point `η`. -/
-lemma Variety.fibrePointMap_left {E : Type} [Field E] [CMBase E] {S : Scheme}
+lemma Variety.fibrePointMap_left {E : Type} [Field E] {S : Scheme}
     {η : Spec (CommRingCat.of ℂ) ⟶ S} (A : Over S) [AddObj A] [ModuleObj (𝓞 E) A]
     (u : Over.mk η ⟶ A) :
     (fibrePointMap (E := E) A η u).left = (lift u (𝟙 (Over.mk η))).left :=
@@ -1009,7 +1039,7 @@ lemma Variety.exists_isLieChart_hasSignature (j : ι → κ) (hη : IsDenseFamil
   · rintro ⟨i, ψ, hψ⟩
     exact ((u _).hasSignature_iff (F := (x (j i)).intAction) (by simp [hu_e, ← he_smul])
       (h_jac hψ) (isGroupBaseChange_counit (O := 𝓞 E) (A := A) (η (j i)))
-      (x (j i)).isPeriodMap.finrank_eq_abelianDim).2
+      (finrank_eq_abelianDim (x (j i)).realEquiv)).2
       ((x (j i)).exists_eigenline b fun d ↦ by simpa [← hψ] using hη_base (j i) d)
   · simpa [← assoc] using hβ.map (preimage (S.fromSpecStalk (s (closedPoint _)) ≫ π)).hom
 
@@ -1086,7 +1116,7 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
     exact hd
   -- The fibre over `η i` is the base change of `A` along `η i`, so it has the same dimension.
   choose u hu_theta hu_e hu_L _ using fun i : κ ↦
-    h_unif i _ ((smoothOfRelativeDimension_isStableUnderBaseChange _).1
+    h_unif i _ ((smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback
       (isGroupBaseChange_counit (O := 𝓞 E) (A := A) (η i)).isPullback h_dim)
   refine ⟨{ total := A, lineBundle := N, embeds := hN, levelPoints := ς, class_laws := h_class
             relative_dim := h_dim
@@ -1097,9 +1127,8 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
             eq_of_level_coords_eq t t' h_base h_coord := ?ext }, fun i ↦ ?model⟩
   case ext =>
     -- The lists agree, so do the pull-backs of the product of the `c l`.
-    have h_pi : pi (fun l : D.levelTorsion ↦ N.pull (t ≫ (ς l).left)) =
-        pi (fun l : D.levelTorsion ↦ N.pull (t' ≫ (ς l).left)) := congrArg pi (funext h_coord)
-    exact hπ.ext (by simpa [← hσ_pull, pull_pi] using h_pi) (hφ.right_cancellation _ _ h_base)
+    exact hπ.ext (by simpa [← hσ_pull, pull_pi] using congrArg pi (funext h_coord))
+      (hφ.right_cancellation _ _ h_base)
   case model =>
     refine ⟨⟨hη_base i, u i, _, _, hu_theta i, fun d w ↦ ?_, fun l ↦ ?_, hu_L i⟩, rfl⟩
     -- `using!`: the exponential map `u i` matches `fibrePointMap A (η i)` only up to unfolding.

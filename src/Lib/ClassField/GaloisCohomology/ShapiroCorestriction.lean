@@ -1,3 +1,9 @@
+module
+
+import Mathlib.CategoryTheory.Shift.Basic
+import Mathlib.GroupTheory.IndexNormal
+import Mathlib.Topology.Sheaves.Presheaf
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 import Lib.General.Groups.ProfiniteCharacters
 
 /-!
@@ -38,6 +44,8 @@ Notions from other files:
 Known; see `Lib.ClassField.GaloisCohomology.KummerCyclicClasses` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -60,15 +68,6 @@ variable {R Γ : Type} {H : Type*} [CommRing R] [Group Γ] [TopologicalSpace Γ]
 characters of Γ to those of H, χ ↦ χ∘φ. -/
 def New.QZChar.comap : QZChar Γ →+ QZChar H := pairMapZ1 φ LinearMap.id
 
-omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
-lemma New.QZChar.comap_val_apply (χ : ↥(QZChar Γ)) (h : H) :
-    (QZChar.comap φ χ).val h = χ.val (φ h) := rfl
-
-omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
-/-- The character `χ ∘ φ`, as a homomorphism to `ℚ/ℤ`, takes the value `χ (φ h)` at `h`. -/
-lemma New.QZChar.comap_apply [IsTopologicalGroup H] (χ : ↥(QZChar Γ)) (h : H) :
-    QZChar.toHom (QZChar.comap φ χ) h = QZChar.toHom χ (φ h) := rfl
-
 /-- An open normal subgroup `U` of the compact group `Γ` with cyclic quotient is the kernel of a
 continuous character `Γ → ℚ/ℤ`. -/
 lemma New.QZChar.exists_ker_eq_of_isCyclic [U.Normal] (h_cyclic : IsCyclic (Γ ⧸ U.toSubgroup)) :
@@ -84,7 +83,7 @@ lemma New.QZChar.exists_ker_eq_of_isCyclic [U.Normal] (h_cyclic : IsCyclic (Γ �
   refine ⟨ofZModCocycle _ ⟨f, hf_cont, hf_cocycle⟩, Subgroup.ext fun g ↦ ?_⟩
   have hf_eq_zero : f g = 0 ↔ g ∈ U.toSubgroup := by simp [f, MulEquiv.symm_apply_eq]
   -- The character sends `g` to the image of `f g` in `ℚ/ℤ`, which vanishes exactly when `f g` does.
-  show QZ.ofZMod (Nat.card (Γ ⧸ U.toSubgroup)) (f g) = 0 ↔ g ∈ U.toSubgroup
+  change QZ.ofZMod (Nat.card (Γ ⧸ U.toSubgroup)) (f g) = 0 ↔ g ∈ U.toSubgroup
   exact (map_eq_zero_iff _ QZ.ofZMod_injective).trans hf_eq_zero
 
 namespace New.DiscreteModule
@@ -102,13 +101,13 @@ lemma funModule_apply_one (u : U.toSubgroup) (F : (M.funModule U).V) :
 /-- The Shapiro map on continuous 1-cocycles, Z¹(Γ, Fun(Γ/U, M)) → Z¹(U, M): restrict to U and
 evaluate at the trivial coset. -/
 abbrev shapiroZ1 : ↥(Z1 (M.funModule U).ρ) →+ ↥(Z1 (M.restrictTo U).ρ) :=
-  pairMapZ1 (ρ := (M.funModule U).ρ) (subgroupIncl U.1) (LinearMap.proj ⟦1⟧)
+  pairMapZ1 (ρ := (M.funModule U).ρ) (subgroupIncl U.toSubgroup) (LinearMap.proj ⟦1⟧)
     (M.funModule_apply_one U)
 
 /-- The linear map H²(Γ, Fun(Γ/U,M)) → H²(U,M) given by restriction to U followed by evaluation
 at the identity coset. -/
 abbrev shapiroH2 : New.H2 (M.funModule U).ρ →ₗ[R] New.H2 (M.restrictTo U).ρ :=
-  pairMapH2 (ρ := (M.funModule U).ρ) (subgroupIncl U.1) (LinearMap.proj ⟦1⟧)
+  pairMapH2 (ρ := (M.funModule U).ρ) (subgroupIncl U.toSubgroup) (LinearMap.proj ⟦1⟧)
     (M.funModule_apply_one U)
 
 /-- The norm of a U-invariant y of M: the sum of g·y over the cosets gU in Γ/U. -/
@@ -197,7 +196,7 @@ lemma shapiroH2_injective : Injective (M.shapiroH2 U) := by
   let b (g : Γ) (x : Γ ⧸ U.toSubgroup) : M :=
     M.ρ (s x) (c (t x g)) - F (s x, t x g) x + F (g, s (g⁻¹ • x)) x
   refine (QuotientAddGroup.eq_zero_iff _).mpr ⟨b, by fun_prop, fun g k ↦ funext fun x ↦ ?_⟩
-  show F (g, k) x = M.ρ g (b k (g⁻¹ • x)) - b (g * k) x + b g x
+  change F (g, k) x = M.ρ g (b k (g⁻¹ • x)) - b (g * k) x + b g x
   -- Three instances of the cocycle identity, evaluated at `x`.
   have h_cocycle_at (p q r : Γ) :
       F (p * q, r) x = F (p, q * r) x - F (p, q) x + M.ρ p (F (q, r) (p⁻¹ • x)) :=
@@ -236,7 +235,7 @@ lemma mapH2_sum_eq_index_smul (β : New.H2 (M.funModule U).ρ) (α : M.H2) :
   -- Summing a constant function multiplies by the index.
   refine (congrArg (Quotient.mk _) ?_).symm
   ext p
-  show U.index • x.val p = M.sum U fun _ : Γ ⧸ U.toSubgroup ↦ x.val p
+  change U.index • x.val p = M.sum U fun _ : Γ ⧸ U.toSubgroup ↦ x.val p
   exact index_smul_eq_sum_const U (x.val p)
 
 /-- The projection formula for symbols. Suppose `v` is the norm of the `U`-invariant `w`, and the
@@ -260,7 +259,7 @@ lemma cyclicClass_corestrictH0 (χ : ↥(QZChar Γ))
     refine congrArg (Quotient.mk _) (Subtype.ext (funext fun p ↦ ?_))
     -- Both sides are `carry (χ u, χ u') •` a value: `w` on the left, `F` at the coset `U` on the
     -- right (the Shapiro image evaluates there).
-    show (χ.val p.fst).carry (χ.val p.snd) • (w : M.V) =
+    change (χ.val p.fst).carry (χ.val p.snd) • (w : M.V) =
       (χ.val p.fst).carry (χ.val p.snd) • F.val ⟦1⟧
     rw [h_F_one]
   -- The sum of the values of `F` is the norm of `w`, which is `v`.
@@ -338,7 +337,7 @@ lemma resH2_subgroupOf_eq_zero_symm {U V : Subgroup Γ} {α : M.H2} :
   -- Pull the vanishing class back along the identification of the two copies of `U ⊓ V`.
   let swap : V.subgroupOf U →ₜ* U.subgroupOf V :=
     .mk (.mk' (fun g ↦ ⟨⟨g, Subgroup.mem_subgroupOf.mp g.prop⟩, g.val.prop⟩) (by tauto))
-      ((continuous_subtype_val.comp continuous_subtype_val).subtype_mk _ |>.subtype_mk _)
+      ((continuous_subtypeVal.comp continuous_subtypeVal).subtype_mk _ |>.subtype_mk _)
   intro h_zero
   -- By definition, restricting to `U` and then to `U ⊓ V` is the pull-back along `swap` of
   -- restricting to `V` and then to `U ⊓ V`.
@@ -366,31 +365,30 @@ lemma mem_of_prime_step (S : AddSubgroup M.H2) {α : M.H2} {W : OpenSubgroup Γ}
     isOpen_mono (le_comap_mk' _ L) W.isOpen'
   -- Take a maximal `l`-subgroup `K` of `Γ ⧸ W` on whose preimage some `α - s` dies.
   let Dies (U : Subgroup Γ) : Prop := ∃ s ∈ S, M.resH2 U (α - s) = 0
-  let Good : Set (Subgroup (Γ ⧸ W.1)) :=
-    {L | ∃ n : ℕ, Dies (comap (mk' W.1) L) ∧ Nat.card L = l ^ n}
+  let Good : Set (Subgroup (Γ ⧸ W.toSubgroup)) :=
+    {L | ∃ n : ℕ, Dies (comap (mk' W.toSubgroup) L) ∧ Nat.card L = l ^ n}
   -- The trivial subgroup is good: its preimage is `W`, on which `α - 0` dies.
-  have hW_dies : M.resH2 (comap (mk' W.1) ⊥) (α - 0) = 0 := by
+  have hW_dies : M.resH2 (comap (mk' W.toSubgroup) ⊥) (α - 0) = 0 := by
     rwa [MonoidHom.comap_bot, QuotientGroup.ker_mk', sub_zero]
   have h_bot : ⊥ ∈ Good := ⟨0, ⟨0, S.zero_mem, hW_dies⟩, by simp⟩
   obtain ⟨K, ⟨n, ⟨s, hs, hK_dies⟩, card_K⟩, K_max⟩ :
-      ∃ K : Subgroup (Γ ⧸ W.1), Maximal (· ∈ Good) K :=
+      ∃ K : Subgroup (Γ ⧸ W.toSubgroup), Maximal (· ∈ Good) K :=
     Good.toFinite.exists_maximal ⟨⊥, h_bot⟩
   -- A class that dies on an open subgroup is killed by its index. So the index of `K` kills `α`
   -- modulo `S`, `l` divides it, and `K` lies in a subgroup `L` of order `l ^ (n + 1)`.
   have index_kills : K.index • mk' S α = 0 := by
-    let UK : OpenSubgroup Γ := ⟨comap (mk' W.1) K, comap_open⟩
-
+    let UK : OpenSubgroup Γ := ⟨comap (mk' W.toSubgroup) K, comap_open⟩
     have h_index : UK.index = K.index := by simp [UK, index_comap]
     have hs_zero : mk' S s = 0 := (eq_zero_iff s).mpr hs
     calc K.index • mk' S α = mk' S (UK.index • (α - s)) := by
           rw [map_nsmul, map_sub, hs_zero, sub_zero, h_index]
       _ = 0 := by rw [index_smul_eq_zero_of_resH2 UK hK_dies, map_zero]
-  have pow_dvd : l ^ (n + 1) ∣ Nat.card (Γ ⧸ W.1) :=
+  have pow_dvd : l ^ (n + 1) ∣ Nat.card (Γ ⧸ W.toSubgroup) :=
     calc l ^ (n + 1) = Nat.card K * l := by rw [pow_succ, card_K]
       _ ∣ Nat.card K * K.index :=
         mul_dvd_mul_left (Nat.card K) (l_dvd.trans (addOrderOf_dvd_of_nsmul_eq_zero index_kills))
-      _ = Nat.card (Γ ⧸ W.1) := K.card_mul_index
-  obtain ⟨L, card_L, K_le⟩ : ∃ L : Subgroup (Γ ⧸ W.1), Nat.card L = l ^ (n + 1) ∧ K ≤ L :=
+      _ = Nat.card (Γ ⧸ W.toSubgroup) := K.card_mul_index
+  obtain ⟨L, card_L, K_le⟩ : ∃ L : Subgroup (Γ ⧸ W.toSubgroup), Nat.card L = l ^ (n + 1) ∧ K ≤ L :=
     Sylow.exists_subgroup_card_pow_succ (hp := ⟨l_prime⟩) pow_dvd card_K
   have index_eq : K.relIndex L = l := by
     -- Indices multiply along `⊥ ≤ K ≤ L`: `l ^ n * [L : K] = l ^ (n + 1)`.
@@ -402,17 +400,17 @@ lemma mem_of_prime_step (S : AddSubgroup M.H2) {α : M.H2} {W : OpenSubgroup Γ}
   have h_minFac : l = (Nat.card L).minFac := by simp [card_L, l_prime.pow_minFac]
   have hK_normal : (K.subgroupOf L).Normal :=
     normal_of_index_eq_minFac_card (index_eq.trans h_minFac)
-  let U : OpenSubgroup Γ := ⟨comap (mk' W.1) L, comap_open⟩
-  let V : OpenSubgroup U.1 :=
-    ⟨(comap (mk' W.1) K).subgroupOf U, subgroupOf_isOpen _ _ comap_open⟩
-  have hV_normal : V.Normal := hK_normal.comap (MonoidHom.subgroupComap (mk' W.1) L)
+  let U : OpenSubgroup Γ := ⟨comap (mk' W.toSubgroup) L, comap_open⟩
+  let V : OpenSubgroup U.toSubgroup :=
+    ⟨(comap (mk' W.toSubgroup) K).subgroupOf U, subgroupOf_isOpen _ _ comap_open⟩
+  have hV_normal : V.Normal := hK_normal.comap (MonoidHom.subgroupComap (mk' W.toSubgroup) L)
   have V_prime : V.index.Prime := by
     simp [U, V, ← relIndex.eq_1, relIndex_comap, map_comap_eq_self, index_eq, l_prime]
   have h_dies_V : (M.restrictTo U).resH2 V (M.resH2 U (α - s)) = 0 :=
     resH2_subgroupOf_eq_zero_symm (by rw [hK_dies, map_zero])
-  have hW_le_V : W.toSubgroup.subgroupOf U ≤ V := fun _ hg ↦ le_comap_mk' W.1 K hg
-  have dies_L : Dies (comap (mk' W.1) L) :=
-    h_step U V (le_comap_mk' W.1 L) hW_le_V V_prime s hs h_dies_V
+  have hW_le_V : W.toSubgroup.subgroupOf U ≤ V := fun _ hg ↦ le_comap_mk' W.toSubgroup K hg
+  have dies_L : Dies (comap (mk' W.toSubgroup) L) :=
+    h_step U V (le_comap_mk' W.toSubgroup L) hW_le_V V_prime s hs h_dies_V
   have L_le : L ≤ K := K_max ⟨n + 1, dies_L, card_L⟩ K_le
   exact l_prime.ne_one (index_eq.symm.trans (relIndex_eq_one.mpr L_le))
 

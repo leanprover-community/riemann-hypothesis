@@ -1,5 +1,11 @@
-import Lib.Adelic.Reduction.FirstMinimumShortBases
-import Lib.Weil.DualPair.Defs
+module
+
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
+public import Lib.Weil.DualPair.Defs
+public import Lib.Weil.Fock.WeightedNorms
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Cohomology.Etale.Basic
 
 /-!
 # Short isotropic vectors and means of theta functionals over isotropic subspaces
@@ -35,6 +41,8 @@ Notions from other files:
 Known; see `Lib.Weil.DualPair.KernelDecay` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New
@@ -66,26 +74,20 @@ lemma Space.mul_coordMatrix_ne_zero (hc : c ≠ 0) (X : GL p (𝔸 E)) {M : Matr
     (X.val.map snd)ᴴ * (M * (S.coordMatrix g c).map snd) ≠ 0 := by
   -- Apply `φ`. Then `Xᴴ`, `M` and the inverse of `S.x * g` all have left inverses and cancel, and
   -- what is left is the image of `c` under an injective map out of the field `E`.
-  obtain ⟨L, hL⟩ : ∃ L : Matrix n p R, L * M.map φ = 1 := hM
+  obtain ⟨L, hL⟩ := hM
   intro h_zero
   let ψ : 𝔸 E →+* R := φ.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E))
   let u : GL n R := (S.x * g.toUnitary.val).map ψ
   let Y : GL p R := (star X).map ψ
-  let c' : Matrix n q R := c.map (ψ.comp toAdele)
-  have h_coord : ((S.coordMatrix g c).map snd).map φ = u⁻¹.val * c' := by
+  have h_coord : ((S.coordMatrix g c).map snd).map φ = u⁻¹.val * c.map (ψ.comp toAdele) := by
     change (S.coordMatrix g c).map ψ = (S.x * g.toUnitary.val)⁻¹.val.map ψ * (c.map toAdele).map ψ
     rw [← Matrix.map_mul, coordMatrix, _root_.mul_inv_rev, Units.val_mul, Matrix.mul_assoc]
     rfl
-  have h_star : (X.val.map snd)ᴴ.map φ = Y.val := rfl
-  have h_map : Y.val * (M.map φ * (u⁻¹.val * c')) = 0 := by
-    rw [← h_coord, ← h_star, ← Matrix.map_mul, ← Matrix.map_mul, h_zero,
-      Matrix.map_zero _ φ.map_zero]
-  have h_c : c' = 0 :=
-    calc c' = u.val * (L * (Y⁻¹.val * (Y.val * (M.map φ * (u⁻¹.val * c'))))) := by
-          simp only [← Matrix.mul_assoc Y⁻¹.val, ← Matrix.mul_assoc L, ← Matrix.mul_assoc u.val,
-            Units.inv_mul, Units.mul_inv, hL, Matrix.one_mul]
-      _ = 0 := by simp only [h_map, Matrix.mul_zero]
-  exact hc (map_injective (ψ.comp toAdele).injective (by simpa [c'] using h_c))
+  refine hc (map_injective (ψ.comp toAdele).injective ?_)
+  have h_map := congrArg (fun A => u.val * (L * (Y⁻¹.val * A.map φ))) h_zero
+  simpa [Matrix.map_mul, h_coord, show (X.val.map snd)ᴴ.map φ = Y.val from rfl,
+    ← Matrix.mul_assoc Y⁻¹.val, ← Matrix.mul_assoc L, ← Matrix.mul_assoc u.val,
+    Units.inv_mul, Units.mul_inv, hL, Matrix.map_zero _ φ.map_zero] using h_map
 
 /-- Let `c ≠ 0` be a matrix over `E` with coordinates `c'` at `g`, let `X` be an invertible adelic
 matrix, and let `M` be a finite adelic matrix that has a right inverse after a ring map `φ` from the
@@ -528,7 +530,7 @@ lemma Space.exists_norm_le_of_differences {E n : Type} [Field E] [CMType E] [Wei
     h_fock _ (L ∘L J) (by positivity) fun _ ↦ h_diff
   calc ‖(L ∘L J) v‖
     _ ≤ C * ‖L ∘L J‖ * (C₀ * δ) ^ l * (fockMoment l v).toReal := by
-      rw [← toReal_enorm, ← toReal_ofReal_mul _ _ (by positivity)]
+      rw [← toReal_eNorm, ← toReal_ofReal_mul _ _ (by positivity)]
       exact toReal_mono (mul_ne_top ofReal_ne_top hv) h_enorm
     _ ≤ C * (‖L‖ * ‖J‖) * (C₀ * δ) ^ l * (fockMoment l v).toReal := by grw [L.opNorm_comp_le]
     _ = _ := by ring

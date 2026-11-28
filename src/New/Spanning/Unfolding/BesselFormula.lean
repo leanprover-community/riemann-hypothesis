@@ -1,5 +1,9 @@
-import Lib.Weil.Periods.Equivariant
-import New.Spanning.Unfolding.PoincareSeries
+module
+
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.MeasureTheory.SpecificCodomains.WithLp
+public import Lib.Weil.Periods.Equivariant
+public import New.Spanning.Unfolding.PoincareSeries
 
 /-!
 # The Bessel function as an integral over `R(F_∞)`
@@ -38,6 +42,8 @@ Notions from other files:
 Related work on Bessel periods and on second moments is listed in `New.Spanning.Unfolding.Moments`.
 -/
 
+@[expose] public section
+
 open MeasureTheory Measure Matrix ComplexConjugate NumberField
 
 noncomputable section
@@ -64,8 +70,8 @@ the one written with the unit matrix, by the identity on matrices. -/
 def unitSignEquiv (n : Type) [Fintype n] [DecidableEq n] :
     USign (1 : n → ℤˣ) ≃ₜ* U (1 : Matrix n n ℂ) where
   __ := MulEquiv.subgroupCongr (congrArg U signMatrix_one)
-  continuous_toFun := continuous_subtype_val.subtype_mk _
-  continuous_invFun := continuous_subtype_val.subtype_mk _
+  continuous_toFun := continuous_subtypeVal.subtype_mk _
+  continuous_invFun := continuous_subtypeVal.subtype_mk _
 
 /-- The isomorphism `unitSignEquiv` does not change the matrix. -/
 lemma coe_unitSignEquiv {n : Type} [Fintype n] [DecidableEq n] (u : USign (1 : n → ℤˣ)) :
@@ -156,10 +162,10 @@ def besselRealToPi (h : S.Fits V l kw Y η) :
     Y.besselReal →* InfinitePlace E → 𝔰.besselGraph :=
   .mk' (fun s v ↦ ⟨(h.realCoords s v, unitSignEquiv 𝔰.κ ((Y.leviPart ⟨(s.1, 1), s.2⟩).1 v)), by
       rw [Shape.mem_besselGraph_iff_mul_inv_mem, ← h.adelicToInf_mul_inv_inclX]
-      exact h.adelicToInf_mem_besselU (Y.mul_inv_inclX_leviPart_mem ⟨(s.1, 1), s.2⟩) v⟩)
+      exact h.adelicToInf_mem_besselU (Y.mul_inv_inclX_leviPart_mem ⟨(s.val, 1), s.property⟩) v⟩)
     fun s t ↦ by
-      have h_levi : Y.leviPart ⟨((s * t).1, 1), (s * t).2⟩ =
-          Y.leviPart ⟨(s.1, 1), s.2⟩ * Y.leviPart ⟨(t.1, 1), t.2⟩ := by
+      have h_levi : Y.leviPart ⟨((s * t).val, 1), (s * t).property⟩ =
+          Y.leviPart ⟨(s.val, 1), s.property⟩ * Y.leviPart ⟨(t.val, 1), t.property⟩ := by
         rw [← map_mul]
         exact congrArg _ (Subtype.ext (by simp))
       ext v : 3
@@ -179,11 +185,9 @@ lemma besselRealToPi_apply_snd (h : S.Fits V l kw Y η) (s : Y.besselReal) (v : 
 /-- The map `besselRealToPi` is continuous, as both components at each place are. -/
 lemma continuous_besselRealToPi (h : S.Fits V l kw Y η) : Continuous h.besselRealToPi := by
   have h_coords : Continuous h.realCoords := h.isEmbedding_realCoords.continuous
-  have h_levi : Continuous fun s : Y.besselReal ↦ Y.leviPart ⟨(s.1, 1), s.2⟩ :=
-    Y.continuous_leviPart.comp (by fun_prop)
   refine continuous_pi fun v ↦ continuous_induced_rng.2 ?_
   change Continuous fun s : Y.besselReal ↦
-    (h.realCoords s v, unitSignEquiv 𝔰.κ ((Y.leviPart ⟨(s.1, 1), s.2⟩).1 v))
+    (h.realCoords s v, unitSignEquiv 𝔰.κ ((Y.leviPart ⟨(s.val, 1), s.property⟩).1 v))
   fun_prop
 
 /-- Suppose the hermitian space `V` with grading `Y` fits the filling data `S`. Then
@@ -203,7 +207,7 @@ lemma besselRealToPi_surjective (h : S.Fits V l kw Y η) :
   have h_unip : (s, 1) * (Y.inclX (a, 1))⁻¹ ∈ Y.unipotent := by
     refine h.mem_unipotent_of_snd_eq_one (by simp [ha_fin]) fun v ↦ ?_
     rw [h.adelicToInf_mul_inv_inclX, hs, ContinuousMulEquiv.apply_symm_apply]
-    exact Shape.mem_besselGraph_iff_mul_inv_mem.1 (q v).2
+    exact Shape.mem_besselGraph_iff_mul_inv_mem.1 (q v).property
   have h_mem : (s, 1) ∈ Y.besselGroup := by
     simpa using mul_mem (Y.unipotent_le_besselGroup h_unip) (Y.inclX_mem_besselGroup (a, 1))
   have h_levi : Y.leviPart ⟨(s, 1), h_mem⟩ = (a, 1) := by
@@ -240,7 +244,6 @@ lemma exists_integral_pi_eq (h : S.Fits V l kw Y η) :
   let μ : Measure (InfinitePlace E → 𝔰.besselGraph) := Measure.pi fun _ ↦ 𝔰.besselGraphMeasure
   let ν : Measure (InfinitePlace E → 𝔰.besselGraph) := haar.map h.besselRealEquiv
   have : MeasurableMul 𝔰.besselGraph := ContinuousMul.measurableMul
-  have : μ.IsHaarMeasure := Measure.pi.isHaarMeasure _
   have : ν.IsHaarMeasure := h.besselRealEquiv.isHaarMeasure_map haar
   refine ⟨haarScalarFactor μ ν, fun F ↦ ?_⟩
   have h_map : ∫ q, F q ∂ν = ∫ s : Y.besselReal, F (h.besselRealToPi s) ∂haar :=
@@ -278,7 +281,7 @@ lemma besselChar_inl_inv (h : S.Fits V l kw Y η) (s : GInf E ε) :
   have h_wave (v : InfinitePlace E) : wave (-simpleRootSum (h.realCoords s v)) =
       Complex.exp (2 * Real.pi * Complex.I * (2 * (z.1 v).re : ℝ)) := by
     rw [wave, hz_inf, Complex.sub_conj]
-    exact congrArg Complex.exp (by simp [Complex.ext_iff, mul_assoc, mul_left_comm])
+    exact congrArg Complex.exp (by simp [Complex.ext_iff, mul_assoc])
   calc (h.besselChar (s, 1))⁻¹ = (stdAddChar E z : ℂ)⁻¹ := rfl
     _ = Complex.exp (∑ v, 2 * Real.pi * Complex.I * (2 * (z.1 v).re : ℝ)) := by
         simp [stdAddChar, hz_fin, ← Complex.exp_neg, Finset.mul_sum, mul_assoc, mul_comm Complex.I]
@@ -403,8 +406,8 @@ theorem exists_besselFn_eq_integral (h : S.Fits V l kw Y η) :
   have h_prod (s : Y.besselReal) :
       (fun i : S.BesselCoord ↦ ∏ v, f v (h.besselRealToPi s v) (i v)) =
         (∏ v, (l v).dsCoeffInFrame ((h.realHomeomorph g v)⁻¹ * h.realHomeomorph (s * y) v)) •
-          (h.besselChar (s.1, 1))⁻¹ • (kroneckerPi fun v ↦ ((S.besselSystem v).rep
-            (unitSignEquiv 𝔰.κ ((Y.leviPart ⟨(s.1, 1), s.2⟩).1 v))⁻¹).1) *ᵥ w :=
+          (h.besselChar (s.val, 1))⁻¹ • (kroneckerPi fun v ↦ ((S.besselSystem v).rep
+            (unitSignEquiv 𝔰.κ ((Y.leviPart ⟨(s.val, 1), s.property⟩).1 v))⁻¹).val) *ᵥ w :=
     h.prod_besselIntegrand g y u s
   have h_besselFn : S.besselFn .full (h.realHomeomorph y) = (∏ v, (a v : ℂ)) •
       fun i ↦ ∏ v, (∫ s, f v s ∂𝔰.besselGraphMeasure) (i v) := by

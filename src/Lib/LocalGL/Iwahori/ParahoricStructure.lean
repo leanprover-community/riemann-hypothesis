@@ -1,4 +1,22 @@
-import Lib.Adelic.Hecke.ClassSums
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Permutation
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.LinearAlgebra.Matrix.IsDiag
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.Algebra.Ring.Compact
+import Mathlib.Topology.Algebra.Valued.LocallyCompact
+import Mathlib.Topology.Algebra.Valued.WithZeroMulInt
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import Lib.Adelic.Hecke.ClassSums
+public import Lib.General.Groups.BesselGroups
+public import Lib.General.Topology
+import Lib.Adelic.Unitary.Defs
 import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
@@ -49,6 +67,8 @@ The last section proves conjugacy in I₁ t I₁, twisted by an isometric automo
 See also `Lib.LocalGL.Iwahori.HeckeDegrees`.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -84,9 +104,6 @@ lemma permGL_mul_transvectionGL (hij : i ≠ j) (a : R) :
     permGL σ * transvectionGL hij a = transvectionGL (σ.injective.ne hij) a * permGL σ := by
   aesop (add simp [Perm.inv_def, transvection, Matrix.single, toMatrix_mul_apply, Matrix.one_apply,
     mul_toMatrix_toPEquiv])
-
-open scoped Classical in
-instance : IsLocalRing 𝒪[F] := inferInstance
 
 @[simp high]
 lemma residue_eq_zero_iff_valuation_lt_one {a : 𝒪[F]} : residue 𝒪[F] a = 0 ↔ v a.val < 1 :=
@@ -134,7 +151,7 @@ def residuePreimage (H : Subgroup (GL n (IsLocalRing.ResidueField 𝒪[F])))
 entry `g i j` lies in the maximal ideal (`v (g i j) < 1`) whenever `b j < b i`. -/
 def blockParahoric {N : ℕ} (b : ℕ → ℕ) : Subgroup (GL (Fin N) F) :=
   (residuePreimage (fun g : GL (Fin N) F ↦ ∀ i j : Fin N, b j < b i → v (g i j) < 1)
-    (parabolic fun i : Fin N ↦ b i.1) (by simp [parabolic, BlockTriangular])).toSubgroup
+    (parabolic fun i : Fin N ↦ b i.val) (by simp [parabolic, BlockTriangular])).toSubgroup
 
 /-- Dominant elements of the diagonal torus: the `t` with `v (t i) ≤ v (t j)` for `i ≤ j`. -/
 def dominantTorus : Submonoid (n → Fˣ) where
@@ -199,7 +216,7 @@ structure IsIwahoriEigen (x : ρ) : Prop where
 /-- The normalised absolute value on F^×, as a character with complex values: x ↦ q^{−ord x}, q
 the order of the residue field. -/
 def normAbsChar : Fˣ →* ℂˣ :=
-  MonoidHom.mk' (fun x ↦ Units.mk0 (Nat.card 𝓀[F] : ℂ) NeZero.out ^ (v x.1).log)
+  MonoidHom.mk' (fun x ↦ Units.mk0 (Nat.card 𝓀[F] : ℂ) NeZero.out ^ (v x.val).log)
     (by simp [_root_.zpow_add])
 
 /-- The bijection from families `(θ i)`, `0 ≤ i < N`, of characters of `Fˣ` to characters of the
@@ -207,7 +224,7 @@ diagonal torus that sends `θ` to `t ↦ ∏ i, θ i (t i) * |t i| ^ (N - 1 - i)
 `|·| = normAbsChar`: multiply `θ i` by `normAbsChar ^ (N - 1 - i)`, then take the product over `i`.
 See `torusChar_mulSingle` for the value on one coordinate. -/
 def torusChar {N : ℕ} : (Fin N → Fˣ →* ℂˣ) ≃ ((Fin N → Fˣ) →* ℂˣ) :=
-  (Equiv.mulRight fun i : Fin N ↦ normAbsChar (F := F) ^ i.rev.1).trans
+  (Equiv.mulRight fun i : Fin N ↦ normAbsChar (F := F) ^ i.rev.val).trans
     (Pi.monoidHomMulEquiv (fun _ ↦ Fˣ) (ℂˣ)).symm.toEquiv
 
 @[simp]
@@ -281,14 +298,14 @@ lemma mem_proIwahori_iff_of_unitriangular (hg_tri : g ∈ unitriangular id F) :
   -- On and below the diagonal `g` agrees with the identity, so only the entries above it matter.
   have hg_one : ∀ a b : n, b ≤ a → g a b = (1 : Matrix n n F) a b := hg_tri
   rw [mem_proIwahori]
-  refine ⟨fun ⟨hg_int, _⟩ i j _ ↦ hg_int i j,
-    fun h_above ↦ ⟨fun i j ↦ ?_, fun i j h_lt ↦ ?_, fun i ↦ ?_⟩⟩
-  · rcases lt_trichotomy i j with h_lt | rfl | h_gt
-    · exact h_above i j h_lt
-    · simp [hg_one i i le_rfl]
-    · simp [hg_one i j h_gt.le, h_gt.ne']
-  · simp [hg_one i j h_lt.le, h_lt.ne']
-  · simp [hg_one i i le_rfl]
+  refine ⟨fun ⟨hg_int, _⟩ i j _ ↦ hg_int i j, fun h_above ↦ ?_⟩
+  have h_below (i j : n) (hji : j < i) : v (g i j) < 1 := by
+    simp [hg_one i j hji.le, hji.ne']
+  have h_diag (i : n) : g i i = 1 := by simp [hg_one i i le_rfl]
+  refine ⟨fun i j ↦ ?_, h_below, fun i ↦ ?_⟩
+  · rcases lt_trichotomy i j with hij | rfl | hji
+    exacts [h_above i j hij, (by simp [h_diag]), (h_below i j hji).le]
+  · simp [h_diag]
 
 /-- For `i ≠ j` (hypothesis `hij`), the transvection `1 + a E_ij` lies in `New.proIwahori` when `a`
 lies in the maximal ideal, or when `a` is integral and `i < j`. -/
@@ -345,7 +362,8 @@ lemma exists_row_reduction (g : GL n F) (s : Finset n) :
       grind
     have he_mul (r l : n) :
         (e * m) r l = if r < a then m r l - m r j / m a j * m a l else m r l := by
-      simp [e, col, updateCol_apply, Matrix.mul_apply, Finset.sum_ite, Finset.filter_eq', Matrix.one_apply]
+      simp [e, col, updateCol_apply, Matrix.mul_apply, Finset.sum_ite, Finset.filter_eq',
+        Matrix.one_apply]
       grind
     have he_mem (hg : g ∈ proIwahori) : e ∈ proIwahori := by
       obtain ⟨hm_int, -, -⟩ := mem_proIwahori.mp (hm_K hg)
@@ -465,7 +483,7 @@ lemma exists_unipotent_conj_mem_proIwahori (ht : t ∈ dominantTorus) (hg : g �
   -- As `t` is dominant, the lower triangular `u⁻¹ * g` is block triangular for the valuations
   -- of `t⁻¹`.
   have h_tri : (u⁻¹ * g).val.BlockTriangular fun i : n ↦ v ((t⁻¹ i : Fˣ) : F) := fun i j hij ↦ by
-    have h_lt : v (t i : F) < v (t j : F) := by simpa [inv_lt_inv₀, zero_lt_iff] using hij
+    have h_lt : v (t i : F) < v (t j : F) := by simpa [inv_lt_inv₀, pos_iff_ne_zero] using hij
     exact h_lower i j (ht.reflect_lt h_lt)
   have h_conj : diagGL t⁻¹ * (u⁻¹ * g) * (diagGL t⁻¹)⁻¹ ∈ proIwahori :=
     diagGL_conj_mem_proIwahori (mul_mem (inv_mem huK) hg) h_tri
@@ -497,7 +515,7 @@ lemma compactMean_diagGL_compactMean_diagGL (ht : t ∈ dominantTorus) (ht' : t'
       compactMean ρ.ρ proIwahori (ρ (diagGL (t * t')) x) := by
   -- The inner mean drops out: each k in `proIwahori` is u · (u⁻¹ k), where t conjugates u into
   -- `proIwahori` and u⁻¹ k fixes ρ(t') x, since t'⁻¹ u⁻¹ k t' lies in `proIwahori`.
-  rw [map_mul, map_mul, Module.End.mul_apply]
+  rw [map_mul, map_mul, mul_apply_eq_comp]
   refine map_compactMean_of_factor (fun _ ↦ compactMean_apply) fun k hk ↦ ?_
   obtain ⟨u, hu, h_conj⟩ : ∃ u ∈ unitriangular id F ⊓ proIwahori,
       (diagGL t')⁻¹ * (u⁻¹ * k) * diagGL t' ∈ proIwahori :=
@@ -656,7 +674,7 @@ lemma eventually_v_mul_pow_le_one (ht : StrictMono fun i : Fin N ↦ v (t i : F)
   simp_rw [eventually_all, ← div_pow]
   intro i j hij
   -- The powers of `t i / t j` tend to `0`, and `𝒪[F]` is a neighbourhood of `0`.
-  have h_lt : v (t i / t j : F) < 1 := by simp [ht hij, div_lt_one₀, zero_lt_iff]
+  have h_lt : v (t i / t j : F) < 1 := by simp [ht hij, div_lt_one₀, pos_iff_ne_zero]
   exact (tendsto_zero_pow_of_v_lt_one h_lt).mul_const (a i j)
     ((isOpen_integer F).mem_nhds (by simp))
 
@@ -666,7 +684,7 @@ lemma eventually_pow_mul_mem_dominantTorus (ht : StrictMono fun i : Fin N ↦ v 
     (s : Fin N → Fˣ) :
     ∀ᶠ k : ℕ in atTop, t ^ k * s ∈ dominantTorus := by
   filter_upwards [eventually_v_mul_pow_le_one ht fun i j ↦ s i / s j] with k hk
-  simpa [dominantTorus, monotone_iff_forall_lt, field, zero_lt_iff] using hk
+  simpa [dominantTorus, monotone_iff_forall_lt, field, pos_iff_ne_zero] using hk
 
 /-- For a diagonal `t` and an integer `j`, the subgroup `diag(t)⁻ʲ I₁ diag(t)ʲ` of the `x` with
 `diag(t) ^ j * x * diag(t) ^ (-j)` in the pro-`p` Iwahori subgroup `I₁`. -/
@@ -723,7 +741,7 @@ private lemma exists_twistedConj_mem_conjProIwahori (ht : StrictMono fun i : Fin
       cases j with
       | zero =>
         -- for the index `-1`, membership is conjugation by `diag(t)⁻¹`, which is `hu_conj`
-        simpa [_root_.zpow_neg_one, mul_assoc] using hu_conj
+        simpa [_root_.zpow_neg_one] using hu_conj
       | succ j =>
         -- `σ(z) = u⁻¹ * twistedConj t g σ k` and both factors lie in `diag(t)⁻ʲ I₁ diag(t)ʲ`
         rw [Nat.cast_succ, add_neg_cancel_right]
@@ -792,7 +810,7 @@ lemma exists_inv_mul_mul_map_eq_diagGL_mul [CompactSpace 𝒪[F]]
     have h_cont :
         Continuous fun k : proIwahori ↦ (MulAut.conj (diagGL t) ^ j) (twistedConj t g σ k) := by
       -- `simp` writes the conjugation by `diagGL t ^ j` as a product, which `fun_prop` handles
-      simp [← map_zpow, mul_assoc]
+      simp only [← map_zpow, MulAut.conj_apply]
       fun_prop
     have h_closed : IsClosed (twistedConj t g σ ⁻¹' conjProIwahori t j) :=
       (proIwahori.isClosed_of_isOpen isOpen_proIwahori).preimage h_cont

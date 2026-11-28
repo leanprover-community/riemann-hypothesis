@@ -1,4 +1,20 @@
-import Lib.Base
+module
+
+import TauCeti.RingTheory.AdicCompletion.Pi
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.RingTheory.AdicCompletion.Algebra
+import Mathlib.RingTheory.AdicCompletion.LocalRing
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Ideal.Finsupp
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.NumberTheory.Padics.Complex.Basic
+public import Lib.Speed
 
 /-!
 # Adic completeness: p-adic tools, extension by continuity, topological bases
@@ -38,6 +54,8 @@ Notions of this file:
 Known; see `Lib.PadicComparison.Completion` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -46,9 +64,8 @@ noncomputable section
 * `New.PadicField`: normed fields over `ℚ_[p]`. `New.norm_p_eq_inv` gives the norm of `p` there,
   and `Nat.Coprime.norm_natCast_eq_one` that of natural numbers prime to `p`.
 * `New.valRingCp`: the ring of integers of `ℂ_p`, a valuation ring with fraction field `ℂ_p`.
-* `New.pow_dvd_of_map`, `New.smodEq_span_pow_iff_dvd`, `New.eq_of_forall_pow_dvd_sub`,
-  `New.isUnit_of_dvd_sub`: divisibility by powers of `π`, and its use in `π`-adically separated or
-  complete rings.
+* `New.pow_dvd_of_map`, `New.eq_of_forall_pow_dvd_sub`, `New.isUnit_of_dvd_sub`: divisibility by
+  powers of `π`, and its use in `π`-adically separated or complete rings.
 -/
 
 namespace New
@@ -79,6 +96,11 @@ class PadicPlace (p : outParam ℕ) [Fact p.Prime] where
 
 export PadicPlace (ιₚ)
 
+/-- The valuation ring O_ι ⊂ ℂ of complex numbers whose image under ι : ℂ → ℂ_p has absolute
+value at most 1. -/
+noncomputable abbrev embValRing {p : ℕ} [Fact p.Prime] [ι : PadicPlace p] : ValuationSubring ℂ :=
+  ((NormedField.valuation (K := ℂ_[p])).comap ιₚ).valuationSubring
+
 variable {R : Type*} (N : Type*) [CommRing R] [AddCommGroup N] [Module R N] {π x y : R}
   {p n : ℕ} [Fact p.Prime] {F : Type*} [NormedField F] [PadicField F p] {S : Type*} [CommRing S]
 
@@ -88,8 +110,6 @@ noncomputable instance : PadicField (PadicAlgCl p) p where
 
 lemma norm_p_eq_inv : ‖(p : F)‖ = (↑p)⁻¹ := by
   simpa using norm_algebraMap' F (p : ℚ_[p])
-
-lemma norm_p_lt_one : ‖(p : F)‖ < 1 := by simp [norm_p_eq_inv, ← norm_p]
 
 /-- The ring of integers of `ℂ_p`: the elements of norm at most one. It has the same elements as
 Mathlib's `PadicComplexInt p`; here membership is the inequality `‖x‖ ≤ 1` by definition. -/
@@ -102,11 +122,8 @@ lemma mem_valRingCp {x : ℂ_[p]} : x ∈ valRingCp p ↔ ‖x‖ ≤ 1 := Iff.r
 @[simp]
 lemma valRingCp.algebraMap_apply (x : valRingCp p) : algebraMap (valRingCp p) ℂ_[p] x = x := rfl
 
-lemma valRingCp.dvd_iff_norm_le (x y : valRingCp p) : x ∣ y ↔ ‖(y : ℂ_[p])‖ ≤ ‖(x : ℂ_[p])‖ :=
+lemma valRingCp.dvd_iff_norm_le {x y : valRingCp p} : x ∣ y ↔ ‖(y : ℂ_[p])‖ ≤ ‖(x : ℂ_[p])‖ :=
   (Valuation.integer.integers (NormedField.valuation (K := ℂ_[p]))).dvd_iff_le
-
-lemma valRingCp.isClosed : IsClosed (valRingCp p : Set ℂ_[p]) :=
-  isClosed_Iic.preimage continuous_norm
 
 instance : ValuationRing (valRingCp p) :=
   inferInstanceAs (ValuationRing (NormedField.valuation (K := ℂ_[p])).integer)
@@ -115,6 +132,13 @@ instance : IsFractionRing (valRingCp p) ℂ_[p] :=
   inferInstanceAs (IsFractionRing (NormedField.valuation (K := ℂ_[p])).integer ℂ_[p])
 
 instance : IsLocalRing (valRingCp p) := ValuationRing.isLocalRing (valRingCp p)
+
+/-- The residue field of the valuation ring of `ℂ_[p]` has characteristic `p`, since `‖p‖ < 1`. -/
+instance : CharP (IsLocalRing.ResidueField (valRingCp p)) p := by
+  refine (CharP.charP_iff_prime_eq_zero (Fact.out : p.Prime)).2 ?_
+  rw [← map_natCast (IsLocalRing.residue (valRingCp p)), IsLocalRing.residue_eq_zero_iff,
+    IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
+  simpa [isUnit_iff_dvd_one, valRingCp.dvd_iff_norm_le] using PadicComplex.norm_p_lt_one p
 
 instance : IsIntegrallyClosed (valRingCp p) :=
   inferInstanceAs (IsIntegrallyClosed (NormedField.valuation (K := ℂ_[p])).integer)
@@ -142,25 +166,20 @@ lemma pow_dvd_of_map {ϖ : S} {T : R → S} (hT : ∀ a : R, T (π * a) = ϖ * T
     rw [hT, pow_succ', dvd_cancel_left_mem_nonZeroDivisors hϖ] at h_pow
     simpa [pow_succ'] using mul_dvd_mul_left π (ih h_pow)
 
-/-- In a commutative ring, x and y are congruent modulo the submodule (π)^n of the ring if and only
-if π^n divides x − y. -/
-lemma smodEq_span_pow_iff_dvd :
-    x ≡ y [SMOD ((span {π} : Ideal R) ^ n • ⊤ : Ideal R)] ↔ π ^ n ∣ x - y := by
-  simp [SModEq.sub_mem, span_singleton_pow, mem_span_singleton]
-
 /-- In a ring that is separated for `(π)`, two elements congruent modulo every power of `π` are
 equal. -/
 lemma eq_of_forall_pow_dvd_sub (π : R) [IsHausdorff (span {π}) R]
     (h_dvd : ∀ n : ℕ, π ^ n ∣ x - y) : x = y :=
-  IsHausdorff.eq_iff_smodEq.2 fun n ↦ smodEq_span_pow_iff_dvd.2 (h_dvd n)
+  IsHausdorff.eq_iff_smodEq.2 fun n ↦ (TauCeti.sModEq_span_singleton_pow_iff ..).2 (h_dvd n)
 
 /-- In a ring that is complete for `(π)`, an element congruent to a unit modulo `π` is a unit. -/
+@[stacks 05GI "(1), for a ring complete for a principal ideal"]
 lemma isUnit_of_dvd_sub [IsAdicComplete (span {π}) R] (hy : IsUnit y) (h_dvd : π ∣ x - y) :
     IsUnit x := by
   -- `x - y` lies in the Jacobson radical, so `(x - y) * y⁻¹ + 1 = x * y⁻¹` is a unit
-  have h_jac : x - y ∈ jacobson ⊥ :=
-    IsAdicComplete.le_jacobson_bot (span {π}) (mem_span_singleton.2 h_dvd)
-  simpa [sub_mul] using mem_jacobson_bot.1 h_jac ↑hy.unit⁻¹
+  have h_jac : x - y ∈ Ring.jacobson _ :=
+    IsAdicComplete.le_jacobson (span {π}) (mem_span_singleton.2 h_dvd)
+  simpa [sub_mul] using Ring.mem_jacobson_iff.1 h_jac ↑hy.unit⁻¹
 
 omit [Fact p.Prime] in
 /-- An `S`-algebra that is `p`-adically complete as a ring is `p`-adically complete as an
@@ -250,12 +269,13 @@ from the I-adic completion of R to the J-adic completion of S. -/
 @[irreducible]
 def adicMap (h : I ≤ comap f J) : AdicCompletion I R →+* AdicCompletion J S :=
   -- the component in `S / J ^ n` is the image of the component in `R / I ^ n`
-  liftRingHom J (fun n ↦ (quotientMap (J ^ n) f (by grw [← le_comap_pow, ← h])).comp (evalₐ I n))
+  liftRingHom J
+    (fun n ↦ (quotientMap (J ^ n) f (by grw [← le_comap_pow, ← h])).comp (evalₐ I n).toRingHom)
     fun {m n} hmn ↦ by
       -- these components are compatible because those of `x` are
       ext x
       obtain ⟨a, rfl⟩ := AdicCompletion.mk_surjective I R x
-      have h_sub : a n - a m ∈ I ^ m := by simpa using SModEq.sub_mem.1 (a.2 hmn).symm
+      have h_sub : a n - a m ∈ I ^ m := by simpa using SModEq.sub_mem.1 (a.property hmn).symm
       simpa [Quotient.factorPow, Ideal.Quotient.eq] using
         le_comap_pow f m (pow_right_mono h m h_sub)
 
@@ -264,9 +284,8 @@ def adicMap (h : I ≤ comap f J) : AdicCompletion I R →+* AdicCompletion J S 
 @[simp]
 lemma evalₐ_adicMap (h : I ≤ comap f J) (n : ℕ) (x : AdicCompletion I R) :
     evalₐ J n (adicMap f h x) = quotientMap (J ^ n) f (by grw [h, le_comap_pow]) (evalₐ I n x) := by
-  rw [adicMap]
-  generalize_proofs
-  exact evalₐ_liftRingHom _ _ (by assumption) n x
+  rw [adicMap, evalₐ_liftRingHom]
+  rfl
 
 /-- For a ring map `f : R → S` carrying `I` into `J`, the induced map `adicMap f h` of adic
 completions sends the image of `x : R` to the image of `f x`. -/
@@ -426,12 +445,6 @@ lemma isHausdorff_of_injective_pi [IsHausdorff I F] {ι : Type*} (f : M →ₗ[S
     rw [← map_of, ← map_of, hxy]
   exact of_inj.mp h_coord
 
-/-- A finite free module over an `I`-adically complete ring is `I`-adically complete. -/
-lemma isAdicComplete_of_free [IsAdicComplete I S] [Free S M] [Module.Finite S M] :
-    IsAdicComplete I M :=
-  have := isHausdorff_of_injective_pi I _ (Free.chooseBasis S M).equivFun.injective
-  {}
-
 /-- Let C be I-adically complete, β: F → M have I-adically dense image, and g: F → C satisfy
 g(f) ∈ I^n C whenever β(f) ∈ I^{2n} M. Then g = G ∘ β for some S-linear G: M → C. -/
 lemma exists_adic_extension (I : Ideal S) [IsAdicComplete I C] (β : F →ₗ[S] M)
@@ -444,9 +457,9 @@ lemma exists_adic_extension (I : Ideal S) [IsAdicComplete I C] (β : F →ₗ[S]
   have hker : LinearMap.ker (AdicCompletion.map I β) ≤ LinearMap.ker (AdicCompletion.map I g) := by
     refine (mk_surjective I F).forall.2 fun a ha ↦ ext fun n ↦ ?_
     have hβ : β (a (n + n)) ∈ I ^ (n + n) • (⊤ : Submodule S M) :=
-      (Submodule.Quotient.mk_eq_zero _).1 (congrArg (·.1 (n + n)) ha)
+      (Submodule.Quotient.mk_eq_zero _).1 (congrArg (·.val (n + n)) ha)
     exact calc
-      g (a n) ≡ g (a (n + n)) [SMOD I ^ n • ⊤] := (a.map I g).2 le_add_self
+      g (a n) ≡ g (a (n + n)) [SMOD I ^ n • ⊤] := (a.map I g).property le_add_self
       _ ≡ 0 [SMOD I ^ n • ⊤] := zero.2 (mem_comap.1 (h_cont n hβ))
   -- `e` identifies the completion of `M` with a quotient of that of `F`; `G` is the induced map.
   let e : (AdicCompletion I F ⧸ LinearMap.ker (AdicCompletion.map I β)) ≃ₗ[AdicCompletion I S]
@@ -594,7 +607,7 @@ lemma New.free_finite_of_rank_le {S M : Type} [CommRing S] [Nontrivial S] [AddCo
     linearIndependent_iff.2 fun f hf ↦ f.ext fun i ↦ by simp [← c.dual i f, hf]
   have : Finite c.Index :=
     Cardinal.mk_lt_aleph0_iff.1 ((h_indep.cardinal_le_rank.trans h_rank).trans_lt (by simp))
-  have e : (c.Index →₀ S) ≃ₗ[S] M :=
+  let e : (c.Index →₀ S) ≃ₗ[S] M :=
     .ofBijective _ ⟨h_indep, surjective_of_mkQ_comp_surjective c.dense⟩
   exact ⟨.of_equiv e, .equiv e⟩
 
@@ -663,7 +676,7 @@ lemma eventually_sub_sum_mem (y : A) (n : ℕ) :
     (map_surjective_of_mkQ_comp_surjective c.dense).comp (mk_surjective I _) (of I A y)
   -- the `n`-th term `a n` of such a sequence approximates `y`
   have hf : y - linearCombination S c.b (a n) ∈ I ^ n • (⊤ : Submodule S A) :=
-    (Submodule.Quotient.eq _).1 (congrArg (fun z : AdicCompletion I A ↦ z.1 n) ha).symm
+    (Submodule.Quotient.eq _).1 (congrArg (fun z : AdicCompletion I A ↦ z.val n) ha).symm
   set f : c.Index →₀ S := a n
   -- every `F` that contains the support of the approximation `f` will do
   refine Filter.mem_atTop_sets.2 ⟨f.support, fun F hF ↦ (sub_mem_iff_right _ hf).1 ?_⟩

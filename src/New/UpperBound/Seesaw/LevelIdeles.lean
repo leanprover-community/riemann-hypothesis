@@ -1,5 +1,7 @@
+module
+
+public import New.UpperBound.Seesaw.EdgePairEvaluation
 import New.OneLift.ComparisonOperator.ExchangeData
-import New.UpperBound.Seesaw.EdgePairEvaluation
 
 /-!
 # Valuations of the chosen ideles, and lattices and levels at the chosen places
@@ -31,6 +33,8 @@ notions used:
 
 These are auxiliary facts about the data `New.Data`; no external source is cited.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

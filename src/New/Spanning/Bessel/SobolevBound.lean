@@ -1,4 +1,21 @@
+module
+
+import TauCeti.Analysis.Matrix.L2OpNorm
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Calculus.Deriv.Pi
+import Mathlib.CategoryTheory.Countable
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.Bessel.GramSection
 import Lib.DiscreteSeries.Bessel.SchurBound
+import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
+import Lib.DiscreteSeries.Bruhat.ComplexPlace
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.Analysis.GaussianIntegral
+import Lib.General.Analysis.PackingAndSobolev
 import New.Spanning.Bessel.MeanValue
 
 /-!
@@ -40,6 +57,8 @@ Notions from other files:
 See `New.Spanning.Bessel.FillingData` for related work.
 -/
 
+@[expose] public section
+
 /-!
 ## An unfolding bound over G₁ for suitable weights
 
@@ -62,7 +81,11 @@ lemma New.volume_upperEntries_closedBall_le {j : ℕ} {R : ℝ} (hR : 1 ≤ R) :
     (Fintype.card_subtype_le _).trans (by simp [sq])
   suffices h_pow : (R ^ 2 * Real.pi) ^ Fintype.card {p : Fin j × Fin j // p.1 < p.2} ≤
       ((2 * R) ^ 2) ^ j ^ 2 by
-    simpa (disch := finiteness) [volume_pi, pow_mul, ← ENNReal.toReal_le_toReal] using h_pow
+    rw [volume_pi, Set.top_eq_univ, Measure.pi_pi, Finset.prod_const, Finset.card_univ,
+      Complex.volume_closedBall, ← ENNReal.ofReal_coe_nnreal, NNReal.coe_real_pi,
+      ← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_mul (sq_nonneg R),
+      ← ENNReal.ofReal_pow (by positivity), pow_mul]
+    exact ENNReal.ofReal_le_ofReal h_pow
   grw [h_disc, pow_le_pow_right₀ (by nlinarith) h_card]
 
 /-- The frame is e₁, …, e_ϱ, z and `frameMatrix s` is the block of `s` on its rows and columns. Let
@@ -85,7 +108,8 @@ lemma New.lintegral_mul_le_of_frameMatrix_le {𝔰 : Shape} {w φ : 𝔰.G₁ �
   have inner_le (y : 𝔰.G₁) : ∫⁻ u : (𝔰.middleGram (1 : ℂ)).besselU, φ (u * y) ∂𝔰.besselHaar ≤
       K * .ofReal ((2 * R) ^ (2 * 𝔰.n ^ 2)) := by
     by_cases! hφy : ∀ u : (𝔰.middleGram (1 : ℂ)).besselU, φ (u * y) = 0
-    · simp [hφy]
+    · rw [lintegral_congr hφy, lintegral_zero]
+      exact zero_le
     obtain ⟨u₀, hu₀⟩ := hφy
     -- Outside the box the integrand vanishes, by `hR` at `u₀ * y`.
     have h_zero (x : UpperEntries 𝔰.n) (hx : x ∉ box) (u : (𝔰.middleGram (1 : ℂ)).besselU0) :
@@ -99,20 +123,47 @@ lemma New.lintegral_mul_le_of_frameMatrix_le {𝔰 : Shape} {w φ : 𝔰.G₁ �
       simpa [h_frame, unitriangularMatrix, hab] using h_entry
     calc
       _ = ∫⁻ x, ∫⁻ u, φ (u.val * (liftUnitriangular x * (u₀.val * y))) ∂𝔰.besselHaar₀ := by
+        have h_map : Continuous fun p : UpperEntries 𝔰.n × (𝔰.middleGram (1 : ℂ)).besselU0 ↦
+            (⟨p.2.val * liftUnitriangular p.1,
+              mul_mem (mem_besselU0_iff.1 p.2.prop).1 (liftUnitriangular_mem_besselU p.1)⟩ :
+              (𝔰.middleGram (1 : ℂ)).besselU) :=
+          ((continuous_subtypeVal.comp continuous_snd).mul
+            (continuous_liftUnitriangular.comp continuous_fst)).subtype_mk _
+        have h_fn : Measurable fun u : (𝔰.middleGram (1 : ℂ)).besselU ↦
+            φ ((u * u₀ : (𝔰.middleGram (1 : ℂ)).besselU).val * y) :=
+          hφ.comp ((continuous_subtypeVal.mul continuous_const).mul continuous_const).measurable
+        have h_comp : AEMeasurable
+            (fun a : UpperEntries 𝔰.n × (𝔰.middleGram (1 : ℂ)).besselU0 ↦
+              φ ((⟨a.2.val * liftUnitriangular a.1,
+                mul_mem (mem_besselU0_iff.1 a.2.prop).1 (liftUnitriangular_mem_besselU a.1)⟩ *
+                u₀ : (𝔰.middleGram (1 : ℂ)).besselU).val * y))
+            (volume.prod 𝔰.besselHaar₀) :=
+          (h_fn.comp h_map.measurable).aemeasurable
         rw [← lintegral_mul_right_eq_self _ u₀, Shape.besselHaar,
-          lintegral_map (by fun_prop) (by fun_prop), lintegral_prod _ (by fun_prop)]
-        simp [mul_assoc]
+          lintegral_map h_fn h_map.measurable, lintegral_prod _ h_comp]
+        refine lintegral_congr fun x ↦ lintegral_congr fun u ↦ congrArg φ ?_
+        simp only [Subgroup.coe_mul, mul_assoc]
       _ = ∫⁻ x in box, ∫⁻ u, φ (u.val * (liftUnitriangular x * (u₀.val * y))) ∂𝔰.besselHaar₀ :=
         (setLIntegral_eq_of_support_subset <|
-          Function.support_subset_iff'.2 fun x hx ↦ by simp [h_zero x hx]).symm
+          Function.support_subset_iff'.2 fun x hx ↦
+            (lintegral_congr (h_zero x hx)).trans lintegral_zero).symm
       _ ≤ K * volume box := by grw [hK, setLIntegral_const]
       _ ≤ _ := mul_le_mul' le_rfl (volume_upperEntries_closedBall_le h_one_le)
+  have : MeasurableSMul₂ (𝔰.middleGram (1 : ℂ)).besselU 𝔰.G₁ :=
+    ⟨((continuous_subtypeVal.comp continuous_fst).mul continuous_snd).measurable⟩
+  have : SMulInvariantMeasure (𝔰.middleGram (1 : ℂ)).besselU 𝔰.G₁ volume :=
+    ⟨fun c s _ ↦ measure_preimage_mul volume c.val s⟩
   calc _ = ∫⁻ y, ∫⁻ u, φ (u • y) * w (u • y) ∂𝔰.besselHaar ∂besselQuotMeasure :=
       (lintegral_orbitMeasure_lintegral (hφ.mul hw)).symm
     -- The weight `w` is left invariant, so it leaves the inner integral.
     _ = ∫⁻ y, (∫⁻ u, φ (u.val * y) ∂𝔰.besselHaar) * w y ∂besselQuotMeasure := by
-      simp (disch := fun_prop) only [← lintegral_mul_const]
-      simp [smul_def, hw_inv]
+      refine lintegral_congr fun y ↦ ?_
+      have h_meas : Measurable fun u : (𝔰.middleGram (1 : ℂ)).besselU ↦ φ (u.val * y) :=
+        hφ.comp (continuous_subtypeVal.mul continuous_const).measurable
+      rw [← lintegral_mul_const _ h_meas]
+      refine lintegral_congr fun u ↦ ?_
+      rw [smul_def, smul_eq_mul,
+        hw_inv u.val (mem_besselS.2 ⟨u.val, u.prop, 1, one_mem _, (mul_one _).symm⟩)]
     _ ≤ _ := by grw [inner_le, lintegral_const_mul _ hw]
 
 end BoxVolume
@@ -153,7 +204,10 @@ lemma New.Shape.mem_fixerBall {𝔰 : Shape} {R : ℝ}
   Iff.rfl
 
 lemma New.Shape.measurableSet_fixerBall (𝔰 : Shape) (R : ℝ) : MeasurableSet (𝔰.fixerBall R) :=
-  measurableSet_le (by fun_prop) measurable_const
+  measurableSet_le
+    ((Units.continuous_val.comp
+      (continuous_subtypeVal.comp (continuous_subtypeVal.comp continuous_snd))).norm.measurable)
+    measurable_const
 
 /-- The complex matrices of size `ϱ + 1` have real linear coordinates `e` such that `x ↦ Z + e x`
 preserves Lebesgue measure and the operator norm of `e x` is at most `2 (ϱ + 1) ^ 2` times the
@@ -225,7 +279,7 @@ lemma New.RealPlace.norm_frameMatrix_le_of_isBoundedInCell {𝔰 : Shape} {P : �
     simp [realFrameGram_eq_frameMatrix_mul y hs, (mem_openCell.1 hsy.mem_openCell).1]
   calc ‖frameMatrix s a b‖
     _ = ‖(realFrameGram y * (realFrameGram (s * y))⁻¹) b a‖ := by simp [h_adjoint]
-    _ ≤ ‖realFrameGram y * (realFrameGram (s * y))⁻¹‖ := norm_apply_le_l2_opNorm b a
+    _ ≤ ‖realFrameGram y * (realFrameGram (s * y))⁻¹‖ := norm_apply_le_l2_opNorm _ b a
     _ ≤ P * P := norm_mul_le_of_le hy.norm_le hsy.norm_inv_le
     _ = P ^ 2 := (sq P).symm
 
@@ -266,6 +320,7 @@ lemma New.RealPlace.lintegral_lintegral_gramSection_le {𝔰 : Shape} {P c : ℝ
   let J (Z : 𝔰.FrameMatrix) : ENNReal := .ofReal (𝔰.openCellConst * gramDiscReal Z ^ (𝔰.k - 1)) *
     ∫⁻ s', ∫⁻ s, χQ (s' * gramSection Z * s) * w (s' * gramSection Z * s)
       ∂fixerHaar 𝔰 ∂fixerHaar 𝔰
+  have h_xw : Measurable fun γ : 𝔰.G₁ ↦ χQ γ * w γ := χQ_meas.mul hw
   have le_J (Z : 𝔰.FrameMatrix) (hZ : Z ∈ Q) :
       ∫⁻ ω, w (gramSection Z * ((ω.2 : 𝔰.G₁) * embedH ω.1)⁻¹) ∂𝔰.fixerMeasure c ≤ J Z := by
     -- Along an orbit of the fixer only `χ` changes, and its integral over `𝖴⁰` is `1`.
@@ -281,19 +336,32 @@ lemma New.RealPlace.lintegral_lintegral_gramSection_le {𝔰 : Shape} {P c : ℝ
             realFrameGram_gramSection (Q_subset hZ)]
         simp only [χQ, indicator, mem_preimage, h_gram, ite_eq_left hZ]
         rw [mul_assoc s, hw_inv _ (mem_besselS_of_mem_besselFixer hs)]
-      rw [lintegral_fixerHaar (by fun_prop)]
+      have h_f : Measurable fun s : 𝔰.G₁ ↦ χQ (s * gramSection Z * r) * w (s * gramSection Z * r) :=
+        h_xw.comp ((measurable_id.mul_const _).mul_const _)
+      rw [lintegral_fixerHaar h_f]
       simp_rw [h_fiber (mul_embedH_mem_besselFixer (Subtype.prop _) _)]
-      simp (disch := fun_prop) [lintegral_mul_const, mul_assoc, χ_orbit]
+      refine (lintegral_congr fun h ↦ ?_).trans (by rw [lintegral_const, measure_univ, mul_one])
+      have h_χ : Measurable fun u : (𝔰.middleGram (1 : ℂ)).besselU0 ↦
+          χ (u.val * (embedH h * (gramSection Z * r))) :=
+        χ_meas.comp (continuous_subtypeVal.mul continuous_const).measurable
+      simp_rw [mul_assoc]
+      rw [lintegral_mul_const _ h_χ, χ_orbit, one_mul]
     unfold J
-    rw [lintegral_lintegral_swap (by fun_prop), lintegral_fixerHaar_eq_inv (by fun_prop)]
+    have h_prod_meas : Measurable fun p : 𝔰.G₁ × 𝔰.G₁ ↦
+        χQ (p.1 * gramSection Z * p.2) * w (p.1 * gramSection Z * p.2) :=
+      h_xw.comp ((measurable_fst.mul_const _).mul measurable_snd)
+    have h_r : Measurable fun r : 𝔰.G₁ ↦
+        ∫⁻ s, χQ (s * gramSection Z * r) * w (s * gramSection Z * r) ∂fixerHaar 𝔰 :=
+      (h_prod_meas.comp measurable_swap).lintegral_prod_right'
+    rw [lintegral_lintegral_swap h_prod_meas.aemeasurable, lintegral_fixerHaar_eq_inv h_r]
     simp_rw [h_orbit (inv_mem (mul_embedH_mem_besselFixer (Subtype.prop _) _))]
     -- On `Q` the density of the open cell is at least the one of `fixerMeasure c`.
     grw [Shape.fixerMeasure, lintegral_smul_measure, smul_eq_mul, ← h_disc Z hZ, lintegral_prod_le]
     exact 𝔰.openCellConst_pos.le
   calc _ ≤ ∫⁻ Z in Q, J Z := setLIntegral_mono' hQ le_J
     _ ≤ ∫⁻ Z in 𝔰.openCell, J Z := lintegral_mono_set Q_subset
-    _ ≤ ∫⁻ γ, χQ γ * w γ := lintegral_gramSection_le (f := fun γ ↦ χQ γ * w γ) (by fun_prop)
-    _ ≤ _ := by simpa using unfolding
+    _ ≤ ∫⁻ γ, χQ γ * w γ := lintegral_gramSection_le (f := fun γ ↦ χQ γ * w γ) h_xw
+    _ ≤ _ := by rwa [one_mul] at unfolding
 
 /-- The family `V` of functions on `G₁`, indexed by the words in an alphabet `L`, behaves like the
 iterated right derivatives of `V []`: along a curve `γ` in `G₁` with `γ' = γ X` and `‖X‖ ≤ C` near
@@ -344,7 +412,7 @@ lemma New.RealPlace.sobolev_const_mul_le_pow {P N Λ : ℝ} (hP : 8 ≤ P) (h_no
     2 / (P ^ 8)⁻¹ * (1 + (N * (Λ * P ^ 85)) ^ 2) * (2 * P ^ 2) ≤ P ^ 275 := by
   have one_le : 1 ≤ P := by linarith
   calc
-    _ = 4 * P ^ 10 * (1 + (N * Λ * P ^ 85) ^ 2) := by field
+    _ = 4 * P ^ 10 * (1 + (N * Λ * P ^ 85) ^ 2) := by rw [div_inv_eq_mul]; ring
     _ ≤ 4 * P ^ 10 * (P ^ 258 + (P ^ 44 * P ^ 85) ^ 2) := by
       gcongr
       exact one_le_pow₀ one_le
@@ -378,7 +446,9 @@ lemma New.RealPlace.exists_real_coordinates_mapsTo_ball {𝔰 : Shape} {P : ℝ}
   · have norm_x_le : ‖x‖ ≤ (P ^ 8)⁻¹ := by
       simpa [abs_of_pos P_pos] using dist_le_of_mem_pi_Icc hx (left_mem_Icc.2 (hx.1.trans hx.2))
     calc ‖e x‖ ≤ P ^ 2 * (P ^ 8)⁻¹ / 8 := by grw [norm_e_le, norm_x_le]
-      _ = (P ^ 6)⁻¹ / 8 := by field
+      _ = (P ^ 6)⁻¹ / 8 := by
+        rw [show P ^ 8 = P ^ 2 * P ^ 6 by ring, mul_inv, ← mul_assoc,
+          mul_inv_cancel₀ (pow_ne_zero 2 P_pos.ne'), one_mul]
       _ < (P ^ 6)⁻¹ := div_lt_self (by positivity) (by norm_num)
 
 /-- Let `P ≥ 8 r`, where `r = 𝔰.r` is the size of the matrices in `G₁`, and let `n = ϱ + 1`. Let `Z`
@@ -430,6 +500,13 @@ theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords {𝔰 : Shape} {
       exact Shape.mem_fixerBall.1 hω
     exact hV.exists_hasDerivAt_gramSection_mul eight_le h_cell deriv_line (speed_le j)
       (cube_subset ht₀) norm_shift w
+  have h_shift_meas : Measurable shift :=
+    ((continuous_subtypeVal.comp continuous_snd).mul
+      (continuous_embedH.comp continuous_fst)).inv.measurable
+  have hf_meas (w : List L) : Measurable ↿(f w) :=
+    (hV_meas w).comp
+      (((measurable_gramSection.comp (measurable_const.add e.continuous.measurable)).comp
+        measurable_fst).mul (h_shift_meas.comp measurable_snd))
   have cube_bound (w : List L) (hw : w.length ≤ 2 * 𝔰.n ^ 2) :
       ∫⁻ x in cube, ∫⁻ ω in B, ‖f w x ω‖ₑ ^ 2 ∂μ ≤ .ofReal ((2 * P ^ 2) ^ (2 * 𝔰.n ^ 2)) * K := by
     have hw_inv : besselS.FixesLeft fun g : 𝔰.G₁ ↦ ‖V w g‖ₑ ^ 2 :=
@@ -439,25 +516,29 @@ theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords {𝔰 : Shape} {
         grw [← cube_subset, setLIntegral_le_lintegral B]
       _ = ∫⁻ Y in Q, ∫⁻ ω, ‖V w (gramSection Y * shift ω)‖ₑ ^ 2 ∂μ :=
         e_preserving.setLIntegral_comp_preimage measurableSet_ball
-          (f := fun Y ↦ ∫⁻ ω, ‖V w (gramSection Y * shift ω)‖ₑ ^ 2 ∂μ) (by fun_prop)
+          (f := fun Y ↦ ∫⁻ ω, ‖V w (gramSection Y * shift ω)‖ₑ ^ 2 ∂μ)
+          ((((hV_meas w).comp ((measurable_gramSection.comp measurable_fst).mul
+            (h_shift_meas.comp measurable_snd))).eNorm.pow_const 2).lintegral_prod_right')
       _ ≤ .ofReal ((2 * P ^ 2) ^ (2 * 𝔰.n ^ 2)) * ∫⁻ g, ‖V w g‖ₑ ^ 2 ∂besselQuotMeasure :=
-        lintegral_lintegral_gramSection_le (w := fun g ↦ ‖V w g‖ₑ ^ 2) one_le hc measurableSet_ball
-          h_disc h_cell (by fun_prop) hw_inv
+        lintegral_lintegral_gramSection_le one_le hc measurableSet_ball h_disc h_cell
+          ((hV_meas w).eNorm.pow_const 2) hw_inv
       _ ≤ _ := by grw [hK w hw]
   -- Each of the `2 n ^ 2` coordinates costs `a` in Sobolev's inequality and `2 P ^ 2` on the cube.
+  have hcard : card 𝔰.FrameCoord = 2 * 𝔰.n ^ 2 := by
+    simp only [Shape.FrameCoord, Shape.n, card_prod, Fintype.card_fin, sq]
   let a : ℝ := 2 / (P ^ 8)⁻¹ * (1 + (card L * (Λ * P ^ 85)) ^ 2)
   have cost_le : a * (2 * P ^ 2) ≤ P ^ 275 := sobolev_const_mul_le_pow eight_le (by positivity) hΛ
   calc
     _ = ∫⁻ ω in B, ‖f [] 0 ω‖ₑ ^ 2 ∂μ := by simp only [f, shift, B, μ, map_zero, add_zero]
     _ ≤ .ofReal (a ^ card 𝔰.FrameCoord) * (.ofReal ((2 * P ^ 2) ^ (2 * 𝔰.n ^ 2)) * K) :=
-      sobolev_trace_cube f (by fun_prop) (by positivity)
+      sobolev_trace_cube f hf_meas (by positivity)
         (inv_le_one_of_one_le₀ (one_le_pow₀ one_le))
         (ae_restrict_of_forall_mem (𝔰.measurableSet_fixerBall _) deriv_bound)
-        fun w hw ↦ cube_bound w (by simpa [← sq] using hw)
+        fun w hw ↦ cube_bound w (hcard ▸ hw)
     _ = .ofReal ((a * (2 * P ^ 2)) ^ (2 * 𝔰.n ^ 2)) * K := by
-      simp (disch := positivity) [mul_pow a, ENNReal.ofReal_mul, mul_assoc, ← sq]
+      rw [hcard, ← mul_assoc, ← ENNReal.ofReal_mul (by positivity), ← mul_pow]
     _ ≤ .ofReal ((P ^ 275) ^ (2 * 𝔰.n ^ 2)) * K := by gcongr
-    _ = _ := by norm_num [← pow_mul, ← mul_assoc]
+    _ = _ := by rw [← pow_mul, show 275 * (2 * 𝔰.n ^ 2) = 550 * 𝔰.n ^ 2 by ring]
 
 /-- The letters `((a, b), c, d)` that index the derivatives of a convolution on `G₁`: `(a, b)` is
 the matrix unit along which the function is differentiated, and `c`, `d` select the entries of `y`
@@ -488,7 +569,14 @@ lemma New.RealPlace.measurable_convolutionWeight {𝔰 : Shape} (R : ℝ) {φ : 
       Measurable (convolutionWeight R φ i) := by
   induction i with
   | nil => exact hφ
-  | cons l i ih => exact ih.mul (by fun_prop)
+  | cons l i ih =>
+    have hM : Continuous fun y : 𝔰.G₁ ↦ (y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) :=
+      Units.continuous_val.comp continuous_subtypeVal
+    have h_fac : Continuous fun y : 𝔰.G₁ ↦
+        y⁻¹.val l.1.1 l.2.2 * y.val l.2.1 l.1.2 / (R : ℂ) ^ 2 :=
+      (((continuous_apply l.2.2).comp ((continuous_apply l.1.1).comp (hM.comp continuous_inv))).mul
+        ((continuous_apply l.1.2).comp ((continuous_apply l.2.1).comp hM))).div_const _
+    exact ih.mul h_fac.measurable
 
 /-- Let `0 < R` and let the function `φ` on `G₁` vanish at every `y` of operator norm greater than
 `R`. The weight `convolutionWeight R φ i` at `y` is `φ y` times one factor for each letter of the
@@ -505,7 +593,7 @@ lemma New.RealPlace.norm_convolutionWeight_le {𝔰 : Shape} {R : ℝ} (hR : 0 <
     by_cases hy : φ y = 0
     · simp [hy]
     -- Both entries have norm at most `‖y‖ = ‖y⁻¹‖ ≤ R`.
-    have entry_le : ‖y.val c b‖ ≤ R := (norm_apply_le_l2_opNorm c b).trans (hφ_supp y hy)
+    have entry_le : ‖y.val c b‖ ≤ R := (norm_apply_le_l2_opNorm _ c b).trans (hφ_supp y hy)
     have inv_entry_le : ‖y⁻¹.val a d‖ ≤ R := by
       grw [norm_apply_le_l2_opNorm, U.norm_inv, hφ_supp y hy]
     grw [norm_div, norm_mul, entry_le, inv_entry_le]
@@ -555,10 +643,12 @@ lemma New.RealPlace.hasDerivWords_integral {𝔰 : Shape} {I : Type} [Fintype I]
     -- The entries of `Y = y⁻¹ * X t * y` bring the new factors of the weights.
     have Y_apply (a b : 𝔰.BesselIndex) :
         ψ i y * Y a b = ∑ c, ∑ d, coeff t ((a, b), c, d) * ψ (((a, b), c, d) :: i) y := by
+      have hR' : (R : ℂ) ^ 2 ≠ 0 := pow_ne_zero 2 (ofReal_ne_zero.2 hR.ne')
       simp only [Y, coeff, ψ_cons, InvMemClass.coe_inv, coe_units_inv, Matrix.mul_apply,
         Finset.sum_mul, Finset.mul_sum, Matrix.smul_apply, real_smul, ofReal_pow]
-      congr! 2
-      field
+      refine Finset.sum_congr rfl fun c _ ↦ Finset.sum_congr rfl fun d _ ↦ ?_
+      rw [mul_div_assoc', mul_div_assoc', mul_assoc ((R : ℂ) ^ 2), mul_div_cancel_left₀ _ hR']
+      ring
     have F'_eq : ψ i y • ∑ a, ∑ b, Y a b • V ((a, b) :: i.map Prod.fst) (γ t * y) = F' t y := by
       simp only [F', T, sum_prod_type, List.map_cons, Finset.smul_sum, smul_smul, Y_apply,
         Finset.sum_smul]
@@ -568,13 +658,21 @@ lemma New.RealPlace.hasDerivWords_integral {𝔰 : Shape} {I : Type} [Fintype I]
   have F'_le (y : 𝔰.G₁) (t : ℝ) (ht : t ∈ N) :
       ‖F' t y‖ ≤ ∑ l, R ^ 2 * C * (‖ψ (l :: i) y‖ * M ((l :: i).map Prod.fst)) := by
     grw [norm_sum_le, norm_smul_le, coeff_le t ht, norm_smul_le, hM]
+  have F'_int : Integrable (F' t₀) :=
+    integrable_finsetSum _ fun l _ ↦ (T_int (l :: i) (γ t₀)).smul (coeff t₀ l)
   have deriv_integral : HasDerivAt (fun t ↦ ∫ y, T i (γ t) y) (∫ y, F' t₀ y) t₀ :=
-    (hasDerivAt_integral_of_dominated_loc_of_deriv_le (s := N) h_curve (.of_forall (by fun_prop))
-      (T_int i (γ t₀)) (by fun_prop) (.of_forall F'_le) (by fun_prop) (.of_forall T_deriv)).2
+    (hasDerivAt_integral_of_dominated_loc_of_deriv_le (s := N) h_curve
+      (.of_forall fun x ↦ (T_int i (γ x)).aestronglyMeasurable)
+      (T_int i (γ t₀)) F'_int.aestronglyMeasurable (.of_forall F'_le)
+      (integrable_finsetSum _ fun l _ ↦ ((ψ_int (l :: i)).norm.mul_const _).const_mul _)
+      (.of_forall T_deriv)).2
   refine ⟨∫ y, F' t₀ y, deriv_integral, ?_⟩
   calc
     _ = ‖∑ l, coeff t₀ l • ∫ y, T (l :: i) (γ t₀) y‖ := by
-      simp (disch := fun_prop) only [F', integral_finsetSum, integral_smul]
+      rw [show ∫ y, F' t₀ y = ∑ l, coeff t₀ l • ∫ y, T (l :: i) (γ t₀) y from
+        (integral_finsetSum (f := fun l y ↦ coeff t₀ l • T (l :: i) (γ t₀) y) Finset.univ
+          fun l _ ↦ (T_int (l :: i) (γ t₀)).smul (coeff t₀ l)).trans
+          (Finset.sum_congr rfl fun l _ ↦ integral_smul _ _)]
     _ ≤ _ := by grw [norm_sum_le, norm_smul_le, coeff_le t₀ t₀_mem]
 
 /-- Let `P ≥ 8 r`, where `r = 𝔰.r` is the size of the matrices in `G₁`, and let `n = ϱ + 1`. Let `F`
@@ -606,15 +704,10 @@ theorem New.RealPlace.lintegral_gramSection_integral_le {𝔰 : Shape} {I : Type
   have one_le_rank : (1 : ℝ) ≤ 𝔰.r := Nat.one_le_cast.2 card_pos
   have rank_le : (𝔰.r : ℝ) ≤ P := by linarith
   have one_le : 1 ≤ P := by linarith
-  obtain ⟨V, hF, V_bessel, V_deriv, V_schur⟩ :
-      ∃ V : List 𝔰.EntryIndex → C(𝔰.G₁, EuclideanSpace ℂ I),
-        F = V [] ∧
-        (∀ w, IsBesselFunction rep (V w)) ∧
-        (∀ w (γ : ℝ → 𝔰.G₁) (X : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (t : ℝ),
-          HasDerivAt (fun s ↦ (γ s : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) (γ t * X) t →
-          HasDerivAt (V w ∘ γ) (∑ a, ∑ b, X a b • V ((a, b) :: w) (γ t)) t) ∧
-        ∀ w, w.length ≤ 2 * 𝔰.n ^ 2 → SchurLe (V w) (.ofReal (P ^ (2 * w.length)) * D) := by
-    simpa only [HasSchurBound, forall_and] using hF_schur
+  obtain ⟨V, hF, hV⟩ := hF_schur
+  have V_bessel (w : List 𝔰.EntryIndex) : IsBesselFunction rep (V w) := (hV w).1
+  have V_deriv (w : List 𝔰.EntryIndex) := (hV w).2.1
+  have V_schur (w : List 𝔰.EntryIndex) := (hV w).2.2
   let ψ : List 𝔰.ConvolutionDerivIndex → 𝔰.G₁ → ℂ := convolutionWeight (P ^ 20) φ
   have ψ_meas (i : List 𝔰.ConvolutionDerivIndex) : Measurable (ψ i) :=
     measurable_convolutionWeight _ hφ i
@@ -640,16 +733,25 @@ theorem New.RealPlace.lintegral_gramSection_integral_le {𝔰 : Shape} {I : Type
   have schur (i : List 𝔰.ConvolutionDerivIndex) (hi : i.length ≤ 2 * 𝔰.n ^ 2) :
       ∫⁻ g, ‖W i g‖ₑ ^ 2 ∂besselQuotMeasure ≤
         .ofReal (P ^ (2 * (2 * 𝔰.n ^ 2))) * D * ∫⁻ y, ‖φ y‖ₑ ^ 2 := by
-    grw [V_schur (i.map Prod.fst) (by simpa using hi) (ψ i) (ψ_int i), i.length_map, hi,
-      enorm_le_iff_norm_le.2 (norm_ψ_le i _)]
+    have h_len : (i.map Prod.fst).length ≤ 2 * 𝔰.n ^ 2 := by rwa [List.length_map]
+    refine (V_schur (i.map Prod.fst) h_len (ψ i) (ψ_int i)).trans ?_
+    rw [List.length_map]
+    exact mul_le_mul'
+      (mul_le_mul' (ENNReal.ofReal_le_ofReal (pow_le_pow_right₀ one_le (Nat.mul_le_mul_left 2 hi)))
+        le_rfl)
+      (lintegral_mono fun y ↦ pow_le_pow_left' (eNorm_le_iff_norm_le.2 (norm_ψ_le i y)) 2)
+  have W_meas (i : List 𝔰.ConvolutionDerivIndex) : Measurable (W i) :=
+    ((((ψ_meas i).comp measurable_snd).smul
+      ((V (i.map Prod.fst)).continuous.measurable.comp
+        (measurable_fst.mul measurable_snd))).stronglyMeasurable.integral_prod_right').measurable
   calc
     _ ≤ .ofReal (P ^ (550 * 𝔰.n ^ 2)) *
         (.ofReal (P ^ (2 * (2 * 𝔰.n ^ 2))) * D * ∫⁻ y, ‖φ y‖ₑ ^ 2) := by
       simpa only [W, ψ, convolutionWeight_nil, List.map_nil, ← hF] using
         lintegral_gramSection_le_of_hasDerivWords hP hc h_disc h_cell W_deriv (by positivity)
-          letters_le (by fun_prop) W_inv schur
+          letters_le W_meas W_inv schur
     _ ≤ _ := by
       grw [← mul_assoc, ← mul_assoc, ← ENNReal.ofReal_mul (by positivity), ← pow_add,
-        show 550 * 𝔰.n ^ 2 + 2 * (2 * 𝔰.n ^ 2) ≤ 2000 * 𝔰.n ^ 2 by lia]
+        show 550 * 𝔰.n ^ 2 + 2 * (2 * 𝔰.n ^ 2) ≤ 2000 * 𝔰.n ^ 2 by omega]
 
 end SobolevCell

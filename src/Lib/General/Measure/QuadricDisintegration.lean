@@ -1,4 +1,17 @@
+module
+
+public import TauCeti.MeasureTheory.Constructions.Polish.Units
+import TauCeti.MeasureTheory.Measure.Disintegration.Continuous
+public import Aesop.BuiltinRules
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+public import Lib.General.Groups.CongruenceSubgroups
+import Lib.Adelic.QuotientMeasure.Basic
 import Lib.Adelic.Witt.WittTheorem
+import Lib.Base
+import Lib.General.Measure.HaarModulus
 
 /-!
 # Measures on hermitian quadrics: existence and uniqueness of disintegrations
@@ -24,6 +37,8 @@ and `x⁻¹ʳ` is the ring inverse, which is zero at non-units. The vector `x �
 of index sets is `x` on the first part and `y` on the second. The group `U T` consists of the
 invertible matrices g with `gᴴ * T * g = T`.
 -/
+
+@[expose] public section
 
 namespace New.Floors
 
@@ -67,7 +82,7 @@ class Place extends IsTopologicalRing A, ContinuousStar A, LocallyCompactSpace A
   /-- The modulus is measurable. -/
   measurable_modulus : Measurable modulus
   /-- δ is skew: δ̄ = −δ. -/
-  star_skewUnit : star skewUnit.1 = -skewUnit
+  star_skewUnit : star skewUnit.val = -skewUnit
   /-- The map (a, b) ↦ τδ⁻¹a + b on pairs of skew elements carries ν × ν to the volume of A. -/
   measurePreserving_split : MeasurePreserving
     (fun p : skewAdjoint A × skewAdjoint A ↦ element * skewUnit⁻¹ * p.1 + p.2)
@@ -126,12 +141,9 @@ variable [P : Place A] {ι : Type} [Fintype ι] [DecidableEq ι] (u : Aˣ) (T : 
 
 /-! ### Lemmas on measures, and the hyperbolic plane plus a form -/
 
-lemma measurableEmbedding_units_val : MeasurableEmbedding (val : Aˣ → A) :=
-  continuous_val.measurableEmbedding val_injective
-
 @[fun_prop]
 lemma measurable_inverse : Measurable (inverse : A → A) :=
-  measurableEmbedding_units_val.measurable_extend continuous_coe_inv.measurable measurable_const
+  Units.measurableEmbedding_val.measurable_extend continuous_coe_inv.measurable measurable_const
 
 /-- For a map f : Z → Z, a measure ζ on Z with ζ.map f = c⁻¹ • ζ, and c neither zero nor infinite,
 the integral of g against ζ is c times the integral of g against the image ζ.map f. -/
@@ -263,7 +275,7 @@ structure IsDisintegration (J : Matrix ι ι A) (l : skewAdjoint A → Measure (
   ν, of the integral of f(δ⁻¹b, x) against `l b`. -/
   lintegral_eq (f : A × (ι → A) → ℝ≥0∞) : Measurable f →
       ∫⁻ x : ι → A, f (star x ⬝ᵥ J *ᵥ x, x) ∂μ =
-        ∫⁻ b : skewAdjoint A, ∫⁻ x : ι → A, f (skewUnit⁻¹.1 * b, x) ∂l b ∂skewMeasure
+        ∫⁻ b : skewAdjoint A, ∫⁻ x : ι → A, f (skewUnit⁻¹.val * b, x) ∂l b ∂skewMeasure
 
 lemma modulus_star (x : A) : P.modulus (star x) = P.modulus x := (modulus_star_and_neg x).left
 
@@ -340,7 +352,7 @@ lemma map_skewMeasure_hermitianMul (hu : star u.val = u) :
           rw [map_mul_volume, (h_split.smul_measure _).map_eq]
   refine Measure.ext fun S _ ↦ (ENNReal.pow_right_strictMono two_ne_zero).injective ?_
   calc skewMeasure.map mul S ^ 2 = (P.modulus u)⁻¹ * skewMeasure S ^ 2 := by
-        rw [sq, ← prod_prod, h_prod, Measure.smul_apply, prod_prod, _root_.smul_eq_mul, sq]
+        rw [sq, ← prod_prod, h_prod, smul_apply, prod_prod, _root_.smul_eq_mul, sq]
     _ = (P.modulus u ^ (-(1 / 2) : ℝ) • skewMeasure) S ^ 2 := by
         simp [mul_pow, ← rpow_mul_natCast, rpow_neg_one]
 
@@ -433,31 +445,21 @@ for measurable f. The continuity in b is why equality holds at every b rather th
 everywhere. -/
 lemma IsDisintegration.unique {l l' : skewAdjoint A → Measure (ι → A)}
     (hl : IsDisintegration μ T l) (hl' : IsDisintegration μ T l') : l b = l' b := by
-  classical
-  -- Test against `f ≥ 0` continuous of compact support. The functions `b ↦ ∫⁻ f ∂l b` and
-  -- `b ↦ ∫⁻ f ∂l' b` are continuous and have the same integral over every measurable set.
-  have h_fin : IsFiniteMeasureOnCompacts (l b) := hl.isFiniteMeasureOnCompacts b
-  have h_fin' : IsFiniteMeasureOnCompacts (l' b) := hl'.isFiniteMeasureOnCompacts b
-  refine ext_of_integral_eq_on_compactlySupported_nnreal fun f ↦ ?_
-  obtain ⟨h_cont, -⟩ := hl.continuous_and_lt_top f.continuous f.hasCompactSupport
-  obtain ⟨h_cont', -⟩ := hl'.continuous_and_lt_top f.continuous f.hasCompactSupport
-  have h_setLIntegral : ∀ S : Set (skewAdjoint A), MeasurableSet S → skewMeasure S < ∞ →
-      ∫⁻ β in S, ∫⁻ x, f x ∂l β ∂skewMeasure = ∫⁻ β in S, ∫⁻ x, f x ∂l' β ∂skewMeasure := by
-    rintro _ ⟨s, hs, rfl⟩ -
-    -- Both sides equal `∫⁻ x, Φ (h(x, x), x) ∂μ`.
-    let Φ (p : A × (ι → A)) : ℝ≥0∞ := f p.2 * s.indicator 1 (skewUnit.1 * p.1)
-    have hΦ : Measurable Φ := by fun_prop (disch := assumption)
-    have h_both : ∫⁻ β : skewAdjoint A, (∫⁻ x, f x ∂l β) * s.indicator 1 β.val ∂skewMeasure =
-        ∫⁻ β : skewAdjoint A, (∫⁻ x, f x ∂l' β) * s.indicator 1 β.val ∂skewMeasure := by
-      simpa (disch := fun_prop) [Φ, lintegral_mul_const] using
-        (hl.lintegral_eq Φ hΦ).symm.trans (hl'.lintegral_eq Φ hΦ)
-    simpa [indicator, ← lintegral_indicator (measurable_subtype_coe hs)] using h_both
-  have h_eq : (∫⁻ x, f x ∂l ·) = (∫⁻ x, f x ∂l' ·) :=
-    eq_of_ae_eq (ae_eq_of_forall_setLIntegral_eq_of_sigmaFinite h_cont.measurable
-      h_cont'.measurable h_setLIntegral) h_cont h_cont'
-  have h_toReal (m : Measure (ι → A)) : ∫ x, (f x : ℝ) ∂m = (∫⁻ x, f x ∂m).toReal :=
-    (f.toBoundedContinuousFunction.toReal_lintegral_coe_eq_integral m).symm
-  rw [h_toReal, h_toReal, congrFun h_eq b]
+  let : ∀ b, IsFiniteMeasureOnCompacts (l b) := hl.isFiniteMeasureOnCompacts
+  let : ∀ b, IsFiniteMeasureOnCompacts (l' b) := hl'.isFiniteMeasureOnCompacts
+  -- Retract the ambient ring onto its skew elements so both formulas have the same base.
+  obtain ⟨proj, hproj, hfix⟩ := (isClosed_skewAdjoint (A := A)).measurableSet.exists_measurable_proj
+    ⟨0, (skewAdjoint A).zero_mem⟩
+  have disintegrates {m : skewAdjoint A → Measure (ι → A)} (hm : IsDisintegration μ T m)
+      (F : skewAdjoint A × (ι → A) → ℝ≥0∞) (hF : Measurable F) :
+      ∫⁻ x, F (proj (skewUnit.val * (star x ⬝ᵥ T *ᵥ x)), x) ∂μ =
+        ∫⁻ b, ∫⁻ x, F (b, x) ∂m b ∂skewMeasure := by
+    simpa [← mul_assoc, hfix] using
+      hm.lintegral_eq (fun p ↦ F (proj (skewUnit.val * p.1), p.2)) (by fun_prop)
+  exact congrFun (TauCeti.eq_of_continuous_lintegral_of_disintegration
+    (fun f ↦ (hl.continuous_and_lt_top f.continuous f.hasCompactSupport).1)
+    (fun f ↦ (hl'.continuous_and_lt_top f.continuous f.hasCompactSupport).1)
+    (disintegrates hl) (disintegrates hl')) b
 
 /-- Let l disintegrate μ along the form with matrix T: measurable f satisfy ∫ f(x̄ᵀTx, x) dμ = ∬
 f(δ⁻¹b, x) dl_b dν(b), and ∫ f dl_b is finite and continuous in b for continuous compactly
@@ -539,7 +541,7 @@ lemma lintegral_form_eq_lintegral_flatChart (hT : Tᴴ = T)
     f (star (![s, t.val] ⊕ᵥ w) ⬝ᵥ planeSumGram T *ᵥ (![s, t.val] ⊕ᵥ w), ![s, t.val] ⊕ᵥ w)
   let starInv : Aˣ := star t⁻¹
   let shift : A := P.element * star w ⬝ᵥ T *ᵥ w
-  let s (b a : skewAdjoint A) : A := starInv * (P.element * skewUnit⁻¹.1 * b + a - shift)
+  let s (b a : skewAdjoint A) : A := starInv * (P.element * skewUnit⁻¹.val * b + a - shift)
   let scale (a : skewAdjoint A) : skewAdjoint A := hermitianMul ↑(t * star t) (star_mul_star ..) a
   have h_point (b a : skewAdjoint A) : ![s b (scale a), t] ⊕ᵥ w = flatChart T b ((t, w), a) := by
     have h_coord : s b (scale a) =
@@ -550,7 +552,7 @@ lemma lintegral_form_eq_lintegral_flatChart (hT : Tᴴ = T)
   have h_scale : skewMeasure.map scale = (P.modulus ↑(t * star t) ^ (2⁻¹ : ℝ))⁻¹ • skewMeasure := by
     rw [map_skewMeasure_hermitianMul, rpow_neg, one_div]
   -- The Jacobian of the substitution is `modulus (star t)⁻¹ * modulus (t t̄) ^ (1 / 2) = 1`.
-  have h_jac : P.modulus starInv * P.modulus (t * star t).1 ^ (2⁻¹ : ℝ) = 1 := by
+  have h_jac : P.modulus starInv * P.modulus (t * star t).val ^ (2⁻¹ : ℝ) = 1 := by
     simp [starInv, ← sq, ← rpow_natCast_mul, ENNReal.inv_mul_cancel]
   calc ∫⁻ y, G y = P.modulus starInv * ∫⁻ y, G (starInv * (y - shift)) := by
         rw [lintegral_eq_mul_lintegral_map (map_mul_volume starInv) (by simp) (by simp),
@@ -574,25 +576,15 @@ lemma continuous_lintegral_flatChart (hT : Tᴴ = T) {f : (Fin 2 ⊕ ι → A) �
   -- The coordinate `a` is recovered from the chart point by `π`, free of `b`, so it stays in
   -- the compact set `π '' tsupport f`.
   let π (x : Fin 2 ⊕ ι → A) : skewAdjoint A := skewPart (star P.element * p.1⁻¹ʳ * x (inl 0))
-  have hπ (b a : skewAdjoint A) : π (flatChart T b (p, a)) = a := by
-    let q : A := star p.2 ⬝ᵥ T *ᵥ p.2
-    have h_inv : p.1⁻¹ʳ * p.1 = 1 := inverse_mul_cancel p.1 hp
-    -- With `s` the first coordinate, expand `τ̄ t⁻¹ s - τ t̄⁻¹ s̄`: the hermitian terms cancel, and
-    -- `(τ̄ + τ) a = a` remains.
-    suffices star P.element * p.1⁻¹ʳ * (star p.1⁻¹ʳ * element * (skewUnit⁻¹.val * b - q) + p.1 * a)
-      -
-        P.element * star p.1⁻¹ʳ * (p.1⁻¹ʳ * star P.element * (skewUnit⁻¹.val * b - q) - star p.1 *
-          a) = a by
-      simpa [Subtype.ext_iff, π, flatChart, inverse_star, star_dotProduct_mulVec_comm hT p.2 p.2,
-        ← sub_eq_add_neg]
+  refine continuous_lintegral_of_compact_support (hf_supp.image_of_continuous π) (hf.comp ?_)
+    fun b a h_ne ↦ ⟨flatChart T b (p, a), subset_closure h_ne, ?_⟩
+  · simp only [flatChart, continuous_pi_iff, Sum.forall, elim_inl, elim_inr]
+    exact ⟨by fun_prop, by fun_prop⟩
+  · simp [Subtype.ext_iff, π, flatChart, inverse_star, star_dotProduct_mulVec_comm hT p.2 p.2]
+    have h_inv := inverse_mul_cancel p.1 hp
     have h_inv_star : star p.1⁻¹ʳ * star p.1 = 1 := by rw [← star_mul', h_inv, star_one]
     linear_combination a.val * (star P.element * h_inv + P.element * h_inv_star +
       P.element_add_star)
-  have h_chart : Continuous fun q : skewAdjoint A × skewAdjoint A ↦ flatChart T q.1 (p, q.2) := by
-    simp only [flatChart, continuous_pi_iff, Sum.forall, elim_inl, elim_inr]
-    exact ⟨by fun_prop, by fun_prop⟩
-  exact continuous_lintegral_of_compact_support (hf_supp.image_of_continuous π) (hf.comp h_chart)
-    fun b a h_ne ↦ ⟨flatChart T b (p, a), subset_closure h_ne, hπ b a⟩
 
 /-- For f ≥ 0 continuous of compact support, the integral of f over the fibre of the flat chart at
 p = (t, w) is at most sup f times the supremum over b of the ν-measures of the sets
@@ -621,28 +613,22 @@ lemma isDisintegration_quadricMeasure (hT : Tᴴ = T) :
   refine ⟨fun {f} hf hf_supp ↦ ?_, fun f hf ↦ ?_⟩ <;>
     simp (disch := fun_prop) only [quadricMeasure, lintegral_map, lintegral_prod]
   · -- Finiteness and continuity in `b`: the integrals over the fibres have a majorant free of `b`.
-    let bound (p : A × (ι → A)) : ℝ≥0∞ := ofNNReal (iSup f) *
-      ⨆ β : skewAdjoint A, skewMeasure {a | flatChart T β (p, a) ∈ tsupport f}
-    have h_fin : ∫⁻ p, bound p < ∞ := by
-      simpa [bound, lintegral_const_mul'] using
-        mul_lt_top coe_lt_top (lintegral_iSup_fibre_lt_top hf_supp)
-    refine ⟨continuous_iff_continuousAt.2 fun b ↦ ?_,
+    let bound (p : A × (ι → A)) := ofNNReal (iSup f) *
+      ⨆ β, skewMeasure {a | flatChart T β (p, a) ∈ tsupport f}
+    have h_fin : ∫⁻ p, bound p < ∞ := (lintegral_const_mul' _ _ coe_ne_top).trans_lt
+      (mul_lt_top coe_lt_top (lintegral_iSup_fibre_lt_top hf_supp))
+    exact ⟨continuous_iff_continuousAt.2 fun b ↦
+      tendsto_lintegral_filter_of_dominated_convergence bound (.of_forall (by fun_prop))
+        (.of_forall fun β ↦ .of_forall (lintegral_flatChart_le hf hf_supp β)) h_fin.ne
+        (h_unit.mono fun p hp ↦ (continuous_lintegral_flatChart hT hf hf_supp hp).continuousAt),
       fun b ↦ (lintegral_mono (lintegral_flatChart_le hf hf_supp b)).trans_lt h_fin⟩
-    have h_cont_fibre : ∀ᵐ p : A × (ι → A),
-        ContinuousAt (fun β : skewAdjoint A ↦ ∫⁻ a, f (flatChart T β (p, a)) ∂skewMeasure) b :=
-      h_unit.mono fun p hp ↦ (continuous_lintegral_flatChart hT hf hf_supp hp).continuousAt
-    exact tendsto_lintegral_filter_of_dominated_convergence bound (.of_forall (by fun_prop))
-      (.of_forall fun β ↦ .of_forall (lintegral_flatChart_le hf hf_supp β)) h_fin.ne h_cont_fibre
   · -- The disintegration formula, in coordinates `x = (s, t, w)`, for fixed `w` and unit `t`.
-    let Φ (x : Fin 2 ⊕ ι → A) : ℝ≥0∞ := f (star x ⬝ᵥ planeSumGram T *ᵥ x, x)
-    let fibre (b : skewAdjoint A) (p : A × (ι → A)) : ℝ≥0∞ :=
-      ∫⁻ a, f (skewUnit⁻¹.val * b, flatChart T b (p, a)) ∂skewMeasure
-    calc ∫⁻ x, Φ x = ∫⁻ r : A × A × (ι → A), Φ (![r.1, r.2.1] ⊕ᵥ r.2.2) :=
-          (measurePreserving_pair_sumElim.lintegral_comp (by fun_prop)).symm
-      _ = ∫⁻ p : A × (ι → A), ∫⁻ s : A, Φ (![s, p.1] ⊕ᵥ p.2) := lintegral_prod_symm' _ (by fun_prop)
-      _ = ∫⁻ p, ∫⁻ b, fibre b p ∂skewMeasure := lintegral_congr_of_ae_imp h_unit fun p hp ↦
-          lintegral_form_eq_lintegral_flatChart hT hf hp.unit p.2
-      _ = ∫⁻ b, ∫⁻ p, fibre b p ∂volume ∂skewMeasure := lintegral_lintegral_swap (by fun_prop)
+    let Φ (x : Fin 2 ⊕ ι → A) := f (star x ⬝ᵥ planeSumGram T *ᵥ x, x)
+    exact (measurePreserving_pair_sumElim.lintegral_comp (by fun_prop)).symm.trans <|
+      (lintegral_prod_symm' (fun r ↦ Φ (![r.1, r.2.1] ⊕ᵥ r.2.2)) (by fun_prop)).trans <|
+      (lintegral_congr_of_ae_imp h_unit fun p hp ↦
+        lintegral_form_eq_lintegral_flatChart hT hf hp.unit p.2).trans <|
+      lintegral_lintegral_swap (by fun_prop)
 
 end Place
 

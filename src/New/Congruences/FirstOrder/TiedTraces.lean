@@ -1,7 +1,14 @@
+module
+
+import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
+public import Lib.GaloisRep.TaylorWiles
+public import Lib.LocalGL.SphericalChainLemma
+public import New.Congruences.FirstOrder.OnePrime
+public import Lib.LocalGL.Iwahori.SphericalExponents
 import Lib.GaloisRep.LocalGlobal.IwahoriCompatibility
-import Lib.GaloisRep.TaylorWiles
-import Lib.LocalGL.SphericalChainLemma
-import New.Congruences.FirstOrder.OnePrime
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.LocalGL.Iwahori.QuadraticRelation
 
 /-!
 # Tied traces and the dictionary at one auxiliary place
@@ -49,6 +56,8 @@ Notions from other files:
 See `New.Congruences.FirstOrder.AuxiliaryPrimeTie` for related work.
 -/
 
+@[expose] public section
+
 open Pi Fintype Polynomial Nat Group Submodule ComplexOrder
 
 attribute [local instance low] Fintype.ofFinite
@@ -75,9 +84,9 @@ structure LocalChoice (Q : TaylorWilesPlaces E J m) (j : J) where
   `tameUnit`. -/
   ind : (ResField (Q.place j))ˣ →* Multiplicative (ZMod m)
   /-- `ϖ` is a uniformiser. -/
-  v_ϖ : v ϖ.1 = .exp (-1)
+  v_ϖ : v ϖ.val = .exp (-1)
   /-- `tameUnit` is a unit of the ring of integers. -/
-  v_tameUnit : v tameUnit.1 = 1
+  v_tameUnit : v tameUnit.val = 1
   /-- The Artin symbol of `ϖ` is the class of `φ`. -/
   localArtin_ϖ : localArtin Gal(Ω/E) (Q.frobData j).valuationSubring (Q.place j) ϖ =
     ⟦⟨(Q.frobData j).frob, inv_mem_iff.1 (Q.frobData j).isFrob_inv.1⟩⟧
@@ -99,9 +108,9 @@ lemma nonempty_localChoice (Q : TaylorWilesPlaces E J m) (j : J) : Nonempty (Q.L
   obtain ⟨ϖ, v_ϖ, art_ϖ⟩ := (Q.frobData j).isPlaceOver.exists_localArtin_eq
     (Q.frobData j).isFrob_inv 1
   obtain ⟨ind, h_ind⟩ : ∃ ind : (ResField (Q.place j))ˣ →* Multiplicative (ZMod m),
-      ind (residueUnit z.1) = .ofAdd 1 := by
+      ind (residueUnit z.val) = .ofAdd 1 := by
     have residue_eq : (LocInt (Q.place j)).unitGroupToResidueFieldUnits ⟨z, hz⟩ =
-        residueUnit z.1 :=
+        residueUnit z.val :=
       eq_residueUnit rfl rfl
     rw [← residue_eq]
     exact exists_residue_log (Q.dvd_q_sub_one j) gen_z
@@ -132,15 +141,13 @@ lemma transfer_indLine : (P.indLine (N := N)).transfer = P.indDet :=
 
 lemma indDet_diamond : P.indDet (P.diamond (N := N)) = .ofAdd 1 := by
   rw [MonoidHom.comp_apply, show Matrix.GeneralLinearGroup.det (P.diamond (N := N)) =
-    residueUnit P.tameUnit.1 from Units.ext (by simp [diamond, ← Units.coe_prod]), P.ind_tameUnit]
+    residueUnit P.tameUnit.val from Units.ext (by simp [diamond, ← Units.coe_prod]), P.ind_tameUnit]
 
 end LocalChoice
 
 end New.Patching.TaylorWilesPlaces
 
 namespace New.Patching.BaseLevel
-
-set_option synthInstance.maxHeartbeats 200000
 
 section BaseData
 
@@ -165,8 +172,8 @@ noncomputable def lineRep (j : J) :
 omit [Nonempty n] in
 /-- If the auxiliary places `w j = Q.place j` are off the base level, the Hecke algebra commutes
 with `D.residueRep Q`, the action of `∏ GL_n(𝔽_{w j})` on the forms of principal level. -/
-lemma commute_heckeAction_residueRep (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)) [V.IsStd]
-    [WeilData E] (s : D.heckeAlgebra Q.place)
+lemma commute_heckeAction_residueRep (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
+    (s : D.heckeAlgebra Q.place)
       (g : ∀ j : J, GL (Fin (card n)) (ResField (Q.place j))) :
     Commute (heckeAction s) (D.residueRep Q g) := by
   -- The elements that commute with `s` form a submonoid that contains each factor.
@@ -180,29 +187,29 @@ section Parahoric
 
 variable {Q}
 
+omit [Nonempty n] in
 /-- Let the auxiliary places be off the base level. An element `k` of the parahoric subgroup
 of the line in `GL_n(E_w)`, `w = Q.place j` (blocks of sizes `1` and `n - 1`), acts on forms of
 principal level through its reduction, which stabilises the line. On the left, `localFormRep` is
 the action of `GL_n(E_w)` on all forms; on the right, `lineRep` is that of the stabiliser. -/
-lemma localFormRep_apply_eq_lineRep (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)) [V.IsStd]
-    [WeilData E] {j : J} {k : GL (Fin (card n)) (LocField (Q.place j))}
+lemma localFormRep_apply_eq_lineRep (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
+    {j : J} {k : GL (Fin (card n)) (LocField (Q.place j))}
     (hk : k ∈ blockParahoric (min 1)) (y : D.formsOfLevel Q.place) :
     localFormRep V κ (Q.apart.star_ne j j) k y =
-      (D.lineRep Q j ⟨reduceGL ⟨k, hk.1⟩, reduceGL_mem_residueLineStabilizer_iff.2 hk⟩).1 y :=
+      (D.lineRep Q j ⟨reduceGL ⟨k, hk.1⟩, reduceGL_mem_residueLineStabilizer_iff.2 hk⟩).val y :=
   (residueRep_mulSingle hQ ⟨k, hk.1⟩ y).symm
 
-/-- Let `V` be the standard hermitian space (`IsStd`), let `E` carry Weil representation data
-(`WeilData`), and let the auxiliary places be off the base level. If the elements of the stabiliser
+/-- Let the auxiliary places be off the base level. If the elements of the stabiliser
 of the line in `GL_n(𝔽_w)`, `w = Q.place j`, with first entry and determinant `1` fix a form `y` of
 weight `κ`, then the pro-unipotent Iwahori subgroup `proIwahori` of `GL_n(E_w)` fixes it: `y` lies
 in the space `levelSpace` of its fixed vectors for the action `localFormRep` of `GL_n(E_w)` on
 forms. -/
-lemma mem_levelSpace_proIwahori (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)) [V.IsStd] [WeilData E]
+lemma mem_levelSpace_proIwahori (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     {j : J} {y : D.formsOfLevel Q.place}
     (hy : ∀ k : residueLineStabilizer (ResField (Q.place j)) (card n),
-      firstEntry k = 1 → Matrix.GeneralLinearGroup.det k.1 = 1 →
-      (D.lineRep Q j k).1 y = y) :
-    y.1 ∈ levelSpace (localFormRep V κ (Q.apart.star_ne j j)).ρ proIwahori := by
+      firstEntry k = 1 → Matrix.GeneralLinearGroup.det k.val = 1 →
+      (D.lineRep Q j k).val y = y) :
+    y.val ∈ levelSpace (localFormRep V κ (Q.apart.star_ne j j)).ρ proIwahori := by
   rintro ⟨g, hg_iw⟩
   have hg : g ∈ blockParahoric (min 1) := proIwahori_le_blockParahoric (by omega) hg_iw
   obtain ⟨det_one, entry_one⟩ :=
@@ -212,17 +219,16 @@ lemma mem_levelSpace_proIwahori (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)) [
       (congrArg Subtype.val (hy _ (entry_one _) det_one))
   simpa using fixed
 
-/-- Let `V` be the standard hermitian space, let `E` carry Weil representation data, let the
-auxiliary places be off the base level, and let `P` be a local choice at `w = Q.place j`: it has a
+/-- Assume the auxiliary places are off the base
+level, and let `P` be a local choice at `w = Q.place j`: it has a
 logarithm `P.ind` modulo `ℓ ^ ν` on `𝔽_wˣ`, and `P.indLine g = P.ind g₁₁`. A form `y` of weight `κ`
 on which the stabiliser of the line in `GL_n(𝔽_w)` acts by `ψ ∘ P.indLine` is fixed by `proIwahori`,
 and the parahoric subgroup of the line in `GL_n(E_w)` acts on it by `k ↦ ψ (P.ind k₁₁)`. -/
-lemma mem_parahoricEigenspace_line (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)) [V.IsStd]
-    [WeilData E]
+lemma mem_parahoricEigenspace_line (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     {j : J} (P : Q.LocalChoice j) (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ) {y : D.formsOfLevel Q.place}
     (hy : ∀ k : residueLineStabilizer (ResField (Q.place j)) (card n),
-      (D.lineRep Q j k).1 y = ψ (P.indLine k).toAdd • y) :
-    y.1 ∈ parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) (min 1)
+      (D.lineRep Q j k).val y = ψ (P.indLine k).toAdd • y) :
+    y.val ∈ parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) (min 1)
       ((fun s : LocField (Q.place j) ↦ ψ (P.ind (residueUnit s)).toAdd) ∘
         fun k : GL (Fin (card n)) (LocField (Q.place j)) ↦ k 0 0) := by
   refine ⟨mem_levelSpace_proIwahori hQ fun k entry_one _ ↦ by simp [hy, entry_one],
@@ -233,24 +239,23 @@ lemma mem_parahoricEigenspace_line (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)
   rw [localFormRep_apply_eq_lineRep hQ hk, hy, MonoidHom.comp_apply, entry]
   simp
 
-/-- Let `V` be the standard hermitian space, let `E` carry Weil representation data, let the
-auxiliary places be off the base level, and let `P` be a local choice at `w = Q.place j`: it has a
+/-- Assume the auxiliary places are off the base
+level, and let `P` be a local choice at `w = Q.place j`: it has a
 logarithm `P.ind` modulo `ℓ ^ ν` on `𝔽_wˣ`, and `P.indDet = P.ind ∘ det`. A form `y` of weight `κ`
 on which `GL_n(𝔽_w)` acts by `ψ ∘ P.indDet` is fixed by `proIwahori`, and the maximal compact
 subgroup of `GL_n(E_w)` (level function `0`) acts on it by `k ↦ ψ (P.ind (det k))`. -/
-lemma mem_parahoricEigenspace_det (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)) [V.IsStd]
-    [WeilData E]
+lemma mem_parahoricEigenspace_det (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     {j : J} (P : Q.LocalChoice j) (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ) {y : D.formsOfLevel Q.place}
     (hy : ∀ k : GL (Fin (card n)) (ResField (Q.place j)),
-      (D.placeRep Q j k).1 y = ψ (P.indDet k).toAdd • y) :
-    y.1 ∈ parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) 0
+      (D.placeRep Q j k).val y = ψ (P.indDet k).toAdd • y) :
+    y.val ∈ parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) 0
       fun k : GL (Fin (card n)) (LocField (Q.place j)) ↦ ψ (P.ind (residueUnit k.1.det)).toAdd := by
   refine ⟨mem_levelSpace_proIwahori hQ fun k _ det_one ↦ by simp [lineRep, hy, det_one],
     fun k hk ↦ ?_⟩
   have h_red : localFormRep V κ (Q.apart.star_ne j j) k y =
-      (D.placeRep Q j (reduceGL ⟨k, hk.1⟩)).1 y :=
+      (D.placeRep Q j (reduceGL ⟨k, hk.1⟩)).val y :=
     (residueRep_mulSingle hQ ⟨k, hk.1⟩ y).symm
-  have det_eq : Matrix.GeneralLinearGroup.det (reduceGL ⟨k, hk.1⟩) = residueUnit k.1.det :=
+  have det_eq : Matrix.GeneralLinearGroup.det (reduceGL ⟨k, hk.1⟩) = residueUnit k.val.det :=
     det_reduceGL ⟨k, hk.1⟩
   rw [h_red, hy, MonoidHom.comp_apply, det_eq]
   simp
@@ -268,24 +273,25 @@ omit [Nonempty n] [DecidableEq J] [V.IsStd] in
 function that sends a system of level `L` to its `j`-th Hecke eigenvalue at `w.place`, a complex
 number moved to `PadicAlgCl ℓ` by the fixed isomorphism `ιℓ`, lies in the Hecke algebra, which is
 a ring of such `ℓ`-adic functions on systems. -/
-lemma heckeEigenvalues_mem_heckeAlgebra (w : FrobeniusDatum E) (hw : D.IsOffLevel L w.place)
+lemma heckeEigenvalues_mem_heckeAlgebra (w : FrobeniusDatum E)
+    (hw : D.IsOffLevel (ℓ := ℓ) L w.place)
     (j : ℕ) :
     (fun x : D.Eigensystem L ↦ ιℓ (x.val.heckeEigenvalues w.place j)) ∈ D.heckeAlgebra L := by
   obtain ⟨-, -, hℓ, h_sys⟩ := hw
   have h_split : w.place.IsSplit := isSplit_of_q_prime w.prime_q
   let T : Module.End ℂ (V.forms κ) := heckeSplit (V.formTranslation κ) h_split j
-  let t (x : D.Eigensystem L) : PadicAlgCl ℓ := ιℓ (x.1.heckeEigenvalues w.place j)
+  let t (x : D.Eigensystem L) : PadicAlgCl ℓ := ιℓ (x.val.heckeEigenvalues w.place j)
   have h_op : D.formsOfLevel L ≤ T.eqLocus (diagOp t) := by
     refine formsOfLevel_le_of_eigensystem fun x f hf ↦ ?_
     have hf_eigen : f ∈ eigenformsAt V κ w.place (x.1.heckeEigenvalues w.place) := h_sys _ x.2 hf
     simp only [eigenformsAt, mem_iInf, mem_inf] at hf_eigen
-    have hT : T f = x.1.heckeEigenvalues w.place j • f := (hf_eigen h_split).2 j
+    have hT : T f = x.val.heckeEigenvalues w.place j • f := (hf_eigen h_split).2 j
     simp [diagOp_apply t x hf.1, hT, t]
   -- `T` is supported at a place that is not above `ℓ`, so it keeps the integral forms.
   intro y hy
   have h_int : T y ∈ ellIntegralForms :=
     localGroupAlgebra_le_endPreserving hℓ (heckeFun_mem_localGroupAlgebra _ (.id _)) _ hy
-  rwa [h_op y.2] at h_int
+  rwa [h_op y.property] at h_int
 
 /-- For every isotypic space `x`, the representation `N x` is the twist of the Galois representation
 `x.galRep` by the character `a` with values in the ℓ-adic integers. -/
@@ -311,18 +317,18 @@ lemma charpoly_coeff_mem_heckeAlgebra (hN : IsGalRepTwist N a) (g : Gal(Ω/E)) (
   -- Hecke polynomials, and these are integers times eigenvalues.
   have h_lim (x : D.Eigensystem L) :
       (mostFrobeniiAt E g).Tendsto (fun w : FrobeniusDatum E ↦
-        ιℓ ((x.1.heckePolyAt w.place).coeff i))
-        (nhds ((x.1.galRep g).1.charpoly.coeff i)) := by
-    obtain ⟨f, ⟨hf_mem, -⟩, hf_ne⟩ := x.2
+        ιℓ ((x.val.heckePolyAt w.place).coeff i))
+        (nhds ((x.val.galRep g).val.charpoly.coeff i)) := by
+    obtain ⟨f, ⟨hf_mem, -⟩, hf_ne⟩ := x.property
     exact (Isotypic.attached_galRep hf_mem hf_ne).tendsto_charpoly_coeff g i
-  suffices h_good : ∀ w : FrobeniusDatum E, D.IsOffLevel L w.place →
-      (fun x : D.Eigensystem L ↦ ιℓ ((x.1.heckePolyAt w.place).coeff i)) ∈ D.heckeAlgebra L from
+  suffices h_good : ∀ w : FrobeniusDatum E, D.IsOffLevel (ℓ := ℓ) L w.place →
+      (fun x : D.Eigensystem L ↦ ιℓ ((x.val.heckePolyAt w.place).coeff i)) ∈ D.heckeAlgebra L from
     isClosed_heckeAlgebra.mem_of_tendsto (tendsto_pi_nhds.2 h_lim)
       (Filter.mem_inf_of_left (eventually_mostFrobenii (D.eventually_isOffLevel (L := L)) h_good))
   intro w hw
   let m : ℤ := if i ≤ card n then (-1) ^ (card n - i) * w.place.q ^ (card n - i).choose 2 else 0
-  have h_coeff (x : D.Eigensystem L) : ιℓ ((x.1.heckePolyAt w.place).coeff i) =
-      m * ιℓ (x.1.heckeEigenvalues w.place (card n - i)) := by
+  have h_coeff (x : D.Eigensystem L) : ιℓ ((x.val.heckePolyAt w.place).coeff i) =
+      m * ιℓ (x.val.heckeEigenvalues w.place (card n - i)) := by
     rw [coeff_heckePoly, map_mul, map_intCast]
   simp only [h_coeff]
   exact mul_mem (intCast_mem _ m) (heckeEigenvalues_mem_heckeAlgebra w hw (card n - i))
@@ -331,7 +337,7 @@ variable (N) in
 /-- Two systems are congruent if the characteristic polynomials of their representations `N` agree
 modulo the maximal ideal at every element of the Galois group. -/
 def IsCongruent (x x' : Isotypic V κ) : Prop :=
-  ∀ (g : Gal(Ω/E)) (i : ℕ), ‖(N x g).1.charpoly.coeff i - (N x' g).1.charpoly.coeff i‖ < 1
+  ∀ (g : Gal(Ω/E)) (i : ℕ), ‖(N x g).val.charpoly.coeff i - (N x' g).val.charpoly.coeff i‖ < 1
 
 open Finset in
 omit [DecidableEq J] in
@@ -350,33 +356,33 @@ lemma exists_indicator_isCongruent (hN : IsGalRepTwist N a)
   -- `π`, and subtract it from its value at `x'`. The product `sepProd` of these differences
   -- vanishes at all `x'` and has norm at least `1` at each congruent `x`. The indicator is
   -- `1 - ∏ (1 - sepProd / sepProd x)`.
-  have separate (x' : {x : D.Eigensystem L // ¬IsCongruent N x.1 π}) : ∃ u : D.heckeAlgebra L,
-      u.1 x'.1 = 0 ∧ ∀ x : D.Eigensystem L, IsCongruent N x.1 π → 1 ≤ ‖u.1 x‖ := by
+  have separate (x' : {x : D.Eigensystem L // ¬IsCongruent N x.val π}) : ∃ u : D.heckeAlgebra L,
+      u.val x'.val = 0 ∧ ∀ x : D.Eigensystem L, IsCongruent N x.val π → 1 ≤ ‖u.val x‖ := by
     obtain ⟨g, i, h_far⟩ : ∃ (g : Gal(Ω/E)) (i : ℕ),
-        1 ≤ ‖(N x'.1.1 g).1.charpoly.coeff i - (N π g).1.charpoly.coeff i‖ := by
-      simpa [IsCongruent] using x'.2
-    let b : EllAdicIntegers := ⟨(N x'.1.1 g).1.charpoly.coeff i, h_int x'.1 g i⟩
+        1 ≤ ‖(N x'.val.val g).val.charpoly.coeff i - (N π g).val.charpoly.coeff i‖ := by
+      simpa [IsCongruent] using x'.property
+    let b : EllAdicIntegers := ⟨(N x'.val.val g).val.charpoly.coeff i, h_int x'.val g i⟩
     let val : D.heckeAlgebra L :=
-      ⟨fun x ↦ (N x.1 g).1.charpoly.coeff i, charpoly_coeff_mem_heckeAlgebra hN g i⟩
-    have h_apart (x : D.Eigensystem L) (hx : IsCongruent N x.1 π) :
-        1 ≤ ‖(N x'.1.1 g).1.charpoly.coeff i - (N x.1 g).1.charpoly.coeff i‖ := by
+      ⟨fun x ↦ (N x.val g).val.charpoly.coeff i, charpoly_coeff_mem_heckeAlgebra hN g i⟩
+    have h_apart (x : D.Eigensystem L) (hx : IsCongruent N x.val π) :
+        1 ≤ ‖(N x'.val.val g).val.charpoly.coeff i - (N x.val g).val.charpoly.coeff i‖ := by
       by_contra! h_near
       refine h_far.not_gt ?_
-      rw [← sub_add_sub_cancel _ ((N x.1 g).1.charpoly.coeff i)]
+      rw [← sub_add_sub_cancel _ ((N x.val g).val.charpoly.coeff i)]
       exact (IsUltrametricDist.norm_add_le_max ..).trans_lt (max_lt h_near (hx g i))
     exact ⟨algebraMap EllAdicIntegers (D.heckeAlgebra L) b - val, sub_self _, h_apart⟩
   choose u u_zero u_unit using separate
   let sepProd : D.heckeAlgebra L := ∏ x', u x'
-  have h_zero (x : D.Eigensystem L) (hx : ¬IsCongruent N x.1 π) : sepProd.1 x = 0 := by
+  have h_zero (x : D.Eigensystem L) (hx : ¬IsCongruent N x.val π) : sepProd.val x = 0 := by
     simpa [sepProd] using prod_eq_zero (mem_univ ⟨x, hx⟩) (u_zero _)
-  have h_unit (x : D.Eigensystem L) (hx : IsCongruent N x.1 π) : 1 ≤ ‖sepProd.1 x‖ := by
+  have h_unit (x : D.Eigensystem L) (hx : IsCongruent N x.val π) : 1 ≤ ‖sepProd.val x‖ := by
     simpa [sepProd] using one_le_prod₀ fun x' _ ↦ u_unit x' x hx
-  let Cong : Type := {x : D.Eigensystem L // IsCongruent N x.1 π}
+  let Cong : Type := {x : D.Eigensystem L // IsCongruent N x.val π}
   let inv (x : Cong) : EllAdicIntegers :=
-    ⟨(sepProd.1 x.1)⁻¹, (norm_inv _).trans_le (inv_le_one_of_one_le₀ (h_unit x.1 x.2))⟩
+    ⟨(sepProd.val x.val)⁻¹, (norm_inv _).trans_le (inv_le_one_of_one_le₀ (h_unit x.val x.property))⟩
   let A : D.heckeAlgebra L := 1 - ∏ y : Cong, (1 - inv y • sepProd)
   have A_apply (x : D.Eigensystem L) :
-      A.1 x = 1 - ∏ y : Cong, (1 - (sepProd.1 y.1)⁻¹ * sepProd.1 x) := by
+      A.val x = 1 - ∏ y : Cong, (1 - (sepProd.val y.val)⁻¹ * sepProd.val x) := by
     simp [A, inv]
     rfl
   refine ⟨A, fun x hx ↦ ?_, fun x hx ↦ by simp [A_apply, h_zero x hx]⟩
@@ -387,9 +393,9 @@ lemma exists_indicator_isCongruent (hN : IsGalRepTwist N a)
 member of the Hecke algebra. Here `N x` is the twist of `x.galRep` by the character `a`. -/
 noncomputable def traceElement (hN : IsGalRepTwist N a) (P : EllAdicIntegers[X]) (h g : Gal(Ω/E)) :
     D.heckeAlgebra L :=
-  ⟨fun x : D.Eigensystem L ↦ (aeval (N x.1 h).1 P * (N x.1 g).1).trace, by
+  ⟨fun x : D.Eigensystem L ↦ (aeval (N x.val h).val P * (N x.val g).val).trace, by
     -- The trace is, up to sign, a coefficient of the characteristic polynomial.
-    have trace_mem (g : Gal(Ω/E)) : (fun x : D.Eigensystem L ↦ (N x.1 g).1.trace) ∈
+    have trace_mem (g : Gal(Ω/E)) : (fun x : D.Eigensystem L ↦ (N x.val g).val.trace) ∈
         D.heckeAlgebra L := by
       simpa [neg_def, ← Matrix.trace_eq_neg_charpoly_coeff] using
         neg_mem (charpoly_coeff_mem_heckeAlgebra hN g (card n - 1))
@@ -452,9 +458,9 @@ lemma weightedSum_mul_heckeAction_eq_of_eigen {j : J} {r s : D.heckeAlgebra Q.pl
   refine Subtype.ext (formEnd_ext fun x y hy ↦ Subtype.ext ?_)
   let T : (ZMod (ℓ ^ ν) → ℂ) →ₗ[ℂ] D.formsOfLevel Q.place :=
     ∑ γ : Γ, LinearMap.smulRight (.proj ((χ γ).toAdd - shift) - root • .proj (χ γ).toAdd :
-      (ZMod (ℓ ^ ν) → ℂ) →ₗ[ℂ] ℂ) ((ρ γ).1 y)
+      (ZMod (ℓ ^ ν) → ℂ) →ₗ[ℂ] ℂ) ((ρ γ).val y)
   have hT (F : ZMod (ℓ ^ ν) → ℂ) :
-      T F = ∑ γ : Γ, (F ((χ γ).toAdd - shift) - root * F (χ γ).toAdd) • (ρ γ).1 y := by simp [T]
+      T F = ∑ γ : Γ, (F ((χ γ).toAdd - shift) - root * F (χ γ).toAdd) • (ρ γ).val y := by simp [T]
   have hT_mem (F : ZMod (ℓ ^ ν) → ℂ) : (T F : V.forms κ) ∈ (x : Isotypic V κ).val := by
     have hρ_mem (γ : Γ) : ((ρ γ).val y : V.forms κ) ∈ (x : Isotypic V κ).val := by
       obtain ⟨⟨A, hA_local⟩, hA⟩ := hρ γ
@@ -462,7 +468,7 @@ lemma weightedSum_mul_heckeAction_eq_of_eigen {j : J} {r s : D.heckeAlgebra Q.pl
     simp [hT, sum_mem, smul_mem, hρ_mem]
   -- Shifting the summation index by γ: T ψ is an eigenvector with character ψ⁻¹ ∘ χ.
   have hT_eigen (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ) (γ : Γ) :
-      (ρ γ).1 (T ψ) = ψ⁻¹ (χ γ).toAdd • T ψ := by
+      (ρ γ).val (T ψ) = ψ⁻¹ (χ γ).toAdd • T ψ := by
     rw [hT, map_sum, Finset.smul_sum]
     refine sum_equiv (.mulLeft γ) _ _ fun δ ↦ ?_
     simp [← ψ.map_add_eq_mul, smul_smul, mul_left_comm, mul_sub, add_sub]
@@ -475,7 +481,7 @@ lemma weightedSum_mul_heckeAction_eq_of_eigen {j : J} {r s : D.heckeAlgebra Q.pl
     by_cases h₀ : T ψ = 0
     · simp [h₀]
     · simpa using h_eigen x ψ⁻¹ _ (hT_mem ψ) (hT_eigen ψ) (mt (hT_zero ψ) h₀)
-  have hT_f : T f = (weightedSum ρ χ weight).1 y := by
+  have hT_f : T f = (weightedSum ρ χ weight).val y := by
     simp [hT, weightedSum, h_weight, Int.cast_smul_eq_zsmul]
   -- Both Hecke operators act on `y` by scalars.
   have h_scalar (t : D.heckeAlgebra Q.place) : (heckeAction t).val y = ιℓ.symm (t.val x) • y :=
@@ -492,7 +498,7 @@ logarithm `P.ind` modulo `ℓ ^ ν` on `𝔽_wˣ` with `P.ind z̄ = 1`; put `P.i
 `⟨γ⟩ = P.diamond = diag (z̄, 1, …, 1)`. On a form `y` of the system `x` on which `GL_n(𝔽_w)` acts by
 `ψ ∘ P.indDet`, we have `tr[(γ - 1) g p(φ)] = (⟨γ⟩ - 1) tr[g p(φ)]`, where `φ` is the Frobenius
 element and the traces are those of `N x`. -/
-lemma tameTrace_smul_eq_diamond_sub_one (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+lemma tameTrace_smul_eq_diamond_sub_one (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     {N : Isotypic V κ → GalRep ℓ E n} [V.IsStd] [WeilData E] {a : Gal(Ω/E) →* EllAdicIntegers}
     (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     {j : J} (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) (g : Gal(Ω/E))
@@ -509,22 +515,22 @@ lemma tameTrace_smul_eq_diamond_sub_one (hQ : ∀ j : J, D.IsOffLevel ![] (Q.pla
   let γ : Gal(Ω/E) := θ.isPlaceOver.tameGenerator
   obtain ⟨-, -, hℓ, -⟩ := hQ j
   -- The matrix of `γ` is semisimple with the only eigenvalue `ιℓ (ψ 1)`, so it is scalar.
-  have eigen : y.1 ∈ parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) 0
+  have eigen : y.val ∈ parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) 0
       fun k : GL (Fin (card n)) (LocField (Q.place j)) ↦
-        ψ (P.ind (residueUnit k.1.det)).toAdd :=
+        ψ (P.ind (residueUnit k.val.det)).toAdd :=
     mem_parahoricEigenspace_det hQ P ψ hy
-  have compat : IsParahoricCompatible (localFormRep V κ (Q.apart.star_ne j j)) y.1 P.ϖ
+  have compat : IsParahoricCompatible (localFormRep V κ (Q.apart.star_ne j j)) y.val P.ϖ
       (fun i : Fin (card n) ↦
-        ψ (P.ind (residueUnit (diagGL (mulSingle i P.tameUnit)).1.det)).toAdd)
-      (x.1.galRep θ.frob).1 (x.1.galRep γ).1 :=
+        ψ (P.ind (residueUnit (diagGL (mulSingle i P.tameUnit)).val.det)).toAdd)
+      (x.val.galRep θ.frob).val (x.val.galRep γ).val :=
     isParahoricCompatible_galRep θ.isPlaceOver P.v_ϖ P.localArtin_ϖ θ.isFrob_inv P.v_tameUnit
       P.localArtin_tameUnit (by simp) hℓ hx (coe_eq_zero.not.2 y_ne) 0 eigen (by simp)
-  have killed : aeval (x.1.galRep γ).1 (X - C (ιℓ (ψ 1))) = 0 :=
+  have killed : aeval (x.val.galRep γ).val (X - C (ιℓ (ψ 1))) = 0 :=
     compat.aeval_inertia_eq_zero _ fun i ↦ by simp [← Units.coe_prod, P.ind_tameUnit]
-  have scalar : (N x.1 γ).1 = ιℓ (ψ 1) • 1 := by
+  have scalar : (N x.val γ).val = ιℓ (ψ 1) • 1 := by
     simpa [hN.coe_apply, ha, γ, θ, sub_eq_zero, Algebra.algebraMap_eq_smul_one] using killed
-  have trace_eq : (tameTrace Q hN j p g).1 x =
-      (ιℓ (ψ 1) - 1) * (traceElement hN p θ.frob g : D.heckeAlgebra Q.place).1 x := by
+  have trace_eq : (tameTrace Q hN j p g).val x =
+      (ιℓ (ψ 1) - 1) * (traceElement hN p θ.frob g : D.heckeAlgebra Q.place).val x := by
     simp [tameTrace, traceElement, scalar, sub_mul, θ, γ]
   simp [trace_eq, hy, P.indDet_diamond, smul_sub, sub_smul, smul_smul, mul_sub, mul_comm, θ]
 
@@ -558,7 +564,7 @@ a form `y` of the system `x` through `ψ ∘ P.indLine`, where `ψ ((card n)!) �
 `tr[(γ - 1) g p(φ)] = p(Ũ) tr[(γ - 1) g]` on `y`. Here `γ` is the tame generator at `w`,
 `tr[(γ - 1) g p(φ)]` is `tameTrace`, and `p(Ũ)` is `aevalHecke`, for `Ũ = a(φ) U` with `U` the Hecke
 operator of `diag (ϖ, 1, …, 1)` for the pro-unipotent Iwahori subgroup. -/
-lemma tameTrace_smul_eq_aevalHecke (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+lemma tameTrace_smul_eq_aevalHecke (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) (g : Gal(Ω/E))
     {x : D.Eigensystem Q.place} {ψ : AddChar (ZMod (ℓ ^ ν)) ℂ} (hψ : ψ (card n)! ≠ 1)
@@ -572,20 +578,21 @@ lemma tameTrace_smul_eq_aevalHecke (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)
   have large_order : ψ (P.ind (residueUnit P.tameUnit)).toAdd ^ (card n)! ≠ 1 := by
     simp [P.ind_tameUnit, hψ, ← ψ.map_nsmul_eq_pow]
   let pTwist : EllAdicIntegers[X] := p.comp (C (a θ.frob) * X)
-  let T : Matrix n n (PadicAlgCl ℓ) := (x.1.galRep θ.isPlaceOver.tameGenerator).1 - 1
+  let T : Matrix n n (PadicAlgCl ℓ) := (x.val.galRep θ.isPlaceOver.tameGenerator).val - 1
   have iota_comp : ιℓ.toRingHom.comp (algebraMap EllAdicIntegers ℂ) = algebraMap _ _ :=
     RingHom.ext iota_ell_algebraMap
   -- In traces against `T`, polynomials in `U` on `y` act like those in the Frobenius matrix.
-  have frob : ιℓ.symm (T * (N x.1 g).1).trace • aevalHecke V κ P a p y.1 =
-      ιℓ.symm (aeval (x.1.galRep θ.frob).1 pTwist * T * (N x.1 g).1).trace • y.1 := by
+  have frob : ιℓ.symm (T * (N x.val g).val).trace • aevalHecke V κ P a p y.val =
+      ιℓ.symm (aeval (x.val.galRep θ.frob).val pTwist * T * (N x.val g).val).trace • y.val := by
     simpa only [map_map, iota_comp, aeval_map_algebraMap] using
       hecke_eq_frob_on_parahoricEigenspace θ.isPlaceOver P.v_ϖ P.localArtin_ϖ θ.isFrob_inv
         P.v_tameUnit
         P.localArtin_tameUnit (by simp) hℓ hx (fun s ↦ ψ (P.ind (residueUnit s)).toAdd)
         (ψ.val_isUnit _).ne_zero large_order (pTwist.map (algebraMap _ ℂ))
         (mem_parahoricEigenspace_line hQ P ψ hy)
-  have hN_tame : (N x.1 θ.isPlaceOver.tameGenerator).1 = T + 1 := by simp [hN.coe_apply, ha, θ, T]
-  simpa [θ, pTwist, tameTrace, traceElement, hN_tame, hN.coe_apply x.1 θ.frob, mul_add, add_mul,
+  have hN_tame : (N x.val θ.isPlaceOver.tameGenerator).val = T + 1 := by simp [hN.coe_apply, ha, θ,
+    T]
+  simpa [θ, pTwist, tameTrace, traceElement, hN_tame, hN.coe_apply x.val θ.frob, mul_add, add_mul,
     mul_assoc, aeval_comp, ← Algebra.smul_def] using frob.symm
 
 /-- The dictionary for the tame generator `γ` at `w = Q.place j` on weighted norms. Let the
@@ -595,7 +602,7 @@ logarithm `P.ind` on `𝔽_wˣ` gives `P.indDet = P.ind ∘ det` with values mod
 the norm over `GL_n(𝔽_w)` with weight `f ∘ P.indDet`, then
 `L tr[(γ - 1) g p(φ)] = (⟨γ⟩ - 1) L tr[g p(φ)]`, where `φ` is the Frobenius element at `w`,
 `⟨γ⟩ = P.diamond`, and the traces are `tameTrace` and `traceElement`. -/
-lemma weightedSum_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+lemma weightedSum_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) (g : Gal(Ω/E)) (f : ZMod (ℓ ^ ν) → ℤ) :
     weightedSum (D.placeRep Q j) P.indDet f * heckeAction (tameTrace Q hN j p g) =
@@ -605,7 +612,7 @@ lemma weightedSum_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel ![] (Q.plac
       D.placeRep Q j k ∈ D.localOperators Q j :=
     residueRep_mem_localOperators hQ _
   let B : D.formsOfLevel Q.place →ₗ[ℂ] V.forms κ :=
-    (formsOfLevel _).subtype ∘ₗ (D.placeRep Q j P.diamond - 1).1
+    (formsOfLevel _).subtype ∘ₗ (D.placeRep Q j P.diamond - 1).val
   -- It suffices to compare the traces on eigenvectors, where `γ` acts as the diamond element.
   have dict (x : D.Eigensystem Q.place) (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ)
       (z : D.formsOfLevel Q.place) (hz : (z : V.forms κ) ∈ (x : Isotypic V κ).val)
@@ -622,7 +629,8 @@ lemma weightedSum_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel ![] (Q.plac
 by `a`, which is `1` at the tame generators (`hN`, `ha`). The norm over `GL_n(𝔽_w)` at
 `w = Q.place i` kills `tr[(γ - 1) g]`, where `γ` is the tame generator at `w` and `traceElement` is
 the trace of the `N x` as an element of the Hecke algebra. -/
-lemma norm_mul_traceElement_tameGenerator_eq_zero (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+lemma norm_mul_traceElement_tameGenerator_eq_zero
+    (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (i : J) (g : Gal(Ω/E)) :
     (∑ k : GL (Fin (card n)) (ResField (Q.place i)), D.residueRep Q (mulSingle i k)) *
@@ -632,18 +640,20 @@ lemma norm_mul_traceElement_tameGenerator_eq_zero (hQ : ∀ j : J, D.IsOffLevel 
   have dict := weightedSum_indDet_mul_tameTrace hQ hN ha P 1 g 1
   rwa [weightedSum_one, sub_one_mul, mul_sum_monoidHom, sub_self, zero_mul, tameTrace_one] at dict
 
+omit [V.IsStd] [WeilData E] in
 /-- Let the auxiliary places be off the base level and `w = Q.place j`. The norm over the stabiliser
 of a line in `GL_n(𝔽_w)` (acting by `lineRep`) with weight `f ∘ P.indLine` has values fixed by the
 pro-unipotent Iwahori subgroup of `GL_n(E_w)`. -/
-lemma weightedSum_indLine_mem_levelSpace (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+lemma weightedSum_indLine_mem_levelSpace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (P : Q.LocalChoice j) (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place) :
     ((weightedSum (D.lineRep Q j) P.indLine f).val y : V.forms κ) ∈
       levelSpace (localFormRep V κ (Q.apart.star_ne j j)).ρ proIwahori :=
   mem_levelSpace_proIwahori hQ fun k hk _ ↦ by
-    change (D.lineRep Q j k * weightedSum (D.lineRep Q j) P.indLine f).1 y = _
+    change (D.lineRep Q j k * weightedSum (D.lineRep Q j) P.indLine f).val y = _
     rw [mul_weightedSum]
     simp [hk]
 
+omit [V.IsStd] [WeilData E] in
 /-- Let the auxiliary places be off the base level and let `P` be a local choice at
 `w = Q.place j`, with uniformiser `P.ϖ` and a logarithm modulo `ℓ ^ ν` on `𝔽_wˣ`, read on the first
 entry as `P.indLine`. Let `L f` be the norm over the stabiliser of a line in `GL_n(𝔽_w)` with weight
@@ -651,7 +661,7 @@ entry as `P.indLine`. Let `L f` be the norm over the stabiliser of a line in `GL
 There is an additive map `B` from weights to integral operators made of translates at `w`
 (`localOperators`) with `B f = p(Ũ) L f`. Here `p(Ũ)` is `aevalHecke`, with `Ũ = a(φ) U` for the
 Frobenius element `φ` and the Hecke operator `U` of `diag (P.ϖ, 1, …, 1)`. -/
-lemma exists_aevalHecke_weightedSum (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+lemma exists_aevalHecke_weightedSum (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) :
     ∃ B : (ZMod (ℓ ^ ν) → ℤ) →+ D.integralEnd Q.place,
       (∀ f : ZMod (ℓ ^ ν) → ℤ, B f ∈ D.localOperators Q j) ∧
@@ -660,7 +670,7 @@ lemma exists_aevalHecke_weightedSum (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j
   have exists_op (f : ZMod (ℓ ^ ν) → ℤ) : ∃ b ∈ D.localOperators Q j, ∀ y : D.formsOfLevel Q.place,
       (b.1 y).1 = aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).1 y).1 := by
     have norm_mem : weightedSum (D.lineRep Q j) P.indLine f ∈ D.localOperators Q j :=
-      sum_mem fun k _ ↦ zsmul_mem (residueRep_mem_localOperators hQ k.1) _
+      sum_mem fun k _ ↦ zsmul_mem (residueRep_mem_localOperators hQ k.val) _
     exact exists_localOperators_aeval_hecke hQ norm_mem (diagGL (mulSingle 0 P.ϖ))
       (p.comp (C (a (Q.frobData j).frob) * X)) (weightedSum_indLine_mem_levelSpace hQ P f)
   choose B B_mem B_apply using exists_op
@@ -681,7 +691,7 @@ at `Q.place j`, with tame generator `γ` and Frobenius element `φ`. Let `B f` b
 `σ` on `𝒜 = D.integralEnd Q.place` that kills each `T` with `2 (card n)! T ∈ ℓ ^ ν 𝒜` (`hσ`).
 The traces are `tameTrace`, and `L` is the norm whose weight is the logarithm `P.indLine` lifted to
 `ℤ` by `valMinAbs`. -/
-lemma map_aevalHecke_valMinAbs_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+lemma map_aevalHecke_valMinAbs_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (hB : ∀ (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place), ((B f).val y : V.forms κ) =
       aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).val y))
@@ -717,26 +727,27 @@ lemma map_aevalHecke_valMinAbs_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel ![] (
   exact weightedSum_mul_heckeAction_eq_of_eigen Q (shift := ((card n)! : ZMod (ℓ ^ ν))) (root := 1)
     (B := U) lineRep_mem (hB _) (f := fun s ↦ (f s : ℂ)) dict (by simp)
 
+omit [V.IsStd] [WeilData E] in
 /-- Let the auxiliary places be off the base level (`hQ`), let `P` be a local choice at
 `w = Q.place j` for an index `j`, `p` a polynomial and `a` a character. Let `B f` be
 `p(Ũ) = aevalHecke V κ P a p` after the norm over the stabiliser of the line in `GL_n(𝔽_w)` with
 weight `f ∘ P.indLine` (`hB`). Then the stabiliser fixes the values of `B 1`. -/
-lemma lineRep_mul_eq_self (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+lemma lineRep_mul_eq_self (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hB : ∀ (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place), ((B f).val y : V.forms κ) =
       aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).val y))
     (k : residueLineStabilizer (ResField (Q.place j)) (card n)) : D.lineRep Q j k * B 1 = B 1 := by
   obtain ⟨k₀, hk⟩ := k
   obtain ⟨g₀, rfl⟩ := reduceGL_surjective k₀
-  have hg₀ : g₀.1 ∈ blockParahoric (min 1) := reduceGL_mem_residueLineStabilizer_iff.1 hk
+  have hg₀ : g₀.val ∈ blockParahoric (min 1) := reduceGL_mem_residueLineStabilizer_iff.1 hk
   ext y : 3
-  have norm_fixed : ((weightedSum (D.lineRep Q j) P.indLine 1).1 y).1 ∈
+  have norm_fixed : ((weightedSum (D.lineRep Q j) P.indLine 1).val y).val ∈
       parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) (min 1) 1 := by
     refine ⟨weightedSum_indLine_mem_levelSpace hQ P 1 y, fun g hg ↦ ?_⟩
-    rw [localFormRep_apply_eq_lineRep hQ hg, ← Module.End.mul_apply, ← Subalgebra.coe_mul,
+    rw [localFormRep_apply_eq_lineRep hQ hg, ← FormEnd.mul_apply, ← Subalgebra.coe_mul,
       mul_weightedSum]
     simp [Pi.one_def]
   -- `U` preserves the forms fixed by the parahoric subgroup, hence so does `p(Ũ)`.
-  obtain ⟨-, B_fixed⟩ : ((B 1).1 y).1 ∈
+  obtain ⟨-, B_fixed⟩ : ((B 1).val y).val ∈
       parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) (min 1) 1 := by
     rw [hB, aevalHecke, ← aeval_map_algebraMap ℂ]
     exact aeval_apply_smul_mem_of_le_comap norm_fixed _ _
@@ -745,6 +756,7 @@ lemma lineRep_mul_eq_self (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
   -- On forms, an element of the stabiliser acts through any of its lifts to the parahoric subgroup.
   simpa [← localFormRep_apply_eq_lineRep hQ hg₀] using B_fixed g₀ hg₀
 
+omit [V.IsStd] [WeilData E] in
 /-- Let the auxiliary places `w i = Q.place i` be off the base level (`hQ`), and let `P` be a local
 choice at `w j` for an index `j`, with uniformiser `ϖ` and Frobenius element `φ`, and let `q` be the
 order of the residue field at `w j`. Let `U' = B 1` be `p(Ũ)` after the norm over the stabiliser of
@@ -753,7 +765,7 @@ the line (`hB`), where `p = (X - q ^ t) H`, `Ũ = a(φ) U` and `U` is the Hecke 
 algebra, and suppose that the Hecke polynomial at `w j` of every base system where `δ` does not
 vanish is, after scaling by `1 / a(φ)`, a chain of `t + 1` roots `1, q, …, q ^ t` times a divisor of
 `H` (`HasRootChain`). Then `δ Nm U' = 0`, where `Nm` is the sum over `∏ GL_n(𝔽_{w i})`. -/
-lemma heckeAction_mul_norm_mul_eq_zero (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+lemma heckeAction_mul_norm_mul_eq_zero (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hB : ∀ (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place), ((B f).val y : V.forms κ) =
       aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).val y))
     (hB_mem : B 1 ∈ D.localOperators Q j) {H : EllAdicIntegers[X]} {t : ℕ}
@@ -770,26 +782,26 @@ lemma heckeAction_mul_norm_mul_eq_zero (hQ : ∀ j : J, D.IsOffLevel ![] (Q.plac
   -- The values of `S = Nm U'` have base level. We show that `δ S y` is orthogonal to all `δ w` with
   -- `w` of base level, hence to itself.
   let S : D.integralEnd Q.place := (∑ g, D.residueRep Q g) * B 1
-  have S_base (y : D.formsOfLevel Q.place) : (S.1 y).1 ∈ D.formsOfLevel ![] := by
+  have S_base (y : D.formsOfLevel Q.place) : (S.val y).val ∈ D.formsOfLevel ![] := by
     refine mem_formsOfLevel_empty_iff_residueRep_fixed.2 fun g ↦ ?_
-    rw [← Module.End.mul_apply, ← Subalgebra.coe_mul, ← mul_assoc, mul_sum_monoidHom]
+    rw [← FormEnd.mul_apply, ← Subalgebra.coe_mul, ← mul_assoc, mul_sum_monoidHom]
   -- A form `w` of base level in a system where `δ` does not vanish is orthogonal to the values of
   -- `U'` by the chain lemma, and the finite groups fix it.
-  have orth (x : D.Eigensystem Q.place) (hx : x.1 ∈ D.Eigensystem ![]) (hδ : δ.1 x ≠ 0)
-      (w : V.forms κ) (hw : w ∈ x.1.1 ⊓ D.formsOfLevel ![]) (y : D.formsOfLevel Q.place) :
-      F w (S.1 y).1 = 0 := by
+  have orth (x : D.Eigensystem Q.place) (hx : x.val ∈ D.Eigensystem ![]) (hδ : δ.val x ≠ 0)
+      (w : V.forms κ) (hw : w ∈ x.val.val ⊓ D.formsOfLevel ![]) (y : D.formsOfLevel Q.place) :
+      F w (S.val y).val = 0 := by
     rcases eq_or_ne w 0 with rfl | w_ne
     · simp
     obtain ⟨w_sph, ev, poly_eq, w_eigen⟩ := hasHeckePolyAt_iff_localFormRep.1
       (hasHeckePolyAt_of_mem_eigenformsAt (h_sys _ hx hw) (Q.apart.star_ne j j))
-    have orth_B : F w ((B 1).1 y).1 = 0 := by
+    have orth_B : F w ((B 1).val y).val = 0 := by
       rw [hB, aevalHecke, ← aeval_map_algebraMap ℂ]
       simpa [hp, H.map_comp] using pairing_aeval_heckeCoset_eq_zero unitary w_sph w_ne poly_eq
         w_eigen P.v_ϖ (((isUnit _).map a).map _).ne_zero (h_chain x hx hδ)
         (weightedSum_indLine_mem_levelSpace hQ P 1 y)
     have term (g : ∀ j, GL (Fin (card n)) (ResField (Q.place j))) :
-        F w ((D.residueRep Q g).1 ((B 1).1 y)).1 = 0 := by
-      have w_fixed : ((D.residueRep Q g).1 ⟨w, formsOfLevel_base_le _ hw.2⟩).1 = w :=
+        F w ((D.residueRep Q g).val ((B 1).val y)).val = 0 := by
+      have w_fixed : ((D.residueRep Q g).val ⟨w, formsOfLevel_base_le _ hw.2⟩).val = w :=
         congrArg Subtype.val (mem_formsOfLevel_empty_iff_residueRep_fixed.1 hw.2 g)
       rw [← w_fixed]
       exact (F_inv ..).trans orth_B
@@ -800,12 +812,12 @@ lemma heckeAction_mul_norm_mul_eq_zero (hQ : ∀ j : J, D.IsOffLevel ![] (Q.plac
   rw [mul_assoc]
   ext y : 3
   have orth_base :
-      D.formsOfLevel ![] ≤ (F.flip ((heckeAction δ * S).1 y).1 ∘ₛₗ diagOp δ.1).ker := by
+      D.formsOfLevel ![] ≤ (F.flip ((heckeAction δ * S).val y).val ∘ₛₗ diagOp δ.val).ker := by
     refine formsOfLevel_le_of_eigensystem ?_
     rintro ⟨x, f, ⟨hf, hf_base⟩, hf_ne⟩ w hw
     -- The system `x` of base level, read at the auxiliary level.
     let ξ : D.Eigensystem Q.place := ⟨x, f, ⟨hf, formsOfLevel_base_le _ hf_base⟩, hf_ne⟩
-    by_cases hδ : δ.1 ξ = 0
+    by_cases hδ : δ.val ξ = 0
     · simp [diagOp_apply _ ξ hw.1, hδ]
     · simp [diagOp_apply _ ξ hw.1, comm.eq, orth ξ ⟨f, ⟨hf, hf_base⟩, hf_ne⟩ hδ w hw]
   by_contra δS_ne

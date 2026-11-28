@@ -1,7 +1,14 @@
-import New.Reduction.IntegralTargetForms
-import New.Spanning.SecondMoment.SpanningTheorem
+module
+
+import Mathlib.Data.Rat.Cast.OfScientific
+import TauCeti.NumberTheory.Padics.Complex.Basic
+public import New.Reduction.IntegralTargetForms
+public import New.Spanning.SecondMoment.SpanningTheorem
+public import New.Reduction.PrimeSums
+public import New.UpperBound.Divisibility.MarkedPrimes
+public import New.UpperBound.Size.Estimates
 import New.UpperBound.Divisibility.LocalDivisibility
-import New.UpperBound.Seesaw.SeesawIdentity
+public import New.UpperBound.Seesaw.SeesawIdentity -- shake: keep (needed public by an exposed definition)
 import New.UpperBound.Size.ArchimedeanSize
 
 /-!
@@ -13,6 +20,13 @@ The source is the space `ramifiedSourceForms` of ramified source forms. It lies 
 map `𝔭` from the source to the target and prove Theorems A and B: the source is spanned by integral
 forms `φ` whose images `s 𝔭 φ` have short lifts `Θ₁ s 𝔭 φ`, these images have small index, and the
 images of few translates span almost all of the target.
+
+For A, `New.UpperBound.Seesaw.SeesawIdentity` identifies the lift of a Poincaré image with the
+composite lift on the source; `New.UpperBound.Divisibility.LocalDivisibility` and
+`New.UpperBound.Size.ArchimedeanSize` supply its finite and infinite place bounds. The rational
+factor `invGainFactor` trades divisibility for archimedean size. For B, the near-isometry and
+second moment in `New.Spanning.SecondMoment.SpanningTheorem` give the translates; here we pass
+from all source forms to ramified source forms.
 
 Notions from other files:
 * `D.poincare` is the Poincaré map `𝒫` from source forms to the forms on `Y₀`, without the factor
@@ -26,6 +40,8 @@ Notions from other files:
   `D.logB` standing for `log b`.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New.Data
@@ -34,59 +50,11 @@ open Submodule Module Real Finset LevelPlaces.LevelForm Parameters
 
 variable {P : Parameters} (D : Data P)
 
-/-! ### The errors in the divisibility of the composite lift -/
-
-/-- A choice of the numbers `err_l` in the theorem on the divisibility of the composite lift,
-`New.Data.exists_err_gaugeLe_compositeLift`. -/
-def divisibilityError : ℕ → ℝ := D.exists_err_gaugeLe_compositeLift.choose
-
-lemma divisibilityError_nonneg (l : ℕ) : 0 ≤ D.divisibilityError l :=
-  D.exists_err_gaugeLe_compositeLift.choose_spec.1 l
-
-/-- The error `err_l` is zero if `l ≠ N` and either `l` splits in `K` (that is, the value at `l` of
-the character `chiK P.d` of the imaginary quadratic field `K = ℚ(√-d)` is `1`) or `l` is at least
-the cut-off `x₁`. -/
-lemma divisibilityError_eq_zero {l : ℕ} (hN : l ≠ D.N) (hl : chiK P.d l = 1 ∨ D.x₁ ≤ l) :
-    D.divisibilityError l = 0 := by
-  obtain ⟨-, h_zero, -⟩ := D.exists_err_gaugeLe_compositeLift.choose_spec
-  exact h_zero l hN hl
-
-/-- For every finite set `U` of natural numbers, the sum over `l ∈ U` of `err_l log l`, with
-`err_l = D.divisibilityError l`, is at most the unit of loss `D.errorUnit = f a log³ b`. -/
-lemma sum_divisibilityError_mul_log_le (U : Finset ℕ) :
-    ∑ l ∈ U, D.divisibilityError l * log l ≤ D.errorUnit := by
-  obtain ⟨-, -, h_sum, -⟩ := D.exists_err_gaugeLe_compositeLift.choose_spec
-  exact h_sum U
-
-/-- Fix a prime `l` and an `l`-adic place of `ℂ`, with valuation ring `𝒪 = embValRing`. Let
-`gain_l = D.gain l` be the divisibility asked of the chain of lifts at `l`, and
-`err_l = D.divisibilityError l` the error allowed in it. There are `j ≤ err_l · dim_ℂ D.SourceForm`
-and an `𝒪`-module `S` of source forms with two properties.
-* Every finite family of integral ramified source forms is carried into `S` by a square matrix over
-  `𝒪` whose determinant divides `l ^ j` (`ColengthDvd`).
-* For `φ ∈ S`, the form `B_ϑ φ = compositeLift ϑ Ψ φ` has valuation at least `gain_l - err_l`: the
-  `l`-adic gauge at `g` of its value at each finite adelic point `g` is at most
-  `l ^ (err_l - gain_l)`.
-
-Here `ϑ` runs over the twists whose level `ϑ.normQ` is prime to `l`, and `Ψ` over their chain data
-(`IsChainDatum`), which are finitely supported coefficient functions on `D.Translations`, the tuples
-of translations that define a chain of lifts. -/
-lemma exists_colengthDvd_gaugeLe_divisibilityError (l : ℕ) [Fact l.Prime] [PadicPlace l] :
-    ∃ (j : ℕ) (S : Submodule embValRing D.SourceForm),
-      j ≤ D.divisibilityError l * finrank ℂ D.SourceForm ∧
-      ColengthDvd (D.integralSourceForms ⊓ D.ramifiedSourceForms.restrictScalars embValRing) S
-        (l ^ j) ∧
-      ∀ (ϑ : D.Twist) (Ψ : D.Translations →₀ ℂ), IsChainDatum ϑ Ψ → l.Coprime ϑ.normQ →
-        ∀ φ ∈ S, GaugeLe 1 (l ^ (D.divisibilityError l - D.gain l)) (compositeLift ϑ Ψ φ) := by
-  obtain ⟨-, -, -, h_local⟩ := D.exists_err_gaugeLe_compositeLift.choose_spec
-  obtain ⟨j, S, hj, -, h_index, h_gauge⟩ := h_local l
-  exact ⟨j, S, hj, h_index, h_gauge⟩
-
 /-! ### The map from source forms to target forms -/
 
 /-- The integer `g_l = ⌊gain_l - err_l⌋`. For a prime `l` it vanishes unless `l` is non-split and
 below `x₁` or `l = N`. -/
-def gainExponent (l : ℕ) : ℤ := ⌊D.gain l - D.divisibilityError l⌋
+def gainExponent (l : ℕ) : ℤ := ⌊D.gain l - D.allowedLoss l⌋
 
 /-- The positive rational number `c_B = ∏ l ^ (-g_l)`, the product taken over the non-split primes
 below `x₁` and the level `N`. -/
@@ -137,16 +105,16 @@ lemma log_invGainFactor_le :
   calc log D.invGainFactor = ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, -D.gainExponent l * log l := by
         push_cast [invGainFactor, log_prod h_ne, log_zpow]
         rfl
-    _ ≤ ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, (-D.gain l + D.divisibilityError l + 1) * log l := by
+    _ ≤ ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, (-D.gain l + D.allowedLoss l + 1) * log l := by
         gcongr with l
         grw [gainExponent, ← Int.sub_one_lt_floor]
         linarith
     _ = -∑ l ∈ D.smallNonsplitPrimes, D.gain l * log l +
-          ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, D.divisibilityError l * log l +
+          ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, D.allowedLoss l * log l +
           ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, log l := by
         simp only [h_gain, add_mul, neg_mul, one_mul, sum_add_distrib, sum_neg_distrib]
     _ ≤ -∑ l ∈ D.smallNonsplitPrimes, D.gain l * log l + D.errorUnit + D.b := by
-        grw [sum_divisibilityError_mul_log_le, sum_log_smallNonsplitPrimes_union_le]
+        grw [sum_allowedLoss_mul_log_le, sum_log_smallNonsplitPrimes_union_le]
 
 /-- For a prime `l`, the absolute value in `ℂ_l` of `c_B = D.invGainFactor` is that of
 `l ^ (-g_l)`. -/
@@ -161,9 +129,8 @@ lemma norm_invGainFactor (l : ℕ) [hl : Fact l.Prime] :
   · -- If `l` is not in the product, then `g_l = 0`.
     rw [notMem_union, notMem_singleton]
     rintro ⟨h_notMem, hN⟩
-    have h_cases : chiK P.d l = 1 ∨ D.x₁ ≤ l :=
-      chiK_eq_one_or_le_of_notMem_smallNonsplitPrimes h_notMem
-    simp [gainExponent, D.gain_eq_zero h_cases, D.divisibilityError_eq_zero hN h_cases]
+    obtain ⟨h_gain, h_loss⟩ := gain_allowedLoss_eq_zero h_notMem hN
+    simp [gainExponent, h_gain, h_loss]
 
 /-- A non-zero constant `c_ss` for which the seesaw identity `New.Data.seesaw_identity` holds with
 the linear form `D.besselForm` and the archimedean point `D.besselPoint`. -/
@@ -181,27 +148,9 @@ abbrev projectedPoincare (s : D.chosenGL) : D.ramifiedSourceForms →ₗ[ℂ] D.
   D.goodPoincare s ∘ₗ D.scaledInclusion
 
 /-- The map `φ ↦ c_B y`, with `y = #Ḡ · e₀ s c_ss⁻¹ 𝒫 φ`. It is the translate `s 𝔭` of
-`𝔭 = c_B c_ss⁻¹ #Ḡ · e₀ 𝒫` (`coe_normalizedPoincare`). -/
+`𝔭 = c_B c_ss⁻¹ #Ḡ · e₀ 𝒫`. -/
 def normalizedPoincare (s : D.chosenGL) : D.ramifiedSourceForms →ₗ[ℂ] D.targetForms :=
   (D.invGainFactor : ℂ) • D.projectedPoincare s
-
-/-- The map `normalizedPoincare s = c_B c_ss⁻¹ #Ḡ · e₀ s 𝒫` is the translate by `s` of
-`𝔭 = normalizedPoincare 1`, in the representation `D.principalRep` of the finite group
-`Ḡ = D.chosenGL` on the forms on `Y₀`. -/
-lemma coe_normalizedPoincare (s : D.chosenGL) (φ : D.ramifiedSourceForms) :
-    (D.normalizedPoincare s φ : D.principalForms (D.spaceY 0)) =
-      D.principalRep (D.spaceY 0) s (D.normalizedPoincare 1 φ) := by
-  have h_comm : Commute (D.principalRep (D.spaceY 0) s)
-      ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀) := by
-    simpa using (D.isCentralProj_e₀.2.commute (.of ℂ D.chosenGL s)).map
-      (D.principalRep (D.spaceY 0)).asAlgebraHom
-  have h_translate (z : D.principalForms (D.spaceY 0)) :
-      (D.goodProjTranslate s z : D.principalForms (D.spaceY 0)) =
-        D.principalRep (D.spaceY 0) s (D.goodProjTranslate 1 z) := by
-    -- Both sides are `#Ḡ` times the two sides of `h_comm` at `z`.
-    simpa using congrArg ((Nat.card D.chosenGL : ℂ) • ·) (LinearMap.congr_fun h_comm.eq z).symm
-  simp only [normalizedPoincare, LinearMap.smul_apply, Submodule.coe_smul, map_smul]
-  exact congrArg _ (h_translate (D.poincare (D.scaledInclusion φ)))
 
 /-- The ramified source forms that are integral at every `ι`, where `ι` runs over the pairs of a
 prime `l` and an `l`-adic place of `ℂ` (`PrimePadicIso`). -/
@@ -234,8 +183,7 @@ lemma normSqAt_normalizedPoincare (s : D.chosenGL) (φ : D.ramifiedSourceForms) 
   have h_norm : ‖σ D.invGainFactor‖ ^ 2 = exp (2 * log D.invGainFactor) := by
     rw [two_mul, exp_add, exp_log (mod_cast D.invGainFactor_pos), ← sq]
     simp
-  simp only [normalizedPoincare, LinearMap.smul_apply, map_smul, normSqAt, mul_classSum, ← h_norm]
-  exact congrArg _ (funext fun g ↦ weylNormSq_comp_smul _ σ _)
+  rw [normalizedPoincare, LinearMap.smul_apply, map_smul, normSqAt_smul, h_norm]
 
 /-! ### Theorem A -/
 
@@ -260,29 +208,31 @@ theorem span_short_integralRamified_eq_top :
   rintro φ ⟨h_integral, h_size⟩
   refine ⟨fun ι ↦ ?_, fun s σ ↦ ?_⟩
   · -- A short form is integral at every `ι`.
-    let : PadicPlace ι.1 := ι.place
-    exact ⟨φ.val.prop, h_integral ι.1⟩
+    let : PadicPlace ι.prime := ι.place
+    exact ⟨φ.val.prop, h_integral ι.prime⟩
   obtain ⟨Ψ, hΨ, h_seesaw⟩ : ∃ Ψ : D.Translations →₀ ℂ,
       IsChainDatum (1 : D.MFoldTwist).toTwist Ψ ∧ ∀ φ : D.ramifiedSourceForms,
         D.lowerChain .one (D.poincare (D.scaledInclusion φ)) = compositeLift .one Ψ φ :=
     D.exists_lowerChain_poincare_eq 1
-  set β : ℝ := D.mainAmount - D.m * D.totalRemainder +
-    2 * ∑ l ∈ D.smallNonsplitPrimes, D.gain l * log l + D.errorUnit with β_def
+  set chainLogBound : ℝ := D.mainAmount - D.m * D.totalRemainder +
+    2 * ∑ l ∈ D.smallNonsplitPrimes, D.gain l * log l + D.errorUnit with chainLogBound_def
   -- The values of `ι₁ z = B₁ φ`, for `z = c_ss⁻¹ 𝒫 φ`, are bounded by the sizes of `φ` and the
   -- chain.
-  have h_chain (g : Gf D.E (D.Y D.m)) :
+  have h_composite_size (g : Gf D.E (D.Y D.m)) :
       weylNormSq (σ ∘ (D.lowerChain .one (D.poincare (D.scaledInclusion φ))).val g) ≤
-        exp (D.errorUnit + β) := by
+        exp (D.errorUnit + chainLogBound) := by
     rw [h_seesaw φ]
     exact weylNormSq_compositeLift_le hΨ (h_size σ) g
   -- The passage from `z` to the target form `y = #Ḡ · e₀ s z` adds `x ^ 99`.
-  have h_target :
-      (D.Θ 1 (D.projectedPoincare s φ)).normSqAt σ ≤ exp (D.x ^ 99 + (D.errorUnit + β)) :=
-    normSqAt_goodProjTranslate_le h_chain
-  have h_error : D.x ^ 99 + 4 * D.errorUnit + 2 * D.b ≤ D.f * D.a * D.logB ^ 4 :=
+  have h_projected_size :
+      (D.Θ 1 (D.projectedPoincare s φ)).normSqAt σ ≤
+        exp (D.x ^ 99 + (D.errorUnit + chainLogBound)) :=
+    normSqAt_goodProjTranslate_le h_composite_size
+  have h_error_budget : D.x ^ 99 + 4 * D.errorUnit + 2 * D.b ≤ D.f * D.a * D.logB ^ 4 :=
     D.le_of_hasLogBound
-  -- The positive rational number `c_B` adds `2 log c_B`, and the gains cancel.
-  grw [D.normSqAt_normalizedPoincare, h_target, ← exp_add, exp_le_exp, β_def]
+  -- The rational normalization adds `2 log c_B` to the log squared norm, cancelling the
+  -- finite-place gains. The rounding and allowed local losses enter the error budget.
+  grw [D.normSqAt_normalizedPoincare, h_projected_size, ← exp_add, exp_le_exp, chainLogBound_def]
   linarith [D.log_invGainFactor_le]
 
 /-- The ramified source forms `D.ramifiedSourceForms` have at least half the dimension over `ℂ` of
@@ -296,7 +246,7 @@ lemma finrank_sourceForm_le_two_mul :
   linarith
 
 /-- Let `l = ι.1` be the prime below `ι`, let `gain_l = D.gain l` be the divisibility asked of the
-chain of lifts at `l` and `err_l = D.divisibilityError l` the error allowed in it. Suppose that
+chain of lifts at `l` and `err_l = D.allowedLoss l` the error allowed in it. Suppose that
 `B_ϑ φ = compositeLift ϑ Ψ φ` has valuation at least `gain_l - err_l` at `ι`, for every twist `ϑ`
 whose level `ϑ.normQ` is prime to `l` and every chain datum `Ψ` of `ϑ`. Then the target form
 `y = s 𝔭 φ = D.normalizedPoincare s φ` is integral at `ι`: its lift `Θ_ϑ y` is integral at `ι` for
@@ -304,10 +254,10 @@ every `m`-fold twist `ϑ` of level prime to `l`. -/
 lemma normalizedPoincare_mem_integralVectors {ι : PrimePadicIso} (s : D.chosenGL)
     {φ : D.ramifiedSourceForms}
     (hφ : ∀ (ϑ : D.Twist) (Ψ : D.Translations →₀ ℂ), IsChainDatum ϑ Ψ →
-      Nat.Coprime ι.1 ϑ.normQ → letI := ι.place
-      GaugeLe 1 (((ι.1 : ℕ) : ℝ) ^ (D.divisibilityError ι.1 - D.gain ι.1)) (compositeLift ϑ Ψ φ)) :
+      Nat.Coprime ι.prime ϑ.normQ → letI := ι.place
+      GaugeLe 1 (((ι.1 : ℕ) : ℝ) ^ (D.allowedLoss ι.1 - D.gain ι.1)) (compositeLift ϑ Ψ φ)) :
     D.normalizedPoincare s φ ∈ D.targetLattice.integralVectors ι := by
-  let : PadicPlace ι.1 := ι.place
+  let : PadicPlace ι.prime := ι.place
   refine mem_integralVectors_targetLattice.2 fun ϑ hϑ ↦ ?_
   obtain ⟨Ψ, hΨ, h_seesaw⟩ : ∃ Ψ : D.Translations →₀ ℂ, IsChainDatum ϑ.toTwist Ψ ∧
       ∀ φ : D.ramifiedSourceForms, D.lowerChain ϑ.toTameChar (D.poincare (D.scaledInclusion φ)) =
@@ -315,7 +265,7 @@ lemma normalizedPoincare_mem_integralVectors {ι : PrimePadicIso} (s : D.chosenG
     D.exists_lowerChain_poincare_eq ϑ
   -- As `g_l ≤ gain_l - err_l`, the form `B_ϑ φ` is `l ^ g_l` times an integral form.
   have h_gauge : GaugeLe 1 1
-      (((ι.1 : ℕ) : ℂ) ^ (-D.gainExponent ι.1) • compositeLift ϑ.toTameChar Ψ φ) :=
+      (((ι.prime : ℕ) : ℂ) ^ (-D.gainExponent ι.prime) • compositeLift ϑ.toTameChar Ψ φ) :=
     (hφ ϑ Ψ hΨ hϑ).zpow_neg_smul ((Int.floor_le _).trans_eq (neg_sub _ _).symm)
   have h_norm : ‖ιₚ (D.invGainFactor : ℂ)‖ = ‖ιₚ (((ι.1 : ℕ) : ℂ) ^ (-D.gainExponent ι.1))‖ := by
     simp [norm_invGainFactor]
@@ -324,7 +274,7 @@ lemma normalizedPoincare_mem_integralVectors {ι : PrimePadicIso} (s : D.chosenG
   have h_lift_mem :
       (D.invGainFactor : ℂ) • D.lowerChainAtLevel ϑ (D.poincare (D.scaledInclusion φ)) ∈
         integralForms ι.place := fun g ↦ by
-    show weylGauge D.columnsY (D.lastEntry D.m) g ((D.invGainFactor : ℂ) •
+    change weylGauge D.columnsY (D.lastEntry D.m) g ((D.invGainFactor : ℂ) •
       (D.lowerChain ϑ.toTameChar (D.poincare (D.scaledInclusion φ))).val g) ≤ 1
     rw [h_seesaw φ, weylGauge_smul, h_norm, ← weylGauge_smul]
     simpa using h_gauge g
@@ -346,23 +296,24 @@ lemma indexLe_of_mem_image_normalizedPoincare (s : D.chosenGL) {n : ℕ} {y : Fi
   -- forms, `D_X` being the dimension of the space of all source forms. So `e l = D_X err_l` serves,
   -- and `D_X ≤ 2 dim src`.
   refine TwistedLattice.indexLe_of_colengthDvd
-    (e := fun l ↦ finrank ℂ D.SourceForm * D.divisibilityError l)
-    (fun l ↦ mul_nonneg (by positivity) (D.divisibilityError_nonneg l)) (fun U _ ↦ ?_) fun ι ↦ ?_
+    (e := fun l ↦ finrank ℂ D.SourceForm * D.allowedLoss l)
+    (fun l ↦ mul_nonneg (by positivity) (D.allowedLoss_nonneg l)) (fun U _ ↦ ?_) fun ι ↦ ?_
   · have h_errorUnit_nonneg : 0 ≤ D.errorUnit := (HasLogBound.pos D).le
-    simp only [mul_assoc _ (D.divisibilityError _), ← mul_sum]
-    grw [sum_divisibilityError_mul_log_le, finrank_sourceForm_le_two_mul]
+    simp only [mul_assoc _ (D.allowedLoss _), ← mul_sum]
+    grw [sum_allowedLoss_mul_log_le, finrank_sourceForm_le_two_mul]
     push_cast
     exact le_of_eq (by ring)
-  let : PadicPlace ι.1 := ι.place
+  let : PadicPlace ι.prime := ι.place
   -- On `S` the chain has valuation at least `gain_l - err_l`, for all twists prime to `l`.
-  obtain ⟨j, S, hj, h_index, h_gauge⟩ := D.exists_colengthDvd_gaugeLe_divisibilityError ι.1
+  obtain ⟨j, S, hj, h_index, h_gauge⟩ :=
+    exists_colengthDvd_gaugeLe_compositeLift (D := D) (p := ι.prime)
   let A : D.ramifiedSourceForms →ₗ[ι.integers] D.targetForms :=
     (D.normalizedPoincare s).restrictScalars _
   let M : Submodule ι.integers D.ramifiedSourceForms :=
     D.integralSourceForms.comap (D.ramifiedSourceForms.subtype.restrictScalars _)
-  have h_source : ColengthDvd M ((D.targetLattice.integralVectors ι).comap A) (ι.1 ^ j) :=
-    h_index.comap _ (fun φ hφ ↦ ⟨hφ, φ.prop⟩) fun φ _ hφ ↦
-      D.normalizedPoincare_mem_integralVectors s fun ϑ Ψ hΨ hϑ ↦ h_gauge ϑ Ψ hΨ hϑ φ hφ
+  have h_source : ColengthDvd M ((D.targetLattice.integralVectors ι).comap A) (ι.prime ^ j) :=
+    h_index.comap _ (fun _ hφ ↦ hφ) fun φ _ hφ ↦
+      D.normalizedPoincare_mem_integralVectors s fun ϑ Ψ hΨ hϑ ↦ h_gauge ϑ Ψ hΨ hϑ φ hφ φ.prop
   have h_subset : D.integralRamified ⊆ M := fun φ hφ ↦ hφ ι
   exact ⟨j, M.map A, hj.trans_eq (mul_comm _ _), fun i ↦ Set.image_mono h_subset (hy i),
     h_source.map A le_sup_left (map_comap_le A _)⟩

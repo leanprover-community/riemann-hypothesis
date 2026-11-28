@@ -1,3 +1,8 @@
+module
+
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.Group.Units
+public import Lib.Speed
 import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
@@ -8,6 +13,8 @@ parabolic subgroup that keeps the image of `ε`. If a polynomial in `g` is a pro
 image of `ε`, then every translate of `g` by the radical is conjugate to `g` under the radical
 (`semiconjBy_radicalHom_aeval_sub`).
 -/
+
+@[expose] public section
 
 open Matrix Polynomial Multiplicative
 
@@ -95,7 +102,7 @@ lemma coe_radicalHom_mul_idempotent (hε : IsIdempotentElem ε) (Y : Multiplicat
 lemma continuous_radicalHom [TopologicalSpace k] [IsTopologicalRing k] (hε : IsIdempotentElem ε) :
     Continuous (radicalHom hε) := by
   refine Continuous.of_coeHom_comp ?_
-  show Continuous fun Y : Multiplicative (Matrix n n k) ↦ 1 + ε * Y.toAdd * (1 - ε)
+  change Continuous fun Y : Multiplicative (Matrix n n k) ↦ 1 + ε * Y.toAdd * (1 - ε)
   exact continuous_const.add ((continuous_const.mul continuous_toAdd).mul continuous_const)
 
 /-- Let `ε g ε = g ε` and let `x - g` be an upper right block (a matrix `Z` with `ε Z = Z` and
@@ -153,17 +160,11 @@ lemma radicalHom_mul_mul_sub_mem_upperBlocks (hε : IsIdempotentElem ε) {g : Ma
     (hg : ε * (g * ε) = g * ε) (Y Z : Multiplicative (Matrix n n k)) :
     (radicalHom hε Y : Matrix n n k) * g * radicalHom hε Z - g ∈ upperBlocks ε := by
   rw [coe_radicalHom, coe_radicalHom]
-  set A : Matrix n n k := ε * Y.toAdd * (1 - ε)
-  set B : Matrix n n k := ε * Z.toAdd * (1 - ε)
-  have hA : A ∈ upperBlocks ε := mul_mul_one_sub_mem_upperBlocks hε Y.toAdd
-  have hgB : g * B ∈ upperBlocks ε :=
-    mul_mem_upperBlocks_left hg (mul_mul_one_sub_mem_upperBlocks hε Z.toAdd)
-  have h_zero : A * (g * B) = 0 :=
+  have hA := mul_mul_one_sub_mem_upperBlocks hε Y.toAdd
+  have hgB := mul_mem_upperBlocks_left hg (mul_mul_one_sub_mem_upperBlocks hε Z.toAdd)
+  convert add_mem (mul_mem_upperBlocks_right hg hA) hgB using 1
+  linear_combination (norm := noncomm_ring)
     mul_eq_zero_of_mem_upperBlocks hA (mem_upperBlocks_iff.mp hgB).1
-  have h_diff : (1 + A) * g * (1 + B) - g = A * g + g * B := by
-    linear_combination (norm := noncomm_ring) h_zero
-  rw [h_diff]
-  exact add_mem (mul_mem_upperBlocks_right hg hA) hgB
 
 /-- Let `ε` be idempotent, let `p(g)` be a projection onto its image (`ε p(g) = p(g)` and
 `p(g) ε = ε`), and let `x = u g u'` with `u, u'` in the image of `radicalHom`, the group of the

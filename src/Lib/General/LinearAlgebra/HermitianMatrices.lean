@@ -1,5 +1,15 @@
-import Lib.General.Analysis.GaussianIntegral
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
+import TauCeti.Analysis.Matrix.LDL
+import TauCeti.Analysis.Matrix.PosSemidef.Determinant
+import TauCeti.LinearAlgebra.Matrix.Determinant.ComplementaryMinor
+public import Aesop.BuiltinRules
+public import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Analysis.CStarAlgebra.Hom
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Determinants of positive semidefinite matrices, principal minors and hermitian involutions
@@ -26,6 +36,8 @@ hermitian involution `J` and its unitary group `New.U J`, the group of invertibl
 Known; see `Lib.DiscreteSeries.Haar.TotalMass` for sources.
 -/
 
+@[expose] public section
+
 /-! ## Positive semidefinite matrices -/
 
 section PosSemidefDet
@@ -37,12 +49,8 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι] {P Q : Matrix ι ι ℂ}
 /-- If `P` and `Q - P` are positive semidefinite complex square matrices, that is `0 ≤ P ≤ Q` in
 the Loewner order, then `|det P| ≤ |det Q|`. -/
 lemma New.norm_det_le_norm_det_of_posSemidef (hP : P.PosSemidef) (h_le : (Q - P).PosSemidef) :
-    ‖P.det‖ ≤ ‖Q.det‖ := by
-  -- The Ostrowski–Taussky bound `|det H| ≤ 2 ^ card ι * |det Θ|` (for `0 ≤ H ≤ Θ + Θᴴ`) at
-  -- `H = 2 P` and `Θ = Q`; the factors `2 ^ card ι` cancel.
-  have h_sum : (Q + Qᴴ - (P + P)).PosSemidef := by
-    simpa [hP.1.eq, sub_add_sub_comm] using h_le.add h_le.conjTranspose
-  simpa [← two_smul ℂ P] using ostrowski_taussky (hP.add hP) h_sum
+    ‖P.det‖ ≤ ‖Q.det‖ :=
+  CStarAlgebra.norm_le_norm_of_le_of_nonneg (hP.det_le_det h_le) hP.det_nonneg
 
 /-- Cauchy–Schwarz inequality for determinants: if the complex block matrix with rows `(P, A)` and
 `(B, Q)`, all blocks square of the same size, is positive semidefinite, then
@@ -50,13 +58,8 @@ lemma New.norm_det_le_norm_det_of_posSemidef (hP : P.PosSemidef) (h_le : (Q - P)
 lemma New.norm_det_sq_le_of_posSemidef {A B : Matrix ι ι ℂ} (h : (fromBlocks P A B Q).PosSemidef) :
     ‖A.det‖ ^ 2 ≤ ‖P.det‖ * ‖Q.det‖ := by
   by_cases hQ : Q.det = 0
-  · -- A vector `v` killed by `Q` makes `(0, v)` isotropic for the block matrix, hence killed by it;
-    -- so `A v = 0` and `det A = 0`.
-    obtain ⟨v, hv, hQv⟩ := exists_mulVec_eq_zero_iff.2 hQ
-    have h_kernel : fromBlocks P A B Q *ᵥ (0 ⊕ᵥ v) = 0 :=
-      (h.dotProduct_mulVec_zero_iff (x := 0 ⊕ᵥ v)).1
-        (by simp [fromBlocks_mulVec, hQv, dotProduct])
-    have hAv : A *ᵥ v = 0 := by simpa [fromBlocks_mulVec, hQv, funext_iff] using h_kernel
+  · obtain ⟨v, hv, hQv⟩ := exists_mulVec_eq_zero_iff.2 hQ
+    have hAv : A *ᵥ v = 0 := by simpa using h.toBlocks₁₂_mulVec_eq_zero hQv
     simp [hQ, exists_mulVec_eq_zero_iff.1 ⟨v, hv, hAv⟩]
   -- Otherwise `Q` is positive definite and the Schur complement `P - A Q⁻¹ Aᴴ` is semidefinite.
   have hQ_pos : Q.PosDef := (h.submatrix Sum.inr).posDef_iff_det_ne_zero.2 hQ
@@ -72,31 +75,8 @@ lemma New.norm_det_sq_le_of_posSemidef {A B : Matrix ι ι ℂ} (h : (fromBlocks
 columns are orthonormal for `G`. -/
 lemma New.exists_lowerTriangular_conjTranspose_mul_mul_eq_one {m : ℕ}
     {G : Matrix (Fin m) (Fin m) ℂ} (hG : G.PosDef) :
-    ∃ Γ : Matrix (Fin m) (Fin m) ℂ, (∀ a b : Fin m, a < b → Γ a b = 0) ∧ Γᴴ * G * Γ = 1 := by
-  -- Orthogonalise the standard basis from the last vector to the first, then normalise.
-  let H : Matrix (Fin m) (Fin m) ℂ := G.submatrix Fin.revPerm Fin.revPerm
-  have hH : H.PosDef := hG.submatrix Fin.revPerm.injective
-  let L : Matrix (Fin m) (Fin m) ℂ := LDL.lowerInv hH
-  let d : Fin m → ℂ := LDL.diagEntries hH
-  have h_diag : diagonal d = L * H * Lᴴ := by simpa [LDL.diag] using LDL.diag_eq_lowerInv_conj hH
-  have hd_pos (a : Fin m) : 0 < d a := by
-    have h_pos : (diagonal d).PosDef := by
-      simpa [h_diag] using hH.mul_mul_conjTranspose_same
-        (vecMul_injective_of_isUnit (isUnit_of_invertible (LDL.lowerInv hH)))
-    exact posDef_diagonal_iff.1 h_pos a
-  let r (a : Fin m) : ℂ := (√(d a).re : ℝ)⁻¹
-  have h_scale (a : Fin m) : star (r a) * d a * r a = 1 := by
-    obtain ⟨h_re, h_im⟩ := Complex.pos_iff.1 (hd_pos a)
-    simp [r, Complex.ext_iff, ← h_im, field, Real.sq_sqrt h_re.le]
-  refine ⟨(Lᴴ * diagonal r).submatrix Fin.revPerm Fin.revPerm, fun a b hab ↦ ?_, ?_⟩
-  · have hL_lower : L b.rev a.rev = 0 := LDL.isLowerTriangular_lowerInv hH (Fin.rev_lt_rev.2 hab)
-    simp [mul_diagonal, hL_lower]
-  · have h_rev : (Lᴴ * diagonal r)ᴴ * H * (Lᴴ * diagonal r) = 1 :=
-      calc
-        _ = (diagonal r)ᴴ * (L * H * Lᴴ) * diagonal r := by simp [Matrix.mul_assoc]
-        _ = 1 := by simpa [← h_diag, funext_iff] using h_scale
-    have hG_eq : G = H.submatrix Fin.revPerm Fin.revPerm := by simp [H, ← Matrix.ext_iff]
-    simp only [hG_eq, conjTranspose_submatrix, submatrix_mul_equiv, h_rev, submatrix_one_equiv]
+    ∃ Γ : Matrix (Fin m) (Fin m) ℂ, (∀ a b : Fin m, a < b → Γ a b = 0) ∧ Γᴴ * G * Γ = 1 :=
+  PosDef.exists_isUpperTriangular_conjTranspose_mul_mul_eq_one (n := OrderDual (Fin m)) hG
 
 end PosSemidefDet
 
@@ -131,24 +111,16 @@ variable {x b : Matrix n n ℂ} {p : n → Prop} [DecidablePred p] {ε : n → �
 satisfying `p` is at most `‖x‖ ^ k`, where `‖x‖` is the operator norm and `k` is the number of
 these indices. -/
 theorem norm_principalMinor_le_pow : ‖principalMinor x p‖ ≤ ‖x‖ ^ card {i // p i} := by
-  -- With `A` the block of `x` on `p`: `Aᴴ * A ≤ ‖x‖ ^ 2` in the Loewner order,
-  -- and taking determinants gives the square of the claim.
-  set A : Matrix {i // p i} {i // p i} ℂ := x.toBlock p p with hA
-  set c : Matrix n n ℂ := algebraMap ℝ (Matrix n n ℂ) (‖x‖ ^ 2) with hc
-  have h_le : Aᴴ * A ≤ c.toBlock p p :=
-    calc
-      _ ≤ Aᴴ * A + (x.toBlock (¬p ·) p)ᴴ * x.toBlock (¬p ·) p :=
-        le_add_of_nonneg_right (posSemidef_conjTranspose_mul_self _).nonneg
-      _ = (star x * x).toBlock p p := (toBlock_mul_eq_add p p p (star x) x).symm
-      -- restrict `star x * x ≤ ‖x‖ ^ 2` to the block
-      _ ≤ c.toBlock p p := (star_mul_le_algebraMap_norm_sq (a := x)).submatrix _
+  -- `Aᴴ * A ≤ ‖x‖ ^ 2` in the Loewner order; taking determinants gives the square of the claim.
+  have h_le :
+      (x.toBlock p p)ᴴ * x.toBlock p p ≤ (algebraMap ℝ (Matrix n n ℂ) (‖x‖ ^ 2)).toBlock p p :=
+    ((le_add_of_nonneg_right (posSemidef_conjTranspose_mul_self _).nonneg).trans_eq
+      (toBlock_mul_eq_add p p p (star x) x).symm).trans
+      ((star_mul_le_algebraMap_norm_sq (a := x)).submatrix _)
   refine le_of_sq_le_sq ?_ (by positivity)
-  calc
-    ‖principalMinor x p‖ ^ 2 = ‖(Aᴴ * A).det‖ := by simp [sq, principalMinor, toSquareBlockProp, hA]
-    _ ≤ ‖(c.toBlock p p).det‖ :=
-      norm_det_le_norm_det_of_posSemidef A.posSemidef_conjTranspose_mul_self h_le
-    _ = (‖x‖ ^ card {i // p i}) ^ 2 := by
-      simp [hc, algebraMap_eq_diagonal, toBlock_diagonal_self, pow_right_comm]
+  simpa [sq, mul_pow, principalMinor, toSquareBlockProp, algebraMap_eq_diagonal,
+    toBlock_diagonal_self] using
+    norm_det_le_norm_det_of_posSemidef (x.toBlock p p).posSemidef_conjTranspose_mul_self h_le
 
 -- lets `aesop` reduce an equality of two determinants to an equality of the two matrices
 attribute [local aesop 1%] congr
@@ -199,15 +171,10 @@ principal minor of `x⁻¹` on the indices satisfying `p` equals the principal m
 complementary indices divided by `det x`. -/
 theorem jacobi_complementary_minor (hx : x.det ≠ 0) :
     principalMinor x⁻¹ p = principalMinor x (fun i : n ↦ ¬p i) / x.det := by
-  -- With `D` the projection onto `p`, write both minors by `principalMinor_eq_det` and clear
-  -- `x.det`: `(1 - D (1 - x⁻¹)) x = x - D x + D = 1 - (1 - D) (1 - x)`.
-  set D : Matrix n n ℂ := diagonal (fun i : n ↦ if p i then 1 else 0) with hD
-  have h_compl : diagonal (fun i : n ↦ if ¬p i then (1 : ℂ) else 0) = 1 - D := by
-    aesop (add simp [Matrix.one_apply, Matrix.ext_iff.symm])
-  have h_mat : (1 - D * (1 - x⁻¹)) * x = 1 - (1 - D) * (1 - x) := by
-    simp [sub_mul, mul_sub, mul_assoc, nonsing_inv_mul _ hx.isUnit]
-    abel
-  rw [eq_div_iff hx, principalMinor_eq_det, principalMinor_eq_det, ← det_mul, h_compl, ← hD, h_mat]
+  have h := det_submatrix_comp_inr_eq_sign_mul_det_mul_det_submatrix_comp_inl_nonsing_inv
+    x hx.isUnit (Equiv.sumCompl p) 1 1
+  rw [eq_div_iff hx, mul_comm]
+  simpa [principalMinor, toSquareBlockProp, toBlock, Function.comp_def] using h.symm
 
 @[fun_prop]
 theorem continuous_principalMinor : Continuous fun y : Matrix n n ℂ ↦ principalMinor y p := by
@@ -357,7 +324,24 @@ section UnitaryNorm
 
 open Matrix CStarRing Norms.L2Operator IsHermitianInvolution
 
-variable {n : Type*} [Fintype n] [DecidableEq n] {J : Matrix n n ℂ}
+variable {n : Type*} [Fintype n] [DecidableEq n]
+
+/-- The L² operator norm of diag(x, b) is the larger of the norms of x and b. -/
+@[simp]
+theorem norm_fromBlocks_zero_zero {m : Type*} [Fintype m] [DecidableEq m]
+    (x : Matrix n n ℂ) (b : Matrix m m ℂ) :
+    ‖fromBlocks x 0 0 b‖ = ‖x‖ ⊔ ‖b‖ := by
+  -- `(x, b) ↦ fromBlocks x 0 0 b` is an injective star homomorphism of C⋆-algebras, so an isometry
+  let φ : Matrix n n ℂ × Matrix m m ℂ →⋆ₙₐ[ℂ] Matrix (n ⊕ m) (n ⊕ m) ℂ :=
+    { toFun p := fromBlocks p.1 0 0 p.2
+      map_smul' := by simp [fromBlocks_smul]
+      map_zero' := fromBlocks_zero
+      map_add' := by simp [fromBlocks_add]
+      map_mul' := by simp [fromBlocks_multiply]
+      map_star' := by simp [star_eq_conjTranspose, fromBlocks_conjTranspose] }
+  exact NonUnitalStarAlgHom.norm_map φ (fun p q h ↦ by simpa [φ, Prod.ext_iff] using h) (x, b)
+
+variable {J : Matrix n n ℂ}
   [IsHermitianInvolution (n := n) J] (g : U J)
 
 theorem IsHermitianInvolution.isUnit : IsUnit J := .of_mul_eq_one _ mul_self
@@ -374,22 +358,13 @@ theorem U.norm_det : ‖g.val.val.det‖ = 1 :=
 
 /-- For a hermitian involution `J` and `g` in `U J`, the group of `g` with `gᴴ * J * g = J`, the
 inverse of `g` has the operator norm of `g`. -/
-theorem U.norm_inv : ‖g⁻¹.val.val‖ = ‖g.val.val‖ := by
-  -- `g⁻¹ = J * gᴴ * J` with `J` unitary, and the conjugate transpose keeps the operator norm
-  have hJ : J ∈ unitary (Matrix n n ℂ) := IsHermitianInvolution.mem_unitary
-  calc
-    ‖g⁻¹.val.val‖ = ‖J * g.val.valᴴ * J‖ := by rw [coe_inv mul_self]
-    _ = ‖J * g.val.valᴴ‖ := norm_mul_mem_unitary (J * g.val.valᴴ) hJ
-    _ = ‖g.val.valᴴ‖ := norm_mem_unitary_mul g.val.valᴴ hJ
-    _ = ‖g.val.val‖ := l2_opNorm_conjTranspose g.val.val
+theorem U.norm_inv : ‖g⁻¹.val.val‖ = ‖g.val.val‖ :=
+  Matrix.norm_val_inv_of_mem_unitaryGroupOf IsHermitianInvolution.mem_unitary g.property
 
 /-- For a hermitian involution `J` in positive dimension, every element of `U J`, the group of `g`
 with `gᴴ * J * g = J`, has operator norm at least `1`. -/
-theorem U.one_le_norm [Nonempty n] : 1 ≤ ‖g.val.val‖ := by
-  refine (one_le_sq_iff₀ (norm_nonneg _)).1 ?_
-  calc
-    (1 : ℝ) = ‖g⁻¹.val.val * g.val.val‖ := by simp
-    _ ≤ ‖g.val.val‖ ^ 2 := (norm_mul_le _ _).trans_eq (by rw [norm_inv g, pow_two])
+theorem U.one_le_norm [Nonempty n] : 1 ≤ ‖g.val.val‖ :=
+  Matrix.one_le_norm_val_of_mem_unitaryGroupOf IsHermitianInvolution.mem_unitary g.property
 
 end UnitaryNorm
 

@@ -1,4 +1,6 @@
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
 # Moving a quotient from one variable to another
@@ -17,6 +19,8 @@ Notions from other files:
 A consequence of a known result: the integral over a quotient does not depend on the cutoff. See
 `Lib.Adelic.QuotientMeasure.Basic`.
 -/
+
+@[expose] public section
 
 open MeasureTheory Measure
 
@@ -64,7 +68,6 @@ theorem integral_cutoff_swap {G Λ : Type*} [Group G] [MeasurableSpace G] [Measu
     (measurePreserving_mul_left ν (i l)).prod (measurePreserving_mul_left μ (i l : G))
   have : SMulInvariantMeasure Λ (R × G) (ν.prod μ) :=
     ⟨fun l T hT ↦ (h_pres l).measure_preimage hT.nullMeasurableSet⟩
-  have : IsInvInvariant (count : Measure Λ) := ⟨(measurePreserving_count (Equiv.inv Λ)).map_eq⟩
   have h_fst : IsCutoff (count : Measure Λ) fun p : R × G ↦ β p.1 :=
     ⟨by fun_prop, fun p ↦ by simpa [lintegral_count, h_smul] using hβ_one p.1⟩
   have h_snd : IsCutoff (count : Measure Λ) fun p : R × G ↦ β p.2 :=

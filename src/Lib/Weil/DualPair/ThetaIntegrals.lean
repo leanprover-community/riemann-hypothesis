@@ -1,7 +1,16 @@
-import Lib.SiegelWeil.SingularForms.CentreCoefficients
+module
+
+import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.SiegelWeil.SingularForms.CentreCoefficients
+public import Lib.Weil.DualPair.MixedModel
+public import Lib.Weil.DualPair.ShortIsotropicVectors
+import Lib.DiscreteSeries.Haar.TotalMass
 import Lib.Weil.DualPair.FiniteAction
 import Lib.Weil.DualPair.KernelDecay
-import Lib.Weil.DualPair.MixedModel
+import Lib.Weil.DualPair.ThetaLiftConvergence
+import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Terms of theta kernels at rational matrices and basic laws of theta integrals
@@ -43,6 +52,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.DualPair.ThetaLiftConvergence` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Terms of the theta kernel at rational matrices
@@ -156,19 +167,12 @@ lemma theta_homSlice_rho_ratMap {y : Matrix n' n E} (hy : y * D.k = 0) :
     θ (S₀.hom T) (D.homSlice T (T.x⁻¹.val * x.map toAdele)
         (ϱ (S.hom T) (matrixToVec (T.ratMap S y)) f)) =
       θ (S₀.hom T) (D.homSlice T (T.x⁻¹.val * x.map toAdele) f) := by
-  -- By `homSlice_rho` the operator acts on the term through the rational map `y * D.i`, which
-  -- `θ` does not see, and the value of the additive character at a rational point, which is `1`.
-  have h_k : T.ratMap S y * D.kAdelic = 0 := by
-    rw [kAdelic, ratMap_mul_toAdele, hy, Matrix.map_zero _ (map_zero toAdele), Matrix.mul_zero]
-  have h_i : matrixToVec (T.ratMap S y * D.iAdelic) =
-      (S₀.hom T).vecAtPoint (matrixToVec (y * D.i)) := by
-    rw [iAdelic, ratMap_mul_ratMap, vecAtPoint_hom]
-  have h_rat : ((T.x⁻¹.val * (y * D.l).map toAdele)ᴴ * stdForm E s' *
-      (T.x⁻¹.val * x.map toAdele + T.x⁻¹.val * x.map toAdele)).trace =
-        toAdele (2 * ((y * D.l)ᴴ * T.J * x).trace) := by
-    rw [Matrix.mul_add, gram_at_point_eq_map, trace_add, ← AddMonoidHom.map_trace, two_mul, map_add]
-  rw [homSlice_rho, h_k, lAdelic, ratMap_mul_toAdele, h_i, add_zero, add_zero, h_rat, ← map_mul,
-    stdAddChar_toAdele]
+  -- By `homSlice_rho`, the operator acts via the rational map `y * D.i` (invisible to `θ`)
+  -- and the additive character at a rational point (which is `1`).
+  rw [homSlice_rho, kAdelic, iAdelic, lAdelic, ratMap_mul_toAdele, ratMap_mul_ratMap,
+    ratMap_mul_toAdele, hy, Matrix.map_zero _ (map_zero toAdele), Matrix.mul_zero, add_zero,
+    add_zero, ← vecAtPoint_hom, Matrix.mul_add, gram_at_point_eq_map, trace_add,
+    ← AddMonoidHom.map_trace, ← map_add, ← map_mul, stdAddChar_toAdele]
   simp [theta_apply, rho_apply, apply_vecAtPoint]
 
 /-- The rational maps `z (c • (D.k | D.i))ᴴ S.J` kill the isotropic frame `D.k`, so their Heisenberg
@@ -274,7 +278,7 @@ lemma exists_tsum_thetaTerm_schrodingerOp_le {P : Set (FinPlace E)} (hP : Set.Is
     refine (norm_sum_le _ _).trans ?_
     simp only [norm_mul, hu_norm, one_mul]
     rw [← ofReal_le_ofReal_iff (by bound [T.height_pos k]), ← h_sum_eq]
-    exact (ENNReal.sum_le_tsum t).trans (h_sum f k)
+    exact (sum_le_tsum t).trans (h_sum f k)
   have h_inv (z : Matrix n' (p ⊕ n₀) E) (f : 𝒮 (S.hom T)) :
       ℓ (ϱ (S.hom T) (matrixToVec (T.ratMap S (z * ((d : E) • D.k.fromCols D.i)ᴴ * S.J))) f) =
         ℓ f := by
@@ -409,22 +413,13 @@ map. -/
 lemma exists_linear_thetaIntegral (α β : AutChar E) :
     ∃ Λ : 𝒮 (S.hom T) →ₗ[ℂ] G E s → ℂ, ∀ {f : 𝒮 (S.hom T)}, IsTargetBounded S T f →
       Λ f = thetaIntegral S T α β f := by
-  -- Integration is linear on the subspace of integrable functions; extend it to a linear form
-  -- `I` on all functions and apply `I` to the kernel, which is linear in `f`.
   let L : Submodule ℂ (G E s' → ℂ) := .ofLinearComb {u | Integrable u T.quotMeasure}
-    ⟨0, integrable_zero (G E s') ℂ T.quotMeasure⟩ fun _ hu _ hv a b ↦ (hu.smul a).add (hv.smul b)
-  let int : L →ₗ[ℂ] ℂ :=
-    { toFun u := ∫ h, (u : G E s' → ℂ) h ∂T.quotMeasure
-      map_add' u v := integral_add u.property v.property
-      map_smul' c u := integral_smul c (u : G E s' → ℂ) }
-  obtain ⟨I, hI⟩ := int.exists_extend
-  use .pi fun g ↦ I ∘ₗ .pi fun h ↦ θ (S.hom T) ∘L pairWeil S T α β (g, h)
-  intro f ⟨B, C, h_bound⟩
-  funext g
-  -- under `IsTargetBounded S T f` the kernel is bounded in `h`, hence integrable
-  have h_int : Integrable (fun h ↦ pairTheta S T α β f (g, h)) T.quotMeasure :=
-    .of_bound (by fun_prop) _ (.of_forall (h_bound α β g))
-  exact LinearMap.congr_fun hI ⟨_, h_int⟩
+    ⟨0, integrable_zero _ _ _⟩ fun _ hu _ hv a b ↦ (hu.smul a).add (hv.smul b)
+  obtain ⟨I, hI⟩ := (⟨⟨fun u ↦ ∫ h, u.1 h ∂T.quotMeasure, fun u v ↦ integral_add u.2 v.2⟩,
+    fun c u ↦ integral_smul c u.val⟩ : L →ₗ[ℂ] ℂ).exists_extend
+  refine ⟨.pi fun g ↦ I ∘ₗ .pi fun h ↦ θ (S.hom T) ∘L pairWeil S T α β (g, h),
+    fun ⟨_, _, h_bound⟩ ↦ funext fun g ↦ LinearMap.congr_fun hI
+      ⟨_, .of_bound (by fun_prop) _ (.of_forall (h_bound α β g))⟩⟩
 
 /-- The product of the local fields at the nonempty set `𝔠.ramifiedPlaces` is nontrivial. -/
 instance : Nontrivial (LocProd 𝔠.ramifiedPlaces) := Pi.nontrivial_at 𝔠.nonempty.coe_sort.some

@@ -1,6 +1,19 @@
+module
+
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.NumberTheory.NumberField.Countable
+public import Lib.Adelic.TraceFormula.TestFunction
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
+public import Lib.DiscreteSeries.Haar.CayleyChart
 import Lib.Adelic.AutomorphicForms.RealConvolution
+import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Adelic.TraceFormula.Stretch
-import Lib.Adelic.TraceFormula.TestFunction
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.GramPolar
+import Lib.DiscreteSeries.Haar.TotalMass
 
 /-!
 # The sum of a majorant over the rational points
@@ -33,6 +46,8 @@ Known result: Sum over the rational points of a majorant of a test function, bou
 the height. This is the standard estimate for the kernel of a trace formula.
 -/
 
+@[expose] public section
+
 open NumberField MeasureTheory Matrix Fintype Norms.L2Operator ENNReal
 
 noncomputable section
@@ -54,7 +69,7 @@ lemma tsum_mul_measure_le_lintegral {G I : Type*} [Group G] [MeasurableSpace G] 
     rw [← measure_preimage_mul μ (y i)⁻¹ B, ← setLIntegral_const]
     exact setLIntegral_mono' (hS i) fun x hx ↦ by simpa using h_le (y i) _ hx
   calc (∑' i : I, f (y i)) * μ B ≤ ∑' i : I, ∫⁻ x in S i, c * f x ∂μ :=
-        ENNReal.tsum_mul_right.ge.trans (ENNReal.tsum_le_tsum h_term)
+        ENNReal.tsum_mul_right.ge.trans (tsum_le_tsum h_term)
     _ = ∫⁻ x in ⋃ i : I, S i, c * f x ∂μ := (lintegral_iUnion hS hS_disjoint _).symm
     _ ≤ ∫⁻ x, c * f x ∂μ := setLIntegral_le_lintegral _ _
     _ = c * ∫⁻ x, f x ∂μ := lintegral_const_mul' _ _ hc
@@ -63,8 +78,8 @@ lemma tsum_mul_measure_le_lintegral {G I : Type*} [Group G] [MeasurableSpace G] 
 level `J`, that is, under some open subgroup of the integral points. -/
 lemma TestFunction.exists_isLevel_invariant {E n : Type} [Field E] [NumberField E] [IsCMField E]
     [Fintype n] [DecidableEq n] (φ : TestFunction (Gf E n)) : ∃ J : Subgroup (Gf E n), IsLevel J ∧
-      (∀ u ∈ J, ∀ y : Gf E n, φ.1 (u⁻¹ * y) = φ.1 y) ∧
-      ∀ u ∈ J, ∀ y : Gf E n, φ.1 (y * u) = φ.1 y := by
+      (∀ u ∈ J, ∀ y : Gf E n, φ.val (u⁻¹ * y) = φ.val y) ∧
+      ∀ u ∈ J, ∀ y : Gf E n, φ.val (y * u) = φ.val y := by
   have h_fixed : ∀ᶠ p in nhds (1 : Gf E n × Gf E n), TestFunction.translate p φ = φ :=
     IsSmoothRep.eventually_fixed φ
   have h_left : ∀ᶠ u in nhds (1 : Gf E n), TestFunction.translate (u, 1) φ = φ :=
@@ -133,23 +148,17 @@ lemma exists_le_mul_volume_levelBox {J : Subgroup (Gf E n)} (hJ : IsOpen (J : Se
       ((12 * D) ^ (2 * card n ^ 2 * Core.numInfPlaces E)) * volume (levelBox E s D⁻¹ J) := by
   -- The set `‖z‖ ≤ 2` is covered by `(12 D) ^ (2 n²)` translates of the set `‖z - 1‖ ≤ D⁻¹`.
   let bigVol : ℝ≥0∞ := volume {z : USign s | ‖z.val.val‖ ≤ 2}
-  have h_bigVol : bigVol ≠ 0 :=
-    measure_sublevel_ne_zero volume (norm_one.trans_lt one_lt_two) (by fun_prop)
   refine ⟨bigVol ^ Core.numInfPlaces E * volume (J : Set (Gf E n)),
-    mul_ne_zero (pow_ne_zero _ h_bigVol) (hJ.measure_ne_zero _ ⟨1, J.one_mem⟩), fun D hD ↦ ?_⟩
-  set count : ℝ≥0∞ := .ofReal ((12 * D) ^ (2 * card n ^ 2))
-  set smallVol : ℝ≥0∞ := volume {z : USign s | ‖z.val.val - 1‖ ≤ D⁻¹}
-  have h_cover : bigVol ≤ count * smallVol := by
-    simpa using DiscreteSeries.measure_ball_le_covering volume
-      (MonoidHom.id (USign s)) 1 hD one_le_two (K := 12 * D) (by linarith)
-  have h_box : volume (levelBox E s D⁻¹ J) =
-      smallVol ^ Core.numInfPlaces E * volume (J : Set (Gf E n)) := by
-    simp [levelBox, Measure.volume_eq_prod, volume_pi_pi, smallVol]
-  calc bigVol ^ Core.numInfPlaces E * volume (J : Set (Gf E n))
-      ≤ (count * smallVol) ^ Core.numInfPlaces E * volume (J : Set (Gf E n)) := by gcongr
-    _ = ENNReal.ofReal ((12 * D) ^ (2 * card n ^ 2 * Core.numInfPlaces E)) *
-          volume (levelBox E s D⁻¹ J) := by
-      rw [h_box, pow_mul, ENNReal.ofReal_pow (by positivity), mul_pow, mul_assoc]
+    mul_ne_zero (pow_ne_zero _
+      (measure_sublevel_ne_zero volume (norm_one.trans_lt one_lt_two) (by fun_prop)))
+      (hJ.measure_ne_zero _ ⟨1, J.one_mem⟩), fun D hD ↦ ?_⟩
+  rw [show volume (levelBox E s D⁻¹ J) = volume {z : USign s | ‖z.val.val - 1‖ ≤ D⁻¹} ^
+        Core.numInfPlaces E * volume (J : Set (Gf E n)) by
+      simp [levelBox, Measure.volume_eq_prod, volume_pi_pi],
+    pow_mul, ENNReal.ofReal_pow (by positivity), ← mul_assoc, ← mul_pow]
+  gcongr
+  simpa using DiscreteSeries.measure_ball_le_covering volume
+    (MonoidHom.id (USign s)) 1 hD one_le_two (K := 12 * D) (by linarith)
 
 namespace Space
 
@@ -228,21 +237,14 @@ theorem exists_levelBox_disjoint {J : Subgroup (Gf E n)} (hJ : J ≤ stdLevel E 
   -- The quotient `γ'⁻¹ γ` is conjugate to `z' z⁻¹`, which is integral and close to the identity.
   obtain ⟨c, hc, h_one⟩ := V.exists_eq_one_of_norm_sub_one_le
   refine ⟨4 * c, by linarith, fun g x γ γ' z hz z' hz' h_eq ↦ ?_⟩
-  obtain ⟨hz_inf, hz_fin⟩ := mem_levelBox.1 hz
-  obtain ⟨hz'_inf, hz'_fin⟩ := mem_levelBox.1 hz'
-  have h_quot : x⁻¹ * V.ratEmbed (γ'⁻¹ * γ) * x = z' * z⁻¹ :=
-    calc x⁻¹ * V.ratEmbed (γ'⁻¹ * γ) * x
-        = (g⁻¹ * V.ratEmbed γ' * x)⁻¹ * (g⁻¹ * V.ratEmbed γ * x * z) * z⁻¹ := by
-          simp [mul_assoc]
-      _ = z' * z⁻¹ := by rw [h_eq, inv_mul_cancel_left]
-  have h_radius : (4 * c * V.height x ^ 2)⁻¹ ≤ 1 := inv_le_one_of_one_le₀
+  rw [mem_levelBox] at hz hz'
+  have h_quot : x⁻¹ * V.ratEmbed (γ'⁻¹ * γ) * x = z' * z⁻¹ := eq_mul_inv_iff_mul_eq.2 <| by
+    simpa [mul_assoc] using congrArg ((g⁻¹ * V.ratEmbed γ' * x)⁻¹ * ·) h_eq
+  have h_rad : (4 * c * V.height x ^ 2)⁻¹ ≤ 1 := inv_le_one_of_one_le₀
     (one_le_mul_of_one_le_of_one_le (by linarith) (one_le_pow₀ (V.one_le_height x)))
-  have h_int : (z' * z⁻¹).2 ∈ stdLevel E n := hJ (J.mul_mem hz'_fin (J.inv_mem hz_fin))
-  have h_close (w : InfinitePlace E) :
-      ‖((z' * z⁻¹).1 w).val.val - 1‖ ≤ (c * V.height x ^ 2)⁻¹ :=
-    (norm_mul_inv_sub_one_le h_radius (hz_inf w) (hz'_inf w)).trans_eq (by ring)
-  rw [← h_quot] at h_int h_close
-  exact (inv_mul_eq_one.1 (h_one x (γ'⁻¹ * γ) h_int h_close)).symm
+  exact (inv_mul_eq_one.1 (h_one x (γ'⁻¹ * γ) (h_quot.symm ▸ hJ (J.mul_mem hz'.2 (J.inv_mem hz.2)))
+    fun w ↦ h_quot.symm ▸
+      (norm_mul_inv_sub_one_le h_rad (hz.1 w) (hz'.1 w)).trans_eq (by ring))).symm
 
 /-- The majorant `|φ(y_fin)| ‖y_∞‖ ^ (-A)`, where `‖y_∞‖` is the product of the operator norms at
 the infinite places. -/
@@ -292,9 +294,9 @@ lemma integrable_majorant (φ : TestFunction (Gf E n)) {A : ℕ} (hA : 8 * card 
   have h_inf : Integrable fun z : GInf E s ↦ ∏ w : InfinitePlace E, (‖(z w).val.val‖ ^ A)⁻¹ :=
     .fintype_prod fun _ ↦ h_place
   obtain ⟨h_const, h_compact, -⟩ := φ.property
-  have h_fin : Integrable φ.1 := h_const.continuous.integrable_of_hasCompactSupport h_compact
+  have h_fin : Integrable φ.val := h_const.continuous.integrable_of_hasCompactSupport h_compact
   have h_eq (y : G E s) :
-      (∏ w : InfinitePlace E, (‖(y.1 w).val.val‖ ^ A)⁻¹) * ‖φ.1 y.2‖ = majorant φ.1 A y := by
+      (∏ w : InfinitePlace E, (‖(y.1 w).val.val‖ ^ A)⁻¹) * ‖φ.val y.2‖ = majorant φ.val A y := by
     simp [majorant, Finset.prod_pow, mul_comm]
   exact (h_inf.mul_prod h_fin.norm).congr (.of_forall h_eq)
 
@@ -326,17 +328,10 @@ theorem exists_tsum_majorant_le (φ : TestFunction (Gf E n)) : ∃ C ≥ (0 : �
   set B : Set (G E s) := levelBox E s (c * V.height x ^ 2)⁻¹ J
   set cover : ℝ := (12 * (c * V.height x ^ 2)) ^ d
   have h_sum : S * volume B ≤ bound := by
-    have hB : MeasurableSet B := measurableSet_levelBox _ hJ.isOpen
-    have hBd : ∀ i j : U V.J, ∀ z ∈ B, ∀ z' ∈ B,
-        g⁻¹ * V.ratEmbed i * x * z = g⁻¹ * V.ratEmbed j * x * z' → i = j := h_disjoint g x
-    have h_le' : ∀ y : G E s, ∀ z ∈ B, ENNReal.ofReal (majorant φ A y) ≤
-        .ofReal factor * .ofReal (majorant φ A (y * z)) := fun y z hz ↦ by
-      rw [← ofReal_mul (by positivity)]
-      exact ofReal_le_ofReal (majorant_le_mul_majorant_mul hJ_fix A (inv_le_one_of_one_le₀ hD) y hz)
-    have key := tsum_mul_measure_le_lintegral (volume : Measure (G E s)) hB
-      (y := fun γ : U V.J ↦ g⁻¹ * V.ratEmbed γ * x) hBd
-      (f := fun y ↦ .ofReal (majorant φ A y)) (c := .ofReal factor) ofReal_ne_top h_le'
-    exact key
+    refine tsum_mul_measure_le_lintegral volume (measurableSet_levelBox _ hJ.isOpen)
+      (h_disjoint g x) (f := fun y ↦ .ofReal (majorant φ A y)) ofReal_ne_top fun y z hz ↦ ?_
+    rw [← ofReal_mul (by positivity)]
+    exact ofReal_le_ofReal (majorant_le_mul_majorant_mul hJ_fix A (inv_le_one_of_one_le₀ hD) y hz)
   have h_le : S * v ≤ .ofReal cover * bound :=
     calc S * v ≤ S * (.ofReal cover * volume B) := by gcongr; exact h_volume _ hD
       _ = .ofReal cover * (S * volume B) := mul_left_comm _ _ _

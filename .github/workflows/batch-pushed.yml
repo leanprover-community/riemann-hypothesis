@@ -1,0 +1,29 @@
+name: batch pushed
+
+# Tells the batch building workflow that a `batch/...` branch was pushed, so that the pull requests
+# in that batch are labelled `batch-building` within a minute or so. This workflow does nothing but
+# run: `batch-building.yml` follows it.
+#
+# GitHub runs the pushed branch's copy of this file, and a batch can hold pull requests that change
+# workflows. So the labelling is not done here: this job has no permissions and checks nothing out,
+# and `batch-building.yml`, which GitHub runs from the default branch when this run completes, does
+# the work. A pull request in the batch that changed this file could make it do something else on
+# that push, but so could one that added any workflow with a `push` trigger: this file adds nothing
+# to that. A batch whose copy of this file is missing or broken is caught by the half-hourly run of
+# the batch building workflow.
+
+on:
+  push:
+    branches: ['batch/**']
+
+permissions: {}
+
+jobs:
+  relay:
+    if: ${{ github.repository == 'leanprover-community/riemann-hypothesis' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - run: echo "Pushed $REF. The batch building workflow takes it from here."
+        env:
+          REF: ${{ github.ref_name }}

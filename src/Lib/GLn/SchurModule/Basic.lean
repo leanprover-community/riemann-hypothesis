@@ -1,4 +1,9 @@
-import Lib.Base
+module
+
+public import Mathlib.Algebra.Module.LinearMap.Polynomial
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.RingTheory.MvPowerSeries.Derivative
+public import Lib.Speed
 
 /-!
 # Schur modules: semi-invariants, minors, Fock pairing, Schur and Gram matrices
@@ -36,6 +41,8 @@ elements, so it acts on the Weyl module, and the Gram matrix is the coefficient 
 
 Known; see `Lib.GLn.SchurModule.MinorBasis` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -174,9 +181,14 @@ lemma IsTableauBasis.of_linearIndepOn_of_mem_span_of_character {s : Finset (Tabl
 /-- The standard fillings: the members of a chosen finite set of fillings that satisfies
 `IsTableauBasis` as soon as some set does. This is the case for a finite alphabet `m`
 (`isTableauBasis_epsilon`). They need not be semistandard tableaux. -/
-def BasisTableau (m : Type) [DecidableEq m] (N : ℕ) (k : ℕ → ℕ) : Type :=
+def BasisTableau (m : Type) (N : ℕ) (k : ℕ → ℕ) : Type :=
   {T : Tableau m N k // T ∈ (Classical.epsilon IsTableauBasis : Finset (Tableau m N k))}
-deriving Fintype, DecidableEq
+deriving Fintype
+
+instance {m : Type} [DecidableEq m] {N : ℕ} {k : ℕ → ℕ} :
+    DecidableEq (BasisTableau m N k) := by
+  unfold BasisTableau
+  infer_instance
 
 /-- The number of elements of the finite row type n_τ at the place τ. -/
 abbrev rankAt : ℕ := Fintype.card (n τ)
@@ -204,7 +216,7 @@ abbrev nablaFamily : Submodule R (MatrixPoly (Sigma n) R) :=
 /-- For a family i of chosen standard fillings, the polynomial that is the product over places τ
 of the minor product of i_τ in the rows of block τ. -/
 def nablaBasis (i : WeylIndexFamily n κ) : MatrixPoly ((τ : Φ) × n τ) R :=
-  ∏ τ : Φ, tableauPoly (m := Σ τ : Φ, n τ) R (Sigma.mk τ) (i τ).1
+  ∏ τ : Φ, tableauPoly (m := Σ τ : Φ, n τ) R (Sigma.mk τ) (i τ).val
 
 /-- The polynomial product over places τ and h<N_τ of the leading principal h×h minor of the
 variables in block τ raised to κ_τ(h). -/
@@ -291,16 +303,6 @@ lemma jet_monomial :
   classical
   aesop
 
-/-- Raising the exponent at `i` by one multiplies `d!` by `d i + 1`. -/
-private lemma prod_factorial_add_single (d : σ →₀ ℕ) (i : σ) :
-    ((d + Finsupp.single i 1).prod fun (_k : σ) (j : ℕ) ↦ (j ! : R)) =
-      ((d i : R) + 1) * d.prod fun (_k : σ) (j : ℕ) ↦ (j ! : R) := by
-  rw [← mul_prod_erase' (d + Finsupp.single i 1) i _ (by simp), ← mul_prod_erase' d i _ (by simp),
-    Finsupp.erase_add, Finsupp.erase_single, add_zero, Finsupp.add_apply, Finsupp.single_eq_same,
-    factorial_succ]
-  push_cast
-  ring
-
 /-- For the pairing `jet R f F = f(∂) F (0)` of a polynomial with a power series, multiplication of
 `f` by `X i` is adjoint to the derivative of `F` in `X i`. -/
 @[local simp↓]
@@ -309,7 +311,11 @@ lemma jet_mul_X : jet R (f * X i) F = jet R f (F.pderiv i) := by
   rw [jet_eq_sum, jet_eq_sum, support_mul_X, sum_map]
   refine sum_congr rfl fun x _ ↦ ?_
   -- At the exponent `x + single i 1`: `(x i + 1)! = (x i + 1) * (x i)!` matches the derivative.
-  rw [addRightEmbedding_apply, coeff_mul_X, prod_factorial_add_single, F.coeff_pderiv]
+  rw [addRightEmbedding_apply, coeff_mul_X, F.coeff_pderiv,
+    ← mul_prod_erase' (x + Finsupp.single i 1) i _ (by simp), ← mul_prod_erase' x i _ (by simp),
+    Finsupp.erase_add, Finsupp.erase_single, add_zero, Finsupp.add_apply, Finsupp.single_eq_same,
+    factorial_succ]
+  push_cast
   ring
 
 /-- The Fock pairing `⟨a * X ^ α, g⟩` is `α! * a * g.coeff α`, where `α!` is the product of the
@@ -342,6 +348,7 @@ def schur (z : ∀ τ : Φ, Matrix (n' τ) (n τ) R) :
     (Fintype.linearCombination R fun j ↦ nablaBasis R n κ j * detPow R n (schurDetExp n n' κ)) ∘
       rowSubst z ∘ nablaBasis R n' κ)
 
+omit [(τ : Φ) → DecidableEq (n τ)] [(τ : Φ) → DecidableEq (n' τ)] in
 /-- In the notation of `schur` (`n τ`, `n' τ` the finite row types and `κ τ h` the column counts at
 the place `τ`): if `b'_i(z y)` is a linear combination of the products
 `b_j(y) * ∏ τ, det(y_τ) ^ d τ`, then row `i` of the Schur matrix gives the coefficients of such a
@@ -372,39 +379,13 @@ def weylKernel : MatrixPoly ((τ : Φ) × n τ) R :=
 
 /-- The Gram matrix `G`: chosen integer coefficients of the generic kernel `weylKernel n κ X` in
 the products `b_i(x) * b_j(y)`, where `b` is `nablaBasis`. The kernel is first expanded in the
-`b_i(x)` with coefficients in `ℤ[y]`, and row `i` expands the `i`-th coefficient in the `b_j(y)`;
-see `sum_weylGram_smul_eq_weylKernel_of_exists`. Both expansions exist, and `toPoly_weylEval` states
+`b_i(x)` with coefficients in `ℤ[y]`, and row `i` expands the `i`-th coefficient in the `b_j(y)`.
+Both expansions exist, and `toPoly_weylEval` states
 the resulting identity. It is the matrix of the form on the Weyl module for which the basis tensors
 are orthonormal (`fillingMatrix_transpose_mul_self`). -/
 def weylGram : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) ℤ :=
   of (invFun (GL.nablaCombination (R := ℤ) κ) ∘
     invFun (GL.nablaCombination (R := MatrixPoly (Σ τ : Φ, n τ) ℤ) κ) (weylKernel n κ X))
-
-/-- Let `n τ` be the finite row type and `κ τ h` the number of columns of height `h` at the place
-`τ`, let `y` be the array of variables `X` with rows `(τ, a)`, and let `b = nablaBasis`. If `b` is
-linearly independent over the polynomial ring `ℤ[y]` and the generic kernel `weylKernel n κ X` is an
-integer combination of the products `b_i(x) * b_j(y)`, then `weylGram` gives the coefficients of
-such a combination. -/
-lemma sum_weylGram_smul_eq_weylKernel_of_exists {Φ : Type} [Fintype Φ] [DecidableEq Φ]
-    (n : Φ → Type) [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] (κ : Φ → ℕ → ℕ)
-    (h_indep : LinearIndependent (MatrixPoly (Σ τ : Φ, n τ) ℤ)
-      (nablaBasis (MatrixPoly (Σ τ : Φ, n τ) ℤ) n κ))
-    (h_coords : ∃ G : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) ℤ,
-      ∑ i : WeylIndexFamily n κ, (∑ j : WeylIndexFamily n κ, G i j • nablaBasis ℤ n κ j) •
-        nablaBasis (MatrixPoly (Σ τ : Φ, n τ) ℤ) n κ i = weylKernel n κ X) :
-    ∑ i : WeylIndexFamily n κ, (∑ j : WeylIndexFamily n κ, weylGram n κ i j • nablaBasis ℤ n κ j) •
-        nablaBasis (MatrixPoly (Σ τ : Φ, n τ) ℤ) n κ i = weylKernel n κ X := by
-  obtain ⟨G, hG⟩ := h_coords
-  -- By independence the coordinates in the `b_i(x)` are unique, so they are those given by `G`.
-  have h_outer : invFun (GL.nablaCombination κ) (weylKernel n κ X) =
-      fun i ↦ ∑ j, G i j • nablaBasis ℤ n κ j :=
-    h_indep.fintypeLinearCombination_injective <|
-      (invFun_eq (f := GL.nablaCombination κ) ⟨_, hG⟩).trans hG.symm
-  have h_row (i : WeylIndexFamily n κ) :
-      ∑ j, weylGram n κ i j • nablaBasis ℤ n κ j = ∑ j, G i j • nablaBasis ℤ n κ j := by
-    rw [weylGram, h_outer]
-    exact invFun_eq (f := GL.nablaCombination κ) ⟨G i, rfl⟩
-  simp only [h_row, hG]
 
 variable {n} in
 /-- The integer Gram matrix `New.weylGram` for the row type n and column counts κ, with its entries
@@ -413,8 +394,7 @@ abbrev weylGramOver {κ : Φ → ℕ → ℕ} : Matrix (WeylIndexFamily n κ) (W
   (weylGram n κ).map (Int.cast : ℤ → R)
 
 /-- The polynomial of a vector ξ of the Weyl module: Σ_i (Gξ)_i b_i, with G the Gram matrix and b_i
-the basis minor products. It is the pairing of the tensor of ξ with the tensor of the variables
-(`toPoly_eq_sum_fillingPoly`). -/
+the basis minor products. -/
 def toPoly : (WeylIndexFamily n κ → R) →ₗ[R] MatrixPoly ((τ : Φ) × n τ) R :=
   GL.nablaCombination κ ∘ₗ ((weylGram n κ).map (Int.cast : ℤ → R)).mulVecLin
 
@@ -434,7 +414,7 @@ def linSubst : MvPolynomial σ R →ₐ[R] MvPolynomial m R := aeval fun s ↦ �
 /-- The chain rule for a linear substitution: the derivative of `p(zᵀx)` in `x_i` is
 `Σ_a z_{ia} (∂p/∂x_a)(zᵀx)`. -/
 lemma pderiv_linSubst {σ m R : Type} [CommRing R] [Fintype m] (z : Matrix m σ R) [Fintype σ]
-    [DecidableEq σ] (p : MvPolynomial σ R) (i : m) :
+    (p : MvPolynomial σ R) (i : m) :
     (linSubst z p).pderiv i = ∑ a : σ, z i a • linSubst z (p.pderiv a) := by
   classical
   -- By induction from the variables; the step for `p * X j` is the Leibniz rule.
@@ -449,13 +429,13 @@ lemma pderiv_linSubst {σ m R : Type} [CommRing R] [Fintype m] (z : Matrix m σ 
 /-- For an `m × σ` matrix `z` over the commutative ring `R`, the substitutions by `z` and by `zᵀ`
 (`New.linSubst`) are adjoint for the Fock form `⟨p, q⟩ = p(∂) q (0)`. -/
 lemma fockPairing_linSubst {σ m R : Type} [CommRing R] [Fintype m] (z : Matrix m σ R) [Fintype σ]
-    [DecidableEq σ] (f : MvPolynomial m R) (g : MvPolynomial σ R) :
+    (f : MvPolynomial m R) (g : MvPolynomial σ R) :
     fockPairing R f (linSubst z g) = fockPairing R (linSubst zᵀ f) g := by
   classical
   -- A factor `X i` of `f` moves across the Fock form as `pderiv i` (`fockPairing_mul_X`), and
   -- both sides then agree by the chain rule; for constants only the constant terms matter.
   induction f using MvPolynomial.induction_on generalizing g with
-  | C c => simp [linSubst, fockPairing_C, hom_bind₁, -fockPairing]
+  | C c => simp [linSubst, fockPairing_C, -fockPairing]
   | add p q hp hq => simp [hp, hq, -fockPairing]
   | mul_X p i hp =>
     have h_subst : linSubst zᵀ (p * X i) = ∑ a : σ, z i a • (linSubst zᵀ p * X a) := by
@@ -470,17 +450,17 @@ abbrev Monomials : Type := ↥((univ : Finset σ).finsuppAntidiag a)
 
 omit [DecidableEq σ] in
 /-- `linSubst A` substitutes for each variable the linear form of the matching row of `Aᵀ`. -/
-lemma linSubst_eq_bind₁ : linSubst A = bind₁ Aᵀ.toMvPolynomial := by
+lemma linSubst_eq_bind₁ : linSubst A = aeval Aᵀ.toMvPolynomial := by
   ext s : 1
-  simp [linSubst, MvPolynomial.bind₁, Matrix.toMvPolynomial, smul_eq_C_mul, C_mul_X_eq_monomial]
+  simp [linSubst, Matrix.toMvPolynomial, smul_eq_C_mul, C_mul_X_eq_monomial]
 
 @[simp]
 lemma linSubst_one : linSubst 1 f = f := by
-  simp [linSubst_eq_bind₁, MvPolynomial.bind₁, aeval_X_left_apply]
+  simp [linSubst_eq_bind₁, aeval_X_left_apply]
 
 omit [DecidableEq σ] in
 lemma linSubst_mul : linSubst (A * B) f = linSubst A (linSubst B f) := by
-  simp [linSubst_eq_bind₁, MvPolynomial.bind₁, comp_aeval_apply, ← toMvPolynomial_mul]
+  simp [linSubst_eq_bind₁, comp_aeval_apply, ← toMvPolynomial_mul]
 
 omit [DecidableEq σ] in
 lemma map_linSubst :
@@ -493,7 +473,7 @@ lemma Monomials.degree_eq : α.val.degree = a := by
   simpa [degree_eq_sum] using (mem_finsuppAntidiag.mp α.property).left
 
 lemma Monomials.isHomogeneous_linSubst : (linSubst A (monomial α 1)).IsHomogeneous a := by
-  rw [linSubst_eq_bind₁, ← aeval_eq_bind₁]
+  rw [linSubst_eq_bind₁]
   simpa only [one_mul] using
     (isHomogeneous_monomial (1 : R) α.degree_eq).aeval _ Aᵀ.toMvPolynomial_isHomogeneous
 
@@ -509,19 +489,19 @@ lemma sum_monomials_eq_of_isHomogeneous (hf : f.IsHomogeneous a) :
 /-- The a-th symmetric power: the homomorphism sending a square matrix A to the matrix, in the
 monomial basis, of `New.linSubst` A on forms of degree a. -/
 def symPowMatrix (a : ℕ) : Matrix σ σ R →* Matrix (Monomials σ a) (Monomials σ a) R where
-  toFun A := of fun β α ↦ (linSubst A (monomial α.1 1)).coeff β.1
+  toFun A := of fun β α ↦ (linSubst A (monomial α.val 1)).coeff β.val
   map_one' := by simp [eq_comm, Matrix.one_apply, ← ext_iff]
   map_mul' A B := by
     ext β α
     -- Expand `linSubst B (monomial α 1)` in the monomials of degree `a`, then apply `linSubst A`.
-    show (linSubst (A * B) (monomial α.1 1)).coeff β.1 = _
+    change (linSubst (A * B) (monomial α.val 1)).coeff β.val = _
     rw [linSubst_mul, ← sum_monomials_eq_of_isHomogeneous (α.isHomogeneous_linSubst B)]
     simp [mul_comm, Matrix.mul_apply]
 
 /-- For a family `β` of degree-`a` exponent vectors indexed by `S`, the single exponent vector on
 the variables `(b, s)` whose value is `β_s(b)`. -/
 def exponentOf : (S → Monomials σ a) ↪ σ × S →₀ ℕ where
-  toFun β := equivFunOnFinite.symm fun x ↦ (β x.2).1 x.1
+  toFun β := equivFunOnFinite.symm fun x ↦ (β x.2).val x.1
   inj' :=
     id fun β β' h ↦ by
       ext s t
@@ -703,15 +683,16 @@ lemma fockPairing_rowSubst [∀ τ : Φ, DecidableEq (n τ)] (p : MatrixPoly ((�
       obtain ⟨⟨τ', a'⟩, k'⟩ := j
       have h_X : w (X (⟨τ', a'⟩, k')) = ∑ d : n' τ', z τ' d a' • X (⟨τ', d⟩, k') := by
         simp [w, rowSubst]
-      simp [h_q, mul_sum (ι := n _), apply_ite, sum_add_distrib, Pi.single_apply, smul_add, h_X]
       -- Both sides are `z τ b a' • w q` if `τ' = τ` and `k' = k`, and `0` otherwise; `aesop`
       -- matches the dependent pairs.
-      show (w q * ∑ x : n' τ', if (τ' = τ ∧ x ≍ b) ∧ k' = k then z τ' x a' • 1 else 0) =
-          ∑ x : n τ, if (τ' = τ ∧ a' ≍ x) ∧ k' = k then z τ b x • w q else 0
+      suffices h : (w q * ∑ x : n' τ', if (τ' = τ ∧ x ≍ b) ∧ k' = k then z τ' x a' • 1 else 0) =
+          ∑ x : n τ, if (τ' = τ ∧ a' ≍ x) ∧ k' = k then z τ b x • w q else 0 by
+        simpa [h_q, mul_sum (ι := n _), apply_ite, sum_add_distrib, Pi.single_apply, smul_add, h_X]
+          using h
       aesop (add simp ite_and)
   -- Induction on `p`: multiplication by a variable is adjoint to the partial derivative.
   induction p using MvPolynomial.induction_on with
-  | C a => simp [w, fockPairing_C, hom_bind₁, rowSubst]
+  | C a => simp [w, fockPairing_C, rowSubst]
   | add p₁ p₂ h₁ h₂ => simp [h₁, h₂]
   | mul_X p j h_p =>
     intro q
@@ -749,18 +730,25 @@ lemma diagramWeight_apply (τ : Φ) (i : ℕ) : diagramWeight N κ (τ, i) = (Io
 lemma diagramWeight_add : diagramWeight N (κ + κ') = diagramWeight N κ + diagramWeight N κ' := by
   simp [diagramWeight, smul_sum, sum_add_distrib]
 
+private lemma map_minor {h : ℕ} (I : Fin h → m) :
+    MvPolynomial.map φ (minor R I) = minor S I := by
+  simp only [minor, RingHom.map_det]
+  congr 1
+  ext a b
+  simp
+
 @[simp]
-lemma map_nablaBasis [∀ τ : Φ, DecidableEq (n τ)] (i : WeylIndexFamily n κ) :
+lemma map_nablaBasis (i : WeylIndexFamily n κ) :
     MvPolynomial.map φ (nablaBasis R n κ i) = nablaBasis S n κ i := by
-  simp [nablaBasis, tableauPoly, minor, det_apply]
+  simp [nablaBasis, tableauPoly, map_minor]
 
 @[simp]
 lemma map_highestPoly : MvPolynomial.map φ (highestPoly R κ N) = highestPoly S κ N := by
-  simp [highestPoly, tableauPoly, minor, det_apply]
+  simp [highestPoly, tableauPoly, map_minor]
 
 @[simp]
 lemma map_detPow (e : Φ → ℕ) : MvPolynomial.map φ (detPow R n e) = detPow S n e := by
-  simp [detPow, minor, det_apply]
+  simp [detPow, map_minor]
 
 @[simp]
 lemma detPow_zero : detPow R n 0 = 1 := by simp [detPow]

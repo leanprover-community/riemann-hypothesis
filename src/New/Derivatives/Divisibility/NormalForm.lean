@@ -1,6 +1,13 @@
+module
+
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.RingTheory.MvPowerSeries.Derivative
+import TauCeti.RingTheory.MvPowerSeries.Dvd
+public import Lib.General.Algebra.IntegralPowerSeries
 import Lib.General.Algebra.SeriesBounds
 import Lib.General.Algebra.SeriesCongruences
-import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # Couplings and the normal form
@@ -9,8 +16,7 @@ import Lib.General.NumberTheory.PadicLimitsValuation
   `F(ϖ z) = W exp (c_ϖ Ξ)` with `W` integral, `c_ϖ = ϖ ^ (p + 1) / p` and
   `Ξ = ∑_{e ∈ S} ∑_j λ_{e j} Γ_e ^ p ^ j`, for any rule that assigns partners to places.
 * `New.HasNormalForm.rescale`: the normal form is kept, with other numbers `λ_{e j}`, under
-  `z ↦ α z` with `α` integral; so its existence depends only on the valuation of `ϖ`
-  (`New.HasNormalForm.exists_of_norm_eq`).
+  `z ↦ α z` with `α` integral.
 * `New.HasNormalForm.norm_coeff_subst_le_one`: if `F` has the normal form and `Z` is integral
   without constant term, then `F(ϖ Z)` is integral in degrees at most `B` if the couplings `Γ_e(Z)`
   with `e ∈ S`, `e ≤ log_p B` are divisible by some `π` with `‖c_ϖ π‖ ≤ p ^ (-1 / (p - 1))`.
@@ -26,6 +32,8 @@ import Lib.General.NumberTheory.PadicLimitsValuation
 * The variables `z_x` are indexed by pairs `x = (τ, i)` in `Φ × c`, for finite types `Φ` and `c`;
   the elements `τ` of `Φ` are called places.
 -/
+
+@[expose] public section
 
 open MvPowerSeries WithPiTopology IsLocalRing
 
@@ -135,7 +143,7 @@ lemma norm_coeff_expSubst_smul_le_one {τ : Type} {a : ℂ_[p]} {π : valRingCp 
   refine norm_coeff_expSubst_le_one (by simp [hG]) (fun d hd ↦ ?_) hm
   calc ‖coeff d (a • seriesToCp G)‖ = ‖a * (coeff d G : valRingCp p)‖ := rfl
     _ ≤ p ^ (-(1 / (p - 1)) : ℝ) := by
-      grw [← hπ, norm_mul, norm_mul, dvd_iff_norm_le.1 (h_dvd d hd)]
+      grw [← hπ, norm_mul, norm_mul, valRingCp.dvd_iff_norm_le.1 (h_dvd d hd)]
 
 /-- To prove that `F` has the normal form `F(ϖ z) = W exp (c_ϖ Ξ₀)`, where `W` is integral,
 `c_ϖ = ϖ ^ (p + 1) / p` and `Ξ₀ = couplingSum S pr l`, it is enough to know the exponent modulo a
@@ -154,7 +162,7 @@ lemma HasNormalForm.of_dvd_sub {π : valRingCp p}
   have hG_zero : constantCoeff G = 0 := by simp [hG, hΞ, constantCoeff_couplingSum]
   have h_int (d : Φ × c →₀ ℕ) : ‖coeff d (expSubst (a • seriesToCp G))‖ ≤ 1 :=
     norm_coeff_expSubst_smul_le_one hπ hG_zero
-      (fun d' _ ↦ C_dvd_iff_forall_dvd_coeff.1 h_dvd d') le_rfl
+      (fun d' _ ↦ (C_dvd_iff_dvd_coeff _ _).1 h_dvd d') le_rfl
   obtain ⟨V, hV⟩ : ∃ V : MvPowerSeries (Φ × c) (valRingCp p),
       seriesToCp V = expSubst (a • seriesToCp G) := ⟨fun d ↦ ⟨_, h_int d⟩, rfl⟩
   have h_exp : expSubst (a • seriesToCp Ξ) =
@@ -199,29 +207,6 @@ lemma HasNormalForm.rescale (hF : HasNormalForm S pr ϖ l F) (α : valRingCp p) 
   rw [h_subst, ← rescale_couplingSum, rescale_eq_subst _ (couplingSum S pr l)]
   exact hF.exists_subst_eq_mul_expSubst fun x ↦ by simp [Z]
 
-/-- Let `F` have the normal form `F(ϖ z) = W exp (c_ϖ ∑_{e ∈ S} ∑_j λ_{e j} Γ_e ^ p ^ j)` with `W`
-integral. The existence of such a form depends only on the valuation of `ϖ`: if `ϖ ≠ 0` and
-`‖ϖ'‖ = ‖ϖ‖`, then `F` has it for `ϖ'`, with other numbers `λ'_{e j} = l' e j` in place of the
-`λ_{e j}`. -/
-lemma HasNormalForm.exists_of_norm_eq (hF : HasNormalForm S pr ϖ l F) (hϖ : ϖ ≠ 0) {ϖ' : ℂ_[p]}
-    (h_norm : ‖ϖ'‖ = ‖ϖ‖) : ∃ l' : ℕ → ℕ → valRingCp p, HasNormalForm S pr ϖ' l' F := by
-  -- Scale by the unit `ϖ' / ϖ`, and move the unit `c_ϖ / c_ϖ'` into the numbers `λ_{e j}`.
-  have hϖ' : ϖ' ≠ 0 := by rwa [← norm_ne_zero_iff, h_norm, norm_ne_zero_iff]
-  let α : valRingCp p := ⟨ϖ' / ϖ, (norm_div ϖ' ϖ).trans_le (by simp [h_norm, hϖ])⟩
-  let β : valRingCp p := ⟨ϖ / ϖ', (norm_div ϖ ϖ').trans_le (by simp [h_norm, hϖ])⟩
-  let l₁ (e j : ℕ) : valRingCp p := α ^ ((p ^ e + 1) * p ^ j) * l e j
-  have h_sum : (couplingSum S pr fun e j ↦ β ^ (p + 1) * l₁ e j :
-      MvPowerSeries (Φ × c) (valRingCp p)) = β ^ (p + 1) • couplingSum S pr l₁ :=
-    hasSum_couplingSum.unique <| by
-      simpa only [mul_smul, smul_eq_C_mul] using hasSum_couplingSum.mul_left (C (β ^ (p + 1)))
-  have h_scale : (fun _ : Φ × c ↦ ϖ') = (fun _ ↦ (α : ℂ_[p])) * fun _ ↦ ϖ :=
-    funext fun _ ↦ (div_mul_cancel₀ ϖ' hϖ).symm
-  have h_const : ϖ' ^ (p + 1) / p * (β ^ (p + 1) : valRingCp p) = ϖ ^ (p + 1) / p := by
-    simp [β, div_mul_eq_mul_div, ← mul_pow, mul_div_cancel₀ ϖ hϖ']
-  obtain ⟨W, hW⟩ : HasNormalForm S pr ϖ l₁ (F.rescale fun _ ↦ (α : ℂ_[p])) := hF.rescale α
-  refine ⟨fun e j ↦ β ^ (p + 1) * l₁ e j, W, ?_⟩
-  rw [h_sum, seriesToCp_smul, smul_smul, h_const, ← hW, rescale_rescale, h_scale]
-
 /-- Let `Γ_e = coupling pr e` be the coupling `∑ z_(τ,i) ^ p ^ e * z_(pr e τ, i)`, homogeneous of
 degree `p ^ e + 1`. A substitution of series `Z_x` without constant term does not lower orders, so
 `Γ_e(Z) ^ p ^ j` has order at least `p ^ e + 1`. -/
@@ -249,7 +234,7 @@ lemma dvd_coeff_subst_couplingSum {π : valRingCp p} {τ : Type}
   set G : MvPowerSeries τ (valRingCp p) := (coupling (p := p) pr e).subst Z ^ p ^ j
   suffices h_dvd : π ∣ coeff d G by simpa only [coeff_smul] using h_dvd.mul_left (l e j)
   obtain h_le | h_lt := le_or_gt e (p.log B)
-  · exact C_dvd_iff_forall_dvd_coeff.1 ((hΓ e he h_le).pow (pow_ne_zero j hp.ne_zero)) d
+  · exact (C_dvd_iff_dvd_coeff _ _).1 ((hΓ e he h_le).pow (pow_ne_zero j hp.ne_zero)) d
   · have h_deg : d.degree < p ^ e + 1 :=
       (hd.trans_lt (Nat.lt_pow_of_log_lt hp.one_lt h_lt)).trans (Nat.lt_succ_self _)
     rw [coeff_of_lt_order ((Nat.cast_lt.2 h_deg).trans_le (le_order_subst_coupling_pow hZ e j))]
@@ -268,20 +253,25 @@ lemma HasNormalForm.norm_coeff_subst_le_one (hF : HasNormalForm S pr ϖ l F) {π
     ‖coeff m (F.subst fun x : Φ × c ↦ ϖ • seriesToCp (Z x))‖ ≤ 1 := by
   classical
   set Ξ : MvPowerSeries τ (valRingCp p) := (couplingSum S pr l).subst Z
-  have h_zero : constantCoeff Ξ = 0 :=
+  have h_exponent_zero : constantCoeff Ξ = 0 :=
     constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero hZ) hZ constantCoeff_couplingSum
-  have h_exp (d : τ →₀ ℕ) (hd : d.degree ≤ B) :
+  -- Only couplings of sufficiently small degree can affect the truncated exponential.
+  have h_exp_integral (d : τ →₀ ℕ) (hd : d.degree ≤ B) :
       ‖coeff d (expSubst ((ϖ ^ (p + 1) / p) • seriesToCp Ξ))‖ ≤ 1 :=
-    norm_coeff_expSubst_smul_le_one hπ h_zero
+    norm_coeff_expSubst_smul_le_one hπ h_exponent_zero
       (fun _ hd' ↦ dvd_coeff_subst_couplingSum hZ hΓ hd') hd
-  obtain ⟨W, hW⟩ : ∃ W : MvPowerSeries τ (valRingCp p),
+  obtain ⟨W, h_factorization⟩ : ∃ W : MvPowerSeries τ (valRingCp p),
       F.subst (fun x : Φ × c ↦ ϖ • seriesToCp (Z x)) =
         seriesToCp W * expSubst ((ϖ ^ (p + 1) / p) • seriesToCp Ξ) :=
           hF.exists_subst_eq_mul_expSubst hZ
-  rw [hW, coeff_mul]
+  -- The other factor is already integral. Each convolution term uses a coefficient
+  -- of the exponential of degree at most B.
+  rw [h_factorization, coeff_mul]
   refine sum_mem (S := valRingCp p) fun ⟨d₁, d₂⟩ hd ↦ ?_
-  have h_le : d₂ ≤ m := le_of_add_le_right (Finset.HasAntidiagonal.mem_antidiagonal.1 hd).le
-  exact mul_mem (coeff d₁ W).property (h_exp d₂ ((Finsupp.degree_mono h_le).trans hm))
+  have h_degree_bound : d₂ ≤ m :=
+    le_of_add_le_right (Finset.HasAntidiagonal.mem_antidiagonal.1 hd).le
+  exact mul_mem (coeff d₁ W).property
+    (h_exp_integral d₂ ((Finsupp.degree_mono h_degree_bound).trans hm))
 
 variable [DecidableEq Φ] [DecidableEq c]
 
@@ -384,7 +374,7 @@ lemma residue_coeff_pderiv_couplingSum_eq (hS : 0 ∉ S) (y : Φ × c) (d : Φ �
   obtain ⟨a, ha⟩ : (p : valRingCp p) ∣ coeff d (pderiv y (couplingSum S pr l)) -
       ∑' e : S, l e 0 * coeff d (partnerPowerSum pr e y) := by
     simpa only [h_sum, ← map_sub] using
-      C_dvd_iff_forall_dvd_coeff.1 (dvd_pderiv_couplingSum_sub hS y) d
+      (C_dvd_iff_dvd_coeff _ _).1 (dvd_pderiv_couplingSum_sub hS y) d
   rw [sub_eq_iff_eq_add'] at ha
   simp only [ha, map_add, map_mul, map_natCast, CharP.cast_eq_zero, zero_mul, add_zero]
 

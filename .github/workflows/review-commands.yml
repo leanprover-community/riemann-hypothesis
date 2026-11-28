@@ -1,0 +1,123 @@
+name: review commands
+
+# Two comments hand a pull request back and forth between its author and the maintainers.
+#
+# Commenting `aa` hands a pull request back to its author: it adds the `awaiting-author` label and
+# nothing else. The inbox workflow takes a pull request with that label out of the inbox.
+#
+# Commenting `ready` hands it back to the maintainers: it takes `awaiting-author` off and nothing
+# else. The pull request's author can do this as well as maintainers. The inbox workflow counts
+# the label coming off as the pull request entering review again, and this workflow starts it for
+# that pull request, so it goes back in the inbox within a minute or so. Without the label there
+# is nothing to take off, and `ready` does nothing.
+#
+# Only a comment whose whole text is `aa` or `ready` counts, letter case and blank space after the
+# word aside. A comment that starts with blank space is ignored. `aa` needs triage access to this repository or more, and so does `ready`, except
+# from the pull request's author. Reviewers are the people given the Triage role: it lets them hand
+# pull requests back without write access. Every other comment is ignored.
+#
+# GitHub runs this workflow from the default branch, so a pull request cannot change what it does.
+# Nothing from a pull request is checked out or run: everything goes through GitHub's API.
+#
+# The batch-queue workflow on branch alpoge handled these two comments together with the batch
+# commands, which are not restored here.
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  label:
+    name: Act on an `aa` or `ready` comment
+    # A first filter, so that most comments start no runner: pull requests only, and the comment
+    # has to start with one of the words. startsWith ignores letter case. The step below makes the
+    # exact comparison.
+    if: >-
+      ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request &&
+          (startsWith(github.event.comment.body, 'aa') || startsWith(github.event.comment.body, 'ready')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # `actions: write` is for starting the inbox workflow after `ready`.
+    permissions:
+      actions: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Check the comment and its author, then add or remove the label
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.issue.number }}
+          AUTHOR: ${{ github.event.comment.user.login }}
+          OPENER: ${{ github.event.issue.user.login }}
+          BODY: ${{ github.event.comment.body }}
+          WAITING: awaiting-author
+        run: |
+          # The comment text arrives in an environment variable. It is compared and never run.
+          text=$(printf '%s' "$BODY" | tr -d '\r' | tr '[:upper:]' '[:lower:]')
+          # Drop blank space, line breaks included, from both ends.
+          text="${text#"${text%%[![:space:]]*}"}"
+          text="${text%"${text##*[![:space:]]}"}"
+          case "$text" in
+            aa | ready) ;;
+            *)
+              echo "The comment is not just 'aa' or 'ready': nothing to do."
+              exit 0
+              ;;
+          esac
+
+          # Triage access or higher. The API reports the maintain role as write and triage as read
+          # under `permission`, so triage is told apart by `role_name`. The pull request's author
+          # may comment `ready` whatever their access.
+          if [ "$text" = ready ] && [ "$AUTHOR" = "$OPENER" ]; then
+            permission=author
+            role=''
+          else
+            if ! access=$(gh api "repos/$REPO/collaborators/$AUTHOR/permission" --jq '.permission + " " + (.role_name // "")'); then
+              echo "::error::Could not read the access $AUTHOR has to $REPO."
+              exit 1
+            fi
+            read -r permission role <<< "$access"
+          fi
+          case "$permission" in
+            admin | write | author) ;;
+            *)
+              if [ "$role" = triage ]; then
+                :
+              elif [ "$text" = aa ]; then
+                echo "$AUTHOR has '${role:-$permission}' access. Labelling a pull request '$WAITING' needs triage access."
+                exit 0
+              else
+                echo "$AUTHOR did not open pull request $PR and has '${role:-$permission}' access. Taking '$WAITING' off someone else's pull request needs triage access."
+                exit 0
+              fi
+              ;;
+          esac
+
+          if [ "$text" = aa ]; then
+            # Back to the author. The label is all this does. Adding a label that does not exist
+            # creates it, so a renamed `awaiting-author` should fail here instead.
+            if ! gh api "repos/$REPO/labels/$(jq -rn --arg label "$WAITING" '$label | @uri')" --silent; then
+              echo "::error::There is no '$WAITING' label in $REPO. Was it renamed?"
+              exit 1
+            fi
+            gh api -X POST "repos/$REPO/issues/$PR/labels" -f "labels[]=$WAITING" --silent
+            echo "Added '$WAITING' to pull request $PR, as $AUTHOR asked."
+            exit 0
+          fi
+
+          # `ready`: back to the maintainers. The inbox workflow counts the label coming off as the
+          # pull request entering review again. A label change made with this job's token starts no
+          # run of it, so this asks for one.
+          if gh api "repos/$REPO/issues/$PR/labels" --jq '.[].name' | grep -qxF -- "$WAITING"; then
+            gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$WAITING" '$label | @uri')" --silent
+            echo "Removed '$WAITING' from pull request $PR, as $AUTHOR asked."
+            if ! gh workflow run inbox.yml --repo "$REPO" -f "pr=$PR"; then
+              echo "::warning::Could not start the inbox workflow for pull request $PR."
+            fi
+          else
+            echo "Pull request $PR does not carry '$WAITING': nothing to do."
+          fi
+        

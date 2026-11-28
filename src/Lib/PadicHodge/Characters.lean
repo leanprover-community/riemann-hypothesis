@@ -1,6 +1,30 @@
+module
+
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Topology.Algebra.Group.SubmonoidClosure
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.FieldTheory.Galois.IsometricAction
+import TauCeti.Topology.Algebra.Group.Units
+public import Lib.GaloisRep.Main.Defs
+public import Lib.GaloisRep.Main.LocalConditions
+public import Lib.General.NumberTheory.PadicLimitsValuation
+public import Lib.ClassField.HeckeL.EulerProduct
+import Lib.ClassField.Global.ArtinMap
 import Lib.ClassField.Global.ExistenceTheorem
-import Lib.GaloisRep.Main.LocalConditions
-import Lib.General.NumberTheory.PadicLimitsValuation
+import Lib.ClassField.Global.NormTheorems
+import Lib.ClassField.HeckeL.ContinuationAtOne
+import Lib.ClassField.Places.LocalFields
+import Lib.ClassField.Places.TameInertia
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.PadicHodge.Crystalline.HodgeTateForms
+import Lib.PadicHodge.Crystalline.HodgeTateJumps
+import Lib.PadicHodge.Crystalline.Regularity
 
 /-!
 # p-adic avatars of Hecke characters and local conditions for twists and characters
@@ -20,7 +44,7 @@ of `Ω`: finite type, good, Hodge–Tate jumps, and polynomials killing an eleme
   `New.GaloisRep.JumpsRelAt` (Hodge–Tate jumps) and `New.GaloisRep.PolyKillsAt` (a polynomial kills
   an element) behave when a representation is multiplied by a character. It collects the four
   lemmas `IsFiniteTypeAt.twist`, `IsGoodAt.twist`, `JumpsRelAt.twist` and `PolyKillsAt.twist`.
-* `New.Period.isPotentiallyCrystalline_of_unramified_char`: take a continuous `p`-adic character `ν`
+* Take a continuous `p`-adic character `ν`
   of an open subgroup of `G_p`, trivial on inertia near `1`. An algebra on which `ν` acts by scalars
   is potentially crystalline (`IsPotentiallyCrystalline.of_unramified_char`) with the jumps of the
   trivial action (`jump_eq_jump_one_of_unramified_char`). Weil elements act on its Weil–Deligne
@@ -60,6 +84,8 @@ representations (1968), III, Appendix.
 See also `Lib.ClassField.Avatar.LocalGlobalCompatibility` and
 `Lib.PadicHodge.Crystalline.Regularity`.
 -/
+
+@[expose] public section
 
 /-!
 ## p-adic avatars of algebraic Hecke characters
@@ -120,8 +146,8 @@ lemma exists_avatar :
     ext g : 1
     obtain ⟨x, hx⟩ := artinMap_surjective Gal(Ω/K) ⟦g⟧
     have hψ_mul : ψ (θ * θ') x = ψ θ x * ψ θ' x := by
-      simp [ψ, AlgHeckeChar.character, AlgHeckeChar.infinityType, zpow_add, prod_mul_distrib,
-        mul_mul_mul_comm]
+      simpa [ψ, AlgHeckeChar.character, AlgHeckeChar.infinityType, zpow_add, prod_mul_distrib]
+        using mul_mul_mul_comm ..
     rw [MonoidHom.mul_apply, hμ _ x g hx, hμ θ x g hx, hμ θ' x g hx, hψ_mul]
   exact ⟨.mk' μ hμ_mul, fun θ ↦ ⟨hμ_cont θ, fun x g hg ↦ by simp [ψ, hμ θ x g hg]⟩⟩
 
@@ -403,7 +429,7 @@ lemma jump_twist [OverGp (decompGroup Gal(Ω/E) A) ℓ] {γ : PadicAlgCl ℓ →
       ∃ x : Fin 1 → PadicAlgCl ℓ, f x ≠ 0 := by
     -- `jump` is the rank of the space `hodgeTateMaps`, so that space has a nonzero element.
     obtain ⟨f, hf_ne, -⟩ := finrank_eq_one_iff'.1 hμ
-    exact ⟨f, f.property, by simpa [Subtype.ext_iff, DFunLike.ext_iff] using hf_ne⟩
+    exact ⟨f, f.property, not_forall.mp fun h ↦ hf_ne (Subtype.ext (LinearMap.ext h))⟩
   have h_period : ∀ᶠ t : decompGroup Gal(Ω/E) A in nearOne _,
       γ (μ t.val).val * f x = (χ t ^ (-u)).val • toGp t • f x := by
     filter_upwards [hf x] with t ht
@@ -425,7 +451,7 @@ lemma JumpsRelAt.twist {R : ℕ → ℕ → Prop} {J : (E →+* ℂ) → Multise
   set τ : E →+* ℂ := .comp ιℓ.symm (.comp ↑g⁻¹ (L.e.comp (algebraMap E Ω)) : E →+* PadicAlgCl ℓ)
   have h_one : jump (decompRep ((GeneralLinearGroup.scalar (Fin 1)).comp μ) A) γ (u τ) = 1 :=
     (hμ hg (u τ)).symm.trans (count_singleton_self (u τ))
-  show R (((J τ).map fun v : ℤ ↦ v + u τ).count v) (jump (decompRep r' A) γ v)
+  change R (((J τ).map fun v : ℤ ↦ v + u τ).count v) (jump (decompRep r' A) γ v)
   rw [← sub_add_cancel v (u τ), count_map_eq_count' _ _ (add_left_injective (u τ)),
     jump_twist h_twist h_one]
   exact hr hg (v - u τ)
@@ -494,7 +520,9 @@ noncomputable instance : MulSemiringAction FrobGal (Ainf ⊗[ℤ_[p]] T) :=
 /-- The operator `φ - 1` of `A_inf`, tensored with `T`, is `φ - 1` on `A_inf ⊗ T`. -/
 private lemma rTensor_frobenius_sub_id_apply (z : Ainf ⊗[ℤ_[p]] T) :
     (DistribSMul.toLinearMap ℤ_[p] Ainf ((ofAdd 1, 1) : FrobGal) - .id).rTensor T z =
-      ((ofAdd 1, 1) : FrobGal) • z - z := by aesop
+      ((ofAdd 1, 1) : FrobGal) • z - z := by
+  rw [rTensor_sub, LinearMap.sub_apply, rTensor_id_apply]
+  rfl
 
 /-- The map `φ - 1` is onto on `A_inf ⊗ T`, with `φ` the Frobenius of `A_inf`. -/
 private lemma exists_frobenius_smul_sub_eq (v : Ainf ⊗[ℤ_[p]] T) :
@@ -513,9 +541,11 @@ private lemma exists_one_tmul_eq_of_frobenius_smul_eq [Flat ℤ_[p] T] {z : Ainf
   let d : Ainf →ₗ[ℤ_[p]] Ainf := DistribSMul.toLinearMap ℤ_[p] Ainf ((ofAdd 1, 1) : FrobGal) - .id
   have hz_ker : d.rTensor T z = 0 := by rw [rTensor_frobenius_sub_id_apply, hz, sub_self]
   have h_exact : Exact (Algebra.linearMap ℤ_[p] Ainf) d := fun c : Ainf ↦ by
-    refine ⟨fun hc ↦ exists_algebraMap_eq_of_frobenius_eq c ?_, by aesop⟩
-    have hc_fixed : frobEnd c = c := sub_eq_zero.1 hc
-    simpa [frobEnd_eq_frobenius] using hc_fixed
+    refine ⟨fun hc ↦ exists_algebraMap_eq_of_frobenius_eq c ?_, ?_⟩
+    · have hc_fixed : frobEnd c = c := sub_eq_zero.1 hc
+      simpa [frobEnd_eq_frobenius] using hc_fixed
+    · rintro ⟨a, rfl⟩
+      exact sub_eq_zero.mpr (smul_algebraMap _ a)
   simpa [(TensorProduct.lid ℤ_[p] T).symm.surjective.exists, hz_ker] using
     Flat.rTensor_exact T h_exact z
 
@@ -552,7 +582,7 @@ private lemma exists_isUnit_mul_frobenius_smul_eq [Free ℤ_[p] T] [Module.Finit
       ring
   have h_pow : (1 - α) ^ e = (p : Ainf) • (1 ⊗ₜ b) := by
     simp [α, one_def, hb, ← nsmul_eq_mul, ← tmul_sub, smul_tmul']
-  have complete : IsAdicComplete (span {(p : Ainf)}) (Ainf ⊗[ℤ_[p]] T) := isAdicComplete_of_free _
+  have complete : IsAdicComplete (span {(p : Ainf)}) (Ainf ⊗[ℤ_[p]] T) := .of_finite_projective _ _
   obtain ⟨x, hx⟩ : ∃ x : Ainf ⊗[ℤ_[p]] T, α * φ • x - x = 1 := by
     let f : Ainf ⊗[ℤ_[p]] T →+ Ainf ⊗[ℤ_[p]] T :=
       α • (frobEnd (A := Ainf ⊗[ℤ_[p]] T)).toAddMonoidHom - .id _
@@ -561,8 +591,9 @@ private lemma exists_isUnit_mul_frobenius_smul_eq [Free ℤ_[p] T] [Module.Finit
     exact ⟨n, 1 ⊗ₜ b * w, by rwa [h_pow, smul_mul_assoc] at hv⟩
   refine ⟨(1 - α) * x + 1, ?_, ?_⟩
   · -- `(1 - α) ^ e` lies in `(p)`, so `1 - α` lies in the Jacobson radical
-    refine mem_jacobson_bot.1 (isRadical_jacobson _ ⟨e, ?_⟩) x
-    apply ((map_algebraMap_iff ..).2 complete).le_jacobson_bot
+    refine Ring.mem_jacobson_iff.1 (Ideal.jacobson_bot.le (isRadical_jacobson _ ⟨e, ?_⟩)) x
+    apply Ideal.jacobson_bot.ge
+    apply ((map_algebraMap_iff ..).2 complete).le_jacobson
     simp [h_pow, Algebra.smul_def, mem_span_singleton, Ideal.map_span]
   · rw [smul_add, smul_mul', smul_sub, smul_one, α_fixed]
     linear_combination (1 - α) * hx
@@ -620,7 +651,7 @@ lemma exists_unramified_period [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] (a : T
   refine ⟨weil_fix, ?_⟩
   -- `φ ^ k * (1, s) = (ofAdd k, s)` fixes `y`, so `s • y = α ^ k * y`
   have h_mul : φ ^ k * ((1, s) : FrobGal) = (ofAdd k, s) := by simp [φ, ← ofAdd_nsmul]
-  show ((1, s) : FrobGal) • y = _
+  change ((1, s) : FrobGal) • y = _
   rw [← smul_y_eq k (1, s), h_mul, weil_fix]
 
 /-- If `‖1 - b‖ < 1` and `f ≠ 0`, then `b ∈ ℚ̄_p` has an `f`-th root `a` with `‖1 - a‖ < 1`. -/
@@ -716,7 +747,9 @@ lemma exists_period_of_character [TopologicalSpace Γ]
     refine isClosed_eq ?_ (by fun_prop)
     -- on a pure tensor `a ⊗ o` the left side is `(toGp g⁻¹ • θ a) * o`
     obtain ⟨s, rfl⟩ : ∃ s : Finset (Ainf × O), y = ∑ i ∈ s, i.1 ⊗ₜ[ℤ_[p]] i.2 := y.exists_finset
-    simp [Θ, Finset.smul_sum, smul_tmul']
+    suffices h : Continuous fun g : Γ ↦
+        ∑ i ∈ s, (toGp g)⁻¹ • (theta i.1 : ℂ_[p]) * algebraMap (PadicAlgCl p) ℂ_[p] i.2 by
+      simpa [Θ, Finset.smul_sum, smul_tmul'] using h
     fun_prop
   -- it holds at `φ ^ k * i` with `i` in inertia: the inverse is a Weil element of degree `f * k`,
   -- so it multiplies `y` by `a ^ (f * k) = (ν φ) ^ k`, and `ν i = 1`
@@ -727,7 +760,7 @@ lemma exists_period_of_character [TopologicalSpace Γ]
     have h_smul : toGp (φ ^ k * i)⁻¹ • y = 1 ⊗ₜ a₀ ^ (f * k) * y := by
       rw [map_inv, (h_weil _ _ h_pair).2]
     have hνi : ν i = 1 := (hU i hiU).1 (inv_mem hi)
-    show Θ (toGp (φ ^ k * i)⁻¹ • y) = (ν (φ ^ k * i)).val * Θ y
+    change Θ (toGp (φ ^ k * i)⁻¹ • y) = (ν (φ ^ k * i)).val * Θ y
     rw [h_smul]
     simp [a₀, Θ, ha, hνi, coe_eq, pow_mul]
   -- these elements are dense in the preimage of `U`, so it holds at `g⁻¹`
@@ -803,7 +836,7 @@ private lemma one_tmul_mul_toBmaxTensor_mem_dpcris {ρ : Γ →* End (PadicAlgCl
     1 ⊗ₜ x * toBmaxTensor T O y ∈ Dpcris ρ := by
   -- The factor `ν g⁻¹` on `y` cancels the factor `ν g` on `x`.
   refine h_near.mono fun g ⟨o, (h_line : ((1, toGp g) : FrobGal) • y = 1 ⊗ₜ o * y), ho⟩ ↦ ?_
-  show tensorAction Bmax ((1, toGp g) : FrobGal) (ρ g) (1 ⊗ₜ x * toBmaxTensor T O y) = _
+  change tensorAction Bmax ((1, toGp g) : FrobGal) (ρ g) (1 ⊗ₜ x * toBmaxTensor T O y) = _
   rw [tensorAction_one_tmul_mul_toBmaxTensor hρ (1, toGp g) 1, h_line]
   simp [toBmaxTensor, hρ, ho, algebraMap_eq_smul_one, ← mul_assoc]
 
@@ -855,26 +888,6 @@ lemma isKilledBy_X_sub_C_of_unramified_char (h_emb : IsOpenEmbedding 𝒥.toGp) 
       one_tmul_mul_toBmaxTensor_mem_dpcris hρ h_near x, h_weil (toGp s) k hs]
   exact ⟨h_pcr, by simp [h_frob]⟩
 
-/-- Let `𝒥.toGp` be an open embedding and `ν` a continuous character of `Γ`, trivial on inertia near
-`1`, and let `ρ` act on a commutative `ℚ̄_p`-algebra `T` by the scalars `ν g`. Then `ρ` is
-potentially crystalline, has the jumps of the trivial action, and for every Weil pair `(toGp s, k)`
-the polynomial `X - ν s` kills `linearFrob ρ s k`.
-
-A case of the fact that potentially unramified characters are potentially crystalline of weight 0
-(Caruso). -/
-lemma isPotentiallyCrystalline_of_unramified_char (h_emb : IsOpenEmbedding 𝒥.toGp)
-    (hν : Continuous ν) (hν_inertia : ∀ᶠ g : Γ in 𝓝 1, IsWeilPair (toGp g) 0 → ν g = 1)
-    {ρ : Γ →* End (PadicAlgCl p) T} (hρ : ∀ (g : Γ) (x : T), ρ g x = (ν g).val • x) :
-    -- (a) potentially crystalline
-    IsPotentiallyCrystalline ρ ∧
-    -- (b) the jumps of the trivial representation
-    jump ρ = jump (1 : Γ →* End (PadicAlgCl p) T) ∧
-    -- (c) a Weil element `s` acts by the scalar `ν s`
-    ∀ (s : Γ) (k : ℕ), IsWeilPair (toGp s) k → IsKilledBy ρ s k (X - C (ν s).val) :=
-  ⟨.of_unramified_char h_emb hν hν_inertia hρ,
-    jump_eq_jump_one_of_unramified_char h_emb hν hν_inertia hρ,
-    fun _ _ hs ↦ isKilledBy_X_sub_C_of_unramified_char h_emb hν hν_inertia hρ hs⟩
-
 end New.Period
 
 /-!
@@ -918,7 +931,7 @@ private lemma eventually_eq_one_of_isWeilPair_zero [L : PadicPlaceEmbedding E A 
     (hμ : Continuous μ) (hfin : (μ '' inertiaGroup Gal(Ω/E) A).Finite) :
     ∀ᶠ s : decompGroup Gal(Ω/E) A in nhds 1,
       IsWeilPair (L.toGp s) 0 → μ.domRestrict (decompGroup Gal(Ω/E) A) s = 1 :=
-  (continuousAt_subtype_val.eventually (eventually_eq_one_of_finite_image_inertia hμ hfin)).mono
+  (continuousAt_subtypeVal.eventually (eventually_eq_one_of_finite_image_inertia hμ hfin)).mono
     fun _ hs h_pair ↦ hs (L.isWeilPair_zero_iff.1 h_pair)
 
 /-- If a continuous ℓ-adic character μ has finite image on the inertia group of A, then the
@@ -967,8 +980,7 @@ lemma JumpsRelAt.congr {r : GalRep ℓ E m} {R : ℕ → ℕ → Prop} {J J' : (
   let τ : E →+* ℂ := .comp ιℓ.symm (.comp ↑g⁻¹ (L.e.comp (algebraMap E Ω)) : E →+* PadicAlgCl ℓ)
   have hτ : inducedPrime τ = w := by
     ext x
-    simpa [τ, hw] using congrArg (· < 1)
-      (norm_smul_Cp g⁻¹ (L.e (algebraMap E Ω (algebraMap (𝓞 E) E x)) : ℂ_[ℓ]))
+    simp [τ, hw]
   rw [← hJ τ hτ]
   exact h hg
 

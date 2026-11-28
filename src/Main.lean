@@ -1,5 +1,9 @@
 -- The proof is Levent Alpöge's, with Claude.
-import New.Main
+module
+
+public import New.Main
+
+@[expose] public section
 
 /-- **The Riemann Hypothesis**, as stated in Mathlib. -/
 theorem riemannHypothesis : RiemannHypothesis := New.zeta_zeros_on_line New.grh

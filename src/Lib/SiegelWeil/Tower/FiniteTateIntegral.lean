@@ -1,6 +1,14 @@
-import Lib.ClassField.Avatar.HeckeBaseChange
+module
+
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Order.Interval.Finset.Box
+import TauCeti.Topology.Algebra.Group.Units
+public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.SiegelWeil.Tower.RealConeIntegral
+public import Lib.SiegelWeil.Tower.PrincipalIdeles
 import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.SiegelWeil.Tower.RealConeIntegral
+import Lib.ClassField.HeckeL.ContinuationAtOne
+import Lib.Weil.DualPair.ThetaIntegrals
 
 /-!
 # Products of `L`-values and Tate's integral at the finite places
@@ -32,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.SiegelWeil.Tower.LargeSideConstantTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -154,7 +164,7 @@ lemma exists_lineFinFactor_uniformizer_eq : ∃ c : (𝔸f E)ˣ,
   -- Off `S̄` the components of `c` are `1`, so `c` does not change the integrality condition.
   have h_int : idem (conjClosure (𝔠.ramifiedPlaces : Set (FinPlace E)))ᶜ * (a * c) ∈ Ô E ↔
       idem (conjClosure (𝔠.ramifiedPlaces : Set (FinPlace E)))ᶜ * a ∈ Ô E := by
-    simp +contextual [idem_mul_mem_Ô, finAdele_mul_apply, hc_one]
+    simp +contextual [idem_mul_mem_Ô, hc_one]
   simp only [lineFinFactor, h_int, map_mul, star_mul', hc_eval, hc_star, mul_one]
 
 /-- On the support of the finite factor an adele is integral off `S ∪ S̄` and a unit at `S ∪ S̄`,
@@ -167,7 +177,7 @@ lemma valuation_of_lineFinFactor_ne_zero {a : 𝔸f E} (ha : lineFinFactor 𝔠 
     a ∈ Ô E ∧
       IsIntegralUnit (evalPlaces 𝔠.ramifiedPlaces a) ∧ IsIntegralUnit
         (evalPlaces 𝔠.ramifiedPlaces (star a)) := by
-    simp only [lineFinFactor, invOnUnits, mul_one] at ha
+    simp only [lineFinFactor, invOnUnits] at ha
     grind
   rw [isIntegralUnit_iff_v_eq_one] at h_unit h_unit_star
   refine ⟨idem_mul_mem_Ô.1 h_int, fun w hw ↦ hw.elim (fun hw ↦ h_unit ⟨w, hw⟩) fun hw ↦ ?_⟩
@@ -229,8 +239,8 @@ lemma integral_finTateIntegrand (ρ : Measure (𝔸f E)ˣ) [IsHaarMeasure ρ] {x
 nonzero weight is not trivial. -/
 lemma continuousOn_L : ContinuousOn (𝔠.character.L 𝔠.ramifiedPlaces) (Ici 1) := by
   have h_hecke : IsHeckeOfType 𝔠.character.baseChange.finPart (2 • μ) := 𝔠.hasWeight.isHeckeOfType
-  exact (h_hecke.exists_hasPrimeDensity (by simp [Finite.star])
-    (h_hecke.ne_one (smul_ne_zero two_ne_zero 𝔠.weight_ne_zero))).1
+  exact h_hecke.continuousOn_eulerProd (by simp [Finite.star])
+    (h_hecke.ne_one (smul_ne_zero two_ne_zero 𝔠.weight_ne_zero))
 
 /-! ### Unfolding over the idele classes -/
 

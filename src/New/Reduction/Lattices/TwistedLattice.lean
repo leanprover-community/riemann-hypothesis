@@ -1,6 +1,12 @@
-import Lib.General.LinearAlgebra.GramDeterminant
-import New.Reduction.Lattices.Colength
-import New.Reduction.Lattices.Heights
+module
+
+import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.Analysis.Normed.Ring.Ultra
+public import Lib.General.LinearAlgebra.GramDeterminant
+public import New.Reduction.Lattices.Colength
+public import New.Reduction.Lattices.Heights
+public import Lib.ClassField.Places.ValuationSubrings
+import Lib.General.LinearAlgebra.MinorProducts
 
 /-!
 # Twisted lattices
@@ -19,6 +25,8 @@ from the definition of the number `Z(ξ)` on.
 * `New.TwistedLattice.CovolumeLe.norm_map_det_gram_le`, `New.TwistedLattice.CovolumeLe.sumElim`,
   `New.TwistedLattice.norm_det_mul_det_gram_le_one`: conjugates of Gram determinants, adjoining
   vectors, and valuations of Gram determinants.
+* `New.TwistedLattice.heightLe_volume_div`: height of the forward ratio `Z(ξ_ι) / Z(1)` from the
+  covolume of a completed basis and its denominator bounds.
 * `New.TwistedLattice.covolume_add_index_nonneg`: given an allowed twist `ξ_ι` for each `ι`, a
   lower bound for the covolume of a family in terms of its index, the height of `Z(1) / Z(ξ_ι)`,
   and the sizes and denominators of vectors that complete the family to a basis.
@@ -37,6 +45,8 @@ Size-versus-divisibility bounds for a determinant are known in the literature. R
 Algebraic leaves of algebraic foliations over number fields, 2001; Laurent, Linear forms in two
 logarithms and interpolation determinants, 1994.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -242,20 +252,6 @@ lemma indexLe_card_mul {y : S → V} {δ : ℝ} {κ : Type} {A : κ → Set V} (
 
 end Index
 
-section FormGram
-
-variable {I S S' : Type} [Fintype I] (G : Matrix I I ℂ) (v : S → I → ℂ) (w : S' → I → ℂ)
-
-/-- The upper left block of the Gram matrix of the union of `v` and `w` is the Gram matrix
-of `v`. -/
-lemma toBlocks₁₁_formGram_sumElim : (formGram G (Sum.elim v w)).toBlocks₁₁ = formGram G v := rfl
-
-/-- The lower right block of the Gram matrix of the union of `v` and `w` is the Gram matrix
-of `w`. -/
-lemma toBlocks₂₂_formGram_sumElim : (formGram G (Sum.elim v w)).toBlocks₂₂ = formGram G w := rfl
-
-end FormGram
-
 section Covolume
 
 variable {V T S : Type} [AddCommGroup V] [Module ℂ V] [One T] (L : TwistedLattice V T)
@@ -319,27 +315,20 @@ lemma covolumeLe_of_normSqAt_le {n : ℕ} {z : Fin n → V} {h : ℝ}
     L.CovolumeLe z (n * h) :=
   fun σ ↦ norm_det_formGram_le L.posDef_gramMatrix.posSemidef fun i ↦ hz i σ
 
-/-- **Gram determinants, adjoining vectors.** Let `L` be a twisted lattice on `V`, with map
-`Θ₁ = L.lift 1` for the trivial twist. For an automorphism `σ` of `ℂ`, write `σ Θ₁ v` for the
-coordinate vector of `Θ₁ v` with `σ` applied to each coordinate (`conjCoord`); such vectors are
-paired by the rational matrix `L.gramMatrix` of the inner product. If `y` has covolume at most `c`,
-that is, `|det ⟨σ Θ₁ y_i, σ Θ₁ y_k⟩| ≤ exp c` for all `σ`, and
-`L.normSqAt (z i) σ = ⟨σ Θ₁ z_i, σ Θ₁ z_i⟩ ≤ exp h` for all `i` and `σ`, then the family `y`
-together with `z_1, …, z_n` has covolume at most `c + n h`. This is Fischer's inequality together
-with Hadamard's. -/
-lemma CovolumeLe.sumElim {y : S → V} {n : ℕ} {z : Fin n → V} {c h : ℝ} (hy : L.CovolumeLe y c)
-    (hz : ∀ (i : Fin n) (σ : ℂ ≃+* ℂ), L.normSqAt (z i) σ ≤ exp h) :
-    L.CovolumeLe (Sum.elim y z) (c + n * h) := by
+/-- **Gram determinants, adjoining vectors.** If two families have covolume at most `c` and
+`c'`, their union has covolume at most `c + c'` by Fischer's inequality. -/
+lemma CovolumeLe.sumElim {S' : Type} [Fintype S'] [DecidableEq S']
+    {y : S → V} {z : S' → V} {c c' : ℝ} (hy : L.CovolumeLe y c) (hz : L.CovolumeLe z c') :
+    L.CovolumeLe (Sum.elim y z) (c + c') := by
   -- Apply Fischer's inequality to the Gram matrix `M` of the union at `σ`.
   intro σ
   rw [Sum.comp_elim]
-  set M : Matrix (S ⊕ Fin n) (S ⊕ Fin n) ℂ :=
+  set M : Matrix (S ⊕ S') (S ⊕ S') ℂ :=
     formGram (L.gramMatrix.map (↑)) (Sum.elim (L.conjCoord σ ∘ y) (L.conjCoord σ ∘ z))
   calc ‖M.det‖ ≤ ‖M.toBlocks₁₁.det‖ * ‖M.toBlocks₂₂.det‖ :=
         fischer_det_inequality (posSemidef_formGram L.posDef_gramMatrix.posSemidef _)
-    _ ≤ exp c * exp (n * h) :=
-        mul_le_mul (hy σ) (covolumeLe_of_normSqAt_le hz σ) (norm_nonneg _) (exp_nonneg c)
-    _ = exp (c + n * h) := (Real.exp_add _ _).symm
+    _ ≤ exp c * exp c' := mul_le_mul (hy σ) (hz σ) (norm_nonneg _) (exp_nonneg c)
+    _ = exp (c + c') := (Real.exp_add _ _).symm
 
 end Covolume
 
@@ -353,12 +342,6 @@ of `V`. -/
 def volume (ξ : T) : ℂ := (L.lift ξ).normDet ^ 2
 
 variable {L}
-
-/-- If the space `L.Space ξ` for `ξ` has finite dimension, the volume `Z(ξ) = L.volume ξ` is the
-determinant of `Θ_ξ* Θ_ξ` on `V`, where `Θ_ξ = L.lift ξ`. -/
-lemma volume_eq_det_adjoint_comp (ξ : T) [Module.Finite ℂ (L.Space ξ)] :
-    L.volume ξ = ((L.lift ξ).adjoint ∘ₗ L.lift ξ).det := by
-  simp [volume, ← LinearMap.normDet_sq]
 
 lemma volume_ne_zero {ξ : T} (h_inj : Function.Injective (L.lift ξ)) : L.volume ξ ≠ 0 := by
   simp [volume, LinearMap.normDet_eq_zero_iff_ker_ne_bot, LinearMap.ker_eq_bot.2 h_inj]
@@ -418,17 +401,19 @@ lemma norm_pow_mul_det_gram_le {n n' : ℕ} {y : Fin n → V}
     (hz' : ∀ i : Fin n', γ • L.lift ξ (z i) ∈ L.lattice ξ ι.conj) :
     ‖ι.iso (((‖γ‖ : ℂ) ^ 2) ^ n' * (gram ℂ (L.lift ξ ∘ Sum.elim y z)).det)‖ ≤
       exp (2 * (a * log ι.prime)) := by
+  -- Correct the two families separately at the conjugate places. Each correction has loss `a`.
   obtain ⟨v, hv_det, hv_mem⟩ := exists_matrix_elim_mem_lattice hξ hu.sum_smul_mem hz
   obtain ⟨v', hv'_det, hv'_mem⟩ :=
     exists_matrix_elim_mem_lattice (ι := ι.conj) hξ hu'.sum_smul_mem hz'
   set Gram : ℂ := (gram ℂ (L.lift ξ ∘ Sum.elim y z)).det
-  have h_int : ‖ι.conj.iso v'.det‖ * ‖ι.iso Gram‖ * ‖ι.iso v.det‖ ≤ 1 :=
+  have h_integral_gram : ‖ι.conj.iso v'.det‖ * ‖ι.iso Gram‖ * ‖ι.iso v.det‖ ≤ 1 :=
     norm_det_mul_det_gram_le_one hξ hv_mem hv'_mem
+  -- The two determinant lower bounds turn local integrality into the loss `2 a log l`.
   set β : ℝ := a * log ι.prime with hβ
-  have h_exp : exp (-β) = ((ι.prime : ℕ) : ℝ) ^ (-a) := by
+  have h_exp_loss : exp (-β) = ((ι.prime : ℕ) : ℝ) ^ (-a) := by
     rw [rpow_def_of_pos (mod_cast ι.prime.prop.pos), mul_neg, mul_comm, hβ]
-  have hu_det : exp (-β) ≤ ‖ι.iso (u.det : ℂ)‖ := h_exp.trans_le hu.le_norm_det
-  have hu'_det : exp (-β) ≤ ‖ι.conj.iso (u'.det : ℂ)‖ := h_exp.trans_le hu'.le_norm_det
+  have h_det_lower : exp (-β) ≤ ‖ι.iso (u.det : ℂ)‖ := h_exp_loss.trans_le hu.le_norm_det
+  have hu'_det : exp (-β) ≤ ‖ι.conj.iso (u'.det : ℂ)‖ := h_exp_loss.trans_le hu'.le_norm_det
   calc ‖ι.iso (((‖γ‖ : ℂ) ^ 2) ^ n' * Gram)‖
       = ‖ι.conj.iso γ‖ ^ n' * ‖ι.iso Gram‖ * ‖ι.iso γ‖ ^ n' := by
         simp [← Complex.conj_mul', mul_pow, mul_right_comm]
@@ -439,7 +424,7 @@ lemma norm_pow_mul_det_gram_le {n n' : ℕ} {y : Fin n → V}
     _ ≤ exp (2 * β) * (‖ι.conj.iso v'.det‖ * ‖ι.iso Gram‖ * ‖ι.iso v.det‖) := by
         simp only [hv_det, hv'_det, map_mul, map_pow, norm_mul, norm_pow]
         gcongr
-    _ ≤ exp (2 * β) := mul_le_of_le_one_right (exp_nonneg _) h_int
+    _ ≤ exp (2 * β) := mul_le_of_le_one_right (exp_nonneg _) h_integral_gram
 
 /-- Let `L` be a twisted lattice with maps `Θ_ξ = L.lift ξ`. Let `y` have index at most `δ`, let
 `ξ_ι = θ ι` be allowed at the prime of `ι`, and let the vectors `γ_ι Θ_{ξ_ι} z_i` be integral both
@@ -464,48 +449,68 @@ lemma heightLe_pow_mul_det_gram {n n' : ℕ} {y : Fin n → V} {z : Fin n' → V
 
 end
 
-/-- **A twist for each prime.** Let `L` be a twisted lattice on `V` with maps `Θ_ξ = L.lift ξ`, all
-injective. Let `y_1, …, y_n, z_1, …, z_n'` be a basis of `V`, and let `ξ_ι = θ ι` be allowed at the
-prime of `ι`. Suppose that
+/-- Height of the forward volume ratio for a completed basis. Suppose the completed family
+`y, z` has log squared covolume at most `a` at every complex conjugate. An index bound `δ`
+for `y` and a common clearing scalar for the `n'` added vectors give the finite-place cost
+`2 δ + n' b_denom`. The selected twisted lifts need not be injective. -/
+lemma heightLe_volume_div {n n' : ℕ} {y : Fin n → V} {z : Fin n' → V}
+    (h_inj : Function.Injective (L.lift 1))
+    (h_indep : LinearIndependent ℂ (Sum.elim y z)) (h_card : finrank ℂ V = n + n')
+    {θ : PrimePadicIso → T} (hθ : ∀ ι : PrimePadicIso, L.IsAllowed ι.prime (θ ι))
+    {a δ b_denom : ℝ} (ha : L.CovolumeLe (Sum.elim y z) a) (hδ : L.IndexLe y δ)
+    {γ : PrimePadicIso → ℂ} (hγ_ne : ∀ ι, γ ι ≠ 0)
+    (hz_int : ∀ ι i, γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι)
+    (hz_conj : ∀ ι i, γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι.conj)
+    (hγ : HeightLe b_denom fun ι : PrimePadicIso ↦ ((‖γ ι‖ : ℂ) ^ 2)⁻¹) :
+    HeightLe (a + (2 * δ + n' * b_denom)) fun ι ↦ L.volume (θ ι) / L.volume 1 := by
+  let G (ξ : T) := (gram ℂ (L.lift ξ ∘ Sum.elim y z)).det
+  have hG (ξ : T) : G ξ = L.volume ξ * (gram ℂ (Sum.elim y z)).det :=
+    det_gram_comp (L.lift ξ) _ (by simpa using h_card)
+  have h_one : G 1 ≠ 0 :=
+    det_gram_ne_zero_iff_linearIndependent.2 (h_indep.map_injOn _ h_inj.injOn)
+  have h_inv := HeightLe.inv_const h_one ha.norm_map_det_gram_le
+  have h_fin : HeightLe (2 * δ) fun ι ↦ ((‖γ ι‖ : ℂ) ^ 2) ^ n' * G (θ ι) :=
+    heightLe_pow_mul_det_gram hδ hθ hz_int hz_conj
+  -- The common basis determinant and the powers of the clearing scalar cancel in the ratio.
+  convert h_inv.mul (h_fin.mul (hγ.pow n')) using 1
+  funext ι
+  have h_norm : (‖γ ι‖ : ℂ) ≠ 0 := by simpa using hγ_ne ι
+  simp [hG, field]
+  exact (mul_div_mul_right _ _ (det_gram_ne_zero_iff_linearIndependent.2 h_indep)).symm
+
+/-- **A twist for each prime.** Let `L` be a twisted lattice on `V` with maps `Θ_ξ = L.lift ξ`.
+Let `y_1, …, y_n, z_1, …, z_n'` be a basis of `V`, and let `ξ_ι = θ ι` be allowed at the prime of
+`ι`. Only the untwisted map must be injective, and only the selected volumes `Z(ξ_ι)` must be
+nonzero. Write `ῑ = ι.conj`. Suppose that
 * `y` has covolume at most `c` and index at most `δ`;
-* `γ(ξ) ≠ 0`, and `γ(ξ) Θ_ξ z_i` is integral at all `ι ∣ l` for `ξ` allowed at `l`;
+* `γ_ι ≠ 0`, and `γ_ι Θ_{ξ_ι} z_i` is integral at both `ι` and `ῑ`;
 * `⟨σ Θ₁ z_i, σ Θ₁ z_i⟩ ≤ exp b_short` for all automorphisms `σ` of `ℂ`;
-* the families `|γ(ξ_ι)| ^ (-2)` and `Z(1) / Z(ξ_ι)` have height at most `b_denom` and `b_volume`
+* the families `|γ_ι| ^ (-2)` and `Z(1) / Z(ξ_ι)` have height at most `b_denom` and `b_volume`
   respectively.
 
 Then `c + 2 δ + n' (b_short + b_denom) + b_volume ≥ 0`. -/
 theorem covolume_add_index_nonneg {n n' : ℕ} {y : Fin n → V} {z : Fin n' → V}
-    (h_inj : ∀ ξ : T, Function.Injective (L.lift ξ))
+    (h_inj : Function.Injective (L.lift 1))
     (h_indep : LinearIndependent ℂ (Sum.elim y z)) (h_card : finrank ℂ V = n + n')
     {θ : PrimePadicIso → T} (hθ : ∀ ι : PrimePadicIso, L.IsAllowed ι.prime (θ ι))
+    (h_volume_ne : ∀ ι : PrimePadicIso, L.volume (θ ι) ≠ 0)
     {c δ b_volume b_short b_denom : ℝ} (hc : L.CovolumeLe y c) (hδ : L.IndexLe y δ)
-    {γ : T → ℂ} (hγ_ne : ∀ ξ : T, γ ξ ≠ 0)
-    (hz_int : ∀ (i : Fin n') (ι : PrimePadicIso) (ξ : T), L.IsAllowed ι.prime ξ →
-      γ ξ • L.lift ξ (z i) ∈ L.lattice ξ ι)
+    {γ : PrimePadicIso → ℂ} (hγ_ne : ∀ ι, γ ι ≠ 0)
+    (hz_int : ∀ (ι : PrimePadicIso) (i : Fin n'), γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι)
+    (hz_conj : ∀ (ι : PrimePadicIso) (i : Fin n'),
+      γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι.conj)
     (hz_short : ∀ (i : Fin n') (σ : ℂ ≃+* ℂ), L.normSqAt (z i) σ ≤ exp b_short)
-    (hγ : HeightLe b_denom fun ι : PrimePadicIso ↦ ((‖γ (θ ι)‖ : ℂ) ^ 2)⁻¹)
+    (hγ : HeightLe b_denom fun ι : PrimePadicIso ↦ ((‖γ ι‖ : ℂ) ^ 2)⁻¹)
     (hZ : HeightLe b_volume fun ι : PrimePadicIso ↦ L.volume 1 / L.volume (θ ι)) :
     0 ≤ c + 2 * δ + n' * (b_short + b_denom) + b_volume := by
-  -- Write `Gram(1)` as a product of three factors, add their heights, and compare with the
-  -- conjugates of `Gram(1)` by the product formula.
-  let Gram (ξ : T) : ℂ := (gram ℂ (L.lift ξ ∘ Sum.elim y z)).det
-  have h_gram (ξ : T) : Gram ξ = L.volume ξ * (gram ℂ (Sum.elim y z)).det :=
-    det_gram_comp (L.lift ξ) _ (by simpa using h_card)
-  have h_factor (ι : PrimePadicIso) : Gram 1 = ((‖γ (θ ι)‖ : ℂ) ^ 2) ^ n' * Gram (θ ι) *
-      ((‖γ (θ ι)‖ : ℂ) ^ 2)⁻¹ ^ n' * (L.volume 1 / L.volume (θ ι)) := by
-    have hγ_norm : (‖γ (θ ι)‖ : ℂ) ≠ 0 := by simpa using hγ_ne (θ ι)
-    have hZ_ne : L.volume (θ ι) ≠ 0 := volume_ne_zero (h_inj (θ ι))
-    simp [h_gram, field]
-  have h_index : HeightLe (2 * δ) fun ι ↦ ((‖γ (θ ι)‖ : ℂ) ^ 2) ^ n' * Gram (θ ι) :=
-    heightLe_pow_mul_det_gram hδ hθ (fun ι i ↦ hz_int i ι (θ ι) (hθ ι))
-      fun ι i ↦ hz_int i ι.conj (θ ι) (hθ ι)
-  have h_height : HeightLe (2 * δ + n' * b_denom + b_volume) fun _ ↦ Gram 1 := by
-    simpa only [← h_factor, Pi.mul_def, Pi.pow_def] using (h_index.mul (hγ.pow n')).mul hZ
-  have h_ne : Gram 1 ≠ 0 :=
-    det_gram_ne_zero_iff_linearIndependent.2 (h_indep.map_injOn _ (h_inj 1).injOn)
-  have h_conj (σ : ℂ ≃+* ℂ) : ‖σ (Gram 1)‖ ≤ exp (c + n' * b_short) :=
-    (hc.sumElim hz_short).norm_map_det_gram_le σ
-  linarith [h_height.neg_le_of_norm_map_le h_ne h_conj]
+  have h_forward := heightLe_volume_div h_inj h_indep h_card hθ
+    (hc.sumElim (covolumeLe_of_normSqAt_le hz_short)) hδ hγ_ne hz_int hz_conj hγ
+  -- The forward and inverse ratios use the same twist at each place, so their product is one.
+  have h_one : HeightLe ((c + n' * b_short) + (2 * δ + n' * b_denom) + b_volume) 1 := by
+    convert h_forward.mul hZ using 1
+    funext ι
+    simp [field, volume_ne_zero h_inj, h_volume_ne ι]
+  linarith [h_one.nonneg_of_one]
 
 end Twist
 

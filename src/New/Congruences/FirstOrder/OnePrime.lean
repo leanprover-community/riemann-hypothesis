@@ -1,4 +1,10 @@
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Mathlib.GroupTheory.Transfer
+import Mathlib.Algebra.GroupWithZero.Action.Regular
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.Weil.Unramified.HeckeGL
+public import Lib.LocalGL.Iwahori.ParahoricStructure
 
 /-!
 # Norms, logarithms and first-order deformations of the norm
@@ -34,6 +40,8 @@ Notions from other files:
   completion `E_w`, its ring of integers `O_w` and its residue field, which has `w.q` elements.
 * `New.localIntGL n w`: the subgroup `GL_n(O_w)` of `GL_n(E_w)`.
 -/
+
+@[expose] public section
 
 /-!
 ## Congruences, norms and the family
@@ -261,7 +269,8 @@ lemma coeff_mul_C_sub_X_mul_C_insert {J T : Type*} [DecidableEq J] [CommRing T]
     (G : MvPolynomial J T) (t r : T) {j : J} {S : Finset J} (hj : j ∉ S) :
     (G * (.C t - .X j * .C r)).coeff (∑ i ∈ insert j S, .single i 1) =
       t * G.coeff (∑ i ∈ insert j S, .single i 1) - r * G.coeff (∑ i ∈ S, .single i 1) := by
-  rw [mul_sub, mul_left_comm G, MvPolynomial.coeff_sub, sum_insert hj, MvPolynomial.coeff_X_mul]
+  rw [mul_sub, mul_left_comm G, AddMonoidAlgebra.coeff_sub_apply, sum_insert hj,
+    MvPolynomial.coeff_X_mul]
   simp [mul_comm G]
 
 /-- Let `σ : R → R'` be a ring map, write `a ≡ b` for `σ a = σ b` and `∂ j = der j`, and let the
@@ -338,9 +347,8 @@ lemma exists_map_pow_mul_family_eq_mul_norm {ρ : (∀ j : J, Γ j) →* R} {N :
           N (S.erase j) = N' * ∑ k : Γ j, ρ (Pi.mulSingle j k) ∧ N S = N' * der j := by
         simpa only [insert_erase hj] using h_factor j (S.erase j) (notMem_erase j S)
       obtain ⟨Z, hZ, hZ_zero⟩ := h_der j g
-      obtain ⟨Y, hY⟩ : ∃ Y : R, σ (δ ^ e * N (S.erase j)) = σ (Y * ∑ g, ρ g) :=
-        (ih (S.erase j) (erase_ssubset hj) (i := e) (by grind [card_erase_of_mem])).imp
-          fun Y ↦ And.left
+      obtain ⟨Y, hY, -⟩ := ih (S.erase j) (erase_ssubset hj) (i := e)
+        (by grind [card_erase_of_mem])
       -- `δ'` moves to the right of `N (S.erase j)` first: `Y` need not commute with it.
       have h_move : δ' * δ ^ e * N (S.erase j) = δ ^ e * N (S.erase j) * δ' := by
         rw [mul_assoc, ((hδ'δ.pow_right e).mul_right (hδ'N _)).eq]
@@ -354,8 +362,7 @@ lemma exists_map_pow_mul_family_eq_mul_norm {ρ : (∀ j : J, Γ j) →* R} {N :
             simp only [mul_assoc]
         _ = 0 := by rw [hZ_zero, mul_zero, map_zero]
     · -- The norm at `j` is a factor of `N S`.
-      obtain ⟨N', h_S⟩ : ∃ N' : R, N S = N' * ∑ k : Γ j, ρ (Pi.mulSingle j k) :=
-        (h_factor j S hj).imp fun N' ↦ And.left
+      obtain ⟨N', h_S, -⟩ := h_factor j S hj
       have norm_inv : (∑ k : Γ j, ρ (Pi.mulSingle j k)) * ρ (Pi.mulSingle j g) =
           ∑ k : Γ j, ρ (Pi.mulSingle j k) :=
         sum_monoidHom_mul (ρ.comp (MonoidHom.mulSingle Γ j)) g
@@ -445,7 +452,7 @@ lemma transfer_firstEntry_diagGL (x : Fˣ) :
   let H : Subgroup (GL (Fin N) F) := residueLineStabilizer F N
   set g : GL (Fin N) F := diagGL (Pi.mulSingle 0 x) with hg
   let Ω : Type := Quotient (MulAction.orbitRel (Subgroup.zpowers g) (GL (Fin N) F ⧸ H))
-  have : Fintype Ω := Fintype.ofFinite Ω
+  let : Fintype Ω := Fintype.ofFinite Ω
   have g_pow (f : ℕ) : g ^ f = diagGL (Pi.mulSingle 0 (x ^ f)) := by simp [hg, Pi.mulSingle_pow]
   have g_mem : g ∈ H := mem_residueLineStabilizer.2 fun i hi ↦ by simp [g, hi]
   let η₀ : GL (Fin N) F ⧸ H := ↑(1 : GL (Fin N) F)
@@ -477,7 +484,7 @@ transvections: `τ` sends the image of each transvection `t` to `1`. -/
 lemma map_toGL_transvection_eq_one {n : Type*} [Fintype n] [DecidableEq n] (τ : GL n F →* Fˣ)
     (t : TransvectionStruct n F) : τ (toGL t.toSpecialLinearGroup) = 1 := by
   -- `c ↦ τ (transvection c)` is a homomorphism from a group of order `q` to one of order `q - 1`.
-  have : Fintype F := Fintype.ofFinite F
+  let : Fintype F := Fintype.ofFinite F
   let ψ : F →+ Additive Fˣ :=
     .mk' (fun c ↦ .ofMul (τ (toGL (transvection t.hij c)))) (by simp [transvection_add])
   have pow_card : τ (toGL t.toSpecialLinearGroup) ^ Fintype.card F = 1 :=
@@ -506,23 +513,17 @@ transfer to `GL_N(F)` is the determinant. -/
 lemma transfer_firstEntry (g : GL (Fin N) F) :
     (firstEntry (F := F) (N := N)).transfer g = GeneralLinearGroup.det g := by
   -- Both sides are characters of `GL_N(F)`, and they agree on diagonal matrices and transvections.
-  set τ : GL (Fin N) F →* Fˣ := (firstEntry (F := F) (N := N)).transfer
-  have det_single (i : Fin N) (x : Fˣ) :
-      GeneralLinearGroup.det (diagGL (Pi.mulSingle i x) : GL (Fin N) F) = x :=
-    Units.ext (by simp [← Units.coe_prod])
-  have τ_diag : τ.comp diagGL = GeneralLinearGroup.det.comp diagGL :=
-    MonoidHom.pi_ext fun i x ↦
-      (transfer_firstEntry_diagGL_mulSingle i x).trans (det_single i x).symm
-  let P (M : Matrix (Fin N) (Fin N) F) : Prop :=
-    ∃ g' : GL (Fin N) F, (g' : Matrix (Fin N) (Fin N) F) = M ∧ τ g' = GeneralLinearGroup.det g'
-  suffices P g by simpa [P, Units.val_inj]
-  refine diagonal_transvection_induction_of_det_ne_zero P _ g.det_ne_zero ?_ ?_ ?_
-  · intro D hD
-    have hD_ne (i : Fin N) : D i ≠ 0 := by simp_all [prod_ne_zero_iff]
-    exact ⟨diagGL fun i ↦ Units.mk0 (D i) (hD_ne i), rfl, DFunLike.congr_fun τ_diag _⟩
-  · exact fun t ↦ ⟨toGL t.toSpecialLinearGroup, rfl, by simp [map_toGL_transvection_eq_one]⟩
-  · rintro _ _ - - ⟨g₁, rfl, h₁⟩ ⟨g₂, rfl, h₂⟩
-    exact ⟨g₁ * g₂, rfl, by rw [map_mul, map_mul, h₁, h₂]⟩
+  set τ := (firstEntry (F := F) (N := N)).transfer
+  have τ_diag : τ.comp diagGL = GeneralLinearGroup.det.comp diagGL := MonoidHom.pi_ext fun i x ↦
+    (transfer_firstEntry_diagGL_mulSingle i x).trans <| Units.ext (by simp [← Units.coe_prod])
+  let ⟨g', h, h'⟩ := diagonal_transvection_induction_of_det_ne_zero
+    (fun M ↦ ∃ g' : GL (Fin N) F, (g' : Matrix _ _ F) = M ∧ τ g' = GeneralLinearGroup.det g')
+    g g.det_ne_zero
+    (fun D hD ↦ ⟨diagGL fun i ↦ .mk0 (D i) (by simp_all [prod_ne_zero_iff]), rfl,
+      DFunLike.congr_fun τ_diag _⟩)
+    (fun t ↦ ⟨toGL t.toSpecialLinearGroup, rfl, by simp [map_toGL_transvection_eq_one]⟩)
+    (fun _ _ _ _ ⟨g₁, h₁, e₁⟩ ⟨g₂, h₂, e₂⟩ ↦ ⟨g₁ * g₂, by simp [h₁, h₂], by simp [e₁, e₂]⟩)
+  simpa [Units.val_inj.mp h] using h'
 
 /-- Let `F` be a finite field, `l` a homomorphism from `Fˣ` to a commutative group, and `firstEntry`
 the character `g ↦ g 0 0` of the stabiliser in `GL_N(F)` of the line of the first basis vector. The
@@ -563,9 +564,10 @@ lemma reduceGL_mem_iff_mem_residuePreimage {N : ℕ} {P : GL (Fin N) (LocField w
     reduceGL g ∈ H ↔ (g : GL (Fin N) (LocField w)) ∈ residuePreimage P H hP :=
   (hP g).trans (and_iff_right g.property).symm
 
-/-- The reduction of `g ∈ GL_N(O_w)` stabilises the line of the first basis vector if and only if
-`g` lies in the parahoric subgroup with blocks of sizes `1` and `N - 1`. -/
-lemma reduceGL_mem_residueLineStabilizer_iff {N : ℕ} [NeZero N] {g : localIntGL (Fin N) w} :
+/-- The reduction of `g ∈ GL_N(O_w)` belongs to the residue line stabiliser if and only if
+`g` belongs to the corresponding block parahoric. For positive `N`, the blocks have sizes
+`1` and `N - 1`. -/
+lemma reduceGL_mem_residueLineStabilizer_iff {N : ℕ} {g : localIntGL (Fin N) w} :
     reduceGL g ∈ residueLineStabilizer (ResField w) N ↔
       (g : GL (Fin N) (LocField w)) ∈ blockParahoric (min 1) := by
   unfold residueLineStabilizer blockParahoric

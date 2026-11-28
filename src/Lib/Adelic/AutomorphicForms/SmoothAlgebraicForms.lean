@@ -1,7 +1,15 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.MeasureTheory.Integral.Pi
+public import Lib.GLn.SchurModule.SchurOrthogonality
+public import Lib.GaloisRep.Main.Defs
+public import Lib.Weil.Construction.ThetaJets
 import Lib.Adelic.Reduction.DefiniteClassSums
-import Lib.GLn.SchurModule.SchurOrthogonality
-import Lib.GaloisRep.Main.Defs
-import Lib.Weil.Construction.ThetaJets
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.GLn.SchurModule.WeylKernel
 
 /-!
 # Algebraic forms on definite unitary groups, their pairing and Harish-Chandra parameters
@@ -23,7 +31,7 @@ and the power `e τ` of the determinant.
 * `New.IsHCParam.eq_hcParameter`, `New.IsHCParam.exists_decreasingPosition_eq`: the entries of a
   parameter `l` are those of `New.hcParameter`, in the decreasing order of `l`;
   `New.IsHCParam.lowestKType_eq`: the highest weight that `l` determines.
-* `New.highestVector_cyclic`: for injective `l w` and signs all 1, the highest vector
+* For injective `l w` and signs all 1, the highest vector
   `New.highestVector` of `New.conjWeylRep` is cyclic (`New.span_translate_highestVector_eq_top`),
   and so is its dual (`New.span_gramForm_highestVector_comp_eq_top`).
 * `New.IsHCParam.prod_formalDegree`: the product of the formal degrees `New.HCParam.formalDegree` is
@@ -47,6 +55,8 @@ Notions from other files:
 Known result: algebraic modular forms on definite unitary groups, their invariant pairing and
 Harish-Chandra parameters. Source: B. Gross, Algebraic modular forms, Israel J. Math. 113 (1999).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -225,7 +235,7 @@ lemma pairing_mem_smoothInvariants
   obtain ⟨ψ, hψ_smooth, hψ_equivariant⟩ := ψ
   refine ⟨Set.forall_mem_range.2 ?_, ?_⟩
   · -- Both forms transform under `V.weightRep`, which preserves `B`.
-    show ∀ (γ : U V.J) (g : Gf E n), B (φ (V.embFin γ * g)) (ψ (V.embFin γ * g)) = B (φ g) (ψ g)
+    change ∀ (γ : U V.J) (g : Gf E n), B (φ (V.embFin γ * g)) (ψ (V.embFin γ * g)) = B (φ g) (ψ g)
     simp [hφ_equivariant _, hψ_equivariant _, hB]
   · -- The pairing is fixed by every translation that fixes both forms.
     have h_open : (rightStabilizer φ ⊓ rightStabilizer ψ).IsOpen := .inter hφ_smooth hψ_smooth
@@ -297,10 +307,22 @@ lemma hcParameter_strictAnti {w : Φ} : StrictAnti (hcParameter κ e N w) :=
 
 /-- Index the entries of the decreasing sequence `hcParameter κ e (card n) w` by `n` through the
 enumeration `Fintype.equivFin n`. The resulting vector satisfies `IsHCParam κ e`. -/
-lemma isHCParam_hcParameter [DecidableEq Φ] (n : Type) [Fintype n] (κ : Φ → ℕ → ℕ) (e : Φ → ℤ) :
+lemma isHCParam_hcParameter (n : Type) [Fintype n] (κ : Φ → ℕ → ℕ) (e : Φ → ℤ) :
     IsHCParam κ e fun (w : Φ) (i : n) ↦
       hcParameter κ e (Fintype.card n) w (Fintype.equivFin n i) := by
   simp [IsHCParam, Function.Injective, hcParameter_strictAnti.injective.eq_iff, Fin.val_inj]
+
+/-- In rank `N`, for `p + 1 < N`, entries `p` and `p + 1` of the parameter `New.hcParameter`
+differ by twice the number `κ w (p + 1)` of columns of height `p + 1`, plus two. -/
+lemma hcParameter_sub_succ {N p : ℕ} (w : Φ) (hp : p + 1 < N) :
+    hcParameter κ e N w p - hcParameter κ e N w (p + 1) = 2 * κ w (p + 1) + 2 := by
+  classical
+  have h_row : diagramWeight (fun _ ↦ N) κ (w, p) =
+      diagramWeight (fun _ ↦ N) κ (w, p + 1) + κ w (p + 1) := by
+    rw [GL.diagramWeight_eq_succ_add, ite_eq_left hp]
+  simp only [hcParameter, h_row]
+  push_cast
+  ring
 
 /-- Let L be a sequence of integers with L(p) − L(p+1) = 2κ_w(p+1) + 2 whenever p + 1 < N. If L
 agrees with `New.hcParameter κ e N w` at one index q < N, then it agrees with it at every p < N.
@@ -316,12 +338,8 @@ lemma hcParameter_eq_of_steps (w : Φ) (L : ℕ → ℤ)
     induction p with
     | zero => rfl
     | succ p ih =>
-      have h_row : diagramWeight (fun _ ↦ N) κ (w, p) =
-          diagramWeight (fun _ ↦ N) κ (w, p + 1) + κ w (p + 1) := by
-        rw [GL.diagramWeight_eq_succ_add, ite_eq_left hp]
-      have h_param : hcParameter κ e N w p = hcParameter κ e N w (p + 1) + 2 * κ w (p + 1) + 2 := by
-        grind [hcParameter]
-      linarith [ih (Nat.lt_of_succ_lt hp), h_step p hp]
+      linarith [ih (Nat.lt_of_succ_lt hp), h_step p hp,
+        hcParameter_sub_succ (κ := κ) (e := e) w hp]
   intro p hp
   linarith [diff_const p hp, diff_const q hq]
 
@@ -391,18 +409,6 @@ lemma span_gramForm_highestVector_comp_eq_top [DecidableEq n]
   have h_orth (x : Φ → USign (1 : n → ℤˣ)) :
       gramForm (highestVector κ l) (conjWeylRep κ e x u) = 0 := (Submodule.mem_iInf _).1 hu x
   simp [eq_zero_of_forall_gramForm_translate_eq_zero hl e u h_orth]
-
-/-- Let each `l w` be injective. For any determinant twist `e`, the highest vector
-v⁺ = `New.highestVector κ l` and its dual ⟨v⁺, ·⟩ for `New.gramForm` are cyclic under the compact
-group (`USign 1` at each place, acting by ρ = `New.conjWeylRep`): the vectors ρ(x)v⁺ span the
-representation, and the linear forms u ↦ ⟨v⁺, ρ(x)u⟩ span its dual. Both facts are consequences of
-the irreducibility of the Schur module. -/
-lemma highestVector_cyclic [DecidableEq n] (hl : ∀ w : Φ, (l w).Injective) (e : Φ → ℤ) :
-    Submodule.span ℂ (Set.range fun x : Φ → USign (1 : n → ℤˣ) ↦
-      conjWeylRep κ e x (highestVector κ l)) = ⊤ ∧
-    Submodule.span ℂ (Set.range fun x : Φ → USign (1 : n → ℤˣ) ↦
-      gramForm (highestVector κ l) ∘ₗ conjWeylRep κ e x) = ⊤ :=
-  ⟨span_translate_highestVector_eq_top hl e, span_gramForm_highestVector_comp_eq_top hl e⟩
 
 /-! ### Positions in the decreasing order -/
 

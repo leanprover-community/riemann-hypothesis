@@ -1,4 +1,21 @@
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+import TauCeti.LinearAlgebra.Matrix.Charpoly.Roots
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.Lie.Weights.Linear
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Univ
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.LinearAlgebra.PID
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Finiteness.Nilpotent
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Eigenvalues: traces of powers, common eigenvectors, Amitsur's theorem, Sylvester's law
@@ -32,6 +49,8 @@ pseudocharacters of a profinite group and pseudorepresentations over arbitrary r
 Note Ser. 414 (2014), (1.5).
 -/
 
+@[expose] public section
+
 /-! ## Traces of powers as power sums of eigenvalues -/
 
 section PowerSums
@@ -47,29 +66,13 @@ the product of q(−x) over the roots x of the characteristic polynomial of A, c
 multiplicity. -/
 lemma det_aeval_neg_eq_prod_roots (q : k[X]) :
     (aeval (-A) q).det = (A.charpoly.roots.map fun a : k ↦ q.eval (-a)).prod := by
-  -- `q` is a product of constants and of factors `X + C a`; both sides are multiplicative in `q`.
-  have hq : q ∈ Submonoid.closure ({C a | a : k} ∪ {X + C a | a : k}) := splits q
-  refine Submonoid.closure_induction_left ?_ ?_ hq
-  · simp
-  · rintro _ (⟨a, rfl⟩ | ⟨a, rfl⟩) r - hr
-    · -- A constant `a` contributes `a ^ card n` to both sides.
-      simp [hr, card_roots_eq_natDegree, algebraMap]
-    · -- `X + C a` contributes `det (a - A)`, the value at `a` of the characteristic polynomial.
-      simp [hr, ← (splits _).eval_eq_prod_roots_of_monic, charpoly_monic, neg_add_eq_sub,
-        eval_charpoly, algebraMap]
+  simpa [aeval_comp] using det_aeval_eq_prod_roots_charpoly A (q.comp (-X))
 
 /-- Over an algebraically closed field, the trace of A^m is the sum of the m-th powers of the
 roots of the characteristic polynomial of A, counted with multiplicity. -/
 lemma trace_pow_eq_sum_roots (m : ℕ) :
     (A ^ m).trace = (A.charpoly.roots.map fun a : k ↦ a ^ m).sum := by
-  -- The roots of the characteristic polynomial of `A ^ m` are the `m`-th powers of those of `A`.
-  have h_charpoly :
-      (A ^ m).charpoly = ((A.charpoly.roots.map (· ^ m)).map fun a ↦ X - C a).prod := by
-    refine Polynomial.funext fun x ↦ ?_
-    -- At `-A` the polynomial `C x - (-X) ^ m` is `x - A ^ m`; at `-a` it is `x - a ^ m`.
-    have h_det := det_aeval_neg_eq_prod_roots A (C x - (-X) ^ m)
-    simpa [eval_charpoly, eval_multiset_prod, algebraMap_eq_diagonal, Pi.algebraMap_def] using h_det
-  rw [trace_eq_sum_roots_charpoly, h_charpoly, roots_multiset_prod_X_sub_C]
+  simpa using trace_aeval_eq_sum_roots_charpoly_of_splits (splits A.charpoly) (X ^ m)
 
 /-- Over an algebraically closed field of characteristic 0, if tr A^m = tr B^m + ∑_{e∈S} α_e^m
 for all m ≥ 0, with S finite, then the characteristic polynomial of A is that of B times
@@ -114,15 +117,6 @@ lemma New.det_one_sub_smul_eq_prod_roots {ι : Type*} [Fintype ι] [DecidableEq 
     (c : ℂ) :
     (1 - c • N).det = (N.charpoly.roots.map fun x : ℂ ↦ 1 - c * x).prod :=
   det_one_sub_smul_eq_prod_roots_of_isAlgClosed N c
-
-/-! ## The trace of an idempotent matrix -/
-
-/-- The trace of an idempotent matrix over a field is its rank. -/
-lemma New.trace_eq_rank_of_isIdempotentElem {k n : Type*} [Field k] [Fintype n] [DecidableEq n]
-    {p : Matrix n n k} (hp : IsIdempotentElem p) : p.trace = p.rank := by
-  -- `p` is a projection, so its trace is the dimension of its range.
-  rw [← p.trace_toLin'_eq, ← p.finrank_range_mulVecLin]
-  exact (LinearMap.IsIdempotentElem.isProj_range _ (hp.map Matrix.toLinAlgEquiv')).trace
 
 /-! ## Sorting by adjacent swaps and common eigenvectors -/
 
@@ -181,7 +175,7 @@ lemma New.exists_eigenvector_of_commute (hS : ∀ m : ι, ∀ x ∈ S, φ m x �
   -- A weight of `L` has a weight vector `x`; evaluate the weight on the generators `f m` of `L`.
   let f (m : ι) : L := ⟨(φ m).restrict (hS m), subset_lieSpan ⟨m, rfl⟩⟩
   obtain ⟨x, hx, h_eigen⟩ := exists_forall_lie_eq_smul k L S χ
-  refine ⟨fun m ↦ χ (f m), ?_, x, x.2, by simpa using hx, fun m ↦ ?_⟩
+  refine ⟨fun m ↦ χ (f m), ?_, x, x.property, by simpa using hx, fun m ↦ ?_⟩
   · -- The generalised eigenspace of `f m` for `χ (f m)` is its generalised weight space.
     exact fun h_le ↦ hχ ((le_iInf_comp _ f).trans h_le)
   · -- The bracket of `f m` with `x` is the value of `φ m` at `x`.
@@ -256,7 +250,7 @@ lemma New.exists_eigencharacter_of_ne_bot {M : Type*} [CommMonoid M] (ρ : M →
     (hS : ∀ m : M, ∀ x ∈ S, ρ m x ∈ S) (hS_ne : S ≠ ⊥) :
     ∃ χ : M →* k, ∃ x ∈ S, x ≠ 0 ∧ ∀ m : M, ρ m x = χ m • x := by
   have comm (m n : M) : ∀ x ∈ S, ρ m (ρ n x) = ρ n (ρ m x) := by
-    simp [← End.mul_apply, ← map_mul, mul_comm]
+    simp [← mul_apply_eq_comp, ← map_mul, mul_comm]
   have : Nontrivial S := Submodule.nontrivial_iff_ne_bot.2 hS_ne
   obtain ⟨χ, -, x, x_mem, x_ne, eigen⟩ := exists_eigenvector_of_commute ρ hS comm bot_ne_top
   -- The eigenvalues are multiplicative, since scalars are determined by their action on `x ≠ 0`.
@@ -292,7 +286,7 @@ lemma trace_restrict_ne_zero {p : Submodule ℂ V} [FiniteDimensional ℂ p] {b 
   -- `b - c` is nilpotent on `p`, so it has trace zero: the trace of `b` is `c * finrank ℂ p`.
   have h_nil : IsNilpotent (restrict b h_stable - c • 1) :=
     isNilpotent_iff_of_finite.2 fun v ↦ mem_genEigenspace_top.1
-      ((genEigenspace_restrict b p ⊤ c h_stable).ge (hp_le v.2))
+      ((genEigenspace_restrict b p ⊤ c h_stable).ge (hp_le v.property))
   have h_trace : trace ℂ p (restrict b h_stable) = c * finrank ℂ p := by
     simpa [sub_eq_zero] using isNilpotent_trace_of_isNilpotent h_nil
   simp [h_trace, hc, hp_ne]
@@ -531,7 +525,7 @@ lemma exists_eigenvector_of_trace_mul_eq [FiniteDimensional ℂ V] [FiniteDimens
   -- non-zero map of `U` to itself: so `χ` is `θ` on the first pairs and `0` on the others.
   have h_eig (v : U) (a : κ) : (x * A b) v ∈ maxGenEigenspace (G a).1 (Sum.elim θ 0 a) := by
     rcases a with a | e
-    · exact (mem_iInf _).1 (hU hx v v.2) a
+    · exact (mem_iInf _).1 (hU hx v v.property) a
     · exact eigenspace_le_maxGenEigenspace (mem_eigenspace_iff.2 (by simp [G]))
   have hχ (a : κ) : χ a = Sum.elim θ 0 a := by
     by_contra h_ne
@@ -715,14 +709,12 @@ lemma charpoly_smul_coeff (a : A) (M : Matrix n n A) (k : ℕ) :
   nontriviality A
   by_cases! h : card n < k
   · simp [coeff_eq_zero_of_natDegree_lt, h]
-  -- The coefficient is a signed sum of principal minors of size `card n - k`.
-  obtain ⟨m, hm, rfl⟩ : ∃ m ≤ card n, k = card n - m := ⟨card n - k, by omega, by omega⟩
-  have h_minor (s : Finset n) (hs : s ∈ univ.powersetCard m) :
-      ((a • M).submatrix (Subtype.val : s → n) Subtype.val).det =
-        a ^ m * (M.submatrix (Subtype.val : s → n) Subtype.val).det := by
-    simp [submatrix_smul, (mem_powersetCard.1 hs).2]
-  rw [charpoly_coeff_eq_sum_minors _ _ hm, charpoly_coeff_eq_sum_minors _ _ hm,
-    sum_congr rfl h_minor, ← mul_sum, Nat.sub_sub_self hm, mul_left_comm]
+  -- The universal coefficient of degree `k` is homogeneous of degree `card n - k` in the entries.
+  have eval (B : Matrix n n A) : _ = B.charpoly.coeff k :=
+    Matrix.charpoly.univ_coeff_eval₂Hom n (RingHom.id A) (Function.uncurry B) k
+  rw [← eval (a • M), ← eval M]
+  exact (Matrix.charpoly.univ_coeff_isHomogeneous A n k _ (Nat.add_sub_cancel' h)).eval_smul
+    a (Function.uncurry M)
 
 end New
 

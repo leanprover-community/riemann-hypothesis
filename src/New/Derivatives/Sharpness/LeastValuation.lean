@@ -1,3 +1,14 @@
+module
+
+import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+import Mathlib.NumberTheory.SumFourSquares
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.RingTheory.MvPowerSeries.Derivative
+import TauCeti.RingTheory.PowerSeries.Rescale
+public import Lib.CM.FormalGroup.PrimeNotation
+public import New.Derivatives.FormalGroup.Resolution
+import New.Derivatives.FormalGroup.ThetaProducts
 import New.Derivatives.Sharpness.OneCurve
 
 /-!
@@ -38,6 +49,8 @@ The imported notions used in the statements are:
   combinations of the forms give the coordinates up to a unit.
 -/
 
+@[expose] public section
+
 /-!
 ## Least valuations of coefficients of theta products
 
@@ -76,15 +89,15 @@ lemma IsLowestTerm.mul {w : X → ℕ} {f g : MvPowerSeries X R} {D D' : X →�
   · by_cases hy : y.weight w ≤ D'.weight w
     · rw [hf x hx, hg y hy]
     · -- `y` is heavier than `D'`, so `x` is lighter than `D` and both first factors vanish.
-      rw [hf x hx, coeff_monomial_ne (by grind : x ≠ D), zero_mul, zero_mul]
+      rw [hf x hx, coeff_monomial_ne (fun h ↦ by subst h; omega), zero_mul, zero_mul]
   · -- `x` is heavier than `D`, so `y` is lighter than `D'` and both second factors vanish.
-    rw [hg y (by omega), coeff_monomial_ne (by grind : y ≠ D'), mul_zero, mul_zero]
+    rw [hg y (by omega), coeff_monomial_ne (fun h ↦ by subst h; omega), mul_zero, mul_zero]
 
 end LowestTerm
 
 /-- If each factor `f i` has lowest term `c i * z ^ α i` for the weights `w`, then the product of
 the `f i` has lowest term `(∏ c i) * z ^ (∑ α i)`. -/
-lemma IsLowestTerm.prod {X R ι : Type} [Fintype X] [CommRing R] {w : X → ℕ} {s : Finset ι}
+lemma IsLowestTerm.prod {X R ι : Type} [CommRing R] {w : X → ℕ} {s : Finset ι}
     {f : ι → MvPowerSeries X R} {α : ι → X →₀ ℕ} {c : ι → R}
     (hf : ∀ i ∈ s, IsLowestTerm w (f i) (α i) (c i)) :
     IsLowestTerm w (∏ i ∈ s, f i) (∑ i ∈ s, α i) (∏ i ∈ s, c i) := by
@@ -95,7 +108,7 @@ lemma IsLowestTerm.prod {X R ι : Type} [Fintype X] [CommRing R] {w : X → ℕ}
     exact (hf i (mem_cons_self i s)).mul (ih fun j hj ↦ hf j (mem_cons_of_mem hj))
 
 /-- If `f` has lowest term `c * z ^ α`, then `f ^ k` has lowest term `c ^ k * z ^ (k • α)`. -/
-lemma IsLowestTerm.pow {X R : Type} [Fintype X] [CommRing R] {w : X → ℕ} {f : MvPowerSeries X R}
+lemma IsLowestTerm.pow {X R : Type} [CommRing R] {w : X → ℕ} {f : MvPowerSeries X R}
     {α : X →₀ ℕ} {c : R} (hf : IsLowestTerm w f α c) (k : ℕ) :
     IsLowestTerm w (f ^ k) (k • α) (c ^ k) := by
   simpa using IsLowestTerm.prod (s := range k) fun _ _ ↦ hf
@@ -155,17 +168,17 @@ lemma killCompl_copySubst (a : K → R) (F : MvPowerSeries X R) (k : K) :
 `F` to `F (∑ r a_k z_k)`. -/
 lemma rescale_copySubst (a : K → R) (r : R) (F : MvPowerSeries X R) :
     rescale (fun _ : X × K ↦ r) (copySubst a F) = copySubst a (rescale (fun _ : X ↦ r) F) := by
+  have ha := hasSubst_sum_smul_X (X := X) a
+  have hr := HasSubst.smul_X (σ := X × K) (fun _ ↦ r)
   rw [copySubst_apply, copySubst_apply, rescale_eq_subst, rescale_eq_subst,
-    subst_comp_subst_apply (hasSubst_sum_smul_X a) (HasSubst.smul_X _),
-    subst_comp_subst_apply (HasSubst.smul_X _) (hasSubst_sum_smul_X a)]
+    subst_comp_subst_apply ha hr, subst_comp_subst_apply (HasSubst.smul_X _) ha]
   congr 1
   funext x
   -- both sides are the linear form `∑ r a_k z_k`
   trans ∑ k : K, r • a k • (MvPowerSeries.X (x, k) : MvPowerSeries (X × K) R)
-  · simp only [← coe_substAlgHom (HasSubst.smul_X _), map_sum, map_smul, substAlgHom_X,
-      Pi.smul_apply', smul_comm r]
-  · simp [← coe_substAlgHom (hasSubst_sum_smul_X a), smul_sum,
-      hasSubst_of_constantCoeff_zero]
+  · simp only [← coe_substAlgHom hr, map_sum, map_smul, substAlgHom_X, Pi.smul_apply', smul_comm r]
+  · symm
+    rw [Pi.smul_apply', ← coe_substAlgHom ha, map_smul, substAlgHom_X, smul_sum]
 
 /-- The exponent `γ.mapDomain Prod.fst` adds up the copies of each variable in `γ`. -/
 lemma mapDomain_fst_apply (γ : X × K →₀ ℕ) (x : X) :
@@ -194,16 +207,27 @@ lemma prod_factorial_mul_coeff_copySubst (a : K → R) (F : MvPowerSeries X R) (
   set δ : X →₀ ℕ := γ.mapDomain Prod.fst with hδ
   let M : Matrix X (X × K) R := fun x y ↦ if y.1 = x then a y.2 else 0
   have h_subst : copySubst a F = F.subst fun x : X ↦ linearSeries (M x) := by
-    simp [copySubst, linearSeries, M, Fintype.sum_prod_type, ite_smul]
+    rw [copySubst_apply]
+    congr 1; funext x
+    rw [linearSeries, Fintype.sum_prod_type, sum_eq_single_of_mem x (mem_univ x)]
+    · simp only [M, ↓reduceIte]
+    · exact fun x' _ hx' ↦ sum_eq_zero fun k _ ↦ by simp only [M, hx', ↓reduceIte, zero_smul]
   have h_monomial : linSubst M (.monomial γ 1) = .monomial δ (∏ y : X × K, a y.2 ^ γ y) := by
-    simp [linSubst, M, MvPolynomial.monomial_eq, Finsupp.prod_fintype, ite_smul, hδ,
-      mapDomain_fst_apply, MvPolynomial.smul_eq_C_mul, mul_pow, prod_mul_distrib,
-      Fintype.prod_prod_type, prod_pow_eq_pow_sum]
-  calc _ = jet R (.monomial γ 1) (copySubst a F) := by simp [jet_monomial, Finsupp.prod_fintype]
+    rw [MvPolynomial.monomial_eq, map_one, one_mul, MvPolynomial.monomial_eq,
+      Finsupp.prod_fintype _ _ (fun _ ↦ pow_zero _),
+      Finsupp.prod_fintype _ _ (fun _ ↦ pow_zero _), map_prod]
+    simp only [map_pow, linSubst, MvPolynomial.aeval_X, M, ite_smul, zero_smul, sum_ite_eq,
+      mem_univ, ↓reduceIte, MvPolynomial.smul_eq_C_mul, mul_pow, prod_mul_distrib, map_prod]
+    rw [Fintype.prod_prod_type (f := fun y : X × K ↦ MvPolynomial.X y.1 ^ γ y)]
+    simp only [hδ, mapDomain_fst_apply, prod_pow_eq_pow_sum]
+  calc _ = jet R (.monomial γ 1) (copySubst a F) := by
+        rw [jet_monomial, one_mul,
+          Finsupp.prod_fintype _ _ (fun _ ↦ by rw [factorial_zero, cast_one])]
     _ = jet R (.monomial δ (∏ y : X × K, a y.2 ^ γ y)) F := by
       rw [h_subst, jet_subst_linearSeries, h_monomial]
     _ = (∏ y : X × K, a y.2 ^ γ y) * (∏ x : X, ((δ x)! : R)) * coeff δ F := by
-      simp [jet_monomial, Finsupp.prod_fintype, mul_assoc]
+      rw [jet_monomial, Finsupp.prod_fintype _ _ (fun _ ↦ by rw [factorial_zero, cast_one]),
+        mul_assoc]
 
 /-- Over a domain of characteristic zero, the coefficient of `z ^ γ` in `F (∑ a_k z_k)` is `a ^ γ`
 times a product of multinomial coefficients times the coefficient of `F` whose exponent adds up the
@@ -265,7 +289,7 @@ def LeastValLE (C : CMLattice d) (μ : J → X → ℂ_[p]) (m : J → ℕ) (n :
 /-- The series `Θ = ∏ θ(μ_j z) ^ m j` has constant term `1`, because `θ(0) = 1`. -/
 lemma constantCoeff_thetaProd {C : CMLattice d} {μ : J → X → ℂ_[p]} {m : J → ℕ} :
     constantCoeff (C.thetaProd μ m) = 1 := by
-  simp [thetaProd]
+  simp [thetaProd, PowerSeries.constantCoeff_subst_of_constantCoeff_zero]
 
 /-- The series `Θ = ∏ θ(μ_j z) ^ m j` has lowest term `1` for the total degree. -/
 lemma isLowestTerm_thetaProd (C : CMLattice d) (μ : J → X → ℂ_[p]) (m : J → ℕ) :
@@ -397,24 +421,38 @@ lemma prod_rescale_theta_mem [PrimeSevenModEight d] (C : CMLattice d) {n : ℕ} 
   have hη (x : ℤ_[p]) : η x = algebraMap ℚ_[p] ℂ_[p] x := rfl
   let g : PowerSeries ℂ_[p] := C.negLogTheta
   have hg : PowerSeries.constantCoeff g = 0 := C.constantCoeff_negLogTheta
-  have h_cont : Continuous fun x : ℤ_[p] ↦ (η x, η x ^ 2) := by
-    simp only [hη]
-    fun_prop
+  have hη_cont : Continuous fun x : ℤ_[p] ↦ η x := by simp only [hη]; fun_prop
+  have h_cont : Continuous fun x : ℤ_[p] ↦ (η x, η x ^ 2) := hη_cont.prodMk (hη_cont.pow 2)
   -- `(x, x ^ 2)` is a limit of pairs `(k, k * k)` with `k` natural
   have h_pair (x : ℤ_[p]) : (η x, η x ^ 2) ∈ normPairClosure d :=
     PadicInt.denseRange_natCast.induction_on (p := fun x ↦ (η x, η x ^ 2) ∈ normPairClosure d) x
       (isClosed_closure.preimage h_cont) fun k ↦ subset_closure ⟨k, by simp [sq]⟩
-  have h_sum : ∑ c, η (δ c) ^ 2 = 0 := by simp only [← map_pow, ← map_sum, hδ, map_zero]
+  have h_sum : ∑ c, η (δ c) ^ 2 = 0 := by
+    calc ∑ c, η (δ c) ^ 2 = ∑ c, η (δ c ^ 2) := sum_congr rfl fun c _ ↦ (map_pow η _ 2).symm
+      _ = η (∑ c, δ c ^ 2) := (map_sum η.toAddMonoidHom _ _).symm
+      _ = 0 := by rw [hδ, map_zero]
+  have hneg : PowerSeries.constantCoeff (-g) = 0 := by
+    rw [RingHom.map_neg, hg, neg_zero]
+  have hg' : constantCoeff g = 0 := hg
+  have hresc (c : Fin n) : constantCoeff (g.rescale (η (δ c))) = 0 := by
+    change PowerSeries.constantCoeff (g.rescale (η (δ c))) = 0
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_rescale, pow_zero,
+      one_mul, PowerSeries.coeff_zero_eq_constantCoeff_apply, hg]
   have h_prod : ∏ c, (taylorVia ιₚ C.θ).rescale (η (δ c)) =
       ∏ c, expSubst (η (δ c) ^ 2 • g - g.rescale (η (δ c))) := calc
     _ = ∏ c, expSubst (-g.rescale (η (δ c))) := by
-      simp only [taylorVia_theta_eq_expSubst, ← map_neg, g,
-        ← rescale_subst (show PowerSeries.constantCoeff (-g) = 0 by simp [hg])]
-    _ = expSubst (∑ c, -g.rescale (η (δ c))) := (expSubst_sum fun c ↦ by simpa using hg).symm
+      refine prod_congr rfl fun c _ ↦ ?_
+      rw [taylorVia_theta_eq_expSubst, rescale_subst hneg, RingHom.map_neg]
+    _ = expSubst (∑ c, -g.rescale (η (δ c))) :=
+      (expSubst_sum fun c ↦ by rw [RingHom.map_neg, hresc, neg_zero]).symm
     _ = expSubst (∑ c, (η (δ c) ^ 2 • g - g.rescale (η (δ c)))) := by
-      simp [sum_sub_distrib, ← sum_smul, h_sum]
-    _ = ∏ c, expSubst (η (δ c) ^ 2 • g - g.rescale (η (δ c))) := expSubst_sum fun c ↦ by simp [hg]
-  simp only [← hη, h_prod]
+      congr 1
+      rw [sum_sub_distrib, ← sum_smul, h_sum, zero_smul, zero_sub, sum_neg_distrib]
+    _ = ∏ c, expSubst (η (δ c) ^ 2 • g - g.rescale (η (δ c))) :=
+      expSubst_sum fun c ↦ by rw [RingHom.map_sub, constantCoeff_smul, hg', smul_zero, hresc,
+        sub_zero]
+  change ∏ c, (taylorVia ιₚ C.θ).rescale (η (δ c)) ∈ C.integralSeriesRing
+  rw [h_prod]
   exact prod_mem fun c _ ↦ C.expSubst_sub_rescale_mem (h_pair (δ c))
 
 /-- The product `∏ Θ(δ_c z)` of copies of `Θ = C.thetaProd μ m = ∏ θ(μ_j z) ^ m j` scaled by
@@ -522,9 +560,11 @@ lemma leastValLE_of_unit_coefficients (C : CMLattice d) {μ : J → X → ℂ_[p
   have h_prod :
       ∏ c, (H c * C.thetaProd μ m).rescale (fun _ ↦ algebraMap ℚ_[p] ℂ_[p] (δ c)) = G := by
     simp only [map_mul, prod_mul_distrib]
-    rw [← scaledThetaProd]
-    -- only `H 0` contributes, as `G * V`
-    simp [H, Fin.prod_univ_succ, hδ₀, ← Pi.one_def, mul_assoc, mul_comm V, hV_inv]
+    rw [← scaledThetaProd, Fin.prod_univ_succ]
+    simp only [H, Fin.cons_zero, Fin.cons_succ, Pi.one_apply, map_one, prod_const_one, mul_one,
+      hδ₀]
+    rw [PadicInt.coe_one, map_one, ← Pi.one_def, rescale_one, RingHom.id_apply, mul_assoc,
+      mul_comm V, hV_inv, mul_one]
   refine leastValLE_of_rescale (δ := fun c ↦ algebraMap ℚ_[p] ℂ_[p] (δ c))
     (fun c ↦ by simpa using (δ c).norm_le_one) hH ?_
   rw [h_prod]
@@ -536,10 +576,15 @@ lemma leastValLE_of_unit_coefficients (C : CMLattice d) {μ : J → X → ℂ_[p
     _ ≤ ‖(ν.degree ! * g.coeff ν.degree : ℂ_[p])‖ * p ^ vFactorial := by grw [hg_deriv]
     _ = ‖coeff ν G‖ := by
         -- the coefficient is a unit times the `|ν|`-th derivative of `g` at `0`, divided by `ν!`
-        simp [G, hv_factorial, coeff_subst_linearSeries, h_unit,
-          norm_natCast_eq_inv_pow_padicValNat, factorial_ne_zero, prod_pow_eq_pow_sum, ← cast_sum,
-          div_eq_mul_inv]
+        symm
+        rw [coeff_subst_linearSeries, norm_div, norm_mul, norm_prod,
+          prod_eq_one fun x _ ↦ by rw [norm_pow, h_unit, one_pow], one_mul,
+          norm_prod, prod_congr rfl fun x _ ↦
+            norm_natCast_eq_inv_pow_padicValNat (factorial_ne_zero (ν x)),
+          prod_pow_eq_pow_sum, inv_pow, div_inv_eq_mul, hv_factorial, ← cast_sum,
+          Real.rpow_natCast]
 
+omit [PrimeSevenModEight d] in
 /-- If each coordinate `z_x`, up to a unit `s`, is a combination `∑ a x j • μ_j z` with coefficients
 in the ring `valRingCp p` of integers of `ℂ_p`, then `val₆(ν) ≤ 0` in every degree `ν`: some
 coefficient of degree `ν` in some product `∏ (H_c Θ)(z_c)` over six copies `z_c` of the variables,
@@ -556,28 +601,49 @@ lemma leastValLE_zero_of_span [DecidableEq X] (C : CMLattice d) {μ : J → X �
   let G (x : X) : MvPowerSeries X ℂ_[p] := ∑ i, (a x i : ℂ_[p]) • y.subst (linearSeries (μ i))
   have hG_mem (x : X) : G x ∈ C.multiSeriesRing μ := sum_mem fun i _ ↦ by
     -- by definition, the ring contains the constants of the valuation ring
-    have h_const : MvPowerSeries.C (a x i : ℂ_[p]) ∈ C.multiSeriesRing μ := ⟨.C (a x i), by simp⟩
+    have h_const : MvPowerSeries.C (a x i : ℂ_[p]) ∈ C.multiSeriesRing μ :=
+      ⟨.C (a x i), by
+        rw [RingHom.comp_apply, map_C, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, coe_substAlgHom,
+          subst_C]
+        rfl⟩
     rw [smul_eq_C_mul]
     exact mul_mem h_const
       (subst_mem_multiSeriesRing μ C.isSeriesGenerator_translatedY.generator_mem i)
   have hG_low (x : X) : IsLowestTerm (fun _ ↦ 1) (G x) (.single x 1) s := by
     intro β hβ
-    obtain h_zero | h_one := le_one_iff_eq_zero_or_eq_one.1
-      (by simpa [← Finsupp.degree_eq_weight_one] using hβ : β.degree ≤ 1)
+    have hβ_deg : β.degree ≤ 1 := by
+      rwa [← Finsupp.degree_eq_weight_one, Finsupp.degree_single] at hβ
+    obtain h_zero | h_one := le_one_iff_eq_zero_or_eq_one.1 hβ_deg
     · obtain rfl : β = 0 := β.degree_eq_zero_iff.1 h_zero
-      simp [G, hy_const, coeff_monomial, eq_comm]
+      rw [coeff_monomial_ne (Finsupp.single_ne_zero.2 one_ne_zero).symm,
+        coeff_zero_eq_constantCoeff, map_sum]
+      refine sum_eq_zero fun i _ ↦ ?_
+      rw [constantCoeff_smul, PowerSeries.constantCoeff_subst_of_constantCoeff_zero
+        (constantCoeff_linearSeries _), hy_const, RingHom.map_zero, smul_zero]
     · obtain ⟨x', rfl⟩ : ∃ x', β = .single x' 1 := (Finsupp.sum_eq_one_iff β).1 h_one
       -- by `ha`, the linear term of `G x` is `s z_x`
-      simp [G, coeff_subst_linearSeries, hy_linear, coeff_monomial, Finsupp.single_apply, ha,
-        Finsupp.single_left_inj, eq_comm, apply_ite factorial]
+      have h_coeff (i : J) : coeff (.single x' 1) (y.subst (linearSeries (μ i))) = μ i x' := by
+        simp only [coeff_subst_linearSeries, Finsupp.degree_single, factorial_one, cast_one,
+          hy_linear, mul_one, Finsupp.single_apply, pow_ite, pow_one, pow_zero, prod_ite_eq,
+          mem_univ, ↓reduceIte, apply_ite factorial, factorial_zero, ite_self, prod_const_one,
+          div_one]
+      simp only [G, map_sum, coeff_smul, h_coeff, coeff_monomial,
+        Finsupp.single_left_inj one_ne_zero, eq_comm (a := x')]
+      exact ha x x'
   have h_low : IsLowestTerm (fun _ ↦ 1) ((∏ x, G x ^ ν x) * C.thetaProd μ m) ν (∏ x, s ^ ν x) := by
-    simpa using (IsLowestTerm.prod (s := univ) fun x _ ↦ (hG_low x).pow (ν x)).mul
+    have h := (IsLowestTerm.prod (s := univ) fun x _ ↦ (hG_low x).pow (ν x)).mul
       (C.isLowestTerm_thetaProd μ m)
+    rw [add_zero, mul_one, show (∑ x : X, ν x • Finsupp.single x 1) = ν by
+      simp only [Finsupp.smul_single, smul_eq_mul, mul_one, Finsupp.univ_sum_single]] at h
+    exact h
   -- one copy has a unit coefficient at `ν`; the other five are taken in degree `0`
-  have h_one_copy : C.LeastValLE μ m 1 ν 0 := ⟨fun _ ↦ ∏ x, G x ^ ν x,
-    fun _ ↦ prod_mem fun x _ ↦ pow_mem (hG_mem x) _, fun _ ↦ ν, by simp,
-    by simp [h_low ν le_rfl, hs]⟩
-  simpa using h_one_copy.add (leastValLE_zero (n := 5))
+  have h_one_copy : C.LeastValLE μ m 1 ν 0 :=
+    ⟨fun _ ↦ ∏ x, G x ^ ν x, fun _ ↦ prod_mem fun x _ ↦ pow_mem (hG_mem x) _, fun _ ↦ ν,
+      Fin.sum_univ_one _, by
+        rw [neg_zero, Real.rpow_zero, Fin.prod_univ_one, h_low ν le_rfl, coeff_monomial_same,
+          norm_prod, prod_eq_one fun x _ ↦ by rw [norm_pow, hs, one_pow]]⟩
+  rw [← add_zero ν, ← add_zero (0 : ℝ)]
+  exact h_one_copy.add (leastValLE_zero (n := 5))
 
 /-- If the coefficients of the forms `μ_j` are integers of `ℂ_p` and `ϖ` has `p`-adic valuation at
 least `ρ_p = varpiValuation d p`, then a series `H ∈ C.multiSeriesRing μ` has integral coefficients
@@ -596,15 +662,28 @@ lemma rescale_mem_range_seriesToCp_of_mem_multiSeriesRing (C : CMLattice d) {μ 
   have hY (i : J) : seriesToCp (Y i) =
       ((taylorVia ιₚ C.translatedY).subst (linearSeries (μ i))).rescale fun _ ↦ ϖ := by
     rw [rescale_subst_linearSeries, ← hy₀, PowerSeries.map_subst (hasSubst_linearSeries _)]
-    simp [linearSeries, smul_eq_C_mul, PowerSeries.map]
+    congr 1
+    change (seriesToCp (p := p)).toAddMonoidHom (∑ x, _) = ∑ x, _
+    rw [map_sum]
+    refine sum_congr rfl fun x _ ↦ ?_
+    change seriesToCp ((⟨μ i x, hμ i x⟩ : valRingCp p) • MvPowerSeries.X x) = _
+    rw [smul_eq_C_mul, smul_eq_C_mul, map_mul, map_C, map_X]
+    rfl
   have hY₀ (i : J) : constantCoeff (Y i) = 0 := Subtype.ext <|
-    show constantCoeff (seriesToCp (Y i)) = 0 by simp [hY, rescale_subst_linearSeries]
+    show constantCoeff (seriesToCp (Y i)) = 0 by
+      rw [hY, rescale_subst_linearSeries,
+        PowerSeries.constantCoeff_subst_of_constantCoeff_zero (constantCoeff_linearSeries _),
+        ← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_rescale, pow_zero,
+        one_mul, PowerSeries.coeff_zero_eq_constantCoeff_apply,
+        C.isSeriesGenerator_translatedY.constantCoeff_eq_zero, RingHom.map_zero]
   refine ⟨g.subst Y, ?_⟩
   -- both sides substitute the series `y(μ_i ϖ z)` into `g`
   rw [map_subst (hasSubst_of_constantCoeff_zero hY₀), RingHom.comp_apply]
   simp only [hY, rescale_eq_subst, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, coe_substAlgHom]
   -- the two substituted families agree by definition of composition
-  exact (subst_comp_subst_apply (hasSubst_of_constantCoeff_zero fun i ↦ by simp) (.smul_X _) _).symm
+  exact (subst_comp_subst_apply (hasSubst_of_constantCoeff_zero fun i ↦ by
+    rw [PowerSeries.constantCoeff_subst_of_constantCoeff_zero (constantCoeff_linearSeries _),
+      C.isSeriesGenerator_translatedY.constantCoeff_eq_zero, RingHom.map_zero]) (.smul_X _) _).symm
 
 end CMLattice
 

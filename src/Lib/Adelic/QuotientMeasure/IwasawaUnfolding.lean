@@ -1,4 +1,9 @@
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Topology.Algebra.ProperAction.Torsor
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
 # Unfolding over orbits and integration in Iwasawa coordinates
@@ -30,6 +35,8 @@ Known result: The unfolding trick and the integration formula in Iwasawa coordin
 by a discrete subgroup. Weil's formula for invariant integration on a quotient is in
 `Lib.Adelic.QuotientMeasure.Basic`.
 -/
+
+@[expose] public section
 
 /-!
 ## Unfolding a sum over an orbit
@@ -70,12 +77,12 @@ lemma New.integrable_prod_count_of_lintegral_lt_top {X Y : Type*} [MeasurableSpa
     Integrable (fun p : X × Y ↦ k p.2 p.1) (ν.prod count) := by
   have h_meas : Measurable fun p : X × Y ↦ k p.2 p.1 := measurable_from_prod_countable_left hk_meas
   refine ⟨h_meas.aestronglyMeasurable, ?_⟩
-  rw [HasFiniteIntegral, lintegral_prod _ h_meas.enorm.aemeasurable]
+  rw [HasFiniteIntegral, lintegral_prod _ h_meas.eNorm.aemeasurable]
   simpa only [lintegral_count] using h_fin
 
 /-- If the `k y` are measurable and `∑ ‖k y‖` has finite integral, then `∑ k y` is integrable. -/
 lemma New.integrable_tsum_of_lintegral_lt_top {X Y : Type*} [MeasurableSpace X] [Countable Y]
-    {ν : Measure X} [SFinite ν] {k : Y → X → ℂ} (hk_meas : ∀ y : Y, Measurable (k y))
+    {ν : Measure X} {k : Y → X → ℂ} (hk_meas : ∀ y : Y, Measurable (k y))
     (h_fin : ∫⁻ x : X, ∑' y : Y, ‖k y x‖ₑ ∂ν < ∞) :
     Integrable (fun x : X ↦ ∑' y : Y, k y x) ν := by
   let : MeasurableSpace Y := ⊤
@@ -96,8 +103,8 @@ lemma New.hasSum_integral_of_lintegral_tsum_lt_top {k : Y → G → ℂ} {ν : M
   rw [lintegral_tsum (by fun_prop)] at h_fin
   rw [integral_tsum h_meas h_fin.ne]
   have h_le : ∑' y : Y, ‖∫ x, k y x ∂ν‖ₑ ≤ ∑' y : Y, ∫⁻ x, ‖k y x‖ₑ ∂ν :=
-    ENNReal.tsum_le_tsum fun y ↦ enorm_integral_le_lintegral_enorm (k y)
-  exact (Summable.of_enorm (h_le.trans_lt h_fin).ne).hasSum
+    tsum_le_tsum fun y ↦ eNorm_integral_le_lintegral_eNorm (k y)
+  exact (Summable.of_eNorm (h_le.trans_lt h_fin).ne).hasSum
 
 open scoped Classical in
 omit [MeasurableSpace G] [Countable Y] in
@@ -150,7 +157,7 @@ lemma New.lintegral_tsum_block (hi : Function.Injective i) {Γ S : Subgroup G}
       _ = ∑' γ : Λ, β (i γ * x) * ∑' y : C, g y (i γ * x) := ((i.ofInjective hi).tsum_eq _).symm
       _ = ∑' y : Y, (∑' γ : Λ, if γ • y ∈ C then β (i γ * x) else 0) * g y x := by
           simp only [h_term, ← ENNReal.tsum_mul_right]
-          exact ENNReal.tsum_comm
+          exact tsum_comm
       _ = ∑' y : D, g y x := by
           simp [tsum_cutoff_smul_mem_block hi rfl hS hC hD hβ_one, tsum_subtype D fun y ↦ g y x,
             indicator]
@@ -173,8 +180,8 @@ lemma New.lintegral_tsum_enorm_block (hi : Function.Injective i) {Γ S : Subgrou
     (hD : ∀ y : Y, y ∈ D ↔ ∃ γ : Λ, γ • y ∈ C) {k : Y → G → ℂ} (hk_meas : ∀ y : Y, Measurable (k y))
     (hk : ∀ (γ : Λ) (y : Y) (x : G), k (γ • y) (i γ * x) = k y x) :
     ∫⁻ x : G, ∑' y : D, ‖k y x‖ₑ ∂Γ.quotMeasure μ = ∫⁻ x : G, ∑' y : C, ‖k y x‖ₑ ∂S.quotMeasure μ :=
-  lintegral_tsum_block hi hΓ hS hC hD (g := fun y x ↦ ‖k y x‖ₑ) (fun y ↦ (hk_meas y).enorm)
-    fun γ y x ↦ congrArg enorm (hk γ y x)
+  lintegral_tsum_block hi hΓ hS hC hD (g := fun y x ↦ ‖k y x‖ₑ) (fun y ↦ (hk_meas y).eNorm)
+    fun γ y x ↦ congrArg eNorm (hk γ y x)
 
 /-- Unfolding of the integral of a sum over the translates of a block. Let `i` map `Λ`
 isomorphically onto the discrete subgroup `Γ`, let `γ` carry a point of `C` into `C` exactly when
@@ -312,9 +319,8 @@ lemma New.integral_tsum_orbit_of_lt_top_or_integrable (hi : Function.Injective i
   obtain rfl : D = orbit Λ y := Set.ext fun z ↦ (h_orbit z).trans mem_orbit_symm
   subst hΓ h_stab
   -- The sum over the orbit is at most the sum over all of `Y`.
-  refine integral_tsum_orbit_eq_integral_stabilizer hi hk_meas hk (h_fin.imp_left fun h ↦ ?_)
-  exact (lintegral_mono fun x ↦ ENNReal.tsum_comp_le_tsum_of_injective Subtype.val_injective
-    fun z ↦ ‖k z x‖ₑ).trans_lt h
+  exact integral_tsum_orbit_eq_integral_stabilizer hi hk_meas hk <| h_fin.imp_left <|
+    (lintegral_mono fun x ↦ tsum_comp_le_tsum_of_injective Subtype.val_injective _).trans_lt
 
 /-- Left invariance of `k y` and unfolding over the orbit `D` of `y`, as one statement. Here `i`
 maps `Λ` isomorphically onto the discrete subgroup `Γ`, `S` is the image under `i` of the stabiliser
@@ -384,7 +390,7 @@ lemma New.ae_eq_zero_of_integrable_top_smul {X : Type*} [MeasurableSpace X] {q :
   have h_lt : ∞ * ∫⁻ x, ‖F x‖ₑ ∂q < ∞ := by
     simpa [HasFiniteIntegral] using h_int.hasFiniteIntegral
   have h_norm : ∫⁻ x, ‖F x‖ₑ ∂q = 0 := by simpa [mul_lt_top_iff] using h_lt
-  filter_upwards [(lintegral_eq_zero_iff' hF.enorm).1 h_norm] with x hx using by simpa using hx
+  filter_upwards [(lintegral_eq_zero_iff' hF.eNorm).1 h_norm] with x hx using by simpa using hx
 
 /-- Division of an integral formula by a factor `c ∈ (0, ∞]` of the measure. For finite nonzero `V`
 there is `a ≠ 0` such that, if `F` is measurable and integrable for `c • q` with integral `V * I`,
@@ -498,14 +504,14 @@ lemma New.lintegral_iwasawa_inv_mul_translate
 variable [LocallyCompactSpace G]
 
 /-- Iwasawa integration formula. Let `G`, `M` and the closed subgroup `N` be unimodular, `K`
-compact, and `i : M →* G` and `w : M → ℝ` continuous. Suppose that `G = N · i(M) · K` and that
+compact, `i : M →* G` continuous, and `w : M → ℝ`. Suppose that `G = N · i(M) · K` and that
 conjugation by `i m` multiplies integrals over `N` by `w m > 0`. Then the measure `dn dm dk` in the
 coordinates `i m * n * k` is `d` times the Haar measure `μ` on `G`, for some `d ∈ [0, ∞]` (`d` may
 be infinite, for instance if `i` has noncompact kernel). Here `lam`, `ν`, `κ` are Haar measures on
 `N`, `M`, `K`. -/
 lemma New.lintegral_iwasawa [PolishSpace M] [LocallyCompactSpace M]
-    (hN : IsClosed (N : Set G)) (_hw : Continuous w) (hw_pos : ∀ m : M, 0 < w m) (hi : Continuous i)
-    (h_dec : ∀ g : G, ∃ᵉ (n : N) (m : M) (k : K), g = n * i m * k)
+    (hN : IsClosed (N : Set G)) (hw_pos : ∀ m : M, 0 < w m) (hi : Continuous i)
+    (h_dec : ∀ g : G, ∃ n : N, ∃ m : M, ∃ k : K, g = n * i m * k)
     (h_conj : ∀ (m : M) (f : G → ℝ≥0∞), Measurable f →
       ∫⁻ n : N, f (i m * n * (i m)⁻¹) ∂lam = ENNReal.ofReal (w m) * ∫⁻ n : N, f n ∂lam)
     [IsMulRightInvariant lam] :
@@ -562,7 +568,7 @@ let the discrete group `Γ` contain every `i (δ d)` and lie in the union of the
 Suppose that conjugation by `i m` multiplies integrals over `N` by `w m`. Then `w m` times the
 integral over `(Γ ∩ N) \ N` (that is, against `quotMeasure lam`) of a sum over `Γ` unfolds to a sum
 over `d` of integrals over `N` against the Haar measure `lam`. -/
-lemma New.ofReal_mul_lintegral_quotMeasure_tsum [IsMulRightInvariant lam]
+lemma New.ofReal_mul_lintegral_quotMeasure_tsum
     (hN : IsClosed (N : Set G))
     (h_conj : ∀ (m : M) (f : G → ℝ≥0∞), Measurable f →
       ∫⁻ n : N, f (i m * n * (i m)⁻¹) ∂lam = ENNReal.ofReal (w m) * ∫⁻ n : N, f n ∂lam)
@@ -575,7 +581,7 @@ lemma New.ofReal_mul_lintegral_quotMeasure_tsum [IsMulRightInvariant lam]
   -- Write the elements of `Γ` as `i (δ d) * γ` with `γ ∈ Γ ∩ N`, unfold the quotient measure to
   -- `lam`, and move `i m` past `n`.
   obtain ⟨e, he⟩ := exists_equiv_prod_subgroupOf h_triv hδ hδ_mem hΓ
-  simp only [← e.tsum_eq, ENNReal.tsum_prod', he]
+  simp only [← e.tsum_eq, tsum_prod', he]
   rw [lintegral_tsum (by fun_prop), ← ENNReal.tsum_mul_left]
   refine tsum_congr fun d ↦ ?_
   calc ENNReal.ofReal (w m) * ∫⁻ n : N, ∑' γ : Γ.subgroupOf N,
@@ -600,7 +606,7 @@ that for measurable `F`, left invariant under `N` and `Γ` (`FixesLeft`): if
 `Γ.quotMeasure μ`), and its integral is `c` times the integral of `w m * F (i m * k)`. -/
 lemma New.integral_quotMeasure_iwasawa [PolishSpace M] [LocallyCompactSpace M]
     (hN : IsClosed (N : Set G)) (hw : Continuous w) (hw_pos : ∀ m : M, 0 < w m) (hi : Continuous i)
-    (h_dec : ∀ g : G, ∃ᵉ (n : N) (m : M) (k : K), g = n * i m * k)
+    (h_dec : ∀ g : G, ∃ n : N, ∃ m : M, ∃ k : K, g = n * i m * k)
     (h_conj : ∀ (m : M) (f : G → ℝ≥0∞), Measurable f →
       ∫⁻ n : N, f (i m * n * (i m)⁻¹) ∂lam = ENNReal.ofReal (w m) * ∫⁻ n : N, f n ∂lam)
     (h_triv : ∀ a : M, i a ∈ N → a = 1) {D : Type*}
@@ -619,7 +625,7 @@ lemma New.integral_quotMeasure_iwasawa [PolishSpace M] [LocallyCompactSpace M]
   let lam' : Measure N := (Γ.subgroupOf N).quotMeasure lam
   have h_finite : IsFiniteMeasure lam' := isFiniteMeasure_quotMeasure_of_cocompact lam h_cocpt
   have : lam.IsMulRightInvariant := isMulRightInvariant_of_finite_covolume h_finite
-  obtain ⟨r, h_iwa⟩ := lintegral_iwasawa (lam := lam) w μ ν κ i hN hw hw_pos hi h_dec h_conj
+  obtain ⟨r, h_iwa⟩ := lintegral_iwasawa (lam := lam) w μ ν κ i hN hw_pos hi h_dec h_conj
   -- For `f = 1` the left side of `h_iwa` is a product of nonzero total masses.
   have hr : r ≠ 0 := fun h ↦ by simpa [h, NeZero.ne] using h_iwa 1 measurable_one
   have hw_meas : Measurable fun p : M × K ↦ ENNReal.ofReal (w p.1) := by fun_prop
@@ -653,7 +659,7 @@ lemma New.integral_quotMeasure_iwasawa [PolishSpace M] [LocallyCompactSpace M]
       (by fun_prop) fun γ x ↦ hFΓ γ γ.property x).trans ⟨by fun_prop, by fun_prop, ?_⟩
     simp (disch := fun_prop) only [hFτ, ← map_fst_prod, map_map, comp_def]
   have h_int : Integrable (fun p : M × K ↦ F (σ p)) ρ := by
-    simpa [ρ, σ, integrable_withDensity_iff_integrable_smul' hw_meas, hw_pos, le_of_lt]
+    simpa [ρ, integrable_withDensity_iff_integrable_smul' hw_meas, hw_pos, le_of_lt]
       using h_weighted
   refine h_div F _ hF (h_law.integrable_iff.2 (h_int.smul_measure (measure_ne_top lam' .univ))) ?_
   rw [h_law.integral_eq, integral_smul_measure,

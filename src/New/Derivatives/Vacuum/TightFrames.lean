@@ -1,8 +1,19 @@
-import Lib.Adelic.AutomorphicForms.PAdicGauge
-import Lib.CM.ChowlaSelberg
+module
+
+import Mathlib.Algebra.Ring.IsFormallyReal
+import TauCeti.NumberTheory.Padics.Complex.Basic
+public import New.Derivatives.Field.WeilData
+public import Lib.CM.ConjugateCurve
+public import Lib.ClassField.Places.ValuationSubrings
+public import Lib.General.Algebra.IntegralPowerSeries
+public import Lib.Weil.Construction.ThetaDictionary
+import Lib.Adelic.Adeles.StrongApproximation
+public import Lib.CM.ChowlaSelberg -- shake: keep (needed public by an exposed definition)
+import Lib.CM.Integrality.TorsionValues
+import Lib.ClassField.HeckeCharacter.AlgebraicValues
+import Lib.Cohomology.Etale.Basic
 import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.Weil.Construction.FourierInversion
-import New.Derivatives.Field.WeilData
 
 /-!
 # Scale of theta Taylor series, tight frames, jet series along lines
@@ -65,6 +76,8 @@ integrality via torsion values are known from the literature. Related work: Conw
 Low-dimensional lattices V, 1989; Finis, Divisibility of anticyclotomic L-functions and theta
 functions with CM, 2006; Mumford, On the equations defining abelian varieties I, 1966.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -152,37 +165,6 @@ lemma IsTightFrame.mul_left {E I : Type} [Field E] [CMType E] [WeilData E] [Fint
 
 namespace Parameters
 
-/-- Let `φ : E →+* ℂ_[p]` be an embedding of the CM field `E = P.E s`, and let `adeleExtension φ` be
-its extension to the finite adeles. There is an element `y` of `𝔞₀⁻¹`, the inverse of the
-fractional ideal `𝔞₀` of the idele `α = P.α s`, such that the integral adele `α y` is a unit at the
-place of `φ`. -/
-lemma exists_norm_adeleExtension_alpha_mul_eq_one {P : Parameters} {s p : ℕ} [Fact p.Prime]
-    (φ : P.E s →+* ℂ_[p]) :
-    ∃ y : P.E s, (P.α s).val * y ∈ Ô (P.E s) ∧ ‖adeleExtension φ ((P.α s).val * y)‖ = 1 := by
-  -- `E` is dense in the finite adeles, so some `y` has `α y - 1 ∈ p Ô`.
-  let pInv : 𝔸f (P.E s) := ((p : P.E s)⁻¹ : P.E s)
-  have h_open : IsOpen {x : 𝔸f (P.E s) | pInv * ((P.α s).val * x - 1) ∈ Ô (P.E s)} :=
-    isOpen_Ô.preimage (by fun_prop)
-  obtain ⟨y, hy⟩ : ∃ y : P.E s, pInv * ((P.α s).val * y - 1) ∈ Ô (P.E s) :=
-    denseRange_algebraMap_finAdele.exists_mem_open h_open ⟨(P.α s)⁻¹.val, by simp⟩
-  have h_decomp : (P.α s).val * y = 1 + p * (pInv * ((P.α s).val * y - 1)) := by
-    rw [← mul_assoc, ← map_natCast (algebraMap (P.E s) (𝔸f (P.E s))), ← map_mul,
-      mul_inv_cancel₀ (NeZero.ne _), map_one, one_mul, add_sub_cancel]
-  have h_small : ‖adeleExtension φ (p * (pInv * ((P.α s).val * y - 1)))‖ < 1 :=
-    calc ‖adeleExtension φ (p * (pInv * ((P.α s).val * y - 1)))‖
-      _ = ‖(p : ℂ_[p])‖ * ‖adeleExtension φ (pInv * ((P.α s).val * y - 1))‖ := by
-        rw [map_mul, map_natCast, norm_mul]
-      _ ≤ ‖(p : ℂ_[p])‖ :=
-        mul_le_of_le_one_right (norm_nonneg _) (norm_adeleExtension_le_one φ hy)
-      _ < 1 := norm_p_lt_one
-  have h_int : (P.α s).val * y ∈ Ô (P.E s) := by
-    rw [h_decomp]
-    exact add_mem (one_mem _) (mul_mem (natCast_mem _ p) hy)
-  refine ⟨y, h_int, ?_⟩
-  -- In an ultrametric field, `‖1 + x‖ = 1` for `‖x‖ < 1`.
-  rw [h_decomp, map_add, map_one, IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm
-    (norm_one.trans_ne h_small.ne'), norm_one, max_eq_left h_small.le]
-
 variable {P : Parameters} {s p : ℕ} [Fact p.Prime] [ι : PadicPlace p]
 
 /-- The trace of `z` from `E` to `K`, as a complex number, is the sum of its images under the
@@ -203,8 +185,8 @@ then the trace of `z` from `E` to `K` is an integer of `K`. -/
 lemma exists_coe_eq_trace_of_isIntegral {z : P.E s}
     (hz : IsIntegral ℤ (z * (P.relDifferentGen s).val)) :
     ∃ c : 𝓞 P.K, (c : P.K) = Algebra.trace P.K (P.E s) z := by
-  obtain ⟨-, h_span, -⟩ := relDifferent_spec (isPrimitiveRoot_zetaInt (P := P) (s := s))
-  have h_le : differentIdeal (𝓞 P.K) (𝓞 (P.E s)) ≤ Ideal.span {P.relDifferentGen s} := h_span.ge
+  have h_le : differentIdeal (𝓞 P.K) (𝓞 (P.E s)) ≤ Ideal.span {P.relDifferentGen s} :=
+    differentIdeal_eq_span_relDifferentGen.le
   have h_bot : Ideal.span {P.relDifferentGen s} ≠ ⊥ :=
     Ideal.span_singleton_eq_bot.not.2 (mod_cast P.relDifferentGen_ne_zero s)
   have h_mem : z ∈ ((Ideal.span {P.relDifferentGen s} : Ideal (𝓞 (P.E s))) :
@@ -216,6 +198,17 @@ lemma exists_coe_eq_trace_of_isIntegral {z : P.E s}
   exact Submodule.mem_one.1
     ((differentialIdeal_le_iff (K := P.K) (L := P.E s) h_bot).1 h_le ⟨z, h_mem, rfl⟩)
 
+/-- For finite adeles `x, y ∈ α Ô`, their hermitian product times the generator of the different
+lies in `Ô`. Indeed, writing `x = α u` and `y = α v` leaves the integral factor `u * star v`. -/
+lemma mul_star_mul_relDifferentGen_mem {x y : 𝔸f (P.E s)}
+    (hx : (P.α s)⁻¹.val * x ∈ Ô (P.E s)) (hy : (P.α s)⁻¹.val * y ∈ Ô (P.E s)) :
+    x * star y * (P.relDifferentGen s).val ∈ Ô (P.E s) := by
+  have h_gen : (P.α s).val * star (P.α s).val * (P.relDifferentGen s).val ∈ Ô (P.E s) :=
+    mem_Ô.2 fun w ↦ (v_alpha_mul_star_mul_relDifferentGen w).le
+  have h_star : star (P.α s).val * star (P.α s)⁻¹.val = 1 := by simp [← star_mul']
+  convert mul_mem h_gen (mul_mem hx (star_mem_Ô hy)) using 1
+  grind [star_mul', Units.mul_inv]
+
 /-- Let `x`, `y` in the CM field `E = P.E s` lie in `𝔞₀ = E ∩ α Ô`: the finite adeles
 `finiteImage id x = α⁻¹ x` and `finiteImage id y = α⁻¹ y`, with `α = P.α s`, lie in the ring `Ô E`
 of integral adeles. Then the hermitian product `∑ τ, Φ τ x * conj (Φ τ y)` lies in `quadInt d`, the
@@ -223,23 +216,10 @@ ring of integers of `K` inside `ℂ`. -/
 lemma sum_mul_conj_mem_quadInt {x y : P.E s} (hx : finiteImage id x ∈ Ô (P.E s))
     (hy : finiteImage id y ∈ Ô (P.E s)) :
     ∑ τ : InfinitePlace (P.E s), Φ τ x * conj (Φ τ y) ∈ quadInt P.d := by
-  -- The number `x ȳ P'(ζ)` is integral: it is `α ᾱ P'(ζ)`, a unit at every finite place, times
-  -- `α⁻¹ x` and the conjugate of `α⁻¹ y`.
-  have h_gen : (P.α s).val * star (P.α s).val * (P.relDifferentGen s).val ∈ Ô (P.E s) :=
-    mem_Ô.2 fun w ↦ (v_alpha_mul_star_mul_relDifferentGen w).le
-  have h_factor : algebraMap (P.E s) (𝔸f (P.E s)) (x * star y * (P.relDifferentGen s).val) =
-      (P.α s).val * star (P.α s).val * (P.relDifferentGen s).val *
-        (finiteImage id x * star (finiteImage id y)) := by
-    have h_one : (P.α s).val * (P.α s)⁻¹.val * (star (P.α s).val * star (P.α s)⁻¹.val) = 1 := by
-      simp [← star_mul']
-    have h_conj : star (algebraMap (P.E s) (𝔸f (P.E s)) y) =
-        algebraMap (P.E s) (𝔸f (P.E s)) (star y) := by simp
-    simp only [finiteImage_id_eq_inv_alpha_mul, map_mul, star_mul', h_conj]
-    linear_combination -(algebraMap (P.E s) (𝔸f (P.E s)) x *
-      algebraMap (P.E s) (𝔸f (P.E s)) (star y) * (P.relDifferentGen s).val) * h_one
   have h_int : IsIntegral ℤ (x * star y * (P.relDifferentGen s).val) := by
-    rw [← algebraMap_mem_Ô, h_factor]
-    exact mul_mem h_gen (mul_mem hx (star_mem_Ô hy))
+    rw [← algebraMap_mem_Ô]
+    simpa using mul_star_mul_relDifferentGen_mem (P := P) (s := s) (x := algebraMap _ _ x)
+      (y := algebraMap _ _ y) hx hy
   obtain ⟨c, hc⟩ := exists_coe_eq_trace_of_isIntegral h_int
   exact ⟨c, show ((c : P.K) : ℂ) = _ by simp [hc, coe_trace_eq_sum]⟩
 
@@ -253,7 +233,8 @@ lemma adeleExtension_alpha (φ : P.E s →+* ℂ_[p]) :
       (if P.betaKInE s ∈ (placeOfEmb φ).asIdeal then (φ (P.relDifferentGen s))⁻¹ else 1) := by
   let e : ℂ_[p] := adeleExtension φ (idem {w | P.betaKInE s ∈ w.asIdeal})
   have h_expand : adeleExtension φ (P.α s).val = e * (φ (P.relDifferentGen s))⁻¹ + (1 - e) := by
-    simp [α, e]
+    rw [α, Units.coe_map, Units.val_inv_eq_inv_val, Units.val_mk0, diagonalAtPlaces_eq, map_add,
+      map_mul, map_sub, map_one, adeleExtension_algebraMap, map_inv₀]
   rw [h_expand]
   split_ifs with h_mem <;> simp [e, adeleExtension, h_mem]
 
@@ -288,36 +269,6 @@ lemma norm_iota_vacuumRoot (τ : P.Φ s) :
   rw [h_chi, ← inv_pow] at h_pow
   exact (pow_left_inj₀ (norm_nonneg _) (by positivity) Fintype.card_ne_zero).1 h_pow
 
-/-- At a `p`-adic place `ιₚ` of `ℂ` with valuation ring `embValRing`, the number `vacuumRoot`
-generates the module spanned by `τ(𝔞̄₀)⁻¹`, the set of the `τ ȳ` with `y` in `𝔞₀⁻¹`. -/
-lemma span_vacuumRoot_eq (τ : P.Φ s) :
-    Submodule.span embValRing {P.vacuumRoot s} =
-      Submodule.span embValRing
-        {conj (Φ τ y) | (y : P.E s) (_ : (P.α s).val * y ∈ Ô (P.E s))} := by
-  -- With `φ` the embedding `y ↦ ιₚ (τ ȳ)`, extended to the finite adeles, we have
-  -- `‖φ y‖ = ‖φ (α y)‖ ‖ιₚ vacuumRoot‖`. So each `τ ȳ` is an integral multiple of `vacuumRoot`,
-  -- and a unit multiple if `‖φ (α y)‖ = 1`.
-  let φ : P.E s →+* ℂ_[p] := weightEmbedding ιₚ τ
-  have h_alpha_ne : adeleExtension φ (P.α s).val ≠ 0 := ((P.α s).isUnit.map _).ne_zero
-  have h_root : P.vacuumRoot s ≠ 0 := fun h_zero ↦
-    h_alpha_ne (norm_eq_zero.1 (by simpa [h_zero, φ, eq_comm] using norm_iota_vacuumRoot τ))
-  have h_ratio (y : P.E s) : ‖ιₚ (conj (Φ τ y) / P.vacuumRoot s)‖ =
-      ‖adeleExtension φ ((P.α s).val * y)‖ := by
-    simp [φ, norm_iota_vacuumRoot τ, starRingEnd_apply y, mul_comm]
-  refine le_antisymm ?_ (Submodule.span_le.2 ?_)
-  · obtain ⟨y, h_int, h_one⟩ := exists_norm_adeleExtension_alpha_mul_eq_one φ
-    have h_unit : ‖ιₚ (conj (Φ τ y) / P.vacuumRoot s)‖ = 1 := (h_ratio y).trans h_one
-    have h_inv_norm_le : ‖ιₚ (P.vacuumRoot s / conj (Φ τ y))‖ ≤ 1 := by
-      rw [← inv_div, map_inv₀, norm_inv, h_unit, inv_one]
-    have h_ne : conj (Φ τ y) ≠ 0 := fun h_zero ↦ by simp [h_zero] at h_unit
-    rw [Submodule.span_singleton_le_iff_mem, ← div_mul_cancel₀ (P.vacuumRoot s) h_ne]
-    exact Submodule.smul_mem _ (⟨_, h_inv_norm_le⟩ : embValRing)
-      (Submodule.subset_span ⟨y, h_int, rfl⟩)
-  · rintro - ⟨y, hy, rfl⟩
-    have h_mem : conj (Φ τ y) / P.vacuumRoot s ∈ embValRing :=
-      (h_ratio y).trans_le (norm_adeleExtension_le_one φ hy)
-    exact Submodule.mem_span_singleton.2 ⟨⟨_, h_mem⟩, div_mul_cancel₀ (conj (Φ τ y)) h_root⟩
-
 /-- At a `p`-adic place `ιₚ` of `ℂ`, the absolute value of `periodFactor` equals that of
 `vacuumRoot`. It is the inverse of the absolute value of the idele `P.α s` of the Weil data at the
 place of `weightEmbedding ιₚ τ : y ↦ ιₚ (τ ȳ)`. -/
@@ -339,33 +290,18 @@ variable (P s) in
 /-- If the prime `p` does not divide `q₁ = P.q₁ s`, the order of the roots of unity that generate
 `E = P.E s` over `K`, then `periodFactor` is a unit at the `p`-adic place `ιₚ` of `ℂ`. -/
 lemma norm_iota_periodFactor_eq_one (hp : ¬p ∣ P.q₁ s) : ‖ιₚ (P.periodFactor s)‖ = 1 := by
-  -- With `τ = Φ 1`, the number `vacuumRoot` generates the module spanned by the `τ ȳ` with `y` in
-  -- `𝔞₀⁻¹`. As `q₁ 𝔞₀ ⊆ 𝓞 E ⊆ 𝔞₀`, the `τ ȳ` are integral, and one of them is the unit `q₁`.
-  have h_span : Submodule.span embValRing {P.vacuumRoot s} = Submodule.span embValRing
-      {conj (Φ (1 : P.Φ s) y) | (y : P.E s) (_ : (P.α s).val * y ∈ Ô (P.E s))} :=
-    span_vacuumRoot_eq (p := p) 1
-  have h_le : ‖ιₚ (P.vacuumRoot s)‖ ≤ 1 := by
-    have h_int : Submodule.span embValRing {P.vacuumRoot s} ≤ (1 : Submodule embValRing ℂ) := by
-      rw [h_span, Submodule.span_le]
-      rintro - ⟨y, hy, rfl⟩
-      have h_norm : ‖ιₚ (conj (Φ (1 : P.Φ s) y))‖ ≤ 1 := by
-        simpa [starRingEnd_apply y] using
-          norm_adeleExtension_le_one (weightEmbedding ιₚ 1) (mul_mem inv_alpha_mem hy)
-      exact Submodule.mem_one.2 ⟨⟨_, h_norm⟩, rfl⟩
-    obtain ⟨c, hc⟩ := Submodule.mem_one.1 (h_int (Submodule.mem_span_singleton_self _))
-    rw [← hc]
-    exact c.prop
-  obtain ⟨c, hc⟩ : ∃ c : embValRing, c • P.vacuumRoot s = P.q₁ s := by
-    rw [← Submodule.mem_span_singleton, h_span]
-    exact Submodule.subset_span ⟨P.q₁ s, by simpa [mul_comm] using q₁_mul_alpha_mem, by simp⟩
-  have h_norm_q₁ : ‖(P.q₁ s : ℂ_[p])‖ = 1 :=
+  let φ := weightEmbedding ιₚ (1 : P.Φ s)
+  have hq : ‖(P.q₁ s : ℂ_[p])‖ = 1 :=
     ((Nat.Prime.coprime_iff_not_dvd Fact.out).2 hp).norm_natCast_eq_one ℂ_[p]
-  have h_ge : 1 ≤ ‖ιₚ (P.vacuumRoot s)‖ :=
-    calc 1 = ‖ιₚ c‖ * ‖ιₚ (P.vacuumRoot s)‖ := by
-          rw [← norm_mul, ← map_mul, ← smul_eq_mul, ← Subring.smul_def, hc, map_natCast, h_norm_q₁]
-      _ ≤ ‖ιₚ (P.vacuumRoot s)‖ := mul_le_of_le_one_left (norm_nonneg _) c.prop
-  rw [periodFactor, map_div₀, norm_div, norm_iota_chowlaSelbergUnit, div_one]
-  exact h_le.antisymm h_ge
+  -- Both α⁻¹ and q₁ α are integral, and q₁ is a unit at this place.
+  have h_le : ‖adeleExtension φ (P.α s).val‖ ≤ 1 := by
+    simpa only [map_mul, map_natCast, norm_mul, hq, one_mul] using
+      norm_adeleExtension_le_one φ (q₁_mul_alpha_mem (P := P) (s := s))
+  have h_inv : ‖adeleExtension φ (P.α s).val‖⁻¹ ≤ 1 := by
+    simpa only [map_units_inv, norm_inv] using
+      norm_adeleExtension_le_one φ (inv_alpha_mem (P := P) (s := s))
+  rw [norm_iota_periodFactor (1 : P.Φ s)]
+  exact h_inv.antisymm ((one_le_inv₀ (norm_pos_iff.mpr ((P.α s).isUnit.map _).ne_zero)).2 h_le)
 
 /-- The integers of `P.E s` have integral finite image: for `a` in the ring of integers `𝓞 (P.E s)`,
 the finite adele `α⁻¹ a` (`finiteImage id a`) lies in `Ô (P.E s)`. -/
@@ -447,12 +383,15 @@ lemma iteratedDeriv_integral_exp_mul_realVac (f : 𝒮 V) (L : (InfinitePlace E 
   -- Expand the exponential under the integral to get a power series in `t`.
   let g (w : InfinitePlace E × n → ℂ) : ℂ := realVac w * f (realVec w)
   let I (t : ℂ) : ℂ := ∫ w, exp (t * L w) * g w ∂normalizedVolume (InfinitePlace E × n)
+  have hg_cont : Continuous g := by dsimp only [g]; fun_prop [realVac]
   have h_sum (t : ℂ) : HasSum (fun j : ℕ ↦
       ∫ w, (t * L w) ^ j / j.factorial * g w ∂normalizedVolume (InfinitePlace E × n)) (I t) := by
     -- Dominated convergence: the bounds sum to a multiple of `exp (‖t‖ * ‖L‖ * ‖w‖) * ‖realVac w‖`.
     refine hasSum_integral_of_dominated_convergence
       (fun j w ↦ (‖t‖ * (‖L‖ * ‖w‖)) ^ j / j.factorial * (‖realVac w‖ * (‖V.θ‖ * ‖f‖)))
-      (by fun_prop [realVac]) (fun j ↦ .of_forall fun w ↦ ?_) ?_ ?_
+      (fun j ↦ ((((continuous_const.mul L.continuous).pow j).div_const _).mul
+        hg_cont).aestronglyMeasurable)
+      (fun j ↦ .of_forall fun w ↦ ?_) ?_ ?_
       (.of_forall fun w ↦ (expSeries_div_hasSum_exp (t * L w)).mul_right (g w))
     · simp only [g, norm_mul, norm_div, norm_pow, Complex.norm_natCast]
       grw [L.le_opNorm w, norm_apply_le]
@@ -462,7 +401,15 @@ lemma iteratedDeriv_integral_exp_mul_realVac (f : 𝒮 V) (L : (InfinitePlace E 
   obtain ⟨r, hr⟩ : HasFPowerSeriesAt I (.ofScalars ℂ fun j : ℕ ↦
       (∫ w, L w ^ j * g w ∂normalizedVolume (InfinitePlace E × n)) / j.factorial) 0 :=
     hasFPowerSeriesAt_iff.2 <| .of_forall fun t ↦ by
-      simpa [integral_const_mul, mul_pow, mul_assoc, div_eq_inv_mul, mul_left_comm] using h_sum t
+      rw [zero_add]
+      refine (h_sum t).congr_fun fun j ↦ ?_
+      have h_eq : (fun w ↦ (t * L w) ^ j / j.factorial * g w) =
+          fun w ↦ (t ^ j / j.factorial) * (L w ^ j * g w) := by
+        ext w
+        rw [mul_pow]
+        ring
+      rw [h_eq, integral_const_mul, FormalMultilinearSeries.coeff_ofScalars, smul_eq_mul]
+      ring
   change iteratedDeriv k I 0 = ∫ w, L w ^ k * g w ∂normalizedVolume (InfinitePlace E × n)
   simpa [iteratedDeriv, mul_div_cancel₀, k.factorial_ne_zero] using (hr.factorial_smul 1 k).symm
 
@@ -491,18 +438,37 @@ lemma taylor_line_eq_subst_jetSeries (hf : f ∈ V.finitePart) (a : ℂ)
   have h_line (t : ℂ) : entireTheta f (a • t • v) =
       ∫ w, exp (t * L w) * g w ∂normalizedVolume (InfinitePlace E × n) := by
     rw [entireTheta_eq_integral rfl (projReal_eq_self_of_mem_finitePart hf)]
-    simp [hL, g, mul_sum, mul_assoc, mul_left_comm, Complex.exp_eq_exp_ℂ]
+    congr 1; ext w
+    rw [hL, Complex.exp_eq_exp_ℂ]
+    congr 2
+    rw [mul_sum, mul_sum]
+    refine sum_congr rfl fun p _ ↦ ?_
+    simp only [Pi.smul_apply, smul_eq_mul, RCLike.star_def]
+    ring
   let T : PowerSeries ℂ := (V.jetSeries a f).subst fun p ↦ linearSeries fun _ ↦ v p
   have h_jet : k.factorial * PowerSeries.coeff k T =
       ∫ w, L w ^ k * g w ∂normalizedVolume (InfinitePlace E × n) := calc
     _ = jet ℂ (.X () ^ k) T := by
       simp [MvPolynomial.X_pow_eq_monomial, jet_monomial, PowerSeries.coeff]
     _ = jet ℂ ((∑ p, v p • .X p) ^ k) (V.jetSeries a f) :=
-      (jet_subst_linearSeries (.replicateCol Unit v) _ _).trans (by simp [linSubst])
+      (jet_subst_linearSeries (.replicateCol Unit v) _ _).trans <|
+        congrArg (fun Q ↦ jet ℂ Q (V.jetSeries a f)) (by
+          simp only [linSubst, map_pow, MvPolynomial.aeval_X, Matrix.replicateCol_apply])
     _ = ∫ w, L w ^ k * g w ∂normalizedVolume (InfinitePlace E × n) := by
       -- The jet along a polynomial `Q` is `∫ Q (a • conj w) * g w`.
       rw [jet_jetSeries_eq_theta, theta_integrated]
-      simp [hL, g, holomorphicCoord_eq, mul_sum, mul_assoc, mul_left_comm]
+      congr 1; ext w
+      rw [polyVector_apply, mul_assoc]
+      congr 1
+      rw [hL, map_pow, map_pow]
+      congr 1
+      rw [map_sum, map_sum, mul_sum]
+      refine sum_congr rfl fun p _ ↦ ?_
+      simp only [MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.aeval_C,
+        MvPolynomial.algebraMap_eq, MvPolynomial.aeval_X, MvPolynomial.eval_C,
+        MvPolynomial.eval_X, holomorphicCoord_eq, realSigns, Pi.one_apply, ↓reduceIte,
+        Pi.star_apply]
+      ring
   rw [taylorAtZero, PowerSeries.coeff_mk, funext h_line, iteratedDeriv_integral_exp_mul_realVac,
     ← h_jet, mul_div_cancel_left₀ _ (Nat.cast_ne_zero.2 k.factorial_ne_zero)]
 
@@ -520,7 +486,9 @@ lemma eq_zero_of_jetSeries_eq_zero (hf : f ∈ V.finitePart) {a : ℂ} (ha : a �
   have h_line : (fun t : ℂ ↦ entireTheta f (a • t • y)) = 0 :=
     eq_of_taylorAtZero_eq (by fun_prop (disch := simp [hf])) differentiable_zero h_taylor
   -- The point `a⁻¹` of the line is `y`.
-  simpa [ha, entireTheta, realVac] using congrFun h_line a⁻¹
+  have h0 := congrFun h_line a⁻¹
+  rw [smul_smul, mul_inv_cancel₀ ha, one_smul, Pi.zero_apply, entireTheta, div_eq_zero_iff] at h0
+  exact h0.resolve_right (Complex.exp_ne_zero _)
 
 /-- The Taylor series at `0` of a finite product of entire functions `x ↦ G i (c i * x)` is the
 product of the Taylor series of the `G i`, with `c i • X` substituted for the variable. -/
@@ -549,21 +517,16 @@ lemma _root_.New.mvPowerSeries_eq_of_forall_line {σ : Type*} [Fintype σ] {S T 
   have hα : α ∈ A := by simp [A]
   have h_eval (v : σ → ℂ) (U : MvPowerSeries σ ℂ) : (U.truncFinset ℂ A).eval v =
       (rename (fun _ : σ ↦ ()) (rescale v U)).coeff (deg α) := by
-    simp [A, deg, truncFinset, coeff_rename, MvPolynomial.eval_monomial, mul_comm]
+    simp only [truncFinset, LinearMap.coe_mk, AddHom.coe_mk, map_sum, coeff_rename]
+    refine sum_congr rfl fun d _ ↦ ?_
+    rw [MvPolynomial.eval_monomial, coeff_rescale, mul_comm]
   have h_trunc : S.truncFinset ℂ A = T.truncFinset ℂ A :=
     MvPolynomial.funext fun v ↦ by rw [h_eval, h_eval, h_line]
   rw [← coeff_truncFinset_of_mem S hα, ← coeff_truncFinset_of_mem T hα, h_trunc]
 
 lemma entireTheta_zero {ε : n → ℤˣ} {V : Space E n ε} (f : 𝒮 V) : entireTheta f 0 = V.θ f := by
-  simp [entireTheta, realVac]
-
-/-- If `entireTheta f (c • z) = ∏ i, G i (μ i ⬝ᵥ z)` for all `z`, then the theta functional of `f`
-is `∏ i, G i 0`. -/
-lemma theta_eq_prod_of_entireTheta_smul {ε : n → ℤˣ} {V : Space E n ε} {f : 𝒮 V} {I : Type*}
-    [Fintype I] {G : I → ℂ → ℂ} {c : ℂ} {μ : I → InfinitePlace E × n → ℂ}
-    (h_prod : ∀ z : InfinitePlace E × n → ℂ, entireTheta f (c • z) = ∏ i : I, G i (μ i ⬝ᵥ z)) :
-    V.θ f = ∏ i : I, G i 0 := by
-  simpa only [smul_zero, entireTheta_zero, dotProduct_zero] using h_prod 0
+  rw [entireTheta, map_zero, ← theta_apply, realVac, star_zero, zero_dotProduct, neg_zero,
+    zero_div, Complex.exp_zero, div_one]
 
 /-- Let `V` have all signs `1`, so that `xᴴJx` is the identity at the infinite places. Let `f` lie
 in `V.finitePart`, the span of the translates of the vacuum under the finite Heisenberg operators.
@@ -580,41 +543,40 @@ lemma jetSeries_eq_prod_of_entireTheta_smul (hf : f ∈ V.finitePart) {I : Type*
   refine mvPowerSeries_eq_of_forall_line fun v ↦ ?_
   let line : MvPowerSeries (InfinitePlace E × n) ℂ →+* PowerSeries ℂ :=
     (rename fun _ ↦ ()).toRingHom.comp (rescale v)
+  have hv : HasSubst (v • (X : InfinitePlace E × n → MvPowerSeries _ ℂ)) :=
+    hasSubst_of_constantCoeff_zero fun p ↦ by
+      rw [Pi.smul_apply', constantCoeff_smul, constantCoeff_X, smul_zero]
+  have hX : HasSubst ((X : Unit → PowerSeries ℂ) ∘ fun _ : InfinitePlace E × n ↦ ()) :=
+    hasSubst_of_constantCoeff_zero fun _ ↦ constantCoeff_X _
+  have hXv : HasSubst fun p : InfinitePlace E × n ↦ v p • (PowerSeries.X : PowerSeries ℂ) :=
+    hasSubst_of_constantCoeff_zero fun p ↦ by
+      rw [constantCoeff_smul, PowerSeries.X, constantCoeff_X, smul_zero]
   have h_line (U : MvPowerSeries (InfinitePlace E × n) ℂ) :
       line U = U.subst fun p ↦ v p • (PowerSeries.X : PowerSeries ℂ) := by
-    simp [line, PowerSeries.X, subst_comp_subst_apply, rename_eq_subst, rescale_eq_subst,
-      subst_smul, subst_X, hasSubst_of_constantCoeff_zero]
+    rw [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, rename_eq_subst,
+      rescale_eq_subst, subst_comp_subst_apply hv hX]
+    congr 1; ext p
+    rw [Pi.smul_apply', subst_smul hX, subst_X hX]
+    rfl
   -- Restricting to the line turns the linear form `μ i` into `(μ i ⬝ᵥ v) • X`.
   have h_factor (i : I) : line ((taylorAtZero (G i)).subst (linearSeries (μ i))) =
       (taylorAtZero (G i)).subst ((μ i ⬝ᵥ v) • (PowerSeries.X : PowerSeries ℂ)) := by
     have h_form : line (linearSeries (μ i)) = (μ i ⬝ᵥ v) • PowerSeries.X := by
-      simp [line, linearSeries, rescale_eq_subst, ← coe_substAlgHom,
-        hasSubst_of_constantCoeff_zero, smul_smul, ← sum_smul, dotProduct, PowerSeries.X]
+      rw [h_line, linearSeries, ← coe_substAlgHom hXv, map_sum]
+      simp only [map_smul, coe_substAlgHom, subst_X hXv, smul_smul, ← sum_smul, dotProduct]
     rw [← h_form, h_line, h_line]
-    exact subst_comp_subst_apply (hasSubst_of_constantCoeff_zero (by simp [linearSeries]))
-      (hasSubst_of_constantCoeff_zero (by simp [PowerSeries.X])) _
+    exact subst_comp_subst_apply
+      (hasSubst_of_constantCoeff_zero fun _ ↦ constantCoeff_linearSeries (μ i)) hXv _
   calc line (V.jetSeries c f)
     _ = taylorAtZero fun t : ℂ ↦ entireTheta f (c • t • v) := by
-      simp [taylor_line_eq_subst_jetSeries hf, h_line, linearSeries, PowerSeries.X]
+      rw [h_line, taylor_line_eq_subst_jetSeries hf]
+      congr 1; ext p
+      simp only [linearSeries, Fintype.sum_unique, PowerSeries.X]
     _ = taylorAtZero fun x : ℂ ↦ ∏ i, G i (μ i ⬝ᵥ v * x) := by
       simp only [h_prod, dotProduct_smul, smul_eq_mul, mul_comm]
     _ = line (∏ i, (taylorAtZero (G i)).subst (linearSeries (μ i))) := by
       rw [taylorAtZero_prod_comp_mul hG, map_prod]
       simp only [h_factor]
-
-/-- Let `V` have all signs `1`, let `f` lie in its finite part, and suppose that
-`entireTheta f (c • z) = ∏ i, G i (μ c i ⬝ᵥ z)` for all `c` and `z`, with every `G i` entire. Then
-the theta functional of `f` is `∏ i, G i 0`, and for every `c` the series `V.jetSeries c f` is the
-product of the Taylor series of the `G i`, evaluated at the linear forms with coefficients
-`μ c i`. -/
-lemma jetSeries_eq_prod (hf : f ∈ V.finitePart) {I : Type*} [Fintype I] {G : I → ℂ → ℂ}
-    {μ : ℂ → I → InfinitePlace E × n → ℂ} (hG : ∀ i : I, Differentiable ℂ (G i))
-    (h_prod : ∀ (c : ℂ) (z : InfinitePlace E × n → ℂ),
-      entireTheta f (c • z) = ∏ i : I, G i (μ c i ⬝ᵥ z)) :
-    V.θ f = ∏ i : I, G i 0 ∧
-    ∀ c : ℂ, V.jetSeries c f = ∏ i : I, (taylorAtZero (G i)).subst (linearSeries (μ c i)) :=
-  ⟨theta_eq_prod_of_entireTheta_smul (h_prod 0),
-    fun c ↦ jetSeries_eq_prod_of_entireTheta_smul hf hG (h_prod c)⟩
 
 end New.Space
 
@@ -633,7 +595,8 @@ variable {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n] {ε :
 
 /-- The period `cmPeriod` lies in the lattice `cmPeriod 𝓞_K` of the curve `cmCurve`. -/
 lemma cmPeriod_mem_cmCurve_lattice : (P.cmPeriod : ℂ) ∈ P.cmCurve.Λ :=
-  latticeModule_cmCurve.ge (mem_scaledIdeal.2 ⟨1, by simp⟩)
+  latticeModule_cmCurve.ge (mem_scaledIdeal.2
+    ⟨1, (FractionalIdeal.mem_one_iff _).2 ⟨1, map_one _⟩, by rw [OneMemClass.coe_one, mul_one]⟩)
 
 /-- The values of the character `selfDualAddChar` of the finite adeles have finite order, so their
 images under a multiplicative map `ι` to a normed field have norm one. -/
@@ -675,10 +638,15 @@ lemma resolutionLinearForm_realImage {P : Parameters} {s : ℕ} {n I : Type} (b 
     resolutionLinearForm (b / P.areaScale) w i (realImage γ) =
       b * ∑ τ : InfinitePlace (P.E s), Φ τ (γ i.2) * conj (Φ τ (w i.1)) := by
   have h_coord (τ : InfinitePlace (P.E s)) : realImage γ (τ, i.2) = P.areaScale * Φ τ (γ i.2) := by
-    simp [realImage_apply, val_scaleIdele_fst, Real.sqrt_div_self, areaScale, j, field]
+    have h_im : (Φ τ (j : P.E s)).im = (√(P.d : ℝ))⁻¹ := by
+      rw [phi_weilData_j τ, Complex.div_ofReal_im, Complex.I_im, one_div]
+    rw [realImage_apply, val_scaleIdele_fst, h_im, ← div_eq_mul_inv, div_inv_eq_mul, mul_comm]
+    rfl
   simp only [resolutionLinearForm, _root_.sum_apply, mul_sum]
   refine sum_congr rfl fun τ _ ↦ ?_
-  simp [h_coord, field]
+  rw [_root_.smul_apply, ContinuousLinearMap.proj_apply, smul_eq_mul, h_coord]
+  have h_ne : (P.areaScale : ℂ) ≠ 0 := P.areaScale.ne_zero
+  field_simp
 
 /-- Let `x`, `y` in `P.E s` have integral finite images `α⁻¹ x`, `α⁻¹ y` (`finiteImage id`). Then
 multiplying `a ∈ C.Λ` by `x† y = ∑ τ, Φ τ y * conj (Φ τ x)` gives an element of the CM lattice
@@ -736,8 +704,13 @@ lemma IsResolutionProduct.jetSeries_translate {C : CMLattice P.d} {b : ℂ} {w :
       entireTheta (V.ϱ (finVec (finiteImage γ)) F) (c • z) =
         ∏ i : I × n, C.twistedTranslate (m i.1) (resolutionShift b w γ i) (f i)
           (resolutionFormCoeff (b / P.areaScale * c) w i ⬝ᵥ z) := by
-    simp [hF.entireTheta_translate, resolutionLinearForm_apply_eq_dotProduct, resolutionFormCoeff,
-      dotProduct, mul_sum, mul_assoc, mul_left_comm]
+    rw [hF.entireTheta_translate]
+    refine prod_congr rfl fun i _ ↦ congrArg _ ?_
+    rw [map_smul, smul_eq_mul, resolutionLinearForm_apply_eq_dotProduct, dotProduct, dotProduct,
+      mul_sum]
+    refine sum_congr rfl fun y _ ↦ ?_
+    simp only [resolutionFormCoeff]
+    split_ifs <;> ring
   have hf : ∀ i : I × n, Differentiable ℂ (f i) := hF.differentiable
   exact jetSeries_eq_prod_of_entireTheta_smul (rho_finVec_mem_finitePart _ hF.mem_finitePart)
     (fun i ↦ by fun_prop) h_prod
@@ -765,12 +738,11 @@ lemma IsResolutionProduct.norm_iota_apply_le_one {C : CMLattice P.d} {b : ℂ} {
   have h_value : F (finVec y) = ∏ i : I × n,
       C.twistedTranslate (m i.1) (resolutionShift b w γ i) (C.monomialSection (x i)) 0 := by
     rw [← theta_rho, ← hγ, hF.theta_translate γ]
+  -- Clear the denominators of the whole finite vector at once. Then `N * L` times
+  -- each shift is a period.
+  obtain ⟨L, hL, hLγ⟩ := exists_forall_mul_mem_Ô (finiteImage γ)
   rw [h_value, map_prod, norm_prod]
   refine prod_le_one₀ (by simp) fun i _ ↦ ?_
-  -- The shift is a torsion point: `L * finiteImage γ` is integral for some `L ≠ 0`, so `N * L`
-  -- times the shift is a period.
-  obtain ⟨L, hL, hLγ⟩ : ∃ L : ℕ, L ≠ 0 ∧ ∀ k : n, L * finiteImage γ k ∈ Ô (P.E s) :=
-    exists_forall_mul_mem_Ô (finiteImage γ)
   have h_integral : finiteImage id (L * γ i.2) ∈ Ô (P.E s) := by
     simpa [finiteImage, mul_left_comm] using hLγ i.2
   let t : ℂ := ∑ τ : InfinitePlace (P.E s), Φ τ (L * γ i.2) * conj (Φ τ (w i.1))
@@ -778,7 +750,9 @@ lemma IsResolutionProduct.norm_iota_apply_le_one {C : CMLattice P.d} {b : ℂ} {
     mul_sum_mul_conj_mem_lattice hbδ_mem h_integral (hw i.1)
   have h_torsion : (N * L : ℕ) * resolutionShift b w γ i ∈ C.Λ := by
     rw [show (N * L : ℕ) * resolutionShift b w γ i = δ * -(b * conj (δ : ℂ) * t) by
-      simp [t, resolutionShift, ← hN, mul_assoc, mul_left_comm b, ← mul_sum]]
+      simp only [t, resolutionShift, Nat.cast_mul, ← hN, map_mul, map_natCast]
+      rw [mul_neg, mul_neg, mul_neg, mul_sum, mul_sum, mul_sum, mul_sum]
+      exact congrArg Neg.neg (sum_congr rfl fun τ _ ↦ by ring)]
     exact C.mul_mem_of_quadInt ⟨δ, rfl⟩ (neg_mem h_period)
   rw [← hx]
   exact C.hasIntegralValues_monomialSection (x i) _ ⟨N * L, mul_ne_zero hN_ne hL, h_torsion⟩
@@ -800,20 +774,54 @@ lemma sum_pullForm_resolutionLinearForm_apply {M : ℕ} (hw : IsTightFrame w m M
   obtain ⟨hb, hM, hd⟩ : b ≠ 0 ∧ M ≠ 0 ∧ P.d ≠ 0 := by
     simpa [h_area, and_assoc] using (area_pos C.periodPair).ne'
   -- The area of `C` fixes the scale: the pull-back of `C.hermitianForm` carries the factor `1 / M`.
+  have h_as_sq : (P.areaScale : ℂ) * conj (P.areaScale : ℂ) = 2 * Real.pi / √(P.d : ℝ) := by
+    change (√(2 * Real.pi / √(P.d : ℝ)) : ℂ) * conj (√(2 * Real.pi / √(P.d : ℝ)) : ℂ) = _
+    rw [conj_ofReal, ← ofReal_mul, Real.mul_self_sqrt (by positivity), ofReal_div, ofReal_mul,
+      ofReal_ofNat]
   have h_scale : Real.pi / C.area * (b / P.areaScale * conj (b / P.areaScale)) = (M : ℂ)⁻¹ := by
-    simpa [h_area, ← mul_conj', areaScale, ← ofReal_pow √_, field, Real.pi_nonneg] using ⟨hb, hd⟩
+    rw [map_div₀, div_mul_div_comm, h_as_sq, h_area, mul_conj']
+    push_cast
+    have h_pi : (Real.pi : ℂ) ≠ 0 := ofReal_ne_zero.2 Real.pi_ne_zero
+    have h_sqd : (√(P.d : ℝ) : ℂ) ≠ 0 :=
+      ofReal_ne_zero.2 (Real.sqrt_ne_zero'.2 (Nat.cast_pos.2 (Nat.pos_of_ne_zero hd)))
+    have h_nb : (‖b‖ : ℂ) ≠ 0 := ofReal_ne_zero.2 (norm_ne_zero_iff.2 hb)
+    have h_M' : (M : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hM
+    field_simp
   have h_term (j : I) (k : n) :
       pullForm (resolutionLinearForm (b / P.areaScale) w (j, k)) (m j • C.hermitianForm) u v =
         ∑ σ, ∑ τ, conj (u (τ, k)) * v (σ, k) / M * (m j * (Φ τ (w j) * conj (Φ σ (w j)))) := by
-    simp only [div_eq_mul_inv _ (M : ℂ), ← h_scale]
-    simp [resolutionLinearForm, mul_assoc, mul_comm, mul_left_comm]
+    have h_eval (z : InfinitePlace (P.E s) × n → ℂ) :
+        resolutionLinearForm (b / P.areaScale) w (j, k) z =
+          ∑ σ, b / P.areaScale * conj (Φ σ (w j)) * z (σ, k) := by
+      simp only [resolutionLinearForm, _root_.sum_apply, _root_.smul_apply,
+        ContinuousLinearMap.proj_apply, smul_eq_mul]
+    rw [pullForm_apply_apply, _root_.smul_apply, _root_.smul_apply, nsmul_eq_mul,
+      hermitianForm_apply, h_eval, h_eval, map_sum, sum_mul, mul_sum, mul_sum]
+    refine sum_congr rfl fun σ _ ↦ ?_
+    rw [mul_sum, mul_sum, mul_sum]
+    refine sum_congr rfl fun τ _ ↦ ?_
+    simp only [map_mul, starRingEnd_self_apply]
+    rw [div_eq_mul_inv _ (M : ℂ), ← h_scale]
+    ring
   -- Multiply the frame identity at `(τ, σ)` by `conj (u (τ, k)) * v (σ, k) / M` and sum.
   calc (∑ i : I × n,
       pullForm (resolutionLinearForm (b / P.areaScale) w i) (m i.1 • C.hermitianForm)) u v
+    _ = ∑ k : n, ∑ j : I,
+        pullForm (resolutionLinearForm (b / P.areaScale) w (j, k)) (m j • C.hermitianForm) u v := by
+      simp only [_root_.sum_apply, sum_prod_type_right]
     _ = ∑ k, ∑ σ, ∑ τ, conj (u (τ, k)) * v (σ, k) / M *
         ∑ j, m j * (Φ τ (w j) * conj (Φ σ (w j))) := by
-      simp [sum_prod_type_right, h_term, mul_sum, sum_comm (s := (univ : Finset I))]
-    _ = star u ⬝ᵥ v := by simp [hw.sum_mul_conj, hM, dotProduct, sum_prod_type_right]
+      refine sum_congr rfl fun k _ ↦ ?_
+      simp_rw [h_term]
+      rw [sum_comm]
+      refine sum_congr rfl fun σ _ ↦ ?_
+      rw [sum_comm]
+      refine sum_congr rfl fun τ _ ↦ ?_
+      rw [mul_sum]
+    _ = star u ⬝ᵥ v := by
+      simp only [hw.sum_mul_conj, mul_ite, mul_zero, Fintype.sum_ite_eq',
+        div_mul_cancel₀ _ ((Nat.cast_ne_zero (R := ℂ)).2 hM), dotProduct, sum_prod_type_right,
+        Pi.star_apply, RCLike.star_def]
 
 omit [DecidableEq n] in
 /-- Let each `f i` be a section of degree `m i.1` of `C`: twisted translation
@@ -833,11 +841,35 @@ lemma normalizedShift_prod_comp_of_mem_lattice
   let χ : ℂ := ThetaTori.canonicalMultiplier B (conj (quadGen P.d) • 1) u
   -- The multipliers of the factors multiply to the canonical multiplier of `B`.
   have hχ : ∏ i, C.multiplier (A i u) ^ m i.1 = χ := by
-    simp [χ, B, hu, multiplier_eq_canonicalMultiplier, ThetaTori.canonicalMultiplier,
-      riemannForm_pullForm, ← exp_nsmul, ← exp_sum, mul_sum, mul_left_comm]
+    have h_term (i : I × n) : C.multiplier (A i u) ^ m i.1 =
+        Complex.exp ((m i.1 : ℂ) * (Real.pi * Complex.I *
+          C.hermitianForm.riemannForm (conj (quadGen P.d) • A i u) (A i u))) := by
+      rw [C.multiplier_eq_canonicalMultiplier (hu i), ThetaTori.canonicalMultiplier,
+        ← Complex.exp_natCast_mul]
+      rfl
+    have h_riem : B.riemannForm ((conj (quadGen P.d) • (1 : _ →L[ℂ] _)) u) u =
+        ∑ i, (m i.1 : ℝ) *
+          C.hermitianForm.riemannForm (conj (quadGen P.d) • A i u) (A i u) := by
+      dsimp only [B]
+      rw [map_sum, LinearMap.sum_apply, LinearMap.sum_apply]
+      refine sum_congr rfl fun i _ ↦ ?_
+      rw [riemannForm_pullForm, RealComplexForm.riemannForm.map_nsmul,
+        LinearMap.smul_apply, LinearMap.smul_apply, nsmul_eq_mul,
+        _root_.smul_apply, one_apply_eq_self, map_smul]
+    rw [prod_congr rfl fun i _ ↦ h_term i, ← Complex.exp_sum]
+    dsimp only [χ, ThetaTori.canonicalMultiplier]
+    rw [h_riem]
+    congr 1
+    push_cast
+    rw [mul_sum]
+    refine sum_congr rfl fun i _ ↦ by ring
   have h_shift : B.thetaShift u (∏ i, f i ∘ A i) = χ • ∏ i, f i ∘ A i := by
     ext z
-    simp [B, thetaShift_prod, hf, hu, ← hχ, prod_mul_distrib]
+    rw [thetaShift_prod, Finset.prod_apply, Pi.smul_apply, smul_eq_mul, Finset.prod_apply, ← hχ,
+      ← prod_mul_distrib]
+    refine prod_congr rfl fun i _ ↦ ?_
+    rw [Function.comp_apply, Function.comp_apply]
+    exact congrFun (hf i (A i u) (hu i)) (A i z)
   change χ⁻¹ • B.thetaShift u (∏ i, f i ∘ A i) = _
   rw [h_shift, inv_smul_smul₀ (show χ ≠ 0 from exp_ne_zero _)]
 
@@ -898,8 +930,16 @@ lemma exists_isResolutionProduct_of_isTightFrame (V : Space (P.E s) n ε) [hV : 
   -- The forms `A i` take the real image of `δ̄ 𝔞₀ⁿ` to periods.
   have h_period (γ : n → P.E s) (hγ : γ ∈ idealLattice (P.E s) n) (i : I × n) :
       A i (realImage (star (algebraMap P.K (P.E s) δ) • γ)) ∈ C.Λ := by
-    simpa [A, resolutionLinearForm_realImage, mul_assoc, ← mul_sum] using
-      mul_sum_mul_conj_mem_lattice ha (hγ i.2) (hw.finiteImage_mem i.1)
+    have h_eq : A i (realImage (star (algebraMap P.K (P.E s) δ) • γ)) =
+        b * conj (δ : ℂ) * ∑ τ : InfinitePlace (P.E s), Φ τ (γ i.2) * conj (Φ τ (w i.1)) := by
+      rw [resolutionLinearForm_realImage, mul_assoc]
+      congr 1
+      rw [mul_sum]
+      refine sum_congr rfl fun τ _ ↦ ?_
+      rw [Pi.smul_apply, smul_eq_mul, map_mul, ← map_star_CM, P.phi_algebraMap s τ,
+        coe_star_eq_conj, mul_assoc]
+    rw [h_eq]
+    exact mul_sum_mul_conj_mem_lattice ha (hγ i.2) (hw.finiteImage_mem i.1)
   have hS_theta :
       IsThetaFunction (star (algebraMap P.K (P.E s) δ) • idealLattice (P.E s) n) S := by
     have h_form : fockForm (InfinitePlace (P.E s) × n) = B :=
@@ -909,18 +949,25 @@ lemma exists_isResolutionProduct_of_isTightFrame (V : Space (P.E s) n ε) [hV : 
     have h_traceOne (v : P.Φ s) : Φ v (WeilData.traceOne : P.E s) = quadGen P.d := by
       rw [P.traceOne_eq_betaKInE]
       exact P.phi_algebraMap s v _
-    rw [← normalizedShift_realImage (b := conj (quadGen P.d) • 1) (by simp [h_traceOne]), h_form]
+    rw [← normalizedShift_realImage (b := conj (quadGen P.d) • 1) (fun u x ↦ by
+      rw [h_traceOne, _root_.smul_apply, one_apply_eq_self, Pi.smul_apply, smul_eq_mul]),
+      h_form]
     exact normalizedShift_prod_comp_of_mem_lattice h_shift A (h_period γ hγ)
   have hN_E : algebraMap P.K (P.E s) δ * star (algebraMap P.K (P.E s) δ) = N :=
-    (Φ 1).injective (by simpa using hN)
+    (Φ 1).injective <| by
+      rw [map_mul, ← map_star_CM, P.phi_algebraMap s 1, P.phi_algebraMap s 1, coe_star_eq_conj,
+        map_natCast]
+      exact hN
   obtain ⟨F, hF, hΘ⟩ : ∃ F ∈ V.finitePart, entireTheta F = S :=
     V.exists_entireTheta_eq_of_isThetaFunction (coe_mem_Ô (algebraMap _ _ δ)) hN_ne hN_E hS_theta
   -- Translation by the finite image of `γ` shifts the factor `i` of `entireTheta F` by
   -- `-A i (realImage γ)`.
   have h_prod : IsResolutionProduct V C b w m (fun i ↦ C.monomialSection (x i)) F := by
     refine ⟨hF, fun i ↦ C.differentiable_monomialSection (x i), fun γ z ↦ ?_⟩
-    rw [entireTheta_translate_finiteImage γ V hB, hΘ, thetaShift_prod]
-    simp [A, resolutionLinearForm_realImage, resolutionShift]
+    rw [entireTheta_translate_finiteImage γ V hB, hΘ, thetaShift_prod, Finset.prod_apply]
+    refine prod_congr rfl fun i _ ↦ ?_
+    rw [Function.comp_apply, map_neg, resolutionLinearForm_realImage, ← mul_neg]
+    rfl
   have h_int (p : ℕ) [Fact p.Prime] [PadicPlace p] (y : n → 𝔸f (P.E s)) :
       ‖ιₚ (F (finVec y))‖ ≤ 1 :=
     h_prod.norm_iota_apply_le_one hN_ne hN hw.finiteImage_mem hx ha y

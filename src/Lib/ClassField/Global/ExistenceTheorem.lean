@@ -1,4 +1,21 @@
+module
+
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.Topology.Algebra.Group.OpenMapping
+import Mathlib.Topology.Baire.LocallyCompactRegular
+import TauCeti.Topology.Algebra.Group.Units
+public import Lib.ClassField.GaloisCohomology.TateIndexFormula
+public import Lib.ClassField.Local.ArtinMap
+import Lib.Adelic.Hecke.ClassSums
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.Global.ArtinMap
+import Lib.ClassField.Global.ArtinReciprocity
 import Lib.ClassField.Global.NormTheorems
+import Lib.ClassField.LocalDuality.KummerFiniteness
+import Lib.ClassField.Places.LocalFields
+import Lib.ClassField.Places.TameInertia
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Kummer characters, power indices and the existence theorem for totally complex fields
@@ -33,6 +50,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Global.AlbertBrauerHasseNoether` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 
@@ -127,7 +146,7 @@ lemma index_pow_local_le (v : FinPlace K) :
         Nat.card (valRingBelow (LocField v) (intQpBar p) ⧸
           Ideal.span {(n : valRingBelow (LocField v) (intQpBar p))}) := by
     rw [map_pow, ← FinPlace.q, ← hF.residueCard_eq,
-      (hF.isUniformiser_iff.2 (v_uniformizer v)).card_quotient_span_eq_pow hF.toIsLocalGalois _
+      (hF.isUniformizer_iff.2 (v_uniformizer v)).card_quotient_span_eq_pow hF.toIsLocalGalois _
         h_val]
   rw [h_card, sq, mul_right_comm]
   intro i
@@ -746,12 +765,10 @@ lemma QZChar.commutator_le_commutator_ker {G : Type*} [Group G] [TopologicalSpac
   -- `k` lies in `U`, so its commutators with all of `G` lie in `⁅G, U⁆`, and its class is central.
   have h_exp : expUnit (toHom χ k) = 1 := congrArg Subtype.val (MonoidHom.mem_ker.mp hk')
   have hkU : k ∈ U := MonoidHom.mem_ker.mpr (expUnit_eq_one_iff.mp h_exp)
-  refine mem_center_iff.mpr fun q ↦ ?_
-  obtain ⟨g, rfl⟩ := mk_surjective q
-  have h_comm : g * k * g⁻¹ * k⁻¹ ∈ ⁅(⊤ : Subgroup G), U⁆ :=
-    commutator_mem_commutator (mem_top g) hkU
-  rwa [← commutatorElement_eq_one_iff_mul_comm, commutatorElement_def, ← mk_inv, ← mk_inv,
-    ← mk_mul, ← mk_mul, ← mk_mul, QuotientGroup.eq_one_iff]
+  have h_center : U.map (mk' ⁅(⊤ : Subgroup G), U⁆) ≤ Subgroup.center _ := by
+    rw [← commutator_top_left_eq_bot_iff_le_center, ← map_top_of_surjective _ (mk'_surjective _),
+      ← map_commutator, map_mk'_self]
+  exact h_center ⟨k, hkU, rfl⟩
 
 omit [NumberField K] in
 /-- Let `χ` be a continuous character of `Γ` with values in `ℚ/ℤ` such that `Γ ⧸ ker χ` is finite,
@@ -771,7 +788,7 @@ private lemma QZChar.topologicalClosure_commutator_le_map_ker (χ : QZChar Γ) [
     exact ⟨_, h_mem, division_def _ _⟩
   have h_ker_closed : IsClosed ((ker χ : Subgroup Γ) : Set Γ) := inferInstance
   exact closure_minimal h_comm
-    (h_ker_closed.isClosedMap_subtype_val _ (isClosed_singleton.preimage hμ_cont))
+    (h_ker_closed.isClosedMap_subtypeVal _ (isClosed_singleton.preimage hμ_cont))
 
 /-- Let `Γ` be the Galois group of `Ω/K` for the algebraic closure `Ω` of `ℚ`. Let `χ` be a
 continuous character of `Γ` with values in `ℚ/ℤ` such that `Γ ⧸ ker χ` is finite, let `L` be the
@@ -779,7 +796,7 @@ fixed field of `ker χ`, and let `ψ` be a continuous character of the finite id
 homomorphism `μ` on `ker χ` with `μ k = ψ (N z)` whenever the class of `k` is the Artin symbol over
 `L` of `z`, where `N` is the norm from `L` to `K`, is invariant under conjugation by `Γ`: the norm
 does not see the action of `Γ` on `L`. -/
-private lemma map_conjNormal_eq_of_forall_artinMap_eq (χ : QZChar Γ) [Finite (Γ ⧸ ker χ)]
+private lemma map_conjNormal_eq_of_forall_artinMap_eq (χ : QZChar Γ)
     (ψ : QZChar (𝔸f K)ˣ) (μ : ker χ →* Multiplicative QZ)
     (hμ : ∀ (z : (𝔸f (fixedFieldOf (K := K) (Ω := Ω) (ker χ)))ˣ) (k : ker χ),
       artinMap (ker χ) z = k →
@@ -994,12 +1011,12 @@ lemma OddPart.exists_detecting_points_hom [IsTotallyComplex K] (m : ℕ)
       abelianLift (χ f) a = 1 := by
     have h_conj (c : Γ) (hc : IsComplexConj c) : (χ f).val c = 0 :=
       (hc.false_of_isTotallyComplex (K := K)).elim
-    have h_decomp (w : FinPlace K) (_hw : w ∈ S) (g : Γ) (_hg : g ∈ decompGroup Γ (placeOver w)) :
+    have h_decomp (g : Γ) :
         m • (χ f).val g = 0 := by simp [χ, ← map_nsmul, hx.nsmul_eq_zero]
     have h_inertia (w : FinPlace K) (hw : w ∉ S) (g : Γ) (hg : g ∈ inertiaGroup Γ (placeOver w)) :
         (χ f).val g = 0 := by simp [χ, hx.unramified w hw g hg]
     have h_le : H ≤ (abelianLift (χ f)).ker := map_le_iff_le_comap.mpr
-      (sup_le_ker_abelianLift_artinMap S m (χ f) h_conj h_decomp h_inertia)
+      (sup_le_ker_abelianLift_artinMap S m (χ f) h_conj (fun _ _ g _ ↦ h_decomp g) h_inertia)
     exact h_le ((QuotientGroup.eq_one_iff a).mp (ε.map_eq_one_iff.mp ha))
   refine ⟨fun i ↦ eq_zero_of_forall_hom_eq_zero fun f ↦ ?_,
     fun h_zero ↦ funext fun g ↦ eq_zero_of_forall_hom_eq_zero fun f ↦ ?_⟩

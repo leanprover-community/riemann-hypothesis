@@ -1,4 +1,12 @@
-import Lib.Adelic.Adeles.IdeleModulus
+module
+
+import Mathlib.Analysis.Convex.Integral
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.ProperConstSMul
+import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.NumberTheory.NumberField.Countable
+public import Lib.Adelic.Adeles.IdeleModulus
+import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
 # Idelic theta sums over principal ideles as Riemann sums
@@ -16,9 +24,9 @@ the principal ideles. It writes theta sums as Riemann sums over the image of `K`
 * `New.ZetaIntegral.adelicTent r d`: a tent of height and radius `r` at `1` times the indicator of
   `d * (x - 1) ∈ Ô`.
 * `New.ZetaIntegral.thetaSum d r b`: the sum of the tent over the coset of `b` modulo the
-  principal ideles. `New.ZetaIntegral.exists_abs_sub_thetaSum_le_mul_rpow`: `thetaSum d (r / 3) b`
+  principal ideles. `New.ZetaIntegral.exists_abs_sub_thetaSum_le`: `thetaSum d (r / 3) b`
   depends only on the module `l` of `b`, up to an error: for each `l > 0` some `i` has
-  `|i - thetaSum d (r / 3) b| ≤ C * l ^ δ * thetaSum d r b` for all `b` of module `l`.
+  `|i - thetaSum d (r / 3) b| ≤ C * l ^ δ * |thetaSum d r b|` for all `b` of module `l`.
 
 Notions from other files:
 * `New.finIdeleAbs`: The module |x| of a finite idele x: the adelic absolute value of the idele with
@@ -29,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.HeckeL.ContinuationAtOne` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -52,12 +62,9 @@ lemma abs_max_sub_max_le_mul_max {r ε D D' : ℝ} (hr : 0 < r) (hε : 0 < ε)
     rw [h_max_low, h_max_mid, sub_zero, abs_zero]
     positivity
   · -- The tent loses at most `2 * ε * r / 3`, while `r - D > 2 * r / 3`.
-    have h_max_mid : max (r / 3 - D) 0 = r / 3 - D := max_eq_left (by linarith)
-    have h_max_top : max (r - D) 0 = r - D := max_eq_left (by linarith)
-    have h_ε_le : ε * (2 * r / 3) ≤ ε * (r - D) := mul_le_mul_of_nonneg_left (by linarith) hε.le
-    have h_low_le : max ((r - ε * r) / 3 - D') 0 ≤ r / 3 - D := max_le (by linarith) (by linarith)
-    rw [h_max_mid, h_max_top, abs_le]
-    exact ⟨by linarith [le_max_left ((r - ε * r) / 3 - D') 0], by linarith⟩
+    have h_top := mul_le_mul_of_nonneg_left (le_max_left (r - D) 0) hε.le
+    have h_εD := mul_lt_mul_of_pos_left hD_lt hε
+    exact (abs_max_sub_max_le_abs _ _ 0).trans (abs_le.mpr ⟨by linarith, by linarith⟩)
 
 namespace New.ZetaIntegral
 
@@ -142,11 +149,19 @@ lemma ideleModule_principal_eq_one : ∀ γ : principalIdeles K, ideleModule γ.
   simp [principalIdeles, ideleModule, finIdeleAbs_principalIdele, field, h_norm]
 
 open scoped Classical in
+/-- The adelic tent is nonzero exactly on the open ball of radius `r` at infinity
+and the coset `1 + d⁻¹ Ô` at the finite places. -/
+lemma adelicTent_ne_zero_iff {x : mixedSpace K × 𝔸f K} :
+    adelicTent r d x ≠ 0 ↔ dist x.fst 1 < r ∧ d.val * (x.snd - 1) ∈ Ô K := by
+  by_cases h : d.val * (x.snd - 1) ∈ Ô K <;> simp [adelicTent, h]
+
+open scoped Classical in
 /-- Where `adelicTent r d` is nonzero, the infinite part is within `r` of `1` and `d` times the
 finite part minus `1` is integral. -/
 lemma dist_le_and_mem_of_adelicTent_ne_zero {x : mixedSpace K × 𝔸f K}
     (hx : adelicTent r d x ≠ 0) : dist x.fst 1 ≤ r ∧ d.val * (x.snd - 1) ∈ Ô K := by
-  grind [adelicTent]
+  obtain ⟨h_dist, h_mem⟩ := (adelicTent_ne_zero_iff r d).mp hx
+  exact ⟨h_dist.le, h_mem⟩
 
 /-- The tent `adelicTent r d`, composed with multiplication by an idele `a`, has compact support. -/
 lemma hasCompactSupport_adelicTent_mul :
@@ -275,13 +290,10 @@ lemma hasSum_adelicTent_mul_range
     have hy_ne_zero : y ≠ 0 := fun hy_zero ↦ hy (by simp [f, hy_zero, hρ])
     exact ⟨⟨_, .mk0 y hy_ne_zero, rfl⟩, rfl⟩
   -- Only finitely many points of the discrete `j.range` lie in the compact support of `f`.
-  have h_fin_supp : Function.HasFiniteSupport fun y : j.range ↦ f y := by
-    have h_cocompact : (Function.support f)ᶜ ∈ Filter.cocompact (mixedSpace K × 𝔸f K) :=
-      Filter.mem_cocompact'.mpr ⟨_, hasCompactSupport_adelicTent_mul ρ d (b * γ),
-        (compl_compl (Function.support f)).symm ▸ subset_tsupport f⟩
-    have h_fin := tendsto_coe_cofinite_of_isDiscrete _ ⟨h_disc⟩ h_cocompact
-    rw [Filter.mem_map, Filter.mem_cofinite, ← Set.preimage_compl, compl_compl] at h_fin
-    exact h_fin
+  have h_fin_supp : Function.HasFiniteSupport fun y : j.range ↦ f y :=
+    tendsto_coe_cofinite_of_isDiscrete _ ⟨h_disc⟩ <|
+      (Filter.mem_cocompact' (s := {x | f x = 0})).mpr
+        ⟨_, hasCompactSupport_adelicTent_mul ρ d (b * γ), subset_tsupport f⟩
   rw [(summable_of_hasFiniteSupport h_fin_supp).hasSum_iff]
   calc ∑' y : j.range, f y
       = ∑' γ' : principalIdeles K, f (g γ') :=
@@ -300,7 +312,7 @@ lemma volume_preimage_idele_mul_adelicBox {t ρ : ℝ} (ht : 0 < t) (b : (mixedS
     volume ((b.map val val * ·) ⁻¹' adelicBox d (t * ρ)) =
       ENNReal.ofReal ((ideleModule b)⁻¹ * t ^ finrank ℚ K) * volume (adelicBox d ρ) := by
   rw [(measurePreserving_idele_mul b).measure_preimage (isOpen_adelicBox d _).nullMeasurableSet,
-    Measure.smul_apply, _root_.smul_eq_mul, ENNReal.ofReal_mul (by simp [le_of_lt]), mul_assoc]
+    smul_apply, _root_.smul_eq_mul, ENNReal.ofReal_mul (by simp [le_of_lt]), mul_assoc]
   simp only [adelicBox, Measure.volume_eq_prod (mixedSpace K) (𝔸f K), Measure.prod_prod,
     addHaar_ball_mul_of_pos volume (0 : mixedSpace K) ht ρ, mixedEmbedding.finrank, mul_assoc]
 
@@ -346,15 +358,15 @@ def thetaSum (ρ : ℝ) (b : (mixedSpace K)ˣ × (𝔸f K)ˣ) : ℝ :=
   ∑' γ : principalIdeles K, adelicTent ρ d ((γ.val * b).map val val)
 
 open scoped Pointwise in
-/-- Let `0 < r < 1`, and for an idele `b` let `thetaSum d ρ b` be the sum of the adelic tent
-`adelicTent ρ d` of radius `ρ` (built from the finite idele `d`) over the coset of `b` modulo the
-principal ideles `Kˣ`. There are `δ > 0` and `C > 0` such that for every `l > 0` some number `i` is
-within `C * l ^ δ * thetaSum d r b` of `thetaSum d (r / 3) b`, for all ideles `b` of module `l`. The
-bound on `r` makes the tents of radius `r` and `r / 3` vanish at `0`, so the theta sums may be taken
-over all of `K`. -/
-lemma exists_abs_sub_thetaSum_le_mul_rpow (hr_pos : 0 < r) (hr : r < 1) :
-    ∃ δ > (0 : ℝ), ∃ C > (0 : ℝ), ∀ l > (0 : ℝ), ∃ i : ℝ, ∀ b : (mixedSpace K)ˣ × (𝔸f K)ˣ,
-      ideleModule b = l → |i - thetaSum d (r / 3) b| ≤ C * l ^ δ * thetaSum d r b := by
+/-- The principal ideles are discrete. Let `0 < r < 1` and let `thetaSum d ρ b` be the sum of the
+adelic tent of radius `ρ` over the coset of `b` modulo the principal ideles. There are `δ > 0` and
+`C` such that for every `l > 0` some number `i` is within `C * l ^ δ * |thetaSum d r b|` of
+`thetaSum d (r / 3) b`, for all ideles `b` of module `l`. The bound on `r` makes the tents of radius
+`r` and `r / 3` vanish at `0`, so the theta sums may be taken over all of `K`. -/
+lemma exists_abs_sub_thetaSum_le (hr_pos : 0 < r) (hr : r < 1) :
+    DiscreteTopology (principalIdeles K) ∧
+    ∃ δ > (0 : ℝ), ∃ C : ℝ, ∀ l > (0 : ℝ), ∃ i : ℝ, ∀ b : (mixedSpace K)ˣ × (𝔸f K)ˣ,
+      ideleModule b = l → |i - thetaSum d (r / 3) b| ≤ C * l ^ δ * |thetaSum d r b| := by
   classical
   -- Take a fundamental domain `F` of volume one for `K` in its adeles. Blichfeldt's lemma moves `b`
   -- by a principal idele `γ` to a small `b * γ`; then `thetaSum d (r / 3) b` is a Riemann sum, over
@@ -375,8 +387,8 @@ lemma exists_abs_sub_thetaSum_le_mul_rpow (hr_pos : 0 < r) (hr : r < 1) :
     (isOpen_adelicBox d _).measure_ne_zero volume ⟨0, by simpa [adelicBox] using hr_pos⟩
   obtain ⟨n, hn, hn_vol⟩ : ∃ n : ℕ, 0 < n ∧ 1 < (n : ℝ≥0∞) * volume (adelicBox d (r / 6)) :=
     exists_nat_pos_mul_gt h_box_ne_zero one_ne_top
-  refine ⟨(finrank ℚ K : ℝ)⁻¹, by simp [finrank_pos], R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹,
-    by positivity, fun l hl ↦ ?_⟩
+  refine ⟨discreteTopology_principalIdeles h_disc, (finrank ℚ K : ℝ)⁻¹, by simp [finrank_pos],
+    R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹, fun l hl ↦ ?_⟩
   let t : ℝ := ((n : ℝ) * l) ^ (finrank ℚ K : ℝ)⁻¹
   have ht : 0 < t := by positivity
   refine ⟨integral (ENNReal.ofReal l⁻¹ • volume) (adelicTent ((r - R * t * r) / 3) d),
@@ -422,27 +434,8 @@ lemma exists_abs_sub_thetaSum_le_mul_rpow (hr_pos : 0 < r) (hr : r < 1) :
       ≤ R * t * thetaSum d r b := h_bound
     _ = R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹ * l ^ (finrank ℚ K : ℝ)⁻¹ * thetaSum d r b := by
         rw [mul_assoc R ((n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹), ← Real.mul_rpow n.cast_nonneg hl.le]
-
-open scoped Pointwise in
-/-- Let `0 < r < 1`, and let `Θ r b` be the theta sum `thetaSum d r b`. (a) The principal ideles
-are discrete. (b) The estimate of `exists_abs_sub_thetaSum_le_mul_rpow`, with `|Θ r b|` in the
-bound. -/
-lemma exists_abs_sub_thetaSum_le (hr_pos : 0 < r) (hr : r < 1) :
-    let Θ (r : ℝ) (b : (mixedSpace K)ˣ × (𝔸f K)ˣ) :=
-      ∑' γ : principalIdeles K, adelicTent r d ((γ.val * b).map val val)
-    DiscreteTopology (principalIdeles K) ∧
-    ∃ δ > (0 : ℝ), ∃ C : ℝ, ∀ l > (0 : ℝ), ∃ i : ℝ, ∀ b : (mixedSpace K)ˣ × (𝔸f K)ˣ,
-      ideleModule b = l → |i - Θ (r / 3) b| ≤ C * l ^ δ * |Θ r b| := by
-  classical
-  intro Θ
-  have : IsAddHaarMeasure (volume : Measure (mixedSpace K × 𝔸f K)) := prod.instIsAddHaarMeasure ..
-  obtain ⟨R, -, h_fund⟩ :=
-    exists_hasFundDomain (mixedEmbedding K) (.refl ℝ (mixedSpace K)) (.id volume) fun _ ↦ rfl
-  obtain ⟨δ, hδ, C, hC, h_approx⟩ := exists_abs_sub_thetaSum_le_mul_rpow r d hr_pos hr
-  refine ⟨discreteTopology_principalIdeles h_fund.isCovolOneLattice.toDiscreteTopology, δ, hδ, C,
-    fun l hl ↦ ?_⟩
-  obtain ⟨i, hi⟩ := h_approx l hl
-  exact ⟨i, fun b hb ↦ (hi b hb).trans (mul_le_mul_of_nonneg_left (le_abs_self _) (by positivity))⟩
+    _ ≤ R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹ * l ^ (finrank ℚ K : ℝ)⁻¹ * |thetaSum d r b| :=
+        mul_le_mul_of_nonneg_left (le_abs_self _) (by positivity)
 
 end New.ZetaIntegral
 

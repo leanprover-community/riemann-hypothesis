@@ -1,5 +1,13 @@
+module
+
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Weil.Periods.Grading
+public import Lib.DiscreteSeries.Bessel.Basic
 import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
-import Lib.Weil.Periods.Grading
+import Lib.DiscreteSeries.Bruhat.FloorMeasures
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.GramPolar
 
 /-!
 # The group of the Bessel period at a real place
@@ -16,6 +24,8 @@ Here a shape `𝔰` gives the number of hyperbolic planes and the index set `κ`
 
 Known; see `Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure` for sources.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory Subgroup
 
@@ -65,8 +75,8 @@ instance : SecondCountableTopology 𝔰.besselGraph :=
 @[simps!]
 def Shape.besselGraphChart :
     (𝔰.middleGram (1 : ℂ)).besselU × U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) ≃ₜ 𝔰.besselGraph where
-  toFun q := ⟨(embedH q.2 * q.1.1, q.2), by simp [Shape.mem_besselGraph]⟩
-  invFun s := (⟨(embedH s.1.2)⁻¹ * s.1.1, s.2⟩, s.1.2)
+  toFun q := ⟨(embedH q.2 * q.1.val, q.2), by simp [Shape.mem_besselGraph]⟩
+  invFun s := (⟨(embedH s.val.2)⁻¹ * s.val.1, s.property⟩, s.val.2)
   left_inv q := by simp
   right_inv s := by simp
 
@@ -89,7 +99,7 @@ instance Shape.besselGraphMeasure_isMulRightInvariant :
   -- `h'⁻¹` preserves `du`.
   refine ⟨𝔰.besselGraphChart.surjective.forall.2 fun (u', h') ↦ ?_⟩
   let conj (u : (𝔰.middleGram (1 : ℂ)).besselU) : (𝔰.middleGram (1 : ℂ)).besselU :=
-    ⟨embedH h'⁻¹ * u * (embedH h'⁻¹)⁻¹, (𝔰.embedH_conj_mem_besselU_iff h'⁻¹ _).2 u.2⟩
+    ⟨embedH h'⁻¹ * u * (embedH h'⁻¹)⁻¹, (𝔰.embedH_conj_mem_besselU_iff h'⁻¹ _).2 u.property⟩
   have h_conj : MeasurePreserving conj 𝔰.besselHaar 𝔰.besselHaar :=
     measurePreserving_conj_bessel mem_besselU besselS_le_normalizer_besselU
       (𝔰.embedH_mem_besselS h'⁻¹)
@@ -107,7 +117,7 @@ instance Shape.besselGraphMeasure_isMulLeftInvariant :
   -- each `h` this is a left translation of `U`.
   refine ⟨𝔰.besselGraphChart.surjective.forall.2 fun (u', h') ↦ ?_⟩
   let c (k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) : (𝔰.middleGram (1 : ℂ)).besselU :=
-    ⟨embedH k⁻¹ * u' * (embedH k⁻¹)⁻¹, (𝔰.embedH_conj_mem_besselU_iff k⁻¹ _).2 u'.2⟩
+    ⟨embedH k⁻¹ * u' * (embedH k⁻¹)⁻¹, (𝔰.embedH_conj_mem_besselU_iff k⁻¹ _).2 u'.property⟩
   have h_skew : MeasurePreserving (fun q ↦ (h' * q.1, c q.1 * q.2))
       (volume.prod 𝔰.besselHaar) (volume.prod 𝔰.besselHaar) :=
     (measurePreserving_mul_left volume h').skew_product (by fun_prop)
@@ -133,8 +143,7 @@ seal Finset.sum in
 lemma besselGraph_fst_mem_besselS (s : 𝔰.besselGraph) :
     (s : 𝔰.G₁ × U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)).1 ∈ besselS := by
   obtain ⟨⟨g, h⟩, h_mem⟩ := s
-  have h_unipotent : g * (embedH h)⁻¹ ∈ besselU :=
-    (Shape.mem_besselGraph_iff_mul_inv_mem (s := (g, h))).1 h_mem
+  have h_unipotent : g * (embedH h)⁻¹ ∈ besselU := Shape.mem_besselGraph_iff_mul_inv_mem.1 h_mem
   exact mem_besselS.2 ⟨g * (embedH h)⁻¹, h_unipotent, embedH h, toBesselH_mem h, by simp⟩
 
 variable {ε : 𝔰.BesselIndex → ℤˣ} [SignFrame 𝔰.J₁ ε] {I : Type*} [Fintype I] [DecidableEq I]
@@ -147,8 +156,8 @@ coefficient read in the frame of `SignFrame`, a unitary representation `rep` of 
 the scalar `wave (-simpleRootSum g)` times `rep h⁻¹` (through `besselValueRep`), where
 `wave c = exp (c - conj c)` and `simpleRootSum` is the sum of the superdiagonal frame entries. -/
 def besselIntegrand (y : 𝔰.G₁) (s : 𝔰.besselGraph) : EuclideanSpace ℂ I :=
-  l.dsCoeffInFrame (x⁻¹ * (s.1.1 * y)) • wave (-simpleRootSum s.1.1) •
-    (besselValueRep rep s.1.2⁻¹).1 v
+  l.dsCoeffInFrame (x⁻¹ * (s.val.1 * y)) • wave (-simpleRootSum s.val.1) •
+    (besselValueRep rep s.val.2⁻¹).val v
 
 /-- The integral `∫_R c_λ(x⁻¹ s y) π(s)⁻¹ v ds` over `R` with the measure `du dh`, which defines
 the Bessel function. -/

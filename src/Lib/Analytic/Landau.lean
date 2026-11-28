@@ -1,4 +1,12 @@
-import Lib.Analytic.EntireLFunction
+module
+
+public import Mathlib.Probability.Moments.ComplexMGF
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.HalfPlane
+import Mathlib.Analysis.Complex.TaylorSeries
+import Mathlib.Analysis.Meromorphic.Order
+import Mathlib.MeasureTheory.Order.Group.Lattice
+public import Lib.Analytic.EntireLFunction
 
 /-!
 # Landau's lemma
@@ -29,6 +37,8 @@ simple poles whose residues at real points have non-negative real part: no pole 
 of the abscissa given by the one-sided bound. Source: Montgomery and Vaughan, Multiplicative
 Number Theory I, 2007, Lemma 15.1 (Widder, The Laplace Transform, 1941, II Thm 5b).
 -/
+
+@[expose] public section
 
 open ArithmeticFunction DirichletCharacter Complex Set Filter MeasureTheory Metric ProbabilityTheory
   Nat Topology ComplexOrder AnalyticOnNhd Real
@@ -69,13 +79,13 @@ lemma mem_integrableExpSet_of_summable_taylor {μ : Measure ℝ} {X : ℝ → �
       simp_rw [taylor, hg_eq.iteratedDeriv_eq, iteratedDeriv_complexMGF (z := z) hz, term_eq,
         integral_const_mul, smul_eq_mul, ← ofReal_natCast]
       norm_cast
-    simp_rw [← ofReal_integral_norm_eq_lintegral_enorm integrable,
+    simp_rw [← ofReal_integral_norm_eq_lintegral_eNorm integrable,
       Real.norm_of_nonneg (term_nonneg _ _), taylor_eq]
   change Integrable (fun y : ℝ ↦ (σ * X y).exp) μ
   refine ⟨by fun_prop, ?_⟩
   calc
     ∫⁻ y, ‖(σ * X y).exp‖ₑ ∂μ = ∫⁻ y, ‖∑' k, term k y‖ₑ ∂μ := by simp only [tsum_term]
-    _ ≤ ∫⁻ y, ∑' k, ‖term k y‖ₑ ∂μ := lintegral_mono fun y ↦ enorm_tsum_le_tsum_enorm
+    _ ≤ ∫⁻ y, ∑' k, ‖term k y‖ₑ ∂μ := lintegral_mono fun y ↦ eNorm_tsum_le_tsum_eNorm
     _ = ∑' k, .ofReal (taylor k) := by rw [lintegral_tsum (by fun_prop), tsum_congr lintegral_term]
     _ < ⊤ := (hasSum_re hg.hasSum).summable.tsum_ofReal_lt_top
 
@@ -151,9 +161,9 @@ lemma eventuallyEq_of_eq_far_right {f g : ℂ → ℂ} {a b : ℝ} (hf : Meromor
   have order_s₀ : meromorphicOrderAt (f - g) s₀ = ⊤ :=
     meromorphicOrderAt_eq_top_iff.mpr <| eventually_nhdsWithin_of_eventually_nhds <|
       mem_of_superset ((isOpen_re_gt b).mem_nhds hbs₀) fun z hz ↦ sub_eq_zero.mpr (hfg z hz)
-  exact eventuallyEq_iff_sub.mpr <| meromorphicOrderAt_eq_top_iff.mp <| by_contra fun hne ↦
-    (hf.sub hg).meromorphicOrderAt_ne_top_of_isPreconnected
-      (convex_halfSpace_re_gt a).isPreconnected hρ has₀ hne order_s₀
+  exact eventuallyEq_iff_sub.mpr <| meromorphicOrderAt_eq_top_iff.mp <|
+    (hf.sub hg).meromorphicOrderAt_eq_top_of_isPreconnected
+      (convex_halfSpace_re_gt a).isPreconnected has₀ hρ order_s₀
 
 /-- **Landau's lemma.** Let `X ≤ 0` be measurable and let the moment generating function
 `s ↦ ∫ exp (s X) ∂μ` converge to the right of `a`. If it agrees near the real points `x > a` close
@@ -206,7 +216,7 @@ lemma exists_Ioi_subset_integrableExpSet {μ : Measure ℝ} {X : ℝ → ℝ} (h
   obtain ⟨p, hp⟩ : AnalyticAt ℂ G a :=
     MeromorphicAt.analyticAt (by fun_prop) (by simpa [continuousAt_iff_punctured_nhds, G])
   refine exists_Ioi_subset_integrableExpSet_of_analyticAt hX hX_nonpos ha
-    hp.has_fpower_series_dslope_fslope.analyticAt ?_
+    hp.dslope_fslope.analyticAt ?_
   filter_upwards [eq_near, self_mem_nhdsWithin] with x hΨx (hx : a < x) using
     ((eqOn_dslope_sub_smul Ψ a).eventuallyEq_of_mem
       (isOpen_ne.mem_nhds (ofReal_injective.ne hx.ne'))).trans hΨx
@@ -217,7 +227,8 @@ Suppose `IsPolar E r`: `|E v| ≤ C e^v` for `v ≥ 0` and the transform
 in `re ρ > 0`. Let `β > 0`. If `E(v) ≤ A e^{(β-1)v}` for all large `v` and the residues at real points
 right of `β` have real part `≥ 0`, then there is no pole in `re s > β`, that is, `r ρ = 0`. -/
 lemma IsPolar.landau {r : ℂ → ℂ} (h : IsPolar E r) {A β : ℝ} (hβ : 0 < β)
-    (hr : ∀ x : ℝ, β < x → 0 ≤ (r x).re) (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ A * Real.exp ((β - 1) * v))
+    (hr : ∀ x : ℝ, β < x → 0 ≤ (r x).re)
+    (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ A * Real.exp ((β - 1) * v))
     {ρ : ℂ} (hρ : β < ρ.re) :
     r ρ = 0 := by
   -- `Ψ(s) = K / (s - β) - Φ(s)` continues the Laplace transform `F` of a measure. Let `a` be the

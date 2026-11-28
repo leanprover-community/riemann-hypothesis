@@ -1,4 +1,13 @@
-import Lib.SiegelWeil.Mass
+module
+
+import Mathlib.MeasureTheory.Integral.Layercake
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.NumberTheory.NumberField.Countable
+public import Lib.SiegelWeil.Mass
+public import Lib.Adelic.Adeles.LocalFactors
+import Lib.Adelic.Reduction.FirstMinimumShortBases
 
 /-!
 # Products of completions at finite sets of places and approximation of adeles by elements of E
@@ -32,6 +41,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.Adeles.Basic` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -97,7 +108,7 @@ variable {E : Type} [Field E] [NumberField E] (P : Finset (FinPlace E))
 /-- The ring homomorphism sending a finite adele to its components at the places of the finite
 set `P`. -/
 @[simps!]
-noncomputable def evalPlaces : 𝔸f E →+* LocProd P := RingHom.pi fun w ↦ evalAt w.1
+noncomputable def evalPlaces : 𝔸f E →+* LocProd P := RingHom.pi fun w ↦ evalAt w.val
 
 open scoped Classical in
 /-- Extension by zero: the additive and multiplicative map from the product of the completions
@@ -183,9 +194,6 @@ lemma mem_integralOff {x : 𝔸f E} :
 lemma isOpen_integralOff : IsOpen (integralOff S : Set (𝔸f E)) :=
   AddSubgroup.isOpen_mono (H₁ := (Ô E).toAddSubgroup) (H₂ := (integralOff S).toAddSubgroup)
     (fun _ hx ↦ (mem_integralOff S).2 fun w _ ↦ mem_Ô.1 hx w) isOpen_Ô
-
-lemma evalAt_adeleOfLocal_of_notMem {w : FinPlace E} (hw : w ∉ S) (x : LocProd S) :
-    evalAt w (adeleOfLocal S x) = 0 := dite_eq_right hw
 
 @[simp]
 lemma adeleOfLocal_mem_integralOff (x : LocProd S) : adeleOfLocal S x ∈ integralOff S :=
@@ -357,21 +365,15 @@ lemma sqrt_genIndex_le_prod_norm [IsTotallyComplex E] [PlaceEmbedding E] {y : E}
   let f (w : FinPlace E) : ℝ := ‖algebraMap E (𝔸f E) y w‖
   have hf_fin : HasFiniteMulSupport f :=
     (hasFiniteMulSupport hy_ne).preimage (f := equivHeightOneSpectrum.symm) (by simp)
-  have h_index : genIndex (ratToPlaces S y) = (∏ w ∈ S, f w)⁻¹ :=
-    (genIndex_eq_inv_prod_norm S _).trans (congrArg (·⁻¹) (S.prod_coe_sort f))
-  have h_inv_le : |(Algebra.norm ℚ y : ℝ)|⁻¹ ≤ ∏ w ∈ S, f w :=
-    calc |(Algebra.norm ℚ y : ℝ)|⁻¹
-      _ = ∏ᶠ w : FinitePlace E, w y := mod_cast (prod_eq_inv_abs_norm hy_ne).symm
-      _ = ∏ w ∈ S ∪ hf_fin.toFinset, f w :=
-        (finprod_comp_equiv equivHeightOneSpectrum.symm).symm.trans
-          (finprod_eq_prod_of_mulSupport_toFinset_subset f hf_fin subset_union_right)
-      _ ≤ ∏ w ∈ S, f w := prod_le_prod_of_subset_of_le_one₀ subset_union_left
-        (fun w _ ↦ norm_nonneg _) fun w _ hw ↦ by simpa [f] using (mem_integralOff S).1 hy_int w hw
-  rw [Real.sqrt_le_left (by positivity)]
-  calc genIndex (ratToPlaces S y)
-    _ = (∏ w ∈ S, f w)⁻¹ := h_index
-    _ ≤ |(Algebra.norm ℚ y : ℝ)| := inv_le_of_inv_le₀ (by simp [hy_ne]) h_inv_le
-    _ = (∏ v : InfinitePlace E, ‖Φ v y‖) ^ 2 := by rw [abs_norm_eq_prod_norm_sq, prod_pow]
+  have h_eq : |(Algebra.norm ℚ y : ℝ)|⁻¹ = ∏ w ∈ S ∪ hf_fin.toFinset, f w :=
+    (by exact_mod_cast (prod_eq_inv_abs_norm hy_ne).symm : _ = ∏ᶠ w : FinitePlace E, w y).trans <|
+      (finprod_comp_equiv equivHeightOneSpectrum.symm).symm.trans
+        (finprod_eq_prod_of_mulSupport_toFinset_subset f hf_fin subset_union_right)
+  rw [Real.sqrt_le_left (by positivity), genIndex_eq_inv_prod_norm, ← prod_pow,
+    ← abs_norm_eq_prod_norm_sq]
+  refine inv_le_of_inv_le₀ (by simp [hy_ne]) (h_eq.trans_le <| (prod_le_prod_of_subset_of_le_one₀
+    subset_union_left (fun _ _ ↦ norm_nonneg _) fun w _ hw ↦ by
+      simpa [f] using (mem_integralOff S).1 hy_int w hw).trans_eq (S.prod_coe_sort f).symm)
 
 /-! ### The involution -/
 

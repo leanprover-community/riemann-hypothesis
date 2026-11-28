@@ -1,4 +1,11 @@
-import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+module
+
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Topology.Connected.Separation
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 
 /-!
 # Profinite Galois groups: continuity, restriction maps and the Galois correspondence
@@ -27,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 open Function MulSemiringAction InfiniteGalois Subgroup Units IntermediateField IsScalarTower Module
   Fact Subtype DFunLike MulAction Topology algebraMap

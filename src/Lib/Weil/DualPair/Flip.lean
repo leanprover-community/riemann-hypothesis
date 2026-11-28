@@ -1,4 +1,12 @@
+module
+
+public import Lib.General.Analysis.FiniteFourier
+public import Lib.Weil.DualPair.FiniteAction
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.Cohomology.Etale.Basic
+import Lib.Weil.Construction.CanonicalTheta
 import Lib.Weil.DualPair.KernelLaws
+import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Flipping a dual pair by adjoints: Weil actions and theta kernels modulo ideals
@@ -48,6 +56,8 @@ Notions from other files:
 Known; see `Lib.Weil.DualPair.ThetaLiftConvergence` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New
@@ -87,7 +97,7 @@ def flipCoords : CoordChange E (.id ℂ) (homSigns t s) (homSigns s t') where
   finEquiv := starCoordEquiv (.prodComm ..) fun _ ↦ c.map (Ô E).subtype
   apply_adelicSum := by
     -- In the finite part the factors `star α` and `star α⁻¹` cancel.
-    simp [adelicSum, val_scaleIdele_fst, val_scaleIdele_snd, ← mul_assoc, mul_comm,
+    simp [adelicSum, val_scaleIdele_fst, val_scaleIdele_snd, ← mul_assoc,
       starCoordEquiv, val_flipIdele, _root_.funext_iff, Prod.ext_iff]
     grind [star_mul', star_one, α.mul_inv]
   beta_realEquiv := by
@@ -101,14 +111,14 @@ def flipCoords : CoordChange E (.id ℂ) (homSigns t s) (homSigns s t') where
       starCoordEquiv, sum_prod_type]
   selfDualAddChar_finEquiv := by
     -- The sign from `star c * c = -1` is made up for by `selfDualAddChar_star`.
-    simp_all [dotProduct, Finset.sum_comm (γ := a), mul_right_comm _ _ (star c.1.1), ← mul_assoc,
-      mul_comm, ← selfDualAddChar_star, star_half, starCoordEquiv, sum_prod_type]
+    simp_all [dotProduct, Finset.sum_comm (γ := a), mul_right_comm _ _ (star c.val.val),
+      ← mul_assoc, mul_comm, ← selfDualAddChar_star, star_half, starCoordEquiv, sum_prod_type]
   dot_finEquiv := by
-    simp_all [dotProduct, Finset.sum_comm (γ := a), mul_right_comm _ _ (star c.1.1), ← mul_assoc,
-      mul_comm, starCoordEquiv, sum_prod_type]
+    simp_all [dotProduct, Finset.sum_comm (γ := a), mul_right_comm _ _ (star c.val.val),
+      ← mul_assoc, mul_comm, starCoordEquiv, sum_prod_type]
   finEquiv_mem x := by
     -- Both the unit `c` and conjugation preserve `Ô E`.
-    erw [Submodule.smul_mem_iff' _ c]
+    refine (Submodule.smul_mem_iff' _ c).trans ?_
     simp [intVectors, stdLattice]
     grind [star_star, star_mem_Ô]
 
@@ -120,7 +130,7 @@ diag(t) at the infinite places and the identity at the finite places. It then sc
 reads the result back as a vector on pairs. -/
 lemma flipCoords_apply (hc : star (c : 𝔸f E) * c = -1) (ht : t' = -t) (x : a × n → 𝔸 E) :
     (flipCoords (s := s) hc ht).φ x =
-      matrixToVec ((flipIdele c 1).1 • (stdForm E s * (vecToMatrix x)ᴴ * stdForm E t)) := by
+      matrixToVec ((flipIdele c 1).val • (stdForm E s * (vecToMatrix x)ᴴ * stdForm E t)) := by
   simp [flipCoords, stdForm, matrixToVec, vecToMatrix, field, starCoordEquiv, pairSign,
     val_flipIdele, _root_.funext_iff, Prod.ext_iff]
 
@@ -291,7 +301,7 @@ lemma exists_pairTheta_flip (l : G E t')
 transposition with signs. -/
 def flipPoly (t : a → ℤˣ) (s : n → ℤˣ) :
     MvPolynomial (InfinitePlace E × n × a) ℂ →ₐ[ℂ] MvPolynomial (InfinitePlace E × a × n) ℂ :=
-  bind₁ fun p : InfinitePlace E × n × a ↦ (homSigns (-t) s p.2 : ℂ) • X (R := ℂ) (p.1, p.2.swap)
+  aeval fun p : InfinitePlace E × n × a ↦ (homSigns (-t) s p.2 : ℂ) • X (R := ℂ) (p.1, p.2.swap)
 
 /-- The archimedean part `New.CoordChange.realMap` of `New.flipCoords` sends the Fock vector of a
 polynomial `P` to the Fock vector of `New.flipPoly t' s P`. -/
@@ -308,7 +318,9 @@ lemma realMap_flipCoords_polyVector (hc : star (c : 𝔸f E) * c = -1) (ht : t' 
           holomorphicCoord (realSigns E (homSigns s t')) x (i.1, i.2.swap)) := by
     aesop (add simp [holomorphicCoord_eq, flipCoords, mul_comm, starCoordEquiv, pairSign,
       units_ne_iff_eq_neg])
-  simp [realMap, ← aeval_eq_eval, aeval_bind₁, ↓vac_realEquiv, flipPoly, h_coord, pairSign]
+  simp only [realMap, Heisenberg.IsVacuum.transport_apply, polyVector_apply, ← aeval_eq_eval,
+    flipPoly, comp_aeval_apply]
+  simp [↓vac_realEquiv, h_coord, pairSign]
 
 end Flip
 
@@ -514,15 +526,26 @@ lemma Modulus.exists_modKernel_flip (c : (Ô E)ˣ) (hc : star (c : 𝔸f E) * c 
       _ = z * pairTheta V S a b
             (integrated _ (Fock.polyVector _ P) (𝔪.vacTranslate (V.hom S) (matrixToVec v)))
             (G.neg g * (1, u), h) := by
-        -- `erw`, `rfl`: `modKernel` and `modDatum` unfold, and `pairTheta` is linear in the datum,
-        -- only up to definitional unfolding.
-        erw [modKernel, modDatum, Pi.single_comp_equiv (.curry ..), mul_assoc, ← smul_eq_mul C,
-          ← map_smul, ← map_smul, ← map_smul, ← hC, ← pairWeil_integrated_fin, ← pairTheta,
-          ← pairTheta_mul, Prod.mk_mul_mk, mul_one h]
-        rfl
+        -- Identify the matrix indicator in vector coordinates before applying linearity.
+        let v₀ : Matrix n m 𝔪.ResidueRing := Matrix.of fun i j ↦ 𝔪.reduction (v i j)
+        have h_indicator : Pi.single v₀ (1 : ℂ) ∘ vecToMatrix =
+            Pi.single (𝔪.reduction ∘ matrixToVec v) 1 :=
+          Pi.single_comp_equiv (.curry ..) v₀ 1
+        let theta (f : (n × m → 𝔪.ResidueRing) → ℂ) :=
+          pairTheta V S a b
+            (integrated _ (Fock.polyVector _ P)
+              ((V.hom S).schrodingerOp 𝔪.places (𝔪.liftFn f) (V.hom S).vacElem))
+            (G.neg g, h)
+        change z * C * theta (Pi.single v₀ 1 ∘ vecToMatrix) = _
+        rw [h_indicator]
+        dsimp only [theta]
+        rw [mul_assoc, ← smul_eq_mul C]
+        nth_rw 1 [pairTheta]
+        rw [← map_smul, ← map_smul, ← map_smul, ← hC, ← pairWeil_integrated_fin, ← pairTheta,
+          ← pairTheta_mul, Prod.mk_mul_mk, show h * (1, 1) = h from mul_one h]
       _ = _ := by
-        -- `erw`, `rfl`: the flipped datum matches `pairTheta` and `modKernel` only after unfolding.
-        erw [← h_flip _ _ _ _ _ h_mat, map_integrated, realMap_flipCoords_polyVector,
+        refine (h_flip a _ (G.neg g * (1, u)) h (g * (1, 𝔪.flipScalar m)) h_mat).symm.trans ?_
+        rw [map_integrated, realMap_flipCoords_polyVector,
           𝔪.flipCoords_map_vacTranslate S T hc_neg V v]
         rfl
   -- Expand `D` in indicators of classes; both kernels are linear in their datum.
@@ -563,7 +586,8 @@ lemma Exchange.exists_conj_modKernel_eq_swap (a b : AutChar E) :
       (fun v ↦ conj (D (𝔪.normNegOne⁻¹ • v))) = matrixFourier 𝔪.primAddChar fun v ↦ conj (D v) := by
     ext ρ
     apply sum_equiv (MulAction.toPerm 𝔪.normNegOne⁻¹)
-    simp [-map_neg]
+    simp only [Units.coe_star, AddChar.mulShift_apply, MulAction.toPerm_apply, Matrix.mul_smul,
+      trace_smul, mul_eq_mul_left_iff, map_eq_zero]
     -- Termwise the characters agree: `𝔪.normNegOne⁻¹` is the class of `-star normNegOne`.
     exact fun v ↦ Or.inl rfl
   rw [h_neg a b 𝔪, h_flip, h_ft, mul_assoc]

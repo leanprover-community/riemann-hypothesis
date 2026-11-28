@@ -1,5 +1,21 @@
-import Lib.SiegelWeil.Formula.LagrangianZeroTerms
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Convex.Integral
+import Mathlib.Analysis.Normed.Group.Tannery
+import Mathlib.Order.Interval.Finset.Box
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.Adelic.Witt.WittTheorem
+import Lib.DiscreteSeries.Haar.TotalMass
 import Lib.Weil.DualPair.ThetaIntegrals
+import Lib.Weil.DualPair.ThetaLiftConvergence
+import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Siegel sets and the Siegel–Weil formula in Weil's range
@@ -53,6 +69,8 @@ Reduction theory, namely the existence of Siegel sets. The compactness criterion
 uses is from `Lib.Adelic.Reduction.FiniteVolume`.
 -/
 
+@[expose] public section
+
 /-! ## Siegel sets and uniform summability of the zero terms -/
 
 section SiegelSets
@@ -94,7 +112,8 @@ lemma exists_compact_parabolic_normal_form :
   obtain ⟨N, hN, hN_cover⟩ := IsCovolOneLattice.exists_compact_cover (ratMatrices E p p)
   obtain ⟨M, _, hM, h_bases⟩ := exists_isCompact_profileBases E p
   have h_levi : Continuous fun a : GL p (𝔸 E) ↦ P.levi (a, 1) := by
-    simp [↓continuous_iff, Splitting.levi, -coe_units_inv]
+    simp only [↓continuous_iff, Splitting.levi, mk'_apply, adeleMatrix_one, Matrix.mul_one,
+      adeleMatrix_ofMatrix]
     fun_prop
   -- The compact set is `N ×ˢ (K * levi '' M)⁻¹` with `K` the maximal compact subgroup.
   open Pointwise in
@@ -164,7 +183,7 @@ lemma exists_siegel_set :
   let A : Matrix n I E := Y.val.submatrix id ((↑) : I → n)
   have hA_inv : HasLeftInv A :=
     ⟨_, (congrArg (submatrix · _ _) Y.inv_val).trans (submatrix_one _ (by simp))⟩
-  have hA_isotropic : Aᴴ * S.J * A = 0 := funext₂ fun i j ↦ hY.isotropic i i.2 j j.2
+  have hA_isotropic : Aᴴ * S.J * A = 0 := funext₂ fun i j ↦ hY.isotropic i i.property j j.property
   obtain ⟨γ, hγ⟩ := exists_isometry_orthogonal P hA_inv hA_isotropic
   let γk : Matrix n p E := γ.val.val * P.k
   have fix : W.val * (D * (⅟W.val * γk)) = γk := by
@@ -488,7 +507,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
         Continuous.tendsto (by fun_prop (disch := order)) 0
     simpa [Φ, modulus_zero] using tendsto_lintegral_filter_of_dominated_convergence _
       (.of_forall h_meas) (.of_forall fun a ↦ .of_forall (h_bound a)) h_integrable h_pointwise
-  refine tendsto_zero_iff_enorm_tendsto_zero.mpr (ENNReal.tendsto_nhds_zero.mpr fun ε hε ↦ ?_)
+  refine tendsto_zero_iff_eNorm_tendsto_zero.mpr (ENNReal.tendsto_nhds_zero.mpr fun ε hε ↦ ?_)
   -- The scalar that is `M` at the finite places and `M / 2 ^ j` at infinity is small for a
   -- suitable integer `M` and large `j`.
   obtain ⟨M, hM, h_small⟩ : ∃ M : ℕ, M ≠ 0 ∧
@@ -498,7 +517,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
   let z (j : ℕ) : NumberField.InfinitePlace E → ℂ := (1 / 2 : ℝ) ^ j • ↑M
   have hz : Tendsto z atTop (nhds 0) := (summable_geometric_two.smul_const _).tendsto_atTop_zero
   filter_upwards [(hz.comp tendsto_comap).eventually (h_small 1 (one_mem _))] with ⟨x, f⟩ hx
-  grw [enorm_integral_le_lintegral_enorm]
+  grw [eNorm_integral_le_lintegral_eNorm]
   refine le_trans (lintegral_mono fun h ↦ ?_) hx
   -- The torus element scales the row `D₁.lCoord`, and `h` commutes with the zero term.
   have h_torus := lCoord_mul_levi_dyadicDiag P D₁ hk x
@@ -507,7 +526,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
     simpa [splitWeil, D₁.card_eq, pow_succ, Prod.mk_one_one] using
       (D₁.homSlice_levi T _ 1 1 1 h 0 g).symm
   let F : 𝒮 (S.hom T) := splitWeil S T (1, h) (normalisedTorus T P x f)
-  rw [h_comm, theta_apply, Splitting.zeroTerm_apply, ← edist_eq_enorm_sub]
+  rw [h_comm, theta_apply, Splitting.zeroTerm_apply, ← eDist_eq_eNorm_sub]
   -- A mean lies in a closed ball if all values do.
   refine (convex_closedEBall ..).integral_mem isClosed_closedEBall (.of_forall fun q ↦ ?_)
     (isContPeriodic_along_k ..).integrable_out
@@ -531,7 +550,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
       simp only [along, F, translate, y]
       simp [normalisedTorus, rho_pairWeil, -theta_apply, h_torus, ← mul_sub, ← theta_rho,
         splitWeil, ↓mulVec_smul, kronecker_mulVec_eq_matrixToVec, homSource_kAdelic,
-        edist_eq_enorm_sub, Matrix.mul_assoc]
+        eDist_eq_eNorm_sub, Matrix.mul_assoc]
     _ ≤ B h * ‖translate h y f - f‖ₑ := h_theta h x _
     _ ≤ B h * modulus (Prod.swap (M * 1, z (x ι)), h) := mul_right_mono h_mem
 
@@ -802,7 +821,7 @@ theorem New.SiegelWeil.siegel_weil (P : SiegelWeil.CompleteSplitting S p)
     obtain ⟨n₁, s₁, S₁, D₁, hk⟩ := S.exists_splitting (HasLeftInv.of_ne_zero hk_ne) hk_isotropic
     obtain ⟨σ, -⟩ := exists_lagrangian_equiv_col_mem T P D₁ hk
     let L₁ := σ.symm ⟨P.lagrangian, Pi.single ι 1, mulVec_single_one P.k ι⟩
-    have P₁ : CompleteSplitting S₁ (Fin L₁.numPlanes) := L₁.chosenSplitting
+    let P₁ : CompleteSplitting S₁ (Fin L₁.numPlanes) := L₁.chosenSplitting
     obtain ⟨-, ih⟩ := IH _ (by simp [← h_card, D₁.card_eq]) P₁
       (by linarith [P.card_eq, P₁.card_eq, D₁.card_eq]) rfl
     simpa only [hℓ] using tendsto_tsum_zeroTerm_sub_integral_theta T P hm

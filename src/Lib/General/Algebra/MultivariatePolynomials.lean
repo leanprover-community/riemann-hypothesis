@@ -1,12 +1,29 @@
-import Lib.Cohomology.Etale.Basic
+module
+
+public import Mathlib.Algebra.DualNumber
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.RingTheory.Nullstellensatz
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Data.Finset.Finsupp
+import Mathlib.Data.Finsupp.PWO
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.LinearAlgebra.Dimension.OrzechProperty
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.MvPolynomial.Ideal
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.Unramified.LocalStructure
+public import Lib.Cohomology.Etale.Basic
 
 /-!
 # Multivariate polynomials: cost of vanishing, homogenization, Nullstellensatz, Hensel
 
 This file collects lemmas on polynomials in several variables and on algebras of finite type. They
-cover commuting partial derivatives, generation by products of polynomials in two sets of variables,
-the cost of monomials of polynomials that vanish to high order, and homogenization along a linear
-form.
+cover generation by products of polynomials in two sets of variables, the cost of monomials of
+polynomials that vanish to high order, and homogenization along a linear form.
 
 ## Main definitions and results
 
@@ -38,18 +55,7 @@ to order d at all these points then has a monomial of weighted degree at least d
 Combinatorial Nullstellensatz (1999); Ball–Serra, Punctured combinatorial Nullstellensätze (2009).
 -/
 
-/-! ## Partial derivatives of multivariate polynomials commute -/
-
-/-- The formal partial derivatives of a polynomial in several variables commute. -/
-lemma New.pderiv_comm {σ A : Type*} [CommRing A] (a b : σ) (p : MvPolynomial σ A) :
-    (p.pderiv b).pderiv a = (p.pderiv a).pderiv b := by
-  classical
-  ext m
-  -- Both coefficients are the same multiple of the coefficient of `p` at `m + eₐ + e_b`.
-  obtain rfl | h_ne := eq_or_ne a b
-  · rfl
-  · simp [MvPolynomial.coeff_pderiv, add_right_comm m (Finsupp.single a 1), h_ne, h_ne.symm,
-      mul_right_comm]
+@[expose] public section
 
 /-! ## Polynomials in two covering sets of variables -/
 
@@ -83,12 +89,12 @@ open MvPolynomial Finset Finsupp Submodule Ideal
 
 /-- If `p` vanishes to order `d` at the point `w`, then after translating `w` to the origin the
 coefficients of `p` of degree below `d` are zero. -/
-lemma New.coeff_translate_eq_zero_of_mem_vanishingIdeal_pow {K ι : Type} [Field K] [Fintype ι]
+lemma New.coeff_translate_eq_zero_of_mem_vanishingIdeal_pow {K ι : Type} [Field K]
     {w : ι → K} {d : ℕ} {p : MvPolynomial ι K} (hp : p ∈ vanishingIdeal K {w} ^ d) {γ : ι →₀ ℕ}
-    (hγ : γ.degree < d) : (bind₁ (X + C ∘ w) p).coeff γ = 0 := by
-  let T : MvPolynomial ι K →ₐ[K] MvPolynomial ι K := bind₁ (X + C ∘ w)
+    (hγ : γ.degree < d) : (aeval (X + C ∘ w) p).coeff γ = 0 := by
+  let T : MvPolynomial ι K →ₐ[K] MvPolynomial ι K := aeval (X + C ∘ w)
   have h_origin : vanishingIdeal K {w} ≤ (idealOfVars ι K).comap T := fun q hq ↦ by
-    have h_const : constantCoeff (T q) = 0 := by simpa [T, hom_bind₁] using hq
+    have h_const : constantCoeff (T q) = 0 := by simpa [T, map_aeval] using hq
     rw [Ideal.mem_comap, ← pow_one (idealOfVars ι K), mem_pow_idealOfVars_iff']
     simpa [degree_eq_zero_iff, ← constantCoeff_eq] using h_const
   have h_mem : T p ∈ idealOfVars ι K ^ d := le_comap_pow T d (pow_right_mono h_origin d hp)
@@ -96,21 +102,21 @@ lemma New.coeff_translate_eq_zero_of_mem_vanishingIdeal_pow {K ι : Type} [Field
 
 /-- If the polynomials `φ u` vanish at the point `w`, the product `∏ φ u ^ γ u` vanishes at `w` to
 every order `d ≤ |γ|`. -/
-lemma New.bind₁_monomial_mem_vanishingIdeal_pow {K ι : Type} [Field K] [Fintype ι] {w : ι → K}
+lemma New.bind₁_monomial_mem_vanishingIdeal_pow {K ι : Type} [Field K] {w : ι → K}
     {φ : ι → MvPolynomial ι K} (hφ : ∀ u : ι, eval w (φ u) = 0) {d : ℕ} {γ : ι →₀ ℕ}
-    (hγ : d ≤ γ.degree) : bind₁ φ (monomial γ 1) ∈ vanishingIdeal K {w} ^ d := by
+    (hγ : d ≤ γ.degree) : aeval (R := K) φ (monomial γ 1) ∈ vanishingIdeal K {w} ^ d := by
   classical
-  have h_vars : idealOfVars ι K ≤ (vanishingIdeal K {w}).comap (bind₁ φ) := by
-    simp [Ideal.span_le, hφ, Set.range_subset_iff, bind₁_X_right]
+  have h_vars : idealOfVars ι K ≤ (vanishingIdeal K {w}).comap (aeval (R := K) φ) := by
+    simp [Ideal.span_le, hφ, Set.range_subset_iff, aeval_X]
   have h_mem : monomial γ 1 ∈ idealOfVars ι K ^ d := (mem_pow_idealOfVars_iff d _).2 (by simpa)
   exact le_comap_pow _ d (pow_right_mono h_vars d h_mem)
 
 /-- Chinese remainder theorem for jets: at finitely many distinct points `z t`, the coefficients
 of degree below `d` after translation to the origin can be prescribed arbitrarily. -/
-lemma New.exists_forall_coeff_translate_eq {K ι S : Type} [Field K] [Fintype ι] [Fintype S]
+lemma New.exists_forall_coeff_translate_eq {K ι S : Type} [Field K] [Fintype S]
     {z : S → ι → K} (hz_inj : z.Injective) {d : ℕ} {Γ : Finset (ι →₀ ℕ)}
     (hΓ : ∀ γ ∈ Γ, γ.degree < d) (y : S × Γ → K) :
-    ∃ p : MvPolynomial ι K, ∀ (t : S) (γ : Γ), (bind₁ (X + C ∘ z t) p).coeff γ = y (t, γ) := by
+    ∃ p : MvPolynomial ι K, ∀ (t : S) (γ : Γ), (aeval (X + C ∘ z t) p).coeff γ = y (t, γ) := by
   classical
   have h_ideal_inj : Function.Injective fun w : ι → K ↦ vanishingIdeal K {w} := fun w w' h_eq ↦ by
     funext u
@@ -118,12 +124,12 @@ lemma New.exists_forall_coeff_translate_eq {K ι S : Type} [Field K] [Fintype ι
   have h_coprime : Pairwise (Function.onFun IsCoprime fun t : S ↦ vanishingIdeal K {z t} ^ d) :=
     fun t t' h_ne ↦ .pow (isCoprime_of_isMaximal ((h_ideal_inj.comp hz_inj).ne h_ne))
   -- The polynomial `q t` has the prescribed jet at `z t`.
-  let q (t : S) : MvPolynomial ι K := bind₁ (X + C ∘ (-z t)) (∑ γ : Γ, monomial γ (y (t, γ)))
+  let q (t : S) : MvPolynomial ι K := aeval (X + C ∘ (-z t)) (∑ γ : Γ, monomial γ (y (t, γ)))
   obtain ⟨p, hp⟩ := exists_forall_sub_mem_ideal h_coprime q
   refine ⟨p, fun t γ ↦ ?_⟩
-  have h_jet : (bind₁ (X + C ∘ z t) (p - q t)).coeff γ = 0 :=
+  have h_jet : (aeval (X + C ∘ z t) (p - q t)).coeff γ = 0 :=
     New.coeff_translate_eq_zero_of_mem_vanishingIdeal_pow (hp t) (hΓ γ γ.property)
-  simpa [q, bind₁_bind₁, coeff_sum, sub_eq_zero, bind₁_X_right, bind₁_X_left] using h_jet
+  simpa [q, comp_aeval_apply, coeff_sum, sub_eq_zero, aeval_X, aeval_X_left] using h_jet
 
 /-- A submodule that contains the monomials occurring in `p` contains `p`. -/
 lemma New.mem_of_forall_monomial_mem {K ι : Type} [Field K] {N : Submodule K (MvPolynomial ι K)}
@@ -149,16 +155,16 @@ lemma New.monomial_mul_bind₁_mem_of_weight_le {K ι : Type} [Field K] [Fintype
     {N : Submodule K (MvPolynomial ι K)} {r : ℝ}
     (hN : ∀ α γ : ι →₀ ℕ, (∀ u : ι, α u < κ u) →
       γ.degree + weight (fun u : ι ↦ (κ u : ℝ))⁻¹ α ≤ r →
-      monomial α 1 * bind₁ (fun u : ι ↦ X u ^ κ u - g u) (monomial γ 1) ∈ N)
+      monomial α 1 * aeval (R := K) (fun u : ι ↦ X u ^ κ u - g u) (monomial γ 1) ∈ N)
     (α γ : ι →₀ ℕ) (h_le : γ.degree + weight (fun u : ι ↦ (κ u : ℝ))⁻¹ α ≤ r) :
-    monomial α 1 * bind₁ (fun u : ι ↦ X u ^ κ u - g u) (monomial γ 1) ∈ N := by
+    monomial α 1 * aeval (R := K) (fun u : ι ↦ X u ^ κ u - g u) (monomial γ 1) ∈ N := by
   set cost : (ι →₀ ℕ) →+ ℝ := weight (fun u : ι ↦ (κ u : ℝ))⁻¹ with h_cost
   have h_mono : Monotone cost := fun α β h_exp ↦ by
-    simp only [h_cost, weight_eq_sum, nsmul_eq_mul, Pi.inv_apply]
+    simp only [h_cost, weight_eq_sum, Pi.inv_apply]
     gcongr with u
     exact h_exp u
   let b (α γ : ι →₀ ℕ) : MvPolynomial ι K :=
-    monomial α 1 * bind₁ (fun u : ι ↦ X u ^ κ u - g u) (monomial γ 1)
+    monomial α 1 * aeval (R := K) (fun u : ι ↦ X u ^ κ u - g u) (monomial γ 1)
   change b α γ ∈ N
   induction α using (New.wellFounded_lt_of_monotone_finsupp h_mono).induction generalizing γ with
   | _ α ih => ?_
@@ -169,7 +175,7 @@ lemma New.monomial_mul_bind₁_mem_of_weight_le {K ι : Type} [Field K] [Fintype
   obtain ⟨β, rfl⟩ : ∃ β : ι →₀ ℕ, α = single u (κ u) + β := exists_add_of_le (single_le_iff.2 hu)
   have cost_eq : cost (single u (κ u) + β) = 1 + cost β := by simp [h_cost, weight, hκ, ne_of_gt]
   have h_split : b (single u (κ u) + β) γ = b β (single u 1 + γ) + g u * b β γ := by
-    simp only [b, monomial_single_add, map_mul, pow_one, bind₁_X_right]
+    simp only [b, monomial_single_add, map_mul, pow_one, aeval_X]
     ring
   rw [cost_eq] at ih h_le
   rw [h_split]
@@ -199,7 +205,7 @@ theorem New.exists_le_weight_of_mem_vanishingIdeal_pow {K ι S : Type} [Field K]
     ⟨(finite_of_degree_lt d).toFinset, fun γ ↦ Set.Finite.mem_toFinset _⟩
   -- The jets of order below `d` at the points: the low coefficients after translation.
   let J : MvPolynomial ι K →ₗ[K] (S × Γ → K) :=
-    LinearMap.pi fun (t, γ) ↦ lcoeff K γ ∘ₗ (bind₁ (X + C ∘ z t)).toLinearMap
+    LinearMap.pi fun (t, γ) ↦ lcoeff K γ ∘ₗ (aeval (X + C ∘ z t)).toLinearMap
   have mem_ker {p : MvPolynomial ι K} (hp : ∀ t : S, p ∈ vanishingIdeal K {z t} ^ d) : p ∈ J.ker :=
     LinearMap.mem_ker.2 <| funext fun (t, γ) ↦
       New.coeff_translate_eq_zero_of_mem_vanishingIdeal_pow (hp t) ((hΓ γ).1 γ.property)
@@ -208,7 +214,7 @@ theorem New.exists_le_weight_of_mem_vanishingIdeal_pow {K ι S : Type} [Field K]
       fun p hp ↦ funext fun (t, γ) ↦ hp t γ
   -- The products `b α γ = X ^ α * ψ ^ γ`; they vanish to order `|γ|` at the points.
   let b (α γ : ι →₀ ℕ) : MvPolynomial ι K :=
-    monomial α 1 * bind₁ (fun u : ι ↦ X u ^ κ u - g u) (monomial γ 1)
+    monomial α 1 * aeval (R := K) (fun u : ι ↦ X u ^ κ u - g u) (monomial γ 1)
   let v : univ.finsupp (range ∘ κ) × Γ → MvPolynomial ι K := fun (α, γ) ↦ b α γ
   have b_span (α γ : ι →₀ ℕ) (hα : ∀ u : ι, α u < κ u) (hγ : γ.degree < d) :
       b α γ ∈ span K (Set.range v) :=

@@ -1,6 +1,17 @@
+module
+
+import TauCeti.Analysis.Matrix.L2OpNorm
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+public import New.Spanning.Frames.RealPlaceGauge
+public import New.Spanning.Frames.Shells
+import Lib.General.Analysis.GaussianIntegral
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.Bessel.Orthonormality
-import New.Spanning.Frames.RealPlaceGauge
-import New.Spanning.Frames.Shells
+import New.Spanning.Frames.Gains
+import New.Spanning.Frames.QuadricPlancherel
+import New.Spanning.Frames.TwoGauges
 
 /-!
 # Cut Bessel functions at ℂ: integration of the local estimates over shells
@@ -50,6 +61,8 @@ Notions from other files:
   `New.Floors.IsCutBessel.formConst`.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New.Floors
@@ -94,7 +107,7 @@ def dyadicShell (𝔰 : Shape) (i : ℕ) : Set 𝔰.G₁ :=
 lemma exists_mem_dyadicShell (x : 𝔰.G₁) : ∃ i : ℕ, x ∈ dyadicShell 𝔰 i := by
   let X : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ := x - 1
   obtain ⟨B, hB⟩ : ∃ B : ℝ, ∀ a c : 𝔰.BesselIndex, ‖X a c‖ ≤ B :=
-    ⟨_, fun a c ↦ norm_apply_le_l2_opNorm ..⟩
+    ⟨_, fun a c ↦ Matrix.norm_apply_le_l2_opNorm ..⟩
   obtain ⟨l, hl⟩ : ∃ l : ℕ, B < 2 ^ l := pow_unbounded_of_one_lt B _root_.one_lt_two
   have h_bound : ∃ l : ℕ, ∀ a c : 𝔰.BesselIndex, ‖X a c‖ ≤ 2 ^ l :=
     ⟨l, fun a c ↦ (hB a c).trans hl.le⟩
@@ -143,17 +156,6 @@ lemma mem_ofSize_gauge (hF : IsCutBessel F rep ρ s b F₀ f) (hL : ρ ≤ L) {i
 lemma isHead_gauge_iff (hF : IsCutBessel F rep ρ s b F₀ f) (hL : ρ ≤ L) :
     (hF.gauge hL).IsHead j p ↔ ∀ l ≤ j, ‖(∏ a ∈ range l, p a).val‖⁻¹ ≤ L := by
   simp only [IsHead, hF.mem_ofSize_gauge, Units.val_inv_eq_inv_val, norm_inv, pow_one]
-
-/-- If the orbital integral J(γ) = ∫ F(y) ⊗ F(γ⁻¹y)^* dy of a cut Bessel function `F` of box size
-`ρ` is not zero, then all leading minors of the matrix `realFrameGram γ` of the products
-`h(f_a, γ f_b)` have modulus at most `ρ ^ (9 * 𝔰.n)`, where f is the frame (e₀, …, e_{ϱ-1}, z).
--/
-theorem norm_leadingMinor_le_of_besselOrbitalIntegral_ne_zero (hF : IsCutBessel F rep ρ s b F₀ f)
-    {γ : 𝔰.G₁} (hγ : besselOrbitalIntegral volume F γ ≠ 0) (j : Fin (𝔰.n + 1)) :
-    ‖leadingMinor (realFrameGram γ) j‖ ≤ ρ ^ (9 * 𝔰.n) :=
-  hF.mem_ofSize_gauge le_rfl |>.1 <|
-    (hF.gauge le_rfl).leadingMinor_mem_ofSize_of_besselOrbitalIntegral_ne_zero
-      hF.isCut_complexData hγ j
 
 /-- The exponent `s` is at least `10 ^ 10 * 𝔰.n ^ 4`, since the hypotheses carried by `hF` give
 `s + 3 𝔰.n + 6 ≥ 𝔰.n ^ 7` and `𝔰.n > 10 ^ 8`. -/
@@ -230,9 +232,9 @@ lemma pairingNormSq_le [Nonempty I] (hF : IsCutBessel F rep ρ s b F₀ f) :
     hF.complexData.pairingNormSq F ≤ hF.haarRatio ^ 2 * card I := by
   -- The integral over `y` is at most `haarRatio * ‖F x‖ ^ 2`, as `∫ F ⊗ F^* ≤ 1` on the quotient.
   have h_cut : hF.complexData.IsCut F := hF.isCut_complexData
-  have h_meas : Measurable fun g : 𝔰.G₁ ↦ ‖F g‖ₑ ^ 2 := h_cut.stronglyMeasurable.enorm.pow_const 2
+  have h_meas : Measurable fun g : 𝔰.G₁ ↦ ‖F g‖ₑ ^ 2 := h_cut.stronglyMeasurable.eNorm.pow_const 2
   have h_inv : besselU.FixesLeft fun g : 𝔰.G₁ ↦ ‖F g‖ₑ ^ 2 := fun u hu g ↦ by
-    simp [h_cut.map_unipotent_mul u hu, enorm_smul, ← ofReal_norm (wave _)]
+    simp [h_cut.map_unipotent_mul u hu, eNorm_smul, ← ofReal_norm (wave _)]
   set μ : Measure 𝔰.G₁ := hF.complexData.quotientMeasureFrom 0
   -- `h_unfold` turns integrals of invariant functions against `quotientMeasureFrom 0` into
   -- `haarRatio` times integrals over the quotient.
@@ -244,7 +246,7 @@ lemma pairingNormSq_le [Nonempty I] (hF : IsCutBessel F rep ρ s b F₀ f) :
       ∫⁻ y, ‖inner ℂ v (F y)‖ₑ ^ 2 ∂μ ≤ hF.haarRatio * ‖v‖ₑ ^ 2 := by
     have h_meas_inner : Measurable fun y : 𝔰.G₁ ↦ ‖inner ℂ v (F y)‖ₑ ^ 2 := by fun_prop
     have h_inv_inner : besselU.FixesLeft fun y : 𝔰.G₁ ↦ ‖inner ℂ v (F y)‖ₑ ^ 2 := fun u hu g ↦ by
-      simp [h_cut.map_unipotent_mul u hu, enorm_mul, ← ofReal_norm (wave _)]
+      simp [h_cut.map_unipotent_mul u hu, eNorm_mul, ← ofReal_norm (wave _)]
     have h_quot : ∫⁻ y, ‖inner ℂ v (F y)‖ₑ ^ 2 ∂besselQuotMeasure ≤ ‖v‖ₑ ^ 2 :=
       hF.toIsCutPair.lintegral_sq_inner_cut_le hF.irreducible v
     grw [h_unfold _ h_meas_inner h_inv_inner, h_quot]
@@ -265,24 +267,18 @@ lemma formMajorant_eq_zero_of_lt (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j 
     hF.complexData.formMajorant j p q F x = 0 := by
   -- An active point `y` (`IsActive`) would bound the products of the entries of both lists
   -- (`head_products_mem_ofSize`). There are none, so `formMajorant_sq_le` holds with the gain `0`.
-  have h_cut : hF.complexData.IsCut F := hF.isCut_complexData
   obtain ⟨L, hL, hp, -⟩ := hF.exists_gauge_isHead j p q 0
   have h_small {r : ℕ → ℂˣ} {y : 𝔰.G₁} (hy : F y ≠ 0)
-      (h_near : hF.complexData.IsNear j ((FloorGroups.weylElem j r)⁻¹ * y)) :
-      ‖(∏ a ∈ range l, r a).val‖ ≤ ρ ^ (9 * 𝔰.n) := by
-    obtain ⟨u, hu⟩ : hF.complexData.IsNear j y := h_cut.isNear_of_ne_zero hy
-    exact (hF.mem_ofSize_gauge le_rfl).1
+      (h_near : hF.complexData.IsNear j ((FloorGroups.weylElem j r)⁻¹ * y)) :=
+    let ⟨_, hu⟩ := hF.isCut_complexData.isNear_of_ne_zero hy
+    (hF.mem_ofSize_gauge le_rfl).1
       (head_products_mem_ofSize (hF.gauge le_rfl).hasMatrixSize_boxSet hj h_near hu l hl)
-  have no_active (y : 𝔰.G₁) : ¬ hF.complexData.IsActive j p q F x y := by
-    rintro ⟨hy, near_p, near_q⟩
-    rcases h_big with big_p | big_q
-    · exact big_p.not_ge (h_small (fun h ↦ hy (by simp [h])) near_p)
-    · exact big_q.not_ge (h_small (fun h ↦ hy (by simp [h])) near_q)
-  have h_sq : hF.complexData.formMajorant j p q F x ^ 2 ≤
-      0 ^ hF.complexData.volumeExponent * ∞ ^ 2 * (hF.gauge hL).weightedSquareProduct j p q F x :=
-    formMajorant_sq_le (hF.gauge hL) h_cut hj hp (Set.mem_univ x) (fun _ ↦ le_top) le_top
-      fun _ y h_active ↦ (no_active y h_active).elim
-  simpa [hF.volumeExponent_eq, hF.mul_cube_lt_s.ne_zero] using h_sq
+  simpa [hF.volumeExponent_eq, hF.mul_cube_lt_s.ne_zero] using
+    (formMajorant_sq_le (hF.gauge hL) hF.isCut_complexData hj hp (Set.mem_univ x)
+      (fun _ ↦ le_top) le_top fun _ y ⟨hy, near_p, near_q⟩ ↦
+        (h_big.elim (fun h ↦ h.not_ge (h_small (fun h ↦ hy (by simp [h])) near_p))
+          (fun h ↦ h.not_ge (h_small (fun h ↦ hy (by simp [h])) near_q))).elim :
+      _ ≤ 0 ^ _ * ∞ ^ 2 * _)
 
 /-- Let `F` be a cut Bessel function (`hF`) and `l ≤ j ≤ 𝔰.ϱ`. If the product of the first `l`
 entries of `p` or of `q` has modulus above `ρ ^ (9 * 𝔰.n)`, then the form `floorForm j p q F ω` of
@@ -293,7 +289,7 @@ lemma floorForm_eq_zero_of_lt (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤
       ρ ^ (9 * 𝔰.n) < ‖(∏ a ∈ range l, q a).val‖) {ω : 𝔰.G₁ → ℂ} (hω : ∀ x : 𝔰.G₁, ‖ω x‖ ≤ 1) :
     hF.complexData.floorForm j p q F ω = 0 := by
   have h_modulus (x : 𝔰.G₁) : hF.complexData.formIntegrandL1Norm j p q F x ω = 0 :=
-    le_zero_iff.1 ((hF.isCut_complexData.formIntegrandL1Norm_le_formMajorant hω).trans_eq
+    nonpos_iff_eq_zero.1 ((hF.isCut_complexData.formIntegrandL1Norm_le_formMajorant hω).trans_eq
       (hF.formMajorant_eq_zero_of_lt hj hl h_big x))
   have h_le : ‖hF.complexData.floorForm j p q F ω‖ₑ ≤ hF.complexData.headDensity j p q *
       ∫⁻ x, hF.complexData.formIntegrandL1Norm j p q F x ω ∂hF.complexData.groupMeasure :=
@@ -376,28 +372,20 @@ lemma floorMassLe (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 𝔰.ϱ) :
     hF.complexData.FloorMassLe j (.ofReal ((π * ρ ^ 24) ^ 𝔰.k * ρ ^ (9999 * 𝔰.n))) 1 := by
   intro g
   have one_le_ρ : 1 ≤ ρ := by linarith [hF.four_le]
-  have h_volume : (ρ ^ 24) ^ (𝔰.k - 5) ≤ (π * ρ ^ 24) ^ 𝔰.k := by
-    grw [← one_le_two.trans two_le_pi, one_mul]
-    exact pow_le_pow_right₀ (one_le_pow₀ one_le_ρ) (by lia)
   -- The bound of `floorMassLe_one` in the gauge of size `ρ`, whose `loss` is `ρ ^ 2`.
-  have h_real : (ρ ^ 2) ^ (99 * 𝔰.n * 13) * ((ρ ^ 2) ^ 12) ^ (𝔰.k - 5) ≤
-      (π * ρ ^ 24) ^ 𝔰.k * ρ ^ (9999 * 𝔰.n) :=
-    calc _ = (ρ ^ 24) ^ (𝔰.k - 5) * ρ ^ (2574 * 𝔰.n) := by ring
-      _ ≤ _ := by
-        gcongr
-        lia
   grw [(hF.gauge le_rfl).floorMassLe_one ⟨j, by lia⟩ g, volume_ofSize_le]
-  simpa (disch := first | positivity | simp [mul_eq_top, pow_eq_top_iff])
-    [RealPlaceSizes.gauge, ← toReal_le_toReal, PlaceData.blockRank, Nat.sub_sub] using h_real
+  simp (disch := finiteness) [RealPlaceSizes.gauge, ← toReal_le_toReal, PlaceData.blockRank,
+    Nat.sub_sub]
+  grw [← one_le_two.trans two_le_pi, one_mul]
+  simp only [← pow_mul, ← pow_add]
+  exact pow_le_pow_right₀ one_le_ρ (by lia)
 
 /-- The bound `(π ρ ^ 24) ^ k ρ ^ (9999 n)` for the mass of a floor is at least 1. -/
 lemma one_le_massBound (hF : IsCutBessel F rep ρ s b F₀ f) :
     1 ≤ ENNReal.ofReal ((π * ρ ^ 24) ^ 𝔰.k * ρ ^ (9999 * 𝔰.n)) := by
   have one_le_ρ : 1 ≤ ρ := by linarith [hF.four_le]
   have one_le_π : 1 ≤ π := one_le_two.trans two_le_pi
-  exact one_le_ofReal.2 (one_le_mul_of_one_le_of_one_le
-    (one_le_pow₀ (one_le_mul_of_one_le_of_one_le one_le_π (one_le_pow₀ one_le_ρ)))
-    (one_le_pow₀ one_le_ρ))
+  exact one_le_ofReal.2 (by bound)
 
 /-- If `2 ≤ L`, `0 < τ ≤ 1`, `n ≠ 0` and `L ^ (2400 n²) ≤ τ ^ (400 n²) H`, then at the scale
 `T = L ^ (11 n + 1) / τ` the number `T ^ (99 n)` is at most half of `H`. -/
@@ -421,7 +409,7 @@ whose `loss` is L². The dyadic shell of index `i` is a shell of height H = `2 ^
 It is covered by the positions `x` with `x - 1` of size 1 for at most 2 H ^ (9 n) gauges of loss at
 most L² H². If σ < 1 and L ^ (2400 n²) ≤ σ ^ (400 n²) H, then at each of its positions every active
 point has a vector e_a, `a ≥ j`, of depth at least σ⁻². -/
-lemma isShell_dyadicShell [Nonempty I]
+lemma isShell_dyadicShell
     (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 𝔰.ϱ) {hL : ρ ≤ L}
     (hp : (hF.gauge hL).IsHead j p) (hq : (hF.gauge hL).IsHead j q) (i : ℕ) :
     (hF.gauge hL).IsShell j p q F (dyadicShell 𝔰 i) (2 ^ i) := by
@@ -446,9 +434,7 @@ lemma isShell_dyadicShell [Nonempty I]
   have h_real : L ^ (2400 * 𝔰.n ^ 2) ≤ (τ : ℝ) ^ (400 * 𝔰.n ^ 2) * 2 ^ i :=
     calc L ^ (2400 * 𝔰.n ^ 2) = ((hF.gauge hL).loss ^ (1200 * 𝔰.n ^ 2)).toReal := by
           simp [RealPlaceSizes.gauge, ← pow_mul, zero_le_one.trans one_le_L, ← mul_assoc]
-      _ ≤ ((τ : ℝ≥0∞) ^ (400 * 𝔰.n ^ 2) * 2 ^ i).toReal := by
-          refine toReal_mono ?_ hσ
-          exact mul_ne_top (pow_ne_top coe_ne_top) (pow_ne_top ofNat_ne_top)
+      _ ≤ ((τ : ℝ≥0∞) ^ (400 * 𝔰.n ^ 2) * 2 ^ i).toReal := toReal_mono (by finiteness) hσ
       _ = (τ : ℝ) ^ (400 * 𝔰.n ^ 2) * 2 ^ i := by simp
   have τ_pos : (0 : ℝ) < τ := τ.coe_nonneg.lt_of_ne fun h_zero ↦ by
     rw [← h_zero, zero_pow (by positivity), zero_mul] at h_real
@@ -497,8 +483,7 @@ lemma formConst_mul_lintegral_le [Nonempty I]
   have h_gain (h_lt : ENNReal.ofReal t⁻¹ < 1) (x : 𝔰.G₁) (_ : x ∈ hF.complexData.positions) :
       φ x ^ 2 ≤ (.ofReal V * .ofReal t⁻¹ ^ hF.complexData.volumeExponent) ^ 2 *
         (hF.gauge hL).weightedSquareProduct j p q F x := by
-    rw [hF.volumeExponent_eq, ← ofReal_pow (by positivity), ← ofReal_mul (by positivity), inv_pow,
-      ← div_eq_mul_inv]
+    rw [hF.volumeExponent_eq, ← ofReal_pow (by positivity), ← ofReal_mul (by positivity), inv_pow]
     exact hφ_gain ((inv_lt_one₀ (by positivity)).1 (ofReal_lt_one.1 h_lt)) x
   have r_le : 9 * 10 ^ 7 * 𝔰.n ^ 4 + r ≤ hF.complexData.volumeExponent := by
     rw [hF.volumeExponent_eq]
@@ -522,9 +507,7 @@ lemma formConst_mul_lintegral_le [Nonempty I]
         π ^ ((2 * 𝔰.ϱ + 1) * 𝔰.k) * L ^ (1000000000 * 𝔰.n ^ 4) by
     have t_pow : t ^ s = t ^ (10 ^ 8 * 𝔰.n ^ 4) * t ^ r := by rw [← pow_add, ← hr]
     rw [t_pow]
-    have t_pos : 0 < t := by linarith
-    simpa (disch := first | positivity | simp [mul_eq_top, pow_eq_top_iff, ratio_ne_top,
-        not_le.2 t_pos]) [V, ← toReal_le_toReal, toReal_ne_zero, ratio_ne_zero,
+    simpa (disch := finiteness) [V, ← toReal_le_toReal, toReal_ne_zero, ratio_ne_zero,
       ratio_ne_top, formConst, scaledVolumeRatio, volU, field, mul_pow, ← pow_mul, abs_of_nonneg]
       using h_powers
   calc
@@ -593,9 +576,8 @@ lemma lintegral_formMajorant_ne_top [Nonempty I]
   have h_factor : card I * ‖(hF.formConst : ℂ)‖ₑ * hF.complexData.headDensity j p q ≠ 0 := by
     simp [headDensity, formConst, prod_eq_zero_iff, toReal_ne_zero, ne_of_gt,
       haarRatio_ne_zero_and_groupMeasure_eq_smul]
-  intro h_top
-  rw [h_top, ← mul_assoc, ← mul_assoc, ENNReal.mul_top h_factor] at h_finite
-  exact h_finite rfl
+  rw [← mul_assoc, ← mul_assoc] at h_finite
+  exact (ENNReal.lt_top_of_mul_ne_top_right h_finite h_factor).ne
 
 /-- Let `ρ`, `s`, `b` be the sizes of a cut Bessel function, `0 < r` and `1 ≤ L`, and let `H ≥ 0`
 satisfy `L ^ n ^ 6 ≤ ρ ^ n ^ 6 * H`. At `t = max 1 (ρ ^ 24 * r)`, the bound for the sum over all
@@ -628,8 +610,7 @@ lemma shell_bound_le_dampedPower (hF : IsCutBessel F rep ρ s b F₀ f) {r H : �
     simp only [hF.rho_eq, ← pow_mul, ← pow_add]
     exact pow_le_pow_right₀ one_le_b (by lia)
   have div_le : ρ ^ 24 / t ≤ r⁻¹ := by
-    rw [div_le_iff₀ (by positivity), le_inv_mul_iff₀' r_pos]
-    exact mul_le_t
+    rwa [div_le_iff₀ (by positivity), le_inv_mul_iff₀' r_pos]
   have inv_le : t⁻¹ ≤ min 1 r⁻¹ :=
     le_min (inv_le_one_of_one_le₀ one_le_t) (inv_anti₀ r_pos
       ((le_mul_of_one_le_left r_pos.le (one_le_pow₀ one_le_ρ)).trans mul_le_t))
@@ -696,12 +677,10 @@ lemma norm_floorForm_le [Nonempty I] (hF : IsCutBessel F rep ρ s b F₀ f) (hj 
     have pow_le_R : ρ ^ (9 * 𝔰.n) ≤ R := by
       have three_le_n : 3 ≤ 𝔰.n := Nat.succ_le_succ (le_trans (by norm_num) hF.ten_pow_le_varrho)
       rw [hF.rho_eq, ← pow_mul]
-      exact pow_le_pow_right₀ one_le_b
-        (by nlinarith only [three_le_n, Nat.mul_le_mul_right 𝔰.n three_le_n])
+      exact pow_le_pow_right₀ one_le_b (by nlinarith)
     have form_eq : hF.complexData.floorForm j p q F ω = 0 :=
       hF.floorForm_eq_zero_of_lt hj hl (h_big.imp pow_le_R.trans_lt pow_le_R.trans_lt) hω
-    rw [form_eq, mul_zero, norm_zero, mul_zero]
-    exact bound_nonneg
+    rwa [form_eq, mul_zero, norm_zero, mul_zero]
   obtain ⟨L, hL, hp, hq, h_pay⟩ : ∃ L : ℝ, ∃ hL : ρ ≤ L, (hF.gauge hL).IsHead j p ∧
       (hF.gauge hL).IsHead j q ∧
       ∀ R : ℝ, (∀ l ≤ j, ‖(∏ a ∈ range l, p a).val‖ ≤ R ∧ ‖(∏ a ∈ range l, q a).val‖ ≤ R) →
@@ -729,13 +708,12 @@ lemma norm_floorForm_le [Nonempty I] (hF : IsCutBessel F rep ρ s b F₀ f) (hj 
     grw [h_local (hF.gauge hL) hp, t_eq]
     gcongr 1
     -- At the place ℂ, `kernelBound` is `π ^ 2` and the modulus of `y` is `‖y‖ ^ 2`.
-    simpa (disch := first | positivity | simp [div_eq_top, pow_eq_top_iff, not_le.2 y_pos])
-      [← ofReal_norm, ← toReal_le_toReal, div_pow, field, PlaceData.blockRank, Nat.sub_sub]
-      using h_real
+    simpa (disch := finiteness) [← ofReal_norm, ← toReal_le_toReal, div_pow, field,
+      PlaceData.blockRank, Nat.sub_sub] using h_real
   rw [← ofReal_le_ofReal_iff bound_nonneg]
   calc
     _ = card I * (‖(hF.formConst : ℂ)‖ₑ * ‖hF.complexData.floorForm j p q F ω‖ₑ) := by
-      rw [ofReal_mul (Nat.cast_nonneg _), ofReal_natCast, ofReal_norm, enorm_mul]
+      rw [ofReal_mul (Nat.cast_nonneg _), ofReal_natCast, ofReal_norm, eNorm_mul]
     _ ≤ card I * (‖(hF.formConst : ℂ)‖ₑ * (hF.complexData.headDensity j p q *
         ∫⁻ x, hF.complexData.formIntegrandL1Norm j p q F x ω ∂hF.complexData.groupMeasure)) := by
       grw [enorm_floorForm_le]

@@ -1,4 +1,6 @@
-import Lib.ClassField.Global.CMSplittingCharacters
+module
+
+public import Lib.ClassField.Global.CMSplittingCharacters
 
 /-!
 # Selmer groups unramified outside a set and cocycles of tamely ramified actions
@@ -38,6 +40,8 @@ Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts`,
 `Lib.ClassField.LocalDuality.CrystallineDuality` and `Lib.ClassField.Places.LocalFields` for
 sources.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 
@@ -130,9 +134,8 @@ noncomputable def affineAction (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g
     (by simp [Equiv.ext_iff, Units.smul_def, hc, mul_smul, add_assoc])
 
 /-- The affine action of a cocycle `c` sends `u` to `c g + ρ g • u`. -/
-private lemma affineAction_apply_eq (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h)
-    (g : Gal(Ω/E)) (u : n → B) : affineAction hc g u = c g + ρ g • u := by
-  simp [affineAction, Units.smul_def]
+lemma affineAction_apply (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h) (g : Gal(Ω/E))
+    (u : n → B) : affineAction hc g u = c g + ρ g • u := rfl
 
 lemma cocycle_apply_inv (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h) (g : Gal(Ω/E)) :
     c g⁻¹ = -(ρ g⁻¹ • c g) := by
@@ -155,7 +158,7 @@ lemma cocycle_eq_zero_on_inertia_of_tameGenerator (hB : ∀ b : B, ℓ ^ M • b
   have h_one : c 1 = 0 := by simpa using hc 1 1
   have h_near : ∀ᶠ g in nhds 1, g ∈ inertiaGroup Gal(Ω/E) A → affineAction hc g = 1 := by
     filter_upwards [hc_lc.eventually_eq 1, h_open] with g hg_const hg_triv hg_inertia
-    simp [Equiv.ext_iff, affineAction_apply_eq, hg_const, h_one, hg_triv hg_inertia]
+    simp [Equiv.ext_iff, affineAction_apply, hg_const, h_one, hg_triv hg_inertia]
   -- `g ^ m` acts as a translation, and translations are killed by `ℓ ^ M`.
   have h_pow (g : Gal(Ω/E)) (hg : g ∈ inertiaGroup Gal(Ω/E) A) :
       affineAction hc g ^ (m * ℓ ^ M) = 1 := by
@@ -165,7 +168,7 @@ lemma cocycle_eq_zero_on_inertia_of_tameGenerator (hB : ∀ b : B, ℓ ^ M • b
   obtain ⟨a, ha⟩ : ∃ a : ℕ, affineAction hc γ = affineAction hc hA.tameGenerator ^ a :=
     (hA.tame_inertia (affineAction hc) h_near h_prime h_pow γ).1
   -- `c g` is the image of `0` under `g`, and the tame generator fixes `0`.
-  have h_apply (g : Gal(Ω/E)) : affineAction hc g 0 = c g := by simp [affineAction_apply_eq]
+  have h_apply (g : Gal(Ω/E)) : affineAction hc g 0 = c g := by simp [affineAction_apply]
   rw [← h_apply γ, ha, coe_pow, Function.iterate_fixed ((h_apply _).trans h_zero)]
 
 /-- A locally constant cocycle `c` for `ρ` that vanishes on the inertia group of a place `A'` over
@@ -175,7 +178,7 @@ lemma eq_zero_on_decompGroup {A' : ClosurePlace} {v : FinPlace E} (hA' : IsPlace
     (h_zero : ∀ g ∈ inertiaGroup Gal(Ω/E) A', c g = 0) {φ : Gal(Ω/E)} (hφ : IsFrob A' v.q φ)
     (hφ_zero : c φ = 0) (g : decompGroup Gal(Ω/E) A') : c g = 0 :=
   -- The zeros of `c` form an open subgroup containing inertia and `φ`.
-  hA'.decompGroup_le hφ (U := cocycleKer ρ hc) (hc_lc {0}) h_zero hφ_zero g.2
+  hA'.decompGroup_le hφ (U := cocycleKer ρ hc) (hc_lc {0}) h_zero hφ_zero g.property
 
 /-- An upper bound on length, of the kind given by the local Euler characteristic formula and local
 duality. Let `A` be a place of `Ω` over `P`, let `ℓ ^ M` kill `B`, let `ρ` be trivial on inertia at
@@ -207,7 +210,7 @@ lemma length_localCocycles_le (hB : ∀ b : B, ℓ ^ M • b = 0) (hA : IsPlaceO
     rintro _ ⟨⟨y, hy, rfl⟩, h_tame : y hA.tameGenerator = 0⟩
     obtain ⟨h_cocycle, -, -, -⟩ := mem_selmerModule_iff.1 hy
     have h_conj_mem : φ⁻¹ * (γ * φ) ∈ inertiaGroup Gal(Ω/E) A :=
-      .inv_mul_mem_inertiaGroup (by simpa) (γ.2.mul_iff.2 hφ : IsFrob A (1 * P.q) (γ * φ))
+      .inv_mul_mem_inertiaGroup (by simpa) (γ.property.mul_iff.2 hφ : IsFrob A (1 * P.q) (γ * φ))
     have h_fix : ρ γ • y φ = y φ := by
       simpa [h_cocycle γ, h_unram hy h_tame _ h_conj_mem, h_unram hy h_tame γ γ.property]
         using h_cocycle φ (φ⁻¹ * (γ * φ))
@@ -218,10 +221,8 @@ lemma length_localCocycles_le (hB : ∀ b : B, ℓ ^ M • b = 0) (hA : IsPlaceO
     exact funext (eq_zero_on_decompGroup hA h_cocycle h_lc (h_unram hy h_tame) hφ hφ_zero)
   have h_ker : length O Z₀ ≤ length O (ker ((ρ γ - 1) • 1 : End O (n → B))) := by
     simpa using relLength_le_of_mapsTo evalFrob (T := ⊥) (T' := ⊥) h_fixed h_inj
-  have h_quot : relLength (localCocycles ρ L A B) (ker evalTame) ≤ length O (n → B) := by
-    grw [relLength_ker, length_mono le_top, length_top]
-  rw [← relLength_add_length_inf _ (ker evalTame)]
-  exact add_le_add h_quot h_ker
+  rw [← length_map_add_length_inf_ker _ evalTame]
+  exact add_le_add (length_le_of_injective _ (Submodule.subtype_injective _)) h_ker
 
 /-- Let `A'` be a place of `Ω` over `v`, and let `ρ` be trivial on the inertia groups above `v`.
 A cocycle `c` for `ρ` that vanishes on the inertia group of `A'` vanishes on every inertia group

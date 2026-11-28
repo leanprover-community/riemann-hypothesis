@@ -1,3 +1,17 @@
+module
+
+public import Mathlib.Algebra.DualNumber
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.AlgebraicGeometry.Morphisms.Immersion
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.RingTheory.DualNumber
+import Mathlib.Tactic.Linter.Style
+public import Lib.General.Geometry.PointsOfProperSchemes
+public import Lib.Shimura.ThetaModuli.ThetaFamilyRigidity
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.General.Algebra.MultivariatePolynomials
+import Lib.PadicComparison.Descent.TestCategory
 import Lib.Shimura.HeckeTower.Model
 
 /-!
@@ -45,6 +59,8 @@ Known; see `Lib.Shimura.AbelianScheme.IsogenyFlatness`,
 `Lib.Shimura.CongruenceRelation.HeckeNeighbours`, `Lib.Shimura.Deformation.TangentBound` and
 `Lib.Shimura.ThetaModuli.UniversalFamily` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Cartier's theorem on density of characteristic zero points
@@ -126,13 +142,16 @@ lemma cartier (K : Type) [Field.{0} K] [IsAlgClosed K] [CharZero K] [Algebra V K
     -- Modulo `ε`, `c` and `v` cancel; at `c` (that is, along `μ`) the first two terms cancel.
     have h_mod_ε := specOver.map (fstHom V (K ⊗[V] S) (K ⊗[V] S)) ≫= hρ.trans (sub_add ..)
     have h_along_μ := specOver.map (μ.restrictScalars V) ≫= hρ
+    have h_fst : ∀ x : S, (ρ (1 ⊗ₜ[V] x)).fst = 1 ⊗ₜ[V] x := by
+      simpa +zetaDelta [sub_eq_zero_of_eq, cancel_mono, map_bijective.injective.eq_iff,
+        AlgHom.ext_iff, hv, map_comp_assoc, algebraMap_eq_inl', lift_apply_apply,
+        AddGrpObj.comp_sub] using h_mod_ε
     -- `TensorProduct.algebraMap_apply` stays out: with it the call no longer reduces `h_along_μ`.
-    simp +zetaDelta [sub_eq_zero_of_eq, cancel_mono, map_bijective.injective.eq_iff,
-      AlgHom.ext_iff, hv, -TensorProduct.algebraMap_apply, map_comp_assoc, algebraMap_eq_inl',
-      lift_apply_apply, AddGrpObj.comp_sub, comp_add] at h_mod_ε h_along_μ
-    have h_fst : ∀ x : S, (ρ (1 ⊗ₜ[V] x)).fst = 1 ⊗ₜ[V] x := h_mod_ε
     have h_at_c : ∀ x : S, inl (c (ρ (1 ⊗ₜ[V] x)).fst) + inl (c (ρ (1 ⊗ₜ[V] x)).snd) * ε =
-        inl (c (1 ⊗ₜ[V] x)) + inl (v (1 ⊗ₜ[V] x)).snd * ε := h_along_μ
+        inl (c (1 ⊗ₜ[V] x)) + inl (v (1 ⊗ₜ[V] x)).snd * ε := by
+      simpa +zetaDelta [sub_eq_zero_of_eq, cancel_mono, map_bijective.injective.eq_iff,
+        AlgHom.ext_iff, hv, -TensorProduct.algebraMap_apply, map_comp_assoc, algebraMap_eq_inl',
+        lift_apply_apply, AddGrpObj.comp_sub, comp_add] using h_along_μ
     -- `ι` is a monomorphism, so these are identities on the elements `1 ⊗ x`: `ρ` is a section of
     -- `R[ε] → R`, and its value at `c` is `v`.
     have h_section : (fstHom ..).comp ρ = 1 := ext_ring (AlgHom.ext h_fst)
@@ -315,11 +334,8 @@ lemma ker_factors_of_torsionPoint {A : Over (Spec (.of V))} [IsAbelianScheme A]
     hx_gen.isGroupBaseChange.pointEquiv (T := Over.mk (𝟙 _))
   have h_inj : Function.Injective (hx_gen.isGroupBaseChange.pullSection ∘ₗ e.torsionPoint) :=
     p.symm.injective.comp (bijective_restrict_genericPt.injective.comp e.injective)
-  obtain ⟨m, hm, hms⟩ := hs_tors.exists_nsmul_eq_zero
-  have h_tors : m • p.symm s = 0 :=
-    calc m • p.symm s = p.symm (m • s) := (map_nsmul p.symm m s).symm
-      _ = p.symm 0 := congrArg p.symm hms
-      _ = 0 := map_zero p.symm
+  obtain ⟨m, hm, h_tors⟩ :=
+    (p.symm.toAddEquiv.toAddMonoidHom.isOfFinAddOrder hs_tors).exists_nsmul_eq_zero
   obtain ⟨t, ht⟩ := x_gen.exists_apply_eq_of_torsion h_inj (p.symm s) ⟨m, hm.ne', h_tors⟩
   -- `p.symm` is injective, so `s` is the section `e.torsionPoint t` read over `ℂ`
   obtain rfl : toUnit _ ≫ e.torsionPoint t = s := p.symm.injective ht
@@ -393,14 +409,14 @@ lemma exists_isLieLine {R : Type} [CommRing R] [IsLocalRing R] [Algebra R k]
     refine hZ_uniq _ _ (.trans ?_ (hZ_tan 1)) (funext fun i ↦ ?_)
     · exact (assoc ..).symm.trans (eq_whisker (by simp [r, OverMorphism.ext_iff, specOver.map,
         ← Spec.map_comp, Spec.map_inj, CommRingCat.hom_ext_iff, RingHom.ext_iff]) _)
-    · erw [IsEtaleChart.tangentCoords_comp (z := z) h_zero (h_tiny.2 (hZ_tan 1))
-        ((map x).map (specOver.map _)) rfl]
+    · refine (congrFun (IsEtaleChart.tangentCoords_comp (z := z) h_zero (h_tiny.2 (hZ_tan 1))
+        ((map x).map (specOver.map _)) rfl) i).trans ?_
       simp [hZ_dv, TrivSqZeroExt.ext_iff]
   · -- `β - b` vanishes in `k`, so `star β - b` acts on coordinates as `u ↦ ⟨ξ, u⟩ Y`
     refine ⟨∑ j, ξ j • snd (tangentCoords z (p v) j),
       hZ_uniq _ _ (by simp [r, hv]) (funext fun i ↦ ?_)⟩
     have h_fst : ∀ j, fst (tangentCoords z (p v) j) = 0 :=
-      h_chart.map_tangentCoords_eq_zero h_zero (h_tiny.2 hv)
+      IsEtaleChart.map_tangentCoords_eq_zero h_zero (h_tiny.2 hv)
     have hb_zero : algebraMap R k ((Spec.preimage (x ≫ τ)).hom (D.β - b)) = 0 := by
       simpa only [hρ, ThetaObject.baseHom] using! hb
     simp [h_lin (h_tiny.2 hv), map_smul, smul_sum, h_fst, eq_add_of_sub_eq h_rank,
@@ -435,11 +451,8 @@ lemma IsLieLine.exists_detects_tangent {R : Type} [CommRing R] [Algebra R k]
     specOver.map_bijective.surjective.exists.mp
       (h_lift (L 1 + p) (by simp [p, hL.smul_apply, hd, h_tors]))
   -- `T` is any function with nonzero derivative along `v₀`, if there is one
-  obtain ⟨T, hT⟩ : ∃ T : S, (v₀ T).snd = 0 → ∀ a : S, (v₀ a).snd = 0 := by
-    by_cases h_all : ∀ a : S, (v₀ a).snd = 0
-    · exact ⟨0, fun _ ↦ h_all⟩
-    · obtain ⟨T, hT_ne⟩ := not_forall.mp h_all
-      exact ⟨T, fun hT_zero ↦ absurd hT_zero hT_ne⟩
+  obtain ⟨T, hT⟩ : ∃ T : S, (v₀ T).snd = 0 → ∀ a : S, (v₀ a).snd = 0 :=
+    forall_imp_iff_exists_imp.mp id
   refine ⟨T, fun v hv hvT a ↦ ?_⟩
   -- As `c * (star β - b) = 1` on points of `Spec S`, `v - p = L m` for some `m`: `v = m • v₀`.
   -- (The calls below leave out `Spec.map_comp`: with `← Spec.map_comp_assoc` it makes simp loop.)
@@ -659,7 +672,7 @@ tangent vector at the `k`-point `o`, and let `γ : S → B` give `z'`, invert th
 and `G` kills `t ^ N`, `N` the number of `θ i` through `o`, then `ψ (ι z')` vanishes along `G`. -/
 private lemma vanishesAlong_of_map_pow_card_eq_zero [Algebra V k] {J : Type} [Finite J]
     {κ : J → AdelicTorsion E D.Index} {S : CommAlgCat V} [Module.Finite V S]
-    {ι : specOver V S ⟶ y.groupScheme} [IsClosedImmersion ι.left] {θ : J → S →ₐ[V] V}
+    {ι : specOver V S ⟶ y.groupScheme} {θ : J → S →ₐ[V] V}
     (hθ : ∀ i : J, Spec.map (ofHom (θ i)) ≫ ι.left = (e.torsionPoint (κ i)).left)
     (θ_inj : θ.Injective) {o : S →ₐ[V] k} {T : S}
     (hT : ∀ v : S →ₐ[V] k[ε], (∀ a : S, (v a).fst = o a) → (v T).snd = 0 → ∀ a : S, (v a).snd = 0)
@@ -862,8 +875,7 @@ lemma exists_param_pow_card_eq_zero (hw : D.IsGoodAt (ker x.baseHom))
         simpa [sub_smul, ← map_smul, sub_eq_zero] using hz _ ht
       have h_van : VanishesAlong (hq.pointEquiv z ≫ (c • 𝟙 y.groupScheme)) (.id B) :=
         (vanishesAlong_iff (𝟙 _) (by simp [specMap])).mpr (by simp [← map_smul, hz c hc])
-      have h_zero : RingHom.id B (u ^ sectionCount e (Subtype.val : T → AdelicTorsion E D.Index)
-          ((Over.map (specMap φ)).map (specOver.map π) ≫ hq.pointEquiv z)) = 0 :=
+      have h_zero :=
         (h_ker (J := T) Subtype.val Subtype.val_injective Subtype.prop).map_eq_zero
           (c • 𝟙 y.groupScheme) h_fix
           (fun s hs ↦ ⟨⟨t • s, smul_mem_torsionBySet_of_comp_smul_eq_zero e h_dvd hs⟩, rfl⟩) h_van

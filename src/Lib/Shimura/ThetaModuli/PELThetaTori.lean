@@ -1,6 +1,14 @@
-import Lib.Shimura.ThetaModuli.FlatClosure
-import Lib.Shimura.ThetaNormality.NormalGeneration
-import Lib.Shimura.Uniformisation.AdelicFrames
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.Shimura.ThetaModuli.FlatClosure
+public import Lib.Shimura.ThetaNormality.NormalGeneration
+public import Lib.Shimura.Uniformisation.AdelicFrames
+public import Lib.Adelic.Adeles.AdditiveCharacter
+public import Lib.Shimura.ComplexTheta.DimensionFormula
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Base
 
 /-!
 # PEL data, the adelic Riemann form and theta coordinates of polarised period maps
@@ -48,6 +56,8 @@ Notions from other files:
 Known; see `Lib.Shimura.IntegralModel.TowerExistence`, `Lib.Shimura.Uniformisation.AppellHumbert`
 and `Lib.Shimura.ThetaModuli.UniversalFamily` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -191,8 +201,7 @@ def IsGoodAt (w : Ideal (𝓞 E)) : Prop :=
 /-- The laws of a class `c` in the Picard group of `A`, for all points `x`, `y` of `A` with values
 in a scheme `T` over `S`: (a) the parallelogram law `New.Pic.ParallelogramLaw`; (b)
 `⟨β x, y⟩ = ⟨x, (1 - β) y⟩` for the pairing `New.Pic.pairing`, where `1 - β = star β`; (c) the
-pull-back of `c` along `y` is `⟨β y, y⟩` plus its pull-back along `0` (`x` plays no part here). The
-three laws are read with `HasClassLaws.parallelogramLaw`, `pairing_smul_beta` and `atPoint_eq`. -/
+pull-back of `c` along `y` is `⟨β y, y⟩` plus its pull-back along `0` (`x` plays no part here). -/
 def HasClassLaws {S : AlgebraicGeometry.Scheme} {A : CategoryTheory.Over S} [AddObj (S := S) A]
     [ModuleObj (𝓞 E) A] (c : Pic A.left) : Prop :=
   -- (a) the parallelogram law
@@ -207,19 +216,6 @@ namespace HasClassLaws
 
 variable {D : PEL E} {S : AlgebraicGeometry.Scheme} {A : CategoryTheory.Over S} [AddObj (S := S) A]
   [ModuleObj (𝓞 E) A] {c : Pic A.left}
-
-lemma parallelogramLaw (h_laws : D.HasClassLaws c) : c.ParallelogramLaw := h_laws.1
-
-/-- For a class with the laws `New.PEL.HasClassLaws`, `1 - β` is adjoint to `β` for the pairing. -/
-lemma pairing_smul_beta (h_laws : D.HasClassLaws c) {T : CategoryTheory.Over S} (x y : T ⟶ A) :
-    c.pairing (D.β • x) y = c.pairing x ((1 - D.β) • y) :=
-  (h_laws.right x y).left
-
-/-- For a class with the laws `New.PEL.HasClassLaws`, the pull-back along `y` is `⟨β y, y⟩` plus the
-pull-back along `0`. -/
-lemma atPoint_eq (h_laws : D.HasClassLaws c) {T : CategoryTheory.Over S} (y : T ⟶ A) :
-    c.atPoint y = c.pairing (D.β • y) y + c.atPoint 0 :=
-  (h_laws.right y y).right
 
 end HasClassLaws
 
@@ -244,7 +240,8 @@ variable {E : Type} [Field E] [CMBase E] (D : PEL E)
 /-- For a matrix β over E, the real bilinear form (y, z) ↦ Σ_v 2 Re(Φ_v(ξ)·z_vᴴ Φ_v(β) y_v) on
 (E ⊗ ℝ)ⁿ, with ξ from the datum D: a map
 `RealVectors E D.Index →ₗ[ℝ] RealVectors E D.Index →ₗ[ℝ] ℝ`. -/
-noncomputable def polarisationForm (β : Matrix D.Index D.Index E) := by
+noncomputable def polarisationForm (β : Matrix D.Index D.Index E) :
+    RealVectors E D.Index →ₗ[ℝ] RealVectors E D.Index →ₗ[ℝ] ℝ := by
   apply LinearMap.mk₂ ℝ fun y z : RealVectors E D.Index ↦
     ∑ v, 2 * (Φ v D.ξ * star (z · v) ⬝ᵥ β.map (Φ v) *ᵥ (y · v)).re
   -- Real bilinearity: expand the matrix products into sums and compare term by term.
@@ -320,20 +317,10 @@ lemma fourierChar_polarisationForm {a : 𝔸f E}
   -- Both sides are values of `ψf E`; compare their arguments in the finite adeles.
   rw [polarisationForm_toRealVectors, ← ψf_coe]
   congr 1
-  -- By `h_gram`, the adelic matrix of `β` is `a • (g⁻¹ᴴ * g⁻¹)`.
-  have h_beta : β.map (algebraMap E (𝔸f E)) = a • ((g⁻¹).valᴴ * (g⁻¹).val) := by
-    rw [← gram_inv_of_gram_eq h_gram]
-    simp
-  calc algebraMap E (𝔸f E) (D.ξ * star z ⬝ᵥ β *ᵥ y)
-      = algebraMap E (𝔸f E) D.ξ * star (algebraMap E (𝔸f E) ∘ z) ⬝ᵥ
-          β.map (algebraMap E (𝔸f E)) *ᵥ (algebraMap E (𝔸f E) ∘ y) := by
-        simp [dotProduct, RingHom.map_mulVec]
-    _ = a * (algebraMap E (𝔸f E) D.ξ * star (algebraMap E (𝔸f E) ∘ z) ⬝ᵥ
-          ((g⁻¹).valᴴ * (g⁻¹).val) *ᵥ (algebraMap E (𝔸f E) ∘ y)) := by
-        simp [h_beta, smul_mulVec, mul_left_comm a]
-    _ = a * xiForm D.ξ (frameCoords g y) (frameCoords g z) := by
-        rw [xiForm, frameCoords_eq_mulVec, frameCoords_eq_mulVec, star_mulVec_dotProduct,
-          mulVec_mulVec]
+  rw [xiForm, frameCoords_eq_mulVec, frameCoords_eq_mulVec, star_mulVec_dotProduct, mulVec_mulVec]
+  simp [dotProduct, RingHom.map_mulVec, ← gram_inv_of_gram_eq h_gram, smul_mulVec,
+    Finset.mul_sum]
+  exact Finset.sum_congr rfl fun _ _ ↦ by ring
 
 end New.Variety
 
@@ -411,8 +398,8 @@ structure ThetaTorus extends PeriodMap D g ℓ V where
   /-- In suitable coordinates `a ∈ 𝓞 E` acts diagonally: at `v₀` by `Φ v₀ a` on the line and by its
   conjugate on the complement, and by `Φ w a` at each place `w ≠ v₀`. -/
   exists_std_equiv : ∃ e : V ≃ₗ[ℂ] BallFibre E D.Index, ∀ a : 𝓞 E,
-    e.1 ∘ₗ toPeriodMap.intAction a ∘ₗ e.symm.1 =
-      .prodMap (.prodMap (Φ v₀ a.val • 1) (star (Φ v₀ a.val) • 1)) (.piMap (Φ ·.1 a • 1))
+    e.toLinearMap ∘ₗ toPeriodMap.intAction a ∘ₗ e.symm.toLinearMap =
+      .prodMap (.prodMap (Φ v₀ a.val • 1) (star (Φ v₀ a.val) • 1)) (.piMap (Φ ·.val a • 1))
 
 namespace PeriodMap
 
@@ -566,8 +553,7 @@ lemma intAction_rescaledBeta_mem_latticeOver (h_le : S ≤ D.dualTorsion) (hu : 
   have h_eq : x.intAction D.rescaledBeta u =
       x.intAction D.β (Nat.card D.dualTorsion • u) - (Nat.card D.dualTorsion / 2) • u := by
         simp [rescaledBeta]
-  rw [h_eq]
-  exact _root_.sub_mem (x.latticeOver_mono bot_le h_β) (nsmul_mem hu _)
+  simpa only [h_eq] using _root_.sub_mem (x.latticeOver_mono bot_le h_β) (nsmul_mem hu _)
 
 /-- e(β₁u, w) + e(u, β₁w) = e(u, w) for the Riemann form e of B, where β₁ is `D.rescaledBeta`. -/
 lemma riemannForm_intAction_rescaledBeta (u w : V) :
@@ -751,7 +737,7 @@ lemma mem_lagrangian_of_bicharacter_sq
     refine fourierChar_eq_one_iff.mp (Circle.coe_eq_one.mp ?_)
     calc (Real.fourierChar (2 * τ * x.automorphyForm.riemannForm l (x.torsionLift s)) : ℂ)
         = x.automorphyForm.riemannPhase l (τ • x.torsionLift s) ^ 2 := by
-          simp [RealComplexForm.riemannPhase, ← Complex.exp_nat_mul, mul_assoc, mul_left_comm]
+          simp [RealComplexForm.riemannPhase, ← Complex.exp_natCast_mul, mul_assoc, mul_left_comm]
       _ = 1 := h_sq_phase
   -- `(2 τ + 1) r = m` and `2 τ r = n` for `r = riemannForm l (x.torsionLift s)`; subtract.
   have h_odd : (2 * τ + 1) * x.automorphyForm.riemannForm l (x.torsionLift s) = m := by
@@ -788,18 +774,16 @@ lemma lagrangianTheta_mem_thetaSpace_lagrangian :
       x.multiplier :=
   x.exists_generator_thetaSpace.choose.prop
 
-lemma lagrangianTheta_ne_zero : x.lagrangianTheta ≠ 0 := by
-  obtain ⟨h_ne, -⟩ := x.exists_generator_thetaSpace.choose_spec
-  exact fun h_zero ↦ h_ne (Subtype.ext h_zero)
+lemma lagrangianTheta_ne_zero : x.lagrangianTheta ≠ 0 :=
+  fun h_zero ↦ x.exists_generator_thetaSpace.choose_spec.1 (Subtype.ext h_zero)
 
 /-- Every theta function for the lattice over the Lagrangian subgroup is a complex multiple of
 `x.lagrangianTheta`. -/
 lemma exists_smul_lagrangianTheta_eq {f : V → ℂ}
     (hf : f ∈ x.automorphyForm.thetaSpace (L := x.latticeOver D.lagrangian) x.multiplier) :
-    ∃ c : ℂ, c • x.lagrangianTheta = f := by
-  obtain ⟨-, h_span⟩ := x.exists_generator_thetaSpace.choose_spec
-  obtain ⟨c, hc⟩ := h_span ⟨f, hf⟩
-  exact ⟨c, congrArg Subtype.val hc⟩
+    ∃ c : ℂ, c • x.lagrangianTheta = f :=
+  (x.exists_generator_thetaSpace.choose_spec.2 ⟨f, hf⟩).imp
+    fun _ hc ↦ congrArg Subtype.val hc
 
 /-- The theta coordinate at `t`: the normalised translate of `x.lagrangianTheta` by the chosen
 lift of `t`. -/
@@ -861,30 +845,18 @@ lemma thetaCoord_eq_normalizedShift (y : D.Index → E) (hy : frameTorsionClass 
     x.thetaCoord t =
       normalizedShift x.automorphyForm (x.intAction D.rescaledBeta) (x.periodPoint y)
         x.lagrangianTheta := by
-  -- `x.thetaCoord t` is invariant under the normalised translation by the lattice vector `l`. By
-  -- the Heisenberg law `normalizedShift_normalizedShift`, whose cocycle is trivial here, composing
-  -- it with the translation by `x.torsionLift t` gives the translation by `x.periodPoint y`.
+  -- Translate `x.thetaCoord t` by `l ∈ x.periodLattice`; the Heisenberg cocycle is trivial.
   set l : V := x.periodPoint y - x.torsionLift t with hl_def
   have hl : l ∈ x.periodLattice := x.sub_mem_periodLattice_iff.mpr (by simp [hy])
-  obtain ⟨m, hm⟩ :
-      ∃ m : ℤ, x.automorphyForm.riemannForm (x.torsionLift t) (x.intAction D.rescaledBeta l) = m :=
-    x.dualLattice_periodLattice.ge (x.torsionLift_mem_latticeOver t) _
-      (x.intAction_rescaledBeta_mem_latticeOver bot_le hl)
-  have h_cocycle : x.automorphyForm.riemannPhase (x.intAction D.rescaledBeta l) (x.torsionLift t) =
-    1 :=
+  obtain ⟨m, hm⟩ := x.dualLattice_periodLattice.ge (x.torsionLift_mem_latticeOver t) _
+    (x.intAction_rescaledBeta_mem_latticeOver bot_le hl)
+  have h_cocycle :
+      x.automorphyForm.riemannPhase (x.intAction D.rescaledBeta l) (x.torsionLift t) = 1 :=
     Circle.coe_eq_one.mpr (fourierChar_eq_one_iff.mpr
       ⟨-m, by rw [riemannForm_swap, hm, Int.cast_neg]⟩)
-  calc x.thetaCoord t
-      = normalizedShift x.automorphyForm (x.intAction D.rescaledBeta) l (x.thetaCoord t) :=
-      ((mem_thetaSpace_iff_normalizedShift.mp (x.thetaCoord_mem_thetaSpace t)).right l hl).symm
-    _ = x.automorphyForm.riemannPhase (x.intAction D.rescaledBeta l) (x.torsionLift t) •
-          normalizedShift x.automorphyForm (x.intAction D.rescaledBeta) (l + x.torsionLift t)
-            x.lagrangianTheta :=
-      x.isAppellHumbert_periodLattice.normalizedShift_normalizedShift
-        x.riemannForm_intAction_rescaledBeta
-    _ = normalizedShift x.automorphyForm (x.intAction D.rescaledBeta) (x.periodPoint y)
-      x.lagrangianTheta := by
-      rw [h_cocycle, one_smul, hl_def, sub_add_cancel]
+  rw [← (mem_thetaSpace_iff_normalizedShift.mp (x.thetaCoord_mem_thetaSpace t)).2 l hl,
+    thetaCoord, x.isAppellHumbert_periodLattice.normalizedShift_normalizedShift
+      x.riemannForm_intAction_rescaledBeta, h_cocycle, one_smul, hl_def, sub_add_cancel]
 
 /-- If the rational vector `y` represents `s ∈ T`, its image in `V` lies in the lattice over `T`. -/
 lemma periodPoint_mem_latticeOver_of_frameTorsionClass_eq (hy : frameTorsionClass g y = s) :
@@ -977,23 +949,14 @@ lemma valuation_multiplier_mul_bicharacter_eq_one (v : Valuation ℂ NNReal)
     v (x.multiplier u * x.bicharacter hu t) = 1 := by
   -- Both factors are roots of unity by `exp_riemannForm_pow_eq_one`, as `#T` multiplies the lattice
   -- over `T` into `x.periodLattice`.
-  have h_beta_card : Nat.card D.dualTorsion • x.intAction D.rescaledBeta u ∈ x.periodLattice :=
-    x.card_nsmul_mem_periodLattice (x.intAction_rescaledBeta_mem_latticeOver le_rfl hu)
-  -- `v (exp (π i e(β₁ u, w))) = 1` whenever `#T • w` lies in the period lattice.
-  have h_val_exp : ∀ w : V, Nat.card D.dualTorsion • w ∈ x.periodLattice →
+  have h_val : ∀ {w : V}, w ∈ x.latticeOver D.dualTorsion →
       v (cexp (Real.pi * I * x.automorphyForm.riemannForm (x.intAction D.rescaledBeta u) w)) = 1 :=
-    fun w hw ↦ valuation_eq_one_of_pow_eq_one (by simp [Nat.card_pos.ne'])
-      (x.isAppellHumbert_periodLattice.exp_riemannForm_pow_eq_one h_beta_card hw)
-  have h_mult : v (x.multiplier u) = 1 := by
-    simpa [canonicalMultiplier] using h_val_exp u (x.card_nsmul_mem_periodLattice hu)
-  -- The character value is the square of `exp (π i e(β₁ u, a_t))`, `a_t` the lift of `t`.
-  have h_char_eq : x.bicharacter hu t =
-      cexp (Real.pi * I *
-        x.automorphyForm.riemannForm (x.intAction D.rescaledBeta u) (x.torsionLift t)) ^ 2 := by
-    simp [bicharacter, RealComplexForm.riemannPhase, two_mul, add_mul, exp_add, sq]
-  rw [map_mul, h_mult, h_char_eq, map_pow,
-    h_val_exp _ (x.card_nsmul_mem_periodLattice (x.torsionLift_mem_latticeOver t)), one_pow,
-      mul_one]
+    fun hw ↦ valuation_eq_one_of_pow_eq_one (by simp [Nat.card_pos.ne'])
+      (x.isAppellHumbert_periodLattice.exp_riemannForm_pow_eq_one
+        (x.card_nsmul_mem_periodLattice (x.intAction_rescaledBeta_mem_latticeOver le_rfl hu))
+        (x.card_nsmul_mem_periodLattice hw))
+  simp [canonicalMultiplier, bicharacter, RealComplexForm.riemannPhase, two_mul, add_mul, exp_add,
+    h_val hu, h_val (x.torsionLift_mem_latticeOver t)]
 
 /-- At the trivial valuation `1` on ℂ, the form `x.automorphyForm` of the polarised period map `x`
 and its multiplier `x.multiplier` satisfy `HasGoodReduction` of level `D.paddedNorm`. This means the
@@ -1035,7 +998,7 @@ lemma hasGoodReduction_one :
     exact hf_ne (eq_zero_of_torsionPoints hf h_torsion_zero)
   -- The three sup norms are `0` or `1`.
   rw [← sizeAt_mul]
-  show (B + C).thetaNorm 1 (f * f') = B.thetaNorm 1 f * C.thetaNorm 1 f'
+  change (B + C).thetaNorm 1 (f * f') = B.thetaNorm 1 f * C.thetaNorm 1 f'
   by_cases hf_zero : f = 0
   · simp [hf_zero, thetaNorm_zero]
   by_cases hf'_zero : f' = 0
@@ -1071,7 +1034,9 @@ lemma formSpan_eq_normBall (v : Valuation ℂ NNReal)
     (hG : HasGoodReduction x.automorphyForm x.multiplier v D.paddedNorm)
     (c : D.dualTorsion) (j : ℕ) :
     formSpan v.valuationSubring x.thetaCoord (D.paddedNorm ^ j) =
-    (hG.pow j).normBall (x.thetaCoord c ^ D.paddedNorm ^ j) := by
+    HasGoodReduction.normBall (D.paddedNorm ^ j • x.automorphyForm)
+        (x.multiplier ^ D.paddedNorm ^ j) v
+        (x.thetaCoord c ^ D.paddedNorm ^ j) := by
   -- The span of the `x.thetaCoord t` holds the translates of `x.thetaCoord c` by the dual lattice,
   -- by `thetaShift_thetaCoord`.
   have h_shift :
@@ -1085,12 +1050,14 @@ lemma formSpan_eq_normBall (v : Valuation ℂ NNReal)
     exact smul_mem _ (⟨_, (x.valuation_multiplier_mul_bicharacter_eq_one v _).le⟩ : v.integer)
       (subset_span ⟨_, rfl⟩)
   -- So it holds the ball of `x.thetaCoord c`; conversely all `x.thetaCoord t` have the same norm.
-  have h_range : range x.thetaCoord ⊆ hG.normBall (x.thetaCoord c) := by
+  have h_range : range x.thetaCoord ⊆ HasGoodReduction.normBall x.automorphyForm x.multiplier v
+      (x.thetaCoord c) := by
     simp [hG.mem_normBall, thetaNorm_thetaCoord, range_subset_iff]
   have h_lattice (u : V) (hu : D.paddedNorm • u ∈ x.periodLattice) :
     u ∈ x.latticeOver D.lagrangian :=
     x.latticeOver_mono D.torsion_mem_lagrangian ((x.nsmul_mem_latticeOver hG.one_lt.ne_bot).mp hu)
-  have h_span : span v.valuationSubring (range x.thetaCoord) = hG.normBall (x.thetaCoord c) :=
+  have h_span : span v.valuationSubring (range x.thetaCoord) =
+      HasGoodReduction.normBall x.automorphyForm x.multiplier v (x.thetaCoord c) :=
     span_eq_of_le _ h_range fun f hf ↦
       hG.mem_of_mem_normBall (x.thetaCoord_mem_thetaSpace c) le_rfl hG.isAppellHumbert
         (x.thetaCoord_mem_thetaSpace c) hf.left h_shift hf
@@ -1105,35 +1072,23 @@ lemma formSpan_eq_normBall (v : Valuation ℂ NNReal)
 /-- The theta functions θ_t, t in T, have no common zero: for every z in V the vector (θ_t(z))_t
 is non-zero. -/
 lemma thetaCoord_vector_ne_zero (z : V) : (x.thetaCoord · z) ≠ 0 := by
-  -- Some theta function of degree `D.paddedNorm` does not vanish at `z`. By `formSpan_eq_normBall`
-  -- for the trivial valuation it is a multiple of a form of degree `D.paddedNorm` in the
-  -- `x.thetaCoord t`, so these cannot all vanish at `z`.
+  -- Some theta function of degree `D.paddedNorm` does not vanish at `z`; by `formSpan_eq_normBall`
+  -- it lies in the span of degree-`D.paddedNorm` monomials in `x.thetaCoord`, contradiction.
   intro h_zero
-  obtain ⟨f, hf, hfz⟩ : ∃ f ∈ thetaSpace (x.multiplier ^ D.paddedNorm)
-    (D.paddedNorm • x.automorphyForm), f z ≠ 0 :=
+  obtain ⟨f, hf, hfz⟩ :=
     x.isAppellHumbert_periodLattice.exists_mem_thetaSpace_nsmul_apply_ne_zero z D.paddedNorm
       x.hasGoodReduction_one.one_lt
-  -- This is the case `j = 1` of `formSpan_eq_normBall`, whose powers are `D.paddedNorm ^ j`; so
-  -- `hf` is restated with the exponent `D.paddedNorm ^ 1`.
-  have h_pow_mem :
-      x.thetaCoord 0 ^ D.paddedNorm ^ 1 ∈ thetaSpace (x.multiplier ^ D.paddedNorm ^ 1)
-        (D.paddedNorm ^ 1 • x.automorphyForm) :=
-    pow (x.thetaCoord_mem_thetaSpace 0) (D.paddedNorm ^ 1)
-  have h_pow_ne : x.thetaCoord 0 ^ D.paddedNorm ^ 1 ≠ 0 := by simp [thetaCoord_ne_zero]
   obtain ⟨c, f₀, h_ball, rfl, -⟩ := (x.hasGoodReduction_one.pow 1).exists_eq_smul_normBall
-    h_pow_mem h_pow_ne (g := f) (by simpa using hf)
+    (pow (x.thetaCoord_mem_thetaSpace 0) (D.paddedNorm ^ 1)) (by simp [thetaCoord_ne_zero])
+    (g := f) (by simpa using hf)
   rw [← x.formSpan_eq_normBall 1 x.hasGoodReduction_one] at h_ball
-  -- Evaluation at `z` sends `f₀` into a positive power of the zero module.
   set ev := mapHom (Pi.evalAlgHom (1 : Valuation ℂ NNReal).valuationSubring (fun _ : V ↦ ℂ) z)
-  set M := span (1 : Valuation ℂ NNReal).valuationSubring (range x.thetaCoord)
-  have h_eval : f₀ z ∈ ev M ^ D.paddedNorm ^ 1 := by
+  have h_eval : f₀ z ∈ ev (span _ (range x.thetaCoord)) ^ D.paddedNorm ^ 1 := by
     rw [← map_pow]
     exact ⟨f₀, h_ball, rfl⟩
-  have h_eval_zero : ev M = ⊥ := by simp [ev, M, map_span, ← range_comp', h_zero]
-  rw [h_eval_zero, pow_one, bot_pow x.hasGoodReduction_one.one_lt.ne_bot, Submodule.mem_bot]
-    at h_eval
-  have h_smul_zero : (c • f₀) z = 0 := by simp [h_eval]
-  exact hfz h_smul_zero
+  simp [ev, map_span, ← range_comp', h_zero,
+    bot_pow x.hasGoodReduction_one.one_lt.ne_bot] at h_eval
+  exact hfz (by simp [h_eval])
 
 end PeriodMap
 

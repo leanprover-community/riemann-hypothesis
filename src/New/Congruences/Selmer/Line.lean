@@ -1,7 +1,16 @@
-import Lib.General.NumberTheory.CoefficientInclusion
+module
+
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.FieldTheory.Galois.Profinite
+public import Lib.General.NumberTheory.CoefficientInclusion
+public import New.Congruences.Selmer.Untied
+public import Lib.General.Algebra.BlockFittingBound
+public import Lib.General.NumberTheory.GaussValuation
+public import New.Congruences.Selmer.SelmerData
+public import New.Congruences.Selmer.StickelbergerSystems
+import Lib.GaloisRep.Main.DivisibleSelmerModules
 import New.Congruences.Selmer.Descent
 import New.Congruences.Selmer.StickelbergerLine
-import New.Congruences.Selmer.Untied
 
 /-!
 # Restriction to a line
@@ -47,6 +56,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -121,14 +132,14 @@ def twistedSelmer {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRin
 `ψ` with values in a discrete valuation ring `O'` over `O` (by the map `e`): the cocycles in
 `T ψ ⊗ Frac(O') / O'` that vanish at `γ_* = T.γ`, are unramified outside `S ∪ Q ∪ Q̄`,
 where `S = T.places`, and satisfy the local conditions of `T`. -/
-def divisibleSelmer {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O'] [DVR O']
+def divisibleSelmer {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O']
     [Fintype n] [DecidableEq n] (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E))
     (e : O →+* O') (ψ : Gal(Ω/E) →* O') : Submodule O' (Gal(Ω/E) → n → DivisibleQuot O') :=
   selmerModule (twistRep e ψ T.ρ) (unionWithConj T.places Q) (mapRel e '' T.classRelations)
     (DivisibleQuot O')
 
 /-- The length over `O'` of the Selmer group `Sel_Q(T ψ)` with coefficients in `Frac(O') / O'`. -/
-def divisibleLength {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O'] [DVR O']
+def divisibleLength {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O']
     [Fintype n] [DecidableEq n] (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E))
     (e : O →+* O') (ψ : Gal(Ω/E) →* O') : ℕ∞ :=
   length O' (T.divisibleSelmer Q e ψ)
@@ -158,7 +169,7 @@ open scoped Classical in
 component) and slopes `s` indexed by `ι` (second component). The ties `z(γ_w) = s • z(φ_w)` with the
 slopes of index `i`, as relations by `n × n` matrices, at the primes of `I ∪ I'` are the ties at
 the primes of `I` together with those at the primes of `I'`. -/
-lemma tieRelations_union {O n ι : Type} [CommRing O] [Fintype n] [DecidableEq n] {q : ℕ}
+lemma tieRelations_union {O n ι : Type} [CommRing O] [DecidableEq n] {q : ℕ}
     (I I' : Finset (FinPlace E)) (d : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι) :
     tieRelations (n := n) (I ∪ I') d i = tieRelations I d i ∪ tieRelations I' d i := by
   ext f
@@ -169,7 +180,7 @@ lemma tieRelations_union {O n ι : Type} [CommRing O] [Fintype n] [DecidableEq n
 of `ρ` by `ψ_x(g) = ∏ (1 + x_j) ^ (h_j g)`: we have `len Sel(x) ≤ v(P(x))` at all points `x` over
 all discrete valuation rings of characteristic zero over `O`, not only where `ψ_x` is a
 character. -/
-def BoundsSelmer (ℓ : ℕ) {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+def BoundsSelmer (ℓ : ℕ) {E : Type} [Field E] [EmbeddedNumberField E]
     {O n σ : Type} [CommRing O] [Fintype n] [DecidableEq n] [Fintype σ] {q : ℕ} (M : ℕ)
     (h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)) (ρ : Gal(Ω/E) →* Matrix n n O)
     (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O)) (P : MvPolynomial σ O) : Prop :=
@@ -223,6 +234,13 @@ lemma coe_twistRep_pointChar {O O' n σ : Type} [CommRing O] [CommRing O'] [Fint
   ext1 g
   simp [twistRep, pointTwist, eval_universalChar]
 
+/-- Bound module length using the relative length and the length of the comparison submodule. -/
+private lemma length_le_of_relLength_le {A M : Type*} [Ring A] [AddCommGroup M] [Module A M]
+    {S T : Submodule A M} {b c : ℕ∞} (hrel : relLength S T ≤ b)
+    (hT : Module.length A T ≤ c) : Module.length A S ≤ b + c := by
+  rw [← relLength_add_length_inf S T]
+  exact add_le_add hrel ((New.length_mono inf_le_right).trans hT)
+
 namespace SelmerDatum
 
 variable {ι n : Type} [Fintype n] [DecidableEq n] {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)}
@@ -263,10 +281,8 @@ lemma length_tiedSelmer_erase_le {O : Type} [CommRing O] [PadicIntegerRing O ℓ
     exact h_primes.relLength_tieRelations_le_sum_addVal_det (Nat.ne_zero_of_lt hMN) i
       (fun _ hg ↦ T.reduceModPow_eq_one hg) hV hMN.le h_first (unionWithConj T.places J)
       (T.classRelations ∪ tieRelations (J.erase P₀) d i)
-  calc length O Z₀
-    _ = relLength Z₀ Z + length O ↥(Z₀ ⊓ Z) := (relLength_add_length_inf Z₀ Z).symm
-    _ ≤ T.firstPrimeTerm + (T.globalTerm + T.placesTerm) :=
-      add_le_add h_release ((length_mono inf_le_right).trans h_tied)
+  calc length O Z₀ ≤ T.firstPrimeTerm + (T.globalTerm + T.placesTerm) :=
+        length_le_of_relLength_le h_release h_tied
     _ = T.β := by rw [β, localTerms, add_comm, add_assoc]
 
 open scoped Classical in
@@ -310,7 +326,7 @@ lemma exists_boundsSelmer_and_eval_dvd {O : Type} [CommRing O] [PadicIntegerRing
   let L₀ : Set (Gal(Ω/E) →₀ Matrix n n O) := T.classRelations ∪ tieRelations (J.erase P₀) d i
   let a : J → O := lineDirection P₀ J d i
   have h_lam (v : J) : IsLocallyConstant (lam v) :=
-    (h_primes.isAuxPrimeDataAt v v.2).isLocallyConstant
+    (h_primes.isAuxPrimeDataAt v v.property).isLocallyConstant
   -- A polynomial `G` for the tied module that is sharp at `0`; `P⁰` is its restriction to the line.
   obtain ⟨G, hG_sharp, hG_bound⟩ : ∃ G : MvPolynomial J O,
       addVal O (G.eval₂ (.id O) fun _ ↦ 0) =
@@ -336,9 +352,8 @@ lemma exists_boundsSelmer_and_eval_dvd {O : Type} [CommRing O] [PadicIntegerRing
     h_primes.relLength_tied_le hN₀ i (fun _ ↦ T.reduceModPow_eq_one) hV e h_norm S T.classRelations
   have h_dvd : P.eval₂ e x ∣
       (restrictToLine a G).eval₂ e y * (tiePolynomial T.ρ (J.erase P₀) d).eval₂ e y := by
-    rw [← addVal_le_iff_dvd, addVal_mul, eval₂_restrictToLine, hP_sharp,
-      ← relLength_add_length_inf (Sel T.classRelations) (Sel L₀), add_comm]
-    exact add_le_add ((length_mono inf_le_right).trans (hG_bound O' e x)) h_untie
+    rw [← addVal_le_iff_dvd, addVal_mul, eval₂_restrictToLine, hP_sharp, add_comm]
+    exact length_le_of_relLength_le h_untie (hG_bound O' e x)
   -- The claim is the image of `h_dvd` under `f`.
   refine ⟨P, hP_bound, ?_⟩
   simpa only [map_mul, Polynomial.hom_eval₂, MvPolynomial.eval₂_comp_left, Polynomial.eval_map,
@@ -602,9 +617,9 @@ lemma nonempty_twistPolynomials_of_isTiedPrimes (T : ∀ i : ι, SelmerDatum ℓ
     (Y k).exists_point_ellVal_universalChar_le h_primes (hM' k) (h_frob_system k) hs₀
       (h_card (h_exps k)) hr hN'
   have h_inertia (v : J) : ∃ g ∈ inertiaAbove {v.val}, lam v g = Multiplicative.ofAdd 1 := by
-    obtain ⟨hγ_inertia, hγ_one, -⟩ := (h_primes.isAuxPrimeDataAt v v.2).tame_gen
+    obtain ⟨hγ_inertia, hγ_one, -⟩ := (h_primes.isAuxPrimeDataAt v v.property).tame_gen
     exact ⟨(d v).1.tameGenerator,
-      ⟨v, rfl, _, (h_primes.isAuxPrimeDataAt v v.2).isPlaceOver, hγ_inertia⟩, hγ_one⟩
+      ⟨v, rfl, _, (h_primes.isAuxPrimeDataAt v v.property).isPlaceOver, hγ_inertia⟩, hγ_one⟩
   choose P x hx hP_val hP_bound using h_datum
   choose x' hx' hx'_val using h_system
   exact ⟨{
@@ -612,7 +627,7 @@ lemma nonempty_twistPolynomials_of_isTiedPrimes (T : ∀ i : ι, SelmerDatum ℓ
     auxiliary := h_primes.auxiliary
     two_mul_card_le := by simpa using h_card hc
     primeChar := lam
-    isFromU1_primeChar v := (h_primes.isAuxPrimeDataAt v v.2).toIsFromU1
+    isFromU1_primeChar v := (h_primes.isAuxPrimeDataAt v v.property).toIsFromU1
     exists_eq_ofAdd_one := h_inertia
     datumPoly i := (P i).map O.toIntQpBar
     systemPoly k := groupRingEval (universalChar lam) ((Y k).element J)

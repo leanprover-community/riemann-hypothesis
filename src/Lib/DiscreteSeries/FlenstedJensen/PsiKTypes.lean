@@ -1,4 +1,16 @@
+module
+
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
 import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
+import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.General.Analysis.MeanValueAndTaylor
+import Lib.General.LinearAlgebra.PolarDecomposition
+import Lib.General.Measure.IdempotentKernel
 import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
@@ -44,6 +56,8 @@ semisimple symmetric spaces, Ann. of Math. 111 (1980) 253-311; B. Sun, Matrix co
 cohomologically induced representations, Compositio Math. 143 (2007), Thm 1.1 (arXiv math/0403440);
 A. Knapp, Representation Theory of Semisimple Groups (1986), ch. IX.
 -/
+
+@[expose] public section
 
 /-! ## Value at one, polar formula and symmetries of c_λ -/
 
@@ -103,23 +117,16 @@ theorem dsCoeff_polar (hg : l.HasGap h) (p q : maxCompactU ε) {z : USign ε}
 
 /-- For a parameter λ of gap h and g in U(diag ε), c_λ(g⁻¹) is the complex conjugate of c_λ(g). -/
 theorem dsCoeff_inv (hg : l.HasGap h) (g : USign ε) : l.dsCoeff ↑g⁻¹ = conj (l.dsCoeff g) := by
-  -- Write `g = k z` with `z > 0`. Then `g⁻¹ = z⁻¹ k⁻¹`, and the integrands of `dsCoeff_polar` for
-  -- the two are conjugate, because `weightMinors` is conjugated by inversion.
+  -- Write `g = k z` with `z > 0`. Then `g⁻¹ = z⁻¹ k⁻¹`, and the `dsCoeff_polar` integrands are
+  -- conjugate because `weightMinors` is conjugated by inversion.
   obtain ⟨k, z, hz, rfl, -⟩ := exists_polar g
-  let F (u : maxCompactU ε) : ℂ := weightMinors l.lowestKType (k * u.val) *
-    conj (weightMinors l.lowestKType u) /
-    weightMinors (-paramAddRho l) ((u : Matrix n n ℂ)ᴴ * z * u)
-  have h_denom (u : maxCompactU ε) (w : n → ℤ) :
-      weightMinors w ((u : Matrix n n ℂ)⁻¹ * ((z : Matrix n n ℂ)⁻¹ * u)) =
-        conj (weightMinors w ((u : Matrix n n ℂ)⁻¹ * (z * u))) := by
-    simpa [mul_assoc, Matrix.mul_inv_rev, GeneralLinearGroup.det_ne_zero] using
-      weightMinors_unitary_inv ((u : USign ε)⁻¹ * z * (u : USign ε)) w
-  have h_self : l.dsCoeff ↑(k * z) = (∫ u, F u ∂haarK ε) / l.lowestKType.kTypeNormSq := by
-    simpa [F] using dsCoeff_polar hg k 1 hz
-  have h_inv : l.dsCoeff ↑(k * z)⁻¹ = (∫ u, conj (F u) ∂haarK ε) / l.lowestKType.kTypeNormSq := by
-    simpa [F, mul_assoc, mul_comm, ← maxCompactU.coe_inv, Matrix.mul_inv_rev, h_denom] using
-      dsCoeff_polar hg 1 k (z := z⁻¹) (by simpa using hz)
-  rw [h_inv, h_self, integral_conj, map_div₀, Complex.conj_ofReal]
+  have h_self := dsCoeff_polar hg k 1 hz
+  have h_inv := dsCoeff_polar hg 1 k (z := z⁻¹) (by simpa using hz)
+  have h_denom (u : maxCompactU ε) :=
+    weightMinors_unitary_inv ((u : USign ε)⁻¹ * z * (u : USign ε)) (-paramAddRho l)
+  simp [mul_assoc, Matrix.mul_inv_rev] at h_self h_inv h_denom
+  simp [h_inv, h_self, mul_comm, ← maxCompactU.coe_inv, h_denom,
+    ← integral_conj]
 
 /-- Let `l = 2λ` be a parameter of gap `h`: its entries are distinct and congruent to `card n - 1`
 mod 2, and `|λ i - λ j| ≥ h` whenever `ε i ≠ ε j`. Let c_λ = `l.dsCoeff` be the function
@@ -209,13 +216,10 @@ injective, and `o i < o j` holds only if `l j < l i`. -/
 private theorem New.injective_and_lt_of_reverses_order (hg : l.HasGap h) {o : n → ℤ}
     (ho : ∀ i j : n, l j < l i → o i < o j) :
     o.Injective ∧ ∀ i j : n, o i < o j → l j < l i := by
-  have h_order (i j : n) (hij : o i < o j) : l j < l i := by
-    by_contra! h_le
-    rcases h_le.lt_or_eq with h_lt | h_eq
-    exacts [(ho j i h_lt).not_gt hij, hij.ne (congrArg o (hg.injective h_eq))]
-  refine ⟨fun i j hij ↦ hg.injective ?_, h_order⟩
-  exact le_antisymm (not_lt.1 fun h_lt ↦ (ho i j h_lt).ne hij)
-    (not_lt.1 fun h_lt ↦ (ho j i h_lt).ne' hij)
+  -- For the order on the indices pulled back along `l`, `o` is strictly antitone.
+  let _ : LinearOrder n := .lift' l hg.injective
+  have h_anti : StrictAnti o := fun i j hij ↦ ho j i hij
+  exact ⟨h_anti.injective, fun i j hij ↦ h_anti.lt_iff_gt.1 hij⟩
 
 variable [DecidableEq n]
 
@@ -405,7 +409,7 @@ private theorem New.eventually_integral_conj_weightMinors_mul_dsCoeff (hg : l.Ha
       fun s hs ↦ hA_acc k s hs j
   let c : ℂ := l.lowestKType.kTypeNormSq
   have h_x : l.dsCoeff x = (∫ j, G j j 1 ∂haarK ε) / c := by
-    simp [HCParam.dsCoeff, HCParam.flenstedJensen, G, S, c, mul_assoc]
+    simp [HCParam.dsCoeff, HCParam.flenstedJensen, G, S, c]
   have h_b : l.dsCoeff b = (∫ k, F k ∂haarK ε) / c := by
     simp [dsCoeff_eq_flenstedJensen hg (one_mem _) (by simpa using hb_acc 1),
       HCParam.flenstedJensen, F, S, c]

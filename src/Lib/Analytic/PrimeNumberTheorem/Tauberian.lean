@@ -1,3 +1,11 @@
+module
+
+import TauCeti.Analysis.Convex.Lipschitz
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.HalfPlane
+import Mathlib.Order.CompletePartialOrder
+public import Lib.Speed
 import Lib.Analytic.EntireLFunction
 
 /-!
@@ -19,6 +27,8 @@ Known result: the passage from a zero-free region to the error term of the prime
 Source: Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Section 6.2, where a contour
 integral is used in place of the Taylor coefficient.
 -/
+
+@[expose] public section
 
 open Complex Filter MeasureTheory Metric Set Topology
 
@@ -211,7 +221,7 @@ lemma norm_taylorCoeff_dslope_le {H η M : ℝ} (hη : 0 < η) (hηH : η ≤ H)
         field
     _ ≤ 2 * M / η * (H + H) * rexp (-(η / (2 * H))) ^ (k + 1) := by gcongr
     _ = 4 * M * H / η * rexp (-((k + 1) * (η / (2 * H)))) := by
-        rw [← Real.exp_nat_mul, Nat.cast_succ]
+        rw [← Real.exp_natCast_mul, Nat.cast_succ]
         ring_nf
 
 /-- If `|R v - R u| ≤ L (v - u)` for all steps `0 ≤ u ≤ v ≤ u + 1`, then `R` is Lipschitz with
@@ -219,23 +229,20 @@ constant `L` on `[0, ∞)`. -/
 lemma abs_sub_le_of_unit_steps
     (h_step_le : ∀ u v : ℝ, 0 ≤ u → u ≤ v → v ≤ u + 1 → |R v - R u| ≤ L * (v - u)) {u v : ℝ}
     (hu : 0 ≤ u) (hv : 0 ≤ v) : |R v - R u| ≤ L * |v - u| := by
-  wlog huv : u ≤ v generalizing u v with h_ordered
-  · simpa only [abs_sub_comm] using h_ordered hv hu (le_of_not_ge huv)
-  -- Cut the interval from `u` to `v` into `n` steps of length `t ≤ 1`.
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, v - u < n := exists_nat_gt (v - u)
-  have hn_pos : (0 : ℝ) < n := (sub_nonneg.2 huv).trans_lt hn
-  let t : ℝ := (v - u) / n
-  have ht_nonneg : 0 ≤ t := div_nonneg (sub_nonneg.2 huv) hn_pos.le
-  have ht_le_one : t ≤ 1 := (div_le_one hn_pos).2 hn.le
-  have h_step (i : ℕ) : dist (R (u + i * t)) (R (u + (i + 1 : ℕ) * t)) ≤ L * t := by
-    rw [dist_comm, Real.dist_eq, Nat.cast_succ, add_one_mul, ← add_assoc]
-    simpa using
-      h_step_le (u + i * t) (u + i * t + t) (by positivity) (by linarith) (by linarith)
-  calc |R v - R u| = dist (R (u + (0 : ℕ) * t)) (R (u + n * t)) := by
-        simp [t, mul_div_cancel₀ _ hn_pos.ne', Real.dist_eq, abs_sub_comm]
-    _ ≤ ∑ _ ∈ Finset.range n, L * t :=
-        dist_le_range_sum_of_dist_le (f := fun i : ℕ ↦ R (u + i * t)) n fun _ ↦ h_step _
-    _ = L * |v - u| := by simp [abs_of_nonneg (sub_nonneg.2 huv), t, field]
+  have hL : 0 ≤ L := by
+    simpa using (abs_nonneg _).trans (h_step_le 0 1 le_rfl zero_le_one (by simp))
+  have h_lip : LipschitzOnWith (NNReal.mk L hL) R (Ici (0 : ℝ)) := by
+    refine (convex_Ici _).lipschitzOnWith_of_locally_dist_le fun x hx ↦ ?_
+    filter_upwards [mem_nhdsWithin_of_mem_nhds (Metric.ball_mem_nhds x zero_lt_one),
+      self_mem_nhdsWithin] with y hy hy0
+    simp only [Metric.mem_ball, Real.dist_eq, abs_lt] at hy
+    rw [Real.dist_eq, Real.dist_eq, NNReal.coe_mk]
+    rcases le_total x y with hxy | hyx
+    · rw [abs_of_nonneg (sub_nonneg.mpr hxy)]
+      exact h_step_le x y hx hxy (by linarith [hy.2])
+    · rw [abs_sub_comm (R y), abs_sub_comm y, abs_of_nonneg (sub_nonneg.mpr hyx)]
+      exact h_step_le y x hy0 hyx (by linarith [hy.1])
+  simpa only [Real.dist_eq, NNReal.coe_mk] using h_lip.dist_le_mul v hv u hu
 
 /-- Let `R` be measurable and Lipschitz with constant `L` on `[0, ∞)`, with transform
 `Φ s = ∫₀^∞ R(v) e^{(1 - s) v} dv` in `re s > 2`, and let `u, δ > 0` and `H = (k + 1) / u > 1`. The
@@ -253,7 +260,7 @@ lemma norm_taylorCoeff_transform_sub_le_of_lipschitz (hR : Measurable R)
   have h_near (v : ℝ) (hv : 0 < v) : |R v - R u| ≤ L * δ + L / δ * (v - (k + 1) / H) ^ 2 := by
     have h_amgm : |v - u| ≤ δ + (v - u) ^ 2 / δ := by
       field_simp
-      nlinarith [sq_nonneg (|v - u| - δ), abs_nonneg (v - u), sq_abs (v - u)]
+      nlinarith only [sq_nonneg (|v - u| - δ), abs_nonneg (v - u), sq_abs (v - u)]
     rw [H_eq, div_div_cancel₀ (by positivity)]
     calc |R v - R u| ≤ L * |v - u| := h_lip u hu.le v hv.le
       _ ≤ L * (δ + (v - u) ^ 2 / δ) := by gcongr
@@ -365,7 +372,7 @@ theorem eventually_abs_le_inv_pow_of_transform (hR : Measurable R)
       DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ l ^ A := by
     obtain ⟨h_re, h_norm⟩ := one_sub_le_re_and_norm_le_of_mem_closedBall (by positivity) hs
     refine hF_region s h_re (h_norm.trans ?_)
-    rw [l_def, Real.exp_nat_mul, Real.exp_log hu_pos, pow_succ']
+    rw [l_def, Real.exp_natCast_mul, Real.exp_log hu_pos, pow_succ']
     linarith
   have h_small : ‖coeff‖ ≤ 1 / u ^ (B + 1) :=
     norm_taylorCoeff_dslope_le_inv_pow hu_pos hl_one rfl hH_gt (by linarith) h_log_pow_le

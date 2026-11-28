@@ -1,4 +1,11 @@
-import New.Determinant.Norms.AdjointThetaLift
+module
+
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Determinant.Norms.AdjointThetaLift
+public import New.OneLift.HeckeValues.CharacterLift
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.Groups.IndexOfProduct
 
 /-!
 # The lift of a character and its squared norm as a Hecke L-value
@@ -47,6 +54,8 @@ Notions from other files:
 
 See `Lib.SiegelWeil.RallisInner.SharpData` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -184,29 +193,6 @@ theorem LValueData.trivialLift_eq_smul_thetaLift [WeilData E] :
         h_descent.continuous
   rw [inner_smul_left, map_natCast, h_lift, h_sum, mul_inv_cancel_left₀ (by simp)]
 
-/-- For lift data `X` the target of the theta lift is the definite `U(n)`, with forms of weight
-`mixedWeight n colsPlus colsMinus`: as `colsMinus = 0` and `colsPlus τ` has `X.rowLength τ` columns
-of height `1`, it has the single row `X.rowLength τ` at each infinite place `τ`. Let `paramV` be the
-doubled Harish-Chandra parameter of this weight and `highestVector` its highest weight vector in the
-order that `paramV` gives to the basis.
-
-The lift of the constant function `1` on adelic `U(1)` by the theta kernel `pairThetaKernel` of the
-two spaces, at the datum `fockDatum` of the highest vector, is the function `ofAlgForm` on adelic
-`U(n)` attached to the algebraic form `X.trivialLift`, divided by the index of the level
-`X.chosenLevel` in the integral points of `U(1)`. -/
-lemma LValueData.lift_fockDatum_const_one [WeilData E] :
-    lift X.descentPair.pairThetaKernel (X.descentPair.fockDatum
-        (highestVector (mixedWeight n X.descentPair.colsPlus X.descentPair.colsMinus)
-          X.descentPair.paramV))
-        (fun _ : G E X.descentPair.signs ↦ 1) =
-      (stdLevelIndex X.chosenLevel : ℂ)⁻¹ • ofAlgForm X.descentPair.paramV 1 X.trivialLift.val := by
-  have h_val : X.trivialLift.val = (stdLevelIndex X.chosenLevel : ℂ) •
-      (X.descentPair.thetaLift X.fitsParams_descentPair X.constForm).val :=
-    congrArg Subtype.val X.trivialLift_eq_smul_thetaLift
-  rw [h_val, map_smul, inv_smul_smul₀ (by simp), X.descentPair.ofAlgForm_thetaLift,
-    X.fitsParams_descentPair.isArrow_fockDatum.coe_formLift]
-  rfl
-
 /-- The lift `X.trivialLift` has the Hecke polynomials of a lift of the trivial system of
 eigenvalues. That is, at a split place `w` of norm `q` with neither `w` nor `w̄` among the places of
 `X`, it is spherical with Hecke polynomial `∏_{l < N - 1} (1 - q ^ l α T) * (1 - q ^ (N - 1) α β⁻¹
@@ -275,7 +261,7 @@ the basis given by `paramV`, the doubled Harish-Chandra parameter of this weight
 `P = fockPoly η` be the polynomial in the coordinates of `Hom(W, V)` at the infinite places that
 corresponds to `η`, with `W`, `V` the definite spaces of ranks `1` and `card n`. Then the squared
 Fock norm `⟨P̄, P⟩` is the hook number, where `⟨P, Q⟩ = fockPairing ℂ P Q = P(∂) Q (0)`. -/
-lemma LValueData.fockPairing_fockPoly_highestVector [WeilData E] :
+lemma LValueData.fockPairing_fockPoly_highestVector :
     fockPairing ℂ ((X.descentPair.fockPoly
       (highestVector X.descentPair.columnCount X.descentPair.paramV)).map conj)
         (X.descentPair.fockPoly (highestVector X.descentPair.columnCount X.descentPair.paramV)) =
@@ -300,7 +286,6 @@ lemma LValueData.fockPairing_fockPoly_highestVector [WeilData E] :
     fockPairing_rename_rename] at h_gram
 /-- The group `GL Unit (ResField w)` of invertible 1×1 matrices over the residue field `ResField w`
 at `w` has as many elements as the unit group `(ResField w)ˣ` of this field. -/
-
 lemma natCard_GL_unit_resField (w : FinPlace E) :
     Nat.card (GL Unit (ResField w)) = Nat.card (ResField w)ˣ :=
   Nat.card_congr (Units.mapEquiv uniqueRingEquiv.toMulEquiv).toEquiv
@@ -352,7 +337,7 @@ lemma LValueData.blockMass_eq_blockMeanSquare_div :
   have h_twist (w : FinPlace E) :
       ((w.q : ℂ) - 1) / w.q = (w.q - 1) * w.q ^ (card n - 1) / w.q ^ card n := by
     rw [← pow_sub_one_mul X.one_lt_card.ne_bot (w.q : ℂ)]
-    field_simp [Nat.cast_ne_zero.2 (zero_lt_one.trans w.one_lt_q).ne']
+    field_simp [w.q_bounds]
   calc X.descentPair.blockMass
       = (∏ i, (((X.twistPlace i).q : ℂ) - 1) * ((X.twistPlace i).q : ℂ) ^ (card n - 1)) /
           ((∏ i, ((X.chosenPlace i).q : ℂ) ^ card n) * ∏ i, ((X.twistPlace i).q : ℂ) ^ card n) /
@@ -402,11 +387,11 @@ lemma LValueData.blockMeanSquare_mul_relIndex_mul_prod_eq_pow :
     sub_ne_zero.2 (mod_cast (one_lt_pow₀ w.one_lt_q h_card).ne')
   have h_chosen (w : FinPlace E) :
       ((w.q : ℂ) ^ card n)⁻¹ * (w.q ^ card n - 1) * (1 - ((w.q : ℂ) ^ card n)⁻¹)⁻¹ = 1 := by
-    field_simp [h_ne w, Nat.cast_ne_zero.2 (zero_lt_one.trans w.one_lt_q).ne']
+    field_simp [w.q_bounds, h_ne w]
   have h_twist (w : FinPlace E) : ((w.q : ℂ) - 1) / w.q * (∑ j ∈ range (card n), (w.q : ℂ) ^ j) *
       (1 - ((w.q : ℂ) ^ card n)⁻¹)⁻¹ = w.q ^ (card n - 1) := by
     rw [div_mul_eq_mul_div, mul_geom_sum]
-    field_simp [h_ne w, Nat.cast_ne_zero.2 (zero_lt_one.trans w.one_lt_q).ne']
+    field_simp [w.q_bounds, h_ne w]
     rw [mul_pow_sub_one h_card]
   calc _ = (∏ i, ((X.chosenPlace i).q ^ card n : ℂ)⁻¹ * ((X.chosenPlace i).q ^ card n - 1) *
           (1 - ((X.chosenPlace i).q ^ card n : ℂ)⁻¹)⁻¹) *
@@ -430,7 +415,7 @@ in which `(x, y)` acts by the Fock operator times `∏ τ, det (y τ) ^ γ τ * 
 `γ' τ = -X.rowLength τ`, so that `ω(x, 1)` fixes `v`. Then the integral over the real points `x` of
 `U(1)` of `⟨v, ω(x, 1) v⟩` times the Petersson product `⟨1, 1⟩` on `W` is the hook number times the
 volume of the adelic quotient `[U(1)]`, the total mass of `quotMeasure` of `stdSpace E Unit`. -/
-lemma LValueData.integral_fockInner_realPairWeil [WeilData E] :
+lemma LValueData.integral_fockInner_realPairWeil :
     ∫ x : GInf E X.descentPair.signs,
         fockInner (polyVector (realSigns E (homSigns 1 1))
             (X.descentPair.fockPoly (highestVector X.descentPair.columnCount X.descentPair.paramV)))
@@ -490,7 +475,6 @@ theorem LValueData.inner_thetaLift_constForm_self [WeilData E] (h_rank : 2 < Fin
     rfl
   have h_one : (fun _ : G E O.signs ↦ (1 : ℂ)) ∈ (stdSpace E Unit).rapidFunctions :=
     ((stdSpace E Unit).isAutomorphic_const 1).mem_rapidFunctions fun _ _ ↦ rfl
-
   have h_rallis : (stdSpace E n).petersson θ₁ θ₁ =
       (stdSpace E n).quotMeasure.real .univ * (X.blockMeanSquare / stdLevelIndex X.chosenLevel) *
         ∫ x : GInf E O.signs,

@@ -1,4 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.Defs
+module
+
+public import Mathlib.LinearAlgebra.Lagrange
+public import Lib.Speed
 
 /-!
 # Sums of residues at simple real poles
@@ -19,6 +22,8 @@ are ordered.
 
 The residue sums rest on Lagrange interpolation.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -74,10 +79,6 @@ section Signs
 
 variable {M : ℕ} {x : Fin M → ℝ}
 
-private lemma prod_erase_eq_prod_Ioi_mul_prod_Iio (f : Fin M → ℝ) (i : Fin M) :
-    ∏ j ∈ univ.erase i, f j = (∏ j ∈ Ioi i, f j) * ∏ j ∈ Iio i, f j := by
-  rw [← prod_disjUnion (disjoint_Ioi_Iio i), Ioi_disjUnion_Iio, compl_singleton]
-
 /-- For decreasing roots `x 0 > x 1 > …` of `p = nodal univ x` the number `p' (x i)` has the sign
 `(-1) ^ i`. -/
 lemma derivative_nodal_sign_of_strictAnti (hx : StrictAnti x) (i : Fin M) :
@@ -85,7 +86,8 @@ lemma derivative_nodal_sign_of_strictAnti (hx : StrictAnti x) (i : Fin M) :
   -- The factors `x i - x j` with `j < i` are negative, and those with `j > i` are positive.
   have h_split : (-1) ^ (i : ℕ) * ∏ j ∈ univ.erase i, (x i - x j) =
       (∏ j ∈ Ioi i, (x i - x j)) * ∏ j ∈ Iio i, (x j - x i) := by
-    rw [prod_erase_eq_prod_Ioi_mul_prod_Iio, ← Fin.card_Iio, mul_left_comm, ← prod_neg]
+    rw [← compl_singleton, ← Ioi_disjUnion_Iio, prod_disjUnion (disjoint_Ioi_Iio i),
+      ← Fin.card_Iio, mul_left_comm, ← prod_neg]
     simp_rw [neg_sub]
   rw [eval_derivative_nodal, h_split]
   exact mul_pos (prod_pos fun j hj ↦ sub_pos.2 (hx (mem_Ioi.1 hj)))
@@ -95,14 +97,11 @@ lemma derivative_nodal_sign_of_strictAnti (hx : StrictAnti x) (i : Fin M) :
 sign `(-1) ^ (M - 1 - i)`. -/
 lemma derivative_nodal_sign_of_strictMono (hx : StrictMono x) (i : Fin M) :
     0 < (-1) ^ (M - 1 - (i : ℕ)) * (derivative (nodal univ x)).eval (x i) := by
-  -- The factors `x i - x j` with `j > i` are negative, and those with `j < i` are positive.
-  have h_split : (-1) ^ (M - 1 - (i : ℕ)) * ∏ j ∈ univ.erase i, (x i - x j) =
-      (∏ j ∈ Ioi i, (x j - x i)) * ∏ j ∈ Iio i, (x i - x j) := by
-    rw [prod_erase_eq_prod_Ioi_mul_prod_Iio, ← Fin.card_Ioi, ← mul_assoc, ← prod_neg]
-    simp_rw [neg_sub]
-  rw [eval_derivative_nodal, h_split]
-  exact mul_pos (prod_pos fun j hj ↦ sub_pos.2 (hx (mem_Ioi.1 hj)))
-    (prod_pos fun j hj ↦ sub_pos.2 (hx (mem_Iio.1 hj)))
+  have h_nodal : nodal univ (x ∘ Fin.rev) = nodal univ x :=
+    (EquivLike.bijective (Fin.revPerm (n := M))).prod_comp (fun j ↦ (X : ℝ[X]) - C (x j))
+  rw [Nat.sub_sub, Nat.add_comm 1]
+  simpa only [Function.comp_apply, Fin.rev_rev, Fin.val_rev, h_nodal] using
+    derivative_nodal_sign_of_strictAnti (hx.comp_strictAnti Fin.rev_strictAnti) i.rev
 
 end Signs
 

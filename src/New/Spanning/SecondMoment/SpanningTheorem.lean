@@ -1,8 +1,12 @@
+module
+
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.Spanning.Unfolding.Moments
+public import New.Spanning.Unfolding.SeriesPeriod
+import Lib.DiscreteSeries.Character.FormalDegree
 import New.Determinant.AuxiliaryForms.RegularParameters
 import New.Spanning.MainTerm.BadTypes
 import New.Spanning.Multiplicities.EqualMultiplicities
-import New.Spanning.Unfolding.Moments
-import New.Spanning.Unfolding.SeriesPeriod
 
 /-!
 # The dimension of the target and one good translate of the Poincaré map
@@ -13,6 +17,13 @@ source `D.SourceForm` is the space of the forms that the Poincaré map `P = D.po
 forms on `Y₀`. This file supplies the hypotheses of the lemma on one translate,
 `New.isSpread_of_second_moment`, for `P` and draws its conclusion. The spanning theorem itself,
 `New.Data.enough_forms`, is deduced in `New.Reduction.ShortAndEnough`.
+
+The estimates enter `isSpread_of_second_moment` in different ways: the near-isometry bounds
+loss of dimension in a preimage, while the second moment bounds the mean of the squared
+projected norms over the group. The target dimension estimate cancels the Bessel degree and
+mass in the second moment. The two error terms are then relaxed to the same tolerance
+`(8 * b²)⁻¹`. Finally the preimage dimension is unchanged by the coordinate equivalence
+and nonzero normalization factors (`comap_scaledPoincare_eq_comap_goodPoincare`).
 
 ## Main definitions and results
 
@@ -47,6 +58,8 @@ literature. Related work: Petersson, Über die Entwicklungskoeffizienten der aut
 compactly supported Poincaré series and existence of cusp forms, 2010.
 -/
 
+@[expose] public section
+
 namespace New.Data
 
 variable {P : Parameters} (D : Data P)
@@ -55,23 +68,19 @@ variable {P : Parameters} (D : Data P)
 
 section TargetDimension
 
-/-- At every infinite place `v`, the parameter `D.paramW v` decreases along the numbering
-`D.basisNumber` of the basis of `Y₀`: exactly `D.basisNumber i` of its entries exceed the entry at
-`i` (`decreasingPosition` is the number of larger entries). -/
-lemma decreasingPosition_paramW (v : D.Φ) (i : D.RowIndex) :
-    decreasingPosition (D.paramW v) i = D.basisNumber i :=
-  D.card_filter_basisNumber (q := fun j : D.RowIndex ↦ D.paramW v i < D.paramW v j) 0
-    (D.basisNumber i) (by simp [paramW_lt_iff]) (by simp)
-
 /-- The forms of principal level on the definite space `D.spaceW D.m`, where the level is free, have
-dimension `#Ḡ · mass_r` times the product over the infinite places of the formal degrees of the
-parameter `D.paramW v` for the definite signs. Here `Ḡ = D.chosenGL` and `mass_r = mass D.E D.r`. -/
+dimension `#Ḡ · deg · mass_r`, where `Ḡ = D.chosenGL`, `deg = D.filling.besselDegree` and
+`mass_r = mass D.E D.r`. -/
 lemma finrank_principalForms_spaceW :
     (Module.finrank ℂ (D.principalForms (D.spaceW D.m)) : ℝ) =
-      Nat.card D.chosenGL * mass D.E D.r * ∏ v : D.Φ, (toHCParam 1 (D.paramW v)).formalDegree := by
+      Nat.card D.chosenGL * D.filling.besselDegree * mass D.E D.r := by
   -- These are algebraic forms of a free level, so their dimension is the class number times the
   -- dimension of the weight `(κ, e)`, which is the product of the compact formal degrees.
   obtain ⟨κ, e, h_wt⟩ := Exchange.exists_isHCParam_of_hasGap D.hasGap_signsY_paramW
+  -- both degrees are given by Weyl's dimension formula
+  have h_deg : ∏ v, (toHCParam 1 (D.paramW v)).formalDegree = D.filling.besselDegree := by
+    simp [Filling.besselDegree, (D.filling_fits.isDiscreteSeriesBessel _).deg_eq,
+      Orbital.harish_chandra_degree_and_orbital, h_wt.hasGap]
   have h_free (g : Gf D.E D.RowIndex) :
       classAut (stdSpace D.E D.RowIndex).embFin.range D.chosenLevel g = ⊥ :=
     D.classAut_eq_bot_of_le_chosenLevel le_rfl D.nat_le_of_hasLogBound g
@@ -86,7 +95,7 @@ lemma finrank_principalForms_spaceW :
         mod_cast (Space.algFormEquiv _ h_wt _).finrank_eq.symm
     _ = _ := by
       rw [finrank_levelSpace_smoothFormRep h_free, Nat.cast_mul, card_classes_eq_classSum h_free,
-        h_classes, Module.finrank_pi, ← h_wt.prod_formalDegree]
+        h_classes, Module.finrank_pi, ← h_wt.prod_formalDegree, h_deg, mul_right_comm]
 
 /-- **Dimension of the target.** For admissible data `D`, the dimension `D.targetDim` of the space
 of good forms on `Y₀` is at most `#Ḡ · deg · mass_r`. -/
@@ -94,17 +103,12 @@ theorem targetDim_le_card_mul_besselDegree_mul_mass :
     D.targetDim ≤ Nat.card D.chosenGL * D.filling.besselDegree * mass D.E D.r := by
   -- The target has the dimension of the good forms on `D.spaceW D.m`, which are among the forms
   -- of principal level there.
-  obtain ⟨κ, e, h_wt⟩ := Exchange.exists_isHCParam_of_hasGap D.hasGap_signsY_paramW
-  -- both degrees are given by Weyl's dimension formula
-  have h_deg : ∏ v, (toHCParam 1 (D.paramW v)).formalDegree = D.filling.besselDegree := by
-    simp [Filling.besselDegree, (D.filling_fits.isDiscreteSeriesBessel _).deg_eq,
-      Orbital.harish_chandra_degree_and_orbital, h_wt.hasGap]
   calc (D.targetDim : ℝ)
       = Module.finrank ℂ (D.goodForms (D.spaceW D.m)) :=
         mod_cast D.targetDim_eq_finrank_goodForms_spaceW ⟨D.m, D.nat_le_of_hasLogBound, le_rfl⟩
     _ ≤ Module.finrank ℂ (D.principalForms (D.spaceW D.m)) := mod_cast Submodule.finrank_le _
-    _ = Nat.card D.chosenGL * D.filling.besselDegree * mass D.E D.r := by
-      rw [D.finrank_principalForms_spaceW, h_deg, mul_right_comm]
+    _ = Nat.card D.chosenGL * D.filling.besselDegree * mass D.E D.r :=
+      D.finrank_principalForms_spaceW
 
 end TargetDimension
 
@@ -198,7 +202,7 @@ lemma levelRepresentation_goodIdempotentAbove_eq :
     D.levelRepresentation.asAlgebraHom (piTensorElem D.goodIdempotentAbove) =
       (D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀ := by
   classical
-  have : Fintype D.chosenGL := .ofFinite D.chosenGL
+  let : Fintype D.chosenGL := .ofFinite D.chosenGL
   -- Both coefficients are the sum over the families of the products over all chosen places.
   have h_tensor (s : D.filling.ResidueGL) : (piTensorElem D.goodIdempotentAbove).coeff s =
       ∑ c ∈ piFinset fun _ : Fin 2 ↦ goodTuples (P.q₂ D.towerExp) (card D.RowIndex),
@@ -210,7 +214,7 @@ lemma levelRepresentation_goodIdempotentAbove_eq :
         ∏ i : Fin 2, ∏ w : D.ChosenPlace i,
           (labelIdem D.RowIndex (c i w)).coeff (t ⟨i, w⟩) := by
     simp [e₀, goodTupleFamilies, tupleIdem, prod_sigma, Sigma.uncurry]
-  simp_rw [asAlgebraHom_eq_sum]
+  simp_rw [Representation.asAlgebraHom_eq_sum]
   refine Fintype.sum_equiv (κ := D.chosenGL) (Equiv.piCurry _).symm _ _ fun s ↦ ?_
   rw [h_tensor, h_proj, levelRepresentation_apply]
   rfl -- the definition of `Sigma.uncurry`
@@ -337,13 +341,14 @@ dimension of the target, the preimage of `F` under one of them has dimension at 
 `(1 + α + 3 ε₀) / 2 · D_X`, where `ε₀ = b⁻² / 8`. Here `b = D.b` is the weight at the places
 `D.bPlaces`, and `D_X` is the dimension of `D.SourceForm`. -/
 theorem isSpread_goodPoincare : IsSpread D.goodPoincare (3 / 2 * (8 * D.b ^ 2)⁻¹) := by
-  have : Fintype D.chosenGL := .ofFinite D.chosenGL
+  let : Fintype D.chosenGL := .ofFinite D.chosenGL
   let ρ : Representation ℂ D.chosenGL (D.principalForms (D.spaceY 0)) := D.principalRep (D.spaceY 0)
   have h_unitary (s : D.chosenGL) (x y : D.principalForms (D.spaceY 0)) :
       inner ℂ (ρ s x) (ρ s y) = inner ℂ x y := Space.inner_formRep ..
   have h_comm (s : D.chosenGL) : Commute (ρ.asAlgebraHom D.e₀) (ρ s) := by
     simpa using ((D.isCentralProj_e₀.2.commute (.single s 1)).map ρ.asAlgebraHom).symm
-  -- The two hypotheses of the lemma on one translate, for the scaled map and `ε₀ = b⁻² / 8`.
+  -- Relax the two different error bounds to the common tolerance `ε₀ = b⁻² / 8`.
+  -- Near-isometry controls the preimage dimension; the second moment controls the mean.
   have h_isom : IsNearIsometry (ρ.asAlgebraHom D.e₀ ∘ₗ D.scaledPoincare) (8 * D.b ^ 2)⁻¹ :=
     D.isNearIsometry_e₀_comp_scaledPoincare.mono D.le_of_hasLogBound
   have h_moment : finrank ℂ (ρ.asAlgebraHom D.e₀).range *
@@ -354,6 +359,7 @@ theorem isSpread_goodPoincare : IsSpread D.goodPoincare (3 / 2 * (8 * D.b ^ 2)�
     have h_error : 9 / D.b ^ 4 ≤ (8 * D.b ^ 2)⁻¹ := D.le_of_hasLogBound
     grw [finrank_source_eq_sourceDim, ← h_error]
     exact D.targetDim_mul_sum_hilbertSchmidtNorm_sq_le
+  -- Apply the abstract spreading theorem to the scaled map, then transport its conclusion.
   -- Neither the coordinates nor the nonzero factors change the dimension of a preimage.
   intro F α
   obtain ⟨s, hs⟩ := isSpread_of_second_moment h_unitary

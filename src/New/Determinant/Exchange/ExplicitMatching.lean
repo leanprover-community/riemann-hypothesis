@@ -1,6 +1,16 @@
+module
+
+import Mathlib.Analysis.Complex.MeanValue
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import New.OneLift.ComparisonOperator.DeterminantProducts
+public import Lib.SiegelWeil.Tower.FiniteTateIntegral
+public import New.Determinant.Exchange.MatchingPartners
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 import Lib.GLn.SchurModule.Polarisation
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Weil.Construction.CanonicalTheta
 import New.Determinant.Exchange.TheoremForPartners
-import New.OneLift.ComparisonOperator.DeterminantProducts
 import New.OneLift.ComparisonOperator.OneExchange
 
 /-!
@@ -51,6 +61,8 @@ Segal–Shale–Weil representations and harmonic polynomials, 1978; Böcherer�
 modular forms and theta series attached to quaternion algebras, 1991.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -84,9 +96,11 @@ abbrev blockSigns : b → ℤˣ := (1 ⊕ᵥ -1) ∘ f.symm
 
 /-- The embedding of the compact groups `U(m)`, one for each infinite place, as the positive block
 of the unitary group of signs `blockSigns j`. -/
-@[simps!]
+@[simps! -isSimp]
 def posBlockEmb : GInf E (1 : m → ℤˣ) →* GInf E (blockSigns j) :=
   ((U.reindex j (by simp [signMatrix])).toMonoidHom.comp (U.inl 1 (-1))).compLeft (InfinitePlace E)
+
+attribute [simp] val_posBlockEmb_apply_coe
 
 omit [NumberField E] in
 /-- At each place, the inverse of the image of `k` has the matrix of the image of `k⁻¹`. -/
@@ -161,8 +175,8 @@ abbrev posFockVector :
 variable `x` multiplied by `s ^ w x` is differentiable in `s`. -/
 lemma differentiable_apply_bind₁_pow_smul {σ : Type} (L : MvPolynomial σ ℂ →ₗ[ℂ] ℂ) (w : σ → ℕ)
     (P : MvPolynomial σ ℂ) :
-    Differentiable ℂ fun s : ℂ ↦ L (P.bind₁ fun x : σ ↦ s ^ w x • X x) := by
-  simp only [← aeval_eq_bind₁, aeval_def, eval₂_eq, algebraMap_eq, C_mul', smul_pow, prod_smul,
+    Differentiable ℂ fun s : ℂ ↦ L (aeval (fun x : σ ↦ s ^ w x • X (R := ℂ) x) P) := by
+  simp only [aeval_def, eval₂_eq, algebraMap_eq, C_mul', smul_pow, prod_smul,
     map_sum, map_smul, smul_eq_mul]
   fun_prop
 
@@ -312,13 +326,13 @@ lemma exists_mul_eq_circle_mean (j : m ⊕ l ≃ n) (e : p ⊕ a ≃ m)
   -- `P₀` is `P` with variables outside the columns `cols` set to zero. Averaged over U(`a`) with
   -- the weight `∏ τ, det (u τ) ^ (-card (ι τ))`, it is `κ` times `∏ τ, det ^ card (ι τ)`.
   let P₀ : MvPolynomial (InfinitePlace E × a × a) ℂ :=
-    P.bind₁ fun (τ, i, k) ↦ extend cols (fun k' ↦ X (τ, i, k')) 0 k
+    aeval (fun (τ, i, k) ↦ extend cols (fun k' ↦ X (τ, i, k')) 0 k) P
   obtain ⟨κ, hκ⟩ := exists_forall_eq_mul_map_det_pow (fun τ ↦ card (ι τ)) P₀
   refine ⟨κ, funext fun ⟨ℓ, hℓ⟩ ↦ ?_⟩
   -- The torus scales the variables outside the columns `cols` by `z`; the result is polynomial in
   -- `z`, so its circle mean is the value `scaled 0`.
   let scaled (s : ℂ) : ℂ :=
-    ℓ (polyVector _ (P.bind₁ fun (τ, i, k) ↦ s ^ extend cols 0 1 k • X (τ, i, k)))
+    ℓ (polyVector _ (aeval (fun (τ, i, k) ↦ s ^ extend cols 0 1 k • X (R := ℂ) (τ, i, k)) P))
   have h_torus (z : Circle) : ℓ (orbit (polyVector _ P) z) = scaled z := by
     simp [orbit, hγ, principalMinor_of_forall, DiscreteSeries.principalMinor_of_forall_not,
       ↓coe_inv_posBlockEmb, ↓posBlockEmb_mem_blockDiagAlg, ↓principalMinor_posBlockEmb_eq_det,
@@ -345,7 +359,7 @@ lemma exists_mul_eq_circle_mean (j : m ⊕ l ≃ n) (e : p ⊕ a ≃ m)
     have h_det : ∏ τ, (u τ : Matrix a a ℂ).det ^ card (ι τ) ≠ 0 :=
       prod_ne_zero_iff.2 fun τ _ ↦ pow_ne_zero _ (GeneralLinearGroup.det_ne_zero _)
     simp [hγ, field, rename_eq_aeval, evalCols, P₀, principalMinor_of_forall,
-      DiscreteSeries.principalMinor_of_forall_not, ← aeval_eq_bind₁, ↓comp_aeval_apply,
+      DiscreteSeries.principalMinor_of_forall_not, ↓comp_aeval_apply,
       ↓realPairWeil_polyVector, ↓prod_pair, ↓Nat.card_eq_fintype_card, Matrix.one_apply]
     -- Both substitutions keep the columns `cols`, mixed by `u`, and kill the other variables.
     congr
@@ -400,9 +414,7 @@ lemma exists_stackedDetProd_eq_sum_unitary (f : p ⊕ l ≃ b) (j : m ⊕ l ≃ 
     exists_pairedDetProd_eq_sum_unitary h_card (e.injective.comp inl_injective) ξ
   refine ⟨c, MvPolynomial.funext fun x ↦ ?_, ?_⟩
   · -- At the point `x`, `stackedDetProd e` is a fixed multiple of the product for complex `Y τ`.
-    have h_point (τ : InfinitePlace E) : ∃ (Y : m → p → ℂ) (d : ℂ), ∀ ζ : Matrix p m ℂ,
-        (stackedDet τ ζ e).eval x = d * (ζ * of Y).det := exists_eval_stackedDet_eq e τ x
-    choose Y d hY using h_point
+    choose Y d hY using fun τ : InfinitePlace E ↦ exists_eval_stackedDet_eq e τ x
     have h_eval (ζ : (τ : InfinitePlace E) → ι τ → Matrix p m ℂ) :
         (stackedDetProd e ζ).eval x =
           (∏ τ : InfinitePlace E, d τ ^ card (ι τ)) * pairedDetProd Y ζ := by
@@ -461,7 +473,7 @@ lemma exists_mul_apply_eq_apply_matchedPoly (f : p ⊕ l ≃ b) (j : m ⊕ l ≃
     -- multiple of `matchedPoly (z⁻¹ ^ 2 • ξ)`, so `h_match` applies.
     have h_frame (z : Circle) (τ : InfinitePlace E) (i : ι τ) :
         η τ i * ((k * t z) τ : Matrix m m ℂ)ᵀ = (z⁻¹ : Circle).val ^ 2 • ξ τ i := by
-      simp [η, ξ, ← ext_iff, Matrix.mul_apply, t, standardFrame, frameTorus, mul_comm, ↓diagTorus,
+      simp [η, ξ, ← ext_iff, Matrix.mul_apply, t, standardFrame, frameTorus, ↓diagTorus,
         Matrix.one_apply, ↓diagonal_apply]
     have h_transl (z : Circle) : ℓ (posBlockEmb j (k * t z)) v =
         ℓ' ((∏ τ, ((k * t z) τ : Matrix m m ℂ).det ^ c τ)⁻¹ •
@@ -484,7 +496,7 @@ lemma exists_mul_apply_eq_apply_matchedPoly (f : p ⊕ l ≃ b) (j : m ⊕ l ≃
             ← prod_pow_eq_pow_sum, ← map_mul, mul_pow, prod_mul_distrib]
           -- What is left is an equation between powers of `z` and of `det k τ ≠ 0`.
           field_simp [↓prod_ne_zero_iff, GeneralLinearGroup.det_ne_zero]
-          simp [pow_add, ← pow_mul, mul_pow, prod_mul_distrib, mul_comm, mul_left_comm, mul_assoc]
+          simp [pow_add, ← pow_mul, mul_pow, prod_mul_distrib, mul_comm, mul_assoc]
         simp [field, h_integrand]
   -- Both sides are linear in the polynomials, so the identity passes to combinations.
   intro ξ
@@ -525,7 +537,7 @@ lemma exists_clm_eq_thetaIntegral_modDatum {s : n → ℤˣ} (S : Space E n s) (
   let φ : 𝒮 (S.hom (stdSpace E a)) :=
     schrodingerOp (S.hom (stdSpace E a)) 𝔪.places (𝔪.liftFn (Φ ∘ vecToMatrix)) (vacElem _)
   refine ⟨fun g ↦ L g ∘L (integrated (S.hom (stdSpace E a))).flip φ, fun g w ↦ ?_⟩
-  show L g (integrated _ w φ) = thetaIntegral S (stdSpace E a) α β (integrated _ w φ) g
+  change L g (integrated _ w φ) = thetaIntegral S (stdSpace E a) α β (integrated _ w φ) g
   simp [← hL, lift, thetaIntegral, pairTheta]
 
 omit [Fintype a] [DecidableEq a] in
@@ -552,6 +564,7 @@ lemma exists_linearMap_eq_integral_modKernel {s : b → ℤˣ} {t : n → ℤˣ}
            map_smul' c Q := by simp [integral_const_mul] },
     fun Q ↦ rfl⟩ -- by definition of `modKernelBilin`
 
+omit [DecidableEq b] in
 /-- Let `W` have `card l` negative signs and let `I_a` be the positive definite standard space
 `stdSpace E a`. Let the character `α` be tame for `(𝔪, χ)` of weight `card l - card (ι τ)`. Let `Φ`
 have a matched function `Ψ` for `χ⁻¹` (`AreMatched`): for invertible `k` modulo `𝔪` they vanish off
@@ -663,7 +676,7 @@ lemma exists_stdClassSum_eq_of_exchange (f : p ⊕ l ≃ b) (V' : Space E b (blo
     have h_translate (x : G E (blockSigns f)) :
         modKernel V' W α α 𝔪 Ψ Q₀ x (g * (y, 1)) = modKernel V' W α α 𝔪 Ψ Q x g := by
       simp [modKernel, modDatum, ← hQ, ← pairWeil_integrated_right α α, ← pairTheta_mul]
-    show L (g * (y, 1)) v = c * ℓ' Q
+    change L (g * (y, 1)) v = c * ℓ' Q
     rw [hL, h_exchange, hℓ']
     simp only [h_translate]
   rw [← integral_modKernel_stackedDetProd j W σ e h_tame η h_matched g, ← hℓ']
@@ -876,7 +889,7 @@ lemma integral_one_quotMeasure_of_isEmpty [IsEmpty b] {t : b → ℤˣ} (V' : Sp
   obtain rfl : t = 1 := Subsingleton.elim t 1
   have h_sub : Subsingleton (DoubleCoset.Quotient (V'.Γf : Set (Gf E b)) (stdLevel E b)) :=
     Quotient.mk''_surjective.subsingleton
-  have h_class : Unique (DoubleCoset.Quotient (V'.Γf : Set (Gf E b)) (stdLevel E b)) :=
+  let h_class : Unique (DoubleCoset.Quotient (V'.Γf : Set (Gf E b)) (stdLevel E b)) :=
     uniqueOfSubsingleton (DoubleCoset.mk V'.Γf (stdLevel E b) 1)
   have h_left : V'.Γ.FixesLeft (fun _ : G E (1 : b → ℤˣ) ↦ (1 : ℂ)) := fun _ _ _ ↦ rfl
   have h_level : stdLevel E b ≤ rightStabilizer fun _ : Gf E b ↦ (1 : ℂ) := fun _ _ _ ↦ rfl
@@ -904,9 +917,6 @@ lemma modKernel_one_of_isEmpty [IsEmpty b] {t : b → ℤˣ} {s : n → ℤˣ} (
     modKernel V' W α β 𝔪 1 1 x g = α.val g.det := by
   obtain rfl : x = 1 := Subsingleton.eq_one x
   have h_triv : G.onHom ((1 : G E t), g) = 1 := Subsingleton.eq_one _
-  have h_coe (z : Circle) : Circle.coeHom z = (z : ℂ) := rfl
-  have h_char : pairChar α β ((1 : G E t), g) = (α.val g.det : ℂ) := by
-    simp [pairChar, h_coe]
   -- The datum is the vacuum, and the only lattice vector is `0`.
   have h_vac : (V'.hom W).vacElem 0 = 1 := by
     simp [vacElem_apply_eq_prod_lineTheta, funext_iff, Fintype.prod_empty]

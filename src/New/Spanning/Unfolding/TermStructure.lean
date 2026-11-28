@@ -1,3 +1,10 @@
+module
+
+import Mathlib.RingTheory.PicardGroup
+import TauCeti.LinearAlgebra.Matrix.Rank
+public import New.Spanning.Unfolding.Link
+import Lib.Cohomology.Etale.Basic
+import New.Spanning.RemainingTerms.BorderedDeterminant
 import New.Spanning.Unfolding.Climbing
 
 /-!
@@ -34,6 +41,8 @@ Notions from other files:
 
 See `New.Spanning.Unfolding.Climbing` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -222,17 +231,6 @@ theorem range_framePerpToX₀ (γ : S.G E) : (framePerpToX₀ γ).range = linked
   · obtain ⟨y, hy_perp, hy_X₀, hγy_z, h_link⟩ := exists_mem_isotropicPerp_comp_eq γ v
     exact ⟨⟨y, mem_framePerp.2 ⟨hy_perp, h_link.symm.trans hv, hγy_z⟩⟩, hy_X₀⟩
 
-/-- The map `y ↦ y₀` from `(A⁺_γ)^⊥` to `X₀` sends the form `S.ratGram` of the whole space to the
-standard hermitian product of `X₀`. -/
-theorem form_framePerpToX₀ (y y' : framePerp γ) :
-    star (framePerpToX₀ γ y) ⬝ᵥ framePerpToX₀ γ y' = star y.val ⬝ᵥ S.ratGram *ᵥ y'.val := by
-  obtain ⟨hy_perp, hy_z, -⟩ := mem_framePerp.1 y.2
-  obtain ⟨hy_dual, -⟩ := mem_isotropicPerp.1 hy_perp
-  obtain ⟨hy'_dual, -⟩ := mem_isotropicPerp.1 (mem_framePerp.1 y'.2).1
-  -- The product of `y` and `y'` is that of their middle blocks, and the `z_N`-part of `y` vanishes.
-  rw [ratGram_form_of_eStar_eq_zero hy_dual hy'_dual, dotProduct_ratMiddle_mulVec_eq_sum_sub, hy_z]
-  simp [framePerpToX₀_apply, dotProduct]
-
 /-- The space `I_γ = A ∩ γ A` is orthogonal to both frames. -/
 lemma commonIsotropic_le_framePerp (γ : S.G E) : commonIsotropic γ ≤ framePerp γ := by
   intro y hy
@@ -256,20 +254,6 @@ theorem ker_framePerpToX₀ (γ : S.G E) :
     _ ↔ (⟨y, hy⟩ : framePerp γ) ∈ (commonIsotropic γ).submoduleOf (framePerp γ) := by
       simp [h_ker, Submodule.submoduleOf]
 
-/-- A vector `y` of `framePerp γ = (A⁺_γ)^⊥` is isotropic for the form `S.ratGram` if and only if it
-lies in `commonIsotropic γ = A ∩ γ A`, where `A = ⟨e_1, …, e_ϱ⟩`. -/
-lemma form_self_eq_zero_iff_mem_commonIsotropic (hy : y ∈ framePerp γ) :
-    star y ⬝ᵥ S.ratGram *ᵥ y = 0 ↔ y ∈ commonIsotropic γ := by
-  have h_ker : framePerpToX₀ γ ⟨y, hy⟩ = 0 ↔ y ∈ commonIsotropic γ := by
-    simp [← LinearMap.mem_ker, ker_framePerpToX₀, Submodule.submoduleOf]
-  rw [← h_ker, ← form_framePerpToX₀ ⟨y, hy⟩ ⟨y, hy⟩]
-  refine ⟨fun h_norm ↦ ?_, fun h ↦ by rw [h, dotProduct_zero]⟩
-  -- The form of `X₀ ⊥ E z⁺` has no nonzero isotropic vector, hence neither has that of `X₀`.
-  have h_zero : (framePerpToX₀ γ ⟨y, hy⟩ ⊕ᵥ 0 : 𝔰.MiddleIndex → E) = 0 :=
-    eq_zero_of_positiveGram_form_eq_zero (S := S)
-      (by rw [dotProduct_positiveGram_mulVec_eq_sum_add]; simpa [dotProduct] using h_norm)
-  exact funext fun i ↦ congrFun h_zero (inl i)
-
 omit [CMType E] in
 /-- The space `M A`, spanned by `M e_1, …, M e_ϱ`, lies in `M A⁺`, the span of the columns of
 `frameImage M`, which are the images under `M` of the frame `e_1, …, e_ϱ, z`. -/
@@ -285,15 +269,6 @@ lemma commonIsotropic_le_colSpan_frameImage_one (γ : S.G E) :
 lemma commonIsotropic_le_colSpan_frameImage_coe (γ : S.G E) :
     commonIsotropic γ ≤ colSpan (frameImage γ.val.val) :=
   (commonIsotropic_le_isotropicSpan_coe γ).trans (isotropicSpan_le_colSpan_frameImage γ.val.val)
-
-/-- The space `I_γ = A ∩ γ A` is the radical of `A⁺_γ = A⁺ + γ A⁺`, that is, the intersection of
-`A⁺_γ` with its orthogonal complement. -/
-theorem frameSum_inf_framePerp (γ : S.G E) : frameSum γ ⊓ framePerp γ = commonIsotropic γ := by
-  refine le_antisymm ?_ (le_inf ?_ (commonIsotropic_le_framePerp γ))
-  · rintro y ⟨h_sum, h_perp⟩
-    exact (form_self_eq_zero_iff_mem_commonIsotropic h_perp).1
-      (mem_framePerp_iff_orthogonal.1 h_perp y h_sum)
-  · exact le_sup_of_le_left (commonIsotropic_le_colSpan_frameImage_one γ)
 
 /-- A vector `p` on two copies of the middle coordinates lies in the kernel of
 `zRowBlockDiagonal (S.ratMiddle E)` (two copies of the `z`-row of the Gram matrix) if and only if
@@ -386,12 +361,6 @@ lemma inv_mulVec_z_eq_of_pairOccursAt {ζ : E} (h_pair : PairOccursAt γ ζ 1 �
   simp only [form_frameImage_one, h_dual, hγ_dual, hx, hx'] at h_form
   simpa [S.N_prime.ne_zero] using h_form.symm
 
-/-- If `γ` has cell rank `j` (`S.HasCellRank j γ`), which includes that `j = ϱ + 1` exactly when
-`gr(γ) = S.termDisc γ ≠ 0`, and `S.termDisc γ = 0`, then `j ≤ ϱ`. -/
-lemma HasCellRank.le_of_termDisc_eq_zero {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellRank j γ)
-    (h_disc : S.termDisc γ = 0) : j.val ≤ 𝔰.ϱ :=
-  not_lt.1 fun h_lt ↦ h_rank.lt_iff_termDisc_ne_zero.1 h_lt h_disc
-
 /-- If `γ` has cell rank `j` and `S.termDisc γ = 0`, then the link isometry `Υ_γ` maps `X₀` into
 itself: `linkedX₀ γ` is all of `X₀`. -/
 lemma HasCellRank.linkedX₀_eq_top {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellRank j γ)
@@ -405,19 +374,12 @@ lemma HasCellRank.linkedX₀_eq_top {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellR
   rw [mem_linkedX₀, h_link]
   exact (mul_eq_zero_iff_left (right_ne_zero_of_mul_eq_one hζ)).1 hγy_z
 
-/-- Let `E` contain a primitive root of unity of order `5040`. If `γ` agrees and
-`gr(γ) = S.termDisc γ` vanishes, then the link of `γ` maps all of `X₀` into `X₀`, that is,
-`X₀^γ = X₀`. -/
-theorem CharsAgree.linkedX₀_eq_top [HasPrimitiveRoot5040 E] (h_agree : S.CharsAgree γ)
-    (h_disc : S.termDisc γ = 0) : linkedX₀ γ = ⊤ :=
-  h_agree.exists_hasCellRank h_disc |>.elim fun _ h_rank ↦ h_rank.linkedX₀_eq_top h_disc
-
 /-- If `gr(γ) = S.termDisc γ` is not zero, then the span `A⁺` of the frame `e_1, …, e_ϱ, z_N` and
 the span `γ A⁺` of its image have the intersection `0`. -/
 theorem disjoint_colSpan_frameImage (h_disc : S.termDisc γ ≠ 0) :
     Disjoint (colSpan (frameImage 1))
       (colSpan (frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E))) :=
-  disjoint_iff.2 <| by_contra fun h_ne ↦ h_disc (termDisc_eq_zero_iff.2 h_ne)
+  disjoint_iff.2 <| by_contra fun h_ne ↦ h_disc (termDisc_eq_zero_of_inf_ne_bot h_ne)
 
 /-- If `gr(γ) = S.termDisc γ` is not zero, then `I_γ = A ∩ γ A` is zero, where
 `A = ⟨e_1, …, e_ϱ⟩`. -/
@@ -429,8 +391,8 @@ lemma commonIsotropic_eq_bot (h_disc : S.termDisc γ ≠ 0) : commonIsotropic γ
 `n = ϱ + 1`. -/
 lemma finrank_colSpan_frameImage (γ : S.G E) :
     finrank E (colSpan (frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E))) = 𝔰.n := by
-  rw [LinearMap.finrank_range_of_inj ((injective_iff_map_eq_zero _).2 fun _ ↦
-    frameImage_mulVec_eq_zero_iff.1), finrank_fin_fun]
+  rw [colSpan, range_mulVecLin, finrank_span_eq_card (linearIndependent_col_frameImage γ),
+    Fintype.card_fin]
 
 /-- The ranks of `frameSum γ` = `A⁺_γ = A⁺ + γ A⁺` (the span of the frame and of its image under
 `γ`) and of its orthogonal complement `framePerp γ` add up to `𝔰.r`, the rank of the whole space. -/
@@ -438,7 +400,7 @@ lemma finrank_frameSum_add_finrank_framePerp (γ : S.G E) :
     finrank E (frameSum γ) + finrank E (framePerp γ) = 𝔰.r := by
   have h_unit : IsUnit S.ratGram.det := (isUnit_iff_isUnit_det _).1 Floors.IsHermitianUnit.isUnit
   have h_rank : ((framePair γ)ᴴ * S.ratGram).rank = finrank E (frameSum γ) := by
-    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_eq, ← colSpan_framePair,
+    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_of_field, ← colSpan_framePair,
       ← finrank_range_mulVecLin]
   rw [← h_rank, Shape.r, ← finrank_fintype_fun_eq_card E, framePerp, ← finrank_range_mulVecLin]
   exact ((framePair γ)ᴴ * S.ratGram).mulVecLin.finrank_range_add_finrank_ker
@@ -471,7 +433,6 @@ theorem finrank_linkedX₀_add_one (h_disc : S.termDisc γ ≠ 0) :
   have h_perp : 𝔰.n + 𝔰.n + finrank E (framePerp γ) = 𝔰.r := by
     rw [← finrank_frameSum_of_termDisc_ne_zero h_disc, finrank_frameSum_add_finrank_framePerp]
   have h_r : 𝔰.r = 𝔰.ϱ + (𝔰.k + 1 + 𝔰.ϱ) := by simp [Shape.r]
-  have h_n : 𝔰.n = 𝔰.ϱ + 1 := rfl
   lia
 
 /-- If `γ` has the cell rank `j`, then `finrank E (linkedX₀ γ) + (j - ϱ) = 𝔰.k`, the dimension of
@@ -515,15 +476,8 @@ lemma mem_isotropicSpan {M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E} :
 `e_1, …, e_ϱ, z_N` has rank `j`. -/
 lemma finrank_flagSpan_coe (γ : S.G E) (j : Fin (𝔰.ϱ + 2)) :
     finrank E (flagSpan (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) j) = j := by
-  let g : GL 𝔰.BesselIndex E := γ
-  let e : Fin j → 𝔰.BesselIndex := 𝔰.besselFrame ∘ castLE j.is_le
-  have he : Injective e := besselFrame_injective.comp (castLE_injective j.is_le)
-  -- The rows of `γ⁻¹` at the indices `e` form a left inverse of the columns of `γ` at `e`.
-  have h_left : g⁻¹.val.submatrix e id * g.val.submatrix id e = 1 := by
-    rw [← submatrix_mul _ _ e id e bijective_id, g.inv_mul, submatrix_one e he]
-  rw [flagSpan, submatrix_submatrix, id_comp,
-    LinearMap.finrank_range_of_inj (HasLeftInv.injective_mulVec ⟨g⁻¹.val.submatrix e id, h_left⟩),
-    finrank_fin_fun]
+  rw [flagSpan, colSpan, range_mulVecLin, finrank_span_eq_card, Fintype.card_fin]
+  exact (linearIndependent_col_frameImage γ).comp _ (castLE_injective j.is_le)
 
 /-- A vector with the coefficients `x` in the frame `e_1, …, e_ϱ, z_N` and `x'` in its image under
 `γ` lies in `I_γ = A ∩ γ A` if one of its coefficients at `z_N` and `γ z_N` vanishes, because the
@@ -588,75 +542,14 @@ lemma _root_.New.NormOnePairOccursFrom.flagSpan_one_sup_commonIsotropic {j : Fin
     simp [mulVec_mulVec]
   exact ⟨x', hx', frameImage_mulVec_mem_commonIsotropic h_shared (.inl ((hx' 𝔰.top hj).trans hx))⟩
 
-omit [CMType E] in
-/-- If a square matrix `Z` kills a nonzero vector `x` whose coefficients vanish from the index `j`
-on, then the leading minor of order `j` of `Z` vanishes. -/
-lemma leadingMinor_eq_zero_of_mulVec_eq_zero {j : Fin (𝔰.ϱ + 2)}
-    {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E} {x : Fin (𝔰.ϱ + 1) → E} (hx_ne : x ≠ 0)
-    (hZx : Z *ᵥ x = 0) (h_above : ∀ b : Fin (𝔰.ϱ + 1), j.val ≤ b.val → x b = 0) :
-    leadingMinor Z j = 0 := by
-  have h_padded : paddedLeading j Z *ᵥ x = 0 := by
-    funext b
-    have hb_row : (Z *ᵥ x) b = 0 := congrFun hZx b
-    by_cases hb : b.val < j.val <;> simp_all [paddedLeading, mulVec, dotProduct]
-  rw [← det_paddedLeading]
-  exact exists_mulVec_eq_zero_iff.1 ⟨x, hx_ne, h_padded⟩
-
-/-- Let `δ_i` be the leading minor of order `i` of the matrix `S.frameProducts γ` of the hermitian
-products of the frame `e_1, …, e_ϱ, z_N` with its image under `γ`, and let
-`gr(γ) = S.termDisc γ = |δ_n|² - N² |δ_{n-1}|²` vanish. Let `γ` have the cell rank `j`: a norm-one
-pair occurs from the index `j` on, `δ_j ≠ 0`, and `j = n` exactly when `gr(γ) ≠ 0`. Then `j` is the
-least index from which a norm-one pair occurs for `γ`, since a smaller index would give
-`δ_j = 0`. -/
-lemma HasCellRank.isLeast_normOnePairOccursFrom {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellRank j γ)
-    (h_disc : S.termDisc γ = 0) : IsLeast {i : ℕ | NormOnePairOccursFrom i γ} j.val := by
-  have hj_le : j.val ≤ 𝔰.ϱ := h_rank.le_of_termDisc_eq_zero h_disc
-  obtain ⟨h_occurs, h_minor, -⟩ := h_rank
-  refine ⟨h_occurs, ?_⟩
-  rintro i ⟨ζ, -, h_pairs⟩
-  by_contra! hij : i < j.val
-  -- The vector shared at the index `i < j` gives a nonzero `x'` in the kernel of the products.
-  let a : Fin (𝔰.ϱ + 1) := ⟨i, by lia⟩
-  obtain ⟨x, x', hxx', -, hx', h_above⟩ : ∃ x x' : Fin (𝔰.ϱ + 1) → E,
-      frameImage 1 *ᵥ x = frameImage γ *ᵥ x' ∧ x a = ζ ∧ x' a = 1 ∧
-        ∀ b > a, x b = 0 ∧ x' b = 0 :=
-      h_pairs a le_rfl
-  have hx_top : x 𝔰.top = 0 := (h_above 𝔰.top (Fin.lt_def.2 (hij.trans_le hj_le))).1
-  have h_products : S.frameProducts γ *ᵥ x' = 0 := by
-    rw [frameProducts_mulVec_of_frameImage_eq hxx', hx_top, mul_zero, Pi.single_zero]
-  have hx'_ne : x' ≠ 0 := fun h ↦ by simp [h] at hx'
-  have hx'_above (b : Fin (𝔰.ϱ + 1)) (hb : j.val ≤ b.val) : x' b = 0 :=
-    (h_above b (Fin.lt_def.2 (hij.trans_le hb))).right
-  exact h_minor (leadingMinor_eq_zero_of_mulVec_eq_zero hx'_ne h_products hx'_above)
-
-/-- Let `E` contain a primitive root of unity of order `5040`. Let `S.CharsAgree γ` hold: the
-character `unipotentChar` takes the same value at `u` and at `γ⁻¹ u γ` for every rational `u` in
-`U₀ ∩ γ U₀ γ⁻¹`. Let `j` be least with `NormOnePairOccursFrom j γ`: for one `ζ` with `ζ ζ̄ = 1`, at
-every index from `j` on, the flags of the frame `e_1, …, e_ϱ, z_N` and of its image under `γ` share
-a vector with leading coefficients `ζ` and `1`. Then `flagSpan 1 j`, the span of the first `j` frame
-vectors, meets `colSpan (frameImage γ)`, the span of the image of the frame under `γ`, only in
-`0`. -/
-lemma CharsAgree.disjoint_flagSpan_one {j : Fin (𝔰.ϱ + 2)} [HasPrimitiveRoot5040 E]
-    (h_agree : S.CharsAgree γ) (h_least : IsLeast {i : ℕ | NormOnePairOccursFrom i γ} j.val) :
-    Disjoint (flagSpan 1 j)
-      (colSpan (frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E))) := by
-  refine Submodule.disjoint_def.2 fun w hw hw' ↦ ?_
-  obtain ⟨x, hx, rfl⟩ := mem_flagSpan.1 hw
-  obtain ⟨x', hx' : frameImage γ *ᵥ x' = frameImage 1 *ᵥ x⟩ := hw'
-  by_contra h_ne
-  have hx_ne : x ≠ 0 := fun h ↦ h_ne (by rw [h, mulVec_zero])
-  obtain ⟨l, hl, hxl : x l ≠ 0, -⟩ := h_agree.exists_coords_ne_zero_of_common_vector h_least
-    hx'.symm hx_ne
-  exact hxl (hx l hl)
-
-/-- Let `E` contain a primitive root of unity of order `5040`. Let `γ` satisfy `S.CharsAgree γ`: the
-character `unipotentChar` takes the same value at `u` and at `γ⁻¹uγ` for every rational `u` in
+/-- Assume `S.CharsAgree γ`, so `unipotentChar` takes the same value at `u` and at `γ⁻¹uγ`
+for every rational `u` in
 `U₀ ∩ γU₀γ⁻¹`. Let `j` be least with `NormOnePairOccursFrom j γ`: for one `ζ` with `ζ ζ̄ = 1`, at
 every index from `j` on, the flags of the frame `e_1, …, e_ϱ, z_N` and of its image under `γ` share
 a vector with leading coefficients `ζ` and `1`. Then `flagSpan γ j`, the span of the images under
 `γ` of the first `j` frame vectors, meets the span `colSpan (frameImage 1)` of the frame only in
 `0`. -/
-lemma CharsAgree.disjoint_flagSpan_coe {j : Fin (𝔰.ϱ + 2)} [HasPrimitiveRoot5040 E]
+lemma CharsAgree.disjoint_flagSpan_coe {j : Fin (𝔰.ϱ + 2)}
     (h_agree : S.CharsAgree γ) (h_least : IsLeast {i : ℕ | NormOnePairOccursFrom i γ} j.val) :
     Disjoint (flagSpan (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) j) (colSpan (frameImage 1)) := by
   refine Submodule.disjoint_def.2 fun w hw hw' ↦ ?_
@@ -668,14 +561,6 @@ lemma CharsAgree.disjoint_flagSpan_coe {j : Fin (𝔰.ϱ + 2)} [HasPrimitiveRoot
     hx_ne
   exact hx'l (hx' l hl)
 
-/-- Let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then `A = A_{≤j} + I_γ`,
-where `A = ⟨e_1, …, e_ϱ⟩`, `A_{≤j} = ⟨e_1, …, e_j⟩` and `I_γ = A ∩ γ A`. -/
-theorem HasCellRank.flagSpan_one_sup_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
-    (h_rank : S.HasCellRank j γ) (h_disc : S.termDisc γ = 0) :
-    flagSpan 1 j ⊔ commonIsotropic γ = isotropicSpan 1 :=
-  h_rank.normOnePairOccursFrom.flagSpan_one_sup_commonIsotropic
-    (h_rank.le_of_termDisc_eq_zero h_disc)
-
 /-- Let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
 `γ A = γ A_{≤j} + I_γ`, where `A = ⟨e_1, …, e_ϱ⟩`, `A_{≤j} = ⟨e_1, …, e_j⟩` and `I_γ = A ∩ γ A`. -/
 theorem HasCellRank.flagSpan_coe_sup_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
@@ -684,20 +569,10 @@ theorem HasCellRank.flagSpan_coe_sup_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
   h_rank.normOnePairOccursFrom.flagSpan_coe_sup_commonIsotropic
     (h_rank.le_of_termDisc_eq_zero h_disc)
 
-/-- Let `E` contain a primitive root of unity of order `5040`, let `γ` agree, let
-`gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then `A_{≤j} = ⟨e_1, …, e_j⟩`
-meets `I_γ = A ∩ γ A` only in `0`. -/
-theorem CharsAgree.disjoint_flagSpan_one_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
-    [HasPrimitiveRoot5040 E] (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0)
-    (h_rank : S.HasCellRank j γ) : Disjoint (flagSpan 1 j) (commonIsotropic γ) :=
-  (h_agree.disjoint_flagSpan_one (h_rank.isLeast_normOnePairOccursFrom h_disc)).mono_right
-    (commonIsotropic_le_colSpan_frameImage_coe γ)
-
-/-- Let `E` contain a primitive root of unity of order `5040`, let `γ` agree, let
-`gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
+/-- Let `γ` agree, let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
 `γ A_{≤j} = ⟨γ e_1, …, γ e_j⟩` meets `I_γ = A ∩ γ A` only in `0`. -/
 theorem CharsAgree.disjoint_flagSpan_coe_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
-    [HasPrimitiveRoot5040 E] (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0)
+    (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0)
     (h_rank : S.HasCellRank j γ) : Disjoint (flagSpan γ j) (commonIsotropic γ) :=
   (h_agree.disjoint_flagSpan_coe (h_rank.isLeast_normOnePairOccursFrom h_disc)).mono_right
     (commonIsotropic_le_colSpan_frameImage_one γ)
@@ -707,7 +582,7 @@ theorem CharsAgree.disjoint_flagSpan_coe_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
 Let `S.termDisc γ = |δ_{ϱ+1}|² - N² |δ_ϱ|²` vanish. Let `γ` have the cell rank `j`:
 `NormOnePairOccursFrom j γ` holds, `δ_j ≠ 0`, and `j = ϱ + 1` exactly when `S.termDisc γ ≠ 0`. Then
 `j + finrank E (commonIsotropic γ) = ϱ`. -/
-theorem CharsAgree.add_finrank_commonIsotropic_eq {j : Fin (𝔰.ϱ + 2)} [HasPrimitiveRoot5040 E]
+theorem CharsAgree.add_finrank_commonIsotropic_eq {j : Fin (𝔰.ϱ + 2)}
     (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0) (h_rank : S.HasCellRank j γ) :
     j.val + finrank E (commonIsotropic γ) = 𝔰.ϱ := by
   have h_sup : flagSpan γ j ⊔ commonIsotropic γ = isotropicSpan γ :=
@@ -721,7 +596,7 @@ theorem CharsAgree.add_finrank_commonIsotropic_eq {j : Fin (𝔰.ϱ + 2)} [HasPr
 `gr(γ) = S.termDisc γ` vanish, and let `j + rk I_γ = ϱ` for `I_γ = A ∩ γ A` and `A = ⟨e_1, …, e_ϱ⟩`.
 Then `γ` has the cell rank `j`: a norm-one pair occurs for it from the index `j` on, and the leading
 minor `δ_j` of the products of the frame with its image is not zero. -/
-theorem CharsAgree.hasCellRank_of_add_finrank_eq {j : Fin (𝔰.ϱ + 2)} [HasPrimitiveRoot5040 E]
+theorem CharsAgree.hasCellRank_of_add_finrank_eq {j : Fin (𝔰.ϱ + 2)}
     (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0)
     (hj : j.val + finrank E (commonIsotropic γ) = 𝔰.ϱ) : S.HasCellRank j γ := by
   obtain ⟨i, h_rank⟩ := h_agree.exists_hasCellRank h_disc
@@ -878,11 +753,11 @@ lemma _root_.New.NormOnePairOccursFrom.notMem_remainingTerms
     rw [flagSpan_zero, bot_sup_eq] at h_one h_coe
     exact h_ne (h_one.symm.trans h_coe)
 
-/-- Let `E` contain a primitive root of unity of order `5040`. If `γ` agrees and is not in the set
+/-- If `γ` agrees and is not in the set
 `Γ*` of the remaining terms, then a norm-one pair occurs for `γ` from the index `0` on: for one `ζ`
 with `ζ ζ̄ = 1`, the frame and its image under `γ` share a vector with the leading coefficients `ζ`
 and `1` at every index. -/
-lemma CharsAgree.normOnePairOccursFrom_zero [HasPrimitiveRoot5040 E] (h_agree : S.CharsAgree γ)
+lemma CharsAgree.normOnePairOccursFrom_zero (h_agree : S.CharsAgree γ)
     (hγ : γ ∉ S.remainingTerms) : NormOnePairOccursFrom 0 γ := by
   have h_disc : S.termDisc γ = 0 := by_contra fun h ↦ hγ (.inl h)
   have h_span : isotropicSpan 1 = isotropicSpan (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) :=

@@ -1,6 +1,13 @@
-import Lib.CM.Sigma.Basic
-import Lib.GLn.SchurModule.Basic
-import Lib.General.Algebra.AdicCompletion
+module
+
+import TauCeti.NumberTheory.Padics.Factorial
+public import Mathlib.RingTheory.PowerSeries.Exp
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+import Mathlib.Topology.Algebra.Valued.LocallyCompact
+import TauCeti.RingTheory.MvPowerSeries.Derivative
+public import Lib.GLn.SchurModule.Basic
+public import Lib.General.Algebra.AdicCompletion
 
 /-!
 # Integral power series over ℂ_p: jets, the chain rule and the exponential
@@ -12,13 +19,11 @@ with coefficients in the ring of integers of `ℂ_[p]`.
 
 * `New.mem_range_seriesToCp`: a series in one variable is integral iff all its coefficients have
   norm at most one.
-* `New.pderiv_subst`: the chain rule for partial derivatives of a substitution of power series.
 * `New.jet_subst_linearSeries`: for a linear substitution `M`, the jet `P(∂) (F ∘ M) (0)` is the jet
   of `F` along the polynomial `New.linSubst M P` obtained from `P` by the transposed substitution.
 * `New.expSubst`: the exponential `exp a` of a power series `a` in several variables without
   constant term; it turns finite sums into products (`New.expSubst_add`, `New.expSubst_sum`).
 * `New.padicValNat_factorial_mem_Icc`: `n / (p - 1) - v_p(n!)` lies in `[0, K]` for `n < p ^ K`.
-* `New.rpow_le_norm_factorial`: the lower bound `p ^ (-n / (p - 1)) ≤ ‖n!‖` for the `p`-adic norm.
 
 Notions from other files:
 * `New.jet`: the bilinear pairing `P(∂)F(0)` of a polynomial `P` with a power series `F`, the sum
@@ -32,6 +37,8 @@ Notions from other files:
 Known results: the chain rule and the functional equation of the exponential for formal power
 series, and Legendre's formula for the valuation of a factorial.
 -/
+
+@[expose] public section
 
 /-! ## The inclusion of integral power series -/
 
@@ -58,6 +65,11 @@ section IntegralSeries
 open MvPowerSeries PowerSeries
 
 namespace New
+
+/-- The linear form ∑ c_i z_i, as a power series in the variables z_i. -/
+noncomputable def linearSeries {ι R : Type*} [Fintype ι] [CommSemiring R] (c : ι → R) :
+    MvPowerSeries ι R :=
+  ∑ i : ι, c i • MvPowerSeries.X i
 
 variable {σ : Type*} {R S : Type*} [CommRing R] [CommRing S] {p : ℕ} [Fact p.Prime]
 
@@ -98,37 +110,6 @@ section JetChainRule
 
 open MvPowerSeries Finset WithPiTopology
 
-
-/-- Partial derivatives of power series are continuous for the coefficientwise topology. -/
-lemma New.continuous_pderiv_of_continuousMul {σ R : Type*} [CommRing R] [TopologicalSpace R]
-    [ContinuousMul R] (i : σ) : Continuous (pderiv (R := R) i) := by
-  refine continuous_pi fun d ↦ ?_
-  change Continuous fun F : MvPowerSeries σ R ↦ coeff d (pderiv i F)
-  simp only [coeff_pderiv]
-  exact (continuous_coeff R _).mul continuous_const
-
-variable {ι : Type _} {κ : Type _} {R : Type _} [CommRing R] [Fintype ι] in
-/-- The chain rule for power series: if the family `a` can be substituted into series in the
-variables `ι`, then `∂_k F(a) = ∑_i (∂_i F)(a) * ∂_k a_i`. -/
-@[simp]
-lemma New.pderiv_subst {a : ι → MvPowerSeries κ R} (ha : HasSubst a) (k : κ)
-    (F : MvPowerSeries ι R) :
-    pderiv k (subst a F) = ∑ i : ι, (pderiv i F).subst a * pderiv k (a i) := by
-  classical
-  -- With the discrete topology on `R` both sides are continuous in `F` and polynomials are dense,
-  -- so it suffices to prove the chain rule for polynomials.
-  let : UniformSpace R := ⊥
-  have h_cont : Continuous (subst (R := R) a) := continuous_subst ha
-  refine denseRange_toMvPowerSeries.induction_on F ?_ fun Q ↦ ?_
-  · have h_pderiv (i : ι) : Continuous (pderiv (R := R) i) := continuous_pderiv_of_continuousMul i
-    exact isClosed_eq ((continuous_pderiv_of_continuousMul k).comp h_cont) (by fun_prop)
-  · simp only [subst_coe, pderiv_coe]
-    induction Q using MvPolynomial.induction_on with
-    | C c => simp
-    | add P Q hP hQ => simp [hP, hQ, add_mul, sum_add_distrib]
-    | mul_X P i hP =>
-      -- the Leibniz rule on both sides
-      simp [hP, add_mul, sum_add_distrib, mul_sum, apply_ite, mul_assoc, Pi.single_apply]
 
 /-- Jets of a linear substitution. Let `M` be a matrix and substitute the linear forms
 `(M z)_i = ∑_k M_(i k) z_k` into the series `F`. The jet `P(∂) F(M z) (0)` equals the jet of `F`
@@ -179,15 +160,6 @@ meaningful when `a` has no constant term. -/
 noncomputable abbrev expSubst (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
   (exp ℂ_[p]).subst a
 
-/-- Substituting a series `a` without constant term into `f` keeps the constant term of `f`. -/
-@[simp]
-lemma constantCoeff_subst_of_constantCoeff_eq_zero (a : MvPowerSeries σ ℂ_[p])
-    (ha : a.constantCoeff = 0) (f : ℂ_[p]⟦X⟧) :
-    (subst a f).constantCoeff = constantCoeff f := by
-  rw [constantCoeff_subst (.of_constantCoeff_zero ha),
-    finsum_eq_single _ 0 fun d hd ↦ by simp [ha, hd]]
-  simp
-
 /-- The functional equation `exp (a + b) = exp a * exp b` for series `a`, `b` without constant
 term. -/
 lemma expSubst_add (a : MvPowerSeries σ ℂ_[p]) {b : MvPowerSeries σ ℂ_[p]}
@@ -226,40 +198,26 @@ lemma norm_natCast_eq_inv_pow_padicValNat {n : ℕ} (hn : n ≠ 0) :
   simpa [Padic.norm_eq_zpow_neg_valuation, hn, Nat.padicValNat_def] using
     PadicComplex.norm_extends' p n
 
+/-- The `p`-adic norm of a finite product of nonzero natural numbers. -/
+lemma norm_prod_natCast_eq_rpow_neg_sum {X : Type*} [Fintype X] {n : X → ℕ}
+    (hn : ∀ x, n x ≠ 0) :
+    ‖∏ x, (n x : ℂ_[p])‖ = (p : ℝ) ^ (-∑ x, (padicValNat p (n x) : ℝ)) := by
+  simp [norm_natCast_eq_inv_pow_padicValNat, hn, Real.rpow_neg p.cast_nonneg,
+    ← Nat.cast_sum, Finset.prod_pow_eq_pow_sum]
+
 /-- For `p` prime and `n < p ^ K` one has `n / (p - 1) - K ≤ v_p(n!) ≤ n / (p - 1)`, a consequence
 of Legendre's formula. -/
 lemma padicValNat_factorial_mem_Icc {n K : ℕ} (hn : n < p ^ K) :
     (padicValNat p n ! : ℝ) ∈ Set.Icc ((n : ℝ) / (p - 1) - K) (n / (p - 1)) := by
-  -- By Legendre's formula `n - (p - 1) * v_p(n!)` is the sum of the base `p` digits of `n`. There
-  -- are at most `K` digits, each at most `p - 1`.
-  have hp1 : 1 < p := hp.out.one_lt
-  have legendre : (p - 1) * padicValNat p n ! + (p.digits n).sum = n := by
-    rw [Nat.padicValNat_def, sub_one_mul_padicValNat_factorial,
-      Nat.sub_add_cancel (digit_sum_le p n)]
-    exact hp.out
-  have digit_le : ∀ d ∈ p.digits n, d ≤ p - 1 :=
-    fun d hd ↦ le_sub_one_of_lt (digits_lt_base hp1 hd)
-  have sum_le : (p.digits n).sum ≤ K * (p - 1) :=
-    calc (p.digits n).sum ≤ (p.digits n).length * (p - 1) := sum_le_length_nsmul _ _ digit_le
-      _ ≤ K * (p - 1) := Nat.mul_le_mul_right _ ((digits_length_le_iff hp1 n).2 hn)
-  have lower : n ≤ (p - 1) * (padicValNat p n ! + K) := by grind
-  have upper : (p - 1) * padicValNat p n ! ≤ n := by omega
-  have h_pos : (0 : ℝ) < (p - 1 : ℕ) := cast_pos.2 (Nat.sub_pos_of_lt hp1)
-  rw [Set.mem_Icc, sub_le_iff_le_add, ← cast_pred hp.out.pos, div_le_iff₀' h_pos,
-    le_div_iff₀' h_pos]
-  exact_mod_cast And.intro lower upper
-
-/-- For a prime `p` and a natural number `n`, the norm of `n !` in the `p`-adic complex numbers
-`ℂ_[p]` is at least `p ^ (-(n / (p - 1)))`, where the exponent is a real number. -/
-lemma rpow_le_norm_factorial {n : ℕ} : p ^ (-(n / (p - 1)) : ℝ) ≤ ‖(n ! : ℂ_[p])‖ := by
-  have h_val : (padicValNat p n ! : ℝ) ≤ n / (p - 1) :=
-    (padicValNat_factorial_mem_Icc (n.lt_pow_self hp.out.one_lt)).2
-  calc (p : ℝ) ^ (-(n / (p - 1)) : ℝ) ≤ p ^ (-(padicValNat p n ! : ℝ)) :=
-        Real.rpow_le_rpow_of_exponent_le (mod_cast hp.out.one_le) (neg_le_neg h_val)
-    _ = ‖(n ! : ℂ_[p])‖ := by simp [norm_natCast_eq_inv_pow_padicValNat n.factorial_ne_zero]
+  rcases eq_or_ne n 0 with rfl | hn0
+  · simp [Nat.padicValNat_def]
+  rw [Set.mem_Icc, Nat.padicValNat_def]
+  refine ⟨?_, TauCeti.multiplicity_factorial_le_div p n⟩
+  have hlog : Nat.log p n + 1 ≤ K := Nat.succ_le_of_lt (Nat.log_lt_of_lt_pow hn0 hn)
+  exact (sub_le_sub_left (by exact_mod_cast hlog) _).trans
+    (TauCeti.div_sub_log_le_multiplicity_factorial p n)
 
 /-- Substituting `a` into the rescaled series `f(c X)` is substituting `c • a` into `f`. -/
-@[simp]
 lemma subst_rescale_eq_subst_smul {c : ℂ_[p]} (a : MvPowerSeries σ ℂ_[p]) (ha : HasSubst a)
     (f : ℂ_[p]⟦X⟧) :
     (rescale c f).subst a = f.subst (c • a) := by

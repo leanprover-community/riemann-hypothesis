@@ -1,5 +1,20 @@
-import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
+module
+
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+public import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
+public import Lib.ClassField.Grunwald
+public import Lib.GaloisRep.Main.AttachedRepresentations
+import Lib.ClassField.Global.ArtinMap
+import Lib.ClassField.Global.Chebotarev
+import Lib.GaloisRep.Main.QuadraticStep
 import Lib.GaloisRep.Main.SplitCase
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.PadicComparison.ToricTower
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Attached Galois representations in odd rank and their descent along weak base change
@@ -53,6 +68,8 @@ séries discrètes (2011), Cor. 5.3, and Barnet-Lamb, Gee, Geraghty, Taylor, Pot
 change of weight (2014), Thm 2.1.1.
 -/
 
+@[expose] public section
+
 /-!
 ## Descent along a step of weak base change
 
@@ -76,10 +93,10 @@ variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
 /-- The subgroup Gal(Ω/L) ∩ ker χ of Gal(Ω/E), where L = `New.QZChar.stepField` χ: the elements
 killed by χ and by its symmetrisation. -/
 noncomputable abbrev QZChar.stepKer (χ : QZChar Gal(Ω/E)) : Subgroup Gal(Ω/E) :=
-  ker (symmetrise χ) ⊓ ker χ
+  ker (symmetrize χ) ⊓ ker χ
 
 lemma QZChar.isOpen_stepKer (χ : QZChar Gal(Ω/E)) : (stepKer χ).IsOpen :=
-  (isOpen_ker (symmetrise χ)).inter (isOpen_ker χ)
+  (isOpen_ker (symmetrize χ)).inter (isOpen_ker χ)
 
 lemma QZChar.stepKer_le_fixingSubgroup (χ : QZChar Gal(Ω/E)) :
     stepKer χ ≤ (stepField χ).fixingSubgroup :=
@@ -111,7 +128,9 @@ lemma IsPlaceOver.isMatched_of_decompGroup_le {A : ClosurePlace} {w : FinPlace E
     (hA : IsPlaceOver A w) (h_dec : decompGroup Gal(Ω/E) A ≤ stepKer χ) :
     IsMatched (stepField χ) (ideleChar χ) w := by
   refine ⟨fun x ↦ ?_, hA.q_eq_and_comap_ne_self_of_decompGroup_le (h_dec.trans inf_le_left)⟩
-  simp [(hA.artinAt_trivial_iff_decompGroup_le χ).2 (h_dec.trans inf_le_right)]
+  change QZ.expUnit (abelianLift χ (artinMap Gal(Ω/E) (locIdele w x))) = 1
+  rw [artinMap_locIdele,
+    (hA.artinAt_trivial_iff_decompGroup_le χ).2 (h_dec.trans inf_le_right) x, QZ.expUnit.map_one]
 
 /-- Let `f'` be a weak base change of `f` to the field `stepField χ`, off `S` and its conjugate.
 Let the place `A` of `Ω` lie over a split place `w` of `E` outside these sets, with
@@ -127,14 +146,9 @@ lemma IsWeakBaseChange.hasHeckePolyAt_of_decompGroup_le
   have h_matched : IsMatched (stepField χ) (ideleChar χ) w := hA.isMatched_of_decompGroup_le h_dec
   exact ⟨(h_matched.2 u h_below).1, (hs.2 w h_off u h_below).2 h_matched hw Q hQ⟩
 
-/-- A nonzero function has at most one Hecke polynomial at a split place. -/
-lemma HasHeckePolyAt.unique (hf : f ≠ 0) {w : FinPlace E} {hw hw' : w.IsSplit}
-    {Q Q' : Polynomial ℂ} (hQ : HasHeckePolyAt f w hw Q) (hQ' : HasHeckePolyAt f w hw' Q') :
-    Q = Q' := by
-  obtain ⟨-, t, rfl, ht⟩ := hQ
-  obtain ⟨-, t', rfl, ht'⟩ := hQ'
-  have h_eq : t = t' := funext fun j ↦ smul_left_injective ℂ hf ((ht j).symm.trans (ht' j))
-  rw [h_eq]
+private lemma QZChar.isOpenEmbedding_restrictScalarsHom_stepField (χ : QZChar Gal(Ω/E)) :
+    Topology.IsOpenEmbedding (AlgEquiv.restrictScalarsHom E : Gal(Ω/stepField χ) →* Gal(Ω/E)) :=
+  isOpenEmbedding_galois_restrict (AlgEquiv.restrictScalarsHom E) fun _ _ ↦ rfl
 
 /-- Let `χ` be a continuous `ℚ/ℤ`-valued character of Gal(Ω/E), and let `L = New.QZChar.stepField χ`
 be the fixed field of the kernel of `g ↦ χ g + χ (gᶜ)`. Let `f` and `f'` be eigenforms on the
@@ -148,16 +162,13 @@ lemma IsWeakBaseChange.attached_comp_stepKerInclusion
     Attached P (r'.comp (stepKerInclusion χ)) (stepKer χ).subtype := by
   -- Almost all places with a Frobenius element in `stepKer χ` split in `L` with the same Hecke
   -- polynomial, so the estimate for `r'` above such a place is the estimate wanted.
-  let res : Gal(Ω/stepField χ) →* Gal(Ω/E) := AlgEquiv.restrictScalarsHom E
-  have h_res : Topology.IsOpenEmbedding res := isOpenEmbedding_galois_restrict res (by simp [res])
-  have h_cont : Continuous (stepKerInclusion χ) := h_res.continuous_iff.2 continuous_subtype_val
+  have h_res := isOpenEmbedding_restrictScalarsHom_stepField χ
+  have h_cont : Continuous (stepKerInclusion χ) := h_res.continuous_iff.2 continuous_subtypeVal
   have h_normal : (stepKerInclusion χ).range.Normal := by
     rw [stepKerInclusion, MonoidHom.range_comp, inclusion_range]
     exact Normal.map inferInstance _ (stepField χ).fixingSubgroupEquiv.surjective
-  have h_nondeg : IsTraceNondeg (r'.comp (stepKerInclusion χ)) :=
-    hr'.isTraceNondeg.comp (stepKerInclusion χ) h_normal
-  refine ⟨hr'.continuous.comp h_cont, h_nondeg, (isOpen_stepKer χ).isOpenMap_subtype_val,
-    fun η hη ↦ ?_⟩
+  refine ⟨hr'.continuous.comp h_cont, hr'.isTraceNondeg.comp (stepKerInclusion χ) h_normal,
+    (isOpen_stepKer χ).isOpenMap_subtypeVal, fun η hη ↦ ?_⟩
   -- At most Frobenius data of `L`, `f'` has the polynomial given by `P'`.
   have h_most' : ∀ᶠ y : FrobeniusDatum (stepField χ) in mostFrobenii (stepField χ),
       ∃ hy : y.place.IsSplit, HasHeckePolyAt f' y.place hy (P' y.place) :=
@@ -178,17 +189,22 @@ lemma IsWeakBaseChange.attached_comp_stepKerInclusion
   -- Inertia and the Frobenius element lie in `stepKer χ`, hence so does the decomposition group.
   -- So `x.place` is matched, and `f'` has the polynomial `P x.place` at `u`.
   have h_dec : decompGroup Gal(Ω/E) x.valuationSubring ≤ stepKer χ :=
-    x.isPlaceOver.decompGroup_le x.isFrob_inv (isOpen_stepKer χ) h_inertia (by simp [← hs_eq])
+    x.isPlaceOver.decompGroup_le x.isFrob_inv (isOpen_stepKer χ) h_inertia
+      (hs_eq ▸ (stepKer χ).inv_mem s.prop)
   obtain ⟨hq, hu_split, h_hecke_u⟩ :=
     hs.hasHeckePolyAt_of_decompGroup_le h_off x.isPlaceOver h_dec h_below h_hecke
   -- The image of `s` is a geometric Frobenius element of `L` at `u`.
-  have hu_prime : u.q.Prime := by simpa [hq] using x.prime_q
+  have hu_prime : u.q.Prime := hq.symm ▸ x.prime_q
   have hu_frob : IsFrob x.valuationSubring u.q (stepKerInclusion χ s)⁻¹ :=
-    show IsFrob x.valuationSubring u.q s.val⁻¹ by simpa only [hq, hs_eq] using x.isFrob_inv
+    show IsFrob x.valuationSubring u.q s.val⁻¹ from hq ▸ hs_eq ▸ x.isFrob_inv
   obtain ⟨h_close, hu_split', h_hecke_u'⟩ :=
     h_above ⟨u, x.valuationSubring, stepKerInclusion χ s, hu_prime, hu, hu_frob⟩ h_below hs_eq
-  have hP : P' u = P x.place := h_hecke_u'.unique he'.1 h_hecke_u
-  simpa only [hP, MonoidHom.comp_apply] using h_close (stepKerInclusion χ s) rfl
+  obtain ⟨-, t', hP', ht'⟩ := h_hecke_u'
+  obtain ⟨-, t, hP, ht⟩ := h_hecke_u
+  have hP_eq : P' u = P x.place := by
+    rw [hP', hP,
+      show t' = t from funext fun j ↦ smul_left_injective ℂ he'.1 ((ht' j).symm.trans (ht j))]
+  exact hP_eq ▸ h_close (stepKerInclusion χ s) rfl
 
 /-- Let `χ` be a continuous `ℚ/ℤ`-valued character of `Gal(Ω/E)`, and let
 `L = New.QZChar.stepField χ` be the field cut out by `g ↦ χ g + χ (gᶜ)`. Let `f'` on `L` be a weak
@@ -200,12 +216,11 @@ lemma IsWeakBaseChange.descendsAt (hs : IsWeakBaseChange (ideleChar χ) S f f')
     (hr' : Attached P' r') (he' : IsEigenform f' P') (he : IsEigenform f P) {r : GalRep ℓ E n}
     (hr : Attached P r) (A : ClosurePlace) :
     DescendsAt χ r' r A := by
-  classical
   -- On `stepKer χ`, both `r` and `r'` are attached to `P`. So they have the same trace and are
   -- conjugate there, and the local conditions pass.
   let L : IntermediateField E Ω := stepField χ
   let res : Gal(Ω/L) →* Gal(Ω/E) := AlgEquiv.restrictScalarsHom E
-  have h_res : Topology.IsOpenEmbedding res := isOpenEmbedding_galois_restrict res (by simp [res])
+  have h_res : Topology.IsOpenEmbedding res := isOpenEmbedding_restrictScalarsHom_stepField χ
   have h_att : Attached P (r'.comp (stepKerInclusion χ)) (stepKer χ).subtype :=
     hs.attached_comp_stepKerInclusion hr' he' he
   have h_trace (s : stepKer χ) : (r' (stepKerInclusion χ s)).val.trace = (r s).val.trace :=
@@ -213,24 +228,20 @@ lemma IsWeakBaseChange.descendsAt (hs : IsWeakBaseChange (ideleChar χ) S f f')
   have h_normal : (stepKer χ).subtype.range.Normal := by
     rw [range_subtype]
     infer_instance
-  obtain ⟨Z, hZ⟩ : ∃ Z : GL n (PadicAlgCl ℓ),
-      ∀ s : stepKer χ, (r' (stepKerInclusion χ s)).val * Z = Z * r s :=
-    h_att.isTraceNondeg.exists_conj_of_trace_eq _ (AlgHom.id (PadicAlgCl ℓ) _)
-      (hr.isTraceNondeg.comp (stepKer χ).subtype h_normal).hasSemiprimeSpan h_trace
+  obtain ⟨Z, hZ⟩ := h_att.isTraceNondeg.exists_conj_of_trace_eq _ (AlgHom.id (PadicAlgCl ℓ) _)
+    (hr.isTraceNondeg.comp (stepKer χ).subtype h_normal).hasSemiprimeSpan h_trace
   -- `Z` intertwines `r ∘ res` with `r'` on the neighbourhood `res ⁻¹' stepKer χ` of `1`.
   have h_nhds : res ⁻¹' stepKer χ ∈ nhds 1 :=
     ((isOpen_stepKer χ).preimage h_res.continuous).mem_nhds (stepKer χ).one_mem
   obtain ⟨h_finite, h_jumps, h_kills⟩ := local_clauses_of_retract (A := A) 1 (algebraMap E L)
-    (by simp) (by simp [res]) h_res h_nhds (fun g hg ↦ hZ ⟨res g, hg⟩) Z.inv_val
-  refine ⟨h_finite, fun {κ} m hm ↦ h_jumps Z.val_inv ?_,
+    (fun _ ↦ rfl) (fun _ _ ↦ rfl) h_res h_nhds (fun g hg ↦ hZ ⟨res g, hg⟩) Z.inv_val
+  refine ⟨h_finite, fun {κ} m hm ↦ h_jumps Z.val_inv (Eq.mp (congrArg (HasJumpsAt r' A) ?_) hm),
     fun s Q ↦ h_kills (stepKerInclusion χ s) s.prop⟩
   -- `τ` lies in the CM type of `L` exactly when its restriction lies in that of `E`.
-  have h_baseChange :
-      jumps κ.baseChange m = fun τ : L →+* ℂ ↦ jumps κ m (τ.comp (algebraMap E L)) := by
-    ext1 τ
-    simp only [jumps, CMTypeOver.eq_chosen_iff (K := E) τ]
-    rfl
-  rwa [h_baseChange] at hm
+  classical
+  funext τ
+  exact congrArg (Multiset.map · _) <| funext fun j ↦
+    if_congr (CMTypeOver.eq_chosen_iff (K := E) τ) rfl rfl
 
 /-- Let `f'` be a weak base change of `f` to `stepField χ`, both eigenforms, with `r'` and `r`
 attached to their systems of polynomials. Let `A` lie over `w ∉ S ∪ S̄` and let `u` be a place of
@@ -275,23 +286,30 @@ lemma New.GaloisRep.exists_weak_baseChange {E E' n : Type} [Field E] [CMType E] 
     {f : Gf E n → WeylIndex n κ.1 → ℂ} (hf : f ∈ (stdSpace E n).forms κ) (hf_ne : f ≠ 0) :
     ∃ (F : (stdSpace E' n).forms κ.baseChange) (P' : FinPlace E' → Polynomial ℂ),
       IsEigenform F.val P' ∧ IsWeakBaseChange μ ∅ f F.val := by
-  classical
   -- This is the transfer for trivial local data, whose only operator is the identity; its trace
   -- on a space containing `f ≠ 0` is not zero.
   let π : Representation ℂ Unit ((stdSpace E n).forms κ) :=
     localFormTranslation κ (1 : Unit →* Gf E n)
   have h_id : heckeFun π ⊤ 1 = 1 := by
     have := QuotientGroup.subsingleton_quotient_top (G := Unit)
-    have : Unique (Unit ⧸ (⊤ : Subgroup Unit)) := .mk' _
-    simp [heckeFun, finsum_unique, π]
+    let : Unique (Unit ⧸ (⊤ : Subgroup Unit)) := .mk' _
+    rw [heckeFun, finsum_unique, Pi.one_apply, one_smul]
+    exact π.map_one
   have h_trace : HasNonzeroTraceAround π (heckeFun π ⊤ 1)
       (heckeGenEigenspace π ⊤ ((1 : Unit → Unit → ℂ) ∘ ![]) 0) ⟨f, hf⟩ := by
     intro W hW _
     refine trace_restrict_ne_zero one_ne_zero (fun h_bot ↦ hf_ne ?_) fun x _ ↦ ?_
-    · exact congrArg Subtype.val (h_bot.le ⟨by simp [π], hW⟩)
-    · exact eigenspace_le_maxGenEigenspace (by simp [h_id])
+    · have h_mem : (⟨f, hf⟩ : (stdSpace E n).forms κ) ∈
+          heckeGenEigenspace π ⊤ ((1 : Unit → Unit → ℂ) ∘ ![]) 0 :=
+        mem_heckeGenEigenspace.2 ⟨fun _ ↦ by
+          change π 1 ⟨f, hf⟩ = (1 : ℂ) • ⟨f, hf⟩
+          rw [π.map_one, one_apply_eq_self, one_smul], fun i ↦ i.elim0⟩
+      exact congrArg Subtype.val (h_bot.le ⟨h_mem, hW⟩)
+    · exact eigenspace_le_maxGenEigenspace (Module.End.mem_eigenspace_iff.2 (by
+        rw [h_id, one_apply_eq_self, one_smul]))
   obtain ⟨F, P', hF, h_bc, -⟩ := exists_isWeakBaseChange_of_matching (hμ := hμ) ⟨f, hf⟩
-    isLocalMatching_empty (o := ![]) (θ := 0) (j₀ := ()) (hj₀ := rfl) (h_comm := by simp)
+    isLocalMatching_empty (o := ![]) (θ := 0) (j₀ := ()) (hj₀ := rfl)
+    (h_comm := fun () () ↦ ⟨heckeCommute_self _ _ _, heckeCommute_self _ _ _⟩)
     (h_stable := nofun) (h_trace := h_trace)
   exact ⟨F, P', hF, h_bc⟩
 
@@ -303,7 +321,7 @@ lemma New.GaloisRep.isStepUnramifiedAt_of_decompGroup_le {E : Type} [Field E]
     [EmbeddedNumberField E] [CMType E]
     {χ : QZChar Gal(Ω/E)} (h_step : IsStep (stepField χ) (ideleChar χ))
     {x : FinPlace E} {A : ClosurePlace} (hA : IsPlaceOver A x)
-    (h_dec : decompGroup Gal(Ω/E) A ≤ QZChar.ker (symmetrise χ))
+    (h_dec : decompGroup Gal(Ω/E) A ≤ QZChar.ker (symmetrize χ))
     (h_inertia : inertiaGroup Gal(Ω/E) A ≤ QZChar.ker χ) :
     IsStepUnramifiedAt (stepField χ) (ideleChar χ) x := by
   rintro v rfl
@@ -315,8 +333,10 @@ lemma New.GaloisRep.isStepUnramifiedAt_of_decompGroup_le {E : Type} [Field E]
     (hA.artinAt_units_trivial_iff_inertiaGroup_le χ).mpr fun _ h ↦ h_inertia h
   refine ⟨h_step.exists_gal_ne_one.imp fun σ hσ ↦
     notMem_inertia_of_comap_ne (comap_ne σ hσ), fun y hy ↦ ?_⟩
-  change ideleChar χ (locIdele (v.below E) (localNorm E v y)) = 1
-  simp [localNorm, ideleAt, h_units, v_adeleNorm_eq_one, locIdele_mem_idelesUnitOff hy]
+  have hv_norm : Valued.v (localNorm E v y).val = 1 :=
+    v_adeleNorm_eq_one (locIdele_mem_idelesUnitOff hy) (v.below E)
+  change QZ.expUnit (abelianLift χ (artinMap Gal(Ω/E) (locIdele (v.below E) (localNorm E v y)))) = 1
+  rw [artinMap_locIdele, h_units _ hv_norm, QZ.expUnit.map_one]
 
 /-- Let `ρ₀` on a normal subgroup `N₀` of `Gal(Ω/E)` and the `ρ T` on open normal subgroups `N T`
 be attached to the same system `P` along the inclusions (`New.GaloisRep.Attached`: the
@@ -327,7 +347,7 @@ conjugate of an element of `I` lies in every `N T` and is killed by `ρ T`. If e
 Frobenius element at a place `A` of `Ω` over a place `y` of prime norm lies in some `N T`, then a
 representation of `Gal(Ω/E)` is attached to `P`. -/
 lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
-    {E n : Type} [Field E] [EmbeddedNumberField E] [CMType E] [Fintype n] [DecidableEq n]
+    {E n : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
     {P : FinPlace E → Polynomial ℂ} {N₀ : Subgroup Gal(Ω/E)} [N₀.Normal]
     {ρ₀ : N₀ →* GL n (PadicAlgCl ℓ)} (hρ₀ : Attached P ρ₀ N₀.subtype)
     {N : ℕ → Subgroup Gal(Ω/E)} [∀ T : ℕ, (N T).Normal] (N_open : ∀ T : ℕ, (N T).IsOpen)
@@ -343,8 +363,7 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
   let K : Subgroup Gal(Ω/E) := (⨅ T : ℕ, (ρ T).ker.map (N T).subtype).normalCore
   -- `ρ₀` and `ρ T` are attached to the same `P`, so where both are defined they have the same
   -- traces and are conjugate, by `Q T`; and `ρ T` is trivial on `K`.
-  have exists_conj (T : ℕ) : ∃ Q : GL n (PadicAlgCl ℓ), ∀ g : ↥(N₀ ⊓ N T),
-      (ρ₀ (inclusion inf_le_left g)).val * Q = Q * ρ T (inclusion inf_le_right g) := by
+  have exists_conj (T : ℕ) :=
     have normal_range {M : Subgroup Gal(Ω/E)} (h_le : N₀ ⊓ N T ≤ M) :
         (inclusion h_le).range.Normal := by
       rw [inclusion_range]
@@ -356,13 +375,13 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
     have h_trace (g : ↥(N₀ ⊓ N T)) :
         (ρ₀ (inclusion inf_le_left g)).val.trace = (ρ T (inclusion inf_le_right g)).val.trace :=
       hρ₀.trace_eq (hρ T) _ rfl
-    exact h_left.exists_conj_of_trace_eq _ (AlgHom.id (PadicAlgCl ℓ) _) h_right.hasSemiprimeSpan
-      h_trace
+    h_left.exists_conj_of_trace_eq _ (AlgHom.id (PadicAlgCl ℓ) _) h_right.hasSemiprimeSpan h_trace
   choose Q hQ using exists_conj
   have h_conj (T : ℕ) (g : N T) (y : Gal(Ω/E)) (hy : y ∈ K) (hgy : g.val * y ∈ N₀) :
       ρ₀ ⟨g.val * y, hgy⟩ = Q T * ρ T g * (Q T)⁻¹ := by
     obtain ⟨y, hy_ker, rfl⟩ := mem_iInf.1 (normalCore_le _ hy) T
-    have h_mul : ρ T g = ρ T (g * y) := by rw [map_mul, MonoidHom.mem_ker.1 hy_ker, mul_one]
+    have h_mul : ρ T g = ρ T (g * y) := by
+      rw [(ρ T).map_mul, MonoidHom.mem_ker.1 hy_ker, mul_one]
     rw [h_mul]
     exact eq_mul_inv_of_mul_eq (Units.ext (hQ T ⟨g.val * y, hgy, (g * y).prop⟩))
   have I_subset : I ⊆ (K : Set Gal(Ω/E)) := by
@@ -373,15 +392,22 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
   -- `R g = ρ₀ (g * σ g)` is a homomorphism that extends `ρ₀`.
   choose σ σ_mem mul_σ_mem using h_gen K I_subset
   have ρ₀_kills (y : N₀) (hy : y.val ∈ K) : ρ₀ y = 1 := by
-    simpa using h_conj 0 1 y hy (by simp)
+    have h1y : (1 : N 0).val * y.val ∈ N₀ := by rw [OneMemClass.coe_one, one_mul]; exact y.prop
+    have h := h_conj 0 1 y hy h1y
+    have h_sub : (⟨(1 : N 0).val * y.val, h1y⟩ : N₀) = y := Subtype.ext (one_mul y.val)
+    rw [h_sub, (ρ 0).map_one, mul_one, mul_inv_cancel] at h
+    exact h
   have ρ₀_congr {x z : N₀} (h : (z.val : Gal(Ω/E) ⧸ K) = x.val) : ρ₀ x = ρ₀ z :=
     ρ₀.eq_iff.2 (ρ₀_kills (z⁻¹ * x) (QuotientGroup.eq.1 h))
+  have hq (a : Gal(Ω/E)) : ((a * σ a : Gal(Ω/E)) : Gal(Ω/E) ⧸ K) = a := by
+    rw [QuotientGroup.mk_mul, (QuotientGroup.eq_one_iff _).2 (σ_mem a), mul_one]
   have ρ₀_mul (g g' : Gal(Ω/E)) : ρ₀ ⟨g * g' * σ (g * g'), mul_σ_mem (g * g')⟩ =
       ρ₀ ⟨g * σ g, mul_σ_mem g⟩ * ρ₀ ⟨g' * σ g', mul_σ_mem g'⟩ := by
-    rw [← map_mul]
-    exact ρ₀_congr (by simp [σ_mem])
+    rw [← ρ₀.map_mul]
+    exact ρ₀_congr (by
+      rw [Subgroup.coe_mul, QuotientGroup.mk_mul, hq, hq, hq, QuotientGroup.mk_mul])
   let R : GalRep ℓ E n := .mk' (fun g ↦ ρ₀ ⟨g * σ g, mul_σ_mem g⟩) ρ₀_mul
-  have R_eq (x : N₀) : ρ₀ x = R x := ρ₀_congr (by simp [σ_mem])
+  have R_eq (x : N₀) : ρ₀ x = R x := ρ₀_congr (hq x.val)
   -- `R` agrees with `ρ₀` on the open subgroup `N₀`, and both have the same image.
   have R_cont : Continuous R := by
     have h_cont : Continuous fun x : N₀ ↦ R x := hρ₀.continuous.congr R_eq
@@ -390,7 +416,9 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
   have R_nondeg : IsTraceNondeg R := by
     intro x hx h_zero
     have h_range : (Set.range fun g : Gal(Ω/E) ↦ (R g).val) ⊆
-        Set.range fun g : N₀ ↦ (ρ₀ g).val := by simp [R, Set.range_subset_iff]
+        Set.range fun g : N₀ ↦ (ρ₀ g).val := by
+      rintro _ ⟨g, rfl⟩
+      exact ⟨⟨g * σ g, mul_σ_mem g⟩, rfl⟩
     exact hρ₀.isTraceNondeg x (Submodule.span_mono h_range hx) fun g ↦ by rw [R_eq, h_zero]
   have R_conj (T : ℕ) (g : N T) : R g = Q T * ρ T g * (Q T)⁻¹ :=
     h_conj T g (σ g) (σ_mem g) (mul_σ_mem g)
@@ -405,11 +433,13 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
   filter_upwards [h_close] with v hv B g hv_prime hB g_frob hg
   have g_mem : g ∈ N T := Set.mem_of_mem_inter_right (hO hg)
   have h_charpoly : (R g).val.charpoly = (ρ T ⟨g, g_mem⟩).val.charpoly := by
-    simp [R_conj T ⟨g, g_mem⟩]
-  simpa [h_charpoly] using hv B g hv_prime hB g_frob hg ⟨g, g_mem⟩ rfl
+    rw [R_conj T ⟨g, g_mem⟩, Units.val_mul, Units.val_mul, Matrix.coe_units_inv,
+      Matrix.charpoly_units_conj]
+  rintro x (rfl : x = g) i
+  rw [h_charpoly]
+  exact hv B x hv_prime hB g_frob hg ⟨x, g_mem⟩ rfl i
 
 open scoped Pointwise in
-
 /-- Let `a` be odd, `E` a CM field containing a primitive 5040th root of unity, and `w` any finite
 place. Then eigenforms of any weight on the standard definite unitary group of rank `a` satisfy
 `New.GaloisRep.SphericalCompat` at `w`: each has an attached representation. If the form is
@@ -427,6 +457,10 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
   intro P κ f hf he
   -- `f` is fixed by the integral points that are trivial at a finite set `S` of places.
   obtain ⟨S, -, hS⟩ := exists_inf_trivialOn_le hf.1
+  have hf_level :
+      f ∈ levelSpace (rightRegular ℂ (Gf E (Fin a)) (WeylIndex (Fin a) κ.1 → ℂ))
+        (stdLevel E (Fin a) ⊓ Gf.trivialOn (Fin a) S) :=
+    fun k ↦ (funext (hS k.prop)).trans (one_smul ℂ f).symm
   -- The modulus `n T` is divisible by `ℓ`, by `w`, by the places of `S` and by all places of norm
   -- at most `T`.
   let n (T : ℕ) : ℕ := ℓ * (T + w.q + S.sup FinPlace.q).factorial
@@ -436,27 +470,13 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
   have n_mem_w (T : ℕ) : ↑(n T) ∈ w.asIdeal := n_mem T w (by omega)
   have not_mem_S (x : FinPlace E) (hx : ↑(n 0) ∉ x.asIdeal) : x ∉ S :=
     fun hxS ↦ hx (n_mem 0 x (le_add_left (S.le_sup hxS)))
-  -- Step `T` is the field `stepField (χ T) ⊇ ℚ(√-D T)`. Its group, cut down to `ker (χ T)`, and
-  -- the inertia groups at small places prime to `n T` generate `Gal(Ω/E)` (`h_gen`). At places
-  -- dividing `n T`: the places of `ℚ(√-D T)` below are split (`h_spl`), decomposition groups fix
-  -- the field, and `χ T` kills inertia, and decomposition if the place is split (`h_loc`).
-  have exists_step (T : ℕ) : ∃ (χ : QZChar Gal(Ω/E)) (D : ℕ) (_ : HasQuadSubfield D (stepField χ)),
-      IsStep (stepField χ) (ideleChar χ) ∧
-      (∃ m : ℕ, ∀ H : Subgroup Gal(Ω/E),
-        inertiaAbove {x : FinPlace E | ↑(n T) ∉ x.asIdeal ∧ x.q ≤ m} ⊆ H →
-        ∀ g : Gal(Ω/E), ∃ h ∈ H, g * h ∈ stepKer χ) ∧
-      (∀ v : FinPlace (stepField χ),
-        ↑(n T) ∈ v.asIdeal → IsSplitPrimeToDisc (v.below (QuadField D))) ∧
-      ∀ {A : ClosurePlace} {x : FinPlace E}, IsPlaceOver A x → ↑(n T) ∈ x.asIdeal →
-        decompGroup Gal(Ω/E) A ≤ QZChar.ker (symmetrise χ) ∧ inertiaGroup Gal(Ω/E) A ≤ stepKer χ ∧
-        (x.IsSplit → decompGroup Gal(Ω/E) A ≤ stepKer χ) :=
-    exists_isStep_hasQuadSubfield E (n T) NeZero.out
-  choose χ D D_subfield h_step h_gen h_spl h_loc using exists_step
+  -- Step `T` is the field `stepField (χ T) ⊇ ℚ(√-D T)`, given by `exists_isQuadraticStep`.
+  choose χ D D_subfield h_quad using fun T ↦ exists_isQuadraticStep E (n T) NeZero.out
   -- `F T` is an eigenform over step `T`, with polynomials `P' T`: a weak base change of `f`.
   have exists_form (T : ℕ) : ∃ (F : (stdSpace (stepField (χ T)) (Fin a)).forms κ.baseChange)
       (P' : FinPlace (stepField (χ T)) → Polynomial ℂ),
       IsEigenform F.val P' ∧ IsWeakBaseChange (ideleChar (χ T)) ∅ f F.val :=
-    exists_weak_baseChange (h_step T) hf he.1
+    exists_weak_baseChange (h_quad T).isStep hf he.1
   choose F P' hF h_bc using exists_form
   -- For `A` over the place `x` of `E`, `u T hA` is a place of step `T` between them.
   have exists_place (T : ℕ) {x : FinPlace E} {A : ClosurePlace} (hA : IsPlaceOver A x) :
@@ -466,7 +486,7 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
   have h_split_case (T : ℕ) {x : FinPlace E} {A : ClosurePlace} (hA : IsPlaceOver A x)
       (hx : ↑(n T) ∈ x.asIdeal) :
       SphericalCompat (ℓ := ℓ) (stepField (χ T)) (Fin a) a (u T hA) := by
-    refine sphericalCompat_of_split ha fun v hv ↦ h_spl T v ?_
+    refine sphericalCompat_of_split ha fun v hv ↦ (h_quad T).isSplitPrimeToDisc_below v ?_
     obtain hℓ | rfl := hv
     · exact mem_of_dvd _ (by simp [n]) hℓ
     · rw [← h_below T hA] at hx
@@ -481,15 +501,16 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
       (hfx : f ∈ sphericalAt (rightRegular ℂ (Gf E (Fin a)) (WeylIndex (Fin a) κ.1 → ℂ)) x) :
       IsCompatibleAt (F T).val a (u T hA) (r T) A := by
     -- Step `T` is unramified at `x`, so `F T` is spherical above `x`.
-    obtain ⟨h_dec, h_inertia, -⟩ := h_loc T hA hx
     have h_unram : IsStepUnramifiedAt (stepField (χ T)) (ideleChar (χ T)) x :=
-      isStepUnramifiedAt_of_decompGroup_le (h_step T) hA h_dec (h_inertia.trans inf_le_right)
+      isStepUnramifiedAt_of_decompGroup_le (h_quad T).isStep hA
+        ((h_quad T).decompGroup_le_ker_symmetrise hA hx)
+        (((h_quad T).inertiaGroup_le_ker_inf hA hx).trans inf_le_right)
     exact (h_split_case T hA hx).isCompatibleAt (F T).prop (hF T) (hr T)
       (((h_bc T).2 x nofun _ (h_below T hA)).1 h_unram hfx) (hu T hA)
   -- The representation `ρ T` above: the restriction of `r T` to `stepKer (χ T)`, attached to `P`.
   have hρ (T : ℕ) : Attached P ((r T).comp (stepKerInclusion (χ T))) (stepKer (χ T)).subtype :=
     (h_bc T).attached_comp_stepKerInclusion (hr T) (hF T) he
-  obtain ⟨m, h_gen₀⟩ := h_gen 0
+  obtain ⟨m, h_gen₀⟩ := (h_quad 0).exists_mul_mem_of_inertiaAbove_subset
   refine ⟨?_, fun R' hR' f_sph_w A hA ↦ ?_⟩
   · -- Glue the `ρ (T + m)` to `ρ 0`.
     refine exists_attached_of_open_subgroups (hρ 0) (fun T ↦ isOpen_stepKer (χ (T + m)))
@@ -500,19 +521,19 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
       have hA' : IsPlaceOver (c • A) x := hA.smul c
       have hs' := hs.conj c
       have hfx : f ∈ sphericalAt (rightRegular ℂ (Gf E (Fin a)) (WeylIndex (Fin a) κ.1 → ℂ)) x :=
-        levelSpace_le_sphericalAt (not_mem_S x hx) (not_mem_S (star x) (by simpa using hx))
-          (by simpa [LE.le, funext_iff] using hS)
-      have hℓ : ↑ℓ ∉ x.asIdeal := fun hℓ ↦ hx (mem_of_dvd _ (by simp [n]) hℓ)
+        levelSpace_le_sphericalAt (not_mem_S x hx)
+          (not_mem_S (star x) fun h ↦ hx (by rwa [mem_star_place, star_natCast] at h)) hf_level
+      have hℓ : ↑ℓ ∉ x.asIdeal := fun hℓ ↦ hx (mem_of_dvd _ (dvd_mul_right ℓ _).natCast hℓ)
       have hx_dvd : ↑(n (T + m)) ∈ x.asIdeal := n_mem (T + m) x (by omega)
-      obtain ⟨-, h_inertia, -⟩ := h_loc (T + m) hA' hx_dvd
-      exact ⟨h_inertia hs',
+      exact ⟨(h_quad (T + m)).inertiaGroup_le_ker_inf hA' hx_dvd hs',
         (h_sph (T + m) hA' hx_dvd hfx).isGoodAt.1 (hA'.valuation_natCast_eq_one_iff.2 hℓ) _ hs'⟩
     · -- A place `y` of prime norm is split and divides `n (y.q + m)`.
-      obtain ⟨-, -, h_dec⟩ := h_loc (y.q + m) hA (n_mem (y.q + m) y (by omega))
-      exact h_dec (isSplit_of_q_prime hy) h_frob.1
+      exact (h_quad (y.q + m)).decompGroup_le_ker_inf_of_isSplit hA
+        (n_mem (y.q + m) y (by omega)) (isSplit_of_q_prime hy) h_frob.1
   -- The clause at `w` descends from step `0`, where the decomposition group fixes the field.
-  obtain ⟨-, h_inertia, h_dec⟩ := h_loc 0 hA (n_mem_w 0)
   exact (h_bc 0).isCompatibleAt_of_attached (hr 0) (hF 0) he hR' (by simp [Set.conjClosure]) hA
-    h_inertia h_dec (h_below 0 hA) (h_sph 0 hA (n_mem_w 0) f_sph_w)
+    ((h_quad 0).inertiaGroup_le_ker_inf hA (n_mem_w 0))
+    ((h_quad 0).decompGroup_le_ker_inf_of_isSplit hA (n_mem_w 0))
+    (h_below 0 hA) (h_sph 0 hA (n_mem_w 0) f_sph_w)
 
 end QuadraticDescent

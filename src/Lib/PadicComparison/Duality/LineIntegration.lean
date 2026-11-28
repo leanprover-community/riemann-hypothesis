@@ -1,4 +1,7 @@
-import Lib.Cohomology.ProjectiveLine.ChernClass
+module
+
+public import Mathlib.CategoryTheory.Limits.Final.Type
+public import Lib.Cohomology.ProjectiveLine.ChernClass
 
 /-!
 # Integration over ℙ¹, compared cohomology theories, and moving kernel classes in (ℙ¹)^d
@@ -40,10 +43,18 @@ Notions from other files:
 * `New.Variety.IdealFamily.topLocus`: the subfunctor of the one-point functor that is non-empty
   exactly where I_c is the unit ideal.
 
+## Implementation notes
+
+Several declarations are preceded by `seal Abelian.Ext Abelian.Ext.instAddCommGroup in`. Sealing
+the Ext groups and their group structure makes unification compare Ext groups by their arguments
+instead of unfolding them into the derived category, which is slow.
+
 ## Relation to the literature
 
 Known; see `Lib.PadicComparison.Duality.GoodPairs` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -126,6 +137,7 @@ lemma zerosEquiv_extendToZeros (x : TotalH (abCoker (ℓ • 𝟙 (g ⋙ relFree
     I.zerosEquiv Θ q (I.extendToZeros Θ q x) = pullbackAlong (I.atSectionMod q) x :=
   (I.zerosEquiv Θ q).apply_symm_apply _
 
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Let `I` be a family of ideals on the points of a functor `X` on tests, `q` a section of `X`
 along `g`, `Θ` a theory along `g`, `φ : C' ⥤ C` a functor, `K` a theory along `φ ⋙ g`, and `b` a
 class in the total Ext group from `φ ⋙ Θ.functor` to `K.functor`. Write `R` for the map
@@ -146,20 +158,20 @@ lemma extendToZeros_naturality {C' : Type 1} [Category C'] (φ : C' ⥤ C) (K : 
   have R_pullback {N N' : AbFunctor C} (f : N ⟶ N') (y : TotalH N' Θ.functor) :
       R (pullbackAlong f y) = pullbackAlong (φ.whiskerLeft f) (R y) :=
     mapThenComp_comp map_homClass
-  have R_zerosEquiv :
-      I.zerosEquiv K q' (R (I.extendToZeros Θ q x)) =
-        R (I.zerosEquiv Θ q (I.extendToZeros Θ q x)) :=
-    (R_pullback ((sectionLift g q).whiskerLeft I.constToZeros) (I.extendToZeros Θ q x)).symm
-  have R_atSectionMod :
-      pullbackAlong (I.atSectionMod q') (R x) = R (pullbackAlong (I.atSectionMod q) x) :=
-    (R_pullback (I.atSectionMod q) x).symm
-  have h_left :
-      I.zerosEquiv K q' (R (I.extendToZeros Θ q x)) = R (pullbackAlong (I.atSectionMod q) x) :=
-    R_zerosEquiv.trans (congrArg R (I.zerosEquiv_extendToZeros Θ q x))
-  have h_right :
-      I.zerosEquiv K q' (I.extendToZeros K q' (R x)) = R (pullbackAlong (I.atSectionMod q) x) :=
-    (I.zerosEquiv_extendToZeros K q' (R x)).trans R_atSectionMod
-  exact (I.zerosEquiv K q').injective (h_left.trans h_right.symm)
+  -- (The next facts keep the types they are born with; `apply` then compares them with the goal
+  -- once. Restating them first would repeat each of the costly definitional checks.)
+  have R_zerosEquiv :=
+    R_pullback ((sectionLift g q).whiskerLeft I.constToZeros) (I.extendToZeros Θ q x)
+  have R_atSectionMod := R_pullback (I.atSectionMod q) x
+  -- `zerosEquiv K q'` of the left side is `R` of the pull-back of `x` along `q`, restricted
+  have h_left :=
+    R_zerosEquiv.symm.trans
+      ((congrArg R (I.zerosEquiv_extendToZeros Θ q x)).trans R_atSectionMod)
+  -- and so is `zerosEquiv K q'` of the right side (`(R x :)`: elaborate `R x` on its own)
+  have h_right := I.zerosEquiv_extendToZeros K q' (R x :)
+  apply (I.zerosEquiv K q').injective
+  apply h_left.trans
+  apply h_right.symm
 
 end IdealFamily
 
@@ -200,7 +212,7 @@ lemma isZariskiLocallyTop_preimage_topLocus_inf_sup
   · obtain ⟨a, ha, h_top⟩ := J.exists_notMem_eq_top hJ
     exact ⟨a, ha, fun B f hf ↦ ⟨Subtype.prop _, .inr (h_top B f hf)⟩⟩
 
-seal TorsionCoeff.mulClass in
+seal TorsionCoeff.mulClass Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- The one-coordinate case of `exists_move_kernel`. Let `K` be an `ℓ`-torsion coefficient along
 `g`, and let the sections `s` and `s'` of `X` agree wherever the sections `x` and `x'` of `ℙ¹` do.
 Let `h_max` say that each maximal ideal of a ring `g(c)` is the kernel of some `g(f)`. Then for
@@ -235,7 +247,7 @@ lemma exists_move_kernel_of_eq_imp_eq (K : TorsionCoeff g)
   -- the sections `s` and `s'` agree where `J` is zero, and so do `L s` and `L s'`
   have hs_eq (c : C) (hc : J.ideal c = ⊥) : s.val c = s'.val c := h_agree c (hJ c hc)
   have h_L_eq (c : C) (hc : J.ideal c = ⊥) : (L s).ideal c = (L s').ideal c := by
-    show I.ideal (X.elementsMk (g.obj c) (s.val c)) = I.ideal (X.elementsMk (g.obj c) (s'.val c))
+    change I.ideal (X.elementsMk (g.obj c) (s.val c)) = I.ideal (X.elementsMk (g.obj c) (s'.val c))
     rw [hs_eq c hc]
   -- Where `L s'` is the unit ideal, locally `L s` or `J` is the unit ideal too.
   have h_loc :
@@ -358,8 +370,6 @@ section IntegrationOverLine
 open CategoryTheory Fin TotalH Functor.Elements Finsupp
 open Function hiding comp comp_id id_comp
 
-set_option backward.isDefEq.respectTransparency false
-
 variable {C : Type 1}
   {C' D : Type _} [Category C] [Category C'] [Category D] {ℓ : ℕ}
   {A : Type} [CommRing A] [InvertsPrime A ℓ]
@@ -373,6 +383,7 @@ lemma map_restrictAlong_restrictAlong :
       TotalH.map (restrictAlong (ψ ⋙ φ)) x :=
   TotalH.map_map (restrictAlong φ) (restrictAlong ψ) x
 
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Restriction to the points of `X` passes through a product of classes `M.etaAt (b j)` factor by
 factor. -/
 lemma map_foldr_etaAt {X : C ⥤ Type 1} {J : Type*}
@@ -389,8 +400,7 @@ lemma map_foldr_etaAt {X : C ⥤ Type 1} {J : Type*}
 
 variable (h : M.HasLineFormula) {φ} {M' : TorsionCoeff (φ ⋙ g)} (β : φ ⋙ M.functor ⟶ M'.functor)
 
--- Keeps definitional checks from unfolding the Ext groups.
-seal CategoryTheory.Abelian.Ext in
+seal CategoryTheory.Abelian.Ext CategoryTheory.Abelian.Ext.instAddCommGroup in
 /-- Restriction along `φ` followed by the product with a class `T` from `M.functor` restricted along
 `φ` to `M'.functor` commutes with the two maps `x ↦ x · 1` and `x ↦ x · η` to the cohomology over
 the points of the line. -/
@@ -405,19 +415,39 @@ lemma lineBasis_naturality (T : TotalH ((restrictAlong φ).obj M.functor) M'.fun
           x) := by
   -- Both sides are products of three factors, and the two restrictions of `x` agree; it remains
   -- to commute the restriction of `T` with the member of the family.
-  -- (erw: `mapThenComp` unfolds to these products only up to definitional equality)
-  erw [map_comp_assoc, map_comp_assoc, map_restrictAlong_restrictAlong,
+  let π := elementsProj (projLineAlong g)
+  let π' := elementsProj (projLineAlong (φ ⋙ g))
+  let ψ := precomp φ (projLineAlong g)
+  change comp (map (restrictAlong π') (comp (map (restrictAlong φ) x) T))
+        (M'.lineBasis i).toTotalH =
+      comp (map (restrictAlong ψ) (comp (map (restrictAlong π) x) (M.lineBasis i).toTotalH))
+        (map (restrictAlong π') T)
+  rw [map_comp_assoc, map_comp_assoc, map_restrictAlong_restrictAlong,
     map_restrictAlong_restrictAlong]
   cases i
   · -- `T` commutes with the class η by naturality of `TorsionCoeff.etaAt`.
-    erw [M.onElements.etaAt_naturality (precomp φ _) M'.onElements, TorsionCoeff.lineBasis_false]
-    rfl
+    rw [TorsionCoeff.lineBasis_false, TorsionCoeff.lineBasis_false]
+    refine congrArg (comp (map (restrictAlong (elementsProj (projLineAlong (φ ⋙ g)) ⋙ φ)) x)) ?_
+    exact (M.onElements.etaAt_naturality (precomp φ (projLineAlong g)) M'.onElements
+      (map (restrictAlong (elementsProj (projLineAlong (φ ⋙ g)))) T)
+      (freeAb.map (tautologicalSection (X := projLineAlong g)))).symm
   · -- the class `1` is the identity, so the products with it drop out
-    erw [map_homClass, comp_id, pullbackAlong_id]
-    rfl
+    have h_id : (M.lineBasis true).toTotalH =
+        homClass (𝟙 (elementsProj (projLineAlong g) ⋙ M.functor)) := rfl
+    have h_id' : (M'.lineBasis true).toTotalH =
+        homClass (𝟙 (elementsProj (projLineAlong (φ ⋙ g)) ⋙ M'.functor)) := rfl
+    rw [h_id, h_id', map_homClass]
+    have h_map := (restrictAlong (precomp φ (projLineAlong g))).map_id
+      (elementsProj (projLineAlong g) ⋙ M.functor)
+    rw [h_map]
+    exact (congrArg (comp (map (restrictAlong (elementsProj (projLineAlong (φ ⋙ g)) ⋙ φ)) x))
+      comp_id).trans
+      (congrArg (comp (map (restrictAlong (precomp φ (projLineAlong g) ⋙
+        elementsProj (projLineAlong g))) x)) pullbackAlong_id).symm
 
 namespace TorsionCoeff.HasLineFormula
 
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- If the comparison `(φ, β)` has universal points along `u : Y' ⟶ φ ⋙ Y`, the projective line
 formula holds for `M` at `ℤ[Y]` (each class from ℤ[Y] over the points of ℙ¹ is a·1 + b·η for unique
 a, b from the base) if and only if it holds for `M'` at `ℤ[Y']`. -/
@@ -474,19 +504,30 @@ lemma integrate_naturality (hM' : M'.HasLineFormula) {T : AbFunctor C'}
   rw [← h_fam w]
   simp [integrate]
 
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- The integral over the line of `y · (η + ξ)`, with η here the class `M.cupClass` placed in degree
 2 (η in `M.lineBasis`), is `y`, for `y` and `ξ` pulled back from the base. -/
 lemma integrate_mul_cupClass (y : TotalH S M.functor) (ξ : TotalH M.functor M.functor) :
     h.integrate (S := S)
       (comp (TotalH.map (restrictAlong (elementsProj (projLineAlong g))) y)
-        (.of _ 2 M.cupClass +
+        -- (`by exact`: elaborates `.of` only once the type of the sum is known. Elaborated
+        -- eagerly, its type is still unknown and Lean builds the hint of an error message
+        -- that is then discarded.)
+        ((by exact .of _ 2 M.cupClass) +
           TotalH.map (restrictAlong (elementsProj (projLineAlong g))) ξ) :) = y := by
-  -- Expand the product: `y · cupClass` is `lerayHirsch` of `y` placed at the index of `cupClass`,
-  -- and the second term is restricted from the base, so it is `lerayHirsch` of a class placed at
-  -- the index of `1`. (erw: `lineBasis` unfolds to `cupClass` and `1` only definitionally)
-  erw [map_add, ← map_comp, ← lerayHirsch_single M.lineBasis false,
-    ← (lerayHirsch_single M.lineBasis true _).trans comp_id]
-  -- `integrate` reads off the coefficient of η: `y` for the first term, zero for the second.
+  let Φ : AbFunctor C ⥤ AbFunctor (projLineAlong g).Elements :=
+    restrictAlong (elementsProj (projLineAlong g))
+  have h_eta : lerayHirsch M.lineBasis S (.single false y) =
+      comp (TotalH.map Φ y) (.of _ 2 M.cupClass) :=
+    lerayHirsch_single M.lineBasis false y
+  have h_one : lerayHirsch M.lineBasis S (.single true (comp y ξ)) =
+      comp (TotalH.map Φ y) (TotalH.map Φ ξ) :=
+    ((lerayHirsch_single M.lineBasis true (comp y ξ)).trans comp_id).trans (map_comp ..)
+  have h_product := (map_add (comp (TotalH.map Φ y)) _ _).trans
+    (congrArg₂ (· + ·) h_eta.symm h_one.symm)
+  refine (congrArg (h.integrate (S := S)) h_product).trans ?_
+  refine (congrArg (h.integrate (S := S))
+    (map_add (lerayHirsch M.lineBasis S) (single false y) (single true (comp y ξ))).symm).trans ?_
   simp [integrate]
 
 end TorsionCoeff.HasLineFormula
@@ -497,8 +538,6 @@ section ComparedTheories
 
 open CategoryTheory Fin TotalH Functor.Elements Finsupp
 open Function hiding comp comp_id id_comp
-
-set_option backward.isDefEq.respectTransparency false
 
 variable {C : Type 1} [Category C] {ℓ : ℕ} {A : Type} [CommRing A] [InvertsPrime A ℓ]
   {g : C ⥤ TestOver A} {N N' : AbFunctor (TestOver A)} {d : ℕ} {ι : Type*} [Fintype ι]
@@ -564,9 +603,10 @@ def LineStage.consTautologicalPoint (t : LineStage A d) : LineStage A (d + 1) wh
   line_formula := t.line_formula.onElements
   points :=
     ⟨fun x ↦ Fin.cons x.2 (t.points.1 ((elementsProj (projLineAlong t.toTestOver)).obj x)), fun f ↦
-      funext (cases f.2 (congrFun (t.points.2
+      funext (cases f.map_val (congrFun (t.points.property
         ((elementsProj (projLineAlong t.toTestOver)).map f))))⟩
 
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Integrating out the first parameter of r: pull back to the points of P¹, apply r with the
 tautological point as first parameter, and integrate over the line. -/
 def NaturalOp.integrate (r : NaturalOp (d + 1) N N') : NaturalOp d N N' where
@@ -607,6 +647,7 @@ finite. -/
 def IsFiniteLerayHirsch (N : AbFunctor (TestOver A)) : Prop :=
   IsLerayHirschBasis D.comparison N ∧ Finite (TotalH N (locConstAlong (𝟭 (TestOver A))))
 
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- `D.IsFiniteLerayHirsch` is a closed class (`IsClosedClass`): it holds for zero functors, and in
 a short exact sequence `0 → X₁ → X₂ → X₃ → 0` with `D.IsFiniteLerayHirsch X₁` it holds for `X₂` if
 and only if for `X₃`. -/
@@ -636,6 +677,7 @@ lemma isClosedClass_isFiniteLerayHirsch : IsClosedClass D.IsFiniteLerayHirsch :=
       exact finite_of_exact h_exact_mid
   exact h_bij_iff.and h_fin_iff
 
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- In a short exact sequence `0 → X₁ → X₂ → X₃ → 0` of functors on tests over `A`, if
 `D.IsFiniteLerayHirsch` holds for `X₂` and `X₃`, it holds for `X₁`. -/
 lemma isFiniteLerayHirsch_of_shortExact {X : ShortComplex (AbFunctor (TestOver A))}
@@ -658,6 +700,7 @@ lemma isFiniteLerayHirsch_of_shortExact {X : ShortComplex (AbFunctor (TestOver A
         (isLerayHirschBasis_iff_allBijective_truncMap.mp h_bij₃) (n + 1)
   exact ⟨isLerayHirschBasis_iff_allBijective_truncMap.mpr h_trunc₁, h_fin₁⟩
 
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Let `α : N ⟶ N'` be a map of functors on tests over `A` such that, for every functor `g` from a
 category `C` to tests over `A` and every functor `F` on `C` with Zariski descent along `g`,
 pull-back along `α` (restricted along `g`) is a bijection of total Ext groups into `F`
@@ -679,8 +722,7 @@ lemma isFiniteLerayHirsch_iff_of_isCohomEquiv (α : N ⟶ N')
       (mapRange_bijective _ _ h_const) h_D
   exact (h_bij_iff.and h_const.finite_iff).symm
 
--- Without the seal, unification unfolds `Abelian.Ext` into the derived category and is slow.
-seal Abelian.Ext in
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- `D.IsFiniteLerayHirsch` passes to retracts by natural operations. Let `N` have flat values,
 write `N / ℓ` for `abCoker (ℓ • 𝟙 N)`, and let `r i : N / ℓ → N'` and `ρ i : N' → N` be operations
 without parameters (`NaturalOp 0`). If `∑ i, ρ i (r i x)` is always the pull-back of `x` along
@@ -756,15 +798,12 @@ lemma isFiniteLerayHirsch_of_retract [HasFlatValues N] (r : ι → NaturalOp 0 (
           b N' ((u.mapRange δ δ.map_zero).mapRange ((r i).app stL) ((r i).app stL).map_zero) =
             b N' (w.mapRange ((r i).app stL) ((r i).app stL).map_zero) := by
         rw [h_nat, h_nat, h_cob]
-      have h_eq : (u.mapRange δ δ.map_zero).mapRange ((r i).app stL) ((r i).app stL).map_zero =
-          w.mapRange ((r i).app stL) ((r i).app stL).map_zero :=
-        hN'_inj h_image
-      -- Evaluate at `m`; `Finsupp.mapRange_apply` holds by definition.
-      exact DFunLike.congr_fun h_eq m
-    calc π (w m)
-      _ = ∑ i, (ρ i).app stL ((r i).app stL (δ (u m))) := by simp only [h_r, hπ_sum]
-      _ = π (δ (u m)) := hπ_sum _
-      _ = 0 := h_exact.apply_apply_eq_zero _
+      -- Evaluate the equality of finitely supported functions at `m`.
+      exact DFunLike.congr_fun (hN'_inj h_image) m
+    rw [Finsupp.mapRange_apply, Finsupp.zero_apply, ← hπ_sum (w m),
+      ← h_exact.apply_apply_eq_zero (u m), ← hπ_sum (δ (u m))]
+    simp only [h_r]
+    rfl
   -- Finite: the cohomology of `N` is the image of a finite product of copies of that of `N'`.
   have h_onto : Surjective fun v : ι → TotalH N' L ↦ ∑ i, (ρ i).app stL (v i) := by
     intro y
@@ -774,8 +813,7 @@ lemma isFiniteLerayHirsch_of_retract [HasFlatValues N] (r : ι → NaturalOp 0 (
 
 /-! ### Pairs in a power of the projective line -/
 
--- Without the seal, unification unfolds `Abelian.Ext` into the derived category and is slow.
-seal Abelian.Ext in
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- `D.IsFiniteLerayHirsch` passes from `N` to `ℤ[(ℙ¹)^m]/ℤ[U]`, `U = I.topPoints`, given classes
 `β i` from it to `N`, operations `T i` with `d` parameters in `ℙ¹` from its quotient by `ℓ` to `N`,
 and `σ` sending parameters to coordinates, such that (`h_sum_eq_foldr`) for every stage `t` with
@@ -837,10 +875,10 @@ lemma isFiniteLerayHirsch_of_integrate_params (β : ι → TotalH (relFreeAb I.t
       rw [map_sum]
       exact Finset.sum_congr rfl fun i _ ↦ (h_nat (ρ i) _).trans (congrArg _ (h_nat (T i) x))
     change comp _ (r _) = comp _ (r _)
-    -- `erw`: the target is well typed only after unfolding `Comparison.restrict`.
-    erw [h_sum_r, h_proj]
+    refine (congrArg (comp _) h_sum_r).trans ?_
+    refine Eq.trans ?_ (congrArg (comp _) h_proj).symm
     -- This is `h_sum_eq_foldr` at `t'` and the tautological section `a ↦ a.2` of `X`.
-    exact h_sum_eq_foldr t' ⟨fun a ↦ a.2, fun f ↦ f.2⟩ (r x)
+    exact h_sum_eq_foldr t' ⟨fun a ↦ a.val, fun f ↦ f.map_val⟩ (r x)
   | succ d ih =>
     -- Apply the induction hypothesis to the integrated operations.
     refine ih (fun j ↦ σ j.succ) (fun i ↦ (T i).integrate) fun t q' w ↦ ?_
@@ -858,8 +896,10 @@ lemma isFiniteLerayHirsch_of_integrate_params (β : ι → TotalH (relFreeAb I.t
               (comp (map (restrictAlong (elementsProj (projLineAlong t.toTestOver))) ξ) x) :=
       t.line_formula.integrate_naturality (φ := 𝟭 _) t.line_formula
         (lerayHirsch_mapRange_comp _ rfl)
-    -- `erw`: the summands match `comp_int` only after unfolding `NaturalOp.integrate`.
-    erw [Finset.sum_congr rfl fun i _ ↦ comp_int .., ← map_sum, comp_int]
+    -- `change`: the summands match `comp_int` only after unfolding `NaturalOp.integrate`.
+    change pullbackAlong _ (∑ i, comp (map (restrictAlong t.toTestOver) (β i))
+      (t.line_formula.integrate _)) = _
+    rw [Finset.sum_congr rfl fun i _ ↦ comp_int .., ← map_sum, comp_int]
     -- Push restriction into the products, split off the first factor in `h_sum_eq_foldr`, and
     -- write the remaining products as folds over lists.
     simp only [map_comp_assoc, map_restrictAlong_restrictAlong, map_homClass,
@@ -868,11 +908,11 @@ lemma isFiniteLerayHirsch_of_integrate_params (β : ι → TotalH (relFreeAb I.t
     conv_rhs => erw [← map_add, ← map_add, map_foldr_etaAt, map_pullbackAlong]
     -- The integrands agree by `h_sum_eq_foldr` over the points of the line, with the tautological
     -- point as first parameter.
-    exact congrArg _ (h_sum_eq_foldr t.consTautologicalPoint ((elementsProj _).sectionsPrecomp q')
-      _)
+    -- (`apply`: compares the statement with the goal once; `exact congrArg _ (…)` does it twice)
+    refine congrArg _ ?_
+    apply h_sum_eq_foldr t.consTautologicalPoint ((elementsProj _).sectionsPrecomp q')
 
--- Without the seal, unification unfolds `Abelian.Ext` into the derived category and is slow.
-seal Abelian.Ext in
+seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Let I be a compatible family of ideals on points of (P¹)^m, U the locus where I is the unit
 ideal, and Q = ℤ[(P¹)^m]/ℤ[U]. Let `θ i` be classes of degree `d i`, over the points of (P¹)^m, from
 N to the locally constant ℤ/ℓ-valued functions modulo those dying where I = 0 (`I.zerosCoeff`).
@@ -903,10 +943,10 @@ lemma isFiniteLerayHirsch_topPoints_of_surjective {J : Type*} {d : J → ℕ}
             (I.extendToZeros t.theory t.points w)) =
         pullbackAlong (I.atSection t.points)
           (pullbackAlong (t.toTestOver.whiskerLeft (abCoker.π _)) w) := by
-    erw [(congrArg _ (I.zerosEquiv_extendToZeros t.theory t.points w)).trans
-        (pullbackAlong_pullbackAlong ..),
-      pullbackAlong_pullbackAlong]
-    rfl
+    refine ((congrArg (pullbackAlong _) (I.zerosEquiv_extendToZeros t.theory t.points w)).trans
+      (pullbackAlong_pullbackAlong ..)).trans ?_
+    exact (pullbackAlong_pullbackAlong (f := I.atSection t.points)
+      (t.toTestOver.whiskerLeft (abCoker.π _)) w).symm
   let T (i : J) : NaturalOp m (abCoker (ℓ • 𝟙 (relFreeAb I.topPoints))) N :=
     { app t :=
         (comp (map (restrictAlong (sectionLift (X := X) t.toTestOver t.points)) (θ i).toTotalH
@@ -931,7 +971,7 @@ lemma isFiniteLerayHirsch_topPoints_of_surjective {J : Type*} {d : J → ℕ}
   have h_chain :=
     I.exists_move_kernel
       (((Theory.locallyConstant.onElements (X := X)).onZeros I).onElements (X := _ ⋙ X)) h_max
-      (fun r ↦ ⟨_, fun f ↦ funext fun j ↦ (r j).2 f⟩) (fun _ hr ↦ funext hr)
+      (fun r ↦ ⟨_, fun f ↦ funext fun j ↦ (r j).property f⟩) (fun _ hr ↦ funext hr)
       (projLinePow.component ⟨_, fun f ↦ f.hom.map_val⟩) (projLinePow.component ⟨_, fun f ↦ f.2⟩)
       (pullbackAlong ((elementsProj _).whiskerLeft (abCoker.π _))
         (.homClass ((elementsProj _).whiskerLeft I.constToZeros)))
@@ -949,11 +989,11 @@ lemma isFiniteLerayHirsch_topPoints_of_surjective {J : Type*} {d : J → ℕ}
       ∑ i : β.support, mapThenComp (restrictAlong t.toTestOver) ((T i).app t w) (β i) =
         comp (TotalH.map (restrictAlong (sectionLift t.toTestOver t.points)) (lerayHirsch θ _ β) :)
           (I.extendToZeros t.theory t.points w) := by
-    simp_rw [show lerayHirsch θ _ β = _ from (β.1.sum_coe_sort _).symm, map_sum,
+    simp_rw [show lerayHirsch θ _ β = _ from (β.support.sum_coe_sort _).symm, map_sum,
       AddMonoidHom.finsetSum_apply]
-    congr! 1
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
     exact (mapThenComp_comp
-      (map_restrictAlong_restrictAlong (elementsProj X) (sectionLift _ t.points) (β _))).symm
+      (map_restrictAlong_restrictAlong (elementsProj X) (sectionLift _ t.points) (β i))).symm
   -- Specialise `hβ` to the pair `(t.points, q')`; its hypothesis is `h_ext`.
   let s : t.Base ⥤ E :=
     sectionLift (X := (elementsProj X ⋙ 𝟭 (TestOver A)) ⋙ X)
@@ -961,8 +1001,11 @@ lemma isFiniteLerayHirsch_topPoints_of_surjective {J : Type*} {d : J → ℕ}
   have h_move :=
     hβ _ s t.theory (I.extendToZeros t.theory t.points w)
       (pullbackAlong (t.toTestOver.whiskerLeft (abCoker.π _)) w)
-      ((mapThenComp_comp map_homClass).trans
-        ((congrArg _ congr(comp $map_homClass _)).trans (h_ext t w)))
+      (by
+        -- (`apply`: compares `h_ext t w` with the goal once; as a term it is compared twice)
+        refine (mapThenComp_comp map_homClass).trans
+          ((congrArg _ congr(comp $map_homClass _)).trans ?_)
+        apply h_ext t w)
   refine (congrArg _ h_sum).trans (.trans (comp_assoc_of_eq (.symm ?_) _) h_move)
   -- The moved kernel at `(t.points, q')` is `lerayHirsch θ _ β` restricted along `t.points`, then
   -- pulled back by `I.atSection q'`.

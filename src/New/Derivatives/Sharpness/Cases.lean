@@ -1,6 +1,9 @@
-import New.Derivatives.Sharpness.Couplings
-import New.Derivatives.Sharpness.NearPairs
-import New.Derivatives.Vacuum.Scale
+module
+
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.Derivatives.Sharpness.Couplings
+public import New.Derivatives.Sharpness.NearPairs
 
 /-!
 # The valuation bound `v(l!) + val₁₂(l) ≤ S_p + 2 ∑ v(B_τ)` for every prime
@@ -38,6 +41,8 @@ Notions from other files:
 * `P.cmCurve`: the curve `ℂ / Ω₀ 𝓞_K`, whose theta series is `θ`.
 -/
 
+@[expose] public section
+
 /-!
 ## Least valuations along a tight frame at non-split primes
 
@@ -63,15 +68,6 @@ lemma isIntegralAbove_of_isIntegral_mul {E : Type} [Field E] [CMType E] {N : ℕ
   rwa [map_mul, hN_val, one_mul] at h_val
 
 variable [PadicPlace p] {J : Type} [Fintype J]
-
-/-- Multiplying the linear forms `μ_j` by `s` turns the product `Θ(z) = ∏ θ(μ_j z) ^ m j` of copies
-of the theta series of `C` into `Θ(s z)`. -/
-lemma CMLattice.thetaProd_smul {d : ℕ} (C : CMLattice d) {X : Type} [Fintype X]
-    (μ : J → X → ℂ_[p]) (m : J → ℕ) (s : ℂ_[p]) :
-    C.thetaProd (s • μ) m = (C.thetaProd μ m).rescale fun _ : X ↦ s := by
-  simp only [thetaProd, map_prod, map_pow, rescale_subst_linearSeries,
-    subst_rescale_eq_subst_smul _ (.of_constantCoeff_zero (constantCoeff_linearSeries _))]
-  simp [linearSeries, smul_sum, smul_smul]
 
 /-- For a family `w` in the field `E = P.E s`, the linear forms `μ_i z = ∑ μ_(i τ) z_τ` with the
 coefficients `μ_(i τ) = periodFactor * conj (τ (w i))` at the places `τ`, read in `ℂ_p` by the
@@ -101,18 +97,6 @@ lemma piMBar_mul_conj (D : Data P) : D.piMBar * conj (D.piMBar : ℂ) = D.M := b
 
 lemma coe_piMBar_ne_zero (D : Data P) : (D.piMBar : ℂ) ≠ 0 :=
   left_ne_zero_of_mul (D.piMBar_mul_conj.trans_ne (cast_ne_zero.2 (NeZero.ne D.M)))
-
-/-- The period scale `π_M * jetScale` has the squared modulus `M / Ω`. Here `π_M` is the complex
-conjugate of `D.piMBar`, `jetScale = periodFactor * √(2π / √d) / Ω₀` is the scale of the Taylor
-series of theta functions, `M = D.M` is the level, and
-`Ω = P.bigOmega D.towerExp = exp (γ - Re L′/L(1, χ_K)) * 2π / rd_E`, with `γ` Euler's constant and
-`rd_E` the root discriminant of `E`. -/
-lemma norm_conj_piMBar_mul_jetScale_sq (D : Data P) :
-    ‖conj (D.piMBar : ℂ) * P.jetScale D.towerExp‖ ^ 2 = D.M / P.bigOmega D.towerExp := by
-  have h_norm : ‖conj (D.piMBar : ℂ)‖ ^ 2 = D.M := by
-    rw [Complex.norm_conj, ← Complex.normSq_eq_norm_sq]
-    exact_mod_cast (Complex.mul_conj _).symm.trans D.piMBar_mul_conj
-  rw [norm_mul, mul_pow, h_norm, P.norm_jetScale_sq, div_eq_mul_inv]
 
 omit [Fintype J] in
 lemma phi_resolutionVectors (D : Data P) {w : J → D.E} (τ : D.Φ) (i : J) :
@@ -232,7 +216,7 @@ lemma leastValLE_six_zero_of_inert (D : Data P) {w : J → D.E} {c : J → ℕ}
           (New.Φ x.1 (D.resolutionVectors w i x.2) * dagger (D.resolutionVectors w i) y)) := by
         simp [a, resolutionForms_eq_smul, daggerForms, mul_sum, mul_assoc, mul_left_comm]
     _ = if x = y then D.taylorScale else 0 := by
-        simp [D.isResolution_resolutionVectors hw x y, apply_ite ιₚ]
+        simp [D.isResolution_resolutionVectors hw x y]
 
 /-- Let `D` be admissible data for the parameters `P` and `p` a prime that is inert in `K = ℚ(√-d)`.
 For a tight frame `w` of length `M = D.M` with multiplicities `c`, the theta product
@@ -261,7 +245,7 @@ lemma exists_hasNormalForm_resolutionForms (D : Data P) {w : J → D.E} {c : J �
   have h𝔰 : IsUnit 𝔰 := isUnit_integer_iff_norm_eq_one.2 (D.norm_taylorScale h_nonsplit)
   refine ⟨ϖ, fun e j ↦ 𝔰 ^ ((p ^ e + 1) * p ^ j) * lam e j, hϖ,
     fun e he ↦ (h𝔰.pow _).mul (h_lam_unit h_inert e he), ?_⟩
-  rw [resolutionForms_eq_smul, CMLattice.thetaProd_smul]
+  rw [resolutionForms_eq_smul, ← CMLattice.rescale_thetaProd]
   exact hΘ.rescale 𝔰
 
 /-- If `w`, taken `c i` times, is a tight frame with frame bound `M = D.M` (`IsTightFrame w c D.M`),
@@ -309,9 +293,9 @@ lemma le_two_mul_b (D : Data P) {l : D.Φ × Unit →₀ ℕ} (hl : D.IsNearWeig
     (place : D.Φ × Unit) : l place ≤ 2 * D.b :=
   (hl.le_weight_add place.1).trans (D.weight_add_x_pow_le_two_mul_b place.1)
 
-/-- Let `p` be a prime with `D.k < p`, and let the degree `l` be near the weights. Then at each
+/-- Let `D.k < p`, and let the degree `l` be near the weights. Then at each
 place `τ` the number `⌊(l_τ - n♯)₊ / p⌋` is at most `n♯ = D.lossFactorCount = ⌈6 * D.b / D.k⌉`. -/
-lemma div_le_lossFactorCount (D : Data P) {p : ℕ} [Fact p.Prime] {l : D.Φ × Unit →₀ ℕ}
+lemma div_le_lossFactorCount (D : Data P) {p : ℕ} {l : D.Φ × Unit →₀ ℕ}
     (hl : D.IsNearWeights l) (hk : D.k < p) (place : D.Φ × Unit) :
     (l place - D.lossFactorCount) / p ≤ D.lossFactorCount := by
   have hk_pos : (0 : ℝ) < D.k := mod_cast D.k_pos
@@ -360,7 +344,7 @@ lemma padicValNat_factorial_sub_min_le (D : Data P) {p : ℕ} [Fact p.Prime] {l 
       _ ≤ i + 2 * padicValNat p B := by lia
   have h_sub_le_weight : ((l (τ, ()) - D.lossFactorCount : ℕ) : ℝ) ≤ D.weight τ := by
     rw [cast_le, tsub_le_iff_right, ← cast_le (α := ℝ), cast_add]
-    linarith [hl.le_weight_add τ, D.x_pow_le_lossFactorCount]
+    linarith only [hl.le_weight_add τ, D.x_pow_le_lossFactorCount]
   have h_quot : (i : ℝ) ≤ D.weight τ / p := by grw [hi, cast_div_le, h_sub_le_weight]
   have h_min : (i : ℝ) - (min i (l (P.partner D.towerExp p 1 τ, ())) : ℕ) ≤
       (D.weight τ / p - D.weight (P.partner D.towerExp p 1 τ) : ℝ)⁺ := by
@@ -412,7 +396,7 @@ lemma gammaPrime_mul_degree_sub_le_localPrimeSumTotal_add (D : Data P) {p : ℕ}
     simp only [Finsupp.degree_eq_sum, cast_sum, Fintype.sum_prod_type, Fintype.sum_unique, mul_sum,
       ← sum_add_distrib]
     refine sum_le_sum fun τ _ ↦ ?_
-    linarith [hl.le_weight_add τ, mul_le_of_le_one_left (sub_nonneg.2 (hl.weight_le τ)) hγ]
+    linarith only [hl.le_weight_add τ, mul_le_of_le_one_left (sub_nonneg.2 (hl.weight_le τ)) hγ]
   have h_weights_sub_predicted :
       γ * ∑ τ : D.Φ, (D.weight τ : ℝ) - D.localPrimeSumTotal p ≤ ∑ τ : D.Φ, D.partnerMinSum p τ :=
     (D.mul_sum_weight_sub_localPrimeSumTotal p).trans_le <|
@@ -496,11 +480,11 @@ lemma powerDegree_add_partnerDegree_le_of_isNearPair (D : Data P) {p : ℕ} [hp 
 lemma partner_bijective (D : Data P) (p e : ℕ) : Function.Bijective (P.partner D.towerExp p e) :=
   Group.mulLeft_bijective (P.placeOfInt D.towerExp (-p ^ e))
 
-/-- Let `p` be a prime greater than `k = D.k`, and `l` a degree between the weights
+/-- Let `p` be a natural number greater than `k = D.k`, and `l` a degree between the weights
 `κ(τ) = D.weight τ` and `κ(τ) + x ^ 42`, `x = D.x`. The couplings `z_τ ^ p * z_(-p τ)` at all places
 `τ` are used `j τ = min ⌊(l_τ - n♯)₊ / p⌋ l_(-p τ)` times each. Together they have total degree at
 most `l`. -/
-lemma powerDegree_add_partnerDegree_le_of_k_lt (D : Data P) {p : ℕ} [Fact p.Prime]
+lemma powerDegree_add_partnerDegree_le_of_k_lt (D : Data P) {p : ℕ}
     {l : D.Φ × Unit →₀ ℕ} (hl : D.IsNearWeights l) (hk : D.k < p) {j : D.Φ → ℕ}
     (hj : ∀ τ : D.Φ, j τ = min ((l (τ, ()) - D.lossFactorCount) / p)
       (l (P.partner D.towerExp p 1 τ, ()))) :

@@ -1,7 +1,26 @@
-import Lib.General.LinearAlgebra.HermitianMatrices
+module
+
+import TauCeti.Analysis.SpecialFunctions.Gaussian.Reproducing
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.LineDeriv.Basic
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Presheaf
+public import TauCeti.Topology.Instances.Matrix -- shake: keep (needed public by an exposed definition)
+public import Lib.General.LinearAlgebra.HermitianMatrices
+public import Lib.Weil.Construction.WeilOperators
+public import Lib.General.Analysis.GaussianIntegral
+import Lib.Base
+import Lib.General.Analysis.HolomorphicIntegrals
 import Lib.General.Measure.HaarModulus
 import Lib.General.Measure.IntegralOperators
-import Lib.Weil.Construction.WeilOperators
+import Lib.General.Topology
 
 /-!
 # The Fock model of the Weil representation of U(ε) at a real place
@@ -43,6 +62,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.Fock.OscillatorPair` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -158,10 +179,6 @@ omit [Fintype ι] in
 lemma conjTranspose_posProj : (posProj ε)ᴴ = posProj ε := by
   simp [posProj]
 
-omit [Fintype ι] in
-lemma conjTranspose_signMatrix : (signMatrix ε)ᴴ = signMatrix ε := by
-  simp [signMatrix]
-
 /-- The projection P₊ is idempotent and Hermitian, and the matrix of signs is Hermitian: the three
 facts `posProj_mul_posProj`, `conjTranspose_posProj` and `conjTranspose_signMatrix` together. -/
 @[simp]
@@ -263,7 +280,7 @@ lemma integrable_exp_mul_realVac (C : ℝ) :
   -- As `realVac u = exp (-|u|² / 2)`, the bound on exponents `C ‖u‖ - |u|² / 2 ≤ C² - |u|² / 4`
   -- follows from `C ‖u‖ ≤ C² + ‖u‖² / 4 ≤ C² + |u|² / 4` (sup norm against Euclidean norm).
   have h_exponent_le : C * ‖u‖ - (star u ⬝ᵥ u).re / 2 ≤ C ^ 2 - 4⁻¹ * (star u ⬝ᵥ u).re := by
-    linarith [norm_sq_le_re_star_dotProduct_self u, sq_nonneg (‖u‖ - 2 * C)]
+    linarith only [norm_sq_le_re_star_dotProduct_self u, sq_nonneg (‖u‖ - 2 * C)]
   calc
     ‖Real.exp (C * ‖u‖) * ‖realVac u‖‖ = Real.exp (C * ‖u‖ - (star u ⬝ᵥ u).re / 2) := by
       simp [realVac, norm_exp, ← Real.exp_add, neg_div, ← sub_eq_add_neg]
@@ -279,23 +296,15 @@ lemma integral_exp_holomorphicCoord (c ζ₀ : ι → ℂ) :
     ∫ z : ι → ℂ, exp (c ⬝ᵥ holomorphicCoord ε z) * exp (star (holomorphicCoord ε z) ⬝ᵥ ζ₀) * exp
       (-(star z ⬝ᵥ z))
       ∂normalizedVolume ι = exp (c ⬝ᵥ ζ₀) := by
-  -- The exponent is `z* p + q z - z* z`, where `p` and `q` take their coordinates from `c` and `ζ₀`
-  -- according to the sign. In the variable `w = z - conj q` it is `q p - w* (w - (p - conj q))`.
-  let p : ι → ℂ := fun i ↦ if ε i = 1 then c i else ζ₀ i
-  let q : ι → ℂ := fun i ↦ if ε i = 1 then ζ₀ i else c i
-  have h_exponent (z : ι → ℂ) :
-      c ⬝ᵥ holomorphicCoord ε z + star (holomorphicCoord ε z) ⬝ᵥ ζ₀ + -(star z ⬝ᵥ z) =
-        c ⬝ᵥ ζ₀ + -(star (z - star q) ⬝ᵥ 1 *ᵥ (z - star q - (p - star q))) := by
-    simp only [dotProduct, one_mulVec, ← sum_neg_distrib, ← sum_add_distrib]
-    refine sum_congr rfl fun i _ ↦ ?_
-    by_cases h_sign : ε i = 1 <;> simp [p, q, holomorphicCoord_eq, h_sign] <;> ring
-  have h_gauss :
-      ∫ z : ι → ℂ, exp (-(star (z - star q) ⬝ᵥ 1 *ᵥ (z - star q - (p - star q)))) ∂normalizedVolume
-        ι =
-        (1 : Matrix ι ι ℂ).det⁻¹ :=
-    (integral_sub_right_eq_self _ (star q)).trans
-      (integral_gauss PosDef.one.isAccretive (p - star q))
-  simp_rw [← exp_add, h_exponent, exp_add, integral_const_mul, h_gauss, det_one, inv_one, mul_one]
+  have h_measure : ENNReal.ofReal ((1 / Real.pi) ^ Fintype.card ι) •
+      (volume : Measure (ι → ℂ)) = normalizedVolume ι := by
+    rw [normalizedVolume, ← Measure.coe_nnreal_smul, ← ENNReal.ofReal_coe_nnreal]
+    congr 2
+    simp
+  have h := TauCeti.integral_cexp_reproducing (by norm_num : (0 : ℝ) < 1)
+    (fun i ↦ decide (ε i = 1)) c ζ₀
+  rw [h_measure] at h
+  simpa [dotProduct, holomorphicCoord_eq, ← conj_mul'] using h
 
 /-- The Gaussian `New.Fock.realVac` is a vacuum for the Heisenberg datum `New.Fock.realHeisenberg ε`
 and the normalised measure `New.Fock.normalizedVolume`. -/
@@ -365,7 +374,7 @@ lemma exists_norm_eval_le_exp (P : MvPolynomial ι ℂ) :
     _ ≤ ∑ d ∈ P.support, ‖P.coeff d‖ * Real.exp ‖l‖ ^ ∑ i, P.degreeOf i := by
       gcongr with d hd_support
       exact h_mono d hd_support
-    _ ≤ _ := by grw [← sum_mul, ← le_abs_self, Real.exp_nat_mul]
+    _ ≤ _ := by grw [← sum_mul, ← le_abs_self, Real.exp_natCast_mul]
 
 end New.Fock
 
@@ -471,7 +480,8 @@ lemma realMultiplier_mul_integral_eq_one {ε : ι → ℤˣ} (g h : USign ε) :
       ofReal 2⁻¹ • fromBlocks ((h : Matrix ι ι ℂ)ᴴ * signMatrix ε * (h : Matrix ι ι ℂ)) 0 0
           (-((k : Matrix ι ι ℂ)ᴴ * signMatrix ε * (k : Matrix ι ι ℂ))) =
         ofReal 2⁻¹ • fromBlocks (signMatrix ε) 0 0 (-signMatrix ε) := by
-    rw [mem_U.mp h.prop, mem_U.mp k.prop]
+    rw [← star_eq_conjTranspose, ← star_eq_conjTranspose, mem_unitaryGroupOf_iff.mp h.prop,
+      mem_unitaryGroupOf_iff.mp k.prop]
   have hA_factor :
       A = ((T h).fromBlocks (1 - posProj ε) 0 (T ↑k⁻¹ * (k : Matrix ι ι ℂ)))ᴴ *
           (posProj ε).fromBlocks (posProj ε - 1) 1 1 *
@@ -510,7 +520,7 @@ conjugate of the determinant of the negative block of `g`, and its cocycle is tr
 def realAction (ε : ι → ℤˣ) :
     (realHeisenberg ε).MultiplierAction (normalizedVolume ι) realVac (USign ε) where
   beta_smul := by simp [↓form_mulVec_mulVec, realHeisenberg]
-  measurePreserving g := ⟨by fun_prop, by simp [map_mulVec_addHaar_eq_smul g.1.det_ne_zero]⟩
+  measurePreserving g := ⟨by fun_prop, by simp [map_mulVec_addHaar_eq_smul g.val.det_ne_zero]⟩
   Δ := realMultiplier
   continuous_delta := by fun_prop [realMultiplier]
   Δ_one := by simp [realMultiplier]
@@ -729,7 +739,7 @@ def polyVector (ε : ι → ℤˣ) : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace �
     fun P ↦ by
       induction P using induction_on with
       | C c =>
-        convert (c • vacVector).2
+        convert (c • vacVector).property
         ext
         simp
       | add => aesop
@@ -757,7 +767,9 @@ lemma polyVector_apply (P : MvPolynomial ι ℂ) (x : ι → ℂ) :
   rfl
 
 @[simp]
-lemma polyVector_one : polyVector ε 1 = vacVector := by aesop
+lemma polyVector_one : polyVector ε 1 = vacVector := by
+  ext x
+  simp [polyVector_apply, vacVector]
 
 /-- For v in ℂ^ι and a polynomial P with Fock vector v_P = `New.Fock.polyVector` ε P, the curve
 t ↦ `New.Fock.realHeisenbergOp`(tv)v_P (t real) has derivative at t = 0 equal to the Fock vector of
@@ -834,14 +846,14 @@ def piTensor :
     (MultilinearMap.codRestrict
       (MultilinearMap.pi fun x : T × ι → ℂ ↦
         MultilinearMap.compLinearMap (MultilinearMap.mkPiAlgebra ℂ T ℂ) fun τ ↦
-          (IsVacuum.valueAt (MeasurableEquiv.curry T ι ℂ x τ)).1)
+          (IsVacuum.valueAt (MeasurableEquiv.curry T ι ℂ x τ)).toLinearMap)
       (IsVacuum.modelSubmodule (realHeisenberg fun p ↦ ε p.2)) fun v ↦ by
         -- Integrability and the reproducing identity hold factor by factor, by Fubini.
         refine ⟨(integrable_map_equiv ..).1
-          (pi_normalizedVolume.subst (.fintype_prod fun τ ↦ (v τ).2.1)), ?_⟩
+          (pi_normalizedVolume.subst (.fintype_prod fun τ ↦ (v τ).property.1)), ?_⟩
         simpa [realHeisenberg, signMatrix, dotProduct, mulVec_diagonal, sum_prod_type, realVac,
           ← integral_fintype_prod_eq_prod, prod_mul_distrib, ← exp_sum, ← sum_div,
-          integral_map_equiv] using! fun _ ↦ congr(∏ τ, $((v τ).2.2 _)))
+          integral_map_equiv] using! fun _ ↦ congr(∏ τ, $((v τ).property.2 _)))
     1 fun v ↦ by
       simp [norm_eq_integral_norm, integral_map_equiv, ← integral_fintype_prod_eq_prod, ← norm_prod,
         MeasurableEquiv.curry_apply_eq]
@@ -877,7 +889,7 @@ lemma blockMatrix_preserves_signMatrix :
       signMatrix fun p : T × ι ↦ ε p.2 := by
   -- Apply the ring homomorphism `blockMatrix` to the unitarity relations of the blocks.
   have h_blocks : (fun τ : T ↦ (u τ).val.valᴴ * signMatrix ε * (u τ).val.val) =
-      fun _ ↦ signMatrix ε := funext fun τ ↦ (u τ).prop
+      fun _ ↦ signMatrix ε := funext fun τ ↦ mem_unitaryGroupOf_iff.1 (u τ).prop
   simpa [blockMatrix, ← submatrix_mul_equiv (e₂ := .prodComm ..), -Equiv.coe_prodComm,
     signMatrix, comp_def] using congrArg blockMatrix h_blocks
 

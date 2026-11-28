@@ -1,4 +1,11 @@
-import Lib.Cohomology.Etale.FilteredLimits
+module
+
+public import Aesop.BuiltinRules
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Localization.Pi
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.Cohomology.Etale.FilteredLimits
 
 /-!
 # The space of places of residue fields and its properness over the base
@@ -27,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.ProperBaseChange.Theorem` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -207,7 +216,7 @@ def placeSpace : PointFunctor where
       iseqv := by
         -- transitivity: the middle pair can be cancelled because it is coprime
         constructor <;> intros <;> grind [!isCoprime_denominator_numerator, IsCoprime] }
-  map k := ↾fun x ↦ ULift.up (x.1.map' (· ≫ k) (by simp_all [← map_mul]))
+  map k := ↾fun x ↦ ULift.up (x.down.map' (· ≫ k) (by simp_all [← map_mul]))
   map_id C := by
     ext ⟨⟨f⟩⟩
     rfl
@@ -217,7 +226,7 @@ def placeSpace : PointFunctor where
 
 /-- The map from the space of places of `z` to `Z` that sends the class of `f` to `f z ∈ Z(C)`. -/
 def placeSpaceMap : placeSpace z ⟶ Z where
-  app _ := ↾fun x ↦ x.1.lift (fun f ↦ Z.map f z.point) fun _ _ ↦ And.left
+  app _ := ↾fun x ↦ x.down.lift (fun f ↦ Z.map f z.point) fun _ _ ↦ And.left
   naturality _ _ _ := by
     ext ⟨⟨f⟩⟩
     apply Z.map_comp_apply
@@ -228,7 +237,7 @@ variable {z} {R : Type} [CommRing R] [IsLocalRing R] {q : Ideal P} [M : q.IsMaxi
 /-- A ring map `g : P ⟶ F` to a field factors through the residue field of some prime `q` of
 `P`. -/
 lemma exists_algebraMap_residueField_comp_eq (g : P ⟶ of F) :
-    ∃ᵉ (q : PrimeSpectrum P) (l : of q.asIdeal.ResidueField ⟶ of F),
+    ∃ q : PrimeSpectrum P, ∃ l : of q.asIdeal.ResidueField ⟶ of F,
       ofHom (algebraMap P q.asIdeal.ResidueField) ≫ l = g := by
   -- Take `q = ker g`: elements outside it go to units of the field `F`.
   have := ker_isPrime g.hom
@@ -241,7 +250,7 @@ that `x` gives `t` the finite value `c`. For any representative `f` of `x`, thes
 `New.Variety.ResiduePlace.fractionGraph f`, that is, `f (numerator t) = f (denominator t) * c`. This
 does not depend on the choice of `f`. -/
 def placeGraph : Subring (P × C) :=
-  x.1.lift fractionGraph (by
+  x.down.lift fractionGraph (by
     -- equal values give the same graph, by `mem_fractionGraph` and coprimality
     rintro _ _ ⟨⟩
     grind +extAll [mem_fractionGraph, isCoprime_denominator_numerator, IsCoprime])

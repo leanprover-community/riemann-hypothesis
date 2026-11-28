@@ -1,4 +1,8 @@
-import Lib.ClassField.Places.DecompositionCompletion
+module
+
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+public import Lib.PadicHodge.PeriodRings.CrystallineRings
+public import Lib.ClassField.Places.DecompositionCompletion -- shake: keep (needed public by an exposed definition)
 import Lib.PadicHodge.PeriodRings.DeRhamPeriods
 
 /-!
@@ -40,6 +44,8 @@ Notions from other files:
 Known; see `Lib.PadicHodge.Crystalline.Regularity`, `Lib.PadicHodge.BlochKato` and
 `Lib.PadicHodge.Kisin.PeriodMatrixFrame` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -203,7 +209,7 @@ def hodgeTateMaps : Submodule (PadicAlgCl p) (T →ₛₗ[toRingHom γ] ℂ_[p])
   smul_mem' c f hf x := by
     -- the algebraic scalar `c` is fixed by `toGp g` for `g` near 1
     filter_upwards [hf x, eventually_nearOne_apply_eq Γ c] with g hg h_fix
-    simp [hg, h_fix, Algebra.smul_def c, ← PadicComplex.coe_eq, smul_coe_Cp]
+    simp [hg, h_fix, Algebra.smul_def c, ← PadicComplex.coe_eq]
 
 /-- The multiplicity of the Hodge–Tate jump `u` at `γ`: the dimension over Q̄_p (zero if infinite)
 of the space `New.Period.hodgeTateMaps ρ γ u`. -/
@@ -215,9 +221,10 @@ def HasJumps (J : Multiset ℤ) : Prop := ∀ u : ℤ, jump ρ γ u = Multiset.c
 
 /-- A chosen `Bmax`-linear endomorphism of `Bmax ⊗ T` that agrees on `Dpcris ρ` with the map
 `φ ^ m s ⊗ ρ s`, where `φ` is Frobenius, if one exists (`linearFrob_eq_tensorAction_of_exists`);
-otherwise the value is unspecified. If `ρ` is potentially crystalline, there is at most one such map
-(`IsPotentiallyCrystalline.linearFrob_eq`), and there is one when `toGp s` and `m` form a Weil pair
-(`linearFrob_apply`).
+otherwise the value is unspecified. Potential crystallinity makes `Dpcris ρ` span the tensor
+module, so there is at most one such map. Existence for Weil pairs is proved in
+`Lib.PadicHodge.Crystalline.Regularity` (`linearFrob_apply`). Thus in that case the chosen
+operator is determined by its action on the fixed periods.
 
 This operator plays the role of Fontaine's Weil–Deligne representation: it extends the action of a
 Weil pair on `Dpcris ρ` linearly to `Bmax ⊗ T`. -/
@@ -233,16 +240,6 @@ lemma linearFrob_eq_tensorAction_of_exists (s : Γ) (m : ℕ)
     ∀ d ∈ Dpcris ρ, linearFrob ρ s m d = tensorAction Bmax (⟨.ofAdd m, toGp s⟩ : FrobGal) (ρ s) d :=
   Classical.epsilon_spec h_exists
 
-/-- For potentially crystalline `ρ`, a `Bmax`-linear map that agrees with `φ ^ m s ⊗ ρ s` on
-`Dpcris ρ` is `linearFrob ρ s m`. -/
-lemma IsPotentiallyCrystalline.linearFrob_eq {ρ : Representation R Γ T}
-    (h_potCrys : IsPotentiallyCrystalline ρ) {s : Γ} {m : ℕ} {β : End Bmax (Bmax ⊗[ℤ_[p]] T)}
-    (hβ : ∀ d ∈ Dpcris ρ, β d = tensorAction Bmax (⟨.ofAdd m, toGp s⟩ : FrobGal) (ρ s) d) :
-    linearFrob ρ s m = β := by
-  -- Both maps are linear and agree on `Dpcris ρ`, which spans.
-  refine LinearMap.ext_on (s := Dpcris ρ) h_potCrys fun d hd ↦ ?_
-  rw [linearFrob_eq_tensorAction_of_exists ρ s m ⟨β, hβ⟩ d hd, hβ d hd]
-
 variable (R T) in
 /-- The ring homomorphism from `R` to the `Bmax`-linear endomorphisms of `Bmax ⊗ T` (tensor over
 `ℤ_p`) sending `a` to `1 ⊗ (multiplication by a on T)`. -/
@@ -254,26 +251,10 @@ at `linearFrob ρ s m` with the coefficients acting on `T` through `coeffEnd`, i
 `Bmax ⊗ T`.
 
 This is the analogue, tested on `Bmax ⊗ T`, of the vanishing of a polynomial at an element acting on
-Fontaine's Weil–Deligne representation. -/
+Fontaine's Weil–Deligne representation. The Weil-pair condition is not a field of `IsKilledBy`;
+results that identify the chosen operator with the period action require it separately. -/
 def IsKilledBy (s : Γ) (m : ℕ) (P : Polynomial R) : Prop :=
   IsPotentiallyCrystalline ρ ∧ Polynomial.eval₂ (coeffEnd R T) (linearFrob ρ s m) P = 0
-
-/-- `P` kills `(s, m)` if and only if `ρ` is potentially crystalline and `P`, evaluated at
-`linearFrob ρ s m` through `coeffEnd`, is zero. -/
-lemma isKilledBy_iff {ρ : Representation R Γ T} {s : Γ} {m : ℕ} {P : Polynomial R} :
-    IsKilledBy ρ s m P ↔
-      IsPotentiallyCrystalline ρ ∧ Polynomial.eval₂ (coeffEnd R T) (linearFrob ρ s m) P = 0 :=
-  Iff.rfl
-
-/-- If `P` kills `(s, m)`, then `ρ` is potentially crystalline. -/
-lemma IsKilledBy.isPotentiallyCrystalline {ρ : Representation R Γ T} {s : Γ} {m : ℕ}
-    {P : Polynomial R} (h_killed : IsKilledBy ρ s m P) : IsPotentiallyCrystalline ρ :=
-  (isKilledBy_iff.mp h_killed).left
-
-/-- If `P` kills `(s, m)`, then `P` evaluated at `linearFrob ρ s m` through `coeffEnd` is zero. -/
-lemma IsKilledBy.eval₂_eq_zero {ρ : Representation R Γ T} {s : Γ} {m : ℕ} {P : Polynomial R}
-    (h_killed : IsKilledBy ρ s m P) : Polynomial.eval₂ (coeffEnd R T) (linearFrob ρ s m) P = 0 :=
-  (isKilledBy_iff.mp h_killed).right
 
 end Frobenius
 
@@ -363,11 +344,12 @@ noncomputable def baseChangePairing : A ⊗[ℤ_[p]] T →ₗ[A] A ⊗[ℤ_[p]] 
 
 /-- Let `ψ : A → A'` be `ℤ_p`-linear and multiplicative (`hψ_mul`), and let the endomorphisms `f`,
 `f'`, `f''` of `T`, `T'`, `T''` be compatible with `b`: `b (f t) (f' t') = f'' (b t t')`. Then the
-extended pairings satisfy the same identity for the maps `ψ ⊗ f`, `ψ ⊗ f'` and `ψ ⊗ f''`. -/
-lemma baseChangePairing_map_of_map_mul {ψ : A →ₗ[ℤ_[p]] A'} {f : T →ₗ[ℤ_[p]] T}
-    {f' : T' →ₗ[ℤ_[p]] T'} {f'' : T'' →ₗ[ℤ_[p]] T''}
-    (h_equiv : ∀ (t : T) (t' : T'), b (f t) (f' t') = f'' (b t t'))
-    (hψ_mul : ∀ a a' : A, ψ (a * a') = ψ a * ψ a') (x : A ⊗[ℤ_[p]] T) (y : A ⊗[ℤ_[p]] T') :
+extended pairings satisfy the same identity for the maps `ψ ⊗ f`, `ψ ⊗ f'` and `ψ ⊗ f''`. The
+multiplicativity `hψ_mul` comes last and is proved by `simp` when omitted. -/
+lemma baseChangePairing_map {ψ : A →ₗ[ℤ_[p]] A'} {f : T →ₗ[ℤ_[p]] T} {f' : T' →ₗ[ℤ_[p]] T'}
+    {f'' : T'' →ₗ[ℤ_[p]] T''} (h_equiv : ∀ (t : T) (t' : T'), b (f t) (f' t') = f'' (b t t'))
+    (x : A ⊗[ℤ_[p]] T) (y : A ⊗[ℤ_[p]] T')
+    (hψ_mul : ∀ a a' : A, ψ (a * a') = ψ a * ψ a' := by simp) :
     baseChangePairing b (map ψ f x) (map ψ f' y) = map ψ f'' (baseChangePairing b x y) := by
   -- Both sides are additive in `x` and in `y`; on pure tensors this is `h_equiv` and `hψ_mul`.
   induction x with
@@ -376,15 +358,6 @@ lemma baseChangePairing_map_of_map_mul {ψ : A →ₗ[ℤ_[p]] A'} {f : T →ₗ
     induction y with
     | add y₁ y₂ hy₁ hy₂ => simp only [map_add, hy₁, hy₂]
     | _ => simp [baseChangePairing, smul_tmul', h_equiv, hψ_mul]
-
-/-- `New.Lift.baseChangePairing_map_of_map_mul` in the form in which `simp` proves the
-multiplicativity `hψ_mul` of `ψ` by default. -/
-lemma baseChangePairing_map {ψ : A →ₗ[ℤ_[p]] A'} {f : T →ₗ[ℤ_[p]] T} {f' : T' →ₗ[ℤ_[p]] T'}
-    {f'' : T'' →ₗ[ℤ_[p]] T''} (h_equiv : ∀ (t : T) (t' : T'), b (f t) (f' t') = f'' (b t t'))
-    (x : A ⊗[ℤ_[p]] T) (y : A ⊗[ℤ_[p]] T')
-    (hψ_mul : ∀ a a' : A, ψ (a * a') = ψ a * ψ a' := by simp) :
-    baseChangePairing b (map ψ f x) (map ψ f' y) = map ψ f'' (baseChangePairing b x y) :=
-  baseChangePairing_map_of_map_mul b h_equiv hψ_mul x y
 
 end New.Lift
 
@@ -542,11 +515,6 @@ lemma exists_tate_twist_unit (c : ℤ)
   | add y z hy hz => simp only [smul_add, map_add, hy, hz]
   | _ => simp [hσ, mul_zpow, ← map_zpow, tensorAction, smul_tmul', mul_smul]
 
-/-- `tensorAction` for the pair `(1, g)` of `FrobGal` is `tensorAction` for `g`: `φ ^ 0` is the
-identity. -/
-private lemma tensorAction_mk_one (g : Gp p) (f : End R T) :
-    tensorAction Bmax ((1, g) : FrobGal) f = tensorAction Bmax g f := rfl
-
 /-- Let `ρ` be a representation of `Γ` on `T`, where `Γ` maps to Gal(ℚ̄_p/ℚ_p) by `j`. Say `ρ` is
 admissible along a filter `F` on `Γ` if the elements of `Bmax ⊗ T` fixed by `j(g) ⊗ ρ(g)` for
 `F`-almost all `g` span `Bmax ⊗ T` over `Bmax`. If `ρ` is admissible along `F`, then so is every
@@ -564,7 +532,7 @@ lemma IsAdmissible.tate_twist (h_adm : IsAdmissible ρ F) (c : ℤ)
   have h_twist_zero (g : Γ) (y : Bmax ⊗[ℤ_[p]] T) :
       tensorAction Bmax (toGp g) (σ g) ((t : Bmax) • y) =
         (t : Bmax) • tensorAction Bmax (toGp g) (ρ g) y := by
-    simpa [tensorAction_mk_one] using h_twist 0 g y
+    simpa using! h_twist 0 g y
   have h_fix : ∀ y ∈ fixedPeriods ρ Bmax F, (t : Bmax) • y ∈ fixedPeriods σ Bmax F := by
     intro y hy
     filter_upwards [hy] with g hg

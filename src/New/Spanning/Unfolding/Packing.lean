@@ -1,3 +1,9 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+public import New.Spanning.RemainingTerms.Box
+import Lib.General.Analysis.PackingAndSobolev
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 import New.Spanning.Unfolding.ReducedPoints
 
 /-!
@@ -30,6 +36,9 @@ Notions from other files:
 * `New.Filling.IsAdmissible`: the standing hypotheses, among them the size inequalities between
   `S.b`, `S.realM v` and `S.N`.
 -/
+
+@[expose] public section
+
 section BoxPartition
 
 open ENNReal Fin Matrix Module Set Norms.L2Operator Subgroup
@@ -65,22 +74,6 @@ lemma frameVector_sub_eq_sum {γ γ' : S.G E}
   simp only [h_lower]
   simp [frameVector, mul_sub, mul_comm]
 
-/-- Reduction of frames: for every class `c` and every point `y` at the infinite places, some `u` in
-the congruence group `S.classUnipotent c` of rational unipotent elements makes all entries of
-`gramSchmidtMatrix` of the components of `u y` at most `S.b ^ 26` in absolute value. Here
-`gramSchmidtMatrix x` is the upper unitriangular matrix expressing the frame vectors
-`x⁻¹ e₁, …, x⁻¹ e_ϱ, x⁻¹ z` in their Gram–Schmidt orthogonalisation. -/
-lemma exists_gramSchmidtMatrix_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
-    (c : S.Classes) (y : NumberField.InfinitePlace E → 𝔰.G₁) :
-    ∃ u : S.classUnipotent c, ∀ (v : NumberField.InfinitePlace E) (a b : Fin (𝔰.ϱ + 1)),
-      ‖gramSchmidtMatrix (S.ratToInf u v * y v) a b‖ ≤ S.b ^ 26 := by
-  obtain ⟨D, hD⟩ : ∃ D : Set (NumberField.InfinitePlace E → ℂ), S.IsResidueDomain D :=
-    S.exists_isResidueDomain
-  obtain ⟨u, hu⟩ : ∃ u₀ : S.classUnipotent c, ∀ u : S.classUnipotent c,
-      S.ratToInf u * y ∈ S.reducedPoints D ↔ (u * u₀⁻¹).val ∈ S.classUnipotent₀ c :=
-    hD.exists_mul_mem_reducedPoints_iff_rightCoset c y
-  exact ⟨u, hD.norm_gramSchmidtMatrix_le ((hu u).2 (by simp))⟩
-
 /-- The indicator of the reduced points for the chosen set of representatives is a partition of
 unity in boxes (`IsBoxPartitionOfUnity`) for every class `c`. -/
 lemma isBoxPartitionOfUnity_reducedIndicator [HasPrimitiveRoot5040 E] [S.IsAdmissible]
@@ -105,7 +98,7 @@ lemma IsBoxPartitionOfUnity.mem_frameBox {c : S.Classes}
   grw [hω.mem_frameBox_besselLength y v hy a, h_size, frameBoxRadius, ← mul_assoc, ← pow_add]
   -- Exponents of `b`: `27 + 6 n + 2 ≤ 37 n`.
   gcongr
-  nlinarith [S.ten_pow_five_le_varrho]
+  linarith only [S.ten_pow_five_le_varrho]
 
 /-- The cutoff `S.classCutoff c` of a class `c` is a cutoff for the rational unipotent elements
 fixing the frame, times the indicator of the reduced points. If it is not zero at `y` and
@@ -164,7 +157,7 @@ lemma frameImage_inr_eq_of_frameProducts_eq {g : S.G E} {a : Fin (𝔰.ϱ + 1)}
   have h_unitary :
       ((g : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)ᴴ * (S.ratMiddle E).splitGram * g).diag
         (𝔰.besselFrame a) = (S.ratMiddle E).splitGram.diag (𝔰.besselFrame a) :=
-    congr_fun₂ g.prop (𝔰.besselFrame a) (𝔰.besselFrame a)
+    congr_fun₂ (mem_unitaryGroupOf_iff.1 g.prop) (𝔰.besselFrame a) (𝔰.besselFrame a)
   have h_isotropic : star (w ∘ Sum.inl) ⬝ᵥ S.ratMiddle E *ᵥ (w ∘ Sum.inl) = 0 := by
     -- Expand `h_unitary`; the terms pairing `e_i` with `e*_i` vanish by `h_dual`.
     cases a using lastCases with
@@ -329,7 +322,7 @@ lemma frameImage_eq_frameImage_one_of_close {g : S.G E} {d : S.Classes} {r : S.R
   have h_exp : S.b ^ (23 * 𝔰.ϱ) * S.b ^ (6 * 𝔰.n + 2) ≤ S.frameBoxRadius := by
     rw [frameBoxRadius, ← pow_add]
     gcongr
-    nlinarith [S.ten_pow_five_le_varrho]
+    linarith only [S.ten_pow_five_le_varrho]
   set ε : ℝ := ‖Φ v (g.val (Sum.inl a) (𝔰.besselFrame b) -
     (1 : S.G E).val (Sum.inl a) (𝔰.besselFrame b))‖
   calc ε ≤ ε * (S.b ^ (23 * 𝔰.ϱ) *
@@ -344,9 +337,6 @@ lemma frameImage_eq_frameImage_one_of_close {g : S.G E} {d : S.Classes} {r : S.R
 
 variable [HasPrimitiveRoot5040 E]
 
--- Lean v4.37.0-rc1: side goals `0 < S.b ^ (c * 𝔰.n ^ 2)` of `bound`/`gcongr` (`Shape.n` is an
--- abbrev) exceed the default recursion depth.
-set_option maxRecDepth 2000 in
 omit [HasPrimitiveRoot5040 E] in
 /-- **Packing of frames.** Let `E` be a CM field, `𝔰` a shape (`𝔰.ϱ` hyperbolic planes), and `S`
 admissible data of the filling theorem over `E` (`IsAdmissible`), with parameter `b = S.b`. Let
@@ -391,17 +381,17 @@ theorem encard_image_frameImage_le {c : S.Classes} {y : NumberField.InfinitePlac
   let F (γ : S.G E) (v : NumberField.InfinitePlace E) :
       Fin (𝔰.ϱ + 1) → EuclideanSpace ℂ 𝔰.BesselIndex :=
     frameVector (((S.ratToInf γ)⁻¹ * y) v)
-  let f (p : A) : V := ⟨F γ₀ - F p, hV γ₀ hγ₀ p p.2⟩
+  let f (p : A) : V := ⟨F γ₀ - F p, hV γ₀ hγ₀ p p.property⟩
   have h_sep : u.Pairwise fun p q ↦ (S.N * ρ)⁻¹ ≤ ‖f p - f q‖ := by
     refine fun p hp q hq h_ne ↦ not_lt.1 fun h_close ↦ h_ne (h_inj hp hq ?_)
     obtain ⟨s, d, hp_over⟩ : ∃ (s : S.ResidueGL) (d : S.Classes), p.val ∈ S.termsOver c s d :=
-      h_over p p.2
+      h_over p p.property
     obtain ⟨s', d', hq_over⟩ : ∃ (s : S.ResidueGL) (d : S.Classes), q.val ∈ S.termsOver c s d :=
-      h_over q q.2
+      h_over q q.property
     -- The inverse of the term `p⁻¹ q` sends `p⁻¹ y` to `q⁻¹ y`, whose frame vectors are close.
     refine frameImage_inv_mul_eq_iff.1 (frameImage_eq_frameImage_one_of_close
       (termsOver.mul (termsOver.inv hp_over) hq_over) hR
-      (h_box p p.2) (h_size p p.2) fun v a ↦ lt_of_le_of_lt ?_ h_close)
+      (h_box p p.property) (h_size p p.property) fun v a ↦ lt_of_le_of_lt ?_ h_close)
     have h_point : (S.ratToInf (p.val⁻¹ * q.val) v)⁻¹ * ((S.ratToInf p.val)⁻¹ * y) v =
         ((S.ratToInf q.val)⁻¹ * y) v := by
       simp [mul_assoc]
@@ -412,7 +402,7 @@ theorem encard_image_frameImage_le {c : S.Classes} {y : NumberField.InfinitePlac
   have h_norm (γ : S.G E) (hγ : γ ∈ A) : ‖F γ‖ ≤ ρ :=
     (pi_norm_le_iff_of_nonneg hρ.le).2 fun v ↦ (pi_norm_le_iff_of_nonneg hρ.le).2 (h_box γ hγ v)
   have h_ball (p : A) (_ : p ∈ u) : ‖f p‖ ≤ ρ + ρ :=
-    norm_sub_le_of_le (h_norm γ₀ hγ₀) (h_norm p p.2)
+    norm_sub_le_of_le (h_norm γ₀ hγ₀) (h_norm p p.property)
   have h_one : 1 ≤ S.b ^ (60 * 𝔰.n) * ρ ^ 2 := by
     have hb_one : 1 ≤ S.b := S.one_le_b
     rw [hρ_eq, frameBoxRadius]
@@ -477,7 +467,7 @@ lemma tsum_le_of_le_classCutoff_mul {c : S.Classes} {s : S.ResidueGL} {α : Type
     frameImage (γ p : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)
   refine tsum_le_of_encard_range_le
     (R := fun p q : α ↦ k p = k q ∧ (γ p)⁻¹ * γ q ∈ S.classUnipotent₀ (k p)) frame ?_
-    (fun p q ↦ termsOver.eq_and_mem_classUnipotent₀ (h_over p p.2) (h_over q q.2))
+    (fun p q ↦ termsOver.eq_and_mem_classUnipotent₀ (h_over p p.property) (h_over q q.property))
     fun B hBA p hp h_rel ↦ ?_
   · -- The frames are those of the terms `γ p` with `p` in the support.
     have h_range : range frame =
@@ -490,7 +480,7 @@ lemma tsum_le_of_le_classCutoff_mul {c : S.Classes} {s : S.ResidueGL} {α : Type
       (forall_mem_image.2 fun p hp ↦ forall_mem_image.2 fun q hq ↦ hV p hp q hq)
   · -- The terms `B` with the same frame: `q ↦ (γ q)⁻¹ * γ p` injects `B` into the unipotent group,
     -- over which the cutoffs sum to one.
-    have h_class (q : B) : k q = k p := (h_rel q q.2 p hp).1
+    have h_class (q : B) : k q = k p := (h_rel q q.property p hp).1
     have h_mem (q : B) : (γ q)⁻¹ * γ p ∈ S.classUnipotent (k p) := by
       obtain ⟨h_unipotent, -⟩ : (γ q)⁻¹ * γ p ∈ S.classUnipotent₀ (k q) := (h_rel q q.2 p hp).2
       rwa [← h_class q]
@@ -502,9 +492,9 @@ lemma tsum_le_of_le_classCutoff_mul {c : S.Classes} {s : S.ResidueGL} {α : Type
     calc
       ∑' q : B, w q ≤ ∑' q : B, β (ι q) * x := by
         gcongr with q
-        simpa [β, ι, h_class q] using h_le q (hBA q.2)
+        simpa [β, ι, h_class q] using h_le q (hBA q.property)
       _ ≤ (∑' u : S.classUnipotent (k p), β u) * x := by
-        grw [← ENNReal.tsum_comp_le_tsum_of_injective hι, ENNReal.tsum_mul_right]
+        grw [← tsum_comp_le_tsum_of_injective hι, ENNReal.tsum_mul_right]
       _ = x := by rw [tsum_classCutoff_eq_one, one_mul]
 
 /-- Let `E` be a CM field with a primitive 5040-th root of unity, `S` admissible filling data over
@@ -521,13 +511,13 @@ lemma exists_classUnipotent_mul_mem_boxedPoints (c : S.Classes)
     ∃ u ∈ S.classUnipotent c, S.ratToInf u * y ∈ S.boxedPoints := by
   -- The cutoffs of the translates add up to `1`, so one of them is not zero.
   obtain ⟨u, hu⟩ : ∃ u : S.classUnipotent c, S.classCutoff c (S.ratToInf u * y) ≠ 0 :=
-    ENNReal.summable.tsum_ne_zero_iff.1 ((tsum_classCutoff_eq_one c y).trans_ne one_ne_zero)
+    CompleteLattice.summable.tsum_ne_zero_iff.1 ((tsum_classCutoff_eq_one c y).trans_ne one_ne_zero)
   -- Left translation by the unipotent `u` keeps `besselLength`.
-  obtain ⟨hu_unipotent, -⟩ : u.val ∈ S.classUnipotent c := u.2
+  obtain ⟨hu_unipotent, -⟩ : u.val ∈ S.classUnipotent c := u.property
   have h_cut_mul (v : NumberField.InfinitePlace E) : InCut ((S.ratToInf u * y) v) S.b :=
     (besselLength_besselS_mul (mem_partialUnitriangularGroup_of_mem_besselU
       (hu_unipotent.ratToInf_mem_agreeWithOneOn v))).trans_le (h_cut v)
-  exact ⟨u, u.2, mem_boxedPoints_of_classCutoff_ne_zero hu h_cut_mul⟩
+  exact ⟨u, u.property, mem_boxedPoints_of_classCutoff_ne_zero hu h_cut_mul⟩
 
 /-- The cutoff of a class is measurable. -/
 @[fun_prop]

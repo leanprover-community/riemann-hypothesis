@@ -1,3 +1,12 @@
+module
+
+import Mathlib.Algebra.BigOperators.Ring.Nat
+import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
+import Mathlib.CategoryTheory.Shift.Basic
+public import Lib.ClassField.HeckeL.EulerProduct
+public import Lib.ClassField.Local.ArtinMap
+import Lib.Adelic.Hecke.ClassSums
+import Lib.ClassField.GaloisCohomology.TateIndexFormula
 import Lib.ClassField.Global.ArtinMap
 import Lib.ClassField.HeckeL.ContinuationAtOne
 import Lib.General.NumberTheory.SUnitsAndClassNumber
@@ -49,6 +58,8 @@ Algebrenklassengruppe, Math. Ann. 107 (1933) (reciprocity from the sum formula).
 See also `Lib.ClassField.Places.LocalFields` and `Lib.ClassField.HeckeL.ContinuationAtOne`.
 -/
 
+@[expose] public section
+
 /-!
 ## Symbols of totally positive elements at the real places
 
@@ -84,10 +95,10 @@ lemma Cohomology.isReal_comp_algebraMap {j : Ω →+* ℂ} (hj : ∀ x : Ω, j (
   simp [← hj, ← star_def]
 
 variable (Γ) in
-/-- If the number field `K` has a real place `w`, some `c` in `Γ` acts on the field `Ω` (`New.Ω`,
+/-- If the field `K` has a real place `w`, some `c` in `Γ` acts on the field `Ω` (`New.Ω`,
 the algebraic closure of `ℚ`) as complex conjugation (`New.IsComplexConj`: under some embedding
 `j : Ω →+* ℂ`, `j (c • x)` is the complex conjugate of `j x`). -/
-lemma exists_isComplexConj [NumberField K] {w : InfinitePlace K} (hw : w.IsReal) :
+lemma exists_isComplexConj {w : InfinitePlace K} (hw : w.IsReal) :
     ∃ c : Γ, IsComplexConj c := by
   -- An extension `j` of the real embedding to `Ω` and its conjugate agree on `K`, so they differ
   -- by an element `c` of `Γ`.
@@ -285,7 +296,7 @@ private lemma index_re_le_sum_of_hasPrimeDensity [FiniteIndex W]
   rcases (D v).eq_empty_or_nonempty with hD | hD
   · simp_all [D, ← mul_sum, sum_apply_eq_ite, apply_ite, mul_nonneg]
   · have h_mul : (W.index : ℝ) * (D v).ncard ≤ finrank K L * W.index := by grw [h_card, mul_comm]
-    simpa [(eq_one_iff _).mpr (hv hD), index, mul_comm, D] using h_mul
+    simpa [(eq_one_iff _).mpr (hv hD), index, mul_comm] using h_mul
 
 /-- Let `L / K` be Galois and `W` an open subgroup of the finite ideles of `K` (`hW_open`) that
 contains the totally positive principal ideles (`hW_pos`) and the norms from `L` (`h_norm`). A
@@ -501,10 +512,17 @@ lemma relIndex_norm_unit_pow [IsGalois K L] {l : ℕ} (hl : l.Prime) (hL : Modul
   · -- The Galois group permutes the places that are not above `S`.
     intro g y hy w hw
     rw [← g.toAlgHom.comp_algebraMap] at hw
-    -- The goal is over `LocField w` with the Galois action on units, the lemmas over the completion
-    -- with ring homomorphisms; the two forms agree by unfolding.
-    erw [← v_algebraMap_eq_valuation, ← locMap_algebraMap g.toRingHom rfl,
-      v_locMap_eq_of_surjective _ _ g.surjective, v_algebraMap_eq_valuation, hy _ hw]
+    let u := FinPlace.comap g.toRingHom w
+    let y' := algebraMap L (LocField u) (y : L)
+    change w.valuation L (g (y : L)) = 1
+    calc
+      _ = Valued.v (algebraMap L (LocField w) (g (y : L))) :=
+        (v_algebraMap_eq_valuation (g (y : L))).symm
+      _ = Valued.v (locMap g.toRingHom (u := u) rfl y') :=
+        congrArg Valued.v (locMap_algebraMap g.toRingHom rfl (y : L)).symm
+      _ = Valued.v y' := v_locMap_eq_of_surjective g.toRingHom rfl g.surjective y'
+      _ = u.valuation L (y : L) := v_algebraMap_eq_valuation (y : L)
+      _ = 1 := hy u hw
   · -- Let the divisor of `z` off `S` be invariant. The idele `a` of `K` with orders those of the
     -- norm of `z` divided by the degree has that divisor, and is principal off `S`.
     intro z hz
@@ -709,7 +727,7 @@ lemma albert_brauer_hasse_noether (α : (unitsModule Γ).H2)
       ⟨U.normalCore, isOpen_of_isClosed_of_finiteIndex _ (normalCore_isClosed _ U.isClosed)⟩
     -- Restriction to `W` factors through restriction to `U`.
     have h_factor : (unitsModule Γ).resH2 W α =
-        (pairMapH2 (.mk (inclusion U.normalCore_le) (continuous_subtype_val.subtype_mk _)) .id)
+        (pairMapH2 (.mk (inclusion U.normalCore_le) (continuous_subtypeVal.subtype_mk _)) .id)
           ((unitsModule Γ).resH2 U α) := by
       induction α using QuotientAddGroup.induction_on
       rfl

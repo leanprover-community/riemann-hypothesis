@@ -1,5 +1,10 @@
-import New.Derivatives.FormalGroup.ThetaProducts
-import New.UpperBound.Size.ShortColumns
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.Derivatives.FormalGroup.ThetaProducts
+public import New.UpperBound.Size.ShortColumns
+import New.Reduction.Data.Sizes
 
 /-!
 # Near pairs of `b`-places and the losses in the sharpness bound
@@ -43,6 +48,8 @@ Notions from other files:
 
 Legendre's formula for `v(n!)` is classical.
 -/
+
+@[expose] public section
 
 open Finset Real Nat New.Parameters
 
@@ -276,7 +283,7 @@ lemma padicValNat_factorial_mem_Icc_of_le (D : Data P) {p : ℕ} [Fact p.Prime] 
       _ ≤ p ^ (⌈D.logB⌉₊ + 1) := by grw [exp_one_lt_three.le, ← hp3, cast_ofNat]
   refine Set.Icc_subset_Icc_left ?_ (padicValNat_factorial_mem_Icc h_digits)
   push_cast
-  linarith [ceil_lt_add_one h_logB]
+  linarith only [ceil_lt_add_one h_logB]
 
 /-- For `p ≥ 3` and `n₁ + n₂ + n₃ ≤ 2 b`, the multinomial coefficient
 `(n₁ + n₂ + n₃)! / (n₁! n₂! n₃!)` has valuation at most `3 (log b + 2)`.

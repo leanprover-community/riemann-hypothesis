@@ -1,3 +1,12 @@
+module
+
+public import Aesop.BuiltinRules
+public import Mathlib.Algebra.TrivSqZeroExt.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.Spectrum.Prime.Homeomorph
+public import Lib.Shimura.AbelianScheme.Basic
 import Lib.General.Geometry.PointsOfProperSchemes
 
 /-!
@@ -32,6 +41,8 @@ Notions from other files:
 Known; see `Lib.Shimura.AbelianScheme.IsogenyFlatness` and `Lib.Shimura.ThetaModuli.UniversalFamily`
 for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -133,22 +144,17 @@ variable {S X : Scheme} {A : Over S} {ι O : Type} {B C C' D : CommRingCat} {V :
 
 /-! ### Existence of charts; the signature condition -/
 
-/-- The two conditions of `New.IsSqZeroExt` as one conjunction. -/
-lemma IsSqZeroExt.surjective_and_mul_eq_zero (hψ : IsSqZeroExt ψ) :
-    (⇑ψ).Surjective ∧ ∀ a b : C, ψ a = 0 → ψ b = 0 → a * b = 0 :=
-  ⟨hψ.coe_surjective, fun _ _ ↦ hψ.mul_eq_zero⟩
-
 /-- The kernel of a square-zero extension ψ is a nilpotent ideal: its square is zero. -/
 lemma IsSqZeroExt.isNilpotent_ker (hψ : IsSqZeroExt ψ) : IsNilpotent (RingHom.ker ψ.hom) := by
   refine ⟨2, ?_⟩
-  simp_all [hψ.surjective_and_mul_eq_zero, ← le_bot_iff, Ideal.mul_le, sq]
+  simp_all [hψ.mul_eq_zero, ← le_bot_iff, Ideal.mul_le, sq]
 
 /-- For a square-zero extension ψ : C → C', the map Spec C' → Spec C is surjective. -/
 lemma IsSqZeroExt.surjective_specMap (hψ : IsSqZeroExt ψ) : Surjective (Spec.map ψ) := by
   -- A surjection with nil kernel induces a homeomorphism of spectra.
   have h_pow_mem (x : C') : ∃ n > 0, x ^ n ∈ ψ.hom.range := ⟨1, by simp [hψ.coe_surjective x]⟩
   have h_ker_le (a : C) (ha : a ∈ RingHom.ker ψ.hom) : a ∈ nilradical C :=
-    ⟨2, by simp_all [hψ.surjective_and_mul_eq_zero, sq]⟩
+    ⟨2, by simp_all [hψ.mul_eq_zero, sq]⟩
   have h_homeo : IsHomeomorph (PrimeSpectrum.comap ψ.hom) :=
     PrimeSpectrum.isHomeomorph_comap ψ.hom h_pow_mem h_ker_le
   exact ⟨h_homeo.surjective⟩
@@ -160,7 +166,7 @@ lemma IsSqZeroExt.landsIn_of_comp (hψ : IsSqZeroExt ψ) {y : Spec C ⟶ X} {V :
   -- Every point of Spec C is the image of a point of Spec C', where the composite lands in V.
   hψ.surjective_specMap.surj.forall.mpr h_in
 
-open MvPolynomial Algebra FormallySmooth FormallyUnramified RingHom in
+open MvPolynomial Algebra RingHom in
 /-- If f : X → S is smooth of relative dimension d, every point x of X has an open neighbourhood
 V on which some d functions are étale coordinates for f. -/
 lemma exists_isEtaleChart (x : X) {d : ℕ} (hf : SmoothOfRelativeDimension d f) :
@@ -188,19 +194,20 @@ lemma exists_isEtaleChart (x : X) {d : ℕ} (hf : SmoothOfRelativeDimension d f)
     (h_point_iff ξ (σ ≫ ψ) (ψ ∘ l)).1 ⟨by simp [hyt], hl.symm⟩
   algebraize [g, eval₂Hom σ.hom l, eval₂Hom (σ ≫ ψ).hom (ψ ∘ l)]
   have h_nil : IsNilpotent (ker ψ.hom) := hψ.isNilpotent_ker
-  -- Existence: `g` is formally smooth, so `ξ` lifts to an algebra map `ρ` into `C`.
-  obtain ⟨ρ, rfl⟩ :
-      ∃ ρ : Γ(X, V) →ₐ[MvPolynomial (Fin d) Γ(S, U)] C, ofHom ρ.toRingHom ≫ ψ = ξ := by
-    let ξ_alg : Γ(X, V) →ₐ[MvPolynomial (Fin d) Γ(S, U)] C' := ⟨ξ.hom, RingHom.congr_fun hξ⟩
-    let ψ_alg : C →ₐ[MvPolynomial (Fin d) Γ(S, U)] C' := ⟨ψ.hom, map_eval₂Hom _ _ _⟩
-    refine ⟨liftOfSurjective ξ_alg ψ_alg hψ.coe_surjective h_nil, ?_⟩
+  let ξ_alg : Γ(X, V) →ₐ[MvPolynomial (Fin d) Γ(S, U)] C' := ⟨ξ.hom, RingHom.congr_fun hξ⟩
+  let ψ_alg : C →ₐ[MvPolynomial (Fin d) Γ(S, U)] C' := ⟨ψ.hom, map_eval₂Hom _ _ _⟩
+  have : FormallyEtale (MvPolynomial (Fin d) Γ(S, U)) Γ(X, V) := h_etale.formallyEtale
+  obtain ⟨ρ, hρ, h_unique⟩ :=
+    New.Variety.existsUnique_algHom_lift ξ_alg ψ_alg hψ.coe_surjective h_nil
+  have h_lift : ofHom ρ.toRingHom ≫ ψ = ξ := by
     ext a
-    exact AlgHom.congr_fun (comp_liftOfSurjective ξ_alg ψ_alg hψ.coe_surjective h_nil) a
+    exact AlgHom.congr_fun hρ a
+  obtain rfl := h_lift.symm
   obtain ⟨hρ_over, hρ_coord⟩ :=
     (h_point_iff (ofHom ρ.toRingHom) σ l).2 (RingHom.ext ρ.commutes)
   refine ⟨homMk _ hρ_over, ⟨by simp, hρ_coord⟩,
     fun ⟨y', _, hy'_over⟩ ⟨hy'_red, hy'_coord⟩ ↦ ?_⟩
-  -- Uniqueness: another lift is an algebra map `ρ'` congruent to `ρ`, and `g` is unramified.
+  -- Any scheme-theoretic lift on the chart gives an algebraic lift through `ψ`.
   obtain ⟨ρ', rfl⟩ := landsIn_opensRange.mp
     (hψ.landsIn_of_comp (landsIn_opensRange.mpr ⟨ofHom ρ.toRingHom ≫ ψ, hy'_red.symm⟩) :
       LandsIn y' hV.fromSpec.opensRange)
@@ -208,7 +215,7 @@ lemma exists_isEtaleChart (x : X) {d : ℕ} (hf : SmoothOfRelativeDimension d f)
   have h_red : ρ' ≫ ψ = ofHom ρ.toRingHom ≫ ψ := by
     simpa [-map_comp, ← map_comp_assoc, cancel_mono, map_inj] using hy'_red
   obtain rfl : ⟨ρ'.hom, RingHom.congr_fun h_alg⟩ = ρ :=
-    FormallyUnramified.ext' ψ.hom h_nil _ _ (ConcreteCategory.congr_hom h_red)
+    h_unique _ (AlgHom.ext fun a ↦ ConcreteCategory.congr_hom h_red a)
   rfl
 
 @[simp]
@@ -240,7 +247,8 @@ lemma HasSignature.of_points [Fintype ι] [DecidableEq ι]
     simpa [← hq, Matrix.map_add, map_smul', vecMulVec] using congr_fun₂ (hX_rank n) i j
   have h_eigen_b (n : N) (i : ι) :
       ∑ j : ι, σ n (q i j) * X n j + σ n (ρ b') * X n i = σ n (ρ b) * X n i := by
-    simpa [← hq, Matrix.one_apply, add_mul, Finset.sum_add_distrib, apply_ite (σ n)] using h_eigen n b i
+    simpa [← hq, Matrix.one_apply, add_mul, Finset.sum_add_distrib, apply_ite (σ n)] using
+      h_eigen n b i
   have h_trace : ρ b - ρ b' - ∑ i, q i i = 0 := by
     -- `q X = (ξ ⬝ X) X` is the trace times `X`; compare with `q X = (ρ b - ρ b') X` at a unit
     -- entry of `X`.
@@ -327,10 +335,9 @@ lemma tangentCoords_comp (h_zero_in : LandsIn (0 : mk t ⟶ A).left V) (hy : IsI
     h_zero_in, funext_iff]
 
 /-- The coordinates z(y) − z(0) of a C-point y that is infinitesimal for the square-zero extension
-ψ lie in ker ψ; here z are étale coordinates on V, which contains the zero C-point. -/
-lemma map_tangentCoords_eq_zero (_hz : IsEtaleChart A.hom V z)
-    (h_zero_in : LandsIn (0 : mk t ⟶ A).left V) (hy : IsInfinitesimal ψ y) [hψ : IsSqZeroExt ψ]
-    (k : ι) :
+ψ lie in ker ψ; here z are coordinates on V, which contains the zero C-point. -/
+lemma map_tangentCoords_eq_zero (h_zero_in : LandsIn (0 : mk t ⟶ A).left V)
+    (hy : IsInfinitesimal ψ y) [hψ : IsSqZeroExt ψ] (k : ι) :
     ψ (tangentCoords z y k) = 0 := by
   -- `ψ ∘ tangentCoords z y` is `tangentCoords z` of the reduction of `y`, which is `0`.
   have hy_zero : (homMk (map ψ) : mk (map ψ ≫ t) ⟶ mk t) ≫ y = 0 := hy
@@ -340,7 +347,7 @@ lemma map_tangentCoords_eq_zero (_hz : IsEtaleChart A.hom V z)
   exact (congrFun h_nat k).symm
 
 /-- A C-point y that is infinitesimal for the square-zero extension ψ and has coordinates
-z(y) − z(0) = 0 is zero; here z are étale coordinates on V, which contains the zero C-point. -/
+z(y) − z(0) = 0 is zero; here z are coordinates on V, which contains the zero C-point. -/
 lemma eq_zero_of_tangentCoords_eq_zero (hz : IsEtaleChart A.hom V z)
     (h_zero_in : LandsIn (0 : mk t ⟶ A).left V) (hy : IsInfinitesimal ψ y) [hψ : IsSqZeroExt ψ]
     (h_dv : tangentCoords z y = 0) : y = 0 :=
@@ -362,14 +369,6 @@ the zero C-point of A lies in V. -/
 lemma IsLieChart.zero_landsIn {s : Spec B ⟶ S} {V : A.left.Opens} {z : ι → Γ(A.left, V)}
     {m : O → Matrix ι ι B} (h_lie : IsLieChart A s V z m) {φ : B ⟶ C} (ht : Spec.map φ ≫ s = t) :
     LandsIn (0 : mk t ⟶ A).left V := (h_lie.2 ht).1
-
-/-- For a chart at 0 over s with matrices m, the point t = Spec φ ≫ s, and a C-point y that is
-infinitesimal for a square-zero extension ψ: dz(a y) = φ(m(a)) dz(y) for a in O, where
-dz = `New.tangentCoords z`. -/
-lemma IsLieChart.tangentCoords_smul {s : Spec B ⟶ S} {V : A.left.Opens} {z : ι → Γ(A.left, V)}
-    {m : O → Matrix ι ι B} (h_lie : IsLieChart A s V z m) {φ : B ⟶ C} (ht : Spec.map φ ≫ s = t)
-    {ψ : C ⟶ C'} [IsSqZeroExt ψ] {y : mk t ⟶ A} (hy : IsInfinitesimal ψ y) (a : O) :
-    tangentCoords z (a • y) = (m a).map φ *ᵥ tangentCoords z y := ((h_lie.2 ht).2 hy).1 a
 
 /-- For a chart at 0 over s, the point t = Spec φ ≫ s, and C-points y, x that are infinitesimal
 for a square-zero extension ψ: dz(y + x) = dz(y) + dz(x), where dz = `New.tangentCoords z`. -/
@@ -430,8 +429,8 @@ lemma exists_isLieChart {g : ℕ} (hd : SmoothOfRelativeDimension g A.hom) [IsLo
     have h_univ : IsInfinitesimal (ofHom (fstHom B B _).toRingHom) (c • (Y .inl + Y .inr)) :=
       IsInfinitesimal.smul (by rw [IsInfinitesimal, comp_add, hY, hY, add_zero]) c
     have h_ker (v : Fin g ⊕ Fin g → C) : ψ (v ⬝ᵥ L) = 0 := by
-      simp [L, dotProduct, hz.map_tangentCoords_eq_zero h_in hy,
-        hz.map_tangentCoords_eq_zero h_in hy']
+      simp [L, dotProduct, IsEtaleChart.map_tangentCoords_eq_zero h_in hy,
+        IsEtaleChart.map_tangentCoords_eq_zero h_in hy']
     algebraize [φ.hom]
     -- The entries of `L` lie in the square-zero kernel of `ψ`, so sending the basis vectors to them
     -- is a `B`-algebra map `B ⊕ B^{2g} → C`; `q` is the induced map of schemes over `S`.
@@ -446,13 +445,13 @@ lemma exists_isLieChart {g : ℕ} (hd : SmoothOfRelativeDimension g A.hom) [IsLo
     have h_pull (c : Fin g → Fin g ⊕ Fin g) {x : mk (map φ ≫ s) ⟶ A} (hx : IsInfinitesimal ψ x)
         (hL : tangentCoords z x = L ∘ c) : q ≫ Y c = x := by
       refine (hz.existsUnique_tangentCoords_eq h_in hψ (tangentCoords z x)
-          (hz.map_tangentCoords_eq_zero h_in hx)).unique ⟨(hY c).precomp q rfl (φ ≫ ψ) ?_, ?_⟩
-        ⟨hx, rfl⟩
+          (IsEtaleChart.map_tangentCoords_eq_zero h_in hx)).unique
+        ⟨(hY c).precomp q rfl (φ ≫ ψ) ?_, ?_⟩ ⟨hx, rfl⟩
       · exact hom_ext (RingHom.ext fun _ ↦ (map_add _ _ _).trans (add_eq_left.2 (h_ker _)))
       · simp [IsEtaleChart.tangentCoords_comp (z := z) h_in (hY c) q rfl, hY_coords, hL, funext_iff]
     -- The universal coordinates have no `B`-part; pull them back along `q`.
     have h_fst : ∀ k : Fin g, (tangentCoords z (c • Y .inl + c • Y .inr) k).fst = 0 := by
-      simpa using hz.map_tangentCoords_eq_zero h_in h_univ
+      simpa using IsEtaleChart.map_tangentCoords_eq_zero h_in h_univ
     -- `using!`: the two sides agree only after unfolding `Fintype.linearCombination`.
     simpa [b, h_pull .inl hy rfl, h_pull .inr hy' rfl, lift, h_fst, funext_iff, comp_add] using!
       IsEtaleChart.tangentCoords_comp (z := z) h_in h_univ q rfl
@@ -504,14 +503,6 @@ lemma IsInfinitesimal.eq_zero_of_isUnit_and_nsmul_eq_zero_of_cast_eq_zero (hy : 
       (hm.smul_eq_zero.1 h_smul_zero)
   · have h_coords_zero : tangentCoords z (m • y) = 0 := by rw [h_dv, hm, zero_smul]
     exact h_lie.isEtaleChart.eq_zero_of_tangentCoords_eq_zero h_in (h_nsmul m) h_coords_zero
-
-/-- Let A → S be smooth of constant relative dimension, let t : Spec C → S factor through
-s : Spec B → S with B local, and let the C-point y of A vanish modulo the square-zero ideal ker ψ.
-If m is invertible in C, then my = 0 forces y = 0. -/
-lemma IsInfinitesimal.eq_zero_of_nsmul_eq_zero (hy : IsInfinitesimal ψ y) [IsSqZeroExt ψ] {g : ℕ}
-    (hd : SmoothOfRelativeDimension g A.hom) [IsLocalRing B] (a : mk t ⟶ mk s) {m : ℕ}
-    (hm : IsUnit (m : C)) (hmy : m • y = 0) : y = 0 :=
-  (hy.eq_zero_of_isUnit_and_nsmul_eq_zero_of_cast_eq_zero hd a m).left hm hmy
 
 /-- Let A → S be smooth of constant relative dimension, let t : Spec C → S factor through
 s : Spec B → S with B local, and let the C-point y of A vanish modulo the square-zero ideal ker ψ.
@@ -569,8 +560,9 @@ lemma New.Variety.eq_zero_of_nsmul_eq_zero_of_comp_eq_zero {R K : Type} {g : ℕ
   have h_le_ker : I ≤ RingHom.ker (preimage s).hom := by
     simpa [hI, eq_zero_iff_factors_zero_section] using h_vanish
   -- Nakayama's lemma: a finitely generated ideal inside the Jacobson radical with `I ≤ I • I`.
-  have h_bot : I = ⊥ := I.eq_bot_of_le_smul_of_le_jacobson_bot I h_fg h_le_sq
-    (h_le_ker.trans ((le_maximalIdeal (RingHom.ker_ne_top _)).trans (maximalIdeal_le_jacobson _)))
+  have h_bot : I = ⊥ := I.eq_bot_of_le_smul_of_le_jacobson I h_fg h_le_sq
+    (h_le_ker.trans ((le_maximalIdeal (RingHom.ker_ne_top _)).trans
+      (IsLocalRing.ringJacobson_eq_maximalIdeal _).ge))
   simpa [eq_zero_iff_factors_zero_section, h_bot] using hI (.id R)
 
 end TorsionUnramified

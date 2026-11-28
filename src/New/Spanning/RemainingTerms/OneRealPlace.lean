@@ -1,4 +1,11 @@
-import New.Spanning.RemainingTerms.BorderedDeterminant
+module
+
+import TauCeti.Analysis.Matrix.OstrowskiTaussky
+import Mathlib.Algebra.Order.Star.Real
+public import New.Spanning.RemainingTerms.BorderedDeterminant
+import Lib.Cohomology.Etale.Basic
+import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # The weight of Schur's test at one real place
@@ -29,6 +36,8 @@ Notions from other files:
 * `New.RealPlace.differenceX₀_eq_add`: the dependence of `v` on the unipotent element.
 * `New.RealPlace.exists_majorant_volumeRatio_inv_pow`: an integrable majorant of `ν ^ (-(k + i))`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -77,18 +86,11 @@ lemma frameVolume_pos (γ : 𝔰.G₁) : 0 < frameVolume γ := by
   simp_rw [frameVolume, norm_pos_iff, ← exists_mulVec_eq_zero_iff.not, ← mulVec_mulVec]
   intro ⟨v, hv, h_ker⟩
   set w : 𝔰.BesselIndex → ℂ := γ⁻¹.val.val *ᵥ 𝔰.frameCols *ᵥ v
-  have h_fix : 𝔰.J₁ *ᵥ w = w := J₁_mulVec_eq_self h_ker
-  have h_form : star w ⬝ᵥ w = -(‖v 𝔰.top‖ ^ 2 : ℝ) := by
-    calc
-      _ = star w ⬝ᵥ 𝔰.J₁ *ᵥ w := by rw [h_fix]
-      _ = star (𝔰.frameCols *ᵥ v) ⬝ᵥ 𝔰.J₁ *ᵥ 𝔰.frameCols *ᵥ v := U.form_mulVec_mulVec γ⁻¹ _ _
-      _ = _ := form_frameCols_mulVec v
-  have hw_zero : w = 0 :=
-    dotProduct_star_self_pos_iff.not_left.1 (by simp [h_form, not_lt_of_ge])
-  have hv_image : 𝔰.frameCols *ᵥ v = 0 := by simpa [w] using congrArg (γ.val.val *ᵥ ·) hw_zero
-  -- Apply the left inverse `frameColsᴴ` of `frameCols`.
-  simpa [inclMatrix_gram_eq_one besselFrame_injective, hv] using
-    congrArg (𝔰.frameColsᴴ *ᵥ ·) hv_image
+  have hw : w = 0 := dotProduct_star_self_pos_iff.not_left.1 <| by
+    simp [(congrArg (star w ⬝ᵥ ·) (J₁_mulVec_eq_self h_ker).symm).trans
+      ((U.form_mulVec_mulVec γ⁻¹ _ _).trans (form_frameCols_mulVec v)), not_lt_of_ge]
+  simpa [w, inclMatrix_gram_eq_one besselFrame_injective, hv] using
+    congrArg (fun x => 𝔰.frameColsᴴ *ᵥ γ.val.val *ᵥ x) hw
 
 /-- The volume does not change when the point `y` is moved by a unipotent element `γ` that fixes
 every vector of the frame. -/
@@ -131,7 +133,7 @@ lemma measurable_volumeRatio : Measurable (volumeRatio γ) := by fun_prop [volum
 /-- For `γ ∈ G₁`, the form `J₁` is negative semidefinite on the span of the frame `γ f`, where
 `f = (e₁, …, e_ϱ, z)` is given by the columns of `frameCols`: for any matrix `a` of coefficients,
 minus the Gram matrix for `J₁` of the columns of `γ f a` is positive semidefinite. -/
-lemma RealPlace.posSemidef_neg_gram_mul_frameCols (γ : 𝔰.G₁) {m : Type} [Fintype m]
+lemma RealPlace.posSemidef_neg_gram_mul_frameCols (γ : 𝔰.G₁) {m : Type}
     (a : Matrix (Fin 𝔰.n) m ℂ) :
     (-((γ.val.val * (𝔰.frameCols * a))ᴴ * 𝔰.J₁ *
       (γ.val.val * (𝔰.frameCols * a)))).PosSemidef := by
@@ -181,10 +183,6 @@ lemma RealPlace.frameCols_J₁_gram :
     simp [inclMatrix, splitGram, middleGram, Matrix.mul_apply, Matrix.one_apply, diagonal_apply,
       (castSucc_lt_last _).ne']
 
-lemma RealPlace.realFrameGram_eq :
-    realFrameGram γ = 𝔰.frameColsᴴ * 𝔰.J₁ * (γ.val.val * 𝔰.frameCols) := by
-  simp [← Matrix.ext_iff, inclMatrix, frameGram, Matrix.mul_apply, Matrix.one_apply]
-
 /-- If the vector `frameCols x = γ frameCols x'` lies in the span of the frame `f` and in the span
 of `γ f`, then its products with the frame `γ f` are `(0, …, 0, -x' top)`. That is,
 `(realFrameGram γ)ᴴ x = Pi.single top (-x' top)`. Here `realFrameGram γ` is the matrix of the
@@ -193,21 +191,15 @@ the coefficients `x top` and `x' top` of `z` have the same modulus. -/
 lemma RealPlace.conjTranspose_realFrameGram_mulVec {γ : 𝔰.G₁} {x x' : Fin 𝔰.n → ℂ}
     (h_shared : γ.val.val *ᵥ 𝔰.frameCols *ᵥ x' = 𝔰.frameCols *ᵥ x) :
     (realFrameGram γ)ᴴ *ᵥ x = Pi.single 𝔰.top (-x' 𝔰.top) ∧ ‖x' 𝔰.top‖ = ‖x 𝔰.top‖ := by
-  have h_diagonal (w : Fin 𝔰.n → ℂ) :
-      (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.frameCols) *ᵥ w = Pi.single 𝔰.top (-w 𝔰.top) := by
-    ext a
-    rw [frameCols_J₁_gram, mulVec_diagonal]
-    cases a using lastCases <;> simp
   constructor
-  · rw [← h_diagonal, ← U.gram_invariant γ, ← mulVec_mulVec, ← mulVec_mulVec x', h_shared,
-      realFrameGram_eq, mulVec_mulVec]
+  · suffices (realFrameGram γ)ᴴ *ᵥ x = (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.frameCols) *ᵥ x' by
+      ext a
+      cases a using lastCases <;> simp [this, frameCols_J₁_gram, mulVec_diagonal]
+    rw [← U.gram_invariant γ, ← mulVec_mulVec, ← mulVec_mulVec x', h_shared,
+      realFrameGram_eq_conjTranspose_mul, mulVec_mulVec]
     simp [Matrix.mul_assoc, isHermitian.eq]
-  · have h_form : star (γ.val.val *ᵥ 𝔰.frameCols *ᵥ x') ⬝ᵥ
-        𝔰.J₁ *ᵥ γ.val.val *ᵥ 𝔰.frameCols *ᵥ x' =
-        star (𝔰.frameCols *ᵥ x') ⬝ᵥ 𝔰.J₁ *ᵥ 𝔰.frameCols *ᵥ x' :=
-      U.form_mulVec_mulVec γ _ _
-    rw [h_shared, form_frameCols_mulVec, form_frameCols_mulVec, neg_inj, Complex.ofReal_inj]
-      at h_form
+  · have h_form := U.form_mulVec_mulVec γ (𝔰.frameCols *ᵥ x') (𝔰.frameCols *ᵥ x')
+    simp only [h_shared, form_frameCols_mulVec, neg_inj, Complex.ofReal_inj] at h_form
     exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h_form.symm
 
 /-- An element `y` preserves the form `J₁`, so `J₁ y = (y⁻¹)ᴴ J₁`. -/
@@ -445,7 +437,7 @@ lemma RealPlace.inclMatrix_mul_dualProducts (hδ : (subframeBlock hi Z).det ≠ 
 image under `γ` of the subframe `e₁, …, e_i, z` are the columns of `Z` at its indices. -/
 lemma RealPlace.frameCols_mul_mul_subframeCols (hZ : realFrameGram γ = Z) :
     𝔰.frameColsᴴ * 𝔰.J₁ * (γ.val.val * subframeCols hi) = Z * inclMatrix ℂ (subframeIndex hi) := by
-  rw [← Matrix.mul_assoc γ.val.val, ← Matrix.mul_assoc, ← hZ, realFrameGram_eq]
+  rw [← Matrix.mul_assoc γ.val.val, ← Matrix.mul_assoc, ← hZ, realFrameGram_eq_conjTranspose_mul]
 
 /-- The columns of `ω` are a basis with Gram matrix `-1` of a subspace of the negative space at `y`.
 Their products with the subframe `e₁, …, e_i, z` form the lower triangular matrix `L`, and those
@@ -467,6 +459,12 @@ structure RealPlace.IsTriangularBasis (y : 𝔰.G₁) (Z : 𝔰.FrameMatrix)
   det_ne_zero : L.det ≠ 0
 
 end Subframe
+
+private lemma gram_eq_neg_mul_of_J₁_mul {m : Type}
+    {y : 𝔰.G₁} {ω : Matrix 𝔰.BesselIndex m ℂ}
+    (hω : 𝔰.J₁ * (y⁻¹.val.val * ω) = -(y⁻¹.val.val * ω)) :
+    ωᴴ * 𝔰.J₁ * ω = -((y⁻¹.val.val * ω)ᴴ * (y⁻¹.val.val * ω)) := by
+  rw [← U.gram_invariant y⁻¹, Matrix.mul_assoc, hω, Matrix.mul_neg]
 
 /-- Let `i ≤ ϱ` and let `Z` be a square matrix indexed by the frame whose block
 `B = subframeBlock hi_le Z` at the indices of the subframe `e₁, …, e_i, z` has nonzero determinant.
@@ -490,8 +488,7 @@ lemma RealPlace.exists_isTriangularBasis {i : ℕ} {Z : 𝔰.FrameMatrix} (hi_le
   have h_products : 𝔰.frameColsᴴ * 𝔰.J₁ * ω₀ = dualProducts hi_le Z := by
     simp [ω₀, Matrix.mul_assoc, mul_mul_eq_of_mul_eq mul_self, ← conjTranspose_mul,
       frameLeftInverse_mul_frameCols, ← Matrix.mul_assoc 𝔰.frameColsᴴ]
-  have h_gram : ω₀ᴴ * 𝔰.J₁ * ω₀ = -(Wᴴ * W) := by
-    rw [← U.gram_invariant y⁻¹, Matrix.mul_assoc, hW, Matrix.mul_neg]
+  have h_gram : ω₀ᴴ * 𝔰.J₁ * ω₀ = -(Wᴴ * W) := gram_eq_neg_mul_of_J₁_mul hW
   have h_left :
       (inclMatrix ℂ (subframeIndex hi_le))ᴴ * (𝔰.frameColsᴴ * 𝔰.J₁ * y.val.val) * W = 1 := by
     simp [← inclMatrix_mul_dualProducts hi_le hδ, ← h_products, W, Matrix.mul_assoc]
@@ -551,8 +548,7 @@ lemma norm_dotProduct_J₁_mul_col_le_norm (h : IsTriangularBasis hi y Z ω L)
       (𝔰.J₁ * (((y⁻¹ : 𝔰.G₁) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) * ω)).col l‖ ≤ ‖x‖ := by
   set W : Matrix 𝔰.BesselIndex (Fin (i + 1)) ℂ := y⁻¹.val.val * ω
   have h_orthonormal : Wᴴ * W = 1 := by
-    rw [← neg_inj, ← h.gram_eq_neg_one, ← U.gram_invariant y⁻¹, Matrix.mul_assoc, h.J₁_mul,
-      Matrix.mul_neg]
+    exact neg_inj.mp ((gram_eq_neg_mul_of_J₁_mul h.J₁_mul).symm.trans h.gram_eq_neg_one)
   let w : EuclideanSpace ℂ 𝔰.BesselIndex := .toLp 2 (W.col l)
   have hw : ‖w‖ = 1 := by
     have h_inner : inner ℂ w w = 1 := by
@@ -664,9 +660,8 @@ lemma norm_det_mul_le_volumeRatio (h : IsTriangularBasis hi y Z ω L)
         (inclMatrix ℂ (subframeIndex hi) * (subframeBlock hi Z)⁻¹ * L)
   have h_ostrowski : ‖(1 + vᴴ * v).det‖ ≤ 2 ^ (i + 1) * ‖(-K).det‖ := by
     simpa only [Fintype.card_fin] using
-      ostrowski_taussky (PosSemidef.one.add v.posSemidef_conjTranspose_mul_self) h_negative
+      (PosSemidef.one.add v.posSemidef_conjTranspose_mul_self).norm_det_le_two_pow_mul h_negative
   have hL : 0 < ‖L.det‖ := norm_pos_iff.2 h.det_ne_zero
-  have hδ_pos : 0 < ‖(subframeBlock hi Z).det‖ := norm_pos_iff.2 hδ
   have h_det : ‖(-K).det‖ = volumeRatio γ y * ‖L.det‖ ^ 2 / ‖(subframeBlock hi Z).det‖ := by
     have h_factor : K = ((γ.val.val * subframeCols hi)ᴴ * 𝔰.J₁ * ω)ᴴ * (subframeBlock hi Z)⁻¹ *
       L := by
@@ -742,11 +737,11 @@ lemma RealPlace.exists_common_vector_of_normOnePairOccursFrom (hi_le : i ≤ �
       simp_all [inclMatrix, mulVec, dotProduct, eq_comm]
   have h_block_mulVec : subframeBlock hi_le Z *ᵥ c = Pi.single (last i) (-x 𝔰.top) := by
     have hZx' : Z *ᵥ x' = Pi.single 𝔰.top (-x 𝔰.top) := by
-      rw [← hZ, realFrameGram_eq, ← mulVec_mulVec, ← mulVec_mulVec x', h_frames, mulVec_mulVec,
-        frameCols_J₁_gram]
-      ext a
-      rw [mulVec_diagonal]
-      cases a using lastCases <;> simp
+      have h_inverse : γ⁻¹.val.val *ᵥ 𝔰.frameCols *ᵥ x = 𝔰.frameCols *ᵥ x' := by
+        simpa [mulVec_mulVec, ← Units.val_mul, ← Subgroup.coe_mul] using
+          congrArg (γ⁻¹.val.val *ᵥ ·) h_frames.symm
+      simpa only [← hZ, realFrameGram, Filling.frameGram_inv, conjTranspose_conjTranspose] using
+        (conjTranspose_realFrameGram_mulVec h_inverse).1
     rw [← hc, mulVec_mulVec, mul_inclMatrix] at hZx'
     ext l
     -- The block is made of the rows of the subframe in `Z.submatrix id (subframeIndex hi_le)`.
@@ -953,7 +948,6 @@ theorem RealPlace.exists_majorant_volumeRatio_inv_pow (hi_le : i ≤ 𝔰.ϱ) {�
   let φ (A : Fin i → 𝔰.κ → ℂ) : ENNReal :=
     .ofReal (C * ‖(G + (L₁ᴴ * of A + c)ᴴ * (L₁ᴴ * of A + c)).det‖⁻¹ ^ (𝔰.k + i))
   have hG : G.PosDef := PosDef.one.add_posSemidef (posSemidef_vecMulVec_self_star _)
-  have hδ_pos : 0 < ‖(subframeBlock hi_le Z).det‖ := norm_pos_iff.2 hδ
   have h_zero (l : Fin i) : L l.castSucc (last i) = 0 := h.triangular _ _ (castSucc_lt_last l)
   refine ⟨φ, ?_, ?_, fun γ A hZ hγ h_shift ↦ ENNReal.ofReal_mono ?_⟩
   · exact (((measurable_det_add_conjTranspose_mul L₁ᴴ c G).norm.inv.pow_const _).const_mul

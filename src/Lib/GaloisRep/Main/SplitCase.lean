@@ -1,6 +1,17 @@
-import Lib.GaloisRep.Main.AttachedRepresentations
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import Lib.GaloisRep.Main.AttachedRepresentations
+public import Lib.GaloisRep.WeightCongruence
+public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+public import Lib.Shimura.HeckeTower.HeckeData
+import Lib.GaloisRep.Main.CuspidalTypes
 import Lib.GaloisRep.Main.SeedRepresentation
-import Lib.GaloisRep.WeightCongruence
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.PadicComparison.ToricTower
+import Lib.PadicHodge.Limit.TraceLimit
 
 /-!
 # Attached Galois representations in odd rank: the split case
@@ -39,6 +50,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.Main.OddRank` for sources.
 -/
+
+@[expose] public section
 
 section OddRank
 
@@ -139,7 +152,7 @@ by the coefficients of `P` and of the `Q i`, with the sign changed. If `P` is mo
 and these coefficients of `P` in degree `a - 1` lie in a complete set, some `R` is attached to `P`,
 and the pairs of the traces of `R` and of the `r i` lie in `N`. -/
 lemma New.GaloisRep.exists_attached_of_isApproximatingMonoid {ℓ : ℕ} {E : Type} {a : ℕ} [ThePrime ℓ]
-    [PadicIso ℓ] [Field E] [CMType E] [EmbeddedNumberField E] [NeZero a] {s : Set.Ioi (0 : ℝ) → ℕ}
+    [PadicIso ℓ] [Field E] [EmbeddedNumberField E] [NeZero a] {s : Set.Ioi (0 : ℝ) → ℕ}
     {t : (η : Set.Ioi 0) → Fin (s η) → PadicAlgCl ℓ}
     {N : Submonoid (PadicAlgCl ℓ × ((η : Set.Ioi 0) × Fin (s η) → PadicAlgCl ℓ))}
     (apx : IsApproximatingMonoid s t N)
@@ -251,9 +264,9 @@ lemma New.HasNoSmallRelations.exists_mem_jumps {E : Type} {a : ℕ} [Field E] [C
     omega
   by_cases hσ : σ = Φ τ
   · refine ⟨_, h_free.const_add_mul (a - 1 - κ.2 τ) one_ne_zero, fun i ↦ Multiset.mem_map.2
-      ⟨i, Multiset.mem_range.2 i.2, (ite_eq_left hσ).trans (by linarith [h_sum i])⟩⟩
+      ⟨i, Multiset.mem_range.2 i.isLt, (ite_eq_left hσ).trans (by linarith [h_sum i])⟩⟩
   · refine ⟨_, h_free.const_add_mul (κ.2 τ) (neg_ne_zero.2 one_ne_zero), fun i ↦ Multiset.mem_map.2
-      ⟨i, Multiset.mem_range.2 i.2, (ite_eq_right hσ).trans (by linarith [h_sum i])⟩⟩
+      ⟨i, Multiset.mem_range.2 i.isLt, (ite_eq_right hσ).trans (by linarith [h_sum i])⟩⟩
 
 /-- Let `v` be a split place, `V` an open subgroup, and `ϑ` a character of the matrices `≡ 1`
 modulo `v` that is trivial on those `≡ 1` modulo `v ^ 2`. There are a level `K` and a character
@@ -277,22 +290,22 @@ lemma New.GaloisRep.exists_isLevel_of_localCongruence_hom {E : Type} {a : ℕ} [
     .comap (atPlace v) (continuous_atPlace v)
         ⟨localCongruence (Fin a) v 0, isOpen_localCongruence⟩ ⊓
       offPartComap v_split V ⊓ ⟨stdLevel E (Fin a), isOpen_stdLevel⟩
-  have mem_K (k : Gf E (Fin a)) : k ∈ K.1 ↔ atPlace v k ∈ localCongruence (Fin a) v 0 ∧
+  have mem_K (k : Gf E (Fin a)) : k ∈ K.toSubgroup ↔ atPlace v k ∈ localCongruence (Fin a) v 0 ∧
       k * (ofSplitPlace v_split (atPlace v k))⁻¹ ∈ V ∧ k ∈ stdLevel E (Fin a) := by
     simp [K, offPartComap, and_assoc]
-  let χ : K.1 →* ℂ :=
-    ϑ.comp (.mk' (fun k ↦ ⟨atPlace v k, ((mem_K k).1 k.2).left⟩) (by simp))
+  let χ : K.toSubgroup →* ℂ :=
+    ϑ.comp (.mk' (fun k ↦ ⟨atPlace v k, ((mem_K k).1 k.property).left⟩) (by simp))
   have χ_near : χ =ᶠ[nhds 1] 1 :=
     .mono (((isOpen_localCongruence (m := 1)).preimage_of_continuous
-      ((continuous_atPlace v).comp continuous_subtype_val)).mem_nhds (by simp)) fun k hk ↦
-      show χ k = 1 from ϑ_one ⟨_, ((mem_K k).1 k.2).left⟩ hk
+      ((continuous_atPlace v).comp continuous_subtypeVal)).mem_nhds (by simp)) fun k hk ↦
+      show χ k = 1 from ϑ_one ⟨_, ((mem_K k).1 k.property).left⟩ hk
   have K_off (k : Gf E (Fin a)) (k_int : k ∈ stdLevel E (Fin a)) (k_v : atPlace v k = 1) :
-      k ∈ K.1 ↔ k ∈ V := by simp [mem_K, k_v, k_int]
-  have χ_off (k : K.1) (k_v : atPlace v k.val = 1) : χ k = 1 := by simp [χ, k_v, ϑ_one]
-  have j_mem (j : localCongruence (Fin a) v 0) : ofSplitPlace v_split j.val ∈ K.1 := by
+      k ∈ K.toSubgroup ↔ k ∈ V := by simp [mem_K, k_v, k_int]
+  have χ_off (k : K.toSubgroup) (k_v : atPlace v k.val = 1) : χ k = 1 := by simp [χ, k_v, ϑ_one]
+  have j_mem (j : localCongruence (Fin a) v 0) : ofSplitPlace v_split j.val ∈ K.toSubgroup := by
     have j_int : j.val ∈ localIntGL (Fin a) v := j.prop.1
     simpa [mem_K] using j_int
-  exact ⟨K.1, χ, ⟨inf_le_right, K.2⟩, χ_near, K_off, χ_off,
+  exact ⟨K.toSubgroup, χ, ⟨inf_le_right, K.isOpen'⟩, χ_near, K_off, χ_off,
     fun j ↦ ⟨⟨_, j_mem j⟩, rfl, by simp [χ]⟩⟩
 
 /-- Let `N` be a closed monoid of pairs `(x, φ)` such that `∑ i, t η i * φ (η, i)` tends to `x`
@@ -361,13 +374,13 @@ private lemma New.GaloisRep.exists_inf_trivialOn_le_offPartComap {E : Type} {a :
       x ∉ S ∧
       star x ∉ S ∧
       (∀ w : FinPlace E, x ≠ w → star x ≠ w → maxCompactAt (Fin a) w ≤ H.1 → w ∉ S ∧ star w ∉ S) ∧
-      stdLevel E (Fin a) ⊓ trivialOn (Fin a) S ≤ (offPartComap x_split H).1 := by
+      stdLevel E (Fin a) ⊓ trivialOn (Fin a) S ≤ (offPartComap x_split H).toSubgroup := by
   obtain ⟨S, S_min, S_level⟩ : ∃ S : Finset (FinPlace E),
       (∀ w : FinPlace E, maxCompactAt (Fin a) w ≤ (offPartComap x_split H).1 → w ∉ S ∧ star w ∉ S) ∧
-      stdLevel E (Fin a) ⊓ trivialOn (Fin a) S ≤ (offPartComap x_split H).1 :=
-    exists_inf_trivialOn_le (offPartComap x_split H).2
+      stdLevel E (Fin a) ⊓ trivialOn (Fin a) S ≤ (offPartComap x_split H).toSubgroup :=
+    exists_inf_trivialOn_le (offPartComap x_split H).isOpen'
   -- A point supported at `x` and its conjugate has trivial part off `x`.
-  have x_le : maxCompactAt (Fin a) x ≤ (offPartComap x_split H).1 :=
+  have x_le : maxCompactAt (Fin a) x ≤ (offPartComap x_split H).toSubgroup :=
     inf_le_of_right_le (by simp [LE.le, ← range_ofSplitPlace x_split, offPartComap])
   obtain ⟨x_off, star_off⟩ := S_min x x_le
   refine ⟨S, x_off, star_off, fun w x_ne star_ne le_H ↦ S_min w fun g hg ↦ ?_, S_level⟩
@@ -415,7 +428,7 @@ private lemma New.GaloisRep.exists_isTypeLevel {E : Type} {a : ℕ} [Field E] [C
     {ϑ : localCongruence (Fin a) v 0 →* ℂ}
     (ϑ_one : ∀ k : localCongruence (Fin a) v 0, k.val ∈ localCongruence (Fin a) v 1 → ϑ k = 1) :
     ∃ (K : Subgroup (Gf E (Fin a))) (χ : K →* ℂ) (U : Finset (FinPlace E)),
-      IsTypeLevel v_split ϑ x H.1 K χ U := by
+      IsTypeLevel v_split ϑ x H.toSubgroup K χ U := by
   classical
   -- Off `v` the level is the group of integral points whose part off `x` lies in `H`.
   obtain ⟨S, x_off, star_x_off, S_min, S_level⟩ := exists_inf_trivialOn_le_offPartComap x_split H
@@ -555,7 +568,7 @@ private lemma New.GaloisRep.exists_attached_of_coeff_mem {ℓ : ℕ} {E : Type} 
     exact ⟨by simpa using p_hecke.isMonicOfDegree hf_ne, neg_mem (p_hecke.coeff_pred_mem hL hf₀),
       fun j ↦ hd p j (coeff_mem p.place p_split _ j p_off star_off p_prime p_hecke)⟩
   exact exists_attached_of_isApproximatingMonoid apx r_cont r_frob
-    L.toSubmodule.complete_of_finiteDimensional d
+    L.toSubmodule.isComplete_of_finiteDimensional d
     most_frob
 
 -- Keeps definitional checks from unfolding the finite sums.
@@ -639,7 +652,7 @@ lemma New.GaloisRep.sphericalCompat_of_split {ℓ : ℕ} {E : Type} {a D : ℕ} 
   -- limit of combinations of the others. It contains the pairs of eigenvalues of the `T w hw j`.
   obtain ⟨s, t, N, apx, y, mem_N⟩ :=
     exists_isApproximatingMonoid_of_mem_uniformClosure (padicModel_one_ne_zero h_eig.1) mem_closure
-  choose r Q y_eig y_cont y_frob y_sph using fun i ↦ (y i).2
+  choose r Q y_eig y_cont y_frob y_sph using fun i ↦ (y i).property
   have pair_mem (w : FinPlace E) (hw : star w ≠ w) (X : ℂ[X]) (j : ℕ) (h₁ : w ∉ U)
       (h₂ : star w ∉ U) (h₃ : ↑ℓ ∈ w.asIdeal → w = u) (hX : HasHeckePolyAt f w hw X) :
       (b w hw j * ιℓ (X.coeff j), fun i ↦ b w hw j * ιℓ ((Q i w).coeff j)) ∈ N :=

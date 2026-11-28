@@ -1,4 +1,13 @@
-import Lib.GaloisRep.Main.LocalConditions
+module
+
+public import Mathlib.AlgebraicGeometry.Morphisms.Proper
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+public import Lib.GaloisRep.Main.LocalConditions
+public import Lib.Cohomology.Etale.EllAdicCohomology
+public import Lib.PadicComparison.HodgeTate.Map
+public import Lib.PadicComparison.Primitive.PeriodCoefficients
+import Lib.General.Geometry.PointsOfProperSchemes
+import Lib.PadicComparison.Descent.TestCovers
 import Lib.PadicComparison.HodgeTate.GaloisWeight
 import Lib.PadicComparison.Primitive.ComparisonTheorem
 import Lib.PadicComparison.Primitive.Periods
@@ -44,6 +53,8 @@ the kernel of Fontaine's map, and bijectivity is not proved. Source: Scholze, p-
 for rigid-analytic varieties, Forum Math. Pi 1 (2013), Cor. 1.8; the construction follows Bhatt, The
 Hodge–Tate decomposition via perfectoid spaces, Arizona Winter School 2017, §3.4.
 -/
+
+@[expose] public section
 
 /-!
 ## The period map on p-adic tests
@@ -180,7 +191,6 @@ lemma exists_period_map [Algebra ℤ_[p] S] [IsScalarTower ℤ_[p] Ainf S] [IsSc
   -- bijective on cohomology as soon as `primitiveMap` is modulo `p`, given flat base change
   -- and finiteness (`hγ_bij`).
   obtain ⟨γ, hγ, hγ_bij⟩ := exists_primitive_period_comparison K θ hS
-  have := Flat.trans ℤ_[p] ℚ_[p] K
   algebraize [(algebraMap _ ℂ_[p]).comp e]
   let α (Y : Over (Spec R)) :
       freeAb (testPoints Y) ⟶ genericTest ⋙ freeAb (testIncl ⋙ geomPoints R Ω Y) :=
@@ -204,46 +214,44 @@ lemma exists_period_map [Algebra ℤ_[p] S] [IsScalarTower ℤ_[p] Ainf S] [IsSc
   · -- Naturality in `Y`, checked on pure tensors.
     obtain ⟨x, rfl⟩ := (E Y).symm.surjective x
     induction x with
-    | add x y hx hy => simp [hx, hy]
+    | add x y hx hy =>
+      rw [LinearEquiv.map_add, LinearMap.map_add, LinearMap.map_add, hx, hy, LinearMap.map_add,
+        AddMonoidHom.map_add]
     | tmul a x =>
       rw [J_tmul]
       refine (J_tmul W a (x.map _ _ n)).trans (map_pull_eq_pull_map ?_ n x).symm
-      exact freeAb.hom_ext fun _ _ ↦ rfl
+      exact freeAb.hom_ext fun _ _ ↦ by rfl
   · -- Equivariance, checked on pure tensors.
     obtain ⟨x, rfl⟩ := (E Y).symm.surjective x
     induction x with
-    | add x y hx hy => simp [hx, hy]
+    | add x y hx hy =>
+      rw [LinearEquiv.map_add, LinearMap.map_add, LinearMap.map_add, hx, hy, LinearMap.map_add,
+        AddMonoidHom.map_add]
     | tmul a x =>
-      -- The comparisons agree by `hβ`: Witt vectors of locally constant `𝔽_p`-valued functions
-      -- are fixed by Frobenius.
-      have h_coeff : (cmp (σ a)).coeffHom =
-          ((cmp a).trans (Comparison.of (PadicTest.twist (j g)) β)).coeffHom :=
-        coeffHom_eq_coeffHom_trans_of_actsAsOnFrobeniusFixed K θ γ hγ hβ a
       refine (J_tmul Y (σ a) (x.map _ _ n)).trans ?_
-      rw [J_tmul, pull_trans, ← map_pull_eq_pull_map (Category.id_comp _), H.map_id]
-      -- Two steps: the two pull-backs are along the same map of points, as `e` is equivariant;
-      -- and along the same comparison, by `h_coeff`.
-      refine (congrArg (fun f ↦ (cmp (σ a)).pull f n x)
-        (?h_maps : _ = freeAbMap (toTwistPoints he hj g Y) ≫
-          (Comparison.of (PadicTest.twist (j g)) β).functor.whiskerLeft (α Y))).trans ?h_cmp
-      case h_cmp =>
-        exact congrArg (fun φ ↦ Comparison.pull ⟨_, φ⟩ _ n x) h_coeff
-      case h_maps =>
-        refine freeAb.hom_ext fun c y ↦
-          congrArg FreeAddCommGroup.of (baseChangeOf.ext ?_ fun z ↦ ?_)
-        · exact congrArg ULift.up (Spec.map_comp_assoc (𝟙 _) ..)
-        · -- `genericStructureMap_twist` matches the structure map of the twisted test only up to
-          -- instances
-          erw [eq_comm, genericStructureMap_twist, smul_coe_Cp, hj]
-          rfl
+      rw [J_tmul, pull_trans]
+      -- Two steps. The two pull-backs are along the same comparison by `hβ`: Witt vectors of
+      -- locally constant `𝔽_p`-valued functions are fixed by Frobenius.
+      refine (congrArg (fun φ ↦ Comparison.pull ⟨_, φ⟩ _ n _)
+        (coeffHom_eq_coeffHom_trans_of_actsAsOnFrobeniusFixed K θ γ hγ hβ a)).trans ?_
+      -- And they are along the same map of points, as `e` is equivariant.
+      refine (map_pull_eq_pull_map (a' := 𝟙 _) ((Category.id_comp _).trans (.symm ?_)) n
+        x).symm.trans (H.map_id ..)
+      refine freeAb.hom_ext fun c y ↦
+        congrArg FreeAddCommGroup.of (baseChangeOf.ext (congrArg ULift.up ?_) fun z ↦ ?_)
+      · apply Spec.map_comp_assoc (𝟙 _) (CommRingCat.ofHom (algebraMap c.ProdRing c.GenericRing))
+      · -- `genericStructureMap_twist` matches the structure map of the twisted test only up to
+        -- instances
+        exact .symm ((c.genericStructureMap_twist (j g) _).trans (congrArg c.genericStructureMap
+          ((UniformSpace.Completion.algEquiv_smul_coe ..).trans (congrArg _ (hj ..)))))
   · -- For `Y` proper and charted each of the three factors is bijective: `E Y` as a linear
     -- equivalence, `baseChangeMap` by flat base change, the pull-back by
     -- `finite_and_primitive_comparison`. The acyclicity hypothesis of the latter is almost descent,
     -- which applies since `p ∣ ξ` in `S`.
     obtain ⟨h_geo, -, h_prim⟩ :=
       finite_and_primitive_comparison Ω (isAcyclicOnPerfect_almostCoeff hS.pFlat_smul_eq_zero) Y
-    have h_pts : HasFlatBaseChange (freeAb (testPoints Y)) :=
-      (isAffinelyCovered_algPointsOf (ι := algFunctor) (fun c ↦ c.isTest.isComparableRing)
+    have h_pts : HasFlatBaseChange (freeAb (testPoints Y)) := by
+      apply (isAffinelyCovered_algPointsOf (ι := algFunctor) (fun c ↦ c.isTest.isComparableRing)
         Y).hasFlatBaseChange
     exact (hγ_bij h_geo h_pts finite_padic_cohomology (h_prim he) n).comp
       ((h_geo ..).comp (E Y).bijective)
@@ -296,8 +304,8 @@ lemma New.Variety.exists_hasHodgeTateWeight {p h : ℕ} {R : CommRingCat} {E k :
   -- As `R` maps into the place `A`, the embedding `e` carries it into `OC`.
   algebraize [theta.comp (algebraMap ℤ_[p] _), (algebraMap E k).comp (algebraMap R E),
     (.codRestrict (.comp (algebraMap ..) (e.comp _)) _ (by simpa) : R →+* OC)]
-  have : IsScalarTower ℤ_[p] OC ℂ_[p] :=
-    of_algebraMap_eq fun z ↦ ((OC.toPadicIntAlgHom _).commutes z).symm
+  have := IsScalarTower.of_algebraMap_eq (R := ℤ_[p]) (S := OC) (A := ℂ_[p]) fun z ↦
+    ((OC.toPadicIntAlgHom _).commutes z).symm
   -- `J Z'` maps `ℂ_p ⊗ V^(q+h)(Z')` to `H^(q+h)` of the points of `Z'` in tests `c`, with
   -- coefficients `c[1/p]`; it is natural in `Z'`, Galois equivariant, and bijective for `Z'`
   -- proper and charted.
@@ -325,8 +333,8 @@ lemma New.Variety.exists_hasHodgeTateWeight {p h : ℕ} {R : CommRingCat} {E k :
     change J Z' (z • y) = algebraMap k ℂ_[p] (ε z) • J Z' y
     rw [h_scalar, ← (J Z').map_smul, _root_.algebraMap_smul]
   -- `Y` is smooth, so covered by étale charts.
-  have h_den : PairRestrictBijective (restrictAlg E k ⋙ freeAb (algPointsOf E R Y)) :=
-    (hasAtlas_algPointsOf d).isChartCovered.pairRestrictBijective
+  have h_den : PairRestrictBijective (restrictAlg E k ⋙ freeAb (algPointsOf E R Y)) := by
+    apply (hasAtlas_algPointsOf d).isChartCovered.pairRestrictBijective
   obtain ⟨ξ, hξ⟩ : ∃ ξ : H (genericOver ⋙ restrictAlg E k ⋙ freeAb (algPointsOf E R Y))
       genericCoeff (q + h), hodgeTateMap h x.baseChange = restrictToPairs (n := q + h) ξ :=
     h_den.exists_hodgeTateMap_eq h _
@@ -343,10 +351,11 @@ lemma New.Variety.exists_hasHodgeTateWeight {p h : ℕ} {R : CommRingCat} {E k :
       _ = (Comparison.of _ (twistGenericCoeff (toGp g))).pull
           (freeAbMap (toTwistPoints (fun _ ↦ rfl) hj g Y)) (q + h) (J Y v) := by
         refine J_twist Y g _ (twistGenericCoeff _) (fun c a w _ ↦ ?_) v
-        unfold periodTmul
         -- `hθ` and `genericStructureMap_twist` match the twisted test only up to instances
-        erw [hθ, hθ, genericStructureMap_twist]
-        rfl
+        exact (congrArg (fun t ↦ (twistGenericCoeff (toGp g)).app c ⟨t⟩)
+          ((hθ ((PadicTest.twist (toGp g)).obj c) a w).trans
+            (congrArg (· * _) (c.genericStructureMap_twist (toGp g) a)))).trans
+              (congrArg ULift.up (hθ c _ w).symm)
       _ = B Y (ε (algebraMap _ _ (cyclotomicGp (toGp g)⁻¹).val) ^ h • ξ) := by
         -- `g` multiplies `ξ` by this scalar
         have h_weight := h_den.injective_restrictToPairs
@@ -363,12 +372,16 @@ lemma New.Variety.exists_hasHodgeTateWeight {p h : ℕ} {R : CommRingCat} {E k :
       _ = J Y ((cyclotomicGp (toGp g) ^ (-h : ℤ)).val • v) := by
         simp [algebra_compatible_smul (PadicAlgCl p), J_semi, hv]
   · -- Naturality of `hodgeTateMap`, `restrictToPairs`, `J` and `B` in `u`.
-    simp [hodgeTateMap_map, hξ, J_nat, hv, ← restrictToPairs_map]
+    simp only [HodgeH.baseChange_map, hodgeTateMap_map, hξ, ← restrictToPairs_map, J_nat, hv,
+      LinearMap.comp_apply, LinearEquiv.coe_coe, LinearMap.coe_mk, LinearMap.coe_toAddHom]
     -- It remains that `B` commutes with the pull-back along `u`: `B` is `mapₗ` along the maps
     -- `toGenericPoints`, which are natural in the scheme.
     rw [(B W).symm_apply_eq.mpr]
-    refine (map_comp _ (freeAb.map (toGenericPoints k h_compat Y)) ξ).symm.trans
-      (.trans ?_ (map_comp (freeAb.map (toGenericPoints k h_compat W)) _ ξ))
+    -- `τ Z'` is that map, typed with the source of `B Z'`, so that unification does not unfold `B`
+    let τ (Z' : Over (Spec R)) : freeAb.obj (testPoints.obj Z') ⟶
+        genericOver ⋙ restrictAlg E k ⋙ freeAb (algPointsOf E R Z') := by
+      apply freeAb.map (toGenericPoints k h_compat Z')
+    refine (map_comp _ (τ Y) ξ).symm.trans (.trans ?_ (map_comp (τ W) _ ξ))
     -- the two composite maps of points agree
     exact congrArg (H.map genericCoeff · (q + h) ξ) hom_ext
 

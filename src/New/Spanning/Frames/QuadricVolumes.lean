@@ -1,5 +1,11 @@
+module
+
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Topology.Algebra.Group.Units
+public import New.Spanning.Frames.Correlations
+public import Lib.DiscreteSeries.Bruhat.QuadricBlocks
 import Lib.DiscreteSeries.Bruhat.FourierKernels
-import New.Spanning.Frames.Correlations
+import New.Spanning.Frames.TwoGauges
 
 /-!
 # Volumes on quadrics and on sections
@@ -15,8 +21,8 @@ G^(l), U_(<l) and Y^(l) are those of the head of `New.Spanning.Frames.Lengths`.
 * `New.Floors.Gauge.setLIntegral_orthonormalPart_le`: integrals of functions of the orthonormal
   coordinates.
 * `New.Floors.Gauge.lintegral_heisenbergMeasure_le`: integrals over a Heisenberg group.
-* `New.Floors.sectionPoint`, `New.Floors.PlaceData.lintegral_floorQuadricMeasure_eq`,
-  `New.Floors.Gauge.setLIntegral_sectionMeasure_le`: sections and their measures.
+* `New.Floors.sectionPoint`, `New.Floors.Gauge.setLIntegral_sectionMeasure_le`: sections and their
+  measures.
 
 Notions from other files:
 
@@ -36,6 +42,8 @@ Notions from other files:
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
 
+@[expose] public section
+
 namespace New.Floors
 
 open Matrix MeasureTheory Measure ENNReal Sum Set Function FloorGroups Size Place TraceOne PlaceData
@@ -53,20 +61,13 @@ lemma mem_vecsOfSize_of_floorBasis_mulVec {x : Fin 2 ⊕ FloorPairs b m ⊕ ι �
     (h : F.floorBasis b *ᵥ x ∈ Γ.vecsOfSize j) :
     x ∈ Γ.vecsOfSize (j + 4) := by
   -- Each entry of the basis is zero, one or an entry of `F.basisMatrix`, and so has size 1.
-  have h_entry (k : 𝔰.BesselIndex) (i : Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m) :
-      F.floorBasis b k i ∈ Γ.ofSize 1 := by
+  have h_basis : Γ.HasMatrixSize 1 (F.floorBasis b)ᴴ := fun i k ↦ by
+    simp only [conjTranspose_apply, neg_mem_iff_and_star_mem_iff]
     revert k i
-    -- `sum_boole_mul` evaluates the products with `inclMatrix`; `ite_mul` would hide its pattern.
     simp [floorBasis, Matrix.mul_apply, inclMatrix, Matrix.one_apply, -ite_mul, sum_boole_mul,
       Γ.hasMatrixSize_basisMatrix _, zero_one_mem_ofSize, ite_mem]
-  have h_basis : Γ.HasMatrixSize 1 (F.floorBasis b)ᴴ := fun i k ↦ by
-    simpa [neg_mem_iff_and_star_mem_iff] using h_entry k i
-  have h_dual : Γ.HasMatrixSize 3 ((F.floorBasis b)ᴴ * T.splitGram) :=
-    h_basis.mul Γ.splitGram_and_inv_mem.1
-  have h_pair : planeSumGram (hyperbolicGram (FloorPairs b m) (1 : Matrix ι ι A)) *ᵥ x ∈
-      Γ.vecsOfSize (j + 4) := by
-    rw [← gram_floorBasis, ← mulVec_mulVec, show j + 4 = 3 + j + 1 by lia]
-    exact h_dual.mulVec h
+  have h_pair := (h_basis.mul Γ.splitGram_and_inv_mem.1).mulVec h
+  rw [mulVec_mulVec, gram_floorBasis, show 3 + j + 1 = j + 4 by lia] at h_pair
   -- The Gram matrix of the basis swaps the two entries of each pair and fixes the others.
   rintro (i | i | i | i)
   · fin_cases i
@@ -211,23 +212,17 @@ lemma skewMeasure_le_of_sub_mem_ofSize {S : Set (skewAdjoint A)} (u : Aˣ)
   -- times the volume of the numbers of size `j + 3`.
   refine skewMeasure_le_of_sub_mem u⁻¹ (C := Γ.ofSize (1 + (j + 1) + 1)) ?_ ?_
   · rintro ⟨β₁, β₂⟩ ⟨hβ₁, hβ₂⟩ ⟨β₁', β₂'⟩ ⟨hβ₁', hβ₂'⟩
-    have h_eq : u⁻¹ * (element * skewUnit⁻¹.val * (β₁ - β₁').val + (β₂ - β₂').val) =
-        element * skewUnit⁻¹.val * (u⁻¹ * (β₁ - β₁').val) - u⁻¹ * (β₂' - β₂).val := by
-      push_cast
-      ring
-    rw [Prod.mk_sub_mk, h_eq]
-    exact sub_mem_ofSize (Γ.mul_mem_ofSize Γ.traceOne_div_mem_ofSize (h_diff β₁ hβ₁ β₁' hβ₁'))
-      (mem_ofSize_mono (h_diff β₂' hβ₂' β₂ hβ₂))
-  · calc (Place.modulus u⁻¹.val)⁻¹ * volume (Γ.ofSize (1 + (j + 1) + 1))
-        ≤ Place.modulus u.val * Γ.loss ^ (1 + (j + 1) + 1 + 1) := by
-          grw [volume_ofSize_le]
-          simp
-      _ ≤ Place.modulus u.val * Γ.loss ^ ((j + 2) * 2) := by
-          gcongr
-          · exact Γ.one_le_loss
-          · lia
-      _ = (Place.modulus u.val ^ (2⁻¹ : ℝ) * Γ.loss ^ (j + 2)) ^ 2 := by
-          simp [mul_pow, ← rpow_mul_natCast, ← pow_mul]
+    rw [Prod.mk_sub_mk]
+    convert sub_mem_ofSize (Γ.mul_mem_ofSize Γ.traceOne_div_mem_ofSize (h_diff β₁ hβ₁ β₁' hβ₁'))
+      (mem_ofSize_mono (h_diff β₂' hβ₂' β₂ hβ₂)) using 1
+    push_cast
+    ring
+  · grw [volume_ofSize_le]
+    simp only [modulus_inv, inv_inv, mul_pow, ← rpow_mul_natCast, Nat.cast_ofNat,
+      inv_mul_cancel₀ (two_ne_zero' ℝ), rpow_one, ← pow_mul]
+    gcongr
+    · exact Γ.one_le_loss
+    · lia
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum in
@@ -354,37 +349,6 @@ lemma measurable_sectionPoint (c : A) : Measurable (sectionPoint (T := T) a c) :
   unfold sectionPoint
   fun_prop
 
-omit [TopologicalSpace A] [MeasureSpace A] [Place A] [IsHermitianUnit T.splitGram] in
-/-- Let w = `floorWeyl a c` be the Weyl element of floor a that sends e_a to c e*_a, for a unit c.
-Then the point (w⁻¹ n)⁻¹ e_a of the orbit of e_a is c n⁻¹ e*_a = `sectionPoint a c n`. -/
-lemma orbitPoint_floorWeyl_inv_mul (c : Aˣ) (n : T.G) :
-    orbitPoint a.castSucc ((floorWeyl a c.val)⁻¹ * n) = sectionPoint a c.val n := by
-  have h_weyl : (floorWeyl a c.val : T.G).val.val *ᵥ Pi.single (inl a) 1 =
-      c.val • Pi.single (eStar a) 1 := by
-    ext k
-    simp [floorWeyl, weylOn, BesselIndex.level, Pi.single_apply]
-  simp [orbitPoint, sectionPoint, ← mulVec_mulVec, -mulVec_single, h_weyl, mulVec_smul]
-
-/-- The measure `F.floorQuadricMeasure a.castSucc` of the isotropic cone of Y^(a) is dc times the
-measures `sectionMeasure T a c` of its sections ⟨e_a, y⟩ = c, where the product is that of the form
-`T` over `A` and e_a is the a-th isotropic basis vector. -/
-lemma PlaceData.lintegral_floorQuadricMeasure_eq {f : (𝔰.BesselIndex → A) → ℝ≥0∞}
-    (hf : Measurable f) :
-    ∫⁻ y : 𝔰.BesselIndex → A, f y ∂F.floorQuadricMeasure a.castSucc =
-      ∫⁻ c : A, ∫⁻ y : 𝔰.BesselIndex → A, f y ∂sectionMeasure T a c := by
-  -- The measure of the cone is the image under `orbitPoint` of the floor measure, which is the
-  -- Weyl law convolved with the Heisenberg measure.
-  have h_floor : F.floorMeasure a.castSucc = weylLaw a ∗ₘ heisenbergMeasure a := by
-    simp [floorMeasure]
-  rw [← (measurePreserving_orbitPoint (F := F) a.castSucc).lintegral_comp hf, h_floor,
-    lintegral_mconv (by fun_prop), weylLaw, lintegral_map (by fun_prop) (by fun_prop),
-    lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)]
-  -- Almost every `c` is a unit, and for a unit the inner integrals agree.
-  refine lintegral_congr_ae (ae_isUnit.mono ?_)
-  rintro _ ⟨c, rfl⟩
-  simp only [sectionMeasure, lintegral_smul_measure, lintegral_map hf (measurable_sectionPoint _),
-    ← orbitPoint_floorWeyl_inv_mul, Pi.mul_apply, smul_eq_mul]
-
 /-- The coordinates of a point of a section: for the Heisenberg element n = `heisenbergElem a t`
 with t = (ω, β), the point c n⁻¹ e*_a is c (e*_a - ω) plus a multiple of c e_a. Here ω is extended
 by zero to the floors at most a. -/
@@ -498,20 +462,13 @@ lemma Gauge.sectionPoint_mem_vecsOfSize_of_isNear {y n ν : T.G} (hp : Γ.IsHead
     (hy : y ∈ F.boxSet) (hn : n ∈ floorUnipotent a) (hν : ν ∈ unipotentBelow a)
     (h_near : F.IsNear (a + 1) (weylElem (a + 1) p * (n * ν) * y)) :
     sectionPoint a (star (p a).val) n ∈ Γ.vecsOfSize (20 * 𝔰.n) := by
-  obtain ⟨hn_floor, hn_unip⟩ : n ∈ floorGroup a ∧ n ∈ unipotentBelow (a + 1) := hn
-  -- For the head `star p`, the entry `star (p a)` and `(n ν)⁻¹ e*_a` have size `10 * 𝔰.n`.
-  have h_mem : n * ν ∈ partialUnitriangularGroup (a + 1) :=
-    mul_mem (unipotentBelow_le_partialUnitriangularGroup hn_unip)
-      (unipotentBelow_le_partialUnitriangularGroup hν)
-  have h_box : (n * ν)⁻¹ * (n * ν * y) ∈ F.boxSet := by rwa [inv_mul_cancel_left]
-  obtain ⟨h_unit, -, h_col⟩ :
-      (star p a).val ∈ Γ.ofSize (10 * 𝔰.n) ∧ (star p a)⁻¹.val ∈ Γ.ofSize (10 * 𝔰.n) ∧
-        ∀ i : 𝔰.BesselIndex, (n * ν)⁻¹.val.val i (eStar a) ∈ Γ.ofSize (10 * 𝔰.n) :=
-    head_entries_mem_ofSize Γ.hasMatrixSize_boxSet a.isLt
-      (by simpa [IsNear, mul_assoc] using h_near)
-      ⟨inv_mem h_mem, h_box⟩ hp.star_head .refl
-  refine sectionPoint_mem_vecsOfSize hn_floor (congrBelow_sectionPoint_orbitPoint hn_floor hν)
-    fun k ↦ ?_
+  -- For the head `star p`, `star (p a)` and `(n ν)⁻¹ e*_a` have size `10 * 𝔰.n`.
+  obtain ⟨h_unit, -, h_col⟩ := head_entries_mem_ofSize Γ.hasMatrixSize_boxSet a.isLt
+    (by simpa [IsNear, mul_assoc] using h_near)
+    ⟨inv_mem (mul_mem (unipotentBelow_le_partialUnitriangularGroup hn.2)
+      (unipotentBelow_le_partialUnitriangularGroup hν)), by simpa [← mul_assoc] using hy⟩
+    hp.star_head .refl
+  refine sectionPoint_mem_vecsOfSize hn.1 (congrBelow_sectionPoint_orbitPoint hn.1 hν) fun k ↦ ?_
   rw [orbitPoint_weylElem_mul, mulVec_single_one]
   exact mem_ofSize_mono (Γ.mul_mem_ofSize h_unit (h_col k))
 

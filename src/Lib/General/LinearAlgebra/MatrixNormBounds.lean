@@ -1,4 +1,14 @@
-import Lib.GLn.SchurModule.GramMatrix
+module
+
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.LinearAlgebra.PiTensorProduct.Generators
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.GLn.SchurModule.GramMatrix
+import Lib.GLn.SchurModule.WeylKernel
 
 /-!
 # Auerbach's lemma, ultrametric matrix bounds and Gram norms
@@ -12,9 +22,9 @@ This file collects norm estimates for linear maps and matrices.
   of a basis on whose vectors all forms of the family take values of image norm at most `1`. These
   forms are chosen to maximise the norm of the image of their determinant; Cramer's rule gives the
   bound.
-* `New.norm_mulVec_le_of_nonneg`, `New.norm_mulVec_le`: over an ultrametric field, a matrix whose
-  entries have norm at most `c ≥ 0` multiplies the sup norm of a vector by at most `c`, whatever its
-  size.
+* `New.norm_mulVec_le_of_nonneg`, `New.norm_mulVec_le`: over an ultrametric seminormed ring, a
+  matrix whose entries have norm at most `c ≥ 0` multiplies the sup norm of a vector by at most `c`,
+  whatever its size.
 * `New.sqrt_weylNormSq_le_of_dual`: a bound on the Gram norm of Weyl modules by duality.
 * `New.sqrt_weylNormSq_sum_le`: the triangle inequality for the Gram norm of Weyl modules.
 
@@ -22,6 +32,8 @@ This file collects norm estimates for linear maps and matrices.
 
 Known result: Auerbach's lemma, here for a compact family of linear forms.
 -/
+
+@[expose] public section
 
 /-! ## Auerbach's lemma for a compact family of linear forms -/
 
@@ -36,12 +48,14 @@ basis `z` such that the coordinates of `z` are the forms `ℓ (S k)` and `‖φ 
 all `a`, `k`. The result depends on the basis `b` only through its index type `ι`. The topology
 `topA` of `A` is implicit: it is found from the continuity hypothesis. -/
 lemma New.exists_auerbach {K U A L ι : Type*} [Field K] [AddCommGroup U] [Module K U]
-    [Module.Finite K U] [Fintype ι] {topA : TopologicalSpace A} [CompactSpace A] [NormedField L]
+    [Module.Finite K U] {topA : TopologicalSpace A} [CompactSpace A] [NormedField L]
     (b : Basis ι K U) (ℓ : A → Dual K U) (h_sep : ∀ v : U, (∀ a : A, ℓ a v = 0) → v = 0)
     (φ : K →+* L) (hℓ_cont : ∀ v : U, Continuous fun a : A ↦ φ (ℓ a v)) :
     ∃ (S : ι → A) (z : Basis ι K U),
       (∀ k : ι, z.coord k = ℓ (S k)) ∧ ∀ (a : A) (k : ι), ‖φ (ℓ a (z k))‖ ≤ 1 := by
   classical
+  have : Finite ι := Module.Finite.finite_basis b
+  let := Fintype.ofFinite ι
   -- Choose `S` to maximise `‖φ (det (ℓ ∘ S))‖` and let `z` be the basis dual to `ℓ ∘ S`. By
   -- Cramer's rule `ℓ a (z k)` is the determinant with `S k` replaced by `a` over the maximal one.
   -- First, the forms span the dual space, so the determinant is nonzero on some family of them.
@@ -78,24 +92,24 @@ lemma New.exists_auerbach {K U A L ι : Type*} [Field K] [AddCommGroup U] [Modul
 
 end Auerbach
 
-/-! ## Sup norm bound for matrix–vector products over ultrametric fields -/
+/-! ## Sup norm bound for matrix–vector products over ultrametric rings -/
 
-/-- Over an ultrametric normed field, a matrix whose entries have norm at most `c ≥ 0` multiplies
+/-- Over an ultrametric seminormed ring, a matrix whose entries have norm at most `c ≥ 0` multiplies
 the sup norm of a vector by at most `c`, whatever the size of the matrix. -/
-lemma New.norm_mulVec_le_of_nonneg {K l m : Type*} [NormedField K] [IsUltrametricDist K]
+lemma New.norm_mulVec_le_of_nonneg {K l m : Type*} [SeminormedRing K] [IsUltrametricDist K]
     [Fintype l] [Fintype m] {M : Matrix l m K} {c : ℝ} (hc : 0 ≤ c)
     (hM : ∀ (i : l) (j : m), ‖M i j‖ ≤ c) (x : m → K) :
     ‖M.mulVec x‖ ≤ c * ‖x‖ := by
   refine (pi_norm_le_iff_of_nonneg (by positivity)).2 fun i ↦ ?_
-  -- In an ultrametric field a sum is bounded by its largest term.
+  -- In an ultrametric ring a sum is bounded by its largest term.
   rw [M.mulVec_apply_eq_sum]
   refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity) fun j _ ↦ ?_
   exact (norm_mul_le _ _).trans (mul_le_mul (hM i j) (norm_le_pi_norm x j) (norm_nonneg _) hc)
 
-/-- If all entries of a matrix `M` over an ultrametric normed field have norm at most `c`, then
+/-- If all entries of a matrix `M` over an ultrametric seminormed ring have norm at most `c`, then
 `‖M.mulVec x‖ ≤ c * ‖x‖` in the sup norm. This is the form of `New.norm_mulVec_le_of_nonneg` for
 explicit constants: the hypothesis `0 ≤ c` comes last and is proved by `simp` when omitted. -/
-lemma New.norm_mulVec_le {K l m : Type*} [NormedField K] [IsUltrametricDist K] [Fintype l]
+lemma New.norm_mulVec_le {K l m : Type*} [SeminormedRing K] [IsUltrametricDist K] [Fintype l]
     [Fintype m] {M : Matrix l m K} {c : ℝ} (hM : ∀ (i : l) (j : m), ‖M i j‖ ≤ c) (x : m → K)
     (hc : 0 ≤ c := by simp) :
     ‖M.mulVec x‖ ≤ c * ‖x‖ :=

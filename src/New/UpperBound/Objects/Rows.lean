@@ -1,7 +1,14 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.UpperBound.Objects.AuxiliaryPair
+public import New.UpperBound.Objects.Columns
+public import New.UpperBound.Objects.Parameters
+import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+import Lib.Adelic.AutomorphicForms.Cuspidality
+import Lib.Adelic.Witt.WittTheorem
 import Lib.Weil.Seesaw
-import New.UpperBound.Objects.AuxiliaryPair
-import New.UpperBound.Objects.Columns
-import New.UpperBound.Objects.Parameters
 
 /-!
 # Spaces Y_j and W_j, the forms on them, and the target parameter
@@ -36,6 +43,8 @@ Notions from other files:
   κ = `New.Data.weight`, h the gap and h₂ half the gap.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-- The bijection from κ plus a string of length 2ϱ + 1 to the basis indices
@@ -67,7 +76,7 @@ instance {u : Bool} : D.HasLogBound u D.ϱ (D.logX / 2 + (if u then 2 else -4)) 
   have h_mem : (D.ϱ : ℝ) ∈ Set.Icc (D.m / 4 : ℝ) D.m := by
     have h_nat : D.m ≤ 4 * D.ϱ ∧ D.ϱ ≤ D.m := by grind [ten_thousand_le_m]
     simpa [field] using mod_cast h_nat
-  exact .of_mem_Icc (D.m / 4) D.m h_mem (by cases u <;> scale_arith D)
+  exact .of_mem_Icc (D.m / 4) D.m h_mem (by cases u <;> grind [D.scale_inequalities])
 
 /-- A place w of the modulus Q of ϑ, or the conjugate of one, divides the product `ϑ.normQ` of
 the norms of the places of Q, and divides neither π̄₀π̄₁ (`D.piM`) nor the level N. -/
@@ -231,7 +240,8 @@ lemma exists_space_isStd_of_le_and_gram_eq_of_lt :
     { J
       x := mkAdelicGL (y, hL_unit.unit * (l * k'.val))
       gram_point :=
-        gram_mkAdelicGL hy (gram_mul_of_gram_eq rfl (gram_mul_of_gram_eq hl_orth k.val.prop)) }
+        gram_mkAdelicGL hy (gram_mul_of_gram_eq rfl (gram_mul_of_gram_eq hl_orth
+            (Matrix.mem_unitaryGroupOf_iff.1 k.val.prop))) }
   refine ⟨V, fun h_le ↦ absurd h_le hj.not_ge, fun _ ↦ ⟨rfl, ⟨l, hl⟩ * k', fun x ↦ ?_, by rfl⟩⟩
   have hk' : intGL.map (reduceAt (D.chosenPlace x)) k' =
       (intGL.map (reduceAt (D.chosenPlace x)) ⟨l, hl⟩)⁻¹ :=
@@ -537,42 +547,34 @@ Harish-Chandra parameter λ + ρ of the weight λ with column numbers `D.columns
 exponent `D.lastEntry D.m`. -/
 lemma isHCParam_paramY : IsHCParam D.columnsY (D.lastEntry D.m) (D.paramY D.m) := by
   intro τ
-  -- The decreasing list `sortedParamY` is twice the Harish-Chandra parameter of the weight.
-  have h_sorted (p : ℕ) (hp : p < D.n D.m - 1) :
-      D.sortedParamY τ p = hcParameter D.columnsY (D.lastEntry D.m) (D.n D.m - 1) τ p := by
-    have h_weight : 2 * D.weightY τ p = D.sortedParamY τ p - twiceBlockEntry (D.n D.m - 1) p :=
-      D.two_mul_weightY τ
-    rw [D.weightY_eq τ hp, twiceBlockEntry] at h_weight
-    rw [hcParameter, diagramWeight_apply]
-    linarith
-  -- It remains to find every entry of the parameter in the decreasing list.
-  suffices h_occurs : ∀ i : D.Y D.m, ∃ p < D.n D.m - 1, D.paramY D.m τ i = D.sortedParamY τ p by
-    refine ⟨(D.hasGap_gridParam τ false 0 0 D.m).injective, fun i ↦ ?_⟩
-    obtain ⟨p, hp, h_eq⟩ := h_occurs i
+  refine ⟨(D.hasGap_gridParam τ false 0 0 D.m).injective, ?_⟩
+  -- It suffices to find every entry of the parameter in the decreasing list `sortedParamY`.
+  suffices ∀ i : D.Y D.m, ∃ p < D.n D.m - 1, D.paramY D.m τ i = D.sortedParamY τ p by
+    intro i
+    obtain ⟨p, hp, h_eq⟩ := this i
+    have h_w : 2 * D.weightY τ p = _ := D.two_mul_weightY τ
+    rw [D.weightY_eq τ hp, twiceBlockEntry] at h_w
     rw [card_Y_m]
-    exact ⟨p, hp, h_eq.trans (h_sorted p hp)⟩
+    refine ⟨p, hp, ?_⟩
+    rw [h_eq, hcParameter, diagramWeight_apply]
+    linarith
   have h_rank (l : ℕ) (hl : l < D.m) : D.n l + (D.t + 1) ≤ D.n D.m :=
     (D.n_succ l).ge.trans (D.n_mono hl)
-  have h_even : D.m % 2 = 0 := even_iff.1 D.m_even -- nothing is lowered
+  have h_even : D.m % 2 = 0 := even_iff.1 D.m_even
   refine (D.gridBlockEquiv (z := false) (i := 0)).forall_congr_left.2 ?_
   rintro ((⟨y, hy⟩ | ⟨⟨-, ⟨⟩⟩, -⟩) | ⟨l, b⟩)
   · -- The entry `y` of the target parameter; the summand indexed by `Fin 0` is empty.
-    suffices h_row : ∃ p < D.n D.m - 1, 2 * D.targetParameter τ y = D.sortedParamY τ p by
-      simpa [paramY, gridParam, h_even] using h_row
+    simp [paramY, gridParam, h_even]
     by_cases h_head : y + 1 < D.k
-    · -- An entry of `[k - 1]` keeps its position.
-      exact ⟨y, by grind [D.k_le_n D.m], (ite_eq_left h_head).symm⟩
-    · -- The entry `halfGap - w_{i + 1}` of the target parameter stands just above block `i + 1`.
-      obtain ⟨i, rfl⟩ : ∃ i : ℕ, y = D.k - 1 + i := Nat.exists_eq_add_of_le (by omega)
+    · exact ⟨y, by grind [D.k_le_n D.m], (ite_eq_left h_head).symm⟩
+    · obtain ⟨i, rfl⟩ : ∃ i : ℕ, y = D.k - 1 + i := Nat.exists_eq_add_of_le (by omega)
       have hi : i < D.m := by grind [D.r_add_one]
       exact ⟨D.n i - 1, by grind [D.n_pos i, h_rank i hi], (D.sortedParamY_n_sub_one i τ).symm⟩
   · -- Entry `b` of block `l + 1`.
     refine ⟨D.n l + b, by grind [h_rank l l.isLt], ?_⟩
-    have h_entry : D.paramY D.m τ ((D.gridBlockEquiv (z := false) (i := 0) (j := D.m)).symm
-        (.inr ⟨l, b⟩)) = twiceBlockEntry D.t b - 2 * D.liftWeight (l + 1) τ := by
-      simp [paramY, gridParam, h_even, twiceBlockEntry]
-      ring
-    rw [h_entry, D.sortedParamY_block l τ b.isLt]
+    rw [D.sortedParamY_block l τ b.isLt]
+    simp [paramY, gridParam, h_even, twiceBlockEntry]
+    ring
 
 lemma card_rowIndex_sum_fin : Fintype.card (D.RowIndex ⊕ Fin D.t) = D.r + D.t := by
   rw [Fintype.card_sum, card_rowIndex, Fintype.card_fin]
@@ -593,6 +595,14 @@ lemma card_filter_basisNumber {q : D.RowIndex → Prop} [DecidablePred q] (a b :
 lemma paramW_lt_iff (τ : D.Φ) {a b : D.RowIndex} :
     D.paramW τ a < D.paramW τ b ↔ D.basisNumber b < D.basisNumber a := by
   simp [paramW, (D.targetParameter_strictAnti τ).lt_iff_gt]
+
+/-- At every infinite place `v`, the parameter `D.paramW v` decreases along the numbering
+`D.basisNumber` of the basis of `Y₀`: exactly `D.basisNumber i` of its entries exceed the entry at
+`i` (`decreasingPosition` is the number of larger entries). -/
+lemma decreasingPosition_paramW (v : D.Φ) (i : D.RowIndex) :
+    decreasingPosition (D.paramW v) i = D.basisNumber i :=
+  D.card_filter_basisNumber (q := fun j : D.RowIndex ↦ D.paramW v i < D.paramW v j) 0
+    (D.basisNumber i) (by simp [paramW_lt_iff]) (by simp)
 
 /-- For 1 ≤ j ≤ m, the space W_j has exactly m − j minus signs. -/
 lemma negCount_signsW (j : D.LiftIndex) : negCount (D.signsW j) = D.m - j := by
@@ -698,7 +708,7 @@ def descentCentres (τ : D.Φ) (j : D.LiftIndex) : CentreSystem (ℕ ⊕ ℕ) :=
 /-- The value of the centre `.inr (j - 1)` of `D.descentCentres τ j` is `-D.liftWeight j τ`, minus
 the weight at `τ` of the character of the `j`-th lift. -/
 lemma descentCentres_centre (τ : D.Φ) (j : D.LiftIndex) :
-    (D.descentCentres τ j).centre (.inr (j - 1)) = -D.liftWeight j τ := by
+    (D.descentCentres τ j).center (.inr (j - 1)) = -D.liftWeight j τ := by
   simp [descentCentres, gridCentres, Nat.sub_add_cancel j.prop.1]
 
 /-- When the block of the only centre of `New.Data.descentCentres` is present, every entry has the
@@ -781,7 +791,7 @@ lemma isParam_paramV (ϑ : D.TameChar) (τ : D.Φ) (j : D.LiftIndex) :
     refine h_image.trans (Finset.ext fun y ↦ ?_)
     -- Unfold both sides to entries of the shifted parameter, of the stem and of the block.
     simp only [CentreSystem.entries, biUnion_empty, union_empty, descentCentres, gridCentres,
-      mem_union, mem_image, Finset.mem_range, mem_centredBlock, Function.comp_apply, Sum.elim_inr,
+      mem_union, mem_image, Finset.mem_range, mem_centeredBlock, Function.comp_apply, Sum.elim_inr,
       Bool.toNat_false, Nat.sub_zero, Nat.cast_zero, add_zero, shift]
     constructor
     · rintro ⟨p, hp, rfl⟩
@@ -812,25 +822,19 @@ lemma paramsCorrespond_descentPair (ϑ : D.TameChar) (j : D.LiftIndex) :
       (fun τ : D.Φ ↦ (card (D.RowIndex ⊕ Fin D.t) / 2 : ℕ) + -(D.liftWeight j τ : ℤ))
       D.paramW (D.descentPair ϑ j).paramV (D.signsW j) 1 := by
   intro τ
-  obtain ⟨h_one_le, h_le⟩ : 1 ≤ (j : ℕ) ∧ (j : ℕ) ≤ D.m := j.prop
   let u : ℤ := D.m - j + D.liftWeight j τ - D.r / 2
-  have h_centre : Sum.inr (j - 1 : ℕ) ∈ (D.gridCentres τ false).centres := by
-    simpa [gridCentres] using Nat.sub_one_lt_of_le h_one_le h_le
-  have h_gap : 500 * (card D.RowIndex + card (D.RowIndex ⊕ Fin D.t)) ^ 3 ≤ D.gap - D.t - 2 := by
-    have h_size : 500 * (D.r + (D.r + D.t)) ^ 3 + D.t + 2 ≤ D.gap := D.nat_le_of_hasLogBound
-    grind [card_rowIndex_sum_fin, card_rowIndex]
+  have : 500 * (D.r + (D.r + D.t)) ^ 3 + D.t + 2 ≤ D.gap := D.nat_le_of_hasLogBound
   -- Insert the block of the centre `-w_j`, then raise the first weight by `u`.
-  have h_rule : IsBlockRule (-D.liftWeight j τ + card D.RowIndex / 2)
-      (-D.liftWeight j τ + card (D.RowIndex ⊕ Fin D.t) / 2) (toHCParam (D.signsW j) (D.paramW τ))
-      (toHCParam 1 fun x : D.RowIndex ⊕ Fin D.t ↦ (D.descentPair ϑ j).paramV τ x - 2 * u) := by
-    rw [← descentCentres_centre]
-    exact (D.isParam_paramW τ j).isBlockRule_insert_of_down (D.isParam_paramV ϑ τ j) rfl
-      ((D.isSeparated_gridCentres τ false).subset (singleton_subset_iff.2 h_centre))
-      (empty_subset _) (mem_singleton_self _) (notMem_empty _) h_gap rfl
-  have h_weight : (negCount (D.signsW j) : ℤ) = -D.liftWeight j τ + card D.RowIndex / 2 + u := by
-    grind [negCount_signsW, card_rowIndex]
-  rw [h_weight]
-  simpa [add_comm] using h_rule.shift u 0
+  have h_rule : IsBlockRule _ _ (toHCParam (D.signsW j) (D.paramW τ))
+      (toHCParam 1 fun x ↦ (D.descentPair ϑ j).paramV τ x - 2 * u) :=
+    (D.isParam_paramW τ j).isBlockRule_insert_of_down (D.isParam_paramV ϑ τ j) rfl
+      ((D.isSeparated_gridCentres τ false).subset (singleton_subset_iff.2
+        (by simpa [gridCentres] using Nat.sub_one_lt_of_le j.prop.1 j.prop.2)))
+      (empty_subset _) (mem_singleton_self _) (notMem_empty _)
+      (by grind [card_rowIndex_sum_fin, card_rowIndex]) rfl
+  rw [show (negCount (D.signsW j) : ℤ) = -D.liftWeight j τ + card D.RowIndex / 2 + u by
+    grind [negCount_signsW, card_rowIndex]]
+  simpa [descentCentres_centre, add_comm] using h_rule.shift u 0
 
 /-- The doubled parameter 2ς = `D.paramW` on W_j fits the j-th descent pair (W_j, V_j), that is:
 * it corresponds to the doubled parameter `paramV` on V_j;

@@ -1,4 +1,10 @@
-import New.Derivatives.Sharpness.Cases
+module
+
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.Derivatives.Sharpness.Cases
+import Lib.General.Algebra.LevelModulus
+import Lib.Weil.Construction.FourierInversion
+import New.Derivatives.Vacuum.ShortVectors
 
 /-!
 # Sharpness of the valuation bound
@@ -41,6 +47,8 @@ p-adic sigma function, 2017; Schneider–Teitelbaum, p-adic Fourier theory, 2001
 Integral structures on p-adic Fourier theory, 2016.
 -/
 
+@[expose] public section
+
 open Finset MvPowerSeries ComplexConjugate Real IsUltrametricDist Fintype Nat Finsupp
 
 namespace New
@@ -64,18 +72,20 @@ lemma copyExponent_apply {X : Type} {k : ℕ} (α : Fin k → X × Unit →₀ �
     copyExponent α (x, b, ()) = α b (x, ()) := by
   rw [copyExponent, finsetSum_apply, sum_eq_single_of_mem b (mem_univ b)]
   · exact embDomain_apply_self (copyEmbedding b) (α b) (x, ())
-  · exact fun b' _ hb' ↦ embDomain_of_notMem_range _ _ _ (by simp [copyEmbedding_apply, hb'])
+  · exact fun b' _ hb' ↦ embDomain_of_notMem_range _ _ _ fun ⟨⟨x', ⟨⟩⟩, hx'⟩ ↦
+      hb' (Prod.mk.inj (Prod.mk.inj hx').2).1
 
 /-- The coefficient at `copyExponent α` of a product of series, each in the variables of its own
 copy, is the product of the coefficients at the exponents `α b` of the copies. -/
-lemma coeff_prod_rename_copyEmbedding {X R : Type} [Fintype X] [CommRing R] {k : ℕ}
+lemma coeff_prod_rename_copyEmbedding {X R : Type} [CommRing R] {k : ℕ}
     (α : Fin k → X × Unit →₀ ℕ) (Ψ : Fin k → MvPowerSeries (X × Unit) R) :
     coeff (copyExponent α) (∏ b : Fin k, rename (copyEmbedding b) (Ψ b)) =
       ∏ b : Fin k, coeff (α b) (Ψ b) := by
   classical
   let β₀ : Fin k →₀ X × Fin k × Unit →₀ ℕ :=
     equivFunOnFinite.symm fun b ↦ (α b).embDomain (copyEmbedding b)
-  have hβ₀ : β₀ ∈ finsuppAntidiag univ (copyExponent α) := by simp [β₀, copyExponent]
+  have hβ₀ : β₀ ∈ finsuppAntidiag univ (copyExponent α) :=
+    mem_finsuppAntidiag.2 ⟨rfl, fun _ _ ↦ mem_univ _⟩
   rw [coeff_prod, sum_eq_single_of_mem β₀ hβ₀]
   · simp only [β₀, equivFunOnFinite_symm_apply_apply, coeff_embDomain_rename]
   -- In a nonzero term each exponent `β b` lies in copy `b`, so it is the part `α b`.
@@ -85,11 +95,15 @@ lemma coeff_prod_rename_copyEmbedding {X R : Type} [Fintype X] [CommRing R] {k :
     by_contra fun hb ↦ h_prod (prod_eq_zero (mem_univ b) (coeff_rename_eq_zero _ _ hb))
   choose (α' : Fin k → X × Unit →₀ ℕ) hα' using h_range
   have h_exponent : copyExponent α' = copyExponent α := by
-    simpa [copyExponent, embDomain_eq_mapDomain, hα'] using (mem_finsuppAntidiag.1 hβ).1
+    rw [copyExponent]
+    simp only [embDomain_eq_mapDomain, hα']
+    exact (mem_finsuppAntidiag.1 hβ).1
   have h_copy (b : Fin k) : α' b = α b := by
     ext ⟨x, ⟨⟩⟩
     rw [← copyExponent_apply, h_exponent, copyExponent_apply]
-  exact h_ne (Finsupp.ext fun b ↦ by simp [β₀, ← hα', h_copy, embDomain_eq_mapDomain])
+  exact h_ne (Finsupp.ext fun b ↦ by
+    rw [← hα' b, h_copy b, ← embDomain_eq_mapDomain]
+    rfl)
 
 end copies
 
@@ -106,9 +120,21 @@ lemma map_subst_linearSeries_copy {p : ℕ} [Fact p.Prime] [PadicPlace p] {X : T
       (linearSeries fun y : X × Fin k × Unit ↦ if y.2 = (b, ()) then μ y.1 else 0)).map ιₚ =
       rename (copyEmbedding b) ((taylorVia ιₚ f).subst
         (linearSeries fun x : X × Unit ↦ (ιₚ (μ x.1) : ℂ_[p]))) := by
+  have h_lhs : (linearSeries fun y : X × Fin k × Unit ↦ if y.2 = (b, ()) then μ y.1 else 0) =
+      ∑ x : X, μ x • MvPowerSeries.X (x, b, ()) := by
+    rw [linearSeries, sum_prod_type]
+    refine sum_congr rfl fun x _ ↦ ?_
+    rw [sum_prod_type_right, Fintype.sum_unique, PUnit.default_eq_unit]
+    simp only [Prod.mk.injEq, and_true, ite_smul, zero_smul, Fintype.sum_ite_eq']
   have h_form : (linearSeries fun y : X × Fin k × Unit ↦ if y.2 = (b, ()) then μ y.1 else 0).map
       ιₚ = rename (copyEmbedding b) (linearSeries fun x : X × Unit ↦ (ιₚ (μ x.1) : ℂ_[p])) := by
-    simp [linearSeries, copyEmbedding_apply, sum_prod_type, smul_eq_C_mul]
+    let fMap := MvPowerSeries.map (σ := X × Fin k × Unit) ιₚ
+    let gMap := rename (R := ℂ_[p]) (copyEmbedding (X := X) b)
+    rw [h_lhs, map_sum fMap, linearSeries,
+      map_sum gMap, sum_prod_type]
+    refine sum_congr rfl fun x _ ↦ ?_
+    rw [Fintype.sum_unique, PUnit.default_eq_unit, smul_eq_C_mul, smul_eq_C_mul,
+      RingHom.map_mul fMap, map_C, map_X, map_mul, rename_C, rename_X, copyEmbedding_apply]
   -- Both sides are the series of `f` substituted into the linear form in the copy `b`.
   rw [PowerSeries.map_subst (.of_constantCoeff_zero (constantCoeff_linearSeries _)), h_form]
   simp only [rename_eq_subst, PowerSeries.subst]
@@ -120,8 +146,8 @@ valuations. -/
 lemma norm_natCast_prod_eq_rpow_neg_sum {p : ℕ} [hp : Fact p.Prime] [PadicPlace p] {X : Type}
     [Fintype X] {n : X → ℕ} (hn : ∀ x : X, n x ≠ 0) :
     ‖(ιₚ (∏ x : X, n x : ℕ) : ℂ_[p])‖ = p ^ (-∑ x : X, (padicValNat p (n x) : ℝ)) := by
-  simp [norm_natCast_eq_inv_pow_padicValNat, hn, rpow_neg p.cast_nonneg, ← cast_sum,
-    prod_pow_eq_pow_sum]
+  rw [map_natCast, Nat.cast_prod]
+  exact New.norm_prod_natCast_eq_rpow_neg_sum (p := p) hn
 
 /-- The hermitian space `Hom(E, E¹²)` of `12 × 1` matrices over `E = D.E`, where `E` and `E¹²` carry
 the sum of the norms of the coordinates (`stdSpace`). The sign of a coordinate is the product of
@@ -181,27 +207,48 @@ lemma exists_integral_isThetaFunction_twelveTaylor_eq {P : Parameters} {p : ℕ}
   let monomialDegrees (x : J × Fin 12 × Unit) : ℕ × ℕ × ℕ :=
     (c x.1 - e x.2.1 x.1 * 3, 0, e x.2.1 x.1)
   have h_area : P.cmCurve.area = ‖(P.cmPeriod : ℂ)‖ ^ 2 / D.M * D.M * √P.d / 2 := by
-    simp [area_eq_of_eq_scaledIdeal latticeModule_cmCurve, NeZero.ne D.M]
+    rw [area_eq_of_eq_scaledIdeal latticeModule_cmCurve,
+      div_mul_cancel₀ _ (Nat.cast_ne_zero.2 (NeZero.ne D.M))]
+    dsimp only
+    rw [Units.val_one, map_one, Rat.cast_one, mul_one]
   obtain ⟨F, hF, hF_int, h_periods⟩ := exists_isResolutionProduct_of_isTightFrame D.twelveSpace
     D.piMBar (NeZero.ne D.M) D.piMBar_mul_conj hw monomialDegrees
     (fun x ↦ Nat.sub_add_cancel (he x.2.1 x.1)) cmPeriod_mem_cmCurve_lattice h_area
   refine ⟨F, ?_, hF_int p, h_periods⟩
   have h_scale : P.cmPeriod / conj ↑D.piMBar / P.areaScale *
       (conj ↑D.piMBar * P.jetScale D.towerExp) = P.periodFactor D.towerExp := by
-    simp [jetScale, field]
+    have hπ : conj (D.piMBar : ℂ) ≠ 0 := star_ne_zero.2 D.coe_piMBar_ne_zero
+    rw [jetScale, div_div, div_mul_eq_mul_div, mul_left_comm (P.cmPeriod : ℂ),
+      mul_div_mul_left _ _ hπ, mul_comm (P.cmPeriod : ℂ),
+      div_mul_cancel₀ _ P.cmPeriod.ne_zero, mul_div_cancel_right₀ _ P.areaScale.ne_zero]
   -- the form `μ_i` in the variables of copy `b`
   let copyForm : J × Fin 12 × Unit → D.Φ × Fin 12 × Unit → ℂ :=
     resolutionFormCoeff (P.periodFactor D.towerExp) w
   have h_taylor : D.twelveTaylor F = ∏ x : J × Fin 12 × Unit,
       (taylorAtZero (P.cmCurve.monomialSection (monomialDegrees x))).subst
         (linearSeries (copyForm x)) := by
-    simpa [resolutionShift, h_scale] using hF.jetSeries_translate 0
-      (conj ↑D.piMBar * P.jetScale D.towerExp)
+    have h_shift (x : J × Fin 12 × Unit) :
+        resolutionShift (P.cmPeriod / conj ↑D.piMBar) w (0 : Fin 12 × Unit → D.E) x = 0 := by
+      rw [resolutionShift, Pi.zero_apply,
+        Finset.sum_eq_zero fun τ _ ↦ by rw [map_zero, zero_mul], neg_zero, mul_zero]
+    have h := hF.jetSeries_translate 0 (conj ↑D.piMBar * P.jetScale D.towerExp)
+    rw [map_zero, finVec_zero, Space.ϱ, Heisenberg.Rep.rho_zero_apply, h_scale] at h
+    refine h.trans (prod_congr rfl fun x _ ↦ ?_)
+    rw [h_shift x, twistedTranslate, thetaShift_zero]
+  have hθ : AnalyticAt ℂ P.cmCurve.θ 0 := P.cmCurve.differentiable_theta.analyticAt 0
   have h_monomial (x : J × Fin 12 × Unit) :
       taylorAtZero (P.cmCurve.monomialSection (monomialDegrees x)) =
       taylorAtZero P.cmCurve.translatedY ^ e x.2.1 x.1 * taylorAtZero P.cmCurve.θ ^ c x.1 := by
-    simp (disch := fun_prop) [monomialDegrees, taylorAtZero_congr _ (monomialSection_eq _ _),
-      Nat.sub_add_cancel (he x.2.1 x.1), mul_comm (taylorAtZero P.cmCurve.θ ^ c x.1)]
+    have h_eq : ∀ z : ℂ, z + P.cmCurve.t ∉ P.cmCurve.Λ →
+        P.cmCurve.monomialSection (monomialDegrees x) z =
+          P.cmCurve.θ z ^ c x.1 * P.cmCurve.translatedY z ^ e x.2.1 x.1 := by
+      intro z hz
+      rw [P.cmCurve.monomialSection_eq (monomialDegrees x) z hz]
+      dsimp only [monomialDegrees, monomialDeg]
+      rw [zero_mul, add_zero, Nat.sub_add_cancel (he x.2.1 x.1), pow_zero, one_mul]
+    rw [P.cmCurve.taylorAtZero_congr h_eq,
+      taylorAtZero_mul (hθ.fun_pow _) (P.cmCurve.analyticAt_translatedY_zero.fun_pow _),
+      taylorAtZero_pow hθ, taylorAtZero_pow P.cmCurve.analyticAt_translatedY_zero, mul_comm]
   have h_copy (f : ℂ → ℂ) (i : J) (b : Fin 12) :
       ((taylorAtZero f).subst (linearSeries (copyForm (i, b, ())))).map ιₚ =
         rename (copyEmbedding b)
@@ -209,9 +256,14 @@ lemma exists_integral_isThetaFunction_twelveTaylor_eq {P : Parameters} {p : ℕ}
     map_subst_linearSeries_copy f (fun τ ↦ P.periodFactor D.towerExp * conj (New.Φ τ (w i))) b
   have h_subst (x : J × Fin 12 × Unit) : PowerSeries.HasSubst (linearSeries (copyForm x)) :=
     .of_constantCoeff_zero (constantCoeff_linearSeries _)
-  simp only [h_taylor, h_monomial, PowerSeries.subst_mul (h_subst _),
-    PowerSeries.subst_pow (h_subst _), map_prod, map_mul, map_pow, prod_prod_type_right,
-    Fintype.prod_unique, h_copy, thetaProd, prod_mul_distrib]
+  rw [h_taylor, map_prod, prod_prod_type_right, prod_prod_type_right, Fintype.prod_unique,
+    PUnit.default_eq_unit]
+  refine prod_congr rfl fun b _ ↦ ?_
+  rw [thetaProd, map_mul, map_prod, map_prod, ← prod_mul_distrib]
+  refine prod_congr rfl fun i _ ↦ ?_
+  rw [h_monomial (i, b, ()), PowerSeries.subst_mul (h_subst _), PowerSeries.subst_pow (h_subst _),
+    PowerSeries.subst_pow (h_subst _), map_mul, map_pow, map_pow, h_copy, h_copy, map_pow,
+    map_pow]
 
 /-- Let `D` be admissible data for the parameters `P`, with CM field `E = D.E` over `K = P.K`, and
 let `F` lie in `𝒮 D.twelveSpace`, the Heisenberg model of functions on the adelic `12 × 1` matrices
@@ -235,8 +287,10 @@ lemma exists_norm_le_norm_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Prim
   set v : ℂ := D.twelveSpace.vacElem (finVec y)
   have h_integral : algebraMap D.E (𝔸f D.E) (algebraMap P.K D.E D.piMBar) ∈ Ô D.E :=
     coe_mem_Ô (algebraMap (NumberField.RingOfIntegers P.K) _ D.piMBar)
-  have h_norm : algebraMap P.K D.E D.piMBar * star (algebraMap P.K D.E D.piMBar) = D.M :=
-    (New.Φ 1).injective (by simpa using D.piMBar_mul_conj)
+  have h_norm : algebraMap P.K D.E D.piMBar * star (algebraMap P.K D.E D.piMBar) = D.M := by
+    apply (New.Φ 1).injective
+    rw [map_mul, map_star_complex, phi_algebraMap, map_natCast]
+    exact D.piMBar_mul_conj
   obtain ⟨Y, Γ, _, _, u, γ, c, hu, -, -, h_average, h_inversion⟩ :=
     D.twelveSpace.exists_fourier_coefficients h_integral (NeZero.ne D.M) h_norm h_periods
   -- The values of `c i • vac`, among them `c i * v`, are integral with those of `F`.
@@ -248,26 +302,36 @@ lemma exists_norm_le_norm_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Prim
         ∑ y₀ : Matrix (Fin 12) Unit 𝔪.ResidueRing,
           stdLattice.selfDualAddChar D.E (z y₀) • D.indicatorDatum 𝔪 y₀ := by
     refine exists_rho_finVec_vacElem_eq_sum_modDatum _ _ h𝔪 fun k ↦ ?_
-    change algebraMap D.E (𝔸f D.E) (algebraMap P.K D.E D.piMBar) * finiteImage (u i) k ∈ Ô D.E
-    simpa [finiteImage, mul_left_comm, Algebra.smul_def] using mem_idealLattice.1 (hu i) k
+    have hk := mem_idealLattice.1 (hu i) k
+    rw [map_smul, Pi.smul_apply, Algebra.smul_def] at hk
+    exact hk
   choose z hz using h_translate
   have h_sum : D.M ^ (D.f * 12) * L F * v = ∑ x : Y × Matrix (Fin 12) Unit 𝔪.ResidueRing,
       stdLattice.selfDualAddChar D.E (z x.1 x.2) * (c x.1 * v) * L (D.indicatorDatum 𝔪 x.2) :=
     calc D.M ^ (D.f * 12) * L F * v
-        = L ((D.M : ℂ) ^ card (D.Φ × Fin 12 × Unit) • F) * v := by simp
+        = L ((D.M : ℂ) ^ card (D.Φ × Fin 12 × Unit) • F) * v := by
+          rw [map_smul, smul_eq_mul, Fintype.card_prod, Fintype.card_prod, Fintype.card_fin,
+            Fintype.card_unique (α := Unit), mul_one]
       _ = ∑ i : Y, c i * (∑ y₀ : Matrix (Fin 12) Unit 𝔪.ResidueRing,
             stdLattice.selfDualAddChar D.E (z i y₀) * L (D.indicatorDatum 𝔪 y₀)) * v := by
-        simp only [← h_inversion, hz, map_sum, map_smul, smul_eq_mul, Finset.sum_mul]
+        rw [← h_inversion, map_sum L, Finset.sum_mul]
+        refine sum_congr rfl fun i _ ↦ ?_
+        rw [hz i, L.map_smul, smul_eq_mul, map_sum L]
+        congr 2
+        exact sum_congr rfl fun y₀ _ ↦ by rw [L.map_smul, smul_eq_mul]
       _ = _ := by
-        simp only [Finset.mul_sum, Finset.sum_mul, sum_prod_type]
-        exact sum_congr rfl fun i _ ↦ sum_congr rfl fun y₀ _ ↦ by ring
+        rw [sum_prod_type]
+        refine sum_congr rfl fun i _ ↦ ?_
+        rw [Finset.mul_sum, Finset.sum_mul]
+        exact sum_congr rfl fun y₀ _ ↦ by ring
   obtain ⟨y₀, h_max⟩ := Finite.exists_max fun y₁ : Matrix (Fin 12) Unit 𝔪.ResidueRing ↦
     ‖(ιₚ (L (D.indicatorDatum 𝔪 y₁)) : ℂ_[p])‖
   refine ⟨y₀, ?_⟩
-  rw [h_sum, map_sum]
+  rw [h_sum, map_sum ιₚ]
   refine norm_sum_le_of_forall_le_of_nonneg (norm_nonneg _) fun x _ ↦ ?_
-  grw [map_mul, map_mul, norm_mul, norm_mul, norm_map_selfDualAddChar, hc, one_mul, one_mul,
-    h_max x.2]
+  rw [map_mul, map_mul, norm_mul, norm_mul, norm_map_selfDualAddChar, one_mul]
+  exact (mul_le_mul_of_nonneg_right (hc x.1) (norm_nonneg _)).trans
+    (by rw [one_mul]; exact h_max x.2)
 
 /-- Reduction to the curve. Let `D` be admissible data for the parameters `P`, with CM field
 `E = D.E = P.E D.towerExp`, whose `f = D.f` infinite places form `D.Φ`; valuations are taken at
@@ -298,12 +362,13 @@ lemma exists_le_norm_coeff_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Pri
   -- Take twelve series `∏ y(μ_i z) ^ e b i * Θ` with `|e b| ≤ |l|` whose coefficients at exponents
   -- `α b` of sum `l` have a product of valuation at most `r`. Lift them to a vector and expand it.
   obtain ⟨α, e, rfl, he_deg, h_prod⟩ := h_val.exists_monomial
-  have he (b : Fin 12) (i : J) : e b i * 3 ≤ c i := by grw [le_degree, he_deg, hc]
+  have he (b : Fin 12) (i : J) : e b i * 3 ≤ c i :=
+    (Nat.mul_le_mul_right 3 ((le_degree _ _).trans (he_deg b))).trans (hc i)
   obtain ⟨F, h_series, hF_int, h_periods⟩ :=
     D.exists_integral_isThetaFunction_twelveTaylor_eq (p := p) hw he
   obtain ⟨y₀, h_indicator_bound⟩ := D.exists_norm_le_norm_indicatorDatum hF_int h_periods h𝔪
     (P.vacuumScale D.towerExp ^ 12 • coeff (copyExponent α) ∘ₗ D.twelveTaylor) y
-  refine ⟨copyExponent α, y₀, by simp [copyExponent_apply], ?_⟩
+  refine ⟨copyExponent α, y₀, fun σ ↦ by simp only [copyExponent_apply, finsetSum_apply], ?_⟩
   set a : ℂ := coeff (copyExponent α) (D.twelveTaylor F) with ha
   have h_coeff : p ^ (-r) ≤ ‖(ιₚ a : ℂ_[p])‖ := by
     rwa [ha, ← coeff_map, h_series, coeff_prod_rename_copyEmbedding, norm_prod]
@@ -341,22 +406,30 @@ lemma norm_map_mul_intVacuum_le {P : Parameters} (D : Data P) {l : D.Φ → ℕ}
     have h_const : (P.vacuumBoundConst : ℝ) ≤ P.constantBound := by
       rw [Parameters.constantBound, add_assoc]
       exact le_add_of_nonneg_right (by positivity)
-    grw [norm_ringEquiv_intVacuum_le, ← exp_nat_mul, h_const]
-    simp
+    refine (norm_ringEquiv_intVacuum_le (V := D.twelveSpace) σ).trans ?_
+    rw [Fintype.card_prod, Fintype.card_fin, Fintype.card_unique (α := Unit), mul_one,
+      ← exp_natCast_mul]
+    exact Real.exp_le_exp.2 (by push_cast; gcongr)
   have h_loss (τ : D.Φ) : (D.lossProduct (l τ) : ℝ) ≤ lossBase ^ D.lossFactorCount := by
-    grw [lossProduct, ascFactorial_le_pow_add, tsub_le_self, cast_pow, cast_add, hl τ,
-      weight_add_x_pow_le_two_mul_b]
+    refine (Nat.cast_le.2 (ascFactorial_le_pow_add _ _)).trans ?_
+    rw [cast_pow]
+    refine pow_le_pow_left₀ (Nat.cast_nonneg _) ?_ _
+    rw [cast_add]
+    exact add_le_add ((Nat.cast_le.2 tsub_le_self).trans
+      ((hl τ).trans (weight_add_x_pow_le_two_mul_b D τ))) le_rfl
   have h_int : ((D.M ^ (D.f * 12) * ∏ τ : D.Φ, D.lossProduct (l τ) ^ 2 : ℕ) : ℝ) ≤
       exp (12 * D.f * Real.log D.M + 2 * D.f * D.lossFactorCount * Real.log lossBase) := by
     have h_lossBase_pos : 0 < lossBase := by positivity
     calc _ ≤ (D.M : ℝ) ^ (D.f * 12) * ∏ _τ : D.Φ, (lossBase ^ D.lossFactorCount) ^ 2 := by
           push_cast
-          grw [h_loss]
+          gcongr with τ _
+          exact h_loss τ
       _ = exp (Real.log D.M) ^ (D.f * 12) *
             (exp (Real.log lossBase) ^ D.lossFactorCount) ^ (2 * D.f) := by
-          simp [exp_log, NeZero.pos D.M, h_lossBase_pos, ← pow_mul, mul_assoc]
+          rw [exp_log (Nat.cast_pos.2 (NeZero.pos D.M)), exp_log h_lossBase_pos, prod_const,
+            Finset.card_univ, ← pow_mul]
       _ = _ := by
-          simp only [← exp_nat_mul, ← exp_add]
+          simp only [← exp_natCast_mul, ← exp_add]
           congr 1
           push_cast
           ring
@@ -364,7 +437,9 @@ lemma norm_map_mul_intVacuum_le {P : Parameters} (D : Data P) {l : D.Φ → ℕ}
       12 * (P.constantBound * D.q₁ ^ 2) ≤ D.f * D.m / D.k * D.b := by
     rw [h_lossBase, lossFactorCount]
     exact D.le_of_hasLogBound
-  grw [map_mul, norm_mul, map_natCast, Complex.norm_natCast, h_int, h_vac, ← exp_add, h_exponent]
+  rw [map_mul, norm_mul, map_natCast, Complex.norm_natCast]
+  exact (mul_le_mul h_int h_vac (norm_nonneg _) (exp_nonneg _)).trans
+    (by rw [← exp_add]; exact Real.exp_le_exp.2 h_exponent)
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
@@ -395,8 +470,9 @@ theorem exists_rpow_neg_localPrimeSumTotal_le_norm_coeff {P : Parameters} (D : D
   obtain ⟨J, _, w, c, hw, hc, h_unit⟩ := D.exists_isTightFrame
   let intFactor : ℕ := D.M ^ (D.f * 12) * ∏ τ : D.Φ, D.lossProduct (l τ) ^ 2
   set c₀ : ℂ := intVacuum D.twelveSpace (finVec y)
-  have ht : intFactor * c₀ ≠ 0 := by
-    simp [intFactor, NeZero.ne D.M, hy, Finset.prod_eq_zero_iff, D.lossProduct_ne_zero]
+  have ht : intFactor * c₀ ≠ 0 :=
+    mul_ne_zero (Nat.cast_ne_zero.2 (mul_ne_zero (pow_ne_zero _ (NeZero.ne D.M))
+      (Finset.prod_ne_zero_iff.2 fun τ _ ↦ pow_ne_zero 2 (D.lossProduct_ne_zero _)))) hy
   refine ⟨intFactor * c₀, ht, D.norm_map_mul_intVacuum_le (fun τ ↦ (hl τ).2) y,
     fun 𝔪 h𝔪 p hp _ ↦ ?_⟩
   obtain ⟨ν, rfl⟩ : ∃ ν : D.Φ × Unit →₀ ℕ, (fun τ ↦ ν (τ, ())) = l :=
@@ -404,8 +480,10 @@ theorem exists_rpow_neg_localPrimeSumTotal_le_norm_coeff {P : Parameters} (D : D
   obtain ⟨i₀, hi₀⟩ := h_unit p
   have h_degree (i : J) : ν.degree * 3 ≤ c i := by
     have h_sum : (ν.degree : ℝ) ≤ D.f * (2 * D.b) := by
-      grw [degree_eq_sum, cast_sum, (hl _).2, weight_add_x_pow_le_two_mul_b]
-      simp
+      rw [degree_eq_sum, cast_sum, sum_prod_type_right, Fintype.sum_unique, PUnit.default_eq_unit]
+      refine (Finset.sum_le_sum (g := fun _ ↦ 2 * D.b) fun τ _ ↦
+        (hl τ).2.trans (weight_add_x_pow_le_two_mul_b D τ)).trans ?_
+      rw [sum_const, Finset.card_univ, nsmul_eq_mul]
     rify
     linarith [hc i]
   let valLoss : ℝ := ∑ τ : D.Φ, (padicValNat p (D.lossProduct (ν (τ, ()))) : ℝ)
@@ -419,10 +497,14 @@ theorem exists_rpow_neg_localPrimeSumTotal_le_norm_coeff {P : Parameters} (D : D
   -- Multiply by `l!` and divide by `t`.
   set scaledVac : ℂ := D.M ^ (D.f * 12) * c₀ with h_scaledVac
   have hp_pos : (0 : ℝ) < p := mod_cast hp.out.pos
-  have h_normVac : 0 < ‖(ιₚ scaledVac : ℂ_[p])‖ := by simp [h_scaledVac, NeZero.ne D.M, hy]
+  have h_normVac : 0 < ‖(ιₚ scaledVac : ℂ_[p])‖ := by
+    have h_ne : scaledVac ≠ 0 :=
+      mul_ne_zero (pow_ne_zero _ (Nat.cast_ne_zero.2 (NeZero.ne D.M))) hy
+    exact norm_pos_iff.2 fun h ↦ h_ne (ιₚ.injective (h.trans ιₚ.map_zero'.symm))
   have h_factor :
       intFactor * c₀ = scaledVac * (∏ τ : D.Φ, D.lossProduct (ν (τ, ())) : ℕ) ^ 2 := by
-    simp [h_scaledVac, intFactor, Finset.prod_pow, mul_right_comm]
+    push_cast [h_scaledVac, intFactor, Finset.prod_pow]
+    ring
   have h_normLoss : ‖(ιₚ (∏ τ : D.Φ, D.lossProduct (ν (τ, ())) : ℕ) : ℂ_[p])‖ = p ^ (-valLoss) :=
     norm_natCast_prod_eq_rpow_neg_sum fun τ ↦ D.lossProduct_ne_zero _
   have h_normFactorial : ‖(ιₚ (∏ τ : D.Φ, (ν (τ, ()))! : ℕ) : ℂ_[p])‖ = p ^ (-valFactorial) :=
@@ -431,8 +513,18 @@ theorem exists_rpow_neg_localPrimeSumTotal_le_norm_coeff {P : Parameters} (D : D
       = (‖(ιₚ scaledVac : ℂ_[p])‖ * (p ^ (-valLoss)) ^ 2)⁻¹ * p ^ (-valFactorial) *
           (p ^ (-(D.localPrimeSumTotal p + 2 * valLoss - valFactorial)) *
             ‖(ιₚ scaledVac : ℂ_[p])‖) := by
-        simp only [neg_sub, rpow_sub hp_pos, rpow_add hp_pos, rpow_neg hp_pos.le, two_mul]
-        field
+        rw [mul_inv, ← rpow_natCast, ← rpow_mul hp_pos.le, ← rpow_neg hp_pos.le]
+        have h_cancel : ‖(ιₚ scaledVac : ℂ_[p])‖⁻¹ * ‖(ιₚ scaledVac : ℂ_[p])‖ = 1 :=
+          inv_mul_cancel₀ h_normVac.ne'
+        calc (p : ℝ) ^ (-D.localPrimeSumTotal p)
+            = ((p : ℝ) ^ (-(-valLoss * (2 : ℕ))) * p ^ (-valFactorial) *
+                p ^ (-(D.localPrimeSumTotal p + 2 * valLoss - valFactorial))) *
+                (‖(ιₚ scaledVac : ℂ_[p])‖⁻¹ * ‖(ιₚ scaledVac : ℂ_[p])‖) := by
+              rw [h_cancel, mul_one, ← rpow_add hp_pos, ← rpow_add hp_pos]
+              congr 1
+              push_cast
+              ring
+          _ = _ := by ring
     _ ≤ (‖(ιₚ scaledVac : ℂ_[p])‖ * (p ^ (-valLoss)) ^ 2)⁻¹ * p ^ (-valFactorial) *
           ‖ιₚ (P.vacuumScale D.towerExp ^ 12 * coeff γ
             (D.twelveTaylor (D.indicatorDatum 𝔪 y₀)))‖ := by

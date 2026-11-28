@@ -1,5 +1,13 @@
+module
+
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.LinearAlgebra.Matrix.Rank
+public import New.Spanning.Unfolding.Terms
 import Lib.DiscreteSeries.Bruhat.BigCell
-import New.Spanning.Unfolding.Terms
 
 /-!
 # Links of isometries, the link isometry Υ_γ, and invariance under `besselU`
@@ -31,7 +39,8 @@ vanishes if and only if the spans of the frame and of its image under `γ` share
   link as its graph.
 * `New.Filling.linkIsometry_frameImage_mulVec`, `New.Filling.mul_dotProduct_comp_indexX₀_eq_sub`:
   the link on combinations of the second frame, and the norm identity that follows.
-* `New.Filling.termDisc_eq_zero_iff`: the criterion for the vanishing of `termDisc γ`.
+* `New.Filling.termDisc_eq_zero_of_inf_ne_bot`: the sufficient condition for the vanishing of
+  `termDisc γ`.
 
 Notions from other files:
 * `New.Shape.Form.splitGram`: the Gram matrix of `ϱ` hyperbolic planes and a middle space with Gram
@@ -49,6 +58,8 @@ Notions from other files:
   `c` with `c c̄ = 1` such that, for every frame index `a ≥ j` (counted from `0`), the flags of `f`
   and `γ f` share a vector with leading coefficients `c` and `1` at `a`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -75,7 +86,7 @@ lemma splitGram_mulVec (v : 𝔰.BesselIndex → F) :
   simp [funext_iff, splitGram, fromBlocks_mulVec, comp_def]
 
 /-- The matrix `linkMatrix γ` sends `t` to the pair of the middle blocks of `t` and of `γ⁻¹ t`. -/
-@[simp ↓]
+@[simp↓]
 lemma linkMatrix_mulVec {γ : T.G} (t : 𝔰.BesselIndex → F) :
     linkMatrix γ *ᵥ t = (fun b : 𝔰.MiddleIndex ↦ t (inr (inl b))) ⊕ᵥ
       fun b : 𝔰.MiddleIndex ↦ (γ⁻¹.val.val *ᵥ t) (inr (inl b)) := by
@@ -84,7 +95,7 @@ lemma linkMatrix_mulVec {γ : T.G} (t : 𝔰.BesselIndex → F) :
 /-- A vector `t` is orthogonal to `A = ⟨e₁, …, e_ϱ⟩` and to `γ A` (so to the span `A + γ A` of the
 columns of `isotropicFramePair γ`) iff the last `ϱ` coordinates, those at the `e*_a`, of both `t`
 and `γ⁻¹ t` vanish. -/
-@[simp ↓]
+@[simp↓]
 lemma orthogonal_isotropicFramePair_iff {γ : T.G} {t : 𝔰.BesselIndex → F} :
     t ∈ ((isotropicFramePair γ)ᴴ * T.splitGram).mulVecLin.ker ↔
       (∀ a : Fin 𝔰.ϱ, t (eStar a) = 0) ∧ ∀ a : Fin 𝔰.ϱ, (γ⁻¹.val.val *ᵥ t) (eStar a) = 0 := by
@@ -150,18 +161,11 @@ lemma Filling.exists_frameImage_eq_of_pairOccursAt {γ : T.G} {j : Fin (𝔰.ϱ 
   induction j using reverseInduction with
   | last => exact ⟨0, 0, fun a ha ↦ absurd a.is_lt (not_lt.2 ha), by simp⟩
   | cast j ih =>
-    obtain ⟨x, z, hzy, hxz⟩ : ∃ x z : Fin (𝔰.ϱ + 1) → F,
-        (∀ a : Fin (𝔰.ϱ + 1), j.succ.val ≤ a.val → z a = y a) ∧
-        frameImage 1 *ᵥ x = frameImage γ.val.val *ᵥ z :=
-      ih fun a ha ↦ h_shared a (le_of_lt ha)
-    obtain ⟨X, Y, hXY, -, hY_one, h_above⟩ : ∃ X Y : Fin (𝔰.ϱ + 1) → F,
-        frameImage 1 *ᵥ X = frameImage γ.val.val *ᵥ Y ∧ X j = c ∧ Y j = 1 ∧
-          ∀ b > j, X b = 0 ∧ Y b = 0 := h_shared j le_rfl
-    refine ⟨x + (y - z) j • X, z + (y - z) j • Y, fun a ha ↦ ?_, ?_⟩
-    · obtain rfl | hlt : j = a ∨ j < a := eq_or_lt_of_le ha
-      · simp [hY_one]
-      · simp [h_above a hlt, hzy a hlt]
-    · simp [mulVec_add, mulVec_smul, hxz, hXY]
+    obtain ⟨x, z, hzy, hxz⟩ := ih fun a ha ↦ h_shared a (le_of_lt ha)
+    obtain ⟨X, Y, hXY, -, hY_one, h_above⟩ := h_shared j le_rfl
+    refine ⟨x + (y - z) j • X, z + (y - z) j • Y, fun a ha ↦ (eq_or_lt_of_le (a := j) ha).elim
+      (fun | rfl => by simp [hY_one]) (fun hlt ↦ by simp [h_above a hlt, hzy a hlt]),
+      by simp [mulVec_add, mulVec_smul, hxz, hXY]⟩
 
 /-- Let `γ` satisfy the norm-one pair condition from some `j ≤ ϱ + 1` (for some `c` of norm `1`, the
 flags of the frame `f = (e₁, …, e_ϱ, z)` and of `γ f` share a vector with leading coefficients `c`
@@ -275,7 +279,7 @@ matrix of products of the frame `(e₁, …, e_ϱ, z)` with its image under `w_p
 of this matrix, that is `|D_{ϱ+1}|² - N² |D_ϱ|²` in its leading minors `D_l`, equals
 `d d̄ (t t̄ - N²)`. -/
 theorem Filling.frameDisc_weylElem_mul {A : Type} [Field A] [StarRing A] {T : 𝔰.Form A}
-    [IsHermitianUnit T.splitGram] {σ : T.G} {p : ℕ → Aˣ} (hσ : σ ∈ floorGroup 𝔰.ϱ) (N : A) :
+    {σ : T.G} {p : ℕ → Aˣ} (hσ : σ ∈ floorGroup 𝔰.ϱ) (N : A) :
     let t : A := T.frameGram σ 𝔰.top 𝔰.top
     let d : A := ∏ a : Fin 𝔰.ϱ, (p a).val
     frameDisc N (T.frameGram (weylElem 𝔰.ϱ p * σ).val) = d * star d * (t * star t - N ^ 2) := by
@@ -295,7 +299,7 @@ hyperbolic planes, and let `w_r = weylElem 𝔰.ϱ r` send `e_a` to `r a • e*_
 the graph of the middle block of `ρ`: a pair lies in it if and only if its first member is the image
 of the second under this block. -/
 lemma Filling.mem_link_weylElem_mul_iff {A : Type} [Field A] [StarRing A] {T : 𝔰.Form A}
-    [IsHermitianUnit T.splitGram] {ρ : T.G} (hρ : ρ ∈ floorGroup 𝔰.ϱ) (r : ℕ → Aˣ)
+    {ρ : T.G} (hρ : ρ ∈ floorGroup 𝔰.ϱ) (r : ℕ → Aˣ)
     {v : 𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → A} :
     v ∈ link (weylElem 𝔰.ϱ r * ρ) ↔ ρ.val.val.toBlocks₂₂.toBlocks₁₁ *ᵥ (v ∘ inr) = v ∘ inl := by
   -- `mem_link` asks for an `a` with one block of `w_r ρ` sending it to `0`: `a = 0` will do.
@@ -307,7 +311,7 @@ lemma Filling.mem_link_weylElem_mul_iff {A : Type} [Field A] [StarRing A] {T : �
 the hyperbolic planes, and let `w_p = weylElem 𝔰.ϱ p` send `e_a` to `p a • e*_a`. Then `w_p σ` and
 `w_q τ` have the same link exactly when `σ = τ`. -/
 theorem Filling.link_weylElem_mul_eq_iff {A : Type} [Field A] [StarRing A] {T : 𝔰.Form A}
-    [IsHermitianUnit T.splitGram] {σ τ : T.G} {p q : ℕ → Aˣ} (hσ : σ ∈ floorGroup 𝔰.ϱ)
+    {σ τ : T.G} {p q : ℕ → Aˣ} (hσ : σ ∈ floorGroup 𝔰.ϱ)
     (hτ : τ ∈ floorGroup 𝔰.ϱ) :
     link (weylElem 𝔰.ϱ p * σ) = link (weylElem 𝔰.ϱ q * τ) ↔ σ = τ := by
   -- The link of `w_p σ` is the graph of the middle block of `σ`, and this block determines `σ`.
@@ -343,24 +347,6 @@ section LinkIsometry
 open Matrix Module Fin Sum Function
 
 namespace New
-
-/-- Over a field with involution a matrix and its conjugate transpose have the same rank. -/
-lemma rank_conjTranspose_eq {F m n : Type} [Field F] [StarRing F] [Fintype m] [Fintype n]
-    (A : Matrix m n F) : Aᴴ.rank = A.rank := by
-  -- `Aᴴ` is the transpose of `A.map star`, and `star` is a semilinear bijection that carries the
-  -- span of the columns of `A` onto the span of those of `A.map star`, so keeps its dimension.
-  let e : (m → F) ≃ₗ⋆[F] (m → F) := starLinearEquiv F
-  let W : Submodule F (m → F) := Submodule.span F (Set.range A.col)
-  have h_span : Submodule.span F (Set.range (A.map star).col) = W.map e.toLinearMap := by
-    rw [Submodule.map_span, ← Set.range_comp]
-    rfl
-  have h_rank : Module.rank F W = Module.rank F (W.map e.toLinearMap) :=
-    rank_eq_of_equiv_equiv star (e.submoduleMap W).toAddEquiv star_involutive.bijective
-      (e.submoduleMap W).map_smulₛₗ
-  calc Aᴴ.rank = (A.map star).rank := rank_transpose (A.map star)
-    _ = finrank F (W.map e.toLinearMap) := by rw [← finrank_span_range_col, h_span]
-    _ = finrank F W := (congrArg Cardinal.toNat h_rank).symm
-    _ = A.rank := finrank_span_range_col A
 
 /-- The columns of two matrices set side by side span the sum of the two column spaces. -/
 lemma colSpan_fromCols {K m n₁ n₂ : Type*} [CommRing K] [Fintype n₁] [Fintype n₂]
@@ -564,13 +550,17 @@ lemma mem_commonIsotropic {γ : S.G E} {y : 𝔰.BesselIndex → E} :
   simp only [funext_iff, Sum.forall (α := 𝔰.MiddleIndex), elim_inl, elim_inr, Pi.zero_apply]
   rw [and_and_and_comm, and_comm]
 
+/-- The image of the Bessel frame under an isometry consists of distinct columns of its
+invertible matrix, hence is linearly independent. -/
+lemma linearIndependent_col_frameImage (γ : S.G E) :
+    LinearIndependent E (frameImage γ.val.val).col :=
+  (linearIndependent_cols_of_isUnit γ.val.isUnit).comp _ besselFrame_injective
+
 /-- The space `γ A`, spanned by `γ e_1, …, γ e_ϱ`, has rank `ϱ`. -/
 lemma finrank_isotropicSpan_coe (γ : S.G E) : finrank E (isotropicSpan γ.val.val) = 𝔰.ϱ := by
-  -- The first `ϱ` rows of `γ⁻¹` are a left inverse of the first `ϱ` columns of `γ`.
-  have h_inj : Injective ((frameImage γ.val.val).submatrix id castSucc).mulVecLin :=
-    HasLeftInv.injective_mulVec ⟨γ⁻¹.val.val.submatrix inl id, Matrix.ext fun a b ↦ by
-      simpa [Matrix.mul_apply, Matrix.one_apply] using congrFun₂ γ.val.inv_mul (inl a) (inl b)⟩
-  rw [isotropicSpan, LinearMap.finrank_range_of_inj h_inj, finrank_fin_fun]
+  rw [isotropicSpan, colSpan, range_mulVecLin, finrank_span_eq_card, Fintype.card_fin]
+  exact (linearIndependent_col_frameImage γ).comp _ (castSucc_injective 𝔰.ϱ)
+
 /-- The columns `e_1, …, e_ϱ, γ e_1, …, γ e_ϱ` of `isotropicFramePair γ` span `A + γ A`, where `A`
 is the span of `e_1, …, e_ϱ`. -/
 lemma colSpan_isotropicFramePair (γ : S.G E) :
@@ -595,7 +585,7 @@ lemma rank_add_finrank_isotropicPerp (γ : S.G E) :
     (isotropicFramePair γ).rank + finrank E (isotropicPerp γ) = 𝔰.r := by
   have h_unit : IsUnit S.ratGram.det := (isUnit_iff_isUnit_det _).1 Floors.IsHermitianUnit.isUnit
   have h_rank : ((isotropicFramePair γ)ᴴ * S.ratGram).rank = (isotropicFramePair γ).rank := by
-    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_eq]
+    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_of_field]
   rw [← h_rank, Shape.r, ← finrank_fintype_fun_eq_card E, ← finrank_range_mulVecLin]
   exact ((isotropicFramePair γ)ᴴ * S.ratGram).mulVecLin.finrank_range_add_finrank_ker
 
@@ -740,20 +730,12 @@ lemma mem_link_iff_linkIsometry {γ : S.G E} {p : 𝔰.MiddleIndex ⊕ 𝔰.Midd
     rw [← linkIsometry_linkSource hq, h_source, h]
   rwa [← eq_of_linkSource_eq_of_linkTarget_eq h_source h_target]
 
-/-- Two elements of `S.G E` have the same link isometry if and only if they have the same link. -/
-theorem linkIsometry_eq_iff {γ γ' : S.G E} :
-    linkIsometry γ = linkIsometry γ' ↔ link γ = link γ' := by
-  refine ⟨fun h ↦ Submodule.ext fun p ↦ ?_, fun h ↦ LinearEquiv.ext fun a ↦ ?_⟩
-  · rw [mem_link_iff_linkIsometry, mem_link_iff_linkIsometry, h]
-  · obtain ⟨p, hp, rfl⟩ := exists_mem_link_linkSource_eq γ a
-    rw [linkIsometry_linkSource hp, linkIsometry_linkSource (h.le hp)]
-
-/-- The link isometry is the same for `u⁻¹ γ u'` as for `γ`, when `u` and `u'` lie in the Bessel
-unipotent group `besselU`, because the two links are equal. -/
-theorem linkIsometry_inv_mul_mul_of_mem_besselU {γ u u' : S.G E} (hu : u ∈ besselU)
-    (hu' : u' ∈ besselU) :
-    linkIsometry (u⁻¹ * γ * u') = linkIsometry γ :=
-  linkIsometry_eq_iff.2 (link_inv_mul_mul_of_mem_besselU hu hu')
+/-- Two elements of `S.G E` with the same link have the same link isometry. -/
+theorem linkIsometry_eq_of_link_eq {γ γ' : S.G E} (h : link γ = link γ') :
+    linkIsometry γ = linkIsometry γ' := by
+  refine LinearEquiv.ext fun a ↦ ?_
+  obtain ⟨p, hp, rfl⟩ := exists_mem_link_linkSource_eq γ a
+  rw [linkIsometry_linkSource hp, linkIsometry_linkSource (h.le hp)]
 
 /-- The product of two pairs `p`, `q` for the form `S.linkForm = T ⊕ -T`, where `T` is the form of
 `X₀ ⊥ E z_N`, is the difference of the products, in the positive space `X₀ ⊥ E z⁺` with Gram matrix
@@ -782,17 +764,11 @@ lemma _root_.New.mem_link_iff_orthogonal {γ : S.G E} {p : 𝔰.MiddleIndex ⊕ 
   -- The difference `d` of `Υ_γ (linkSource p)` and `linkTarget p` is `linkTarget q` for some `q` in
   -- the link, and the hypothesis at `q` says that `d` has norm `0`.
   rw [mem_link_iff_linkIsometry, ← sub_eq_zero]
-  set d : 𝔰.MiddleIndex → E := linkIsometry γ (linkSource E 𝔰 p) - linkTarget E 𝔰 p with hd
-  obtain ⟨q, hq, h_source⟩ := exists_mem_link_linkSource_eq γ ((linkIsometry γ).symm d)
-  have h_target : linkTarget E 𝔰 q = d := by
-    rw [← linkIsometry_linkSource hq, h_source, LinearEquiv.apply_symm_apply]
+  obtain ⟨q, hq, hq'⟩ := exists_mem_link_linkSource_eq γ
+    ((linkIsometry γ).symm (linkIsometry γ (linkSource E 𝔰 p) - linkTarget E 𝔰 p))
   refine eq_zero_of_positiveGram_form_eq_zero (S := S) ?_
-  calc star d ⬝ᵥ S.positiveGram *ᵥ d
-      = star (linkTarget E 𝔰 q) ⬝ᵥ S.positiveGram *ᵥ linkIsometry γ (linkSource E 𝔰 p) -
-          star (linkTarget E 𝔰 q) ⬝ᵥ S.positiveGram *ᵥ linkTarget E 𝔰 p := by
-        rw [← dotProduct_sub, ← mulVec_sub, h_target]
-    _ = 0 := by rw [← h_orth q hq, ← linkIsometry_linkSource hq,
-      dotProduct_positiveGram_mulVec_linkIsometry, sub_self]
+  rw [mulVec_sub, dotProduct_sub, sub_eq_zero, ← (linkIsometry γ).apply_symm_apply (_ - _), ← hq',
+    dotProduct_positiveGram_mulVec_linkIsometry, linkIsometry_linkSource hq, h_orth q hq]
 
 /-! ### The link on the second frame, and the vanishing of `termDisc` -/
 
@@ -916,24 +892,17 @@ lemma termDisc_eq_zero_iff_exists {γ : S.G E} :
 /-- The vectors `γ e_1, …, γ e_ϱ, γ z`, the columns of `frameImage γ`, are linearly independent. -/
 lemma frameImage_mulVec_eq_zero_iff {γ : S.G E} {y : Fin (𝔰.ϱ + 1) → E} :
     frameImage (𝔰 := 𝔰) γ *ᵥ y = 0 ↔ y = 0 := by
-  refine ⟨fun h ↦ ?_, fun h ↦ by rw [h, mulVec_zero]⟩
-  have h_one : frameImage 1 *ᵥ y = 0 :=
-    mulVec_injective_of_isUnit γ.val.isUnit (by rw [← frameImage_mulVec, h, mulVec_zero])
-  -- The columns of `frameImage 1` are distinct standard basis vectors.
-  exact funext fun a ↦ by simpa [mulVec, dotProduct, Matrix.one_apply,
-    besselFrame_injective.eq_iff] using congrFun h_one (𝔰.besselFrame a)
+  simpa only [mulVec_zero] using
+    (mulVec_injective_iff.mpr (linearIndependent_col_frameImage γ)).eq_iff (a := y) (b := 0)
 
 /-- The quantity `S.termDisc γ`, formed from the last two leading minors of the matrix of products
-of the frame `f = (e_1, …, e_ϱ, z)` with `γ f`, vanishes if and only if the spans of `f` and of
-`γ f` have a nonzero intersection. -/
-theorem termDisc_eq_zero_iff {γ : S.G E} :
-    S.termDisc γ = 0 ↔ colSpan (frameImage 1) ⊓ colSpan (frameImage γ.val.val) ≠ ⊥ := by
-  rw [termDisc_eq_zero_iff_exists, Submodule.ne_bot_iff]
-  constructor
-  · rintro ⟨x, y, hy, hxy⟩
-    exact ⟨frameImage γ *ᵥ y, ⟨⟨x, hxy⟩, ⟨y, rfl⟩⟩, frameImage_mulVec_eq_zero_iff.not.2 hy⟩
-  · rintro ⟨t, ⟨⟨x, hxy⟩, ⟨y, rfl⟩⟩, h_ne⟩
-    exact ⟨x, y, frameImage_mulVec_eq_zero_iff.not.1 h_ne, hxy⟩
+of the frame `f = (e_1, …, e_ϱ, z)` with `γ f`, vanishes if the spans of `f` and of `γ f` have a
+nonzero intersection. -/
+theorem termDisc_eq_zero_of_inf_ne_bot {γ : S.G E}
+    (h : colSpan (frameImage 1) ⊓ colSpan (frameImage γ.val.val) ≠ ⊥) :
+    S.termDisc γ = 0 := by
+  obtain ⟨t, ⟨⟨x, hxy⟩, ⟨y, rfl⟩⟩, h_ne⟩ := (Submodule.ne_bot_iff _).1 h
+  exact termDisc_eq_zero_iff_exists.2 ⟨x, y, frameImage_mulVec_eq_zero_iff.not.1 h_ne, hxy⟩
 
 end Filling
 

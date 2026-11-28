@@ -1,5 +1,17 @@
+module
+
+import Std.Tactic.BVDecide.Normalize.Bool
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.Unfolding.Terms
+import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.QuotientMeasure.UnfoldingInStages
+import Lib.Adelic.Unitary.CongruenceLevels
+import Lib.Base
+import New.Spanning.RemainingTerms.BorderedDeterminant
 import New.Spanning.Unfolding.AmplitudeSums
+import New.Spanning.Unfolding.CutoffIntegral
+import New.Spanning.Unfolding.Packing
 
 /-!
 # Residue lifts, lattice charts and common flag vectors: which filling terms contribute
@@ -18,11 +30,8 @@ contribute. Common vectors of two flags are moved up the flags by elementary lin
   `New.Filling.InScalarCoset`: the meeting places, and the subsets of the finite group.
 * `New.Filling.amplitudeSum_eq_zero_of_not_charsAgree`: a stable set of terms none of which agrees
   contributes `0`.
-* `New.Filling.mul_star_eq_and_pairOccursAt_of_le`,
-  `New.Filling.exists_pairOccursInColumnsAt_top_of_meetsAt`: when the characters agree, the leading
-  coefficients of a common vector of two flags have equal norms and recur at all higher indices over
-  `E`; modulo a place above `M` where the flags meet, some pair not both zero occurs at the top
-  index.
+* `New.Filling.exists_pairOccursInColumnsAt_top_of_meetsAt`: when the characters agree, modulo a
+  place above `M` where the flags meet, some pair not both zero occurs at the top index.
 * `New.Filling.CharsAgree.exists_hasCellRank`: a term with agreeing characters and discriminant `0`
   has a cell rank.
 
@@ -54,6 +63,8 @@ second moment. Related work: Friedberg, Poincaré series for GL(n), 1987; Y. Liu
 formulae toward Bessel and Fourier–Jacobi periods, 2014; Furusawa–Shalika, Central critical values
 of degree four L-functions for GSp(4), Mem. AMS 782, 2003.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -186,24 +197,6 @@ lemma mulVec_frameImage_one_mulVec {R : Type*} [CommRing R]
   rw [mulVec_mulVec]
   exact congrArg (fun N ↦ N *ᵥ x) (mul_inclMatrix g 𝔰.besselFrame)
 
-/-- Let `besselH` be the fixer of all basis vectors outside `𝔰.κ`, a copy of the unitary group of
-X₀. Its reduction to the residue fields, `S.reducedImage besselH`, fixes every nonzero vector `d` of
-the span of the frame f = (e₁,…,e_ϱ,z), taken modulo a chosen place `w` or modulo its conjugate.
-That is, `S.reducedImage besselH` lies in `S.vectorFixer w d`. -/
-lemma reducedImage_besselH_le_vectorFixer {i : Fin 2} (w : S.chosenPlaces i)
-    (d : S.FrameVector w) : S.reducedImage besselH ≤ S.vectorFixer w d := by
-  rintro _ ⟨k, hk, rfl⟩
-  -- The columns of `k` at the frame are those of `1`, and this passes to the residue field.
-  have h_frame (a : 𝔰.BesselIndex) (b : Fin (𝔰.ϱ + 1)) :
-      (k : S.GFin).val a (𝔰.besselFrame b) = if a = 𝔰.besselFrame b then 1 else 0 := by
-    simpa [Matrix.one_apply] using congrFun₂ (frameImage_mul_of_mem_agreeWithOneOn hk 1) a b
-  have h_action : frameImage (S.actionAt (S.reduction k) (⟨i, w⟩, d.1)) = frameImage 1 := by
-    rw [actionAt, ← intGL_map_reduceAboveM]
-    ext a b
-    by_cases h_eq : a = 𝔰.besselFrame b <;> simp [intGL.map_apply, h_frame, h_eq, Matrix.one_apply,
-      ← Submonoid.one_def, ← ZeroMemClass.zero_def]
-  rw [mem_vectorFixer, mulVec_frameImage_one_mulVec, h_action]
-
 /-- The element `s` meets at the place `p` of `E` above `M`: modulo `p`, the span of the frame and
 its image under `s` share a nonzero vector. -/
 def MeetsAt (s : S.ResidueGL) (p : (Σ i : Fin 2, S.chosenPlaces i) × Bool) : Prop :=
@@ -247,13 +240,6 @@ lemma mem_fixer {places : Finset (S.chosenPlaces 0)}
     {vectors : ∀ w : S.chosenPlaces 0, S.FrameVector w} {s : S.ResidueGL} :
     s ∈ S.fixer places vectors ↔ ∀ w ∈ places, s ∈ S.vectorFixer w (vectors w) := by
   simp [fixer, Subgroup.mem_iInf]
-
-/-- The group that fixes given vectors of the span of the frame modulo some places contains the
-reduction of `besselH`, the unitary group of `X₀`. -/
-theorem reducedImage_besselH_le_fixer (places : Finset (S.chosenPlaces 0))
-    (vectors : ∀ w : S.chosenPlaces 0, S.FrameVector w) :
-    S.reducedImage besselH ≤ S.fixer places vectors :=
-  fun _ hs ↦ mem_fixer.2 fun w _ ↦ reducedImage_besselH_le_vectorFixer w (vectors w) hs
 
 open scoped Classical in
 /-- For `w` not in `places`, `s` lies in `S.fixer` for `insert w places` and `update vectors w d`
@@ -301,14 +287,6 @@ namespace New.Filling
 open NumberField Matrix Valued
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
 
-/-- The matrix `l` with row `o` multiplied by `a` is integral iff that row times `a` and the other
-rows of `l` are integral. -/
-lemma isIntMatrix_scaleAt_mul_iff {κ m R : Type*} [Fintype κ] [DecidableEq κ] [CommRing R]
-    {O : Subring R} {a : R} {o : κ} {l : Matrix κ m R} :
-    IsIntMatrix O (scaleAt a o * l) ↔ (∀ j : m, a * l o j ∈ O) ∧ ∀ i ≠ o, ∀ j : m, l i j ∈ O := by
-  simp only [IsIntMatrix, diagonal_mul]
-  grind
-
 /-- Let `S.piN` be the integral idele of the filling data `S`, and let `l` be a matrix over the
 finite adeles with rows indexed by `𝔰.κ`; a matrix is integral (`IsIntMatrix (Ô E)`) if its entries
 are integral finite adeles. The columns of `middleInclusionMatrix 𝔰 S.piN` are the orthonormal basis
@@ -330,9 +308,7 @@ lemma isIntMatrix_middleInclusionMatrix_mul_iff {m : Type*} {l : Matrix 𝔰.κ 
       simpa using mul_mem S.piN_mem (h_div j)
     have h_int : IsIntMatrix (Ô E) l := by
       intro i j
-      obtain rfl | hi := eq_or_ne i 𝔰.k₀
-      · exact h_row j
-      · exact h_other i hi j
+      grind
     exact ⟨h_int, fun j ↦ mem_span_unit_iff.2 (h_div j)⟩
   · rintro ⟨h_int, h_span⟩
     have h_star (j : m) : star S.piN.val * l 𝔰.k₀ j ∈ Ô E :=
@@ -381,36 +357,6 @@ lemma forall_inclHFin_sub_one_iff {k : U (1 : Matrix 𝔰.κ 𝔰.κ (𝔸f E))}
           Matrix (𝔰.κ ⊕ Unit) 𝔰.κ (𝔸f E)) a b) := by
   rw [inclHFin_sub_one_eq]
   simp [hP]
-
-/-- Let the idele `p` be a unit at `w` or at the conjugate of `w`, for each place `w` (`v` is the
-valuation). If the finite adelic unitary matrix `k` is integral with row `o` congruent to that of
-`1` modulo `p`, then `k - 1` stays integral after dividing row `o` by `p` and column `o` by
-`p̄`. -/
-lemma isIntMatrix_scaleAt_mul_sub_one_mul_scaleAt {κ : Type*} [Fintype κ] [DecidableEq κ]
-    (p : (𝔸f E)ˣ) (o : κ)
-    (hp : ∀ w : FinPlace E, v (p.val w) = 1 ∨ v (p.val (star w)) = 1) {k : Gf E κ}
-    (hk : k.val ∈ congruenceGL (Ô E ∙ p.val) fun () ↦ o) :
-    IsIntMatrix (Ô E) (scaleAt p⁻¹.val o * ((k.val.val - 1) * scaleAt (star p⁻¹.val) o)) := by
-  -- Row `o` of `M = k - 1` is divisible by `p`. The same holds for `k⁻¹ = kᴴ`, so column `o` of
-  -- `M` is divisible by `star p`. All entries of `M` are integral.
-  set M : Matrix κ κ (𝔸f E) := k.val.val - 1 with hM
-  obtain ⟨-, hk_inv_row⟩ := inv_mem hk
-  obtain ⟨hk_int, hk_row⟩ := hk
-  have h_int : IsIntMatrix (Ô E) M := hk_int.isIntMatrix.sub .one
-  have h_row (j : κ) : p⁻¹.val * M o j ∈ Ô E := mem_span_unit_iff.1 (hk_row () j)
-  have h_col (i : κ) : M i o * star p⁻¹.val ∈ Ô E := by
-    have h_inv : p⁻¹.val * Mᴴ o i ∈ Ô E := by
-      rw [hM, conjTranspose_sub, conjTranspose_one, ← U.inv_val_eq_conjTranspose]
-      exact mem_span_unit_iff.1 (hk_inv_row () i)
-    simpa [star_mul] using star_mem_Ô h_inv
-  -- The entry `(o, o)` is divided twice, but at each place one of the two divisors is a unit.
-  have h_corner : p⁻¹.val * (M o o * star p⁻¹.val) ∈ Ô E := mem_Ô.2 fun w ↦ by
-    obtain h_unit | h_unit := hp w
-    · simpa [idele_inv_apply_and_ne_zero, h_unit] using mem_Ô.1 (h_col o) w
-    · simpa [idele_inv_apply_and_ne_zero, h_unit] using mem_Ô.1 (h_row o) w
-  refine isIntMatrix_scaleAt_mul_iff.2 ⟨fun j ↦ ?_, fun i _ j ↦ ?_⟩
-  · by_cases hj : j = o <;> simp [hj, h_corner, h_row]
-  · by_cases hj : j = o <;> simp [hj, h_col, h_int i j]
 
 /-- The diagonal matrix with `a ∈ O` at `o` and `1` elsewhere has entries in the subring `O`. -/
 lemma isIntMatrix_scaleAt {A κ : Type*} [CommRing A] [DecidableEq κ] {O : Subring A} {a : A}
@@ -611,7 +557,7 @@ lemma amplitudeSum_eq_zero_of_not_charsAgree [HasPrimitiveRoot5040 E]
     have coe_mul (u : S.classUnipotent c) : (↑(u * γ) : S.G E ⧸ S.classUnipotent c') = u • x := rfl
     calc _ = ∑' u : S.classUnipotent c, reps.indicator 1 (u • x) * φ (u • x)
            (S.ratToInf u * y) := by
-          simp [wt, tsum_classCutoff_eq_one, coe_mul, ENNReal.tsum_prod', ENNReal.tsum_mul_right]
+          simp [wt, tsum_classCutoff_eq_one, coe_mul, tsum_prod', ENNReal.tsum_mul_right]
       _ = ∑' u : stabilizer (S.classUnipotent c) (a x • x),
             φ (a x • x) (S.ratToInf (u * a x : S.classUnipotent c) * y) :=
           tsum_indicator_smul_eq_tsum_stabilizer ha (fun z u ↦ φ z (S.ratToInf u * y)) x
@@ -668,12 +614,6 @@ lemma IsTopIndex.ne_zero_or_ne_zero (h_top : IsTopIndex x y j) (hx : x ≠ 0) :
   | zero => exact hx (funext fun b ↦ (h_from b b.zero_le).1)
   | succ i =>
     exact i.castSucc_lt_succ.not_ge (h_top.2 fun b hb ↦ h_from b (castSucc_lt_iff_succ_le.1 hb))
-
-/-- An index `j` above which the coordinates `x`, `y` vanish, and at which they are not both `0`, is
-the top index. -/
-lemma isTopIndex_of_ne_zero (h_above : ∀ b > j, x b = 0 ∧ y b = 0) (h_ne : x j ≠ 0 ∨ y j ≠ 0) :
-    IsTopIndex x y j :=
-  ⟨h_above, fun _ ha ↦ not_lt.1 fun h_lt ↦ not_and_or.2 h_ne (ha j h_lt)⟩
 
 /-- Suppose that whenever `μ`, `μ'` are the coefficients at an index of a common vector of the flags
 of `P` and `P'`, they are so at the next index. Then coefficients at `j` are coefficients at every
@@ -757,7 +697,7 @@ lemma pairOccursAt_succ (h_agree : S.CharsAgree γ) {μ μ' : E} (j : Fin 𝔰.�
   obtain ⟨u, hu, hu_sum, hu_eichler⟩ := exists_mem_besselU_eq_eichlerMap j.succ x r hγv hx hm
   obtain ⟨w, hw, hw_sum, hw_eichler⟩ := exists_mem_besselU_eq_eichlerMap j.succ y r hv hy hm'
   have h_comm : u * γ = γ * w := by
-    ext : 2
+    refine Subtype.ext (Units.ext ?_)
     simp [hu_eichler, hw_eichler, hxy, ext_iff_mulVec, U.form_mulVec_mulVec, ← mulVec_mulVec,
       frameImage_mulVec γ.val.val, eichlerMap_mulVec, mulVec_sub, mulVec_add, mulVec_smul]
   -- So the agreement of the characters at `u` and `w` is the claim.
@@ -787,15 +727,6 @@ lemma CharsAgree.mul_star_eq_of_pairOccursAt (h_agree : S.CharsAgree γ) {μ μ'
     h_agree.pairOccursAt_mono h_occurs j.le_last
   rw [mul_comm, star_mul_last_eq_of_frameImage_eq hxy, mul_comm]
 
-/-- Let the characters of `γ` agree. If `μ`, `μ'` are the coefficients at `j` of a common vector of
-the flags of the frame `f` and of `γ f`, then `μ μ̄ = μ' μ̄'`, and `μ`, `μ'` are the coefficients of
-a common vector at every index `l ≥ j`. -/
-lemma mul_star_eq_and_pairOccursAt_of_le (h_agree : S.CharsAgree γ) (j : Fin (𝔰.ϱ + 1)) (μ μ' : E)
-    (h_occurs : PairOccursAt γ μ μ' j) :
-    μ * star μ = μ' * star μ' ∧ ∀ l ≥ j, PairOccursAt γ μ μ' l :=
-  ⟨h_agree.mul_star_eq_of_pairOccursAt h_occurs,
-    fun _ hl ↦ h_agree.pairOccursAt_mono h_occurs hl⟩
-
 /-- Let the characters of `γ` agree, and let a common vector, with coordinates `x` in the frame `f`
 and `y` in `γ f`, have the top index `j` (the least index above which `x` and `y` vanish). Then
 `x j` and `y j` have the same norm. -/
@@ -811,45 +742,7 @@ lemma CharsAgree.mul_star_ne_zero_of_isTopIndex (h_agree : S.CharsAgree γ) {x y
     (h_top : IsTopIndex x y j) : x j * star (x j) ≠ 0 := by
   obtain hxj | hyj : x j ≠ 0 ∨ y j ≠ 0 := h_top.ne_zero_or_ne_zero hx
   · exact mul_ne_zero hxj (star_ne_zero.2 hxj)
-  · rw [h_agree.mul_star_eq_of_isTopIndex hxy h_top]
-    exact mul_ne_zero hyj (star_ne_zero.2 hyj)
-
-/-- Suppose `S.CharsAgree γ`: the unipotent character takes equal values at `u` and `γ⁻¹ u γ` for
-every rational `u` in `𝖴 ∩ γ 𝖴 γ⁻¹`. Let a nonzero vector have coordinates `x` in the frame
-`f = (e₁,…,e_ϱ,z)` (`frameImage 1`) and `y` in `γ f` (`frameImage γ`), with top index `j`. Then for
-every `l ≥ j` some such common vector has top index `l` and the coefficients `x j`, `y j` at `l`. -/
-lemma CharsAgree.exists_isTopIndex_apply_eq (h_agree : S.CharsAgree γ) {x y : Fin (𝔰.ϱ + 1) → E}
-    {j l : Fin (𝔰.ϱ + 1)} (hxy : frameImage 1 *ᵥ x = frameImage γ *ᵥ y) (hx : x ≠ 0)
-    (h_top : IsTopIndex x y j) (hjl : j ≤ l) :
-    ∃ x' y' : Fin (𝔰.ϱ + 1) → E,
-      frameImage 1 *ᵥ x' = frameImage γ *ᵥ y' ∧
-      IsTopIndex x' y' l ∧
-      x' l = x j ∧
-      y' l = y j := by
-  obtain ⟨x', y', hxy', hx', hy', h_above⟩ : PairOccursAt γ (x j) (y j) l :=
-    h_agree.pairOccursAt_mono ⟨x, y, hxy, rfl, rfl, h_top.1⟩ hjl
-  have h_not_both : x' l ≠ 0 ∨ y' l ≠ 0 := by
-    rw [hx', hy']
-    exact h_top.ne_zero_or_ne_zero hx
-  exact ⟨x', y', hxy', isTopIndex_of_ne_zero h_above h_not_both, hx', hy'⟩
-
-/-- Let `γ` satisfy `S.CharsAgree γ`. Let `x ≠ 0` and `y` be the coordinates of one vector in the
-frames `frameImage 1` and `frameImage γ`, with top index `j`. Then
-`x j * star (x j) = y j * star (y j) ≠ 0`. For every `l ≥ j`, some such pair `x'`, `y'` has top
-index `l` with `x' l = x j` and `y' l = y j`. -/
-lemma mul_star_eq_and_ne_zero_and_exists_isTopIndex (h_agree : S.CharsAgree γ)
-    {x y : Fin (𝔰.ϱ + 1) → E} {j : Fin (𝔰.ϱ + 1)}
-    (hxy : frameImage 1 *ᵥ x = frameImage γ *ᵥ y) (hx : x ≠ 0) (h_top : IsTopIndex x y j) :
-    x j * star (x j) = y j * star (y j) ∧
-    x j * star (x j) ≠ 0 ∧
-    ∀ l ≥ j, ∃ x' y' : Fin (𝔰.ϱ + 1) → E,
-      frameImage 1 *ᵥ x' = frameImage γ *ᵥ y' ∧
-      IsTopIndex x' y' l ∧
-      x' l = x j ∧
-      y' l = y j :=
-  ⟨h_agree.mul_star_eq_of_isTopIndex hxy h_top,
-    h_agree.mul_star_ne_zero_of_isTopIndex hxy hx h_top,
-    fun _ hl ↦ h_agree.exists_isTopIndex_apply_eq hxy hx h_top hl⟩
+  · simp [h_agree.mul_star_eq_of_isTopIndex hxy h_top, hyj]
 
 end New.Filling
 
@@ -931,7 +824,7 @@ lemma exists_eichler_mem_latticeStabilizer (a : Fin (𝔰.ϱ + 1)) (r : Ô E) (x
   -- trace `1`, and push it into the finite adeles.
   obtain ⟨v, hv⟩ := exists_star_vecMul_eq (S.latticeMiddle (Ô E)).splitGram m
   obtain ⟨-, -, τ, hτ_mem, -, -, hτ⟩ := exists_skew_unit (A := 𝔸f E)
-  have : Floors.TraceOne (Ô E) := ⟨⟨τ, hτ_mem⟩, Subtype.ext hτ⟩
+  let : Floors.TraceOne (Ô E) := ⟨⟨τ, hτ_mem⟩, Subtype.ext hτ⟩
   obtain ⟨u, hu, hu_sum, hu_eq⟩ := exists_mem_besselU_eq_eichlerMap a x r hv hx hm
   let u' : S.GFin := U.map (Ô E).subtype (by simp) (map_splitGram_latticeMiddle _) u
   have hu'_sum : simpleRootSum u' = (simpleRootSum u : Ô E) := (map_sum (Ô E).subtype _ _).symm

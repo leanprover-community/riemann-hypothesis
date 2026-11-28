@@ -1,6 +1,21 @@
-import Lib.Adelic.Unitary.Defs
-import Lib.General.Analysis.FourierTransforms
+module
+
+public import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.RingTheory.DedekindDomain.Different
+import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.NumberTheory.NumberField.Discriminant.Different
+import Mathlib.NumberTheory.Padics.HeightOneSpectrum
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.ProperConstSMul
+import Mathlib.Topology.Compactness.Paracompact
+import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
+public import Lib.Adelic.Unitary.Defs
+public import Lib.General.Analysis.FourierTransforms
+public import Lib.Adelic.Adeles.AdditiveCharacter
+import Lib.General.Measure.IdempotentKernel
 import Lib.General.NumberTheory.EmbeddingsAndDifferent
+public import TauCeti.NumberTheory.NumberField.FinitePlace.Basic
 
 /-!
 # Standard character, self-duality, strong approximation and one-sided Poisson summation
@@ -49,6 +64,8 @@ ch. XV, Theorem 4.1.4; for strong approximation, Cassels, ch. II §15.
 
 See also `Lib.Adelic.Unitary.WeakApproximation`.
 -/
+
+@[expose] public section
 
 /-!
 ## Rational points of a space embed injectively and discretely
@@ -114,7 +131,7 @@ instance discreteTopology_Gamma : DiscreteTopology V.Γ := by
     exact ⟨(γ : GL n E), by simp [← hγ, ratEmbed, U.map]⟩
   let f (g : V.Γ) : ratMatrices E n n := ⟨(V.toRatCoords g : GL n (𝔸 E)), h_mem g⟩
   have hf_cont : Continuous f := .subtype_mk ((continuous_const.matrix_mul
-    (G.continuous_adeleMatrix.comp continuous_subtype_val)).matrix_mul continuous_const) h_mem
+    (G.continuous_adeleMatrix.comp continuous_subtypeVal)).matrix_mul continuous_const) h_mem
   exact .of_continuous_injective hf_cont (by simp [f, Injective, Units.val_inj])
 
 /-- The image in the adelic group of any subgroup of the rational points is discrete. -/
@@ -374,7 +391,7 @@ are continuous, unitary and trivial on the image `ratAdeles E` of `E`; they depe
 injectively on `a`; and an adele killed by all of them lies in `ratAdeles E`. -/
 instance isDualFamily_ratAdeles :
     IsDualFamily (ratAdeles E) (fun (a : E) (x : 𝔸 E) ↦ stdAddChar E (toAdele a * x)) where
-  periodic a := ⟨.subtype_val (by fun_prop),
+  periodic a := ⟨.subtypeVal (by fun_prop),
     by simp [ratAdeles, mul_add, AddChar.map_add_eq_mul, ← map_mul]⟩
   add_left := by simp [add_mul, AddChar.map_add_eq_mul]
   add_right := by simp [mul_add, AddChar.map_add_eq_mul]
@@ -394,7 +411,7 @@ instance isDualFamily_ratMatrices :
     IsDualFamily (ratMatrices E m n) (fun (a : Matrix n m E) (x : Matrix m n (𝔸 E)) ↦
       stdAddChar E (trace (a.map toAdele * x))) where
   periodic a := by
-    refine ⟨(continuous_stdAddChar.comp (by fun_prop)).subtype_val, ?_⟩
+    refine ⟨(continuous_stdAddChar.comp (by fun_prop)).subtypeVal, ?_⟩
     -- for a rational matrix `γ` the trace of `a γ` lies in `E`, where `ψ` is trivial
     simp [Matrix.mul_apply, ratMatrices, trace, mul_add, Finset.sum_add_distrib,
       AddChar.map_add_eq_mul, ← map_mul, ← map_sum]
@@ -429,11 +446,6 @@ namespace New
 open Set QuotientAddGroup Rat MeasureTheory IsDualFamily
 
 variable {E : Type*} [Field E] [NumberField E] [NumberField.IsTotallyComplex E] [PlaceEmbedding E]
-
-/-- A number field has infinitely many finite places, since they surject onto the primes. -/
-instance : Infinite (FinPlace E) :=
-  .of_surjective _
-    (HeightOneSpectrum.primesEquiv.surjective.comp (FinPlace.comap_surjective (castHom E)))
 
 /-- The idempotent adele with component `1` at the finite places in `S`, and `0` at the other finite
 places and at all infinite places. -/
@@ -687,7 +699,7 @@ lemma IsDualFamily.sum_le_of_fourier {E : Type*} [Field E] [NumberField E] [IsTo
     obtain ⟨u, hu, hux⟩ : ∃ u ∈ W, (u : 𝔸 E ⧸ ratAdeles E) = x := hη_supp (subset_closure hx)
     exact ⟨u, eq_iff_sub_mem.1 hux.symm, hu.self_of_nhds.le⟩
   set J : ℝ := ∫ q : 𝔸 E ⧸ ratAdeles E, η q ∂addHaarMeasure ⊤
-  have hJ_pos : 0 < J := η.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (x := 0)
+  have hJ_pos : 0 < J := η.continuous.integral_pos_of_hasCompactSupport_nonneg_ne_zero (x := 0)
     hη_compact hη_nonneg (by simp [hη_one rfl])
   refine le_of_mul_le_mul_left ?_ hJ_pos
   calc J * m ≤ ∫ x : 𝔸 E, η x * F x :=

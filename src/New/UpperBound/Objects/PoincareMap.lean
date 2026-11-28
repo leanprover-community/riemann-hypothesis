@@ -1,4 +1,12 @@
-import New.UpperBound.Seesaw.EdgePairEvaluation
+module
+
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.UpperBound.Seesaw.EdgePairEvaluation
+public import Lib.Weil.Periods.BesselIntegral
+public import Lib.Weil.Periods.Equivariant
+import Lib.General.Measure.IntegralOperators
+import Lib.Adelic.Hecke.ClassSums
 
 /-!
 # The Poincaré map
@@ -26,6 +34,8 @@ Notions from other files:
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
 
+@[expose] public section
+
 open MeasureTheory ComplexConjugate
 noncomputable section
 namespace New
@@ -37,7 +47,7 @@ variable {M F : Type*} [AddCommGroup M] [Module ℂ M] [NormedAddCommGroup F] [I
 /-- On an inner product space `F` of finite dimension, every conjugate linear form is `y ↦ ⟨y, z⟩`
 for a unique vector `z` (Riesz). -/
 lemma bijective_flip_innerₛₗ : Function.Bijective (innerₛₗ ℂ (E := F)).flip := by
-  have : CompleteSpace F := FiniteDimensional.complete ℂ F
+  have : CompleteSpace F := FiniteDimensional.completeSpace ℂ F
   refine ⟨fun z z' h_eq ↦ ext_inner_left ℂ (LinearMap.congr_fun h_eq), fun l ↦ ?_⟩
   -- Apply the Riesz theorem to the linear form `conj ∘ l`.
   let z : F := (InnerProductSpace.toDual ℂ F).symm
@@ -88,13 +98,14 @@ lemma Form.hasLevel_levelTrace {J : Subgroup (Gf E n)} (K : Subgroup (Gf E n))
     HasLevel (z.levelTrace J K) K := by
   intro k hk x
   rw [levelTrace_apply, levelTrace_apply]
-  -- Left multiplication by `k` permutes the cosets.
-  refine Fintype.sum_equiv (MulAction.toPerm (⟨k, hk⟩ : K)) _ _ fun q ↦ ?_
-  obtain ⟨⟨j, hj_mem⟩, hj⟩ := QuotientGroup.mk_out_eq_mul (J.subgroupOf K) (⟨k, hk⟩ * q.out)
-  have h_out : (((⟨k, hk⟩ : K) • q).out : Gf E n) = k * q.out * j := by
-    rw [← MulAction.Quotient.mk_smul_out, smul_eq_mul, hj, Subgroup.coe_mul, Subgroup.coe_mul]
-  rw [MulAction.toPerm_apply, h_out, ← hz j hj_mem (x * (1, k) * (1, (q.out : Gf E n)))]
-  simp only [mul_assoc, Prod.mk_mul_mk, mul_one]
+  -- Left multiplication by `k` permutes the cosets of `J ∩ K` in `K` (`sum_mul_out`).
+  let i : K →* G E s := (MonoidHom.inr (GInf E s) (Gf E n)).comp K.subtype
+  have h_inv (a j : K) (hj : j ∈ J.subgroupOf K) : z (x * i (a * j)) = z (x * i a) := by
+    rw [map_mul, ← mul_assoc]
+    exact hz j hj (x * i a)
+  have h_sum := sum_mul_out (J.subgroupOf K) (fun a : K ↦ z (x * i a)) h_inv (⟨k, hk⟩ : K)
+  simp only [map_mul, ← mul_assoc] at h_sum
+  simpa only [i, MonoidHom.comp_apply, MonoidHom.inr_apply, Subgroup.subtype_apply] using h_sum
 
 /-- Let `y` be a form of level `K` and `z` any form. The integral against `y` of the sum of the
 translates of `z` under representatives of `K / (J ∩ K)` is `[K : J ∩ K]` times the integral of
@@ -105,14 +116,14 @@ lemma Form.integral_levelTrace_mul {J : Subgroup (Gf E n)} (K : Subgroup (Gf E n
     ∫ x : G E s, z.levelTrace J K x * y x ∂V.quotMeasure =
       J.relIndex K * ∫ x : G E s, z x * y x ∂V.quotMeasure := by
   have h_aut : V.IsAutomorphic fun x ↦ z x * y x :=
-    z.2.toIsAutomorphic.map₂ y.2.toIsAutomorphic (fun a b ↦ a * b) (by fun_prop)
+    z.property.toIsAutomorphic.map₂ y.property.toIsAutomorphic (fun a b ↦ a * b) (by fun_prop)
   -- The integral is invariant under right translation, which fixes `y`.
   have h_term (k : K) : ∫ x, z (x * (1, (k : Gf E n))) * y x ∂V.quotMeasure =
       ∫ x, z x * y x ∂V.quotMeasure := by
     rw [← (integral_comp_mul_right (1, (k : Gf E n)) h_aut.rat_mul h_aut.continuous).1]
-    simp only [hy k k.2]
+    simp only [hy k k.property]
   have h_int (k : K) : Integrable (fun x ↦ z (x * (1, (k : Gf E n))) * y x) V.quotMeasure :=
-    (z.2.comp_mul_right k).memLp.integrable_mul y.2.memLp
+    (z.property.comp_mul_right k).memLp.integrable_mul y.property.memLp
   simp only [levelTrace_apply, Finset.sum_mul]
   rw [integral_finsetSum _ fun q _ ↦ h_int q.out]
   simp [h_term, Subgroup.relIndex, Subgroup.index]
@@ -130,10 +141,10 @@ of `V`, and let `x` be a point of `G E ε`. Then `r ↦ W r * y (r * x)` is inte
 `[R] = R(F) \ R(𝔸)`, because it is continuous on a compact quotient. -/
 lemma IsEquivariant.integrable_mul {W : Y.besselGroup → ℂ} (hW : Y.IsEquivariant W)
     {y : G E ε → ℂ} (hy : V.IsAutomorphic y) (x : G E ε) :
-    Integrable (fun r : Y.besselGroup ↦ W r * y (r.1 * x)) Y.besselMeasure := by
+    Integrable (fun r : Y.besselGroup ↦ W r * y (r.val * x)) Y.besselMeasure := by
   refine integrable_of_isCocompact Y.isCocompact_ratBessel
     (hW.continuous.mul (hy.continuous.comp (by fun_prop))) fun γ hγ r ↦ ?_
-  have h_rat : γ.1 ∈ V.Γ := (Subgroup.mem_subgroupOf.1 hγ).1
+  have h_rat : γ.val ∈ V.Γ := (Subgroup.mem_subgroupOf.1 hγ).1
   rw [hW.rat_mul γ h_rat, Subgroup.coe_mul, mul_assoc, hy.rat_mul γ h_rat]
 
 end Grading
@@ -146,8 +157,8 @@ variable {P : Parameters} (D : Data P) (g : GInf D.E (D.signsY 0))
 of `D.gradingY 0` is continuous, left invariant under the rational points, and transforms by the
 generic character under the unipotent part. -/
 lemma isEquivariant_sourceFn (φ : D.SourceForm) :
-    (D.gradingY 0).IsEquivariant ((D.gradingY 0).sourceFn t φ.1) :=
-  (D.gradingY 0).isEquivariant_sourceFn (odd_two_mul_add_one D.ϱ) t φ.1
+    (D.gradingY 0).IsEquivariant ((D.gradingY 0).sourceFn t φ.val) :=
+  (D.gradingY 0).isEquivariant_sourceFn (odd_two_mul_add_one D.ϱ) t φ.val
 
 /-- The Bessel period `∫_{[R₀]} 𝒲_φ (r) conj (y (r g)) dr`, linear in the source form `φ` and
 conjugate linear in the form `y` on `Y₀`. Here `g` is an archimedean point of `G₀`, and `𝒲_φ` is
@@ -155,9 +166,9 @@ formed with the linear form `t`. -/
 def besselPeriod : D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) →ₗ⋆[ℂ] ℂ :=
   have h_int (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0)) : Integrable
       (fun r : (D.gradingY 0).besselGroup ↦
-        (D.gradingY 0).sourceFn t φ.1 r * conj (y.1 (r.1 * (g, 1))))
+        (D.gradingY 0).sourceFn t φ.val r * conj (y.val (r.val * (g, 1))))
       (D.gradingY 0).besselMeasure :=
-    (D.isEquivariant_sourceFn t φ).integrable_mul y.1.2.toIsAutomorphic.conj (g, 1)
+    (D.isEquivariant_sourceFn t φ).integrable_mul y.val.property.toIsAutomorphic.conj (g, 1)
   LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ)
     (fun (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0)) ↦
       ∫ r : (D.gradingY 0).besselGroup, (D.gradingY 0).sourceFn t φ.1 r * conj (y.1 (r.1 * (g, 1)))
@@ -177,14 +188,14 @@ conj (y (r g)) dr`. -/
 lemma besselPeriod_apply (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0)) :
     D.besselPeriod g t φ y =
       ∫ r : (D.gradingY 0).besselGroup,
-        (D.gradingY 0).sourceFn t φ.1 r * conj (y.1 (r.1 * (g, 1)))
+        (D.gradingY 0).sourceFn t φ.val r * conj (y.val (r.val * (g, 1)))
         ∂(D.gradingY 0).besselMeasure :=
   rfl
 
 /-- The Poincaré map `𝒫 : 𝒜(X₀) → 𝒜(Y₀)` for an archimedean point `g` of `G₀` and a linear form
 `t`: the form `𝒫 φ` represents the Bessel period of `φ`. The measure on `[R₀]` is `besselMeasure`;
 another Haar measure on `R₀(𝔸)` would multiply `𝒫` by a positive constant, which can be absorbed
-in `t` by `poincareAt_smul`. -/
+in `t`. -/
 def poincareAt (g : GInf D.E (D.signsY 0)) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) :
     D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) :=
   rieszMap (D.besselPeriod g t)
@@ -197,17 +208,9 @@ archimedean type is the discrete series of doubled parameter `D.paramW`. Then th
 theorem inner_poincareAt (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0)) :
     inner ℂ y (D.poincareAt g t φ) =
       ∫ r : (D.gradingY 0).besselGroup,
-        (D.gradingY 0).sourceFn t φ.1 r * conj (y.1 (r.1 * (g, 1)))
+        (D.gradingY 0).sourceFn t φ.val r * conj (y.val (r.val * (g, 1)))
         ∂(D.gradingY 0).besselMeasure := by
   rw [poincareAt, inner_rieszMap, besselPeriod_apply]
-
-/-- Scaling the linear form `t` scales the Poincaré map `𝒫 = D.poincareAt g t` by the same factor,
-so that a change of the Haar measure can be absorbed in `t`. -/
-theorem poincareAt_smul (c : ℂ) : D.poincareAt g (c • t) = c • D.poincareAt g t := by
-  refine LinearMap.ext fun φ ↦ ext_inner_left ℂ fun y ↦ ?_
-  rw [LinearMap.smul_apply, inner_smul_right, inner_poincareAt, inner_poincareAt,
-    ← integral_const_mul]
-  simp only [Grading.sourceFn_smul_left, mul_assoc]
 
 /-- Let `z` be a form on `G₀`, right invariant under `J`, whose archimedean type is conjugate to
 that of the values of `𝒫 = D.poincareAt g t`. Then `[J_M : J ∩ J_M] ∫_{[G₀]} z · 𝒫 φ` is the sum
@@ -219,10 +222,10 @@ theorem integral_mul_poincareAt (g : GInf D.E (D.signsY 0))
     (z : (D.spaceY 0).Form (star (typeKernel (D.paramY 0) (D.signsY 0))))
     (hz_level : HasLevel z J) :
     J.relIndex D.chosenLevel *
-        ∫ x : New.G D.E (D.signsY 0), z x * (D.poincareAt g t φ).1 x ∂(D.spaceY 0).quotMeasure =
+        ∫ x : New.G D.E (D.signsY 0), z x * (D.poincareAt g t φ).val x ∂(D.spaceY 0).quotMeasure =
       ∑ q : D.chosenLevel ⧸ J.subgroupOf D.chosenLevel,
         ∫ r : (D.gradingY 0).besselGroup,
-          (D.gradingY 0).sourceFn t φ.1 r * z (r.1 * (g, q.out.1))
+          (D.gradingY 0).sourceFn t φ.val r * z (r.val * (g, q.out.val))
           ∂(D.gradingY 0).besselMeasure := by
   -- The conjugate `y` of the sum of the translates of `z` lies in `𝒜(Y₀)`.
   have h_trace : HasLevel (z.levelTrace J D.chosenLevel) D.chosenLevel :=
@@ -230,27 +233,27 @@ theorem integral_mul_poincareAt (g : GInf D.E (D.signsY 0))
   let y : D.principalForms (D.spaceY 0) :=
     ⟨conjForm (star_star _).symm (z.levelTrace J D.chosenLevel),
       Space.mem_levelSpace_formRep_iff.2 fun k hk x ↦ congrArg star (h_trace k hk x)⟩
-  have hy (x : New.G D.E (D.signsY 0)) : conj (y.1 x) = z.levelTrace J D.chosenLevel x :=
+  have hy (x : New.G D.E (D.signsY 0)) : conj (y.val x) = z.levelTrace J D.chosenLevel x :=
     Complex.conj_conj _
-  have h_level : HasLevel (D.poincareAt g t φ).1 D.chosenLevel :=
-    Space.mem_levelSpace_formRep_iff.1 (D.poincareAt g t φ).2
-  calc J.relIndex D.chosenLevel * ∫ x, z x * (D.poincareAt g t φ).1 x ∂(D.spaceY 0).quotMeasure
+  have h_level : HasLevel (D.poincareAt g t φ).val D.chosenLevel :=
+    Space.mem_levelSpace_formRep_iff.1 (D.poincareAt g t φ).property
+  calc J.relIndex D.chosenLevel * ∫ x, z x * (D.poincareAt g t φ).val x ∂(D.spaceY 0).quotMeasure
     _ = ∫ x, z.levelTrace J D.chosenLevel x * (D.poincareAt g t φ).1 x ∂(D.spaceY 0).quotMeasure :=
         (z.integral_levelTrace_mul D.chosenLevel h_level).symm
-    _ = ∫ x, conj (y.1 x) * (D.poincareAt g t φ).1 x ∂(D.spaceY 0).quotMeasure := by
+    _ = ∫ x, conj (y.val x) * (D.poincareAt g t φ).val x ∂(D.spaceY 0).quotMeasure := by
         simp only [hy]
     -- The inner product on `𝒜(Y₀)` is `⟨y, y'⟩ = ∫ conj y · y'` by definition.
     _ = inner ℂ y (D.poincareAt g t φ) := rfl
     _ = ∫ r, ∑ q : D.chosenLevel ⧸ J.subgroupOf D.chosenLevel,
-          (D.gradingY 0).sourceFn t φ.1 r * z (r.1 * (g, q.out.1))
+          (D.gradingY 0).sourceFn t φ.val r * z (r.val * (g, q.out.val))
           ∂(D.gradingY 0).besselMeasure := by
         simp only [inner_poincareAt, hy, Space.Form.levelTrace_apply, Finset.mul_sum, mul_assoc,
           Prod.mk_mul_mk, mul_one, one_mul]
     _ = ∑ q : D.chosenLevel ⧸ J.subgroupOf D.chosenLevel,
-          ∫ r, (D.gradingY 0).sourceFn t φ.1 r * z (r.1 * (g, q.out.1))
+          ∫ r, (D.gradingY 0).sourceFn t φ.val r * z (r.val * (g, q.out.val))
             ∂(D.gradingY 0).besselMeasure :=
         integral_finsetSum _ fun q _ ↦
-          (D.isEquivariant_sourceFn t φ).integrable_mul z.2.toIsAutomorphic (g, q.out.1)
+          (D.isEquivariant_sourceFn t φ).integrable_mul z.property.toIsAutomorphic (g, q.out.val)
 
 end Data
 

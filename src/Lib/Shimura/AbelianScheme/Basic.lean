@@ -1,5 +1,12 @@
-import Lib.General.Geometry.LineBundles
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
+public import Mathlib.AlgebraicGeometry.Morphisms.Proper
+public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Linter.Style
+public import Lib.General.Geometry.LineBundles
 
 /-!
 # Abelian schemes: base change, finite kernels and constant functions
@@ -30,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.AbelianScheme.IsogenyFlatness` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -106,8 +115,8 @@ variable {f}
 @[simp]
 lemma IsLinear.smul_comp [hf : IsLinear f] (t : T ⟶ A) : (c • t : T ⟶ A) ≫ f = c • t ≫ f := by
   -- `c • t` is `t` followed by multiplication by `c` on `A`
-  calc (c • t) ≫ f = t ≫ (c • 𝟙 A) ≫ f := by simp [← Category.assoc, ModuleObj.comp_smul]
-    _ = c • t ≫ f := by rw [hf.smul_id_comp, ModuleObj.comp_smul]
+  rw [show c • t = t ≫ (c • 𝟙 A) by rw [ModuleObj.comp_smul, Category.comp_id],
+    Category.assoc, hf.smul_id_comp, ModuleObj.comp_smul]
 
 -- For all importers, `simp` pulls scalar multiplication out of compositions
 -- (`ModuleObj.comp_smul`).
@@ -120,20 +129,28 @@ lemma isAdditive_of_universal (h_univ : (fst A A + snd A A) ≫ f = fst A A ≫ 
   constructor
   · -- At the point `(0, 0)` of `A ⊗ A`, `h_univ` reads `f 0 = f 0 + f 0`, so `f 0 = 0`.
     have h_at_zero : (0 : 𝟙_ (Over S) ⟶ A) ≫ f = 0 ≫ f + 0 ≫ f := by
-      simpa [comp_add_assoc, comp_add] using (0 : 𝟙_ (Over S) ⟶ A ⊗ A) ≫= h_univ
-    simpa [Hom.zero_def] using h_at_zero
+      have h0 := lift (0 : 𝟙_ (Over S) ⟶ A) 0 ≫= h_univ
+      rw [comp_add_assoc, comp_add, lift_fst, lift_snd, _root_.add_zero, ← Category.assoc, lift_fst,
+        ← Category.assoc, lift_snd] at h0
+      exact h0
+    have h0 : (0 : 𝟙_ (Over S) ⟶ A) ≫ f = 0 :=
+      add_left_cancel (a := (0 : 𝟙_ (Over S) ⟶ A) ≫ f)
+        (by rw [_root_.add_zero]; exact h_at_zero.symm)
+    have h_toUnit : toUnit (𝟙_ (Over S)) = 𝟙 (𝟙_ (Over S)) := toUnit_unique _ _
+    rw [Hom.zero_def, Hom.zero_def, h_toUnit, Category.id_comp, Category.id_comp] at h0
+    exact h0
   · -- The addition of `A` is `fst A A + snd A A`, so this is `h_univ`.
-    simpa [add_eq_add, comp_add] using h_univ
+    rw [add_eq_add, add_eq_add, h_univ, comp_add, tensorHom_fst, tensorHom_snd]
 
 /-- Every commutative group object is a `ℤ`-module object: the points form `ℤ`-modules through
 integer multiples. -/
-instance (priority := low) : ModuleObj ℤ A := ⟨by simp [comp_zsmul]⟩
+instance (priority := low) : ModuleObj ℤ A := ⟨fun a c x ↦ comp_zsmul a x c⟩
 
 omit [ModuleObj R A] in
 /-- A multiple `c • f` of a homomorphism `f` of commutative group objects is a homomorphism. -/
 instance [IsAdditive f] : IsAdditive (c • f) := by
   apply isAdditive_of_universal
-  simp [add_comp]
+  rw [ModuleObj.comp_smul, ModuleObj.comp_smul, ModuleObj.comp_smul, add_comp, smul_add]
 
 /-! ### Structures on the pullback, and properties of morphisms over the base -/
 
@@ -148,10 +165,15 @@ instance : ModuleObj R ((pullback b).obj A) where
   -- Transport the module structure on the points of `A` along the adjunction bijection.
   homModule _ :=
     AddEquiv.module _
-      (.symm ⟨(mapPullbackAdj b).homEquiv .., by
+      (.symm ⟨(mapPullbackAdj b).homEquiv .., fun x y ↦ by
         delta pullbackAddObj
-        simp [homEquiv, Functor.map_add', comp_add]⟩)
-  comp_smul := by simp [smul_def, ← homEquiv_naturality_left, homEquiv_counit]
+        dsimp only [Equiv.toFun_as_coe]
+        rw [homEquiv_unit, homEquiv_unit, homEquiv_unit, Functor.map_add', comp_add]⟩)
+  comp_smul := by
+    intro T' T a c x
+    change a ≫ (mapPullbackAdj b).homEquiv T A (c • ((mapPullbackAdj b).homEquiv T A).symm x) =
+      (mapPullbackAdj b).homEquiv T' A (c • ((mapPullbackAdj b).homEquiv T' A).symm (a ≫ x))
+    rw [← homEquiv_naturality_left, ModuleObj.comp_smul, ← homEquiv_naturality_left_symm]
 
 variable (c : Pic A.left) (x y : T ⟶ A) (f : X ⟶ Y) (z : 𝟙_ (Over S) ⟶ A)
 
@@ -162,7 +184,7 @@ instance [IsIso f] : IsIso f.left := map_isIso (forget S) f
 is the underlying morphism of schemes `f.left`. -/
 instance [IsProper X.hom] [IsSeparated Y.hom] : IsProper f.1 := by
   -- `f.left ≫ Y.hom` is the proper structure morphism `X.hom`
-  have h_comp : IsProper (f.left ≫ Y.hom) := by simpa
+  have h_comp : IsProper (f.left ≫ Y.hom) := by rw [f.w]; infer_instance
   exact IsProper.of_comp f.left Y.hom
 
 /-- Smoothness of relative dimension `d` is stable under base change: if `f : X ⟶ S` is smooth of
@@ -185,7 +207,13 @@ abbrev translation : A ⟶ A := 𝟙 A + toUnit A ≫ z
 
 /-- Translation by `z` is an isomorphism, with inverse the translation by `-z`. -/
 instance : IsIso (translation z) where
-  out := ⟨translation (-z), by simp [comp_neg, comp_add]⟩
+  out := ⟨translation (-z),
+    by rw [translation, translation, comp_add, Category.comp_id, ← Category.assoc,
+        toUnit_unique ((𝟙 A + toUnit A ≫ z) ≫ toUnit A) (toUnit A), comp_neg, _root_.add_assoc,
+        add_neg_cancel, _root_.add_zero],
+    by rw [translation, translation, comp_add, Category.comp_id, ← Category.assoc,
+        toUnit_unique ((𝟙 A + toUnit A ≫ (-z)) ≫ toUnit A) (toUnit A), comp_neg, _root_.add_assoc,
+        neg_add_cancel, _root_.add_zero]⟩
 
 namespace Pic
 
@@ -206,6 +234,25 @@ def ParallelogramLaw : Prop :=
 
 end Pic
 
+namespace Variety
+
+open Pic
+
+variable {R : CommRingCat} {A : Over (Spec R)} [IsLocalRing R] [AddObj A] {c : Pic A.left}
+
+omit [AddObj A] in
+/-- Over a local ring, a class pulls back to zero along a point that comes from a section. -/
+@[simp]
+lemma atPoint_toUnit_comp_eq_zero {T : Over (Spec R)} (z : 𝟙_ (Over (Spec R)) ⟶ A) :
+    c.atPoint (toUnit T ≫ z) = 0 := by
+  rw [Pic.atPoint, Over.comp_left, Pic.pull_comp, eq_zero_of_isLocalRing (c.pull z.left)]
+  exact (Pic.pull (toUnit T).left).map_zero
+
+@[simp]
+lemma atPoint_zero {T : Over (Spec R)} : c.atPoint (T := T) 0 = 0 := atPoint_toUnit_comp_eq_zero _
+
+end Variety
+
 end New
 
 end AbelianScheme
@@ -215,8 +262,8 @@ open CategoryTheory in
 over `Y` gives the square `u.left ≫ p.left = p.left ≫ v.left` of the underlying morphisms. -/
 private lemma CategoryTheory.Over.left_comp_left_eq_of_map_comp_eq {C : Type*} [Category C]
     {X Y : C} {b : X ⟶ Y} {U : Over X} {V : Over Y} {p : (Over.map b).obj U ⟶ V} {u : U ⟶ U}
-    {v : V ⟶ V} (h_comm : (Over.map b).map u ≫ p = p ≫ v) : u.left ≫ p.left = p.left ≫ v.left := by
-  simpa using congrArg CommaMorphism.left h_comm
+    {v : V ⟶ V} (h_comm : (Over.map b).map u ≫ p = p ≫ v) : u.left ≫ p.left = p.left ≫ v.left :=
+  congrArg CommaMorphism.left h_comm
 
 /-!
 ## Points, sections and homomorphisms under base change
@@ -239,14 +286,9 @@ x ↦ (Over.map b).map x ≫ p from T-points of A' over S' to T-points of A over
 def pointEquiv {T : Over S'} : (T ⟶ A') ≃ₗ[O] ((Over.map b).obj T ⟶ A) :=
   -- the linear map `u ↦ (map b).map u ≫ p`, inverted by the universal property of the pull-back
   LinearEquiv.mk (h.linear (U := T)).mk' (fun u ↦ homMk (h.isPullback.lift u.left T.hom u.w))
-    (by
-      -- `cat_disch` uses this: two morphisms into the pull-back `A'` agree if they agree after `p`
-      -- and after `A'.hom`
-      have h_ext : ∀ (W : AlgebraicGeometry.Scheme) (k l : W ⟶ A'.left),
-          k ≫ p.left = l ≫ p.left → k ≫ A'.hom = l ≫ A'.hom → k = l :=
-        fun W k l ↦ h.isPullback.hom_ext
-      cat_disch)
-    (by cat_disch)
+    (fun x ↦ OverMorphism.ext (h.isPullback.hom_ext (h.isPullback.lift_fst _ _ _)
+      ((h.isPullback.lift_snd _ _ _).trans x.w.symm)))
+    (fun u ↦ OverMorphism.ext (h.isPullback.lift_fst u.left T.hom u.w))
 
 /-- For a base change A' of A along b : S' → S, the O-linear map pulling sections of A over S
 back to sections of A' over S'. -/
@@ -254,18 +296,22 @@ def pullSection : (𝟙_ (Over S) ⟶ A) →ₗ[O] 𝟙_ (Over S') ⟶ A' :=
   h.pointEquiv.symm.toLinearMap ∘ₗ
     ⟨⟨fun z ↦ toUnit ((Over.map b).obj (𝟙_ (Over S'))) ≫ z,
         comp_add (toUnit ((Over.map b).obj (𝟙_ (Over S'))))⟩,
-      by simp⟩
+      fun c z ↦ ModuleObj.comp_smul _ c z⟩
 
 @[reassoc]
 lemma pullSection_comp (z : 𝟙_ (Over S) ⟶ A) : (h.pullSection z).left ≫ p.left = b ≫ z.left := by
-  simp [pullSection, pointEquiv]
+  have h_u : (toUnit ((Over.map b).obj (𝟙_ (Over S')))).left = b :=
+    ((toUnit ((Over.map b).obj (𝟙_ (Over S')))).w.symm.trans (Category.comp_id _)).symm
+  refine (h.isPullback.lift_fst _ _ _).trans ?_
+  dsimp only [LinearMap.coe_mk, AddHom.coe_mk]
+  rw [Over.comp_left, h_u]
 
 /-- For a base change p : A' → A, a line bundle N on A and a T-point x of A', the pull-back of
 the class of p*N along x equals the pull-back of the class of N along the point p∘x of A. -/
 lemma atPoint_picClass_pull {T : Over S'} {ι : Type} {N : LineBundle A.left ι} (x : T ⟶ A') :
     Pic.atPoint (A := A') (T := T) (N.pull p.left).picClass x =
-      (LineBundle.picClass (ι := ι) N).atPoint (h.pointEquiv x) :=
-  -- by definition, both sides are the pull-back of the class of `N` along `x.left ≫ p.left`
+      (LineBundle.picClass (ι := ι) N).atPoint (h.pointEquiv x) := by
+  rw [Pic.atPoint, Pic.atPoint, h.pointEquiv_apply, ← Pic.pull_picClass, ← Pic.pull_comp]
   rfl
 
 /-- `p` commutes with multiplication by `m` in `O` on `A'` and on `A`. -/
@@ -273,7 +319,8 @@ lemma smul_id_comp (h : IsGroupBaseChange (A := A) (B := A') b p) (m : O) :
     (m • 𝟙 A').left ≫ p.left = p.left ≫ (m • 𝟙 A).left := by
   -- the map `u ↦ (map b).map u ≫ p` is linear; apply this to `m • 𝟙 A'`
   have h_comm : (map b).map (m • 𝟙 A') ≫ p = p ≫ (m • 𝟙 A) := by
-    simpa using h.linear.map_smul m (𝟙 A')
+    rw [h.linear.map_smul m (𝟙 A'), CategoryTheory.Functor.map_id, Category.id_comp,
+      ModuleObj.comp_smul, Category.comp_id]
   exact Over.left_comp_left_eq_of_map_comp_eq h_comm
 
 /-- `p` commutes with multiplication by a natural number `m` on `A'` and on `A`. -/
@@ -286,11 +333,14 @@ translation by `z`. -/
 lemma translation_comp (h : IsGroupBaseChange (A := A) (B := A') b p) (z : 𝟙_ (Over S) ⟶ A) :
     (translation (h.pullSection z)).left ≫ p.left = p.left ≫ (translation z).left := by
   -- `translation` adds a constant section to `𝟙`, and the map `u ↦ (map b).map u ≫ p` is additive
-  have h_comm : (map b).map (New.translation (h.pullSection z)) ≫ p = p ≫ New.translation z :=
-    calc (map b).map (New.translation (h.pullSection z)) ≫ p
-        = (map b).map (𝟙 A') ≫ p + (map b).map (toUnit A' ≫ h.pullSection z) ≫ p :=
-          h.linear.map_add (𝟙 A') (toUnit A' ≫ h.pullSection z)
-      _ = p ≫ New.translation z := by simp [← h.pointEquiv_apply, pullSection, comp_add]
+  have h_sec : h.pointEquiv (h.pullSection z) =
+      toUnit ((Over.map b).obj (𝟙_ (Over S'))) ≫ z :=
+    h.pointEquiv.apply_symm_apply _
+  have h_comm : (map b).map (New.translation (h.pullSection z)) ≫ p = p ≫ New.translation z := by
+    rw [New.translation, New.translation, comp_add, Category.comp_id, h.linear.map_add,
+      CategoryTheory.Functor.map_id, Category.id_comp, CategoryTheory.Functor.map_comp,
+      Category.assoc, ← h.pointEquiv_apply, h_sec, ← Category.assoc,
+      toUnit_unique ((map b).map (toUnit A') ≫ toUnit _) (p ≫ toUnit A), Category.assoc]
   exact Over.left_comp_left_eq_of_map_comp_eq h_comm
 
 /-- Let `A'` be a base change of `A` along `b` and `B'` one of `B` along `c`, with `b c : S' ⟶ S`,
@@ -311,24 +361,28 @@ lemma exists_hom_baseChange (h : IsGroupBaseChange (A := A) (B := A') b p) {c : 
   obtain ⟨ψ, h_def⟩ := hB.pointEquiv.surjective (F.app A' ≫ p ≫ χ)
   -- (a), by naturality of `F`
   have hψ {T : Over S'} (u : T ⟶ A') :
-      hB.pointEquiv (u ≫ ψ) = F.app T ≫ h.pointEquiv u ≫ χ :=
-    calc hB.pointEquiv (u ≫ ψ) = (map c).map u ≫ hB.pointEquiv ψ := by simp [pointEquiv_apply]
-      _ = (map c).map u ≫ F.app A' ≫ p ≫ χ := by rw [h_def]
-      _ = F.app T ≫ h.pointEquiv u ≫ χ := by
-          rw [NatTrans.naturality_assoc, pointEquiv_apply, Category.assoc]
+      hB.pointEquiv (u ≫ ψ) = F.app T ≫ h.pointEquiv u ≫ χ := by
+    rw [hB.pointEquiv_apply, CategoryTheory.Functor.map_comp, Category.assoc,
+      ← hB.pointEquiv_apply, h_def, NatTrans.naturality_assoc, h.pointEquiv_apply, Category.assoc]
   have h_universal : (fst A' A' + snd A' A') ≫ ψ = fst A' A' ≫ ψ + snd A' A' ≫ ψ := by
-    simp [← hB.pointEquiv.apply_eq_iff_eq, hψ, add_comp, comp_add]
+    apply hB.pointEquiv.injective
+    rw [LinearEquiv.map_add, hψ, hψ, hψ, LinearEquiv.map_add, add_comp, comp_add]
   have h_add : IsAdditive ψ := isAdditive_of_universal h_universal
   refine ⟨ψ, hψ, { h_add with smul_id_comp := fun m ↦ ?_ }, fun z ↦ ?_⟩
   · -- (b): `O`-linearity of `ψ`, from that of `h.pointEquiv` and of `χ`
     apply hB.pointEquiv.injective
-    calc hB.pointEquiv ((m • 𝟙 A') ≫ ψ) = F.app A' ≫ h.pointEquiv (m • 𝟙 A') ≫ χ := hψ (m • 𝟙 A')
-      _ = m • (F.app A' ≫ h.pointEquiv (𝟙 A') ≫ χ) := by simp
-      _ = m • hB.pointEquiv (𝟙 A' ≫ ψ) := by rw [hψ]
-      _ = hB.pointEquiv (m • ψ) := by rw [Category.id_comp, LinearEquiv.map_smul]
+    rw [hψ, LinearEquiv.map_smul, IsLinear.smul_comp, ModuleObj.comp_smul, ← hψ,
+      Category.id_comp, LinearEquiv.map_smul]
   · -- (c): after `hB.pointEquiv`, both sides are the constant point `z ≫ χ`
     apply hB.pointEquiv.injective
-    simp [pullSection, hψ]
+    have h_secA : h.pointEquiv (h.pullSection z) =
+        toUnit ((Over.map b).obj (𝟙_ (Over S'))) ≫ z :=
+      h.pointEquiv.apply_symm_apply _
+    have h_secB : hB.pointEquiv (hB.pullSection (z ≫ χ)) =
+        toUnit ((Over.map c).obj (𝟙_ (Over S'))) ≫ z ≫ χ :=
+      hB.pointEquiv.apply_symm_apply _
+    rw [hψ, h_secA, h_secB, ← Category.assoc, ← Category.assoc,
+      toUnit_unique (F.app (𝟙_ (Over S')) ≫ toUnit _) (toUnit _), Category.assoc]
 
 end New.IsGroupBaseChange
 
@@ -350,6 +404,7 @@ variable {R : Type} [CommRing R] {A B : Over (Spec ⟨R⟩)} [AddObj B] {f : A �
 omit [AddObj B] in
 /-- If `A` is locally of finite presentation over `Spec R` and `B` is locally of finite type over
 `Spec R`, then every morphism `f : A ⟶ B` over `Spec R` is locally of finite presentation. -/
+@[stacks 02FV "first assertion, over an affine base"]
 lemma locallyOfFinitePresentation_left [hB : LocallyOfFiniteType B.hom]
     [h : LocallyOfFinitePresentation A.hom] :
     LocallyOfFinitePresentation f.left := by
@@ -375,22 +430,31 @@ lemma exists_isPullback_SpecMap {X Y : Scheme} (f : X ⟶ Y) [IsAffineHom.{0} f]
   let e : Spec Γ(Limits.pullback f i, ⊤) ≅ Limits.pullback f i := (Scheme.isoSpec _).symm
   refine ⟨Γ(Limits.pullback f i, ⊤), Spec.preimage (e.hom ≫ Limits.pullback.snd f i),
     e.hom ≫ Limits.pullback.fst f i, ?_⟩
-  exact .of_iso_pullback ⟨by simp [Limits.pullback.condition]⟩ e rfl (Spec.map_preimage _).symm
+  exact .of_iso_pullback
+    ⟨by rw [Category.assoc, Limits.pullback.condition, ← Category.assoc, Spec.map_preimage]⟩
+    e rfl (Spec.map_preimage _).symm
 
 open MonoidalCategory in
 /-- A morphism `f : A ⟶ B` over `Spec R` is zero exactly when, as a morphism of schemes, it factors
 through the zero section `ζ[B]` of `B`. -/
 lemma eq_zero_iff_factors_zero_section :
     f = 0 ↔ ∃ l : A.left ⟶ (𝟙_ (Over (Spec (CommRingCat.of R)))).left, l ≫ ζ[B].left = f.left := by
+  have h_u : (CartesianMonoidalCategory.toUnit A).left = A.hom :=
+    (Category.comp_id _).symm.trans (CartesianMonoidalCategory.toUnit A).w
   constructor
   · -- `0 : A ⟶ B` is the structure morphism of `A` followed by the zero section
     intro hf
     refine ⟨A.hom, ?_⟩
-    simp [hf, Hom.zero_def]
+    rw [hf, Hom.zero_def, Over.comp_left, h_u]
   · -- `l` is the structure morphism of `A`, since `ζ[B]` is a section of `B`
     rintro ⟨l, hl⟩
     apply OverMorphism.ext
-    simp [Hom.zero_def, ← f.w, ← hl]
+    rw [Hom.zero_def, Over.comp_left, h_u, ← hl]
+    have hl_eq : l = A.hom := by
+      rw [← Category.comp_id l]
+      change l ≫ (𝟙_ (Over (Spec (CommRingCat.of R)))).hom = A.hom
+      rw [← Over.w ζ[B], ← Category.assoc, hl, f.w]
+    rw [hl_eq]
 
 /-- `ι : Spec S ⟶ A` is the kernel of `f : A ⟶ B` over `Spec R`, and `S` is finite over `R`: `ι` is
 a closed immersion killed by `f`, through which every point of `A` killed by `f` factors; `S` is
@@ -414,7 +478,8 @@ variable [IsSeparated B.hom]
 instance : IsClosedImmersion ζ[B].left := by
   -- The zero section is a section of the separated morphism `B.hom`.
   have h_id : IsClosedImmersion (ζ[B].left ≫ B.hom) := by
-    simpa using (inferInstance : IsClosedImmersion (𝟙 (Spec (CommRingCat.of R))))
+    rw [Over.w ζ[B]]
+    exact (inferInstance : IsClosedImmersion (𝟙 (Spec (CommRingCat.of R))))
   -- `MorphismProperty.of_postcomp` takes the property `@IsClosedImmersion` as its first argument
   exact of_postcomp @IsClosedImmersion ζ[B].left B.hom (inferInstance : IsSeparated B.hom) h_id
 
@@ -432,17 +497,20 @@ lemma exists_finite_kernel_ring (hf : IsFinite f.left) :
   have h_flat : ∀ [Flat f.left], Module.Flat R P :=
     fun [Flat f.left] ↦ Flat.SpecMap_iff.mp (of_isPullback h_pb inferInstance)
   -- the closed immersion `ι`, killed by `f`
-  have h_over : i ≫ A.hom = Spec.map φ :=
-    calc i ≫ A.hom = i ≫ f.left ≫ B.hom := by rw [Over.w f]
-      _ = Spec.map φ ≫ ζ[B].left ≫ B.hom := h_pb.w_assoc B.hom
-      _ = Spec.map φ := by simp
+  have h_over : i ≫ A.hom = Spec.map φ := by
+    rw [← Over.w f, h_pb.w_assoc B.hom, Over.w ζ[B]]
+    exact Category.comp_id _
   let ι : specOver R P ⟶ A := homMk i h_over
   have h_closed : IsClosedImmersion ι.left := of_isPullback h_pb.flip inferInstance
   have h_zero : ι ≫ f = 0 := eq_zero_iff_factors_zero_section.mpr ⟨Spec.map φ, h_pb.w.symm⟩
   refine ⟨.of R P, ι, h_finite, h_flat, h_closed, h_zero, fun T y hy ↦ ?_⟩
   -- a point `y` killed by `f` and the structure morphism of `T` map to the pull-back square
   have hy_left : y.left ≫ f.left = T.hom ≫ ζ[B].left := by
-    simpa [Hom.zero_def] using congrArg CommaMorphism.left hy
+    have hyl : (y ≫ f).left = (0 : T ⟶ B).left := congrArg CommaMorphism.left hy
+    rw [Over.comp_left, Hom.zero_def, Over.comp_left] at hyl
+    have h_u : (CartesianMonoidalCategory.toUnit T).left = T.hom :=
+      (Category.comp_id _).symm.trans (CartesianMonoidalCategory.toUnit T).w
+    rwa [h_u] at hyl
   exact ⟨homMk (h_pb.lift y.left T.hom hy_left) (h_pb.lift_snd y.left T.hom hy_left),
     OverMorphism.ext (h_pb.lift_fst y.left T.hom hy_left)⟩
 
@@ -478,32 +546,33 @@ lemma New.Variety.hasConstFunctions_of_isPullback {k : Type} [Field k]
   -- Flat base change gives `Γ(X) = Γ(A) ⊗[k] C`, and `k → Γ(A)` is onto; so `C → Γ(X)` is an
   -- epimorphism, and evaluation at a point of `X` is determined by its image in `Spec C`.
   intro f B x y hxy
-  have h_top : (⊤ : X.Opens) = p ⁻¹ᵁ ⊤ ⊓ s ⁻¹ᵁ ⊤ := by simp
+  have h_top : (⊤ : X.Opens) = p ⁻¹ᵁ ⊤ ⊓ s ⁻¹ᵁ ⊤ := by
+    rw [Scheme.Hom.preimage_top, Scheme.Hom.preimage_top, inf_idem]
   have h_pushout : IsPushout (A.hom.appLE ⊤ ⊤ le_top) (q.appLE ⊤ ⊤ le_top) (p.appLE ⊤ ⊤ le_top)
       (s.appLE ⊤ ⊤ le_top) :=
     (isIso_pushoutSection_iff h_pullback le_top le_top h_top).mp <|
       isIso_pushoutSection_of_isQuasiSeparated_of_flat_right h_pullback le_top le_top h_top
-        (isAffineOpen_top _) (isAffineOpen_top _) (isCompact_preimage A.hom (U := ⊤) (by simp))
+        (isAffineOpen_top _) (isAffineOpen_top _)
+        (isCompact_preimage A.hom (U := ⊤) (isAffineOpen_top _).isCompact)
         (isQuasiSeparated_preimage A.hom (U := ⊤) isQuasiSeparated_univ)
   -- `Γ(A)` is a field, so evaluation at the zero section is injective; it is a retraction of
   -- `k → Γ(A)`, which is therefore surjective.
   let _ : Field Γ(A.left, ⊤) := (isField_of_universallyClosed _ A.hom).toField
   have h_inj : Function.Injective ζ[A].left.appTop :=
     RingHom.injective (S := Γ(Spec (.of k), ⊤)) ζ[A].left.appTop.hom
-  have h_surj : Function.Surjective A.hom.appTop := fun a ↦ by
-    refine ⟨ζ[A].left.appTop a, h_inj ?_⟩
-    -- `ζ[A]` is a section of `A.hom`, so `ζ[A].left.appTop` undoes `A.hom.appTop`
-    show ζ[A].left.appTop (A.hom.appTop (ζ[A].left.appTop a)) = ζ[A].left.appTop a
-    have h_sec : ζ[A].left ≫ A.hom = 𝟙 _ := by simp
-    rw [← CommRingCat.comp_apply, ← Scheme.Hom.comp_appTop, h_sec]
-    simp
-  have h_appLE : A.hom.appLE ⊤ ⊤ le_top = A.hom.appTop := appLE_eq_app A.hom
-  have h_epi : Epi (s.appLE ⊤ ⊤ le_top) :=
-    h_pushout.epi_inr_of_epi (ConcreteCategory.epi_of_surjective _ (by rwa [h_appLE]))
+  have h_sec : Function.LeftInverse ζ[A].left.appTop A.hom.appTop := fun a ↦ by
+    rw [← CommRingCat.comp_apply, ← Scheme.Hom.comp_appTop,
+      show ζ[A].left ≫ A.hom = 𝟙 _ from Over.w ζ[A], Scheme.Hom.id_appTop]
+    rfl
+  have h_epi : Epi (s.appLE ⊤ ⊤ le_top) := h_pushout.epi_inr_of_epi <| by
+    rw [show A.hom.appLE ⊤ ⊤ le_top = A.hom.appTop from appLE_eq_app A.hom]
+    exact ConcreteCategory.epi_of_surjective _ (h_sec.rightInverse_of_injective h_inj).surjective
   -- Both evaluations agree on the sections that come from `Spec C`, since `x ≫ s = y ≫ s` (`hxy`).
   have h_agree : s.appLE ⊤ ⊤ le_top ≫ evalSection x landsIn_top =
       s.appLE ⊤ ⊤ le_top ≫ evalSection y landsIn_top := by
-    grind [evalSection, appLE_comp_appLE]
+    dsimp only [evalSection]
+    rw [appLE_comp_appLE_assoc x s ⊤ ⊤ ⊤ le_top landsIn_top,
+      appLE_comp_appLE_assoc y s ⊤ ⊤ ⊤ le_top landsIn_top, hxy]
   rw [ofSection_eq landsIn_top, ofSection_eq landsIn_top, h_epi.left_cancellation _ _ h_agree]
 
 end ConstantFunctions

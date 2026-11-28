@@ -1,6 +1,13 @@
-import Lib.SiegelWeil.Tower.ConstantTerm
-import Lib.SiegelWeil.Tower.FiniteTateIntegral
-import Lib.SiegelWeil.Tower.LineGaussSums
+module
+
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.SiegelWeil.Tower.ConstantTerm
+public import Lib.SiegelWeil.Tower.FiniteTateIntegral
+public import Lib.SiegelWeil.Tower.LineGaussSums
+import Lib.ClassField.HeckeCharacter.TameModulus
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Removing a plane: the constant term on the side of the large space
@@ -14,7 +21,8 @@ Neither side of Poisson's formula on the line has a term at `0`, so `𝒵` is an
 line. For `x ≥ 1` its value is, up to an explicit factor, `L(x)` times the theta integral of
 `(W, V)` at a cone integral (`New.Exchange.exists_zetaIntegral`). This gives the constant term for
 `e ≥ 0` (`New.Exchange.exists_planeConstantTerm_eq_thetaLarge_cone`) and, through the other side of
-Poisson's formula, for `e < 0` (`New.Exchange.exists_planeConstantTerm_eq_thetaLarge_dualCone`).
+Poisson's formula, for `e < 0` (`New.Exchange.exists_planeConstantTerm_eq_thetaLarge` with
+`β = false`).
 
 ## Main definitions and results
 
@@ -22,8 +30,9 @@ Poisson's formula, for `e < 0` (`New.Exchange.exists_planeConstantTerm_eq_thetaL
   `rk W = card n` even, a Schwartz vector `v'` and integral `y`, the constant term along `A` of the
   theta integral of `(W', V')` is `γ` times the theta integral of `(W, V)` on
   `cone A X μ (z + 1) v'` and `stdRowDatum σ 𝔠.semilocalChar y`.
-* `New.Exchange.exists_planeConstantTerm_eq_thetaLarge_dualCone`: the same for
-  `rk V - rk W / 2 = -z - 1 < 0`, at `u = 1`, with `dualCone A X μ (z + 1) v'` in place of the cone.
+* `New.Exchange.exists_planeConstantTerm_eq_thetaLarge`: both cases at once, with a flag `β` for
+  the side of Poisson's formula; for `β = false`, `rk V - rk W / 2 = -z - 1 < 0` and the theta
+  integral of `(W, V)` is taken on `dualCone A X μ (z + 1) v'`.
 
 Notions from other files:
 * `𝔠 : SplitTameChar E μ` is a character `𝔠.character` of `[U(1)]` of positive weight `μ`, tamely
@@ -49,6 +58,8 @@ times a factor whose size is given by a Hecke L-value. Source: S. Rallis, On the
 conjecture, Compositio Math. 51 (1984), Thm I.1.1; for the unitary case, C. Wu, Irreducibility of
 theta lifting for unitary groups, J. Number Theory 133 (2013), Prop. 3.1.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -158,9 +169,6 @@ theorem homSlice_zero_planeDatum (σ' : b ⊕ r' ≃ n') (v : PairFock E s' t')
   simpa [localDatum, ← Pi.zero_def] using 𝔠.readsAt.homSlice_localDatum A V' (G := 0)
     (stdRowDatum_mem σ' 𝔠.semilocalChar) 0 v fun w hw ↦ h_std w (by simpa using hw)
 
-/-- A shortcut for instance search, for the Haar measures on `maxCompact E t` below. -/
-local instance : LocallyCompactSpace (maxCompact E t) := inferInstance
-
 /-- Let `A` and `X` be base-adapted splittings of a plane off `W'` and `V'`, let `v` be a Schwartz
 vector (all Fock moments finite), let `y` be a matrix over the completions at the places
 `𝔠.ramifiedPlaces`, and let `g ∈ U(W)` and `σ : b ⊕ r ≃ n`. Then for every character `ψ`, every side
@@ -198,8 +206,8 @@ theorem integrable_theta_cone [IsBaseAdapted X]
   have h_bound (h : G E t) (q : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) :
       ‖kernel h (coneIntegrand A X μ β x v q)‖ ≤ D * ‖φ q‖ :=
     calc _ ≤ D * (Fock.fockMoment Q (coneIntegrand A X μ β x v q)).toReal :=
-        h_decay _ _ ((hφ q).trans_lt enorm_lt_top).ne
-      _ ≤ _ := by grw [ENNReal.toReal_mono enorm_ne_top (hφ q), toReal_enorm]
+        h_decay _ _ ((hφ q).trans_lt eNorm_lt_top).ne
+      _ ≤ _ := by grw [ENNReal.toReal_mono eNorm_ne_top (hφ q), toReal_eNorm]
   have h_cont : Continuous (Function.uncurry kernel) := by
     simp only [kernel, pairTheta]
     fun_prop
@@ -265,7 +273,6 @@ theorem theta_lineTerm_levi (hn : 2 ∣ card n) {u : (𝔸 E)ˣ} (hu : u = 1 ∨
           rpow_mul_natCast ideleAbs_pos.le]
   have h_factor : (ideleAbs a ^ (card r + 1) : ℝ) * c =
       ν.baseChange.val (a * u) * (ideleAbs (a * u) ^ e : ℝ) := by
-    have h_ne : (√(ideleAbs (a * u)) : ℂ) ≠ 0 := ofReal_ne_zero.2 (sqrt_pos.2 ideleAbs_pos).ne'
     rw [← mul_div_assoc, ← ofReal_pow, ← ofReal_mul, h_module]
     simp [circleChar_inv_apply, field]
   rw [h_move, ← mul_assoc, h_factor, mul_right_comm]
@@ -567,7 +574,7 @@ let `ρ` be a Haar measure on the finite ideles such that Haar measure on the id
 Tate's integral at `x` (for `β = true`) or at `1 - x` (for `β = false`) converges, and it is the
 integral of the cone kernel times `L^S(x, ν)` and explicit factors, for `ν = 𝔠.character` and
 `S = 𝔠.ramifiedPlaces`. -/
-theorem integral_zetaIntegrand_of_one_lt [Fintype b] [DecidableEq b]
+theorem integral_zetaIntegrand_of_one_lt
     (h_factor : LineValueFactors 𝔠 A X σ v y g f κ)
     (hc : ∀ a : 𝔸f E, lineFinFactor 𝔠 ϖ.val a = lineFinFactor 𝔠 1 (a * c))
     (hn : 2 ∣ card n) (hv : IsSchwartzVector v) (u : (𝔸 E)ˣ)
@@ -604,7 +611,7 @@ theorem integral_zetaIntegrand_of_one_lt [Fintype b] [DecidableEq b]
 character `𝔠 : SplitTameChar E μ` in terms of the cone kernel holds for all `x ≥ 1`, under the same
 hypotheses, if Tate's integral is continuous in its exponent: both sides are then continuous up to
 `1`. -/
-theorem integral_zetaIntegrand_of_one_le [Fintype b] [DecidableEq b]
+theorem integral_zetaIntegrand_of_one_le
     (h_factor : LineValueFactors 𝔠 A X σ v y g f κ)
     (hc : ∀ a : 𝔸f E, lineFinFactor 𝔠 ϖ.val a = lineFinFactor 𝔠 1 (a * c))
     (hn : 2 ∣ card n) (hv : IsSchwartzVector v) (u : (𝔸 E)ˣ)
@@ -686,7 +693,7 @@ with `u = 1` or `rk V = rk W`. If Tate's integral `𝒵(e + 1)` of `planeDatum �
 integral of `Θ`, converges absolutely, then the constant term along `A` at `(u, g)` of the theta
 integral of `(W', V')` on this datum is `c 𝒵(e + 1)`. -/
 theorem exists_planeConstantTerm_eq_integral (A : W'.Splitting W Unit) (X : V'.Splitting V Unit)
-    [IsBaseAdapted A] [IsBaseAdapted X] (σ' : b ⊕ r' ≃ n') (hn : 2 ∣ card n) :
+    [IsBaseAdapted A] (σ' : b ⊕ r' ≃ n') (hn : 2 ∣ card n) :
     ∃ c : ℝ, c ≠ 0 ∧ ∀ {μ : InfinitePlace E → ℤ} (𝔠 : SplitTameChar E μ)
       {v : PairFock E s' t'}, IsSchwartzVector v → ∀ (y : Matrix b n (LocProd 𝔠.ramifiedPlaces))
         (g : G E s)
@@ -767,14 +774,8 @@ theorem exists_zetaIntegral (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n) (hn : 2
   have h_vol (β : Bool) : 0 < vol β := measureReal_idelesUnitOff_empty_pos (ρ β)
   refine ⟨fun β ↦ |cUnfold| * ‖(lineConst β).val‖ * vol β, fun β ↦ ?_, fun 𝔠 ↦ ?_⟩
   · exact mul_pos (mul_pos (abs_pos.2 h_cUnfold) (norm_pos_iff.2 (lineConst β).ne_zero)) (h_vol β)
-  obtain ⟨γ, hγ, hγ_factor⟩ : ∃ γ : ℂ, ‖γ‖ ^ 2 = (∏ w : 𝔠.ramifiedPlaces, (w.val.q : ℝ))⁻¹ ∧
-      ∀ (v : PairFock E s' t') (y : Matrix b n (LocProd 𝔠.ramifiedPlaces)), IsIntMatrix O y → ∀ g :
-        G E s,
-        LineValueFactors 𝔠 A X σ v y g (planeDatum 𝔠 A σ' v y) fun β ↦ lineConst β * γ :=
-    h_lineConst 𝔠
-  obtain ⟨c, hc_abs, hc⟩ : ∃ c : (𝔸f E)ˣ, finIdeleAbs c⁻¹ = ∏ w : 𝔠.ramifiedPlaces, (w.val.q : ℝ) ∧
-      ∀ a : 𝔸f E, lineFinFactor 𝔠 ϖ.val a = lineFinFactor 𝔠 1 (a * c) :=
-    exists_lineFinFactor_uniformizer_eq 𝔠
+  obtain ⟨γ, hγ, hγ_factor⟩ := h_lineConst 𝔠
+  obtain ⟨c, hc_abs, hc⟩ := exists_lineFinFactor_uniformizer_eq 𝔠
   let K : (𝔸 E)ˣ := shiftIdele c
   let Q : ℝ := ∏ w : 𝔠.ramifiedPlaces, (w.val.q : ℝ)
   have hQ : 0 < Q := Finset.prod_pos fun w _ ↦ by simp [FinPlace.q_bounds]
@@ -796,10 +797,7 @@ theorem exists_zetaIntegral (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n) (hn : 2
     analyticOnNhd_integral_zetaIntegrand A X (h_conv true) (h_conv false)
   refine ⟨fun x ↦ cUnfold * ∫ p, zetaIntegrand 𝔠.character A X f g u x p ∂zetaMeasure V t',
     analyticOnNhd_const.mul h_analytic, h_unfold 𝔠 hv y g hu (h_int _), fun β x hx ↦ ?_⟩
-  have h_value : ∫ p, zetaIntegrand 𝔠.character A X f g u (cond β x (1 - x)) p ∂zetaMeasure V t' =
-      (∫ p, coneKernel 𝔠 A X σ v y g β x p ∂V.quotMeasure.prod (haar.prod haar)) *
-        (lineConst β * γ * 𝔠.character.baseChange.val K * (ideleAbs K ^ x : ℝ) *
-          (𝔠.character.L 𝔠.ramifiedPlaces x * vol β)) :=
+  have h_value :=
     integral_zetaIntegrand_of_one_le A X h_factor hc hn hv u (hρ β)
       (continuousOn_univ.1 h_analytic.continuousOn) hx
   have h_abs : ideleAbs K ^ x =
@@ -822,7 +820,8 @@ or `1 - (z + 1)` (for `β = false`). There are `C > 0`, independent of `𝔠`, a
 `(W', V')` on `planeDatum` is `γ` times the theta integral of `(W, V)` on the datum with
 `stdRowDatum σ 𝔠.semilocalChar y` at `S` and real part the cone integral of side `β` of `v'`, which
 integrates `coneIntegrand` with exponent `z + 1` over `k` in the maximal compact subgroup of `U(V')`
-and the archimedean ideles. -/
+and the archimedean ideles. As Poisson's formula is applied before the integral is evaluated, only
+values of `L` at points `≥ 1` occur, and the functional equation of `L` is not needed. -/
 theorem exists_planeConstantTerm_eq_thetaLarge (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n) (hn : 2 ∣ card n)
     (μ : InfinitePlace E → ℤ) (β : Bool) {z : ℕ}
     (hz : ((card r - card n / 2 : ℤ) + 1 : ℝ) = cond β (z + 1 : ℝ) (1 - (z + 1))) :
@@ -869,28 +868,6 @@ theorem exists_planeConstantTerm_eq_thetaLarge_cone (σ' : b ⊕ r' ≃ n') (σ 
           γ * thetaLarge W V 𝔠 (cone A X μ (z + 1) v') (stdRowDatum σ 𝔠.semilocalChar y) g := by
   simpa only [cone] using
     exists_planeConstantTerm_eq_thetaLarge A X σ' σ hn μ true (z := z) (by simp [hz])
-
-/-- One plane for `rk V - rk W / 2 = -z - 1 < 0`, with `rk W = card n` even: for a Schwartz vector
-`v'` and integral `y`, at `u = 1` (the case `rk V = rk W` cannot occur here), the constant term
-along `A` of the theta integral of `(W', V')` is `γ` times the theta integral of `(W, V)` on
-`dualCone A X μ (z + 1) v'` and `stdRowDatum σ 𝔠.semilocalChar y`. The cone integral is a real Tate
-integral over the isotropic cone of `V'`, and `dualCone` is this integral on the other side of
-Poisson's formula. Here `|γ| = C L♯(z + 1)` with `L♯(z) = |L^S(z, ν)| ∏_{w ∈ S} q_w ^ (z - 1/2)`
-(`lSharp`) for `ν = 𝔠.character` and `S = 𝔠.ramifiedPlaces`, and `C > 0` does not depend on `𝔠`. As
-Poisson's formula is applied before the integral is evaluated, only values of `L` at points `≥ 1`
-occur, and the functional equation of `L` is not needed. -/
-theorem exists_planeConstantTerm_eq_thetaLarge_dualCone (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n)
-    (hn : 2 ∣ card n)
-    (μ : InfinitePlace E → ℤ) {z : ℕ} (hz : (card r - card n / 2 : ℤ) = -(z + 1)) :
-    ∃ C > (0 : ℝ), ∀ 𝔠 : SplitTameChar E μ, ∃ γ : ℂ,
-      ‖γ‖ = C * lSharp 𝔠 (z + 1) ∧
-      ∀ v' : PairFock E s' t', IsSchwartzVector v' → ∀ y : Matrix b n (LocProd 𝔠.ramifiedPlaces),
-        IsIntMatrix O y →
-        ∀ (u : (𝔸 E)ˣ) (g : G E s), u = 1 ∨ card r = card n →
-          planeConstantTerm 𝔠 V' A σ' v' y u g =
-          γ * thetaLarge W V 𝔠 (dualCone A X μ (z + 1) v') (stdRowDatum σ 𝔠.semilocalChar y) g := by
-  simpa only [dualCone] using
-    exists_planeConstantTerm_eq_thetaLarge A X σ' σ hn μ false (z := z) (by simp [hz])
 
 end
 

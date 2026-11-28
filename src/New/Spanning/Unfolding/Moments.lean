@@ -1,5 +1,22 @@
-import New.Spanning.SecondMoment.FewTranslates
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.InnerProductSpace.Trace
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import TauCeti.Analysis.Normed.Ring.Ultra
+import TauCeti.NumberTheory.NumberField.Countable
+public import New.Spanning.SecondMoment.FewTranslates
+public import Lib.General.Groups.CharacterTheory
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
+public import New.Spanning.Frames.FixedLines
+public import New.Spanning.RemainingTerms.Size
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import New.Spanning.Frames.FiniteDepth
+import New.Spanning.Frames.FiniteShells
+import New.Spanning.MainTerm.GlobalToLocal
 import New.Spanning.Unfolding.MomentBounds
+import New.Spanning.Unfolding.SquareExpansion
 
 /-!
 # The second moments of the operators `P* s P`, and good forms
@@ -49,6 +66,8 @@ Michel–Ramakrishnan–Yang, Bessel periods on U(2,1)×U(1,1), 2023.
 See `New.Spanning.SecondMoment.SpanningTheorem` and `New.Spanning.RemainingTerms.Sum` for related
 work.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 
@@ -121,6 +140,19 @@ lemma hasAmplitudeBlocks_smul_of_inner_eq {c : ℝ} (hc : 0 < c)
   push_cast
   field [ofReal_ne_zero.2 hc.ne']
 
+open scoped Classical in
+omit ok in
+private lemma hilbertSchmidtNorm_sq_of_entries
+    {L : Module.End ℂ (EuclideanSpace ℂ (S.Classes × S.BesselCoord))}
+    {A : S.Classes → S.ResidueGL → S.Classes → EuclideanSpace ℂ (S.BesselCoord × S.BesselCoord)}
+    {s : S.ResidueGL} (h : ∀ x y : S.Classes × S.BesselCoord,
+      ⟪L (.single y 1), .single x 1⟫_ℂ = A x.1 s y.1 (x.2, y.2) / S.unipotentCovolume) :
+    hilbertSchmidtNorm L ^ 2 = secondMoment (S := S) A {s} := by
+  rw [hilbertSchmidtNorm_sq_eq_sum_entries (basisFun _ ℂ) (basisFun _ ℂ)]
+  simp only [basisFun_apply, h]
+  simp [secondMoment, sum_filter, norm_sq_eq, sum_prod_type, sum_div, div_pow,
+    sum_comm (α := S.Classes) (γ := S.BesselCoord)]
+
 omit ok in
 /-- Let `S` be filling data (`Filling`) for a unitary group `G` over the CM field `E`, and let
 `Ḡ = S.ResidueGL` be the product of the general linear groups over the residue fields at the chosen
@@ -138,15 +170,9 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_sq_eq_secondMoment (hP : S.HasAmplit
     (s : S.ResidueGL) :
     hilbertSchmidtNorm (P.adjoint ∘ₗ ρ s ∘ₗ P) ^ 2 =
       secondMoment (S.amplitudeSum .full .univ) {s} := by
-  classical
-  have h_entry (x y : S.Classes × S.BesselCoord) :
-      ⟪(P.adjoint ∘ₗ ρ s ∘ₗ P) (.single y 1), .single x 1⟫_ℂ =
-        S.amplitudeSum .full .univ x.1 s y.1 (x.2, y.2) / S.unipotentCovolume := by
-    simpa [LinearMap.adjoint_inner_left] using hP s x y
-  rw [hilbertSchmidtNorm_sq_eq_sum_entries (basisFun _ ℂ) (basisFun _ ℂ)]
-  simp only [basisFun_apply, h_entry]
-  simp [secondMoment, sum_filter, norm_sq_eq, sum_prod_type, sum_div, div_pow,
-    sum_comm (α := S.Classes) (γ := S.BesselCoord)]
+  apply hilbertSchmidtNorm_sq_of_entries
+  intro x y
+  simpa [LinearMap.adjoint_inner_left] using hP s x y
 
 open scoped Classical in
 variable (S) in
@@ -219,7 +245,7 @@ lemma besselTranslate_mul [HasPrimitiveRoot5040 E] {s t : S.ResidueGL}
   have h_matrix : S.besselTranslate (s * t) φ (c, i) =
       ∑ k : S.BesselCoord, star ((M * N) i k) * φ (c'', k) :=
     besselTranslate_apply (mul_mem hγ hδ) (termsOver.mul hγ_over hδ_over) hMN φ i
-  rw [h_matrix, End.mul_apply, besselTranslate_apply hγ hγ_over hM]
+  rw [h_matrix, mul_apply_eq_comp, besselTranslate_apply hγ hγ_over hM]
   simp only [besselTranslate_apply hδ hδ_over hN, Matrix.mul_apply, star_sum, star_mul', sum_mul,
     mul_sum, mul_assoc]
   exact sum_comm
@@ -263,8 +289,8 @@ lemma hilbertSchmidtNorm_besselTranslate_comp [HasPrimitiveRoot5040 E] {t : S.Re
       besselTranslate_one]
   have h_norm (x : EuclideanSpace ℂ (S.Classes × S.BesselCoord)) :
       ‖S.besselTranslate t x‖ = ‖x‖ := by
-    rw [norm_eq_sqrt_re_inner (𝕜 := ℂ), ← LinearMap.adjoint_inner_right, ← End.mul_apply,
-      h_adjoint, End.one_apply, ← norm_eq_sqrt_re_inner]
+    rw [norm_eq_sqrt_re_inner (𝕜 := ℂ), ← LinearMap.adjoint_inner_right, ← mul_apply_eq_comp,
+      h_adjoint, one_apply_eq_self, ← norm_eq_sqrt_re_inner]
   exact le_antisymm (hilbertSchmidtNorm_le_of_norm_le fun x ↦ (h_norm (A x)).le)
     (hilbertSchmidtNorm_le_of_norm_le fun x ↦ (h_norm (A x)).ge)
 
@@ -278,8 +304,8 @@ lemma trace_besselTranslate [HasPrimitiveRoot5040 E] (s : S.ResidueGL) :
         S.amplitudeSum .full (S.ratMiddle E).besselS y.1 s⁻¹ y.1 (y.2, y.2) /
           S.unipotentCovolume := by
   classical
-  rw [LinearMap.trace_eq_sum_inner _ (basisFun _ ℂ)]
-  simp [besselTranslate, inner_single_left, amplitudeSum_besselS_inv]
+  simp [LinearMap.trace_eq_sum_inner _ (basisFun _ ℂ), besselTranslate, inner_single_left,
+    amplitudeSum_besselS_inv]
 
 /-- Equivariance on the right. Let `S` be admissible filling data for a unitary group `G` over the
 CM field `E`, which contains a primitive `5040`-th root of unity, and let `Ḡ = S.ResidueGL` be the
@@ -313,7 +339,7 @@ lemma HasAmplitudeBlocks.adjoint_comp_rep_mul_right [HasPrimitiveRoot5040 E]
       rw [← Complex.star_def, ← amplitudeSum_besselS_inv, amplitudeSum_besselS_apply hδ hδ_over hN]
     by_cases h : d' = e
     · simp [besselTranslate, h_block, h, S.unipotentCovolume_pos.ne', Pi.single_apply,
-        Matrix.of_apply, Function.swap]
+        Function.swap]
     · simp [besselTranslate, h_block, h, Ne.symm h]
   -- The blocks of all terms transform in the same way, as the set of all terms is stable.
   have h_move : S.amplitudeSum .full .univ c (s * t) d (i, j) =
@@ -359,7 +385,7 @@ lemma HasAmplitudeBlocks.rep_comp_eq_comp_besselTranslate [HasPrimitiveRoot5040 
         P.adjoint (ρ s⁻¹ (P (S.besselTranslate t φ))) :=
       LinearMap.congr_fun (hP.adjoint_comp_rep_mul_right s⁻¹ ht) φ
     have h_zero : P.adjoint (ρ s⁻¹ d) = 0 := by
-      rw [hd, map_sub, map_sub, ← h_apply, map_mul, End.mul_apply, sub_self]
+      rw [hd, map_sub, map_sub, ← h_apply, map_mul, mul_apply_eq_comp, sub_self]
     rw [← hρ s⁻¹, ρ.inv_self_apply, ← LinearMap.adjoint_inner_right, h_zero, inner_zero_right]
   have h_self : ⟪d, d⟫_ℂ = 0 := by
     calc ⟪d, d⟫_ℂ = ⟪ρ t (P φ), d⟫_ℂ - ⟪P (S.besselTranslate t φ), d⟫_ℂ := inner_sub_left ..
@@ -407,24 +433,12 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_sub_besselTranslate_sq [HasPrimitive
     hilbertSchmidtNorm (P.adjoint ∘ₗ ρ s ∘ₗ P - S.besselTranslate s) ^ 2 =
       secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) {s} := by
   classical
-  have h_entry (x y : S.Classes × S.BesselCoord) :
-      ⟪(P.adjoint ∘ₗ ρ s ∘ₗ P - S.besselTranslate s) (.single y 1), .single x 1⟫_ℂ =
-        S.amplitudeSum .full (S.ratMiddle E).besselSᶜ x.1 s y.1 (x.2, y.2) /
-          S.unipotentCovolume := by
-    rw [LinearMap.sub_apply, inner_sub_left, LinearMap.comp_apply, LinearMap.adjoint_inner_left,
-      LinearMap.comp_apply, hP s x y, amplitudeSum_eq_inter_compl_add_inter Set.univ
-        (S.ratMiddle E).besselS]
-    simp [besselTranslate, inner_single_right, add_div, Set.univ_inter]
-  calc hilbertSchmidtNorm (P.adjoint ∘ₗ ρ s ∘ₗ P - S.besselTranslate s) ^ 2
-    _ = ∑ x : S.Classes × S.BesselCoord, ∑ y : S.Classes × S.BesselCoord,
-        ‖S.amplitudeSum .full (S.ratMiddle E).besselSᶜ x.1 s y.1 (x.2, y.2) / S.unipotentCovolume‖ ^
-          2 :=
-      by
-        simp only [hilbertSchmidtNorm_sq_eq_sum_entries (basisFun _ ℂ) (basisFun _ ℂ),
-          basisFun_apply, h_entry]
-    _ = secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) {s} := by
-      simp [secondMoment, sum_filter, norm_sq_eq, sum_prod_type, sum_div, div_pow,
-        sum_comm (α := S.Classes) (γ := S.BesselCoord)]
+  apply hilbertSchmidtNorm_sq_of_entries
+  intro x y
+  rw [LinearMap.sub_apply, inner_sub_left, LinearMap.comp_apply, LinearMap.adjoint_inner_left,
+    LinearMap.comp_apply, hP s x y, amplitudeSum_eq_inter_compl_add_inter Set.univ
+      (S.ratMiddle E).besselS]
+  simp [besselTranslate, inner_single_right, add_div, Set.univ_inter]
 
 open scoped Classical in
 /-- **Second moment near the Bessel subgroup.** Let `S` be admissible filling data for a unitary
@@ -512,7 +526,6 @@ omit ok in
 lemma hilbertSchmidtNorm_one_sq_eq_sourceDim :
     hilbertSchmidtNorm (1 : End ℂ (EuclideanSpace ℂ (S.Classes × S.BesselCoord))) ^ 2 =
       S.sourceDim := by
-  classical
   simp [hilbertSchmidtNorm_sq_eq_sum (basisFun _ ℂ), sourceDim]
 
 /-- Let `S` be admissible filling data (`Filling`, `IsAdmissible`) for a unitary group `G` over the
@@ -538,14 +551,12 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_adjoint_comp_sq_le [HasPrimitiveRoot
     simpa [hilbertSchmidtNorm] using norm_add_le (hilbertSchmidtVector (P.adjoint ∘ₗ P - one))
       (hilbertSchmidtVector one)
   have h_near : hilbertSchmidtNorm (P.adjoint ∘ₗ P - one) ≤ hilbertSchmidtNorm one / 3 := by
-    have h_sq : hilbertSchmidtNorm (P.adjoint ∘ₗ P - one) ^ 2 ≤ (hilbertSchmidtNorm one / 3) ^
-      2 := by
-      grw [hP.hilbertSchmidtNorm_sub_one_sq_le, div_pow, hilbertSchmidtNorm_one_sq_eq_sourceDim,
-        ← hb]
-      gcongr
-      norm_num
-    exact (abs_le_of_sq_le_sq' h_sq (div_nonneg (hilbertSchmidtNorm_nonneg _) zero_le_three)).2
-  have h_le : hilbertSchmidtNorm (P.adjoint ∘ₗ P) ≤ 4 / 3 * hilbertSchmidtNorm one := by linarith
+    refine le_of_pow_le_pow_left₀ (n := 2) (by decide)
+      (div_nonneg (hilbertSchmidtNorm_nonneg _) zero_le_three) ?_
+    grw [hP.hilbertSchmidtNorm_sub_one_sq_le, div_pow, hilbertSchmidtNorm_one_sq_eq_sourceDim,
+      ← hb]
+    gcongr
+    norm_num
   rw [← hilbertSchmidtNorm_one_sq_eq_sourceDim]
   nlinarith [hilbertSchmidtNorm_nonneg (P.adjoint ∘ₗ P), hilbertSchmidtNorm_nonneg one]
 
@@ -689,7 +700,9 @@ lemma sum_norm_sq_coeff_of_isCentralProj {G : Type*} [Group G] [Fintype G] {x : 
   simpa [h_inv, x.coeff_mul_apply_left, Complex.sq_norm, Finsupp.sum_fintype, mul_conj] using
     congr_arg (fun y ↦ (y.coeff 1).re) hx.1
 
-/-- Let `S` be admissible filling data over a CM field `E` with Weil data. Let `γ` be in the Bessel
+omit ok in
+omit [WeilData E] in
+/-- Let `S` be filling data over a CM field `E`. Let `γ` be in the Bessel
 subgroup and `k = translateByClassReps c c γ`, that is `h_c⁻¹ γ h_c` for the representative `h_c` of
 the class `c`. If `k` lies in the stabilizer `latticeStabilizer` of the lattice and reduces to `1`
 at the chosen places above the level prime `p_j`, then `k` lies in the unipotent subgroup
@@ -756,22 +769,16 @@ lemma trace_besselTranslate_eq_mul_reducedChar {j : Fin 2} {s : S.ResidueGL} (hs
   split_ifs with h
   · -- If `s` is the reduction of a unipotent `k`, the block at `s⁻¹` is `ψ_U(k)` times the block at
     -- `1`, which is the covolume times the identity.
-    obtain ⟨hk_unip, hk_red⟩ :
-        h.choose.val ∈ (S.latticeMiddle (𝔸f E)).besselU ∧ S.reduction h.choose = s := h.choose_spec
-    have h_move (c : S.Classes) :
-        S.amplitudeSum .full (S.ratMiddle E).besselS c s⁻¹ c =
-          S.unipotentChar h.choose • S.amplitudeSum .full (S.ratMiddle E).besselS c 1 c := by
-      simpa [hk_red] using
-        amplitudeSum_besselU_mul isStable_besselS (u := 1) (one_mem _) hk_unip c 1 c
+    obtain ⟨hk_unip, hk_red⟩ := h.choose_spec
+    have h_move (c : S.Classes) :=
+      amplitudeSum_besselU_mul (side := .full) isStable_besselS (u := 1) (one_mem _) hk_unip c 1 c
+    simp [hk_red] at h_move
     simp [h_move, amplitudeSum_besselS_one_eq_ite, S.unipotentCovolume_pos.ne', sourceDim]
   · -- Otherwise there is no term: its translate `k` by the class representatives would be unipotent
     -- with the reduction `s⁻¹`.
-    have h_empty (c : S.Classes) :
-        IsEmpty ↥(↑(S.ratMiddle E).besselS ∩ S.termsOver c s⁻¹ c) := by
-      refine ⟨fun ⟨γ, hγ, k, hk_red, hk⟩ ↦ ?_⟩
-      have hk_unip : k.val ∈ (S.latticeMiddle (𝔸f E)).besselU :=
-        S.mem_besselU_of_reduction_eq_one (j := j) hγ hk (by simp [hk_red, hs])
-      exact h ⟨k⁻¹, inv_mem hk_unip, by simp [hk_red]⟩
+    have (c : S.Classes) : IsEmpty ↥(↑(S.ratMiddle E).besselS ∩ S.termsOver c s⁻¹ c) :=
+      ⟨fun ⟨_, hγ, k, hk_red, hk⟩ ↦ h ⟨k⁻¹, inv_mem <|
+        S.mem_besselU_of_reduction_eq_one (j := j) hγ hk (by simp [hk_red, hs]), by simp [hk_red]⟩⟩
     simp [amplitudeSum, tsum_empty]
 
 omit ok [WeilData E] in
@@ -883,6 +890,7 @@ lemma integral_extendedBesselChar_conj_eq {T : Finset (FinPlace E)} [T.StarStabl
         rw [setIntegral_congr_fun measurableSet_unitaryLevel h_const, setIntegral_const,
           mul_smul_comm]
 
+omit [WeilData E] ok in
 /-- Let `S` be admissible filling data for a unitary group `G` over the CM field `E`, which carries
 Weil data, and let `Ḡ = S.ResidueGL` be the product of the general linear groups over the residue
 fields at the chosen places above the two level primes `p₀`, `p₁`. Let `M = p₀ p₁`, and let `T` be a
@@ -922,13 +930,15 @@ lemma sum_sq_norm_integral_extendedBesselChar_conjugate_le {T : Finset (FinPlace
   have hC_meas (s : ι) : MeasurableSet (C s) := measurable_const_mul _ measurableSet_unitaryLevel
   have ha_const (s : ι) : ∀ z ∈ C s, a z = a (S.toPlaces T (σ s)) := fun z hz ↦
     setIntegral_congr_fun measurableSet_unitaryLevel fun y hy ↦ by
-      simpa using extendedBesselChar_mul_of_mem_unitaryLevel (y := y * S.toPlaces T (σ s) * y⁻¹)
-        (conj_mem_unitaryLevel hy hz)
+      simpa only [mul_assoc, inv_mul_cancel_left, mul_inv_cancel_left] using
+        extendedBesselChar_mul_of_mem_unitaryLevel (y := y * S.toPlaces T (σ s) * y⁻¹)
+          (conj_mem_unitaryLevel hy hz)
   -- The cosets are disjoint, since the `σ s` have different reductions.
   have hC_disj : Pairwise (Function.onFun Disjoint C) := by
     intro s t hst
-    refine Set.disjoint_left.mpr fun z hs ht ↦ hst <| hσ <| ?_
-    simpa [← hF.reduction_eq_iff, eq_comm] using div_mem hs.out ht.out
+    refine Set.disjoint_left.mpr fun z hs ht ↦ hst <| hσ <| (hF.reduction_eq_iff _ _).2 ?_
+    have h := mul_mem hs.out (inv_mem ht.out)
+    rwa [mul_inv_rev, inv_inv, mul_assoc, mul_inv_cancel_left] at h
   -- The integral of `|a|²` over these cosets is at most `massIntegral K = ∫ |a|²`; bound this by
   -- `IsLargeLatticeData.massIntegral_le_main_add_error` with `Q = 2`, and by
   -- `2⁻¹ ^ n ≤ groupMeasure(K)`.
@@ -938,9 +948,10 @@ lemma sum_sq_norm_integral_extendedBesselChar_conjugate_le {T : Finset (FinPlace
     have h_coset (s : ι) : ∫⁻ z in C s, ‖a z‖ₑ ^ 2 ∂F.groupMeasure =
         ‖a (S.toPlaces T (σ s))‖ₑ ^ 2 * F.groupMeasure F.congruenceSubgroup := by
       rw [setLIntegral_congr_fun (hC_meas s) fun z hz ↦ by rw [ha_const s z hz]]
-      simp [C, Set.univ_inter]
+      rw [setLIntegral_const, measure_preimage_mul]
     have h_rank : 𝔰.n + 2 * 10 ^ 9 * 𝔰.n ^ 4 ≤ 𝔰.k := by
-      grind [S.pow_chain, Nat.le_self_pow (n := 4) (by norm_num) 𝔰.n]
+      obtain ⟨h₁, h₂, h₃⟩ := S.pow_chain
+      linarith [Nat.le_self_pow (n := 4) (by norm_num) 𝔰.n]
     calc (∑ s : ι, ‖a (S.toPlaces T (σ s))‖ₑ ^ 2) * F.groupMeasure F.congruenceSubgroup
         = ∑' s : ι, ∫⁻ z in C s, ‖a z‖ₑ ^ 2 ∂F.groupMeasure := by
           simp only [h_coset, sum_mul, tsum_fintype]
@@ -1131,7 +1142,7 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_asAlgebraHom_comp_sq_le [WeilData E]
     have h_sum : P.adjoint ∘ₗ e ∘ₗ P =
         ∑ t, x.coeff t • (P.adjoint ∘ₗ ρ (Pi.mulSingle i t) ∘ₗ P) := by
       ext1 v
-      simp [he_def, asAlgebraHom_eq_sum]
+      simp [he_def, Representation.asAlgebraHom_eq_sum]
     rw [← ofReal_re (_ ^ 2), hilbertSchmidtNorm_sq_eq_trace, h_proj, h_sum, ← add_re, hP']
     simp [mul_sub]
   have h_bessel :
@@ -1145,10 +1156,7 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_asAlgebraHom_comp_sq_le [WeilData E]
       rw [inner_hilbertSchmidtVector, End.one_eq_id, LinearMap.adjoint_id, LinearMap.id_comp]
     rw [h_inner]
     refine (re_le_norm _).trans ((norm_inner_le_norm _ _).trans ?_)
-    suffices h_sq : (‖hilbertSchmidtVector
-      (1 : End ℂ (EuclideanSpace ℂ (S.Classes × S.BesselCoord)))‖ *
-        ‖hilbertSchmidtVector P'‖) ^ 2 ≤ ((S.b ^ 4)⁻¹ * S.sourceDim) ^ 2 from
-      (abs_le_of_sq_le_sq' h_sq (by positivity)).2
+    refine le_of_pow_le_pow_left₀ (n := 2) (by decide) (by positivity) ?_
     calc
       _ = S.sourceDim * hilbertSchmidtNorm P' ^ 2 := by
         rw [mul_pow, ← hilbertSchmidtNorm_one_sq_eq_sourceDim, hilbertSchmidtNorm,
@@ -1243,8 +1251,8 @@ theorem HasAmplitudeBlocks.isNearIsometry_piTensorElem_comp [WeilData E]
     gcongr <;> linarith
   have h_bad : hilbertSchmidtNorm ((1 - ρ.asAlgebraHom (piTensorElem g)) ∘ₗ P) ^ 2 ≤
       4 * (S.b ^ 4)⁻¹ * finrank ℂ (EuclideanSpace ℂ (S.Classes × S.BesselCoord)) := by
-    rw [finrank_source_eq_sourceDim]
-    exact hP.hilbertSchmidtNorm_one_sub_piTensorElem_comp_sq_le hρ hg hg_small
+    simpa only [finrank_source_eq_sourceDim] using
+      hP.hilbertSchmidtNorm_one_sub_piTensorElem_comp_sq_le hρ hg hg_small
   have h_proj : (ρ.asAlgebraHom (piTensorElem g)).IsSymmetricProjection :=
     (IsCentralProj.piTensorElem hg).isSymmetricProjection hρ
   exact (h_isom.proj_comp h_proj h_bad).mono (le_of_eq (by ring))

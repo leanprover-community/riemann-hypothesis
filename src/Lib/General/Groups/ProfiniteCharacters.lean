@@ -1,5 +1,16 @@
-import Lib.ClassField.GaloisCohomology.ContinuousCocycles
-import Lib.General.Topology
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
+public import Mathlib.Topology.Instances.ZMod
+import Mathlib.GroupTheory.FiniteAbelian.Duality
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Separation.Connected
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+public import Lib.General.Topology
+import TauCeti.Algebra.Module.CharacterModule
 
 /-!
 # ℚ/ℤ, characters of profinite groups, and extension of homomorphisms
@@ -36,6 +47,8 @@ Notions from other files:
 * `New.QZChar.toHom χ`: the character `χ` as a group homomorphism to `ℚ/ℤ` written
   multiplicatively; `New.QZChar.ker χ` is its kernel.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -115,9 +128,9 @@ lemma eq_zero_of_forall_hom_eq_zero {a : A} (h_eval : ∀ u : A →+ QZ, u a = 0
 
 /-! ### The embedding of `ZMod n` -/
 
-/-- For `n` nonzero, the additive homomorphism `ℤ/n → ℚ/ℤ` sending the class of `k` to the class
-of `k / n`. -/
-def ofZMod (n : ℕ) [NeZero n] : ZMod n →+ QZ :=
+/-- The additive homomorphism `ℤ/n → ℚ/ℤ` sending the class of `k` to the class
+of `k / n`. For `n = 0`, this is the zero homomorphism. -/
+def ofZMod (n : ℕ) : ZMod n →+ QZ :=
   ZMod.lift n ⟨zmultiplesHom QZ (mk (n : ℚ)⁻¹), int.divByNat_self n⟩
 
 variable [NeZero n]
@@ -157,32 +170,17 @@ lemma bijective_ofZMod_comp (h_exp : ∀ a : A, n • a = 0) :
 
 end QZ
 
-variable (A) [Finite A]
+variable (A)
 
 /-! ### Duals of finite abelian groups -/
 
-/-- A finite abelian group `A` has exactly `#A` homomorphisms to `ℚ/ℤ`: its Pontryagin dual has
-the same order as `A`. -/
+/-- An abelian group `A` has `Nat.card (A →+ ℚ/ℤ) = Nat.card A` (for infinite `A`, both sides are
+`0`). -/
 @[simp]
-lemma card_hom_QZ : Nat.card (A →+ QZ) = Nat.card A := by
-  -- With `n` the exponent of `A`, homomorphisms to `QZ` are homomorphisms to `ZMod n`; written
-  -- multiplicatively, this cyclic group has enough `n`-th roots of unity for the duality theorem.
-  let n : ℕ := AddMonoid.exponent A
-  let M : Type := Multiplicative (ZMod n)
-  let e₁ : (A →+ ZMod n) ≃ (A →+ QZ) :=
-    .ofBijective _ (QZ.bijective_ofZMod_comp AddMonoid.exponent_nsmul_eq_zero)
-  let e : (A →+ QZ) ≃ (Multiplicative A →* Mˣ) :=
-    (e₁.symm.trans toMultiplicative).trans toUnits.monoidHomCongrRightEquiv
-  have h_prim : IsPrimitiveRoot (Multiplicative.ofAdd 1 : M) n := by
-    rw [IsPrimitiveRoot.iff_orderOf, orderOf_ofAdd_eq_addOrderOf, ZMod.addOrderOf_one]
-  -- The roots of unity correspond under `toUnits` to a subgroup of the cyclic group `M`.
-  have h_roots : HasEnoughRootsOfUnity M (Monoid.exponent (Multiplicative A)) := by
-    rw [Monoid.exponent_multiplicative]
-    exact { prim := ⟨.ofAdd 1, h_prim⟩,
-            cyc := (toUnits.symm.subgroupMap (rootsOfUnity n M)).isCyclic.2 inferInstance }
-  exact (card_congr e).trans (CommGroup.card_monoidHom_of_hasEnoughRootsOfUnity (hM := h_roots))
+lemma card_hom_QZ : Nat.card (A →+ QZ) = Nat.card A :=
+  TauCeti.natCard_characterModule A
 
-instance : Finite (A →+ QZ) := finite_of_card_ne_zero (by simp [ne])
+instance [Finite A] : Finite (A →+ QZ) := finite_of_card_ne_zero (by simp [ne])
 
 end New
 
@@ -201,8 +199,9 @@ attribute [instance] isClosed_topologicalClosure
 namespace QZChar
 
 /-- The additive map sending a continuous 1-cocycle of `G` with values in `ℤ/n` (trivial action)
-to the character `G → ℚ/ℤ` obtained by composing with the embedding `ofZMod n`. -/
-noncomputable abbrev ofZModCocycle (n : ℕ) [NeZero n] :
+to the character `G → ℚ/ℤ` obtained by composing with the map `ofZMod n`, which is zero when
+`n = 0`. -/
+noncomputable abbrev ofZModCocycle (n : ℕ) :
     Z1 (Representation.trivial ℤ G (ZMod n)) →+ QZChar G :=
   pairMapZ1 (ContinuousMonoidHom.id G) (ofZMod n).toIntLinearMap
 
@@ -278,7 +277,6 @@ lemma exists_eval_eq_on_finset (t : QZChar G →+ QZ) (S : Finset (QZChar G)) :
   -- `E` is the group of the homomorphisms `T →+ QZ` that are evaluation at a point of `G`.
   let pair : QZChar G →+ Additive G →+ QZ := .mk' (fun χ ↦ toAdditiveLeft (toHom χ)) fun _ _ ↦ rfl
   let ev : Additive G →+ T →+ QZ := (pair.domRestrict T).flip
-  have ev_apply (g : Additive G) (χ : T) : ev g χ = (χ : QZChar G).val g.toMul := rfl
   let E : AddSubgroup (T →+ QZ) := ev.range
   -- Evaluations separate characters, so `T` embeds in the dual of `E`. As a finite group and
   -- its dual have the same order, `E` is all of the dual of `T`.

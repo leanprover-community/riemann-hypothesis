@@ -1,4 +1,14 @@
+module
+
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Pointwise.Stabilizer
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.LinearAlgebra.Span.TensorProduct
+public import Lib.PadicHodge.Kisin.Modules
+import Lib.PadicComparison.Descent.TestCategory
 import Lib.PadicHodge.Kisin.FrameTheorem
+import Lib.PadicHodge.Kisin.PeriodMatrixBasis
+import Lib.PadicHodge.RadiusLemma
 
 /-!
 # Lattices with prescribed orders, depth steps and the depth lemma
@@ -10,10 +20,11 @@ B_dR, and `hodgeFil n` is tⁿB_dR^+. `L.withOrders i c` consists of the x in th
 `L.kisinLocAinf` at the letter i with `valueAt a μ x ∈ hodgeFil (c a u)` for all a, all u in
 `L.jumpSet (i.stepBack a)` and all forms μ of type u at the letter `i.stepBack a`; such x are said
 to have orders c at i. An element x of the Kisin module `L.kisinLoc` (all φ^a E inverted) has
-depth n at p_a for a form μ if `valueAt a μ x` is a constant modulo `hodgeFil n`. Such an x at the
-letter i has depth o a u at p_a for all a, all u in `L.jumpSet (i.stepBack a)` and all forms of
-type u at `i.stepBack a` if and only if gx − x has orders o at i for every g in Γ'
-(`New.Lift.KummerChart.JumpLattice.mem_invariantsMod_withOrders_iff`). The depth lemma gives an
+depth n at p_a for a form μ if `valueAt a μ x` is a constant modulo `hodgeFil n`. If gx − x has
+orders o at i for every g in Γ', then such an x at the letter i has depth o a u at p_a for all a,
+all u in `L.jumpSet (i.stepBack a)` and all forms of type u at `i.stepBack a`
+(`New.Lift.KummerChart.JumpLattice.exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`). The
+depth lemma gives an
 operator p^c + υ ∑ (t_l − 1)/δ, with t_l in Γ', that sends elements of depth n to elements whose
 value is a constant modulo `hodgeFil (n + 1)`.
 
@@ -52,6 +63,8 @@ Notions from other files:
 See `New.Congruences.Lifting.SafeMoves` for related work. See
 `Lib.PadicHodge.Kisin.PeriodMatrixFrame` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -103,7 +116,7 @@ lemma theta_sub_one_dvd_pow_mul_theta_zTau {g : k.subgroup} {ω : Ainf}
   let w : Ainf :=
     tau * u * (∑ j ∈ Finset.range (p ^ a), WittVector.teichmuller p epsTilt ^ j) * k.z.val
   have h_diff : toGp g.val • k.z.val - k.z.val = k.E.val * w := by
-    rw [hz, ← sub_one_mul, ← mul_geom_sum, ← mu, ← hu]
+    rw [hz, ← sub_one_mul, ← mul_geom_sum, ← mu_eq, ← hu]
     ring
   have h_theta_w : theta w = theta tau * theta u * p ^ a * theta k.z := by simp [w]
   have h_aeval : aeval (toGp g.val • k.z.val) F = toGp g.val • aeval k.z.val F :=
@@ -368,12 +381,11 @@ lemma kisinModule_le_kisinLoc : L.kisinModule ≤ L.kisinLoc :=
 holds on the Kisin module `L.kisinModule` and passes from `p_a • y` to `y` holds on `L.kisinLoc`. -/
 lemma kisinLoc_induction {C : L.Ambient → Prop} (hx : x ∈ L.kisinLoc)
     (h_base : ∀ y ∈ L.kisinModule, C y)
-    (h_step : ∀ a : ℕ, ∀ y ∈ L.kisinLoc, C ((k.frobE a).val • y) → C y) : C x := by
-  have h_span := mem_kisinLocAinf_of_mem_kisinLoc hx
-  revert hx
-  exact saturateBy_induction (C := fun y ↦ y ∈ L.kisinLoc → C y) h_span
+    (h_step : ∀ a : ℕ, ∀ y ∈ L.kisinLoc, C ((k.frobE a).val • y) → C y) : C x :=
+  saturateBy_induction (C := fun y ↦ y ∈ L.kisinLoc → C y)
+    (mem_kisinLocAinf_of_mem_kisinLoc hx)
     (fun z hz_span ⟨_, hz_val⟩ ↦ h_base z ⟨hz_span, hz_val⟩)
-    fun a z ih hz ↦ h_step a z hz (ih (smul_mem _ (k.frobE a) hz))
+    (fun a z ih hz ↦ h_step a z hz (ih (smul_mem _ (k.frobE a) hz))) hx
 
 /-- The Kisin module `L.kisinLoc` with all `φ^a E` inverted is stable under multiplication and
 division by the integer powers of `k.frobEUnit a`, which is `φ^a E` as a unit of `W(C^♭)`. -/
@@ -551,40 +563,6 @@ lemma frobEUnit_zpow_smul_mem_withOrders (b : ℕ) (m : ℤ) (hx : x ∈ L.withO
     k.frobEUnit b ^ m • x ∈ L.withOrders i c' :=
   mem_withOrders_of_le (frobEUnit_zpow_smul_mem_withOrders_add b m hx) h_le
 
-/-- Let `p_b = φ^b E` be the unit `k.frobEUnit b`. Then `p_b ^ m • x` has orders at the letter `i`
-given by c(a,u) + m for a = b and c(a,u) for a ≠ b if and only if `x` has the orders `c` at `i`. -/
-lemma frobEUnit_zpow_smul_mem_withOrders_add_iff (b : ℕ) (m : ℤ) :
-    k.frobEUnit b ^ m • x ∈
-        L.withOrders i (fun (a : ℕ) (u : ℤ) ↦ c a u + if b = a then m else 0) ↔
-      x ∈ L.withOrders i c := by
-  refine ⟨fun hx ↦ ?_, frobEUnit_zpow_smul_mem_withOrders_add b m⟩
-  have h_back : k.frobEUnit b ^ (-m) • k.frobEUnit b ^ m • x ∈ L.withOrders i c :=
-    frobEUnit_zpow_smul_mem_withOrders b (-m) hx fun a u _ ↦ by grind
-  simpa [smul_smul, ← zpow_add] using h_back
-
-/-- Let `F = ∏_{b ∈ s} p_b ^ r b` be a product of integer powers of the units `p_b = φ^b E`
-(`k.frobEUnit b`). Then `F • x` has the orders `c` raised by `r a` at `p_a` for `a ∈ s` (and
-unchanged at the other `p_a`) at the letter `i` if and only if `x` has the orders `c` at `i`. -/
-lemma prod_frobEUnit_zpow_smul_mem_withOrders_add_iff (s : Finset ℕ) (r : ℕ → ℤ) :
-    (∏ b ∈ s, k.frobEUnit b ^ r b) • x ∈
-        L.withOrders i (fun (a : ℕ) (u : ℤ) ↦ c a u + if a ∈ s then r a else 0) ↔
-      x ∈ L.withOrders i c := by
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert b s hb ih =>
-    have h_exponents : (fun (a : ℕ) (u : ℤ) ↦ c a u + if a ∈ insert b s then r a else 0) =
-        fun (a : ℕ) (u : ℤ) ↦ (c a u + if a ∈ s then r a else 0) + if b = a then r b else 0 := by
-      grind
-    rw [prod_insert hb, mul_smul, h_exponents, frobEUnit_zpow_smul_mem_withOrders_add_iff, ih]
-
-/-- The Kisin module `L.kisinLoc` with all `φ^a E` inverted is stable under multiplication and
-division by products of integer powers of the units `k.frobEUnit b = φ^b E`. -/
-lemma prod_frobEUnit_zpow_smul_mem_kisinLoc_iff (s : Finset ℕ) (r : ℕ → ℤ) :
-    (∏ b ∈ s, k.frobEUnit b ^ r b) • x ∈ L.kisinLoc ↔ x ∈ L.kisinLoc := by
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert b s hb ih => rw [prod_insert hb, mul_smul, frobEUnit_zpow_smul_mem_kisinLoc_iff, ih]
-
 /-- Every element of `L.kisinLocAinf` has a multiple by a non-zero element of A_inf in the
 A_inf-span of 1 ⊗ L, that is, lies in `L.fracSpan`. -/
 lemma kisinLocAinf_le_fracSpan : L.kisinLocAinf ≤ L.fracSpan :=
@@ -608,8 +586,9 @@ lemma smul_sub_mem_withOrders (hx : x ∈ L.withOrders i c) (g : k.galMonoid) :
   obtain ⟨h_span, h_letter, h_exp⟩ := mem_withOrders_iff.1 hx
   refine mem_withOrders_iff.2 ⟨sub_mem (galMonoid_smul_mem_kisinLocAinf h_span) h_span,
     sub_mem ((gal_smul_mem_letterPart g).2 h_letter) h_letter, fun a u hu μ hμ ↦ ?_⟩
-  rw [valueAt_smul_sub h_span hμ.1]
-  exact sub_mem (galMonoid_smul_mem_hodgeFil g (h_exp a u hu μ hμ)) (h_exp a u hu μ hμ)
+  have h_mem := h_exp a u hu μ hμ
+  simpa only [valueAt_smul_sub h_span hμ.1] using sub_mem (galMonoid_smul_mem_hodgeFil g h_mem)
+      h_mem
 
 /-! ### Divisibility of `g x - x` by `zTau` -/
 
@@ -697,17 +676,12 @@ lemma phi_pow_smul_mem_kisinLoc {x : L.Ambient} (hx : x ∈ L.kisinLoc) : φ ^ l
   | zero => simpa using hx
   | succ l ih => simpa only [pow_succ', mul_smul] using phi_smul_mem_kisinLoc ih
 
-/-- The A_inf-module `L.kisinAinf` is spanned by the Kisin module `L.kisinModule`. This is a part of
-`frame_theorem`. -/
-lemma span_kisinModule : span Ainf (L.kisinModule : Set L.Ambient) = L.kisinAinf :=
-  L.frame_theorem.kisinAinf_eq_span_kisinModule.symm
-
 /-- The A_inf-span of the Kisin module `L.kisinLoc` with all φ^a E inverted is `L.kisinLocAinf`,
 which is defined as the set of x that some product of the φ^a E sends into `L.kisinAinf`, the
 A_inf-span of the Kisin module `L.kisinModule`. -/
 lemma span_kisinLoc : span Ainf (L.kisinLoc : Set L.Ambient) = L.kisinLocAinf := by
   have h_base : L.kisinAinf ≤ span Ainf (L.kisinLoc : Set L.Ambient) :=
-    span_kisinModule.ge.trans (span_mono kisinModule_le_kisinLoc)
+    kisinAinf_eq_span_kisinModule.le.trans (span_mono kisinModule_le_kisinLoc)
   have h_step (a : ℕ) (y : L.Ambient)
       (hy : (k.frobE a).val • y ∈ span Ainf (L.kisinLoc : Set L.Ambient)) :
       y ∈ span Ainf (L.kisinLoc : Set L.Ambient) := by
@@ -735,14 +709,6 @@ lemma sum_map_smul_eq_zero_of_mem_kisinLoc (f : Ainf →ₗ[k.S] k.S) {ι : Type
   refine sum_map_smul_eq_zero_of_mem_valueFieldPoints f (fun i ↦ ?_) h_zero
   exact ⟨kisinLocAinf_le_fracSpan (hv i).1, (hv i).2⟩
 
-/-- The element τ^h multiplies the A_inf-span `L.ainfLattice` of 1 ⊗ L into `L.kisinAinf`, the
-A_inf-span of the Kisin module. Here τ = `tau` is [ε^{1/p}] − 1, and h = `L.jumpBound` is the least
-natural number with all Hodge–Tate jumps of L over Γ' in [−h, h]. This is a part of
-`frame_theorem`. -/
-lemma tau_pow_smul_mem_kisinAinf {x : L.Ambient} (hx : x ∈ L.ainfLattice) :
-    tau ^ L.jumpBound • x ∈ L.kisinAinf :=
-  L.frame_theorem.tau_pow_smul_mem_kisinAinf x hx
-
 /-- Let L be a Galois lattice over the Kummer chart and a ≥ 0. Let μ be a form, that is, an
 A_inf-linear map `L.Ambient` = W(C^♭) ⊗ L → B_dR that is Γ'-equivariant on 1 ⊗ L, and let x lie in
 the Kisin module `L.kisinLoc` with all φ^b E inverted. Then the value `valueAt a μ x` = μ(φ^{−a}x)
@@ -757,7 +723,8 @@ lemma valueAt_mem_valueField {a : ℕ} {μ : L.Functional} {x : L.Ambient} (hμ 
     smul_mem_fracSpan (φ ^ a)⁻¹ (kisinLocAinf_le_fracSpan (mem_kisinLocAinf_of_mem_kisinLoc hx))
   obtain ⟨n, t, v, hv⟩ : ∃ (n : ℕ) (t : Fin n → Ainf) (v : Fin n → L.kisinLoc),
       ∑ l : Fin n, t l • (v l).val = tau ^ L.jumpBound • r • (φ ^ a)⁻¹ • x :=
-    mem_span_set'.1 (span_kisinLoc.ge (mem_saturateBy_of_mem (tau_pow_smul_mem_kisinAinf hrx)))
+    mem_span_set'.1 (span_kisinLoc.ge
+      (mem_saturateBy_of_mem (tau_pow_jumpBound_smul_mem_kisinAinf_of_mem_ainfLattice hrx)))
   let ρ : Ainf := φ ^ a • (tau ^ L.jumpBound * r)
   have hρx : ρ • x = ∑ l : Fin n, (φ ^ a • t l) • φ ^ a • (v l).val := by
     simpa [ρ, smul_sum, frobGroup_smul_smul, smul_smul] using
@@ -806,8 +773,7 @@ lemma exists_coordRetract :
     simpa [ℓ, Subtype.ext_iff] using
       sum_map_smul_eq_zero_of_mem_kisinLoc k.coord₀ (fun j ↦ (v j).prop) h_rel
   have hπ : Function.Surjective π := surjective_tensorToSpan _ _
-  refine ⟨(LinearMap.ker π).liftQ ℓ h_ker ∘ₗ (π.quotKerEquivOfSurjective hπ).symm.toLinearMap,
-    fun a x hx hax ↦ ?_⟩
+  refine ⟨π.liftOfSurjective hπ ⟨ℓ, h_ker⟩, fun a x hx hax ↦ ?_⟩
   have h_tmul : π (a ⊗ₜ ⟨x, hx⟩) = ⟨a • x, hax⟩ := by simp [π, Subtype.ext_iff]
   simp [← h_tmul, ℓ]
 
@@ -912,18 +878,16 @@ variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
   {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O} {a : ℕ} {i : Letter} {n : ℤ} {x : L.Ambient}
   (Q : Submodule Ainf L.Ambient)
 
-instance : Module ℤ_[p] L.kisinLoc := inferInstance
-
 /-- For an A_inf-submodule Q of W(C^♭)⊗L, the Z_p-submodule of
 `New.Lift.KummerChart.JumpLattice.kisinLoc` of the elements that lie in Q. -/
 abbrev locKisinPart : Submodule ℤ_[p] L.kisinLoc :=
   (Q.restrictScalars ℤ_[p]).comap (L.kisinLoc.subtype.restrictScalars ℤ_[p])
 
 /-- The Z_p-module of the x in W(C^♭) ⊗ L that are invariant modulo Q: gx − x lies in Q for all g in
-Γ'. Take Q = `L.withOrders i o` and x in `L.kisinLocAinf` at the letter i. Then this holds if and
-only if, for every a, every jump u at `i.stepBack a` and every form μ of type u there,
-`valueAt a μ x` is a constant in `localFieldOf k.subgroup` modulo `hodgeFil (o a u)`. This is the
-notion of depth in the module header (`mem_invariantsMod_withOrders_iff`). (The module is the
+Γ'. Take Q = `L.withOrders i o` and x in `L.kisinLocAinf`. Then for every a, every jump u at
+`i.stepBack a` and every form μ of type u there, `valueAt a μ x` is a constant in
+`localFieldOf k.subgroup` modulo `hodgeFil (o a u)`: x has the depth of the module header
+(`exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`). (The module is the
 intersection of the preimages of Q under the maps g − 1; `copy` only makes membership unfold to the
 displayed condition.) -/
 def invariantsMod : Submodule ℤ_[p] L.Ambient :=
@@ -991,25 +955,20 @@ lemma valueAt_smul_sub_mem_hodgeFil_of_sub_const_mem {μ : L.Functional}
     sub_sub_sub_cancel_right] using sub_mem (galMonoid_smul_mem_hodgeFil g h_close) h_close
 
 /-- Let `i` be a letter and let `x` lie in `L.kisinLocAinf`, the `A_inf`-span of the Kisin module
-`L.kisinLoc` (all `φ^a E` inverted) in `W(C^♭) ⊗ L`, and in `L.letterPart i`. Then `x` is in
+`L.kisinLoc` (all `φ^a E` inverted) in `W(C^♭) ⊗ L`. Suppose that `x` is in
 `invariantsMod (L.withOrders i o)`, that is, `g x - x` has orders `o` at `i` for every `g` in the
-Galois group `Γ'` of the chart, if and only if the following holds for every `a`, every `u` in the
-finite set `L.jumpSet j` of jumps at the letter `j = i.stepBack a` (the one with `j ^ p ^ a = i`)
-and every form `μ` of type `u` at `j` (a linear map to `B_dR`, `Γ'`-equivariant on `1 ⊗ L`, sending
-its projection to `j` into `hodgeFil (-u)`): the value `valueAt a μ x = μ (φ^{-a} x)` is congruent
+Galois group `Γ'` of the chart. Then the following holds for every `a`, every `u` in the finite set
+`L.jumpSet j` of jumps at the letter `j = i.stepBack a` (the one with `j ^ p ^ a = i`) and every
+form `μ` of type `u` at `j` (a linear map to `B_dR`, `Γ'`-equivariant on `1 ⊗ L`, sending its
+projection to `j` into `hodgeFil (-u)`): the value `valueAt a μ x = μ (φ^{-a} x)` is congruent
 modulo `hodgeFil (o a u) = t^(o a u)B_dR⁺` to a constant in the fixed field of `Γ'`. -/
-lemma mem_invariantsMod_withOrders_iff {i : Letter} {x : L.Ambient} {o : ℕ → ℤ → ℤ}
-    (h_span : x ∈ L.kisinLocAinf) (h_letter : x ∈ L.letterPart i) :
-    x ∈ invariantsMod (L.withOrders i o) ↔
-      ∀ a : ℕ, ∀ u ∈ L.jumpSet (i.stepBack a), ∀ μ ∈ L.formsOfType (i.stepBack a) u,
-        ∃ c : localFieldOf k.subgroup, valueAt a μ x - c ∈ hodgeFil (o a u) := by
-  refine ⟨fun h_inv a u hu μ hμ ↦ ?_, fun h_const g ↦ mem_withOrders_iff.2
-    ⟨sub_mem (galMonoid_smul_mem_kisinLocAinf h_span) h_span,
-      sub_mem ((gal_smul_mem_letterPart g).2 h_letter) h_letter, fun a u hu μ hμ ↦ ?_⟩⟩
-  · exact exists_valueAt_sub_mem_hodgeFil h_span hμ.1 fun g ↦
-      valueAt_mem_hodgeFil_of_mem_withOrders (h_inv g) hu hμ
-  · obtain ⟨c, h_close⟩ := h_const a u hu μ hμ
-    exact valueAt_smul_sub_mem_hodgeFil_of_sub_const_mem h_span hμ.1 h_close g
+lemma exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod {i : Letter} {x : L.Ambient}
+    {o : ℕ → ℤ → ℤ} (h_span : x ∈ L.kisinLocAinf) (h_inv : x ∈ invariantsMod (L.withOrders i o))
+    (a : ℕ) {u : ℤ} (hu : u ∈ L.jumpSet (i.stepBack a)) {μ : L.Functional}
+    (hμ : μ ∈ L.formsOfType (i.stepBack a) u) :
+    ∃ c : localFieldOf k.subgroup, valueAt a μ x - c ∈ hodgeFil (o a u) :=
+  exists_valueAt_sub_mem_hodgeFil h_span hμ.1 fun g ↦
+    valueAt_mem_hodgeFil_of_mem_withOrders (h_inv g) hu hμ
 
 /-- Let `i` be a letter and `x` an element of `L.Ambient = W(C^♭) ⊗ L` with orders `lo` at `i`: it
 lies in `L.kisinLocAinf` and in the part at `i`, and for all natural numbers `a`, all jumps `u` at
@@ -1024,7 +983,7 @@ lemma mem_withOrders_improvedOrders {i : Letter} {x : L.Ambient} {lo hi : ℕ �
   refine mem_withOrders_iff.2 ⟨h_span, h_letter, fun a u hu μ hμ ↦ ?_⟩
   -- The value is a constant `y` modulo `hodgeFil (hi a u)`.
   obtain ⟨y, h_close⟩ : ∃ y : localFieldOf k.subgroup, valueAt a μ x - y ∈ hodgeFil (hi a u) :=
-    (mem_invariantsMod_withOrders_iff h_span h_letter).1 h_inv a u hu μ hμ
+    exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod h_span h_inv a hu hμ
   -- The constant lies in the step `min (lo a u) (hi a u)`, so it is zero if both are positive.
   have h_min : (y : BdR) ∈ hodgeFil (min (lo a u) (hi a u)) :=
     (sub_mem_iff_right _ (hodgeFil_anti (min_le_left _ _) (h_exp a u hu μ hμ))).1
@@ -1176,8 +1135,7 @@ lemma exists_valueAt_sub_mem_hodgeFil_succ (a : ℕ) (n : ℤ) :
     have h_fix (g : k.galMonoid) :
         g • ∑ l, t l • valueAt a μ x - ∑ l, t l • valueAt a μ x ∈ hodgeFil 1 :=
       smul_sub_mem_hodgeFil_of_valueField g t (valueAt_mem_valueField hμ hx) h_int (ht g)
-    rw [h_value, zero_add]
-    exact exists_const_sub_mem_hodgeFil_of_smul_sub_mem h_fix
+    simpa only [h_value, zero_add] using exists_const_sub_mem_hodgeFil_of_smul_sub_mem h_fix
 
 end New.Lift.KummerChart.JumpLattice
 

@@ -1,6 +1,20 @@
-import Lib.GaloisRep.Main.Defs
+module
+
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.GroupTheory.FiniteAbelian.Duality
+import Mathlib.LinearAlgebra.PerfectPairing.Basic
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+public import Lib.PadicHodge.BlochKato
+public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
+public import Lib.ClassField.Places.DecompositionCompletion
+import Lib.ClassField.LocalDuality.DualityInequality
+import Lib.ClassField.Places.LocalFields
+import Lib.ClassField.Places.TameInertia
 import Lib.PadicComparison.Descent.TestCategory
-import Lib.PadicHodge.BlochKato
 import Lib.PadicHodge.Crystalline.Regularity
 
 /-!
@@ -58,6 +72,8 @@ Duality Theorems (2nd ed. 2006), I 2.3, 2.8.
 
 See also `Lib.PadicHodge.Crystalline.Regularity` and `Lib.PadicHodge.ArtinSchreierSequence`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -281,10 +297,11 @@ lemma jump_tateDual (h : IsPotentiallyCrystalline L.ρ) (γ : O →ₐ[ℤ_[p]] 
 
 /-- A lattice `Y` with jointly injective equivariant `O`-linear maps to finitely many lattices of a
 class lies in that class. -/
-lemma InClass.of_jointly_injective [IsDomain O] {ι : Type*} [Fintype ι] {M : ι → GalLattice O Γ}
+lemma InClass.of_jointly_injective [IsDomain O] {ι : Type*} [Finite ι] {M : ι → GalLattice O Γ}
     (h : ∀ a : ι, InClass F K U (M a)) (f : ∀ a : ι, Y →ₗ[O] M a)
     (hf : ∀ (a : ι) (g : Γ) (x : Y), f a (Y.ρ g x) = (M a).ρ g (f a x))
     (h_inj : ∀ x : Y, (∀ a : ι, f a x = 0) → x = 0) : InClass F K U Y := by
+  let := Fintype.ofFinite ι
   refine ⟨?_, fun g u hu ↦ ?_, fun s Q hK hs ↦ ?_⟩
   · exact .of_jointly_injective le_sup_left (fun a ↦ (h a).isAdmissible) (fun a ↦ f a)
       (fun a ↦ .of_forall (hf a)) h_inj
@@ -336,13 +353,14 @@ lemma InClass.tensor (h : InClass F K U Y) (h' : InClass F K' U' L) :
   -- product has Hodge–Tate rows for the tensor product with jumps `k a + l b`.
   obtain ⟨P, k, hPk, hk, -⟩ := h.isPotentiallyCrystalline.exists_isHodgeTateFrame (finBasis ..) g
   obtain ⟨Q, l, hQl, hl, -⟩ := h'.isPotentiallyCrystalline.exists_isHodgeTateFrame (finBasis ..) g
-  have jumps : HasJumps (Y.tensor L).ρ g (Finset.univ.1.map (k · + l ·).uncurry) := by
-    refine (hasJumps_of_rows ((finBasis O Y).tensorProduct (finBasis O L)) (kroneckerGL P⁻¹ Q⁻¹) _
-      ?_).1
+  have jumps : HasJumps (Y.tensor L).ρ g (Finset.univ.val.map (k · + l ·).uncurry) := by
+    refine (hasJumps_of_rows ((finBasis O Y).tensorProduct (finBasis O L))
+      (Matrix.GeneralLinearGroup.kronecker P⁻¹ Q⁻¹) _ ?_).1
     filter_upwards [hPk, hQl] with x hPx hQx ⟨a, b⟩ ⟨a', b'⟩
     -- the row identity at `((a, b), (a', b'))` is the product of those for `P⁻¹` and for `Q⁻¹`
     simpa [Matrix.mul_apply, zpow_add, mul_smul, Finset.sum_mul_sum, Fintype.sum_prod_type,
-      LinearMap.toMatrix_apply, mul_comm (_ : O), kroneckerGL, mul_mul_mul_comm] using
+      LinearMap.toMatrix_apply, mul_comm (_ : O), Matrix.GeneralLinearGroup.kronecker,
+      mul_mul_mul_comm] using
       congrArg₂ HMul.hMul (inv_mul_apply_of_isHodgeTateFrame hPx a a')
         (inv_mul_apply_of_isHodgeTateFrame hQx b b')
   -- so a jump is some `k a + l b`, where `k a` is a jump of `Y` and `l b` is a jump of `L`
@@ -473,14 +491,8 @@ lemma Period.IsPotentiallyCrystalline.index_mul_index_dual [𝒥 : OverGp Γ ℓ
     simpa [← J.count_map_eq_count' (fun u ↦ -u - 1) h_inj] using h_dual.trans (hJ _)
   have h_count : J.countP (· < 0) + (J.map fun u ↦ -u - 1).countP (· < 0) = finrank ℤ_[ℓ] L := by
     grind [countP_map, countP_eq_card_filter, card_eq_countP_add_countP]
-  obtain ⟨h_fin, h_rank⟩ : Module.Finite ℤ_[ℓ] (crysCocycles L.ρ) ∧
-      finrank ℤ_[ℓ] (crysCocycles L.ρ) =
-        finrank ℤ_[ℓ] L + 𝒥.toGp.range.index * J.countP (· < 0) :=
-    finrank_eq hL hJ
-  obtain ⟨h_fin', h_rank'⟩ : Module.Finite ℤ_[ℓ] (crysCocycles L'.ρ) ∧
-      finrank ℤ_[ℓ] (crysCocycles L'.ρ) =
-        finrank ℤ_[ℓ] L' + 𝒥.toGp.range.index * (J.map fun u ↦ -u - 1).countP (· < 0) :=
-    finrank_eq hL' hJ'
+  obtain ⟨h_fin, h_rank⟩ := finrank_eq hL hJ
+  obtain ⟨h_fin', h_rank'⟩ := finrank_eq hL' hJ'
   have h_sum : finrank ℤ_[ℓ] (crysCocycles L.ρ) + finrank ℤ_[ℓ] (crysCocycles L'.ρ) =
       finrank ℤ_[ℓ] L * (2 + 𝒥.toGp.range.index) := by
     grind [b.finrank_eq, finrank_linearMap_self]
@@ -666,7 +678,7 @@ lemma Period.card_quotient_span_localFieldOf :
         Ideal.span {(ℓ : valRingBelow (localFieldOf Γ) (intQpBar ℓ))}) =
       ℓ ^ 𝒥.toGp.range.index := by
   simp [(of_finite ⟨𝒥.toGp.range, 𝒥.isOpen_range.out⟩).card_quotient,
-    isUniformiser_ell.card_quotient_span_eq_pow isLocalGalois_padic 1, residueCard_padic]
+    isUniformizer_ell.card_quotient_span_eq_pow isLocalGalois_padic 1, residueCard_padic]
 
 /-- For an additive map `f` and a subgroup `H` of its source, the size of the range of `f` divides
 the size of the image of `H` times the index of `H`. -/

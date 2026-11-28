@@ -1,5 +1,11 @@
-import New.Spanning.RemainingTerms.OneRealPlace
+module
+
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.RemainingTerms.OneRealPlace
 import New.Spanning.Unfolding.AmplitudeSums
+import New.Spanning.Unfolding.CutoffIntegral
+import New.Spanning.Unfolding.Packing
 
 /-!
 # Schur's test: Cauchy–Schwarz and integration in stages
@@ -23,6 +29,8 @@ Notions from other files:
 * `besselU0`: the unipotent elements that fix the frame; `classUnipotent₀ c` is the group of
   rational such elements in the class `c`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -72,13 +80,13 @@ lemma inCut_of_besselKernel_ne_zero {γ : S.G E} {y : NumberField.InfinitePlace 
     (h_kernel : S.besselKernel .cut γ y ≠ 0) (v : NumberField.InfinitePlace E) :
     InCut (y v) S.b ∧ InCut (((S.ratToInf γ)⁻¹ * y) v) S.b := by
   -- All local factors at `y` and at `γ⁻¹ y` are nonzero, and each vanishes outside the cut.
-  rw [← enorm_ne_zero, enorm_besselKernel, mul_ne_zero_iff, Finset.prod_ne_zero_iff,
+  rw [← eNorm_ne_zero, enorm_besselKernel, mul_ne_zero_iff, Finset.prod_ne_zero_iff,
     Finset.prod_ne_zero_iff] at h_kernel
   obtain ⟨h_at_y, h_at_γy⟩ := h_kernel
   have h_factors : (S.besselSystem v).besselFn .cut (y v) ≠ 0 ∧
       (S.besselSystem v).besselFn .cut (((S.ratToInf γ)⁻¹ * y) v) ≠ 0 :=
-    ⟨enorm_ne_zero.1 (h_at_y v (Finset.mem_univ v)),
-      enorm_ne_zero.1 (h_at_γy v (Finset.mem_univ v))⟩
+    ⟨eNorm_ne_zero.1 (h_at_y v (Finset.mem_univ v)),
+      eNorm_ne_zero.1 (h_at_γy v (Finset.mem_univ v))⟩
   exact h_factors.imp ((S.besselSystem v).isCutPair.inCut_of_ne_zero _)
     ((S.besselSystem v).isCutPair.inCut_of_ne_zero _)
 
@@ -113,7 +121,7 @@ lemma amplitudeMajorant_sq_le {c c' : S.Classes} {γ : S.G E} [S.IsAdmissible] (
   by_cases h_zero :
       S.classCutoff c y * S.classCutoff c' ((S.ratToInf γ)⁻¹ * y) * ‖S.besselKernel .cut γ y‖ₑ = 0
   · simp [h_zero]
-  simp only [mul_eq_zero, enorm_eq_zero, not_or] at h_zero
+  simp only [mul_eq_zero, eNorm_eq_zero, not_or] at h_zero
   obtain ⟨⟨h_cutoff, h_cutoff'⟩, h_ker⟩ := h_zero
   -- Where the integrand is nonzero, `y` and `γ⁻¹y` lie in `S.boxedPoints`, so there `boxCutoff`
   -- equals `classCutoff`.
@@ -275,7 +283,7 @@ lemma lintegral_boxCutoff_le_of_average {X : Type*} [MeasurableSpace X] [S.IsAdm
   let ν : Measure G := .pi fun _ ↦ 𝔰.besselHaar₀
   let i : Γ →* G :=
     MonoidHom.mk' (fun k v ↦ ⟨S.ratToInf ((k : S.classUnipotent c) : S.G E) v,
-        ratToInf_mem_besselU0 (Subgroup.mem_inf.1 (mem_subgroupOf.1 k.2)).2 v⟩)
+        ratToInf_mem_besselU0 (Subgroup.mem_inf.1 (mem_subgroupOf.1 k.property)).2 v⟩)
       fun k k' ↦ funext fun v ↦ Subtype.ext <| congrFun (map_mul S.ratToInf _ _) v
   let ι (u : G) : NumberField.InfinitePlace E → 𝔰.G₁ := fun v ↦ u v
   have ι_mul (k : Γ) (u : G) : ι (i k * u) = S.ratToInf k * ι u := rfl
@@ -286,8 +294,8 @@ lemma lintegral_boxCutoff_le_of_average {X : Type*} [MeasurableSpace X] [S.IsAdm
       (by fun_prop) (by fun_prop) ?_ ?_ m (by fun_prop) h_pos h_finite ?_
     · simp only [ι_mul, mul_assoc, p_sum, implies_true]
     · intro k u
-      rw [ι_mul, mul_assoc, hF _ (mem_subgroupOf.1 k.2)]
-    · exact fun u ↦ h_bound (ι u) (fun v ↦ (u v).2) a ha
+      rw [ι_mul, mul_assoc, hF _ (mem_subgroupOf.1 k.property)]
+    · exact fun u ↦ h_bound (ι u) (fun v ↦ (u v).property) a ha
   -- Write both integrals as integrals of orbit integrals and compare orbit by orbit.
   grw [← lintegral_classCutoff_mul_sq_le c]
   rw [← lintegral_const_mul C (by fun_prop), lintegral_eq_lintegral_orbit (by fun_prop),
@@ -300,12 +308,12 @@ lemma lintegral_boxCutoff_le_of_average {X : Type*} [MeasurableSpace X] [S.IsAdm
   have hω : S.IsBoxPartitionOfUnity c ω := isBoxPartitionOfUnity_reducedIndicator c
   have cutoff_orbit (u : G) : S.classCutoff c (ι u * a) = p (ι u * a) * ω a := by
     rw [h_cutoff, Pi.mul_apply,
-      hω.besselFixer_invariant (ι u) a fun v ↦ mem_besselFixer_of_mem_besselU0 (u v).2]
+      hω.besselFixer_invariant (ι u) a fun v ↦ mem_besselFixer_of_mem_besselU0 (u v).property]
   have norm_orbit (u : G) : S.besselCutNormSq (ι u * a) = S.besselCutNormSq a := by
     refine Finset.prod_congr rfl fun v _ ↦ ?_
-    rw [Pi.mul_apply, enorm_besselSystem_cut_mul v (Subgroup.mem_inf.1 (u v).2).1]
+    rw [Pi.mul_apply, enorm_besselSystem_cut_mul v (Subgroup.mem_inf.1 (u v).property).1]
   have box_orbit (u : G) : ι u * a ∈ S.boxedPoints ↔ a ∈ S.boxedPoints :=
-    mul_mem_boxedPoints_iff fun v ↦ (u v).2
+    mul_mem_boxedPoints_iff fun v ↦ (u v).property
   by_cases ha : a ∈ S.boxedPoints
   · -- Pull the constant `K` out of both orbit integrals; `h_orbit` remains.
     let K : ENNReal := ω a * S.besselCutNormSq a

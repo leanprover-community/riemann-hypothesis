@@ -1,3 +1,8 @@
+module
+
+public import Lib.Weil.DualPair.Defs
+import Lib.Adelic.Adeles.LocalFactors
+import Lib.Adelic.Unitary.WeakApproximation
 import Lib.Weil.Construction.CanonicalTheta
 import Lib.Weil.DualPair.WeilAction
 
@@ -34,6 +39,8 @@ Notions from other files:
 Known; see `Lib.Weil.DualPair.GaloisLaw` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New
@@ -66,7 +73,8 @@ variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
 idele equal to `det g` on `A` and to `1` elsewhere. -/
 lemma Exchange.detOn_preimage_star (g : Gf E n) :
     detOn (star ⁻¹' A) g.val = star (detOn A g.val)⁻¹ := by
-  ext <;> simp [detOn, cutGL, star_idem, ← det_conjTranspose, inv_eq_left_inv g.prop]
+  ext <;> simp [detOn, cutGL, star_idem, ← det_conjTranspose, star_eq_conjTranspose,
+      inv_eq_left_inv (mem_unitaryGroupOf_iff.1 g.prop)]
 
 @[simp↓]
 lemma onHom_snd_inv_mulVec {p : G E s × G E s'} (x : n' × n → 𝔸f E) :
@@ -100,7 +108,7 @@ variable (n) in
 /-- The scalar matrices, as a homomorphism from the finite adeles of norm one to `Gf E n`. -/
 noncomputable def scalarFin : unitary (𝔸f E) →* Gf E n :=
   MonoidHom.codRestrict (MonoidHom.comp (GeneralLinearGroup.scalar n) Unitary.toUnits) (U 1)
-    (by simp [star_mul_self_of_mem, U])
+    (by simp [star_mul_self_of_mem, mem_unitaryGroupOf_iff, star_eq_conjTranspose])
 
 /-- Scalar finite points are central in the finite adelic unitary group. -/
 lemma Seesaw.commute_scalarFin {ν : unitary (𝔸f E)} (g : Gf E n) : Commute (scalarFin n ν) g :=
@@ -329,14 +337,14 @@ lemma theta_boxProd_target (hs : s ∘ e = s₁ ⊕ᵥ s₂) (T : Space E n' s')
     (f : 𝒮 (T.hom V₁)) (f' : 𝒮 (T.hom V₂)) :
     (T.hom V).θ (boxProd (homSigns_sum_target hs) f f') = (T.hom V₁).θ f * (T.hom V₂).θ f' :=
   -- The point of `Hom(T, V)` is block diagonal, as the point of `V` is.
-  by refine theta_boxProd (homSigns_sum_target hs) ?_ f f'; simp_all [Space.hom, ← ext_iff]
+  theta_boxProd _ (by simp_all [Space.hom, ← ext_iff]) f f'
 
 /-- For data f on Hom(V₁,T) and f' on Hom(V₂,T), θ on Hom(V₁ ⊕ V₂, T) of the product f ⊠ f' is
 θ(f)θ(f'). The product is taken along the splitting `New.homSigns_sum_source` of the coordinates. It
 is induced by the identity of the index set n₁ ⊕ n₂ of V₁ ⊕ V₂. -/
 lemma theta_boxProd_source (f : 𝒮 (V₁.hom T)) (f' : 𝒮 (V₂.hom T)) :
     ((V₁.sum V₂).hom T).θ (boxProd homSigns_sum_source f f') = (V₁.hom T).θ f * (V₂.hom T).θ f' :=
-  by refine theta_boxProd homSigns_sum_source ?_ f f'; simp [Space.hom, Space.sum, blockGL, ← ext_iff]
+  theta_boxProd _ (by simp [Space.hom, Space.sum, blockGL, ← ext_iff]) f f'
 
 /-- On Hom(V₁ ⊕ V₂, T), the block diagonal element with blocks g₁ and g₂ acts on a product f ⊠ f'
 factor by factor: ω_{bb',a}(g,h)(f ⊠ f') = ω_{b,a}(g₁,h)f ⊠ ω_{b',a}(g₂,h)f' for data f, f' on
@@ -350,7 +358,7 @@ lemma pairWeil_boxProd_source (h : G E s') (f : 𝒮 (V₁.hom T)) (f' : 𝒮 (V
   have h_ω : ((V₁.sum V₂).hom T).ω (onHom (G.sum (g₁, g₂), h)) (boxProd homSigns_sum_source f f') =
       boxProd homSigns_sum_source ((V₁.hom T).ω (onHom (g₁, h)) f)
         ((V₂.hom T).ω (onHom (g₂, h)) f') :=
-    omega_boxProd _ (by simp_all [adeleMatrix_inv, stdForm, ← ext_iff]) f f'
+    omega_boxProd _ (by simp [adeleMatrix_inv, stdForm, ← ext_iff]) f f'
   simp [pairWeil_apply, det_eq, h_ω]
   module
 
@@ -418,26 +426,13 @@ lemma conj_weilMultiplier_of_eq_neg {g : G E s} {t : n → ℤˣ} {g₁ : G E t}
     conj (weilMultiplier g₁) = upsilonU1.val g₁.det * weilMultiplier g := by
   subst hs
   obtain rfl : g = g₁.neg := ext_adeleMatrix (h_mat.trans g₁.adeleMatrix_neg.symm)
-  -- Split `upsilonU1 (det g₁)` into the determinants at the infinite places, which have modulus
-  -- one, and the value of `υ` at the finite part. In the three `simp` calls below,
-  -- `-implicitDefEqProofs` keeps the kernel from unfolding the groups.
-  have υ_split : (upsilonU1.val g₁.det : ℂ) =
-      (∏ w : InfinitePlace E, (g₁.1 w).val.val.det) * υ.val (finIdeleIncl g₁.2.val.det) := by
-    -- `det g₁` has the valuations of its finite part, and modulus one at the infinite places
-    rw [upsilonU1_apply, upsilon_eq_prod_mul_of_v_eq g₁.2.val.det
-      (by simp -implicitDefEqProofs [-coe_det])]
-    simp -implicitDefEqProofs [-coe_det]
-  -- Negation exchanges the positive and the negative block, and at an infinite place the negative
-  -- minor is `det` times the conjugate of the positive one. It keeps the finite part.
-  have h_real (w : InfinitePlace E) :
-      conj (realMultiplier (g₁.1 w)) = (g₁.1 w).val.val.det * realMultiplier (g₁.neg.1 w) := by
-    simp -implicitDefEqProofs [G.neg, MulEquiv.prodCongr, ← units_ne_iff_eq_neg, realMultiplier,
-      U.principalMinor_compl]
-  have h_fin :
-      conj (finMultiplier g₁.2) = υ.val (finIdeleIncl g₁.2.val.det) * finMultiplier g₁.neg.2 := by
-    rw [G.neg_snd, upsilon_mul_finMultiplier]
-  rw [weilMultiplier, weilMultiplier, map_mul, map_prod, υ_split, h_fin,
-    Finset.prod_congr rfl fun w _ ↦ h_real w, Finset.prod_mul_distrib]
+  -- Split `upsilonU1 (det g₁)` into infinite-place determinants and the finite part, then
+  -- conjugate each infinite minor up to `det` while preserving the finite part.
+  rw [weilMultiplier, weilMultiplier, map_mul, map_prod, upsilonU1_apply,
+    upsilon_eq_prod_mul_of_v_eq g₁.2.val.det (by simp -implicitDefEqProofs [-coe_det]),
+    G.neg_snd, ← upsilon_mul_finMultiplier]
+  simp -implicitDefEqProofs [-coe_det, G.neg, MulEquiv.prodCongr, ← units_ne_iff_eq_neg,
+    realMultiplier, U.principalMinor_compl, Finset.prod_mul_distrib]
   ring
 
 omit [WeilData E] in
@@ -485,8 +480,9 @@ lemma exists_theta_negSource :
   -- with `‖c‖ = 1` (`CoordChange.exists_theta_omega_map` with `g = 1`).
   have h_rat (x : n' × n → 𝔸 E) (hx : (negSource (s := s) (s' := s')).φ x ∈ (S.hom T).ratVectors) :
       (1 : G E (homSigns (-s) s')) • x ∈ (S.neg.hom T).ratVectors := by
-    simp [Space.neg, mem_ratVectors_hom] at hx ⊢
-    rwa [← smul_mul, ← T.x.1.mul_smul]
+    simp only [mem_ratVectors_hom, coe_units_inv, Space.neg, one_smul, Units.smul_inv,
+      Units.val_smul, Matrix.mul_smul] at hx ⊢
+    rwa [← smul_mul, ← T.x.val.mul_smul]
   obtain ⟨c, hc, hθ⟩ := negSource.exists_theta_omega_map (S.hom T) (S.neg.hom T) 1 h_rat
   exact ⟨conj c, by simpa using hc, fun f ↦ by simp [hθ f]⟩
 

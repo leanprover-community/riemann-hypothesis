@@ -1,4 +1,16 @@
-import Lib.DiscreteSeries.Haar.GramCoordinates
+module
+
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Haar.GramCoordinates
+public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
 # The polar formula for the Gram map on bases
@@ -31,6 +43,8 @@ Known result: the invariant measure `dY / dT` on tuples of vectors with a given 
 C. L. Siegel, Über die analytische Theorie der quadratischen Formen, Ann. of Math. 36 (1935).
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New
@@ -42,7 +56,8 @@ variable {ι n : Type} [Fintype ι] [Fintype n] [DecidableEq ι] [DecidableEq n]
 
 /-- The Haar measure of `U J` is invariant under right translations. -/
 instance : (volume (α := U J)).IsMulRightInvariant :=
-  ⟨fun g ↦ (measurePreserving_haarU 1 g 1 (.mulRight g) (by simp [mem_U.1 g.2]) (by simp)).map_eq⟩
+  ⟨fun g ↦ (measurePreserving_haarU 1 g 1 (.mulRight g)
+    (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 g.property) (by simp)).map_eq⟩
 
 theorem IsHermitianInvolution.norm_det : ‖J.det‖ = 1 := by
   refine (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 ?_
@@ -128,7 +143,7 @@ theorem exists_isGramSection :
   have h_near : ∀ᶠ t in 𝓝 (gramCoords J (β 0)),
       DifferentiableAt ℝ σ t ∧ gramCoords J (σ t) = t ∧ IsUnit (σ t) := by
     filter_upwards [hσ_smooth.eventually (by simp),
-      (h_smooth.hasStrictFDerivAt' h_deriv one_ne_zero).eventually_right_inverse,
+      (h_smooth.hasStrictFDerivAt h_deriv one_ne_zero).eventually_right_inverse,
       hσ_smooth.continuousAt.eventually_mem (Units.isOpen.mem_nhds (by simp [hσ_base]))]
       with t h_diff h_inv h_unit
     exact ⟨h_diff.differentiableAt one_ne_zero, h_inv, h_unit⟩
@@ -274,11 +289,9 @@ theorem exists_mul_eq (hσ : IsGramSection J V σ) {Y : Matrix ι ι ℂ} (hY : 
   have h_unit : IsUnit Z.det := (isUnit_iff_isUnit_det Z).1 (hσ.isUnit hY)
   have h_gram : Yᴴ * J * Y = Zᴴ * J * Z := by
     simp only [← hermOfReal_gramCoords IsHermitianInvolution.isHermitian, Z, hσ.gramCoords_eq hY]
-  have h_mem : (Y * Z⁻¹)ᴴ * J * (Y * Z⁻¹) = J :=
-    calc (Y * Z⁻¹)ᴴ * J * (Y * Z⁻¹) = Z⁻¹ᴴ * (Yᴴ * J * Y) * Z⁻¹ := by
-          simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = (Z * Z⁻¹)ᴴ * J * (Z * Z⁻¹) := by simp only [h_gram, conjTranspose_mul, Matrix.mul_assoc]
-      _ = J := by simp [mul_nonsing_inv Z h_unit]
+  have h_mem : (Y * Z⁻¹)ᴴ * J * (Y * Z⁻¹) = J := by
+    rw [gram_mul, h_gram, ← gram_mul, mul_nonsing_inv Z h_unit, conjTranspose_one, Matrix.one_mul,
+      Matrix.mul_one]
   exact ⟨U.of IsHermitianInvolution.isUnit _ h_mem, nonsing_inv_mul_cancel_right Z Y h_unit⟩
 
 /-- Let `J` be a hermitian involution (`Jᴴ = J`, `J² = 1`). Let `σ` be a section of the Gram map
@@ -379,7 +392,7 @@ theorem lintegral_eq_cayleyChart_mul (hσ : IsGramSection J V σ) {K : Matrix ι
       rw [← lintegral_indicator h_meas, lintegral_eq_comp_skewAddHerm (hK.indicator h_meas),
         Set.image_comp, e.image_eq_preimage_symm,
         ← lintegral_indicator (e.symm.continuous.measurable h_meas)]
-      simp only [← Function.comp_def K, Set.indicator_comp_right]
+      simp only [← Function.comp_def K]
       rfl
     _ = (2 ^ card ι)⁻¹ * ∫⁻ p in A, ENNReal.ofReal (cayleyDensity J p.2) * K (Φ p) := by
       rw [lintegral_image_eq_lintegral_abs_det_fderiv_mul volume hA (fun p hp ↦

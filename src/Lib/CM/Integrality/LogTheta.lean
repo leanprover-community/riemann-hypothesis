@@ -1,6 +1,15 @@
+module
+
+public import Mathlib.RingTheory.PowerSeries.Log
+import TauCeti.RingTheory.MvPowerSeries.Derivative
+import TauCeti.RingTheory.PowerSeries.Log
+import TauCeti.RingTheory.PowerSeries.Rescale
+public import Lib.General.NumberTheory.PadicLimitsValuation
+public import Lib.CM.FormalGroup.IntegralParameter
 import Lib.CM.Integrality.IsogenyIntegrality
 import Lib.General.Algebra.SeriesBounds
-import Lib.General.NumberTheory.PadicLimitsValuation
+import Lib.General.NumberTheory.SUnitsAndClassNumber
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # The logarithm of the theta function of a CM lattice and the integral group law
@@ -41,6 +50,8 @@ a constant. Moreover `θ(α z) / θ(z) ^ (α ᾱ)` is a unit on the formal group
 Known result: the formal group law of a Weierstrass curve has integral coefficients. Source:
 Silverman, The Arithmetic of Elliptic Curves, IV.1 and IV.2.
 -/
+
+@[expose] public section
 
 /-!
 ## The logarithm of the theta function
@@ -83,18 +94,8 @@ lemma IsSeriesGenerator.isClosed {p : ℕ} [Fact p.Prime] {B : Subring ℂ_[p]�
 `T_n` are the coefficients of `X ^ n` in `f` and `T`. -/
 lemma coeff_two_subst {p : ℕ} [Fact p.Prime] {T f : ℂ_[p]⟦X⟧} (hT₀ : constantCoeff T = 0) :
     coeff 2 (f.subst T) = coeff 1 f * coeff 2 T + coeff 2 f * coeff 1 T ^ 2 := by
-  -- Only the powers `T` and `T ^ 2` contribute to degree two.
-  have h_sq : coeff 2 (T ^ 2) = coeff 1 T ^ 2 := by
-    simp [sq, coeff_mul, Finset.Nat.antidiagonal_succ, hT₀]
-  have h_pow (n : ℕ) (hn₁ : n ≠ 1) (hn₂ : n ≠ 2) : coeff 2 (T ^ n) = 0 := by
-    rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp [coeff_one]
-    · exact X_pow_dvd_iff.1 (pow_dvd_pow_of_dvd (X_dvd_iff.2 hT₀) n) 2 (by omega)
-  rw [coeff_subst' (.of_constantCoeff_zero' hT₀), finsum_eq_sum_of_support_subset _ (s := {1, 2}),
-    Finset.sum_pair (by norm_num), pow_one, h_sq, smul_eq_mul, smul_eq_mul]
-  intro n hn
-  by_contra h_not
-  simp_all
+  rw [coeff_subst_eq_sum_range f hT₀]
+  simp [Finset.sum_range_succ, coeff_one, sq, coeff_mul, Finset.Nat.antidiagonal_succ, hT₀]
 
 /-- If an element `f` of the ring `B = 𝒪[[T]]` of integral power series in `T = X + ⋯` has no
 linear term, then its coefficient of `X²` is its coefficient of `T²`, so it is integral. -/
@@ -102,7 +103,8 @@ lemma IsSeriesGenerator.norm_coeff_two_le_one {p : ℕ} [Fact p.Prime] {B : Subr
     {T f : ℂ_[p]⟦X⟧}
     (hB : IsSeriesGenerator B T) (hf : f ∈ B) (hf₁ : coeff 1 f = 0) : ‖coeff 2 f‖ ≤ 1 := by
   obtain ⟨g, rfl⟩ := (hB.mem_iff f).1 hf
-  rw [coeff_one_subst hB.constantCoeff_eq_zero, hB.coeff_one, mul_one] at hf₁
+  rw [coeff_one_subst hB.constantCoeff_eq_zero, hB.coeff_one, mul_one,
+    Algebra.algebraMap_self_apply] at hf₁
   rw [coeff_two_subst hB.constantCoeff_eq_zero, hf₁, hB.coeff_one, zero_mul, zero_add, one_pow,
     mul_one]
   exact mem_range_seriesToCp.1 ⟨g, rfl⟩ 2
@@ -161,7 +163,8 @@ lemma constantCoeff_negLogTheta : constantCoeff C.negLogTheta = 0 := by
   rw [negLogTheta, map_neg, constantCoeff_logOf C.constantCoeff_taylorVia_theta, neg_zero]
 
 lemma taylorVia_theta_eq_expSubst : taylorVia ιₚ C.θ = expSubst (-C.negLogTheta) := by
-  rw [negLogTheta, neg_neg, expSubst_logOf C.constantCoeff_taylorVia_theta]
+  rw [negLogTheta, neg_neg]
+  exact (subst_exp_logOf C.constantCoeff_taylorVia_theta).symm
 
 lemma derivative_taylorVia_theta :
     d⁄dX (taylorVia ιₚ C.θ) = -(taylorVia ιₚ C.θ * d⁄dX C.negLogTheta) := by
@@ -540,7 +543,7 @@ lemma norm_constantCoeff_le_of_mem_multiSeriesRing (hH : H ∈ C.multiSeriesRing
     ‖constantCoeff H‖ ≤ 1 := by
   obtain ⟨G, rfl⟩ := C.mem_multiSeriesRing_iff.1 hH
   rw [constantCoeff_subst_translatedY_subst, constantCoeff_map]
-  exact (constantCoeff G).2
+  exact (constantCoeff G).property
 
 /-- An element of `𝒪[[y(μ_i z)]]` whose constant term has norm one is a unit of that ring. -/
 lemma exists_mul_eq_one_of_mem_multiSeriesRing (hH : H ∈ C.multiSeriesRing μ)
@@ -591,7 +594,7 @@ variable {C}
 /-- An element `v` of `𝒪[[y]]` (the ring `integralSeriesRing` of the lattice), taken at the linear
 form `μ_i z` (`linearSeries (μ i)`), lies in the ring `𝒪[[y(μ_j z)]]` of all the forms. The
 hypothesis `PrimeSevenModEight d` says that `d` is a prime that is 7 modulo 8. -/
-lemma subst_mem_multiSeriesRing (μ : I → X → ℂ_[p]) [PrimeSevenModEight d] {v : PowerSeries ℂ_[p]}
+lemma subst_mem_multiSeriesRing (μ : I → X → ℂ_[p]) {v : PowerSeries ℂ_[p]}
     (hv : v ∈ C.integralSeriesRing) (i : I) :
     v.subst (linearSeries (μ i)) ∈ C.multiSeriesRing μ := by
   -- If `v = g(y)` with `g` integral, then `v(μ i)` is `g(X i)` evaluated at the series `y(μ j)`.
@@ -685,7 +688,7 @@ lemma translatedY_add_mem_multiSeriesRing [PrimeSevenModEight d] :
     have h_euler : D (eulerAddition a (x 0) (y 0) (x 1) (y 1) u) = 0 :=
       derivation_eulerAddition D (h_curve 0) (h_curve 1) (by rwa [mul_comm])
         (by simp [D, a, pderiv_C]) hDx₀ hDy₀ hDx₁ hDy₁
-    rw [← Derivation.sub_apply (eulerAddition ..), h_euler]
+    rw [← sub_apply (pderiv 0) (pderiv 1) (eulerAddition ..), h_euler]
     simp [pderiv_subst_linearSeries]
   · -- At `z₀ = 0` both `x₀` and `y₀` vanish.
     have h_kill {g : PowerSeries ℂ_[p]} (hg : g.constantCoeff = 0) :

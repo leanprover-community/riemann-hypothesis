@@ -1,5 +1,13 @@
+module
+
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Haar.GramFibre
+public import Lib.DiscreteSeries.Bessel.Basic
 import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
-import Lib.DiscreteSeries.Haar.GramFibre
 
 /-!
 # Haar measure of G₁ and the fibre measure on frames
@@ -11,7 +19,7 @@ unipotent group `New.Shape.Form.besselU0` that fixes it. The file compares Haar 
 the fibre measure of the Gram map on tuples of vectors.
 
 Notions from other files:
-* `New.LeGramFibre J E m` says that the image of `m` under `g ↦ g E` is at most the fibre measure of
+* `New.LeGramFiber J E m` says that the image of `m` under `g ↦ g E` is at most the fibre measure of
   the Gram map `E' ↦ E'ᴴ J E'` over the Gram matrix of `E`.
 * `New.LeFibreMeasure μ ν π b l` says that `l` is at most the fibre measure `dμ / dν` of `π` over
   `b`.
@@ -19,12 +27,12 @@ Notions from other files:
   compact dual, and on the unitary group H = U(X₀) it is the Haar measure of mass one.
 
 Main results:
-* `New.LeGramFibre.mconv_embedH_le`: tuples with the Gram matrix of the basis vectors outside `X₀`.
+* `New.LeGramFiber.mconv_embedH_le`: tuples with the Gram matrix of the basis vectors outside `X₀`.
   These vectors have fixer `H = U(X₀)`; if their image under `m` is below the fibre measure, then
   `m ∗ dh` is at most `vol U(r) / (2 ^ (r - k) vol U(k))` times Haar measure of G₁.
 * `New.RealPlace.lintegral_eq_unipotent_coords`: Lebesgue measure on the `ϱ`-tuples dual to
   `e_0, …, e_{ϱ-1}` and orthogonal to `z`, in coordinates given by 𝖴⁰ and the Gram matrix.
-* `New.LeGramFibre.mconv_fixerHaar_le`: frames. The standard frame has fixer 𝖴⁰ H, with the measure
+* `New.LeGramFiber.mconv_fixerHaar_le`: frames. The standard frame has fixer 𝖴⁰ H, with the measure
   `ds = New.RealPlace.fixerHaar`; if the image of the frame under `m` is below the fibre measure,
   then `m ∗ ds` is at most `vol U(r) / (2 ^ (ϱ + 1) vol U(k))` times Haar measure of G₁.
 
@@ -35,6 +43,8 @@ the unitary group. The file proves the inequality that is used. Siegel, Über di
 der quadratischen Formen, Ann. of Math. 36 (1935).
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New.RealPlace
@@ -43,24 +53,13 @@ open Matrix MeasureTheory Measure Complex Fintype ENNReal Norms.L2Operator
 
 variable {𝔰 : Shape} {n : Type} [Fintype n] [DecidableEq n]
 
-/-- The columns of `definiteCols`, the basis vectors `x_i` of `X₀`, are orthonormal for the standard
-hermitian form. -/
-theorem conjTranspose_definiteCols_mul_self : 𝔰.definiteColsᴴ * 𝔰.definiteCols = 1 :=
-  inclMatrix_gram_eq_one (by simp)
-
 /-- The matrix `J₁` of the form fixes the basis vectors `x_i` of `X₀`. -/
 theorem J₁_mul_definiteCols : 𝔰.J₁ * 𝔰.definiteCols = 𝔰.definiteCols := by
   simp [J₁_eq, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc,
     conjTranspose_definiteCols_mul_self,
     inclMatrix_gram_eq_zero]
 
-/-- For `h` in the unitary group `H` of `X₀`, the element `embedH h` of `G₁` acts on the basis
-vectors `x_i` of `X₀` by the matrix `h`. -/
-theorem embedH_mul_definiteCols (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
-    (embedH h).val.val * 𝔰.definiteCols = 𝔰.definiteCols * h.val.val := by
-  simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc,
-    conjTranspose_definiteCols_mul_self]
-
+omit [DecidableEq n] in
 /-- Let `f` be a measurable map to the unitary group `G₁` whose values all fix the tuple of
 vectors given by the columns of `E`. Then almost every element for the image of `μ` under `f`
 fixes this tuple. -/
@@ -77,7 +76,7 @@ under `h ↦ h (x_i)` of `vol U(k) / 2 ^ k` times the Haar probability measure o
 embedded in `G₁` by `embedH`, is at most the fibre measure (`LeFibreMeasure`) of the Gram map
 `gramCoords` over the Gram matrix of the `x_i`, the columns of `definiteCols`. Here `volU k` is
 `vol U(k)`. -/
-theorem leFibreMeasure_definiteCols :
+theorem leFiberMeasure_definiteCols :
     LeFibreMeasure (volume.map fun x : Matrix 𝔰.κ 𝔰.κ ℂ ↦ 𝔰.definiteCols * x) volume
       (gramCoords 𝔰.J₁) (gramCoords 𝔰.J₁ 𝔰.definiteCols)
       ((ENNReal.ofReal (volU 𝔰.k / 2 ^ 𝔰.k) • volume.map embedH).map
@@ -91,7 +90,7 @@ theorem leFibreMeasure_definiteCols :
   have h_haar : LeFibreMeasure volume volume (gramCoords 𝔰.J₁ ∘ φ) (gramCoords 𝔰.J₁ (φ 1))
       ((ENNReal.ofReal (volU 𝔰.k / 2 ^ 𝔰.k) • volume).map
         fun h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) ↦ h.val.val * (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) := by
-    simpa only [LeGramFibre, Function.comp_def, h_gram] using leGramFibre_haar (J := 1)
+    simpa only [LeGramFiber, Function.comp_def, h_gram] using leGramFiber_haar (J := 1)
   simpa (disch := fun_prop) only [φ, ← Measure.map_smul, Measure.map_map, Function.comp_def,
     Matrix.mul_one, embedH_mul_definiteCols] using
     h_haar.map (φ := φ) (by fun_prop) (by fun_prop) (by fun_prop)
@@ -101,54 +100,44 @@ hermitian form with Gram matrix `J₁`: ϱ hyperbolic pairs, the identity on `X�
 `i ∈ κ`) and `h(z, z) = −1`. Let `e` enumerate the basis, indexed by `BesselIndex`, with the `x_i`
 last (`indexX₀ i` is the index of `x_i`), and let `E` be the tuple of the other `r - k = 2 ϱ + 1`
 basis vectors. Suppose the image of `m` under `g ↦ g E` is at most the fibre measure `dY / dT` of
-the Gram map over the Gram matrix of `E` (`LeGramFibre`). Then the convolution of `m` with the Haar
+the Gram map over the Gram matrix of `E` (`LeGramFiber`). Then the convolution of `m` with the Haar
 probability measure of `H = U(X₀)`, embedded in `G₁` by `embedH`, is at most
 `vol U(r) / (vol U(k) 2 ^ (2 ϱ + 1))` times Haar measure of `G₁`, normalised through its compact
 dual. Here `inclMatrix ℂ f` has the basis vectors with indices `f j` as columns and `volU j` is
 `vol U(j)`. -/
-theorem _root_.New.LeGramFibre.mconv_embedH_le (e : n ⊕ 𝔰.κ ≃ 𝔰.BesselIndex)
+theorem _root_.New.LeGramFiber.mconv_embedH_le (e : n ⊕ 𝔰.κ ≃ 𝔰.BesselIndex)
     (he : ∀ i : 𝔰.κ, e (Sum.inr i) = 𝔰.indexX₀ i) {m : Measure 𝔰.G₁} [SFinite m]
-    (hm : LeGramFibre 𝔰.J₁ (inclMatrix ℂ (e ∘ Sum.inl)) m) :
+    (hm : LeGramFiber 𝔰.J₁ (inclMatrix ℂ (e ∘ Sum.inl)) m) :
     m ∗ₘ volume.map embedH ≤ ENNReal.ofReal (volU 𝔰.r / volU 𝔰.k / 2 ^ (2 * 𝔰.ϱ + 1)) • volume := by
   -- Complete `g E` to a basis by `k` vectors orthogonal to it, which is the definite case, and
   -- compare with the fibre measure on bases.
   set E : Matrix 𝔰.BesselIndex n ℂ := inclMatrix ℂ (e ∘ Sum.inl)
   set c : ℝ := volU 𝔰.k / 2 ^ 𝔰.k
   have hc : 0 < c := div_pos (volU_pos _) (by positivity)
-  have hE : Eᴴ * E = 1 := inclMatrix_gram_eq_one (e.injective.comp Sum.inl_injective)
   have hXE : 𝔰.definiteColsᴴ * E = 0 := inclMatrix_gram_eq_zero fun i j ↦ by simp [← he]
   have h_orth : Eᴴ * 𝔰.J₁ * 𝔰.definiteCols = 0 := by
     simpa [Matrix.mul_assoc, J₁_mul_definiteCols] using congrArg conjTranspose hXE
-  have h_linear : LeFibreMeasure volume volume (fun y : Matrix 𝔰.BesselIndex 𝔰.κ ℂ ↦ Eᴴ * 𝔰.J₁ * y)
-      (Eᴴ * 𝔰.J₁ * 𝔰.definiteCols) (volume.map fun x : Matrix 𝔰.κ 𝔰.κ ℂ ↦ 𝔰.definiteCols * x) := by
-    simpa only [h_orth, Matrix.mul_zero, zero_add] using leFibreMeasure_conjTranspose_mul_mul hE
-      conjTranspose_definiteCols_mul_self h_orth (by simp [← card_congr e]) (0 : Matrix n 𝔰.κ ℂ)
-  have h_join : joinCols e (E, 𝔰.definiteCols) = 1 := by
-    rw [← LinearEquiv.eq_symm_apply, Shape.definiteCols, ← funext he]
-    rfl
-  have h_embed (u : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) : (embedH u).val.val * E = E := by
-    simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc, hXE]
-  have h_definite : LeFibreMeasure volume (volume.prod volume)
-      (fun y : Matrix 𝔰.BesselIndex 𝔰.κ ℂ ↦ (Eᴴ * 𝔰.J₁ * y, gramCoords 𝔰.J₁ y))
-      (Eᴴ * 𝔰.J₁ * 𝔰.definiteCols, gramCoords 𝔰.J₁ 𝔰.definiteCols)
-      ((ENNReal.ofReal c • volume.map embedH).map fun g : 𝔰.G₁ ↦ g.val.val * 𝔰.definiteCols) :=
-    h_linear.trans leFibreMeasure_definiteCols (by fun_prop)
-  have h_basis : LeGramFibre 𝔰.J₁ (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)
-      (m ∗ₘ (ENNReal.ofReal c • volume.map embedH)) :=
-    hm.append e h_join h_definite (ae_smul_measure (ae_map_mul_eq (by fun_prop) h_embed) _)
+  have h_basis : LeGramFiber 𝔰.J₁ (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)
+      (m ∗ₘ (ENNReal.ofReal c • volume.map embedH)) := by
+    refine hm.append e ?_ (LeFibreMeasure.trans ?_ leFiberMeasure_definiteCols (by fun_prop))
+      (ae_smul_measure (ae_map_mul_eq (by fun_prop) fun u ↦ by
+        simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc, hXE]) _)
+    · rw [← LinearEquiv.eq_symm_apply, Shape.definiteCols, ← funext he]
+      rfl
+    · simpa only [h_orth, Matrix.mul_zero, zero_add] using leFiberMeasure_conjTranspose_mul_mul
+        (inclMatrix_gram_eq_one (e.injective.comp Sum.inl_injective))
+        conjTranspose_definiteCols_mul_self h_orth (by simp [← card_congr e]) (0 : Matrix n 𝔰.κ ℂ)
   have h_const : volU 𝔰.r / volU 𝔰.k / 2 ^ (2 * 𝔰.ϱ + 1) =
       c⁻¹ * (volU (card 𝔰.BesselIndex) / 2 ^ card 𝔰.BesselIndex) := by
     rw [show 𝔰.r = card 𝔰.BesselIndex by simp,
       show card 𝔰.BesselIndex = 2 * 𝔰.ϱ + 1 + 𝔰.k by simp +arith]
     simp [c, pow_add, field]
-  calc m ∗ₘ volume.map embedH
-      = ENNReal.ofReal c⁻¹ • (m ∗ₘ (ENNReal.ofReal c • volume.map embedH)) := by
-        simp [mconv_smul_right, smul_smul, ← ENNReal.ofReal_mul (inv_pos.2 hc).le, hc.ne']
-    _ ≤ ENNReal.ofReal c⁻¹ •
-        ENNReal.ofReal (volU (card 𝔰.BesselIndex) / 2 ^ card 𝔰.BesselIndex) • volume := by
-        gcongr
-        exact h_basis.le_haar
-    _ = _ := by rw [h_const, smul_smul, ENNReal.ofReal_mul (by positivity)]
+  rw [show m ∗ₘ volume.map embedH =
+      ENNReal.ofReal c⁻¹ • (m ∗ₘ (ENNReal.ofReal c • volume.map embedH)) by
+        simp [mconv_smul_right, smul_smul, ← ENNReal.ofReal_mul (inv_pos.2 hc).le, hc.ne'],
+    h_const, ENNReal.ofReal_mul (inv_pos.2 hc).le, mul_smul]
+  gcongr
+  exact h_basis.le_haar
 
 /-! ### Coordinates adapted to the frame -/
 
@@ -234,7 +223,7 @@ theorem lintegral_eq_unipotent_coords {K : Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ)
 group 𝖴⁰ is at most the fibre measure (`LeFibreMeasure`) of the map that sends `y` to its products
 with the frame `e_0, …, e_{ϱ-1}, z` (columns of `frameCols`), and to the coordinates `gramCoords` of
 its Gram matrix, over the image of `(e*_0, …, e*_{ϱ-1})`. -/
-theorem leFibreMeasure_dualCols :
+theorem leFiberMeasure_dualCols :
     LeFibreMeasure volume volume
       (fun y : Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ) ℂ ↦ (𝔰.frameColsᴴ * 𝔰.J₁ * y, gramCoords 𝔰.J₁ y))
       (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.dualCols, gramCoords 𝔰.J₁ 𝔰.dualCols)
@@ -242,12 +231,12 @@ theorem leFibreMeasure_dualCols :
         fun g : 𝔰.G₁ ↦ g.val.val * 𝔰.dualCols) := by
   -- Fix the products with the frame, then the Gram matrix.
   have h_dual : 𝔰.J₁ * 𝔰.frameCols * (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.dualCols) = 𝔰.dualCols := by
-    simp [← ext_iff, J₁_eq, inclMatrix, Matrix.mul_apply, Matrix.one_apply, Fin.sum_univ_castSucc]
+    simp [← ext_iff, inclMatrix, Matrix.mul_apply, Matrix.one_apply, Fin.sum_univ_castSucc]
   let μ : Measure (Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ) ℂ) :=
     volume.map fun p : Matrix (Fin 𝔰.ϱ ⊕ 𝔰.κ) (Fin 𝔰.ϱ) ℂ ↦ 𝔰.dualCols + 𝔰.freeCols * p
   have h_linear : LeFibreMeasure volume volume (𝔰.frameColsᴴ * 𝔰.J₁ * ·)
       (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.dualCols) μ := by
-    simpa only [h_dual] using leFibreMeasure_conjTranspose_mul_mul conjTranspose_frameCols_mul_self
+    simpa only [h_dual] using leFiberMeasure_conjTranspose_mul_mul conjTranspose_frameCols_mul_self
       conjTranspose_freeCols_mul_self
       frameCols_gram_freeCols card_frame_add_card_free (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.dualCols)
   let ψ (t : Matrix (Fin 𝔰.ϱ) (Fin 𝔰.ϱ) ℝ) (q : 𝔰.UnipotentParams) :
@@ -286,12 +275,12 @@ instance : SFinite (fixerHaar 𝔰) := by
   infer_instance
 
 /-- The fibre measure on frames. If the image of `m` under `g ↦ g F`, with `F = frameCols` the frame
-`e_0, …, e_{ϱ-1}, z`, is at most the Gram map's fibre measure (`LeGramFibre`), then the convolution
+`e_0, …, e_{ϱ-1}, z`, is at most the Gram map's fibre measure (`LeGramFiber`), then the convolution
 of `m` with the measure `fixerHaar 𝔰` on the fixer 𝖴⁰ H of the frame is at most
 `vol U(r) / (vol U(k) 2 ^ (ϱ + 1))` times Haar measure of `G₁`, normalised through its compact
 dual. Here `r` is the rank, `k` the dimension of `X₀`, and `volU j` is `vol U(j)`. -/
-theorem _root_.New.LeGramFibre.mconv_fixerHaar_le {m : Measure 𝔰.G₁} [SFinite m]
-    (hm : LeGramFibre 𝔰.J₁ 𝔰.frameCols m) :
+theorem _root_.New.LeGramFiber.mconv_fixerHaar_le {m : Measure 𝔰.G₁} [SFinite m]
+    (hm : LeGramFiber 𝔰.J₁ 𝔰.frameCols m) :
     m ∗ₘ fixerHaar 𝔰 ≤ ENNReal.ofReal (volU 𝔰.r / volU 𝔰.k / 2 ^ (𝔰.ϱ + 1)) • volume := by
   -- Add the dual vectors to the frame; the complement of the tuple so obtained is definite.
   let e : (Fin (𝔰.ϱ + 1) ⊕ Fin 𝔰.ϱ) ⊕ 𝔰.κ ≃ 𝔰.BesselIndex :=
@@ -300,12 +289,12 @@ theorem _root_.New.LeGramFibre.mconv_fixerHaar_le {m : Measure 𝔰.G₁} [SFini
         ⟨by simp [Function.Injective, Fin.forall_fin_succ'], by simp +arith⟩
   let ν : Measure 𝔰.G₁ := 𝔰.besselHaar₀.map Subtype.val
   have h_fix : ∀ᵐ g : 𝔰.G₁ ∂ν, g.val.val * 𝔰.frameCols = 𝔰.frameCols := by
-    refine ae_map_mul_eq measurable_subtype_coe fun u ↦ ?_
+    refine ae_map_mul_eq measurable_subtypeVal fun u ↦ ?_
     obtain ⟨q, hq⟩ := mem_besselU0_iff_unipotentOf.1 u.property
     simp [hq, val_unipotentOf_coe, Matrix.add_mul, Matrix.sub_mul, Matrix.mul_assoc,
       inclMatrix_gram_eq_zero, Fin.forall_fin_succ']
-  have h_pairs : LeGramFibre 𝔰.J₁ (inclMatrix ℂ (e ∘ Sum.inl)) (m ∗ₘ (((2 : ℝ≥0∞) ^ 𝔰.ϱ)⁻¹ • ν)) :=
-    hm.append (.refl _) (by ext i (j | j) <;> rfl) leFibreMeasure_dualCols
+  have h_pairs : LeGramFiber 𝔰.J₁ (inclMatrix ℂ (e ∘ Sum.inl)) (m ∗ₘ (((2 : ℝ≥0∞) ^ 𝔰.ϱ)⁻¹ • ν)) :=
+    hm.append (.refl _) (by ext i (j | j) <;> rfl) leFiberMeasure_dualCols
       (ae_smul_measure h_fix _)
   have h_const : (2 : ℝ) ^ 𝔰.ϱ * (volU 𝔰.r / volU 𝔰.k / 2 ^ (2 * 𝔰.ϱ + 1)) =
       volU 𝔰.r / volU 𝔰.k / 2 ^ (𝔰.ϱ + 1) := by field

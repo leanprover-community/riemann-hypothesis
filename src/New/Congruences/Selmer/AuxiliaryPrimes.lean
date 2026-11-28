@@ -1,7 +1,13 @@
-import Lib.ClassField.Global.CMSplittingCharacters
+module
+
+import Mathlib.Topology.Algebra.Group.Units
+public import Lib.ClassField.Global.CMSplittingCharacters
+import Lib.ClassField.Global.ArtinMap
 import Lib.ClassField.Global.Chebotarev
 import Lib.ClassField.Global.ExistenceTheorem
+import Lib.ClassField.Places.TameInertia
 import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Auxiliary primes, anticyclotomic characters, slopes and ties
@@ -41,6 +47,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` and `New.Congruences.Selmer.Descent` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -167,7 +175,7 @@ lemma New.Selmer.exists_discreteLog {E : Type*} [Field E] [NumberField E] {P : F
 /-- Let `σ` be a Frobenius at a place above `P`, with `P.q = 1 + n * k`. If `σ` fixes an `n`-th root
 of a `T`-unit `u`, where `P ∉ T`, then `u ^ k ≡ 1` modulo `P`. -/
 lemma New.Selmer.valuation_pow_sub_one_lt_one_of_isFrob {E : Type*} [Field E]
-    [EmbeddedNumberField E] [NumberField.IsCMField E]
+    [EmbeddedNumberField E]
     {A : ClosurePlace} {P : FinPlace E} (hA : IsPlaceOver A P) {σ : Gal(Ω/E)} (hσ : IsFrob A P.q σ)
     {n k : ℕ} [NeZero n] (hk : P.q = 1 + n * k) {T : Set (FinPlace E)} (hPT : P ∉ T) {u : Eˣ}
     (hu : u ∈ T.unit E) {y : Ω} (hy : y ^ n = algebraMap E Ω u) (hy_fix : σ • y = y) :
@@ -268,7 +276,7 @@ lemma New.Selmer.exists_anticyclotomicChar_of_frob_fixes_roots {E : Type} [Field
     (hθ_cont.comp (continuous_id.div' continuous_star)) hθ'_rat
   refine ⟨χ, θ, hχ_cont, ?_, hθ_rat, fun a ha ha_one ↦ (hθ a ha).trans (hlg_one _ ha_one), hχ⟩
   -- the tame generator is the Artin symbol of `u₀` at `P`; its conjugate has component `1` at `P`
-  have h_art : artinMap Gal(Ω/E) (locIdele P u₀) = hA.tameGenerator.1 := by
+  have h_art : artinMap Gal(Ω/E) (locIdele P u₀) = hA.tameGenerator.val := by
     rw [artinMap_locIdele, hA.artinAt_eq_of_localArtin_eq hu₀_art]
   have h_conj_mem : star (locIdele P u₀) ∈ idelesUnitOff T := by
     rw [star_locIdele]
@@ -285,7 +293,7 @@ lemma New.Selmer.exists_anticyclotomicChar_of_frob_fixes_roots {E : Type} [Field
 `q`-th root of `x`. Then an element of the normal closure of the inertia groups above `R` fixes the
 `q`-th roots of unity and the roots `y u` of each element `u` of a set `s` of `T`-units. -/
 lemma New.Selmer.mem_ker_inf_stabilizer_of_mem_normalClosure {E : Type} [Field E]
-    [EmbeddedNumberField E] [NumberField.IsCMField E]
+    [EmbeddedNumberField E]
     {q : ℕ} [NeZero q] {T R : Set (FinPlace E)} (hRT : ∀ w ∈ R, w ∉ T)
     (hq : ∀ (w : FinPlace E) (A : ClosurePlace), w ∉ T → IsPlaceOver A w → A (q : Ω) = 1)
     {y : E → Ω} (hy : ∀ x : E, y x ^ q = algebraMap E Ω x) (s : Finset (Additive (T.unit E)))
@@ -349,7 +357,7 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
   let U : Subgroup Gal(Ω/E) :=
     (cyclotomicCharMod Ω (ℓ ^ N)).ker ⊓
       ⨅ u : s, MulAction.stabilizer Gal(Ω/E) (y (u.val.toMul : Eˣ))
-  have hU_open : IsOpen (SetLike.coe U) := isOpen_ker_cyclotomicCharMod.1.inter
+  have hU_open : IsOpen (SetLike.coe U) := isOpen_ker_cyclotomicCharMod.out.inter
     (by simp [isOpen_iInter_of_finite, stabilizer_isOpen_of_isIntegral])
   -- the inertia groups in question sit at places off `T`, so `z` lies in `U`
   have hz : z ∈ U := by
@@ -371,8 +379,8 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
     exists_anticyclotomicChar_of_frob_fixes_roots h_gen hs hp hk hPT hP_ne_star hA hσ
       fun u hu ↦ ⟨y (u.toMul : Eˣ), hy _, mem_iInf.1 hσ_root ⟨u, hu⟩⟩
   -- multiply `σ` by a power of the tame generator to get a Frobenius `τ` at which `χ` is trivial
-  let τ : Gal(Ω/E) := σ * hA.tameGenerator.1 ^ (χ σ⁻¹).toAdd.val
-  have hτ : IsFrob A P.q τ := by simpa using hσ.mul_iff.2 (pow_mem hA.tameGenerator.2 _)
+  let τ : Gal(Ω/E) := σ * hA.tameGenerator.val ^ (χ σ⁻¹).toAdd.val
+  have hτ : IsFrob A P.q τ := by simpa using hσ.mul_iff.2 (pow_mem hA.tameGenerator.property _)
   have hχτ : χ τ = 1 := by simp [τ, hχ_tg, ← ofAdd_nsmul]
   obtain ⟨-, hτW⟩ := h_frob τ hτ
   have hχ_lc : IsLocallyConstant χ := fun V ↦ hχ_cont.isOpen_preimage V (isOpen_discrete V)
@@ -381,7 +389,7 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
   have hT'T : T'.conjClosure ⊆ T :=
     (Set.union_subset_union hT' (Set.preimage_mono hT')).trans hST
   refine ⟨⟨hχ_lc, θ, hθ_rat, fun a ha ha_one ↦ ?_, hχ⟩, h_norm, hA, hτ,
-    fun h ↦ hPT (hT'T (.inl h)), hP_ne_star, hA.tameGenerator.2, hχ_tg, rfl⟩
+    fun h ↦ hPT (hT'T (.inl h)), hP_ne_star, hA.tameGenerator.property, hχ_tg, rfl⟩
   -- an idele that is a unit off `T'.conjClosure ⊆ T` and `≡ 1` at `P` is killed by `θ`
   exact hθ_one a (idelesUnitOff_mono hT'T ha) (ha_one P ⟨rfl, fun h ↦ hPT (hT'T h)⟩)
 

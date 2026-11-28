@@ -1,4 +1,15 @@
-import Lib.Base
+module
+
+public import Mathlib.Analysis.Matrix.MeasurableSpace
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import TauCeti.Data.Matrix.Countable
+public import TauCeti.LinearAlgebra.Matrix.IndefiniteUnitaryGroup
+public import TauCeti.MeasureTheory.Constructions.Polish.Units
+public import TauCeti.Topology.Instances.Matrix
+public import TauCeti.Topology.MetricSpace.Polish.Matrix
+import Mathlib.Topology.Algebra.Group.Matrix
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
+public import Lib.Speed
 
 /-!
 # Integral, congruence and unitary matrix groups over a ring, with their topology
@@ -9,16 +20,19 @@ integrability.
 * `New.intGL`, `New.congruenceGL`: the matrices of `GL n R` that are invertible over a subring `O`,
   and the congruence subgroups among them; `New.intGL.toMatrix` reads such a matrix over `O`, and
   `New.intGL.map` applies a ring map out of `O`.
-* `New.U`: the unitary group of a matrix `J`, the `g` in `GL n R` with `gᴴ * J * g = J`, with change
-  of ring `New.U.map`, change of basis `New.U.conj` and determinant `New.U.det`.
-* `New.U.isClosedEmbedding_coe`: for invertible `J`, `U J` is closed in the space of matrices; with
-  the bound on the entries of a unitary matrix, this gives that the complex unitary group of the
-  identity matrix is compact.
+* `New.U`: the unitary group of a matrix `J`, Tau Ceti's `Matrix.unitaryGroupOf J` of the `g` in
+  `GL n R` with `star g * J * g = J`, with change of ring `New.U.map`, change of basis `New.U.conj`
+  and determinant `New.U.det`. With Tau Ceti's `Matrix.unitaryGroupOf.isClosedEmbedding_val` and the
+  bound on the entries of a unitary matrix, the complex unitary group of the identity matrix is
+  compact.
 
-The file also supplies the Polish and Borel instances on units, the measurable and measure space
-structures on matrices, the Polish instance on unitary groups and the Borel instance on complex
-ones, local compactness of unitary groups, and the additive Haar measure on matrices.
+The file also supplies the measure space structure on matrices with its additive Haar measure, the
+Polish instance on unitary groups and the Borel instance on complex ones, and local compactness of
+unitary groups. The Polish, countability, local compactness and Borel instances on matrices and
+units come from Mathlib and Tau Ceti.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -36,22 +50,6 @@ section Reindex
 
 variable {F : Sort*} {α β : Type*} [EquivLike F α β]
 
-/-- A statement `∀ y, p y` about `β` is reindexed along an equivalence `e` from `α` to `β`. -/
-lemma New.forall_reindex_equiv (e : F) {p : β → Prop} : (∀ y : β, p y) ↔ ∀ x : α, p (e x) :=
-  (EquivLike.surjective e).forall
-
-/-- A statement `∃ y, p y` about `β` is reindexed along an equivalence `e` from `α` to `β`. -/
-lemma New.exists_reindex_equiv (e : F) {p : β → Prop} : (∃ y : β, p y) ↔ ∃ x : α, p (e x) :=
-  (EquivLike.surjective e).exists
-
-/-- A finite sum over `β` is reindexed along an equivalence `e` from `α` to `β`. -/
-lemma New.sum_reindex_equiv [Fintype α] [Fintype β] {M : Type*} [AddCommMonoid M] (e : F)
-    (f : β → M) : ∑ i : β, f i = ∑ i : α, f (e i) := ((EquivLike.bijective e).sum_comp f).symm
-
-/-- A finite product over `β` is reindexed along an equivalence `e` from `α` to `β`. -/
-lemma New.prod_reindex_equiv [Fintype α] [Fintype β] {M : Type*} [CommMonoid M] (e : F)
-    (f : β → M) : ∏ i : β, f i = ∏ i : α, f (e i) := ((EquivLike.bijective e).prod_comp f).symm
-
 /-- For an equivalence `e` from `α` to `β`, statements `∀ y, p y` and `∃ y, p y` about `β`, and
 finite sums and products over `β` of values in a type of universe 0, become those over `α` of the
 composite with `e`. The four rules are joined so that `simp` takes them as one argument. -/
@@ -61,8 +59,8 @@ lemma New.reindex_equiv (e : F) :
     ∀ [Fintype α] [Fintype β] {M : Type} (f : β → M),
       (∀ [AddCommMonoid M], ∑ i : β, f i = ∑ i : α, f (e i)) ∧
       ∀ [CommMonoid M], ∏ i : β, f i = ∏ i : α, f (e i) :=
-  ⟨New.forall_reindex_equiv e, New.exists_reindex_equiv e,
-    fun f ↦ ⟨New.sum_reindex_equiv e f, New.prod_reindex_equiv e f⟩⟩
+  ⟨(EquivLike.surjective e).forall, (EquivLike.surjective e).exists,
+    fun f ↦ ⟨((EquivLike.bijective e).sum_comp f).symm, ((EquivLike.bijective e).prod_comp f).symm⟩⟩
 
 end Reindex
 
@@ -116,37 +114,9 @@ section Matrices
 
 variable {m n R S : Type*} [DecidableEq n]
 
-section
-
-variable [Countable m] [Countable n] [Monoid R] [TopologicalSpace R] [ContinuousMul R]
-  [PolishSpace R]
-
-instance : PolishSpace Rˣ := by
-  have : PolishSpace Rᵐᵒᵖ := opEquiv.symm.polishSpace_induced
-  exact isClosedEmbedding_embedProduct.polishSpace
-
-deriving instance PolishSpace for Matrix m n R
-
-variable [MeasurableSpace R] [BorelSpace R]
-
-instance : MeasurableSpace (Matrix m n R) := .pi
-
-instance : BorelSpace Rˣ := by
-  borelize Rˣ
-  use (continuous_val.measurableEmbedding val_injective).comap_eq
-
-end
-
-section
-
-variable [Countable m] [Countable n] [TopologicalSpace R] [SecondCountableTopology R]
-  [MeasurableSpace R] [BorelSpace R] [Finite m] [Finite n] [Countable R] [LocallyCompactSpace R]
-
-deriving instance Countable, LocallyCompactSpace, BorelSpace for Matrix m n R
-
-end
-
-instance [Fintype m] [Fintype n] [MeasureSpace R] : MeasureSpace (Matrix m n R) := .pi
+/-- The product measure on matrices, over Mathlib's `σ`-algebra `Matrix.instMeasurableSpace`. -/
+instance [Fintype m] [Fintype n] [MeasureSpace R] : MeasureSpace (Matrix m n R) where
+  volume := (volume : Measure (m → n → R))
 
 /-! ### Special matrices -/
 
@@ -161,11 +131,28 @@ def signMatrix (s : n → ℤˣ) : Matrix n n ℂ := Matrix.diagonal fun i : n �
 @[simp]
 lemma signMatrix_one : signMatrix (n := n) 1 = 1 := by simp [signMatrix]
 
+/-- The diagonal matrix of a vector of signs ε is Hermitian. -/
+lemma conjTranspose_signMatrix {ε : n → ℤˣ} : (signMatrix ε)ᴴ = signMatrix ε := by
+  simp [signMatrix]
+
 variable [Fintype n] [CommRing R] [CommRing S] {O : Subring R}
 
 /-- Multiplying M on the right by the inclusion matrix of u selects the columns u(j) of M. -/
 lemma mul_inclMatrix {l : Type*} (M : Matrix l n R) (u : m → n) :
     M * inclMatrix R u = M.submatrix id u := mul_submatrix_one (Equiv.refl n) u M
+
+/-- Multiplying on the left by the adjoint of an inclusion matrix selects rows. -/
+lemma conjTranspose_inclMatrix_mul [StarRing R] {l : Type*} (u : l → n) (M : Matrix n m R) :
+    (inclMatrix R u)ᴴ * M = M.submatrix u id := by
+  rw [inclMatrix, conjTranspose_submatrix, conjTranspose_one]
+  exact one_submatrix_mul u (Equiv.refl n) M
+
+/-- Multiplying by inclusion matrices on both sides selects a submatrix. -/
+lemma conjTranspose_inclMatrix_mul_mul_inclMatrix [StarRing R] {l p : Type*} [Fintype m]
+    [DecidableEq m] (M : Matrix n m R) (u : l → n) (v : p → m) :
+    (inclMatrix R u)ᴴ * M * inclMatrix R v = M.submatrix u v := by
+  simp only [conjTranspose_inclMatrix_mul, mul_inclMatrix, submatrix_submatrix,
+    Function.comp_id, Function.id_comp]
 
 omit [Fintype n] in
 lemma one_map_ringHom (f : R →+* S) : (1 : Matrix n n R).map f = 1 :=
@@ -184,21 +171,25 @@ def diagGL : (n → Rˣ) →* GL n R :=
 lemma coe_diagGL (t : n → Rˣ) : (diagGL t).val = Matrix.diagonal fun i : n ↦ ↑(t i) := rfl
 
 /-- The transpose of g, as an element of GL_n(R). -/
-@[simps]
+@[simps -isSimp]
 def transposeGL (g : GL n R) : GL n R where
   val := gᵀ
-  inv := g⁻¹.1ᵀ
+  inv := g⁻¹.valᵀ
   val_inv := by simp [← transpose_mul]
   inv_val := by simp [← transpose_mul]
 
+attribute [simp] val_transposeGL
+
 /-- For distinct indices i, j and a in R, the element 1 + aE_{ij} of GL_n(R), with inverse
 1 − aE_{ij}. -/
-@[simps]
+@[simps -isSimp]
 def transvectionGL {i j : n} (h : i ≠ j) (a : R) : GL n R where
   val := transvection i j a
   inv := transvection i j (-a)
   val_inv := by simp [transvection_mul_transvection_same, h]
   inv_val := by simp [transvection_mul_transvection_same, h]
+
+attribute [simp] val_transvectionGL
 
 /-! ### Integral matrices and congruence subgroups -/
 
@@ -259,11 +250,11 @@ lemma mem_span_singleton_iff_exists_mul {a x : R} : x ∈ O ∙ a ↔ ∃ y ∈ 
 rows e(i) are congruent to those of 1 modulo M; for e the identity, the principal congruence
 subgroup of level M. -/
 def congruenceGL (M : Submodule O R) (e : m → n) : Subgroup (GL n R) :=
-  Subgroup.ofDiv {g ∈ intGL n O | ∀ (i : m) (j : n), (g.1 - 1) (e i) j ∈ M} ⟨1, by simp⟩ <| by
+  Subgroup.ofDiv {g ∈ intGL n O | ∀ (i : m) (j : n), (g.val - 1) (e i) j ∈ M} ⟨1, by simp⟩ <| by
     rintro g ⟨hg, hg_row⟩ k ⟨hk, hk_row⟩
     refine ⟨div_mem hg hk, fun i j ↦ ?_⟩
     -- `g k⁻¹ - 1 = ((g - 1) - (k - 1)) k⁻¹`, and `k⁻¹` has entries in `O`.
-    have h_eq : (g * k⁻¹).1 - 1 = ((g.1 - 1) - (k.1 - 1)) * k⁻¹.1 := by simp [sub_mul]
+    have h_eq : (g * k⁻¹).val - 1 = ((g.val - 1) - (k.val - 1)) * k⁻¹.val := by simp [sub_mul]
     rw [h_eq, Matrix.mul_apply]
     refine sum_mem fun l _ ↦ ?_
     rw [mul_comm]
@@ -297,20 +288,14 @@ lemma gram_mul_of_gram_eq {J J' J'' : Matrix n n R} {x y : GL n R} (hx : x.val�
 lemma gram_inv_of_gram_eq {J J' : Matrix n n R} {x : GL n R} (hx : x.valᴴ * J * x = J') :
     x⁻¹.valᴴ * J' * x⁻¹ = J := by simp [← hx, ← gram_mul]
 
-/-- The unitary group U(J) of a matrix J over a commutative ring with involution: the g in
-GL_n(R) with gᴴJg = J. -/
-def U (J : Matrix n n R) : Subgroup (GL n R) where
-  carrier := {g : GL n R | g.1ᴴ * J * g.1 = J}
-  mul_mem' := gram_mul_of_gram_eq
-  one_mem' := by simp
-  inv_mem' := gram_inv_of_gram_eq
+/-- The unitary group U(J) of a matrix J over a commutative ring with involution: Tau Ceti's
+`Matrix.unitaryGroupOf J`, the g in GL_n(R) with `star g * J * g = J`. -/
+abbrev U (J : Matrix n n R) : Subgroup (GL n R) := unitaryGroupOf J
 
 /-- For a vector of signs ε, the unitary group U(J) of the diagonal matrix J=diag(ε). -/
 abbrev USign (ε : n → ℤˣ) := U (signMatrix ε)
 
 variable {J : Matrix n n R}
-
-lemma mem_U {g : GL n R} : g ∈ U J ↔ g.valᴴ * J * g = J := .rfl
 
 -- An element of a unitary group is read as its matrix.
 instance : CoeOut (U J) (Matrix n n R) := ⟨(·.val.val)⟩
@@ -319,7 +304,7 @@ namespace U
 
 /-- For g in the unitary group U(J), one has J g⁻¹ = gᴴ J. -/
 lemma form_mul_inv_eq (g : U J) : J * ((g⁻¹ : U J) : Matrix n n R) = (g : Matrix n n R)ᴴ * J :=
-  (mul_inv_eq_iff_eq_mul g.val).mpr (mem_U.mp g.prop).symm
+  (mul_inv_eq_iff_eq_mul g.val).mpr (mem_unitaryGroupOf_iff.mp g.prop).symm
 
 /-- If J is an involution, the inverse of g in the unitary group U(J) is J gᴴ J. -/
 lemma coe_inv (hJ : J * J = 1) (g : U J) :
@@ -338,13 +323,13 @@ lemma gram_invariant (g : U J) {a b : Type*} (A : Matrix n a R) (B : Matrix n b 
 
 /-- An element g of U(J) preserves the sesquilinear form with matrix J. -/
 lemma form_mulVec_mulVec (g : U J) (x y : n → R) :
-    star (g *ᵥ x) ⬝ᵥ J *ᵥ g *ᵥ y = star x ⬝ᵥ J *ᵥ y := by
-  rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, mulVec_mulVec, mem_U.mp g.prop]
+    star (g *ᵥ x) ⬝ᵥ J *ᵥ g *ᵥ y = star x ⬝ᵥ J *ᵥ y :=
+  mem_unitaryGroupOf_iff_forall_dotProduct.mp g.prop x y
 
 /-- For invertible J and a matrix M with MᴴJM = J, the element of U(J) with matrix M. -/
 @[simps! coe_val]
 def of (hJ : IsUnit J) M (h : Mᴴ * J * M = J) : U J :=
-  ⟨(isUnit_of_mul_isUnit_right (by rwa [h] : IsUnit (Mᴴ * J * M))).unit, h⟩
+  ⟨(isUnit_of_mul_isUnit_right (by rwa [h] : IsUnit (Mᴴ * J * M))).unit, mem_unitaryGroupOf_iff.2 h⟩
 
 /-- For a ring homomorphism f commuting with the involutions and carrying J to J', the
 homomorphism U(J) → U(J') applying f to each entry. By default `simp` proves both conditions. -/
@@ -352,8 +337,10 @@ def map (f : R →+* S) (hf : ∀ x : R, f (star x) = star (f x) := by simp) {J 
     {J' : Matrix n n S} (h : J.map f = J' := by simp) : U J →* U J' :=
   ((GeneralLinearGroup.map f).comp (U J).subtype).codRestrict (U J') fun g ↦ by
     -- Apply `f` to `gᴴ * J * g = J`.
-    show ((g : Matrix n n R).map f)ᴴ * J' * (g : Matrix n n R).map f = J'
-    rw [← h, ← map_conjTranspose_mul_mul f hf, mem_U.mp g.prop]
+    rw [mem_unitaryGroupOf_iff]
+    change star ((g : Matrix n n R).map f) * J' * (g : Matrix n n R).map f = J'
+    rw [star_eq_conjTranspose, ← h, ← map_conjTranspose_mul_mul f hf, ← star_eq_conjTranspose,
+      mem_unitaryGroupOf_iff.mp g.prop]
 
 /-- Let `f : R → S` be an injective ring map that commutes with the involutions and carries the
 invertible n × n matrix `J` over `R` to `J'`. An element `g` of the unitary group `U J'` whose
@@ -366,14 +353,19 @@ lemma mem_range_map {f : R →+* S} (hf_star : ∀ x : R, f (star x) = star (f x
     ∃ k : U J, (k : Matrix n n R) = M ∧ map f hf_star hJ_map k = g := by
   -- `M` preserves `J` because its image under the injective map `f` preserves `J'`.
   have h_form : (Mᴴ * J * M).map f = J.map f := by
-    rw [map_conjTranspose_mul_mul f hf_star, hM_map, hJ_map, mem_U.mp g.prop]
+    rw [map_conjTranspose_mul_mul f hf_star, hM_map, hJ_map, ← star_eq_conjTranspose,
+      mem_unitaryGroupOf_iff.mp g.prop]
   exact ⟨of hJ M (map_injective hf_inj h_form), rfl, Subtype.ext (Units.ext hM_map)⟩
 
 /-- For x in GL_n(R) with xᴴJx = J', the isomorphism U(J') ≅ U(J), g ↦ x g x⁻¹. -/
 @[simps! apply_coe symm_apply_coe]
-def conj (x : GL n R) {J} {J' : Matrix n n R} (h : x.1ᴴ * J * x = J') : U J' ≃* U J where
-  toFun g := ⟨x * g * x⁻¹, gram_mul_of_gram_eq (gram_mul_of_gram_eq h g.2) (gram_inv_of_gram_eq h)⟩
-  invFun g := ⟨x⁻¹ * g * x, gram_mul_of_gram_eq (gram_mul_of_gram_eq (gram_inv_of_gram_eq h) g.2) h⟩
+def conj (x : GL n R) {J} {J' : Matrix n n R} (h : x.valᴴ * J * x = J') : U J' ≃* U J where
+  toFun g := ⟨x * g * x⁻¹, mem_unitaryGroupOf_iff.2 <|
+    gram_mul_of_gram_eq (gram_mul_of_gram_eq h (mem_unitaryGroupOf_iff.1 g.property))
+        (gram_inv_of_gram_eq h)⟩
+  invFun g := ⟨x⁻¹ * g * x, mem_unitaryGroupOf_iff.2 <|
+    gram_mul_of_gram_eq (gram_mul_of_gram_eq (gram_inv_of_gram_eq h)
+        (mem_unitaryGroupOf_iff.1 g.property)) h⟩
   left_inv g := by simp [mul_assoc]
   right_inv g := by simp [mul_assoc]
   map_mul' g k := by simp [mul_assoc]
@@ -381,10 +373,8 @@ def conj (x : GL n R) {J} {J' : Matrix n n R} (h : x.1ᴴ * J * x = J') : U J' �
 /-- For J with unit determinant, the determinant as a homomorphism from U(J) to the group of
 elements u of R with uū = 1. -/
 def det (hJ : IsUnit J.det) : U J →* unitary R :=
-  MonoidHom.mk' (fun g ↦ ⟨(g : Matrix n n R).det, by
-    -- Take determinants in `gᴴ * J * g = J` and cancel `det J`.
-    have h_det : ((g : Matrix n n R)ᴴ * J * g).det = J.det := by rw [mem_U.mp g.prop]
-    simpa [unitary, mul_comm, mul_assoc, hJ.mul_eq_left] using h_det⟩) (by simp)
+  MonoidHom.mk' (fun g ↦ ⟨(g : Matrix n n R).det,
+    det_mem_unitary_of_mem_unitaryGroupOf ((isUnit_iff_isUnit_det J).mpr hJ) g.prop⟩) (by simp)
 
 /-- Let `f : R → S` be a continuous ring map that commutes with the involutions and carries `J` to
 `J'`. The induced map `U J → U J'` of unitary groups is continuous. -/
@@ -405,15 +395,11 @@ section Topology
 variable {m n R S : Type*} [DecidableEq n] [Fintype n] [CommRing R] [StarRing R]
   [TopologicalSpace R] [IsTopologicalRing R] [ContinuousStar R]
 
-/-- The unitary group `U J` of a matrix J is closed in GL_n(R), for a Hausdorff topological ring R
-with continuous involution. -/
-lemma isClosed_U (J : Matrix n n R) [T2Space R] : IsClosed (U J : Set (GL n R)) :=
-  isClosed_eq (f := fun g : GL n R ↦ g.valᴴ * J * g) (by fun_prop) continuous_const
-
 instance (J : Matrix n n R) [T2Space R] [LocallyCompactSpace R] : LocallyCompactSpace (U J) :=
-  (isClosed_U J).locallyCompactSpace
+  (isClosed_unitaryGroupOf J).locallyCompactSpace
 
-instance (J : Matrix n n R) [PolishSpace R] : PolishSpace (U J) := (isClosed_U J).polishSpace
+instance (J : Matrix n n R) [PolishSpace R] : PolishSpace (U J) :=
+  (isClosed_unitaryGroupOf J).polishSpace
 
 variable {J : Matrix n n R} [T2Space R]
 
@@ -428,34 +414,18 @@ lemma isClosed_of_entries_eq_one {H : Subgroup (U J)} {p : n → n → Prop}
   exact EqOn.closure (f := fun k : U J ↦ (k : Matrix n n R) i j) (fun k hk ↦ hH.mp hk i j hij)
     (by fun_prop) continuous_const hg
 
-/-- For invertible J over a Hausdorff topological commutative ring with continuous involution,
-the map sending an element of the unitary group U(J) to its matrix is a closed embedding. -/
-lemma U.isClosedEmbedding_coe (hJ : IsUnit J) :
-    IsClosedEmbedding (fun g : U J ↦ (g : Matrix n n R)) := by
-  -- `g ↦ (g, g⁻¹)` is a closed embedding, and on `U J` the inverse is the continuous
-  -- function `J⁻¹ * gᴴ * J` of the matrix, so this map factors through the graph of that
-  -- function.
-  have h_graph : IsEmbedding fun M : Matrix n n R ↦ (M, op (J⁻¹ * Mᴴ * J)) :=
-    isEmbedding_graph (by fun_prop)
-  have h_inv (g : U J) : J⁻¹ * (g : Matrix n n R)ᴴ * J = (g⁻¹ : U J) := by
-    simp [← isUnit_iff_isUnit_det, hJ, ← form_mul_inv_eq, mul_assoc]
-  have h_pair :
-      IsClosedEmbedding fun g : U J ↦ ((g : Matrix n n R), op (J⁻¹ * (g : Matrix n n R)ᴴ * J)) := by
-    simp only [h_inv]
-    exact isClosedEmbedding_embedProduct.comp (isClosed_U J).isClosedEmbedding_subtypeVal
-  exact .of_comp h_graph h_pair
-
 /-- An element of the complex unitary group U(1) of the identity matrix is a unitary matrix. -/
 lemma U_one_mem_unitaryGroup (g : U (1 : Matrix n n ℂ)) :
     (g : Matrix n n ℂ) ∈ unitaryGroup n ℂ := by
-  simpa [mem_unitaryGroup_iff', star_eq_conjTranspose] using mem_U.mp g.prop
+  simpa [mem_unitaryGroup_iff', star_eq_conjTranspose] using mem_unitaryGroupOf_iff.mp g.prop
 
 instance : CompactSpace (U (1 : Matrix n n ℂ)) := by
   -- The entries of a unitary matrix lie in the closed unit disc, so the group is the preimage of
   -- a compact set of matrices under a closed embedding.
   have h_compact : IsCompact
       {g : U (1 : Matrix n n ℂ) | (g : Matrix n n ℂ) ∈ (Metric.closedBall 0 1).matrix} :=
-    (U.isClosedEmbedding_coe isUnit_one).isCompact_preimage (isCompact_closedBall 0 1).matrix
+    (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).isCompact_preimage
+        (isCompact_closedBall 0 1).matrix
   simpa [← isCompact_univ_iff, mem_matrix, entry_norm_bound_of_unitary, U_one_mem_unitaryGroup]
     using h_compact
 

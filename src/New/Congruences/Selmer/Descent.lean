@@ -1,6 +1,15 @@
+module
+
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Data.ENat.BigOperators
+import Mathlib.Data.Finset.Functor
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Sheaves.Presheaf
+public import New.Congruences.Selmer.Mirror
+import Lib.ClassField.GreenbergWiles.SelmerRelations
 import Lib.GaloisRep.Main.DivisibleSelmerModules
-import New.Congruences.Selmer.Mirror
-import New.Congruences.Selmer.OneSystem
 
 /-!
 # The descent
@@ -50,6 +59,8 @@ is known in the literature. Related work: Fakhruddin–Khare–Patrikis, Relativ
 relative Selmer groups, and lifting irreducible Galois representations, 2021; Mazur–Rubin,
 Diophantine stability, 2018; Darmon–Diamond–Taylor, Fermat's Last Theorem, 1995.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -109,10 +120,6 @@ lemma tilting {O m B : Type*} [CommRing O] [DVR O] [Fintype m] [AddCommGroup B]
   have h_ker : C' ⊓ evγ.ker ≤ C ⊓ evγ.ker ⊓ (C.map evγ).comap evφ :=
     le_inf (inf_le_inf_right _ hC')
       (inf_le_left.trans (h_image.trans (comap_mono (map_mono hC'))))
-  -- Every map splits the length of `C'` into the lengths of image and kernel.
-  have h_split (Φ : B →ₗ[O] m → O ⧸ I) :
-      length O (C'.map Φ) + length O ↥(C' ⊓ Φ.ker) = length O C' := by
-    rw [← relLength_ker C' Φ, relLength_add_length_inf]
   have h_le : C ⊓ (a • evγ - evφ).ker ≤ C' ⊓ (a • evγ - evφ).ker :=
     le_inf (le_iSup (fun t : O ↦ C ⊓ (t • evγ - evφ).ker) a) inf_le_right
   -- The image has finite length, so it cancels.
@@ -120,7 +127,8 @@ lemma tilting {O m B : Type*} [CommRing O] [DVR O] [Fintype m] [AddCommGroup B]
   calc length O (C'.map (a • evγ - evφ)) + length O ↥(C ⊓ (a • evγ - evφ).ker)
     _ ≤ length O (C'.map (a • evγ - evφ)) + length O ↥(C' ⊓ (a • evγ - evφ).ker) :=
       add_le_add_right (length_mono h_le) _
-    _ = length O (C'.map evγ) + length O ↥(C' ⊓ evγ.ker) := by rw [h_split, h_split]
+    _ = length O (C'.map evγ) + length O ↥(C' ⊓ evγ.ker) := by
+      simp only [length_map_add_length_inf_ker]
     _ ≤ length O (C'.map (a • evγ - evφ)) + length O ↥(C ⊓ evγ.ker ⊓ (C.map evγ).comap evφ) :=
       add_le_add (length_mono h_map) (length_mono h_ker)
 
@@ -214,7 +222,7 @@ lemma exists_unit_residue_notMem {O : Type} [CommRing O] [IsLocalRing O]
     ∃ s : Oˣ, residue O s ∉ bad := by
   classical
   have : Finite (ResidueField O) := Nat.finite_of_card_ne_zero (by lia)
-  have := Fintype.ofFinite (ResidueField O)
+  let := Fintype.ofFinite (ResidueField O)
   obtain ⟨r, -, hr⟩ := exists_mem_notMem_of_card_lt_card (t := (univ : Finset (ResidueField O)))
     ((card_insert_le 0 bad).trans_lt (by simpa using h_room))
   obtain ⟨s, rfl⟩ := residue_surjective r
@@ -254,7 +262,7 @@ lemma exists_isTiedPrimes_singleton {O ι : Type} [CommRing O] {W : Set Gal(Ω/E
   have hR : R.Finite := S₀.finite_toSet.biUnion fun v _ ↦
     have : NeZero v.q := ⟨v.one_lt_q.ne_bot⟩
     finite_natCast_mem v.q
-  have hS₀ (v : FinPlace E) (hv : v ∈ S₀) : v ∈ R := Set.mem_biUnion hv v.1.absNorm_mem
+  have hS₀ (v : FinPlace E) (hv : v ∈ S₀) : v ∈ R := Set.mem_biUnion hv v.asIdeal.absNorm_mem
   have hg₀R : g₀ ∈ inertiaAbove (R \ (.conjClosure (∅ : Finset (FinPlace E)) ∪
       placesDividing E ℓ)) := by
     obtain ⟨v, ⟨hvS, hvℓ⟩, hv⟩ := hg₀
@@ -265,7 +273,7 @@ lemma exists_isTiedPrimes_singleton {O ι : Type} [CommRing O] {W : Set Gal(Ω/E
   -- If `v ∈ S₀` divided the prime number `P₀.q`, then `P₀.q ∣ v.q` and `P₀` would divide `v.q`.
   have h_norm (v : FinPlace E) (hv : v ∈ S₀) : v ∉ placesDividing E P₀.q := fun hvP ↦ by
     obtain h_coprime | h_dvd := Nat.coprime_or_dvd_of_prime h_prime v.q
-    · exact natCast_notMem_of_coprime h_coprime hvP v.1.absNorm_mem
+    · exact natCast_notMem_of_coprime h_coprime hvP v.asIdeal.absNorm_mem
     · exact hP₀R (Set.mem_biUnion hv (P₀.1.mem_of_dvd (Nat.cast_dvd_cast h_dvd) P₀.1.absNorm_mem))
   have h_split : star P₀ ≠ P₀ := (hl_anti _ Set.subset_union_right).star_ne
   have h_notMem : P₀ ∉ S₀ ∧ star P₀ ∉ S₀ := ⟨mt (hS₀ P₀) hP₀R, mt (hS₀ (star P₀)) hP₀R'⟩
@@ -562,10 +570,9 @@ lemma exists_slope_totalTiedLength_lt [Fintype ι] [DecidableEq ι] {ϖ : O} {e 
   have h_lt : length O ((T i).tiedSelmer (insert P J) (insert P J) (x' u) i (ϖ ^ k)) <
       length O ((T i).tiedSelmer J J x i (ϖ ^ k)) := by
     refine (h_row k hk).trans_lt ?_
-    rw [← relLength_add_length_inf ((T i).tiedSelmer J J x i (ϖ ^ k))
-      ((T i).frobInTameImage J x i (ϖ ^ k) P l)]
-    exact ENat.lt_add_left (ne_top_of_le_ne_top (h_fin i k hk) (length_mono inf_le_left))
-      (pos_iff_ne_zero.2 (mt relLength_eq_zero.1 h_fail))
+    have := (T i).finite_tiedSelmer (h_dvd k hk) J J x i
+    rw [← (Submodule.submoduleOfEquivInf _ _).length_eq]
+    exact Submodule.length_lt (mt Submodule.submoduleOf_eq_top.mp h_fail)
   exact ⟨u⁻¹, sum_lt_sum_of_ne_top (fun (j, m) h_mem ↦ h_le j m (mem_product.1 h_mem).2)
     (fun (j, m) h_mem ↦ h_fin j m (mem_product.1 h_mem).2) (mk_mem_product (mem_univ i) hk) h_lt⟩
 
@@ -680,7 +687,7 @@ theorem exists_isTiedPrimes_card_le_and_length_le [Finite ι]
       #J ≤ s ∧
       ∀ i : ι,
         length O ((T i).tiedSelmer J J x i (ℓ ^ M)) ≤ (T i).globalTerm + (T i).placesTerm := by
-  have : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   obtain ⟨ϖ, hϖ⟩ := exists_irreducible O
   obtain ⟨e, he⟩ : ∃ e : ℕ, Associated ((ℓ : O) ^ M) (ϖ ^ e) :=
     associated_pow_irreducible (NeZero.ne _) hϖ

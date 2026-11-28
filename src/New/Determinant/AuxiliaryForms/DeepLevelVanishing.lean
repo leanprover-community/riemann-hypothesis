@@ -1,7 +1,15 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.MeasureTheory.Integral.Pi
+public import New.Determinant.AuxiliaryForms.DeepLevelPoincarePeriod
+public import New.Determinant.AuxiliaryForms.PathData
+public import Lib.Adelic.AutomorphicForms.Cuspidality
 import Lib.Adelic.TraceFormula.OrbitalUnfolding
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import New.Appendix.DiscreteSeries.PositionGroup
-import New.Determinant.AuxiliaryForms.DeepLevelPoincarePeriod
-import New.Determinant.AuxiliaryForms.PathData
+import New.OneLift.ComparisonOperator.ExchangeData
 import New.UpperBound.Objects.RowChain
 
 /-!
@@ -59,6 +67,8 @@ of Jacquet, 2008; Harris, Testing rationality of coherent cohomology of Shimura 
 Muić, Fourier coefficients of automorphic forms and integrable discrete series, 2015.
 -/
 
+@[expose] public section
+
 /-!
 ## A vanishing criterion through restrictions of deep level forms
 
@@ -89,7 +99,6 @@ lemma New.Exchange.norm_prod_conj_dsCoeff_inv_mul_sub_le {β δ : ℝ}
       ∏ w : NumberField.InfinitePlace D.E, conj ((l w).dsCoeff (z w))‖ ≤ β * (β * δ) := by
   -- There are at most `β` factors, each of norm at most `1` and with Lipschitz constant `β`.
   have β_nonneg : 0 ≤ β := hβ.trans' (by positivity)
-  have δ_nonneg : 0 ≤ δ := dist_nonneg.trans hu
   let c (g : GInf D.E s) (w : NumberField.InfinitePlace D.E) : ℂ := conj ((l w).dsCoeff (g w))
   have factor_le (w : NumberField.InfinitePlace D.E) : ‖c (u⁻¹ * z) w - c z w‖ ≤ β * δ := by
     have const_le : (100 * (card n + L + 1) ^ 5 : ℝ) ≤ β := hβ.trans' (mod_cast by lia)
@@ -185,7 +194,7 @@ lemma New.Exchange.HasDeepLevelSizes.pow_places_le_div
       exacts [by linarith, h_size.rank_pow_le, by linarith, by linarith]
     _ = β ^ ((1 + 2 * card n ^ 2 + 2 * A + (N + 2 * (3 * A))) * D.f + 2) := by ring
     _ ≤ β ^ (20 * A * (D.f + 1)) :=
-      pow_le_pow_right₀ (by linarith) (by nlinarith [Nat.mul_le_mul_right D.f exponent_le])
+      pow_le_pow_right₀ (by linarith) (by linarith [Nat.mul_le_mul_right D.f exponent_le])
     _ ≤ m := h_size.pow_le
 
 end
@@ -436,7 +445,7 @@ lemma New.Exchange.norm_realConv_translatedCoeff_le
       h_size.rank_sq_lt h_gap' (by positivity) x h_large (h_size.places_le.trans h_size.beta_le_m)
       (by linarith) ω α
   -- The positive volume `vol` of the level cancels.
-  simpa [slice, vol, measureReal_pos_of_isLevel, abs_of_pos, mul_assoc] using key
+  simpa [vol, measureReal_pos_of_isLevel, abs_of_pos, mul_assoc] using key
 
 /-- Let the parameter `l` have large gaps for `4 * A` (`HasLargeGap`), let `16 ≤ β` and
 `‖ω‖ ^ 2 ≤ β`. Then the norm of the kernel `dsKernel l r`, times

@@ -1,5 +1,19 @@
+module
+
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.PicardGroup
+import TauCeti.LinearAlgebra.Matrix.Range
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
+public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
+public import Lib.Weil.DualPair.FiniteAction
+public import Lib.Weil.DualPair.ShortIsotropicVectors
+public import Lib.Weil.DualPair.ThetaLiftConvergence
+public import Lib.Weil.DualPair.WeilAction
+import Lib.DiscreteSeries.Haar.TotalMass
 import Lib.SiegelWeil.Formula.WeilRange
-import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
 
 /-!
 # Doubling: clean data, the doubling identity and the inner product formula
@@ -42,6 +56,8 @@ S. Rallis, L-functions and the oscillator representation, LNM 1245 (1987); J.-S.
 Eischen–Harris–Li–Skinner 4.1.4.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 section InnerProductFormula
@@ -57,11 +73,8 @@ variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [Decidable
 
 /-- A chosen number `c` of modulus one with `θ (c • conj f) = conj (θ f)` for all data `f` on
 `Hom(S, T)`, where `conj f = negSource.map f` is the transport of `f` to `Hom(S⁻, T)`; see
-`norm_negSourceFactor` and `theta_negSourceFactor_smul`. -/
+`exists_theta_negSource` and `theta_negSourceFactor_smul`. -/
 def negSourceFactor (S : Space E n s) (T : Space E m t) : ℂ := (exists_theta_negSource S T).choose
-
-lemma norm_negSourceFactor (S : Space E n s) (T : Space E m t) : ‖negSourceFactor S T‖ = 1 :=
-  (exists_theta_negSource S T).choose_spec.1
 
 /-- The theta functional of `S⁻, T` at the transport of `f`, multiplied by `negSourceFactor S T`,
 is the complex conjugate of the theta functional of `S, T` at `f`. -/
@@ -205,7 +218,7 @@ lemma zeroTerm_graphSplitting (b : AutChar E) (δ : U S.J) (f f' : 𝒮 (S.hom T
     have hT : IsUnit (T.x⁻¹.val * T.J⁻¹.map toAdele) := by simp [map_J_inv]
     have hS : IsUnit (S.J.map toAdele * S.x.val)ᵀ := by simp [isUnit_transpose, S.map_J]
     simp only [P, hom_point_inv_mul_kronecker]
-    exact (kroneckerGL hT.unit hS.unit).isUnit
+    exact (Matrix.GeneralLinearGroup.kronecker hT.unit hS.unit).isUnit
   have h_per : IsContPeriodic (S.hom T).ratVectors fun x : m × n → 𝔸 E ↦
       pairWeil S T 1 b (S.ratEmbed δ⁻¹, 1) f x * conj (f' x) := by
     obtain ⟨h_invariant, -⟩ := (S.hom T).isThetaFunctional_rawTheta
@@ -350,7 +363,7 @@ lemma graphSplitting_lagrangian_injective :
   -- Equal graphs have frames `(δ'⁻¹, -1) = (δ⁻¹, -1) * c`; the lower block forces `c = 1`.
   intro δ δ' h_eq
   have h_frames : ∃ c : Matrix n n E, (graphSplitting S δ⁻¹).k * c = (graphSplitting S δ'⁻¹).k :=
-    Filling.exists_mul_eq_of_col_mem_range fun i ↦ h_eq.ge ⟨_, mulVec_single_one _ i⟩
+    exists_mul_eq_of_range_le fun i ↦ h_eq.ge ⟨_, mulVec_single_one _ i⟩
   -- `-coe_units_inv` keeps the inverse of a unit from turning into a matrix inverse.
   simpa [fromRows_ext_iff, ← Units.ext_iff, -coe_units_inv] using h_frames
 
@@ -433,7 +446,7 @@ lemma exists_doubling_bound (h_rank : 2 * card n < card m) : ∃ C : ENNReal, C 
       ‖θ ((S.sum S.neg).hom T) (splitWeil (S.sum S.neg) T (1, x) d)‖ₑ ≤ N x * ‖d‖ₑ := by
     simpa [-theta_apply] using hN x 0 d
   let Z : ENNReal := ∑' δ : U S.J, ‖(graphSplitting S δ⁻¹).lagrangian.zeroTerm T‖ₑ
-  have hZ : Z ≠ ⊤ := tsum_enorm_ne_top_iff_summable_norm.2 <|
+  have hZ : Z ≠ ⊤ := tsum_eNorm_ne_top_iff_summable_norm.2 <|
     (siegel_weil T (graphSplitting S 1) h_rank).1.comp_injective graphSplitting_lagrangian_injective
   refine ⟨(∫⁻ x, N x ∂T.quotMeasure + Z) * ‖doubleDatum (S := S) (T := T)‖ₑ, by finiteness,
     fun a b f f' g g' ↦ ?_⟩
@@ -450,7 +463,7 @@ lemma exists_doubling_bound (h_rank : 2 * card n < card m) : ∃ C : ENNReal, C 
   · let e : U S.J ≃ S.Γ := .ofInjective _ S.ratEmbed_injective
     calc _ ≤ Z * ‖d‖ₑ := by
           rw [← e.tsum_eq, ← ENNReal.tsum_mul_right]
-          refine ENNReal.tsum_le_tsum fun δ ↦ .trans (le_of_eq ?_) (le_opENorm _ d)
+          refine tsum_le_tsum fun δ ↦ .trans (le_of_eq ?_) (le_opENorm _ d)
           exact congrArg eNorm (zeroTerm_graphSplitting_doubleDatum b f f' g g' δ).symm
       _ ≤ _ := by grw [hd, mul_assoc, ← le_add_self]
 
@@ -551,7 +564,7 @@ theorem inner_product_formula (h_rank : 2 * card n < card m) (a b : AutChar E)
   have h_unfold := measurePreserving_quotMeasure_unfold S
   have hΦ_unfold (g g' : G E s) (γ : S.Γ) : Φ (g', g'⁻¹ * (γ * g)) =
       conj (y' g') * y g * weilMatrixCoeff b f f' (g'⁻¹ * (γ * g)) := by
-    simp only [Φ, mul_inv_cancel_left, hy_aut.rat_mul γ γ.2]
+    simp only [Φ, mul_inv_cancel_left, hy_aut.rat_mul γ γ.property]
     exact mul_comm ..
   have hΦ : Integrable Φ (S.quotMeasure.prod volume) := by
     refine ⟨aestronglyMeasurable (by fun_prop), h_finite.trans_le' ?_⟩
@@ -559,7 +572,7 @@ theorem inner_product_formula (h_rank : 2 * card n < card m) (a b : AutChar E)
     gcongr with p
     calc ∫⁻ γ : S.Γ, ‖Φ (p.1, p.1⁻¹ * (γ * p.2))‖ₑ ∂.count
         = ‖y' p.1‖ₑ * ‖y p.2‖ₑ * ∑' γ : S.Γ, ‖weilMatrixCoeff b f f' (p.1⁻¹ * (γ * p.2))‖ₑ := by
-          simp [lintegral_count, hΦ_unfold, enorm_mul, ENNReal.tsum_mul_left]
+          simp [lintegral_count, hΦ_unfold, eNorm_mul, ENNReal.tsum_mul_left]
       _ ≤ _ := by grw [(h_bound p.2 p.1).2, enorm_mul_height_pow_le hB hB']
   have h_swap : Integrable
       (Function.uncurry fun (p : G E s × G E s) x ↦ conj (y' p.1) * y p.2 * Θ p.2 p.1 x)
@@ -569,7 +582,7 @@ theorem inner_product_formula (h_rank : 2 * card n < card m) (a b : AutChar E)
     gcongr with p
     calc ∫⁻ x, ‖conj (y' p.1) * y p.2 * Θ p.2 p.1 x‖ₑ ∂T.quotMeasure
         = ‖y' p.1‖ₑ * ‖y p.2‖ₑ * ∫⁻ x, ‖Θ p.2 p.1 x‖ₑ ∂T.quotMeasure := by
-          simp [enorm_mul, lintegral_const_mul', ENNReal.mul_eq_top]
+          simp [eNorm_mul, lintegral_const_mul', ENNReal.mul_eq_top]
       _ ≤ _ := by grw [(h_bound p.2 p.1).1, enorm_mul_height_pow_le hB hB']
   have h_fubini (g : G E s) : weilMatrixCoeff b f f' g *
       S.petersson y' (rightRegular ℂ (G E s) ℂ g y) = ∫ g', Φ (g', g) ∂S.quotMeasure := by
@@ -607,10 +620,10 @@ lemma weilMatrixCoeff_mul {A : Set (FinPlace E)} (b : AutChar E) {f : 𝒮 (S.ho
   set u : 𝒮 (S.hom T) := pairWeil S T 1 b (g, 1) f with hu
   have hu_vac : projOn (S.hom T) A u = u :=
     projOn_pairWeil hf (g, 1) fun w hw ↦ onHom_atPlace_mem (hg w hw) (by simp)
-  have h_char : pairChar (s' := t) 1 b ((γ : G E s), 1) = (b.1 (detFin 1 γ) : ℂ)⁻¹ := by
+  have h_char : pairChar (s' := t) 1 b ((γ : G E s), 1) = (b.val (detFin 1 γ) : ℂ)⁻¹ := by
     -- The determinant of a finite point does not depend on the signs.
     have h_det : detFin 1 γ = detFin s γ := by ext <;> simp
-    change _ = (Circle.coeHom (b.1 (detFin 1 γ)))⁻¹
+    change _ = (Circle.coeHom (b.val (detFin 1 γ)))⁻¹
     simp [pairChar, h_det]
   have h_mult : finMultiplier (onHom (s' := t) ((γ : G E s), 1)).2⁻¹ =
       finMultiplier γ ^ card m := by simp [finMultiplier_inv, finMultiplier_onHom_left]
@@ -644,8 +657,8 @@ lemma exists_integral_isotropic_frame (h_rank : 2 * card n ≤ card m) :
   · -- Distinct columns have disjoint supports, and a column has norm `1 + ε̄ ε = 0`.
     refine Matrix.ext fun (j k : n) ↦ ?_
     have h_entry : ((of col)ᵀᴴ * (of col)ᵀ) j k = if j = k then 1 + star ε * ε else 0 := by
-      by_cases h_eq : j = k <;> simp [col, Function.swap, Matrix.mul_apply, apply_ite star, Pi.single_apply,
-        mul_add, add_mul, Finset.sum_add_distrib, h_eq, eq_comm (a := k)]
+      by_cases h_eq : j = k <;> simp [col, Function.swap, Matrix.mul_apply, apply_ite star,
+        Pi.single_apply, mul_add, add_mul, Finset.sum_add_distrib, h_eq, eq_comm (a := k)]
     exact h_entry.trans (by simp [ε, star_normNegOne_mul_self])
   · simp [col, Function.swap, funext_iff, eq_comm, Pi.single_apply]
 

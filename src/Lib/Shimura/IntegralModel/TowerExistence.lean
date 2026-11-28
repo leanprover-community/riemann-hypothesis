@@ -1,4 +1,13 @@
-import Lib.General.Combinatorics
+module
+
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Combinatorics.Enumerative.IncidenceAlgebra
+import Mathlib.RingTheory.Etale.Weakly
+import TauCeti.NumberTheory.NumberField.Countable
+public import Lib.General.Combinatorics
+public import Lib.Shimura.IntegralModel.UniversalFamily
+import Lib.ClassField.Places.ValuationSubrings
+import Lib.PadicComparison.Descent.TestCategory
 import Lib.Shimura.CongruenceRelation.HeckeNeighbours
 import Lib.Shimura.IntegralModel.BallImmersion
 
@@ -41,6 +50,8 @@ Source: Harris, Taylor, The geometry and cohomology of some simple Shimura varie
 Kottwitz, Points on some Shimura varieties over finite fields, JAMS 5 (1992), §5.
 -/
 
+@[expose] public section
+
 open NumberField CategoryTheory AlgebraicGeometry IsLocalRing CommRingCat New.Variety Spec
   ULift QuotientGroup Category Function ReducedClosure Finset IncidenceAlgebra Filter Algebra
   RingHom Over Finsupp ModuliPoint UniversalFamily
@@ -66,14 +77,42 @@ lemma New.Variety.cancels_moebius_of_factorsThrough_sup {E n : Type} {X : Type*}
   have sum_F (B : Submodule (ResField w) (n → ResField w)) : 0 = ∑ B' ∈ Finset.Iic B, F B' := by
     refine .trans ?_ (sum_fiberwise_eq_sum_filter ..).symm
     by_cases h : W ≤ B
-    · simp [h, μ, ← Int.cast_inj (α := ℂ), prod_eq_zero (i := 0), q_binomial_submodule,
-        ← card_ResField, zero_lt_iff, ne_bot_of_le_ne_bot hW]
-    · simp [h]
+    · have hfilt : (Finset.univ.filter fun A : Submodule (ResField w) (n → ResField w) ↦
+          A ⊔ W ∈ Finset.Iic B) = Finset.univ.filter (· ≤ B) := by
+        ext A
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_Iic, sup_le_iff, h,
+          and_true]
+      rw [hfilt, ← Int.cast_inj (α := ℂ), Int.cast_zero, Int.cast_sum]
+      have hcast : (∑ A ∈ Finset.univ.filter (· ≤ B), (μ A : ℂ)) =
+          ∑ A ∈ Finset.univ.filter (· ≤ B), heckePolyCoeff 1 A :=
+        Finset.sum_congr rfl fun A _ ↦ by
+          simp only [μ, heckePolyCoeff, Int.cast_mul, Int.cast_pow, Int.cast_neg, Int.cast_one,
+            Int.cast_natCast, card_ResField]
+      rw [hcast, q_binomial_submodule, SiegelWeil.qPochhammer]
+      have hpos : 0 < Module.finrank (ResField w) B :=
+        pos_iff_ne_zero.mpr (mt Submodule.finrank_eq_zero.mp (ne_bot_of_le_ne_bot hW h))
+      exact (Finset.prod_eq_zero (i := 0) (Finset.mem_range.mpr hpos)
+        (by simp only [pow_zero, mul_one, sub_self])).symm
+    · have hfilt : (Finset.univ.filter fun A : Submodule (ResField w) (n → ResField w) ↦
+          A ⊔ W ∈ Finset.Iic B) = ∅ := by
+        rw [Finset.filter_eq_empty_iff]
+        intro A _ hle
+        exact h (le_sup_right.trans (Finset.mem_Iic.mp hle))
+      rw [hfilt, Finset.sum_empty]
   have F_eq_zero (B : Submodule (ResField w) (n → ResField w)) : F B = 0 := by
-    simpa using moebius_inversion_bot F 0 sum_F B
+    simpa only [Pi.zero_apply, mul_zero, sum_const_zero] using moebius_inversion_bot F 0 sum_F B
   -- `F B` is the coefficient of `B` in the formal sum of the `μ A • [A ⊔ W]`
   refine .mono ((FreeAddCommGroup.equivFinsupp _).injective (ext fun B ↦ ?_)) hv
-  simpa [sum_ite, single_apply, filter_filter, -zsmul_eq_mul] using F_eq_zero B
+  rw [map_sum, map_zero, Finset.sum_apply', Finsupp.zero_apply]
+  have hterm (A : Submodule (ResField w) (n → ResField w)) :
+      FreeAddCommGroup.equivFinsupp _ (μ A • FreeAddCommGroup.of (A ⊔ W)) B =
+        if A ⊔ W = B then μ A else 0 := by
+    rw [map_zsmul, Finsupp.smul_apply]
+    have hof : FreeAddCommGroup.equivFinsupp _ (FreeAddCommGroup.of (A ⊔ W)) =
+        single (A ⊔ W) 1 := by simp
+    rw [hof, single_apply, smul_ite, zsmul_eq_mul, mul_one, Int.cast_id, smul_zero]
+  rw [Finset.sum_congr rfl fun A _ ↦ hterm A, ← Finset.sum_filter]
+  exact F_eq_zero B
 
 /-- Suppose `D.β` is the image of (1 + √−d₀)/2, and `c` sends the complex point of each `a` in the
 closure `C` to `U.datumPoint 1 a`. Let `w` be a split finite place that is safe for `D.level` and at
@@ -120,19 +159,32 @@ lemma New.Variety.UniversalFamily.GraphClosure.congruenceRelation {E : Type} [Fi
   obtain ⟨W, hW, reduction⟩ : ∃ W ≠ ⊥, FactorsThrough twist (· ⊔ W) := by
     -- the Frobenius exponents: `l ^ ((n - r A) * f) = q ^ (n - r A)`
     refine U.exists_ne_bot_factorsThrough_sup hβ (along (hc b)) residue_surjective rfl ?_ hD hw
-      (fun A ↦ by simp [hq, pow_mul', r]) fun A ↦ along (hu A b)
+      (fun A ↦ by dsimp only [r]; rw [pow_mul', ← hq, Fintype.card_fin]) fun A ↦ along (hu A b)
     -- the centre of the arc lies above `w`
     refine w.val.isMaximal.eq_of_le (ker_ne_top _) fun a ha ↦ ?_
-    -- `erw`: the goal `a ∈ ker (ThetaObject.baseHom …)` matches `hx` only after unfolding.
-    erw [ThetaObject.baseHom, ← assoc, preimage_comp]
-    simpa [← reassoc_of% centre, ← c.w] using hx _ (h𝔭 a ha)
+    have hcw : c.left ≫ (U.family.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν)).hom ≫
+        U.base.hom = C.scheme.hom := c.w
+    have hmap : (specMap (residue V) ≫ (α ≫ c.left) ≫
+        (U.family.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν)).hom) ≫
+        U.base.hom ≫ specMap (algebraMap (𝓞 E) R) =
+        (specMap ρ' ≫ C.scheme.left.fromSpecResidueField z ≫ C.scheme.hom) ≫
+        specMap (algebraMap (𝓞 E) R) := by
+      rw [assoc, assoc, assoc, ← assoc (specMap (residue V)), ← centre, assoc, assoc,
+        ← assoc (U.family.fibrePower _).hom, ← assoc c.left, hcw, assoc]
+    rw [RingHom.mem_ker, ThetaObject.baseHom, hmap, preimage_comp, preimage_comp]
+    have h0 := hx _ (h𝔭 a ha)
+    rw [assoc, preimage_comp] at h0
+    simp only [specMap, CommRingCat.hom_comp, RingHom.coe_comp, Function.comp_apply,
+      Spec.preimage_map, CommRingCat.hom_ofHom, map_eq_zero] at h0 ⊢
+    exact h0
   refine (cancels_moebius_of_factorsThrough_sup hW reduction).mono fun A B hAB ↦ ?_
   -- Frobenius commutes with `ρ` and `ρ'`, and `Spec` of a field embedding is an epimorphism: the
   -- equation descends from the residue field of `V` to that of `z` and goes up to `k`.
-  simp [twist, specMap] at hAB
-  -- both sides of `hAB` become the twists at `z`, followed by the field embedding `ρ'`
-  simp [← reassoc_of% centre, ← map_comp_assoc, ← ofHom_comp, ← iterateFrobenius_comm] at hAB ⊢
-  simpa [cancel_epi] using hAB
+  simp only [twist, specMap, ofHom_comp, Spec.map_comp, assoc] at hAB ⊢
+  simp only [← reassoc_of% centre] at hAB
+  simp only [← Spec.map_comp_assoc, ← ofHom_comp, ← iterateFrobenius_comm] at hAB ⊢
+  simp only [ofHom_comp, Spec.map_comp, assoc] at hAB ⊢
+  exact congrArg (Spec.map (ofHom ρ) ≫ ·) ((cancel_epi (Spec.map (ofHom ρ'))).mp hAB)
 
 
 /-- The tangent map at a fixed point. Let `c` send the complex point of `a` in the closure `C` to
@@ -171,7 +223,13 @@ lemma New.Variety.UniversalFamily.GraphClosure.isTangentPoly_localTerm_of_transl
   have jet (x : BallBase D.Index × (Fin ν → BallFibre E D.Index)) :
       IsJet (fun q ↦ (C.point (f.ballPoint a.markedPoint q)).left) 0 (LinearMap.applyₗ x) (τ x) :=
     fun V s hV ↦ by
-      simp [τ, PointFn.isRegularOn_ofSection _ _, hσ V s hV, LandsIn.comp]
+      obtain ⟨hland, hval⟩ := hσ V s hV
+      refine ⟨hland.comp _, ?_⟩
+      dsimp only [τ]
+      rw [PointFn.isRegularOn_ofSection s _ _ hland, hval]
+      change (TrivSqZeroExt.map (.applyₗ x)) (_ + _) = _
+      simp only [map_add, TrivSqZeroExt.map_inl, TrivSqZeroExt.map_inr, LinearMap.id_apply,
+        LinearMap.applyₗ_apply_apply]
   -- followed by `c`, it is the jet of the family in the base (`hc`)
   have jet_c (x : BallBase D.Index × (Fin ν → BallFibre E D.Index)) :
       IsJet (fun q ↦ (U.datumPoint 1 (f.ballPoint a.markedPoint q)).left) 0 (LinearMap.applyₗ x)
@@ -191,7 +249,7 @@ lemma New.Variety.UniversalFamily.GraphClosure.isTangentPoly_localTerm_of_transl
   -- it remains to check its dimension and its base point, that `dc` is injective, and `dv = dc K`
   refine ⟨.of ℂ _, ⟨homMk σ ((hσ.comp_base_eq fun _ ↦ w _).trans (map_comp ..).symm)⟩, K, ?_, ?_,
     fun x y hxy ↦ ?_, fun x ↦ up_inj.mpr (OverMorphism.ext ?_), hdet⟩
-  · simp [(f.torus 0).isPeriodMap.finrank_eq_abelianDim, Module.finrank_pi_fintype]
+  · simp [finrank_eq_abelianDim (f.torus 0).realEquiv, Module.finrank_pi_fintype]
   · -- the jet `σ` lies over the point of `f.ballPoint a.markedPoint 0 = a`
     refine congrArg ULift.up (OverMorphism.ext (hσ.fst_comp.trans ?_))
     rw [hf.ballPoint_zero]
@@ -204,16 +262,20 @@ lemma New.Variety.UniversalFamily.GraphClosure.isTangentPoly_localTerm_of_transl
     refine sub_eq_zero.mp (imm.2 _ (isFirstOrderConst_iff.mpr fun V s hV ↦ ?_))
     have value_x := (jet_c x V s hV).2
     rw [same, (jet_c y V s hV).2] at value_x
-    -- `using!`: the derivative parts match the goal only up to unfolding the maps of points.
-    simpa [sub_eq_zero] using! congrArg TrivSqZeroExt.snd value_x.symm
+    have hsnd := congrArg TrivSqZeroExt.snd value_x.symm
+    simp only [TrivSqZeroExt.snd_add, TrivSqZeroExt.snd_inl, TrivSqZeroExt.snd_inr, zero_add,
+      LinearMap.applyₗ_apply_apply] at hsnd
+    rw [map_sub, sub_eq_zero]
+    exact hsnd
   · -- By the chain rule, both sides are the jet of `q ↦ f.ballPoint a.markedPoint (K q)` in the
     -- direction `x`.
+    let K' := ContinuousLinearMap.mk K
+    have h0 : K' 0 = 0 := map_zero K'
     have chain : IsJet (fun q ↦ (U.datumPoint 1 (f.ballPoint a.markedPoint (K q))).left) 0
         (LinearMap.applyₗ x) (τ (K x) ≫ c.left) :=
-      (isJet_comp_iff (ContinuousLinearMap.mk K).hasFDerivAt
-        (U.isHolomorphicImmersionAt_datumPoint _ (by simpa using hf.zero_mem)).1).mpr
-        -- `using!`: `jet_c (K x)` matches this goal only up to unfolding
-        (by simpa using! jet_c (K x))
+      (isJet_comp_iff K'.hasFDerivAt
+        (U.isHolomorphicImmersionAt_datumPoint _ (by rw [h0]; exact hf.zero_mem)).1).mpr
+        (by rw [h0]; exact jet_c (K x))
     exact (jet_v x).unique chain
 
 /-- Two moduli points `a` and `b` with the same complex point in the base (`hab`) have the same
@@ -221,7 +283,7 @@ complex point in the closure `C` after `a` is translated by `κ⁻¹` for some `
 `levelGU D.Index D.level`. -/
 lemma New.Variety.UniversalFamily.GraphClosure.exists_point_act_eq {E : Type} [Field E] [CMBase E]
     {R : Subalgebra (𝓞 E) E} {D : PEL E} {U : UniversalFamily D R} {ν : ℕ}
-    [NeZero ν] {J : Type} [Finite J] {γ : J → nonZeroDivisors (𝓞 E) × GUPlus E D.Index}
+    {J : Type} [Finite J] {γ : J → nonZeroDivisors (𝓞 E) × GUPlus E D.Index}
     (C : U.GraphClosure γ ν) {a b : ModuliPoint E D.Index ν}
     (hab : U.datumPoint 1 a = U.datumPoint 1 b) :
     ∃ κ : levelGU D.Index D.level,
@@ -232,34 +294,35 @@ lemma New.Variety.UniversalFamily.GraphClosure.exists_point_act_eq {E : Type} [F
   obtain ⟨z, hz⟩ := datumPoint_eq_iff.mp hab
   obtain ⟨𝔫, h_point_eq⟩ := C.exists_level_point_eq
   exact ⟨⟨_, hz.mem_level.1⟩, h_point_eq
-    { mem_level := by simp [act]
+    { mem_level := by
+        simp only [act, Subgroup.coe_inv, ← mul_assoc, mul_inv_cancel, one_mem]
       reflection_eq := hz.reflection_eq
-      sub_mem_lattice := by simpa [act] using hz.sub_mem_lattice }⟩
+      sub_mem_lattice := fun i ↦ by
+        simp only [act, Pi.one_apply, map_one, one_smul]
+        exact hz.sub_mem_lattice i }⟩
 
 /-- A map `f` from the closure `C` to the base that translates the complex points by `g` is
 determined by the coset of `g` modulo `levelGU D.Index D.level`: there is one map `u` on all cosets
-with `f = u ⟦g⟧` for every such `f`. The map `c` serves only (the hypothesis `_hc` is unused) to
-show that maps to the base exist. -/
+with `f = u ⟦g⟧` for every such `f`. The map `c` witnesses that maps to the base exist. -/
 lemma New.Variety.UniversalFamily.GraphClosure.exists_forall_eq_apply_mk_of_translate {E : Type}
     [Field E] [CMBase E] {R : Subalgebra (𝓞 E) E} {D : PEL E} {U : UniversalFamily D R} {ν : ℕ}
-    [NeZero ν] {J : Type} [Finite J] {γ : J → nonZeroDivisors (𝓞 E) × GUPlus E D.Index}
+    {J : Type} [Finite J] {γ : J → nonZeroDivisors (𝓞 E) × GUPlus E D.Index}
     (C : U.GraphClosure γ ν)
-    {c : C.scheme ⟶ (Over.map U.base.hom).obj
-      (ThetaFamily.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν))}
-    (_hc : ∀ a : ModuliPoint E D.Index ν, C.point a ≫ c = U.datumPoint 1 a) :
+    (c : C.scheme ⟶ (Over.map U.base.hom).obj
+      (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))) :
     ∃ u : (GL D.Index (𝔸f E) ⧸ levelGU D.Index D.level) →
         (C.scheme ⟶ (Over.map U.base.hom).obj
-          (ThetaFamily.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν))),
+          (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))),
       ∀ {g : GL D.Index (𝔸f E)}
         {f : C.scheme ⟶ (Over.map U.base.hom).obj
-          (ThetaFamily.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν))}
+          (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))}
         (hg : g ∈ GUPlus E D.Index),
       (∀ a : ModuliPoint E D.Index ν, C.point a ≫ f = U.datumPoint 1 (a.act ⟨g, hg⟩)) →
       f = u ⟦g⟧ := by
   -- the legs: maps `f` that translate complex points by some `g`
   let Leg := Σ' (g : GUPlus E D.Index)
     (f : C.scheme ⟶ (Over.map U.base.hom).obj
-      (ThetaFamily.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν))),
+      (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))),
     ∀ a : ModuliPoint E D.Index ν, C.point a ≫ f = U.datumPoint 1 (a.act g)
   -- two legs whose `g` have the same coset agree on all complex points, hence are equal
   have factors :
@@ -268,10 +331,22 @@ lemma New.Variety.UniversalFamily.GraphClosure.exists_forall_eq_apply_mk_of_tran
     rintro ⟨⟨g, hg⟩, f, hf⟩ ⟨⟨g', hg'⟩, f', hf'⟩ hpq
     refine C.isSeparatingFamily.hom_ext fun a ↦ ?_
     -- the isomorphism is `1`; its level condition is the equality of cosets `hpq`
-    simpa [hf, hf', act, datumPoint_eq_iff, isLevelIso_iff, ratConj] using ⟨1, by
-      simpa [QuotientGroup.eq] using hpq.symm⟩
+    have hpt : U.datumPoint 1 (a.act ⟨g, hg⟩) = U.datumPoint 1 (a.act ⟨g', hg'⟩) := by
+      refine datumPoint_eq_iff.mpr ⟨1, ?_, by simp only [act, ratConj, map_one, one_smul],
+        fun i ↦ by
+          rw [act, act, realVecAction, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _),
+            Matrix.mulVecLin_apply, Matrix.one_mulVec, sub_self]
+          exact zero_mem _⟩
+      have hmem : g'⁻¹ * g ∈ levelGU D.Index D.level := QuotientGroup.eq.mp hpq.symm
+      have h1 : (a.frame * g')⁻¹ * toFinGL (1 : GL D.Index E) * (a.frame * g) = g'⁻¹ * g := by
+        simp only [map_one, mul_one, mul_inv_rev, mul_assoc, inv_mul_cancel_left]
+      change (a.frame * g')⁻¹ * toFinGL (1 : GL D.Index E) * (a.frame * g) ∈
+        levelGU D.Index D.level ⊓ levelGU D.Index 1
+      rw [levelGU_inf_one, h1]
+      exact hmem
+    exact (hf a).trans (hpt.trans (hf' a).symm)
   have h_nonempty : Nonempty (C.scheme ⟶ (Over.map U.base.hom).obj
-      (ThetaFamily.fibrePower (NonzeroTorsion 1 D.Index ⊕ Fin ν))) := ⟨c⟩
+      (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))) := ⟨c⟩
   obtain ⟨u, hu⟩ := (factorsThrough_iff _).mp factors
   exact ⟨u, fun hg h ↦ congrFun hu ⟨⟨_, hg⟩, _, h⟩⟩
 
@@ -294,6 +369,15 @@ section TowerHelpers
 variable {E : Type} [Field E] [CMBase E] {R : Subalgebra (𝓞 E) E}
   {D : PEL E} {U : UniversalFamily D R} {ν : ℕ}
 
+private lemma ModuliPoint.act_eq_self {n : Type} [Fintype n] [DecidableEq n]
+    (a : ModuliPoint E n ν) {g : GUPlus E n} (hg : g.val = 1) : a.act g = a := by
+  cases a
+  simp only [act, hg, mul_one, Pi.one_apply, map_one, one_smul]
+
+private lemma ModuliPoint.act_mul {n : Type} [Fintype n] [DecidableEq n]
+    (a : ModuliPoint E n ν) (g h : GUPlus E n) : (a.act g).act h = a.act (g * h) := by
+  simp only [act, Submonoid.coe_mul, mul_assoc, Pi.one_apply, map_one, one_smul]
+
 /-- The finite quotient of `levelGU D.Index D.level` by the normal core of its subgroup of level
 `M`: the deck group of a cover of the tower in `New.Variety.exists_model`. -/
 private abbrev TowerQuot (D : PEL E) (M : nonZeroDivisors (𝓞 E)) : Type :=
@@ -308,7 +392,7 @@ private noncomputable abbrev towerPairs (D : PEL E) (M : nonZeroDivisors (𝓞 E
     (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E D.Index))
     (j : TowerQuot D M × ↥(insert (M, 1) (insert 1 i))) :
     nonZeroDivisors (𝓞 E) × GUPlus E D.Index :=
-  (j.2.1.1, ⟨_, mem_GUPlus_of_mem_levelGU j.1.out.2⟩ * j.2.1.2)
+  (j.2.val.1, ⟨_, mem_GUPlus_of_mem_levelGU j.1.out.property⟩ * j.2.val.2)
 
 open scoped Classical in
 /-- On the cover `C` of level `i` with pairs `New.Variety.towerPairs D M i`, the factor `(⟦κ⟧, x)`
@@ -321,13 +405,26 @@ private lemma UniversalFamily.GraphClosure.point_comp_proj_towerPairs
     (C : U.GraphClosure (towerPairs D M i) ν) {a : ModuliPoint E D.Index ν}
     (x : ↥(insert (M, 1) (insert 1 i))) (κ : levelGU D.Index D.level) :
     C.point a ≫ C.proj (⟦κ⟧, x) =
-      U.datumPoint x.1.1 (a.act (⟨κ, mem_GUPlus_of_mem_levelGU κ.2⟩ * x.1.2)) := by
+      U.datumPoint x.val.1 (a.act (⟨κ, mem_GUPlus_of_mem_levelGU κ.property⟩ * x.val.2)) := by
   -- `κ⁻¹` times the chosen representative of `⟦κ⟧` has level `M`
-  have h_deep : (κ.1⁻¹ * (κ : TowerQuot D M).out) ∈ levelGU D.Index (M : 𝓞 E) := by
-    simpa using! QuotientGroup.eq.1 (κ : TowerQuot D M).out_eq.symm 1
+  have h_deep : (κ.val⁻¹ * (κ : TowerQuot D M).out) ∈ levelGU D.Index (M : 𝓞 E) := by
+    have h := Subgroup.normalCore_le _ (QuotientGroup.eq.1 (κ : TowerQuot D M).out_eq.symm)
+    rw [Subgroup.mem_subgroupOf, Subgroup.coe_mul, Subgroup.coe_inv] at h
+    exact h
   rw [point_comp_proj]
-  exact datumPoint_eq_iff.2 ⟨1, by
-    simpa [towerPairs, act, isLevelIso_iff, mul_assoc, ratConj] using! hM _ x.2 _ h_deep⟩
+  refine datumPoint_eq_iff.2 ⟨1, ?_, by simp only [act, ratConj, map_one, one_smul],
+    fun k ↦ by
+      rw [act, act, realVecAction, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _),
+        Matrix.mulVecLin_apply, Matrix.one_mulVec, sub_self]
+      exact zero_mem _⟩
+  have hframe :
+      (a.act (⟨κ, mem_GUPlus_of_mem_levelGU κ.2⟩ * x.1.2)).frame⁻¹ * toFinGL (1 : GL D.Index E) *
+        (a.act (towerPairs D M i (⟦κ⟧, x)).2).frame =
+      (x.val.2 : GL D.Index (𝔸f E))⁻¹ * (κ.val⁻¹ * (κ : TowerQuot D M).out.val) * x.val.2 := by
+    simp only [act, Submonoid.coe_mul, map_one, mul_one, mul_inv_rev, mul_assoc,
+      inv_mul_cancel_left]
+  rw [hframe]
+  exact hM _ x.property _ h_deep
 
 open scoped Classical in
 /-- The element `κ` of `levelGU D.Index D.level` acts on the cover `C` of level `i` by a map `p`
@@ -341,10 +438,12 @@ private lemma UniversalFamily.GraphClosure.exists_deck_towerPairs
       (∀ j : TowerQuot D M × ↥(insert (M, 1) (insert 1 i)),
         p ≫ C.proj j = C.proj (κ⁻¹ * j.1, j.2)) ∧
         ∀ a : ModuliPoint E D.Index ν,
-          C.point a ≫ p = C.point (a.act ⟨↑κ⁻¹, mem_GUPlus_of_mem_levelGU κ⁻¹.2⟩) :=
+          C.point a ≫ p = C.point (a.act ⟨↑κ⁻¹, mem_GUPlus_of_mem_levelGU κ⁻¹.property⟩) :=
   C.exists_lift _ _ fun a j ↦ by
-    rw [← j.1.out_eq]
-    exact (C.point_comp_proj_towerPairs hM _ _).trans (by simp [towerPairs, act, mul_assoc])
+    rw [← j.1.out_eq, ← QuotientGroup.mk_mul, C.point_comp_proj_towerPairs hM]
+    refine congrArg (U.datumPoint j.2.val.1) ?_
+    rw [act_mul, ← mul_assoc]
+    rfl
 
 open scoped Classical in
 /-- The deck maps `p κ` act freely on complex points: if `p κ` and `p κ'` agree at the point of `x`,
@@ -358,7 +457,7 @@ private lemma UniversalFamily.GraphClosure.eq_of_point_comp_deck_eq
       (x.2 : GL D.Index (𝔸f E))⁻¹ * k * x.2 ∈ levelGU D.Index D.level ⊓ levelGU D.Index x.1)
     (C : U.GraphClosure (towerPairs D M i) ν) {p : levelGU D.Index D.level → (C.scheme ⟶ C.scheme)}
     (hp : ∀ (κ : levelGU D.Index D.level) (a : ModuliPoint E D.Index ν),
-      C.point a ≫ p κ = C.point (a.act ⟨↑κ⁻¹, mem_GUPlus_of_mem_levelGU κ⁻¹.2⟩))
+      C.point a ≫ p κ = C.point (a.act ⟨↑κ⁻¹, mem_GUPlus_of_mem_levelGU κ⁻¹.property⟩))
     {x : ModuliPoint E D.Index ν} {κ κ' : levelGU D.Index D.level}
     (h_eq : C.point x ≫ p κ = C.point x ≫ p κ') :
     (κ : TowerQuot D M) = κ' := by
@@ -367,11 +466,21 @@ private lemma UniversalFamily.GraphClosure.eq_of_point_comp_deck_eq
   obtain ⟨z, hz⟩ := datumPoint_eq_iff.1
     (by simpa only [C.point_comp_proj_towerPairs hM] using
       h_eq =≫ C.proj ⟨⟦κ * q⁻¹⟧, _, mem_insert_self ..⟩)
-  obtain ⟨h_level_𝔑, h_level_M⟩ := hz.mem_level
+  obtain ⟨h_level_𝔑, h_level_M⟩ := Subgroup.mem_inf.mp hz.mem_level
+  simp only [act, mul_one, Subgroup.coe_mul, Subgroup.coe_inv, mul_inv_rev, inv_inv, mul_assoc,
+    inv_mul_cancel_left] at h_level_𝔑 h_level_M
   have h_aut : x.frame⁻¹ * toFinGL z * x.frame ∈ levelGU D.Index D.level := by
-    simpa [mul_mem_cancel_left, mul_assoc, act] using mul_mem h_level_𝔑 q.2
+    have h1 : q.val * (κ.val⁻¹ * (κ'.val * (x.frame⁻¹ * (toFinGL z * x.frame)))) ∈
+        levelGU D.Index D.level := by
+      simpa only [mul_assoc, inv_mul_cancel, mul_one] using mul_mem h_level_𝔑 q.property
+    have h2 := (mul_mem_cancel_left q.property).mp h1
+    have h3 := (mul_mem_cancel_left (inv_mem κ.property)).mp h2
+    have h4 := (mul_mem_cancel_left κ'.property).mp h3
+    rwa [mul_assoc]
   obtain rfl : z = 1 := hN.eq_one_of_mem_levelGU x.isSignedFrame h_aut hz.reflection_eq
-  simpa [mul_assoc, Subgroup.mem_subgroupOf, act] using h_level_M
+  simp only [map_one, one_mul, inv_mul_cancel_left] at h_level_M
+  rw [Subgroup.mem_subgroupOf]
+  simpa only [Subgroup.coe_mul, Subgroup.coe_inv, mul_assoc] using h_level_M
 
 end TowerHelpers
 
@@ -408,27 +517,43 @@ lemma New.Variety.exists_model {E : Type} [Field E] [CMBase E]
   -- the legs `u i`, and the set `s i` of the `g` for which `u i ⟦g⟧` translates points by `g`
   have pt_base (i) (a : ModuliPoint E D.Index ν) :
       (C i).point a ≫ (C i).proj ⟨⟦1⟧, 1, by simp⟩ = U.datumPoint 1 a := by
-    simp [↓(C i).point_comp_proj_towerPairs (hM i), act]
-  choose u eq_u using fun i ↦ (C i).exists_forall_eq_apply_mk_of_translate (pt_base i)
+    rw [(C i).point_comp_proj_towerPairs (hM i)]
+    exact congrArg (U.datumPoint 1) (act_eq_self a (by simp only [Subgroup.coe_one, Prod.snd_one,
+      mul_one]))
+  choose u eq_u using fun i ↦
+    (C i).exists_forall_eq_apply_mk_of_translate ((C i).proj ⟨⟦1⟧, 1, by simp⟩)
   let s i := {g | ∃ hg, ∀ a, (C i).point a ≫ u i ⟦g⟧ = U.datumPoint 1 (a.act ⟨g, hg⟩)}
   have mem_s {i g f} (hg : g ∈ GUPlus E D.Index)
       (h : ∀ a, (C i).point a ≫ f = U.datumPoint 1 (a.act ⟨g, hg⟩)) : g ∈ s i :=
     ⟨hg, by rwa [← eq_u i hg h]⟩
-  have one_mem_s i : 1 ∈ s i := mem_s (one_mem _) (by simpa [act] using pt_base i)
-  have pt_u_one {i} a : (C i).point a ≫ u i ⟦1⟧ = U.datumPoint 1 a := by
-    simpa [act] using (one_mem_s i).2 a
+  have one_mem_s i : 1 ∈ s i :=
+    mem_s (one_mem _) fun a ↦
+      (pt_base i a).trans (congrArg (U.datumPoint 1) (act_eq_self a rfl).symm)
+  have pt_u_one {i} a : (C i).point a ≫ u i ⟦1⟧ = U.datumPoint 1 a :=
+    ((one_mem_s i).2 a).trans (congrArg (U.datumPoint 1) (act_eq_self a rfl))
   have comp_u {g hg i j f} (h : ∀ a, (C i).point a ≫ f = (C j).point (a.act ⟨g, hg⟩)) q
       (hq : q ∈ s j) : f ≫ u j ⟦q⟧ = u i ⟦g * q⟧ :=
-    eq_u i (mul_mem hg hq.1) (by simp [reassoc_of% h, hq.2, act, mul_assoc])
+    eq_u i (mul_mem hg hq.1) fun a ↦ by
+      rw [← assoc, h, hq.2, act_mul]
+      rfl
   -- `p` is a homomorphism, trivial on the normal core, so the finite group `TowerQuot D (M i)` acts
   let deck i : TowerQuot D (M i) →* End (C i).scheme := QuotientGroup.lift _
-    ⟨⟨fun κ ↦ .of (p κ), End.ext ((C i).isSeparatingFamily.hom_ext (by simp [pt_p, act]))⟩,
-      fun _ _ ↦ End.ext
-        ((C i).isSeparatingFamily.hom_ext (by simp [pt_p, ← assoc, act, mul_assoc]))⟩
-    fun κ hκ ↦ End.ext <| ReducedClosure.hom_ext _ fun j ↦ by
-      erw [p_proj, mul_eq_right.2]
-      · simp
-      · simpa
+    ⟨⟨fun κ ↦ .of (p κ), End.ext <| (C i).isSeparatingFamily.hom_ext fun a ↦ by
+        change (C i).point a ≫ p 1 = (C i).point a ≫ 𝟙 _
+        rw [Category.comp_id, pt_p]
+        exact congrArg (C i).point (act_eq_self a (by simp only [inv_one, Subgroup.coe_one]))⟩,
+      fun κ₁ κ₂ ↦
+        have hg : (⟨↑(κ₁ * κ₂)⁻¹, mem_GUPlus_of_mem_levelGU (κ₁ * κ₂)⁻¹.2⟩ : GUPlus E D.Index) =
+            ⟨↑κ₂⁻¹, mem_GUPlus_of_mem_levelGU κ₂⁻¹.property⟩ *
+              ⟨↑κ₁⁻¹, mem_GUPlus_of_mem_levelGU κ₁⁻¹.property⟩ :=
+          Subtype.ext (by simp only [Submonoid.coe_mul, Subgroup.coe_inv, Subgroup.coe_mul,
+            mul_inv_rev])
+        End.ext <| (C i).isSeparatingFamily.hom_ext fun a ↦ by
+          change (C i).point a ≫ p (κ₁ * κ₂) = (C i).point a ≫ (p κ₂ ≫ p κ₁)
+          rw [pt_p, ← assoc, pt_p, pt_p, act_mul, hg]⟩
+    fun κ hκ ↦ End.ext <| (C i).hom_ext fun j ↦ by
+      change p κ ≫ (C i).proj j = 𝟙 _ ≫ (C i).proj j
+      rw [p_proj, Category.id_comp, (QuotientGroup.eq_one_iff κ⁻¹).2 (inv_mem hκ), one_mul]
   exact ⟨{ base := _
            cover i := (C i).scheme
            legIndices := s
@@ -442,24 +567,28 @@ lemma New.Variety.exists_model {E : Type} [Field E] [CMBase E]
              obtain ⟨f, -, hf⟩ :=
                (C j).exists_lift (C' := C i) (·.act ⟨g, hg⟩)
                  (fun x ↦ (C i).proj ⟨⟦1⟧, _, mem_insert_of_mem (mem_insert_of_mem (hi x))⟩)
-                 (by simp [↓(C i).point_comp_proj_towerPairs (hM i), towerPairs, act, mul_assoc])
-             exact ⟨mem_s (f := f ≫ u j ⟦1⟧) hg (by simp [← assoc, hf, pt_u_one]), f, comp_u hf⟩
+                 fun a x ↦ by
+                   rw [(C i).point_comp_proj_towerPairs (hM i), act_mul]
+                   exact congrArg (U.datumPoint _) (congrArg a.act (one_mul _))
+             exact ⟨mem_s (f := f ≫ u j ⟦1⟧) hg fun a ↦ by rw [← assoc, hf, pt_u_one], f,
+               comp_u hf⟩
            deckGroup i := .of (TowerQuot D (M i))
            deck := deck
            deck_comp_leg i := Quot.ind fun κ ↦ ⟨κ⁻¹, comp_u (pt_p κ)⟩
            mulMap := m
            point i := (C i).point
            point_surjective i := (C i).point_surjective pt_u_one
-           point_eq_iff := by simp [pt_u_one, datumPoint_eq_iff]
-           point_leg g α a h := by simp [reassoc_of% h.2, pt_u_one, hm]
+           point_eq_iff i a b := by
+             rw [pt_u_one, pt_u_one, datumPoint_eq_iff, OneMemClass.coe_one, levelGU_inf_one]
+           point_leg g α a h := by rw [← assoc, h.2, hm, pt_u_one]
            dimension := _
            smooth := smooth
            covering i := by
              refine isGaloisCovering_of_complex_points (injective_of_subalgebra_of_charZero R)
                (Quot.ind fun κ ↦ ?_) ?_ ?_
              · -- `u i ⟦1⟧` is invariant under the deck group
-               exact (comp_u (pt_p κ) 1 (one_mem_s i)).trans (congrArg (u i) (by simp
-                 [QuotientGroup.eq]))
+               exact (comp_u (pt_p κ) 1 (one_mem_s i)).trans (congrArg (u i) (QuotientGroup.eq.mpr
+                 (by rw [mul_one, mul_one, Subgroup.coe_inv, inv_inv]; exact κ.property)))
              · -- its image is closed and contains the dense points `U.datumPoint 1 a`
                exact dense.surjective _ _ fun a ↦ congr($(pt_u_one a).1)
              · -- simply transitive on fibres; every complex point is some `(C i).point x`
@@ -471,6 +600,6 @@ lemma New.Variety.exists_model {E : Type} [Field E] [CMBase E]
                  (C i).eq_of_point_comp_deck_eq hN (hM i) (fun κ a ↦ pt_p κ a) (hκ'.trans hκ.symm)⟩
            tangent i g α a z μ h :=
              (C i).isTangentPoly_localTerm_of_translate pt_u_one fun a ↦ by
-               simp [reassoc_of% h.2, hm]
+               rw [← assoc, h.2, hm]
            congruence w hw i 𝔭 h𝔭 hs l f _ hq :=
              (C i).congruenceRelation hβ pt_u_one hw (hG _ hw) h𝔭 (fun A ↦ (hs A).2) hq }⟩

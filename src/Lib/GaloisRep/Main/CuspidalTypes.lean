@@ -1,7 +1,23 @@
+module
+
+import Mathlib.FieldTheory.Finite.Extension
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import Lib.Shimura.HeckeTower.HeckeData
+public import Lib.GaloisRep.Main.LocalConditions
+public import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
+public import Lib.PadicHodge.Limit.CrystallineLimit
 import Lib.GaloisRep.Pseudocharacter.Pseudorepresentations
+import Lib.General.LinearAlgebra.HermiteForm
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 import Lib.PadicHodge.Characters
+import Lib.PadicHodge.Crystalline.HodgeTateJumps
 import Lib.PadicHodge.Limit.TraceLimit
-import Lib.Shimura.HeckeTower.HeckeData
 
 /-!
 # Cuspidal types, multiplicity-free sums and the Hodge–Tate cocharacter
@@ -52,6 +68,8 @@ Hodge-Tate, Astérisque 65 (1979), §1; Sen, Ann. of Math. 97 (1973).
 See also `Lib.GaloisRep.WeightCongruence`, `Lib.Adelic.Unitary.CongruenceLevels` and
 `Lib.GaloisRep.Main.OddRank`.
 -/
+
+@[expose] public section
 
 /-! ## Existence of a cuspidal type and of a principal level -/
 
@@ -162,8 +180,8 @@ lemma exists_eq_one_add_mul_mul_and_map_trace_ne_zero (N : ℕ) {a : LocField w}
         using h_ne_zero
     have h_trace : (b.map Subtype.val * (K.val * (diagonal d * (s * K⁻¹.val)))).trace =
         (k⁻¹ * b * k) j i * d i * t := by
-      simp [s, ← hk, ← mul_assoc, trace_mul_cycle _ s, trace_mul_single, Matrix.mul_apply, ← map_inv,
-        diagonal]
+      simp [s, ← hk, ← mul_assoc, trace_mul_cycle _ s, trace_mul_single, Matrix.mul_apply,
+        ← map_inv, diagonal]
     rwa [h_trace]
 
 /-- For N ≥ 1 and a finite place w, some character of 1 + ϖM_N(O_w) is nontrivial on every
@@ -307,7 +325,7 @@ algebras, with `k` algebraically closed of characteristic `0`. If `f` kills no b
 `f' (piMatrixUnit i)` has trace `1`, then `f'` is a retract of `f`: some `B` with a left inverse `C`
 satisfies `f z * B = B * f' z` for all `z`. -/
 lemma New.exists_retract_of_trace_map_piMatrixUnit_eq_one {k N n : Type} [Field k] [CharZero k]
-    [IsAlgClosed k] [Fintype N] [DecidableEq N] [Fintype n] [DecidableEq n] {b : ℕ}
+    [Fintype N] [DecidableEq N] [Fintype n] [DecidableEq n] {b : ℕ}
     {d : Fin b → ℕ} [∀ i : Fin b, NeZero (d i)] (f : PiMatrix k d →ₐ[k] Matrix N N k)
     (f' : PiMatrix k d →ₐ[k] Matrix n n k) (f_ne : ∀ i : Fin b, f (piMatrixUnit i) ≠ 0)
     (f'_trace : ∀ i : Fin b, (f' (piMatrixUnit i)).trace = 1) :
@@ -347,7 +365,7 @@ lemma New.diagonal_mem_span_range_blockDiagonal {k G : Type} [Field k] [Monoid G
 continuous representation `σ` with non-degenerate trace form has as trace the sum of the traces of
 the `ρ τ`; it acts on the rows `Σ τ, (ρ τ).Index` of their block diagonal sum. -/
 lemma New.GaloisRep.exists_continuous_isTraceNondeg_trace_eq_sum {ℓ : ℕ} [ThePrime ℓ]
-    [PadicIso ℓ] {E ι : Type} [Field E] [EmbeddedNumberField E] [Fintype ι] [DecidableEq ι]
+    {E ι : Type} [Field E] [EmbeddedNumberField E] [Fintype ι] [DecidableEq ι]
     (ρ : ι → PadicRep Gal(Ω/E) ℓ) (ρ_cont : ∀ τ : ι, Continuous (ρ τ).rep) :
     ∃ σ : GalRep ℓ E (Σ τ : ι, (ρ τ).Index),
       Continuous σ ∧
@@ -372,7 +390,7 @@ in square matrices of size `∑ i, d i`. Suppose each `f' (piMatrixUnit i)` has 
 `piMatrixUnit i` is the matrix unit `E₀₀` in factor `i` and zero elsewhere. If `u` is not a
 Hodge–Tate jump at `γ` of the representation `f' ∘ s` restricted to the decomposition group of `A`,
 then it is not a jump at `γ` of `σ` restricted to that group. -/
-lemma New.GaloisRep.jump_eq_zero_of_jump_eq_zero_of_trace_eq_one {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+lemma New.GaloisRep.jump_eq_zero_of_jump_eq_zero_of_trace_eq_one {ℓ : ℕ} [ThePrime ℓ]
     {E m : Type} [Field E] [EmbeddedNumberField E] [Fintype m] [DecidableEq m] {b : ℕ}
     {d : Fin b → ℕ} [∀ i : Fin b, NeZero (d i)] {σ : GalRep ℓ E m}
     {s : Gal(Ω/E) →* PiMatrix (PadicAlgCl ℓ) d}
@@ -408,7 +426,7 @@ lemma New.GaloisRep.jump_eq_zero_of_jump_eq_zero_of_trace_eq_one {ℓ : ℕ} [Th
     have term_eq (i : Fin b) (c : Fin (d i)) (x : Fin (∑ i, d i)) :
         I i c x *ᵥ f' (piMatrixUnit i c) *ᵥ Pi.single x 1 =
           f' (piMatrixUnit i) x x • f (piMatrixUnit i c c) *ᵥ v := by
-      simp [I, -mulVec_single, intertwiner_mul_piMatrixUnit, mul_vecMulVec, vecMulVec_mul,
+      simp [I, -mulVec_single, intertwiner_mul_map_piMatrixUnit, mul_vecMulVec, vecMulVec_mul,
         vecMulVec_mulVec, ← map_mul, ← Pi.single_mul]
     simp [-mulVec_single, term_eq, ← Finset.sum_smul,
       fun i ↦ show ∑ x, f' (piMatrixUnit i) x x = 1 from f'_trace i, ← sum_mulVec, ← map_sum,
@@ -521,40 +539,32 @@ lemma New.Period.aeval_cocharacter_eq_zero {p : ℕ} [ThePrime p] {n : Type _} [
   -- View `F` as the vector of its coefficients, indexed by its monomials `ν`. The vectors that
   -- vanish at the twisted translates form a space `W` stable under the twisted Galois action, so
   -- by `le_of_hodgeTate_stable` it suffices to treat vectors of pure weight.
-  suffices h_sum : ∑ ν : F.support, F.coeff ν • ∏ i, (T (κ i) * C (x i)) ^ ν.1 i = 0 by
-    simpa only [F.aeval_def, F.eval₂_eq', ← F.support.sum_coe_sort, ← Algebra.smul_def] using h_sum
-  obtain ⟨V, hV⟩ : ∃ V : OpenSubgroup (Gp p), (V : Set (Gp p)) ⊆ {g : Gp p | ∑ ν : F.support,
-      F.coeff ν • ∏ i, ((cyclotomicGp g ^ (-κ i)).val • g • x i) ^ ν.1 i = 0} :=
-    NonarchimedeanGroup.is_nonarchimedean _ <| show ∀ᶠ g in nhds 1, _ by
-      simpa only [F.aeval_def, F.eval₂_eq', ← F.support.sum_coe_sort, ← Algebra.smul_def] using h
+  simp only [F.aeval_def, F.eval₂_eq', ← F.support.sum_coe_sort, ← Algebra.smul_def] at h ⊢
+  obtain ⟨V, hV⟩ := NonarchimedeanGroup.is_nonarchimedean _ h
   -- `u ν` is the weight of the monomial `ν`; `W` consists of the vectors that vanish at the
   -- translates by all `g` in the open subgroup `V`, and `W'` of those that vanish at `T ^ κ * x`.
-  let u (ν : F.support) : ℤ := ∑ i, ν.1 i * κ i
+  let u (ν : F.support) : ℤ := ∑ i, ν.val i * κ i
   let W : Submodule ℂ_[p] (F.support → ℂ_[p]) := (of fun (ν : F.support) (g : V) ↦
-    ∏ i, ((cyclotomicGp g ^ (-κ i)).val • (g : Gp p) • x i) ^ ν.1 i).vecMulLinear.ker
+    ∏ i, ((cyclotomicGp g ^ (-κ i)).val • (g : Gp p) • x i) ^ ν.val i).vecMulLinear.ker
   let W' : Submodule ℂ_[p] (F.support → ℂ_[p]) := (Fintype.linearCombination ℂ_[p]
-    fun ν : F.support ↦ ∏ i, (T (κ i) * C (x i)) ^ ν.1 i).ker
-  have hF : (fun ν : F.support ↦ F.coeff ν) ∈ W := funext fun g ↦ hV g.prop
+    fun ν : F.support ↦ ∏ i, (T (κ i) * C (x i)) ^ ν.val i).ker
   refine le_of_hodgeTate_stable le_rfl u W W'
-    (fun a ha ↦ ?_) (fun v ν hv _hv_int h_supp _hv_one _hv_fix ↦ ?_) hF
+    (fun a ha ↦ ?_) (fun v ν hv _ h_supp _ _ ↦ ?_) (funext fun g ↦ hV g.prop)
   · -- Stability: for `k ∈ V`, apply `k` to the equation of `W` at `k⁻¹ * g`.
     filter_upwards [V.mem_nhds_one] with k hk
     refine LinearMap.mem_ker.mpr (funext fun g ↦ ?_)
     have zpow_sum (f : n → ℤ) : cyclotomicGp k ^ ∑ i, f i = ∏ i, cyclotomicGp k ^ f i := by
       simpa [-map_prod] using map_prod (zpowersHom _ (cyclotomicGp k)) (.ofAdd ∘ f) univ
-    -- `h_at`: the equation of `W` for `a` at `k⁻¹ * g`, with `k` applied to both sides.
-    have h_at := congrArg (k • ·) (congrFun (LinearMap.mem_ker.mp ha) (⟨k, hk⟩⁻¹ * g))
     simpa [u, mul_pow, smul_smul, smul_prod', dotProduct, _root_.zpow_mul', vecMul, smul_sum,
-      zpow_sum, mul_zpow, smul_pow, prod_smul, smul_comm k, prod_mul_distrib] using h_at
+      zpow_sum, mul_zpow, smul_pow, prod_smul, smul_comm k, prod_mul_distrib] using
+      congrArg (k • ·) (congrFun (LinearMap.mem_ker.mp ha) (⟨k, hk⟩⁻¹ * g))
   · -- For `v` of pure weight `u ν`, the equation of `W'` is that of `W` at `1`, times `T (u ν)`.
     have h_one : ∑ l, (v l : ℂ_[p]) * ∏ i, x i ^ (l : n →₀ ℕ) i = 0 := by
       simpa [vecMul, dotProduct] using congrFun (LinearMap.mem_ker.mp hv) 1
     calc ∑ l, (v l : ℂ_[p]) • ∏ i, (T (κ i) * C (x i)) ^ (l : n →₀ ℕ) i
-        = ∑ l, ((v l : ℂ_[p]) * ∏ i, x i ^ (l : n →₀ ℕ) i) • T (u ν) := by
-          refine sum_congr rfl fun l _ ↦ ?_
-          rcases h_supp l with hl | hl
-          · simp [← hl, u, T, C, -single_eq_C_mul_T]
-          · simp [hl]
+        = ∑ l, ((v l : ℂ_[p]) * ∏ i, x i ^ (l : n →₀ ℕ) i) • T (u ν) :=
+          sum_congr rfl fun l _ ↦ (h_supp l).elim
+            (fun hl ↦ by simp [← hl, u, T, C, -single_eq_C_mul_T]) (fun hl ↦ by simp [hl])
       _ = 0 := by rw [← sum_smul, h_one, zero_smul]
 
 end HodgeTateCocharacter

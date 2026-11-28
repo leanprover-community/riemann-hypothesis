@@ -1,4 +1,16 @@
-import Lib.General.Geometry.ProjectiveSpace
+module
+
+public import Mathlib.AlgebraicGeometry.Noetherian
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.AlgebraicGeometry.Morphisms.Immersion
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.Valuation.LocalSubring
+public import Lib.General.Geometry.ProjectiveSpace
 
 /-!
 # Dense families of complex points: reduced closures, separation of maps, and arcs
@@ -33,6 +45,8 @@ Notions from other files:
   chart with the same affine coordinates and the same image in `S` are equal.
 -/
 
+@[expose] public section
+
 /-! ## Reduced closures of families of complex points -/
 
 section ReducedClosure
@@ -41,6 +55,7 @@ open CategoryTheory AlgebraicGeometry Scheme IdealSheafData IsLocalRing
 
 /-- Let `i : Y ⟶ Z` be a closed immersion and `f : X ⟶ Z` with `X` reduced. If the preimage under
 `f` of the image of `i` is dense in `X`, then `f` factors through `i`. -/
+@[stacks 0356 "'if' direction, with the preimage of the closed subscheme only assumed dense"]
 lemma New.exists_lift_of_dense_preimage {X Y Z : Scheme} [IsReduced X] (i : Y ⟶ Z)
     [IsClosedImmersion i] (f : X ⟶ Z) (h_dense : Dense (f ⁻¹' Set.range i)) :
     ∃ g : X ⟶ Y, g ≫ i = f := by
@@ -126,7 +141,7 @@ lemma pointFn_ext {Z : Type} {X : Scheme} {ξ : Z → (Spec (CommRingCat.of ℂ)
   by_contra hs_ne
   -- On a reduced scheme a nonzero section is invertible on a nonempty open set.
   have h_nonempty : (X.basicOpen (s - s') : Set X).Nonempty := by
-    simpa [nonempty_iff_ne_empty] using hs_ne
+    simpa [← ne_empty_iff_nonempty] using hs_ne
   -- By density some `ξ z` lies in it: there `s - s'` is a unit, but `f` and `g` agree.
   obtain ⟨z, hz⟩ := h_dense.exists_mem_open (X.basicOpen (s - s')).isOpen h_nonempty
   have hz_U : LandsIn (ξ z) U := (landsIn_iff_mem.2 hz).mono (X.basicOpen_le _)
@@ -231,8 +246,6 @@ lemma New.eq_map_C_of_ne_bot_of_le_map_C {A σ : Type*} [CommRing A] [IsDomain A
     rw [← coeff_rename_mapDomain u hu]
     exact mem_map_C_iff.1 (hJ_le (mem_comap.1 ha)) _
   have h_ne_bot : J' ≠ ⊥ := J'.ne_bot_iff.2 ⟨w, mem_comap.2 hw_mem, ne_zero_of_map hw_ne⟩
-  have : p.IsPrime := Ideal.IsMinimalPrime.isPrime hp
-  have := isPrime_map_C_mvPolynomial (σ := Fin n) p
   have h_eq : J' = p.map C := J'.eq_of_le_of_height_le h_le
     ((height_map_C_le_one hp).trans (by simpa [Order.one_le_iff_ne_zero] using h_ne_bot))
   refine hJ_le.antisymm (map_le_of_le_comap fun a ha ↦ ?_)
@@ -272,21 +285,15 @@ lemma New.exists_nnreal_valuation {K : Type*} [Field K] (V : ValuationSubring K)
   -- The canonical valuation of the valuative relation of `V` is equivalent to that of `V`.
   let : ValuativeRel K := ofValuation V.valuation
   have : V.valuation.Compatible := .ofValuation V.valuation
-  have h_equiv : (valuation K).IsEquiv V.valuation := isEquiv _ _
-  have h_prime (J : Ideal V) (hJ : J.IsPrime) (hJ_ne : J ≠ ⊥) : maximalIdeal V ≤ J :=
-    let ⟨c, hc_mem, hc_ne⟩ := J.ne_bot_iff.1 hJ_ne
-    hV J hJ c (mem_nonZeroDivisors_of_ne_zero hc_ne) hc_mem
-  have h_arch : MulArchimedean (ValueGroupWithZero K) := by
-    refine ⟨valuation_surjective.forall₂.2 fun z y hy ↦ ?_⟩
-    obtain ⟨n, hn⟩ :=
-      exists_valuation_le_pow_of_maximalIdeal_le V h_prime z (h_equiv.one_lt_iff_one_lt.1 hy)
-    exact ⟨n, by rwa [← map_pow, h_equiv.le_iff_le, map_pow]⟩
-  -- An archimedean value group has rank at most one, that is, it embeds in `ℝ≥0` by some `g`.
-  obtain ⟨g, hg⟩ : IsRankLeOne K := isRankLeOne_iff_mulArchimedean.2 h_arch
-  refine ⟨(valuation K).map ⟨g, hg.monotone⟩, ?_⟩
-  rw [(isEquiv_iff_valuationSubring _ _).1
-    ((isEquiv_map_self_of_strictMono ⟨g, hg.monotone⟩ hg.injective).trans h_equiv),
-    V.valuationSubring_valuation]
+  have h : (valuation K).IsEquiv V.valuation := isEquiv _ _
+  -- The value group is archimedean, hence has rank at most one and embeds into `ℝ≥0` by some `g`.
+  obtain ⟨g, hg⟩ : IsRankLeOne K := isRankLeOne_iff_mulArchimedean.2
+    ⟨valuation_surjective.forall₂.2 fun z y hy ↦
+      (exists_valuation_le_pow_of_maximalIdeal_le V (fun J hJ hne ↦ (J.ne_bot_iff.1 hne).elim
+        fun c ⟨hc, hc0⟩ ↦ hV J hJ c (mem_nonZeroDivisors_of_ne_zero hc0) hc) z
+        (h.one_lt_iff_one_lt.1 hy)).imp fun n hn ↦ by rwa [← map_pow, h.le_iff_le, map_pow]⟩
+  exact ⟨(valuation K).map ⟨g, hg.monotone⟩, V.valuationSubring_valuation ▸
+    (isEquiv_iff_valuationSubring _ _).1 ((isEquiv_map_self_of_strictMono _ hg.injective).trans h)⟩
 
 /-- Blowing up inside a valuation ring. Let `O ⟶ W` be a local map from a noetherian local ring to
 a valuation ring. Then `W` has a noetherian `O`-subalgebra `A` with a prime `p` that is minimal
@@ -319,6 +326,7 @@ lemma New.exists_subalgebra_minimalPrimes_span_singleton (O W : Type*) [CommRing
 
 /-- Let `e` identify a ring `R` with a subring of a field `K`. Every prime `P` of `R` is the centre
 of a valuation subring `U` of `K` that contains `R`. -/
+@[stacks 00IA "for a prime of a subring"]
 lemma New.exists_valuationSubring_comap_maximalIdeal_eq {R K : Type*} [CommRing R] [Field K]
     {B : Subring K} (e : R ≃+* B) (P : Ideal R) [P.IsPrime] :
     ∃ (U : ValuationSubring K) (f : R →+* U),
@@ -372,7 +380,7 @@ lemma New.exists_nnreal_valuation_le_comap_maximalIdeal {A : Type*} (K : Type*) 
       (ht.isAlgebraic.isAlgebraic (c : K)).of_ringHom_of_comp_eq _ _ e.surjective
         V.subtype_injective (RingHom.ext fun a ↦ (hg a).symm)
     obtain ⟨w, hw_ne, hcw⟩ : ∃ w : MvPolynomial t A, w ≠ 0 ∧ c ∣ g w :=
-      hc_alg.exists_nonzero_dvd hc
+      hc_alg.exists_ne_zero_dvd hc
     have h_comap : J.comap g = (J.comap (algebraMap U V)).comap f := (comap_comap _ _).symm
     have hJP : J.comap g ≤ P :=
       h_comap.trans_le ((comap_mono (hJq.trans hq_le)).trans_eq h_centre)

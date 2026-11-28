@@ -1,3 +1,10 @@
+module
+
+public import New.Derivatives.FormalGroup.Resolution
+public import New.Derivatives.Vacuum.IntegralVacuum
+import Lib.CM.Integrality.IsogenyIntegrality
+import Lib.General.NumberTheory.SUnitsAndClassNumber
+import Lib.Weil.Construction.FourierInversion
 import New.Derivatives.Vacuum.JetIntegrality
 import New.Derivatives.Vacuum.ShortVectors
 
@@ -50,6 +57,8 @@ Notions from other files:
   `a` times the factor that keeps it a theta function.
 -/
 
+@[expose] public section
+
 open NumberField ComplexConjugate
 
 namespace New
@@ -88,17 +97,6 @@ lemma IsTightFrame.isResolution [WeilData E] [Fintype I] [Fintype n] {w : I → 
   by_cases hc : c = c' <;> simp [hc, ← Finset.sum_div, h_tight, apply_ite (· / (b * b : ℂ)), hb]
 
 end Frames
-
-/-- In the field `E = P.E s` of level `s` of the parameters `P` let `ζ = P.ζ s`, a primitive root of
-unity of order `q₁ = P.q₁ s`. The vectors `ζ ^ i / q₁` for `0 ≤ i < q₁`, each taken `q₁` times and
-placed in each copy of `E`, are a resolution of the identity on `Eⁿ`. -/
-lemma Parameters.isResolution_resolutionVectors_zeta_pow (P : Parameters) (s : ℕ) (n : Type)
-    [Fintype n] [DecidableEq n] :
-    IsResolution (resolutionVectors (n := n)
-      (fun x : (Σ _ : Fin (P.q₁ s), Fin (P.q₁ s)) ↦ P.ζ s ^ (x.fst : ℕ)) (P.q₁ s)) fun _ ↦ 1 := by
-  -- The powers of `ζ`, each taken `q₁` times, are a tight frame of length `q₁²`.
-  simpa only [mul_one] using (P.isTightFrame_zeta_pow s (P.q₁ s)).repeat_vectors.isResolution
-    (NeZero.ne (P.q₁ s)) one_ne_zero
 
 /-- Let `d` be a prime congruent to `7` modulo `8`, `C` a lattice with complex multiplication by the
 integers of `ℚ(√-d)`, and `δ ≠ 0` such an integer, of norm `N`. Write `T_y` for the twisted
@@ -151,7 +149,7 @@ lemma mem_integralAfter_of_nsmul_mem {δ : 𝓞 P.K} {ν : ℕ} (hν : p.Coprime
     simpa using v_algebraMap_eq_one (u.isPrime.notMem_of_isCoprime_of_mem hν.cast hu)
   have h_int : ν • y ∈ integralAfter δ fun u : FinPlace (P.E s) ↦ ↑p ∈ u.asIdeal :=
     integralAfter.stdLattice_le hy
-  simpa [mul_left_comm, h_unit] using h_int c u hu
+  simpa [h_unit] using h_int c u hu
 
 /-- If the `w i` lie in the lattice `𝔞₀` (their finite images are integral) and `ν` is prime to
 `p`, the finite images of the vectors `w i / ν` of `Eⁿ` are integral at all places above `p`. -/
@@ -191,7 +189,7 @@ adelic vector with finite part `α x` and real part zero. If `δ x` is integral 
 `F` as the translation by a rational vector `γ` with `δ γ` in `𝔞₀ⁿ ⊗ ℤ_(p)`: for a number `m` prime
 to `p`, the vector `m δ γ` lies in the lattice `𝔞₀ⁿ` (its finite image is integral). -/
 lemma exists_rho_finiteImage_eq_and_coprime_mul_mem [DecidableEq n]
-    {ε : n → ℤˣ} {V : Space (E P s) n ε} [V.IsStd] {F : 𝒮 V} (hF : F ∈ V.finitePart) {δ : 𝓞 P.K}
+    {ε : n → ℤˣ} {V : Space (E P s) n ε} {F : 𝒮 V} (hF : F ∈ V.finitePart) {δ : 𝓞 P.K}
     {x : n → 𝔸f (P.E s)} (hx : x ∈ integralAfter δ fun u : FinPlace (P.E s) ↦ ↑p ∈ u.asIdeal) :
     ∃ (γ : n → P.E s) (m : ℕ),
       V.ϱ (finVec (finiteImage γ)) F = V.ϱ (finVec x) F ∧
@@ -423,7 +421,7 @@ def thetaMultiples {J : Type} [Fintype J] (μ : J → InfinitePlace (P.E s) × n
     exact ⟨H + H', add_mem hH hH', by rw [map_add, map_add, hg, hg', mul_add]⟩
   smul_mem' := by
     rintro a g ⟨H, hH, hg⟩
-    refine ⟨ιₚ a • H, P.cmCurve.smul_mem_multiSeriesRing a.2 hH, ?_⟩
+    refine ⟨ιₚ a • H, P.cmCurve.smul_mem_multiSeriesRing a.property hH, ?_⟩
     rw [mul_smul_comm, ← hg]
     change MvPowerSeries.map ιₚ (V.jetSeries c ((a : ℂ) • g)) =
       ιₚ a • MvPowerSeries.map ιₚ (V.jetSeries c g)

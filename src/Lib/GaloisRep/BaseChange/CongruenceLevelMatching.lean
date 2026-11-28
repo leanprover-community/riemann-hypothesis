@@ -1,5 +1,14 @@
-import Lib.Adelic.AutomorphicForms.HeckeEigenforms
-import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
+module
+
+import Mathlib.RingTheory.Polynomial.IsIntegral
+import Mathlib.RingTheory.Valuation.Integral
+public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
+import Lib.Adelic.Witt.WittTheorem
+import Lib.ClassField.Local.ArtinMap
+import Lib.GaloisRep.Hilbert90.TameActions
+import Lib.GaloisRep.Hilbert90.UnitaryGroups
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # Matching unit pairs at congruence levels and at unramified places of a step
@@ -36,6 +45,8 @@ Notions from other files:
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
 
+@[expose] public section
+
 /-!
 ## Matching pairs at a congruence level over a profinite ring
 
@@ -59,7 +70,7 @@ lemma New.charpoly_map_eq_self_of_smul_sub_one {O R n : Type} [CommRing O] [Comm
   -- of `charpoly (g - 1) = (charpoly g).comp (X + 1)`, and `σ` fixes all of these.
   have h_shift : (g - 1).charpoly = g.charpoly.comp (X + 1) := by
     simpa using g.charpoly_sub_scalar 1
-  refine Polynomial.ext fun i ↦ h_inj ?_
+  refine AddMonoidAlgebra.ext <| Finsupp.ext fun i ↦ h_inj ?_
   rw [coeff_map, hιτ]
   simp [← coeff_map, ← charpoly_map, hY, hσv, hg, h_shift, charpoly_smul_coeff,
     Polynomial.map_add, map_comp]
@@ -79,10 +90,21 @@ lemma New.exists_det_one_add_smul_eq {O R k : Type} [CommRing O] [CommRing R] [A
     refine (reverse _).lifts_iff_coeff_lifts.mpr fun i ↦ h_closed.isIntegral_iff.mp ?_
     simpa [reverse] using isIntegral_coeff_of_dvd _ _ (hF.pow _) (charpoly_monic _) h_dvd _
   obtain ⟨Q, hQ⟩ := (mem_lifts _).mp h_int
-  obtain ⟨w, hw⟩ : M ∣ Q.eval m - Q.eval 0 := hM.trans (by simpa using Q.sub_dvd_eval_sub m 0)
+  obtain ⟨w, hw⟩ : M ∣ Q.eval m - Q.eval 0 :=
+    hM.trans (by simpa only [sub_zero] using Q.sub_dvd_eval_sub m 0)
   use w
-  rw [← hw]
-  simp [← eval_map_apply, hQ, eval_det, ← smul_eq_mul_diagonal, reverse_charpoly, charpolyRev]
+  have h_eval (r : O) : algebraMap O R (Q.eval r) = (1 + r • C).det := by
+    rw [← eval_map_apply, hQ, reverse_charpoly, charpolyRev]
+    change evalRingHom (algebraMap O R r) (1 - (X : R[X]) • (-C).map Polynomial.C).det = _
+    rw [RingHom.map_det]
+    congr 1
+    ext i j
+    simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.sub_apply, Matrix.one_apply,
+      Matrix.smul_apply, Matrix.neg_apply, Matrix.add_apply, coe_evalRingHom, eval_sub,
+      smul_eq_mul, eval_mul, eval_X, eval_C, mul_neg, sub_neg_eq_add]
+    rw [Algebra.smul_def]
+    split_ifs <;> simp only [eval_one, eval_zero]
+  rw [← hw, map_sub, h_eval m, h_eval 0, zero_smul, add_zero, Matrix.det_one, add_sub_cancel]
 
 /-- Let `ι Y = v • (g - 1)`. For a polynomial `r` over `O`, the characteristic polynomial of `r Y`
 at `r (v • (B - 1))` is a multiple of the characteristic polynomial of `g` at `B`. -/
@@ -101,10 +123,17 @@ lemma New.star_smul_sub_one_mul_one_add_smul_eq_neg {R n : Type} [CommRing R] [S
     [Fintype n] [DecidableEq n] {a v : R} (hav : a * v * v = v) (hv_star : star v = v)
     (γ : U (1 : Matrix n n R)) :
     star (v • (γ.val.val - 1)) * (1 + a • v • (γ.val.val - 1)) = -(v • (γ.val.val - 1)) := by
-  -- Expand with `γᴴ = γ⁻¹`; `match_scalars` leaves one scalar identity for each of the
-  -- coefficients, which follow from `a * v * v = v` and `star v = v`.
-  simp [← inv_val_eq_conjTranspose, smul_smul, mul_add, mul_sub, sub_mul, star]
-  match_scalars <;> grind
+  -- Expand with `γᴴ = γ⁻¹`, using `a * v * v = v` and `star v = v`.
+  have hgg : γ.val.valᴴ * γ.val.val = 1 := by
+    rw [← inv_val_eq_conjTranspose, ← Units.val_mul, ← Subgroup.coe_mul, inv_mul_cancel]
+    rfl
+  have hvav : v * (a * v) = v := by rw [← mul_assoc, mul_comm v a, hav]
+  change (v • (γ.val.val - 1))ᴴ * (1 + a • v • (γ.val.val - 1)) = -(v • (γ.val.val - 1))
+  rw [conjTranspose_smul, conjTranspose_sub, conjTranspose_one, hv_star, smul_smul,
+    mul_add, mul_one, smul_mul_smul_comm, hvav, ← smul_add, sub_mul, mul_sub, one_mul, mul_one,
+    hgg, ← smul_neg]
+  congr 1
+  abel
 
 /-- The two support conditions of `New.IsMatchingPair` for the indicator functions of a subgroup
 `L` of `G`. Let `Nm : G → G` map `L` into itself, and let `γ ∈ L` imply `a ∈ L`. Then the
@@ -156,10 +185,13 @@ lemma New.exists_twisted_root_of_smul_sub_one {O R n : Type} [CommRing O] [CommR
   -- The hypotheses of `exists_isTwistedRoot_of_charpoly_eq` for `Y` can be checked after applying
   -- `ι`.
   have h_rel : Yᴴ * (1 + m • Y) ^ 1 = (-1) ^ 1 * Y := by
+    rw [pow_one, pow_one, neg_one_mul]
     apply map_injective h_inj
-    simp [hY, hmv, huv, hv_star, conjTranspose_map _ hι, Matrix.map_neg,
-      ← inv_val_eq_conjTranspose, ← mul_assoc, smul_sub, mul_add, Matrix.map_add, map_smul',
-      mul_sub, sub_mul, smul_smul]
+    dsimp only
+    rw [← RingHom.mapMatrix_apply, ← RingHom.mapMatrix_apply, map_mul, map_add, map_one, map_neg]
+    simp only [RingHom.mapMatrix_apply]
+    rw [conjTranspose_map _ hι, map_smul' (hf := map_mul ι), hY]
+    exact star_smul_sub_one_mul_one_add_smul_eq_neg (a := ι m) (by rw [hmv, huv]) hv_star g
   obtain ⟨y, z, z', h_roots⟩ := exists_isTwistedRoot_of_charpoly_eq hO hτ_tame hc h_unit hτ hm_star
     hm_tame.left rfl
     (charpoly_map_eq_self_of_smul_sub_one h_inj hιτ hσv hY hP) le_rfl h_rel hY_unit
@@ -280,8 +312,15 @@ lemma New.exists_isNormRoot_and_mem_of_mem {O R n : Type} [CommRing O] [CommRing
       -map_add, -Polynomial.map_add, ← conjTranspose_mul, aeval_comp, smul_smul] using h_mul
   refine (hL a).mpr ⟨u • (z.aeval (Y γ hγ_mem) + (1 + m • z).aeval (Y γ hγ_mem) *
     (z'.aeval (Y γ hγ_mem))ᴴ), ?_⟩
-  simp [hm_star, conjTranspose_map _ hι, map_aeval_matrix, ι, smul_sub, ← hmv, hY, add_assoc,
-    mul_smul, smul_comm v, h_va_eq, Matrix.map_add, map_smul', mul_add]
+  rw [map_smul' (hf := map_mul ι), ← RingHom.mapMatrix_apply, map_add, map_mul]
+  simp only [RingHom.mapMatrix_apply]
+  rw [conjTranspose_map _ hι, map_aeval_matrix, map_aeval_matrix, map_aeval_matrix,
+    aeval_map_algebraMap, aeval_map_algebraMap, aeval_map_algebraMap, hY, smul_sub v a.val.val 1,
+    h_va_eq, ← hmv, mul_comm (ι m) v, mul_smul, ← smul_sub]
+  congr 1
+  rw [map_add (aeval _), map_one, map_smul, map_add (aeval _), map_one, map_smul,
+    conjTranspose_add, conjTranspose_one, conjTranspose_smul, hm_star, mul_add, mul_one,
+    mul_smul_comm, algebraMap_smul, smul_add, add_assoc, add_sub_cancel_left]
 
 /-- Let `O` be profinite and integrally closed in `R`. Let `τ`, with `τ ^ p = 1`, be tame on `O` at
 the levels `0` and `m = u * M` (`star m = m`), commute with `star`, and fix some `c` with
@@ -347,11 +386,16 @@ lemma New.cocyclesSplit_and_isMatchingPair_of_congruence {O R n : Type} [CommRin
   refine ⟨fun s hs hN ↦ ?_, ?_, ?_⟩
   · -- the lift of `s` has norm `1` too, so it is a coboundary of some `t ≡ 1` mod `m`
     -- `e` and `cutAt` commute with the twists, so `e` carries the norm of `S s` to that of `s`.
-    have h_e_comm (δ : U (1 : Matrix n n O)) : e (mapEnd hτ δ) = mapEnd hσ (e δ) := by
-      simp [Units.ext_iff, e, U.map, hιτ, Function.comp_def]
+    have h_e_comm (δ : U (1 : Matrix n n O)) : e (mapEnd hτ δ) = mapEnd hσ (e δ) :=
+      Subtype.ext (Units.ext (Matrix.ext fun _ _ ↦ hιτ _))
     have h_cut_comm (δ : U (1 : Matrix n n R)) :
-        cutAt hu hu_star (mapEnd hσ δ) = mapEnd hσ (cutAt hu hu_star δ) := by
-      simp [Units.ext_iff, U.map, hσu, cutAt, cutGL, Matrix.map_add, map_smul']
+        cutAt hu hu_star (mapEnd hσ δ) = mapEnd hσ (cutAt hu hu_star δ) :=
+      Subtype.ext (Units.ext (by
+        change ι u • δ.val.val.map σ + (1 - ι u) • 1 = (ι u • δ.val.val + (1 - ι u) • 1).map σ
+        rw [← RingHom.mapMatrix_apply σ (ι u • δ.val.val + (1 - ι u) • 1), map_add,
+          RingHom.mapMatrix_apply, RingHom.mapMatrix_apply, map_smul' (hf := map_mul σ),
+          map_smul' (hf := map_mul σ), ← RingHom.mapMatrix_apply σ 1, map_one, map_sub,
+          map_one, hσu]))
     have h_norm : e (twistedNorm (mapEnd hτ) p (S s hs)) = e 1 := by
       rw [map_twistedNorm (σ := mapEnd hσ) e h_e_comm, hS_cut,
         ← map_twistedNorm (cutAt hu hu_star) h_cut_comm, hN, map_one, map_one]
@@ -359,15 +403,28 @@ lemma New.cocyclesSplit_and_isMatchingPair_of_congruence {O R n : Type} [CommRin
       unitary_hilbert90_at_level hO hτ_tame hc h_unit hτ (S s hs) hm_star hm_tame (hS s hs)
         (map_injective h_inj (congrArg (fun x : U (1 : Matrix n n R) ↦ x.val.val) h_norm))
     have h_et_mem : e t ∈ L := (hL (e t)).mpr ⟨u • W, by
-      simp [e, U.map, hW, hmv, mul_comm v, map_smul', Matrix.map_add, smul_smul]⟩
+      change (u • W).map ι = v • ((t.val.val).map ι - 1)
+      rw [map_smul' (hf := map_mul ι), hW, ← RingHom.mapMatrix_apply ι (1 + m • W), map_add,
+        map_one, RingHom.mapMatrix_apply, map_smul' (hf := map_mul ι), add_sub_cancel_left,
+        smul_smul, mul_comm v, hmv]⟩
     have h_et_off : (1 - ι u) • (e t).val.val = (1 - ι u) • 1 := by
-      simp [e, U.map, hW, hum, Matrix.map_add, map_smul', smul_smul, sub_mul]
+      change (1 - ι u) • (t.val.val).map ι = (1 - ι u) • 1
+      rw [hW, ← RingHom.mapMatrix_apply, map_add, map_one, RingHom.mapMatrix_apply,
+        map_smul' (hf := map_mul ι), smul_add, smul_smul, sub_mul, one_mul, hum, sub_self,
+        zero_smul, add_zero]
     refine ⟨e t, h_et_mem, h_et_off, ?_⟩
     -- On the `u`-part, `t⁻¹ * s * τ t = 1` is `e` applied to `t⁻¹ * S * τ t = 1`.
-    have h_cob :
-        ι u • (e (t⁻¹ * (S s hs * mapEnd hτ t))).val.val = ι u • (e (t⁻¹ * t)).val.val := by rw [ht]
-    simpa [e, U.map, hS, hY, hmv, hu, hιτ, add_mul, mul_assoc, smul_sub, Function.comp_def,
-      Matrix.map_add, map_smul', smul_smul, sub_mul, mul_add, mul_sub] using h_cob
+    have h_cut_u : ι u • (cutAt hu hu_star s).val.val = ι u • s.val.val := by
+      change ι u • (ι u • s.val.val + (1 - ι u) • 1) = ι u • s.val.val
+      rw [smul_add, smul_smul, smul_smul, hu, mul_sub, mul_one, hu, sub_self, zero_smul, add_zero]
+    have h_cob : ι u • (e (t⁻¹ * (S s hs * mapEnd hτ t))).val.val = ι u • 1 := by
+      rw [ht, inv_mul_cancel, map_one]
+      rfl
+    rw [map_mul, map_mul, map_inv, hS_cut, h_e_comm, Subgroup.coe_mul, Subgroup.coe_mul,
+      Units.val_mul, Units.val_mul, ← mul_smul_comm, ← smul_mul_assoc, h_cut_u,
+      smul_mul_assoc, mul_smul_comm, ← Units.val_mul, ← Units.val_mul,
+      ← Subgroup.coe_mul, ← Subgroup.coe_mul, ← mul_assoc] at h_cob
+    exact h_cob
   · -- the indicator of `L` is invariant under twisted conjugation by `L`
     simp +contextual [mul_mem_cancel_left, mul_mem_cancel_right, hL_tw, indicator]
   -- The polynomial is that of some `g`, which lies in `L` by the supports.
@@ -495,8 +552,7 @@ noncomputable def adeleOneOn {F : Type} [Field F] [NumberField F] (A : Set (FinP
 @[fun_prop]
 lemma continuous_adeleOneOn {F : Type} [Field F] [NumberField F] (A : Set (FinPlace F)) :
     Continuous (adeleOneOn A) := by
-  unfold adeleOneOn
-  fun_prop
+  exact continuous_id.add (continuous_const.mul (continuous_const.sub continuous_id))
 
 /-- If `a * b = 1`, the adeles that are `1` on `A` and `a`, resp. `b`, off `A` are inverse to each
 other. -/
@@ -534,7 +590,7 @@ lemma eventually_mem_kerCompNorm_of_apply_localNorm_eq_one {A : Set (FinPlace E'
   rintro ⟨y, d⟩ ⟨-, hd, h_notMem⟩
   refine isOpen_ne.mem_nhds fun h_eq ↦
     h_notMem (mem_of_locIdele_mem hμ.isClopen_kerCompNorm.isClosed fun u ↦ ?_)
-  show μ (Units.map (adeleNorm E E') (locIdele u (ideleAt u d))) = 1
+  change μ (Units.map (adeleNorm E E') (locIdele u (ideleAt u d))) = 1
   rw [adeleNorm_locIdele]
   by_cases hu : u ∈ A
   · exact hA u hu _ (mem_idelesUnitOff.1 hd u (notMem_empty u))
@@ -622,7 +678,7 @@ is in its field. -/
 lemma isIntegrallyClosedIn_Ô : IsIntegrallyClosedIn (Ô E') (𝔸f E') := by
   refine Subring.isIntegrallyClosedIn_iff.mpr fun x hx ↦ mem_Ô.mpr fun u ↦ ?_
   exact (Valuation.integer.integers (v.comap (evalAt u))).mem_of_integral
-    (hx.map_of_comp_eq (Subring.inclusion (iInf_le _ u)) 1 rfl)
+    (hx.map_of_comp_eq (Subring.inclusion fun _ hy ↦ mem_Ô.1 hy u) 1 rfl)
 
 /-- The ring homomorphism from the integral finite adeles of `E` to those of `F` induced by an
 embedding `f : E → F`. -/
@@ -632,10 +688,9 @@ noncomputable def intAdeleMap {F : Type} [Field F] [NumberField F] (f : E →+* 
 /-- For a ring endomorphism `f` of `E`, the `i`-th iterate of `intAdeleMap f` is the restriction of
 `adeleMap f ^ i` to the integral adeles. -/
 @[simp] lemma intAdeleMap_iterate (i : ℕ) (x : Ô E) :
-    ((intAdeleMap f)^[i] x : 𝔸f E) = (adeleMap f ^ i) x := by
-  induction i generalizing x with
-  | zero => rfl
-  | succ i ih => exact ih (intAdeleMap f x)
+    ((intAdeleMap f)^[i] x : 𝔸f E) = (adeleMap f ^ i) x :=
+  Function.Semiconj.iterate_right (f := Subtype.val) (ga := intAdeleMap f) (gb := adeleMap f)
+    (fun _ ↦ rfl) i x
 
 omit [CMType E] [CMType E'] in
 /-- If `σ` moves the place `u`, then `σ` is not in the inertia group of `u`. -/
@@ -655,10 +710,15 @@ lemma exists_intAdeleMap_eq_isUnit_sub_star :
   -- Take the image of an integral adele `z` of `E` with `z - star z` a unit.
   obtain ⟨z, hz⟩ : ∃ z : Ô E, IsUnit (z - star z) := exists_isUnit_sub_star_Ô
   let c : Ô E' := intAdeleMap (algebraMap E E') z
-  have hc_sub : c - star c = intAdeleMap (algebraMap E E') (z - star z) :=
-    Subtype.ext (by simp [c, intAdeleMap, adeleMap_star])
-  refine ⟨c, Subtype.ext (by simp [c, intAdeleMap, mem_range_finAdeleIncl_iff.1]), ?_⟩
-  simpa only [hc_sub] using hz.map (intAdeleMap (algebraMap E E'))
+  have hc_sub : c - star c = intAdeleMap (algebraMap E E') (z - star z) := Subtype.ext <| by
+    change adeleMap (algebraMap E E') z.val - star (adeleMap (algebraMap E E') z.val) =
+      adeleMap (algebraMap E E') (z.val - star z.val)
+    rw [map_sub, adeleMap_star]
+  have hc_fix : intAdeleMap σ c = c := Subtype.ext <| by
+    change adeleMap (σ : E' →+* E') (adeleMap (algebraMap E E') z.val) =
+      adeleMap (algebraMap E E') z.val
+    exact (mem_range_finAdeleIncl_iff (K := E) (L := E')).1 ⟨z.val, rfl⟩ σ
+  exact ⟨c, hc_fix, hc_sub.symm ▸ hz.map (intAdeleMap (algebraMap E E'))⟩
 
 /-- Let `m * k = 1` with `k` fixed by `σ`. Then the level given by `congruenceLevel n k` at the
 places above `S` and their conjugates is stable under `σ`. -/
@@ -695,7 +755,7 @@ lemma isMatchingLevel_congruenceLevel {m : Ô E'} {k : 𝔸f E'} (hmk : m * k = 
   have h_stable (g : Gf E' n) : galoisGf σ g ∈ L ↔ g ∈ L :=
     galoisGf_mem_localLevel_congruenceLevel_iff hmk hk_fixed S g
   have h_open : L.IsOpen := by
-    show IsOpen {g : Gf E' n | g ∈ L}
+    change IsOpen {g : Gf E' n | g ∈ L}
     simp only [mem_L_iff_entries]
     exact isOpen_Ô.matrix.preimage_of_continuous
   have mem_L_iff_lift (g : Gf E' n) : g ∈ L ↔ ∃ Y : Matrix n n (Ô E'),
@@ -705,14 +765,18 @@ lemma isMatchingLevel_congruenceLevel {m : Ô E'} {k : 𝔸f E'} (hmk : m * k = 
     exact mem_of_eq_of_mem (congr_fun₂ hY i j).symm (Y i j).prop
   -- The idempotent `e` is fixed by `σ` and `star`, and `e * k` inverts `e * m` on the `e`-part.
   let e : Ô E' := ⟨idem (placesAbove E' S), idem_mem_Ô _⟩
-  have he_fixed : intAdeleMap σ e = e :=
-    Subtype.ext (by simp [e, intAdeleMap, adeleMap_idem_placesAbove])
-  have he_star : star e = e := Subtype.ext (by simp [e, star_idem, preimage])
+  have he_fixed : intAdeleMap σ e = e := Subtype.ext adeleMap_idem_placesAbove
+  have he_star : star e = e := Subtype.ext <| (star_idem _).trans <|
+    congrArg idem (Set.ext fun _ ↦ by rw [Set.mem_preimage]; exact star_mem_placesAbove)
   have hem_star : star (e * m) = e * m := by rw [star_mul', he_star, hm_star]
   have hem_mul_ek : (e * m).val * (e * k) = e := by
     rw [MulMemClass.coe_mul, mul_mul_mul_comm]
-    simp [e, hmk, idem_mul_self]
-  have he_mul_ek : (e : 𝔸f E') * (e * k) = e * k := by simp [e, ← mul_assoc, idem_mul_self]
+    change idem _ * idem _ * (m.val * k) = _
+    rw [idem_mul_self, hmk, mul_one]
+  have he_mul_ek : (e : 𝔸f E') * (e * k) = e * k := by
+    rw [← mul_assoc]
+    change idem _ * idem _ * k = _
+    rw [idem_mul_self]
   -- An idele that, like its inverse, is `1` modulo `m` is a unit idele, so `μ` kills its norm.
   have h_mem_ker (y y' : Ô E') (h_inv : (1 + (m * y).val) * (1 + (m * y').val) = 1) :
       .mkOfMulEqOne _ _ h_inv ∈ kerCompNorm E' μ := by
@@ -723,15 +787,15 @@ lemma isMatchingLevel_congruenceLevel {m : Ô E'} {k : 𝔸f E'} (hmk : m * k = 
   -- The inputs on `Ô E'`: `σ` is tame at level `0`, and commutes with `star` and with the
   -- inclusion into `𝔸f E'`.
   have h_tame_zero : IsTameAtLevel (intAdeleMap σ) (finrank E E') (0 : Ô E') := by
-    simpa only [zero_mul] using h_tame 0 (map_zero _)
+    have h0 : intAdeleMap (σ : E' →+* E') 0 = 0 := Subtype.ext (map_zero (adeleMap (σ : E' →+* E')))
+    simpa only [zero_mul] using h_tame 0 h0
   obtain ⟨c, hc_fixed, hc_unit⟩ := exists_intAdeleMap_eq_isUnit_sub_star σ
   have h_star_comm (x : Ô E') :
       intAdeleMap (σ : E' →+* E') (star x) = star (intAdeleMap (σ : E' →+* E') x) :=
     Subtype.ext (adeleMap_star _ x.val)
   have h_starModule : StarModule (Ô E') (𝔸f E') := ⟨fun r x ↦ star_mul' r.val x⟩
   have h_algebraMap (x : Ô E') : algebraMap (Ô E') (𝔸f E') (intAdeleMap σ x) =
-      adeleMap (σ : E' →+* E') (algebraMap (Ô E') (𝔸f E') x) := by
-    simp [intAdeleMap, Algebra.algebraMap_ofSubring]
+      adeleMap (σ : E' →+* E') (algebraMap (Ô E') (𝔸f E') x) := rfl
   obtain ⟨h_split, h_pair⟩ :=
     cocyclesSplit_and_isMatchingPair_of_congruence (M := m) (v := e * k) e isProfiniteRing_intAdeles
       h_tame_zero
@@ -769,7 +833,7 @@ lemma comap_localLevel_congruenceLevel_le {H : Subgroup (Gf E n)} {m : Ô E'} {k
   let Y : Matrix n n (𝔸f E') := k • ((baseChangeGf g : Gf E' n).val.val - 1)
   have hY_int (i j : n) : Y i j ∈ Ô E' := by
     refine mem_Ô.2 fun u ↦ ?_
-    show k u * ((baseChangeGf g : Gf E' n).val.val - 1) i j u ∈ LocInt u
+    change k u * ((baseChangeGf g : Gf E' n).val.val - 1) i j u ∈ LocInt u
     simpa only [atPlace_sub_one_apply] using (mem_congruenceLevel.1 (h_at u)).right i j
   have h_eq : (baseChangeGf g : Gf E' n).val.val - (m : 𝔸f E') • Y = 1 := by
     rw [smul_smul, hmk, one_smul, sub_sub_self]
@@ -814,10 +878,23 @@ lemma exists_isTameAtLevel_intAdeleMap :
     intro y
     -- The image of `(σ ^ i) • y - y` in the integral adeles is `(σ ^ i) ȳ - ȳ` for the image `ȳ`
     -- of `y`, which is in `P`.
+    have h_pow_val (k : ℕ) (a : Ô E') :
+        ((intAdeleMap σ ^ k) a).val = (adeleMap (σ : E' →+* E') ^ k) a.val := by
+      induction k with
+      | zero => rfl
+      | succ k ih =>
+        rw [pow_succ', pow_succ']
+        exact congrArg (adeleMap (σ : E' →+* E')) ih
     have h_smul : ((σ ^ i • y : 𝓞 E') : E') = (σ ^ i) (y : E') := rfl
     have h_map : algebraMap (𝓞 E') (Ô E') ((σ ^ i) • y - y) =
-        (intAdeleMap σ ^ i) (algebraMap (𝓞 E') (Ô E') y) - algebraMap (𝓞 E') (Ô E') y :=
-      Subtype.ext (by simp [adeleMap_gal_pow, h_smul, -AlgEquiv.coe_pow])
+        (intAdeleMap σ ^ i) (algebraMap (𝓞 E') (Ô E') y) - algebraMap (𝓞 E') (Ô E') y := by
+      apply Subtype.ext
+      rw [AddSubgroupClass.coe_sub, h_pow_val, adeleMap_gal_pow, coe_algebraMap_Ô,
+        coe_algebraMap_Ô, RingOfIntegers.coe_eq_algebraMap ((σ ^ i) • y - y), map_sub,
+        ← RingOfIntegers.coe_eq_algebraMap ((σ ^ i) • y),
+        ← RingOfIntegers.coe_eq_algebraMap y, h_smul, map_sub,
+        adeleMap_algebraMap ((σ ^ i : Gal(E'/E)) : E' →+* E') (y : E')]
+      rfl
     exact mem_comap.2 (mem_of_eq_of_mem h_map (hP _))
   have h_inertia : ∀ g : Gal(E'/E), g ∈ (P.under (𝓞 E')).inertia Gal(E'/E) :=
     (bijective_pow_of_ne_one_of_prime_finrank hi_ne).surjective.forall.2 fun j ↦ pow_mem hi_mem j
@@ -828,9 +905,11 @@ lemma exists_isTameAtLevel_intAdeleMap :
   have hm_red : m ∈ RingHom.ker (reduceAt u) := h_red u hC_mem h_inertia
   -- The kernel of reduction at `u` contains `C ≠ 0`, so it is generated by its contraction `u` to
   -- `𝓞 E'` (`map_under_Ô`), and `u` lies in `P`.
-  rw [← map_under_Ô hC (I := RingHom.ker (reduceAt u)) (algebraMap_ResField_eq_zero.2 hC_mem)]
-    at hm_red
-  exact map_le_of_le_comap (fun _ ↦ algebraMap_ResField_eq_zero.1) hm_red
+  have h_ker (a : 𝓞 E') :
+      algebraMap (𝓞 E') (Ô E') a ∈ RingHom.ker (reduceAt u) ↔ a ∈ u.asIdeal := by
+    rw [RingHom.mem_ker, reduceAt_algebraMap, algebraMap_ResField_eq_zero]
+  rw [← map_under_Ô hC (I := RingHom.ker (reduceAt u)) ((h_ker _).2 hC_mem)] at hm_red
+  exact map_le_of_le_comap (fun a ha ↦ (h_ker a).1 ha) hm_red
 
 /-- Let `E'/E` be a step with character `μ` (`IsStep`): `E` contains a primitive 5040th root of
 unity, and `E'` is a CM field Galois over `E` of prime degree. Let `σ ≠ 1` in `Gal(E'/E)` and let
@@ -870,20 +949,51 @@ lemma exists_isBaseChangeLevel {H : Subgroup (Gf E n)} (hH : H.IsOpen) :
     have h_ne : (N * C : E') ≠ 0 := by positivity
     simpa only [map_mul, map_natCast, map_one] using
       congrArg (algebraMap E' (𝔸f E')) (mul_inv_cancel₀ h_ne)
-  have hm_star : star m = m := Subtype.ext (by simp [m, A, star_idem, preimage])
+  have hm_star : star m = m := Subtype.ext <| by
+    change star (m : 𝔸f E') = (m : 𝔸f E')
+    rw [← hm, adeleOneOn, star_add, star_mul', star_mul', star_sub, star_one, star_mul',
+      star_natCast, star_natCast, star_idem]
+    have hA_star : star ⁻¹' A = A :=
+      Set.ext fun _ ↦ by rw [Set.mem_preimage]; exact star_mem_placesAbove
+    rw [hA_star]
   have hk_fixed : adeleMap (σ : E' →+* E') k = k := by
-    simp [k, A, adeleOneOn, adeleMap_idem_placesAbove]
-  have hm_fixed : intAdeleMap σ m = m :=
-    Subtype.ext (by simp [m, A, intAdeleMap, adeleMap_idem_placesAbove])
+    dsimp only [k, adeleOneOn]
+    rw [map_add, map_mul, map_sub, map_one, adeleMap_idem_placesAbove,
+      adeleMap_algebraMap, map_inv₀, map_mul, map_natCast, map_natCast]
+  have hm_fixed : intAdeleMap σ m = m := Subtype.ext <| by
+    change adeleMap (σ : E' →+* E') (m : 𝔸f E') = (m : 𝔸f E')
+    rw [← hm, adeleOneOn, map_add, map_mul, map_mul, map_sub, map_one, map_mul, map_natCast,
+      map_natCast, adeleMap_idem_placesAbove]
   -- `σ` is tame at `e * m` for every fixed `e`: a totally ramified place is off `A`, so `m = N * C`
   -- there, which vanishes modulo a place dividing `C`.
   have h_tame_m (e : Ô E') (he_fixed : intAdeleMap σ e = e) :
       IsTameAtLevel (intAdeleMap σ) (finrank E E') (e * m) := by
-    refine h_tame (e * m) (by rw [map_mul, he_fixed, hm_fixed]) fun u hCu h_inertia ↦ ?_
+    have hem_fixed : intAdeleMap σ (e * m) = e * m := Subtype.ext <| by
+      change adeleMap (σ : E' →+* E') (e.val * m.val) = e.val * m.val
+      rw [map_mul, show adeleMap (σ : E' →+* E') e.val = e.val from congrArg Subtype.val he_fixed,
+        show adeleMap (σ : E' →+* E') m.val = m.val from congrArg Subtype.val hm_fixed]
+    refine h_tame (e * m) hem_fixed fun u hCu h_inertia ↦ ?_
     have huA : u ∉ A := fun hu ↦
       (hA_unram u hu).exists_notMem_inertia.elim fun τ hτ ↦ hτ (h_inertia τ)
-    have hC_red : (C : ResField u) = 0 := by simpa using algebraMap_ResField_eq_zero.2 hCu
-    simp [m, hC_red, huA]
+    rw [reduceAt_eq_zero, MulMemClass.coe_mul, finAdele_mul_apply, map_mul]
+    have hm_u : m.val u = (N : LocField u) * (C : LocField u) := by
+      rw [← hm, adeleOneOn]
+      change evalAt u ((N : 𝔸f E') * C) + idem A u * evalAt u (1 - (N : 𝔸f E') * C) = _
+      rw [idem_of_notMem huA, zero_mul, add_zero, map_mul, map_natCast, map_natCast]
+    have hC_lt : v (C : LocField u) < 1 := by
+      have h1 : v ((algebraMap (𝓞 E') (Ô E') (C : 𝓞 E')).val u) < 1 :=
+        reduceAt_eq_zero.1
+          ((reduceAt_algebraMap u (C : 𝓞 E')).trans (algebraMap_ResField_eq_zero.2 hCu))
+      rw [coe_algebraMap_Ô] at h1
+      change v (evalAt u (algebraMap E' (𝔸f E') ((C : 𝓞 E') : E'))) < 1 at h1
+      rwa [RingOfIntegers.coe_eq_algebraMap, map_natCast, map_natCast, map_natCast] at h1
+    have hN_le : v (N : LocField u) ≤ 1 := by
+      have h1 : v (evalAt u ((N : Ô E') : 𝔸f E')) ≤ 1 := mem_Ô.1 (N : Ô E').prop u
+      rwa [SubringClass.coe_natCast, map_natCast] at h1
+    rw [hm_u, map_mul]
+    calc v (e.val u) * (v (N : LocField u) * v (C : LocField u))
+      _ ≤ 1 * (1 * v (C : LocField u)) := mul_le_mul' (mem_Ô.1 e.prop u) (mul_le_mul' hN_le le_rfl)
+      _ < 1 := by rwa [one_mul, one_mul]
   refine ⟨congruenceLevel n k,
     { le_localIntGL := fun u g hg ↦ (mem_congruenceLevel.1 hg).left
       isMatchingLevel := isMatchingLevel_congruenceLevel hmk hm_star hk_fixed h_tame_m h_idele

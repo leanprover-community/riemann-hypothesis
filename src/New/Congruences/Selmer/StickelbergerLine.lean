@@ -1,5 +1,14 @@
-import New.Congruences.Selmer.OneSystem
-import New.Congruences.Selmer.StickelbergerSystems
+module
+
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
+import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.Topology.Algebra.Valued.LocallyCompact
+public import New.Congruences.Selmer.OneSystem
+public import New.Congruences.Selmer.StickelbergerSystems
+public import Lib.General.NumberTheory.GaussValuation
+import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # Stickelberger systems on a line
@@ -29,6 +38,8 @@ Notions from other files:
   `New.intQpBar` is its valuation ring.
 * `New.Selmer.gaussVal`: the Gauss valuation `v_ρ(g) = min_i (v(y_i) + ρ i)` of `g = ∑ y_i Y ^ i`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -153,16 +164,11 @@ lemma ellVal_eulerFactor_le {q : ℕ} (exps : List ℤ) (ha : ‖a‖ = 1) (hb :
   | nil => simp [ellVal, eulerFactor_nil]
   | cons e exps ih =>
     rw [List.length_cons, Nat.cast_succ, add_one_mul] at hM ⊢
-    have hb_lt : ellVal (b - 1) < M :=
-      calc ellVal (b - 1) ≤ 2 * ellVal (b - 1) := le_self_add.trans_eq (two_mul _).symm
-        _ < M := le_add_self.trans_lt hM
-    have h_tail : ellVal (eulerFactor exps a q) ≤ exps.length * (2 * ellVal (b - 1)) :=
-      ih (le_self_add.trans_lt hM)
-    have h_head : ellVal ((1 - a * (q : PadicAlgCl ℓ) ^ (-e)) *
-        (1 - a⁻¹ * (q : PadicAlgCl ℓ) ^ (-e))) ≤ 2 * ellVal (b - 1) :=
-      ellVal_one_sub_mul_one_sub_inv_le (-e) ha hb hq_norm hab hq hb_lt
     rw [eulerFactor_cons, add_comm]
-    exact ellVal_mul_le.trans (add_le_add h_head h_tail)
+    exact ellVal_mul_le.trans (add_le_add
+      (ellVal_one_sub_mul_one_sub_inv_le (-e) ha hb hq_norm hab hq <|
+        (le_self_add.trans_eq (two_mul _).symm).trans_lt (le_add_self.trans_lt hM))
+      (ih (le_self_add.trans_lt hM)))
 
 end Valuation
 
@@ -202,9 +208,7 @@ lemma exists_polynomial_eulerFactor (ρ : ℚ≥0) (exps : List ℤ) {α : Padic
       ∀ ζ : intQpBar ℓ, ζ ≠ 0 → ((R.eval (ζ - 1) : intQpBar ℓ) : PadicAlgCl ℓ) =
         (ζ : PadicAlgCl ℓ) ^ exps.length * eulerFactor exps (α * (ζ : PadicAlgCl ℓ)) q := by
   induction exps with
-  | nil =>
-    refine ⟨1, ?_, fun ζ _ ↦ by simp [eulerFactor_nil]⟩
-    simpa using gaussVal_le_of_isUnit_coeff (ρ := ρ) (g := (1 : (intQpBar ℓ)[X])) (d := 0) (by simp)
+  | nil => exact ⟨1, by simp [gaussVal_one], fun ζ _ ↦ by simp [eulerFactor_nil]⟩
   | cons e exps ih =>
     obtain ⟨R, hR_le, hR_eval⟩ := ih
     obtain ⟨S, hS_le, hS_eval⟩ :=
@@ -253,9 +257,7 @@ lemma exists_ellVal_eval_le_gaussVal {ρ : ℚ≥0} (hρ : ρ ≤ 1) {N j : ℕ}
     (h_congr : (1 + X) ^ ℓ ^ N - 1 ∣ (1 + X) ^ j * P - R) (hR : gaussVal ρ R < N * (ρ : ℝ≥0)) :
     ∃ y : intQpBar ℓ, (ρ : ℝ≥0) ≤ ellVal (y : PadicAlgCl ℓ) ∧
       ellVal (P.eval y).val ≤ gaussVal ρ R := by
-  obtain ⟨y, hy, h_generic⟩ : ∃ y : intQpBar ℓ, (ρ : ℝ≥0) ≤ ellVal (y : PadicAlgCl ℓ) ∧
-      ellVal (R.eval y).val = gaussVal ρ R := by
-    simpa only [forall_const] using exists_forall_ellVal_eval_eq_gaussVal ρ fun _ : Unit ↦ R
+  obtain ⟨y, hy, h_generic⟩ := exists_ellVal_eval_eq_gaussVal ρ R
   have h_dvd : (1 + y) ^ ℓ ^ N - 1 ∣ (1 + y) ^ j * P.eval y - R.eval y := by
     simpa using eval_dvd (x := y) h_congr
   have h_lt : ellVal (R.eval y).val < ellVal ((1 + y) ^ j * P.eval y - R.eval y).val :=
@@ -454,25 +456,15 @@ lemma ellVal_one_element_singleton_le (h_tied : IsTiedPrimes ℓ S₀ U W N P₀
     (h_frob : (M : ℝ≥0∞) ≤ ellVal (Y.twistChar (x P₀).1.frob - Y.twistChar g₀ : PadicAlgCl ℓ)) :
     ellVal (groupRingEval (1 : Gal(Ω/E) →* PadicAlgCl ℓ) (Y.element {P₀})) ≤ Y.β := by
   classical
-  have h_data : IsAuxPrimeDataAt (placesDividing E ℓ) P₀ (x P₀).1 :=
-    h_tied.isAuxPrimeDataAt P₀ h_tied.first_mem
-  have hM_pos : 0 < M := Nat.cast_pos.1 hM.pos
-  have hN : N ≠ 0 := (hM_pos.trans_le hMN).ne'
-  have h_norm_rel : groupRingEval (1 : Gal(Ω/E) →* PadicAlgCl ℓ) (Y.element {P₀}) =
-      groupRingEval (1 : Gal(Ω/E) →* PadicAlgCl ℓ) (Y.element ∅) *
-        eulerFactor Y.exponents (Y.twistChar (x P₀).1.frob : PadicAlgCl ℓ) P₀.q := by
-    rw [← insert_empty_eq P₀]
-    have h_aux := h_tied.auxiliary.mono (singleton_subset_iff.2 h_tied.first_mem)
-    simpa only [MonoidHom.one_apply, mul_one] using Y.element_insert ∅ P₀ (notMem_empty P₀)
-      h_aux 1 IsFromU1.one _ h_data.isPlaceOver _ h_data.isFrob
-  have hq : (M : ℝ≥0∞) ≤ ellVal (P₀.q - 1 : PadicAlgCl ℓ) :=
-    (Nat.cast_le.2 hMN).trans (le_ellVal_natCast_sub_one h_data.norm_modEq)
-  have h_euler : ellVal (eulerFactor Y.exponents (Y.twistChar (x P₀).1.frob : PadicAlgCl ℓ) P₀.q) ≤
-      Y.exponents.length * (2 * ellVal (Y.twistChar g₀ - 1 : PadicAlgCl ℓ)) :=
-    ellVal_eulerFactor_le Y.exponents (Y.norm_twistChar _) (Y.norm_twistChar _)
-      (norm_natCast_eq_one_of_modEq hN h_data.norm_modEq) h_frob hq (le_add_self.trans_lt hM)
-  rw [h_norm_rel, β]
-  exact ellVal_mul_le.trans (add_le_add le_rfl h_euler)
+  have h_data := h_tied.isAuxPrimeDataAt P₀ h_tied.first_mem
+  rw [← insert_empty_eq P₀, Y.element_insert ∅ P₀ (notMem_empty P₀)
+    (h_tied.auxiliary.mono (singleton_subset_iff.2 h_tied.first_mem)) 1 IsFromU1.one _
+    h_data.isPlaceOver _ h_data.isFrob, MonoidHom.one_apply, mul_one, β]
+  exact ellVal_mul_le.trans (add_le_add le_rfl (ellVal_eulerFactor_le Y.exponents
+    (Y.norm_twistChar _) (Y.norm_twistChar _)
+    (norm_natCast_eq_one_of_modEq ((Nat.cast_pos.1 hM.pos).trans_le hMN).ne' h_data.norm_modEq)
+    h_frob ((Nat.cast_le.2 hMN).trans (le_ellVal_natCast_sub_one h_data.norm_modEq))
+    (le_add_self.trans_lt hM)))
 
 /-- The system `Y`, for a set `S₀` of places and `g₀ ∈ Gal(Ω/E)`, gives elements `Θ_Q = Y.element Q`
 of the group rings of class groups `Cl_Q` with a norm relation, a character `ϑ = Y.twistChar` and

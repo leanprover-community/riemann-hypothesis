@@ -1,4 +1,11 @@
-import New.Derivatives.Divisibility.Count
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.Tactic.Monotonicity.Lemmas
+public import New.Derivatives.Divisibility.Count
+public import New.UpperBound.Size.ShortColumns
 import New.Derivatives.Sharpness.NearPairs
 
 /-!
@@ -27,6 +34,8 @@ Notions from other files:
 * `New.Data.placeOfInt`: The infinite place of E named by the class of the integer ν modulo q₁ if ν
   is prime to q₁, and the identity place otherwise.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -152,8 +161,10 @@ lemma collisionSum_le {S : Finset D.Φ} {o : ℕ}
     have h_bound (e : ℕ) : ‖t (o + e)‖ ≤ D.a / p ^ o * 2 / 2 / 2 ^ e :=
       calc ‖t (o + e)‖ ≤ (D.a / p ^ o / p ^ e : ℝ) := by
             unfold t
-            split <;> simp [pow_add, ← div_div]; positivity
-        _ ≤ D.a / p ^ o / 2 ^ e := by gcongr; exact mod_cast q.1.two_le
+            split
+            · simp [pow_add, ← div_div]
+            · rw [norm_zero]; positivity
+        _ ≤ D.a / p ^ o / 2 ^ e := by gcongr; exact mod_cast q.out.two_le
         _ = _ := by ring
     grw [← (add_right_injective o).tsum_eq h_support, le_norm_self (tsum _)]
     exact tsum_of_norm_bounded (hasSum_geometric_two' _) h_bound
@@ -178,8 +189,8 @@ lemma mul_collisionSum_le_loss (hp : D.IsSmallNonsplit p)
     have h_far {τ : D.Φ} {e : ℕ} (hc : D.IsCollision p ∅ τ e) : D.ceilLogLifts p + 1 ≤ e := by
       obtain ⟨h_ne, h_odd, h_dvd⟩ := hc.ne_and_odd_and_dvd
       grind [IsExceptional, chiK_cases, Odd.of_dvd_nat, Nat.le_of_dvd h_odd.pos h_dvd]
-    grw [collisionSum_le h_far, le_pow_clog q.1.one_lt D.m, ← ceilLogLifts]
-    have hp_ne : p ≠ 0 := q.1.ne_zero
+    grw [collisionSum_le h_far, le_pow_clog q.out.one_lt D.m, ← ceilLogLifts]
+    have hp_ne : p ≠ 0 := q.out.ne_zero
     simp [pow_succ, field]
 
 /-- The least height `k` of a low column is below `n_{j+1}`. -/
@@ -230,19 +241,10 @@ lemma lowBoxes_le (hj : j < D.m) (σ : D.Φ) :
           add_assoc]
         exact add_le_add le_rfl D.le_of_hasLogBound
 
-/-- For `j < m` and an infinite place `σ` of weight `w = D.weight σ` (that is `a / x` at a `b`-place
-and `a / x₁` at any other): the number of boxes in the low columns lies between `k w` and
-`k w + x ^ 60`, and the number of low columns is at most `w + x ^ 60`. -/
-lemma lowColumns_lowBoxes_bounds (hj : j < D.m) (σ : D.Φ) :
-    D.k * (D.weight σ : ℝ) ≤ D.lowBoxes j σ ∧
-    D.lowColumns j σ ≤ (D.weight σ : ℝ) + D.x ^ 60 ∧
-    D.lowBoxes j σ ≤ D.k * (D.weight σ : ℝ) + D.x ^ 60 :=
-  ⟨mul_weight_le_lowBoxes j σ, lowColumns_le hj σ, lowBoxes_le hj σ⟩
-
-/-- For `j < D.m`, the number `boxes D.columnCount (D.n (j + 1))` of boxes in the columns of height
+/-- The number `boxes D.columnCount (D.n (j + 1))` of boxes in the columns of height
 below `D.n (j + 1)` equals `D.a` times the number of a-places `D.aPlaces`, plus the sum over `σ` of
 `D.lowBoxes j σ`, the boxes in columns at `σ` of height below `D.n (j + 1)` other than `1`. -/
-lemma boxes_eq_aPlaces_add_low (_hj : j < D.m) :
+lemma boxes_eq_aPlaces_add_low :
     (boxes D.columnCount (D.n (j + 1)) : ℝ) = #D.aPlaces * D.a + ∑ σ : D.Φ,
       (D.lowBoxes j σ : ℝ) := by
   have h_one : 1 < D.n (j + 1) := by grind [n]
@@ -253,15 +255,16 @@ lemma boxes_eq_aPlaces_add_low (_hj : j < D.m) :
   simp_rw [boxes, h_split, sum_add_distrib]
   simp [lowBoxes, h_one, Finset.univ_inter _]
 
-/-- For `j < m` the boxes removed with the columns of height one at the places of `S` are the `a`
+/-- The boxes removed with the columns of height one at the places of `S` are the `a`
 boxes at each a-place in `S`. -/
-lemma boxes_sub_boxes_eraseHeightOne (hj : j < D.m) (S : Finset D.Φ) :
+lemma boxes_sub_boxes_eraseHeightOne (S : Finset D.Φ) :
     (boxes D.columnCount (D.n (j + 1)) - boxes (eraseHeightOne D.columnCount S) (D.n (j + 1)) : ℝ)
       =
       #(D.aPlaces ∩ S) * D.a := by
   have h_card : (#D.aPlaces : ℝ) = #(D.aPlaces \ S) + #(D.aPlaces ∩ S) :=
     mod_cast (card_sdiff_add_card_inter D.aPlaces S).symm
-  simp [-Nat.cast_sum, boxes_eq_aPlaces_add_low hj, boxes_eq_sum, heightOneColumns_eraseHeightOne,
+  rw [boxes_eq_aPlaces_add_low]
+  simp [-Nat.cast_sum, boxes_eq_sum, heightOneColumns_eraseHeightOne,
     lowBoxCount_eraseHeightOne, sum_add_distrib, longRow, h_card, add_mul, sum_ite_mem, -mem_sdiff,
     Finset.univ_inter _]
 
@@ -277,12 +280,12 @@ lemma one_add_logb_boxes_le (hj : j < D.m) :
   have h_boxes : ((max (boxes D.columnCount (D.n (j + 1))) 1 : ℕ) : ℝ) ≤ D.f * D.a + D.f * D.M +
     1 := by
     grw [max_le_add_of_nonneg (Nat.zero_le _) zero_le_one, cast_add_one,
-      boxes_eq_aPlaces_add_low hj,
+      boxes_eq_aPlaces_add_low,
       h_low, card_le_univ]
     simp [f, Core.numInfPlaces]
   have h_log : 1 / 2 ≤ Real.log p := by
     grw [← q.out.two_le]
-    linarith [Real.log_two_gt_d9]
+    linarith only [Real.log_two_gt_d9]
   calc _ ≤ 1 + Real.log (D.f * D.a + D.f * D.M + 1) / (1 / 2) := by
         grw [logb, ← h_log, h_boxes]
     _ ≤ D.logB ^ 2 := D.le_of_hasLogBound
@@ -315,7 +318,7 @@ lemma posPart_sub_weight_le_posPart_longRow (hj : j < D.m) (hp : D.IsSmallNonspl
   · simp only [h_aPlace, mem_inter, false_and, and_false, ite_false, add_zero]
     positivity
   have h_nonneg : (0 : ℝ) ≤ D.weight τ' := Nat.cast_nonneg _
-  simp only [IsCollision, ← hτ', mem_inter, mem_sdiff, h_aPlace, he, posPart_def, longRow]
+  simp only [IsCollision, ← hτ', mem_inter, h_aPlace, he, posPart_def, longRow]
   by_cases h_removed : τ ∈ S
   · -- A removed row: only the surplus at `e = 1` is to be absorbed.
     have h_surplus (h_one : e = 1) : (D.a / D.x₁ : ℝ) ≤ D.a / p ^ e := by
@@ -385,7 +388,7 @@ lemma sub_le_predictedDivisibility (hj : j < D.m) (S : Finset D.Φ) :
     grw [sum_le_card_nsmul univ _ _ fun τ _ ↦
       min_longRow_add_lowColumns_add_min_lowBoxes_le hj S τ, nsmul_eq_mul]
     change (1 / 2 * (D.f * (3 * (D.a / P.d / D.m))) : ℝ) ≤ D.f * (2 * (D.a / P.d / D.m))
-    linarith [show (0 : ℝ) ≤ D.f * (D.a / P.d / D.m) by positivity]
+    linarith only [show (0 : ℝ) ≤ D.f * (D.a / P.d / D.m) by positivity]
   · positivity
 
 /-- For `j < D.m` and a place `τ`, the number `γ_p = gammaPrime P.d p` times the number
@@ -515,7 +518,6 @@ lemma le_divisibilityBound (hj : j < D.m) (hp : D.IsSmallNonsplit p) (S : Finset
   set u : ℝ := D.a / p / D.m with hu
   set γ : ℝ := gammaPrime P.d p
   set v : ℝ := piPrimeValuation P.d p
-  have hv_pos : 0 < v := piPrimeValuation_pos P.d p
   have hv_le : v ≤ 1 := piPrimeValuation_le_one P.d p
   have h_err : v * (clog p ⌈D.x₁⌉₊ * (2 * D.x ^ 60)) ≤ u := by
     grw [hv_le, one_mul, clog_le_of_le_pow (Nat.lt_pow_self q.out.one_lt).le,
@@ -546,7 +548,7 @@ lemma le_divisibilityBound (hj : j < D.m) (hp : D.IsSmallNonsplit p) (S : Finset
     exact D.le_of_hasLogBound
   have h_losses : D.f * (5 * u) ≤ D.f * D.logB ^ 2 * (D.a / p) / D.m := by
     grw [mul_div_assoc, mul_assoc, ← hu, (D.le_of_hasLogBound : 5 ≤ D.logB ^ 2)]
-  rw [divisibilityBound, boxes_sub_boxes_eraseHeightOne hj, gain,
+  rw [divisibilityBound, boxes_sub_boxes_eraseHeightOne, gain,
     mul_div_cancel_left₀ _ (HasLogBound.pos D).ne', mul_assoc (D.f : ℝ) (_ ^ 3)]
   have h_predicted : v * ∑ τ, ∑' e, partnerTerm p j S τ e - D.f * (2 * u) ≤
       predictedDivisibility P.d p (P.partner D.towerExp p) (eraseHeightOne D.columnCount S)

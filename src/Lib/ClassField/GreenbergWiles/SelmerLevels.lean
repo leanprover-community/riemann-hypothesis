@@ -1,4 +1,14 @@
+module
+
+public import Mathlib.Algebra.Group.Action.Sum
+import Mathlib.LinearAlgebra.Matrix.Gershgorin
+public import Lib.ClassField.Local.ArtinMap
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
 import Lib.ClassField.Global.ExistenceTheorem
+import Lib.ClassField.LocalDuality.KummerFiniteness
+import Lib.ClassField.Places.LocalFields
+import Lib.ClassField.Places.TameInertia
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Selmer cocycles, N-units, split places and the equivariant S-unit theorem
@@ -39,6 +49,8 @@ Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts` and `Lib.ClassField.Pla
 sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New
@@ -62,9 +74,9 @@ def IsTameGeneratorFor (A : ClosurePlace) (γ : G) : Prop :=
   ∃ (π : Kˣ) (y : DiscreteUnits Ω),
     -- `π` is a uniformiser, `y ^ m = π`, and `γ y / y` is the fixed primitive `m`-th root of
     -- unity, written additively
-    IsUniformiser A π.1 ∧
+    IsUniformizer A π.val ∧
     m • y = ↑(DiscreteUnits.ofBase G Ω (Additive.ofMul π)) ∧
-    unitsRep γ y - y = (rootPowHom Ω m).1 1
+    unitsRep γ y - y = (rootPowHom Ω m).val 1
 
 variable (G) in
 /-- Let the profinite group `G` act on `Ω` as the Galois group of `Ω/K`, and let the valuation
@@ -74,7 +86,7 @@ uniformiser `π` of `K` for `B` and some `m`-th root `y` of `π`, the quotient `
 primitive `m`-th root of unity `rootPowHom Ω m 1`. -/
 lemma exists_isTameGeneratorFor (h : IsPlaceOver B v) : ∃ γ : G, IsTameGeneratorFor m B γ := by
   -- Take a uniformiser `π` of `K` that stays one in the decomposition field, and `y ^ m = π`.
-  obtain ⟨π, hπ, hπ_local⟩ := h.exists_uniformiser G
+  obtain ⟨π, hπ, hπ_local⟩ := h.exists_uniformizer G
   obtain ⟨y, hy⟩ := (DiscreteUnits.ofBase G Ω (.ofMul π)).val.exists_nsmul (n := m) out
   let ζ : DiscreteUnits Ω := (rootPowHom Ω m).val 1
   have hy_pow : (y.toMul : Ω) ^ m = algebraMap K Ω π := congrArg (·.toMul.val) hy
@@ -82,11 +94,11 @@ lemma exists_isTameGeneratorFor (h : IsPlaceOver B v) : ∃ γ : G, IsTameGenera
   -- is transitive on these roots.
   have same_pow : ((ζ + y).toMul : Ω) ^ m = (y.toMul : Ω) ^ m :=
     mod_cast by simp [ζ, mul_pow, (isPrimitiveRoot_rootPowHom_one ..).pow_eq_one]
-  obtain ⟨h_galois, -, -⟩ := h.isLocalGalois_and_residueCard_eq_and_isUniformiser G
+  obtain ⟨h_galois, -, -⟩ := h.isLocalGalois_and_residueCard_eq_and_isUniformizer G
   -- so some `γ` in inertia carries `y` to `ζ * y`
   obtain ⟨γ, hγ, hγy⟩ := h_galois.exists_inertia_smul_eq_of_pow_eq hπ_local (pos m) hy_pow same_pow
   have h_act : unitsRep (γ : G) y = ζ + y := Additive.toMul.injective (Units.ext hγy)
-  exact ⟨γ, hγ, π, y, h.isUniformiser_iff.2 hπ, hy, by rw [h_act, add_sub_cancel_right]⟩
+  exact ⟨γ, hγ, π, y, h.isUniformizer_iff.2 hπ, hy, by rw [h_act, add_sub_cancel_right]⟩
 
 /-- The places of Ω above N and infinity: valuation subrings in which N has valuation below 1,
 together with the infinite places. -/
@@ -97,7 +109,7 @@ instance : MulAction G (PlaceAboveLevel N) :=
   @Sum.instMulAction G {B : ClosurePlace // B N < 1} (InfinitePlace Ω) _
     -- the places above `N` form a set that is stable under `G`, as `G` fixes `N`
     (SubMulAction.mk {B : ClosurePlace | B N < 1} fun g _ hB ↦ by
-      simpa using! (smul_apply_smul_lt_one_iff g).mpr (Set.mem_setOf_eq.mp hB)).mulAction
+      simpa using! (smul_apply_smul_lt_one_iff g).mpr (Set.mem_ofPred_eq.mp hB)).mulAction
     -- on the infinite places `G` acts through the automorphisms of `Ω` over `ℚ`
     (.compHom _ (toAlgAut G ℚ Ω))
 
@@ -176,12 +188,12 @@ theorem finite_cocycles_unramified_outside (V : DiscreteModule R G) [Finite V]
       exists_superset_sup_idelesUnitOff_eq_top h_fin_above
   -- `res z`: the values of `z` at representatives modulo `U` and on the decomposition groups at
   -- the places in `T`.
-  let res : (G → V) →+ (G ⧸ U → V) × ∀ w : T, decompGroup U (placeOver w.1) → V :=
+  let res : (G → V) →+ (G ⧸ U → V) × ∀ w : T, decompGroup U (placeOver w.val) → V :=
     .mk' (fun z ↦ (fun q ↦ z q.out⁻¹, fun _ g ↦ z g)) fun _ _ ↦ rfl
   -- The decomposition group at each `w ∈ T` has finitely many continuous cocycles.
   have h_local (w : T) :
-      Finite (Z1 ((V.restrictTo U).restrictTo (decompGroup U (placeOver w.1))).ρ) :=
-    (w.1.isPlaceOver_placeOver.isLocalGalois_and_residueCard_eq_and_isUniformiser U).1.finite_Z1 _
+      Finite (Z1 ((V.restrictTo U).restrictTo (decompGroup U (placeOver w.val))).ρ) :=
+    (w.val.isPlaceOver_placeOver.isLocalGalois_and_residueCard_eq_and_isUniformizer U).1.finite_Z1 _
   -- `res` maps the unramified cocycles into a finite set, and is injective on them.
   refine (finite_univ.prod (.pi' h_local)).of_injOn (f := res) ?_ ?_
   · exact fun z ⟨⟨hz_cont, hz_mul⟩, _⟩ ↦
@@ -191,10 +203,10 @@ theorem finite_cocycles_unramified_outside (V : DiscreteModule R G) [Finite V]
   obtain ⟨hz_cont, hz_mul⟩ : z ∈ Z1 V.ρ := sub_mem hz₁ hz₂
   have h_res : res z = 0 := by rw [map_sub, h_eq, sub_self]
   have h_coset (q : G ⧸ U) : z q.out⁻¹ = 0 := congrFun (congrArg Prod.fst h_res) q
-  have h_dec (w : T) (u : decompGroup U (placeOver w.1)) : z u = 0 :=
+  have h_dec (w : T) (u : decompGroup U (placeOver w.val)) : z u = 0 :=
     congrFun (congrFun (congrArg Prod.snd h_res) w) u
   have h_hom : (fun u : U ↦ z u) ∈ Z1 (.trivial ℤ U V) :=
-    ⟨hz_cont.comp continuous_subtype_val, fun u u' ↦ by simp [hz_mul, h_act]⟩
+    ⟨hz_cont.comp continuous_subtypeVal, fun u u' ↦ by simp [hz_mul, h_act]⟩
   -- A continuous homomorphism on `U` that kills complex conjugations, the decomposition groups at
   -- `T` and the inertia groups outside `T` is zero.
   have h_zero : ∀ u : U, z u = 0 := by
@@ -245,14 +257,14 @@ lemma mem_sUnits_iff {x : DiscreteUnits Ω} :
 abbrev fixedSUnits : Submodule ℤ (DiscreteUnits Ω) := sUnits N ⊓ (unitsModule U.1.1).H0
 
 /-- The `N`-units of the fixed field of `U`, as a representation of `G ⧸ U` over `ℤ`. -/
-abbrev fixedSUnitsRep : Representation ℤ (G ⧸ U.1.1) (fixedSUnits N U) :=
-  lift U.1.1
+abbrev fixedSUnitsRep : Representation ℤ (G ⧸ U.toOpenSubgroup.toSubgroup) (fixedSUnits N U) :=
+  lift U.toOpenSubgroup.toSubgroup
     (unitsRep.subrepresentation (fixedSUnits N U) fun g x ⟨hx_unit, hx_fix⟩ ↦
       ⟨mem_sUnits_iff.2 fun B hB ↦ isEquiv_comap.eq_one_iff_eq_one.1 <|
         -- `g • x` is a unit at `B` because `x` is a unit at the preimage of `B` under `g`.
         mem_sUnits_iff.1 hx_unit (B.comap (toRingHom G Ω g))
           (isEquiv_comap.eq_one_iff_eq_one.2 (by simpa using hB)),
-        unitsRep.le_comap_invariants U.1.1 g hx_fix⟩)
+        unitsRep.le_comap_invariants U.toOpenSubgroup.toSubgroup g hx_fix⟩)
     fun u hu ↦ LinearMap.ext fun ⟨x, _, hx_fix⟩ ↦ Subtype.ext (hx_fix ⟨u, hu⟩)
 
 /-- Split places for `U`. The subgroup `U` fixes the `m`-th roots of unity, and `m` divides `N`. The
@@ -270,7 +282,7 @@ structure SplitPlaces (ι : Type) where
   /-- The chosen primes are distinct. -/
   v_injective : v.Injective
   /-- No chosen prime divides `N`. -/
-  level_notMem (i : ι) : ↑N ∉ (v i).1
+  level_notMem (i : ι) : ↑N ∉ (v i).asIdeal
   /-- A place of `Ω` for each chosen prime. -/
   valuationSubring : ι → ClosurePlace
   /-- The place `valuationSubring i` lies over `v i`. -/
@@ -283,15 +295,15 @@ structure SplitPlaces (ι : Type) where
   chosen and do not divide `N`. -/
   mem_inertia_iff (g : G) :
       g ∈ I ↔ ∃ w : FinPlace K,
-        ↑N ∉ w.1 ∧ w ∉ range v ∧ ∃ B : ClosurePlace, IsPlaceOver B w ∧ g ∈ inertiaGroup G B
+        ↑N ∉ w.asIdeal ∧ w ∉ range v ∧ ∃ B : ClosurePlace, IsPlaceOver B w ∧ g ∈ inertiaGroup G B
   /-- The inertia group of every place over a prime not dividing `N` lies in `U`. -/
   inertiaGroup_le {v : FinPlace K} {B : ClosurePlace} :
-      ↑N ∉ v.1 → IsPlaceOver B v → inertiaGroup G B ≤ U
+      ↑N ∉ v.asIdeal → IsPlaceOver B v → inertiaGroup G B ≤ U
   /-- For each number field `F` between `K` and the fixed field of `U`, the principal ideles and the
   ideles that are units away from the primes dividing `N` generate all finite ideles. -/
   principal_sup_idelesUnitOff (F : IntermediateField K Ω) [NumberField F] :
-      F ≤ fixedFieldOf U.1.1 →
-      (principalIdele (K := F)).range ⊔ idelesUnitOff {w : FinPlace F | ↑N ∈ w.1} = ⊤
+      F ≤ fixedFieldOf U.toOpenSubgroup.toSubgroup →
+      (principalIdele (K := F)).range ⊔ idelesUnitOff {w : FinPlace F | ↑N ∈ w.asIdeal} = ⊤
 
 variable {m N I U} {ι : Type} (s : SplitPlaces m N I U ι)
 
@@ -347,13 +359,13 @@ inertia set is the preimage of `I` in `B`. -/
 def SplitPlaces.liftToSubgroup (B : OpenSubgroup G) (Q : OpenNormalSubgroup B.1) (hUB : U.1.1 ≤ B)
     (hUQ : U.1.1.subgroupOf B ≤ Q) (h_fix : ∀ g ∈ Q, cyclotomicCharMod Ω m g = 1) (σ : G ⧸ B.1 → G)
     (hσ : ∀ x : G ⧸ (B : Subgroup G), σ x = x) :
-    SplitPlaces m N ((↑) ⁻¹' I) Q (ι × G ⧸ B.1) := by
+    SplitPlaces m N ((↑) ⁻¹' I) Q (ι × G ⧸ B.toSubgroup) := by
   -- The place of index `(i, x)` is the translate of `s.valuationSubring i` by `(σ x)⁻¹`; it lies
   -- over `s.v i`, and over a prime `w (i, x)` of the field of `B`.
   have h_over (θ : ι × G ⧸ B.1) : IsPlaceOver ((σ θ.2)⁻¹ • s.valuationSubring θ.1) (s.v θ.1) :=
     (s.isPlaceOver θ.1).smul (σ θ.2)⁻¹
   -- `w (i, x)`: the prime of the field of `B` below the translate, and its prime in `K`.
-  choose w hw h_below using fun θ ↦ (h_over θ).exists_above (L := fixedFieldOf B.1)
+  choose w hw h_below using fun θ ↦ (h_over θ).exists_above (L := fixedFieldOf B.toSubgroup)
   have h_conj (θ : ι × G ⧸ B.1) : (σ θ.2)⁻¹ * s.φ θ.1 * (σ θ.2)⁻¹⁻¹ ∈ U := U.2.1 _ (s.isFrob _).2 _
   refine
     { cyclotomicCharMod_eq_one := h_fix
@@ -379,14 +391,14 @@ def SplitPlaces.liftToSubgroup (B : OpenSubgroup G) (Q : OpenNormalSubgroup B.1)
     have h_dec : t * ((σ x)⁻¹ * σ y) ∈ decompGroup G ((σ y)⁻¹ • s.valuationSubring i) := by
       simpa [mul_smul]
     rw [← hσ x, ← hσ y, QuotientGroup.eq.2
-      ((mul_mem_cancel_left t.2).1 (hUB (s.decompGroup_le (h_over (i, y)) h_dec)))]
+      ((mul_mem_cancel_left t.property).1 (hUB (s.decompGroup_le (h_over (i, y)) h_dec)))]
   · -- The decomposition group lies in `B`, so the residue field does not grow.
     have h_card : (w θ).q = (s.v θ.1).q :=
       (((h_over θ).ramification_in_tower _ (hw θ)).1 ((s.decompGroup_le (h_over θ)).trans hUB)).1
     exact h_card ▸ (s.isFrob _).1.conj _
   · -- A prime above an unchosen prime is unchosen.
     rintro ⟨v, hN, hv, C, hC, hg⟩
-    obtain ⟨v', hC', rfl⟩ := hC.exists_above (L := fixedFieldOf B.1)
+    obtain ⟨v', hC', rfl⟩ := hC.exists_above (L := fixedFieldOf B.toSubgroup)
     exact ⟨v', hN ∘ by simp, fun ⟨θ, hθ⟩ ↦ hv (by simp [← hθ, h_below]), C, hC', hg⟩
   · -- Every prime above `s.v i` is chosen: if `a` carries `C` to `s.valuationSubring i`, it is
     -- `w (i, a)`.
@@ -395,7 +407,7 @@ def SplitPlaces.liftToSubgroup (B : OpenSubgroup G) (Q : OpenNormalSubgroup B.1)
     obtain ⟨a, ha⟩ := hC.isPlaceOver_below.exists_smul G (hi ▸ s.isPlaceOver i)
     -- The place of index `(i, a)` is the translate of `C` by `(σ a)⁻¹ * a ∈ B`.
     exact hv ⟨(i, a), (hw _).unique
-      (by simpa [smul_smul, ← ha] using! hC.smul (⟨_, QuotientGroup.eq.1 (hσ a)⟩ : B.1))⟩
+      (by simpa [smul_smul, ← ha] using! hC.smul (⟨_, QuotientGroup.eq.1 (hσ a)⟩ : B.toSubgroup))⟩
 
 /-- For split places `s : SplitPlaces m N I U ι`, with chosen primes indexed by a type `ι`, the set
 `I` (the union of the inertia groups above the primes that are not chosen and do not divide `N`)
@@ -475,7 +487,7 @@ lemma linearIndependent_sUnit_log {S : Set (FinPlace K)} [Fintype S]
   -- Units of `𝓞 K` have valuation one at every finite place, so `M` vanishes on them at `v ∈ S`.
   have h_lower : A.toBlocks₂₁ = 0 := by
     ext w v
-    show M (Sum.inl v) (atInfinite w) = 0
+    change M (Sum.inl v) (atInfinite w) = 0
     by_cases hw : w = dirichletUnitTheorem.w₀ <;> simp [h_fin, atInfinite, hw, notMem_of_isUnit]
   -- The block of the places in `S` is diagonal, with nonzero diagonal as `h ≠ 0`.
   have h_finite : A.toBlocks₁₁.det ≠ 0 := det_ne_zero_of_sum_col_lt_diag fun v ↦ by
@@ -553,7 +565,7 @@ omit [NeZero N] in
 /-- For an open normal subgroup `Q`, the units of the fixed field `F` of `Q` away from the primes
 dividing `N` map onto the `N`-units of `Ω` fixed by `Q`, by the inclusion of `Fˣ` in `Ωˣ`. -/
 lemma exists_surjective_sUnit_to_fixedSUnits (Q : OpenNormalSubgroup G) :
-    let F : IntermediateField K Ω := fixedFieldOf Q.1.1
+    let F : IntermediateField K Ω := fixedFieldOf Q.toOpenSubgroup.toSubgroup
     let S : Set (FinPlace F) := {v : FinPlace F | ↑N ∈ v.asIdeal}
     ∃ ε : Additive (S.unit F) →+ IsLargeLevel.fixedSUnits N Q,
       Surjective ε ∧ ∀ x : Additive (S.unit F),
@@ -561,7 +573,7 @@ lemma exists_surjective_sUnit_to_fixedSUnits (Q : OpenNormalSubgroup G) :
   intro F S
   -- An `S`-unit of `F` is an `N`-unit of `Ω` fixed by `Q`.
   let ε : Additive (S.unit F) →+ IsLargeLevel.fixedSUnits N Q :=
-    .mk' (fun x ↦ ⟨(DiscreteUnits.ofBase Q.1.1 Ω (.ofMul x.toMul.1)).1,
+    .mk' (fun x ↦ ⟨(DiscreteUnits.ofBase Q.toOpenSubgroup.toSubgroup Ω (.ofMul x.toMul.val)).val,
         IsLargeLevel.ofBase_mem_sUnits.2 x.toMul.2, Subtype.prop _⟩) fun x y ↦ Subtype.ext (by simp)
   refine ⟨ε, fun ⟨y, y_unit, y_fix⟩ ↦ ?_, fun x ↦ rfl⟩
   -- Conversely, a unit of `Ω` fixed by `Q` comes from some `x : Fˣ`, which is then an `S`-unit.
@@ -600,9 +612,9 @@ lemma IsLargeLevel.dirichlet_fixedSUnits (Q : OpenNormalSubgroup G) :
       finrank ℤ (fixedSUnits N Q × ℤ) ≤ Nat.card X := by
   intro X
   -- The orbits `X` are the places of the fixed field `F` of `Q` above `N` and infinity.
-  let F : IntermediateField K Ω := fixedFieldOf Q.1.1
-  let S : Set (FinPlace F) := {v : FinPlace F | ↑N ∈ v.1}
-  have : Fintype S := (finite_natCast_mem N).fintype
+  let F : IntermediateField K Ω := fixedFieldOf Q.toOpenSubgroup.toSubgroup
+  let S : Set (FinPlace F) := {v : FinPlace F | ↑N ∈ v.asIdeal}
+  let : Fintype S := (finite_natCast_mem N).fintype
   let e : S ⊕ InfinitePlace F ≃ X :=
     .ofBijective _ (PlaceAboveLevel.bijective_orbits _ N FinPlace.isPlaceOver_placeOver)
   -- `fixedSUnits N Q` is the image of the `S`-units of `F`, to which Dirichlet's theorem applies.
@@ -613,15 +625,15 @@ lemma IsLargeLevel.dirichlet_fixedSUnits (Q : OpenNormalSubgroup G) :
   let ε' : S.unit F × ℤ → fixedSUnits N Q × ℤ := fun u ↦ (ε (.ofMul u.1), u.2)
   -- The order of `y` at a finite place, `log |y|_w + n` at an infinite one; both are equivariant.
   let lg (y : DiscreteUnits Ω) (n : ℤ) : PlaceAboveLevel N → ℝ :=
-    Sum.elim (fun B ↦ ordRat K B.1 y) fun w ↦ (w y.toMul.1).log + n
+    Sum.elim (fun B ↦ ordRat K B.val y) fun w ↦ (w y.toMul.val).log + n
   have lg_smul (g : G) (y : DiscreteUnits Ω) (n : ℤ) :
       ∀ z : PlaceAboveLevel N, lg (unitsRep g⁻¹ y) n z = lg y n (g • z)
-    | .inl B => congrArg Rat.cast (ordRat_inv_smul G N B.2 g y)
+    | .inl B => congrArg Rat.cast (ordRat_inv_smul G N B.property g y)
     | .inr _ => rfl
   have lg_orbit (y : fixedSUnits N Q) (n : ℤ) (z z' : PlaceAboveLevel N) :
-      orbitRel Q.1.1 _ z z' → lg y n z = lg y n z' := by
+      orbitRel Q.toOpenSubgroup.toSubgroup _ z z' → lg y n z = lg y n z' := by
     rintro ⟨g, rfl⟩
-    have h_fix : unitsRep (g : G)⁻¹ (y : DiscreteUnits Ω) = y := y.2.2 g⁻¹
+    have h_fix : unitsRep (g : G)⁻¹ (y : DiscreteUnits Ω) = y := y.property.2 g⁻¹
     exact (lg_smul g y n z').symm.trans (by rw [h_fix])
   let Λ (x : X) : fixedSUnits N Q × ℤ →+ ℝ :=
     -- Both branches of `lg` are additive in `(y, n)`.
@@ -629,15 +641,15 @@ lemma IsLargeLevel.dirichlet_fixedSUnits (Q : OpenNormalSubgroup G) :
       obtain ⟨_ | _⟩ := x <;> simp [lg, Real.log_mul, add_add_add_comm]
   -- Read through `e` and `ε'`, the `Λ x` are as in `linearIndependent_sUnit_log`.
   have Λ_fin (v : S) (u : S.unit F × ℤ) :
-      Λ (e (.inl v)) (ε' u) = 0 ↔ v.1.valuation F u.1.1 = 1 := by
-    change (ordRat K (placeOver v.1) (ε (.ofMul u.1)).1 : ℝ) = 0 ↔ _
-    rw [hε, Rat.cast_eq_zero, v.1.isPlaceOver_placeOver.isPlaceOver_below.ordRat_eq_zero_iff]
-    exact v.1.isPlaceOver_placeOver.valuationVia_eq_one_iff
+      Λ (e (.inl v)) (ε' u) = 0 ↔ v.val.valuation F u.1.val = 1 := by
+    change (ordRat K (placeOver v.val) (ε (.ofMul u.1)).val : ℝ) = 0 ↔ _
+    rw [hε, Rat.cast_eq_zero, v.val.isPlaceOver_placeOver.isPlaceOver_below.ordRat_eq_zero_iff]
+    exact v.val.isPlaceOver_placeOver.valuationVia_eq_one_iff
   have Λ_inf (w : InfinitePlace F) (u : S.unit F × ℤ) :
-      Λ (e (.inr w)) (ε' u) = (w u.1.1).log + u.2 := by
-    change Real.log (surjInv comap_surjective w (ε (.ofMul u.1)).1.toMul.1) + u.2 = _
+      Λ (e (.inr w)) (ε' u) = (w u.1.val).log + u.2 := by
+    change Real.log (surjInv comap_surjective w (ε (.ofMul u.1)).val.toMul.val) + u.2 = _
     rw [hε]
-    change Real.log ((surjInv comap_surjective w).comap (algebraMap F Ω) u.1.1) + u.2 = _
+    change Real.log ((surjInv comap_surjective w).comap (algebraMap F Ω) u.1.val) + u.2 = _
     rw [surjInv_eq comap_surjective w]
   have h_indep : LinearIndependent ℝ fun z u ↦ Λ (e z) (ε' u) :=
     linearIndependent_sUnit_log Λ_fin Λ_inf

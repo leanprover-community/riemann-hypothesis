@@ -1,5 +1,10 @@
-import New.Reduction.Lattices.Colength
-import New.UpperBound.Divisibility.SetupAtLevel
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Rat.Cast.OfScientific
+import TauCeti.NumberTheory.Padics.Complex.Basic
+public import New.Reduction.Lattices.Colength
+public import New.UpperBound.Divisibility.SetupAtLevel
 import New.UpperBound.Objects.Rows
 
 /-!
@@ -23,48 +28,9 @@ Notions from other files:
 * `New.Data.upIntegralForms`: the module `𝒜'`, the preimage of `𝒜^L` under `Up ^ (m / 2)`.
 -/
 
+@[expose] public section
+
 noncomputable section
-
-namespace New
-
-open Finset
-
-/-- The model case of the bound on colengths. In the free module on the monomials `z ^ α` of degree
-`a` in `k` variables, the span of the vectors `N ^ α_i • z ^ α` has index dividing
-`N ^ ∑_α α_i`, in the sense of `New.ColengthDvd`. -/
-lemma colengthDvd_span_pow_monomials {O : Type*} [CommRing O] [IsDomain O] [ValuationRing O] (N : O)
-    {k a : ℕ} (i : Fin k) :
-    ColengthDvd ⊤
-      (Submodule.span O (Set.range fun α : Monomials (Fin k) a ↦ Pi.single α (N ^ α.val i)))
-      (N ^ ∑ α : Monomials (Fin k) a, α.val i) := by
-  -- The diagonal matrix of the factors `N ^ α_i` carries `z ^ α` to `N ^ α_i • z ^ α`.
-  let A : Matrix (Monomials (Fin k) a) (Monomials (Fin k) a) O := .diagonal fun α ↦ N ^ α.1 i
-  refine ColengthDvd.of_det_dvd (A := A) (by simp [A, prod_pow_eq_pow_sum]) ?_
-  rintro _ ⟨v, rfl⟩
-  have h_sum : A.mulVecLin v = ∑ α, v α • Pi.single α (N ^ α.1 i) := funext fun β ↦ by
-    simp [A, Matrix.mulVec_diagonal, Finset.sum_apply, Pi.single_apply, mul_comm]
-  rw [h_sum]
-  exact Submodule.sum_mem _ fun α _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨α, rfl⟩)
-
-/-- The mean degree in one of `k` variables of the monomials of degree `a` is `a / k`, by symmetry
-in the variables. -/
-lemma mul_sum_monomials_apply {k a : ℕ} (i : Fin k) :
-    k * ∑ α : Monomials (Fin k) a, α.val i = a * Fintype.card (Monomials (Fin k) a) := by
-  -- Swapping `z_i` and `z_j` permutes the monomials and exchanges their exponents.
-  have h_swap (j : Fin k) :
-      ∑ α : Monomials (Fin k) a, α.1 j = ∑ α : Monomials (Fin k) a, α.1 i :=
-    have h_sum (α : Fin k →₀ ℕ) : ∑ x, Finsupp.equivMapDomain (Equiv.swap i j) α x = ∑ x, α x :=
-      Fintype.sum_equiv (Equiv.swap i j) _ _ fun x ↦ by simp
-    Fintype.sum_equiv ((Finsupp.equivCongrLeft (Equiv.swap i j)).subtypeEquiv fun α ↦ by
-      simp [h_sum]) _ _ fun α ↦ by simp
-  calc k * ∑ α : Monomials (Fin k) a, α.1 i
-      = ∑ j : Fin k, ∑ α : Monomials (Fin k) a, α.1 j := by
-        simp only [h_swap, sum_const, card_fin, smul_eq_mul]
-    _ = ∑ α : Monomials (Fin k) a, ∑ j, α.1 j := sum_comm
-    _ = a * Fintype.card (Monomials (Fin k) a) := by
-      simp [fun α : Monomials (Fin k) a ↦ (mem_finsuppAntidiag.1 α.2).1, mul_comm]
-
-end New
 
 namespace New.Data
 
@@ -125,12 +91,13 @@ lemma integralFormsAt_one_le :
   refine fun φ ⟨h_source, (h_integral : GaugeLe 1 1 φ)⟩ ↦ ⟨h_source, fun g ↦ ?_⟩
   let d : Gf D.E (D.X 0) := D.diagPoint 0 (D.nonInducedPlaces \ D.piNPlaces)
   have h_dual : D.dualPointN 0 = d⁻¹ := by
-    simp [d, dualPointN, diagPoint, diagN_eq_sdiff_mul D.piNPlaces]
+    simp [d, dualPointN, diagPoint,
+      diagN_eq_sdiff_mul (N := D.N) (P := D.nonInducedPlaces) D.piNPlaces]
   let A (τ : D.Φ) : Matrix (D.X 0) (D.X 0) ℂ_[D.N] :=
     (GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) d.val).val
   have hA (τ : D.Φ) (i j : D.X 0) : ‖A τ i j‖ ≤ 1 := by
     simp only [A, d, map_adeleExtension_diagPoint, coe_diagGL, diagonal_apply]
-    split_ifs <;> simp [norm_p_lt_one.le]
+    split_ifs <;> simp [inv_le_one_of_one_le₀, (Fact.out : D.N.Prime).one_le]
   let ξ : WeylIndex (D.X 0) D.columnCount → ℂ_[D.N] :=
     weylRep D.columnCount (D.lastEntry 0) (fun τ : D.Φ ↦
     GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (g * 1)⁻¹.val) *ᵥ ιₚ ∘ φ.val g
@@ -221,24 +188,19 @@ lemma upOperator_mem_integralFormsAt {φ : D.FormX 0}
     (hφ : φ ∈ integralFormsAt D.SourceForm (D.diagPointN 0)) :
     upOperator (D.formRepAtN 0) φ ∈ integralFormsAt D.SourceForm (D.dualPointN 0) := by
   classical
-  obtain ⟨h_source, h_integral⟩ := hφ
-  refine ⟨D.upOperator_mem_sourceForm h_source, fun g ↦ ?_⟩
+  refine ⟨D.upOperator_mem_sourceForm hφ.1, fun g ↦ ?_⟩
   -- The value at `g` is a sum of roots of unity times values `φ (g g')`, where `g' δ_0` and `δ_0^∨`
   -- differ on the right by an element `k` that is integral above `N`.
-  let k (y : D.X 0 → D.nonInducedPlaces → ZMod D.N) : Gf D.E (D.X 0) :=
-    embedGL (inclGL (lastRowColGL y))
-  let g' (y : D.X 0 → D.nonInducedPlaces → ZMod D.N) : Gf D.E (D.X 0) :=
-    D.dualPointN 0 * k y * (D.diagPointN 0)⁻¹
-  have h_value : (upOperator (D.formRepAtN 0) φ).val g =
-      ∑ y with IsUnit (y (.inr ())), psiN (y (.inr ())) • φ.val (g * g' y) := by
-    simp [upOperator, conjEmbedGL, g', k, mul_assoc]
-  rw [h_value]
+  let k (y : D.X 0 → D.nonInducedPlaces → ZMod D.N) := embedGL (inclGL (lastRowColGL y))
+  let g' y := D.dualPointN 0 * k y * (D.diagPointN 0)⁻¹
+  rw [show (upOperator (D.formRepAtN 0) φ).val g =
+      ∑ y with IsUnit (y (.inr ())), psiN (y (.inr ())) • φ.val (g * g' y) by
+    simp [upOperator, conjEmbedGL, g', k, mul_assoc]]
   refine weylGauge_sum_le _ zero_le_one fun y _ ↦ ?_
   rw [weylGauge_smul, psiN, P.norm_map_selfDualAddChar, one_mul,
     ← weylGauge_mul_of_mem_integralAbove (k := k y) _
-    (mem_integralAbove_of_inclGL_eq (atPlaces_embedGL _).symm),
-    show g * D.dualPointN 0 * k y = g * g' y * D.diagPointN 0 by simp [g', mul_assoc]]
-  exact h_integral (g * g' y)
+      (mem_integralAbove_of_inclGL_eq (atPlaces_embedGL _).symm)]
+  simpa [g', mul_assoc] using hφ.2 (g * g' y)
 
 /-- Let `𝒜_ι` and `𝒜^L` be the modules of source forms (`D.SourceForm`) that are integral at the
 points `1` and `δ_0 = D.diagPointN 0`. Let `Up = upOperator (D.formRepAtN 0)` be the sum of right
@@ -256,7 +218,7 @@ lemma colengthDvd_comap_upOperator_pow (i : ℕ) :
   | zero =>
     rw [zero_add, mul_one]
     exact D.colengthDvd_integralFormsAt_diagPointN.comap .id D.integralFormsAt_one_le
-      fun φ _ hφ ↦ by simpa using hφ
+      fun φ _ hφ ↦ hφ
   | succ i ih =>
     rw [mul_add_one, pow_add (D.N : embValRing)]
     refine ih.trans (D.colengthDvd_integralFormsAt_diagPointN.comap _ (fun φ hφ ↦ ?_) fun _ _ h ↦ h)

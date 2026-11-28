@@ -1,3 +1,13 @@
+module
+
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.FieldTheory.Finite.Extension
+import Mathlib.RingTheory.PicardGroup
+public import Lib.LocalGL.Green.TauFunctions
+public import Lib.LocalGL.Shintani.CosetDescent
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.LocalGL.Green.CuspidalFunctions
 import Lib.LocalGL.Green.LabelCharacters
 
 /-!
@@ -53,6 +63,8 @@ Algebra 319 (2008) 4147-4176, Thm 5.1; for tensor induction, Gluck-Isaacs, Illin
 
 See also `Lib.LocalGL.Green.TauFunctions`.
 -/
+
+@[expose] public section
 
 /-!
 ## Frobenius reciprocity for parabolically induced characters
@@ -142,7 +154,7 @@ attribute [local instance low] Fintype.ofFinite
 variable {k L K : Type*} {r : ℕ}
   (k' : Type*) [Field k] [Field k'] [Algebra k k'] [Finite k] [Finite k'] [Field L]
   [Algebra k L] [Field K] [Algebra k K] [Algebra k' K] [IsScalarTower k k' K]
-  (T : MulChar K ℂ) [IsFaithfulMulChar K T] {P : k[X]} {x : K}
+  (T : MulChar K ℂ) {P : k[X]} {x : K}
 
 omit [IsScalarTower k k' K] in
 /-- Let irreducible polynomials `S` over `k'` and `P` over `k` have a common root `z`. Then
@@ -163,7 +175,7 @@ multiplication by `u` times `∏ j, conj` of the `thetaChar` of `x ^ |k| ^ a j` 
 `mulMoebius B = B · μ`. -/
 lemma exists_rankInner_labelChar_eq_finMean (hP : Irreducible P) (hx : Polynomial.aeval x P = 0)
     (hx_int : IsIntegral k' x) [FiniteDimensional k' k'⟮x⟯] [Finite k'⟮x⟯] {n : ℕ} {c : k'[X]}
-    (hc : IsLabel n c) (h_dvd : c ∣ P.map (algebraMap k k')) :
+    [IsFaithfulMulChar K T] (hc : IsLabel n c) (h_dvd : c ∣ P.map (algebraMap k k')) :
     ∃ b : ℕ, ∃ a : Fin b → ℕ,
       -- (a) the roots
       (∀ z : K, Polynomial.aeval z c = 0 → ∃ j : Fin b, ∃ v < finrank k' k'⟮x⟯,
@@ -180,9 +192,11 @@ lemma exists_rankInner_labelChar_eq_finMean (hP : Irreducible P) (hx : Polynomia
   revert h_dvd
   refine hc.induction_irreducible_mul K (fun _ ↦ ?_)
     fun S m c z hS_monic hS hS_zero hzS ih h_dvd ↦ ?_
-  · simp [eq_simClassOf_zero_of_dim_eq_zero, finMean, univ_eq_empty, rankInner,
-    finsum_eq_sum_of_fintype,
-      mulMoebius, finrank_pi_fintype]
+  · -- `b = 0`: both sides are `B` at the class of dimension `0` (naming `b` first keeps `simp`
+    -- from trying `eq_simClassOf_zero_of_dim_eq_zero` on classes of unknown dimension).
+    refine ⟨0, Fin.elim0, by simp, zero_mul _, fun B ↦ ?_⟩
+    simp [eq_simClassOf_zero_of_dim_eq_zero, finMean, univ_eq_empty, rankInner,
+      finsum_eq_sum_of_fintype, mulMoebius, finrank_pi_fintype]
   -- The new factor `S` has a root `x ^ |k| ^ e`, and its degree is `[k'(x) : k']`.
   have hzP : Polynomial.aeval z P = 0 := by simpa [hzS] using map_dvd (aeval z) h_dvd
   have h_dvd_iff (d : ℕ) : S.natDegree ∣ d ↔ finrank k' k'⟮x⟯ ∣ d := by
@@ -193,20 +207,25 @@ lemma exists_rankInner_labelChar_eq_finMean (hP : Irreducible P) (hx : Polynomia
     exists_pow_card_pow_eq_of_root hP hx hzP
   -- the statement for `c`, by induction
   obtain ⟨b, a, roots, rfl, h_avg⟩ := ih (dvd_of_mul_left_dvd h_dvd)
-  refine ⟨b + 1, cons e a, ?_, by grind, fun B ↦ ?_⟩
+  refine ⟨b + 1, cons e a, ?_, by rw [degree_eq, Nat.add_one_mul, add_comm], fun B ↦ ?_⟩
   · -- A root of `S * c` is a root of `S`, and then conjugate to `x ^ |k| ^ e`, or a root of `c`.
     suffices h_roots : ∀ z : K, Polynomial.aeval z S = 0 ∨ Polynomial.aeval z c = 0 →
         (∃ v < finrank k' k'⟮x⟯, e < P.natDegree ∧ z ^ Nat.card k' ^ v = x ^ Nat.card k ^ e) ∨
           ∃ i : Fin b, ∃ v < finrank k' k'⟮x⟯,
             a i < P.natDegree ∧ z ^ Nat.card k' ^ v = x ^ Nat.card k ^ a i by
       simpa [exists_fin_succ] using h_roots
-    grind [exists_pow_card_pow_eq_of_root]
+    rintro z (hz | hz)
+    · obtain ⟨v, hv, h_conj⟩ := exists_pow_card_pow_eq_of_root hS hz hzS
+      exact .inl ⟨v, degree_eq ▸ hv, he, h_conj⟩
+    · exact .inr (roots z hz)
   -- Removing the factor `greenTau T S` replaces `B` by `B'`: up to sign, `B' o` is the mean over
   -- `z` in `k'(x)ˣ` of `conj (θ z)` times `B` at the direct sum of `o` and multiplication by `z`.
-  let θ : MulChar K ℂ := thetaChar T (.card k'⟮x⟯) (x ^ .card k ^ e)
+  -- (`Nat.card` in the exponent and `LinearMap.mulLeft` are written in full here and below: `.card`
+  -- there and the overloaded `mulLeft` (also `Units.mulLeft`) are slow to elaborate.)
+  let θ : MulChar K ℂ := thetaChar T (.card k'⟮x⟯) (x ^ Nat.card k ^ e)
   let B' : Hall k' := fun o ↦ (-1) ^ finrank k' k'⟮x⟯ * finMean fun z : k'⟮x⟯ˣ ↦
     conj (θ (k'⟮x⟯.val z.val)) *
-      B (simClassOf ((simClassOf (mulLeft k' z.val)).out.2.prodMap o.out.2))
+      B (simClassOf ((simClassOf (LinearMap.mulLeft k' z.val)).out.2.prodMap o.out.2))
   have h_skew : skew (finrank k' k'⟮x⟯) (greenTau T S) (mulMoebius B) = mulMoebius B' := by
     -- `greenTau T S` is Green's function of `θ` up to sign, and
     -- `rankInner_greenCuspidal_mulMoebius` computes its pairing.
@@ -219,12 +238,12 @@ lemma exists_rankInner_labelChar_eq_finMean (hP : Irreducible P) (hx : Polynomia
     ac_rfl
   -- Multiplication by `cons z u` is the direct sum of the multiplications by `z` and by `u`.
   have block (z : k'⟮x⟯ˣ) (u : Fin b → k'⟮x⟯ˣ) :
-      simClassOf ((simClassOf (mulLeft k' z.val)).out.2.prodMap
-          (simClassOf (mulLeft k' fun j : Fin b ↦ (u j).val)).out.2) =
-        simClassOf (mulLeft k' fun j : Fin (b + 1) ↦
+      simClassOf ((simClassOf (LinearMap.mulLeft k' z.val)).out.2.prodMap
+          (simClassOf (LinearMap.mulLeft k' fun j : Fin b ↦ (u j).val)).out.2) =
+        simClassOf (LinearMap.mulLeft k' fun j : Fin (b + 1) ↦
           ((Fin.cons z u : Fin (b + 1) → k'⟮x⟯ˣ) j).val) := by
-    obtain ⟨f, hf⟩ := exists_equiv_simClassOf_out (mulLeft k' z.val)
-    obtain ⟨g, hg⟩ := exists_equiv_simClassOf_out (mulLeft k' fun j ↦ (u j).val)
+    obtain ⟨f, hf⟩ := exists_equiv_simClassOf_out (LinearMap.mulLeft k' z.val)
+    obtain ⟨g, hg⟩ := exists_equiv_simClassOf_out (LinearMap.mulLeft k' fun j ↦ (u j).val)
     refine simClassOf_eq_of_equiv (f.prodCongr g ≪≫ₗ consLinearEquiv k' fun _ ↦ k'⟮x⟯) fun v ↦ ?_
     simp [hf, hg, funext_iff, forall_fin_succ]
   -- Split off the factor `greenTau T S` with its sign, and apply the case of `c` to `B'`.
@@ -237,7 +256,9 @@ lemma exists_rankInner_labelChar_eq_finMean (hP : Irreducible P) (hx : Polynomia
   -- Both sides are double sums, over `z` and over the other coordinates `u`; compare the terms.
   rw [finMean_equiv (consEquiv _) fun _ ↦ rfl]
   simp only [finMean_prod]
-  simp [finMean, prod_univ_succ, mul_sum, sum_div, sum_comm (α := _ˣ), B', finsum_eq_sum_of_fintype]
+  simp only [finMean, card_eq_fintype_card, coe_val, finsum_eq_sum_of_fintype, sum_div, mul_sum,
+    sum_comm (α := _ˣ), Fintype.card_pi, Finset.prod_const, Finset.card_univ, Fintype.card_fin,
+    cast_pow, consEquiv_apply, prod_univ_succ, cons_zero, cons_succ, B']
   congr! 2 with z _ u
   rw [block z u]
   -- The sign in `B'` cancels the one split off by `pow_add`.
@@ -249,7 +270,7 @@ such that every root of `P` over `k'` is conjugate over `k'` to some `x ^ |k| ^ 
 `(j, i) ↦ F ^ (a j + deg P * i)`, for `F` the Frobenius of `k'` over `k`, is a bijection from
 `Fin g × Fin s` onto `Gal(k'/k)`. -/
 private lemma bijective_frobeniusAlgEquivOfAlgebraic_pow_of_roots (hP : Irreducible P)
-    (hx : Polynomial.aeval x P = 0) [FiniteDimensional k' k'⟮x⟯] {g s : ℕ} {a : Fin g → ℕ}
+    (hx : Polynomial.aeval x P = 0) {g s : ℕ} {a : Fin g → ℕ}
     (roots : ∀ z : K, Polynomial.aeval z (P.map (algebraMap k k')) = 0 →
       ∃ j : Fin g, ∃ v < finrank k' k'⟮x⟯,
         a j < P.natDegree ∧ z ^ Nat.card k' ^ v = x ^ Nat.card k ^ a j)
@@ -288,7 +309,7 @@ power of the Frobenius of `k'(x)` (`χ_frob`), and let these powers run once thr
 (`frob_bij`). Then for a unit `t` of `k' ⊗ L`, `conj θ_x` at `χ 0` of the norm `∏ τ, τ t` is the
 product over `j` of `conj θ_(x ^ |k| ^ a j)` at `χ (a j) t`. -/
 private lemma conj_thetaChar_prod_eq_prod_conj_thetaChar (hP : Irreducible P)
-    (hP_coeff : P.coeff 0 ≠ 0) (hx : Polynomial.aeval x P = 0) [FiniteDimensional k' k'⟮x⟯]
+    (hP_coeff : P.coeff 0 ≠ 0) (hx : Polynomial.aeval x P = 0)
     [Finite k'⟮x⟯] {g s : ℕ} {a : Fin g → ℕ}
     (hs : finrank k k' * finrank k' k'⟮x⟯ = P.natDegree * s)
     (χ : ℕ → k' ⊗[k] L →ₐ[k'] k'⟮x⟯)
@@ -301,7 +322,7 @@ private lemma conj_thetaChar_prod_eq_prod_conj_thetaChar (hP : Irreducible P)
     (t : (k' ⊗[k] L)ˣ) :
     conj (thetaChar T (.card k ^ P.natDegree) x
         (k'⟮x⟯.val.comp (χ 0) (∏ τ : Gal(k'/k), map τ.toAlgHom (.id k L) (t : k' ⊗[k] L)))) =
-      ∏ j : Fin g, conj (thetaChar T (.card k'⟮x⟯) (x ^ .card k ^ a j) (χ (a j) t)) := by
+      ∏ j : Fin g, conj (thetaChar T (.card k'⟮x⟯) (x ^ Nat.card k ^ a j) (χ (a j) t)) := by
   -- Group the norm by `j`. Each group is the `|k| ^ a j`-th power of the norm of `χ (a j) t` from
   -- `k'(x)` to its subfield with `|k| ^ deg P` elements, to which `thetaChar_eq_apply_norm_pow`
   -- applies.
@@ -324,7 +345,7 @@ the semidirect product `GL_r(k') ⋊ Gal(k'/k)` that descends (`DescendsTo`) to 
 cuspidal function `greenCuspidal k θ_x`, where `θ_x = thetaChar T (|k| ^ r) x`. The same `Φ`
 descends to `(-1) ^ r Ξ_P μ`, with `Ξ_P = labelChar T P` formed over `k'`. -/
 lemma exists_isChar_descendsTo_labelChar [Finite L] (hP : Irreducible P) (hP_label : IsLabel r P)
-    (hx : Polynomial.aeval x P = 0) (hL_rank : finrank k L = r) :
+    [IsFaithfulMulChar K T] (hx : Polynomial.aeval x P = 0) (hL_rank : finrank k L = r) :
     ∃ Φ : GalSemidirect k k' (Fin r) → ℂ,
       -- (a) a character
       IsChar Φ ∧
@@ -385,7 +406,7 @@ lemma exists_isChar_descendsTo_labelChar [Finite L] (hP : Irreducible P) (hP_lab
       (k'⟮x⟯.val.comp (χ 0))
   -- `E` respects multiplication, so it keeps the similarity classes of the multiplications.
   have h_cls (t : (k' ⊗[k] L)ˣ) :
-      simClassOf (mulLeft k' (t : k' ⊗[k] L)) = simClassOf (mulLeft k' (π t)) :=
+      simClassOf (LinearMap.mulLeft k' (t : k' ⊗[k] L)) = simClassOf (LinearMap.mulLeft k' (π t)) :=
     simClassOf_eq_of_equiv E (map_mul π _)
   refine ⟨Ψ, hΨ_char, hΨ_down, hΨ_up _ fun B ↦ ?_⟩
   calc
@@ -395,11 +416,11 @@ lemma exists_isChar_descendsTo_labelChar [Finite L] (hP : Irreducible P) (hP_lab
       ac_rfl
     _ = finMean fun u : Fin g → k'⟮x⟯ˣ ↦
           (∏ j : Fin g, conj (thetaChar T (Nat.card k'⟮x⟯) (x ^ Nat.card k ^ a j) (u j))) *
-            B (simClassOf (mulLeft k' fun j : Fin g ↦ (u j).val)) := h_avg B
+            B (simClassOf (LinearMap.mulLeft k' fun j : Fin g ↦ (u j).val)) := h_avg B
     _ = finMean fun t : (k' ⊗[k] L)ˣ ↦
           conj (thetaChar T (.card k ^ P.natDegree) x
             (k'⟮x⟯.val.comp (χ 0) (∏ τ : Gal(k'/k), map τ.toAlgHom (.id k L) (t : k' ⊗[k] L)))) *
-          B (simClassOf (mulLeft k' (t : k' ⊗[k] L))) := by
+          B (simClassOf (LinearMap.mulLeft k' (t : k' ⊗[k] L))) := by
       -- Change variables by `E`: the weights agree by `conj_thetaChar_prod_eq_prod_conj_thetaChar`.
       refine finMean_equiv ((mapEquiv ⟨E.toEquiv, map_mul π⟩).trans .piUnits) fun t ↦ ?_
       simp only [h_cls t,
@@ -430,11 +451,9 @@ private lemma lift_brauerLift_pow_of_forall_eq_one [Algebra k' k']
     (η : K → ℂ) : Lift ℂ (brauerLift k' fun y : K ↦ η (y ^ a)) (brauerLift k' η) := by
   intro m
   have h_span : (brauerLift k' η).evalGL ∈ virtualChars ℂ (GL (Fin m) k') := by
-    -- part (b) of `isIrreducibleChar_and_mem_virtualChars_and_exists_mul`: every inner product with
-    -- a character is a complex number
-    obtain ⟨-, h_crit, -⟩ := isIrreducibleChar_and_mem_virtualChars_and_exists_mul ℂ
-      (isClassFunction_evalGL (F := brauerLift k' η) (n := Fin m))
-    exact h_crit fun χ _ ↦ ⟨_, rfl⟩
+    -- `IsClassFunction.mem_virtualChars`: every inner product with a character is a complex number
+    exact (isClassFunction_evalGL (F := brauerLift k' η) (n := Fin m)).mem_virtualChars
+      fun χ _ ↦ ⟨_, rfl⟩
   refine hasCommonLift_of_gal_trivial h_gal h_span fun g ↦ ?_
   simp [Hall.evalGL, charpoly_map, h_roots]
 
@@ -464,9 +483,10 @@ private lemma lift_labelChar_map_of_forall_eq_one [Algebra k' k']
     rw [labelChar_eq_greenTau T hP hP_monic, labelChar_eq_greenTau T hPσ (hP_monic.map _),
       greenTau_eq hP hP_coeff hx, greenTau_eq hPσ (by simpa using hP_coeff) hx_pow, natDegree_map,
       rankPart_greenCuspidal_pow hP hP_coeff hx]
-    exact (lift_brauerLift_pow_of_forall_eq_one T h_gal h_roots _).rankPart_mulMoebius_mul_constOne
+    exact (lift_brauerLift_pow_of_forall_eq_one h_gal h_roots _).rankPart_mulMoebius_mul_constOne
   simpa using h_lift_P.mul h_lift_c
 
+omit [Finite k'] in
 /-- Let `k'` be an algebra over itself with surjective structure map `s` (`h_surj`), and let `F`
 lift to `F'` over it. Then `F'` at `s(g)` is `F` at `g`: a common lift `Φ` is `F'` on `GL n k'`
 and descends to `F` on the coset of `1`, whose fixed field is `k'`. -/
@@ -487,27 +507,14 @@ degree `r` over `k'` (monic, squarefree, of degree `r`, with nonzero constant te
 `g ∈ GL_n(k')`, we have Ξ_c(σ(g)) = Ξ_{σ(c)}(g). -/
 lemma evalGL_labelChar_map (σ : Gal(k'/k)) {c : k'[X]} (hc : IsLabel r c) (g : GL n k') :
     (labelChar T c).evalGL (g.map σ) = (labelChar T (c.map σ)).evalGL g := by
-  -- View `k'` as an extension of itself through `σ`; its Galois group is trivial. For this
-  -- extension `labelChar T (c.map σ)` lifts to `labelChar T c`, by induction on the irreducible
-  -- factors of `c`. Evaluating the common combination of characters at `g.map σ` gives the claim.
+  -- View `k'` as an extension of itself via `σ`; its Galois group is trivial, so
+  -- `labelChar T (c.map σ)` lifts to `labelChar T c`, and evaluating at `g.map σ` gives the claim.
   let twist : Algebra k' k' := σ.toRingEquiv.toRingHom.toAlgebra
-  have h_gal (τ : Gal(k'/k')) : τ = 1 := by
-    ext y
-    obtain ⟨z, rfl⟩ := σ.surjective y
-    exact τ.commutes z
-  -- `σ` is the power map `y ↦ y ^ a`, so it raises the roots of a polynomial to the power `a`.
-  obtain ⟨i, hσ_pow⟩ : ∃ i : ℕ, ∀ y : k', σ y = y ^ Nat.card k ^ i :=
-    exists_forall_apply_eq_pow k _ k' σ
-  set a : ℕ := Nat.card k ^ i
-  have h_roots (P : k'[X]) :
-      (P.map (algebraMap k' k')).aroots K = (P.aroots K).map fun y ↦ y ^ a :=
-    aroots_map_frobenius_pow _ hσ_pow P
-  -- `σ` keeps irreducible polynomials irreducible; the lemmas above give the lift.
-  have h_irr (P : k'[X]) (hP : Irreducible P) : Irreducible (P.map (algebraMap k' k')) :=
-    hP.map (mapEquiv σ.toRingEquiv)
-  have h_lift : Lift ℂ (labelChar T (c.map (algebraMap k' k'))) (labelChar T c) :=
-    lift_labelChar_map_of_forall_eq_one T h_gal h_roots h_irr hc
-  -- Evaluate the common lift at `g.map σ`; the structure map of the twisted algebra is `σ`.
+  obtain ⟨i, hσ_pow⟩ := exists_forall_apply_eq_pow k _ k' σ
+  have h_lift := lift_labelChar_map_of_forall_eq_one T
+    (fun τ ↦ AlgEquiv.ext (σ.surjective.forall.2 τ.commutes))
+    (aroots_map_frobenius_pow _ hσ_pow)
+    (fun _ hP ↦ hP.map (mapEquiv σ.toRingEquiv)) hc
   have h_alg : algebraMap k' k' = (σ : k' →+* k') := RingHom.ext fun _ ↦ rfl
   simpa [h_alg] using evalGL_map_eq_of_lift h_lift σ.surjective g
 
@@ -531,22 +538,14 @@ lemma lift_detChar [IsScalarTower k k' K] {χ : MulChar k ℂ} {χ' : MulChar k'
   · -- over `σ` with fixed field `k`, `ϑ` descends to `θ_x ∘ det`, which is `χ ∘ det` on `GL m k`
     simp +contextual [DescendsOnCoset, hϑ_lifts σ hσ _, ν, RingHom.map_det, ← thetaChar_charName T,
       algebraMap_apply k k' K]
-  · -- on `GL m k'`: `θ_x` for `#k` at the norm of `z` is `θ_x` for `#k'` at `z`
-    set x : K := algebraMap k K (charName T χ)
-    set z : K := algebraMap k' K g.val.det
+  · -- on `GL m k'`: `θ_x` for `#k` at the norm of `det g` is `θ_x` for `#k'` at `det g`
     have h_det (τ : Gal(k'/k)) : (galActionGL k k' (Fin m) τ g).val.det = τ g.val.det :=
       (τ.map_det _).symm
-    calc ϑ (inl g)
-      _ = thetaChar T (Nat.card k) x (algebraMap k' K (∏ τ : Gal(k'/k), τ g.val.det)) := by
-        simp [hϑ, ν, h_det, x]
-      _ = thetaChar T (Nat.card k) x (z ^ ∑ i ∈ range (finrank k k'), Nat.card k ^ i) := by
-        rw [← Algebra.norm_eq_prod_automorphisms, algebraMap_norm_eq_pow_sum, map_pow]
-      _ = thetaChar T (Nat.card k') x z := by
-        simpa using (thetaChar_eq_apply_norm_pow T one_lt_card
-          (algebraMap_pow_card_pred_eq_one (charName T χ)) one_lt_card natCard_eq_pow_finrank
-          (pow_one _) (algebraMap_pow_card_pred_eq_one g.det)).symm
-      _ = (detChar χ').evalGL g := by
-        simp [← thetaChar_charName T χ', h_name, ← IsScalarTower.algebraMap_apply, x, z]
+    simpa [hϑ, ν, h_det, ← map_pow, ← algebraMap_norm_eq_pow_sum,
+      Algebra.norm_eq_prod_automorphisms, ← thetaChar_charName T χ', h_name,
+      ← IsScalarTower.algebraMap_apply] using
+      (thetaChar_eq_apply_norm_pow T one_lt_card (algebraMap_pow_card_pred_eq_one (charName T χ))
+        one_lt_card natCard_eq_pow_finrank (pow_one _) (algebraMap_pow_card_pred_eq_one g.det)).symm
 
 /-- Let `P` be a label of degree `m` over `k` with `P(1) ≠ 0`, and suppose that `Ξ_P` is `(-1) ^ m`
 times the rank-`m` part of `greenCuspidal k θ`. Then the inner product in rank `m` of
@@ -591,7 +590,7 @@ private lemma labelChar_map_evalGL_galActionGL {P : k[X]} {m : ℕ}
     (labelChar T (P.map (algebraMap k k'))).evalGL (galActionGL k k' (Fin m) σ g) =
       (labelChar T (P.map (algebraMap k k'))).evalGL g := by
   have hσP : (P.map (algebraMap k k')).map σ = P.map (algebraMap k k') :=
-    Polynomial.ext fun _ ↦ by simp
+    AddMonoidAlgebra.ext <| Finsupp.ext fun _ ↦ by simp
   change (labelChar T (P.map (algebraMap k k'))).evalGL (g.map σ) = _
   rw [evalGL_labelChar_map T σ hL', hσP]
 
@@ -650,7 +649,7 @@ lemma DescendsTo.card_mul_classInner {F G : Hall k} {Φ Ψ : GalSemidirect k k' 
 degree `m` over `k` with `P(1) ≠ 0` and `Ξ_P = (-1) ^ m` times the rank-`m` part of
 `greenCuspidal k θ`, and let the character `J` descend to `greenCuspidal k θ` times `μ` over `k` and
 to `(-1) ^ m` times `Ξ_P μ` formed over `k'`. Then `Ξ_P` lifts by characters to `Ξ_P` over `k'`. -/
-private lemma lift_labelChar_of_not_isRoot_one {P : k[X]} {m : ℕ} [NeZero m] (hL : IsLabel m P)
+private lemma lift_labelChar_of_not_isRoot_one {P : k[X]} {m : ℕ} (hL : IsLabel m P)
     (h_not_root_one : ¬P.IsRoot 1) {θ : MulChar K ℂ}
     (h_labelChar_eq : labelChar T P = (-1 : ℂ) ^ m • rankPart m (greenCuspidal k θ))
     {J : GalSemidirect k k' (Fin m) → ℂ} (hJ : IsChar J)
@@ -708,7 +707,7 @@ private lemma lift_labelChar_of_not_isRoot_one {P : k[X]} {m : ℕ} [NeZero m] (
   -- `Ψ` is `Y'` on `GL m k'`, and `Φ`, which descends to `Y` (`hΦ_down`), over the `σ ≠ 1`.
   have h_on_cosets : DescendsTo Ψ Y := by
     simpa +contextual [Ψ, DescendsTo, DescendsOnCoset, hasFixedField_iff_ne_one hp] using hΦ_down
-  exact .rankPart_of_hasCommonLift ⟨Ψ, h_irr.left.mem_virtualChars, h_on_cosets, by simp [Ψ, Y']⟩
+  exact .rankPart_of_hasCommonLift ⟨Ψ, h_irr.isChar.mem_virtualChars, h_on_cosets, by simp [Ψ, Y']⟩
 
 /-- Shintani lifting: let `k'/k` be an extension of finite fields of prime degree (`hp`), `T`
 injective (`IsFaithfulMulChar`) and `c` a label over `k` (`IsLabel`: monic, squarefree,

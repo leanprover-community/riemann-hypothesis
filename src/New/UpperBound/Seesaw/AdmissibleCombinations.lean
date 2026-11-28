@@ -1,6 +1,11 @@
-import Lib.Adelic.AutomorphicForms.PAdicGauge
+module
+
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Lib.General.LinearAlgebra.TensorChains
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+public import Lib.Weil.Periods.Grading
 import Lib.ClassField.HeckeCharacter.AlgebraicValues
-import Lib.General.LinearAlgebra.TensorChains
+import Lib.General.LinearAlgebra.HermiteForm
 import Lib.Weil.DualPair.WeilAction
 
 /-!
@@ -48,6 +53,8 @@ Notions from other files:
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work. See
 `Lib.ClassField.Global.CMSplittingCharacters` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -97,12 +104,14 @@ integral (has norm at most `1`), for every prime `l` coprime to `n`. -/
 def integralAway (n : ℕ) : Subring ℂ where
   carrier := {z : ℂ | ∀ (l : ℕ) [Fact l.Prime], l.Coprime n → ∀ ι : ℂ →+* ℂ_[l], ‖ι z‖ ≤ 1}
   mul_mem' hx hy l _ hl ι := by
-    simpa using (mul_le_of_le_one_left (norm_nonneg _) (hx l hl ι)).trans (hy l hl ι)
-  one_mem' := by simp
+    simpa only [map_mul, norm_mul] using
+      (mul_le_of_le_one_left (norm_nonneg _) (hx l hl ι)).trans (hy l hl ι)
+  one_mem' := by simp only [Set.mem_ofPred_eq, map_one, norm_one, le_refl, implies_true]
   add_mem' hx hy l _ hl ι := by
     grw [map_add, IsUltrametricDist.norm_add_le_max, hx l hl ι, hy l hl ι, max_self]
-  zero_mem' := by simp
-  neg_mem' := by simp
+  zero_mem' := by
+    simp only [Set.mem_ofPred_eq, map_zero, norm_zero, zero_le_one, implies_true]
+  neg_mem' := by simp only [Set.mem_ofPred_eq, map_neg, norm_neg, imp_self, implies_true]
 
 /-- The conditions on finitely supported coefficients `r`: the support lies in `A`, each `d * r x`
 is integral away from `n` (`New.Seesaw.integralAway`) and, if `p` holds, `∑ ‖σ (r x)‖ ≤ B` for
@@ -125,9 +134,16 @@ variable {E : Type*} [Field E] [NumberField E]
 dividing `q`, for every index `i`. There is no condition at the places dividing `q`. -/
 def weightedTranslations (q : ℕ) (d : ι → 𝔸f E) : AddSubgroup (ι → 𝔸f E) where
   carrier := {x : ι → 𝔸f E | ∀ (i : ι) (w : FinPlace E), ↑q ∉ w.asIdeal → v ((d i * x i) w) ≤ 1}
-  add_mem' {x y} hx hy i w hw := by simpa [mul_add] using v.map_add_le (hx i w hw) (hy i w hw)
-  zero_mem' := by simp
-  neg_mem' := by simp
+  add_mem' {x y} hx hy i w hw := by
+    simpa only [Pi.add_apply, mul_add, IsDedekindDomain.FiniteAdeleRing.add_apply,
+      IsDedekindDomain.FiniteAdeleRing.mul_apply] using v.map_add_le (hx i w hw) (hy i w hw)
+  zero_mem' := by
+    simp only [IsDedekindDomain.FiniteAdeleRing.mul_apply, map_mul, Set.mem_ofPred_eq,
+      Pi.zero_apply, IsDedekindDomain.FiniteAdeleRing.zero_apply, map_zero, mul_zero, zero_le,
+      implies_true]
+  neg_mem' := by
+    simp only [IsDedekindDomain.FiniteAdeleRing.mul_apply, map_mul, Set.mem_ofPred_eq,
+      Pi.neg_apply, finAdele_neg_apply, Valuation.map_neg, imp_self, implies_true]
 
 /-- The group of finite adelic vectors `x` indexed by `ι` such that `d * x i` is integral at every
 place `w` not dividing `q`, for every index `i`. -/
@@ -178,46 +194,86 @@ def gluedGram {K : Type*} [CommRing K] (p q : K) :
     (of fun b c ↦ if b = c.rev then (if b = c then -p else 1) else 0)
 
 /-- For odd `s`, the reversal `c ↦ s - 1 - c` of `Fin s` fixes exactly the middle index. -/
-lemma eq_rev_iff_of_odd (hs : Odd s) (c : Fin s) : c = c.rev ↔ c = ⟨s / 2, by grind⟩ := by grind
+lemma eq_rev_iff_of_odd (hs : Odd s) (c : Fin s) : c = c.rev ↔ c = ⟨s / 2, by grind⟩ := by
+  rcases hs with ⟨k, rfl⟩
+  have hc : (c : ℕ) < 2 * k + 1 := c.isLt
+  rw [Fin.ext_iff, Fin.ext_iff, Fin.val_rev]
+  dsimp only
+  omega
 
 /-- For even `s`, the reversal `c ↦ s - 1 - c` of `Fin s` has no fixed point. -/
-lemma ne_rev_of_not_odd (hs : ¬ Odd s) (c : Fin s) : c ≠ c.rev := by grind
+lemma ne_rev_of_not_odd (hs : ¬ Odd s) (c : Fin s) : c ≠ c.rev := by
+  obtain ⟨k, rfl⟩ := Nat.not_odd_iff_even.mp hs
+  intro h
+  have hc : (c : ℕ) < k + k := c.isLt
+  rw [Fin.ext_iff, Fin.val_rev] at h
+  omega
 
 /-- A ring homomorphism carries `gluedGram p q` to the form with parameters `(f p, f q)`. -/
 lemma map_gluedGram {K L : Type*} [CommRing K] [CommRing L] (f : K →+* L) (p q : K) :
     (gluedGram p q).map f = gluedGram (X := X) (s := s) (f p) (f q) := by
-  ext ((i | i) | b) ((j | j) | c) <;> simp [gluedGram, apply_ite f, diagonal_apply, Function.swap]
+  ext ((i | i) | b) ((j | j) | c) <;>
+    simp only [gluedGram, transpose_of, map_apply, fromBlocks_apply₁₁, fromBlocks_apply₁₂,
+      fromBlocks_apply₂₁, fromBlocks_apply₂₂, diagonal_apply, of_apply, Function.swap,
+      Sum.inl.injEq, Sum.elim_inl, Sum.elim_inr, Pi.one_apply, Pi.zero_apply, apply_ite f,
+      map_one, map_zero, map_neg, reduceCtorEq]
 
 /-- The matrices `gluedGram p 0` and `gluedGram 0 p` multiply to `1`. -/
 lemma gluedGram_mul_eq_one [Fintype X] {K : Type*} [CommRing K] (p : K) :
     gluedGram (X := X) (s := s) p 0 * gluedGram 0 p = 1 := by
-  -- The product is computed block by block, by cases on whether there is a middle vector; `A r`,
-  -- `C` and `J r` name the blocks of `gluedGram`.
-  let J (r : K) : Matrix (Fin s) (Fin s) K :=
-    of fun b c ↦ if b = c.rev then (if b = c then -r else 1) else 0
-  let A (r : K) : Matrix (X ⊕ Unit) (X ⊕ Unit) K :=
-    diagonal (1 ⊕ᵥ fun _ : Unit ↦ if Odd s then r else 1)
-  let C : Matrix (X ⊕ Unit) (Fin s) K := of (0 ⊕ᵥ fun _ b ↦ if b = b.rev then -1 else 0)
-  change fromBlocks (A 0) C Cᵀ (J p) * fromBlocks (A p) C Cᵀ (J 0) = 1
-  suffices (A 0 * A p + C * Cᵀ = 1 ∧ A 0 * C + C * J 0 = 0 ∧ Cᵀ * C + J p * J 0 = 1) ∧
-      Cᵀ * A p + J p * Cᵀ = 0 by
-    simp only [fromBlocks_multiply, this, fromBlocks_one]
+  -- Compute the block product by cases on whether `s` is odd (existence of a middle vector).
   by_cases hs : Odd s
-  · constructor
-    · simp [A, C, J, hs, eq_rev_iff_of_odd hs, ← ext_iff, Matrix.mul_apply, Matrix.one_apply,
-        diagonal, Function.swap]
-      grind
-    · simp [A, C, J, hs, eq_rev_iff_of_odd hs, ← ext_iff, Matrix.mul_apply, diagonal,
-        ← Fin.rev_eq_iff, Function.swap]
-      grind
-  · simp [A, C, J, hs, ne_rev_of_not_odd hs, ← ext_iff, Matrix.mul_apply, Matrix.one_apply,
-      diagonal, Function.swap]
-    grind
+  · simp only [gluedGram, diagonal, hs, ↓reduceIte, eq_rev_iff_of_odd hs, transpose_of,
+      neg_zero, fromBlocks_multiply, ← fromBlocks_one, ← ext_iff, Sum.forall, fromBlocks_apply₁₁,
+      Matrix.add_apply, Matrix.mul_apply, of_apply, mul_ite, ite_mul, zero_mul, mul_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, Sum.elim_inl, Pi.one_apply, mul_one, Function.swap,
+      Pi.zero_apply, Finset.sum_const_zero, add_zero, Sum.elim_inr, mul_neg, fromBlocks_apply₁₂,
+      Finset.sum_ite_eq, Matrix.zero_apply, Sum.inl.injEq, Matrix.one_apply, implies_true,
+      reduceCtorEq, and_self, ite_self, fromBlocks_apply₂₁, zero_add, fromBlocks_apply₂₂,
+      ite_eq_left_iff, ite_eq_right_iff, neg_eq_zero, true_and, forall_const, neg_mul,
+      one_mul, sum_sum_type, Finset.univ_unique, PUnit.default_eq_unit, Finset.sum_ite_irrel,
+      Finset.sum_neg_distrib, Finset.sum_const, Finset.card_singleton, one_smul, Fin.rev_rev]
+    let m : Fin s := ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩
+    have hm : m = m.rev := (eq_rev_iff_of_odd hs m).2 rfl
+    dsimp only [m] at hm
+    refine ⟨⟨neg_neg 1, fun b h1 h2 ↦ ?_⟩, fun b ↦ ⟨?_, fun b1 ↦ ?_⟩⟩
+    · exact False.elim (h1 ((eq_rev_iff_of_odd hs b).2 ((Fin.rev_eq_iff.mp h2).trans hm.symm)).symm)
+    · by_cases hb : b = m
+      · dsimp only [m] at hb; subst hb; simp only [← hm, ↓reduceIte, add_neg_cancel]
+      · dsimp only [m] at hb
+        have hbr : b ≠ (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s).rev :=
+          fun h ↦ hb (h.trans hm.symm)
+        simp only [hb, hbr, ↓reduceIte, neg_zero, add_zero]
+    · by_cases hb1 : b1 = m
+      · dsimp only [m] at hb1; subst hb1
+        by_cases hbb1 : b = ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩
+        · rw [hbb1, ← hm]; simp only [↓reduceIte, neg_neg, add_zero]
+        · simp only [← hm, hbb1, ↓reduceIte, neg_zero, add_zero]
+      · dsimp only [m] at hb1
+        have hb1r : b1 ≠ b1.rev := fun h ↦ hb1 ((eq_rev_iff_of_odd hs b1).1 h)
+        by_cases hbb1 : b = b1
+        · subst hbb1; simp only [hb1, hb1r, hb1r.symm, ↓reduceIte, zero_add]
+        · simp only [hb1, hb1r.symm, hbb1, ↓reduceIte, add_zero]
+  · simp only [gluedGram, diagonal, hs, ↓reduceIte, ne_rev_of_not_odd hs, transpose_of,
+      neg_zero, fromBlocks_multiply, ← fromBlocks_one, ← ext_iff, Sum.forall, fromBlocks_apply₁₁,
+      Matrix.add_apply, Matrix.mul_apply, of_apply, mul_ite, ite_mul, zero_mul, mul_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, Sum.elim_inl, Pi.one_apply, mul_one, Function.swap,
+      Pi.zero_apply, Finset.sum_const_zero, add_zero, Sum.elim_inr, fromBlocks_apply₁₂,
+      Finset.sum_ite_eq, Matrix.zero_apply, Sum.inl.injEq, Matrix.one_apply, implies_true,
+      reduceCtorEq, and_self, ite_self, fromBlocks_apply₂₁, fromBlocks_apply₂₂, sum_sum_type,
+      Finset.univ_unique, PUnit.default_eq_unit, Fin.rev_rev, zero_add, true_and]
+    intro b c
+    by_cases hbc : b = c <;> simp only [hbc, ↓reduceIte, eq_comm]
+    · split_ifs with h1; exact False.elim (ne_rev_of_not_odd hs c h1); rfl
+    · split_ifs with h1; exact False.elim (ne_rev_of_not_odd hs c h1); rfl
 
 /-- A ring homomorphism carries the graded Gram matrix with parameter `r` to the one with `f r`. -/
 lemma map_gradedGram (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*} [CommRing S] (f : S →+* R) (r : S) :
     (gradedGram e r).map f = gradedGram e (f r) := by
-  simp [gradedGram, ← ext_iff, reindex_equiv e, apply_ite f, Matrix.one_apply]
+  simp only [gradedGram, ← ext_iff, map_apply, submatrix_apply, reindex_equiv e,
+    Equiv.symm_apply_apply, Sum.forall, fromBlocks_apply₁₁, Matrix.one_apply, apply_ite f,
+    map_one, map_zero, implies_true, and_self, fromBlocks_apply₁₂, Matrix.zero_apply,
+    fromBlocks_apply₂₁, fromBlocks_apply₂₂, of_apply, map_neg]
 
 /-- The image of the graded Gram matrix `New.gradedGram e N`, with `N` a natural number, under a
 ring homomorphism `f` into a star ring is hermitian. -/
@@ -235,6 +291,7 @@ lemma isHermitian_map_gradedGram_natCast (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S 
 
 variable [Fintype X] [Fintype ι]
 
+omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`. Let `J = New.gradedGram e N` be the
 form that is the identity on `X ⊕ Unit` and pairs string vectors `b` and `s - 1 - b` to `1`, or to
 `-N` if they are equal, carried from `S` to the star ring `R` by `f`; write `π̄ = star π` and
@@ -244,11 +301,13 @@ follows. For odd `s`, the string vectors are multiplied by `u` and the vector `y
 string is multiplied by `u a⁻¹` and the second half by `u ā`. If `N = π π̄` in `R`, then `Bᴴ J B`
 is `gluedGram N 0`, reindexed by `e`. It agrees with `J` except that, for odd `s`, the vector of
 `Unit` has norm `0` and pairs to `-1` with the middle vector. -/
-lemma gram_gradedLatticeBasis_eq_gluedGram (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*} [CommRing S]
+lemma gram_gradedLatticeBasis_eq_gluedGram
+    [Finite X] (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*} [CommRing S]
     [StarRing R] {f : S →+* R} (a : Rˣ) {π : Rˣ} (u : unitary R)
     (hN : f (N : S) = π * star (π : R)) :
     (gradedLatticeBasis e a π u)ᴴ * (gradedGram e (N : S)).map f * gradedLatticeBasis e a π u =
       reindex e e (gluedGram (N : R) 0) := by
+  have := Fintype.ofFinite X
   -- The blocks of the basis are `T`, `0`, `Z`, `D`; the form is `G` on the string.
   let T : Matrix (X ⊕ Unit) (X ⊕ Unit) R :=
     if Odd s then diagonal (1 ⊕ᵥ fun _ : Unit ↦ ((star π)⁻¹ : Rˣ).val) else 1
@@ -262,36 +321,135 @@ lemma gram_gradedLatticeBasis_eq_gluedGram (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {
   -- The unit `u` drops out as `ū u = 1`. For even `s` the factors `a⁻¹` and `ā` on partners in
   -- the string cancel; for odd `s` the last vector of `X ⊕ Unit` is glued, by `π π̄ = N`.
   have hu : star (u : R) * u = 1 := Unitary.coe_star_mul_self u
+  have hu : star (u : R) * u = 1 := Unitary.coe_star_mul_self u
+  have hπ1 : ((star π)⁻¹ : Rˣ).val * star (π : R) = 1 := (star π).inv_mul
+  have hπ2 : (π⁻¹ : Rˣ).val * (π : R) = 1 := π.inv_mul
+  have h_star_inv (z : Rˣ) : star (z⁻¹ : Rˣ).val = ((star z)⁻¹ : Rˣ).val := by
+    have h : star (z⁻¹ : Rˣ).val * star (z : R) = 1 := by rw [← star_mul, z.mul_inv, star_one]
+    calc star (z⁻¹ : Rˣ).val = star (z⁻¹ : Rˣ).val * 1 := (mul_one _).symm
+      _ = star (z⁻¹ : Rˣ).val * (star (z : R) * ((star z)⁻¹ : Rˣ).val) := by
+          rw [← (star z).mul_inv, Units.coe_star]
+      _ = (star (z⁻¹ : Rˣ).val * star (z : R)) * ((star z)⁻¹ : Rˣ).val := (mul_assoc _ _ _).symm
+      _ = ((star z)⁻¹ : Rˣ).val := by rw [h, one_mul]
   have h_X : Tᴴ * T + Zᴴ * G * Z = diagonal (1 ⊕ᵥ fun _ ↦ if Odd s then 0 else 1) := by
     by_cases hs : Odd s
-    · simp [T, Z, G, hs, eq_rev_iff_of_odd hs, apply_ite star, diagonal, ← ext_iff,
-        Matrix.mul_apply]
-      grind [star_mul, star_one, Units.mul_inv, map_natCast]
-    · simp [T, Z, G, hs, ne_rev_of_not_odd hs, diagonal, ← ext_iff, Matrix.one_apply,
-        Matrix.mul_apply]
+    · simp only [hs, ↓reduceIte, diagonal, Units.coe_star_inv, eq_rev_iff_of_odd hs,
+        _root_.mul_inv_rev, Units.val_mul, ← ext_iff, Matrix.add_apply, Matrix.mul_apply,
+        conjTranspose_apply, of_apply, apply_ite star, star_zero, mul_ite, ite_mul, zero_mul,
+        mul_zero, Finset.sum_ite_eq', Finset.mem_univ, Sum.forall, Sum.elim_inl, Pi.one_apply,
+        star_one, mul_one, Pi.zero_apply, Finset.sum_const_zero, add_zero, Sum.elim_inr,
+        star_star, Sum.inl.injEq, reduceCtorEq, implies_true, star_mul', forall_const,
+        true_and, T, Z, G]
+      refine ⟨fun a ↦ ⟨fun a1 ↦ by simp only [eq_comm], ?_⟩, ?_⟩
+      · trivial
+      · have hm : (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s).rev =
+            ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ :=
+          ((eq_rev_iff_of_odd hs _).2 rfl).symm
+        simp only [map_neg, hN, h_star_inv π]
+        calc (π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val +
+              star (u : R) * (((star π)⁻¹ : Rˣ).val * (π⁻¹ : Rˣ).val) * -((π : R) * star (π : R)) *
+                ((u : R) * ((π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val))
+            = (π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val - (star (u : R) * (u : R)) *
+                ((π⁻¹ : Rˣ).val * (π : R)) * (((star π)⁻¹ : Rˣ).val * star (π : R)) *
+                ((π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val) := by ring
+          _ = 0 := by rw [hu, hπ2, hπ1]; ring
+    · simp only [hs, ↓reduceIte, conjTranspose_one, mul_one, ne_rev_of_not_odd hs, diagonal,
+        ← ext_iff, Matrix.add_apply, Matrix.one_apply, Matrix.mul_apply, conjTranspose_apply,
+        of_apply, Sum.forall, Sum.elim_inl, Pi.zero_apply, mul_zero, Finset.sum_const_zero,
+        add_zero, Sum.elim_inr, Sum.inl.injEq, Pi.one_apply, implies_true, reduceCtorEq,
+        and_self, T, Z, G]
   have h_mixed : Zᴴ * G * D = C ∧ Dᴴ * G * Z = Cᵀ := by
     by_cases hs : Odd s
-    · simp [Z, D, G, C, hs, eq_rev_iff_of_odd hs, apply_ite star, diagonal, ← ext_iff,
-        Matrix.mul_apply, Function.swap]
-      grind [star_mul, star_one, Units.mul_inv, map_natCast]
-    · simp [Z, C, ne_rev_of_not_odd hs, ← ext_iff, Matrix.mul_apply, Function.swap]
+    · simp only [eq_rev_iff_of_odd hs, _root_.mul_inv_rev, Units.val_mul, Units.coe_star_inv,
+        diagonal, hs, ↓reduceIte, mul_one, ← ext_iff, Matrix.mul_apply, conjTranspose_apply,
+        of_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, Sum.forall,
+        Sum.elim_inl, Pi.zero_apply, star_zero, zero_mul, Finset.sum_const_zero, implies_true,
+        Sum.elim_inr, apply_ite star, star_mul', star_star, ite_mul, forall_const, true_and,
+        transpose_of, Function.swap, Z, G, D, C]
+      let m : Fin s := ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩
+      have hm : m.rev = m := ((eq_rev_iff_of_odd hs m).2 rfl).symm
+      dsimp only [m] at hm
+      have h_mid : star (u : R) * (((star π)⁻¹ : Rˣ).val * (π⁻¹ : Rˣ).val) *
+          -((π : R) * star (π : R)) * (u : R) = -1 := by
+        calc _ = -(star (u : R) * (u : R)) *
+              (((star π)⁻¹ : Rˣ).val * star (π : R)) * ((π⁻¹ : Rˣ).val * (π : R)) := by ring
+          _ = -1 := by rw [hu, hπ1, hπ2]; ring
+      have h_mid' : star (u : R) * -((π : R) * star (π : R)) *
+          ((u : R) * ((π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val)) = -1 := by
+        calc _ = -(star (u : R) * (u : R)) *
+              (((star π)⁻¹ : Rˣ).val * star (π : R)) * ((π⁻¹ : Rˣ).val * (π : R)) := by ring
+          _ = -1 := by rw [hu, hπ1, hπ2]; ring
+      refine ⟨fun j ↦ ?_, fun i ↦ ?_⟩
+      · simp only [h_star_inv π]
+        by_cases hj : j = m
+        · dsimp only [m] at hj; subst hj
+          simp only [↓reduceIte, hm, map_neg, hN, h_mid]
+        · dsimp only [m] at hj
+          have hjr : (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s) ≠ j.rev :=
+            fun h ↦ hj ((Fin.rev_eq_iff.mp h.symm).trans hm)
+          simp only [hj, hjr, ↓reduceIte, map_zero, mul_zero, zero_mul]
+      · simp only [h_star_inv π]
+        by_cases hi : i = m
+        · dsimp only [m] at hi; subst hi
+          simp only [↓reduceIte, hm, map_neg, hN, h_mid']
+        · dsimp only [m] at hi
+          have hir : i ≠ (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s).rev :=
+            fun h ↦ hi (h.trans hm)
+          simp only [hi, hir, ↓reduceIte, map_zero, mul_zero, zero_mul]
+    · simp only [ne_rev_of_not_odd hs, ↓reduceIte, ← ext_iff, Matrix.mul_apply,
+        conjTranspose_apply, of_apply, Sum.forall, Sum.elim_inl, Pi.zero_apply, star_zero,
+        zero_mul, Finset.sum_const_zero, implies_true, Sum.elim_inr, and_self, transpose_of,
+        Function.swap, mul_zero, Z, C]
   have h_string : Dᴴ * G * D =
       of fun b c ↦ if b = c.rev then (if b = c then -(N : R) else 1) else 0 := by
-    simp [D, G, apply_ite star, diagonal, ← ext_iff, Matrix.mul_apply]
-    grind [star_mul, star_one, Units.mul_inv, map_natCast]
+    simp only [diagonal, mul_ite, mul_one, ← ext_iff, Matrix.mul_apply, conjTranspose_apply,
+      of_apply, apply_ite star, star_mul', star_star, star_zero, ite_mul, zero_mul,
+      Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, mul_zero, D, G]
+    intro b c
+    by_cases hrev : b = c.rev
+    · simp only [hrev, ↓reduceIte]
+      by_cases hs : Odd s
+      · simp only [hs, ↓reduceIte, apply_ite f, map_neg, map_natCast, map_one]
+        calc star (u : R) * (if c.rev = c then -(N : R) else 1) * (u : R)
+            = (star (u : R) * (u : R)) * (if c.rev = c then -(N : R) else 1) := by ring
+          _ = if c.rev = c then -(N : R) else 1 := by rw [hu, one_mul]
+      · have hne : c.rev ≠ c := (ne_rev_of_not_odd hs c).symm
+        have hlt : 2 * (c.rev : ℕ) < s ↔ ¬ 2 * (c : ℕ) < s := by
+          obtain ⟨k, rfl⟩ := Nat.not_odd_iff_even.mp hs
+          have hc := c.isLt
+          rw [Fin.val_rev]; omega
+        simp only [hs, ↓reduceIte, hne, map_one, hlt]
+        by_cases hc : 2 * (c : ℕ) < s
+        · simp only [hc, ↓reduceIte, not_true_eq_false]
+          calc star (u : R) * (a : R) * 1 * ((u : R) * (a⁻¹ : Rˣ).val)
+              = (star (u : R) * (u : R)) * ((a : R) * (a⁻¹ : Rˣ).val) := by ring
+            _ = 1 := by rw [hu, a.mul_inv, one_mul]
+        · simp only [hc, ↓reduceIte, not_false_eq_true]
+          calc star (u : R) * star (a⁻¹ : Rˣ).val * 1 * ((u : R) * star (a : R))
+              = (star (u : R) * (u : R)) * star ((a : R) * (a⁻¹ : Rˣ).val) := by
+                rw [star_mul]; ring
+            _ = 1 := by rw [hu, a.mul_inv, star_one, mul_one]
+    · simp only [hrev, ↓reduceIte, map_zero, mul_zero, zero_mul, ite_self]
   have h_basis : gradedLatticeBasis e a π u = reindex e e (fromBlocks T 0 Z D) := rfl
   have h_form : (gradedGram e (N : S)).map f = reindex e e (fromBlocks 1 0 0 G) := by
-    simp [gradedGram, G, ← ext_iff, reindex_equiv e, apply_ite f, Matrix.one_apply]
+    simp only [gradedGram, apply_ite f, map_neg, map_natCast, map_one, map_zero,
+      reindex_apply, ← ext_iff, map_apply, submatrix_apply, reindex_equiv e,
+      Equiv.symm_apply_apply, Sum.forall, fromBlocks_apply₁₁, Matrix.one_apply,
+      implies_true, and_self, fromBlocks_apply₁₂, Matrix.zero_apply, fromBlocks_apply₂₁,
+      fromBlocks_apply₂₂, of_apply, G]
   have h_blocks : (fromBlocks T 0 Z D)ᴴ * fromBlocks 1 0 0 G * fromBlocks T 0 Z D =
       fromBlocks (Tᴴ * T + Zᴴ * G * Z) (Zᴴ * G * D) (Dᴴ * G * Z) (Dᴴ * G * D) := by
-    simp [fromBlocks_conjTranspose, fromBlocks_multiply]
+    simp only [fromBlocks_conjTranspose, conjTranspose_zero, fromBlocks_multiply, mul_one,
+      Matrix.mul_zero, add_zero, zero_add, Matrix.mul_one, Matrix.zero_mul]
   have h_gram : (fromBlocks T 0 Z D)ᴴ * fromBlocks 1 0 0 G * fromBlocks T 0 Z D =
       gluedGram (N : R) 0 := by
     simp only [h_blocks, h_X, h_mixed, h_string, gluedGram, C]
-  simp [h_basis, h_form, ← h_gram]
+  simp only [h_basis, h_form, reindex_apply, conjTranspose_submatrix, submatrix_mul_equiv,
+    ← h_gram]
 
 variable [DecidableEq ι]
 
+omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`. Let `J = New.gradedGram e N` be the
 form that is the identity on `X ⊕ Unit` and pairs string vectors `b` and `s - 1 - b` to `1`, or to
 `-N` if they are equal, carried from `S` to the star ring `R` by `f`. For units `a`, `π` and a
@@ -300,11 +458,13 @@ changed as follows. For odd `s`, the string vectors are multiplied by `u` and th
 `Unit` becomes `y / π̄ + u z / (π π̄)`, with `z` the middle string vector. For even `s`, the first
 half of the string is multiplied by `u a⁻¹` and the second half by `u ā`. If `N = π π̄` in `R`,
 then `Bᴴ J B` is unimodular over every subring `O` of `R`: it is hermitian and lies in `GL(O)`. -/
-lemma isUnimodular_gradedLatticeBasis_gram {s N : ℕ} (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*}
+lemma isUnimodular_gradedLatticeBasis_gram
+    [Finite X] {s N : ℕ} (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*}
     {O : Subring R} [CommRing S] [StarRing R] {f : S →+* R} {a π : Rˣ} {u : unitary R}
     (hN : f (N : S) = π * star (π : R)) :
     IsUnimodular O ((gradedLatticeBasis e a π u)ᴴ * (gradedGram e (N : S)).map f *
       gradedLatticeBasis e a π u) := by
+  let := Fintype.ofFinite X
   -- The Gram matrix is `gluedGram N 0`, reindexed by `e`; it and its inverse `gluedGram 0 N` have
   -- entries in `O`.
   let B : Matrix ι ι R := gradedLatticeBasis e a π u
@@ -312,7 +472,8 @@ lemma isUnimodular_gradedLatticeBasis_gram {s N : ℕ} (e : (X ⊕ Unit) ⊕ Fin
   let H (p q : O) : Matrix ι ι O := reindex e e (gluedGram p q)
   have h_hermitian : (Bᴴ * J * B).IsHermitian :=
     isHermitian_conjTranspose_mul_mul B (isHermitian_map_gradedGram_natCast e f)
-  have h_inv : H N 0 * H 0 N = 1 := by simp [H, gluedGram_mul_eq_one]
+  have h_inv : H N 0 * H 0 N = 1 := by
+    simp only [reindex_apply, submatrix_mul_equiv, gluedGram_mul_eq_one, submatrix_one_equiv, H]
   have h_gram : (H N 0).map O.subtype = Bᴴ * J * B := by
     simp only [B, J, H, gram_gradedLatticeBasis_eq_gluedGram e a u hN, reindex_apply,
       ← submatrix_map, map_gluedGram, map_natCast, map_zero]
@@ -322,6 +483,19 @@ lemma isUnimodular_gradedLatticeBasis_gram {s N : ℕ} (e : (X ⊕ Unit) ⊕ Fin
 /-- The signs on a string of `s` vectors: `-1` at the first `⌊(s + 1) / 2⌋` indices and `1` at
 the others. -/
 def stringSign (s : ℕ) (b : Fin s) : ℤˣ := if (b : ℕ) < (s + 1) / 2 then -1 else 1
+
+private lemma stringSign_mid {s : ℕ} (a : Fin s) (ha : a = a.rev) :
+    ((stringSign s a : ℤ) : ℂ) = -1 := by
+  rw [Fin.ext_iff, Fin.val_rev] at ha
+  have h : (a : ℕ) < (s + 1) / 2 := by omega
+  simp [stringSign, h]
+
+private lemma rev_lt_half_iff {s : ℕ} (a : Fin s) (ha : a ≠ a.rev) :
+    (a.rev : ℕ) < (s + 1) / 2 ↔ ¬ (a : ℕ) < (s + 1) / 2 := by
+  have h_ne : (a : ℕ) ≠ s - 1 - a := fun h ↦ ha (Fin.ext (by rw [Fin.val_rev]; omega))
+  have hlt := a.isLt
+  rw [Fin.val_rev]
+  omega
 
 /-- A complex frame for a string of `s` vectors `e_b`, with `σ = stringSign s`. Column `b` is
 `(σ b • e_b + e_{s - 1 - b}) / √2`. At the middle index `b = s - 1 - b` these two terms cancel,
@@ -346,78 +520,186 @@ lemma gram_stringFrame_eq_signMatrix {s N : ℕ} (hN : 0 < N) :
   let σ (b : Fin s) : ℂ := stringSign s b
   let t : ℂ := (√2⁻¹ : ℝ)
   let r : ℂ := (√N⁻¹ : ℝ)
-  have ht : t * t = 2⁻¹ := by simp [t, ← mul_inv, ← Complex.ofReal_mul]
-  have hr : r * r * N = 1 := by simp [r, ← mul_inv, ← Complex.ofReal_mul, hN.ne']
-  have hσ_mid (a : Fin s) (ha : a = a.rev) : σ a = -1 := by
-    have h_lt : (a : ℕ) < (s + 1) / 2 := by grind
-    simp [σ, stringSign, h_lt]
+  have ht : t * t = 2⁻¹ := by
+    simp only [Real.sqrt_inv, Complex.ofReal_inv, ← mul_inv, ← Complex.ofReal_mul,
+      Nat.ofNat_nonneg, Real.mul_self_sqrt, Complex.ofReal_ofNat, t]
+  have hr : r * r * N = 1 := by
+    simp only [Real.sqrt_inv, Complex.ofReal_inv, ← mul_inv, ← Complex.ofReal_mul,
+      Nat.cast_nonneg, Real.mul_self_sqrt, Complex.ofReal_natCast, ne_eq, Nat.cast_eq_zero,
+      hN.ne', not_false_eq_true, inv_mul_cancel₀, r]
   have hσ_rev (a : Fin s) (ha : a ≠ a.rev) : σ a * σ a.rev = -1 := by
-    have h_iff : (a.rev : ℕ) < (s + 1) / 2 ↔ ¬ (a : ℕ) < (s + 1) / 2 := by grind
-    simp only [σ, stringSign, h_iff]
-    by_cases h_lt : (a : ℕ) < (s + 1) / 2 <;> simp [h_lt]
+    simp only [σ, stringSign, rev_lt_half_iff a ha]
+    by_cases h_lt : (a : ℕ) < (s + 1) / 2
+    · simp only [h_lt, ↓reduceIte, Units.val_neg, Units.val_one, Int.reduceNeg, Int.cast_neg,
+        Int.cast_one, not_true_eq_false, mul_one]
+    · simp only [h_lt, ↓reduceIte, Units.val_one, Int.cast_one, not_false_eq_true,
+        Units.val_neg, Int.reduceNeg, Int.cast_neg, mul_neg, mul_one]
   have h_col_mid (b : Fin s) (hb : b = b.rev) (i : Fin s) :
       stringFrame s N i b = if i = b then r else 0 := by
-    by_cases hi : i = b <;> simp [stringFrame, ← hb, hi, r, σ, hσ_mid b hb, neg_div]
+    by_cases hi : i = b
+    · simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
+        Complex.ofReal_add, Complex.ofReal_inv, hi, of_apply, ↓reduceIte, stringSign_mid b hb,
+        neg_div, one_div, ← hb, neg_add_cancel_left, r]
+    · simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
+        Complex.ofReal_add, Complex.ofReal_inv, of_apply, hi, ↓reduceIte, ← hb, add_zero]
   have h_col (b : Fin s) (hb : b ≠ b.rev) (i : Fin s) :
       stringFrame s N i b = (if i = b then σ b * t else 0) + if i = b.rev then t else 0 := by
-    by_cases hi : i = b <;> simp [stringFrame, hb, hi, t, σ, div_eq_mul_inv]
+    by_cases hi : i = b
+    · simp only [stringFrame, div_eq_mul_inv, Complex.ofReal_mul, Complex.ofReal_intCast,
+        Complex.ofReal_inv, Real.sqrt_inv, Complex.ofReal_add, hi, of_apply, ↓reduceIte,
+        hb, add_zero, σ, t]
+    · simp only [stringFrame, div_eq_mul_inv, Complex.ofReal_mul, Complex.ofReal_intCast,
+        Complex.ofReal_inv, Real.sqrt_inv, Complex.ofReal_add, of_apply, hi, ↓reduceIte,
+        Complex.ofReal_zero, add_zero, zero_add, t]
   have h_star (i b : Fin s) : star (stringFrame s N i b) = stringFrame s N i b := by
-    simp [stringFrame, apply_ite star]
+    simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
+      Complex.ofReal_add, Complex.ofReal_inv, of_apply, star_add, apply_ite star, star_div₀,
+      star_intCast, Complex.star_def, Complex.conj_ofReal, star_zero, star_inv₀]
   ext a b
   suffices h_entry : ∑ i : Fin s, stringFrame s N i a *
       ((if i = i.rev then -(N : ℂ) else 1) * stringFrame s N i.rev b) = if a = b then σ a else 0 by
     rw [Matrix.mul_assoc]
-    simpa [Matrix.mul_apply, h_star, signMatrix, diagonal_apply, ← Fin.rev_eq_iff] using h_entry
+    simpa only [← Fin.rev_eq_iff, Matrix.mul_apply, conjTranspose_apply, h_star, of_apply,
+      ite_mul, neg_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte,
+      mul_ite, mul_neg, signMatrix, diagonal_apply] using h_entry
+  have rev_eq_self (x y : Fin s) (hx : x = x.rev) (hy : y = y.rev) : x = y := by
+    rw [Fin.ext_iff, Fin.val_rev] at hx hy; exact Fin.ext (by omega)
   by_cases ha : a = a.rev
-  · simp only [h_col_mid a ha, ite_mul, zero_mul, Fintype.sum_ite_eq', ← ha, hσ_mid a ha]
+  · simp only [h_col_mid a ha, ite_mul, zero_mul, Fintype.sum_ite_eq', ← ha, σ, stringSign_mid a ha]
     by_cases hb : b = b.rev
-    · -- Both columns are the middle one, and `r * (-N * r) = -1` by `hr`.
-      rw [h_col_mid b hb]
-      grind
-    · -- Column `b` vanishes at the middle index.
-      rw [h_col b hb]
-      grind
-  · simp only [h_col a ha, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul, Fintype.sum_ite_eq',
-      Fin.rev_rev]
+    · have hab : a = b := rev_eq_self a b ha hb
+      subst hab
+      simp only [h_col_mid a ha, ↓reduceIte]
+      calc r * (-(N : ℂ) * r) = -(r * r * (N : ℂ)) := by ring
+        _ = -1 := by rw [hr]
+    · have hab : a ≠ b := fun h ↦ hb (by rw [← h]; exact ha)
+      have hab' : a ≠ b.rev := fun h ↦ hb (by rw [h, Fin.rev_rev] at ha; exact ha.symm)
+      simp only [h_col b hb, hab, hab', ↓reduceIte, add_zero, mul_zero]
+  · simp only [h_col a ha, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul,
+      Fintype.sum_ite_eq', Fin.rev_rev]
     by_cases hb : b = b.rev
-    · -- The middle column vanishes at `a` and `a.rev`.
-      simp only [h_col_mid b hb]
-      grind
-    · -- The entry is `2 * σ a * t * t = σ a` if `b = a` (`ht`), `(σ a * σ b + 1) * t * t = 0` if
-      -- `b = a.rev` (`hσ_rev`), and `0` otherwise.
-      simp only [h_col b hb]
-      grind
+    · have hab : a ≠ b := fun h ↦ ha (by rw [h]; exact hb)
+      have har : a.rev ≠ b := fun h ↦ ha (by rw [← h, Fin.rev_rev] at hb; exact hb.symm)
+      simp only [h_col_mid b hb, hab, har, ↓reduceIte, ite_self, mul_zero, add_zero]
+    · by_cases hab : a = b
+      · subst hab
+        have hba : a.rev ≠ a := fun h ↦ ha h.symm
+        simp only [h_col a hb, ha, hba, ↓reduceIte, add_zero, zero_add, one_mul]
+        calc σ a * t * t + t * (σ a * t) = σ a * (2 * (t * t)) := by ring
+          _ = σ a := by rw [ht]; ring
+      · by_cases har : a = b.rev
+        · subst har
+          have hrne : b.rev ≠ b := fun h ↦ hb h.symm
+          simp only [h_col b hb, hrne, hrne.symm, Fin.rev_rev, ↓reduceIte, zero_add,
+            add_zero, one_mul]
+          calc σ b.rev * t * (σ b * t) + t * t = (σ b * σ b.rev + 1) * (t * t) := by ring
+            _ = 0 := by rw [hσ_rev b hb]; ring
+        · have h1 : a.rev ≠ b := fun h ↦ har (by rw [← h, Fin.rev_rev])
+          have h2 : a.rev ≠ b.rev := fun h ↦ hab (Fin.rev_inj.mp h)
+          simp only [h_col b hb, hab, har, h1, h2, ha, ↓reduceIte, ite_self, mul_zero,
+            add_zero]
 
 /-- For `N = 1` the frame `stringFrame s N` is unitary. -/
 lemma conjTranspose_stringFrame_one_mul_self : (stringFrame s 1)ᴴ * stringFrame s 1 = 1 := by
+  let σ (b : Fin s) : ℂ := stringSign s b
+  let t : ℂ := (√2⁻¹ : ℝ)
+  have ht : t * t = 2⁻¹ := by
+    simp only [Real.sqrt_inv, Complex.ofReal_inv, ← mul_inv, ← Complex.ofReal_mul,
+      Nat.ofNat_nonneg, Real.mul_self_sqrt, Complex.ofReal_ofNat, t]
+  have hσ_rev (a : Fin s) (ha : a ≠ a.rev) : σ a + σ a.rev = 0 := by
+    simp only [σ, stringSign, rev_lt_half_iff a ha]
+    by_cases h_lt : (a : ℕ) < (s + 1) / 2 <;>
+      simp only [h_lt, ↓reduceIte, Units.val_neg, Units.val_one, Int.reduceNeg, Int.cast_neg,
+        Int.cast_one, not_true_eq_false, not_false_eq_true, neg_add_cancel, add_neg_cancel]
+  have h_col_mid (b : Fin s) (hb : b = b.rev) (i : Fin s) :
+      stringFrame s 1 i b = if i = b then 1 else 0 := by
+    by_cases hi : i = b <;>
+      simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
+        Nat.cast_one, inv_one, Real.sqrt_one, Complex.ofReal_add, Complex.ofReal_inv,
+        hi, of_apply, ↓reduceIte, stringSign_mid b hb, neg_div, one_div, ← hb, neg_add_cancel_left,
+        add_zero, Complex.ofReal_one]
+  have h_col (b : Fin s) (hb : b ≠ b.rev) (i : Fin s) :
+      stringFrame s 1 i b = (if i = b then σ b * t else 0) + if i = b.rev then t else 0 := by
+    by_cases hi : i = b <;>
+      simp only [stringFrame, div_eq_mul_inv, Complex.ofReal_mul, Complex.ofReal_intCast,
+        Complex.ofReal_inv, Real.sqrt_inv, Complex.ofReal_add, hi, of_apply, ↓reduceIte,
+        hb, add_zero, Complex.ofReal_zero, zero_add, σ, t]
+  have h_star (i b : Fin s) : star (stringFrame s 1 i b) = stringFrame s 1 i b := by
+    simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
+      Complex.ofReal_add, Complex.ofReal_inv, of_apply, star_add, apply_ite star, star_div₀,
+      star_intCast, Complex.star_def, Complex.conj_ofReal, star_zero, star_inv₀]
+  have rev_eq_self (x y : Fin s) (hx : x = x.rev) (hy : y = y.rev) : x = y := by
+    rw [Fin.ext_iff, Fin.val_rev] at hx hy; exact Fin.ext (by omega)
   ext a b
-  simp [stringFrame, stringSign, mul_add, apply_ite star, Matrix.one_apply, Matrix.mul_apply,
-    Finset.sum_add_distrib]
-  split_ifs <;> first | lia | (norm_cast; grind)
+  simp only [Matrix.mul_apply, conjTranspose_apply, h_star, Matrix.one_apply]
+  by_cases ha : a = a.rev
+  · simp only [h_col_mid a ha, ite_mul, one_mul, zero_mul, Fintype.sum_ite_eq']
+    by_cases hb : b = b.rev
+    · have hab : a = b := rev_eq_self a b ha hb
+      subst hab; simp only [h_col_mid a ha, ↓reduceIte]
+    · have hab : a ≠ b := fun h ↦ hb (by rw [← h]; exact ha)
+      have har : a ≠ b.rev := fun h ↦ hb (by rw [h, Fin.rev_rev] at ha; exact ha.symm)
+      simp only [h_col b hb, hab, har, ↓reduceIte, add_zero]
+  · simp only [h_col a ha, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul,
+      Fintype.sum_ite_eq']
+    by_cases hb : b = b.rev
+    · have hab : a ≠ b := fun h ↦ ha (by rw [h]; exact hb)
+      have har : a.rev ≠ b := fun h ↦ ha (by rw [← h, Fin.rev_rev] at hb; exact hb.symm)
+      simp only [h_col_mid b hb, hab, har, ↓reduceIte, mul_zero, add_zero]
+    · have hσ_sq (x : Fin s) : σ x * σ x = 1 := by
+        simp only [σ, stringSign]; split_ifs <;> norm_num
+      by_cases hab : a = b
+      · subst hab
+        have hba : a.rev ≠ a := fun h ↦ ha h.symm
+        simp only [h_col a hb, hba, hba.symm, ↓reduceIte, add_zero, zero_add]
+        calc σ a * t * (σ a * t) + t * t = (σ a * σ a + 1) * (t * t) := by ring
+          _ = 1 := by rw [hσ_sq a, ht]; norm_num
+      · by_cases har : a = b.rev
+        · subst har
+          have hrb : b.rev ≠ b := fun h ↦ hb h.symm
+          simp only [h_col b hb, hrb, hrb.symm, Fin.rev_rev, ↓reduceIte, zero_add, add_zero]
+          calc σ b.rev * t * t + t * (σ b * t) = (σ b.rev + σ b) * (t * t) := by ring
+            _ = 0 := by rw [add_comm, hσ_rev b hb, zero_mul]
+        · have h1 : a.rev ≠ b := fun h ↦ har (by rw [← h, Fin.rev_rev])
+          have h2 : a.rev ≠ b.rev := fun h ↦ hab (Fin.rev_inj.mp h)
+          simp only [h_col b hb, hab, har, h1, h2, ↓reduceIte, mul_zero, add_zero]
 
+omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`, and let `N` be a positive integer.
 Let `J` be the image under `φ` of `New.gradedGram e N`, the form that is the identity on `X ⊕ Unit`
 and pairs string vectors `b` and `s - 1 - b` to `1`, or to `-N` if they are equal. If exactly
 `⌊(s + 1) / 2⌋` of the signs `ε i` are `-1`, then `yᴴ J y = diag(ε)` (`New.signMatrix ε`) for some
 complex matrix `y`, which is unitary if `N = 1`. -/
-lemma exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix (e : (X ⊕ Unit) ⊕ Fin s ≃ ι)
+lemma exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix [Finite X] (e : (X ⊕ Unit) ⊕ Fin s ≃ ι)
     (φ : R →+* ℂ) (hN : 0 < N) {ε : ι → ℤˣ} (hε : negCount ε = (s + 1) / 2) :
     ∃ y : Matrix ι ι ℂ, yᴴ * (gradedGram e (N : R)).map φ * y = signMatrix ε ∧
       (N = 1 → yᴴ * y = 1) := by
+  let := Fintype.ofFinite X
   -- Up to a bijection `f` of the indices the signs are `1` on `X ⊕ Unit` and `stringSign s` on
   -- the string. The frame is the identity on `X ⊕ Unit` and `stringFrame s N` on the string.
   let σ : (X ⊕ Unit) ⊕ Fin s → ℤˣ := 1 ⊕ᵥ stringSign s
   have h_card : negCount σ = (s + 1) / 2 := by
     rw [negCount_sumElim]
-    simp [stringSign, negCount, card_fin_lt_of_le (show (s + 1) / 2 ≤ s by lia)]
+    simp only [negCount, Pi.one_apply, units_ne_neg_self, card_eq_zero, stringSign,
+      ite_eq_left_iff, not_lt, imp_false, not_le, card_fin_lt_of_le (show (s + 1) / 2 ≤ s by lia),
+      zero_add]
   obtain ⟨f, rfl⟩ : ∃ f : ι ≃ (X ⊕ Unit) ⊕ Fin s, σ ∘ f = ε :=
     exists_equiv_comp_eq_of_negCount_eq (card_congr e.symm) (hε.trans h_card.symm)
   refine ⟨gradedBlocks e f.symm 1 (stringFrame s N), ?_, fun hN1 ↦ ?_⟩
   · rw [map_gradedGram, map_natCast, gradedGram]
-    simp [σ, fromBlocks_conjTranspose, fromBlocks_multiply, gram_stringFrame_eq_signMatrix hN,
-      signMatrix, ← ext_iff, reindex_equiv f.symm, diagonal_apply, Matrix.one_apply]
-  · simp [hN1, fromBlocks_conjTranspose, fromBlocks_multiply,
-      conjTranspose_stringFrame_one_mul_self]
+    simp only [conjTranspose_submatrix, fromBlocks_conjTranspose, conjTranspose_one,
+      conjTranspose_zero, Equiv.symm_symm, submatrix_mul_equiv, fromBlocks_multiply, mul_one,
+      Matrix.mul_zero, add_zero, Matrix.zero_mul, Matrix.mul_one, zero_add,
+      gram_stringFrame_eq_signMatrix hN, signMatrix, Function.comp_apply, ← ext_iff,
+      submatrix_apply, diagonal_apply, reindex_equiv f.symm, Equiv.apply_symm_apply, Sum.forall,
+      EmbeddingLike.apply_eq_iff_eq, fromBlocks_apply₁₁, Matrix.one_apply, Sum.inl.injEq,
+      Sum.elim_inl, Pi.one_apply, Units.val_one, Int.cast_one, implies_true, and_self,
+      fromBlocks_apply₁₂, Matrix.zero_apply, reduceCtorEq, ↓reduceIte, fromBlocks_apply₂₁,
+      fromBlocks_apply₂₂, Sum.inr.injEq, Sum.elim_inr, σ]
+  · simp only [hN1, conjTranspose_submatrix, fromBlocks_conjTranspose, conjTranspose_one,
+      conjTranspose_zero, Equiv.symm_symm, submatrix_mul_equiv, fromBlocks_multiply, mul_one,
+      Matrix.mul_zero, add_zero, Matrix.zero_mul, Matrix.mul_one,
+      conjTranspose_stringFrame_one_mul_self, zero_add, fromBlocks_one, submatrix_one_equiv]
 
 end New.Seesaw
 
@@ -436,8 +718,13 @@ lemma Seesaw.div_mem_integralAway (h_dvd : c ∣ d * q ^ k) : (d / c : ℂ) ∈ 
   obtain ⟨m, hm⟩ := h_dvd
   intro l _ hl ι
   have h_norm : ‖(d : ℂ_[l])‖ = ‖(c : ℂ_[l])‖ * ‖(m : ℂ_[l])‖ := by
-    simpa [hl.norm_natCast_eq_one] using congrArg (fun a : ℕ ↦ ‖(a : ℂ_[l])‖) hm
-  by_cases hc : c = 0 <;> simp [h_norm, hc, IsUltrametricDist.norm_natCast_le_one]
+    simpa only [Nat.cast_mul, Nat.cast_pow, norm_mul, norm_pow, hl.norm_natCast_eq_one,
+      one_pow, mul_one] using congrArg (fun a : ℕ ↦ ‖(a : ℂ_[l])‖) hm
+  by_cases hc : c = 0
+  · simp only [hc, Nat.cast_zero, div_zero, map_zero, norm_zero, zero_le_one]
+  · simp only [map_div₀, map_natCast, norm_div, h_norm, ne_eq, norm_eq_zero,
+      Nat.cast_eq_zero, hc, not_false_eq_true, mul_div_cancel_left₀,
+      IsUltrametricDist.norm_natCast_le_one]
 
 omit [Fact l.Prime] in
 /-- If `l` is coprime to `q`, a finite adelic unitary point that is integral at all places not
@@ -463,7 +750,8 @@ lemma Parameters.norm_finMultiplier_eq_one {ι : ℂ →+* ℂ_[l]} {g : Gf E n}
   refine WeilData.chiFinAlgebraic.norm_padic_eq_one _ ι fun w hw ↦ ?_
   have h_one : IsSaturating (LocInt w).matrix (g.atPlace w) 1 :=
     .of_mem (mem_subring_matrix_iff.2 (mem_intGL.1 (hg w hw)).1)
-  simpa using IsSaturating.v_det_saturatingElem (b := g.val) h_one
+  simpa only [Matrix.GeneralLinearGroup.val_det_apply, Units.val_one, Matrix.det_one,
+    map_one] using IsSaturating.v_det_saturatingElem (b := g.val) h_one
 
 /-- Let the automorphic character `a` of the norm-one adeles have weight `e` (its exponents at the
 infinite places) and tame part `ψ` (its characters of the residue fields), and let the finite adelic
@@ -480,10 +768,12 @@ lemma AutChar.HasWeight.norm_apply_detFin_eq_one {ι : ℂ →+* ℂ_[l]} {g : G
       ‖adeleExtension (ι.comp (Φ τ)) (detFin s g).val.2‖ = 1 := by
     let w : FinPlace E := placeOfEmb (ι.comp (Φ τ))
     have h_val : Valued.v ((detFin s g).val.2 w) = Valued.v ((1 : 𝔸f E) w) := by
-      simp [mem_intGL_iff_det.1 (hg w (natCast_mem_placeOfEmb _))]
-    simpa using (norm_adeleExtension_eq_iff _ 1).2 h_val
-  simp only [ha.norm_padic_eq_prod ι (detFin s g) (by simp [funext_iff]), h_unit, one_zpow,
-    Finset.prod_const_one]
+      simp only [↓det_atPlace, mem_intGL_iff_det.1 (hg w (natCast_mem_placeOfEmb _)),
+        IsDedekindDomain.FiniteAdeleRing.one_apply, map_one]
+    simpa only [↓G.det_snd, map_one, norm_one] using (norm_adeleExtension_eq_iff _ 1).2 h_val
+  simp only [ha.norm_padic_eq_prod ι (detFin s g) (by simp only [↓det_fst, Pi.one_apply,
+      OneMemClass.coe_one, Units.val_one, Matrix.det_one, funext_iff, implies_true]),
+    h_unit, one_zpow, Finset.prod_const_one]
 
 end New
 
@@ -518,23 +808,34 @@ lemma of_sum {s : Finset α} {c : α → ℂ} (hc : ∀ i ∈ s, (d : ℂ) * c i
     (hB : p → ∀ σ : ℂ ≃+* ℂ, ∑ i ∈ s, ‖σ (c i)‖ ≤ B) :
     IsAdmissibleCombination v s n d p B (∑ i ∈ s, c i • v i) := by
   refine ⟨indicator s fun i _ ↦ c i, ⟨support_indicator_subset _ _, fun x ↦ ?_, fun hp σ ↦ ?_⟩, ?_⟩
-  · by_cases hx : x ∈ s <;> simp [hx, hc]
-  · exact (sum_indicator_index _ (by simp)).trans_le (hB hp σ)
-  · rw [sum_indicator_index _ (by simp)]
+  · by_cases hx : x ∈ s
+    · simp only [indicator_apply, hx, ↓reduceDIte, hc]
+    · simp only [indicator_apply, hx, ↓reduceDIte, mul_zero, zero_mem]
+  · exact (sum_indicator_index (h := fun _ x ↦ ‖σ x‖) _
+      (fun _ _ ↦ by rw [map_zero, norm_zero])).trans_le (hB hp σ)
+  · exact (sum_indicator_index (h := fun _ a ↦ a • v _) _ (fun _ _ ↦ zero_smul ℂ _)).symm
 
 /-- A single term `c • v x` with `x ∈ A` is an admissible combination of size `1` if `d · c` is
 integral away from `n` and, under `p`, all conjugates `σ c` have absolute value at most `1`. -/
 lemma smul_single {c : ℂ} {x : α} (hx : x ∈ A) (hc_int : (d : ℂ) * c ∈ integralAway n)
     (hc_size : p → ∀ σ : ℂ ≃+* ℂ, ‖σ c‖ ≤ 1) : IsAdmissibleCombination v A n d p 1 (c • v x) := by
   classical
-  refine ⟨.single x c, ⟨fun y hy ↦ ?_, fun y ↦ ?_, by simpa using hc_size⟩, by simp⟩
+  refine ⟨.single x c, ⟨fun y hy ↦ ?_, fun y ↦ ?_, ?_⟩, ?_⟩
   · rwa [Finset.mem_singleton.1 (support_single_subset hy)]
-  · by_cases hy : x = y <;> simp [hy, hc_int]
+  · by_cases hy : x = y
+    · simp only [hy, single_eq_same, hc_int]
+    · simp only [ne_eq, hy, not_false_eq_true, single_eq_of_ne', mul_zero, zero_mem]
+  · simpa only [map_zero, norm_zero, sum_single_index] using hc_size
+  · simp only [sum_single_index, zero_smul]
 
 /-- Each vector `v x` with `x ∈ A` is an admissible combination of size `1`, for any
 denominator `d`. -/
 lemma single (x : α) (hx : x ∈ A) : IsAdmissibleCombination v A n d p 1 (v x) := by
-  simpa using smul_single (v := v) (c := 1) hx (by simp) (by simp)
+  have hc_int : (d : ℂ) * 1 ∈ integralAway n := by
+    rw [mul_one]
+    exact fun l _ _ ι ↦ by rw [map_natCast]; exact IsUltrametricDist.norm_natCast_le_one _ d
+  simpa only [one_smul] using smul_single (v := v) (c := 1) hx hc_int
+    (by simp only [map_one, norm_one, le_refl, implies_true])
 
 /-- Substitution. Fix a natural number `n` and a proposition `p`. A vector is an admissible
 combination of the `v x`, `x ∈ A`, with denominator `d` and size `B` if it is a finite sum
@@ -559,19 +860,26 @@ lemma bind {v' : α' → Z} {e : ℕ} {C : ℝ} (hz : IsAdmissibleCombination v 
     obtain ⟨x, hx, hy_mem⟩ := mem_support_finsetSum y hy
     exact (hr x hx).support_subset y (support_smul hy_mem)
   · have h_eq : ↑(d * d' * k) * t y = ∑ x ∈ c.support, k * (d * c x * (d' * r x y)) := by
-      simp [t, Finset.mul_sum, mul_assoc, mul_left_comm]
+      simp only [mul_assoc, Nat.cast_mul, coe_finsetSum, coe_smul, Finset.sum_apply,
+        Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_left_comm, t]
     rw [h_eq]
-    exact sum_mem fun x hx ↦ mul_mem (by simp) (mul_mem (hc.integral x) ((hr x hx).integral y))
+    exact sum_mem fun x hx ↦
+      mul_mem (natCast_mem _ k) (mul_mem (hc.integral x) ((hr x hx).integral y))
   · -- Triangle inequality, then the size bounds of the `r x` and of `c`.
     let T : Finset α' := t.support
     have h_size (x : α) (hx : x ∈ c.support) : ∑ y ∈ T, ‖σ (r x y)‖ ≤ |B'| := by
       grw [← le_abs_self, ← (hr x hx).sum_norm_le hp σ, ← Finset.sum_filter_ne_zero, sum]
       gcongr
-      simp [Finset.subset_iff]
+      simp only [ne_eq, norm_eq_zero, EmbeddingLike.map_eq_zero_iff, Finset.subset_iff,
+        Finset.mem_filter, mem_support_iff, and_imp, imp_self, implies_true]
     calc ∑ y ∈ T, ‖σ (t y)‖
       _ ≤ ∑ y ∈ T, ∑ x ∈ c.support, ‖σ (c x)‖ * ‖σ (r x y)‖ :=
-        T.sum_le_sum fun y _ ↦ by simpa [t] using norm_sum_le c.support fun x ↦ σ (c x * r x y)
-      _ = ∑ x ∈ c.support, ‖σ (c x)‖ * ∑ y ∈ T, ‖σ (r x y)‖ := by simp [Finset.mul_sum, T.sum_comm]
+        T.sum_le_sum fun y _ ↦ by
+          simpa only [coe_finsetSum, coe_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+            map_sum, map_mul, Complex.norm_mul, t] using
+            norm_sum_le c.support fun x ↦ σ (c x * r x y)
+      _ = ∑ x ∈ c.support, ‖σ (c x)‖ * ∑ y ∈ T, ‖σ (r x y)‖ := by
+        simp only [T.sum_comm, Finset.mul_sum]
       _ ≤ ∑ x ∈ c.support, ‖σ (c x)‖ * |B'| := Finset.sum_le_sum fun x hx ↦ by grw [h_size x hx]
       _ ≤ C := by grw [← Finset.sum_mul, ← hB hp, ← hc.sum_norm_le hp σ, sum]
   · calc c.sum (fun x a ↦ a • v x)
@@ -585,27 +893,28 @@ the `v' y`, with the same denominator and size. -/
 lemma bind_one {v' : α' → Z} (hz : IsAdmissibleCombination v A n d p B z)
     (hv : ∀ x ∈ A, IsAdmissibleCombination v' A' n 1 p 1 (v x)) :
     IsAdmissibleCombination v' A' n d p B z :=
-  hz.bind 1 1 hv (by simp) (by simp)
+  hz.bind 1 1 hv (by simp only [mul_one, dvd_refl])
+    (fun _ ↦ by simp only [abs_one, mul_one, le_rfl])
 
 /-- A linear map `L` sends an admissible combination of the `v x` to one of the `L (v x)`, with the
 same coefficients. -/
 lemma map (hz : IsAdmissibleCombination v A n d p B z) (L : Z →ₗ[ℂ] Z') :
     IsAdmissibleCombination (L ∘ v) A n d p B (L z) := by
   obtain ⟨r, hr, rfl⟩ := hz
-  exact ⟨r, hr, by simp [sum]⟩
+  exact ⟨r, hr, by simp only [sum, map_sum, map_smul, comp_apply]⟩
 
 /-- Admissible combinations are stable under a scalar `c` that is integral away from `n` and, if
 `p` holds, has all conjugates `σ c` of absolute value at most `1`. -/
 lemma smul (hz : IsAdmissibleCombination v A n d p B z) {c : ℂ} (hc_int : c ∈ integralAway n)
     (hc_size : p → ∀ σ : ℂ ≃+* ℂ, ‖σ c‖ ≤ 1) : IsAdmissibleCombination v A n d p B (c • z) :=
   (hz.map (LinearMap.lsmul ℂ Z c)).bind_one fun _ hx ↦
-    smul_single hx (by simpa using hc_int) hc_size
+    smul_single hx (by simpa only [Nat.cast_one, one_mul] using hc_int) hc_size
 
 /-- Admissible combinations are stable under a scalar that is `0` or a root of unity. -/
 lemma smul_of_eq_zero_or_isOfFinOrder (hz : IsAdmissibleCombination v A n d p B z) {ζ : ℂ}
     (hζ : ζ = 0 ∨ IsOfFinOrder ζ) : IsAdmissibleCombination v A n d p B (ζ • z) := by
   obtain rfl | hζ := hζ
-  · exact hz.smul (zero_mem _) (by simp)
+  · exact hz.smul (zero_mem _) (by simp only [map_zero, norm_zero, zero_le_one, implies_true])
   · -- Every ring homomorphism sends a root of unity to a root of unity, which has norm `1`.
     exact hz.smul (fun l _ _ ι ↦ (ι.toMonoidHom.isOfFinOrder hζ).norm_eq_one.le)
       fun _ σ ↦ (σ.toMonoidHom.isOfFinOrder hζ).norm_eq_one.le
@@ -661,16 +970,23 @@ lemma normUnit_smul {C : ℂ} (a : ℂ) (hd : d ≠ 0)
   let z₀ : Z := r.sum fun x c ↦ c • v x
   have h_comb : IsAdmissibleCombination v A n 1 p (d * B) ((d : ℂ) • z₀) := by
     refine ⟨d • r, ⟨fun x hx ↦ h_supp x (support_smul hx), fun x ↦ ?_, fun hp σ ↦ ?_⟩, ?_⟩
-    · simpa using h_int x
-    · simpa [sum_smul_index', ← mul_sum, hd.pos] using h_size hp σ
-    · simp [z₀, sum_smul_index', smul_sum, smul_smul]
+    · simpa only [Nat.cast_one, coe_smul, Pi.smul_apply, nsmul_eq_mul, one_mul] using h_int x
+    · simpa only [map_zero, norm_zero, implies_true, sum_smul_index', nsmul_eq_mul, map_mul,
+        map_natCast, Complex.norm_mul, RCLike.norm_natCast, ← mul_sum, Nat.cast_pos, hd.pos,
+        mul_le_mul_iff_right₀] using h_size hp σ
+    · simp only [smul_sum, smul_smul, zero_smul, implies_true, sum_smul_index', nsmul_eq_mul,
+        z₀]
   have h_vec : (normUnit (a * C / d)).val • a • (r.sum fun x c ↦ c • C • v x) =
       ((normUnit (a * C / d)).val * (a * C)) • z₀ := by
-    simp [z₀, smul_sum, smul_smul, mul_comm, mul_left_comm, mul_assoc]
+    simp only [mul_comm, smul_smul, smul_sum, mul_left_comm, mul_assoc, z₀]
   rw [h_vec]
   by_cases haC : a * C = 0
-  · simpa [haC] using h_comb.smul (zero_mem _) (c := 0) (by simp)
-  · simpa [normUnit, haC, hd] using h_comb
+  · simpa only [haC, zero_div, normUnit_zero, Units.val_one, mul_zero, zero_smul] using
+      h_comb.smul (zero_mem _) (c := 0) (by simp only [map_zero, norm_zero, zero_le_one,
+        implies_true])
+  · simpa only [normUnit, div_eq_zero_iff, haC, Nat.cast_eq_zero, hd, or_self, ↓reduceDIte,
+      Units.val_inv_eq_inv_val, Units.val_mk0, inv_div, isUnit_iff_ne_zero, ne_eq,
+      not_false_eq_true, IsUnit.div_mul_cancel] using h_comb
 
 end New.Seesaw.IsAdmissibleCombination
 
@@ -697,7 +1013,7 @@ lemma New.Seesaw.IsAdmissibleCombination.pure {n : ℕ} {p : Prop} {α : ℕ →
   | zero =>
     -- The empty tensor is `1` for every family, in particular for `y = 0`.
     rw [pow_zero, pow_zero]
-    exact single 0 (by simp)
+    exact single 0 (fun j ↦ (A j).zero_mem)
   | succ m ih =>
     -- Tensor the first `m` factors with the last (`map_bilinear`), then merge a point `s` for the
     -- former and a pair `t` for the latter by updating the coordinates `2 m`, `2 m + 1` of `s`.
@@ -707,15 +1023,29 @@ lemma New.Seesaw.IsAdmissibleCombination.pure {n : ℕ} {p : Prop} {α : ℕ →
         (fun x : (∀ j : ℕ, α j) × α (2 * m) × α (2 * m + 1) ↦ v m x.2 ⊗ₜ[ℂ] w x.1)
         ({y | ∀ j : ℕ, y j ∈ A j} ×ˢ A (2 * m) ×ˢ A (2 * m + 1)) n (d ^ m * d) p (|B| ^ m * |B|)
         (f m ⊗ₜ[ℂ] TensorChain.pure f m) :=
-      (ih fun i hi ↦ hf i (by lia)).map_bilinear (TensorProduct.mk ℂ _ _).flip (hf m (by lia))
+      (ih fun i hi ↦ hf i (Nat.lt_succ_of_lt hi)).map_bilinear
+        (TensorProduct.mk ℂ _ _).flip (hf m (Nat.lt_succ_self m))
     -- By definition, the pure tensor of length `m + 1` is `f m ⊗ₜ` the one of length `m`.
     rw [pow_succ, pow_succ]
     refine h_tensor.of_eq_isOfFinOrder_smul fun ⟨s, t⟩ ⟨hs, ht⟩ ↦ ?_
     let y : ∀ j : ℕ, α j := update (update s (2 * m) t.1) (2 * m + 1) t.2
-    have h_init : w y = w s := TensorChain.pure_congr (by grind)
-    refine ⟨1, .one, y, by grind [SetLike.mem_coe], ?_⟩
+    have h_init : w y = w s := TensorChain.pure_congr fun i hi ↦ by
+      have h1 : 2 * i ≠ 2 * m := by omega
+      have h2 : 2 * i ≠ 2 * m + 1 := by omega
+      have h3 : 2 * i + 1 ≠ 2 * m := by omega
+      have h4 : 2 * i + 1 ≠ 2 * m + 1 := by omega
+      simp only [y, Function.update_of_ne h2, Function.update_of_ne h1,
+        Function.update_of_ne h4, Function.update_of_ne h3]
+    have hy_mem : y ∈ {y | ∀ j : ℕ, y j ∈ A j} := fun j ↦ by
+      by_cases hj1 : j = 2 * m + 1
+      · subst hj1; simp only [y, update_self]; exact ht.2
+      · by_cases hj2 : j = 2 * m
+        · subst hj2; simp only [y, update_of_ne hj1, update_self]; exact ht.1
+        · simp only [y, update_of_ne hj1, update_of_ne hj2]; exact hs j
+    refine ⟨1, .one, y, hy_mem, ?_⟩
     change v m t ⊗ₜ[ℂ] w s = (1 : ℂ) • v m (y (2 * m), y (2 * m + 1)) ⊗ₜ[ℂ] w y
-    simp [h_init, y]
+    simp only [ne_eq, Nat.left_eq_add, one_ne_zero, not_false_eq_true, update_of_ne,
+      update_self, Prod.mk.eta, h_init, one_smul, y]
 
 /-!
 ## Moved vacua as admissible combinations
@@ -752,8 +1082,10 @@ lemma New.Seesaw.isAdmissibleCombination_weil_vacElem {E n : Type} [Field E] [CM
   let L : AddSubgroup (n → 𝔸f E) := stdLattice E n
   let H : AddSubgroup L := (L.comap M.mulVecLin).addSubgroupOf L
   have h_index : ‖finMultiplier g‖ ^ 2 = H.index := norm_finMultiplier_sq g
-  have h_index_ne : H.index ≠ 0 := fun h_zero ↦ by simp [h_zero, finMultiplier_ne_zero] at h_index
-  have : Fintype (L ⧸ H) := fintypeOfIndexNeZero h_index_ne
+  have h_index_ne : H.index ≠ 0 := fun h_zero ↦ by
+    simp only [h_zero, Nat.cast_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+      pow_eq_zero_iff, norm_eq_zero, finMultiplier_ne_zero] at h_index
+  let : Fintype (L ⧸ H) := fintypeOfIndexNeZero h_index_ne
   -- `ζ z` is the root of unity in the product of the translations by `g x` and `g z`.
   let ζ (z : L ⧸ H) : ℂ :=
     stdLattice.selfDualAddChar E (star stdLattice.traceOneAdele * star (M *ᵥ z.out) ⬝ᵥ M *ᵥ x)
@@ -769,7 +1101,9 @@ lemma New.Seesaw.isAdmissibleCombination_weil_vacElem {E n : Type} [Field E] [CM
   have h_total (hp : p) (σ : ℂ ≃+* ℂ) : ∑ _z : L ⧸ H, ‖σ a‖ ≤ 1 := by
     calc ∑ _z : L ⧸ H, ‖σ a‖
         = H.index * (‖σ c‖ / H.index) := by
-          simp [ha, ← ofReal_pow, h_index, ← Nat.card_eq_fintype_card, ← H.index_eq_card]
+          simp only [ha, ← ofReal_pow, h_index, ofReal_natCast, map_div₀, map_natCast,
+            Complex.norm_div, RCLike.norm_natCast, sum_const, card_univ,
+            ← Nat.card_eq_fintype_card, ← H.index_eq_card, nsmul_eq_mul]
       _ = ‖σ c‖ := mul_div_cancel₀ _ (Nat.cast_ne_zero.2 h_index_ne)
       _ ≤ 1 := h_size hp σ
   have h_comb : IsAdmissibleCombination
@@ -803,7 +1137,7 @@ lemma card_residueRing_pi_dvd {g : 𝓞 E} {q : ℕ} (𝔪 : Modulus E) (hg : g 
   have h_norm : absNorm (span {g * q}) = absNorm (span {g}) * q ^ Module.finrank ℤ (𝓞 E) := by
     rw [← span_singleton_mul_span_singleton, map_mul, absNorm_span_natCast]
   have h_card : card 𝔪.ResidueRing = absNorm 𝔪.ideal := by
-    simp [absNorm_apply, Submodule.cardQuot_apply]
+    simp only [absNorm_apply, Submodule.cardQuot_apply, Nat.card_eq_fintype_card]
   rw [card_fun, h_card, pow_mul, ← mul_pow, ← h_norm]
   exact pow_dvd_pow_of_dvd (map_dvd absNorm (dvd_span_singleton.2 hg)) (card n)
 
@@ -820,7 +1154,8 @@ lemma star_idem_smul_mem_translations {q : ℕ} (𝔪 : Modulus E) {d : Ô E}
       translations n q (star (d : 𝔸f E)) := by
   intro i w hw
   have h_dq : (↑𝔪.generator⁻¹ : 𝔸f E) * (d * q) ∈ Ô E := by
-    simpa using (𝔪.reduction_eq_zero_iff_generator_inv_mul_mem (d * q)).1 hd
+    simpa only [MulMemClass.coe_mul, SubringClass.coe_natCast] using
+      (𝔪.reduction_eq_zero_iff_generator_inv_mul_mem (d * q)).1 hd
   -- Let `t` be `star d` times the entry. Then `q t` is the conjugate of an integral adele, and
   -- `q` is a unit at `w`.
   let t : 𝔸f E := star (d : 𝔸f E) * star (idem 𝔪.places * (↑𝔪.generator⁻¹ * (z i : 𝔸f E)))
@@ -828,8 +1163,9 @@ lemma star_idem_smul_mem_translations {q : ℕ} (𝔪 : Modulus E) {d : Ô E}
     simp only [t, star_mul', star_natCast]
     ring
   have h_int : q * t ∈ Ô E := by
-    simpa only [h_eq] using star_mem_Ô (mul_mem (idem_mem_Ô _) (mul_mem h_dq (z i).2))
-  have h_unit : Valued.v ((q : 𝔸f E) w) = 1 := by simpa using v_algebraMap_eq_one hw
+    simpa only [h_eq] using star_mem_Ô (mul_mem (idem_mem_Ô _) (mul_mem h_dq (z i).property))
+  have h_unit : Valued.v ((q : 𝔸f E) w) = 1 :=
+    by simpa only [finAdele_natCast_apply, map_natCast] using v_algebraMap_eq_one hw
   calc Valued.v (t w) = Valued.v ((q : 𝔸f E) w * t w) := by rw [map_mul, h_unit, one_mul]
     _ ≤ 1 := mem_Ô.1 h_int w
 
@@ -876,16 +1212,22 @@ lemma isAdmissibleCombination_schrodingerOp_of_reduction {g : 𝓞 E} {q : ℕ} 
       simp only [δ, c, w, y, 𝔪.schrodingerOp_single_eq_mean_translate_projOn V u a hz, huv]
     have h_comb : IsAdmissibleCombination w (Finset.univ : Finset (n → 𝔪.ResidueRing)) q
         (absNorm (span {g}) ^ card n) p 1 (δ a) := by
-      simpa only [h_mean] using .of_sum (fun _ _ ↦ hc_int) (by simp [c])
+      simpa only [h_mean] using .of_sum (fun _ _ ↦ hc_int) (by
+        simp only [card_pi, Finset.prod_const, Finset.card_univ, Nat.cast_pow, map_inv₀,
+          map_pow, map_natCast, norm_inv, norm_pow, RCLike.norm_natCast, Finset.sum_const,
+          nsmul_eq_mul, ne_eq, pow_eq_zero_iff', Nat.cast_eq_zero, card_ne_zero, false_and,
+          not_false_eq_true, mul_inv_cancel₀, le_refl, implies_true, c])
     exact h_comb.of_eq_isOfFinOrder_smul fun b _ ↦
       ⟨𝔪.primAddChar (-a ⬝ᵥ b), h_root _, y b, hy b, rfl⟩
   have h_sum : V.schrodingerOp 𝔪.places (𝔪.liftFn Ψ) u = ∑ a : n → 𝔪.ResidueRing, Ψ a • δ a := by
     conv_lhs => rw [pi_eq_sum_univ' Ψ]
-    simp [δ]
+    simp only [map_sum, map_smul, sum_apply, smul_apply, δ]
   have h_comb : IsAdmissibleCombination δ (Finset.univ : Finset (n → 𝔪.ResidueRing)) q 1 p B
       (V.schrodingerOp 𝔪.places (𝔪.liftFn Ψ) u) := by
-    simpa only [h_sum] using .of_sum (by simpa using fun a ↦ hΨ_int a) hΨ_size
-  exact h_comb.bind _ 1 (fun a _ ↦ h_point a) (by simp) (by simp)
+    simpa only [h_sum] using .of_sum
+      (fun a _ ↦ by rw [Nat.cast_one, one_mul]; exact hΨ_int a) hΨ_size
+  exact h_comb.bind _ 1 (fun a _ ↦ h_point a) (by simp only [one_mul, dvd_refl])
+    (fun _ ↦ by simp only [abs_one, mul_one, le_rfl])
 
 /-- The case `d = g` of `isAdmissibleCombination_schrodingerOp_of_reduction`. Let `V` be a hermitian
 space over the CM field `E`, `u` a vector of its Weil representation `𝒮 V`, and `𝔪` a modulus that
@@ -905,7 +1247,7 @@ lemma isAdmissibleCombination_schrodingerOp {g : 𝓞 E} {q : ℕ} [WeilData E] 
       (translations n q (star (algebraMap (𝓞 E) (Ô E) g : 𝔸f E))) q
       (absNorm (span {g}) ^ card n) p B (V.schrodingerOp 𝔪.places (𝔪.liftFn Ψ) u) :=
   isAdmissibleCombination_schrodingerOp_of_reduction V 𝔪 hg hΨ_int hΨ_size huv
-    (by simpa using Quotient.eq_zero_iff_mem.2 hg)
+    (by simpa only [map_mul, reduction_algebraMap, map_natCast] using Quotient.eq_zero_iff_mem.2 hg)
 
 end New.Seesaw
 

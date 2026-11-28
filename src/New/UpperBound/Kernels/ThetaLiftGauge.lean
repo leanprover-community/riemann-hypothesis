@@ -1,6 +1,13 @@
-import Lib.Weil.DualPair.KernelLaws
+module
+
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Lib.Weil.DualPair.KernelLaws
+public import New.UpperBound.Kernels.JetConjugatesAndBounds
+public import New.Derivatives.Divisibility.Count
+import Lib.Adelic.AutomorphicForms.PAdicGauge
+import Lib.General.LinearAlgebra.MatrixNormBounds
 import New.Derivatives.Vacuum.Divisibility
-import New.UpperBound.Kernels.JetConjugatesAndBounds
+import New.Derivatives.Vacuum.JetIntegrality
 
 /-!
 # p-adic gauge bounds for one theta lift and data from functions modulo an ideal
@@ -45,6 +52,8 @@ See `New.UpperBound.Divisibility.LocalDivisibility` and
 `New.UpperBound.Kernels.JetConjugatesAndBounds` for related work.
 -/
 
+@[expose] public section
+
 /-! ## Standard data and the p-adic gauge of a theta kernel -/
 
 section OneLift
@@ -60,12 +69,6 @@ section Raises
 variable {c : ℝ} {K : Subgroup (Gf (P.E s) n)} {p : ℕ} [Fact p.Prime] [PadicPlace p]
   {S : Type*} [AddCommGroup S] [Module ℂ S] (k : Kernel n n' κ e ea K S)
 
-/-- The `p`-adic gauge `New.weylGauge` is ultrametric in the vector. -/
-lemma New.weylGauge_add_le_max (g : Gf (P.E s) n) (ξ η : WeylIndex n κ → ℂ) :
-    weylGauge κ e g (ξ + η) ≤ max (weylGauge κ e g ξ) (weylGauge κ e g η) := by
-  have h_add : ιₚ ∘ (ξ + η) = ιₚ ∘ ξ + ιₚ ∘ η := funext fun i ↦ map_add ιₚ (ξ i) (η i)
-  simpa only [weylGauge, h_add, mulVec_add] using norm_add_le_max _ _
-
 /-- The data `Φ` whose kernel multiplies the `p`-adic gauge by at most `c`: for all `g`, `h` and
 `ξ`, the gauge at `h * d'` of `jetMap (ω (g, h) Φ) ξ` is at most `max c 0` times the gauge at
 `g * d` of `ξ`. The factor is `max c 0` so that `0` is a member for every real `c`; sums stay inside
@@ -76,7 +79,7 @@ def New.Kernel.raises (d : Gf (E P s) n) (d' : Gf (E P s) n') (c : ℝ) : AddSub
       weylGauge κ ea (h * d') (k.jetMap (k.ω (g, h) Φ) ξ) ≤ max c 0 * weylGauge κ e (g * d) ξ}
   add_mem' hΦ hΨ g h ξ := by
     simp only [map_add, LinearMap.add_apply]
-    exact (weylGauge_add_le_max _ _ _).trans (max_le (hΦ g h ξ) (hΨ g h ξ))
+    exact (Rows.weylGauge_add_le_max _ _ _).trans (max_le (hΦ g h ξ) (hΨ g h ξ))
   zero_mem' := by simp [weylGauge, mul_nonneg]
 
 /-- Let `k` be a theta kernel with data in `S`: the pairs of finite adelic points of rank `n`, `n'`
@@ -169,6 +172,11 @@ lemma pairWeil_mem_standardData {a b : AutChar (E P s)}
   rw [onHom_fin g h]
   exact omega_mem_standardData h_int hf
 
+variable {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
+  {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
+  {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
+  {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+
 /-- Let `E = P.E s` (a CM field) and `Gf` its finite adelic unitary group. Take the theta kernel
 (`thetaKernel`) of scale `c` and level `K`, for the standard definite spaces of ranks `n`, `n'` over
 `E`. Its characters `a`, `b` have exponents `ea`, `eb`, and its weight `(κ, e)` has `κ τ h` columns
@@ -183,10 +191,7 @@ to the diagonal matrix `u τ`, and that for every standard `f` and entry `(i', i
 Then the translate `ω (1, x * d * y) Ψ` lies in `raises 1 1 B`: for all finite points `g`, `h`,
 applying it after translation by `(g, h)` to a vector `ξ` gives a vector of gauge at `h` at most
 `max B 0` times the gauge of `ξ` at `g`. -/
-lemma omega_mem_raises_of_schurJet_le {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+lemma omega_mem_raises_of_schurJet_le
     {Ψ : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart}
     {δ : NumberField.RingOfIntegers P.K}
     (hΨ : Ψ.val ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) δ)
@@ -232,7 +237,7 @@ lemma omega_mem_raises_of_schurJet_le {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
       simp [hΨ', hg₀, hg₁, k.omega_omega, mul_assoc, η]
     _ = weylGauge κ ea d⁻¹ (k.jetMap Ψ' η) := by
       rw [← weylGauge_mul_of_mem_integralAbove (hk := div_mem hx hεd)]
-      simp [hg₁, ← mul_assoc, div_eq_mul_inv]
+      simp [hg₁, ← mul_assoc]
     _ = ‖A *ᵥ ιₚ ∘ η‖ := by
       simp [A, V, k, thetaKernel, ιₚ.map_mulVec, weylGauge, comp_def, weylRep, hu, Units.smul_def,
         schur_diagonal_eq_prod]
@@ -257,10 +262,7 @@ entries `b` of the filling.
 
 Then the translate of `Ψ` by `(1, x * d * y)` multiplies the `p`-adic gauge `New.weylGauge` by at
 most `max B 0`. -/
-lemma omega_mem_raises_of_jet_minorProd_le {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+lemma omega_mem_raises_of_jet_minorProd_le
     {Ψ : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart}
     {δ : NumberField.RingOfIntegers P.K}
     (hΨ : Ψ.val ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) δ)
@@ -295,10 +297,7 @@ above `p`. Such a `Φ` lies in `raises 1 1` of `(‖ιₚ c‖ / ‖ιₚ (star 
 `L = boxes κ (card n')` counts the boxes in columns of height below `card n'`: for all finite points
 `g`, `h`, its kernel translated by `(g, h)` multiplies the `p`-adic gauge (`New.weylGauge`) from
 `g` to `h` by at most this factor. -/
-lemma mem_raises_of_standardData {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+lemma mem_raises_of_standardData
     {Φ : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart}
     {δ : NumberField.RingOfIntegers P.K} (hδ : δ ≠ 0)
     (hΦ : Φ.val ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) δ) :
@@ -332,10 +331,7 @@ any level `K`. A standard datum `Φ` for `δ = 1` multiplies the `p`-adic gauge 
 `κ` in columns of height below `N`.
 
 The term `D` is `New.predictedDivisibility`. -/
-lemma mem_raises_predictedDivisibility {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+lemma mem_raises_predictedDivisibility
     (hp : chiK P.d p ≠ 1) (hc : ‖ιₚ c‖ ≤ 1)
     {Φ : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart}
     (hΦ : Φ.val ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) 1) :
@@ -351,7 +347,7 @@ lemma mem_raises_predictedDivisibility {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
   rw [← h_one]
   refine omega_mem_raises_of_jet_minorProd_le hΦ (one_mem _) (one_mem _) (d := 1) (u := 1) (by simp)
     fun f hf i' w ↦ ?_
-  simpa [N, diagonalWeight_one] using norm_jet_minorProd_jetSeries_le hp hf hc i' w
+  simpa [diagonalWeight_one] using norm_jet_minorProd_jetSeries_le hp hf hc i' w
 
 /-- Take the theta kernel (`New.thetaKernel`) of weight `(κ, e)`, with `κ` giving the column numbers
 of the diagrams, and of scale `c * P.jetScale s`, where `P.jetScale s` is the scale of Taylor series
@@ -359,10 +355,7 @@ of theta functions and `‖ιₚ c‖ ≤ 1` for the chosen embedding `ιₚ : �
 such that `d • f` is standard for the natural number `N ≠ 0`. If `d * (N * P.d) ^ L` divides `M`,
 where `L` is the number of boxes of `κ` in columns of height below `card n'`, then `M • f` does not
 increase the `p`-adic gauge `New.weylGauge` (`New.Kernel.raises` with bound `1`). -/
-lemma smul_mem_raises_of_dvd {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e} {N d M : ℕ} [NeZero N]
+lemma smul_mem_raises_of_dvd {N d M : ℕ} [NeZero N]
     (f : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart)
     (hf : (d : ℂ) • f.val ∈
       standardData (p := p) ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) N)

@@ -1,8 +1,19 @@
-import Lib.GaloisRep.LocalGlobal.LabelCompatibility
-import Lib.GaloisRep.Main.DivisibleSelmerModules
-import New.Congruences.LocalLoss.Basic
-import New.OneLift.TestedForms
-import New.UpperBound.Objects.Rows
+module
+
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import Lib.GaloisRep.LocalGlobal.LabelCompatibility
+public import Lib.GaloisRep.Main.DivisibleSelmerModules
+public import New.Congruences.LocalLoss.Basic
+public import New.OneLift.TestedForms
+public import New.UpperBound.Objects.Rows
+public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
+import Lib.ClassField.Avatar.LocalGlobalCompatibility
+import Lib.ClassField.Global.CMSplittingCharacters
+import Lib.ClassField.HeckeL.ContinuationAtOne
+import Lib.GaloisRep.Main.QuadraticStep
+import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # Bad places, ℓ-adic avatars and hypotheses on conjugate self-dual representations
@@ -39,6 +50,8 @@ Notions from other files:
 
 See `Lib.ClassField.Avatar.LocalGlobalCompatibility` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -204,7 +217,7 @@ fixed splitting character. Then inertia at `A` acts on `μ` through the label of
 of the residue field that names this character (`New.charName`) through
 `T = faithfulChar (ResField w)`: an element with tame exponent `i` of level `f` at `A` over `w` is
 killed by `X - ι (T^i label)`. -/
-lemma isLabelledAt_avatar {a : AutChar D.E} {e : NumberField.InfinitePlace D.E → ℤ}
+lemma isLabeledAt_avatar {a : AutChar D.E} {e : NumberField.InfinitePlace D.E → ℤ}
     {ψ : (w : FinPlace D.E) → MulChar (ResField w) ℂ} (ha : a.HasWeight e ψ) (k j : ℤ)
     {w : FinPlace D.E} {A : ClosurePlace} {f : ℕ} (hψ_star : ψ (star w) = 1) (hw : w.IsSplit) :
     let T : MulChar (AlgebraicClosure (ResField w)) ℂ := faithfulChar (ResField w)
@@ -217,7 +230,7 @@ lemma isLabelledAt_avatar {a : AutChar D.E} {e : NumberField.InfinitePlace D.E �
   intro T s y hy
   have ⟨hA, _, hs, _⟩ := hy
   obtain ⟨-, -, weil⟩ := avatarCompatAt_of_hasPrimitiveRoot5040 (ha.toAlgebraic k j) hA
-  obtain ⟨x, hx : Valued.v x.1 = 1, hxs,
+  obtain ⟨x, hx : Valued.v x.val = 1, hxs,
       (kills : PolyKillsAt ((scalar (Fin 1)).comp (ha.toAlgebraic k j).avatar) A s
         (X - C (ιℓ ((ha.toAlgebraic k j).val.1 (locIdele w x) : ℂ))))⟩ :=
     weil s 0 bot_le (inv_mem hs)
@@ -297,7 +310,7 @@ structure IsConjSelfDual : Prop where
   /-- Conjugate self-duality on traces: `tr R(g^c) = cyc(g)^{1 - t} tr R(g⁻¹)`, where
   `cyclotomicInv` is the inverse of the cyclotomic character `cyc`; `t = 0` is read as `t = 1`. -/
   trace_conj (g : Gal(Ω/D.E)) :
-      (R (conjGal g)).1.trace = cyclotomicInv ℓ D.E (PadicAlgCl ℓ) g ^ (t - 1) * (R g⁻¹).1.trace
+      (R (conjGal g)).val.trace = cyclotomicInv ℓ D.E (PadicAlgCl ℓ) g ^ (t - 1) * (R g⁻¹).val.trace
 
 variable (ℓ D) in
 /-- The negligible number `e'_ℓ = (4 f + 3) r v_ℓ(D.chosenGroupOrder) + 2 ^ (-ℓ)` that bounds the
@@ -318,14 +331,12 @@ noncomputable def selmerCocycles {O : CoeffRing ℓ} (ρ : AbsGal D →* Matrix 
 
 section SelmerLength
 
-variable (γ : AbsGal D) (ζ : intQpBar ℓ)
+variable (γ : AbsGal D)
 
-/-- `u`, `ψ'` and `ζ'` are models over `O` of `R`, `ψ` and `ζ`, and on the twisted lattice `ψ' u`
-the element `γ` is the scalar `ζ'`. -/
+/-- `u` and `ψ'` are models over `O` of `R` and `ψ`, and on the twisted lattice `ψ' u` the element
+`γ` is a scalar `ζ'` with `ζ' - 1` a unit. -/
 structure IsTwistedLattice {O : CoeffRing ℓ} (u : AbsGal D →* Matrix n n O) (ψ' : AbsGal D →* O)
     (ζ' : ↑O) : Prop where
-  /-- `ζ'` is `ζ`. -/
-  scalar_eq : ζ'.1 = ζ
   /-- `u` is a lattice in `R`. -/
   isLatticeIn : IsLatticeIn R u
   /-- `ψ'` is `ψ`. -/
@@ -337,20 +348,20 @@ structure IsTwistedLattice {O : CoeffRing ℓ} (u : AbsGal D →* Matrix n n O) 
   /-- `γ` lies in an inertia group above a place that does not divide `ℓ`. -/
   mem_inertiaAbove : γ ∈ inertiaAbove (placesDividing D.E ℓ)ᶜ
 
-variable {ψ R γ ζ} in
+variable {ψ R γ} in
 omit [PadicIso ℓ] in
 /-- The cyclotomic character is `1` at `γ`, which lies in inertia at a place not above `ℓ`. -/
 lemma IsTwistedLattice.cyclotomicChar_eq_one {O : CoeffRing ℓ} {u : AbsGal D →* Matrix n n O}
-    {ψ' : AbsGal D →* O} {ζ' : ↑O} (h : IsTwistedLattice ψ R γ ζ u ψ' ζ') :
+    {ψ' : AbsGal D →* O} {ζ' : ↑O} (h : IsTwistedLattice ψ R γ u ψ' ζ') :
     cyclotomicChar Ω ℓ γ = 1 :=
   cyclotomicChar_eq_one_of_mem_inertiaAbove h.mem_inertiaAbove
 
-/-- Over all large coefficient rings, `R`, `ψ` and `ζ` have models `u`, `ψ'`, `ζ'` on whose twisted
-lattice `γ` acts by the scalar `ζ'` (`IsTwistedLattice`). -/
+/-- Over all large coefficient rings, `R` and `ψ` have models `u` and `ψ'` on whose twisted lattice
+`γ` acts by a scalar `ζ'` (`IsTwistedLattice`). -/
 def HasTwistedLattice : Prop :=
   ∀ᶠ O : CoeffRing ℓ in Filter.atTop,
     ∃ (u : AbsGal D →* Matrix n n O) (ψ' : AbsGal D →* O) (ζ' : ↑O),
-      IsTwistedLattice ψ R γ ζ u ψ' ζ'
+      IsTwistedLattice ψ R γ u ψ' ζ'
 
 end SelmerLength
 
@@ -362,16 +373,16 @@ noncomputable def crystallineSelmerLength {n : Type} [Fintype n] [DecidableEq n]
   divisibleSelmerLength ρ (placesDividing D.E ℓ ∪ placesAboveM D ∪ .conjClosure Q)
     (crysRelations ρ ∪ {Finsupp.single γ 1})
 
-/-- Over all large coefficient rings `O` there are models `u`, `ψ'` and `ζ'` of `R`, `ψ` and `ζ`
-such that `γ` acts on the twisted lattice `ψ' u` by the scalar `ζ'` (see `IsTwistedLattice`) and the
+/-- Over all large coefficient rings `O` there are models `u` and `ψ'` of `R` and `ψ` such that `γ`
+acts on the twisted lattice `ψ' u` by a scalar `ζ'` (see `IsTwistedLattice`) and the
 Selmer group of `ψ' u` with coefficients in `Frac(O) / O` has length at most `sel`, normalised by
 `len O / ℓ = 1`. -/
 def HasDivisibleSelmerLengthLe {n : Type} [Fintype n] [DecidableEq n]
     (ψ : AbsGal D →* PadicAlgCl ℓ) (R : GalRep ℓ D.E n) (Q : Finset (FinPlace D.E)) (γ : AbsGal D)
-    (ζ : intQpBar ℓ) (sel : ENNReal) : Prop :=
+    (sel : ENNReal) : Prop :=
   ∀ᶠ O : CoeffRing ℓ in Filter.atTop,
     ∃ (u : AbsGal D →* Matrix n n O) (ψ' : AbsGal D →* O) (ζ' : ↑O),
-      IsTwistedLattice ψ R γ ζ u ψ' ζ' ∧
+      IsTwistedLattice ψ R γ u ψ' ζ' ∧
       O.normLength (crystallineSelmerLength (twistRep (.id O) ψ' u) Q γ) ≤ sel
 
 omit [PadicIso ℓ] in
@@ -400,16 +411,16 @@ omit [PadicIso ℓ] in
 /-- A bound for the Selmer group with divisible coefficients comes with a twisted lattice. -/
 lemma HasDivisibleSelmerLengthLe.hasTwistedLattice {n : Type} [Fintype n] [DecidableEq n]
     {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalRep ℓ D.E n} {Q : Finset (FinPlace D.E)} {γ : AbsGal D}
-    {ζ : intQpBar ℓ} {sel : ENNReal} (h : HasDivisibleSelmerLengthLe ψ R Q γ ζ sel) :
-    HasTwistedLattice ψ R γ ζ :=
+    {sel : ENNReal} (h : HasDivisibleSelmerLengthLe ψ R Q γ sel) :
+    HasTwistedLattice ψ R γ :=
   Filter.Eventually.mono h fun _ ⟨u, ψ', ζ', h_lattice, _⟩ ↦ ⟨u, ψ', ζ', h_lattice⟩
 
 omit [PadicIso ℓ] in
 /-- A bound for the Selmer group with divisible coefficients holds for every larger bound. -/
 lemma HasDivisibleSelmerLengthLe.mono {n : Type} [Fintype n] [DecidableEq n]
     {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalRep ℓ D.E n} {Q : Finset (FinPlace D.E)} {γ : AbsGal D}
-    {ζ : intQpBar ℓ} {sel sel' : ENNReal} (h : HasDivisibleSelmerLengthLe ψ R Q γ ζ sel)
-    (h_le : sel ≤ sel') : HasDivisibleSelmerLengthLe ψ R Q γ ζ sel' :=
+    {sel sel' : ENNReal} (h : HasDivisibleSelmerLengthLe ψ R Q γ sel)
+    (h_le : sel ≤ sel') : HasDivisibleSelmerLengthLe ψ R Q γ sel' :=
   Filter.Eventually.mono h fun _ ⟨u, ψ', ζ', h_lattice, h_len⟩ ↦
     ⟨u, ψ', ζ', h_lattice, h_len.trans h_le⟩
 
@@ -457,8 +468,8 @@ structure IsMainSummandLike : Prop extends IsConjSelfDualOfLevel D t J ∅ R,
   /-- Some inertia element at a place above `p₀` or `p₁` and prime to `ℓ` acts by a scalar `y` such
   that `y ^ (ℓ ^ a * j) - 1` is a unit for all `a` and `1 ≤ j ≤ 4 * card n + 2`. -/
   exists_scalar_inertia :
-      ∃ᵉ (γ ∈ inertiaAbove (placesAboveM D \ placesDividing D.E ℓ)) (y : PadicAlgCl ℓ),
-        (R γ).val = y • 1 ∧ ∀ᵉ (a : ℕ) (j ∈ Icc 1 (4 * card n + 2)), ‖y ^ (ℓ ^ a * j) - 1‖ = 1
+      ∃ γ ∈ inertiaAbove (placesAboveM D \ placesDividing D.E ℓ), ∃ y : PadicAlgCl ℓ,
+        (R γ).val = y • 1 ∧ ∀ a : ℕ, ∀ j ∈ Icc 1 (4 * card n + 2), ‖y ^ (ℓ ^ a * j) - 1‖ = 1
 
 variable {D t J R}
 
@@ -474,38 +485,6 @@ theorem IsMainSummandLike.eventually_span_eq_top_and_exists_eq_smul_one
   filter_upwards [hR.span_eq_top, hR.exists_scalar_cyclotomicChar] with O h_span h_scalar u hu
   exact ⟨h_span u hu, h_scalar u hu⟩
 
-/-- A main summand `R` (`IsMainSummandLike`) is residually absolutely irreducible: for all large
-coefficient rings `O`, every lattice `u` in `R` and every ring map `f` from `O` to a field `k`, the
-only subspaces of `kⁿ` stable under all `f (u g)` are `0` and `kⁿ`. -/
-theorem IsMainSummandLike.eventually_eq_bot_or_eq_top (hR : IsMainSummandLike D t J R) :
-    ∀ᶠ O : CoeffRing ℓ in Filter.atTop, ∀ u : Gal(Ω/D.E) →* Matrix n n O, IsLatticeIn R u →
-      ∀ (k : Type) [Field k] (f : O →+* k) (U : Submodule k (n → k)),
-        (∀ g : Gal(Ω/D.E), ∀ v ∈ U, ((u g).map f).mulVec v ∈ U) → U = ⊥ ∨ U = ⊤ := by
-  filter_upwards [hR.span_eq_top] with O h_span u hu k _ f U h_stable
-  exact eq_bot_or_eq_top_of_span_eq_top f (h_span u hu) U h_stable
-
-/-- Let `R` be a main summand: an `ℓ`-adic representation of the Galois group of `D.E` with
-`R^c ≅ R^∨(1 - t)` on traces and Hodge–Tate jumps `J`, such that, among other conditions, the image
-of each lattice over a large coefficient ring `O` spans all matrices. Then the stable lattice is
-unique up to scalars, for all large `O`: if `R` has matrices `u g` over `O` in the basis `Q` and
-`u' g` over `O` in the basis `Q'`, then `Q' = α Q k` with a scalar `α` and `k` in `GL_n(O)`. -/
-theorem IsMainSummandLike.eventually_lattice_unique {ℓ : ℕ} [ThePrime ℓ] {P : Parameters}
-    {D : Data P} [PadicIso ℓ] {n : Type} [Fintype n] [DecidableEq n] {t : ℕ}
-    {J : (D.E →+* ℂ) → Multiset ℤ} {R : GalRep ℓ D.E n} (hR : IsMainSummandLike D t J R) :
-    ∀ᶠ O : CoeffRing ℓ in Filter.atTop,
-      ∀ (u u' : Gal(Ω/D.E) →* Matrix n n O) (Q Q' : GL n (PadicAlgCl ℓ)),
-        (∀ g : Gal(Ω/D.E), (Q⁻¹ * R g * Q).val = (u g).map O.val.val) →
-        (∀ g : Gal(Ω/D.E), (Q'⁻¹ * R g * Q').val = (u' g).map O.val.val) →
-        ∃ (α : (PadicAlgCl ℓ)ˣ) (k : GL n O), Q'.val = α.val • (Q.val * k.val.map O.val.val) := by
-  -- The change of basis `Q⁻¹ * Q'` conjugates `u` to `u'`, and `u` spans all matrices over `O`.
-  filter_upwards [hR.span_eq_top] with O h_span u u' Q Q' hQ hQ'
-  have h_conj (g : Gal(Ω/D.E)) :
-      (Q⁻¹ * Q')⁻¹.val * (u g).map O.val.val * (Q⁻¹ * Q').val = (u' g).map O.val.val := by
-    have h_group : (Q⁻¹ * Q')⁻¹ * (Q⁻¹ * R g * Q) * (Q⁻¹ * Q') = Q'⁻¹ * R g * Q' := by group
-    rw [← hQ g, ← hQ' g, ← h_group, ← Units.val_mul, ← Units.val_mul]
-  obtain ⟨α, k, h_eq⟩ := exists_eq_smul_of_conj_eq (h_span u ⟨Q, hQ⟩) (Q⁻¹ * Q') h_conj
-  exact ⟨α, k, by rw [← Matrix.mul_smul, ← h_eq, Units.val_mul, Units.mul_inv_cancel_left]⟩
-
 end RowColumnDefs
 
 /-!
@@ -514,7 +493,7 @@ end RowColumnDefs
 Conventions: a label is a polynomial over the residue field at a place of `O.chosenPlace`.
 
 * `New.Selmer.normalizingAvatar`, `New.Selmer.normalizingAvatar_eq_of_isFrob_inv`,
-  `New.Selmer.normalisedRep`: the normalising character, its Frobenius values, and the twist of a
+  `New.Selmer.normalizedRep`: the normalising character, its Frobenius values, and the twist of a
   representation by it.
 -/
 
@@ -562,7 +541,7 @@ variable (O : DescentPair D.E r n) (k : ℕ) (J : (D.E →+* ℂ) → Multiset �
   (R : GalRep ℓ D.E m)
 
 /-- The normalised representation: R twisted by the character `New.Selmer.normalizingAvatar`. -/
-abbrev normalisedRep (R : Gal(Ω/D.E) →* GL n (PadicAlgCl ℓ)) : Gal(Ω/D.E) →* GL n (PadicAlgCl ℓ) :=
+abbrev normalizedRep (R : Gal(Ω/D.E) →* GL n (PadicAlgCl ℓ)) : Gal(Ω/D.E) →* GL n (PadicAlgCl ℓ) :=
   twistByChar (m := n) (normalizingAvatar O) R
 
 /-! ### Scaled type polynomials -/
@@ -571,7 +550,7 @@ abbrev normalisedRep (R : Gal(Ω/D.E) →* GL n (PadicAlgCl ℓ)) : Gal(Ω/D.E) 
 (`New.charName`) the character `(O.tamePart w)⁻¹`, where `w = O.chosenPlace i`. -/
 def scaledTypePoly (i : O.ChosenIndex) : (ResField (O.chosenPlace i))[X] :=
   (c i).scaleRoots
-    (charName (faithfulChar (ResField (O.chosenPlace i))) (O.tamePart (O.chosenPlace i))⁻¹).1
+    (charName (faithfulChar (ResField (O.chosenPlace i))) (O.tamePart (O.chosenPlace i))⁻¹).val
 
 /-- The descent pair `O` with the labels `c` is a lift setting for the twist `ϑ`. Conditions on the
 pair: its places are `D.levelPlaces ϑ`. Its character `O.tamePart` is `D.chiMLocal ^ j * ϑ.tamePart`
@@ -596,7 +575,7 @@ structure IsLiftSetting (ϑ : D.Twist) where
   `card r = D.r` and `c i` is a primitive polynomial (`IsPrimitivePolynomial`), or `card r = 1` and
   `c i = X - 1`. -/
   exists_primitive_or_one (k : Fin 2) : ∃ i : O.ChosenIndex,
-    ↑(D.levelPrime k) ∈ (O.chosenPlace i).1 ∧
+    ↑(D.levelPrime k) ∈ (O.chosenPlace i).asIdeal ∧
     (card r = D.r ∧ IsPrimitivePolynomial (card r) (c i) ∨ card r = 1 ∧ c i = X - 1)
   /-- The scaled type polynomial `New.Selmer.scaledTypePoly O c i` does not have `1` as a root. -/
   not_isRoot_scaledTypePoly (i : O.ChosenIndex) : ¬(scaledTypePoly O c i).IsRoot 1
@@ -625,7 +604,7 @@ def IsMainSummand (z : FinPlace D.E → ℕ → ℂ) (R : GalRep ℓ D.E r) : Pr
   ∀ {ϑ : D.TameChar} {V : DescentPair D.E r n} {y : V.FormV} {H : FinPlace D.E → ℂ[X]}
     {S : GalRep ℓ D.E n},
     V.u1Char = O.u1Char * ϑ.toAutChar → V.HasLiftHeckePolynomial y z → IsEigenform y H →
-      Attached H S → HasLiftTrace ϑ.invAvatar R V.rankDiff (normalisedRep V S)
+      Attached H S → HasLiftTrace ϑ.invAvatar R V.rankDiff (normalizedRep V S)
 
 /-- A representation of a type: `R` is conjugate self-dual of twist `1 - k`, jumps `J` and level `S`
 (`New.Selmer.IsConjSelfDualOfLevel`), and inertia at the place `O.chosenPlace i` acts through the
@@ -633,7 +612,7 @@ roots of the label `c i`, a polynomial over the residue field. -/
 structure IsRepOfType extends IsConjSelfDualOfLevel (n := m) D k J S R where
   /-- At each place `A`, an element of inertia over `O.chosenPlace i` is killed by the polynomial
   that `IsLabelledAt` makes from the label `c i` and the tame exponent at level `(card r)!`. -/
-  labelled ⦃i : O.ChosenIndex⦄ ⦃A : ClosurePlace⦄ :
+  labeled ⦃i : O.ChosenIndex⦄ ⦃A : ClosurePlace⦄ :
       IsLabelledAt A (faithfulChar (ResField (O.chosenPlace i))) (card r).factorial
         (PolyKillsAt R A) (c i)
 
@@ -720,7 +699,7 @@ lemma IsLiftSetting.range_typeProjection_mem_invtSubmodule {O : DescentPair D.E 
     commute_supportedOn_trivialOn hu h_off
   -- The action of `g` is a scalar multiple of this translation, so both pass through the operator.
   refine (map_smul ..).trans (congrArg _ (map_heckePolyOp (algFormRep _ _ _) x fun u hu ↦ ?_).symm)
-  rw [← Module.End.mul_apply, ← (h_comm u hu).map, Module.End.mul_apply]
+  rw [← mul_apply_eq_comp, ← (h_comm u hu).map, mul_apply_eq_comp]
 
 /-- Infinitely many places of `E` are split and are, with their conjugates, outside the places of
 the descent pair `O`. -/

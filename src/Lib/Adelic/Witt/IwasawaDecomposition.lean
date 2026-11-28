@@ -1,7 +1,15 @@
+module
+
+import Mathlib.RingTheory.PicardGroup
+public import Lib.Weil.MixedModel.IsotropicSplitting
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
 import Lib.Adelic.Landherr
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.Adelic.Witt.WittTheorem
 import Lib.Cohomology.Etale.Basic
+import Lib.General.LinearAlgebra.HermiteForm
 import Lib.General.LinearAlgebra.PolarDecomposition
-import Lib.Weil.MixedModel.IsotropicSplitting
 
 /-!
 # Maximal compact subgroup, splittings of isotropic frames and the Iwasawa decomposition
@@ -18,13 +26,12 @@ and further choices).
   splitting `V = range l ⊕ V₀ ⊕ range k` (`New.Space.Splitting`, a Witt decomposition). The proof
   compares `V` with the sum of a hyperbolic space and a standard space by Landherr's theorem
   (`New.Space.landherr`) and moves the frame by Witt's theorem (`New.Space.witt`).
-* `New.Space.Splitting.radicalCentre`: the centre of the radical, parametrised additively by adelic
+* `New.Space.Splitting.radicalCenter`: the centre of the radical, parametrised additively by adelic
   matrices M through M − M*; it sends rational matrices to rational points.
-* `New.Space.Splitting.centreCoeff`: the Fourier coefficients of a function along this centre.
+* `New.Space.Splitting.centerCoeff`: the Fourier coefficients of a function along this centre.
 * `New.Space.Splitting.iwasawa`: the Iwasawa decomposition for the maximal compact subgroup
   `New.maxCompact`, obtained at each infinite place and over the finite adeles from Witt's theorem
-  (`New.Space.Splitting.iwasawa_of_witt`). The compact factor can be taken trivial where the given
-  element is (`New.Space.Splitting.exists_mem_maxCompact_actsOnFrame_and_eq_one`).
+  (`New.Space.Splitting.iwasawa_of_witt`).
 * `New.Space.Splitting.exists_eq_radicalElement_mul_levi_mul_isAdapted`: every element is a product
   of an element of the radical, a Levi element and an element adapted to the splitting.
 
@@ -51,6 +58,8 @@ lattices, Jacobowitz, Amer. J. Math. 84 (1962)). For the Iwasawa decomposition a
 J. Tits, Reductive groups over local fields, Proc. Sympos. Pure Math. 33 (1979), part 1, 3.3.2 and
 3.8.1.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -89,7 +98,7 @@ lemma New.mem_maxCompact_iff_isOrthoIntegral_adeleMatrix {g : G E s} :
     g ∈ maxCompact E s ↔ Exchange.IsOrthoIntegral g.adeleMatrix := by
   have h_inf (w : NumberField.InfinitePlace E) : g.fst w ∈ maxCompactU s ↔
       (g.adeleMatrix.map (evalInf w)).conjTranspose * g.adeleMatrix.map (evalInf w) = 1 := by
-    rw [maxCompactU, Subgroup.mem_subgroupOf, mem_U, Matrix.mul_one]
+    rw [maxCompactU, Subgroup.mem_subgroupOf, Matrix.mem_unitaryGroupOf_iff, Matrix.mul_one]
     rfl
   rw [maxCompact, Subgroup.mem_prod, Subgroup.mem_pi, mem_stdLevel]
   simp only [Set.mem_univ, forall_const, h_inf, Exchange.IsOrthoIntegral, G.adeleMatrix_snd]
@@ -115,7 +124,7 @@ lemma New.rank_le_card_preimage_of_isotropic {n p : Type*} [Fintype n] [Decidabl
     rcases Int.units_eq_one_or ε with rfl | rfl <;>
       simp [hd, Matrix.mul_add, Matrix.add_mul, h_iso]
   have h_supp (i : n) (hi : d i ≠ 0) : i ∈ s ⁻¹' {ε} := by
-    contrapose! hi
+    contrapose hi
     simp [d, Int.units_ne_iff_eq_neg.1 hi]
   calc X.rank = (ε • Xᴴ * diagonal d * X).rank := by rw [← h_gram, rank_conjTranspose_mul_self]
     _ ≤ (diagonal d).rank := (rank_mul_le_left _ _).trans (rank_mul_le_right _ _)
@@ -149,23 +158,16 @@ lemma New.Space.card_le_card_preimage_of_isotropic {E : Type*} [Field E] [CMType
     [Fintype n] [DecidableEq n] [Fintype p] [DecidableEq p] {s : n → ℤˣ} (V : Space E n s)
     {k : Matrix n p E} (hk : HasLeftInv k) (h_iso : kᴴ * V.J * k = 0) (ε : ℤˣ) :
     card p ≤ card (s ⁻¹' {ε}) := by
-  -- At an infinite place w, the frame k in standard coordinates gives a complex matrix X of full
-  -- rank that is isotropic for diag s.
+  -- At an infinite place `w`, `k` in standard coordinates gives a full-rank isotropic matrix `X`.
   let w : NumberField.InfinitePlace E := Classical.ofNonempty
   let X : Matrix n p ℂ := (V.x⁻¹.val * k.map toAdele).map (evalInf w)
-  obtain ⟨l, hl⟩ : ∃ l : Matrix p n E, l * k = 1 := hk
-  let L : Matrix p n ℂ := (l.map toAdele * V.x.val).map (evalInf w)
-  have hLX : L * X = 1 := by simp [L, X, ← Matrix.map_mul, Matrix.mul_assoc, hl]
-  have h_rank : card p ≤ X.rank := by simpa [hLX] using L.rank_mul_le_right X
-  have h_sign : (stdForm E s).map (evalInf w) = signMatrix s := by
-    simp [signMatrix, stdForm]
-  have hX : Xᴴ * signMatrix s * X = 0 :=
-    calc Xᴴ * signMatrix s * X
-        = ((V.x⁻¹.val * k.map toAdele)ᴴ * stdForm E s * (V.x⁻¹.val * k.map toAdele)).map
-            (evalInf w) := by
-          rw [Matrix.map_mul, Matrix.map_mul, h_sign, conjTranspose_map (evalInf w) fun _ ↦ rfl]
-      _ = 0 := by simp only [V.gram_at_point_eq_map, h_iso, Matrix.map_zero, map_zero]
-  exact h_rank.trans (rank_le_card_preimage_of_isotropic hX ε)
+  obtain ⟨l, hl⟩ := hk
+  refine le_trans ?_ (rank_le_card_preimage_of_isotropic (X := X) ?_ ε)
+  · simpa [X, ← Matrix.map_mul, Matrix.mul_assoc, hl] using
+      Matrix.rank_mul_le_right ((l.map toAdele * V.x.val).map (evalInf w)) X
+  · have h_sign : (stdForm E s).map (evalInf w) = signMatrix s := by simp [signMatrix, stdForm]
+    simp only [X, ← h_sign, ← conjTranspose_map (evalInf w) fun _ ↦ rfl, ← Matrix.map_mul,
+      V.gram_at_point_eq_map, h_iso, Matrix.map_zero, map_zero]
 
 /-- Let `k` be a left invertible `n × p` matrix over `E` whose columns span an isotropic subspace of
 `V`, that is, `kᴴ J k = 0` for the Gram matrix `J`. Then `k` is the frame `D.k` of a splitting `D`
@@ -176,120 +178,27 @@ lemma New.Space.exists_splitting {E : Type} [Field E] [CMType E] [WeilData E] {n
     (V : Space E n s) {k : Matrix n p E} (hk : HasLeftInv k) (h_iso : kᴴ * V.J * k = 0) :
     ∃ (m : ℕ) (s₀ : Fin m → ℤˣ) (V₀ : Space E (Fin m) s₀) (D : V.Splitting V₀ p), D.k = k := by
   classical
-  -- First, each sign occurs at least `card p` times in s. Then V has the signs of hyperbolic space
-  -- plus a standard space, so it splits by Landherr's theorem; Witt's theorem moves the frame to k.
-  have h_card (ε : ℤˣ) : card p ≤ card (s ⁻¹' {ε}) :=
-    V.card_le_card_preimage_of_isotropic hk h_iso ε
-  -- Number the coordinates: p with sign 1, p with sign -1, and the rest.
-  obtain ⟨m, s₀, e, h_signs⟩ : ∃ (m : ℕ) (s₀ : Fin m → ℤˣ) (e : (p ⊕ p) ⊕ Fin m ≃ n),
-      s ∘ e = hyperbolicSigns p ⊕ᵥ s₀ := exists_equiv_hyperbolicSigns h_card
-  let V₀ : Space E (Fin m) s₀ := signedSpace E s₀
+  -- Each sign occurs at least `card p` times, so coordinates split into hyperbolic signs + `s₀`.
+  obtain ⟨m, s₀, e, h_signs⟩ :=
+    exists_equiv_hyperbolicSigns (V.card_le_card_preimage_of_isotropic hk h_iso)
+  let V₀ := signedSpace E s₀
   have h_dim : card n = card (Fin m) + 2 * card p := by simp +arith [← card_congr e]
-  -- Landherr: `a` is an isometry from hyperbolic space plus V₀ (renumbered by `e`) onto V; its
-  -- column blocks form a splitting D.
-  obtain ⟨a, ha⟩ : ∃ a : GL n E, a.valᴴ * V.J * a = (hyperbolicSum p V₀).J.reindex e e :=
+  -- Landherr gives an isometry from hyperbolic space plus `V₀` onto `V`, yielding a splitting `D`.
+  obtain ⟨a, ha⟩ :=
     V.landherr ((hyperbolicSum p V₀).reindex e ((Equiv.comp_symm_eq e _ _).2 h_signs.symm))
-  have h_gram : (a.val.submatrix id e)ᴴ * V.J * a.val.submatrix id e = (hyperbolicSum p V₀).J :=
-    calc (a.val.submatrix id e)ᴴ * V.J * a.val.submatrix id e
-        = (a.valᴴ * V.J * a.val).submatrix e e := Matrix.ext fun i j ↦ by simp [Matrix.mul_apply]
-      _ = (hyperbolicSum p V₀).J := by simp [ha]
-  have D : V.Splitting V₀ p := splittingOfGram _ h_gram h_dim
-  -- Witt: both `D.k` and k are left invertible with Gram matrix 0. Move all of D by `g`.
-  obtain ⟨g, hg⟩ : ∃ g : U V.J, g.val.val * D.k = k :=
-    V.witt ⟨D.lᴴ * V.J, D.gram_lk⟩ hk (D.gram_kk.trans h_iso.symm)
-  let M : Matrix n ((p ⊕ p) ⊕ Fin m) E := (D.l.fromCols D.k).fromCols D.i
-  have h_moved : (g.val.val * M)ᴴ * V.J * (g.val.val * M) = (hyperbolicSum p V₀).J :=
-    (U.gram_invariant g M M).trans D.gram_eq_hyperbolicSum
-  refine ⟨m, s₀, V₀, splittingOfGram (g.val.val * M) h_moved h_dim, ?_⟩
+  let D : V.Splitting V₀ p := splittingOfGram (a.val.submatrix id e)
+    (Eq.trans (b := (a.valᴴ * V.J * a.val).submatrix e e)
+      (Matrix.ext fun i j ↦ by simp [Matrix.mul_apply]) (by simp [ha])) h_dim
+  -- Witt moves the isotropic frame `D.k` to `k`; apply the same isometry to all of `D`.
+  obtain ⟨g, hg⟩ := V.witt ⟨D.lᴴ * V.J, D.gram_lk⟩ hk (D.gram_kk.trans h_iso.symm)
+  let M := (D.l.fromCols D.k).fromCols D.i
+  refine ⟨m, s₀, V₀, splittingOfGram (g.val.val * M)
+    ((U.gram_invariant g M M).trans D.gram_eq_hyperbolicSum) h_dim, ?_⟩
   change (g.val.val * M).toCols₁.toCols₂ = k
   simpa [M, mul_fromCols] using hg
 
 variable {E : Type*} [Field E] [CMType E] {n n₀ p : Type*} [Fintype n] [DecidableEq n]
   [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₀ : n₀ → ℤˣ}
-
-/-- Let `k`, `l` be dual isotropic frames of `V`, whose Gram matrix is `J`, and let `i` be an
-isometric embedding of a space `V₀` into `V` that is orthogonal to both. If every vector orthogonal
-to the columns of `k` has the form `k a + i b`, then the rank of `V` is the rank of `V₀` plus twice
-the number of columns of `k`. -/
-lemma New.Space.card_eq_of_perp_subset (V : Space E n s) (V₀ : Space E n₀ s₀)
-    {k l : Matrix n p E} {i : Matrix n n₀ E} (h_kk : kᴴ * V.J * k = 0) (h_ll : lᴴ * V.J * l = 0)
-    (h_lk : lᴴ * V.J * k = 1) (h_ii : iᴴ * V.J * i = V₀.J) (h_ik : iᴴ * V.J * k = 0)
-    (h_il : iᴴ * V.J * l = 0)
-    (h_perp : ∀ y : n → E,
-      (kᴴ * V.J) *ᵥ y = 0 → ∃ (a : p → E) (b : n₀ → E), y = k *ᵥ a + i *ᵥ b) :
-    card n = card n₀ + 2 * card p := by
-  -- Every vector is `k a + i b + l c`, so the projections to the three summands add up to the
-  -- identity. Their traces count the dimensions.
-  have h_kl : kᴴ * V.J * l = 1 := by rw [V.conjTranspose_mul_J_mul_swap, h_lk, conjTranspose_one]
-  have h_ki : kᴴ * V.J * i = 0 := by rw [V.conjTranspose_mul_J_mul_swap, h_ik, conjTranspose_zero]
-  have h_li : lᴴ * V.J * i = 0 := by rw [V.conjTranspose_mul_J_mul_swap, h_il, conjTranspose_zero]
-  have h_J₀ : V₀.J⁻¹ * V₀.J = 1 := nonsing_inv_mul _ ((isUnit_iff_isUnit_det _).1 V₀.isUnit_J)
-  let P : Matrix n n E := k * (lᴴ * V.J) + i * (V₀.J⁻¹ * (iᴴ * V.J)) + l * (kᴴ * V.J)
-  -- By the Gram relations, `P` fixes the columns of `k`, `i` and `l`.
-  obtain ⟨h_Pk, h_Pi, h_Pl⟩ : P * k = k ∧ P * i = i ∧ P * l = l := by
-    simp [P, Matrix.add_mul, Matrix.mul_assoc k, Matrix.mul_assoc i, Matrix.mul_assoc l,
-      Matrix.mul_assoc V₀.J⁻¹, h_kk, h_ik, h_lk, h_ki, h_ii, h_li, h_J₀, h_kl, h_il, h_ll]
-  have h_one : P = 1 := by
-    refine ext_iff_mulVec.mpr fun y : n → E ↦ ?_
-    have h_perp_part : (kᴴ * V.J) *ᵥ (y - l *ᵥ ((kᴴ * V.J) *ᵥ y)) = 0 := by
-      rw [mulVec_sub, mulVec_mulVec, h_kl, one_mulVec, sub_self]
-    obtain ⟨a, b, h_ab⟩ := h_perp _ h_perp_part
-    generalize (kᴴ * V.J) *ᵥ y = c at h_ab
-    have hy : y = k *ᵥ a + i *ᵥ b + l *ᵥ c := eq_add_of_sub_eq h_ab
-    simp [hy, mulVec_add, h_Pk, h_Pi, h_Pl]
-  have h_trace : (card p : E) + card n₀ + card p = card n :=
-    calc (card p : E) + card n₀ + card p
-        = trace (lᴴ * V.J * k) + trace (V₀.J⁻¹ * (iᴴ * V.J * i)) + trace (kᴴ * V.J * l) := by
-          simp [h_lk, h_ii, h_J₀, h_kl]
-      _ = trace P := by simp [P, trace_mul_comm k, trace_mul_comm i, trace_mul_comm l,
-          Matrix.mul_assoc]
-      _ = card n := by rw [h_one, trace_one]
-  norm_cast at h_trace
-  omega
-
-/-- Let `k` be a left invertible `n × p` matrix over `E` whose columns span an isotropic subspace
-`A` of `V` (`kᴴ J k = 0` for the Gram matrix `J`), and let `i` be an isometric embedding of a space
-`V₀` into `V` (`iᴴ J i = J₀`) such that the orthogonal complement of `A` is `A + i V₀`: a vector `y`
-satisfies `kᴴ J y = 0` exactly when `y = k a + i b` for some `a`, `b`. Then there is a splitting `D`
-of `V` over `V₀` whose isotropic frame `D.k` is `k` and whose embedding `D.i` is `i`. -/
-lemma New.Space.exists_splitting_of_perp_eq (V : Space E n s) (V₀ : Space E n₀ s₀)
-    {k : Matrix n p E} {i : Matrix n n₀ E} (hk : HasLeftInv k) (h_iso : kᴴ * V.J * k = 0)
-    (h_isom : iᴴ * V.J * i = V₀.J)
-    (h_perp : ∀ y : n → E,
-      (kᴴ * V.J) *ᵥ y = 0 ↔ ∃ (a : p → E) (b : n₀ → E), y = k *ᵥ a + i *ᵥ b) :
-    ∃ D : V.Splitting V₀ p, D.k = k ∧ D.i = i := by
-  -- Take `e` dual to `k` and orthogonal to `i`, and put `l = e - ½ k (eᴴ J e)`.
-  obtain ⟨L, hL⟩ : ∃ L : Matrix p n E, L * k = 1 := hk
-  have h_ki : kᴴ * V.J * i = 0 := ext_iff_mulVec.mpr fun b ↦ by
-    simpa [mulVec_mulVec] using (h_perp (i *ᵥ b)).mpr ⟨0, b, by simp⟩
-  have h_ik : iᴴ * V.J * k = 0 := by rw [V.conjTranspose_mul_J_mul_swap, h_ki, conjTranspose_zero]
-  have h_J : IsUnit V.J.det := (isUnit_iff_isUnit_det _).1 V.isUnit_J
-  have h_J₀ : IsUnit V₀.J.det := (isUnit_iff_isUnit_det _).1 V₀.isUnit_J
-  -- `J⁻¹ Lᴴ` is dual to `k`; removing its component in `i V₀` gives `e`.
-  let e : Matrix n p E := V.J⁻¹ * Lᴴ - i * (V₀.J⁻¹ * (iᴴ * Lᴴ))
-  have h_ie : iᴴ * V.J * e = 0 := by
-    simp [e, Matrix.mul_sub, ← Matrix.mul_assoc, mul_nonsing_inv_cancel_right _ _ h_J,
-      mul_nonsing_inv _ h_J₀, h_isom]
-  have h_ke : kᴴ * V.J * e = 1 := by
-    simp [e, Matrix.mul_sub, ← Matrix.mul_assoc, mul_nonsing_inv_cancel_right _ _ h_J, h_ki,
-      ← conjTranspose_mul, hL]
-  have h_ek : eᴴ * V.J * k = 1 := by rw [V.conjTranspose_mul_J_mul_swap, h_ke, conjTranspose_one]
-  -- Correct `e` by a multiple of `k` to make it isotropic.
-  let M : Matrix p p E := (2⁻¹ : E) • (eᴴ * V.J * e)
-  have hM : Mᴴ = M := by simp [M, ← V.conjTranspose_mul_J_mul_swap e e]
-  let l : Matrix n p E := e - k * M
-  have h_il : iᴴ * V.J * l = 0 := by simp [l, Matrix.mul_sub, ← Matrix.mul_assoc, h_ie, h_ik]
-  have h_kl : kᴴ * V.J * l = 1 := by simp [l, Matrix.mul_sub, ← Matrix.mul_assoc, h_ke, h_iso]
-  have h_lk : lᴴ * V.J * k = 1 := by rw [V.conjTranspose_mul_J_mul_swap, h_kl, conjTranspose_one]
-  have h_ll : lᴴ * V.J * l = 0 := by
-    calc lᴴ * V.J * l = eᴴ * V.J * l - Mᴴ * (kᴴ * V.J * l) := by
-          simp [l, Matrix.sub_mul, Matrix.mul_assoc]
-      _ = eᴴ * V.J * e - M - M := by
-          simp [l, h_kl, hM, Matrix.mul_sub, ← Matrix.mul_assoc, h_ek]
-      _ = 0 := by simp only [M]; module
-  have h_card : card n = card n₀ + 2 * card p :=
-    V.card_eq_of_perp_subset V₀ h_iso h_ll h_lk h_isom h_ik h_il fun y ↦ (h_perp y).mp
-  exact ⟨⟨k, l, i, h_iso, h_ll, h_lk, h_isom, h_ik, h_il, h_card⟩, rfl, rfl⟩
 
 end SplittingExists
 
@@ -314,46 +223,6 @@ variable {E : Type*} [Field E] [CMType E] [WeilData E]
 /-! ### Adapted elements -/
 
 variable {H} in
-open Exchange in
-omit [WeilData E] in
-/-- Let `H` be a Witt decomposition of `W` over `W₀`, and let `l`, `k`, `ι` be its two isotropic
-frames and its embedding of `W₀` in standard adelic coordinates (`H.lAdelic`, `H.kAdelic`,
-`H.iAdelic`). Let `t` be in GL_p(𝔸). Suppose two elements `g`, `g'` of the adelic unitary group
-`G E s` are both adapted to `H` and `t`: the matrices `g⁻¹ (l (t⁻¹)ᴴ, k t, ι)` and
-`g'⁻¹ (l (t⁻¹)ᴴ, k t, ι)` have orthonormal columns at every infinite place and integral entries at
-the finite places. Then `g⁻¹ * g'` lies in the maximal compact subgroup K_∞K₀. -/
-lemma IsAdapted.inv_mul_mem_maxCompact {g g' : G E s} {t : GL p (𝔸 E)} (hg : H.IsAdapted g t)
-    (hg' : H.IsAdapted g' t) : g⁻¹ * g' ∈ maxCompact E s := by
-  -- The frames `M`, `M'` of `g`, `g'` satisfy `M = (g⁻¹g') M'`. The Gram matrix `Q` of `M'` for the
-  -- standard form `ε` has `Q² = 1`, so `L = Q M'ᴴ ε` inverts the square matrix `M'`. Hence
-  -- `g⁻¹g' = M L` is a product of matrices that are unitary at infinity and integral.
-  let M' : Matrix n ((p ⊕ p) ⊕ n₀) (𝔸 E) := H.frameAt g' t
-  let Q : Matrix ((p ⊕ p) ⊕ n₀) ((p ⊕ p) ⊕ n₀) (𝔸 E) :=
-    fromBlocks (fromBlocks 0 1 1 0) 0 0 (stdForm E s₀)
-  let L : Matrix ((p ⊕ p) ⊕ n₀) n (𝔸 E) := Q * M'ᴴ * stdForm E s
-  have h_card : Fintype.card ((p ⊕ p) ⊕ n₀) = Fintype.card n := by simp +arith [H.card_eq]
-  have h_left : L * M' = 1 :=
-    calc L * M' = Q * (M'ᴴ * stdForm E s * M') := by simp only [L, Matrix.mul_assoc]
-      _ = Q * Q := by rw [H.gram_frameAt g' t]
-      _ = 1 := by simp [Q, fromBlocks_multiply, stdForm_mul_self]
-  have h_right : M' * L = 1 := (mul_eq_one_comm_of_card_eq _ _ _ h_card).1 h_left
-  have h_mat : (g⁻¹ * g').adeleMatrix = H.frameAt g t * L := by
-    rw [← Matrix.mul_one (g⁻¹ * g').adeleMatrix, ← h_right]
-    simp only [M', frameAt, ← Matrix.mul_assoc, ← G.adeleMatrix_mul, mul_inv_cancel_right]
-  have h_hyp : IsOrthoIntegral (fromBlocks 0 1 1 0 : Matrix (p ⊕ p) (p ⊕ p) (𝔸 E)) :=
-    ⟨fun w ↦ by simp [fromBlocks_map, fromBlocks_conjTranspose, fromBlocks_multiply],
-      by simp [Sum.forall, Matrix.one_apply, apply_ite]⟩
-  have h_star : IsOrthoIntegral M'ᴴ := by
-    obtain ⟨h_cols, h_int⟩ : IsOrthoIntegral M' := hg'
-    refine ⟨fun w ↦ ?_, fun i j ↦ star_mem_Ô (h_int j i)⟩
-    rw [conjTranspose_map (evalInf w) fun a : 𝔸 E ↦ rfl, conjTranspose_conjTranspose]
-    exact (mul_eq_one_comm_of_card_eq _ _ _ h_card).1 (h_cols w)
-  have h_L : IsOrthoIntegral L :=
-    ((h_hyp.block_diag (.of_stdForm s₀)).mul h_star).mul (.of_stdForm s)
-  rw [mem_maxCompact_iff_isOrthoIntegral_adeleMatrix, h_mat]
-  exact IsOrthoIntegral.mul hg h_L
-
-variable {H} in
 omit [WeilData E] in
 /-- An element adapted to the splitting `H` and the basis `γ` (its frame `H.frameAt h γ`, the matrix
 h⁻¹ (l (γ⁻¹)ᴴ, k γ, ι) built from the frames `H.lAdelic`, `H.kAdelic` and the embedding `H.iAdelic`,
@@ -370,24 +239,24 @@ lemma IsAdapted.mul_of_mem_maxCompact {h κ : G E s} {γ : GL p (𝔸 E)} (h_ada
 
 /-- For an adelic p×p matrix M, the element 1 + k(M − M*)k*ε (k*ε is `H.lCoord`) of the centre of
 the unipotent radical of the stabiliser of the span of the isotropic frame k. -/
-def radicalCentre : AddChar (Matrix p p (𝔸 E)) (G E s) where
+def radicalCenter : AddChar (Matrix p p (𝔸 E)) (G E s) where
   toFun M := H.radicalElement 0 (-toAdele (j * 2 : E) • M)
   map_zero_eq_one' := ext_adeleMatrix (by simp [radicalElement])
   map_add_eq_mul' := by simp [radicalElement_mul]
 
 @[simp]
-lemma adeleMatrix_radicalCentre (M : Matrix p p (𝔸 E)) :
-    (H.radicalCentre M).adeleMatrix = 1 + H.kAdelic * (M - Mᴴ) * H.lCoord := by
+lemma adeleMatrix_radicalCenter (M : Matrix p p (𝔸 E)) :
+    (H.radicalCenter M).adeleMatrix = 1 + H.kAdelic * (M - Mᴴ) * H.lCoord := by
   -- The scalars cancel because `star j = -j`.
-  simp [radicalCentre, radicalElement, smul_smul, ← map_mul, j_ne_zero, Matrix.mul_add,
-    Matrix.add_mul, Matrix.mul_assoc, sub_eq_add_neg, add_comm]
+  simp [radicalCenter, radicalElement, smul_smul, ← map_mul, j_ne_zero, Matrix.mul_add,
+    Matrix.add_mul, sub_eq_add_neg, add_comm]
 
 /-- If `g` acts on the isotropic frame k of the splitting by the matrix `c`, that is `g k = k c`,
 then conjugation by `g` carries the element 1 + k(M − Mᴴ)kᴴε of the centre of the radical to the
 element given by `c * M * cᴴ`. -/
-lemma mul_radicalCentre {g : G E s} {c : Matrix p p (𝔸 E)} (h : H.ActsOnFrame g c)
+lemma mul_radicalCenter {g : G E s} {c : Matrix p p (𝔸 E)} (h : H.ActsOnFrame g c)
     (M : Matrix p p (𝔸 E)) :
-    g * H.radicalCentre M = H.radicalCentre (c * M * cᴴ) * g := by
+    g * H.radicalCenter M = H.radicalCenter (c * M * cᴴ) * g := by
   -- As `g` preserves the form, `g k = k c` gives the adjoint relation `cᴴ lCoord g = lCoord`.
   have h_adj : cᴴ * (H.lCoord * g.adeleMatrix) = H.lCoord :=
     calc cᴴ * (H.lCoord * g.adeleMatrix)
@@ -397,29 +266,29 @@ lemma mul_radicalCentre {g : G E s} {c : Matrix p p (𝔸 E)} (h : H.ActsOnFrame
           rw [← h, conjTranspose_mul]
           simp only [Matrix.mul_assoc]
       _ = H.lCoord := by rw [g.conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix, lCoord]
-  -- With `N = M - Mᴴ`, both sides have the matrix `g + k c N lCoord` (`adeleMatrix_radicalCentre`).
+  -- With `N = M - Mᴴ`, both sides have the matrix `g + k c N lCoord` (`adeleMatrix_radicalCenter`).
   apply G.ext_adeleMatrix
   simp [← g.adeleMatrix.mul_assoc, h, h_adj, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc,
     Matrix.mul_add, Matrix.add_mul]
 
 @[simp]
-lemma radicalCentre_mem {M : Matrix p p (𝔸 E)} (hM : M ∈ ratMatrices E p p) :
-    H.radicalCentre M ∈ W.Γ := by
+lemma radicalCenter_mem {M : Matrix p p (𝔸 E)} (hM : M ∈ ratMatrices E p p) :
+    H.radicalCenter M ∈ W.Γ := by
   obtain ⟨a, rfl⟩ := hM
   change H.radicalElement 0 (-toAdele (j * 2 : E) • a.map toAdele) ∈ W.Γ
   simpa only [Matrix.map_zero _ (map_zero _), Matrix.mul_zero] using
     H.radicalElement_mem_Gamma 0 ⟨-(j * 2 : E) • a, Matrix.ext fun i k ↦ by simp⟩
 
 @[fun_prop]
-lemma continuous_radicalCentre : Continuous H.radicalCentre := by
+lemma continuous_radicalCenter : Continuous H.radicalCenter := by
   change Continuous fun M : Matrix p p (𝔸 E) ↦ H.radicalElement 0 (-toAdele (j * 2 : E) • M)
   fun_prop
 
 /-- The Fourier coefficient at T of a function D at g: the mean of ψ(tr TM)·D(z(M)g) over adelic
-matrices M modulo rational ones, z = `New.Space.Splitting.radicalCentre`. -/
-def centreCoeff (T : Matrix p p E) (D : G E s → ℂ) (g : G E s) : ℂ :=
+matrices M modulo rational ones, z = `New.Space.Splitting.radicalCenter`. -/
+def centerCoeff (T : Matrix p p E) (D : G E s → ℂ) (g : G E s) : ℂ :=
   quotMean (ratMatrices E p p) fun M : Matrix p p (𝔸 E) ↦
-    stdAddChar E (T.map toAdele * M).trace * D (H.radicalCentre M * g)
+    stdAddChar E (T.map toAdele * M).trace * D (H.radicalCenter M * g)
 
 /-! ### The Iwasawa decomposition -/
 
@@ -493,7 +362,8 @@ lemma exists_unitary_mul_eq_of_isotropic {s : n → ℤˣ} {A B : Matrix n p ℂ
   let σ : n ≃ Σ ε : ℤˣ, {i : n // s i = ε} := (Equiv.sigmaFiberEquiv s).symm
   let K : Matrix n n ℂ := (blockDiagonal' fun ε ↦ (g ε).val.val).submatrix σ σ
   have h_unitary : Kᴴ * K = 1 := by
-    have h_block (ε : ℤˣ) : (g ε).val.valᴴ * (g ε).val.val = 1 := by simpa using mem_U.1 (g ε).prop
+    have h_block (ε : ℤˣ) : (g ε).val.valᴴ * (g ε).val.val = 1 := by
+      simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 (g ε).prop
     simp [K, ← blockDiagonal'_mul, h_block, ← Pi.one_def]
   have h_comm : signMatrix s * K = K * signMatrix s := by
     ext i j
@@ -503,7 +373,8 @@ lemma exists_unitary_mul_eq_of_isotropic {s : n → ℤˣ} {A B : Matrix n p ℂ
   have h_form : Kᴴ * signMatrix s * K = signMatrix s := by
     rw [Matrix.mul_assoc, h_comm, ← Matrix.mul_assoc, h_unitary, Matrix.one_mul]
   have h_mem : U.of IsHermitianInvolution.isUnit K h_form ∈ maxCompactU s := by
-    simpa [maxCompactU, Subgroup.mem_subgroupOf, mem_U] using h_unitary
+    simpa [maxCompactU, Subgroup.mem_subgroupOf, mem_unitaryGroupOf_iff,
+        star_eq_conjTranspose] using h_unitary
   refine ⟨_, h_mem, ?_⟩
   ext i j
   -- Row i of κ A is the row i of the block of sign s i.
@@ -528,79 +399,24 @@ lemma exists_mem_maxCompact_actsOnFrame (g : G E s) (wt : p → ℕ) :
   -- Apply `iwasawa_of_witt` at each infinite place, with orthonormal frames (Gram–Schmidt), and
   -- at the finite places, with frames that are integral and left invertible over Ô (Witt's
   -- theorem over Ô is `witt_Ô`); then glue the components.
-  have h_inf_exists (w : NumberField.InfinitePlace E) :
-      ∃ κ ∈ (maxCompactU s : Set (USign s)), ∃ b ∈ (parabolic wt : Subgroup (GL p ℂ)),
-        (g.fst w * κ).val.val * H.kAdelic.map (evalInf w) = H.kAdelic.map (evalInf w) * b.val := by
-    have h_form : H.lCoord.map (evalInf w) = (H.kAdelic.map (evalInf w))ᴴ * signMatrix s := by
-      simp [← ext_iff, lCoord, stdForm, signMatrix]
-    exact H.iwasawa_of_witt (P := fun X ↦ Xᴴ * X = 1) (evalInf w) (g.fst w)
-      (exists_orthonormal_mul wt) exists_unitary_mul_eq_of_isotropic h_form
-  choose κ hκ b hb h_inf using h_inf_exists
+  choose κ hκ b hb h_inf using fun w : NumberField.InfinitePlace E ↦
+    H.iwasawa_of_witt (P := fun X ↦ Xᴴ * X = 1) (evalInf w) (g.fst w)
+      (exists_orthonormal_mul wt) exists_unitary_mul_eq_of_isotropic
+      (by simp [← ext_iff, lCoord, stdForm, signMatrix])
   let fin : 𝔸 E →+* 𝔸f E := RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)
-  obtain ⟨κ', hκ', b', hb', h_fin⟩ :
-      ∃ κ' ∈ stdLevel E n, ∃ b' ∈ (parabolic wt : Subgroup (GL p (𝔸f E))),
-        (g.snd * κ').val.val * H.kAdelic.map fin = H.kAdelic.map fin * b'.val := by
-    have h_form : H.lCoord.map fin = (H.kAdelic.map fin)ᴴ * (1 : Matrix n n (𝔸f E)) := by
-      simp [← ext_iff, fin, lCoord, stdForm]
-    have h_witt {X Y : Matrix n p (𝔸f E)} (hX : IsPrimitiveMatrix (Ô E) X)
-        (hY : IsPrimitiveMatrix (Ô E) Y) (hX₀ : Xᴴ * (1 : Matrix n n (𝔸f E)) * X = 0)
-        (hY₀ : Yᴴ * (1 : Matrix n n (𝔸f E)) * Y = 0) : ∃ κ' ∈ stdLevel E n, κ'.val.val * X = Y :=
-      witt_Ô hX hY (by simpa using hX₀.trans hY₀.symm)
-    exact H.iwasawa_of_witt fin g.snd
-      (fun hX ↦ isValuationPair_Ô.exists_isPrimitiveMatrix_mul hX wt) h_witt h_form
-  have h_frame : H.ActsOnFrame (g * (κ, κ')) (mkAdelicGL (b, b')).val := by
-    refine matrix_ext_𝔸 (fun w ↦ ?_) ?_
-    · rw [Matrix.map_mul, Matrix.map_mul]
-      exact h_inf w
-    · rw [Matrix.map_mul, Matrix.map_mul]
-      exact h_fin
-  have h_triangular : (mkAdelicGL (b, b')).val.BlockTriangular wt := fun i j hij ↦
-    Prod.ext (funext fun w ↦ hb w hij) (hb' hij)
-  exact ⟨(κ, κ'), ⟨fun w _ ↦ hκ w, hκ'⟩, mkAdelicGL (b, b'), h_triangular, h_frame⟩
-
-/-- The Iwasawa decomposition place by place. Every `g` has a right translate `g * κ`, with `κ` in
-the maximal compact subgroup, that acts on the isotropic frame k by a matrix `b` (`H.ActsOnFrame`:
-g κ k = k b) that is block triangular for the weights `wt`, where `κ` is trivial at every infinite
-and every finite place at which `g` is trivial (`atPlace w` is the component at `w`). -/
-lemma exists_mem_maxCompact_actsOnFrame_and_eq_one (g : G E s) (wt : p → ℕ) :
-    ∃ κ ∈ maxCompact E s, ∃ b : GL p (𝔸 E),
-      b.val.BlockTriangular wt ∧
-      H.ActsOnFrame (g * κ) b.val ∧
-      (∀ w : NumberField.InfinitePlace E, g.fst w = 1 → κ.fst w = 1) ∧
-      ∀ w : FinPlace E, g.snd.atPlace w = 1 → κ.snd.atPlace w = 1 := by
-  -- Replace the components of `κ` and `b` by `1` at the places where `g` is trivial; the adele `e`
-  -- is `0` at these places and `1` at the others.
-  classical
-  obtain ⟨κ, ⟨hκ_inf, hκ_fin⟩, b, hb, h_frame⟩ := H.exists_mem_maxCompact_actsOnFrame g wt
-  let S : Set (FinPlace E) := {w : FinPlace E | g.snd.atPlace w ≠ 1}
-  have hS (w : FinPlace E) : w ∈ S.conjClosure ↔ g.snd.atPlace w ≠ 1 := by
-    simp [S, Gf.atPlace_star_eq_one_iff]
-  let e : 𝔸 E := (fun w ↦ if g.fst w = 1 then 0 else 1, idem S.conjClosure)
-  have he : IsIdempotentElem e :=
-    Prod.ext (funext fun w ↦ by simp [e]) (idem_mul_self S.conjClosure)
-  let κ' : G E s := (fun w ↦ if g.fst w = 1 then 1 else κ.fst w, Gf.componentOn n S κ.snd)
-  have hκ' : κ' ∈ maxCompact E s :=
-    ⟨fun w hw ↦ by simpa [κ', ite_mem] using fun _ ↦ hκ_inf w hw,
-                     Gf.componentOn_mem_stdLevel hκ_fin⟩
-  have h_mat : (g * κ').adeleMatrix = e • (g * κ).adeleMatrix + (1 - e) • 1 := by
-    ext i j : 1
-    refine Prod.ext (funext fun w ↦ ?_) ?_
-    · by_cases hw : g.fst w = 1 <;>
-        simp [e, κ', hw, Matrix.one_apply, apply_ite Prod.fst, ite_apply, -G.adeleMatrix_mul]
-    · have h_fin : (g * κ').snd = Gf.componentOn n S (g * κ).snd := by
-        refine Gf.ext fun w ↦ ?_
-        by_cases hw : g.snd.atPlace w = 1 <;> simp [κ', hS, hw]
-      have h_component : (Gf.componentOn n S (g * κ).snd).val.val =
-          idem S.conjClosure • (g * κ).snd.val.val + (1 - idem S.conjClosure) • 1 := rfl
-      rw [G.adeleMatrix_snd, h_fin, h_component]
-      simp [e, Matrix.one_apply, apply_ite Prod.snd, -G.adeleMatrix_mul]
-  have h_cut : (cutGL he b).val = e • b.val + (1 - e) • 1 := rfl
-  refine ⟨κ', hκ', cutGL he b, fun i j hij ↦ ?_, ?_, fun w hw ↦ ?_, fun w hw ↦ ?_⟩
-  · simp [h_cut, hb hij, ne_of_apply_ne wt hij.ne']
-  · rw [ActsOnFrame, h_mat, h_cut, Matrix.add_mul, Matrix.smul_mul, h_frame]
-    simp [Matrix.mul_add]
-  · simp [κ', hw]
-  · simp [κ', hS, hw]
+  obtain ⟨κ', hκ', b', hb', h_fin⟩ :=
+    H.iwasawa_of_witt fin g.snd
+      (fun hX ↦ isValuationPair_Ô.exists_isPrimitiveMatrix_mul hX wt)
+      (fun hX hY hX₀ hY₀ ↦ witt_Ô hX hY (by simpa using hX₀.trans hY₀.symm))
+      (by simp [← ext_iff, fin, lCoord, stdForm] :
+        H.lCoord.map fin = (H.kAdelic.map fin)ᴴ * (1 : Matrix n n (𝔸f E)))
+  refine ⟨(κ, κ'), ⟨fun w _ ↦ hκ w, hκ'⟩, mkAdelicGL (b, b'),
+    fun i j hij ↦ Prod.ext (funext fun w ↦ hb w hij) (hb' hij),
+    matrix_ext_𝔸 (fun w ↦ ?_) ?_⟩
+  · rw [Matrix.map_mul, Matrix.map_mul]
+    exact h_inf w
+  · rw [Matrix.map_mul, Matrix.map_mul]
+    exact h_fin
 
 /-- The Iwasawa decomposition. Every `g` has a right translate `g * κ`, with `κ` in the maximal
 compact subgroup, that acts on the isotropic frame by a matrix `b`, block triangular for the

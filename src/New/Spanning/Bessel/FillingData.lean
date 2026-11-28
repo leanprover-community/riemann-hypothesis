@@ -1,10 +1,25 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.MeasureTheory.SpecificCodomains.WithLp
+import Mathlib.Tactic.Monotonicity.Lemmas
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.UpperBound.Objects.Rows
+public import New.Spanning.Bessel.LargeFunction
+public import New.Spanning.Frames.RealPlaceGauge
+public import New.Spanning.Unfolding.Setup
+import Lib.DiscreteSeries.Bessel.SchurBound
 import Lib.DiscreteSeries.Character.FormalDegree
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.GLn.SchurModule.SchurNorm
 import New.Determinant.AuxiliaryForms.DeepLevelPoincarePeriod
 import New.Spanning.Bessel.CutTailBound
 import New.Spanning.Bessel.SchurBound
 import New.Spanning.Frames.RealBandLimits
 import New.Spanning.Unfolding.Climbing
-import New.UpperBound.Objects.Rows
 
 /-!
 # Filling data from admissible data, with Bessel systems at the real places
@@ -40,9 +55,11 @@ almost span the target forms. Rank one is classical, and Bessel kernels are stud
 GSp(4).
 
 Related work: Petersson, Über die Entwicklungskoeffizienten der automorphen Formen, 1932; NIST DLMF
-§10.22; Baruch, Bessel distributions on the open cell, 2001–2004; Comtat et al., Effective Kuznetsov
-trace formula for GSp(4), 2025.
+§10.22; Baruch, On Bessel distributions for quasi-split groups, 2001, and Bessel distributions for
+GL(3) over the p-adics, 2004; Comtat et al., Effective Kuznetsov trace formula for GSp(4), 2025.
 -/
+
+@[expose] public section
 
 namespace New.Data
 
@@ -430,10 +447,10 @@ component of `r` has valuation less than 1 at each chosen place `w` above that p
 `D.ChosenPlace i`) and at the conjugate place `star w`. -/
 lemma natCast_levelPrime_dvd_iff (i : Fin 2) (r : Ô D.E) :
     ↑(D.levelPrime i) ∣ r ↔
-      ∀ w : D.ChosenPlace i, Valued.v (r.1 w) < 1 ∧ Valued.v (r.1 (star w.1)) < 1 := by
+      ∀ w : D.ChosenPlace i, Valued.v (r.val w) < 1 ∧ Valued.v (r.val (star w.val)) < 1 := by
   -- As the prime is unramified, it divides `r` iff `r` vanishes modulo every place above it.
   have h_red : ↑(D.levelPrime i) ∣ r ↔ ∀ w : FinPlace D.E,
-    ↑(D.levelPrime i) ∈ w.1 → Valued.v (r.1 w) < 1 := by
+    ↑(D.levelPrime i) ∈ w.asIdeal → Valued.v (r.val w) < 1 := by
     simpa using dvd_iff_reduceAt_eq_zero
       (intValuation_natCast_eq_exp_neg_one ·
         (not_dvd_q₁_mul_d_of_modEq_one (D.levelPrime_modEq_one i))) r
@@ -464,7 +481,7 @@ noncomputable def filling : Filling D.E D.shape where
   piN := D.piNIdele
   deltaE := P.deltaE D.towerExp
   b := D.b
-  chosenPlaces i := {w | D.piM ∈ w.1 ∧ ↑(D.levelPrime i) ∈ w.1}
+  chosenPlaces i := {w | D.piM ∈ w.asIdeal ∧ ↑(D.levelPrime i) ∈ w.asIdeal}
   fintypeChosen i := inferInstanceAs (Fintype (D.ChosenPlace i))
   sourceLevel := D.levelX 0
   classAut_eq_bot := D.classAut_levelX_zero_eq_bot
@@ -482,7 +499,7 @@ noncomputable def filling : Filling D.E D.shape where
   le_levelPrime i := (D.levelPrime_mem i).1
   levelPrime_le i := (D.levelPrime_mem i).2
   chosenPlaces_q i w hw := D.q_eq_levelPrime hw.2
-  chosenPlaces_injective := D.isConjApart_chosenPlace.1
+  chosenPlaces_injective := D.isConjApart_chosenPlace.injective
   star_notMem_chosenPlaces hw hw' := IsChosen.not_star hw.1 hw'.1
   M_dvd_iff r := by
     -- The primes `D.levelPrime 0` and `D.levelPrime 1` are distinct, so their product divides `r`
@@ -506,7 +523,6 @@ noncomputable def filling : Filling D.E D.shape where
              rify [finrank_eq_two_mul_card_infinitePlace, pow_mul']
              exact D.le_of_hasLogBound
   pow_le_k := D.nat_le_of_hasLogBound.trans D.card_X₀.ge
-  thousand_mul_le_k := D.nat_le_of_hasLogBound.trans D.card_X₀.ge
   k_le_f := D.card_X₀.trans_le D.nat_le_of_hasLogBound
   mul_rootDiscr_pow_le := by
                  rify [Shape.k, card_X₀]
@@ -520,8 +536,6 @@ noncomputable def filling : Filling D.E D.shape where
   M_le_b_pow := D.le_of_hasLogBound
   le_M := D.le_of_hasLogBound
   five_le_N := D.le_of_hasLogBound
-  pow_chain := ⟨D.nat_le_of_hasLogBound, D.nat_le_of_hasLogBound,
-    D.nat_le_of_hasLogBound.trans D.card_X₀.ge⟩
 
 /-- The Bessel system of `D.filling` at the infinite place `v` has type
 `(D.paramW v, D.columnCount v)`: its full function is the Bessel function of the discrete series of

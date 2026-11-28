@@ -1,6 +1,21 @@
-import New.Appendix.DiscreteSeries.SteepParameters
+module
+
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Appendix.DiscreteSeries.SteepParameters
+public import New.UpperBound.Objects.Parameters
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.Analysis.PackingAndSobolev
 import New.UpperBound.Objects.Columns
-import New.UpperBound.Objects.Parameters
 
 /-!
 # Steep parameters of Y₀ and Ỹ^0_0; periods of Poincaré series of deep level
@@ -46,6 +61,8 @@ Notions from other files:
   of the ring of integers of `E`.
 -/
 
+@[expose] public section
+
 /-! ## Steepness of the discrete series parameters at infinite places -/
 
 section SteepParameters
@@ -84,7 +101,7 @@ lemma New.Data.abs_targetParameter_sub_lowestKType_le_and_eq {P : Parameters} (D
     | zero => simp
     | succ M ih =>
       rw [Finset.sum_range_succ]
-      grind (splits := 20) [targetParameter_eq]
+      grind [targetParameter_eq]
   -- `entrySign 0 0 i` depends only on the parity of `i`
   have h_sign (i i' : ℕ) : entrySign 0 0 i = entrySign 0 0 i' ↔ i % 2 = i' % 2 := by
     have h_ne : (-1 : ℤˣ) ≠ 1 := by decide
@@ -126,7 +143,7 @@ lemma New.Data.exists_isSteep {P : Parameters} (D : Data P) (z : Bool) :
   have h_entry (x : D.GridIndex z 0 0) :
       D.gridSigns z 0 0 0 x = entrySign 0 0 (ν x + 1 - D.k) ∧
       D.gridParam z 0 0 0 τ x = 2 * D.targetParameter τ (ν x) + z.toNat := by
-    cases z <;> aesop (add simp [gridSigns, gridParam, gridNumber])
+    cases z <;> aesop (add simp [gridSigns, gridNumber])
   -- The far entries of `D.targetParameter τ` are `Δ / 2 - κ_j` with `j ≤ Δ`, and `κ_j` lies between
   -- `B = D.liftWeight 0 τ` and `D.liftWeight D.gap τ ≤ 2 * B`.
   have h_sq_le : D.gap ^ 2 ≤ D.liftWeight 0 τ := D.nat_le_of_hasLogBound
@@ -698,7 +715,7 @@ lemma New.Exchange.norm_poincare_period_sub_le {E n : Type} {s : n → ℤˣ} [F
     (integral_norm_poincareKernel_le ha hA_sq h_gap ω α (hk γ) one_pos fun h ↦
       (le_prod_opNorm (transl γ h).1).1).1
   have term_int (γ : supp) : Integrable (term γ) :=
-    (kernel_int γ).mul_bdd hF.1.aestronglyMeasurable (.of_forall hS)
+    (kernel_int γ).mul_bdd hF.continuous.aestronglyMeasurable (.of_forall hS)
   -- the decay: the product of the local operator norms of `transl γ h` is at least `‖col γ‖ / d`
   have term_le (γ : Elem {base}ᶜ) :
       ∫ h, ‖term γ h‖ ≤ vol * sliceConst A α ω * S * (d / ‖col γ‖) ^ A := by
@@ -729,7 +746,7 @@ lemma New.Exchange.norm_poincare_period_sub_le {E n : Type} {s : n → ℤˣ} [F
       exact ⟨δ * h, by simpa [transl, mul_assoc] using level⟩
     have cosets : ∑' γ : Z.Γ, p γ = ∑' q : supp × V.Γ, p (q.1 * inlLine E s q.2) :=
       V.tsum_eq_tsum_cosets hC p_supp
-    simpa [hF.2, p, term, transl, mul_assoc] using cosets
+    simpa [hF.rat_mul, p, term, transl, mul_assoc] using cosets
   -- unfolding over `V.Γ` turns the period into the sum of the integrals of `term γ` over the group
   have summable_norm : Summable fun γ : supp ↦ ∫ h, ‖term γ h‖ :=
     .compl_add (s := {base}) (.of_nonneg_of_le (fun _ ↦ integral_nonneg fun _ ↦ norm_nonneg _)

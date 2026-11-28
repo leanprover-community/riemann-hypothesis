@@ -1,5 +1,13 @@
-import New.Spanning.Bessel.Basic
-import New.Spanning.Frames.Depth
+module
+
+import Mathlib.MeasureTheory.Function.SpecialFunctions.Inner
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.Bessel.Basic
+public import New.Spanning.Frames.Depth
+import New.Spanning.Frames.QuadricPlancherel
+import New.Spanning.Frames.TwoGauges
 
 /-!
 # The densities as integrals over pairs of frames
@@ -41,6 +49,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -202,8 +212,8 @@ theorem PlaceData.enorm_floorForm_le (ω : T.G → ℂ) :
   have h_integral : ‖∫ z : T.G × T.G, F.formIntegrand j p q W z.1 ω z.2
       ∂F.groupMeasure.prod (F.partialGroupMeasure 0 j)‖ₑ ≤
       ∫⁻ x : T.G, F.formIntegrandL1Norm j p q W x ω ∂F.groupMeasure :=
-    (enorm_integral_le_lintegral_enorm _).trans (lintegral_prod_le _)
-  rw [floorForm, enorm_mul]
+    (eNorm_integral_le_lintegral_eNorm _).trans (lintegral_prod_le _)
+  rw [floorForm, eNorm_mul]
   exact mul_le_mul' h_density h_integral
 
 /-- The partial group measure of the last two floors, `ϱ` and `ϱ + 1`, is the convolution of the
@@ -219,58 +229,11 @@ lemma Gauge.isCompact_hasMatrixSize {j : ℕ} (Γ : Gauge F) :
     IsCompact {y : T.G | Γ.HasMatrixSize j (y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)} :=
   isClosedEmbedding_unitary_coe.isCompact_preimage (Γ.isCompact_ofSize _).matrix
 
-omit [IsHermitianUnit T.splitGram] in
-/-- Let `W` be a Bessel function of frequency `η`, so that `W (u * y) = χ(u) • W y` for `u` in the
-unipotent group 𝖴 = `T.besselU`, with `χ(u) = ψ (η * simpleRootSum u)`. For a left invariant measure
-`μ`, the orbital integral J(γ) = ∫ W(y) ⊗ W(γ⁻¹y)^* dμ(y) (`besselOrbitalIntegral μ W γ`) satisfies
-J(u⁻¹γu') = conj χ(u) · χ(u') · J(γ) for `u`, `u'` in 𝖴. -/
-theorem Place.IsBessel.besselOrbitalIntegral_besselU_mul {W : T.G → EuclideanSpace ℂ I} {η : Aˣ}
-    (hW : P.IsBessel W η) (μ : Measure T.G) [μ.IsMulLeftInvariant] {u u' : T.G}
-    (hu : u ∈ T.besselU) (hu' : u' ∈ T.besselU) (γ : T.G) :
-    besselOrbitalIntegral μ W (u⁻¹ * γ * u') =
-      (conj (P.ψ (η * simpleRootSum u)) * P.ψ (η * simpleRootSum u')) •
-        besselOrbitalIntegral μ W γ := by
-  let χ (v : T.G) : ℂ := P.ψ (η * simpleRootSum v)
-  have h_inv {v : T.G} (hv : v ∈ T.besselU) (y : T.G) : W (v⁻¹ * y) = conj (χ v) • W y := by
-    have h_law : W y = χ v • W (v⁻¹ * y) := by
-      rw [← hW.map_unipotent_mul v hv, mul_inv_cancel_left]
-    rw [h_law, smul_smul, RCLike.conj_mul, P.norm_psi, RCLike.ofReal_one, one_pow, one_smul]
-  ext ⟨i, i'⟩
-  simp only [besselOrbitalIntegral, PiLp.smul_apply, smul_eq_mul]
-  -- Substitute `u⁻¹ * y` for `y`.
-  calc ∫ y : T.G, W y i * conj (W ((u⁻¹ * γ * u')⁻¹ * y) i') ∂μ
-    _ = ∫ y : T.G, W (u⁻¹ * y) i * conj (W ((u⁻¹ * γ * u')⁻¹ * (u⁻¹ * y)) i') ∂μ :=
-      (integral_mul_left_eq_self _ u⁻¹).symm
-    _ = ∫ y : T.G, conj (χ u) * χ u' * (W y i * conj (W (γ⁻¹ * y) i')) ∂μ := by
-      refine integral_congr_ae (.of_forall fun y : T.G ↦ ?_)
-      have h_point : (u⁻¹ * γ * u')⁻¹ * (u⁻¹ * y) = u'⁻¹ * (γ⁻¹ * y) := by group
-      simp only [h_point, h_inv hu, h_inv hu', PiLp.smul_apply, smul_eq_mul, map_mul, conj_conj]
-      ring
-    _ = conj (χ u) * χ u' * ∫ y : T.G, W y i * conj (W (γ⁻¹ * y) i') ∂μ := integral_const_mul _ _
-
 /-- A cut Bessel function `W` vanishes off the points near at `j`, for every `j`: if `W x ≠ 0`, then
 `u x` lies in the box `F.boxSet` for some `u` in `partialUnitriangularGroup j`. -/
 theorem PlaceData.IsCut.isNear_of_ne_zero (hk : F.IsCut W) (h : W x ≠ 0) : F.IsNear j x := by
   obtain ⟨u, hu, hu_box⟩ : ∃ u ∈ T.besselU, u * x ∈ F.boxSet := hk.exists_mul_mem_box h
   exact ⟨u, mem_partialUnitriangularGroup_of_mem_besselU hu, hu_box⟩
-
-/-- Let `W` be a cut Bessel function for the place datum `F`. If the orbital integral J(γ) = ∫
-W(y) ⊗ W(γ⁻¹y)^* dμ(y) is not zero, then all leading minors of the matrix of the products h(f_a, γ
-f_b) of the frame vectors (`T.frameGram γ`) have size `9 * 𝔰.n`, that is lie in the set
-`Γ.ofSize (9 * 𝔰.n)`, in every gauge `Γ` for `F`. -/
-theorem Gauge.leadingMinor_mem_ofSize_of_besselOrbitalIntegral_ne_zero (Γ : Gauge F)
-    {W : T.G → EuclideanSpace ℂ I} (hW : F.IsCut W) {μ : Measure T.G} {γ : T.G}
-    (hγ : besselOrbitalIntegral μ W γ ≠ 0) (j : Fin (𝔰.n + 1)) :
-    leadingMinor (T.frameGram (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)) j ∈
-      Γ.ofSize (9 * 𝔰.n) := by
-  obtain ⟨y, hy, hγy⟩ : ∃ y : T.G, W y ≠ 0 ∧ W (γ⁻¹ * y) ≠ 0 := by
-    by_contra! h_zero
-    refine hγ (PiLp.ext fun i ↦ integral_eq_zero_of_ae (.of_forall fun y ↦ ?_))
-    by_cases hy : W y = 0
-    · simp only [hy, PiLp.zero_apply, zero_mul, Pi.zero_apply]
-    · simp only [h_zero y hy, PiLp.zero_apply, map_zero, mul_zero, Pi.zero_apply]
-  exact Γ.leadingMinor_mem_ofSize_of_isNear (hW.isNear_of_ne_zero hy) (hW.isNear_of_ne_zero hγy)
-    le_rfl
 
 /-- Let W be a cut Bessel function and |ω| ≤ 1 everywhere. For every floor `j : ℕ`, all sequences of
 units `p q : ℕ → Aˣ` and every point x of the group, the L¹ norm 𝖥_j(x; ω) of the form integrand at
@@ -295,15 +258,15 @@ theorem PlaceData.IsCut.formIntegrandL1Norm_le_formMajorant {W : T.G → Euclide
     have hω : ‖ω (σ * τ⁻¹)‖ₑ ≤ 1 := by
       rw [← ofReal_norm]
       exact ofReal_le_one.2 (hω_le _)
-    grw [enorm_mul, hω, one_mul]
+    grw [eNorm_mul, hω, one_mul]
     simp [partialCorrelationProduct, plain, twisted, mul_assoc]
   have h_plain_meas : Measurable plain := by fun_prop [partialCorrelation]
   calc ‖F.formIntegrand j p q W x ω g‖ₑ
     _ ≤ ∫⁻ σ : T.G, ∫⁻ τ : T.G, plain σ * twisted τ ∂F.floorMeasure j ∂F.floorMeasure j :=
-      (enorm_integral_le_lintegral_enorm _).trans <| lintegral_mono fun σ ↦
-        (enorm_integral_le_lintegral_enorm _).trans (lintegral_mono (h_integrand σ))
+      (eNorm_integral_le_lintegral_eNorm _).trans <| lintegral_mono fun σ ↦
+        (eNorm_integral_le_lintegral_eNorm _).trans (lintegral_mono (h_integrand σ))
     _ = ∫⁻ σ : T.G, plain σ * ∫⁻ τ : T.G, twisted τ ∂F.floorMeasure j ∂F.floorMeasure j :=
-      lintegral_congr fun σ ↦ lintegral_const_mul' _ _ enorm_ne_top
+      lintegral_congr fun σ ↦ lintegral_const_mul' _ _ eNorm_ne_top
     _ = (∫⁻ σ : T.G, plain σ ∂F.floorMeasure j) * ∫⁻ τ : T.G, twisted τ ∂F.floorMeasure j :=
       lintegral_mul_const _ h_plain_meas
     _ = F.pivotL1Norm j (frameCorrelation W 1) g (g * x) *
@@ -596,10 +559,16 @@ lemma PlaceData.integrable_and_integral_succ_eq_mul_floorForm {W : T.G → Eucli
     refine ⟨h_succ_meas.aemeasurable, h_form_meas.aemeasurable, ext_of_lintegral _ fun f hf ↦ ?_⟩
     rw [lintegral_map hf h_succ_meas, lintegral_map hf h_form_meas]
     -- Write both sides as iterated integrals over `x`, `g`, `σ` and the remaining variables.
-    -- (As a discharger, `fun_prop` needs `with_unfolding_all` to treat the inner integrals.)
-    simp (disch := with_unfolding_all fun_prop) only [μ_succ, μ_form, ν, lintegral_prod,
-      lintegral_mconv_symm]
-    refine lintegral_congr fun x ↦ lintegral_congr fun g ↦ ?_
+    dsimp only [μ_succ, μ_form, ν]
+    have hs : Measurable fun z ↦ f (succTerm z) := hf.comp h_succ_meas
+    have hF : Measurable fun z ↦ f (formTerm z) := hf.comp h_form_meas
+    rw [lintegral_prod _ hs.aemeasurable, lintegral_prod _ hs.lintegral_prod_right'.aemeasurable,
+      lintegral_prod _ hF.aemeasurable, lintegral_prod _ hF.lintegral_prod_right'.aemeasurable,
+      lintegral_prod _ hF.lintegral_prod_right'.lintegral_prod_right'.aemeasurable]
+    refine lintegral_congr fun x ↦ ?_
+    rw [lintegral_mconv_symm (by fun_prop)]
+    refine lintegral_congr fun g ↦ ?_
+    rw [lintegral_mconv_symm (by fun_prop)]
     exact lintegral_congr_of_ae_imp ae_floorMeasure_mem fun σ hσ ↦ h_fiber hf x g hσ
   -- As `‖χ‖ ≤ 1`, the integral of `‖formTerm‖` is at most that of `F.formMajorant`.
   have h_form_le : ∫⁻ z : ((T.G × T.G) × T.G) × T.G, ‖formTerm z‖ₑ ∂μ_form ≤
@@ -607,12 +576,15 @@ lemma PlaceData.integrable_and_integral_succ_eq_mul_floorForm {W : T.G → Eucli
     have hχ_le (y : T.G) : ‖χ y‖ₑ ≤ 1 := by
       rw [← ofReal_norm]
       exact ofReal_le_one.2 (hφ_le _)
-    simp (disch := with_unfolding_all fun_prop) only [μ_form, lintegral_prod]
+    dsimp only [μ_form]
+    have hF := h_form_meas.eNorm
+    rw [lintegral_prod _ hF.aemeasurable, lintegral_prod _ hF.lintegral_prod_right'.aemeasurable,
+      lintegral_prod _ hF.lintegral_prod_right'.lintegral_prod_right'.aemeasurable]
     refine lintegral_mono fun x ↦ lintegral_mono fun g ↦ ?_
-    simp only [formTerm, enorm_mul]
+    simp only [formTerm, eNorm_mul]
     grw [hχ_le]
     -- The remaining double integral over floor `b` splits into the two factors `pivotL1Norm`.
-    simp only [one_mul, pivotL1Norm, partialCorrelationProduct, enorm_mul, enorm_conj,
+    simp only [one_mul, pivotL1Norm, partialCorrelationProduct, eNorm_mul, eNorm_conj,
       _root_.mul_inv_rev,
       inv_inv, mul_assoc, inv_mul_cancel_left]
     exact (lintegral_lintegral_mul (by fun_prop) (by fun_prop)).le
@@ -663,7 +635,8 @@ theorem Gauge.integral_weight_mul_floorForm_succ {W : T.G → EuclideanSpace ℂ
           ite_eq_left a.isLt
   refine integrable_and_integral_succ_eq_mul_floorForm Γ hk a.castSucc hφ hφ_le h_fin
     (ae_mem_floorUnipotent.mono fun n hn ↦ ⟨unipotentBelow_le_partialUnitriangularGroup hn.2, hn.1⟩)
-    (ae_isUnit.mono ?_) h_cell (ae_isUnit.mono ?_)
+    (ae_isUnit.mono ?_) h_cell (ae_isUnit.mono ?_) measurable_floorWeyl
+    (P.measurable_modulus.pow_const _)
   · rintro _ ⟨c, rfl⟩
     simp [Ne.lt_top]
   · -- At a unit `c` the integrand is the one of `integrable_and_integral_succ_eq_mul_floorForm`:

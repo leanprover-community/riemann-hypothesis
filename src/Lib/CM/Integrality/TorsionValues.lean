@@ -1,3 +1,9 @@
+module
+
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.CM.Sigma.ThetaSections
+public import Lib.General.Algebra.AdicCompletion
 import Lib.CM.GoodReduction
 import Lib.CM.Integrality.Doubling
 
@@ -7,17 +13,26 @@ import Lib.CM.Integrality.Doubling
 The file defines the value `torsionValue` at a point of a function with a degree `n` (the function
 value times an exponential factor that depends on `n`), which is used for sections at torsion
 points, and the property `HasIntegralValues`. For a prime `d ≡ 7 (mod 8)` the file shows that `a₁`
-is integral, that `max (|σ[u]|_p, |θ[u]|_p) = 1` at torsion points, and that monomials in `θ`, `σ²`
-and the section `translatedYThetaCube` have integral torsion values. Here `translatedYThetaCube` is
-`y θ³`, where `y` is the coordinate `translatedY` in the cubic `y² + a₁ x y = x³ + x`.
+is integral and that monomials in `θ`, `σ²` and the section `translatedYThetaCube` have integral
+torsion values. Here `translatedYThetaCube` is `y θ³`, where `y` is the coordinate `translatedY` in
+the cubic `y² + a₁ x y = x³ + x`.
+
+The proof uses the naive height `h(w) = max (|σ(w)|_p, |θ(w)|_p)` of a complex number `w`. Because
+`a₁ ^ 4 - 64` is a unit, doubling raises the height to the fourth power exactly. From this the file
+proves the height comparison: the height of a pull-back along an isogeny of degree `N` is at most
+the `N`-th power of the height, and a twisted translation by a torsion point does not increase the
+height. At `0` the height is `1`, which gives the integrality of torsion values.
 
 Notions from other files:
 * `CMLattice d`: a lattice `Λ` with a point `t` of order two in `ℂ / Λ` and a coefficient `a₁` of
   its cubic. For `d ≠ 0` the lattice has complex multiplication by the integers of `ℚ(√-d)`.
 * `σ` and `θ`: the sigma function of `Λ`, normalised so that twisted translation by a period
   multiplies it by a sign, and the theta function that vanishes exactly on `-t + Λ`.
-* `twistedTranslate n v G`: the translate of a function `G` by `v`, multiplied by the exponential
-  factor of `n` times the Hermitian form `H(l, z) = (π / area Λ) l̄ z`.
+* `twistedTranslate n v G`: the translate of a function `G` by `v`, multiplied by the `n`-th power
+  of the exponential factor `exp (-(H(v, z) + H(v, v) / 2))`, where `H(l, z) = (π / area Λ) l̄ z` is
+  the Hermitian form.
+* `C.sections m`: the sections of degree `m`, spanned by the monomials `monomialSection` in `θ`,
+  `σ²` and `translatedYThetaCube`.
 * `ιₚ`: the fixed embedding of `ℂ` into `ℂ_p` (`PadicPlace p`); integral means of norm at most `1`,
   that is, lying in `valRingCp p`, the set of elements of `ℂ_p` of norm at most `1`.
 
@@ -26,9 +41,13 @@ Notions from other files:
 * `New.CMLattice.torsionValue`, `New.CMLattice.HasIntegralValues`: the torsion value `G[u]` and the
   property that all of these are integral at torsion points.
 * `New.CMLattice.norm_a₁_le_one`: `a₁` is integral, because `a₁ ^ 4 - 64` is a unit.
-* `New.CMLattice.torsionValue_mul`, `New.CMLattice.torsionValue_comp_isogeny`,
-  `New.CMLattice.torsionValue_twistedTranslate`: the rules for products, pull-backs and translates.
-* `New.CMLattice.max_norm_torsionValue`: `max (|σ[u]|_p, |θ[u]|_p) = 1` at torsion points.
+* `New.CMLattice.naiveHeight`, `New.CMLattice.naiveHeight_two_mul`: the height `h`, and
+  `h(2 w) = h(w) ^ 4`.
+* `New.CMLattice.naiveHeight_mul_le`, `New.CMLattice.translateHeight_le_naiveHeight`: the height
+  comparison for an isogeny and for a translation by a torsion point.
+* `New.CMLattice.norm_twistedTranslate_mul_le`: if `|g|_p ≤ h' ^ m` on `ℂ`, then the twisted
+  translate of `g` by a torsion point, pulled back along an isogeny of degree `N`, is at most
+  `h ^ (m N)`.
 * `New.CMLattice.hasIntegralValues_monomialSection`: monomials have integral torsion values.
 
 ## Relation to the literature
@@ -40,43 +59,43 @@ Known result: the integrality of Siegel functions at torsion points. Source: Kub
 *Modular Units*.
 -/
 
+@[expose] public section
+
 /-! ## Integrality of the coefficient `a₁` -/
 
 namespace New.CMLattice
 
 variable {d : ℕ} [PrimeSevenModEight d] (C : CMLattice d) {p : ℕ} [Fact p.Prime]
 
-lemma mem_valRingCp_iff_norm_le_one {x : ℂ_[p]} : x ∈ valRingCp p ↔ ‖x‖ ≤ 1 := Iff.rfl
-
-/-- If `g ^ 2 + u g = v` in `ℂ_p` and `‖u‖, ‖v‖ ≤ 1`, then `‖g‖ ≤ 1`: a root of a monic quadratic
-with integral coefficients is integral. -/
-lemma norm_le_one_of_sq_add_mul_eq {g u v : ℂ_[p]} (hu : ‖u‖ ≤ 1) (hv : ‖v‖ ≤ 1)
-    (hg : g ^ 2 + u * g = v) : ‖g‖ ≤ 1 := by
+/-- If `g ^ 2 + u g = v` in `ℂ_p` with `‖u‖ ≤ c` and `‖v‖ ≤ c ^ 2`, then `‖g‖ ≤ c`: a root of a
+monic quadratic whose coefficients are bounded by `c` and `c ^ 2` is bounded by `c`. -/
+lemma norm_le_of_sq_add_mul_eq {g u v : ℂ_[p]} {c : ℝ} (hu : ‖u‖ ≤ c) (hv : ‖v‖ ≤ c ^ 2)
+    (hg : g ^ 2 + u * g = v) : ‖g‖ ≤ c := by
   by_contra! h_lt
+  have hc : 0 ≤ c := (norm_nonneg u).trans hu
   have h_eq : g ^ 2 = u * -g + v := by linear_combination hg
-  have h_sq : ‖g‖ ^ 2 ≤ ‖g‖ := calc
+  have h_sq : ‖g‖ ^ 2 ≤ c * ‖g‖ := calc
     ‖g‖ ^ 2 = ‖u * -g + v‖ := by rw [← norm_pow, h_eq]
     _ ≤ max (‖u‖ * ‖g‖) ‖v‖ := by grw [IsUltrametricDist.norm_add_le_max, norm_mul, norm_neg]
-    _ ≤ ‖g‖ := by grw [hu, hv, one_mul, max_eq_left h_lt.le]
-  exact (lt_self_pow₀ h_lt one_lt_two).not_ge h_sq
+    _ ≤ max (c * ‖g‖) (c ^ 2) := by gcongr
+    _ = c * ‖g‖ := max_eq_left (by nlinarith)
+  nlinarith
 
 /-- For a prime `d ≡ 7 (mod 8)` the coefficient `a₁` of the cubic of a CM lattice is integral in
 `ℂ_p`. -/
 lemma norm_a₁_le_one [PadicPlace p] : ‖ιₚ C.a₁‖ ≤ 1 := by
   -- `a₁ ^ 4 = (a₁ ^ 4 - 64) + 64` is a sum of two integral elements.
   have h_pow : ιₚ C.a₁ ^ 4 - 64 + 64 ∈ valRingCp p :=
-    add_mem (mem_valRingCp_iff_norm_le_one.2 (C.norm_disc_eq_one ιₚ).le) (ofNat_mem _ 64)
-  rwa [sub_add_cancel, mem_valRingCp_iff_norm_le_one, norm_pow,
+    add_mem (mem_valRingCp.2 (C.norm_disc_eq_one ιₚ).le) (ofNat_mem _ 64)
+  rwa [sub_add_cancel, mem_valRingCp, norm_pow,
     pow_le_one_iff_of_nonneg (norm_nonneg _) four_ne_zero] at h_pow
 
 end New.CMLattice
 
 /-!
-## Torsion values and their norms
+## Torsion values
 
-The proof of `max_norm_torsionValue` rests on three facts: doubling raises the norm of the nonzero
-pair `(θ[u]², σ[u]²)` to the fourth power, this norm depends only on `u` modulo `Λ`, and modulo
-`Λ` the orbit of a torsion point under doubling is finite.
+The torsion value of a function with a degree, and its rules for powers and pull-backs.
 -/
 
 section TorsionValues
@@ -94,37 +113,6 @@ def IsTorsion (u : ℂ) : Prop := ∃ n : ℕ, n ≠ 0 ∧ n * u ∈ C.Λ
 translate of `G` by `u` for `n` times the Hermitian form of the lattice. -/
 noncomputable def torsionValue (n : ℕ) (G : ℂ → ℂ) (u : ℂ) : ℂ := C.twistedTranslate n u G 0
 
-lemma IsTorsion.of_mem {C : CMLattice d} {u : ℂ} (hu : u ∈ C.Λ) : C.IsTorsion u :=
-  ⟨1, one_ne_zero, by simpa⟩
-
-lemma IsTorsion.natCast_mul {C : CMLattice d} {u : ℂ} (hu : C.IsTorsion u) (k : ℕ) :
-    C.IsTorsion (k * u) := by
-  obtain ⟨n, hn, hnu⟩ := hu
-  exact ⟨n, hn, by simpa only [nsmul_eq_mul, mul_left_comm] using nsmul_mem hnu k⟩
-
-lemma IsTorsion.neg {C : CMLattice d} {u : ℂ} (hu : C.IsTorsion u) : C.IsTorsion (-u) := by
-  obtain ⟨n, hn, hnu⟩ := hu
-  exact ⟨n, hn, by simpa only [mul_neg] using neg_mem hnu⟩
-
-/-- The sum of two torsion points is a torsion point. -/
-lemma IsTorsion.add {C : CMLattice d} {u v : ℂ} (hu : C.IsTorsion u) (hv : C.IsTorsion v) :
-    C.IsTorsion (u + v) := by
-  obtain ⟨m, hm, hmu⟩ := hu
-  obtain ⟨n, hn, hnv⟩ := hv
-  have h_eq : (m * n : ℕ) * (u + v) = n • (m * u) + m • (n * v) := by
-    simp only [nsmul_eq_mul, Nat.cast_mul]
-    ring
-  refine ⟨m * n, mul_ne_zero hm hn, ?_⟩
-  rw [h_eq]
-  exact add_mem (nsmul_mem hmu n) (nsmul_mem hnv m)
-
-/-- An isogeny `z ↦ a z` between the lattices takes torsion points to torsion points. -/
-lemma IsTorsion.mul_of_isogeny {C C' : CMLattice d} {a u : ℂ} {N : ℕ}
-    (h : C.IsIsogeny C'.periodPair a N) (hu : C.IsTorsion u) : C'.IsTorsion (a * u) := by
-  obtain ⟨h_lattice, -⟩ := h
-  obtain ⟨n, hn, hnu⟩ := hu
-  exact ⟨n, hn, by simpa only [mul_left_comm] using h_lattice _ hnu⟩
-
 /-- The torsion value of `G` at `u` is `G(u) exp (-n π |u|² / (2 area Λ))`. -/
 lemma torsionValue_eq (n : ℕ) (G : ℂ → ℂ) (u : ℂ) :
     C.torsionValue n G u = G u * exp (-(π * ‖u‖ ^ 2 / (2 * C.area))) ^ n := by
@@ -132,25 +120,12 @@ lemma torsionValue_eq (n : ℕ) (G : ℂ → ℂ) (u : ℂ) :
     change -(n • C.hermitianForm u u / 2) = _
     rw [nsmul_eq_mul, hermitianForm_apply, mul_conj']
     ring
-  simp only [torsionValue, thetaShift_apply, zero_add, neg_zero, add_zero, map_zero, ← exp_nat_mul,
-    ← h_exponent, mul_comm (G u)]
-
-/-- Products: degrees add and torsion values multiply. -/
-lemma torsionValue_mul (m n : ℕ) (F G : ℂ → ℂ) (u : ℂ) :
-    C.torsionValue (m + n) (F * G) u = C.torsionValue m F u * C.torsionValue n G u := by
-  simp only [torsionValue_eq, Pi.mul_apply]
-  ring
+  simp only [torsionValue, thetaShift_apply, zero_add, neg_zero, add_zero, map_zero,
+    ← exp_natCast_mul, ← h_exponent, mul_comm (G u)]
 
 lemma torsionValue_pow (k n : ℕ) (G : ℂ → ℂ) (u : ℂ) :
     C.torsionValue (k * n) (G ^ k) u = C.torsionValue n G u ^ k := by
   simp only [torsionValue_eq, Pi.pow_apply]
-  ring
-
-/-- If `G(u) = θ(u) ^ n c`, then `G[u] = θ[u] ^ n c` for the torsion values in the degrees `n` of
-`G` and `1` of `θ`; so `G[u] / θ[u] ^ n = G(u) / θ(u) ^ n` off the zeros of `θ`. -/
-lemma torsionValue_eq_mul_theta_pow {n : ℕ} {G : ℂ → ℂ} {u c : ℂ} (h : G u = C.θ u ^ n * c) :
-    C.torsionValue n G u = C.torsionValue 1 C.θ u ^ n * c := by
-  simp only [torsionValue_eq, h]
   ring
 
 /-- Pull-backs: if `z ↦ a z` is an isogeny of degree `N` from the lattice of `C` to that of `C'`,
@@ -160,280 +135,327 @@ lemma torsionValue_comp_isogeny {C' : CMLattice d} {a : ℂ} {N : ℕ}
     C.torsionValue (n * N) (fun z : ℂ ↦ G (a * z)) u = C'.torsionValue n G (a * u) := by
   simp only [torsionValue, C.twistedTranslate_comp_isogeny h, mul_zero]
 
-/-- `π i` times the Riemann form (the alternating form) of `n` times the Hermitian form of the
-lattice, at `(u, v)`, is `-n π i Im (u v̄) / area Λ`. -/
-lemma pi_mul_I_mul_riemannForm_eq (n : ℕ) (u v : ℂ) :
-    π * I * (n • C.hermitianForm).riemannForm u v = -(n * π * I * (u * conj v).im / C.area) := by
-  have h_im : (conj u * v).im = -(u * conj v).im := by
-    rw [← conj_im, map_mul, conj_conj]
-  rw [map_nsmul, LinearMap.smul_apply, LinearMap.smul_apply, riemannForm_hermitianForm]
-  simp only [h_im, nsmul_eq_mul]
-  push_cast
-  ring
-
-/-- Translates: the twisted translate of `G` by `v` (for `n` times the Hermitian form) has at `u`
-the torsion value `G[u + v]` times `exp (-n π i Im (u v̄) / area Λ)`. -/
-lemma torsionValue_twistedTranslate (n : ℕ) (G : ℂ → ℂ) (u v : ℂ) :
-    C.torsionValue n (C.twistedTranslate n v G) u =
-      exp (-(n * π * I * (u * conj v).im / C.area)) * C.torsionValue n G (u + v) := by
-  rw [← pi_mul_I_mul_riemannForm_eq]
-  -- Translating by `v` and then by `u` is translating by `u + v`, up to the exponential factor.
-  have h_shift : C.twistedTranslate n u (C.twistedTranslate n v G) =
-      exp (π * I * (n • C.hermitianForm).riemannForm u v) • C.twistedTranslate n (u + v) G :=
-    (C.isAppellHumbert_multiplier.nsmul n).thetaShift_thetaShift u v
-  simp only [torsionValue, h_shift, Pi.smul_apply, smul_eq_mul]
-
 variable {p : ℕ} [Fact p.Prime] [PadicPlace p]
-
-/-- For torsion points `u`, `v` the twisted translate of `G` by `v` has at `u` a torsion value of
-the same `p`-adic norm as `G[u + v]`: the two differ by a root of unity. -/
-lemma norm_torsionValue_twistedTranslate (n : ℕ) (G : ℂ → ℂ) {u v : ℂ} (hu : C.IsTorsion u)
-    (hv : C.IsTorsion v) :
-    ‖ιₚ (C.torsionValue n (C.twistedTranslate n v G) u)‖ = ‖ιₚ (C.torsionValue n G (u + v))‖ := by
-  obtain ⟨k, hk, hku⟩ := hu
-  obtain ⟨l, hl, hlv⟩ := hv
-  rw [← nsmul_eq_mul] at hku hlv
-  set c : ℂ := exp (π * I * (n • C.hermitianForm).riemannForm u v)
-  have h_root : IsOfFinOrder c :=
-    isOfFinOrder_iff_pow_eq_one.2 ⟨2 * k * l, by positivity,
-      (C.isAppellHumbert_multiplier.nsmul n).exp_riemannForm_pow_eq_one hku hlv⟩
-  have h_norm : ‖ιₚ c‖ = 1 := ((ιₚ : ℂ →+* ℂ_[p]).toMonoidHom.isOfFinOrder h_root).norm_eq_one
-  rw [torsionValue_twistedTranslate, ← pi_mul_I_mul_riemannForm_eq, map_mul, norm_mul, h_norm,
-    one_mul]
 
 /-- The torsion values of `G` with the degree `n` are all integral in `ℂ_p`: for every torsion
 point `u`, the image of `G[u]` under `ιₚ` has norm at most `1`. -/
 def HasIntegralValues (n : ℕ) (G : ℂ → ℂ) : Prop :=
   ∀ u : ℂ, C.IsTorsion u → ‖ιₚ (C.torsionValue n G u)‖ ≤ 1
 
-section
-variable {C}
+end New.CMLattice
 
-/-- If `F` and `G` have integral torsion values (`HasIntegralValues`) in the degrees `m` and `n`,
-so has `F G` in the degree `m + n`. -/
-lemma HasIntegralValues.mul {m n : ℕ} {F G : ℂ → ℂ} (hF : C.HasIntegralValues (p := p) m F)
-    (hG : C.HasIntegralValues (p := p) n G) : C.HasIntegralValues (p := p) (m + n) (F * G) := by
-  intro u hu
-  rw [torsionValue_mul, map_mul, norm_mul]
-  exact (mul_le_of_le_one_left (norm_nonneg _) (hF u hu)).trans (hG u hu)
+end TorsionValues
 
-/-- If `G` has integral torsion values in the degree `n`, so has `G ^ k` in the degree `k n`. -/
-lemma HasIntegralValues.pow {n : ℕ} {G : ℂ → ℂ} (hG : C.HasIntegralValues (p := p) n G) (k : ℕ) :
-    C.HasIntegralValues (p := p) (k * n) (G ^ k) := by
-  intro u hu
-  rw [torsionValue_pow, map_pow, norm_pow]
-  exact pow_le_one₀ (norm_nonneg _) (hG u hu)
+namespace New
 
-/-- If `G` has integral torsion values on the target of an isogeny `z ↦ a z` of degree `N`, so has
-`G(a z)` on the source, with the degree multiplied by `N`. -/
-lemma HasIntegralValues.comp_isogeny {C' : CMLattice d} {a : ℂ} {N n : ℕ} {G : ℂ → ℂ}
-    (h : C.IsIsogeny C'.periodPair a N) (hG : C'.HasIntegralValues (p := p) n G) :
-    C.HasIntegralValues (p := p) (n * N) fun z : ℂ ↦ G (a * z) := by
-  intro u hu
-  rw [C.torsionValue_comp_isogeny h]
-  exact hG _ (hu.mul_of_isogeny h)
+/-- A bounded real `r` with some value at least `r z ^ 2` whenever `r z > 1` is at most `1`. -/
+lemma le_one_of_forall_exists_sq_le {α : Type*} {r : α → ℝ} {K : ℝ} (h_bdd : ∀ z : α, r z ≤ K)
+    (h_sq : ∀ z : α, 1 < r z → ∃ z' : α, r z ^ 2 ≤ r z') (z : α) : r z ≤ 1 := by
+  by_contra! h_lt
+  have h_iterate (k : ℕ) : ∃ z' : α, r z ^ 2 ^ k ≤ r z' := by
+    induction k with
+    | zero => exact ⟨z, by simp⟩
+    | succ k ih =>
+      obtain ⟨z₁, h₁⟩ := ih
+      obtain ⟨z₂, h₂⟩ := h_sq z₁ ((one_lt_pow₀ h_lt (by positivity)).trans_le h₁)
+      refine ⟨z₂, le_trans ?_ h₂⟩
+      rw [pow_succ, pow_mul]
+      exact pow_le_pow_left₀ (by positivity) h₁ 2
+  obtain ⟨n, hn⟩ : ∃ n : ℕ, K < r z ^ n := pow_unbounded_of_one_lt K h_lt
+  obtain ⟨z', hz'⟩ := h_iterate n
+  have h_exp : r z ^ n ≤ r z ^ 2 ^ n := pow_le_pow_right₀ h_lt.le Nat.lt_two_pow_self.le
+  exact (hn.trans_le (h_exp.trans hz')).not_ge (h_bdd z')
 
-/-- If `G` has integral torsion values in the degree `n`, so has its twisted translate by a torsion
-point `v`. -/
-lemma HasIntegralValues.translate {n : ℕ} {G : ℂ → ℂ} (hG : C.HasIntegralValues (p := p) n G)
-    {v : ℂ} (hv : C.IsTorsion v) :
-    C.HasIntegralValues (p := p) n (C.twistedTranslate n v G) := by
-  intro u hu
-  rw [C.norm_torsionValue_twistedTranslate n G hu hv]
-  exact hG _ (hu.add hv)
+end New
 
-end
-/-- The pair `w(u) = (θ[u]², σ[u]²)` of squared torsion values of degree `1`, read in `ℂ_p`. -/
-noncomputable def squarePair (u : ℂ) : ℂ_[p] × ℂ_[p] :=
-  (ιₚ (C.torsionValue 1 C.θ u) ^ 2, ιₚ (C.torsionValue 1 C.σ u) ^ 2)
+/-!
+## The naive height
 
-lemma squarePair_fst_eq_zero_iff {u : ℂ} : (C.squarePair u).1 = 0 ↔ u + C.t ∈ C.Λ := by
-  simp [squarePair, torsionValue_eq, theta_eq_zero_iff]
+The height `h(w) = max (|σ(w)|_p, |θ(w)|_p)` is positive, and `h(2 w) = h(w) ^ 4` by the doubling
+formulas. The monomials of degree `m` are at most `h ^ m`, so every section of degree `m` is at
+most a constant times `h ^ m`.
+-/
 
-lemma squarePair_snd_eq_zero_iff {u : ℂ} : (C.squarePair u).2 = 0 ↔ u ∈ C.Λ := by
-  simp [squarePair, torsionValue_eq, sigma_eq_zero_iff]
+section NaiveHeight
 
-/-- The pair `w(u)` is never zero, because `t ∉ Λ`. -/
-lemma squarePair_ne_zero (u : ℂ) : C.squarePair u ≠ 0 := by
-  intro h
-  obtain ⟨h_fst, h_snd⟩ := Prod.ext_iff.1 h
-  exact C.t_notMem <|
-    (add_mem_cancel_left (C.squarePair_snd_eq_zero_iff.1 h_snd)).1
-      (C.squarePair_fst_eq_zero_iff.1 h_fst)
+open Complex
 
-/-- For a torsion point `u` the norm in `ℂ_p × ℂ_p` of `w(u) = (θ[u]², σ[u]²)` depends only on `u`
-modulo `Λ`: twisted translation by a period multiplies `θ` and `σ` by a sign. -/
-lemma norm_squarePair_add_of_mem {u l : ℂ} (hu : C.IsTorsion u) (hl : l ∈ C.Λ) :
-    ‖C.squarePair (p := p) (u + l)‖ = ‖C.squarePair (p := p) u‖ := by
-  have h_sign {G : ℂ → ℂ} {s : ℂ} (hs : s = 1 ∨ s = -1) (hG : C.twistedTranslate 1 l G = s • G) :
-      ‖ιₚ (C.torsionValue 1 G (u + l))‖ = ‖ιₚ (C.torsionValue 1 G u)‖ := by
-    rw [← C.norm_torsionValue_twistedTranslate 1 G hu (.of_mem hl), hG]
-    obtain rfl | rfl := hs
-    · rw [one_smul]
-    · simp [torsionValue_eq]
-  have hθ : C.twistedTranslate 1 l C.θ = C.multiplier l • C.θ := C.twistedTranslate_theta_of_mem hl
-  have hσ : C.twistedTranslate 1 l C.σ = sigmaSign C.periodPair l • C.σ := by
-    simpa only [twistedTranslate, one_smul, pow_one] using thetaShift_of_mem sigma_mem_thetaSpace hl
-  have h_sigmaSign (v : ℂ) : sigmaSign C.periodPair v = 1 ∨ sigmaSign C.periodPair v = -1 := by
-    unfold sigmaSign
-    split_ifs <;> simp
-  have hχ : C.multiplier l = 1 ∨ C.multiplier l = -1 := by
-    simpa [C.multiplier_eq_neg_sigmaSign hl, neg_eq_iff_eq_neg, or_comm] using h_sigmaSign _
-  simp only [squarePair, Prod.norm_mk, norm_pow, h_sign hχ hθ, h_sign (h_sigmaSign l) hσ]
+namespace New.CMLattice
+variable {d : ℕ} (C : CMLattice d) {p : ℕ} [Fact p.Prime] [PadicPlace p]
 
-/-- In the degree `1` the torsion value of `G` at `2 u` is that of `G(2 z)`, with the degree `4`,
-at `u`. -/
-lemma torsionValue_two_mul (G : ℂ → ℂ) (u : ℂ) :
-    C.torsionValue 1 G (2 * u) = C.torsionValue 4 (fun z : ℂ ↦ G (2 * z)) u :=
-  (C.torsionValue_comp_isogeny C.isIsogeny_two 1 G u).symm
+/-- The naive height `h(w) = max (‖ιₚ (σ w)‖, ‖ιₚ (θ w)‖)` of a complex number `w`. -/
+noncomputable def naiveHeight (w : ℂ) : ℝ := max ‖ιₚ (C.σ w)‖ ‖ιₚ (C.θ w)‖
 
-/-- For a prime `d ≡ 7 (mod 8)` the doubling formula for `θ` holds for torsion values:
-`θ[2 u] = θ[u] ^ 4 - σ[u] ^ 4`. -/
-lemma torsionValue_theta_two_mul [PrimeSevenModEight d] (u : ℂ) :
-    C.torsionValue 1 C.θ (2 * u) = C.torsionValue 1 C.θ u ^ 4 - C.torsionValue 1 C.σ u ^ 4 := by
-  rw [torsionValue_two_mul]
-  simp only [torsionValue_eq, theta_two_mul]
+/-- The value of `σ` is at most the naive height. -/
+lemma norm_sigma_le_naiveHeight (w : ℂ) : ‖ιₚ (C.σ w)‖ ≤ C.naiveHeight w := le_max_left _ _
+
+/-- The value of `θ` is at most the naive height. -/
+lemma norm_theta_le_naiveHeight (w : ℂ) : ‖ιₚ (C.θ w)‖ ≤ C.naiveHeight w := le_max_right _ _
+
+/-- The naive height is positive, because `σ` and `θ` have no common zero: `t ∉ Λ`. -/
+lemma naiveHeight_pos (w : ℂ) : 0 < C.naiveHeight w := by
+  by_cases hw : w ∈ C.Λ
+  · have hθ : C.θ w ≠ 0 := fun h ↦
+      C.t_notMem ((add_mem_cancel_left hw).1 (C.theta_eq_zero_iff.1 h))
+    exact lt_max_of_lt_right (by simpa using hθ)
+  · have hσ : C.σ w ≠ 0 := mt sigma_eq_zero_iff.1 hw
+    exact lt_max_of_lt_left (by simpa using hσ)
+
+variable [PrimeSevenModEight d]
+
+/-- Doubling raises the naive height to the fourth power: `h(2 w) = h(w) ^ 4`. -/
+lemma naiveHeight_two_mul (w : ℂ) : C.naiveHeight (2 * w) = C.naiveHeight w ^ 4 := by
+  -- Doubling acts on the pair `(θ², σ²)` through the quartic forms `doublingForms`, which raise
+  -- the norm of a pair to the fourth power; the norm of the pair is the square of the height.
+  let v : ℂ → ℂ_[p] × ℂ_[p] := fun z : ℂ ↦ (ιₚ (C.θ z) ^ 2, ιₚ (C.σ z) ^ 2)
+  have h_norm (z : ℂ) : ‖v z‖ = C.naiveHeight z ^ 2 := by
+    simp only [v, Prod.norm_mk, norm_pow, naiveHeight, max_comm ‖ιₚ (C.σ z)‖]
+    exact (pow_left_monotoneOn.map_max (norm_nonneg _) (norm_nonneg _)).symm
+  have h_double : v (2 * w) = doublingForms (ιₚ C.a₁) (v w) := by
+    ext
+    · simp only [v, doublingForms, C.theta_two_mul w, map_sub, map_pow, ← pow_mul]
+    · simpa only [v, doublingForms, map_mul, map_add, map_pow, map_ofNat, ← pow_mul]
+        using congrArg ιₚ (C.sigma_two_mul_sq w)
+  have h_sq : C.naiveHeight (2 * w) ^ 2 = (C.naiveHeight w ^ 4) ^ 2 := by
+    rw [← h_norm, h_double, norm_doublingForms C.norm_a₁_le_one (C.norm_disc_eq_one ιₚ), h_norm]
+    ring
+  exact (sq_eq_sq₀ (C.naiveHeight_pos _).le (pow_pos (C.naiveHeight_pos w) 4).le).1 h_sq
+
+/-- The section `y θ³` (`translatedYThetaCube`) is at most `h ^ 3`. -/
+lemma norm_translatedYThetaCube_le (w : ℂ) :
+    ‖ιₚ (C.translatedYThetaCube w)‖ ≤ C.naiveHeight w ^ 3 := by
+  have hσ : ‖ιₚ (C.σ w)‖ ≤ C.naiveHeight w := C.norm_sigma_le_naiveHeight w
+  have hθ : ‖ιₚ (C.θ w)‖ ≤ C.naiveHeight w := C.norm_theta_le_naiveHeight w
+  have h_pos : 0 < C.naiveHeight w := C.naiveHeight_pos w
+  have h_linear : ‖ιₚ C.a₁ * ιₚ (C.σ w) ^ 2 * ιₚ (C.θ w)‖ ≤ C.naiveHeight w ^ 3 := by
+    grw [norm_mul, norm_mul, norm_pow, C.norm_a₁_le_one, hσ, hθ, one_mul, ← pow_succ]
+  have h_const :
+      ‖ιₚ (C.σ w) ^ 6 + ιₚ (C.σ w) ^ 2 * ιₚ (C.θ w) ^ 4‖ ≤ (C.naiveHeight w ^ 3) ^ 2 := by
+    grw [IsUltrametricDist.norm_add_le_max, norm_mul, norm_pow, norm_pow, norm_pow, hσ, hθ,
+      ← pow_add, max_self, ← pow_mul]
+  exact norm_le_of_sq_add_mul_eq h_linear h_const <| by
+    simpa only [map_add, map_mul, map_pow] using congrArg ιₚ (C.translatedYThetaCube_sq_add w)
+
+/-- The monomial `θ^a (σ²)^b G^c` (`monomialSection`) is at most `h ^ (a + 2b + 3c)`. -/
+lemma norm_monomialSection_le (x : ℕ × ℕ × ℕ) (w : ℂ) :
+    ‖ιₚ (C.monomialSection x w)‖ ≤ C.naiveHeight w ^ monomialDeg x := by
+  obtain ⟨a, b, c⟩ := x
+  have hσ : ‖ιₚ (C.σ w)‖ ≤ C.naiveHeight w := C.norm_sigma_le_naiveHeight w
+  have hθ : ‖ιₚ (C.θ w)‖ ≤ C.naiveHeight w := C.norm_theta_le_naiveHeight w
+  have hG : ‖ιₚ (C.translatedYThetaCube w)‖ ≤ C.naiveHeight w ^ 3 :=
+    C.norm_translatedYThetaCube_le w
+  have h_pos : 0 < C.naiveHeight w := C.naiveHeight_pos w
+  simp only [monomialSection, monomialDeg, Pi.mul_apply, Pi.pow_apply, map_mul, map_pow, norm_mul,
+    norm_pow, pow_add, pow_mul', mul_assoc]
+  gcongr
+
+/-- A section `g` of degree `m` is at most a constant times `h ^ m`. -/
+lemma exists_norm_le_mul_naiveHeight_pow {m : ℕ} {g : ℂ → ℂ} (hg : g ∈ C.sections m) :
+    ∃ K : ℝ, ∀ w : ℂ, ‖ιₚ (g w)‖ ≤ K * C.naiveHeight w ^ m := by
+  refine Submodule.span_induction ?_ ⟨0, by simp⟩ ?_ ?_ (C.sections_le_span_monomialSection m hg)
+  · rintro _ ⟨x, hx, rfl⟩
+    exact ⟨1, fun w ↦ by simpa only [one_mul, ← hx.2] using C.norm_monomialSection_le x w⟩
+  · rintro f₁ f₂ - - ⟨K₁, h₁⟩ ⟨K₂, h₂⟩
+    refine ⟨max K₁ K₂, fun w ↦ ?_⟩
+    calc ‖ιₚ ((f₁ + f₂) w)‖ ≤ max ‖ιₚ (f₁ w)‖ ‖ιₚ (f₂ w)‖ := by
+          rw [Pi.add_apply, map_add]
+          exact IsUltrametricDist.norm_add_le_max _ _
+      _ ≤ max (K₁ * C.naiveHeight w ^ m) (K₂ * C.naiveHeight w ^ m) := max_le_max (h₁ w) (h₂ w)
+      _ = max K₁ K₂ * C.naiveHeight w ^ m :=
+          (max_mul_of_nonneg _ _ (pow_pos (C.naiveHeight_pos w) m).le).symm
+  · rintro c f - ⟨K, hK⟩
+    refine ⟨‖ιₚ c‖ * K, fun w ↦ ?_⟩
+    rw [Pi.smul_apply, smul_eq_mul, map_mul, norm_mul, mul_assoc]
+    exact mul_le_mul_of_nonneg_left (hK w) (norm_nonneg _)
+
+/-- If `g ^ e` (`e ≠ 0`) is a section of degree `e m`, `g` is at most a constant times `h ^ m`. -/
+lemma exists_norm_le_of_pow_mem_sections {e m : ℕ} (he : e ≠ 0) {g : ℂ → ℂ}
+    (hg : g ^ e ∈ C.sections (e * m)) :
+    ∃ K : ℝ, ∀ w : ℂ, ‖ιₚ (g w)‖ ≤ K * C.naiveHeight w ^ m := by
+  obtain ⟨K, hK⟩ := C.exists_norm_le_mul_naiveHeight_pow (p := p) hg
+  -- Replace the constant `K` by `max 1 K`, which is at most its own `e`-th power.
+  refine ⟨max 1 K, fun w ↦ ?_⟩
+  have h_pos : 0 < C.naiveHeight w := C.naiveHeight_pos w
+  have h_pow : ‖ιₚ (g w)‖ ^ e ≤ (max 1 K * C.naiveHeight w ^ m) ^ e := calc
+    ‖ιₚ (g w)‖ ^ e = ‖ιₚ ((g ^ e) w)‖ := by rw [Pi.pow_apply, map_pow, norm_pow]
+    _ ≤ K * C.naiveHeight w ^ (e * m) := hK w
+    _ ≤ max 1 K ^ e * C.naiveHeight w ^ (e * m) := by
+      gcongr
+      exact (le_max_right 1 K).trans (le_self_pow₀ (le_max_left 1 K) he)
+    _ = (max 1 K * C.naiveHeight w ^ m) ^ e := by rw [mul_pow, ← pow_mul, mul_comm e m]
+  exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) he).1 h_pow
+
+end New.CMLattice
+
+end NaiveHeight
+
+/-!
+## Height comparison
+
+Let `r` be the ratio of the height of a pull-back, or of a translate, to the bound that is claimed
+for it. The ratio is bounded, because powers of the functions involved are sections. Doubling
+raises the height to the fourth power, which gives `r(z) ^ 4 = r(2 z)` for a pull-back and
+`r(z) ^ 4 = r(2 z + y) r(2 z)` for the translation by `y`. A bounded function with such a law is
+at most `1`.
+-/
+
+section HeightComparison
+
+open Complex
+
+namespace New.CMLattice
+variable {d : ℕ} [PrimeSevenModEight d] (C : CMLattice d) {p : ℕ} [Fact p.Prime] [PadicPlace p]
+
+/-- An isogeny `z ↦ a z` of degree `N` from `C` to `C'` satisfies `h'(a z) ≤ h(z) ^ N`. -/
+lemma naiveHeight_mul_le {C' : CMLattice d} {a : ℂ} {N : ℕ} (h : C.IsIsogeny C'.periodPair a N)
+    (z : ℂ) : C'.naiveHeight (p := p) (a * z) ≤ C.naiveHeight z ^ N := by
+  -- The pull-backs of `σ'²` and `θ'` are sections of degrees `2 N` and `N`, so the ratio
+  -- `r(z) = h'(a z) / h(z) ^ N` is bounded.
+  have hσ_mem : (fun z : ℂ ↦ C'.σ (a * z) ^ 2) ∈ C.sections (2 * N) := by
+    simpa [monomialSection] using C.comp_mul_mem_sections h (C'.monomialSection_mem (0, 1, 0))
+  have hθ_mem : (fun z : ℂ ↦ C'.θ (a * z)) ^ 1 ∈ C.sections (1 * N) := by
+    simpa only [pow_one] using C.comp_mul_mem_sections h C'.theta_mem
+  obtain ⟨K₁, h₁⟩ := C.exists_norm_le_of_pow_mem_sections (p := p) two_ne_zero
+    (g := fun z : ℂ ↦ C'.σ (a * z)) hσ_mem
+  obtain ⟨K₂, h₂⟩ := C.exists_norm_le_of_pow_mem_sections (p := p) one_ne_zero hθ_mem
+  let r : ℂ → ℝ := fun z : ℂ ↦ C'.naiveHeight (a * z) / C.naiveHeight z ^ N
+  have h_pos (z : ℂ) : 0 < C.naiveHeight z ^ N := pow_pos (C.naiveHeight_pos z) N
+  have h_bdd (z : ℂ) : r z ≤ max K₁ K₂ := by
+    rw [div_le_iff₀ (h_pos z), max_mul_of_nonneg _ _ (h_pos z).le]
+    exact max_le_max (h₁ z) (h₂ z)
+  -- Doubling raises both heights to the fourth power.
+  have h_four (z : ℂ) : r z ^ 4 = r (2 * z) := by
+    simp only [r]
+    rw [div_pow, ← C'.naiveHeight_two_mul, ← pow_mul, mul_comm N 4, pow_mul,
+      ← C.naiveHeight_two_mul, mul_left_comm]
+  refine (div_le_one (h_pos z)).1 (le_one_of_forall_exists_sq_le h_bdd (fun z hz ↦ ⟨2 * z, ?_⟩) z)
+  rw [← h_four]
+  exact pow_le_pow_right₀ hz.le (by norm_num)
+
+/-- Height of the twisted translate by `y`: `h(w + y)` times the norm of its exponential factor. -/
+noncomputable def translateHeight (y w : ℂ) : ℝ :=
+  ‖ιₚ (exp (-(C.hermitianForm y w + C.hermitianForm y y / 2)))‖ * C.naiveHeight (w + y)
+
+omit [PrimeSevenModEight d] in
+/-- The degree `m` twisted translate is the translate times `exp (-(H(y, w) + H(y, y) / 2)) ^ m`. -/
+lemma twistedTranslate_eq_exp_pow_mul (m : ℕ) (y : ℂ) (g : ℂ → ℂ) (w : ℂ) :
+    C.twistedTranslate m y g w =
+      exp (-(C.hermitianForm y w + C.hermitianForm y y / 2)) ^ m * g (w + y) := by
+  rw [twistedTranslate, thetaShift_apply_apply, ← exp_natCast_mul]
+  simp [mul_add, mul_div_assoc]
+
+omit [PrimeSevenModEight d] in
+/-- If `g` is at most `h ^ m`, its degree `m` twisted translate is at most `translateHeight ^ m`. -/
+lemma norm_twistedTranslate_le_translateHeight_pow {m : ℕ} {g : ℂ → ℂ}
+    (hg : ∀ w : ℂ, ‖ιₚ (g w)‖ ≤ C.naiveHeight w ^ m) (y w : ℂ) :
+    ‖ιₚ (C.twistedTranslate m y g w)‖ ≤ C.translateHeight y w ^ m := by
+  rw [C.twistedTranslate_eq_exp_pow_mul, map_mul, map_pow, norm_mul, norm_pow, translateHeight,
+    mul_pow]
+  exact mul_le_mul_of_nonneg_left (hg _) (by positivity)
+
+/-- The height `k` of the translate by `y` satisfies `k(w) ^ 4 h(2 w + y) = k(2 w + y) k(2 w)`. -/
+lemma translateHeight_pow_four_mul (y w : ℂ) :
+    C.translateHeight y w ^ 4 * C.naiveHeight (2 * w + y) =
+      C.translateHeight (p := p) y (2 * w + y) * C.translateHeight y (2 * w) := by
+  have h_factor : exp (-(C.hermitianForm y w + C.hermitianForm y y / 2)) ^ 4 =
+      exp (-(C.hermitianForm y (2 * w + y) + C.hermitianForm y y / 2)) *
+        exp (-(C.hermitianForm y (2 * w) + C.hermitianForm y y / 2)) := by
+    rw [← exp_natCast_mul, ← exp_add]
+    simp only [hermitianForm_apply]
+    ring_nf
+  simp only [translateHeight]
+  rw [mul_pow, ← norm_pow, ← map_pow, h_factor, map_mul, norm_mul, ← C.naiveHeight_two_mul,
+    mul_add 2 w y, two_mul y, ← add_assoc]
   ring
 
-/-- For a prime `d ≡ 7 (mod 8)` the doubling formula for `σ²` holds for torsion values:
-`σ[2 u]² = θ[u]² σ[u]² (4 θ[u] ^ 4 + a₁² θ[u]² σ[u]² + 4 σ[u] ^ 4)`. -/
-lemma torsionValue_sigma_two_mul_sq [PrimeSevenModEight d] (u : ℂ) :
-    C.torsionValue 1 C.σ (2 * u) ^ 2 =
-      C.torsionValue 1 C.θ u ^ 2 * C.torsionValue 1 C.σ u ^ 2 *
-        (4 * C.torsionValue 1 C.θ u ^ 4 +
-          C.a₁ ^ 2 * C.torsionValue 1 C.θ u ^ 2 * C.torsionValue 1 C.σ u ^ 2 +
-          4 * C.torsionValue 1 C.σ u ^ 4) := by
-  rw [torsionValue_two_mul]
-  simp only [torsionValue_eq, mul_pow, sigma_two_mul_sq]
-  ring
+/-- For a torsion point `y`, the height of the translate by `y` is at most the naive height. -/
+lemma translateHeight_le_naiveHeight {y : ℂ} (hy : C.IsTorsion y) (w : ℂ) :
+    C.translateHeight (p := p) y w ≤ C.naiveHeight w := by
+  obtain ⟨n, hn, hny⟩ := hy
+  -- If `f ^ (2 n)` is a section of degree `2 n`, so is the `2 n`-th power of the twisted translate
+  -- of `f` by `y`, because `2 n y` lies in the lattice. This holds for `f = σ` and `f = θ`.
+  have h_mem {f : ℂ → ℂ} (hf : f ^ (n * 2) ∈ C.sections (n * 2)) :
+      C.twistedTranslate 1 y f ^ (n * 2) ∈ C.sections (n * 2 * 1) := by
+    have h_lattice : (n * 2) • y ∈ C.Λ := by
+      have h_two : (n * 2) • y = 2 • ((n : ℂ) * y) := by
+        simp only [nsmul_eq_mul]
+        push_cast
+        ring
+      exact h_two ▸ nsmul_mem hny 2
+    have h_dual : y ∈ ((n * 2) • C.hermitianForm).dualLattice :=
+      ThetaTori.mem_dualLattice_nsmul.2 (C.isAppellHumbert_multiplier.le_dualLattice h_lattice)
+    rw [mul_one, twistedTranslate, one_smul, ← thetaShift_pow]
+    exact (C.isAppellHumbert_multiplier.nsmul (n * 2)).thetaShift_mem_of_mem_dualLattice h_dual hf
+  have hσ_mem : C.σ ^ (n * 2) ∈ C.sections (n * 2) := by
+    simpa [monomialSection, ← pow_mul, mul_comm 2 n] using C.monomialSection_mem (0, n, 0)
+  have hθ_mem : C.θ ^ (n * 2) ∈ C.sections (n * 2) := by
+    simpa [monomialSection] using C.monomialSection_mem (n * 2, 0, 0)
+  have h_ne : n * 2 ≠ 0 := mul_ne_zero hn two_ne_zero
+  obtain ⟨K₁, h₁⟩ := C.exists_norm_le_of_pow_mem_sections (p := p) h_ne (h_mem hσ_mem)
+  obtain ⟨K₂, h₂⟩ := C.exists_norm_le_of_pow_mem_sections (p := p) h_ne (h_mem hθ_mem)
+  -- So the ratio `r(z) = k(z) / h(z)` is bounded, where `k` is the height of the translate.
+  let r : ℂ → ℝ := fun z : ℂ ↦ C.translateHeight y z / C.naiveHeight z
+  have h_pos (z : ℂ) : 0 < C.naiveHeight z := C.naiveHeight_pos z
+  have hr_nonneg (z : ℂ) : 0 ≤ r z :=
+    div_nonneg (mul_nonneg (norm_nonneg _) (h_pos _).le) (h_pos z).le
+  have h_bdd (z : ℂ) : r z ≤ max K₁ K₂ := by
+    rw [div_le_iff₀ (h_pos z), max_mul_of_nonneg _ _ (h_pos z).le, translateHeight, naiveHeight,
+      mul_max_of_nonneg _ _ (norm_nonneg _), ← norm_mul, ← norm_mul, ← map_mul, ← map_mul]
+    simpa only [C.twistedTranslate_eq_exp_pow_mul, pow_one] using max_le_max (h₁ z) (h₂ z)
+  -- Doubling gives `r(z) ^ 4 = r(2 z + y) r(2 z)`.
+  have h_four (z : ℂ) : r z ^ 4 = r (2 * z + y) * r (2 * z) := by
+    simp only [r]
+    rw [div_pow, ← C.naiveHeight_two_mul, div_mul_div_comm, div_eq_div_iff (h_pos _).ne'
+      (mul_pos (h_pos _) (h_pos _)).ne', ← C.translateHeight_pow_four_mul]
+    ring
+  refine (div_le_one (h_pos w)).1 (le_one_of_forall_exists_sq_le h_bdd (fun z hz ↦ ?_) w)
+  -- One of the two factors of `r(z) ^ 4` is at least `r(z) ^ 2`.
+  by_contra! h_lt
+  have h_mul : r (2 * z + y) * r (2 * z) < r z ^ 2 * r z ^ 2 :=
+    mul_lt_mul'' (h_lt _) (h_lt _) (hr_nonneg _) (hr_nonneg _)
+  rw [← h_four, ← pow_add] at h_mul
+  exact lt_irrefl _ h_mul
 
-/-- For a prime `d ≡ 7 (mod 8)`, doubling acts on `w(u) = (θ[u]², σ[u]²)` through `doublingForms`,
-the quartic forms `(w₀² - w₁²)²` and `w₀ w₁ (4 w₀² + a₁² w₀ w₁ + 4 w₁²)`. -/
-lemma squarePair_two_mul [PrimeSevenModEight d] (u : ℂ) :
-    C.squarePair (2 * u) = doublingForms (ιₚ C.a₁) (C.squarePair u) := by
-  ext
-  · simp only [squarePair, doublingForms, C.torsionValue_theta_two_mul u, map_sub, map_pow,
-      ← pow_mul]
-  · simpa only [squarePair, doublingForms, map_mul, map_add, map_pow, map_ofNat, ← pow_mul]
-      using congrArg ιₚ (C.torsionValue_sigma_two_mul_sq u)
+/-- If `g ≤ h' ^ m`, a torsion translate of `g` along an isogeny of degree `N` is `≤ h ^ (m N)`. -/
+theorem norm_twistedTranslate_mul_le {C' : CMLattice d} {a : ℂ} {N m : ℕ}
+    (h : C.IsIsogeny C'.periodPair a N) {y : ℂ} (hy : C'.IsTorsion y) {g : ℂ → ℂ}
+    (hg : ∀ w : ℂ, ‖ιₚ (g w)‖ ≤ C'.naiveHeight w ^ m) (z : ℂ) :
+    ‖ιₚ (C'.twistedTranslate m y g (a * z))‖ ≤ C.naiveHeight z ^ (m * N) := by
+  have h_nonneg : 0 ≤ C'.translateHeight (p := p) y (a * z) :=
+    mul_nonneg (norm_nonneg _) (C'.naiveHeight_pos _).le
+  calc ‖ιₚ (C'.twistedTranslate m y g (a * z))‖
+      ≤ C'.translateHeight y (a * z) ^ m := C'.norm_twistedTranslate_le_translateHeight_pow hg y _
+    _ ≤ C'.naiveHeight (a * z) ^ m :=
+        pow_le_pow_left₀ h_nonneg (C'.translateHeight_le_naiveHeight hy _) m
+    _ ≤ (C.naiveHeight z ^ N) ^ m :=
+        pow_le_pow_left₀ (C'.naiveHeight_pos _).le (C.naiveHeight_mul_le h z) m
+    _ = C.naiveHeight z ^ (m * N) := by rw [← pow_mul, mul_comm]
 
-/-- For a prime `d ≡ 7 (mod 8)` the pair `w(2 ^ j u)` is the `j`-th iterate of the map
-`doublingForms (ιₚ C.a₁)`, whose two quartic forms are given in `squarePair_two_mul`, at
-`w(u) = (θ[u]², σ[u]²)`. -/
-lemma squarePair_two_pow_mul [PrimeSevenModEight d] (u : ℂ) (j : ℕ) :
-    C.squarePair (2 ^ j * u) = (doublingForms (ιₚ C.a₁))^[j] (C.squarePair u) := by
-  induction j with
-  | zero => simp
-  | succ j ih => rw [Function.iterate_succ_apply', ← ih, ← squarePair_two_mul, pow_succ', mul_assoc]
+end New.CMLattice
 
-/-- For a prime `d ≡ 7 (mod 8)`, doubling `j` times raises the norm of `w(u) = (θ[u]², σ[u]²)` to
-the power `4 ^ j`. -/
-lemma norm_squarePair_two_pow_mul [PrimeSevenModEight d] (u : ℂ) (j : ℕ) :
-    ‖C.squarePair (2 ^ j * u)‖ = ‖C.squarePair u‖ ^ 4 ^ j := by
-  induction j with
-  | zero => simp
-  | succ j ih =>
-    rw [pow_succ', mul_assoc, squarePair_two_mul,
-      norm_doublingForms C.norm_a₁_le_one (C.norm_disc_eq_one ιₚ), ih, ← pow_mul, pow_succ]
+end HeightComparison
 
-/-- Among the powers of `2`, two with different exponents are congruent modulo `n ≠ 0`. -/
-lemma exists_ne_two_pow_modEq {n : ℕ} (hn : n ≠ 0) :
-    ∃ i j : ℕ, i ≠ j ∧ (2 ^ i : ℤ) ≡ 2 ^ j [ZMOD n] := by
-  have : NeZero n := ⟨hn⟩
-  obtain ⟨i, j, hij, h_eq⟩ :=
-    Finite.exists_ne_map_eq_of_infinite fun i : ℕ ↦ ((2 ^ i : ℤ) : ZMod n)
-  exact ⟨i, j, hij, (ZMod.intCast_eq_intCast_iff _ _ n).1 h_eq⟩
+/-! ## Integral torsion values of monomials -/
 
-/-- For a prime `d ≡ 7 (mod 8)` the pair `w(u) = (θ[u]², σ[u]²)` has norm `1` in `ℂ_p × ℂ_p` at
-every torsion point `u`. -/
-lemma norm_squarePair [PrimeSevenModEight d] {u : ℂ} (hu : C.IsTorsion u) :
-    ‖C.squarePair (p := p) u‖ = 1 := by
-  have ⟨n, hn, hnu⟩ := hu
-  -- The points `2 ^ i u` form a finite set modulo `Λ`, so two of them are congruent; doubling
-  -- raises the norm to the fourth power, so two different powers of it are equal.
-  obtain ⟨i, j, hij, h_mod⟩ := exists_ne_two_pow_modEq hn
-  obtain ⟨k, hk⟩ : ∃ k : ℤ, 2 ^ j - 2 ^ i = (n : ℤ) * k := h_mod.dvd
-  have h_shift : 2 ^ j * u = 2 ^ i * u + k • (n * u) := by
-    rw [zsmul_eq_mul]
-    have hk' : (2 ^ j - 2 ^ i : ℂ) = n * k := by exact_mod_cast hk
-    linear_combination u * hk'
-  have h_pow : ‖C.squarePair u‖ ^ 4 ^ j = ‖C.squarePair u‖ ^ 4 ^ i := by
-    rw [← norm_squarePair_two_pow_mul, ← norm_squarePair_two_pow_mul, h_shift,
-      C.norm_squarePair_add_of_mem (by exact_mod_cast hu.natCast_mul (2 ^ i)) (zsmul_mem hnu k)]
-  by_contra h_ne
-  have h_exp : 4 ^ j = 4 ^ i :=
-    pow_right_injective₀ (norm_pos_iff.2 (C.squarePair_ne_zero u)) h_ne h_pow
-  exact hij (Nat.pow_right_injective (by norm_num) h_exp).symm
-
-/-- For `d` a prime `≡ 7 (mod 8)`, a `p`-adic place `ιₚ` and a torsion point `u` (`u ∈ ℚ Λ`),
-consider the degree-`1` torsion values `σ[u]` and `θ[u]` of the sigma function `σ` and of `C.θ`.
-These are the values at `0` of their twisted translates by `u` for the Hermitian form of the
-lattice. The larger of `‖ιₚ σ[u]‖` and `‖ιₚ θ[u]‖` is `1`. This is a form of the integrality of
-Siegel functions at torsion points. -/
-lemma max_norm_torsionValue [PrimeSevenModEight d] {u : ℂ} (hu : C.IsTorsion u) :
-    max ‖ιₚ (C.torsionValue 1 C.σ u)‖ ‖ιₚ (C.torsionValue 1 C.θ u)‖ = 1 := by
-  have h_sq : max ‖ιₚ (C.torsionValue 1 C.σ u)‖ ‖ιₚ (C.torsionValue 1 C.θ u)‖ ^ 2 = 1 := by
-    rw [← C.norm_squarePair hu, max_comm]
-    simp only [squarePair, Prod.norm_mk, norm_pow]
-    exact pow_left_monotoneOn.map_max (norm_nonneg _) (norm_nonneg _)
-  exact (pow_eq_one_iff_of_nonneg (le_max_of_le_left (norm_nonneg _)) two_ne_zero).1 h_sq
-
-/-- For a CM lattice `C` with `d` a prime `≡ 7 (mod 8)`, the sigma function `C.σ` has integral
-torsion values in degree `1` at the chosen place `ιₚ` above `p`: for every torsion point `u`, the
-image of `σ[u]` under `ιₚ` has norm at most `1` in `ℂ_p`.
-
-This is a local analogue of the integrality of the Siegel function at torsion points (Ramachandra,
-Robert): only at the chosen place above `p`, for these CM lattices, and with the normalization of
-`torsionValue`. -/
-lemma hasIntegralValues_sigma [PrimeSevenModEight d] : C.HasIntegralValues (p := p) 1 C.σ :=
-  fun _ hu ↦ le_of_max_le_left (C.max_norm_torsionValue hu).le
-
-/-- For a prime `d ≡ 7 (mod 8)` the theta function has integral torsion values in the degree `1`. -/
-lemma hasIntegralValues_theta [PrimeSevenModEight d] : C.HasIntegralValues (p := p) 1 C.θ :=
-  fun _ hu ↦ le_of_max_le_right (C.max_norm_torsionValue hu).le
-
-/-- For a prime `d ≡ 7 (mod 8)` the torsion values of `y θ³` (`translatedYThetaCube`) satisfy the
-monic quadratic equation that the cubic gives after multiplication by `θ ^ 6`. -/
-lemma torsionValue_translatedYThetaCube_sq_add [PrimeSevenModEight d] (u : ℂ) :
-    C.torsionValue 3 C.translatedYThetaCube u ^ 2 +
-      C.a₁ * C.torsionValue 1 C.θ u * C.torsionValue 1 C.σ u ^ 2 *
-        C.torsionValue 3 C.translatedYThetaCube u =
-      C.torsionValue 1 C.σ u ^ 6 + C.torsionValue 1 C.θ u ^ 4 * C.torsionValue 1 C.σ u ^ 2 := by
-  simp only [torsionValue_eq]
-  linear_combination exp (-(π * ‖u‖ ^ 2 / (2 * C.area))) ^ 6 * C.translatedYThetaCube_sq_add u
-
-/-- For a prime `d ≡ 7 (mod 8)` the section `y θ³` has integral torsion values in the degree `3`,
-as roots of monic quadratic equations with integral coefficients. -/
-lemma hasIntegralValues_translatedYThetaCube [PrimeSevenModEight d] :
-    C.HasIntegralValues (p := p) 3 C.translatedYThetaCube := by
-  intro u hu
-  set θu : ℂ_[p] := ιₚ (C.torsionValue 1 C.θ u)
-  set σu : ℂ_[p] := ιₚ (C.torsionValue 1 C.σ u)
-  have hθ : ‖θu‖ ≤ 1 := C.hasIntegralValues_theta u hu
-  have hσ : ‖σu‖ ≤ 1 := C.hasIntegralValues_sigma u hu
-  -- Both coefficients of the quadratic equation for the image in `ℂ_p` are integral.
-  have h_linear : ‖ιₚ C.a₁ * θu * σu ^ 2‖ ≤ 1 := by
-    grw [norm_mul, norm_mul, norm_pow, C.norm_a₁_le_one, hθ, hσ]
-    norm_num
-  have h_const : ‖σu ^ 6 + θu ^ 4 * σu ^ 2‖ ≤ 1 := by
-    grw [IsUltrametricDist.norm_add_le_max, norm_mul, norm_pow, norm_pow, norm_pow, hθ, hσ]
-    norm_num
-  exact norm_le_one_of_sq_add_mul_eq h_linear h_const <| by
-    simpa only [map_add, map_mul, map_pow] using
-      congrArg ιₚ (C.torsionValue_translatedYThetaCube_sq_add u)
+namespace New.CMLattice
+variable {d : ℕ} [PrimeSevenModEight d] (C : CMLattice d) {p : ℕ} [Fact p.Prime] [PadicPlace p]
 
 /-- For `d` a prime `≡ 7 (mod 8)` and a `p`-adic place `ιₚ`, take a triple `(a, b, c)` and the
 monomial `θ^a (σ²)^b G^c` (`monomialSection`), a section of degree `a + 2b + 3c`. Here `σ` is the
 sigma function of the lattice and `G = translatedYThetaCube` is the entire function equal to `y θ³`
 off `t + Λ`. For every torsion point `u`, the torsion value of this monomial in degree `a + 2b + 3c`
 at `u` has `ιₚ`-image of norm at most `1`. -/
-lemma hasIntegralValues_monomialSection [PrimeSevenModEight d] (x : ℕ × ℕ × ℕ) :
+lemma hasIntegralValues_monomialSection (x : ℕ × ℕ × ℕ) :
     C.HasIntegralValues (p := p) (monomialDeg x) (C.monomialSection x) := by
-  obtain ⟨a, b, c⟩ := x
-  simpa only [monomialDeg, monomialSection, mul_one, add_assoc] using
-    (C.hasIntegralValues_theta.pow a).mul <| ((C.hasIntegralValues_sigma.pow 2).pow b).mul
-      (C.hasIntegralValues_translatedYThetaCube.pow c)
+  -- The torsion value is the value at `0` of the twisted translate, and the height of `0` is `1`.
+  intro u hu
+  have h_zero : C.naiveHeight (p := p) 0 = 1 := by simp [naiveHeight, theta_zero]
+  calc ‖ιₚ (C.torsionValue (monomialDeg x) (C.monomialSection x) u)‖
+      ≤ C.translateHeight u 0 ^ monomialDeg x :=
+        C.norm_twistedTranslate_le_translateHeight_pow (C.norm_monomialSection_le x) u 0
+    _ ≤ C.naiveHeight 0 ^ monomialDeg x :=
+        pow_le_pow_left₀ (mul_nonneg (norm_nonneg _) (C.naiveHeight_pos _).le)
+          (C.translateHeight_le_naiveHeight hu 0) _
+    _ = 1 := by rw [h_zero, one_pow]
 
 end New.CMLattice
-
-end TorsionValues

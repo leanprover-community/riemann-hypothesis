@@ -24,9 +24,9 @@ Checks, before any credential is read:
 
 With --publish, it then derives the R2 key from R2_ACCOUNT_TOKEN and writes, each with
 If-None-Match (nothing is ever overwritten): the new artifacts, the map, the module manifest and
-last the record, grh-lean/grh/inputs/<input fingerprint>.json. An existing object with other
-bytes is an error, except for the record: an existing successful record for the same build
-inputs is left as it is. Adapted from scripts/publish-ci-cache.py of branch alpoge and from
+last the record, grh-lean/grh/inputs/<input fingerprint>.json. If a successful record for the
+same build inputs is already published (from another commit with the same inputs), it writes
+nothing at all. An existing object with other bytes is an error, except for the record. Adapted from scripts/publish-ci-cache.py of branch alpoge and from
 the hand publisher of the rh-buildq hosts.
 
 The cache does not verify any proof. As on every build host, the build itself is trusted to
@@ -291,6 +291,14 @@ def publish(checked):
     record, identity = checked["record"], checked["identity"]
     with tempfile.TemporaryDirectory(prefix="publish-ci-cache-auth-") as temporary:
         r2 = R2(temporary)
+        key = f"{cli.PREFIX}/inputs/{record['input_fingerprint']}.json"
+        existing = r2.get(key)
+        if existing is not None and existing != checked["record_bytes"] and cli.matching_record(existing, identity):
+            # Another commit with the same build inputs was published first (by hand, or an
+            # earlier build): its map and artifacts serve this commit, so write nothing.
+            log(f"record {key}: a successful record for these build inputs (from"
+                f" {json.loads(existing).get('candidate_head')}) is already published; nothing to write")
+            return
 
         def upload(item):
             artifact, path = item
@@ -303,7 +311,6 @@ def publish(checked):
         log(f"map {record['map_key']}: " + r2.immutable(record["map_key"], checked["contents"], MAP_TYPE))
         log(f"module manifest {record['module_manifest_key']}: "
             + r2.immutable(record["module_manifest_key"], checked["manifest"], "application/gzip"))
-        key = f"{cli.PREFIX}/inputs/{record['input_fingerprint']}.json"
         if r2.create(key, checked["record_bytes"], "application/json", "no-cache"):
             log(f"record {key}: created")
         else:

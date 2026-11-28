@@ -1,7 +1,11 @@
-import Lib.ClassField.HeckeL.EulerProduct
-import Lib.ClassField.Local.ArtinMap
+module
+
+public import Lib.ClassField.HeckeL.EulerProduct
+public import Lib.ClassField.Local.ArtinMap
+public import Lib.Weil.Construction.FiniteMultiplier
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.CongruenceLevels
 import Lib.Cohomology.Etale.Basic
-import Lib.Weil.Construction.FiniteMultiplier
 
 /-!
 # Values of algebraic Hecke characters
@@ -16,8 +20,8 @@ character of the Weil data.
 ## Main definitions and results
 
 * `New.AlgHeckeChar.exists_pow_eq_prod`, `New.AlgHeckeChar.norm_map_eq_sqrt_finIdeleAbs_zpow`,
-  `New.AlgHeckeChar.norm_padic_eq_prod`, `New.AlgHeckeChar.conjugateBy`: powers, complex and
-  `p`-adic absolute values and conjugates of the values of an algebraic Hecke character.
+  `New.AlgHeckeChar.norm_padic_eq_prod`: powers and complex and `p`-adic absolute values of the
+  values of an algebraic Hecke character.
 * `New.IsHeckeOfType.toAlgebraic`: the algebraic character `ψ |·|^{k/2}` of infinity type `m`, for
   `ψ` of type `m (Φ w) - m (Φ̄ w)` with `m (Φ w) + m (Φ̄ w) = k` at every infinite place `w`.
 * `New.AutChar.HasWeight.isHeckeOfType`: if `ν` has weight `e`, its base change has type `2 • e`.
@@ -41,6 +45,8 @@ Notions from other files:
 Known result: the values of characters of type A₀. Source: A. Weil, On a certain type of characters
 of the idèle-class group of an algebraic number-field (1956).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -69,20 +75,14 @@ theorem exists_pow_eq_prod :
       y ^ N / principalIdele γ ∈ idelesUnitOff ∅ ∧
       (θ.val.fst y : ℂ) ^ N = ∏ τ : K →+* ℂ, τ γ ^ (-θ.val.snd.toAdd τ) := by
   -- The principal ideles and the units in the kernel generate an open subgroup `H` of finite index.
-  obtain ⟨h_open, (h_principal : ∀ x : Kˣ, (θ.val.fst (principalIdele x) : ℂ) =
-      ∏ τ : K →+* ℂ, τ x ^ (-θ.val.snd.toAdd τ))⟩ := θ.property
   let H : Subgroup (𝔸f K)ˣ := principalIdele.range ⊔ (θ.val.fst.ker ⊓ idelesUnitOff ∅)
-  have h_fin : H.FiniteIndex :=
-    finiteIndex_idele_subgroup_of_isOpen H
-      (Subgroup.isOpen_mono le_sup_right (h_open.inter (isOpen_idelesUnitOff ∅)))
-      fun x _ ↦ Subgroup.mem_sup_left ⟨x, rfl⟩
-  obtain ⟨_, ⟨γ, rfl⟩, u, ⟨hu_ker, hu_unit⟩, h_eq⟩ : ∃ a ∈ principalIdele.range,
-      ∃ u ∈ θ.val.fst.ker ⊓ idelesUnitOff ∅, a * u = y ^ H.index :=
-    Subgroup.mem_sup.1 (H.pow_index_mem y)
-  refine ⟨H.index, h_fin.index_ne_zero.pos, γ, ?_, ?_⟩
-  · rwa [← h_eq, mul_div_cancel_left]
-  · rw [← Units.val_pow_eq_pow_val, ← map_pow, ← h_eq, map_mul,
-      show θ.val.fst u = 1 from hu_ker, mul_one, h_principal]
+  have h_fin : H.FiniteIndex := finiteIndex_idele_subgroup_of_isOpen H
+    (Subgroup.isOpen_mono le_sup_right (θ.property.1.inter (isOpen_idelesUnitOff ∅)))
+    fun x _ ↦ Subgroup.mem_sup_left ⟨x, rfl⟩
+  obtain ⟨_, ⟨γ, rfl⟩, u, ⟨hu_ker, hu_unit⟩, h_eq⟩ := Subgroup.mem_sup.1 (H.pow_index_mem y)
+  refine ⟨H.index, h_fin.index_ne_zero.pos, γ, by rwa [← h_eq, mul_div_cancel_left], ?_⟩
+  simpa [← Units.val_pow_eq_pow_val, ← map_pow, ← h_eq, MonoidHom.mem_ker.1 hu_ker] using
+    θ.property.2 γ
 
 /-- Let `γ` in `Kˣ` and the finite idele `y` be such that `y ^ N / γ` is a unit at all finite
 places. Then the moduli of the conjugates `σ (τ γ)` have product `|y| ^ (-N)`, where `|y|` is the
@@ -169,36 +169,6 @@ theorem norm_padic_eq_one {p : ℕ} [Fact p.Prime] (ι : ℂ →+* ℂ_[p])
     (norm_adeleExtension_eq_iff _ _).2 (by simpa using hy _ (natCast_mem_placeOfEmb _))
   simp [θ.norm_padic_eq_prod y ι, h_unit]
 
-/-- The conjugate `σ ∘ θ` of an algebraic Hecke character `θ` by an automorphism `σ` of `ℂ`. It is
-algebraic, and its exponent at `σ ∘ τ` is that of `θ` at `τ`. -/
-def conjugateBy (σ : ℂ ≃+* ℂ) : AlgHeckeChar K where
-  val :=
-    ((Units.map σ.toMonoidHom).comp θ.val.fst,
-      Multiplicative.ofAdd fun τ ↦ θ.val.snd.toAdd (σ.symm.toRingHom.comp τ))
-  property := by
-    obtain ⟨h_open, h_principal⟩ := θ.property
-    have h_ker : θ.val.fst.ker ≤ ((Units.map σ.toMonoidHom).comp θ.val.fst).ker :=
-      fun y (hy : θ.val.fst y = 1) ↦ by simp [hy]
-    refine ⟨Subgroup.isOpen_mono h_ker h_open, fun x ↦ ?_⟩
-    -- Reindex the product by `τ ↦ σ ∘ τ`.
-    let e : (K →+* ℂ) ≃ (K →+* ℂ) :=
-      { toFun τ := σ.toRingHom.comp τ
-        invFun τ := σ.symm.toRingHom.comp τ
-        left_inv τ := by simp [← RingHom.comp_assoc]
-        right_inv τ := by simp [← RingHom.comp_assoc] }
-    rw [← e.prod_comp]
-    simp [e, h_principal, ← RingHom.comp_assoc]
-
-/-- For an algebraic Hecke character `θ` of the number field `K`, an automorphism `σ` of `ℂ` and a
-finite idele `y`, the finite-idele character of the conjugate `θ.conjugateBy σ` (that is, `σ ∘ θ`)
-takes at `y` the value `σ` applied to the value of `θ` at `y`. -/
-lemma conjugateBy_apply (σ : ℂ ≃+* ℂ) : ((θ.conjugateBy σ).val.fst y : ℂ) = σ (θ.val.fst y) := rfl
-
-/-- The conjugate of the character `θ` by `σ` has at `σ ∘ τ` the exponent of `θ` at `τ`. -/
-lemma conjugateBy_exponent (σ : ℂ ≃+* ℂ) (τ : K →+* ℂ) :
-    (θ.conjugateBy σ).val.snd.toAdd (σ.toRingHom.comp τ) = θ.val.snd.toAdd τ := by
-  simp [conjugateBy, ← RingHom.comp_assoc]
-
 end AlgHeckeChar
 
 /-! ## Algebraic characters from unitary Hecke characters of a CM field -/
@@ -281,7 +251,7 @@ lemma HeckeChar.isHeckeOfType_finPart {n : NumberField.InfinitePlace E → ℤ} 
       χ.val.comp
         ⟨Units.map (.inr (NumberField.InfinitePlace E → ℂ) (𝔸f E)), .units_map _ (.prodMk_right _)⟩
     refine (char_eventually_eq_one _ χf.continuous_toFun).mono fun y hy ↦ Units.ext ?_
-    show (χf y : ℂ) = 1
+    change (χf y : ℂ) = 1
     exact congrArg Subtype.val hy
   · -- `χ` is trivial on the principal idele of `x`, the product of its finite and infinite parts.
     let a : (𝔸 E)ˣ := .map (.inr (NumberField.InfinitePlace E → ℂ) (𝔸f E)) (principalIdele x) *

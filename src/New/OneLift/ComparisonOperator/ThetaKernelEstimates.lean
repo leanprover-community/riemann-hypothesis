@@ -1,6 +1,23 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.CStarAlgebra.Spectrum
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.RingTheory.Etale.Weakly
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Holomorphic.PeaksAwayFromCusp
+public import New.OneLift.ComparisonOperator.ExchangeData
+public import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 import Lib.DiscreteSeries.Holomorphic.ModelFunction
-import Lib.DiscreteSeries.Holomorphic.PeaksAwayFromCusp
-import New.OneLift.ComparisonOperator.ExchangeData
+import Lib.General.Analysis.PackingAndSobolev
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Decay of Fock matrix coefficients, sparse theta sums and the isolation estimate
@@ -49,6 +66,8 @@ See `New.OneLift.ComparisonOperator.ProductsSpan` for related work. See
 `Lib.Weil.DualPair.ThetaLiftConvergence` and `Lib.Adelic.Reduction.FiniteVolume` for sources.
 -/
 
+@[expose] public section
+
 /-!
 ## Decay of Heisenberg matrix coefficients of homogeneous Fock vectors
 
@@ -96,7 +115,8 @@ theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [De
   -- takes a Gaussian factor out of `v`, which is small at `x` or at `σ x + y`; the rest is bounded
   -- by `2ab ≤ a² + b²`, which does the work of the Cauchy–Schwarz inequality as `a²` and `b²` have
   -- the same integral. The dilation costs the factor `c^(2(d + |ι|)) ≤ eⁿ`.
-  have A_ne : A ≠ 0 := by linarith [card_pos (α := ι)]
+  have A_ne : A ≠ 0 :=
+    (card_pos.trans_le ((Nat.le_add_left (card ι) d).trans hA)).ne'
   let c : ℝ := √(n / A + 1)
   let v_scaled : fockSpace ε := (c : ℂ) ^ d • v
   let G (x : ι → ℂ) : ℝ := ‖v_scaled (c⁻¹ • x)‖ ^ 2
@@ -105,18 +125,18 @@ theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [De
   have norm_v (x : ι → ℂ) :
       ‖v x‖ = ‖v_scaled (c⁻¹ • x)‖ / exp (‖toLp 2 x‖ ^ 2 / (n + A) / 2) ^ n := by
     simp (disch := positivity) [v_scaled, *, realVac, star_dotProduct_self_eq_norm_sq, sq, c,
-      ← exp_nat_mul, mul_assoc, ← exp_add, field, star_trivial, Complex.norm_exp]
+      ← exp_natCast_mul, mul_assoc, ← exp_add, field, star_trivial, Complex.norm_exp]
   have G_int : Integrable G (normalizedVolume ι) :=
     (integrable_norm_sq v_scaled).comp_smul (by positivity)
   have preserving : MeasurePreserving (σ • · + y) (normalizedVolume ι) (normalizedVolume ι) :=
-    ((realAction ε).2 σ).add_right _ y
+    ((realAction ε).measurePreserving σ).add_right _ y
   -- Undoing the dilation gives `c^(2d)` from `v_scaled` and the Jacobian `c^(2|ι|)`.
   have G_le : ∫ x, G x ∂normalizedVolume ι ≤ exp n * ∫ x, ‖v x‖ ^ 2 ∂normalizedVolume ι := by
     have exponent_le : ((card ι + d : ℕ) : ℝ) * (n / A) ≤ n := by
       grw [add_comm, hA]
       simp [field]
     have c_pow : (c ^ 2) ^ (card ι + d) ≤ exp n := by
-      grw [sq_sqrt (by positivity), add_one_le_exp, ← exp_nat_mul, exponent_le]
+      grw [sq_sqrt (by positivity), add_one_le_exp, ← exp_natCast_mul, exponent_le]
     calc _ = (c ^ 2) ^ card ι * ((c ^ 2) ^ d * ∫ x, ‖v x‖ ^ 2 ∂normalizedVolume ι) := by
           -- ↓ changes variables before simp rewrites inside the integral.
           simp [G, ↓(normalizedVolume ι).integral_comp_inv_smul (‖v_scaled ·‖ ^ 2), v_scaled,
@@ -207,7 +227,7 @@ theorem firstMinimum_mul_le_hom [Nonempty n] [Nonempty n']
   · -- both minima are at most `1` and the denominator is a natural number
     grw [firstMinimum_le_one, firstMinimum_le_one]
     · simp [Nat.cast_inv_le_one, ← Nat.cast_mul]
-    all_goals simp [firstMinimum_pos, le_of_lt]
+    simp [firstMinimum_pos, le_of_lt]
   choose Y Y_mem Y_short using S.exists_short_basis hN_mem
   -- `k`, the matrix of `z` in adelic coordinates, takes the coordinates of `y` to those of `z y`
   let k : Matrix n' n (𝔸 E) := vecToMatrix ((S.hom T).vecAtPoint z)
@@ -220,13 +240,13 @@ theorem firstMinimum_mul_le_hom [Nonempty n] [Nonempty n']
     l2_opNorm_le_of_apply fun i j ↦ ((S.hom T).archCoords z).norm_apply_le (w, i, j)
   have k_int (i : n') (j : n) : (k i j).2 ∈ Ô E := hz (i, j)
   -- As `Y` is invertible and `z ≠ 0`, some basis vector has a nonzero image.
-  obtain ⟨j, hj⟩ : ∃ j : n, vecToMatrix z *ᵥ Y.1.col j ≠ 0 := by
+  obtain ⟨j, hj⟩ : ∃ j : n, vecToMatrix z *ᵥ Y.val.col j ≠ 0 := by
     by_contra! h_all
-    have hzY : vecToMatrix z * Y.1 = 0 := Matrix.ext fun i j ↦ congrFun (h_all j) i
+    have hzY : vecToMatrix z * Y.val = 0 := Matrix.ext fun i j ↦ congrFun (h_all j) i
     exact z_ne (by simpa [Matrix.mul_assoc] using congrArg (fun M ↦ matrixToVec (M * Y⁻¹.1)) hzY :)
   -- That image lies in the lattice of `T`, and its length is bounded by means of `norm_k`.
   obtain ⟨image_mem, norm_image⟩ :=
-    T.mem_and_norm_le_of_vecAtPoint _ S (Y.1.col j) k 1 norm_k (by rw [one_smul, vec_eq])
+    T.mem_and_norm_le_of_vecAtPoint _ S (Y.val.col j) k 1 norm_k (by rw [one_smul, vec_eq])
   grw [firstMinimum_le (image_mem (by simpa using k_int) (Y_mem j)) hj, norm_image, Y_short]
   · have h_pos : 0 < S.firstMinimum := S.firstMinimum_pos
     simp [field]
@@ -265,7 +285,7 @@ lemma dataInner_traceChar {𝔪 : Modulus E} (t : Matrix n n' 𝔪.ResidueRing)
       traceChar t ∘ vecToMatrix = fun x ↦ 𝔪.primAddChar (x ⬝ᵥ 𝔪.reduction ∘ tLift) := by
     simp [funext_iff, tLift, hlift, trace, Matrix.mul_apply, dotProduct, sum_prod_type, traceChar,
       vecToMatrix]
-  let y : n' × n → 𝔸 E := finVec (star (idem 𝔪.places • 𝔪.generator⁻¹.1 • Subtype.val ∘ tLift))
+  let y : n' × n → 𝔸 E := finVec (star (idem 𝔪.places • 𝔪.generator⁻¹.val • Subtype.val ∘ tLift))
   let zf : n' × n → 𝔸 E := fun i ↦ (0, (z i).2)
   have h_zf : finVec (finCoord z) = zf := funext fun i ↦ by simp [finVec, finCoord, zf]
   rw [h_zf]
@@ -275,19 +295,19 @@ lemma dataInner_traceChar {𝔪 : Modulus E} (t : Matrix n n' 𝔪.ResidueRing)
   · rw [modDatum, modDatum, rho_integrated_realCoord, dataInner_integrated, h_char,
       𝔪.schrodingerOp_char_eq_translate_projOn, rho_swap, map_smul]
     -- ↓ rewrites operators on integrated vectors before their arguments are simplified.
-    simp [y, zf, finVec, ↓← rho_integrated, vacuumFn]
+    simp [y, zf, finVec, ↓← rho_integrated]
   by_cases hz : ∀ i, finCoord z i ∈ Ô E
   · -- The phase of `ϱ zf` past `ϱ y` is the lift of `traceChar t` at `α⁻¹ z_f`.
     have h_beta : ((adelicHeisenberg E (homSigns s s')).β zf y : ℂ) ^ 2 =
       (ψf E (algebraMap E (𝔸f E) j * ∑ x, star α.val *
-        (idem 𝔪.places * (𝔪.generator⁻¹.1 * (tLift x).1)) * (z x).2) : Circle) := by
+        (idem 𝔪.places * (𝔪.generator⁻¹.val * (tLift x).val)) * (z x).2) : Circle) := by
       simp [y, zf, finVec, adelicHeisenberg, stdForm, stdAddChar, dotProduct, fst_sum, snd_sum,
         mulVec_diagonal, ← Circle.coe_pow, ← map_nsmul_eq_pow, two_mul, ← map_add, ← add_mul]
     rw [h_char, 𝔪.liftFn_apply, dite_eq_left fun i ↦ mul_mem (idem_mem_Ô _) (hz i), h_beta,
       mul_left_comm]
     simp [zf, finCoord, stdLattice.selfDualAddChar_apply, dotProduct, ← map_mul, ← map_sum, mul_sum,
       mul_assoc,
-      mul_left_comm, mul_comm (tLift _).1]
+      mul_left_comm, mul_comm (tLift _).val]
   · -- Otherwise `z_f` lies outside the support of the vacuum.
     have h_vac : vacuumFn zf = 0 := by simpa [zf, vacuumFn, finCoord] using hz
     simp [h_vac]
@@ -557,19 +577,19 @@ theorem exists_norm_modKernel_sub_fockInner_le [Nonempty n] [Nonempty n']
     obtain ⟨⟨hz, hz_zero⟩, -⟩ := ite_ne_right_iff.1 ((term_eq y).symm.trans_ne term_ne.symm)
     exact ⟨fun i ↦ by simpa [x, finCoord] using hc _ (hz_zero i), y_ne⟩
   -- Removing the term `y = 0` leaves the difference to be bounded, as a sum over `L`.
-  have h_rest : HasSum (fun y : L ↦ if y.1 = 0 then 0 else term y) (mean - term 0) :=
+  have h_rest : HasSum (fun y : L ↦ if y.val = 0 then 0 else term y) (mean - term 0) :=
     (hasSum_subtype_iff_of_support_subset h_supp).2 (hasSum_ite_sub_hasSum h_sum 0)
   -- Each term decays like a Heisenberg matrix coefficient of the Fock vector `v`.
   set dim : ℕ := card (InfinitePlace E × n' × n)
   let σ : USign (realSigns E (homSigns s s')) := pairHomInf (u, u')
   let normσ : ℝ := ‖(σ : Matrix (InfinitePlace E × n' × n) (InfinitePlace E × n' × n) ℂ)‖
   have term_le (y : L) :
-      ‖if y.1 = 0 then 0 else term y‖ ≤
+      ‖if y.val = 0 then 0 else term y‖ ≤
         normσ ^ (dim + 2 * q) * (fockInner v v).re * (4 * ((d + dim : ℕ) + q)) ^ q *
           (len y)⁻¹ ^ (2 * q) := by
     calc _ ≤ ‖fockInner v (realHeisenbergOp (realCoord (x y)) (realWeil σ v))‖ := by
           rw [term_eq]
-          split_ifs <;> simp [w, σ, χ, realPairWeil, prod_mul_distrib, norm_coe]
+          split_ifs <;> simp [w, σ, realPairWeil, prod_mul_distrib, norm_coe]
       _ ≤ _ := norm_fockInner_realHeisenbergOp_le σ hv hQ le_rfl (hm_pos.trans_le (h_far y))
   have h_zero : term 0 = fockInner v w := by
     simp [term_eq, x, χ, finCoord, ← ZeroMemClass.zero_def, realCoord.eq_unfold, ← Pi.zero_def]
@@ -616,7 +636,7 @@ namespace New.Rows
 
 /-- A point of the archimedean unitary group has operator norm at least `1` at every place, so the
 largest of these norms is at least `1`. -/
-@[bound] theorem one_le_maxOpNorm {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n]
+@[bound] theorem one_le_maxOpNorm {E n : Type} [Field E] [NumberField E] [Fintype n]
     [DecidableEq n] [Nonempty n] {s : n → ℤˣ} (h : GInf E s) : 1 ≤ maxOpNorm h := by
   obtain ⟨w⟩ : Nonempty (InfinitePlace E) := inferInstance
   exact (U.one_le_norm (h w)).trans (norm_le_pi_norm (fun w ↦ (h w : Matrix n n ℂ)) w)
@@ -792,8 +812,8 @@ lemma integral_norm_holMinorsPi_sq_pos (h_rank : card n ≤ D.t) (ho : IsPosFirs
   obtain ⟨hl_gap, hl_coeff⟩ : (∀ τ : D.Φ, (l τ).HasLargeGap (8 * nStar D)) ∧
       ∀ (τ : D.Φ) (g : USign s), (l τ).dsCoeff g = holMinors s (u τ) g :=
     forall_and.1 fun τ ↦ hasLargeGap_and_dsCoeff_eq_holMinors h_rank ho (hu_dom τ) (hu_gap τ)
-  rw [integral_norm_holMinorsPi_sq_eq_inv_prod hl_coeff]
-  exact inv_pos.2 (prod_pos fun τ _ ↦ formalDegree_pos (hl_gap τ))
+  simpa only [integral_norm_holMinorsPi_sq_eq_inv_prod hl_coeff, inv_pos] using
+    (prod_pos fun τ _ ↦ formalDegree_pos (hl_gap τ))
 
 /-- Let `D` be admissible data, `b = D.b`, `t = D.t`, `n_* = nStar D`, and let the rank satisfy
 `1 ≤ n ≤ t`. Let the order `o` put the signs `+1` first. Let the weights `u τ`, `u' τ` at the

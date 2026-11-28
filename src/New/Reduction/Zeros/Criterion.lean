@@ -1,13 +1,15 @@
+module
+
+public import New.Reduction.Zeros.PrimeError
 import Lib.Analytic.Landau
 import Lib.Analytic.QuadraticTwist
-import New.Reduction.Zeros.PrimeError
 
 /-!
 # The one-sided criterion for a zero-free half-plane
 
-`New.LFunction_ne_zero_of_primeRemainder_le`: an eventual upper bound `R_q(x) ≤ A * x ^ (β - 1)` for the
-remainder of a sum over prime powers `≡ 1` mod `q` with weights depending on a prime `d`, for all
-`d` of a suitable class, excludes zeros `s ≠ 1` of the `L(s, ψ)`, `ψ` mod `q`, in `re s > β`.
+`New.LFunction_ne_zero_of_primeRemainder_le`: an eventual upper bound `R_q(x) ≤ A * x ^ (β - 1)` for
+the remainder of a sum over prime powers `≡ 1` mod `q` with weights depending on a prime `d`, for
+all `d` of a suitable class, excludes zeros `s ≠ 1` of the `L(s, ψ)`, `ψ` mod `q`, in `re s > β`.
 
 Notions from other files:
 * `primeRemainder d q x`: the remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`,
@@ -26,14 +28,16 @@ Chebyshev's conjecture, arXiv 2411.07436, 2024; Montgomery–Vaughan, Multiplica
 §15.1–15.2, 2007; Landau, Über einen Satz von Tschebyschef, 1905.
 -/
 
+@[expose] public section
+
 open Complex Filter Nat Real Set MeasureTheory Topology
 
 /-- **One-sided criterion.** Let `q₀` be a positive multiple of `8`, let `d₀ ≡ 7` mod `8` be prime
 to `q₀`, and let `β > 1/2`. Suppose that for each prime `d ≡ d₀` mod `q₀` the remainder
-`primeRemainder d q₀ x = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q₀) - c` is at most `A * x ^ (β - 1)`
-for some `A` and all large `x`. Here `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q₀` and `0` otherwise,
-and `c` is the constant for which the remainder tends to `0`. Then `L(ρ, ψ) ≠ 0` for every
-character `ψ` modulo `q₀` and every `ρ ≠ 1` with `re ρ > β`. -/
+`primeRemainder d q₀ x = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q₀) - c` is at most
+`A * x ^ (β - 1)` for some `A` and all large `x`. Here `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod
+`q₀` and `0` otherwise, and `c` is the constant for which the remainder tends to `0`. Then
+`L(ρ, ψ) ≠ 0` for every character `ψ` modulo `q₀` and every `ρ ≠ 1` with `re ρ > β`. -/
 theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (hq₀ : 8 ∣ q₀) {d₀ : ℕ}
     (hd₀_mod : d₀ % 8 = 7) (hd₀_cop : d₀.Coprime q₀) {β : ℝ} (hβ : 1 / 2 < β)
     (h_bound : ∀ d : Primes, (d : ℕ) ≡ d₀ [MOD q₀] →
@@ -83,10 +87,4 @@ theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (h
     simpa [hρ_ne_zero, sub_ne_zero.2 hρ_ne.symm, NeZero.ne] using h_landau
   have h_entire : entireL ψ ρ ≠ 0 := (analyticOrderNatAt_entireL_eq_zero_iff ψ ρ).1
     (Finset.sum_eq_zero_iff.1 h_count ψ (Finset.mem_univ ψ))
-  -- Away from `s = 1`, `entireL ψ` is `L(s, ψ)` or `(s - 1) L(s, ψ)`.
-  rw [entireL] at h_entire
-  split_ifs at h_entire with hψ
-  · subst hψ
-    rw [DirichletCharacter.LFunctionTrivChar₁, Function.update_of_ne hρ_ne] at h_entire
-    exact right_ne_zero_of_mul h_entire
-  · exact h_entire
+  exact (entireL_ne_zero_iff ψ hρ_ne).1 h_entire

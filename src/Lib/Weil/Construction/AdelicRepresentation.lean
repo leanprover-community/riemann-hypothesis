@@ -1,6 +1,23 @@
+module
+
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
+import Mathlib.Analysis.LocallyConvex.Barrelled
+import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
+import Mathlib.Data.Finset.Functor
+import Mathlib.Topology.Algebra.ProperConstSMul
+import TauCeti.Algebra.Group.AddChar.Basic
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Weil.Fock.Basic
+public import Lib.General.Analysis.FourierTransforms
+public import Lib.General.Analysis.HolomorphicIntegrals
+public import Lib.Weil.Construction.FiniteMultiplier
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.GramMatrix
 import Lib.Adelic.Unitary.RationalPoints
-import Lib.Weil.Construction.FiniteCocycle
-import Lib.Weil.Fock.Basic
+import Lib.Base
+public import Lib.Weil.Construction.FiniteCocycle -- shake: keep (needed public by an exposed definition)
 
 /-!
 # The adelic Weil representation on 𝒮(V) and its theta functional
@@ -53,6 +70,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -151,14 +170,14 @@ sign −1, and Δ_f is `New.finMultiplier`, the multiplier of the action `finAct
 vectors. -/
 def weilMultiplier : ℂ := (∏ w : InfinitePlace E, realMultiplier (g.1 w)) * finMultiplier g.2
 
-set_option synthInstance.maxSize 999
-
 /-- The Haar measure on 𝔸^n that is the image of the product of `New.Fock.normalizedVolume` and
 `New.latticeMeasure` under the isomorphism `New.adelicSum` from real and finite coordinates. The
 isomorphism does not depend on the signs, so the signs `1` are used. -/
 def vacuumMeasure : Measure (n → 𝔸 E) :=
   ((normalizedVolume (InfinitePlace E × n)).prod (latticeMeasure E n)).map (adelicSum E 1).equiv
-  deriving IsAddHaarMeasure
+
+instance : (vacuumMeasure (E := E) (n := n)).IsAddHaarMeasure :=
+  (adelicSum E 1).equiv.isAddHaarMeasure_map _
 
 /-- The function `New.vacuumFn` (Gaussian at infinity times twisted lattice indicator at finite
 places) is a vacuum, in the sense of `New.Heisenberg.IsVacuum`, for the bicharacter β of signs s and
@@ -178,7 +197,7 @@ lemma smul_eq_adeleMatrix_mulVec (x : n → 𝔸 E) : g • x = g.adeleMatrix *�
 
 instance : ContinuousSMul (G E s) (n → 𝔸 E) := by
   refine ⟨?_⟩
-  simp
+  simp only [smul_eq_adeleMatrix_mulVec]
   fun_prop
 
 end
@@ -233,7 +252,6 @@ namespace New
 
 open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle
   Complex
-open scoped Classical
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n]
@@ -271,7 +289,7 @@ end Space
 that multiplies the coordinates at τ by (2π Im τ(ȷ))^(−1/2), ȷ being the element `j` of the Weil
 data, and puts zero at the finite places. -/
 def realVec : (InfinitePlace E × n → ℂ) →+ n → 𝔸 E :=
-  AddMonoidHom.mk' (fun y i ↦ ((scaleIdele E).1.1 * fun w ↦ y (w, i), 0)) <| by
+  AddMonoidHom.mk' (fun y i ↦ ((scaleIdele E).val.1 * fun w ↦ y (w, i), 0)) <| by
     simp [mul_add, funext_iff]
 
 /-- The archimedean part of an adelic vector y in Fock coordinates: the complex numbers (2π Im
@@ -290,8 +308,7 @@ omit [Fintype n] [DecidableEq n] in
 /-- An adelic vector `y` is the real vector of its archimedean coordinates plus its finite part. -/
 lemma realVec_realCoord_add : realVec (realCoord y) + (fun i : n ↦ (0, (y i).2)) = y := by
   -- The real part is `κ * (y / κ)` with `κ = scaleIdele E`, and `κ ≠ 0` at every infinite place.
-  have h_ne (w : InfinitePlace E) : (scaleIdele E).val.1 w ≠ 0 := by
-    grind [conj_scaleIdele_mul]
+  have h_ne (w : InfinitePlace E) : (scaleIdele E).val.1 w ≠ 0 := Units.ne_zero _
   ext <;> simp [realVec, realCoord, mul_div_cancel₀ _ (h_ne _)]
 
 /-- Along `adelicSum`, real coordinates `y` with zero finite part give the adelic vector
@@ -321,6 +338,7 @@ omit [DecidableEq n] in
 /-- The vacuum function of `𝔸^n` is the product, over the coordinates, of the vacuum functions of
 the lines. -/
 lemma vacuumFn_eq_prod : vacuumFn x = ∏ i : n, vacuumFn fun _ : Unit ↦ x i := by
+  classical
   -- The indicator, the Gaussian and the character `ψf E` each factor over the coordinates.
   simp [vacuumFn, prod_ite_zero, ← Complex.exp_sum, mul_sum,
     prod_mul_distrib, AddChar.map_sum_eq_prod, Circle.coe_prod]
@@ -336,8 +354,6 @@ open Matrix ComplexConjugate Heisenberg.IsVacuum
 variable {E : Type _} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} (V : Space E n s) (g : G E s) (x y : n → 𝔸 E) (f f' : 𝒮 V)
-
-lemma dataInner_apply : V.dataInner f f' = modelInner f f' := rfl
 
 /-- Superposition: a bounded linear map `T` from `𝒮 V` to a complex Banach space is determined by
 its values on the translates ϱ(y) vac of the vacuum `vacElem`. Specifically, `T f` = ∫ ⟨ϱ(y) vac, f⟩
@@ -381,9 +397,10 @@ lemma dataInner_vacElem_vacElem : V.dataInner V.vacElem V.vacElem = 1 := by
 `y`. -/
 lemma dataInner_vacElem_rho_vacElem : V.dataInner V.vacElem (V.ϱ y V.vacElem) = vacuumFn y := by
   -- Conjugating swaps the arguments, the reproducing property gives the value of the vacuum
-  -- function at `y`, and that function is real. `erw`: the rewrites must see through `V.dataInner`,
-  -- `V.ϱ` and `V.vacElem`.
-  erw [← conj_modelInner, modelInner_heisenbergOp_vacElem, (adelicSum E s).isVacuum.conj_apply]
+  -- function at `y`, and that function is real.
+  exact (conj_modelInner ..).symm.trans <|
+    (congrArg conj (modelInner_heisenbergOp_vacElem ..)).trans <|
+      (adelicSum E s).isVacuum.conj_apply ..
 
 /-- For a hermitian space `V` over a CM field `E` with Weil data, and `g` in the adelic unitary
 group `G E s`, let `vacElem` be the vacuum vector of `𝒮 V` (a Gaussian times a twisted lattice
@@ -395,8 +412,7 @@ lemma dataInner_vacElem_omega_vacElem :
   -- Pairing with the vacuum evaluates `ω g vacElem` at `0`.
   have h_eval : V.dataInner V.vacElem (V.ω g V.vacElem) =
       weilRep adelicAction g Heisenberg.IsVacuum.vacElem 0 := modelInner_vacElem ..
-  rw [h_eval]
-  exact eq_inv_of_mul_eq_one_right (conj_delta_mul_weilRep_vacElem adelicAction g)
+  exact h_eval.trans (eq_inv_of_mul_eq_one_right (conj_delta_mul_weilRep_vacElem adelicAction g))
 
 /-- The operator norm of `ω g` is at most the norm of the vacuum times `|Δ g|`. -/
 lemma norm_omega_le : ‖V.ω g‖ ≤ ‖V.vacElem‖ * ‖weilMultiplier g‖ :=
@@ -471,7 +487,7 @@ lemma mem_ratVectors_iff {y : n → 𝔸 E} : y ∈ V.ratVectors ↔ V.x *ᵥ y 
 instance : CompactSpace ((n → 𝔸 E) ⧸ V.ratVectors) := by
   -- Multiplication by `V.x⁻¹` carries the lattice `ratVectors E n`, which is cocompact, onto
   -- `V.ratVectors`.
-  have e : ((n → 𝔸 E) ⧸ New.ratVectors E n) ≃ₜ ((n → 𝔸 E) ⧸ V.ratVectors) := by
+  let e : ((n → 𝔸 E) ⧸ New.ratVectors E n) ≃ₜ ((n → 𝔸 E) ⧸ V.ratVectors) := by
     refine Homeomorph.Quotient.congr (.smul V.x⁻¹) ?_
     simp [QuotientAddGroup.leftRel_eq, mem_ratVectors_iff, mulVec_neg, Units.smul_def, mulVec_add]
   exact e.compactSpace
@@ -488,7 +504,7 @@ lemma beta_vecAtPoint_eq_one (x y : n → E) :
 Heisenberg operators: ℓ(ρ(γ)v) = ℓ(v) for all v and all γ in `V.ratVectors`, where ρ(γ) =
 `heisenbergOp γ` is the Heisenberg operator of γ. -/
 def IsRatInvariant : Prop :=
-  ∀ᵉ (γ ∈ V.ratVectors) (v : Model (adelicHeisenberg E s)), ℓ (heisenbergOp γ v) = ℓ v
+  ∀ γ ∈ V.ratVectors, ∀ v : Model (adelicHeisenberg E s), ℓ (heisenbergOp γ v) = ℓ v
 
 /-- A theta functional of V: a bounded functional θ on `Model (adelicHeisenberg E s)` such that
 (1) θ is invariant under the rational Heisenberg operators (`IsRatInvariant`), and
@@ -568,7 +584,7 @@ lemma summable_modelInner (f' f : Model (adelicHeisenberg E s)) :
   have h_norm (z x : n → 𝔸 E) :
       ‖modelInner f' (heisenbergOp (z + ContinuousAddMonoidHom.id (n → 𝔸 E) x) IsVacuum.vacElem)‖ₑ =
         ‖f' (id z + x)‖ₑ := by
-    rw [← conj_modelInner, modelInner_heisenbergOp_vacElem, RCLike.enorm_conj]
+    rw [← conj_modelInner, modelInner_heisenbergOp_vacElem, RCLike.eNorm_conj]
     simp only [ContinuousAddMonoidHom.id_toFun, id_eq]
   obtain ⟨B, hB, M, hM⟩ :=
     wiener_bound (modelInner f') h_vac_ne (ContinuousAddMonoidHom.id (n → 𝔸 E)) h_int id h_norm
@@ -579,7 +595,7 @@ lemma summable_modelInner (f' f : Model (adelicHeisenberg E s)) :
   have h_fin : (V.vecAtPoint ⁻¹' B).Finite :=
     isCovolOneLattice_ratVectors.finite_preimage (hB.preimage_smul V.x⁻¹)
   rw [← h_fin.cast_ncard_eq] at h_bound
-  exact .of_enorm (ne_top_of_le_ne_top (by simp [ENNReal.mul_ne_top]) h_bound)
+  exact .of_eNorm (ne_top_of_le_ne_top (by simp [ENNReal.mul_ne_top]) h_bound)
 
 namespace IsRatInvariant
 
@@ -796,7 +812,6 @@ namespace New
 
 open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle
   Complex
-open scoped Classical
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n] {s : n → ℤˣ} (V : Space E n s)
@@ -819,6 +834,7 @@ lemma exists_isThetaFunctional_signedSpace :
     ∃ θ : Model (adelicHeisenberg E s) →L[ℂ] ℂ,
       (signedSpace E s).IsThetaFunctional θ ∧
       ∀ x : n → 𝔸 E, θ (heisenbergOp x IsVacuum.vacElem) = ∏ i : n, lineTheta (s i) (x i) := by
+  classical
   -- Take any theta functional θ. The identity θ(f) conj θ(f') = ∑_γ ⟨f', ϱ(γ) f⟩
   -- (`hasSum_modelInner`) factors over the coordinates, so θ(ϱ(x) vac) is proportional to the
   -- product; rescale θ by a factor of modulus 1.
@@ -915,6 +931,7 @@ lemma IsThetaFunctional.comp {V₁ : Space E n' s'} {θ : Model (adelicHeisenber
 
 /-! ### The choice of the theta functional of `V` -/
 
+open scoped Classical in
 /-- The functional θ₀ = θ_s ∘ ω(g) on 𝒮(V), where θ_s is the theta functional of the standard space
 of signs s chosen in `New.exists_isThetaFunctional_signedSpace`, and g is a chosen element carrying
 the rational vectors of V to those of the standard space. Such a g exists by Landherr's theorem
@@ -937,6 +954,7 @@ lemma theta_eq_rawTheta : V.θ = V.rawTheta := by
 /-- The functional `V.rawTheta` is a theta functional of `V`: it is invariant under the rational
 points, and |θ(ϱ(x)vac)|² has mean 1 over adelic vectors x modulo these. -/
 lemma isThetaFunctional_rawTheta : V.IsThetaFunctional V.rawTheta := by
+  classical
   -- In the second branch of the definition, `rawTheta` is a theta functional by choice.
   refine dite_mem (s := {θ | V.IsThetaFunctional θ}).2
     ⟨fun h_move ↦ ?_, fun _ ↦ V.exists_isThetaFunctional.choose_spec⟩

@@ -1,7 +1,11 @@
+module
+
+public import New.UpperBound.Objects.PoincareMap
+public import New.UpperBound.Seesaw.Cut
+import Lib.Adelic.AutomorphicForms.BlockPeriods
+import Lib.Adelic.Unitary.WeakApproximation
 import Lib.DiscreteSeries.Bruhat.ComplexPlace
 import New.UpperBound.Divisibility.ChainValuation
-import New.UpperBound.Objects.PoincareMap
-import New.UpperBound.Seesaw.Cut
 import New.UpperBound.Seesaw.GoodDatum
 
 /-!
@@ -13,6 +17,12 @@ we pair `Θ_ξ 𝒫 φ` with a form on `Y_m` and move the Bessel period up the l
 time. Each outer integral is a real integral times a weighted sum over the classes `Ω_j`. What
 remains is the upper chain for the tensor `φ_ξ`, a multiple of which is the glued tensor of a chain
 datum.
+
+The identity has two inputs: equality of the pairings with every form on `Y_m`, and an
+admissible expansion of the resulting tensor into translated vacuum data. The first supplies
+the equality of lifts; the second supplies support and coefficient bounds. The scalar in the
+final identity is a unit independent of the twist and the source form, but the theorem does
+not assert that either lift is nonzero.
 
 Notions from other files:
 * `D.spaceY j`, `D.FormY j`: the space `Y_j` of the lower chain and the forms on its unitary group.
@@ -49,6 +59,8 @@ conductor. Related work: Gross, Algebraic modular forms, 1999; Hsieh–Namikawa,
 non-vanishing of Yoshida lifts modulo a prime, 2015; X. Zhang, Non-vanishing mod p of theta lifts
 for (O(2n+1), Mp(4n)), 2022.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -107,13 +119,13 @@ lemma exists_integral_eq_mul_inner_restrictToFormY (hM : D.m = M)
   refine ⟨C * card (WeylIndex (D.Y D.m) D.columnsY) * c, fun x ψ F hF ↦ ?_⟩
   -- `x̄` is the pairing of its algebraic form `xAlg` with the translates of the highest vector.
   let xAlg : AlgForm (D.Y D.m) D.columnsY (D.lastEntry D.m) := toAlgForm _ hw x
-  have h_conj (a : GInf D.E (D.signsY D.m)) (g : Gf D.E (D.Y D.m)) : star (x.1 (a, g)) =
-      gramForm (xAlg.1 g) (conjWeylRep D.columnsY (D.lastEntry D.m) a
+  have h_conj (a : GInf D.E (D.signsY D.m)) (g : Gf D.E (D.Y D.m)) : star (x.val (a, g)) =
+      gramForm (xAlg.val g) (conjWeylRep D.columnsY (D.lastEntry D.m) a
         (highestVector D.columnsY (D.paramY D.m))) := by
     rw [← star_ofAlgForm hs, ofAlgForm_toAlgForm]
   -- `avg` is the common mean over the finite points of both sides.
   let avg : ℂ := classIntegral stdRatPoints (stdLevel D.E (D.Y D.m)) fun h ↦
-    gramForm (xAlg.1 h) (D.branching.map (↑) *ᵥ ψ.1 (D.borderU h))
+    gramForm (xAlg.val h) (D.branching.map (↑) *ᵥ ψ.val (D.borderU h))
   -- `Y_m` is standard and its last grading has no isotropic vectors split off: so `hF` describes
   -- `F` at every point, after relabelling along `D.lastIndexEquiv`, and the Bessel subgroup is the
   -- whole group.
@@ -121,16 +133,16 @@ lemma exists_integral_eq_mul_inner_restrictToFormY (hM : D.m = M)
       (e := D.lastIndexEquiv.sumCongr (.refl Unit)) (by simp [hs]) (g, 1)) := by
     convert hF (.reindex D.lastIndexEquiv (by rw [hs]; rfl) g)
     · -- `inclX` of the relabelled point is `g`: they have the same matrix in rational coordinates.
-      apply (D.spaceY _).isEmbedding_ratCoordMatrix.2
+      apply (D.spaceY _).isEmbedding_ratCoordMatrix.injective
       -- '↓' rewrites `ratCoordMatrix` of `inclX` before its arguments are unfolded.
       simp [← ext_iff, lastGrading, ↓ratCoordMatrix_inclX, ratCoordMatrix_eq, IsStd.point_eq_one]
     · exact New.G.ext_adeleMatrix (by simp [← ext_iff, New.G.blockEmb])
   have hΓ : (lastGrading rfl).ratBessel = (D.spaceY D.m).Γ :=
     inf_eq_left.2 fun g _ ↦ by simp [mem_besselGroup_iff, lastGrading]
-  have h_left : ∫ g, F g * star (x.1 g) ∂(D.spaceY D.m).quotMeasure = C * avg := by
+  have h_left : ∫ g, F g * star (x.val g) ∂(D.spaceY D.m).quotMeasure = C * avg := by
     simp_rw [mul_comm (F _), hF']
-    refine (hC ψ (star x.1) 1 (fun g ↦ gramForm (xAlg.1 g)) (stdLevel D.E (D.Y D.m))
-      x.2.conj.toIsAutomorphic h_conj).trans ?_
+    refine (hC ψ (star x.val) 1 (fun g ↦ gramForm (xAlg.val g)) (stdLevel D.E (D.Y D.m))
+      x.property.conj.toIsAutomorphic h_conj).trans ?_
     -- The index of `stdLevel` in itself is `1`, and `D.borderU h` is the point `diag (h, 1)`.
     have h_index : stdLevelIndex (stdLevel D.E (D.Y D.m)) = 1 := by simp
     rw [h_index, Nat.cast_one, div_one]
@@ -203,24 +215,16 @@ lemma integral_mul_liftY (ϑ : D.TameChar) {j : ℕ} (hj : j < D.m) (z : D.ConjF
     ∫ h : New.G D.E (D.signsY (j + 1)), z h * liftY ϑ j f h ∂(D.spaceY (j + 1)).quotMeasure =
       ∫ g : New.G D.E (D.signsY j), transposedLiftY ϑ j z g * f g ∂(D.spaceY j).quotMeasure := by
   obtain ⟨h_up, h_down⟩ := isArrow_datumY ϑ hj
-  calc
-    _ = stdLevelIndex (levelY ϑ j) * ∫ h, z h * formLift (thetaKernelY ϑ j) _ _ (datumY ϑ j) f h
-        ∂(D.spaceY (j + 1)).quotMeasure := by
-      rw [← integral_const_mul]
-      congr with h
-      have h_lift : liftY ϑ j f h = stdLevelIndex (levelY ϑ j) *
-          formLift (thetaKernelY ϑ j) _ _ (datumY ϑ j) f h := rfl
-      rw [h_lift, mul_left_comm]
-    _ = stdLevelIndex (levelY ϑ j) *
-        ∫ g, f g * formLift (thetaKernelY ϑ j).swap _ _ (datumY ϑ j) z g
-          ∂(D.spaceY j).quotMeasure := by
-      rw [h_up.integral_mul_formLift_swap h_down]
-    _ = _ := by
-      rw [← integral_const_mul]
-      congr with g
-      have h_descent : transposedLiftY ϑ j z g = stdLevelIndex (levelY ϑ j) *
-          formLift (thetaKernelY ϑ j).swap _ _ (datumY ϑ j) z g := rfl
-      rw [h_descent, mul_comm (f g), mul_assoc]
+  have h1 : ∀ h, z h * liftY ϑ j f h =
+      stdLevelIndex (levelY ϑ j) *
+        (z h * formLift (thetaKernelY ϑ j) _ _ (datumY ϑ j) f h) :=
+    fun _ => mul_left_comm _ _ _
+  have h2 : ∀ g, transposedLiftY ϑ j z g * f g =
+      stdLevelIndex (levelY ϑ j) *
+        (f g * formLift (thetaKernelY ϑ j).swap _ _ (datumY ϑ j) z g) :=
+    fun _ => (mul_assoc _ _ _).trans (congrArg _ (mul_comm _ _))
+  simp_rw [h1, h2, integral_const_mul]
+  rw [h_up.integral_mul_formLift_swap h_down]
 
 /-- Let `ϑ` be a tame character and `u` an element of its level `levelY ϑ j`: an integral finite
 adelic point of `G_j = U(Y_j)` that reduces to `1` at the chosen places and at the places of the
@@ -252,8 +256,7 @@ lemma hasLevel_transposedLiftY (ϑ : D.TameChar) {j : ℕ} (hj : j < D.m) (z : D
     HasLevel (transposedLiftY ϑ j z) (levelY ϑ j) := by
   intro u hu g
   rw [transposedLiftY_apply ϑ hj, transposedLiftY_apply ϑ hj]
-  refine congrArg (_ * ·)
-    (congrArg (fun F ↦ ∫ h, F h ∂(D.spaceY (j + 1)).quotMeasure) (funext fun h ↦ ?_))
+  congr with h
   conv_rhs => rw [← twistedPairWeil_datumY_of_mem_levelY ϑ hu, ← mul_apply_eq_comp,
     ← map_mul, Prod.mk_mul_mk, mul_one]
 
@@ -273,7 +276,7 @@ group of `Y`. -/
 def unfoldedPeriod (ϑ : D.TameChar)
     (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) (φ : D.SourceForm)
     (ξ : ∀ i : ℕ, GInf D.E (D.signsY i)) (y : ∀ i : ℕ, Gf D.E (D.Y i))
-    (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1) {X : Type} {s : ℕ} [Fintype X] [DecidableEq X]
+    (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1) {X : Type} {s : ℕ} [DecidableEq X]
     (Y : Grading (D.spaceY (k + 1)) D.N X s) (z : D.ConjFormY (k + 1)) : ℂ :=
   ∫ h : New.G D.E (D.signsY (k + 1)),
     (unfoldStage ϑ t φ ξ y k hk Y * z.val) h ∂Y.ratBessel.quotMeasure
@@ -292,7 +295,7 @@ lemma integrable_unfoldStage_mul (ϑ : D.TameChar)
     [DecidableEq X] (Y : Grading (D.spaceY (k + 1)) D.N X (2 * D.ϱ + 1 - (k + 1)))
     (z : D.ConjFormY (k + 1)) :
     Integrable (unfoldStage ϑ t φ ξ y k hk Y * z.val) Y.ratBessel.quotMeasure := by
-  exact (integral_unfoldStageOn ϑ t φ ξ y k hk Y z.2.toIsAutomorphic
+  exact (integral_unfoldStageOn ϑ t φ ξ y k hk Y z.property.toIsAutomorphic
     (isRapid_conjFormY (lt_m_of_le hk) z)).1
 
 /-- The recursion of the iterated unfolding, for the tame character `ϑ`, the source form `φ` on
@@ -314,7 +317,7 @@ lemma integral_unfoldStageOn_mul_transposedLiftY (ϑ : D.TameChar)
       unfoldStageOn ϑ t φ ξ y k hk r * transposedLiftY ϑ k z (r.val * (ξ k, y k))
         ∂(D.gradingY k hk).besselMeasure =
       stdLevelIndex (levelY ϑ k) * unfoldedPeriod ϑ t φ ξ y k hk Y z := by
-  obtain ⟨-, h_step⟩ := integral_unfoldStageOn ϑ t φ ξ y k hk Y z.2.toIsAutomorphic
+  obtain ⟨-, h_step⟩ := integral_unfoldStageOn ϑ t φ ξ y k hk Y z.property.toIsAutomorphic
     (isRapid_conjFormY (lt_m_of_le hk) z)
   -- `h_step` evaluates `Ξ_{k+1}` as the period of `𝒲_k` against the theta integral of `z`.
   rw [unfoldedPeriod, ← h_step, ← integral_const_mul]
@@ -333,10 +336,10 @@ lemma sum_quotient_chosenLevel_eq_sum_cutPoints (ϑ : D.TameChar)
   let J : Subgroup (Gf D.E (D.Y 0)) := levelY ϑ 0
   have h_out (x : Gf D.E (D.Y 0)) : f (x : Gf D.E (D.Y 0) ⧸ J).out = f x := by
     obtain ⟨u, hu⟩ := QuotientGroup.mk_out_eq_mul J x
-    rw [hu, hf x u u.2]
+    rw [hu, hf x u u.property]
   -- A class of `J_M` modulo `J` goes to the class modulo `J` of its representative.
   refine sum_bij (fun q _ ↦ ↑(q.out : Gf D.E (D.Y 0)))
-    (fun q _ ↦ (mk_mem_cutPoints_zero ϑ).2 q.out.2) (fun q _ q' _ h_eq ↦ ?_) (fun c hc ↦ ?_)
+    (fun q _ ↦ (mk_mem_cutPoints_zero ϑ).2 q.out.property) (fun q _ q' _ h_eq ↦ ?_) (fun c hc ↦ ?_)
     fun q _ ↦ (h_out q.out).symm
   · rw [← q.out_eq', ← q'.out_eq']
     exact QuotientGroup.eq.2 (QuotientGroup.eq.1 h_eq :)
@@ -372,12 +375,12 @@ lemma integral_mul_liftY_poincareAt (ϑ : D.TameChar)
     Subgroup.relIndex_mul_relIndex J _ _ (levelY_le_chosenLevel ϑ 0) levelOf_le_stdLevel
   have h_ne : stdLevelIndex J ≠ 0 := isCompact_stdLevel.relIndex_ne_zero IsLevel.isOpen
   have h_rel_ne : J.relIndex D.chosenLevel ≠ 0 := left_ne_zero_of_mul (h_index.trans_ne h_ne)
-  have : Fintype (D.chosenLevel ⧸ J.subgroupOf D.chosenLevel) :=
+  let : Fintype (D.chosenLevel ⧸ J.subgroupOf D.chosenLevel) :=
     Subgroup.fintypeOfIndexNeZero h_rel_ne
   -- The period over `[R_0]` at `(g, x)` depends only on the class of `x` modulo `J`.
   let period (x : Gf D.E (D.Y 0)) : ℂ :=
     ∫ r : (D.gradingY 0).besselGroup,
-      (D.gradingY 0).sourceFn t φ.1 r * transposedLiftY ϑ 0 z (r.1 * (g, x))
+      (D.gradingY 0).sourceFn t φ.val r * transposedLiftY ϑ 0 z (r.val * (g, x))
         ∂(D.gradingY 0).besselMeasure
   have period_mul (x u : Gf D.E (D.Y 0)) (hu : u ∈ J) : period (x * u) = period x := by
     have h_mul : ((g, x * u) : New.G D.E (D.signsY 0)) = (g, x) * (1, u) := by simp
@@ -453,12 +456,12 @@ lemma exists_integral_mul_lowerChainUpTo_eq_cutSum
     obtain ⟨c, hc⟩ := ih (by omega) a' Y₀
     refine ⟨c, fun ϑ φ z S h_period ↦ ?_⟩
     let z' : D.ConjFormY (k + 1) := transposedLiftY ϑ (k + 1) z
-    have hz' : (D.spaceY (k + 1)).IsAutomorphic z' := z'.2.toIsAutomorphic
+    have hz' : (D.spaceY (k + 1)).IsAutomorphic z' := z'.property.toIsAutomorphic
     -- Descend `z`. It remains to show that the period of `z'` at step `k` is `a' ξ` times the
     -- weighted sum of `S` over `cutPoints ϑ (k + 1) _`.
     refine (integral_mul_liftY ϑ (lt_m_of_le hk) z _).trans
       (hc ϑ φ z' _ fun ξ y hy_zero hy_top ↦ ?_)
-    let f : New.G D.E (D.signsY (k + 1)) → ℂ := unfoldStage ϑ t φ ξ y k (by omega) Y₀ * z'.1
+    let f : New.G D.E (D.signsY (k + 1)) → ℂ := unfoldStage ϑ t φ ξ y k (by omega) Y₀ * z'.val
     have h_cut : IsStageCut ϑ (k + 1) hk (cutPoints ϑ (k + 1) hk) := isStageCut_cutPoints ϑ k hk
     have h_fix : Y₀.ratBessel.FixesLeft f := fun γ hγ x ↦ by
       simp only [f, Pi.mul_apply, fixesLeft_ratBessel_unfoldStage ϑ t φ ξ y k _ Y₀ γ hγ,
@@ -477,8 +480,7 @@ lemma exists_integral_mul_lowerChainUpTo_eq_cutSum
       have h_next := h_period (update ξ (k + 1) x.1) (update y (k + 1) x.2)
         (by rwa [update_of_ne (by omega)]) (by rwa [update_of_ne (by omega)])
       rw [← mk_update, ← h_next, ← integral_unfoldStageOn_mul_transposedLiftY]
-      refine integral_congr_ae (.of_forall fun r ↦ ?_)
-      beta_reduce
+      congr with r
       rw [unfoldStageOn_succ, unfoldStage_update (hkl := k.lt_succ_self), update_self, update_self]
       rfl
     exact integral_eq ξ (fun q ↦ S (update (fun i : ℕ ↦ ↑(y i)) (k + 1) q))
@@ -515,7 +517,7 @@ lemma isInvariant_seesawDatum (ϑ : D.TameChar) : (seesawDatum ϑ).IsInvariant �
   let bY (i : ℕ) : Gf D.E (D.Y i) :=
     if hi : i < 2 * D.ϱ + 2 then (D.gradingY i).inclXFin (b i) else 1
   rw [seesawDatum, map_cutSum, ← cutSum_comp_smul ϑ _ le_rfl (h := bY) (evaluatedTensor ϑ)
-    (fun i hi ↦ ⟨b i, (b i).2, dite_eq_left hi⟩) fun i hi ↦ dite_eq_right hi.not_gt]
+    (fun i hi ↦ ⟨b i, (b i).property, dite_eq_left hi⟩) fun i hi ↦ dite_eq_right hi.not_gt]
   congr with c
   simp only [evaluatedTensor, ← Quotient.mk_smul_out, evaluatedDatum_out,
     twoKernelAction, TensorChain.map_pure]
@@ -525,7 +527,7 @@ lemma isInvariant_seesawDatum (ϑ : D.TameChar) : (seesawDatum ϑ).IsInvariant �
   have h_top : bY (2 * D.ϱ + 2) = (D.lastGrading D.m_eq_two_mul_varrho_add_two).inclXFin 1 := by
     simp [bY]
   simp only [evaluatedDatum, translatedPointDatumY, smul_eq_mul, ← Prod.mk_mul_mk, map_mul,
-    Module.End.mul_apply]
+    mul_apply_eq_comp]
   rcases Nat.lt_succ_iff_lt_or_eq.1 hi with hi' | rfl
   · -- An earlier double lift is evaluated by a middle pair, which commutes with its three groups.
     simp (disch := lia) only [doubleLiftEvalY, dite_eq_left, h_lower]
@@ -567,16 +569,17 @@ lemma exists_lowerChainUpTo_poincareAt_eq (t : (WeylIndex (D.X 0) D.columnCount 
   choose l h_stage using h_top_coeff
   obtain ⟨c₀, h_sum⟩ :=
     exists_integral_mul_lowerChainUpTo_eq_cutSum t g _ le_rfl (D.lastGrading hm) (by omega) (c ∘ l)
-  -- Pair both sides with a form `x` on `Y_m`.
+  -- Pair both sides with an arbitrary form `x` on `Y_m`; equality of these pairings
+  -- suffices for equality of the lifts.
   refine ⟨c₀, fun ϑ φ ↦ ext_inner_left ℂ fun x ↦ ?_⟩
   let L : D.ChainTensor →ₗ[ℂ] ℂ := innerₛₗ ℂ x ∘ₗ restrictToFormY hm ∘ₗ chainOfTensor ϑ φ
   have h_top (ξ : ∀ i, GInf D.E (D.signsY i)) (y : ∀ i, Gf D.E (D.Y i)) (hy : y (2 * D.ϱ + 2) = 1) :
-      unfoldedPeriod ϑ t φ ξ y _ le_rfl (D.lastGrading hm) ⟨_, x.2.conj⟩ =
+      unfoldedPeriod ϑ t φ ξ y _ le_rfl (D.lastGrading hm) ⟨_, x.property.conj⟩ =
         c (l ξ) * L (pure (evaluatedDatum ϑ y) (D.ϱ + 1)) :=
     (integral_top _ x (h_stage ξ ϑ φ y hy)).trans (by simp [L, doubleLiftChain])
   calc
     _ = c₀ * cutSum ϑ _ le_rfl fun q ↦ L (evaluatedTensor ϑ q) :=
-      h_sum ϑ φ ⟨_, x.2.conj⟩ _ fun ξ y _ hy ↦ by
+      h_sum ϑ φ ⟨_, x.property.conj⟩ _ fun ξ y _ hy ↦ by
         rw [evaluatedTensor_mk, h_top ξ y hy, comp_apply]
     _ = c₀ * L (seesawDatum ϑ) := by rw [seesawDatum, map_cutSum]
     _ = _ := by simp [L, inner_smul_right]
@@ -605,7 +608,7 @@ lemma exists_isAdmissibleCombination_seesawDatum (D : Data P) :
       IsAdmissibleCombination (fun x : Translations (P := P) (D := D) ↦ C • D.gluedVacuum x)
         (admissibleTranslations ϑ.normQ) ϑ.normQ (D.residueMatrixCount ^ (2 * D.m)) (ϑ.Q = ∅) 1
         (evaluatedTensor ϑ fun i : ℕ ↦ ⟦(y i).val⟧) := by
-    simpa [evaluatedTensor_mk] using h_comb ϑ _ fun i ↦ (y i).2
+    simpa [evaluatedTensor_mk] using h_comb ϑ _ fun i ↦ (y i).property
   exact (isAdmissibleCombination_cutSum ϑ _ le_rfl _).bind _ 1 (fun y _ ↦ h_value y) (one_mul _).dvd
     (by simp)
 
@@ -640,7 +643,8 @@ theorem seesaw_identity {P : Parameters} {D : Data P}
         (2 * D.ϱ + 2))
       ((u : ℂ) • c₀ • seesawDatum ϑ) :=
     (h_admissibleComb ϑ).normUnit_smul c₀ NeZero.out
-  -- Each translation may be replaced by a supported one with the same glued vacuum.
+  -- Replace each translation by a supported representative without changing the glued tensor.
+  -- This gives the support condition separately from the equality of lifts.
   obtain ⟨Ψ, h_adm, h_glued : (u : ℂ) • c₀ • seesawDatum ϑ = gluedTensor Ψ⟩ :=
     h_rescaled.of_eq_isOfFinOrder_smul
       (A' := admissibleTranslations ϑ.normQ ∩ supportedTranslations (D.M * ϑ.normQ))

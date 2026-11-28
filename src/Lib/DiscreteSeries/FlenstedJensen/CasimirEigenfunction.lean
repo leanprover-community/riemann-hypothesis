@@ -1,4 +1,24 @@
+module
+
+public import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.Calculus.LineDeriv.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
+import Mathlib.Topology.Germ
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+public import Lib.General.Analysis.GaussianIntegral
+public import Lib.General.Analysis.HolomorphicIntegrals
 import Lib.DiscreteSeries.FlenstedJensen.FlagDensities
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.Analysis.MeanValueAndTaylor
+import Lib.General.LinearAlgebra.PolarDecomposition
 
 /-!
 # Flensted-Jensen's integral, analyticity of c_λ and its Casimir eigenvalue
@@ -42,6 +62,8 @@ Notions from other files:
 Known; see `Lib.DiscreteSeries.FlenstedJensen.PsiKTypes` for sources.
 -/
 
+@[expose] public section
+
 /-!
 ## Flensted-Jensen's integral and analyticity of the coefficient
 
@@ -66,17 +88,6 @@ open Matrix MeasureTheory Finset ComplexConjugate ComplexOrder DiscreteSeries No
   ContinuousMap
 
 variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {l : HCParam ε}
-
-omit [DecidableEq n] in
-/-- For an integer vector `l`, the sum `2ρ = twoRho l ⊤` of all roots that are positive for `l` has
-its entries in the strict order of those of `l`. -/
-theorem twoRho_lt_twoRho {l : n → ℤ} {a b : n} (hab : l a < l b) : twoRho l ⊤ a < twoRho l ⊤ b := by
-  -- both sides are sums of signs of differences of entries of `l`; compare them term by term
-  have h_sum (i : n) : twoRho l ⊤ i =
-      ∑ j : n, ((if l j < l i then 1 else 0) - (if l i < l j then 1 else 0)) := by
-    simp [twoRho, ← sum_boole, sum_sub_distrib]
-  rw [h_sum, h_sum]
-  exact sum_lt_sum (fun j _ ↦ by split_ifs <;> lia) ⟨a, mem_univ a, by split_ifs <;> lia⟩
 
 @[fun_prop]
 theorem DiscreteSeries.analyticAt_matrix_inv {s : Matrix n n ℂ} (hs : s.det ≠ 0) :
@@ -494,13 +505,6 @@ theorem eventually_isAccretive_inv_mul {a g : Matrix n n ℂ} (h_acc : (a⁻¹ *
     ∀ᶠ x : Matrix n n ℂ in nhds g, (a⁻¹ * x).IsAccretive :=
   (continuous_const_mul a⁻¹).continuousAt.eventually h_acc.setOf_mem_nhds
 
-/-- The set `splittable ε` is open in `Matrix n n ℂ`. This is the set of complex matrices `g` with
-`a⁻¹ g` accretive (`z + zᴴ > 0`) for some block diagonal `a`, that is, the products `p z qᴴ` with
-`p`, `q` invertible block diagonal and `z` accretive. -/
-theorem isOpen_splittable : IsOpen (splittable ε) :=
-  isOpen_iff_eventually.2 fun _ ⟨a, ha, ha_acc⟩ ↦
-    (eventually_isAccretive_inv_mul ha_acc).mono fun _ hx ↦ ⟨a, ha, hx⟩
-
 open scoped Classical in
 /-- The coefficient on the set `New.splittable ε` of products: Flensted-Jensen's integral at
 `(a, a⁻¹ g)` for a chosen block diagonal `a` with `a⁻¹ g` accretive, and `0` off this set. -/
@@ -566,23 +570,6 @@ theorem dsCoeff_eq_integral_of_eq_mul_mul_conjTranspose {m : ℕ} (hl : l.HasGap
     simpa [h_split, hz.det_ne_zero] using GeneralLinearGroup.det_ne_zero (g : GL n ℂ)
   rw [← splitCoeff_eq_dsCoeff hl, h_split]
   exact splitCoeff_mul_mul_conjTranspose hl hp hq hp_det hq_det hz
-
-/-- For a parameter `l` of gap `h`, the coefficient `l.splitCoeff` is holomorphic on the open set
-`New.splittable ε` of the products `p z qᴴ` with `p`, `q` invertible and block diagonal and `z`
-accretive (`z + zᴴ > 0`). On this set, `l.splitCoeff g` is Flensted-Jensen's integral at
-`(a, a⁻¹ g)` for a block diagonal `a` with `a⁻¹ g` accretive. This is a corollary of the
-independence of the splitting; on the group itself the later proofs use
-`New.HCParam.analyticAt_dsCoeff`. -/
-theorem analyticOnNhd_splitCoeff {h : ℕ} (hl : l.HasGap h) :
-    AnalyticOnNhd ℂ l.splitCoeff (splittable ε) := by
-  -- Near `g` one factor `a` serves for all points, and for fixed `a` the integral is analytic.
-  rintro g ⟨a, ha, ha_acc⟩
-  refine AnalyticAt.congr (f := fun x : Matrix n n ℂ ↦ l.flenstedJensen a (a⁻¹ * x)) ?_
-    ((eventually_isAccretive_inv_mul ha_acc).mono fun x hx ↦
-      (splitCoeff_eq_flenstedJensen hl ha hx).symm)
-  unfold HCParam.flenstedJensen
-  exact ((isAnalyticFamily_flenstedJensen l (a := fun _ ↦ a) analyticAt_const
-    ha_acc).analyticAt_integral (haarK ε)).div_const
 
 end New
 
@@ -703,7 +690,7 @@ theorem exists_equiv_fin_lt_iff {l : n → ℤ} (hl : l.Injective) :
 the value `casimirKValue` that the Casimir operator takes on a lowest weight vector of weight
 `λ + ρ`, that is, a highest vector for the roots positive for `-l`, all pairs of indices counting
 as compact (`compactForm`). -/
-theorem casimirValue_eq_casimirKValue_paramAddRho [DecidableEq n] {l : HCParam (n := n) ε}
+theorem casimirValue_eq_casimirKValue_paramAddRho {l : HCParam (n := n) ε}
     (hl : l.HasGap h) :
     (l.casimirValue : ℂ) = (-l).compactForm.casimirKValue (paramAddRho l) := by
   -- Substitute `l = 2 (λ + ρ) - 2ρ`; the positive roots for `-l` are the negatives of those of `l`.

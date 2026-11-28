@@ -1,5 +1,12 @@
-import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+module
+
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.NumberTheory.MulChar.Lemmas
+public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+public import Lib.General.Geometry.GaloisCovers
+public import Lib.LocalGL.Iwahori.ParahoricStructure
 import Lib.General.LinearAlgebra.BlockEmbeddings
+import Lib.LocalGL.Green.LabelCharacters
 import Lib.LocalGL.Shintani.LiftingGreenCharacters
 
 /-!
@@ -35,6 +42,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.LocalGlobal.LabelCompatibility` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 
@@ -169,7 +178,7 @@ lemma IsEigenform.of_mem_cyclicSpan {y : localFormRep V κ hw} {P : FinPlace E �
     have h_swap :
         V.formTranslation κ k (V.formTranslation κ (embedAtSplit hw g) x) =
           V.formTranslation κ (embedAtSplit hw g) (V.formTranslation κ k x) := by
-      rw [← Module.End.mul_apply, ← map_mul, h_comm.eq, map_mul, Module.End.mul_apply]
+      rw [← mul_apply_eq_comp, ← map_mul, h_comm.eq, map_mul, mul_apply_eq_comp]
     simpa [mem_levelSpace.mp h_fixed k] using h_swap
   · -- the Hecke operators at `u` commute with the translations at `w`, so each translate of `x`
     -- is an eigenvector with eigenvalue `t j`
@@ -248,29 +257,6 @@ def HasProductLabel (f : Gf E n → M → ℂ) (hw : star w ≠ w) (T : MulChar 
   -- (d) `f` has the class function induced from `labelChar T c` and the `χ l ∘ det` in size `t l`
   HasLabel f hw (labelChar T c * ∏ l : Fin s, (detChar (χ l)).rankPart (t l)).evalGL
 
-omit [IsCMField E] in
-/-- Let block `0` of the blocks `b` be the image of `e` (`h_block`). Then the map from the
-parabolic subgroup of `b` to `GL ρ (ResField w)` that takes block `0`, renumbered along `e`, is
-onto: a matrix `x` extends by the identity matrix outside block `0`. -/
-private lemma surjective_reindexGL_comp_blockHom_zero {e : ρ ↪ n} {b : n → Fin (s + 1)}
-    (h_block : ∀ i : n, b i = 0 ↔ i ∈ Set.range e) :
-    Surjective
-      ((reindexGL ((Equiv.subtypeEquivRight h_block).trans e.toEquivRange.symm)).toMonoidHom.comp
-        (blockHom b 0) : parabolic b →* GL ρ (ResField w)) := by
-  intro x
-  obtain ⟨h_block0, h_off⟩ := submatrix_extendGL_and_apply_of_notMem_range e x
-  refine ⟨⟨extendGL e x, fun _ ↦ ?_⟩, Units.ext h_block0⟩
-  grind [one_apply_ne]
-
-/-- Over a perfect field, `a * ∏ l, (X - C (x l))` is separable when `a` is squarefree, the `x l`
-are distinct and none of them is a root of `a`. -/
-private lemma _root_.Polynomial.separable_mul_prod_X_sub_C_of_squarefree {F : Type*} [Field F]
-    [PerfectField F] {s : ℕ} {a : F[X]} {x : Fin s → F} (ha : Squarefree a) (hx : Injective x)
-    (h_root : ∀ l : Fin s, ¬a.IsRoot (x l)) : (a * ∏ l : Fin s, (X - C (x l))).Separable := by
-  refine (PerfectField.separable_iff_squarefree.mpr ha).mul (separable_prod_X_sub_C_iff.mpr hx)
-    (.prod_right fun l _ ↦ ?_)
-  exact ((prime_X_sub_C (x l)).coprime_iff_not_dvd.mpr (mt dvd_iff_isRoot.mp (h_root l))).symm
-
 /-- A parahoric type gives a label. Let `σ` be a representation of `GL ρ (k_w)` on `V`, `L` an
 injective linear map from `V` to functions on the finite adelic group, and `y` a vector not killed
 by the idempotent `labelIdem ρ c` (a multiple of `∑ x, star ((labelChar T c).evalGL x) • x`, with
@@ -323,7 +309,9 @@ lemma HasParahoricType.hasProductLabel {f : Gf E n → M → ℂ} {hw : w.IsSpli
   · -- `a` is squarefree, the `charName T (χ l)` are distinct, and none of them is a root of `a`.
     have h_inj : Injective fun l : Fin s ↦ (charName T (χ l)).val :=
       Units.val_injective.comp ((charName T).injective.comp hχ)
-    exact separable_mul_prod_X_sub_C_of_squarefree ha_sqfree h_inj h_root
+    refine (PerfectField.separable_iff_squarefree.mpr ha_sqfree).mul
+      (separable_prod_X_sub_C_iff.mpr h_inj) (.prod_right fun l _ ↦ ?_)
+    exact ((prime_X_sub_C _).coprime_iff_not_dvd.mpr (mt dvd_iff_isRoot.mp (h_root l))).symm
   · simp [← card_congr (.sigmaFiberEquiv b), sum_univ_succ, card_congr ε]
   -- On `f` the action of integral matrices factors through `GL n (ResField w)`.
   let τ : GL n (ResField w) → intGL n Valued.v.integer := surjInv reduceGL_surjective
@@ -363,9 +351,13 @@ lemma HasParahoricType.hasProductLabel {f : Gf E n → M → ℂ} {hw : w.IsSpli
       inv_apply_eq_inv', prod_ne_zero_iff, ← evalGL_labelChar_mul_det hc]
   have h_par_sum : ∑ᶠ p, Φ (π p) = 0 := by
     simpa [finsum_eq_sum_of_fintype, ← h_term, Finset.sum_apply] using congrFun₂ h_sum g m
-  -- The projection `π` to the block `0` is onto, so the two averages agree.
+  -- Extend by the identity outside block `0` to see that the projection `π` is onto.
+  have h_surj : Surjective π := by
+    intro x
+    refine ⟨⟨extendGL e x, fun _ ↦ ?_⟩, Units.ext (submatrix_extendGL e x)⟩
+    grind [one_apply_ne, extendGL_apply_of_notMem_range]
   have h_mean : finMean Φ = finMean fun p : parabolic b ↦ Φ (π p) :=
-    (finMean_comp_surjective π.toAdditive (surjective_reindexGL_comp_blockHom_zero h_block) Φ).symm
+    (finMean_comp_surjective π.toAdditive h_surj Φ).symm
   have h_sum_Φ : ∑ x : GL ρ (ResField w), Φ x = 0 := by
     rw [finMean, finMean, h_par_sum] at h_mean
     simpa [finsum_eq_sum_of_fintype] using h_mean
@@ -373,7 +365,7 @@ lemma HasParahoricType.hasProductLabel {f : Gf E n → M → ℂ} {hw : w.IsSpli
   -- vanishes.
   suffices h_or : (labelChar T c).evalGL 1 = 0 ∨
       ∑ x : GL ρ (ResField w), starRingEnd ℂ ((labelChar T c).evalGL x) * L (σ x y) g m = 0 by
-    simpa [T, labelIdem, hc, asAlgebraHom_eq_sum, mul_assoc, ← mul_sum] using h_or
+    simpa [T, labelIdem, hc, Representation.asAlgebraHom_eq_sum, mul_assoc, ← mul_sum] using h_or
   exact .inr h_sum_Φ
 
 end ParahoricTypeLabel

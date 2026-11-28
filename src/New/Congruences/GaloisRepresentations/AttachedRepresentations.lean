@@ -1,4 +1,24 @@
-import New.Congruences.GaloisRepresentations.SelmerHypotheses
+module
+
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import New.Congruences.GaloisRepresentations.SelmerHypotheses
+public import Lib.ClassField.Global.CMSplittingCharacters
+public import New.Determinant.Twist.FitTwists
+import Lib.ClassField.Avatar.LocalGlobalCompatibility
+import Lib.ClassField.Places.TameInertia
+import Lib.GaloisRep.Main.AllRanks
+import Lib.GaloisRep.Main.QuadraticStep
+import Lib.LocalGL.Shintani.LiftingGreenCharacters
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.PadicHodge.Crystalline.HodgeTateForms
+import Lib.PadicHodge.Crystalline.HodgeTateJumps
+import Lib.PadicHodge.Crystalline.Regularity
 import New.OneLift.HeckeValues.TwistedRatio
 
 /-!
@@ -42,6 +62,8 @@ Notions from other files:
 For sources see `Lib.GaloisRep.Main.OddRank`, `Lib.PadicHodge.Crystalline.Regularity` and
 `New.Congruences.GaloisRepresentations.RowsFromEigensystems`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -89,14 +111,14 @@ theorem isLiftSetting_descentPair (j : D.LiftIndex)
     mem_goodTuples.1 (mem_piFinset.1 (mem_map_equiv.1 hc) i)
   refine
     { toLevelPlaces_eq := rfl
-      exists_tamePart_eq_chiMLocal_zpow_mul := ⟨j, j.2, rfl⟩
+      exists_tamePart_eq_chiMLocal_zpow_mul := ⟨j, j.property, rfl⟩
       odd := by simp [D.card_rowIndex, D.r_odd, D.t_odd, DescentPair.rankDiff]
       rank_le := by simp [D.card_rowIndex, DescentPair.rankDiff]
       isLabel w := ((h_good w.1).1 w.2).isLabel
       exists_primitive_or_one i := ?_
       not_isRoot_scaledTypePoly w := ?_ }
   · obtain ⟨w, hw⟩ := (h_good i).2
-    exact ⟨⟨i, w⟩, w.2.2, .inl ⟨D.card_rowIndex, hw⟩⟩
+    exact ⟨⟨i, w⟩, w.property.2, .inl ⟨D.card_rowIndex, hw⟩⟩
   · -- `1` is a root of the scaled type polynomial exactly when `x`, the unit naming the character
     -- at `w`, is a root of `c w`; it is a root of unity of order dividing `P.q₂ D.towerExp`, so it
     -- is not.
@@ -107,7 +129,7 @@ theorem isLiftSetting_descentPair (j : D.LiftIndex)
     have h_not_root : ¬(c w).IsRoot x.val :=
       ((h_good w.1).1 w.2).not_isRoot
         (charName_pow_eq_one (k := ResField v) (D.chiMLocal_zpow_mul_pow_eq_one _ hϑ_one))
-    show ¬((c w).scaleRoots
+    change ¬((c w).scaleRoots
       (charName (faithfulChar (ResField v)) ((D.descentPair ϑ j).tamePart v)⁻¹).val).IsRoot 1
     rw [map_inv]
     exact not_isRoot_one_scaleRoots_inv h_not_root
@@ -134,7 +156,7 @@ theorem isLiftSetting_mainPair (hp : p.IsMainPair j) :
       rank_le := by grind [card_unique]
       -- `map_one` is kept out of `simp` because it would undo the rewriting of `1` as `C 1`.
       isLabel i := by simp [IsLabel, ← C_1, Monic, -map_one, separable_X_sub_C.squarefree]
-      exists_primitive_or_one k := ⟨⟨k, D.chosenEquiv k 1⟩, (D.chosenEquiv k 1).2.2, by simp⟩
+      exists_primitive_or_one k := ⟨⟨k, D.chosenEquiv k 1⟩, (D.chosenEquiv k 1).property.2, by simp⟩
       not_isRoot_scaledTypePoly i := ?_ }
   -- The scaled type polynomial has the root `1` only if the tame part of `ν` is trivial at the
   -- place, and a main pair is ramified.
@@ -157,7 +179,7 @@ theorem trivialLift_mem_range_typeProjection (hp : p.IsMainPair j) :
   -- The label `X - 1` belongs to the trivial character of `GL₁`.
   have h_label (w : FinPlace D.E) (g : GL Unit (ResField w)) :
       (labelChar (faithfulChar (ResField w))
-          (X - C (charName (faithfulChar (ResField w)) 1).1)).evalGL g = 1 := by
+          (X - C (charName (faithfulChar (ResField w)) 1).val)).evalGL g = 1 := by
     rw [labelChar_X_sub_C]
     -- On `GL₁` the rank `1` part of a function is the function itself.
     exact (ite_eq_left (by simp)).trans ((evalGL_detChar 1 g).trans (MulChar.one_apply_coe g.det))
@@ -166,8 +188,8 @@ theorem trivialLift_mem_range_typeProjection (hp : p.IsMainPair j) :
     (isLiftSetting_mainPair ϑ hp).isLabel i
   refine ⟨Y.trivialLift, ?_⟩
   -- The idempotent is the mean over the group, which fixes `Y.trivialLift`.
-  show typeProjection Y.descentPair (fun _ ↦ X - 1) Y.trivialLift = Y.trivialLift
-  simp_all [asAlgebraHom_eq_sum, tupleIdem, labelIdem, Y.formAction_trivialLift,
+  change typeProjection Y.descentPair (fun _ ↦ X - 1) Y.trivialLift = Y.trivialLift
+  simp_all [Representation.asAlgebraHom_eq_sum, tupleIdem, labelIdem, Y.formAction_trivialLift,
     ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, prod_ne_zero_iff]
 
 end AptInstances
@@ -203,9 +225,9 @@ lemma levelPrime_pow_sub_one_dvd_chosenGroupOrder {i : Fin 2} {d : ℕ}
   -- of a place `w` above `p_i`, and `chosenGroupOrder` is a multiple of the product of these
   -- orders.
   let w : D.ChosenPlace i := D.chosenEquiv i 1
-  have h_above : ↑(D.levelPrime i) ∈ w.val.asIdeal := w.2.2
+  have h_above : ↑(D.levelPrime i) ∈ w.val.asIdeal := w.property.2
   calc
-    D.levelPrime i ^ d - 1 ∣ Nat.card (GL (Fin d) (ResField w.1)) := by
+    D.levelPrime i ^ d - 1 ∣ Nat.card (GL (Fin d) (ResField w.val)) := by
       grw [card_GL_field, ← dvd_prod_of_mem _ (mem_univ ⟨0, hd.1⟩), Fintype.card_eq_nat_card,
         card_ResField, D.q_eq_levelPrime h_above, pow_zero]
     _ ∣ Nat.card (∀ x, GL (Fin d) (ResField (D.chosenPlace x))) := by
@@ -477,7 +499,7 @@ theorem isFiniteTypeAt_and_hasJumpsAt_of_conjPlace {R : GalRep ℓ D.E m} {k : �
     (isTraceNondeg_transpose_inv (R' := Rdual) h_dual.nondeg fun g : AbsGal D ↦ rfl).twist _
   have h_normal : IsTraceNondeg (R.comp conjGal) :=
     h_dual.nondeg.comp conjGal ⟨fun _ _ _ ↦ ⟨_, conjGal_conjGal _⟩⟩
-  obtain ⟨Pm, hPm⟩ : ∃ Pm : GL m (PadicAlgCl ℓ), ∀ g, (r' g).1 * Pm = Pm * (R (conjGal g)).1 :=
+  obtain ⟨Pm, hPm⟩ : ∃ Pm : GL m (PadicAlgCl ℓ), ∀ g, (r' g).val * Pm = Pm * (R (conjGal g)).val :=
     h_nondeg.exists_conj_of_trace_eq _ (AlgHom.id (PadicAlgCl ℓ) (Matrix m m (PadicAlgCl ℓ)))
       h_normal.hasSemiprimeSpan
       (by simp [r', Rdual, h_dual.trace_conj, Units.smul_def, cyclotomicInv])
@@ -497,7 +519,7 @@ theorem isFiniteTypeAt_and_hasJumpsAt_of_conjPlace {R : GalRep ℓ D.E m} {k : �
   have h_pair [H : PadicPlaceEmbedding D.E (conjPlace A) ℓ]
       (g : decompGroup Gal(Ω/D.E) (conjPlace A)) (x y : m → PadicAlgCl ℓ) :
       dot (decompRep r' (conjPlace A) g x) (decompRep R (conjPlace A) g y) =
-        (χ g ^ (-k.pred : ℤ)).1 • dot x y := by
+        (χ g ^ (-k.pred : ℤ)).val • dot x y := by
     simp [dot, r', Rdual, H.cyclotomicGp_eq_cyclotomicChar, mulVec_transpose, ← dotProduct_mulVec,
       @Algebra.smul_def ℤ_[ℓ], Units.smul_def]
   have h_jump (H : PadicPlaceEmbedding D.E (conjPlace A) ℓ) (γ : PadicAlgCl ℓ →ₐ[ℤ_[ℓ]] ℂ_[ℓ])
@@ -592,7 +614,7 @@ theorem IsRepOfType.twist_avatar {O : DescentPair D.E r n} {ϑ : D.Twist}
     have h_trace : (R (conjGal g)).val.trace =
         cyclotomicInv ℓ D.E (PadicAlgCl ℓ) g ^ (k - 1) * (R g⁻¹).val.trace := hR.trace_conj g
     simp [h_exp, h_trace, hμ_conj, zpow_sub₀, field, Units.smul_def, cyclotomicInv]
-  refine { toIsConjSelfDual := h_dual, local_conditions v hv A hA := ?_, labelled i A := ?_ }
+  refine { toIsConjSelfDual := h_dual, local_conditions v hv A hA := ?_, labeled i A := ?_ }
   · obtain ⟨hR_fin, hR_jumps, hR_good⟩ :
         IsFiniteTypeAt R A ∧ HasJumpsAt R A J ∧ (v ∉ placesAboveM D → IsGoodAt R A) :=
       hR.local_conditions v hv hA
@@ -620,11 +642,11 @@ theorem IsRepOfType.twist_avatar {O : DescentPair D.E r n} {ϑ : D.Twist}
     have hψ_star : ψ (star w) = 1 := hψ_off (star w) (h_setting.isChosen_chosenPlace i).not_star
     have hw_split : w.IsSplit := O.isConjApart_chosenPlace.star_ne i i
     have hμ_kill : PolyKillsAt μ₁ A s (X - C (φ (algebraMap (ResField w) K u.val))) := by
-      simpa [μ₁, μ, θ, φ, u, T] using isLabelledAt_avatar ha k' j hψ_star hw_split hy
+      simpa [μ₁, μ, θ, φ, u, T] using isLabeledAt_avatar ha k' j hψ_star hw_split hy
     have hR_kill : PolyKillsAt R A s (((c i).aroots K).map fun x : K ↦ X - C (φ x)).prod :=
-      hR.labelled hy
+      hR.labeled hy
     -- So it acts on `μ • R` through the values of `φ` at these roots times `u`.
-    show PolyKillsAt (twistByChar μ R) A s
+    change PolyKillsAt (twistByChar μ R) A s
       ((((c i).scaleRoots u.val).aroots K).map fun x : K ↦ X - C (φ x)).prod
     exact (hR_kill.of_dvd (prod_aroots_dvd_prod_aroots_scaleRoots_comp φ (c i) u)).twist h_twist
       hμ_kill
@@ -654,8 +676,8 @@ theorem isRepOfType_of_hasProductLabel {O : DescentPair D.E r n} {ϑ : D.Twist}
     [Nonempty m] :
     IsRepOfType O (card m) (jumps κ (card m))
       (fun i : O.ChosenIndex ↦ c i * (X - 1) ^ (card m - card r)) S R := by
-  -- At the places over `O.chosenPlace i`: finite type, jumps, and the action of inertia through the
-  -- label.
+  -- At chosen places use the label to obtain finite type, jumps and annihilators on inertia.
+  -- The annihilator records the label without identifying the characteristic polynomial.
   have h_lab (i : O.ChosenIndex) {A : ClosurePlace} (hA : IsPlaceOver A (O.chosenPlace i)) :
       IsFiniteTypeAt R A ∧ HasJumpsAt R A (jumps κ (card m)) ∧
         IsLabelledAt A (faithfulChar (ResField (O.chosenPlace i))) (card r).factorial
@@ -683,13 +705,13 @@ theorem isRepOfType_of_hasProductLabel {O : DescentPair D.E r n} {ϑ : D.Twist}
       have h_above : v ∈ placesAboveM D := by
         simpa [hi] using (h_setting.isChosen_chosenPlace i).mem_placesAboveM
       exact ⟨h_fin', h_jump' κ h_jump, fun hg ↦ (hg h_above).elim⟩
-    · -- Elsewhere the form is spherical, and local-global compatibility `sphericalCompat_std`
-      -- applies.
+    · -- Elsewhere the form is spherical. Only goodness and jumps are needed from
+      -- `sphericalCompat_std`; the Frobenius annihilator is not used in this branch.
       obtain ⟨h_unr, h_jump, -⟩ :=
         (sphericalCompat_std v hf h_eigen).2 hR (h_spherical v hv hv') A hA
       exact ⟨(isGoodAt_iff.1 h_unr).1, h_jump, fun _ ↦ h_unr⟩
   · -- The completing characters are trivial, and their exponents add up to `card m - card r`.
-    obtain ⟨-, -, h_kill⟩ := h_lab i hs.1
+    obtain ⟨-, -, h_kill⟩ := h_lab i hs.isPlaceOver
     obtain ⟨-, -, h_sum, -⟩ := h_prod i
     have h_label :
         c i * (X - 1) ^ (card m - card r) =

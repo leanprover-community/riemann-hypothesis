@@ -1,6 +1,14 @@
-import Lib.DiscreteSeries.Bessel.FrameFibre
+module
+
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Bessel.FrameFibre
+public import New.Spanning.Bessel.GramSection
+import Lib.Adelic.Adeles.AdditiveCharacter
+import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
 import Lib.DiscreteSeries.Bruhat.ComplexPlace
-import New.Spanning.Bessel.GramSection
+import Lib.DiscreteSeries.Haar.TotalMass
 
 /-!
 # The mean value inequality over the Gram matrix of two frames
@@ -12,7 +20,7 @@ the matrix `Z` of the products of `e` with `γ e`, over the open set `Ω = New.S
 invertible `Z` whose inverse has last diagonal entry of absolute value less than `1`.
 
 On the frames `y = γ e` the fibre measure of the Gram map is compared with Haar measure in
-`New.LeGramFibre.mconv_fixerHaar_le`. This file bounds the same fibre measure from below, by `dZ`
+`New.LeGramFiber.mconv_fixerHaar_le`. This file bounds the same fibre measure from below, by `dZ`
 times a measure on the frames whose products with `e` form the matrix `Z`. Such a frame is `y' Z`
 with `y'` dual to `e`. The first `ϱ` vectors of `y'` are moved by `𝖴⁰`, and the part of the last one
 in `X₀ = ℂ ^ κ` runs over a sphere.
@@ -48,6 +56,8 @@ Part of the bound on the open cell for the Bessel integrals at a real place; see
 analytische Theorie der quadratischen Formen, Ann. of Math. 36 (1935).
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New.RealPlace
@@ -66,7 +76,7 @@ theorem lintegral_fixerHaar {φ : 𝔰.G₁ → ℝ≥0∞} (hφ : Measurable φ
     ∫⁻ s : 𝔰.G₁, φ s ∂fixerHaar 𝔰 =
       ∫⁻ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), ∫⁻ u : besselU0, φ (u.val * embedH h) ∂𝔰.besselHaar₀ := by
   rw [fixerHaar, Floors.lintegral_mconv_symm hφ, lintegral_map (by fun_prop) (by fun_prop)]
-  exact lintegral_congr fun h ↦ lintegral_map (by fun_prop) measurable_subtype_coe
+  exact lintegral_congr fun h ↦ lintegral_map (by fun_prop) measurable_subtypeVal
 
 /-- The integral for `fixerHaar 𝔰`, the measure on the fixer of the frame, in coordinates: the
 iterated integral of the value at `unipotentOf q * embedH h`, for Lebesgue measure in the parameter
@@ -111,7 +121,7 @@ def splitLast (j : ℕ) : Fin j ⊕ Unit ≃ Fin (j + 1) :=
 /-- The matrix `joinCol (splitLast j) p`, made of the `j` columns of `p.1` followed by the vector
 `p.2`, agrees with `p.1` in each column before the last. -/
 @[simp]
-theorem joinCol_castSucc {l : Type} [Fintype l] [DecidableEq l] {j : ℕ}
+theorem joinCol_castSucc {l : Type} {j : ℕ}
     (p : Matrix l (Fin j) ℂ × (l → ℂ)) (i : l) (b : Fin j) :
     joinCol (splitLast j) p i b.castSucc = p.1 i b := by
   simpa [splitLast] using joinCol_inl (splitLast j) p i b
@@ -119,7 +129,7 @@ theorem joinCol_castSucc {l : Type} [Fintype l] [DecidableEq l] {j : ℕ}
 /-- The matrix `joinCol (splitLast j) p`, made of the `j` columns of `p.1` followed by the vector
 `p.2`, has the last column `p.2`. -/
 @[simp]
-theorem joinCol_last {l : Type} [Fintype l] [DecidableEq l] {j : ℕ}
+theorem joinCol_last {l : Type} {j : ℕ}
     (p : Matrix l (Fin j) ℂ × (l → ℂ)) (i : l) : joinCol (splitLast j) p i (last j) = p.2 i := by
   simpa [splitLast] using joinCol_inr (splitLast j) p i
 
@@ -174,24 +184,17 @@ theorem dualFrameOfGram_apply_indexX₀ (T : 𝔰.FrameMatrix) (b : Fin (𝔰.ϱ
 Then the tuple `dualFrameOfGram T` has the Gram matrix `T` for `𝔰.J₁`. -/
 theorem gram_dualFrameOfGram {T : 𝔰.FrameMatrix} (hT : Tᴴ = T)
     (h_top : 0 ≤ 1 + (T 𝔰.top 𝔰.top).re) : (dualFrameOfGram T)ᴴ * 𝔰.J₁ * dualFrameOfGram T = T := by
-  set y : Matrix 𝔰.BesselIndex (Fin (𝔰.ϱ + 1)) ℂ := dualFrameOfGram T
-  have h_form (a b : Fin (𝔰.ϱ + 1)) : (yᴴ * 𝔰.J₁ * y) a b =
-      ∑ c : Fin 𝔰.ϱ, (star (y (eStar c) a) * y (.inl c) b + star (y (.inl c) a) * y (eStar c) b) +
-        ∑ i : 𝔰.κ, star (y (𝔰.indexX₀ i) a) * y (𝔰.indexX₀ i) b - star (y 𝔰.z a) * y 𝔰.z b := by
-    -- The form pairs each `e_c` with `e*_c`, is the identity on `X₀`, and is `-1` at `z`.
-    simp [Matrix.mul_apply, splitGram, middleGram, Matrix.one_apply, Finset.sum_add_distrib]
-    ring
   have h_conj (a b : Fin (𝔰.ϱ + 1)) : starRingEnd ℂ (T a b) = T b a := congrFun₂ hT b a
-  have h_real : ((T 𝔰.top 𝔰.top).re : ℂ) = T 𝔰.top 𝔰.top := conj_eq_iff_re.1 (h_conj _ _)
   ext a b
-  simp only [h_form, y, dualFrameOfGram_apply_inl, dualFrameOfGram_apply_eStar,
-    dualFrameOfGram_apply_z, dualFrameOfGram_apply_indexX₀]
-  -- The block is `T / 2 + T / 2`, and the corner is `(1 + T_{last,last}) - 1`.
+  simp [Matrix.mul_apply, splitGram, middleGram, Matrix.one_apply, dualFrameOfGram_apply_inl,
+    dualFrameOfGram_apply_eStar, dualFrameOfGram_apply_z, dualFrameOfGram_apply_indexX₀]
+  -- Split into the `(last, last)` corner, cross terms, and the `castSucc` block.
   induction a using lastCases <;> induction b using lastCases
-  · simp [← Complex.ofReal_mul, h_top, h_real, (castSucc_lt_last _).ne']
+  · simp [← Complex.ofReal_mul, h_top, conj_eq_iff_re.1 (h_conj _ _), (castSucc_lt_last _).ne']
   · simp [h_conj, (castSucc_lt_last _).ne']
   · simp [(castSucc_lt_last _).ne']
-  · simp [h_conj, Finset.sum_add_distrib, ← two_mul]
+  · simp [h_conj, map_ofNat]
+    ring
 
 /-- The mass `π ^ k r ^ (k - 1) / (k - 1)!` of the sphere `⟨x, x⟩ = r` in `ℂ ^ k` for the fibre
 measure `dx / d⟨x, x⟩` if `r > 0`, and `0` if `r ≤ 0`. The mass is written as half of
@@ -423,24 +426,14 @@ theorem dualFrameOfGram_mul_eq_gramSection_mul {Z : 𝔰.FrameMatrix} (hZ : Z �
   -- Compare the coefficients of the vectors e_a, x_i, z and e*_a in the two tuples.
   rw [coe_gramSection hZ, sectionMatrix_mul_frameCols, sectionFrame,
     sqrt_eq_sqrt_oneSubNormSqInvCorner hZ]
-  suffices h_dual : dualFrameOfGram (Z⁻¹ᴴ * (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.frameCols) * Z⁻¹) =
-      𝔰.frameCols * sectionCoeff Z Zᴴ +
-        𝔰.dualFrameCols * diagLast (𝔰 := 𝔰) (√(oneSubNormSqInvCorner Z) : ℂ) by rw [h_dual]
-  ext (a | (i | i) | a) b
-  -- the coefficient of `e_a`
-  · rw [dualFrameOfGram_apply_inl, inv_frameGram_inv_apply,
+  congr 1
+  ext (a | (i | _) | a) b
+  all_goals
+    try rw [dualFrameOfGram_apply_inl, inv_frameGram_inv_apply,
       ← sectionCoeff_conjTranspose_castSucc_apply]
-    simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, sum_univ_castSucc]
-  -- the coefficient of `x_i`, in either case for the last column and for the others
-  · rw [dualFrameOfGram_apply_indexX₀, one_add_inv_frameGram_inv_top]
-    induction b using lastCases <;>
-      simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, sum_univ_castSucc, diagLast,
-        diagonal_apply]
-  -- the coefficient of `z`
-  · rw [dualFrameOfGram_apply_z, ← sectionCoeff_conjTranspose_top_apply Z]
-    simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, sum_univ_castSucc]
-  -- the coefficient of `e*_a`
-  · rw [dualFrameOfGram_apply_eStar]
+    try rw [dualFrameOfGram_apply_indexX₀, one_add_inv_frameGram_inv_top]
+    try rw [dualFrameOfGram_apply_z, ← sectionCoeff_conjTranspose_top_apply Z]
+    try rw [dualFrameOfGram_apply_eStar]
     induction b using lastCases <;>
       simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, sum_univ_castSucc, diagLast,
         diagonal_apply, eq_comm, (castSucc_lt_last _).ne]
@@ -516,11 +509,11 @@ matrix of the hermitian form that defines `G₁`. The measure `gramSectionMeasur
 `ϱ`. The image `l` of this measure under `g ↦ g e` is at most the fibre measure `dY / dT` of the
 Gram map `Y ↦ T = Yᴴ J₁ Y` over the Gram matrix `T₀` of `e`. Here `dY` is Lebesgue measure on the
 matrices `Y` of the size of `e`, and `dT` is Lebesgue measure in the real coordinates of `T`
-(`hermOfReal`). By the definition of `LeGramFibre` this means: if `K ≥ 0` is lower semicontinuous
+(`hermOfReal`). By the definition of `LeGramFiber` this means: if `K ≥ 0` is lower semicontinuous
 and `∫_{T(Y) ∈ S} K dY ≤ C vol(S)` for all open `S` inside some neighbourhood of `T₀`, then
 `∫ K dl ≤ C`. -/
 theorem leGramFibre_gramSectionMeasure :
-    LeGramFibre 𝔰.J₁ 𝔰.frameCols (gramSectionMeasure 𝔰) := by
+    LeGramFiber 𝔰.J₁ 𝔰.frameCols (gramSectionMeasure 𝔰) := by
   -- The tuples with `Z` in the open cell have the coordinates `tuple t (Z, s)`, with the density
   -- `density t (Z, s)` for `dt` and `μ = dZ ds`. At the coordinates `t₀` of the Gram matrix of `e`
   -- the point is `s γ_Z e` and the sphere has the squared radius `oneSubNormSqInvCorner Z`.
@@ -575,7 +568,7 @@ theorem leGramFibre_gramSectionMeasure :
     rw [gramSectionMeasure, Measure.map_map (by fun_prop) (by fun_prop),
       ← withDensity_congr_ae h_density]
     exact Measure.map_congr (withDensity_absolutelyContinuous μ (density t₀) h_point)
-  rw [LeGramFibre, h_law]
+  rw [LeGramFiber, h_law]
   exact .of_coordinates (ψ := tuple) (w := density) (by fun_prop) (by fun_prop) (by fun_prop)
     Filter.univ_mem (fun t _ ↦ h_fibre t) h_cont h_le
 

@@ -1,5 +1,9 @@
+module
+
+import Mathlib.FieldTheory.Galois.Profinite
+public import New.Congruences.FirstOrder.TraceRelations
 import New.Congruences.FirstOrder.RibetLemma
-import New.Congruences.FirstOrder.TraceRelations
+import New.Congruences.GaloisRepresentations.AttachedRepresentations
 
 /-!
 # Ribet's element for conjugate self-dual representations
@@ -56,6 +60,8 @@ for GL2, 2023; Bellaïche–Chenevier, Families of Galois representations and Se
 Urban, Selmer groups and the Eisenstein–Klingen ideal, 2001.
 -/
 
+@[expose] public section
+
 namespace New.Selmer
 
 section RibetColumns
@@ -70,7 +76,8 @@ variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P}
 /-- A polynomial over the integers of `ℚ̄_ℓ` is defined over every large coefficient ring. -/
 lemma eventually_exists_map_eq (H : (intQpBar ℓ)[X]) : ∀ᶠ O : CoeffRing ℓ in atTop,
     ∃ H' : O[X], H'.map (algebraMap O (PadicAlgCl ℓ)) = H.map (intQpBar ℓ).subtype := by
-  filter_upwards [H.finite_range_coeff.eventually_all.2 fun a _ ↦ eventually_mem a.2] with O hO
+  filter_upwards [(Finsupp.finite_range H.coeff).eventually_all.2 fun a _ ↦ eventually_mem a.2]
+    with O hO
   rw [← mem_lifts, lifts_iff_coeff_lifts]
   exact fun k ↦ ⟨⟨H.coeff k, hO _ ⟨k, rfl⟩⟩, by simp⟩
 
@@ -124,11 +131,11 @@ lemma ellVal_add_le_of_addVal_le {O : CoeffRing ℓ} {t' h k nTest nDetect : ℕ
     (hd : addVal O d ≤ lossT + selT + (∑ e : Fin t', (lossχ e + odd e) +
       t' * (tame + 2 * nDetect * addVal O (ℓ ^ (D.halfGap * h))) +
       (k + 1) * addVal O (ℓ ^ (D.halfGap * h)))) :
-    ellVal d.1 + 2 * padicValNat ℓ D.chosenGroupOrder ≤
+    ellVal d.val + 2 * padicValNat ℓ D.chosenGroupOrder ≤
       sel + 2 * t' * ram + loc + denominatorError D ℓ := by
   have h_odd_val (e : Fin t') : O.normLength (odd e) ≤ padicValNat ℓ (oddClassBound D) :=
     (normLength_mono (h_odd e)).trans_eq (by simp [ellVal_natCast (oddClassBound_ne_zero D)])
-  have h_val : ellVal d.1 ≤ sel + loc + (t' * padicValNat ℓ (oddClassBound D) +
+  have h_val : ellVal d.val ≤ sel + loc + (t' * padicValNat ℓ (oddClassBound D) +
       t' * (O.normLength tame + 2 * nDetect * (D.halfGap * h : ℕ)) +
       (k + 1) * (D.halfGap * h : ℕ)) := by
     grw [← normLength_addVal d, hd, ← h_sel, ← h_loc]
@@ -147,11 +154,11 @@ lemma ellVal_add_le_of_addVal_le {O : CoeffRing ℓ} {t' h k nTest nDetect : ℕ
 is the ring of integers of `ℚ̄_ℓ`. Let the `u x` be conjugate self-dual, and for `x ∈ 𝓧` let `u x`
 have the trace of the twisted main summand `ψ (R x)` plus the characters `O(-e)`, `e < t`. Let each
 `x ∈ 𝓧` have, over all large `O`, a model `R₀`, `ψ'`, `ζ'` with a property `Good x O R₀ ψ'`; here
-`IsTwistedLattice` says that `R₀` is a lattice in `R x`, that `ψ'` and `ζ'` are `ψ` and `ζ x` with
-values in `O`, and that the inertial element `γ x` acts on `ψ' R₀` by the scalar `ζ'`, with `ζ' - 1`
-a unit. Then over every large `O` there are such models `R₀ x`, `ψ' x`, `ζ' x`, whose twisted
-lattices span all matrices, and lattices `u' x` in all `u x` that are block diagonal for `x ∈ 𝓧`:
-the twisted lattice, then the characters. -/
+`IsTwistedLattice` says that `R₀` is a lattice in `R x`, that `ψ'` is `ψ` with values in `O`, and
+that the inertial element `γ x` acts on `ψ' R₀` by the scalar `ζ'`, with `ζ' - 1` a unit. Then over
+every large `O` there are such models `R₀ x`, `ψ' x`, `ζ' x`, whose twisted lattices span all
+matrices, and lattices `u' x` in all `u x` that are block diagonal for `x ∈ 𝓧`: the twisted lattice,
+then the characters. -/
 lemma eventually_exists_twistedLattice_and_block_lattices [PadicIso ℓ] {t : ℕ}
     {u : Y → GalRep ℓ D.E n} (hu : ∀ x : Y, IsConjSelfDual t (u x))
     {ψ : AbsGal D →* PadicAlgCl ℓ} {𝓧 : Set Y}
@@ -159,17 +166,17 @@ lemma eventually_exists_twistedLattice_and_block_lattices [PadicIso ℓ] {t : �
     (h_summand : ∀ x : 𝓧, IsMainSummandLike D t (J x) (R x))
     (h_trace : ∀ (x : 𝓧) (g : AbsGal D), (u x g).val.trace =
       ψ g * (R x g).val.trace + ∑ e ∈ range t, cyclotomicInv ℓ D.E (PadicAlgCl ℓ) g ^ e)
-    {γ : 𝓧 → AbsGal D} {ζ : 𝓧 → intQpBar ℓ}
+    {γ : 𝓧 → AbsGal D}
     {Good : 𝓧 → ∀ O : CoeffRing ℓ, (AbsGal D →* Matrix r r O) → (AbsGal D →* O) → Prop}
     (h_model : ∀ x : 𝓧, ∀ᶠ O : CoeffRing ℓ in atTop,
       ∃ (R₀ : AbsGal D →* Matrix r r O) (ψ' : AbsGal D →* O) (ζ' : ↑O),
-        IsTwistedLattice ψ (R x) (γ x) (ζ x) R₀ ψ' ζ' ∧ Good x O R₀ ψ')
+        IsTwistedLattice ψ (R x) (γ x) R₀ ψ' ζ' ∧ Good x O R₀ ψ')
     (ϵ : Sigma (SummandCoordIndex r (t := t)) ≃ n) :
     ∀ᶠ O : CoeffRing ℓ in atTop,
       ∃ (R₀ : 𝓧 → AbsGal D →* Matrix r r O) (ψ' : 𝓧 → AbsGal D →* O) (ζ' : 𝓧 → ↑O)
         (u' : Y → AbsGal D →* Matrix n n O),
         (∀ x : 𝓧,
-          IsTwistedLattice ψ (R x) (γ x) (ζ x) (R₀ x) (ψ' x) (ζ' x) ∧ Good x O (R₀ x) (ψ' x)) ∧
+          IsTwistedLattice ψ (R x) (γ x) (R₀ x) (ψ' x) (ζ' x) ∧ Good x O (R₀ x) (ψ' x)) ∧
         (∀ x : 𝓧, Submodule.span O (.range (twistRep (.id O) (ψ' x) (R₀ x))) = ⊤) ∧
         (∀ x : Y, IsLatticeIn (u x) (u' x)) ∧
         ∀ (x : 𝓧) (g : AbsGal D), u' x g = reindex ϵ ϵ (blockDiagonal' fun i : Option (Fin t) ↦
@@ -247,13 +254,8 @@ lemma exists_length_le_loss_add_crystallineSelmerLength {ν : ℕ} {w : K → Fi
     rw [← map_sum]
     exact normLength_mono
       (crystallineColength_le_sum_dualDefect hu_cl (fun v ↦ hT_cl v (some e)) ν)
-  -- modulo every `ℓ ^ M` the cocycles are counted by the loss and the Selmer group
-  have h_main (M : ℕ) : length O (ribetCocyclesVanishingOn u T (QuotSpan (ℓ ^ M : ↑O))
-      (.range (withConjInv τ)) γ) ≤ lossT + crystallineSelmerLength T Q γ :=
-    (length_ribetCocyclesVanishingOn_le hw hu_cont hu_unr hT_unr M γ).trans
-      (add_le_add (crystallineColength_le_sum_dualDefect hu_cl (fun v ↦ hT_cl v none) M)
-        (length_selmerCocycles_le_crystallineSelmerLength _ Q M γ))
-  -- both are finite, so the bound holds with divisible coefficients
+  -- The local defect and the Selmer length are both finite; choose the truncation after fixing
+  -- their sum.
   have h_ne {a : ℕ∞} {b : ℝ≥0∞} (hb : b ≠ ⊤) (hab : O.normLength a ≤ b) : a ≠ ⊤ :=
     fun ha ↦ hb (by simpa [ha, normLength_top] using hab)
   obtain ⟨b₀, hb₀⟩ : ∃ b₀ : ℕ, b₀ = lossT + crystallineSelmerLength T Q γ :=
@@ -262,8 +264,14 @@ lemma exists_length_le_loss_add_crystallineSelmerLength {ν : ℕ} {w : K → Fi
   have hℓ_ne : (ℓ : ↑O) ≠ 0 := ne_zero_pow one_ne_zero (NeZero.ne _)
   have hℓ_unit : ¬IsUnit (ℓ : ↑O) := fun h ↦ by
     simpa [IsDiscreteValuationRing.addVal_eq_zero_iff.2 h] using normLength_addVal_pow (O := O) 1
+  -- Only the level `ℓ ^ (b₀ + 1)` is needed to control all the divisible coefficients.
+  have h_main : length O (ribetCocyclesVanishingOn u T (QuotSpan (ℓ ^ (b₀ + 1) : ↑O))
+      (.range (withConjInv τ)) γ) ≤ b₀ :=
+    ((length_ribetCocyclesVanishingOn_le hw hu_cont hu_unr hT_unr (b₀ + 1) γ).trans
+      (add_le_add (crystallineColength_le_sum_dualDefect hu_cl (fun v ↦ hT_cl v none) (b₀ + 1))
+        (length_selmerCocycles_le_crystallineSelmerLength _ Q (b₀ + 1) γ))).trans_eq hb₀.symm
   exact ⟨b₀, lossT, length_ribetCocyclesVanishingOn_divisibleQuot_le u T _ γ hℓ_ne hℓ_unit
-    fun M ↦ (h_main M).trans_eq hb₀.symm, hb₀, h_loc⟩
+    h_main, hb₀, h_loc⟩
 
 /-- Ribet's element for conjugate self-dual representations, with `t' = V.rankDiff`, the difference
 `card n - card r` of the ranks of the descent pair `V`, and `r' = card r`. Let `V` with type
@@ -277,7 +285,7 @@ Hodge–Tate jumps `J'` and level `Q`, the `w j` and their conjugates, on which 
 places acts through the roots of the rescaled polynomials `scaledTypePoly V c i` and `1`
 (`IsRepOfType`), and inertia above `Q` and `Q̄` satisfies `(g - ψ g) (g - 1) = 0`. For `x ∈ 𝓧` let
 `u x` have the trace of `ψ (R x)` plus the characters `O(-e)`, `e < t'`. Here `R x` is a main
-summand, and `ψ (R x)` has a lattice on which `γ x` acts by the scalar `ζ x`. Let `S` be an algebra
+summand, and `ψ (R x)` has a lattice on which `γ x` acts by a scalar. Let `S` be an algebra
 of families, indexed by `Y`, of polynomials in variables `X j`, and let the `S`-module `𝒥` contain
 `ℓ ^ ν` times the traces and the traces of the relations `τ j - 1 - X j (φ j - 1) H j (φ j)`
 (`IsTraceIdeal`), with `H j (1) = 1`. At one `π ∈ 𝓧` let the Selmer group of `ψ (R π)` with
@@ -308,15 +316,15 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
     (h_summand : ∀ x : 𝓧, IsMainSummandLike D V.rankDiff (J x) (R x))
     (h_trace : ∀ (x : 𝓧) (g : AbsGal D), (u x g).val.trace =
       ψ g * (R x g).val.trace + ∑ e ∈ range V.rankDiff, cyclotomicInv ℓ D.E (PadicAlgCl ℓ) g ^ e)
-    {γ : 𝓧 → AbsGal D} {ζ : 𝓧 → intQpBar ℓ}
-    (h_lat : ∀ x : 𝓧, HasTwistedLattice ψ (R x) (γ x) (ζ x))
+    {γ : 𝓧 → AbsGal D}
+    (h_lat : ∀ x : 𝓧, HasTwistedLattice ψ (R x) (γ x))
     -- the tied relations
     {S : Subalgebra (intQpBar ℓ) (Y → MvPolynomial K (PadicAlgCl ℓ))}
     {𝒥 : Submodule S (Y → MvPolynomial K (PadicAlgCl ℓ))} {H : K → (intQpBar ℓ)[X]}
     (h𝒥 : IsTraceIdeal 𝒥 (fun (x : Y) (g : AbsGal D) ↦ (u x g).val) (ℓ ^ ν) τ φ id H)
     (hH : ∀ j : K, (H j).eval 1 = 1)
     -- the lift, and the Selmer group of its twisted main summand with divisible coefficients
-    (π : 𝓧) {sel : ℝ≥0∞} (h_sel : HasDivisibleSelmerLengthLe ψ (R π) Q (γ π) (ζ π) sel)
+    (π : 𝓧) {sel : ℝ≥0∞} (h_sel : HasDivisibleSelmerLengthLe ψ (R π) Q (γ π) sel)
     (h_fin : sel ≠ ⊤) :
     ∃ d : PadicAlgCl ℓ,
       IsCommonRibetElement 𝒥 (fun (g : AbsGal D) (x : Y) ↦ (1 - (u x g).val).det) π d ∧
@@ -327,13 +335,13 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
   -- `exists_isCommonRibetElement_addVal_le` over `O`, and add up the losses in its bound for `d`.
   obtain ⟨-, hψ : IsFromU1 (placesDividing D.E ℓ) Q ψ, -⟩ := id h_twist
   have : NeZero V.rankDiff := .of_pos hc.odd.2.pos
-  have ϵ : Sigma (SummandCoordIndex r (t := V.rankDiff)) ≃ n :=
+  let ϵ : Sigma (SummandCoordIndex r (t := V.rankDiff)) ≃ n :=
     equivOfCardEq (by simp! [V.rank_lt.le])
   have h_dual (x : Y) : IsConjSelfDual V.rankDiff (u x) := (h_type x).toIsConjSelfDual
   -- the models: at `π` the one of `h_sel`, with its Selmer bound; elsewhere those of `h_lat`
   have h_lat' (x : 𝓧) : ∀ᶠ O : CoeffRing ℓ in atTop,
       ∃ (u : AbsGal D →* Matrix r r O) (ψ' : AbsGal D →* O) (ζ' : ↑O),
-        IsTwistedLattice ψ (R x) (γ x) (ζ x) u ψ' ζ' ∧
+        IsTwistedLattice ψ (R x) (γ x) u ψ' ζ' ∧
         (x = π → O.normLength (crystallineSelmerLength (twistRep (.id O) ψ' u) Q (γ x)) ≤ sel) := by
     obtain rfl | hx := eq_or_ne x π
     · exact Eventually.mono h_sel fun _ ⟨u, ψ', ζ', h_tw, h_le⟩ ↦ ⟨u, ψ', ζ', h_tw, fun _ ↦ h_le⟩
@@ -374,7 +382,7 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
     grw [card_union_le, card_insert_le, card_image_le, card_univ, card_prod, card_bool]
     omega
   -- the characters `χ e`, which `g₀` separates up to `ℓ ^ (halfGap h)`
-  let χ (e : Fin V.rankDiff) : AbsGal D →* O := cyclotomicInv ℓ D.E O ^ e.1
+  let χ (e : Fin V.rankDiff) : AbsGal D →* O := cyclotomicInv ℓ D.E O ^ e.val
   have h_sep (e : Fin V.rankDiff) : ∏ e' ∈ {e}ᶜ, (χ e g₀ - χ e' g₀) ∣ ℓ ^ (D.halfGap * h) := by
     simpa [χ, cyclotomicInv] using map_dvd (algebraMap ℤ_[ℓ] O) (h_tri.prod_dvd e)
   let ϵ' : r ⊕ Fin V.rankDiff ≃ n := (summandCoordIndexEquiv r V.rankDiff).trans ϵ
@@ -386,8 +394,7 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
   have hχδ (k : W × Bool) (e : Fin V.rankDiff) : χ e (withConjInv δ k) = 1 := by
     simp [χ, (hq.cyclotomicInv_withConjInv_eq_one_and_dvd O k).1]
   -- the trace ideal over `O` for the doubled families, whose factors are `1` modulo `ℓ ^ ν`
-  have h𝒥' : IsTraceIdeal (S := restrictToCoeffRing S O) 𝒥 (fun x : Y ↦ u' x) (ℓ ^ ν)
-      (withConjInv τ) (withConjInv φ) Prod.fst H' := h𝒥.of_isLatticeIn hw h_dual hu' hH'
+  have h𝒥' := h𝒥.of_isLatticeIn hw h_dual hu' hH'
   have hH'_dvd (e : Fin V.rankDiff) (k : K × Bool) :
       (ℓ ^ ν : ↑O) ∣ (H' k.1).eval (χ e (withConjInv φ k)) - 1 :=
     hw.dvd_eval_cyclotomicInv_sub_one (hH'_one k.1) e k
@@ -401,7 +408,7 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
     hasTriangleCost_of_isCharacterCocycle h_tri hu'_cont hq hq_cover hu'_unr e
       (h_tw π).mem_inertiaAbove (h_detect e) hZ
   obtain ⟨d, ⟨h_mem, h_zero, f, hf_mem, hf_low, hf_top⟩, hd_le⟩ :=
-    exists_isCommonRibetElement_addVal_le u' 𝒥 (S := restrictToCoeffRing S O) ϵ' π T
+    exists_isCommonRibetElement_addVal_le u' _ ϵ' π T
       (hξ₀ := by simp [χ]) (hu_block := h_block) (hρ_span := hT_span π)
       (hργ := fun x ↦ (h_tw x).apply_eq_smul) (hy_unit := fun x ↦ (h_tw x).isUnit_sub_one)
       (hξγ := hχγ) (hp := NeZero.ne _) (h𝒥 := h𝒥') (hε := hH'_dvd) (a := g₀) (hC_dvd := h_sep)
@@ -409,7 +416,7 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
   rw [hb₀_eq] at hd_le
   have ht' : V.rankDiff ≤ D.t := (h_summand π).t_le
   refine ⟨d, ?_, ellVal_add_le_of_addVal_le ht' h_le hs_card hs'_card h_loc h_selT
-    (fun e ↦ h_odd e (e.2.trans_le ht') ν) ho hd_le⟩
+    (fun e ↦ h_odd e (e.isLt.trans_le ht') ν) ho hd_le⟩
   -- `det (1 - u x g)` is the determinant of the combination `∑ ω g' (u' x g' - 1)`, where the
   -- coefficient function `ω` is `-1` at `g` and `0` elsewhere
   simp only [(hu' _).det_one_sub]

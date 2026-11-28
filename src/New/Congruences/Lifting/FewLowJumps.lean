@@ -1,4 +1,11 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.PiTensorProduct
+public import New.Congruences.Lifting.SidePoints
+import Lib.PadicComparison.Descent.TestCategory
 import New.Congruences.Lifting.DeepPoints
+import New.Congruences.Lifting.SafeMoves
 
 /-!
 # Few low jumps: length lost to depth and a submodule cupping to zero
@@ -49,6 +56,8 @@ Notions from other files:
 See `New.Congruences.Lifting.CutExponentBounds` and `New.Congruences.Lifting.CupOrthogonalityBounds`
 for related work.
 -/
+
+@[expose] public section
 
 section FewLowJumps
 
@@ -131,7 +140,13 @@ lemma exists_isOperatorOfCost_zero_mem_deepElements (hk : k.IsUnramified) {N : �
     obtain ⟨v, -, hn_mem⟩ := mem_biUnion.1 hn
     exact Nat.le_zero.1 (cost_le_of_isUnramified hk fun h ↦ absurd h (h_free v n hn_mem))
   refine ⟨A, by rwa [h_cost] at h_reach, fun w hw ↦ h_raise hw _ fun l v hv n hn_ge hn_lt ↦ ?_⟩
-  obtain ⟨rfl, hn⟩ : l = 0 ∧ n ∈ Ioo (c l v) (c l v + N) := by grind [raiseOrdersAt]
+  obtain ⟨rfl, hn⟩ : l = 0 ∧ n ∈ Ioo (c l v) (c l v + N) := by
+    by_cases h : l = 0
+    · subst h
+      simp only [raiseOrdersAt, ↓reduceIte] at hn_ge hn_lt
+      exact ⟨rfl, mem_Ioo.2 ⟨by omega, by omega⟩⟩
+    · simp only [raiseOrdersAt, Ne.symm h, ↓reduceIte] at hn_ge hn_lt
+      omega
   exact mem_sigma.2 ⟨mem_singleton_self 0, mem_biUnion.2 ⟨v, hv, hn⟩⟩
 
 /-- Division by `p`. Suppose the chart is unramified, and no multiple of `p` lies strictly between
@@ -193,8 +208,12 @@ lemma exists_sub_mem_deepElements_of_smul_sub_mem (hk : k.IsUnramified) {a : ℕ
     obtain ⟨-, h_deep_inv⟩ := h_reach.apply_mem_of_kerWithOrders_le
       locKisinPart_kerWithOrders_le_deepElements h_deep h_deep
     have h_le (l : ℕ) (v : ℤ) : raiseOrder c a u l v ≤ c l v + if a = l then 1 else 0 := by
-      unfold raiseOrder
-      lia
+      refine Int.add_le_add_left ?_ _
+      split_ifs with h₁ h₂ h₂'
+      · exact le_rfl
+      · exact absurd h₁.1.symm h₂
+      · exact zero_le_one
+      · exact le_rfl
     rw [h_smul_eq, Submodule.coe_add, hAw_sub]
     exact add_mem h_deep_inv (smul_sub_mem_withOrders
       (frobEUnit_zpow_smul_mem_withOrders a 1 hw'_exp fun l v _ ↦ h_le l v))
@@ -215,7 +234,11 @@ lemma exists_isOperatorOfCost_mem_deepElements_raiseOrder (a : ℕ) (u : ℤ) :
       ∀ x ∈ S.deepElements i c, A x ∈ S.deepElements i (raiseOrder c a u) := by
   obtain ⟨A, h_reach, h_raise⟩ := S.exists_isOperatorOfCost_and_mem_deepElements {⟨a, c a u⟩}
   refine ⟨A, by simpa using h_reach, fun x hx ↦ h_raise hx _ fun l v _ n hn_ge hn_lt ↦ ?_⟩
-  obtain ⟨rfl, rfl, rfl⟩ : l = a ∧ v = u ∧ n = c l v := by grind [raiseOrder]
+  obtain ⟨rfl, rfl, rfl⟩ : l = a ∧ v = u ∧ n = c l v := by
+    simp only [raiseOrder] at hn_lt
+    split_ifs at hn_lt with h
+    · exact ⟨h.1, h.2, (Int.le_of_lt_add_one hn_lt).antisymm hn_ge⟩
+    · exact (not_lt_of_ge hn_ge (by simpa only [add_zero] using hn_lt)).elim
   exact mem_singleton_self _
 
 /-- A primitive relation for one step. Let `S` be a side on an unramified chart `k` and `i` a
@@ -313,7 +336,16 @@ lemma sigma_Ico_raiseOrder (U : Finset ℤ) (a : ℕ) (u : ℤ) (d : ℤ → ℤ
     (U.sigma fun v : ℤ ↦ Ico (raiseOrder c a u a v) (d v)) =
       (U.sigma fun v : ℤ ↦ Ico (c a v) (d v)).erase ⟨u, c a u⟩ := by
   ext ⟨v, n⟩
-  grind [raiseOrder]
+  simp only [mem_sigma, mem_Ico, mem_erase, ne_eq, Sigma.mk.inj_iff, heq_eq_eq, raiseOrder,
+    true_and]
+  split_ifs with h
+  · subst h
+    constructor
+    · rintro ⟨hv, h1, h2⟩; exact ⟨fun h' ↦ by omega, hv, by omega, h2⟩
+    · rintro ⟨hne, hv, h1, h2⟩; exact ⟨hv, by omega, h2⟩
+  · constructor
+    · rintro ⟨hv, h1, h2⟩; exact ⟨fun h' ↦ h h'.1, hv, by omega, h2⟩
+    · rintro ⟨-, hv, h1, h2⟩; exact ⟨hv, by omega, h2⟩
 
 /-- All steps at one level. Let `S` be a side on an unramified chart `k`, `i` a letter, and
 `S.deepConstants i 0 c` the constants at `i` below elements of the extension without pole and of
@@ -454,7 +486,7 @@ lemma pointsOver_raisedOrdersAtZero_nonempty_of_fitsWindows {k : KummerChart Γ}
   · grind [low_or_far_of_fitsWindows (h_window i) hu, mem_twoWindows_union_iff]
 
 /-- Let `S` be a side on an unramified chart `k` and `p ≥ 5`; at every letter `j` let
-`b j + W + η ≤ (p - 3) a` and `6 (a + η + W) < b j`, let `p` divide no nonzero integer within
+`b j + W + η ≤ (p - 3) a`, let `p` divide no nonzero integer within
 `6 (a + η + W)` of `0` or `± b j`, and let the jumps of `S` lie in `[-η, η]` or in
 `ε j • [b j, b j + W]`. Write `raisedOrdersAtZero t` for the orders that on the line of a jump `u`
 are `t - u` at the level `0` and `-u` above. With `a - s` taken in `ℕ`, a point with orders
@@ -466,7 +498,6 @@ orders `raisedOrdersAtZero t` and depth `raisedOrdersAtZero (2a + η)`. -/
 lemma pow_smul_constantAt_mem_deepConstants {k : KummerChart Γ} {O : k.Coeffs}
     {S : k.PairingSide O} {i : k.Letter} (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ}
     {b : k.Letter → ℕ} {ε : k.Letter → ℤˣ} (hb_le : ∀ j : k.Letter, b j + W + η ≤ (p - 3) * a)
-    (_hb_gt : ∀ j : k.Letter, 6 * (a + η + W) < b j)
     (hb_gap : ∀ j : k.Letter, NoMultipleNear p (6 * (a + η + W)) (b j))
     (h_window : ∀ j : k.Letter, FitsWindows η (ε j) (b j) W (S.jumpSet j)) (s : ℕ)
     (d : S.paramLattice) {t : ℤ}
@@ -554,7 +585,7 @@ lemma relLength_constantAt_range_deepConstants_le {k : KummerChart Γ} {O : k.Co
     rw [relLength_eq_zero]
     rintro _ ⟨d, rfl⟩
     rw [← one_smul ℕ (S.constantAt i d), ← pow_zero p]
-    refine pow_smul_constantAt_mem_deepConstants hk hp hb_le hb_gt hb_gap h_window 0 d
+    refine pow_smul_constantAt_mem_deepConstants hk hp hb_le hb_gap h_window 0 d
       fun l u hu ↦ ?_
     -- No jump lies in `[-a, -η)`.
     have h_far : 6 * (a + η + W) < b (i.stepBack l) := hb_gt _
@@ -562,7 +593,7 @@ lemma relLength_constantAt_range_deepConstants_le {k : KummerChart Γ} {O : k.Co
     obtain h_low | h_pos | h_neg := low_or_far_of_fitsWindows (h_window _) hu <;> omega
   have h_kill (t : ℤ) (ht : t ≤ 0) (d : S.paramLattice) :
       p ^ a • S.constantAt i d ∈ S.deepConstants i t (raisedOrdersAtZero (2 * a + η)) :=
-    pow_smul_constantAt_mem_deepConstants hk hp hb_le hb_gt hb_gap h_window a d fun l u _ ↦ by
+    pow_smul_constantAt_mem_deepConstants hk hp hb_le hb_gap h_window a d fun l u _ ↦ by
       simp only [raisedOrdersAtZero, improvedOrders]
       omega
   have h_pole : ∀ t : ℤ, -η ≤ t → t ≤ 0 →
@@ -598,15 +629,15 @@ lemma sum_cost_zero_le {k : KummerChart Γ} (hk : k.IsUnramified) {N m : ℕ} (h
 
 /-- Let the Kummer chart `k` of the prime `p ≥ 5` be unramified, so that the cost `k.cost 0 y` of
 the step `y` at the level `0` is `v_p(y)`, with `v_p(0) = 0`. Let `β + W + η ≤ (p - 3) a`, let `p`
-divide no nonzero integer within `6 (a + η + W)` of `0` or `± β`, and let `t` be the least multiple
-of `p` that is at least `β + W + a + η`. For `u` in `[-η, η]` or in `-[β, β + W]`, the steps `y`
+divide no nonzero integer within `6 (a + η + W)` of `0` or `± β`, and let `t` be a multiple
+of `p` below `β + W + a + η + p`. For `u` in `[-η, η]` or in `-[β, β + W]`, the steps `y`
 with `2a + η - u ≤ y < t` cost at most `a + 1` together, and nothing if `u` is not in
 `[-η, η]`. -/
 lemma sum_cost_zero_Ico_multiple_le {k : KummerChart Γ} (hk : k.IsUnramified) (hp : 5 ≤ p)
     {a η W β : ℕ} {u t : ℤ}
     (h_top : β + W + η ≤ (p - 3) * a) (h_gap : NoMultipleNear p (6 * (a + η + W)) (β : ℤ))
     (hu : (-η ≤ u ∧ u ≤ η) ∨ (β ≤ -u ∧ -u ≤ β + W)) (ht_dvd : (p : ℤ) ∣ t)
-    (_ht_ge : β + W + a + η ≤ t) (ht_lt : t < β + W + a + η + p) :
+    (ht_lt : t < β + W + a + η + p) :
     ∑ y ∈ Ico (2 * a + η - u) t, k.cost 0 y ≤ if u ∈ Icc (-η : ℤ) η then a + 1 else 0 := by
   split_ifs with h_low
   · -- the steps lie in `[0, t]`, and `t ≤ (p - 1) (a + 1)`
@@ -615,7 +646,7 @@ lemma sum_cost_zero_Ico_multiple_le {k : KummerChart Γ} (hk : k.IsUnramified) (
       ring
     have h_bound : t.toNat ≤ (p - 1) * (a + 1) := by omega
     have h_sub : Ico (2 * a + η - u) t ⊆ Ico (0 : ℤ) (t.toNat + 1) :=
-      Ico_subset_Ico (by grind) (by omega)
+      Ico_subset_Ico (by omega) (by omega)
     exact (sum_le_sum_of_subset h_sub).trans (sum_cost_zero_le hk h_bound)
   · -- a step `y < t` divisible by `p` has `y ≤ t - p`, so it is near `β` and hence is `0`
     refine sum_nonpos fun y hy ↦ cost_le_of_isUnramified hk fun h_dvd ↦
@@ -643,7 +674,8 @@ lemma sum_cost_one_Ico_negativeWindowDepth_le {k : KummerChart Γ} (hk : k.IsUnr
     cost_le_of_isUnramified hk
       (h_gap.eq_zero_of_dvd (by grind [low_or_far_of_fitsWindows h_window hu]))
   grw [sum_le_card_nsmul _ _ _ h_step, h_depth, Int.card_Ico, smul_eq_mul]
-  grind
+  simp only [mem_Icc]
+  split_ifs <;> omega
 
 /-- Let `S` be a side on an unramified Kummer chart `k` and `p ≥ 5`. At every letter `j` let
 `b j + W + η ≤ (p - 3) a` and `6 (a + η + W) < b j`, let `p` divide no nonzero integer within
@@ -683,7 +715,7 @@ lemma relLength_deepConstants_negativeWindowDepth_le {k : KummerChart Γ} {O : k
       0 + if u ∈ Icc (-η : ℤ) η then a + 1 else 0 := fun u hu ↦ by
     simpa [d, raisedOrdersAtZero] using sum_cost_zero_Ico_multiple_le hk hp (hb_le i) (hb_gap i)
       (h_win u hu)
-      (dvd_mul_left _ q) hq_ge hq_lt
+      (dvd_mul_left _ q) hq_lt
   have h_level_zero : relLength (S.deepConstants i 0 (raisedOrdersAtZero (2 * a + η)))
       (S.deepConstants i 0 d) ≤ ↑(0 * r i + (a + 1) * n i) := by
     refine relLength_deepConstants_le d hk hn hr 0 0 (a + 1) (fun v y hy ↦ ?_)
@@ -705,7 +737,6 @@ lemma relLength_deepConstants_negativeWindowDepth_le {k : KummerChart Γ} {O : k
   have h_anti : AntitoneOn (negativeWindowDepth a η W (b i) 1) (S.jumpSet m) := fun u hu v hv h_le ↦
     by
     have hu_win := low_or_far_of_fitsWindows (h_window m) hu
-    have hv_win := low_or_far_of_fitsWindows (h_window m) hv
     simp only [negativeWindowDepth, one_ne_zero, ite_false, ite_true, abs_le]
     lia
   have h_level_one : relLength (S.deepConstants i 0 d)
@@ -757,23 +788,6 @@ lemma relLength_constantAt_deepConstants_le {k : KummerChart Γ} {O : k.Coeffs}
     hb_gap
       h_window hn hr i ((units_eq_one_or _).resolve_left hε))).trans (mod_cast by lia)
 
-/-- Let the jumps of `T` and `S` at a letter `i` lie in `[-η, η]` or in far windows `∓σ [β, β + W]`
-of opposite signs. Then each jump `u` of the Tate dual side of a pairing of `T` and `S` lies near
-`0`, `β` or `-β`: such a jump is `0` or `-(v + w) - 1` for jumps `v` of `T` and `w` of `S`. -/
-lemma tateDualSide_jump_near {k : KummerChart Γ} {O : k.Coeffs} {S : k.PairingSide O} {i : Letter}
-    {η W : ℕ} {T : PairingSide O} (P : SidePairing T S) {σ : ℤˣ} {β : ℕ}
-    (hT_window : FitsWindows η (-σ) β W (T.jumpSet i))
-    (hS_window : FitsWindows η σ β W (S.jumpSet i)) {u : ℤ}
-    (hu : u ∈ P.tateDualSide.jumpSet i) :
-    (-(2 * η + W + 1) ≤ u ∧ u ≤ 2 * η + W) ∨
-      (β ≤ u + η + 1 ∧ u + 1 ≤ β + W + η) ∨
-      (β ≤ -u + η ∧ -u ≤ β + W + η + 1) := by
-  obtain rfl | ⟨v, hv, w, hw, rfl⟩ : u = 0 ∨ ∃ v ∈ T.jumpSet i, ∃ w ∈ S.jumpSet i,
-    -(v + w) - 1 = u := by
-    simpa [mem_image₂] using hu
-  · omega
-  · grind [hT_window v hv, hS_window w hw, Units.val_neg]
-
 /-- Let `b j + W + η ≤ (p - 3) a` and `6 (a + η + W) < b j` at every letter `j`. If the jumps of the
 paired sides `T` and `S` lie in `[-η, η]` or in far windows `∓ε j [b j, b j + W]` of opposite signs,
 then the jumps of the Tate dual side are at most `(p - 3) a`. -/
@@ -784,7 +798,9 @@ lemma tateDualSide_jump_le {k : KummerChart Γ} {O : k.Coeffs} {S : k.PairingSid
     {T : PairingSide O} (P : SidePairing T S)
     (hT_window : ∀ j : Letter, FitsWindows η (-ε j) (b j) W (T.jumpSet j)) (j : Letter) (u : ℤ)
     (hu : u ∈ P.tateDualSide.jumpSet j) : u ≤ ((p - 3) * a : ℕ) := by
-  grind [tateDualSide_jump_near P (hT_window j) (hS_window j) hu, hb_le j, hb_gt j]
+  have h := tateDualSide_jump_near P (hT_window j) (hS_window j) hu
+  simp only [abs_eq_max_neg] at h
+  grind [hb_le j, hb_gt j]
 
 /-- The inequality for a safe move at the level `1`. Let `6 (a + η + W) < β`, let the jump `u` of
 the moving side lie in `[-η, η]` or in `-σ • [β, β + W]`, and the jump `v` of the resting side in
@@ -862,8 +878,9 @@ lemma isSafeMoveFst_of_negativeWindowDepth {k : KummerChart Γ} {O : k.Coeffs} {
       (by simpa only [zero_add] using tateDualSide_jump_le hb_le hb_gt hS_window P hT_window)
       fun u hu y hy_ge hy_lt ↦ ?_
     rw [mem_twoWindows_union_iff]
-    obtain h_low | h_pos | h_neg :=
-      tateDualSide_jump_near P (hT_window _) (hS_window _) hu <;> omega
+    have h := tateDualSide_jump_near P (hT_window _) (hS_window _) hu
+    simp only [abs_eq_max_neg] at h
+    omega
   have h_anti (l : ℕ) : Antitone (z l) := fun u v h_le ↦ by
     simp only [z, improvedOrders, raisedOrdersAtZero]
     omega
@@ -896,7 +913,7 @@ counted with multiplicity. Take the `d` in `S.paramLattice` such that at every l
 letter-`i` part `S.constantAt i d` of `1 ⊗ d` lies below an element of the extension without pole
 whose differences with its translates by the group of the chart have the orders
 `fewLowJumpsDepth a η W (b i) (ε i)`. They form a `ℤ_[p]`-submodule of `S.paramLattice` with
-quotient of length at most `11 ∑ i, (n i (a + 1) + r i (W + 1))`. -/
+quotient of length at most `∑ i, (n i (8a + 1) + 3 r i (W + 1))`. -/
 lemma relLength_iInf_comap_deepConstants_le {k : KummerChart Γ} {O : k.Coeffs}
     {S : k.PairingSide O} (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ}
     {b n r : k.Letter → ℕ} {ε : k.Letter → ℤˣ} (hb_le : ∀ i : k.Letter, b i + W + η ≤ (p - 3) * a)
@@ -908,20 +925,17 @@ lemma relLength_iInf_comap_deepConstants_le {k : KummerChart Γ} {O : k.Coeffs}
     relLength (⊤ : Submodule ℤ_[p] S.paramLattice)
         (⨅ i : k.Letter, (S.deepConstants i 0 (fewLowJumpsDepth a η W (b i) (ε i))).comap
           (S.constantAt i)) ≤
-      (11 * ∑ i : k.Letter, (n i * (a + 1) + r i * (W + 1)) : ℕ) := by
-  have h_len (i : Letter) :
-      relLength ⊤ ((S.deepConstants i 0 (fewLowJumpsDepth a η W (b i) (ε i))).comap
-          (S.constantAt i)) ≤
-        ↑((2 * a + 1) * n i + (3 * (W + 1) * r (i.stepBack 1) + 6 * a * n (i.stepBack 1))) := by
-    rw [relLength_comap, Submodule.map_top]
-    exact relLength_constantAt_deepConstants_le hk hp hb_le hb_gt hb_gap h_window hn hr i
+      (∑ i : k.Letter, (n i * (8 * a + 1) + r i * (3 * (W + 1))) : ℕ) := by
   -- `i ↦ i.stepBack 1` permutes the letters
   have h_perm (f : Letter → ℕ) : ∑ i : Letter, f (i.stepBack 1) = ∑ i : Letter, f i := by
     simp [Equiv.sum_comp]
-  grw [relLength_iInf_le, sum_le_sum fun i _ ↦ h_len i]
+  grw [relLength_iInf_le]
+  simp_rw [relLength_comap, Submodule.map_top]
+  grw [sum_le_sum fun i _ ↦
+      relLength_constantAt_deepConstants_le hk hp hb_le hb_gt hb_gap h_window hn hr i]
   norm_cast
   simp only [sum_add_distrib, ← mul_sum, ← sum_mul, h_perm]
-  lia
+  exact le_of_eq (by ring)
 
 /-- Scaled cup coboundaries for few low jumps. Let `k` be an unramified Kummer chart with constants
 `W(𝔽_{p ^ k.f})`, whose letters are the units of `𝔽_{p ^ k.f}`, and let `p ≥ 5` and `η ≥ 1`. Let
@@ -936,7 +950,7 @@ Hodge–Tate jumps of `Y` at the letters `i`. Suppose that at every letter `i`
 `S.jumpSet i`, counted with multiplicity.
 
 Then there is a `ℤ_[p]`-submodule `V` of `S.paramLattice` such that `S.paramLattice / V` has length
-at most `11 ∑ i, (n i (a + 1) + r i (W + 1))`, and `V` cups to zero. That is, let `T` be a second
+at most `∑ i, (n i (8a + 1) + 3 r i (W + 1))`, and `V` cups to zero. That is, let `T` be a second
 side with each `T.jumpSet i` in the union of `[-η, η]` and the opposite far window
 `-ε i • [b i, b i + W]`, and let `P` be a pairing of the lattices of `T` and `S`. For `c` in
 `T.paramLattice` and `d` in `V`, the cup product under `P` of the cocycles `T.cocycleMap c` and
@@ -954,7 +968,7 @@ lemma exists_relLength_le_and_isScaledCupCoboundary {k : KummerChart Γ} {O : k.
     (hr_all : ∀ i : k.Letter, ∑ u ∈ S.jumpSet i, k.f * S.jumpMultiplicity i u ≤ r i) (hη : 1 ≤ η) :
     ∃ V : Submodule ℤ_[p] S.paramLattice,
       relLength (⊤ : Submodule ℤ_[p] S.paramLattice) V ≤
-        (11 * ∑ i : k.Letter, (n i * (a + 1) + r i * (W + 1)) : ℕ) ∧
+        (∑ i : k.Letter, (n i * (8 * a + 1) + r i * (3 * (W + 1))) : ℕ) ∧
       ∀ (T : k.PairingSide O) (P : T.SidePairing S) (c : T.paramLattice),
         (∀ i : k.Letter, FitsWindows η (-ε i) (b i) W (T.jumpSet i)) →
         ∀ d ∈ V, P.IsScaledCupCoboundary 0 c d := by

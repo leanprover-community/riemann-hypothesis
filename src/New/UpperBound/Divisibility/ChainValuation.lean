@@ -1,5 +1,9 @@
-import New.UpperBound.Divisibility.MarkedPrimes
-import New.UpperBound.Kernels.ThetaLiftGauge
+module
+
+import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+public import New.UpperBound.Divisibility.MarkedPrimes
+public import New.UpperBound.Kernels.ThetaLiftGauge
+import Lib.General.LinearAlgebra.MatrixNormBounds
 
 /-!
 # p-adic gauge bounds for chains of theta lifts and restrictions to `Y_m`
@@ -41,6 +45,8 @@ Notions from other files:
   X_{j+1}) translated by the finite Heisenberg operator of x_j.
 * `New.Data.piNPlaces`: the set of primes dividing `π`, where `π π̄ = N`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -125,7 +131,7 @@ lemma exists_supported_translateDatum_eq {q : ℕ} {x : D.Translations}
   -- both `q` and `M = piM * star piM` are units
   have h_unit_outside (w : FinPlace D.E) (hw : w ∈ Sᶜ) :
       ↑q ∉ w.asIdeal ∧ (1 = D.piMBar ∨ ¬D.IsChosen (star w)) := by
-    simp_all [S, ← piM_mul_star, IsChosen, w.2.mul_mem_iff_mem_or_mem]
+    simp_all [S, ← piM_mul_star, IsChosen, w.isPrime.mul_mem_iff_mem_or_mem]
   have h_int : idem Sᶜ • x j ∈ stdLattice D.E (D.X (j + 1) × D.X j) := fun i ↦
     idem_mul_mem_Ô.2 fun w hw ↦ by simpa using D.mem_integralAfter_of_mem_admissibleTranslations hx
                                      h_unit_outside i w hw
@@ -182,12 +188,12 @@ lemma IsWeakChainDatum.translateDatum_mem_standardData (h_weak : IsWeakChainDatu
   refine D.mem_integralAfter_of_mem_admissibleTranslations (h_weak.support_subset x hx) fun w hw ↦
     ⟨?_, ?_⟩
   · -- `w` lies above `p`, which is prime to `ϑ.normQ` and to `N`
-    rw [Nat.cast_mul, w.2.mul_mem_iff_mem_or_mem, not_or]
-    exact ⟨w.2.notMem_of_isCoprime_of_mem hQ.cast hw,
+    rw [Nat.cast_mul, w.isPrime.mul_mem_iff_mem_or_mem, not_or]
+    exact ⟨w.isPrime.notMem_of_isCoprime_of_mem hQ.cast hw,
       (D.natCast_notMem_and_star_notMem_piNPlaces_of_ne hp hw).1⟩
   -- as `M = piM * star piM`, a chosen `star w` above `p` forces `p ∣ M`
   refine hδ.imp_right fun h ↦ ?_
-  simp_all [← piM_mul_star, IsChosen, ← w.natCast_mem_iff_dvd, w.2.mul_mem_iff_mem_or_mem]
+  simp_all [← piM_mul_star, IsChosen, ← w.natCast_mem_iff_dvd, w.isPrime.mul_mem_iff_mem_or_mem]
 
 end StandardData
 
@@ -207,14 +213,15 @@ variable {P : Parameters} {D : Data P}
 
 /-- Let the tensor of data `∑ x, Ψ x • ⊗ⱼ Φ x j` be jointly invariant: it is unchanged when `Φ x j`
 is moved by `(D.liftKernel ϑ j).ω (a j, a (j + 1))`, for `a j` in the level `D.levelX j` and
-`a j = 1` for `j ≥ m = D.m`. Let the `Ψ x` be integral at `p`, and let the kernel of each `Φ x j`
-send vectors of gauge `c` at `g * d j` to vectors of gauge at most `p ^ r j * c` at `g' * d (j + 1)`
-(`raises`). Then the `Ψ`-combination of the chains of `m` lifts sends a source form of gauge at most
-`1` at `d 0` to a form of gauge at most `p ^ ∑ j < m, r j` at `d m`. -/
+`a j = 1` for `j ≥ m = D.m`. Let the `Ψ x` with `x ∈ Ψ.support` be integral at `p`, and let the
+kernel of each `Φ x j` send vectors of gauge `c` at `g * d j` to vectors of gauge at most
+`p ^ r j * c` at `g' * d (j + 1)` (`raises`). Then the `Ψ`-combination of the chains of `m` lifts
+sends a source form of gauge at most `1` at `d 0` to a form of gauge at most `p ^ ∑ j < m, r j` at
+`d m`. -/
 lemma gaugeLe_chainCombination {Φ : D.Translations → ∀ j : ℕ, (D.homX j).finitePart}
     (h_inv : IsJointlyInvariant (D.liftKernel ϑ) D.m Ψ.support
       (fun x : D.Translations ↦ Ψ x • LinearMap.id) Φ)
-    (h_int : ∀ x : D.Translations, ‖ιₚ (Ψ x)‖ ≤ 1) (d : ∀ j : ℕ, Gf D.E (D.X j)) {r : ℕ → ℝ}
+    (h_int : ∀ x ∈ Ψ.support, ‖ιₚ (Ψ x)‖ ≤ 1) (d : ∀ j : ℕ, Gf D.E (D.X j)) {r : ℕ → ℝ}
     (h_raise : ∀ x ∈ Ψ.support, ∀ j < D.m,
       Φ x j ∈ (D.liftKernel ϑ j).raises (d j) (d (j + 1)) (p ^ r j))
     {φ : D.SourceForm} (hφ : GaugeLe (d 0) 1 φ.val) :
@@ -232,7 +239,7 @@ lemma gaugeLe_chainCombination {Φ : D.Translations → ∀ j : ℕ, (D.homX j).
     simpa only [classPoints_of_le c g le_rfl] using apply_kernelProduct_le_prod_mul (D.liftKernel ϑ)
       (fun j g ↦ weylGauge D.columnCount (D.lastEntry j) (g * d j)) (by simp) (h_raise x hx) hφ
       (classPoints c g)
-  grw [weylGauge_smul, h_term, h_int]
+  grw [weylGauge_smul, h_term, h_int x hx]
   simp [rpow_nonneg, rpow_sum_of_pos, NeZero.pos]
 
 /-- Let `Ψ` be a weak chain datum for the twist `ϑ`: the tensor `∑ x, Ψ x • ⊗ⱼ D.translateDatum x j`
@@ -263,8 +270,8 @@ lemma IsWeakChainDatum.gaugeLe_chain (h_weak : IsWeakChainDatum ϑ Ψ) (hQ : p.C
     -- apply the invariance of the original data to `β` composed with the tensor of the `t j`
     simpa +contextual [*] using
       h_weak.isJointlyInvariant a ha (β ∘ₗ TensorChain.map (fun j ↦ t j) D.m)
-  exact gaugeLe_chainCombination h_inv (fun x ↦ by simpa using h_weak.integral x p hQ ιₚ) d h_raise
-    hφ
+  exact gaugeLe_chainCombination h_inv (fun x _ ↦ by simpa using h_weak.integral x p hQ ιₚ) d
+    h_raise hφ
 
 lemma norm_star_piMBar_le_one : ‖ιₚ (star D.piMBar)‖ ≤ 1 :=
   norm_le_one_of_isIntegral (ιₚ.comp (starRingEnd _)) D.piMBar.prop.algebraMap
@@ -304,25 +311,27 @@ lemma GaugeLe.restrictToY_of_diag {d : Gf D.E (D.X D.m)}
     ‖D.branching.map (↑) *ᵥ ξ‖ ≤ ‖ξ‖ := by
     simpa using norm_mulVec_le (c := 1) (by simp [IsUltrametricDist.norm_intCast_le_one]) ξ
   intro g
-  suffices h_eq : weylGauge D.columnsY (D.lastEntry D.m) (g * 1) ((D.restrictToY φ).1 g) =
+  suffices h_eq : weylGauge D.columnsY (D.lastEntry D.m) (g * 1) ((D.restrictToY φ).val g) =
       ‖D.branching.map (↑) *ᵥ weylRep D.columnCount (D.lastEntry D.m) (fun τ ↦
-          GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (D.borderU g * d)⁻¹.1) *ᵥ
-        (ιₚ ∘ φ.1 (D.borderU g))‖ from
+          GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (D.borderU g * d)⁻¹.val) *ᵥ
+        (ιₚ ∘ φ.val (D.borderU g))‖ from
     h_eq.trans_le ((h_integral _).trans (hφ (D.borderU g)))
   -- At `τ`, `(diag (g, 1) * d)⁻¹` is the block matrix `diag (g⁻¹, s τ)`.
-  let s (τ : D.Φ) : ℂ_[p]ˣ := (d.1.map (adeleExtension (weightEmbedding ιₚ τ))).det⁻¹
+  let s (τ : D.Φ) : ℂ_[p]ˣ := (d.val.map (adeleExtension (weightEmbedding ιₚ τ))).det⁻¹
   have h_block (τ : D.Φ) : ((D.borderU g * d)⁻¹.1.map (adeleExtension (weightEmbedding ιₚ τ))).1 =
       GL.blockScalar (fun _ ↦ D.lastIndexEquiv.sumCongr (.refl _))
         (fun τ ↦ ((g * 1)⁻¹.1.map (adeleExtension (weightEmbedding ιₚ τ))).1) (fun τ ↦ s τ) τ := by
-    simp [s, ← map_inv, ← ext_iff, borderU, GL.blockScalar, map_inv _ d.1, hd]
+    simp [s, ← map_inv, ← ext_iff, borderU, GL.blockScalar, map_inv _ d.val, hd]
   let a : ℂ := ∏ τ : D.Φ, Φ τ (star (D.piN : D.E)) ^ (-D.branchExponent τ)
-  have h_restrict : (D.restrictToY φ).1 g = a • D.branching.map (↑) *ᵥ φ.1 (D.borderU g) := rfl
-  have h_intertwine : D.branching.map (↑) * weylRep D.columnCount (D.lastEntry D.m) (fun τ ↦
-        GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (D.borderU g * d)⁻¹.1) =
+  have h_restrict : (D.restrictToY φ).val g = a • D.branching.map (↑) *ᵥ φ.val (D.borderU g) := rfl
+  have h_intertwine : D.branching.map (↑) *ᵥ weylRep D.columnCount (D.lastEntry D.m) (fun τ ↦
+        GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (D.borderU g * d)⁻¹.val) *ᵥ
+        (ιₚ ∘ φ.val (D.borderU g)) =
       (∏ τ, s τ ^ D.branchExponent τ) • (weylRep D.columnsY (D.lastEntry D.m) (fun τ ↦
-          GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (g * 1)⁻¹.1) *
-        D.branching.map (↑)) :=
-    D.isBranchingMap_branching.mul_weylRep _ _ s _ h_block
+          GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (g * 1)⁻¹.val) *ᵥ
+        D.branching.map (↑) *ᵥ (ιₚ ∘ φ.val (D.borderU g))) := by
+    rw [mulVec_mulVec, D.isBranchingMap_branching.mul_weylRep _ _ s _ h_block, smul_mulVec,
+      ← mulVec_mulVec]
   -- The scalars: `weightEmbedding ιₚ τ π = ιₚ (Φ τ π̄)` has the absolute value of `N` if
   -- `star (inducedPlace τ)` divides `π`, and is a unit if not.
   have h_norm (τ : D.Φ) : NormedField.valuation.comap (weightEmbedding ιₚ τ) D.piN =
@@ -337,12 +346,10 @@ lemma GaugeLe.restrictToY_of_diag {d : Gf D.E (D.X D.m)}
           ^ D.branchExponent τ :=
       prod_congr rfl fun τ _ ↦ congrArg (· ^ D.branchExponent τ) (congrArg NNReal.toReal (h_norm τ))
     simpa [a, s, hd, apply_ite, starRingEnd_apply (R := D.E)] using h_prod
-  have h_comp : ιₚ ∘ (D.branching.map (↑) *ᵥ φ.1 (D.borderU g)) =
-      D.branching.map (↑) *ᵥ (ιₚ ∘ φ.1 (D.borderU g)) := funext (by simp [mulVec_eq_sum])
-  rw [h_restrict, weylGauge_smul, mulVec_mulVec]
-  -- `erw`, as `D.X D.m` and `InitIndex ⊕ Unit` agree only after unfolding
-  erw [h_intertwine, smul_mulVec, ← mulVec_mulVec, Units.smul_def, norm_smul]
-  rw [h_scalar, weylGauge, h_comp]
+  have h_comp : ιₚ ∘ (D.branching.map (↑) *ᵥ φ.val (D.borderU g)) =
+      D.branching.map (↑) *ᵥ (ιₚ ∘ φ.val (D.borderU g)) := funext (by simp [mulVec_eq_sum])
+  rw [h_restrict, weylGauge_smul, h_intertwine, Units.smul_def, norm_smul, h_scalar, weylGauge,
+    h_comp]
 
 /-- For `p ≠ N`, a form that has gauge at most `c` at every point has a restriction to `Y_m` with
 the same bound. -/
@@ -376,7 +383,7 @@ lemma weylNormSq_restrictToY_le (σ : ℂ →+* ℂ) (φ : D.FormX D.m) (h : Gf 
     simpa [Real.log_pow] using congrArg Real.log h_sq
   have res_eq : weylNormSq (σ ∘ (D.restrictToY φ).val h) =
       ‖σ c‖ ^ 2 * weylNormSq (D.branching.map (↑) *ᵥ σ ∘ φ.val (D.borderU h)) :=
-    (weylNormSq_comp_smul _ σ c).trans (by simp [c, Function.comp_def, σ.map_mulVec])
+    (weylNormSq_comp_smul _ σ c).trans (by simp [Function.comp_def, σ.map_mulVec])
   have log_c : Real.log (‖σ c‖ ^ 2) = -((∑ τ, D.branchExponent τ : ℝ) * Real.log D.N) := by
     have h_norm_c : ‖σ c‖ = ∏ τ : D.Φ, ‖weightEmbedding σ τ D.piN‖ ^ (-D.branchExponent τ) := by
       simp [c, starRingEnd_apply (R := D.E)]
@@ -395,62 +402,5 @@ lemma weylNormSq_restrictToY_le (σ : ℂ →+* ℂ) (φ : D.FormX D.m) (h : Gf 
 end New.Data
 
 end RestrictionGauge
-
-/-! ## Values of source forms -/
-
-section SourceValues
-
-open Matrix
-
-namespace New.Data
-
-/-- The weight on the hermitian space `X₀` has `D.columnCount τ h` columns of height `h` in its
-Young diagram at the infinite place `τ`, and last entry `D.lastEntry 0 = 0`. Let `ζ` be a vector of
-its Weyl module, `toPoly` of `ιₚ ∘ ζ` its polynomial, and `z_τ` the first column of variables at
-`τ`, indexed by the basis of `X₀`. Then `ζ` has gauge at most `1` at `g` if and only if this
-polynomial, after the substitution `rowSubst` of `g z_τ` for `z_τ`, is a combination of the
-`∏_τ (a_τ! / α_τ!) z_τ ^ α_τ` with `|α_τ| = a_τ` and coefficients in the unit ball `valRingCp p` of
-`ℂ_[p]`. Here `g` is read at the place induced by `ιₚ` and the complex embedding `New.Φ τ` chosen at
-`τ`, and `a_τ`, the length of the one row of the weight at `τ`, is `D.a` at the places in
-`D.aPlaces` and `0` at the others. -/
-lemma weylGauge_le_one_iff_mem_span {P : Parameters} (D : Data P) {p : ℕ} [Fact p.Prime]
-    [PadicPlace p] (g : Gf D.E (D.X 0)) (ζ : WeylIndex (D.X 0) D.columnCount → ℂ) :
-    weylGauge D.columnCount (D.lastEntry 0) g ζ ≤ 1 ↔
-      rowSubst (fun τ : D.Φ ↦ (g : Matrix (D.X 0) (D.X 0) (𝔸f D.E)).map
-          (adeleExtension (ιₚ.comp (New.Φ τ))))
-          (toPoly (fun _ : D.Φ ↦ D.X 0) D.columnCount (ιₚ ∘ ζ)) ∈
-        Submodule.span (valRingCp p) (multinomialMonomial ℂ_[p] ''
-          {α | ∀ τ : D.Φ, ∑ b : D.X 0, α τ b = if τ ∈ D.aPlaces then D.a else 0}) := by
-  classical
-  -- The gauge at `g` is the norm of `ζ` moved by the Schur matrix of the conjugate `z` of `g⁻¹`. On
-  -- polynomials this substitutes `zᵀ`, and the weight of `X₀` has one row at each place.
-  let z (τ : D.Φ) : Matrix (D.X 0) (D.X 0) ℂ_[p] :=
-    g⁻¹.val.val.map (adeleExtension (weightEmbedding ιₚ τ))
-  have h_card : Fintype.card (D.X 0) = D.k := by simp [D.card_X, Data.n]
-  have h_gauge :
-      weylGauge D.columnCount (D.lastEntry 0) g ζ = ‖schur D.columnCount z *ᵥ ιₚ ∘ ζ‖ := by
-    simp [weylGauge, weylRep, Data.lastEntry, z, -map_inv, -coe_units_inv]
-  -- As `g` is unitary, the transpose of the conjugate of `g⁻¹` is `g`.
-  have h_transpose (τ : D.Φ) : (z τ)ᵀ =
-      (g : Matrix (D.X 0) (D.X 0) (𝔸f D.E)).map (adeleExtension (ιₚ.comp (New.Φ τ))) := by
-    ext a b
-    simp only [z, U.inv_val_eq_conjTranspose g, transpose_apply, map_apply, conjTranspose_apply,
-      ← adeleExtension_star, star_star]
-  have h_poly : toPoly (fun _ : D.Φ ↦ D.X 0) D.columnCount (schur D.columnCount z *ᵥ ιₚ ∘ ζ) =
-      rowSubst (fun τ : D.Φ ↦ (z τ)ᵀ) (toPoly (fun _ : D.Φ ↦ D.X 0) D.columnCount (ιₚ ∘ ζ)) := by
-    simp [toPoly_schur, detPow, schurDetExp]
-  have h_row (τ : D.Φ) : D.columnCount τ 1 = if τ ∈ D.aPlaces then D.a else 0 := ite_eq_left rfl
-  have h_rank (τ : D.Φ) : 1 < rankAt (fun _ : D.Φ ↦ D.X 0) τ := by grind [D.ten_thousand_le_m]
-  have h_one_row (τ : D.Φ) (h : ℕ) (h_one : 1 < h) (h_lt : h < rankAt (fun _ : D.Φ ↦ D.X 0) τ) :
-      D.columnCount τ h = 0 := by grind [Data.columnCount]
-  simp only [← h_transpose, ← h_poly, ← h_row, h_gauge]
-  -- The gauge is the largest norm of a coordinate, and `valRingCp p` is the unit ball.
-  rw [toPoly_mem_span_multinomialMonomial_iff h_rank h_one_row,
-    pi_norm_le_iff_of_nonneg zero_le_one]
-  rfl
-
-end New.Data
-
-end SourceValues
 
 end

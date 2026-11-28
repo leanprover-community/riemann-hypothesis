@@ -1,18 +1,42 @@
 #!/bin/bash
-# Set up (or update) a host for the self-hosted GitHub Actions runner of the merge queue.
-# Run as root, from a copy of this directory: `bash setup-host.sh`. It is idempotent.
+# Set up (or update) a host for a self-hosted GitHub Actions runner. Run as root, from a copy of
+# this directory. It is idempotent, and restarts the runner it sets up (killing a running job).
 #
-# The host holds no credential of the project. It runs one ephemeral just-in-time runner at a
-# time as the unprivileged user ghrunner, which gets a fresh home directory for every job (see
-# loop.sh). It gets each job's one-time runner configuration from the spool directory, which a
-# trusted workstation fills (mint-jit.sh). See CACHE.md, "Self-hosted merge queue runner".
+#   bash setup-host.sh
+#       the rh-big runner of the merge queue: user ghrunner, rh-runner.service, all CPUs;
+#   bash setup-host.sh <instance> <label> <cpus> <memory-max>
+#       one of several runners on a shared host, for example
+#       `bash setup-host.sh pr1 rh-pr-trusted 0-37 150G`: user ghrunner-<instance>,
+#       rh-runner@<instance>.service, confined to the cpuset <cpus> and to <memory-max> of memory.
+#
+# The host holds no credential of the project. Each runner runs one ephemeral just-in-time runner
+# at a time as its own unprivileged user, which gets a fresh home directory for every job (see
+# loop.sh). It gets each job's one-time runner configuration from its spool directory, which a
+# trusted workstation fills (mint-jit.sh). See CACHE.md, "Self-hosted runners".
 set -euo pipefail
 here=$(cd "$(dirname "$0")" && pwd)
 VERSION=2.338.2
 SHA256=baebf204307bac6193480852732f0aba2ae97b6c5597c244f4d5558390147c40
-U=ghrunner
 
 [ "$(id -u)" = 0 ] || { echo "run as root" >&2; exit 1; }
+instance=${1:-}
+if [ -z "$instance" ]; then
+  U=ghrunner
+  spool=/var/lib/rh-runner/spool
+  firewall=ghrunner-firewall
+  service=rh-runner.service
+else
+  [ $# = 4 ] || { echo "usage: setup-host.sh [<instance> <label> <cpus> <memory-max>]" >&2; exit 1; }
+  label=$2 cpus=$3 memory_max=$4
+  [[ $instance =~ ^[a-z0-9]+$ ]] || { echo "bad instance name $instance" >&2; exit 1; }
+  case "$label" in rh-big | rh-pr-trusted | rh-pr-fork) ;; *) echo "unknown label $label" >&2; exit 1 ;; esac
+  [[ $cpus =~ ^[0-9]+(-[0-9]+)?(,[0-9]+(-[0-9]+)?)*$ ]] || { echo "bad cpuset $cpus" >&2; exit 1; }
+  [[ $memory_max =~ ^[0-9]+[KMGT]$ ]] || { echo "bad memory limit $memory_max" >&2; exit 1; }
+  U=ghrunner-$instance
+  spool=/var/lib/rh-runner/$instance/spool
+  firewall=ghrunner-firewall-$instance
+  service=rh-runner@$instance.service
+fi
 
 # The user: no sudo, no password, no other groups.
 if ! id "$U" >/dev/null 2>&1; then
@@ -47,11 +71,16 @@ install -m 0755 -o root -g root "$here/loop.sh" /opt/rh-runner/loop.sh
 install -m 0755 -o root -g root "$here/job-started.sh" /opt/rh-runner/job-started.sh
 
 # The spool of one-time runner configurations: root only.
-install -d -m 0700 -o root -g root /var/lib/rh-runner /var/lib/rh-runner/spool
+install -d -m 0700 -o root -g root /var/lib/rh-runner "$(dirname "$spool")" "$spool"
+if [ -n "$instance" ]; then
+  install -d -m 0755 -o root -g root /etc/rh-runner
+  printf 'LABEL=%s\nCPUS=%s\nMEMORY_MAX=%s\n' "$label" "$cpus" "$memory_max" > "/etc/rh-runner/$instance.env"
+  chmod 0644 "/etc/rh-runner/$instance.env"
+fi
 
-# No metadata service (IMDS, IPv4 and IPv6) and no private addresses for ghrunner. loop.sh
-# also denies these addresses to the job's cgroup (IPAddressDeny).
-cat > /usr/local/sbin/ghrunner-firewall <<EOF
+# No metadata service (IMDS, IPv4 and IPv6) and no private addresses for the runner user.
+# loop.sh also denies these addresses to the job's cgroup (IPAddressDeny).
+cat > /usr/local/sbin/$firewall <<EOF
 #!/bin/bash
 set -e
 for d in 169.254.0.0/16 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 100.64.0.0/10; do
@@ -61,16 +90,16 @@ for d in fd00::/8 fe80::/10; do
   ip6tables -C OUTPUT -d \$d -m owner --uid-owner $uid -j REJECT 2>/dev/null || ip6tables -A OUTPUT -d \$d -m owner --uid-owner $uid -j REJECT
 done
 EOF
-chmod 0755 /usr/local/sbin/ghrunner-firewall
-cat > /etc/systemd/system/ghrunner-firewall.service <<'EOF'
+chmod 0755 /usr/local/sbin/$firewall
+cat > /etc/systemd/system/$firewall.service <<EOF
 [Unit]
-Description=Block the metadata service and private ranges for uid ghrunner
-Before=network-pre.target rh-runner.service
+Description=Block the metadata service and private ranges for uid $U
+Before=network-pre.target $service
 Wants=network-pre.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/local/sbin/ghrunner-firewall
+ExecStart=/usr/local/sbin/$firewall
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -79,12 +108,13 @@ EOF
 echo 'kernel.yama.ptrace_scope = 1' > /etc/sysctl.d/60-ptrace-scope.conf
 sysctl -q -p /etc/sysctl.d/60-ptrace-scope.conf
 
-# No cron or at jobs for ghrunner, so nothing outlives a job.
+# No cron or at jobs for the runner user, so nothing outlives a job.
 for f in /etc/cron.deny /etc/at.deny; do
   grep -qx "$U" "$f" 2>/dev/null || echo "$U" >> "$f"
 done
 
-cat > /etc/systemd/system/rh-runner.service <<'EOF'
+if [ -z "$instance" ]; then
+  cat > /etc/systemd/system/rh-runner.service <<'EOF'
 [Unit]
 Description=Ephemeral GitHub Actions runner for the merge queue (one job per runner)
 After=network-online.target ghrunner-firewall.service
@@ -97,9 +127,24 @@ RestartSec=10
 [Install]
 WantedBy=multi-user.target
 EOF
+else
+  cat > /etc/systemd/system/rh-runner@.service <<'EOF'
+[Unit]
+Description=Ephemeral GitHub Actions runner %i (one job per runner)
+After=network-online.target ghrunner-firewall-%i.service
+Wants=network-online.target
+Requires=ghrunner-firewall-%i.service
+[Service]
+ExecStart=/opt/rh-runner/loop.sh %i
+Restart=always
+RestartSec=10
+[Install]
+WantedBy=multi-user.target
+EOF
+fi
 
 systemctl daemon-reload
-systemctl enable --now ghrunner-firewall.service
-systemctl enable rh-runner.service
-systemctl restart rh-runner.service
-echo "set up: $(cat /opt/rh-runner/actions-runner/.version), uid $uid"
+systemctl enable --now "$firewall.service"
+systemctl enable "$service"
+systemctl restart "$service"
+echo "set up $service: $(cat /opt/rh-runner/actions-runner/.version), user $U, uid $uid"

@@ -1,6 +1,18 @@
+module
+
+import Mathlib.Analysis.Polynomial.Norm
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
+public import Lib.PadicHodge.Characters
+public import Lib.Weil.DualPair.FiniteAction
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+public import Lib.General.LinearAlgebra.MatrixPolynomials
+import Lib.Adelic.Adeles.StrongApproximation
 import Lib.GLn.SchurModule.SchurNorm
-import Lib.PadicHodge.Characters
-import Lib.Weil.DualPair.FiniteAction
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Attached Galois representations: traces, characteristic polynomials and rank one
@@ -11,7 +23,9 @@ complex polynomials, one for each finite place. A continuous representation `ρ`
 trace form, with an open map `j` to the Galois group, is attached to `P` when, along most Frobenius
 elements (the filter `New.mostFrobenii`), its characteristic polynomials approach `ιℓ (P w)`. The
 file shows that the characteristic polynomials are then determined by `P`, so two attached
-representations have the same traces. It also shows that the representation attached to an
+representations have the same traces. The attachment condition itself asserts coefficientwise
+approximation on the Frobenius filter, not pointwise equality at every unramified place.
+It also shows that the representation attached to an
 eigenform on the definite unitary group of rank one is the avatar of an algebraic Hecke character.
 
 ## Main definitions and results
@@ -46,6 +60,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.Main.OddRank` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Attached representations and the existence statement -/
 
@@ -173,11 +189,9 @@ polynomial of `M` is a root of `P`. -/
 lemma isRoot_of_isRoot_charpoly {m K : Type*} [Fintype m] [DecidableEq m] [Field K]
     {M : Matrix m m K} {P : Polynomial K} {x : K} (hP : Polynomial.aeval M P = 0)
     (hx : M.charpoly.IsRoot x) : P.IsRoot x := by
-  -- The characteristic polynomial of `aeval M P = 0` is a power of `X`, so that of `M` divides a
-  -- power of `P`.
-  have h_dvd : M.charpoly ∣ P ^ Fintype.card m := by
-    simpa [hP] using charpoly_dvd_charpoly_aeval_comp (Y := M) P
-  exact eq_zero_of_pow_eq_zero (by simpa using hx.dvd h_dvd : P.eval x ^ Fintype.card m = 0)
+  have h_mem : P.eval x ∈ spectrum K (0 : Matrix m m K) := hP ▸
+    spectrum.subset_polynomial_aeval M P ⟨x, Matrix.mem_spectrum_iff_isRoot_charpoly.2 hx, rfl⟩
+  exact (by simpa using Matrix.mem_spectrum_iff_isRoot_charpoly.1 h_mem : P.eval x = 0 ∧ _).1
 
 end New.GaloisRep
 
@@ -189,17 +203,6 @@ open Matrix Polynomial Filter Topology Metric IsUltrametricDist Units
 variable {ℓ : ℕ} [ThePrime ℓ] {E n H : Type} [Field E] [EmbeddedNumberField E] [Fintype n]
   [DecidableEq n] [Group H] [TopologicalSpace H] {P : FinPlace E → ℂ[X]} {j : H → Gal(Ω/E)}
   {ρ : H →* GL n (PadicAlgCl ℓ)}
-
-/-- A continuous character of a compact group with values in the algebraic closure of `ℚ_ℓ` has
-values of absolute value `1`. -/
-lemma norm_eq_one_of_continuous {G : Type*} [Group G] [TopologicalSpace G] [CompactSpace G]
-    {ψ : G →* (PadicAlgCl ℓ)ˣ} (hψ : Continuous ψ) (g : G) : ‖(ψ g).val‖ = 1 := by
-  -- the norm has a maximum at some `a`; compare it with the values at `a * g` and `a / g`
-  obtain ⟨a, ha⟩ : ∃ a : G, ∀ b : G, ‖(ψ b).val‖ ≤ ‖(ψ a).val‖ :=
-    (continuous_val.comp hψ).norm.exists_forall_ge (by simp)
-  apply le_antisymm
-  · simpa [field] using ha (a * g)
-  · simpa [field] using ha (a / g)
 
 /-- For polynomials `D`, `R` over the algebraic closure of `ℚ_ℓ` with `R` monic, if all coefficients
 of `D * R` have absolute value at most `η`, then so do all coefficients of `D`. -/
@@ -213,15 +216,6 @@ lemma norm_coeff_le_of_mul_monic {D R : (PadicAlgCl ℓ)[X]} {η : ℝ} (hR : R.
       isNonarchimedean_norm one_pos R).symm
     _ ≤ η := (supNorm_eq_iSup _).trans_le (ciSup_le h_le)
 
-/-- The coefficients of the characteristic polynomial depend continuously on the matrix. -/
-lemma continuous_coeff_charpoly (i : ℕ) :
-    Continuous fun M : Matrix n n (PadicAlgCl ℓ) ↦ M.charpoly.coeff i := by
-  -- it is a polynomial in the entries: a coefficient of the universal characteristic polynomial
-  have h_eval : Continuous fun M : Matrix n n (PadicAlgCl ℓ) ↦
-      MvPolynomial.eval M.uncurry ((charpoly.univ (PadicAlgCl ℓ) n).coeff i) :=
-    (MvPolynomial.continuous_eval _).comp (by fun_prop)
-  exact h_eval.congr fun M ↦ charpoly.univ_coeff_eval₂Hom n (RingHom.id _) M.uncurry i
-
 /-- Here `E` is a number field embedded in `Ω` (`EmbeddedNumberField`). Let `ρ` be attached through
 an open map `j` to the system of polynomials `P` (`GaloisRep.Attached`). As the Frobenius element at
 `w` tends to `j x` (along most Frobenius data `(w, A, s)`, `New.mostFrobeniiAt`), the `i`-th
@@ -233,7 +227,7 @@ lemma GaloisRep.Attached.tendsto_charpoly_coeff [PadicIso ℓ] (hρ : Attached P
   -- Near `j x` a Frobenius element is `j z` with the coefficient at `z` within `η` of that at `x`,
   -- and `P` is within `η` of the polynomial at `z`; the distance is ultrametric.
   let c (z : H) : PadicAlgCl ℓ := (ρ z).val.charpoly.coeff i
-  have hc : Continuous c := (continuous_coeff_charpoly i).comp (continuous_val.comp hρ.continuous)
+  have hc : Continuous c := (continuous_charpoly_coeff i).comp (continuous_val.comp hρ.continuous)
   refine nhds_basis_closedBall.tendsto_right_iff.2 fun η hη ↦ ?_
   have h_nhds : j '' {z : H | c z ∈ closedBall (c x) η} ∈ 𝓝 (j x) :=
     hρ.isOpenMap.image_mem_nhds (hc.continuousAt (closedBall_mem_nhds _ hη))
@@ -248,10 +242,12 @@ lemma GaloisRep.Attached.tendsto_charpoly_coeff [PadicIso ℓ] (hρ : Attached P
 lemma GaloisRep.Attached.trace_eq [PadicIso ℓ] {G : Type} [Group G] [TopologicalSpace G]
     {j' : G → Gal(Ω/E)} {σ : G →* GL n (PadicAlgCl ℓ)} (hρ : Attached P ρ j) (hσ : Attached P σ j')
     (x : H) {y : G} (hxy : j x = j' y) : (ρ x).val.trace = (σ y).val.trace := by
-  -- both characteristic polynomials are the limit of `ιℓ (P w)` as the Frobenius tends to `j x`
-  have h_char : (ρ x).val.charpoly = (σ y).val.charpoly :=
-    Polynomial.ext fun i ↦ tendsto_nhds_unique (hρ.tendsto_charpoly_coeff x i)
+  -- The localized Frobenius filter is nontrivial by Chebotarev, so its limits are unique.
+  have h_coeff (i : ℕ) : (ρ x).val.charpoly.coeff i = (σ y).val.charpoly.coeff i :=
+    tendsto_nhds_unique (hρ.tendsto_charpoly_coeff x i)
       (by simpa only [hxy] using hσ.tendsto_charpoly_coeff y i)
+  have h_char : (ρ x).val.charpoly = (σ y).val.charpoly :=
+    AddMonoidAlgebra.ext <| Finsupp.ext h_coeff
   simp [h_char, trace_eq_sum_roots_charpoly]
 
 end New
@@ -303,8 +299,8 @@ variable {E : Type} [Field E] [CMType E]
 as scalar matrices in `U(1)` (`scalarFin`), is continuous. -/
 lemma New.continuous_scalarFin_divStar :
     Continuous fun x : (𝔸f E)ˣ ↦ scalarFin (Fin 1) (divStar x) :=
-  (U.isClosedEmbedding_coe isUnit_one).continuous_iff.2 <|
-    .matrix_diagonal (continuous_pi fun _ ↦ continuous_subtype_val.comp divStar.continuous)
+  (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).continuous_iff.2 <|
+    .matrix_diagonal (continuous_pi fun _ ↦ continuous_subtypeVal.comp divStar.continuous)
 
 /-- At a split place `w`, the element `x / star x` of `U(1)` for the idele with component `x` at `w`
 and `1` elsewhere is the scalar matrix `x` embedded at `w`. -/

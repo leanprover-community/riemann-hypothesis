@@ -1,5 +1,11 @@
-import Lib.Adelic.Hecke.Basic
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.Adelic.Hecke.Basic
+public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
 # Class sums as integrals over Γ\G, orbit unfolding and means over compact subgroups
@@ -40,6 +46,8 @@ measure. Source: G. Shimura, Introduction to the Arithmetic Theory of Automorphi
 (1971), ch. 3; B. Gross, Algebraic modular forms, Israel J. Math. 113 (1999) 61-93; M. Greenberg and
 J. Voight, Lattice methods for algebraic modular forms on classical groups, arXiv 1209.2460.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -87,9 +95,9 @@ class HasFiniteType : Prop where
   isCompact : IsCompact (K : Set G)
 
 -- `open New.HasFiniteType` turns the two finiteness fields into instances and gives every finite
--- type a `Fintype` instance.
+-- type a `Fintype` instance, at low priority so that a structural `Fintype` instance wins.
 scoped[New.HasFiniteType] attribute [instance] HasFiniteType.finite_classes HasFiniteType.finite_aut
-  Fintype.ofFinite
+scoped[New.HasFiniteType] attribute [instance low] Fintype.ofFinite
 
 open HasFiniteType
 
@@ -150,11 +158,7 @@ lemma card_classAut_out (g : G) :
     Nat.card (classAut Γ K g) = Nat.card (classAut Γ K (DoubleCoset.mk Γ K g).out) := by
   -- The representative is some `γ * g * k`, and conjugation by `γ` matches the two stabilisers.
   obtain ⟨γ, hγ, k, hk, h_out⟩ := mk_out_eq_mul Γ K g
-  have h_mem (a : G) : a ∈ classAut Γ K g ↔ conj γ a ∈ classAut Γ K (mk Γ K g).out := by
-    have h_right : g⁻¹ * (a * (g * k)) ∈ K ↔ g⁻¹ * (a * g) ∈ K := by
-      simp [← mul_assoc, hk, mul_mem_cancel_right]
-    simp [h_out, hγ, hk, h_right, mul_assoc, mul_mem_cancel_left, mul_mem_cancel_right]
-  exact Nat.card_congr ((conj γ).subtypeEquiv h_mem)
+  rw [h_out, card_classAut_mul_mul hγ hk]
 
 /-- The integral over `Γ \ G` of a complex function commutes with multiplication by a constant. -/
 @[simp] lemma classIntegral_const_mul (β : ℂ) (f : G → ℂ) :
@@ -291,7 +295,7 @@ lemma classSum_eq_relIndex_smul [H : HasFiniteType Γ K] [J : HasFiniteType Γ K
         simp_rw [card_eq_sum_ones]
         refine sum_comm' fun γ q ↦ ?_
         have h_mem : q.out⁻¹ * (y⁻¹ * γ * (x * a)) ∈ L → γ ∈ Γ → y⁻¹ * γ * (x * a) ∈ K :=
-          fun h_mem_L _ ↦ (K.mul_mem_cancel_left (K.inv_mem q.out.2)).1 (hLK h_mem_L)
+          fun h_mem_L _ ↦ (K.mul_mem_cancel_left (K.inv_mem q.out.property)).1 (hLK h_mem_L)
         simpa [hT, hL, mul_assoc] using h_mem
   -- Only the class of `x * a` contributes to this class sum, and its weight cancels.
   have hF (x : G) : F x = classSum Γ K fun y ↦ (#(T K y (x * a)) : ℚ) • f y := by
@@ -659,7 +663,7 @@ lemma orbit_mem_smoothInvariants (x : V) :
     have h_cont : Continuous fun z : (H × H) × H × H ↦ (f z.2)⁻¹ * f (z.2 * z.1) := by fun_prop
     filter_upwards [h_cont.tendsto' (1, p) 1 (by simp) (IsSmoothRep.eventually_fixed (ρ := ρ) x)]
       with z hz
-    rwa [← ρ.inv_apply_eq_iff, ← Module.End.mul_apply, ← map_mul]
+    rwa [← ρ.inv_apply_eq_iff, ← mul_apply_eq_comp, ← map_mul]
   -- By compactness one neighbourhood of `1` serves for all `q`.
   exact (isCompact_univ.eventually_forall_of_forall_eventually fun p _ ↦ h_local p).mono
     fun k hk q ↦ hk q (Set.mem_univ q)
@@ -756,7 +760,7 @@ the chosen representatives `q.out` of the cosets `q` equals the sum of `f (a * q
 /-- A sum over coset representatives of `G ⧸ H` of a right `H`-invariant function does not
 change under left translation. -/
 lemma New.sum_mul_out {G B : Type*} [Group G] [AddCommMonoid B] (H : Subgroup G) [Fintype (G ⧸ H)]
-    (f : G → B) (hf : ∀ᵉ (x : G) (y ∈ H), f (x * y) = f x) (a : G) :
+    (f : G → B) (hf : ∀ x : G, ∀ y ∈ H, f (x * y) = f x) (a : G) :
     ∑ q : G ⧸ H, f (a * q.out) = ∑ q : G ⧸ H, f q.out := by
   -- `q ↦ a • q` permutes the cosets, and `(a • q).out = a * q.out * y` for some `y ∈ H`.
   refine Fintype.sum_equiv (MulAction.toPerm a) _ _ fun q ↦ ?_

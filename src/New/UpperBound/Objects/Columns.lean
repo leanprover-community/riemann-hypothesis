@@ -1,10 +1,22 @@
-import Lib.ClassField.Avatar.HeckeBaseChange
+module
+
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
+public import Lib.GLn.Branching.IntegralMap
+public import New.UpperBound.Objects.LiftChains
+public import New.UpperBound.Objects.Weights
+public import New.UpperBound.Seesaw.AdmissibleCombinations
+public import New.UpperBound.Objects.LiftLawsModuloN
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import Lib.SiegelWeil.SingularForms.CentreCoefficients
+public import Lib.Weil.DualPair.FiniteAction
 import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.GLn.Branching.IntegralMap
+import Lib.GLn.SchurModule.SchurNorm
 import Lib.General.Algebra.LevelModulus
-import New.UpperBound.Objects.LiftChains
-import New.UpperBound.Objects.Weights
-import New.UpperBound.Seesaw.AdmissibleCombinations
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Levels of the chain, chain data, and the composite lift
@@ -43,6 +55,8 @@ in `New.UpperBound.Divisibility.LocalDivisibility`, `New.UpperBound.Seesaw.Seesa
 `New.UpperBound.Divisibility.ValuationAtLevel`.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -67,7 +81,7 @@ variable {E n n' : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
 omit [WeilData E] in
 /-- The component at a finite place `w` of the scalar element `ν` is the scalar matrix `ν w`. -/
 @[simp] lemma scalarFin_atPlace (ν : unitary (𝔸f E)) (w : FinPlace E) :
-    ((scalarFin n ν).atPlace w).1 = diagonal fun _ : n ↦ ν.1 w :=
+    ((scalarFin n ν).atPlace w).val = diagonal fun _ : n ↦ ν.val w :=
   diagonal_map rfl
 
 /-- Let `ν`, `ν'` be finite adeles of norm one. The Weil action with characters `a`, `b` of the pair
@@ -137,11 +151,11 @@ def detCharAt (χ : HeckeChar E) (k : ℕ) : GL n (LocProd P) →* ℂˣ :=
 /-- The operator `v ↦ Ψ ⊗ v` of the Schrödinger model at `P` on the finite part for the standard
 spaces on `n` and `n'`, as a linear function of the function `Ψ` of matrices over `LocProd P`. Here
 `Ψ` is read as a function of finite adelic matrices through their components at `P`. -/
-def schrodingerOpAt [_h : IsSplitLevel P N] : (Matrix n' n (LocProd P) → ℂ) →ₗ[ℂ]
+def schrodingerOpAt : (Matrix n' n (LocProd P) → ℂ) →ₗ[ℂ]
     Module.End ℂ ((stdSpace E n).hom (stdSpace E n')).finitePart :=
   LinearMap.mk₂ ℂ
     (fun Ψ v ↦ ⟨_, schrodingerOp_mem_finitePart P (Ψ ∘ fun T ↦ (vecToMatrix T).map (evalPlaces P))
-      v.2⟩)
+      v.property⟩)
     (by simp [Pi.add_comp]) (by simp [Pi.smul_comp]) (by simp) (by simp)
 
 variable [h : IsSplitLevel P N]
@@ -156,15 +170,15 @@ omit [WeilData E] [Fact N.Prime] in
   ext i j w : 3
   have h_at : (embedGL g).atPlace w = GeneralLinearGroup.map (Pi.evalRingHom _ w) g :=
     atPlace_ofSplitPlaces star_notMem _ w
-  exact congrArg (fun k : GL n (LocField w.1) ↦ k i j) h_at
+  exact congrArg (fun k : GL n (LocField w.val) ↦ k i j) h_at
 
 open scoped Classical in
 omit [WeilData E] in
-/-- At a place `w` of `P`, the component `atPlace w` of `embedGL (h.diagN n S)` is
+/-- At a place `w` of `P`, the component `atPlace w` of `embedGL (diagN (P := P) (N := N) n S)` is
 `diag (1, …, 1, N)` if `w` is in `S`, and `1` otherwise. -/
-lemma atPlace_embedGL_diagN (w : P) : (embedGL (h.diagN n S)).atPlace w =
+lemma atPlace_embedGL_diagN (w : P) : (embedGL (diagN (P := P) (N := N) n S)).atPlace w =
     diagGL fun i : n ⊕ Unit ↦
-      if i.isLeft then 1 else if ↑w ∈ S then .mk0 (N : LocField w.1) NeZero.out else 1 :=
+      if i.isLeft then 1 else if ↑w ∈ S then .mk0 (N : LocField w.val) NeZero.out else 1 :=
   (atPlace_ofSplitPlaces star_notMem _ w).trans (by simp [diagN, Units.ext_iff])
 
 omit [WeilData E] [Fact N.Prime] in
@@ -179,7 +193,7 @@ omit [WeilData E] [Fact N.Prime]
 
 lemma isConjDisjoint : Set.IsConjDisjoint (E := E) P := by grind [star_notMem]
 
-lemma natCast_level_mem : ∀ w ∈ P, ↑N ∈ w.1 := fun w hw ↦ (h.natCast_mem_iff w).2 (.inl hw)
+lemma natCast_level_mem : ∀ w ∈ P, ↑N ∈ w.asIdeal := fun w hw ↦ (h.natCast_mem_iff w).2 (.inl hw)
 
 /-- Let `P` hold one place of each conjugate pair above the prime `N` (`IsSplitLevel P N`). An
 element `g` of the finite adelic unitary group whose component at `P` is an integral invertible
@@ -203,7 +217,7 @@ omit [WeilData E]
 /-- Let `x` be the component at `P` of `N u`, assumed integral. Its reduction modulo `N` is `c`
 exactly when `u - c / N` is integral at `P`, with `c / N = residueOverN c`. -/
 lemma reduction_eq_iff_idem_mul_mem {x : O (F := LocProd P)} {c : P → ZMod N} {u : 𝔸f E}
-    (hx : x.1 = evalPlaces P (N * u)) :
+    (hx : x.val = evalPlaces P (N * u)) :
     h.reduction x = c ↔ idem P * (u - residueOverN c) ∈ Ô E := by
   simp +contextual [hx, reduction_eq_iff, sub_div, idem_mul_mem_Ô, NeZero.ne]
 
@@ -214,20 +228,20 @@ is `1` away from `w` and `w̄`. Then there is a unit `x` of the integers at `P`,
 modulo `N` at the places of `P` other than `w`, such that the scalar matrix `ν` is the unitary
 element `embedGL` supported above `N` whose component at `P` is the scalar matrix `x`. -/
 lemma exists_embedGL_scalar_eq_scalarFin [h : IsSplitLevel P N] {ν : unitary (𝔸f E)} (w : P)
-    (h_int : ν.1 ∈ Ô E) (h_supp : ∀ v : FinPlace E, v ≠ w.1 → star v ≠ w.1 → ν.1 v = 1) :
+    (h_int : ν.val ∈ Ô E) (h_supp : ∀ v : FinPlace E, v ≠ w.val → star v ≠ w.val → ν.val v = 1) :
     ∃ x : (O (F := LocProd P))ˣ, (∀ v : P, v ≠ w → h.reduction x v = 1) ∧
       h.embedGL (inclGL (scalar n x)) = scalarFin n ν := by
   -- `x` is the component of `ν` at `P`; its inverse is the component of `star ν`.
-  have h_inv : evalPlaces P ν.1 * evalPlaces P (star ν.1) = 1 := by
+  have h_inv : evalPlaces P ν.val * evalPlaces P (star ν.val) = 1 := by
     rw [← map_mul, ν.property.right, map_one]
   let x : (O (F := LocProd P))ˣ :=
     .mkOfMulEqOne ⟨_, evalPlaces_mem_O _ h_int⟩ ⟨_, evalPlaces_mem_O _ (star_mem_Ô h_int)⟩
       (Subtype.ext h_inv)
   refine ⟨x, fun v hv ↦ ?_, eq_of_supportedOn (embedGL_mem_supportedOn _) ?_ ?_⟩
   · -- `P` contains no pair of conjugate places, so `v` is neither `w` nor its conjugate.
-    have h_one : ν.1 v = 1 := h_supp v (by grind) (by grind [star_notMem])
+    have h_one : ν.val v = 1 := h_supp v (by grind) (by grind [star_notMem])
     have h_residue : residueAt v (x : O (F := LocProd P)) = 1 :=
-      (congrArg (IsLocalRing.residue (LocInt v.1)) (Subtype.ext h_one)).trans (map_one _)
+      (congrArg (IsLocalRing.residue (LocInt v.val)) (Subtype.ext h_one)).trans (map_one _)
     exact (residueEquiv v).map_eq_one_iff.2 h_residue
   · simp +contextual (disch := grind) [Units.ext_iff, h_supp]
   · simp [x, Subtype.forall', embedGL, Units.ext_iff]
@@ -241,7 +255,7 @@ through their components at `P`, it is the residue datum of `f`: the value of `f
 at `P` if the matrix is integral there, and zero otherwise. -/
 lemma liftFn_eq_residueDatum [h : IsSplitLevel P N] (f : Matrix n' n (P → ZMod N) → ℂ) :
     (h.liftFn f ∘ fun T : n' × n → 𝔸f E ↦ (vecToMatrix T).map (evalPlaces P)) =
-    residueDatum (fun w : P ↦ w.1) fun T : (w : P) → Matrix n' n (ResField w.1) ↦
+    residueDatum (fun w : P ↦ w.val) fun T : (w : P) → Matrix n' n (ResField w.val) ↦
       f (of fun (i : n') (j : n) (w : P) ↦ residueEquiv w (T w i j)) := by
   classical
   -- The conditions of integrality at `P` agree, and on integral entries so do the residue maps.
@@ -257,7 +271,7 @@ instance isSchwartzBruhat_liftFn (f : Matrix n' n (P → ZMod N) → ℂ) :
     IsSchwartzBruhat P (h.liftFn f ∘ fun T : n' × n → 𝔸f E ↦
       (vecToMatrix T).map (evalPlaces P)) := by
   simpa [liftFn_eq_residueDatum] using
-    isSchwartzBruhat_residueDatum (w := fun w : P ↦ w.1) _ (by grind [star_notMem])
+    isSchwartzBruhat_residueDatum (w := fun w : P ↦ w.val) _ (by grind [star_notMem])
 
 omit h in
 /-- Let `P` hold one place of each conjugate pair above the prime `N`, all unramified of degree one
@@ -271,7 +285,7 @@ lemma isSchwartzBruhat_liftFn_mul [h : IsSplitLevel P N] (g : GL n (LocProd P))
       h.liftFn f (k⁻¹.val * (vecToMatrix T).map (evalPlaces P) * g.val) := by
   rw [← atPlaces_embedGL g, ← atPlaces_embedGL k]
   -- The substitution `T ↦ k⁻¹ T g` is multiplication of the vector `T` by an invertible matrix.
-  let M := (G.onHom (s := 1) (s' := 1) ((1, embedGL g), 1, embedGL k)).2⁻¹.1
+  let M := (G.onHom (s := 1) (s' := 1) ((1, embedGL g), 1, embedGL k)).2⁻¹.val
   simpa only [M, onHom_snd_inv_mulVec, vecToMatrix_matrixToVec, Matrix.map_mul, Function.comp_def]
     using!
     (h.isSchwartzBruhat_liftFn f).comp_mulVec M
@@ -293,10 +307,10 @@ lemma pairWeilFinite_schrodingerOpAt [h : IsSplitLevel P N] (g : GL n (LocProd P
     (f : Matrix n' n (P → ZMod N) → ℂ) (a b : AutChar E) (k : GL n' (LocProd P))
     (v : ((stdSpace E n).hom (stdSpace E n')).finitePart) :
     pairWeilFinite (stdSpace E n) (stdSpace E n') a b (h.embedGL g, h.embedGL k)
-        (h.schrodingerOpAt (h.liftFn f) v) =
+        (schrodingerOpAt (P := P) (h.liftFn f) v) =
       ((detCharAt (b.spaceChar (card n')) (card n') g)⁻¹ *
           detCharAt (a.spaceChar (card n)) (card n) k) •
-        h.schrodingerOpAt
+        schrodingerOpAt (P := P)
           (fun T : Matrix n' n (LocProd P) ↦ h.liftFn f (k⁻¹.val * T * g.val)) v := by
   -- Read `g` and `k` on the right as the components at `P` of their lifts; then this is
   -- `pairWeil_schrodingerOp_of_mem_supportedOn`.
@@ -310,21 +324,20 @@ lemma pairWeilFinite_schrodingerOpAt [h : IsSplitLevel P N] (g : GL n (LocProd P
   simp [-atPlaces_embedGL, field]
 
 omit h [Fact N.Prime] in
-/-- Let `P` hold one place of each conjugate pair above `N`, all unramified of degree one
-(`IsSplitLevel P N`), and let the base change of `a` be unramified at every place of `P`. Let
+/-- Suppose the base change of `a` is unramified at every place of `P`. Let
 `χ = a.spaceChar i` be this base change divided by the `i`-th power of the splitting character `υ`.
 The character `detCharAt χ k: x ↦ χ (det x) |det x| ^ (-k / 2)` of the invertible matrices at `P` is
 trivial on those that are invertible over the integers, which `inclGL` includes. -/
-lemma detCharAt_inclGL [_h : IsSplitLevel P N] (a : AutChar E)
+lemma detCharAt_inclGL (a : AutChar E)
     (h_unr : ∀ w ∈ P, CharUnramifiedAt a.baseChange.finPart w) (i k : ℕ)
     (g : GL n (O (F := LocProd P))) : detCharAt (a.spaceChar i) k (inclGL g) = 1 := by
   -- The determinant is a unit at each place of `P`, where both characters in `spaceChar` are
   -- unramified.
   have h_unit : ∀ w : P, Valued.v ((g.val.det : LocProd P) w) = 1 :=
     isIntegralUnit_iff_v_eq_one.1 (isIntegralUnit_iff_isUnit.2 g.det.isUnit)
-  have h_space (w : P) (u : (LocField w.1)ˣ) (hu : Valued.v u.val = 1) :
-      (a.spaceChar i).finPart (locIdele w.1 u) = 1 := by
-    simp [AutChar.spaceChar, h_unr w w.property u hu, charUnramifiedAt_upsilon w.1 u hu]
+  have h_space (w : P) (u : (LocField w.val)ˣ) (hu : Valued.v u.val = 1) :
+      (a.spaceChar i).finPart (locIdele w.val u) = 1 := by
+    simp [AutChar.spaceChar, h_unr w w.property u hu, charUnramifiedAt_upsilon w.val u hu]
   ext
   simp [detCharAt, localChar, g.map_det, norm_locField_eq_q_zpow, h_unit, h_space]
 
@@ -335,17 +348,19 @@ omit [WeilData E]
 omit h in
 /-- Let `P` hold one place of each conjugate pair above the prime `N`, all unramified of degree one
 (`IsSplitLevel P N`). The character `detCharAt χ k` is `g ↦ χ (det g) |det g| ^ (-k / 2)` over the
-completions at `P`, and `h.diagN n S` is `diag (1, …, 1, N)` at `P ∩ S` and `1` at `P \ S`. For an
-embedding `ι` of `ℂ` into `ℂ_[N]` and `k ≤ k'`, the `N`-adic size of `detCharAt χ k'` at this matrix
-is at most that of `detCharAt χ k`, whatever the sizes of the two matrices. -/
+completions at `P`, and `diagN (P := P) (N := N) n S` is `diag (1, …, 1, N)` at `P ∩ S` and `1` at
+`P \ S`. For an embedding `ι` of `ℂ` into `ℂ_[N]` and `k ≤ k'`, the `N`-adic size of
+`detCharAt χ k'` at this matrix is at most that of `detCharAt χ k`, whatever the sizes of the two
+matrices. -/
 lemma norm_detCharAt_diagN_anti [h : IsSplitLevel P N] {ι : ℂ →+* ℂ_[N]} {χ : HeckeChar E}
     {k k' : ℕ} (hk : k ≤ k') :
-    ‖ι (detCharAt χ k' (h.diagN n S))‖ ≤ ‖ι (detCharAt χ k (h.diagN n' S))‖ := by
+    ‖ι (detCharAt χ k' (diagN (P := P) (N := N) n S))‖ ≤
+      ‖ι (detCharAt χ k (diagN (P := P) (N := N) n' S))‖ := by
   classical
   -- The local determinant `d w` is `N` or `1`, of norm `N⁻¹` or `1`; the square root of this norm
   -- has `N`-adic size at least `1`, and it occurs with the exponent `-k`.
-  let d (w : P) : (LocField w.1)ˣ := if ↑w ∈ S then .mk0 N NeZero.out else 1
-  have hd_one_le (w : P) : 1 ≤ ‖ι √‖(d w).1‖‖ := by
+  let d (w : P) : (LocField w.val)ˣ := if ↑w ∈ S then .mk0 N NeZero.out else 1
+  have hd_one_le (w : P) : 1 ≤ ‖ι √‖(d w).val‖‖ := by
     rw [← one_le_sq_iff₀ (by simp), ← norm_pow, ← map_pow]
     norm_cast
     by_cases hw : ↑w ∈ S
@@ -354,12 +369,12 @@ lemma norm_detCharAt_diagN_anti [h : IsSplitLevel P N] {ι : ℂ →+* ℂ_[N]} 
     · simp [d, hw]
   -- In every rank the value is a product over `P` of local factors at the determinants `d w`.
   have h_norm {r : Type} [Fintype r] [DecidableEq r] (l : ℕ) :
-      ‖ι (detCharAt χ l (h.diagN r S))‖ = ∏ w : P,
-        ‖ι (χ.finPart (locIdele w.1 (d w)) : ℂ)‖ * (‖ι √‖(d w).1‖‖ ^ l)⁻¹ := by
-    have h_det : (detCharAt χ l (h.diagN r S) : ℂ) =
+      ‖ι (detCharAt χ l (diagN (P := P) (N := N) r S))‖ = ∏ w : P,
+        ‖ι (χ.finPart (locIdele w.val (d w)) : ℂ)‖ * (‖ι √‖(d w).val‖‖ ^ l)⁻¹ := by
+    have h_det : (detCharAt χ l (diagN (P := P) (N := N) r S) : ℂ) =
         localChar P χ (-l) (MulEquiv.piUnits.symm d : (LocProd P)ˣ) := by
       simp [diagN, detCharAt, d]
-    have h_component (w : P) : Units.map (Pi.evalMonoidHom (fun v : P ↦ LocField v.1) w)
+    have h_component (w : P) : Units.map (Pi.evalMonoidHom (fun v : P ↦ LocField v.val) w)
         (MulEquiv.piUnits.symm d) = d w := rfl
     simp [h_det, localChar, h_component]
   rw [h_norm, h_norm]
@@ -368,8 +383,11 @@ lemma norm_detCharAt_diagN_anti [h : IsSplitLevel P N] {ι : ℂ →+* ℂ_[N]} 
   · exact hd_one_le w
 
 open scoped Classical in
+omit h in
 /-- The matrix `diag (1, …, 1, N)` at all of `P` is the product of those at `P \ S` and at `S`. -/
-lemma diagN_eq_sdiff_mul (S : Finset (FinPlace E)) : h.diagN n P = diagN n (P \ S) * diagN n S := by
+lemma diagN_eq_sdiff_mul (S : Finset (FinPlace E)) :
+    diagN (P := P) (N := N) n P =
+      diagN (P := P) (N := N) n (P \ S) * diagN (P := P) (N := N) n S := by
   simp +contextual [diagN, ← map_mul, Pi.mul_def]
 
 omit h in
@@ -390,7 +408,7 @@ lemma exists_sub_residueOverN_mem_iff [h : IsSplitLevel P N] (z : 𝔸f E) :
       add_mem (nsmul_mem (evalPlaces_mem_O _ hz) N)
         (mem_O_locProd.2 fun w ↦ natCast_mem (LocInt _) (y w).val)
   refine (iff_and_self.2 h_int).trans (and_congr_right fun hz ↦ ?_)
-  have hx : x.1 = evalPlaces P (N * z) :=
+  have hx : x.val = evalPlaces P (N * z) :=
     Function.invFun_eq (by simpa [mem_O_locProd, idem_mul_mem_Ô] using hz)
   exact (reduction_eq_iff_idem_mul_mem hx).symm
 
@@ -458,21 +476,18 @@ lemma sum_translate_eq_gluedDatum [hP : IsSplitLevel P N] (hS : IsSplitLevel S N
     ∑ y : n' → S → ZMod N,
         schrodingerAct P (poleColumn n y) (boxIndicator (n' × (n ⊕ Unit)) P) T *
           schrodingerAct P (poleRow m y) (boxIndicator ((m ⊕ Unit) × n') P) R =
-      hP.gluedDatum ((vecToMatrix T).map (evalPlaces P) * (hP.diagN n S).val)
-        ((hP.diagN m (P \ S)).val * (vecToMatrix R).map (evalPlaces P)) := by
+      hP.gluedDatum ((vecToMatrix T).map (evalPlaces P) * (diagN (P := P) (N := N) n S).val)
+        ((diagN (P := P) (N := N) m (P \ S)).val * (vecToMatrix R).map (evalPlaces P)) := by
   -- Let `t` be the last column of `T` and `r` the last row of `R`. At most one class `b` makes
   -- `t - b / N` and `r - b̄ / N` integral at `P`, and its term is `ψ₀ (-r ⬝ t)`.
   let j : 𝔸f E := idem P
   let p : 𝔸f E := 1 + idem S * ((N : 𝔸f E) - 1)
-  have h_class (i : n') : ∃ b : S → ZMod N, ∀ y : S → ZMod N,
-      j * (T (i, .inr ()) - residueOverN y) ∈ Ô E ∧
-        j * (R (.inr (), i) - star (residueOverN y)) ∈ Ô E ↔
-      (j * (T (i, .inr ()) * p) ∈ Ô E ∧ j * ((N + 1 - p) * R (.inr (), i)) ∈ Ô E) ∧ b = y :=
-    hP.exists_sub_mem_and_sub_star_mem_iff hS rfl _ _
-  choose b hb using h_class
-  have hD_S : (diagN n S).val = diagonal fun i ↦ evalPlaces P (if i.isLeft then 1 else p) := by
+  choose b hb using fun i : n' ↦
+    hP.exists_sub_mem_and_sub_star_mem_iff hS (p := p) rfl (T (i, .inr ())) (R (.inr (), i))
+  have hD_S : (diagN (P := P) (N := N) n S).val =
+      diagonal fun i ↦ evalPlaces P (if i.isLeft then 1 else p) := by
     simp +contextual [diagN, funext_iff, apply_ite, p, idem_apply]
-  have hD_PS : (diagN m (P \ S)).val =
+  have hD_PS : (diagN (P := P) (N := N) m (P \ S)).val =
       diagonal fun i ↦ evalPlaces P (if i.isLeft then 1 else N + 1 - p) := by
     simp +contextual [diagN, funext_iff, apply_ite, p, idem_apply]
   have h_int (x : 𝔸f E) : evalPlaces P x ∈ O ↔ j * x ∈ Ô E := by
@@ -517,8 +532,8 @@ Here `lastColDatum z` is the indicator of the matrices integral at `P` whose las
 `z` modulo `N`. The function `charDatum z` is zero off the integral matrices, and on these it is
 `ψ_N (r ⬝ᵥ z)`, with `r` the reduction of the last row and `ψ_N c = ψ₀ (-c / N)` (`psiN`) for the
 additive character `ψ₀ = stdLattice.selfDualAddChar E`. The matrices are first multiplied by
-`hP.diagN n S` and `hP.diagN m (P \ S)`, which are `diag (1, …, 1, N)` at `P ∩ S` and at `P \ S`
-respectively, and `1` at the other places of `P`. -/
+`diagN (P := P) (N := N) n S` and `diagN (P := P) (N := N) m (P \ S)`, which are `diag (1, …, 1, N)`
+at `P ∩ S` and at `P \ S` respectively, and `1` at the other places of `P`. -/
 lemma doubleLiftGluing_eq_sum_schrodingerOpAt [hP : IsSplitLevel P N] (hS : IsSplitLevel S N)
     (v : ((stdSpace E (n ⊕ Unit)).hom (stdSpace E n')).finitePart)
     (v' : ((stdSpace E n').hom (stdSpace E (m ⊕ Unit))).finitePart) :
@@ -526,17 +541,17 @@ lemma doubleLiftGluing_eq_sum_schrodingerOpAt [hP : IsSplitLevel P N] (hS : IsSp
         (vacuumProjFinPart ((stdSpace E (n ⊕ Unit)).hom (stdSpace E n')) S v ⊗ₜ[ℂ]
           vacuumProjFinPart ((stdSpace E n').hom (stdSpace E (m ⊕ Unit))) S v') =
       ∑ z : n' → P → ZMod N,
-        hP.schrodingerOpAt (fun T : Matrix n' (n ⊕ Unit) (LocProd P) ↦
-            hP.lastColDatum z (T * (hP.diagN n S).val)) v ⊗ₜ[ℂ]
-          hP.schrodingerOpAt (fun R : Matrix (m ⊕ Unit) n' (LocProd P) ↦
-            hP.charDatum z ((hP.diagN m (P \ S)).val * R)) v' := by
+        schrodingerOpAt (P := P) (fun T : Matrix n' (n ⊕ Unit) (LocProd P) ↦
+            hP.lastColDatum z (T * (diagN (P := P) (N := N) n S).val)) v ⊗ₜ[ℂ]
+          schrodingerOpAt (P := P) (fun R : Matrix (m ⊕ Unit) n' (LocProd P) ↦
+            hP.charDatum z ((diagN (P := P) (N := N) m (P \ S)).val * R)) v' := by
   -- Both sides come from tensors of functions, and these tensors have the same values.
   let F (y : n' → S → ZMod N) := schrodingerAct P (poleColumn n y) (boxIndicator _ P)
   let G (y : n' → S → ZMod N) := schrodingerAct P (poleRow m y) (boxIndicator _ P)
   let F' (z : n' → P → ZMod N) (T : n' × (n ⊕ Unit) → 𝔸f E) : ℂ :=
-    hP.lastColDatum z ((vecToMatrix T).map (evalPlaces P) * (hP.diagN n S).val)
+    hP.lastColDatum z ((vecToMatrix T).map (evalPlaces P) * (diagN (P := P) (N := N) n S).val)
   let G' (z : n' → P → ZMod N) (R : (m ⊕ Unit) × n' → 𝔸f E) : ℂ :=
-    hP.charDatum z ((hP.diagN m (P \ S)).val * (vecToMatrix R).map (evalPlaces P))
+    hP.charDatum z ((diagN (P := P) (N := N) m (P \ S)).val * (vecToMatrix R).map (evalPlaces P))
   have h_kernel : ∑ y, F y ⊗ₜ[ℂ] G y = ∑ z, F' z ⊗ₜ G' z := by
     refine sub_eq_zero.1
       (tensor_eq_zero_of_separating (f := .proj) funext _ fun T ↦ funext fun R ↦ ?_)
@@ -710,15 +725,7 @@ lemma exists_sum_columnsY_le_and_pow_le_exp :
     · exact Nat.mul_le_mul_right _ (by grind [Nat.card_Ico])
   · refine Real.le_exp_of_log_le ?_
     push_cast [sum_const, card_univ, smul_eq_mul, Real.log_pow]
-    -- `scale_arith` splits every `max` and times out, and the kernel cannot check `grind` with the
-    -- large numerals of `scale_inequalities'`: derive bounds with small numerals for `grind`.
-    exact D.le_of_hasLogBound (by
-      obtain ⟨⟨h64, -, -, -⟩, hc, hL, hX, hX₁, -⟩ := New.Data.scale_inequalities' D
-      have hcL : P.constantBound ≤ Real.log D.logB := by linarith
-      have hXB : D.logX ≤ D.logB := by linarith
-      clear hc hX hX₁
-      simp only [Bool.false_eq_true, ↓reduceIte, Nat.cast_ofNat]
-      grind)
+    exact D.le_of_hasLogBound
 
 /-- There is an integer matrix `br` from the Weyl module on `X_m` to that on `Y_m` that is a
 branching map (`IsBranchingMap`). It is equivariant for the block matrices `diag (g, z)` up to the
@@ -796,19 +803,29 @@ def restrictToY :
     refine ⟨?_, fun γ g ↦ ?_⟩
     · -- the stabiliser contains the preimage under `borderU` of the open stabiliser of `ψ`
       have cont : Continuous D.borderU := by
-        refine (U.isClosedEmbedding_coe isUnit_one).continuous_iff.2 (.matrix_reindex ?_ ..)
+        refine (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).continuous_iff.2
+            (.matrix_reindex ?_ ..)
         -- each entry of `diag (g, 1)` is a constant or an entry of `g`
-        simp [U.sum]
+        simp only [U.sum, MonoidHom.inl_apply, MonoidHom.codRestrict_apply, MonoidHom.coe_comp,
+          MonoidHom.coe_prodMap, Function.comp_apply, val_blockGL_apply]
         fun_prop
       exact ((rightStabilizer ψ).comap D.borderU).isOpen_mono (fun _ hk ↦ by simp [hk _])
         (smooth.preimage cont)
     -- `branching` intertwines the action of `diag (γ, 1)` with that of `γ`
-    simp [stdSpace_weightRep_apply]
-    -- `erw`: the index types of `borderU` and of `stdSpace` agree only up to unfolding.
-    erw [block_embFin, equivariant, stdSpace_weightRep_apply]
+    simp only [LinearMap.coe_comp, Function.comp_apply, LinearMap.compLeft_apply,
+      LinearMap.funLeft_apply, map_mul, mulVecBilin_apply, stdSpace_weightRep_apply, mulVec_mulVec]
+    let ε := D.lastIndexEquiv.sumCongr (Equiv.refl Unit)
+    have h_block : D.borderU ((stdSpace D.E (D.Y D.m)).embFin γ) =
+        (stdSpace D.E (D.InitIndex D.m ⊕ Unit)).embFin (U.block ε (γ, 1)) :=
+      block_embFin ε γ
+    rw [h_block]
+    refine (congrArg (D.branching.map (↑) *ᵥ ·)
+      (equivariant (U.block ε (γ, 1)) (D.borderU g))).trans ?_
+    refine (congrArg (D.branching.map (↑) *ᵥ ·)
+      (stdSpace_weightRep_apply (γ := U.block ε (γ, 1)) (v := ψ (D.borderU g)))).trans ?_
     rw [mulVec_mulVec, D.isBranchingMap_branching.mul_weylRep _ _ 1, Finset.prod_eq_one,
       one_smul] <;>
-      simp [← ext_iff, GL.blockScalar])
+      simp [← ext_iff, GL.blockScalar, ε])
 
 end New.Data
 
@@ -865,9 +882,8 @@ def liftKernel :
         (D.liftTamePart (ϑ.pow j.succ) j.succ) :=
     D.hasWeight_liftChar
   exact thetaKernel (D.isLiftWeight_columnCount j) (star ↑D.piMBar * P.jetScale D.towerExp)
-    (by
-      convert weight.hasWeight_rankTwist (n := D.X j)
-      grind [lastEntry, card_X])
+    ((weight.hasWeight_rankTwist (n := D.X j)).of_weight_eq (funext fun _ ↦ by
+      grind [lastEntry, card_X]))
     weight.hasWeight_rankTwist (D.levelX j)
 
 /-- Tuples (x_j) of finite adelic matrices with rows X_{j+1} and columns X_j, the translations

@@ -1,7 +1,20 @@
-import New.Spanning.Frames.TopCorrelation
-import New.Spanning.MainTerm.FillingLevel
-import New.Spanning.MainTerm.KloostermanSum
+module
+
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.MeasureTheory.SpecificCodomains.WithLp
+import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.Frames.TopCorrelation
+public import New.Spanning.MainTerm.FillingLevel
+public import New.Spanning.MainTerm.KloostermanSum
+import Lib.DiscreteSeries.Bessel.SchurBound
+import Lib.DiscreteSeries.Bruhat.BigCell
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.Unfolding.AmplitudeSums
+import New.Spanning.Unfolding.Link
+import New.Spanning.Unfolding.Packing
 
 /-!
 # Class sums as orbit sums, and unfolding at a set of primes
@@ -62,6 +75,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 
@@ -139,7 +154,8 @@ lemma mul_star_dotProduct_eq_last_frameProducts {σ : S.G E} (hσ : σ ∈ floor
   have h_last : S.frameProducts σ 𝔰.top 𝔰.top = -(S.N * a) := by
     simp [a, frameGram, middleGram, splitGram, Matrix.mul_apply]
   have h_form : (σ.val.valᴴ * (S.ratMiddle E).splitGram * σ.val.val) 𝔰.z 𝔰.z =
-      (S.ratMiddle E).splitGram 𝔰.z 𝔰.z := by rw [mem_U.1 σ.prop]
+      (S.ratMiddle E).splitGram 𝔰.z 𝔰.z := by
+    rw [show σ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 σ.prop]
   have h_norm : star ω ⬝ᵥ ω + -(star a * S.N * a) = -S.N := by
     simpa [apply_eq_one_apply_of_mem_floorGroup hσ, middleGram, splitGram, Matrix.mul_apply,
       dotProduct, Matrix.one_apply]
@@ -155,11 +171,12 @@ lemma translateByClassReps_weylElem_mul (c c' : S.Classes) (p : ℕ → Eˣ) (σ
   -- No `e*_a` has level below `ϱ`.
   have h_level (a : Fin 𝔰.ϱ) : ¬2 * 𝔰.ϱ - a < 𝔰.ϱ := by lia
   -- The Weyl element commutes with the change of basis, entry by entry.
-  simp +contextual [Subtype.ext_iff, ← mul_assoc, Units.ext_iff, ← ext_iff, Sum.forall, weylElem,
+  simp [Subtype.ext_iff, ← mul_assoc, Units.ext_iff, ← ext_iff, Sum.forall, weylElem,
     weylOn, coe_translateByClassReps, classBasis, toBesselH, besselLatticeBasis,
       fromBlocks_multiply,
     fromCols_mul_fromBlocks, Matrix.mul_apply, Matrix.one_apply, BesselIndex.level, h_level,
     apply_ite (algebraMap E (𝔸f E))]
+  simp +contextual
 
 end
 
@@ -280,7 +297,7 @@ structure NamesLink (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes)
   /-- `t` is the last diagonal entry of the frame products of `σ`. -/
   frameProducts_top_top : S.frameProducts σ 𝔰.top 𝔰.top = t
   /-- `t t̄ - N²` is totally positive. -/
-  sq_lt_norm_sq (v : InfinitePlace E) : S.N ^ 2 < ‖Φ v t.1‖ ^ 2
+  sq_lt_norm_sq (v : InfinitePlace E) : S.N ^ 2 < ‖Φ v t.val‖ ^ 2
   /-- `k` reduces to `s`. -/
   reduction_eq : S.reduction k = s
   /-- `Λ` is the link of `w_1 σ`, which is that of `w_p σ` for every head `p`. -/
@@ -305,7 +322,8 @@ lemma sq_lt_norm_sq_last_frameProducts {σ : S.G E} (hσ : σ ∈ floorGroup �
     mul_star_dotProduct_eq_last_frameProducts hσ
   have h_nonneg : 0 ≤ Φ v (θ * star θ - S.N ^ 2) := by
     rw [← h_norm]
-    simp [dotProduct, conj_mul']
+    simp only [dotProduct, Pi.star_apply, map_mul, map_natCast, _root_.map_sum, map_star_complex,
+      star_def, conj_mul']
     -- The goal is `0 ≤ N ∑ j, ‖ω j‖²` at the place `v`.
     positivity
   have h_pos : 0 < Φ v (θ * star θ - S.N ^ 2) := ((map_ne_zero (Φ v)).2 hθ).lt_of_le' h_nonneg
@@ -343,7 +361,7 @@ lemma head_and_last_mem_entrySet [WeilData E] [S.IsAdmissible] {c c' : S.Classes
   rw [weylElem_padTuple p t] at hγ h_amp
   have h_mem {a : ℕ} (ha : a ≤ 𝔰.ϱ) : padTuple (fun a : Fin 𝔰.ϱ ↦ p a) t a ∈ S.entrySet :=
     entry_mem_entrySet hu hu' hσ (by simp [padTuple, ht]) hγ h_amp ha
-  exact ⟨fun a ↦ by simpa [padTuple] using h_mem a.2.le, by simpa [padTuple] using h_mem le_rfl⟩
+  exact ⟨fun a ↦ by simpa [padTuple] using h_mem a.isLt.le, by simpa [padTuple] using h_mem le_rfl⟩
 
 /-- Let `σ` fix the vectors `e_a`, `e*_a` of the `ϱ = 𝔰.ϱ` hyperbolic pairs (`floorGroup 𝔰.ϱ`). Let
 `θ = h(z, σ z)` be the last diagonal entry of the matrix `S.frameProducts σ` of products of the
@@ -395,7 +413,7 @@ lemma exists_amplitudeSum_eq_sum_cosetAmplitude [WeilData E] [S.IsAdmissible] {c
   -- terms γ over (c, s, c') with link Λ and `termDisc γ ≠ 0` are among the u w_p σ u'⁻¹ with p in
   -- 𝒯, each occurring once; sum over (u, u') for fixed p.
   obtain ⟨⟨γ₀, ⟨h_disc₀, hΛ⟩, hγ₀⟩, h_amp₀⟩ :
-      ∃ γ : ↥(S.termsOfLink Λ ∩ S.termsOver c s c'), S.amplitude .cut c c' γ.1 ≠ 0 := by
+      ∃ γ : ↥(S.termsOfLink Λ ∩ S.termsOver c s c'), S.amplitude .cut c c' γ.val ≠ 0 := by
     by_contra! h_zero
     exact h_sum_ne (by simp [amplitudeSum, h_zero])
   obtain ⟨u₀, hu₀, u₀', hu₀', p₀, σ, hσ, rfl⟩ := exists_big_cell_decomp (h_minors _ hγ₀)
@@ -475,7 +493,7 @@ lemma toPlaces_translateByClassReps_weylElem_mul {σ : (S.ratMiddle E).G} {p : �
   rw [translateByClassReps_weylElem_mul, map_mul]
   congr 1
   -- The name `q` keeps `simp` from unfolding the units on the right.
-  ext : 3
+  ext : 2
   simp [toPlaces, U.map, weylElem, weylOn, apply_ite (evalPlaces T), -star_algebraMap_finAdele,
     -Units.val_inv_eq_inv_val]
   rfl
@@ -492,15 +510,15 @@ theorem _root_.New.Floors.IntegralPlace.modulus_evalPlaces_rpow_half {x : Eˣ}
     (hx : x.val ∈ ratIntegralOff T ∧ x⁻¹.val ∈ ratIntegralOff T) :
     P.modulus (evalPlaces T x.val) ^ (2⁻¹ : ℝ) = (∏ v : InfinitePlace E, ‖Φ v x.val‖ₑ)⁻¹ := by
   obtain ⟨hx_int, hx_inv⟩ := hx
-  let u : (LocProd T)ˣ := x.map (ratToPlaces T).1
+  let u : (LocProd T)ˣ := x.map (ratToPlaces T).toMonoidHom
   -- The product formula: the inequality `sqrt_genIndex_le_prod_norm` for `x` and for `x⁻¹` gives
   -- equality.
-  have h_prod : √(genIndex u.1) = ∏ v : InfinitePlace E, ‖Φ v x.1‖ := by
+  have h_prod : √(genIndex u.val) = ∏ v : InfinitePlace E, ‖Φ v x.val‖ := by
     refine (sqrt_genIndex_le_prod_norm T x.ne_zero hx_int).antisymm ?_
     simpa [u, genIndex_eq_inv_prod_norm] using
       inv_anti₀ (Real.sqrt_pos.2 (genIndex_pos u⁻¹))
         (sqrt_genIndex_le_prod_norm T x⁻¹.ne_zero hx_inv)
-  have h_modulus : P.modulus (evalPlaces T x.val) = (ENNReal.ofReal √(genIndex u.1) ^ 2)⁻¹ :=
+  have h_modulus : P.modulus (evalPlaces T x.val) = (ENNReal.ofReal √(genIndex u.val) ^ 2)⁻¹ :=
     inv_eq_iff_eq_inv.1 (P.inv_modulus_eq_sqrt_genIndex_sq u)
   rw [h_modulus, h_prod]
   simp [inv_rpow, ← rpow_natCast_mul, ofReal_prod_of_nonneg]
@@ -570,8 +588,9 @@ theorem IsFillingData.unipotentOrder_mul_unipotentMass_eq_one [hF : S.IsFillingD
     induction n with
     | zero => simp
     | succ n ih => grind [Finset.sum_range_succ']
-  simp [-Nat.cast_mul, PlaceData.unipotentMass, PlaceData.floorModulus, hF.modulus_levelUnit,
-    ← rpow_natCast_mul, ← pow_mul _ 2, ← pow_succ, Finset.prod_pow_eq_pow_sum]
+  simp only [Nat.cast_pow, PlaceData.unipotentMass, PlaceData.floorModulus, hF.modulus_levelUnit,
+    ← rpow_natCast_mul, Nat.cast_ofNat, mul_inv_cancel₀ (two_ne_zero' ℝ), rpow_one, ← pow_mul _ 2,
+    ← pow_succ, Finset.prod_pow_eq_pow_sum]
   rw [pow_mul, h_sum, ← mul_pow]
   simp [ENNReal.mul_inv_cancel, Nat.Prime.ne_zero, -Nat.cast_mul]
 
@@ -598,7 +617,7 @@ theorem IsFillingData.card_reducedImage_mul_measure_congruenceSubgroup_eq [hF : 
   -- Choose lifts `k s ∈ B ∩ K` of the `s ∈ S.reducedImage B`. Almost everywhere, the integral
   -- points are the disjoint union of the cosets `C s = K(M) (k s)⁻¹`, all of measure `μ K(M)`.
   have h_lift (s : S.reducedImage B) :
-      ∃ k : S.latticeStabilizer, k.val ∈ B ∧ S.reduction k = s := s.2
+      ∃ k : S.latticeStabilizer, k.val ∈ B ∧ S.reduction k = s := s.property
   choose k hkB hk_red using h_lift
   let C (s : S.reducedImage B) : Set (U (S.latticeMiddle (LocProd T)).splitGram) :=
     (· * S.toPlaces T (k s)) ⁻¹' F.congruenceSubgroup
@@ -683,7 +702,7 @@ lemma hasSum_besselOrbitalIntegral_cosetAmplitude [WeilData E]
         Subtype.ext_iff, exists_and_left, exists_and_right]
       simp
     obtain ⟨⟨v, hv, v_unique⟩, v', hv', v'_unique⟩ :=
-      h_rep _ (inv_mem u.2) _ (inv_mem u'.2) (by simpa [f] using h_over)
+      h_rep _ (inv_mem u.property) _ (inv_mem u'.property) (by simpa using h_over)
     rw [tsum_eq_single (v, v'), indicator_of_mem ((h_iff (v, v')).2 ⟨hv, hv'⟩), Pi.one_apply]
     refine fun z hz ↦ indicator_of_notMem (fun h_mem ↦ hz ?_) _
     exact Prod.ext (v_unique _ ((h_iff z).1 h_mem).1) (v'_unique _ ((h_iff z).1 h_mem).2)
@@ -737,7 +756,7 @@ the group of block upper unitriangular isometries, and put `K(M) = F.congruenceS
 `T` with the cosets of `𝖴 ∩ K(M)` in 𝖴 at `T`. This is stated by a list `r` of rational
 representatives, one for each coset at `T`. -/
 lemma IsFillingData.exists_injective_mem_besselU_and_isIntegralOff [hF : S.IsFillingData T F]
-    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] [S.IsAdmissible] (c : S.Classes) :
+    [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] (c : S.Classes) :
     ∃ r : F.UnipotentCosets → S.G E,
       Injective r ∧
       (∀ w : F.UnipotentCosets, r w ∈ besselU) ∧
@@ -751,7 +770,7 @@ lemma IsFillingData.exists_injective_mem_besselU_and_isIntegralOff [hF : S.IsFil
   have h_dense (w : F.UnipotentCosets) : ∃ u ∈ besselU,
       S.IsIntegralOff T (pos u) ∧ w.out.val⁻¹ * S.toPlaces T (pos u) ∈ F.congruenceSubgroup := by
     obtain ⟨x, hx, hx_off, hx_unip, -⟩ := S.exists_isIntegralOff_toPlaces_eq w.out.val
-    obtain ⟨u, hu, hux, -⟩ := exists_rat_approx_unipotentChar_eq c (hx_unip w.out.2)
+    obtain ⟨u, hu, hux, -⟩ := exists_rat_approx_unipotentChar_eq c (hx_unip w.out.property)
     obtain ⟨h_off, h_level⟩ := hF.mem_principalLevel_iff.1 hux
     exact ⟨u, hu, (mul_mem_cancel_left (inv_mem hx_off)).1 h_off, by simpa [hx] using h_level⟩
   choose r hr r_off r_level using h_dense
@@ -814,15 +833,17 @@ lemma besselOrbitalIntegral_ratToInf_besselU_mul {side : FullOrCut} {u u' : S.G 
         besselOrbitalIntegral volume
           (fun y : InfinitePlace E → 𝔰.G₁ ↦ WithLp.toLp 2 (S.besselFn side y)) (S.ratToInf γ) := by
   let χ : ℂ := S.unipotentChar (S.ratToFin u) * star (S.unipotentChar (S.ratToFin u'))
-  have h_norm (x : S.GFin) : ‖S.unipotentChar x‖ = 1 := norm_selfDualChar
-  have h_ne (x : S.GFin) : S.unipotentChar x ≠ 0 := norm_ne_zero_iff.1 (by simp [h_norm])
+  have h_inv {x : S.G E} (hx : x ∈ besselU) :
+      S.unipotentChar (S.ratToFin x)⁻¹ = (S.unipotentChar (S.ratToFin x))⁻¹ := by
+    rw [unipotentChar, simpleRootSum_inv _
+      (mem_partialUnitriangularGroup_of_mem_besselU (ratToFin_mem_besselU_iff.2 hx)),
+      mul_neg, AddChar.map_neg_eq_inv, unipotentChar]
+  have h_phase : ‖S.unipotentChar (S.ratToFin u')‖ = 1 := norm_selfDualChar
   have h_kernel (y : InfinitePlace E → 𝔰.G₁) :
       S.besselKernel side (u⁻¹ * γ * u') y = χ • S.besselKernel side γ (S.ratToInf u * y) := by
-    have h_move := besselKernel_besselU_mul (side := side) hu hu' (u⁻¹ * γ * u') y
-    rw [show u * (u⁻¹ * γ * u') * u'⁻¹ = γ by group] at h_move
-    simp only [χ]
-    rw [h_move, smul_smul, Complex.star_def, ← Complex.inv_eq_conj (h_norm _), mul_mul_mul_comm,
-      mul_inv_cancel₀ (h_ne _), inv_mul_cancel₀ (h_ne _), one_mul, one_smul]
+    simpa [χ, h_inv hu, h_inv hu', Complex.star_def,
+      ← Complex.inv_eq_conj h_phase, mul_assoc] using
+      besselKernel_besselU_mul (side := side) (inv_mem hu) (inv_mem hu') γ (S.ratToInf u * y)
   ext i
   calc
     _ = ∫ y, S.besselKernel side (u⁻¹ * γ * u') y i := rfl
@@ -854,7 +875,6 @@ theorem IsFillingData.cosetAmplitude_eq_kloostermanSum_smul [hF : S.IsFillingDat
         besselOrbitalIntegral volume
           (fun y : InfinitePlace E → 𝔰.G₁ ↦ WithLp.toLp 2 (S.besselFn side y))
           (S.ratToInf (weylElem 𝔰.ϱ p * σ)) := by
-  classical
   set γ : S.G E := weylElem 𝔰.ϱ p * σ
   obtain ⟨r, r_inj, hr, r_off, r_level, r_rep⟩ :=
     hF.exists_injective_mem_besselU_and_isIntegralOff c
@@ -867,7 +887,7 @@ theorem IsFillingData.cosetAmplitude_eq_kloostermanSum_smul [hF : S.IsFillingDat
         S.IsIntegralOff T (S.translateByClassReps c' c' u') := by
     obtain ⟨h_left, -⟩ := isIntegralOff_of_mem_termsOver hu hu' hσ hp h_over
     obtain ⟨l, -, hl⟩ := h_over
-    have h_all : S.IsIntegralOff T l.val := (mem_latticeStabilizer_iff.1 l.2).1
+    have h_all : S.IsIntegralOff T l.val := (mem_latticeStabilizer_iff.1 l.property).1
     rw [hl, translateByClassReps_inv_mul_mul] at h_all
     exact ⟨h_left, (mul_mem_cancel_left (mul_mem (inv_mem h_left) h_off)).1 h_all⟩
   -- Unfolding: each double coset gives one orbital integral at the infinite places.
@@ -885,7 +905,7 @@ theorem IsFillingData.cosetAmplitude_eq_kloostermanSum_smul [hF : S.IsFillingDat
       exact mul_mem (mul_mem (inv_mem (r_off w)) h_off) (r'_off w')
     have h_conj : s⁻¹ * (w.out.val⁻¹ * S.toPlaces T (S.translateByClassReps c c (r w))) * s⁻¹⁻¹ ∈
         F.congruenceSubgroup :=
-      conj_mem_unitaryLevel (inv_mem (mem_latticeStabilizer_iff.1 k.2).2) (r_level w)
+      conj_mem_unitaryLevel (inv_mem (mem_latticeStabilizer_iff.1 k.property).2) (r_level w)
     rw [hF.mem_termsOver_iff k h_term, ← mul_mem_cancel_left h_conj,
       ← mul_mem_cancel_right (inv_mem (r'_level w')), translateByClassReps_inv_mul_mul]
     simp [x, s, mul_assoc]

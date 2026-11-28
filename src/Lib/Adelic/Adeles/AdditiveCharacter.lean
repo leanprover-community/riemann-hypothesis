@@ -1,6 +1,22 @@
-import Lib.Adelic.Adeles.Basic
-import Lib.Adelic.QuotientMeasure.Basic
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Mathlib.Analysis.Complex.Circle
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.BorelSpace
+import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Dynamics.FixedPoints.Topology
+import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.Adeles.Basic
+public import Lib.Adelic.QuotientMeasure.Basic
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # The additive character, Haar measures and the rational lattice in the adeles
@@ -37,6 +53,8 @@ Notions from other files:
 For totally complex `E` the file proves a known result: a number field is a discrete subgroup of its
 adeles with compact quotient, here with a measure for which the covolume is one.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -213,7 +231,9 @@ lemma ψf_eq_one_of_mem {x : 𝔸f E} (h : x ∈ Ô E) : ψf E x = 1 := by
 
 instance : SigmaFinite (volume (α := 𝔸f E)) := inferInstance
 
-deriving instance SecondCountableTopology, T2Space for 𝔸f E, 𝔸 E
+deriving instance T2Space for 𝔸f E
+
+deriving instance SecondCountableTopology, T2Space for 𝔸 E
 
 deriving instance PolishSpace, LocallyCompactSpace, BorelSpace, IsTopologicalRing,
   MeasurableSingletonClass for 𝔸 E
@@ -359,31 +379,20 @@ infinite place `v`. Some volume-preserving ℝ-linear isomorphism from the Minko
 lemma exists_mixedEquiv :
     ∃ e : mixedEmbedding.mixedSpace E ≃ₗ[ℝ] (InfinitePlace E → ℂ),
       MeasurePreserving e ∧ ∀ x : E, e (mixedEmbedding E x) = fun v : InfinitePlace E ↦ Φ v x := by
-  -- There is no real place, so Minkowski space is its complex factor (`e₀`), and all places are
-  -- complex (`e₁`). At each place apply the identity or complex conjugation, to turn Mathlib's
-  -- embedding `v.embedding` into `Φ v` (`e₂`).
-  have h_no_real : IsEmpty {v : InfinitePlace E // v.IsReal} := ⟨by simp [isComplex]⟩
+  -- No real places, so Minkowski space is its complex factor; conjugate at places where needed.
+  have : IsEmpty {v : InfinitePlace E // v.IsReal} := ⟨by simp [isComplex]⟩
   let σ (v : InfinitePlace E) : ℂ ≃ₗᵢ[ℝ] ℂ := if v.embedding = Φ v then 1 else Complex.conjLIE
   let ι : {v : InfinitePlace E // v.IsComplex} ≃ InfinitePlace E := .subtypeUnivEquiv isComplex
-  let e₀ : mixedEmbedding.mixedSpace E ≃ₗ[ℝ] ({v : InfinitePlace E // v.IsComplex} → ℂ) :=
-    .uniqueProd
-  let e₁ : ({v : InfinitePlace E // v.IsComplex} → ℂ) ≃ₗ[ℝ] (InfinitePlace E → ℂ) :=
-    .funCongrLeft ℝ ℂ ι.symm
-  let e₂ : (InfinitePlace E → ℂ) ≃ₗ[ℝ] (InfinitePlace E → ℂ) :=
-    .piCongrRight fun v ↦ (σ v).toLinearEquiv
-  have h_e₀ : MeasurePreserving e₀ := by
-    change MeasurePreserving
-      (Prod.snd : mixedEmbedding.mixedSpace E → ({v : InfinitePlace E // v.IsComplex} → ℂ))
-    exact ⟨measurable_snd, by simp [volume]⟩
-  have h_e₁ : MeasurePreserving e₁ := volume_preserving_arrowCongr' ι (.refl ℂ) (.id _)
-  have h_e₂ : MeasurePreserving e₂ := volume_preserving_pi fun v ↦ (σ v).measurePreserving
-  have h_σ (v : InfinitePlace E) (x : E) : σ v (v.embedding x) = Φ v x := by
-    by_cases hv : v.embedding = Φ v
-    · simp [σ, hv]
-    · have h_conj : v.embedding = ComplexEmbedding.conjugate (Φ v) := by
-        simpa [mk_Φ, hv] using embedding_mk_eq (Φ v)
-      simp [σ, ite_eq_right hv, h_conj]
-  exact ⟨e₀ ≪≫ₗ e₁ ≪≫ₗ e₂, h_e₂.comp (h_e₁.comp h_e₀), fun x ↦ funext fun v ↦ h_σ v x⟩
+  refine ⟨.uniqueProd ≪≫ₗ .funCongrLeft ℝ ℂ ι.symm ≪≫ₗ .piCongrRight fun v ↦ (σ v).toLinearEquiv,
+    (volume_preserving_pi fun v ↦ (σ v).measurePreserving).comp <|
+      (volume_preserving_arrowCongr' ι (.refl ℂ) (.id _)).comp ⟨measurable_snd, by simp [volume]⟩,
+    fun x ↦ funext fun v ↦ ?_⟩
+  by_cases hv : v.embedding = Φ v
+  · simp [σ, ι, hv]
+  · have h_conj : v.embedding = ComplexEmbedding.conjugate (Φ v) := by
+      simpa [mk_Φ, hv] using embedding_mk_eq (Φ v)
+    simp [σ, ι, hv]
+    simp [h_conj]
 
 open scoped Classical in
 /-- Let `K` be a number field and `φ : K → V` a ring homomorphism. Let `e` be a volume-preserving
@@ -450,13 +459,14 @@ instance isCovolOneLattice_ratMatrices [Fintype m] : IsCovolOneLattice (ratMatri
 /-- An injective additive map `f` into a Hausdorff topological group, with discrete image, sends
 only finitely many points into a given compact set. -/
 lemma finite_preimage_of_discreteTopology_range {B I : Type*} [AddCommGroup B] [AddCommGroup I]
-    [TopologicalSpace B] [IsTopologicalAddGroup B] [T2Space B] {f : I →+ B} {C : Set B}
+    [TopologicalSpace B] [IsTopologicalAddGroup B] {f : I →+ B} {C : Set B}
     (hf_inj : Function.Injective f) (h_disc : DiscreteTopology f.range) (hC : IsCompact C) :
     (f ⁻¹' C).Finite := by
   -- `f` tends to infinity along the cofinite filter
   simpa using f.tendsto_coe_cofinite_of_isDiscrete hf_inj ⟨h_disc⟩ hC.compl_mem_cocompact
 
-omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure] in
+omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure]
+    [T2Space B] in
 /-- Let `f : I →+ B` be an injective additive map whose image is a lattice of covolume one in `B`
 (discrete, with compact quotient of measure one). Then for every compact set `C`, only finitely many
 `a` in `I` have `f a ∈ C`. -/

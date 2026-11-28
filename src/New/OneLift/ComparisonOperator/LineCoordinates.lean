@@ -1,5 +1,13 @@
-import New.OneLift.ComparisonOperator.DeterminantProducts
-import New.OneLift.ComparisonOperator.GluedLattices
+module
+
+public import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+public import New.OneLift.ComparisonOperator.DeterminantProducts
+public import New.OneLift.ComparisonOperator.GluedLattices
+public import Lib.General.LinearAlgebra.MinorProducts
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # The polynomial map ζ, the datum Ψ^add and the series Υ; norm, degree and denominator of ζ
@@ -42,6 +50,8 @@ Notions from other files:
 
 See `New.OneLift.ComparisonOperator.FirstFactors` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -125,7 +135,7 @@ lemma New.HasWeightNormSqLeIf.prod {p : Prop} {ι : Type*} {s : Finset ι} {κ :
 open Matrix in
 /-- For the weight with one column of height `h < card N` at `τ`, the kernel `weylKernel` at `y`
 (the highest weight polynomial at `yᵀ x`) is the leading `h × h` minor of `yᵀ x` in block `τ`. -/
-lemma New.eval_weylKernel_single_eq_det {N : Type} [Fintype N] [DecidableEq N] (τ : Φ) {h : ℕ}
+lemma New.eval_weylKernel_single_eq_det {N : Type} [Fintype N] (τ : Φ) {h : ℕ}
     (h_lt : h < Fintype.card N) (y x : (Σ _ : Φ, N) × ℕ → ℂ) :
     (weylKernel (fun _ : Φ ↦ N) (Pi.single τ (Pi.single h 1)) y).eval x =
       (of fun a b : Fin h ↦ ∑ u : N, y (⟨τ, u⟩, a) * x (⟨τ, u⟩, b)).det := by
@@ -316,7 +326,7 @@ def addedDatum (u : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModul
   if z.submatrix id (Sum.map id Sum.inl) = inclMatrix (D.twistModulus ϑ 2).ResidueRing
     (.map (inr ∘ inr) id)
     then
-    ∑ g : GL D.CarrierIndex _, traceChar u (z.toCols₂.toCols₂.map (forgetTwist ϑ) * g.1)
+    ∑ g : GL D.CarrierIndex _, traceChar u (z.toCols₂.toCols₂.map (forgetTwist ϑ) * g.val)
   else 0
 
 /-- The coordinate l of the series Υ at h, for the choice `i`: the kernel of ((E^j)⁻, V″)
@@ -387,17 +397,8 @@ lemma card_detIndex_le (j : D.LiftIndex) (τ : NumberField.InfinitePlace D.E) :
     Fintype.card (DetIndex j τ) ≤ D.natB + D.offWeight + D.gap + D.m * D.gap := by
   -- By `card_detIndex_add_firstFactorCharExp` the count is at most the weight `D.liftWeight j τ`,
   -- and `j ≤ m`.
-  have h_mul : j * D.gap ≤ D.m * D.gap := mul_le_mul_left j.2.2 D.gap
+  have h_mul : j * D.gap ≤ D.m * D.gap := mul_le_mul_left j.property.2 D.gap
   grind [card_detIndex_add_firstFactorCharExp j τ, D.weight_le_natB_add_offWeight τ]
-
-/-- The number `card (DetIndex j τ)` of determinants at the infinite place `τ` is the number of
-columns of μ⁺. This is the sum of `(untwistedDescentPair j).colsPlus τ h` over heights
-`h < card (FirstFactorIndex j)`. It is at most `D.natB + D.offWeight + D.gap + D.m * D.gap`. -/
-lemma card_detIndex (j : D.LiftIndex) (τ : NumberField.InfinitePlace D.E) :
-    Fintype.card (DetIndex j τ) =
-        ∑ h ∈ range (Fintype.card (FirstFactorIndex j)), (untwistedDescentPair j).colsPlus τ h ∧
-      Fintype.card (DetIndex j τ) ≤ D.natB + D.offWeight + D.gap + D.m * D.gap :=
-  ⟨card_detIndex_eq_sum j τ, card_detIndex_le j τ⟩
 
 /-- Let `Z` have the `2 m + card (FirstFactorIndex j)` rows of a determinant det(𝖼; X z) at `j`, and
 as columns the last `D.posRank j - h ≤ j` of the `D.posRank j` positive indices of W_j and the
@@ -474,29 +475,33 @@ lemma hasWeightNormSqLeIf_stackedDet (j : D.LiftIndex) (i : D.RowChoice)
         (inFirstCols (stackedDet τ (constantRows j i Y τ l) (posEquiv j)))) =
       (((fromRows 0 (of fun u (c : Fin h) ↦ x (⟨τ, u⟩, c))).fromCols Z).submatrix id
         ((posEquiv j).trans colSplit)).det := by
-    simp [stackedDet, AlgHom.map_det, RingHom.map_det, ↓ constantRows, ↓ inclMatrix]
+    simp only [stackedDet, constantRows, inclMatrix, transpose_submatrix, transpose_one,
+      AlgHom.map_det, AlgHom.mapMatrix_apply, RingHom.map_det, RingHom.mapMatrix_apply,
+      Matrix.map_map, Equiv.coe_trans]
     -- The two matrices differ by the unipotent factor (1 0; T 1), where T holds the cleared
     -- variables: it adds multiples of the upper rows.
     let T : Matrix (FirstFactorIndex j) (Fin (2 * D.m)) ℂ :=
       of fun u a ↦ if h + a < D.posRank j then x (⟨τ, u⟩, h + a) else 0
     refine det_eq_of_eq_det_one_mul (fromBlocks 1 0 T 1) (by simp)
       (ext fun a ↦ ((posEquiv j).trans colSplit).forall_congr_left.mpr ?_)
-    -- Compare entries, by the kind of the factor and of the row.
-    cases l <;> cases a
-    all_goals
-      simp [T, Z, Matrix.one_apply, ↓ Matrix.mul_apply, ↓ constantRows, ↓ inclMatrix,
-        fromCols_map] at h_height ⊢
-      simp +contextual [colSplit, firstCols, inFirstCols, h_height, Fin.cast]
-    · -- an upper row vanishes in the first `h` columns
-      lia
-    · -- in a cleared column the sum over the upper rows has a single nonzero term
-      intro b
+    -- in a cleared column the sum over the upper rows has a single nonzero term
+    have h_single (u : FirstFactorIndex j) (b : Fin (D.posRank j - h)) :
+        ∑ a : Fin (2 * D.m), (if h + a < D.posRank j then
+          if (a : ℕ) = b then x (⟨τ, u⟩, h + b) else 0 else 0) = x (⟨τ, u⟩, h + b) := by
       have hb_lt : (b : ℕ) < 2 * D.m := by grind
       have hb_pos : h + b < D.posRank j := by lia
       rw [Fintype.sum_eq_single ⟨b, hb_lt⟩]
       · simp [hb_pos]
       · intro a ha
         simp [Fin.val_ne_of_ne ha]
+    -- Compare entries, by the kind of the factor and of the row.
+    cases l <;> cases a
+    all_goals
+      simp [T, Z, Matrix.one_apply, ↓ Matrix.mul_apply, ↓ constantRows, ↓ inclMatrix,
+        fromCols_map] at h_height ⊢
+      simp +contextual [colSplit, firstCols, inFirstCols, h_height, Fin.cast, h_single]
+    · -- an upper row vanishes in the first `h` columns
+      lia
     · -- if `h = posRank j` there is no cleared column
       lia
   obtain ⟨ξ, h_eval, h_norm⟩ := exists_toPoly_eq_det_and_weylNormSq_le τ h_lt
@@ -588,23 +593,6 @@ lemma weylNormSq_comp_eval_stackedDetProdCoords_le (j : D.LiftIndex) (i : D.RowC
   rw [comp_eval_stackedDetProdCoords_eq_of_toPoly_eq j i Y hξ]
   exact h_norm ⟨hY_small, hz_small⟩
 
-/-- Specialise the coordinates `stackedDetProdCoords j i Y` by values `z` for the remaining
-variables and a ring map `φ`. Then `toPoly` of the result is the specialised product of
-determinants. Assume `IsSmallSpecialization j Y φ z`: the images under `φ` of the conjugates of the
-entries of `Y`, and of the values of `z`, are at most `M ^ 4` in size. Then `weylNormSq` of the
-result is at most `(M ^ 9) ^ ((12 D.m + 1) N)`, where `N` is the sum over `τ` of
-`card (DetIndex j τ)`, the total number of determinants. -/
-lemma weylNormSq_stackedDetProdCoords_le (j : D.LiftIndex) (i : D.RowChoice)
-    (Y : Matrix D.FlatIndex D.FlatIndex D.E) (φ : ℂ →+* ℂ)
-    (z : D.Φ × FirstFactorIndex j × AddedIndex j → ℂ) :
-    toPoly (fun _ : D.Φ ↦ FirstFactorIndex j) (untwistedDescentPair j).colsPlus
-        (φ ∘ eval z ∘ stackedDetProdCoords j i Y) =
-      .map (φ.comp (eval z)) (inFirstCols (stackedDetProd (posEquiv j) (constantRows j i Y))) ∧
-    (IsSmallSpecialization j Y φ z → weylNormSq (φ ∘ eval z ∘ stackedDetProdCoords j i Y) ≤
-      ↑(D.M ^ 9) ^ ((12 * D.m + 1) * ∑ τ : D.Φ, card (DetIndex j τ))) :=
-  ⟨toPoly_comp_eval_stackedDetProdCoords j i Y φ z, fun h_small ↦
-    weylNormSq_comp_eval_stackedDetProdCoords_le j i Y h_small.norm_entry_le h_small.norm_value_le⟩
-
 /-- Take the product of the determinants of the constant rows `constantRows j i Y`, some of them
 rows of the matrix `Y` chosen by `i`, stacked over rows of variables (`stackedDetProd`). Read it as
 a polynomial in the first `D.posRank j` columns of variables, with coefficients polynomials in the
@@ -648,16 +636,10 @@ lemma aeval_smul_X_stackedDetProdCoords (j : D.LiftIndex) (i : D.RowChoice)
   have h_subst : c ^ (∑ τ, ∑ h ∈ range N, h * κ τ h) •
       aeval (fun x ↦ c • MvPolynomial.X x) (stackedDetProdCoords j i Y l) =
       c ^ (∑ τ, ∑ h ∈ range N, N * κ τ h) • stackedDetProdCoords j i Y l := by
-    have h0 := twoSidedSubst_firstColsCoord (c • 1) 1
+    simpa [twoSidedSubst, h_schur, ↓ card_detIndex_eq_sum, -card_sum, prod_pow_eq_pow_sum, mul_sum,
+      ← pow_mul, Matrix.one_apply, N, κ] using
+      twoSidedSubst_firstColsCoord (c • 1) 1
         (twoSidedSubst_stackedDetProd (posEquiv j) (constantRows j i Y) ..) κ l
-    simp [h_schur, ↓ card_detIndex_eq_sum, -card_sum, prod_pow_eq_pow_sum, mul_sum, ← pow_mul,
-      Matrix.one_apply, N, κ] at h0
-    have h_sub : twoSidedSubst (c • 1) 1 =
-        aeval (fun x : D.Φ × FirstFactorIndex j × AddedIndex j ↦ c • MvPolynomial.X x) := by
-      refine MvPolynomial.algHom_ext fun ⟨τ, a, b⟩ ↦ ?_
-      simp [Matrix.one_apply]
-    rw [h_sub] at h0
-    exact h0
   have h_exp : ∑ τ, ∑ h ∈ range N, N * κ τ h =
       (∑ τ, ∑ h ∈ range N, h * κ τ h) + ∑ τ, ∑ h ∈ range N, (N - h) * κ τ h := by
     simp_rw [← sum_add_distrib, ← add_mul]

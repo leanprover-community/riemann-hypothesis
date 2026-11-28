@@ -1,6 +1,19 @@
+module
+
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Unitary
+import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.Global.ArtinMap
 import Lib.ClassField.Global.CMSplittingCharacters
 import Lib.ClassField.Global.ExistenceTheorem
-import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
+import Lib.ClassField.Global.NormTheorems
+import Lib.GaloisRep.Hilbert90.TameActions
+import Lib.GaloisRep.Hilbert90.UnitaryGroups
+import Lib.General.LinearAlgebra.MatrixPolynomials
 import Lib.General.NumberTheory.CMFields
 
 /-!
@@ -38,6 +51,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## The Hasse principle for ideles in one CM field
@@ -183,8 +198,17 @@ lemma New.IsStep.exists_isSelfAdjoint_of_mem_kerCompNorm {E E' L : Type} [Field 
       MonoidHom.ext adeleNorm_adeleNorm
     -- the norm of `u` to `E` is that of `w * star w` times principal ideles, which `μ` kills
     have h_ww : μ (w.map (adeleNorm E K) * star (w.map (adeleNorm E K))) = 1 := by
-      simpa [← h_tower, hμ.apply_principal, map_adeleNorm_principalIdele,
-        units_map_adeleNorm_star, eq_inv_mul_of_mul_eq hw] using hu
+      have h_eq : u.map (adeleNorm K L) =
+          (principalIdele y)⁻¹ * (principalIdele a * (w * star w)) :=
+        eq_inv_mul_of_mul_eq hw
+      have h_u : μ ((u.map (adeleNorm K L)).map (adeleNorm E K)) = 1 := by
+        change μ (u.map (adeleNorm E L)) = 1 at hu
+        rwa [← h_tower, Units.map_comp] at hu
+      rw [h_eq, map_mul, map_inv, map_mul, map_mul, map_mul, map_inv, map_mul,
+        map_adeleNorm_principalIdele, map_adeleNorm_principalIdele,
+        hμ.apply_principal, inv_one, one_mul, hμ.apply_principal, one_mul,
+        units_map_adeleNorm_star] at h_u
+      exact h_u
     obtain ⟨b, v, hbv⟩ := (hμ.apply_norm_eq_one_iff _).mp h_ww
     exact ⟨b, v, isTotallyPositive_of_isTotallyComplex _, hbv⟩
   -- the Artin symbol `f` of `w` fixes `E'` and `x`, hence all of `L = E'[x]`
@@ -214,13 +238,18 @@ lemma New.IsStep.exists_isSelfAdjoint_of_mem_kerCompNorm {E E' L : Type} [Field 
   obtain ⟨b, s, -, rfl⟩ := (abelianLift_artinMap_eq_one_iff ψ w).mp h_art
   obtain ⟨k, hk⟩ : ∃ k : Kˣ, principalIdele k = (s * star s / u).map (adeleNorm K L) := by
     refine ⟨y / (a * b * star b), ?_⟩
-    -- after substituting `hw`, the two sides in `𝔸f K` differ by the order of the factors
-    have h_vals : algebraMap K (𝔸f K) a * (algebraMap K (𝔸f K) b * adeleNorm K L s *
-        (algebraMap K (𝔸f K) (star (b : K)) * star (adeleNorm K L s))) =
-        adeleNorm K L s * star (adeleNorm K L s) *
-          (algebraMap K (𝔸f K) a * algebraMap K (𝔸f K) b * algebraMap K (𝔸f K) (star (b : K))) := by
-      ring
-    simpa [div_eq_div_iff_mul_eq_mul, hw, Units.ext_iff] using h_vals
+    rw [map_div, map_mul, map_mul, map_div, map_mul, units_map_adeleNorm_star,
+      div_eq_div_iff_mul_eq_mul, hw, star_mul]
+    have h_sb : star (principalIdele b) = principalIdele (star b) :=
+      Units.ext (star_algebraMap_finAdele (b : K))
+    rw [h_sb]
+    set S := (Units.map (adeleNorm K L)) s
+    rw [mul_comm (star S) (principalIdele (star b)),
+      ← mul_assoc (principalIdele b * S), mul_assoc (principalIdele b) S,
+      mul_comm S (principalIdele (star b)), ← mul_assoc (principalIdele b),
+      mul_assoc (principalIdele b * principalIdele (star b)),
+      ← mul_assoc (principalIdele a), ← mul_assoc (principalIdele a),
+      mul_comm (principalIdele a * principalIdele b * principalIdele (star b))]
   obtain ⟨z, c, hc, h_cob⟩ : ∃ (z : Lˣ) (c : 𝔸f L), IsUnit c ∧
       ↑(principalIdele z / (s * star s / u)) * adeleMap (g : L →+* L) c = c :=
     exists_principalIdele_div_mul_adeleMap_eq (isTotallyPositive_of_isTotallyComplex _) hk
@@ -277,7 +306,7 @@ lemma U.isRootQuotient_map {f : R →+* S} (hf : ∀ x : R, f (star x) = star (f
       (map f hf (one_map_ringHom f) a : U (1 : Matrix n n S)) := by
   have h_map : (a.val.val * (aeval γ.val.val z)ᴴ).map f = (aeval γ.val.val z).map f :=
     congrArg (fun M : Matrix n n R ↦ M.map f) h_root
-  show (a.val.val).map f * (aeval ((γ.val.val).map f) (z.map f))ᴴ =
+  change (a.val.val).map f * (aeval ((γ.val.val).map f) (z.map f))ᴴ =
     aeval ((γ.val.val).map f) (z.map f)
   simpa [conjTranspose_map _ hf, map_aeval_matrix] using h_map
 
@@ -285,7 +314,7 @@ lemma U.isRootQuotient_map {f : R →+* S} (hf : ∀ x : R, f (star x) = star (f
 (`New.IsRootQuotient`), namely `z(γ) * (z(γ)ᴴ)⁻¹`. -/
 lemma U.existsUnique_isRootQuotient (h_unit : IsUnit (aeval γ.val.val z)) :
     ∃! a : U 1, IsRootQuotient γ z a.val.val := by
-  have h_invertible : Invertible (aeval γ.val.val z) := h_unit.invertible
+  let h_invertible : Invertible (aeval γ.val.val z) := h_unit.invertible
   -- The root is `z(γ) / z(γ)ᴴ`, which is unitary as `z(γ)` commutes with its adjoint.
   have h_unitary :
       (aeval γ.val.val z * ⅟(aeval γ.val.val z)ᴴ)ᴴ * 1 *
@@ -302,7 +331,9 @@ lemma IsRootQuotient.mul (hx : IsRootQuotient γ z x) (hy : IsRootQuotient γ w 
   have h_comm :
       (aeval γ.val.val z)ᴴ * aeval γ.val.val w = aeval γ.val.val w * (aeval γ.val.val z)ᴴ :=
     (commute_conjTranspose_aeval γ.val.val).eq
-  grind [conjTranspose_mul]
+  change x * y * (aeval γ.val.val (z * w))ᴴ = aeval γ.val.val (z * w)
+  rw [map_mul, conjTranspose_mul, mul_assoc, ← mul_assoc y, hy, ← mul_assoc, mul_assoc x,
+    ← h_comm, ← mul_assoc, hx]
 
 /-! ### Matching pairs and norms -/
 
@@ -337,21 +368,26 @@ lemma IsMatchingPair.mul {A : Type*} {j : A → U (1 : Matrix n n R)}
   · -- `(1 - u) (1 - v) = 1 - (u + v)`.
     have h_off_mul : (1 - u) • z * (1 - v) • w = (1 - u) • (1 : R[X]) * (1 - v) • (1 : R[X]) := by
       rw [hz_off, hw_off]
-    grind [smul_mul_smul]
+    have h1uv : (1 - u) * (1 - v) = 1 - (u + v) := by
+      rw [sub_mul, one_mul, mul_sub, mul_one, huv, sub_zero, sub_sub, add_comm v u]
+    rw [smul_mul_smul, smul_mul_smul, mul_one, h1uv] at h_off_mul
+    exact h_off_mul
   · -- The determinant of `(z * w)(γ)` is a product of two elements of `D`.
     intro m A hA
     obtain ⟨a, ha, ha_eq⟩ := (hz_root γ hγ).1 m A hA
     obtain ⟨b, hb, hb_eq⟩ := (hw_root γ hγ).1 m A hA
-    exact ⟨a * b, D.mul_mem ha hb, by simp_all [det_mul]⟩
+    exact ⟨a * b, D.mul_mem ha hb, by
+      rw [map_mul, ha_eq, hb_eq, map_mul, det_mul]⟩
   · -- `(1 + u (γ - 1)) (1 + v (γ - 1)) = 1 + (u + v) (γ - 1)`.
     obtain ⟨-, hz_norm⟩ := hz_root γ hγ
     obtain ⟨-, hw_norm⟩ := hw_root γ hγ
     have h_norm_mul : twistedNorm (Polynomial.map σ) p (z * w) =
         twistedNorm (Polynomial.map σ) p z * twistedNorm (Polynomial.map σ) p w := by
-      simp [twistedNorm_map_eq_prod, Finset.prod_mul_distrib]
+      simp only [twistedNorm_map_eq_prod, Polynomial.map_mul, Finset.prod_mul_distrib]
     have h_factor : (1 + u • (γ.val.val - 1)) * (1 + v • (γ.val.val - 1)) =
         1 + (u + v) • (γ.val.val - 1) := by
-      simp [add_mul, mul_add, smul_smul, huv, mul_comm v u, add_smul, add_assoc]
+      rw [add_mul, mul_add, mul_add, one_mul, mul_one, one_mul, smul_mul_smul, huv, zero_smul,
+        add_zero, add_smul, add_assoc, add_comm (v • _)]
     rw [h_norm_mul, ← h_factor]
     exact hz_norm.mul hw_norm
   · -- A quotient `r` for `(u + v) z w` is one for `u z` and one for `v w`.
@@ -360,20 +396,40 @@ lemma IsMatchingPair.mul {A : Type*} {j : A → U (1 : Matrix n n R)}
     have hz_off_v : v • ((1 - u) • z) * w = v • ((1 - u) • (1 : R[X])) * w := by
       rw [hz_off]
     have huzw : u • (z * w) = u • z := by
-      simpa [smul_smul, mul_sub, huv] using hw_off_u
+      rw [smul_smul, smul_smul, mul_sub, mul_one, huv, sub_zero, mul_smul_comm, mul_smul_comm,
+        mul_one] at hw_off_u
+      exact hw_off_u
     have hvzw : v • (z * w) = v • w := by
-      simpa [smul_smul, mul_sub, mul_comm v u, huv] using hz_off_v
+      rw [smul_smul, smul_smul, mul_sub, mul_one, mul_comm v u, huv, sub_zero, smul_mul_assoc,
+        smul_mul_assoc, one_mul] at hz_off_v
+      exact hz_off_v
     -- multiply the relation for `(u + v) • (z * w)` by `e = u`, and by `e = v`
     have hr_part {e : R} {f₀ : R[X]} (he : e * (u + v) = e) (he_star : star e = e)
         (h_part : e • (z * w) = e • f₀) : IsRootQuotient γ (e • f₀) r.val := by
       rw [← h_part]
-      simpa [smul_smul, he, he_star, hu_star, hv_star, IsRootQuotient] using
-        congrArg (fun M : Matrix n n R ↦ e • M) hr
+      have h_e := congrArg (fun M : Matrix n n R ↦ e • M) hr
+      change r.val * (aeval γ.val.val (e • (z * w)))ᴴ = aeval γ.val.val (e • (z * w))
+      rw [smul_eq_C_mul, map_mul, aeval_C, Algebra.algebraMap_eq_smul_one, smul_mul_assoc, one_mul,
+        conjTranspose_smul, he_star]
+      have h_lhs : e • (r.val * (aeval γ.val.val ((u + v) • (z * w)))ᴴ) =
+          r.val * (e • (aeval γ.val.val (z * w))ᴴ) := by
+        rw [smul_eq_C_mul, map_mul, aeval_C, Algebra.algebraMap_eq_smul_one, smul_mul_assoc,
+          one_mul, conjTranspose_smul, star_add, hu_star, hv_star, mul_smul_comm, smul_smul, he,
+          mul_smul_comm]
+      have h_rhs : e • aeval γ.val.val ((u + v) • (z * w)) = e • aeval γ.val.val (z * w) := by
+        rw [smul_eq_C_mul, map_mul, aeval_C, Algebra.algebraMap_eq_smul_one, smul_mul_assoc,
+          one_mul, smul_smul, he]
+      rw [h_lhs, h_rhs] at h_e
+      exact h_e
     have hu_sum : u * (u + v) = u := by rw [mul_add, hu_idem, huv, add_zero]
     have hv_sum : v * (u + v) = v := by rw [mul_add, mul_comm v u, huv, hv_idem, zero_add]
     have hr_u : IsRootQuotient γ (u • z) r.val := hr_part hu_sum hu_star huzw
     have hr_v : IsRootQuotient γ (v • w) r.val := hr_part hv_sum hv_star hvzw
-    simp +contextual [hz_match γ r hγ hr_u, hw_match γ r hγ hr_v]
+    refine ⟨fun g hg hnorm ↦ ?_, fun δ hδ hne ↦ ?_⟩
+    · simp only [Pi.mul_apply, (hz_match γ r hγ hr_u).1 g hg hnorm,
+        (hw_match γ r hγ hr_v).1 g hg hnorm]
+    · exact ⟨(hz_match γ r hγ hr_u).2 δ hδ (left_ne_zero_of_mul hne),
+        (hw_match γ r hγ hr_v).2 δ hδ (right_ne_zero_of_mul hne)⟩
 
 /-- Let `z(γ)` be invertible, and let `a * z(γ)ᴴ = z(γ)`. Let `γ * N(γ)ᴴ = N(γ)` for
 `N = twistedNorm (.map σ) p z = z * σ(z) * ⋯ * σ^(p-1)(z)` (likewise `twistedNorm (mapEnd hσ) p
@@ -409,8 +465,26 @@ lemma IsRootQuotient.twistedNorm_eq_mul
       rw [h_succ]
       have h_semiconj : SemiconjBy c.val.val (γ.val.val.map σ) γ.val.val :=
         congrArg (fun g : U (1 : Matrix n n R) ↦ g.val.val) h_conj.symm
-      simpa [h_isUnit, aeval_semiconj h_semiconj, twistedNorm_succ', mul_assoc,
-        map_aeval_matrix] using And.intro h_unit h_root
+      refine ⟨?_, ?_⟩
+      · rw [map_mul]
+        have h_unit' : IsUnit (aeval γ.val.val ((twistedNorm (.map σ) q z).map σ)) := by
+          have h_conj_eq : aeval γ.val.val ((twistedNorm (.map σ) q z).map σ) =
+              c.val.val * σ.mapMatrix (aeval γ.val.val (twistedNorm (.map σ) q z)) *
+                c.val⁻¹.val := by
+            rw [RingHom.mapMatrix_apply, map_aeval_matrix, aeval_semiconj h_semiconj,
+              mul_assoc, Units.mul_inv, mul_one]
+          rw [h_conj_eq]
+          exact h_unit.mul c.val⁻¹.isUnit
+        exact h_unit'.mul h_isUnit
+      · have h_grp :
+            (c * mapEnd hσ (twistedNorm (mapEnd hσ) q c * (twistedNorm (mapEnd hσ) q (a⁻¹ * c))⁻¹) *
+              c⁻¹) * a =
+            twistedNorm (mapEnd hσ) (q + 1) c * (twistedNorm (mapEnd hσ) (q + 1) (a⁻¹ * c))⁻¹ := by
+          rw [twistedNorm_succ', twistedNorm_succ', map_mul, map_inv, _root_.mul_inv_rev,
+            _root_.mul_inv_rev, inv_inv]
+          group
+        rw [← h_grp]
+        exact h_root
   obtain ⟨h_unit_p, h_root_p⟩ := h_quotient_root p
   exact eq_mul_of_mul_inv_eq ((existsUnique_isRootQuotient h_unit_p).unique h_root_p h_norm)
 
@@ -441,7 +515,8 @@ lemma New.U.conjTranspose_aeval {R n : Type} [CommRing R] [StarRing R] [Fintype 
     (hv : aeval (γ : Matrix n n R) v * (γ : Matrix n n R) = 1) (f : R[X]) :
     (aeval (γ : Matrix n n R) f)ᴴ = aeval (γ : Matrix n n R) ((f.map conj).comp v) := by
   have h_inv : (γ : Matrix n n R)ᴴ = aeval (γ : Matrix n n R) v := by
-    simpa using left_inv_eq_left_inv γ.property hv
+    simpa [star_eq_conjTranspose] using left_inv_eq_left_inv
+        (mem_unitaryGroupOf_iff.1 γ.property) hv
   calc (aeval (γ : Matrix n n R) f)ᴴ = aeval (γ : Matrix n n R)ᴴ (f.map conj) :=
         star_aeval (R := R) (γ : Matrix n n R) f
     _ = aeval (γ : Matrix n n R) ((f.map conj).comp v) := by rw [h_inv, aeval_comp]
@@ -611,11 +686,9 @@ lemma New.isUnit_and_isRootQuotient_of_isSelfAdjoint {R n ι : Type} [CommRing R
     (h_adj : ∀ i : ι, IsSelfAdjoint (star (θ i c) * θ i x)) :
     IsUnit (aeval (γ : Matrix n n R) x) ∧
       ∀ a : Matrix n n R, IsRootQuotient γ x a → IsRootQuotient γ c a := by
-  have h_inv_glued : aeval (γ : Matrix n n R) (x * x') = aeval (γ : Matrix n n R) (1 : R[X]) := by
-    refine h_glue fun i ↦ ?_
-    rw [map_mul, h_inv, map_one]
   have h_inv_γ : aeval (γ : Matrix n n R) x * aeval (γ : Matrix n n R) x' = 1 := by
-    rwa [map_mul, map_one] at h_inv_glued
+    simpa only [map_mul, map_one] using
+      (h_glue (f := x * x') (f' := 1) fun i ↦ by rw [map_mul, h_inv, map_one])
   refine ⟨.of_mul_eq_one _ h_inv_γ, fun a ha ↦ ?_⟩
   have β_eq : aeval (γ : Matrix n n R) (β c) = aeval (γ : Matrix n n R) (β x * (c * x')) := by
     refine h_glue fun i ↦ ?_
@@ -628,8 +701,7 @@ lemma New.isUnit_and_isRootQuotient_of_isSelfAdjoint {R n ι : Type} [CommRing R
       rw [hβ_adjoint, hβ_adjoint, β_eq, map_mul, mul_assoc]
     _ = aeval (γ : Matrix n n R) (c * (x * x')) := by rw [ha, ← map_mul, mul_left_comm]
     _ = aeval (γ : Matrix n n R) c := by
-      refine h_glue fun i ↦ ?_
-      rw [map_mul, map_mul, h_inv, mul_one]
+      rw [map_mul, map_mul, h_inv_γ, mul_one]
 
 /-- The complex roots of a factor `q` of the characteristic polynomial `P` of a unitary matrix over
 a CM field have absolute value `1`. -/
@@ -694,15 +766,6 @@ theorem exists_mem_coe_eq_norm_aeval_of_forall_det_aeval_mem {R A : Type*} [Comm
   refine ⟨d, hd, ?_⟩
   rw [Algebra.norm_eq_matrix_det b, ← aeval_algHom_apply]
   exact hd_det
-
-/-- The `i`-th power of `Polynomial.mapRingHom f` maps the coefficients by `f ^ i`. -/
-theorem Polynomial.mapRingHom_pow_apply {R : Type*} [Semiring R] (f : R →+* R) (i : ℕ)
-    (p : R[X]) : (mapRingHom f ^ i) p = p.map (f ^ i) := by
-  induction i with
-  | zero => simp [RingHom.one_def]
-  | succ i ih =>
-    rw [pow_succ', RingHom.mul_def, RingHom.comp_apply, ih, coe_mapRingHom, Polynomial.map_map,
-      pow_succ', RingHom.mul_def]
 
 /-- The finite idele of `y` in `Lˣ` is the image of `y` in the finite adeles. -/
 private lemma New.coe_principalIdele {L : Type*} [Field L] [NumberField L] (y : Lˣ) :
@@ -802,7 +865,7 @@ some unit `y` and `c` with `θ q c` a unit make `star (θ q c) * (y * θ q (T^[p
 self-adjoint, then some `y q`, `c₀ q` make `y q * θ q (T c)` a unit and `star (θ q c)` times it
 self-adjoint at all `q`, for every `c` with `θ q c = θ q (c₀ q)` for all `q`. -/
 private lemma New.exists_isSelfAdjoint_principalIdele_of_forall_minimalPeriod {E E' : Type}
-    [Field E] [Field E'] [NumberField E'] [IsCMField E'] [Algebra E E'] {P : E'[X]}
+    [Field E] [Field E'] [NumberField E'] [Algebra E E'] {P : E'[X]}
     [∀ q : primeFactors P, Fact (Irreducible q.val)]
     [∀ q : primeFactors P, IsCMField (AdjoinRoot q.val)]
     (θ : ∀ q : primeFactors P, (𝔸f E')[X] →ₐ[𝔸f E'] 𝔸f (AdjoinRoot q.val))
@@ -988,8 +1051,10 @@ lemma New.exists_global_root {E E' n : Type} [Field E] [CMType E] [Field E'] [Nu
       θ q ((f.map conj).comp (v.map k)) = star (θ q f) := by
     have h_bezout : mk q.val (v' * P + v * X) = 1 := by rw [hv, map_one]
     have h_inv : mk q.val v * root q.val = 1 := by
-      simpa [mk_eq_zero.mpr (dvd_P q)] using h_bezout
-    have h_star : root q.val * star (root q.val) = 1 := by simpa using root_star q
+      rw [map_add, map_mul, map_mul, mk_eq_zero.mpr (dvd_P q), mul_zero, zero_add, mk_X] at h_bezout
+      exact h_bezout
+    have h_star : root q.val * star (root q.val) = 1 := by
+      simpa only [Rat.cast_one] using root_star q
     exact (θ_presents q).apply_map_conj_comp (left_inv_eq_right_inv h_inv h_star) f
   -- `θ q z` is an idele of `L q` whose norm to the ideles of `E'` lies in `kerCompNorm E' μ`
   have z_norm (q : primeFactors P) :

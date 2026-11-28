@@ -1,4 +1,8 @@
-import Lib.DiscreteSeries.Character.MultiplicityOrbitalIntegral
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.DiscreteSeries.Character.MultiplicityOrbitalIntegral
 import Lib.DiscreteSeries.Character.OpenOrbitIntegral
 
 /-!
@@ -11,8 +15,7 @@ parameter `l = 2λ` of gap `500 n³ + 10 n⁵`; `New.Orbital.harish_chandra_degr
 the two together. By `New.Orbital.exists_laurent_orbital_integral` the orbital integral times a
 product of roots is a Laurent polynomial; it is identified by comparing monomials of low level
 (`New.Orbital.orbital_eq_char_sub_offOrbitIntegral`, `New.Orbital.coeff_eq_zero_of_low_level`).
-The formal degree, with its constant, is read off from one coefficient in this comparison. The
-orbital integrals converge absolutely by `New.Orbital.integrable_dsCoeff_conj`.
+The formal degree, with its constant, is read off from one coefficient in this comparison.
 
 Conventions: `New.HCParam.rootProd l r` is the product of `x_a - x_b` over the pairs with
 `r (ε a) (ε b)` and `l b < l a`, and `New.HCParam.lowerCount l r a` counts these `b`;
@@ -41,6 +44,8 @@ Harish-Chandra, Discrete series for semisimple Lie groups II: explicit determina
 characters, Acta Math. 116 (1966), Thm 16 (with part I, Acta Math. 113 (1965), Thm 3); Knapp,
 Representation Theory of Semisimple Groups (1986), Thm 12.7.
 -/
+
+@[expose] public section
 
 namespace New.Orbital
 
@@ -176,7 +181,7 @@ lemma coeff_top_of_isConeSeriesMultiple {ε : n → ℤˣ} {l : HCParam ε} {o a
           sum_eq_single (k • δ) (fun β _ hβ ↦ only_top β hβ) (by simp +contextual)
       _ = 1 := by rw [coeff_top, one_mul, ← hab, add_comm a, neg_add_cancel_left, t_a]
   · obtain ⟨β, -, hβ⟩ := exists_ne_zero_of_sum_ne_zero hγ
-    exact (exists_perm_level_le γ β hβ).imp fun w hw ↦ by grind
+    exact (exists_perm_level_le γ β hβ).imp fun w hw ↦ by lia
 
 /-- The product of the compact roots that are positive for `l` times that of the noncompact ones is
 the product of all positive roots, which is the Weyl denominator of the compact form. -/
@@ -478,36 +483,6 @@ theorem formalDegree_eq_weylDimensionPoly [Nonempty n] {ε : n → ℤˣ} {l : H
   rw [eq_inv_of_mul_eq_one_left (formalDegree_mul_kTypeNormSq_and_isOrbitalLaurent hg).1]
   exact weyl_dimension_formula (HasGap.signs_one hg)
 
-/-- Absolute convergence of the orbital integrals: for a parameter `l` of gap `500 n³ + 10 n⁵` and a
-regular point `x` of the compact torus, `g ↦ l.dsCoeff (g⁻¹ x g)` is integrable on `U(diag ε)`.
-
-This is Harish-Chandra's convergence theorem for regular orbital integrals of Schwartz functions,
-restricted to one discrete series coefficient (a Schwartz function by Harish-Chandra) of
-`U(diag ε)`, the compact torus and parameters of large gap. -/
-theorem integrable_dsCoeff_conj [Nonempty n] {ε : n → ℤˣ} {l : HCParam ε}
-    (hg : l.HasLargeGap (10 * card n ^ 5)) {x : n → Circle} (x_inj : x.Injective) :
-    MeasureTheory.Integrable fun g : USign ε ↦ l.dsCoeff (g⁻¹ * diagTorus ε x * g :) := by
-  -- The integrand times a power `D` of the noncompact roots is integrable, and `D(x) ≠ 0`.
-  let D : ℂ[n → ℤ] := (-l).rootProd Ne ^ (4 * card n ^ 2 + 1)
-  let ψ : C(USign ε, C(maxCompactU ε, ℂ)) :=
-    (ContinuousMap.mk fun p : USign ε × maxCompactU ε ↦
-      l.dsCoeffSmooth.val (p.1⁻¹ * p.2 * p.1)).curry
-  have hψ (g : USign ε) (k : maxCompactU ε) : ψ g k = l.dsCoeff (g⁻¹ * k * g :) := rfl
-  choose s ν hν apply_eq using exists_sign_isKDominant hg.injective
-  have hs : IsStraightening l s ν := ⟨hν, apply_eq⟩
-  obtain ⟨Y, hXY⟩ := hs.exists_isWeylFamily hg.injective
-  obtain ⟨d, hd⟩ : ∃ d : C(maxCompactU ε, ℂ),
-      ∀ (y : maxCompactU ε) (t : n → Circle), d (y * diagTorusK t * y⁻¹) = torusEval t D :=
-    hXY.exists_apply_conj_eq hg.injective fun w hw t ↦ by
-      simp [D, torusEval_rootProd_noncompact_comp hg.neg.injective hw]
-  have d_ne : d (diagTorusK x) ≠ 0 := by
-    rw [show d (diagTorusK x) = torusEval x D by simpa using hd 1 x, map_pow]
-    exact pow_ne_zero _ (torusEval_rootProd_ne_zero (-l) Ne x_inj)
-  have h_mul : MeasureTheory.Integrable fun g : USign ε ↦ d (diagTorusK x) * ψ g (diagTorusK x) :=
-    (ContinuousMap.evalCLM ℂ (diagTorusK x)).integrable_comp
-      (integrable_mul_dsCoeff_conj l hg hd hψ)
-  exact (MeasureTheory.integrable_const_mul_iff d_ne.isUnit _).1 h_mul
-
 /-- Let the Harish-Chandra parameter `l = 2λ` have gap `500 n³ + 10 n⁵`, and let `l.dsKernel g` be
 `l.formalDegree` (`deg_λ`) times the conjugate of the discrete series coefficient `l.dsCoeff g`
 (`c_λ(g)`). At a regular point `x` of the compact torus, the stable sum of the orbital integrals of
@@ -516,8 +491,8 @@ times the conjugate of Weyl's character of `U(n)` of highest weight `l.compactFo
 Here `oppositePairs ε` is the set of pairs `(a, b)` with `ε a = 1` and `ε b = -1`.
 
 This is a consequence of Harish-Chandra's elliptic orbital integral formula for discrete series
-coefficients. It gives only the sum over all permutations, and the integrals converge absolutely by
-`integrable_dsCoeff_conj`. -/
+coefficients. It gives only the sum over all permutations, and the integrals converge
+absolutely. -/
 theorem neg_one_pow_mul_sum_integral_dsKernel [Nonempty n] {ε : n → ℤˣ} {l : HCParam ε}
     (hg : l.HasLargeGap (10 * card n ^ 5)) {x : n → Circle} (x_inj : x.Injective) :
     (-1) ^ #(oppositePairs ε) *
@@ -571,7 +546,7 @@ theorem neg_one_pow_mul_sum_integral_dsKernel [Nonempty n] {ε : n → ℤˣ} {l
 `500 n³ + 10 n⁵`. Then (a) the formal degree, the reciprocal of `∫ |c_λ|²` over `USign ε`, equals
 `weylDimensionPoly l`; (b) at every regular point `x` of the compact torus (`x` injective), the sum
 over all permutations `σ` of the orbital integrals `∫ l.dsKernel (g⁻¹ diag(x ∘ σ) g) dg`, which
-converge absolutely by `integrable_dsCoeff_conj`, times `(-1)` to the number of pairs `(a, b)` with
+converge absolutely, times `(-1)` to the number of pairs `(a, b)` with
 `ε a = 1` and `ε b = -1`, equals `#{σ | ε ∘ σ = ε}` (the order of the Weyl group of `K`) times the
 conjugate of Weyl's character `l.compactForm.lowestKType.kTypeChar` of the compact form at
 `diag(x)`. Here `c_λ` is `l.dsCoeff`, `deg_λ` is `l.formalDegree`, and `l.dsKernel` is `deg_λ` times

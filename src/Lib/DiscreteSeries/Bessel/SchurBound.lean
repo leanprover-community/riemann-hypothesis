@@ -1,4 +1,16 @@
-import Lib.DiscreteSeries.Bessel.Basic
+module
+
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.MeasureTheory.Function.Holder
+import Mathlib.MeasureTheory.Function.LpSpace.DomAct.Continuous
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.Topology.Algebra.Group.Units
+public import Lib.DiscreteSeries.Bessel.Basic
 
 /-!
 # Traces and L² bounds for Bessel functions
@@ -34,6 +46,8 @@ Notions from other files:
 Known; see `Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure` and `Lib.DiscreteSeries.CuspKernel` for
 sources.
 -/
+
+@[expose] public section
 
 /-!
 ## The sum of the simple root entries as a trace against a fixed matrix
@@ -118,7 +132,7 @@ Bochner integral of `‖F‖ ^ 2`. -/
 lemma lintegral_enorm_sq (hF_int : Integrable F ν) (h_top : MemLp F ∞ ν) :
     ∫⁻ y : G, ‖F y‖ₑ ^ 2 ∂ν = ENNReal.ofReal (∫ y : G, ‖F y‖ ^ 2 ∂ν) := by
   have h_sq_int := hF_int.norm.mul_of_top_left h_top.norm
-  simpa [sq] using (ofReal_integral_norm_eq_lintegral_enorm h_sq_int).symm
+  simpa [sq] using (ofReal_integral_norm_eq_lintegral_eNorm h_sq_int).symm
 
 /-- Schur's orthogonality relation for an idempotent kernel `ψ`:
 `∫ ψ a⁻¹ * ψ (g * (a * y)) da = ψ g / ψ 1 * ψ y`, where `ψ a⁻¹ = conj (ψ a)`. -/
@@ -210,7 +224,7 @@ theorem IsBoundedMeasurable.identDistrib_norm_translate (hν : orbitMeasure ρ v
   rw [← hν]
   refine identDistrib_orbitMeasure_mul_right g (fun (s : S) y ↦ ?_)
     hF.stronglyMeasurable.norm.measurable
-  rw [Subgroup.smul_def, smul_eq_mul, hF_left _ s.2, norm_smul, hc, one_mul]
+  rw [Subgroup.smul_def, smul_eq_mul, hF_left _ s.property, norm_smul, hc, one_mul]
 
 omit [CompleteSpace E] in
 /-- If `x` is integrable and `F` is bounded, transforms under `S` by factors `c s` of modulus one
@@ -272,7 +286,7 @@ theorem IsBoundedMeasurable.integral_inner_translate (hν : orbitMeasure ρ volu
   have shift (s t : G) : ∫ y : G, ⟪F (y * s), F (y * t)⟫_ℂ ∂ν = k (s⁻¹ * t) := by
     have h_inv (u : S) (y : G) :
         ⟪F (u • y), F (u • y * (s⁻¹ * t))⟫_ℂ = ⟪F y, F (y * (s⁻¹ * t))⟫_ℂ := by
-      simp [Subgroup.smul_def, mul_assoc, hF_left _ u.2,
+      simp [Subgroup.smul_def, mul_assoc, hF_left _ u.property,
         mul_left_comm (c (u : G)), Complex.mul_conj', hc]
     have h_meas : StronglyMeasurable fun y : G ↦ ⟪F y, F (y * (s⁻¹ * t))⟫_ℂ := by fun_prop
     simpa [k, hν, mul_assoc] using (identDistrib_orbitMeasure_mul_right (ν := ρ) (μ := volume)
@@ -521,9 +535,9 @@ theorem IsIdempotentKernel.enorm_integral_convolve_sq_le (hx : Integrable x)
         hψ.integral_inner_convolve_mul hx hψ_one hψ_bdd hx_conv hw hu hu
     calc
       _ ≤ (∫⁻ g, ‖z g * ⟪u, convolve w x g⟫_ℂ‖ₑ) ^ 2 := by
-        grw [inner_V, enorm_integral_le_lintegral_enorm]
+        grw [inner_V, eNorm_integral_le_lintegral_eNorm]
       _ ≤ (∫⁻ g, ‖z g‖ₑ ^ 2) * ∫⁻ g, ‖⟪u, convolve w x g⟫_ℂ‖ₑ ^ 2 :=
-        sq_lintegral_le (hz.1.enorm.pow_const 2) (coef_int.1.enorm.pow_const 2) (by simp [mul_pow])
+        sq_lintegral_le (hz.1.eNorm.pow_const 2) (coef_int.1.eNorm.pow_const 2) (by simp [mul_pow])
       _ = B * ‖u‖ₑ ^ 2 := by
         rw [lintegral_enorm_sq coef_int coef_bdd.memLp_top, orth, ofReal_mul' (by positivity),
           ofReal_pow (norm_nonneg u), ofReal_norm, hB]
@@ -661,7 +675,7 @@ lemma enorm_integral_besselS_mul (hW : IsBesselFunction rep W) {s : 𝔰.G₁} (
     _ = ‖wave (simpleRootSum u) • ∫ y : 𝔰.G₁, A (β y • W (g * y)) ∂μ‖ₑ := by
       simp only [h_transl, map_smul, smul_comm (β _), integral_smul]
     _ = ‖∫ y : 𝔰.G₁, A (β y • W (g * y)) ∂μ‖ₑ := by simp [← ofReal_norm, norm_smul]
-    _ = ‖∫ y : 𝔰.G₁, β y • W (g * y) ∂μ‖ₑ := by rw [A.integral_comp_comm, A.enorm_map]
+    _ = ‖∫ y : 𝔰.G₁, β y • W (g * y) ∂μ‖ₑ := by rw [A.integral_comp_comm, A.eNorm_map]
 
 /-- The norm of a Bessel function `W` is invariant under left multiplication by the Bessel
 subgroup. -/

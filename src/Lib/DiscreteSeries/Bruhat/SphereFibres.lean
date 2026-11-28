@@ -1,6 +1,11 @@
-import Lib.DiscreteSeries.Bruhat.ComplexPlace
-import Lib.DiscreteSeries.Bruhat.QuadricBlocks
+module
+
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.MeasureTheory.Order.Group.Lattice
 import Mathlib.Probability.Kernel.WithDensity
+public import Lib.DiscreteSeries.Bruhat.ComplexPlace
+import Lib.DiscreteSeries.Bruhat.QuadricBlocks
+import Lib.DiscreteSeries.Haar.TotalMass
 
 /-!
 # The spheres of ℂ^κ as fibres of the standard form
@@ -19,6 +24,8 @@ Notions from other files:
 ## Relation to the literature
 Elementary: polar coordinates.
 -/
+
+@[expose] public section
 
 namespace New.Floors
 
@@ -111,7 +118,7 @@ theorem exists_isDisintegration_le_sphereDensity {κ : Type} [Fintype κ] [Decid
       simp only [h_im, mass, posPart_eq_self.2 ht.le]
       rw [← lintegral_congr h_point]
   · -- if the box meets the sphere of squared radius `2 * β.val.im`, that is at most `card κ * R²`
-    rw [Kernel.withDensity_apply _ (by fun_prop), withDensity_const, hl, Measure.smul_apply,
+    rw [Kernel.withDensity_apply _ (by fun_prop), withDensity_const, hl, smul_apply,
       smul_eq_mul, Measure.map_apply (by fun_prop) (by measurability)]
     obtain h_empty | ⟨h, hh⟩ :=
       (point (2 * β.val.im) ⁻¹' {y : κ → ℂ | ∀ i : κ, ‖y i‖ ≤ R}).eq_empty_or_nonempty

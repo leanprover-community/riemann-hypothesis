@@ -1,8 +1,19 @@
+module
+
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+public import Lib.GLn.Dual
+public import Lib.General.Algebra.LevelModulus
+public import Lib.Weil.Unramified.HeckeTransfer
 import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
 import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.GLn.Dual
-import Lib.General.Algebra.LevelModulus
-import Lib.Weil.Unramified.HeckeTransfer
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.DiscreteSeries.Theta.FockJointHarmonics
+import Lib.DiscreteSeries.Theta.LocalCorrespondence
+import Lib.GLn.SchurModule.SchurNorm
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Descent pairs: descent data for theta lifts to definite unitary groups
@@ -60,6 +71,8 @@ Notions from other files:
 See `Lib.Adelic.Unitary.CongruenceLevels` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New
@@ -98,10 +111,6 @@ def firstBlockHom :
   MonoidHom.pi fun
     | .inl i => (extendGL u).comp (Pi.evalMonoidHom _ i)
     | .inr _ => 1
-
-/-- At a place w of M the component of `firstBlockHom S u g` is diag(g_w, 1). -/
-lemma firstBlockHom_apply_inl (g : S.ChosenGL r) (i : S.ChosenIndex) :
-    firstBlockHom S u g (inl i) = extendGL (R := ResField (S.placeAt (inl i))) u (g i) := rfl
 
 /-- At a place of Q the component of `firstBlockHom S u g` is 1. -/
 lemma firstBlockHom_apply_inr (g : S.ChosenGL r) (i : S.TwistIndex) :
@@ -145,19 +154,13 @@ lemma firstBlockHom_conj_mem_descentResidueLevel (s : S.ChosenGL r)
     (hx : x ∈ descentResidueLevel S u) :
     (firstBlockHom S u s)⁻¹ * x * firstBlockHom S u s ∈ descentResidueLevel S u := by
   obtain ⟨h_fix, h_parabolic⟩ := (mem_descentResidueLevel_iff S u).1 hx
-  refine (mem_descentResidueLevel_iff S u).2 ⟨fun i ↦ ?_, fun i ↦ ?_⟩
-  · -- With `d = diag(t, 1)` and `e` the inclusion matrix, `d * e = e * t`, so `x` fixes `d * e`.
-    let t : GL r (ResField (S.placeAt (inl i))) := s i
-    let d : GL n (ResField (S.placeAt (inl i))) := extendGL u t
-    let e : Matrix n r (ResField (S.placeAt (inl i))) := inclMatrix _ u
-    have h_block : d.val * e = e * t.val := extendGL_mul_inclMatrix u t
-    have h_fix_block : (x (inl i)).val * (d.val * e) = d.val * e := by
-      rw [h_block, ← Matrix.mul_assoc, h_fix i]
-    have h_apply : ((firstBlockHom S u s)⁻¹ * x * firstBlockHom S u s) (inl i) =
-        d⁻¹ * x (inl i) * d := rfl
-    rw [h_apply, Units.val_mul, Units.val_mul, Matrix.mul_assoc, Matrix.mul_assoc, h_fix_block,
-      ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
-  · simpa only [firstBlockHom_conj_apply_inr] using h_parabolic i
+  refine (mem_descentResidueLevel_iff S u).2 ⟨fun i ↦ ?_,
+    fun i ↦ by simpa only [firstBlockHom_conj_apply_inr] using h_parabolic i⟩
+  let t : GL r (ResField (S.placeAt (inl i))) := s i
+  change ((extendGL u t)⁻¹ * x (inl i) * extendGL u t).val * inclMatrix _ u = inclMatrix _ u
+  simp only [Units.val_mul, Matrix.mul_assoc, extendGL_mul_inclMatrix]
+  rw [← Matrix.mul_assoc (x (inl i)).val, h_fix i, ← extendGL_mul_inclMatrix,
+    ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
 
 end
 
@@ -765,7 +768,7 @@ lemma _root_.New.fockRowSubst_fockLetters (s : r → ℤˣ) (ord : r → ℕ) (y
 /-- If the first weight is the number of negative signs of s, then (1, y), y in the compact group
 U(n)(ℝ), acts on the Fock vector of `New.fockLetters s ord c F` by substituting yᵀ in the variables
 of F if c = 1, and y⁻¹ otherwise. -/
-lemma _root_.New.realPairWeil_fockLetters [WeilData E]
+lemma _root_.New.realPairWeil_fockLetters
     (s : r → ℤˣ) (ord : r → ℕ) (γ' : InfinitePlace E → ℤ)
     (y : GInf E 1) (c : ℤˣ) (F : MatrixPoly ((_ : InfinitePlace E) × n) ℂ) :
     realPairWeil (n' := n) (s := s) (fun _ ↦ negCount s) γ' (1, y) (fockLetters s ord c F) =
@@ -937,9 +940,7 @@ lemma FitsParams.lowestKType_eq_staircaseWeight {O : DescentPair E r n}
       ((toHCParam O.signs (-l w)).lowestKType c : ℂ) • O.productOfMinors w := by
     obtain ⟨h_torus_Q, -⟩ := hQ.isJointHighest.isKHighest_cols
     rw [ha, map_smul, h_torus_Q, smul_comm]
-  have h_cast : ((toHCParam O.signs (-l w)).lowestKType c : ℂ) = ν c :=
-    (smul_left_inj h_ne).1 (h_eigen.symm.trans (h_torus c))
-  exact Int.cast_injective h_cast
+  exact Int.cast_injective ((smul_left_inj h_ne).1 (h_eigen.symm.trans (h_torus c)))
 
 /-- If l fits O, the product of minors at w is a joint harmonic for (V, W), with weights r₋ (the
 number of minus signs of W) and −(⌊n/2⌋ + `O.weight w`) and parameters `O.paramV w` and −l_w. -/
@@ -949,8 +950,8 @@ lemma FitsParams.isJointHarmonic_productOfMinors {O : DescentPair E r n}
       (FockDualPair.std 1 O.signs (negCount O.signs) (-((Fintype.card n / 2 : ℕ) + O.weight w)))
       (O.paramV w) (-l w) (O.productOfMinors w) := by
   refine ⟨h_fits.paramsCorrespond.isMatch w, ?_⟩
-  rw [funext (h_fits.lowestKType_eq_staircaseWeight w)]
-  exact h_fits.isJointHighest_productOfMinors w
+  simpa only [funext (h_fits.lowestKType_eq_staircaseWeight w)] using
+    h_fits.isJointHighest_productOfMinors w
 
 /-- Let the parameter l fit O, let l' = `O.paramV`, let r₋ be the number of minus signs of W and
 γ_w = ⌊n/2⌋ + `O.weight w`. There are polynomials Φ_w, one for each infinite place w, such that

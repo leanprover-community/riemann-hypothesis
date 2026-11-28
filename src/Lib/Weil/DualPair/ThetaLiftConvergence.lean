@@ -1,5 +1,18 @@
+module
+
+
+import TauCeti.RepresentationTheory.Continuous.StronglyContinuous
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.AutomorphicForms.Basic
+public import Lib.Weil.DualPair.Defs
 import Lib.Adelic.AutomorphicForms.RealConvolution
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Adelic.Unitary.RationalPoints
 import Lib.DiscreteSeries.CuspKernel
+import Lib.DiscreteSeries.Haar.TotalMass
 import Lib.Weil.DualPair.WeilAction
 
 /-!
@@ -39,6 +52,8 @@ Notions from other files:
 Known; see `Lib.Weil.DualPair.KernelDecay` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -61,12 +76,9 @@ variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Finty
 /-- The operator norms ‖ω(k)‖ of a theta kernel on a Banach space are bounded for k in a compact
 subset of the product of the two adelic groups (Banach–Steinhaus). -/
 lemma exists_norm_le_of_isCompact {K : Set (G E s × G E t)} (hK : IsCompact K) :
-    ∃ C : ℝ, ∀ k ∈ K, ‖Θ.ω k‖ ≤ C := by
-  -- Each orbit map is continuous, hence bounded on `K`; then apply the Banach–Steinhaus theorem.
-  have orbit_bdd (φ : X) : ∃ C : ℝ, ∀ k : K, ‖Θ.ω k φ‖ ≤ C := by
-    simpa only [Subtype.forall] using
-      hK.exists_bound_of_continuousOn (f := fun k ↦ Θ.ω k φ) (by fun_prop)
-  simpa only [Subtype.forall] using banach_steinhaus orbit_bdd
+    ∃ C : ℝ, ∀ k ∈ K, ‖Θ.ω k‖ ≤ C :=
+  ContRepresentation.exists_norm_le_of_isCompact (π := .ofMonoidHom Θ.ω)
+    (fun _ ↦ Θ.continuous.comp₂ continuous_id continuous_const) hK
 
 /-- One step of reduction: for `g` an adelic point of the unitary group of `V`, there is an
 archimedean point `y` with operator norm at most `2` at every infinite place such that the height of
@@ -187,56 +199,23 @@ theorem eventually_exists_norm_omega_le_mul_height_pow (g₀ : G E s) :
   -- Write `γ g = z x` with `z` in a compact set and `x` a product of `k` real points of norm at
   -- most `2`, where `2 ^ k ≤ height g`. Each of the `k + 1` factors acts with norm at most `2 ^ a`.
   obtain ⟨Ω, hΩ, h_reduce⟩ := V.exists_reduction_norm_le_height
-  -- The real points `(x, 1)` with `‖x_τ‖ ≤ 2` at every infinite place.
-  let B : Set (G E t) := (Set.univ.pi fun _ : InfinitePlace E ↦
-    {y : USign t | ‖((y : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2}) ×ˢ {1}
-  have hB : IsCompact B :=
-    (isCompact_univ_pi fun _ ↦ isCompact_U_norm_le 2).prod isCompact_singleton
-  obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ x ∈ ({g₀, 1} : Set (G E s)) ×ˢ (Ω ∪ B), ‖Θ.ω x‖ ≤ C :=
-    Θ.exists_norm_le_of_isCompact ((isCompact_singleton.insert g₀).prod (hΩ.union hB))
+  obtain ⟨C, hC⟩ := Θ.exists_norm_le_of_isCompact <|
+    ((isCompact_singleton (x := 1)).insert g₀).prod <| hΩ.union
+      ((isCompact_univ_pi fun _ ↦ isCompact_U_norm_le 2).prod (isCompact_singleton (x := 1)))
   filter_upwards [(tendsto_pow_atTop_atTop_of_one_lt one_lt_two).eventually_ge_atTop C] with a ha g
-  -- Each factor acts with norm at most `2 ^ a`, by induction on the list.
-  have h_prod {z : G E t} (hz : z ∈ Ω) (l : List (GInf E t))
-      (hl : ∀ y ∈ l, ∀ τ : InfinitePlace E, ‖((y τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2) :
-      ‖Θ.ω (g₀, z * (l.prod, 1))‖ ≤ 2 ^ a * (2 ^ a) ^ l.length := by
-    induction l using List.reverseRecOn with
-    | nil => simpa [mul_def] using (hC (g₀, z) (by simp [hz])).trans ha
-    | append_singleton l y ih =>
-      have hy : ‖Θ.ω (1, y, 1)‖ ≤ 2 ^ a := (hC (1, y, 1) (by simp [B, hl y (by simp)])).trans ha
-      calc ‖Θ.ω (g₀, z * ((l ++ [y]).prod, 1))‖
-          = ‖Θ.ω (g₀, z * (l.prod, 1)) * Θ.ω (1, y, 1)‖ := by simp [mul_def, mul_assoc, ← map_mul]
-        _ ≤ 2 ^ a * (2 ^ a) ^ l.length * 2 ^ a := by
-            grw [norm_mul_le, ih fun x hx ↦ hl x (by simp [hx]), hy]
-        _ = 2 ^ a * (2 ^ a) ^ (l ++ [y]).length := by simp [pow_succ, mul_assoc]
   obtain ⟨γ, hγ, l, h_mem, -, h_length, h_factors⟩ := h_reduce g
-  have h_le : ‖Θ.ω (g₀, γ * g)‖ ≤ 2 ^ a * (2 ^ a) ^ l.length := by
-    simpa only [inv_mul_cancel_right] using h_prod h_mem l h_factors
-  exact ⟨γ, hγ, by grw [h_le, pow_right_comm, h_length]⟩
-
-omit [CMType E] in
-/-- The real Weil representation of a pair of ranks `n`, `n'`, which depends on `γ`, `γ'` only
-through a scalar of modulus one, has at `(y, y')` operator norm at most the norm of the vacuum times
-`(‖y‖ ‖y'‖) ^ (n n')`, where the norm of a real point is the product of the operator norms of its
-components at the infinite places. -/
-theorem _root_.New.norm_realPairWeil_le [NumberField E] (γ γ' : InfinitePlace E → ℤ)
-    (y : GInf E s) (y' : GInf E t) :
-    ‖realPairWeil γ γ' (y, y')‖ ≤ ‖(Fock.vacVector : PairFock E s t)‖ *
-      ((∏ τ : InfinitePlace E, ‖((y τ : GL n ℂ) : Matrix n n ℂ)‖) *
-        ∏ τ : InfinitePlace E, ‖((y' τ : GL n' ℂ) : Matrix n' n' ℂ)‖) ^
-          (Fintype.card n * Fintype.card n') := by
-  -- The determinants have modulus one, and at each place the multiplier is a minor of size at most
-  -- `n n'` of the matrix of `x ↦ y' x y⁻¹`.
-  have h_det : ‖realPairWeil γ γ' (y, y')‖ = ‖Fock.realWeil (pairHomInf (y, y'))‖ := by
-    change ‖(_ : ℂ) • Fock.realWeil (pairHomInf (y, y'))‖ = _
-    simp [norm_smul]
-  have h_multiplier : Fock.realMultiplier (pairHomInf (y, y')) =
-      ∏ τ : InfinitePlace E, Fock.realMultiplier (Fock.pairHom t s (y τ, y' τ)) :=
-    Fock.realMultiplier_blockU _
-  rw [h_det, ← Finset.prod_mul_distrib, ← Finset.prod_pow]
-  grw [Fock.norm_realWeil_le, h_multiplier, norm_prod]
-  gcongr with τ
-  grw [Fock.norm_realMultiplier_le, Fock.norm_pairHom_le, Fintype.card_prod,
-    mul_comm (Fintype.card n')]
+  suffices h : ‖Θ.ω (g₀, γ * g * (l.prod, 1)⁻¹ * (l.prod, 1))‖ ≤ 2 ^ a * (2 ^ a) ^ l.length from
+    ⟨γ, hγ, by grw [← inv_mul_cancel_right (γ * g) (l.prod, 1), h, pow_right_comm, h_length]⟩
+  generalize γ * g * (l.prod, 1)⁻¹ = z at h_mem ⊢
+  clear h_length
+  induction l using List.reverseRecOn with
+  | nil => simpa [mul_def] using (hC (g₀, z) (by simp [h_mem])).trans ha
+  | append_singleton l y ih =>
+    rw [show Θ.ω (g₀, z * ((l ++ [y]).prod, 1)) = Θ.ω (g₀, z * (l.prod, 1)) * Θ.ω (1, y, 1) by
+      simp [mul_def, mul_assoc, ← map_mul]]
+    grw [norm_mul_le, ih fun x hx ↦ h_factors x (by simp [hx]),
+      (hC (1, y, 1) (by simp [h_factors y (by simp)])).trans ha]
+    simp [pow_succ, mul_assoc]
 
 /-- Let `S` and `T` be hermitian spaces of ranks `n` and `n'`, let `a` and `b` be automorphic
 characters, and let `pairWeil S T a b` be the resulting Weil representation of the product of the
@@ -323,7 +302,8 @@ abbrev swap : ThetaKernel X T S where
   ω := K.ω.comp MulEquiv.prodComm.toMonoidHom
   θ := K.θ
   continuous := by
-    simp
+    simp only [MulEquiv.toMonoidHom_eq_coe, MonoidHom.coe_comp, MonoidHom.coe_ofClass,
+      MulEquiv.coe_prodComm, Function.comp_apply]
     fun_prop
   rat_mul := by simp_all [K.rat_mul]
 
@@ -435,7 +415,7 @@ include hr in
 /-- The theta lift (φ, y) ↦ `New.Space.lift` K φ y as a ℂ-bilinear map from X and rapidly
 decaying automorphic functions for S to functions on the group of T. The definition also takes an
 argument `hr : y ∈ S.rapidFunctions` for a function `y` that the map does not use. -/
-def liftBilin : X →ₗ[ℂ] S.rapidFunctions.1 →ₗ[ℂ] G E t → ℂ :=
+def liftBilin : X →ₗ[ℂ] S.rapidFunctions.toSubmodule →ₗ[ℂ] G E t → ℂ :=
   LinearMap.mk₂ ℂ (fun φ y ↦ lift K φ y)
     (by simp [add_mul, funext_iff, integral_add, integrable_theta_mul, lift])
     (by simp [funext_iff, lift, ← integral_const_mul, ← mul_assoc])

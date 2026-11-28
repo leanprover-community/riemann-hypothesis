@@ -1,5 +1,13 @@
+module
+
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import New.UpperBound.ElementaryDivisors.TwistingData
 import Lib.General.LinearAlgebra.HermiteForm
-import Lib.LocalGL.Green.HallAlgebra
 import New.UpperBound.ElementaryDivisors.InvariantAverage
 import New.UpperBound.ElementaryDivisors.RootLemma
 
@@ -15,8 +23,6 @@ monomials `w ^ (-depth β) z ^ β`, where the depth is the degree in the deep va
 file works with coefficient vectors in the normalized monomials, so the halfway lattice is the
 module of all vectors.
 
-* `New.monomialLattice`, `New.dividedPowerLattice`: the spans `H ⊇ H°` of the monomials `z ^ β` and
-  of the `(n! ^ N / β!) z ^ β`; both are stable under `GL_k(W)`.
 * `New.FrobeniusCycle.allEdgesForms`: the forms that lie in the halfway lattices of all edges from
   `L'`.
 * `New.FrobeniusCycle.IsEdgePairing`: weights of a pairing for which `ρ(g)` and `ρ(gᵀ)` are adjoint;
@@ -50,6 +56,8 @@ Notions from other files:
 
 See `New.UpperBound.Divisibility.LocalDivisibility` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -102,9 +110,9 @@ lemma card_le_mul_finrank_of_dual_rows {O X I E : Type*} [CommRing O] [IsLocalRi
       simpa [v] using congrArg (fun f : X → S ↦ S.subtype (f y.1) y.2) hc
     -- Pair the relation with row `i` of `R`: only the coefficient `c i` survives.
     calc c i = ∑ j : s, c j * residue O ((R * Q) i j) := by
-          simp [h_dual, apply_ite (residue O)]
+          simp [h_dual]
       _ = ∑ y : X × I, residue O (R i y) * ∑ j : s, c j * residue O (Q y j) := by
-          simp only [Matrix.mul_apply, map_sum, map_mul, mul_sum, mul_left_comm]
+          simp only [Matrix.mul_apply, map_sum, mul_sum, mul_left_comm]
           exact sum_comm
       _ = 0 := by simp only [h_entry, mul_zero, sum_const_zero]
   simpa [finrank_pi_fintype] using h_indep.fintype_card_le_finrank
@@ -135,74 +143,6 @@ lemma pow_sub_dvd_of_pow_dvd_pow_mul {O : Type} [CommRing O] [IsDomain O] {w x :
   · simp [Nat.sub_eq_zero_of_le hmd]
   · rwa [← Nat.add_sub_cancel' hdm, pow_add, mul_dvd_mul_iff_left (pow_ne_zero d hw)] at h_dvd
 
-/-! ### The two lattices of forms -/
-
-section Lattices
-
-open Nat
-
-variable {N k n : ℕ} [NeZero N] (O K : Type) [CommRing O] [CommRing K] [Algebra O K]
-
-/-- The number `n! ^ N / β!` for an exponent `β` of degree `n` in each of the `N` letters, where
-`β!` is the product of the factorials of all entries of `β`. -/
-def dividedPowerCoeff (β : Exponents N k n) : ℕ :=
-  n ! ^ N / ∏ s : ZMod N, ∏ b : Fin k, ((β s).val b)!
-
-/-- The number `n! ^ N / β!` is the product over the letters `s` of the multinomial coefficients of
-the exponent vectors `β s`. -/
-lemma dividedPowerCoeff_eq_prod_multinomial (β : Exponents N k n) :
-    dividedPowerCoeff β = ∏ s : ZMod N, multinomial univ (β s).val := by
-  have h_letter (s : ZMod N) :
-      (∏ b : Fin k, ((β s).val b)!) * multinomial univ (β s).val = n ! := by
-    rw [multinomial_spec, (mem_finsuppAntidiag.1 (β s).property).left]
-  refine Nat.div_eq_of_eq_mul_right (by positivity) ?_
-  simp [← prod_mul_distrib, h_letter]
-
-variable (N k n) in
-/-- The lattice `H` of forms with coefficients in `O`: the `O`-span, in the polynomials over the
-`O`-algebra `K`, of the monomials `z ^ β` of degree `n` in each of the `N` letters, with `k`
-variables in each letter. -/
-def monomialLattice : Submodule O (MvPolynomial (Fin k × ZMod N) K) :=
-  Submodule.span O (Set.range fun β : Exponents N k n ↦ monomial (exponentOf β) (1 : K))
-
-variable (N k n) in
-/-- The lattice `H°` of divided powers: the `O`-span, in the polynomials over the `O`-algebra `K`,
-of the `(n! ^ N / β!) z ^ β`, for the monomials `z ^ β` of degree `n` in each of the `N` letters,
-with `k` variables in each letter. -/
-def dividedPowerLattice : Submodule O (MvPolynomial (Fin k × ZMod N) K) :=
-  Submodule.span O
-    (Set.range fun β : Exponents N k n ↦ monomial (exponentOf β) (dividedPowerCoeff β : K))
-
-/-- The span `H°` of the `(n! ^ N / β!) z ^ β` lies in the span `H` of the monomials `z ^ β`. -/
-theorem dividedPowerLattice_le_monomialLattice :
-    dividedPowerLattice N k n O K ≤ monomialLattice N k n O K := by
-  refine Submodule.span_le.2 (Set.range_subset_iff.2 fun β ↦ ?_)
-  have h_mem : monomial (exponentOf β) (1 : K) ∈ monomialLattice N k n O K :=
-    Submodule.subset_span ⟨β, rfl⟩
-  simpa [smul_monomial] using nsmul_mem h_mem (dividedPowerCoeff β)
-
-/-- Over a domain of characteristic `0`, the `n`-th symmetric powers of a matrix `A` and of `Aᵀ` are
-transposes of each other up to the multinomial coefficients of the exponents. -/
-lemma symPowMatrix_mul_multinomial {σ O : Type} [Fintype σ] [DecidableEq σ] [CommRing O]
-    [IsDomain O] [CharZero O] {n : ℕ} (A : Matrix σ σ O) (α β : Monomials σ n) :
-    symPowMatrix n A α β * multinomial univ β.val =
-      multinomial univ α.val * symPowMatrix n Aᵀ β α := by
-  -- Multiply by `α! β!` and use `γ! * multinomial γ = n!` in degree `n`.
-  let fact (γ : Monomials σ n) : ℕ := ∏ i : σ, (γ.val i)!
-  have h_fact (γ : Monomials σ n) : (fact γ : O) * multinomial univ γ.val = n ! := by
-    rw [← cast_mul, multinomial_spec, (mem_finsuppAntidiag.1 γ.property).left]
-  have h_ne (γ : Monomials σ n) : (fact γ : O) ≠ 0 := cast_ne_zero.2 (by positivity)
-  have h_adjoint : fact α * symPowMatrix n A α β = fact β * symPowMatrix n Aᵀ β α :=
-    Average.prod_factorial_mul_coeff_linSubst A α.val β.val
-  refine mul_left_cancel₀ (mul_ne_zero (h_ne α) (h_ne β)) ?_
-  calc fact α * fact β * (symPowMatrix n A α β * multinomial univ β.val)
-      = fact α * symPowMatrix n A α β * (fact β * multinomial univ β.val) := by ring
-    _ = fact β * symPowMatrix n Aᵀ β α * (fact α * multinomial univ α.val) := by
-        rw [h_adjoint, h_fact, h_fact]
-    _ = fact α * fact β * (multinomial univ α.val * symPowMatrix n Aᵀ β α) := by ring
-
-end Lattices
-
 namespace FrobeniusCycle
 
 section Edges
@@ -229,68 +169,6 @@ lemma residue_mem_translatesIn [IsLocalRing O] {τ : Fin k → ℕ} {B : Set (Ex
   have h_residue : ((T.map (residue O)).letterRep n g *ᵥ fun α ↦ residue O (v α)) β =
       residue O ((T.letterRep n g *ᵥ v) β) := by simp [letterRep_map, mulVec, dotProduct]
   simpa only [h_residue, Submodule.mem_bot, residue_eq_zero_iff] using hv g hg β hβ
-
-/-! ### Stability of the two lattices of forms -/
-
-/-- Over an `O`-algebra `K`, the translate by `g ∈ GL_k(W)` of `c z ^ β`, with `c ∈ O`, has the
-coefficient `ρ(g)_{αβ} c` at `z ^ α`, where `ρ = T.letterRep n`. -/
-lemma polyAction_map_monomial {K : Type} [CommRing K] [Algebra O K] (g : GL (Fin k) W)
-    (β : Exponents N k n) (c : O) :
-    (T.map (algebraMap O K)).polyAction g (monomial (exponentOf β) (algebraMap O K c)) =
-      ∑ α : Exponents N k n,
-        monomial (exponentOf α) (algebraMap O K (T.letterRep n g α β * c)) := by
-  have h_single : monomial (exponentOf β) (algebraMap O K c) =
-      polyOfCoeffs (Pi.single β (algebraMap O K c)) := by
-    simp [polyOfCoeffs, Pi.single_apply, apply_ite]
-  rw [h_single, polyAction_polyOfCoeffs, letterRep_map]
-  simp [polyOfCoeffs, Algebra.smul_def, mul_comm]
-
-/-- The lattice `H`, the `O`-span of the monomials of degree `n` in each letter in the polynomials
-over the `O`-algebra `K`, is stable under `GL_k(W)`. An element `g` acts by linear substitution,
-through the image of `g` in even letters and of its inverse transpose in odd letters. -/
-theorem polyAction_mem_monomialLattice {K : Type} [CommRing K] [Algebra O K] (g : GL (Fin k) W)
-    {h : MvPolynomial (Fin k × ZMod N) K} (h_mem : h ∈ monomialLattice N k n O K) :
-    (T.map (algebraMap O K)).polyAction g h ∈ monomialLattice N k n O K := by
-  let act : MvPolynomial (Fin k × ZMod N) K →ₗ[O] MvPolynomial (Fin k × ZMod N) K :=
-    ((T.map (algebraMap O K)).polyAction g).toLinearMap.restrictScalars O
-  suffices h_le : monomialLattice N k n O K ≤ (monomialLattice N k n O K).comap act from
-    h_le h_mem
-  refine Submodule.span_le.2 (Set.range_subset_iff.2 fun β ↦ ?_)
-  have h_act : act (monomial (exponentOf β) 1) =
-      ∑ α : Exponents N k n, T.letterRep n g α β • monomial (exponentOf α) (1 : K) := by
-    simpa [act, Algebra.smul_def, C_mul_monomial] using T.polyAction_map_monomial (K := K) g β 1
-  rw [SetLike.mem_coe, Submodule.mem_comap, h_act]
-  exact sum_mem fun α _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨α, rfl⟩)
-
-/-- Let `O` be a domain of characteristic `0`. The lattice `H°`, the `O`-span of the
-`(n! ^ N / β!) z ^ β` in the polynomials over the `O`-algebra `K`, is stable under `GL_k(W)`. -/
-theorem polyAction_mem_dividedPowerLattice [IsDomain O] [CharZero O] {K : Type} [CommRing K]
-    [Algebra O K] (g : GL (Fin k) W) {h : MvPolynomial (Fin k × ZMod N) K}
-    (h_mem : h ∈ dividedPowerLattice N k n O K) :
-    (T.map (algebraMap O K)).polyAction g h ∈ dividedPowerLattice N k n O K := by
-  -- In the basis of divided powers `g` acts by the transpose of the matrix `ρ'` built from the
-  -- transposes of the matrices of the letters, which has entries in `O`.
-  let act : MvPolynomial (Fin k × ZMod N) K →ₗ[O] MvPolynomial (Fin k × ZMod N) K :=
-    ((T.map (algebraMap O K)).polyAction g).toLinearMap.restrictScalars O
-  let ρ' : Matrix (Exponents N k n) (Exponents N k n) O :=
-    kroneckerPi fun s : ZMod N ↦ symPowMatrix n (T.letterMatrix s g)ᵀ
-  have h_entry (α β : Exponents N k n) :
-      T.letterRep n g α β * dividedPowerCoeff β = dividedPowerCoeff α * ρ' β α := by
-    simp only [letterRep_apply, ρ', kroneckerPi, of_apply, dividedPowerCoeff_eq_prod_multinomial,
-      Nat.cast_prod, ← prod_mul_distrib, symPowMatrix_mul_multinomial]
-  suffices h_le : dividedPowerLattice N k n O K ≤ (dividedPowerLattice N k n O K).comap act from
-    h_le h_mem
-  refine Submodule.span_le.2 (Set.range_subset_iff.2 fun β ↦ ?_)
-  have h_act : act (monomial (exponentOf β) (dividedPowerCoeff β)) =
-      ∑ α : Exponents N k n, ρ' β α • monomial (exponentOf α) (dividedPowerCoeff α : K) := by
-    have h_expand : act (monomial (exponentOf β) (algebraMap O K (dividedPowerCoeff β))) =
-        ∑ α : Exponents N k n,
-          monomial (exponentOf α) (algebraMap O K (dividedPowerCoeff α * ρ' β α)) := by
-      simp only [← h_entry]
-      exact T.polyAction_map_monomial g β (dividedPowerCoeff β)
-    simpa [Algebra.smul_def, C_mul_monomial, mul_comm] using h_expand
-  rw [SetLike.mem_coe, Submodule.mem_comap, h_act]
-  exact sum_mem fun α _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨α, rfl⟩)
 
 /-! ### One edge -/
 
@@ -403,12 +281,6 @@ def allEdgesForms (k n r : ℕ) : Submodule O (Exponents N k n → O) where
     · rw [mulVec_smul, ← hv, smul_comm]
     · simpa only [mulVec_smul, Pi.smul_apply, smul_eq_mul] using (h_dvd g β).mul_left c
 
-/-- Integral forms lie in the halfway lattices of all edges from the origin: the normalized
-coefficients of a form with coefficients `h` in `O` belong to `allEdgesForms`. -/
-lemma depthScaling_mulVec_mem_allEdgesForms (r : ℕ) (h : Exponents N k n → O) :
-    T.depthScaling k n r *ᵥ h ∈ T.allEdgesForms k n r :=
-  ⟨0, h, by simp, by simp⟩
-
 /-! ### Duality -/
 
 /-- The number `c₀ = k² log_p q`, where `q = p ^ (T.frobExp * N)` is the size of the residue field
@@ -457,34 +329,26 @@ edge with the edge of dual lattices exists if `p = T.p` is not a unit in `O` and
 each letter is less than `q = T.q`, the number of elements of the residue field of `W`. -/
 lemma exists_isEdgePairing [IsDomain O] [ValuationRing O] [CharZero O] (hp : ¬IsUnit (T.p : O))
     (hn : n < T.q) : ∃ b b' : Exponents N k n → O, T.IsEdgePairing b b' := by
-  -- In one letter, `b₀ γ` is `p ^ (k log_p q)` divided by a multinomial coefficient, and with these
-  -- weights the substitutions by a matrix and by its transpose are adjoint.
+  -- In one letter, `b₀ γ` is `p ^ (k log_p q)` divided by a multinomial coefficient.
   obtain ⟨b₀, hb₀_mul, hb₀_adj⟩ :=
     Average.exists_isAdjointWeight (Fin k) T.prime hp (T.frobExp * N)
   -- The factor `u` raises the exponent `k log_p q` to `c₀ = k² log_p q`.
   let u : O := (T.p : O) ^ ((k - 1) * k * (T.frobExp * N))
   refine ⟨fun β ↦ ∏ s, u * b₀ (β s).val, fun β ↦ ∏ s, ((β s).val.multinomial : O),
     fun g α β ↦ ?_, fun β ↦ ?_⟩
-  · have h_transpose (s : ZMod N) : T.letterMatrix s (transposeGL g) = (T.letterMatrix s g)ᵀ := by
-      -- The simp lemma `coe_units_inv` would hide that the inverse is one in `GL`.
-      by_cases h_even : T.isEven s <;>
-        simp [letterMatrix_apply, h_even, transposeGL, transpose_map, -coe_units_inv]
-    simp only [letterRep_apply, kroneckerPi, of_apply, ← prod_mul_distrib, h_transpose]
+  · simp only [letterRep_apply, kroneckerPi, of_apply, ← prod_mul_distrib]
     refine prod_congr rfl fun s _ ↦ ?_
-    have h_adj : b₀ (β s).val * symPowMatrix n (T.letterMatrix s g)ᵀ (β s) (α s) =
-        b₀ (α s).val * symPowMatrix n (T.letterMatrix s g) (α s) (β s) := by
-      simpa [symPowMatrix, mul_comm] using
-        (hb₀_adj (T.letterMatrix s g) (α s).val (β s).val).symm
-    rw [mul_assoc, h_adj, mul_assoc]
-  · have h_exponent : (k - 1) * k * (T.frobExp * N) + k * (T.frobExp * N) =
-        T.multinomialExponent k := by
-      rw [multinomialExponent, ← add_mul, Nat.sub_one_mul, Nat.sub_add_cancel k.le_mul_self, sq]
-    have h_letter (s : ZMod N) :
+    have h_tr : T.letterMatrix s (transposeGL g) = (T.letterMatrix s g)ᵀ := by
+      by_cases hs : T.isEven s <;>
+        simp [letterMatrix_apply, hs, transposeGL, transpose_map, -coe_units_inv]
+    simpa [h_tr, symPowMatrix, mul_assoc, mul_left_comm, mul_comm] using
+      congrArg (u * ·) (hb₀_adj (T.letterMatrix s g) (α s).val (β s).val).symm
+  · have h (s : ZMod N) :
         u * b₀ (β s).val * (β s).val.multinomial = (T.p : O) ^ T.multinomialExponent k := by
       rw [mul_assoc, mul_comm (b₀ _), ← hb₀_mul _ (by rwa [Monomials.degree_eq, pow_mul]),
-        Fintype.card_fin, ← pow_add, h_exponent]
-    simp only [← prod_mul_distrib, h_letter, prod_const, card_univ, ZMod.card, ← pow_mul,
-      mul_comm N]
+        Fintype.card_fin, ← pow_add, multinomialExponent, ← add_mul, Nat.sub_one_mul,
+        Nat.sub_add_cancel k.le_mul_self, sq]
+    simp only [← prod_mul_distrib, h, prod_const, card_univ, ZMod.card, ← pow_mul, mul_comm N]
 
 /-! ### Functions on edges -/
 
@@ -767,18 +631,25 @@ lemma pow_dvd_letterRep_mulVec_of_mem_allEdgesForms (ha : a < r) {v : Exponents 
   rw [← mul_dvd_mul_iff_left (pow_ne_zero m T.sqrtPrime_ne_zero), ← pow_add, h_translate]
   exact T.pow_add_dvd_of_le_defect i ha h_normalized hβ
 
+/-- Above any cutoff at least `defectThreshold k c`, every Levi translate of an all-edges
+form has coefficients divisible by `T.sqrtPrime ^ c`. -/
+private lemma allEdgesForms_le_defectConditions_of_threshold_le (ha : a < r) (c : ℕ)
+    {d : ℝ} (hd : (defectThreshold k c : ℝ) ≤ d) :
+    T.allEdgesForms k n r ≤ T.defectConditions n a r (span {T.sqrtPrime ^ c}) d := by
+  rintro v hv g hg β ⟨i, hi⟩
+  have hc : (3 * c : ℝ) ≤ defectThreshold k c := mod_cast three_mul_le_defectThreshold a.pos c
+  exact mem_span_singleton.2
+    (T.pow_dvd_letterRep_mulVec_of_mem_allEdgesForms ha hv hg (hc.trans (hd.trans hi.le)))
+
 /-- Let `O` be a domain of characteristic zero. The forms in the halfway lattices of all edges
 (`allEdgesForms`) satisfy the conditions on an edge (`defectConditions`): their block diagonal
 translates have, modulo `sqrtPrime ^ c`, no term of defect above `3 c*` along the root `(a, r)`,
 where `c* = 3 k c` is `defectThreshold k c` and `a < r` are indices, one in each block. -/
 lemma allEdgesForms_le_defectConditions (ha : a < r) (c : ℕ) :
     T.allEdgesForms k n r ≤ T.defectConditions n a r (span {T.sqrtPrime ^ c})
-      (3 * defectThreshold k c) := by
-  rintro v hv g hg β ⟨i, h_defect :
-    (3 * defectThreshold k c : ℝ) < (exponentOf β).weight (T.defectWeight i a r)⟩
-  have h_le : (3 * c : ℝ) ≤ defectThreshold k c := mod_cast three_mul_le_defectThreshold a.pos c
-  exact mem_span_singleton.2
-    (T.pow_dvd_letterRep_mulVec_of_mem_allEdgesForms ha hv hg (j := c) (by linarith))
+      (3 * defectThreshold k c) :=
+  T.allEdgesForms_le_defectConditions_of_threshold_le ha c
+    (le_mul_of_one_le_left (by positivity) (by norm_num))
 
 /-- Let `O` be a domain of characteristic zero, `w = T.sqrtPrime` (so `w ^ 2 = p`) and
 `ρ = T.letterRep n`. Let `(b, b')` be an edge pairing: `ρ(g)` and `ρ(gᵀ)` are adjoint for
@@ -803,9 +674,10 @@ lemma IsEdgePairing.pow_dvd_pairing_letterRep {b b' : Exponents N k n → O}
       (T.letterRep n (transposeGL g) *ᵥ v) β * b β := by
     rw [hb.dotProduct_letterRep_mulVec]
     simp [dotProduct, Pi.single_apply]
-  have h_le : (3 * c : ℝ) ≤ defectThreshold k c := mod_cast three_mul_le_defectThreshold a.pos c
+  have h_coeff := T.allEdgesForms_le_defectConditions_of_threshold_le ha c le_rfl hv
+    (transposeGL g) hg' β ⟨i, hβ⟩
   rw [h_pairing]
-  exact (T.pow_dvd_letterRep_mulVec_of_mem_allEdgesForms ha hv hg' (h_le.trans hβ.le)).mul_right _
+  exact (mem_span_singleton.1 h_coeff).mul_right _
 
 end FrobeniusCycle
 

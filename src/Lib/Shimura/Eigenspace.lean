@@ -1,8 +1,27 @@
+module
+
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Data.Finset.Functor
+import Mathlib.Topology.Algebra.Group.Units
+public import Lib.GaloisRep.Main.Defs
+public import Lib.PadicHodge.Limit.CrystallineLimit
+public import Lib.Shimura.Transfer.Lefschetz
+public import Lib.Cohomology.Etale.EllAdicCohomology
+public import Lib.GaloisRep.Main.LocalConditions
+public import Lib.PadicHodge.Crystalline.HodgeTateJumps
+import Lib.ClassField.Places.TameInertia
 import Lib.Cohomology.WoodsHole
+import Lib.General.Geometry.GaloisCovers
+import Lib.General.Geometry.PointsOfProperSchemes
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.General.NumberTheory.CoefficientRings -- shake: keep (its instance priorities)
 import Lib.PadicComparison.CrystallineFrobenius
-import Lib.PadicHodge.Limit.CrystallineLimit
+import Lib.PadicComparison.HodgeTate.PeriodMap
+import Lib.PadicComparison.Primitive.ComparisonTheorem
+import Lib.PadicHodge.Crystalline.HodgeTateForms
+import Lib.PadicHodge.Crystalline.Regularity
 import Lib.Shimura.CongruenceRelation.EichlerShimura
-import Lib.Shimura.Transfer.Lefschetz
 
 /-!
 # Eigenquotients for Hecke eigensystems and the Galois representations they cut out
@@ -102,6 +121,8 @@ cohomology of some simple Shimura varieties (2001), ch. VII; Wedhorn, Congruence
 Shimura varieties, J. reine angew. Math. 524 (2000).
 -/
 
+@[expose] public section
+
 /-!
 ## The largest quotient on which Hecke operators act by an eigensystem
 
@@ -188,7 +209,7 @@ lemma exists_isEigenQuotient [Fintype ι] [∀ i, Module.Finite ℚ_[ℓ] (V i)]
   -- `R g` is the map that the universal property attaches to the family `F i ∘ ρ i g`.
   have h_eig_comp (g : Γ) (i : ι) (s : σ) (x : V i) :
       F i (ρ i g (T i s x)) = θ s • F i (ρ i g x) := by
-    rw [← h_eig, ← End.mul_apply (T i s), (h_comm i s g).eq, End.mul_apply]
+    rw [← h_eig, ← mul_apply_eq_comp (T i s), (h_comm i s g).eq, mul_apply_eq_comp]
   have h_act (g : Γ) : ∃ R : End (PadicAlgCl ℓ) (Fin _ → PadicAlgCl ℓ),
       ∀ (i : ι) (x : V i), R (F i x) = F i (ρ i g x) :=
     h_univ _ (fun i ↦ F i ∘ₗ ρ i g) (h_eig_comp g)
@@ -272,7 +293,7 @@ lemma IsEigenQuotient.isKilledBy {f : ℕ} {g : Γ} (hg : IsWeilPair (toGp g) f)
   simp only [h_tmul, LinearMap.zero_apply]
   rw [← map_zero (φ.baseChange Bmax), ← h_rel i (a ⊗ₜ x)]
   simp only [eval₂_finsetSum, C_mul_X_pow_eq_monomial, eval₂_monomial, LinearMap.sum_apply,
-    End.mul_apply, h_frob, h_coef, map_sum]
+    mul_apply_eq_comp, h_frob, h_coef, map_sum]
 
 /-- Let `r` with the maps `F i` be the largest quotient on which `T` acts by `θ` (`h`), the `ρ i`
 crystalline (`hρ`), `toGp` (from `[OverGp Γ ℓ]`) of open image, and the `T i s` commuting with each
@@ -300,10 +321,7 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
   let Φ (v : ℤ) (L : List σ) :
       End (PadicAlgCl ℓ) (∀ i, hodgeTateMaps (ρ i) (toAlgHom ..) v) :=
     piMap fun i ↦ hodgeTateMaps.pull (L.map (T i)).prod
-      (.of_forall fun g x ↦ by
-        rw [← mul_apply_eq_comp, ← mul_apply_eq_comp, (Commute.list_prod_left _ _ fun t ht ↦ by
-          obtain ⟨s, -, rfl⟩ := List.mem_map.1 ht
-          exact hTρ i s g).eq])
+      (by simp [← mul_apply_eq_comp, -FunLike.coe_mul_eq_comp, (Commute.list_prod_left ..).eq, *])
   have h_alg : Algebra.IsAlgebraic ℤ_[ℓ] ℚ_[ℓ] := IsLocalization.isAlgebraic ℚ_[ℓ] ℤ_[ℓ]⁰
   have h_no_eigen (f : ∀ i : ι, hodgeTateMaps (ρ i) (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) u)
       (hf : ∀ s : σ, Φ u [s] f = (a ∘ θ) s • f) : f = 0 := by
@@ -314,12 +332,15 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
       -- let `ℚ̄_ℓ` act on `ℂ_ℓ` through `γ`, so that a `γ`-semilinear form is linear
       let := γ.toModule
       have h_eig (i : ι) (s : σ) (x : V i) : (f i).val (T i s x) = γ (θ s) * (f i).val x := by
-        have h_f_apply : ((Φ u [s] f) i).val x = (((a ∘ θ) s • f) i).val x := by rw [hf s]
-        simpa [Φ, hodgeTateMaps.pull, ha, Algebra.smul_def] using! h_f_apply
+        have h_f_apply := DFunLike.congr_fun (congrArg Subtype.val (congrFun (hf s) i)) x
+        simpa only [ha, Function.comp_apply, Pi.smul_apply, SetLike.val_smul, LinearMap.smul_apply,
+          Algebra.smul_def] using! h_f_apply
       -- the instances are passed by hand, since `ℂ_ℓ` carries another action of `ℚ̄_ℓ`
       obtain ⟨φ, hφ⟩ := @h_univ ℂ_[ℓ] _ _ _ (.of_algHom (γ.extendScalarsOfIsLocalization _ _⁰))
-        (fun i ↦ ⟨(f i).val.toAddHom, by simp [Algebra.smul_def]⟩) h_eig
-      exact ⟨⟨φ.1, φ.2⟩, hφ⟩
+        (fun i ↦ ⟨(f i).val.toAddHom, by
+          simp only [AddHom.toFun_eq_coe, coe_toAddHom, LinearMap.map_smulₛₗ, coe_toAlgHom,
+            smul_eq_mul, RingHom.id_apply, Algebra.smul_def, implies_true]⟩) h_eig
+      exact ⟨⟨φ.toAddHom, φ.map_smul'⟩, hφ⟩
     have h_mem : φ ∈ hodgeTateMaps (matrixRep r) γ u :=
       mem_hodgeTateMaps_of_span h_span fun ⟨i, x⟩ ↦ by simpa [↓h_equiv, ← hφ] using! (f i).prop x
     ext
@@ -328,7 +349,8 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
     -- Both sides apply the same form to `x` moved by `T j s` and `T j t`, which commute.
     ext i f j x
     exact congrArg _ (LinearMap.congr_fun (hTT j s t).eq.symm x)
-  obtain ⟨c, h_one, h_kill⟩ := exists_words_comb_eq_zero (Φ u) (by aesop) h_comm h_no_eigen
+  obtain ⟨c, h_one, h_kill⟩ := exists_words_comb_eq_zero (Φ u) (fun s L ↦ by simp [Φ]; rfl) h_comm
+    h_no_eigen
   refine ⟨c, h_one, fun i y hy ↦ ?_⟩
   -- A basis `b` of the forms on `V i`, with `b l` of weight `w l` (`hb`).
   obtain ⟨-, w, -, -, b, hb, -⟩ :=
@@ -337,7 +359,9 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
   let Λ : ℂ_[ℓ] ⊗[ℤ_[ℓ]] V i →ₗ[ℂ_[ℓ]]
       (V i →ₛₗ[(toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ] : ℚ_[ℓ] →+* ℂ_[ℓ])] ℂ_[ℓ]) →ₗ[ℂ_[ℓ]] ℂ_[ℓ] :=
     liftBaseChange ℂ_[ℓ]
-      (.restrictScalars ℤ_[ℓ] (S := ℚ_[ℓ]) ⟨(b.constr ℕ b).flip.toAddHom, by simp⟩)
+      (.restrictScalars ℤ_[ℓ] (S := ℚ_[ℓ]) ⟨(b.constr ℕ b).flip.toAddHom, by
+        simp only [AddHom.toFun_eq_coe, coe_toAddHom, LinearMap.map_smulₛₗ, coe_toAlgHom,
+          _root_.algebraMap_smul, RingHom.id_apply, implies_true]⟩)
   set cT := c.sum fun (L : List σ) (z : PadicAlgCl ℓ) ↦
     z • ((L.map (T i)).prod.restrictScalars ℤ_[ℓ]).baseChange ℂ_[ℓ]
   have h_basis (l : Fin (finrank ℚ_[ℓ] (V i))) : Λ (cT y) (b l) = 0 := by
@@ -345,7 +369,16 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
     let z : hodgeTateMaps (ρ i) (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) (w l) :=
       c.sum (fun L e ↦ e • Φ (w l) L) (Pi.single i ⟨b l, hb l⟩) i
     have h_adj : Λ.flip (b l) ∘ₗ cT = Λ.flip z :=
-      AlgebraTensorModule.ext (by simp [Λ, z, cT, Φ, hodgeTateMaps.pull, Finsupp.sum])
+      AlgebraTensorModule.ext (by
+        simp only [Finsupp.sum, coe_comp, LinearMap.coe_sum, LinearMap.coe_smul,
+          Function.comp_apply, Finset.sum_apply, Pi.smul_apply, baseChange_tmul,
+          LinearMap.coe_restrictScalars, map_sum, flip_apply, map_smul_of_tower,
+          liftBaseChange_tmul, LinearMap.coe_mk, coe_toAddHom, LinearMap.smul_apply,
+          Basis.constr_apply_fintype, Basis.equivFun_self, ite_smul, one_smul, zero_smul,
+          Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, smul_eq_mul, finsupp_sum_apply,
+          hodgeTateMaps.pull, coe_piMap, AddHom.coe_mk, Pi.map_apply, Pi.single_eq_same,
+          SetLike.mk_smul_mk, AddSubmonoidClass.coe_finsetSum, Basis.equivFun_apply,
+          Basis.sum_repr, implies_true, Λ, cT, z, Φ])
     rw [← flip_apply, ← comp_apply, h_adj]
     obtain rfl | hw := eq_or_ne (w l) u
     · -- For `w l = u`, the combination `c(Φ u)` is zero, so `z = 0`.
@@ -360,8 +393,16 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
     have h_pair : Λ (tensorAction ℂ_[ℓ] (toGp g) (ρ i g) (∑ k, e k ⊗ₜ[ℤ_[ℓ]] x k)) z =
         Λ ((cyclotomicGp (toGp g) ^ (-u)).val • ∑ k, e k ⊗ₜ[ℤ_[ℓ]] x k) z :=
       congrArg (fun y' ↦ Λ y' z) (hy g)
-    simpa [Λ, hg, Finset.smul_sum, tensorAction] using h_pair
+    -- Only the underlying form and its transformation law matter in this calculation.
+    generalize (z.val) = form at hg h_pair ⊢
+    simpa only [zpow_neg, map_sum, flip_apply, liftBaseChange_tmul, LinearMap.coe_restrictScalars,
+      LinearMap.coe_mk, coe_toAddHom, LinearMap.smul_apply, Basis.constr_apply_fintype,
+      Basis.equivFun_apply, Basis.sum_repr, smul_eq_mul, Finset.smul_sum, smul_mul',
+      Set.mem_ofPred_eq, tensorAction, map_tmul, DistribSMul.toLinearMap_apply, LinearMap.coe_sum,
+      LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply, hg, MonoidHom.coe_comp,
+      Function.comp_apply, Algebra.mul_smul_comm, map_smul_of_tower, Λ] using h_pair
   -- Every linear form on `ℂ_ℓ ⊗ V i` is the pairing with some form.
+  have := Module.Free.of_divisionRing ℂ_[ℓ] (ℂ_[ℓ] ⊗[ℤ_[ℓ]] V i)
   refine (forall_dual_apply_eq_zero_iff ℂ_[ℓ] _).1 fun φ ↦ ?_
   -- The form on `V i` that `φ` restricts to, as a `ℚ_ℓ`-semilinear map.
   let ψ : V i →ₛₗ[(toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ] : ℚ_[ℓ] →+* ℂ_[ℓ])] ℂ_[ℓ] :=
@@ -395,7 +436,7 @@ open scoped NumberField
 
 /-- If `R` is the localization of `𝓞 E` at a set `M` of denominators prime to `w`, then `R` is
 integral at every place `A` of `Ω` above `w`. -/
-lemma New.Variety.algebraMap_mem_of_isLocalization {E : Type} [Field E] [NumberField E]
+lemma New.Variety.algebraMap_mem_of_isLocalization {E : Type} [Field E]
     [Algebra E Ω] {R : Subalgebra (𝓞 E) E} {M : Submonoid (𝓞 E)} [IsLocalization M R]
     {w : FinPlace E} (hM : M ≤ w.asIdeal.primeCompl) {A : ClosurePlace} (hA : IsPlaceOver A w)
     (x : R) :
@@ -461,18 +502,31 @@ lemma New.Variety.Model.isNullHecke_mul_of_kills_weight {E : Type} [Field E] [CM
     woods_hole (hasAtlas_algPointsOf _) (hasAtlas_algPointsOf _) (X.projective i) fun hh q hq x ↦
       ?_)
   -- Hodge–Tate: `λ_h (u^* m_α^* x) = Θ (u^* v)` with `v` of weight `h`
-  obtain ⟨v, Θ, hv_weight, hΘ⟩ := exists_hasHodgeTateWeight hR hε X.dimension ε.symm ε.right_inv
+  obtain ⟨n, hn⟩ : ∃ n : Set.Iic (X.dimension + X.dimension), (n : ℕ) = q + h :=
+    ⟨⟨q + h, add_le_add hq hh⟩, rfl⟩
+  have h_HT := exists_hasHodgeTateWeight hR hε X.dimension ε.symm ε.right_inv (h := h)
     (W := X.cover i) (x.map (freeAb.map ((algPoints E (CommRingCat.of R)).map (X.mulMap α))))
-  let n : Set.Iic (X.dimension + X.dimension) := ⟨q + h, add_le_add hq hh⟩
+  rw [← hn] at h_HT
+  obtain ⟨v, Θ, hv_weight, hΘ⟩ := h_HT
   have h_word (L : List (SafePlace 𝔑 × ℕ)) (hL : L ∈ c.support) :=
     hi L hL n (.mk' (fun u ↦ Θ ((u.restrictScalars ℤ_[ℓ]).baseChange ℂ_[ℓ] v)) (by simp))
   -- the sum is `∑_L c_L ∑_g (b L(τ))_g Θ (u_g^* v) = ∑_g b_g Θ (u_g^* c(T) v) = 0`
   refine .trans ?_
     ((sum_congr rfl fun L hL ↦ congrArg (ε.symm (c L) • ·) (h_word L hL)).trans ?_)
-  · simp [n, legPullback, ← hΘ, HodgeH.map_comp, cosetFn, cosetSum]
-  · simpa [legPullback, Finsupp.linearCombination, Finsupp.sum, c.support.sum_comm,
-      smul_comm (ε.symm _), cosetSum, baseChange_comp, smul_sum] using
-      congr(cosetSum (fun g ↦ Θ (baseChange _ _ $(hc_kill n v hv_weight))) b.val)
+  · simp only [Quotient.out_eq, CategoryTheory.Functor.map_comp, HodgeH.map_comp,
+      HodgeH.baseChange_map, cosetFn, MulMemClass.coe_mul, AddSubmonoidClass.coe_finsetSum,
+      SetLike.val_smul, SubmonoidClass.coe_list_prod, List.map_map, map_mul, map_sum, map_smul,
+      mul_apply_eq_comp, LinearMap.coe_sum, LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply,
+      MonoidAlgebra.coeff_sum, MonoidAlgebra.coeff_smul, cosetSum, legPullback,
+      AddMonoidHom.mk'_apply, ← hΘ]
+  · have h_kill := hc_kill n v hv_weight
+    simpa only [cosetSum, Finsupp.linearCombination, legPullback, AddMonoidHom.mk'_apply,
+      restrictScalars_comp, baseChange_comp, coe_comp, Function.comp_apply, Finsupp.coe_lsum,
+      Finsupp.sum, coe_smulRight, id_coe, id_eq, smul_sum, smul_comm (ε.symm _),
+      c.support.sum_comm, LinearMap.coe_sum, LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply,
+      map_sum, map_smul_of_tower, LinearMap.map_smulₛₗ, RingHom.coe_coe, map_zero, smulRight_zero,
+      LinearMap.zero_apply, sum_const_zero] using
+      congr(cosetSum (fun g ↦ Θ (LinearMap.baseChange _ _ $h_kill)) b.val)
 
 open scoped Classical in
 /-- Let `T` be Hecke operators on the cohomology groups `V^n(Z)` of the model `X` that
@@ -542,7 +596,7 @@ the model `X` act through the legs of the levels `l w` (`hT_pull`), whose pull-b
 the Hecke polynomial of `θ` at `w` kills `r s` for every geometric Frobenius `s` at `A`. -/
 lemma New.Variety.Model.aeval_heckePoly_eq_zero_of_isEigenQuotient {E : Type} [Field E] [CMBase E]
     {a d₀ : ℕ} [HasQuadSubfield d₀ E] {𝔑 : 𝓞 E} {ν : ℕ} {R : Subalgebra (𝓞 E) E}
-    (X : Model (Fin a) d₀ 𝔑 ν R) {ℓ : ℕ} [NeZero a] [ThePrime ℓ] [Algebra E Ω]
+    (X : Model (Fin a) d₀ 𝔑 ν R) {ℓ : ℕ} [ThePrime ℓ] [Algebra E Ω]
     (M : Submonoid (𝓞 E)) [IsLocalization M R] [PadicIso ℓ] (θ : SafePlace 𝔑 → ℕ → ℂ)
     {w : SafePlace 𝔑} {A : ClosurePlace} (hA : IsPlaceOver A w.val.val)
     (hR : ∀ x : CommRingCat.of R, algebraMap (CommRingCat.of R) Ω x ∈ A)
@@ -573,13 +627,8 @@ lemma New.Variety.Model.aeval_heckePoly_eq_zero_of_isEigenQuotient {E : Type} [F
   have Z_smooth := X.smooth
   have Z_proper := X.proper
   have W_projective := X.projective
-  have W_reduced := X.isReduced
-  have W_smooth i := (X.covering i).smoothOfRelativeDimension_baseChange X.dimension
   have R_noetherian : IsNoetherianRing R := isNoetherianRing M R inferInstance
   have Z_charted_int : IsCharted X.base R := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
-  have Z_charted : IsCharted X.base Ω := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
-  have W_charted i : IsCharted (X.cover i) Ω :=
-    ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
   obtain ⟨hF_gal, hF_span, hF_hecke, -⟩ := h_eig
   -- the residue characteristic `t` with `N w = t ^ f`, and the congruence relation above `A`
   obtain ⟨t, f, -, ht_mem, ht_prime, hq⟩ := w.val.val.asIdeal.exists_prime_and_absNorm_eq_pow
@@ -591,7 +640,9 @@ lemma New.Variety.Model.aeval_heckePoly_eq_zero_of_isEigenQuotient {E : Type} [F
   -- on `F n x` the polynomial is `F n` of a combination of `T` and Frobenius, which vanishes after
   -- pull-back to the level `l w` by `congruence_relation`
   refine toLinAlgEquiv'.injective (ext_on_range hF_span fun ⟨n, x⟩ ↦ ?_)
-  simp [↓C_mul', -cast_mul]
+  simp only [↓C_mul', reduceNegSucc, reduceNeg, ne_eq, Nat.cast_pow, map_sum, map_smul, map_pow,
+    aeval_X, LinearMap.coe_sum, LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply, map_zero,
+    LinearMap.zero_apply]
   -- `matrixRep r` and the eigenvalues, in the form that `hF_gal` and `hF_hecke` use
   have h_rep (g : Gal(Ω/E)) :
       toLinAlgEquiv' (r g : Matrix (Fin N) (Fin N) (PadicAlgCl ℓ)) = matrixRep r g := rfl
@@ -604,7 +655,9 @@ lemma New.Variety.Model.aeval_heckePoly_eq_zero_of_isEigenQuotient {E : Type} [F
   have hs_t : IsFrob A (t ^ f) s⁻¹ := by
     rw [← hq]
     exact hs
-  simpa [hT_pull, sum_filter, sum_comm, (finrank_le _).trans_eq, smul_sum] using
+  simpa only [map_sum, map_smul_of_tower, hT_pull, sum_filter, smul_sum, smul_ite, smul_zero,
+    sum_comm, sum_ite_eq, Finset.mem_range_succ_iff, finrank_fintype_fun_eq_card, Fintype.card_fin,
+    (finrank_le _).trans_eq, ↓reduceIte, map_zero, reduceNegSucc, Nat.cast_pow, inv_inv] using
     congruence_relation hR (by simpa [ValuationSubring.valuation_eq_one_iff]) ht_val hs_t _
       _ _ (h_cong hq) x
 
@@ -617,7 +670,7 @@ crystalline cohomology. Then for `s` a geometric Frobenius at `A` and `(s, k)` a
 Hecke polynomial of `ιℓ ∘ θ` at `w` kills `decompRep r A` at `(s, k)`. -/
 lemma New.Variety.Model.isKilledBy_heckePoly_of_isEigenQuotient {E : Type} [Field E] [CMBase E]
     {a d₀ : ℕ} [HasQuadSubfield d₀ E] {𝔑 : 𝓞 E} {ν : ℕ} {R : Subalgebra (𝓞 E) E}
-    (X : Model (Fin a) d₀ 𝔑 ν R) {ℓ : ℕ} [NeZero a] [ThePrime ℓ] [Algebra E Ω]
+    (X : Model (Fin a) d₀ 𝔑 ν R) {ℓ : ℕ} [ThePrime ℓ] [Algebra E Ω]
     (M : Submonoid (𝓞 E)) [IsLocalization M R] [PadicIso ℓ] (θ : SafePlace 𝔑 → ℕ → ℂ)
     {w : SafePlace 𝔑} {A : ClosurePlace} (hA : IsPlaceOver A w.val.val)
     (hR : ∀ x : CommRingCat.of R, algebraMap (CommRingCat.of R) Ω x ∈ A)
@@ -660,10 +713,7 @@ lemma New.Variety.Model.isKilledBy_heckePoly_of_isEigenQuotient {E : Type} [Fiel
   have Z_charted : IsCharted X.base Ω := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
   have W_charted i : IsCharted (X.cover i) Ω :=
     ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
-  -- the residue characteristic `t` with `N w = t ^ f`, and the congruence relation above `A`
-  obtain ⟨t, f, -, ht_mem, ht_prime, hq⟩ := w.val.val.asIdeal.exists_prime_and_absNorm_eq_pow
-  have t_prime : Fact t.Prime := ⟨ht_prime⟩
-  have ht_val : A.valuation t < 1 := hA.valuation_natCast_lt_one_iff.mpr ht_mem
+  -- the congruence relation above `A`
   have h_cong := X.congruence _ w.prop _ (algebraMap R Ω ⁻¹' A.nonunits) (fun c ↦ (hA c).mpr) (hl w)
   rw [heckePoly]
   norm_cast at h_cong ⊢
@@ -678,8 +728,10 @@ lemma New.Variety.Model.isKilledBy_heckePoly_of_isEigenQuotient {E : Type} [Fiel
   apply lTensor_preserves_injective_linearMap
     (((ellAdicCohom (.of R) Ω n).map (X.leg (l w) ⟦1⟧).op).hom.restrictScalars ℤ_[ℓ])
     (h_inj n (l w))
-  simpa [← baseChange_eq_lTensor, hT_pull_cris, sum_filter, sum_comm, (finrank_le _).trans_eq,
-    ↓LinearMap.sum_apply, smul_sum] using! LinearMap.congr_fun h_rel y
+  simpa only [map_sum, map_smul_of_tower, ← baseChange_eq_lTensor, hT_pull_cris, sum_filter,
+    smul_sum, smul_ite, smul_zero, sum_comm, sum_ite_eq, Finset.mem_range_succ_iff,
+    finrank_fintype_fun_eq_card, Fintype.card_fin, (finrank_le _).trans_eq,
+    ↓LinearMap.sum_apply] using! LinearMap.congr_fun h_rel y
 
 open scoped Classical in
 /-- The Galois representation cut out of the cohomology of the model `X` by the system `θ` of Hecke
@@ -708,15 +760,13 @@ lemma New.Variety.Model.exists_galois_rep {E : Type} [Field E] [CMBase E] {a d�
   have Z_smooth := X.smooth
   have Z_proper := X.proper
   have W_projective := X.projective
-  have W_reduced := X.isReduced
-  have W_smooth i := (X.covering i).smoothOfRelativeDimension_baseChange X.dimension
   have R_noetherian : IsNoetherianRing R := isNoetherianRing M R inferInstance
   have Z_charted_int : IsCharted X.base R := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
   have Z_charted : IsCharted X.base Ω := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
-  have W_charted i : IsCharted (X.cover i) Ω :=
-    ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
   -- pull-back along the leg `u₁ = X.leg i ⟦1⟧` is injective with image containing the invariants
   choose h_inj h_descent using fun n i ↦ transfer (X.covering i) ℓ n
+  replace h_inj : ∀ (n : ℕ) (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E (Fin a))),
+      Function.Injective ((ellAdicCohom (.of R) Ω n).map (X.leg i ⟦1⟧).op) := h_inj
   -- a level `l w` that carries all the Hecke legs `u_U` at `w`, for subspaces `U` over the residue
   -- field; there `u₁^* T (w, j) = ∑ u_U^*` over the `U` of dimension `j` (`hT_pull`)
   have h_level (w : SafePlace 𝔑) : ∃ i, ∀ U, invHeckeIsogeny w.val U ∈ X.legIndices i :=
@@ -729,8 +779,13 @@ lemma New.Variety.Model.exists_galois_rep {E : Type} [Field E] [CMBase E] {a d�
   -- the same after extending scalars to `Bmax`; both identities are then put in pointwise form
   have hT_pull_cris n w j :=
     congr((baseChangeHom ℤ_[ℓ] Bmax .. ∘ₗ restrictScalarsₗ ..) $(hT_pull n w j))
-  simp [LinearMap.ext_iff, -Subtype.forall, legPullback, heckeSum, baseChange_comp, cosetSum,
-    cosetFn] at hT_pull_cris hT_pull
+  simp only [legPullback, coe_comp, Function.comp_apply, restrictScalarsₗ_apply,
+    restrictScalars_comp, baseChangeHom_apply, baseChange_comp, cosetSum, cosetFn, heckeSum, ne_eq,
+    MonoidAlgebra.of_apply, map_sum, Representation.asAlgebraHom_single, one_smul,
+    LinearMap.coe_sum, Finset.sum_apply, Representation.ofMulAction_single,
+    MulAction.Quotient.smul_mk, smul_eq_mul, mul_one, MonoidAlgebra.coeff_sum,
+    MonoidAlgebra.coeff_single, Finsupp.linearCombination_single, LinearMap.ext_iff]
+    at hT_pull_cris hT_pull
   -- `T` commutes with the Galois action: check after the injective pull-back to the level `l w`
   have hT_gal (n : Set.Iic (X.dimension + X.dimension)) (s : SafePlace 𝔑 × ℕ) (g : Gal(Ω/E)) :
       Commute (T n s) (galoisAction (.of R) Ω Gal(Ω/E) X.base n g) :=

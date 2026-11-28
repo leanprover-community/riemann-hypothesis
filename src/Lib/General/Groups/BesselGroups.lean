@@ -1,4 +1,8 @@
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Aesop.BuiltinRules
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Block triangular groups, unipotent Bessel groups, Levi and parahoric subgroups
@@ -29,6 +33,8 @@ The file also defines the Kronecker product of a finite family of matrices and t
 Known; see `Lib.DiscreteSeries.Bruhat.FloorGroups` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New
@@ -44,6 +50,7 @@ structure Shape where
   κ : Type
   /-- The instance that κ is finite. -/
   [fintypeIndex : Fintype κ]
+  /-- The instance that κ has decidable equality. -/
   [decEqIndex : DecidableEq κ]
   /-- A distinguished index in κ. -/
   k₀ : κ

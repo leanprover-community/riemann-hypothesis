@@ -1,3 +1,17 @@
+module
+
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+public import New.OneLift.ComparisonOperator.GluedLattices
+public import New.OneLift.FalseLifts.BottomOfTower
+import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+import Lib.ClassField.Avatar.HeckeBaseChange
+import Lib.DiscreteSeries.Bruhat.ComplexPlace
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.GLn.SchurModule.SchurNorm
+import Lib.PadicComparison.Descent.TestCategory
 import New.OneLift.FalseLifts.HyperbolicPlaneStep
 
 /-!
@@ -29,9 +43,7 @@ periods assume `2 r + 2 N + 3 < n`.
   `New.SiegelWeil.integral_blockEmb_eq_zero_of_descentsVanish`, which takes a Fourier coefficient
   and varies the datum.
 * The theorem `New.Rows.stdClassSum_gramForm_eq_zero` writes the periods over the block `I_l` as
-  class sums `New.stdClassSum`. `New.Rows.stdClassSum_gramForm_eq_zero_of_rank_one` is the case of
-  false lifts from a line; that of false lifts on `V_j` is in
-  `New.OneLift.ComparisonOperator.GluingMaps`.
+  class sums `New.stdClassSum`.
 * Two uses: `New.Rows.stdClassSum_period_eq_zero` for point forms, and
   `New.Rows.DividedSplitting.stdClassSum_inner_productForm_eq_zero` for the product forms
   `New.Rows.DividedSplitting.productForm` of the kernel vectors.
@@ -61,6 +73,8 @@ lifts for unitary groups, arXiv 2104.11954, 2021; Ginzburg–Jiang–Soudry, Pol
 theta liftings for orthogonal groups, 2009; Jiang–Wu, On (χ,b)-factors of cuspidal automorphic
 representations of unitary groups I, 2016; Rallis, On the Howe duality conjecture, 1984.
 -/
+
+@[expose] public section
 
 section MemberOrthogonality
 
@@ -474,7 +488,7 @@ lemma hyperplaneSum_mul_labelIdem_X_sub_one {k : Type} [Field k] [Finite k] {χ 
     hyperplaneSum χ l * labelIdem Unit (Polynomial.X - 1 : Polynomial k) = 0 := by
   classical
   -- The group fixes its mean, so a character sum remains.
-  have : Fintype (GL Unit k) := .ofFinite _
+  let : Fintype (GL Unit k) := .ofFinite _
   have h_sum : ∑ s : GL Unit k, (hyperplaneSum χ l).coeff s = 0 :=
     calc _ = ∑ s : GL Unit k with s ∈ hyperplaneGroup l, χ⁻¹ (s : Matrix Unit Unit k).det := by
           simp [coeff_hyperplaneSum_eq_ite, Finset.sum_filter]
@@ -503,48 +517,7 @@ lemma hyperplaneSum_apply_eq_zero_of_rank_one {O : DescentPair E Unit n}
   have h_zero : (piTensorElem fun i ↦ hyperplaneSum (O.tamePart (O.chosenPlace i)) (v i)) *
       tupleIdem Unit (fun _ ↦ Polynomial.X - 1) = 0 :=
     piTensorElem_mul_eq_zero i (hyperplaneSum_mul_labelIdem_X_sub_one (h_chosen i) hv)
-  rw [← Module.End.mul_apply, ← map_mul, h_zero, map_zero, LinearMap.zero_apply]
-
-open scoped Classical in
-/-- Periods of false lifts from a line vanish. Let the archimedean parameter `l₀` on `W` correspond
-to that on `I_n` (`O.FitsParams`), and let the residue characters `O.tamePart` be nontrivial at all
-places of the level. Let the form `Ξ` on `U(I_n)` be a false lift (`O.falseLiftsAt`): it lies in the
-image of the mean over the product of the groups `GL_1(k_v)` at the chosen places `v`, and it is
-killed by the theta descent `O.normalizedDescent` to `W` and by the Hecke polynomial at the number
-`O.liftHeckeRoot w` for a split place `w` off the level. Let `ε` split `I_n = I_N ⊕ I_l` with
-`2 #N + 5 < #n`, and let `x` be supported on `O.places`. Let each coordinate of `ϑ`, moved by the
-real points of `U(I_l)`, be a multiple of a conjugate theta kernel (`pairTheta`) of the pair
-`O.W, I_l` whose datum is the vacuum off `O.places` and their conjugates. Let `C` be
-conjugate-linear and equivariant for the real points of `U(I_l)`, which act by the representation
-`conjWeylRep` of the given weight. Then the invariant inner product `gramForm` of `C (ϑ h)` with
-`Ξ ((h₁, h) x)` is left invariant under the rational points, and its class sum is zero at every
-level `K` that fixes it. -/
-theorem stdClassSum_gramForm_eq_zero_of_rank_one {O : DescentPair E Unit n}
-    {l₀ : InfinitePlace E → Unit → ℤ} (hO_fits : O.FitsParams l₀)
-    (h_chosen : ∀ i : O.ChosenIndex, O.tamePart (O.chosenPlace i) ≠ 1)
-    (h_twist : ∀ i : O.TwistIndex, O.tamePart (O.twistPlace i) ≠ 1)
-    {w : FinPlace E} {hw : star w ≠ w} {hw_off : w ∉ O.places.conjClosure} {Ξ : O.FormV}
-    (hΞ : Ξ ∈ O.falseLiftsAt hw hw_off (tupleIdem Unit fun _ : O.ChosenIndex ↦ Polynomial.X - 1)
-      O.normalizedDescent.ker)
-    (ε : N ⊕ l ≃ n) (h_rank : 2 * card N + 5 < card n) {κ : InfinitePlace E → ℕ → ℕ}
-    (C : (WeylIndex l κ → ℂ) →ₗ⋆[ℂ] WeylIndex n O.columnCount → ℂ)
-    (hC : ∀ (g : GInf E (1 : n → ℤˣ)) (y : GInf E (1 : l → ℤˣ)) (ζ : WeylIndex l κ → ℂ),
-      (∀ τ : InfinitePlace E, (g τ : GL n ℂ) = reindexGL ε (blockGL (1, y τ))) →
-        conjWeylRep O.columnCount O.detExp g (C ζ) = C (conjWeylRep κ 0 y ζ))
-    (ϑ : Gf E l → WeylIndex l κ → ℂ)
-    (h_kernels : ∀ j : WeylIndex l κ, ∃ (c : ℂ) (g : G E O.signs) (b : AutChar E)
-      (φ : 𝒮 (O.W.hom (stdSpace E l))),
-      projOn (O.W.hom (stdSpace E l)) O.places.conjClosureᶜ φ = φ ∧
-        ∀ (u : GInf E (1 : l → ℤˣ)) (h : Gf E l), conjWeylRep κ 0 u⁻¹ (ϑ h) j =
-          c * conj (pairTheta O.W (stdSpace E l) O.charW b φ (g, u, h)))
-    (h₁ : Gf E N) {x : Gf E n} (hx : x ∈ supportedOn n O.places) :
-    let f (h : Gf E l) : ℂ := gramForm (C (ϑ h)) (Ξ (U.block ε (h₁, h) * x))
-    (∀ δ ∈ (stdSpace E l).Γ, ∀ h : Gf E l, f (δ.2 * h) = f h) ∧
-      ∀ (K : Subgroup (Gf E l)) [IsLevel K], K ≤ rightStabilizer f → stdClassSum K f = 0 := by
-  obtain ⟨⟨hΞ_range, hΞ_hecke⟩, hΞ_descent⟩ := hΞ
-  exact stdClassSum_gramForm_eq_zero hO_fits h_twist
-    (hyperplaneSum_apply_eq_zero_of_rank_one h_chosen hΞ_range) hΞ_descent hΞ_hecke
-    (by grind [card_unit]) ε C hC ϑ h_kernels h₁ hx
+  rw [← mul_apply_eq_comp, ← map_mul, h_zero, map_zero, LinearMap.zero_apply]
 
 omit [WeilData E] [Nonempty r] in
 /-- Conjugates of the second block fix forms. Let `ε` split `I_n = I_N ⊕ I_l`, with `U.block ε` the
@@ -571,17 +544,17 @@ lemma algFormRep_conj_block_apply_eq_self (Ξ : O.FormV) (ε : N ⊕ l ≃ n) {x
   let c : stdLevel E n := A⁻¹ * ⟨_, h_mem⟩ * A
   -- At the chosen places the columns `O.incl` of `c` are those of `1`, as `x⁻¹ (1, k) x` fixes `Y`.
   have h_col (i : O.ChosenIndex) :
-      (stdLevel.reduceAt (O.placeAt (inl i)) c).1 *
+      (stdLevel.reduceAt (O.placeAt (inl i)) c).val *
           inclMatrix (ResField (O.placeAt (inl i))) O.incl =
         inclMatrix (ResField (O.placeAt (inl i))) O.incl := by
     simp [c, hA_col, h_fixY, inv_mul_eq_iff_eq_mul_of_invertible, -elim_inl, Matrix.mul_assoc]
   -- At the twist places the point `x` is trivial, so `x⁻¹ (1, k) x` reduces to the block matrix
   -- `(1, k)`; it fixes the rows `e'`. So the rows `O.incl` of `c` are those of `1`.
   have h_row (i : O.TwistIndex) :
-      (stdLevel.reduceAt (O.placeAt (inr i)) c).1ᵀ *
+      (stdLevel.reduceAt (O.placeAt (inr i)) c).valᵀ *
           inclMatrix (ResField (O.placeAt (inr i))) O.incl =
         inclMatrix (ResField (O.placeAt (inr i))) O.incl := by
-    obtain ⟨h_blk, h_red⟩ : ∃ h : U.block ε (1, k.1) ∈ stdLevel E n,
+    obtain ⟨h_blk, h_red⟩ : ∃ h : U.block ε (1, k.val) ∈ stdLevel E n,
       stdLevel.reduceAt (O.twistPlace i) ⟨_, h⟩ =
         reindexGL ε (blockGL (1, stdLevel.reduceAt (O.twistPlace i) k)) := by
       simpa using! map_block_eq_blockGL (reduceAt (O.twistPlace i)) ε 1 k
@@ -589,7 +562,7 @@ lemma algFormRep_conj_block_apply_eq_self (Ξ : O.FormV) (ε : N ⊕ l ≃ n) {x
       ⟨_, h_blk⟩ :=
       (MonoidHom.eq_iff _).2
         (stdLevel.reduceAt_eq_one_of_atPlace (by simp [atPlace_twistPlace_eq_one hx]))
-    have h_fix_rows : (stdLevel.reduceAt (O.twistPlace i) ⟨_, h_mem⟩).1ᵀ *
+    have h_fix_rows : (stdLevel.reduceAt (O.twistPlace i) ⟨_, h_mem⟩).valᵀ *
           inclMatrix (ResField (O.twistPlace i)) e' =
         inclMatrix (ResField (O.twistPlace i)) e' := by
       rw [h_eq.trans h_red, mul_inclMatrix]
@@ -605,7 +578,7 @@ lemma algFormRep_conj_block_apply_eq_self (Ξ : O.FormV) (ε : N ⊕ l ≃ n) {x
       (1 : ∀ i : O.ChosenIndex, GL r (ResField (O.chosenPlace i))) := rfl
   rw [h_one, map_one] at h_act
   change _ = _ • Ξ.val at h_act
-  simpa [c, mul_assoc] using h_act
+  simpa [c] using h_act
 
 open scoped Classical in
 /-- Periods against point forms vanish. Let `O` be a descent pair `(W, I_n)`; its level `O.places`
@@ -695,16 +668,16 @@ lemma DividedSplitting.algFormRep_conj_block_eq_self {z : r ↪ l} (V : DividedS
   -- first block.
   obtain ⟨h_mem', h_conj⟩ := L.reduceAt_conj_eq_one _ h_one
   have h_incl : ⇑O.incl = V.ε ∘ inl ∘ V.fixedEmb := (funext V.equiv_inl_fixedEmb).symm
-  have h_fixY (i : O.ChosenIndex) : (stdLevel.reduceAt (O.placeAt (inl i)) ⟨_, h_mem'⟩).1 *
+  have h_fixY (i : O.ChosenIndex) : (stdLevel.reduceAt (O.placeAt (inl i)) ⟨_, h_mem'⟩).val *
       inclMatrix _ O.incl = inclMatrix _ O.incl := by
     have h_red : stdLevel.reduceAt (O.placeAt (inl i)) ⟨_, h_mem'⟩ = 1 := h_conj i
     rw [h_red]
     exact Matrix.one_mul _
   -- So `algFormRep_conj_block_apply_eq_self` applies with `A = 1`.
-  have h_col (i : O.ChosenIndex) : (stdLevel.reduceAt (O.placeAt (inl i)) (1 : stdLevel E n)).1 *
+  have h_col (i : O.ChosenIndex) : (stdLevel.reduceAt (O.placeAt (inl i)) (1 : stdLevel E n)).val *
       inclMatrix (ResField (O.placeAt (inl i))) O.incl = inclMatrix _ O.incl := by
     rw [map_one, Units.val_one, Matrix.one_mul]
-  have h_row (i : O.TwistIndex) : (stdLevel.reduceAt (O.placeAt (inr i)) (1 : stdLevel E n)).1ᵀ *
+  have h_row (i : O.TwistIndex) : (stdLevel.reduceAt (O.placeAt (inr i)) (1 : stdLevel E n)).valᵀ *
       inclMatrix (ResField (O.placeAt (inr i))) O.incl = inclMatrix _ O.incl := by
     rw [map_one, Units.val_one, transpose_one, Matrix.one_mul]
   simpa using algFormRep_conj_block_apply_eq_self Ξ V.ε L.mem_supportedOn h_incl h_col h_row k
@@ -739,25 +712,25 @@ lemma DividedSplitting.stdClassSum_inner_productForm_eq_zero {z : r ↪ l}
       (star (kernelVector O b O.chosenModulusSq Ψ O.colsMinus g h))) Ξ) = 0 := by
   -- Apply the vanishing of periods to the conjugate-linear map `ζ ↦ y · conj ζ` and the point `γ`.
   let C : (WeylIndex l O.colsMinus → ℂ) →ₗ⋆[ℂ] WeylIndex n O.columnCount → ℂ :=
-    cartanProduct V.ε 1 y ∘ₛₗ (starLinearEquiv ℂ).1
+    cartanProduct V.ε 1 y ∘ₛₗ (starLinearEquiv ℂ).toLinearMap
   -- `C` is equivariant for the real group of the second block.
   have hC (g : GInf E (1 : n → ℤˣ)) (u : GInf E (1 : l → ℤˣ)) (ζ : WeylIndex l O.colsMinus → ℂ)
       (hg : ∀ τ : InfinitePlace E, (g τ : GL n ℂ) = reindexGL V.ε (blockGL (1, u τ))) :
       conjWeylRep O.columnCount O.detExp g (C ζ) = C (conjWeylRep O.colsMinus 0 u ζ) := by
-    have h_inv (τ : InfinitePlace E) : (g τ).1.1⁻¹ = (g τ).1.1ᴴ := by
+    have h_inv (τ : InfinitePlace E) : (g τ).val.val⁻¹ = (g τ).val.valᴴ := by
       simpa using U.form_mul_inv_eq (g τ)
     -- In the first block the columns of `conj g` are those of `1`; in the second those of its
     -- inverse transpose, which is `g`, are given by `u`.
-    have h_first (τ : InfinitePlace E) : ((g τ).1.1.map conj).submatrix id (V.ε ∘ inl) =
+    have h_first (τ : InfinitePlace E) : ((g τ).val.val.map conj).submatrix id (V.ε ∘ inl) =
         (1 : Matrix n n ℂ).submatrix id (V.ε ∘ inl) := by
       simp [hg, ← ext_iff, reindex_equiv V.ε, Matrix.one_apply]
-    have h_second (τ : InfinitePlace E) : ((g τ).1.1ᴴ.map conj)ᵀ.submatrix id (V.ε ∘ inr) =
-        (1 : Matrix n n ℂ).submatrix id (V.ε ∘ inr) * (u τ).1.1.map (conj ∘ conj) := by
+    have h_second (τ : InfinitePlace E) : ((g τ).val.valᴴ.map conj)ᵀ.submatrix id (V.ε ∘ inr) =
+        (1 : Matrix n n ℂ).submatrix id (V.ε ∘ inr) * (u τ).val.val.map (conj ∘ conj) := by
       simp [hg, ← ext_iff, Matrix.mul_apply, reindex_equiv V.ε, Matrix.one_apply]
     -- `conjWeylRep` acts through the conjugate matrix `gc`, which `weylRep_mulVec_cartanProduct`
     -- moves into `cartanProduct`; there it acts on the two factors by the Schur maps of those
     -- columns.
-    let gc (τ : InfinitePlace E) : GL n ℂ := GeneralLinearGroup.map conj (g τ).1
+    let gc (τ : InfinitePlace E) : GL n ℂ := GeneralLinearGroup.map conj (g τ).val
     suffices h_factors : cartanProduct V.ε gc y (star ζ) =
         cartanProduct V.ε 1 y (star (conjWeylRep O.colsMinus 0 u ζ)) by
       simpa [gc, C, conjWeylRep, weylRep_mulVec_cartanProduct, V.hasColumnsBelow,

@@ -1,5 +1,19 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.CategoryTheory.Countable
+public import Mathlib.Topology.Algebra.ProperConstSMul -- shake: keep (needed public by an exposed definition)
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Bruhat.QuadricBlocks
+public import Lib.SiegelWeil.OneVector.FinitePlaceDensity
+public import New.Spanning.Bessel.Basic
+public import New.Spanning.Frames.Correlations
+import Lib.Base
+import Lib.General.LinearAlgebra.HermiteForm
 import Lib.SiegelWeil.OneVector.StandardQuadrics
 import New.Spanning.Frames.QuadricPlancherel
+import New.Spanning.Frames.QuadricVolumes
 import New.Spanning.Unfolding.BesselLevelStructure
 
 /-!
@@ -43,6 +57,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -146,9 +162,9 @@ structure IntegralPlace.IsLatticeData : Prop where
   /-- The Gram matrix is hermitian and invertible over `integers`, the basis `F.basisMatrix` is
   integral, and the unit `F.levelUnit` is integral and fixed by the involution. -/
   integral_data :
-      IsUnimodular integers T.splitGram ∧ IsIntMatrix integers F.basisMatrix ∧ F.levelUnit.1 ∈
+      IsUnimodular integers T.splitGram ∧ IsIntMatrix integers F.basisMatrix ∧ F.levelUnit.val ∈
         integers ∧
-        star F.levelUnit.1 = F.levelUnit
+        star F.levelUnit.val = F.levelUnit
   /-- The box `F.boxSet` is the group of integral isometries. Its `F.topFloorMeasure`-measure is at
   least the volume of the units of `integers`, and its `F.measureH`-measure is `1`. The close pairs
   are the pairs of integral vectors congruent modulo `F.levelUnit`. The positions `F.positions` are
@@ -203,7 +219,7 @@ lemma IntegralPlace.exists_right_invariant_measure_besselH :
   let H : Subgroup T.G := T.besselH
   have h_closed : IsClosed (H : Set T.G) := isClosed_of_entries_eq_one mem_floorGroup
   have h_emb : MeasurableEmbedding (Subtype.val : H → T.G) :=
-    .subtype_coe h_closed.measurableSet
+    .subtypeVal h_closed.measurableSet
   have h_open : IsOpen (K : Set T.G)⁻¹ := IsOpen.inv unitaryLevel_open_compact.1
   let K₀ : TopologicalSpace.PositiveCompacts H :=
     ⟨⟨Subtype.val ⁻¹' (K : Set T.G)⁻¹, unitaryLevel_open_compact.2.inv.preimage_val h_closed⟩,
@@ -252,12 +268,11 @@ lemma IntegralPlace.exists_isIntMatrix_hyperbolicBasis {N : A} (hN : N ∈ P.int
   have E_form : Eᴴ * latticeMiddleGram 𝔰 N * E = planeSumGram (hyperbolicGram (Fin m) 1) := by
     have h_ne (i : SplitIndex m ι) : (f i : 𝔰.κ) ≠ 𝔰.k₀ := (f i).prop.symm
     have h_trace : P.element + star P.element = 1 := P.element_add_star
-    rw [gram_mul, gram_inclMatrix]
+    rw [gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix]
     -- each entry reduces to `hc_norm`, `h_trace` or `hN_star`
     simp [← Matrix.ext_iff, Matrix.mul_apply, C, latticeMiddleGram, diagonal, h_ne,
       Subtype.val_inj, fromBlocks_conjTranspose, conjTranspose_fromRows_eq_fromCols_conjTranspose,
-      conjTranspose_fromCols_eq_fromRows_conjTranspose, mul_assoc, mul_add, mul_sum,
-      sum_add_distrib, Matrix.one_apply]
+      conjTranspose_fromCols_eq_fromRows_conjTranspose, Matrix.one_apply]
     grind
   obtain ⟨V, hV, hV_eq⟩ : ∃ V ∈ intGL 𝔰.MiddleIndex P.integers, V.val = latticeMiddleGram 𝔰 N :=
     (isUnimodular_latticeMiddleGram 𝔰 ⟨hN, hN_star⟩).2
@@ -554,7 +569,7 @@ lemma exists_kernel_isDisintegration_coordinateBox_le :
       ∀ (β : skewAdjoint A) (u : Aˣ),
         q β (coordinateBox (Fin F.blockRank) {x : A | u.val * x ∈ P.integers}) ≤
           idealZeta P.integers m * (P.modulus u)⁻¹ ^ (2 * m + 3) :=
-  exists_kernel_isDisintegration_le h.psi_add_star h.idealZeta_le_two
+  exists_kernel_isDisintegration_le h.idealZeta_le_two
     (Fintype.card_fin _) (by lia)
 
 /-- For a large lattice datum `F`, the elements of `F.productDifferences` are integral. These are
@@ -695,12 +710,13 @@ lemma exists_isCommonBound {α : Aˣ} (hα : α.val ∈ integers) {S : Size T}
 /-- The gauge of scale `α` at a large lattice datum, for an integral self-conjugate unit `α` of `A`:
 a number `x` has size `j` if `α ^ j * x` is integral, and the field `loss` is `2 / P.modulus α`. -/
 @[simp]
-def gauge (α : Aˣ := 1) (hα : α.1 ∈ integers := by simp)
-    (sα : star α.1 = α := by simp [*] <;> ring) :
+def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
+    (sα : star α.val = α := by simp [*] <;> ring) :
     Gauge F where
   ofSize j := {x : A | α ^ j * x ∈ integers}
   loss := 2 / P.modulus α
-  mul_mem_ofSize hx hy := by grind [integers.mul_mem hx hy]
+  mul_mem_ofSize hx hy := by
+    simpa only [Set.mem_ofPred_eq, pow_add, mul_mul_mul_comm] using integers.mul_mem hx hy
   sum_mem_ofSize := by simp_all [pow_succ', mul_assoc, mul_sum, mul_mem, sum_mem]
   neg_mem_iff_and_star_mem_iff := by
              refine ⟨by simp, fun hx ↦ ?_, fun hx ↦ ?_⟩ <;> simpa [sα] using isAdelic.1.1 hx
@@ -750,17 +766,6 @@ def gauge (α : Aˣ := 1) (hα : α.1 ∈ integers := by simp)
                      (h.idealZeta_mul_inv_modulus_pow_le hα (by simp only [blockRank]; nlinarith))⟩
   exists_commonBound _ hx _ hz := h.exists_isCommonBound hα (fun _ ↦ rfl) hx hz
 
-/-- At a large lattice datum, let `y` and `γ⁻¹ y` be near at `l`: elements of
-`partialUnitriangularGroup l` move them into the group of integral isometries. Then the leading
-minors of order `j ≤ l` of the matrix of the products `h(f_a, γ f_b)` of the frame vectors are
-integral. -/
-theorem leadingMinor_mem_of_isNear {l : ℕ} {γ y : T.G} (hy : F.IsNear l y)
-    (hγy : F.IsNear l (γ⁻¹ * y)) {j : Fin (𝔰.n + 1)} (hj : j.val ≤ l) :
-    leadingMinor (T.frameGram (γ.val : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)) j ∈ P.integers := by
-  -- In the gauge of scale `1` every size means integral.
-  simpa [gauge] using
-    (h.gauge 1 (one_mem P.integers) (star_one A)).leadingMinor_mem_ofSize_of_isNear hy hγy hj
-
 include h in
 /-- At a large lattice datum `F`, let `g` be an integral self-conjugate unit of `A`, `a < 𝔰.ϱ`, and
 `S` a subgroup of the unipotent group `unipotentBelow a` of the floors below `a`. Some `u ∈ S` moves
@@ -781,6 +786,10 @@ lemma exists_mul_heisenbergElem_mem_unitaryLevel_iff
     rw [← inv_smul_smul g w, hw]
     simp [inclMatrix_val_mulVec, dite_mem, intVectors, Units.smul_def]
   obtain ⟨hg_mem, hg_star⟩ := hg
+  have h_form (hw_int : w ∈ intVectors integers 𝔰.BesselIndex) :
+      P.element * g * star w ⬝ᵥ T.splitGram *ᵥ w ∈ integers :=
+    mul_mem (mul_mem data_normalised.1 hg_mem)
+      (h.star_dotProduct_splitGram_mulVec_mem hw_int hw_int)
   rw [h_int]
   constructor
   · -- In the gauge of scale `1`, the column of `e*_a` gives `w` and `(β - τ h(v, v)) / g`.
@@ -792,9 +801,7 @@ lemma exists_mul_heisenbergElem_mem_unitaryLevel_iff
       simpa [Units.smul_def] using hw_int i
     replace hβ : g⁻¹.val * (β : A) - P.element * g * star w ⬝ᵥ T.splitGram *ᵥ w ∈ integers := by
       simpa [Units.smul_def, mulVec_smul, hg_star, mul_sub, mul_left_comm, mul_assoc] using hβ
-    have h_form : P.element * g * star w ⬝ᵥ T.splitGram *ᵥ w ∈ integers := by
-      simp [data_normalised, mul_mem, hg_mem, h.star_dotProduct_splitGram_mulVec_mem hw_int hw_int]
-    exact ⟨hw_int, by simpa using add_mem hβ h_form⟩
+    exact ⟨hw_int, by simpa using add_mem hβ (h_form hw_int)⟩
   · -- Take `u = 1`: with `e = e_a`, the Eichler map minus `1`, divided by `g`, is
     -- `(w - s e) h(e, ·) - e h(w, ·)` with `s` integral.
     rintro ⟨hw_int, hβ⟩
@@ -802,8 +809,7 @@ lemma exists_mul_heisenbergElem_mem_unitaryLevel_iff
     let s : A := P.element * g * star w ⬝ᵥ T.splitGram *ᵥ w - g⁻¹.val * (β : A)
     have hJ : IsIntMatrix integers T.splitGram := h.isUnimodular_splitGram.isIntMatrix
     have he : e ∈ intVectors integers 𝔰.BesselIndex := single_mem_intVectors _
-    have hs : s ∈ integers := sub_mem (mul_mem (mul_mem data_normalised.1 hg_mem)
-      (h.star_dotProduct_splitGram_mulVec_mem hw_int hw_int)) hβ
+    have hs : s ∈ integers := sub_mem (h_form hw_int) hβ
     have hws : w - s • e ∈ intVectors integers 𝔰.BesselIndex :=
       fun i ↦ sub_mem (hw_int i) (mul_mem hs (he i))
     have h_param : P.element * star (g • w) ⬝ᵥ T.splitGram *ᵥ (g • w) - (β : A) = g * s := by
@@ -966,25 +972,18 @@ theorem le_partialGroupMeasure_boxSet (i l : ℕ) (hl : l + i = 𝔰.ϱ) :
   | zero =>
     obtain rfl : l = 𝔰.ϱ := hl
     obtain ⟨h_theta, -, h_norm, -⟩ := h.volume_le_and_boxSet_closePairs_positions_eq
-    calc volume P.intUnits ^ (0 + 1)
-      _ ≤ F.measureH F.boxSet * F.topFloorMeasure F.boxSet := by simpa [h_norm] using h_theta
-      _ ≤ (F.measureH ∗ₘ F.topFloorMeasure) F.boxSet := h.mul_le_mconv_boxSet _ _
-      _ = F.partialGroupMeasure 𝔰.ϱ (0 + 2) F.boxSet := by simp [descConv, floorMeasure]
+    simp [descConv, floorMeasure]
+    grw [← h.mul_le_mconv_boxSet]
+    simpa [h_norm] using h_theta
   | succ i ih =>
     have h_eta : heisenbergMeasure l F.boxSet = 1 := by
       simpa [floorModulus, ← h.boxSet_eq] using
         h.heisenbergMeasure_eq_floorModulus (g := 1) (by simp) ⟨l, by lia⟩ bot_le
-    calc volume P.intUnits ^ (i + 1 + 1)
-      _ ≤ F.partialGroupMeasure (l + 1) (i + 2) F.boxSet *
-          (heisenbergMeasure l F.boxSet * (weylLaw l F.boxSet * heisenbergMeasure l F.boxSet)) := by
-        rw [h_eta, mul_one, one_mul, pow_succ]
-        exact mul_le_mul' (ih (l + 1) (by lia)) (h.volume_intUnits_le_weylLaw_boxSet l)
-      _ ≤ (F.partialGroupMeasure (l + 1) (i + 2) ∗ₘ
-            (heisenbergMeasure l ∗ₘ (weylLaw l ∗ₘ heisenbergMeasure l))) F.boxSet := by
-        grw [h.mul_le_mconv_boxSet, h.mul_le_mconv_boxSet, h.mul_le_mconv_boxSet]
-      _ = F.partialGroupMeasure l (i + 1 + 2) F.boxSet := by
-        have hl_lt : l < 𝔰.ϱ := by lia
-        simp [descConv, floorMeasure, hl_lt]
+    rw [pow_succ]
+    grw [ih (l + 1) (by lia), h.volume_intUnits_le_weylLaw_boxSet l]
+    rw [← one_mul (weylLaw l F.boxSet), ← mul_one (weylLaw l F.boxSet), ← h_eta]
+    grw [h.mul_le_mconv_boxSet, h.mul_le_mconv_boxSet, h.mul_le_mconv_boxSet]
+    simp [descConv, floorMeasure, show l < 𝔰.ϱ by lia]
 
 /-- For a large lattice datum, `F.groupMeasure` is a Haar measure. -/
 instance isHaarMeasure_groupMeasure : F.groupMeasure.IsHaarMeasure := by

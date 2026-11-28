@@ -1,4 +1,14 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import Mathlib.LinearAlgebra.Matrix.Module
+public import New.Spanning.RemainingTerms.Size
+public import New.Spanning.Unfolding.Climbing
+import Lib.General.LinearAlgebra.BlockEmbeddings
 import New.Spanning.MainTerm.EnergyEstimate
+import New.Spanning.RemainingTerms.Sum
 import New.Spanning.SecondMoment.PositiveType
 import New.Spanning.Unfolding.SquareExpansion
 
@@ -38,6 +48,8 @@ Notions from other files:
   `s ∈ Ω`.
 * `reducedImage A`: the image in the finite group `ResidueGL` of the integral elements of `A`.
 -/
+
+@[expose] public section
 
 namespace New
 
@@ -92,15 +104,16 @@ lemma card_inScalarCoset_le : #{s : S.ResidueGL | ∃ ζ : Ô E, S.InScalarCoset
   have h_scalar (s : {s : S.ResidueGL // ∃ ζ : Ô E, S.InScalarCoset ζ s}) :
       ∃ (ζ : Ô E) (t : S.ResidueGL), t ∈ S.reducedImage besselS ∧ ∀ (i : Fin 2)
         (w : S.chosenPlaces i),
-        (s.1 i w).1 = New.reduceAt w.1 ζ • (t i w).1 := s.2
+        (s.val i w).val = New.reduceAt w.val ζ • (t i w).val := s.property
   choose ζ t ht h_eq using h_scalar
   let φ (s : {s : S.ResidueGL // ∃ ζ : Ô E, S.InScalarCoset ζ s}) :
-      (∀ (i : Fin 2) (w : S.chosenPlaces i), ResField w.1) × S.reducedImage besselS :=
-    (fun _ w ↦ New.reduceAt w.1 (ζ s), ⟨t s, ht s⟩)
+      (∀ (i : Fin 2) (w : S.chosenPlaces i), ResField w.val) × S.reducedImage besselS :=
+    (fun _ w ↦ New.reduceAt w.val (ζ s), ⟨t s, ht s⟩)
   have hφ : φ.Injective := fun s s' h ↦ by
     obtain ⟨h_res, h_t⟩ := Prod.ext_iff.1 h
     refine Subtype.ext (funext₂ fun i w ↦ Units.ext ?_)
-    rw [h_eq, h_eq, show New.reduceAt w.1 (ζ s) = New.reduceAt w.1 (ζ s') from congrFun₂ h_res i w,
+    rw [h_eq, h_eq,
+      show New.reduceAt w.val (ζ s) = New.reduceAt w.val (ζ s') from congrFun₂ h_res i w,
       show t s = t s' from congrArg Subtype.val h_t]
   rw [← Fintype.card_subtype, card_eq_nat_card]
   refine (Nat.card_le_card_of_injective φ hφ).trans_eq ?_
@@ -130,7 +143,7 @@ lemma pow_mul_identitySecondMoment_le_mul_mainSecondMoment [hS : S.IsAdmissible]
 frame modulo `w`. If its Boolean is `true`, it is taken modulo the conjugate of `w` instead. Let `s`
 fix all of them. So `meetNorm s`, the product of the norms of the places at which `s` meets, is at
 least `levelPrime 0 ^ numInfPlaces E`. -/
-lemma levelPrime_pow_le_meetNorm_of_mem_fixer [S.IsAdmissible]
+lemma levelPrime_pow_le_meetNorm_of_mem_fixer
     {vectors : ∀ w : S.chosenPlaces 0, S.FrameVector w} {s : S.ResidueGL}
     (hs : s ∈ S.fixer univ vectors) : S.levelPrime 0 ^ Core.numInfPlaces E ≤ S.meetNorm s := by
   classical
@@ -143,12 +156,11 @@ lemma levelPrime_pow_le_meetNorm_of_mem_fixer [S.IsAdmissible]
   simp [φ, S.card_chosenPlaces]
 
 open scoped Classical in
-/-- Let `E` contain a primitive `5040`-th root of unity and let the filling data `S` be admissible
-(`IsAdmissible`). For `s` in `ResidueGL`, write `‖P_s‖²` for the `secondMoment` at `s` of the
-amplitude sums of all terms. If `‖P_s‖² ≤ 2 D_X` for all `s`, with `D_X = sourceDim`, then the sum
+/-- For `s` in `ResidueGL`, write `‖P_s‖²` for the `secondMoment` at `s` of the amplitude sums
+of all terms. If `‖P_s‖² ≤ 2 D_X` for all `s`, with `D_X = sourceDim`, then the sum
 of `‖P_s‖²` over the cosets of the reduction `R̄₀` of the Bessel subgroup by integral scalars
 (`InScalarCoset`) is at most `2 M ^ f 𝒟_id`. -/
-lemma sum_secondMoment_inScalarCoset_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+lemma sum_secondMoment_inScalarCoset_le
     (h_le : ∀ s : S.ResidueGL, secondMoment (S.amplitudeSum .full Set.univ) {s} ≤ 2 * S.sourceDim) :
     ∑ s : S.ResidueGL with ∃ ζ : Ô E, S.InScalarCoset ζ s,
         secondMoment (S.amplitudeSum .full Set.univ) {s} ≤
@@ -166,7 +178,7 @@ lemma eight_mul_M_pow_mul_identitySecondMoment_le [S.IsAdmissible] :
       (S.b ^ (6 * 𝔰.k))⁻¹ ^ #(univ : Finset (S.chosenPlaces 0)) * S.mainSecondMoment := by
   have h_id_nonneg : 0 ≤ S.identitySecondMoment := identitySecondMoment_nonneg
   have h_exp : 23 * Core.numInfPlaces E + 1 ≤ 5 * (𝔰.k * Core.numInfPlaces E) := by
-    nlinarith [S.thousand_mul_le_k, NeZero.one_le (n := Core.numInfPlaces E)]
+    nlinarith only [S.thousand_mul_le_k, NeZero.one_le (n := Core.numInfPlaces E)]
   have hb : 1000 ≤ S.b := S.thousand_le_b
   calc _ ≤ S.b * (S.b ^ 23) ^ Core.numInfPlaces E * S.identitySecondMoment := by
         grw [M_le_b_pow, show (8 : ℝ) ≤ S.b by linarith]
@@ -174,9 +186,9 @@ lemma eight_mul_M_pow_mul_identitySecondMoment_le [S.IsAdmissible] :
       grw [← pow_mul, ← pow_succ', pow_le_pow_right₀ S.one_le_b h_exp]
     _ ≤ _ := pow_mul_identitySecondMoment_le_mul_mainSecondMoment univ
 
-/-- Let the filling `S` be admissible (`IsAdmissible`). The bound `(b^(2f) / p₀^f)^k 𝒟_main` on sums
-over links is at most an eighth of `b^(-6kf) 𝒟_main`, as `b¹⁰ ≤ p₀` (`le_levelPrime`). -/
-lemma div_levelPrime_pow_mul_mainSecondMoment_le [S.IsAdmissible] :
+/-- The bound `(b^(2f) / p₀^f)^k 𝒟_main` on sums over links is at most an eighth of
+`b^(-6kf) 𝒟_main`, as `b¹⁰ ≤ p₀` (`le_levelPrime`). -/
+lemma div_levelPrime_pow_mul_mainSecondMoment_le :
     (S.b ^ (2 * Core.numInfPlaces E) / (S.levelPrime 0 ^ Core.numInfPlaces E : ℕ)) ^ 𝔰.k *
         S.mainSecondMoment ≤
       (S.b ^ (6 * 𝔰.k))⁻¹ ^ #(univ : Finset (S.chosenPlaces 0)) * S.mainSecondMoment / 8 := by
@@ -302,20 +314,19 @@ lemma secondMoment_fixer_isOpenElement_le [S.IsAdmissible] [WeilData E]
       rw [div_eq_mul_inv]
       nlinarith
 
-/-- Let the filling `S` be admissible (`IsAdmissible`). For `l < n = ϱ + 1` we have
-`p₀ ^ (l + r / 2) ≤ b ^ (6 k)`. Here `p₀ = levelPrime 0`, `b = S.b`, `k = |κ|`, and `r` is the rank
-of the space, that is, the number of indices in `𝔰.BesselIndex`. -/
-lemma levelPrime_pow_mul_sqrt_le [S.IsAdmissible] (l : Fin 𝔰.n) :
+/-- For `l < n = ϱ + 1` we have `p₀ ^ (l + r / 2) ≤ b ^ (6 k)`. Here `p₀ = levelPrime 0`,
+`b = S.b`, `k = |κ|`, and `r` is the rank of the space, the number of indices in `𝔰.BesselIndex`. -/
+lemma levelPrime_pow_mul_sqrt_le (l : Fin 𝔰.n) :
     (S.levelPrime 0 : ℝ) ^ l.val * √(S.levelPrime 0 ^ card 𝔰.BesselIndex) ≤ S.b ^ (6 * 𝔰.k) := by
   -- Square, and use `p₀ ≤ b¹¹`, `r = k + 2 n - 1` and `2000 n ≤ k`.
   have hb : 1 ≤ S.b := S.one_le_b
-  have h_exp : 11 * (l.1 * 2 + card 𝔰.BesselIndex) ≤ 6 * 𝔰.k * 2 := by
+  have h_exp : 11 * (l.val * 2 + card 𝔰.BesselIndex) ≤ 6 * 𝔰.k * 2 := by
     have h_rank : card 𝔰.BesselIndex = 2 * 𝔰.ϱ + 𝔰.k + 1 := by simp +arith
-    linarith [S.thousand_mul_le_k, (l.2 : l.1 < 𝔰.ϱ + 1)]
+    linarith [S.thousand_mul_le_k, (l.isLt : l.val < 𝔰.ϱ + 1)]
   rw [← sq_le_sq₀ (by positivity) (by positivity)]
-  calc _ = (S.levelPrime 0 : ℝ) ^ (l.1 * 2 + card 𝔰.BesselIndex) := by
+  calc _ = (S.levelPrime 0 : ℝ) ^ (l.val * 2 + card 𝔰.BesselIndex) := by
         rw [mul_pow, Real.sq_sqrt (by positivity), ← pow_mul, ← pow_add]
-    _ ≤ S.b ^ (11 * (l.1 * 2 + card 𝔰.BesselIndex)) := by grw [S.levelPrime_le 0, ← pow_mul]
+    _ ≤ S.b ^ (11 * (l.val * 2 + card 𝔰.BesselIndex)) := by grw [S.levelPrime_le 0, ← pow_mul]
     _ ≤ (S.b ^ (6 * 𝔰.k)) ^ 2 := by grw [h_exp, ← pow_mul]
 
 open scoped Classical in
@@ -327,7 +338,7 @@ Suppose that the stabilizer in `Γ` of any such vector carries at most a proport
 sum of `β` over `Γ`. Let `l < 𝔰.n`, and let `δ_l` be the leading minor of size `l` of the
 `frameGram` of the component `s 0 w` over the residue field at `w`. Then the `s` in `Γ` with
 `δ_l = 0` carry at most a proportion `3 / b¹⁰`. -/
-lemma sum_leadingMinor_eq_zero_le [S.IsAdmissible] {V : Type*} [NormedAddCommGroup V]
+lemma sum_leadingMinor_eq_zero_le {V : Type*} [NormedAddCommGroup V]
     [InnerProductSpace ℂ V] {β : S.ResidueGL → ℝ} (h_nonneg : ∀ s : S.ResidueGL, 0 ≤ β s)
       {u : S.ResidueGL → V}
     (h_posType : ∀ a b : S.ResidueGL, ⟪u a, u b⟫_ℂ = β (a⁻¹ * b)) {Γ : Subgroup S.ResidueGL}
@@ -339,49 +350,49 @@ lemma sum_leadingMinor_eq_zero_le [S.IsAdmissible] {V : Type*} [NormedAddCommGro
       3 * (∑ s : Γ, β s.val) / S.b ^ 10 := by
   -- `δ_l` is the determinant of the pairings of the first `l` frame vectors with their images.
   have hb : 0 < S.b := b_pos
-  set total : ℝ := ∑ s : Γ, β s.1
+  set total : ℝ := ∑ s : Γ, β s.val
   set stabFactor : ℝ := S.b ^ (6 * 𝔰.k)
   have h_total_nonneg : 0 ≤ total := sum_nonneg fun s _ ↦ h_nonneg s
   -- The group `Γ` acts on the lattice modulo `w`; the residue field has `p₀` elements.
-  let π : Γ →* GL 𝔰.BesselIndex (ResField w.1) := MonoidHom.mk' (fun s ↦ s.1 0 w) (by simp)
-  have h_card : card (ResField w.1) = S.levelPrime 0 :=
+  let π : Γ →* GL 𝔰.BesselIndex (ResField w.val) := MonoidHom.mk' (fun s ↦ s.val 0 w) (by simp)
+  have h_card : card (ResField w.val) = S.levelPrime 0 :=
     card_eq_nat_card.trans (card_resField_eq_levelPrime S 0 w)
   -- The columns of `e` are the first `l` frame vectors, those of `J * e` their linear forms.
-  let J : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (ResField w.1) :=
-    (S.latticeMiddle (ResField w.1)).splitGram
-  let e : Matrix 𝔰.BesselIndex (Fin l.castSucc) (ResField w.1) :=
-    frameImage 1 * inclMatrix (ResField w.1) (Fin.castLE l.castSucc.is_le)
-  have h_det (s : Γ) : ((J * e)ᵀ * (π s).1 * e).det =
-      leadingMinor ((S.latticeMiddle (ResField w.1)).frameGram (s.1 0 w).1) l.castSucc := by
+  let J : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (ResField w.val) :=
+    (S.latticeMiddle (ResField w.val)).splitGram
+  let e : Matrix 𝔰.BesselIndex (Fin l.castSucc) (ResField w.val) :=
+    frameImage 1 * inclMatrix (ResField w.val) (Fin.castLE l.castSucc.is_le)
+  have h_det (s : Γ) : ((J * e)ᵀ * (π s).val * e).det =
+      leadingMinor ((S.latticeMiddle (ResField w.val)).frameGram (s.val 0 w).val) l.castSucc := by
     let ι : Fin l.castSucc → 𝔰.BesselIndex := 𝔰.besselFrame ∘ Fin.castLE l.castSucc.is_le
-    rw [show e = inclMatrix (ResField w.1) ι from mul_inclMatrix _ _, mul_inclMatrix,
+    rw [show e = inclMatrix (ResField w.val) ι from mul_inclMatrix _ _, mul_inclMatrix,
       mul_inclMatrix, transpose_submatrix, transpose_splitGram]
     rfl
   -- The stabilizer of a vector, or of a form, fixes a vector modulo `w`, or modulo its conjugate.
   have h_le_of_fixes (d : S.FrameVector w) (p : Γ → Prop) [DecidablePred p]
-      (hp : ∀ s : Γ, p s → s.1 ∈ S.vectorFixer w d) :
-      ∑ s : Γ with p s, β s.1 ≤ total / stabFactor :=
+      (hp : ∀ s : Γ, p s → s.val ∈ S.vectorFixer w d) :
+      ∑ s : Γ with p s, β s.val ≤ total / stabFactor :=
     (sum_le_sum_of_subset_of_nonneg (monotone_filter_right _ fun s _ h ↦ hp s h)
       fun s _ _ ↦ h_nonneg s).trans (h_stab d)
-  have h_coord (v : Fin l.castSucc → ResField w.1) (hv : v ≠ 0) :
-      inclMatrix (ResField w.1) (Fin.castLE l.castSucc.is_le) *ᵥ v ≠ 0 :=
+  have h_coord (v : Fin l.castSucc → ResField w.val) (hv : v ≠ 0) :
+      inclMatrix (ResField w.val) (Fin.castLE l.castSucc.is_le) *ᵥ v ≠ 0 :=
     (map_ne_zero_iff _ (inclMatrix_mulVecLin_injective (Fin.castLEEmb l.castSucc.is_le) _)).2 hv
-  have h_fix_vector (v : Fin l.castSucc → ResField w.1) (hv : v ≠ 0) :
-      ∑ s with e *ᵥ v = π s • e *ᵥ v, β s.1 ≤ total / stabFactor := by
+  have h_fix_vector (v : Fin l.castSucc → ResField w.val) (hv : v ≠ 0) :
+      ∑ s with e *ᵥ v = π s • e *ᵥ v, β s.val ≤ total / stabFactor := by
     refine h_le_of_fixes ⟨false, _, h_coord v hv⟩ _ fun s hs ↦ ?_
     rw [mem_vectorFixer_false, mulVec_mulVec v]
     exact hs.symm
-  have h_fix_form (v : Fin l.castSucc → ResField w.1) (hv : v ≠ 0) :
+  have h_fix_form (v : Fin l.castSucc → ResField w.val) (hv : v ≠ 0) :
       ∑ s with (J * e) *ᵥ v = invTransposeGL (π s) • (J * e) *ᵥ v, β s.1 ≤ total / stabFactor := by
     refine h_le_of_fixes ⟨true, _, h_coord v hv⟩ _ fun s hs ↦ ?_
     rw [mem_vectorFixer_true, mulVec_mulVec v, mulVec_mulVec v]
     exact hs.symm
   rw [le_div_iff₀' (by positivity)]
-  calc _ ≤ card (ResField w.1) * ∑ s with ((J * e)ᵀ * (π s).1 * e).det = 0, β s.1 := by
+  calc _ ≤ card (ResField w.val) * ∑ s with ((J * e)ᵀ * (π s).val * e).det = 0, β s.val := by
         simp only [h_det, h_card]
         exact mul_le_mul_of_nonneg_right (S.le_levelPrime 0) (sum_nonneg fun s _ ↦ h_nonneg s)
-    _ ≤ 2 * total + card (ResField w.1) ^ card (Fin l.castSucc) *
-        √(card (ResField w.1) ^ card 𝔰.BesselIndex) * (total / stabFactor) :=
+    _ ≤ 2 * total + card (ResField w.val) ^ card (Fin l.castSucc) *
+        √(card (ResField w.val) ^ card 𝔰.BesselIndex) * (total / stabFactor) :=
       card_mul_sum_det_eq_zero_le π e (J * e) (fun s ↦ h_nonneg s) (fun a b ↦ h_posType a b) _
         (by positivity) h_fix_vector h_fix_form
     _ ≤ 2 * total + stabFactor * (total / stabFactor) := by
@@ -396,7 +407,7 @@ all `a`, `b`, for a map `u` into an inner product space. Let `Γ` be a subgroup 
 modulo `w` or its conjugate, the elements of `Γ` that fix it (`vectorFixer`) carry at most a
 proportion `S.b^(-6k)` of the sum of `β` over `Γ`. Then the elements of `Γ` that are not open carry
 at most a proportion `S.b⁻⁴` of that sum. -/
-lemma sum_not_isOpenElement_le [S.IsAdmissible] {V : Type*} [NormedAddCommGroup V]
+lemma sum_not_isOpenElement_le {V : Type*} [NormedAddCommGroup V]
     [InnerProductSpace ℂ V] {β : S.ResidueGL → ℝ} (h_nonneg : ∀ s : S.ResidueGL, 0 ≤ β s)
       {u : S.ResidueGL → V}
     (h_posType : ∀ a b : S.ResidueGL, ⟪u a, u b⟫_ℂ = β (a⁻¹ * b)) {Γ : Subgroup S.ResidueGL}
@@ -405,9 +416,9 @@ lemma sum_not_isOpenElement_le [S.IsAdmissible] {V : Type*} [NormedAddCommGroup 
       (∑ s : Γ, β s.val) / S.b ^ (6 * 𝔰.k)) :
     ∑ s : Γ with ¬S.IsOpenElement s.val, β s.val ≤ (S.b ^ 4)⁻¹ * ∑ s : Γ, β s.val := by
   have hb : 1000 ≤ S.b := S.thousand_le_b
-  have h_total_nonneg : 0 ≤ ∑ s : Γ, β s.1 := sum_nonneg fun s _ ↦ h_nonneg s
-  let δ (l : Fin 𝔰.n) (s : S.ResidueGL) : ResField w.1 :=
-    leadingMinor ((S.latticeMiddle (ResField w.1)).frameGram (s 0 w).1) l.castSucc
+  have h_total_nonneg : 0 ≤ ∑ s : Γ, β s.val := sum_nonneg fun s _ ↦ h_nonneg s
+  let δ (l : Fin 𝔰.n) (s : S.ResidueGL) : ResField w.val :=
+    leadingMinor ((S.latticeMiddle (ResField w.val)).frameGram (s 0 w).val) l.castSucc
   calc
     _ ≤ ∑ l : Fin 𝔰.n, ∑ s : Γ with δ l s.val = 0, β s.val := by
       simp only [sum_filter]
@@ -418,9 +429,9 @@ lemma sum_not_isOpenElement_le [S.IsAdmissible] {V : Type*} [NormedAddCommGroup 
       · obtain ⟨l, hl⟩ : ∃ l : Fin 𝔰.n, δ l s.val = 0 := by_contra fun h ↦ hs ⟨w, not_exists.1 h⟩
         refine le_trans ?_ (single_le_sum (fun l _ ↦ ite_nonneg (h_nonneg s) le_rfl) (mem_univ l))
         rw [ite_eq_left hl]
-    _ ≤ card (Fin 𝔰.n) • (3 * (∑ s : Γ, β s.1) / S.b ^ 10) :=
+    _ ≤ card (Fin 𝔰.n) • (3 * (∑ s : Γ, β s.val) / S.b ^ 10) :=
       sum_le_card_nsmul _ _ _ fun l _ ↦ sum_leadingMinor_eq_zero_le h_nonneg h_posType h_stab l
-    _ ≤ (S.b ^ 4)⁻¹ * ∑ s : Γ, β s.1 := by
+    _ ≤ (S.b ^ 4)⁻¹ * ∑ s : Γ, β s.val := by
       -- `3 n ≤ 3 b ≤ b⁶`
       have h_three : 3 ≤ S.b ^ 5 := le_trans (by linarith) (le_self_pow₀ S.one_le_b (by norm_num))
       grw [Fintype.card_fin, nsmul_eq_mul, S.succ_le_b, h_three]
@@ -455,25 +466,26 @@ theorem sum_secondMoment_le [S.IsAdmissible] {V : Type*} [NormedAddCommGroup V]
   let β (s : S.ResidueGL) : ℝ := secondMoment (S.amplitudeSum .full Set.univ) {s}
   have h_nonneg (s : S.ResidueGL) : 0 ≤ β s := secondMoment_nonneg
   set stabFactor : ℝ := S.b ^ (6 * 𝔰.k)
-  let mass (places : Finset (S.chosenPlaces 0))
+  let fixerMass (places : Finset (S.chosenPlaces 0))
       (vectors : ∀ w : S.chosenPlaces 0, S.FrameVector w) : ℝ :=
     ∑ s : S.ResidueGL with s ∈ S.fixer places vectors, β s
   have : Nonempty (∀ w : S.chosenPlaces 0, S.FrameVector w) := ⟨fun _ ↦ (true, ⟨1, one_ne_zero⟩)⟩
-  obtain ⟨places, vectors, h_max⟩ : ∃ places vectors, ∀ places' vectors',
-      stabFactor ^ #places' * mass places' vectors' ≤
-        stabFactor ^ #places * mass places vectors := by
+  obtain ⟨places, vectors, h_max_weighted⟩ : ∃ places vectors, ∀ places' vectors',
+      stabFactor ^ #places' * fixerMass places' vectors' ≤
+        stabFactor ^ #places * fixerMass places vectors := by
     simpa only [Prod.exists, Prod.forall, Function.uncurry_apply_pair] using Finite.exists_max
-      (Function.uncurry fun places vectors ↦ stabFactor ^ #places * mass places vectors)
-  suffices h_mass : mass places vectors ≤
+      (Function.uncurry fun places vectors ↦ stabFactor ^ #places * fixerMass places vectors)
+  suffices h_fixer_bound : fixerMass places vectors ≤
       (1 + 9 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment) by
-    calc _ = stabFactor ^ #(∅ : Finset (S.chosenPlaces 0)) * mass ∅ vectors := by
-          simp [mass, β, mem_fixer]
-      _ ≤ stabFactor ^ #places * mass places vectors := h_max ∅ vectors
+    calc _ = stabFactor ^ #(∅ : Finset (S.chosenPlaces 0)) * fixerMass ∅ vectors := by
+          simp [fixerMass, β, mem_fixer]
+      _ ≤ stabFactor ^ #places * fixerMass places vectors := h_max_weighted ∅ vectors
       _ ≤ stabFactor ^ #places *
           ((1 + 9 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment)) := by gcongr
       _ = (1 + 9 / S.b ^ 4) * S.mainSecondMoment := by
         rw [inv_pow]
         field
+  -- If every place is fixed, positive type bounds each term by its value at the identity.
   obtain rfl | h_places := eq_or_ne places univ
   · calc _ = secondMoment (S.amplitudeSum .full Set.univ) (S.fixer univ vectors) :=
           (secondMoment_eq_sum_secondMoment_singleton _
@@ -485,32 +497,33 @@ theorem sum_secondMoment_le [S.IsAdmissible] {V : Type*} [NormedAddCommGroup V]
   -- small by maximality.
   obtain ⟨w, hw⟩ : ∃ w : S.chosenPlaces 0, w ∉ places :=
     not_forall.1 (mt eq_univ_iff_forall.2 h_places)
-  have mass_eq : mass places vectors = ∑ s : S.fixer places vectors, β s.1 :=
+  have fixerMass_eq : fixerMass places vectors = ∑ s : S.fixer places vectors, β s.val :=
     sum_subtype _ (by simp) β
-  have h_stab (d : S.FrameVector w) :
-      ∑ s : S.fixer places vectors with s.1 ∈ S.vectorFixer w d, β s.1 ≤
-        mass places vectors / stabFactor := by
-    have h_le := h_max (insert w places) (Function.update vectors w d)
+  have h_vector_fixer (d : S.FrameVector w) :
+      ∑ s : S.fixer places vectors with s.val ∈ S.vectorFixer w d, β s.val ≤
+        fixerMass places vectors / stabFactor := by
+    have h_le := h_max_weighted (insert w places) (Function.update vectors w d)
     rw [card_insert_of_notMem hw, pow_succ, mul_assoc, mul_le_mul_iff_right₀ (by positivity),
       ← le_div_iff₀' (by positivity)] at h_le
     rw [sum_subgroup_filter _ (· ∈ S.vectorFixer w d)]
-    simpa only [mass, mem_fixer_insert hw] using h_le
-  have h_other : ∑ s : S.fixer places vectors with ¬S.IsOpenElement s.1, β s.1 ≤
-      (S.b ^ 4)⁻¹ * mass places vectors := by
-    rw [mass_eq] at h_stab ⊢
-    exact sum_not_isOpenElement_le h_nonneg h_posType h_stab
-  have h_open : ∑ s : S.fixer places vectors with S.IsOpenElement s.1, β s.1 ≤
+    simpa only [fixerMass, mem_fixer_insert hw] using h_le
+  have h_nonopen : ∑ s : S.fixer places vectors with ¬S.IsOpenElement s.val, β s.val ≤
+      (S.b ^ 4)⁻¹ * fixerMass places vectors := by
+    rw [fixerMass_eq] at h_vector_fixer ⊢
+    exact sum_not_isOpenElement_le h_nonneg h_posType h_vector_fixer
+  have h_open : ∑ s : S.fixer places vectors with S.IsOpenElement s.val, β s.val ≤
       (1 + 4 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment) := by
     refine le_trans (le_of_eq ?_) (secondMoment_fixer_isOpenElement_le places vectors)
     rw [sum_subgroup_filter, secondMoment_eq_sum_secondMoment_singleton]
     congr!
-  have h_split : mass places vectors ≤
-      (1 + 4 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment) + (S.b ^ 4)⁻¹ * mass places
-        vectors := by
-    grw [← h_open, ← h_other, sum_filter_add_sum_filter_not, mass_eq]
-  simp only [div_eq_mul_inv _ (S.b ^ 4)] at h_split ⊢
+  -- Absorb the non-open contribution, at most b⁻⁴ of the fixer mass itself.
+  have h_open_nonopen : fixerMass places vectors ≤
+      (1 + 4 / S.b ^ 4) * (stabFactor⁻¹ ^ #places * S.mainSecondMoment) +
+        (S.b ^ 4)⁻¹ * fixerMass places vectors := by
+    grw [← h_open, ← h_nonopen, sum_filter_add_sum_filter_not, fixerMass_eq]
+  simp only [div_eq_mul_inv _ (S.b ^ 4)] at h_open_nonopen ⊢
   exact le_one_add_nine_mul_of_le_add (by positivity) (by grw [← hb]; norm_num) (by positivity)
-    h_split
+    h_open_nonopen
 
 end Filling
 

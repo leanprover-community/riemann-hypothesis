@@ -1,8 +1,18 @@
-import Lib.GLn.SchurModule.Basic
-import Lib.General.Geometry.ProjectiveSpace
-import Lib.PadicComparison.Descent.TestCategory
-import Lib.Shimura.AbelianScheme.TangentCoordinates
-import Lib.Shimura.ComplexTheta.AppellHumbertData
+module
+
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.ValuativeCriterion
+import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.DualNumber
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import Lib.General.Geometry.ProjectiveSpace
+public import Lib.Shimura.AbelianScheme.TangentCoordinates
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
+import Lib.Cohomology.Etale.Basic
 
 /-!
 # Holomorphic families of complex points, jets, uniformisations and theta coordinates
@@ -51,6 +61,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.Uniformisation.AppellHumbert` and `Lib.Shimura.ArcExtension` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -310,7 +322,8 @@ lemma of_affine (hU : IsAffineOpen U) (h_near : ∀ᶠ w : T in 𝓝 w₀, Lands
     simpa [p, h_near.self_of_nhds, landsIn_basicOpen] using landsIn_iff_mem.mpr mem_basic
   have quotient : ∀ᶠ w : T in 𝓝 w₀, LandsIn (φ w) W ∧ p w 0 / p w 1 ^ n = f _ (φ w) := by
     filter_upwards [h_near, (p_cont.apply_nhds 1).eventually_ne H_ne] with w hw H_ne_w
-    have in_basic : LandsIn (φ w) (X.basicOpen H) := by simp_all [p, landsIn_basicOpen]
+    have in_basic : LandsIn (φ w) (X.basicOpen H) :=
+      (landsIn_basicOpen hw H).mpr H_ne_w.isUnit
     -- Evaluate `G = H ^ n * a`, an equation on the basic open set of `H`, at the point `φ w`.
     have h_eval := congrArg (evalSection (φ w) in_basic) hG
     rw [map_mul, map_pow] at h_eval
@@ -361,13 +374,9 @@ lemma of_jointly_mono {W : Over (Spec R)} [h_proper : IsProper W.hom] {Z : ι �
     (h_over : ∀ w : T, φ w ≫ W.hom = b) : HasGermAt Q φ w₀ := by
   -- The Segre product of the embeddings of the `Z l` embeds `W`; its coordinates are products of
   -- coordinates of the points `φ w ≫ π l`.
-  have h_bundle (l : ι) : ∃ (ν : Type) (N : LineBundle (Z l).left ν),
-      Finite ν ∧ N.IsProjEmbedding (Z l).hom := (hasProjEmbedding_iff _).mp (h_emb l)
-  choose ν N ν_finite hN using h_bundle
-  have h_coords (l : ι) : ∃ p : T → ν l → ℂ, (∀ i : ν l, Q fun w ↦ p w i) ∧
-      ∀ᶠ w in 𝓝 w₀, (N l).IsHomogeneousCoords (φ w ≫ (π l).left) (p w) :=
+  choose ν N ν_finite hN using fun l : ι ↦ (hasProjEmbedding_iff _).mp (h_emb l)
+  choose p hp lifts using fun l : ι ↦
     (h_germ l).exists_isHomogeneousCoords (hN l).isLinearSystem
-  choose p hp lifts using h_coords
   refine of_isHomogeneousCoords (isProjEmbedding_pi π hN h_sep) (p := fun w i ↦ ∏ l, p l w (i l))
     (fun i ↦ ?_) ?_ h_over
   · -- A product is an analytic function of its factors.
@@ -394,7 +403,8 @@ lemma lift {A : Over (Spec ⟨ℂ⟩)} {N : LineBundle A.left ι} (hN : N.IsProj
     HasGermAt Q (fun w : T ↦ (CartesianMonoidalCategory.lift (φ w) (ψ w)).left) w₀ := by
   -- The two projections separate the points of the product, which is proper as `A` is.
   have h_proper : IsProper A.hom := hN.isProper
-  refine of_jointly_mono ![fst A A, snd A A] (h_emb := fun _ ↦ ⟨hN⟩)
+  refine of_jointly_mono ![CartesianMonoidalCategory.fst A A, CartesianMonoidalCategory.snd A A]
+    (h_emb := fun _ ↦ ⟨hN⟩)
     (h_proper := inferInstanceAs (IsProper (pullback.fst A.hom A.hom ≫ A.hom)))
     (fun h_proj ↦ CartesianMonoidalCategory.hom_ext _ _ (h_proj 0) (h_proj 1))
     (Fin.forall_fin_two.mpr ⟨?_, ?_⟩) fun w ↦ Over.w (CartesianMonoidalCategory.lift (φ w) (ψ w))
@@ -539,8 +549,11 @@ direction `v`. -/
 lemma isFirstOrderConst_iff {v : P} :
     IsFirstOrderConst φ w₀ v ↔ ∀ (U : X.Opens) (s : Γ(X, U)), LandsIn (φ w₀) U →
       fderiv ℂ (fun w : P ↦ PointFn.ofSection s (CommRingCat.of ℂ) (φ w)) w₀ v = 0 := by
-  simp_all [isRegularOn_ofSection _ _, IsJet, LandsIn.comp, algebraMap_eq_inl,
-    TrivSqZeroExt.ext_iff]
+  refine forall₃_congr fun U s hU ↦ ?_
+  simp only [hU.comp, true_and, isRegularOn_ofSection s _ _ hU, CommRingCat.hom_ofHom,
+    algebraMap_eq_inl, TrivSqZeroExt.ext_iff, fst_inl, fst_add, fst_inr, add_zero, snd_inl,
+    snd_add, snd_inr, zero_add, LinearMap.applyₗ_apply_apply, ContinuousLinearMap.coe_coe]
+  exact eq_comm
 
 /-! ### Immersions and tangent vectors of group schemes -/
 
@@ -583,9 +596,13 @@ lemma HolomorphicAt.isFirstOrderConst_of_nsmul {v : P} {𝒜 : Over X} [AddObj �
   have h_comp_eq : y ≫ (n • 𝟙 𝒜) = y₀ ≫ (n • 𝟙 𝒜) :=
     OverMorphism.ext ((hτ.comp_hom _).unique h_still)
   have h_nsmul_sub : n • (y - y₀) = 0 := by
-    simpa [comp_nsmul, smul_sub, sub_eq_zero] using h_comp_eq
+    rw [comp_nsmul, Category.comp_id, comp_nsmul, Category.comp_id] at h_comp_eq
+    rw [smul_sub, sub_eq_zero]
+    exact h_comp_eq
   obtain ⟨h_inj, -⟩ := tiny.eq_zero_of_isUnit_and_nsmul_eq_zero_of_cast_eq_zero hd (𝟙 _) n
-  have y_eq : y = y₀ := sub_eq_zero.mp (h_inj (by simpa [isUnit_iff_isUnit_fst]) h_nsmul_sub)
+  have h_unit : IsUnit (n : TrivSqZeroExt ℂ ℂ) :=
+    isUnit_iff_isUnit_fst.mpr (by rw [fst_natCast]; exact (Nat.cast_ne_zero.mpr hn).isUnit)
+  have y_eq : y = y₀ := sub_eq_zero.mp (h_inj h_unit h_nsmul_sub)
   rwa [show τ = τ₀ from congrArg CommaMorphism.left y_eq] at hτ
 
 /-- The signature condition read on a uniformisation. Let `u` uniformise `A`, a group scheme over
@@ -627,7 +644,17 @@ lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleO
   have h_infinitesimal (v : V) :
       IsInfinitesimal (ofHom (fstHom ℂ ℂ ℂ).toRingHom) (h_bc.pointEquiv (τ v)) := by
     refine OverMorphism.ext (((jet v).fst_comp =≫ _).trans ?_)
-    simp [zero_p, Hom.zero_def, ← map_comp_assoc, ← ofHom_comp]
+    have h_sec : specMap (fstHom ℂ ℂ ℂ).toRingHom ≫ specMap (algebraMap ℂ (TrivSqZeroExt ℂ ℂ)) =
+        𝟙 (Spec (CommRingCat.of ℂ)) := by
+      rw [specMap, specMap, ← Spec.map_comp, ← ofHom_comp]
+      exact (congrArg (fun φ ↦ Spec.map (ofHom φ)) (RingHom.ext fun _ ↦ rfl)).trans (Spec.map_id _)
+    rw [Hom.zero_def]
+    change (u.expMap 0).left ≫ p.left =
+      (specMap (fstHom ℂ ℂ ℂ).toRingHom ≫ specMap (algebraMap ℂ (TrivSqZeroExt ℂ ℂ)) ≫ s) ≫
+        (AddMonObj.zero (X := 𝒜)).left
+    rw [map_zero, Hom.zero_def]
+    change (𝟙 _ ≫ (AddMonObj.zero (X := A)).left) ≫ p.left = _
+    rw [Category.id_comp, zero_p, ← Category.assoc, h_sec, Category.id_comp]
   let D₀ : V →ₗ[ℂ] Fin d → ℂ := LinearMap.pi fun j ↦
     (fderiv ℂ (fun w ↦ PointFn.ofSection (z j) _ (atGeneric u.expMap w ≫ p.left)) 0).toLinearMap
   -- The coordinates of `τ v` differ from those of `0` by `ε • D₀ v`, by the definition of a jet.
@@ -657,7 +684,16 @@ lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleO
     have chain : IsJet (fun w ↦ atGeneric u.expMap (F a w)) 0 (.applyₗ v) (τ₀ (F a v)) :=
       (isJet_comp_iff (F a).hasFDerivAt (u.immersive (F a 0)).1).mpr h_jet_F
     refine OverMorphism.ext (chain.unique ?_)
-    simpa [hF, ← comp_left] using (jet v).comp_hom (τ := (τ v).left) (a • 𝟙 A).left
+    have h_jet_smul := (jet v).comp_hom (τ := (τ v).left) (a • 𝟙 A).left
+    have h_fn : (fun w ↦ atGeneric u.expMap w ≫ (a • 𝟙 A).left) =
+        fun w ↦ atGeneric u.expMap (F a w) :=
+      funext fun w ↦ by
+        change (u.expMap w).left ≫ (a • 𝟙 A).left = (u.expMap (F a w)).left
+        rw [← Over.comp_left, ModuleObj.comp_smul, Category.comp_id, ← hF]
+    have h_τ : (τ v).left ≫ (a • 𝟙 A).left = (a • τ v).left := by
+      rw [← Over.comp_left, ModuleObj.comp_smul, Category.comp_id]
+    rw [h_fn, h_τ] at h_jet_smul
+    exact h_jet_smul
   -- Take the `ε`-part of the equation `tangentCoords z (a • y) = m a *ᵥ tangentCoords z y` of the
   -- chart, for the image `y` of `τ v` in `𝒜`.
   have D_F (a : O) (v : V) : D (F a v) = m a *ᵥ D v := by
@@ -666,9 +702,31 @@ lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleO
     simpa [dv_eq, mulVec_eq_sum, snd_sum, ← map_smul, ← τ_F, funext_iff, hD_apply,
       algebraMap_eq_inl] using congrArg (fun c ↦ snd ∘ c) (h_act a)
   -- Transport vectors along `D` and linear forms along its dual.
-  simp [HasSignature, ↓reindex_equiv D.symm, ← D.apply_eq_iff_eq, D_F, ext_iff_mulVec,
-    reindex_equiv (D.symm.dualMap ≪≫ₗ (dotProductEquiv ..).symm).symm, vecMulVec_mulVec, funext_iff,
-    sub_mulVec, smul_mulVec]
+  constructor
+  · rintro ⟨X, ξ, k, hXk, h_eig, h_mat⟩
+    refine ⟨D.symm X,
+      fun hY ↦ hXk.ne_zero (congrFun (show X = 0 by rw [← D.apply_symm_apply X, hY, map_zero]) k),
+      fun a ↦ D.injective ?_,
+      { toFun w := ξ ⬝ᵥ D w
+        map_add' u v := by rw [map_add, dotProduct_add]
+        map_smul' r v := by rw [map_smul, dotProduct_smul, RingHom.id_apply] },
+      fun w ↦ D.injective ?_⟩
+    · rw [D_F, map_smul, D.apply_symm_apply, h_eig a]
+    · rw [map_sub, D_F, map_smul, map_smul, D.apply_symm_apply]
+      have h_app := congrArg (· *ᵥ D w) h_mat
+      rw [sub_mulVec, smul_mulVec, one_mulVec, vecMulVec_mulVec, op_smul_eq_smul] at h_app
+      exact h_app
+  · rintro ⟨Y, hY, h_eig, ξ, h_mat⟩
+    have hDY_ne : D Y ≠ 0 := fun h0 ↦ hY (D.injective (h0.trans (map_zero D).symm))
+    obtain ⟨k, hk⟩ := Function.ne_iff.mp hDY_ne
+    refine ⟨D Y, fun j ↦ ξ (D.symm (Pi.single j 1)), k, hk.isUnit, fun a ↦ ?_, ?_⟩
+    · rw [← D_F, h_eig a, map_smul]
+    · ext i j
+      have h_col := congrFun (congrArg D (h_mat (D.symm (Pi.single j 1)))) i
+      rw [map_sub, D_F, map_smul, map_smul, D.apply_symm_apply, mulVec_single_one] at h_col
+      simp only [Pi.sub_apply, Pi.smul_apply, Matrix.col_apply, smul_eq_mul, Matrix.sub_apply,
+        Matrix.smul_apply, Matrix.one_apply, vecMulVec_apply, Pi.single_apply] at h_col ⊢
+      exact h_col.trans (mul_comm _ _)
 
 end HolomorphicFamily
 
@@ -725,7 +783,7 @@ lemma relIndex_comap_eq_det_mul_conj_det {L : Submodule ℤ V} [IsFullRankLattic
     b'.toMatrix fun i ↦ ⟨b i, hF_mem (b i) (b i).prop⟩
   -- `b` is read as a basis of `L.toAddSubgroup.toIntSubmodule`.
   have h_index : relIndex L.toAddSubgroup (L.toAddSubgroup.comap F) = M.det.natAbs := by
-    erw [relIndex_eq_natAbs_det _ _ hF_mem b b']
+    rw [relIndex_eq_natAbs_det _ _ hF_mem b b']
     rfl
   let bℝ : Basis (Fin (finrank ℤ L)) ℝ V := b.ofZLatticeBasis ℝ
   have h_matrix : M.map (↑) = toMatrix bℝ bℝ (F.restrictScalars ℝ) := by
@@ -752,7 +810,9 @@ lemma Uniformisation.card_torsion (u : Uniformisation A V) {m : ℕ} (hm : m ≠
   have hF (z : V) : F z = m • z := Nat.cast_smul_eq_nsmul ℂ m z
   have h_ker : u.expMap.ker = u.lattice.toAddSubgroup := (AddSubgroup.ext u.eq_zero_iff).symm
   have h_comap : (nsmulAddMonoidHom m).ker.comap u.expMap = u.lattice.toAddSubgroup.comap F :=
-    AddSubgroup.ext fun z ↦ by simp [hF]
+    AddSubgroup.ext fun z ↦ by
+      change m • u.expMap z = 0 ↔ F z ∈ u.lattice
+      rw [← map_nsmul, ← hF z, u.eq_zero_iff]
   have h_card : Nat.card {y : 𝟙_ _ ⟶ A // m • y = 0} =
       relIndex u.lattice.toAddSubgroup (u.lattice.toAddSubgroup.comap F) := by
     rw [← h_comap, ← h_ker, relIndex_ker, map_comap_eq_self_of_surjective u.surjective]
@@ -869,7 +929,7 @@ lemma pull_translate (h : HasThetaCoords L e N B χ θ) {f : S ⟶ S} {a : V}
   mem_thetaSpace i := h.isAppellHumbert.thetaShift_mem (h.mem_thetaSpace i) a
   hasFieldCoords z := by
     -- The new coordinates at `z` are those at `z + a` times a nonzero exponential.
-    show N.IsHomogeneousCoords (e z ≫ f) (exp (-(B a z + B a a / 2)) • θ (z + a))
+    change N.IsHomogeneousCoords (e z ≫ f) (exp (-(B a z + B a a / 2)) • θ (z + a))
     rw [← he z]
     exact (h.hasFieldCoords (z + a)).smul (exp_ne_zero _).isUnit
 

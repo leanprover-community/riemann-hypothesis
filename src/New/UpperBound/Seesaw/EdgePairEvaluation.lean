@@ -1,7 +1,13 @@
-import Lib.Weil.DualPair.TwoEdges
-import Lib.Weil.MixedModel.AdaptedSplitting
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Lib.Weil.DualPair.TwoEdges
+public import Lib.Weil.MixedModel.AdaptedSplitting
+public import New.UpperBound.Objects.Rows
+import Lib.General.LinearAlgebra.HermiteForm
+import Lib.PadicComparison.Descent.TestCategory
 import Lib.Weil.Periods.ConstantTerm
-import New.UpperBound.Objects.Rows
 
 /-!
 # Finite zero terms and the evaluation of pairs of edges in the tower of spaces `Y_k`
@@ -20,9 +26,8 @@ Throughout, a *string* of a grading is the block of basis vectors outside the de
 `DoubleLiftData` records two successive steps `Y → Y' → Y''` where the first step makes the string
 one shorter and the second, unless the string is already empty, makes it shorter by one.
 
-* `New.Seesaw.zeroTermFin`: the finite part of the zero term. It obeys the law of the zero term for
-  finite points of the parabolic subgroup (`New.Seesaw.zeroTermFin_omega`) and is not zero at the
-  vacuum (`New.Seesaw.zeroTermFin_vacElem_ne_zero`).
+* `New.Seesaw.zeroTermFin`: the finite part of the zero term. It is not zero at the vacuum
+  (`New.Seesaw.zeroTermFin_vacElem_ne_zero`).
 * `New.Seesaw.GradeZeroPart`, `New.Seesaw.GradeZeroPart.splitting`: the part of grade zero, and the
   splitting it gives.
 * `New.Seesaw.DoubleLiftData`: the part of grade zero of `V⁻ ⊕ V''` is `X⁻ ⊕ X''` plus hyperbolic
@@ -55,6 +60,8 @@ Notions from other files:
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work. See `Lib.Weil.MixedModel.ZeroTerm` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -121,17 +128,6 @@ lemma exists_zeroTermFin_ne_zero (D : V.Splitting V₀ p) :
   have h_vac : V₀.vacElem = 0 := (smul_eq_zero.1 (h_value.symm.trans h_zero)).resolve_left hc_ne
   simpa [h_vac] using V₀.dataInner_vacElem_vacElem
 
-/-- The law of the zero term on the parabolic subgroup holds for its finite part and finite points:
-if `g k = k a` for the isotropic frame `k` of `D`, with `det a = d`, and `g` acts on `V₀` as `g₀`,
-then `zeroTermFin D` carries `ω g` to `(chiAdelic d)⁻¹ • ω g₀`. Here
-`chiAdelic d = υ(d) |d| ^ (-1 / 2)`, with `υ` the splitting character of `New.WeilData` and `|d|`
-the idele norm. This is a corollary of `New.Space.Splitting.zeroTerm_omega`. -/
-lemma zeroTermFin_omega (D : V.Splitting V₀ p) {g : Gf E n} {g₀ : G E s₀} {a : Matrix p p (𝔸 E)}
-    (hi : D.iCoord * (G.adeleMatrix (s := s) (1, g) * D.iAdelic) = g₀.adeleMatrix)
-    (hk : D.ActsOnFrame (1, g) a) {d : (𝔸 E)ˣ} (hd : a.det = d.val) (f : 𝒮 V) :
-    zeroTermFin D (V.ω (1, g) f) = (chiAdelic d)⁻¹ • V₀.ω g₀ (zeroTermFin D f) := by
-  simp [zeroTermFin, ← D.zeroTerm_omega g₀ hi hk d hd, omega_integrated]
-
 unseal finitePart in
 /-- Let `D` be a splitting of `V` over `V₀`, with isotropic frame `k` indexed by `p`. The finite
 part `zeroTermFin D : 𝒮 V → 𝒮 V₀` of the zero term along `k` sends `V.finitePart`, the span of the
@@ -171,7 +167,7 @@ lemma exists_zeroTerm_rho_integrated_eq (D : V.Splitting V₀ p) (y : n → 𝔸
   set g : G E s := (D.exists_isAdapted_and_frame_eq 1).choose with hg_def
   have hg : D.IsAdapted g 1 := (D.exists_isAdapted_and_frame_eq 1).choose_spec.1
   obtain ⟨w, hw⟩ := V.exists_rho_integrated_eq y v
-  obtain ⟨L, -, hL⟩ := hg.exists_map_vacVector_apply_zero_omega_eq D.isMixedLaw_slice
+  obtain ⟨L, hL⟩ := hg.exists_apply_zero_omega_integrated_eq D.isMixedLaw_slice
   refine ⟨L (realWeil (blockU g⁻¹.1) w), fun f ↦ ?_⟩
   have h_integrated_eq_omega (f : 𝒮 V) :
       V.integrated w f = V.ω g (V.integrated (realWeil (blockU g⁻¹.1) w) (V.ω (1, g⁻¹.2) f)) := by
@@ -302,9 +298,7 @@ lemma exists_eq_iFin_add_isotropicBasisFin_of_mulVec_eq_zero (D : V.Splitting V�
     {z : n → 𝔸f E} (hz : D.isotropicBasisFinᴴ *ᵥ z = 0) :
     ∃ (w : n₀ → 𝔸f E) (b : p → 𝔸f E), z = D.iFin *ᵥ w + D.isotropicBasisFin *ᵥ b := by
   obtain ⟨a, w, b, rfl⟩ := D.exists_eq_finFrameVector 1 1 z
-  obtain ⟨h_dual, -⟩ : D.isotropicBasisFinᴴ *ᵥ D.finFrameVector 1 1 a w b = a ∧
-      D.iFinᴴ *ᵥ D.finFrameVector 1 1 a w b = w :=
-        conjTranspose_isotropicBasisFin_iFin_mulVec_finFrameVector D a b w
+  have h_dual := (conjTranspose_isotropicBasisFin_iFin_mulVec_finFrameVector D a b w).1
   obtain rfl : a = 0 := h_dual.symm.trans hz
   exact ⟨w, b, finFrameVector_zero D w b⟩
 
@@ -321,7 +315,7 @@ lemma exists_eq_add_of_zeroTermFin_ne_zero (D : V.Splitting V₀ p) {y : n → �
     simpa using exists_sub_orthogonal_of_zeroTermFin_ne_zero D 1 1 h_ne (by simp)
       fun x hx ↦ by rw [one_mulVec, finHeisenbergOp_vacElem hx]
   obtain ⟨w, b, h_sub⟩ := exists_eq_iFin_add_isotropicBasisFin_of_mulVec_eq_zero D h_perp
-  exact ⟨l, hl, w, b, by rw [← h_sub, sub_add_cancel]⟩
+  exact ⟨l, hl, w, b, sub_eq_iff_eq_add.1 h_sub⟩
 
 /-- The translates of the vacuum under the finite Heisenberg operators of `x` and of `x + l`, with
 `l` in the standard lattice `Ô ^ n`, agree up to a root of unity. -/
@@ -435,8 +429,7 @@ lemma map_stdLattice_le_zeroTermLattice {D : V.Splitting V₀ p} {g : Gf E n₀}
   rintro _ ⟨x, hx, rfl⟩
   refine ⟨c *ᵥ x, ?_⟩
   change D.iFin *ᵥ (g : Matrix n₀ n₀ (𝔸f E)) *ᵥ x + D.isotropicBasisFin *ᵥ c *ᵥ x ∈ stdLattice E n
-  rw [mulVec_mulVec, mulVec_mulVec, ← add_mulVec, ← hB_def]
-  exact hB.mulVec hx
+  simpa only [hB_def, add_mulVec, ← mulVec_mulVec] using! hB.mulVec hx
 
 /-- Let `D` be a splitting of `V` over `V₀`, with finite parts `i = D.iFin` of the embedding of `V₀`
 and `k = D.isotropicBasisFin` of the isotropic frame. The lattice `zeroTermLattice D` consists of
@@ -450,8 +443,8 @@ lemma mem_zeroTermLattice_iff {D : V.Splitting V₀ p} {g : Gf E n₀} {c : Matr
   constructor
   · -- The integral matrix `Bᴴ` sends a lattice vector of class `w` to `g⁻¹ w`.
     rintro ⟨b, hb⟩
-    rw [← conjTranspose_mulVec_iFin_add_isotropicBasisFin hB_def w b]
-    exact hB.conjTranspose.mulVec hb
+    simpa only [conjTranspose_mulVec_iFin_add_isotropicBasisFin hB_def w b] using!
+      hB.conjTranspose.mulVec hb
   · exact fun hx ↦ map_stdLattice_le_zeroTermLattice hB_def hB ⟨_, hx, smul_inv_smul g w⟩
 
 end
@@ -536,15 +529,6 @@ lemma relIndex_map_stdLattice_ne_zero (g : Gf E n) :
     rw [norm_finMultiplier_sq, AddSubgroup.relIndex_comap]
     rfl
   simp [h_zero, finMultiplier_ne_zero] at h_norm
-
-/-- For a splitting `D` of `V` over `V₀`, the quotient `L' / (L' ∩ L°)` is finite, where
-`L' = zeroTermLattice D` and `L°` is the standard lattice of `V₀`. So finite families of
-representatives as in `exists_zeroTermFin_vacElem_eq_sum` exist. This is a corollary of
-`exists_zeroTermLattice_eq_map`. -/
-lemma relIndex_zeroTermLattice_ne_zero (D : V.Splitting V₀ p) :
-    (stdLattice E n₀).relIndex (zeroTermLattice D) ≠ 0 := by
-  obtain ⟨g, hg⟩ := exists_zeroTermLattice_eq_map D
-  simpa [hg] using relIndex_map_stdLattice_ne_zero g
 
 /-- Let `D` be a splitting of `V` over `V₀`, with embedding `i = D.iFin` and isotropic frame
 `k = D.isotropicBasisFin`. Let `L' = zeroTermLattice D` be the lattice of the `w` with
@@ -947,7 +931,7 @@ lemma zeroTerm_splitting_tripleWeil (D : DoubleLiftData X'' q Y Y' Y'') (a b : A
     constructor <;> simp [P, r', kAdelic, iAdelic, Space.ratMap, removePlanes, hyperbolicSum, sum,
       blockGL, -coe_units_inv, fromRows_map, fromBlocks_mul_fromRows, fromBlocks_multiply]
   have h_planes : ∀ f, (P.homTarget (stdSpace E X')).zeroTerm (ω _ (.onHom (g', r')) f) =
-      ((WeilData.upsilonU1.1 g'.det).1 : ℂ) ^ card q •
+      ((WeilData.upsilonU1.val g'.det).val : ℂ) ^ card q •
         ω _ (.onHom (g', r)) ((P.homTarget (stdSpace E X')).zeroTerm f) := by
     simpa [pairWeil, inv_smul_eq_iff₀, r'] using P.homTarget_zeroTerm_pairWeil (stdSpace E X')
       1 1 r' r 1 (by simp [ActsOnFrame, h_k]) (by simp [h_i]) g'
@@ -1013,8 +997,12 @@ lemma finEval_arrowProduct_equivariant (D : DoubleLiftData X'' q Y Y' Y'') (a b 
   have h_point : finVec (stackedStringMapFin Y Y' Y'') = V'.homAtPoint (flipSum V V'')
       (fromRows (V.formAdjoint V' (((0, 1) : 𝔸 E) • Y.stringMap Y'))
         (((0, 1) : 𝔸 E) • Y'.stringMap Y'')) := by
-    ext <;> simp [finVec, stackedStringMapFin, homAtPoint, matrixToVec, stackedStringMap,
-      formAdjoint, Prod.fst_sum, Prod.snd_sum, Matrix.mul_apply]
+    ext <;> simp only [finVec, stackedStringMapFin, homAtPoint, matrixToVec, stackedStringMap,
+      formAdjoint, AddMonoidHom.mk'_apply, Units.mul_inv_cancel_left, Matrix.mul_apply,
+      sum_sum_type, fromRows_apply_inl, fromRows_apply_inr, conjTranspose_smul, Matrix.smul_apply,
+      smul_eq_mul, Prod.fst_sum, Prod.snd_sum, Prod.fst_mul, Prod.snd_mul, Prod.fst_add,
+      Prod.snd_add, Prod.fst_star, Prod.snd_star, Pi.zero_apply, star_zero, star_one, zero_mul,
+      mul_zero, one_mul, add_zero, Finset.sum_const_zero]
   rw [← leftInverse_arrowTensor (TensorProduct.map _ _ _), arrowTensor_map_liftWeilFin,
     arrowTensor_finEval, h_equivariant]
   -- Split the translation over the two factors (`homHeisenbergOp_arrowProduct`,
@@ -1164,19 +1152,17 @@ def lastGrading {M : ℕ} (e : D.m = M) : Grading (D.spaceY M) D.N (D.InitIndex 
 /-- The finite evaluation `New.Seesaw.DoubleLiftData.finEval` of the double lift
 Y_{2i} → Y_{2i+1} → Y_{2i+2}: for the middle double lift if i < ϱ, the last double lift if i = ϱ,
 and 0 beyond. -/
-def doubleLiftEvalY (i : ℕ) := by
-  refine if _ : i < D.ϱ then
+def doubleLiftEvalY (i : ℕ) :=
+  if _ : i < D.ϱ then
     (middleDoubleLift (D.gradingY (2 * i)) (D.gradingY (2 * i + 1)) (D.gradingY (2 * i + 2))
-      ⟨?_, ?_, ?_, ?_⟩ ?_ ?_).finEval
+      ⟨by grind, by grind, by grind, by simp [gradingY]⟩ (by simp; grind) (by grind)).finEval
   else if _ : D.ϱ = i then
     -- the last pair, which ends in the space with the trivial grading
-    (lastDoubleLift (D.gradingY (2 * i)) (D.gradingY (2 * i + 1)) (D.lastGrading ?_)
-      ⟨?_, ?_, ?_, ?_⟩ ?_ congr($D.piN_mul_star) ?_).finEval
+    (lastDoubleLift (p := (D.piN : D.E)) (D.gradingY (2 * i)) (D.gradingY (2 * i + 1))
+      (D.lastGrading (M := 2 * i + 2) (by grind))
+      ⟨by grind, by grind, by grind, by simp [gradingY]⟩ (by simp; grind)
+      (by exact_mod_cast D.piN_mul_star) (by grind)).finEval
   else 0
-  -- what is left: lengths of the strings, parity of the ranks, that the constants `genericConst`
-  -- agree, and that the last double lift ends at `D.m`
-  all_goals try simp [gradingY]
-  all_goals grind
 
 /-- The natural number `M ^ (f n²)`, with `M = p₀ p₁`, `f` the number of infinite places of `E` and
 `n = n_m` the rank `D.n D.m`. -/

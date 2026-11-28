@@ -1,7 +1,18 @@
+module
+
+public import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Appendix.DiscreteSeries.PositionGroup
+public import New.Spanning.Bessel.Average
+public import New.Spanning.Bessel.Basic
 import Lib.DiscreteSeries.Bessel.SchurBound
-import New.Appendix.DiscreteSeries.PositionGroup
-import New.Spanning.Bessel.Average
-import New.Spanning.Bessel.Basic
+import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import New.Appendix.DiscreteSeries.StationaryPosition
 
 /-!
 # Bessel systems of discrete series type and a Bessel function large at a point
@@ -41,6 +52,8 @@ Notions from other files:
 See `New.Appendix.DiscreteSeries.Periods` for related work. See
 `Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -102,6 +115,27 @@ namespace DiscreteSeries
 
 variable {𝔰 : Shape} {ε : 𝔰.BesselIndex → ℤˣ}
 
+private lemma isotropicCols_mul_apply {m : Type*} (N : Matrix (Fin 𝔰.ϱ) m ℂ)
+    (i : 𝔰.BesselIndex) (b : m) :
+    (𝔰.isotropicCols * N) i b = match i with
+      | Sum.inl a => N a b
+      | Sum.inr _ => 0 := by
+  rw [Matrix.mul_apply]
+  rcases i with a | r
+  · simp only [inclMatrix, submatrix_apply, id_eq, Matrix.one_apply, Sum.inl.injEq,
+      ite_mul, one_mul, zero_mul, sum_ite_eq, mem_univ, ↓reduceIte]
+  · exact sum_eq_zero fun k _ ↦ by
+      simp only [inclMatrix, submatrix_apply, id_eq, Matrix.one_apply, reduceCtorEq, ↓reduceIte,
+        zero_mul]
+
+private lemma continuousMul_G₁ : ContinuousMul 𝔰.G₁ := inferInstance
+
+private lemma continuousInv_G₁ : ContinuousInv 𝔰.G₁ := inferInstance
+
+private lemma measurableMul_besselGraph : MeasurableMul 𝔰.besselGraph := inferInstance
+
+private lemma borelSpace_besselGraph : BorelSpace 𝔰.besselGraph := inferInstance
+
 /-- The measure on `R` unfolds 𝖴∖G₁ to G₁: for measurable `f ≥ 0`, the integral of `f (x s y)` over
 `s` in `R` and then over `y` in G₁ for `besselQuotMeasure`, which computes integrals over 𝖴∖G₁,
 is the integral of `f` over G₁. -/
@@ -110,16 +144,42 @@ lemma lintegral_unfold_besselGraphMeasure {x : 𝔰.G₁} (f : 𝔰.G₁ → ENN
       f (x * (s.val.fst * y)) ∂𝔰.besselGraphMeasure ∂besselQuotMeasure := by
   -- Write `s = k * u` with `k` in `H` and `u` in `𝖴`. The integrals over `u` and `y` unfold to one
   -- over the whole group, where left invariance removes `x * k`; and `H` has total mass `1`.
+  have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
+  have : MeasurableSMul₂ (𝔰.middleGram (1 : ℂ)).besselU 𝔰.G₁ :=
+    ⟨((continuous_subtypeVal.comp continuous_fst).fun_mul continuous_snd).measurable⟩
+  have : SMulInvariantMeasure (𝔰.middleGram (1 : ℂ)).besselU 𝔰.G₁ volume :=
+    ⟨fun c s _ ↦ measure_preimage_mul volume c.val s⟩
+  have hf_kg : Measurable fun p : 𝔰.G₁ × U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) ↦
+      f (x * (embedH p.2 * p.1)) :=
+    hf.comp (continuous_const.fun_mul
+      ((continuous_embedH.comp continuous_snd).fun_mul continuous_fst)).measurable
   have h_orbit :
       ∫⁻ y : 𝔰.G₁, ∫⁻ u : (𝔰.middleGram (1 : ℂ)).besselU, ∫⁻ k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ),
           f (x * (embedH k * (u.val * y))) ∂volume ∂𝔰.besselHaar ∂besselQuotMeasure =
         ∫⁻ g : 𝔰.G₁, ∫⁻ k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), f (x * (embedH k * g)) :=
     lintegral_orbitMeasure_lintegral
-      (f := fun g : 𝔰.G₁ ↦ ∫⁻ k, f (x * (embedH k * g))) (by fun_prop)
-  simp (disch := fun_prop) only [Shape.besselGraphMeasure, lintegral_map, lintegral_prod,
-    Shape.besselGraphChart_apply_coe, mul_assoc]
-  rw [h_orbit, lintegral_lintegral_swap (by fun_prop)]
-  simp [← mul_assoc, lintegral_mul_left_eq_self]
+      (f := fun g : 𝔰.G₁ ↦ ∫⁻ k, f (x * (embedH k * g))) hf_kg.lintegral_prod_right'
+  have h_inner (y : 𝔰.G₁) : ∫⁻ s : 𝔰.besselGraph, f (x * (s.val.fst * y)) ∂𝔰.besselGraphMeasure =
+      ∫⁻ u : (𝔰.middleGram (1 : ℂ)).besselU, ∫⁻ k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ),
+        f (x * (embedH k * (u.val * y))) ∂volume ∂𝔰.besselHaar := by
+    have hf_s : Measurable fun s : 𝔰.besselGraph ↦ f (x * (s.val.fst * y)) :=
+      hf.comp (continuous_const.fun_mul
+        ((continuous_fst.comp continuous_subtypeVal).fun_mul continuous_const)).measurable
+    rw [Shape.besselGraphMeasure, lintegral_map hf_s 𝔰.besselGraphChart.measurable]
+    simp only [Shape.besselGraphChart_apply_coe]
+    rw [lintegral_prod
+      (fun p : (𝔰.middleGram (1 : ℂ)).besselU × U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) ↦
+        f (x * (embedH p.2 * p.1.val * y)))
+      (hf_s.comp 𝔰.besselGraphChart.measurable).aemeasurable]
+    simp only [mul_assoc]
+  simp_rw [h_inner]
+  rw [h_orbit, lintegral_lintegral_swap hf_kg.aemeasurable]
+  have h_const (k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
+      ∫⁻ g : 𝔰.G₁, f (x * (embedH k * g)) = ∫⁻ g : 𝔰.G₁, f g := by
+    simp only [← mul_assoc]
+    exact lintegral_mul_left_eq_self f (x * embedH k)
+  simp_rw [h_const]
+  rw [lintegral_const, measure_univ, mul_one]
 
 /-- For `s` in `besselGraph` (the group `R`), its first component `s.val.fst` lowers the flag of the
 frame `e₁, …, e_ϱ, z`: `(s.val.fst - 1) * frameCols = isotropicCols * N` for some strictly
@@ -131,15 +191,23 @@ lemma exists_sub_one_mul_frameCols_eq (s : 𝔰.besselGraph) :
       ((s.val.fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) - 1) * 𝔰.frameCols =
         𝔰.isotropicCols * N ∧
       ∑ a : Fin 𝔰.ϱ, N a a.succ = simpleRootSum s.val.fst := by
-  -- Write `s = h u` with `u` in `𝖴`; the factor `h` fixes the frame, and `u` is unitriangular
-  -- on it.
-  obtain ⟨⟨⟨u, hu⟩, h⟩, rfl⟩ := 𝔰.besselGraphChart.surjective s
-  refine ⟨(frameMatrix u - 1).submatrix castSucc id,
-    fun a b hab ↦ sub_eq_zero.2 (frameMatrix_unitriangular hu _ _ hab), ?_, ?_⟩
-  · simp [← Matrix.ext_iff, Matrix.mul_apply, apply_inr_of_mem_besselU hu, frameMatrix, inclMatrix,
-      val_toBesselH_apply_coe, forall_fin_succ', Matrix.one_apply]
-  · simp [Matrix.mul_apply, simpleRootSum, frameMatrix, val_toBesselH_apply_coe, Matrix.one_apply,
-      ne_of_lt]
+  -- Each frame column of s - 1 is supported on rows of strictly lower level.
+  let M := (s.val.fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) - 1
+  have h_zero (i : 𝔰.BesselIndex) (b : Fin (𝔰.ϱ + 1)) (hb : b.val ≤ BesselIndex.level i) :
+      M i (𝔰.besselFrame b) = 0 :=
+    sub_eq_zero.2 (mem_besselS_iff_frameImage.mp (besselGraph_fst_mem_besselS s) i b hb)
+  refine ⟨M.submatrix Sum.inl 𝔰.besselFrame, fun a b hab ↦ h_zero _ _ hab, ?_, ?_⟩
+  · ext i b
+    rw [mul_inclMatrix, submatrix_apply, id_eq, isotropicCols_mul_apply]
+    rcases i with a | r
+    · rfl
+    · exact h_zero _ _ (b.is_le.trans (le_level_inr r))
+  · refine sum_congr rfl fun a _ ↦ ?_
+    have h_ne : (Sum.inl a : 𝔰.BesselIndex) ≠ 𝔰.besselFrame a.succ := by
+      rw [← besselFrame_castSucc]
+      exact besselFrame_injective.ne castSucc_lt_succ.ne
+    simp only [submatrix_apply, M, Matrix.sub_apply, Matrix.one_apply_ne h_ne, sub_zero,
+      besselFrame_castSucc]
 
 /-- An element `s` of `besselGraph` (the group `R`) acts on `X₀`, the span of the columns of
 `definiteCols`, by its image `s.val.snd` in `H`, modulo the span of `e₁, …, e_ϱ` (the columns of
@@ -150,9 +218,21 @@ lemma exists_sub_one_mul_definiteCols_eq (s : 𝔰.besselGraph) :
         𝔰.definiteCols * ((s.val.snd : Matrix 𝔰.κ 𝔰.κ ℂ) - 1) + 𝔰.isotropicCols * C := by
   -- Write `s = h u`; the matrix `C` is the block of `u` from `X₀` to `e₁, …, e_ϱ`.
   obtain ⟨⟨⟨u, hu⟩, h⟩, rfl⟩ := 𝔰.besselGraphChart.surjective s
-  use (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ).submatrix Sum.inl 𝔰.indexX₀
-  simp [← Matrix.ext_iff, Matrix.mul_apply, apply_inr_of_mem_besselU hu, inclMatrix,
-    val_toBesselH_apply_coe, Matrix.one_apply]
+  let C := u.val.val.submatrix Sum.inl 𝔰.indexX₀
+  refine ⟨C, ?_⟩
+  have hu_cols : u.val.val * 𝔰.definiteCols = 𝔰.definiteCols + 𝔰.isotropicCols * C := by
+    ext (a | r) j <;> rw [mul_inclMatrix, Matrix.add_apply, isotropicCols_mul_apply]
+    · simp [C, inclMatrix]
+    · simpa [inclMatrix, Matrix.one_apply] using
+        apply_inr_of_mem_besselU hu r (𝔰.indexX₀ j) (by simp)
+  have hh_cols : (embedH h).val.val * 𝔰.isotropicCols = 𝔰.isotropicCols := by
+    simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc,
+      inclMatrix_gram_eq_zero]
+  change ((embedH h).val.val * u.val.val - 1) * 𝔰.definiteCols =
+    𝔰.definiteCols * (h.val.val - 1) + 𝔰.isotropicCols * C
+  rw [Matrix.sub_mul, Matrix.one_mul, Matrix.mul_assoc, hu_cols, Matrix.mul_add,
+    embedH_mul_definiteCols, ← Matrix.mul_assoc, hh_cols, Matrix.mul_sub, Matrix.mul_one]
+  abel
 
 /-- Let `g` in `G₁` lower the flag of the frame `e₁, …, e_ϱ, z`. That is, `g - 1` maps the frame
 into the span of `e₁, …, e_ϱ` by a strictly triangular matrix `N`. Then `g` is the first component
@@ -192,17 +272,24 @@ lemma subOnePair_besselPairHom_fst (s : 𝔰.besselGraph) (x : 𝔰.G₁) :
     (subOnePair (besselPairHom x) s).fst =
       (x.val * p.matrix)⁻¹.val * ((s.val.fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) - 1) *
         (x.val * p.matrix).val := by
-  simp [besselPairHom, frameEquiv, U.conj, mul_sub, sub_mul, mul_assoc]
+  change p.matrix⁻¹.val * (x⁻¹.val.val * s.val.fst.val.val * x.val.val) * p.matrix.val - 1 = _
+  rw [_root_.mul_inv_rev, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Units.val_mul,
+    Units.val_mul]
+  have h1 : p.matrix⁻¹.val * x.val⁻¹.val * (x.val.val * p.matrix.val) = 1 := by
+    rw [Matrix.mul_assoc p.matrix⁻¹.val, ← Matrix.mul_assoc x.val⁻¹.val,
+      show x.val⁻¹.val * x.val.val = 1 from x.val.inv_mul, Matrix.one_mul, Units.inv_mul]
+  rw [h1]
+  refine congrArg (· - 1) ?_
+  simp only [Matrix.mul_assoc]
+  rfl
 
 /-- The second component of `besselPairHom x s` has the matrix of the image of `s` in `H`. -/
 lemma besselPairHom_snd_val (s : 𝔰.besselGraph) (x : 𝔰.G₁) :
-    ((besselPairHom (ε := ε) x s).snd : Matrix 𝔰.κ 𝔰.κ ℂ) = (s.val.snd : Matrix 𝔰.κ 𝔰.κ ℂ) := by
-  simp [besselPairHom]
+    ((besselPairHom (ε := ε) x s).snd : Matrix 𝔰.κ 𝔰.κ ℂ) = (s.val.snd : Matrix 𝔰.κ 𝔰.κ ℂ) := rfl
 
 /-- The second entry of `subOnePair (besselPairHom x) s` is the image of `s` in `H`, minus one. -/
 lemma subOnePair_besselPairHom_snd (s : 𝔰.besselGraph) (x : 𝔰.G₁) :
-    (subOnePair (besselPairHom (ε := ε) x) s).snd = (s.val.snd : Matrix 𝔰.κ 𝔰.κ ℂ) - 1 := by
-  simp [besselPairHom_snd_val]
+    (subOnePair (besselPairHom (ε := ε) x) s).snd = (s.val.snd : Matrix 𝔰.κ 𝔰.κ ℂ) - 1 := rfl
 
 variable {v : Matrix 𝔰.BesselIndex (Fin (𝔰.ϱ + 1)) ℂ} {i₀ : Matrix 𝔰.BesselIndex 𝔰.κ ℂ}
 
@@ -212,10 +299,14 @@ lemma norm_frame_mulVec_le {M : ℝ} (hM : 0 ≤ M) {w : 𝔰.BesselIndex → �
     (hw : ∀ i : 𝔰.BesselIndex, ‖w i‖ ≤ M) :
     ‖WithLp.toLp 2 (p.matrix.val *ᵥ w)‖ ≤ √𝔰.r * M := by
   have h_sum : ∑ i : 𝔰.BesselIndex, ‖w i‖ ^ 2 ≤ 𝔰.r * M ^ 2 := by
-    simpa using sum_le_card_nsmul univ _ _ fun i _ ↦ pow_le_pow_left₀ (norm_nonneg _) (hw i) 2
+    have h := sum_le_card_nsmul univ (fun i : 𝔰.BesselIndex ↦ ‖w i‖ ^ 2) (M ^ 2) fun i _ ↦
+      pow_le_pow_left₀ (norm_nonneg _) (hw i) 2
+    rwa [card_univ, nsmul_eq_mul] at h
   refine (l2_opNorm_mulVec p.matrix.val (WithLp.toLp 2 w)).trans ?_
-  grw [CStarRing.norm_of_mem_unitary p.mem_unitary, one_mul, EuclideanSpace.norm_eq, h_sum,
-    Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hM]
+  rw [CStarRing.norm_of_mem_unitary p.mem_unitary, one_mul, EuclideanSpace.norm_eq]
+  calc √(∑ i : 𝔰.BesselIndex, ‖w i‖ ^ 2)
+      ≤ √(𝔰.r * M ^ 2) := Real.sqrt_le_sqrt h_sum
+    _ = √𝔰.r * M := by rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hM]
 
 /-- Take a position (`IsPosition`) of `H = U(X₀)` in `U(ε)`: independent vectors `v₁, …, v_n` (the
 columns of `v`) whose products for the form `signMatrix ε` vanish except that of `v_n` with itself,
@@ -242,24 +333,52 @@ lemma IsPosition.exists_mul_eq_frameCols_and_besselLength_le (hP : IsPosition ε
     · rw [hab.1, hab.2, h_norm]
     · exact hP.gram_eq_zero a b (not_and_or.1 hab)
   have h_frame : vᴴ * signMatrix ε * v = 𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.frameCols := by
-    simp_rw [← Matrix.ext_iff, h_entry]
-    simp [Matrix.mul_apply, inclMatrix, splitGram, middleGram, forall_fin_succ', Matrix.one_apply]
+    rw [Matrix.mul_assoc 𝔰.frameColsᴴ, mul_inclMatrix, conjTranspose_inclMatrix_mul]
+    ext a b
+    rw [h_entry, submatrix_apply, submatrix_apply, id_eq]
+    refine Fin.lastCases ?_ (fun a ↦ ?_) a <;> refine Fin.lastCases ?_ (fun b ↦ ?_) b
+    · simp [Shape.besselFrame, Shape.J₁, splitGram, middleGram]
+    · simp [Shape.besselFrame, Shape.J₁, splitGram, middleGram]
+    · simp [Shape.besselFrame, Shape.J₁, splitGram, middleGram, (castSucc_lt_last a).ne]
+    · simp [Shape.besselFrame, Shape.J₁, splitGram, middleGram, (castSucc_lt_last a).ne]
   have h_gram : (p.matrix.val * fromCols i₀ v)ᴴ * 𝔰.J₁ * (p.matrix.val * fromCols i₀ v) =
       (fromCols 𝔰.definiteCols 𝔰.frameCols)ᴴ * 𝔰.J₁ * fromCols 𝔰.definiteCols 𝔰.frameCols := by
     rw [gram_mul, p.gram_eq]
     simp only [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul, mul_fromCols]
-    rw [hP.isometry, hP.orthogonal, hP.vec_orthogonal, h_frame]
-    simp [← Matrix.ext_iff, Matrix.mul_apply, inclMatrix, splitGram, middleGram, forall_fin_succ',
-      Matrix.one_apply]
+    rw [hP.isometry, hP.orthogonal, hP.vec_orthogonal, h_frame, signMatrix_one]
+    refine congrArg₂ fromCols (congrArg₂ fromRows ?_ ?_) (congrArg₂ fromRows ?_ rfl)
+    · rw [Matrix.mul_assoc 𝔰.definiteColsᴴ, mul_inclMatrix, conjTranspose_inclMatrix_mul]
+      ext i j
+      simp [Shape.J₁, splitGram, middleGram, Matrix.one_apply]
+    · rw [Matrix.mul_assoc 𝔰.frameColsᴴ, mul_inclMatrix, conjTranspose_inclMatrix_mul]
+      ext a j
+      refine Fin.lastCases ?_ (fun c ↦ ?_) a <;>
+        simp [Shape.besselFrame, Shape.J₁, splitGram, middleGram]
+    · rw [Matrix.mul_assoc 𝔰.definiteColsᴴ, mul_inclMatrix, conjTranspose_inclMatrix_mul]
+      ext i b
+      refine Fin.lastCases ?_ (fun c ↦ ?_) b <;>
+        simp [Shape.besselFrame, Shape.J₁, splitGram, middleGram]
   -- Both families are independent, so Witt's theorem gives `x`.
   have h_indep : HasLeftInv (p.matrix.val * fromCols i₀ v) := by
     obtain ⟨Z, hZ⟩ := hP.hasLeftInv
     exact ⟨Z * p.matrix⁻¹.val, by
       rw [Matrix.mul_assoc, ← Matrix.mul_assoc _ p.matrix.val, Units.inv_mul, Matrix.one_mul, hZ]⟩
-  have h_indep' : HasLeftInv (fromCols 𝔰.definiteCols 𝔰.frameCols) :=
-    ⟨(fromCols 𝔰.definiteCols 𝔰.frameCols)ᴴ, by
-      simp [← Matrix.ext_iff, Matrix.mul_apply, inclMatrix, Matrix.one_apply, forall_fin_succ',
-        eq_comm]⟩
+  have h_indep' : HasLeftInv (fromCols 𝔰.definiteCols 𝔰.frameCols) := by
+    refine ⟨(fromCols 𝔰.definiteCols 𝔰.frameCols)ᴴ, ?_⟩
+    rw [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul_fromCols,
+      conjTranspose_inclMatrix_mul, conjTranspose_inclMatrix_mul,
+      conjTranspose_inclMatrix_mul, conjTranspose_inclMatrix_mul, ← fromBlocks_one]
+    refine fromBlocks_inj.2 ⟨?_, ?_, ?_, ?_⟩
+    · ext i j
+      simp only [submatrix_apply, id_eq, inclMatrix, Matrix.one_apply, Sum.inr.injEq, Sum.inl.injEq]
+    · ext i b
+      refine Fin.lastCases ?_ (fun c ↦ ?_) b <;>
+        simp [Shape.besselFrame, inclMatrix]
+    · ext a j
+      refine Fin.lastCases ?_ (fun c ↦ ?_) a <;>
+        simp [Shape.besselFrame, inclMatrix]
+    · ext a b
+      simp only [submatrix_apply, id_eq, inclMatrix, Matrix.one_apply, besselFrame_injective.eq_iff]
   obtain ⟨x, hx⟩ : ∃ x : 𝔰.G₁,
       x.val.val * (p.matrix.val * fromCols i₀ v) = fromCols 𝔰.definiteCols 𝔰.frameCols :=
     witt ⟨Complex.I, by simp⟩ isHermitian.eq IsHermitianInvolution.isUnit h_indep h_indep' h_gram
@@ -270,7 +389,8 @@ lemma IsPosition.exists_mul_eq_frameCols_and_besselLength_le (hP : IsPosition ε
   -- `J₁` are those of the `w a` for `signMatrix ε`.
   have h_vec (a : Fin (𝔰.ϱ + 1)) : frameVector x a = WithLp.toLp 2 (p.matrix.val *ᵥ w a) := by
     have h_inv : x⁻¹.val.val * 𝔰.frameCols = p.matrix.val * v := by
-      simp [← hx_frame, ← Matrix.mul_assoc]
+      rw [← hx_frame, Units.val_mul, ← Matrix.mul_assoc, ← Matrix.mul_assoc,
+        show x⁻¹.val.val * x.val.val = 1 from x.val.inv_mul, Matrix.one_mul]
     ext i
     rw [hw]
     exact (congrFun₂ (mul_inclMatrix x⁻¹.val.val 𝔰.besselFrame) i a).symm.trans
@@ -342,11 +462,26 @@ lemma exists_besselPairHom_fst_eq (h_frame : (x.val * p.matrix).val * v = 𝔰.f
     ∃ s : 𝔰.besselGraph, (besselPairHom x s).fst = g := by
   -- Write `g` as `x⁻¹ g₁ x` in the frame of signs; then `g₁` lowers the flag of the frame.
   obtain ⟨g₁, hg₁⟩ : ∃ g₁ : 𝔰.G₁, frameEquiv (x⁻¹ * g₁ * x) = g :=
-    ⟨x * frameEquiv.symm g * x⁻¹, by simp [mul_assoc]⟩
+    ⟨x * frameEquiv.symm g * x⁻¹, by
+      rw [← mul_assoc, ← mul_assoc, inv_mul_cancel, one_mul, inv_mul_cancel_right,
+        frameEquiv.apply_symm_apply]⟩
   have h_conj : (g₁ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) - 1 =
       (x.val * p.matrix).val * ((g : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) - 1) *
         (x.val * p.matrix)⁻¹.val := by
-    simp [← hg₁, frameEquiv, U.conj, mul_sub, sub_mul, mul_assoc]
+    rw [← hg₁]
+    change _ = (x.val * p.matrix).val *
+        (p.matrix⁻¹.val * (x⁻¹.val.val * g₁.val.val * x.val.val) * p.matrix.val - 1) *
+        (x.val * p.matrix)⁻¹.val
+    rw [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Units.mul_inv]
+    have h_u : (x.val * p.matrix) * (p.matrix⁻¹ * (x⁻¹.val * g₁.val * x.val) * p.matrix) *
+        (x.val * p.matrix)⁻¹ = g₁.val := by
+      rw [_root_.mul_inv_rev, Subgroup.coe_inv]
+      simp only [mul_assoc, mul_inv_cancel_left, mul_inv_cancel, mul_one]
+    have h_l : (x.val * p.matrix).val *
+        (p.matrix⁻¹.val * (x⁻¹.val.val * g₁.val.val * x.val.val) * p.matrix.val) *
+        (x.val * p.matrix)⁻¹.val = g₁.val.val := by
+      simpa only [Units.val_mul] using congrArg Units.val h_u
+    rw [h_l]
   obtain ⟨σ, N, hN_tri, hN, -⟩ := hg
   have h_lowers : ((g₁ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) - 1) * 𝔰.frameCols =
       𝔰.isotropicCols * N := by
@@ -354,7 +489,7 @@ lemma exists_besselPairHom_fst_eq (h_frame : (x.val * p.matrix).val * v = 𝔰.f
       initCols_eq_of_frame h_frame, Matrix.mul_assoc, ← Matrix.mul_assoc, Units.mul_inv,
       Matrix.one_mul]
   obtain ⟨s, hs⟩ : ∃ s : 𝔰.besselGraph, s.val.fst = g₁ := exists_besselGraph_fst_eq hN_tri h_lowers
-  exact ⟨s, by simp [besselPairHom, hs, ← hg₁]⟩
+  exact ⟨s, by change frameEquiv (x⁻¹ * s.val.fst * x) = g; rw [hs, hg₁]⟩
 
 end Point
 
@@ -364,13 +499,23 @@ lemma mul_sqrt_mul_pow_le_pow {B b : ℝ} {a : ℕ} (hB : 1 ≤ B) (hb : 3 * B +
     (hb_rank : 8 * 𝔰.n * 𝔰.r ≤ b) :
     8 * 𝔰.n * (√𝔰.r * (3 * B + a) ^ (2 * 𝔰.ϱ + 2)) ≤ b ^ (5 * 𝔰.n) := by
   have hr : (1 : ℝ) ≤ 𝔰.r := Nat.one_le_cast.2 Fintype.card_pos
-  have hb_one : 1 ≤ b := by nlinarith [Nat.one_le_cast (α := ℝ).2 (Nat.le_add_left 1 𝔰.ϱ)]
-  calc _ ≤ 8 * 𝔰.n * (𝔰.r * (b ^ 2) ^ (2 * 𝔰.ϱ + 2)) := by
-        gcongr
-        exact Real.sqrt_le_iff.2 ⟨by positivity, le_self_pow₀ hr two_ne_zero⟩
-    _ = 8 * 𝔰.n * 𝔰.r * b ^ (4 * (𝔰.ϱ + 1)) := by ring
-    _ ≤ b * b ^ (4 * (𝔰.ϱ + 1)) := by gcongr
-    _ ≤ b ^ (5 * 𝔰.n) := (pow_succ' b _).ge.trans (pow_le_pow_right₀ hb_one (by lia))
+  have hn : (1 : ℝ) ≤ 𝔰.n := Nat.one_le_cast.2 (Nat.le_add_left 1 𝔰.ϱ)
+  have hb_one : 1 ≤ b := by nlinarith
+  have h_sqrt : √(𝔰.r : ℝ) ≤ 𝔰.r :=
+    Real.sqrt_le_iff.2 ⟨zero_le_one.trans hr, le_self_pow₀ hr two_ne_zero⟩
+  have h_pow : (3 * B + a) ^ (2 * 𝔰.ϱ + 2) ≤ (b ^ 2) ^ (2 * 𝔰.ϱ + 2) :=
+    pow_le_pow_left₀ (by linarith [a.cast_nonneg (α := ℝ)]) hb _
+  calc _ ≤ 8 * 𝔰.n * (𝔰.r * (b ^ 2) ^ (2 * 𝔰.ϱ + 2)) :=
+        mul_le_mul_of_nonneg_left
+          (mul_le_mul h_sqrt h_pow (pow_nonneg (by linarith [a.cast_nonneg (α := ℝ)]) _)
+            (zero_le_one.trans hr))
+          (by linarith)
+    _ = 8 * 𝔰.n * 𝔰.r * b ^ (4 * (𝔰.ϱ + 1)) := by
+        rw [← mul_assoc, ← pow_mul]; congr 2; omega
+    _ ≤ b * b ^ (4 * (𝔰.ϱ + 1)) :=
+        mul_le_mul_of_nonneg_right hb_rank (pow_nonneg (zero_le_one.trans hb_one) _)
+    _ ≤ b ^ (5 * 𝔰.n) :=
+        (pow_succ' b _).ge.trans (pow_le_pow_right₀ hb_one (by dsimp only [Shape.n]; omega))
 
 /-- Split the coordinates of `G₁` into `X` and `2 n` more (by `e`), and those of `H` into `X` and
 one more (by `τ`). Let the parameter `l` of `U(ε)` be steep with bound `B ≥ 1` (its lowest `K`-type
@@ -404,6 +549,8 @@ theorem IsSteep.exists_stationary_point {X : Type} [Fintype X] {l : HCParam ε}
             (fun s' : 𝔰.besselGraph ↦ simpleRootSum s'.val.fst - conj (simpleRootSum s'.val.fst)) s
             ∂𝔰.besselGraphMeasure‖ := by
   classical
+  have : MeasurableMul 𝔰.besselGraph := measurableMul_besselGraph
+  have : BorelSpace 𝔰.besselGraph := borelSpace_besselGraph
   have : 𝔰.besselGraphMeasure.IsMulRightInvariant := 𝔰.besselGraphMeasure_isMulRightInvariant
   have : IsFiniteMeasureOnCompacts 𝔰.besselGraphMeasure :=
     𝔰.besselGraphMeasure_finiteOnCompacts
@@ -412,10 +559,17 @@ theorem IsSteep.exists_stationary_point {X : Type} [Fintype X] {l : HCParam ε}
   -- `2 n` coordinates of `G₁` and one coordinate of `H` outside `X`.
   let e' : X ⊕ Fin 1 ≃ 𝔰.κ := ((Equiv.refl X).sumCongr finOneEquiv).trans τ
   have hX_sign (y : X) : (1 : 𝔰.κ → ℤˣ) (e' (Sum.inl y)) = 1 := Pi.one_apply _
-  have hX_zero (y : X) : u.lowestKType (e' (Sum.inl y)) = 0 := by simp [e', ha]
+  have hX_zero (y : X) : u.lowestKType (e' (Sum.inl y)) = 0 := by
+    simp only [e', ha, Equiv.trans_apply, Equiv.sumCongr_apply, Equiv.refl_apply, Sum.map_inl,
+      EmbeddingLike.apply_eq_iff_eq, reduceCtorEq, ↓reduceIte]
   obtain ⟨v, i₀, hP, h_norm, -, -, h_pow_le⟩ :=
     h_steep.exists_isStationary (k := u) (e' := e') (d := 𝔰.ϱ) (B' := a) hB (by omega) hX_sign
-      hX_zero (by simp) (Subsingleton.strictMono _) a.cast_nonneg (by simp [e', ha])
+      hX_zero (fun j ↦ by simp only [Fin.eq_zero j, Fin.val_zero, pow_zero, Pi.one_apply])
+      (Subsingleton.strictMono _) a.cast_nonneg
+      (fun j ↦ by
+        simp only [e', ha, Equiv.trans_apply, Equiv.sumCongr_apply, Sum.map_inr,
+          Subsingleton.elim (finOneEquiv j) (), ↓reduceIte, Int.cast_natCast, Set.mem_Icc,
+          a.cast_nonneg, le_rfl, and_self])
   -- The point: with `μ` the weight of the lowest `K`-type of `l` as a diagonal matrix, the vectors
   -- `μ ^ c v₁` continue `v₁, …, v_n`.
   have h_one_le : 1 ≤ 3 * B + a := by linarith [a.cast_nonneg (α := ℝ)]
@@ -435,18 +589,21 @@ theorem IsSteep.exists_stationary_point {X : Type} [Fintype X] {l : HCParam ε}
       ‖∫ s : 𝔰.besselGraph, l.laplaceIntegrand u (besselPairHom x)
         (fun s' : 𝔰.besselGraph ↦ simpleRootSum s'.val.fst - conj (simpleRootSum s'.val.fst)) s
         ∂𝔰.besselGraphMeasure‖) :=
-    hP.period_lower_bound_of_surjective h_steep hB hX_sign hX_zero (by simp [ha, ite_nonneg])
-      (by simp) hl hu hL hK hβ h_rank h_excess 𝔰.besselGraphMeasure
+    hP.period_lower_bound_of_surjective h_steep hB hX_sign hX_zero
+      (fun i ↦ by rw [ha]; split_ifs; exacts [Int.natCast_nonneg a, le_rfl])
+      (fun _ _ h ↦ (h rfl).elim) hl hu hL hK hβ h_rank h_excess 𝔰.besselGraphMeasure
       (isProperMap_besselPairHom_fst x) (fun _ ↦ exists_besselPairHom_fst_eq h_frame)
       (lowersFlag_besselPairHom · h_frame) (inducesOn_besselPairHom · h_isometry h_frame)
   -- This set contains the unit ball, as `H` is compact.
+  have hβ_one : 1 ≤ β := le_trans (by norm_num) hβ
   have h_ball : {s : 𝔰.besselGraph | ‖(subOnePair (besselPairHom (ε := ε) x) s).fst‖ ≤ 1} ⊆
       Large := by
-    have hβ_one : 1 ≤ β := le_trans (by norm_num) hβ
     refine fun s hs ↦ ⟨(norm_le_insert' _ 1).trans (add_le_add (norm_one.trans_le hβ_one) hs), ?_⟩
     rw [besselPairHom_snd_val, CStarRing.norm_of_mem_unitary (U_one_mem_unitaryGroup s.val.snd)]
     linarith
-  exact ENNReal.toReal_le_of_le_ofReal (by positivity) ((measure_mono h_ball).trans h_period)
+  exact ENNReal.toReal_le_of_le_ofReal
+    (mul_nonneg (pow_nonneg (zero_le_one.trans hβ_one) _) (norm_nonneg _))
+    ((measure_mono h_ball).trans h_period)
 
 end DiscreteSeries
 
@@ -462,14 +619,30 @@ open Matrix Fintype Complex Norms.L2Operator MeasureTheory ComplexConjugate ENNR
 variable {𝔰 : Shape} {I : Type*} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I] [DecidableEq I]
   [UnitarySignFrame 𝔰 ε]
 
+private lemma sFinite_besselGraphMeasure : SFinite 𝔰.besselGraphMeasure :=
+  @Measure.instSFiniteMap _ _ _ _ (𝔰.besselHaar.prod volume) 𝔰.besselGraphChart inferInstance
+
+private lemma continuous_uncurry_smul_mul_left {G S E : Type*} [TopologicalSpace G] [Mul G]
+    [ContinuousMul G] [TopologicalSpace S] [TopologicalSpace E] [SMul ℂ E] [ContinuousSMul ℂ E]
+    {k : G → ℂ} {F : G → S → E} (hk : Continuous k) (hF : Continuous F.uncurry) (y : G) :
+    Continuous (Function.uncurry fun (a : G) (s : S) ↦ k a • F (y * a) s) :=
+  (hk.comp continuous_fst).smul
+    (hF.comp ((continuous_const.mul continuous_fst).prodMk continuous_snd))
+
 /-- The map `(y, s) ↦ s y` carries the measures of 𝖴∖G₁ and of the Bessel group `R = 𝖴 H` to the
 Haar measure of G₁. -/
 lemma measurePreserving_unfold_besselGraphMeasure :
     MeasurePreserving (fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ q.snd.val.fst * q.fst)
       (besselQuotMeasure.prod 𝔰.besselGraphMeasure) volume := by
-  refine ⟨by fun_prop, Measure.ext_of_lintegral _ fun (g : 𝔰.G₁ → ℝ≥0∞) (hg : Measurable g) ↦ ?_⟩
-  simp (disch := fun_prop) only [lintegral_map, lintegral_prod,
-    lintegral_unfold_besselGraphMeasure (x := 1) g hg, one_mul]
+  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
+  have h_meas : Measurable (fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ q.snd.val.fst * q.fst) :=
+    (measurable_fst.comp (measurable_subtypeVal.comp measurable_snd)).mul measurable_fst
+  refine ⟨h_meas, Measure.ext_of_lintegral _ fun (g : 𝔰.G₁ → ℝ≥0∞) (hg : Measurable g) ↦ ?_⟩
+  rw [lintegral_map hg h_meas,
+    lintegral_prod (fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ g (q.snd.val.fst * q.fst))
+      (hg.comp h_meas).aemeasurable,
+    lintegral_unfold_besselGraphMeasure (x := 1) g hg]
+  simp only [one_mul]
 
 variable (l : HCParam ε) (rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ) (x : 𝔰.G₁)
   (v : EuclideanSpace ℂ I)
@@ -482,8 +655,11 @@ noncomputable def besselBallVolume : ℝ≥0∞ :=
 
 /-- The ball whose volume is `besselBallVolume x` has finite measure, as the conjugation by `x` is
 proper on `R`. -/
-lemma besselBallVolume_ne_top : besselBallVolume (ε := ε) x ≠ ∞ :=
-  measure_ball_ne_top_of_isProperMap 𝔰.besselGraphMeasure
+lemma besselBallVolume_ne_top : besselBallVolume (ε := ε) x ≠ ∞ := by
+  have : MeasurableMul 𝔰.besselGraph := measurableMul_besselGraph
+  have : 𝔰.besselGraphMeasure.IsMulRightInvariant := 𝔰.besselGraphMeasure_isMulRightInvariant
+  have : IsFiniteMeasureOnCompacts 𝔰.besselGraphMeasure := 𝔰.besselGraphMeasure_finiteOnCompacts
+  exact measure_ball_ne_top_of_isProperMap 𝔰.besselGraphMeasure
     (j := (MonoidHom.fst _ _).comp (besselPairHom x)) (isProperMap_besselPairHom_fst x) 1
 
 /-- The ball whose volume is `besselBallVolume x` has nonzero measure, as it is a neighbourhood of
@@ -491,7 +667,11 @@ lemma besselBallVolume_ne_top : besselBallVolume (ε := ε) x ≠ ∞ :=
 lemma besselBallVolume_ne_zero : besselBallVolume (ε := ε) x ≠ 0 := by
   have h_cont : Continuous fun s : 𝔰.besselGraph ↦ (besselPairHom (ε := ε) x s).fst :=
     (isProperMap_besselPairHom_fst x).continuous
-  exact measure_sublevel_ne_zero _
+  exact measure_sublevel_ne_zero 𝔰.besselGraphMeasure
+    (by rw [map_one]; simp only [Prod.fst_one, OneMemClass.coe_one, Units.val_one, sub_self,
+      norm_zero, zero_lt_one])
+    (((Units.continuous_val.comp (continuous_subtypeVal.comp h_cont)).fun_sub
+      continuous_const).norm)
 
 /-- The covering bound: let `N = 9 r ^ 2`. The integral of `(2 / ‖x⁻¹ s y‖) ^ N` over `s` in
 `besselGraph` (the group `R`) is at most `16 ^ N` times `besselBallVolume x`, uniformly in `y`. The
@@ -502,13 +682,21 @@ lemma lintegral_decay_le_besselBallVolume (y : 𝔰.G₁) :
           Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖) ^ (9 * 𝔰.r ^ 2))
         ∂𝔰.besselGraphMeasure ≤
       .ofReal (16 ^ (9 * 𝔰.r ^ 2)) * besselBallVolume (ε := ε) x := by
+  have : MeasurableMul 𝔰.besselGraph := measurableMul_besselGraph
+  have : 𝔰.besselGraphMeasure.IsMulRightInvariant := 𝔰.besselGraphMeasure_isMulRightInvariant
+  have : IsFiniteMeasureOnCompacts 𝔰.besselGraphMeasure := 𝔰.besselGraphMeasure_finiteOnCompacts
+  have : BorelSpace 𝔰.besselGraph := borelSpace_besselGraph
   let j : 𝔰.besselGraph →* USign ε := (MonoidHom.fst _ _).comp (besselPairHom x)
   have hj_apply (s : 𝔰.besselGraph) : j s = frameEquiv (x⁻¹ * s.val.fst * x) := rfl
   -- The general covering bound for the proper map `j`, at the point `x⁻¹ y`.
   have hr : 0 < 𝔰.r ^ 2 := pow_pos Fintype.card_pos 2
   refine (lintegral_decay_le 𝔰.besselGraphMeasure (j := j) (isProperMap_besselPairHom_fst x)
-    (by lia) (frameEquiv (x⁻¹ * y))).trans_eq' ?_
-  simp_rw [hj_apply, ← map_mul, mul_assoc, mul_inv_cancel_left]
+    (by dsimp only [Shape.r] at hr ⊢; omega) (frameEquiv (x⁻¹ * y))).trans_eq' ?_
+  refine lintegral_congr fun s ↦ ?_
+  rw [hj_apply, show frameEquiv (ε := ε) (x⁻¹ * s.val.fst * x) * frameEquiv (ε := ε) (x⁻¹ * y) =
+      frameEquiv (ε := ε) (x⁻¹ * (s.val.fst * y)) from
+    (frameEquiv.map_mul _ _).symm.trans (congrArg frameEquiv (by
+      rw [mul_assoc, mul_assoc, mul_inv_cancel_left]))]
 
 variable {l rep v} {excess : ℕ}
 
@@ -519,24 +707,47 @@ lemma norm_dsCoeffInFrame_le (h_gap : l.HasLargeGap excess) {j : ℕ} (hj : j �
     ‖l.dsCoeffInFrame g‖ ≤
       (2 / ‖(frameEquiv (ε := ε) g : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖) ^
         (j + 9 * 𝔰.r ^ 2) := by
-  have h_sq : 𝔰.r ^ 2 ≤ 𝔰.r ^ 3 := pow_le_pow_right₀ Fintype.card_pos (by lia)
-  have h_exponent : j + 9 * 𝔰.r ^ 2 ≤ gapThreshold 𝔰.BesselIndex excess := by grind
+  have h_sq : 𝔰.r ^ 2 ≤ 𝔰.r ^ 3 := pow_le_pow_right₀ Fintype.card_pos (by omega)
+  have h_exponent : j + 9 * 𝔰.r ^ 2 ≤ gapThreshold 𝔰.BesselIndex excess := by
+    dsimp only [gapThreshold, Shape.r] at h_sq ⊢
+    omega
   exact norm_dsCoeff_le_pow h_gap (mod_cast h_exponent) _
 
 /-- For a continuous representation `rep`, the integrand `besselIntegrand l rep x v y s`, which is
 `c_λ(x⁻¹ s y) π(s)⁻¹ v` with `c_λ = l.dsCoeffInFrame`, is jointly continuous in `y` and `s`. -/
 lemma continuous_besselIntegrand (h_cont : Continuous rep) :
     Continuous (besselIntegrand l rep x v).uncurry := by
+  have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
   change Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦
     l.dsCoeffInFrame (x⁻¹ * (q.snd.val.fst * q.fst)) •
       wave (-simpleRootSum q.snd.val.fst) • WithLp.toLp 2 ((rep q.snd.val.snd⁻¹).val *ᵥ v.ofLp)
-  fun_prop [simpleRootSum, wave]
+  have h_fst : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ q.snd.val.fst :=
+    continuous_fst.comp (continuous_subtypeVal.comp continuous_snd)
+  have h_snd : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ q.snd.val.snd :=
+    continuous_snd.comp (continuous_subtypeVal.comp continuous_snd)
+  have h1 : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦
+      l.dsCoeffInFrame (x⁻¹ * (q.snd.val.fst * q.fst)) :=
+    continuous_dsCoeffInFrame.comp (continuous_const.fun_mul (h_fst.fun_mul continuous_fst))
+  have h_mat : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦
+      (q.snd.val.fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) :=
+    Units.continuous_val.comp (continuous_subtypeVal.comp h_fst)
+  have h_srs : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ simpleRootSum q.snd.val.fst :=
+    continuous_finsetSum _ fun _ _ ↦ h_mat.matrix_elem _ _
+  have h2 : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ wave (-simpleRootSum q.snd.val.fst) :=
+    Complex.continuous_exp.comp (h_srs.neg.fun_sub (Complex.continuous_conj.comp h_srs.neg))
+  have h_rep : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ (rep q.snd.val.snd⁻¹).val :=
+    continuous_subtypeVal.comp (h_cont.comp h_snd.inv)
+  have h3 : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦
+      WithLp.toLp 2 ((rep q.snd.val.snd⁻¹).val *ᵥ v.ofLp) :=
+    (PiLp.continuous_toLp 2 _).comp (h_rep.matrix_mulVec continuous_const)
+  exact h1.fun_smul (h2.fun_smul h3)
 
 /-- For a unit vector `v`, the norm of the integrand `c_λ(x⁻¹ s y) π(s)⁻¹ v` is `|c_λ(x⁻¹ s y)|`,
 as `π` is unitary. -/
 lemma enorm_besselIntegrand (hv_norm : ‖v‖ = 1) (y : 𝔰.G₁) (s : 𝔰.besselGraph) :
     ‖besselIntegrand l rep x v y s‖ₑ = ‖l.dsCoeffInFrame (x⁻¹ * (s.val.fst * y))‖ₑ := by
-  simp [besselIntegrand, ← ofReal_norm, norm_smul, hv_norm, Unitary.norm_map]
+  rw [besselIntegrand, ← ofReal_norm, norm_smul, norm_smul, norm_wave, one_mul,
+    Unitary.norm_map, hv_norm, mul_one, ofReal_norm]
 
 /-- For a unit vector `v` and a parameter `l` of gap `500 r³ + excess`, the integral over `R` of the
 norm of `besselIntegrand l rep x v y` is at most `16 ^ (9 r ^ 2)` times `besselBallVolume x`, the
@@ -546,8 +757,9 @@ lemma lintegral_enorm_besselIntegrand_le (hv_norm : ‖v‖ = 1) (h_gap : l.HasL
     ∫⁻ s : 𝔰.besselGraph, ‖besselIntegrand l rep x v y s‖ₑ ∂𝔰.besselGraphMeasure ≤
       .ofReal (16 ^ (9 * 𝔰.r ^ 2)) * besselBallVolume (ε := ε) x := by
   refine (lintegral_mono fun s ↦ ?_).trans (lintegral_decay_le_besselBallVolume x y)
-  grw [enorm_besselIntegrand x hv_norm, ← ofReal_norm,
-    norm_dsCoeffInFrame_le h_gap (Nat.zero_le excess), zero_add]
+  rw [enorm_besselIntegrand x hv_norm, ← ofReal_norm]
+  exact ENNReal.ofReal_le_ofReal (by
+    simpa only [zero_add] using norm_dsCoeffInFrame_le h_gap (Nat.zero_le excess) _)
 
 /-- For a continuous representation `rep`, a unit vector `v` and a parameter `l` of gap
 `500 r³ + excess`, the integral over `R` defining `besselAverage l rep x v y` converges
@@ -558,6 +770,19 @@ lemma integrable_besselIntegrand (h_cont : Continuous rep) (hv_norm : ‖v‖ = 
   ⟨((continuous_besselIntegrand x h_cont).uncurry_left y).aestronglyMeasurable,
     (lintegral_enorm_besselIntegrand_le x hv_norm h_gap y).trans_lt
       (mul_lt_top ofReal_lt_top (besselBallVolume_ne_top x).lt_top)⟩
+
+private lemma besselValueRep_mul_val (k₁ k₂ : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) (w : EuclideanSpace ℂ I) :
+    (besselValueRep rep (k₁ * k₂)).val w =
+      (besselValueRep rep k₁).val ((besselValueRep rep k₂).val w) := by
+  rw [(besselValueRep rep).map_mul k₁ k₂, Submonoid.coe_mul, mul_apply_eq_comp]
+
+private lemma besselValueRep_inv_val (k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
+    (besselValueRep rep k⁻¹).val = ContinuousLinearMap.adjoint (besselValueRep rep k).val := by
+  have hBA : (besselValueRep rep k⁻¹).val * (besselValueRep rep k).val = 1 := by
+    have h : besselValueRep rep k⁻¹ * besselValueRep rep k = 1 := by
+      rw [← (besselValueRep rep).map_mul, inv_mul_cancel, (besselValueRep rep).map_one]
+    exact congrArg Subtype.val h
+  exact left_inv_eq_right_inv hBA (besselValueRep rep k).property.2
 
 /-- Let `rep` be a continuous unitary representation of `H` on `ℂ^I`, `v` a unit vector of `ℂ^I`,
 `x` a point of `G₁`, and `l = 2λ` a parameter with coefficient `c_λ = l.dsCoeffInFrame` and large
@@ -570,14 +795,30 @@ lemma besselAverage_mul (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
     besselAverage l rep x v (s.val.fst * y) =
       wave (simpleRootSum s.val.fst) •
         (besselValueRep rep s.val.snd).val (besselAverage l rep x v y) := by
+  have : MeasurableMul 𝔰.besselGraph := measurableMul_besselGraph
+  have : 𝔰.besselGraphMeasure.IsMulRightInvariant := 𝔰.besselGraphMeasure_isMulRightInvariant
   -- Substitute `t * s⁻¹` for `t`; the measure is right invariant and `simpleRootSum` is additive.
   have h_wave (t : 𝔰.besselGraph) : wave (-simpleRootSum (t.val.fst * s.val.fst⁻¹)) =
       wave (simpleRootSum s.val.fst) * wave (-simpleRootSum t.val.fst) := by
-    simp [simpleRootSum_mul, Filling.simpleRootSum_inv, wave, ← exp_add, add_sub_add_comm]
+    rw [simpleRootSum_mul (besselGraph_fst_mem_besselS t) (inv_mem (besselGraph_fst_mem_besselS s)),
+      Filling.simpleRootSum_inv s.val.fst (besselGraph_fst_mem_besselS s), wave, wave, wave,
+      ← Complex.exp_add]
+    congr 1
+    simp only [map_neg, map_add, neg_add, neg_neg]
+    ring
   have h_point (t : 𝔰.besselGraph) : besselIntegrand l rep x v (s.val.fst * y) (t * s⁻¹) =
       wave (simpleRootSum s.val.fst) •
         (besselValueRep rep s.val.snd).val (besselIntegrand l rep x v y t) := by
-    simp [besselIntegrand, h_wave, mul_assoc, smul_smul, mul_left_comm]
+    dsimp only [besselIntegrand]
+    have h_fst : (t * s⁻¹ : 𝔰.besselGraph).val.fst = t.val.fst * s.val.fst⁻¹ := rfl
+    have h_snd : ((t * s⁻¹ : 𝔰.besselGraph).val.snd)⁻¹ = s.val.snd * t.val.snd⁻¹ := by
+      change (t.val.snd * s.val.snd⁻¹)⁻¹ = _
+      rw [_root_.mul_inv_rev, inv_inv]
+    rw [h_fst, h_snd, mul_assoc t.val.fst, inv_mul_cancel_left, h_wave t,
+      besselValueRep_mul_val, ContinuousLinearMap.map_smul, ContinuousLinearMap.map_smul,
+      smul_smul, smul_smul, smul_smul]
+    refine congrArg (· • _) ?_
+    ring
   rw [besselAverage, besselAverage, ← integral_mul_right_eq_self _ s⁻¹, funext h_point,
     integral_smul, integral_comp_comm _ (integrable_besselIntegrand x h_cont hv_norm h_gap y)]
 
@@ -589,19 +830,26 @@ on the unipotent group `𝖴`. Then `W = besselAverage l rep x v`, given by
 `W(u y) = ψ(u) W(y)` for `u` in `𝖴` and `W(h y) = rep h W(y)` for `h` in `H`. -/
 lemma isBesselFunction_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
     (h_gap : l.HasLargeGap excess) : IsBesselFunction rep (besselAverage l rep x v) where
-  stronglyMeasurable :=
-    (continuous_besselIntegrand x h_cont).stronglyMeasurable.integral_prod_right
+  stronglyMeasurable := by
+    have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
+    exact (continuous_besselIntegrand x h_cont).stronglyMeasurable.integral_prod_right
   bounded :=
     have h_le (y : 𝔰.G₁) : ‖besselAverage l rep x v y‖ₑ ≤
         .ofReal (16 ^ (9 * 𝔰.r ^ 2)) * besselBallVolume (ε := ε) x :=
-      (enorm_integral_le_lintegral_enorm _).trans
+      (eNorm_integral_le_lintegral_eNorm _).trans
         (lintegral_enorm_besselIntegrand_le x hv_norm h_gap y)
     ⟨_, fun y ↦ toReal_mono (mul_ne_top ofReal_ne_top (besselBallVolume_ne_top x)) (h_le y)⟩
   map_unipotent_mul s hs y := by
-    simpa using besselAverage_mul x h_cont hv_norm h_gap (𝔰.besselGraphChart ⟨⟨s, hs⟩, 1⟩) y
+    have h := besselAverage_mul x h_cont hv_norm h_gap (𝔰.besselGraphChart ⟨⟨s, hs⟩, 1⟩) y
+    simp only [Shape.besselGraphChart_apply_coe, map_one, one_mul, OneMemClass.coe_one,
+      one_apply_eq_self] at h
+    exact h
   map_unitary_mul k y := by
-    simpa [simpleRootSum_eq_zero_of_mem_besselH, wave, besselValueRep] using
-      besselAverage_mul x h_cont hv_norm h_gap (𝔰.besselGraphChart ⟨1, k⟩) y
+    have h := besselAverage_mul x h_cont hv_norm h_gap (𝔰.besselGraphChart ⟨1, k⟩) y
+    simp only [Shape.besselGraphChart_apply_coe, OneMemClass.coe_one, mul_one,
+      simpleRootSum_eq_zero_of_mem_besselH (toBesselH_mem k), wave, map_zero, sub_self,
+      Complex.exp_zero, one_smul] at h
+    exact h
 
 /-- Let `rep` be a continuous unitary representation of `H` on `ℂ^I`, `v` a unit vector of `ℂ^I`,
 `x` a point of `G₁`, and `l = 2λ` a parameter with coefficient `c_λ = l.dsCoeffInFrame`, formal
@@ -611,6 +859,9 @@ lemma convolve_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
     (h_gap : l.HasLargeGap excess) :
     convolve (besselAverage l rep x v) (fun g : 𝔰.G₁ ↦ l.formalDegree * l.dsCoeffInFrame g) =
       besselAverage l rep x v := by
+  have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
+  have : ContinuousInv 𝔰.G₁ := continuousInv_G₁
+  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   -- Exchange the two integrals and use the product formula of the kernel `deg * c_λ`.
   have h_kernel : IsIdempotentKernel fun g : 𝔰.G₁ ↦ l.formalDegree * l.dsCoeffInFrame g :=
     isIdempotentKernel_dsCoeffInFrame h_gap
@@ -618,7 +869,9 @@ lemma convolve_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
       ∫ a : 𝔰.G₁, l.formalDegree * l.dsCoeffInFrame a⁻¹ * l.dsCoeffInFrame (g * a) =
         l.dsCoeffInFrame g := by
     have h_deg : (l.formalDegree : ℂ) ≠ 0 := ofReal_ne_zero.2 (formalDegree_pos h_gap).ne'
-    have h_one : l.dsCoeffInFrame (1 : 𝔰.G₁) = 1 := by simp [dsCoeffInFrame]
+    have h_one : l.dsCoeffInFrame (1 : 𝔰.G₁) = 1 := by
+      rw [dsCoeffInFrame, show frameEquiv (ε := ε) 1 = 1 from frameEquiv.map_one]
+      exact dsCoeff_one
     have h_product := h_kernel.integral_inv_mul_translate g 1
     simp only [mul_one, h_one, div_mul_cancel₀ _ h_deg] at h_product
     rw [← mul_right_inj' h_deg, ← h_product, ← integral_const_mul]
@@ -627,24 +880,38 @@ lemma convolve_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
   have h_reprod_integrand (s : 𝔰.besselGraph) :
       ∫ a : 𝔰.G₁, (l.formalDegree * l.dsCoeffInFrame a⁻¹) • besselIntegrand l rep x v (y * a) s =
         besselIntegrand l rep x v y s := by
-    simp [besselIntegrand, smul_smul _ (l.dsCoeffInFrame (_ : 𝔰.G₁)), ← mul_assoc,
-      integral_smul_const, h_reprod]
+    have h_eq (a : 𝔰.G₁) :
+        (l.formalDegree * l.dsCoeffInFrame a⁻¹) • besselIntegrand l rep x v (y * a) s =
+          (l.formalDegree * l.dsCoeffInFrame a⁻¹ *
+            l.dsCoeffInFrame (x⁻¹ * (s.val.fst * y) * a)) •
+            (wave (-simpleRootSum s.val.fst) • (besselValueRep rep s.val.snd⁻¹).val v) := by
+      dsimp only [besselIntegrand]
+      rw [smul_smul, ← mul_assoc s.val.fst y a, ← mul_assoc x⁻¹]
+    simp_rw [h_eq]
+    rw [integral_smul_const, h_reprod (x⁻¹ * (s.val.fst * y))]
+    rfl
   -- The double integral converges, by the covering bound and the integrability of the kernel.
+  have h_ker_cont : Continuous fun a : 𝔰.G₁ ↦ (l.formalDegree : ℂ) * l.dsCoeffInFrame a⁻¹ :=
+    continuous_const.fun_mul (continuous_dsCoeffInFrame.comp continuous_inv)
   have h_int : Integrable (Function.uncurry fun (a : 𝔰.G₁) (s : 𝔰.besselGraph) ↦
       (l.formalDegree * l.dsCoeffInFrame a⁻¹) • besselIntegrand l rep x v (y * a) s)
       (volume.prod 𝔰.besselGraphMeasure) := by
-    have h_integrand_cont : Continuous (besselIntegrand l rep x v).uncurry :=
-      continuous_besselIntegrand x h_cont
-    refine ⟨Continuous.aestronglyMeasurable (by fun_prop), (lintegral_prod_le _).trans_lt ?_⟩
+    have h_joint_cont : Continuous (Function.uncurry fun (a : 𝔰.G₁) (s : 𝔰.besselGraph) ↦
+        (l.formalDegree * l.dsCoeffInFrame a⁻¹) • besselIntegrand l rep x v (y * a) s) :=
+      continuous_uncurry_smul_mul_left h_ker_cont (continuous_besselIntegrand x h_cont) y
+    refine ⟨h_joint_cont.aestronglyMeasurable, (lintegral_prod_le _).trans_lt ?_⟩
     calc ∫⁻ a : 𝔰.G₁, ∫⁻ s : 𝔰.besselGraph,
           ‖(l.formalDegree * l.dsCoeffInFrame a⁻¹) • besselIntegrand l rep x v (y * a) s‖ₑ
           ∂𝔰.besselGraphMeasure
       _ ≤ ∫⁻ a : 𝔰.G₁, ‖l.formalDegree * l.dsCoeffInFrame a⁻¹‖ₑ *
           (.ofReal (16 ^ (9 * 𝔰.r ^ 2)) * besselBallVolume (ε := ε) x) := by
-        simp_rw [enorm_smul, lintegral_const_mul' _ _ enorm_ne_top]
-        grw [lintegral_enorm_besselIntegrand_le x hv_norm h_gap]
+        simp_rw [eNorm_smul, lintegral_const_mul' _ _ eNorm_ne_top]
+        exact lintegral_mono fun a ↦
+          mul_le_mul' le_rfl (lintegral_enorm_besselIntegrand_le x hv_norm h_gap (y * a))
       _ < ∞ := by
-        rw [lintegral_mul_const'' _ (by fun_prop)]
+        rw [lintegral_mul_const _ (show Measurable fun a : 𝔰.G₁ ↦
+          ‖(l.formalDegree : ℂ) * l.dsCoeffInFrame a⁻¹‖ₑ from
+            (continuous_eNorm.comp h_ker_cont).measurable)]
         exact mul_lt_top h_kernel.integrable.comp_inv.hasFiniteIntegral
           (mul_lt_top ofReal_lt_top (besselBallVolume_ne_top x).lt_top)
   simp only [besselAverage, convolve, ← integral_smul, integral_integral_swap h_int,
@@ -657,7 +924,7 @@ lemma enorm_besselAverage_le (hv_norm : ‖v‖ = 1) (y : 𝔰.G₁) :
       ∫⁻ s : 𝔰.besselGraph, ‖l.dsCoeffInFrame (x⁻¹ * (s.val.fst * y))‖ₑ
         ∂𝔰.besselGraphMeasure := by
   simp_rw [← enorm_besselIntegrand (rep := rep) x hv_norm]
-  exact enorm_integral_le_lintegral_enorm _
+  exact eNorm_integral_le_lintegral_eNorm _
 
 /-- Let `rep` be a continuous unitary representation of `H`, `v` a unit vector, and `l = 2λ` a
 parameter with coefficient `c_λ = l.dsCoeffInFrame` and large gap. Then
@@ -676,7 +943,8 @@ lemma integrable_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
           ∂𝔰.besselGraphMeasure ∂besselQuotMeasure :=
       lintegral_mono (enorm_besselAverage_le x hv_norm)
     _ = ∫⁻ g : 𝔰.G₁, ‖l.dsCoeffInFrame g‖ₑ :=
-      (lintegral_unfold_besselGraphMeasure (‖l.dsCoeffInFrame ·‖ₑ) (by fun_prop)).symm
+      (lintegral_unfold_besselGraphMeasure (‖l.dsCoeffInFrame ·‖ₑ)
+        (continuous_eNorm.comp continuous_dsCoeffInFrame).measurable).symm
     _ < ∞ := h_coeff_int.hasFiniteIntegral
 
 /-- The norm is a period. Let `rep` be a continuous unitary representation of `H`, `v` a unit
@@ -687,6 +955,8 @@ lemma formalDegree_mul_integral_norm_sq_besselAverage (h_cont : Continuous rep) 
     (h_gap : l.HasLargeGap excess) :
     ((l.formalDegree * ∫ y : 𝔰.G₁, ‖besselAverage l rep x v y‖ ^ 2 ∂besselQuotMeasure : ℝ) : ℂ) =
       ⟪v, besselAverage l rep x v x⟫_ℂ := by
+  have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
+  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   -- Insert the integral for one factor of `⟪W y, W y⟫`, unfold, and use that `e_λ` reproduces `W`
   -- at the point `x`.
   set W : 𝔰.G₁ → EuclideanSpace ℂ I := besselAverage l rep x v
@@ -699,14 +969,27 @@ lemma formalDegree_mul_integral_norm_sq_besselAverage (h_cont : Continuous rep) 
     obtain ⟨C, hC⟩ := hW.bounded
     refine (conjCLE.integrable_comp_iff.2 (h_kernel.integrable.comp_mul_left x⁻¹)).mul_bdd
       (c := ‖v‖ * C) hW.stronglyMeasurable.aestronglyMeasurable.const_inner (.of_forall fun g ↦ ?_)
-    grw [norm_inner_le_norm, hC]
+    exact (norm_inner_le_norm v (W g)).trans (mul_le_mul_of_nonneg_left (hC g) (norm_nonneg v))
   have h_insert (y : 𝔰.G₁) : ∫ s : 𝔰.besselGraph, Φ (s.val.fst * y) ∂𝔰.besselGraphMeasure =
       l.formalDegree * (‖W y‖ ^ 2 : ℂ) := by
     have h_point (s : 𝔰.besselGraph) :
         Φ (s.val.fst * y) = l.formalDegree * conj ⟪W y, besselIntegrand l rep x v y s⟫_ℂ := by
       -- Move `π(s)` to the other side of the inner product, as `π(s)⁻¹ = π(s)*`.
-      simp [Φ, W, besselAverage_mul x h_cont hv_norm h_gap, besselIntegrand, wave,
-        ← Unitary.star_eq_inv, star, adjoint_inner_left, ← exp_conj, neg_add_eq_sub, mul_assoc]
+      have h_wave_conj : conj (wave (-simpleRootSum s.val.fst)) =
+          wave (simpleRootSum s.val.fst) := by
+        rw [wave, wave, ← Complex.exp_conj]
+        congr 1
+        simp only [map_sub, map_neg, RingHomCompTriple.comp_apply, RingHom.id_apply]
+        ring
+      have h_adj : ⟪v, (besselValueRep rep s.val.snd).val (W y)⟫_ℂ =
+          conj ⟪W y, (besselValueRep rep s.val.snd⁻¹).val v⟫_ℂ := by
+        rw [inner_conj_symm, besselValueRep_inv_val]
+        exact (ContinuousLinearMap.adjoint_inner_left
+          (besselValueRep rep s.val.snd).val (W y) v).symm
+      dsimp only [Φ, W, besselIntegrand]
+      rw [besselAverage_mul x h_cont hv_norm h_gap s y, inner_smul_right, inner_smul_right,
+        inner_smul_right, map_mul, map_mul, map_mul, Complex.conj_ofReal, h_wave_conj, h_adj]
+      ring
     simp_rw [h_point, integral_const_mul, integral_conj,
       integral_inner (integrable_besselIntegrand x h_cont hv_norm h_gap y), inner_conj_symm]
     exact congrArg _ (inner_self_eq_norm_sq_to_K (W y))
@@ -745,7 +1028,12 @@ lemma besselBallVolume_le_of_period (h_cont : Continuous rep) (h_gap : l.HasLarg
     besselBallVolume (ε := ε) x ≤ .ofReal P *
       (.ofReal l.formalDegree *
         ∫⁻ y : 𝔰.G₁, ‖besselAverage l rep x v y‖ₑ ^ 2 ∂besselQuotMeasure) := by
-  have h_sq : ‖v‖ ^ 2 = 1 := by simpa using congrArg norm (hv 1)
+  have h_sq : ‖v‖ ^ 2 = 1 := by
+    have h1 := hv 1
+    rw [(besselValueRep rep).map_one, OneMemClass.coe_one, one_apply_eq_self,
+      inner_self_eq_norm_sq_to_K] at h1
+    have h2 : (‖v‖ : ℂ) ^ 2 = 1 := h1.trans dsCoeff_one
+    exact_mod_cast h2
   have hv_norm : ‖v‖ = 1 := (pow_eq_one_iff_of_nonneg (norm_nonneg v) two_ne_zero).1 h_sq
   have h_deg : 0 ≤ l.formalDegree := (formalDegree_pos h_gap).le
   -- The period is `⟪v, W x⟫`, as `conj c_u(h) = conj ⟪v, π(h) v⟫ = ⟪v, π(h)⁻¹ v⟫`.
@@ -753,9 +1041,26 @@ lemma besselBallVolume_le_of_period (h_cont : Continuous rep) (h_gap : l.HasLarg
       (fun s' : 𝔰.besselGraph ↦ simpleRootSum s'.val.fst - conj (simpleRootSum s'.val.fst)) s
       ∂𝔰.besselGraphMeasure = ⟪v, besselAverage l rep x v x⟫_ℂ := by
     rw [besselAverage, ← integral_inner (integrable_besselIntegrand x h_cont hv_norm h_gap x)]
-    simp [← hv, besselPairHom, laplaceIntegrand, besselIntegrand, wave, inner_smul_right,
-      ← Unitary.star_eq_inv, star, adjoint_inner_right, neg_add_eq_sub, mul_assoc,
-      mul_comm (cexp _), dsCoeffInFrame]
+    refine integral_congr_ae (.of_forall fun s ↦ ?_)
+    have h_fst : (besselPairHom (ε := ε) x s).fst = frameEquiv (x⁻¹ * (s.val.fst * x)) := by
+      change frameEquiv (x⁻¹ * s.val.fst * x) = _
+      rw [mul_assoc]
+    have h_snd : u.dsCoeff (besselPairHom (ε := ε) x s).snd =
+        ⟪v, (besselValueRep rep s.val.snd).val v⟫_ℂ := (hv s.val.snd).symm
+    have h_adj : conj ⟪v, (besselValueRep rep s.val.snd).val v⟫_ℂ =
+        ⟪v, (besselValueRep rep s.val.snd⁻¹).val v⟫_ℂ := by
+      rw [inner_conj_symm, besselValueRep_inv_val]
+      exact (ContinuousLinearMap.adjoint_inner_right
+        (besselValueRep rep s.val.snd).val v v).symm
+    have h_exp : cexp (-(simpleRootSum s.val.fst - conj (simpleRootSum s.val.fst))) =
+        wave (-simpleRootSum s.val.fst) := by
+      rw [wave]
+      congr 1
+      rw [map_neg]
+      ring
+    dsimp only [laplaceIntegrand, besselIntegrand]
+    rw [h_fst, ← dsCoeffInFrame, h_snd, h_adj, h_exp, inner_smul_right, inner_smul_right]
+    ring
   have h_nonneg :
       0 ≤ l.formalDegree * ∫ y : 𝔰.G₁, ‖besselAverage l rep x v y‖ ^ 2 ∂besselQuotMeasure :=
     mul_nonneg h_deg (integral_nonneg fun y ↦ sq_nonneg _)

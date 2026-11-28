@@ -1,6 +1,15 @@
+module
+
+import TauCeti.LinearAlgebra.Matrix.Charpoly.Newton
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.LinearAlgebra.PID
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import New.Determinant.Norms.AdjointThetaLift
 import Lib.Adelic.TraceFormula.CuspidalComparison
 import Lib.Adelic.TraceFormula.CuspidalType
-import New.Determinant.Norms.AdjointThetaLift
+import Lib.PadicComparison.Descent.TestCategory
+import New.Reduction.Data.Sizes
 
 /-!
 # Equality of multiplicities
@@ -40,6 +49,8 @@ The equality of traces is the analogue of the Jacquet–Langlands correspondence
 algebra that is ramified exactly at the real places. Related work: Harris–Labesse, Conditional base
 change for unitary groups, 2004; Labesse, Changement de base CM et séries discrètes, 2011.
 -/
+
+@[expose] public section
 
 namespace New
 
@@ -86,8 +97,8 @@ lemma exists_heckeAlgebra_inner_eq_inner_translate {γ : Gf D.E D.RowIndex}
     h_closed.isClosedEmbedding_subtypeVal.isCompact_preimage isCompact_stdLevel
   have h_open : IsOpen (K.comap (MulAut.conj g⁻¹).toMonoidHom : Set D.offLevelGroup) :=
     (IsTopologicalGroup.continuous_conj g⁻¹).isOpen_preimage _
-      (isOpen_stdLevel.preimage continuous_subtype_val)
-  have h_fin := H.fintypeOfIndexNeZero (h_compact.relIndex_ne_zero h_open)
+      (isOpen_stdLevel.preimage continuous_subtypeVal)
+  let h_fin := H.fintypeOfIndexNeZero (h_compact.relIndex_ne_zero h_open)
   let a : ℂ[D.offLevelGroup] := ∑ q : K ⧸ H, .single (q.out * g) 1
   have h_act {M : Type} [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ D.offLevelGroup M)
       (y : M) : ρ.asAlgebraHom a y = ∑ q : K ⧸ H, ρ (q.out * g) y := by
@@ -100,7 +111,7 @@ lemma exists_heckeAlgebra_inner_eq_inner_translate {γ : Gf D.E D.RowIndex}
       have h_mem : g⁻¹ * h * g ∈ K := by simpa [H, Subgroup.mem_subgroupOf] using hh
       have h_fix : ρ (g⁻¹ * h * g) y = y := by simpa using mem_levelSpace.1 hy ⟨g⁻¹ * h * g, h_mem⟩
       have h_mul : (k * h).val * g = k.val * g * (g⁻¹ * h * g) := by simp [mul_assoc]
-      rw [h_mul, map_mul, End.mul_apply, h_fix]
+      rw [h_mul, map_mul, mul_apply_eq_comp, h_fix]
     rw [h_act]
     simpa using sum_mul_out H (fun k : K ↦ ρ (k * g) y) h_inv
   -- The operator `p` acts as `a` on the forms of every space.
@@ -191,7 +202,7 @@ lemma exists_heckeAlgebra_eq_mul_inner_of_hasSum_rallisTerm
   have h_sum : HasSum (fun i ↦ (fun z y ↦ a * D.rallisTerm ϑ j V z y i,
       fun z y ↦ a' * D.rallisTerm ϑ j V' z y i)) (B, B') :=
     (Pi.hasSum.2 fun z ↦ Pi.hasSum.2 (hB z)).prodMk (Pi.hasSum.2 fun z ↦ Pi.hasSum.2 (hB' z))
-  have h_mem : (B, B') ∈ N := N.closed_of_finiteDimensional.mem_of_tendsto h_sum
+  have h_mem : (B, B') ∈ N := N.isClosed_of_finiteDimensional.mem_of_tendsto h_sum
     (.of_forall fun t ↦ sum_mem fun i _ ↦ h_term i)
   obtain ⟨T, h_hecke, h_image⟩ := h_mem
   obtain ⟨p, hp⟩ : ∃ p : D.heckeAlgebra, (ev V).prod (ev V') p = T := mem_range.1 h_hecke
@@ -255,7 +266,7 @@ lemma trace_mul_tupleIdem_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasG
   have hf_acts {s : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex s) (y : D.principalForms W) :
       ((T.val W * (D.principalRep W).asAlgebraHom (tupleIdem D.RowIndex c)) y).val =
         (W.formRep (typeKernel D.paramW s)).asAlgebraHom f y := by
-    rw [End.mul_apply, hT, coe_principalRep_asAlgebraHom_apply, map_mul, End.mul_apply]
+    rw [mul_apply_eq_comp, hT, coe_principalRep_asAlgebraHom_apply, map_mul, mul_apply_eq_comp]
   have h_rank : 2 ≤ Fintype.card D.RowIndex := D.nat_le_of_hasLogBound
   have h_gap : gapThreshold D.RowIndex (10 * Fintype.card D.RowIndex ^ 5) ≤ D.gap :=
     D.nat_le_of_hasLogBound
@@ -280,8 +291,10 @@ Hecke operator away from `M` has the same characteristic polynomial on the good 
 theorem charpoly_heckeOnGood_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
     [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap] (T : D.heckeAlgebra) :
     (D.heckeOnGood V T).charpoly = (D.heckeOnGood V' T).charpoly := by
-  exact charpoly_eq_of_trace_pow_eq fun l ↦ by
+  refine LinearMap.charpoly_eq_of_trace_pow_eq (Nat.cast_injective (R := ℂ) ?_) fun l _ _ ↦ by
     rw [← map_pow, ← map_pow, D.trace_heckeOnGood_eq V V']
+  -- The dimensions agree, being the traces of the identity.
+  simpa using D.trace_heckeOnGood_eq V V' 1
 
 /-- Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. Then a spherical
 Hecke operator away from `M` has the same determinant on the good forms of `V` and of `V'`. -/

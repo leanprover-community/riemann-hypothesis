@@ -1,5 +1,10 @@
-import Lib.Cohomology.Etale.Basic
-import Lib.PadicHodge.PeriodRings.Ainf
+module
+
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Regular.IsSMulRegular
+import Mathlib.RingTheory.TotallySplit
+public import Lib.Cohomology.Etale.Basic
+public import Lib.PadicHodge.PeriodRings.Ainf
 
 /-!
 # Divided power ideal, p-adic test rings, tilt, Witt vectors and reduction modulo p
@@ -36,6 +41,8 @@ Known; see `Lib.PadicComparison.Crystalline.ComparisonMap`, `Lib.PadicComparison
 `Lib.PadicComparison.Descent.AlmostDescent` and `Lib.PadicComparison.HodgeTate.PeriodMap` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -99,15 +106,15 @@ abbrev CrysTest : Type 1 := FullSubcategory fun A : CommAlg S ↦ IsCompleteTors
 to k-algebras, with 𝔡 the ideal `New.Variety.pdIdeal`. -/
 def pdReduction (r : k →+* B ⧸ pdIdeal B) : CrysTest B ⥤ CommAlg k := by
   -- `A ⧸ pdIdeal A` is a `k`-algebra through `k → B ⧸ pdIdeal B → A ⧸ pdIdeal A`.
-  let (A : CrysTest B) := ((pdQuotientMap (algebraMap B A.1)).comp r).toAlgebra
+  let (A : CrysTest B) := ((pdQuotientMap (algebraMap B A.obj)).comp r).toAlgebra
   refine
-    { obj A := .of k (A.1.1 ⧸ pdIdeal A.1.1)
+    { obj A := .of k (A.obj.carrier ⧸ pdIdeal A.obj.carrier)
       map f :=
-        ConcreteCategory.ofHom ⟨pdQuotientMap f.1.1.1, fun a ↦ by
+        ConcreteCategory.ofHom ⟨pdQuotientMap f.hom.hom'.toRingHom, fun a ↦ by
           -- On a representative `b : B` of `r a` this says that `f` is a `B`-algebra map.
           change pdQuotientMap _ (pdQuotientMap _ (r a)) = pdQuotientMap _ (r a)
           obtain ⟨b⟩ := r a
-          exact congrArg (pdQuotientMk _) (f.1.1.commutes' b)⟩
+          exact congrArg (pdQuotientMk _) (f.hom.hom'.commutes' b)⟩
       map_id _ := ?_
       map_comp _ _ := ?_ }
   -- Both functor laws hold on representatives.
@@ -230,7 +237,7 @@ abbrev Comparison.restrict : Comparison N (φ ⋙ N) := of φ (𝟙 (φ ⋙ N))
 T-algebras. -/
 def algBaseChange : CommAlg S ⥤ CommAlg T where
   obj A := CommAlgCat.of T (T ⊗[S] A)
-  map f := CommAlgCat.ofHom (Algebra.TensorProduct.lTensor T f.1)
+  map f := CommAlgCat.ofHom (Algebra.TensorProduct.lTensor T f.hom')
 
 /-- In a nontrivial ring that is `p`-adically complete, `p` is not a unit. -/
 instance not_isUnit_p [Nontrivial S] [IsAdicComplete (span {(p : S)}) S] : Fact ¬IsUnit (p : S) :=
@@ -286,7 +293,8 @@ instance isAdicComplete_prodRing : IsAdicComplete (span {(p : c.ProdRing)}) c.Pr
   have h_smodEq (x y : c.ProdRing) (n : ℕ) :
       x ≡ y [SMOD (span {(p : c.ProdRing)} ^ n • ⊤ : Ideal c.ProdRing)] ↔
         ∀ i : c.Index, x i ≡ y i [SMOD (span {(p : c.Cell i)} ^ n • ⊤ : Ideal (c.Cell i))] := by
-    simp only [smodEq_span_pow_iff_dvd, pi_dvd_iff, Pi.pow_apply, Pi.natCast_apply, Pi.sub_apply]
+    simp only [TauCeti.sModEq_span_singleton_pow_iff, pi_dvd_iff, Pi.pow_apply, Pi.natCast_apply,
+      Pi.sub_apply]
   refine { haus' := fun x hx ↦ funext fun i ↦ ?_, prec' := fun f hf ↦ ?_ }
   · exact (c.isCell i).haus (x i) fun n ↦ (h_smodEq x 0 n).mp (hx n) i
   · have h_lim (i : c.Index) : ∃ L : c.Cell i, ∀ n : ℕ,
@@ -502,7 +510,7 @@ lemma IsReductionMod.surjective {R A B : Type*} [SMul R A] [Zero B] {m : R} {g :
 lemma IsReductionMod.exact {R A B : Type*} [SMul R A] [Zero B] {m : R} {g : A → B}
     (h_red : IsReductionMod m g) : Exact (m • ·) g := h_red.right
 
-private lemma subsingleton_wittVector {q : ℕ} {R : Type*} [CommRing R] [Subsingleton R] :
+private lemma subsingleton_wittVector {q : ℕ} {R : Type*} [Subsingleton R] :
     Subsingleton (WittVector q R) :=
   ⟨fun x y ↦ WittVector.ext fun n ↦ Subsingleton.elim (x.coeff n) (y.coeff n)⟩
 

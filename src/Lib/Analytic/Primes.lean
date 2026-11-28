@@ -1,3 +1,14 @@
+module
+
+import TauCeti.NumberTheory.ArithmeticFunction.VonMangoldt
+public import Mathlib.NumberTheory.LSeries.PrimesInAP
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Dynamics.Newton
+import Mathlib.NumberTheory.LSeries.Linearity
+import Mathlib.Order.CompletePartialOrder
+public import Lib.Analytic.PrimeNumberTheorem.LFunctionGrowth
+import Lib.Analytic.EntireLFunction
 import Lib.Analytic.PrimeNumberTheorem.ZeroFreeRegion
 
 /-!
@@ -25,6 +36,8 @@ moduli that are powers of a fixed multiple of `4`. Source: Montgomery and Vaugha
 Number Theory I, 2007, Cor. 11.19.
 -/
 
+@[expose] public section
+
 /-! ## A lower bound for Euler's totient -/
 
 section TotientBound
@@ -35,22 +48,15 @@ open Finset Real Nat Prime
 `∏ p ∈ S, (1 - p⁻¹) ≥ a / (a + #S)`. -/
 lemma New.div_add_card_le_prod_one_sub_inv (S : Finset ℕ) (a : ℕ) (ha : ∀ p ∈ S, a < p) :
     (a : ℚ) / (a + #S) ≤ ∏ p ∈ S, (1 - (p : ℚ)⁻¹) := by
-  -- Remove the least element `b` of `S`: by induction the product is at least
-  -- `(1 - b⁻¹) * b / (b + #S - 1) = (b - 1) / (b + #S - 1)`, and `a ≤ b - 1`.
+  -- Remove the least element `b` of `S` and apply induction.
   induction S using Finset.induction_on_min generalizing a with
   | empty => simp [div_self_le_one]
   | insert b S b_min ih =>
     have hab : (a : ℚ) + 1 ≤ b := mod_cast ha b (mem_insert_self b S)
-    have hb : 0 < (b : ℚ) := lt_of_lt_of_le (by positivity) hab
-    have hb_notMem : b ∉ S := fun h ↦ (b_min b h).false
-    rw [prod_insert hb_notMem, card_insert_of_notMem hb_notMem, Nat.cast_succ]
-    calc
-      (a : ℚ) / (a + (#S + 1)) ≤ (b - 1) / (b + #S) := by
-        rw [div_le_div_iff₀ (by positivity) (by positivity)]
-        nlinarith
-      _ = (1 - (b : ℚ)⁻¹) * (b / (b + #S)) := by field_simp
-      _ ≤ (1 - (b : ℚ)⁻¹) * ∏ p ∈ S, (1 - (p : ℚ)⁻¹) :=
-        mul_le_mul_of_nonneg_left (ih b b_min) (sub_nonneg.2 (cast_inv_le_one b))
+    rw [prod_insert fun h ↦ (b_min b h).false, card_insert_of_notMem fun h ↦ (b_min b h).false]
+    refine le_trans ?_ (mul_le_mul_of_nonneg_left (ih b b_min) (sub_nonneg.2 (cast_inv_le_one b)))
+    rw [Nat.cast_succ, ← mul_div_assoc, div_le_div_iff₀ (by positivity) (by linarith)]
+    nlinarith [mul_inv_cancel₀ (a := (b : ℚ)) (by linarith)]
 
 /-- Every positive integer satisfies `n ≤ φ n * (2 * log n + 1)`. -/
 lemma New.le_totient_mul_log {n : ℕ} (hn : 0 < n) : n ≤ φ n * (2 * Real.log n + 1) := by
@@ -89,23 +95,17 @@ lemma New.factorsThrough_sq_of_sq_eq_one {M k : ℕ} [NeZero M] (hM : 4 ∣ M) (
     χ.FactorsThrough (M ^ 2) := by
   refine (χ.factorsThrough_iff_ker_unitsMap (pow_dvd_pow M hk)).mpr fun u hu ↦ ?_
   obtain ⟨m, hm⟩ := hM
-  obtain ⟨t, ht⟩ : (↑(M ^ 2) : ℤ) ∣ 1 - (u : ZMod (M ^ k)).cast :=
-    (intCast_eq_intCast_iff_dvd_sub u.val.cast 1 (M ^ 2)).mp
-      (by simpa [unitsMap_def] using congrArg Units.val (MonoidHom.mem_ker.1 hu))
-  have u_lin : 1 - (u : ZMod (M ^ k)) = M ^ 2 * t := by
-    simpa using congrArg (Int.cast : ℤ → ZMod (M ^ k)) ht
-  -- Newton's iteration from `0` solves `c ^ 2 + c = -M * m * t`, as the right side is nilpotent;
-  -- then `(1 + 2 * c) ^ 2 = 1 - 4 * M * m * t = u`
-  obtain ⟨c, hc⟩ : ∃ c : ZMod (M ^ k), M * m * t + c ^ 2 + c = 0 := by
-    have h_nil : IsNilpotent ((M : ZMod (M ^ k)) * m * t) :=
-      ⟨k, by simp [mul_pow, natCast_pow_eq_zero_of_le]⟩
-    obtain ⟨c, ⟨-, hc⟩, -⟩ := existsUnique_nilpotent_sub_and_aeval_eq_zero (x := (0 : ZMod (M ^ k)))
-      (P := C ((M : ZMod (M ^ k)) * m * t) + X ^ 2 + X) (by simpa using h_nil) (by simp)
-    exact ⟨c, by simpa using hc⟩
-  have hM_cast : (M : ZMod (M ^ k)) = 4 * m := by simp [hm]
-  have u_eq : u = (1 + 2 * c) ^ 2 := by linear_combination -u_lin - 4 * hc - M * t * hM_cast
-  refine Units.ext ?_
-  simpa [u_eq, ← pow_apply', hχ] using one_apply_coe u
+  obtain ⟨t, ht⟩ := (intCast_eq_intCast_iff_dvd_sub u.val.cast 1 (M ^ 2)).mp
+    (by simpa [unitsMap_def] using congrArg Units.val (MonoidHom.mem_ker.1 hu))
+  -- Newton's iteration from `0` solves `c ^ 2 + c = -M * m * t`, so `(1 + 2 * c) ^ 2 = u`.
+  obtain ⟨c, ⟨-, hc⟩, -⟩ := existsUnique_nilpotent_sub_and_aeval_eq_zero (x := (0 : ZMod (M ^ k)))
+    (P := C ((M : ZMod (M ^ k)) * m * t) + X ^ 2 + X)
+    ⟨k, by simp [mul_pow, natCast_pow_eq_zero_of_le]⟩ (by simp)
+  replace ht := congrArg (Int.cast : ℤ → ZMod (M ^ k)) ht
+  simp at ht hc
+  have u_eq : (u : ZMod (M ^ k)) = (1 + 2 * c) ^ 2 := by
+    linear_combination -ht - 4 * hc - M * t * (by simp [hm] : (M : ZMod (M ^ k)) = 4 * m)
+  exact Units.ext <| by simpa [u_eq, ← pow_apply', hχ] using one_apply_coe u
 
 /-- If `4 ∣ M` and `2 ≤ k`, then for a character `χ` mod `M ^ k` with trivial square there is a
 character `χ₀` mod `M ^ 2` with `regularL χ = regularL χ₀`, as the two moduli have the same prime
@@ -154,7 +154,7 @@ lemma New.eventually_norm_logDeriv_entireL_le_near_one (A : ℕ) {M : ℕ} [NeZe
   have hl_pow : 0 < l ^ 25 := pow_pos (by linarith) 25
   replace h_pow : 2 * l ^ 25 ≤ X := (le_abs_self _).trans (h_pow.trans_eq (abs_of_pos hX_pos))
   have h_exp : rexp l = X ^ A * X := by
-    rw [l_def, Real.exp_nat_mul, Real.exp_log hX_pos, pow_succ]
+    rw [l_def, Real.exp_natCast_mul, Real.exp_log hX_pos, pow_succ]
   have h_one : 1 ≤ X ^ A := one_le_pow₀ (by linarith)
   have h_re_lower : 1 - 1 / l ^ 25 ≤ s.re := by
     have h_inv_le : X⁻¹ ≤ 1 / l ^ 25 := by
@@ -178,22 +178,11 @@ lemma New.norm_term_le_exp_mul (a : ℕ → ℂ) {z : ℂ} (σ E : ℝ) {n : ℕ
     ‖term a (1 + z) n‖ ≤ Real.exp E * ‖term a (1 + σ) n‖ := by
   obtain rfl | hn := eq_or_ne n 0
   · simp
-  -- `↓cpow_add` must fire before simp rewrites the exponent.
-  have h_eq : ‖term a (1 + z) n‖ = Real.exp (Real.log n * (σ - z.re)) * ‖term a (1 + σ) n‖ := by
-    simp [hn, ↓cpow_add, cpow_def, norm_exp, field, mul_sub, Real.exp_sub, ← natCast_log]
-  grw [h_eq, h_le]
-
-/-- The Dirichlet series of the function that is `Λ n` at the numbers `n` that are not prime and
-`0` at the primes converges absolutely at `3 / 4 = 1 + -4⁻¹`, because Chebyshev's functions satisfy
-`ψ - θ = O(√x)`. -/
-lemma New.summable_vonMangoldt_not_prime : Summable fun n : ℕ ↦
-    ‖term (fun m : ℕ ↦ ((if m.Prime then 0 else vonMangoldt m : ℝ) : ℂ)) (1 + -4⁻¹) n‖ := by
-  have h_bigO : (fun n : ℕ ↦ ∑ m ∈ Finset.Icc 1 n, if m.Prime then 0 else vonMangoldt m) =O[atTop]
-      fun n : ℕ ↦ (n : ℝ) ^ (2⁻¹ : ℝ) := by
-    simpa [Function.comp_def, psi_sub_theta_eq_sum_not_prime, sum_filter, sqrt_eq_rpow,
-      ← Finset.Icc_add_one_left_eq_Ioc] using isBigO_psi_sub_theta_sqrt.natCast_atTop
-  exact (LSeriesSummable_of_sum_norm_bigO_and_nonneg h_bigO
-    (fun m ↦ by split_ifs <;> simp [vonMangoldt_nonneg]) (by simp) (by norm_num)).norm
+  have hn_pos : 0 < (n : ℝ) := Nat.cast_pos.2 (Nat.pos_of_ne_zero hn)
+  simp only [norm_term_eq, ite_eq_right hn, add_re, one_re, ofReal_re]
+  rw [show 1 + z.re = (1 + σ) - (σ - z.re) by ring,
+    Real.rpow_sub hn_pos, div_div_eq_mul_div, mul_comm ‖a n‖, mul_div_assoc]
+  grw [Real.rpow_def_of_pos hn_pos (σ - z.re), h_le]
 
 /-- For `0 < re z` the Dirichlet series of `Λ` on the class `1` mod `q` has at `1 + z` the sum
 `(1 - z * ∑ χ, L_χ'/L_χ (1 + z)) / φ(q) / z`. Here `L_χ = entireL χ` is `L(s, χ)` with the pole
@@ -378,7 +367,6 @@ lemma New.analyticOnNhd_sub_mul_sum_term (q : ℕ) [NeZero q] (N : ℕ) {r : ℝ
         z * ∑ n ∈ .range N, term (fun n : ℕ ↦ (residueClass (1 : ZMod q) n : ℂ)) (1 + z) n)
       (Metric.closedBall 0 r) := by
   intro z hz
-  have hz_ne (χ : DirichletCharacter ℂ q) : entireL χ (1 + z) ≠ 0 := h_ne z (by simpa using hz) χ
   have h_term (i : ℕ) : AnalyticAt ℂ
       (fun s : ℂ ↦ term (fun n : ℕ ↦ (residueClass (1 : ZMod q) n : ℂ)) s i) (1 + z) :=
     Differentiable.analyticAt (fun s ↦ (hasDerivAt_term _ i s).differentiableAt) _
@@ -395,7 +383,14 @@ theorem New.exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M)
   -- `exp (2 - U z - X (1 + X z)² / 4)` is at most `3 U` on `‖z‖ = 1 / X`, yet of size
   -- `e ^ (X / 4 - 2) / φ(q)` at `0`.
   let b (n : ℕ) : ℂ := ↑(if n.Prime then 0 else vonMangoldt n : ℝ)
-  obtain ⟨C, hC⟩ : Summable fun n ↦ ‖term b (1 + -4⁻¹) n‖ := summable_vonMangoldt_not_prime
+  have h_sum : Summable fun n ↦ ‖term b (1 + -4⁻¹) n‖ := by
+    refine (vonMangoldt.summable_nonprime_div_rpow (σ := (1 + -(4 : ℂ)⁻¹).re)
+      (by norm_num [Complex.inv_re, Complex.normSq_apply])).congr fun n ↦ ?_
+    rw [norm_term_eq]
+    by_cases hn : n = 0
+    · simp [hn]
+    simp [b, hn, apply_ite, abs_of_nonneg vonMangoldt_nonneg]
+  obtain ⟨C, hC⟩ := h_sum
   -- Take `X` large: `q, U ≤ X ^ (2 * A)`, so `3 * U * q ≤ 3 * X ^ (4 * A) < e ^ (X / 4 - 2)`.
   -- The substitution `W = X ^ 2` turns "for large `W`" into "for large `X = √W`".
   rw [← comap_sqrt_atTop, eventually_comap]

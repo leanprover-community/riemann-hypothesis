@@ -1,4 +1,7 @@
-import New.UpperBound.Objects.Rows
+module
+
+public import New.UpperBound.Objects.Rows
+public import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
 
 /-!
 # The chain of theta lifts ι_μ along the spaces Y_j: level, character and 𝖦-equivariance
@@ -28,6 +31,8 @@ Notions from other files:
 * `New.Data.pointDatumY`: the finite datum on Hom(Y_j, Y_{j+1}), the indicator of the inclusion
   modulo the level places and the vacuum elsewhere.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -395,7 +400,7 @@ lemma lowerChain_mem_levelSpace (ϑ : D.TameChar) (y : D.principalForms (D.space
     simp only [lastLevelChar, MonoidHom.finsetProd_apply]
     rfl
   refine (algFormRep_lowerChain ϑ 1 y ⟨k.val, hk⟩ g rfl h_tri h_first).trans ?_
-  rw [← h_scalar, map_one, Module.End.one_apply]
+  rw [← h_scalar, map_one, one_apply_eq_self]
   rfl
 
 /-- The map ι_μ with its target restricted to the space of algebraic forms on Y_m with level J_m

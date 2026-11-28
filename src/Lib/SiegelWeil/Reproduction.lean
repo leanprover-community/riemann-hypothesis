@@ -1,6 +1,22 @@
+module
+
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Weil.DualPair.HolomorphicData
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
+public import Lib.General.LinearAlgebra.MatrixPolynomials
+public import Lib.Weil.Lift
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 import Lib.DiscreteSeries.Holomorphic.ModelFunction
+import Lib.DiscreteSeries.Theta.LocalCorrespondence
+import Lib.GLn.SchurModule.WeylKernel
+import Lib.General.LinearAlgebra.BlockEmbeddings
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.SiegelWeil.RallisInner.SharpData
-import Lib.Weil.DualPair.HolomorphicData
 
 /-!
 # Holomorphic Fock vectors and a reproducing formula by theta lifts
@@ -45,6 +61,8 @@ Fourier-Jacobi-Entwicklung Siegelscher Eisensteinreihen, Math. Z. 183 (1983); J.
 
 See also `Lib.Weil.Fock.OscillatorPair` and `Lib.Weil.DualPair.HolomorphicData`.
 -/
+
+@[expose] public section
 
 namespace New.Rows
 
@@ -135,7 +153,7 @@ lemma polyMatrixCoeff_eq_holMinorsPi_mul_conj (s : n → ℤˣ) (s' : n' → ℤ
     have h_neg {k : InfinitePlace E × n' × n} (hk : σ k ≠ 1) : pderiv k P = 0 :=
       pderiv_eq_zero_of_notMem_vars fun hk' ↦ hk (mem_supported.1 hP hk')
     by_cases hj : σ j = 1
-    · rw [New.pderiv_comm, h_neg (h.trans_eq hj), map_zero]
+    · rw [MvPolynomial.pderiv_comm, h_neg (h.trans_eq hj), map_zero]
     · rw [h_neg hj, map_zero]
   let t : ℂ := ∏ w : InfinitePlace E, principalMinor (u⁻¹ w) (fun k : n ↦ s k = 1) ^ ν w *
     principalMinor (u⁻¹ w) (fun k : n ↦ s k = -1) ^ c w
@@ -182,9 +200,9 @@ lemma prod_variableMinor_mem_holomorphicData {O : p ⊕ q → ℤ}
   let T (w : InfinitePlace E) : FockDualPair (1 : n' → ℤˣ) (1 ⊕ᵥ -1 : p ⊕ q → ℤˣ) (n' × (p ⊕ q)) :=
     FockDualPair.std 1 (1 ⊕ᵥ -1) (γ w) (-0) -- `-0`, as in `prod_mem_holomorphicData`
   let ν (w : InfinitePlace E) (r : n') : ℤ :=
-    (T w).vacuumWeight 1 + ∑ t : Fin d, ∑ a : p with ρ t a = r, ((T w).varSign (r, κ t a)).1
+    (T w).vacuumWeight 1 + ∑ t : Fin d, ∑ a : p with ρ t a = r, ((T w).varSign (r, κ t a)).val
   have h_rows (w : InfinitePlace E) : IsLayering (T w) 0 (ν w) ρ κ :=
-    { injective _ := i.2, sign_eq := by simp [κ], closed := by simp, weight_eq _ := rfl }
+    { injective _ := i.inj', sign_eq := by simp [κ], closed := by simp, weight_eq _ := rfl }
   have h_cols (w : InfinitePlace E) : IsLayering (T w).swap (-O) (-d ⊕ᵥ card n') κ ρ :=
     { injective _ := inl_injective, sign_eq := by simp, closed := by simp [κ, T]
       weight_eq := by simp [κ, T, filter_eq', vacuumWeight, pairSign] }
@@ -293,7 +311,7 @@ its lift by the datum (`modDatum`) of `Q₀` and of the indicator of the matrix 
 `𝔪` vanishes, then `realConv (holMinorsPi s u) ψ`, the convolution of `ψ` with it over the real
 points, vanishes. -/
 lemma realConv_holMinorsPi_eq_zero_of_lift_eq_zero (ho : IsPosFirstOrder s O) {E : Type} [Field E]
-    [CMType E] [WeilData E] {𝔪 : Modulus E} {N : 𝓞 E} [Fact (N ≠ 0)]
+    [CMType E] [WeilData E] {𝔪 : Modulus E} {N : 𝓞 E}
     (hN : 𝔪.ideal = Ideal.span {N}) (h𝔪 : Nonempty 𝔪.places) (S : Space E n s) {c b : AutChar E}
     {γ' γ : InfinitePlace E → ℤ} {u : InfinitePlace E → n → ℤ} (hb : b.HasWeight γ 1)
     (h_dom : ∀ w : InfinitePlace E, IsKDominant s O (u w)) (h_int : Integrable (holMinorsPi s u))
@@ -315,7 +333,7 @@ lemma realConv_holMinorsPi_eq_zero_of_lift_eq_zero (ho : IsPosFirstOrder s O) {E
   have coeff (h : GInf E s) : φ h = holMinorsPi s u h * fockInner v₀ v₀ := by
     simpa [Prod.mk_one_one] using (hQ₀_hol (fockInner v₀)).eq_holMinorsPi_mul ho h_dom hermitian h
   -- The finite datum of `Ψ` is sharp for the level `1 mod 𝔪`, under which `ψ` is invariant.
-  have sharp : IsSharp b 𝔪.places.conjClosure (vacuumDatum S (stdSpace E n') 𝔪 Ψ).1
+  have sharp : IsSharp b 𝔪.places.conjClosure (vacuumDatum S (stdSpace E n') 𝔪 Ψ).val
       (𝔪.levelOfSubgroup ⊥) (star Ψ ⬝ᵥ Ψ / card (n' × n → 𝔪.ResidueRing) / card
         (GL n 𝔪.ResidueRing)) :=
     isSharp_vacuumDatum_of_mul_eq_one _ b (.inr h𝔪) (inclMatrix 𝔪.ResidueRing e)ᵀ
@@ -341,7 +359,7 @@ indicator of the matrix of the inclusion `e` modulo `𝔪` (the datum `modDatum`
 paired by `integrated` with the Schrödinger operator of that indicator on the vacuum), vanishes,
 then the lift by `Q₀` vanishes everywhere. -/
 lemma lift_modDatum_eq_zero_of_mem_span {E : Type} [Field E] [CMType E] [WeilData E]
-    {𝔪 : Modulus E} {N : 𝓞 E} [Fact (N ≠ 0)] (hN : 𝔪.ideal = Ideal.span {N}) (S : Space E n s)
+    {𝔪 : Modulus E} {N : 𝓞 E} (hN : 𝔪.ideal = Ideal.span {N}) (S : Space E n s)
     {c b : AutChar E} {γ' : InfinitePlace E → ℤ} (hc : c.HasWeight γ' 1) (e : n ↪ n')
     {Q₀ : MvPolynomial (InfinitePlace E × n' × n) ℂ} {ι : Type*}
     (Q : StdClasses (principalLevel n' N) → ι → MvPolynomial (InfinitePlace E × n' × n) ℂ)
@@ -364,16 +382,17 @@ lemma lift_modDatum_eq_zero_of_mem_span {E : Type} [Field E] [CMType E] [WeilDat
   ext y
   obtain ⟨p, g, w, hy⟩ :=
     exists_eq_map_mul_rep_mul T.embFin (principalLevel n' N) (fun p ↦ p.out_eq) y.2
-  have y_eq : y = T.ratEmbed g * (1, p.out) * (1, w.1) * ((T.ratEmbed g⁻¹ * y).1, 1) :=
+  have y_eq : y = T.ratEmbed g * (1, p.out) * (1, w.val) * ((T.ratEmbed g⁻¹ * y).1, 1) :=
     Prod.ext (by simp) (hy.trans (mul_one _).symm)
   have fixed (v : PairFock E s (1 : n' → ℤˣ)) :
-      pairWeil S T c b (1, 1, w.1) (modDatum S T 𝔪 Ψ v) = modDatum S T 𝔪 Ψ v := by
-    simpa [hc.apply_det_eq_one w.2.1, (𝔪.mem_principalLevel_iff hN _).1, Prod.mk_one_one] using
-      pairWeil_modDatum_stdLevel S T c b 𝔪 1 ⟨w, w.2.1⟩ Ψ v
+      pairWeil S T c b (1, 1, w.val) (modDatum S T 𝔪 Ψ v) = modDatum S T 𝔪 Ψ v := by
+    simpa [hc.apply_det_eq_one w.property.1, (𝔪.mem_principalLevel_iff hN _).1,
+      Prod.mk_one_one] using
+      pairWeil_modDatum_stdLevel S T c b 𝔪 1 ⟨w, w.property.1⟩ Ψ v
   -- `Λ` sends `v` to the lift of `ψ` by the datum of `v` and `Ψ` at the class `p`.
   let Λ : PairFock E s (1 : n' → ℤˣ) →ₗ[ℂ] ℂ :=
     .proj (1, p.out) ∘ₗ K.liftBilin.flip ⟨ψ, h_rapid⟩ ∘ₗ ((integrated (S.hom T)).flip
-      ((S.hom T).schrodingerOp 𝔪.places (𝔪.liftFn (Ψ ∘ vecToMatrix)) (S.hom T).vacElem)).1
+      ((S.hom T).schrodingerOp 𝔪.places (𝔪.liftFn (Ψ ∘ vecToMatrix)) (S.hom T).vacElem)).toLinearMap
   have hΛ (v : PairFock E s (1 : n' → ℤˣ)) : Λ v = lift K (modDatum S T 𝔪 Ψ v) ψ (1, p.out) := rfl
   have moved (v : PairFock E s (1 : n' → ℤˣ)) : lift K (modDatum S T 𝔪 Ψ v) ψ y =
       Λ (realPairWeil (s := s) (s' := 1) γ' 0 (1, (T.ratEmbed g⁻¹ * y).1) v) := by
@@ -428,11 +447,11 @@ lemma reproducing_formula_modKernel (ho : IsPosFirstOrder s O) {E : Type} [Field
     .proj (1, i.1.out) ∘ₗ
       K.liftBilin (modDatum S T 𝔪 Ψ (polyVector _ (Q i.1 i.2))) ∘ₗ inclusion inf_le_left
   have integrable (ψ : rapidOfLevel S N) :
-      Integrable fun h : GInf E s ↦ holMinorsPi s u h * ψ.1 (x * (h, 1)) := by
-    obtain ⟨⟨⟨h_cont, -⟩, h_decay⟩, -⟩ := ψ.2
+      Integrable fun h : GInf E s ↦ holMinorsPi s u h * ψ.val (x * (h, 1)) := by
+    obtain ⟨⟨⟨h_cont, -⟩, h_decay⟩, -⟩ := ψ.property
     exact (IsBoundedMeasurable.of_continuous h_decay.bounded h_cont).integrable_mul_comp h_int _
   let ℓ : rapidOfLevel S N →ₗ[ℂ] ℂ :=
-    { toFun ψ := realConv (holMinorsPi s u) ψ.1 x
+    { toFun ψ := realConv (holMinorsPi s u) ψ.val x
       map_add' ψ ψ' := by simp [realConv, mul_add, integral_add, integrable]
       map_smul' z ψ := by simp [realConv, mul_left_comm (holMinorsPi s u _) z, integral_const_mul] }
   suffices ker_le : ⨅ i : StdClasses (principalLevel n' N) × ι, (L i).ker ≤ ℓ.ker by

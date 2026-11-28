@@ -1,5 +1,7 @@
-import Lib.Cohomology.Etale.BijectiveComparisons
-import Lib.PadicComparison.Descent.TestCategory
+module
+
+public import Lib.Cohomology.Etale.BijectiveComparisons
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Flat base change in functor cohomology, and the base change adjunction for algebras
@@ -42,6 +44,8 @@ The arguments are the usual ones: the Yoneda lemma, exactness of tensoring with 
 the tensor-hom adjunction.
 -/
 
+@[expose] public section
+
 namespace New.Variety
 
 /-! ## Flat base change in functor cohomology: representable case and dévissage -/
@@ -73,11 +77,6 @@ noncomputable def Comparison.pullₗ (n : ℕ) :
     apply pull_push ⟨φ, _⟩
     ext
     apply_rules [ULift.ext, LinearMap.map_smul]
-
-/-- The linear comparison map `pullₗ` has the same values as the additive one. -/
-lemma Comparison.pullₗ_apply (x : H N (moduleCoeff Φ) n) :
-    pullₗ β α n x = (ofModuleHom φ β).pull α n x :=
-  rfl
 
 /-- For β: Φ∘φ → Φ' and m ∈ M, the maps of coefficients y ↦ m ⊗ y (`tensorWith.mk T m`) commute with
 β and M ⊗_S β, regarded as maps of coefficients in abelian groups (`coeffHom` of `ofModuleHom`):
@@ -120,10 +119,10 @@ noncomputable def HasBaseChange.yonedaEquiv₀ (Φ : C ⥤ ModuleCat S) (A : C) 
     Φ.obj A ≃ₗ[S] H (freeAb.obj (reprBy A)) (moduleCoeff Φ) 0 :=
   AddEquiv.toLinearEquiv
     (show Φ.obj A ≃+ H (freeAb.obj (reprBy A)) (moduleCoeff Φ) 0 from
-      (addEquiv₀.trans ((homReprEquiv A (moduleCoeff Φ)).trans .ulift)).symm) fun s x ↦ by
-    -- A scalar acts on classes by pushing along an endomorphism of the coefficients.
-    rw [smul_eq_push]
-    exact (push_homReprEquiv_symm (CoeffAction.act s : End (moduleCoeff Φ)).asHom A (.up x)).symm
+      (addEquiv₀.trans ((homReprEquiv A (moduleCoeff Φ)).trans .ulift)).symm) fun s x ↦
+    -- A scalar acts on classes by pushing along an endomorphism of the coefficients; this is
+    -- `smul_eq_push`, which holds by definition.
+    (push_homReprEquiv_symm (CoeffAction.act s : End (moduleCoeff Φ)).asHom A (.up x)).symm
 
 /-- `yonedaEquiv₀` sends x to the class of the map ℤ[h_A] → Φ that corresponds to x. -/
 lemma HasBaseChange.yonedaEquiv₀_apply (Φ : C ⥤ ModuleCat S) (A : C) (x : Φ.obj A) :
@@ -203,9 +202,9 @@ lemma HasBaseChange.devissage [Flat S M] :
   have h_hom (X : ShortComplex (AbFunctor C)) (hX : X.ShortExact) :
       Hom (tensoredSeq M Φ hX) (contravariant hX (moduleCoeff (Φ ⋙ tensorWith T M)))
         base base base :=
-    { comm_f := fun _ x ↦ baseChangeMap_lTensor_precompₗ _ _ x
-      comm_g := fun _ x ↦ baseChangeMap_lTensor_precompₗ _ _ x
-      comm_delta := fun _ x ↦ baseChangeMap_lTensor_precompₗ _ _ x }
+    { comm_f := fun n x ↦ baseChangeMap_lTensor_precompₗ (mk₀ X.g) n.zero_add x
+      comm_g := fun n x ↦ baseChangeMap_lTensor_precompₗ (mk₀ X.f) n.zero_add x
+      comm_delta := fun n x ↦ baseChangeMap_lTensor_precompₗ hX.extClass n.one_add x }
   refine ⟨⟨fun hX ↦ (h_hom _ hX).four_lemma⟩, fun N hN ↦ ?_, fun X hX ↦ (h_hom X hX).five_lemma⟩
   -- For the zero functor both sides are trivial.
   have (F : AbFunctor C) (n : ℕ) : Subsingleton (H N F n) := subsingleton_of_id_eq_zero hN F n

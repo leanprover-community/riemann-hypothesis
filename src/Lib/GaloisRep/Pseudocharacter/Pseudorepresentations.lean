@@ -1,5 +1,16 @@
-import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
+module
+
+import TauCeti.RepresentationTheory.Irreducible.ConjugatePow
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+public import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
+import Lib.General.LinearAlgebra.Eigenvalues
 import Lib.General.NumberTheory.PadicLimitsValuation
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Spanning criteria, limits of traces and pseudorepresentations
@@ -43,6 +54,8 @@ pseudo-caractères, J. Algebra 180 (1996); K. Conrad, Compact subgroups of GL_n(
 See also `Lib.GaloisRep.WeightCongruence`.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -51,19 +64,12 @@ noncomputable section
 A criterion for residual absolute irreducibility, in the strong form that the image of the group
 spans the matrix algebra over the coefficient ring
 (`New.Selmer.IsLatticeIn.span_range_eq_top_of_map_pow_eq_map_conj`). In the application `γ` and `φ`
-come from tame inertia and Frobenius at an auxiliary place. A spanning family has an absolutely
-irreducible reduction (`New.Selmer.eq_bot_or_eq_top_of_span_eq_top`), and its stable lattice is
-unique up to scalars (`New.Selmer.exists_eq_smul_of_conj_eq`).
+come from tame inertia and Frobenius at an auxiliary place.
 -/
 
 section ResidualIrreducibility
 
 open Matrix IsLocalRing Fintype Module Submodule Set End
-
-/-- The coordinates of a matrix in the standard basis are its entries. -/
-private lemma Matrix.stdBasis_repr_apply {R m : Type*} [CommRing R] [Fintype m]
-    (M : Matrix m m R) (i j : m) : (stdBasis R m m).repr M (i, j) = M i j :=
-  rfl
 
 /-- In a group, if `x ^ q = y⁻¹ * x * y`, then `x * y ^ k = y ^ k * x ^ q ^ k` for every `k`. -/
 private lemma mul_pow_eq_pow_mul_pow_pow_of_pow_eq_inv_mul_mul {M : Type*} [Group M] {x y : M}
@@ -75,15 +81,6 @@ private lemma mul_pow_eq_pow_mul_pow_pow_of_pow_eq_inv_mul_mul {M : Type*} [Grou
       _ = y ^ (k + 1) * (y⁻¹ * x ^ q ^ k * y) := by simp [pow_succ, mul_assoc]
       _ = y ^ (k + 1) * (y⁻¹ * x * y) ^ q ^ k := by simpa using (conj_pow (a := y⁻¹)).symm
       _ = y ^ (k + 1) * x ^ q ^ (k + 1) := by rw [← h, ← pow_mul, ← pow_succ']
-
-/-- Let `R : G →* M` be a homomorphism of groups and `R (γ * φ ^ d) = R (φ ^ d * γ)`. Then every
-`R (φ ^ a * γ ^ b)` commutes with `R (φ⁻¹ ^ d)`. -/
-private lemma commute_map_pow_mul_pow_map_inv_pow {G M : Type*} [Group G] [Group M] (R : G →* M)
-    {γ φ : G} {d : ℕ} (h_comm : R (γ * φ ^ d) = R (φ ^ d * γ)) (a b : ℕ) :
-    Commute (R (φ ^ a * γ ^ b)) (R (φ⁻¹ ^ d)) := by
-  have h_γ : Commute (R γ) (R (φ ^ d)) := by simpa only [map_mul, commute_iff_eq] using h_comm
-  simp only [map_mul, map_pow, map_inv, inv_pow] at h_γ ⊢
-  exact ((Commute.pow_pow_self (R φ) a d).mul_left (h_γ.pow_left b)).inv_right
 
 /-- If the differences `ζ ^ q ^ i - ζ ^ q ^ j` for distinct `i, j < d` have norm `1`, then the
 residues of the `ζ ^ q ^ i`, `i < d`, are pairwise distinct: a difference of norm `1` is a unit of
@@ -103,10 +100,8 @@ multiple of `1`. -/
 private lemma Matrix.exists_eq_smul_one_of_commute_of_span_eq_top {R n ι : Type*} [CommRing R]
     [Fintype n] [DecidableEq n] {v : ι → Matrix n n R} (h_span : Submodule.span R (range v) = ⊤)
     {M : Matrix n n R} (h_comm : ∀ i : ι, Commute (v i) M) : ∃ α : R, M = α • 1 := by
-  have h_scalar : M ∈ range (scalar n) := by
-    refine mem_range_scalar_of_commute_single fun i j _ ↦ ?_
-    exact .span_left (forall_mem_range.mpr h_comm) _ (h_span.ge Submodule.mem_top)
-  simpa [eq_comm, smul_one_eq_diagonal] using h_scalar
+  simpa [eq_comm, smul_one_eq_diagonal] using
+    mem_range_scalar_of_commute_of_span_eq_top h_span h_comm
 
 /-- A tame pair with incongruent conjugate eigenvalues spans all matrices. Let `u` be an
 `O`-lattice in `R`, `d = card n`, let conjugation by `φ` raise `R γ` to the power `q`, let
@@ -123,169 +118,40 @@ lemma New.Selmer.IsLatticeIn.span_range_eq_top_of_map_pow_eq_map_conj {G n : Typ
     span O (range u) = ⊤ ∧
     -- (b) `φ⁻¹ ^ card n` acts by a scalar
     ∃ α : ↑O, u (φ⁻¹ ^ card n) = α • 1 := by
-  -- Modulo the maximal ideal, `γ` has the eigenvectors `φ ^ j v` with the distinct eigenvalues
-  -- `ζ ^ q ^ j`. A Vandermonde argument makes the `(card n)²` matrices of `φ ^ a * γ ^ b`
-  -- independent, so they form a basis over `O`; and `φ⁻¹ ^ card n` commutes with all of them.
+  -- Tau Ceti's spanning criterion lifts the residual eigenvalue argument by Nakayama's lemma.
   have hζ_u : ((u γ).charpoly.map O.val.val).IsRoot (ζ : PadicAlgCl ℓ) := by
     rwa [h_lattice.charpoly_eq_map γ] at h_root
   obtain ⟨P, hP⟩ := h_lattice
   -- `u` is determined by `R`: `u a` is `R a` conjugated by `P`, read in `O`.
   have u_congr {a b : G} (hab : R a = R b) : u a = u b :=
     map_injective (f := O.val.val) Subtype.val_injective (by simp only [← hP, hab])
-  -- `τ` is the residual representation, `v` an eigenvector of `τ γ`.
-  let τ : G →* End (ResidueField O) (n → ResidueField O) :=
-    (toLinAlgEquiv'.toRingHom.comp (residue _).mapMatrix).toMonoidHom.comp u
-  obtain ⟨v, hv⟩ : ∃ v : n → ResidueField O, HasEigenvector (τ γ) (residue O ζ) v := by
-    refine ((hasEigenvalue_iff_isRoot_charpoly (τ γ) _).2 ?_).exists_hasEigenvector
-    show (toLin' ((u γ).map (residue O))).charpoly.IsRoot (residue O ζ)
-    rw [charpoly_toLin', charpoly_map]
+  have h_root_u : ((u γ).map (residue O)).charpoly.IsRoot (residue O ζ) := by
+    rw [charpoly_map]
     exact .map (residue O) (.of_map hζ_u O.val.subtype_injective)
   -- Iterating `h_tame`: conjugation by `φ ^ k` raises `R γ` to the power `q ^ k`.
   have h_conj (k : ℕ) : R (γ * φ ^ k) = R (φ ^ k * γ ^ q ^ k) := by
     simpa [map_mul, map_pow] using mul_pow_eq_pow_mul_pow_pow_of_pow_eq_inv_mul_mul
       (x := R γ) (y := R φ) (h_tame.trans (by simp)) k
-  have hφ_inj (j : ℕ) : Function.Injective (τ φ ^ j) := by
-    simpa [← map_pow] using (Representation.apply_bijective τ (φ ^ j)).injective
-  let μ (j : ℕ) : ResidueField O := residue O ζ ^ q ^ j
-  have h_eig (j : ℕ) : HasEigenvector (τ γ) (μ j) ((τ φ ^ j) v) := by
-    have h_act : τ (γ * φ ^ j) v = τ (φ ^ j * γ ^ q ^ j) v := by
-      simp only [τ, MonoidHom.comp_apply, u_congr (h_conj j)]
-    refine ⟨?_, (map_ne_zero_iff _ (hφ_inj j)).2 hv.right⟩
-    simpa [hv.pow_apply] using h_act
-  -- A difference of norm `1` is a unit of `O`, so it has non-zero residue.
-  have hμ_inj : Function.Injective fun j : Fin (card n) ↦ μ j :=
-    injective_residue_pow_pow_of_norm_sub_eq_one h_dist
+  have h_mul : u γ * u φ = u φ * u γ ^ q := by
+    simpa [map_mul, map_pow] using u_congr (h_conj 1)
   let w (p : Fin (card n) × Fin (card n)) : G := φ ^ (p.fst : ℕ) * γ ^ (p.snd : ℕ)
-  have h_indep (c : Fin (card n) × Fin (card n) → ResidueField O)
-      (hc : ∑ p, c p • τ (w p) = 0) (a b : Fin (card n)) : c (a, b) = 0 := by
-    -- Apply the relation to the eigenvector `φ ^ l v` and cancel `φ ^ l`.
-    have h_rel (l : Fin (card n)) :
-        ∑ a : Fin (card n), (∑ k, c (a, k) * μ l ^ (k : ℕ)) • (τ φ ^ (a : ℕ)) v = 0 := by
-      apply hφ_inj l
-      simpa [w, sum_prod_type, Finset.sum_smul, mul_smul, (h_eig l).pow_apply,
-        ← Module.End.mul_apply (_ ^ (l : ℕ)), pow_mul_comm _ l] using
-        LinearMap.congr_fun hc ((τ φ ^ (l : ℕ)) v)
-    -- The eigenvectors are independent, so a polynomial of degree `< card n` vanishes at all `μ l`.
-    have h_poly (l : Fin (card n)) : ∑ k, c (a, k) * μ l ^ (k : ℕ) = 0 := linearIndependent_iff.mp
-      (eigenvectors_linearIndependent' (τ γ) _ hμ_inj _ fun l ↦ h_eig l) _ (h_rel l) a
-    exact congrFun (eq_zero_of_forall_index_sum_mul_pow_eq_zero hμ_inj h_poly) b
-  -- The determinant of the `u (w p)` in the standard basis is a unit, as its residue is not zero.
-  let e : Basis (Fin (card n) × Fin (card n)) O (Matrix n n O) :=
-    (stdBasis O n n).reindex ((equivFin n).prodCongr (equivFin n))
-  have h_det : IsUnit (e.det (u ∘ w)) := by
-    have h_col : LinearIndependent (ResidueField O) ((e.toMatrix (u ∘ w)).map (residue O)).col := by
-      refine linearIndependent_iff.mpr fun c hc (a, b) ↦ h_indep c ?_ a b
-      ext i j
-      simpa [τ, e, Basis.toMatrix_apply, Matrix.stdBasis_repr_apply] using
-        congrFun hc (equivFin n j, equivFin n i)
-    rw [← isUnit_map_iff (residue O), Basis.det_apply, RingHom.map_det]
-    exact (linearIndependent_col_iff_isUnit.mp h_col).map detMonoidHom
-  have h_span : Submodule.span O (range (u ∘ w)) = ⊤ := (e.is_basis_iff_det.mpr h_det).right
+  have h_span : Submodule.span O (range (u ∘ w)) = ⊤ := by
+    simpa [Function.comp_def, w, map_mul, map_pow] using
+      IsLocalRing.span_range_pow_mul_pow_eq_top_of_mul_eq_mul_pow h_mul
+        ((Group.isUnit φ).map u) h_root_u (injective_residue_pow_pow_of_norm_sub_eq_one h_dist)
   refine ⟨eq_top_mono (span_mono (range_comp_subset_range w u)) h_span, ?_⟩
   -- By `h_conj` and `h_fix`, `R γ` commutes with `R φ ^ card n`, so `R (φ⁻¹ ^ card n)` commutes
   -- with every `R (w p)`. As `u` is `R` conjugated by `P`, read in `O`, also `u (φ⁻¹ ^ card n)`
   -- commutes with every `u (w p)`.
-  have h_comm_φ : R (γ * φ ^ card n) = R (φ ^ card n * γ) := by
-    rw [h_conj, map_mul, map_mul, h_fix]
+  have h_comm_φ : Commute (R γ) (R φ ^ card n) := by
+    rw [commute_iff_eq, ← map_pow, ← map_mul, ← map_mul, h_conj, map_mul, map_mul, h_fix]
   have h_comm (p : Fin (card n) × Fin (card n)) : Commute (u (w p)) (u (φ⁻¹ ^ card n)) := by
     have h_R : R (w p * φ⁻¹ ^ card n) = R (φ⁻¹ ^ card n * w p) := by
-      simpa only [w, map_mul] using (commute_map_pow_mul_pow_map_inv_pow R h_comm_φ _ _).eq
+      have h_pow :=
+          (Commute.pow_pow_self (R φ) p.1.val (card n)).mul_left (h_comm_φ.pow_left p.2.val)
+      simpa only [w, map_mul, map_pow, map_inv, inv_pow] using h_pow.inv_right.eq
     simpa only [map_mul, commute_iff_eq] using u_congr h_R
   exact Matrix.exists_eq_smul_one_of_commute_of_span_eq_top h_span h_comm
-
-/-- If the matrices `T g` span all of `M_n(O)` over a commutative ring `O`, then for every ring map
-`f` from `O` to a field `k`, the only subspaces of `kⁿ` stable under all `f (T g)` are `0` and `kⁿ`.
-For a local ring `O` this says that the reduction of `T` is absolutely irreducible. -/
-theorem New.Selmer.eq_bot_or_eq_top_of_span_eq_top {X n O k : Type} [Fintype n] [DecidableEq n]
-    [CommRing O] [Field k] (f : O →+* k) {T : X → Matrix n n O}
-    (h_span : span O (range T) = ⊤) (U : Submodule k (n → k))
-    (h_stable : ∀ g : X, ∀ v ∈ U, (T g).map f *ᵥ v ∈ U) :
-    U = ⊥ ∨ U = ⊤ := by
-  -- Every matrix over `O` is a combination of the `T g`, so its image under `f` also preserves `U`.
-  have h_all (x : Matrix n n O) : ∀ v ∈ U, x.map f *ᵥ v ∈ U := by
-    induction eq_top_iff'.1 h_span x using span_induction with
-    | mem x hx =>
-      obtain ⟨g, rfl⟩ := hx
-      exact h_stable g
-    | zero => simp
-    | add x y _ _ hx hy =>
-      intro v hv
-      simpa [Matrix.map_add, add_mulVec] using U.add_mem (hx v hv) (hy v hv)
-    | smul c x _ hx =>
-      intro v hv
-      simpa [Matrix.map_smul', smul_mulVec] using U.smul_mem (f c) (hx v hv)
-  -- If `v ∈ U` has `v j ≠ 0`, the matrix units move `v` to multiples of all basis vectors.
-  refine or_iff_not_imp_left.2 fun h_ne ↦ eq_top_iff'.2 fun w ↦ ?_
-  obtain ⟨v, hv, hv_ne⟩ := U.ne_bot_iff.1 h_ne
-  obtain ⟨j, hj⟩ : ∃ j : n, v j ≠ 0 := Function.ne_iff.1 hv_ne
-  have h_single (i : n) : Pi.single i (w i) =
-      (w i / v j) • ((Matrix.single i j 1 : Matrix n n O).map f *ᵥ v) := by
-    ext l
-    simp [single_mulVec, Pi.single_apply, Function.update_apply, hj]
-  rw [← Finset.univ_sum_single w]
-  simp only [h_single]
-  exact sum_mem fun i _ ↦ U.smul_mem _ (h_all _ v hv)
-
-/-- Let the matrices `T g` span all of `M_n(O)` over a coefficient ring `O`, and let `a` in
-`GL_n(ℚ̄_ℓ)` conjugate each `T g` to a matrix `T' g` over `O`. Then `a` is a scalar times an element
-of `GL_n(O)`. So the lattice `a Oⁿ` is a multiple of `Oⁿ`. -/
-theorem New.Selmer.exists_eq_smul_of_conj_eq {X n : Type} [Fintype n] [DecidableEq n] {ℓ : ℕ}
-    [ThePrime ℓ] {O : CoeffRing ℓ} {T T' : X → Matrix n n O} (h_span : span O (range T) = ⊤)
-    (a : GL n (PadicAlgCl ℓ))
-    (h_conj : ∀ g : X, a⁻¹.val * (T g).map O.val.val * a.val = (T' g).map O.val.val) :
-    ∃ (α : (PadicAlgCl ℓ)ˣ) (k : GL n O), a.val = α.val • k.val.map O.val.val := by
-  -- All products of an entry of `a⁻¹` with an entry of `a` lie in `O`. For an entry `α` of `a` of
-  -- largest norm, both `α⁻¹ a` and its inverse `α a⁻¹` then have entries in `O`.
-  rcases isEmpty_or_nonempty n with h_empty | h_nonempty
-  · exact ⟨1, 1, Subsingleton.elim _ _⟩
-  -- Conjugation by `a` preserves `M_n(O)`, which is spanned by the `T g`.
-  have h_int (x : Matrix n n O) :
-      ∃ y : Matrix n n O, a⁻¹.val * x.map O.val.val * a.val = y.map O.val.val := by
-    induction eq_top_iff'.1 h_span x using span_induction with
-    | mem x hx =>
-      obtain ⟨g, rfl⟩ := hx
-      exact ⟨T' g, h_conj g⟩
-    | zero => exact ⟨0, by simp⟩
-    | add x x' _ _ hx hx' =>
-      obtain ⟨y, hy⟩ := hx
-      obtain ⟨y', hy'⟩ := hx'
-      exact ⟨y + y', by rw [Matrix.map_add _ (map_add _), Matrix.map_add _ (map_add _), mul_add,
-        add_mul, hy, hy']⟩
-    | smul c x _ hx =>
-      obtain ⟨y, hy⟩ := hx
-      have h_map (z : Matrix n n O) : (c • z).map O.val.val = c.val • z.map O.val.val := rfl
-      exact ⟨c • y, by rw [h_map, h_map, Matrix.mul_smul, Matrix.smul_mul, hy]⟩
-  -- The product `a⁻¹ p i * a j q` is an entry of the conjugate of a matrix unit.
-  have h_prod (p i j q : n) : a⁻¹.val p i * a.val j q ∈ O.val := by
-    obtain ⟨y, hy⟩ := h_int (Matrix.single i j 1)
-    convert (y p q).prop
-    simpa [Matrix.mul_apply, Matrix.single_apply, ite_and, apply_ite Subtype.val] using
-      congrFun (congrFun hy p) q
-  obtain ⟨⟨j, q⟩, h_max⟩ := Finite.exists_max fun x : n × n ↦ ‖a.val x.1 x.2‖
-  have h_ne : a.val j q ≠ 0 := fun h_zero ↦
-    a.ne_zero (Matrix.ext fun u v ↦ by simpa [h_zero] using h_max (u, v))
-  obtain ⟨p, i, h_inv_ne⟩ : ∃ p i : n, a⁻¹.val p i ≠ 0 := by
-    by_contra! h_zero
-    exact a⁻¹.ne_zero (Matrix.ext h_zero)
-  -- In `O`, the product with the largest entry divides the products with the other entries.
-  have h_quot (u v : n) : (a.val j q)⁻¹ * a.val u v ∈ O.val := by
-    have h_le : ‖a⁻¹.val p i * a.val u v‖ ≤ ‖a⁻¹.val p i * a.val j q‖ := by
-      simpa only [norm_mul] using mul_le_mul_of_nonneg_left (h_max (u, v)) (norm_nonneg _)
-    obtain ⟨c, hc⟩ := (O.dvd_iff_norm_le ⟨_, h_prod p i j q⟩ ⟨_, h_prod p i u v⟩).2 h_le
-    have h_mul : a.val u v = a.val j q * c :=
-      mul_left_cancel₀ h_inv_ne ((congrArg Subtype.val hc).trans (mul_assoc _ _ _))
-    simp [h_mul, h_ne]
-  let k : Matrix n n O := .of fun u v ↦ ⟨(a.val j q)⁻¹ * a.val u v, h_quot u v⟩
-  let k' : Matrix n n O := .of fun u v ↦ ⟨a⁻¹.val u v * a.val j q, h_prod u v j q⟩
-  have hk : k.map O.val.val = (a.val j q)⁻¹ • a.val := rfl
-  have hk' : k'.map O.val.val = a.val j q • a⁻¹.val := Matrix.ext fun _ _ ↦ mul_comm _ _
-  have h_inv : k * k' = 1 := by
-    refine Matrix.map_injective (f := O.val.val) Subtype.val_injective ?_
-    change (k * k').map O.val.val = (1 : Matrix n n O).map O.val.val
-    rw [Matrix.map_mul, hk, hk', Matrix.map_one _ (map_zero _) (map_one _), smul_mul_smul_comm,
-      inv_mul_cancel₀ h_ne, one_smul, a.mul_inv]
-  refine ⟨Units.mk0 (a.val j q) h_ne, ⟨k, k', h_inv, mul_eq_one_comm.1 h_inv⟩, ?_⟩
-  rw [hk, Units.val_mk0, smul_inv_smul₀ h_ne]
 
 end ResidualIrreducibility
 
@@ -535,7 +401,8 @@ private lemma eval_linearExtension_eq_zero {T : G → k}
     (hB : ∀ ρ : k[G] →ₐ[k] Matrix n n k, eval (fun x : k[G] ↦ (ρ x).trace) B = 0) :
     eval (linearExtension T) B = 0 := by
   -- Apply `h_identities` to `B` with each variable `X (∑ c g • g)` replaced by `∑ c g • X g`.
-  refine (B.aeval_bind₁ T _).symm.trans (h_identities _ fun ρ ↦ (aeval_bind₁ ..).trans ?_)
+  refine (comp_aeval_apply _ (aeval T) B).symm.trans
+    (h_identities _ fun ρ ↦ (comp_aeval_apply _ (aeval fun g : G ↦ (ρ g).val.trace) B).trans ?_)
   simpa [Finsupp.sum, lift_apply] using
     hB (MonoidAlgebra.lift k (Matrix n n k) G ((Units.coeHom (Matrix n n k)).comp ρ))
 
@@ -614,7 +481,7 @@ lemma exists_rep_of_trace_identities [IsAlgClosed k] [CharZero k] {T : G → k}
   -- If `x g x = 0` for all `g`, each `x g` has square zero, so `t (x g) = 0` (`τ_nat` with `l = 0`)
   -- and `x ∈ I`.
   let π : G →* k[G] ⧸ I := (mk I).toMonoidHom.comp (of k G)
-  have h_semisimple (x : k[G] ⧸ I) (_hx_span : x ∈ span k (Set.range π))
+  have h_semisimple (x : k[G] ⧸ I)
       (hx : ∀ g : G, x * π g * x = 0) : x = 0 := by
     obtain ⟨x, rfl⟩ := mk_surjective (I := I) x
     refine eq_zero_iff_mem.mpr ?_
@@ -626,7 +493,7 @@ lemma exists_rep_of_trace_identities [IsAlgClosed k] [CharZero k] {T : G → k}
   -- Wedderburn: `π = F ∘ s`, where `s G` spans a product of matrix algebras and `F` is an algebra
   -- map from it to the quotient.
   obtain ⟨b, d, hd, s, F, -, hs_span, hF⟩ :=
-    exists_wedderburn (k := k) π (.id G) h_semisimple ⟨by simp⟩
+    exists_wedderburn (k := k) π (.id G) (fun x _ ↦ h_semisimple x) ⟨by simp⟩
   -- On the product of matrix algebras `τ ∘ₗ F` is a trace, natural on the idempotents
   -- `piMatrixUnit i` (`τ_nat` with `l = 1`) and `card n` at `1`; so `exists_rep_of_trace` applies.
   have hτF_comm (x y : PiMatrix k d) :

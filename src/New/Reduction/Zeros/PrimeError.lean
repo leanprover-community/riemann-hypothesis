@@ -1,4 +1,11 @@
-import Lib.Analytic.EntireLFunction
+module
+
+public import Mathlib.NumberTheory.LSeries.PrimesInAP
+import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.MeasureTheory.Function.Floor
+import Mathlib.NumberTheory.LSeries.Linearity
+import Mathlib.NumberTheory.LSeries.SumCoeff
+public import Lib.Analytic.EntireLFunction
 
 /-!
 # A weighted prime-counting error term and its poles at zeros of L-functions
@@ -28,6 +35,8 @@ Euler's constant.
 The transform of a weighted prime sum in a residue class is computed by orthogonality of characters
 and partial summation. Source: Davenport, Multiplicative Number Theory.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -60,8 +69,8 @@ def logDerivMean [NeZero q] (s : ℂ) : ℂ :=
 /-- The remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`, with
 `λ = lambdaKResidueClass d q` and `c_q = re G_q(1)`, `G_q = logDerivMean d q`; see
 `primeRemainder_eq_sum_posPart`. For odd `d` prime to `q` this is the constant for which
-`R_q(x) → 0` as `x → ∞`, as `tendsto_primeRemainder` in `New.Reduction.Zeros.PrimeNumberTheorem`
-proves. -/
+`R_q(x) → 0` as `x → ∞`, by `eventually_abs_primeRemainder_le` in
+`New.Reduction.Zeros.PrimeNumberTheorem` with `B = 1`. -/
 def primeRemainder [NeZero q] (x : ℝ) : ℝ :=
   lambdaKSum d q 0 x - lambdaKSum d q 1 x - x.log / φ q - re (logDerivMean d q 1)
 
@@ -162,11 +171,23 @@ lemma re_logDerivMean_one : (logDerivMean d 1 1).re = -1 - chowlaSelbergConst d 
   rw [re_logDerivMean_one_eq_add_re_logDeriv, chowlaSelbergConst]
   ring
 
+variable {d q} in
+/-- For a character `ψ` mod `q` let `L_ψ = entireL ψ` be `L(s, ψ)`, times `s - 1` if `ψ` is
+principal, and let `ψ' = quadTwist ψ d` be `ψ (·/d)`. The function `logDerivMean d q`, that is
+`(∑_ψ (logDeriv L_ψ' - logDeriv L_ψ) - 1) / φ(q)`, is analytic at every point where no `L_ψ` and no
+`L_ψ'` vanishes. -/
+lemma analyticAt_logDerivMean {s : ℂ} (h_char : ∀ ψ : DirichletCharacter ℂ q, entireL ψ s ≠ 0)
+    (h_twist : ∀ ψ : DirichletCharacter ℂ q, entireL (quadTwist ψ d) s ≠ 0) :
+    AnalyticAt ℂ (logDerivMean d q) s := by
+  unfold logDerivMean
+  fun_prop (disch := simp only [h_char, h_twist, ne_eq, not_false_eq_true]) [logDeriv]
+
 /-- The function `G_q = logDerivMean d q` is analytic in `re s ≥ 1`, where no `entireL χ`
 vanishes. -/
 lemma analyticAt_logDerivMean_of_one_le_re {s : ℂ} (hs : 1 ≤ s.re) :
-    AnalyticAt ℂ (logDerivMean d q) s := by
-  fun_prop (disch := exact entireL_ne_zero _ hs) [logDerivMean, logDeriv]
+    AnalyticAt ℂ (logDerivMean d q) s :=
+  analyticAt_logDerivMean (fun ψ ↦ entireL_ne_zero ψ hs)
+    (fun ψ ↦ entireL_ne_zero (quadTwist ψ d) hs)
 
 /-- Growth of the remainder: for a prime `d`, `q ≥ 1` and `v ≥ 0`,
 `|R_q(e ^ v)| ≤ (|re G_q(1)| + 5) e ^ v`. -/
@@ -174,7 +195,7 @@ lemma abs_primeRemainder_exp_le {v : ℝ} (hv : 0 ≤ v) :
     |primeRemainder d q (rexp v)| ≤ (|re (logDerivMean d q 1)| + 5) * rexp v := by
   have h_log : |v / φ q| ≤ rexp v := by
     rw [abs_of_nonneg (by positivity)]
-    linarith [div_le_self hv (mod_cast NeZero.one_le : (1 : ℝ) ≤ φ q), add_one_le_exp v]
+    linarith only [div_le_self hv (mod_cast NeZero.one_le : (1 : ℝ) ≤ φ q), add_one_le_exp v]
   set c : ℝ := re (logDerivMean d q 1) with hc
   calc
     |primeRemainder d q (rexp v)|

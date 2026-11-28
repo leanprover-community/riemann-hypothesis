@@ -1,4 +1,13 @@
-import New.UpperBound.ElementaryDivisors.TwistingData
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Swap
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+public import New.UpperBound.ElementaryDivisors.TwistingData
 
 /-!
 # Gauss filtrations, Stepanov's count and the root lemma
@@ -52,6 +61,8 @@ of GL2(F_q) using calculus, 2025; Imai–Koskivirta, Automorphic vector bundles 
 G-zips, 2021; Bombieri, Counting points on curves over finite fields, Sém. Bourbaki 430, 1973.
 -/
 
+@[expose] public section
+
 namespace New
 
 open Polynomial IsLocalRing Function in
@@ -64,19 +75,23 @@ lemma stepanov_count {R W : Type} [CommRing R] [CommRing W] [IsLocalRing W] (ι 
   -- Lift the residue classes to points `a x` of `R` with unit differences. The coprime polynomials
   -- `(X - a x) ^ E` all divide `Φ`, hence so does their product, monic of degree `E q`.
   cases fintypeOrInfinite (ResidueField W) with
-  | inr _ => simp [Nat.card_eq_zero_of_infinite (α := ResidueField W)]
+  | inr _ => simp only [Nat.card_eq_zero_of_infinite (α := ResidueField W), mul_zero,
+      zero_le]
   | inl _ =>
   have : Nontrivial R := Nontrivial.of_polynomial_ne hΦ
   let a (x : ResidueField W) : R := ι (surjInv residue_surjective x)
   have h_unit (x y : ResidueField W) (hxy : x ≠ y) : IsUnit (a x - a y) := by
     rw [← map_sub]
-    exact .map ι (by simpa [sub_eq_zero, ← residue_ne_zero_iff_isUnit, surjInv_eq] using hxy)
+    exact .map ι (by simpa only [← residue_ne_zero_iff_isUnit, map_sub, surjInv_eq, ne_eq,
+      sub_eq_zero] using hxy)
   have h_dvd : ∏ x : ResidueField W, (X - C (a x)) ^ E ∣ Φ := Fintype.prod_dvd_of_coprime
     (fun x y hxy ↦ (isCoprime_X_sub_C_of_isUnit_sub (h_unit x y hxy)).pow)
     fun x ↦ X_sub_C_pow_dvd_iff.2 (h_zero _)
   have h_monic : (∏ x : ResidueField W, (X - C (a x))).Monic := monic_prod_X_sub_C a _
   by_contra! h_lt
-  exact (h_monic.pow E).not_dvd_of_natDegree_lt hΦ (by simpa [h_monic.natDegree_pow] using h_lt)
+  exact (h_monic.pow E).not_dvd_of_natDegree_lt hΦ
+    (by simpa only [h_monic.natDegree_pow, natDegree_finsetProd_X_sub_C_eq_card,
+      Finset.card_univ, Nat.card_eq_fintype_card] using h_lt)
     (by rwa [← Finset.prod_pow])
 
 /-! ### Filtrations and Gauss weights -/
@@ -99,17 +114,19 @@ power `max(⌈t⌉, 0)`. -/
 @[simp] def adicFiltration (w : R) (t : ℝ) : AddSubgroup R where
   carrier := {x : R | w ^ ⌈t⌉₊ ∣ x}
   add_mem' := Dvd.dvd.add
-  zero_mem' := by simp
-  neg_mem' := by simp
+  zero_mem' := by simp only [Set.mem_ofPred_eq, dvd_zero]
+  neg_mem' := by simp only [Set.mem_ofPred_eq, dvd_neg, imp_self, implies_true]
 
 lemma mem_adicFiltration_iff {w : R} {t : ℝ} {x : R} : x ∈ adicFiltration w t ↔ w ^ ⌈t⌉₊ ∣ x :=
   Iff.rfl
 
 instance (w : R) : IsRealFiltration (adicFiltration w) where
-  one_mem := by simp
+  one_mem := by simp only [adicFiltration, ceil_zero, pow_zero, isUnit_one, IsUnit.dvd,
+    Set.ofPred_true, AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk,
+    Set.mem_univ]
   mul_mem s t x y hx hy :=
     calc w ^ ⌈s + t⌉₊ ∣ w ^ (⌈s⌉₊ + ⌈t⌉₊) := pow_dvd_pow w (ceil_add_le s t)
-      _ ∣ x • y := by simpa [pow_add] using mul_dvd_mul hx hy
+      _ ∣ x • y := by simpa only [pow_add, smul_eq_mul] using mul_dvd_mul hx hy
   antitone s t hst x hx := (pow_dvd_pow w (ceil_mono hst)).trans hx
 
 /-- The Gauss filtration: for subgroups `F t` of `R` and weights `c` of the variables, the additive
@@ -117,9 +134,15 @@ group of polynomials whose coefficient at each `x ^ α` lies in `F (t - c · α)
 def gaussFiltration (F : ℝ → AddSubgroup R) (c : σ → ℝ) (t : ℝ) :
     AddSubgroup (MvPolynomial σ R) where
   carrier := {f : MvPolynomial σ R | ∀ α : σ →₀ ℕ, f.coeff α ∈ F (t - weight c α)}
-  add_mem' hf hg α := by simpa using add_mem (hf α) (hg α)
-  zero_mem' := by simp
-  neg_mem' := by simp
+  add_mem' hf hg α := by
+    simpa only [AddMonoidAlgebra.coeff_add, Finsupp.coe_add, Pi.add_apply] using
+      add_mem (hf α) (hg α)
+  zero_mem' := by
+    simp only [Set.mem_ofPred_eq, AddMonoidAlgebra.coeff_zero, Finsupp.coe_zero,
+      Pi.zero_apply, zero_mem, implies_true]
+  neg_mem' := by
+    simp only [Set.mem_ofPred_eq, AddMonoidAlgebra.coeff_neg, Finsupp.coe_neg,
+      Pi.neg_apply, neg_mem_iff, imp_self, implies_true]
 
 variable {F : ℝ → AddSubgroup R} {c : σ → ℝ} {w : R} {t : ℝ}
 
@@ -128,27 +151,34 @@ lemma mem_gaussFiltration_iff {f : MvPolynomial σ R} :
 
 lemma mem_adicFiltration_of_nonpos {x : R} (h_nonpos : x ≠ 0 → t ≤ 0) :
     x ∈ adicFiltration w t := by
-  by_cases hx : x = 0 <;> simp_all [ceil_eq_zero.2]
+  by_cases hx : x = 0
+  · subst hx; exact zero_mem _
+  · rw [mem_adicFiltration_iff, ceil_eq_zero.2 (h_nonpos hx), pow_zero]; exact one_dvd x
 
 /-- The term `x * X ^ α` lies in the level `t` of the Gauss filtration if `x` lies in
 `F (t - c · α)`. -/
 lemma monomial_mem_gaussFiltration {α : σ →₀ ℕ} {x : R} (hx : x ∈ F (t - weight c α)) :
     monomial α x ∈ gaussFiltration F c t := by
-  classical grind [mem_gaussFiltration_iff, coeff_monomial, zero_mem]
+  classical
+  intro β
+  by_cases h : β = α
+  · subst h; rwa [coeff_monomial, ite_eq_left rfl]
+  · rw [coeff_monomial, ite_eq_right fun heq ↦ h heq.symm]; exact zero_mem _
 
 lemma C_mem_gaussFiltration {x : R} (hx : x ∈ F t) :
-    (C x : MvPolynomial σ R) ∈ gaussFiltration F c t := monomial_mem_gaussFiltration (by simpa)
+    (C x : MvPolynomial σ R) ∈ gaussFiltration F c t :=
+  monomial_mem_gaussFiltration (by simpa only [map_zero, sub_zero])
 
 open scoped Classical in
 instance {σ R : Type} [CommRing R] {F : ℝ → AddSubgroup R} {c : σ → ℝ} [IsRealFiltration F] :
     IsRealFiltration (gaussFiltration F c) where
-  one_mem := monomial_mem_gaussFiltration (by simp [one_mem_graded])
+  one_mem := monomial_mem_gaussFiltration (by simp only [map_zero, sub_self, one_mem_graded])
   mul_mem s t f g hf hg α := by
     -- The coefficient at `α` is a sum of products of coefficients at `β`, `γ` with `β + γ = α`.
     rw [coeff_mul]
     refine sum_mem fun (β, γ) hβγ ↦ ?_
-    obtain rfl : β + γ = α := by simpa using hβγ
-    simpa [add_sub_add_comm] using mul_mem_graded (hf β) (hg γ)
+    obtain rfl : β + γ = α := by simpa only [Finset.HasAntidiagonal.mem_antidiagonal] using hβγ
+    simpa only [map_add, add_sub_add_comm] using mul_mem_graded (hf β) (hg γ)
   antitone s t hst f hf α := antitone (sub_le_sub_right hst _) (hf α)
 
 /-- Substitution respects weights. Let `G` be a filtration of the `R`-algebra `A` such that the
@@ -166,27 +196,35 @@ lemma algHom_sub_mem_of_mem_gaussFiltration (χ : MvPolynomial σ R →ₐ[R] A)
   -- Induction on `f`: degrees in the filtration add in products, so a gain of `20⁻¹` on one
   -- factor is a gain of `20⁻¹` on the product.
   induction f using induction_on'' generalizing t with
-  | C x => simpa using hF (hf 0)
+  | C x => simpa only [algHom_C, sub_self, zero_mem, and_true, map_zero, sub_zero, coeff_C,
+      ↓reduceIte] using hF (hf 0)
   | monomial_add α x f hα _ ih_f ih_monomial =>
     -- both summands lie in `gaussFiltration F c t`, since `α` is not in the support of `f`
     have h_monomial : monomial α x ∈ gaussFiltration F c t :=
-      monomial_mem_gaussFiltration (by simpa [f.notMem_support_iff.1 hα] using hf α)
+      monomial_mem_gaussFiltration (by
+        simpa only [AddMonoidAlgebra.coeff_add, Finsupp.coe_add, Pi.add_apply,
+          coeff_monomial, ↓reduceIte, f.notMem_support_iff.1 hα, add_zero] using hf α)
     have h_rest : f ∈ gaussFiltration F c t := (add_mem_cancel_left h_monomial).1 hf
-    simpa [add_sub_add_comm, add_mem (ih_monomial h_monomial).1 (ih_f h_rest).1] using
+    have h_sum1 : ψ (monomial α x) + ψ f ∈ G t :=
+      add_mem (ih_monomial h_monomial).1 (ih_f h_rest).1
+    simpa only [map_add, h_sum1, add_sub_add_comm, true_and] using
       add_mem (ih_monomial h_monomial).2 (ih_f h_rest).2
   | mul_X p i ih =>
     have hp : p ∈ gaussFiltration F c (t - c i) := fun α ↦ by
       have h_level : t - c i - weight c α = t - weight c (α + .single i 1) := by
-        simp [weight_single, sub_add_eq_sub_sub_swap]
-      rw [h_level, ← coeff_mul_X α i p]
-      exact hf _
+        simp only [map_add, weight_single, one_smul, sub_add_eq_sub_sub_swap]
+      simpa only [h_level, coeff_mul_X α i p] using hf (α + .single i 1)
     obtain ⟨hψp, h_diff⟩ : ψ p ∈ G (t - c i) ∧ ψ p - χ p ∈ G (t - c i + 20⁻¹) := ih hp
-    have hψX : ψ (X i) ∈ G (c i) := by simpa using add_mem (hχ i) (antitone (by simp) (hψ i))
-    refine ⟨by simpa using mul_mem_graded hψp hψX, ?_⟩
+    have hψX : ψ (X i) ∈ G (c i) := by
+      simpa only [add_sub_cancel] using add_mem (hχ i)
+        (antitone (by simp only [le_add_iff_nonneg_right, inv_nonneg, ofNat_nonneg]) (hψ i))
+    refine ⟨by simpa only [map_mul, sub_add_cancel] using mul_mem_graded hψp hψX, ?_⟩
     rw [show ψ (p * X i) - χ (p * X i) =
-      (ψ p - χ p) * χ (X i) + ψ p * (ψ (X i) - χ (X i)) by simp [sub_mul, mul_sub]]
-    exact add_mem (by simpa [add_right_comm] using mul_mem_graded h_diff (hχ i))
-      (by simpa [← add_assoc] using mul_mem_graded hψp (hψ i))
+      (ψ p - χ p) * χ (X i) + ψ p * (ψ (X i) - χ (X i)) by
+        simp only [map_mul, sub_mul, mul_sub, sub_add_sub_cancel']]
+    exact add_mem
+      (by simpa only [add_right_comm, sub_add_cancel] using mul_mem_graded h_diff (hχ i))
+      (by simpa only [← add_assoc, sub_add_cancel] using mul_mem_graded hψp (hψ i))
 
 end Filtration
 
@@ -206,7 +244,11 @@ def rootSL (W : Type) [CommRing W] (a a' : Fin k) : Subgroup (GL (Fin k) W) :=
 
 omit [IsLocalRing W] in
 lemma rootSL_le_levi {τ : Fin k → ℕ} (hτ : τ a = τ a') : rootSL W a a' ≤ levi W τ :=
-  fun _ hg i j hij ↦ (hg.1 i j (by grind)).trans (one_apply_ne (ne_of_apply_ne τ hij))
+  fun _ hg i j hij ↦ (hg.1 i j <| by
+    by_cases hi : i = a ∨ i = a'
+    · refine .inr ⟨fun h ↦ hij ?_, fun h ↦ hij ?_⟩ <;>
+        rcases hi with rfl | rfl <;> subst h <;> first | rfl | exact hτ | exact hτ.symm
+    · exact .inl (not_or.1 hi)).trans (one_apply_ne (ne_of_apply_ne τ hij))
 
 /-- A root `(a, a')` of `GL_k` and a letter `i`, the data at which a defect is measured. -/
 structure FrobeniusCycle.RootAt (T : FrobeniusCycle N W R) (k : ℕ) where
@@ -269,14 +311,24 @@ def zeroOrder (z : Fin k × ZMod N) : ℕ :=
 def crossSign (z : Fin k × ZMod N) : R :=
   if z.2 = D.letter then 0 else D.sign z + D.sign (D.swapVar z)
 
-lemma cast_card_pos [NeZero N] : (0 : ℝ) < D.card := by simpa [card] using one_pos.trans T.one_lt_q
+private lemma one_lt_cast_card [NeZero N] : (1 : ℝ) < D.card := by
+  simpa only [card, cast_pow] using T.one_lt_q
+
+lemma cast_card_pos [NeZero N] : (0 : ℝ) < D.card :=
+  one_pos.trans D.one_lt_cast_card
 
 @[simp] lemma varX_snd : (D.varX s).2 = s := rfl
 
 @[simp] lemma varY_snd : (D.varY s).2 = s := rfl
 
 @[simp] lemma varX_ne_varY (s t : ZMod N) : D.varX s ≠ D.varY t := by
-  grind [varX, varY, rootVar, D.ne]
+  intro h
+  obtain rfl : s = t := congrArg Prod.snd h
+  have h1 := congrArg Prod.fst h
+  simp only [varX, varY, rootVar] at h1
+  split_ifs at h1
+  · exact D.ne h1
+  · exact D.ne h1.symm
 
 @[simp] lemma varY_ne_varX (s t : ZMod N) : D.varY s ≠ D.varX t := (D.varX_ne_varY t s).symm
 
@@ -286,58 +338,93 @@ lemma cast_card_pos [NeZero N] : (0 : ℝ) < D.card := by simpa [card] using one
 @[simp] lemma swapVar_snd : (D.swapVar z).2 = z.2 := rfl
 
 @[simp] lemma swapVar_varX : D.swapVar (D.varX s) = D.varY s := by
-  grind [swapVar, varX, varY, rootVar]
+  simp only [swapVar, varX, varY, rootVar]
+  split_ifs
+  · exact Prod.ext (Equiv.swap_apply_left _ _) rfl
+  · exact Prod.ext (Equiv.swap_apply_right _ _) rfl
 
 @[simp] lemma swapVar_varY : D.swapVar (D.varY s) = D.varX s := by
-  grind [swapVar, varX, varY, rootVar]
+  simp only [swapVar, varX, varY, rootVar]
+  split_ifs
+  · exact Prod.ext (Equiv.swap_apply_right _ _) rfl
+  · exact Prod.ext (Equiv.swap_apply_left _ _) rfl
 
 /-- Every variable is `Y_i`, `X_i`, some `Y_s` or `X_s` with `s ≠ i`, or lies off the root. -/
 lemma var_cases (z : Fin k × ZMod N) : z = D.varY D.letter ∨ z = D.varX D.letter ∨
     (∃ s : ZMod N, s ≠ D.letter ∧ (z = D.varY s ∨ z = D.varX s)) ∨ D.IsFixed z := by
-  have h_letter : z = D.varY z.2 ∨ z = D.varX z.2 ∨ D.IsFixed z := by
-    grind [varX, varY, rootVar, IsFixed]
-  grind
+  by_cases hz : D.IsFixed z
+  · exact .inr (.inr (.inr hz))
+  · have h_fst : z.1 = D.fst ∨ z.1 = D.snd := by
+      by_contra h
+      exact hz ⟨fun h1 ↦ h (.inl h1), fun h2 ↦ h (.inr h2)⟩
+    have h_letter : z = D.varY z.2 ∨ z = D.varX z.2 := by
+      simp only [varX, varY, rootVar, Prod.ext_iff, and_true]
+      split_ifs
+      · exact h_fst.symm
+      · exact h_fst
+    by_cases hs : z.2 = D.letter
+    · rcases h_letter with h | h
+      · exact .inl (by rwa [← hs])
+      · exact .inr (.inl (by rwa [← hs]))
+    · exact .inr (.inr (.inl ⟨z.2, hs, h_letter⟩))
 
-@[simp] lemma sign_varX : D.sign (D.varX s) = 0 := by simp [sign]
+@[simp] lemma sign_varX : D.sign (D.varX s) = 0 := by
+  simp only [sign, varX_snd, varX_ne_varY, ↓reduceIte]
 
-@[simp] lemma sign_varY_letter : D.sign (D.varY D.letter) = -1 := by simp [sign]
+@[simp] lemma sign_varY_letter : D.sign (D.varY D.letter) = -1 := by
+  simp only [sign, varY_snd, ↓reduceIte, Int.reduceNeg]
 
 lemma sign_varY_eq_one_or_neg_one (s : ZMod N) :
     D.sign (D.varY s) = 1 ∨ D.sign (D.varY s) = -1 := by
-  grind [sign, varY_snd]
+  simp only [sign, varY_snd, ↓reduceIte]
+  by_cases h : T.isEven s = T.isEven D.letter
+  · exact .inr (ite_eq_left h)
+  · exact .inl (ite_eq_right h)
 
-@[simp] lemma frobPower_letter : D.frobPower D.letter = 1 := by simp [frobPower]
+@[simp] lemma frobPower_letter : D.frobPower D.letter = 1 := by
+  simp only [frobPower, sub_self, ZMod.val_zero, pow_zero]
 
-@[simp] lemma merge_varX : D.merge (D.varX s) = D.varX s := by simp [merge]
+@[simp] lemma merge_varX : D.merge (D.varX s) = D.varX s := by
+  simp only [merge, varX_ne_varY, ↓reduceIte]
 
 @[simp] lemma merge_varY :
-    D.merge (D.varY s) = if s = D.letter then D.varX D.letter else D.varY s := by simp [merge]
+    D.merge (D.varY s) = if s = D.letter then D.varX D.letter else D.varY s := by
+  simp only [merge, varY_inj]
 
 @[simp] lemma poleOrder_varX : D.poleOrder (D.varX s) = D.card * D.frobPower s := by
-  simp [poleOrder]
+  simp only [poleOrder, varX_snd, ↓reduceIte]
 
-@[simp] lemma poleOrder_varY : D.poleOrder (D.varY s) = 0 := by simp [poleOrder]
+@[simp] lemma poleOrder_varY : D.poleOrder (D.varY s) = 0 := by
+  simp only [poleOrder, varY_snd, varY_ne_varX, ↓reduceIte]
 
-@[simp] lemma zeroOrder_varX : D.zeroOrder (D.varX s) = 0 := by simp [zeroOrder]
+@[simp] lemma zeroOrder_varX : D.zeroOrder (D.varX s) = 0 := by
+  simp only [zeroOrder, varX_snd, varX_ne_varY, ↓reduceIte]
 
 @[simp] lemma zeroOrder_varY :
     D.zeroOrder (D.varY s) = if s = D.letter then D.card else D.frobPower s := ite_eq_left rfl
 
 @[simp] lemma crossSign_varX : D.crossSign (D.varX s) =
-    if s = D.letter then 0 else (D.sign (D.varY s) : R) := by simp [crossSign]
+    if s = D.letter then 0 else (D.sign (D.varY s) : R) := by
+  simp only [crossSign, varX_snd, sign_varX, Int.cast_zero, swapVar_varX, zero_add]
 
 @[simp] lemma crossSign_varY : D.crossSign (D.varY s) =
-    if s = D.letter then 0 else (D.sign (D.varY s) : R) := by simp [crossSign]
+    if s = D.letter then 0 else (D.sign (D.varY s) : R) := by
+  simp only [crossSign, varY_snd, swapVar_varY, sign_varX, Int.cast_zero, add_zero]
 
 namespace IsFixed
 
 variable {D}
 
-lemma ne_varX (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varX s := by grind [varX, rootVar, IsFixed]
+lemma ne_varX (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varX s := by
+  intro h; have h1 := congrArg Prod.fst h
+  simp only [varX, rootVar] at h1; split_ifs at h1; exact hz.1 h1; exact hz.2 h1
 
-lemma ne_varY (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varY s := by grind [varY, rootVar, IsFixed]
+lemma ne_varY (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varY s := by
+  intro h; have h1 := congrArg Prod.fst h
+  simp only [varY, rootVar] at h1; split_ifs at h1; exact hz.2 h1; exact hz.1 h1
 
-lemma swapVar_eq (hz : D.IsFixed z) : D.swapVar z = z := by grind [swapVar, IsFixed]
+lemma swapVar_eq (hz : D.IsFixed z) : D.swapVar z = z := by
+  rw [swapVar, Equiv.swap_apply_of_ne_of_ne hz.1 hz.2]
 
 lemma merge_eq (hz : D.IsFixed z) : D.merge z = z := ite_eq_right (hz.ne_varY D.letter)
 
@@ -348,7 +435,7 @@ lemma poleOrder_eq_zero (hz : D.IsFixed z) : D.poleOrder z = 0 := ite_eq_right (
 lemma zeroOrder_eq_zero (hz : D.IsFixed z) : D.zeroOrder z = 0 := ite_eq_right (hz.ne_varY z.2)
 
 lemma crossSign_eq_zero (hz : D.IsFixed z) : D.crossSign z = 0 := by
-  simp [crossSign, hz.swapVar_eq, hz.sign_eq_zero]
+  simp only [crossSign, hz.sign_eq_zero, Int.cast_zero, hz.swapVar_eq, add_zero, ite_self]
 
 end IsFixed
 
@@ -386,7 +473,17 @@ lemma defectWeight_eq [NeZero N] {T : FrobeniusCycle N W R} (D : T.RootAt k) (z 
     if z = D.varX z.2 then (T.P : ℝ) ^ (z.2 - D.letter).val else 0) / (D.card - 1) = _
   rw [one_add_val_sub_one_sub, zeroOrder, poleOrder]
   congr 1
-  split_ifs <;> simp [card, frobPower, T.prime.ne_zero]
+  split_ifs
+  · simp only [cast_pow, card, frobPower, cast_mul, ne_eq, pow_eq_zero_iff', cast_eq_zero,
+      T.prime.ne_zero, false_and, not_false_eq_true, mul_div_cancel_left₀]
+  · simp only [cast_pow, sub_zero, card, cast_zero, zero_div]
+  · simp only [cast_pow, sub_self, frobPower, card, cast_mul, ne_eq, pow_eq_zero_iff',
+      cast_eq_zero, T.prime.ne_zero, false_and, not_false_eq_true, mul_div_cancel_left₀]
+  · simp only [cast_pow, sub_zero, frobPower, cast_zero, zero_div]
+  · simp only [cast_pow, zero_sub, cast_zero, card, frobPower, cast_mul, ne_eq,
+      pow_eq_zero_iff', cast_eq_zero, T.prime.ne_zero, false_and, not_false_eq_true,
+      mul_div_cancel_left₀]
+  · simp only [sub_self, cast_zero, card, cast_pow, zero_div]
 
 /-- The matrix `!![0, 1; -1, x]` in the rows and columns `a`, `a'`, with `x = -r` if `i` is even and
 `x = r` otherwise, written as a transposition times a transvection times the diagonal matrix with
@@ -410,19 +507,33 @@ diagonal matrix with `-1` at `a`, agree with the identity elsewhere and have det
 lemma swapTransvection_mem_rootSL {T : FrobeniusCycle N W R} (D : T.RootAt k) (r : W) :
     D.swapTransvection r ∈ rootSL W D.fst D.snd := by
   refine ⟨mul_mem (mul_mem (fun i j hij ↦ ?_) fun i j hij ↦ ?_) fun i j hij ↦ ?_, Units.ext ?_⟩
-  · have h_swap : Equiv.swap D.fst D.snd i = j ↔ i = j := by grind
-    simp [swap, Matrix.one_apply, h_swap]
-  · have h_off : ¬(D.fst = i ∧ D.snd = j) := by grind
-    simp [transvection, Matrix.one_apply, Matrix.single, h_off]
+  · have h_swap : Equiv.swap D.fst D.snd i = j ↔ i = j := hij.elim
+      (fun hi ↦ by rw [Equiv.swap_apply_of_ne_of_ne hi.1 hi.2])
+      (fun hj ↦ by
+        conv_lhs => rw [← Equiv.swap_apply_of_ne_of_ne hj.1 hj.2]
+        exact (Equiv.swap D.fst D.snd).injective.eq_iff)
+    simp only [GeneralLinearGroup.val_swap, swap, PEquiv.toMatrix_apply,
+      Equiv.toPEquiv_apply, Option.mem_def, Option.some.injEq, h_swap, Matrix.one_apply]
+  · have h_off : ¬(D.fst = i ∧ D.snd = j) := fun ⟨h1, h2⟩ ↦
+      hij.elim (fun hi ↦ hi.1 h1.symm) (fun hj ↦ hj.2 h2.symm)
+    simp only [val_transvectionGL, transvection, Matrix.single, Matrix.add_apply,
+      Matrix.one_apply, of_apply, h_off, ↓reduceIte, add_zero]
   · obtain rfl | h_ne := eq_or_ne i j
-    · simp [show i ≠ D.fst by tauto]
-    · simp [h_ne]
+    · simp only [coe_diagGL, diagonal_apply_eq, ne_eq, hij.elim And.left And.left,
+        not_false_eq_true, Function.update_of_ne, Pi.one_apply, Units.val_one,
+        one_apply_eq]
+    · simp only [coe_diagGL, ne_eq, h_ne, not_false_eq_true, diagonal_apply_ne,
+        one_apply_ne]
   · change (D.swapTransvection r).val.det = 1
     have h_diag : (diagGL (Function.update 1 D.fst (-1)) : GL (Fin k) W).val.det = -1 := by
-      simp [← Units.coe_prod, Finset.prod_update_of_mem]
+      simp only [coe_diagGL, det_diagonal, ← Units.coe_prod, Finset.mem_univ,
+        Finset.prod_update_of_mem, Pi.one_apply, Finset.prod_const_one, mul_one,
+        Units.val_neg, Units.val_one]
     rw [swapTransvection, Units.val_mul, det_mul, h_diag]
-    simp [swap, det_permutation, Equiv.Perm.sign_swap D.ne, transvectionGL,
-      det_transvection_of_ne _ _ D.ne]
+    simp only [transvectionGL, Units.val_mul, GeneralLinearGroup.val_swap, swap, det_mul,
+      det_permutation, Equiv.Perm.sign_swap D.ne, Units.val_neg, Units.val_one,
+      Int.reduceNeg, Int.cast_neg, Int.cast_one, det_transvection_of_ne _ _ D.ne, mul_one,
+      mul_neg, neg_neg]
 
 /-- The action of the matrix `D.swapTransvection r` on the variable `z = (b, s)` with index
 `b : Fin k` and letter `s : ZMod N`. Let `a = D.fst` and `a' = D.snd`. The variable
@@ -441,27 +552,52 @@ lemma polyAction_swapTransvection_X [NeZero N] {T : FrobeniusCycle N W R} (D : T
   let d : GL (Fin k) W := diagGL (Function.update 1 D.fst (-1))
   have h_diag : T.polyAction d (X z) = D.moveSign z • X z := by
     rw [polyAction_X, letterMatrix_apply, ← map_inv, ← Function.update_inv, inv_one, inv_neg_one]
-    simp [d, moveSign, diagonal_apply, Function.update_apply, apply_ite Units.val,
-      apply_ite (T.embedding _), apply_ite C]
+    simp only [coe_diagGL, Function.update_apply, Pi.one_apply, apply_ite Units.val,
+      Units.val_neg, Units.val_one, diagonal_transpose, ite_self, map_apply,
+      diagonal_apply, apply_ite (T.embedding _), map_neg, map_one, map_zero, apply_ite C,
+      ite_mul, neg_mul, one_mul, zero_mul, Finset.sum_ite_eq',
+      Finset.mem_univ, ↓reduceIte, Prod.mk.eta, moveSign, Int.reduceNeg, ite_smul,
+      neg_smul, one_smul, d]
   -- Read the column of `z` in the matrix of the letter, for both parities of `z.2` and of
   -- `D.letter`.
   let M : Matrix (Fin k) (Fin k) W :=
     if T.isEven z.2 then transvection D.fst D.snd x else (transvection D.fst D.snd (-x))ᵀ
   have h_column : T.polyAction (.swap W D.fst D.snd * transvectionGL D.ne x) (X z) =
       ∑ b : Fin k, C (T.embedding z.2 (M b z.1)) * X (Equiv.swap D.fst D.snd b, z.2) := by
-    simp [M, polyAction_X, letterMatrix_apply, transvectionGL, swap,
-      GeneralLinearGroup.swap, Equiv.swap_apply_eq_iff]
+    simp only [GeneralLinearGroup.swap, swap, transvectionGL, map_mul, AlgHom.mul_apply,
+      polyAction_X, letterMatrix_apply, Units.inv_mk, map_apply, map_sum, algHom_C,
+      MvPolynomial.algebraMap_eq, transpose_permMatrix, Equiv.swap_inv, ite_self,
+      PEquiv.toMatrix_apply, Equiv.toPEquiv_apply, Option.mem_def, Option.some.injEq,
+      Equiv.swap_apply_eq_iff, MonoidWithZeroHom.map_ite_one_zero, ite_mul, one_mul,
+      zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, M]
   -- Off the diagonal, the column of `z` has only the entry `D.sign z * r`, in the row of `X_s`.
   have h_entry (b : Fin k) : M b z.1 =
       (if b = z.1 then 1 else 0) + if (b, z.2) = D.varX z.2 then D.sign z * r else 0 := by
-    cases h_letter : T.isEven D.letter <;> cases h_z : T.isEven z.2 <;>
-      simp [M, hx, h_letter, h_z, sign, varX, varY, rootVar, transvection, Matrix.one_apply,
-        Matrix.single, Function.swap, Prod.ext_iff, ← ite_and, and_comm, eq_comm]
-  rw [swapTransvection, map_mul, AlgHom.mul_apply, h_diag, map_zsmul, h_column, ← swapVar_varX,
-    swapVar,
-    swapVar]
-  simp [h_entry, Prod.ext_iff, add_mul, apply_ite (T.embedding _), apply_ite C,
-    Finset.sum_add_distrib]
+    cases h_letter : T.isEven D.letter <;> cases h_z : T.isEven z.2
+    · simp only [h_z, Bool.false_eq_true, ↓reduceIte, transvection, Matrix.single, eq_comm,
+        hx, h_letter, transpose_add, transpose_one, transpose_of, Matrix.add_apply,
+        Matrix.one_apply, of_apply, Function.swap, and_comm, varX, rootVar, Prod.ext_iff,
+        true_and, sign, varY, Int.reduceNeg, Int.cast_ite, Int.cast_neg, Int.cast_one,
+        Int.cast_zero, ite_mul, neg_mul, one_mul, zero_mul, ← ite_and, M]
+    · simp only [h_z, ↓reduceIte, transvection, Matrix.single, eq_comm, hx, h_letter,
+        Bool.false_eq_true, Matrix.add_apply, Matrix.one_apply, of_apply, varX, rootVar,
+        Prod.ext_iff, and_comm, true_and, sign, varY, Int.cast_ite, Int.cast_one,
+        Int.cast_zero, ite_mul, one_mul, zero_mul, ← ite_and, M]
+    · simp only [h_z, Bool.false_eq_true, ↓reduceIte, transvection, Matrix.single, eq_comm,
+        hx, h_letter, neg_neg, transpose_add, transpose_one, transpose_of, Matrix.add_apply,
+        Matrix.one_apply, of_apply, Function.swap, and_comm, varX, rootVar, Prod.ext_iff,
+        true_and, sign, varY, Int.cast_ite, Int.cast_one, Int.cast_zero, ite_mul, one_mul,
+        zero_mul, ← ite_and, M]
+    · simp only [h_z, ↓reduceIte, transvection, Matrix.single, eq_comm, hx, h_letter,
+        Matrix.add_apply, Matrix.one_apply, of_apply, varX, rootVar, Prod.ext_iff, and_comm,
+        true_and, sign, varY, Int.reduceNeg, Int.cast_ite, Int.cast_neg, Int.cast_one,
+        Int.cast_zero, ite_mul, neg_mul, one_mul, zero_mul, ← ite_and, M]
+  rw [swapTransvection, map_mul, AlgHom.mul_apply, h_diag, map_zsmul, h_column,
+    ← swapVar_varX, swapVar, swapVar]
+  simp only [h_entry, Prod.ext_iff, varX_snd, and_true, map_add, apply_ite (T.embedding _),
+    map_one, map_zero, map_mul, map_intCast, apply_ite C, add_mul,
+    ite_mul, one_mul, zero_mul, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ,
+    ↓reduceIte, smul_add, zsmul_eq_mul]
 
 /-- The weights `c` of the variables rise from `X_s` to `Y_s` by an amount in `[1 / 2, 1]`. -/
 def HasBoundedIncrements {T : FrobeniusCycle N W R} (D : T.RootAt k) (c : Fin k × ZMod N → ℝ) :
@@ -500,7 +636,8 @@ lemma HasBoundedIncrements.two_le_card_mul_frobPower_mul_slope [NeZero N] {T : F
     (hs : s ≠ D.letter) :
     2 ≤ D.card * D.frobPower s * D.slope c := by
   have h_power : (5 : ℝ) ≤ D.frobPower s :=
-    mod_cast T.five_le_P.trans (le_self_pow (by simpa [sub_eq_zero]) _)
+    mod_cast T.five_le_P.trans
+      (le_self_pow (by simpa only [ne_eq, ZMod.val_eq_zero, sub_eq_zero] using hs) _)
   have h_step : (2⁻¹ : ℝ) ≤ D.card * D.slope c := (hc D.letter).1.trans_eq card_mul_slope.symm
   nlinarith
 
@@ -545,7 +682,8 @@ lemma C_monomial_mul_X_mem_iteratedGaussFiltration {T : FrobeniusCycle N W R} {z
     C (monomial (single () n) r) * X z ∈ T.iteratedGaussFiltration c ρ v b := by
   rw [C_mul_X_eq_monomial]
   refine monomial_mem_gaussFiltration (monomial_mem_gaussFiltration ?_)
-  exact mem_adicFiltration_of_nonpos (by simpa [weight_single, add_comm] using hb)
+  exact mem_adicFiltration_of_nonpos (by simpa only [ne_eq, weight_single, one_smul,
+    nsmul_eq_mul, tsub_le_iff_right, add_comm, add_zero] using hb)
 
 /-- Expansion at infinity. Let `w = T.sqrtPrime`, a square root of the prime `T.p` in `R`, let
 `i = D.letter` and let `q = D.card = P ^ N` with `P = T.P`. In each letter `s`, `X_s = D.varX s` and
@@ -570,23 +708,33 @@ lemma HasBoundedIncrements.aeval_mem_and_sub_mem_iteratedGaussFiltration [NeZero
       D.mainSubst z ∈ T.iteratedGaussFiltration c (-D.slope c) D.poleOrder (c z) := by
     refine C_monomial_mul_X_mem_iteratedGaussFiltration fun _ ↦ ?_
     by_cases hz : z = D.varY D.letter
-    · simp [hz, card_mul_slope]
-    · simp [merge, hz]
+    · simp only [hz, merge_varY, ↓reduceIte, poleOrder_varX, frobPower_letter, mul_one,
+        mul_neg, card_mul_slope, neg_sub, sub_sub_cancel, poleOrder_varY, cast_zero,
+        zero_mul, neg_zero, add_zero, Std.le_refl]
+    · simp only [merge, hz, ↓reduceIte, mul_neg, sub_neg_eq_add, add_neg_cancel_right,
+        Std.le_refl]
   have h_cross (z : Fin k × ZMod N) :
       D.crossSubst z ∈ T.iteratedGaussFiltration c (-D.slope c) D.poleOrder (c z + 20⁻¹) := by
     refine C_monomial_mul_X_mem_iteratedGaussFiltration fun h_sign ↦ ?_
     rcases D.var_cases z with rfl | rfl | ⟨s, hs, rfl | rfl⟩ | hz
-    · simp at h_sign
-    · simp at h_sign
+    · simp only [crossSign_varY, ↓reduceIte, ne_eq, not_true_eq_false] at h_sign
+    · simp only [crossSign_varX, ↓reduceIte, ne_eq, not_true_eq_false] at h_sign
     · -- `X_s` weighs `c X_s + q P_s * D.slope c ≥ c X_s + 2 ≥ c Y_s + 1`
-      suffices c (D.varY s) + 20⁻¹ ≤ c (D.varX s) + D.card * D.frobPower s * D.slope c by simpa
+      suffices c (D.varY s) + 20⁻¹ ≤ c (D.varX s) + D.card * D.frobPower s * D.slope c by
+        simpa only [swapVar_varY, poleOrder_varX, cast_mul, mul_neg, sub_neg_eq_add,
+          zeroOrder_varX, cast_zero, zero_mul, neg_zero, add_zero, ge_iff_le]
       linarith [(hc s).2, hc.two_le_card_mul_frobPower_mul_slope hs]
     · -- `t ^ P_s Y_s` weighs `c Y_s - P_s * D.slope c ≥ c X_s + 1 / 2 - 1 / 5`
-      suffices c (D.varX s) + 20⁻¹ ≤ c (D.varY s) + -(D.frobPower s * D.slope c) by simpa [hs]
+      suffices c (D.varX s) + 20⁻¹ ≤ c (D.varY s) + -(D.frobPower s * D.slope c) by
+        simpa only [swapVar_varX, poleOrder_varY, cast_zero, mul_neg, zero_mul, neg_zero,
+          sub_zero, zeroOrder_varY, hs, ↓reduceIte, le_add_neg_iff_add_le, ge_iff_le]
       linarith [(hc s).1, hc.frobPower_mul_slope_le s]
     · exact absurd hz.crossSign_eq_zero h_sign
-  exact algHom_sub_mem_of_mem_gaussFiltration (aeval D.mainSubst) _ hf (by simpa using h_main) _
-    (by simpa using h_cross) algebraMap_mem_iteratedGaussFiltration
+  exact algHom_sub_mem_of_mem_gaussFiltration (aeval D.mainSubst) _ hf
+    (by simpa only [aeval_X, Prod.forall] using h_main) _
+    (by simpa only [aeval_X, Pi.sub_apply, sub_sub_cancel_left, neg_mem_iff,
+      Prod.forall] using h_cross)
+    algebraMap_mem_iteratedGaussFiltration
 
 /-- The error in the rule `(t + ι_i(r)) ^ P ^ n = t ^ P ^ n + ι_{i + n}(r)`. -/
 noncomputable def _root_.New.FrobeniusCycle.frobeniusError (T : FrobeniusCycle N W R) (i : ZMod N)
@@ -602,17 +750,22 @@ lemma frobeniusError_mul_X_mem {T : FrobeniusCycle N W R} {c : Fin k × ZMod N �
     C (T.frobeniusError i r n) * X z ∈ T.iteratedGaussFiltration c ρ v (c z - v z * ρ + 2) := by
   have h_add : (T.p : MvPolynomial Unit R) ∣
       (X () + C (T.embedding i r)) ^ T.P ^ n - X () ^ T.P ^ n - C (T.embedding i r) ^ T.P ^ n := by
-    simp [← pow_mul, add_pow_prime_pow_eq' T.prime, add_assoc]
+    simp only [← pow_mul, add_pow_prime_pow_eq' T.prime, add_assoc, add_sub_cancel_left,
+      dvd_mul_right]
   have h_shift : (T.p : MvPolynomial Unit R) ∣ C (T.embedding (i + n) r) - C (T.embedding i r) ^ T.P
     ^ n := by
-    simpa using map_dvd C (T.frobenius_pow_congr n i r)
+    simpa only [map_natCast, C_sub, C_pow] using map_dvd C (T.frobenius_pow_congr n i r)
   have h_dvd : C (T.sqrtPrime ^ 2) ∣ T.frobeniusError i r n := by
-    simpa [frobeniusError, sqrtPrime_sq] using dvd_sub h_add h_shift
+    simpa only [sqrtPrime_sq, map_natCast, frobeniusError, sub_sub_sub_cancel_right] using
+      dvd_sub h_add h_shift
   rw [C_mul_X_eq_monomial]
   refine monomial_mem_gaussFiltration fun β ↦
     (pow_dvd_pow T.sqrtPrime ?_).trans ((C_dvd_iff_dvd_coeff _ _).1 h_dvd β)
   -- The order asked for is `2` minus the weight `β () * ρ ≥ 0` of the monomial `β` in `t`.
-  simpa [weight_single, β.weight_eq_sum _] using mul_nonneg (β ()).cast_nonneg hρ
+  simpa only [weight_single, one_smul, add_sub_cancel_left, β.weight_eq_sum _,
+    Finset.univ_unique, PUnit.default_eq_unit, nsmul_eq_mul, Finset.sum_singleton, ceil_le,
+    cast_ofNat, tsub_le_iff_right, le_add_iff_nonneg_right] using
+    mul_nonneg (β ()).cast_nonneg hρ
 
 /-- The substitution `t ↦ t + x` in the coefficients. -/
 noncomputable def _root_.New.shiftCoeff (σ : Type*) (x : R) :
@@ -648,19 +801,58 @@ lemma shiftCoeff_aeval_swapTransvection_X [NeZero N]
   congr 1
   rcases D.var_cases z with rfl | rfl | ⟨s, hs, rfl | rfl⟩ | hz
   · -- `z = Y_i`
-    simp [monomial_eq, card, ZMod.natCast_self]
+    simp only [AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply, AlgEquiv.symm_symm,
+      monomial_eq, C_1, pow_zero, prod_single_index, one_mul, swapVar_varY,
+      sign_varY_letter, Int.reduceNeg, Int.cast_neg, Int.cast_one, varY_snd, neg_mul,
+      map_add, aeval_X, Pi.sub_apply, poleOrder_varX, card, frobPower_letter,
+      mul_one, merge_varX, crossSign_varX, ↓reduceIte, C_0, swapVar_varX, zeroOrder_varY,
+      zero_mul, sub_zero, map_neg, map_mul, algHom_C, MvPolynomial.algebraMap_apply,
+      MvPolynomial.algebraMap_eq, poleOrder_varY, merge_varY, crossSign_varY,
+      zeroOrder_varX, mapAlgHom_apply, map_pow, map_C, RingHom.coe_coe, AlgHom.coe_comp,
+      AlgEquiv.coe_toAlgHom, Function.comp_apply, MvPolynomial.uniqueAlgEquiv_apply,
+      eval₂_X, Polynomial.taylorAlgHom_apply, Polynomial.taylor_X,
+      MvPolynomial.uniqueAlgEquiv_symm_apply, PUnit.default_eq_unit,
+      Polynomial.eval₂_X, Polynomial.eval₂_C, map_X, abs_neg, abs_one, sub_self,
+      ZMod.val_zero, add_zero, ZMod.natCast_self, C_sub, pow_one, add_sub_cancel_left,
+      cast_zero, smul_zero]
     ring
   · -- `z = X_i`
-    simp [monomial_eq]
-  · -- `z = Y_s` with `s ≠ i`, the same computation for both signs
-    rcases D.sign_varY_eq_one_or_neg_one s with h_sign | h_sign
-    all_goals
-      simp [monomial_eq, card, frobPower, pow_add, ZMod.natCast_self, hs, h_sign]
-      ring
+    simp only [AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply, AlgEquiv.symm_symm,
+      monomial_eq, C_1, pow_zero, prod_single_index, one_mul, C_pow, C_mul, swapVar_varX,
+      sign_varX, Int.cast_zero, varX_snd, zero_mul, add_zero, aeval_X, Pi.sub_apply,
+      poleOrder_varY, merge_varY, ↓reduceIte, crossSign_varY, swapVar_varY,
+      zeroOrder_varX, mul_one, sub_zero, mapAlgHom_apply, map_X, sub_self, abs_zero,
+      map_zero, ZMod.val_zero, pow_one, add_sub_cancel_left, cast_zero, smul_zero]
+  · -- `z = Y_s` with `s ≠ i`, for both signs
+    rcases D.sign_varY_eq_one_or_neg_one s with h_sign | h_sign <;>
+      simp only [AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply, AlgEquiv.symm_symm,
+        monomial_eq, C_1, pow_zero, prod_single_index, one_mul, swapVar_varY, h_sign, Int.cast_one,
+        varY_snd, map_add, aeval_X, Pi.sub_apply, poleOrder_varX, card, frobPower, merge_varX,
+        crossSign_varX, hs, ↓reduceIte, swapVar_varX, zeroOrder_varY, map_mul, algHom_C,
+        MvPolynomial.algebraMap_apply, MvPolynomial.algebraMap_eq, poleOrder_varY, merge_varY,
+        crossSign_varY, zeroOrder_varX, mul_one, mapAlgHom_apply, map_sub, map_pow, map_C,
+        RingHom.coe_coe, AlgHom.coe_comp, AlgEquiv.coe_toAlgHom, Function.comp_apply,
+        MvPolynomial.uniqueAlgEquiv_apply, eval₂_X, Polynomial.taylorAlgHom_apply,
+        Polynomial.taylor_X, MvPolynomial.uniqueAlgEquiv_symm_apply, PUnit.default_eq_unit,
+        Polynomial.eval₂_X, Polynomial.eval₂_C, map_X, abs_one, pow_add, cast_add,
+        ZMod.natCast_self, ZMod.natCast_val, dvd_refl, ZMod.cast_sub, ZMod.cast_id', id_eq,
+        zero_add, add_sub_cancel, one_smul, Int.reduceNeg, Int.cast_neg, neg_mul, sub_neg_eq_add,
+        map_neg, abs_neg, neg_smul] <;> ring
   · -- `z = X_s` with `s ≠ i`
-    simp [monomial_eq, hs]
+    simp only [AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply, AlgEquiv.symm_symm,
+      monomial_eq, C_1, pow_zero, prod_single_index, one_mul, C_pow, swapVar_varX,
+      sign_varX, Int.cast_zero, varX_snd, zero_mul, add_zero, aeval_X, Pi.sub_apply,
+      poleOrder_varY, merge_varY, hs, ↓reduceIte, crossSign_varY, map_intCast,
+      swapVar_varY, zeroOrder_varX, mul_one, mapAlgHom_apply, map_sub, map_X, map_mul,
+      sub_self, abs_zero, map_zero, cast_add, ZMod.natCast_val, dvd_refl, ZMod.cast_sub,
+      ZMod.cast_id', id_eq, add_sub_cancel, C_add, zero_smul]
   · -- `z` lies off the root
-    simp [monomial_eq, hz.swapVar_eq, hz.sign_eq_zero, hz.poleOrder_eq_zero, hz.crossSign_eq_zero]
+    simp only [AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply, AlgEquiv.symm_symm,
+      monomial_eq, C_1, pow_zero, prod_single_index, one_mul, C_pow, C_mul, hz.swapVar_eq,
+      hz.sign_eq_zero, Int.cast_zero, zero_mul, add_zero, aeval_X, Pi.sub_apply,
+      hz.poleOrder_eq_zero, hz.crossSign_eq_zero, sub_zero, mapAlgHom_apply, map_X,
+      sub_self, abs_zero, map_zero, cast_add, ZMod.natCast_val, dvd_refl, ZMod.cast_sub,
+      ZMod.cast_id', id_eq, add_sub_cancel, C_sub, C_add, zero_smul]
 
 /-- In each letter `s`, `X_s = D.varX s` and `Y_s = D.varY s` are the variables with the two indices
 of the root, and `D.swapVar` swaps them and fixes the others. Let the weights `c` rise from `X_s` to
@@ -678,16 +870,24 @@ lemma HasBoundedIncrements.subst_swapVar_mem_iteratedGaussFiltration [NeZero N]
     (D.mainSubst - D.crossSubst) (D.swapVar z) ∈
       T.iteratedGaussFiltration c (D.slope c) D.zeroOrder (c z) := by
   refine sub_mem (C_monomial_mul_X_mem_iteratedGaussFiltration fun _ ↦ ?_)
-    (C_monomial_mul_X_mem_iteratedGaussFiltration (by simp [swapVar]))
+    (C_monomial_mul_X_mem_iteratedGaussFiltration
+      (by simp only [swapVar, ne_eq, Equiv.swap_apply_self, Prod.mk.eta, sub_add_cancel,
+        Std.le_refl, implies_true]))
   rcases D.var_cases z with rfl | rfl | ⟨s, hs, rfl | rfl⟩ | hz
-  · simp [card_mul_slope]
-  · simp
-  · suffices c (D.varY s) ≤ c (D.varX s) + D.card * D.frobPower s * D.slope c by simpa
+  · simp only [swapVar_varY, merge_varX, zeroOrder_varX, cast_zero, zero_mul, sub_zero,
+      poleOrder_varX, frobPower_letter, mul_one, card_mul_slope, add_sub_cancel, Std.le_refl]
+  · simp only [swapVar_varX, merge_varY, ↓reduceIte, zeroOrder_varX, cast_zero, zero_mul,
+      sub_zero, poleOrder_varY, add_zero, Std.le_refl]
+  · suffices c (D.varY s) ≤ c (D.varX s) + D.card * D.frobPower s * D.slope c by
+      simpa only [swapVar_varY, merge_varX, zeroOrder_varX, cast_zero, zero_mul, sub_zero,
+        poleOrder_varX, cast_mul, ge_iff_le]
     linarith [(hc s).2, hc.two_le_card_mul_frobPower_mul_slope hs]
   · suffices c (D.varX s) + D.frobPower s * D.slope c ≤ c (D.varY s) by
-      simpa [hs, le_sub_iff_add_le]
+      simpa only [swapVar_varX, merge_varY, hs, ↓reduceIte, zeroOrder_varY, poleOrder_varY,
+        cast_zero, zero_mul, add_zero, le_sub_iff_add_le, ge_iff_le]
     linarith [(hc s).1, hc.frobPower_mul_slope_le s]
-  · simp [hz.swapVar_merge_eq_self_and_weights_eq_zero]
+  · simp only [hz.swapVar_merge_eq_self_and_weights_eq_zero, cast_zero, zero_mul, sub_zero,
+      add_zero, Std.le_refl]
 
 /-- Let `i = D.letter`, and let `X_s = D.varX s`, `Y_s = D.varY s` be the two variables of the root
 in the letter `s`. At a finite point a variable `y` weighs `c y - D.zeroOrder y * D.slope c`. If `c`
@@ -700,14 +900,20 @@ lemma HasBoundedIncrements.add_le_sub_zeroOrder_mul_slope_add_two [NeZero N]
     c z + 20⁻¹ ≤ c (D.swapVar z) - D.zeroOrder (D.swapVar z) * D.slope c + 2 ∧
       c z + 20⁻¹ ≤ c z - D.zeroOrder z * D.slope c + 2 := by
   rcases D.var_cases z with rfl | rfl | ⟨s, hs, rfl | rfl⟩ | hz
-  · suffices c (D.varY D.letter) + 20⁻¹ ≤ c (D.varX D.letter) + 2 by simpa [card_mul_slope]
+  · suffices c (D.varY D.letter) + 20⁻¹ ≤ c (D.varX D.letter) + 2 by
+      simpa only [swapVar_varY, zeroOrder_varX, cast_zero, zero_mul, sub_zero,
+        zeroOrder_varY, ↓reduceIte, card_mul_slope, sub_sub_cancel, and_self, ge_iff_le]
     linarith [(hc D.letter).2]
   · norm_num [card_mul_slope]
   · suffices c (D.varY s) + 20⁻¹ ≤ c (D.varX s) + 2 ∧
-        c (D.varY s) + 20⁻¹ ≤ c (D.varY s) - D.frobPower s * D.slope c + 2 by simpa [hs]
+        c (D.varY s) + 20⁻¹ ≤ c (D.varY s) - D.frobPower s * D.slope c + 2 by
+      simpa only [swapVar_varY, zeroOrder_varX, cast_zero, zero_mul, sub_zero,
+        zeroOrder_varY, hs, ↓reduceIte]
     constructor <;> linarith [(hc s).2, hc.frobPower_mul_slope_le s]
   · suffices c (D.varX s) + 20⁻¹ ≤ c (D.varY s) - D.frobPower s * D.slope c + 2 ∧
-        (20⁻¹ : ℝ) ≤ 2 by simpa [hs]
+        (20⁻¹ : ℝ) ≤ 2 by
+      simpa only [swapVar_varX, zeroOrder_varY, hs, ↓reduceIte, zeroOrder_varX, cast_zero,
+        zero_mul, sub_zero, add_le_add_iff_left]
     constructor <;> linarith [(hc s).1, hc.frobPower_mul_slope_le s]
   · norm_num [hz.swapVar_merge_eq_self_and_weights_eq_zero]
 
@@ -757,7 +963,7 @@ lemma HasBoundedIncrements.shiftCoeff_aeval_mem [NeZero N]
       algebraMap_mem_iteratedGaussFiltration).left
   have h_cancel : T.polyAction (D.swapTransvection r) (T.polyAction (D.swapTransvection r)⁻¹ f) =
     f := by
-    simp [← AlgHom.mul_apply, ← map_mul]
+    simp only [← AlgHom.mul_apply, ← map_mul, mul_inv_cancel, map_one, AlgHom.one_apply]
   rwa [AlgHom.comp_apply, AlgHom.comp_apply, h_cancel] at h_level
 
 /-- The coefficient, a polynomial in `t`, of the monomial obtained from `x ^ α` by writing `X_i`
@@ -769,18 +975,26 @@ noncomputable def mergedCoeff {T : FrobeniusCycle N W R} (D : T.RootAt k)
 
 lemma mergedCoeff_add {T : FrobeniusCycle N W R} {D : T.RootAt k} (α : Fin k × ZMod N →₀ ℕ)
     (p p' : MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R)) :
-    D.mergedCoeff α (p + p') = D.mergedCoeff α p + D.mergedCoeff α p' := by simp [mergedCoeff]
+    D.mergedCoeff α (p + p') = D.mergedCoeff α p + D.mergedCoeff α p' := by
+  simp only [mergedCoeff, AddMonoidAlgebra.coeff_add, Finsupp.coe_add, Pi.add_apply,
+    MvPolynomial.uniqueAlgEquiv_apply, eval₂_add]
 
 lemma mergedCoeff_sub {T : FrobeniusCycle N W R} {D : T.RootAt k} (α : Fin k × ZMod N →₀ ℕ)
     (p p' : MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R)) :
-    D.mergedCoeff α (p - p') = D.mergedCoeff α p - D.mergedCoeff α p' := by simp [mergedCoeff]
+    D.mergedCoeff α (p - p') = D.mergedCoeff α p - D.mergedCoeff α p' := by
+  simp only [mergedCoeff, AddMonoidAlgebra.coeff_sub, Finsupp.coe_sub, Pi.sub_apply,
+    MvPolynomial.uniqueAlgEquiv_apply, eval₂_sub]
 
 /-- Shifting `t` by `x` in the coefficients of `p` shifts the polynomial `D.mergedCoeff α p` by
 `x`. -/
 lemma mergedCoeff_shiftCoeff {T : FrobeniusCycle N W R} {D : T.RootAt k} (α : Fin k × ZMod N →₀ ℕ)
     (x : R) (p : MvPolynomial (Fin k × ZMod N) (MvPolynomial Unit R)) :
     D.mergedCoeff α (shiftCoeff (Fin k × ZMod N) x p) = (D.mergedCoeff α p).taylor x := by
-  simpa [mergedCoeff, shiftCoeff, coeff_map] using
+  simpa only [mergedCoeff, shiftCoeff, AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply,
+    AlgEquiv.symm_symm, mapAlgHom_apply, coeff_map, RingHom.coe_coe, AlgHom.coe_comp,
+    AlgEquiv.coe_toAlgHom, Function.comp_apply, MvPolynomial.uniqueAlgEquiv_apply,
+    Polynomial.taylorAlgHom_apply, MvPolynomial.uniqueAlgEquiv_symm_apply,
+    PUnit.default_eq_unit] using
     (uniqueAlgEquiv R Unit).apply_symm_apply ((D.mergedCoeff α p).taylor x)
 
 /-- In `T.iteratedGaussFiltration c ρ v`, `w = T.sqrtPrime` weighs `1`, `t` weighs `ρ` and a
@@ -798,15 +1012,21 @@ lemma pow_dvd_coeff_mergedCoeff {T : FrobeniusCycle N W R} {D : T.RootAt k} {c :
     (hj : l < b - (weight c α - weight v α * ρ) - j * ρ) :
     T.sqrtPrime ^ (l + 1) ∣ (D.mergedCoeff α p).coeff j := by
   have h_var (z : Fin k × ZMod N) : c (D.merge z) - v (D.merge z) * ρ = c z - v z * ρ := by
-    grind [merge]
+    by_cases hz : z = D.varY D.letter
+    · simp only [merge, hz, ↓reduceIte, h_merge_weight]
+    · simp only [merge, hz, ↓reduceIte]
   have h_weight : weight (fun z ↦ c z - v z * ρ) (mapDomain D.merge α) =
       weight c α - weight v α * ρ := by
-    rw [weight_apply, sum_mapDomain_index (by simp) (by simp [add_mul])]
-    simp [h_var, weight_apply, mul_sub, Finsupp.sum_mul, mul_assoc]
+    rw [weight_apply, sum_mapDomain_index (by simp only [zero_nsmul, implies_true])
+      (by simp only [nsmul_eq_mul, cast_add, add_mul, implies_true])]
+    simp only [h_var, nsmul_eq_mul, mul_sub, sum_sub, weight_apply, smul_eq_mul,
+      cast_finsupp_sum, cast_mul, sum_mul, mul_assoc]
   have h_coeff : T.sqrtPrime ^ ⌈b - (weight c α - weight v α * ρ) - j * ρ⌉₊ ∣
     (D.mergedCoeff α p).coeff j := by
     rw [mergedCoeff, coeff_uniqueAlgEquiv]
-    simpa [h_weight, weight_single] using hp (mapDomain D.merge α) (single () j)
+    simpa only [PUnit.default_eq_unit, adicFiltration, h_weight, weight_single, nsmul_eq_mul,
+      AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk,
+      Set.mem_ofPred_eq] using hp (mapDomain D.merge α) (single () j)
   exact (pow_dvd_pow T.sqrtPrime (lt_ceil.2 hj)).trans h_coeff
 
 /-- Let `i = D.letter`. The map of variables `D.merge` sends `Y_i = D.varY i` to `X_i = D.varX i`
@@ -821,18 +1041,28 @@ lemma eq_of_mapDomain_merge_eq {T : FrobeniusCycle N W R} {D : T.RootAt k}
       mapDomain D.merge γ + single (D.varY D.letter) (γ (D.varY D.letter)) =
         γ + single (D.varX D.letter) (γ (D.varY D.letter)) := by
     induction γ using induction_linear with
-    | zero => simp
-    | add γ γ' hγ hγ' => grind [mapDomain_add, Finsupp.add_apply, Finsupp.single_add]
-    | single z n => by_cases hz : z = D.varY D.letter <;> simp [merge, hz, Ne.symm, add_comm]
+    | zero => simp only [mapDomain_zero, Finsupp.coe_zero, Pi.zero_apply, Finsupp.single_zero,
+        add_zero]
+    | add γ γ' hγ hγ' =>
+      simp only [mapDomain_add, Finsupp.add_apply, Finsupp.single_add]
+      rw [add_add_add_comm, hγ, hγ', add_add_add_comm]
+    | single z n =>
+      by_cases hz : z = D.varY D.letter
+      · simp only [hz, merge, mapDomain_single, ↓reduceIte, single_eq_same, add_comm]
+      · simp only [merge, mapDomain_single, hz, ↓reduceIte, ne_eq, not_false_eq_true,
+          Ne.symm, single_eq_of_ne, Finsupp.single_zero, add_zero]
   have h_pole_merge (γ : Fin k × ZMod N →₀ ℕ) : weight D.poleOrder (mapDomain D.merge γ) =
       weight D.poleOrder γ + γ (D.varY D.letter) * D.card := by
-    simpa [weight_single] using congrArg (weight D.poleOrder) (h_merge_add γ)
+    simpa only [map_add, weight_single, poleOrder_varY, nsmul_zero, mul_zero, add_zero,
+      poleOrder_varX, frobPower_letter, mul_one, smul_eq_mul] using
+      congrArg (weight D.poleOrder) (h_merge_add γ)
   have h_sum : weight D.poleOrder α + β (D.varY D.letter) * D.card =
       weight D.poleOrder α + α (D.varY D.letter) * D.card := by
     rw [← h_pole_merge, ← h_merge, h_pole_merge, h_weight]
   have h_exponent : β (D.varY D.letter) = α (D.varY D.letter) := by
-    simpa [card, T.prime.ne_zero] using h_sum
-  refine add_right_cancel (b := single (D.varX D.letter) (α (D.varY D.letter))) ?_
+    simpa only [card, Nat.add_left_cancel_iff, mul_eq_mul_right_iff, Nat.pow_eq_zero,
+      T.prime.ne_zero, ne_eq, false_and, or_false] using h_sum
+  refine add_right_cancel (b := Finsupp.single (D.varX D.letter) (α (D.varY D.letter))) ?_
   rw [← h_merge_add α, ← h_merge, ← h_exponent, h_merge_add β]
 
 /-- Put `i = D.letter`. In each letter `s`, `X_s = D.varX s` and `Y_s = D.varY s` are the two
@@ -850,14 +1080,25 @@ lemma coeff_mergedCoeff_aeval_mainSubst {T : FrobeniusCycle N W R} {D : T.RootAt
   | monomial β r =>
     have h_image : aeval D.mainSubst (monomial β r) =
         monomial (mapDomain D.merge β) (monomial (single () (weight D.poleOrder β)) r) := by
-      simp [mainSubst, aeval_monomial, X, C_mul_monomial, monomial_pow, Finsupp.prod,
-        ← monomial_sum_prod, mapDomain, weight_apply, Finsupp.sum, single_finsetSum]
+      simp only [aeval_monomial, MvPolynomial.algebraMap_apply, MvPolynomial.algebraMap_eq,
+        Finsupp.prod, mainSubst, X, C_mul_monomial, mul_one, monomial_pow, Finsupp.smul_single,
+        smul_eq_mul, single_mul, one_pow, ← monomial_sum_prod, Finset.prod_const_one,
+        mapDomain, sum, weight_apply, single_finsetSum]
     have h_iff : mapDomain D.merge β = mapDomain D.merge α ∧
         weight D.poleOrder β = weight D.poleOrder α ↔ β = α :=
-      ⟨fun h ↦ eq_of_mapDomain_merge_eq h.left h.right, fun h ↦ by simp [h]⟩
+      ⟨fun h ↦ eq_of_mapDomain_merge_eq h.left h.right, fun h ↦ by simp only [h, and_self]⟩
     rw [h_image, mergedCoeff, coeff_uniqueAlgEquiv, coeff_monomial, coeff_monomial]
-    split_ifs <;> simp_all [coeff_monomial]
-  | add p p' hp hp' => simp [mergedCoeff_add, hp, hp']
+    by_cases h_m : mapDomain D.merge β = mapDomain D.merge α <;> by_cases hβα : β = α
+    · subst hβα; rw [ite_eq_left rfl, ite_eq_left rfl, coeff_monomial, ite_eq_left rfl]
+    · rw [ite_eq_left h_m, ite_eq_right hβα, coeff_monomial, ite_eq_right fun h ↦ hβα <|
+        h_iff.1 ⟨h_m, by have h' := Finsupp.ext_iff.1 h (); simpa only [single_eq_same] using
+          h'⟩]
+    · exact absurd (congrArg (mapDomain D.merge) hβα) h_m
+    · rw [ite_eq_right h_m, ite_eq_right hβα, AddMonoidAlgebra.coeff_zero, Finsupp.coe_zero,
+        Pi.zero_apply]
+  | add p p' hp hp' =>
+    simp only [map_add, mergedCoeff_add, AddMonoidAlgebra.coeff_add, Finsupp.coe_add,
+      Pi.add_apply, hp, hp']
 
 /-- Zeros against degree. Let `w = T.sqrtPrime`, a square root of the prime `T.p` in `R`, let
 `i = D.letter` and let `q = D.card = P ^ N` be the number of residue classes of `W`. In each letter
@@ -890,9 +1131,12 @@ lemma HasBoundedIncrements.weight_zeroOrder_mul_card_le [NeZero N]
       p ∈ T.iteratedGaussFiltration c (-D.slope c) D.poleOrder (l + weight c α) ∧ p - aeval
         D.mainSubst f ∈
         T.iteratedGaussFiltration c (-D.slope c) D.poleOrder (l + weight c α + 20⁻¹) :=
-    hc.aeval_mem_and_sub_mem_iteratedGaussFiltration (by simpa using h_least 1 (one_mem _))
+    hc.aeval_mem_and_sub_mem_iteratedGaussFiltration
+      (by simpa only [map_one, AlgHom.one_apply] using h_least 1 (one_mem _))
   have h_merge_weight : c (D.varX D.letter) - D.poleOrder (D.varX D.letter) * -D.slope c =
-      c (D.varY D.letter) - D.poleOrder (D.varY D.letter) * -D.slope c := by simp [card_mul_slope]
+      c (D.varY D.letter) - D.poleOrder (D.varY D.letter) * -D.slope c := by
+    simp only [poleOrder_varX, frobPower_letter, mul_one, mul_neg, card_mul_slope, neg_sub,
+      sub_sub_cancel, poleOrder_varY, cast_zero, zero_mul, neg_zero, sub_zero]
   -- Modulo `w ^ (l + 1)` the coefficient of `t ^ (q ν')` is the coefficient of `x ^ α` in `f`.
   have h_top : T.sqrtPrime ^ (l + 1) ∣ (D.mergedCoeff α p).coeff (weight D.poleOrder α) - f.coeff
     α := by
@@ -900,7 +1144,9 @@ lemma HasBoundedIncrements.weight_zeroOrder_mul_card_le [NeZero N]
     exact pow_dvd_coeff_mergedCoeff _ h_cross h_merge_weight (by linarith)
   have Φ_ne : Φ ≠ 0 := by
     refine fun hΦ ↦ h_not_dvd ((dvd_sub_right ?_).1 h_top)
-    simpa [Φ, eq_zero_iff_dvd] using Polynomial.ext_iff.1 hΦ (weight D.poleOrder α)
+    rw [← eq_zero_iff_dvd, ← Polynomial.coeff_map]
+    exact (congrArg (fun q : Polynomial _ ↦ q.coeff (weight D.poleOrder α)) hΦ).trans
+      (Polynomial.coeff_zero _)
   have Φ_deg : Φ.natDegree ≤ weight D.poleOrder α := by
     refine Polynomial.natDegree_le_iff_coeff_eq_zero.2 fun j hj ↦ ?_
     have h_gap : weight D.poleOrder α * D.slope c < j * D.slope c := by gcongr
@@ -915,7 +1161,9 @@ lemma HasBoundedIncrements.weight_zeroOrder_mul_card_le [NeZero N]
       hc.shiftCoeff_aeval_mem r (h_least _ (inv_mem (D.swapTransvection_mem_rootSL r)))
     rw [RingHom.comp_apply, ← Polynomial.map_taylor, ← mergedCoeff_shiftCoeff, Polynomial.coeff_map,
       eq_zero_iff_dvd]
-    exact pow_dvd_coeff_mergedCoeff j h_shift (by simp [card_mul_slope]) (by linarith)
+    exact pow_dvd_coeff_mergedCoeff j h_shift (by simp only [zeroOrder_varX, cast_zero,
+      zero_mul, sub_zero, zeroOrder_varY, ↓reduceIte, card_mul_slope, sub_sub_cancel])
+      (by linarith)
   calc weight D.zeroOrder α * D.card
       = weight D.zeroOrder α * Nat.card (IsLocalRing.ResidueField W) := by
         rw [T.card_residueField, card]
@@ -950,11 +1198,12 @@ theorem FrobeniusCycle.defect_nonpos_of_extreme_term (T : FrobeniusCycle N W R) 
   -- Stepanov's count gives `ν q ≤ q ν'`, and the defect is `(ν - ν') / (q - 1)`.
   have h_count : weight D.zeroOrder α * D.card ≤ weight D.poleOrder α :=
     RootAt.HasBoundedIncrements.weight_zeroOrder_mul_card_le (D := D) hc h_least h_not_dvd
-  have h_card : (1 : ℝ) < D.card := by simpa [RootAt.card] using T.one_lt_q
   have h_defect : weight (T.defectWeight D.letter D.fst D.snd) α =
       (weight D.zeroOrder α - weight D.poleOrder α / D.card) / (D.card - 1) := by
-    simp [weight_eq_sum, D.defectWeight_eq, mul_sub, mul_div, ← Finset.sum_div]
-  refine h_defect.trans_le (div_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 ?_) (by linarith))
+    simp only [weight_eq_sum, D.defectWeight_eq, nsmul_eq_mul, mul_div, mul_sub,
+      ← Finset.sum_div, Finset.sum_sub_distrib, smul_eq_mul, cast_sum, cast_mul]
+  refine h_defect.trans_le (div_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 ?_)
+    (sub_nonneg.mpr D.one_lt_cast_card.le))
   exact (le_div_iff₀ D.cast_card_pos).2 (mod_cast h_count)
 
 /-! ### Consequences -/
@@ -979,7 +1228,8 @@ lemma FrobeniusCycle.weight_sub_defectWeight_div_three (T : FrobeniusCycle N W R
     (i : ZMod N) (depth : Fin k × ZMod N → ℝ) (α : Fin k × ZMod N →₀ ℕ) :
     weight (fun x : Fin k × ZMod N ↦ depth x - T.defectWeight i a a' x / 3) α =
       weight depth α - weight (T.defectWeight i a a') α / 3 := by
-  simp [weight_eq_sum, mul_sub, mul_div, ← Finset.sum_div]
+  simp only [weight_eq_sum, nsmul_eq_mul, mul_sub, mul_div, Finset.sum_sub_distrib,
+    ← Finset.sum_div]
 
 /-- A large defect forces a divisible coefficient. Let `a ≠ a'`, and in each letter `s ∈ ℤ/N` let
 `Y_s = T.rootVar a a' s` be the variable `(a', s)` for even and `(a, s)` for odd `s`, and
@@ -1022,11 +1272,16 @@ theorem FrobeniusCycle.mem_gaussFiltration_sub_defect_div_three (T : FrobeniusCy
     intro α
     by_contra h_not
     obtain ⟨l, hl⟩ : ∃ l : ℕ, ⌈t - weight ω α⌉₊ = l + 1 :=
-      exists_eq_succ_of_ne_zero fun h_zero ↦ h_not (by simp [h_zero])
+      exists_eq_succ_of_ne_zero fun h_zero ↦ h_not (by
+        simp only [adicFiltration, h_zero, pow_zero, isUnit_one, IsUnit.dvd, Set.ofPred_true,
+          AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk, Set.mem_univ])
     have h_lt : l < t - weight ω α := lt_ceil.1 (by lia)
-    linarith [h_low (α, l) ⟨by linarith, g, hg, by simpa [hl] using h_not⟩]
+    linarith [h_low (α, l) ⟨by linarith, g, hg, by
+      simpa only [adicFiltration, hl, AddSubgroup.mem_mk, AddSubmonoid.mem_mk,
+        AddSubsemigroup.mem_mk, Set.mem_ofPred_eq] using h_not⟩]
   suffices h_empty : ¬low.Nonempty by
-    simpa using mem_of_forall le_rfl (fun x hx ↦ absurd ⟨x, hx⟩ h_empty) (one_mem _)
+    simpa only [map_one, AlgHom.one_apply] using
+      mem_of_forall le_rfl (fun x hx ↦ absurd ⟨x, hx⟩ h_empty) (one_mem _)
   intro h_ne
   -- The degree of `f` bounds `α`, and `v₀` bounds `l`.
   have h_finite : low.Finite := by
@@ -1034,15 +1289,17 @@ theorem FrobeniusCycle.mem_gaussFiltration_sub_defect_div_three (T : FrobeniusCy
       (Set.finite_singleton α).prod (Set.finite_Iio ⌈v₀ - weight ω α⌉₊)).subset ?_
     rintro ⟨α, l⟩ ⟨h_lt, g, -, h_not⟩
     have h_degree : α.degree ≤ f.totalDegree :=
-      (le_totalDegree (MvPolynomial.mem_support_iff.2 fun h_zero ↦ h_not (by simp [h_zero]))).trans
-        (T.totalDegree_polyAction_le g f)
+      (le_totalDegree (MvPolynomial.mem_support_iff.2 fun h_zero ↦
+        h_not (by simp only [h_zero, dvd_zero]))).trans (T.totalDegree_polyAction_le g f)
     exact Set.mem_biUnion h_degree ⟨rfl, lt_ceil.2 (by linarith)⟩
   obtain ⟨⟨α, l⟩, ⟨h_lt, g₀, hg₀, h_not⟩, h_min⟩ :
       ∃ x ∈ low, ∀ y ∈ low, x.2 + weight ω x.1 ≤ y.2 + weight ω y.1 :=
     Set.exists_min_image low _ h_finite h_ne
   have h_defect : weight (T.defectWeight i a a') α ≤ 0 :=
     T.defect_nonpos_of_extreme_term i ha ω_step
-      (fun g hg ↦ by simpa using mem_of_forall h_lt.le h_min (mul_mem hg hg₀)) h_not
+      (fun g hg ↦ by
+        simpa only [map_mul, AlgHom.mul_apply] using mem_of_forall h_lt.le h_min (mul_mem hg hg₀))
+      h_not
   have h_weight : weight ω α = weight depth α - weight (T.defectWeight i a a') α / 3 :=
     T.weight_sub_defectWeight_div_three i depth α
   have h_depth : l < v₀ - weight depth α := by linarith
@@ -1064,6 +1321,7 @@ lemma FrobeniusCycle.weight_defectWeight_nonpos_of_least {a a' : Fin k} {K : Typ
   have w_zero : T.sqrtPrime = 0 := (pow_eq_zero_iff two_ne_zero).1
     (T.sqrtPrime_sq.trans (CharP.cast_eq_zero K _))
   exact T.defect_nonpos_of_extreme_term i ha (c := height) (l := 0) (fun s ↦ by norm_num [h_step])
-    (by simpa using h_least) (by simpa [w_zero] using hα)
+    (by simpa only [cast_zero, zero_add] using h_least)
+    (by simpa only [w_zero, zero_add, pow_one, zero_dvd_iff, ne_eq] using hα)
 
 end New

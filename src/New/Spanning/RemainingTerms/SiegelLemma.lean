@@ -1,6 +1,16 @@
+module
+
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.PicardGroup
+import TauCeti.LinearAlgebra.Matrix.Range
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
+public import Lib.Adelic.Reduction.MinkowskiTheorems
 import Lib.Adelic.Adeles.LocalFactors
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Witt.WittTheorem
+import Lib.General.Analysis.PackingAndSobolev
+import Lib.General.LinearAlgebra.PolarDecomposition
 import Lib.General.NumberTheory.LatticeCovolumes
-import New.Spanning.Unfolding.Setup
 
 /-!
 # Discriminants of sublattices, Siegel's lemma and a height zeta function of subspaces
@@ -37,6 +47,8 @@ out by lattice vectors; a power of the product of their norms is bounded by an e
 depending on the degree, the codimension and the root discriminant, times its discriminant. Source:
 E. Bombieri, J. Vaaler, On Siegel's lemma, Invent. Math. 73 (1983).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -95,7 +107,7 @@ structure IsKernelExtension (A : Matrix σ P k) (x : Matrix P σ k) (L : Submodu
 extend to a basis of `L` by the columns of a matrix `y`, a basis of `L ⊓ ker A`. -/
 lemma exists_isKernelExtension {A : Matrix σ P k} {x : Matrix P σ k} (h_det : (A * x).det ≠ 0)
     {L : Submodule k (P → k)} (hL : colSpan x ≤ L) :
-    ∃ᵉ (s : ℕ) (y : Matrix P (Fin s) k), IsKernelExtension A x L y := by
+    ∃ s : ℕ, ∃ y : Matrix P (Fin s) k, IsKernelExtension A x L y := by
   classical
   -- Take for `y` a basis of `L ⊓ ker A`, with left inverse `l`. As `A * y = 0`, the matrix
   -- `C = (A * x)⁻¹ * A` reads off the `x`-coordinates of a combination of the columns of `x` and
@@ -138,7 +150,7 @@ columns of a left invertible matrix over `E`) and an `a ∈ GL_s(𝔸_f)` such t
 primitive: it has entries in `Ô` and a left inverse with entries in `Ô`. -/
 lemma exists_isPrimitiveMatrix_mul_finAdeleMatrix (hLH : L * H = 1) (V : Submodule E (σ → E))
     {s : ℕ} (hs : finrank E V = s) :
-    ∃ᵉ (y : Matrix σ (Fin s) E) (a : GL (Fin s) (𝔸f E)),
+    ∃ y : Matrix σ (Fin s) E, ∃ a : GL (Fin s) (𝔸f E),
       HasLeftInv y ∧ colSpan y = V ∧ IsPrimitiveMatrix (Ô E) (H * (finAdeleMatrix y * a.val)) := by
   classical
   subst hs
@@ -156,7 +168,7 @@ integral left inverse); it exists by `exists_isPrimitiveMatrix_mul_finAdeleMatri
 def sublatticeBasis (hLH : L * H = 1) (V : Submodule E (σ → E)) :
     {m : Matrix σ (Fin (finrank E V)) (𝔸f E) //
       IsPrimitiveMatrix (Ô E) (H * m) ∧
-      ∃ᵉ (y : Matrix σ (Fin (finrank E V)) E) (a : GL (Fin (finrank E V)) (𝔸f E)),
+      ∃ y : Matrix σ (Fin (finrank E V)) E, ∃ a : GL (Fin (finrank E V)) (𝔸f E),
         HasLeftInv y ∧ colSpan y = V ∧ m = finAdeleMatrix y * a.val} :=
   Nonempty.some <| by
     obtain ⟨y, a, hy_inv, hy_span, h_prim⟩ := exists_isPrimitiveMatrix_mul_finAdeleMatrix hLH V rfl
@@ -169,7 +181,7 @@ lemma isPrimitiveMatrix_mul_sublatticeBasis (hLH : L * H = 1) (V : Submodule E (
 /-- The chosen basis is `y a`, with the columns of `y` a basis of `V` over `E` and `a` invertible
 over `𝔸_f`. -/
 lemma exists_sublatticeBasis_eq_finAdeleMatrix_mul (hLH : L * H = 1) (V : Submodule E (σ → E)) :
-    ∃ᵉ (y : Matrix σ (Fin (finrank E V)) E) (a : GL (Fin (finrank E V)) (𝔸f E)),
+    ∃ y : Matrix σ (Fin (finrank E V)) E, ∃ a : GL (Fin (finrank E V)) (𝔸f E),
       HasLeftInv y ∧ colSpan y = V ∧ (sublatticeBasis hLH V).val = finAdeleMatrix y * a.val :=
   (sublatticeBasis hLH V).property.right
 
@@ -198,13 +210,13 @@ lemma exists_finAdeleMatrix_mul_eq_sublatticeBasis_mul (hLH : L * H = 1) {V : Su
     ∃ A : GL (Fin (finrank E V)) (𝔸f E),
       finAdeleMatrix x * w.val = (sublatticeBasis hLH V).val * A.val := by
   classical
-  obtain ⟨y, a, -, hy, hm⟩ : ∃ᵉ (y : Matrix σ (Fin (finrank E V)) E)
-      (a : GL (Fin (finrank E V)) (𝔸f E)),
+  obtain ⟨y, a, -, hy, hm⟩ : ∃ y : Matrix σ (Fin (finrank E V)) E,
+      ∃ a : GL (Fin (finrank E V)) (𝔸f E),
       HasLeftInv y ∧ colSpan y = V ∧ (sublatticeBasis hLH V).val = finAdeleMatrix y * a.val :=
     exists_sublatticeBasis_eq_finAdeleMatrix_mul hLH V
   -- The columns of `x` lie in `V`, the span of those of `y`.
   obtain ⟨B, rfl⟩ : ∃ B : Matrix (Fin (finrank E V)) (Fin (finrank E V)) E, y * B = x :=
-    exists_mul_eq_of_col_mem_range fun i ↦ hy.ge (hx ⟨Pi.single i 1, x.mulVec_single_one i⟩)
+    exists_mul_eq_of_range_le fun i ↦ hy.ge (hx ⟨Pi.single i 1, x.mulVec_single_one i⟩)
   have h_gram : (y * B)ᴴ * (y * B) = Bᴴ * (yᴴ * y) * B := by simp [Matrix.mul_assoc]
   have hB_det : B.det ≠ 0 := fun h_zero ↦ hx_det (by rw [h_gram, det_mul, h_zero, mul_zero])
   obtain ⟨b, hb⟩ : IsUnit (finAdeleMatrix B) :=
@@ -267,7 +279,6 @@ lemma sublatticeDiscriminant_mul_index_sq_le (hLH : L * H = 1) (V : Submodule E 
         genIndex (finAdeleMatrix (xᴴ * x)).det * genIndex w.val.det ^ 2 ∧
       0 < sublatticeDiscriminant hLH V ∧
       1 ≤ sublatticeIndex hLH V Y K := by
-  classical
   -- Write `x w = m A` with `m` the chosen basis. The right side is `δ² [det A]²`, and `[det A]` is
   -- the index of the column lattice of `A` in `Ô ^ s`. It bounds `i`, since `Y H m` maps that
   -- lattice into `K` and `Ô ^ s` onto the span of the columns of `Y H m`.
@@ -391,7 +402,7 @@ lemma genIndex_sq_mul_abs_norm_eq [HasPrimitiveRoot5040 E] (u : Gf E κ) {t s : 
       rw [Matrix.mul_one, conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul_fromCols]
       simp [fromBlocks_add]
     rw [h_index, h_block] at h_jacobi
-    simpa [w, Matrix.mul_assoc] using h_jacobi
+    simpa [w] using h_jacobi
   have h_conj : wᴴ * w = a.valᴴ * finAdeleMatrix (yᴴ * y) * a.val := by
     simp [w, finAdeleMatrix_conjTranspose, Matrix.mul_assoc]
   rw [h_gram, h_gram, h_conj, det_mul, det_mul, det_conjTranspose] at h_disc
@@ -532,10 +543,10 @@ lemma siegel_lemma (u : Gf E κ) {T : Submodule E (κ → E)} {s : ℕ}
   have hm_prim : IsPrimitiveMatrix (Ô E) (u.val.inv * m) :=
     isPrimitiveMatrix_mul_sublatticeBasis u.val.val_inv T
   obtain ⟨x, b, hx_inv, hx, hm⟩ :
-      ∃ᵉ (x : Matrix κ (Fin (Module.finrank E T)) E) (b : GL (Fin (Module.finrank E T)) (𝔸f E)),
+      ∃ x : Matrix κ (Fin (Module.finrank E T)) E, ∃ b : GL (Fin (Module.finrank E T)) (𝔸f E),
         HasLeftInv x ∧ colSpan x = T ∧ m = finAdeleMatrix x * b.val :=
     exists_sublatticeBasis_eq_finAdeleMatrix_mul u.val.val_inv T
-  obtain ⟨y, a, ⟨l, hl⟩, hy, hy_prim⟩ : ∃ᵉ (y : Matrix κ (Fin s) E) (a : GL (Fin s) (𝔸f E)),
+  obtain ⟨y, a, hy_inv, hy, hy_prim⟩ : ∃ y : Matrix κ (Fin s) E, ∃ a : GL (Fin s) (𝔸f E),
       HasLeftInv y ∧ colSpan y = xᴴ.mulVecLin.ker ∧
         IsPrimitiveMatrix (Ô E) (u.val.inv * (finAdeleMatrix y * a.val)) :=
     exists_isPrimitiveMatrix_mul_finAdeleMatrix u.val.val_inv _
@@ -547,8 +558,7 @@ lemma siegel_lemma (u : Gf E κ) {T : Submodule E (κ → E)} {s : ℕ}
   -- At each infinite place make the columns of `y` orthonormal by `r v`.
   have h_orth (v : InfinitePlace E) :
       ∃ r : GL (Fin s) ℂ, (y.map (Φ v) * r.val)ᴴ * (y.map (Φ v) * r.val) = 1 :=
-    have h_inv : l.map (Φ v) * y.map (Φ v) = 1 := by simp [← Matrix.map_mul, hl]
-    (exists_orthonormal_mul id ⟨l.map (Φ v), h_inv⟩).imp fun _ ↦ And.right
+    (exists_orthonormal_mul id (hy_inv.map (Φ v))).imp fun _ ↦ And.right
   choose r hr using h_orth
   have h_vol : 1 ≤ ideleAbs (mkAdelicGL (r, a)).det * √(genIndex (mᴴ * m).det) := by
     rw [← h_jacobi]
@@ -562,7 +572,7 @@ lemma siegel_lemma (u : Gf E κ) {T : Submodule E (κ → E)} {s : ℕ}
   · -- `u⁻¹ y Bᵀ = (u⁻¹ y a) (a⁻¹ Bᵀ)` is a product of integral matrices.
     obtain ⟨hy_int, -⟩ := hy_prim
     exact mulVec_mem_baseLattice u (by simpa [Matrix.mul_assoc] using hy_int.mul haB) i
-  · have hBi : B i = 0 := by simpa [hl] using congrArg (l *ᵥ ·) h_zero
+  · have hBi : B i = 0 := hy_inv.injective_mulVec (by simpa using h_zero)
     exact hB_det (det_eq_zero_of_row_eq_zero i (congrFun hBi))
   · -- Trade the determinant of `(r, a)` for the discriminant by `h_vol`.
     have h_rootDiscr_pos : 0 < rootDiscr E := rootDiscr_pos E
@@ -600,7 +610,7 @@ lemma exists_inv_sublatticeDiscriminant_pow_le_prod (u : Gf E κ) {T : Submodule
   set P : ℝ := ∏ i, ‖((stdSpace E κ).move (1, u)).archCoords (X i)‖
   set n : ℕ := numInfPlaces E * (card κ + 1) with hn
   set C : ℝ := (8 * (numInfPlaces E * card κ) * rootDiscr E) ^ n with hC
-  have h_rootDiscr_nonneg : 0 ≤ rootDiscr E := Real.rpow_nonneg (by positivity) _
+  have h_rootDiscr_nonneg : 0 ≤ rootDiscr E := (rootDiscr_pos E).le
   have hd : 0 ≤ d := Real.sqrt_nonneg _
   have hP : 1 ≤ P := one_le_prod₀ fun i _ ↦ one_le_norm_archCoords u (hX i).left (hX i).right
   have h_pow : P ^ (2 * n) ≤ C ^ s * d ^ (card κ + 1) :=
@@ -638,7 +648,7 @@ lemma tsum_sublatticeDiscriminant_inv_le (u : Gf E κ) (s : ℕ) :
   let n : ℕ := numInfPlaces E * (card κ + 1)
   let C : ℝ := (8 * (numInfPlaces E * card κ) * rootDiscr E) ^ n
   let wt (x : L) : ℝ := ‖V.archCoords x.val‖⁻¹ ^ (2 * n) * C
-  have h_rootDiscr_nonneg : 0 ≤ rootDiscr E := Real.rpow_nonneg (by positivity) _
+  have h_rootDiscr_nonneg : 0 ≤ rootDiscr E := (rootDiscr_pos E).le
   have h_wt (x : L) : 0 ≤ wt x := by positivity
   -- Nonzero lattice vectors have length at least `1`, so they are `1`-separated and the packing
   -- bound `∑ ‖x‖⁻¹ ^ (2 n) ≤ 5 ^ (2 n)` holds, as `2 n` exceeds the real dimension

@@ -1,4 +1,8 @@
-import Lib.Cohomology.Hodge.CupProduct
+module
+
+import Aesop.Frontend.Attribute
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Lib.Cohomology.Hodge.CupProduct
 
 /-!
 # The Leray–Hirsch map as a map of δ-functors, and dévissage from representable functors
@@ -32,6 +36,8 @@ the Leray–Hirsch map is bijective on ℤ[h_c] for every representable functor 
 bijective on every functor. Source: Leray, Hirsch; Hatcher, Algebraic Topology, Thm 4D.1; SGA 5 VII
 (projective bundle formula).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -138,43 +144,29 @@ degree below n is a bijection onto the classes of degree below n. Here `S`, `G` 
 `A ⥤ Ab`, `F` is a functor `C ⥤ Ab`, and the classes `θ i` are indexed by a type `I`. -/
 lemma isLerayHirschBasis_iff_allBijective_truncMap : IsLerayHirschBasis θ S ↔
     AllBijective fun n : ℕ ↦ truncMap (degreeTrunc_comp_lerayHirsch θ S n) := by
-  -- The map `lerayHirsch θ S`, with values in families indexed by one point, commutes with the
-  -- truncations.
   have comm (n : ℕ) (a : I →₀ TotalH S G) :
       single () (lerayHirsch θ S (degreeTrunc d n a)) =
         degreeTrunc 0 n (single () (lerayHirsch θ S a)) :=
     LinearMap.congr_fun (degreeTrunc_comp_lerayHirsch θ S n) a
-  -- Unfold both sides on elements; the range of `degreeTrunc d n` is the part of degree below `n`.
-  suffices key : ((∀ a : I →₀ TotalH S G, lerayHirsch θ S a = 0 → a = 0) ∧
-        ∀ b : TotalH (Φ.obj S) F, ∃ a, lerayHirsch θ S a = b) ↔
-      ∀ n : ℕ, (∀ a : I →₀ TotalH S G,
-          lerayHirsch θ S (degreeTrunc d n a) = 0 → degreeTrunc d n a = 0) ∧
-        ∀ z : Unit →₀ TotalH (Φ.obj S) F,
-          ∃ a, single () (lerayHirsch θ S (degreeTrunc d n a)) = degreeTrunc 0 n z by
-    simpa [AllBijective, Bijective, truncMap, injective_iff_map_eq_zero, Surjective,
-      LinearMap.restrict_apply] using key
+  simp [AllBijective, Bijective, truncMap, injective_iff_map_eq_zero, Surjective,
+    LinearMap.restrict_apply]
   refine ⟨fun ⟨h_inj, h_surj⟩ n ↦ ⟨fun a ↦ h_inj _, fun z ↦ ?_⟩,
     fun h_trunc ↦ ⟨fun a ha ↦ ?_, fun b ↦ ?_⟩⟩
   · -- Truncate a preimage of `z`.
     obtain ⟨a, ha⟩ := h_surj (z ())
     exact ⟨a, by rw [comm, ha, ← unique_single]⟩
-  · -- If `lerayHirsch θ S a = 0`, every truncation of `a` is in the kernel, hence zero; the
-    -- component of `a i` in degree `m` survives truncation at `m + d i + 1`.
-    have h_zero (n : ℕ) : degreeTrunc d n a = 0 :=
-      (h_trunc n).left a (by simpa [ha] using comm n a)
+  · -- Every truncation of `a` is in the kernel, hence zero; the component of `a i` in degree `m`
+    -- survives truncation at `m + d i + 1`.
     ext i m
-    have h_comp : degreeTrunc d (m + d i + 1) a i m = 0 := by simp [h_zero]
-    simpa [degreeTrunc] using h_comp
+    have h0 := (h_trunc (m + d i + 1)).1 a (by simpa [ha] using comm _ a)
+    simpa [degreeTrunc] using congr_arg (fun f ↦ f i m) h0
   · -- The range is a submodule, so it is enough to reach a homogeneous class `z` of degree `n`,
     -- which is unchanged by truncation at `n + 1`.
     induction b using DirectSum.induction_on with
     | zero => exact ⟨0, map_zero _⟩
     | of n z =>
-      obtain ⟨a, ha⟩ := (h_trunc (n + 1)).right (single () (of _ n z))
-      refine ⟨degreeTrunc d (n + 1) a, ?_⟩
-      have h_val : lerayHirsch θ S (degreeTrunc d (n + 1) a) =
-          degreeTrunc 0 (n + 1) (single () (of (H (Φ.obj S) F) n z)) () := by simp [← ha]
-      simpa [degreeTrunc] using h_val
+      obtain ⟨a, ha⟩ := (h_trunc (n + 1)).2 (single () (of _ n z))
+      exact ⟨degreeTrunc d (n + 1) a, by simpa [degreeTrunc] using congr_arg (fun f ↦ f ()) ha⟩
     | add x y hx hy => exact (lerayHirsch θ S).range.add_mem hx hy
 
 /-! ### Long exact sequences of truncated families -/
@@ -265,10 +257,12 @@ lemma lerayHirsch.devissage :
   -- a map between groups with one element is bijective
   aesop
 
+omit [DecidableEq I] in
 /-- The functors `S` at which `θ` is a Leray–Hirsch basis form a closed class
 (`New.Variety.IsClosedClass`): the class contains the zero functors, and along a short exact
 sequence whose subobject is in it, the middle term is in it exactly when the quotient is. -/
 lemma isClosedClass_isLerayHirschBasis : IsClosedClass fun S : A ⥤ Ab ↦ IsLerayHirschBasis θ S := by
+  classical
   simp [isLerayHirschBasis_iff_allBijective_truncMap, lerayHirsch.devissage.isClosedClass]
 
 /-! ### Dévissage from representable functors -/
@@ -292,6 +286,7 @@ lemma Devissage.allBijective_of_allBijective_sigma_reprBy {A B : C ⥤ Ab → �
     exact hf.bijectiveUpTo_quotient h_exact
       (allBijective_iff_forall_bijectiveUpTo.mp (h_sum ι c) (r + 1)) (ih _)
 
+omit [DecidableEq I] in
 /-- Let θ be a finite family of classes in Ext(G∘φ, F), for a functor φ. If the Leray–Hirsch map
 `New.Variety.lerayHirsch` is bijective at ℤ[h_c], the free abelian functor on h_c = Hom(c, −), for
 every object c of the target of φ, it is bijective at every S. Here `S`, `G` are functors `A ⥤ Ab`,
@@ -300,6 +295,7 @@ lemma isLerayHirschBasis_of_reprBy [Finite I] {φ : C ⥤ A}
     {θ : ∀ i : I, H (restrictAlong φ G) F (d i)}
     (h_repr : ∀ c : A, IsLerayHirschBasis θ (freeAb (reprBy c))) (S : AbFunctor A) :
     IsLerayHirschBasis θ S := by
+  classical
   -- By dévissage it suffices to treat a disjoint union of representable functors `reprBy (X c)`.
   -- Restriction to the summands turns both sides into products, where `h_repr` applies factorwise.
   refine isLerayHirschBasis_iff_allBijective_truncMap.mpr

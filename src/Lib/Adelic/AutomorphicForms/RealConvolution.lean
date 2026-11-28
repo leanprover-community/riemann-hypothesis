@@ -1,5 +1,20 @@
-import Lib.Adelic.AutomorphicForms.Basic
+module
+
+public import Mathlib.Topology.ContinuousMap.CompactlySupported
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.MeasureTheory.Function.LpSpace.DomAct.Continuous
+import Mathlib.MeasureTheory.Integral.CompactlySupported
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.Tactic.Monotonicity.Lemmas
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.AutomorphicForms.Basic
+public import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.QuotientMeasure.IwasawaUnfolding
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import Lib.DiscreteSeries.Rigidity.KernelFixes
 
 /-!
@@ -49,6 +64,8 @@ projected to forms, from the theory of cusp forms. For sources see
 `Lib.Adelic.AutomorphicForms.Cuspidality`.
 -/
 
+@[expose] public section
+
 /-! ## Convolution over the real points; cusp kernels -/
 
 section RealConvolution
@@ -66,7 +83,7 @@ noncomputable def bumpProduct (α : NumberField.InfinitePlace E → DiscreteSeri
     C_c(GInf E s, ℂ) where
   toFun x := ∏ w : NumberField.InfinitePlace E, (α w).val.val (x w)⁻¹
   continuous_toFun := by fun_prop
-  hasCompactSupport' := HasCompactSupport.intro (isCompact_univ_pi fun w ↦ (α w).2.inv)
+  hasCompactSupport' := HasCompactSupport.intro (isCompact_univ_pi fun w ↦ (α w).property.inv)
     (fun x hx ↦ by
     obtain ⟨w, hw⟩ := not_forall.1 fun h ↦ hx (Set.mem_univ_pi.2 h)
     exact prod_eq_zero (mem_univ w) (image_eq_zero_of_notMem_tsupport hw))
@@ -149,11 +166,8 @@ theorem isCuspKernel_typeKernel [Nonempty n] {l : NumberField.InfinitePlace E �
       ‖typeKernel l s x‖ * (∏ w, ‖(x w).val.val‖) ^ (B + 1) := by
     have h_loc : Integrable fun x : GInf E s ↦
         ∏ w, e w (x w) * (‖(x w).val.val‖ : ℂ) ^ (B + 1) :=
-      .fintype_prod (f := fun w g ↦ e w g * (‖g.val.val‖ : ℂ) ^ (B + 1)) fun w ↦ by
-        simpa [e] using (h w).integrable_dsKernel_mul_norm_pow (B + 1) le_rfl
-    refine h_loc.norm.congr (.of_forall fun x ↦ ?_)
-    simp only [h_prod, norm_prod, norm_mul, norm_pow, Complex.norm_real, norm_norm,
-      prod_mul_distrib, prod_pow]
+      .fintype_prod fun w ↦ (h w).integrable_dsKernel_mul_norm_pow (B + 1) le_rfl
+    simpa [h_prod, prod_mul_distrib, prod_pow] using h_loc.norm
   have h_bump (w : NumberField.InfinitePlace E) : ∃ α : DiscreteSeries.Bumps s,
       ∀ g : USign s, ∫ x : USign s, α.val.val x⁻¹ * e w (x⁻¹ * g) = e w g :=
     (h w).exists_bump_conv_dsKernel
@@ -204,10 +218,10 @@ lemma hasLevel_realConv (K : OpenSubgroup (Gf E n)) (h_level : HasLevel F K) :
 
 /-- The oscillation of an average is bounded by that of the kernel in L¹. Let α be integrable on
 G_∞, F bounded and measurable on G, u a real point, real points sitting in G as x ↦ (x, 1), and
-R(α)F(g) = ∫_{G_∞} α(x)F(gx) dx (`realConv`). If C ≥ 0 and |F(gx)| ≤ C for all real x with
+R(α)F(g) = ∫_{G_∞} α(x)F(gx) dx (`realConv`). If |F(gx)| ≤ C for all real x with
 α(u⁻¹x) ≠ α(x), then |R(α)F(gu) − R(α)F(g)| ≤ ‖α(u⁻¹ ·) − α‖₁ C. -/
 lemma norm_realConv_mul_sub_le (hF : IsBoundedMeasurable F) (hα : Integrable α) (g : G E s)
-    (u : GInf E s) {C : ℝ} (_hC_nonneg : 0 ≤ C)
+    (u : GInf E s) {C : ℝ}
     (hC : ∀ x : GInf E s, α (u⁻¹ * x) ≠ α x → ‖F (g * (x, 1))‖ ≤ C) :
     ‖realConv α F (g * (u, 1)) - realConv α F g‖ ≤
       (∫ x : GInf E s, ‖α (u⁻¹ * x) - α x‖) * C := by
@@ -241,7 +255,7 @@ lemma tendsto_integral_norm_translate_sub (hα : Integrable α) :
   let T (u : GInf E s) : Lp ℂ 1 (volume : Measure (GInf E s)) := DomMulAct.mk u⁻¹ • hα.toL1
   have h_cont : Continuous T :=
     -- `continuous_smul` for the action on L¹, whose instance is not found by unification here
-    Lp.instContinuousSMulDomMulAct.1.comp
+    Lp.instContinuousSMulDomMulAct.continuous_smul.comp
       (f := fun u : GInf E s ↦ (DomMulAct.mk u⁻¹, hα.toL1)) (by fun_prop)
   have h_norm (u : GInf E s) : ‖T u - T 1‖ = ∫ x : GInf E s, ‖α (u⁻¹ * x) - α (1⁻¹ * x)‖ :=
     L1.norm_of_fun_eq_integral_norm ((hα.comp_mul_left u⁻¹).sub (hα.comp_mul_left 1⁻¹))
@@ -268,7 +282,7 @@ lemma eventually_norm_realConv_sub_le (K : OpenSubgroup (Gf E n)) (hα : Integra
       = ‖realConv α F (g * (u, 1)) - realConv α F g‖ := by
         rw [h_split, hasLevel_realConv K h_level a ha]
     _ ≤ (∫ x : GInf E s, ‖α (u⁻¹ * x) - α x‖) * ‖C‖ :=
-        norm_realConv_mul_sub_le hF hα g u (norm_nonneg C) fun x hx ↦
+        norm_realConv_mul_sub_le hF hα g u fun x hx ↦
           (hC x hx).trans C.le_norm_self
     _ ≤ ε * ‖C‖ := mul_le_mul_of_nonneg_right (le_of_lt hu) (norm_nonneg C)
 
@@ -574,7 +588,7 @@ theorem New.Space.exists_form_eq_tsum_of_fixesLeft (he : IsIdempotentKernel e)
       (y.val : G E s → ℂ) = fun g : G E s ↦ ∑' i : ι, realConv e (W i) g := by
   -- The series is the convolution with `e` of the bounded sum of the `W i`.
   have h_bounded (g : G E s) : ‖∑' i : ι, W i g‖ ≤ M.toReal := by
-    simpa using toReal_mono hM (enorm_tsum_le_tsum_enorm.trans (h_le g))
+    simpa using toReal_mono hM (eNorm_tsum_le_tsum_eNorm.trans (h_le g))
   -- Convolve term by term: the kernel is integrable and the sum of the norms is at most `M`.
   have h_termwise (g : G E s) :
       ∑' i : ι, realConv e (W i) g = realConv e (fun x : G E s ↦ ∑' i : ι, W i x) g := by
@@ -583,7 +597,7 @@ theorem New.Space.exists_form_eq_tsum_of_fixesLeft (he : IsIdempotentKernel e)
     refine (hasSum_integral_of_lintegral_tsum_lt_top ?_).tsum_eq
     calc ∫⁻ x : GInf E s, ∑' i : ι, ‖e x * W i (g * (x, 1))‖ₑ
         ≤ ∫⁻ x : GInf E s, ‖e x‖ₑ * M := by
-          simp only [enorm_mul, ENNReal.tsum_mul_left]
+          simp only [eNorm_mul, ENNReal.tsum_mul_left]
           grw [h_le]
       _ < ⊤ := by
           rw [lintegral_mul_const' _ _ hM]

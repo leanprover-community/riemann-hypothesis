@@ -1,4 +1,34 @@
-import Lib.General.Algebra.AbsIntegrallyClosed
+module
+
+public import Mathlib.Algebra.Category.FGModuleCat.Basic
+public import Mathlib.Algebra.Category.Grp.Adjunctions
+public import Mathlib.Algebra.Category.Grp.FiniteGrp
+public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Map
+public import Mathlib.Algebra.TrivSqZeroExt.Ideal
+public import Mathlib.AlgebraicGeometry.Group.Affine
+public import Mathlib.AlgebraicGeometry.Morphisms.UnderlyingMap
+public import Mathlib.CategoryTheory.Abelian.FunctorCategory
+public import Mathlib.CategoryTheory.Linear.FunctorCategory
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Topology.LocallyConstant.Algebra
+public import Mathlib.Algebra.Category.Grp.Abelian
+public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.Basic
+import Mathlib.Algebra.Category.Grp.AB
+import Mathlib.Algebra.Category.Grp.Zero
+import Mathlib.Algebra.Divisibility.Prod
+import Mathlib.Algebra.Homology.DerivedCategory.Ext.EnoughInjectives
+import Mathlib.CategoryTheory.Abelian.Exact
+import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.FunctorCategory
+import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
+import Mathlib.CategoryTheory.Functor.ReflectsIso.Exact
+import Mathlib.CategoryTheory.Generator.Presheaf
+import Mathlib.CategoryTheory.Limits.FunctorCategory.Filtered
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.Valuation.LocalSubring
+import TauCeti.RingTheory.Ideal.Maps
+public import Lib.General.Algebra.AbsIntegrallyClosed
 
 /-!
 # Cohomology of functors as Ext: test rings, points, functoriality, coefficients
@@ -38,6 +68,8 @@ Notions from other files:
 Known; see `Lib.Cohomology.Etale.FilteredLimits` and `Lib.Cohomology.WoodsHole` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -69,8 +101,8 @@ scoped instance {F G : D ⥤ T} : CoeFun (F ⟶ G) fun _ ↦ ∀ A : D, F A ⟶ 
 /-- A subfunctor is applied to an object. -/
 scoped instance {F : D ⥤ Type _} : CoeFun (Subfunctor F) fun _ ↦ ∀ A : D, Set (F A) := ⟨(·.obj)⟩
 
-/-- The category of covariant functors from C to abelian groups. -/
-abbrev AbFunctor : Type 2 := C ⥤ AddCommGrpCat.{1}
+/-- The category of covariant functors from `D` to abelian groups. -/
+abbrev AbFunctor (D : Type*) [Category* D] := D ⥤ AddCommGrpCat.{1}
 
 -- `HasAbFunctorExt` is a reducible `def` and not an `abbrev`: the kernel then compares these
 -- instances by `C` alone instead of unfolding them.
@@ -87,11 +119,11 @@ variable {C} {Y E : D ⥤ Type 1} (p : E ⟶ Y) {J : Type 1} (X : J → C ⥤ Ty
 same image in Y(A). -/
 def cech (m : ℕ) : D ⥤ Type 1 where
   obj A := {e : Fin (m + 1) → E A // ∀ i j : Fin (m + 1), p.app A (e i) = p.app A (e j)}
-  map f := ↾fun e ↦ ⟨fun i ↦ E.map f (e.1 i), fun i j ↦ by simp [e.2 i j]⟩
+  map f := ↾fun e ↦ ⟨fun i ↦ E.map f (e.val i), fun i j ↦ by simp [e.property i j]⟩
 
 /-- The projection from the (m+1)-fold fibre power of p: E → Y to E taking the j-th coordinate. -/
 def cech.proj (m : ℕ) (j : Fin (m + 1)) : cech p m ⟶ E where
-  app _ := ↾fun e ↦ e.1 j
+  app _ := ↾fun e ↦ e.val j
 
 /-- For a family X_i of set-valued functors on C, the functor sending A to the disjoint union of
 the X_i(A). -/
@@ -115,7 +147,7 @@ abbrev H : Type 2 := Abelian.Ext N F n
 
 /-- The functor sending a set-valued functor Y to Z[Y], whose value at A is the free abelian group
 on Y(A). -/
-def freeAb : (D ⥤ Type 1) ⥤ D ⥤ Ab.{1} := (whiskeringRight D (Type 1) Ab) free
+def freeAb : (D ⥤ Type 1) ⥤ AbFunctor D := (whiskeringRight D (Type 1) Ab) free
 
 /-- A functor from C to small abelian groups, regarded as taking values in abelian groups of the
 next universe. -/
@@ -195,17 +227,17 @@ def cechFunctor (m : ℕ) : Arrow (C ⥤ Type 1) ⥤ C ⥤ Type 1 :=
   toArrowFunctor ⋙ (whiskeringRight C (Arrow (Type 1)) (Type 1)) (cech Arrow.leftToRight m)
 
 /-- For u: W → Y and p: E → Y, the fibre product of W and E over Y. -/
-def fibreProd : C ⥤ Type 1 :=
+def fiberProd : C ⥤ Type 1 :=
   CategoryTheory.Functor.mk (fun A ↦ {x : W A × E A // u A x.1 = p A x.2}) fun f ↦
-    ↾fun x ↦ ⟨(W.map f x.1.1, E.map f x.1.2), by aesop⟩
+    ↾fun x ↦ ⟨(W.map f x.val.1, E.map f x.val.2), by aesop⟩
 
 /-- The first projection from the fibre product of W and E over Y to W. -/
-def fibreProd.fst : fibreProd u p ⟶ W where
-  app _ := ↾fun x ↦ x.1.1
+def fiberProd.fst : fiberProd u p ⟶ W where
+  app _ := ↾fun x ↦ x.val.1
 
 /-- The second projection from the fibre product of W and E over Y to E. -/
-def fibreProd.snd : fibreProd u p ⟶ E where
-  app _ := ↾fun x ↦ x.1.2
+def fiberProd.snd : fiberProd u p ⟶ E where
+  app _ := ↾fun x ↦ x.val.2
 
 /-- The map h_A → Y corresponding to a point y of Y(A) by the Yoneda lemma. -/
 def pointMap {A : C} (y : Y A) : reprBy A ⟶ Y := uliftCoyonedaEquiv.symm y
@@ -357,6 +389,11 @@ variable (A : Type*) [CommRing A] (Λ : Ab.{0})
 polynomial of positive degree has a root. -/
 class IsAbsIntegrallyClosedLocal extends IsDomain A, IsLocalRing A, IsAbsIntegrallyClosed A
 
+-- The projections rank low, so that the instances on algebraically closed fields are found
+-- directly rather than through the instance of this class on such fields (below).
+attribute [instance 100] IsAbsIntegrallyClosedLocal.toIsDomain
+  IsAbsIntegrallyClosedLocal.toIsLocalRing IsAbsIntegrallyClosedLocal.toIsAbsIntegrallyClosed
+
 /-- A is a test ring: reduced, absolutely integrally closed, and any a, b admit an idempotent e
 with a ∣ eb and b ∣ (1 − e)a. -/
 structure IsTest extends IsAbsIntegrallyClosed A where
@@ -421,7 +458,7 @@ point x ∈ X(A) to the ring map R → A whose spectrum is s∘x. -/
 def pointsToBase {X : Scheme} {R : CommRingCat} (s : X ⟶ Spec R) :
     Scheme.Spec.rightOp ⋙ uliftYoneda.obj X ⟶ reprBy R where
   -- a point `x : Spec B ⟶ X` goes to the ring map `R ⟶ B` whose spectrum is `x ≫ s`
-  app B := ↾fun x ↦ ULift.up (Spec.preimage (x.1 ≫ s))
+  app B := ↾fun x ↦ ULift.up (Spec.preimage (x.down ≫ s))
   naturality := by
     -- the goal is the naturality of `Spec.preimage` under precomposition, after unfolding `h_R`
     delta reprBy reprFunctor
@@ -431,15 +468,11 @@ def pointsToBase {X : Scheme} {R : CommRingCat} (s : X ⟶ Spec R) :
 under s. -/
 def baseRingMap (x : X B) : R ⟶ B := (s B x).down
 
-/-- The map of `h_R` along `f : B ⟶ B'` sends a ring map `R ⟶ B` to its composite with `f`. -/
-private lemma reprBy_map_down {B' : CommRingCat} (f : B ⟶ B') (y : (reprBy R).obj B) :
-    ((reprBy R).map f y).down = y.down ≫ f :=
-  rfl
-
 @[simp]
 lemma baseRingMap_map {B' : CommRingCat} (f : B ⟶ B') (x : X.obj B) :
     baseRingMap s (X.map (X := B) (Y := B') f x) = baseRingMap s x ≫ f := by
-  simp [baseRingMap, NatTrans.naturality_apply, reprBy_map_down]
+  simp only [baseRingMap, NatTrans.naturality_apply]
+  rfl
 
 /-- For s: X → h_R and a subset I of R, the subfunctor of points x ∈ X(B) whose structure map
 R → B sends I to 0. -/
@@ -452,7 +485,7 @@ def unitPoints : Subfunctor X :=
   Subfunctor.mk (fun _ ↦ {x | ∀ a ∈ I, IsUnit (baseRingMap s x a)}) (by simp_all [IsUnit.map])
 
 /-- For s: X → h_R and a ring map φ: R → B, the base change X_B = X ×_{h_R} h_B. -/
-abbrev baseChangeOf : CommRingCat ⥤ Type 1 := fibreProd s (reprMap φ)
+abbrev baseChangeOf : CommRingCat ⥤ Type 1 := fiberProd s (reprMap φ)
 
 end New.Variety
 
@@ -510,30 +543,16 @@ lemma locallyConstant_mem_of_indicator {Λ : Type*} [AddCommGroup Λ]
     ext x
     -- at `x` only the term of `a = y x` is non-zero
     change evalAddMonoidHom x y = evalAddMonoidHom x _
-    rw [map_sum]
-    simp [Set.indicator, ← h_fiber_eq]
+    simp [map_sum, Set.indicator, ← h_fiber_eq]
   rw [h_sum]
   exact sum_mem fun a _ ↦ h a (e a) (he_idem a)
 
 /-- If divisibility in `A` is total, every element of the extension of an ideal `J` along
 `f : A →+* B` is a multiple of `f i` for a single `i ∈ J`. -/
 lemma exists_map_dvd_of_mem_map [PreValuationRing A] {J : Ideal A} {x : B}
-    (hx : x ∈ Ideal.map f J) : ∃ i ∈ J, f i ∣ x := by
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨i, hi, rfl⟩ := hx
-    exact ⟨i, hi, dvd_rfl⟩
-  | zero => exact ⟨0, J.zero_mem, dvd_zero _⟩
-  | add x y _ _ ih_x ih_y =>
-    -- of the two elements of `J`, one divides the other, and its image divides both terms
-    obtain ⟨i, hi, h_dvd_x⟩ := ih_x
-    obtain ⟨j, hj, h_dvd_y⟩ := ih_y
-    obtain h_ij | h_ji := dvd_total i j
-    · exact ⟨i, hi, dvd_add h_dvd_x ((map_dvd f h_ij).trans h_dvd_y)⟩
-    · exact ⟨j, hj, dvd_add ((map_dvd f h_ji).trans h_dvd_x) h_dvd_y⟩
-  | smul a x _ ih =>
-    obtain ⟨i, hi, h_dvd_x⟩ := ih
-    exact ⟨i, hi, h_dvd_x.mul_left a⟩
+    (hx : x ∈ Ideal.map f J) : ∃ i ∈ J, f i ∣ x :=
+  (Ideal.mem_map_iff_exists_dvd_of_dvd_total f
+    (fun a _ b _ ↦ (dvd_total a b).imp (map_dvd f) (map_dvd f))).mp hx
 
 /-- An absolutely integrally closed domain `A` in which of any two elements one divides the other
 (`PreValuationRing A`) is a test ring: the idempotent `e` can be taken to be `1` or `0`. -/
@@ -651,7 +670,7 @@ lemma IsTest.exists_valuationSubring_atPrime (h : IsTest A) (p : Ideal A) [p.IsP
   -- `L` is the ring of integers `O` of its valuation on `FractionRing L`, which is algebraically
   -- closed as a localisation of the test ring `L`
   let O : ValuationSubring (FractionRing L) := (valuation L (FractionRing L)).valuationSubring
-  let e_int : L ≃+* O := equivInteger L (FractionRing L)
+  let e_int : L ≃+* O.toSubring := equivInteger L (FractionRing L)
   let h_alg : Algebra A O := (e_int.toRingHom.comp (algebraMap A L)).toAlgebra
   have h_loc : IsLocalization.AtPrime O p :=
     (isLocalization_iff_of_ringEquiv p.primeCompl e_int).1 inferInstance
@@ -731,29 +750,17 @@ lemma H.dimension_shift_induction {P : ∀ {F : AbFunctor C} {n : ℕ}, H N F n 
       x.covariant_sequence_exact₁ N hS (eq_zero_of_injective _) rfl
     exact h S hS n y (ih y)
 
-set_option backward.isDefEq.respectTransparency false
 
 lemma mapExactFunctor_mapExactFunctor :
-    (x.mapExactFunctor Φ).mapExactFunctor Θ = x.mapExactFunctor (Φ ⋙ Θ) := by
-  induction x with
-  | h₀ F f => simp [mapExactFunctor_mk₀]
-  | h S hS n x ih => simp [ih, mapExactFunctor_comp, mapExactFunctor_extClass]
+    (x.mapExactFunctor Φ).mapExactFunctor Θ = x.mapExactFunctor (Φ ⋙ Θ) :=
+  (x.comp_mapExactFunctor Φ Θ).symm
 
 /-- For a natural transformation η: Φ → Ψ of exact functors and x in Ext^n(N,F), pushing Φ(x)
 forward along η_F equals pulling Ψ(x) back along η_N, in Ext^n(ΦN,ΨF). -/
 lemma mapExactFunctor_naturality :
     push (Φ.obj N) (η F) n (x.mapExactFunctor Φ) =
-      H.map (Ψ.obj F) (η N) n (x.mapExactFunctor Ψ) := by
-  induction x with
-  | h₀ => simp [H.push, mapExactFunctor_mk₀, H.map]
-  | h S hS n x ih =>
-    -- The connecting classes of `Φ S` and `Ψ S` are compatible with `η` (`h_nat`). After
-    -- unfolding, reassociate the composites and use `h_nat`, then `ih`.
-    have h_nat : (hS.map_of_exact Φ).extClass.comp (mk₀ (η.app S.X₁)) (add_zero 1) =
-        (mk₀ (η.app S.X₃)).comp (hS.map_of_exact Ψ).extClass (zero_add 1) :=
-      extClass_naturality (hS.map_of_exact Φ) (hS.map_of_exact Ψ) (mapNatTrans S η)
-    simp_all [← comp_assoc_of_second_deg_zero, comp_assoc (h₂₃ := rfl), H.push, H.map,
-      mapExactFunctor_comp, mapExactFunctor_extClass]
+      H.map (Ψ.obj F) (η N) n (x.mapExactFunctor Ψ) :=
+  x.mapExactFunctor_comp_mk₀_natTransApp η
 
 namespace H
 
@@ -775,19 +782,17 @@ map. -/
 def mapₗ (F : AbFunctor C) [CoeffAction R F] (α : M ⟶ N) (n : ℕ) : H N F n →ₗ[R] H M F n :=
   { map F α n with map_smul' r := map_push α (CoeffAction.act r : End F).asHom }
 
-lemma mapExactFunctor_restrictAlong_id : x.mapExactFunctor (restrictAlong (𝟭 C)) = x := by
-  induction x with
-  | h₀ F f => simp [mapExactFunctor_mk₀, show (𝟭 C).whiskerLeft f = f from rfl]
-  | h S hS n x ih => simp [ih, mapExactFunctor_comp, mapExactFunctor_extClass]
+lemma mapExactFunctor_restrictAlong_id : x.mapExactFunctor (restrictAlong (𝟭 C)) = x :=
+  x.id_mapExactFunctor
 
 end H
 
 /-- An isomorphism `α : M ⟶ N` induces bijections `Ext^n(N,F) → Ext^n(M,F)` in every degree. -/
-lemma IsCohomEquiv.of_isIso [IsIso α] : IsCohomEquiv F α := by
-  intro n
-  -- pull-back along `inv α` is inverse to pull-back along `α`
-  refine bijective_iff_has_inverse.mpr ⟨map F (inv α) n, fun x ↦ ?_, fun x ↦ ?_⟩ <;>
-    simp [← H.map_comp]
+lemma IsCohomEquiv.of_isIso [IsIso α] : IsCohomEquiv F α := fun n ↦
+  -- pull-back along `inv α` is a two-sided inverse of pull-back along `α`
+  bijective_iff_has_inverse.mpr ⟨H.map F (inv α) n,
+    fun x ↦ by rw [← H.map_comp, IsIso.inv_hom_id, H.map_id],
+    fun x ↦ by rw [← H.map_comp, IsIso.hom_inv_id, H.map_id]⟩
 
 /-- If `γ : F ⟶ G` and `γ' : F' ⟶ G'` intertwine the coefficient maps of two comparisons with the
 same functor `c.functor`, then the comparison maps commute with push-forward along `γ` and `γ'`. The
@@ -796,13 +801,27 @@ lemma Comparison.pull_push (β : c.functor ⋙ G ⟶ G') (γ : F ⟶ G) (γ' : F
     (h : whiskerLeft c.functor γ ≫ β = c.coeffHom ≫ γ')
     (α : N' ⟶ { functor := c.functor, coeffHom := β : Comparison G G' }.functor ⋙ N) (x : H N F n) :
     pull ⟨c.functor, β⟩ α n (push N γ n x) = push N' γ' n (c.pull α n x) := by
+  let Φ : AbFunctor C ⥤ AbFunctor C' := restrictAlong c.functor
+  -- restriction along `c.functor` commutes with push-forward along `γ`
+  have h_push : (push N γ n x).mapExactFunctor Φ =
+      push (c.functor ⋙ N) (whiskerLeft c.functor γ) n (x.mapExactFunctor Φ) :=
+    (mapExactFunctor_comp Φ x (mk₀ γ) (add_zero n)).trans
+      (congrArg (fun y ↦ (x.mapExactFunctor Φ).comp y (add_zero n)) (mapExactFunctor_mk₀ Φ γ))
   -- after unfolding, both sides push along `whiskerLeft c.functor γ ≫ β = c.coeffHom ≫ γ'`
-  simp [h, pull, H.map, H.push, mapExtAddHom, mapExactFunctor_comp, mapExactFunctor_mk₀]
+  have h_unfold : H.map G' α n (push (c.functor ⋙ N) β n ((push N γ n x).mapExactFunctor Φ)) =
+      push N' γ' n (H.map F' α n (push (c.functor ⋙ N) c.coeffHom n (x.mapExactFunctor Φ))) := by
+    rw [h_push, ← H.push_comp, h, H.push_comp, H.map_push]
+  apply h_unfold
 
 @[simp]
 lemma Comparison.id_pull : (id F).pull α = H.map F α := by
   ext n x
-  simp [mapExactFunctor_restrictAlong_id, x.comp_mk₀_id, pull, H.map, H.push, mapExtAddHom]
+  let Φ : AbFunctor C ⥤ AbFunctor C := restrictAlong (𝟭 C)
+  have h_id : x.mapExactFunctor Φ = x := mapExactFunctor_restrictAlong_id x
+  have h_unfold : H.map F α n ((x.mapExactFunctor Φ).comp (mk₀ (𝟙 F)) (add_zero n)) =
+      H.map F α n x := by
+    rw [h_id, x.comp_mk₀_id]
+  apply h_unfold
 
 /-- The composite of comparisons (φ,β) from F to F' and (φ',β') from F' to F'': the functor φ∘φ'
 with the map Fφφ' → F'φ' → F''. -/
@@ -824,8 +843,12 @@ namespace Comparison
 
 /-- The comparison map of `(𝟭 C, β)` along the identity of `N` is the push-forward along `β`. -/
 lemma pull_id_eq_push : pull ⟨𝟭 C, β⟩ (𝟙 N) n = push N β n := by
-  ext
-  simp [mapExactFunctor_restrictAlong_id, pull, H.map, H.push, mapExtAddHom]
+  ext x
+  let Φ : AbFunctor C ⥤ AbFunctor C := restrictAlong (𝟭 C)
+  have h_id : x.mapExactFunctor Φ = x := mapExactFunctor_restrictAlong_id x
+  have h_unfold : H.map G (𝟙 N) n (push N β n (x.mapExactFunctor Φ)) = push N β n x := by
+    rw [h_id, H.map_id]
+  apply h_unfold
 
 /-- For `η : φ ⟶ ψ` and `β : ψ ⋙ F ⟶ F'`, moving `η` from the coefficient map (`η F` before
 `β`) to the source map (`η N` after `α`) does not change the comparison map. The target of `α` is
@@ -834,14 +857,16 @@ lemma pull_whiskerRight {φ ψ : C' ⥤ C} (η : φ ⟶ ψ) (β : ψ ⋙ F ⟶ F
     (α : N' ⟶ { functor := φ, coeffHom := whiskerRight η F ≫ β : Comparison F F' }.functor ⋙ N) :
     pull ⟨φ, whiskerRight η F ≫ β⟩ α n = pull ⟨ψ, β⟩ (α ≫ whiskerRight η N) n := by
   ext x
+  let Φ : AbFunctor C ⥤ AbFunctor C' := restrictAlong φ
+  let Ψ : AbFunctor C ⥤ AbFunctor C' := restrictAlong ψ
   -- `η` induces a map of restriction functors; push its naturality by `β` and pull it by `α`.
-  have h_nat : push (φ ⋙ N) (whiskerRight η F) n (x.mapExactFunctor (restrictAlong φ)) =
-      H.map (ψ ⋙ F) (whiskerRight η N) n (x.mapExactFunctor (restrictAlong ψ)) :=
+  have h_nat : push (φ ⋙ N) (whiskerRight η F) n (x.mapExactFunctor Φ) =
+      H.map (ψ ⋙ F) (whiskerRight η N) n (x.mapExactFunctor Ψ) :=
     mapExactFunctor_naturality ((whiskeringLeft C' C Ab).map η) x
-  change H.map F' α n (push (φ ⋙ N) (whiskerRight η F ≫ β) n
-      (x.mapExactFunctor (restrictAlong φ))) =
-    H.map F' (α ≫ whiskerRight η N) n (push (ψ ⋙ N) β n (x.mapExactFunctor (restrictAlong ψ)))
-  rw [H.push_comp, h_nat, H.map_comp, ← H.map_push]
+  have h_unfold : H.map F' α n (push (φ ⋙ N) (whiskerRight η F ≫ β) n (x.mapExactFunctor Φ)) =
+      H.map F' (α ≫ whiskerRight η N) n (push (ψ ⋙ N) β n (x.mapExactFunctor Ψ)) := by
+    rw [H.push_comp, h_nat, H.map_comp, ← H.map_push]
+  apply h_unfold
 
 /-! ### Squares and composites of comparisons -/
 
@@ -851,21 +876,53 @@ back by `c` along `a` and then along `a'` is pulling it back along `α` and then
 lemma map_pull_eq_pull_map {a' : M' ⟶ N'} {a : N' ⟶ c.functor ⋙ N} {α : M ⟶ N}
     {b : M' ⟶ c.functor ⋙ M} (h_comm : a' ≫ a = b ≫ whiskerLeft c.functor α) (n : ℕ) (x : H N F n) :
     H.map F' a' n (c.pull a n x) = c.pull b n (H.map F α n x) := by
+  let Φ : AbFunctor C ⥤ AbFunctor C' := restrictAlong c.functor
+  -- restriction along `c.functor` commutes with pull-back along `α`
+  have h_map : (H.map F α n x).mapExactFunctor Φ =
+      H.map (c.functor ⋙ F) (whiskerLeft c.functor α) n (x.mapExactFunctor Φ) :=
+    (mapExactFunctor_comp Φ (mk₀ α) x (zero_add n)).trans
+      (congrArg (fun y ↦ y.comp (x.mapExactFunctor Φ) (zero_add n)) (mapExactFunctor_mk₀ Φ α))
   -- both sides precompose the restricted and pushed class with one side of the square
-  simp [H.map, pull, H.push, mapExtAddHom, mapExactFunctor_comp, mapExactFunctor_mk₀, h_comm]
+  have h_unfold : H.map F' a' n (H.map F' a n (push (c.functor ⋙ N) c.coeffHom n
+      (x.mapExactFunctor Φ))) =
+      H.map F' b n (push (c.functor ⋙ M) c.coeffHom n ((H.map F α n x).mapExactFunctor Φ)) := by
+    rw [h_map, ← H.map_push, ← H.map_comp, ← H.map_comp, h_comm]
+  apply h_unfold
 
 /-- Comparison maps compose. Applying the comparison map of c along a and then that of c' along α'
 gives the comparison map of the composite `New.Variety.Comparison.trans` c c', taken along
 `α' ≫ whiskerLeft c'.functor a`, the map `a` restricted along the functor of c'. -/
 lemma pull_trans {α' : N'' ⟶ c'.functor ⋙ N'} (x : H N F n) :
     c'.pull α' n (c.pull a n x) = (c.trans c').pull (α' ≫ whiskerLeft c'.functor a) n x := by
+  let Φ : AbFunctor C ⥤ AbFunctor C' := restrictAlong c.functor
+  let Φ' : AbFunctor C' ⥤ AbFunctor C'' := restrictAlong c'.functor
+  let Φ'' : AbFunctor C ⥤ AbFunctor C'' := restrictAlong (c'.functor ⋙ c.functor)
   -- restricting along `c.functor` and then along `c'.functor` is restricting along
   -- `c'.functor ⋙ c.functor`
-  have h_restrict : (x.mapExactFunctor (restrictAlong c.functor)).mapExactFunctor
-    (restrictAlong c'.functor) =
-      x.mapExactFunctor (restrictAlong (c'.functor ⋙ c.functor)) :=
+  have h_restrict : (x.mapExactFunctor Φ).mapExactFunctor Φ' = x.mapExactFunctor Φ'' :=
     mapExactFunctor_mapExactFunctor x
-  simp [h_restrict, pull, H.map, H.push, mapExtAddHom, mapExactFunctor_comp, mapExactFunctor_mk₀]
+  -- restricting along `c'.functor` commutes with push-forward and with pull-back
+  have h_push (y : H (c.functor ⋙ N) (c.functor ⋙ F) n) :
+      (push (c.functor ⋙ N) c.coeffHom n y).mapExactFunctor Φ' =
+        push (c'.functor ⋙ c.functor ⋙ N) (whiskerLeft c'.functor c.coeffHom) n
+          (y.mapExactFunctor Φ') :=
+    (mapExactFunctor_comp Φ' y (mk₀ c.coeffHom) (add_zero n)).trans
+      (congrArg (fun z ↦ (y.mapExactFunctor Φ').comp z (add_zero n))
+        (mapExactFunctor_mk₀ Φ' c.coeffHom))
+  have h_map (y : H (c.functor ⋙ N) F' n) : (H.map F' a n y).mapExactFunctor Φ' =
+      H.map (c'.functor ⋙ F') (whiskerLeft c'.functor a) n (y.mapExactFunctor Φ') :=
+    (mapExactFunctor_comp Φ' (mk₀ a) y (zero_add n)).trans
+      (congrArg (fun z ↦ z.comp (y.mapExactFunctor Φ') (zero_add n)) (mapExactFunctor_mk₀ Φ' a))
+  -- unfold the comparison maps and move `whiskerLeft c'.functor a` and `c'.coeffHom` outside
+  have h_unfold : c'.pull α' n (H.map F' a n (push (c.functor ⋙ N) c.coeffHom n
+      (x.mapExactFunctor Φ))) =
+      H.map F'' (α' ≫ whiskerLeft c'.functor a) n
+        (push (c'.functor ⋙ c.functor ⋙ N) (whiskerLeft c'.functor c.coeffHom ≫ c'.coeffHom) n
+          (x.mapExactFunctor Φ'')) := by
+    rw [H.map_comp, H.push_comp, ← h_restrict, ← h_push,
+      H.map_push (whiskerLeft c'.functor a) c'.coeffHom, ← h_map]
+    rfl
+  apply h_unfold
 
 end Comparison
 
@@ -989,7 +1046,7 @@ extension by the dual), which turns each `x ∈ T` into a point `f x ∈ W(k[ε]
 for all `t ∈ k`. -/
 def IsTangentPoly {W Z : CommAlg k ⥤ Type 1} (d : ℕ) (c u : W ⟶ Z) (y : W.obj (of k k))
     (P : Polynomial k) : Prop :=
-  ∃ᵉ (T : FGModuleCat k) (v : W.obj (of k (TrivSqZeroExt k (Dual k T)))) (A : Module.End k T),
+  ∃ T : FGModuleCat k, ∃ v : W.obj (of k (TrivSqZeroExt k (Dual k T))), ∃ A : Module.End k T,
     -- a vector `x : T` gives a point `f x` of `W` with values in `k ⊕ k`
     let f (x : T) := W.map (ofHom (TrivSqZeroExt.map (Dual.eval k T x))) v
     -- (a) `T` has dimension `d`
@@ -1081,7 +1138,7 @@ lemma freeAb.desc_of (s : (A : C) → Y.obj A → F.obj A)
     (A : C) (y : Y.obj A) :
     desc (F := F) (Y := Y) s h A (FreeAddCommGroup.of y) = s A y := by
   -- at `A` the map is the lift of `s A` to the free abelian group
-  show FreeAddCommGroup.lift (s A) (FreeAddCommGroup.of y) = s A y
+  change FreeAddCommGroup.lift (s A) (FreeAddCommGroup.of y) = s A y
   exact FreeAddCommGroup.lift_apply_of (s A) y
 
 /-- Two maps ℤ[Y] → F agree if they agree on every generator [y]. -/
@@ -1110,12 +1167,6 @@ def homReprEquiv (F : C ⥤ Ab) : (freeAb (reprBy A) ⟶ F) ≃+ F A :=
   -- The universal property of `freeAb`, then the Yoneda lemma.
   ⟨(freeAb.homEquiv (reprBy A) F).trans uliftCoyonedaEquiv, by tauto⟩
 
-/-- The additive Yoneda bijection is natural in the target: composing with `e : E ⟶ F` corresponds
-to applying `e` at `A`. -/
-private lemma homReprEquiv_comp {E : C ⥤ Ab} (f : freeAb (reprBy A) ⟶ E) (e : E ⟶ F) :
-    homReprEquiv A F (f ≫ e) = e.app A (homReprEquiv A E f) :=
-  rfl
-
 /-- The free abelian group ℤ[h_A] on a represented functor is projective. -/
 instance : Projective (freeAb (reprBy A)) where
   factors {E X} f e h_epi := by
@@ -1124,7 +1175,8 @@ instance : Projective (freeAb (reprBy A)) where
     obtain ⟨x, hx⟩ :=
       (AddCommGrpCat.epi_iff_surjective (e.app A)).mp inferInstance (homReprEquiv A X f)
     refine ⟨(homReprEquiv A E).symm x, (homReprEquiv A X).injective ?_⟩
-    rw [homReprEquiv_comp, AddEquiv.apply_symm_apply, hx]
+    change e.app A (homReprEquiv A E ((homReprEquiv A E).symm x)) = _
+    rw [AddEquiv.apply_symm_apply, hx]
 
 /-- The value at `x ∈ N(A)` of a finite sum of maps `N ⟶ F` is the sum of their values. -/
 lemma sum_app_apply {ι : Type*} {A : C} {x : N.obj A} [Fintype ι] {g : ι → (N ⟶ F)} :
@@ -1152,7 +1204,7 @@ instance : Epi (abCoker.π α) where
 
 /-- For a subfunctor `U` of a set-valued functor `Y`, the functor to abelian groups ℤ[Y]/ℤ[U], the
 cokernel of the map ℤ[U] → ℤ[Y]. -/
-def relFreeAb : C ⥤ Ab := abCoker (freeAb.map U.ι)
+def relFreeAb : AbFunctor C := abCoker (freeAb.map U.ι)
 
 /-- For a subfunctor `U` of `Y`, the quotient morphism ℤ[Y] → ℤ[Y]/ℤ[U]. -/
 def relFreeAb.π : freeAb Y ⟶ relFreeAb U := abCoker.π (freeAb.map U.ι)
@@ -1184,8 +1236,10 @@ lemma shortExact_of_app (h_inj : ∀ A : C, Function.Injective (α A))
     (h_exact : ∀ A : C, Function.Exact (α A) (g A)) (h_surj : ∀ A : C, Surjective (g A)) :
     ∃ w : α ≫ g = 0, ShortExact ⟨α, g, w⟩ := by
   obtain ⟨w, hw⟩ := exact_of_app h_exact
-  have h_mono : Mono α := by grind [mono_iff_mono_app, AddCommGrpCat.mono_iff_injective]
-  have h_epi : Epi g := by grind [epi_iff_epi_app, AddCommGrpCat.epi_iff_surjective]
+  have h_mono : Mono α := (mono_iff_mono_app _).2 fun A ↦
+    (AddCommGrpCat.mono_iff_injective _).2 (h_inj A)
+  have h_epi : Epi g := (epi_iff_epi_app _).2 fun A ↦
+    (AddCommGrpCat.epi_iff_surjective _).2 (h_surj A)
   exact ⟨w, .mk' hw h_mono h_epi⟩
 
 /-- For `f : N ⟶ F` with `α ≫ f = 0`, the induced morphism `coker α ⟶ F` through which `f`

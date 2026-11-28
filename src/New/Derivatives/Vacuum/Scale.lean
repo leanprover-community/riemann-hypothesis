@@ -1,5 +1,7 @@
-import New.Derivatives.FormalGroup.Resolution
-import New.Derivatives.Vacuum.IntegralVacuum
+module
+
+public import New.Derivatives.FormalGroup.Resolution
+public import New.Derivatives.Vacuum.IntegralVacuum
 
 /-!
 # The scale of the Taylor series of a vector
@@ -8,12 +10,9 @@ import New.Derivatives.Vacuum.IntegralVacuum
   homogeneous polynomial is a theta value times a power of the scale.
 * `New.Parameters.norm_periodFactor_mul_daggerForms_le_one`: the scaled linear form of a vector `y`
   is integral at `p` if `α⁻¹ y` is integral above `p`.
-* `New.Parameters.norm_jetScale_sq`: the modulus of `jetScale`, from the area of the CM lattice and
-  the formula of Chowla and Selberg.
 
-The period scale is `jetScale` times an integer `π_M` of `K` of norm `M`. The statements with this
-factor are `New.Data.norm_conj_piMBar_mul_jetScale_sq` and
-`New.Data.norm_taylorScale_eq_one_of_not_dvd`.
+The period scale is `jetScale` times an integer `π_M` of `K` of norm `M`. The statement with this
+factor is `New.Data.norm_taylorScale_eq_one_of_not_dvd`.
 
 The statements use these notions:
 * `jetSeries a f`: the Taylor series of the theta function of `f`, with variables scaled by `a`;
@@ -32,6 +31,8 @@ The modulus of `jetScale` is computed from the formula of Chowla and Selberg,
 `New.CMLattice.chowla_selberg`.
 -/
 
+@[expose] public section
+
 open NumberField ComplexConjugate MvPolynomial
 
 namespace New
@@ -43,12 +44,9 @@ lemma jet_rescale {R X : Type} [CommRing R] {Q : MvPolynomial X R} {l : ℕ}
     jet R Q (MvPowerSeries.rescale (fun (_ : X) ↦ a) F) = a ^ l * jet R Q F := by
   rw [jet_eq_sum, jet_eq_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun α hα ↦ ?_
-  have h_degree : α.degree = l := by
-    by_contra h_ne
-    exact mem_support_iff.1 hα (hQ.coeff_eq_zero h_ne)
-  rw [MvPowerSeries.coeff_rescale, ← h_degree, Finsupp.degree_apply, ← Finset.prod_pow_eq_pow_sum]
-  simp only [Finsupp.prod]
-  ring
+  simp only [MvPowerSeries.coeff_rescale, Finsupp.prod, Finset.prod_pow_eq_pow_sum,
+    ← hQ.degree_eq_sum_deg_support hα]
+  ac_rfl
 
 /-- Let `E` be a CM number field with a chosen CM type (`CMType`) and the data of its Weil
 representation (`WeilData`). For a homogeneous polynomial `Q` of degree `l` and a vector `f` of
@@ -78,28 +76,6 @@ lemma norm_adeleExtension_le_one_iff {E F : Type} [Field E] [NumberField E] {p :
   -- `adeleExtension σ` is by definition the component at the place, mapped by the extension of `σ`.
   change ‖placeOfEmbExtension σ (evalAt (placeOfEmb σ) x)‖ ≤ 1 ↔ _
   exact (valuation_comap_placeOfEmbExtension_isEquiv σ).le_one_iff_le_one
-
-/-- Let `d` be a prime that is `7` modulo `8`. Two CM lattices for `d` with the same invariant
-`a₁` (a square root of `12 ℘(t)` for the marked point `t` of order two) have the same area. -/
-lemma CMLattice.area_eq_of_a₁_eq {d : ℕ} [PrimeSevenModEight d] {C D : CMLattice d}
-    (h_a₁ : C.a₁ = D.a₁) : C.area = D.area := by
-  -- Each lattice contains the other, so each area is an integral multiple of the other.
-  have h_multiple (C' D' : CMLattice d) (h_a₁' : C'.a₁ = D'.a₁) :
-      ∃ N : ℕ, (C'.area : ℂ) = N * D'.area := by
-    have h_id : D'.IsIsogeny D'.periodPair 1 1 :=
-      ⟨fun x hx ↦ by rwa [one_mul], by rw [map_one, one_mul, Nat.cast_one]⟩
-    obtain ⟨N, -, hN⟩ := exists_isIsogeny_of_mul_mem_lattice
-      fun _ ↦ conj_isogeny_mul_mem_lattice 1 (C' := C') (D' := D') h_a₁' rfl h_id
-    rw [AlgEquiv.one_apply, map_one, one_mul, one_mul] at hN
-    exact ⟨N, hN⟩
-  obtain ⟨N, hN⟩ : ∃ N : ℕ, (C.area : ℂ) = N * D.area := h_multiple C D h_a₁
-  obtain ⟨N', hN'⟩ : ∃ N' : ℕ, (D.area : ℂ) = N' * C.area := h_multiple D C h_a₁.symm
-  have h_prod : N * N' = 1 := by
-    have h_ne : (C.area : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (area_pos C.periodPair).ne'
-    rw [hN', ← mul_assoc, eq_comm, mul_eq_right₀ h_ne] at hN
-    exact_mod_cast hN
-  rw [Nat.eq_one_of_mul_eq_one_left h_prod, Nat.cast_one, one_mul] at hN'
-  exact_mod_cast hN'.symm
 
 namespace Parameters
 
@@ -131,23 +107,6 @@ lemma norm_periodFactor_mul_daggerForms_le_one {P : Parameters} {s : ℕ} {n : T
       starRingEnd_apply, map_star_complex]
   rw [h_image, map_mul, norm_mul, map_units_inv, norm_inv, adeleExtension_algebraMap] at h_int
   rwa [norm_mul, norm_iota_periodFactor x.1, h_form]
-
-/-- Let `P` be the fixed parameters, and `E = P.E s` the field at the index `s`, a cyclotomic
-extension of `K = ℚ(i√d)`. The squared modulus of `jetScale = periodFactor * √(2π / √d) / cmPeriod`,
-the scale of the Taylor series at the index `s`, is the inverse of
-`bigOmega = exp (γ - Re L'/L(1, χ_K)) * 2π / rd_E`. Here `γ` is Euler's constant, `χ_K` the
-quadratic character of `K` and `rd_E` the root discriminant of `E`. -/
-lemma norm_jetScale_sq (P : Parameters) (s : ℕ) : ‖P.jetScale s‖ ^ 2 = (P.bigOmega s)⁻¹ := by
-  -- This is the formula of Chowla and Selberg for `σ = 1`: the lattice chosen as the conjugate by
-  -- `1` has the invariant `a₁`, hence the area, of `cmPeriod * 𝓞_K`.
-  have h_area : (P.cmCurve.galConjugate 1).area = ‖(P.cmPeriod : ℂ)‖ ^ 2 * √P.d / 2 := by
-    have h_a₁ : (P.cmCurve.galConjugate 1).a₁ = P.cmCurve.a₁ :=
-      P.cmCurve.galConjugate_a₁ 1
-    rw [CMLattice.area_eq_of_a₁_eq h_a₁,
-      QuadField.area_eq_of_eq_scaledIdeal latticeModule_cmCurve]
-    simp only [Units.val_one, map_one, Rat.cast_one, mul_one]
-  rw [← P.norm_gal_periodFactor_div_mul_areaScale_sq s h_area, jetScale, AlgEquiv.one_apply,
-    div_mul_eq_mul_div]
 
 end Parameters
 

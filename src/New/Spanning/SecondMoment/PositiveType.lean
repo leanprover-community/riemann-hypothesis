@@ -1,6 +1,18 @@
-import Lib.Adelic.Unitary.Defs
+module
+
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.TensorProduct
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.NumberTheory.LegendreSymbol.Complex
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import Lib.General.LinearAlgebra.IntegralLattices
 import Lib.General.Analysis.FiniteFourier
-import Lib.General.LinearAlgebra.IntegralLattices
 
 /-!
 # Functions of positive type and singular minors
@@ -25,6 +37,8 @@ Notions from other files:
 
 See `New.Spanning.Unfolding.Moments` for related work.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 open InnerProductSpace Finset EuclideanSpace Complex Matrix WithLp Fintype AddChar
@@ -128,7 +142,6 @@ lemma re_sum_addChar_dotProduct_mul_le [Fintype k] [DecidableEq k] {ψ : AddChar
   have h_cs : 2 * (⟪X₁, X₀⟫_ℂ).re ≤ ‖X₁‖ ^ 2 + ‖X₀‖ ^ 2 := by
     have h_re : (⟪X₁, X₀⟫_ℂ).re ≤ ‖X₁‖ * ‖X₀‖ := re_inner_le_norm (𝕜 := ℂ) X₁ X₀
     linarith [two_mul_le_add_sq ‖X₁‖ ‖X₀‖]
-  have hr_pos : 0 < r := by positivity
   calc (∑ s, ψ (x ⬝ᵥ (π s • z)) * Θ s).re
       = r * (2 * (⟪X₁, X₀⟫_ℂ).re / card G) / 2 := by simp [h_X, w, ← sum_div, field]
     _ ≤ r * ((‖X₁‖ ^ 2 + ‖X₀‖ ^ 2) / card G) / 2 := by gcongr
@@ -184,7 +197,7 @@ lemma card_mul_sum_det_eq_zero_le [DecidableEq m] [Fintype k] [DecidableEq k] (�
     · linarith [on_axes y v (.inl hy)]
     · linarith [on_axes y v (.inl hy)]
     · linarith [on_axes y v (.inr hv)]
-    · linarith [off_axes y v hy hv]
+    · linarith only [off_axes y v hy hv]
   -- By orthogonality of characters, the mean over `v` is the mass of the `s` with `y` in the left
   -- kernel of `Z s`.
   have mean_eq (y : m → k) : 𝔼 v : m → k, (∑ s, W y v s).re = ∑ s with y ᵥ* Z s = 0, Θ s := by

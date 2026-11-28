@@ -1,5 +1,16 @@
-import Lib.General.Geometry.GaloisCovers
-import Lib.LocalGL.Shintani.CosetDescent
+module
+
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+import Mathlib.NumberTheory.MulChar.Lemmas
+import Mathlib.RingTheory.Artinian.Instances
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.PicardGroup
+import TauCeti.RepresentationTheory.Character.Basic
+public import Lib.General.Geometry.GaloisCovers
+public import Lib.LocalGL.Shintani.CosetDescent
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.LocalGL.Green.CuspidalFunctions
 
 /-!
 # Label characters Ξ_c: orthonormality, central idempotents and twisting by χ∘det
@@ -33,9 +44,8 @@ Notions from other files:
   of k to k^×, inverse to a ↦ θ_a restricted to k, with θ_a taken for Q = |k|.
 * `New.Hall.rankInner`: For complex functions F, H on similarity classes, the average over GL_n(k)
   of the conjugate of F times H.
-* `New.IsIrreducibleChar`: `f` is an irreducible character, stated as three conditions: (a) `f` is a
-  character, (b) `New.classInner f f = 1`, and (c) for every class function `h` and every `y`,
-  `f 1 * New.classInner f (h (· * y)) = New.classInner f h * f y`.
+* `New.IsIrreducibleChar`: `f` is the character of a simple finite-dimensional complex
+  representation.
 * `New.IsFaithfulMulChar`: K is algebraically closed and the character T of Kˣ is injective.
 * `New.thetaChar`: The character θ_x = T^a of K, where a is a chosen natural number with
   T(x) = exp(2πi/(Q−1))^a.
@@ -45,19 +55,7 @@ Notions from other files:
 Known; see `Lib.LocalGL.Green.TauFunctions` for sources.
 -/
 
-/-- For `v ≠ 0`, the map `u ↦ u vᵀ` from vectors to matrices is injective. -/
-private lemma Matrix.vecMulVec_left_injective_of_ne_zero {m p R : Type*} [Field R] {v : p → R}
-    (hv : v ≠ 0) : Function.Injective fun u : m → R ↦ Matrix.vecMulVec u v := by
-  intro u u' h_eq
-  obtain ⟨j, hj⟩ : ∃ j : p, v j ≠ 0 := Function.ne_iff.mp hv
-  funext i
-  simpa [Matrix.vecMulVec_apply, hj] using congrFun (congrFun h_eq i) j
-
-/-- For a linear map `g` from a field `R` to itself, `g 1` (its determinant) is minus the
-constant coefficient of its characteristic polynomial. -/
-private lemma LinearMap.apply_one_eq_neg_charpoly_coeff_zero {R : Type*} [Field R]
-    (g : Module.End R R) : g 1 = -(LinearMap.charpoly g).coeff 0 := by
-  simp [← LinearMap.det_ring, LinearMap.det_eq_sign_charpoly_coeff]
+@[expose] public section
 
 namespace New
 
@@ -86,30 +84,21 @@ A case of Green's identification of his rank-one characters with the multiplicat
 lemma labelChar_X_sub_C (χ : MulChar k ℂ) :
     labelChar T (X - C (charName T χ).val : k[X]) = (detChar χ).rankPart 1 := by
   -- The left side is minus the rank `1` part of `greenCuspidal k θ`, where `θ` extends `χ`.
-  let θ : MulChar K ℂ := thetaChar T (Nat.card k) (algebraMap k K (charName T χ))
-  have h_tau : labelChar T (X - C (charName T χ).val : k[X]) =
-      (-1 : ℂ) • (greenCuspidal k θ).rankPart 1 := by
-    rw [labelChar_eq_greenTau T (irreducible_X_sub_C _) (monic_X_sub_C _), greenTau,
-      natDegree_X_sub_C, chosenRoot_X_sub_C, pow_one, pow_one]
-  rw [h_tau]
+  rw [labelChar_eq_greenTau T (irreducible_X_sub_C _) (monic_X_sub_C _), greenTau,
+    natDegree_X_sub_C, chosenRoot_X_sub_C, pow_one, pow_one]
   ext m g
-  obtain hm | rfl : m ≠ 1 ∨ m = 1 := ne_or_eq m 1
+  rcases ne_or_eq m 1 with hm | rfl
   · simp [hm]
-  -- In rank `1`, `greenCuspidal k θ = -brauerLift k θ`: both `greenCuspidal k θ` and
-  -- `1 - constOne` vanish in rank `0`, so their product `greenCuspidal k θ + brauerLift k θ`
-  -- vanishes in rank `1`.
-  have h_rank_one : greenCuspidal k θ (simClassOf g) = -brauerLift k θ (simClassOf g) := by
-    simpa [mul_sub, add_eq_zero_iff_eq_neg] using
-      mul_apply_eq_zero_of_dim_lt (greenCuspidal_eq_zero_of_dim_lt_one θ)
-        (one_sub_constOne_pow_apply_eq_zero 1) (simClassOf g) (by simp)
+  -- In rank `1`, `greenCuspidal k θ = -brauerLift k θ`.
+  have h_rank_one := mul_apply_eq_zero_of_dim_lt (greenCuspidal_eq_zero_of_dim_lt_one
+    (thetaChar T (Nat.card k) (algebraMap k K (charName T χ))))
+    (one_sub_constOne_pow_apply_eq_zero 1) (simClassOf g) (by simp)
+  simp [mul_sub, add_eq_zero_iff_eq_neg] at h_rank_one
   -- The characteristic polynomial is linear, so `brauerLift` has a single term.
-  have h_linear : g.charpoly = X + C (g.charpoly.coeff 0) :=
-    g.charpoly_monic.eq_X_add_C (by simp [g.charpoly_natDegree])
   have h_roots : g.charpoly.aroots K = {algebraMap k K (-g.charpoly.coeff 0)} := by
-    conv_lhs => rw [h_linear]
-    simp [aroots]
-  -- (`map_neg` and `map_mul` are left out so that `thetaChar_charName` applies to the argument)
-  simp [h_rank_one, h_roots, detChar, θ, -map_neg, -map_mul, thetaChar_charName]
+    rw [aroots, g.charpoly_monic.eq_X_add_C (by simp [g.charpoly_natDegree])]
+    simp
+  simp [h_rank_one, h_roots, detChar, -map_neg, -map_mul, thetaChar_charName]
 
 /-- A polynomial over the finite field `k` splits over `k` if each of its roots in the
 algebraically closed field `K` is fixed by `x ↦ x ^ q`, where `q` is the order of `k`. -/
@@ -185,21 +174,15 @@ lemma skew_greenTau_labelChar_eq_zero (hc : IsLabel r c) {d : ℕ} (hP : Irreduc
     skew d (greenTau T P) (labelChar T c) = 0 := by
   -- Induct on the factors of `c`, using that `skew d (greenTau T P)` is a derivation.
   obtain ⟨hP_monic, -, rfl, hP_coeff⟩ := hP_label
-  have h_deriv (F H : Hall k) : skew P.natDegree (greenTau T P) (F * H) =
-      skew P.natDegree (greenTau T P) F * H + F * skew P.natDegree (greenTau T P) H :=
-    skew_mul isCuspidal_greenTau hP.natDegree_pos.ne'
   refine hc.induction_irreducible_mul K (fun _ ↦ ?_)
-    (fun Q _ c _ hQ_monic hQ_irred hQ_coeff _ ih h_not_dvd_mul ↦ ?_) h_not_dvd
-  · -- A derivation kills `1`.
-    simpa only [map_one, mul_one, one_mul, left_eq_add] using h_deriv 1 1
-  · -- For a factor `Q ≠ P` it kills `greenTau T Q`, which is orthogonal to `greenTau T P`.
-    have h_ne : P ≠ Q := fun h_eq ↦ h_not_dvd_mul (h_eq.dvd.mul_right c)
-    have h_skew_Q : skew P.natDegree (greenTau T P) (greenTau T Q) = 0 := by
-      rw [skew_of_isCuspidal isCuspidal_greenTau hP.natDegree_pos.ne',
-        (rankInner_greenTau hP hP_coeff hP_monic).left Q hQ_irred hQ_monic hQ_coeff,
-        ite_eq_right h_ne, zero_smul]
-    rw [map_mul, labelChar_eq_greenTau T hQ_irred hQ_monic, h_deriv, h_skew_Q,
-      ih fun h_dvd ↦ h_not_dvd_mul (h_dvd.mul_left Q), zero_mul, mul_zero, add_zero]
+    (fun Q _ c _ hQ_monic hQ_irred hQ_coeff _ ih hnd ↦ ?_) h_not_dvd
+  · simpa [map_one] using (skew_mul isCuspidal_greenTau hP.natDegree_pos.ne' :
+      skew P.natDegree (greenTau T P) (1 * 1) = _)
+  · simp [map_mul, labelChar_eq_greenTau T hQ_irred hQ_monic,
+      skew_mul isCuspidal_greenTau hP.natDegree_pos.ne',
+      skew_of_isCuspidal isCuspidal_greenTau hP.natDegree_pos.ne',
+      (rankInner_greenTau hP hP_coeff hP_monic).1 Q hQ_irred hQ_monic hQ_coeff,
+      ih fun h ↦ hnd (h.mul_left Q), show P ≠ Q from fun h ↦ hnd (h.dvd.mul_right c)]
 
 /-- Let T be faithful (`New.IsFaithfulMulChar`) and c a label of degree r with c(1) ≠ 0. Then
 ⟨Ξ_c, A * 1⟩ = ⟨Ξ_c, A⟩ on GL_r(k) for every class function A, where * is parabolic induction and 1
@@ -239,44 +222,34 @@ lemma rankInner_labelChar (hc : IsLabel r c) (c' : k[X]) (hc' : IsLabel r c') :
   -- `skew`, which removes `P` from `c'` if `P ∣ c'` and gives `0` otherwise.
   refine hc.induction_irreducible_mul K (fun c' hc' ↦ ?_)
     (fun P r c _ hP_monic hP_irred hP_coeff _ ih c' hc' ↦ ?_) c' hc'
-  · obtain ⟨hc'_monic, -, hc'_deg, -⟩ := hc'
-    obtain rfl : c' = 1 := hc'_monic.natDegree_eq_zero.mp hc'_deg
+  · obtain rfl : c' = 1 := hc'.1.natDegree_eq_zero.mp hc'.2.2.1
     simp [rankInner]
   have hP_label : IsLabel P.natDegree P := ⟨hP_monic, hP_irred.squarefree, rfl, hP_coeff⟩
   rw [map_mul, labelChar_eq_greenTau T hP_irred hP_monic,
     rankInner_mul_eq_rankInner_skew greenTau_eq_zero_of_dim_ne]
-  rcases em' (P ∣ c') with h_not_dvd | h_dvd
+  rcases em' (P ∣ c') with h_not_dvd | ⟨c'', rfl⟩
   · rw [skew_greenTau_labelChar_eq_zero T hc' hP_irred hP_label h_not_dvd,
       ite_eq_right fun h_eq ↦ h_not_dvd ⟨c, h_eq.symm⟩]
     simp [rankInner, finMean]
-  · obtain ⟨c'', rfl⟩ := h_dvd
-    obtain ⟨h_monic, h_squarefree, h_deg, h_coeff⟩ := hc'
-    have hc''_monic : c''.Monic := hP_monic.of_mul_monic_left h_monic
-    have hc''_label : IsLabel r c'' := by
-      rw [hP_monic.natDegree_mul hc''_monic, add_right_inj] at h_deg
-      rw [mul_coeff_zero] at h_coeff
-      exact ⟨hc''_monic, h_squarefree.of_mul_right, h_deg, right_ne_zero_of_mul h_coeff⟩
-    have h_not_dvd : ¬P ∣ c'' :=
-      hP_irred.isRelPrime_iff_not_dvd.mp (squarefree_mul_iff.mp h_squarefree).left
-    have h_norm : rankInner P.natDegree (greenTau T P) (greenTau T P) = 1 := by
-      rw [(rankInner_greenTau hP_irred hP_coeff hP_monic).left P hP_irred hP_monic hP_coeff,
-        ite_eq_left rfl]
-    -- Of the two terms of `skew_mul`, the one that acts on `labelChar T c''` vanishes.
-    have h_skew : skew P.natDegree (greenTau T P) (labelChar T (P * c'')) = labelChar T c'' := by
-      rw [map_mul, labelChar_eq_greenTau T hP_irred hP_monic,
-        skew_mul isCuspidal_greenTau hP_irred.natDegree_pos.ne',
-        skew_greenTau_labelChar_eq_zero T hc''_label hP_irred hP_label h_not_dvd,
-        skew_of_isCuspidal isCuspidal_greenTau hP_irred.natDegree_pos.ne', h_norm, one_smul,
-        one_mul, mul_zero, add_zero]
-    rw [h_skew, ih c'' hc''_label]
-    simp only [mul_right_inj' hP_irred.ne_zero]
+  · obtain ⟨h_monic, h_sq, h_deg, h_coeff⟩ := hc'
+    have hc''_monic := hP_monic.of_mul_monic_left h_monic
+    have hc''_label : IsLabel r c'' := ⟨hc''_monic, h_sq.of_mul_right,
+      by simpa [hP_monic.natDegree_mul hc''_monic] using h_deg,
+      right_ne_zero_of_mul (by rwa [← mul_coeff_zero])⟩
+    -- Of the two terms of `skew_mul`, the one acting on `labelChar T c''` vanishes.
+    rw [map_mul, labelChar_eq_greenTau T hP_irred hP_monic,
+      skew_mul isCuspidal_greenTau hP_irred.natDegree_pos.ne',
+      skew_greenTau_labelChar_eq_zero T hc''_label hP_irred hP_label
+        (hP_irred.isRelPrime_iff_not_dvd.mp (squarefree_mul_iff.mp h_sq).1),
+      skew_of_isCuspidal isCuspidal_greenTau hP_irred.natDegree_pos.ne',
+      (rankInner_greenTau hP_irred hP_coeff hP_monic).1 P hP_irred hP_monic hP_coeff]
+    simp [ih c'' hc''_label, hP_irred.ne_zero]
 
 /-- This is a case of Green's theorem: let K be an algebraically closed field over the finite field
 k, with an injective multiplicative character T : K → ℂ. Let c be a label of degree |n|, i.e. a
 monic squarefree polynomial of degree |n| with nonzero constant term. Then Green's class function
-Ξ_c, evaluated on GL_n(k), is an irreducible character in the sense of `IsIrreducibleChar`, which
-also requires that class functions act by scalars. Ξ_c is the parabolic-induction product of τ_P
-over the monic irreducible factors P of c. -/
+Ξ_c, evaluated on GL_n(k), is an irreducible character. Ξ_c is the parabolic-induction product of
+τ_P over the monic irreducible factors P of c. -/
 lemma IsLabel.isIrreducibleChar_labelChar (hc : IsLabel (Fintype.card n) c) :
     IsIrreducibleChar ((labelChar T c).evalGL (n := n)) := by
   -- `labelChar T c` is a virtual character, as it has a lift over `ℤ` along `k/k`: the Brauer lift
@@ -295,8 +268,7 @@ lemma IsLabel.isIrreducibleChar_labelChar (hc : IsLabel (Fintype.card n) c) :
   have h_degree : 0 ≤ ((labelChar T c).evalGL (n := n) 1).re := (labelChar_degree_bounds K hc).1
   -- With the function itself as test function: norm `1`, a value at `1` with nonnegative real part
   -- and integer inner products with all characters make it irreducible.
-  exact (isIrreducibleChar_and_mem_virtualChars_and_exists_mul ℤ isClassFunction_evalGL).left
-    (labelChar T c).evalGL
+  exact isClassFunction_evalGL.isIrreducibleChar_of_classInner_eq_intCast
     isClassFunction_evalGL (h_norm.trans_ne one_ne_zero) h_norm h_degree
     fun χ hχ _ _ ↦ hχ.exists_classInner_eq h_virtual
 
@@ -304,7 +276,7 @@ lemma IsLabel.isIrreducibleChar_labelChar (hc : IsLabel (Fintype.card n) c) :
 lemma IsLabel.isChar_labelChar (hc : IsLabel r c) : IsChar ((labelChar T c).evalGL (n := n)) := by
   -- `labelChar T c` is an irreducible character in dimension `r` and vanishes in the others.
   obtain rfl | h_card_ne := eq_or_ne (Fintype.card n) r
-  · exact (hc.isIrreducibleChar_labelChar (n := n) T).left
+  · exact (hc.isIrreducibleChar_labelChar (n := n) T).isChar
   · have h_zero : (labelChar T c).evalGL (n := n) = 0 := by
       rw [← rankPart_labelChar T hc]
       funext g
@@ -359,28 +331,19 @@ distinct polynomials have product zero. -/
 lemma labelIdem_orthogonal : OrthogonalIdempotents (labelIdem (k := k) n) := by
   classical
   refine OrthogonalIdempotents.iff_mul_eq.mpr fun c d ↦ ?_
-  obtain h_not_labels | ⟨hc, hd⟩ := em' (IsLabel (Fintype.card n) c ∧ IsLabel (Fintype.card n) d)
+  obtain h | ⟨hc, hd⟩ := em' (IsLabel (Fintype.card n) c ∧ IsLabel (Fintype.card n) d)
   · -- If `c` or `d` is not a label of degree `|n|`, one factor is `0`.
     aesop (add simp labelIdem)
   ext x
-  let Ξ (c : Polynomial k) : GL n k → ℂ := (labelChar (faithfulChar k) c).evalGL
-  obtain ⟨hc_isChar, -, -⟩ := hc.isIrreducibleChar_labelChar (n := n) (faithfulChar k)
-  -- The convolution identity of the irreducible character `Ξ d` (last clause of
-  -- `IsIrreducibleChar`); the inner product of `Ξ d` and `Ξ c` on its right side is `1` or `0` by
-  -- `rankInner_labelChar`.
-  have h_conv : Ξ d 1 * ((∑ t, starRingEnd ℂ (Ξ d t) * Ξ c (t * x⁻¹)) / Fintype.card (GL n k)) =
-      (if d = c then 1 else 0) * Ξ d x⁻¹ := by
-    obtain ⟨-, -, h_conv⟩ := hd.isIrreducibleChar_labelChar (n := n) (faithfulChar k)
-    simpa only [Ξ, classInner_evalGL, rankInner_labelChar _ hd c hc, finMean,
-      finsum_eq_sum_of_fintype, Nat.card_eq_fintype_card] using h_conv (Ξ c) isClassFunction_evalGL
-        x⁻¹
-  -- The coefficient at `x` of the product is `Ξ c 1 / |GL n k|` times the left side of `h_conv`.
-  suffices h_coeff : Ξ c 1 / Fintype.card (GL n k) * (Ξ d 1 / Fintype.card (GL n k)) *
-      ∑ t, Ξ c (t * x⁻¹) * starRingEnd ℂ (Ξ d t) =
-        if d = c then Ξ c 1 / Fintype.card (GL n k) * Ξ c x⁻¹ else 0 by
-    simpa [hc, hd, apply_ite (coeff · x), eq_comm (a := c),
-      ← hc_isChar.apply_inv, mul_mul_mul_comm _ _ (_ / _), ← mul_sum, labelIdem,
-      coeff_mul_apply_right, Finsupp.sum_fintype] using h_coeff
+  -- Convolution identity of the irreducible character `Ξ d` paired with `Ξ c`.
+  have h_conv := (hd.isIrreducibleChar_labelChar (n := n) (faithfulChar k)).mul_classInner_translate
+    (φ := (labelChar (faithfulChar k) c).evalGL) isClassFunction_evalGL x⁻¹
+  simp only [classInner_evalGL, rankInner_labelChar _ hd c hc, finMean,
+    finsum_eq_sum_of_fintype, Nat.card_eq_fintype_card] at h_conv
+  simp [hc, hd, apply_ite (coeff · x), eq_comm (a := c),
+    ← (hc.isIrreducibleChar_labelChar (n := n) (faithfulChar k)).isChar.apply_inv,
+    mul_mul_mul_comm _ _ (_ / _), ← mul_sum, labelIdem, coeff_mul_apply_right,
+    Finsupp.sum_fintype]
   grind
 
 /-- The coefficients of `e_c = New.labelIdem n c` form a class function on `GL_n(k)`: they are
@@ -441,14 +404,16 @@ lemma hyperplaneSum_mul_labelIdem {c : Polynomial k} {χ : MulChar k ℂ}
       have h_vecMulVec_eq :
           vecMulVec (E.symm (g.val - 1, x)) l = vecMulVec (E.symm (g'.val - 1, x')) l := by
         simpa [param, Units.ext_iff] using h_param_eq
+      have h_zero : vecMulVec (E.symm (g.val - 1, x) - E.symm (g'.val - 1, x')) l = 0 := by
+        rw [sub_vecMulVec, h_vecMulVec_eq, sub_self]
       simpa [Units.ext_iff] using E.symm.injective
-        (vecMulVec_left_injective_of_ne_zero hl h_vecMulVec_eq)
+        (sub_eq_zero.mp ((vecMulVec_eq_zero.mp h_zero).resolve_right hl))
     · simp_all [param, E, Units.smul_def, Units.ext_iff]
   -- `ρ` is the one-dimensional representation `χ⁻¹ ∘ det` of `N`.
   let ρ : Representation ℂ N ℂ :=
     .comp .smulOneHom { toFun g := χ⁻¹ g.val.det, map_one' := by simp, map_mul' := by simp }
   let Ξ : GL n k → ℂ := (labelChar (faithfulChar k) c).evalGL
-  obtain ⟨h_isChar, -, -⟩ := hc.isIrreducibleChar_labelChar (n := n) (faithfulChar k)
+  have h_isChar := (hc.isIrreducibleChar_labelChar (n := n) (faithfulChar k)).isChar
   have h_orth : finMean (Ξ ∘ N.subtype * ρ.character) = 0 := by
     -- Through `param`, the mean over `N` becomes the mean over the scalar block `g` of `χ⁻¹(det g)`
     -- times the block average over `x`: a value of the skew function of `χ ∘ det`.
@@ -465,8 +430,10 @@ lemma hyperplaneSum_mul_labelIdem {c : Polynomial k} {χ : MulChar k ℂ}
         (Ξ ∘ N.subtype * ρ.character) (param g x) =
           starRingEnd ℂ ((detChar χ).rankPart (Module.finrank k k) (simClassOf g.val)) *
             labelChar (faithfulChar k) c (simClassOf (blockTriangularEnd 1 g.val x)) := by
+      have h_const : g.val 1 = -(LinearMap.charpoly g.val).coeff 0 := by
+        simp [← LinearMap.det_ring, LinearMap.det_eq_sign_charpoly_coeff]
       simp [Ξ, ρ, param, mul_comm (labelChar _ c _), h_det, h_cls, ← χ.star_apply', Hall.evalGL,
-        LinearMap.apply_one_eq_neg_charpoly_coeff_zero, character, detChar]
+        h_const, character, detChar]
     rw [finMean_equiv (.ofBijective _ h_param) (fun p ↦ h_term p.1 p.2), finMean_prod]
     simpa only [finMean_const_mul] using h_skew_at
   -- Orthogonality kills every translate of the character, hence every coefficient of the product.
@@ -643,9 +610,9 @@ lemma evalGL_labelChar_mul_det [Algebra k K]
     refine fun hm ↦ greenCuspidal_simClassOf_eq_mul _ _ fun z ↦ ?_
     by_cases hz : z = 0
     · -- At `z = 0` both sides vanish.
-      simp_all [w, θ, ← range_val, MulChar.map_zero, mul_comm, prod_pow_eq_pow_sum]
+      simp_all [w, θ, ← range_val, MulChar.map_zero, prod_pow_eq_pow_sum]
     · simp_all [w, θ, thetaChar_mul, root_pow_card_pow_pred_eq_one hP_irred hP_coeff hy,
-        ← range_val, thetaChar_eq_apply_norm_pow T one_lt_card _ _ rfl (pow_one _), mul_comm,
+        ← range_val, thetaChar_eq_apply_norm_pow T one_lt_card _ _ rfl (pow_one _),
         prod_pow_eq_pow_sum, root_pow_card_pow_eq_self_iff (irreducible_X_sub_C a.val)]
   have h_scaleRoots_eq : labelChar T (c.scaleRoots a) = fun x ↦ labelChar T c x * w x := by
     refine hc.induction_irreducible_mul K ?_ fun P _ c y hP_monic hP_irred hP_coeff hy ih ↦

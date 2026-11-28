@@ -1,6 +1,16 @@
-import Lib.General.NumberTheory.ImaginaryQuadraticField
-import Lib.Shimura.Uniformisation.AdelicFrames
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+import Mathlib.RingTheory.Ideal.Quotient.HasFiniteQuotients.Norm
+public import Lib.General.NumberTheory.ImaginaryQuadraticField
+public import Lib.Shimura.Uniformisation.AdelicFrames
+public import Lib.Weil.Unramified.HeckeGL
+public import Lib.Adelic.Adeles.IdeleModulus
+public import Lib.Cohomology.Etale.Basic
+import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
 # Hecke elements in group rings, marked triples, local terms and neat levels
@@ -50,6 +60,8 @@ Known; see `Lib.Shimura.HeckeTower.Model`, `Lib.Shimura.IntegralModel.TowerExist
 `Lib.Shimura.Uniformisation.AppellHumbert` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -92,9 +104,18 @@ def fixedToEigen {H : Type*} [Group H] (ι : H →* G) (J : Subgroup H := K.coma
       ∀ ⦃W : Type⦄ [AddCommGroup.{0} W] [Module k W] ⦃π : Representation k G W⦄ ⦃v : W⦄,
         v ∈ levelSpace π K →
         π.asAlgebraHom a v ∈ levelSpace (π.comp ι) J χ}
-  add_mem' := by simp_all
-  zero_mem' := by simp_all
-  smul_mem' := by simp_all [smul_smul, mul_comm]
+  add_mem' ha hb := by
+    intro W _ _ π v hv
+    rw [map_add, LinearMap.add_apply]
+    exact add_mem (ha hv) (hb hv)
+  zero_mem' := by
+    intro W _ _ π v hv
+    rw [map_zero, LinearMap.zero_apply]
+    exact zero_mem _
+  smul_mem' c a ha := by
+    intro W _ _ π v hv
+    rw [map_smul, LinearMap.smul_apply]
+    exact Submodule.smul_mem _ c (ha hv)
 
 variable {K} {D D' D'' : Set G}
 
@@ -195,26 +216,6 @@ lemma New.GaloisRep.IsSplitPrimeToDisc.isSplit_and_prime_q {w : FinPlace (QuadFi
     · exact h_norm
   exact ⟨h_ne, hp, fun u ↦ (h_over u).symm⟩
 
-/-- A place satisfying `New.GaloisRep.IsSplitPrimeToDisc` differs from its conjugate. -/
-lemma New.GaloisRep.IsSplitPrimeToDisc.isSplit {w : FinPlace (QuadField d)}
-    (h_split : IsSplitPrimeToDisc w) : w.IsSplit :=
-  h_split.isSplit_and_prime_q.1
-
-/-- The order `w.q` of the residue field of a place satisfying
-`New.GaloisRep.IsSplitPrimeToDisc` is prime. -/
-lemma New.GaloisRep.IsSplitPrimeToDisc.prime_q {w : FinPlace (QuadField d)}
-    (h_split : IsSplitPrimeToDisc w) : w.q.Prime := by
-  obtain ⟨-, h_prime, -⟩ := h_split.isSplit_and_prime_q
-  exact h_prime
-
-/-- If `w` satisfies `New.GaloisRep.IsSplitPrimeToDisc`, the places that contain `w.q` are `w` and
-its conjugate. -/
-lemma New.GaloisRep.IsSplitPrimeToDisc.q_mem_asIdeal_iff {w : FinPlace (QuadField d)}
-    (h_split : IsSplitPrimeToDisc w) (u : FinPlace (QuadField d)) :
-    ↑w.q ∈ u.asIdeal ↔ u = w ∨ u = star w := by
-  obtain ⟨-, -, h_places⟩ := h_split.isSplit_and_prime_q
-  exact (h_places u).symm
-
 /-- The number d is 3 mod 4, and the field E is an algebra over the imaginary quadratic field
 ℚ(i√d). -/
 class New.HasQuadSubfield (d : outParam ℕ) (E : semiOutParam Type)
@@ -251,7 +252,7 @@ lemma roots_map_eq_map_numberedRoots {t : E →+* ℂ} {P : E[X]}
 open scoped Classical in
 /-- The matrix that describes the signature at `v₀`, written as a polynomial in `Φ v₀ (y)`. The
 proposition `ε` chooses the case. In the marked case (`ε` holds) it is `markedReflection y i`. In
-the definite case (`ε` fails) it is the identity. See `eigenReflection_eq_ite`. -/
+the definite case (`ε` fails) it is the identity. -/
 def eigenReflection (ε : Prop) (y : GL n E) (i : n) : Matrix n n ℂ :=
   aeval (y.val.map (Φ v₀))
     (if ε then
@@ -271,12 +272,6 @@ lemma markedReflection_eq_aeval (y : GL n E) (i : n) :
       (Lagrange.interpolate Finset.univ (numberedRoots (Φ v₀) y.val.charpoly)
         fun j : n ↦ if j = i then 1 else -1) := by
   simp [markedReflection, eigenReflection]
-
-open scoped Classical in
-/-- The matrix `eigenReflection ε y i` is `markedReflection y i` if ε holds and `1` otherwise. -/
-lemma eigenReflection_eq_ite (ε : Prop) (y : GL n E) (i : n) :
-    eigenReflection ε y i = if ε then markedReflection y i else 1 := by
-  by_cases hε : ε <;> simp [markedReflection, eigenReflection, hε]
 
 section
 
@@ -357,25 +352,6 @@ section
 
 omit [CMBase E]
 
-/-- A safe place lies over a place of K₀ that satisfies `New.GaloisRep.IsSplitPrimeToDisc`. -/
-lemma IsSafe.isSplitPrimeToDisc_below {𝔑 : 𝓞 E} {w : FinPlace E} (h_safe : IsSafe 𝔑 w) :
-    GaloisRep.IsSplitPrimeToDisc (w.below (QuadField d₀)) :=
-  h_safe.1
-
-/-- If `w` is safe for 𝔑, then 𝔑 is prime to `w`. -/
-lemma IsSafe.level_notMem_asIdeal {𝔑 : 𝓞 E} {w : FinPlace E} (h_safe : IsSafe 𝔑 w) :
-    𝔑 ∉ w.asIdeal := by
-  obtain ⟨-, h_level, -⟩ := h_safe
-  exact h_level
-
-/-- If `w` is safe for 𝔑, then 𝔑 is prime to every place `v` above the conjugate of the place of
-K₀ below `w`. -/
-lemma IsSafe.level_notMem_asIdeal_of_below_eq_star {𝔑 : 𝓞 E} {w : FinPlace E} (h_safe : IsSafe 𝔑 w)
-    {v : FinPlace E} (hv : v.below (QuadField d₀) = star (w.below (QuadField d₀))) :
-    𝔑 ∉ v.asIdeal := by
-  obtain ⟨-, -, h_conj⟩ := h_safe
-  exact h_conj v hv
-
 end
 
 /-- For a subspace U of k_vⁿ (k_v the residue field) of dimension r, the scalar matrix of the
@@ -411,9 +387,13 @@ left K-invariant. -/
 def heckeAlgebra : Subalgebra k (MonoidAlgebra k (GL n (𝔸f E))) :=
   (spanOn k (GUPlus E n) ⊓
     fixedToEigen (levelGU n 𝔑) (MonoidHom.id (GL n (𝔸f E))) (levelGU n 𝔑)).toSubalgebra
-    ⟨Submodule.subset_span ⟨1, by simp, rfl⟩, by simp [fixedToEigen]⟩ fun a b ha hb ↦
+    ⟨Submodule.subset_span ⟨1, by simp, rfl⟩, fun _ _ _ π v hv ↦ by
+      rw [map_one, one_apply_eq_self]
+      exact hv⟩ fun a b ha hb ↦
       -- `GUPlus E n` is closed under products, and `a * b` acts as `b` followed by `a`
-      ⟨spanOn.mul ha.1 hb.1 fun _ hg _ ↦ mul_mem hg, by simp_all [fixedToEigen, -mem_levelSpace]⟩
+      ⟨spanOn.mul ha.1 hb.1 fun _ hg _ ↦ mul_mem hg, fun _ _ _ π v hv ↦ by
+        rw [map_mul, mul_apply_eq_comp]
+        exact ha.2 (hb.2 hv)⟩
 
 end
 
@@ -422,18 +402,6 @@ variable {n 𝔑}
 /-- The principal level consists of similitudes. -/
 lemma levelGU_le_GU {𝔑 : 𝓞 E} : levelGU n 𝔑 ≤ GU E n :=
   inf_le_left
-
-/-- An element of the Hecke algebra is supported on `GUPlus E n`. -/
-lemma heckeAlgebra.val_mem_spanOn {𝔑 : 𝓞 E} {k : Type*} [CommRing k] (f : heckeAlgebra n k 𝔑) :
-    f.val ∈ spanOn k (GUPlus E n) :=
-  f.property.1
-
-/-- An element of the Hecke algebra sends the vectors fixed by `levelGU n 𝔑` to vectors fixed by
-it, in every representation. -/
-lemma heckeAlgebra.val_mem_fixedToEigen {𝔑 : 𝓞 E} {k : Type*} [CommRing k]
-    (f : heckeAlgebra n k 𝔑) :
-    f.val ∈ fixedToEigen (levelGU n 𝔑) (MonoidHom.id (GL n (𝔸f E))) (levelGU n 𝔑) :=
-  f.property.2
 
 /-- For an element f = ∑ a_g [g] of the Hecke algebra of level 𝔑, the function ∑ a_g 1_{gK} on
 cosets of the principal level subgroup K. -/
@@ -535,27 +503,17 @@ instance [h : HasPrimitiveRoot5040 E] : Nontrivial (InfinitePlace E) := by
 lemma exists_isScalarFrame_of_gram_eq (a : (𝔸f ℚ)ˣ)
     (h_gram : xᴴ * x.val = finAdeleIncl ℚ E a • 1) :
     ∃ c : ℚ, (c : ℝ) = finIdeleAbs a ∧ IsScalarFrame x c := by
-  -- As `ℚ` has class number one, `a = s * u` with `s` rational and `u` a unit at every place; then
-  -- `finIdeleAbs a = |s|⁻¹` by the product formula, and `|s|⁻¹ * a = ± u` is a unit of `Ô ℚ`.
-  have h_split : a ∈ principalIdele.range ⊔ idelesUnitOff ∅ := by
-    simpa [classNumber_eq] using pow_classNumber_mem_principal_sup a
-  -- `a = principalIdele s * u` with `s ∈ ℚˣ` and `u` a unit at every place
-  obtain ⟨_, ⟨s, rfl⟩, u, hu, rfl⟩ := Subgroup.mem_sup.1 h_split
-  -- `u` as a unit of `Ô ℚ`
+  -- As `ℚ` has class number one, `a = s * u` with `s ∈ ℚˣ` and `u` a unit at every place.
+  obtain ⟨_, ⟨s, rfl⟩, u, hu, rfl⟩ := Subgroup.mem_sup.1
+    (by simpa [classNumber_eq] using pow_classNumber_mem_principal_sup a)
   let ν : (Ô ℚ)ˣ := (Ô ℚ).unitsEquivUnitsType ⟨u, idelesUnitOff_empty.le hu⟩
-  have h_unit : finIdeleAbs u = 1 := by
-    simp [finIdeleAbs, ideleAbs_eq_prod_of_v_eq_one, mem_idelesUnitOff.1 hu]
-  have h_abs : finIdeleAbs (principalIdele s * u) = (|(s : ℚ)|⁻¹ : ℚ) := by
-    rw [map_mul, h_unit, mul_one, finIdeleAbs_principalIdele]
-    push_cast
-    -- The goal's instance `Algebra ℚ ℚ` agrees with `Algebra.id ℚ` only after unfolding.
-    exact congrArg (fun q : ℚ ↦ |(q : ℝ)|⁻¹)
-      (show Algebra.norm ℚ (s : ℚ) = s by simp [Algebra.norm_self])
-  refine ⟨|(s : ℚ)|⁻¹, h_abs.symm, inv_pos.2 (abs_pos.2 s.ne_zero), ?_⟩
+  refine ⟨|(s : ℚ)|⁻¹, ?_, inv_pos.2 (abs_pos.2 s.ne_zero), ?_⟩
+  · rw [map_mul, finIdeleAbs_principalIdele]
+    simp [finIdeleAbs, ideleAbs_eq_prod_of_v_eq_one, mem_idelesUnitOff.1 hu, Algebra.norm_self]
   -- With `c = |s|⁻¹`, `xᴴ (c • 1) x = c • s • u`, which is `u` or `-u` by the sign of `s`.
-  rcases abs_choice (s : ℚ) with hs | hs
-  · exact ⟨ν, by simp [h_gram, hs, ν, principalIdele, mul_smul, map_smul']⟩
-  · exact ⟨-ν, by simp [h_gram, hs, ν, principalIdele, Matrix.map_neg, mul_smul, map_smul']⟩
+  · rcases abs_choice (s : ℚ) with hs | hs
+    · exact ⟨ν, by simp [h_gram, hs, ν, principalIdele, mul_smul, map_smul']⟩
+    · exact ⟨-ν, by simp [h_gram, hs, ν, principalIdele, Matrix.map_neg, mul_smul, map_smul']⟩
 
 /-- A matrix `x` with `xᴴ x` the scalar matrix of a finite idele of `ℚ` is a similitude. -/
 lemma mem_GU_of_gram_eq (a : (𝔸f ℚ)ˣ) (h_gram : xᴴ * x.val = finAdeleIncl ℚ E a • 1) :
@@ -600,7 +558,8 @@ omit [Nonempty n] in
 /-- A point `g` of the finite adelic unitary group `Gf E n` (so `gᴴ g = 1`) is a signed frame for
 the identity form, with `ℓ = 1` at the base place. -/
 lemma isSignedFrameFor_one (g : Gf E n) : IsSignedFrameFor g.val 1 1 :=
-  ⟨⟨1, by simpa [U] using g.property⟩, by simp [PosDef.one]⟩
+  ⟨⟨1, by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 g.property⟩,
+      by simp [PosDef.one]⟩
 
 /-- If `x` is a similitude whose inverse has integral entries (`x ∈ GUPlus E n`) and `x` is a frame
 for the scalar form `c • 1`, then the rational number `c` is an integer. -/
@@ -694,29 +653,16 @@ frame for the scalar form `c • 1` with `c > 0` rational, then `yᴴ β' y = c 
 lemma IsSignedFrameFor.conjTranspose_mul_mul_eq_smul (h : IsSignedFrameFor x ℓ β)
     (h' : IsSignedFrameFor x' ℓ' β') (h_frame : IsScalarFrame (x'⁻¹ * toFinGL y * x)⁻¹ c) :
     yᴴ * β' * y.val = (c : E) • β := by
-  -- Both forms have the frame `(toFinGL y)⁻¹ * x'` and are positive at a place `w ≠ v₀`, so they
-  -- agree.
-  obtain ⟨h_frame_x, h_pos_x⟩ := h
-  obtain ⟨h_frame_x', h_pos_x'⟩ := h'
-  obtain ⟨hc_pos, h_frame_c⟩ := h_frame
+  -- Both forms have the frame `x * (x'⁻¹ * y * x)⁻¹` and are positive at a place `w ≠ v₀`.
   obtain ⟨w, hw⟩ := exists_ne (v₀ : InfinitePlace E)
-  have h_prod : toFinGL y * (x * (x'⁻¹ * toFinGL y * x)⁻¹) = x' := by group
-  -- the common frame of the two forms
-  set x₁ : GL n (𝔸f E) := x * (x'⁻¹ * toFinGL y * x)⁻¹
-  have h_frame_conj : IsFrameFor (y.valᴴ * β' * y.val) x₁ := by
-    rwa [IsFrameFor.conj_iff, h_prod]
-  have hβ_pos : (β.map (Φ w)).PosDef := by simpa [hw] using h_pos_x w
-  have hβ'_pos : (β'.map (Φ w)).PosDef := by simpa [hw] using h_pos_x' w
-  have h_frame_smul : IsFrameFor ((c : E) • β) x₁ := h_frame_x.mul_iff.2 h_frame_c
-  refine h_frame_smul.unique w h_frame_conj ?_ ?_
-  · -- At `w` the form `c • β` is `c` times the positive definite `β`.
-    have h_map_smul : ((c : E) • β).map (Φ w) = c • β.map (Φ w) := by
-      simp [← Matrix.ext_iff, Rat.smul_def]
-    simpa only [h_map_smul] using hβ_pos.smul hc_pos
-  · -- At `w` the form `yᴴ β' y` is the positive definite `β'` transported by `y`.
-    rw [map_conjTranspose_mul_mul (Φ w) (map_star_complex (Φ w))]
+  refine (h.1.mul_iff.2 h_frame.2).unique w ?_ ?_ ?_
+  · rw [IsFrameFor.conj_iff, show toFinGL y * (x * (x'⁻¹ * toFinGL y * x)⁻¹) = x' by group]
+    exact h'.1
+  · convert (by simpa [hw] using h.2 w : (β.map (Φ w)).PosDef).smul h_frame.1
+    simp [← Matrix.ext_iff, Rat.smul_def]
+  · rw [map_conjTranspose_mul_mul (Φ w) (map_star_complex (Φ w))]
     simpa [star_eq_conjTranspose] using
-      (y.map (Φ w)).isUnit.posDef_star_left_conjugate_iff.2 hβ'_pos
+      (y.map (Φ w)).isUnit.posDef_star_left_conjugate_iff.2 (by simpa [hw] using h'.2 w)
 
 /-- Let `(x, ℓ, β)` be a signed frame (`IsSignedFrameFor`) and let `y ∈ GL_n(E)` fix `ℓ` under
 `ratConj`, with `(x⁻¹ y x)⁻¹` a frame for the scalar form `c • 1`; so `y` is an automorphism of the
@@ -934,7 +880,7 @@ places, and let the `w i` be distinct finite places whose norms have product abo
 `g⁻¹ γ g` (with γ embedded in G_f) lies in the integral level `stdLevel E n`, which is
 G_f ∩ GL_n(Ô E) (hypothesis `hk`), and reduces to `1` modulo every `w i`, then `γ = 1`. -/
 lemma eq_one_of_reduceAt_eq_one {E : Type} [Field.{0} E] [CMType E] {w : ι → FinPlace E}
-    [Nontrivial (InfinitePlace E)] (hw : w.Injective)
+    (hw : w.Injective)
     (h_large : (2 * card n) ^ finrank ℚ E < ∏ i : ι, (w i).q)
     {γ : U (stdSpace E n).J} {g : Gf E n}
     (hk : g⁻¹ * (stdSpace E n).embFin γ * g ∈ stdLevel E n)
@@ -944,7 +890,7 @@ lemma eq_one_of_reduceAt_eq_one {E : Type} [Field.{0} E] [CMType E] {w : ι → 
   -- have modulus at most `2 * card n`. Comparing norms shows that it is `0`, and then
   -- `tr (γ - 1)ᴴ (γ - 1) = 0`.
   let y : GL n E := γ
-  have h_isom : y.valᴴ * (1 : Matrix n n E) * y.val = 1 := mem_U.1 γ.property
+  have h_isom : y.valᴴ * (1 : Matrix n n E) * y.val = 1 := mem_unitaryGroupOf_iff.1 γ.property
   have h_conj_le (v : InfinitePlace E) : ‖Φ v (y.val - 1).trace‖ ≤ 2 * card n := by
     -- The image of `y` under `Φ v` is unitary, so its entries have modulus at most `1`.
     have h_unitary : y.val.map (Φ v) ∈ unitaryGroup n ℂ := by
@@ -984,7 +930,7 @@ unitary group over `E` of the definite form `stdSpace E n` (identity matrix, sum
 coordinates), embedded in `Gf E n`. A case of Minkowski's lemma on integral matrices of finite
 order. -/
 lemma classAut_eq_bot {E : Type} [Field.{0} E] [CMType E] {w : ι → FinPlace E}
-    [Nontrivial (InfinitePlace E)] (hw : w.Injective)
+    (hw : w.Injective)
     (h_large : (2 * card n) ^ finrank ℚ E < ∏ i : ι, (w i).q)
     {K : Subgroup (Gf E n)} (hK : K ≤ levelOf w ⊥) (g : Gf E n) :
     classAut (stdSpace E n).Γf K g = ⊥ := by

@@ -1,4 +1,18 @@
+module
+
+import TauCeti.Analysis.Matrix.L2OpNorm
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.Deriv.Star
+import Mathlib.Data.Set.Finite.List
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
+import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
 import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
+import Lib.General.Analysis.GaussianIntegral
+import Lib.General.Analysis.HolomorphicIntegrals
 import Lib.General.LinearAlgebra.Eigenvalues
 
 /-!
@@ -54,6 +68,8 @@ Source: R. Parthasarathy, Classification of discrete series by minimal K-type, R
 of Math. 102 (1975) 535-564; Vogan-Zuckerman, Compositio 53 (1984) Prop 6.1; Nelson, Analytic
 vectors, Ann. of Math. 70 (1959) 572-615.
 -/
+
+@[expose] public section
 
 namespace New
 
@@ -235,12 +251,12 @@ theorem HCParam.IsKHighest.finite_filtration (hx : l.IsKHighest ρ ν x) [hg : l
       -- `ρ.casimirK ε` is the scalar `l.casimirKValue ν` on `y = ρ.word w x`, and
       -- `⟪y, ρ.casimirK ε y⟫` is the sum of the `‖E b a y‖ ^ 2` over compact pairs, among them the
       -- `‖E a a y‖ ^ 2`. So the weight `μ` of `y` has `|μ|² ≤ l.casimirKValue ν`.
-      have h_diag : ∑ a, (ε a * ε a).1 * ‖ρ.E a a (ρ.word w x)‖ ^ 2 ≤
+      have h_diag : ∑ a, (ε a * ε a).val * ‖ρ.E a a (ρ.word w x)‖ ^ 2 ≤
           (inner ℂ (ρ.word w x) ((l.casimirKValue ν : ℂ) • ρ.word w x)).re := by
         rw [← casimirK_eq_smul_of_mem_filtration y_mem hx.casimirK_eq_smul, hρ.inner_casimir,
           Complex.ofReal_re]
         exact sum_le_sum fun a _ ↦ single_le_sum
-          (f := fun b ↦ (ε a * ε b).1 * ‖ρ.E b a (ρ.word w x)‖ ^ 2) (by simp_all) (by simp)
+          (f := fun b ↦ (ε a * ε b).val * ‖ρ.E b a (ρ.word w x)‖ ^ 2) (by simp_all) (by simp)
       have h_wt : wordWeight ν w ⬝ᵥ wordWeight ν w ≤ l.casimirKValue ν := by
         rify [dotProduct, ← sq]
         simpa [hx.E_self_word_eq_smul, norm_smul, mul_pow, ← sum_mul, ← Complex.ofReal_pow,
@@ -290,8 +306,11 @@ theorem IsKInvariantForm.mul_E (hρ : IsUnitaryCasimirGe l ρ) (hJ : IsKInvarian
     fun a b hab ↦ ρ.commute_E_sum_E_mul_mul_E (· * ·) hab (hD_comm a b hab), fun u v ↦ ?_⟩
   suffices ∑ p : n, ∑ q : n, ⟪ρ.E q p u, D (ρ.E q p v)⟫_ℂ =
       ⟪u, (∑ c, ∑ d, ((ε c : ℂ) * ε d) • (ρ.E c d * D * ρ.E d c)) v⟫_ℂ by
-    simpa [sum_prod_type, ← hD_form]
-  simp [hρ.inner_E_left, mul_comm]
+    simpa only [mul_apply_eq_comp, sum_prod_type, LinearMap.coe_sum, LinearMap.coe_smul,
+      Finset.sum_apply, Pi.smul_apply, inner_sum, inner_smul_right, ← hD_form]
+  simp only [hρ.inner_E_left, mul_comm, Units.val_mul, cast_mul, LinearMap.coe_sum,
+    LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply, mul_apply_eq_comp, inner_sum,
+    inner_smul_right]
 
 /-- Assume `New.IsUnitaryCasimirGe l ρ`, which gives `E_ab` the adjoint `ε_a ε_b E_ba`, and let `J`
 satisfy `New.IsKInvariantForm`: its form is given by an operator commuting with `𝔨`. Then the
@@ -305,7 +324,7 @@ theorem IsKInvariantForm.sum_inner_casimirK (hρ : IsUnitaryCasimirGe l ρ)
   -- For a compact pair (c, d), `E c d` commutes with `D` and has adjoint `E d c`.
   have h_move (c d : n) (hcd : ε c = ε d) (z : H) :
       ⟪u, D (ρ.E c d z)⟫_ℂ = ⟪ρ.E d c u, D z⟫_ℂ := by
-    simp [← End.mul_apply D, ← (hD_comm c d hcd).eq, hρ.inner_E_left, hcd]
+    simp [← mul_apply_eq_comp D, ← (hD_comm c d hcd).eq, hρ.inner_E_left, hcd]
   suffices h_sum : ∑ c : n, ∑ d : n with ε c = ε d, ⟪u, D (ρ.E c d (ρ.E d c v))⟫_ℂ =
       ∑ c : n, ∑ d : n with ε c = ε d, ⟪ρ.E d c u, D (ρ.E d c v)⟫_ℂ by
     simpa [sum_comm (γ := I), GlModule.casimir, hD_form] using h_sum
@@ -331,9 +350,9 @@ theorem HCParam.IsKHighest.casimirK_bound_of_highest (hx : l.IsKHighest ρ ν x)
   -- Write `∑ ⟪J_i u, J_i v⟫ = ⟪u, D v⟫`. It is enough that the compression `B` to `U` of
   -- `T = α D Ω_K - β D` is positive. Each eigenspace of `B` is `𝔨`-stable, so it contains a highest
   -- vector, and on that vector `h_bound` shows that the eigenvalue is nonnegative.
-  have ⟨D, hD_comm, hD_form⟩ := hJ
+  let ⟨D, hD_comm, hD_form⟩ := hJ
   let T : End ℂ H := α • D * ρ.casimirK ε - β • D
-  let B : End ℂ U := U.orthogonalProjectionOnto.1 ∘ₗ T.domRestrict U
+  let B : End ℂ U := U.orthogonalProjectionOnto.toLinearMap ∘ₗ T.domRestrict U
   have hB_symm : B.IsSymmetric :=
     fun _ ↦ by simp [B, T, ← inner_conj_symm (D _), ← hD_form, hJ.sum_inner_casimirK hρ]
   suffices h_nonneg : ∀ e : ℝ, HasEigenvalue B e → 0 ≤ e by
@@ -351,14 +370,9 @@ theorem HCParam.IsKHighest.casimirK_bound_of_highest (hx : l.IsKHighest ρ ν x)
   -- `W` is `𝔨`-stable: `ρ.E a b` commutes with `T`, and its adjoint `ρ.E b a` preserves `U`.
   have hW_stable (a b : n) (hab : ε a = ε b) : W ∈ (ρ.E a b).invtSubmodule := by
     refine fun z ⟨hzU, hz_orth⟩ ↦ ⟨hU_stable a b hab hzU, fun u hu ↦ ?_⟩
-    have hT : Commute (ρ.E a b) (T - (e : ℂ) • 1) :=
-      ((((hD_comm a b hab).smul_right α).mul_right (commute_E_casimirK hab)).sub_right
-        ((hD_comm a b hab).smul_right β)).sub_right ((Commute.one_right _).smul_right _)
-    have h : ⟪ρ.E b a u, (T - (e : ℂ) • 1) z⟫_ℂ = 0 :=
+    simpa [T, hρ.inner_E_left, ← mul_apply_eq_comp, -FunLike.coe_mul_eq_comp, sub_mul,
+      (hD_comm ..).eq, hab, ((hD_comm ..).mul_right (commute_E_casimirK ..)).eq] using
       hz_orth (ρ.E b a u) (hU_stable b a hab.symm hu)
-    show ⟪u, (T - (e : ℂ) • 1) (ρ.E a b z)⟫_ℂ = 0
-    rw [← mul_apply_eq_comp, ← hT.eq, mul_apply_eq_comp]
-    simpa [hρ.inner_E_left] using h
   have : FiniteDimensional ℂ W := finiteDimensional_of_le inf_le_left
   obtain ⟨μ, z, ⟨hzU, hz_orth⟩, hz_ne, hz_wt, hz_high⟩ := l.exists_highest_vector W hW_ne hW_stable
   -- `z` is not orthogonal to all words of length `≤ s`: the orthogonal complement of `z` is stable
@@ -449,17 +463,27 @@ theorem HCParam.IsKHighest.norm_apply_le_mul_norm (hx : l.IsKHighest ρ ν x)
   -- Bound each `‖X a b‖` by `‖X‖`, square, and apply Cauchy–Schwarz over the pairs `(a, b)`.
   have h_norm : ‖ρ X y‖ ≤ ‖X‖ * ∑ p : n × n, ‖ρ.E p.1 p.2 y‖ := by
     simp only [ρ.apply_eq_sum X, LinearMap.sum_apply, LinearMap.smul_apply]
-    grw [← sum_prod_type', norm_sum_le, norm_smul_le, norm_apply_le_l2_opNorm, ← mul_sum]
+    grw [← sum_prod_type', norm_sum_le, norm_smul_le, Matrix.norm_apply_le_l2_opNorm, ← mul_sum]
   refine (sq_le_sq₀ (norm_nonneg _) (by positivity)).1 ?_
   calc ‖ρ X y‖ ^ 2 ≤ ‖X‖ ^ 2 * (∑ p : n × n, ‖ρ.E p.1 p.2 y‖) ^ 2 := by grw [h_norm, mul_pow]
     _ ≤ ‖X‖ ^ 2 * (#(univ : Finset (n × n)) * (C * ‖y‖ ^ 2)) := by
         grw [sq_sum_le_card_mul_sum_sq, sum_le]
     _ ≤ ((card n + 1) ^ 4 * (L + 1 + s) * ‖X‖ * ‖y‖) ^ 2 := by
-        -- The difference of the two sides is a polynomial with nonnegative coefficients.
-        rw [← sub_nonneg, card_univ, card_prod, Nat.cast_mul]
-        unfold C N
-        ring_nf
-        positivity
+        -- In `c = card n` and `N`, the difference of the two sides is a polynomial with
+        -- nonnegative coefficients; the factor `(‖X‖ * ‖y‖) ^ 2` is common to both.
+        have key (c N : ℝ) (hc : 0 ≤ c) (hN : 0 ≤ N) :
+            c * c * (2 * (c * (N * (N + c))) + c ^ 3 / 4) ≤ ((c + 1) ^ 4 * (N + 1)) ^ 2 := by
+          rw [← sub_nonneg]
+          ring_nf
+          positivity
+        rw [card_univ, card_prod, Nat.cast_mul]
+        calc ‖X‖ ^ 2 * (card n * card n * (C * ‖y‖ ^ 2))
+            = card n * card n * C * (‖X‖ * ‖y‖) ^ 2 := by ring
+          _ ≤ ((card n + 1) ^ 4 * (N + 1)) ^ 2 * (‖X‖ * ‖y‖) ^ 2 :=
+            mul_le_mul_of_nonneg_right (key _ N (by positivity) (by positivity)) (sq_nonneg _)
+          _ = ((card n + 1) ^ 4 * (L + 1 + s) * ‖X‖ * ‖y‖) ^ 2 := by
+            unfold N
+            ring
 
 /-- Let the inner product be invariant and satisfy the Casimir lower bound
 (`New.IsUnitaryCasimirGe`), `l` be a parameter of some gap, and `x` a `K`-highest vector of weight
@@ -583,7 +607,8 @@ theorem New.sum_norm_sq_le_sum_re_inner_lie {n : Type} [Fintype n] [DecidableEq 
   let R : ℝ := ∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d,
     ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2
   suffices h_NC : N ≤ C by
-    simpa [N, C, -map_sub, -map_add, ← map_bracket, h_component, ← mul_sum, lie_def] using h_NC
+    simpa only [N, C, h_component, ← mul_sum, lie_def, ← map_bracket, Nat.ofNat_pos,
+      mul_le_mul_iff_right₀] using h_NC
   -- On `M 1 ⊖ M 0`, `Ω_K` gains at least `4 n + 2`: `casimirKValue_lowestKType_add_le` gives this
   -- on highest vectors, and `casimirK_bound_of_highest` extends it to all vectors.
   have hU_stable : ∀ c d : n, ε c = ε d → M 1 ⊓ (M 0)ᗮ ∈ (ρ.E c d).invtSubmodule := by
@@ -592,13 +617,17 @@ theorem New.sum_norm_sq_le_sum_re_inner_lie {n : Type} [Fintype n] [DecidableEq 
       ∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d, ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2 := by
     have h_form : ∑ p : n, ∑ q : n, re ⟪P (ρ.E q p y), P (ρ.E q p (ρ.casimirK ε y))⟫_ℂ =
         ∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d, ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2 := by
-      simpa [sum_prod_type, ← ofReal_pow] using
+      -- the family `(p, q, i) ↦ ![P] i * ρ.E q p` has the single index `i = 0`
+      simpa only [Matrix.cons_val_fin_one, mul_apply_eq_comp, sum_prod_type, univ_unique,
+        sum_const, card_singleton, one_smul, re_sum, inner_self_eq_norm_sq_to_K, coe_algebraMap,
+        ← ofReal_pow, ofReal_re] using
         congrArg re ((P_adj.mul_E h).sum_inner_casimirK h y y)
-    simpa [N, sum_prod_type, h_form] using hx.casimirK_bound_of_highest h 1
-      (l.casimirKValue l.lowestKType + 4 * card n + 2) inf_le_left hU_stable (P_adj.mul_E h)
-      ⟨hy, ha⟩ fun w ⟨u, hu, hu_high, h_inner⟩ hw ↦ by
-        simpa using Int.cast_mono (R := ℝ)
-          (casimirKValue_lowestKType_add_le h hu.2 hw hu_high h_inner)
+    simpa only [N, Matrix.cons_val_fin_one, mul_apply_eq_comp, sum_prod_type, univ_unique,
+      sum_const, card_singleton, one_smul, re_sum, h_form, one_mul] using
+      hx.casimirK_bound_of_highest h 1 (l.casimirKValue l.lowestKType + 4 * card n + 2)
+        inf_le_left hU_stable (P_adj.mul_E h) ⟨hy, ha⟩ fun w ⟨u, hu, hu_high, h_inner⟩ hw ↦ by
+          simpa using Int.cast_mono (R := ℝ)
+            (casimirKValue_lowestKType_add_le h hu.2 hw hu_high h_inner)
   -- By `map_single_mul_single` a commutator is a difference of two terms, each zero for all but
   -- `n` pairs `(c, d)`.
   have upper : R ≤ 4 * Fintype.card n * N := by
@@ -609,8 +638,8 @@ theorem New.sum_norm_sq_le_sum_re_inner_lie {n : Type} [Fintype n] [DecidableEq 
             LinearMap.sub_apply]
           grw [filter_subset, norm_sub_le, add_sq_le]
       _ = 4 * Fintype.card n * N := by
-          simp [N, DFunLike.ite_apply, apply_ite (‖P ·‖), sum_add_distrib, ← mul_sum, mul_add]
-          rw [sum_comm]
+          simp [N, DFunLike.ite_apply, apply_ite (‖P ·‖), sum_add_distrib, ← mul_sum, mul_add,
+            sum_comm (f := fun p q : n ↦ ‖P (ρ.E p q y)‖ ^ 2)]
           ring
   -- Expand the square of `P (E_qp E_dc y) = E_dc (P (E_qp y)) + P (⁅E_qp, E_dc⁆ y)`.
   have h_square (p q c d : n) (hcd : ε d = ε c) : ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2 =
@@ -621,8 +650,17 @@ theorem New.sum_norm_sq_le_sum_re_inner_lie {n : Type} [Fintype n] [DecidableEq 
     ring
   have expand : (∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d,
       ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2) = l.casimirKValue l.lowestKType * N + 2 * C + R := by
-    simp +contextual [N, C, R, h_square, casimir_zero, sum_filter, ite_add_zero, sum_add_distrib,
-      mul_sum]
+    -- Sum `h_square` over the compact pairs `(c, d)`; the first terms add up to `casimir_zero`.
+    have h_inner (p q : n) : ∑ c : n, ∑ d : n with ε c = ε d, ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2 =
+        l.casimirKValue l.lowestKType * ‖P (ρ.E q p y)‖ ^ 2 +
+          2 * ∑ c : n, ∑ d : n with ε c = ε d,
+            re ⟪ρ.E d c (P (ρ.E q p y)), P (⁅ρ.E q p, ρ.E d c⁆ y)⟫_ℂ +
+          ∑ c : n, ∑ d : n with ε c = ε d, ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2 := by
+      rw [← casimir_zero, mul_sum, ← sum_add_distrib, ← sum_add_distrib]
+      refine sum_congr rfl fun c _ ↦ ?_
+      rw [← sum_filter, mul_sum, ← sum_add_distrib, ← sum_add_distrib]
+      exact sum_congr rfl fun d hd ↦ h_square p q c d (mem_filter.1 hd).2.symm
+    simp only [N, C, R, h_inner, sum_add_distrib, mul_sum]
   linarith
 
 /-- A finite family `J` of operators detects step `k` of the filtration
@@ -676,7 +714,7 @@ theorem New.IsDetectingFamily.mul_E {n : Type} [Fintype n] [DecidableEq n] {H : 
       hJ.apply_eq_zero (ρ X a) (map_mem_orthogonal_filtration h ha) i
     have h_swap (Y : Matrix n n ℂ) : J i (ρ Y (ρ.E q p a)) = J i (ρ.E q p (ρ Y a)) := by
       rw [ρ.apply_apply_eq_swap_add_bracket, map_add, h_kill, add_zero]
-    simpa [h_swap, ← map_bracket, -map_sub, lie_def] using
+    simpa only [mul_apply_eq_comp, lie_def, ← map_bracket, h_swap] using
       hJ.cross_term_bound (ρ.E q p a) (map_mem_orthogonal_filtration h ha) i
   · -- All `ρ.E q p a` are orthogonal to step `k`, so `a` is orthogonal to step `k + 1`.
     have h_image (p q : n) : a ∈ ((ρ.filtration ε x k).map (ρ.E p q))ᗮ := by
@@ -703,9 +741,16 @@ theorem New.IsDetectingFamily.mul_E {n : Type} [Fintype n] [DecidableEq n] {H : 
             2 * re ⟪ρ.E d c (J i (ρ.E q p a)), J i (⁅ρ.E q p, ρ.E d c⁆ a)⟫_ℂ := by
       simp [lie_def, norm_sub_sq (𝕜 := ℂ)]
       ring
-    simp only [sum_prod_type, Module.End.mul_apply, h_expand, sum_add_distrib]
-    simpa [↓sum_comm (α := I), mul_add, add_mul, ← mul_sum, sum_add_distrib, add_assoc]
-      using add_le_add h_level h_cross
+    simp only [sum_prod_type, mul_apply_eq_comp, h_expand, sum_add_distrib]
+    -- Add the two bounds, after moving the sum over `i` in `h_cross` inside.
+    have h_comm (f : I → n → n → ℝ) : ∑ i, ∑ p, ∑ q, f i p q = ∑ p, ∑ q, ∑ i, f i p q := by
+      rw [sum_comm]
+      exact sum_congr rfl fun p _ ↦ sum_comm
+    rw [h_comm, h_comm] at h_cross
+    refine (le_of_eq ?_).trans (add_le_add h_level h_cross)
+    simp only [← mul_sum]
+    push_cast
+    ring
 
 /-- Let `l` be a parameter for the signs `ε` with gap `500 n³ + A` (`l.HasLargeGap A`). Assume the
 inner product is invariant under 𝔲(diag ε) and the Casimir operator is bounded below by
@@ -824,7 +869,7 @@ theorem HCParam.IsKHighest.coeffMap_eq_zero [InnerProductSpace ℂ H] {ρ : GlMo
       ∀ s, ∀ v ∈ ρ.filtration ε x s, c (g * expU Y) v = 0 by
     simpa using h_step Y₂ _ (h_step Y₁ 1 h_one) 0 x ρ.self_mem_filtration
   intro Y g hg
-  let growth : ℝ := (card n + 1) ^ 4 * ‖Y.1‖
+  let growth : ℝ := (card n + 1) ^ 4 * ‖Y.val‖
   let decay (t : ℝ) : ℝ := exp (-exp 1 * (growth + 1) * t)
   -- `f_v t = c (g * expU (t • Y)) v` has `f_v 0 = 0` and `f_v' = f_{Y v}`. For every `m` it stays
   -- below this barrier, by downward induction on `s`.
@@ -832,12 +877,13 @@ theorem HCParam.IsKHighest.coeffMap_eq_zero [InnerProductSpace ℂ H] {ρ : GlMo
       ‖c (g * expU (t • Y)) v‖ ≤ exp (m * -decay t) * (exp (R + 1 + s) * (|D| * ‖v‖ + 1)) := by
     induction hk : m - s using Nat.strong_induction_on generalizing s with | _ k ih => ?_
     intro v hv
-    have hYv_le : ‖ρ Y v‖ ≤ (card n + 1) ^ 4 * (R + 1 + s) * ‖Y.1‖ * ‖v‖ :=
-      hx.norm_apply_le_mul_norm h_inv (fun i ↦ toNat_le.1 (hR i)) hv Y
+    obtain ⟨hYv_mem, hYv_le⟩ :=
+      hx.norm_apply_le_of_mem_filtration h_inv (fun i ↦ toNat_le.1 (hR i)) hv Y
     refine image_norm_le_of_norm_deriv_right_lt_deriv_boundary
       (HasDerivAt.continuousOn fun t _ ↦ h_coef g Y v t)
       (fun t _ ↦ (h_coef g Y v t).hasDerivWithinAt)
-      (by simp [hg s v hv]; positivity) (fun _ ↦ hasDerivAt_deriv_iff.2 (by fun_prop))
+      (by simp only [zero_smul, expU_zero, mul_one, hg s v hv, norm_zero]; positivity)
+      (fun _ ↦ hasDerivAt_deriv_iff.2 (by fun_prop))
       fun t ⟨ht_nonneg, ht_lt⟩ h_touch ↦ ?_
     -- where `f_v` touches the barrier, `‖f_v t‖ ≤ D * ‖v‖` forces `R + 1 + s < m * decay t ≤ m`
     have h_lt : R + 1 + s < m * decay t := by
@@ -846,7 +892,8 @@ theorem HCParam.IsKHighest.coeffMap_eq_zero [InnerProductSpace ℂ H] {ρ : GlMo
       simpa [← exp_add, field] using h_le
     have hs : s < m := by
       rify
-      nlinarith [show decay t ≤ 1 by simp [decay]; positivity]
+      nlinarith [show decay t ≤ 1 by
+          simp only [decay, neg_mul, exp_le_one_iff, Left.neg_nonpos_iff]; positivity]
     -- `‖Y v‖ ≤ growth * (R + 1 + s) * ‖v‖`, and `R + 1 + s` is below `m * decay t`
     have h_deriv_lt : |D| * ‖ρ Y v‖ + 1 < (growth + 1) * (m * decay t) * (|D| * ‖v‖ + 1) := by
       grw [hYv_le, ← h_lt, ← sub_nonneg]
@@ -855,7 +902,7 @@ theorem HCParam.IsKHighest.coeffMap_eq_zero [InnerProductSpace ℂ H] {ρ : GlMo
       positivity
     -- as `s < m` the induction hypothesis bounds `f_v' = f_{Y v}` below the barrier's derivative
     calc _ ≤ exp (m * -decay t) * (exp (R + 1 + (s + 1 : ℕ)) * (|D| * ‖ρ Y v‖ + 1)) :=
-          ih _ (by omega) (s + 1) rfl _ (GlModule.apply_mem_filtration_succ hv Y) t
+          ih _ (by omega) (s + 1) rfl _ hYv_mem t
             ⟨ht_nonneg, ht_lt.le⟩
       _ < exp (m * -decay t) * (exp (R + 1 + (s + 1 : ℕ)) *
           ((growth + 1) * (m * decay t) * (|D| * ‖v‖ + 1))) := by gcongr

@@ -1,4 +1,12 @@
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+public import Mathlib.Topology.Algebra.IsOpenUnits
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.SpecialFunctions.Pow.Integral
+import Mathlib.MeasureTheory.Integral.Pi
+public import Lib.Adelic.QuotientMeasure.Basic
+import TauCeti.MeasureTheory.Constructions.Pi
+import TauCeti.MeasureTheory.Integral.Lebesgue.SublevelGrowth
 
 /-!
 # Product measures, layer cake bounds, cocompact subgroups and L² bounds of integral operators
@@ -31,6 +39,8 @@ for `γ ∈ Γ`, and the following.
   that are integrable in the last variable.
 -/
 
+@[expose] public section
+
 /-! ## Regrouping, currying and flipping coordinates of product measures -/
 
 section ProductMeasure
@@ -43,17 +53,9 @@ variable {Y ι κ : Type*} {α : Type*} {n : ι → Type*} [Fintype Y] [Fintype 
 /-- For a bijection `e` from the disjoint union of the finite types `n i` onto `Y`, the regrouping
 map `α^Y → ∏ i, α^(n i)`, `x ↦ (x (e ⟨i, j⟩))_{i, j}`, preserves the product volume measures. -/
 lemma New.measurePreserving_sigma (e : Sigma n ≃ Y) :
-    MeasurePreserving fun (x : Y → α) (i : ι) (j : n i) ↦ x (e ⟨i, j⟩) := by
-  -- The map is reindexing along `e` followed by currying, which preserves the volumes of boxes.
-  have h_uncurry :
-      MeasurePreserving (MeasurableEquiv.piCurry fun (i : ι) (_ : n i) ↦ α).symm := by
-    refine ⟨by fun_prop, .symm (Measure.pi_eq fun s _ ↦ ?_)⟩
-    have h_box : (uncurry : ((i : ι) → n i → α) → Sigma n → α) ⁻¹' Set.univ.pi s =
-        Set.univ.pi fun i : ι ↦ Set.univ.pi fun j : n i ↦ s ⟨i, j⟩ :=
-      Set.ext fun x ↦ by simp [Sigma.forall, uncurry]
-    rw [MeasurableEquiv.map_apply, MeasurableEquiv.coe_piCurry_symm, h_box]
-    simp only [volume_pi_pi, Fintype.prod_sigma]
-  exact h_uncurry.symm.comp (volume_measurePreserving_piCongrLeft (fun _ : Y ↦ α) e).symm
+    MeasurePreserving fun (x : Y → α) (i : ι) (j : n i) ↦ x (e ⟨i, j⟩) :=
+  (TauCeti.measurePreserving_piCurry (fun (i : ι) (_ : n i) ↦ (volume : Measure α))).comp
+    (volume_measurePreserving_piCongrLeft (fun _ : Y ↦ α) e).symm
 
 /-- Currying, `α^(ι × κ) → (α^κ)^ι`, preserves the product volume measures. -/
 lemma New.measurePreserving_curry : MeasurePreserving (MeasurableEquiv.curry ι κ α) :=
@@ -76,64 +78,32 @@ open MeasureTheory Set Real Filter
 variable {S : Type*} [MeasurableSpace S] {ν : Measure S} {u : S → ℝ} {K A c : ℝ} {e d : ℕ}
   {V : ENNReal}
 
-/-- For an exponent `p > 0`, the Lebesgue integral of `t^(p-1)` over `(0, 1]` is `1/p`. -/
-lemma New.lintegral_Ioc_rpow_sub_one {p : ℝ} (hp : 0 < p) :
-    ∫⁻ t in Ioc (0 : ℝ) 1, ENNReal.ofReal (t ^ (p - 1)) = ENNReal.ofReal p⁻¹ := by
-  have h_exp : -1 < p - 1 := by linarith
-  have h_value : ∫ t in (0 : ℝ)..1, t ^ (p - 1) = p⁻¹ := by
-    simp [integral_rpow (.inl h_exp), zero_rpow hp.ne']
-  rw [← ofReal_integral_eq_lintegral_ofReal (intervalIntegral.intervalIntegrable_rpow' h_exp).1
-      (ae_restrict_of_forall_mem measurableSet_Ioc fun t ht ↦ rpow_nonneg ht.1.le (p - 1)),
-    ← intervalIntegral.integral_of_le zero_le_one, h_value]
-
 /-- Layer cake bound for a negative power. Let `u ≥ 1` be measurable and suppose that
 `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`, where `K ≥ 0`. If `e d < A` and `A ≤ c (A - e d)`, then
 the Lebesgue integral of `u^(-A)` is at most `K^d c V`. -/
 lemma New.lintegral_rpow_neg_le_of_measure_sublevel_le (hu_meas : Measurable u)
-    (hu : ∀ s : S, 1 ≤ u s) (hK : 0 ≤ K)
+    (hu : ∀ s : S, 1 ≤ u s) (_hK : 0 ≤ K)
     (h_vol : ∀ R ≥ (1 : ℝ), ν {s : S | u s ≤ R} ≤ ENNReal.ofReal ((K * R ^ e) ^ d) * V)
     (hA : e * d < A) (hc : A ≤ c * (A - e * d)) :
     ∫⁻ s : S, ENNReal.ofReal (u s ^ (-A)) ∂ν ≤ ENNReal.ofReal (K ^ d * c) * V := by
-  -- Layer cake: ∫ u^(-A) = A ∫ ν{t ≤ u⁻¹} t^(A-1) dt ≤ c p ∫ g = c p M / p = c M, where M = K^d V,
-  -- p = A - e d, and g(t) = M t^(p-1) on (0, 1], 0 beyond, bounds the integrand.
   have hA_pos : 0 < A := (show (0 : ℝ) ≤ e * d by positivity).trans_lt hA
   have hc_nonneg : 0 ≤ c := by nlinarith
-  let p : ℝ := A - e * d
-  let M : ENNReal := .ofReal (K ^ d) * V
-  have hp : 0 < p := sub_pos.2 hA
-  let g : ℝ → ENNReal := (Iic 1).indicator fun t : ℝ ↦ M * .ofReal (t ^ (p - 1))
-  have h_layer (t : ℝ) (ht : 0 < t) : ν {s : S | t ≤ (u s)⁻¹} * .ofReal (t ^ (A - 1)) ≤ g t := by
-    by_cases h_le : t ≤ 1
-    · have h_set : {s : S | t ≤ (u s)⁻¹} = {s : S | u s ≤ t⁻¹} :=
-        Set.ext fun s ↦ le_inv_comm₀ ht (one_pos.trans_le (hu s))
-      have h_pow : (K * t⁻¹ ^ e) ^ d * t ^ (A - 1) = K ^ d * t ^ (p - 1) := by
-        rw [sub_right_comm, rpow_sub ht (A - 1), ← Nat.cast_mul, rpow_natCast]
-        ring
-      calc ν {s : S | t ≤ (u s)⁻¹} * .ofReal (t ^ (A - 1))
-          ≤ .ofReal ((K * t⁻¹ ^ e) ^ d) * V * .ofReal (t ^ (A - 1)) := by
-            grw [h_set, h_vol t⁻¹ ((one_le_inv₀ ht).2 h_le)]
-        _ = M * .ofReal (t ^ (p - 1)) := by
-            rw [mul_right_comm, ← ENNReal.ofReal_mul (by positivity), h_pow,
-              ENNReal.ofReal_mul (by positivity), mul_right_comm]
-        _ = g t := by simp [g, h_le]
-    · -- the level set is empty, since u⁻¹ ≤ 1 < t
-      have h_set : {s : S | t ≤ (u s)⁻¹} = ∅ :=
-        eq_empty_of_forall_notMem fun s hs ↦ h_le (hs.trans (inv_le_one_of_one_le₀ (hu s)))
-      simp [h_set]
-  calc ∫⁻ s : S, .ofReal (u s ^ (-A)) ∂ν
-      = ∫⁻ s : S, .ofReal ((u s)⁻¹ ^ A) ∂ν := by simp only [rpow_neg_eq_inv_rpow]
-    _ = .ofReal A * ∫⁻ t in Ioi 0, ν {s : S | t ≤ (u s)⁻¹} * .ofReal (t ^ (A - 1)) :=
-        lintegral_rpow_eq_lintegral_meas_le_mul ν
-          (.of_forall fun s ↦ inv_nonneg.2 (zero_le_one.trans (hu s)))
-          hu_meas.inv.aemeasurable hA_pos
-    _ ≤ .ofReal (c * p) * ∫⁻ t in Ioi 0, g t := by
-        grw [← hc, setLIntegral_mono' measurableSet_Ioi h_layer]
-    _ = .ofReal (c * p) * (M * .ofReal p⁻¹) := by
-        rw [setLIntegral_indicator measurableSet_Iic, inter_comm, Ioi_inter_Iic,
-          lintegral_const_mul _ (by fun_prop), New.lintegral_Ioc_rpow_sub_one hp]
-    _ = .ofReal (K ^ d * c) * V := by
-        rw [mul_left_comm, ← ENNReal.ofReal_mul (by positivity), mul_inv_cancel_right₀ hp.ne',
-          mul_right_comm, ← ENNReal.ofReal_mul (by positivity)]
+  -- The growth hypothesis is the one of Tau Ceti's bound with `ε = e d` and `C = K^d V`.
+  have h_growth (R : ℝ) (hR : 1 ≤ R) : ν {s : S | u s ≤ R} ≤
+      ENNReal.ofReal (R ^ ((e * d : ℕ) : ℝ)) * (ENNReal.ofReal (K ^ d) * V) := by
+    refine (h_vol R hR).trans_eq ?_
+    rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), Real.rpow_natCast, mul_pow, ← pow_mul,
+      mul_comm (K ^ d)]
+  calc ∫⁻ s : S, ENNReal.ofReal (u s ^ (-A)) ∂ν
+      ≤ ENNReal.ofReal (A / (A - ((e * d : ℕ) : ℝ))) * (ENNReal.ofReal (K ^ d) * V) :=
+        TauCeti.lintegral_ofReal_rpow_neg_le_of_measure_le_rpow hu_meas.aemeasurable
+          (.of_forall hu) hA_pos (by simpa using hA) h_growth
+    _ ≤ ENNReal.ofReal c * (ENNReal.ofReal (K ^ d) * V) := by
+        gcongr
+        rw [Nat.cast_mul, div_le_iff₀ (by linarith)]
+        exact hc
+    _ = ENNReal.ofReal (K ^ d * c) * V := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul hc_nonneg, mul_comm c]
 
 /-- Let `u ≥ 1` be measurable and suppose that `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`, where
 `K ≥ 0` and `V` is finite. Then `u^(-A)` is integrable for `A > e d`. -/
@@ -232,42 +202,11 @@ namespace New
 variable {V Y X I A : Type*} [MeasurableSpace Y] {μ : Measure Y} [NormedAddCommGroup V]
   [NormedSpace ℝ V] [MeasurableSpace X] [Monoid A]
 
-/-- Tonelli's theorem for a finite product: the integral of `∏ i, f i (x i)` over the product
-measure is the product of the integrals, for σ-finite measures and measurable `f i` with values
-in `[0, ∞]`. -/
-lemma lintegral_pi_prod {ι : Type*} [Fintype ι] {X : ι → Type*} [∀ i : ι, MeasurableSpace (X i)]
-    (μ : ∀ i : ι, Measure (X i)) [∀ i : ι, SigmaFinite (μ i)] {f : ∀ i : ι, X i → ENNReal}
-    (hf : ∀ i : ι, Measurable (f i)) :
-    ∫⁻ x : (i : ι) → X i, ∏ i : ι, f i (x i) ∂Measure.pi μ = ∏ i : ι, ∫⁻ x : X i, f i x ∂μ i := by
-  classical
-  rcases isEmpty_or_nonempty ((i : ι) → X i) with h_empty | ⟨⟨x₀⟩⟩
-  · -- some factor `X i` is empty, and both sides vanish
-    obtain ⟨i, hi⟩ := isEmpty_pi.1 h_empty
-    rw [lintegral_of_isEmpty, Finset.prod_eq_zero (Finset.mem_univ i) (lintegral_of_isEmpty _ _)]
-  -- Integrate out one coordinate at a time: induction on the set `s` of factors. The coordinates
-  -- outside `s` are held at the point `x₀`.
-  have h_marginal (s : Finset ι) :
-      (∫⋯∫⁻_s, (fun x : (j : ι) → X j ↦ ∏ i ∈ s, f i (x i)) ∂μ) x₀ =
-        ∏ i ∈ s, ∫⁻ x : X i, f i x ∂μ i := by
-    induction s using Finset.induction_on with
-    | empty => simp
-    | insert i s hi ih =>
-      -- integrate over `x i` first: the other factors do not depend on it and come out
-      have h_inner (x : (j : ι) → X j) :
-          ∫⁻ t : X i, ∏ j ∈ insert i s, f j (Function.update x i t j) ∂μ i =
-            (∫⁻ t : X i, f i t ∂μ i) * ∏ j ∈ s, f j (x j) := by
-        simp +contextual [Finset.prod_insert hi, Function.update_of_ne,
-          ne_of_mem_of_not_mem _ hi, lintegral_mul_const _ (hf i)]
-      rw [lmarginal_insert' _ (by fun_prop) hi, Finset.prod_insert hi, ← ih]
-      simp only [h_inner]
-      exact lintegral_const_mul _ (by fun_prop)
-  rw [lintegral_eq_lmarginal_univ x₀, h_marginal]
-
 /-- The bound `‖x.toReal • v‖ₑ ≤ x * ‖v‖ₑ`; for `x = ∞` the left side is `0`. -/
 lemma enorm_toReal_smul_le (x : ENNReal) (v : V) : ‖x.toReal • v‖ₑ ≤ x * ‖v‖ₑ := by
   cases x with
   | top => simp
-  | coe r => simp [enorm_smul]
+  | coe r => simp [eNorm_smul]
 
 /-- Let `φ` be measurable with values in `[0, ∞]` and `F` almost everywhere strongly measurable.
 If `∫⁻ φ ‖F‖` is finite, then `φ • F` is integrable (`φ = ∞` is read as `0`). -/
@@ -302,7 +241,7 @@ measures, the family of products `k i x y * k' i' x' y'`, indexed by `I × I'`, 
 bound for the product measures `m.prod m'`, `μ.prod μ'` and `n.prod n'`. -/
 lemma IsL2Contraction.prod {X' Y' I' : Type*} [MeasurableSpace X'] [MeasurableSpace Y'] [Fintype I]
     [Fintype I'] {m : Measure X} {m' : Measure X'} {n : Measure Y} {μ' n' : Measure Y'} [SFinite m]
-    [SFinite m'] [SFinite μ] [SFinite μ'] [SFinite n] [SFinite n'] {k : I → X → Y → ℂ}
+    [SFinite μ] [SFinite μ'] [SFinite n] [SFinite n'] {k : I → X → Y → ℂ}
     {k' : I' → X' → Y' → ℂ} (hk : ∀ i : I, Measurable ↿(k i)) (hk' : ∀ i : I', Measurable ↿(k' i))
     (hi : ∀ (i : I) (x : X), Integrable (k i x) μ)
     (hi' : ∀ (i : I') (x : X'), Integrable (k' i x) μ') (h : IsL2Contraction m μ n k)

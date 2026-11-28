@@ -1,4 +1,8 @@
+module
+
+public import Lib.Shimura.HeckeTower.HeckeData
 import Lib.Adelic.TraceFormula.ChangingSigns
+import Lib.General.LinearAlgebra.Eigenvalues
 
 /-!
 # Eigenline reflections of a separable matrix, and the term of the count at a marked triple
@@ -39,6 +43,8 @@ Notions from other files:
 Known; see `Lib.Shimura.Transfer.WeightOccurs` and `Lib.Shimura.TraceFormula.MarkedDefiniteSums` for
 sources.
 -/
+
+@[expose] public section
 
 open NumberField Finset Matrix Polynomial Lagrange MulAction Quotient ConjAct
 
@@ -171,13 +177,6 @@ lemma isReflection_markedReflection_and_exists_eq_iff (hy_sep : y.val.charpoly.S
   ⟨isReflection_markedReflection hy_sep, fun _ hJ h_fix ↦
     exists_eq_markedReflection_iff_of_ratConj_eq hy_sep hJ h_fix⟩
 
-/-- Under the permutation representation of a group `G` on `k[H]`, the coefficient of `g • v` at
-`g • q` is the coefficient of `v` at `q`. -/
-private lemma _root_.Representation.coeff_ofMulAction_smul {G H k : Type*} [Group G] [MulAction G H]
-    [Semiring k] (g : G) (v : MonoidAlgebra k H) (q : H) :
-    (Representation.ofMulAction k G H g v).coeff (g • q) = v.coeff q := by
-  simp
-
 /-- For `x` in the level `K = levelGU n 𝔑`, the function `heckeCosetFn f` of an element `f` of the
 Hecke algebra takes the same value at the cosets of `x⁻¹ g x` and of `g`. -/
 lemma heckeAlgebra.heckeCosetFn_conj (hx_level : x ∈ levelGU n 𝔑) :
@@ -187,11 +186,11 @@ lemma heckeAlgebra.heckeCosetFn_conj (hx_level : x ∈ levelGU n 𝔑) :
   set π := Representation.ofMulAction ℂ (GL n (𝔸f E)) (GL n (𝔸f E) ⧸ levelGU n 𝔑)
   set v : MonoidAlgebra ℂ (GL n (𝔸f E) ⧸ levelGU n 𝔑) :=
     π.asAlgebraHom f.val (MonoidAlgebra.single ⟦1⟧ 1)
-  have h_fixed : π x v = v := by simpa using f.2.2 single_one_mem_levelSpace ⟨x, hx_level⟩
+  have h_fixed : π x v = v := by simpa using f.property.2 single_one_mem_levelSpace ⟨x, hx_level⟩
   calc heckeCosetFn f ↑(x⁻¹ * g * x) = v.coeff (x⁻¹ • ↑g) := by
         simp [v, π, cosetFn, QuotientGroup.mk_mul_of_mem _ hx_level]
-    _ = (π x v).coeff (x • x⁻¹ • ↑g) := (Representation.coeff_ofMulAction_smul x v _).symm
-    _ = heckeCosetFn f ↑g := by rw [h_fixed, smul_inv_smul, heckeCosetFn, cosetFn]
+    _ = (π x v).coeff ↑g := (Representation.coeff_ofMulAction x v _).symm
+    _ = heckeCosetFn f ↑g := by rw [h_fixed, heckeCosetFn, cosetFn]
 
 /-- If the function `heckeCosetFn f` of an element `f` of the Hecke algebra does not vanish at the
 coset of `g`, then `g` lies in `GUPlus E n`, the similitudes whose inverse has integral
@@ -199,7 +198,7 @@ entries. -/
 lemma heckeAlgebra.mem_GUPlus_of_ne_zero (hg_ne : heckeCosetFn f g ≠ 0) : g ∈ GUPlus E n := by
   -- `g` lies in the coset of some `d` in `GUPlus E n`, and the level is contained in `GUPlus E n`.
   obtain ⟨d, hd_mem, hd_coset⟩ : ∃ d ∈ GUPlus E n, (d : GL n (𝔸f E) ⧸ levelGU n 𝔑) = g :=
-    spanOn.exists_mem_of_cosetFn_ne_zero f.2.1 hg_ne
+    spanOn.exists_mem_of_cosetFn_ne_zero f.property.1 hg_ne
   simpa using mul_mem hd_mem (mem_GUPlus_of_mem_levelGU (QuotientGroup.eq.mp hd_coset))
 
 open scoped Classical in

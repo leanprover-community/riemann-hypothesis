@@ -1,3 +1,14 @@
+module
+
+import Mathlib.Algebra.Category.Grp.Zero
+import Mathlib.CategoryTheory.Abelian.Exact
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Lib.Cohomology.TorsionTheories
+public import Lib.PadicComparison.Descent.AlmostDescent
+public import Lib.PadicComparison.HodgeTate.GenericFibre
+import Lib.Cohomology.LerayHirsch
+import Lib.PadicComparison.Completion
+import Lib.PadicComparison.Descent.TestCovers
 import Lib.PadicComparison.Primitive.PeriodCoefficients
 
 /-!
@@ -10,7 +21,7 @@ two discs are represented in the tilt S^♭ by O^♭[ℚ≥0], and its torus by 
   (a monomorphism). Its cokernel plays the role of the perfect line with the point ∞ killed.
 * `New.Variety.PerfectLine.oneSub_comp_gluing`: the operators 1 − (T^s ↦ χ(s) T^s) commute with the
   gluing map.
-* `New.Variety.PerfectLine.isCohomEquiv_gluing_tilt`,
+* `New.Variety.PerfectLine.isCohomEquiv_tensorCoeff_gluing`,
   `New.Variety.PerfectLine.isCohomEquiv_gluing_generic`: over each test c the gluing map induces
   bijections on cohomology. This holds for coefficients G(S^♭), where G is built from an O^♭-module
   N and is assumed acyclic on perfect rings. It also holds for S[1/p].
@@ -33,9 +44,9 @@ Notions from other files:
 Known; see `Lib.Cohomology.ProjectiveLine.ConstantLineFormula` for sources.
 -/
 
-noncomputable section
+@[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
+noncomputable section
 
 namespace New.Variety
 
@@ -90,7 +101,6 @@ def pointOrTorus : ULift.{1} Bool → CommAlg OFlat
 
 lemma pointOrTorus_true : pointOrTorus ⟨true⟩ = monoidAlg ℚ := rfl
 
-lemma pointOrTorus_false : pointOrTorus ⟨false⟩ = CommAlgCat.of OFlat OFlat := rfl
 
 /-- For O^♭-algebras B_i indexed by Bool and an endofunctor ψ of O^♭-algebras (default the
 identity), the functor S ↦ ⊔_i Hom(ψ(B_i), S^♭) on p-adic tests. -/
@@ -107,11 +117,37 @@ abbrev gluing : freeAb (tiltPointsSum pointOrTorus ψ) ⟶ freeAb (twoDiscs ψ) 
   freeAb.desc
     (fun
       | _, ⟨⟨true⟩, t⟩ =>
-        .of ⟨⟨false⟩, ⟨ψ.map (discToTorus (-coeHom)) ≫ t.1⟩⟩ -
-          .of ⟨⟨true⟩, ⟨ψ.map (discToTorus coeHom) ≫ t.1⟩⟩
+        .of ⟨⟨false⟩, ⟨ψ.map (discToTorus (-coeHom)) ≫ t.down⟩⟩ -
+          .of ⟨⟨true⟩, ⟨ψ.map (discToTorus coeHom) ≫ t.down⟩⟩
       | _, ⟨⟨false⟩, t⟩ =>
-        FreeAddCommGroup.of ⟨⟨false⟩, ⟨ψ.map (evalZero (pointOrTorus { down := false })) ≫ t.1⟩⟩)
+        FreeAddCommGroup.of ⟨⟨false⟩, ⟨ψ.map (evalZero (pointOrTorus { down := false })) ≫ t.down⟩⟩)
     (by bound)
+
+private def ofTorus {ψ : CommAlg OFlat ⥤ CommAlg OFlat} {A : PadicTest}
+    (t : ψ (monoidAlg ℚ) ⟶ tilt A) : (freeAb (tiltPointsSum pointOrTorus ψ)).obj A :=
+  FreeAddCommGroup.of ⟨⟨true⟩, ⟨t⟩⟩
+
+private def ofPoint {ψ : CommAlg OFlat ⥤ CommAlg OFlat} {A : PadicTest}
+    (t : ψ (CommAlgCat.of OFlat OFlat) ⟶ tilt A) :
+    (freeAb (tiltPointsSum pointOrTorus ψ)).obj A :=
+  FreeAddCommGroup.of ⟨⟨false⟩, ⟨t⟩⟩
+
+private def ofDisc {ψ : CommAlg OFlat ⥤ CommAlg OFlat} {A : PadicTest}
+    (b : ULift.{1} Bool) (t : ψ (monoidAlg ℚ≥0) ⟶ tilt A) : (freeAb (twoDiscs ψ)).obj A :=
+  FreeAddCommGroup.of ⟨b, ⟨t⟩⟩
+
+private lemma gluing_ofTorus (ψ : CommAlg OFlat ⥤ CommAlg OFlat) (A : PadicTest)
+    (t : ψ (monoidAlg ℚ) ⟶ tilt A) :
+    (gluing ψ).app A (ofTorus t) =
+      ofDisc ⟨false⟩ (ψ.map (discToTorus (-coeHom)) ≫ t) -
+        ofDisc ⟨true⟩ (ψ.map (discToTorus coeHom) ≫ t) :=
+  freeAb.desc_of (Y := tiltPointsSum pointOrTorus ψ) _ _ A ⟨⟨true⟩, ⟨t⟩⟩
+
+private lemma gluing_ofPoint (ψ : CommAlg OFlat ⥤ CommAlg OFlat) (A : PadicTest)
+    (t : ψ (CommAlgCat.of OFlat OFlat) ⟶ tilt A) :
+    (gluing ψ).app A (ofPoint t) =
+      ofDisc ⟨false⟩ (ψ.map (evalZero (CommAlgCat.of OFlat OFlat)) ≫ t) :=
+  freeAb.desc_of (Y := tiltPointsSum pointOrTorus ψ) _ _ A ⟨⟨false⟩, ⟨t⟩⟩
 
 @[simp]
 lemma evalZero_comp (g : b ⟶ b') : evalZero b ≫ g = evalZero b' := by aesop
@@ -133,10 +169,22 @@ of the first part and sends those of the second to 0. -/
 abbrev projFirst : freeAb (tiltPointsSum B) ⟶ freeAb (tilt ⋙ reprBy (B ⟨true⟩)) :=
   freeAb.desc (fun | _, ⟨⟨true⟩, t⟩ => FreeAddCommGroup.of t | _, ⟨⟨false⟩, _⟩ => 0) (by bound)
 
+/-- The projection kills a generator of the false summand. -/
+lemma projFirst_false (c : PadicTest)
+    (t : (tilt ⋙ reprBy (B ⟨false⟩)).obj c) :
+    ((projFirst (B := B)).app c).hom (.of (⟨⟨false⟩, t⟩ : (tiltPointsSum B).obj c)) = 0 :=
+  freeAb.desc_of ..
+
+/-- The projection preserves a generator of the true summand. -/
+lemma projFirst_true (c : PadicTest)
+    (t : (tilt ⋙ reprBy (B ⟨true⟩)).obj c) :
+    ((projFirst (B := B)).app c).hom (.of (⟨⟨true⟩, t⟩ : (tiltPointsSum B).obj c)) = .of t :=
+  freeAb.desc_of ..
+
 /-- For endomorphisms Δ_b of the O^♭-algebras B_b, the endomorphism 1 − Δ of the functor S ↦
 ℤ[⊔_b Hom(B_b, S^♭)], sending [x] to [x] − [x∘Δ_b]. -/
 abbrev oneSub : freeAb (tiltPointsSum B) ⟶ freeAb (tiltPointsSum B) :=
-  freeAb.desc (fun _ x ↦ .of x - .of ⟨x.fst, ⟨Δ x.fst ≫ x.2.down⟩⟩) (by bound)
+  freeAb.desc (fun _ x ↦ .of x - .of ⟨x.1, ⟨Δ x.1 ≫ x.2.down⟩⟩) (by bound)
 
 @[simp]
 lemma charTwist_comp_evalZero : charTwist χ g ≫ evalZero b = evalZero b := by
@@ -167,23 +215,40 @@ def discTwist : ULift.{1} Bool → (monoidAlg ℚ≥0 ⟶ monoidAlg ℚ≥0)
 lemma discTwist_comp_evalZero : discTwist χ a ≫ evalZero b = evalZero b := by
   rcases a with ⟨_ | _⟩ <;> simp only [discTwist, charTwist_comp_evalZero]
 
+private lemma oneSub_ofPoint (A : PadicTest) (t : CommAlgCat.of OFlat OFlat ⟶ tilt A) :
+    (oneSub (pointOrTorusTwist χ)).app A (ofPoint (ψ := 𝟭 _) t) =
+      ofPoint (ψ := 𝟭 _) t - ofPoint (ψ := 𝟭 _) t :=
+  (freeAb.desc_of (Y := tiltPointsSum pointOrTorus) _ _ A ⟨⟨false⟩, ⟨t⟩⟩).trans (by
+    change ofPoint (ψ := 𝟭 _) t - ofPoint (ψ := 𝟭 _) (𝟙 _ ≫ t) = _
+    rw [Category.id_comp])
+
+private lemma oneSub_ofDisc (A : PadicTest) (b : ULift.{1} Bool) (t : monoidAlg ℚ≥0 ⟶ tilt A) :
+    (oneSub (discTwist χ)).app A (ofDisc (ψ := 𝟭 _) b t) =
+      ofDisc (ψ := 𝟭 _) b t - ofDisc (ψ := 𝟭 _) b (discTwist χ b ≫ t) :=
+  freeAb.desc_of (Y := twoDiscs) _ _ A ⟨b, ⟨t⟩⟩
+
 /-- The gluing map commutes with the operators `1 - Δ`, where `Δ` is the twist by `χ` on the
 torus and on the two discs, and the identity on the point. -/
 lemma oneSub_comp_gluing :
     oneSub (pointOrTorusTwist χ) ≫ gluing = gluing ≫ oneSub (discTwist χ) := by
   -- Check on generators: `charTwist` fixes evaluation at `0` (the point) and is compatible with the
   -- inclusions of the rings of the two discs in the ring of the torus.
-  refine freeAb.hom_ext ?_
-  rintro _ ⟨⟨_ | _⟩, t⟩
-  · simp [pointOrTorusTwist, evalZero_comp, discTwist_comp_evalZero]
+  apply freeAb.hom_ext
+  rintro A ⟨⟨_ | _⟩, ⟨t⟩⟩
+  · let t' : CommAlgCat.of OFlat OFlat ⟶ tilt A := t
+    change gluing.app A ((oneSub (pointOrTorusTwist χ)).app A (ofPoint (ψ := 𝟭 _) t')) =
+      (oneSub (discTwist χ)).app A (gluing.app A (ofPoint (ψ := 𝟭 _) t'))
+    simp [gluing_ofPoint, oneSub_ofPoint, oneSub_ofDisc, discTwist_comp_evalZero]
   · -- On a point of the torus both sides are the same four terms, grouped in two ways.
-    simp [pointOrTorusTwist, discTwist, charTwist_comp_discToTorus_assoc, sub_sub_sub_comm]
-
-/-- In `O^♭[ℚ]`, the monomial of the absolute value `mabs s` is `T^t` for the rational
-`t = s.nnabs`. -/
-private lemma of_mabs_eq_single_nnabs (s : Multiplicative ℚ) :
-    of OFlat ℚ (mabs s) = single ((s.nnabs : ℚ≥0) : ℚ) (1 : OFlat) :=
-  rfl
+    let t' : monoidAlg ℚ ⟶ tilt A := t
+    change gluing.app A ((oneSub (pointOrTorusTwist χ)).app A (ofTorus (ψ := 𝟭 _) t')) =
+      (oneSub (discTwist χ)).app A (gluing.app A (ofTorus (ψ := 𝟭 _) t'))
+    have h_torus : (oneSub (pointOrTorusTwist χ)).app A (ofTorus (ψ := 𝟭 _) t') =
+        ofTorus (ψ := 𝟭 _) t' - ofTorus (ψ := 𝟭 _) (charTwist χ (AddMonoidHom.id ℚ) ≫ t') :=
+      freeAb.desc_of (Y := tiltPointsSum pointOrTorus) _ _ A ⟨⟨true⟩, ⟨t'⟩⟩
+    simp [gluing_ofTorus, h_torus, oneSub_ofDisc, discTwist,
+      charTwist_comp_discToTorus_assoc]
+    exact sub_sub_sub_comm ..
 
 /-- The gluing map is a monomorphism: on each test it has a retraction. -/
 instance : Mono gluing := by
@@ -192,22 +257,32 @@ instance : Mono gluing := by
   have h_epi : Epi (discToTorus coeHom) := by
     refine ⟨fun x y h_comp ↦ hom_ext (algHom_ext' (MonoidHom.ext fun s ↦ ?_) (by ext))⟩
     refine mabs_mem_iff (H := MonoidHom.eqLocus ..).mp ?_
-    show x (of OFlat ℚ (mabs s)) = y (of OFlat ℚ (mabs s))
-    rw [of_mabs_eq_single_nnabs]
+    change x (single s.nnabs (1 : OFlat)) = y (single s.nnabs (1 : OFlat))
     simpa using congrArg (fun φ ↦ φ (single s.nnabs (1 : OFlat))) h_comp
   -- On each test `gluing` has a retraction: a point of the disc `false` goes to the point `∗`; a
   -- point of the disc `true` goes to `∗ - t` if it comes from a point `t` of the torus (unique by
   -- `h_epi`), and to `∗` otherwise.
-  refine (NatTrans.mono_iff_mono_app _).mpr fun c ↦ SplitMono.mono
-    ⟨AddCommGrpCat.ofHom (FreeAddCommGroup.lift fun ⟨⟨b⟩, ⟨t⟩⟩ ↦
-      .of ⟨⟨false⟩, ⟨structureMap⟩⟩ -
-        cond b (extend (fun s ↦ discToTorus coeHom ≫ s) (fun s ↦ .of ⟨⟨true⟩, ⟨s⟩⟩) 0 t) 0), ?_⟩
-  dsimp [freeAb, AddCommGrpCat.free]
-  ext ⟨⟨_ | _⟩, ⟨t⟩⟩
+  refine (NatTrans.mono_iff_mono_app _).mpr fun c ↦ ?_
+  let r : (freeAb twoDiscs).obj c ⟶ (freeAb (tiltPointsSum pointOrTorus)).obj c :=
+    AddCommGrpCat.ofHom (FreeAddCommGroup.lift fun x ↦
+      ofPoint (ψ := 𝟭 _) structureMap -
+        cond x.1.down (extend (fun s : monoidAlg ℚ ⟶ tilt c ↦ discToTorus coeHom ≫ s)
+          (fun s ↦ ofTorus (ψ := 𝟭 _) s) 0 x.2.down) 0)
+  have hr (b : ULift.{1} Bool) (t : monoidAlg ℚ≥0 ⟶ tilt c) :
+      r (ofDisc (ψ := 𝟭 _) b t) = ofPoint (ψ := 𝟭 _) structureMap -
+        cond b.down (extend (fun s : monoidAlg ℚ ⟶ tilt c ↦ discToTorus coeHom ≫ s)
+          (fun s ↦ ofTorus (ψ := 𝟭 _) s) 0 t) 0 :=
+    FreeAddCommGroup.lift_apply_of _ _
+  refine SplitMono.mono ⟨r, AddCommGrpCat.hom_ext (FreeAddCommGroup.lift_ext _ _ fun x ↦ ?_)⟩
+  rcases x with ⟨⟨_ | _⟩, ⟨t⟩⟩
   · -- Over the point, a point is an algebra map out of `O^♭`, so it is the structure map.
-    simp [freeAb.desc, freeAb]
-    rcongr
-  · simp [freeAb.desc, freeAb, Injective.extend_apply h_epi.left_cancellation]
+    let t' : CommAlgCat.of OFlat OFlat ⟶ tilt c := t
+    have ht : t' = structureMap := by ext
+    change r (gluing.app c (ofPoint (ψ := 𝟭 _) t')) = ofPoint (ψ := 𝟭 _) t'
+    simp [gluing_ofPoint, hr, ht]
+  · let t' : monoidAlg ℚ ⟶ tilt c := t
+    change r (gluing.app c (ofTorus (ψ := 𝟭 _) t')) = ofTorus (ψ := 𝟭 _) t'
+    simp [gluing_ofTorus, hr, Injective.extend_apply h_epi.left_cancellation]
 
 open Abelian.Ext TensorProduct LinearEquiv H Comparison
 
@@ -249,7 +324,7 @@ lemma hasFlatBaseChange_freeAb_tiltPointsSum (B : ULift.{1} Bool → CommAlg OFl
     (.piMap fun _ ↦ hasFlatBaseChange_of_iso_reprBy homTiltIso.symm ..)
   induction x with
   | tmul m y => simp [e, mapₗ, map_push, funext_iff]
-  | add x y hx hy => simp_all [e, mapₗ, funext_iff]
+  | add x y hx hy => simp_all [funext_iff]
 
 /-- The projection of a pair `(y₀, y₁)` of elements of `O^♭[ℚ≥0]` to `y₀` (for `false`) or to
 `y₁` (for `true`). -/
@@ -287,7 +362,7 @@ private lemma bijective_glueLinear :
     ?glue_comp_inv ?inv_comp_glue : (OFlat[ℚ≥0] × OFlat[ℚ≥0]) ≃ₗ[OFlat] OFlat × OFlat[ℚ]).bijective
   · -- The gluing maps after the inverse are the identity of `O^♭ × O^♭[ℚ]`: check it on `1` and on
     -- the monomials `T^t`, whose image under the inverse depends on the sign of `t`.
-    dsimp +zetaDelta [glueLinear, pairProj, pointOrTorus, Bool.cond_true, Bool.cond_false]
+    dsimp +zetaDelta [glueLinear, pairProj, pointOrTorus, Bool.cond_false]
     ext : 3
     · simp
     · simp
@@ -297,7 +372,7 @@ private lemma bijective_glueLinear :
       · simp_all [le_of_lt, Rat.coe_toNNRat]
   · -- The inverse after the gluing maps is the identity of `O^♭[ℚ≥0] × O^♭[ℚ≥0]`: check it on the
     -- monomials of each factor; for `T^a` in the first factor the case `a = 0` is done separately.
-    dsimp +zetaDelta [glueLinear, pairProj, pointOrTorus, Bool.cond_true, Bool.cond_false]
+    dsimp +zetaDelta [glueLinear, pairProj, pointOrTorus, Bool.cond_true]
     ext : 3
     · simp
       split_ifs with h_zero
@@ -310,8 +385,8 @@ lemma perfectRing_monoidAlg_nnrat : PerfectRing (monoidAlg ℚ≥0) p := by
 
 lemma perfectRing_pointOrTorus (b : ULift.{1} Bool) : PerfectRing (pointOrTorus b) p := by
   rcases b with ⟨_ | _⟩
-  · simp [pointOrTorus_false, instPerfectRingOFlat]
-  · simp [pointOrTorus_true, perfectRing_monoidAlgebra]
+  · exact instPerfectRingOFlat
+  · exact perfectRing_monoidAlgebra ℚ
 
 /-- For a test `c`, the target `ℤ[two discs]` of the gluing map formed with the algebras `c^♭ ⊗ B`
 has flat base change. -/
@@ -382,15 +457,48 @@ lemma isCohomEquiv_tensorCoeff_gluing (c : PadicTest)
           mk₀ ∘ sectionOfMaps pointOrTorus glueLinear := by
       -- `G (ψc b)` and `U (L b)` are the same module `(c^♭ ⊗ b) ⊗ N`, with the same maps.
       have h_GU {b b' : CommAlg OFlat} (g : b ⟶ b') : G.map (ψc.map g) = U.map (L.map g) := rfl
-      ext
+      ext x
       simp [H.map]
       congr
       apply freeAb.hom_ext
-      rintro _ ⟨⟨_ | _⟩⟩
-      all_goals
-        simp [sectionOfMaps, glueLinear, h_GU, L, -Functor.comp_obj]
-        -- The two sides differ only in how the maps are coerced to functions.
+      rintro A ⟨⟨_ | _⟩, ⟨t⟩⟩
+      · let t' : ψc (CommAlgCat.of OFlat OFlat) ⟶ tilt A := t
+        have h_disc (s : ψc (monoidAlg ℚ≥0) ⟶ tilt A) :
+            (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A (ofDisc ⟨false⟩ s) =
+              G.map s (U.map (pairProj false) x) :=
+          freeAb.desc_of (Y := twoDiscs ψc) _ _ A ⟨⟨false⟩, ⟨s⟩⟩
+        have h_point :
+            (sectionOfMaps pointOrTorus glueLinear x).app A (ofPoint t') =
+              G.map t' (U.map (glueLinear ⟨false⟩) x) :=
+          freeAb.desc_of (Y := tiltPointsSum pointOrTorus ψc) _ _ A ⟨⟨false⟩, ⟨t'⟩⟩
+        change (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A
+          ((gluing ψc).app A (ofPoint t')) =
+          (sectionOfMaps pointOrTorus glueLinear x).app A (ofPoint t')
+        rw [gluing_ofPoint, h_disc, h_point, G.map_comp, h_GU]
+        change G.map t' (U.map (L.map (evalZero (CommAlgCat.of OFlat OFlat)))
+            (U.map (pairProj false) x)) =
+          G.map t' (U.map (pairProj false ≫ L.map (evalZero (CommAlgCat.of OFlat OFlat))) x)
+        rw [U.map_comp]
         rfl
+      · let t' : ψc (monoidAlg ℚ) ⟶ tilt A := t
+        have h_disc (b : ULift.{1} Bool) (s : ψc (monoidAlg ℚ≥0) ⟶ tilt A) :
+            (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A (ofDisc b s) =
+              G.map s (U.map (pairProj b.down) x) :=
+          freeAb.desc_of (Y := twoDiscs ψc) _ _ A ⟨b, ⟨s⟩⟩
+        have h_torus :
+            (sectionOfMaps pointOrTorus glueLinear x).app A (ofTorus t') =
+              G.map t' (U.map (glueLinear ⟨true⟩) x) :=
+          freeAb.desc_of (Y := tiltPointsSum pointOrTorus ψc) _ _ A ⟨⟨true⟩, ⟨t'⟩⟩
+        change (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A
+          ((gluing ψc).app A (ofTorus t')) =
+          (sectionOfMaps pointOrTorus glueLinear x).app A (ofTorus t')
+        rw [gluing_ofTorus, map_sub, h_disc, h_disc, h_torus, G.map_comp, G.map_comp, h_GU, h_GU]
+        change G.map t' (U.map (L.map (discToTorus (-coeHom))) (U.map (pairProj false) x)) -
+            G.map t' (U.map (L.map (discToTorus coeHom)) (U.map (pairProj true) x)) =
+          G.map t' (U.map (pairProj false ≫ L.map (discToTorus (-coeHom)) -
+            pairProj true ≫ L.map (discToTorus coeHom)) x)
+        rw [U.map_sub, U.map_comp, U.map_comp]
+        exact (map_sub (G.map t').hom _ _).symm
     refine ((h_sections _ h_perf_discs (fun b ↦ pairProj b.down) bijective_id).of_comp_iff _).1 ?_
     rw [h_pullback]
     exact h_sections pointOrTorus perfectRing_pointOrTorus glueLinear bijective_glueLinear
@@ -401,17 +509,6 @@ lemma isCohomEquiv_tensorCoeff_gluing (c : PadicTest)
         (fun b ↦ perfectRing_tensorLeft_tilt c (A b) (hA b)) n
     exact ⟨fun x y _ ↦ (h_vanish _ h_perf_discs).elim x y,
       fun y ↦ ⟨0, (h_vanish _ perfectRing_pointOrTorus).elim _ y⟩⟩
-
-/-- Let `G` be the coefficient functor `b ↦ b ⊗ N` on `O^♭`-algebras, acyclic on perfect
-`O^♭`-algebras, and form the gluing map with the algebras `c^♭ ⊗ B`. Its target and its source have
-flat base change, and it induces bijections on cohomology with coefficients in `S ↦ G(S^♭)`. -/
-lemma isCohomEquiv_gluing_tilt (c : PadicTest)
-    (h_acyclic : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff N))) :
-    HasFlatBaseChange (freeAb (twoDiscs (tensorLeft (tilt c)))) ∧
-    HasFlatBaseChange (freeAb (tiltPointsSum pointOrTorus (tensorLeft (tilt c)))) ∧
-    IsCohomEquiv (tilt ⋙ moduleCoeff (tensorCoeff N)) (gluing (tensorLeft (tilt c))) :=
-  ⟨hasFlatBaseChange_freeAb_twoDiscs c, hasFlatBaseChange_freeAb_tiltPointsSum_pointOrTorus c,
-    isCohomEquiv_tensorCoeff_gluing c h_acyclic⟩
 
 /-- For every test `c`, the gluing map formed with the algebras `c^♭ ⊗ B` induces bijections on
 cohomology with coefficients in `genericCoeff`, the coefficients S ↦ S[1/p]. -/
@@ -475,15 +572,23 @@ lemma subsingleton_H_cokernel_gluing {F : AbFunctor PadicTest}
     let uInv : ((sigma fun j ↦ reprBy (c j)) ⊗ tiltPointsSum B).obj d →
         (sigma fun j ↦ tiltPointsSum B (ψ j)).obj d :=
       fun (⟨j, ⟨f⟩⟩, ⟨b, ⟨t⟩⟩) ↦ ⟨j, b, ⟨ofHom (productMap (tilt.map f).hom t.hom)⟩⟩
-    refine bijective_iff_has_inverse.mpr ⟨uInv, fun ⟨j, b, t⟩ ↦ ?_, fun ⟨⟨j, ⟨f⟩⟩, b, ⟨t⟩⟩ ↦ ?_⟩
+    refine bijective_iff_has_inverse.mpr ⟨uInv, fun ⟨j, b, ⟨t⟩⟩ ↦ ?_, fun ⟨⟨j, ⟨f⟩⟩, b, ⟨t⟩⟩ ↦ ?_⟩
     · -- An algebra map out of `(c j)^♭ ⊗ B b` is determined by its two restrictions.
       have h_product :
-          productMap (t.down.hom.comp includeLeft) (t.down.hom.comp includeRight) = t.down.hom :=
+          productMap (t.hom.comp includeLeft) (t.hom.comp includeRight) = t.hom :=
         Algebra.TensorProduct.ext (productMap_left ..) (productMap_right ..)
-      simp [uInv, u]
-      -- What is left is `h_product` inside the constructors.
-      congr
-    · simp [uInv, u, ← ofHom_comp]
+      exact Sigma.ext rfl <| heq_of_eq <| Sigma.ext rfl <| heq_of_eq <| congrArg ULift.up <| by
+        change ofHom (productMap (tilt.map (tilt.preimage (tensorInl ≫ t))).hom
+          (tensorInr ≫ t).hom) = t
+        rw [Functor.map_preimage]
+        exact CommAlgCat.hom_ext h_product
+    · refine Prod.ext (Sigma.ext rfl <| heq_of_eq <| congrArg ULift.up ?_)
+          (Sigma.ext rfl <| heq_of_eq <| congrArg ULift.up ?_)
+      · change tilt.preimage (tensorInl ≫ ofHom (productMap (tilt.map f).hom t.hom)) = f
+        exact (congrArg tilt.preimage (CommAlgCat.hom_ext (productMap_left ..))).trans
+          (Functor.preimage_map f)
+      · change tensorInr ≫ ofHom (productMap (tilt.map f).hom t.hom) = t
+        exact CommAlgCat.hom_ext (productMap_right ..)
   -- So the cohomology of `ℤ[⊔ h_{c j}] ⊗ ℤ[⊔ Hom(B b, –^♭)]` is the product over `j` of that of
   -- the `ℤ[⊔ Hom((c j)^♭ ⊗ B b, –^♭)]`.
   let v (B : ULift.{1} Bool → CommAlg OFlat) :
@@ -501,18 +606,87 @@ lemma subsingleton_H_cokernel_gluing {F : AbFunctor PadicTest}
       gluing (ψ j) ≫ freeAb.map (sigma.ι (fun k ↦ twoDiscs (ψ k)) j) ≫ v (fun _ ↦ monoidAlg ℚ≥0) =
         freeAb.map (sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j) ≫ v pointOrTorus ≫
           (abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing := by
-    refine freeAb.hom_ext ?_
-    rintro _ ⟨⟨_ | _⟩⟩
-    all_goals
-      change _ = _ ⊗ₜ _
-      simp [u, v, ψ, sigma.ι, tmul_sub, ← Category.assoc, ← ofHom_comp,
-        MonoidalCategoryStruct.whiskerLeft, freeAb.prod, tensorInl]
-      -- `freeAb.prod` sends the generator of a pair `(a, b)` to `a ⊗ b`, by definition.
+    let lhsMap : freeAb (twoDiscs (ψ j)) ⟶
+        abTensor (freeAb (sigma fun k ↦ reprBy (c k))) (freeAb twoDiscs) :=
+      freeAb.map (sigma.ι (fun k ↦ twoDiscs (ψ k)) j) ≫ v (fun _ ↦ monoidAlg ℚ≥0)
+    let rhsMap : freeAb (tiltPointsSum pointOrTorus (ψ j)) ⟶
+        abTensor (freeAb (sigma fun k ↦ reprBy (c k))) (freeAb (tiltPointsSum pointOrTorus)) :=
+      freeAb.map (sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j) ≫ v pointOrTorus
+    have h_lhs (A : PadicTest) (b : ULift.{1} Bool) (t : ψ j (monoidAlg ℚ≥0) ⟶ tilt A) :
+        lhsMap.app A (ofDisc b t) =
+          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+            ofDisc (ψ := 𝟭 _) b (tensorInr ≫ t) := by
+      change (freeAb.prod _ _).app A (FreeAddCommGroup.of
+        ((u (fun _ ↦ monoidAlg ℚ≥0)).app A
+          ((sigma.ι (fun k ↦ twoDiscs (ψ k)) j).app A ⟨b, ⟨t⟩⟩))) = _
+      exact freeAb.desc_of ..
+    have h_rhs_point (A : PadicTest) (t : ψ j (CommAlgCat.of OFlat OFlat) ⟶ tilt A) :
+        ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
+            (rhsMap.app A (ofPoint t)) =
+          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+            gluing.app A (ofPoint (ψ := 𝟭 _) (tensorInr ≫ t)) := by
+      have h_prod : rhsMap.app A (ofPoint t) =
+          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+            ofPoint (ψ := 𝟭 _) (tensorInr ≫ t) := by
+        change (freeAb.prod _ _).app A (FreeAddCommGroup.of
+          ((u pointOrTorus).app A
+            ((sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j).app A
+              ⟨⟨false⟩, ⟨t⟩⟩))) = _
+        exact freeAb.desc_of ..
+      exact congrArg (((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A) h_prod
+    have h_rhs_torus (A : PadicTest) (t : ψ j (monoidAlg ℚ) ⟶ tilt A) :
+        ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
+            (rhsMap.app A (ofTorus t)) =
+          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+            gluing.app A (ofTorus (ψ := 𝟭 _) (tensorInr ≫ t)) := by
+      have h_prod : rhsMap.app A (ofTorus t) =
+          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+            ofTorus (ψ := 𝟭 _) (tensorInr ≫ t) := by
+        change (freeAb.prod _ _).app A (FreeAddCommGroup.of
+          ((u pointOrTorus).app A
+            ((sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j).app A
+              ⟨⟨true⟩, ⟨t⟩⟩))) = _
+        exact freeAb.desc_of ..
+      exact congrArg (((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A) h_prod
+    have h_inl {X Y : CommAlg OFlat} (f : X ⟶ Y) :
+        tensorInl ≫ (ψ j).map f = tensorInl :=
+      CommAlgCat.hom_ext (Algebra.TensorProduct.map_comp_includeLeft (AlgHom.id _ _) f.hom)
+    have h_inr {X Y : CommAlg OFlat} (f : X ⟶ Y) :
+        tensorInr ≫ (ψ j).map f = f ≫ tensorInr :=
+      CommAlgCat.hom_ext (Algebra.TensorProduct.map_comp_includeRight (AlgHom.id _ _) f.hom)
+    apply freeAb.hom_ext
+    rintro A ⟨⟨_ | _⟩, ⟨t⟩⟩
+    · let t' : ψ j (CommAlgCat.of OFlat OFlat) ⟶ tilt A := t
+      change lhsMap.app A ((gluing (ψ j)).app A (ofPoint t')) =
+        ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
+          (rhsMap.app A (ofPoint t'))
+      rw [gluing_ofPoint, h_lhs, h_rhs_point, gluing_ofPoint]
+      rw [← Category.assoc, h_inl, ← Category.assoc, h_inr, Category.assoc]
       rfl
+    · let t' : ψ j (monoidAlg ℚ) ⟶ tilt A := t
+      change lhsMap.app A ((gluing (ψ j)).app A (ofTorus t')) =
+        ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
+          (rhsMap.app A (ofTorus t'))
+      have h_term (g : monoidAlg ℚ≥0 ⟶ monoidAlg ℚ) (b : ULift.{1} Bool) :
+          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ ((ψ j).map g ≫ t'))⟩⟩ :
+              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+            ofDisc (ψ := 𝟭 _) b (tensorInr ≫ ((ψ j).map g ≫ t')) =
+          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t')⟩⟩ :
+              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+            ofDisc (ψ := 𝟭 _) b ((𝟭 (CommAlg OFlat)).map g ≫ (tensorInr ≫ t')) := by
+        rw [← Category.assoc, h_inl, ← Category.assoc, h_inr, Category.assoc]
+        rfl
+      rw [gluing_ofTorus, _root_.map_sub, h_lhs, h_lhs, h_rhs_torus, gluing_ofTorus, tmul_sub]
+      exact congrArg₂ (· - ·) (h_term _ _) (h_term _ _)
   refine (bijective_iff_of_comm_sq (fun x ↦ ?_) (hv_bijective _) (hv_bijective _)).2
     (.piMap fun j ↦ h_rep (c j) n)
   ext j
-  simpa [← H.map_comp, ψ] using congrArg (fun φ ↦ map F φ n x) (h_square j)
+  simpa [← H.map_comp] using congrArg (fun φ ↦ map F φ n x) (h_square j)
 
 end PerfectLine
 

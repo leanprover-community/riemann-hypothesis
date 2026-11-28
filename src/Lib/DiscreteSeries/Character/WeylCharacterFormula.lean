@@ -1,5 +1,25 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Analysis.Fourier.AddCircleMulti
+import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Data.Finset.CastCard
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+import Mathlib.LinearAlgebra.Matrix.Permutation
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+public import Lib.GLn.SchurModule.SchurMatrix
+public import Lib.General.Groups.BesselGroups
+import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
 import Lib.GLn.SchurModule.SchurOrthogonality
+import Lib.GLn.SchurModule.WeylKernel
 import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Laurent polynomials on the torus and Weyl's character and dimension formulas
@@ -45,6 +65,8 @@ Classical Groups (1939), ch. VII; Fulton and Harris, Representation Theory (1991
 
 See also `Lib.DiscreteSeries.Character.FormalDegree`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -205,23 +227,10 @@ lemma torusEval_alternant (x : n → Circle) :
       det (Matrix.of fun a b : n ↦ if ε a = ε b then (x a : ℂ) ^ ν b else 0) := by
   calc torusEval x (alternant ε ν)
     _ = ∑ w : Perm n, if ε ∘ w = ε then (w.sign : ℂ) * ∏ a : n, (x a : ℂ) ^ ν (w a) else 0 := by
-      simp only [alternant, map_sum, apply_ite (torusEval x), map_zero]
-      refine sum_congr rfl fun w _ ↦ ?_
-      split_ifs
-      · rw [torusEval_eq_sum, AddMonoidAlgebra.coeff_single, Finsupp.sum_single_index (by simp)]
-        simp
-      · rfl
+      simp [alternant, torusEval, apply_ite (lift ℂ ℂ (n → ℤ) _)]
     _ = ∑ w : Perm n, (w.sign : ℂ) * ∏ a : n, if ε a = ε (w a) then (x a : ℂ) ^ ν (w a) else 0 := by
-      refine sum_congr rfl fun w _ ↦ ?_
-      by_cases h : ε ∘ w = ε
-      · rw [if_pos h, Finset.prod_ite_zero,
-          if_pos (show ∀ a ∈ (univ : Finset n), ε a = ε (w a) from fun a _ ↦ (congrFun h a).symm)]
-      · rw [if_neg h, Finset.prod_ite_zero,
-          if_neg (show ¬∀ a ∈ (univ : Finset n), ε a = ε (w a) from
-            fun h' ↦ h (funext fun a ↦ (h' a (mem_univ a)).symm)), mul_zero]
-    _ = _ := by
-      rw [← det_transpose, det_apply']
-      simp [transpose_apply]
+      simp [prod_ite_zero, funext_iff, eq_comm]
+    _ = _ := by simp [← det_transpose (Matrix.of _), -transpose_of, det_apply']
 
 section
 
@@ -310,7 +319,8 @@ lemma apply_comp_perm_of_conj_invariant {w : Perm n} (x : n → Circle) (hw : ε
     simp [g, ← Matrix.ext_iff, signMatrix, diagonal, Matrix.mul_apply, sum_ite, hw_apply]
   have h_unitary : (g : Matrix n n ℂ)ᴴ * 1 * g = 1 := by
     simp [g, ← Matrix.ext_iff, Matrix.mul_apply, sum_ite, Matrix.one_apply]
-  let y : maxCompactU ε := ⟨⟨g, h_form⟩, h_unitary⟩
+  let y : maxCompactU ε :=
+    ⟨⟨g, mem_unitaryGroupOf_iff.2 h_form⟩, mem_unitaryGroupOf_iff.2 h_unitary⟩
   have h_conj : y * diagTorusK (x ∘ w) * y⁻¹ = diagTorusK x := by
     ext
     simp [y, g, diagTorus, ← map_inv, diagonal, Matrix.mul_apply, sum_ite]
@@ -463,7 +473,7 @@ on `K`, for Haar measure of mass one. It is defined for every `ν`. If `l` is in
 dominant for the order of `l`, it is the character of highest weight `ν` on the torus (see
 `New.Orbital.weyl_character_kTypeChar`). -/
 noncomputable def _root_.New.HCParam.kTypeChar (ν : HCParam ε) : C(maxCompactU ε, ℂ) where
-  toFun g := (∫ y : maxCompactU ε, weightMinors ν (y⁻¹ * g * y).1 ∂haarK ε) / ν.kTypeNormSq
+  toFun g := (∫ y : maxCompactU ε, weightMinors ν (y⁻¹ * g * y).val ∂haarK ε) / ν.kTypeNormSq
   continuous_toFun := by
     -- an integral over the compact group `maxCompactU ε` depends continuously on the parameter `g`
     rw [← (haarK ε).restrict_univ]
@@ -519,7 +529,7 @@ lemma exists_eq_const_add_partition (hν : IsKDominant ε (-l) ν)
   | succ k ih =>
     have hk' : k < Fintype.card {i : n // ε i = τ} := by omega
     have h_sign : ε (q τ (Fin.rev ⟨k + 1, hk⟩)) = ε (q τ (Fin.rev ⟨k, hk'⟩)) :=
-      (q τ _).2.trans (q τ _).2.symm
+      (q τ _).property.trans (q τ _).property.symm
     have h_lt : l (q τ (Fin.rev ⟨k + 1, hk⟩)) < l (q τ (Fin.rev ⟨k, hk'⟩)) :=
       (hq τ _ _).2 (Fin.rev_lt_rev.2 k.lt_succ_self)
     have h_antitone : g τ (k + 1) ≤ g τ k := by
@@ -538,13 +548,13 @@ lemma prod_weightMinors_toSquareBlock (k : maxCompactU ε) :
         ((k : Matrix n n ℂ).toSquareBlock ε τ) = weightMinors ν (k : Matrix n n ℂ) := by
   set A : Matrix n n ℂ := (k : Matrix n n ℂ)
   have h_tri : A.BlockTriangular ε :=
-    fun i j hij ↦ mem_blockDiagAlg.1 (mem_maxCompactU.1 k.2) i j hij.ne'
+    fun i j hij ↦ mem_blockDiagAlg.1 (mem_maxCompactU.1 k.property) i j hij.ne'
   have h_det : A.det = ∏ τ : ℤˣ, (A.toSquareBlock ε τ).det := h_tri.det_fintype
   have h_ne (τ : ℤˣ) : (A.toSquareBlock ε τ).det ≠ 0 :=
-    prod_ne_zero_iff.1 (h_det.symm.trans_ne k.1.1.det_ne_zero) τ (mem_univ τ)
+    prod_ne_zero_iff.1 (h_det.symm.trans_ne k.val.val.det_ne_zero) τ (mem_univ τ)
   -- each minor of `A` is the product of the corresponding minors of the blocks
   have h_minor (t : ℤ) : principalMinor A (t ≤ ν ·) =
-      ∏ τ : ℤˣ, principalMinor (A.toSquareBlock ε τ) (fun i ↦ t ≤ ν i.1) := by
+      ∏ τ : ℤˣ, principalMinor (A.toSquareBlock ε τ) (fun i ↦ t ≤ ν i.val) := by
     have h_minor_tri :
         (1 - diagonal (fun i : n ↦ if t ≤ ν i then (1 : ℂ) else 0) * (1 - A)).BlockTriangular ε :=
       blockTriangular_one.sub ((blockTriangular_diagonal _).mul (blockTriangular_one.sub h_tri))
@@ -557,13 +567,13 @@ lemma prod_weightMinors_toSquareBlock (k : maxCompactU ε) :
   calc ∏ τ : ℤˣ, weightMinors (fun i : {i : n // ε i = τ} ↦ ν i) (A.toSquareBlock ε τ)
     _ = (∏ τ : ℤˣ, (A.toSquareBlock ε τ).det) ^ (-N) *
           ∏ t ∈ Ioc (-N) N, ∏ τ : ℤˣ,
-            principalMinor (A.toSquareBlock ε τ) (fun i ↦ t ≤ ν i.1) := by
-      simp_rw [weightMinors_eq_det_zpow_mul_prod (h_ne _) _ _ (h_bounds ·.1), prod_mul_distrib,
+            principalMinor (A.toSquareBlock ε τ) (fun i ↦ t ≤ ν i.val) := by
+      simp_rw [weightMinors_eq_det_zpow_mul_prod (h_ne _) _ _ (h_bounds ·.val), prod_mul_distrib,
         prod_zpow]
       rw [prod_comm]
     _ = A.det ^ (-N) * ∏ t ∈ Ioc (-N) N, principalMinor A (t ≤ ν ·) := by simp_rw [h_det, h_minor]
     _ = weightMinors ν A :=
-      (weightMinors_eq_det_zpow_mul_prod k.1.1.det_ne_zero _ _ h_bounds).symm
+      (weightMinors_eq_det_zpow_mul_prod k.val.val.det_ne_zero _ _ h_bounds).symm
 
 /-- Suppose that, with respect to numberings `p τ` of the blocks `{i | ε i = τ}`, the weight `ν` is
 a constant `e τ` plus the partition `New.diagramWeight` of `κ` (whose `k`th part is the sum of the
@@ -614,9 +624,9 @@ lemma kTypeChar_diagTorusK_eq_trace_schur {κ : ℤˣ → ℕ → ℕ} {e : ℤ�
   -- Apply the functionals `X ↦ tr (X R k)` and `X ↦ wᵀ X v` to the mean; the second takes the
   -- value `z` on the scalar, because `wᵀ v = weightMinors ν 1 = 1`.
   have h_integral (k : maxCompactU ε) :
-      ∫ g, weightMinors ν (g⁻¹ * k * g).1 ∂haarK ε = z * (R k).trace := by
+      ∫ g, weightMinors ν (g⁻¹ * k * g).val ∂haarK ε = z * (R k).trace := by
     have h_trace_conj (g : maxCompactU ε) :
-        (R g * vecMulVec v w * R g⁻¹ * R k).trace = weightMinors ν (g⁻¹ * k * g).1 := by
+        (R g * vecMulVec v w * R g⁻¹ * R k).trace = weightMinors ν (g⁻¹ * k * g).val := by
       rw [← h_coeff]
       simp [mul_vecMulVec, vecMulVec_mul, ← dotProduct_mulVec, dotProduct_comm (_ *ᵥ _)]
     simpa [h_trace_conj, ← smul_one_eq_diagonal] using
@@ -658,7 +668,7 @@ lemma filter_lt_eq_map_Iio
   · rintro ⟨rfl, h_lt⟩
     exact ⟨(q (ε b)).symm ⟨b, rfl⟩, by simpa [← hq] using h_lt, by simp⟩
   · rintro ⟨i, hi, rfl⟩
-    exact ⟨(q τ i).2.symm, (hq τ i j).2 (mem_Iio.1 hi)⟩
+    exact ⟨(q τ i).property.symm, (hq τ i j).2 (mem_Iio.1 hi)⟩
 
 /-- If `q τ` enumerates the block of sign `τ` by increasing `l`, then on the torus the product over
 the compact roots is the product over the blocks of Vandermonde determinants. -/
@@ -675,7 +685,7 @@ lemma torusEval_rootProd_eq_prod_vandermonde
     _ = ∏ j : Fin (Fintype.card {i : n // ε i = τ}), ∏ i ∈ Iio j,
           (x (q τ j) - x (q τ i) : ℂ) := by
       rw [← (q τ).prod_comp]
-      simp [(q τ _).2, filter_lt_eq_map_Iio q hq]
+      simp [(q τ _).property, filter_lt_eq_map_Iio q hq]
     _ = ∏ i : Fin (Fintype.card {i : n // ε i = τ}), ∏ j ∈ Ioi i,
           (x (q τ j) - x (q τ i) : ℂ) := prod_comm' (by simp)
     _ = _ := (det_vandermonde _).symm
@@ -696,13 +706,13 @@ lemma exists_kTypeChar_diagTorusK_eq_trace_schur (hl : l.Injective) (hν : IsKDo
           (schur κ fun τ : ℤˣ ↦ diagonal fun a : {i : n // ε i = τ} ↦ (x a : ℂ)).trace := by
   let m (τ : ℤˣ) : Type := {i // ε i = τ}
   have h_enum (τ : ℤˣ) : ∃ q : Fin (Fintype.card (m τ)) ≃ m τ,
-      ∀ a b : Fin (Fintype.card (m τ)), l (q a).1 < l (q b).1 ↔ a < b :=
-    exists_equiv_fin_lt_iff (n := m τ) (l := fun a ↦ l a.1) (hl.comp Subtype.val_injective)
+      ∀ a b : Fin (Fintype.card (m τ)), l (q a).val < l (q b).val ↔ a < b :=
+    exists_equiv_fin_lt_iff (n := m τ) (hl.comp Subtype.val_injective)
   choose q hq using h_enum
   obtain ⟨κ, e, h_partition⟩ := exists_eq_const_add_partition hν q hq
   have hν_q (τ : ℤˣ) (j : Fin (Fintype.card (m τ))) :
-      ν (q τ j).1 = e τ + diagramWeight (rankAt m) κ (τ, j.rev) := by
-    simpa only [Fin.eta, Fin.rev_rev] using h_partition τ j.rev j.rev.2
+      ν (q τ j).val = e τ + diagramWeight (rankAt m) κ (τ, j.rev) := by
+    simpa only [Fin.eta, Fin.rev_rev] using h_partition τ j.rev j.rev.isLt
   -- `(q τ).symm.trans Fin.revPerm` numbers the block by decreasing `l`.
   exact ⟨q, κ, e, hq, hν_q, kTypeChar_diagTorusK_eq_trace_schur
     (fun τ ↦ (q τ).symm.trans Fin.revPerm) fun τ i ↦ by simpa using hν_q τ ((q τ).symm i)⟩
@@ -722,7 +732,7 @@ lemma exists_kTypeChar_diagTorusK_eq_torusEval (hl : l.Injective) (hν : IsKDomi
   have h_single (a : n) (c : ℤ) : torusEval x (.single (Pi.single a c) 1) = (x a : ℂ) ^ c := by
     simp [torusEval, Pi.single_apply]
   have h_value : torusEval x P =
-      ∑ i : WeylIndexFamily m κ, ∏ τ, ∏ a : m τ, (x a.1 : ℂ) ^ (e τ + tableauWeight i τ a) := by
+      ∑ i : WeylIndexFamily m κ, ∏ τ, ∏ a : m τ, (x a.val : ℂ) ^ (e τ + tableauWeight i τ a) := by
     simp only [P, map_sum, map_prod, h_single]
   rw [h_char, h_value, schur_diagonal, trace_diagonal, mul_sum]
   simp only [zpow_add₀ (Circle.coe_ne_zero _), zpow_natCast, prod_mul_distrib, m]
@@ -752,9 +762,9 @@ lemma torusEval_rootProd_mul_kTypeChar_eq_alternant (hl : l.Injective)
   congr with τ
   rw [← det_submatrix_equiv_self (q τ), ← (q τ).prod_comp, ← det_mul_column]
   have hδ_q (j : Fin (Fintype.card {i : n // ε i = τ})) : δ (q τ j) = (j : ℤ) := by
-    simp [δ, lowerCount, (q τ j).2, filter_lt_eq_map_Iio q hq]
+    simp [δ, lowerCount, (q τ j).property, filter_lt_eq_map_Iio q hq]
   congr with i j
-  simp [toSquareBlock_def, Z, (q τ _).2, hν_q, hδ_q, zpow_add₀, pow_add, mul_assoc]
+  simp [toSquareBlock_def, Z, (q τ _).property, hν_q, hδ_q, zpow_add₀, pow_add, mul_assoc]
 
 /-- Weyl's character formula for `K`. Let `l` be injective and `ν` dominant for `K` in the order of
 `l`: `ν b ≤ ν a` if `ε a = ε b` and `l b < l a` (this is `New.IsKDominant ε (-l) ν`). Let `χ x` be
@@ -789,12 +799,12 @@ lemma exists_conj_diagTorusK (k : maxCompactU ε) :
   -- Write `k = exp X` with `X` block diagonal, and diagonalise the Hermitian blocks of `-I • X`
   -- by unitary matrices; these assemble to the conjugating element `y`.
   obtain ⟨X, hXk, hX⟩ := exists_expU_eq_maxCompactU k
-  set H : Matrix n n ℂ := -Complex.I • X.1 with hH
+  set H : Matrix n n ℂ := -Complex.I • X.val with hH
   have h_herm (t : ℤˣ) : (H.toSquareBlock ε t).IsHermitian := by
     ext ⟨i, hi⟩ ⟨j, hj⟩
     simpa [hH, hi, hj, signMatrix, add_eq_zero_iff_eq_neg, field, toSquareBlock_def] using
-      congrFun (congrFun (X.2 : X.1ᴴ * signMatrix ε + signMatrix ε * X.1 = 0) i) j
-  let U (t : ℤˣ) : Matrix {i // ε i = t} {i // ε i = t} ℂ := (h_herm t).eigenvectorUnitary.1
+      congrFun (congrFun (X.property : X.valᴴ * signMatrix ε + signMatrix ε * X.val = 0) i) j
+  let U (t : ℤˣ) : Matrix {i // ε i = t} {i // ε i = t} ℂ := (h_herm t).eigenvectorUnitary.val
   obtain ⟨y, hy, -⟩ := exists_maxCompactU_of_blocks U
     fun t ↦ Unitary.coe_star_mul_self (h_herm t).eigenvectorUnitary
   -- `θ i` is the eigenvalue with index `i` of the block that contains `i`
@@ -810,7 +820,7 @@ lemma exists_conj_diagTorusK (k : maxCompactU ε) :
     by_cases hst : s = t
     · subst hst
       simp [e, sigmaFiberEquiv, toSquareBlock_def]
-    · have h_off : X.1 i j = 0 := mem_blockDiagAlg.1 hX i j (by rwa [hi, hj])
+    · have h_off : X.val i j = 0 := mem_blockDiagAlg.1 hX i j (by rwa [hi, hj])
       simp [e, hH, sigmaFiberEquiv, blockDiagonal'_apply_ne, hst, h_off]
   have h_eigenvalues : e (blockDiagonal' fun t ↦ diagonal fun i ↦ ((h_herm t).eigenvalues i : ℂ)) =
       diagonal fun i ↦ (θ i : ℂ) := by
@@ -851,7 +861,7 @@ open Finset Complex Nat New Orbital AddCircle HCParam Matrix
 /-- For an injective `l` with all signs `1`, the numbers `δ i = l.lowerCount Eq i` of the `j` with
 `l j < l i` run through `0, …, n - 1`, so their Vandermonde product, taken in the order of `l`, is
 `∏_{i < n} i !`. -/
-lemma New.HCParam.prod_prod_lowerCount_sub {n : Type} [Fintype n] [DecidableEq n]
+lemma New.HCParam.prod_prod_lowerCount_sub {n : Type} [Fintype n]
     {l : HCParam (1 : n → ℤˣ)} (hl : l.Injective) :
     ∏ i : n, ∏ j : n with l j < l i, ((l.lowerCount Eq i : ℂ) - l.lowerCount Eq j) =
       ∏ i ∈ range (Fintype.card n), (i ! : ℂ) := by
@@ -906,9 +916,9 @@ lemma New.weyl_dimension_formula {n : Type} [Fintype n] [DecidableEq n] {l : HCP
       simpa using (((hasDerivAt_id 0).ofReal_comp.mul_const Complex.I).const_mul c).cexp
     have h_slope (i j : n) : Filter.Tendsto (fun t : ℝ ↦ (t : ℂ)⁻¹ * (x a t i - x a t j))
         (nhdsWithin 0 {0}ᶜ) (nhds (Complex.I * (a i - a j))) := by
-      simpa [exp_int_mul, mul_comm _ Complex.I, ← mul_sub, x] using
+      simpa [exp_intCast_mul, mul_comm _ Complex.I, ← mul_sub, x] using
         ((h_exp (a i)).sub (h_exp (a j))).tendsto_slope_zero
-    simpa [Δ, prod_mul_distrib] using
+    simpa [prod_mul_distrib] using
       tendsto_finsetProd univ fun i _ ↦ tendsto_finsetProd {j | l j < l i} fun j _ ↦ h_slope i j
   -- The limits of the two sides of `h_swap` agree, and at the identity `χ Λ 1 = Λ.kTypeNormSq⁻¹`.
   have h_cont : Continuous fun t ↦ χ Λ (x δ t) := by fun_prop
@@ -976,12 +986,12 @@ lemma trace_weylRep [DecidableEq ι] (κ : ι → ℕ → ℕ) (e : ι → ℤ) 
       ∏ v : ι, (of fun i j : Fin a ↦
         x v i ^ (e v + ↑(diagramWeight (rankAt fun _ : ι ↦ Fin a) κ (v, j.rev) + j))).det := by
   -- diagonalise each `g v`; the trace is invariant under conjugation
-  have h_eigen (v : ι) : ∃ h : GL (Fin a) ℂ, h.1 * diagonal (x v) = (g v).1 * h.1 :=
+  have h_eigen (v : ι) : ∃ h : GL (Fin a) ℂ, h.val * diagonal (x v) = (g v).val * h.val :=
     isConj_diagonal_of_isRoot_charpoly (hg v)
   choose h h_diag using h_eigen
   have h_trace : (weylRep κ e g).trace =
       (∏ v : ι, (univ.prod (x v)) ^ e v) * (schur κ fun v ↦ diagonal (x v)).trace := by
-    have h_conj (v : ι) : ((h⁻¹ * (g * h)) v).1 = diagonal (x v) := by simp [← h_diag]
+    have h_conj (v : ι) : ((h⁻¹ * (g * h)) v).val = diagonal (x v) := by simp [← h_diag]
     rw [← mul_inv_cancel_right g h, map_mul, trace_mul_comm, ← map_mul]
     generalize h⁻¹ * (g * h) = g' at h_conj ⊢
     simp [weylRep, Units.smul_def, h_conj]

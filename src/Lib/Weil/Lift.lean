@@ -1,7 +1,18 @@
+module
+
+import Mathlib.MeasureTheory.Integral.CompactlySupported
+import Mathlib.MeasureTheory.Integral.Pi
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Theta.BlockRule
+public import Lib.Weil.DualPair.ThetaLiftConvergence
+public import Lib.Adelic.AutomorphicForms.RealConvolution
+public import Lib.DiscreteSeries.Rigidity.KernelFixes
+public import Lib.Weil.DualPair.WeilAction
 import Lib.Adelic.AutomorphicForms.Cuspidality
-import Lib.DiscreteSeries.Theta.BlockRule
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Theta.FockJointHarmonics
 import Lib.DiscreteSeries.Theta.LocalCorrespondence
-import Lib.Weil.DualPair.ThetaLiftConvergence
 
 /-!
 # Theta lifts of forms: products of minors, edges, arrows between spaces of forms
@@ -54,6 +65,8 @@ duality. Source: J.-S. Li, Theta lifting for unitary representations with nonzer
 Math. J. 61 (1990); Howe, JAMS 2 (1989); A. Ichino, arXiv 2002.09148, Lemma 7.8.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -101,7 +114,7 @@ theorem New.sum_sigma_filter_eq_sum_mul_sum_Ioo (N : ℕ) (k : ℤˣ → ℕ →
 
 /-- For injective `l`, number the columns `c` of sign `η` by decreasing `η * l c`: the number `o c`
 of columns of the same sign that come before `c` is a bijection onto an initial segment of `ℕ`. -/
-theorem New.exists_equiv_fin_eq_card_filter_lt {r : Type} [Fintype r] [DecidableEq r] {s : r → ℤˣ}
+theorem New.exists_equiv_fin_eq_card_filter_lt {r : Type} [Fintype r] {s : r → ℤˣ}
     {l : r → ℤ} (hl : Injective l) {o : r → ℕ}
     (ho : ∀ c : r, o c = #{d : r | s d = s c ∧ s c * l c < s c * l d}) (η : ℤˣ) :
     ∃ f : {c : r // s c = η} ≃ Fin (card {c : r // s c = η}),
@@ -114,7 +127,7 @@ theorem New.exists_equiv_fin_eq_card_filter_lt {r : Type} [Fintype r] [Decidable
 
 /-- For injective `l` and a sign `η`, the position of a row in the decreasing order of `η • l` is a
 bijection onto `Fin (card n)`, and the position for `-η` is the reversed one. -/
-theorem New.exists_equiv_decreasingPosition_smul {n : Type} [Fintype n] [DecidableEq n] {l : n → ℤ}
+theorem New.exists_equiv_decreasingPosition_smul {n : Type} [Fintype n] {l : n → ℤ}
     (hl : Injective l) (η : ℤˣ) :
     ∃ u : n ≃ Fin (Fintype.card n), ∀ a : n,
       decreasingPosition (η.val • l) a = u a ∧ decreasingPosition ((-η).val • l) a = (u a).rev := by
@@ -129,7 +142,6 @@ theorem New.sign_eq_of_ne_zero_of_lt {N : ℕ} {k : ℤˣ → ℕ → ℕ}
     (hx : ∀ η : ℤˣ, x (-η) = (x η).rev) {η μ : ℤˣ} {p q : ℕ} (hp : k η p ≠ 0) (hq : k μ q ≠ 0)
     (hxp : x η < p) (hxq : x μ < q) : η = μ := by
   -- For opposite signs the two places add up to `N - 1`, so `N < p + q`.
-  have h_sum : (x (-1) : ℕ) + x 1 + 1 = N := by grind
   rcases Int.units_eq_one_or η with rfl | rfl <;> rcases Int.units_eq_one_or μ with rfl | rfl <;>
     grind
 
@@ -245,6 +257,14 @@ variable {E n n' ι : Type} [Field E] [CMType E] [WeilData E]
   (Ω : GInf E s × GInf E t → fockSpace (realSigns E η) →L[ℂ] fockSpace (realSigns E η))
   (e : GInf E s → ℂ) (e' : GInf E t → ℂ) (Φ : fockSpace (realSigns E η))
 
+omit [WeilData E] in
+private lemma star_typeKernel_of_hasGap {a : Type} [Fintype a] [DecidableEq a]
+    {σ : a → ℤˣ} {μ : InfinitePlace E → HCParam σ} {h : InfinitePlace E → ℕ}
+    (hg : ∀ w, (μ w).HasGap (h w)) :
+    star (typeKernel μ σ) = typeKernel (-μ) σ := by
+  funext x
+  simp [typeKernel, ← conj_dsKernel_neg (hg _)]
+
 /-! ### Corresponding parameters and the chosen joint harmonic -/
 
 /-- `-l` if `d` is true and `l` otherwise: the parameter of the forms of type `l`, or, if `d` is
@@ -252,10 +272,6 @@ true, of their conjugates. -/
 abbrev negIf {α : Type*} [Neg α] (d : Bool) (l : α) : α := match d with
   | true => -l
   | false => l
-
-theorem negIf_true {α : Type*} [Neg α] (l : α) : negIf true l = -l := rfl
-
-theorem negIf_false {α : Type*} [Neg α] (l : α) : negIf false l = l := rfl
 
 /-- The doubled parameters l for the signs s : n → ℤˣ and l' for the signs t : n' → ℤˣ correspond:
 at each infinite place w they satisfy the block rule (`New.IsBlockRule`) for the weights γ w and γ'
@@ -315,24 +331,6 @@ theorem isJointHarmonic_jointHarmonicAt {w : InfinitePlace E}
   Classical.epsilon_spec h_match.exists_isJointHarmonic
 
 end Correspond
-
-variable {E : Type} [Field E] [NumberField E] {γ γ' : InfinitePlace E → ℤ}
-  {l : InfinitePlace E → n → ℤ} {l' : InfinitePlace E → n' → ℤ} in
-/-- Let the doubled parameters `l` (for the signs `s`) and `l'` (for the signs `t`) correspond for
-the weights `γ`, `γ'`. For each infinite place w, let `P w` be a joint harmonic for the standard
-dual pair `.std t s (γ w) (-γ' w)` with parameters `l' w` and `-l w`. Then the product over w of the
-`P w`, with the variables of `P w` renamed to those of the place w, is a scalar multiple of
-`jointHarmonic γ γ' l l' s t`. -/
-theorem ParamsCorrespond.prod_eq_smul_jointHarmonic (h_corr : ParamsCorrespond γ γ' l l' s t)
-    (P : InfinitePlace E → MvPolynomial (n' × n) ℂ)
-    (hP : ∀ w : InfinitePlace E, IsJointHarmonic (.std t s (γ w) (-γ' w)) (l' w) (-l w) (P w)) :
-    ∃ c : ℂ, ∏ w : InfinitePlace E, rename (Prod.mk w) (P w) = c • jointHarmonic γ γ' l l' s t := by
-  have h_local (w : InfinitePlace E) : ∃ c : ℂ, P w = c • jointHarmonicAt γ γ' l l' s t w := by
-    obtain ⟨-, ⟨-, h_cols⟩, h_harm, h_rows, h_harm_swap⟩ := (hP w).isJointHighest
-    exact (isJointHarmonic_jointHarmonicAt (h_corr.isMatch w)).exists_eq_smul_of_row_weight h_harm
-      h_harm_swap h_rows h_cols
-  choose c hc using h_local
-  exact ⟨∏ w, c w, by simp [jointHarmonic, hc, map_smul, Finset.prod_smul]⟩
 
 /-- The real points of the two groups act through `Ω` on the real vector `v` of a datum
 `V.integrated v f` and leave its finite part `f` alone. -/
@@ -531,7 +529,9 @@ theorem lift_piTensor_integratedRep {T : InfinitePlace E → FockDualPair s t ι
         simp only [Space.lift, integral_const_mul]
     _ = ∫ a : G E s, (∫ x : GInf E s, F x a) ∂S.quotMeasure := integral_integral_swap h_int
     _ = S.lift Θ φ (realConv e y) g := by
-        simp only [F, Space.lift, realConv, ← integral_const_mul, mul_left_comm]
+        simp only [F, Space.lift, realConv, ← integral_const_mul]
+        exact integral_congr_ae (.of_forall fun _ ↦ integral_congr_ae (.of_forall fun _ ↦
+          mul_left_comm ..))
     _ = S.lift Θ φ y g := by rw [hy.realConv_eq cusp.integrable]
 
 variable [Nonempty n']
@@ -587,7 +587,7 @@ theorem integral_mul_lift_eq_lift_piTensor {T : InfinitePlace E → FockDualPair
     rw [← hL, lift_piTensor_integratedRep hp hΦ hΩ_left Θ hΘ hy]
   simpa only [h_translate, h_target] using h_mean
 
-omit [WeilData E] in
+omit [WeilData E] [Nonempty n'] in
 /-- Let `s`, `t` be the signs of two real unitary groups over the infinite places of `E`. At each
 place `w`, let `π w`, `π' w` be commuting oscillator representations of `U(diag s)`, `U(diag t)` on
 the rows and columns of the dual pair data `T w`, and let `Φ w` be a joint harmonic for `T w` of
@@ -607,7 +607,8 @@ theorem integral_fockInner_mul_typeKernel_ne_zero {T : InfinitePlace E → FockD
   let pΦ (w : InfinitePlace E) : fockSpace η :=
     integratedRep (π w) (dsKernel (l w)) (polyVector η (Φ w))
   have h_conj (x : GInf E s) : conj (typeKernel (-l) s x) = typeKernel l s x := by
-    simp [typeKernel, conj_dsKernel_neg (hΦ _).hasGap_row]
+    simpa only [Pi.star_apply, starRingEnd_apply, neg_neg] using
+      congrFun (star_typeKernel_of_hasGap (μ := -l) (fun w ↦ (hΦ w).hasGap_row.neg)) x
   have h_pairing : ∫ x : GInf E s, fockInner Φ₀ (Ω (x, 1) Φ₀) * typeKernel l s x =
       ∏ w, fockInner (polyVector η (Φ w)) (pΦ w) := by
     simpa only [smul_eq_mul, mul_comm, Φ₀, fockInner_piTensor] using
@@ -661,7 +662,7 @@ theorem isHalfEdge_of_oscillatorPair {T : InfinitePlace E → FockDualPair s t �
       polyVector η (monomial (a.curry w) 1)
     have local_bump (a : InfinitePlace E × ι →₀ ℕ) (w : InfinitePlace E) :
         ∃ α : DiscreteSeries.Bumps t,
-        p w (v a w) = integratedRep (π' w) (fun g ↦ α.1.1 g⁻¹) (p w (polyVector η (Φ w))) :=
+        p w (v a w) = integratedRep (π' w) (fun g ↦ α.val.val g⁻¹) (p w (polyVector η (Φ w))) :=
       (hp w).exists_bump_integratedRep_eq (hΦ w) _
     choose α hα using local_bump
     rintro _ ⟨P, rfl⟩
@@ -721,11 +722,8 @@ theorem isEdge_of_isJointHarmonic {Φ : InfinitePlace E → MvPolynomial (n' × 
     rw [← neg_neg l]
     exact isHalfEdge_of_oscillatorPair (fun w ↦ (h_pair w).swap) (fun w ↦ (hΦ w).swap) hπ hπ'
   · -- for the reverse one, conjugation changes the sign of the parameters
-    have h_conj : Star.star (typeKernel l s) = typeKernel (-l) s :=
-      funext fun x ↦ by simp [typeKernel, ← conj_dsKernel_neg (hΦ _).hasGap_column]
-    have h_conj' : Star.star (typeKernel l' t) = typeKernel (-l') t :=
-      funext fun y ↦ by simp [typeKernel, ← conj_dsKernel_neg (hΦ _).hasGap_row]
-    rw [h_conj, h_conj']
+    rw [star_typeKernel_of_hasGap (μ := l) (fun w ↦ by simpa using (hΦ w).hasGap_column.neg),
+      star_typeKernel_of_hasGap (μ := l') (fun w ↦ (hΦ w).hasGap_row)]
     exact isHalfEdge_of_oscillatorPair h_pair hΦ hπ' hπ
 
 /-- If `l`, `l'` correspond (the block rule holds at every infinite place), the Fock vector

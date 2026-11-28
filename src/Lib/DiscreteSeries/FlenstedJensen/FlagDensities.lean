@@ -1,4 +1,15 @@
-import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
+module
+
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
+public import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.LinearAlgebra.PolarDecomposition
+import Lib.General.Measure.IdempotentKernel
 
 /-!
 # Integrals of densities over unitary groups and over the flag variety of `K_ℂ`
@@ -38,6 +49,8 @@ Notions from other files:
 Known; see `Lib.DiscreteSeries.Character.FormalDegree` and
 `Lib.DiscreteSeries.FlenstedJensen.PsiKTypes` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 
@@ -238,7 +251,7 @@ lemma exists_mul_isBorelMatrix_of_mem_openOrbit (ho : o.Injective) (ε : n → �
   -- Move the phases of the diagonal of `b` into `g`.
   let t : USign ε := diagTorus ε fun i : n ↦
     ⟨‖b i i‖ / b i i, by simp [Submonoid.unitSphere, hb.diag_ne_zero ho]⟩
-  have ht : IsBorelMatrix o t := ⟨blockTriangular_diagonal _, GeneralLinearGroup.det_ne_zero t.1⟩
+  have ht : IsBorelMatrix o t := ⟨blockTriangular_diagonal _, GeneralLinearGroup.det_ne_zero t.val⟩
   refine ⟨g * t⁻¹, t * b, ht.mul hb, fun i ↦ ?_, by simp [mul_assoc]⟩
   simp [t, diagTorus, hb.diag_ne_zero ho]
 
@@ -354,7 +367,8 @@ lemma abs_det_logDerivU_unitary_factor (ho : o.Injective) {ε ε' : n → ℤˣ}
       signMatrix ε * L (b * (signMatrix ε' * logDerivU c y v) * b⁻¹) :=
     calc _ = (u : Matrix n n ℂ)ᴴ * signMatrix ε * u * L ((u : Matrix n n ℂ)⁻¹ * (x * dc v) * b⁻¹) :=
         by simp [logDerivU, deriv.fderiv, u, mul_assoc]
-      _ = _ := by simp [mem_U.1 u.prop, x_eq, dc, logDerivU, inv_coe_eq_mul_conjTranspose_mul (c y),
+      _ = _ := by simp [show (u : Matrix n n ℂ)ᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 u.prop,
+          x_eq, dc, logDerivU, inv_coe_eq_mul_conjTranspose_mul (c y),
         ← mul_assoc]
   have h_comp : skewCoords ∘ₗ logDerivU (fun z : Matrix n n ℝ ↦ Φ (x * c z)) y =
       (skewCoords ∘ₗ mulLeft ℝ (signMatrix ε) ∘ₗ L ∘ₗ mulLeftRight ℝ (b, b⁻¹) ∘ₗ
@@ -434,7 +448,8 @@ lemma lintegral_openOrbit_le (ho : o.Injective) (ε ε' : n → ℤˣ) (x : GL n
 /-- By Gram-Schmidt every invertible matrix is a unitary times a triangular matrix. -/
 lemma mem_openOrbit_one (o : n → ℤ) (y : GL n ℂ) : (y : Matrix n n ℂ) ∈ openOrbit 1 o := by
   obtain ⟨b, b_tri, b_unit⟩ := exists_orthonormal_mul o ⟨y.inv, y.inv_val⟩
-  exact ⟨⟨y * b, by simpa [mem_U] using b_unit⟩, (b : Matrix n n ℂ)⁻¹,
+  exact ⟨⟨y * b, by simpa [mem_unitaryGroupOf_iff, star_eq_conjTranspose] using b_unit⟩,
+      (b : Matrix n n ℂ)⁻¹,
     IsBorelMatrix.inv ⟨b_tri, GeneralLinearGroup.det_ne_zero b⟩, by simp⟩
 end OpenFlagOrbit
 
@@ -478,7 +493,7 @@ lemma integrable_mul_left_of_isFlagDensity (ho : o.Injective) (ε : n → ℤˣ)
   have h_norm : IsFlagDensity o fun y : Matrix n n ℂ ↦ ‖F y‖ :=
     fun y b hb ↦ by simp [hF_density y b hb]
   have int_K : Integrable fun k : USign (1 : n → ℤˣ) ↦ F k :=
-    DiscreteSeries.integrable_of_compactSpace (hF_cont.comp' continuous_subtype_val)
+    DiscreteSeries.integrable_of_compactSpace (hF_cont.comp' continuous_subtypeVal)
   refine ⟨(hF_cont.comp' (f := fun g : USign ε ↦ x * g) (by fun_prop)).aestronglyMeasurable, ?_⟩
   simpa [HasFiniteIntegral, ← ofReal_norm, lintegral_mul_left_eq_setLIntegral_openOrbit ho ε h_norm]
     using int_K.restrict.hasFiniteIntegral
@@ -492,7 +507,7 @@ lemma integral_mul_left_eq_setIntegral_openOrbit (ho : o.Injective) (ε : n → 
     ∫ g : USign ε, F (x * g) =
       ∫ k in {k : USign (1 : n → ℤˣ) | (x : Matrix n n ℂ)⁻¹ * k ∈ openOrbit ε o}, F k := by
   have int_K : Integrable fun k : USign (1 : n → ℤˣ) ↦ F k :=
-    DiscreteSeries.integrable_of_compactSpace (hF_cont.comp' continuous_subtype_val)
+    DiscreteSeries.integrable_of_compactSpace (hF_cont.comp' continuous_subtypeVal)
   have int_G := integrable_mul_left_of_isFlagDensity ho ε hF_density hF_cont x
   -- Test against real linear forms `φ`, and split `φ ∘ F` into its positive and negative parts.
   refine (SeparatingDual.eq_iff_forall_dual_eq (R := ℝ)).2 fun φ ↦ ?_
@@ -661,7 +676,9 @@ noncomputable def signBlocksHom (ε : n → ℤˣ) :
     USign (1 : PosIndex ε → ℤˣ) × USign (1 : NegIndex ε → ℤˣ) →* maxCompactU ε :=
   MonoidHom.mk'
     (fun u ↦ ⟨U.of IsHermitianInvolution.isUnit (signBlocks ε u.1 u.2)
-        (signBlocks_preserves_form (by simpa using mem_U.1 u.1.2) (by simpa using mem_U.1 u.2.2)),
+        (signBlocks_preserves_form
+          (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u.1.property)
+          (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u.2.property)),
       mem_maxCompactU.2 signBlocks_mem_blockDiagAlg⟩)
     fun u v ↦ Subtype.ext <| Subtype.ext <| Units.ext (by simp [signBlocks_mul])
 

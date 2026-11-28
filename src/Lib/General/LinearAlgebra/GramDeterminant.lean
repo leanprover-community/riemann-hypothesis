@@ -1,4 +1,15 @@
+module
+
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.NormDet
+public import Aesop.BuiltinRules
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.Speed
 import Lib.General.LinearAlgebra.MinorProducts
+import TauCeti.LinearAlgebra.Matrix.AbsoluteValue
 
 /-!
 # Gram determinants
@@ -19,6 +30,8 @@ Notions from other files:
 * `Matrix.gram ℂ x`: the matrix of the inner products `⟨x_i, x_k⟩`.
 -/
 
+@[expose] public section
+
 open Module Submodule Real LinearMap Matrix Fintype NormedField InnerProductSpace
 
 open scoped ComplexOrder
@@ -27,23 +40,23 @@ namespace New
 
 section Basis
 
-variable {V : Type} [AddCommGroup V] [Module ℂ V] [Module.Finite ℂ V]
+variable {F V : Type*} [Field F] [AddCommGroup V] [Module F V] [Module.Finite F V]
 
 /-- A linearly independent family `y` in a finite-dimensional space is completed to a basis by
 finitely many members `z` of a given spanning set `S`. -/
 lemma exists_extend_basis_of_span_eq_top {n : ℕ} {S : Set V} {y : Fin n → V}
-    (hy : LinearIndependent ℂ y) (hS : span ℂ S = ⊤) :
+    (hy : LinearIndependent F y) (hS : span F S = ⊤) :
     ∃ (n' : ℕ) (z : Fin n' → V),
       (∀ i : Fin n', z i ∈ S) ∧
-      LinearIndependent ℂ (Sum.elim y z) ∧
-      finrank ℂ V = n + n' := by
+      LinearIndependent F (Sum.elim y z) ∧
+      finrank F V = n + n' := by
   -- Choose a basis `w` of `V ⧸ span y` among the images of members of `S`, and lift it to `z`.
-  let Y : Submodule ℂ V := span ℂ (Set.range y)
-  obtain ⟨w, hw, -, w_indep⟩ := exists_fun_fin_finrank_span_eq ℂ (Y.mkQ '' S)
+  let Y : Submodule F V := span F (Set.range y)
+  obtain ⟨w, hw, -, w_indep⟩ := exists_fun_fin_finrank_span_eq F (Y.mkQ '' S)
   choose z hz hzw using fun i ↦ (Set.mem_image _ _ _).mp (hw i)
-  have z_indep : LinearIndependent ℂ (Y.mkQ ∘ z) := by rwa [← funext hzw] at w_indep
+  have z_indep : LinearIndependent F (Y.mkQ ∘ z) := by rwa [← funext hzw] at w_indep
   refine ⟨_, z, hz, (linearIndependent_span hy).sumElim_of_quotient z z_indep, ?_⟩
-  have image_spans : span ℂ (Y.mkQ '' S) = ⊤ := by simp [span_image, hS, range_mkQ]
+  have image_spans : span F (Y.mkQ '' S) = ⊤ := by simp [span_image, hS, range_mkQ]
   rw [image_spans, finrank_top, ← Y.finrank_quotient_add_finrank, finrank_span_eq_card hy,
     Fintype.card_fin, add_comm]
 
@@ -78,17 +91,17 @@ lemma norm_det_mul_det_gram_mul_det_le_one {F : Type} [NormedField F] [IsUltrame
     (ι : ℂ →+* F) {φ : S → H} {u u' : Matrix S S ℂ}
     (h_inner : ∀ a b : S, ‖ι ⟪∑ c : S, u' a c • φ c, ∑ c : S, u b c • φ c⟫_ℂ‖ ≤ 1) :
     ‖ι (starRingEnd ℂ u'.det)‖ * ‖ι (gram ℂ φ).det‖ * ‖ι u.det‖ ≤ 1 := by
-  -- The matrix of the inner products has entries, hence determinant, in the ring of integers.
-  have h_mem (z : F) : z ∈ (valuation (K := F)).integer ↔ ‖z‖ ≤ 1 := .rfl
   have h_entry (a b : S) :
       (u'ᴴᵀ * (gram ℂ φ * uᵀ)) a b = ⟪∑ c : S, u' a c • φ c, ∑ c : S, u b c • φ c⟫_ℂ := by
     simp only [← star_dotProduct_gram_mulVec, Matrix.mul_apply, dotProduct, mulVec,
       Matrix.transpose_apply, Matrix.conjTranspose_apply, Pi.star_apply]
-  have h_int : ι (u'ᴴᵀ * (gram ℂ φ * uᵀ)).det ∈ (valuation (K := F)).integer := by
-    rw [ι.map_det, det_apply']
-    refine sum_mem fun σ _ ↦ mul_mem (intCast_mem _ _) (prod_mem fun b _ ↦ ?_)
-    simpa [h_mem, h_entry] using h_inner (σ b) b
-  simpa [h_mem, mul_assoc] using h_int
+  have h_det : ‖(ι.mapMatrix (u'ᴴᵀ * (gram ℂ φ * uᵀ))).det‖ ≤ 1 :=
+    Matrix.abv_det_le_one_of_isNonarchimedean (abv := NormedField.toAbsoluteValue F)
+      IsUltrametricDist.isNonarchimedean_norm fun a b ↦ by
+        simpa only [NormedField.toAbsoluteValue_apply, RingHom.mapMatrix_apply, Matrix.map_apply,
+          h_entry] using h_inner a b
+  rw [← ι.map_det] at h_det
+  simpa [mul_assoc] using h_det
 
 end Gram
 
@@ -101,12 +114,10 @@ noncomputable def formGram (G : Matrix I I ℂ) (v : S → I → ℂ) : Matrix S
   of fun i k ↦ star (v i) ⬝ᵥ G *ᵥ v k
 
 /-- The matrix `formGram G v` of a positive semidefinite form is positive semidefinite. -/
-lemma posSemidef_formGram [Fintype S] (hG : G.PosSemidef) (v : S → I → ℂ) :
+lemma posSemidef_formGram (hG : G.PosSemidef) (v : S → I → ℂ) :
     (formGram G v).PosSemidef := by
   have h_eq : formGram G v = (of v)ᵀᴴ * G * (of v)ᵀ := by
-    rw [Matrix.mul_assoc]
-    ext i k
-    simp [formGram, Matrix.mul_apply, dotProduct, mulVec]
+    exact Matrix.ext fun i k ↦ (Matrix.mul_mul_apply (of v)ᵀᴴ G (of v)ᵀ i k).symm
   rw [h_eq]
   exact hG.conjTranspose_mul_mul_same _
 
@@ -121,7 +132,7 @@ lemma norm_det_formGram_le (hG : G.PosSemidef) {n : ℕ} {v : Fin n → I → �
     _ ≤ ∏ _i : Fin n, exp h := by
         gcongr with i
         simpa [formGram, Complex.re_eq_norm.mpr (hG.dotProduct_mulVec_nonneg (v i))] using hv i
-    _ = exp (n * h) := by rw [Fin.prod_const, exp_nat_mul]
+    _ = exp (n * h) := by rw [Fin.prod_const, exp_natCast_mul]
 
 /-- The Cauchy–Schwarz inequality in the exterior power, where the product of `v₁ ∧ ⋯ ∧ vₙ` and
 `w₁ ∧ ⋯ ∧ wₙ` is `det (v_i* G w_k)`: for `G` positive semidefinite,

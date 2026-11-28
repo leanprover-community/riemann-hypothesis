@@ -1,3 +1,27 @@
+module
+
+import TauCeti.Analysis.Complex.CauchyIntegralPolydisc
+import TauCeti.Analysis.Complex.WeaklyHolomorphic
+import TauCeti.MeasureTheory.Function.StronglyMeasurable.FiniteDimensional
+public import Mathlib.Analysis.CStarAlgebra.ContinuousMap
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Analysis.Calculus.LineDeriv.Basic
+import Mathlib.Analysis.Complex.Schwarz
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.MeasureTheory.Function.LpSpace.ContinuousFunctions
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.Analysis.MvPolynomial.Jacobian
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Speed
 import Lib.General.Analysis.GaussianIntegral
 import Lib.General.Groups.CongruenceSubgroups
 import Lib.General.Measure.HaarNormalisation
@@ -8,11 +32,10 @@ import Lib.General.Topology
 
 In the strong integral, operator-valued functions are integrated vector by vector, so no
 measurability in the operator norm is needed. In the results on analytic families, E is a
-finite-dimensional complex normed space, K a compact R₁ space and f : E → K → ℂ a family of
+finite-dimensional complex normed space, K a compact space and f : E → K → ℂ a family of
 functions on K with parameter in E. The file also contains the Schwarz lemma in normed spaces,
 holomorphy of dominated parameter integrals, a uniqueness result for analytic functions along
-submersions, and Euler's beta integral together with Hua's bound for negative powers of
-determinants.
+submersions, and Hua's bound for negative powers of determinants.
 
 ## Main definitions and results
 
@@ -36,6 +59,8 @@ Known result: an upper bound for Hua's determinant integral. The integral is bou
 above, with an affine change of the rows, instead of being computed exactly. Source: Hua, Harmonic
 Analysis of Functions of Several Complex Variables in the Classical Domains, AMS 1963.
 -/
+
+@[expose] public section
 
 /-! ## The strong integral of a family of bounded operators -/
 
@@ -112,14 +137,15 @@ end OperatorIntegral
 /-!
 ## Analytic maps into C(K, ℂ) and analyticity of differentiable maps
 
-The idea is Cauchy's formula in one coordinate at a time, the circle being adjoined to K.
+Point evaluations detect holomorphy on each complex coordinate line. Osgood's lemma then gives
+analyticity in all coordinates.
 The strong integral `New.strongIntegral` serves here as the functional f ↦ ∫ f dμ on C(K, ℂ)
 (`New.strongIntegral_eval`).
 -/
 
 namespace New
 
-open MeasureTheory Metric ContinuousMap Module Real Finset AbstractMeasure
+open MeasureTheory Metric ContinuousMap Module Real Finset
 
 variable {E F K : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E]
   {p : E} [NormedAddCommGroup F] [NormedSpace ℂ F] [TopologicalSpace K] [CompactSpace K]
@@ -129,7 +155,7 @@ variable {E F K : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimen
 functionals `evalCLM ℂ k : g ↦ g k` (see `New.strongIntegral`) sends a continuous f : K → ℂ to
 ∫ f dμ. -/
 lemma strongIntegral_eval {mK : MeasurableSpace K} [BorelSpace K] (μ : Measure K)
-    [IsFiniteMeasure μ] [R1Space K] (f : C(K, ℂ)) :
+    [IsFiniteMeasure μ] (f : C(K, ℂ)) :
     strongIntegral μ (evalCLM ℂ) f = ∫ k : K, f k ∂μ :=
   strongIntegral_apply μ (evalCLM ℂ) (fun g ↦ (g.memLp μ ℂ).integrable le_rfl) f
 
@@ -139,11 +165,11 @@ def DiscreteSeries.IsAnalyticFamily (f : E → K → ℂ) (a : E) : Prop :=
   ∃ g : E → C(K, ℂ), AnalyticAt ℂ g a ∧ ∀ᶠ x : E in nhds a, g x = f x
 
 omit [FiniteDimensional ℂ E] in
-/-- Let E be a complex normed space, K a compact R₁ space and μ a finite Borel
+/-- Let E be a complex normed space, K a compact space and μ a finite Borel
 measure on K. If x ↦ f(x, ·) is analytic at p ∈ E as a map to C(K, ℂ) (`IsAnalyticFamily f p`), then
 its integral against μ is an analytic function of x at p. -/
 lemma DiscreteSeries.IsAnalyticFamily.analyticAt_integral {mK : MeasurableSpace K} [BorelSpace K]
-    (μ : Measure K) [IsFiniteMeasure μ] [R1Space K] (hf : IsAnalyticFamily f p) :
+    (μ : Measure K) [IsFiniteMeasure μ] (hf : IsAnalyticFamily f p) :
     AnalyticAt ℂ (fun x : E ↦ ∫ k : K, f x k ∂μ) p := by
   obtain ⟨g, hg, h_eq⟩ := hf
   -- The integral is the continuous functional `strongIntegral μ (evalCLM ℂ)` applied to `g`.
@@ -151,117 +177,47 @@ lemma DiscreteSeries.IsAnalyticFamily.analyticAt_integral {mK : MeasurableSpace 
     (h_eq.mono fun x hx ↦ ?_)
   simp [strongIntegral_eval, hx]
 
-/-- Cauchy's integral formula with the circle parametrised by the angle: for g differentiable on
-the closed disc of radius r about c and |w - c| < r, the average over θ ∈ [0, 2π] of
-(ζ - w)⁻¹ (ζ - c) g(ζ), where ζ = c + r exp(iθ), is g(w). -/
-lemma integral_cauchyKernel_circleMap {g : ℂ → ℂ} {c w : ℂ} {r : ℝ} (hw : w ∈ ball c r)
-    (hg : DifferentiableOn ℂ g (closedBall c r)) :
-    ∫ θ : ℝ in Set.Icc 0 (2 * π),
-      (circleMap c r θ - w)⁻¹ * ((circleMap c r θ - c) * g (circleMap c r θ) / π / 2) = g w := by
-  have h_cauchy : (∮ ζ in C(c, r), (ζ - w)⁻¹ • g ζ) = (2 * π * Complex.I) • g w :=
-    hg.circleIntegral_sub_inv_smul hw
-  -- `dζ = I (ζ - c) dθ`, so the integrand of the circle integral is `2 π I` times ours.
-  have h_integrand (θ : ℝ) :
-      deriv (circleMap c r) θ • (circleMap c r θ - w)⁻¹ • g (circleMap c r θ) = 2 * π * Complex.I *
-        ((circleMap c r θ - w)⁻¹ * ((circleMap c r θ - c) * g (circleMap c r θ) / π / 2)) := by
-    simp only [deriv_circleMap, circleMap_sub_center, smul_eq_mul]
-    field
-  simp_rw [circleIntegral_def_Icc, h_integrand, integral_const_mul] at h_cauchy
-  exact mul_left_cancel₀ Complex.two_pi_I_ne_zero h_cauchy
-
-/-- The inverse of a unit of the ring of continuous complex functions is its pointwise inverse. -/
-lemma ringInverse_apply_of_isUnit {X : Type*} [TopologicalSpace X] {g : C(X, ℂ)} (hg : IsUnit g)
-    (x : X) : Ring.inverse g x = (g x)⁻¹ := by
-  apply eq_inv_of_mul_eq_one_left
-  rw [← ContinuousMap.mul_apply, Ring.inverse_mul_cancel g hg, ContinuousMap.one_apply]
-
-/-- Let E be a finite-dimensional complex normed space and K a compact R₁ space. If, for all x near
+/-- Let E be a finite-dimensional complex normed space and K a compact space. If, for all x near
 p ∈ E and all k ∈ K, f : E → K → ℂ is jointly continuous at (x, k) and f(·, k) is complex
 differentiable at x, then x ↦ f(x, ·) is analytic at p as a map to the Banach space C(K, ℂ), that
 is, `IsAnalyticFamily f p`. -/
-lemma isAnalyticFamily_of_continuousAt_of_differentiableAt [R1Space K] {f : E → K → ℂ} {p : E}
+lemma isAnalyticFamily_of_continuousAt_of_differentiableAt {f : E → K → ℂ} {p : E}
     (hf_cont : ∀ᶠ x : E in nhds p, ∀ k : K, ContinuousAt f.uncurry (x, k))
     (hf_diff : ∀ᶠ x : E in nhds p, ∀ k : K, DifferentiableAt ℂ (fun z : E ↦ f z k) x) :
     DiscreteSeries.IsAnalyticFamily f p := by
-  -- Induction on the dimension, for all compact `K` at once. One coordinate `w` is split off and
-  -- written by Cauchy's formula as an integral over a circle; the integrand, a function on
-  -- `K × circle`, is the kernel `(ζ - w)⁻¹` times a function of the remaining coordinates only.
-  induction hdim : finrank ℂ E generalizing E K with
-  | zero =>
-    -- `E` is the point `p`, and the constant map `f p` serves.
-    have : Subsingleton E := finrank_zero_iff.1 hdim
-    have h_cont : Continuous (f p) := continuous_iff_continuousAt.2 fun k ↦
-      (hf_cont.self_of_nhds k).comp (f := fun k : K ↦ (p, k)) (by fun_prop)
-    refine ⟨fun _ ↦ ⟨f p, h_cont⟩, analyticAt_const, .of_forall fun x ↦ ?_⟩
-    rw [Subsingleton.elim x p, coe_mk]
-  | succ n ih =>
-    have e : E ≃L[ℂ] ℂ × (ULift (Fin n) → ℂ) := .ofFinrankEq (by simp [hdim, add_comm])
-    -- Both hypotheses hold on a closed polydisc of radius `r` round `e p`.
-    rw [← e.symm_map_nhds_eq] at hf_cont hf_diff
-    obtain ⟨r, hr, h_ball⟩ : ∃ r > 0, ∀ y ∈ closedBall (e p) r,
-        (∀ k : K, ContinuousAt f.uncurry (e.symm y, k)) ∧
-          ∀ k : K, DifferentiableAt ℂ (fun z : E ↦ f z k) (e.symm y) :=
-      nhds_basis_closedBall.mem_iff.1 (hf_cont.and hf_diff)
-    choose h_cont_at h_diff_at using h_ball
-    -- `u w` is the function `(k, ζ) ↦ ζ - w` on `K × circle`, a unit for `w` inside the circle.
-    let u (w : ℂ) : C(K × sphere (e p).1 r, ℂ) := .mk (fun q ↦ (q.2 : ℂ)) - w • 1
-    have h_unit (w : ℂ) (hw : dist w (e p).1 < r) : IsUnit (u w) :=
-      (isUnit_iff_forall_ne_zero (u w)).2 fun q ↦ by
-        simpa [u, sub_eq_zero] using ne_of_mem_of_not_mem q.2.prop hw.ne
-    -- Induction hypothesis over `K × circle`, for `(ζ - (e p).1) f(e.symm (ζ, x), k) / (2π)`: the
-    -- first factor is, up to `I`, the derivative of the parametrisation of the circle.
-    let G (x : ULift (Fin n) → ℂ) (q : K × sphere (e p).1 r) : ℂ :=
-      u (e p).1 q * f (e.symm (q.2, x)) q.1 / π / 2
-    have hG : ∀ᶠ x : ULift (Fin n) → ℂ in nhds (e p).2, ∀ q : K × sphere (e p).1 r,
-        ContinuousAt G.uncurry (x, q) ∧ DifferentiableAt ℂ (fun z ↦ G z q) x := by
-      filter_upwards [closedBall_mem_nhds (e p).2 hr] with x hx q
-      have hy : ((q.2 : ℂ), x) ∈ closedBall (e p) r := by
-        rw [mem_closedBall, Prod.dist_eq]
-        exact max_le (mem_sphere.1 q.2.prop).le (mem_closedBall.1 hx)
-      have h_cont : ContinuousAt f.uncurry (e.symm (q.2, x), q.1) := h_cont_at _ hy q.1
-      have h_diff : DifferentiableAt ℂ (fun z : E ↦ f z q.1) _ := h_diff_at _ hy q.1
-      have h_f : ContinuousAt (fun z : (ULift (Fin n) → ℂ) × (K × sphere (e p).1 r) ↦
-          f (e.symm ((z.2.2 : ℂ), z.1)) z.2.1) (x, q) :=
-        ContinuousAt.comp (g := f.uncurry) (x := (x, q)) (f := fun z : (ULift (Fin n) → ℂ) ×
-          (K × sphere (e p).1 r) ↦ (e.symm ((z.2.2 : ℂ), z.1), z.2.1)) h_cont (by fun_prop)
-      exact ⟨(((u (e p).1).continuous.continuousAt.comp continuousAt_snd).mul h_f).div_const _
-        |>.div_const _, by fun_prop⟩
-    obtain ⟨H, hH_an, hH_eq⟩ : DiscreteSeries.IsAnalyticFamily G (e p).2 :=
-      ih (hG.mono fun _ hx q ↦ (hx q).1) (hG.mono fun _ hx q ↦ (hx q).2) (by simp)
-    -- The Cauchy integrand `(u w)⁻¹ * H x` is analytic in `(w, x)`, because inversion is
-    -- analytic at units.
-    have h_inv : AnalyticAt ℂ (fun w : ℂ ↦ Ring.inverse (u w)) (e p).1 :=
-      AnalyticAt.comp (g := Ring.inverse) (f := u) (x := (e p).1)
-        (analyticAt_inverse (𝕜 := ℂ) (h_unit (e p).1 (by simpa)).unit) (by fun_prop)
-    have h_integrand : AnalyticAt ℂ (fun y : E ↦ Ring.inverse (u (e y).1) * H (e y).2) p :=
-      ((h_inv.comp analyticAt_fst).mul (hH_an.comp analyticAt_snd)).comp (e.analyticAt p)
-    -- Integration over the circle, by the angle, is a bounded operator `C(K × circle) → C(K)`.
-    let param (θ : ℝ) : sphere (e p).1 r :=
-      ⟨circleMap (e p).1 r θ, circleMap_mem_sphere (e p).1 hr.le θ⟩
-    let ν : Measure (sphere (e p).1 r) := (volume.restrict (.Icc 0 (2 * π))).map param
-    let avg : C(K × sphere (e p).1 r, ℂ) →L[ℂ] C(K, ℂ) :=
-      contractSndCLM (strongIntegral ν (evalCLM ℂ))
-    refine ⟨fun y : E ↦ avg (Ring.inverse (u (e y).1) * H (e y).2),
-      (avg.analyticAt _).comp h_integrand, ?_⟩
-    filter_upwards [e.continuousAt
-      (prod_mem_nhds (ball_mem_nhds (e p).1 hr) (hH_eq.and (closedBall_mem_nhds (e p).2 hr)))] with
-      y ⟨hw, hH, hx⟩
-    ext k
-    change strongIntegral ν (evalCLM ℂ) ((Ring.inverse (u (e y).1) * H (e y).2).curry k) = f y k
-    rw [strongIntegral_eval, integral_map (by fun_prop) (by fun_prop)]
-    -- What remains is Cauchy's integral formula for `z ↦ f (e.symm (z, (e y).2)) k` at `(e y).1`.
-    have h_diff : DifferentiableOn ℂ (fun z : ℂ ↦ f (e.symm (z, (e y).2)) k)
-        (closedBall (e p).1 r) :=
-      fun z hz ↦ (h_diff_at (z, (e y).2) (max_le hz hx) k).comp_differentiableWithinAt z
-        (f := fun z ↦ e.symm (z, (e y).2)) (by fun_prop)
-    simpa [hH, G, ringInverse_apply_of_isUnit (h_unit (e y).1 hw), u, param] using
-      integral_cauchyKernel_circleMap hw h_diff
+  obtain ⟨U, hU, hU_open, hp⟩ := _root_.eventually_nhds_iff.1 (hf_cont.and hf_diff)
+  let g (x : E) := ContinuousMap.mkD (f x) 0
+  have hc : ContinuousOn f.uncurry (U ×ˢ Set.univ) :=
+    fun ⟨x, k⟩ hx ↦ ((hU x hx.1).1 k).continuousWithinAt
+  have hg : ContinuousOn g U := ContinuousMap.continuousOn_mkD_of_uncurry f 0 hc
+  have heq (x : E) (hx : x ∈ U) (k : K) : g x k = f x k :=
+    ContinuousMap.mkD_apply_of_continuous (hc.comp_continuous (Continuous.prodMk_right x)
+      (fun _ ↦ ⟨hx, Set.mem_univ _⟩))
+  refine ⟨g, ?_, Filter.eventually_of_mem (hU_open.mem_nhds hp) fun x hx ↦ funext (heq x hx)⟩
+  let e := (Module.finBasis ℂ E).equivFunL
+  have h : AnalyticAt ℂ (g ∘ e.symm) (e p) := by
+    apply ContinuousOn.analyticAt_of_differentiableAt_update
+      (hg.comp e.symm.continuous.continuousOn (Set.mapsTo_preimage _ _))
+      (e.symm.continuous.continuousAt.preimage_mem_nhds (by simpa using hU_open.mem_nhds hp))
+    intro y hy i
+    let line (z : ℂ) := e.symm (Function.update y i z)
+    have hline : Differentiable ℂ line :=
+      e.symm.differentiable.comp ((contDiff_update 1 y i).differentiable (by simp))
+    have hopen : IsOpen (line ⁻¹' U) := hU_open.preimage hline.continuous
+    have hd := TauCeti.differentiableOn_of_continuousOn_of_forall_comp (evalCLM ℂ)
+      (fun h hh ↦ ContinuousMap.ext hh) (hg.comp hline.continuous.continuousOn
+        (Set.mapsTo_preimage _ _)) (fun k ↦ ?_) hopen
+    · exact hd.differentiableAt (hopen.mem_nhds (by simpa [line] using hy))
+    · apply DifferentiableOn.congr _ (fun z hz ↦ heq (line z) hz k)
+      intro z hz
+      exact (((hU (line z) hz).2 k).comp z (hline z)).differentiableWithinAt
+  simpa only [Function.comp_def, e.symm_apply_apply] using h.comp (e.analyticAt p)
 
-/-- Let E be a finite-dimensional complex normed space, K a compact R₁ space and f : E → K → ℂ. If,
+/-- Let E be a finite-dimensional complex normed space, K a compact space and f : E → K → ℂ. If,
 for all x near p ∈ E and all k ∈ K, f is jointly continuous at (x, k) and f(·, k) is complex
 differentiable at x, then x ↦ f(x, ·) is analytic at p as a map to C(K, ℂ). The two hypotheses of
 `New.isAnalyticFamily_of_continuousAt_of_differentiableAt` are here joined in one. -/
-lemma isAnalyticFamily_of_differentiable [R1Space K]
+lemma isAnalyticFamily_of_differentiable
     (hf : ∀ᶠ x : E in nhds p, ∀ k : K,
       ContinuousAt f.uncurry (x, k) ∧ DifferentiableAt ℂ (fun z : E ↦ f z k) x) :
     DiscreteSeries.IsAnalyticFamily f p :=
@@ -269,9 +225,9 @@ lemma isAnalyticFamily_of_differentiable [R1Space K]
     (hf.mono fun _ hx k ↦ (hx k).2)
 
 /-- Let E be a finite-dimensional complex normed space and F a complex normed space. If ι : K → F is
-continuous, K is compact and R₁, and Θ is analytic at (p, ι k) for every k, then x ↦ Θ(x, ι ·) is
+continuous, K is compact, and Θ is analytic at (p, ι k) for every k, then x ↦ Θ(x, ι ·) is
 analytic at p ∈ E as a map to C(K, ℂ), that is, an `IsAnalyticFamily` at p. -/
-lemma DiscreteSeries.IsAnalyticFamily.of_analyticAt [R1Space K] {ι : K → F} (hι : Continuous ι)
+lemma DiscreteSeries.IsAnalyticFamily.of_analyticAt {ι : K → F} (hι : Continuous ι)
     (Θ : E × F → ℂ) (hΘ : ∀ k : K, AnalyticAt ℂ Θ (p, ι k)) :
     IsAnalyticFamily (fun (x : E) (k : K) ↦ Θ (x, ι k)) p := by
   -- By compactness of `K`, `Θ` is analytic at `(x, ι k)` for all `k` and all `x` near `p`.
@@ -288,32 +244,17 @@ lemma DiscreteSeries.IsAnalyticFamily.of_analyticAt [R1Space K] {ι : K → F} (
 differentiable at every point near p is analytic at p. -/
 lemma analyticAt_of_eventually_differentiableAt [FiniteDimensional ℂ F] {f : E → F}
     (hf : ∀ᶠ z : E in nhds p, DifferentiableAt ℂ f z) :
-    AnalyticAt ℂ f p := by
-  -- In a basis of `F` each coordinate of `f` is a scalar function, to which
-  -- `isAnalyticFamily_of_continuousAt_of_differentiableAt` applies with `K` a point; integration
-  -- against the Dirac measure evaluates at that point.
-  let e : F ≃L[ℂ] (Fin (finrank ℂ F) → ℂ) := (finBasis ℂ F).equivFunL
-  have h_coord (i : Fin (finrank ℂ F)) : AnalyticAt ℂ (fun y : E ↦ e (f y) i) p := by
-    have h_family : DiscreteSeries.IsAnalyticFamily (fun (y : E) (_ : Unit) ↦ e (f y) i) p := by
-      refine isAnalyticFamily_of_continuousAt_of_differentiableAt (hf.mono fun z hz _ ↦ ?_)
-        (hf.mono fun z hz _ ↦ by fun_prop)
-      have h_cont : ContinuousAt f z := hz.continuousAt
-      fun_prop
-    simpa using h_family.analyticAt_integral (.dirac ())
-  simpa [Function.comp_def] using (e.symm.analyticAt _).comp (AnalyticAt.pi h_coord)
+    AnalyticAt ℂ f p :=
+  have := FiniteDimensional.completeSpace ℂ F
+  DifferentiableOn.analyticAt_of_finiteDimensional
+    (s := {z | DifferentiableAt ℂ f z}) (fun _ hz ↦ hz.differentiableWithinAt) hf
 
 /-- A complex polynomial P in finitely many variables is differentiable at every x, with
 derivative v ↦ ∑ᵢ (∂P/∂Xᵢ)(x)·vᵢ, given by the formal partial derivatives. -/
 @[fun_prop]
 lemma hasFDerivAt_mvPolynomial_eval {ι : Type*} [Fintype ι] (P : MvPolynomial ι ℂ) (x : ι → ℂ) :
-    HasFDerivAt (𝕜 := ℂ) (P.eval ·) (∑ i : ι, (P.pderiv i).eval x • .proj i) x := by
-  classical
-  induction P using MvPolynomial.induction_on with
-  | C a => simpa using hasFDerivAt_const a x
-  | add P Q hP hQ => simpa [add_smul, sum_add_distrib] using hP.fun_add hQ
-  | mul_X P i hP =>
-    simpa [add_smul, sum_add_distrib, Pi.single_apply, mul_smul, ← smul_sum, apply_ite] using
-      hP.fun_mul (hasFDerivAt_apply i x)
+    HasFDerivAt (𝕜 := ℂ) (P.eval ·) (∑ i : ι, (P.pderiv i).eval x • .proj i) x :=
+  P.hasFDerivAt_eval x
 
 end New
 
@@ -358,21 +299,6 @@ lemma New.norm_sub_le_of_holomorphic_bdd {f : E → F} {c : E} {r B : ℝ}
       ((norm_sub_le_of_le (hf_bound w hw) (hf_bound c hc)).trans_eq (two_mul B).symm)
   simpa [dist_eq_norm] using dist_le_div_mul_dist_of_mapsTo_ball hf_diff h_maps hz
 
-/-- A family `A` of bounded operators on a finite-dimensional space `E` is a.e. strongly measurable
-if `x ↦ A x y` is so for every vector `y`. -/
-lemma New.aestronglyMeasurable_clm_of_apply [FiniteDimensional ℂ E] {A : X → E →L[ℂ] F}
-    (hA : ∀ y : E, AEStronglyMeasurable (fun x : X ↦ A x y) μ) :
-    AEStronglyMeasurable A μ := by
-  -- With a basis `b` of `E`, the operator `A x` is the sum of the rank-one operators
-  -- `y ↦ (i-th coordinate of y) • A x (b i)`.
-  let b : Basis (Fin (finrank ℂ E)) ℂ E := finBasis ℂ E
-  let rankOne (i : Fin (finrank ℂ E)) : F →L[ℂ] E →L[ℂ] F :=
-    ContinuousLinearMap.smulRightL ℂ ℂ ℂ E F (b.coord i).toContinuousLinearMap
-  have h_sum (x : X) : ∑ i, rankOne i (A x (b i)) = A x :=
-    ContinuousLinearMap.coe_injective (b.ext fun i ↦ by simp [rankOne, Finsupp.single_apply])
-  exact (Finset.aestronglyMeasurable_fun_sum _ fun i _ ↦
-    (rankOne i).continuous.comp_aestronglyMeasurable (hA (b i))).congr (.of_forall h_sum)
-
 /-- Holomorphy of a parameter integral, the parameter `w` lying in a finite-dimensional space `E`.
 Let each `f w : X → F` be a.e. strongly measurable for the measure `μ`, and for all `w` near `z`
 and all `x` let `f · x` be complex differentiable at `w` with `‖f w x‖ ≤ g x`, `g` integrable.
@@ -403,7 +329,7 @@ lemma New.eventually_differentiableAt_integral {f : E → X → F} {z : E} {g : 
   have h_hasFDerivAt :
       HasFDerivAt (fun u : E ↦ ∫ x, f u x ∂μ) (∫ x, fderiv ℂ (f · x) w ∂μ) w :=
     (hasFDerivAt_integral_of_dominated_loc_of_lip' (ball_mem_nhds w hr) (fun u _ ↦ hf u) h_int
-      (aestronglyMeasurable_clm_of_apply h_dir) h_lip (by fun_prop) h_deriv).2
+      (TauCeti.aestronglyMeasurable_clm_apply_iff.mpr h_dir) h_lip (by fun_prop) h_deriv).2
   exact h_hasFDerivAt.differentiableAt
 
 /-- A Mellin integral that converges at two points converges between them. Let N > 0 be a
@@ -479,7 +405,7 @@ lemma New.eq_zero_of_submersion {E F : Type*} [NormedAddCommGroup E] [NormedSpac
   exact congrFun (hG.eq_of_eventuallyEq analyticOnNhd_const h_near) y
 
 /-!
-## Euler's beta integral and Hua's integral bound
+## Hua's integral bound
 
 The integrals are lower Lebesgue integrals with values in `[0, ∞]`.
 -/
@@ -488,28 +414,10 @@ section HuaIntegral
 
 open ComplexOrder Fintype Function Matrix MatrixOrder MeasureTheory Real
 
-/-- Euler's beta integral: for Im z > 0 and s > 1/2, the integral over real t of |z + t|^{−2s}
-equals √π Γ(s − 1/2)/Γ(s) · (Im z)^{−(2s−1)}. -/
-lemma New.lintegral_norm_add_rpow (z : ℂ) {s : ℝ} (hz : 0 < z.im) (hs : 1 / 2 < s) :
-    ∫⁻ t : ℝ, ENNReal.ofReal (‖z + t‖ ^ (-2 * s)) =
-      ENNReal.ofReal (√π * Gamma (s - 1 / 2) / Gamma s * z.im ^ (-(2 * s - 1))) := by
-  -- After the shift by `z.re` the integrand is `(z.im ^ 2 + t ^ 2)⁻¹ ^ s`.
-  have shift (t : ℝ) : ‖z + ↑(t - z.re)‖ ^ (-2 * s) = (z.im ^ 2 + t ^ 2)⁻¹ ^ s := by
-    simp (disch := positivity) [rpow_neg, rpow_mul, Complex.norm_eq_sqrt_sq_add_sq, add_comm,
-      inv_rpow]
-  rw [← lintegral_sub_right_eq_self _ z.re]
-  simp_rw [shift]
-  rw [lintegral_inv_add_rpow (pow_pos hz 2) hs sq_nonneg (by bound)]
-  have im_pow : (1 / z.im ^ 2) ^ (s - 1 / 2) = z.im ^ (-(2 * s - 1)) := by
-    rw [one_div, inv_rpow (by positivity), ← rpow_natCast_mul hz.le, ← rpow_neg hz.le]
-    norm_num [mul_sub]
-  rw [← sqrt_eq_rpow π, im_pow]
-  ring_nf
-
 /-- For a square matrix C over ℂ and a row vector y, |det (C⋆C + (yC)⋆(yC))| = |det C|² (1 + |y|²),
-where ⋆ is the conjugate transpose. The hypothesis det C ≠ 0 is not used. -/
+where ⋆ is the conjugate transpose. -/
 lemma New.norm_det_star_mul_self_add_vecMulVec {κ : Type} [Fintype κ] [DecidableEq κ]
-    {C : Matrix κ κ ℂ} (_hC : C.det ≠ 0) (y : κ → ℂ) :
+    {C : Matrix κ κ ℂ} (y : κ → ℂ) :
     ‖(star C * C + vecMulVec (star (y ᵥ* C)) (y ᵥ* C)).det‖ =
       ‖C.det‖ ^ 2 * (1 + ∑ j : κ, ‖y j‖ ^ 2) := by
   have h_factor : star C * C + vecMulVec (star (y ᵥ* C)) (y ᵥ* C) =
@@ -558,7 +466,7 @@ lemma New.lintegral_norm_det_add_vecMulVec_inv_pow_le {κ : Type} [Fintype κ] [
       rw [← lintegral_add_right_eq_self _ (-a ᵥ* S⁻¹),
         lintegral_eq_norm_det_sq_mul_lintegral_mulVec (C * S⁻¹)ᵀ (by simp [hC, hS]),
         ← lintegral_const_mul' _ _ (by finiteness)]
-      simp_rw [h_subst, norm_det_star_mul_self_add_vecMulVec hC]
+      simp_rw [h_subst, norm_det_star_mul_self_add_vecMulVec (C := C)]
     _ ≤ ∫⁻ y : κ → ℂ, .ofReal B * .ofReal ((1 + ∑ j, ‖y j‖ ^ 2)⁻¹ ^ (card κ + 1)) := by
       refine lintegral_mono fun y ↦ ?_
       rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity), h_jacobian]

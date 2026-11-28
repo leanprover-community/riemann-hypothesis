@@ -1,5 +1,12 @@
+module
+
+public import Mathlib.Analysis.Complex.Circle
+import Mathlib.NumberTheory.MulChar.Duality
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.Star.Unitary
+public import Lib.ClassField.Places.Ideles
+import Lib.Adelic.Adeles.StrongApproximation
 import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
-import Lib.ClassField.Places.Ideles
 import Lib.GaloisRep.Hilbert90.UnitaryGroups
 
 /-!
@@ -41,6 +48,8 @@ Notions from other files:
 Known; see `Lib.ClassField.Global.CMSplittingCharacters` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -79,7 +88,7 @@ variable {E}
 /-- The homomorphism sending a unitary Hecke character of E to its restriction to the finite
 ideles, with values in ℂ^×. -/
 def HeckeChar.finPart : HeckeChar E →* (𝔸f E)ˣ →* ℂˣ :=
-  MonoidHom.mk' (fun χ ↦ Circle.toUnits.comp (χ.1.toMonoidHom.comp finIdeleIncl)) (by aesop)
+  MonoidHom.mk' (fun χ ↦ Circle.toUnits.comp (χ.val.toMonoidHom.comp finIdeleIncl)) (by aesop)
 
 /-- The value of the Hecke character χ at the local idele given by the chosen uniformiser at the
 finite place w. -/
@@ -111,7 +120,7 @@ lemma comp_divStar_mem_charsTrivialOnPrincipal (μ : AutChar E) :
 to the Hecke character x ↦ μ(x/x̄) of E. -/
 @[simps! -isSimp]
 def AutChar.baseChange : AutChar E →* HeckeChar E :=
-  MonoidHom.mk' (fun μ ↦ ⟨μ.1.comp divStar, comp_divStar_mem_charsTrivialOnPrincipal μ⟩) fun _ _ ↦
+  MonoidHom.mk' (fun μ ↦ ⟨μ.val.comp divStar, comp_divStar_mem_charsTrivialOnPrincipal μ⟩) fun _ _ ↦
     rfl
 
 /-- On a unitary adele `w`, where `w / w̄ = w * w`, the base change of `ν` is `ν (w * w)`. -/
@@ -234,11 +243,8 @@ lemma exists_snd_div_divStar_finIdeleIncl_eq_one :
 /-- If an idele `y` satisfies `y = u * ȳ` for some `u` in `U(1)(𝔸)`, then `y / ȳ = u`. -/
 lemma divStar_eq_of_eq_mul_star {y : (𝔸 E)ˣ} {u : unitary (𝔸 E)}
     (h_eq : (y : 𝔸 E) = (u : 𝔸 E) * star (y : 𝔸 E)) :
-    divStar y = u := by
-  apply Subtype.ext
-  rw [coe_divStar]
-  nth_rw 1 [h_eq]
-  rw [mul_assoc, ← star_mul', Units.mul_inv, star_one, mul_one]
+    divStar y = u :=
+  Subtype.ext <| (Units.mul_inv_eq_iff_eq_mul (star y)).mpr h_eq
 
 /-- Hilbert's Theorem 90 for a field with an involution that negates some nonzero element `j`: an
 element `a` with `a * star a = 1` satisfies `b = a * star b`, that is `a = b / star b`, for some
@@ -272,11 +278,9 @@ lemma divStar_surjective : Function.Surjective (divStar : (𝔸 E)ˣ →ₜ* uni
 /-- Base change is injective: a character `μ` of `U(1)(𝔸)` is determined by `x ↦ μ(x / x̄)`, since
 every point of `U(1)(𝔸)` is of the form `y / ȳ` (`divStar_surjective`). -/
 lemma AutChar.baseChange_injective :
-    Function.Injective (AutChar.baseChange : AutChar E →* HeckeChar E) := by
-  intro α β h_eq
-  ext u
-  obtain ⟨y, rfl⟩ := divStar_surjective u
-  exact congrArg (fun χ : HeckeChar E ↦ (χ.val y : ℂ)) h_eq
+    Function.Injective (AutChar.baseChange : AutChar E →* HeckeChar E) := fun _ _ h_eq ↦
+  Subtype.ext <| DFunLike.coe_injective <|
+    divStar_surjective.injective_comp_right (congrArg (fun χ : HeckeChar E ↦ ⇑χ.val) h_eq)
 
 /-- Reduction modulo w: the homomorphism from the elements of U(1)(𝔸) with integral finite part
 to the multiplicative group of the residue field at w. -/
@@ -300,18 +304,6 @@ lemma divStar_principalIdele_mem_sup (x : Eˣ) :
     simp [toAdele, div_eq_mul_inv, ← map_mul]
   exact mem_sup.2 ⟨_, h_rat, _, mem_integralU1_of_snd_eq_one _ h_snd, mul_div_cancel _ _⟩
 
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E] in
-/-- If a finite idele `y` is a unit at every place, then `y / ȳ` has integral finite part. -/
-lemma divStar_mem_integralU1_empty {y : (𝔸f E)ˣ} (hy : y ∈ idelesUnitOff ∅) :
-    divStar (finIdeleIncl y) ∈ integralU1 (∅ : Finset (FinPlace E)) := by
-  obtain ⟨hy_int, hy_inv_int⟩ : (y : 𝔸f E) ∈ Ô E ∧ ((y⁻¹ : (𝔸f E)ˣ) : 𝔸f E) ∈ Ô E :=
-    (Submonoid.mem_units_iff _ y).1 (idelesUnitOff_empty.le hy)
-  have h_snd : ((divStar (finIdeleIncl y) : unitary (𝔸 E)) : 𝔸 E).2 =
-      (y : 𝔸f E) * star ((y⁻¹ : (𝔸f E)ˣ) : 𝔸f E) := rfl
-  refine ⟨?_, nofun⟩
-  rw [h_snd]
-  exact mul_mem hy_int (star_mem_Ô hy_inv_int)
-
 /-- The class group of `U(1)` of tame level `S`: the quotient of U(1)(𝔸) by the subgroup generated
 by the rational points and the points with integral finite part that are 1 modulo every place of
 the finite set `S`. -/
@@ -334,8 +326,8 @@ This is the analogue for `U(1)` of a CM field of the finiteness of ray class gro
 field, for a tame level given by a finite set of finite places. -/
 instance finite_u1_classGroup : Finite (unitary (𝔸 E) ⧸ rationalU1 ⊔ integralU1 S) := by
   -- `f x = x / x̄` maps the finite ideles onto the class group, through a finite quotient.
-  let f : (𝔸f E)ˣ →* unitary (𝔸 E) := divStar.1.comp finIdeleIncl
-  have h_cont : Continuous f := divStar.2.comp (.units_map _ (.prodMk_right 1))
+  let f : (𝔸f E)ˣ →* unitary (𝔸 E) := divStar.toMonoidHom.comp finIdeleIncl
+  have h_cont : Continuous f := divStar.continuous_toFun.comp (.units_map _ (.prodMk_right 1))
   have h_open : IsOpen (SetLike.coe ((rationalU1 ⊔ integralU1 S).comap f)) :=
     (isOpen_mono le_sup_right (isOpen_integralU1 S)).preimage h_cont
   -- An open subgroup of the finite ideles that contains `Eˣ` has finite index.
@@ -344,33 +336,6 @@ instance finite_u1_classGroup : Finite (unitary (𝔸 E) ⧸ rationalU1 ⊔ inte
   refine .of_surjective (map _ _ f le_rfl) fun q ↦ ?_
   obtain ⟨y, hy⟩ := exists_mk_divStar_eq S q
   exact ⟨y, hy⟩
-
-/-- The class group of `U(1)` of tame level `∅`, the quotient of U(1)(𝔸) by its rational points and
-its points with integral finite part, has order dividing the class number of `E`. -/
-lemma card_u1_classGroup_dvd_classNumber :
-    Nat.card (unitary (𝔸 E) ⧸ rationalU1 ⊔ integralU1 (∅ : Finset (FinPlace E))) ∣
-      classNumber E := by
-  -- The map `g` induced by `y ↦ y / ȳ` from the finite ideles onto this quotient kills the
-  -- principal ideles and the ideles that are units at every place. These generate the kernel of
-  -- a map `c` to the ideal class group.
-  let N : Subgroup (unitary (𝔸 E)) := rationalU1 ⊔ integralU1 (∅ : Finset (FinPlace E))
-  let g : (𝔸f E)ˣ →* unitary (𝔸 E) ⧸ N := (mk' N).comp (divStar.1.comp finIdeleIncl)
-  have hg_surj : Function.Surjective g := exists_mk_divStar_eq ∅
-  obtain ⟨c, hc⟩ : ∃ c : (𝔸f E)ˣ →* ClassGroup (𝓞 E),
-      c.ker = principalIdele.range ⊔ idelesUnitOff ∅ := exists_idele_classGroup_hom
-  have h_ker : c.ker ≤ g.ker := by
-    rw [hc, sup_le_iff]
-    constructor
-    · rintro _ ⟨x, rfl⟩
-      exact (eq_one_iff _).2 (divStar_principalIdele_mem_sup ∅ x)
-    · intro y hy
-      exact (eq_one_iff _).2 (mem_sup_right (divStar_mem_integralU1_empty hy))
-  calc Nat.card (unitary (𝔸 E) ⧸ N)
-      = g.ker.index := (Nat.card_congr (quotientKerEquivOfSurjective g hg_surj).toEquiv).symm
-    _ ∣ c.ker.index := index_dvd_of_le h_ker
-    _ = Nat.card c.range := index_ker c
-    _ ∣ Nat.card (ClassGroup (𝓞 E)) := card_subgroup_dvd_card c.range
-    _ = classNumber E := Nat.card_eq_fintype_card
 
 end New
 
@@ -649,7 +614,7 @@ lemma exists_mem_tameChars (χ : unitary (𝔸 E) ⧸ (rationalU1 ⊔ integralU1
     refine exists_monoidHom_extend (.pi fun w : S ↦ reduceU1 (w : FinPlace E))
       ((χ.toHomUnits.comp (mk' _)).domRestrict _) ⊥ fun u hu ↦ ?_
     -- `u` reduces to 1 at every place of `S`, so it lies in `integralU1 S`, which χ kills.
-    have h_mem : (u : unitary (𝔸 E)) ∈ integralU1 S := ⟨snd_mem_Ô_of_mem_integralU1 u.2,
+    have h_mem : (u : unitary (𝔸 E)) ∈ integralU1 S := ⟨snd_mem_Ô_of_mem_integralU1 u.property,
       fun w hw ↦ congrArg Units.val (congrFun (Subgroup.mem_bot.1 hu) ⟨w, hw⟩)⟩
     exact ext (le_comap_mk' _ χ.ker (mem_sup_right h_mem))
   let e_pi := Pi.monoidHomMulEquiv (fun w : S ↦ (ResField (w : FinPlace E))ˣ) ℂˣ
@@ -693,17 +658,17 @@ instance finite_tameChars : Finite (tameChars S) := by
   -- Such a character comes from a character of the finite class group of level `S`; its tame part
   -- is determined by its finitely many components at the places of `S`.
   choose θ hθ using fun χ : tameChars S ↦
-    exists_classGroup_char_eq_of_hasWeight_zero χ.2.1 χ.2.2
+    exists_classGroup_char_eq_of_hasWeight_zero χ.property.1 χ.property.2
   let data (χ : tameChars S) :
-      (AdelicU1ClassGroup S →* ℂˣ) × ∀ w : S, MulChar (ResField w.1) ℂ :=
-    (toUnits.comp (θ χ), S.restrict χ.1.2)
+      (AdelicU1ClassGroup S →* ℂˣ) × ∀ w : S, MulChar (ResField w.val) ℂ :=
+    (toUnits.comp (θ χ), S.restrict χ.val.2)
   refine .of_injective data fun χ χ' h ↦ ?_
   ext w
   · rw [← hθ χ w, ← hθ χ' w]
     congrm $h.1 w
   · by_cases hw : w ∈ S
     · congrm $h.2 ⟨w, hw⟩ _
-    · rw [χ.2.2 w hw, χ'.2.2 w hw]
+    · rw [χ.property.2 w hw, χ'.property.2 w hw]
 
 /-- There are finitely many characters `μ` of `U(1)(𝔸)` of a given weight `e` and tame part `ψ`.
 These satisfy `μ u = ∏_v u_v^{e(v)} · ∏_w ψ_w(u mod w)` for all `u` with integral finite part. -/
@@ -722,15 +687,6 @@ lemma finite_setOf_hasWeight (e : InfinitePlace E → ℤ)
   refine Finite.of_injective quot fun μ μ' h_eq ↦ ?_
   have h_mul : μ.val * ν⁻¹ = μ'.val * ν⁻¹ := congrArg (fun χ ↦ χ.val.fst) h_eq
   exact Subtype.ext (mul_right_cancel h_mul)
-
-/-- The values of a character of `U(1)(𝔸)` of weight 0 are roots of unity. -/
-lemma HasWeight.isOfFinOrder_apply (h : μ.HasWeight 0 ψ) (u : unitary (𝔸 E)) :
-    IsOfFinOrder (μ.val u : ℂ) := by
-  -- `μ` comes from a character of the finite class group of its level.
-  let S : Finset (FinPlace E) := h.finite_ramification.toFinset
-  obtain ⟨χ, hχ⟩ := exists_classGroup_char_eq_of_hasWeight_zero h (S := S) (by simp [S])
-  rw [← hχ u]
-  exact coeHom.isOfFinOrder (χ.isOfFinOrder (isOfFinOrder_of_finite _))
 
 /-- Let `μ` have weight `e` and tame part `ψ`, and let `u` in `U(1)(𝔸)` have archimedean part 1.
 There are `n > 0` and `γ` in `E` with `γ γ̄ = 1` such that (a) `uⁿ γ` is a unit at every finite
@@ -797,8 +753,9 @@ lemma exists_conj (h : μ.HasWeight e ψ) {σ : ℂ ≃+* ℂ}
   let χ : unitary (𝔸 E) →* ℂ :=
     { toFun u := (∏ v, (u : 𝔸 E).fst (p v) ^ e v) * σ (μ.val u / ∏ v, (u : 𝔸 E).fst v ^ e v)
       map_one' := by simp
-      map_mul' := by
-        simp [mul_zpow, Finset.prod_mul_distrib, mul_div_mul_comm, mul_mul_mul_comm] }
+      map_mul' x y := by
+        simp [mul_zpow, Finset.prod_mul_distrib]
+        ring }
   have hχ (u : unitary (𝔸 E)) :
       χ u = (∏ v, (u : 𝔸 E).fst (p v) ^ e v) * σ (μ.val u / ∏ v, (u : 𝔸 E).fst v ^ e v) :=
     rfl

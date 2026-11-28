@@ -1,5 +1,13 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Combinatorics.Additive.AP.Three.Behrend
+import Mathlib.NumberTheory.SumTwoSquares
+import Mathlib.RingTheory.ZMod.UnitsCyclic
+public import New.Reduction.Data.AdmissibleData
 import Lib.Analytic.Primes
-import New.Reduction.Data.AdmissibleData
 
 /-!
 # Admissible data exist at every large x
@@ -30,13 +38,20 @@ Notions from other files:
 
 ## Relation to the literature
 
-Known result: Behrend's construction for several equations at once. Source: Shapira, Behrend-type
-constructions for sets of linear equations, Acta Arith. 2006 (after Behrend, PNAS 32, 1946); compare
-Alon–Shapira, A characterization of easily testable induced subgraphs (2006), Lemma 4.1 (preprint
-numbering). Form here: all weights up to a given bound are avoided at once, modulo an
-integer, with a fixed number of digits and the explicit count of points on a sphere. This concerns
-`exists_three_term_free`.
+Alon–Shapira, *A characterization of easily testable induced subgraphs* (2006),
+[Lemma 4.1, pp. 6–7 of the authors' version](https://web.math.princeton.edu/~nalon/PDFS/testindfull2.pdf#page=6),
+construct one set of integers on which every equation `a x + b y = (a + b) z` with
+`1 ≤ a, b ≤ h` has only the solutions `x = y = z`. Their proof uses Behrend's digit sphere
+(PNAS 32, 1946). Shapira, *Behrend-type constructions for sets of linear equations*
+(Acta Arith. 2006), also treats individual equations and systems of equations.
+
+`exists_three_term_free` bounds the sum of the positive weights by `L` and states the result
+modulo `o`, with a prescribed digit count `n` and digit bound `H`. Both weighted sums have
+base-`L * H` digits less than `L * H`, so their values are below `(L * H) ^ n ≤ o` and a
+congruence gives an equality. The sphere count gives the bound `H ^ n / (n * H ^ 2)`.
 -/
+
+@[expose] public section
 
 /-!
 ## Existence of admissible data at every large integer x
@@ -235,7 +250,7 @@ lemma Parameters.exists_large_isSparse (P : Parameters) {s n H L : ℕ}
     have h_order : 2 ^ s ≤ (ℓ + 1) * (2 * i) :=
       two_pow_le_of_pow_eq_one (q := ℓ) hℓ.one_lt (by omega) (by simpa using h_pow)
     have h_small : (ℓ + 1) * (2 * i) ≤ (L + 1) * (2 * l₀ s) := Nat.mul_le_mul (by omega) (by omega)
-    nlinarith only [h_order, h_small, hL]
+    linarith only [h_order, h_small, hL]
 
 /-- **A large sparse set of places.** The infinite places `P.Φ s` of `E = P.E s` form the group
 `(ℤ/q₁)ˣ`. Let `0 < n`, `1 ≤ W ≤ 2 ^ s ≤ W ^ n`, `(2 l₀) ^ n ≤ W`, `3 l₀ n 2 ^ n ≤ W ^ 3` and
@@ -389,9 +404,9 @@ lemma exists_isLeast_two_pow_three_pow {y : ℝ} (hy : 2 ≤ y) :
       (∃ e : ℕ, r = 3 ^ (e + 1)) ∧
       s ≤ 32 * y := by
   obtain ⟨a, hm, hm_pred_lt : ((2 : ℕ) : ℝ) ^ a < exp (y / 2)⟩ :=
-    exists_isLeast_pow (z := exp (y / 2)) one_lt_two (by bound)
+    exists_isLeast_pow (z := exp (y / 2)) one_lt_two (Real.one_lt_exp_iff.2 (by linarith))
   obtain ⟨c, hr, hr_pred_lt : ((3 : ℕ) : ℝ) ^ c < exp (5 * y)⟩ :=
-    exists_isLeast_pow (q := 3) (z := exp (5 * y)) (by simp) (by bound)
+    exists_isLeast_pow (q := 3) (z := exp (5 * y)) (by simp) (Real.one_lt_exp_iff.2 (by linarith))
   refine ⟨2 ^ (a + 1), 3 ^ (c + 1), (a + 1) * 22, hm, hr, by simpa [pow_succ'] using hm_pred_lt.le,
     by simpa [pow_succ'] using hr_pred_lt.le, ⟨a, rfl, rfl⟩, ⟨c, rfl⟩, ?_⟩
   -- `a log 2 < y / 2` and `2 ≤ y`
@@ -411,10 +426,10 @@ lemma mul_rank_lt_two_pow {y : ℝ} {m r s : ℕ} (hy : 0 < y) (h_large : 1e6 * 
     grw [show r + 1 - m ≤ r by omega]
     push_cast
     grw [hr, hr]
-    linarith [one_le_pow₀ (n := 2) (one_le_exp (x := 5 * y) (by positivity))]
+    linarith only [one_le_pow₀ (n := 2) (one_le_exp (x := 5 * y) (by positivity))]
   rw [h_pow, ← Nat.cast_lt (α := ℝ), Nat.cast_mul, Nat.cast_mul, Nat.cast_pow]
   calc _ ≤ 2 * (2592 * y) * (46 * exp (5 * y) ^ 2) := by grw [h_rank, hl, Nat.cast_ofNat]
-    _ < 1e6 * y * exp (5 * y) ^ 2 := by nlinarith [mul_pos hy (pow_pos (exp_pos (5 * y)) 2)]
+    _ < 1e6 * y * exp (5 * y) ^ 2 := by linarith [mul_pos hy (pow_pos (exp_pos (5 * y)) 2)]
     _ ≤ exp y * exp (5 * y) ^ 2 := by gcongr
     _ = exp (y / 2) ^ 22 := by
       rw [← exp_natCast_mul, ← exp_natCast_mul, ← exp_add]
@@ -459,7 +474,7 @@ lemma pow_mul_exp_le_exp_pow_six {n : ℕ} {W : ℝ} (hW : 1 ≤ W) (hn : n + 1 
     W ^ n * exp W ≤ exp (W ^ 6) :=
   calc W ^ n * exp W ≤ exp W ^ n * exp W := by
         gcongr
-        linarith [add_one_le_exp W]
+        linarith only [add_one_le_exp W]
     _ = exp ((n + 1) * W) := by rw [← exp_natCast_mul, ← exp_add, add_one_mul]
     _ ≤ exp (W ^ 6) := by grw [hn, ← sq, pow_le_pow_right₀ hW (by norm_num : 2 ≤ 6)]
 
@@ -668,11 +683,11 @@ variable {P : Parameters} {n s : ℕ} {y W : ℝ}
 
 /-- A large scale `W` (`Parameters.IsLargeScale`) is at least `1`. -/
 lemma one_le (h_scale : P.IsLargeScale n y W) : 1 ≤ W := by
-  linarith [h_scale.add_one_le, n.cast_nonneg (α := ℝ)]
+  linarith only [h_scale.add_one_le, n.cast_nonneg (α := ℝ)]
 
 /-- If `W` is a large scale for `y` (`Parameters.IsLargeScale`), then `100 ≤ y`. -/
 lemma hundred_le (h_scale : P.IsLargeScale n y W) : 100 ≤ y := by
-  linarith [h_scale.log_W_le, log_nonneg h_scale.one_le]
+  linarith only [h_scale.log_W_le, log_nonneg h_scale.one_le]
 
 /-- At a large scale `W`, the modulus `q₂² = P.q₂ s ^ 2` is at most `W ^ n` for `s ≤ 32 y`. -/
 lemma q₂_sq_le (h_scale : P.IsLargeScale n y W) (hs : s ≤ 32 * y) : (P.q₂ s ^ 2 : ℕ) ≤ W ^ n :=
@@ -719,7 +734,8 @@ end Parameters.IsLargeScale
 `D : Data P` bundles such objects and scales `x`, `x₁` with the inequalities `(log b) ^ 100 ≤ x`,
 `x ^ 10⁶ ≤ x₁`, `x₁ ^ 10⁶ ≤ b`, `(log x₁) ^ 6 ≤ log b`, `10¹² P.constantBound ≤ log log b`,
 `m ∈ [√x, 2 √x]` and `r ∈ [x⁵, 3 x⁵]`. There is a `D` whose ranks, scales and tower exponent are
-the given ones, with `x₁ = ⌊exp W⌋` (`Data.HasFields`). Moreover `W - 1 ≤ log x₁` and `W ^ 6 ≤ log b ≤ W ^ 6 + 1`. -/
+the given ones, with `x₁ = ⌊exp W⌋` (`Data.HasFields`). Moreover `W - 1 ≤ log x₁` and
+`W ^ 6 ≤ log b ≤ W ^ 6 + 1`. -/
 lemma Parameters.IsAdmissibleData.exists_hasFields {P : Parameters} {x n m r s b N : ℕ} {W : ℝ}
     {T : Finset (P.Φ s)} {g : Fin 2 → ℕ} {α : 𝓞 P.K} {β : 𝓞 (P.E s)}
     (h_adm : P.IsAdmissibleData x W m r s b T g α N β) (h_scale : P.IsLargeScale n (log x) W) :
@@ -783,8 +799,8 @@ lemma Parameters.IsAdmissibleData.exists_hasFields {P : Parameters} {x n m r s b
 
 /-- **Admissible data are fields of the data.** Let `0 < ε < 1 / 100`. For every large enough
 integer `x`, any admissible data (`Parameters.IsAdmissibleData`) at `x` and `W = x ^ (ε / 6)` give
-the ranks, scales and tower exponent of some `D : Data P` (`Data.HasFields`). This `D` has `x ^ (ε / 6) - 1 ≤ D.logX₁`, and
-`D.logB` lies in `[x ^ ε, x ^ ε + 1]`. -/
+the ranks, scales and tower exponent of some `D : Data P` (`Data.HasFields`). This `D` has
+`x ^ (ε / 6) - 1 ≤ D.logX₁`, and `D.logB` lies in `[x ^ ε, x ^ ε + 1]`. -/
 theorem eventually_exists_data_of_isAdmissibleData (P : Parameters) {ε : ℝ} (hε : 0 < ε)
     (hε_lt : ε < 1 / 100) :
     ∀ᶠ x : ℕ in atTop, ∀ (m r s b : ℕ) (T : Finset (P.Φ s)) (g : Fin 2 → ℕ) (α : 𝓞 P.K) (N : ℕ)
@@ -896,11 +912,11 @@ theorem eventually_exists_data (P : Parameters) {ε : ℝ} (hε : 0 < ε) (hε_l
   have h_four : 4 ∣ P.q₀ * P.d := Dvd.dvd.mul_right (.trans (by norm_num) P.dvd_q₀) P.d
   have hW : Tendsto (fun x : ℕ ↦ (x : ℝ) ^ (ε / 6)) atTop atTop :=
     (tendsto_rpow_atTop (by positivity)).comp tendsto_natCast_atTop_atTop
-  filter_upwards [h_scale, hW.eventually (exists_prime_modEq_one_log_mem _ (n + 7) h_four),
-    eventually_exists_data_of_isAdmissibleData P hε hε_lt] with x hx h_window h_data
+  filter_upwards [h_scale, hW.eventually (exists_prime_modEq_one_log_mem _ (n + 7) h_four)]
+    with x hx h_window
   -- admissible data exist, and they are the fields of the data `D`
   obtain ⟨m, r, s, b, T, g, α, N, β, h_adm⟩ := hx.exists_isAdmissibleData h_window
-  obtain ⟨D, h_fields, h_logX₁, h_logB⟩ := h_data m r s b T g α N β h_adm
+  obtain ⟨D, h_fields, h_logX₁, h_logB⟩ := h_adm.exists_hasFields hx
   obtain rfl : D.m = m := h_fields.m_eq
   obtain rfl : D.r = r := h_fields.r_eq
   obtain rfl : D.natB = b := h_fields.natB_eq
@@ -908,6 +924,6 @@ theorem eventually_exists_data (P : Parameters) {ε : ℝ} (hε : 0 < ε) (hε_l
   have h_natB : IsLeast {b : ℕ | D.q₁ * D.natX₁ ∣ b ∧ exp ((x : ℝ) ^ ε) < b} D.natB := by
     simpa only [h_fields.natX₁_eq, rpow_div_six_pow_six] using h_adm.isLeast_b
   exact ⟨D, h_fields.natX_eq, h_fields.natX₁_eq, h_natB, h_adm.isLeast_m, h_adm.isLeast_r, h_logX₁,
-    h_logB⟩
+    by simpa only [rpow_div_six_pow_six] using h_logB⟩
 
 end New

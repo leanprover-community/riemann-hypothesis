@@ -1,5 +1,12 @@
-import New.Spanning.RemainingTerms.Data
-import New.Spanning.RemainingTerms.FrameCount
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
+public import New.Spanning.RemainingTerms.Data
+public import New.Spanning.RemainingTerms.FrameCount
+import New.Spanning.Unfolding.ReducedPoints
 
 /-!
 # The part in `X₀` of a frame, moves, and lifts of a lattice
@@ -32,6 +39,8 @@ Notions from other files:
 * `New.Filling.HasCellRank.exists_framePartX₀_sub_eq`: parts in `X₀` that are congruent modulo
   `M δ` differ by `M η Ξ₀`.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 
@@ -150,7 +159,7 @@ basis `B = y a`, where `Bᴴ B` is integral. The rows of the products of `B` wit
 are the integral combinations of the rows of `Bᴴ B`. Their index among all integral rows, that is
 the index of `L` in its dual lattice, is the square of `discriminant r L`, which is by definition
 the square root of the generalised index of the Gram determinant `det (Bᴴ B)`. -/
-lemma submoduleIndex_colLattice_gram_transpose {κ : Type} [Fintype κ] [DecidableEq κ] {r : ℕ}
+lemma submoduleIndex_colLattice_gram_transpose {κ : Type} [Fintype κ] {r : ℕ}
     {y : Matrix κ (Fin r) E} (hy : HasLeftInv y) (a : GL (Fin r) (𝔸f E))
     (h_int : IsIntMatrix (Ô E) ((finAdeleMatrix y * a.val)ᴴ * (finAdeleMatrix y * a.val))) :
     (submoduleIndex (colLattice (Ô E) ((finAdeleMatrix y * a.val)ᴴ * (finAdeleMatrix y * a.val))ᵀ)
@@ -184,7 +193,7 @@ lemma coe_mem_saturatedLattice (h_inv : H' * H = 1) {V : Submodule E (κ → E)}
   -- since `H m` has an integral left inverse `p`.
   let m : Matrix κ (Fin (finrank E V)) (𝔸f E) := (sublatticeBasis h_inv V).val
   obtain ⟨⟨-, p, hp_int, hp⟩, y, a, -, hy, hm⟩ : IsPrimitiveMatrix (Ô E) (H * m) ∧
-      ∃ᵉ (y : Matrix κ (Fin (finrank E V)) E) (a : GL (Fin (finrank E V)) (𝔸f E)),
+      ∃ y : Matrix κ (Fin (finrank E V)) E, ∃ a : GL (Fin (finrank E V)) (𝔸f E),
         HasLeftInv y ∧ colSpan y = V ∧ m = finAdeleMatrix y * a.val :=
     (sublatticeBasis h_inv V).property
   obtain ⟨t, rfl⟩ : ∃ t : Fin (finrank E V) → E, y *ᵥ t = v := hy.ge hv
@@ -286,9 +295,15 @@ lemma exists_framePartX₀_mul_eq_sub_smul (c : S.Classes) {η : Matrix 𝔰.κ 
   have h_products :
       xᴴ * (S.ratGram * frameImage γ.val.val) = isotropicRows (S.frameProducts γ) := by
     rw [← Matrix.mul_assoc, inclMatrix_conjTranspose_mul_frameImage]
+  have hx (Y : Matrix (Fin 𝔰.ϱ) (Fin (𝔰.ϱ + 1)) E) : (x * Y) (𝔰.indexX₀ i) b = 0 := by
+    simp [x, inclMatrix, Matrix.mul_apply]
+  have hv (Y : Matrix (Fin 𝔰.ϱ) (Fin (𝔰.ϱ + 1)) E) : (v * Y) (𝔰.indexX₀ i) b = (η * Y) i b :=
+    rfl
   simp only [hu_eq, Matrix.add_mul, Matrix.sub_mul, Matrix.smul_mul, Matrix.mul_assoc,
     Matrix.one_mul, h_products]
-  simp [x, v, framePartX₀, frameMiddle, inclMatrix, Matrix.mul_apply, sub_eq_add_neg]
+  rw [Matrix.add_apply, Matrix.smul_apply, Matrix.sub_apply, hx, Matrix.add_apply, hx, hv,
+    Matrix.sub_apply, Matrix.smul_apply, zero_sub, add_zero, smul_neg, ← sub_eq_add_neg]
+  rfl
 
 omit [HasPrimitiveRoot5040 E] in
 /-- The middle part of the frame of the translate by class representatives `h_c⁻¹ γ h_c'`, in the
@@ -313,19 +328,13 @@ lemma frameMiddle_translateByClassReps_mul_classCoordX₀ (c c' : S.Classes) (γ
       (finAdeleMatrix (framePartX₀ γ))ᴴ := by
   -- The basis of `X₀` is orthonormal and orthogonal to `z`.
   have h_gram : ((S.classCoordX₀ c).fromCols (fromRows 0 (1 : Matrix Unit Unit (𝔸f E))))ᴴ *
-      S.latticeMiddle (𝔸f E) * S.classCoordX₀ c = (S.ratMiddle (𝔸f E)).toCols₁ := by
-    refine Matrix.ext fun i k ↦ ?_
-    have h_entry : ((S.classCoord c)ᴴ * (S.latticeMiddle (𝔸f E)).splitGram * S.classCoord c)
-        (.inr (.inl i)) (𝔰.indexX₀ k) =
-          (S.ratMiddle (𝔸f E)).splitGram (.inr (.inl i)) (𝔰.indexX₀ k) :=
-      congrFun₂ (classCoord_conj_splitGram c) _ _
-    simpa [classCoord_eq_fromBlocks, splitGram, fromBlocks_conjTranspose, fromBlocks_multiply] using
-      h_entry
+      S.latticeMiddle (𝔸f E) * S.classCoordX₀ c = (S.ratMiddle (𝔸f E)).toCols₁ :=
+    Matrix.ext fun i k ↦ by
+      simpa [classCoord_eq_fromBlocks, splitGram, fromBlocks_conjTranspose, fromBlocks_multiply]
+        using congrFun₂ (classCoord_conj_splitGram c) (.inr (.inl i)) (𝔰.indexX₀ k)
   rw [frameMiddle_translateByClassReps, conjTranspose_mul,
-    Matrix.mul_assoc _ _ (S.latticeMiddle (𝔸f E)),
-    Matrix.mul_assoc, h_gram]
-  refine Matrix.ext fun b k ↦ ?_
-  simp [framePartX₀, middleGram, Matrix.mul_apply, Matrix.one_apply]
+    Matrix.mul_assoc _ _ (S.latticeMiddle (𝔸f E)), Matrix.mul_assoc, h_gram]
+  exact Matrix.ext fun b k ↦ by simp [framePartX₀, middleGram, Matrix.mul_apply, Matrix.one_apply]
 
 omit [HasPrimitiveRoot5040 E] in
 /-- Let `Λ` be the lattice of the class `c`. The parts in `X₀` of two frames of terms over `c` with
@@ -548,6 +557,7 @@ lemma HasCellRank.sum_norm_sq_sub_mul_inv_lt_one (hγ : S.HasCellRank j γ)
       rw [← Finset.mul_sum, Finset.sum_add_distrib]
       linarith
 
+omit [HasPrimitiveRoot5040 E] in
 /-- Let `E` contain a primitive 5040th root of unity, and let `S` have the congruence level
 `M = S.M`. Let `γ` and `γ'` have the same integral matrix `Z = S.frameProducts γ` of products of the
 standard frame with its image, with the leading minor `δ` of order `j`. Let both have the cell rank
@@ -631,6 +641,19 @@ lemma genIndex_algebraMap_le_pow_of_norm_sq_le {x : E} {e : ℕ}
   grw [genIndex_algebraMap, abs_norm_eq_prod_norm_sq, pow_mul, h_place]
   simp
 
+omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
+private lemma genIndex_le_of_norm_le_frame_bound {x : E}
+    (h : ∀ v : InfinitePlace E, ‖Φ v x‖ ≤ S.M * S.b ^ (270 * 𝔰.n ^ 2)) :
+    genIndex (x : 𝔸f E) ≤ S.b ^ (2 * 𝔰.n ^ 3 * numInfPlaces E) := by
+  refine genIndex_algebraMap_le_pow_of_norm_sq_le fun v ↦ ?_
+  have hb : 0 < S.b := b_pos
+  calc ‖Φ v x‖ ^ 2 ≤ (S.b ^ 23 * S.b ^ (270 * 𝔰.n ^ 2)) ^ 2 := by grw [h, M_le_b_pow]
+    _ ≤ S.b ^ (2 * 𝔰.n ^ 3) := by
+      rw [← pow_add, ← pow_mul]
+      apply pow_le_pow_right₀ S.one_le_b
+      have h_cube : 300 * 𝔰.n ^ 2 ≤ 𝔰.n ^ 3 := S.mul_sq_le_cube (by norm_num)
+      linarith [pow_pos 𝔰.ϱ.succ_pos 2]
+
 omit [HasPrimitiveRoot5040 E] in
 /-- Let `S` be admissible, with size parameter `b = S.b` and `M = S.M`, the product of the two level
 primes. Let `ϱ = 𝔰.ϱ` and `n = 𝔰.n = ϱ + 1`, and let `f` be the number of infinite places. Let `γ`
@@ -641,19 +664,15 @@ absolute value of its norm to `ℚ`, is at most `b ^ (2 n³ f)`. -/
 lemma IsNear.genIndex_M_mul_leadingMinor_le {γ : S.G E} (j : Fin (𝔰.ϱ + 2)) (h_near : S.IsNear γ) :
     genIndex ((S.M * leadingMinor (S.frameProducts γ) j : E) : 𝔸f E) ≤
       S.b ^ (2 * 𝔰.n ^ 3 * numInfPlaces E) := by
-  have h_exponent : 23 * 2 + 270 * 𝔰.n ^ 2 ≤ 2 * 𝔰.n ^ 3 := by
-    have h_cube : 300 * 𝔰.n ^ 2 ≤ 𝔰.n ^ 3 := S.mul_sq_le_cube (by norm_num)
-    linarith [pow_pos 𝔰.ϱ.succ_pos 2]
-  refine genIndex_algebraMap_le_pow_of_norm_sq_le fun v ↦ ?_
-  calc ‖Φ v (S.M * leadingMinor (S.frameProducts γ) j)‖ ^ 2
-      = S.M ^ 2 * ‖Φ v (leadingMinor (S.frameProducts γ) j)‖ ^ 2 := by simp [mul_pow]
-    _ ≤ (S.b ^ 23) ^ 2 * S.b ^ (270 * 𝔰.n ^ 2) := by
-        grw [M_le_b_pow, h_near.norm_map_leadingMinor_sq_le]
-    _ ≤ S.b ^ (2 * 𝔰.n ^ 3) := by
-        rw [← pow_mul, ← pow_add]
-        exact pow_le_pow_right₀ S.one_le_b h_exponent
+  refine genIndex_le_of_norm_le_frame_bound fun v ↦ ?_
+  simp only [map_mul, map_natCast, norm_mul, Complex.norm_natCast]
+  gcongr
+  have hb : 1 ≤ S.b ^ (270 * 𝔰.n ^ 2) := one_le_pow₀ S.one_le_b
+  exact le_of_sq_le_sq
+    ((h_near.norm_map_leadingMinor_sq_le j v).trans (le_self_pow₀ hb two_ne_zero))
+    (zero_le_one.trans hb)
 
-omit [S.IsAdmissible] in
+omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 /-- If `Z` has integral entries, then the modulus `S.frameModulus j Z = M det (Y Yᴴ)` is integral,
 where `M = S.M` and `Y` consists of the first `j` rows of `Z` completed by rows of `1`. -/
 lemma frameModulus_mem_integralAdeles_of_isIntegral {j : Fin (𝔰.ϱ + 2)}
@@ -675,18 +694,8 @@ at most `b ^ (2 n³ f)`. -/
 lemma IsNear.genIndex_frameModulus_le {j : Fin (𝔰.ϱ + 2)} {γ : S.G E} (h_near : S.IsNear γ) :
     genIndex (S.frameModulus j (S.frameProducts γ) : 𝔸f E) ≤
       S.b ^ (2 * 𝔰.n ^ 3 * numInfPlaces E) := by
-  have h_exponent : 23 * 2 + 270 * 𝔰.n ^ 2 * 2 ≤ 2 * 𝔰.n ^ 3 := by
-    have h_cube : 300 * 𝔰.n ^ 2 ≤ 𝔰.n ^ 3 := S.mul_sq_le_cube (by norm_num)
-    linarith [pow_pos 𝔰.ϱ.succ_pos 2]
-  refine genIndex_algebraMap_le_pow_of_norm_sq_le fun v ↦ ?_
-  have hb : 1 ≤ S.b := S.one_le_b
-  calc ‖Φ v (S.frameModulus j (S.frameProducts γ))‖ ^ 2
-      = (S.M * ‖Φ v (leadingMinor (S.frameProducts γ) j)‖ ^ 2) ^ 2 := by
-        simp [frameModulus, sq, mul_assoc]
-    _ ≤ (S.b ^ 23 * S.b ^ (270 * 𝔰.n ^ 2)) ^ 2 := by
-        grw [M_le_b_pow, h_near.norm_map_leadingMinor_sq_le]
-    _ ≤ S.b ^ (2 * 𝔰.n ^ 3) := by
-        rw [mul_pow, ← pow_mul, ← pow_mul, ← pow_add]
-        exact pow_le_pow_right₀ hb h_exponent
+  refine genIndex_le_of_norm_le_frame_bound fun v ↦ ?_
+  simpa [frameModulus, sq, mul_assoc] using
+    mul_le_mul_of_nonneg_left (h_near.norm_map_leadingMinor_sq_le j v) (Nat.cast_nonneg S.M)
 
 end New.Filling

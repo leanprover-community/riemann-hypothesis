@@ -1,5 +1,8 @@
+module
+
+public import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Adelic.Adeles.SemilocalProducts
 import New.Spanning.RemainingTerms.Box
-import New.UpperBound.Size.ShortColumns
 
 /-!
 # Explicit bound for the number of classes in the genus
@@ -28,6 +31,8 @@ Notions from other files:
 
 See `New.UpperBound.Size.Estimates` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -107,7 +112,8 @@ lemma New.Space.stdClasses_eq_of_gram_eq {E n : Type} [Field E] [CMType E] [Fint
     (h_int : IsIntMatrix (Ô E) (A' * A⁻¹).val) : g' = g := by
   -- `γ = Y Y'⁻¹` is a rational isometry, since the Gram matrices agree.
   have h_isom : Y * Y'⁻¹ ∈ U (stdSpace E n).J :=
-    gram_mul_of_gram_eq rfl (gram_inv_of_gram_eq (by simpa using h_gram))
+    mem_unitaryGroupOf_iff.2 <| gram_mul_of_gram_eq rfl 
+      (gram_inv_of_gram_eq (by simpa using h_gram))
   let γ : Gf E n := (stdSpace E n).embFin ⟨Y * Y'⁻¹, h_isom⟩
   have hγ_mem : γ ∈ (stdSpace E n).Γf := ⟨_, rfl⟩
   -- We have `g.out = γ g'.out k` with `k = A' A⁻¹`.

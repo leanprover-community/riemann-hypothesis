@@ -1,8 +1,17 @@
+module
+
+import TauCeti.Algebra.Group.AddChar.Basic
+import TauCeti.MeasureTheory.Integral.Pi
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.MainTerm.FillingLevel
+public import New.Spanning.Unfolding.Climbing
+public import New.Spanning.Frames.BesselVector
 import Lib.General.LinearAlgebra.BlockEmbeddings
 import Lib.General.LinearAlgebra.TensorChains
+import New.Spanning.Frames.FiniteDepth
 import New.Spanning.Frames.FiniteShells
-import New.Spanning.MainTerm.FillingLevel
-import New.Spanning.Unfolding.Climbing
 
 /-!
 # Groups that fix given vectors at chosen places have a small mass integral
@@ -44,6 +53,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 
@@ -102,7 +113,7 @@ theorem card_le_b_of_subset_chosenPlacesAndConj {S : Filling E 𝔰} {T : Finset
 of `S` or the conjugate of one, and let `P.integers` be the ring of integers of the product
 `LocProd T` of the completions at `T`, with units `P.intUnits`. Then (a) `2 ≤ b ^ 9`, and (b) the
 integers that are not units have volume at most `(b ^ 9)⁻¹`. -/
-theorem volume_integers_diff_intUnits_le [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible]
+theorem volume_integers_diff_intUnits_le {S : Filling E 𝔰}
     {T : Finset (FinPlace E)} [fT : T.StarStable] [P : IntegralPlace (LocProd T)]
     (hT : T ⊆ S.chosenPlacesAndConj) :
     2 ≤ ENNReal.ofReal (S.b ^ 9) ∧
@@ -182,7 +193,7 @@ completions at `T`. The form `(S.latticeMiddle A).splitGram` over a ring `A` con
 hyperbolic planes and the Gram matrix `S.latticeMiddle A` of X₀ ⊕ Ez in the lattice basis. Taking
 components at `T` (`S.toPlaces T`) maps the integral elements `S.latticeStabilizer` of the finite
 adelic unitary group of `S` onto `unitaryLevel P.integers 1`. -/
-theorem range_toPlaces_latticeStabilizer [WeilData E] {S : Filling E 𝔰} {T : Finset (FinPlace E)}
+theorem range_toPlaces_latticeStabilizer {S : Filling E 𝔰} {T : Finset (FinPlace E)}
     [fT : T.StarStable] [P : IntegralPlace (LocProd T)] :
     ((S.toPlaces T).comp S.latticeStabilizer.subtype).range =
       unitaryLevel P.integers 1 (S.latticeMiddle (LocProd T)).splitGram := by
@@ -252,7 +263,7 @@ theorem IsFillingData.reduction_eq_one {T : Finset (FinPlace E)} [fT : T.StarSta
   have hy : y = x.map (evalPlaces T) := rfl
   have h_map : F.levelUnit⁻¹ • (y - 1) = (S.ideleM⁻¹ • (x - 1)).map (evalPlaces T) := by
     ext1 a b
-    simp [h.levelUnit_eq, hy, Units.smul_def, Matrix.one_apply, apply_ite (evalPlaces T)]
+    simp [h.levelUnit_eq, hy, Units.smul_def, Matrix.one_apply]
   have h_cong : IsIntMatrix integers (F.levelUnit⁻¹ • (y - 1)) := (mem_unitaryLevel_def.1 hk).right
   rw [h_map] at h_cong
   refine intGL.map_eq_one.2 fun a b ↦ reduceAt_eq_zero_of_inv_ideleM_smul w ?_
@@ -294,7 +305,7 @@ theorem exists_exponent_le_k (S : Filling E 𝔰) :
 
 end Reduction
 
-variable [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible]
+variable {S : Filling E 𝔰}
   {T T₀ : Finset (FinPlace E)} [fT : T.StarStable] [P : IntegralPlace (LocProd T)]
   {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)}
 
@@ -380,7 +391,7 @@ congruence subgroup `K(g) = F.congruenceSubgroup`, has two properties. (a) `Z` c
 `T`-component of every integral element whose reduction fixes `d w` for all `w ∈ Sg`. (b) With the
 mass integral `ϰ = F.massIntegral` and `vol = F.groupMeasure`, `ϰ(Z) vol(K) B ≤ ϰ(K) vol(Z)`, where
 `B` is `S.b ^ (6 * 𝔰.k)` if `o` is a place, and `1` otherwise. -/
-theorem IsFillingData.exists_intermediateGroup_one_place (h : S.IsFillingData T F)
+theorem IsFillingData.exists_intermediateGroup_one_place [S.IsAdmissible] (h : S.IsFillingData T F)
     (Sg : Finset (S.chosenPlaces 0)) (o : Option Sg)
     (d : ∀ w : S.chosenPlaces 0, S.FrameVector w)
     (hT : (↑S.ideleM⁻¹ : 𝔸f E) ∈ integralOff T₀)
@@ -394,7 +405,6 @@ theorem IsFillingData.exists_intermediateGroup_one_place (h : S.IsFillingData T 
           o.elim 1 (fun _ : Sg ↦ ENNReal.ofReal (S.b ^ (6 * 𝔰.k))) ≤
         F.massIntegral (unitaryLevel P.integers 1 (S.latticeMiddle (LocProd T)).splitGram) *
           F.groupMeasure Z := by
-  classical
   -- Without a place take `Z = K`. At a place `w` take for `Z` the image of the group `H` of those
   -- `k` whose reduction at `w` fixes the vector; its index in `K` is that of `H`.
   let p : S.latticeStabilizer →* U (S.latticeMiddle (LocProd T)).splitGram :=
@@ -490,7 +500,6 @@ product of the completions at `T`, which is the character of the finite adeles o
 extension by zero, is the product of the characters of the fibres. -/
 theorem charOnPlaces_eq_prod_fibers [Fintype ι] (x : LocProd T) :
     S.charOnPlaces T x = ∏ i : ι, S.charOnPlaces (placeFiber T blk i) (evalFiber T blk i x) := by
-  classical
   -- An adele supported on `T` is the sum of its parts on the fibres.
   have h_sum :
       adeleOfLocal T x = ∑ i : ι, adeleOfLocal (placeFiber T blk i) (evalFiber T blk i x) := by
@@ -547,13 +556,13 @@ lemma toFibers_surjective : Function.Surjective (S.toFibers T blk) := by
       (Mᴴ * (S.latticeMiddle (LocProd T)).splitGram * M).map (evalFiber T blk i) =
         (S.latticeMiddle (LocProd T)).splitGram.map (evalFiber T blk i) := by
     rw [map_conjTranspose_mul_mul _ fun _ ↦ rfl, hM, S.map_splitGram_latticeMiddle]
-    exact mem_U.1 (y i).prop
+    exact mem_unitaryGroupOf_iff.1 (y i).prop
   have h_unitary : Mᴴ * (S.latticeMiddle (LocProd T)).splitGram * M =
       (S.latticeMiddle (LocProd T)).splitGram := by
     ext a b : 1
     exact (eq_iff_evalFiber_eq blk).2 fun i ↦ congr_fun₂ (h_fiber i) a b
   refine ⟨U.of IsHermitianUnit.isUnit M h_unitary, ?_⟩
-  ext i : 3
+  ext i : 2
   exact hM i
 
 /-- A unitary matrix over the completions at `T` is integral with integral inverse and congruent to
@@ -607,7 +616,7 @@ lemma mem_besselU_iff_toFibers {x : U (S.latticeMiddle (LocProd T)).splitGram} :
         ∀ i : ι, (S.toFibers T blk x i).val a b =
           (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (LocProd (placeFiber T blk i))) a b := by
     rw [eq_iff_evalFiber_eq blk]
-    simp [toFibers_apply, Matrix.one_apply, apply_ite (evalFiber T blk _)]
+    simp [toFibers_apply, Matrix.one_apply]
   simp only [mem_besselU, h_entry]
   exact ⟨fun hx i a b hab ↦ hx a b hab i, fun hx a b hab i ↦ hx i a b hab⟩
 
@@ -629,7 +638,7 @@ lemma measurableEmbedding_toFibers : MeasurableEmbedding (S.toFibers T blk) := b
     continuous_pi fun i : ι ↦ U.continuous_map (continuous_pi fun _ ↦ continuous_apply _)
       (hf_star := fun _ ↦ rfl) (hJ_map := S.map_splitGram_latticeMiddle (evalFiber T blk i))
   refine h_cont.measurableEmbedding fun x y hxy ↦ ?_
-  ext a b : 3
+  ext a b : 2
   refine (eq_iff_evalFiber_eq blk).2 fun i ↦ ?_
   rw [← toFibers_apply, ← toFibers_apply, hxy]
 
@@ -709,13 +718,12 @@ lemma IsFillingData.exists_massIntegral_pi_eq (h : S.IsFillingData T F)
     (h' i).isHaarMeasure_groupMeasure.sigmaFinite
   have _ : LocallyCompactSpace (∀ i : ι, (S.latticeMiddle (LocProd (placeFiber T blk i))).G) :=
     Pi.locallyCompactSpace_of_finite
-  have _ (i : ι) : Nonempty (S.latticeMiddle (LocProd (placeFiber T blk i))).G := ⟨1⟩
   have h_inv : (F.groupMeasure.map (S.toFibers T blk)).IsMulRightInvariant := by
     refine ⟨(toFibers_surjective blk).forall.2 fun x ↦ ?_⟩
     have h_right : MeasurePreserving (· * x) F.groupMeasure F.groupMeasure :=
       measurePreserving_mul_right _ x
     exact ((h_emb.measurable.measurePreserving _).of_semiconj h_right
-      (fun y ↦ map_mul (S.toFibers T blk) y x) (by fun_prop)).map_eq
+      (fun y ↦ (S.toFibers T blk).map_mul y x) (by fun_prop)).map_eq
   obtain ⟨t, ht⟩ : ∃ t : ℝ≥0∞,
       F.groupMeasure.map (S.toFibers T blk) = t • .pi fun i : ι ↦ (F' i).groupMeasure :=
     exists_eq_smul_haar _ h_inv
@@ -742,13 +750,14 @@ lemma IsFillingData.exists_massIntegral_pi_eq (h : S.IsFillingData T F)
       _ = ∫⁻ x : (S.latticeMiddle (LocProd T)).G,
           ‖t.toReal‖ₑ ^ 2 * ∏ i : ι, f i (S.toFibers T blk x i) ∂F.groupMeasure := by
         simp only [PlaceData.massIntegral, h_inner, f, mul_pow, prod_pow, eNorm_eq_nnNorm,
-          nnnorm_smul, nnnorm_prod, ENNReal.coe_mul, ofNNReal_finsetProd]
+          nnNorm_smul, nnNorm_prod, ENNReal.coe_mul, ofNNReal_finsetProd]
       _ = ‖t.toReal‖ₑ ^ 2 * ∫⁻ z, ∏ i : ι, f i (z i) ∂F.groupMeasure.map (S.toFibers T blk) := by
         rw [lintegral_const_mul' _ _ (by simp), h_emb.lintegral_map]
       _ = ‖t.toReal‖ₑ ^ 2 * t * ∏ i : ι, (F' i).massIntegral (Y i) := by
-        rw [ht, lintegral_smul_measure, lintegral_pi_prod _ (by fun_prop), smul_eq_mul, mul_assoc]
+        rw [ht, lintegral_smul_measure, TauCeti.lintegral_fintype_prod_eq_prod _ (by fun_prop),
+          smul_eq_mul, mul_assoc]
         simp only [PlaceData.massIntegral, f]
-  · rw [coe_comap, coe_pi, ← h_emb.map_apply, ht, Measure.smul_apply, Measure.pi_pi, smul_eq_mul]
+  · rw [coe_comap, coe_pi, ← h_emb.map_apply, ht, smul_apply, Measure.pi_pi, smul_eq_mul]
 
 /-- Let `F` be a filling datum at `T` and `F' i` a filling datum at each fibre of a map `blk` from
 the places to a finite type, and let `ϰ` be the mass integral and `vol` the Haar volume. If on each
@@ -764,13 +773,7 @@ lemma IsFillingData.massIntegral_pi_mul_le (h : S.IsFillingData T F)
       F.massIntegral ((Subgroup.pi .univ W).comap (S.toFibers T blk)) *
         F.groupMeasure ((Subgroup.pi .univ Y).comap (S.toFibers T blk)) := by
   -- Mass integral and volume of a product are products, up to constants that agree on both sides.
-  obtain ⟨t, h_prod⟩ : ∃ t : ℝ≥0∞,
-      ∀ Z : ∀ i : ι, Subgroup (S.latticeMiddle (LocProd (placeFiber T blk i))).G,
-        F.massIntegral ((Subgroup.pi .univ Z).comap (S.toFibers T blk)) =
-          ‖t.toReal‖ₑ ^ 2 * t * ∏ i : ι, (F' i).massIntegral (Z i) ∧
-        F.groupMeasure ((Subgroup.pi .univ Z).comap (S.toFibers T blk)) =
-          t * ∏ i : ι, (F' i).groupMeasure (Z i) :=
-    h.exists_massIntegral_pi_eq blk h'
+  obtain ⟨t, h_prod⟩ := h.exists_massIntegral_pi_eq blk h'
   calc F.massIntegral ((Subgroup.pi .univ Y).comap (S.toFibers T blk)) *
         F.groupMeasure ((Subgroup.pi .univ W).comap (S.toFibers T blk)) * ∏ i : ι, c i
     _ = ‖t.toReal‖ₑ ^ 2 * t * t * ∏ i : ι,

@@ -1,5 +1,14 @@
+module
+
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.Tactic.Monotonicity.Lemmas
+public import New.UpperBound.Divisibility.MarkedPrimes
+public import New.UpperBound.Kernels.ThetaLiftGauge
+import Lib.ClassField.Avatar.HeckeBaseChange
+import New.Derivatives.Vacuum.Divisibility
 import New.UpperBound.Divisibility.ChainValuation
 import New.UpperBound.Objects.CharactersAtLevel
+import New.UpperBound.Objects.Rows
 
 /-!
 # Valuations of lifts at non-split primes
@@ -42,6 +51,8 @@ Notions from other files:
 
 See `New.UpperBound.Divisibility.ValuationAtLevel` for related work.
 -/
+
+@[expose] public section
 
 /-! ## One lift, evaluated at a neighbor -/
 
@@ -115,13 +126,13 @@ one), and `r * D.lowColumns j τ` elsewhere. -/
 lemma sum_card_boxes_le {j r : ℕ} (T : WeylIndex (D.X (j + 1)) D.columnCount) (τ : D.Φ)
     {I : Finset (D.X (j + 1))} (hI : #I ≤ r) :
     ∑ h : Fin (Fintype.card (D.X (j + 1))), ∑ c : Fin (D.columnCount τ h),
-        (#{b : Fin h | (T τ).1 h c b ∈ I} + #{b : Fin h | h.1 = 1 ∧ (T τ).1 h c b ∉ I}) ≤
+        (#{b : Fin h | (T τ).val h c b ∈ I} + #{b : Fin h | h.val = 1 ∧ (T τ).val h c b ∉ I}) ≤
       (if τ ∈ D.aPlaces then D.a else 0) + r * D.lowColumns j τ := by
   have h_height (h : Fin (Fintype.card (D.X (j + 1)))) : ∑ c : Fin (D.columnCount τ h),
-        (#{b : Fin h | (T τ).1 h c b ∈ I} + #{b : Fin h | h.1 = 1 ∧ (T τ).1 h c b ∉ I}) ≤
-      (if h.1 = 1 then D.columnCount τ h else 0) +
-        r * if h.1 = 1 then 0 else D.columnCount τ h := by
-    have h_col (c : Fin (D.columnCount τ h)) : #{b : Fin h | (T τ).1 h c b ∈ I} ≤ r :=
+        (#{b : Fin h | (T τ).val h c b ∈ I} + #{b : Fin h | h.val = 1 ∧ (T τ).val h c b ∉ I}) ≤
+      (if h.val = 1 then D.columnCount τ h else 0) +
+        r * if h.val = 1 then 0 else D.columnCount τ h := by
+    have h_col (c : Fin (D.columnCount τ h)) : #{b : Fin h | (T τ).val h c b ∈ I} ≤ r :=
       (card_le_card_of_injOn _ (by simp [Set.MapsTo]) (tableau_col_injective T τ h c).injOn).trans
         hI
     split_ifs with h_one
@@ -193,9 +204,9 @@ lemma IsMarked.exists_eq_mul_neighborDiagonal_mul (hΛ : D.IsMarked Λ) {ι : Ty
       g l ∈ DoubleCoset.doubleCoset (neighborDiagonal p Λ J l) (localIntGL ι l.val)
         (localIntGL ι l.val) := by
     have h_unif : Valued.v (Units.mk0 (p : LocField l.val) NeZero.out).val = WithZero.exp (-1) := by
-      simp [← v_algebraMap_eq_valuation, ← hΛ.valuation_natCast_eq_exp_neg_one l.2]
-    rw [neighborDiagonal, ← basicDoubleCoset_eq (diagGL_mem_basicDoubleCoset h_unif (J l)).1,
-      hJ l l.2]
+      simp [← v_algebraMap_eq_valuation, ← hΛ.valuation_natCast_eq_exp_neg_one l.property]
+    rw [neighborDiagonal, ← basicDoubleCoset_eq (diagGL_ite_mem_basicDoubleCoset h_unif (J l)),
+      hJ l l.property]
     exact hg l
   have h_decomp (l : Λ) :
       ∃ a ∈ localIntGL ι l.val, ∃ b ∈ localIntGL ι l.val,
@@ -258,8 +269,8 @@ lemma IsMarked.sum_neighborExponent_add_neighborCharge_le (hΛ : D.IsMarked Λ) 
     {J : FinPlace D.E → Finset (D.X (j + 1))} (hJ : ∀ l ∈ Λ, #(J l) ≤ r)
     (T : WeylIndex (D.X (j + 1)) D.columnCount) :
     ∑ τ : D.Φ, ∑ h : Fin (Fintype.card (D.X (j + 1))), ∑ c : Fin (D.columnCount τ h), ∑ b : Fin h,
-      ((neighborExponent Λ J τ ((T τ).1 h c b) : ℝ) +
-        neighborCharge Λ J τ h.1 ((T τ).1 h c b)) ≤
+      ((neighborExponent Λ J τ ((T τ).val h c b) : ℝ) +
+        neighborCharge Λ J τ h.val ((T τ).val h c b)) ≤
     ∑ l ∈ Λ, heckeScalingExponent l + r * ∑ τ ∈ placesInducing Λ, D.lowColumns j τ := by
   classical
   let cost (τ : D.Φ) (h : ℕ) (b : D.X (j + 1)) : ℝ :=
@@ -268,7 +279,7 @@ lemma IsMarked.sum_neighborExponent_add_neighborCharge_le (hΛ : D.IsMarked Λ) 
   -- or it is charged, and a low column costs at most `r`. At a place inducing the conjugate of a
   -- prime of `Λ` the entries `p` pay for the charges.
   have h_inducing (τ : D.Φ) (hτ : τ ∈ placesInducing Λ) : ∑ h, ∑ c, ∑ b,
-      cost τ h.1 ((T τ).1 h c b) ≤
+      cost τ h.val ((T τ).val h c b) ≤
       (if τ ∈ D.aPlaces then D.a else 0) + r * D.lowColumns j τ := by
     have h_mem : inducedPlace τ ∈ Λ := by simpa using hτ
     have h_box (h : ℕ) (b : D.X (j + 1)) : cost τ h b =
@@ -282,8 +293,8 @@ lemma IsMarked.sum_neighborExponent_add_neighborCharge_le (hΛ : D.IsMarked Λ) 
       cost τ h b = 0 := by
     simp only [cost, neighborCharge, neighborExponent, hτ, false_and, false_or, ite_false]
     split_ifs <;> simp
-  calc ∑ τ, ∑ h, ∑ c, ∑ b, cost τ h.1 ((T τ).1 h c b)
-      = ∑ τ ∈ placesInducing Λ, ∑ h, ∑ c, ∑ b, cost τ h.1 ((T τ).1 h c b) :=
+  calc ∑ τ, ∑ h, ∑ c, ∑ b, cost τ h.val ((T τ).val h c b)
+      = ∑ τ ∈ placesInducing Λ, ∑ h, ∑ c, ∑ b, cost τ h.val ((T τ).val h c b) :=
         (sum_subset (subset_univ _) fun τ _ hτ ↦ by simp [h_other τ hτ]).symm
     _ ≤ ∑ τ ∈ placesInducing Λ,
           ((if τ ∈ D.aPlaces then D.a else 0) + r * D.lowColumns j τ : ℝ) :=
@@ -311,7 +322,7 @@ lemma IsMarked.ω_ofSplitPlaces_mem_raises (hΛ : D.IsMarked Λ) (ϑ : D.Twist) 
   -- Up to integral elements `g` is diagonal, so it suffices to bound the jets weighted by its
   -- entries. The count with charges bounds the jets, and the rest is counted by boxes.
   classical
-  have hp_pos : 0 < (p : ℝ) := mod_cast hp.1.pos
+  have hp_pos : 0 < (p : ℝ) := mod_cast hp.out.pos
   obtain ⟨J, u, v, hJ, hu, hv, rfl⟩ : ∃ (J : FinPlace D.E → Finset (D.X (j + 1)))
       (u v : (l : Λ) → GL (D.X (j + 1)) (LocField l.val)),
       (∀ l ∈ Λ, #(J l) ≤ D.ceilLogLifts p) ∧ (∀ l : Λ, u l ∈ localIntGL (D.X (j + 1)) l.val) ∧
@@ -329,14 +340,14 @@ lemma IsMarked.ω_ofSplitPlaces_mem_raises (hΛ : D.IsMarked Λ) (ϑ : D.Twist) 
   have h_jet : ‖ιₚ (schurJet D.columnCount
       ((D.homX j).jetSeries (star (D.piMBar : ℂ) * P.jetScale D.towerExp) f) rowFilling
           colFilling)‖ ≤
-      p ^ ((∑ τ, ∑ h, ∑ c, ∑ b, charge τ h.1 ((rowFilling τ).1 h c b) : ℕ) -
+      p ^ ((∑ τ, ∑ h, ∑ c, ∑ b, charge τ h.val ((rowFilling τ).val h c b) : ℕ) -
         D.divisibilityBound p j (placesInducing Λ)) := by
     simp_rw [divisibilityBound, ← card_X]
     exact norm_schurJet_jetSeries_le_of_charges hΛ.isSmallNonsplit.2 (isLiftWeight_columnCount j).1
       hf norm_star_piMBar_le_one _ _ (hΛ.neighborCharge_ne_zero_or_partner J) rowFilling colFilling
   -- The boxes with their exponents and charges are counted by the long rows and low columns.
-  have h_cost : (∑ τ, ∑ h, ∑ c, ∑ b, ((neighborExponent Λ J τ ((rowFilling τ).1 h c b) : ℝ) +
-        charge τ h.1 ((rowFilling τ).1 h c b))) ≤
+  have h_cost : (∑ τ, ∑ h, ∑ c, ∑ b, ((neighborExponent Λ J τ ((rowFilling τ).val h c b) : ℝ) +
+        charge τ h.val ((rowFilling τ).val h c b))) ≤
       ∑ l ∈ Λ, heckeScalingExponent l + D.ceilLogLifts p * ∑ τ ∈ placesInducing Λ,
         D.lowColumns j τ :=
     hΛ.sum_neighborExponent_add_neighborCharge_le hJ rowFilling
@@ -344,20 +355,20 @@ lemma IsMarked.ω_ofSplitPlaces_mem_raises (hΛ : D.IsMarked Λ) (ϑ : D.Twist) 
   have h_norm (e : ℤ) : ‖(p : ℂ_[p]) ^ (-e)‖ = (p : ℝ) ^ (e : ℝ) := by simp [norm_p_eq_inv]
   have h_weight : diagonalWeight (D.lastEntry (j + 1))
         (fun τ b ↦ (p : ℂ_[p]) ^ (-neighborExponent Λ J τ b)) rowFilling =
-      (p : ℝ) ^ ∑ τ, ∑ h, ∑ c, ∑ b, (neighborExponent Λ J τ ((rowFilling τ).1 h c b) : ℝ) := by
+      (p : ℝ) ^ ∑ τ, ∑ h, ∑ c, ∑ b, (neighborExponent Λ J τ ((rowFilling τ).val h c b) : ℝ) := by
     simp_rw [diagonalWeight, h_norm, ← rpow_sum_of_pos hp_pos, ← rpow_intCast,
       ← rpow_mul hp_pos.le, ← rpow_add hp_pos, ← rpow_sum_of_pos hp_pos,
       sum_add_distrib, hΛ.sum_neighborExponent_mul_lastEntry_eq_zero J j, zero_add]
   -- The exponents add up to the cost bounded in `h_cost`, less the divisibility bound.
-  have h_exponent : (∑ τ, ∑ h, ∑ c, ∑ b, (neighborExponent Λ J τ ((rowFilling τ).1 h c b) : ℝ)) +
-      ((∑ τ, ∑ h, ∑ c, ∑ b, charge τ h.1 ((rowFilling τ).1 h c b) : ℕ) -
+  have h_exponent : (∑ τ, ∑ h, ∑ c, ∑ b, (neighborExponent Λ J τ ((rowFilling τ).val h c b) : ℝ)) +
+      ((∑ τ, ∑ h, ∑ c, ∑ b, charge τ h.val ((rowFilling τ).val h c b) : ℕ) -
         D.divisibilityBound p j (placesInducing Λ)) ≤
       (∑ l ∈ Λ, heckeScalingExponent l : ℕ) + liftLoss Λ j := by
     simp only [sum_add_distrib] at h_cost
     push_cast [liftLoss] at h_cost ⊢
     linarith
   grw [h_weight, h_jet, ← rpow_add hp_pos]
-  exact rpow_le_rpow_of_exponent_le (mod_cast hp.1.pos) h_exponent
+  exact rpow_le_rpow_of_exponent_le (mod_cast hp.out.pos) h_exponent
 
 /-! ## Hecke transfer along the chain of lifts -/
 
@@ -388,7 +399,6 @@ by a power of the splitting character fixed by the rank, is unramified. -/
 lemma IsMarked.charUnramifiedAt_rankTwist (hQ : p.Coprime ϑ.normQ)
     {Λ : Finset (FinPlace D.E)} (hΛ : D.IsMarked Λ) {l : FinPlace D.E} (hl : l ∈ Λ) (j k : ℕ) :
     CharUnramifiedAt (rankTwist (D.chainChar ϑ j) (D.X k)).baseChange.finPart l := by
-  have hl_split : star l ≠ l := hΛ.isSplit hl
   obtain ⟨h_level, h_piM, h_piMBar, h_N⟩ := hΛ.notMem_asIdeal hQ hl
   have h_notMem_Q : l ∉ ϑ.Q ∧ star l ∉ ϑ.Q :=
     not_or.1 fun h_mem ↦ h_level (D.normQ_mem_and_notMem_of_mem_Q ϑ h_mem).left
@@ -405,7 +415,6 @@ lemma IsWeakChainDatum.projOn_translateDatum_eq_self (H : IsWeakChainDatum ϑ Ψ
     (hΛ : D.IsMarked Λ) {l : FinPlace D.E} (hl : l ∈ Λ)
     {x : D.Translations} (hx : x ∈ Ψ.support) (j : ℕ) :
     Space.projOn (homX j) {l} (D.translateDatum x j).val = (D.translateDatum x j).val := by
-  have hl_split : star l ≠ l := hΛ.isSplit hl
   obtain ⟨h_level, h_piM, h_piMBar, h_N⟩ := hΛ.notMem_asIdeal hQ hl
   -- It suffices that `l` and `star l` avoid the level, and that neither is a chosen place.
   refine D.projOn_translateDatum (D.mem_integralAfter_of_mem_admissibleTranslations
@@ -923,8 +932,8 @@ lemma IsWeakChainDatum.exists_lift_eq_chain_scaledHeckeOperator (H : IsWeakChain
   | cons l L ih =>
     obtain ⟨hl, hL⟩ : l ∉ L ∧ L.Nodup := List.nodup_cons.1 hL
     choose t t_comm t_lift t_raises using ih hL
-    have hl_split : star l.val ≠ l.val := hΛ.isSplit l.2
-    obtain ⟨h_fix, c, hc, h_hecke⟩ := H.exists_hecke_transfer hQ hΛ l.val l.2 hl_split j
+    have hl_split : star l.val ≠ l.val := hΛ.isSplit l.property
+    obtain ⟨h_fix, c, hc, h_hecke⟩ := H.exists_hecke_transfer hQ hΛ l.val l.property hl_split j
     let k := D.liftKernel ϑ j
     let ρ : Representation ℂ (Gf D.E (D.X (j + 1))) (D.homX j).finitePart :=
       liftTargetRep ϑ.toTameChar j
@@ -947,7 +956,7 @@ lemma IsWeakChainDatum.exists_lift_eq_chain_scaledHeckeOperator (H : IsWeakChain
         liftKernel_lift_heckeSplit ϑ.toTameChar j hl_split i newDatum φ
       let z : D.SourceForm := s • (L.map hΛ.scaledHeckeOperator).prod y
       have hz : z.val ∈ sphericalAt (algFormRep D.columnCount (D.lastEntry 0)) l.val :=
-        levelSpace_anti (hΛ.maxCompactAt_le_levelX l.2) z.2
+        levelSpace_anti (hΛ.maxCompactAt_le_levelX l.property) z.property
       simpa [← t_lift x hx, h_lift, k, newDatum, z, smul_smul, s, NeZero.ne, mul_div_cancel₀,
         IsMarked.scaledHeckeOperator] using h_hecke x hx z.val hz
     · -- `T_{l,i}` is a sum over cosets `u`, and each joins `g` as its component at `l`.
@@ -967,8 +976,8 @@ lemma IsWeakChainDatum.exists_lift_eq_chain_scaledHeckeOperator (H : IsWeakChain
         have hs : ‖ιₚ s‖ = p ^ (D.transferExponent p - heckeScalingExponent l.val : ℝ) := by
           simp [s, rpow_sub, NeZero.pos, norm_p_eq_inv, div_eq_mul_inv, mul_comm]
         have hc_norm : ‖ιₚ (c i)‖ ≤ 1 := hc hj i
-        grw [map_mul, norm_mul, hc_norm, one_mul, hs, ← rpow_add (mod_cast hp.1.pos)]
-      simp only [List.map_cons, List.sum_cons, Module.End.mul_apply, LinearMap.sum_apply,
+        grw [map_mul, norm_mul, hc_norm, one_mul, hs, ← rpow_add (mod_cast hp.out.pos)]
+      simp only [List.map_cons, List.sum_cons, mul_apply_eq_comp, LinearMap.sum_apply,
         LinearMap.smul_apply, map_sum, map_smul]
       refine sum_mem fun i hi ↦ smul_mem_raises _ (h_coset i (mem_Iic.1 hi)) ?_
       exact (h_scalar i).trans_eq (by simp [β, add_assoc])
@@ -992,30 +1001,15 @@ theorem IsWeakChainDatum.gaugeLe_scaledHeckeOperator_pow (H : IsWeakChainDatum �
   -- Move one of the `m` copies of `Y` into the datum of each lift, then bound the chain by the
   -- bounds for the new data.
   let Y : Module.End embValRing D.SourceForm := (Λ.attach.toList.map hΛ.scaledHeckeOperator).prod
-  have h_move (j : ℕ) : ∃ t : Module.End ℂ (D.homX j).finitePart, ∀ x ∈ Ψ.support,
-      (∀ a : Gf D.E (D.X j), ∀ b ∈ stdLevel D.E (D.X (j + 1)),
-        (D.liftKernel ϑ j).ω (a, b) (t (D.translateDatum x j)) =
-          t ((D.liftKernel ϑ j).ω (a, b) (D.translateDatum x j))) ∧
-      (∀ y : D.SourceForm,
-        (D.liftKernel ϑ j).lift (t (D.translateDatum x j))
-            (chain (D.liftKernel ϑ) (D.translateDatum x) j y.val) =
-          chain (D.liftKernel ϑ) (D.translateDatum x) (j + 1) (Y y)) ∧
-      (j < D.m → t (D.translateDatum x j) ∈
-        (D.liftKernel ϑ j).raises 1 1 (p ^ (#Λ * D.transferExponent p + liftLoss Λ j))) := by
-    obtain ⟨t, ht⟩ := H.exists_lift_eq_chain_scaledHeckeOperator hQ hΛ j Λ.attach.nodup_toList
-    refine ⟨t, fun x hx ↦ ?_⟩
-    obtain ⟨ht_comm, ht_lift, ht_raises⟩ := ht x hx
-    refine ⟨ht_comm, ht_lift, fun hj ↦ ?_⟩
-    simpa [← Nat.cast_sum, sum_attach, -List.map_subtype, Prod.mk_one_one] using ht_raises 1 hj
-  choose t t_comm t_lift t_raises using h_move
-
+  choose t ht using fun j ↦
+    H.exists_lift_eq_chain_scaledHeckeOperator hQ hΛ j Λ.attach.nodup_toList
   have h_chain (x : D.Translations) (hx : x ∈ Ψ.support) (j : ℕ) :
       chain (D.liftKernel ϑ) (fun j ↦ t j (D.translateDatum x j)) j v =
         chain (D.liftKernel ϑ) (D.translateDatum x) j ((Y ^ j) v) := by
     induction j with
     | zero => rfl
     | succ j ih =>
-      rw [pow_succ', Module.End.mul_apply, ← t_lift j x hx, ← ih]
+      rw [pow_succ', mul_apply_eq_comp, ← (ht j x hx).2.1, ← ih]
       simp [chain, compUpTo]
   have h_comb : restrictedChain ϑ Ψ ((Y ^ D.m) v) =
       D.restrictToY (chainCombination ϑ Ψ (fun x j ↦ t j (D.translateDatum x j)) D.m v) := by
@@ -1024,7 +1018,9 @@ theorem IsWeakChainDatum.gaugeLe_scaledHeckeOperator_pow (H : IsWeakChainDatum �
   have hv_gauge : GaugeLe 1 1 v.val := hv.2
   rw [h_comb]
   refine GaugeLe.restrictToY D hp_N ?_
-  exact H.gaugeLe_chain hQ t (fun j x hx a b hb ↦ t_comm j x hx a b (D.isLevel_levelX.le hb)) 1
-    (fun x hx j hj ↦ t_raises j x hx hj) hv_gauge
+  refine H.gaugeLe_chain hQ t (fun j x hx a b hb ↦ (ht j x hx).1 a b (D.isLevel_levelX.le hb))
+    1 (fun x hx j hj ↦ ?_) hv_gauge
+  simpa [← Nat.cast_sum, sum_attach, -List.map_subtype, Prod.mk_one_one] using
+    (ht j x hx).2.2 1 hj
 
 end New.Data

@@ -1,5 +1,10 @@
-import Lib.Cohomology.Etale.DenseSubfunctors
-import Lib.Cohomology.Hodge.CupProduct
+module
+
+public import Mathlib.GroupTheory.FreeGroup.GeneratorEquiv
+public import Mathlib.CategoryTheory.Monoidal.Cartesian.FunctorCategory
+public import Mathlib.Order.CompletePartialOrder
+public import Lib.Cohomology.Hodge.CupProduct
+public import Lib.Cohomology.Etale.DenseSubfunctors -- shake: keep (needed public by an exposed definition)
 
 /-!
 # Relative chains ℤ[V]/ℤ[U]: local isomorphisms, transfer, excision and gluing
@@ -38,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Etale.FilteredLimits` for sources.
 -/
+
+@[expose] public section
 
 section RelativeChains
 
@@ -193,7 +200,7 @@ lemma isCohomEquiv_of_locallyZero
   -- `cohomology_eq_zero_of_locallyZero`.
   let I := (kerComplex (abCoker.π α)).X₁
   let onto : M ⟶ I :=
-    ⟨fun A ↦ ofHom ((α.app A).1.codRestrict _ fun s ↦ (eq_zero_iff _).2 ⟨s, rfl⟩), fun _ _ f ↦
+    ⟨fun A ↦ ofHom ((α.app A).hom'.codRestrict _ fun s ↦ (eq_zero_iff _).2 ⟨s, rfl⟩), fun _ _ f ↦
       ext fun s ↦ Subtype.ext (α.naturality_apply f s)⟩
   have onto_surj (A : C) : Surjective (onto.app A) :=
     fun y ↦ ((eq_zero_iff _).1 y.property).imp fun _ ↦ Subtype.ext
@@ -286,7 +293,7 @@ namespace relFreeAb
 
 /-- For `u : V' → V` carrying `U'` into `U`, the induced morphism `ℤ[V']/ℤ[U'] → ℤ[V]/ℤ[U]`. -/
 def map : relFreeAb U' ⟶ relFreeAb U :=
-  abCoker.desc (freeAb.map u ≫ π U) (freeAb.hom_ext fun A x ↦ mk_eq_zero (U := U) (h' A x.2))
+  abCoker.desc (freeAb.map u ≫ π U) (freeAb.hom_ext fun A x ↦ mk_eq_zero (U := U) (h' A x.property))
 
 lemma π_map : π U' ≫ map u h' = freeAb.map u ≫ π U := rfl
 
@@ -334,7 +341,7 @@ lemma isCohomEquiv_of_le {U' U : Subfunctor V} (h_le : U' ≤ U)
   -- The third term of that sequence is `relFreeAb U`, since `U = range U.ι ⊔ U'` as `U' ≤ U`; every
   -- goal that `convert` and `congr` leave comes down to this identity and is closed by `simp_all`.
   convert isCohomEquiv_quotient_of_acyclic (shortExact_triple U.ι U').2
-      fun n x ↦ (h_acyclic n).1 x 0 <;> congr <;> simp_all
+      fun n x ↦ (h_acyclic n).allEq x 0 <;> congr <;> simp_all
 
 /-- Excision: let u : V′ → V be a monomorphism, U′ = u⁻¹U, and u(V′) ∪ U dense in V for the
 coefficient F. Then ℤ[V′]/ℤ[U′] → ℤ[V]/ℤ[U] induces bijections on Ext^n(·, F) for all n. -/
@@ -366,16 +373,24 @@ variable {C : Type _} [Category C]
 abbrev relFreeAb.restrict : relFreeAb (U.preimage A.ι) ⟶ relFreeAb (U.preimage B.ι) :=
   map (homOfLe h) (id le_rfl)
 
+/-- Inside `B`, the image of the inclusion of `A ⊓ B` is the preimage of `A`. -/
+lemma range_homOfLe_eq_preimage_of_inf_eq {A B D : Subfunctor V} (hD : A ⊓ B = D) :
+    range (homOfLe (hD.ge.trans inf_le_right)) = A.preimage B.ι := by
+  subst D
+  ext c x
+  constructor
+  · rintro ⟨y, rfl⟩
+    exact y.property.1
+  · intro hx
+    exact ⟨⟨x.val, hx, x.property⟩, rfl⟩
+
 /-- For subfunctors `A`, `B` of `V` with `A ⊓ B = D`, the restriction and quotient maps form a short
 exact sequence `0 → ℤ[D]/ℤ[U ∩ D] → ℤ[B]/ℤ[U ∩ B] → ℤ[B]/ℤ[(A ∪ U) ∩ B] → 0`. -/
 lemma relFreeAb.shortExact_restrict_of_inf_eq {A B D : Subfunctor V} (hD : A ⊓ B = D) :
     ∃ w, ShortComplex.ShortExact ⟨restrict U (hD.ge.trans inf_le_right),
       map (𝟙 B.toFunctor) (U := A.preimage B.ι ⊔ U.preimage B.ι) le_sup_right, w⟩ := by
   -- This is `shortExact_triple` for the inclusion of `D` in `B`, whose image is `A ∩ B`.
-  have h_range : range (homOfLe (hD.ge.trans inf_le_right)) = A.preimage B.ι := by
-    delta toFunctor homOfLe
-    aesop
-  rw [← h_range]
+  rw [← range_homOfLe_eq_preimage_of_inf_eq hD]
   exact shortExact_triple ..
 
 /-- The inclusion of `A` in `B` followed by that of `B` in `D` is the inclusion of `A` in `D`. -/

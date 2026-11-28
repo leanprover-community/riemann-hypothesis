@@ -1,5 +1,8 @@
-import Lib.PadicComparison.Completion
-import Lib.PadicComparison.ToricTower
+module
+
+import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+public import Lib.PadicComparison.Completion
+public import Lib.PadicComparison.ToricTower
 
 /-!
 # Divided power envelopes, lifts modulo divided powers, and one divided power variable
@@ -39,6 +42,8 @@ Notions from other files:
 Known; see `Lib.PadicComparison.Crystalline.ComparisonMap` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-! ## Lifts modulo divided powers and the divided power envelope -/
@@ -70,7 +75,7 @@ lemma IsCompleteTorsionFree.p_mem_pdIdeal (h : IsCompleteTorsionFree S) : ↑p �
   intro n
   obtain ⟨a, b, hab⟩ := (coprime_ordCompl hp.out n.factorial_ne_zero).cast (R := S)
   have h_unit : IsUnit ((p : S) * -a + 1) :=
-    mem_jacobson_bot.mp (h.complete.le_jacobson_bot _ (subset_span rfl)) (-a)
+    Ring.mem_jacobson_iff.mp (h.complete.le_jacobson _ (subset_span rfl)) (-a)
   have h_fact : (n ! : S) ∣ p ^ multiplicity p n ! := by
     refine h_unit.dvd_mul_right.mp ⟨b, ?_⟩
     -- multiply `a * p + b * m = 1` by `p ^ v` and use `p ^ v * m = n !`
@@ -86,8 +91,11 @@ lemma IsCompleteTorsionFree.isLocalHom_pdQuotientMk (h : IsCompleteTorsionFree S
     IsLocalHom (pdQuotientMk S) := by
   -- If `x ∈ pdIdeal S` then `p ∣ p ! ∣ x ^ p`, so `x ^ p` lies in the Jacobson radical, which is a
   -- radical ideal.
-  refine isLocalHom_of_le_jacobson_bot _ fun x hx ↦
-    isRadical_jacobson _ ⟨p, h.complete.le_jacobson_bot _ ?_⟩
+  refine isLocalHom_of_le_jacobson fun x hx ↦ ?_
+  rw [← Ideal.jacobson_bot]
+  refine isRadical_jacobson _ ⟨p, ?_⟩
+  rw [Ideal.jacobson_bot]
+  refine h.complete.le_jacobson _ ?_
   grw [mem_span_singleton, ← hx p, ← dvd_factorial Fin.pos' le_rfl]
 
 /-- Let `S` be `p`-torsion-free and `p`-complete, and `M` a commutative monoid on which `x ↦ x ^ p`
@@ -340,12 +348,14 @@ lemma exists_preEnvelope_basis (z : T) (b : Basis (I × ℕ) B T) (u : I → T) 
     suffices h_gen : ∀ (i : I × ℕ), ∀ x ∈ Submonoid.closure ((Subtype.val : preEnvelope {z} → _) ⁻¹'
         {(z' ^ n) ⊗ₜ[ℤ] (n ! : ℚ)⁻¹ | (z' ∈ ({z} : Set T)) (n : ℕ)}),
           b' i • x ∈ span B (Set.range w) by
-      -- `erw`: `preEnvelope {z}` is `adjoin T _` only after unfolding its definition, and
-      -- `adjoin_adjoin_coe_preimage` is stated for `adjoin`.
-      erw [← restrictScalars_top _ T, ← top_toSubmodule, ← adjoin_adjoin_coe_preimage,
-        adjoin_eq_span, ← span_smul_of_span_eq_top b'.span_eq, span_le, Set.smul_subset_iff,
-        Set.forall_mem_range]
-      exact h_gen
+      let generators : Set (T ⊗[ℤ] ℚ) :=
+        {(z' ^ n) ⊗ₜ[ℤ] (n ! : ℚ)⁻¹ | (z' ∈ ({z} : Set T)) (n : ℕ)}
+      rw [← restrictScalars_top _ T, ← top_toSubmodule]
+      change Submodule.restrictScalars B ((⊤ : Subalgebra T (adjoin T generators)).toSubmodule) ≤ _
+      rw [← adjoin_adjoin_coe_preimage, adjoin_eq_span, ← span_smul_of_span_eq_top b'.span_eq]
+      refine span_le.mpr (Set.smul_subset_iff.mpr ?_)
+      rintro _ ⟨i, rfl⟩
+      exact h_gen i
     rintro ⟨a, k⟩ x hx
     suffices key : ∀ n c : ℕ, algebraMap T _ (u a) * (c * y n) * x ∈ span B (Set.range w) by
       simpa [← hb', smul_def', hy] using key k k !
@@ -364,43 +374,6 @@ lemma exists_preEnvelope_basis (z : T) (b : Basis (I × ℕ) B T) (u : I → T) 
       exact ih (n + m) (c * (n + m).choose n)
   exact ⟨y, .mk h_indep h_span.ge, fun a n ↦ Basis.mk_apply h_indep h_span.ge (a, n), hy⟩
 
-/-- Taylor's formula for divided powers in a `p`-torsion-free, `p`-complete algebra `E`: if
-`y n = x ^ n / n !` and `γ x = x + p ^ 3 * z`, then
-`γ (y (n + 1)) ≡ y (n + 1) + p ^ 3 * z * y n` modulo `p ^ 4 * z`. -/
-lemma exists_map_dividedPow_succ (E : CrysTest A) (γ : E →+* E) {x z : E} {y : ℕ → E}
-    (hy : ∀ n : ℕ, x ^ n = n ! * y n) (hγ : γ x = x + p ^ 3 * z) (n : ℕ) :
-    ∃ w : E, γ (y (n + 1)) = y (n + 1) + p ^ 3 * z * (y n + p * w) := by
-  -- `x` and `p` have divided powers, so `P = (x + p X) ^ (n + 1) / (n + 1)!` is a polynomial.
-  have h_mem_pd : C x + X • C (p : E) ∈ pdIdeal E[X] :=
-    (pdIdeal _).add_mem (pdIdeal_le_comap C fun n ↦ ⟨_, hy n⟩)
-      (smul_mem _ X (pdIdeal_le_comap C E.property.p_mem_pdIdeal))
-  obtain ⟨P, hP⟩ : ((n + 1)! : E[X]) ∣ (C x + X * C (p : E)) ^ (n + 1) := h_mem_pd (n + 1)
-  -- Each value is checked after multiplying by `(n + 1)!`, which is regular in `E`.
-  have h_reg : Function.Injective fun a : E.obj ↦ (n + 1)! • a :=
-    nsmul_right_injective (M := E) (n + 1).factorial_ne_zero
-  have h_eval_zero : P.eval 0 = y (n + 1) := by
-    apply h_reg
-    simpa [hy] using (congrArg (Polynomial.eval 0) hP).symm
-  have h_deriv_zero : (derivative P).eval 0 = p * y n := by
-    -- the derivative of `(x + p X) ^ (n + 1)` at `0` is `(n + 1) x ^ n p = (n + 1)! * y n * p`
-    have h_deriv : (n + 1) * (n ! * y n) * p = (n + 1)! * (derivative P).eval 0 := by
-      simpa [derivative_pow, hy] using congrArg (fun Q : E[X] ↦ (derivative Q).eval 0) hP
-    apply h_reg
-    push_cast [nsmul_eq_mul, factorial_succ] at h_deriv ⊢
-    linear_combination -h_deriv
-  have h_eval_pt : P.eval (p ^ 2 * z) = γ (y (n + 1)) := by
-    have h₁ : (x + p ^ 2 * z * p) ^ (n + 1) = (n + 1)! * P.eval (p ^ 2 * z) := by
-      simpa using congrArg (Polynomial.eval (p ^ 2 * z)) hP
-    have h₂ : (x + p ^ 3 * z) ^ (n + 1) = (n + 1)! * γ (y (n + 1)) := by
-      simpa [hγ] using congrArg γ (hy (n + 1))
-    apply h_reg
-    linear_combination h₂ - h₁
-  -- Expand `P` at `0`: the remainder at `p ^ 2 * z` is a multiple of `p ^ 4 * z ^ 2`.
-  obtain ⟨k, hk⟩ := P.binomExpansion 0 (p ^ 2 * z)
-  rw [zero_add, h_eval_pt, h_eval_zero, h_deriv_zero] at hk
-  refine ⟨z * k, ?_⟩
-  linear_combination hk
-
 /-- If the B-algebra E is p-torsion-free and p-adically complete, then 1 − p • W is bijective for
 every B-linear endomorphism W of E. -/
 lemma IsCompleteTorsionFree.bijective_one_sub_smul {E : Type} [CommRing E] [Algebra B E]
@@ -412,77 +385,11 @@ lemma IsCompleteTorsionFree.bijective_one_sub_smul {E : Type} [CommRing E] [Alge
     have h_shift :
         shiftDiff E (p : B) (fun i ↦ W^[i] x) = shiftDiff E (p : B) (fun i ↦ W^[i] z) := by
       funext i
-      simpa [shiftDiff, ← End.pow_apply, pow_add] using congrArg (W^[i]) hxz
+      simpa [shiftDiff, ← pow_apply_eq_iterate, pow_add] using congrArg (W^[i]) hxz
     exact congrFun (hE.isDerivedComplete.injective h_shift) 0
   · -- every `x` is in the image modulo `p`: `x = (1 - p W) x + p W x`
     exact hE.isDerivedComplete.exists_apply_eq_of_approx hE.isDerivedComplete (1 - (p : B) • W)
       (fun x ↦ x) (fun x ↦ ⟨x, W x, by simp⟩) x
-
-/-- Let `m : N → M` be a split injection (`κ ∘ m = id`) whose image `γ` fixes pointwise. Suppose
-that `γ S - S` is bijective for an endomorphism `S` and that `m ∘ κ' - V = S ∘ G` for a bijection
-`V`, an endomorphism `G` and a map `κ' : M → N`. Then `m` and `γ` are Koszul-exact
-(`New.Variety.KoszulExact`): `m` is injective, every fixed point of `γ` lies in the image of `m`,
-and `γ - 1` is onto. -/
-lemma koszulExact_of_bijective_sub {K M N : Type*} [CommRing K] [AddCommGroup M] [Module K M]
-    [AddCommGroup N] [Module K N] {m : N →ₗ[K] M} {κ κ' : M →ₗ[K] N} {γ S G V : End K M}
-    (hκ : κ ∘ₗ m = LinearMap.id) (hγ : γ ∘ₗ m = m) (hS : Bijective (γ ∘ₗ S - S : End K M))
-    (hV : Bijective V) (hG : m ∘ₗ κ' - V = S ∘ₗ G) :
-    KoszulExact m γ := by
-  refine ⟨LeftInverse.injective (g := κ) fun x ↦ LinearMap.congr_fun hκ x, fun z hz ↦ ?_,
-    fun z ↦ ?_⟩
-  · -- Write `z = V x = m (κ' x) - S (G x)`. Then `γ` fixes `S (G x)`, so `G x = 0`.
-    obtain ⟨x, rfl⟩ := hV.surjective z
-    have hx : S (G x) = m (κ' x) - V x := (LinearMap.congr_fun hG x).symm
-    have hm : γ (m (κ' x)) = m (κ' x) := LinearMap.congr_fun hγ (κ' x)
-    have h_fix : (γ ∘ₗ S - S) (G x) = (γ ∘ₗ S - S) 0 := by simp [hx, hm, hz.eq]
-    have hG_zero : G x = 0 := hS.injective h_fix
-    exact ⟨κ' x, sub_eq_zero.mp (by simpa [hG_zero] using hx.symm)⟩
-  · obtain ⟨x, hx⟩ := hS.surjective z
-    exact ⟨S x, hx⟩
-
-/-- Let `B → E` be `p`-torsion-free, `p`-complete `A`-algebras, `K` an `A`-algebra in which `q` is a
-unit, `v` a unit of `E`, `t ∈ B`, and `γ` a `B`-algebra endomorphism of `E` fixing the image of the
-inclusion `m : B → E`. Let `κ : E → B` be a `B`-linear left inverse of `m`, and let `S`, `G`, `W` be
-`B`-linear endomorphisms of `E` with `γ ∘ S - S = q v (1 - p W)` and `m ∘ (q t κ) - q v = S ∘ G`,
-where `v` acts by multiplication. Then after base change to `K` the map `m ⊗ K` is injective, every
-fixed point of `γ ⊗ K` lies in its image, and `z ↦ (γ ⊗ K)(z) - z` is onto
-(`New.Variety.KoszulExact`); `ULift` only moves the modules to universe `1`. -/
-lemma koszulExact_baseChange_of_sub_comp_eq_smul {K : Type} [CommRing K] [Algebra A K]
-    (E : CrysTest A) [Algebra B E] [IsScalarTower A B E] {v : E.obj} {t : B.obj} {q : A}
-    (hv_unit : IsUnit v) (hq_unit : IsUnit (algebraMap A K q)) (γ : E →ₐ[B] E)
-    {κ : E →ₗ[B] B} {S G W : End B E}
-    (hκ_comp : κ ∘ₗ Algebra.linearMap B E = .id)
-    (hγ_comp : γ.toLinearMap ∘ₗ Algebra.linearMap B E = Algebra.linearMap B E)
-    (hS : γ.toLinearMap ∘ₗ S - S = q • v • (1 - (p : B) • W))
-    (hG : Algebra.linearMap B E ∘ₗ (q • t • κ) - q • v • (1 : End B E) = S ∘ₗ G) :
-    KoszulExact (ULift.map.{0, _, 1, 1} (((Algebra.linearMap B E).restrictScalars A).baseChange K))
-      (ULift.map ((γ.toLinearMap.restrictScalars A).baseChange K)) := by
-  -- After the base change `bc` to `K`, where `q` is a unit, the maps `q v (1 - p W')` are
-  -- bijective, and `koszulExact_of_bijective_sub` applies with the bijection `q v`.
-  let bc {M N : Type} [AddCommGroup M] [Module A M] [Module B M] [IsScalarTower A B M]
-      [AddCommGroup N] [Module A N] [Module B N] [IsScalarTower A B N] (f : M →ₗ[B] N) :
-      K ⊗[A] M →ₗ[K] K ⊗[A] N :=
-    (f.restrictScalars A).baseChange K
-  have h_bij (W' : End B E) : Bijective (bc (q • v • (1 - (p : B) • W'))) := by
-    have h_bij_v : Bijective (bc (v • (1 - (p : B) • W'))) :=
-      TensorProduct.map_bijective (f := 1) bijective_id
-        (hv_unit.smul_bijective.comp (E.property.bijective_one_sub_smul B W'))
-    have h_comp_eq : ⇑(bc (q • v • (1 - (p : B) • W'))) =
-        (algebraMap A K q • ·) ∘ ⇑(bc (v • (1 - (p : B) • W'))) :=
-      funext fun x ↦ by simp [bc]
-    rw [h_comp_eq]
-    exact hq_unit.smul_bijective.comp h_bij_v
-  have h_koszul : KoszulExact (bc (Algebra.linearMap B E)) (bc γ.toLinearMap) := by
-    refine koszulExact_of_bijective_sub (κ := bc κ) (κ' := bc (q • t • κ)) (S := bc S) (G := bc G)
-      (V := bc (q • v • (1 : End B E))) ?_ ?_ ?_ (by simpa using h_bij 0) ?_
-    · simpa [bc, baseChange_comp] using congrArg bc hκ_comp
-    · simpa [bc, baseChange_comp] using congrArg bc hγ_comp
-    · have h_bij_S : Bijective (bc (γ.toLinearMap ∘ₗ S - S)) := by simpa [hS] using h_bij W
-      simpa [bc, baseChange_comp, sub_eq_add_neg] using h_bij_S
-    · simpa [bc, baseChange_comp, sub_eq_add_neg] using congrArg bc hG
-  -- `ULift.map` only changes the universe.
-  simpa [bc, KoszulExact, subset_def, IsFixedPt, Function.Injective, Surjective,
-    ← ULift.down_inj] using h_koszul
 
 /-- Let `B → E` be `p`-torsion-free, `p`-complete `A`-algebras, where `E` has the topological
 `B`-basis `u a * y n` (via `j`), `y n = (t - v) ^ n / n !`, `v` a unit, `u 0 = 1`. Let `p ^ 3 ∣ q`
@@ -510,13 +417,41 @@ lemma koszulExact_pd_line {K : Type} [CommRing K] [Algebra A K] (E : CrysTest A)
     isAdicComplete_over_base E.property.complete
   have hB_complete : IsAdicComplete (Ideal.span {(p : B)}) B := B.property.complete
   have hy_zero : y 0 = 1 := by simpa using (hy 0).symm
-  -- `γ` moves `t - v` by `-q • v`, a multiple of `p ^ 3`
+  -- `γ` moves `t - v` by `-q • v`, a multiple of `p ^ 3`; Taylor expansion of
+  -- `P = (x + p X) ^ (n + 1) / (n + 1)!` at `p ^ 2 * (-d • v)` gives `γ (y (n + 1))`.
   have h_taylor (n : ℕ) : ∃ w : E, γ (y n.succ) = y n.succ - q • v * (y n + p • w) := by
-    have hγ : γ (algebraMap B E t - v) = algebraMap B E t - v + p ^ 3 * -d • v := by
-      simp [hγv, hd, smul_def']
-      ring
-    simpa [hd, smul_def', mul_assoc, sub_eq_add_neg]
-      using exists_map_dividedPow_succ E γ.toRingHom hy hγ n
+    let x : E := algebraMap B E t - v
+    let z : E := -d • v
+    have h_mem_pd : C x + X • C (p : E) ∈ pdIdeal E[X] :=
+      (pdIdeal _).add_mem (pdIdeal_le_comap C fun k ↦ ⟨_, hy k⟩)
+        (smul_mem _ X (pdIdeal_le_comap C E.property.p_mem_pdIdeal))
+    obtain ⟨P, hP⟩ : ((n + 1)! : E[X]) ∣ (C x + X * C (p : E)) ^ (n + 1) := h_mem_pd (n + 1)
+    have h_reg : Function.Injective fun a : E.obj ↦ (n + 1)! • a :=
+      nsmul_right_injective (M := E) (n + 1).factorial_ne_zero
+    have h_eval_zero : P.eval 0 = y (n + 1) :=
+      h_reg (by simpa [x, hy] using (congrArg (Polynomial.eval 0) hP).symm)
+    have h_deriv_zero : (derivative P).eval 0 = p * y n := by
+      have h_deriv : (n + 1) * (n ! * y n) * p = (n + 1)! * (derivative P).eval 0 := by
+        simpa [derivative_pow, x, hy] using congrArg (fun Q : E[X] ↦ (derivative Q).eval 0) hP
+      apply h_reg
+      push_cast [nsmul_eq_mul, factorial_succ] at h_deriv ⊢
+      linear_combination -h_deriv
+    have h_eval_pt : P.eval (p ^ 2 * z) = γ (y (n + 1)) := by
+      have h₁ : (x + p ^ 2 * z * p) ^ (n + 1) = (n + 1)! * P.eval (p ^ 2 * z) := by
+        simpa using congrArg (Polynomial.eval (p ^ 2 * z)) hP
+      have hγx : γ (algebraMap B E t - v) = x + p ^ 3 * z := by
+        simp [x, z, hγv, hd, smul_def']
+        ring
+      have h₂ : (x + p ^ 3 * z) ^ (n + 1) = (n + 1)! * γ (y (n + 1)) := by
+        simpa [hγx] using congrArg γ (hy (n + 1))
+      apply h_reg
+      linear_combination h₂ - h₁
+    obtain ⟨k, hk⟩ := P.binomExpansion 0 (p ^ 2 * z)
+    rw [zero_add, h_eval_pt, h_eval_zero, h_deriv_zero] at hk
+    refine ⟨z * k, ?_⟩
+    simp only [Nat.succ_eq_add_one, hd, z, smul_def', map_mul, map_pow,
+      map_natCast, map_neg] at hk ⊢
+    linear_combination hk
   choose w hw using h_taylor
   -- Linear maps from `T` to a complete module extend uniquely along `j`. `F g` is the endomorphism
   -- of `E` with the values `g` on the basis; `κ` is the coefficient of `u 0 * y 0 = 1`.
@@ -575,7 +510,42 @@ lemma koszulExact_pd_line {K : Type} [CommRing K] [Algebra A K] (E : CrysTest A)
       grind
     · simp [smul_def', hη a, ha, hb]
       ring
-  exact koszulExact_baseChange_of_sub_comp_eq_smul B E hv_unit hq_unit γ hκ_comp hγ_comp hS hG
+  -- After base change `bc` to `K`, where `q` is a unit, the maps `q v (1 - p W')` are bijective,
+  -- giving Koszul exactness of `m` and `γ`.
+  let bc {M N : Type} [AddCommGroup M] [Module A M] [Module B M] [IsScalarTower A B M]
+      [AddCommGroup N] [Module A N] [Module B N] [IsScalarTower A B N] (f : M →ₗ[B] N) :
+      K ⊗[A] M →ₗ[K] K ⊗[A] N :=
+    (f.restrictScalars A).baseChange K
+  have h_bij (W' : End B E) : Bijective (bc (q • v • (1 - (p : B) • W'))) := by
+    have h_comp : ⇑(bc (q • v • (1 - (p : B) • W'))) =
+        (algebraMap A K q • ·) ∘ ⇑(bc (v • (1 - (p : B) • W'))) :=
+      funext fun x ↦ by simp [bc]
+    rw [h_comp]
+    exact hq_unit.smul_bijective.comp (TensorProduct.map_bijective (f := 1) bijective_id
+      (hv_unit.smul_bijective.comp (E.property.bijective_one_sub_smul B W')))
+  have hκ' : bc κ ∘ₗ bc m = .id := by simpa [bc, baseChange_comp] using congrArg bc hκ_comp
+  have hγ' : bc γ.toLinearMap ∘ₗ bc m = bc m := by
+    simpa [bc, baseChange_comp] using congrArg bc hγ_comp
+  have hS_bij : Bijective (bc γ.toLinearMap ∘ₗ bc S - bc S) := by
+    have h_bij_S : Bijective (bc (γ.toLinearMap ∘ₗ S - S)) := by simpa [hS] using h_bij W
+    simpa [bc, baseChange_comp, sub_eq_add_neg] using h_bij_S
+  have hV_bij : Bijective (bc (q • v • (1 : End B E))) := by simpa using h_bij 0
+  have hG' : bc m ∘ₗ bc (q • t • κ) - bc (q • v • (1 : End B E)) = bc S ∘ₗ bc G := by
+    simpa [bc, baseChange_comp, sub_eq_add_neg] using congrArg bc hG
+  have h_koszul : KoszulExact (bc m) (bc γ.toLinearMap) := by
+    refine ⟨LeftInverse.injective (g := bc κ) fun x ↦ LinearMap.congr_fun hκ' x,
+      fun z hz ↦ ?_, fun z ↦ ?_⟩
+    · obtain ⟨x, rfl⟩ := hV_bij.surjective z
+      have hx : bc S (bc G x) = bc m (bc (q • t • κ) x) - bc (q • v • (1 : End B E)) x :=
+        (LinearMap.congr_fun hG' x).symm
+      have hm : bc γ.toLinearMap (bc m (bc (q • t • κ) x)) = bc m (bc (q • t • κ) x) :=
+        LinearMap.congr_fun hγ' _
+      have hG_zero : bc G x = 0 := hS_bij.injective (by simp [hx, hm, hz.eq])
+      exact ⟨bc (q • t • κ) x, sub_eq_zero.mp (by simpa [hG_zero] using hx.symm)⟩
+    · obtain ⟨x, hx⟩ := hS_bij.surjective z
+      exact ⟨bc S x, hx⟩
+  simpa [bc, m, KoszulExact, subset_def, IsFixedPt, Function.Injective, Surjective,
+    ← ULift.down_inj] using h_koszul
 
 end New.Variety
 

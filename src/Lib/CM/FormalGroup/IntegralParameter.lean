@@ -1,3 +1,14 @@
+module
+
+public import Mathlib.Algebra.CubicDiscriminant
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.AdicCompletion.Completeness
+import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.RingTheory.PowerSeries.Rescale
+import TauCeti.RingTheory.PowerSeries.Substitution
+public import Lib.General.Algebra.IntegralPowerSeries
+public import Lib.CM.Sigma.Basic
 import Lib.CM.Integrality.TorsionValues
 
 /-!
@@ -47,6 +58,8 @@ The statements on the CM curve use only that `a₁` is integral; `x ∈ 𝔬[[y]
 the cubic.
 -/
 
+@[expose] public section
+
 /-! ## Rings of integral series in a generating parameter -/
 
 section IntegralParameter
@@ -80,29 +93,11 @@ structure IsSeriesGenerator (A : Subring ℂ_[p]⟦X⟧) (T : ℂ_[p]⟦X⟧) : 
   /-- The elements of `A` are the series `g(T)` with `g` integral. -/
   mem_iff (f : ℂ_[p]⟦X⟧) : f ∈ A ↔ ∃ g : (valRingCp p)⟦X⟧, f = subst T (seriesToCp g)
 
-@[simp]
-lemma constantCoeff_rescale {a : ℂ_[p]} {f : ℂ_[p]⟦X⟧} :
-    (rescale a f).constantCoeff = f.constantCoeff := by simp [rescale]
-
-@[simp]
-lemma rescale_smul {a c : ℂ_[p]} {f : ℂ_[p]⟦X⟧} : rescale a (c • f) = c • rescale a f := by
-  ext n
-  simp [mul_left_comm]
-
 /-- The series `f(T)` and `f` have the same constant term, if `T(0) = 0`. -/
 @[simp]
 lemma constantCoeff_subst_eq {T : ℂ_[p]⟦X⟧} (hT₀ : T.constantCoeff = 0) {f : ℂ_[p]⟦X⟧} :
     constantCoeff (f.subst T) = f.constantCoeff :=
-  constantCoeff_subst_of_constantCoeff_eq_zero T hT₀ f
-
-/-- The linear coefficient of `f(T)` is the product of those of `f` and `T`, if `T(0) = 0`. -/
-lemma coeff_one_subst {T : ℂ_[p]⟦X⟧} (hT₀ : T.constantCoeff = 0) {f : ℂ_[p]⟦X⟧} :
-    coeff 1 (f.subst T) = f.coeff 1 * T.coeff 1 := by
-  -- Only the power `T ^ 1` contributes to degree one, as `T` has no constant term.
-  have h_pow (n : ℕ) (hn : n ≠ 1) : coeff 1 (T ^ n) = 0 := by
-    rcases n with _ | _ | n <;> simp_all [coeff_one_pow]
-  rw [coeff_subst' (.of_constantCoeff_zero' hT₀), finsum_eq_single _ 1, pow_one, smul_eq_mul]
-  simp +contextual [h_pow]
+  PowerSeries.constantCoeff_subst_of_constantCoeff_zero hT₀ f
 
 /-- Substituting `a X` in `f(T)` gives `f(T(a X))`, if `T(0) = 0`. -/
 lemma rescale_subst {a : ℂ_[p]} {T : ℂ_[p]⟦X⟧} (hT₀ : T.constantCoeff = 0) {f : ℂ_[p]⟦X⟧} :
@@ -123,17 +118,8 @@ lemma subst_seriesToCp_subst {T : ℂ_[p]⟦X⟧} (hT₀ : constantCoeff T = 0) 
 topology of coefficientwise convergence. -/
 @[fun_prop]
 lemma continuous_subst {T : ℂ_[p]⟦X⟧} (hT : HasSubst T) :
-    Continuous (subst T : ℂ_[p]⟦X⟧ → ℂ_[p]⟦X⟧) := by
-  refine continuous_pi fun α ↦ ?_
-  -- Only finitely many powers `T ^ n` have a nonzero `α`-th coefficient (apply finiteness to the
-  -- series `mk 1` with all coefficients `1`), so the `α`-th coefficient of `subst T f` is a sum
-  -- over a finite set that does not depend on `f`.
-  have h_fin : (Function.support fun n : ℕ ↦ MvPowerSeries.coeff α (T ^ n)).Finite := by
-    simpa [Function.HasFiniteSupport] using coeff_subst_finite hT (mk (R := ℤ) 1) α
-  have h_sum (f : ℂ_[p]⟦X⟧) : MvPowerSeries.coeff α (subst T f) =
-      ∑ n ∈ h_fin.toFinset, coeff n f • MvPowerSeries.coeff α (T ^ n) := by
-    rw [coeff_subst hT, finsum_eq_sum_of_support_subset_of_finite _ (by simp) h_fin]
-  exact .congr (by fun_prop [coeff]) fun f ↦ (h_sum f).symm
+    Continuous (subst T : ℂ_[p]⟦X⟧ → ℂ_[p]⟦X⟧) :=
+  continuous_id.powerSeries_subst continuous_const fun _ ↦ isNilpotent_iff_eq_zero.mp hT
 
 namespace IsSeriesGenerator
 
@@ -176,10 +162,6 @@ lemma smul_mem (hB : IsSeriesGenerator B T) {c : ℂ_[p]} {f : ℂ_[p]⟦X⟧} (
   rw [subst_smul (.of_constantCoeff_zero' hZ₀), coeff_smul, norm_smul]
   exact (mul_le_of_le_one_left (norm_nonneg _) hc).trans (hf n)
 
-lemma norm_constantCoeff_le_one (hB : IsSeriesGenerator B T) {f : ℂ_[p]⟦X⟧} (hf : f ∈ B) :
-    ‖f.constantCoeff‖ ≤ 1 := by
-  obtain ⟨g, rfl⟩ := (hB.mem_iff f).1 hf
-  simpa [hB.constantCoeff_eq_zero] using mem_range_seriesToCp.1 ⟨g, rfl⟩ 0
 
 lemma norm_coeff_one_le_one (hB : IsSeriesGenerator B T) {f : ℂ_[p]⟦X⟧} (hf : f ∈ B) :
     ‖f.coeff 1‖ ≤ 1 := by
@@ -188,12 +170,6 @@ lemma norm_coeff_one_le_one (hB : IsSeriesGenerator B T) {f : ℂ_[p]⟦X⟧} (h
   simpa [coeff_one_subst hB.constantCoeff_eq_zero, hB.coeff_one] using
     mem_range_seriesToCp.1 ⟨g, rfl⟩ 1
 
-/-- The constant term and the linear coefficient of an element of `B = 𝔬[[T]]` have norm at most
-one. -/
-lemma norm_constantCoeff_le_one_and_norm_coeff_one_le_one (hB : IsSeriesGenerator B T)
-    {f : ℂ_[p]⟦X⟧} (hf : f ∈ B) :
-    ‖f.constantCoeff‖ ≤ 1 ∧ ‖f.coeff 1‖ ≤ 1 :=
-  ⟨hB.norm_constantCoeff_le_one hf, hB.norm_coeff_one_le_one hf⟩
 
 /-- Let `B = 𝔬[[T]]` be the ring of series in `T` over the valuation ring `𝔬` of `ℂ_[p]`. Any
 `f = X + ⋯` in `B` generates the same ring: `𝔬[[f]] = B`. -/

@@ -1,4 +1,11 @@
+module
+
+import Mathlib.Algebra.Order.Star.Rat
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Cohomology.Etale.Basic
 import Lib.GLn.SchurModule.SchurNorm
+import Lib.GLn.SchurModule.WeylKernel
 
 /-!
 # Algebraic modular forms: delta forms, unitary translation and spanning by Hecke eigenforms
@@ -43,6 +50,8 @@ Known result: Finite dimension of spaces of algebraic modular forms and the Heck
 spanning them. Related files: `Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms` and, for congruence
 subgroups and level structures, `Lib.Adelic.Unitary.CongruenceLevels`.
 -/
+
+@[expose] public section
 
 /-!
 ## Algebraic forms of a level: delta forms, values on classes, dimension
@@ -118,7 +127,7 @@ lemma mem_smoothFunctions_of_eigen [IsTopologicalGroup G] (hK : IsOpen (K : Set 
   have h_fix : ∀ᶠ k : K in nhds 1, (k : G) ∈ rightStabilizer f := by
     filter_upwards [o.out] with k (hk : χ k = 1) g
     simpa [hk] using congrFun (hf k) g
-  exact (rightStabilizer f).isOpen_of_mem_nhds (hK.isOpenMap_subtype_val.nhds_le 1 h_fix)
+  exact (rightStabilizer f).isOpen_of_mem_nhds (hK.isOpenMap_subtypeVal.nhds_le 1 h_fix)
 
 /-! ### Forms supported on one class -/
 
@@ -173,7 +182,7 @@ lemma rightRegular_deltaFun (x : G) (v : W) (k : K) :
     rightRegular ℂ G W k (deltaFun e ρ χ x v) = χ k • deltaFun e ρ χ x v := by
   ext y
   have h_mem (γ : Γ) : x⁻¹ * e γ * (y * k) ∈ K ↔ x⁻¹ * e γ * y ∈ K := by
-    rw [← mul_assoc, K.mul_mem_cancel_right k.2]
+    rw [← mul_assoc, K.mul_mem_cancel_right k.property]
   have h_set : transporter K e x (y * k) = transporter K e x y := by
     simp [Finset.ext_iff, mem_transporter, h_mem]
   rw [rightRegular_apply_apply, Pi.smul_apply, deltaFun_apply, deltaFun_apply, h_set, smul_sum]
@@ -248,24 +257,6 @@ noncomputable def freeLevelEquiv (h_free : ∀ g : G, classAut e.range K g = ⊥
       (evalClassReps e ρ χ r φ))
   right_inv f := funext (sum_deltaForm_apply_rep e ρ χ h_free hr f)
 
-/-- `freeLevelEquiv` sends a form to its values at the representatives `r c`. -/
-lemma freeLevelEquiv_apply (h_free : ∀ g : G, classAut e.range K g = ⊥)
-    {r : DoubleCosets e.range K → G}
-    (hr : ∀ c : DoubleCosets e.range K, DoubleCoset.mk e.range K (r c) = c)
-    (φ : levelSpace (smoothFormRep e ρ) K χ) (c : DoubleCosets e.range K) :
-    freeLevelEquiv e ρ χ h_free hr φ c = φ.val.val (r c) :=
-  rfl
-
-/-- The inverse of `freeLevelEquiv` sends `f` to the sum over the classes `c` of the forms
-`deltaForm e ρ χ (r c) (f c)`. -/
-lemma freeLevelEquiv_symm_apply (h_free : ∀ g : G, classAut e.range K g = ⊥)
-    {r : DoubleCosets e.range K → G}
-    (hr : ∀ c : DoubleCosets e.range K, DoubleCoset.mk e.range K (r c) = c)
-    (f : DoubleCosets e.range K → W) :
-    (freeLevelEquiv e ρ χ h_free hr).symm f =
-      ∑ c : DoubleCosets e.range K, deltaForm e ρ χ (r c) (f c) :=
-  rfl
-
 variable {e ρ χ}
 
 /-- Let `e` be injective, `χ` trivial near `1` and `K` of finite type for `e(Γ)`
@@ -334,10 +325,10 @@ lemma exists_isUnitary_formTranslation :
   refine ⟨smoothPairing _ fun _ ↦ gramForm_conjWeylRep _, fun φ hφ ↦ ?_,
     smoothPairing_formTranslation _⟩
   -- Positivity: `f g = ⟨φ g, φ g⟩` is nonnegative and positive at some `g`.
-  let f : Gf E n → ℂ := fun g ↦ gramForm (φ.1 g) (φ.1 g)
+  let f : Gf E n → ℂ := fun g ↦ gramForm (φ.val g) (φ.val g)
   obtain ⟨hf_left, hf_open⟩ : f ∈ smoothInvariants V.Γf :=
     pairing_mem_smoothInvariants (fun _ ↦ gramForm_conjWeylRep _) φ φ
-  obtain ⟨g, hg⟩ : ∃ g : Gf E n, φ.1 g ≠ 0 := Function.ne_iff.1 fun h ↦ hφ (Subtype.ext h)
+  obtain ⟨g, hg⟩ : ∃ g : Gf E n, φ.val g ≠ 0 := Function.ne_iff.1 fun h ↦ hφ (Subtype.ext h)
   have hf_nonneg : ∀ g : Gf E n, 0 ≤ f g := by simp [f, gramForm, weylGramOver_posDef.posSemidef]
   have hf_pos : 0 < f g := by simp [f, gramForm, weylGramOver_posDef.dotProduct_mulVec_pos hg]
   -- The mean is a positive multiple of the class sum at the level `rightStabilizer f ⊓ stdLevel`
@@ -378,9 +369,6 @@ The forms here live on a definite unitary space and have maximal level off a fin
 `New.Gf` is the finite adelic unitary group, `New.stdLevel` its integral points,
 `New.maxCompactAt n w` those supported at `w, w̄`, `New.Gf.trivialOn n S` the elements trivial at
 `S`.
-
-* `New.exists_inf_trivialOn_le`: an open subgroup contains the integral points trivial at some
-  finite set `S`, which avoids each `w, w̄` for which the subgroup contains `maxCompactAt n w`.
 -/
 
 namespace New
@@ -388,53 +376,6 @@ namespace New
 open Submodule Gf
 
 variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-
-/-- For an open subgroup `H` of the finite adelic unitary group there is a finite set `S` of
-places such that (a) neither `w` nor its conjugate is in `S` when `H` contains `maxCompactAt n w`,
-the integral points supported at `w, w̄`, and (b) `H` contains all integral points (`stdLevel E n`)
-that are trivial at `S`. -/
-lemma exists_inf_trivialOn_le {H : Subgroup (Gf E n)} (hH : H.IsOpen) :
-    ∃ S : Finset (FinPlace E), (∀ w : FinPlace E, maxCompactAt n w ≤ H → w ∉ S ∧ star w ∉ S) ∧
-      stdLevel E n ⊓ trivialOn n S ≤ H := by
-  classical
-  -- The compact set `stdLevel \ H` is covered by the open sets `{g | g.atPlace w ≠ 1}`; a finite
-  -- subcover is a finite `S` with `stdLevel ⊓ trivialOn S ≤ H`. Take a minimal such `S`.
-  have hex : ∃ S : Finset (FinPlace E), stdLevel E n ⊓ trivialOn n S ≤ H := by
-    have h_cover : (stdLevel E n : Set (Gf E n)) \ H ⊆ ⋃ w : FinPlace E, {g | g.atPlace w ≠ 1} := by
-      intro g hg
-      have hg_ne : g ≠ 1 := (H.one_mem.ne_of_notMem hg.right).symm
-      simpa using mt Gf.ext hg_ne
-    obtain ⟨S, hS⟩ := (isCompact_stdLevel.diff hH).elim_finite_subcover _
-      (fun w ↦ isOpen_ne_fun (continuous_atPlace w) continuous_const) h_cover
-    refine ⟨S, fun g ⟨hg, hoff⟩ ↦ by_contra fun hgH ↦ ?_⟩
-    simpa +contextual [mem_trivialOn.1 hoff] using hS ⟨hg, hgH⟩
-  obtain ⟨S, hS, hmin⟩ := exists_minimal_of_wellFoundedLT _ hex
-  refine ⟨S, fun w hw ↦ ?_, hS⟩
-  -- If `maxCompactAt n w ≤ H`, the places `w, w̄` can be dropped from `S`: write `g = a * b` with
-  -- `a` supported at `w, w̄` and `b` trivial there; `a ∈ maxCompactAt n w`, and `b` is trivial on
-  -- all of `S`.
-  have hdrop : stdLevel E n ⊓ trivialOn n (S \ {w, star w} : Finset _) ≤ H := by
-    rintro g ⟨hg, hoff⟩
-    obtain ⟨a, ha, b, hb, rfl, hab⟩ := exists_supportedOn_mul_trivialOn {w} g
-    obtain ⟨ha_int, hb_int⟩ : a ∈ stdLevel E n ∧ b ∈ stdLevel E n := hab hg
-    refine mul_mem (hw ⟨ha_int, ha⟩) (hS ⟨hb_int, mem_trivialOn.2 fun u hu ↦ ?_⟩)
-    have hoff_u : u ∈ (↑(S \ {w, star w}) : Set (FinPlace E)) → (a * b).atPlace u = 1 :=
-      mem_trivialOn.1 hoff u
-    grind [mem_trivialOn, mem_supportedOn, atPlace_star_eq_one_iff, star_star]
-  have hsub : S ⊆ S \ {w, star w} := hmin hdrop Finset.sdiff_subset
-  grind
-
-/-- An open subgroup `K` of the finite adelic group contains `maxCompactAt n v`, the integral
-elements supported at `v` and its conjugate, for almost all places `v`. -/
-lemma eventually_maxCompactAt_le {K : Subgroup (Gf E n)} (hK : K.IsOpen) :
-    ∀ᶠ v : FinPlace E in Filter.cofinite, maxCompactAt n v ≤ K := by
-  obtain ⟨S, -, hS⟩ := exists_inf_trivialOn_le hK
-  filter_upwards [S.finite_toSet.conjClosure.eventually_cofinite_notMem] with v hv
-  -- Elements supported at `v` and its conjugate are trivial at every place of `S`.
-  have h_trivial : supportedOn n {v} ≤ trivialOn n (S : Set (FinPlace E)) := by
-    rw [← supportedOn_compl]
-    exact supportedOn_mono (Set.singleton_subset_iff.2 hv)
-  exact le_trans (inf_le_inf_left (stdLevel E n) h_trivial) hS
 
 variable {V : Space E n 1} {κ : Weight E} {S : Finset (FinPlace E)} {f : V.forms κ} {w : FinPlace E}
 

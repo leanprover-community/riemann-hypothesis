@@ -1,6 +1,9 @@
+module
+
+public import New.Congruences.FirstOrder.EvenClasses
+public import New.Congruences.FirstOrder.FittingBlock
+import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 import Lib.PadicHodge.BlochKato
-import New.Congruences.FirstOrder.EvenClasses
-import New.Congruences.FirstOrder.FittingBlock
 
 /-!
 # Cocycles of Tate twists: the even part and the triangle cost
@@ -47,6 +50,8 @@ Notions from other files:
 See `New.Congruences.FirstOrder.RibetElement` for related work.
 -/
 
+@[expose] public section
+
 namespace New.Selmer
 
 section TateTwistSteps
@@ -74,9 +79,9 @@ lemma add_conjGal_mem_evenClasses {e ν : ℕ} {S : Set (FinPlace E)}
     h_locConst.add (h_locConst.comp_continuous continuous_conjGal)⟩,
     fun g ↦ by simp [add_comm], fun g hg ↦ ?_⟩
   · -- the cocycle identity: `g` and `conjGal g` act alike on the twist
-    simp [h_cocycle, add_add_add_comm, tateTwist, cyclotomicInv]
+    simpa [h_cocycle, tateTwist, cyclotomicInv] using add_add_add_comm ..
   · -- `conjGal g` lies in the inertia group of the conjugate place, which is again outside
-    have ⟨v, hv, A, hA, hgA⟩ := hg
+    let ⟨v, hv, A, hA, hgA⟩ := hg
     have hv_star : star v ∉ placesDividing E ℓ ∪ S.conjClosure := by
       simpa [star_mem_placesDividing, and_comm] using hv
     have h_conj : c (conjGal g) = 0 :=
@@ -84,7 +89,7 @@ lemma add_conjGal_mem_evenClasses {e ν : ℕ} {S : Set (FinPlace E)}
     simp [h_unram g hg, h_conj]
   · -- `conjGal g` lies in the kernel of `cyclotomicChar` and in the decomposition group of the
     -- conjugate place
-    have ⟨A, hA, hgA, h_cyc⟩ := hg
+    let ⟨A, hA, hgA, h_cyc⟩ := hg
     have h_conj_mem : conjGal g ∈ shaLocalSet ℓ E 1 := ⟨conjPlace A, comap_apply_lt_one_iff.2
       (by simpa using hA), decompGroup.map cmConj_conjGal_smul hgA, by simpa using h_cyc⟩
     simp [h_loc g hg, h_loc _ h_conj_mem]
@@ -136,7 +141,7 @@ lemma apply_eq_zero_of_mem_obeying_crysRelations {e ν : ℕ}
     · exact ⟨hg.1, by simp [*, tateTwist, cyclotomicInv]⟩
   have h_dec' : s * g * s⁻¹ ∈ decompGroup Gal(Ω/E) (placeOver v) := by
     simpa only [hs] using conj_mem_decompGroup_smul (g := s) h_dec
-  have h_one' : tateTwist ℓ E O e (s * g * s⁻¹) = 1 := (MonoidHom.normal_ker _).1 g h_one s
+  have h_one' : tateTwist ℓ E O e (s * g * s⁻¹) = 1 := (MonoidHom.normal_ker _).conj_mem g h_one s
   have h_ine' (he : e = 0) : s * g * s⁻¹ ∈ inertiaGroup Gal(Ω/E) (placeOver v) := by
     rw [← hs]
     exact IsFrob.conj (h_ine he) s
@@ -260,7 +265,7 @@ lemma hasTriangleCost_tateTwist [Fintype J] [LinearOrder J] {ν : ℕ} {w : J �
     -- when `z + z ∘ conjGal` kills `τ i`, and likewise for `φ i`.
     obtain rfl : (ty j).val = e := (mem_filter.1 hj).2
     have h_even : z + z ∘ conjGal ∈ evenClasses O (Set.range w) ν (ty j).val :=
-      add_conjGal_mem_evenClasses (ty j).2.ne' (hZ_sel hz) hzL
+      add_conjGal_mem_evenClasses (ty j).property.ne' (hZ_sel hz) hzL
     simp only [h_inv hz] at h_prev ⊢
     have h_prev' : ∀ i < j, (z + z ∘ conjGal) (τ i) = 0 ∧
         (ty i = ty j → (z + z ∘ conjGal) (φ i) = 0) := by

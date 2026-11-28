@@ -1,3 +1,11 @@
+module
+
+import Mathlib.Algebra.Divisibility.Prod
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.GaloisRep.BaseChange.Defs
+import Lib.Adelic.Adeles.AdditiveCharacter
 import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
@@ -33,6 +41,8 @@ J.-P. Serre, Corps locaux, 1962, Ch. X §1 Prop. 3 and Ch. V §2; S. Chase, D. H
 Galois theory and Galois cohomology of commutative rings, Mem. AMS 52, 1965; for the norm on O[γ],
 P. Scholze, The Langlands-Kottwitz approach for some simple Shimura varieties, 2013, Lemma 2.2.
 -/
+
+@[expose] public section
 
 section TameDescent
 
@@ -228,7 +238,7 @@ lemma IsProfiniteRing.eqLocus (hR : IsProfiniteRing R) (h_tame : IsTameAtLevel �
       Subtype.ext (by simp [mul_add, sum_add_distrib])
   refine hR.of_retract (σ.eqLocus 1).subtype.toAddMonoidHom retract fun x ↦ Subtype.ext ?_
   -- for a fixed `x` the sum is the trace of `e` times `x`
-  show ∑ i ∈ range p, σ^[i] (e * x) = x
+  change ∑ i ∈ range p, σ^[i] (e * x) = x
   have hx_iter (i : ℕ) : σ^[i] (x : R) = x := iterate_fixed x.prop i
   simp only [iterate_map_mul, hx_iter, ← sum_mul, h_trace, one_mul]
 
@@ -254,9 +264,6 @@ lemma span_natCast_le_comap (σ : R →+* R) (N : ℕ) : span {(N : R)} ≤ (spa
 /-- The ring endomorphism of `R ⧸ (N)` induced by `σ`, for a natural number `N`. -/
 def quotientNatMap (σ : R →+* R) (N : ℕ) : R ⧸ span {(N : R)} →+* R ⧸ span {(N : R)} :=
   quotientMap (span {(N : R)}) σ (span_natCast_le_comap σ N)
-
-private lemma quotientNatMap_mk (σ : R →+* R) (N : ℕ) (x : R) :
-    quotientNatMap σ N (mk (span {(N : R)}) x) = mk (span {(N : R)}) (σ x) := rfl
 
 /-- Let `R` be profinite (`New.IsProfiniteRing`) and `σ` a ring endomorphism of `R`. Some
 `R`-algebra map `Λ` from the families of residues modulo `N !` to `R` carries the maps
@@ -316,7 +323,7 @@ lemma isTameAtLevel_quotientNatMap (h_tame : IsTameAtLevel σ p m) (N : ℕ) :
     IsTameAtLevel (quotientNatMap σ N) p (mk (span {(N : R)}) m) := by
   have hq : Semiconj (mk (span {(N : R)})) σ (quotientNatMap σ N) := fun _ ↦ rfl
   have h_per (y : R) : IsPeriodicPt σ p y := by
-    show σ^[p] y = y
+    change σ^[p] y = y
     simp [← RingHom.coe_pow, h_tame.pow_eq_one]
   have hq_pow : quotientNatMap σ N ^ p = 1 :=
     ringHom_ext (RingHom.ext fun y ↦ (h_per y).map hq)
@@ -648,7 +655,7 @@ lemma IsTameAtLevel.exists_norm_of_finite (h_tame : IsTameAtLevel σ p m) [Finit
       Set.MapsTo (Units.map ((σ ^ i : R →+* R) : R →* R)) (H : Set Rˣ) (H : Set Rˣ) := by
     intro y hy
     have h_dvd : (σ ^ i) m ∣ (σ ^ i) ((y : R) - 1) := map_dvd (σ ^ i) hy
-    show m ∣ ((Units.map ↑(σ ^ i) y : Rˣ) : R) - 1
+    change m ∣ ((Units.map ↑(σ ^ i) y : Rˣ) : R) - 1
     simpa [iterate_fixed h_tame.apply_eq_self] using h_dvd
   let s (i : ℕ) : H →* H := (Units.map ↑(σ ^ i)).restrict (h_stable i)
   let norm : H →* H := (range p).prod s
@@ -704,7 +711,8 @@ lemma IsTameAtLevel.exists_prod_range_pow_apply_eq (h_tame : IsTameAtLevel σ p 
     h_tame.exists_algHom_semiconj_quotientNatMap hR
   choose h_finite h_tame_quotient using h_quotient
   have hx_fixed (N : ℕ) : q N ! (Ideal.Quotient.mk _ x) = Ideal.Quotient.mk _ x := by
-    rw [quotientNatMap_mk, hσx]
+    change Ideal.Quotient.mk _ (σ x) = Ideal.Quotient.mk _ x
+    rw [hσx]
   choose z hz hz_inv hz_norm using fun N ↦
     (h_tame_quotient N).exists_norm_of_finite (hx.map _) (hx_fixed N) (map_dvd _ hx_one)
   -- `Λ` keeps congruences modulo `m`

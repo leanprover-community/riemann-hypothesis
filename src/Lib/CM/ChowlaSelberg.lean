@@ -1,9 +1,19 @@
+module
+
+public import Mathlib.NumberTheory.Harmonic.ZetaAsymp
+import Mathlib.Algebra.GroupWithZero.Torsion
+import Mathlib.Algebra.Order.Monoid.Unbundled.Units
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Topology.UniformSpace.Uniformizable
+public import Lib.CM.ConjugateCurve
+public import Lib.ClassField.HeckeL.EulerProduct
+public import Lib.General.Algebra.AdicCompletion
 import Lib.Analytic.EntireLFunction
-import Lib.CM.ConjugateCurve
 import Lib.CM.Integrality.IsogenyIntegrality
 import Lib.CM.KroneckerLimit
-import Lib.ClassField.HeckeL.EulerProduct
 import Lib.ClassField.Places.ValuationSubrings
+import Lib.General.NumberTheory.EmbeddingsAndDifferent
 
 /-!
 # Odd class number, ζ_K = ζ·L(s, χ), theta functions with CM and Chowla–Selberg
@@ -62,6 +72,8 @@ not identified with the Artin map and is not shown here to be a unit. Source: G.
 Introduction to the Arithmetic Theory of Automorphic Functions (1971), Thm 5.4; J. Milne, Complex
 Multiplication (2020), 9.17.
 -/
+
+@[expose] public section
 
 /-!
 ## The odd class number and the factorisation of ζ_K
@@ -151,7 +163,7 @@ lemma classGroup_sq_bijective :
   obtain ⟨w, hw : s * sqrtNegDInt d ^ m = (star α + I.absNorm) * w⟩ :=
     span_singleton_le_span_singleton.1 (hJ_span.ge.trans mul_le_left)
   refine (mk0_eq_one_iff _).2 ⟨w, ?_⟩
-  show I = span {w}
+  change I = span {w}
   simpa [hJ_def, hw, ← span_singleton_mul_span_singleton, h_ne] using hJ_span
 
 open scoped Classical in
@@ -169,7 +181,7 @@ lemma eulerFactor_mul_eq_prod_inv {p : ℕ} [hp : Fact p.Prime] {w J : FinPlace 
   obtain ⟨rfl, h_norm⟩ | ⟨hwq, hJq, h_span⟩ := h_split
   · -- Inert: one prime of norm `p ^ 2`, and the symbol is `-1`.
     have h_chi : chiK d p = -1 := by grind [hp.out.one_lt, lt_self_pow₀]
-    simp [h_chi, h_norm, sq, Complex.natCast_mul_natCast_cpow, ← mul_inv, ← mul_self_sub_mul_self]
+    simp [h_chi, h_norm, sq, Complex.natCast_mul_cpow, ← mul_inv, ← mul_self_sub_mul_self]
   obtain ⟨rfl, h_chi : chiK p p = 0⟩ | ⟨hp_ne, h_chi⟩ := chiK_cases d p
   · -- Ramified: `w * J` is a square, so `w = J`, as coprime factors of a square are squares.
     have h_sq : w.asIdeal * J.asIdeal = span {sqrtNegDInt p} ^ 2 := by
@@ -227,7 +239,7 @@ lemma eulerProd_one_eq_zeta_mul {s : ℝ} (hs : 1 < s) :
       ← h_above]
   -- The fibre over `p` is `{w, J}`.
   have h_fibre_prod : HasProd
-      (fun v : {v // below v = ⟨p, hp⟩} ↦ ((1 : ℂ) - v.1.q ^ (-s : ℂ))⁻¹)
+      (fun v : {v // below v = ⟨p, hp⟩} ↦ ((1 : ℂ) - v.val.q ^ (-s : ℂ))⁻¹)
       (∏ v ∈ {w, J}, ((1 : ℂ) - v.q ^ (-s : ℂ))⁻¹) :=
     (Equiv.subtypeEquivRight h_fibre).hasProd_iff.2 (Finset.hasProd {w, J} _)
   simpa [h_char, h_factor] using h_fibre_prod
@@ -326,18 +338,12 @@ lemma CMLattice.exists_finAdele_taylorVia_twistedTranslate_theta (C : CMLattice 
     (hU_int x' (b S * x) hx' (by rwa [map_mul])), h_point]
   exact hb S x (hS (mem_singleton_self x))
 
-/-- The data of complex multiplication for the theta function of `C`, relative to a number `Ω₀` and
-an automorphism `σ` of `ℂ` over `K`. The number `Ω` and the integral ideal `𝔠` describe the lattice
-of the conjugate curve `C.galConjugate σ`, and the finite adele `β` of `K` describes the action of
-`σ` on the translates of `θ` by the points `x Ω₀` with `x ∈ K`. -/
+/-- Data for complex multiplication of theta functions of a CM lattice `C` of `K = ℚ(√-d)`, under
+an automorphism `σ` of `ℂ` over `K`. The number `Ω` scales the lattice of the conjugate curve
+`C.galConjugate σ`, and the finite adele `β` of `K` describes the action of `σ` on the translates
+of `θ` by the points `x Ω₀` with `x ∈ K`. -/
 structure CMLattice.IsComplexMultiplicationData (C : CMLattice d) (σ : Gal(ℂ/QuadField d))
-    (Ω₀ Ω : ℂˣ) (𝔠 : Ideal (𝓞 (QuadField d))) (β : 𝔸f (QuadField d)) : Prop where
-  /-- The ideal `𝔠` is nonzero. -/
-  ideal_ne_bot : 𝔠 ≠ ⊥
-  /-- The lattice of the conjugate curve is `Ω 𝔠² / N(𝔠)`, which is `Ω` times the quotient of `𝔠`
-  by its conjugate. -/
-  mem_lattice_iff (z : ℂ) : z ∈ (C.galConjugate σ).Λ ↔
-    ∃ a ∈ 𝔠 ^ 2, Ω.val * ((a : QuadField d) / 𝔠.absNorm : QuadField d) = z
+    (Ω₀ Ω : ℂˣ) (β : 𝔸f (QuadField d)) : Prop where
   /-- The lattice of the conjugate curve has the area `|Ω|² √d / 2`. -/
   area_eq : (C.galConjugate σ).area = ‖Ω.val‖ ^ 2 * √d / 2
   /-- A positive integral multiple of `Ω` is a period of the conjugate curve. -/
@@ -353,18 +359,17 @@ structure CMLattice.IsComplexMultiplicationData (C : CMLattice d) (σ : Gal(ℂ/
 
 /-- Complex multiplication for theta functions, for `d` a prime `≡ 7 (mod 8)` and `K = ℚ(√-d)`. Let
 the lattice of `C` be `Ω₀ 𝓞_K` and let `σ` be an automorphism of `ℂ` over `K`. There are a number
-`Ω`, a nonzero integral ideal `𝔠` and a finite adele `β` of `K` such that
-`C.IsComplexMultiplicationData σ Ω₀ Ω 𝔠 β` holds. This means that the lattice of the conjugate curve
-`C.galConjugate σ` is `Ω 𝔠² / N(𝔠)`, has the area `|Ω|² √d / 2` and contains a multiple `Ω e`; and
-that for each `x ∈ K` and each `x' ∈ K` close enough to `β x` in the finite adeles, `σ` takes the
-Taylor series of the translate of `θ` by `x Ω₀` to that of the translate by `x' Ω` of the theta
-function of the conjugate curve. A case of the main theorem of complex multiplication (Shimura,
-Introduction to the arithmetic theory of automorphic functions, 1971, Theorem 5.4), without the
-reciprocity law. -/
+`Ω` and a finite adele `β` of `K` such that `C.IsComplexMultiplicationData σ Ω₀ Ω β` holds. This
+means that the lattice of the conjugate curve `C.galConjugate σ` has the area `|Ω|² √d / 2` and
+contains a multiple `Ω e`; and that for each `x ∈ K` and each `x' ∈ K` close enough to `β x` in
+the finite adeles, `σ` takes the Taylor series of the translate of `θ` by `x Ω₀` to that of the
+translate by `x' Ω` of the theta function of the conjugate curve. A case of the main theorem of
+complex multiplication (Shimura, Introduction to the arithmetic theory of automorphic functions,
+1971, Theorem 5.4), without the reciprocity law. -/
 lemma CMLattice.complex_multiplication_theta (C : CMLattice d) (σ : Gal(ℂ/QuadField d)) {Ω₀ : ℂˣ}
     (h₀ : C.latticeModule = scaledIdeal d (Ω₀, 1)) :
-    ∃ (Ω : ℂˣ) (𝔠 : Ideal (𝓞 (QuadField d))) (β : 𝔸f (QuadField d)),
-      C.IsComplexMultiplicationData σ Ω₀ Ω 𝔠 β := by
+    ∃ (Ω : ℂˣ) (β : 𝔸f (QuadField d)),
+      C.IsComplexMultiplicationData σ Ω₀ Ω β := by
   -- The lattice of the conjugate curve `D` is `w 𝔠²`; with `n = N(𝔠)` take `Ω = w n` and `e = n`.
   let D : CMLattice d := C.galConjugate σ
   obtain ⟨w, ⟨𝔠, h𝔠⟩, hw : D.latticeModule =
@@ -387,10 +392,8 @@ lemma CMLattice.complex_multiplication_theta (C : CMLattice d) (σ : Gal(ℂ/Qua
   -- The area of `w 𝔠²` is `|w|² N(𝔠)² √d / 2`.
   have h_area : D.area = ‖Ω.val‖ ^ 2 * √d / 2 := by
     simp [area_eq_of_eq_scaledIdeal hw, Ω, field, coeIdeal_absNorm]
-  exact ⟨Ω, 𝔠, β,
-    { ideal_ne_bot := nonZeroDivisors.ne_zero h𝔠
-      mem_lattice_iff := h_lattice
-      area_eq := h_area
+  exact ⟨Ω, β,
+    { area_eq := h_area
       exists_mul_mem_latticeModule := ⟨⟨𝔠.absNorm, Nat.pos_of_ne_zero hn⟩, h_multiple⟩
       taylorVia_twistedTranslate_theta := hβ }⟩
 
@@ -625,8 +628,7 @@ lemma CMLattice.sum_kronecker_terms {E : ClassGroup (𝓞 (QuadField d)) → CML
     push_cast
     field [classNumber_ne_zero, hd_pos.ne']
   rw [chowlaSelbergConst, ← hL, h_log, ofReal_re]
-  field_simp [classNumber_ne_zero]
-  ring
+  field [classNumber_ne_zero]
 
 /-- There are fractional ideals of `K`, one in each ideal class, whose product is `(1)`. -/
 lemma QuadField.exists_mk_eq_and_prod_eq_one :

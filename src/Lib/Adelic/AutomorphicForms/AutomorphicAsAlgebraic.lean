@@ -1,4 +1,15 @@
+module
+
+import Mathlib.MeasureTheory.SpecificCodomains.Pi
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.AutomorphicForms.Basic
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
 import Lib.Adelic.AutomorphicForms.RealConvolution
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Rigidity.KernelFixes
 import Lib.GLn.SchurModule.SchurNorm
 
 /-!
@@ -46,6 +57,8 @@ Notions from other files:
 Known result: algebraic modular forms as functions on the adelic group. For the source see
 `Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -176,12 +189,12 @@ lemma toAlgFormFun_ofAlgForm (h : IsHCParam (n := n) κ e l) (ψ : AlgForm n κ 
     integrable_of_compactSpace (by fun_prop (disch := simp))
   calc toAlgFormFun κ e l (ofAlgForm l 1 ψ) g a
     _ = card (WeylIndex n κ) * ∫ x, LinearMap.proj (R := ℂ) a (conjWeylRep κ e (s := 1) x v) *
-          gramForm v (conjWeylRep κ e x⁻¹ (ψ.1 g)) := by
+          gramForm v (conjWeylRep κ e x⁻¹ (ψ.val g)) := by
       rw [toAlgFormFun, eval_integral h_int, ← integral_const_mul]
       refine integral_congr_ae (.of_forall fun x ↦ ?_)
       simp only [v, algFormCoeff_apply, Pi.smul_apply, smul_eq_mul, LinearMap.proj_apply]
       ring
-    _ = ψ.1 g a := by
+    _ = ψ.val g a := by
       rw [schur_orthogonality, gramForm_highestVector_self fun w ↦ (h w).1, mul_one,
         LinearMap.proj_apply, mul_inv_cancel_left₀ (Nat.cast_ne_zero.2 card_ne_zero)]
 
@@ -229,16 +242,6 @@ lemma ofAlgForm_toAlgForm [V.IsStd] (h : IsHCParam (n := n) κ e l)
     ofAlgForm l s (V.toAlgForm h y) = y :=
   congrArg Subtype.val ((V.toAlgForm h).left_inv y)
 
-/-- Let `l` be twice the Harish-Chandra parameter of `(κ, e)` and `y` a form of type
-`typeKernel l 1` on the standard space. The algebraic form `toAlgForm h y` corresponds to `y` under
-the inverse of `φ ↦ ofAlgForm l 1 φ`. Its underlying function is `y♭ = toAlgFormFun κ e l y`, i.e.
-`g ↦ d ∫_{G_∞} y(x, g) ρ(x) v⁺ dx`, with `d` the dimension of the Weyl module, `ρ = conjWeylRep` and
-`v⁺` the highest vector for `l`. -/
-theorem toAlgForm_eq_toAlgFormFun (h : IsHCParam (n := n) κ e l)
-    (y : (stdSpace E n).Form (typeKernel l 1)) :
-    ((stdSpace E n).toAlgForm h y).val = toAlgFormFun κ e l y.val := by
-  rw [← toAlgFormFun_ofAlgForm h, ofAlgForm_toAlgForm]
-
 /-- For `l` twice the Harish-Chandra parameter of `(κ, e)`, the isomorphism `New.Space.toAlgForm`
 from forms of type `typeKernel l s` on a standard space to smooth algebraic forms of weight
 `(κ, e)` commutes with right translation by `G_f`. -/
@@ -249,7 +252,7 @@ lemma toAlgForm_formRep [V.IsStd] (h : IsHCParam (n := n) κ e l) (a : Gf E n)
   -- Apply the inverse `ofAlgForm`, which commutes with right translation.
   apply (V.toAlgForm h).symm.injective
   refine (LinearEquiv.symm_apply_apply _ _).trans (Subtype.ext (funext fun g ↦ ?_))
-  calc y.1 (g * (1, a)) = ofAlgForm l s (V.toAlgForm h y) (g * (1, a)) :=
+  calc y.val (g * (1, a)) = ofAlgForm l s (V.toAlgForm h y) (g * (1, a)) :=
       (congrFun (ofAlgForm_toAlgForm h y) _).symm
     _ = ofAlgForm l s (algFormRep κ e a (V.toAlgForm h y)) g :=
       (algFormCoeff_algFormRep _ a g).symm
@@ -270,10 +273,9 @@ variable (V) in
 /-- For V standard and l twice the Harish-Chandra parameter of (κ, e), a form y of type
 `typeKernel l s` has Hecke polynomial p at the place w (with `star w ≠ w`) if and only if its
 algebraic form, as a function on G_f, does. (`HasHeckePolynomial`: fixed by the standard group at w
-and an eigenvector of the Hecke operators there, as prescribed by p; `WeilData E`: the auxiliary
-element, idele and splitting character fixed on E.) -/
+and an eigenvector of the Hecke operators there, as prescribed by p.) -/
 lemma _root_.New.hasHeckePolynomial_toAlgForm_iff [V.IsStd] (h : IsHCParam (n := n) κ e l)
-    [WeilData E] {y : V.Form (typeKernel l s)} {w : FinPlace E} {p : ℂ → ℂ} {hw : star w ≠ w} :
+    {y : V.Form (typeKernel l s)} {w : FinPlace E} {p : ℂ → ℂ} {hw : star w ≠ w} :
     HasHeckePolynomial (rightRegular ℂ (Gf E n) (WeylIndex n κ → ℂ)) hw p (V.toAlgForm h y).val ↔
       HasHeckePolynomial (V.formRep (typeKernel l s)) hw p y := by
   -- `L` sends a form to its algebraic form, as a function; it is injective and equivariant.
@@ -372,7 +374,7 @@ lemma integral_mul_eq_classIntegral [hV : V.IsStd] (h_param : IsHCParam (n := n)
 lemma star_ofAlgForm (h : s = 1) (x : GInf E s) (g : Gf E n) :
     star (ofAlgForm l s φ (x, g)) = gramForm (φ.val g) (conjWeylRep κ e x (highestVector κ l)) := by
   subst h
-  simp [← gramForm_conjWeylRep (e := e) x⁻¹ (φ.1 _), conj_gramForm, algFormCoeff_apply]
+  simp [← gramForm_conjWeylRep (e := e) x⁻¹ (φ.val _), conj_gramForm, algFormCoeff_apply]
 
 variable (V) in
 /-- Let `V` be standard (all signs `+1`, point the identity), `l` twice the Harish-Chandra parameter

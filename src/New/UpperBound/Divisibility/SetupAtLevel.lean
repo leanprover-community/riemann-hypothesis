@@ -1,4 +1,7 @@
-import New.UpperBound.Divisibility.MarkedPrimes
+module
+
+import Mathlib.Algebra.Order.Star.Int
+public import New.UpperBound.Divisibility.MarkedPrimes
 
 /-!
 # The places `Σ_N` above N and the set-up at p = N
@@ -18,6 +21,8 @@ source forms with values integral for `L_0`.
 Notions from other files:
 * `New.Data.piNPlaces`: the set of primes dividing `π`, where `π π̄ = N`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -65,7 +70,7 @@ instance isSplitLevel_nonInducedPlaces : IsSplitLevel D.nonInducedPlaces D.N whe
 /-- The point supported above `N` that is `diag (1, …, 1, N)` at the places of `Σ_N` in `S`, and `1`
 at the other places of `Σ_N`. -/
 abbrev diagPoint (j : ℕ) (S : Finset (FinPlace D.E)) : Gf D.E (D.X j) :=
-  embedGL (diagN (P := D.nonInducedPlaces) (D.InitIndex j) S)
+  embedGL (diagN (P := D.nonInducedPlaces) (N := D.N) (D.InitIndex j) S)
 
 /-- The point `δ_j`, which is `diag (1, …, 1, N)` at the places of `Σ_N` that divide `π` and `1` at
 the others. It takes the standard lattice at `Σ_N` to `L_j`, the lattice of integral vectors whose
@@ -121,7 +126,8 @@ lemma directDatum_ne_zero_iff {j : ℕ} (M : Matrix (D.X j) (D.X j) (LocProd D.n
   have h_lift : directDatum M ≠ 0 ↔ ∃ h : ∀ b c : D.X j, M b c ∈ SemilocalField.O,
       ∀ b : D.X j, D.isSplitLevel_nonInducedPlaces.reduction ⟨M b (.inr ()), h b (.inr ())⟩ =
         lastBasisVector b := by
-    simp [directDatum, lastColDatum, liftFn_apply, funext_iff (α := D.X j), -Sum.forall]
+    simp only [directDatum, lastColDatum, funext_iff (α := D.X j), transpose_apply, liftFn_apply,
+      of_apply, ne_eq, dite_eq_right_iff, not_forall]
     exact exists_congr fun _ ↦ by split_ifs <;> simp [*]
   simp [h_lift, mem_O_locProd, reduction_eq_iff, D.isSplitLevel_nonInducedPlaces.v_natCast,
     div_le_one₀, ZMod.val_one, ← forall_and, forall_comm (β := D.nonInducedPlaces),
@@ -310,11 +316,11 @@ lemma upOperator_mem_sourceForm {φ : D.FormX 0} (hφ : φ ∈ D.SourceForm) :
       (commute_supportedOn_trivialOn (D.conjEmbedGL_mem_supportedOn 0 g) hb_away).symm.map _
   have hb_fix : algFormRep D.columnCount (D.lastEntry 0) b (upOperator (D.formRepAtN 0) φ) =
       upOperator (D.formRepAtN 0) φ := by
-    rw [← Module.End.mul_apply, h_commute.eq, Module.End.mul_apply,
+    rw [← mul_apply_eq_comp, h_commute.eq, mul_apply_eq_comp,
       h_fix (mul_mem (inv_mem (D.conjEmbedGL_mem_levelX ha)) k.prop)]
   -- The character of the level in the definition of `D.SourceForm` is trivial.
   rw [show k.val = D.conjEmbedGL 0 a * b from (mul_inv_cancel_left _ _).symm, map_mul,
-    Module.End.mul_apply, hb_fix, MonoidHom.one_apply, one_smul]
+    mul_apply_eq_comp, hb_fix, MonoidHom.one_apply, one_smul]
   exact mirabolic_fix_upOperator (π := D.formRepAtN 0)
     (fun _ hg ↦ h_fix (D.conjEmbedGL_mem_levelX hg)) ha
 

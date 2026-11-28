@@ -1,4 +1,16 @@
-import Lib.Base
+module
+
+import TauCeti.LinearAlgebra.Submodule.CardFinrank
+public import Mathlib.LinearAlgebra.Lagrange
+public import Mathlib.RingTheory.Polynomial.UniversalFactorizationRing
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.Speed
 
 /-!
 # The q-binomial theorem, fibre sums, and Schur polynomials in the coefficients
@@ -31,6 +43,8 @@ Known results: the q-binomial theorem, counted over the subspaces of a finite ve
 bialternant formula for Schur polynomials.
 -/
 
+@[expose] public section
+
 /-! ## The q-binomial theorem over the subspaces of a finite vector space -/
 
 section QBinomial
@@ -52,39 +66,6 @@ noncomputable abbrev New.heckePolyCoeff {n k : Type*} [Field k] (X : ℂ) (U : S
     ℂ :=
   (-X) ^ finrank k U * (Nat.card k : ℂ) ^ (finrank k U).choose 2
 
-/-- If `W` covers `H` in the lattice of subspaces, then a subspace `U ≤ W` is spanned by `U ⊓ H` and
-any vector of `U` outside `H`. -/
-lemma New.inf_sup_span_singleton_of_covBy {k V : Type*} [Field k] [AddCommGroup V] [Module k V]
-    {H W U : Submodule k V} (hHW : H ⋖ W) (hU : U ≤ W) {v : V} (hv : v ∈ U) (hvH : v ∉ H) :
-    U ⊓ H ⊔ k ∙ v = U := by
-  have span_le : k ∙ v ≤ U := by simpa
-  have lt_sup : H < H ⊔ k ∙ v := left_lt_sup.2 (by simpa)
-  have sup_eq : H ⊔ k ∙ v = W :=
-    (hHW.eq_or_eq lt_sup.le (sup_le hHW.le (span_le.trans hU))).resolve_left lt_sup.ne'
-  rw [inf_sup_assoc_of_le _ span_le, sup_eq, inf_of_le_left hU]
-
-/-- If `W` covers `H` in the lattice of subspaces, then `U ⊓ H` has codimension one in every
-subspace `U ≤ W` that is not contained in `H`. -/
-lemma New.finrank_eq_finrank_inf_add_one_of_covBy {k V : Type*} [Field k] [AddCommGroup V]
-    [Module k V] [FiniteDimensional k V] {H W U : Submodule k V} (hHW : H ⋖ W) (hU : U ≤ W)
-    (hUH : ¬U ≤ H) : finrank k U = finrank k ↥(U ⊓ H) + 1 := by
-  obtain ⟨v, hv, hvH⟩ : ∃ v ∈ U, v ∉ H := Set.not_subset.1 hUH
-  rw [← finrank_sup_span_singleton (show v ∉ U ⊓ H by simp [hvH]),
-    inf_sup_span_singleton_of_covBy hHW hU hv hvH]
-
-open scoped Classical in
-/-- If `W` covers `H` and `v` is a vector of `W` outside `H`, then `U ↦ U ⊓ H` is a bijection from
-the subspaces `U ≤ W` containing `v` onto the subspaces of `H`; stated for sums of a function. -/
-lemma New.sum_inf_eq_sum_of_covBy {k V : Type*} [Field k] [AddCommGroup V] [Module k V]
-    [Fintype (Submodule k V)] {H W : Submodule k V} (hHW : H ⋖ W) {v : V} (hvW : v ∈ W)
-    (hvH : v ∉ H) (f : Submodule k V → ℂ) :
-    ∑ U : Submodule k V with v ∈ U ∧ U ≤ W, f (U ⊓ H) = ∑ U : Submodule k V with U ≤ H, f U := by
-  refine sum_nbij' (fun U ↦ U ⊓ H) (fun U ↦ U ⊔ k ∙ v) ?_ ?_ ?_ ?_ fun U _ ↦ rfl
-  · simp
-  · simp +contextual [hvW, hHW.le.trans', mem_sup_right]
-  · simp +contextual [inf_sup_span_singleton_of_covBy hHW, hvH]
-  · simp +contextual [sup_inf_assoc_of_le, (disjoint_span_singleton_of_notMem hvH).symm.eq_bot]
-
 open scoped Classical in
 /-- The q-binomial theorem for subspaces: for a subspace `W` of `k^n`, with `n` finite and `k` a
 field with `q` elements, and for `X : ℂ`, the sum of `(-X) ^ dim U * q ^ (dim U choose 2)`
@@ -97,59 +78,36 @@ lemma New.q_binomial_submodule (n k : Type*) [Finite n] [Field k] [Finite k]
     (W : Submodule k (n → k)) (X : ℂ) :
     ∑ U : Submodule k (n → k) with U ≤ W, heckePolyCoeff X U =
       SiegelWeil.qPochhammer (Nat.card k) (finrank k W) X := by
-  -- Induction along a chain of hyperplanes H ⋖ W. A subspace U ≤ W not contained in H is
-  -- (U ⊓ H) ⊔ k v for every v in U outside H; count such pairs (U, v) in two ways.
-  let q : ℂ := Nat.card k
-  have q_ne : q - 1 ≠ 0 := by simp [q, sub_eq_zero, Fintype.one_lt_card.ne']
-  let : LocallyFiniteOrder (Submodule k (n → k)) := Fintype.toLocallyFiniteOrder
-  induction le_iff_reflTransGen_covBy.1 (OrderBot.bot_le W) with
-  | refl => simp [filter_eq', heckePolyCoeff]
-  | @tail H W _ hHW ih =>
-    -- The vectors of U outside H number q ^ (d + 1) - q ^ d, where d is the rank of U ⊓ H.
-    let outsideH (U : Submodule k (n → k)) : Finset (n → k) := Set.toFinset (U \ ↑(U ⊓ H))
-    have card_eq (U : Submodule k (n → k)) :
-        (#(U : Set (n → k)).toFinset : ℂ) = q ^ finrank k U := by
-      simp [q, card_eq_pow_finrank (K := k) (V := U)]
-    have card_outsideH {U : Submodule k (n → k)} (hU : U ≤ W) (hUH : ¬U ≤ H) :
-        (#(outsideH U) : ℂ) = q ^ finrank k ↥(U ⊓ H) * (q - 1) := by
-      simp only [outsideH]
-      rw [Set.toFinset_sdiff, cast_card_sdiff (Set.toFinset_mono (SetLike.coe_mono inf_le_left)),
-        card_eq, card_eq, finrank_eq_finrank_inf_add_one_of_covBy hHW hU hUH]
-      ring
-    -- The coefficient of U is -X q ^ d times that of U ⊓ H; spread it evenly over these vectors.
-    let weight : ℂ := -X / (q - 1)
-    let notInH : Finset (Submodule k (n → k)) := univ.filter (· ≤ W) \ univ.filter (· ≤ H)
-    have coeff_eq_sum (U : Submodule k (n → k)) (hU : U ∈ notInH) :
-        heckePolyCoeff X U = ∑ v ∈ outsideH U, weight * heckePolyCoeff X (U ⊓ H) := by
-      have ⟨hUW, hUH⟩ : U ≤ W ∧ ¬U ≤ H := by simpa [notInH] using hU
-      rw [sum_const, nsmul_eq_mul, card_outsideH hUW hUH, heckePolyCoeff, heckePolyCoeff,
-        finrank_eq_finrank_inf_add_one_of_covBy hHW hUW hUH, Nat.choose_succ_succ',
-        Nat.choose_one_right]
-      simp only [weight, q] at q_ne ⊢
-      field
-    -- For fixed v, the map U ↦ U ⊓ H is a bijection from the U ≤ W containing v onto the U ≤ H.
-    have sum_fibre (v : n → k) (hv : v ∈ outsideH W) :
-        ∑ U with v ∈ U ∧ U ≤ W, weight * heckePolyCoeff X (U ⊓ H) =
-          weight * ∑ U with U ≤ H, heckePolyCoeff X U := by
-      obtain ⟨hvW, hvH⟩ : v ∈ W ∧ v ∉ H := by simp_all [outsideH]
-      rw [← mul_sum, sum_inf_eq_sum_of_covBy hHW hvW hvH]
-    have mem_pairs_iff (U : Submodule k (n → k)) (v : n → k) : U ∈ notInH ∧ v ∈ outsideH U ↔
-        U ∈ univ.filter (fun U ↦ v ∈ U ∧ U ≤ W) ∧ v ∈ outsideH W := by
-      grind [IsConcreteLE.le_iff, Submodule.mem_inf, SetLike.mem_coe]
-    calc ∑ U with U ≤ W, heckePolyCoeff X U
-      _ = ∑ v ∈ outsideH W, ∑ U with v ∈ U ∧ U ≤ W, weight * heckePolyCoeff X (U ⊓ H) +
-          ∑ U with U ≤ H, heckePolyCoeff X U := by
-        rw [← sum_comm' mem_pairs_iff, ← sum_congr rfl coeff_eq_sum,
-          sum_sdiff (monotone_filter_right univ fun U _ hU ↦ hU.trans hHW.le)]
-      _ = (1 - q ^ finrank k H * X) * ∑ U with U ≤ H, heckePolyCoeff X U := by
-        rw [sum_congr rfl sum_fibre, sum_const, nsmul_eq_mul, card_outsideH le_rfl hHW.lt.not_ge,
-          inf_of_le_right hHW.le]
-        simp only [weight]
-        field
-      _ = SiegelWeil.qPochhammer (Nat.card k) (finrank k W) X := by
-        rw [finrank_eq_finrank_inf_add_one_of_covBy hHW le_rfl hHW.lt.not_ge,
-          inf_of_le_right hHW.le, ih, mul_comm, SiegelWeil.qPochhammer, SiegelWeil.qPochhammer,
-          prod_range_succ]
+  let q := Fintype.card k
+  let d := finrank k W
+  let weight (j : ℕ) : ℂ := (-X) ^ j * (q : ℂ) ^ j.choose 2
+  -- Submodules below W are the subspaces of W itself.
+  have subspaces : (∑ U : Submodule k (n → k) with U ≤ W, heckePolyCoeff X U) =
+      ∑ U : Submodule k W, weight (finrank k U) := by
+    rw [sum_subtype (p := fun U ↦ U ∈ Set.Iic W) _ (fun U ↦ by simp)]
+    symm
+    apply Fintype.sum_equiv W.mapIic.toEquiv
+    intro T
+    change weight (finrank k T) = heckePolyCoeff X (T.map W.subtype)
+    unfold heckePolyCoeff
+    rw [Nat.card_eq_fintype_card,
+      ← (T.equivMapOfInjective W.subtype W.subtype_injective).finrank_eq]
+  -- Collect the terms of each dimension and apply the finite q-binomial theorem.
+  have ranks (U : Submodule k W) (_ : U ∈ univ) : finrank k U ∈ range (d + 1) :=
+    mem_range.mpr (Nat.lt_succ_of_le U.finrank_le)
+  rw [subspaces, ← sum_fiberwise_of_maps_to' ranks weight]
+  have product := TauCeti.prod_one_add_pow_mul_eq_sum_gaussianBinomial (q : ℂ) (-X) d
+  simp only [mul_neg, ← sub_eq_add_neg] at product
+  unfold SiegelWeil.qPochhammer
+  rw [Nat.card_eq_fintype_card, product]
+  apply sum_congr rfl
+  intro j _
+  rw [sum_const, nsmul_eq_mul, ← Fintype.card_subtype, ← Nat.card_eq_fintype_card,
+    TauCeti.card_submodule_finrank_eq_gaussianBinomial]
+  rw [show ((TauCeti.gaussianBinomial q d j : ℕ) : ℂ) = TauCeti.gaussianBinomial (q : ℂ) d j
+    from TauCeti.map_gaussianBinomial (Nat.castRingHom ℂ) q d j]
+  dsimp only [weight]
+  ring
 
 end QBinomial
 
@@ -217,28 +175,20 @@ Vandermonde determinant `det (r i ^ l j)`. -/
 lemma rootCoeffEval_genericSchur_mul_det [IsDomain R] :
     rootCoeffEval (univ.val.map r) (genericSchur l) * (vandermonde r).det =
       (of fun i j : Fin a ↦ r i ^ l j).det := by
-  -- `φ` specialises the generic monic polynomial `freeMonic ℤ a` to `∏ (X - r k)`, which
-  -- vanishes at `r i`; so the remainder of `X ^ l j` takes the value `r i ^ l j` there.
-  let p : MonicDegreeEq R a := .mk (nodal univ r) nodal_monic (by simp)
-  let φ : MvPolynomial (Fin a) ℤ →ₐ[ℤ] R := (MvPolynomial.mapEquivMonic ℤ R a).symm p
+  -- Specialise `freeMonic ℤ a` to `nodal univ r = ∏ (X - r k)` via `φ = rootCoeffEval`.
+  let φ := (MvPolynomial.mapEquivMonic ℤ R a).symm (.mk (nodal univ r) nodal_monic (by simp))
   have hφ : (freeMonic ℤ a).map φ = nodal univ r :=
-    congrArg Subtype.val ((MvPolynomial.mapEquivMonic ℤ R a).apply_symm_apply p)
+    congrArg Subtype.val ((MvPolynomial.mapEquivMonic ℤ R a).apply_symm_apply _)
   have hφ_eq : rootCoeffEval (univ.val.map r) = φ := MvPolynomial.algHom_ext fun k ↦ by
-    simp [rootCoeffEval, φ, p, MvPolynomial.mapEquivMonic, nodal, ← Fin.prod_ofFn,
-      Function.comp_def]
-  have h_rem (i j : Fin a) : (X ^ l j %ₘ freeMonic ℤ a).eval₂ φ (r i) = r i ^ l j := by
-    rw [eval₂_modByMonic_eq_self_of_root (by simp [eval₂_eq_eval_map, hφ, eval_nodal_at_node]),
-      eval₂_X_pow]
-  -- Expanding this value in powers of `r i`: the Vandermonde matrix times the matrix of
-  -- coefficients of the remainders has entries `r i ^ l j`.
-  have h_mul : vandermonde r *
-      φ.mapMatrix (of fun k j : Fin a ↦ (X ^ l j %ₘ freeMonic ℤ a).coeff k.val) =
-        of fun i j : Fin a ↦ r i ^ l j := by
-    ext i j
-    rw [of_apply, ← h_rem i j]
-    conv_rhs => rw [← sum_modByMonic_coeff (monic_freeMonic ℤ a) (degree_freeMonic ℤ a).le]
+    simp [rootCoeffEval, φ, MvPolynomial.mapEquivMonic, nodal, ← Fin.prod_ofFn, Function.comp_def]
+  rw [hφ_eq, genericSchur, mul_comm, AlgHom.map_det, ← det_mul]
+  refine congrArg det (Matrix.ext fun i j ↦ ?_)
+  -- Each entry `(i, j)` evaluates `X ^ l j %ₘ freeMonic ℤ a` at `r i`, giving `r i ^ l j`.
+  trans (X ^ l j %ₘ freeMonic ℤ a).eval₂ φ (r i)
+  · conv_rhs => rw [← sum_modByMonic_coeff (monic_freeMonic ℤ a) (degree_freeMonic ℤ a).le]
     simp [Matrix.mul_apply, mul_comm, eval₂_finsetSum]
-  rw [hφ_eq, genericSchur, mul_comm, AlgHom.map_det, ← det_mul, h_mul]
+  · rw [eval₂_modByMonic_eq_self_of_root (by simp [eval₂_eq_eval_map, hφ, eval_nodal_at_node]),
+      eval₂_X_pow, of_apply]
 
 end New.Variety
 
@@ -326,17 +276,19 @@ lemma algebraicIndependent_embedding_two_mul {E : Type*} [Field E] [NumberField 
   -- `coord (i, σ)` is `σ (2 αᵢ)` as a linear form in the coordinates of `αᵢ`.
   let coord : ι × (E →+* ℂ) → MvPolynomial (ι × I) ℂ :=
     fun (i, σ) ↦ 2 • ∑ k : I, .X (i, k) * .C (b k σ)
-  have h_nat (z : ι × I → ℕ) : MvPolynomial.aeval (fun p ↦ (z p : ℂ)) (P.bind₁ coord) = 0 := by
+  have h_nat (z : ι × I → ℕ) :
+      MvPolynomial.aeval (fun p ↦ (z p : ℂ)) (MvPolynomial.aeval coord P) = 0 := by
     let α (i : ι) : 𝓞 E := ∑ k : I, (z (i, k) : 𝓞 E) * basis E k
     have hPα : MvPolynomial.aeval (fun p : ι × (E →+* ℂ) ↦ p.2 (2 * α p.1 : 𝓞 E)) P = 0 := by
       simpa [comp_aeval_apply] using congrArg (Pi.evalAlgHom ℂ _ α) hP
     have hb (k : I) (σ : E →+* ℂ) : b k σ = σ (basis E k) := by simp [b, I]
-    simpa [aeval_bind₁, α, hb, coord, two_mul] using hPα
-  have h_zero : P.bind₁ coord = 0 := by
+    simpa [comp_aeval_apply, α, hb, coord, two_mul] using hPα
+  have h_zero : MvPolynomial.aeval coord P = 0 := by
     refine funext_set (fun _ ↦ Set.range (Nat.cast : ℕ → ℂ))
       (fun _ ↦ infinite_range_of_injective Nat.cast_injective) fun x hx ↦ ?_
     choose z hz using fun p : ι × I ↦ hx p (Set.mem_univ p)
-    simpa [← _root_.funext hz, ← aeval_eq_eval] using h_nat z
+    rw [← _root_.funext hz, ← aeval_eq_eval, _root_.map_zero]
+    exact h_nat z
   -- To evaluate `P` at `v`, take as coordinates those of `v (i, ·) / 2` in the basis `b`.
   refine MvPolynomial.funext fun v ↦ ?_
   let y (p : ι × I) : ℂ := b.repr (fun σ ↦ v (p.1, σ) / 2) p.2
@@ -344,7 +296,7 @@ lemma algebraicIndependent_embedding_two_mul {E : Type*} [Field E] [NumberField 
     have h_repr : ∑ k : I, y (p.1, k) * b k p.2 = v p / 2 := by
       simpa [y] using congrFun (b.sum_repr fun σ ↦ v (p.1, σ) / 2) p.2
     simp [coord, two_mul, h_repr]
-  simpa [aeval_bind₁, h_coord] using congrArg (MvPolynomial.aeval y) h_zero
+  simpa [comp_aeval_apply, h_coord] using congrArg (MvPolynomial.aeval y) h_zero
 
 /-- Let the functions `c (i, σ) : A → K` be algebraically independent over `K`, let each polynomial
 `q σ` have total degree at most `card ι`, and let each multiset `x j σ` have `a` elements. If a
@@ -362,16 +314,16 @@ lemma map_prod_rootCoeffEval_eq_zero [Fintype ι] {A : Type*} {q : S → MvPolyn
   -- Let `e σ k` be the signed elementary symmetric functions of `x · σ`, and `M σ` their span.
   -- Comparing coefficients shows that `L` kills `∏ σ, M σ ^ card ι`, and
   -- `rootCoeffEval (x · σ) (q σ)` lies in `M σ ^ card ι`.
-  let e (σ : S) (k : Fin a.succ) (j : J) : R := (-1) ^ k.1 * (x j σ).esymm k
+  let e (σ : S) (k : Fin a.succ) (j : J) : R := (-1) ^ k.val * (x j σ).esymm k
   let M (σ : S) : Submodule K (J → R) := span K (.range (e σ))
   -- Vieta's formula at `X = 1` for the multiset `b • x j σ`.
   have vieta (j : J) (σ : S) (b : K) :
-      ((x j σ).map fun t ↦ 1 - b • t).prod = ∑ k : Fin a.succ, b ^ k.1 • e σ k j := by
-    simpa [e, eval_multiset_prod, sum_range, eval_finsetSum, hx, ← pow_smul_esymm] using
+      ((x j σ).map fun t ↦ 1 - b • t).prod = ∑ k : Fin a.succ, b ^ k.val • e σ k j := by
+    simpa [eval_multiset_prod, sum_range, eval_finsetSum, hx, ← pow_smul_esymm] using
       congrArg (Polynomial.eval 1) ((x j σ).map fun t ↦ b • t).prod_X_sub_X_eq_sum_esymm
   -- Expand the product in `hL`.
   have expand (α : A) :
-      L (∑ y : ι × S → Fin a.succ, (∏ p, c p α ^ (y p).1) • ∏ p, e p.2 (y p)) = 0 := by
+      L (∑ y : ι × S → Fin a.succ, (∏ p, c p α ^ (y p).val) • ∏ p, e p.2 (y p)) = 0 := by
     rw [← hL α]
     refine congrArg L (_root_.funext fun j ↦ ?_)
     simp_rw [← Algebra.smul_def, vieta, ← prod_prod_type']

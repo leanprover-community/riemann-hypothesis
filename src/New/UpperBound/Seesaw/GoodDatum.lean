@@ -1,4 +1,8 @@
-import New.UpperBound.Seesaw.AdmissibleEvaluation
+module
+
+public import New.UpperBound.Seesaw.AdmissibleEvaluation
+import Lib.ClassField.HeckeCharacter.AlgebraicValues
+import New.OneLift.ComparisonOperator.ExchangeData
 import New.UpperBound.Seesaw.LevelIdeles
 import New.UpperBound.Size.ShortColumns
 
@@ -29,6 +33,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 /-! ## Scaling factors and the evaluation of a pair of edges -/
 

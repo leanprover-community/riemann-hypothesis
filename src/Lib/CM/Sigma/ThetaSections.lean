@@ -1,4 +1,12 @@
-import Lib.General.Analysis.MeanValueAndTaylor
+module
+
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+public import Lib.CM.Sigma.Basic
+public import Lib.Shimura.ComplexTheta.DimensionFormula
+import Lib.General.Groups.CongruenceSubgroups
 import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
@@ -50,6 +58,8 @@ Known results: sigma and theta functions of a lattice, their addition formulas, 
 equation and the elliptic functions with poles at one point are classical. See `Lib.CM.Sigma.Basic`
 for the sigma function used here and for sources.
 -/
+
+@[expose] public section
 
 section CurveTheta
 
@@ -404,8 +414,8 @@ lemma translatedYThetaCube_sq_add (z : ℂ) :
   -- G = yθ³.
   revert z
   refine C.eq_of_eq_off_lattice C.t (by fun_prop [translatedYThetaCube]) (by fun_prop) fun z hz ↦ ?_
-  rw [show C.σ z ^ 6 = (C.σ z ^ 2) ^ 3 by ring, C.sigma_sq_eq_translatedX_mul_theta_sq hz,
-    C.translatedYThetaCube_eq_translatedY_mul_theta_cube hz]
+  obtain ⟨hσ, hY⟩ := C.sigma_sq_eq_and_translatedYThetaCube_eq z hz
+  rw [show C.σ z ^ 6 = (C.σ z ^ 2) ^ 3 by ring, hσ, hY]
   linear_combination C.θ z ^ 6 * C.weierstrass_equation hz
 
 /-! ### Isogenies and the multiplier of θ -/
@@ -523,7 +533,7 @@ theorem exists_int_twistedTranslate_theta_eq_neg_one_zpow {l : ℂ} (hl : l ∈ 
   have h_mult : C.multiplier l = (-1 : ℂ) ^ n :=
     calc _ = cexp (Real.pi * I * C.hermitianForm.riemannForm (conj (quadGen d) * l) l) := by
           simp [C.multiplier_eq_canonicalMultiplier hl, ThetaTori.canonicalMultiplier]
-      _ = (-1 : ℂ) ^ n := by rw [hn, ofReal_intCast, mul_comm, exp_int_mul, exp_pi_mul_I]
+      _ = (-1 : ℂ) ^ n := by rw [hn, ofReal_intCast, mul_comm, exp_intCast_mul, exp_pi_mul_I]
   exact ⟨n, h_value, by rw [C.twistedTranslate_theta_of_mem hl, h_mult]⟩
 
 /-- Let C, C′ be CM data for a prime d ≡ 7 mod 8, with aΛ ⊂ Λ′ and a·ā·area(Λ) = N·area(Λ′), N
@@ -640,8 +650,8 @@ lemma monomialSection_eq (e : ℕ × ℕ × ℕ) (z : ℂ) (hz : z + C.t ∉ C.�
     C.monomialSection e z =
       C.θ z ^ monomialDeg e * (C.translatedX z ^ e.2.1 * C.translatedY z ^ e.2.2) := by
   simp only [monomialSection, Pi.mul_apply, Pi.pow_apply]
-  rw [C.sigma_sq_eq_translatedX_mul_theta_sq hz,
-    C.translatedYThetaCube_eq_translatedY_mul_theta_cube hz]
+  obtain ⟨hσ, hY⟩ := C.sigma_sq_eq_and_translatedYThetaCube_eq z hz
+  rw [hσ, hY]
   ring
 
 /-- For a triple e = (a, b, c), the monomial `C.monomialSection e` = θ^a(σ²)^b G^c is a section of
@@ -873,7 +883,7 @@ namespace New.CMLattice
 
 variable {d : ℕ} (C : CMLattice d) {K : Type*} [Field K] (ι : ℂ →+* K)
 
-@[simp ↓]
+@[simp↓]
 lemma constantCoeff_taylorVia (f : ℂ → ℂ) : constantCoeff (taylorVia ι f) = ι (f 0) := by
   simp [taylorVia, ← coeff_zero_eq_constantCoeff_apply, taylorAtZero]
 
@@ -914,7 +924,6 @@ variable [CharZero K]
 
 /-- The Taylor series at `0` of `x = C.translatedX` and `y = C.translatedY`, moved to `K` along
 `ι`, satisfy `x' = 2 y + a₁ x`. -/
-@[simp]
 lemma derivative_taylorVia_translatedX :
     d⁄dX (taylorVia ι C.translatedX) =
       2 * taylorVia ι C.translatedY + PowerSeries.C (ι C.a₁) * taylorVia ι C.translatedX := by
@@ -922,7 +931,6 @@ lemma derivative_taylorVia_translatedX :
 
 /-- The Taylor series at `0` of `x = C.translatedX` and `y = C.translatedY`, moved to `K` along
 `ι`, satisfy `y' = 1 + 3 x² - a₁ y`. -/
-@[simp]
 lemma derivative_taylorVia_translatedY :
     d⁄dX (taylorVia ι C.translatedY) =
       1 + 3 * taylorVia ι C.translatedX ^ 2 -

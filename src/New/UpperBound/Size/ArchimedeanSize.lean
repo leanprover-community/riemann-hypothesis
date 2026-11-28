@@ -1,8 +1,15 @@
-import New.Reduction.PrimeSums
-import New.Spanning.Unfolding.FillingAdmissible
+module
+
+import Mathlib.Analysis.SpecialFunctions.Stirling
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.Reduction.PrimeSums
+public import New.Spanning.Unfolding.FillingAdmissible
+public import New.UpperBound.Objects.RowChain
+public import New.UpperBound.Size.Estimates
+import Lib.General.LinearAlgebra.MatrixNormBounds
+import New.Reduction.Data.Sizes
 import New.UpperBound.Divisibility.ChainDatumExpansion
-import New.UpperBound.Objects.RowChain
-import New.UpperBound.Size.Estimates
+import New.UpperBound.Divisibility.ChainValuation
 
 /-!
 # Archimedean size of the composite lift, and passage to target forms by the good projection
@@ -43,6 +50,8 @@ which gives the size side of the product formula. Related work on algebraic modu
 on lattice classes: Gross, Algebraic modular forms, 1999; Greenberg–Voight, Lattice methods for
 algebraic modular forms on classical groups, 2014.
 -/
+
+@[expose] public section
 
 /-!
 ## Archimedean size bound for the composite of theta lifts on source forms
@@ -108,7 +117,7 @@ lemma mul_jetSize_sub_mainPrimeSum_sub_le {P : Parameters} (D : Data P) :
   set G : ℝ := log (D.M * D.rootDisc / (2 * Real.pi))
   -- The lower end of the window for `log N`.
   have level : D.m * (w + G) - (G + 15 / 2 * D.logB) ≤ log D.N := by
-    grw [← D.log_N_mem_Icc_logLevelTarget.1, logLevelTarget]
+    grw [← D.log_N_mem_Icc_logLevelTarget.1, logLevelTarget, New.Parameters.logLevelMin]
     linarith
   have h_stirling : D.m * (1 + log D.a / 2) ≤ D.a * D.logB := D.le_of_hasLogBound
   have h_size : G ≤ 23 * D.logB := le_of_abs_le D.abs_log_M_mul_rootDisc_le
@@ -243,17 +252,7 @@ lemma sqrt_weylNormSq_jetMap_le {P : Parameters} (D : Data P) (σ : ℂ ≃+* �
     grw [D.diagramWeight_le_rowMainLength_add_rowSlack hj, D.rowMainLength_add_rowSlack_le]
     simp only [n, sum_const, card_univ, card_range, nsmul_eq_mul]
     push_cast
-    refine D.le_of_hasLogBound (h_exp := ?_)
-    -- `scale_arith D` splits the `max`es into too many cases; distribute them instead
-    clear_aux_decl
-    clear * - D
-    obtain ⟨⟨_, _, _, _⟩, _, _, _, _, _⟩ := New.Data.scale_inequalities' D
-    simp only [Bool.false_eq_true, ↓reduceIte, Nat.cast_ofNat, neg_zero, ← max_add_add_right,
-      ← max_add_add_left, ← max_sub_sub_right, mul_max_of_nonneg, Nat.ofNat_nonneg, max_lt_iff]
-    constructorm* _ ∧ _
-    all_goals try simp only [max_def, min_def]
-    all_goals try split_ifs
-    all_goals linarith
+    exact D.le_of_hasLogBound
   have h_kernel : √(weylNormSq (σ ∘ (D.liftKernel TameChar.one j).jetMap
       ((D.liftKernel TameChar.one j).ω (g, g') (D.translateDatum t j)) ξ)) ≤
       exp (const + (count + (lengths + D.rowSizeSum j) / 2)) * √(weylNormSq (σ ∘ ξ)) := by
@@ -350,7 +349,7 @@ lemma chainSize_sub_le {P : Parameters} (D : Data P) :
       D.mainAmount - D.m * D.totalRemainder + 2 * ∑ p ∈ D.smallNonsplitPrimes, D.gain p * log p +
         32 * (D.f * D.a * D.logB) := by
   rw [mainAmount_sub_add_two_mul_sum_gain, chainSize]
-  linarith [D.card_aPlaces_mul_excess_le]
+  linarith only [D.card_aPlaces_mul_excess_le]
 
 /-! ### The terms and the restriction -/
 
@@ -413,7 +412,7 @@ lemma weylNormSq_restrictedChain_le {P : Parameters} {D : Data P} {Ψ : D.Transl
       2 * (D.m * exp (30 * D.logX) + exp (60 * D.logX) + D.m * exp (50 * D.logX)) +
       32 * (D.f * D.a * D.logB) ≤ D.errorUnit / 2 :=
     D.le_of_hasLogBound
-  have hx (k : ℕ) : D.x ^ k = exp (k * D.logX) := (exp_nat_mul _ _).symm
+  have hx (k : ℕ) : D.x ^ k = exp (k * D.logX) := (exp_natCast_mul _ _).symm
   calc weylNormSq (σ ∘ (restrictedChain TameChar.one Ψ φ).val y)
     _ ≤ exp (D.x ^ 70 - (∑ τ : D.Φ, D.branchExponent τ : ℝ) * log D.N) *
         size D.m (ψ.val (D.borderU y)) ^ 2 := by
@@ -425,7 +424,7 @@ lemma weylNormSq_restrictedChain_le {P : Parameters} {D : Data P} {Ψ : D.Transl
     _ = exp (D.x ^ 70 - (#D.aPlaces * D.a - D.f * (D.m * D.halfGap)) * log D.N +
         2 * (D.m * D.x ^ 30 + (D.x ^ 60 +
           (D.m * D.x ^ 50 + (∑ j ∈ range D.m, D.rowSizeSum j) / 2 + B / 2)))) := by
-      simp [R, ← exp_nat_mul, ← exp_sum, sum_add_distrib, ← sum_div, ← exp_half, ← exp_add]
+      simp [R, ← exp_natCast_mul, ← exp_sum, sum_add_distrib, ← sum_div, ← exp_half, ← exp_add]
     _ ≤ exp (B + (D.mainAmount - D.m * D.totalRemainder +
         2 * ∑ p ∈ D.smallNonsplitPrimes, D.gain p * log p + D.errorUnit)) := by
       refine exp_le_exp.2 ?_
@@ -494,8 +493,8 @@ lemma lowerChain_goodProjTranslate_apply {P : Parameters} {D : Data P} (ϑ : D.T
         (g * firstBlockLift ϑ (t * s)) := by
   -- Expand the action of `e₀` as a sum over `𝖦`; the lift turns the action of `t * s` into right
   -- translation by `firstBlockLift ϑ (t * s)` (`lowerChain_principalRep`).
-  simp [asAlgebraHom_eq_sum, ← Module.End.mul_apply, ← map_mul, lowerChain_principalRep, smul_sum,
-    mul_smul]
+  simp [Representation.asAlgebraHom_eq_sum, ← mul_apply_eq_comp, ← map_mul, lowerChain_principalRep,
+    smul_sum, mul_smul]
 
 /-- Passage to the good part keeps integrality. Let `j : ℂ → ℂ_l` be a ring homomorphism; a form is
 integral at `j` if each value `φ(g)`, mapped by `j` and moved by `g⁻¹`, has coordinates of `l`-adic
@@ -522,7 +521,7 @@ lemma goodProjTranslate_mem_integralForms {P : Parameters} {D : Data P} {l : ℕ
   have h_int : IsIntegral ℤ (Nat.card D.chosenGL * D.e₀.coeff t) :=
     D.isCentralProj_e₀.isChar_card_mul_coeff.isIntegral _
   rw [weylGauge_smul, ← weylGauge_mul_of_mem_integralAbove
-    (hk := stdLevel_le_localLevel (firstBlockLift ϑ (t * s)).2)]
+    (hk := stdLevel_le_localLevel (firstBlockLift ϑ (t * s)).property)]
   exact (mul_le_of_le_one_left (norm_nonneg _) (norm_le_one_of_isIntegral _ h_int)).trans
     (h_integral _)
 

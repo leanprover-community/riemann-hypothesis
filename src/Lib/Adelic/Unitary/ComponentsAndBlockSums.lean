@@ -1,4 +1,12 @@
-import Lib.Adelic.Witt.WittTheorem
+module
+
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import Lib.Adelic.Unitary.Defs
+public import Lib.General.LinearAlgebra.IntegralLattices
+public import Lib.Adelic.Witt.WittTheorem -- shake: keep (needed public by an exposed definition)
 
 /-!
 # Components of unitary adelic points at places; sums and moves of hermitian spaces
@@ -31,6 +39,8 @@ Notions from other files:
   for signs s at the infinite places and the identity matrix at the finite places.
 * `New.stdForm`: The diagonal adelic matrix that is diag(s) at infinity and 1 at the finite places.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -291,8 +301,10 @@ variable {S : Finset (FinPlace E)} (hS : ∀ w ∈ S, star w ∉ S)
 and `1` off `S ∪ S̄`. -/
 def ofSplitPlaces : (∀ w : S, GL n (LocField w.val)) →* Gf E n :=
   -- the factors commute: at each place one of the two is trivial
-  noncommPiCoprod (fun w : S ↦ ofSplitPlace (n := n) (w := w.val) (by grind)) fun v w hvw g h ↦
-    commute_supportedOn_trivialOn (ofSplitPlace_mem_supportedOn _ _) (by simp (disch := grind))
+  noncommPiCoprod (fun w : S ↦ ofSplitPlace (n := n) (w := w.val) (by grind)) <| by
+    intro v w hvw g h
+    exact commute_supportedOn_trivialOn (ofSplitPlace_mem_supportedOn _ _)
+      (by simp (disch := grind))
 
 /-- For a finite set `S` of places of the CM field `E` disjoint from `S̄` and a family
 `g w ∈ GL_n(E_w)` for `w` in `S`, the component at `w ∈ S` of the finite adelic unitary element
@@ -307,9 +319,8 @@ lemma atPlace_ofSplitPlaces (g : (i : S) → GL n (LocField (i : FinPlace E))) (
   have h_other : ∀ v ∈ (Finset.univ : Finset S).erase w,
       (ofSplitPlace (n := n) (h_split v) (g v)).atPlace w = 1 :=
     fun v hv ↦ atPlace_ofSplitPlace_of_ne (h_split v) (g v) (by grind) (by grind)
-  -- `erw`: the commutation proof in `ofSplitPlaces` has a type equal to `Pairwise …` only up to
-  -- unfolding `Pairwise`, so `rw` does not find the pattern
-  erw [noncommPiCoprod_apply, ← Finset.mul_noncommProd_erase (a := w) (h := Finset.mem_univ w)]
+  rw [ofSplitPlaces, noncommPiCoprod_apply,
+    ← Finset.mul_noncommProd_erase (a := w) (h := Finset.mem_univ w)]
   simp only [map_mul, atPlace_ofSplitPlace, mul_eq_left]
   exact (Gf.atPlace (w : FinPlace E)).ker.noncommProd_mem _ h_other
 
@@ -387,7 +398,8 @@ diagonal sum of `J` and `J'`. -/
 def U.sum {J' : Matrix n n R} {J'' : Matrix (m ⊕ n) (m ⊕ n) R} (h : fromBlocks J 0 0 J' = J'') :
     U J × U J' →* U J'' :=
   (blockGL.comp ((U J).subtype.prodMap (U J').subtype)).codRestrict (U J'') <| by
-    aesop (add simp [mem_U, fromBlocks_conjTranspose, fromBlocks_multiply])
+    aesop (add simp [mem_unitaryGroupOf_iff, star_eq_conjTranspose, fromBlocks_conjTranspose,
+      fromBlocks_multiply])
 
 /-- The block diagonal homomorphism U_m(R) × U_n(R) → U_{m+n}(R), (g, h) ↦ diag(g, h), between
 the unitary groups of identity matrices. -/
@@ -400,7 +412,7 @@ obtained from `J` by the same renaming of rows and columns. -/
 def U.reindex {J' : Matrix n n R} (h : J.submatrix e.symm e.symm = J') : U J ≃* U J' where
   toEquiv := (reindexGL e).subtypeEquiv <| by
     subst h
-    simp [← ext_iff, reindex_equiv e.symm, mem_U]
+    simp [← ext_iff, reindex_equiv e.symm, mem_unitaryGroupOf_iff, star_eq_conjTranspose]
   map_mul' := by simp
 
 variable {l : Type*} [Fintype l] [DecidableEq l] (e : m ⊕ l ≃ n)
@@ -442,7 +454,8 @@ lemma G.adeleMatrix_sum (g : G E s × G E t) :
 /-- The isomorphism between the adelic unitary groups for signs s and −s that is the identity on
 matrices, since U(J) = U(−J) at each infinite place. -/
 def G.neg : G E s ≃* G E (-s) :=
-  .prodCongr (.piCongrRight fun _ ↦ MulEquiv.subgroupCongr (by simp [U])) (.refl (Gf E n))
+  .prodCongr (.piCongrRight fun _ ↦ MulEquiv.subgroupCongr (by ext; simp [mem_unitaryGroupOf_iff]))
+    (.refl (Gf E n))
 
 omit [IsCMField E] [Fintype m] [Fintype n] in
 /-- The standard adelic forms for signs s and t have as block diagonal sum the standard form for
@@ -498,7 +511,7 @@ variable [HasPrimitiveRoot5040 E]
 def Weil.normNegOne {E : Type*} [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E] :
     (Ô E)ˣ :=
   have h_norm := exists_unit_star_mul_self_eq (u := -1) (by simp) (by simp)
-  Units.mkOfMulEqOne h_norm.choose (-star h_norm.choose.1) (by
+  Units.mkOfMulEqOne h_norm.choose (-star h_norm.choose.val) (by
     ext1
     rw [mul_neg]
     change -(h_norm.choose.val.val * star h_norm.choose.val.val) = (1 : 𝔸f E)
@@ -568,8 +581,8 @@ def neg : Space E n (-s) where
 /-- For a space (J, x) and g in G, the space (J, xg): the same matrix with the point moved by g. -/
 def move : Space E n s where
   J := V.J
-  x := V.x * g.toUnitary.1
-  gram_point := gram_mul_of_gram_eq V.gram_point g.toUnitary.2
+  x := V.x * g.toUnitary.val
+  gram_point := gram_mul_of_gram_eq V.gram_point (mem_unitaryGroupOf_iff.1 g.toUnitary.property)
 
 attribute [simps J] signedSpace sum reindex neg move
 

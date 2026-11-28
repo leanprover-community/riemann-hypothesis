@@ -1,5 +1,22 @@
+module
+
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.LinearAlgebra.Pi
+public import Lib.Shimura.Uniformisation.TorusModel
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Base
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.ArcExtension
 import Lib.Shimura.HeckeTower.Model
-import Lib.Shimura.Uniformisation.TorusModel
+import Lib.Shimura.Uniformisation.AppellHumbert
+import Lib.Shimura.Uniformisation.LieExponential
 
 /-!
 # Every full complex object is modelled on a point (g, ℓ)
@@ -31,6 +48,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.Uniformisation.AppellHumbert` for sources.
 -/
+
+@[expose] public section
 
 open CategoryTheory NumberField Matrix FourierTransform LinearMap BilinForm Complex OrzechProperty
   Submodule ContinuousLinearMap Circle RingOfIntegers Finset
@@ -139,7 +158,7 @@ lemma exists_map_eq_and_eq_polarisationForm_of_fourierChar_eq
   -- is `0`.
   have hR : R = polarisationForm D (of β) := by
     refine ext (isClosed_property denseRange_toRealVectors
-      (R.eqLocus _).closed_of_finiteDimensional fun y ↦ ?_)
+      (R.eqLocus _).isClosed_of_finiteDimensional fun y ↦ ?_)
     refine sub_eq_zero.mp (eq_zero_of_forall_fourierChar_eq_one _ (denseRange_toRealVectors.eq ?_))
     simp [h_weil, ← hβ, 𝐞.map_sub_eq_div, ← ψf_coe, xiForm, frameCoords, dotProduct, mulVec]
   exact ⟨β, hβ, hR⟩
@@ -159,7 +178,7 @@ lemma exists_torusModel_of_isPeriodMap
     (h_ev : ∀ y : D.Index → E,
       e.torsionPoint (torsionClass (m *ᵥ frameCoords 1 y)) = u.expMap (Q (toRealVectors y)))
     (h_lat : ∀ z ∈ u.lattice, ∃ y : D.Index → E, Q (toRealVectors y) = z) :
-    ∃ g : GL D.Index (𝔸f E), ∃ᵉ (Y : ThetaTori.PeriodMap D g ℓ V) (M : x.TorusModel Y),
+    ∃ g : GL D.Index (𝔸f E), ∃ Y : ThetaTori.PeriodMap D g ℓ V, ∃ M : x.TorusModel Y,
       M.fullStructure.torsionPoint = e.torsionPoint := by
   -- Appell–Humbert: the coordinates of `x.lineBundle` are theta functions `θ` of a type `(B, χ)`
   -- with positive Riemann form; `R` is that form on `(E ⊗ ℝ)ⁿ`. The Weil pairing computes `R` on
@@ -390,7 +409,7 @@ are those of `e`, and `ℓ` is a reflection: `ℓ = u wᵀ - 1` for vectors `u`,
 lemma exists_torusModel
     (hρ : ∀ c : 𝓞 E, x.baseHom c = Φ v₀ c.val) :
     ∃ (g : GL D.Index (𝔸f E)) (ℓ : Matrix D.Index D.Index ℂ) (d : ℕ),
-      ∃ᵉ (Y : ThetaTori.PeriodMap D g ℓ (Fin d → ℂ)) (m : x.TorusModel Y),
+      ∃ Y : ThetaTori.PeriodMap D g ℓ (Fin d → ℂ), ∃ m : x.TorusModel Y,
       m.fullStructure.torsionPoint = e.torsionPoint ∧ IsReflection ℓ := by
   -- Uniformise `x.groupScheme` by `V = Fin (abelianDim E D.Index) → ℂ` and lift the action of `𝓞 E`
   -- to an action `G` of `E ⊗ ℝ` on `V`. The `2`-torsion points given by `e` define a

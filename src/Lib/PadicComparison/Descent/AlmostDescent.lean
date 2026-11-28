@@ -1,5 +1,24 @@
+module
+
+public import Mathlib.RingTheory.RingHom.FaithfullyFlat
+import Mathlib.Algebra.Category.Grp.Ulift
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Order.PUnit
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.CategoryTheory.Limits.Types.Pushouts
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Flat.Equalizer
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.LocalProperties.Reduced
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+public import Lib.General.Algebra.PerfectAlgebras
+public import Lib.Cohomology.Hodge.CupProduct
+public import Lib.General.Algebra.CohomologyBaseChange
+import Lib.Cohomology.Etale.DenseSubfunctors
 import Lib.Cohomology.Etale.RelativeChains
-import Lib.General.Algebra.PerfectAlgebras
+import Lib.PadicComparison.Descent.TestCovers
 
 /-!
 # Almost coefficients, v-descent for perfect algebras and acyclicity of tilt points
@@ -43,6 +62,8 @@ Scholze, Projectivity of the Witt vector affine Grassmannian, Invent. Math. 209 
 points argument O. Gabber, S. Kelly, Points in algebraic geometry, J. Pure Appl. Algebra 219 (2015),
 Theorem 2.3.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -140,9 +161,9 @@ end WittTensorRegular
   quotient of V over which the tilt of a test is faithfully flat;
 * `New.Variety.faithfullyFlat_descent`: there it vanishes, as this point of b lifts to b'.
 
-`New.Variety.PerfectAlg` S is the category of perfect S-algebras, `New.Variety.H` K F n is Ext^n(K,
-F) for functors to abelian groups, and `New.Variety.relFreeAb` U = ℤ[Y]/ℤ[U], for a subfunctor U of
-Y, gives relative cohomology. For an object X, h_X = Hom(X, −).
+`New.Variety.PerfectAlg p S` is the category of perfect S-algebras, `New.Variety.H` K F n is
+Ext^n(K, F) for functors to abelian groups, and `New.Variety.relFreeAb` U = ℤ[Y]/ℤ[U], for a
+subfunctor U of Y, gives relative cohomology. For an object X, h_X = Hom(X, −).
 -/
 
 section VDescent
@@ -158,7 +179,7 @@ variable {p : ℕ} [ThePrime p] {S M : Type}
   {M' M'' V A : Type _} [CommRing S] [AddCommGroup M] [AddCommGroup M'] [AddCommGroup M'']
   [CommRing V] [CommRing A]
   (N : Type) [AddCommGroup N] [Module OFlat N] [Algebra OFlat S] [Module S M] [Module S M']
-  [Module S M''] {a b d : PerfectAlg S} (φ : b ⟶ d) {C : Type 1} [Category C]
+  [Module S M''] {a b d : PerfectAlg p S} (φ : b ⟶ d) {C : Type 1} [Category C]
   {K : AbFunctor C} {n : ℕ} {Φ : C ⥤ ModuleCat S} {z : H K (moduleCoeff (Φ ⋙ tensorWith S M)) n}
   {f : M →ₗ[S] M'} {g : M' →ₗ[S] M''}
 
@@ -214,10 +235,10 @@ lemma exists_faithfullyFlat_padicTest (V : CommAlg OFlat) [IsDomain V] [Valuatio
   have hp_reg : IsSMulRegular (OC ⊗[Ainf] wittFunctor.obj V) p :=
     isSMulRegular_tensor_witt (.of_ne_zero (NeZero.ne p))
       ⟨inferInstance, (isSMulRegular_algebraMap_iff _).mp (.of_ne_zero h_ne)⟩
-  have hp_mem : (p : OC ⊗[Ainf] wittFunctor.obj V) ∈ ker π := by
-    simp [natCast_eq_zero_of_algebra_oFlat]
+  have hp_mem : (p : OC ⊗[Ainf] wittFunctor.obj V) ∈ RingHom.ker π := by
+    simp only [RingHom.mem_ker, map_natCast, natCast_eq_zero_of_algebra_oFlat]
   obtain ⟨W, hW_ring, hW_cell, ρ, hρ⟩ : ∃ (W : Type) (_ : CommRing W) (_ : IsCell p W)
-      (ρ : OC ⊗[Ainf] wittFunctor.obj V →+* W), ∀ x ∈ ker π, ¬IsUnit (ρ x) :=
+      (ρ : OC ⊗[Ainf] wittFunctor.obj V →+* W), ∀ x ∈ RingHom.ker π, ¬IsUnit (ρ x) :=
     exists_cell_over (ker_isPrime π) hp_reg hp_mem
   -- `c.fst` is the test with the one cell `W` and `c.snd` the point `ρ`. By `homTiltIso` this
   -- point is induced by `θ ∘ W(φ)` for an algebra map `φ` from `V` to the tilt.
@@ -228,20 +249,21 @@ lemma exists_faithfullyFlat_padicTest (V : CommAlg OFlat) [IsDomain V] [Valuatio
   -- The ring `c.fst.ProdRing ≃ W` of the test is a valuation ring, hence so is its tilt
   -- `c.fst.TiltRing`. The image of `V` in the tilt is a valuation ring too, so the inclusion is
   -- flat.
-  have e_prod : c.fst.ProdRing ≃+* W := .piUnique fun () ↦ W
+  let e_prod : c.fst.ProdRing ≃+* W := .piUnique fun () ↦ W
   have h_prod_domain : IsDomain c.fst.ProdRing := e_prod.injective.isDomain
   have h_prod_valuationRing : ValuationRing c.fst.ProdRing :=
     e_prod.symm.surjective.valuationRing e_prod.symm.toRingHom
-  have h_ker_prime : (ker φ).IsPrime := ker_isPrime φ
-  have h_quot_valuationRing : ValuationRing (V ⧸ ker φ) := (mkₐ_surjective V (ker φ)).valuationRing
+  have h_ker_prime : (RingHom.ker φ).IsPrime := ker_isPrime φ
+  have h_quot_valuationRing : ValuationRing (V ⧸ RingHom.ker φ) :=
+    (mkₐ_surjective V (RingHom.ker φ)).valuationRing
   algebraize [φ.kerLift]
-  have h_torsionFree : IsTorsionFree (V ⧸ ker φ) c.fst.TiltRing :=
+  have h_torsionFree : IsTorsionFree (V ⧸ RingHom.ker φ) c.fst.TiltRing :=
     isTorsionFree_iff_algebraMap_injective.mpr φ.kerLift_injective
   -- `φ` is local: if `φ v` is a unit then so is `ρ (1 ⊗ [v])`, its untilt, and by `hρ` the element
   -- `1 ⊗ [v]` is not in the kernel of `π`.
   have h_local (v : V) (hv : IsUnit (φ v)) : IsUnit v := by
     by_contra hv_nonunit
-    have h_mem : (1 ⊗ₜ teichmuller p v : OC ⊗[Ainf] wittFunctor.obj V) ∈ ker π :=
+    have h_mem : (1 ⊗ₜ teichmuller p v : OC ⊗[Ainf] wittFunctor.obj V) ∈ RingHom.ker π :=
       eq_zero_iff_mem.mpr (mul_mem_left _ _ hv_nonunit)
     apply hρ (1 ⊗ₜ teichmuller p v) h_mem
     -- The equation `hφ` of points, evaluated at `1 ⊗ [v]`.
@@ -266,8 +288,6 @@ lemma exists_faithfullyFlat_padicTest (V : CommAlg OFlat) [IsDomain V] [Valuatio
     rw [hφv, zero_dvd_iff] at h_img_dvd
     exact absurd ((hφ_alg pFlat).symm.trans h_img_dvd) h_tilt_ne
 
-local instance : IsScalarTower S S M := inferInstance
-
 /-- For a functor Φ from C to S-modules, a functor K from C to abelian groups and a degree n: the
 additive map that sends an S-linear map f: M → M' to the induced homomorphism
 H^n(K, M ⊗_S Φ) → H^n(K, M' ⊗_S Φ). -/
@@ -290,7 +310,7 @@ private lemma coeffMap_id : coeffMap (𝟙 Φ) = 𝟙 (moduleCoeff Φ) :=
 
 /-- For a functor Φ to S-modules, the natural map M ⊗ Φ → M' ⊗ Φ induced by an S-linear map
 f: M → M'. -/
-private def tensorCoeffMap (Φ : C ⥤ ModuleCat S) (f : M →ₗ[S] M') :
+def tensorCoeffMap (Φ : C ⥤ ModuleCat S) (f : M →ₗ[S] M') :
     Φ ⋙ tensorWith S M ⟶ Φ ⋙ tensorWith S M' :=
   Φ.whiskerLeft ((curriedTensor (ModuleCat S)).map (↟f))
 
@@ -336,38 +356,30 @@ open WidePushout in
 S-algebra D and a point z of the fibre power at D such that, for every A, the map h_D(A) → fibre
 power at A induced by z is bijective. -/
 lemma exists_repr_cech (m : ℕ) :
-    ∃ (D : PerfectAlg S) (z : cech (reprMap φ) m D),
-      AllBijective fun A : PerfectAlg S ↦ pointMap z A := by
-  -- The representing object is the wide pushout `d ⊗_b ⋯ ⊗_b d` of `m + 1` copies of `φ`, which
-  -- exists among perfect algebras; the universal point is the family of its coprojections.
-  have h_closed (J : Type) :
-      IsClosedUnderColimitsOfShape (fun A : CommAlg S ↦ PerfectRing A p) (WidePushoutShape J) :=
-    PerfectAlg.isClosedUnderColimitsOfShape_widePushoutShape (S := S)
-      natCast_eq_zero_of_algebra_oFlat J
-  have : HasColimitsOfShape (WidePushoutShape (Fin (m + 1))) (PerfectAlg S) := inferInstance
+    ∃ (D : PerfectAlg p S) (z : cech (reprMap φ) m D),
+      AllBijective fun A : PerfectAlg p S ↦ pointMap z A := by
+  -- The representing object is the wide pushout of `m + 1` copies of `φ` among perfect algebras.
+  have := PerfectAlg.isClosedUnderColimitsOfShape_widePushoutShape (S := S)
+    natCast_eq_zero_of_algebra_oFlat (Fin (m + 1))
   refine ⟨widePushout b (fun _ : Fin (m + 1) ↦ d) fun _ ↦ φ, ⟨fun i ↦ ⟨ι (fun _ ↦ φ) i⟩, ?_⟩,
-    fun A ↦ bijective_iff_has_inverse.mpr ?_⟩
+    fun A ↦ bijective_iff_has_inverse.mpr ⟨fun e ↦ ⟨desc (φ ≫ (e.val 0).down)
+      (fun i ↦ (e.val i).down) fun i ↦ congrArg ULift.down (e.property i 0)⟩, fun g ↦ ?_,
+      fun e ↦ Subtype.ext (funext fun i ↦ ULift.down_injective (ι_desc (fun _ ↦ φ) ..))⟩⟩
   · simp [reprMap, reprFunctor, DFunLike.coe, arrow_ι fun _ ↦ φ]
-  -- The inverse glues `m + 1` maps `d ⟶ A` that agree on `b` to one map out of the pushout.
-  refine ⟨fun e ↦ ⟨desc (φ ≫ (e.val 0).down) (fun i ↦ (e.val i).down)
-      fun i ↦ congrArg ULift.down (e.property i 0)⟩, fun g ↦ ?_, fun e ↦ ?_⟩
-  · -- A map out of the pushout is determined by its composites with the coprojections.
-    refine ULift.down_injective (.symm ?_)
+  · refine ULift.down_injective (.symm ?_)
     apply eq_desc_of_comp_eq
     exacts [fun _ ↦ rfl, (arrow_ι_assoc _ 0 g.down).symm]
-  · -- The glued map, composed with the `i`-th coprojection, is the `i`-th map.
-    exact Subtype.ext (funext fun i ↦ ULift.down_injective (ι_desc (fun _ ↦ φ) ..))
 
 /-- For a map φ: b → d of perfect S-algebras, the functor D ↦ ℤ[Hom(b,D)]/ℤ[maps that factor
 through φ] from perfect S-algebras to abelian groups. -/
-abbrev relFreeAbOfHom : PerfectAlg S ⥤ Ab := relFreeAb (Subfunctor.range (reprMap φ))
+abbrev relFreeAbOfHom : PerfectAlg p S ⥤ Ab := relFreeAb (Subfunctor.range (reprMap φ))
 
 /-- Let S be an O^♭-algebra, φ: b → d a map of perfect S-algebras, and Q the functor
 D ↦ ℤ[Hom(b,D)]/ℤ[maps factoring through φ] (`New.Variety.relFreeAbOfHom φ`). Let Φ be a functor
 from perfect S-algebras to S-modules, and V → A a map of S-algebras with A flat over V. If x in
 H^n(Q, V ⊗_S Φ) maps to zero in H^n(Q, A ⊗_S Φ) under the map induced by V → A (`tensorPush`), then
 1 ⊗ x = 0 in A ⊗_V H^n(Q, V ⊗_S Φ). -/
-lemma one_tmul_eq_zero_of_tensorPush {Φ : PerfectAlg S ⥤ ModuleCat S} [Algebra S V] [Algebra V A]
+lemma one_tmul_eq_zero_of_tensorPush {Φ : PerfectAlg p S ⥤ ModuleCat S} [Algebra S V] [Algebra V A]
     [Algebra S A] [IsScalarTower S V A] [Flat V A]
     (x : H (relFreeAbOfHom φ) (moduleCoeff (Φ ⋙ tensorWith V V)) n)
     (hx : tensorPush (algHom S V A).toLinearMap x = 0) :
@@ -385,13 +397,16 @@ lemma one_tmul_eq_zero_of_tensorPush {Φ : PerfectAlg S ⥤ ModuleCat S} [Algebr
       (devissage.allBijective_freeAb_range_of_cech _ h_cech)).mp
         (baseChangeMap_bijective_freeAb_reprBy b)
   -- The image of `1 ⊗ x` is the push-forward of `x` along `V ⊗ Φ → A ⊗ Φ ≅ A ⊗ (V ⊗ Φ)`.
-  let r (D : PerfectAlg S) := (cancelBaseChange S V V A (Φ.obj D)).symm.toLinearMap
+  let r (D : PerfectAlg p S) := (cancelBaseChange S V V A (Φ.obj D)).symm.toLinearMap
   let ρ : Φ ⋙ tensorWith V A ⟶ Φ ⋙ tensorWith V V ⋙ tensorWith V A :=
     { app D := ↟(r D)
-      naturality := by
+      naturality D D' _ := by
         delta tensorWith
-        aesop }
-  have h_factor (D : PerfectAlg S) :
+        refine ModuleCat.hom_ext ?_
+        change r D' ∘ₗ _ = _ ∘ₗ r D
+        ext
+        rfl }
+  have h_factor (D : PerfectAlg p S) :
       mk V A (V ⊗[S] Φ.obj D) 1 = r D ∘ₗ rTensor _ _ (Algebra.linearMap V A) := by
     ext
     simp [r]
@@ -412,9 +427,9 @@ instance [Algebra V S] : IsScalarTower V S a.obj := .of_compHom ..
 
 /-- The functor sending a perfect S-algebra D to D ⊗ N ⊗ 𝔪, tensor products over O^♭ with 𝔪 its
 maximal ideal, regarded as an S-module. -/
-def perfectAlmostCoeff : PerfectAlg S ⥤ ModuleCat S where
-  obj D := ModuleCat.of S (D.1 ⊗[OFlat] (N ⊗[OFlat] MaxIdealFlat))
-  map f := ↟(rTensor OFlat (N ⊗[OFlat] MaxIdealFlat) f.1.1.toLinearMap)
+def perfectAlmostCoeff : PerfectAlg p S ⥤ ModuleCat S where
+  obj D := ModuleCat.of S (D.obj ⊗[OFlat] (N ⊗[OFlat] MaxIdealFlat))
+  map f := ↟(rTensor OFlat (N ⊗[OFlat] MaxIdealFlat) f.hom.hom'.toLinearMap)
 
 variable {N} {z : H (relFreeAbOfHom φ) (moduleCoeff (perfectAlmostCoeff N ⋙ tensorWith S a.obj)) n}
 
@@ -425,10 +440,10 @@ non-empty chain of relations on a, each t in c of the form f, g ↦ ψ_t(f) ∣ 
 ψ_t: a → B_t of perfect S-algebras whose push-forward keeps z nonzero. Then some map χ: a → L of
 perfect S-algebras keeps z nonzero, and every relation in c implies χ(f) ∣ χ(g). -/
 private lemma exists_tensorPush_ne_zero_of_isChain {c : Set (a.obj → a.obj → Prop)}
-    (hc_chain : IsChain (· ≤ ·) c) (hc_nonempty : c.Nonempty) {B : c → PerfectAlg S}
+    (hc_chain : IsChain (· ≤ ·) c) (hc_nonempty : c.Nonempty) {B : c → PerfectAlg p S}
     {ψ : ∀ t : c, a.obj →ₐ[S] (B t).obj} (h_ne : ∀ t : c, tensorPush (ψ t).toLinearMap z ≠ 0)
     (h_eq : ∀ t : c, (t : a.obj → a.obj → Prop) = fun f g : a.obj ↦ ψ t f ∣ ψ t g) :
-    ∃ (L : PerfectAlg S) (χ : a.obj →ₐ[S] L.obj),
+    ∃ (L : PerfectAlg p S) (χ : a.obj →ₐ[S] L.obj),
       tensorPush χ.toLinearMap z ≠ 0 ∧ ∀ s ∈ c, s ≤ fun f g : a.obj ↦ χ f ∣ χ g := by
   classical
   -- `L` is the localisation of `∏ B t` at the families that are eventually one.
@@ -452,16 +467,19 @@ private lemma exists_tensorPush_ne_zero_of_isChain {c : Set (a.obj → a.obj →
     fun h_zero ↦ ?_, fun s hs f g hfg ↦ ?_⟩
   · -- If `z` died, then by flat base change some `s ∈ M` would kill its image over the product;
     -- project to a factor where `s t = 1`.
+    have h1 := one_tmul_eq_zero_of_tensorPush (Φ := perfectAlmostCoeff N)
+      (V := ∀ t, (B t).obj) (A := Localization M) φ (tensorPush Ψ.toLinearMap z)
+      (tensorPush_comp.symm.trans h_zero)
     obtain ⟨s, hs : tensorPush (mulLeft S s.val) (tensorPush Ψ.toLinearMap z) = 0⟩ :=
-      (IsLocalizedModule.eq_zero_iff M (TensorProduct.mk (∀ t, (B t).obj) (Localization M) _ 1)).mp
-        (one_tmul_eq_zero_of_tensorPush φ (tensorPush Ψ.toLinearMap z)
-          (tensorPush_comp.symm.trans h_zero))
+      (IsLocalizedModule.eq_zero_iff M
+        (TensorProduct.mk (∀ t, (B t).obj) (Localization M) _ 1)).mp h1
     have h_neBot : (atTop : Filter c).NeBot :=
       atTop_neBot_iff.mpr ⟨hc_nonempty.to_subtype, hc_chain.directedOn.isDirectedOrder⟩
     obtain ⟨t, ht : s.val t = 1⟩ := h_neBot.nonempty_of_mem s.property
     have h_factor : (ψ t).toLinearMap = proj t ∘ₗ mulLeft S s.val ∘ₗ Ψ.toLinearMap := by
       ext x
-      simp [Ψ, ht]
+      simp only [Ψ, LinearMap.comp_apply, AlgHom.toLinearMap_apply, AlgHom.pi_apply,
+        LinearMap.mulLeft_apply, LinearMap.proj_apply, Pi.mul_apply, ht, one_mul]
     apply h_ne t
     rw [h_factor, tensorPush_comp, tensorPush_comp, hs, map_zero]
   · -- As `ψ t f ∣ ψ t g` for `t ≥ s`, the indicator `e` of the `t` where this holds lies in `M`.
@@ -482,11 +500,11 @@ lemma exists_maximal_tensorPush_ne_zero (hz : z ≠ 0) :
     ∃ m : a.obj → a.obj → Prop,
       Maximal
         (fun s : a.obj → a.obj → Prop ↦
-          ∃ (B : PerfectAlg S) (ψ : a.obj →ₐ[S] B.obj),
+          ∃ (B : PerfectAlg p S) (ψ : a.obj →ₐ[S] B.obj),
             tensorPush ψ.toLinearMap z ≠ 0 ∧ s = fun x y : a.obj ↦ ψ x ∣ ψ y)
         m := by
   -- Zorn's lemma for the relations `ψ f ∣ ψ g` on `a`, over all `ψ` along which `z` survives.
-  let good : Set (a.obj → a.obj → Prop) := {s | ∃ (B : PerfectAlg S) (ψ : a.obj →ₐ[S] B.obj),
+  let good : Set (a.obj → a.obj → Prop) := {s | ∃ (B : PerfectAlg p S) (ψ : a.obj →ₐ[S] B.obj),
     tensorPush ψ.toLinearMap z ≠ 0 ∧ s = fun f g ↦ ψ f ∣ ψ g}
   have h_chain (c : Set (a.obj → a.obj → Prop)) (hc : c ⊆ good) (hc_chain : IsChain (· ≤ ·) c)
       (s₀ : a.obj → a.obj → Prop) (hs₀ : s₀ ∈ c) : ∃ ub ∈ good, ∀ s ∈ c, s ≤ ub := by
@@ -509,26 +527,33 @@ V that is a valuation domain. -/
 lemma exists_perfect_valuationRing_factor {ψ : a.obj →ₐ[S] d.obj} {k : d.obj →ₐ[S] b.obj}
     (hk : k.toLinearMap ≠ 0) (hψ_total : ∀ x y : a.obj, ψ x ∣ ψ y ∨ ψ y ∣ ψ x)
     (hk_total : ∀ x y : d.obj, k x ∣ k y ∨ k y ∣ k x) :
-    ∃ (V : PerfectAlg S) (α : a.obj →ₗ[S] V.obj) (β : V.obj →ₗ[S] b.obj),
+    ∃ (V : PerfectAlg p S) (α : a.obj →ₗ[S] V.obj) (β : V.obj →ₗ[S] b.obj),
       (k.comp ψ).toLinearMap = β ∘ₗ α ∧ ∃ _ : IsDomain V.obj, ValuationRing V.obj := by
   -- `d ⧸ ker k` is a perfect domain. Inside it, `V` is the saturation of the image of `a`: the
   -- `y` with `v * y` in the image for some `v ≠ 0` in the image.
   have hb_reduced : IsReduced b.obj := isReduced_of_perfectRing b.property
-  have h_prime : (ker k).IsPrime := by
-    refine ⟨fun h_top ↦ hk (LinearMap.ext fun x ↦ (eq_top_iff.mp h_top trivial : x ∈ ker k)),
+  have h_prime : (RingHom.ker k).IsPrime := by
+    refine ⟨fun h_top ↦ hk (LinearMap.ext fun x ↦
+      (eq_top_iff.mp h_top trivial : x ∈ RingHom.ker k)),
       fun {x y} hxy ↦ ?_⟩
     -- If `k (x * y) = 0` and `k y ∣ k x`, then `k x ^ 2 = 0`; and symmetrically.
-    have h_mul : k x * k y = 0 := by simpa using hxy
+    have h_mul : k x * k y = 0 := (map_mul k x y).symm.trans hxy
     rcases hk_total y x with ⟨w, hw⟩ | ⟨w, hw⟩
-    · exact .inl (IsReduced.eq_zero (k x) ⟨2, by grind⟩)
-    · exact .inr (IsReduced.eq_zero (k y) ⟨2, by grind⟩)
-  have h_perf : PerfectRing (d.obj ⧸ ker k) p := by
+    · refine .inl (IsReduced.eq_zero (k x) ⟨2, ?_⟩)
+      rw [sq]
+      nth_rw 2 [hw]
+      rw [← mul_assoc, h_mul, zero_mul]
+    · refine .inr (IsReduced.eq_zero (k y) ⟨2, ?_⟩)
+      rw [sq]
+      nth_rw 1 [hw]
+      rw [mul_right_comm, h_mul, zero_mul]
+  have h_perf : PerfectRing (d.obj ⧸ RingHom.ker k) p := by
     refine perfectRing_of_pow_surjective natCast_eq_zero_of_algebra_oFlat fun y ↦ ?_
     obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective y
     obtain ⟨x, rfl⟩ := d.property.bijective_frobenius.surjective y
     exact ⟨mkₐ S _ x, rfl⟩
-  let f : a.obj →ₐ[S] d.obj ⧸ ker k := (mkₐ S (ker k)).comp ψ
-  let V : Subalgebra S (d.obj ⧸ ker k) :=
+  let f : a.obj →ₐ[S] d.obj ⧸ RingHom.ker k := (mkₐ S (RingHom.ker k)).comp ψ
+  let V : Subalgebra S (d.obj ⧸ RingHom.ker k) :=
     f.range.saturation (f.range.toSubmonoid ⊓ nonZeroDivisors _) inf_le_left
   -- `V` is perfect: if `v * y ^ p` is in the image, so is `(v * y) ^ p`, say `f x ^ p`; then
   -- `v * y = f x`.
@@ -542,23 +567,25 @@ lemma exists_perfect_valuationRing_factor {ψ : a.obj →ₐ[S] d.obj} {k : d.ob
       rw [← map_pow, hx, ← mul_assoc, pow_sub_one_mul out, mul_pow]
     exact ⟨⟨y, v, ⟨hv_range, hv_nzd⟩, x, h_perf.bijective_frobenius.injective h_pow⟩, rfl⟩
   -- Divisibility in the domain passes to `V`: a quotient of two elements of `V` lies in `V`.
-  have h_dvd {y z : V} (h_yz : (y : d.obj ⧸ ker k) ∣ z) : y ∣ z := by
+  have h_dvd {y z : V} (h_yz : (y : d.obj ⧸ RingHom.ker k) ∣ z) : y ∣ z := by
     obtain ⟨w, hw⟩ := h_yz
     obtain rfl | hy := eq_or_ne y 0
-    · exact ⟨0, Subtype.ext (by simpa using hw)⟩
+    · refine ⟨0, Subtype.ext ?_⟩
+      simp only [ZeroMemClass.coe_zero, zero_mul] at hw ⊢
+      exact hw
     obtain ⟨v, ⟨hv_range, hv_nzd⟩, hvy⟩ := y.property
     have h_mem : v * y * w ∈ V := by
       rw [mul_assoc, ← hw]
       exact mul_mem (f.range.le_saturation hv_range) z.property
     have hw_mem : w ∈ V := f.range.mem_saturation_of_mul_mem_left h_mem
-      ⟨hvy, mul_mem hv_nzd (mem_nonZeroDivisors_of_ne_zero (by simpa using hy))⟩
+      ⟨hvy, mul_mem hv_nzd (mem_nonZeroDivisors_of_ne_zero (Subtype.coe_ne_coe.mpr hy))⟩
     exact ⟨⟨w, hw_mem⟩, Subtype.ext hw⟩
   -- If `f u = v' * v * y` and `f u' = v * v' * z` with `v' * v` a nonzerodivisor, then `ψ u ∣ ψ u'`
   -- gives `f u ∣ f u'` in `d ⧸ ker k`, hence `y ∣ z` after cancelling `v' * v`.
-  have h_dvd_of_image {y z v v' : d.obj ⧸ ker k} {u u' : a.obj}
+  have h_dvd_of_image {y z v v' : d.obj ⧸ RingHom.ker k} {u u' : a.obj}
       (h_nzd : v' * v ∈ nonZeroDivisors _) (hu : f u = v' * (v * y)) (hu' : f u' = v * (v' * z))
       (huu' : ψ u ∣ ψ u') : y ∣ z := by
-    have h_image : f u ∣ f u' := map_dvd (mkₐ S (ker k)) huu'
+    have h_image : f u ∣ f u' := map_dvd (mkₐ S (RingHom.ker k)) huu'
     rwa [hu, hu', ← mul_assoc, ← mul_assoc, mul_comm v v',
       dvd_cancel_left_mem_nonZeroDivisors h_nzd] at h_image
   -- Given `y, z ∈ V`, the multiples `v' * v * y` and `v * v' * z` are images of `u`, `u'` in `a`,
@@ -586,7 +613,7 @@ lemma tensorPush_quotient_ne_zero (hN : ∀ x : N, pFlat • x = 0) (hz : z ≠ 
     tensorPush (mkₐ S I).toLinearMap z ≠ 0 := by
   -- It is enough that `I ⊗ D ⊗ N ⊗ 𝔪 → a ⊗ D ⊗ N ⊗ 𝔪` is zero: then the coefficients for `a` and
   -- for `a ⧸ I` are isomorphic.
-  have h_zero (D : PerfectAlg S) :
+  have h_zero (D : PerfectAlg p S) :
       (I.restrictScalars S).subtype.rTensor (D.obj ⊗[OFlat] (N ⊗[OFlat] MaxIdealFlat)) = 0 := by
     ext y w x m
     -- Write `m = s • c` with `pFlat ∣ s ^ j`; then `pFlat` divides `s * y` in both cases of `hI`.
@@ -603,7 +630,7 @@ lemma tensorPush_quotient_ne_zero (hN : ∀ x : N, pFlat • x = 0) (hz : z ≠ 
       _ = y' ⊗ₜ[S] (w ⊗ₜ[OFlat] ((pFlat • x) ⊗ₜ[OFlat] c)) := by
         rw [hy', ← Algebra.smul_def, smul_tmul, ← tmul_smul, smul_tmul']
       _ = 0 := by simp [hN]
-  have h_bij (D : PerfectAlg S) :
+  have h_bij (D : PerfectAlg p S) :
       Bijective ((I.restrictScalars S).mkQ.rTensor (D.obj ⊗[OFlat] (N ⊗[OFlat] MaxIdealFlat))) :=
     ⟨ker_eq_bot.mp (by rw [rTensor_mkQ, h_zero, range_zero]),
       rTensor_surjective _ (Submodule.mkQ_surjective _)⟩
@@ -624,12 +651,12 @@ lemma faithfullyFlat_descent [hS : PerfectRing S p] [Algebra S V] (ρ : V →ₐ
   -- relative object, because every `a ⊗ D` receives a map from `d`.
   algebraize [ρ.toRingHom]
   refine (h_flat.one_tmul_eq_zero_iff ..).mp (one_tmul_eq_zero_of_tensorPush i x ?_)
-  let E : PerfectAlg S ⥤ PerfectAlg S :=
+  let E : PerfectAlg p S ⥤ PerfectAlg p S :=
     lift _ (ι _ ⋙ tensorLeft a.obj) (perfectRing_tensor natCast_eq_zero_of_algebra_oFlat a)
   let η : 𝟭 _ ⟶ E := { app _ := ⟨ofHom TensorProduct.includeRight⟩ }
   -- A push-forward along `whiskerRight η F ≫ β` is a pull-back along `whiskerRight η K`, so it
   -- vanishes when that map is zero.
-  have h_push {K F G : AbFunctor (PerfectAlg S)} {y : H K F n} {γ : F ⟶ G} (β : E ⋙ F ⟶ G)
+  have h_push {K F G : AbFunctor (PerfectAlg p S)} {y : H K F n} {γ : F ⟶ G} (β : E ⋙ F ⟶ G)
       (hK : whiskerRight η K = 0) (hγ : γ = whiskerRight η F ≫ β) : push K γ n y = 0 := by
     rw [hγ, ← pull_id_eq_push, pull_whiskerRight]
     simp [pull, H.map, hK]
@@ -641,16 +668,16 @@ lemma faithfullyFlat_descent [hS : PerfectRing S p] [Algebra S V] (ρ : V →ₐ
     refine ULift.down_injective (ObjectProperty.hom_ext _ ?_)
     ext
   -- The multiplication map `V ⊗ (a ⊗ D) ⊗ N ⊗ 𝔪 → a ⊗ D ⊗ N ⊗ 𝔪`, natural in `D`.
-  let r (D : PerfectAlg S) :=
+  let r (D : PerfectAlg p S) :=
     liftBaseChange V (assoc OFlat S S a.obj D.obj (N ⊗[OFlat] MaxIdealFlat)).toLinearMap
   let β : E ⋙ perfectAlmostCoeff N ⋙ tensorWith V V ⟶ perfectAlmostCoeff N ⋙ tensorWith V a.obj :=
     { app D := ↟(r D)
       naturality D D' _ := by
         refine ModuleCat.hom_ext ?_
-        show r D' ∘ₗ _ = _ ∘ₗ r D
+        change r D' ∘ₗ _ = _ ∘ₗ r D
         ext
         rfl }
-  have h_factor (D : PerfectAlg S) : rTensor S _ (Algebra.linearMap V a.obj) =
+  have h_factor (D : PerfectAlg p S) : rTensor S _ (Algebra.linearMap V a.obj) =
       r D ∘ₗ lTensor V V (rTensor OFlat _ (TensorProduct.mk S a.obj D.obj 1)) := by
     ext
     simp [r]
@@ -660,7 +687,7 @@ lemma faithfullyFlat_descent [hS : PerfectRing S p] [Algebra S V] (ρ : V →ₐ
 
 /-- For a map φ: b → d of perfect S-algebras, the ring d regarded as a perfect b-algebra through
 φ. -/
-def perfectAlgAlong {b d : PerfectAlg S} (φ : b ⟶ d) : PerfectAlg b.obj :=
+def perfectAlgAlong {b d : PerfectAlg p S} (φ : b ⟶ d) : PerfectAlg p b.obj :=
   letI : Algebra b.obj d.obj := φ.hom.hom.toRingHom.toAlgebra
   ⟨CommAlgCat.of b.obj d.obj, d.property⟩
 
@@ -670,16 +697,16 @@ S-algebra, and z ≠ 0 a class in H^n(ℤ[h_b]/ℤ[im h_d], D ↦ a ⊗_S D ⊗ 
 perfect S-algebra E in place of a. Then z stays nonzero (`New.Variety.tensorPush`) along some map
 ψ: a → B of S-algebras, B perfect, such that of any two images under ψ one divides the other. -/
 lemma exists_tensorPush_ne_zero_and_dvd_total [PerfectRing S p]
-    (h_below : ∀ m < n, ∀ E : PerfectAlg S,
+    (h_below : ∀ m < n, ∀ E : PerfectAlg p S,
       Subsingleton
         (H (relFreeAbOfHom φ) (moduleCoeff (perfectAlmostCoeff N ⋙ tensorWith S E.obj)) m))
     (hz : z ≠ 0) :
-    ∃ (B : PerfectAlg S) (ψ : a.obj →ₐ[S] B.obj),
+    ∃ (B : PerfectAlg p S) (ψ : a.obj →ₐ[S] B.obj),
       tensorPush ψ.toLinearMap z ≠ 0 ∧ ∀ f g : a.obj, ψ f ∣ ψ g ∨ ψ g ∣ ψ f := by
   -- Take `ψ` with a maximal divisibility relation. The class survives on one of the two charts
   -- on which `ψ g ∣ ψ f`, resp. `ψ f ∣ ψ g`, so by maximality that relation holds in `B`.
   obtain ⟨_, ⟨B, ψ, hψ, rfl⟩, h_maximal⟩ := exists_maximal_tensorPush_ne_zero φ hz
-  have h_max {E : PerfectAlg S} (i : B.obj →ₐ[S] E.obj) {f g : a.obj}
+  have h_max {E : PerfectAlg p S} (i : B.obj →ₐ[S] E.obj) {f g : a.obj}
       (hi : tensorPush (i.comp ψ).toLinearMap z ≠ 0) : i (ψ f) ∣ i (ψ g) → ψ f ∣ ψ g :=
     h_maximal ⟨E, i.comp ψ, hi, rfl⟩ (fun _ _ ↦ map_dvd i) f g
   refine ⟨B, ψ, hψ, fun f g ↦ ?_⟩
@@ -691,7 +718,7 @@ lemma exists_tensorPush_ne_zero_and_dvd_total [PerfectRing S p]
   -- `k` stays injective on the coefficients `D ⊗ N ⊗ 𝔪`. Tensoring with `D` and the flat module
   -- `𝔪` gives a short exact sequence whose last term `𝔪 ⊗ B₀ ⊗ D` is torsion-free, so flat, as
   -- `B₀ ⊗ D` is reduced; so it stays exact on the left after tensoring with `N`.
-  have h_coeff (D : PerfectAlg S) : Function.Injective (k.rTensor (perfectAlmostCoeff N D)) := by
+  have h_coeff (D : PerfectAlg p S) : Function.Injective (k.rTensor (perfectAlmostCoeff N D)) := by
     have hB₀D_reduced : IsReduced (B₀.obj ⊗[S] D.obj) :=
       isReduced_of_perfectRing (perfectRing_tensor natCast_eq_zero_of_algebra_oFlat B₀ D)
     have h_flat : Module.Flat OFlat (MaxIdealFlat ⊗[OFlat] (B₀.obj ⊗[S] D.obj)) :=
@@ -732,8 +759,8 @@ a b-algebra through y; `structureMap` is the map from b, seen as a b-algebra ove
 Suppose that for every n and every perfect b-algebra E the relative cohomology H^n(ℤ[h_b]/ℤ[im
 h_{b'}], D ↦ E ⊗_b D ⊗ N ⊗ 𝔪) of this map of b-algebras vanishes. Then h_{b'} → h_b is a cover
 (`New.Variety.IsCover`) for the coefficients D ↦ D ⊗ N ⊗ 𝔪 on perfect O^♭-algebras. -/
-private lemma isCover_reprMap_of_forall_subsingleton {b b' : PerfectAlg OFlat} (y : b ⟶ b')
-    (h_van : ∀ (n : ℕ) (E : PerfectAlg b.obj),
+private lemma isCover_reprMap_of_forall_subsingleton {b b' : PerfectAlg p OFlat} (y : b ⟶ b')
+    (h_van : ∀ (n : ℕ) (E : PerfectAlg p b.obj),
       Subsingleton
         (H (relFreeAbOfHom (⟨structureMap⟩ : perfectAlgAlong (𝟙 b) ⟶ perfectAlgAlong y))
           (moduleCoeff (perfectAlmostCoeff N ⋙ tensorWith b.obj E.obj)) n)) :
@@ -741,8 +768,9 @@ private lemma isCover_reprMap_of_forall_subsingleton {b b' : PerfectAlg OFlat} (
   -- Universal points carry the statement from `OFlat`-algebras to `b`-algebras, where it is the
   -- vanishing of the relative cohomology for `E = b`. `R` restricts scalars from `b` to `OFlat`,
   -- and `u w` is the identity of `A`, seen as a `b`-algebra through `w`.
-  let R : PerfectAlg b.obj ⥤ PerfectAlg OFlat := lift _ (ι _ ⋙ restrictAlg ..) fun A ↦ A.property
-  let u {A : PerfectAlg OFlat} (w : b ⟶ A) : A ⟶ R.obj (perfectAlgAlong w) :=
+  let R : PerfectAlg p b.obj ⥤ PerfectAlg p OFlat := lift _ (ι _ ⋙ restrictAlg ..) fun A ↦
+      A.property
+  let u {A : PerfectAlg p OFlat} (w : b ⟶ A) : A ⟶ R.obj (perfectAlgAlong w) :=
     ⟨ofHom ⟨.id _, fun s ↦ (w.hom.hom.commutes s).symm⟩⟩
   -- Over a point `w : b ⟶ A` the universal point is `A` with the `b`-algebra structure `w`.
   have h_univ : HasUniversalPoints (F := ι _ ⋙ moduleCoeff (almostCoeff N))
@@ -783,7 +811,7 @@ map from b to the tilt of a test (`New.Variety.PadicTest`) factors through y. Th
 cover (`New.Variety.IsCover`) for the coefficients D ↦ D ⊗ N ⊗ 𝔪; here h_b = Hom(b, –) on perfect
 O^♭-algebras, and ι includes them into all O^♭-algebras. This is v-descent for these
 coefficients. -/
-lemma isCover_of_points (hN : ∀ x : N, pFlat • x = 0) {b b' : PerfectAlg OFlat} (y : b ⟶ b')
+lemma isCover_of_points (hN : ∀ x : N, pFlat • x = 0) {b b' : PerfectAlg p OFlat} (y : b ⟶ b')
     (hy : IsPointwiseSurjective (PadicTest.perfectTilt.whiskerLeft (reprMap y))) :
     IsCover (ι _ ⋙ moduleCoeff (almostCoeff N)) (reprMap y) := by
   -- Work over `b` and suppose `z ≠ 0` is a relative class of least degree. Push it to a valuation
@@ -812,12 +840,12 @@ lemma isCover_of_points (hN : ∀ x : N, pFlat • x = 0) {b b' : PerfectAlg OFl
       h_rad (by rw [h_zero, zero_isRadical_iff]; infer_instance)
     -- a test `c` and `φ : V → c.TiltRing`, faithfully flat over `V ⧸ ker φ`, with `ker φ ⊆ p^♭ V`
     obtain ⟨c, φ, hφ_flat, hφ_ker⟩ := exists_faithfullyFlat_padicTest (CommAlgCat.of OFlat V.obj)
-      h_ne fun h_unit ↦ h_rad h_unit.squarefree.isRadical
+      h_ne fun h_unit ↦ h_rad fun _ _ _ ↦ h_unit.dvd
     -- The point `b → V → c.TiltRing` lifts to `g : b' → c.TiltRing`. The class survives in
     -- `V ⧸ ker φ`, and it vanishes there by descent along the faithfully flat map
     -- `V ⧸ ker φ → c.TiltRing`, where `c.TiltRing` is a `b`-algebra through `y ≫ g`.
     obtain ⟨⟨g⟩, hg⟩ := hy c ⟨⟨ofHom (φ.comp (algHom ..))⟩⟩
-    refine tensorPush_quotient_ne_zero i hN hα (ker φ) (.inl hφ_ker) ?_
+    refine tensorPush_quotient_ne_zero i hN hα (RingHom.ker φ) (.inl hφ_ker) ?_
     -- `φ` on `V ⧸ ker φ`, and `g` on `b'`, as maps of `b`-algebras
     exact faithfullyFlat_descent (a := perfectAlgAlong (y ≫ g))
       ⟨φ.kerLift, fun s ↦ congr($(hg.symm).down.hom s)⟩ hφ_flat i
@@ -868,8 +896,8 @@ abbrev IsAcyclicOnPerfect (F : AbFunctor (CommAlg OFlat)) : Prop :=
 in tilts of p-adic tests, such that the points of b' in tilts of tests are acyclic for the
 coefficients D ↦ D ⊗ N ⊗ 𝔪. The proof takes b' to be the tilt of one test through which all points
 of b factor, or the zero ring if b has no point. -/
-private lemma exists_isPointwiseSurjective_and_isAcyclicAt (b : PerfectAlg OFlat) :
-    ∃ (b' : PerfectAlg OFlat) (y : b ⟶ b'),
+private lemma exists_isPointwiseSurjective_and_isAcyclicAt (b : PerfectAlg p OFlat) :
+    ∃ (b' : PerfectAlg p OFlat) (y : b ⟶ b'),
       IsPointwiseSurjective (perfectTilt.whiskerLeft (reprMap y)) ∧
       IsAcyclicAt perfectTilt (ι _ ⋙ moduleCoeff (almostCoeff N)) b' := by
   by_cases! h_point : ∃ c : PadicTest, Nonempty (b ⟶ perfectTilt.obj c)
@@ -886,7 +914,7 @@ private lemma exists_isPointwiseSurjective_and_isAcyclicAt (b : PerfectAlg OFlat
       exact isBijective_of_repr _ (pointMap_id_bijective_of_fullyFaithful (lift ..) _)
         (ConcreteCategory.bijective_of_isIso ((moduleCoeff _).map (𝟙 _)))
   · -- b has no point: b' is the zero ring, and both sides of the comparison vanish
-    let zero : PerfectAlg OFlat := ⟨.of OFlat Unit, ⟨by simp⟩⟩
+    let zero : PerfectAlg p OFlat := ⟨.of OFlat Unit, ⟨by simp⟩⟩
     let y : b ⟶ zero := ⟨CommAlgCat.ofHom default⟩
     have h_zero {A : AbFunctor PadicTest} (u v : freeAb.obj (perfectTilt ⋙ reprBy zero) ⟶ A) :
         u = v :=
@@ -903,7 +931,7 @@ private lemma exists_isPointwiseSurjective_and_isAcyclicAt (b : PerfectAlg OFlat
 /-- Almost descent. Let N be an O^♭-module killed by p^♭, and 𝔪 the maximal ideal of O^♭. For b
 perfect over O^♭, S ↦ Hom(b, S^♭) on p-adic tests with coefficients S^♭ ⊗ N ⊗ 𝔪 has cohomology
 b ⊗ N ⊗ 𝔪, in degree 0. -/
-lemma isAcyclicAt_perfectTilt (hN : ∀ x : N, pFlat • x = 0) (b : PerfectAlg OFlat) :
+lemma isAcyclicAt_perfectTilt (hN : ∀ x : N, pFlat • x = 0) (b : PerfectAlg p OFlat) :
     IsAcyclicAt perfectTilt (ObjectProperty.ι _ ⋙ moduleCoeff (almostCoeff N)) b := by
   -- Every b has a cover b → b' (onto on points in tests) with the claim known for b'
   -- (`exists_isPointwiseSurjective_and_isAcyclicAt`). Čech descent (`bijectiveUpTo_of_cech_pred`)

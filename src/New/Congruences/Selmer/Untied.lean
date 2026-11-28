@@ -1,4 +1,7 @@
-import New.Congruences.Selmer.OneSystem
+module
+
+public import New.Congruences.Selmer.OneSystem
+public import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 
 /-!
 # The failure to be tied
@@ -37,6 +40,8 @@ Notions from other files:
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New.Selmer
@@ -53,9 +58,6 @@ open Matrix.Module
 
 variable {E O n B : Type} [Field E] [EmbeddedNumberField E] [CommRing O] [Fintype n] [DecidableEq n]
   [AddCommGroup B] [Module O B] {ρ : Gal(Ω/E) →* Matrix n n O} {c : Gal(Ω/E) → n → B}
-
-lemma affineAction_apply (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h) (g : Gal(Ω/E))
-    (u : n → B) : affineAction hc g u = c g + ρ g • u := rfl
 
 /-- If `g` acts through `ρ` by the scalar `α`, then the affine action `u ↦ c(g) + g u` of the
 cocycle `c` has `k`-th iterate `u ↦ α ^ k u + ∑ i < k, α ^ i c(g)` at `g`. At `u = 0` this says
@@ -355,10 +357,10 @@ lemma IsTiedPrimes.frob_sub_one_smul_eq [ThePrime ℓ] (hp : IsTiedPrimes ℓ S�
   have h_scalar (g : Gal(Ω/E)) (hg : g ∈ inertiaAbove S₀ᶜ) :
       ∃ α : B, R g = α • 1 ∧ ∑ j ∈ range (ℓ ^ N), α ^ j = 0 :=
     ⟨_, hR_scalar g (h_unr g hg), h_sum (dvd_eval_universalChar_sub_one lam hx_dvd g)⟩
-  obtain ⟨hv_off, -, -, hv_star_off⟩ := hp.auxiliary v v.2
+  obtain ⟨hv_off, -, -, hv_star_off⟩ := hp.auxiliary v v.property
   -- Tame inertia at `v` or at its conjugate, both off `S₀`, gives the relation for `R`.
   simpa only [sub_smul, one_smul, hR_smul] using
-    sub_one_smul_eq_of_isAuxPrimeDataAt hc hz_lc h_open h_scalar (hp.isAuxPrimeDataAt v v.2)
+    sub_one_smul_eq_of_isAuxPrimeDataAt hc hz_lc h_open h_scalar (hp.isAuxPrimeDataAt v v.property)
       hv_off hv_star_off b
 
 /-- Let `J` be a finite set of primes of the CM field `E` that lie, with their conjugates, outside
@@ -401,13 +403,13 @@ lemma IsTiedPrimes.frob_sub_one_smul_tie_eq_zero_of_selmerOnLine [ThePrime ℓ]
   have hψφ : MvPolynomial.eval x (universalChar lam φ) = 1 + y := by
     by_cases hvP : ↑v = P₀
     · simp [universalChar, x, hy_zero_of_eq_first hvP]
-    · simp [φ, lam, hp.universalChar_frob hN v.2 hvP, x, lineDirection]
+    · simp [φ, lam, hp.universalChar_frob hN v.property hvP, x, lineDirection]
   have h_trivial {g : Gal(Ω/E)} (hg : reduceModPow ℓ M ρ g = 1) (u : n → QuotSpan (ℓ ^ M : O')) :
       (ρ g).map e • u = u := by
     simpa using map_smul_eq_of_reduceModPow_eq (hg.trans (map_one _).symm) e u
-  obtain ⟨hv_off, -, -, hv_star_off⟩ := hp.auxiliary v v.2
+  obtain ⟨hv_off, -, -, hv_star_off⟩ := hp.auxiliary v v.property
   have hγ : reduceModPow ℓ M ρ γ = 1 :=
-    have hd : IsAuxPrimeDataAt (placesDividing E ℓ) v (d v).1 := hp.isAuxPrimeDataAt v v.2
+    have hd : IsAuxPrimeDataAt (placesDividing E ℓ) v (d v).1 := hp.isAuxPrimeDataAt v v.property
     h_unr γ (idOrConjInv_mem_inertiaAbove hd.isPlaceOver hd.tame_gen.left
       ⟨hv_off, hv_star_off⟩ b)
   let Φ : Matrix n n O' := (1 + y) • (ρ φ).map e
@@ -425,8 +427,8 @@ lemma IsTiedPrimes.frob_sub_one_smul_tie_eq_zero_of_selmerOnLine [ThePrime ℓ]
     by_cases hs : (d v).2 i = 0
     · simp [hs]
     · simp [Φ, sub_smul, add_smul, mul_smul,
-        h_trivial (h_triv_of_V φ (hp.apply_idOrConjInv_of_slope_ne_zero v.2 hs b))]
-  show (Φ - 1) • (z γ - e ((d v).2 i) • z φ) = 0
+        h_trivial (h_triv_of_V φ (hp.apply_idOrConjInv_of_slope_ne_zero v.property hs b))]
+  change (Φ - 1) • (z γ - e ((d v).2 i) • z φ) = 0
   rw [smul_sub, h_commute, smul_comm, h_slope, sub_self]
 
 /-- Let `J` be a finite set of primes of the CM field `E` that lie, with their conjugates, outside
@@ -448,7 +450,7 @@ lemma IsTiedPrimes.relLength_tied_le_sum_ker [ThePrime ℓ]
     (hp : IsTiedPrimes ℓ S₀ V W N P₀ J d) (hN : N ≠ 0)
     (i : ι) (h_unr : ∀ g ∈ inertiaAbove S₀ᶜ, reduceModPow ℓ M ρ g = 1)
     (h_triv_of_V : ∀ g : Gal(Ω/E), V i g → reduceModPow ℓ M ρ g = 1) {O' : Type} [CommRing O']
-    [DVR O'] (e : O →+* O') {y : O'}
+    (e : O →+* O') {y : O'}
     (h_geom_sum : ∀ α : O', y ∣ α - 1 → (ℓ ^ M : O') ∣ ∑ j ∈ range (ℓ ^ N), α ^ j)
     (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O))
     {I : Finset (FinPlace E)} (hI : I ⊆ J) (hy_zero_of_first_mem : P₀ ∈ I → y = 0) :

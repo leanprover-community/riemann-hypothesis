@@ -1,4 +1,13 @@
-import New.Spanning.Bessel.LargeFunction
+module
+
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.Bessel.LargeFunction
+import Lib.DiscreteSeries.Bessel.SchurBound
+import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # The Bessel function at a real place: decay and cut
@@ -39,6 +48,8 @@ discrete series, 2015; Miličić, Asymptotic behavior of matrix coefficients of 
 See `New.Spanning.Bessel.FillingData` for related work.
 -/
 
+@[expose] public section
+
 namespace New
 
 open Matrix MeasureTheory ENNReal Norms.L2Operator Fintype CStarRing Set DiscreteSeries
@@ -46,6 +57,14 @@ open Matrix MeasureTheory ENNReal Norms.L2Operator Fintype CStarRing Set Discret
 variable {𝔰 : Shape} {I : Type} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I] [DecidableEq I]
   [p : UnitarySignFrame 𝔰 ε] {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ} {l : HCParam ε}
   {A L : ℕ}
+
+private lemma sFinite_besselGraphMeasure {𝔰 : Shape} : SFinite 𝔰.besselGraphMeasure := by
+  unfold Shape.besselGraphMeasure
+  infer_instance
+
+private lemma measurable_norm_U {ι : Type*} [Fintype ι] [DecidableEq ι] {J : Matrix ι ι ℂ} :
+    Measurable fun g : U J ↦ ‖g.val.val‖ :=
+  (Units.continuous_val.comp continuous_subtypeVal).norm.measurable
 
 /-- The frame is unitary, so passing to it by `frameEquiv` (g ↦ p⁻¹ g p) keeps the operator
 norm. -/
@@ -66,19 +85,33 @@ lemma lintegral_formalDegree_mul_decay_le (h_gap : l.HasLargeGap A)
   -- Transport `integral_tail_le` to G₁ by the frame; then `8` and `2000` are at most `b`.
   have h_deg : 0 < l.formalDegree := formalDegree_pos h_gap
   have hb8 : 8 ≤ b := by linarith
+  have hb1 : 1 ≤ b := by linarith
+  have hb0 : 0 ≤ b := zero_le_one.trans hb1
   obtain ⟨h_int, h_le⟩ := integral_tail_le hL M hM
+  have h_meas : Measurable fun g : USign ε ↦
+      ENNReal.ofReal (l.formalDegree * (2 / ‖g.val.val‖) ^ M) :=
+    (measurable_const.mul ((measurable_const.div measurable_norm_U).pow_const M)).ennreal_ofReal
   calc _ = ∫⁻ g : USign ε, ENNReal.ofReal (l.formalDegree * (2 / ‖g.val.val‖) ^ M) := by
-        simp_rw [← norm_frameEquiv]
-        exact measurePreserving_frameEquiv.lintegral_comp
-          (f := fun g ↦ .ofReal (l.formalDegree * (2 / ‖g.val.val‖) ^ M)) (by fun_prop)
+        refine (lintegral_congr fun g ↦ ?_).trans
+          (measurePreserving_frameEquiv.lintegral_comp h_meas)
+        rw [norm_frameEquiv]
     _ = ENNReal.ofReal (∫ g : USign ε, l.formalDegree * (2 / ‖g.val.val‖) ^ M) :=
-        (ofReal_integral_eq_lintegral_ofReal h_int (.of_forall fun _ ↦ by positivity)).symm
+        (ofReal_integral_eq_lintegral_ofReal h_int
+          (.of_forall fun _ ↦
+            mul_nonneg h_deg.le (pow_nonneg (div_nonneg zero_le_two (norm_nonneg _)) M))).symm
     _ ≤ ENNReal.ofReal (b * (b * (b ^ 4) ^ 6) ^ (2 * 𝔰.r ^ 2) * 2 ^ M) := by
-        grw [h_le, hL_le, hb_large, hb8]
+        refine ofReal_le_ofReal
+          (h_le.trans (mul_le_mul_of_nonneg_right ?_ (pow_nonneg zero_le_two _)))
+        have hL_nn : (0 : ℝ) ≤ 𝔰.r + L + 1 := by positivity
+        refine mul_le_mul hb8
+          (pow_le_pow_left₀ (mul_nonneg (by norm_num) (pow_nonneg hL_nn 6))
+            (mul_le_mul hb_large (pow_le_pow_left₀ hL_nn hL_le 6) (pow_nonneg hL_nn 6) hb0) _)
+          (pow_nonneg (mul_nonneg (by norm_num) (pow_nonneg hL_nn 6)) _) hb0
     _ ≤ ENNReal.ofReal (b ^ (50 * 𝔰.r ^ 2 + 1) * 2 ^ M) := by
-        simp only [← pow_mul, ← pow_succ']
+        rw [← pow_mul, ← pow_succ', ← pow_mul, ← pow_succ']
         exact ofReal_le_ofReal
-          (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ (by linarith) (by lia)) (by positivity))
+          (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hb1 (by omega))
+            (pow_nonneg zero_le_two _))
 
 /-- Let `G₁` be the unitary group of `r × r` matrices of the shape `𝔰`, and `l` a discrete series
 parameter of gap `500 r ^ 3 + A`, with entries bounded by `L` and formal degree `deg`. For
@@ -90,16 +123,30 @@ lemma formalDegree_mul_lintegral_decay_le (h_gap : l.HasLargeGap A)
     ENNReal.ofReal l.formalDegree * (∫⁻ g : 𝔰.G₁, ENNReal.ofReal ((2 / ‖g.val.val‖) ^ M)) *
         ENNReal.ofReal (16 ^ M) ≤
       ENNReal.ofReal (b ^ (99 * 𝔰.r ^ 2)) := by
-  obtain ⟨hb1, hb2, hb16⟩ : 1 ≤ b ∧ 2 ≤ b ∧ 16 ≤ b := by bound
-  have hr : 0 < 𝔰.r ^ 2 := by positivity
-  calc _ ≤ ENNReal.ofReal (b ^ (50 * 𝔰.r ^ 2 + 1) * 2 ^ M) * ENNReal.ofReal (16 ^ M) := by
-        grw [lintegral_const_mul_le]
-        simp_rw [← ofReal_mul (formalDegree_pos h_gap).le]
-        grw [lintegral_formalDegree_mul_decay_le h_gap hL hb_large hL_le (by lia)]
+  have hb1 : 1 ≤ b := by linarith
+  have hb2 : 2 ≤ b := by linarith
+  have hb16 : 16 ≤ b := by linarith
+  have hb0 : 0 ≤ b := zero_le_one.trans hb1
+  have hr : 0 < 𝔰.r ^ 2 := pow_pos Fintype.card_pos 2
+  have h_deg : 0 ≤ l.formalDegree := (formalDegree_pos h_gap).le
+  have h1 : ENNReal.ofReal l.formalDegree *
+        (∫⁻ g : 𝔰.G₁, ENNReal.ofReal ((2 / ‖g.val.val‖) ^ M)) ≤
+      ENNReal.ofReal (b ^ (50 * 𝔰.r ^ 2 + 1) * 2 ^ M) :=
+    (lintegral_const_mul_le _ _).trans <|
+      (lintegral_congr fun g ↦ (ofReal_mul h_deg).symm).trans_le <|
+        lintegral_formalDegree_mul_decay_le h_gap hL hb_large hL_le (by omega)
+  calc _ ≤ ENNReal.ofReal (b ^ (50 * 𝔰.r ^ 2 + 1) * 2 ^ M) * ENNReal.ofReal (16 ^ M) :=
+        mul_le_mul' h1 le_rfl
     _ ≤ ENNReal.ofReal (b ^ (50 * 𝔰.r ^ 2 + 1 + M + M)) := by
-        grw [← ofReal_mul (by positivity), hb2, hb16, ← pow_add, ← pow_add]
+        rw [← ofReal_mul (mul_nonneg (pow_nonneg hb0 _) (pow_nonneg zero_le_two _))]
+        refine ofReal_le_ofReal ?_
+        rw [pow_add b (50 * 𝔰.r ^ 2 + 1 + M) M, pow_add b (50 * 𝔰.r ^ 2 + 1) M]
+        exact mul_le_mul
+          (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ zero_le_two hb2 M) (pow_nonneg hb0 _))
+          (pow_le_pow_left₀ (by norm_num) hb16 M) (pow_nonneg (by norm_num) M)
+          (mul_nonneg (pow_nonneg hb0 _) (pow_nonneg hb0 _))
     _ ≤ ENNReal.ofReal (b ^ (99 * 𝔰.r ^ 2)) :=
-        ofReal_le_ofReal (pow_le_pow_right₀ hb1 (by lia))
+        ofReal_le_ofReal (pow_le_pow_right₀ hb1 (by omega))
 
 /-- Let `G₁` be the unitary group of `r × r` matrices of the shape `𝔰`, and `l` a discrete series
 parameter of gap `500 r ^ 3 + A`, with entries bounded by `L` and formal degree `deg`. If
@@ -113,25 +160,35 @@ lemma formalDegree_mul_volume_ball_le (h_gap : l.HasLargeGap A)
   -- Chebyshev's inequality with `M = 9 r ^ 2`: on the ball `deg ≤ (T / 2) ^ M * φ g` for
   -- `φ g = deg * (2 / ‖g‖) ^ M`.
   have hb1 : 1 ≤ b := by linarith
-  have hr : 0 < 𝔰.r ^ 2 := by positivity
+  have hr : 0 < 𝔰.r ^ 2 := pow_pos Fintype.card_pos 2
   have h_deg : 0 < l.formalDegree := formalDegree_pos h_gap
+  have hT2 : 0 ≤ (T / 2) ^ (9 * 𝔰.r ^ 2) :=
+    pow_nonneg (div_nonneg (zero_le_one.trans hT) zero_le_two) _
   let M : ℕ := 9 * 𝔰.r ^ 2
   let φ (g : 𝔰.G₁) : ℝ≥0∞ := .ofReal (l.formalDegree * (2 / ‖g.val.val‖) ^ M)
-  have h_tail : ∫⁻ g : 𝔰.G₁, φ g ≤ .ofReal (b ^ (99 * 𝔰.r ^ 2) * 2 ^ M) := by
-    grw [lintegral_formalDegree_mul_decay_le h_gap hL hb_large hL_le (by lia),
-      show 50 * 𝔰.r ^ 2 + 1 ≤ 99 * 𝔰.r ^ 2 by lia]
+  have h_meas : Measurable fun g : 𝔰.G₁ ↦ .ofReal ((T / 2) ^ M) * φ g :=
+    measurable_const.mul
+      (measurable_const.mul ((measurable_const.div measurable_norm_U).pow_const M)).ennreal_ofReal
+  have h_tail : ∫⁻ g : 𝔰.G₁, φ g ≤ .ofReal (b ^ (99 * 𝔰.r ^ 2) * 2 ^ M) :=
+    (lintegral_formalDegree_mul_decay_le h_gap hL hb_large hL_le (by omega)).trans
+      (ofReal_le_ofReal (mul_le_mul_of_nonneg_right
+        (pow_le_pow_right₀ hb1 (by omega)) (pow_nonneg zero_le_two M)))
   have h_point (g : 𝔰.G₁) (hg_mem : g ∈ {g : 𝔰.G₁ | ‖g.val.val‖ ≤ T}) :
       .ofReal l.formalDegree ≤ .ofReal ((T / 2) ^ M) * φ g := by
-    grw [← ofReal_mul (by positivity), mul_left_comm, ← mul_pow,
-      div_mul_div_cancel₀ two_ne_zero, ← (one_le_div (one_pos.trans_le (U.one_le_norm g))).2 hg_mem,
-      one_pow, mul_one]
-  calc _ ≤ ∫⁻ g : 𝔰.G₁, .ofReal ((T / 2) ^ M) * φ g := by
-        grw [← setLIntegral_const, setLIntegral_mono (by fun_prop) h_point,
-          setLIntegral_le_lintegral]
+    rw [← ofReal_mul hT2]
+    refine ofReal_le_ofReal ?_
+    rw [mul_left_comm, ← mul_pow, div_mul_div_cancel₀ two_ne_zero]
+    exact le_mul_of_one_le_right h_deg.le
+      (one_le_pow₀ ((one_le_div (one_pos.trans_le (U.one_le_norm g))).2 hg_mem))
+  calc _ = ∫⁻ _ in {g : 𝔰.G₁ | ‖g.val.val‖ ≤ T}, ENNReal.ofReal l.formalDegree :=
+        (setLIntegral_const _ _).symm
+    _ ≤ ∫⁻ g : 𝔰.G₁, .ofReal ((T / 2) ^ M) * φ g :=
+        (setLIntegral_mono h_meas h_point).trans (setLIntegral_le_lintegral _ _)
     _ ≤ .ofReal ((T / 2) ^ M) * .ofReal (b ^ (99 * 𝔰.r ^ 2) * 2 ^ M) := by
-        grw [lintegral_const_mul' _ _ ofReal_ne_top, h_tail]
+        rw [lintegral_const_mul' _ _ ofReal_ne_top]
+        exact mul_le_mul' le_rfl h_tail
     _ = ENNReal.ofReal (T ^ M * b ^ (99 * 𝔰.r ^ 2)) := by
-        rw [← ofReal_mul (by positivity), mul_left_comm, ← mul_pow,
+        rw [← ofReal_mul hT2, mul_left_comm, ← mul_pow,
           div_mul_cancel₀ _ two_ne_zero, mul_comm]
 
 /-- Let `s` be in the Bessel subgroup 𝖴H of `G₁` (the first component of a pair in `besselGraph`).
@@ -140,14 +197,21 @@ of `y` divided by `b ^ (6 n)` is at most `‖x⁻¹ s y‖ / 2`. -/
 lemma besselLength_div_le_half_norm {b : ℝ} {x : 𝔰.G₁} (hb : 2 ≤ b)
     (hx : besselLength x ≤ b ^ (5 * 𝔰.n)) (s : 𝔰.besselGraph) (y : 𝔰.G₁) :
     besselLength y / b ^ (6 * 𝔰.n) ≤ ‖(x⁻¹ * (s.val.fst * y)).val.val‖ / 2 := by
-  have h_pow : b ^ (5 * 𝔰.n + 1) ≤ b ^ (6 * 𝔰.n) := pow_le_pow_right₀ (by linarith) (by lia)
+  have hb_pos : 0 < b := two_pos.trans_le hb
+  have h_pow : b ^ (5 * 𝔰.n + 1) ≤ b ^ (6 * 𝔰.n) :=
+    pow_le_pow_right₀ (one_le_two.trans hb) (by dsimp only [Shape.n]; omega)
   set g : 𝔰.G₁ := x⁻¹ * (s.val.fst * y)
-  rw [div_le_div_iff₀ (by positivity) two_pos]
+  rw [div_le_div_iff₀ (pow_pos hb_pos _) two_pos]
   calc _ = besselLength (s.val.fst * y) * 2 := by
         rw [besselLength_besselS_mul (besselGraph_fst_mem_besselS s)]
-    _ ≤ ‖g.val.val‖ * b ^ (5 * 𝔰.n) * b := by
-      grw [besselLength_le_norm_inv_mul_mul_besselLength x, hx, hb]
-    _ ≤ ‖g.val.val‖ * b ^ (6 * 𝔰.n) := by grw [mul_assoc, ← pow_succ, h_pow]
+    _ ≤ ‖g.val.val‖ * b ^ (5 * 𝔰.n) * b :=
+      mul_le_mul
+        ((besselLength_le_norm_inv_mul_mul_besselLength x (s.val.fst * y)).trans
+          (mul_le_mul_of_nonneg_left hx (norm_nonneg _)))
+        hb zero_le_two (mul_nonneg (norm_nonneg _) (pow_nonneg hb_pos.le _))
+    _ ≤ ‖g.val.val‖ * b ^ (6 * 𝔰.n) := by
+      rw [mul_assoc, ← pow_succ]
+      exact mul_le_mul_of_nonneg_left h_pow (norm_nonneg _)
 
 /-- Decay of `W = besselAverage l rep x v`, the average `W y = ∫ c_λ(x⁻¹ s y) π(s)⁻¹ v ds` of the
 discrete series coefficient of `l = 2λ` over the Bessel subgroup 𝖴H of `G₁`, where π is a character
@@ -163,8 +227,8 @@ lemma scaledBesselLength_pow_mul_enorm_besselAverage_le (h_gap : l.HasLargeGap A
       ∫⁻ s : 𝔰.besselGraph,
         ENNReal.ofReal ((2 / ‖(x⁻¹ * (s.val.fst * y)).val.val‖) ^ (9 * 𝔰.r ^ 2))
         ∂𝔰.besselGraphMeasure := by
-  grw [enorm_besselAverage_le x hv, lintegral_const_mul_le]
-  refine lintegral_mono fun s ↦ ?_
+  refine (mul_le_mul' le_rfl (enorm_besselAverage_le x hv y)).trans
+    ((lintegral_const_mul_le _ _).trans (lintegral_mono fun s ↦ ?_))
   set g : 𝔰.G₁ := x⁻¹ * (s.val.fst * y)
   have h_decay (j : ℕ) (hj : j ≤ A) :
       ‖l.dsCoeffInFrame g‖ ≤ (2 / ‖g.val.val‖) ^ j * (2 / ‖g.val.val‖) ^ (9 * 𝔰.r ^ 2) := by
@@ -176,9 +240,18 @@ lemma scaledBesselLength_pow_mul_enorm_besselAverage_le (h_gap : l.HasLargeGap A
   rw [← ofReal_norm, ← ofReal_mul (pow_nonneg (zero_le_one.trans (one_le_scaledBesselLength ..)) i)]
   refine ofReal_le_ofReal ?_
   obtain h_small | h_large := le_total (besselLength y / b ^ (6 * 𝔰.n)) 1
-  · simpa [scaledBesselLength, h_small] using h_decay 0 (Nat.zero_le A)
-  · grw [scaledBesselLength, max_eq_right h_large, h_size, h_decay i hi, ← mul_assoc, ← mul_pow]
-    simp [(one_pos.trans_le (U.one_le_norm g)).ne']
+  · rw [scaledBesselLength, max_eq_left h_small, one_pow, one_mul]
+    exact (h_decay 0 (Nat.zero_le A)).trans_eq (by rw [pow_zero, one_mul])
+  · rw [scaledBesselLength, max_eq_right h_large]
+    have h_norm_pos : 0 < ‖g.val.val‖ := one_pos.trans_le (U.one_le_norm g)
+    calc (besselLength y / b ^ (6 * 𝔰.n)) ^ i * ‖l.dsCoeffInFrame g‖
+        ≤ (‖g.val.val‖ / 2) ^ i *
+            ((2 / ‖g.val.val‖) ^ i * (2 / ‖g.val.val‖) ^ (9 * 𝔰.r ^ 2)) :=
+          mul_le_mul (pow_le_pow_left₀ (zero_le_one.trans h_large) h_size i)
+            (h_decay i hi) (norm_nonneg _) (pow_nonneg (div_nonneg h_norm_pos.le zero_le_two) i)
+      _ = (2 / ‖g.val.val‖) ^ (9 * 𝔰.r ^ 2) := by
+          rw [← mul_assoc, ← mul_pow, div_mul_div_cancel₀ two_ne_zero,
+            div_self h_norm_pos.ne', one_pow, one_mul]
 
 /-- A Bessel function `Y` for `rep` is a bounded measurable function with `Y (n y) = ψ(n) Y y` for
 `n` in `besselU` and `Y (h y) = rep h (Y y)` for `h` in `U(κ)`. If such `Y` is continuous, and `a`
@@ -191,14 +264,14 @@ lemma IsBesselFunction.smul_of_invariant {Y : 𝔰.G₁ → EuclideanSpace ℂ I
     IsBesselFunction rep fun y : 𝔰.G₁ ↦ a y • Y y := by
   obtain ⟨K', hK'⟩ := hY.bounded
   have h_bound (y : 𝔰.G₁) : ‖a y • Y y‖ ≤ K * K' := by
-    grw [norm_smul, Real.norm_eq_abs, ha_le, hK']
-    exact (abs_nonneg _).trans (ha_le y)
-  refine ⟨.of_continuous ⟨K * K', h_bound⟩, fun s hs y ↦ ?_, fun h y ↦ ?_⟩
+    rw [norm_smul, Real.norm_eq_abs]
+    exact mul_le_mul (ha_le y) (hK' y) (norm_nonneg _) ((abs_nonneg _).trans (ha_le y))
+  refine ⟨.of_continuous ⟨K * K', h_bound⟩ (ha_cont.smul hY_cont), fun s hs y ↦ ?_, fun h y ↦ ?_⟩
   · rw [ha_inv s (mem_partialUnitriangularGroup_of_mem_besselU hs), hY.map_unipotent_mul s hs,
     smul_comm]
-  · simp [ha_inv (RealPlace.embedH h) (mem_partialUnitriangularGroup_of_mem_floorGroup
-    (toBesselH_mem _)),
-      hY.map_unitary_mul]
+  · rw [ha_inv (RealPlace.embedH h)
+      (mem_partialUnitriangularGroup_of_mem_floorGroup (toBesselH_mem _)),
+      hY.map_unitary_mul, ContinuousLinearMap.map_smul_of_tower]
 
 /-- A finite nonzero `q` can be scaled to any natural number by the square of a real number. -/
 lemma exists_enorm_sq_mul_eq {q : ℝ≥0∞} (hq_ne : q ≠ 0) (hq_fin : q ≠ ⊤) (k : ℕ) :
@@ -229,7 +302,10 @@ the length `besselLength y`, where `n = ϱ + 1`. -/
 noncomputable def besselCut (b : ℝ) (F : C(𝔰.G₁, EuclideanSpace ℂ I)) :
     C(𝔰.G₁, EuclideanSpace ℂ I) where
   toFun y := besselCutoff (b ^ (6 * 𝔰.n + 2)) (besselLength y) • F y
-  continuous_toFun := by fun_prop [besselCutoff]
+  continuous_toFun :=
+    (continuous_const.max (continuous_const.min (continuous_const.sub
+      ((continuous_const.mul continuous_besselLength).div_const
+        (b ^ (6 * 𝔰.n + 2)))))).smul F.continuous
 
 section Cut
 
@@ -246,7 +322,7 @@ lemma besselCut_apply (y : 𝔰.G₁) :
 `‖F y‖`. -/
 lemma enorm_besselCut_le (y : 𝔰.G₁) : ‖besselCut b F y‖ₑ ≤ ‖F y‖ₑ := by
   obtain ⟨h_nonneg, h_le⟩ := besselCutoff_mem_Icc (b ^ (6 * 𝔰.n + 2)) (besselLength y)
-  rw [besselCut_apply, enorm_le_iff_norm_le, norm_smul, Real.norm_of_nonneg h_nonneg]
+  rw [besselCut_apply, eNorm_le_iff_norm_le, norm_smul, Real.norm_of_nonneg h_nonneg]
   exact mul_le_of_le_one_left (norm_nonneg _) h_le
 
 /-- `besselCut b F y` is `F y` multiplied by a number in `[0, 1]` (a cutoff evaluated at
@@ -254,7 +330,7 @@ lemma enorm_besselCut_le (y : 𝔰.G₁) : ‖besselCut b F y‖ₑ ≤ ‖F y�
 lemma enorm_besselCut_sub_le (y : 𝔰.G₁) : ‖besselCut b F y - F y‖ₑ ≤ ‖F y‖ₑ := by
   obtain ⟨h_nonneg, h_le⟩ := besselCutoff_mem_Icc (b ^ (6 * 𝔰.n + 2)) (besselLength y)
   nth_rw 1 [← one_smul ℝ (F y)]
-  rw [besselCut_apply, ← sub_smul, enorm_le_iff_norm_le, norm_smul]
+  rw [besselCut_apply, ← sub_smul, eNorm_le_iff_norm_le, norm_smul]
   exact mul_le_of_le_one_left (norm_nonneg _) (abs_le.2 ⟨by linarith, by linarith⟩)
 
 /-- Where the cut of `F` is nonzero, the length is at most `b ^ (6 n + 2)` (`InCut`). -/
@@ -274,9 +350,14 @@ end
 /-- The cut of a continuous Bessel function is a Bessel function, as the length is left invariant
 under `besselS`. -/
 lemma IsBesselFunction.besselCut (hF : IsBesselFunction rep F) :
-    IsBesselFunction rep (besselCut b F) := by
-  exact hF.smul_of_invariant F.continuous (by fun_prop [besselCutoff]) (K := 1)
-    (fun y ↦ by simp [besselCutoff, abs_le]) fun s hs y ↦ by rw [besselLength_besselS_mul hs]
+    IsBesselFunction rep (besselCut b F) :=
+  hF.smul_of_invariant F.continuous
+    (continuous_const.max (continuous_const.min (continuous_const.sub
+      ((continuous_const.mul continuous_besselLength).div_const (b ^ (6 * 𝔰.n + 2))))))
+    (K := 1)
+    (fun y ↦ abs_le.2 ⟨(neg_nonpos.2 zero_le_one).trans (besselCutoff_mem_Icc _ _).1,
+      (besselCutoff_mem_Icc _ _).2⟩)
+    fun s hs y ↦ by rw [besselLength_besselS_mul hs]
 
 omit [DecidableEq I] in
 /-- Let `F♭ = besselCut b F` be the product of `F : G₁ → ℂ^I` with a cutoff of the length
@@ -293,32 +374,41 @@ lemma IsDecayMajorant.lintegral_sq_besselCut_sub_le {f : ℕ} [NeZero f] {w : �
       .ofReal (b⁻¹ ^ (𝔰.r ^ 3 * f)) ^ 2 * card I := by
   -- Where the cut acts the scaled length is at least `b`, so `b ^ (3 r ^ 3 f) ‖F♭ - F‖ ≤ w ≤ a`.
   -- Multiply the two bounds and integrate.
+  have hb_pos : 0 < b := two_pos.trans_le hb
   have h_point (y : 𝔰.G₁) :
       .ofReal (b ^ (3 * 𝔰.r ^ 3 * f)) ^ 2 * ‖besselCut b F y - F y‖ₑ ^ 2 ≤ a * w y := by
     obtain h_eq | h_ne := eq_or_ne (besselCut b F y) (F y)
-    · simp [h_eq]
-    have h_gain : .ofReal (b ^ (3 * 𝔰.r ^ 3 * f)) * ‖besselCut b F y - F y‖ₑ ≤ w y := by
-      grw [enorm_besselCut_sub_le,
-        le_scaledBesselLength hb (lt_besselLength_of_besselCut_ne (by positivity) h_ne)]
-      exact hw.pow_mul_enorm_le .full y
+    · rw [h_eq, sub_self, eNorm_zero, zero_pow two_ne_zero, mul_zero]
+      exact zero_le
+    have h_gain : .ofReal (b ^ (3 * 𝔰.r ^ 3 * f)) * ‖besselCut b F y - F y‖ₑ ≤ w y :=
+      (mul_le_mul' (ofReal_le_ofReal (pow_le_pow_left₀ hb_pos.le
+        (le_scaledBesselLength hb (lt_besselLength_of_besselCut_ne hb_pos h_ne)) _))
+        (enorm_besselCut_sub_le y)).trans (hw.pow_mul_enorm_le .full y)
     rw [← mul_pow, sq]
     exact mul_le_mul' (h_gain.trans (hw.le_bound y)) h_gain
   -- Exponents: `400 r ^ 2 + 2 r ^ 3 f ≤ 6 r ^ 3 f`, as `100 r ^ 2 ≤ r ^ 3 ≤ r ^ 3 f`.
-  have h_exponent : 100 * 𝔰.r ^ 2 ≤ 𝔰.r ^ 3 * f := by
-    grw [hr, ← pow_succ']
-    exact Nat.le_mul_of_pos_right _ (NeZero.pos f)
+  have h_exponent : 100 * 𝔰.r ^ 2 ≤ 𝔰.r ^ 3 * f :=
+    ((Nat.mul_le_mul_right (𝔰.r ^ 2) hr).trans_eq (pow_succ' 𝔰.r 2).symm).trans
+      (Nat.le_mul_of_pos_right _ (NeZero.pos f))
   have h_power : b ^ (400 * 𝔰.r ^ 2) ≤ (b ^ (3 * 𝔰.r ^ 3 * f) * b⁻¹ ^ (𝔰.r ^ 3 * f)) ^ 2 := by
-    simp only [inv_pow, fieldLe, ← pow_mul, ← pow_add] -- clears the negative power
-    exact pow_le_pow_right₀ (by linarith) (by linarith)
-  rw [← ENNReal.mul_le_mul_iff_right (a := .ofReal (b ^ (3 * 𝔰.r ^ 3 * f)) ^ 2) (by positivity)
-    (pow_ne_top ofReal_ne_top)]
+    have h_split : b ^ (3 * 𝔰.r ^ 3 * f) * b⁻¹ ^ (𝔰.r ^ 3 * f) = b ^ (2 * (𝔰.r ^ 3 * f)) := by
+      rw [mul_assoc 3, show 3 * (𝔰.r ^ 3 * f) = 2 * (𝔰.r ^ 3 * f) + 𝔰.r ^ 3 * f by omega, pow_add,
+        mul_assoc, ← mul_pow, mul_inv_cancel₀ hb_pos.ne', one_pow, mul_one]
+    rw [h_split, ← pow_mul]
+    exact pow_le_pow_right₀ (one_le_two.trans hb) (by omega)
+  rw [← ENNReal.mul_le_mul_iff_right (a := .ofReal (b ^ (3 * 𝔰.r ^ 3 * f)) ^ 2)
+    (pow_ne_zero 2 (ENNReal.ofReal_pos.2 (pow_pos hb_pos _)).ne') (pow_ne_top ofReal_ne_top)]
   calc .ofReal (b ^ (3 * 𝔰.r ^ 3 * f)) ^ 2 * ∫⁻ y, ‖besselCut b F y - F y‖ₑ ^ 2 ∂besselQuotMeasure
       ≤ ∫⁻ y, a * w y ∂besselQuotMeasure :=
         (lintegral_const_mul_le ..).trans (lintegral_mono h_point)
     _ ≤ .ofReal (b ^ (400 * 𝔰.r ^ 2)) * card I :=
         (lintegral_const_mul _ hw.measurable).trans_le hw.bound_mul_lintegral_le
     _ ≤ .ofReal (b ^ (3 * 𝔰.r ^ 3 * f)) ^ 2 * (.ofReal (b⁻¹ ^ (𝔰.r ^ 3 * f)) ^ 2 * card I) := by
-        grw [h_power, ofReal_pow (by positivity), ofReal_mul (by positivity), mul_pow, mul_assoc]
+        rw [← mul_assoc]
+        refine mul_le_mul' ((ofReal_le_ofReal h_power).trans_eq ?_) le_rfl
+        rw [ofReal_pow (mul_nonneg (pow_nonneg hb_pos.le _)
+            (pow_nonneg (inv_nonneg.2 hb_pos.le) _)),
+          ofReal_mul (pow_nonneg hb_pos.le _), mul_pow]
 
 end Cut
 
@@ -329,11 +419,16 @@ lemma lintegral_besselGraph_mul_eq {x : 𝔰.G₁} (φ : 𝔰.G₁ → ℝ≥0�
     (y : 𝔰.G₁) :
     ∫⁻ s : 𝔰.besselGraph, φ (x⁻¹ * (s.val.fst * (t * y))) ∂𝔰.besselGraphMeasure =
       ∫⁻ s : 𝔰.besselGraph, φ (x⁻¹ * (s.val.fst * y)) ∂𝔰.besselGraphMeasure := by
+  have : MeasurableMul ↥𝔰.besselGraph := inferInstance
   obtain ⟨u, hu, k, rfl⟩ := exists_besselU_mul_toBesselH ht isUnit_one
-  have h_mem : (u * toBesselH 𝔰 1 k, k) ∈ 𝔰.besselGraph :=
-    Shape.mem_besselGraph_iff_mul_inv_mem.2 (by simpa using hu)
-  simpa [mul_assoc] using lintegral_mul_right_eq_self (μ := 𝔰.besselGraphMeasure)
-    (fun s ↦ φ (x⁻¹ * (s.val.fst * y))) ⟨_, h_mem⟩
+  have h_mem : (u * toBesselH 𝔰 1 k, k) ∈ 𝔰.besselGraph := by
+    rw [Shape.mem_besselGraph_iff_mul_inv_mem]
+    dsimp only [RealPlace.embedH]
+    rwa [mul_inv_cancel_right]
+  have h_eq := lintegral_mul_right_eq_self (μ := 𝔰.besselGraphMeasure)
+    (fun s ↦ φ (x⁻¹ * (s.val.fst * y))) ⟨(u * toBesselH 𝔰 1 k, k), h_mem⟩
+  refine (lintegral_congr fun s ↦ ?_).trans h_eq
+  exact congrArg (fun g ↦ φ (x⁻¹ * g)) (mul_assoc s.val.fst (u * toBesselH 𝔰 1 k) y).symm
 
 /-- Let `r` be the size of the matrices of `G₁`, `n = ϱ + 1`, and `l = 2λ` a discrete series
 parameter of gap `500 r ^ 3 + A`, with entries bounded by `L` and formal degree `deg`. Let
@@ -360,39 +455,53 @@ lemma exists_isDecayMajorant_besselAverage {f m : ℕ} {b : ℝ} {x : 𝔰.G₁}
   -- With `φ g = (2 / ‖g‖) ^ M` and `Φ y = ∫ φ (x⁻¹ s y) ds`, the majorant is `|c| Φ`. It is bounded
   -- by `lintegral_decay_le_besselBallVolume`, and unfolding gives its integral; the volume of the
   -- ball cancels against the norm of `W`.
+  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   obtain ⟨hb_one, hb_two⟩ : 1 ≤ b ∧ 2 ≤ b := ⟨by linarith, by linarith⟩
   let M : ℕ := 9 * 𝔰.r ^ 2
   let φ (g : 𝔰.G₁) : ℝ≥0∞ := .ofReal ((2 / ‖g.val.val‖) ^ M)
+  have hφ_meas : Measurable φ :=
+    ((measurable_const.div measurable_norm_U).pow_const M).ennreal_ofReal
   let Φ (y : 𝔰.G₁) : ℝ≥0∞ := ∫⁻ s, φ (x⁻¹ * (s.val.fst * y)) ∂𝔰.besselGraphMeasure
+  have hΦ_meas : Measurable Φ :=
+    (hφ_meas.comp
+      (continuous_const.mul
+        ((continuous_fst.comp (continuous_subtypeVal.comp continuous_fst)).mul
+          continuous_snd)).measurable).lintegral_prod_left'
   let a : ℝ≥0∞ := ‖c‖ₑ * (.ofReal (16 ^ M) * besselBallVolume (ε := ε) x)
   have h_decay (y : 𝔰.G₁) :
       .ofReal (scaledBesselLength y b ^ (3 * 𝔰.r ^ 3 * f)) * ‖F y‖ₑ ≤ ‖c‖ₑ * Φ y := by
-    grw [hF, enorm_smul, mul_left_comm,
-      scaledBesselLength_pow_mul_enorm_besselAverage_le h_gap hv hb_two hx hf]
-  have h_bound (y : 𝔰.G₁) : Φ y ≤ .ofReal (16 ^ M) * besselBallVolume (ε := ε) x := by
-    simpa only [norm_frameEquiv] using lintegral_decay_le_besselBallVolume x y
+    rw [hF, eNorm_smul, mul_left_comm]
+    exact mul_le_mul' le_rfl
+      (scaledBesselLength_pow_mul_enorm_besselAverage_le h_gap hv hb_two hx hf y)
+  have h_bound (y : 𝔰.G₁) : Φ y ≤ .ofReal (16 ^ M) * besselBallVolume (ε := ε) x :=
+    (lintegral_congr fun s ↦ by dsimp only [φ]; rw [norm_frameEquiv]).trans_le
+      (lintegral_decay_le_besselBallVolume x y)
   have h_integral : a * ∫⁻ y, ‖c‖ₑ * Φ y ∂besselQuotMeasure ≤
       .ofReal (b ^ (400 * 𝔰.r ^ 2)) * card I :=
     calc _ = ‖c‖ₑ ^ 2 * (.ofReal (16 ^ M) * besselBallVolume (ε := ε) x) * ∫⁻ g, φ g := by
-          rw [lintegral_const_mul' _ _ enorm_ne_top,
-            lintegral_unfold_besselGraphMeasure (x := x⁻¹) φ (by fun_prop)]
-          simp only [a]
+          rw [lintegral_const_mul' _ _ eNorm_ne_top,
+            lintegral_unfold_besselGraphMeasure (x := x⁻¹) φ hφ_meas]
+          dsimp only [a]
           ring
       _ ≤ .ofReal (b ^ m) * (.ofReal l.formalDegree * (∫⁻ g, φ g) * .ofReal (16 ^ M)) *
             (‖c‖ₑ ^ 2 * ∫⁻ y, ‖besselAverage l rep x v y‖ₑ ^ 2 ∂besselQuotMeasure) := by
-          grw [h_volume]
-          exact le_of_eq (by ring)
+          refine (mul_le_mul' (mul_le_mul' le_rfl (mul_le_mul' le_rfl h_volume)) le_rfl).trans_eq ?_
+          ring
       _ ≤ .ofReal (b ^ (400 * 𝔰.r ^ 2)) * card I := by
-          grw [hc, formalDegree_mul_lintegral_decay_le h_gap hL hb_large hL_le rfl,
-            ← ofReal_mul (by positivity), ← pow_add, hm]
+          rw [hc]
+          refine mul_le_mul' ((mul_le_mul' le_rfl
+            (formalDegree_mul_lintegral_decay_le h_gap hL hb_large hL_le rfl)).trans ?_) le_rfl
+          rw [← ofReal_mul (pow_nonneg (zero_le_one.trans hb_one) m), ← pow_add]
+          exact ofReal_le_ofReal (pow_le_pow_right₀ hb_one hm)
   exact ⟨fun y ↦ ‖c‖ₑ * Φ y, a,
-    { measurable := by fun_prop
+    { measurable := measurable_const.mul hΦ_meas
       fixesLeft s hs y := congrArg (‖c‖ₑ * ·) (lintegral_besselGraph_mul_eq φ hs y)
       pow_mul_enorm_le
         | .full, y => h_decay y
         | .cut, y => (mul_le_mul_right (enorm_besselCut_le y) _).trans (h_decay y)
       le_bound y := mul_le_mul_right (h_bound y) _
-      bound_ne_top := by finiteness [besselBallVolume_ne_top (ε := ε) x]
+      bound_ne_top := ENNReal.mul_ne_top eNorm_ne_top
+        (ENNReal.mul_ne_top ofReal_ne_top (besselBallVolume_ne_top (ε := ε) x))
       bound_mul_lintegral_le := h_integral }⟩
 
 /-- The Bessel function and its cut. Fix a unitary matrix that takes the form of G₁ to the diagonal
@@ -430,21 +539,28 @@ lemma exists_isCutPair_besselAverage {m : ℕ} {b : ℝ} {x : 𝔰.G₁} {v : Eu
     exact hW.continuous_convolve (isIdempotentKernel_dsCoeffInFrame h_gap).integrable
   have hW_int : Integrable W besselQuotMeasure := integrable_besselAverage x h_cont hv h_gap
   -- Normalisation: `W` is not zero in L², because the ball has positive volume.
-  have h_ne_zero : ∫⁻ y, ‖W y‖ₑ ^ 2 ∂besselQuotMeasure ≠ 0 :=
-    fun h ↦ besselBallVolume_ne_zero x (by simpa [h] using h_volume)
+  have h_ne_zero : ∫⁻ y, ‖W y‖ₑ ^ 2 ∂besselQuotMeasure ≠ 0 := fun h ↦ by
+    rw [h, mul_zero, mul_zero, nonpos_iff_eq_zero] at h_volume
+    exact besselBallVolume_ne_zero x h_volume
   obtain ⟨c, hc⟩ : ∃ c : ℝ, ‖c‖ₑ ^ 2 * ∫⁻ y, ‖W y‖ₑ ^ 2 ∂besselQuotMeasure = card I :=
     exists_enorm_sq_mul_eq h_ne_zero
       ((lintegral_enorm_sq hW_int hW.memLp_top).trans_ne ofReal_ne_top) (card I)
-  let F : C(𝔰.G₁, EuclideanSpace ℂ I) := .mk fun y ↦ c • W y
+  let F : C(𝔰.G₁, EuclideanSpace ℂ I) := ⟨fun y ↦ c • W y, hW_cont.const_smul c⟩
   have hF : IsBesselFunction rep F :=
     hW.smul_of_invariant hW_cont continuous_const (K := |c|) (fun _ ↦ le_rfl) fun _ _ _ ↦ rfl
   have hF_norm : ∫⁻ y, ‖F y‖ₑ ^ 2 ∂besselQuotMeasure = card I := by
-    simp [F, enorm_smul, mul_pow, lintegral_const_mul', ← hc]
+    trans ∫⁻ y, ‖c‖ₑ ^ 2 * ‖W y‖ₑ ^ 2 ∂besselQuotMeasure
+    · exact lintegral_congr fun y ↦ by rw [ContinuousMap.coe_mk, eNorm_smul, mul_pow]
+    · rw [lintegral_const_mul' _ _ (pow_ne_top eNorm_ne_top), hc]
   have hF_repr : convolve F e = F := by
     funext y
     calc convolve F e y = c • convolve W e y := by
-          simp [F, convolve, smul_comm _ c, integral_smul]
+          change ∫ a, e a⁻¹ • (c • W (y * a)) = c • ∫ a, e a⁻¹ • W (y * a)
+          exact (integral_congr_ae (.of_forall fun a ↦ smul_comm (e a⁻¹) c (W (y * a)))).trans
+            (integral_smul c (fun a ↦ e a⁻¹ • W (y * a)))
       _ = c • W y := by rw [h_repr]
+  have hb_two : 2 ≤ b := by linarith
+  have hb_pos : 0 < b := two_pos.trans_le hb_two
   obtain ⟨w, a, hw⟩ : ∃ (w : 𝔰.G₁ → ℝ≥0∞) (a : ℝ≥0∞),
       IsDecayMajorant b f (FullOrCut.select F (besselCut b F)) w a :=
     exists_isDecayMajorant_besselAverage h_gap hL hv h_volume hx hb_large hm hL_le hf
@@ -457,9 +573,9 @@ lemma exists_isCutPair_besselAverage {m : ℕ} {b : ℝ} {x : 𝔰.G₁} {v : Eu
       lintegral_sq_full_eq := hF_norm
       lintegral_sq_cut_le :=
         (lintegral_mono fun y ↦ pow_le_pow_left' (enorm_besselCut_le y) 2).trans_eq hF_norm
-      inCut_of_ne_zero y := inCut_of_besselCut_ne_zero (by positivity)
-      lintegral_sq_sub_le := hw.lintegral_sq_besselCut_sub_le (by linarith) hr
-      lt_besselLength_of_ne y := lt_besselLength_of_besselCut_ne (by positivity)
+      inCut_of_ne_zero y := inCut_of_besselCut_ne_zero hb_pos
+      lintegral_sq_sub_le := hw.lintegral_sq_besselCut_sub_le hb_two hr
+      lt_besselLength_of_ne y := lt_besselLength_of_besselCut_ne hb_pos
       exists_majorant := ⟨w, a, hw⟩ }⟩
 
 end New

@@ -1,5 +1,11 @@
-import Lib.Cohomology.Etale.EllAdicCohomology
-import Lib.Cohomology.Etale.RelativeChains
+module
+
+public import Mathlib.AlgebraicGeometry.Morphisms.Proper
+import Mathlib.CategoryTheory.Sites.LocalSite
+public import Lib.Cohomology.Etale.EllAdicCohomology
+public import Lib.Cohomology.Etale.RelativeChains
+public import Lib.Cohomology.ProperBaseChange.PlaceSpace
+import Lib.Cohomology.Etale.DenseSubfunctors
 import Lib.General.Geometry.GeometricPoints
 import Lib.General.Geometry.PointsOfProperSchemes
 
@@ -52,6 +58,8 @@ Known; see `Lib.Cohomology.Etale.FilteredLimits` and `Lib.Cohomology.ProperBaseC
 sources.
 -/
 
+@[expose] public section
+
 /-!
 ## Zorn's lemma, Mayer–Vietoris and reduction to connected pieces
 
@@ -74,7 +82,11 @@ lemma IsRelAffine.preimage (h : IsRelAffine U.ι) (f : X ⟶ Y) : IsRelAffine (U
   -- the preimage of `U` is its pull-back along `f`
   refine h.baseChange (?_ : IsPullback (fromPreimage U f) (U.preimage f).ι U.ι f)
   rw [isPullback_iff]
-  aesop (add simp [ExistsUnique, toFunctor])
+  refine ⟨fun _ _ ↦ rfl, fun B w x h_eq ↦ ?_⟩
+  change x.val = f.app B w at h_eq
+  have hw : f.app B w ∈ U.obj B := h_eq ▸ x.property
+  refine ⟨⟨w, hw⟩, ⟨rfl, Subtype.ext h_eq.symm⟩, ?_⟩
+  exact fun z hz ↦ Subtype.ext hz.1
 
 /-- Pull-back along `(f, -g) : M ⟶ N ⊞ N'` sends the class with components `x`, `y` to
 `f^* x - g^* y`. -/
@@ -91,8 +103,8 @@ lemma TestCohomology.isCohomEquiv_sup_of_isCohomDense
     (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl))
     (h_le : U.whisker testIncl ⊔ V.whisker testIncl ≤ W.whisker testIncl) :
     IsCohomEquiv (locConstCoeff Λ) (freeAb.map (homOfLe h_le)) := by
-  have h_range : Subfunctor.range (homOfLe h_le) = ((U ⊔ V).preimage W.ι).whisker testIncl := by
-    aesop (add simp [homOfLe, toFunctor])
+  have h_range : Subfunctor.range (homOfLe h_le) = ((U ⊔ V).preimage W.ι).whisker testIncl :=
+    range_homOfLe_eq_preimage_of_inf_eq (inf_of_le_left h_le)
   exact (isCohomEquiv_iff_range h_range).2 h_dense.isCohomEquiv
 
 /-- The restriction `Hⁿ(W) → Hⁿ(U) × Hⁿ(V)` on test rings is the restriction to `U ⊔ V`, followed by
@@ -167,17 +179,14 @@ and `mayer_vietoris_bijective`. -/
 lemma TestCohomology.mayer_vietoris_injective (hUW : U ≤ W) (hVW : V ≤ W)
     (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl)) (n : ℕ)
     {T : Subfunctor Y} (hT : T = U ⊓ V) :
-    ((∀ m < n, ∀ z : H (freeAb.obj (testIncl ⋙ T.toFunctor)) (locConstCoeff Λ) m,
+    (∀ m < n, ∀ z : H (freeAb.obj (testIncl ⋙ T.toFunctor)) (locConstCoeff Λ) m,
         ∃ (x : H (freeAb.obj (testIncl ⋙ U.toFunctor)) (locConstCoeff Λ) m)
           (y : H (freeAb.obj (testIncl ⋙ V.toFunctor)) (locConstCoeff Λ) m),
           map Λ (homOfLe (hT.le.trans inf_le_left)) m x -
             map Λ (homOfLe (hT.le.trans inf_le_right)) m y = z) →
-      Injective ((map Λ (homOfLe hUW) n).prod (map Λ (homOfLe hVW) n))) ∧
-    ((∀ B : CommRingCat, T.toFunctor.obj B → (0 : B) = 1) →
-      Bijective ((map Λ (homOfLe hUW) n).prod (map Λ (homOfLe hVW) n))) := by
+      Injective ((map Λ (homOfLe hUW) n).prod (map Λ (homOfLe hVW) n)) := by
   subst hT
-  exact ⟨mayer_vietoris_injective_of_sub_surjective hUW hVW h_dense n,
-    mayer_vietoris_bijective hUW hVW h_dense n⟩
+  exact mayer_vietoris_injective_of_sub_surjective hUW hVW h_dense n
 
 /-- Downward induction by Zorn's lemma. Let `P` be a property of the elements above `a`. If every
 nonempty chain of counterexamples has an upper bound that is a counterexample, and `P` holds at `m`
@@ -429,7 +438,7 @@ lemma IsTestCohomEquiv.of_connected (hX : IsCohomContinuous Λ X)
   let G : Ideal R ⥤ AddCommGrpCat := TestCohomology.antitoneFamily hU.antitone Λ n
   let K : Ideal R ⥤ AddCommGrpCat := TestCohomology.antitoneFamily (hU.antitone_preimage u) Λ n
   let π (a : Ideal R) : G.obj a →+ K.obj a := TestCohomology.map Λ (fromPreimage (U a) u) n
-  show Bijective (π ⊥)
+  change Bijective (π ⊥)
   have h_nat {a b : Ideal R} (f : a ⟶ b) (x : G.obj a) : K.map f (π a x) = π b (G.map f x) :=
     -- both sides are the pull-back along the composite `u⁻¹(U b) → U a`
     calc K.map f (π a x)
@@ -546,7 +555,7 @@ lemma IsRelAffine.hasCohomDenseImage_of_lifts {X Y : PointFunctor} {p : X ⟶ Y}
     U.ι (isZeroLocusFamily_zeroPoints (𝟙 (reprBy A.obj))) (fun e he ↦ ?_) fun J hJ h_conn ↦ ?_
   · -- The points that kill `e` or `1 - e` are dense.
     exact .of_preimage_le (hasPartitions_locConstCoeff.isCohomDense_partition _ he)
-      (by exact {app _ := ↾fun x ↦ ⟨⟨x.1⟩⟩}) fun _ _ ↦
+      (by exact {app _ := ↾fun x ↦ ⟨⟨x.down⟩⟩}) fun _ _ ↦
       .imp (span_singleton_le_iff_mem (ker _)).mpr (span_singleton_le_iff_mem (ker _)).mpr
   · -- The local ring of `A` at a maximal ideal `q ⊇ J` is a valuation ring `O`. We show that every
     -- point `f` that kills `J` lies in `U`, so that the inclusion is bijective on points.
@@ -726,9 +735,9 @@ lemma _root_.New.Variety.isProperOver_id_reprBy {R : CommRingCat.{0}} :
   exact ULift.up_inj.trans h_iff
 
 /-- The base change of a proper functor along a ring map `φ : D ⟶ T` is proper over `T`. -/
-lemma baseChange (h : IsProperOver s) (φ : D ⟶ T) : IsProperOver (fibreProd.snd s (reprMap φ)) := by
+lemma baseChange (h : IsProperOver s) (φ : D ⟶ T) : IsProperOver (fiberProd.snd s (reprMap φ)) := by
   -- `reprBy T` is proper over itself; apply `of_isPullback` to the fibre product.
-  exact isProperOver_id_reprBy.of_isPullback isProperOver_id_reprBy isPullback_fibreProd h φ rfl
+  exact isProperOver_id_reprBy.of_isPullback isProperOver_id_reprBy isPullback_fiberProd h φ rfl
 
 /-- Let `c : Y ⟶ Z` be a map over `D`, with `Y` and `Z` proper over `D`, that is onto on points in
 every algebraically closed field. Then `c` has dense image, for locally constant `Λ`-valued
@@ -912,7 +921,7 @@ lemma New.Variety.IsGaloisCovering.hasCohomDenseImage_geomPoints {R : CommRingCa
     ((isProperOver_pointsToBase _).baseChange _) fun k _ _ ⟨⟨⟨y_pt⟩, ω⟩, hy⟩ ↦ ?_
   -- lift the scheme point `y_pt` of `Y` to a point `x` of `W`, and keep the map `ω` out of `Ω`
   obtain ⟨x, hx⟩ : ∃ x : Spec (CommRingCat.of k) ⟶ W.left, x ≫ c.left = y_pt :=
-    exists_point_over _ (h.surjective.surj _)
+    (Scheme.Hom.exists_comp_eq_iff_mem_range _ _).2 (h.surjective.surj _)
   have h_over : x ≫ W.hom = y_pt ≫ Y.hom := by simp [← hx]
   have h_base : (pointsToBase W.hom).app (CommRingCat.of k) ⟨x⟩ =
       (pointsToBase Y.hom).app (CommRingCat.of k) ⟨y_pt⟩ :=

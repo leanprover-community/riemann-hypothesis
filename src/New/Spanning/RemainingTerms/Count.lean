@@ -1,3 +1,8 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+public import New.Spanning.RemainingTerms.Data
+import New.Spanning.RemainingTerms.FramesOverLattice
 import New.Spanning.RemainingTerms.Gain
 import New.Spanning.RemainingTerms.LatticesOfCorank
 
@@ -25,6 +30,8 @@ The main notions used in the statements:
 The main result is `New.Filling.sum_pairDiscriminant_inv_le`.
 -/
 
+@[expose] public section
+
 namespace New.Filling
 
 open NumberField Matrix Module Fintype ENNReal Pointwise
@@ -37,10 +44,10 @@ lemma tsum_le_tsum_mul_of_encard_le {I Y : Type} {v : I → ℝ≥0∞} {w : Y �
     (R : I → Y → Prop) (h_cover : ∀ i : I, ∃ y : Y, R i y ∧ v i = w y)
     (h_fibre : ∀ y : Y, {i : I | R i y}.encard ≤ x) : ∑' i : I, v i ≤ (∑' y : Y, w y) * x := by
   choose chosenY h_over h_weight using h_cover
-  calc ∑' i, v i = ∑' y, ∑' i : chosenY ⁻¹' {y}, v i := (ENNReal.tsum_fiberwise v chosenY).symm
-    _ ≤ ∑' y, w y * x := ENNReal.tsum_le_tsum fun y ↦ by
+  calc ∑' i, v i = ∑' y, ∑' i : chosenY ⁻¹' {y}, v i := (tsum_fiberwise v chosenY).symm
+    _ ≤ ∑' y, w y * x := tsum_le_tsum fun y ↦ by
       have h_const (i : chosenY ⁻¹' {y}) : v i = w y := by
-        rw [h_weight i, show chosenY i = y from i.2]
+        rw [h_weight i, show chosenY i = y from i.property]
       have h_subset : chosenY ⁻¹' {y} ⊆ {i : I | R i y} :=
         fun i (hi : chosenY i = y) ↦ by simpa [hi] using h_over i
       rw [tsum_congr h_const, tsum_set_const, mul_comm]
@@ -53,7 +60,7 @@ lemma two_mul_count_exponent_le {n f l : ℕ} (hn : 0 < n) (hl : l ≤ n ^ 3) :
     2 * (2000 * n ^ 6 * (l + 1) * f) ≤ 10 ^ 5 * n ^ 9 * f := by
   have h_cube : 1 ≤ n ^ 3 := Nat.pow_pos hn
   have h_corank : n ^ 6 * (l + 1) * f ≤ n ^ 6 * (n ^ 3 + n ^ 3) * f := by gcongr
-  nlinarith [Nat.zero_le (n ^ 9 * f)]
+  linarith [Nat.zero_le (n ^ 9 * f)]
 
 variable (S) in
 /-- The terms `γ` and `γ'` from the class `c'` to the class `c` both have the label `t`
@@ -81,7 +88,7 @@ that are near, chosen in their double cosets and of some cell rank, and lie over
 which agrees (`S.Agrees s`). Such a pair has a common label `t`, and the lattices `S.termLattice` of
 both terms contain their common lattice `S.pairLattice c c' γ γ'`. This is a lattice in
 `Λ ∩ X₀ = S.classLatticeX₀ c`. -/
-lemma exists_isLabelledPair_of_isNearPairOverAgreeingBlock [S.IsAdmissible] {c c' : S.Classes}
+lemma exists_isLabelledPair_of_isNearPairOverAgreeingBlock {c c' : S.Classes}
     {γ γ' : S.G E} (h_pair : S.IsNearPairOverAgreeingBlock c c' (γ, γ')) :
     ∃ t : S.reducedImage besselS, S.IsLabelledPair c c' t γ γ' := by
   obtain ⟨⟨h_near, h_level⟩, ⟨h_near', h_level'⟩, s, hs, h_over, h_over'⟩ := h_pair
@@ -142,7 +149,7 @@ lemma sum_pairDiscriminant_inv_le_tsum [S.IsAdmissible] {c : S.Classes} {r l : �
     obtain ⟨⟨rfl, rfl⟩, -, rfl⟩ : (c' = c'' ∧ γ = δ) ∧ c' = c'' ∧ γ' = δ' := by
       simpa only [termPair, Prod.mk.injEq] using h_eq
     rfl
-  rw [← tsum_fintype (L := .unconditional _), ← ENNReal.tsum_sigma]
+  rw [← tsum_fintype (L := .unconditional _), ← tsum_sigma]
   refine (tsum_le_tsum_mul_of_encard_le (x := .ofReal S.tailScale)
     (w := fun (_, L) ↦ .ofReal (discriminant r L.val ^ 𝔰.k)⁻¹)
     (fun i y ↦ termPair i ∈ terms y ×ˢ terms y) ?_ ?_).trans_eq ?_
@@ -172,7 +179,7 @@ lemma sum_pairDiscriminant_inv_le_tsum [S.IsAdmissible] {c : S.Classes} {r l : �
       _ = .ofReal (S.b ^ (2 * exponent)) := by
           rw [← ofReal_mul (pow_nonneg (zero_le_one.trans S.one_le_b) exponent), ← pow_add, two_mul]
       _ ≤ .ofReal S.tailScale := ofReal_le_ofReal (pow_le_tailScale h_exponent)
-  · simp [ENNReal.tsum_prod', ENat.card_eq_coe_natCard]
+  · simp [tsum_prod', ENat.card_eq_coe_natCard]
 
 /-- **Count.** Let `E` be a CM field with a primitive 5040th root of unity and `f` infinite places,
 and let `S` be admissible filling data of shape `𝔰` over `E`, with size parameter `b = S.b` and

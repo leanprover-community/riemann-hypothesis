@@ -1,5 +1,20 @@
-import Lib.Adelic.Unitary.Defs
-import Lib.GLn.SchurModule.TensorModel
+module
+
+public import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.Analysis.CStarAlgebra.Exponential
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import Lib.GLn.SchurModule.TensorModel
+import Lib.GLn.SchurModule.SchurMatrix
+import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.General.Groups.CongruenceSubgroups
 import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
@@ -36,6 +51,8 @@ Notions from other files:
 
 Known; see `Lib.GLn.SchurModule.SchurNorm` and `Lib.GLn.Dual` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Positivity and a bound for the hook number
@@ -107,7 +124,7 @@ lemma fockPairing_tableauPoly_le {n : Φ → Type} (T : ∀ τ : Φ, Tableau (n 
   have h_card : Fintype.card S ≤ d ! := by
     -- the product over all columns of (height)! is at most the factorial of the sum of the heights
     let height : (Σ (τ : Φ) (h : Fin (N τ)), Fin (κ τ h)) → ℕ := fun ⟨_, h, _⟩ ↦ h
-    simpa [S, d, height, Fintype.card_perm, Fintype.prod_sigma, Fintype.sum_sigma] using
+    simpa [S, height, Fintype.card_perm, Fintype.prod_sigma, Fintype.sum_sigma] using
       prod_factorial_le_factorial_sum univ height
   have h_d_le : d ≤ L := by simpa only [d, sum_range, mul_comm] using h_degree
   rw [h_expand]
@@ -240,7 +257,7 @@ lemma weylKernel_symm :
 
 end
 
-omit [∀ τ : Φ, DecidableEq (n τ)] in
+omit [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)] in
 /-- Multiplying `y` on the right by the upper triangular part of `b` scales the kernel `K(·, y)`
 by `∏ b(τ, i, i) ^ λ(τ, i)`, with `λ = New.diagramWeight (rankAt n) κ`. -/
 lemma weylKernel_borelMul (b : Φ × ℕ × ℕ → R) :
@@ -260,6 +277,7 @@ lemma weylKernel_borelMul (b : Φ × ℕ × ℕ → R) :
   simp only [MvPolynomial.aeval_eq_eval, h_C_borelMul] at h_semi
   simpa [K, ← C_mul', map_finsuppProd, weylKernel_symm (R := R), comp_def] using h_semi
 
+omit [(τ : Φ) → DecidableEq (n τ)] in
 /-- For a vector ξ of the Weyl module over a commutative ring `R` and an array `y` over `R`, the
 value at `y` of the polynomial `toPoly n κ ξ = Σ_i (Gξ)_i b_i` equals ev_yᵀ G ξ. Here the b_i are
 the basis products of minors `nablaBasis`, indexed by `WeylIndexFamily n κ`, and
@@ -269,6 +287,7 @@ coefficients of the generic kernel in the products b_i(x) b_j(y), mapped into `R
 lemma eval_toPoly : MvPolynomial.eval y (toPoly n κ ξ) = weylEval n κ y ⬝ᵥ weylGramOver *ᵥ ξ := by
   simp [toPoly, mul_comm, linearCombination_apply, dotProduct, weylEval]
 
+omit [(τ : Φ) → DecidableEq (n τ)] in
 lemma nablaCombination_weylGramOver_mulVec :
     nablaCombination κ (weylGramOver *ᵥ ξ) = toPoly n κ ξ := rfl
 
@@ -280,7 +299,7 @@ noncomputable def blockScalar (τ : Φ) : Matrix (n' τ) (n' τ) R :=
 omit [DecidableEq Φ] in
 /-- The weight at `(τ, i)` is the weight at `(τ, i + 1)` plus `κ τ (i + 1)` when `i + 1 < N τ`:
 the columns of height `i + 1` are counted at `i` but not at `i + 1`. -/
-@[grind]
+@[grind =]
 lemma diagramWeight_eq_succ_add (τ : Φ) (i : ℕ) :
     diagramWeight N κ (τ, i) =
       diagramWeight N κ (τ, i + 1) + if i + 1 < N τ then κ τ (i + 1) else 0 := by
@@ -364,12 +383,25 @@ lemma GL.weylGram_eq_submatrix {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] (κ : �
   -- `nablaCombination κ`. For `Φ` this gives the kernel at `y` (`toPoly_weylEval`); for `Ψ` the
   -- same after renaming the variables.
   let e : (Σ σ, n (p.symm σ)) × ℕ → (Σ τ, n τ) × ℕ := Prod.map p.symm.sigmaCongrLeft id
+  -- Renaming the variables by `e` sends each basis product for `Ψ` to the one for `Φ`.
+  have h_basis (i : WeylIndexFamily (fun σ ↦ n (p.symm σ)) fun σ ↦ κ (p.symm σ)) :
+      rename e (nablaBasis ℤ (fun σ ↦ n (p.symm σ)) (fun σ ↦ κ (p.symm σ)) i) =
+        nablaBasis ℤ n κ
+          ((p.piCongrLeft' fun τ ↦ BasisTableau (n τ) (rankAt n τ) (κ τ)).symm i) := by
+    simp [nablaBasis, tableauPoly, minor, e, AlgHom.map_det, Matrix.map, reindex_equiv p.symm]
   refine toLin'.injective (ext_weylEval 0 (fun y _ _ ↦ ?_) Set.infinite_univ)
   refine nablaCombination_injective ((toPoly_weylEval y).trans ?_)
-  simpa [toPoly, rowSubst, nablaBasis, e, weylKernel, highestPoly, reindex_equiv p.symm,
+  have h_eval (i : WeylIndexFamily (fun σ ↦ n (p.symm σ)) fun σ ↦ κ (p.symm σ)) :
+      eval (y ∘ e) (nablaBasis ℤ (fun σ ↦ n (p.symm σ)) (fun σ ↦ κ (p.symm σ)) i) =
+        eval y (nablaBasis ℤ n κ
+          ((p.piCongrLeft' fun τ ↦ BasisTableau (n τ) (rankAt n τ) (κ τ)).symm i)) := by
+    rw [← eval_rename, h_basis]
+  have h := congrArg (rename (R := ℤ) e)
+    (toPoly_weylEval (κ := fun σ ↦ κ (p.symm σ)) (y ∘ e)).symm
+  simp [toPoly, rowSubst, e, weylKernel, highestPoly, reindex_equiv p.symm,
     reindex_equiv (p.piCongrLeft' _).symm, tableauPoly, minor, AlgHom.map_det, Matrix.map,
-    linearCombination_apply, mulVec, dotProduct, weylEval, RingHom.map_det] using
-    congrArg (rename (R := ℤ) e) (toPoly_weylEval (y ∘ e)).symm
+    linearCombination_apply, mulVec, dotProduct, weylEval, h_basis, h_eval] at h ⊢
+  exact h
 
 @[simp]
 lemma map_toPoly : MvPolynomial.map φ (toPoly n κ ξ) = toPoly n κ (φ ∘ ξ) := by
@@ -383,7 +415,7 @@ lemma weylKernel_eq_sum_fillingPoly (y : (Σ τ : Φ, n τ) × ℕ → R) :
     weylKernel n κ y = ∑ T : ColumnFilling n κ, eval y (fillingPoly R T) • fillingPoly R T := by
   -- the Cauchy–Binet formula for one leading minor of `yᵀ x`
   let m (τ : Φ) (h : ℕ) (I : IncreasingMap (rankAt n τ) h) : MatrixPoly (Σ τ : Φ, n τ) R :=
-    minor R (Sigma.mk τ ∘ (rowEquivFin n τ).symm ∘ I.1)
+    minor R (Sigma.mk τ ∘ (rowEquivFin n τ).symm ∘ I.val)
   have hminor (τ : Φ) (h : ℕ) :
       (of fun s t : Fin h ↦ ∑ a : n τ, y (⟨τ, a⟩, s) • X (⟨τ, a⟩, ↑t)).det =
         ∑ I : IncreasingMap (rankAt n τ) h, eval y (m τ h I) • m τ h I := by
@@ -420,12 +452,6 @@ lemma weylGramOver_eq_transpose_mul :
       (fillingMatrixOver R n κ)ᵀ * fillingMatrixOver R n κ := by
   rw [weylGramOver, ← fillingMatrix_transpose_mul_self]
   exact Matrix.map_mul (f := Int.castRingHom R)
-
-/-- The polynomial of a vector is the pairing of its tensor with the tensor of the variables. -/
-lemma toPoly_eq_sum_fillingPoly (ξ : WeylIndexFamily n κ → R) :
-    toPoly n κ ξ = ∑ T : ColumnFilling n κ, (fillingMatrixOver R n κ *ᵥ ξ) T • fillingPoly R T := by
-  rw [← nablaCombination_weylGramOver_mulVec, weylGramOver_eq_transpose_mul, ← mulVec_mulVec,
-    nablaCombination_transpose_mulVec]
 
 /-- The integer Gram matrix `weylGram n κ` is symmetric. Its entries are the chosen coefficients of
 the generic kernel `weylKernel n κ` in the products b_i(x) b_j(y) of the basis minor products

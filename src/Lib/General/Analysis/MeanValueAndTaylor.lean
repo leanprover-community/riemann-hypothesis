@@ -1,4 +1,18 @@
-import Lib.CM.Sigma.Basic
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+public import Mathlib.RingTheory.PowerSeries.Basic
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import TauCeti.Analysis.Calculus.Deriv.Second
+import Mathlib.Analysis.Complex.MeanValue
+import Mathlib.Analysis.Complex.TaylorSeries
+import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+import Mathlib.Geometry.Manifold.Algebra.SMul
+import Mathlib.Geometry.Manifold.BumpFunction
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.Speed
+import Lib.General.Measure.IdempotentKernel
 
 /-!
 # Circle means, Taylor series at zero, a power bound, and smooth matrix operations
@@ -8,7 +22,7 @@ develops the algebra of Taylor series at 0 of analytic functions and proves an e
 x^l by a factorial and exponentials. It also gives smoothness rules for matrix operations and
 extends analytic germs to globally smooth maps.
 
-The imported notion `New.taylorAtZero f` is the formal power series whose `n`-th coefficient is
+The definition `New.taylorAtZero f` is the formal power series whose `n`-th coefficient is
 `iteratedDeriv n f 0 / n !`, the Taylor series of `f : ℂ → ℂ` at 0.
 
 ## Main definitions and results
@@ -29,6 +43,8 @@ The imported notion `New.taylorAtZero f` is the formal power series whose `n`-th
 The results of this file include the mean value property of holomorphic functions and the fact that
 an entire function is determined by its Taylor series at 0.
 -/
+
+@[expose] public section
 
 /-! ## Circle averages, the mean value property and a halving criterion for upper bounds -/
 
@@ -99,6 +115,10 @@ attribute [fun_prop] Differentiable.analyticAt
 
 namespace New
 
+/-- The Taylor series ∑ f⁽ⁿ⁾(0) zⁿ/n! at 0 of a function f : ℂ → ℂ, as a formal power series. -/
+noncomputable def taylorAtZero (f : ℂ → ℂ) : PowerSeries ℂ :=
+  PowerSeries.mk fun n ↦ iteratedDeriv n f 0 / n.factorial
+
 @[simp]
 lemma coeff_taylorAtZero {f : ℂ → ℂ} (n : ℕ) :
     coeff n (taylorAtZero f) = iteratedDeriv n f 0 / n ! :=
@@ -117,16 +137,8 @@ coefficient multiplied by `a ^ n` (`PowerSeries.rescale a`). No analyticity is n
 @[simp]
 lemma taylorAtZero_comp_mul (a : ℂ) (f : ℂ → ℂ) :
     taylorAtZero (fun z : ℂ ↦ f (a * z)) = rescale a (taylorAtZero f) := by
-  -- each derivative of `z ↦ f (a * z)` brings out one factor `a`
-  have h_deriv (n : ℕ) : iteratedDeriv n (fun z : ℂ ↦ f (a * z)) =
-      fun z : ℂ ↦ a ^ n * iteratedDeriv n f (a * z) := by
-    induction n with
-    | zero => simp
-    | succ n ih =>
-      ext z
-      simp [iteratedDeriv_succ, ih, deriv_comp_mul_left, _root_.pow_succ, mul_assoc]
   ext n
-  simp [h_deriv, mul_div_assoc]
+  simp [TauCeti.iteratedDeriv_comp_mul_left, smul_eq_mul, mul_div_assoc]
 
 /-- Two entire functions with the same Taylor series at 0 are equal. -/
 lemma eq_of_taylorAtZero_eq {f g : ℂ → ℂ} (hf_diff : Differentiable ℂ f)
@@ -195,7 +207,7 @@ lemma New.pow_le_exp_log_factorial_add (l : ℕ) (x : NNReal) (v : ℝ) :
         gcongr
         exact pow_div_factorial_le_exp _ (by positivity) l
     _ = exp (log l.factorial + l * v + x / exp v) := by
-        simp [exp_add, exp_log, l.factorial_pos, exp_nat_mul]
+        simp [exp_add, exp_log, l.factorial_pos, exp_natCast_mul]
 
 end PowerExpBound
 

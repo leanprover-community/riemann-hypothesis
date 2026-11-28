@@ -1,5 +1,9 @@
+module
+
+public import TauCeti.Topology.Algebra.Group.Units
+public import TauCeti.Topology.Instances.Matrix
+public import Lib.Weil.Periods.Equivariant
 import Lib.Weil.Periods.BesselIntegral
-import Lib.Weil.Periods.Equivariant
 
 /-!
 # Real and finite points of the Bessel group
@@ -17,6 +21,8 @@ Notions used in the statements:
 * A level `K` (`IsLevel K`) is an open subgroup of `G_f` inside the standard compact subgroup.
 -/
 
+@[expose] public section
+
 open MeasureTheory Measure
 
 noncomputable section
@@ -28,34 +34,24 @@ lemma New.isMulRightInvariant_of_prod {A B : Type*} [Group A] [MeasurableSpace A
     [SigmaFinite μ] [SigmaFinite η] [NeZero μ] [NeZero η]
     (h_prod : (μ.prod η).IsMulRightInvariant) :
     μ.IsMulRightInvariant ∧ η.IsMulRightInvariant := by
-  -- Right translation by `(a, b)` keeps the measure of a rectangle `S × T`.
-  have h_rect (a : A) (b : B) {S : Set A} {T : Set B} (hS : MeasurableSet S)
-      (hT : MeasurableSet T) :
-      μ ((fun x : A ↦ x * a) ⁻¹' S) * η ((fun y : B ↦ y * b) ⁻¹' T) = μ S * η T := by
-    have h_meas : Measurable fun q : A × B ↦ q * (a, b) :=
-      (measurable_fst.mul_const a).prodMk (measurable_snd.mul_const b)
-    have h_preimage : (fun q : A × B ↦ q * (a, b)) ⁻¹' (S ×ˢ T) =
-        ((fun x : A ↦ x * a) ⁻¹' S) ×ˢ ((fun y : B ↦ y * b) ⁻¹' T) := Set.ext fun q ↦ by simp
-    calc _ = μ.prod η ((fun q : A × B ↦ q * (a, b)) ⁻¹' (S ×ˢ T)) := by rw [h_preimage, prod_prod]
-      _ = (μ.prod η).map (fun q : A × B ↦ q * (a, b)) (S ×ˢ T) :=
-        (map_apply h_meas (hS.prod hT)).symm
-      _ = μ S * η T := by rw [map_mul_right_eq_self, prod_prod]
-  -- Take `a = 1` or `b = 1` and cancel a side of finite positive measure.
-  obtain ⟨U, hU_meas, -, hU_pos, hU_fin⟩ :
-      ∃ U : Set A, MeasurableSet U ∧ U ⊆ Set.univ ∧ 0 < μ U ∧ μ U < ⊤ :=
-    μ.exists_subset_measure_lt_top MeasurableSet.univ (measure_univ_pos.2 (NeZero.ne μ))
-  obtain ⟨V, hV_meas, -, hV_pos, hV_fin⟩ :
-      ∃ V : Set B, MeasurableSet V ∧ V ⊆ Set.univ ∧ 0 < η V ∧ η V < ⊤ :=
-    η.exists_subset_measure_lt_top MeasurableSet.univ (measure_univ_pos.2 (NeZero.ne η))
+  have h_map (a : A) (b : B) :
+      (μ.map (· * a)).prod (η.map (· * b)) = μ.prod η :=
+    (map_prod_map μ η (measurable_mul_const a) (measurable_mul_const b)).trans
+      (h_prod.map_mul_right_eq_self (a, b))
+  -- Test rectangles whose other factor has finite positive measure, and cancel that factor.
+  obtain ⟨U, -, -, hU_pos, hU_fin⟩ := μ.exists_subset_measure_lt_top MeasurableSet.univ
+    (measure_univ_pos.2 (NeZero.ne μ))
+  obtain ⟨V, -, -, hV_pos, hV_fin⟩ := η.exists_subset_measure_lt_top MeasurableSet.univ
+    (measure_univ_pos.2 (NeZero.ne η))
   constructor
-  · refine (forall_measure_preimage_mul_right_iff μ).1 fun a S hS ↦ ?_
-    have h_left : μ ((fun x : A ↦ x * a) ⁻¹' S) * η V = μ S * η V := by
-      simpa only [mul_one, Set.preimage_id'] using h_rect a 1 hS hV_meas
-    exact (ENNReal.mul_left_inj hV_pos.ne' hV_fin.ne).1 h_left
-  · refine (forall_measure_preimage_mul_right_iff η).1 fun b T hT ↦ ?_
-    have h_right : μ U * η ((fun y : B ↦ y * b) ⁻¹' T) = μ U * η T := by
-      simpa only [mul_one, Set.preimage_id'] using h_rect 1 b hU_meas hT
-    exact (ENNReal.mul_right_inj hU_pos.ne' hU_fin.ne).1 h_right
+  · refine ⟨fun a ↦ Measure.ext fun S _ ↦ ?_⟩
+    refine (ENNReal.mul_left_inj hV_pos.ne' hV_fin.ne).1 ?_
+    simpa only [mul_one, map_id', prod_prod] using
+      congrArg (fun ρ : Measure (A × B) ↦ ρ (S ×ˢ V)) (h_map a 1)
+  · refine ⟨fun b ↦ Measure.ext fun T _ ↦ ?_⟩
+    refine (ENNReal.mul_right_inj hU_pos.ne' hU_fin.ne).1 ?_
+    simpa only [mul_one, map_id', prod_prod] using
+      congrArg (fun ρ : Measure (A × B) ↦ ρ (U ×ˢ T)) (h_map 1 b)
 
 namespace New.Grading
 
@@ -90,8 +86,8 @@ lemma fst_mem_besselReal (r : Y.besselGroup) : (r : G E ε).1 ∈ Y.besselReal :
 times the finite points of the Bessel group to the Bessel group, as an isomorphism of
 topological groups. -/
 def besselProdEquiv : Y.besselReal × Y.besselFin ≃ₜ* Y.besselGroup where
-  toFun z := ⟨(z.1.1, z.2.1), Y.mk_mem_besselGroup z⟩
-  invFun r := (⟨r.1.1, Y.fst_mem_besselReal r⟩, ⟨r.1.2, Y.snd_mem_besselFin r.2⟩)
+  toFun z := ⟨(z.1.val, z.2.val), Y.mk_mem_besselGroup z⟩
+  invFun r := (⟨r.val.1, Y.fst_mem_besselReal r⟩, ⟨r.val.2, Y.snd_mem_besselFin r.property⟩)
   map_mul' _ _ := rfl
   continuous_toFun := by fun_prop
   continuous_invFun := by fun_prop
@@ -104,11 +100,10 @@ lemma isHaarMeasure_map_besselProdEquiv :
     prod.instIsHaarMeasure haar haar
   Y.besselProdEquiv.isHaarMeasure_map _
 
-/-- The groups `R(F_∞)` and `R(𝔸_fin)` of real and finite points of the Bessel subgroup `R` are
-unimodular: their left Haar measures are right invariant. -/
-theorem isMulRightInvariant_haar_besselReal_besselFin [Fintype X] :
-    (haar : Measure Y.besselReal).IsMulRightInvariant ∧
-    (haar : Measure Y.besselFin).IsMulRightInvariant := by
+/-- The group `R(F_∞)` of real points of the Bessel subgroup `R` is unimodular: its left Haar
+measure is right invariant. -/
+theorem isMulRightInvariant_haar_besselReal [Fintype X] :
+    (haar : Measure Y.besselReal).IsMulRightInvariant := by
   -- The group `R(𝔸)` is unimodular and is the product of the two groups.
   let ν : Measure Y.besselGroup := (haar.prod haar).map Y.besselProdEquiv
   have : ν.IsHaarMeasure := Y.isHaarMeasure_map_besselProdEquiv
@@ -121,7 +116,7 @@ theorem isMulRightInvariant_haar_besselReal_besselFin [Fintype X] :
   have h_prod : (haar.prod haar : Measure (Y.besselReal × Y.besselFin)).IsMulRightInvariant := by
     rw [← h_emb.comap_map (haar.prod haar)]
     exact IsMulRightInvariant.comap ν (f := Y.besselProdEquiv.toMulEquiv.toMonoidHom) h_emb
-  exact isMulRightInvariant_of_prod h_prod
+  exact (isMulRightInvariant_of_prod h_prod).1
 
 /-- Let `K` be a level and `J = R(𝔸_fin) ∩ K`. There is a constant `c ≠ 0`, the volume of `J`
 for compatible Haar measures, with this property. Let `t₀` be a point of `R(𝔸_fin)`, and let `f`
@@ -142,7 +137,7 @@ lemma exists_integral_eq_mul_integral_besselReal (K : Subgroup (Gf E ι)) [hK : 
   have h_emb : MeasurableEmbedding Y.besselProdEquiv :=
     Y.besselProdEquiv.toHomeomorph.measurableEmbedding
   let J : Set Y.besselFin := Subtype.val ⁻¹' K
-  have hJ_open : IsOpen J := hK.isOpen.preimage continuous_subtype_val
+  have hJ_open : IsOpen J := hK.isOpen.preimage continuous_subtypeVal
   have hJ_compact : IsCompact J :=
     (IsClosed.isClosedEmbedding_subtypeVal inferInstance).isCompact_preimage hK.isCompact
   have hJ_pos : haar J ≠ 0 := hJ_open.measure_ne_zero haar ⟨1, one_mem K⟩
@@ -170,8 +165,8 @@ lemma exists_integral_eq_mul_integral_besselReal (K : Subgroup (Gf E ι)) [hK : 
         simp only [integral_smul_nnreal_measure, ν, h_emb.integral_map, h_prod, NNReal.smul_def,
           Complex.real_smul]
     _ = (c * haar.real J : ℝ) * ∫ s : Y.besselReal, a s ∂haar := by
-        simp [integral_prod_mul, integral_indicator hJ_open.measurableSet, Set.univ_inter, mul_assoc,
-          mul_comm]
+        simp [integral_prod_mul, integral_indicator hJ_open.measurableSet, Set.univ_inter,
+          mul_assoc, mul_comm]
 
 end New.Grading
 

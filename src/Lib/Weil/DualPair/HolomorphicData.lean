@@ -1,4 +1,12 @@
+module
+
+public import Lib.Weil.DualPair.KernelLaws
+public import Lib.Weil.DualPair.WeilAction
 import Lib.ClassField.HeckeCharacter.TameModulus
+import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.DiscreteSeries.Rigidity.HighestVectorsAndFiltration
+import Lib.Weil.DualPair.ThetaLiftConvergence
 
 /-!
 # Holomorphic data, functions of a level, and theta kernels modulo 𝔪 as level multipliers
@@ -41,12 +49,14 @@ case: highest vectors, such as products of leading minors, that are killed by ea
 second derivative ∂²/∂x_{ca}∂x_{cb} with a, b of opposite signs have matrix coefficients that extend
 holomorphically with an explicit weight. This hypothesis is stronger than pluriharmonic in the sense
 of Kashiwara–Vergne, where only the sums over c must vanish. Source: M. Kashiwara, M. Vergne, On the
-Segal–Shale–Weil representations and harmonic polynomials, Invent. Math. 44 (1978) 1–48, III 6.3,
+Segal–Shale–Weil representations and harmonic polynomials, Invent. Math. 44 (1978) 1–47, III 6.3,
 7.2; M. G. Davidson, The harmonic representation of U(p,q) and its connection with the generalized
 unit disk, Pacific J. Math. 129 (1987) 33–55.
 
 See also `Lib.Weil.DualPair.ThetaLiftConvergence`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -166,7 +176,7 @@ lemma prod_mem_holomorphicData (ho : IsPosFirstOrder s o)
   simp only [h_factor]
   exact HCParam.IsKHighest.isHolOfWeight_coeffMap ho.1 highest
     (fun w ↦ (rep w).derives.isCoeffMap 1)
-    (ℓ.compContinuousMultilinearMap piTensor) fun w _ ↦ (rep w).unitary_rep.1 _
+    (ℓ.compContinuousMultilinearMap piTensor) fun w _ ↦ (rep w).unitary_rep.continuous _
 
 /-- Let the linear map f to the Fock space intertwine the conjugate of the representation
 `conjWeylRep κ e'` (on `WeylIndex n' κ → ℂ`, of highest weight given by κ, twisted by powers e′ of

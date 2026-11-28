@@ -1,3 +1,12 @@
+module
+
+import Mathlib.Topology.Algebra.Group.Units
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import New.Appendix.DiscreteSeries.Positions
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.DiscreteSeries.Haar.GramPolar
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Appendix.DiscreteSeries.Periods
 import New.Appendix.DiscreteSeries.StationaryPosition
 
@@ -29,6 +38,8 @@ Notions from other files:
   and decreases in `[-3 B, -B]` on the other coordinates, with alternating signs there.
 * `IsLaplaceDatum` collects the hypotheses of Laplace's method on a map into `U(ε) × U(η)`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -70,7 +81,7 @@ lemma LowersFlag.inv {g : (Matrix n n ℂ)ˣ} {σ : ℂ}
     blockTriangular_one.add fun a b hba ↦ hN_tri a b.castSucc (le_of_lt hba)
   have hT_diag (a : Fin d) : T a a = 1 := by simp [hT, initCols, hN_tri]
   have hT_unit : IsUnit T.det := by simp [det_of_isUpperTriangular hT_tri, hT_diag]
-  have : Invertible T := T.invertibleOfIsUnitDet hT_unit
+  let : Invertible T := T.invertibleOfIsUnitDet hT_unit
   have hg_inv : (↑g⁻¹ : Matrix n n ℂ) * initCols v = initCols v * T⁻¹ :=
     calc _ = (↑g⁻¹ : Matrix n n ℂ) * ((g : Matrix n n ℂ) * initCols v) * T⁻¹ := by
           rw [mul_initCols_eq hN, ← Matrix.mul_assoc, mul_nonsing_inv_cancel_right _ _ hT_unit]
@@ -347,7 +358,7 @@ theorem IsStationary.isLaplaceDatum [Fintype X] [DecidableEq X] {l : HCParam ε}
     rw [← formAdjoint_inclMatrix (τ := e' ∘ Sum.inl) h_sign_inl, ← formAdjoint_mul, h_inc,
       formAdjoint_inclMatrix (τ := e ∘ Sum.inl) h_steep.sign_inl]
   refine ⟨g, Prod.ext ?_ hy⟩
-  show (g : Matrix n n ℂ) - 1 =
+  change (g : Matrix n n ℂ) - 1 =
     inclMatrix ℂ (e ∘ Sum.inl) * (u - 1) * (inclMatrix ℂ (e ∘ Sum.inl))ᴴ
   rw [hg, hy, Matrix.mul_assoc, Matrix.mul_assoc, h_inc_adj, ← Matrix.mul_assoc, ← Matrix.mul_assoc,
     h_inc]
@@ -456,7 +467,7 @@ theorem IsStationary.period_lower_bound_of_surjective [Fintype X] [DecidableEq X
     simp (disch := fun_prop) only [Measure.map_map, Function.comp_def, map_mul]⟩
   have : IsFiniteMeasureOnCompacts (ν.map f) := ⟨fun K hK ↦ by
     rw [Measure.map_apply hf hK.measurableSet, ← Set.preimage_image_eq K Subtype.val_injective]
-    exact (h_proper.isCompact_preimage (hK.image continuous_subtype_val)).measure_lt_top⟩
+    exact (h_proper.isCompact_preimage (hK.image continuous_subtypeVal)).measure_lt_top⟩
   obtain ⟨h_int, h_vol⟩ := hP.integrable_periodIntegrand_and_measure_le h_steep hB h_sign_inl
     h_weight_inl
     h_weight_nonneg h_weight_le hl_gap hk_gap hl_le hk_le hβ h_card hh (ν.map f)
@@ -539,6 +550,13 @@ lemma conj_inl_sub_one_mul (w : USign (Sum.elim ε (1 : Unit → ℤˣ))) (g : U
       (w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) * fromBlocks ((g : Matrix n n ℂ) - 1) 0 0 0 :=
   (Units.eq_mul_inv_iff_mul_eq _).1 (conj_inl_sub_one w g)
 
+omit [DecidableEq n] in
+private lemma mul_frame_blocks_iff
+    {Y W : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ} {D : Matrix n n ℂ}
+    {A : Matrix (n ⊕ Unit) n ℂ} {b : Matrix (n ⊕ Unit) Unit ℂ} (hw : W = fromCols A b) :
+    Y * W = W * fromBlocks D 0 0 0 ↔ Y * A = A * D ∧ Y * b = 0 := by
+  simp [hw, mul_fromCols, fromCols_mul_fromBlocks, fromCols_ext_iff]
+
 /-- Let `w = (i₀, v₁)` lie in `U(ε ⊕ 1)`, where `v₁` is the only column of `v`. For `g` in `U(ε)`
 the element `w (g ⊕ 1) w⁻¹` fixes `v₁`: its difference with `1` lowers the flag of `v`, with sum of
 coefficients `0`. -/
@@ -549,18 +567,11 @@ lemma lowersFlag_conj_inl_sub_one {v : Matrix (n ⊕ Unit) (Fin 1) ℂ} {i₀ : 
     LowersFlag 0 v
       (((w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1)) : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1)
       0 := by
-  set Y : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ :=
-    ((w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1)) : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1
-  -- Read the last column of `Y w = w ((g - 1) ⊕ 0)`.
-  have h_vec : Y * replicateCol Unit (v.col 0) = 0 := by
-    have h_eq := conj_inl_sub_one_mul w g
-    rw [hw, mul_fromCols, fromCols_mul_fromBlocks, fromCols_ext_iff] at h_eq
-    simpa [Y] using h_eq.right
   refine ⟨0, fun a ↦ a.elim0, ?_, Finset.sum_of_isEmpty _⟩
   rw [Matrix.mul_zero]
   ext i b
   obtain rfl : b = 0 := Fin.fin_one_eq_zero b
-  exact congrFun₂ h_vec i ()
+  exact congrFun₂ ((mul_frame_blocks_iff hw).mp (conj_inl_sub_one_mul w g)).2 i ()
 
 /-- Let `w = (i₀, v₁)` lie in `U(ε ⊕ 1)`, where `v₁` is the only column of `v`. For `g` in `U(ε)`,
 `InducesOn 0 v i₀` holds: `w (g ⊕ 1) w⁻¹ - 1` acts on the image of `i₀` as `g - 1`. So
@@ -572,14 +583,7 @@ lemma inducesOn_conj_inl_sub_one {v : Matrix (n ⊕ Unit) (Fin 1) ℂ} {i₀ : M
     InducesOn 0 v i₀
       (((w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1)) : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1)
       ((g : Matrix n n ℂ) - 1) := by
-  set Y : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ :=
-    ((w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1)) : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1
-  -- Read the first block of columns of `Y w = w ((g - 1) ⊕ 0)`.
-  have h_image : Y * i₀ = i₀ * ((g : Matrix n n ℂ) - 1) := by
-    have h_eq := conj_inl_sub_one_mul w g
-    rw [hw, mul_fromCols, fromCols_mul_fromBlocks, fromCols_ext_iff] at h_eq
-    simpa [Y] using h_eq.left
-  exact ⟨0, by rw [Matrix.mul_zero, add_zero, h_image]⟩
+  exact ⟨0, by simpa using ((mul_frame_blocks_iff hw).mp (conj_inl_sub_one_mul w g)).1⟩
 
 /-- Let `(v, i₀)` be a position of `U(ε)` in `U(ε ⊕ 1)` with `d = 0`: `v` has a single column `v₁`,
 of norm `±1` for the form `ε ⊕ 1`, and `i₀` is an isometry of `(ℂ^n, ε)` into its orthogonal
@@ -601,11 +605,9 @@ lemma IsPosition.exists_conj_inl_eq {v : Matrix (n ⊕ Unit) (Fin 1) ℂ} {i₀ 
     rw [Subsingleton.elim N 0, Matrix.mul_zero] at hN
     ext i b
     exact congrFun₂ hN i 0
-  have h_cols : Y * (w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) =
-      (w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) * fromBlocks ((y : Matrix n n ℂ) - 1) 0 0 0 := by
-    simp [hw, mul_fromCols, fromCols_mul_fromBlocks, h_image, h_vec]
   refine ⟨y, Subtype.ext (Units.ext (sub_left_injective (b := 1) ?_))⟩
-  exact (Units.mul_left_inj _).1 ((conj_inl_sub_one_mul w y).trans h_cols.symm)
+  exact (Units.mul_left_inj _).1
+    ((conj_inl_sub_one_mul w y).trans ((mul_frame_blocks_iff hw).mpr ⟨h_image, h_vec⟩).symm)
 
 omit [Fintype X] [DecidableEq n] in
 /-- If `l` is steep (so its weight is `0` on `X` and in `[-3 B, -B]` elsewhere) and has a large gap,
@@ -734,7 +736,11 @@ theorem IsSteep.exists_volume_le_mul_norm_integral_dsCoeff [Nonempty n] {B β : 
     simp [j, mul_comm]
   have h_ball : {g : USign ε | ‖(g : Matrix n n ℂ) - 1‖ ≤ 1} ⊆ Large := fun g hg ↦
     ⟨(norm_conj_inl_le w hg).trans (by linarith),
-      norm_le_add_one_of_norm_sub_one_le (by linarith) hg⟩
+      by
+        change ‖(g : Matrix n n ℂ)‖ ≤ β + 1
+        refine (norm_le_norm_add_norm_sub' _ 1).trans ?_
+        rw [norm_one]
+        exact add_le_add (by linarith) hg⟩
   refine ⟨w⁻¹, by rwa [U.norm_inv], ENNReal.toReal_le_of_le_ofReal (by positivity) ?_⟩
   simpa only [h_integrand, inv_inv] using (measure_mono h_ball).trans h_period
 

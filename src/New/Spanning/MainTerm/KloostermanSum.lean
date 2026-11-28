@@ -1,4 +1,8 @@
-import New.Spanning.Frames.BesselVector
+module
+
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.Frames.BesselVector
 
 /-!
 # The orbital integral at the finite places is a Kloosterman sum
@@ -31,19 +35,27 @@ Notions from other files:
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 open MeasureTheory Measure Function
 
-/-- Let `μ` be a left invariant measure on a group `G` and `J` an open subgroup of finite volume.
+/-- Let `μ` be a left invariant measure on a group `G` and `J` an open subgroup.
 The integral of a function on the cosets `y J` is the volume of `J` times its sum over the cosets.
 If the sum does not converge, both sides are zero. -/
-lemma New.integral_comp_quotientMk {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-    [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G)
-    [μ.IsMulLeftInvariant] {J : Subgroup G} (hJ : IsOpen (J : Set G)) (_h_fin : μ J ≠ ⊤)
-    (f : G ⧸ J → ℂ) : ∫ y : G, f y ∂μ = μ.real J • ∑' q : G ⧸ J, f q := by
+lemma New.integral_comp_quotientMk {G E : Type*} [Group G] [TopologicalSpace G]
+    [ContinuousMul G] [TopologicalSpace.SeparableSpace G] [MeasurableSpace G] [BorelSpace G]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] (μ : Measure G)
+    [μ.IsMulLeftInvariant] {J : Subgroup G} (hJ : IsOpen (J : Set G))
+    (f : G ⧸ J → E) : ∫ y : G, f y ∂μ = μ.real J • ∑' q : G ⧸ J, f q := by
   -- The image of `μ` on the countable discrete quotient is `μ J` times the counting measure.
   have : DiscreteTopology (G ⧸ J) := QuotientGroup.discreteTopology hJ
+  have : TopologicalSpace.SeparableSpace (G ⧸ J) := by
+    have h := ((TopologicalSpace.isSeparable_univ_iff (α := G)).2 inferInstance).image
+      (QuotientGroup.continuous_mk (N := J))
+    rw [Set.image_univ, (QuotientGroup.mk_surjective (s := J)).range_eq] at h
+    exact TopologicalSpace.isSeparable_univ_iff.1 h
   have : Countable (G ⧸ J) := TopologicalSpace.separableSpace_iff_countable.1 inferInstance
   let : MeasurableSpace (G ⧸ J) := ⊤
   have h_meas : Measurable (QuotientGroup.mk : G → G ⧸ J) := fun s _ ↦
@@ -59,6 +71,8 @@ lemma New.integral_comp_quotientMk {G : Type*} [Group G] [TopologicalSpace G] [I
     · simp [integral_countable hf]
     · rw [integral_undef hf, tsum_eq_zero_of_not_summable]
       rwa [← summable_norm_iff, ← integrable_count_iff]
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
   rw [← integral_map h_meas.aemeasurable measurable_from_top.aestronglyMeasurable, h_map,
     integral_smul_measure, h_count, Measure.real]
 
@@ -115,7 +129,7 @@ lemma PlaceData.exists_out_inv_mul_mem {y : T.G}
     ∃ w : F.UnipotentCosets, (w.out : T.G)⁻¹ * y ∈ F.congruenceSubgroup := by
   obtain ⟨u, hu, huy⟩ := hy
   exact ⟨(⟨u, hu⟩ : T.besselU),
-    by simpa [mul_assoc] using mul_mem (inv_mem (inv_mul_out_mem ⟨u, hu⟩)) huy⟩
+    by simpa using mul_mem (inv_mem (inv_mul_out_mem ⟨u, hu⟩)) huy⟩
 
 /-- An integral point `s` of the unitary group normalises `K(M) = F.congruenceSubgroup`, so the
 cosets `s K(M)` and `K(M) s` agree. -/
@@ -235,8 +249,6 @@ theorem IntegralPlace.IsLargeLatticeData.besselOrbitalIntegral_besselVector_appl
     rw [← extendedBesselChar_eq_of_inv_mul_mem h_first,
       ← extendedBesselChar_eq_of_inv_mul_mem h_second]
   have h_open : IsOpen (F.congruenceSubgroup : Set T.G) := unitaryLevel_open_compact.1
-  have h_fin : F.groupMeasure F.congruenceSubgroup ≠ ⊤ :=
-    groupMeasure_ne_top unitaryLevel_le_unitaryLevel_one
   calc
     _ = ∫ y : T.G, extendedBesselChar F.levelUnit (y * (a.out : T.G)⁻¹) *
           star (extendedBesselChar F.levelUnit (x⁻¹ * y * (b.out : T.G)⁻¹)) ∂F.groupMeasure := by
@@ -247,7 +259,7 @@ theorem IntegralPlace.IsLargeLatticeData.besselOrbitalIntegral_besselVector_appl
       simp only [mul_assoc, mul_inv_cancel, mul_one]
     _ = ∫ y : T.G, Φ y ∂F.groupMeasure := by simp only [h_coset]
     _ = F.groupMeasure.real F.congruenceSubgroup • ∑' q : T.G ⧸ F.congruenceSubgroup, Φ q :=
-      integral_comp_quotientMk F.groupMeasure h_open h_fin Φ
+      integral_comp_quotientMk F.groupMeasure h_open Φ
     _ = _ := by rw [tsum_extendedBesselChar_mul_star_extendedBesselChar x hs]
 
 end New.Floors

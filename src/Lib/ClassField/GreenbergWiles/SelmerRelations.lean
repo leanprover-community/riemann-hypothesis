@@ -1,5 +1,12 @@
+module
+
+import Mathlib.Data.Set.Finite.Monad
+import Mathlib.FieldTheory.Galois.Profinite
+public import Lib.ClassField.GreenbergWiles.SplitPrimeReciprocity
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
 import Lib.ClassField.Global.Chebotarev
-import Lib.ClassField.GreenbergWiles.SplitPrimeReciprocity
+import Lib.ClassField.LocalDuality.KummerFiniteness
+import Lib.ClassField.Places.LocalFields
 
 /-!
 # Relations at split primes and their number (Greenberg–Wiles)
@@ -27,7 +34,7 @@ Notions from other files:
 * `New.IsLargeLevel.SplitPlaces`: Split places for `U`: distinct primes `s.v i` not dividing `N`,
   each with a Frobenius element `s.φ i` in `U`, where `U` fixes the `m`-th roots of unity and
   `m ∣ N`. The set `I` is the union of the inertia groups over the other primes not dividing `N`.
-* `New.DiscreteModule.trivialisedCocycles`: pairs of f : X → V and continuous z : G → V vanishing on
+* `New.DiscreteModule.trivializedCocycles`: pairs of f : X → V and continuous z : G → V vanishing on
   I, with g f(g⁻¹x) = f(x) + z(g) for all g, x. Here X is `New.PlaceAboveLevel q`, the places of Ω
   above q and infinity.
 
@@ -35,6 +42,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts` for sources.
 -/
+
+@[expose] public section
 
 namespace New.selmerZ1
 
@@ -49,21 +58,21 @@ of `s` and is, for each prime `v` dividing `N`, the coboundary of `a v` on the d
 of `A v`. Then `y` vanishes on the set `I` of `s` and is trivialised above `N` and infinity by a map
 with the values `a w` at the chosen places over the primes dividing `N` and the infinite places
 `w`. -/
-lemma exists_trivialisation_of_mem (hA : ∀ v : FinPlace K, IsPlaceOver (A v) v)
+lemma exists_trivialization_of_mem (hA : ∀ v : FinPlace K, IsPlaceOver (A v) v)
     {L : ∀ v : FinPlace K, Submodule R (decompGroup Gal(Ω/K) (A v) → M)}
     (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) {m N : ℕ} [NeZero m] [NeZero N]
     {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)} {ι : Type} (s : SplitPlaces m N I U ι)
-    (hT : ∀ v ∈ S, ↑N ∈ v.1) {y : Gal(Ω/K) → M} (hy : y ∈ selmerZ1 M S A L (range s.v))
-    (a : {v : FinPlace K | (N : 𝓞 K) ∈ v.1} ⊕ InfinitePlace K → M)
-    (h_dec : ∀ (v : FinPlace K) (hv : ↑N ∈ v.1), ∀ g ∈ decompGroup Gal(Ω/K) (A v),
+    (hT : ∀ v ∈ S, ↑N ∈ v.asIdeal) {y : Gal(Ω/K) → M} (hy : y ∈ selmerZ1 M S A L (range s.v))
+    (a : {v : FinPlace K | (N : 𝓞 K) ∈ v.asIdeal} ⊕ InfinitePlace K → M)
+    (h_dec : ∀ (v : FinPlace K) (hv : ↑N ∈ v.asIdeal), ∀ g ∈ decompGroup Gal(Ω/K) (A v),
       y g = M.ρ g (a (.inl ⟨v, hv⟩)) - a (.inl ⟨v, hv⟩)) :
-    ∃ f : PlaceAboveLevel N → M, (f, y) ∈ M.trivialisedCocycles (PlaceAboveLevel N) I ∧
+    ∃ f : PlaceAboveLevel N → M, (f, y) ∈ M.trivializedCocycles (PlaceAboveLevel N) I ∧
       ∀ i : ↑{v : FinPlace K | ↑N ∈ v.asIdeal} ⊕ InfinitePlace K, f (Sum.map
-        (fun v : {v : FinPlace K | (N : 𝓞 K) ∈ v.1} ↦
-          ⟨A v, (hA v).valuation_natCast_lt_one_iff.mpr v.2⟩)
+        (fun v : {v : FinPlace K | (N : 𝓞 K) ∈ v.asIdeal} ↦
+          ⟨A v, (hA v).valuation_natCast_lt_one_iff.mpr v.property⟩)
         (surjInv (comap_surjective (k := K))) i) = a i := by
   obtain ⟨⟨h_coc, h_unr⟩, -, h_real⟩ := hy
-  refine trivialisedCocycles.exists_mem_of_orbit_reps (PlaceAboveLevel.bijective_orbits _ N hA)
+  refine trivializedCocycles.exists_mem_of_orbit_reps (PlaceAboveLevel.bijective_orbits _ N hA)
     h_coc (I := I) (fun g hg ↦ ?_) a ?_
   · obtain ⟨v, hv⟩ := (s.mem_inertia_iff g).1 hg
     exact h_unr g ⟨v, by grind⟩
@@ -94,7 +103,7 @@ theorem card_mul_pow_le (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
     (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) {m : ℕ} [NeZero m] [Finite M]
     {k N : ℕ} {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
     {ι : Type} [NeZero N] (s : SplitPlaces m N I U ι)
-    (hk : M.HasFewCocycles (PlaceAboveLevel N) I k) (hT : ∀ v ∈ S, ↑N ∈ v.1) :
+    (hk : M.HasFewCocycles (PlaceAboveLevel N) I k) (hT : ∀ v ∈ S, ↑N ∈ v.asIdeal) :
     Nat.card (selmerZ1 M S A L (range s.v)) * Nat.card M ^ (#S + card (InfinitePlace K)) ≤
       Nat.card M ^ k *
         ∏ v ∈ S, Nat.card ↥(L v ⊓ Z1 (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ) := by
@@ -105,56 +114,56 @@ theorem card_mul_pow_le (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
   let Y : Submodule R (Gal(Ω/K) → M) := selmerZ1 M S A L (range s.v)
   let J (v : FinPlace K) : Submodule R (decompGroup Gal(Ω/K) (A v) → M) :=
     L v ⊓ Z1 (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ
-  let T : Set (FinPlace K) := {v : FinPlace K | ↑N ∈ v.1}
+  let T : Set (FinPlace K) := {v : FinPlace K | ↑N ∈ v.asIdeal}
   have : Finite T := finite_natCast_mem N
   obtain ⟨h_pos, h_few⟩ := hk
-  have : Finite (M.trivialisedCocycles (PlaceAboveLevel N) I) := (Nat.card_pos_iff.1 h_pos).2
+  have : Finite (M.trivializedCocycles (PlaceAboveLevel N) I) := (Nat.card_pos_iff.1 h_pos).2
   choose frob h_frob using fun v : FinPlace K ↦ (hA v).exists_isFrob Gal(Ω/K)
-  have h_coc (y : Y) : y.1 ∈ Z1 M.ρ := y.2.1.1
+  have h_coc (y : Y) : y.val ∈ Z1 M.ρ := y.property.1.1
   have h_loc (y : Y) (v : FinPlace K) (hv : v ∈ S) :
-      (fun g : decompGroup Gal(Ω/K) (A v) ↦ y.1 g) ∈ J v :=
-    ⟨y.2.2.1 v hv, (h_coc y).1.comp continuous_subtype_val, fun g h ↦ (h_coc y).2 g h⟩
+      (fun g : decompGroup Gal(Ω/K) (A v) ↦ y.val g) ∈ J v :=
+    ⟨y.property.2.1 v hv, (h_coc y).1.comp continuous_subtypeVal, fun g h ↦ (h_coc y).2 g h⟩
   have h_cob (v : FinPlace K) (hv : v ∈ S) (a : M) :
       coboundaryMap (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ a ∈ J v :=
-    ⟨hL v hv ⟨a, rfl⟩, ((M.restrictTo _).coboundary a).2⟩
-  have h_unr (y : Y) : ∀ g ∈ inertiaAbove (S ∪ range s.v)ᶜ, y.1 g = 0 := y.2.1.2
+    ⟨hL v hv ⟨a, rfl⟩, ((M.restrictTo _).coboundary a).property⟩
+  have h_unr (y : Y) : ∀ g ∈ inertiaAbove (S ∪ range s.v)ᶜ, y.val g = 0 := y.property.1.2
   -- The local data: the restriction in `J v` for `v ∈ S`, the value at a Frobenius for `v ∈ T \ S`.
   let F : Y × (T ⊕ InfinitePlace K → M) →+ (∀ v : S, J v) × (↥(T \ S) → M) :=
     .mk' (fun (y, a) ↦
       (fun ⟨v, hv⟩ ↦ ⟨_, sub_mem (h_loc y v hv) (h_cob v hv (a (.inl ⟨v, hT v hv⟩)))⟩,
-        fun v ↦ (y - coboundaryMap M.ρ (a (.inl ⟨v, v.2.1⟩))) (frob v)))
+        fun v ↦ (y - coboundaryMap M.ρ (a (.inl ⟨v, v.property.1⟩))) (frob v)))
       fun p p' ↦ by ext <;> simp [add_sub_add_comm]
   -- In the kernel, `y` is the coboundary of `a v` on the decomposition group at each `v ∈ T`.
   have h_dec (y : Y) (a : T ⊕ InfinitePlace K → M) (h : F (y, a) = 0) (v : FinPlace K)
       (hv : v ∈ T) (g : Gal(Ω/K)) (hg : g ∈ decompGroup Gal(Ω/K) (A v)) :
-      y.1 g = M.ρ g (a (.inl ⟨v, hv⟩)) - a (.inl ⟨v, hv⟩) := by
+      y.val g = M.ρ g (a (.inl ⟨v, hv⟩)) - a (.inl ⟨v, hv⟩) := by
     rw [← sub_eq_zero]
     by_cases hS : v ∈ S
     · exact congrFun (congrArg Subtype.val (congrFun (congrArg Prod.fst h) ⟨v, hS⟩)) ⟨g, hg⟩
     -- Off `S`, the difference is a cocycle that vanishes on inertia and at the Frobenius `frob v`.
     let z : Z1 M.ρ := ⟨y, h_coc y⟩ - M.coboundary (a (.inl ⟨v, hv⟩))
-    have hz_frob : z.1 (frob v) = 0 := congrFun (congrArg Prod.snd h) ⟨v, hv, hS⟩
-    have hz_inertia : ∀ τ ∈ inertiaGroup Gal(Ω/K) (A v), z.1 τ = 0 := by
+    have hz_frob : z.val (frob v) = 0 := congrFun (congrArg Prod.snd h) ⟨v, hv, hS⟩
+    have hz_inertia : ∀ τ ∈ inertiaGroup Gal(Ω/K) (A v), z.val τ = 0 := by
       intro τ hτ
       have h_not : v ∉ ↑S ∪ range s.v := by
         clear h
         grind [s.level_notMem]
-      have hy_τ : y.1 τ = 0 := h_unr y τ ⟨v, h_not, A v, hA v, hτ⟩
+      have hy_τ : y.val τ = 0 := h_unr y τ ⟨v, h_not, A v, hA v, hτ⟩
       simp [z, hy_τ, hu τ ⟨v, hS, A v, hA v, hτ⟩]
     exact Z1.eq_zero_on_decompGroup z (hA v) (h_frob v) hz_inertia hz_frob g hg
   -- So the vectors `a w` extend to a trivialisation of `y` at all places of `Ω` above them.
   choose f hf h_val using fun x : F.ker ↦
-    exists_trivialisation_of_mem hA hcM s hT x.1.1.2 x.1.2 (h_dec x.1.1 x.1.2 x.2)
+    exists_trivialization_of_mem hA hcM s hT x.1.1.2 x.1.2 (h_dec x.1.1 x.1.2 x.2)
   -- The trivialisation determines `y` and all the vectors `a w`.
   have h_inj : Injective fun x : F.ker ↦
-      (⟨(f x, x.1.1.1), hf x⟩ : M.trivialisedCocycles (PlaceAboveLevel N) I) := by
+      (⟨(f x, x.val.1.val), hf x⟩ : M.trivializedCocycles (PlaceAboveLevel N) I) := by
     intro x x' h
     obtain ⟨h_f, h_y⟩ : f x = f x' ∧ x.1.1.1 = x'.1.1.1 := Prod.mk.inj (congrArg Subtype.val h)
     exact Subtype.ext (Prod.ext (Subtype.ext h_y) (funext fun i ↦ by rw [← h_val, h_f, h_val]))
   have h_ker : Nat.card F.ker ≤ Nat.card M ^ k :=
     (Nat.card_le_card_of_injective _ h_inj).trans h_few
   have : ∀ v : FinPlace K, Finite (J v) := fun v ↦
-    .inter_of_right (((hA v).isLocalGalois_and_residueCard_eq_and_isUniformiser _).1.finite_Z1
+    .inter_of_right (((hA v).isLocalGalois_and_residueCard_eq_and_isUniformizer _).1.finite_Z1
       (M.restrictTo _)) _
   have h_index : F.ker.index ≤ Nat.card ((∀ v : S, J v) × (↥(T \ S) → M)) :=
     (AddSubgroup.index_ker F).trans_le F.range.card_le_card_addGroup
@@ -172,11 +181,11 @@ theorem card_mul_pow_le (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
     _ = _ := by ring
 
 /-- A prime does not divide two coprime integers. -/
-lemma _root_.New.natCast_notMem_of_coprime {F : Type} [Field F] [NumberField F] {v : FinPlace F}
-    {p q : ℕ} (hqp : q.Coprime p) (hq : ↑q ∈ v.1) : ↑p ∉ v.1 := fun hp ↦ by
+lemma _root_.New.natCast_notMem_of_coprime {F : Type} [Field F] {v : FinPlace F}
+    {p q : ℕ} (hqp : q.Coprime p) (hq : ↑q ∈ v.asIdeal) : ↑p ∉ v.asIdeal := fun hp ↦ by
   obtain ⟨c, d, h_one⟩ : IsCoprime (q : 𝓞 F) p := hqp.cast
   refine (Ideal.ne_top_iff_one _).1 v.isPrime.ne_top ?_
-  simpa [h_one] using add_mem (v.1.mul_mem_left c hq) (v.1.mul_mem_left d hp)
+  simpa [h_one] using add_mem (v.asIdeal.mul_mem_left c hq) (v.asIdeal.mul_mem_left d hp)
 
 /-- Let `p ≠ 0` be prime to `m` and lie in no prime of `S`, and let the primes dividing `p` be
 unramified in the field of `U`. There is a multiple `q ≠ 0` of `m`, prime to `p`, that lies in all
@@ -184,14 +193,14 @@ primes of `S` and in all primes ramified in the field of `U`, and such that the 
 generate the class group of every number field between `K` and the field of `U`. -/
 lemma exists_dvd_coprime_sup_idelesUnitOff_eq_top (U : OpenNormalSubgroup Gal(Ω/K))
     (S : Finset (FinPlace K)) (m : ℕ)
-    [NeZero m] {p : ℕ} [NeZero p] (hm : m.Coprime p) (hS : ∀ v ∈ S, ↑p ∉ v.1)
-    (hU : ∀ v : FinPlace K, ↑p ∈ v.1 → ∀ B : ClosurePlace, IsPlaceOver B v →
+    [NeZero m] {p : ℕ} [NeZero p] (hm : m.Coprime p) (hS : ∀ v ∈ S, ↑p ∉ v.asIdeal)
+    (hU : ∀ v : FinPlace K, ↑p ∈ v.asIdeal → ∀ B : ClosurePlace, IsPlaceOver B v →
       inertiaGroup Gal(Ω/K) B ≤ U) :
-    ∃ q : ℕ, NeZero q ∧ m ∣ q ∧ q.Coprime p ∧ (∀ v ∈ S, ↑q ∈ v.1) ∧
-      (∀ {v : FinPlace K} {B : ClosurePlace}, ↑q ∉ v.1 → IsPlaceOver B v →
+    ∃ q : ℕ, NeZero q ∧ m ∣ q ∧ q.Coprime p ∧ (∀ v ∈ S, ↑q ∈ v.asIdeal) ∧
+      (∀ {v : FinPlace K} {B : ClosurePlace}, ↑q ∉ v.asIdeal → IsPlaceOver B v →
         inertiaGroup Gal(Ω/K) B ≤ U) ∧
-      ∀ (F : IntermediateField K Ω) [NumberField F], F ≤ fixedFieldOf U.1.1 →
-        (principalIdele (K := F)).range ⊔ idelesUnitOff {w : FinPlace F | ↑q ∈ w.1} = ⊤ := by
+      ∀ (F : IntermediateField K Ω) [NumberField F], F ≤ fixedFieldOf U.toOpenSubgroup.toSubgroup →
+        (principalIdele (K := F)).range ⊔ idelesUnitOff {w : FinPlace F | ↑q ∈ w.asIdeal} = ⊤ := by
   -- Take the product `Q k` of the integers in `[1, k]` that are prime to `p`, with `k` large: it
   -- lies in any finite set of primes, of any number field, that do not divide `p`.
   let Q (k : ℕ) : ℕ := ∏ n ∈ Finset.Icc 1 k with n.Coprime p, n
@@ -199,19 +208,19 @@ lemma exists_dvd_coprime_sup_idelesUnitOff_eq_top (U : OpenNormalSubgroup Gal(Ω
     (eventually_ge_atTop n).mono fun k hk ↦
       Finset.dvd_prod_of_mem _ (Finset.mem_filter.2 ⟨Finset.mem_Icc.2 ⟨hn.pos, hk⟩, hnp⟩)
   have mem_large {F : Type} [Field F] [NumberField F] {T : Set (FinPlace F)} (hT : T.Finite)
-      (hTp : ∀ v ∈ T, ↑p ∉ v.1) : ∀ᶠ k : ℕ in atTop, ∀ v ∈ T, ↑(Q k) ∈ v.1 := by
+      (hTp : ∀ v ∈ T, ↑p ∉ v.asIdeal) : ∀ᶠ k : ℕ in atTop, ∀ v ∈ T, ↑(Q k) ∈ v.asIdeal := by
     refine hT.eventually_all.2 fun v hv ↦ ?_
-    obtain ⟨r, -, -, hr_mem, hr, -⟩ := v.1.exists_prime_and_absNorm_eq_pow
+    obtain ⟨r, -, -, hr_mem, hr, -⟩ := v.asIdeal.exists_prime_and_absNorm_eq_pow
     have hrp : r.Coprime p :=
-      hr.coprime_iff_not_dvd.2 fun h ↦ hTp v hv (v.1.mem_of_dvd h.natCast hr_mem)
-    exact (dvd_large hr.ne_zero hrp).mono fun k hk ↦ v.1.mem_of_dvd hk.natCast hr_mem
+      hr.coprime_iff_not_dvd.2 fun h ↦ hTp v hv (v.asIdeal.mem_of_dvd h.natCast hr_mem)
+    exact (dvd_large hr.ne_zero hrp).mono fun k hk ↦ v.asIdeal.mem_of_dvd hk.natCast hr_mem
   -- Only finitely many fields lie between `K` and the field of `U`,
-  let E : IntermediateField K Ω := fixedFieldOf U.1.1
+  let E : IntermediateField K Ω := fixedFieldOf U.toOpenSubgroup.toSubgroup
   have : Finite (IntermediateField K E) :=
     .of_equiv _ IsGalois.intermediateFieldEquivSubgroup.toEquiv.symm
   -- and the class group of each is generated by finitely many primes that do not divide `p`.
   have class_large : ∀ᶠ k : ℕ in atTop, ∀ F ∈ range E.lift, ∀ _ : NumberField F,
-      (principalIdele (K := F)).range ⊔ idelesUnitOff {w | ↑(Q k) ∈ w.1} = ⊤ := by
+      (principalIdele (K := F)).range ⊔ idelesUnitOff {w | ↑(Q k) ∈ w.asIdeal} = ⊤ := by
     refine (finite_range _).eventually_all.2 fun F _ ↦ Filter.eventually_all.2 fun _ ↦ ?_
     obtain ⟨T, hT, -, h_off, h_top⟩ :=
       exists_sup_idelesUnitOff_eq_top (K := F) finite_empty _ (finite_natCast_mem p)
@@ -220,8 +229,8 @@ lemma exists_dvd_coprime_sup_idelesUnitOff_eq_top (U : OpenNormalSubgroup Gal(Ω
   -- The finitely many primes with an inertia group outside `U` do not divide `p`.
   let bad : Set (FinPlace K) :=
     {v | ¬ ∀ B : ClosurePlace, IsPlaceOver B v → inertiaGroup Gal(Ω/K) B ≤ U}
-  have h_bad : bad.Finite := finite_ramified U.1.2
-  have h_bad_p : ∀ v ∈ bad, ↑p ∉ v.1 := fun v hv hp ↦ hv (hU v hp)
+  have h_bad : bad.Finite := finite_ramified U.toOpenSubgroup.isOpen'
+  have h_bad_p : ∀ v ∈ bad, ↑p ∉ v.asIdeal := fun v hv hp ↦ hv (hU v hp)
   obtain ⟨k, hQ_S, hQ_m, h_ram, h_class⟩ := ((mem_large S.finite_toSet hS).and
     ((dvd_large (NeZero.ne m) hm).and ((mem_large h_bad h_bad_p).and class_large))).exists
   have hQ_ne : Q k ≠ 0 := by grind [Finset.prod_ne_zero_iff]
@@ -253,8 +262,8 @@ lemma exists_fix_roots_of_units {m : ℕ} [NeZero m] (U : OpenNormalSubgroup Gal
   have h_image : (roots.map mul).FG := .of_le h_units (map_comap_le mul _)
   obtain ⟨t, ht⟩ : roots.FG := fg_of_fg_map_of_fg_inf_ker mul h_image h_ker
   -- An open normal subgroup `O` fixes the finitely many generators.
-  have h_cont : Continuous fun p : Gal(Ω/K) × t ↦ (unitsModule Gal(Ω/K)).ρ p.1 p.2.1 :=
-    (unitsModule Gal(Ω/K)).continuous.comp (continuous_id.prodMap continuous_subtype_val)
+  have h_cont : Continuous fun p : Gal(Ω/K) × t ↦ (unitsModule Gal(Ω/K)).ρ p.1 p.2.val :=
+    (unitsModule Gal(Ω/K)).continuous.comp (continuous_id.prodMap continuous_subtypeVal)
   obtain ⟨O, hO⟩ := exists_openNormalSubgroup_apply_eq h_cont
   refine ⟨O, fun g h hgh y hy ↦ LinearMap.eqOn_span (fun x hx ↦ ?_) (ht.ge hy)⟩
   have h_fix : unitsRep (g⁻¹ * h) x = x := by
@@ -270,14 +279,14 @@ dividing `q` with Frobenius elements `s.φ` in `U`) indexed by the cosets of `O`
 `p`, such that the Frobenius element at the coset of `g ∈ U` lies in that coset. -/
 lemma exists_splitPlaces_frob_mem_coset {m : ℕ} [NeZero m] {U : OpenNormalSubgroup Gal(Ω/K)}
     (hU : ∀ g ∈ U, cyclotomicCharMod Ω m g = 1)
-    (S : Finset (FinPlace K)) {p : ℕ} [NeZero p] (hmp : m.Coprime p) (hSp : ∀ v ∈ S, ↑p ∉ v.1)
-    (hUp : ∀ v : FinPlace K, ↑p ∈ v.1 → ∀ B : ClosurePlace, IsPlaceOver B v →
+    (S : Finset (FinPlace K)) {p : ℕ} [NeZero p] (hmp : m.Coprime p) (hSp : ∀ v ∈ S, ↑p ∉ v.asIdeal)
+    (hUp : ∀ v : FinPlace K, ↑p ∈ v.asIdeal → ∀ B : ClosurePlace, IsPlaceOver B v →
       inertiaGroup Gal(Ω/K) B ≤ U) :
     ∃ q : ℕ, ∃ _ : NeZero q, q.Coprime p ∧
       (∀ v ∈ S, ↑q ∈ v.asIdeal) ∧
       ∀ O : OpenNormalSubgroup Gal(Ω/K), ∃ I : Set Gal(Ω/K),
         ∃ s : SplitPlaces m q I U (Gal(Ω/K) ⧸ O.toOpenSubgroup.toSubgroup),
-        (∀ i : Gal(Ω/K) ⧸ (O.toOpenSubgroup : Subgroup Gal(Ω/K)), ↑p ∉ (s.v i).1) ∧
+        (∀ i : Gal(Ω/K) ⧸ (O.toOpenSubgroup : Subgroup Gal(Ω/K)), ↑p ∉ (s.v i).asIdeal) ∧
         ∀ g ∈ U, (s.φ g : Gal(Ω/K) ⧸ O.toOpenSubgroup.toSubgroup) = g := by
   -- Take a large multiple `q` of `m`. Chebotarev gives, outside any finite set, a prime for each
   -- coset; repeating this makes the primes of different cosets distinct.
@@ -350,33 +359,33 @@ lemma exists_three_values {m : ℕ} [NeZero m] [Module (ZMod m) M] {q : ℕ}
     (hU : M.TrivialOn U.1.1) (hc : ∀ {c : Gal(Ω/K)}, IsComplexConj c → c ∉ U) {i j k : J}
     {g : Gal(Ω/K)} (hφ : ∀ y : DiscreteUnits Ω, m • y ∈ fixedSUnits q U →
       unitsRep (s.φ j * (g * s.φ k * g⁻¹)) y = unitsRep (s.φ i) y) (a : M) :
-    ∃ P ∈ M.trivialisedCocycles (PlaceAboveLevel q) I, ∀ n : J, P.2 (γ n) =
+    ∃ P ∈ M.trivializedCocycles (PlaceAboveLevel q) I, ∀ n : J, P.2 (γ n) =
       (if n = i then a else 0) - (if n = j then a else 0) -
-        if n = k then (cyclotomicCharMod Ω m g).1 • M.ρ g⁻¹ a else 0 := by
+        if n = k then (cyclotomicCharMod Ω m g).val • M.ρ g⁻¹ a else 0 := by
   classical
   -- `b y i` is the power residue symbol: by `hb`, the root of unity with exponent `b y i` is
   -- `φ i x - x` whenever `m • x = y`. A linear relation `f` among the symbols of all units gives a
   -- cocycle with values read off from `f`.
   obtain ⟨b, hb, -, exists_cocycle⟩ := s.power_residue_reciprocity γ hγ hU
   -- A real place of the field of `U` would give a complex conjugation in `U`.
-  have h_complex : IsTotallyComplex (fixedFieldOf (K := K) U.1.1) :=
+  have h_complex : IsTotallyComplex (fixedFieldOf (K := K) U.toOpenSubgroup.toSubgroup) :=
     ⟨fun w ↦ not_isReal_iff_isComplex.1 fun hw ↦
-      have ⟨⟨_, hc_mem⟩, hc_conj⟩ := exists_isComplexConj U.1.1 hw
+      have ⟨⟨_, hc_mem⟩, hc_conj⟩ := exists_isComplexConj U.toOpenSubgroup.toSubgroup hw
       hc hc_conj hc_mem⟩
   -- With `m • x = y`: `φ i x - x = (φ j x - x) + φ j g (φ k g⁻¹ x - g⁻¹ x)`, and `φ j * g` acts on
   -- roots of unity by `cyclotomicCharMod Ω m (φ j * g) = cyclotomicCharMod Ω m g`.
   have symbol (y : fixedSUnits q U) :
       b y i = b y j + cyclotomicCharMod Ω m g * b (fixedSUnitsRep q U (↑g)⁻¹ y) k := by
-    obtain ⟨x, hx⟩ : ∃ x : DiscreteUnits Ω, m • x = y := y.1.exists_nsmul (ne m)
+    obtain ⟨x, hx⟩ : ∃ x : DiscreteUnits Ω, m • x = y := y.val.exists_nsmul (ne m)
     have hgx : m • unitsRep g⁻¹ x = fixedSUnitsRep q U (↑g)⁻¹ y := by rw [← map_nsmul, hx]; rfl
     have h_char : cyclotomicCharMod Ω m (s.φ j * g) = cyclotomicCharMod Ω m g := by
       rw [map_mul, s.cyclotomicCharMod_eq_one (s.φ j) (s.isFrob j).2, one_mul]
-    apply (rootPowHom Ω m).2.1
+    apply (rootPowHom Ω m).property.1
     rw [← h_char, map_add, map_cyclotomicCharMod_mul, hb y x hx, hb y x hx, hb _ _ hgx,
       ← hφ x (by simp [hx])]
     simp
   let χ : ZMod m := cyclotomicCharMod Ω m g
-  let f : J × (Gal(Ω/K) ⧸ U.1.1) → ZMod m :=
+  let f : J × (Gal(Ω/K) ⧸ U.toOpenSubgroup.toSubgroup) → ZMod m :=
     Pi.single (i, 1) 1 - Pi.single (j, 1) 1 - Pi.single (k, (g : Gal(Ω/K) ⧸ U.1.1)⁻¹) χ
   -- By `symbol`, `f` is a relation; so `P.2 (γ n) = ∑ δ, δ (f (n, δ) • a)` for some cocycle `P`.
   -- (The finite sum over `J × (Gal(Ω/K) ⧸ U)` in the relation is evaluated by `simp`.)
@@ -385,8 +394,8 @@ lemma exists_three_values {m : ℕ} [NeZero m] [Module (ZMod m) M] {q : ℕ}
   refine ⟨P, hP, fun n ↦ ?_⟩
   -- The representative of the coset of `x` acts on `M` as `x` does.
   have out_act (x : Gal(Ω/K)) (b : M) : M.ρ (x : Gal(Ω/K) ⧸ U.1.1).out b = M.ρ x b := by
-    obtain ⟨u, hu⟩ := mk_out_eq_mul U.1.1 x
-    simp [hu, hU u u.2]
+    obtain ⟨u, hu⟩ := mk_out_eq_mul U.toOpenSubgroup.toSubgroup x
+    simp [hu, hU u u.property]
   -- In the sum over cosets only the coset of `1` and, for `k`, that of `g⁻¹` contribute.
   simp [P_val, f, χ, Pi.single_apply, apply_ite (M.ρ _), ite_and, ← mk_inv, ← mk_one, out_act,
     ZMod.map_smul, sub_smul]
@@ -396,23 +405,23 @@ over `v`, and let `L v` contain the local coboundaries for `v ∈ S`. If `q` lie
 `S`, the part `P.2` of a cocycle `P` trivialised above `q` and infinity and zero on the inertia set
 `I` of `s` is a Selmer cocycle (in `L v` at each `v ∈ S`, zero at complex conjugations) that may
 ramify at the split primes of `s`. -/
-lemma trivialised_mem_selmer (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, M.ρ g = 1)
+lemma trivialized_mem_selmer (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, M.ρ g = 1)
     (hA : ∀ v : FinPlace K, IsPlaceOver (A v) v)
     (L : ∀ v : FinPlace K, Submodule R (decompGroup Gal(Ω/K) (A v) → M))
     (hL : ∀ v ∈ S, (coboundaryMap (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ).range ≤ L v)
     (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) {m : ℕ} [NeZero m] {q : ℕ}
     {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
-    {J : Type} (s : SplitPlaces m q I U J) (hS : ∀ v ∈ S, ↑q ∈ v.1)
+    {J : Type} (s : SplitPlaces m q I U J) (hS : ∀ v ∈ S, ↑q ∈ v.asIdeal)
     {P : (PlaceAboveLevel q → M) × (Gal(Ω/K) → M)}
-    (hP : P ∈ M.trivialisedCocycles (PlaceAboveLevel q) I) :
+    (hP : P ∈ M.trivializedCocycles (PlaceAboveLevel q) I) :
       P.2 ∈ selmerZ1 M S A L (range s.v) := by
   -- On the stabiliser of a place `x` the cocycle is the coboundary of `P.1 x`.
   have ⟨_, h_triv, h_inertia⟩ := hP
   have cob (x : PlaceAboveLevel q) (g : Gal(Ω/K)) (hg : g • x = x) :
       M.ρ g (P.1 x) - P.1 x = P.2 g := by rw [h_triv g x, hg, add_sub_cancel_left]
-  refine ⟨⟨trivialisedCocycles.snd_mem_Z1 hP, fun g ⟨v, hv, B, hB, hg⟩ ↦ ?_⟩, fun v hv ↦ ?_,
+  refine ⟨⟨trivializedCocycles.snd_mem_Z1 hP, fun g ⟨v, hv, B, hB, hg⟩ ↦ ?_⟩, fun v hv ↦ ?_,
     fun c ⟨j, hj⟩ ↦ ?_⟩
-  · by_cases hq : ↑q ∈ v.1
+  · by_cases hq : ↑q ∈ v.asIdeal
     · -- Above `q` and outside `S`, inertia acts trivially, so the coboundary vanishes.
       have h_fix : M.ρ g = 1 := hu g ⟨v, fun h ↦ hv (.inl h), B, hB, hg⟩
       simp [← cob (.inl ⟨B, hB.valuation_natCast_lt_one_iff.2 hq⟩) g
@@ -444,7 +453,7 @@ lemma card_relations_ge (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
     (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) {m : ℕ} [NeZero m] [Finite M]
     {q : ℕ} {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
     {ι : Type} [NeZero q] [Fintype ι] (s : SplitPlaces m q I U ι) (γ : ι → Gal(Ω/K))
-    (hS : ∀ v ∈ S, ↑q ∈ v.1) (h_few : M.HasFewCocycles (PlaceAboveLevel q) I (card ι + 1))
+    (hS : ∀ v ∈ S, ↑q ∈ v.asIdeal) (h_few : M.HasFewCocycles (PlaceAboveLevel q) I (card ι + 1))
     (h_le : selmerZ1 M S A L ∅ ≤ selmerZ1 M S A L (range s.v))
     (h_zero : ∀ x ∈ selmerZ1 M S A L ∅, ∀ i : ι, x (γ i) = 0) :
     Nat.card (selmerZ1 M S A L ∅) * Nat.card M ^ (#S + card (InfinitePlace K)) ≤

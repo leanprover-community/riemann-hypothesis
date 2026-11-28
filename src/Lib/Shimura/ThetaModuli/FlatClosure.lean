@@ -1,6 +1,17 @@
+module
+
+public import Mathlib.Algebra.Group.Ideal
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.Algebra.Order.Group.Ideal
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Data.Finsupp.PWO
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
+public import Lib.General.Geometry.GeometricPoints
 import Lib.General.Algebra.MultivariatePolynomials
-import Lib.General.Geometry.GeometricPoints
 import Lib.General.LinearAlgebra.MatrixPolynomials
+public import TauCeti.RingTheory.MvPolynomial.Finrank
 
 /-!
 # Flat families of ideals cut out by points and the flat closure of theta points
@@ -43,6 +54,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.ThetaModuli.UniversalFamily` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -142,10 +155,6 @@ structure IsCutOut (r i : ℕ) (σ : ℕ → ℕ) (c : J) (p : ι → J → k) (
 lemma restrictSupport_le_homogeneousSubmodule {M : Set (J →₀ ℕ)} :
     restrictSupport A (degree ⁻¹' {d} \ M) ≤ homogeneousSubmodule J A d :=
   (restrictSupport_mono A sdiff_le).trans (homogeneousSubmodule_eq_finsupp_supported J A d).ge
-
-variable [Finite J] in
-/-- In finitely many variables the forms of degree `d` form a finite `A`-module. -/
-instance : Module.Finite A (homogeneousSubmodule J A d) := of_fg (homogeneousSubmodule_fg J A d)
 
 /-! ### Flatness -/
 
@@ -575,12 +584,15 @@ section Charts
 variable {J : Type} {X : Scheme} {R : CommRingCat} {L : LineBundle X J} {s : X ⟶ Spec R}
   {u : ∀ c : J, MvPolynomial J R →+* Γ(X, L.opens c)}
 
+private abbrev chartPresentationCover (hu : ∀ c : J, IsChartPresentation L s c (u c)) :
+    X.OpenCover :=
+  (AffineOpenCover.ofIsOpenCover _ (cover L) fun c ↦ (hu c).isAffineOpen).openCover
+
 /-- `X` is flat over `Spec R` if the ring of each chart is a flat `R`-module. -/
 lemma flat_of_isChartPresentation (hu : ∀ c : J, IsChartPresentation L s c (u c))
     (h_flat : ∀ c : J, Module.Flat R (MvPolynomial J R ⧸ ker (u c))) : Flat s := by
-  let charts : X.OpenCover :=
-    (AffineOpenCover.ofIsOpenCover _ (cover L) fun c ↦ (hu c).isAffineOpen).openCover
-  refine HasRingHomProperty.instIsZariskiLocalAtSource.of_openCover charts fun c ↦ ?_
+  refine HasRingHomProperty.instIsZariskiLocalAtSource.of_openCover
+    (chartPresentationCover hu) fun c ↦ ?_
   -- (`RespectsIso` takes the property with its implicit arguments, hence `@`)
   obtain ⟨h_comp_equiv, -⟩ : RingHom.RespectsIso @RingHom.Flat := respectsIso
   have h_alg : ((u c).comp C).Flat := h_comp_equiv _
@@ -591,8 +603,7 @@ lemma flat_of_isChartPresentation (hu : ∀ c : J, IsChartPresentation L s c (u 
 /-- `X` is reduced if the ideal of each chart is radical. -/
 lemma isReduced_of_isChartPresentation (hu : ∀ c : J, IsChartPresentation L s c (u c))
     (h_rad : ∀ c : J, (ker (u c)).IsRadical) : IsReduced X := by
-  let charts : X.OpenCover :=
-    (AffineOpenCover.ofIsOpenCover _ (cover L) fun c ↦ (hu c).isAffineOpen).openCover
+  let charts := chartPresentationCover hu
   have h_chart (c : charts.I₀) : IsReduced (charts.X c) :=
     (affine_isReduced_iff _).mpr
       ((ker_isRadical_iff_reduced_of_surjective (hu c).surjective).mp (h_rad c))
@@ -613,7 +624,7 @@ lemma isDenseFamily_of_isChartPresentation {J W : Type} {X : Scheme} {L : LineBu
     IsDenseFamily x := by
   -- Otherwise a basic open set of some `u c f` contains a point `y` and misses all the `x v`.
   -- Then `f` vanishes at the `θ v`, so `u c f = 0` and the basic open set is empty.
-  show ∀ y : X, y ∈ closure (Set.range fun v : W ↦ x v (IsLocalRing.closedPoint ℂ))
+  change ∀ y : X, y ∈ closure (Set.range fun v : W ↦ x v (IsLocalRing.closedPoint ℂ))
   intro y
   by_contra hy
   obtain ⟨c, hc⟩ := TopologicalSpace.IsOpenCover.exists_mem (cover L) y
@@ -676,7 +687,7 @@ lies in the kernel of `u` exactly when, for every `a` and every `ψ : stalk → 
 factors, the image of `f` under `ψ` vanishes at every point `θ a v / (θ a v) c` with
 `(θ a v) c ≠ 0`. -/
 lemma IsChartPresentation.mem_ker_stalk_iff {J W ι : Type} [Finite ι] {A S : Scheme} [IsReduced A]
-    [IsReduced S] {N : LineBundle A J} {z : A ⟶ S} {p : S} {c : J}
+    {N : LineBundle A J} {z : A ⟶ S} {p : S} {c : J}
     {u : MvPolynomial J (S.presheaf.stalk p) →+*
       Γ(pullback z (S.fromSpecStalk p), (N.pull (fst z (S.fromSpecStalk p))).opens c)}
     (hu : IsChartPresentation (N.pull (fst z (S.fromSpecStalk p))) (snd z (S.fromSpecStalk p)) c u)

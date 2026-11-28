@@ -1,4 +1,17 @@
+module
+
+import Mathlib.RingTheory.Ideal.Quotient.HasFiniteQuotients.Norm
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.GaloisRep.Main.AttachedRepresentations
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.ClassField.Global.ArtinMap
 import Lib.GaloisRep.Main.OddRank
+import Lib.GaloisRep.Main.QuadraticStep
+import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # Local-global compatibility for the ℓ-adic avatar of an algebraic Hecke character
@@ -35,6 +48,8 @@ Hodge–Tate, Tate's theorem); B. Conrad, Lifting global representations with lo
 App. B (crystalline case).
 -/
 
+@[expose] public section
+
 open NumberField Polynomial New.AlgHeckeChar Filter New.Variety Submodule AlgEquiv
 
 /-- Let `E` be a totally complex number field and `L ⊇ E` a CM field, both inside the fixed
@@ -57,12 +72,11 @@ lemma New.GaloisRep.avatar_baseChange {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] 
       dense_of_mostFrobenii (eventually_mostFrobenii (eventually_notMem_star_notMem (E := L) ℓ ∅)
         fun y ⟨_, _, hℓ⟩ ↦ h_at_frob y hℓ)
     exact congrFun (Continuous.ext_on h_dense (by fun_prop) (by fun_prop) fun _ hg ↦ hg) g
-
   intro y hℓ
   obtain ⟨x, -, hx⟩ := y.isPlaceOver.exists_localArtin_eq y.isFrob_inv 1
   -- `y.frob` is the Artin symbol of `x` and its restriction is that of the norm of `x`.
   have h_norm := (y.isPlaceOver.localArtin_localNorm (restrictScalarsHom E)
-    (hj := IsScalarTower.algebraMap_apply E L Ω)).1 hx
+    (hj := IsScalarTower.algebraMap_apply E L Ω)).localArtin_localNorm hx
   ext
   calc ((θ.baseChange (E := L)).avatar y.frob).val
       = ιℓ (θ.val.1 (Units.map (adeleNorm E L) (locIdele y.place x))) :=
@@ -193,17 +207,18 @@ lemma New.GaloisRep.avatarCompatAt_of_hasPrimitiveRoot5040 {ℓ : ℕ} [ThePrime
     [HasPrimitiveRoot5040 E] (θ : AlgHeckeChar E) :
     AvatarCompatAt w θ := by
   intro A hA
-  -- The field `L` of `exists_isStep_hasQuadSubfield` for `n = w.q` is fixed by the decomposition
-  -- group of `A` (`h_dec`), so the place `u` of `L` under `A` has the norm of `w`; and `u` lies
-  -- over a split place of an imaginary quadratic subfield (`h_spl`), so it is split.
-  obtain ⟨χ, D, _, _, -, h_spl, h_dec⟩ := exists_isStep_hasQuadSubfield E w.q w.one_lt_q.ne_bot
+  -- The field `L` of `exists_isQuadraticStep` for `n = w.q` is fixed by the decomposition group of
+  -- `A`, so the place `u` of `L` under `A` has the norm of `w`; and `u` lies over a split place of
+  -- an imaginary quadratic subfield, so it is split.
+  obtain ⟨χ, D, _, h_quad⟩ := exists_isQuadraticStep E w.q w.one_lt_q.ne_bot
   let L : IntermediateField E Ω := QZChar.stepField χ
   let j : Gal(Ω/L) →* Gal(Ω/E) := restrictScalarsHom E
-  have h_fix : decompGroup Gal(Ω/E) A ≤ QZChar.ker (QZChar.symmetrise χ) :=
-    (h_dec hA w.1.absNorm_mem).1
+  have h_fix : decompGroup Gal(Ω/E) A ≤ QZChar.ker (QZChar.symmetrize χ) :=
+    h_quad.decompGroup_le_ker_symmetrise hA w.asIdeal.absNorm_mem
   obtain ⟨u, hu, rfl⟩ : ∃ u : FinPlace L, IsPlaceOver A u ∧ u.below E = w := hA.exists_above
   have hq : u.q = (u.below E).q := (hA.q_eq_and_comap_ne_self_of_decompGroup_le h_fix u rfl).1
-  have hu_split : u.IsSplit := (h_spl u (by simpa [← hq] using u.1.absNorm_mem)).isSplit_of_below
+  have hu_split : u.IsSplit :=
+    (h_quad.isSplitPrimeToDisc_below u (by simpa [← hq] using u.1.absNorm_mem)).isSplit_of_below
   obtain ⟨h_fin, h_jump, h_poly⟩ := avatarCompatAt_of_isSplit hu_split θ.baseChange hu
   -- The three clauses descend from `L` to `E`, as the avatar over `L` is the restriction of the
   -- avatar over `E`.
@@ -218,9 +233,9 @@ lemma New.GaloisRep.avatarCompatAt_of_hasPrimitiveRoot5040 {ℓ : ℕ} [ThePrime
   refine ⟨desc_fin h_fin, desc_jump (by simp) h_jump, fun s m hm hs ↦ ?_⟩
   -- `s` fixes `L`, so it is the image of an `s'` in `Gal(Ω/L)`; take the norm of the element `y`
   -- that belongs to `s'`.
-  let s' : Gal(Ω/L) := .ofRingEquiv (f := s) fun x ↦ x.2 ⟨s, h_fix (inv_mem_iff.1 hs.1)⟩
+  let s' : Gal(Ω/L) := .ofRingEquiv (f := s) fun x ↦ x.property ⟨s, h_fix (inv_mem_iff.1 hs.1)⟩
   obtain ⟨y, hy_val, hy_art, hy_poly⟩ := h_poly s' m hm (by rwa [hq])
   refine ⟨localNorm E u y, by simp [v_localNorm (f := 1), hq, hy_val],
-    (hu.localArtin_localNorm j).1 hy_art, ?_⟩
+    (hu.localArtin_localNorm j).localArtin_localNorm hy_art, ?_⟩
   rw [← adeleNorm_locIdele]
   exact desc_poly s' (Set.mem_univ s') hy_poly

@@ -1,4 +1,7 @@
-import Lib.DiscreteSeries.Theta.FockDualPair
+module
+
+import Mathlib.Algebra.Order.Star.Int
+public import Lib.DiscreteSeries.Theta.FockDualPair
 
 /-!
 # Weights of matched pairs and uniqueness of joint harmonics in Fock space
@@ -12,16 +15,15 @@ The proof of uniqueness has three steps.
 * The weights relative to the vacuum: `New.IsMatch.relWeight_eq_neg`,
   `New.IsMatch.sign_mul_relWeight_nonneg`.
 * Both polarisations in a raising operator kill a highest harmonic polynomial, and a row has
-  variables of one sign: `New.DiscreteSeries.polarisation_eq_zero_of_isCompactPrimitive`,
-  `New.DiscreteSeries.polarisation_self_eq_smul_of_isCompactPrimitive`.
+  variables of one sign: `New.DiscreteSeries.polarization_eq_zero_of_isCompactPrimitive`,
+  `New.DiscreteSeries.polarization_self_eq_smul_of_isCompactPrimitive`.
 * Such a polynomial does not vanish at the 0-1 matrix of the matching:
   `New.IsMatch.eval_matchingPoint_ne_zero`.
 
 ## Main definitions and results
 
-* `New.IsMatch.unique`, `New.IsJointHarmonic.exists_eq_smul_of_row_weight`,
-  `New.IsJointHarmonic.exists_eq_smul_of_column_weight`: the joint harmonic is unique up to a
-  scalar, and one of its two weights suffices for this.
+* `New.IsMatch.unique`, `New.IsJointHarmonic.exists_eq_smul_of_row_weight`: the joint harmonic is
+  unique up to a scalar, and its row weight suffices for this.
 * `New.IsMatch.eval_matchingPoint_ne_zero`: a pre-joint harmonic does not vanish at the point
   `New.FockDualPair.matchingPoint`, the 0-1 matrix of the matching.
 
@@ -43,6 +45,8 @@ Notions from other files:
 
 Known; see `Lib.DiscreteSeries.Theta.LocalCorrespondence` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -117,8 +121,8 @@ matched with column `c`, that `0 ≤ F r` when the centred parameter `l r - 2γ 
 `card C - card R` in absolute value. -/
 theorem IsMatch.sum_cols_le_sum_rows (hm : IsMatch T l l') (F : R → ℤ) (G : C → ℤ)
     (h_matched : ∀ (r : R) (c : C), T.IsMatchedPair l l' r c → G c ≤ F r)
-    (h_rows : ∀ r : R, |T.centredParam l r| < card R - card C → 0 ≤ F r)
-    (h_cols : ∀ c : C, |T.swap.centredParam l' c| < card C - card R → G c ≤ 0) :
+    (h_rows : ∀ r : R, |T.centeredParam l r| < card R - card C → 0 ≤ F r)
+    (h_cols : ∀ c : C, |T.swap.centeredParam l' c| < card C - card R → G c ≤ 0) :
     ∑ c : C, G c ≤ ∑ r : R, F r := by
   -- The matching is a partial bijection. Compare both sides with the sum of `F r` over the matched
   -- pairs `(r, c)`.
@@ -150,21 +154,15 @@ theorem IsMatch.relWeight_eq_neg (hm : IsMatch T l l') {r : R} {c : C}
   -- of `r` is the negative of that of `c` and exceeds `|card R - card C|` in absolute value.
   let F (j : R) : ℤ := T.swap.varSign (c, j) - ε r * ε j * (l j - l r).sign
   let G (d : C) : ℤ := ε' c * ε' d * (l' d - l' c).sign - T.varSign (r, d)
-  have matched (j : R) (d : C) (hjd : T.IsMatchedPair l l' j d) : G d = F j := by
-    grind [pairSign, val_mul, Units.val_neg]
-  have free_row (j : R) (hj : |T.centredParam l j| < card R - card C) : F j = 0 := by
-    grind [pairSign, val_mul, Units.val_neg]
-  have free_col (d : C) (hd : |T.swap.centredParam l' d| < card C - card R) : G d = 0 := by
-    grind [pairSign, val_mul, Units.val_neg]
-  have sum_eq : ∑ d : C, G d = ∑ j : R, F j :=
-    le_antisymm
-      (hm.sum_cols_le_sum_rows F G (fun j d hjd ↦ (matched j d hjd).le)
-        (fun j hj ↦ (free_row j hj).ge) fun d hd ↦ (free_col d hd).le)
-      (by simpa using hm.sum_cols_le_sum_rows (-F) (-G)
-            (fun j d hjd ↦ neg_le_neg (matched j d hjd).ge)
-            (fun j hj ↦ neg_nonneg.2 (free_row j hj).le) fun d hd ↦ neg_nonpos.2 (free_col d hd).ge)
+  have hle (s : ℤ) : ∑ d : C, s * G d ≤ ∑ j : R, s * F j :=
+    hm.sum_cols_le_sum_rows (fun j ↦ s * F j) (fun d ↦ s * G d)
+      (fun j d hjd ↦ by grind [pairSign, val_mul, Units.val_neg])
+      (fun j hj ↦ by grind [pairSign, val_mul, Units.val_neg])
+      (fun d hd ↦ by grind [pairSign, val_mul, Units.val_neg])
+  have h1 := hle 1
+  have h2 := hle (-1)
   have param : l r - 2 * T.rowShift + card C = -(l' c - 2 * T.columnShift + card R) := hrc.1
-  simp only [F, G, sum_sub_distrib] at sum_eq
+  simp only [F, G, one_mul, neg_mul, sum_neg_distrib, sum_sub_distrib] at h1 h2
   linarith [hm.hasGap_row.two_mul_relWeight (T := T) r,
     hm.hasGap_column.two_mul_relWeight (T := T.swap) c]
 
@@ -172,31 +170,31 @@ theorem IsMatch.relWeight_eq_neg (hm : IsMatch T l l') {r : R} {c : C}
 `l r - 2 * γ + card C` exceeds `card C - card R`, then `T.relWeight l r`, the weight of the lowest
 `K`-type in row `r` relative to the vacuum, has the sign `s` or is zero. -/
 theorem IsMatch.sign_mul_relWeight_nonneg (hm : IsMatch T l l') (r : R) (s : ℤˣ)
-    (hr : card C - card R < (s : ℤ) * T.centredParam l r) :
+    (hr : card C - card R < (s : ℤ) * T.centeredParam l r) :
     0 ≤ s * T.relWeight l r := by
   have inj : Function.Injective l := hm.hasGap_row.injective
   have parity (j : R) : Even (l j + card R - 1) := hm.hasGap_row.parity j
   have gap (i j : R) (hij : (ε i : ℤ) ≠ ε j) : 2 * card R ≤ |l i - l j| := by
     have hg : l.HasGap (card R) := hm.hasGap_row.mono (mod_cast by cases card R <;> lia)
     exact_mod_cast hg.gap i j fun h_eq ↦ hij (by rw [h_eq])
-  -- The numbers `s * T.centredParam l j + card R - card C` are odd and distinct; write them as
+  -- The numbers `s * T.centeredParam l j + card R - card C` are odd and distinct; write them as
   -- `2 * v j + 1`. At most `v r + 1` rows have `0 ≤ v j ≤ v r`.
-  let v (j : R) : ℤ := (s * T.centredParam l j + card R - card C) / 2
+  let v (j : R) : ℤ := (s * T.centeredParam l j + card R - card C) / 2
   let S : Finset ℤ := Icc 0 (v r)
   have card_le : #{j : R | v j ∈ S} ≤ #S :=
     card_le_card_of_injOn v (fun j hj ↦ by simpa using hj) fun i _ j _ hij ↦ by grind
   specialize parity r
-
   -- Termwise comparison. Column terms are `≤ 0`, and row terms with `v j ∈ S` are `≥ 0`. For
   -- `v j ∉ S` a matched row has the term of its column, and an unmatched row is close to `r`, so
   -- `ε j = ε r` by `gap` and its term is `0`.
   let F (j : R) : ℤ := s * (ε r * ε j * (l j - l r).sign) + (if v j ∈ S then 2 else 0) - 1
   let G (c : C) : ℤ := s * T.varSign (r, c) - 1
   have matched (j : R) (c : C) (hjc : T.IsMatchedPair l l' j c) : G c ≤ F j := by
-    have j_large : |(card R - card C : ℤ)| < T.globalSign * ε j * ε' c * T.centredParam l j := hjc.2
+    have j_large : |(card R - card C : ℤ)| < T.globalSign * ε j * ε' c * T.centeredParam l j :=
+        hjc.2
     have sign_rc : (T.varSign (r, c) : ℤ) = T.globalSign * ε r * ε' c := by simp [pairSign]
     grind
-  have free_row (j : R) (hj : |T.centredParam l j| < card R - card C) : 0 ≤ F j := by
+  have free_row (j : R) (hj : |T.centeredParam l j| < card R - card C) : 0 ≤ F j := by
     grind [gap r j]
   have key : s * ∑ c : C, (T.varSign (r, c) : ℤ) ≤
       s * ∑ j : R, ε r * ε j * (l j - l r).sign + #{j : R | v j ∈ S} * 2 - card R + card C := by
@@ -218,14 +216,14 @@ A compact raising operator `E a b` is the difference of two polarisations. -/
 `l b < l a`. Then the two polarisations whose difference is `E a b P` are equal: `∑ X_ac ∂_bc P`
 over the columns `c` where `(b, c)` has sign `1`, and `∑ X_bc ∂_ac P` over those where it has sign
 `-1`. -/
-theorem DiscreteSeries.polarisation_one_eq_of_lt [DecidableEq R] [DecidableEq C]
+theorem DiscreteSeries.polarization_one_eq_of_lt [DecidableEq R] [DecidableEq C]
     {P : MvPolynomial ι ℂ}
     (h_prim : T.oscRows.IsCompactPrimitive l P) {a b : R} (hab : ε a = ε b) (h_lt : l b < l a) :
-    T.polarisation P a b 1 = T.polarisation P b a (-1) := by
+    T.polarization P a b 1 = T.polarization P b a (-1) := by
   have h_ne : a ≠ b := fun h ↦ h_lt.ne (congrArg l h.symm)
-  have h_E : T.oscRows.E a b P = T.polarisation P a b 1 - T.polarisation P b a (-1) +
+  have h_E : T.oscRows.E a b P = T.polarization P a b 1 - T.polarization P b a (-1) +
       (if a = b then (T.vacuumWeight (ε a) : ℂ) else 0) • P :=
-    oscRows_E_eq_polarisation_sub hab
+    oscRows_E_eq_polarization_sub hab
   rw [h_prim a b hab h_lt, ite_eq_right h_ne, zero_smul, add_zero] at h_E
   exact sub_eq_zero.1 h_E.symm
 
@@ -234,11 +232,11 @@ rows for `l` and by the Laplacians of the columns. For rows `a`, `b` of equal si
 polarisations `∑ X_bc ∂_ac P` over the columns `c` where `(a, c)` has sign `-s` and `∑ X_ac ∂_bc P`
 over those where it has sign `s` are orthogonal for the Fischer inner product. For `s = 1` and
 `a ≠ b` these are the two parts of `E a b P`. -/
-theorem DiscreteSeries.inner_polarisation_eq_zero [DecidableEq R] [DecidableEq C]
+theorem DiscreteSeries.inner_polarization_eq_zero [DecidableEq R] [DecidableEq C]
     {P : MvPolynomial ι ℂ} (hl : l.Injective)
     (h_prim : T.oscRows.IsCompactPrimitive l P) (h_harm : T.swap.IsLaplaceHarmonic P) (s : ℤˣ)
     {a b : R} (hab : ε a = ε b) :
-    ⟪T.polarisation P b a (-s), T.polarisation P a b s⟫_ℂ = 0 := by
+    ⟪T.polarization P b a (-s), T.polarization P a b s⟫_ℂ = 0 := by
   -- The pairing in the claim is `N s a b`, which does not depend on `s`. The numbers `N 1 a b` are
   -- `≥ 0`, and their sum over the rows `b` with `ε b = ε a` is a pairing with the Laplacians of the
   -- columns, which is `0`. So all of them vanish.
@@ -253,24 +251,24 @@ theorem DiscreteSeries.inner_polarisation_eq_zero [DecidableEq R] [DecidableEq C
     simp only [u_comm a, u_comm b]
   -- `X` is adjoint to `pderiv`; no commutator term arises, as the two columns have opposite signs.
   have inner_pol (s : ℤˣ) {a b : R} (hab : ε a = ε b) :
-      ⟪T.polarisation P b a (-s), T.polarisation P a b s⟫_ℂ = N s a b := by
+      ⟪T.polarization P b a (-s), T.polarization P a b s⟫_ℂ = N s a b := by
     have sign_eq (c : C) : T.varSign (b, c) = T.varSign (a, c) := by simp only [pairSign, hab]
-    simp only [polarisation, sum_inner, sign_eq, N]
+    simp only [polarization, sum_inner, sign_eq, N]
     refine sum_congr rfl fun d hd ↦ (inner_sum ..).trans (sum_congr rfl fun c hc ↦ ?_)
     have hcd : T.varEquiv (a, c) ≠ T.varEquiv (b, d) := by
       grind [T.varEquiv.injective.eq_iff, neg_units_ne_self]
     rw [inner_X_mul.1, pderiv_mul, pderiv_X_of_ne hcd, zero_mul, zero_add, inner_X_mul.2,
       u_comm b]
   -- `N 1 a b` is a sum of squared norms for `a = b`, and one squared norm by
-  -- `polarisation_one_eq_of_lt` otherwise.
+  -- `polarization_one_eq_of_lt` otherwise.
   have N_nonneg (a b : R) (hb : b ∈ univ.filter (ε · = ε a)) : 0 ≤ N 1 a b := by
     have hab : ε a = ε b := (mem_filter.1 hb).2.symm
     obtain h_lt | h_eq | h_gt := lt_trichotomy (l b) (l a)
-    · rw [← inner_pol 1 hab, polarisation_one_eq_of_lt h_prim hab h_lt]
+    · rw [← inner_pol 1 hab, polarization_one_eq_of_lt h_prim hab h_lt]
       exact CStarModule.inner_self_nonneg
     · obtain rfl : b = a := hl h_eq
       exact sum_nonneg fun d _ ↦ sum_nonneg fun c _ ↦ CStarModule.inner_self_nonneg
-    · rw [← N_neg, ← inner_pol (-1) hab, neg_neg, polarisation_one_eq_of_lt h_prim hab.symm h_gt]
+    · rw [← N_neg, ← inner_pol (-1) hab, neg_neg, polarization_one_eq_of_lt h_prim hab.symm h_gt]
       exact CStarModule.inner_self_nonneg
   -- Summing `u b c d` over the block of `a` gives a Laplacian of `P`, up to sign.
   have N_sum (a : R) : ∑ b with ε b = ε a, N 1 a b = 0 := by
@@ -302,72 +300,55 @@ theorem DiscreteSeries.inner_polarisation_eq_zero [DecidableEq R] [DecidableEq C
 rows for `l` and by the Laplacians of the columns. If the rows `a`, `b` have equal sign and
 `s * l b < s * l a`, then the polarisation `∑ X_ac ∂_bc P` over the columns `c` where `(b, c)` has
 sign `s` is zero. -/
-theorem DiscreteSeries.polarisation_eq_zero_of_isCompactPrimitive [DecidableEq R] [DecidableEq C]
+theorem DiscreteSeries.polarization_eq_zero_of_isCompactPrimitive [DecidableEq R] [DecidableEq C]
     {P : MvPolynomial ι ℂ} (hl : l.Injective) (h_prim : T.oscRows.IsCompactPrimitive l P)
     (h_harm : T.swap.IsLaplaceHarmonic P) {s : ℤˣ} {a b : R} (hab : ε a = ε b)
     (h_lt : s * l b < s * l a) :
-    T.polarisation P a b s = 0 := by
+    T.polarization P a b s = 0 := by
   -- The two parts of a raising operator are equal on `P`, and they are orthogonal.
-  have pol_eq : T.polarisation P b a (-s) = T.polarisation P a b s := by
+  have pol_eq : T.polarization P b a (-s) = T.polarization P a b s := by
     obtain rfl | rfl := units_eq_one_or s
-    · exact (polarisation_one_eq_of_lt h_prim hab (by simpa using h_lt)).symm
-    · exact polarisation_one_eq_of_lt h_prim hab.symm (by simpa using h_lt)
+    · exact (polarization_one_eq_of_lt h_prim hab (by simpa using h_lt)).symm
+    · exact polarization_one_eq_of_lt h_prim hab.symm (by simpa using h_lt)
   rw [← inner_self_eq_zero (𝕜 := ℂ)]
-  simpa only [pol_eq] using inner_polarisation_eq_zero hl h_prim h_harm s hab
+  simpa only [pol_eq] using inner_polarization_eq_zero hl h_prim h_harm s hab
 
 /-- Let the entries of `l` be distinct, let `P` be killed by the compact raising operators of the
 rows for `l` and by the Laplacians of the columns, and let `E a a` act on it by the entry `Λ_a` of
 the lowest `K`-type. Put `k = s * (Λ_a - v)`, where `v` is the weight of the vacuum in row `a`. If
 `k ≥ 0`, then `P` has degree `k` in the variables of sign `s` of row `a`, and it does not depend on
 the variables of sign `-s` of that row. -/
-theorem DiscreteSeries.polarisation_self_eq_smul_of_isCompactPrimitive [DecidableEq R]
-    [DecidableEq C] [Fintype ι] {P : MvPolynomial ι ℂ}
+theorem DiscreteSeries.polarization_self_eq_smul_of_isCompactPrimitive [DecidableEq R]
+    [DecidableEq C] {P : MvPolynomial ι ℂ}
     (hl : l.Injective) (h_prim : T.oscRows.IsCompactPrimitive l P)
     (h_harm : T.swap.IsLaplaceHarmonic P) {s : ℤˣ} {a : R}
     (h_wt : T.oscRows.E a a P = (l.lowestKType a : ℂ) • P) (h_nonneg : 0 ≤ s * T.relWeight l a) :
-    T.polarisation P a a s = ((s * T.relWeight l a : ℤ) : ℂ) • P ∧
+    T.polarization P a a s = ((s * T.relWeight l a : ℤ) : ℂ) • P ∧
       ∀ c : C, T.varSign (a, c) = -s → pderiv (T.varEquiv (a, c)) P = 0 := by
   set k : ℤ := s * T.relWeight l a with hk
-  have pol_diag : T.polarisation P a a s = T.polarisation P a a (-s) + (k : ℂ) • P := by
-    have h_E : T.oscRows.E a a P = T.polarisation P a a 1 - T.polarisation P a a (-1) +
-        (T.vacuumWeight (ε a) : ℂ) • P := by simp [oscRows_E_eq_polarisation_sub]
+  have pol_diag : T.polarization P a a s = T.polarization P a a (-s) + (k : ℂ) • P := by
+    have h_E : T.oscRows.E a a P = T.polarization P a a 1 - T.polarization P a a (-1) +
+        (T.vacuumWeight (ε a) : ℂ) • P := by simp [oscRows_E_eq_polarization_sub]
     obtain rfl | rfl := units_eq_one_or s <;> simp [hk, sub_smul, ← h_wt, h_E]
-  -- Orthogonality reads `‖Q‖ ^ 2 + k * ⟪Q, P⟫ = 0` for `Q = polarisation P a a (-s)`, and `⟪Q, P⟫`
+  -- Orthogonality reads `‖Q‖ ^ 2 + k * ⟪Q, P⟫ = 0` for `Q = polarization P a a (-s)`, and `⟪Q, P⟫`
   -- is the sum of the squared norms of the derivatives in question.
-  have inner_eq : ⟪T.polarisation P a a (-s), P⟫_ℂ = ∑ c with T.varSign (a, c) = -s,
+  have inner_eq : ⟪T.polarization P a a (-s), P⟫_ℂ = ∑ c with T.varSign (a, c) = -s,
       ⟪pderiv (T.varEquiv (a, c)) P, pderiv (T.varEquiv (a, c)) P⟫_ℂ := by
-    simp only [polarisation, sum_inner, inner_X_mul.1]
-  have inner_nonneg : 0 ≤ (k : ℂ) * ⟪T.polarisation P a a (-s), P⟫_ℂ := by
+    simp only [polarization, sum_inner, inner_X_mul.1]
+  have inner_nonneg : 0 ≤ (k : ℂ) * ⟪T.polarization P a a (-s), P⟫_ℂ := by
     rw [inner_eq]
     exact mul_nonneg (mod_cast h_nonneg) (sum_nonneg fun c _ ↦ CStarModule.inner_self_nonneg)
-  have orth : ⟪T.polarisation P a a (-s), T.polarisation P a a (-s)⟫_ℂ +
-      (k : ℂ) * ⟪T.polarisation P a a (-s), P⟫_ℂ = 0 := by
+  have orth : ⟪T.polarization P a a (-s), T.polarization P a a (-s)⟫_ℂ +
+      (k : ℂ) * ⟪T.polarization P a a (-s), P⟫_ℂ = 0 := by
     rw [← inner_smul_right, ← inner_add_right, ← pol_diag]
-    exact inner_polarisation_eq_zero hl h_prim h_harm s rfl
-  have pol_zero : T.polarisation P a a (-s) = 0 := inner_self_eq_zero.1
+    exact inner_polarization_eq_zero hl h_prim h_harm s rfl
+  have pol_zero : T.polarization P a a (-s) = 0 := inner_self_eq_zero.1
     ((add_eq_zero_iff_of_nonneg CStarModule.inner_self_nonneg inner_nonneg).1 orth).1
   refine ⟨by rw [pol_diag, pol_zero, zero_add], fun c hc ↦ ?_⟩
   rw [pol_zero, inner_zero_left] at inner_eq
   exact inner_self_eq_zero.1
     ((sum_eq_zero_iff_of_nonneg fun c _ ↦ CStarModule.inner_self_nonneg).1 inner_eq.symm c
       (mem_filter.2 ⟨mem_univ c, hc⟩))
-
-/-- Let the entries of `l` be distinct, and let `P` be killed by the compact raising operators of
-the rows and by the Laplacians of the columns. Fix a row `a` and a sign `s`. The polarisation
-`∑ c, X_ac ∂P/∂X_bc` over the variables `X_bc` of sign `s` vanishes if `ε a = ε b` and
-`s * l b < s * l a`. If `E a a` acts on `P` by the entry of the lowest `K`-type, and the weight
-`T.relWeight l a` relative to the vacuum has sign `s` or is zero, then `P` is homogeneous of degree
-`s * T.relWeight l a` in the variables of sign `s` of row `a` and free of those of sign `-s`. -/
-theorem DiscreteSeries.polarisation_eq_of_isCompactPrimitive [DecidableEq R] [DecidableEq C]
-    [Fintype ι] {P : MvPolynomial ι ℂ}
-    (hl : l.Injective) (h_prim : T.oscRows.IsCompactPrimitive l P)
-    (h_harm : T.swap.IsLaplaceHarmonic P) (a : R) (s : ℤˣ) :
-    (∀ b : R, ε a = ε b → s * l b < s * l a → T.polarisation P a b s = 0) ∧
-      (T.oscRows.E a a P = (l.lowestKType a : ℂ) • P → 0 ≤ s * T.relWeight l a →
-        T.polarisation P a a s = ((s * T.relWeight l a : ℤ) : ℂ) • P ∧
-          ∀ c : C, T.varSign (a, c) = -s → pderiv (T.varEquiv (a, c)) P = 0) :=
-  ⟨fun _ ↦ polarisation_eq_zero_of_isCompactPrimitive hl h_prim h_harm,
-    polarisation_self_eq_smul_of_isCompactPrimitive hl h_prim h_harm⟩
 
 omit [Fintype R] in
 /-- If each mixed derivative `∂_ac ∂_bc Φ` with `ε a ≠ ε b` vanishes, then the Laplacians of the
@@ -386,7 +367,7 @@ theorem FockDualPair.IsTermwiseHarmonic.isLaplaceHarmonic {Φ : MvPolynomial ι 
 the lowest `K`-type of `l` as weight for the row action and any weight `ν` for the column action.
 Then `Φ` is a pre-joint harmonic: nonzero, killed by the compact raising operators of the columns
 and by the Laplacians of both sides, and highest of weight `l.lowestKType` for the rows. -/
-lemma FockDualPair.IsJointHighest.isPreJointHarmonic [DecidableEq R] [DecidableEq C] [Fintype ι]
+lemma FockDualPair.IsJointHighest.isPreJointHarmonic [DecidableEq R] [DecidableEq C]
     {Φ : MvPolynomial ι ℂ} {ν : C → ℤ} (hΦ : T.IsJointHighest l l' Φ l.lowestKType ν) :
     T.IsPreJointHarmonic l l' Φ := by
   obtain ⟨-, raise_col⟩ := hΦ.isKHighest_cols
@@ -396,7 +377,7 @@ lemma FockDualPair.IsJointHighest.isPreJointHarmonic [DecidableEq R] [DecidableE
 /-- A combination `P - c • Q` of pre-joint harmonics (nonzero polynomials killed by the Laplacians
 and the compact raising operators of both sides, of weight `l.lowestKType` for the rows) is again
 one, unless it is zero. -/
-theorem FockDualPair.IsPreJointHarmonic.sub_smul [DecidableEq R] [DecidableEq C] [Fintype ι]
+theorem FockDualPair.IsPreJointHarmonic.sub_smul [DecidableEq R] [DecidableEq C]
     {P Q : MvPolynomial ι ℂ} {c : ℂ}
     (hP : T.IsPreJointHarmonic l l' P) (hQ : T.IsPreJointHarmonic l l' Q) (h_ne : P ≠ c • Q) :
     T.IsPreJointHarmonic l l' (P - c • Q) := by
@@ -437,10 +418,8 @@ inductive DiscreteSeries.IsEigenDirection (F : MvPolynomial ι ℂ) (x : ι → 
 
 /-- The translation `G ↦ G (X + x)` commutes with partial derivatives. -/
 theorem DiscreteSeries.bind₁_X_add_C_pderiv {τ : Type*} (x : τ → ℂ) (G : MvPolynomial τ ℂ) (i : τ) :
-    bind₁ (fun j : τ ↦ X j + MvPolynomial.C (x j)) (pderiv i G) =
-      pderiv i (bind₁ (fun j : τ ↦ X j + MvPolynomial.C (x j)) G) := by
-  change aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) (pderiv i G) =
-    pderiv i (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G)
+    aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) (pderiv i G) =
+      pderiv i (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G) := by
   induction G using induction_on with
   | C a => simp
   | add p q hp hq => simp only [map_add, hp, hq]
@@ -449,8 +428,7 @@ theorem DiscreteSeries.bind₁_X_add_C_pderiv {τ : Type*} (x : τ → ℂ) (G :
 
 /-- The constant coefficient of `G (X + x)` is the value of `G` at `x`. -/
 theorem DiscreteSeries.coeff_zero_bind₁_X_add_C {τ : Type*} (x : τ → ℂ) (G : MvPolynomial τ ℂ) :
-    (bind₁ (fun j : τ ↦ X j + MvPolynomial.C (x j)) G).coeff 0 = eval x G := by
-  change (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G).coeff 0 = eval x G
+    (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G).coeff 0 = eval x G := by
   rw [← constantCoeff_eq]
   induction G using induction_on with
   | C a => simp
@@ -513,25 +491,24 @@ is matched: `(r, c)` itself, with `s * ξ` large; a pair `(r, d)` with `ε' d = 
 `s * l' d < s * l' c`; or a pair `(a, c)` with `ε a = ε r` and `s * l r < s * l a`. -/
 theorem IsMatch.lt_or_exists_isMatchedPair (hm : IsMatch T l l') (r : R) (c : C) {s : ℤˣ}
     (hs : T.varSign (r, c) = s) :
-    card C - card R < -(s : ℤ) * T.centredParam l r ∨
-      (card C - card R < (s : ℤ) * T.centredParam l r ∧ T.IsMatchedPair l l' r c) ∨
+    card C - card R < -(s : ℤ) * T.centeredParam l r ∨
+      (card C - card R < (s : ℤ) * T.centeredParam l r ∧ T.IsMatchedPair l l' r c) ∨
       (∃ d : C, ε' d = ε' c ∧ s * l' d < s * l' c ∧ T.IsMatchedPair l l' r d) ∨
       ∃ a : R, ε a = ε r ∧ s * l r < s * l a ∧ T.IsMatchedPair l l' a c := by
   refine or_iff_not_imp_left.2 fun h_small ↦ ?_
   -- Row `r` is matched with a column `d`, and the variable `(r, d)` has the sign `s`.
-  have r_not_free : ¬|T.centredParam l r| < card R - card C := by grind [Units.val_neg]
+  have r_not_free : ¬|T.centeredParam l r| < card R - card C := by grind [Units.val_neg]
   obtain ⟨d, hrd⟩ : ∃ d : C, T.IsMatchedPair l l' r d := (hm.left r).resolve_right r_not_free
   have sign_rd : T.varSign (r, d) = s := by grind [Units.val_neg, Units.ext_iff]
   have block_d : ε' d = ε' c := mul_left_cancel (sign_rd.trans hs.symm)
-  have r_large : |(card R - card C : ℤ)| < s * T.centredParam l r := by
+  have r_large : |(card R - card C : ℤ)| < s * T.centeredParam l r := by
     simpa only [sign_rd] using hrd.2
   obtain h_lt | h_eq | h_gt := lt_trichotomy (s * l' d) (s * l' c)
   · exact .inr (.inl ⟨d, block_d, h_lt, hrd⟩)
   · obtain rfl : d = c := hm.hasGap_column.injective (mul_left_cancel₀ s.ne_zero h_eq)
     exact .inl ⟨((le_abs_self _).trans_eq (abs_sub_comm _ _)).trans_lt r_large, hrd⟩
   · -- The parameter of column `c` is further out than that of `d`, so `c` is matched too.
-    have param_rd : T.centredParam l r = -T.swap.centredParam l' d := hrd.1
-    have c_not_free : ¬|T.swap.centredParam l' c| < card C - card R := by grind
+    have c_not_free : ¬|T.swap.centeredParam l' c| < card C - card R := by grind
     obtain ⟨a, hac⟩ : ∃ a : R, T.IsMatchedPair l l' a c := (hm.right c).resolve_right c_not_free
     have a_above : s * l r < s * l a := by grind
     have sign_ac : T.varSign (a, c) = s := by grind [Units.ext_iff]
@@ -542,9 +519,9 @@ theorem IsMatch.lt_or_exists_isMatchedPair (hm : IsMatch T l l') (r : R) (c : C)
 polarisation `∑ X_ad ∂_rd` from row `r` to row `a`, summed over the columns `d` where `(r, d)` has
 the sign of `(r, c)`, then `(r, c)` is an eigendirection of `F` at the 0-1 matrix of the
 matching. -/
-theorem IsMatch.isEigenDirection_of_polarisation (hm : IsMatch T l l') {F : MvPolynomial ι ℂ}
+theorem IsMatch.isEigenDirection_of_polarization (hm : IsMatch T l l') {F : MvPolynomial ι ℂ}
     {a r : R} {c : C} {μ : ℂ} (hac : T.IsMatchedPair l l' a c)
-    (h_eigen : T.polarisation F a r (T.varSign (r, c)) = μ • F) :
+    (h_eigen : T.polarization F a r (T.varSign (r, c)) = μ • F) :
     IsEigenDirection F (T.matchingPoint l l') (T.varEquiv (r, c)) := by
   have only_c (d : C) : T.matchingPoint l l' (T.varEquiv (a, d)) ≠ 0 ↔ d = c := by
     grind [matchingPoint_ne_zero_iff, hm.col_eq_of_isMatchedPair]
@@ -556,18 +533,21 @@ theorem IsMatch.isEigenDirection_of_polarisation (hm : IsMatch T l l') {F : MvPo
 /-- Let `l`, `l'` match and let row `r` be matched with column `d`. If `F` is an eigenvector of the
 polarisation from column `c` to column `d` over the variables with the sign of `(r, c)`, then
 `(r, c)` is an eigendirection of `F` at the 0-1 matrix of the matching. -/
-theorem IsMatch.isEigenDirection_of_swap_polarisation (hm : IsMatch T l l') {F : MvPolynomial ι ℂ}
+theorem IsMatch.isEigenDirection_of_swap_polarization (hm : IsMatch T l l') {F : MvPolynomial ι ℂ}
     {r : R} {c d : C} {μ : ℂ} (hrd : T.IsMatchedPair l l' r d)
-    (h_eigen : T.swap.polarisation F d c (T.swap.varSign (c, r)) = μ • F) :
+    (h_eigen : T.swap.polarization F d c (T.swap.varSign (c, r)) = μ • F) :
     IsEigenDirection F (T.matchingPoint l l') (T.varEquiv (r, c)) := by
-  have only_r (a : R) : T.matchingPoint l l' (T.varEquiv (a, d)) ≠ 0 ↔ a = r := by
-    grind [matchingPoint_ne_zero_iff, hm.row_eq_of_isMatchedPair]
-  have field : ∑ a with T.swap.varSign (c, a) = T.swap.varSign (c, r),
-      X (T.varEquiv (a, d)) * pderiv (T.varEquiv (a, c)) F = μ • F := h_eigen
-  exact ⟨R, _, fun a ↦ T.varEquiv (a, d), fun a ↦ T.varEquiv (a, c), r, μ, by simp, rfl, only_r,
-    field⟩
+  have h_point : T.swap.matchingPoint l' l = T.matchingPoint l l' := by
+    funext i
+    obtain ⟨⟨a, b⟩, rfl⟩ := T.varEquiv.surjective i
+    have h_pair : T.swap.IsMatchedPair l' l b a ↔ T.IsMatchedPair l l' a b :=
+      ⟨fun h ↦ by simpa only [T.swap_swap] using h.swap, fun h ↦ h.swap⟩
+    change T.swap.matchingPoint l' l (T.swap.varEquiv (b, a)) = _
+    simp only [matchingPoint, Equiv.symm_apply_apply, h_pair]
+  rw [← h_point]
+  exact hm.swap.isEigenDirection_of_polarization hrd.swap h_eigen
 
-variable [DecidableEq R] [DecidableEq C] [Fintype ι]
+variable [DecidableEq R] [DecidableEq C]
 
 /-- Let `l`, `l'` match. A pre-joint harmonic `F` (nonzero, killed by the Laplacians and the compact
 raising operators of both sides, of weight `l.lowestKType` for the rows) does not vanish at the
@@ -586,31 +566,31 @@ theorem IsMatch.eval_matchingPoint_ne_zero (hm : IsMatch T l l') {F : MvPolynomi
   -- If `u` times the centred parameter of row `r` exceeds `card C - card R`, then of the variables
   -- of row `r`, `F` contains only those of sign `u`, and it is an eigenvector of Euler's field on
   -- them.
-  have pure (u : ℤˣ) (hu : card C - card R < (u : ℤ) * T.centredParam l r) :
-      T.polarisation F r r u = ((u * T.relWeight l r : ℤ) : ℂ) • F ∧
+  have pure (u : ℤˣ) (hu : card C - card R < (u : ℤ) * T.centeredParam l r) :
+      T.polarization F r r u = ((u * T.relWeight l r : ℤ) : ℂ) • F ∧
         ∀ d : C, T.varSign (r, d) = -u → pderiv (T.varEquiv (r, d)) F = 0 :=
-    polarisation_self_eq_smul_of_isCompactPrimitive hm.hasGap_row.injective raise_row harm_col
+    polarization_self_eq_smul_of_isCompactPrimitive hm.hasGap_row.injective raise_row harm_col
       (weight r)
       (hm.sign_mul_relWeight_nonneg r u hu)
   obtain h_large | ⟨h_large, hrc⟩ | ⟨d, block_d, h_lt, hrd⟩ | ⟨a, block_a, h_lt, hac⟩ :=
     hm.lt_or_exists_isMatchedPair r c (s := s) rfl
   · exact pderiv_ne ((pure (-s) h_large).2 c (neg_neg s).symm)
-  · exact not_eigen (hm.isEigenDirection_of_polarisation hrc (pure s h_large).1)
+  · exact not_eigen (hm.isEigenDirection_of_polarization hrc (pure s h_large).1)
   · -- The part of sign `s` of a raising operator of the columns kills `F`.
-    have kill : T.swap.polarisation F d c (T.swap.varSign (c, r)) = (0 : ℂ) • F := by
+    have kill : T.swap.polarization F d c (T.swap.varSign (c, r)) = (0 : ℂ) • F := by
       rw [zero_smul, show T.swap.varSign (c, r) = -s by
         simp [s, mul_right_comm T.globalSign, pairSign]]
-      exact polarisation_eq_zero_of_isCompactPrimitive hm.hasGap_column.injective raise_col harm_row
+      exact polarization_eq_zero_of_isCompactPrimitive hm.hasGap_column.injective raise_col harm_row
         block_d
         (by simpa using h_lt)
-    exact not_eigen (hm.isEigenDirection_of_swap_polarisation hrd kill)
+    exact not_eigen (hm.isEigenDirection_of_swap_polarization hrd kill)
   · -- So does the part of sign `s` of a raising operator of the rows.
-    have kill : T.polarisation F a r s = (0 : ℂ) • F := by
+    have kill : T.polarization F a r s = (0 : ℂ) • F := by
       rw [zero_smul]
-      exact polarisation_eq_zero_of_isCompactPrimitive hm.hasGap_row.injective raise_row harm_col
+      exact polarization_eq_zero_of_isCompactPrimitive hm.hasGap_row.injective raise_row harm_col
         block_a
         h_lt
-    exact not_eigen (hm.isEigenDirection_of_polarisation hac kill)
+    exact not_eigen (hm.isEigenDirection_of_polarization hac kill)
 
 /-- Uniqueness of the joint harmonic up to a scalar. If the parameters `l` of the rows and `l'` of
 the columns match, then any two pre-joint harmonics of `T` (nonzero polynomials killed by the
@@ -647,23 +627,6 @@ theorem IsJointHarmonic.exists_eq_smul_of_row_weight {Φ P : MvPolynomial ι ℂ
   · have hP : T.IsPreJointHarmonic l l' P := ⟨h_ne, h_cols, h_harmonic.isLaplaceHarmonic, h_rows,
       h_harmonic_swap.isLaplaceHarmonic⟩
     exact hΦ.unique hP hΦ.isJointHighest.isPreJointHarmonic
-
-/-- Let `T` be a dual pair in Fock space, whose variables in `ι` are indexed by rows `R` and columns
-`C`, and let `Φ` be a joint harmonic for matching `l`, `l'`. That is, `Φ ≠ 0` is `K`-highest, of the
-weights of the lowest `K`-types, for the row action `T.oscRows` and the column action
-`T.swap.oscRows`, and it is termwise harmonic for `T` and `T.swap`: no monomial has two variables of
-one column from rows of opposite signs, or two variables of one row from columns of opposite signs.
-Then every polynomial `P` satisfying both termwise harmonic conditions, killed by the compact
-raising operators of the row action for `l`, and `K`-highest of weight `l'.lowestKType` for the
-column action, is a scalar multiple of `Φ`. -/
-theorem IsJointHarmonic.exists_eq_smul_of_column_weight {Φ P : MvPolynomial ι ℂ}
-    (hΦ : IsJointHarmonic T l l' Φ) (h_harmonic : T.IsTermwiseHarmonic P)
-    (h_harmonic_swap : T.swap.IsTermwiseHarmonic P)
-    (h_rows : T.oscRows.IsCompactPrimitive l P)
-    (h_cols : l'.IsKHighest T.swap.oscRows l'.lowestKType P) :
-    ∃ c : ℂ, P = c • Φ :=
-  hΦ.swap.exists_eq_smul_of_row_weight h_harmonic_swap (by rwa [swap_swap]) h_cols
-    (by rwa [swap_swap])
 
 end New
 

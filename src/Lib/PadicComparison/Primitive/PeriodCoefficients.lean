@@ -1,7 +1,22 @@
-import Lib.Cohomology.TorsionTheories
-import Lib.PadicComparison.Descent.AlmostDescent
-import Lib.PadicComparison.HodgeTate.GenericFibre
-import Lib.PadicHodge.ArtinSchreierSequence
+module
+
+import Mathlib.Algebra.Category.Grp.Ulift
+import Mathlib.Algebra.Category.ModuleCat.Biproducts
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.RingTheory.AdicCompletion.Completeness
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Regular.IsSMulRegular
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Instances.ZMod
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Lib.Cohomology.TorsionTheories
+public import Lib.PadicComparison.Descent.AlmostDescent
+public import Lib.PadicComparison.HodgeTate.GenericFibre
+public import Lib.PadicHodge.ArtinSchreierSequence
+import Lib.PadicComparison.Completion
+import Lib.PadicComparison.Descent.TestCovers
+public import Lib.PadicComparison.Primitive.TiltProducts
 
 /-!
 # Tilts and period coefficients of p-adic tests: products, comparisons, theories
@@ -13,13 +28,8 @@ completion. `S` is an `A_inf`-algebra and `K` is an `S`-algebra.
 
 ## Main definitions and results
 
-* `New.Variety.bijective_prod_tilt`: bijectivity of `x ↦ (f x, g x)`, which recognises a product,
-  passes from the rings of `p`-adic tests to their tilts.
 * `New.Variety.IsPeriodRingPair`: `S` is `p`-torsion-free and `p`-complete, `p` divides the image of
   `ξ`, and `τ` is a unit in `K`.
-* `New.Variety.hasPartitions_periodAlg`: a functor `Ψ` with an isomorphism `θ` from the period
-  coefficients `asModules (tilt ⋙ periodAlg S) ⋙ tensorWith K K` turns a product of two tests into a
-  product (`New.Variety.HasPartitions`).
 * `New.Variety.CoeffCompBijective.periodAlg_of_almostCoeff`: for an `A_inf`-algebra `S` with
   `IsPeriodRingPair p S K` and `Flat S K`, under base-change hypotheses on `N` and `N'` and with
   `ψ`, `ψ'` perfect and torsion-free, bijectivity of a comparison of cohomology groups
@@ -47,60 +57,11 @@ Known; see `Lib.PadicComparison.Descent.TestCovers` and `Lib.PadicComparison.Hod
 for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New.Variety
-
-/-!
-## Products of p-adic tests under tilting and product-preserving functors
-
-A product of two objects is recognised here by the map `x ↦ (f x, g x)` being bijective.
--/
-
-section TiltProducts
-
-open CategoryTheory Limits PadicTest Perfection Equiv Function
-
-/-- If `x ↦ (f x, g x)` is bijective for linear maps `f : X ⟶ Y` and `g : X ⟶ Z`, then so is
-`x ↦ (U.map f x, U.map g x)` for every functor `U` from modules to types that preserves finite
-products. -/
-lemma _root_.Function.Bijective.map_prod {S : Type*} [Ring S] {X Y Z : ModuleCat S} {f : X ⟶ Y}
-    {g : X ⟶ Z} (hfg : Bijective fun x : X ↦ (f x, g x)) (U : ModuleCat S ⥤ Type*)
-    [PreservesFiniteProducts U] :
-    Bijective fun x : U.obj X ↦ (U.map f x, U.map g x) := by
-  -- `X` with `f` and `g` is a product of `Y` and `Z`, so its image under `U` is a product of types.
-  have h_iso : IsIso ((Y.binaryProductLimitCone Z).isLimit.lift (BinaryFan.mk f g)) :=
-    (ConcreteCategory.isIso_iff_bijective _).mpr hfg
-  have h_prod : IsLimit (BinaryFan.mk f g) := (Y.binaryProductLimitCone Z).isLimit.ofPointIso
-  exact ((mapIsLimitOfPreservesOfIsLimit U _ _ h_prod).conePointUniqueUpToIso
-    (Types.binaryProductLimit (U.obj Y) (U.obj Z))).toEquiv.bijective
-
-/-- Tilting keeps the product of two tests: if maps of `p`-adic tests `f : c ⟶ d` and `g : c ⟶ d'`
-present the ring of `c` as the product of the rings of `d` and `d'`, then the induced maps present
-the tilt of `c`, read as an `O♭`-module (`asModules tilt`), as the product of the tilts of `d` and
-`d'`. -/
-lemma bijective_prod_tilt {p : ℕ} [ThePrime p] {c d d' : PadicTest} (f : c ⟶ d) (g : c ⟶ d')
-    (hfg : Bijective fun x : c.ProdRing ↦ (f.toRingHom x, g.toRingHom x)) :
-    Bijective fun x : (asModules tilt).obj c ↦
-      ((asModules tilt).map f x, (asModules tilt).map g x) := by
-  -- As a set, the tilt of a test is the set of sequences `x` in its ring with
-  -- `x (n + 1) ^ p = x n`, and such sequences in a product are pairs of such sequences.
-  let e {b : PadicTest} : Perfection b.ProdRing p ≃ tilt.obj b :=
-    (quotientMulEquiv p (Ideal.span {(p : b.ProdRing)})).toEquiv
-  let seqs : (ℕ → c.ProdRing) ≃ (ℕ → d.ProdRing) × (ℕ → d'.ProdRing) :=
-    (ofBijective _ hfg.comp_left).trans
-      (arrowProdEquivProdArrow ℕ (fun _ ↦ d.ProdRing) (fun _ ↦ d'.ProdRing))
-  have compatible_iff (x : ℕ → c.ProdRing) : (∀ n : ℕ, x (n + 1) ^ p = x n) ↔
-      (∀ n : ℕ, (seqs x).fst (n + 1) ^ p = (seqs x).fst n) ∧
-        ∀ n : ℕ, (seqs x).snd (n + 1) ^ p = (seqs x).snd n := by
-    simp [seqs, forall_and, ← hfg.injective.eq_iff]
-  let perf : Perfection c.ProdRing p ≃ Perfection d.ProdRing p × Perfection d'.ProdRing p :=
-    (seqs.subtypeEquiv compatible_iff).trans subtypeProdEquivProd
-  -- By definition of the tilt of a map, the map in question composed with `e` is `perf` followed
-  -- by `e × e`.
-  exact (e.bijective_comp _).mp (perf.trans (e.prodCongr e)).bijective
-
-end TiltProducts
 
 /-!
 ## Period ring pairs and additivity of period coefficients
@@ -138,37 +99,6 @@ lemma isPeriodRingPair_OC : IsPeriodRingPair p OC ℂ_[p] where
   -- `theta tau` is not `0`, so it is a unit of the field
   isUnit_tau := by simp [RingHom.algebraMap_toAlgebra]
 
-/-- Let `Ψ` be isomorphic (by `θ`) to the period coefficient `c ↦ K ⊗ (S ⊗ W(R♭))^`. Then `Ψ` has
-partitions: tests can be cut along idempotents, and `Ψ` sends a product of two tests to the
-product of its values. -/
-lemma hasPartitions_periodAlg (θ : asModules (tilt ⋙ periodAlg S) ⋙ tensorWith K K ≅ Ψ) :
-    HasPartitions ringFunctor (moduleCoeff Ψ) := by
-  refine ⟨exists_isQuotientByElem, fun {A B₁ B₂ : PadicTest} f g hfg ↦ ?_⟩
-  -- Tilting keeps the product, and so do Witt vectors, which are sequences of coordinates.
-  let e {R : Type} : WittVector p R ≃ (ℕ → R) := mk WittVector.coeff .mk'
-  let W : PadicTest ⥤ ModuleCat Ainf := asModules (tilt ⋙ wittFunctor)
-  have h_witt : Function.Bijective fun x : W.obj A ↦ (W.map f x, W.map g x) :=
-    ((arrowProdEquivProdArrow ℕ (fun _ ↦ tilt.obj B₁) (fun _ ↦ tilt.obj B₂)).trans
-      (e.prodCongr e).symm).bijective.comp
-      ((bijective_prod_tilt f g hfg).comp_left.comp e.bijective)
-  -- So do base change to `S`, completion of modules and base change to `K`.
-  let Φ : PadicTest ⥤ ModuleCat K :=
-    asModules (tilt ⋙ wittFunctor ⋙ algBaseChange S) ⋙ moduleCompletion S p ⋙ tensorWith K K
-  have h_ten : Function.Bijective fun x : Φ.obj A ↦ (Φ.map f x, Φ.map g x) :=
-    (h_witt.map_prod (tensorWith S S ⋙ forget _)).map_prod
-      (moduleCompletion S p ⋙ tensorWith K K ⋙ forget _)
-  -- The composite `Φ` is isomorphic to `Ψ`, by `moduleCompletionIso` and `θ`.
-  let θ' : Φ ≅ Ψ :=
-    (Functor.isoWhiskerRight
-      ((tilt ⋙ wittFunctor ⋙ algBaseChange S).isoWhiskerLeft (moduleCompletionIso S p)) _ ≪≫ θ :)
-  -- The square of `θ'` with the two pairs of maps commutes, by naturality of `θ'`.
-  have h_comm (x : Φ.obj A) : (Ψ.map f (θ'.hom.app A x), Ψ.map g (θ'.hom.app A x)) =
-      Prod.map (θ'.hom.app B₁) (θ'.hom.app B₂) (Φ.map f x, Φ.map g x) := by
-    simp
-  have hθ' (A : PadicTest) : Function.Bijective (θ'.hom.app A) := (θ'.app A).toLinearEquiv.bijective
-  exact ((Comparison.bijective_iff_of_comm_sq h_comm (hθ' A) ((hθ' B₁).prodMap (hθ' B₂))).mp
-    h_ten).map_prod (forget _ ⋙ uliftFunctor)
-
 variable {K}
 
 /-- For a period ring pair, `pFlat`, the class of `ξ` modulo `p`, kills `O♭ ⊗ S`. -/
@@ -178,7 +108,8 @@ lemma IsPeriodRingPair.pFlat_smul_eq_zero (hK : IsPeriodRingPair p S K) (x : OFl
   have h_dvd : (p : OFlat ⊗[Ainf] S) ∣ algebraMap Ainf (OFlat ⊗[Ainf] S) xi := by
     simpa using map_dvd (includeRight (R := Ainf) (A := OFlat)) hK.dvd_xi
   change xi • x = 0
-  simpa [Algebra.smul_def, natCast_eq_zero_of_algebra_oFlat] using h_dvd.mul_right x
+  rw [natCast_eq_zero_of_algebra_oFlat, zero_dvd_iff] at h_dvd
+  rw [Algebra.smul_def, h_dvd, zero_mul]
 
 end PeriodPairs
 
@@ -188,13 +119,6 @@ section PeriodLifting
 
 open CategoryTheory TensorProduct Function Functor Module LinearMap AlgebraTensorModule Period Lift
   WittVector AdicCompletion Submodule ModuleCat Comparison AddCommGrpCat
-
-/-- If `p * y` lies in `W(𝔪) = wittOfMaxIdeal`, for `𝔪` the maximal ideal of `O♭`, so does `y`:
-`W(𝔪)` is the kernel of the map to the Witt vectors of the residue field, a domain in which
-`p ≠ 0`. -/
-private lemma mem_wittOfMaxIdeal_of_natCast_mul_mem {p : ℕ} [ThePrime p] {y : Ainf}
-    (h : (p : Ainf) * y ∈ wittOfMaxIdeal) : y ∈ wittOfMaxIdeal := by
-  aesop (add simp [wittOfMaxIdeal, p_nonzero])
 
 /-- There is a linear map `W(𝔪) → 𝔪` that is onto with kernel `p W(𝔪)`: the zeroth coordinate.
 Here `𝔪` is the maximal ideal of `O♭` and `W(𝔪) = wittOfMaxIdeal`. -/
@@ -218,7 +142,8 @@ lemma exists_isReductionMod_wittOfMaxIdeal {p : ℕ} [ThePrime p] :
     simpa [Subtype.ext_iff] using h_iff
   constructor
   · rintro ⟨y, rfl⟩
-    exact ⟨y, mem_wittOfMaxIdeal_of_natCast_mul_mem hx, rfl⟩
+    -- The Witt vectors of the residue field form a domain, and `p` is nonzero there.
+    exact ⟨y, by simpa [wittOfMaxIdeal, p_ne_zero] using hx, rfl⟩
   · rintro ⟨y, -, rfl⟩
     exact ⟨y, rfl⟩
 
@@ -266,7 +191,7 @@ private lemma CoeffCompBijective.completion_wittOfMaxIdeal_of_almostCoeff {C C' 
     asModules (wittFunctor (k := OFlat)) ⋙ tensorWith S (S ⊗[Ainf] wittOfMaxIdeal)
   let Q : ModuleCat S ⥤ ModuleCat S := moduleCompletion S p
   -- `red b` takes zeroth coordinates, applies `c`, then rearranges the factors.
-  have h_smul : CompatibleSMul Ainf OFlat (OFlat ⊗[Ainf] S) MaxIdealFlat :=
+  have h_smul : TensorProduct.CompatibleSMul Ainf OFlat (OFlat ⊗[Ainf] S) MaxIdealFlat :=
     CompatibleSMul.of_algebraMap_surjective (OFlat ⊗[Ainf] S) MaxIdealFlat h_modW.left
   let rearrange (b : CommAlg OFlat) : S ⊗[Ainf] MaxIdealFlat ⊗[Ainf] b ≃ₗ[Ainf]
       b ⊗[OFlat] (OFlat ⊗[Ainf] S ⊗[OFlat] MaxIdealFlat) :=
@@ -320,7 +245,7 @@ private lemma CoeffCompBijective.completion_wittOfMaxIdeal_of_almostCoeff {C C' 
     have h_rep_zero : y.val 1 = 0 ↔ x ∈ nsmulRange p _ := by
       rw [← hx, mkQ_apply, Submodule.Quotient.mk_eq_zero, nsmulRange.mem_span_pow_smul_top_iff,
         pow_one]
-    show redCompl.app b y = 0 ↔ ∃ z, p • z = y
+    change redCompl.app b y = 0 ↔ ∃ z, p • z = y
     rw [hxy, (h_red_mod b).right x]
     exact h_rep_zero.symm.trans h_ker
   -- So on values with `IsPerfectTorsionFree` the sequence of `p` and `redCompl` is short exact.
@@ -339,10 +264,22 @@ private lemma CoeffCompBijective.completion_wittOfMaxIdeal_of_almostCoeff {C C' 
   have h_dc {D : Type 1} [Category D] (χ : D ⥤ CommAlg OFlat) (L : AbFunctor D) (n : ℕ) :
       IsDerivedComplete (p : S) (H L (moduleCoeff (χ ⋙ P ⋙ Q)) n) :=
     .cohomology (fun _ ↦ .of_isAdicComplete (isAdicComplete h_fg)) L n
-  refine .of_mod (h_exact hψ) (h_exact hψ') ?_ (fun n _ ↦ h_dc ψ N n) (h_dc ψ' N') h_red
-  -- The square of `redCompl` and `β` commutes: it is its naturality, read in `ULift`.
-  ext A x
-  exact congrArg ULift.up (ConcreteCategory.congr_hom (redCompl.naturality (β.app A)) x.down)
+  -- The adic step is stated for any functor `F` with a map `r` to the almost coefficients, in
+  -- place of `P ⋙ Q` and `redCompl`.
+  have h_adic {F : CommAlg OFlat ⥤ ModuleCat S}
+      (r : F ⋙ forget₂ _ Ab ⟶ almostCoeff (OFlat ⊗[Ainf] S) ⋙ forget₂ _ Ab)
+      (h : ∀ {D : Type 1} [Category D] {χ : D ⥤ CommAlg OFlat},
+        (∀ A : D, IsPerfectTorsionFree (χ.obj A)) →
+          ModShortExact (Φ := χ ⋙ F) (G := moduleCoeff (χ ⋙ almostCoeff (OFlat ⊗[Ainf] S)))
+            (p : S) (whiskerRight (χ.whiskerLeft r) uliftFunctor))
+      (h' : ∀ {D : Type 1} [Category D] (χ : D ⥤ CommAlg OFlat) (L : AbFunctor D) (n : ℕ),
+        IsDerivedComplete (p : S) (H L (moduleCoeff (χ ⋙ F)) n)) :
+      CoeffCompBijective β α F := by
+    refine .of_mod (h hψ) (h hψ') ?_ (fun n _ ↦ h' ψ N n) (h' ψ' N') h_red
+    -- The square of `r` and `β` commutes: it is its naturality, read in `ULift`.
+    ext A x
+    exact congrArg ULift.up (ConcreteCategory.congr_hom (r.naturality (β.app A)) x.down)
+  exact h_adic redCompl h_exact h_dc
 
 /-- After `p`-adic completion and `K ⊗ –`, the functors `b ↦ (S ⊗ W(𝔪)) ⊗ W(b)` and
 `b ↦ S ⊗ W(b)` are isomorphic, for a period ring pair `(S, K)`: tensored with `W(b)`, the maps of
@@ -364,9 +301,10 @@ private lemma nonempty_completion_wittOfMaxIdeal_iso {p : ℕ} [ThePrime p] {S K
   -- Tensoring `u₀`, `v₀` with `W(b)` gives maps `u`, `v` between `P b` and `B b` that compose to
   -- `τ` in both orders.
   let u : P ⟶ asModules B :=
-    { app _ := ↟(rTensor _ _ u₀)
+    { app _ := ↟(AlgebraTensorModule.rTensor _ _ u₀)
       naturality b b' f := hom_ext (tmul_ext fun _ _ ↦ rfl) }
-  let v (b : CommAlg OFlat) : (asModules B).obj b ⟶ P.obj b := ↟(rTensor _ _ v₀)
+  let v (b : CommAlg OFlat) : (asModules B).obj b ⟶ P.obj b :=
+    ↟(AlgebraTensorModule.rTensor _ _ v₀)
   have huv (b : CommAlg OFlat) : u.app b ≫ v b = τ • 𝟙 (P.obj b) :=
     hom_ext (tmul_ext fun m x ↦ congrArg (fun w ↦ w ⊗ₜ x) (LinearMap.congr_fun huv₀ m))
   have hvu (b : CommAlg OFlat) : v b ≫ u.app b = τ • 𝟙 ((asModules B).obj b) :=
@@ -416,14 +354,30 @@ lemma CoeffCompBijective.periodAlg_of_almostCoeff {C C' : Type 1} [Category C] [
     .completion_wittOfMaxIdeal_of_almostCoeff hK.regular hψ hψ' h_red
   obtain ⟨U⟩ : Nonempty (P ⋙ G ≅ asModules B ⋙ G) := nonempty_completion_wittOfMaxIdeal_iso hK
   -- Transport along `U` and along `moduleCompletionIso`, which compares the completions of
-  -- modules and of algebras.
-  let V : P ⋙ G ≅ B ⋙ asModules (algCompletion S p) ⋙ tensorWith K K :=
-    U ≪≫ B.isoWhiskerLeft (isoWhiskerRight (moduleCompletionIso S p) _)
-  let γ := isoWhiskerRight V (moduleCoeff (𝟭 (ModuleCat K)))
-  refine (isBijective_iff_of_coeff_iso (c := ⟨φ, _⟩) (ψ.whiskerLeft γ.hom) _
-    (whiskerLeft_comp_whiskerRight β γ.hom)).mp ?_
-  -- By `hN` and `hN'`, `K ⊗ –` carries `h_cpl` to the coefficients `P ⋙ G`.
-  exact (IsBijective.baseChangeMap_bijective_iff h_cpl hN).mp (hN' _)
+  -- modules and of algebras. The whiskering `κ` is stated for any functors `Q`, `Q'` in place of
+  -- the two completions.
+  let κ {Q : ModuleCat S ⥤ ModuleCat S} {Q' : CommAlg S ⥤ CommAlg S}
+      (ι : asModules (𝟭 (CommAlg S)) ⋙ Q ≅ asModules Q') :
+      asModules B ⋙ Q ⋙ tensorWith K K ≅
+        asModules (wittFunctor (k := OFlat) ⋙ algBaseChange S ⋙ Q') ⋙ tensorWith K K :=
+    (B.isoWhiskerLeft (isoWhiskerRight ι (tensorWith K K)) :)
+  let V : P ⋙ G ≅ asModules (periodAlg S) ⋙ tensorWith K K := U ≪≫ κ (moduleCompletionIso S p)
+  -- Bijectivity passes along an isomorphism `W` of coefficient functors `F` and `F'`.
+  have h_iso {F F' : CommAlg OFlat ⥤ ModuleCat K} (W : F ≅ F') (h : CoeffCompBijective β α F) :
+      CoeffCompBijective β α F' := by
+    let γ {D : Type 1} [Category.{0} D] (χ : D ⥤ CommAlg OFlat) :
+        moduleCoeff (χ ⋙ F) ≅ moduleCoeff (χ ⋙ F') :=
+      isoWhiskerRight (isoWhiskerRight (χ.isoWhiskerLeft W) (forget₂ _ Ab)) uliftFunctor
+    refine (isBijective_iff_of_coeff_iso
+      (c := ofModuleHom φ (Φ := ψ ⋙ F) (whiskerRight β F)) (γ ψ).hom (γ ψ').hom ?_).mp h
+    ext A x
+    exact congrArg ULift.up (ConcreteCategory.congr_hom (W.hom.naturality (β.app A)).symm x.down)
+  -- By `hN` and `hN'`, `K ⊗ –` carries bijectivity from the coefficients `F ⋙ Q` to
+  -- `F ⋙ Q ⋙ tensorWith K K`.
+  have h_tensor (F : CommAlg OFlat ⥤ ModuleCat S) (Q : ModuleCat S ⥤ ModuleCat S)
+      (h : CoeffCompBijective β α (F ⋙ Q)) : CoeffCompBijective β α (F ⋙ Q ⋙ tensorWith K K) :=
+    (IsBijective.baseChangeMap_bijective_iff h hN).mp (hN' _)
+  exact h_iso V (h_tensor P (moduleCompletion S p) h_cpl)
 
 end PeriodLifting
 
@@ -525,7 +479,7 @@ def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restr
   refine (NatIso.ofComponents (F := ringFunctor ⋙ locConstAlg)
       (G := genericTest ⋙ testIncl ⋙ locConstAlg)
       (fun c ↦ isoMk (.ofBijective
-        (locConstAlg.map (ofHom (algebraMap c.ProdRing c.GenericRing))).1
+        (locConstAlg.map (ofHom (algebraMap c.ProdRing c.GenericRing))).hom'
         c.bijective_locConstAlg_map_algebraMap))
       fun _ ↦ ?restrict).inv ≫
     { app c := ConcreteCategory.ofHom (.mk'
@@ -539,10 +493,20 @@ def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restr
     -- Compare the images in the localisation of `d.ProdRing/p` at each prime `q`; by `hφ` both are
     -- the value of the function at the image of `q`.
     ext x
-    refine ext fun n ↦ toPiLocalization_injective _ (funext fun q ↦ .trans ?_
+    refine Perfection.ext fun n ↦ toPiLocalization_injective _ (funext fun q ↦ .trans ?_
       (Localization.localRingHom_to_map _ _ (quotientMap _ f.1 (by simp)) (comap_asIdeal ..) _))
-    erw [hφ, eq_comm, ← RingHom.comp_apply, ext_zmod (.comp ..)]
-    exact .symm (hφ ..)
+    let ρ := quotientMap (I := Ideal.span {(p : c.ProdRing)})
+      (Ideal.span {(p : d.ProdRing)}) f.toRingHom (by simp)
+    let r := PrimeSpectrum.comap ρ q
+    let L := Localization.localRingHom r.asIdeal q.asIdeal ρ (comap_asIdeal ..)
+    let restrict (a : PadicTest) := locConstAlg.map (CommRingCat.ofHom (Ideal.Quotient.mk
+      (Ideal.span ({(p : a.ProdRing)} : Set a.ProdRing))))
+    change algebraMap _ (Localization.AtPrime q.asIdeal)
+        (φ d (restrict d ((ringFunctor ⋙ locConstAlg).map f x))) =
+      L (algebraMap _ (Localization.AtPrime r.asIdeal) (φ c (restrict c x)))
+    refine (hφ d _ q).trans (.trans ?_ (congrArg L (hφ c _ r).symm))
+    let α := (L.comp (algebraMap (ZMod p) (Localization.AtPrime r.asIdeal)))
+    exact (DFunLike.congr_fun (ext_zmod α (algebraMap _ _)) _).symm
 
 /-- The functor from test rings to `O♭`-algebras sending `A` to `O♭ ⊗_{𝔽_p} LC(A)`, where `LC(A)` is
 the ring of locally constant functions `Spec A → 𝔽_p`. -/
@@ -594,9 +558,7 @@ lemma PadicTest.le_ker_of_tiltNearZeros_le_ker {d : PadicTest} (f : c ⟶ d)
   -- Then `f e` lies in the Jacobson radical, `1 - f e` is a unit, and `p ^ n ∣ (1 - f e) * f r`
   -- gives `p ^ n ∣ f r`.
   have h_unit : IsUnit (1 - f.toRingHom e) := by
-    have h_jac :=
-      mem_jacobson_bot.mp (jacobson_bot (R := d.ProdRing) ▸ HenselianRing.jac h_mod) (-1)
-    rwa [mul_neg_one, neg_add_eq_sub] at h_jac
+    simpa [neg_add_eq_sub] using Ring.mem_jacobson_iff.mp (HenselianRing.jac h_mod) (-1)
   exact h_unit.dvd_mul_left.mp (by simpa using map_dvd f.toRingHom h_dvd')
 
 /-- For an ideal `I` of the generic ring `R[1/p]` of `c`, the quotient of the tilt `R♭` by the
@@ -640,6 +602,38 @@ lemma PadicTest.mem_nearZeros_of_rTensor_eq_zero (M : ModuleCat OFlat) (x : Tilt
 
 end
 
+/-- The support statement behind `tiltTheory`. Let `J = PadicTest.tiltNearZeros c I`, so the maps of
+tests killing `I` are those whose tilt factors, uniquely, through the perfect algebra `R♭ ⧸ J`.
+Then restriction of cohomology to these maps is onto as soon as `R♭ ⊗ M → (R♭ ⧸ J) ⊗ M` is, and a
+section that dies along these maps has image zero in `(R♭ ⧸ J) ⊗ M`. It is a separate lemma so that
+`tiltTheory` stays small for the kernel. -/
+lemma tiltTheory_supp {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p]
+    [Algebra Ω ℂ_[p]] (M : ModuleCat OFlat)
+    (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M))) (c : PadicTest)
+    (I : Ideal c.GenericRing) :
+    let J : Ideal (TiltRing c) := c.nearZeros I fun f ↦ ker (tilt.map f).hom
+    let q : tilt.obj c ⟶ CommAlgCat.of OFlat (c.TiltRing ⧸ J) := CommAlgCat.ofHom (mkₐ OFlat J)
+    (Function.Surjective ((moduleCoeff (tensorCoeff M)).map q) → ∀ n : ℕ,
+      Function.Surjective (H.map (tilt ⋙ moduleCoeff (tensorCoeff M))
+        (freeAb.map (killingMaps (ringOf (genericTestOver Ω)) I).ι) n)) ∧
+    ∀ x : (tilt ⋙ moduleCoeff (tensorCoeff M)).obj c,
+      (∀ (d : PadicTest) (f : c ⟶ d), ⟨f⟩ ∈ (killingMaps (ringOf (genericTestOver Ω)) I) d →
+        (tilt ⋙ moduleCoeff (tensorCoeff M)).map f x = 0) →
+      (moduleCoeff (tensorCoeff M)).map q x = 0 := by
+  intro J q
+  refine surjective_and_map_eq_zero_of_quotient_sieve tilt
+    (R := killingMaps (ringOf (genericTestOver Ω)) I) q
+    (fun {d} f hf ↦ by
+      have h_kill : ∀ y ∈ J, (tilt.map f).hom y = 0 := fun y ⟨a, ha, hy⟩ ↦
+        hy d f (by simp [show mapGeneric f a = 0 from le_comap_of_map_le hf.le ha])
+      refine ⟨ofHom (liftₐ _ (tilt.map f).hom h_kill), rfl, fun g hg ↦ ?_⟩
+      ext ⟨y⟩
+      exact ConcreteCategory.congr_hom hg y)
+    (fun f g hg ↦ (map_eq_bot_iff_le_ker _).2 <| c.le_ker_of_tiltNearZeros_le_ker I f fun y hy ↦
+      RingHom.mem_ker.mpr <| (ConcreteCategory.congr_hom hg y).symm.trans
+        (mk_ker.ge.trans (ker_le_comap (K := ker g.hom) _) hy))
+    (@ac (CommAlgCat.of OFlat (c.TiltRing ⧸ J)) (c.perfectRing_quotient_tiltNearZeros I))
+
 /-- The theory (`New.Variety.Theory`, for the prime `ℓ = p`) on `p`-adic tests along `R ↦ R[1/p]`
 (`New.Variety.genericTestOver`), with coefficients `R ↦ R♭ ⊗_{O♭} M`. It needs `p` invertible in
 `Ω`, and every perfect `O♭`-algebra acyclic for these coefficients (`ac`,
@@ -652,24 +646,7 @@ ideal containing `I`. -/
 def tiltTheory {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p] [Algebra Ω ℂ_[p]]
     (M : ModuleCat OFlat) (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M))) :
     Theory (genericTestOver Ω) :=
-  let J (c : PadicTest) (I : Ideal c.GenericRing) : Ideal (TiltRing c) :=
-    c.nearZeros I fun f ↦ ker (tilt.map f).hom
-  -- The maps that kill `I` are those whose tilt factors, uniquely, through the perfect algebra
-  -- `TiltRing c ⧸ J c I`.
-  have h_supp (c : PadicTest) (I : Ideal c.GenericRing) :=
-    surjective_and_map_eq_zero_of_quotient_sieve tilt
-      (R := killingMaps (ringOf (genericTestOver Ω)) I)
-      (CommAlgCat.ofHom (mkₐ OFlat (J c I)))
-      (fun {d} f hf ↦ by
-        have h_kill : ∀ y ∈ J c I, (tilt.map f).hom y = 0 := fun y ⟨a, ha, hy⟩ ↦
-          hy d f (by simp [show mapGeneric f a = 0 from le_comap_of_map_le hf.le ha])
-        refine ⟨ofHom (liftₐ _ (tilt.map f).hom h_kill), rfl, fun g hg ↦ ?_⟩
-        ext ⟨y⟩
-        exact ConcreteCategory.congr_hom hg y)
-      (fun f g hg ↦ (map_eq_bot_iff_le_ker _).2 <| c.le_ker_of_tiltNearZeros_le_ker I f fun y hy ↦
-        RingHom.mem_ker.mpr <| (ConcreteCategory.congr_hom hg y).symm.trans
-          (mk_ker.ge.trans (ker_le_comap (K := ker g.hom) _) hy))
-      (@ac (CommAlgCat.of OFlat (c.TiltRing ⧸ J c I)) (c.perfectRing_quotient_tiltNearZeros I))
+  have h_supp := tiltTheory_supp Ω M ac
   { functor := tilt ⋙ moduleCoeff (tensorCoeff M)
     prime_smul_eq_zero c x := ULift.down_injective (show p • x.down = 0 by
       simp [natCast_eq_zero_of_algebra_oFlat, ← Nat.cast_smul_eq_nsmul OFlat])

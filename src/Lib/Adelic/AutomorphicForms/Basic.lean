@@ -1,3 +1,18 @@
+module
+
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.Reduction.FiniteVolume
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
+public import Lib.General.Measure.IdempotentKernel
+import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.Reduction.DefiniteClassSums
 
 /-!
@@ -41,6 +56,8 @@ Notions from other files:
 Known result: automorphic forms on unitary groups and their rapid decay. Cusp forms are treated in
 `Lib.Adelic.AutomorphicForms.Cuspidality`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -173,7 +190,7 @@ lemma IsAutomorphic.eq_zero_of_petersson_self (h : V.IsAutomorphic F)
       (integral_eq_zero_iff_of_nonneg (fun g ↦ sq_nonneg _) hF.norm.integrable_sq).1 h_int
   -- the zero set of `F` is stable under `V.Γ`, hence dense; and `F` is continuous
   have h_dense : Dense {g | F g = 0} :=
-    dense_of_ae_orbitMeasure (fun (γ : V.Γ) g hg ↦ (h.rat_mul γ γ.2 g).trans hg) h_ae
+    dense_of_ae_orbitMeasure (fun (γ : V.Γ) g hg ↦ (h.rat_mul γ γ.property g).trans hg) h_ae
   exact h.continuous.ext_on h_dense continuous_zero fun _ hg ↦ hg
 
 lemma IsForm.isBoundedMeasurable (hF : V.IsForm e F) : IsBoundedMeasurable F :=
@@ -203,22 +220,17 @@ lemma isForm_zero : V.IsForm e 0 where
 fixed by convolution with e if e is integrable) is a form of type e. -/
 lemma IsForm.smul_add_smul (hF : V.IsForm e F) (hF' : V.IsForm e F') (a b : ℂ) :
     V.IsForm e (a • F + b • F') := by
-  obtain ⟨C, hC⟩ := hF.bounded
-  obtain ⟨C', hC'⟩ := hF'.bounded
+  rcases hF.bounded, hF'.bounded with ⟨⟨C, hC⟩, ⟨C', hC'⟩⟩
   refine ⟨hF.toIsAutomorphic.map₂ hF'.toIsAutomorphic fun z w ↦ a * z + b * w,
-    ⟨‖a‖ * C + ‖b‖ * C', fun g ↦ ?_⟩, fun he ↦ funext fun g ↦ ?_⟩
-  · exact norm_add_le_of_le (norm_mul_le_of_le le_rfl (hC g)) (norm_mul_le_of_le le_rfl (hC' g))
-  · -- `e` is integrable and forms are bounded, so the integral `realConv e` is linear on them.
-    have h_int {H : G E s → ℂ} (hH : V.IsForm e H) (c : ℂ) :
-        Integrable fun x : GInf E s ↦ c • (e x * H (g * (x, 1))) :=
-      (hH.isBoundedMeasurable.integrable_mul_comp he fun x ↦ g * (x, 1)).fun_smul c
-    calc
-      realConv e (a • F + b • F') g
-          = ∫ x : GInf E s, a • (e x * F (g * (x, 1))) + b • (e x * F' (g * (x, 1))) := by
-        simp [realConv, mul_add, mul_left_comm]
-      _ = a • realConv e F g + b • realConv e F' g := by
-        simp only [realConv, integral_add (h_int hF a) (h_int hF' b), integral_smul]
-      _ = (a • F + b • F') g := by simp [hF.realConv_eq he, hF'.realConv_eq he]
+    ⟨‖a‖ * C + ‖b‖ * C', fun g ↦
+      norm_add_le_of_le (norm_mul_le_of_le le_rfl (hC g)) (norm_mul_le_of_le le_rfl (hC' g))⟩,
+    fun he ↦ funext fun g ↦ ?_⟩
+  -- `e` is integrable and forms are bounded, so the integral `realConv e` is linear on them.
+  have h_int {H : G E s → ℂ} (hH : V.IsForm e H) (c : ℂ) :=
+    (hH.isBoundedMeasurable.integrable_mul_comp he fun x ↦ g * (x, 1)).fun_smul c
+  simp only [realConv, Pi.add_apply, Pi.smul_apply, mul_add, mul_smul_comm,
+    integral_add (h_int hF a) (h_int hF' b), integral_smul]
+  rw [← realConv, ← realConv, hF.realConv_eq he, hF'.realConv_eq he]
 
 /-- The forms of type e for V, as a submodule of the complex functions on G. -/
 def formSubmodule : Submodule ℂ (G E s → ℂ) :=
@@ -318,32 +330,21 @@ theorem exists_height_le_mul (hK : IsCompact K) :
   -- `c * R` times as long; so the first minimum at `g` is at most `max 1 (c * R)` times
   -- that at `k`.
   obtain ⟨c, hc, h_lat⟩ := V.exists_smul_mulVec_mem_latticeBall (hK.image continuous_snd)
-  obtain ⟨R, hR⟩ : ∃ R : ℝ, ∀ x ∈ K, ∀ w : NumberField.InfinitePlace E,
-      ‖(x.1 w).val.val‖ ≤ R := by
-    obtain ⟨R, hR⟩ :=
-      hK.exists_bound_of_continuousOn (f := fun x w ↦ (x.1 w).val.val) (by fun_prop)
-    exact ⟨R, fun x hx w ↦ (norm_le_pi_norm _ w).trans (hR x hx)⟩
-  refine ⟨max 1 (c * R), le_max_left _ _, fun γ g k h_mem ↦ ?_⟩
-  have short_le (y : n → E) (hy : y ∈ (V.move k).baseLattice) (y_ne : y ≠ 0) :
-      (V.move g).firstMinimum ≤ max 1 (c * R) * ‖(V.move k).archCoords y‖ := by
-    obtain ⟨mem_lat, norm_le⟩ : (c : E) • γ.val.val.mulVec y ∈
-        (V.move g).latticeBall (c * R * ‖(V.move k).archCoords y‖) :=
-      h_lat (Set.mem_image_of_mem Prod.snd h_mem) (hR _ h_mem) y hy
-    have mulVec_ne : γ.val.val.mulVec y ≠ 0 := show γ • y ≠ 0 from (smul_ne_zero_iff_ne γ).2 y_ne
-    have image_ne : (c : E) • γ.val.val.mulVec y ≠ 0 :=
-      smul_ne_zero (Nat.cast_ne_zero.2 hc) mulVec_ne
-    grw [firstMinimum_le mem_lat image_ne, norm_le, ← le_max_right]
-  -- By `le_firstMinimum_iff` this is `short_le` together with the bound `1` on the first minimum at
-  -- `g`.
-  have h_min : (max 1 (c * R) * V.height g)⁻¹ ≤ (V.move k).firstMinimum := by
-    simpa [le_firstMinimum_iff, height, field] using short_le
-  exact inv_le_of_inv_le₀ (by simp) h_min
+  obtain ⟨R, hR⟩ :=
+    hK.exists_bound_of_continuousOn (f := fun x w ↦ (x.1 w).val.val) (by fun_prop)
+  refine ⟨max 1 (c * R), le_max_left _ _, fun γ g k h_mem ↦ inv_le_of_inv_le₀ (by simp) ?_⟩
+  simp [le_firstMinimum_iff, height, field]
+  intro y hy y_ne
+  obtain ⟨mem_lat, norm_le⟩ :=
+    h_lat ⟨_, h_mem, rfl⟩ (fun w ↦ (norm_le_pi_norm _ w).trans (hR _ h_mem)) y hy
+  grw [firstMinimum_le mem_lat (smul_ne_zero (Nat.cast_ne_zero.2 hc) <|
+    show γ • y ≠ 0 from (smul_ne_zero_iff_ne γ).2 y_ne), norm_le, ← le_max_right]
 
 /-- For a compact set K ⊆ G, a real C and a natural number B, the function g ↦ C·ht(g)^B is bounded
 above on the set of g that a point of Γ moves into K. Here ht is the height of V, the inverse of
 the first minimum cut off at 1. -/
 theorem exists_mul_height_pow_le (hK : IsCompact K) (C : ℝ) :
-    ∃ D : ℝ, ∀ᵉ (g : G E s) (γ ∈ V.Γ), γ * g ∈ K → C * V.height g ^ B ≤ D := by
+    ∃ D : ℝ, ∀ g : G E s, ∀ γ ∈ V.Γ, γ * g ∈ K → C * V.height g ^ B ≤ D := by
   obtain ⟨C', hC'_one, hC'⟩ := V.exists_height_le_mul hK
   refine ⟨|C| * (C' * V.height 1) ^ B, fun g _ ⟨γ, hγ⟩ hg ↦ ?_⟩
   -- As `γ * g ∈ K`, the height of `g` is comparable to the height of `1`.

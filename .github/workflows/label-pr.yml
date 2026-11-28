@@ -1,0 +1,164 @@
+name: Label PR
+
+# Labels PRs that touch the build configuration, the challenge statement, the solution, CI or the
+# docs, and labels each PR by size, using the larger of its added and removed line counts: under
+# 10 is extra small, under 100 small, under 1,000 medium, under 10,000 large, and 10,000 or more
+# extra large. The counts are GitHub's own for the PR, so the job never downloads file contents.
+# GitHub gives +0 -0 for a PR too large for it to diff, so the size is never taken to be less
+# than the number of paths the PR changes.
+#
+# pull_request_target lets the token label PRs from forks. Nothing from the PR is checked out
+# or run: the job fetches commits and trees without file contents and lists the changed paths
+# with git. (The PR-files API, which actions/labeler uses, stops at 3,000 files, and a PR can
+# change more.) The labels must already exist.
+#
+# When a PR stops changing a label's paths, the label is removed only if this workflow added it
+# (its latest "labeled" event is by github-actions[bot]); labels people add are left alone.
+# Size labels are different: when the size label changes, the other size labels are removed,
+# whoever added them.
+# Since labels can be removed, only the run for the PR's current head may apply them: newer
+# pushes cancel older runs, and a run whose head has moved on exits without changes.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+concurrency:
+  group: label-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Add and remove labels for this PR's paths and size
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git init -q pr
+          git -C pr fetch -q --no-tags --filter=blob:none "https://github.com/$GITHUB_REPOSITORY" "$BASE" "$HEAD"
+          git -C pr diff -z --name-only --no-renames "$BASE...$HEAD" > changed
+
+          lake='' challenge='' solution='' ci='' docs=''
+          while IFS= read -r -d '' path; do
+            # The log shows the paths. A line break in a file name would start a new line of the
+            # log, which GitHub reads as a workflow command if it starts with `::`.
+            shown=${path//$'\n'/\\n}
+            shown=${shown//$'\r'/\\r}
+            case "$path" in
+              lakefile.toml | lakefile.lean | lake-manifest.json | lean-toolchain)
+                lake+="  $shown"$'\n' ;;
+            esac
+            # Challenge.lean imports src/Statements.lean, which defines the propositions that
+            # four of the five theorems state, so that file is part of the challenge.
+            case "$path" in
+              Challenge.lean | comparator.json | src/Statements.lean)
+                challenge+="  $shown"$'\n' ;;
+            esac
+            case "$path" in
+              src/Main.lean)
+                solution+="  $shown"$'\n' ;;
+            esac
+            case "$path" in
+              .github/* | scripts/*)
+                ci+="  $shown"$'\n' ;;
+            esac
+            # The Markdown files at the top level: README.md, GUIDE.md, CONTENTS.md, INDEX.md,
+            # REFERENCES.md and the others.
+            case "$path" in
+              */*) ;;
+              *.md)
+                docs+="  $shown"$'\n' ;;
+            esac
+          done < changed
+
+          add=() stale=()
+          flag() {
+            if [[ -n "$2" ]]; then
+              printf '%s:\n%s' "$1" "$2"
+              add+=("$1")
+            else
+              stale+=("$1")
+            fi
+          }
+          flag changes-lake "$lake"
+          flag changes-challenge "$challenge"
+          flag changes-solution "$solution"
+          flag CI "$ci"
+          flag documentation "$docs"
+
+          api="repos/$GITHUB_REPOSITORY/issues/$PR"
+          pr=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq '"\(.head.sha) \(.additions) \(.deletions)"')
+          read -r current additions deletions <<< "$pr"
+          if [[ "$current" != "$HEAD" ]]; then
+            echo "The PR head has moved to $current; the run for that head applies its labels."
+            exit 0
+          fi
+
+          # GitHub reports +0 -0 for a PR too large for it to diff, which would make the largest
+          # PRs extra small. The number of changed paths is a floor for the size.
+          paths=$(tr -cd '\0' < changed | wc -c)
+          size=$(( additions > deletions ? additions : deletions ))
+          size=$(( size > paths ? size : paths ))
+          if (( size < 10 )); then
+            size_label='extra small'
+          elif (( size < 100 )); then
+            size_label=small
+          elif (( size < 1000 )); then
+            size_label=medium
+          elif (( size < 10000 )); then
+            size_label=large
+          else
+            size_label='extra large'
+          fi
+          echo "$size_label: +$additions -$deletions, $(( paths )) changed paths"
+          wrong_size=()
+          for label in 'extra small' small medium large 'extra large'; do
+            if [[ "$label" == "$size_label" ]]; then add+=("$label"); else wrong_size+=("$label"); fi
+          done
+
+          present=$(gh api --paginate "$api/labels" --jq '.[].name')
+          # When the size label changes, the other size labels are removed whoever added them.
+          # While it stays the same, a size label someone adds alongside it is left alone.
+          if grep -qxF -- "$size_label" <<< "$present"; then wrong_size=(); fi
+
+          if (( ${#add[@]} > 0 )); then
+            # Adding a label that does not exist creates it, so a label renamed on GitHub would
+            # come back under its old name. Stop instead.
+            known=$(gh api --paginate "repos/$GITHUB_REPOSITORY/labels" --jq '.[].name')
+            for label in "${add[@]}"; do
+              if ! grep -qxF -- "$label" <<< "$known"; then
+                echo "::error::There is no '$label' label in $GITHUB_REPOSITORY. Was it renamed?"
+                exit 1
+              fi
+            done
+            args=()
+            for label in "${add[@]}"; do args+=(-f "labels[]=$label"); done
+            gh api --method POST "$api/labels" "${args[@]}" --silent
+          fi
+
+          for label in "${stale[@]}"; do
+            grep -qxF -- "$label" <<< "$present" || continue
+            # Events are oldest first, so the last line is whoever added the label most recently.
+            adder=$(gh api --paginate "$api/events" \
+              --jq ".[] | select(.event == \"labeled\" and .label.name == \"$label\") | .actor.login" | tail -n 1)
+            if [[ "$adder" == "github-actions[bot]" ]]; then
+              echo "Removing $label: its paths are no longer changed."
+              gh api --method DELETE "$api/labels/$label" --silent
+            else
+              echo "Keeping $label: added by ${adder:-unknown}, not by this workflow."
+            fi
+          done
+          for label in "${wrong_size[@]}"; do
+            grep -qxF -- "$label" <<< "$present" || continue
+            echo "Removing $label: this PR is $size_label."
+            gh api --method DELETE "$api/labels/${label// /%20}" --silent
+          done

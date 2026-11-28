@@ -1,5 +1,9 @@
-import New.Congruences.Selmer.Line
+module
+
+import Mathlib.Algebra.Order.Star.Rat
+public import New.Congruences.Selmer.Line
 import New.Congruences.Selmer.RootsOfUnity
+import New.Congruences.Selmer.StickelbergerLine
 
 /-!
 # Twisting, general form
@@ -30,6 +34,8 @@ Notions from other files:
 * `New.ellVal`: the valuation `v` on `PadicAlgCl ℓ` with `v(ℓ) = 1`, read in `[0, ∞]`.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New.Selmer
@@ -41,7 +47,7 @@ open scoped NNReal ENNReal NNRat
 variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
   {S₀ : Finset (FinPlace E)}
   {g₀ : Gal(Ω/E)} {ι κ : Type} {n : ι → Type} [∀ i : ι, Fintype (n i)] [∀ i : ι, DecidableEq (n i)]
-  {O : CoeffRing ℓ} (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.1 (n i))
+  {O : CoeffRing ℓ} (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i))
   (Y : κ → StickelbergerSystem ℓ S₀ g₀)
 
 open scoped Classical in
@@ -245,7 +251,7 @@ lemma ellVal_twist_tameGenerator_sub_one_le
     ‖(ζ v - 1).val‖ = ‖X.twist hζ γ ^ a - 1‖ := by
       rw [← ha, h_value, AddSubgroupClass.coe_sub, OneMemClass.coe_one]
     _ ≤ ‖X.twist hζ γ - 1‖ :=
-      Period.norm_pow_sub_one_le_norm_sub_one h_fin.norm_eq_one.le a
+      TauCeti.norm_pow_sub_one_le_norm_sub_one h_fin.norm_eq_one.le a
 
 open scoped Classical in
 /-- Let `X` be twist polynomials, with a set `X.auxPrimes` of at most `s₀ / 2` auxiliary primes and
@@ -333,7 +339,7 @@ lemma exists_rootsOfUnity_ellVal_eval_le (s₀ : ℕ) {m : ℕ} (hm : 1 ≤ m) {
             ellVal (eval (x i) (P i)).val + ε := by
   -- Apply the case of one exponent to the polynomials `P^{(j)}` that arise from `P` by putting
   -- `(1 + X) ^ j - 1` for each variable `X`, with points `x'` such that `(1 + x') ^ j = 1 + x`.
-  have : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   obtain ⟨B, hB⟩ : ∃ B : ℝ≥0, (B : ℝ≥0∞) = ∑ p : ι × Set.Icc 1 m, β p.1 :=
     ENNReal.canLift.prf _ (ENNReal.sum_ne_top.2 fun p _ ↦ hβ p.1)
   obtain ⟨h₀, h_roots⟩ :=

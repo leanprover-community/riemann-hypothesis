@@ -1,4 +1,8 @@
-import Lib.Weil.Construction.FiniteMultiplier
+module
+
+import Mathlib.Topology.LocallyConstant.Algebra
+public import Lib.Weil.Construction.FiniteMultiplier
+import Lib.General.Measure.HaarNormalisation
 
 /-!
 # Schwartz–Bruhat functions on a set of places and the Schrödinger model there
@@ -31,6 +35,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -190,21 +196,12 @@ Schwartz–Bruhat above `S`. -/
 lemma comp {m : Type*} [Fintype m] {A : Matrix n m (𝔸f E)} (B : Matrix m n (𝔸f E))
     (h_left_inv : ∀ y : m → 𝔸f E, B *ᵥ A *ᵥ y = y) (y : n → 𝔸f E) :
     IsSchwartzBruhat S fun x : m → 𝔸f E ↦ Ψ (A *ᵥ x + y) := by
-  -- The image of the compact set for `Ψ` under `z ↦ B (z - idem S • y)` serves.
-  obtain ⟨C, hC, h_supp⟩ : ∃ C : Set (n → 𝔸f E), IsCompact C ∧
-      ∀ x : n → 𝔸f E, Ψ x ≠ 0 → idem S • x ∈ C := hΨ.compact_support
-  have h_smul (x : m → 𝔸f E) : A *ᵥ (idem S • x) + idem S • y = idem S • (A *ᵥ x + y) := by
-    rw [mulVec_smul, smul_add]
-  have h_cont : Continuous fun z : n → 𝔸f E ↦ B *ᵥ (z - idem S • y) := by fun_prop
+  obtain ⟨C, hC, h_supp⟩ := hΨ.compact_support
   refine ⟨fun x ↦ ?_, hΨ.locally_constant.comp_continuous (by fun_prop),
-    (fun z ↦ B *ᵥ (z - idem S • y)) '' C, hC.image h_cont, ?_⟩
-  · -- Both arguments of `Ψ` have the same part at `S`.
-    have h_part : idem S • (A *ᵥ (idem S • x) + y) = idem S • (A *ᵥ x + y) := by
-      rw [← h_smul (idem S • x), ← h_smul x, smul_smul, idem_mul_self]
-    rw [← hΨ.idem_smul (A *ᵥ (idem S • x) + y), h_part, hΨ.idem_smul]
-  · intro x hx
-    refine ⟨idem S • (A *ᵥ x + y), h_supp _ hx, ?_⟩
-    simp only [← h_smul, add_sub_cancel_right, h_left_inv]
+    (fun z ↦ B *ᵥ (z - idem S • y)) '' C, hC.image (by fun_prop), fun x hx ↦
+      ⟨idem S • (A *ᵥ x + y), h_supp _ hx, by simp [smul_add, ← mulVec_smul, h_left_inv]⟩⟩
+  rw [← hΨ.idem_smul (A *ᵥ (idem S • x) + y), ← hΨ.idem_smul (A *ᵥ x + y)]
+  simp [smul_add, mulVec_smul, smul_smul, idem_mul_self]
 
 /-- A translate of a Schwartz–Bruhat function above `S` is Schwartz–Bruhat above `S`. -/
 instance comp_add (y : n → 𝔸f E) : IsSchwartzBruhat S fun x : n → 𝔸f E ↦ Ψ (x + y) := by
@@ -232,29 +229,20 @@ lemma eq_sum_cosetIndicator (t : (𝔸f E)ˣ)
       t⁻¹.val • (y - x) ∈ integralBox n S ↔ (y : _ ⧸ U.toAddSubgroup) = x :=
     (eq_iff_sub_mem (N := U.toAddSubgroup)).symm
   obtain ⟨C, hC, h_supp⟩ := hΨ.compact_support
-  -- These classes are finitely many: each meets the compact set `C`, as `x` and `idem S • x`
-  -- are congruent modulo `U`, and the quotient is discrete.
-  have h_fin : (Function.support fun q : _ ⧸ U.toAddSubgroup ↦ Ψ q.out).Finite := by
-    refine (hC.image continuous_mk).finite_of_discrete.subset fun q hq ↦ ⟨_, h_supp _ hq, ?_⟩
-    -- `out q` and its part at `S` are congruent modulo `U`.
-    have h_mem : t⁻¹.val • (idem S • q.out - q.out) ∈ integralBox n S := by
-      simp +contextual [mem_integralBox, idem_mul_mem_Ô]
-    exact (mem_box_iff.mp h_mem).trans q.out_eq
+  -- These classes are finitely many: each meets the compact set `C`, as `q.out` and its part at
+  -- `S` are congruent modulo `U`, and the quotient is discrete.
+  have h_fin : (Function.support fun q : _ ⧸ U.toAddSubgroup ↦ Ψ q.out).Finite :=
+    (hC.image continuous_mk).finite_of_discrete.subset fun q hq ↦ ⟨_, h_supp _ hq,
+      (mem_box_iff.mp (by simp +contextual [mem_integralBox, idem_mul_mem_Ô])).trans q.out_eq⟩
   refine ⟨h_fin.toFinset.image out, by simp, ?_⟩
-  -- At `x` only the class of `x` contributes, so it suffices that `Ψ x` is the value at the
-  -- representative of its class, or zero if that value is zero.
-  suffices h_rep : ∀ x : n → 𝔸f E,
-      Ψ x = if Ψ (out (x : (n → 𝔸f E) ⧸ U.toAddSubgroup)) = 0 then 0
-        else Ψ (out (x : (n → 𝔸f E) ⧸ U.toAddSubgroup)) by
-    simpa [funext_iff, mem_box_iff] using h_rep
+  -- At `x` only the class of `x` contributes, and `Ψ` is constant on each class.
+  suffices h : ∀ x : n → 𝔸f E, Ψ x = if Ψ (out (x : (n → 𝔸f E) ⧸ U.toAddSubgroup)) = 0 then 0
+      else Ψ (out (x : (n → 𝔸f E) ⧸ U.toAddSubgroup)) by
+    simpa [funext_iff, mem_box_iff] using h
   intro x
-  set q : n → 𝔸f E := out (x : (n → 𝔸f E) ⧸ U.toAddSubgroup)
-  have h_class : (q : (n → 𝔸f E) ⧸ U.toAddSubgroup) = x := out_eq _
-  split_ifs with h_zero
-  · -- `Ψ x ≠ 0` would give `Ψ q = Ψ x ≠ 0`, as `Ψ` is constant on the class.
-    by_contra hx
-    exact hx ((h_per x hx q (mem_box_iff.mpr h_class)).symm.trans h_zero)
-  · exact h_per q h_zero x (mem_box_iff.mpr h_class.symm)
+  split_ifs with hq
+  · exact by_contra fun hx ↦ hx ((h_per x hx _ (mem_box_iff.mpr (out_eq _))).symm.trans hq)
+  · exact h_per _ hq x (mem_box_iff.mpr (out_eq _).symm)
 
 open scoped Pointwise in
 /-- For `Ψ` Schwartz–Bruhat above `S` (instance `hΨ`) and a continuous `F`, the product `F Ψ` is
@@ -297,7 +285,7 @@ lemma mem_of_cosets (P : Submodule ℂ ((n → 𝔸f E) → ℂ))
   -- that points that differ by an element of `N` times the lattice are `W`-close.
   let uniformSpace : UniformSpace (n → 𝔸f E) := IsTopologicalAddGroup.rightUniformSpace (n → 𝔸f E)
   obtain ⟨W, hW, h_ball_subset⟩ : ∃ W ∈ uniformity (n → 𝔸f E), ∀ x ∈ C, ∃ y : n → 𝔸f E,
-      UniformSpace.ball x W ⊆ {z | Ψ z = Ψ y ∧ (Ψ y ≠ 0 → z ∈ U y)} := by
+      SetRel.ball (SetRel.inv W) x ⊆ {z | Ψ z = Ψ y ∧ (Ψ y ≠ 0 → z ∈ U y)} := by
     obtain ⟨V, hV, h_ball⟩ := lebesgue_number_lemma_nhds hC fun y _ ↦ h_nhds y
     exact ⟨SetRel.inv V, tendsto_swap_uniformity hV, h_ball⟩
   obtain ⟨N, hN, h_smul_mem⟩ : ∃ N : ℕ, N ≠ 0 ∧ ∀ x ∈ (stdLattice E n).carrier,
@@ -308,7 +296,7 @@ lemma mem_of_cosets (P : Submodule ℂ ((n → 𝔸f E) → ℂ))
       t⁻¹.val • (x - q) ∈ integralBox n S →
         Ψ (idem S • x) = Ψ y ∧ (Ψ y ≠ 0 → idem S • x ∈ U y) := by
     obtain ⟨y, hy⟩ : ∃ y : n → 𝔸f E,
-        UniformSpace.ball (idem S • q) W ⊆ {z | Ψ z = Ψ y ∧ (Ψ y ≠ 0 → z ∈ U y)} :=
+        SetRel.ball (SetRel.inv W) (idem S • q) ⊆ {z | Ψ z = Ψ y ∧ (Ψ y ≠ 0 → z ∈ U y)} :=
       h_ball_subset _ (h_supp q hq)
     refine ⟨y, fun x hx ↦ hy (h_smul_mem _ hx ?_)⟩
     simp [← ht, mul_left_comm (t : 𝔸f E), sub_eq_add_neg, smul_smul]
@@ -370,28 +358,21 @@ lemma schrodingerAct_schrodingerAct (y y' : n → 𝔸f E) (f : (n → 𝔸f E) 
       (stdLattice.finHeisenberg E n).β (idem S.conjClosure • y) (idem S.conjClosure • y') •
         schrodingerAct S (y + y') f := by
   funext x
-  simp only [schrodingerAct_apply, Pi.smul_apply, smul_eq_mul]
-  -- Both sides are `selfDualAddChar E` of an exponent times `f (x + y + y')`. With `e = idem S`,
-  -- the exponents differ by `t + star t` for `t = -(half * e * y* y')`, on which
-  -- `selfDualAddChar E` is `1`.
-  set t : 𝔸f E := -(half * idem S * star y ⬝ᵥ y') with ht
-  have h_exp :
-      half * star y ⬝ᵥ idem S • (x + (x + y)) + half * star y' ⬝ᵥ idem S • (x + y + (x + y + y')) =
-        half * star (idem S.conjClosure • y') ⬝ᵥ idem S.conjClosure • y +
-            half * star (y + y') ⬝ᵥ idem S • (x + (x + (y + y'))) + (t + star t) + 0 := by
-    have h_idem_star : star (idem S) * star (idem S) = star (idem S) := by
-      rw [← star_mul, idem_mul_self]
-    rw [ht, idem_conjClosure_eq_add_star hS]
-    simp only [star_smul, star_add, star_neg, star_star, star_mul, star_half, smul_dotProduct,
-      dotProduct_smul, add_dotProduct, dotProduct_add, add_smul, smul_add, smul_eq_mul]
-    linear_combination
-      -(half * (star y' ⬝ᵥ y)) * idem_mul_self S - (half * (star y' ⬝ᵥ y)) * h_idem_star -
-        (2 * half * (star y' ⬝ᵥ y)) * idem_mul_star hS +
-        (half * star (idem S)) * (Matrix.star_dotProduct y' y).symm
-  have h_beta : (stdLattice.finHeisenberg E n).β (idem S.conjClosure • y) (idem S.conjClosure • y')
-      = selfDualAddChar E (half * star (idem S.conjClosure • y') ⬝ᵥ idem S.conjClosure • y) := rfl
-  rw [h_beta, ← mul_assoc, ← mul_assoc, ← map_add_eq_mul, ← map_add_eq_mul,
-    selfDualAddChar_congr t (zero_mem _) h_exp, add_assoc x y y']
+  -- Both sides are `selfDualAddChar E` of an exponent times `f (x + y + y')`, whose exponents
+  -- differ by `t + star t` for `t = -(half * idem S * star y ⬝ᵥ y')`.
+  simp only [schrodingerAct_apply, Pi.smul_apply, smul_eq_mul, ← mul_assoc, add_assoc]
+  refine congrArg (· * f (x + (y + y'))) ?_
+  change selfDualAddChar E _ * selfDualAddChar E _ = selfDualAddChar E _ * selfDualAddChar E _
+  rw [← map_add_eq_mul, ← map_add_eq_mul]
+  refine selfDualAddChar_congr (-(half * idem S * star y ⬝ᵥ y')) (zero_mem _) ?_
+  rw [idem_conjClosure_eq_add_star hS]
+  simp only [star_smul, star_add, star_neg, star_star, star_mul, star_half, smul_dotProduct,
+    dotProduct_smul, add_dotProduct, dotProduct_add, add_smul, smul_add, smul_eq_mul]
+  linear_combination
+    -(half * (star y' ⬝ᵥ y)) * idem_mul_self S -
+      (half * (star y' ⬝ᵥ y)) * ((star_mul _ _).symm.trans (congrArg star (idem_mul_self S))) -
+      (2 * half * (star y' ⬝ᵥ y)) * idem_mul_star hS +
+      (half * star (idem S)) * (Matrix.star_dotProduct y' y).symm
 
 include hS in
 /-- For `S` disjoint from its conjugate (hypothesis `hS`), the operator of `y`, corrected by the
@@ -549,7 +530,7 @@ lemma _root_.New.Space.mem_range_schrodingerCombination {S : Set (FinPlace E)}
   let B : OpenAddSubgroup (n → 𝔸f E) :=
     comap (smulAddHom (𝔸f E) (n → 𝔸f E) (star t⁻¹.val)) (continuous_const_smul _)
       ⟨stdLattice E n, isOpen_stdLattice⟩
-  have h_fintype : Fintype (stdLattice E n ⧸ B.toAddSubgroup.addSubgroupOf (stdLattice E n)) :=
+  let h_fintype : Fintype (stdLattice E n ⧸ B.toAddSubgroup.addSubgroupOf (stdLattice E n)) :=
     fintypeOfIndexNeZero (isCompact_stdLattice.relIndex_ne_zero_add B.isOpen)
   let f (q : stdLattice E n ⧸ B.toAddSubgroup.addSubgroupOf (stdLattice E n)) : (n → 𝔸f E) → ℂ :=
     schrodingerAct S (idem S • -z)

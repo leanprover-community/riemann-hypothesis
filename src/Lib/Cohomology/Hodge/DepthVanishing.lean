@@ -1,5 +1,16 @@
-import Lib.Cohomology.Hodge.Site
+module
+
+import TauCeti.RingTheory.MvPolynomial.RegularSequence
+public import Mathlib.RingTheory.Regular.RegularSequence
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Regular.Category
+import Mathlib.RingTheory.Regular.Flat
+import Mathlib.RingTheory.TotallySplit
+public import Lib.Cohomology.Hodge.Site
+import Lib.Cohomology.Etale.DenseSubfunctors
+import Lib.Cohomology.Etale.RelativeChains
 import Lib.PadicComparison.Descent.AlmostDescent
+import Lib.PadicComparison.Descent.TestCovers
 
 /-!
 # Vanishing of Hodge cohomology with supports below the depth, and Zariski descent
@@ -26,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Hodge.FixedPointFormula` for sources.
 -/
+
+@[expose] public section
 
 open CategoryTheory Function TensorProduct Ideal RingTheory.Sequence MvPolynomial Functor RingHom
   IsLocalization.Away ConcreteCategory TrivSqZeroExt IsLocalizedModule LinearMap Localization Fin
@@ -57,8 +70,8 @@ variable {A k ι : Type} [CommRing A] [CommRing k] {c : HodgeTest k} {n d : ℕ}
 /-- For a pair `c = (A, M)` and a family `(f_i)` in `A`, the subfunctor of h_c of the morphisms
 `y : c ⟶ X` whose ring map `A → X.baseAlg` sends some `f_i` to a unit. -/
 def someUnitLocus (f : ι → c.baseAlg) : Subfunctor (reprBy c) where
-  obj _ := {y | ∃ i : ι, IsUnit (y.1.1 (f i))}
-  map a _ := Exists.imp fun _ ↦ IsUnit.map a.1.1
+  obj _ := {y | ∃ i : ι, IsUnit (y.down.1 (f i))}
+  map a _ := Exists.imp fun _ ↦ IsUnit.map a.1.hom'
 
 /-- Depth vanishing. Let `H n` assign to each `A`-module an `A`-module such that every element of
 every `H n M` is killed by a power of each element of `I`, and such that an `M`-regular `r` is
@@ -90,24 +103,24 @@ private abbrev flatAlgebras (R : Type) [CommRing R] : ObjectProperty (CommAlg R)
 /-- For a flat `R`-algebra `B` and `b ∈ B`, the maps from `B` to flat `R`-algebras that send `b`
 to a unit. -/
 private def flatUnitLocus {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory)
-    (b : B.1) : Subfunctor (reprBy B) where
-  obj _ := {x | IsUnit (x.1.1 b)}
-  map a _ := .map a.1.hom
+    (b : B.obj) : Subfunctor (reprBy B) where
+  obj _ := {x | IsUnit (x.down.hom b)}
+  map a _ := .map a.hom.hom
 
 /-- The localization `B[1/b]` of a flat `R`-algebra `B`, again a flat `R`-algebra. -/
-private abbrev flatAway {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory) (b : B.1) :
+private abbrev flatAway {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory) (b : B.obj) :
     (flatAlgebras R).FullSubcategory :=
-  ⟨.of _ (Away b), B.2.trans ..⟩
+  ⟨.of _ (Away b), B.property.trans ..⟩
 
 /-- The localization map `B → B[1/b]`, as a member of `flatUnitLocus B b`. -/
 private abbrev flatToAway {R : Type} [CommRing R] (B : (flatAlgebras R).FullSubcategory) (b : B.1) :
     (flatUnitLocus B b).toFunctor.obj (flatAway B b) :=
-  ⟨⟨⟨B.1.toAway b⟩⟩, algebraMap_isUnit b⟩
+  ⟨⟨⟨B.obj.toAway b⟩⟩, algebraMap_isUnit b⟩
 
 /-- `B[1/b]` represents the maps from a flat `R`-algebra `B` that send `b` to a unit: for every
 flat `D`, composing with `B → B[1/b]` maps `Hom(B[1/b], D)` bijectively onto them. -/
 private lemma bijective_pointMap_flatToAway {R : Type} [CommRing R]
-    (B : (flatAlgebras R).FullSubcategory) (b : B.1) (D : (flatAlgebras R).FullSubcategory) :
+    (B : (flatAlgebras R).FullSubcategory) (b : B.obj) (D : (flatAlgebras R).FullSubcategory) :
     Bijective ((pointMap (flatToAway B b)).app D) := by
   refine pointMap_bijective_of_existsUnique _ _ (fun D' y hy ↦ ?_) D
   -- the lift of `y` to `B[1/b]`, unique by the universal property of the localization
@@ -121,8 +134,8 @@ private lemma bijective_pointMap_flatToAway {R : Type} [CommRing R]
 `t ∈ S` whose ring map `s t` sends `g` to a unit. -/
 private def commaUnitLocus (g : c.baseAlg) :
     Subfunctor (Comma.fst (𝟭 Type) (coyoneda.obj ⟨c⟩) ⋙ uliftFunctor) where
-  obj X := {t | IsUnit ((X.hom t.1).1 g)}
-  map a _ h := congr(IsUnit (($a.w _).1 g)).mpr (h.map a.right.1.1)
+  obj X := {t | IsUnit ((X.hom t.down).1 g)}
+  map a _ h := congr(IsUnit (($a.w _).1 g)).mpr (h.map a.right.1.hom')
 
 /-- Let `Q` be a closed class (it holds for zero functors and has two-out-of-three along short
 exact sequences whose first term lies in `Q`) of functors on the comma category of pairs `(S, s)`,
@@ -132,24 +145,16 @@ private lemma IsClosedClass.relFreeAb_iSup_commaUnitLocus {f : ι → c.baseAlg}
     (Q : (Comma (𝟭 Type) (coyoneda.obj ⟨c⟩) ⥤ Ab.{1}) → Prop) (hQ : IsClosedClass Q)
     (h_freeAb : ∀ g : c.baseAlg, Q (freeAb.obj (commaUnitLocus g).toFunctor)) :
     Q (relFreeAb (iSup (commaUnitLocus ∘ f))) := by
-  have h_inf (g g' : c.baseAlg) :
-      commaUnitLocus (g * g') = commaUnitLocus g ⊓ commaUnitLocus g' := by
-    aesop (add simp commaUnitLocus)
-  have h_range_inf : ∀ W ∈ Set.range (commaUnitLocus (c := c)),
-      ∀ W' ∈ Set.range (commaUnitLocus (c := c)), W ⊓ W' ∈ Set.range (commaUnitLocus (c := c)) := by
-    rintro _ ⟨g, rfl⟩ _ ⟨g', rfl⟩
-    exact ⟨g * g', h_inf g g'⟩
   have h_union : Q (freeAb.obj (iSup (commaUnitLocus ∘ f)).toFunctor) :=
-    hQ.freeAb_iSup (.range commaUnitLocus) (Set.forall_mem_range.2 h_freeAb) h_range_inf (by simp)
-  have h_one (X : Comma (𝟭 Type) (coyoneda.obj ⟨c⟩)) : ∀ t, t ∈ (commaUnitLocus 1).obj X := by
-    simp [commaUnitLocus]
+    hQ.freeAb_iSup (.range commaUnitLocus) (Set.forall_mem_range.2 h_freeAb)
+      (by
+        rintro _ ⟨g, rfl⟩ _ ⟨g', rfl⟩
+        exact ⟨g * g', by aesop (add simp commaUnitLocus)⟩)
+      (by simp)
   have h_ambient : Q (freeAb.obj (Comma.fst (𝟭 Type) (coyoneda.obj ⟨c⟩) ⋙ uliftFunctor)) :=
     hQ.freeAb_of_bijective (commaUnitLocus 1).ι
-      (fun X ↦ (Equiv.subtypeUnivEquiv (h_one X)).bijective)
-      (h_freeAb 1)
-  obtain ⟨_, h_exact⟩ := relFreeAb.shortExact (iSup (commaUnitLocus ∘ f))
-  obtain ⟨-, h_two_of_three⟩ := hQ
-  exact (h_two_of_three _ h_exact h_union).mp h_ambient
+      (fun _ ↦ (Equiv.subtypeUnivEquiv (by simp [commaUnitLocus])).bijective) (h_freeAb 1)
+  exact (hQ.2 _ (relFreeAb.shortExact _).2 h_union).mp h_ambient
 
 /-- Depth vanishing for Hodge coefficients. Let `c = (A, M)` be a pair, `f` a finite family in `A`
 and `l` a weakly `A`-regular sequence in the ideal generated by the `f i`. Then the cohomology of
@@ -180,12 +185,12 @@ lemma DepthVanishing.subsingleton_of_isWeaklyRegular {f : ι → c.baseAlg} (l :
         (piAbFunctor fun _ ↦ moduleCoeff (asModules P.ι ⋙ tensorWith c.baseAlg _)) :=
     ⟨P.ι ⋙ restrictAlg k _ ⋙ HodgeTest.withIndex c.Index,
       fun B ↦ (AddEquiv.ulift.trans
-        ((Pi.basisFun B.1 c.Index).ExteriorAlgebra.equivFun.toAddEquiv.trans
+        ((Pi.basisFun B.obj c.Index).ExteriorAlgebra.equivFun.toAddEquiv.trans
           (.piCongrRight fun _ ↦ (TensorProduct.lid c.baseAlg _).symm.toAddEquiv.trans
             (.symm .ulift)))).toAddCommGrpIso.hom,
       fun B D a ↦ by
         ext
-        congrm (⟨1 ⊗ₜ $(HodgeTest.repr_withIndex_map a.1 _ ·)⟩)⟩
+        congrm (⟨1 ⊗ₜ $(HodgeTest.repr_withIndex_map a.hom _ ·)⟩)⟩
   let ψ' : P.FullSubcategory ⥤ Comma (𝟭 Type) (coyoneda.obj ⟨c⟩) :=
     L γ.functor ⟨.of _ c.baseAlg, .self⟩ ⟨ofHom ⟨.id _, by tauto⟩, .id⟩
   let η : ψ' ⟶ γ.functor ⋙ ψ := .mk fun B ↦ .mk (ψ'.obj B).hom (𝟙 _)
@@ -241,7 +246,7 @@ lemma DepthVanishing.subsingleton_of_isWeaklyRegular {f : ι → c.baseAlg} (l :
       ((γ.isBijective_congr (pointMap_comp _ (whiskerRight η (commaUnitLocus g).toFunctor))
           (.of_bijective
             (pointMap_bijective_of_existsUnique ((commaUnitLocus g).whisker ψ) _
-              (HodgeTest.existsUnique_lift_away _ g isLocalization.1)))
+              (HodgeTest.existsUnique_lift_away _ g isLocalization.toIsLocalizationMap)))
           (.of_bijective (bijective_pointMap_flatToAway ⟨.of .., .self⟩ g))).2
         -- for representable functors only the coefficients at the representing objects count
         (γ.isBijective_of_repr (u := pointMap ⟨𝟙 _⟩) ⟨𝟙 _⟩
@@ -273,20 +278,8 @@ sequence. -/
 lemma isWeaklyRegular_X_castAdd (e : ℕ) :
     IsWeaklyRegular (MvPolynomial (Fin (d + e)) k)
       (List.ofFn (X (R := k) ∘ castAdd (n := d) e)) := by
-  refine ⟨fun i hi_len ↦ (isSMulRegular_quotient_iff_mem_of_smul_mem ..).mpr fun q hq ↦ ?_⟩
-  have hi : i < d + e := by grind
-  have h_vars : {r : MvPolynomial (Fin (d + e)) k |
-      r ∈ (List.ofFn (X (R := k) ∘ castAdd (n := d) e)).take i} =
-      X '' castAdd e '' {j : Fin d | j < i} := by
-    grind -ring -linarith [List.mem_take_iff_getElem]
-  -- Membership in the ideal of the variables below `i` is read off the monomials, and
-  -- multiplying by the `i`-th variable does not change the exponents below `i`.
-  rw [smul_eq_mul, mul_top, ofList, h_vars, mem_ideal_span_X_image] at hq ⊢
-  intro m hm
-  have h_mem : Finsupp.single ⟨i, hi⟩ 1 + m ∈
-      ((List.ofFn (X (R := k) ∘ castAdd (n := d) e))[i] • q).support := by
-    simp_all
-  exact (hq _ h_mem).imp (by grind -linarith [Finsupp.add_apply])
+  rw [← List.map_ofFn]
+  exact isWeaklyRegular_map_X _ (List.nodup_ofFn.2 (castAdd_injective d e))
 
 /-- Let `c = (A, M)` be a pair over `k` and `x_1, …, x_{2d}` étale coordinates on `A`, that is,
 the `k`-algebra map `polyEval x : k[X_1, …, X_{2d}] → A` sending `X_i` to `x_i` is étale. Then
@@ -335,7 +328,7 @@ lemma hasZariskiDescent_hodgeCoeff :
   -- preimage of `U`.
   have h_dense : IsCohomDense hodgeCoeff (someUnitLocus fun i : s ↦ X.baseProj i) := by
     refine fun _ g ↦ isCohomEquiv_someUnitLocus_of_span_eq_top ?_
-    rw [← map_top (X.baseProj ≫ g.1.1).1, ← hs_span, Ideal.map_span, Set.image_eq_range]
+    rw [← map_top (X.baseProj ≫ g.down.1).hom', ← hs_span, Ideal.map_span, Set.image_eq_range]
     rfl
   exact (h_dense.mono fun X' g ⟨i, h_unit⟩ ↦
     hs_sub i.prop _ _ (isUnit_iff_isUnit_fst.2 h_unit)).isCohomEquiv

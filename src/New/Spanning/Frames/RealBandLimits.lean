@@ -1,5 +1,20 @@
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.MeasureTheory.Function.SpecialFunctions.Inner
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.Frames.RealShells
 import Lib.Cohomology.Etale.Basic
-import New.Spanning.Frames.RealShells
+import Lib.DiscreteSeries.Bessel.SchurBound
+import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.Analysis.GaussianIntegral
+import Lib.Shimura.ComplexTheta.AppellHumbertData
+import New.Spanning.Frames.Gains
 
 /-!
 # The normalized cell integral Ξ and the local bounds at ℂ for cut Bessel functions
@@ -48,6 +63,8 @@ Notions from other files:
 The estimates supply the local bounds of the Bessel systems built in
 `New.Spanning.Bessel.FillingData`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -102,7 +119,7 @@ lemma IsCutBessel.continuous_normalizedCellIntegral (hF : IsCutBessel F rep ρ s
         {c | Γ.IsHead 𝔰.ϱ c} := by
     refine (PiLp.continuous_toLp ..).comp_continuousOn (continuousOn_pi.2 fun i ↦
       continuousOn_integral_of_compact_support (Γ.isCompact_hasMatrixSize (j := 60 * 𝔰.n ^ 2))
-        (by fun_prop) fun c y hc y_large ↦ ?_)
+        (Continuous.continuousOn (by fun_prop)) fun c y hc y_large ↦ ?_)
     -- Off the compact set one of the two values of `F` in the integrand is zero.
     have h_zero : F y = 0 ∨ F ((weylElem 𝔰.ϱ c * cellChart 𝔰 𝔰.ϱ (c 𝔰.ϱ))⁻¹ * y) = 0 := by
       by_contra! ⟨hy, hy'⟩
@@ -110,10 +127,7 @@ lemma IsCutBessel.continuous_normalizedCellIntegral (hF : IsCutBessel F rep ρ s
         (Γ.hasMatrixSize_of_ne_zero hF.isCut_complexData hc cellChart_mem_floorGroup hy hy')
     rcases h_zero with h | h <;> rw [h] <;> simp
   -- `normalizedCellIntegral` is `besselOrbitalIntegral` times a continuous real factor.
-  have c_cont : Continuous fun c : ℕ → ℂˣ ↦ √𝔰.openCellConst * √(‖(c 𝔰.ϱ).val‖ ^ 2 - 1) ^ (𝔰.k - 1) /
-      Fintype.card I * ∏ a ∈ Finset.range 𝔰.ϱ, ‖(c a).val‖ ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1))) := by
-    fun_prop
-  exact c_cont.continuousAt.smul (J_cont.continuousAt heads)
+  exact .smul (M := ℝ) (by fun_prop) (J_cont.continuousAt heads)
 
 /-- The compact group U(κ), embedded in G₁ by `embedH`, acts on the values of a cut Bessel function
 by unitary maps, so left translation by it keeps the inner products of these values. -/
@@ -121,7 +135,7 @@ lemma IsCutBessel.inner_embedH_mul (hF : IsCutBessel F rep ρ s b W f)
     (k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) (x y : 𝔰.G₁) :
     ⟪F (embedH k * x), F (embedH k * y)⟫_ℂ = ⟪F x, F y⟫_ℂ := by
   simp [(hF.isBesselFunction .cut).map_unitary_mul, Unitary.map_mem,
-    ContinuousLinearMap.inner_map_map_of_mem_unitary]
+    ContinuousLinearMap.inner_map_map_of_mem_unitary, -Matrix.toEuclideanCLM_apply]
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum in
@@ -283,14 +297,14 @@ lemma sq_lintegral_enorm_inner_le {A B : 𝔰.G₁ → EuclideanSpace ℂ I} (hA
   have h_inv (u : (𝔰.middleGram (1 : ℂ)).besselU) (y : 𝔰.G₁) :
       ‖B (u • y)‖ₑ ^ 2 = ‖B y‖ₑ ^ 2 := by
     rw [Subgroup.smul_def, smul_eq_mul,
-      hB.enorm_besselS_mul (mem_partialUnitriangularGroup_of_mem_besselU u.2)]
+      hB.enorm_besselS_mul (mem_partialUnitriangularGroup_of_mem_besselU u.property)]
   have h_translate : ∫⁻ y, ‖B (y * x)‖ₑ ^ 2 ∂besselQuotMeasure =
       ∫⁻ y, ‖B y‖ₑ ^ 2 ∂besselQuotMeasure :=
     (identDistrib_orbitMeasure_mul_right (F := fun y ↦ ‖B y‖ₑ ^ 2) x h_inv).lintegral_eq
   rw [← h_translate]
   refine sq_lintegral_le (by fun_prop) (by fun_prop) fun y ↦ ?_
   rw [← mul_pow]
-  exact pow_le_pow_left' (coe_mono (nnnorm_inner_le_nnnorm ..)) 2
+  exact pow_le_pow_left' (coe_mono (nnNorm_inner_le_nnNorm ..)) 2
 
 /-!
 ## The mass on the bottom floor, decay, and the local bounds
@@ -345,7 +359,7 @@ lemma IsCutBessel.enorm_quotientPairing_sub_le (hF : IsCutBessel F rep ρ s b W 
         quotientPairing]
     _ ≤ ∫⁻ y, ‖⟪F y - W y, F (y * x)⟫_ℂ‖ₑ + ‖⟪W y, F (y * x) - W (y * x)⟫_ℂ‖ₑ
         ∂besselQuotMeasure :=
-      (enorm_integral_le_lintegral_enorm _).trans (lintegral_mono fun y ↦ enorm_add_le _ _)
+      (eNorm_integral_le_lintegral_eNorm _).trans (lintegral_mono fun y ↦ eNorm_add_le _ _)
     _ ≤ 2 * (ε * card I) := by grw [lintegral_add_left (by fun_prop), first_le, second_le, two_mul]
 
 /-- For a cut Bessel function `F` and `x` in G₁, the number `formIntegrandL1Norm` that bounds the
@@ -357,7 +371,7 @@ lemma IsCutBessel.formIntegrandL1Norm_zero_eq (hF : IsCutBessel F rep ρ s b W f
     (x : 𝔰.G₁) :
     hF.complexData.formIntegrandL1Norm 0 p q F x 1 = hF.haarRatio ^ 2 * ‖quotientPairing F F x‖ₑ ^
       2 := by
-  obtain ⟨⟨-, ratio_ne_top : hF.haarRatio ≠ ∞⟩, -, h_unfold, -⟩ :=
+  obtain ⟨⟨-, ratio_ne_top : hF.haarRatio ≠ ∞⟩, -, -, -⟩ :=
     hF.haarRatio_ne_zero_and_groupMeasure_eq_smul
   let c (y : 𝔰.G₁) : ℂ := ⟪F y, F (y * x)⟫_ℂ
   have c_meas : Measurable c := by fun_prop
@@ -367,30 +381,17 @@ lemma IsCutBessel.formIntegrandL1Norm_zero_eq (hF : IsCutBessel F rep ρ s b W f
     simp [← mul_assoc, Complex.mul_conj']
   -- The integrand `c` is left invariant under `𝖴`, so its law for the floors is `hF.haarRatio`
   -- times its law on the quotient.
-  have h_law : (hF.complexData.quotientMeasureFrom 0).map c = hF.haarRatio • besselQuotMeasure.map
-    c := by
-    refine ext_of_lintegral _ fun g hg ↦ ?_
-    have g_inv : besselU.FixesLeft fun y : 𝔰.G₁ ↦ g (c y) := fun u hu y ↦ congrArg g (c_inv u hu y)
-    rw [lintegral_smul_measure, lintegral_map hg c_meas, lintegral_map hg c_meas]
-    exact h_unfold (fun y ↦ g (c y)) (hg.comp c_meas) g_inv
   have h_pairing : hF.complexData.partialCorrelation 0 (frameCorrelation F 1) 1 x =
-      hF.haarRatio.toReal • quotientPairing F F x :=
-    calc
-      _ = ∫ y, c y ∂hF.complexData.quotientMeasureFrom 0 := by simp [c, partialCorrelation]
-      _ = ∫ z, z ∂(hF.complexData.quotientMeasureFrom 0).map c :=
-        (integral_map c_meas.aemeasurable aestronglyMeasurable_id).symm
-      _ = hF.haarRatio.toReal • ∫ z, z ∂besselQuotMeasure.map c := by
-        rw [h_law, integral_smul_measure]
-      _ = _ := by
-        rw [integral_map (f := fun z ↦ z) c_meas.aemeasurable aestronglyMeasurable_id,
-          quotientPairing]
+      hF.haarRatio.toReal • quotientPairing F F x := by
+    simpa [c, partialCorrelation, quotientPairing, integral_smul_measure] using
+      (hF.toRealPlaceSizes.identDistrib_quotientMeasureFrom_haarRatio_smul c_meas c_inv).integral_eq
   -- At floor `0` the Weyl elements are trivial, so the two factors of the integrand are conjugate.
   have h_square : hF.complexData.formIntegrandL1Norm 0 p q F x 1 =
       ‖hF.complexData.partialCorrelation 0 (frameCorrelation F 1) 1 x‖ₑ ^ 2 := by
     simp [formIntegrandL1Norm, descConv, ← partialCorrelationProduct_eq hF.gauge
       hF.isCut_complexData,
       partialCorrelationProduct, sq, weylRatio]
-  rw [h_square, h_pairing, enorm_smul, mul_pow, Real.enorm_of_nonneg toReal_nonneg,
+  rw [h_square, h_pairing, eNorm_smul, mul_pow, Real.eNorm_of_nonneg toReal_nonneg,
     ofReal_toReal ratio_ne_top]
 
 /-- Minkowski's inequality in `L²`: if `g` and `h` have `L²` norms at most `α` and `β`, then `g + h`
@@ -435,7 +436,7 @@ lemma IsCutBessel.norm_le_of_mem_positionBall (hF : IsCutBessel F rep ρ s b W f
     one_le_pow₀ (one_le_mul_of_one_le_of_one_le (one_le_pow₀ one_le_b) (one_le_pow₀ one_le_ρ))
   have h_entries : ‖X - 1‖ ≤ 𝔰.r * 𝔰.r * R := l2_opNorm_le_of_apply hx
   have rank_sq_le : (𝔰.r : ℝ) * 𝔰.r + 1 ≤ ρ ^ 2 := by
-    nlinarith [hF.eight_mul_r_le_rho, hF.four_le, Nat.cast_nonneg (α := ℝ) 𝔰.r]
+    nlinarith only [hF.eight_mul_r_le_rho, hF.four_le, Nat.cast_nonneg (α := ℝ) 𝔰.r]
   have cube_le : 10 ^ 9 * 𝔰.n ^ 3 ≤ 𝔰.r := hF.mul_cube_lt_s.le.trans (by grind [hF.r_eq_add])
   calc ‖X‖ ≤ ‖X - 1‖ + 1 := by simpa using norm_add_le (X - 1) 1
     _ ≤ (𝔰.r * 𝔰.r + 1) * R := by linarith
@@ -448,13 +449,8 @@ lemma IsCutBessel.norm_le_of_mem_positionBall (hF : IsCutBessel F rep ρ s b W f
       refine pow_le_pow_right₀ one_le_b ?_
       -- Exponents: `14 n + 7623 n ^ 3 ≤ 106 n r`, as `10 ^ 9 n ^ 3 ≤ r`.
       have one_le_n : 1 ≤ 𝔰.n := Nat.succ_pos _
-      have h_sq : 100 * 𝔰.n ^ 2 ≤ 𝔰.r :=
-        (Nat.mul_le_mul (by norm_num) (Nat.pow_le_pow_right one_le_n (by norm_num))).trans cube_le
-      have one_le_r : 1 ≤ 𝔰.r := (one_le_n.trans (Nat.le_self_pow two_ne_zero _)).trans
-        ((Nat.le_mul_of_pos_left _ (by norm_num)).trans h_sq)
       generalize 𝔰.n = n, 𝔰.r = r at *
-      clear * - h_sq one_le_r
-      nlinarith [Nat.mul_le_mul_left n h_sq, Nat.mul_le_mul_left n one_le_r]
+      nlinarith [Nat.le_self_pow three_ne_zero n]
 
 /-- For `2 ≤ b`, `n, r ≥ 1` and `f ≥ 4000 n`, the square of the error `2 b ^ (-r ^ 3 f)` times the
 volume bound `T ^ (9 r²) b ^ (99 r²)` at the radius `T = b ^ (700 n r)` is at most `b ^ (-24)`. -/
@@ -524,7 +520,7 @@ lemma IsCutBessel.setLIntegral_quotientPairing_sq_le (hF : IsCutBessel F rep ρ 
   calc
     _ ≤ ∫⁻ x in C, (‖quotientPairing W W x‖ₑ + 2 * (ε * card I)) ^ 2 := by
       refine lintegral_mono fun x ↦ pow_le_pow_left' ?_ 2
-      grw [← hF.enorm_quotientPairing_sub_le x, ← enorm_add_le, add_sub_cancel]
+      grw [← hF.enorm_quotientPairing_sub_le x, ← eNorm_add_le, add_sub_cancel]
     _ ≤ (α + .ofReal (b⁻¹ ^ 12) * α) ^ 2 :=
       lintegral_add_sq_le (by fun_prop) aemeasurable_const h_schur h_change
     _ = (1 + .ofReal (b⁻¹ ^ 12)) ^ 2 * (.ofReal deg⁻¹ * card I ^ 2) := by
@@ -541,26 +537,19 @@ lemma IsCutBessel.scaledVolumeRatio_mul_pow_div_pow_le (hF : IsCutBessel F rep �
     (deg_pos : 0 < deg) (deg_le : deg * 𝔰.scaledVolumeRatio ≤ b ^ (4 * 𝔰.r ^ 2)) :
     𝔰.scaledVolumeRatio * ρ ^ (10 ^ 9 * 𝔰.n ^ 4) * ρ ^ (24 * 𝔰.k) *
       (b ^ (6 * 𝔰.r)) ^ (10 ^ 8 * 𝔰.n ^ 4) / (b ^ (6 * 𝔰.r)) ^ s ≤ b⁻¹ ^ 12 / deg := by
-  have one_le_b : 1 ≤ b := one_le_two.trans hF.two_le_b
-  have ρ_nonneg : 0 ≤ ρ := by linarith [hF.four_le]
-  have ρ_le : ρ ≤ b ^ (7 * 𝔰.n) := hF.rho_le_pow
-  have const_le : 𝔰.scaledVolumeRatio ≤ b ^ (4 * 𝔰.r ^ 2) / deg := (le_div_iff₀' deg_pos).2 deg_le
-  let E : ℕ := 4 * 𝔰.r ^ 2 + 7 * 𝔰.n * (10 ^ 9 * 𝔰.n ^ 4) + 7 * 𝔰.n * (24 * 𝔰.k) +
-    6 * 𝔰.r * (10 ^ 8 * 𝔰.n ^ 4)
-  have exponent_le : E + 12 ≤ 6 * 𝔰.r * s := by
-    -- Use `r = s + 5 n + 5`, `k = s + 3 n + 6` and `10 ^ 10 n ^ 4 ≤ s`.
-    simp only [E, hF.r_eq_add, hF.k_eq]
-    obtain ⟨d, rfl⟩ : ∃ d : ℕ, s = 10 ^ 10 * 𝔰.n ^ 4 + d := exists_add_of_le hF.mul_pow_four_le_s
-    lia
-  calc
-    _ ≤ b ^ (4 * 𝔰.r ^ 2) / deg * (b ^ (7 * 𝔰.n)) ^ (10 ^ 9 * 𝔰.n ^ 4) *
-        (b ^ (7 * 𝔰.n)) ^ (24 * 𝔰.k) * (b ^ (6 * 𝔰.r)) ^ (10 ^ 8 * 𝔰.n ^ 4) /
-          (b ^ (6 * 𝔰.r)) ^ s := by gcongr
-    _ = b ^ E / b ^ (6 * 𝔰.r * s) / deg := by
-      simp only [E, pow_add, pow_mul b (7 * 𝔰.n), pow_mul b (6 * 𝔰.r), div_eq_mul_inv]
-      ac_rfl
-    _ ≤ b ^ E / b ^ (E + 12) / deg := by gcongr
-    _ = b⁻¹ ^ 12 / deg := by field
+  have hb : 1 ≤ b := one_le_two.trans hF.two_le_b
+  have hρ : 0 ≤ ρ := by linarith [hF.four_le]
+  have hρ_le := hF.rho_le_pow
+  have hΘ := (le_div_iff₀' deg_pos).2 deg_le
+  refine le_trans (by gcongr : _ ≤ b ^ (4 * 𝔰.r ^ 2) / deg * (b ^ (7 * 𝔰.n)) ^ _ *
+    (b ^ (7 * 𝔰.n)) ^ _ * _ / _) ?_
+  simp only [← pow_mul, div_mul_eq_mul_div]
+  rw [div_right_comm, ← pow_add, ← pow_add, ← pow_add, div_le_div_iff_of_pos_right deg_pos,
+    div_le_iff₀ (by positivity), inv_pow, inv_mul_eq_div, le_div_iff₀ (by positivity), ← pow_add]
+  gcongr
+  simp only [hF.r_eq_add, hF.k_eq]
+  obtain ⟨d, rfl⟩ := exists_add_of_le hF.mul_pow_four_le_s
+  lia
 
 variable [Nonempty I]
 
@@ -638,7 +627,7 @@ lemma IsCutBessel.norm_floorForm_zero_le (hF : IsCutBessel F rep ρ s b W f) {de
             (ofReal_le_ofReal (hF.scaledVolumeRatio_mul_pow_div_pow_le deg_pos deg_le))
   rw [← ofReal_le_ofReal_iff (by positivity)]
   calc
-    _ = c * ‖hF.complexData.floorForm 0 p q F 1‖ₑ := by rw [ofReal_norm, enorm_mul]
+    _ = c * ‖hF.complexData.floorForm 0 p q F 1‖ₑ := by rw [ofReal_norm, eNorm_mul]
     _ ≤ c * ∫⁻ x, Φ x ∂μ := by grw [enorm_floorForm_le, density_eq, one_mul]
     _ = c * ∫⁻ x in C, Φ x ∂μ + c * ∫⁻ x in Cᶜ, Φ x ∂μ := by
       rw [← mul_add, lintegral_add_compl _ (measurableSet_positionBall _)]

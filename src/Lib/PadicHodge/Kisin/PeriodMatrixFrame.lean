@@ -1,4 +1,9 @@
-import Lib.PadicHodge.Kisin.PeriodMatrixBasis
+module
+
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+public import Lib.PadicHodge.Kisin.PeriodMatrixBasis
 
 /-!
 # The frame theorem for a period matrix, with Frobenius and Galois action on the frame
@@ -37,6 +42,8 @@ works directly by linear retractions onto the Breuil–Kisin ring, without slope
 459–496; Bhatt–Morrow–Scholze, Integral p-adic Hodge theory, Publ. IHÉS 128 (2018), 4.26–4.34;
 Cais–Liu, On F-crystalline representations, Doc. Math. 21 (2016).
 -/
+
+@[expose] public section
 
 namespace New.Lift.Chart
 
@@ -122,8 +129,8 @@ lemma exists_det_ne_zero_and_mulVec_eq_coord {Q : Matrix d d Ainf}
         π (t ⬝ᵥ x).val = 0) : ∀ i : d, π (t i).val = 0 := by
     -- `O^♭` is separated for the `π z`-adic topology, as `z = seriesMap X` is not a unit.
     have h_haus : IsHausdorff (span {π (c.seriesMap PowerSeries.X)}) OFlat :=
-      (OFlat.isHausdorff_and_shiftDiff_surjective
-        (mt Ainf.isUnit_iff_isUnit_constantCoeff.mpr c.not_isUnit_z)).left
+      OFlat.isHausdorff_span_singleton_of_not_isUnit
+        (mt Ainf.isUnit_iff_isUnit_constantCoeff.mpr c.not_isUnit_z)
     -- All coordinates of `(Q t) j` in the adic basis lie in the kernel of `π`.
     have h_coord (j : d) (i : c.adicBasis.Index) :
         π (c.adicBasis.coord i ((Q *ᵥ fun l : d ↦ (t l : Ainf)) j)).val = 0 := by
@@ -200,7 +207,7 @@ lemma not_dvd_det_of_frobenius {Q ρ : Matrix d d Ainf} {B : Matrix d d c.S}
     ((add_right_injective M).nat_tendsto_atTop.eventually h_eventually).exists
   choose n s hs using approx
   -- `C = B · φ B ⋯ φⁿ⁻¹ B` carries `a ^ p ^ n` to the kernel, and `K · det C ∣ K ^ p ^ n`.
-  have ⟨C, hCK, hCa⟩ : ∃ C : Matrix d d c.S,
+  let ⟨C, hCK, hCa⟩ : ∃ C : Matrix d d c.S,
       K * R (det C) ∣ K ^ p ^ n ∧ Q.map π *ᵥ C.map R *ᵥ a ^ p ^ n = 0 := by
     clear hs
     induction n with
@@ -245,6 +252,7 @@ lemma not_dvd_det_of_frobenius {Q ρ : Matrix d d Ainf} {B : Matrix d d c.S}
   rw [h_zero, zero_dvd_iff, h_pow] at h_map
   exact h_map.trans (map_zero _).symm
 
+omit [DecidableEq d] in
 /-- Apply `m` to `U Z = E ^ h Q`, given `ρ m(U) = U F` and `w m(E) = E r`: then
 `U w ^ h F m(Z) = E ^ h r ^ h ρ m(Q)`. Here `m` in `FrobGal` acts entrywise on matrices. -/
 lemma mul_smul_mul_smul_eq_smul_map_of_mul_eq {U Z : Matrix d d BPlus} {Q : Matrix d d Ainf} {h : ℕ}
@@ -252,6 +260,7 @@ lemma mul_smul_mul_smul_eq_smul_map_of_mul_eq {U Z : Matrix d d BPlus} {Q : Matr
     (F : Matrix d d BPlus) (w : BPlus) (r : Ainf) (hU : ρ.map ainfToBPlus * m • U = U * F)
     (hE : w * ainfToBPlus (m • c.E.val) = ainfToBPlus (c.E.val * r)) :
     U * w ^ h • (F * m • Z) = c.E.val ^ h • (r ^ h • ρ * m • Q).map ainfToBPlus := by
+  classical
   rw [mul_smul_comm, ← mul_assoc, ← hU, mul_assoc]
   -- `m` acts on matrices entrywise, through the ring map `(toRingHom _ _ m).mapMatrix`
   change w ^ h • (ρ.map ainfToBPlus * ((toRingHom FrobGal BPlus m).mapMatrix U *
@@ -264,12 +273,12 @@ lemma mul_smul_mul_smul_eq_smul_map_of_mul_eq {U Z : Matrix d d BPlus} {Q : Matr
 /-- Let `c` be a chart, let `E` be the image of its series X^e A + p (ξ times a unit),
 `τ = [ε^{1/p}] - 1`, and `B⁺ = A_max[1/p]`. Let `U`, `U'` over `B⁺` satisfy `U U' = (E τ) ^ h`. If
 every solution of `U Y = E ^ h X` with `X` over `A_inf` and `Y` over `B⁺` has `X = Q L` for some `L`
-over `A_inf`, then `U = Q Y` for some `Y` over `B⁺`. -/
-lemma map_dvd_of_forall_mul_eq_smul_map {U U' : Matrix d d BPlus} {Q : Matrix d d Ainf} {h : ℕ}
+over `A_inf`, then `Q L = τ ^ h` for some `L` and `Q` divides `U` over `B⁺`. -/
+lemma exists_mul_eq_tau_pow_and_map_dvd {U U' : Matrix d d BPlus} {Q : Matrix d d Ainf} {h : ℕ}
     (hUU' : U * U' = (c.E * tau) ^ h • 1)
     (hQ : ∀ {X : Matrix d d Ainf} {Y : Matrix d d BPlus},
       U * Y = c.E.val ^ h • X.map ainfToBPlus → ∃ L : Matrix d d Ainf, Q * L = X) :
-    Q.map ainfToBPlus ∣ U := by
+    ∃ L : Matrix d d Ainf, Q * L = tau ^ h • 1 ∧ Q.map ainfToBPlus ∣ U := by
   obtain ⟨t, ht⟩ : ∃ t : Ainf, mu = c.E * tau * t := c.associated_E_mul_tau_mu.dvd
   obtain ⟨q, -, hqp⟩ : ∃ q ∈ c.bicommutant, q * p = 1 := c.exists_bicommutant_mul_p_eq_one
   have hUU'_eq : U * U' = c.E.val ^ h • (tau ^ h • (1 : Matrix d d Ainf)).map ainfToBPlus := by
@@ -295,7 +304,7 @@ lemma map_dvd_of_forall_mul_eq_smul_map {U U' : Matrix d d BPlus} {Q : Matrix d 
     rw [hX, mul_smul_comm]
   obtain ⟨γ, hγ⟩ := hQ h_sol
   -- Divide by `p ^ n` and rewrite the error term using `Q L = τ ^ h`.
-  refine ⟨q ^ n • γ.map ainfToBPlus + (t * c.E) ^ h • L.map ainfToBPlus * U.map w, ?_⟩
+  refine ⟨L, hL, q ^ n • γ.map ainfToBPlus + (t * c.E) ^ h • L.map ainfToBPlus * U.map w, ?_⟩
   simp [mul_add, ← Matrix.map_mul, *, -map_pow, mul_sub, ← mul_assoc, smul_smul, ← mul_pow,
     map_smul']
 
@@ -484,10 +493,7 @@ lemma IsPeriodMatrix.exists_frame {U : Matrix d d BPlus} {h : ℕ} {v : Ainfˣ}
   have hQ {X : Matrix d d Ainf} {Y : Matrix d d BPlus}
       (hY : U * Y = c.E.val ^ h • X.map ainfToBPlus) : ∃ L : Matrix d d Ainf, Q * L = X :=
     exists_mul_eq_of_mul_eq_smul hQ₀ hdvd hp hY
-  have hUU'_eq : U * U' = c.E.val ^ h • (tau ^ h • (1 : Matrix d d Ainf)).map ainfToBPlus := by
-    simp [-map_pow, *, map_smul', smul_smul, ← mul_pow]
-  obtain ⟨L, hL⟩ := hQ hUU'_eq
-  obtain ⟨Y, rfl⟩ : Q.map ainfToBPlus ∣ U := map_dvd_of_forall_mul_eq_smul_map hUU' hQ
+  obtain ⟨L, hL, Y, rfl⟩ := exists_mul_eq_tau_pow_and_map_dvd hUU' hQ
   -- Cancel `Q` in `Q Y Z = E ^ h Q`, as `det Q ≠ 0`.
   have h_det_eq : (Q.map ainfToBPlus).det = ainfToBPlus Q.det := (ainfToBPlus.map_det Q).symm
   have h_regular : IsLeftRegular (Q.map ainfToBPlus).det := by

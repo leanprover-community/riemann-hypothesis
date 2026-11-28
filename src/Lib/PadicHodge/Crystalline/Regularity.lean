@@ -1,4 +1,13 @@
+module
+
+public import Aesop.BuiltinRules
+import Mathlib.FieldTheory.Galois.Profinite
+public import Lib.PadicHodge.Crystalline.Basic
+import Lib.Adelic.Hecke.ClassSums
+import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
+import Lib.ClassField.Places.TameInertia
 import Lib.PadicHodge.Crystalline.FixedRatios
+import Lib.PadicHodge.Kisin.KummerChartExistence
 
 /-!
 # Regularity of B_max, closure of admissibility, and crystalline descent from inertia
@@ -44,6 +53,8 @@ Summer School notes on p-adic Hodge theory (2009), 2.3.1, 5.2.1, 6.3, 9.1–9.3.
 
 See also `Lib.PadicHodge.PeriodRings.DeRhamPeriods` and `Lib.PadicHodge.Kisin.PeriodMatrixFrame`.
 -/
+
+@[expose] public section
 
 /-!
 ## Closure properties of admissible representations
@@ -138,7 +149,7 @@ lemma exists_leftInverse_baseChange (f : ∀ i : κ, T' →ₗ[ℤ_[p]] S i)
     simpa [injective_iff_map_eq_zero, funext_iff] using h_inj
   let L : ((i : κ) → S i) →ₗ[ℤ_[p]] Bmax ⊗[ℤ_[p]] T' := AlgebraTensorModule.curry Φ.leftInverse 1
   have hL (y : T') : L (fun i ↦ f i y) = 1 ⊗ₜ y := leftInverse_apply_of_inj hΦ (1 ⊗ₜ y)
-  refine ⟨liftBaseChange _ L ∘ₗ piRightInv .., fun x ↦ ?_⟩
+  refine ⟨liftBaseChange _ L ∘ₗ (piRight ℤ_[p] Bmax Bmax S).symm.toLinearMap, fun x ↦ ?_⟩
   induction x with
   | tmul b y => simp_all [smul_tmul']
   | add x x' hx hx' => simp_all [← Pi.add_def]
@@ -353,13 +364,15 @@ include h hs in
 `Bmax` as `φ ^ m ∘ toGp s`, `φ` being Frobenius, and `ρ s` acts on `T`. -/
 @[local simp] lemma linearFrob_apply {d : Bmax ⊗[ℤ_[p]] T} (hd : d ∈ Dpcris ρ) :
     linearFrob ρ s m d = tensorAction Bmax ((ofAdd m, toGp s) : FrobGal) (ρ s) d := by
-  -- It suffices to find one linear map with the property that defines `linearFrob`: prescribe it on
-  -- a basis `v` of fixed elements.
+  -- Potential crystallinity supplies a basis of fixed periods. Prescribe the linear extension
+  -- on that basis, then prove agreement on every fixed period to justify the choice.
   obtain ⟨I, v, hv⟩ := h.exists_basis le_rfl
   let β : End Bmax (Bmax ⊗[ℤ_[p]] T) :=
     v.constr ℕ fun i ↦ tensorAction Bmax (ofAdd m, toGp s) (ρ s) (v i)
   refine linearFrob_eq_tensorAction_of_exists ρ s m ⟨β, fun y hy ↦ ?_⟩ d hd
-  -- The coordinates of `y` are fixed near `1`, so they are fixed by `(ofAdd m, toGp s)`.
+  -- Coordinates of a fixed period in the fixed basis are themselves fixed near `1`.
+  -- The Weil-pair condition makes the combined Frobenius and Galois action fix these
+  -- scalars, which is why the otherwise semilinear action agrees with the linear extension.
   have h_coef (i : I) : (ofAdd m, toGp s) • v.repr y i = v.repr y i := by
     refine hs.smul_eq_of_fixed_nearOne ?_
     filter_upwards [hy, eventually_tensorAction_eq hv (v.repr y)] with g y_fix hg
@@ -403,7 +416,7 @@ lemma linearFrob_mul (ht : IsWeilPair (toGp t) k) :
             tensorAction_tensorAction, tensorAction_tensorAction]
           simp [← map_mul, mul_assoc]
       _ = tensorAction Bmax (ofAdd k, toGp t) (ρ t) d := congrArg _ hg
-  rw [Module.End.mul_apply, linearFrob_apply h (hs.mul ht) hd, linearFrob_apply h ht hd,
+  rw [mul_apply_eq_comp, linearFrob_apply h (hs.mul ht) hd, linearFrob_apply h ht hd,
     linearFrob_apply h hs h_mem, tensorAction_tensorAction]
   simp
 
@@ -416,7 +429,7 @@ lemma linearFrob_pow (n : ℕ) : linearFrob ρ (s ^ n) (n * m) = linearFrob ρ s
     -- An element of `Dpcris ρ` is fixed by all `g` near `1`, in particular by `1`.
     refine ext_on h fun d hd ↦ ?_
     have h_weil : IsWeilPair (toGp (1 : Γ)) 0 := by simp [isWeilPair_zero_iff]
-    rw [pow_zero, zero_mul, pow_zero, Module.End.one_apply, linearFrob_zero_apply h h_weil hd]
+    rw [pow_zero, zero_mul, pow_zero, one_apply_eq_self, linearFrob_zero_apply h h_weil hd]
     exact mem_of_mem_nhds (mem_comap'.mp hd) toGp.map_one
   | succ n ih => rw [pow_succ s n, add_one_mul, linearFrob_mul h (hs.pow n) hs, ih, pow_succ]
 
@@ -470,7 +483,7 @@ lemma linearFrob_twist_cyclotomicGp (d : ℕ)
         tensorAction Bmax (ofAdd m, toGp s) (ρ s) y :=
     (linearFrob_apply (h.tate_twist _ hσ) hs h_mem).trans (hu m s y)
   -- Cancel the unit `u` on both sides; `Bmax.pUnit` is `p`.
-  show linearFrob σ s m y = (p : Bmax) ^ (m * d) • linearFrob ρ s m y
+  change linearFrob σ s m y = (p : Bmax) ^ (m * d) • linearFrob ρ s m y
   simpa [mul_smul, zpow_mul, pow_mul, Bmax.coe_pUnit, h, hs, hy] using h_beta
 
 end
@@ -526,7 +539,7 @@ lemma IsCrystalline.linearFrob_eq_one (h : IsCrystalline ρ) (hs : IsWeilPair (t
   refine ext_on h fun d hd ↦ ?_
   have hd_all : ∀ g : Γ, tensorAction Bmax (toGp g) (ρ g) d = d := eventually_top.mp hd
   have hd_near : d ∈ Dpcris ρ := Eventually.of_forall (f := nearOne Γ) hd_all
-  rw [linearFrob_zero_apply h.isPotentiallyCrystalline hs hd_near, hd_all, Module.End.one_apply]
+  rw [linearFrob_zero_apply h.isPotentiallyCrystalline hs hd_near, hd_all, one_apply_eq_self]
 
 variable [AddCommGroup T''] [Module R T''] [Module ℤ_[p] T''] [IsScalarTower ℤ_[p] R T''] (c : ℤ)
   {σ : Representation R Γ T''}
@@ -559,11 +572,12 @@ lemma IsPotentiallyCrystalline.eventually_linearFrob_eq_one [Module.Finite R T] 
   -- `1 ⊗ v l` generate `Bmax ⊗ T` over `Bmax` and `R`.
   have h_term (l : ChooseBasisIndex R T) (r : R) :
       linearFrob ρ g 0 (coeffEnd R T r (1 ⊗ₜ v l)) = coeffEnd R T r (1 ⊗ₜ v l) := by
-    rw [← End.mul_apply, ← (commute_coeffEnd_linearFrob h hg r).eq, End.mul_apply, beta_basis]
+    rw [← mul_apply_eq_comp, ← (commute_coeffEnd_linearFrob h hg r).eq, mul_apply_eq_comp,
+      beta_basis]
   ext x
   have h_expand : (1 : Bmax) ⊗ₜ[ℤ_[p]] x = ∑ l, coeffEnd R T (v.repr x l) (1 ⊗ₜ v l) := by
     simp [← tmul_sum, v.sum_repr]
-  show linearFrob ρ g 0 ((1 : Bmax) ⊗ₜ[ℤ_[p]] x) = (1 : Bmax) ⊗ₜ[ℤ_[p]] x
+  change linearFrob ρ g 0 ((1 : Bmax) ⊗ₜ[ℤ_[p]] x) = (1 : Bmax) ⊗ₜ[ℤ_[p]] x
   simp only [h_expand, map_sum, h_term]
 
 include hB_equiv
@@ -690,7 +704,7 @@ lemma IsAdmissible.of_pairing [Module.Finite R T] [Free.{0} R T]
         (baseChangePairing B).compr₂ (linearFrob (charRep R (χ ^ c)) t 0) ∘ₗ
           linearFrob σ t⁻¹ 0 := by
       rw [linearFrob_baseChangePairing hρ ht h_pcr B (ρ' := charRep R (χ ^ c)) h_equiv adm_char]
-    simp_all [DFunLike.ext_iff, ← End.mul_apply, ← linearFrob_mul,
+    simp_all [DFunLike.ext_iff, ← mul_apply_eq_comp, ← linearFrob_mul,
       IsCrystalline.linearFrob_eq_one adm_char, isWeilPair_zero_iff]
   -- Move `Q(linearFrob σ s⁻¹ 0)` to the other side, where `Q` kills `(s, 0)`: `h_coef` moves the
   -- coefficients of `Q`, `h_adjoint` the powers of `linearFrob`.
@@ -752,7 +766,10 @@ lemma New.Period.IsPotentiallyCrystalline.isCrystalline_of_inertia_fixes {p : �
   let fieldL : Field L := (isField_of_isIntegral_of_isField' (Field.toIsField ℚ_[p])).toField
   refine span_subset_span L _ _
     (mem_span_fixed (A := L) 𝒥.toGp (U := U) (.tprod (actionRep _ Bmax toGp) (overZp ρ))
-      (fun g a x ↦ tensorAction_smul ..) (fun g hg ↦ ?_) fun s hs ↦ ?_)
+      (fun g a x ↦ by
+        rw [Representation.tprod_apply]
+        exact tensorAction_smul (m := toGp g) (g := ρ g) (a : Bmax) x)
+      (fun g hg ↦ ?_) fun s hs ↦ ?_)
   · -- Write `toGp g = i * toGp t` with `i` in inertia and `toGp t ∈ V`; both `t` and `g / t` fix
     -- `y`.
     obtain ⟨i, hi, v, hv, h_eq⟩ := mem_sup_of_normal_left.mp hg
@@ -761,8 +778,8 @@ lemma New.Period.IsPotentiallyCrystalline.isCrystalline_of_inertia_fixes {p : �
     have h_t : tensorAction Bmax (toGp t) (ρ t) y = y := ht
     -- `g / t` lies in inertia, where `linearFrob ρ (g / t) 0 = 1` by `hI`.
     have h_gt : tensorAction Bmax (toGp (g / t)) (ρ (g / t)) y = y := by
-      rw [← linearFrob_zero_apply h h_weil hy, hI _ h_weil, Module.End.one_apply]
-    show tensorAction Bmax (toGp g) (ρ g) y = y
+      rw [← linearFrob_zero_apply h h_weil hy, hI _ h_weil, one_apply_eq_self]
+    change tensorAction Bmax (toGp g) (ρ g) y = y
     rw [← div_mul_cancel g t, map_mul, map_mul, ← tensorAction_tensorAction, h_t, h_gt]
   -- The constants are integral over `ℤ_[p]` and fixed by `U`, so `s` fixes them.
   have h_const : Lift.FixesLambda c.f s := by

@@ -1,5 +1,16 @@
+module
+
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Topology.Algebra.Group.Units
+public import Lib.GaloisRep.Main.SelmerModules
+public import Lib.Weil.Construction.WeilData
+import Lib.Adelic.Adeles.LocalFactors
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Witt.WittTheorem
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.Global.ArtinMap
+import Lib.ClassField.Global.ArtinReciprocity
 import Lib.ClassField.Global.NormTheorems
-import Lib.GaloisRep.Main.SelmerModules
 
 /-!
 # CM fields: complex conjugation, invariant ideles and splitting characters
@@ -47,6 +58,8 @@ exposition A. Raghuram, Notes on the arithmetic of Hecke L-functions, arXiv:2207
 
 See also `Lib.ClassField.Global.AlbertBrauerHasseNoether` and `Lib.ClassField.Places.LocalFields`.
 -/
+
+@[expose] public section
 
 /-!
 ## Invariant ideles and splitting characters at inert places
@@ -381,7 +394,7 @@ lemma exists_quadraticIdeleChar_eq_neg_one {w : FinPlace E} (hw : star w = w) :
       induction σ using gal_maximalReal_induction
       · exact hu rfl
       · exact hu hw
-    show finAdeleIncl K E (locIdele (w.below K) x).val u = 1
+    change finAdeleIncl K E (locIdele (w.below K) x).val u = 1
     rw [adeleMap_apply _ rfl, locIdele_apply_of_ne h_below, map_one]
   -- If `t = a z z̄`, then `a` is positive at infinity, and `χ` kills the symbol of `x`: that of
   -- `a` by the sign law, and that of a norm.
@@ -496,7 +509,7 @@ lemma isRealTimesNorm_of_finPart_eq_one [SplittingChar E] {r : (𝔸 E)ˣ} (hr :
     nth_rw 1 [← h_real w, ← h_b_real w]
     rw [← ofReal_mul, mul_div_cancel₀ _ h_ne_b]
   refine ⟨b, hv.unit, hb, Units.ext (Prod.ext (funext h_inf) ?_)⟩
-  show (r : 𝔸 E).2 = algebraMap E (𝔸f E) b * ((u : 𝔸f E) * star (u : 𝔸f E))
+  change (r : 𝔸 E).2 = algebraMap E (𝔸f E) b * ((u : 𝔸f E) * star (u : 𝔸f E))
   rw [hr_fin]
   exact congrArg Units.val h_u.symm
 
@@ -583,22 +596,6 @@ theorem upsilon_locFullIdele_eq_neg_one_of_star_eq [SplittingChar E] (w : FinPla
 lemma upsilon_atUniformizer_eq_neg_one [SplittingChar E] (w : FinPlace E) (hw : star w = w) :
     υ.atUniformizer w = -1 :=
   upsilon_locFullIdele_eq_neg_one_of_star_eq w (uniformizer w) hw (v_uniformizer w)
-
-/-- The four properties of a splitting character `υ` of `E` that are used: (1) `υ(ȳ) = υ(y)⁻¹`;
-(2) `υ(y) = ∏_τ y_τ/|y_τ|` over the infinite places `τ` if the finite part of `y` is a unit of
-`Ô E`; (3) `υ(ϖ) = -1` for every uniformiser `ϖ` at a finite place `w = w̄`, placed at `w` in an
-idele by `locFullIdele`; (4) on the ideles fixed by conjugation, the ideles of the maximal real
-subfield `F`, `υ` is the quadratic character `η` of `E/F`. This collects `υ_star`, `υ_unit`,
-`upsilon_locFullIdele_eq_neg_one_of_star_eq` and `upsilon_eq_quadraticIdeleChar`. -/
-theorem υ_star_eq_inv_and_apply_eq [SplittingChar E] :
-    (∀ y : (𝔸 E)ˣ, υ.val (star y) = (υ.val y)⁻¹) ∧
-    (∀ y : (𝔸 E)ˣ, y.map (MonoidHom.snd (InfinitePlace E → ℂ) (𝔸f E)) ∈ (Ô E).units →
-      (υ.val y : ℂ) = ∏ w : InfinitePlace E, (y : 𝔸 E).1 w / ‖(y : 𝔸 E).1 w‖) ∧
-    (∀ (w : FinPlace E) (ϖ : (LocField w)ˣ), star w = w →
-      Valued.v (ϖ : LocField w) = WithZero.exp (-1) → (υ.val (locFullIdele w ϖ) : ℂ) = -1) ∧
-    ∀ y : (𝔸 E)ˣ, star y = y → (υ.val y : ℂ) = quadraticIdeleChar E y :=
-  ⟨υ_star, υ_unit, upsilon_locFullIdele_eq_neg_one_of_star_eq,
-    fun _ hy ↦ upsilon_eq_quadraticIdeleChar hy⟩
 
 end Restriction
 
@@ -702,7 +699,7 @@ lemma New.nonempty_splittingChar {E : Type} [Field E] [CMType E] [HasPrimitiveRo
   have h_phase_mul (x y : (𝔸 E)ˣ) : phase (x * y) = phase x * phase y := by
     simp [phase, mul_div_mul_comm, prod_mul_distrib]
   have h_phase_cont : Continuous fun x : (𝔸 E)ˣ ↦ (⟨phase x, h_phase_mem x⟩ : Circle) := by
-    fun_prop (disch := aesop)
+    fun_prop (disch := exact fun x ↦ ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (h_ne x _)))
   let S : (𝔸 E)ˣ →ₜ* Circle :=
     ⟨.mk' (fun x ↦ ⟨phase x, h_phase_mem x⟩) fun x y ↦ Subtype.ext (h_phase_mul x y), h_phase_cont⟩
   let U : Subgroup (𝔸 E)ˣ :=
@@ -752,10 +749,6 @@ lemma star_mem_placesDividing {T : ℕ} : star v ∈ placesDividing E T ↔ v �
 
 /-- The element `g` if `b` is true, and `(conjGal g)⁻¹ = (c g c)⁻¹` if `b` is false. -/
 noncomputable def idOrConjInv (b : Bool) (g : Gal(Ω/E)) : Gal(Ω/E) := cond b g (conjGal g)⁻¹
-
-private lemma idOrConjInv_true : idOrConjInv true g = g := rfl
-
-private lemma idOrConjInv_false : idOrConjInv false g = (conjGal g)⁻¹ := rfl
 
 @[simp]
 lemma conjGal_conjGal : conjGal (conjGal g) = g := by
@@ -857,9 +850,14 @@ lemma IsFromU1.apply_idOrConjInv (h : IsFromU1 S I χ) (g : Gal(Ω/E)) :
     obtain ⟨η, -, -, hη⟩ := h.exists_ideleChar
     obtain ⟨x, hx⟩ := artinMap_surjective Gal(Ω/E) g
     have hx_conj : artinMap Gal(Ω/E) (star x)⁻¹ = idOrConjInv false g := by
-      simp [idOrConjInv_false, artinMap_star g hx]
+      simp [idOrConjInv, artinMap_star g hx]
     simp [hη x g hx, hη _ _ hx_conj, inv_mul_eq_div]
-  · rw [idOrConjInv_true]
+  · rfl
+
+private lemma ideleAt_locIdele_div_star_eq_one (a : (LocField v)ˣ)
+    (a' : (LocField (star v))ˣ) {w : FinPlace E} (hw : w ≠ v) (hw' : w ≠ star v) :
+    ideleAt w (locIdele v a / locIdele (star v) a') = 1 := by
+  rw [map_div, ideleAt_locIdele_of_ne hw, ideleAt_locIdele_of_ne hw', div_one]
 
 /-- Let `S` and `I` be sets of finite places of the CM field `E`, and let `χ` be a character of
 `Gal(Ω/E)` with `IsFromU1 S I χ`. This means `χ(Art x) = η(x / x̄)` for an idele class character `η`
@@ -875,7 +873,8 @@ lemma IsFromU1.eq_one_of_mem_decompGroup (h : IsFromU1 S I χ) (hv : v ∈ S)
   obtain ⟨x, s, hs, hx⟩ : ∃ (x : (LocField v)ˣ) (s : decompGroup Gal(Ω/E) A),
       χ g = χ s ∧ ↑s = localArtin Gal(Ω/E) A v x := by
     obtain ⟨x, s, hs, hx⟩ := hA.denseRange_localArtin.exists_mem_open
-      (QuotientGroup.isOpenMap_coe _ (h.isLocallyConstant {χ g}).preimage_val) ⟨_, ⟨g, hg⟩, rfl, rfl⟩
+      (QuotientGroup.isOpenMap_coe _ (h.isLocallyConstant {χ g}).preimage_val)
+      ⟨_, ⟨g, hg⟩, rfl, rfl⟩
     exact ⟨x, s, (by simpa using hs : χ s = χ g).symm, hx⟩
   have h_art : artinMap Gal(Ω/E) (locIdele v x) = (s : Gal(Ω/E)) := by
     simp [hA.artinAt_eq_of_localArtin_eq hx.symm]
@@ -886,8 +885,8 @@ lemma IsFromU1.eq_one_of_mem_decompGroup (h : IsFromU1 S I χ) (hv : v ∈ S)
   have h_star_v_mem : star v ∈ S.conjClosure := Or.inr (by simpa using hv)
   have h_at_one (a : (LocField v)ˣ) (a' : (LocField (star v))ˣ) (w : FinPlace E)
       (hw : w ∉ S.conjClosure) : ideleAt w (locIdele v a / locIdele (star v) a') = 1 := by
-    rw [map_div, ideleAt_locIdele_of_ne (ne_of_mem_of_not_mem hv_mem hw).symm,
-      ideleAt_locIdele_of_ne (ne_of_mem_of_not_mem h_star_v_mem hw).symm, div_one]
+    exact ideleAt_locIdele_div_star_eq_one a a'
+      (ne_of_mem_of_not_mem hv_mem hw).symm (ne_of_mem_of_not_mem h_star_v_mem hw).symm
   apply hη_one
   · simp +contextual [idelesUnitOff, h_at_one]
   · intro w hw
@@ -915,6 +914,6 @@ lemma IsFromU1.eq_one_of_mem_inertiaAbove (h : IsFromU1 S I χ) (g : Gal(Ω/E))
   · rintro w ⟨hw_I, -⟩
     have hw_ne_v : w ≠ v := ne_of_mem_of_not_mem hw_I fun hv_I ↦ hv_not_mem (Or.inl hv_I)
     have hw_ne_star_v : w ≠ star v := ne_of_mem_of_not_mem hw_I fun hv_I ↦ hv_not_mem (Or.inr hv_I)
-    simp [ideleAt_locIdele_of_ne hw_ne_v, ideleAt_locIdele_of_ne hw_ne_star_v]
+    simp [ideleAt_locIdele_div_star_eq_one _ _ hw_ne_v hw_ne_star_v]
 
 end New

@@ -1,5 +1,11 @@
-import Lib.Cohomology.Hodge.DepthVanishing
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Aesop.BuiltinRules
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.Cohomology.Hodge.DepthVanishing
+public import Lib.Cohomology.Etale.RelativeChains
+import Lib.Cohomology.Etale.DenseSubfunctors
 import Lib.PadicComparison.HodgeTate.ExtCocycles
 
 /-!
@@ -49,6 +55,8 @@ Notions from other files:
 Known; see `Lib.Cohomology.Hodge.FixedPointFormula` and
 `Lib.Cohomology.PointClass.LinearIndependence` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -284,8 +292,7 @@ lemma someUnitLocus_le_unimodularLocus {v : Fin d → c.baseAlg}
   have h_fst : (∑ l, inl (σ.down.fst (M i l)) * g' l).fst = σ.down.fst (v i) := by
     simp [g', hM, mulVec, dotProduct, fst_sum, HodgeTest.sqZeroExt]
   refine eq_top_of_isUnit_mem (span (Set.range g')) h_mem ?_
-  rw [isUnit_iff_isUnit_fst, h_fst]
-  exact hi
+  simpa only [isUnit_iff_isUnit_fst, h_fst] using! hi
 
 section Symbol
 
@@ -356,8 +363,12 @@ lemma smul_grothendieckSymbol_eq_fractionClass (hf : U ≤ unimodularLocus f)
     (fun C t ↦ ?_) fun _ _ ↦ rfl
   -- The cocycles agree since `det (l * σ M) = det l * σ (det M)`.
   simp [volumeForm, formOfExteriorPower, w]
-  -- (`erw`: the rows `l i ᵥ* σ M` are the product matrix only up to unfolding `Matrix.mul`)
-  erw [det_mul, ← map_det]
+  let rows : Matrix (Fin d) (Fin d) C.baseAlg := fun i ↦ (t.val.2 i).down
+  conv in (det (fun i ↦ _)) =>
+    change det (rows * M.map t.val.1.down.fst)
+    tactic =>
+      exact (det_mul rows _).trans
+        (congrArg (rows.det * ·) (t.val.1.down.fst.hom.toRingHom.map_det M).symm)
   refine congrArg ULift.up (.trans ?_
     (congrArg (_ • ·) ((add_zero _).trans (exteriorMap_smul ..))).symm)
   simp [exteriorMap_iotaMulti, mul_smul, ← smul_comm a]
@@ -493,13 +504,14 @@ lemma symbolClass_one :
   refine ⟨ω, fun c v ↦ ?_, by
     simp_all [symbolClass, cocycleClass_apply, universalClass_succ, universalClass_zero, push]⟩
   -- Write `v = a + m`. A witness `l` has `l * a = 1`, so `w = l • m` is "`m / a`".
-  obtain ⟨l, hl⟩ := exists_jouanolouRel_of_unimodular _ _ v.2
+  obtain ⟨l, hl⟩ := exists_jouanolouRel_of_unimodular _ _ v.property
   have hl_one : l.down 0 * (v.val.down 0).fst = 1 := (Fin.sum_univ_one _).symm.trans hl
   refine ⟨l.down 0 • (v.val.down 0).snd, ?_,
-    .symm (hω c _ _ ⟨⟦.of ⟨(v.1, fun _ ↦ l), fun _ ↦ hl⟩⟧, ?_, ?_⟩)⟩
+    .symm (hω c _ _ ⟨⟦.of ⟨(v.val, fun _ ↦ l), fun _ ↦ hl⟩⟧, ?_, ?_⟩)⟩
   · rw [smul_smul, mul_comm, hl_one, one_smul]
   · -- the boundary of `v` with the one witness `l` is `v` with no witness
-    with_unfolding_all congrm .of ⟨⟨_, $(funext nofun)⟩, _⟩
+    simp [boundaryFromCoker, boundary, freeAb, noWitness, abCoker.desc, reindexWitness]
+    congrm .of ⟨⟨_, $(funext nofun)⟩, _⟩
   · -- the cocycle sends it to `det l • volumeForm v = l • ι m`
     refine congrArg ULift.up ?_
     simp [volumeForm]
@@ -508,7 +520,7 @@ lemma symbolClass_one :
 /-- The natural map 𝔸^d × 𝔸^1 → 𝔸^{d+1} appending a last coordinate. -/
 @[simp]
 def affineSpace.snoc : affineSpace k d ⊗ affineSpace k 1 ⟶ affineSpace k d.succ where
-  app _ := ↾fun v ↦ ⟨Fin.snoc v.1.1 (v.2.1 0)⟩
+  app _ := ↾fun v ↦ ⟨Fin.snoc v.1.down (v.2.down 0)⟩
   naturality := by aesop_cat (add simp [affineSpace, comp_snoc])
 
 /-- The subfunctor of 𝔸^d × 𝔸^1 of the pairs (v, x) in which v or x is unimodular, that is, has
@@ -613,9 +625,15 @@ def snocRel.split (m : ℕ) : freeAb.obj (witnessed (snocRel k d) m) ⟶
     (fun c t ↦
       (if hx : lastPoint t ∈ (unimodular.whisker sqZeroExt).obj c then 0 else .of (dropLast t hx))
         ⊗ₜ relFreeAb.mk (unimodular.whisker sqZeroExt) (lastPoint t))
-    fun _ _ φ t ↦ relFreeAb.tmul_mk_congr fun hx ↦ by
-      erw [dite_eq_right hx, dite_eq_right fun h ↦ hx ((unimodular.whisker sqZeroExt).map φ h)]
-      rfl
+    fun c _ φ t ↦ relFreeAb.tmul_mk_congr fun hx ↦ by
+      have ht : lastPoint t ∉ (unimodular.whisker sqZeroExt).obj c :=
+        fun h ↦ hx ((unimodular.whisker sqZeroExt).map φ h)
+      simp only [dite_eq_right hx]
+      let W := witnessed (jouanolouRel (𝟙 (sqZeroExt ⋙ affineSpace k d))) m
+      have h_value : (if h : lastPoint t ∈ (unimodular.whisker sqZeroExt).obj c
+          then 0 else FreeAddCommGroup.of (dropLast t h)) = FreeAddCommGroup.of (dropLast t ht) :=
+        dite_eq_right ht
+      exact (congrArg ((freeAb.obj W).map φ) h_value).symm
 
 /-- The maps `snocRel.split` commute with reindexing the witnesses along g : Fin m → Fin n. -/
 lemma snocRel.reindexWitness_comp_split (m n : ℕ) (g : Fin m → Fin n) :
@@ -689,7 +707,7 @@ lemma snocRel.exists_detTensor_boundary_eq
     refine ⟨_ ⊗ₜ .of ⟨x, hx⟩, rfl, congrArg ULift.up ?_⟩
     simp [volumeForm, ExteriorAlgebra.ιMulti, ↓List.ofFn_succ', a, smul_smul, ← hw, mul_comm]
     -- `erw`, because `hωx` is stated on the subtype of unimodular points.
-    erw [hωx]
+    rw [hωx]
   · -- Otherwise the last column of `l` vanishes, and so do both sides.
     have h_det : det (fun i ↦ (l i).down) = 0 :=
       det_eq_zero_of_column_eq_zero (last d) fun i ↦ (hl i).right.resolve_left hx
@@ -772,18 +790,6 @@ lemma symbolClass_succ :
         (by exact fun c t ↦ (FreeAddCommGroup.lift_apply_of _ _).trans (hz_val c t))
         (by exact fun _ _ ↦ rfl)).symm
     _ = _ := congr($(id_pull _) _ _)
-
-/-- The product formula in natural form: restricted to the pairs (v, x) with v or x unimodular,
-the cup product of [dT/T] in degrees d and 1 is the pull-back of [dT/T] in degree d + 1 along
-the map (v, x) ↦ (v, x) ∈ 𝔸^(d+1). -/
-lemma map_cup_symbolClass_eq_map_symbolClass :
-    HodgeH.map (relFreeAb.prod (unimodular (d := d)) (unimodular (d := 1)))
-        (cup exteriorAlg.mulPairing (symbolClass (k := k) (d := d)) symbolClass
-          (add_comm 1 d) :) =
-      HodgeH.map (relFreeAb.map (affineSpace.snoc k d) (unimodularSup_le_preimage_snoc k d))
-        symbolClass := by
-  obtain ⟨_, h_eq⟩ := symbolClass_succ k d
-  exact h_eq
 
 end
 
@@ -879,7 +885,7 @@ lemma hodge_excision {u : X' ⟶ X} [Mono u] (hu_open : IsOpenSubfunctor (Subfun
     {U' : Subfunctor X'} (hU' : U' = U.preimage u) :
     IsCohomEquiv hodgeCoeff (sqZeroExt.whiskerLeft (relFreeAb.map u hU'.le)) := by
   -- Every point in a field lies in an open set contained in the range of `u` or in `U`.
-  have h_open (K : CommAlg k) (hK : IsField K.1) (x : X K) :
+  have h_open (K : CommAlg k) (hK : IsField K.carrier) (x : X K) :
       ∃ O : Subfunctor X, IsOpenSubfunctor O ∧ x ∈ O K ∧
         O.whisker sqZeroExt ≤ .range (sqZeroExt.whiskerLeft u) ⊔ U.whisker sqZeroExt := by
     by_cases hx : x ∈ Subfunctor.range u K
@@ -910,7 +916,7 @@ maps the part of `Spec R` off the preimage of `P` into `U`. Third, the pull-back
 `m • [dg / g]` in the Hodge cohomology of `Spec R` relative to that part. -/
 def IsLocalSymbol (ξ : HodgeH (relFreeAb U) d) (y : X.obj R) (P : (K : CommAlg k) → X.obj K → Prop)
     (g : Fin d → R) (m : k) : Prop :=
-  ∃ᵉ (D : CutsOutLocus X P y g) (h),
+  ∃ D : CutsOutLocus X P y g, ∃ h,
     HodgeH.map (relFreeAb.map (pointMap (A := R) y) (U := U) h) ξ =
       m • HodgeH.map (relFreeAb.map _ D.preimage_fieldLocus_not.le) (symbolClass (k := k) (d := d))
 
@@ -932,7 +938,7 @@ relative to the complement of `z`. Nothing is asked of `ξ` away from `s`. -/
 def IsPointSum (s : Set (X (CommAlgCat.of k k))) (n : X (CommAlgCat.of k k) → k)
     (ξ : HodgeH (relFreeAb U) d) :
     Prop :=
-  ∀ z ∈ s, ∃ᵉ (a : EtaleChart d X) (g : Fin d → a.coordRing),
+  ∀ z ∈ s, ∃ a : EtaleChart d X, ∃ g : Fin d → a.coordRing,
     z ∈ a.locus (CommAlgCat.of k k) ∧ IsLocalSymbol ξ a.point (ComesFromPoints {z}) g (n z)
 
 /-- The class of a `k`-point `z` in the Hodge cohomology of degree `d`: the image of a chosen
@@ -950,7 +956,11 @@ lemma exists_isOpenSubfunctor_le_offPoints (hz : z ∈ U.obj (CommAlgCat.of k k)
     ∃ O : Subfunctor X, IsOpenSubfunctor O ∧ x ∈ O K ∧ O ≤ offPoints {z} := by
   -- The image of `z` lies in `U K`, so it is not `x`; take `O = offPoints {z}`.
   have hz_mem : X.map structureMap z ∈ U K := U.map structureMap hz
-  have hx_off : x ∈ offPoints {z} K := by aesop (add simp [mem_offPoints_iff, ComesFromPoints])
+  have hx_off : x ∈ offPoints {z} K := by
+    apply (mem_offPoints_iff hK).2
+    rintro ⟨w, hw, rfl⟩
+    obtain rfl := Set.mem_singleton_iff.mp hw
+    exact hx hz_mem
   exact ⟨offPoints {z}, isOpenSubfunctor_offPoints, hx_off, le_rfl⟩
 
 /-- Let `X` be separated, `a` a chart of dimension `e` that contains `z`, and `g` functions on `a`
@@ -1057,8 +1067,13 @@ lemma IsPointSum.map_eq_sum_pointClass {s : Finset (X (CommAlgCat.of k k))}
     exact ⟨a, g, ha, cut, _, by simpa [h_sum, h_vanish] using local_eq⟩
   obtain rfl := add_eq_of_eq_sub' hy
   -- The case of one point applies to `x`, the induction hypothesis to `y`.
-  have hx_sum : IsPointSum {z} n x := h_isPointSum_of_eq_add s rfl (by simp [V]) (by grind)
-  have hy_sum : IsPointSum s n y := h_isPointSum_of_eq_add {z} (add_comm ..) rfl (by grind)
+  have hx_sum : IsPointSum {z} n x := h_isPointSum_of_eq_add s rfl (by simp [V]) (by
+    ext w
+    simp only [Set.mem_singleton_iff, Set.mem_sdiff, Finset.mem_coe, Finset.mem_insert]
+    exact ⟨fun hw ↦ ⟨Or.inl hw, hw ▸ hz⟩, fun ⟨h, hns⟩ ↦ h.resolve_right hns⟩)
+  have hy_sum : IsPointSum s n y := h_isPointSum_of_eq_add {z} (add_comm ..) rfl (by
+    rw [Finset.coe_insert,
+      Set.insert_sdiff_self_of_notMem (by simpa only [Finset.mem_coe] using hz)])
   simp [V, hz, ← ih hy_sum, ← hx_sum.map_eq_smul_pointClass, π_map]
 
 end PointClass

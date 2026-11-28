@@ -1,6 +1,9 @@
-import New.OneLift.ComparisonOperator.GluedLattices
-import New.OneLift.HeckeValues.CharacterLiftNorm
-import New.UpperBound.Size.ShortColumns
+module
+
+public import New.UpperBound.Size.ShortColumns
+public import New.OneLift.TestedForms
+public import New.OneLift.HeckeValues.CharacterLift
+import New.Determinant.Norms.AdjointThetaLift
 
 /-!
 # Central action on lifts from U(1) and a rank-one denominator bound
@@ -25,6 +28,8 @@ to the line of the lift, given a bound `New.Selmer.DenominatorLe` on that line.
 
 See `New.OneLift.HeckeValues.TwistedValueHeights` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -124,7 +129,7 @@ lemma LValueData.algFormRep_scalarFin_apply_comm (ν : unitary (𝔸f D.E)) (g :
         (algFormRep Y.descentPair.columnCount Y.descentPair.detExp g φ) =
       algFormRep Y.descentPair.columnCount Y.descentPair.detExp g
         (algFormRep Y.descentPair.columnCount Y.descentPair.detExp (scalarFin n ν) φ) := by
-  rw [← Module.End.mul_apply, (Y.commute_algFormRep_scalarFin ν g).eq, Module.End.mul_apply]
+  rw [← mul_apply_eq_comp, (Y.commute_algFormRep_scalarFin ν g).eq, mul_apply_eq_comp]
 
 /-- Central translations preserve the image of an element `e` of the group algebra of the residue
 units at the chosen places. -/
@@ -135,7 +140,7 @@ lemma LValueData.centralRep_mem_range_groupAlgAction (z : Gf D.E Unit)
   refine DescentPair.range_groupAlgAction_mem_invtSubmodule _
     (fun g ↦ LinearMap.ext fun x ↦ Subtype.ext ?_) hy
   -- The action `Y.descentPair.formAction g` is a right translation times a number.
-  rw [Module.End.mul_apply, Module.End.mul_apply, coe_centralRep_apply, DescentPair.coe_formAction,
+  rw [mul_apply_eq_comp, mul_apply_eq_comp, coe_centralRep_apply, DescentPair.coe_formAction,
     DescentPair.coe_formAction, coe_centralRep_apply, map_smul,
     algFormRep_scalarFin_apply_comm]
 
@@ -175,9 +180,9 @@ lemma LValueData.normalizedCentralOp_inv_mem_integralForms {ℓ : ℕ} [Fact ℓ
     -- The entries of `k` and `k⁻¹` are `0` or the entry of `z⁻¹`, resp. `z`.
     simp only [mem_localLevel, mem_intGL, ← map_inv, k] at hz ⊢
     simp_all [scalarFin, U.det, diagonal, apply_ite, Gf.atPlace, -map_inv]
-  have h_norm : ‖ιₚ (Y.descentPair.charV.1 (detFin 1 z⁻¹) : ℂ)‖ = 1 :=
+  have h_norm : ‖ιₚ (Y.descentPair.charV.val (detFin 1 z⁻¹) : ℂ)‖ = 1 :=
     Y.charV_hasWeight.norm_apply_detFin_eq_one (hg := inv_mem hz)
-  have h_value : Y.normalizedCentralOp z⁻¹ Ξ g = (Y.descentPair.charV.1 (detFin 1 z⁻¹) : ℂ) • Ξ
+  have h_value : Y.normalizedCentralOp z⁻¹ Ξ g = (Y.descentPair.charV.val (detFin 1 z⁻¹) : ℂ) • Ξ
     (g * k) := rfl
   calc weylGauge Y.descentPair.columnCount Y.descentPair.detExp g (Y.normalizedCentralOp z⁻¹ Ξ g)
       = weylGauge Y.descentPair.columnCount Y.descentPair.detExp g (Ξ (g * k)) := by
@@ -340,7 +345,7 @@ lemma Selmer.DenominatorLe.norm_inner_starProjection_le {ℓ : ℕ} [Fact ℓ.Pr
     h_denom.norm_card_mul_inner_starProjection_le Y h_aut hΞ hΞ'
   rw [map_mul, norm_mul, h_norm, inv_pow, inv_mul_le_iff₀ (by positivity)] at h_bound
   rwa [inner_starProjection_left_eq_right,
-    starProjection_eq_self_iff.2 (starProjection_apply_mem _ Ξ'), exp_add, exp_nat_mul,
+    starProjection_eq_self_iff.2 (starProjection_apply_mem _ Ξ'), exp_add, exp_natCast_mul,
     exp_log hℓ, mul_comm]
 
 end New

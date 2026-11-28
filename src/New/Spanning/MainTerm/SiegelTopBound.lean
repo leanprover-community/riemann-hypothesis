@@ -1,6 +1,15 @@
-import Lib.SiegelWeil.OneVector.SiegelClassSum
-import New.Spanning.Frames.TopFloor
+module
+
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.Analysis.Normed.Ring.Ultra
+import TauCeti.NumberTheory.NumberField.Countable
+public import Lib.SiegelWeil.OneVector.SiegelClassSum
+public import New.Spanning.Frames.TopFloor
+public import New.Spanning.MainTerm.FillingLevel
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.MainTerm.GlobalToLocal
+import New.Spanning.Unfolding.Climbing
 import New.Spanning.Unfolding.ReducedGroups
 
 /-!
@@ -48,6 +57,8 @@ Notions from other files:
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
 
+@[expose] public section
+
 namespace New.Filling
 
 
@@ -65,7 +76,7 @@ variable (S T) in
 /-- A skew frequency `b` at the places of `T`, as a self-adjoint finite adele: extend by zero and
 multiply by `-ϖ⁻¹`, where `ϖ = S.deltaE` generates the different. -/
 noncomputable def adelicFrequency (b : skewAdjoint (LocProd T)) : selfAdjoint (𝔸f E) :=
-  ⟨(-S.deltaE.val⁻¹ : E) * adeleOfLocal T b.1, by
+  ⟨(-S.deltaE.val⁻¹ : E) * adeleOfLocal T b.val, by
     simp [selfAdjoint.mem_iff, ← adeleOfLocal_star, skewAdjoint.star_val_eq,
       ← coe_star_ringOfIntegers, S.star_deltaE]⟩
 
@@ -73,7 +84,7 @@ variable (S T) in
 /-- The part at the places of `T` of a self-adjoint finite adele, multiplied by `-ϖ`, where `ϖ =
 S.deltaE` generates the different. -/
 noncomputable def localFrequency (z : selfAdjoint (𝔸f E)) : skewAdjoint (LocProd T) :=
-  ⟨evalPlaces T ((-S.deltaE.val : E) * z.1), by
+  ⟨evalPlaces T ((-S.deltaE.val : E) * z.val), by
     simp [skewAdjoint.mem_iff, star_evalPlaces, ← coe_star_ringOfIntegers, S.star_deltaE]⟩
 
 @[fun_prop] lemma continuous_adelicFrequency : Continuous (S.adelicFrequency T) :=
@@ -95,9 +106,9 @@ lemma localFrequency_adelicFrequency_add (b : skewAdjoint (LocProd T)) (z : self
 /-- The difference of a self-adjoint adele `z` and `adelicFrequency (localFrequency z)` vanishes at
 `T`, so it kills the adeles that vanish off `T`. -/
 lemma sub_adelicFrequency_mul_adeleOfLocal (z : selfAdjoint (𝔸f E)) (a : LocProd T) :
-    (z.1 - S.adelicFrequency T (S.localFrequency T z)) * adeleOfLocal T a = 0 := by
+    (z.val - S.adelicFrequency T (S.localFrequency T z)) * adeleOfLocal T a = 0 := by
   have h_inv : ((-S.deltaE.val⁻¹ : E) : 𝔸f E) * (-S.deltaE.val : E) = 1 := by simp [← map_mul]
-  have h_eval : evalPlaces T (z.1 - S.adelicFrequency T (S.localFrequency T z)) = 0 := by
+  have h_eval : evalPlaces T (z.val - S.adelicFrequency T (S.localFrequency T z)) = 0 := by
     simp only [adelicFrequency, localFrequency, map_sub, map_mul (evalPlaces T),
       evalPlaces_adeleOfLocal, ← mul_assoc]
     rw [← map_mul, h_inv, map_one, one_mul, sub_self]
@@ -151,11 +162,11 @@ lemma ψf_quadric_eq_mul (hψ : P.ψ = S.charOnPlaces T) {κ : Type} [Fintype κ
     simp [x, y', β', dotProduct, Finset.sum_add_distrib, mul_add, add_mul, adeleOfLocal_star,
       adeleOfLocal_evalPlaces_mul, mul_comm _ (evalPlaces T _), mul_comm (w _)]
     ring
-  have h_arg : (S.adelicFrequency T b + z).1 * (star x ⬝ᵥ x - β) =
+  have h_arg : (S.adelicFrequency T b + z).val * (star x ⬝ᵥ x - β) =
       z * (star w ⬝ᵥ w - β') + S.adelicFrequency T (b + b') * (star x ⬝ᵥ x - β) -
         S.adelicFrequency T b' * (star w ⬝ᵥ w - β') := by
     rw [adelicFrequency_add, AddSubgroup.coe_add, AddSubgroup.coe_add]
-    linear_combination (z.1 - S.adelicFrequency T b') * h_diff +
+    linear_combination (z.val - S.adelicFrequency T b') * h_diff +
       S.sub_adelicFrequency_mul_adeleOfLocal (T := T) z _
   -- the last term is integral at `T`, so its phase is one
   have h_int : P.ψ (P.element * b' * evalPlaces T (star w ⬝ᵥ w - β')) = 1 := by
@@ -179,7 +190,7 @@ is `x ↦ ψf E (-x / ϖ)` (`S.charOnPlaces T`).
 This is a two-factor form of the factorization of the finite adelic density into local densities,
 as in Siegel–Weil theory: the density at `T` and one integral of Gauss sums, not split over the
 remaining places. -/
-lemma normDensity_indicator_eq_mul [WeilData E] (hψ : P.ψ = S.charOnPlaces T) {κ : Type} [Fintype κ]
+lemma normDensity_indicator_eq_mul (hψ : P.ψ = S.charOnPlaces T) {κ : Type} [Fintype κ]
     {Ψ : (κ → LocProd T) → ℝ≥0} (hΨ : Continuous Ψ) {β : 𝔸f E} (hβ : star β = β) :
     normDensity ((intVectors (integralOff T) κ : Set (κ → 𝔸f E)).indicator
         fun x : κ → 𝔸f E ↦ Ψ (evalPlaces T ∘ x)) β =
@@ -191,7 +202,6 @@ lemma normDensity_indicator_eq_mul [WeilData E] (hψ : P.ψ = S.charOnPlaces T) 
       ∫ b : skewAdjoint (LocProd T), ∫ y : κ → LocProd T,
         Ψ y * P.ψ (P.element * (b : LocProd T) * (star y ⬝ᵥ y - evalPlaces T β))
         ∂volume ∂P.skewMeasure := by
-  classical
   -- Split first the frequency and then the vector into their parts at `T` and off `T`.
   let L : Set (κ → 𝔸f E) := intVectors (integralOff T) κ
   have L_meas : MeasurableSet L := (isOpen_intVectors (isOpen_integralOff T)).measurableSet
@@ -205,7 +215,7 @@ lemma normDensity_indicator_eq_mul [WeilData E] (hψ : P.ψ = S.charOnPlaces T) 
   rw [normDensity]
   refine integral_eq_mul_of_section P.skewMeasure (by fun_prop) (by fun_prop)
     localFrequency_adelicFrequency_add
-    (SemilocalField.isOpen_O.preimage continuous_subtype_val).measurableSet skew_vol fun b z hz ↦ ?_
+    (SemilocalField.isOpen_O.preimage continuous_subtypeVal).measurableSet skew_vol fun b z hz ↦ ?_
   rw [integral_withDensity_eq_integral_smul (.indicator (by fun_prop) L_meas), lattice_eq,
     ← setIntegral_indicator L_meas]
   -- the vector: `adeleOfLocal T` is a section of `evalPlaces T`
@@ -227,7 +237,7 @@ variable (S T) in
 /-- The finite idele `π = S.piN`, with `π π̄ = N`, read at the places of `T`. -/
 noncomputable abbrev piNAt : (LocProd T)ˣ := S.piN.map (evalPlaces T)
 
-lemma piNAt_mul_star : S.piNAt T * star (S.piNAt T).1 = (S.N : LocProd T) := by
+lemma piNAt_mul_star : S.piNAt T * star (S.piNAt T).val = (S.N : LocProd T) := by
   simpa [star_evalPlaces] using congrArg (evalPlaces T) S.piN_mul_star
 
 end
@@ -316,7 +326,7 @@ volume `volÔ E ^ k` of the standard lattice and `P.modulus u` is
 the size parameter of `S` and `S.siegelConst = (π^k / ((k - 1)! N^k))^f |disc E|^(1/4) (volÔ E)^k`,
 with `f` the number of infinite places. -/
 lemma siegel_constant_eq (hT_N : (S.N : E)⁻¹ ∈ ratIntegralOff T)
-    [P : IntegralPlace (LocProd T)] {t : E} {u : (LocProd T)ˣ} (hu : u * star u.1 = S.N)
+    [P : IntegralPlace (LocProd T)] {t : E} {u : (LocProd T)ˣ} (hu : u * star u.val = S.N)
     (hβ_pos : ∀ v : InfinitePlace E, 0 < (Φ v ((t * star t - S.N ^ 2) / S.N)).re) {C : ℂ}
     (hC : (classSum stdRatPoints S.sourceLevel 1 * √√|NumberField.discr E| *
       ∏ v : InfinitePlace E, Real.pi ^ card 𝔰.κ / (card 𝔰.κ - 1).factorial *
@@ -330,7 +340,7 @@ lemma siegel_constant_eq (hT_N : (S.N : E)⁻¹ ∈ ratIntegralOff T)
   have h_formula : P.modulus (evalPlaces T ((S.N : E) : 𝔸f E)) ^ (2⁻¹ : ℝ) =
       (∏ v : InfinitePlace E, ‖Φ v (S.N : E)‖ₑ)⁻¹ :=
     P.modulus_evalPlaces_rpow_half (x := .mk0 _ (by simp [Nat.Prime.ne_zero])) ⟨by simp, hT_N⟩
-  have h_md : P.modulus u.1 = (‖(S.N : ℂ)‖ₑ ^ card (InfinitePlace E))⁻¹ := by
+  have h_md : P.modulus u.val = (‖(S.N : ℂ)‖ₑ ^ card (InfinitePlace E))⁻¹ := by
     simpa [← hu, ← sq, ← ENNReal.rpow_natCast_mul] using h_formula
   -- both sides are finite, so they are compared as real numbers
   have h_finite : ‖C‖ₑ * (.ofReal (1 + S.b⁻¹ ^ 6) * volÔ E ^ 𝔰.k) * P.modulus u ≠ ∞ := by
@@ -420,11 +430,11 @@ integral of `Ψ` over the sphere `y* y = β` at `T`. The sphere carries the fibe
 
 This is an upper bound form of the factorization into local densities in Siegel–Weil theory: the
 factor at `T` is kept, and the remaining factor is only bounded, by `(1 + S.b⁻⁶) volÔ E ^ k`. -/
-lemma IsFillingData.enorm_normDensity_le_mul_lintegral_normFiberMeasure [WeilData E]
+lemma IsFillingData.enorm_normDensity_le_mul_lintegral_normFiberMeasure
     (hF : S.IsFillingData T F)
     {Ψ : (𝔰.κ → LocProd T) → ℝ≥0} (hΨ : Continuous Ψ) (h_supp : HasCompactSupport Ψ) {β : 𝔸f E}
     (hβ : star β = β) {δβ : skewAdjoint (LocProd T)}
-    (hδβ : P.skewUnit⁻¹.1 * δβ = evalPlaces T β) :
+    (hδβ : P.skewUnit⁻¹.val * δβ = evalPlaces T β) :
     ‖normDensity ((intVectors (integralOff T) 𝔰.κ : Set (𝔰.κ → 𝔸f E)).indicator
         fun x : 𝔰.κ → 𝔸f E ↦ Ψ (evalPlaces T ∘ x)) β‖ₑ ≤
       .ofReal (1 + S.b⁻¹ ^ 6) * volÔ E ^ 𝔰.k *
@@ -438,14 +448,14 @@ lemma IsFillingData.enorm_normDensity_le_mul_lintegral_normFiberMeasure [WeilDat
     simpa using idealZeta_intAdeles_pow_le 𝔰.ϱ h_degree
   have h_card : 2 * (𝔰.ϱ + 2 * 𝔰.ϱ + 4 + 1) ≤ card 𝔰.κ := by
     simpa using show 2 * (𝔰.ϱ + 2 * 𝔰.ϱ + 4 + 1) ≤ 𝔰.k by omega
-  rw [normDensity_indicator_eq_mul hF.psi_eq hΨ hβ, enorm_mul]
+  rw [normDensity_indicator_eq_mul hF.psi_eq hΨ hβ, eNorm_mul]
   gcongr
   · -- the integral of Gauss sums off `T`
-    grw [enorm_integral_le_lintegral_enorm, setLIntegral_le_lintegral, ← h_zeta]
+    grw [eNorm_integral_le_lintegral_eNorm, setLIntegral_le_lintegral, ← h_zeta]
     exact lintegral_gauss_sum_le_idealZeta
       (le_two_of_pow_le_ofReal (idealZeta_intAdeles_pow_le 𝔰.ϱ h_degree)) h_card _
   · simpa only [one_mulVec, hδβ] using enorm_localDensity_le
-      (P.isDisintegration_normFiberMeasure hF.two_le_card) conjTranspose_one hF.psi_add_star hΨ
+      (P.isDisintegration_normFiberMeasure F.two_le_card) conjTranspose_one hF.psi_add_star hΨ
         h_supp δβ
 
 omit [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] ok in
@@ -453,14 +463,14 @@ omit [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] ok in
 with `π π̄ = N = S.N`. Then the index `lastEntrySphereIndex π t` of the sphere
 `ω* ω = t t̄ / N - N`, divided by `P.skewUnit`, is the value at `T` of `β = (t t̄ - N²) / N`. -/
 lemma skewUnit_inv_mul_lastEntrySphereIndex_piNAt (t : E) :
-    P.skewUnit⁻¹.1 * lastEntrySphereIndex (S.piNAt T) (ratToPlaces T t) =
+    P.skewUnit⁻¹.val * lastEntrySphereIndex (S.piNAt T) (ratToPlaces T t) =
       evalPlaces T (((t * star t - S.N ^ 2) / S.N : E) : 𝔸f E) := by
   set π : (LocProd T)ˣ := S.piNAt T
   set β : E := (t * star t - S.N ^ 2) / S.N
-  have hπ : π * star π.1 = S.N := piNAt_mul_star
+  have hπ : π * star π.val = S.N := piNAt_mul_star
   have h_rat : t * star t = S.N * (β + S.N) := by field [S.N_prime.ne_zero]
-  have h_coe : (lastEntrySphereIndex π (ratToPlaces T t)).1 = P.skewUnit *
-      ((π * star π)⁻¹.1 * ratToPlaces T t * star (ratToPlaces T t) - π * star π.1) := rfl
+  have h_coe : (lastEntrySphereIndex π (ratToPlaces T t)).val = P.skewUnit *
+      ((π * star π)⁻¹.val * ratToPlaces T t * star (ratToPlaces T t) - π * star π.val) := rfl
   rw [h_coe, Units.inv_mul_cancel_left, sub_eq_iff_eq_add, mul_assoc, Units.inv_mul_eq_iff_eq_mul]
   simpa [hπ] using congrArg (ratToPlaces T) h_rat
 
@@ -572,7 +582,7 @@ lemma IsFillingData.sum_sq_norm_sum_cosetAmplitude_le_headSumNormSq [WeilData E]
   -- are distinct.
   intro R
   have h_coset (i : ι) (b : Z.Cosets) : ∃ b' : Z.Cosets,
-      (S.toPlaces T (n i))⁻¹ * b.out.1 * b'.out.1⁻¹ ∈ F.congruenceSubgroup :=
+      (S.toPlaces T (n i))⁻¹ * b.out.val * b'.out.val⁻¹ ∈ F.congruenceSubgroup :=
     (Z.exists_forall_mul_inv_mem_congruenceSubgroup_iff_eq (mul_mem (inv_mem (hn i)) b.out.2)).imp
       fun b' hb' ↦ (hb' b').2 rfl
   choose A hA using h_coset
@@ -591,7 +601,7 @@ lemma IsFillingData.sum_sq_norm_sum_cosetAmplitude_le_headSumNormSq [WeilData E]
         w • F.groupMeasure.real F.congruenceSubgroup • ∑ p, S.cosetAmplitude side c
           (S.reduction (n i)) c' (weylElem 𝔰.ϱ (a p) * γ) := by
       simp only [v, smul_comm (M := ℂ) (N := ℝ),
-        hF.scaledOrbitalIntegral_smul_eq_cosetAmplitude hγ (fun l ↦ (h_head _ l l.2).2)
+        hF.scaledOrbitalIntegral_smul_eq_cosetAmplitude hγ (fun l ↦ (h_head _ l l.isLt).2)
           (isIntegralOff_weylElem_mul (h_head _) h_off) (hA i b),
         smul_smul (ρ _), h_weight, ← smul_sum]
     simp only [R, star_dotProduct_gram_mulVec, h_tensor]
@@ -671,7 +681,7 @@ lemma IsFillingData.mul_sum_norm_sum_cosetAmplitude_sq_le_fiberPairing [WeilData
   obtain ⟨c₀, rfl⟩ : ∃ c₀, c = fun _ ↦ c₀ := ⟨c i₀, funext (h_leftClass · i₀)⟩
   let pair (i : ι) : S.Classes × S.G E := (c' i, γ i)
   let pos (x : Set.range pair) : (S.latticeMiddle (LocProd T)).G :=
-    (S.toPlaces T (S.translateByClassReps c₀ x.1.1 x.1.2))⁻¹
+    (S.toPlaces T (S.translateByClassReps c₀ x.val.1 x.val.2))⁻¹
   have h_point (x : Set.range pair) :
       pos x ∈ floorGroup 𝔰.ϱ ∧ orbitPoint 𝔰.top (pos x) = e := by
     obtain ⟨_, i, rfl⟩ := x
@@ -688,7 +698,7 @@ lemma IsFillingData.mul_sum_norm_sum_cosetAmplitude_sq_le_fiberPairing [WeilData
   rw [mul_assoc, ← Finset.sum_fiberwise univ (Set.rangeFactorization pair), mul_sum]
   gcongr with x
   obtain ⟨_, k, rfl⟩ := x
-  have h_same (i : {i // pair i = pair k}) : c' i = c' k ∧ γ i = γ k := Prod.mk.inj i.2
+  have h_same (i : {i // pair i = pair k}) : c' i = c' k ∧ γ i = γ k := Prod.mk.inj i.property
   have h_inj_fiber : (fun i : {i // pair i = pair k} ↦ S.reduction (n i)).Injective :=
     fun i i' h ↦ Subtype.ext (h_inj (by simp [h_same i, h_same i', h]))
   rw [hR k]
@@ -749,9 +759,9 @@ theorem IsFillingData.siegel_sum_le_lintegral_sphere (hT_N : (S.N : E)⁻¹ ∈ 
     (ht : ∀ v : InfinitePlace E, S.N ^ 2 < ‖Φ v t‖ ^ 2)
     (h_norm : ∀ z ∈ s, S.N * star z.2 ⬝ᵥ z.2 = t * star t - S.N ^ 2)
     (h_int : ∀ z ∈ s, ∀ i : 𝔰.κ,
-      (z.1.out⁻¹.1.1 *ᵥ algebraMap E (𝔸f E) ∘ z.2) i ∈ integralOff T) :
+      (z.1.out⁻¹.val.val *ᵥ algebraMap E (𝔸f E) ∘ z.2) i ∈ integralOff T) :
     (∑ z ∈ s, Ψ (evalPlaces T ∘
-        vectorOfLastEntry S.piN t (z.1.out⁻¹.1.1 *ᵥ algebraMap E (𝔸f E) ∘ z.2)) : ℝ≥0∞) ≤
+        vectorOfLastEntry S.piN t (z.1.out⁻¹.val.val *ᵥ algebraMap E (𝔸f E) ∘ z.2)) : ℝ≥0∞) ≤
       .ofReal ((1 + S.b⁻¹ ^ 6) * card S.Classes * S.siegelConst *
           (∏ v : InfinitePlace E, (‖Φ v t‖ ^ 2 - S.N ^ 2)) ^ (𝔰.k - 1)) *
         ((P.modulus (S.piNAt T))⁻¹ *
@@ -768,7 +778,7 @@ theorem IsFillingData.siegel_sum_le_lintegral_sphere (hT_N : (S.N : E)⁻¹ ∈ 
   let t' : LocProd T := evalPlaces T t
   have hβ : star β = β := by simp [β, field]
   have hβ_pos (v : InfinitePlace E) : 0 < (Φ v β).re := by simpa [β, mul_conj', sq, hN₀] using ht v
-  have h_level : P.skewUnit⁻¹.1 * lastEntrySphereIndex π t' = evalPlaces T β :=
+  have h_level : P.skewUnit⁻¹.val * lastEntrySphereIndex π t' = evalPlaces T β :=
     skewUnit_inv_mul_lastEntrySphereIndex_piNAt t
   have Ψ_lc : IsLocallyConstant Ψ := isLocallyConstant_of_eventually_add Ψ_unif
   -- the integral vectors off `T` form a clopen set
@@ -782,7 +792,7 @@ theorem IsFillingData.siegel_sum_le_lintegral_sphere (hT_N : (S.N : E)⁻¹ ∈ 
     ∏ v : InfinitePlace E, Real.pi ^ card 𝔰.κ / (card 𝔰.κ - 1).factorial *
       (Φ v β).re ^ (card 𝔰.κ - 1) : ℝ)
   obtain ⟨h_summable, (h_siegel : ((classSum stdRatPoints S.sourceLevel fun h : Gf E 𝔰.κ ↦
-      ((∑' v : 𝔰.κ → E, if star v ⬝ᵥ v = β then f (h⁻¹.1.1 *ᵥ fun i ↦ (v i : 𝔸f E)) else 0 :
+      ((∑' v : 𝔰.κ → E, if star v ⬝ᵥ v = β then f (h⁻¹.val.val *ᵥ fun i ↦ (v i : 𝔸f E)) else 0 :
         ℝ≥0) : ℝ) : ℝ) : ℂ) = C * normDensity f β)⟩ :=
     classSum_eq_mul_normDensity (by lia) S.sourceLevel f
       (fun k hk ↦ hF.testFunction_mulVec Ψ_inv t hk)
@@ -793,15 +803,15 @@ theorem IsFillingData.siegel_sum_le_lintegral_sphere (hT_N : (S.N : E)⁻¹ ∈ 
     _ ≤ ‖C * normDensity f β‖ₑ := by
       -- each pair `z ∈ s` has norm `β` and is integral off `T`, so it is a term of the class sum
       rw [← h_siegel]
-      simp_rw [classSum_sourceLevel_eq_sum, ← NNReal.coe_sum, enorm_eq_nnnorm, nnnorm_real,
-        nnnorm_eq, ofNNReal_finsetSum, ENNReal.coe_tsum (h_summable _)]
-      grw [← ENNReal.tsum_prod.trans (tsum_fintype _), ← ENNReal.sum_le_tsum s]
+      simp_rw [classSum_sourceLevel_eq_sum, ← NNReal.coe_sum, eNorm_eq_nnNorm, nnNorm_real,
+        nnNorm_eq, ofNNReal_finsetSum, ENNReal.coe_tsum (h_summable _)]
+      grw [← tsum_prod.trans (tsum_fintype _), ← sum_le_tsum s]
       gcongr with z hz
       have h_norm_eq : star z.2 ⬝ᵥ z.2 = β := by simp [β, ← h_norm z hz, Nat.Prime.ne_zero]
       grw [ite_eq_left h_norm_eq, ← vectorOfLastEntry_evalPlaces]
       exact (ite_eq_left (h_int z hz)).ge
     _ ≤ ‖C‖ₑ * (.ofReal (1 + S.b⁻¹ ^ 6) * volÔ E ^ 𝔰.k * I) := by
-      rw [enorm_mul]
+      rw [eNorm_mul]
       gcongr
       exact hF.enorm_normDensity_le_mul_lintegral_normFiberMeasure
         (Ψ_lc.continuous.comp isClosedEmbedding_vectorOfLastEntry.continuous)
@@ -811,12 +821,12 @@ theorem IsFillingData.siegel_sum_le_lintegral_sphere (hT_N : (S.N : E)⁻¹ ∈ 
       rw [mul_assoc _ (P.modulus π), ENNReal.mul_inv_cancel_left (by simp) (by simp), ← mul_assoc]
     _ = _ := by rw [siegel_constant_eq hT_N piNAt_mul_star hβ_pos (C := C) rfl]
 
-omit [WeilData E] [S.IsAdmissible] [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] in
+omit [WeilData E] [T.StarStable] [S.IsAdmissible] [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] in
 /-- If the lattice basis and the translate `h_c⁻¹ γ h_c'` (`S.translateByClassReps`) of a rational
 element `γ` of `floorGroup 𝔰.ϱ` are integral off `T`, then so is the `X₀`-part of the column of `γ`
 at `z`, moved by the inverse of the representative of `c`. -/
 lemma x₀Part_mem_integralOff (hT_basis : S.latticeBasis ∈ intGL 𝔰.BesselIndex (integralOff T))
-    [_P : IntegralPlace (LocProd T)] {c c' : S.Classes} {γ : S.G E} (hγ : γ ∈ floorGroup 𝔰.ϱ)
+    {c c' : S.Classes} {γ : S.G E} (hγ : γ ∈ floorGroup 𝔰.ϱ)
     (h_off : S.IsIntegralOff T (S.translateByClassReps c c' γ)) (i : 𝔰.κ) :
     (c.out⁻¹.val.val *ᵥ algebraMap E (𝔸f E) ∘ fun l : 𝔰.κ ↦ γ.val.val (𝔰.indexX₀ l) 𝔰.z) i ∈
       integralOff T := by
@@ -879,22 +889,22 @@ theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity
   let ω (p : J) : ℕ → (LocProd T)ˣ := Units.map (ratToPlaces T) ∘ a p
   let y (i : j) : ℝ := r ^ 2 * ‖∑ p : J, S.cosetAmplitude side (c i) (S.reduction (n i)) (c' i)
     (weylElem 𝔰.ϱ (a p) * γ i)‖ ^ 2
-  set G : ℝ := (∏ v : InfinitePlace E, (‖Φ v t.1‖ ^ 2 - S.N ^ 2)) ^ (𝔰.k - 1)
-  let g (i : j) : S.Classes × (𝔰.κ → E) := (c i, fun l ↦ (γ i).1.1 (𝔰.indexX₀ l) 𝔰.z)
-  let x (z : S.Classes × (𝔰.κ → E)) : 𝔰.κ → 𝔸f E := z.1.out⁻¹.1.1 *ᵥ algebraMap E (𝔸f E) ∘ z.2
+  set G : ℝ := (∏ v : InfinitePlace E, (‖Φ v t.val‖ ^ 2 - S.N ^ 2)) ^ (𝔰.k - 1)
+  let g (i : j) : S.Classes × (𝔰.κ → E) := (c i, fun l ↦ (γ i).val.val (𝔰.indexX₀ l) 𝔰.z)
+  let x (z : S.Classes × (𝔰.κ → E)) : 𝔰.κ → 𝔸f E := z.1.out⁻¹.val.val *ᵥ algebraMap E (𝔸f E) ∘ z.2
   let Q : ℂ := ∑ p, ∑ q, R p q * F.lastEntryDensity (S.piNAt T) Z (ω p) (ω q)
   have R_psd : R.PosSemidef := by simpa only [hR i₀] using posSemidef_gram ℂ _
   have G_pos : 0 < G := by simp [G, ht, prod_pos]
   -- The translate of a term by the class representatives moves `z` to the vector with last entry
   -- `t` over `g i`, which has norm `(t t̄ - N²) / N` and is integral off `T`.
-  have norm_eq (i : j) : S.N * star (g i).2 ⬝ᵥ (g i).2 = t.1 * star t.1 - S.N ^ 2 := by
+  have norm_eq (i : j) : S.N * star (g i).2 ⬝ᵥ (g i).2 = t.val * star t.val - S.N ^ 2 := by
     rw [← h_tail i]
     exact mul_star_dotProduct_eq_last_frameProducts (hγ i)
   have x_int (i : j) : ∀ l : 𝔰.κ, x (g i) l ∈ integralOff T :=
     x₀Part_mem_integralOff hT_basis (hγ i) (h_off i)
   have point_eq (i : j) : orbitPoint 𝔰.top
     (S.toPlaces T (S.translateByClassReps (c i) (c' i) (γ i)))⁻¹ =
-      evalPlaces T ∘ vectorOfLastEntry S.piN t.1 (x (g i)) :=
+      evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g i)) :=
     orbitPoint_toPlaces_translateByClassReps (hγ i) (h_tail i)
   -- Extend the real part of the sum of the fiber pairings against `R` to a step function `Ψ`; its
   -- value at a point bounds the classes there.
@@ -907,10 +917,10 @@ theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity
     hF.exists_scaledSiegelConst_eq_and_massRatio_le Z
   have le_Ψ (k₀ : j) :
       .ofReal G * (Z.massRatio / .ofReal D) * ∑ k with g k = g k₀, .ofReal (y k) ≤
-        (Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.1 (x (g k₀))) : ℝ≥0∞) := by
+        (Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g k₀))) : ℝ≥0∞) := by
     have same (k k' : {k // g k = g k₀}) :
-        c k = c k' ∧ (g k).2 = (g k').2 := Prod.mk.inj (k.2.trans k'.2.symm)
-    have point_mem : evalPlaces T ∘ vectorOfLastEntry S.piN t.1 (x (g k₀)) ∈
+        c k = c k' ∧ (g k).2 = (g k').2 := Prod.mk.inj (k.property.trans k'.property.symm)
+    have point_mem : evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g k₀)) ∈
         lastVectorQuadric (S.latticeMiddle (LocProd T)) := by
       rw [← point_eq]
       exact orbitPoint_mem_lastVectorQuadric (inv_mem (.map_mem_agreeWithOneOn _
@@ -922,7 +932,7 @@ theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity
     suffices h_over : F.measureH F.congruenceSubgroup *
       (F.groupMeasure F.congruenceSubgroup ^ 2 * card Z.Cosets) *
         ∑ k : {k // g k = g k₀}, ENNReal.ofReal G * .ofReal (y k) ≤
-          Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.1 (x (g k₀))) by
+          Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g k₀))) by
       grw [div_le_of_le_mul h_unit, mul_comm (ENNReal.ofReal G), mul_assoc _ (ENNReal.ofReal G),
         mul_sum, sum_subtype (F := inferInstance) (p := fun k ↦ g k = g k₀) _ mem_filter_univ,
         h_over]
@@ -931,7 +941,7 @@ theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity
       (fun k k' h ↦ Subtype.ext (h_inj (Prod.ext (same k k').1 h))) (fun k k' ↦ (same k k').1)
       (fun k ↦ hγ k) (fun k k' ↦ by simp only [h_tail])
       (fun k k' ↦ congrFun (same k k').2) (fun k ↦ hn k) (fun k ↦ h_off k)
-      (fun k ↦ by rw [point_eq, k.2]) R_psd (fun k ↦ hR k) h_weight h_head
+      (fun k ↦ by rw [point_eq, k.property]) R_psd (fun k ↦ hR k) h_weight h_head
   -- Siegel's formula sums over the points; the normalized integral over the sphere is `Q.re`.
   obtain ⟨⟨re_nonneg : 0 ≤ Q.re, -⟩, h_sphere⟩ :=
     sum_lastEntryDensity_nonneg_and_eq_inv_mul_lintegral Z piNAt_mul_star
@@ -939,7 +949,7 @@ theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity
   have h_total : .ofReal G * (Z.massRatio / .ofReal D) * ∑ k, .ofReal (y k) ≤
       .ofReal ((1 + S.b⁻¹ ^ 6) * card S.Classes * S.siegelConst * G) * ENNReal.ofReal Q.re := by
     calc
-      _ ≤ ∑ z ∈ univ.image g, (Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.1 (x z)) : ℝ≥0∞) := by
+      _ ≤ ∑ z ∈ univ.image g, (Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x z)) : ℝ≥0∞) := by
         rw [← sum_fiberwise_of_maps_to fun k _ ↦ mem_image_of_mem g (mem_univ k), mul_sum]
         exact sum_le_sum (forall_mem_image.2 fun k _ ↦ le_Ψ k)
       _ ≤ _ := hF.siegel_sum_le_lintegral_sphere hT_N Ψ_supp Ψ_unif Ψ_inv ht
@@ -948,7 +958,7 @@ theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity
       _ = _ := by
         -- almost every point of the sphere lies on the top quadric, where `Ψ_eq` gives `Ψ`
         rw [h_sphere, lintegral_congr_ae
-          ((P.ae_vectorOfLastEntry_mem_lastVectorQuadric piNAt_mul_star hF.two_le_card _).mono
+          ((P.ae_vectorOfLastEntry_mem_lastVectorQuadric piNAt_mul_star F.two_le_card _).mono
             fun _ ↦ Ψ_eq _)]
         rfl
   -- pass to real numbers and cancel the constants

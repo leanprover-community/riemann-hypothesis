@@ -1,5 +1,16 @@
+module
+
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.SiegelWeil.RallisInner.Doubling
+import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.SiegelWeil.RallisInner.SharpData
 import Lib.Weil.CompactLift.DefiniteThetaLift
+import Lib.Weil.Unramified.HeckeTransfer
 
 /-!
 # Theta lift of an algebraic form to a larger definite unitary group and its Hecke polynomials
@@ -30,6 +41,8 @@ string of a character of U(1). Source: Blasius, Rogawski, Motives for Hilbert mo
 Math. 114 (1993) and Shin, Ann. of Math. 173 (2011) for the idea (endoscopic transfer to odd rank);
 Harris, Soudry, Taylor, Invent. Math. 112 (1993) for theta lifts with a varying character.
 -/
+
+@[expose] public section
 
 /-!
 ## The monic Hecke polynomial and the reciprocal one
@@ -128,22 +141,15 @@ private lemma mem_Ô_of_mul_add_sum_mem_Ô {z : 𝔸f E} {g : Gf E n}
     (hD_def : D = g⁻¹.val.val - 1) {u : n → n → 𝔸f E} (hu : ∀ p k : n, u p k ∈ Ô E)
     (h_int : ∀ p j : n, z * D p j + ∑ k : n, u p k * D k j ∈ Ô E) (i j : n) : D i j ∈ Ô E := by
   refine mem_Ô.mpr fun w ↦ ?_
-  have h_nonempty : Nonempty n := ⟨i⟩
+  have : Nonempty n := ⟨i⟩
   obtain ⟨p, hp⟩ := Finite.exists_max fun i' : n ↦ v (D i' j w)
-  refine (hp i).trans (le_of_not_gt fun h_big ↦ ?_)
+  refine (hp i).trans (le_of_not_gt fun h_big ↦ h_big.not_ge <| hD_def ▸ v.map_sub_le
+    ((hg w ?_).isIntMatrix_inv p j) (mem_Ô.mp (by simp [Matrix.one_apply, ite_mem]) w))
   -- `O` is the set of adeles whose valuation at `w` is at most that of `D p j`.
   let O : AddSubgroup (𝔸f E) := (v.comap (evalAt w)).leAddSubgroup (v (D p j w))
-  have h_sum : ∑ k : n, u p k * D k j ∈ O :=
-    sum_mem fun k _ ↦ by simp [O, mul_le_of_le_one_of_le, mem_Ô.mp, hu, hp]
-  have h_all : z * D p j + ∑ k : n, u p k * D k j ∈ O := (mem_Ô.mp (h_int p j) w).trans h_big.le
-  have hzD_mem : z * D p j ∈ O := (O.add_mem_cancel_right h_sum).mp h_all
-  -- so `z` is integral at `w`, where `g⁻¹` is then integral, and `D p j` too
-  have hw : w ∈ {w : FinPlace E | 1 < v (z w)}ᶜ := by simpa [O, h_big.pos] using hzD_mem
-  have h_one : (1 : Matrix n n (𝔸f E)) p j ∈ Ô E := by simp [Matrix.one_apply, ite_mem]
-  have hD_le : v (D p j w) ≤ 1 := by
-    rw [hD_def]
-    exact v.map_sub_le ((hg w hw).isIntMatrix_inv p j) (mem_Ô.mp h_one w)
-  exact h_big.not_ge hD_le
+  simpa [O, h_big.pos] using (O.add_mem_cancel_right (show ∑ k : n, u p k * D k j ∈ O from
+    sum_mem fun k _ ↦ by simp [O, mul_le_of_le_one_of_le, mem_Ô.mp, hu, hp])).mp
+    ((mem_Ô.mp (h_int p j) w).trans h_big.le)
 
 /-- Let the row `ρ p` of `x` be the unit vector at `p`, let `g` be integral at every place where
 the finite adele `z` is integral, and let `D = g⁻¹ - 1`. Unless `g` is integral with every
@@ -168,11 +174,11 @@ private lemma weilMatrixCoeff_finHeisenbergOp_eq_zero {m : Type} [Fintype m] [De
   have h_pt : (((1, g), 1) : G E (1 : n → ℤˣ) × G E (1 : m → ℤˣ)) = ((1, g), 1, 1) := rfl
   rw [weilMatrixCoeff, pairWeil_apply, h_pt, onHom_fin, omega_finHeisenbergOp, omega_vacElem,
     ← dataInner_finHeisenbergOp _ (-matrixToVec (z • x))]
-  simp [finHeisenbergOp_finHeisenbergOp, Prod.mk_one_one, onHom_snd, mulVec_smul]
+  simp [finHeisenbergOp_finHeisenbergOp, mulVec_smul]
   -- `simp` leaves a product of scalars and an inner product; it is enough that the last vanishes:
   -- the inner product of the vacuum with a translate of `ω(g) P ω(g⁻¹)` of the vacuum.
   refine .inr (.inr (.inr ?_))
-  show dataInner _ (vacElem _)
+  change dataInner _ (vacElem _)
       (finHeisenbergOp _ (-(z • matrixToVec x) + _) (ω _ _ (projOn _ univ (ω _ _ (vacElem _))))) = 0
   -- The inner projection is a mean over integral `u`, so it is enough that each term vanishes
   -- (`map_projOn_eq_const`). The projection that fixes the left vacuum, moved to the right, kills
@@ -185,7 +191,7 @@ private lemma weilMatrixCoeff_finHeisenbergOp_eq_zero {m : Type} [Fintype m] [De
   simp [rep_apply_apply, stdLattice.mem_stdLattice, onHom_snd, Prod.mk_one_one,
     finHeisenbergOp_finHeisenbergOp, matrixToVec, projOn_finHeisenbergOp, mem_integralBox,
     Set.conjClosure, idem_univ]
-  show ∀ u : m × n → 𝔸f E, (∀ (a : m) (b : n), u (a, b) ∈ Ô E) →
+  change ∀ u : m × n → 𝔸f E, (∀ (a : m) (b : n), u (a, b) ∈ Ô E) →
     (∀ (a : m) (b : n),
       -(z * x a b) +
           z * (kroneckerMap (fun y₁ y₂ ↦ y₁ * y₂) 1 (g.val.val)⁻¹ᵀ *ᵥ matrixToVec x) (a, b) +
@@ -332,25 +338,10 @@ private lemma frobValue_div_mul_heckeCoeff_eq_one {b : AutChar E} {c : InfiniteP
     (hb : b.HasWeight c 1) (s : ℕ) (w : FinPlace E) :
     w.q ^ s * frobValue 1 n w / b.frobValue (Fin (card n + s)) w *
       heckeCoeff (hb.toAlgebraic s s).val.fst ∅ w = 1 := by
-  have hq : ((√(w.q : ℝ) : ℝ) : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.2 (Real.sqrt_ne_zero'.2 (Nat.cast_pos.2 (zero_lt_one.trans w.one_lt_q)))
-  simp [HasWeight.toAlgebraic, frobValue, w.coe_q_eq_sq_sqrt, HeckeChar.atUniformizer, heckeCoeff,
-    AutChar.spaceChar, zpow_sub₀, zpow_mul (_ : ℂ), field, hq]
+  simp [HasWeight.toAlgebraic, frobValue, w.coe_q_eq_sq_sqrt, w.ne_bot, HeckeChar.atUniformizer,
+    heckeCoeff, AutChar.spaceChar, zpow_sub₀, zpow_mul (_ : ℂ), field]
   -- What is left is a rearrangement of powers of `√q_w` and of `υ` at a uniformiser.
   ring
-
-omit [DecidableEq n] in
-/-- For `l < s`, the value at `w` of the algebraic Hecke character `hb.toAlgebraic (card n + s)
-(s - l)` is `q_w ^ l * frobValue 1 n w` times that of `hb.toAlgebraic s s`. Here `b` is a character
-of `U(1)` of weight `c`. -/
-private lemma heckeCoeff_toAlgebraic_eq {b : AutChar E} {c : InfinitePlace E → ℤ}
-    (hb : b.HasWeight c 1) {s : ℕ} (w : FinPlace E) (l : Fin s) :
-    heckeCoeff (hb.toAlgebraic (card n + s) (s - l)).val.fst ∅ w =
-      w.q ^ (l : ℕ) * frobValue 1 n w * heckeCoeff (hb.toAlgebraic s s).val.fst ∅ w := by
-  have hq : ((√(w.q : ℝ) : ℝ) : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.2 (Real.sqrt_ne_zero'.2 (Nat.cast_pos.2 (zero_lt_one.trans w.one_lt_q)))
-  simp [HasWeight.toAlgebraic, frobValue, w.coe_q_eq_sq_sqrt, HeckeChar.atUniformizer, heckeCoeff,
-    AutChar.spaceChar, zpow_add₀, zpow_sub₀, zpow_mul (_ : ℂ), field, hq]
 
 /-- Rallis' inner product formula makes the theta lift injective on forms of level `J`. Let `b` be
 a character of `U(1)` of weight `c`, `v` an edge from type `l` to type `l'` (`IsEdge`), `Ψ` sharp
@@ -423,7 +414,10 @@ private lemma exists_hasHeckePolyAt_scaleRoots_eq {κ' : InfinitePlace E → ℕ
   exact scaleRoots_heckePoly_eq w
     (fun l ↦ heckeCoeff (hb.toAlgebraic (card n + s) (s - l)).val.fst ∅ w)
     (hF_eig.isMonicOfDegree hF_ne).natDegree_eq h_eigval
-    (frobValue_div_mul_heckeCoeff_eq_one hb s w) (heckeCoeff_toAlgebraic_eq hb w)
+    (frobValue_div_mul_heckeCoeff_eq_one hb s w) (by
+      intro l
+      simp [HasWeight.toAlgebraic, frobValue, w.coe_q_eq_sq_sqrt, w.ne_bot, HeckeChar.atUniformizer,
+        heckeCoeff, AutChar.spaceChar, zpow_add₀, zpow_sub₀, zpow_mul (_ : ℂ), field])
 
 /-- Theta lift by `s > n` steps. Let `f ≠ 0` be a form of rank `n ≥ 1` and weight `(κ, e)`, and let
 `b` be a character of `U(1)` of weight `c ≤ e` with trivial tame part (`b u = ∏ u_v^{c v}` for `u`

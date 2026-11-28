@@ -1,0 +1,204 @@
+name: challenge files
+
+# The Comparator challenge files say what the proof is judged against, so a pull request may not
+# change them. `Challenge.lean` imports `src/Statements.lean`, which defines the propositions that
+# four of the five theorems state, and `src/Main.lean` imports it as well. Comparator would accept
+# a change there, since both sides would see it, so it is a challenge file too.
+#
+# Comparator builds `Challenge` and `Main` with Lake, so the build configuration decides which files
+# those names stand for and which Mathlib they import. Leaving the three files as they are, a pull
+# request could point the `Challenge` or `Main` library at other copies, add a `lakefile.lean`
+# (which Lake reads instead of `lakefile.toml`), or require Mathlib or a toolchain from elsewhere.
+# So this also fails a pull request that
+#
+# - adds or changes `lakefile.lean`;
+# - changes `lakefile.toml` other than in Mathlib's `rev`, `leanOptions`, `defaultTargets`, the
+#   `lean_exe` entries and the `[cache]` block: the libraries, `srcDir`, Lean's arguments and the
+#   rest stay as they are;
+# - changes the settings of `lake-manifest.json` other than its packages, changes the address of
+#   Mathlib there, or lists a package that is not a Git repository of leanprover-community or
+#   leanprover on GitHub, nor one of the repositories in `TRUSTED_REPOS` below (Tau Ceti);
+# - names a toolchain in `lean-toolchain` other than a release of leanprover/lean4;
+# - adds files under `.lake/`.
+#
+# A Mathlib or toolchain bump passes: it changes `rev`, the packages' revisions and
+# `lean-toolchain`. label-pr.yml labels it `changes-lake`.
+#
+# A dependency from anywhere else is trusted by its exact address, not by its organisation, and not
+# because the base branch lists it: a pull request picks its base branch and its history, so a check
+# relative to the base would accept whatever some branch of this repository lists. Adding one is a
+# maintainer's decision, made in a pull request of its own that adds the address to `TRUSTED_REPOS`
+# and nothing else. GitHub runs main's copy of this workflow, so the pull request that adds the
+# dependency passes only after that one has landed.
+#
+# GitHub runs the default branch's copy of this workflow for every pull request, whatever branch
+# it is based on, and nothing from the pull request: the job fetches commits and trees, without
+# file contents, and reads the file hashes with git. A pull request cannot switch it off, and it
+# needs no approval to run on a pull request from a fork.
+#
+# The challenge files depend on the branch a pull request is based on. Those of `alpoge`, which
+# holds the work done before `main` was replaced, are the ones listed there. Whether `alpoge` will
+# be kept up is undecided, and it may be phased out; its list then goes with it. (It does
+# not ask GitHub's compare API for the merge base, which times out on a pull request that changes
+# very many files.)
+
+on:
+  pull_request_target:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request to check
+        type: number
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+# Only the result for a pull request's newest head matters, and the job reads the pull request's
+# current base and head from the API, so a newer run, whether from a push or a dispatch, makes an
+# older one for the same pull request redundant.
+concurrency:
+  group: challenge-files-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: true
+
+jobs:
+  frozen:
+    name: Comparator challenge files and build configuration are unchanged
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Compare the files where the pull request branched off and at its head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number || inputs.pr_number }}
+        run: |
+          read -r base head branch < <(gh api "repos/$REPO/pulls/$PR" --jq '"\(.base.sha) \(.head.sha) \(.base.ref)"')
+          case "$branch" in
+            alpoge)
+              frozen="src/Challenge.lean comparator.json export-targets.txt
+                comparator/FormalConjecturesChallenge.lean comparator/formal-conjectures.json
+                comparator/formal-conjectures-export-targets.txt" ;;
+            *)
+              frozen="Challenge.lean comparator.json src/Statements.lean" ;;
+          esac
+          git init -q pr
+          git -C pr remote add origin "https://github.com/$REPO"
+          # A blobless fetch. Reading a file's contents below downloads that file only.
+          git -C pr fetch -q --no-tags --filter=blob:none origin "$base" "$head"
+          # A head that has merged two main commits, neither containing the other, has more than
+          # one merge base, and GitHub's merge uses all of them.
+          forks=$(git -C pr merge-base --all "$base" "$head")
+          echo "pull request $PR, based on $branch: branched off at ${forks//$'\n'/ }, head $head"
+
+          # A file's mode, type and blob hash at a commit; nothing if the file is not there. The
+          # mode matters: a symlink whose target is the old contents has the old hash. If git
+          # cannot read a tree on the way, it fails and so does the job.
+          entry() {
+            git -C pr ls-tree --format='%(objectmode) %(objecttype) %(objectname)' "$1" -- "$2"
+          }
+
+          status=0
+          for path in $frozen; do
+            new=$(entry "$head" "$path")
+            ours=$(entry "$base" "$path")
+            seen='' verdict="unchanged: $path"
+            for fork in $forks; do
+              old=$(entry "$fork" "$path")
+              [ -n "$old" ] || continue
+              seen=1
+              if [ "$old" != "$new" ]; then
+                verdict="::error file=$path::This pull request changes $path, a Comparator challenge file."
+                status=1
+              fi
+            done
+            # Where the pull request branched off without the file, a change to the path it was
+            # moved from can land in it when the branch is merged, so that is not checked as an
+            # added file unless the base branch does not have it either.
+            if [ -z "$seen" ] && [ -n "$ours" ]; then
+              verdict="::error file=$path::This pull request branched off before $path was there. Merge main into it so the file can be compared."
+              status=1
+            fi
+            echo "$verdict"
+          done
+
+          # The build configuration. The script only reads files with git; it runs nothing from the
+          # pull request.
+          # shellcheck disable=SC2086 # one argument for each merge base
+          python3 -I - "$head" $forks <<'PY' || status=1
+          import json, re, subprocess, sys, tomllib
+
+          head, *forks = sys.argv[1:]
+          # What a pull request may change in lakefile.toml, besides the `rev` of a `require`.
+          FREE = {"leanOptions", "defaultTargets", "lean_exe", "cache"}
+          TRUSTED = ("https://github.com/leanprover-community/", "https://github.com/leanprover/")
+          # Repositories outside those two that a maintainer has agreed to depend on, each by its
+          # exact address as it appears in lake-manifest.json. See the note at the top of this file.
+          TRUSTED_REPOS = {"https://github.com/TauCetiProject/TauCeti"}
+          errors = []
+
+          def error(path, message):
+              errors.append(f"::error file={path}::{message}")
+
+          def read(rev, path):
+              """The text of the file at `path` in `rev`, or None if there is none. Anything that is
+              not a plain file, such as a symbolic link, is an error."""
+              found = subprocess.run(["git", "-C", "pr", "ls-tree", "--format=%(objectmode) %(objectname)",
+                                      rev, "--", path], capture_output=True, text=True, check=True).stdout.split()
+              if not found:
+                  return None
+              if found[0] not in ("100644", "100755"):
+                  raise ValueError(f"{path} is not a plain file at {rev[:10]}")
+              return subprocess.run(["git", "-C", "pr", "cat-file", "blob", found[1]],
+                                    capture_output=True, check=True).stdout.decode()
+
+          def lakefile(text):
+              config = tomllib.loads(text)
+              view = {key: value for key, value in config.items() if key not in FREE}
+              view["require"] = [{key: value for key, value in require.items() if key != "rev"}
+                                 for require in config.get("require", [])]
+              return view
+
+          def manifest(text):
+              data = json.loads(text)
+              packages = {package.get("name"): package for package in data.get("packages", [])}
+              return {key: value for key, value in data.items() if key != "packages"}, packages
+
+          try:
+              if any(read(fork, "lakefile.lean") != read(head, "lakefile.lean") for fork in forks):
+                  error("lakefile.lean", "This pull request adds or changes lakefile.lean, which Lake reads instead of lakefile.toml.")
+              new = lakefile(read(head, "lakefile.toml") or "")
+              if any(lakefile(read(fork, "lakefile.toml") or "") != new for fork in forks):
+                  error("lakefile.toml", "This pull request changes lakefile.toml other than in Mathlib's rev, leanOptions, defaultTargets, lean_exe or [cache].")
+              settings, packages = manifest(read(head, "lake-manifest.json") or "{}")
+              for fork in forks:
+                  old_settings, old_packages = manifest(read(fork, "lake-manifest.json") or "{}")
+                  if old_settings != settings:
+                      error("lake-manifest.json", "This pull request changes the settings of lake-manifest.json.")
+                  if (old_packages.get("mathlib") or {}).get("url") != (packages.get("mathlib") or {}).get("url"):
+                      error("lake-manifest.json", "This pull request changes where Mathlib comes from.")
+              for name, package in packages.items():
+                  url = str(package.get("url"))
+                  if package.get("type") != "git" or not (url.startswith(TRUSTED) or url in TRUSTED_REPOS):
+                      error("lake-manifest.json", f"The package {name} is not a Git repository of leanprover-community or leanprover on GitHub, nor one listed in TRUSTED_REPOS in challenge-files.yml.")
+              toolchain = (read(head, "lean-toolchain") or "").strip()
+              if not re.fullmatch(r"leanprover/lean4:v[0-9][0-9A-Za-z.+-]*", toolchain):
+                  error("lean-toolchain", f"The toolchain {toolchain!r} is not a release of leanprover/lean4.")
+              if subprocess.run(["git", "-C", "pr", "ls-tree", "--name-only", head, "--", ".lake"],
+                                capture_output=True, text=True, check=True).stdout:
+                  error(".lake", "This pull request adds files under .lake/, where Lake keeps what it builds and fetches.")
+          except (ValueError, tomllib.TOMLDecodeError, json.JSONDecodeError, AttributeError) as problem:
+              error("lakefile.toml", f"The build configuration could not be read: {problem}")
+          for line in errors:
+              print(line)
+          if not errors:
+              print("unchanged: the build configuration, as far as Comparator depends on it")
+          sys.exit(1 if errors else 0)
+          PY
+
+          if [ "$status" != 0 ]; then
+            echo "These files say what the proof is judged against and how it is built, and pull requests may"
+            echo "not change them. If one of them has to change, ask a maintainer in the pull request."
+          fi
+          exit "$status"

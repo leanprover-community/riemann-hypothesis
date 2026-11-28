@@ -1,3 +1,15 @@
+module
+
+public import Aesop.BuiltinRules
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Connected.Separation
+public import Lib.Adelic.Adeles.Basic
+public import Lib.ClassField.Places.GaloisDefs
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.Global.ArtinMap
+import Lib.ClassField.Global.ArtinReciprocity
 import Lib.ClassField.Global.NormTheorems
 
 /-!
@@ -19,6 +31,8 @@ Frobenius elements at primes of degree one outside a finite set are dense in the
 group, and no density value is given. Source: J. S. Milne, Class Field Theory, VIII 7.4 (Deuring's
 reduction); Stevenhagen–Lenstra, Chebotarëv and his density theorem, Math. Intelligencer 18 (1996).
 -/
+
+@[expose] public section
 
 open QuotientGroup Subgroup New QZChar Nat
 

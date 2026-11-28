@@ -1,3 +1,14 @@
+module
+
+public import Mathlib.MeasureTheory.Group.ModularCharacter
+public import Mathlib.Probability.IdentDistrib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Topology.Algebra.ProperAction.Basic
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Topology.Algebra.ProperAction.Torsor
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Presheaf
+public import Lib.Speed
 import Lib.General.Measure.IdempotentKernel
 
 /-!
@@ -36,6 +47,8 @@ cited in D. Gentner, G. Last, Math. Z. 267 (2011), §2); for the classical form,
 Intégration VII, 1963.
 -/
 
+@[expose] public section
+
 /-!
 ## Cutoff weights and the quotient measure
 
@@ -54,7 +67,8 @@ variable {H X G : Type*} [MeasurableSpace H] [MeasurableSpace X] [SMul H X] (ν 
 
 /-- The subgroup N of G is cocompact: there is a compact C ⊂ G such that every g has a translate
 γg in C with γ ∈ N. -/
-@[to_additive]
+@[to_additive /-- The additive subgroup N of G is cocompact: there is a compact C ⊂ G such that
+every g has a translate γ + g in C with γ ∈ N. -/]
 abbrev Subgroup.IsCocompact [TopologicalSpace G] : Prop :=
   ∃ C : Set G, IsCompact C ∧ ∀ g : G, ∃ γ ∈ N, γ * g ∈ C
 
@@ -66,23 +80,29 @@ abbrev Subgroup.FixesLeft {W : Sort*} (F : G → W) : Prop := ∀ γ ∈ N, ∀ 
 namespace New
 
 /-- The property that β: X → [0, ∞] is measurable and ∫_H β(hx) dν(h) = 1 for every x in X. -/
-@[to_additive IsAddCutoff]
+@[to_additive IsAddCutoff /-- The property that β: X → [0, ∞] is measurable and
+∫_H β(h +ᵥ x) dν(h) = 1 for every x in X, for an additive action of H on X. -/]
 def IsCutoff (β : X → ENNReal) : Prop := Measurable β ∧ ∀ x : X, ∫⁻ h : H, β (h • x) ∂ν = 1
 
 /-- A chosen weight for the action of `H`, with measure `ν`, on `X`. It is a cutoff when the action
 has one (`New.isCutoff_chosenCutoff`); otherwise it is an unspecified function. -/
-@[to_additive chosenAddCutoff]
+@[to_additive chosenAddCutoff /-- A chosen weight for the additive action of `H`, with measure
+`ν`, on `X`. It is a cutoff when the action has one (`New.isAddCutoff_chosenAddCutoff`); otherwise
+it is an unspecified function. -/]
 noncomputable abbrev chosenCutoff : X → ENNReal := Classical.epsilon (IsCutoff ν)
 
 /-- The measure βμ on X for the weight β = `New.chosenCutoff ν`. When a cutoff exists
 (`New.HasCutoff`), ν is inversion invariant and μ is H-invariant, both s-finite, integrating an
 H-invariant function against it gives the integral over H\X, for every choice of cutoff. -/
-@[to_additive addOrbitMeasure]
+@[to_additive addOrbitMeasure /-- The measure βμ on X for the weight
+β = `New.chosenAddCutoff ν`, for an additive action of H on X; the additive version of
+`New.orbitMeasure`. -/]
 noncomputable abbrev orbitMeasure : Measure X := μ.withDensity (chosenCutoff ν)
 
 /-- The hypothesis that the action of H, with measure ν, on X admits a cutoff: a measurable
 weight with integral one over each orbit. -/
-@[to_additive HasAddCutoff]
+@[to_additive HasAddCutoff /-- The hypothesis that the additive action of H, with measure ν, on X
+admits a cutoff: a measurable weight with integral one over each orbit. -/]
 abbrev HasCutoff (X : Type*) [MeasurableSpace X] [SMul H X] : Prop :=
   Fact (∃ β : X → ENNReal, IsCutoff (X := X) ν β)
 
@@ -91,17 +111,6 @@ abbrev HasCutoff (X : Type*) [MeasurableSpace X] [SMul H X] : Prop :=
 lemma isCutoff_chosenCutoff [h_cutoff : HasCutoff ν X] :
     IsCutoff ν (chosenCutoff ν : X → ENNReal) :=
   Classical.epsilon_spec h_cutoff.out
-
-/-- If the action has a cutoff, the chosen weight is measurable. -/
-@[to_additive measurable_chosenAddCutoff]
-lemma measurable_chosenCutoff [HasCutoff ν X] : Measurable (chosenCutoff ν : X → ENNReal) :=
-  (isCutoff_chosenCutoff ν).1
-
-/-- If the action has a cutoff, the chosen weight has integral one over each orbit. -/
-@[to_additive lintegral_chosenAddCutoff_vadd]
-lemma lintegral_chosenCutoff_smul [HasCutoff ν X] (x : X) :
-    ∫⁻ h : H, chosenCutoff ν (h • x) ∂ν = 1 :=
-  (isCutoff_chosenCutoff ν).2 x
 
 /-- Shortcut: the `MulAction` instance of a subgroup `N` on its ambient group `G`. -/
 @[to_additive]
@@ -114,7 +123,10 @@ instance (priority := high) smulSubgroupSelf : SMul N G := inferInstance
 /-- The measure on G that computes integrals over N\G, when N with counting measure has a cutoff
 (for example when N is discrete) and μ is invariant under N. It is μ weighted by a cutoff chosen for
 the action of N, with counting measure, on G. By default μ is `volume`. -/
-@[to_additive]
+@[to_additive /-- The measure on G that computes integrals over the quotient of G by the additive
+subgroup N, when N with counting measure has a cutoff (for example when N is discrete) and μ is
+invariant under N. It is μ weighted by a cutoff chosen for the action of N, with counting measure,
+on G. By default μ is `volume`. -/]
 noncomputable abbrev _root_.Subgroup.quotMeasure [MeasurableSpace G]
     (μ : Measure G := by volume_tac) : Measure G :=
   orbitMeasure (@count N _) μ
@@ -151,7 +163,7 @@ cutoff) as `F ∘ T` under `m`. -/
 lemma identDistrib_orbitMeasure_of_unfold [SMul H X] [MeasurableSMul₂ H X] {ν : Measure H}
     {μ : Measure X} {Z L : Type*} [MeasurableSpace Z] [MeasurableSpace L] {ρ : Measure L}
     [SFinite ρ] [c : HasCutoff ν X] {σ : L → H} (hσ_pres : MeasurePreserving σ ρ ν) {T : Z → X}
-    {m : Measure Z} [SFinite m]
+    {m : Measure Z}
     (h_unfold : MeasurePreserving (fun p : Z × L ↦ σ p.2 • T p.1) (m.prod ρ) μ) (hF : Measurable F)
     (hT : Measurable T) (h_inv : ∀ (h : H) (x : X), F (h • x) = F x) :
     IdentDistrib F (F ∘ T) (orbitMeasure ν μ) m := by
@@ -326,7 +338,7 @@ number `z` is `z`. -/
 lemma tsum_toReal_smul_of_tsum_eq_one {I : Type*} {f : I → ℝ≥0∞} (h : ∑' x : I, f x = 1) (z : ℂ) :
     ∑' x : I, (f x).toReal • z = z := by
   -- Each `f x` is finite, so `toReal` and the cast to `ℂ` commute with the sum.
-  have h_fin (x : I) : f x ≠ ∞ := ENNReal.ne_top_of_tsum_ne_top (by simp [h]) x
+  have h_fin (x : I) : f x ≠ ∞ := ne_top_of_tsum_ne_top (by simp [h]) x
   have h_real : ∑' x : I, (f x).toReal = 1 := by
     rw [← tsum_toReal_eq h_fin, h, toReal_one]
   simp [tsum_mul_right, ← Complex.ofReal_tsum, h_real]
@@ -404,24 +416,8 @@ noncomputable abbrev cosetProdEquiv : (G ⧸ N) × N ≃ G where
   left_inv x := by aesop
   right_inv x := by aesop
 
-omit [TopologicalSpace G] in
-lemma cosetProdEquiv_apply (q : G ⧸ N) (u : N) :
-    cosetProdEquiv N (q, u) = (u : G) * q.out⁻¹ := rfl
-
-omit [TopologicalSpace G] in
-/-- The coset component of `γ` is the left coset of `γ⁻¹`. -/
-lemma cosetProdEquiv_symm_apply_fst (γ : G) :
-    ((cosetProdEquiv N).symm γ).1 = ((γ⁻¹ : G) : G ⧸ N) := rfl
-
-omit [TopologicalSpace G] in
-/-- The `N`-component of `γ` is `γ` times the chosen representative of the left coset of
-`γ⁻¹`. -/
-lemma cosetProdEquiv_symm_apply_snd (γ : G) :
-    (((cosetProdEquiv N).symm γ).2 : G) = γ * ((γ⁻¹ : G) : G ⧸ N).out := by
-  simp [cosetProdEquiv]
-
 instance : DiscreteTopology (Γ.subgroupOf N) :=
-  have h_cont : Continuous (Subtype.val : N → G) := continuous_subtype_val
+  have h_cont : Continuous (Subtype.val : N → G) := continuous_subtypeVal
   .preimage_of_continuous_injective Γ.carrier h_cont Subtype.val_injective
 
 instance : DiscreteTopology ↥(Γ ⊓ N) :=
@@ -457,36 +453,32 @@ lemma quotMeasure_bot : Subgroup.quotMeasure ⊥ μ = μ := by
     (identDistrib_orbitMeasure h_cut measurable_id (by simp)).map_eq
   simpa using h_map
 
-/-- For a discrete subgroup `Γ` of `G`, a left Haar measure `μ` and an integrable `f`, the sum
-`g ↦ ∑' γ, f (γ * g)` is integrable for the quotient measure on `Γ \ G`. -/
-lemma integrable_quotMeasure_tsum {f : G → ℂ} (hf : Integrable f μ) :
-    Integrable (fun g : G ↦ ∑' γ : Γ, f (γ * g)) (Γ.quotMeasure μ) := by
-  -- The map `(g, γ) ↦ γ * g` carries the product of the quotient measure with the counting
-  -- measure to `μ`; integrals against the counting measure are sums.
-  obtain ⟨h_prod, -⟩ :
-      Integrable (fun p : G × Γ ↦ f (p.2 * p.1)) ((Γ.quotMeasure μ).prod count) ∧
-      ∫ g : G, ∫ γ : Γ, f (γ * g) ∂count ∂Γ.quotMeasure μ = ∫ g : G, f g ∂μ :=
-    (measurePreserving_orbitMeasure (ν := (count : Measure Γ))).fubini hf
-  simpa only [integral_count_eq_tsum] using h_prod.integral_prod_left
-
-/-- For a discrete subgroup `Γ` of `G`, a left Haar measure `μ` and an integrable `f`, the
-integral of `g ↦ ∑' γ, f (γ * g)` over `Γ \ G` is `∫ f dμ`. -/
-lemma integral_quotMeasure_tsum_eq {f : G → ℂ} (hf : Integrable f μ) :
-    ∫ g : G, ∑' γ : Γ, f (γ * g) ∂Γ.quotMeasure μ = ∫ g : G, f g ∂μ := by
-  -- Fubini along `(g, γ) ↦ γ * g`.
-  obtain ⟨-, h_fubini⟩ :
-      Integrable (fun p : G × Γ ↦ f (p.2 * p.1)) ((Γ.quotMeasure μ).prod count) ∧
-      ∫ g : G, ∫ γ : Γ, f (γ * g) ∂count ∂Γ.quotMeasure μ = ∫ g : G, f g ∂μ :=
-    (measurePreserving_orbitMeasure (ν := (count : Measure Γ))).fubini hf
-  simpa only [integral_count_eq_tsum] using h_fubini
-
 /-- Unfolding of a sum over a discrete subgroup `Γ` of `G`, for a left Haar measure `μ` and an
 integrable `f`: `g ↦ ∑' γ, f (γ * g)` is integrable for the quotient measure on `Γ \ G`, and its
 integral is `∫ f dμ`. This is Weil's integration formula for a discrete subgroup. -/
 lemma integral_quotMeasure_tsum {f : G → ℂ} (hf : Integrable f μ) :
     Integrable (fun g : G ↦ ∑' γ : Γ, f (γ * g)) (Γ.quotMeasure μ) ∧
-      ∫ g : G, ∑' γ : Γ, f (γ * g) ∂Γ.quotMeasure μ = ∫ g : G, f g ∂μ :=
-  ⟨integrable_quotMeasure_tsum Γ hf, integral_quotMeasure_tsum_eq Γ hf⟩
+      ∫ g : G, ∑' γ : Γ, f (γ * g) ∂Γ.quotMeasure μ = ∫ g : G, f g ∂μ := by
+  -- Transport the product of the quotient and counting measures along `(g, γ) ↦ γ * g`.
+  -- Then integrals against the counting measure are sums.
+  obtain ⟨h_prod, h_integral⟩ :
+      Integrable (fun p : G × Γ ↦ f (p.2 * p.1)) ((Γ.quotMeasure μ).prod count) ∧
+      ∫ g : G, ∫ γ : Γ, f (γ * g) ∂count ∂Γ.quotMeasure μ = ∫ g : G, f g ∂μ :=
+    (measurePreserving_orbitMeasure (ν := (count : Measure Γ))).fubini hf
+  exact ⟨by simpa only [integral_count_eq_tsum] using h_prod.integral_prod_left,
+    by simpa only [integral_count_eq_tsum] using h_integral⟩
+
+/-- For a discrete subgroup `Γ` of `G`, a left Haar measure `μ` and an integrable `f`, the sum
+`g ↦ ∑' γ, f (γ * g)` is integrable for the quotient measure on `Γ \ G`. -/
+lemma integrable_quotMeasure_tsum {f : G → ℂ} (hf : Integrable f μ) :
+    Integrable (fun g : G ↦ ∑' γ : Γ, f (γ * g)) (Γ.quotMeasure μ) :=
+  (integral_quotMeasure_tsum Γ hf).1
+
+/-- For a discrete subgroup `Γ` of `G`, a left Haar measure `μ` and an integrable `f`, the
+integral of `g ↦ ∑' γ, f (γ * g)` over `Γ \ G` is `∫ f dμ`. -/
+lemma integral_quotMeasure_tsum_eq {f : G → ℂ} (hf : Integrable f μ) :
+    ∫ g : G, ∑' γ : Γ, f (γ * g) ∂Γ.quotMeasure μ = ∫ g : G, f g ∂μ :=
+  (integral_quotMeasure_tsum Γ hf).2
 
 end New
 
@@ -627,7 +619,7 @@ lemma isFiniteMeasure_quotMeasure_of_cocompact :
   have h_one_le (x : G) : 1 ≤ count (Prod.mk x ⁻¹' E) := by
     obtain ⟨γ, hγ, hγC⟩ := h_meets x
     have h_mem : (⟨γ, hγ⟩ : Γ) ∈ Prod.mk x ⁻¹' E := hγC
-    exact (ENNReal.le_tsum ⟨⟨γ, hγ⟩, h_mem⟩).trans le_count_apply
+    exact (le_tsum _ ⟨⟨γ, hγ⟩, h_mem⟩).trans le_count_apply
   constructor
   calc σ univ = ∫⁻ _, 1 ∂σ := lintegral_one.symm
     _ ≤ ∫⁻ x, count (Prod.mk x ⁻¹' E) ∂σ := lintegral_mono h_one_le
@@ -685,7 +677,7 @@ variable {B A : Type*} [AddCommGroup B] [TopologicalSpace B] [IsTopologicalAddGr
 
 /-- The property that a function F on a topological abelian group B is continuous and satisfies
 F(γ+x)=F(x) for all γ in the subgroup B₀ and all x. -/
-def IsContPeriodic : Prop := Continuous F ∧ ∀ᵉ (γ ∈ B₀) (x : B), F (γ + x) = F x
+def IsContPeriodic : Prop := Continuous F ∧ ∀ γ ∈ B₀, ∀ x : B, F (γ + x) = F x
 
 /-- The Borel σ-algebra on the quotient B/B₀ of a topological abelian group B by a subgroup B₀. -/
 scoped instance IsDualFamily.quotMeasurableSpace : MeasurableSpace (B ⧸ B₀) := borel _
@@ -723,7 +715,7 @@ the same value as at `x`. -/
 lemma IsContPeriodic.apply_out_mk (h : IsContPeriodic B₀ F) (x : B) :
     F (mk x : B ⧸ B₀).out = F x := by
   obtain ⟨γ, hγ⟩ : ∃ γ : B₀, (mk x : B ⧸ B₀).out = x + γ := mk_out_eq_add B₀ x
-  rw [hγ, add_comm, h.2 γ γ.2 x]
+  rw [hγ, add_comm, h.2 γ γ.property x]
 
 omit [IsTopologicalAddGroup B] [CompactSpace (B ⧸ B₀)] in
 /-- A continuous `B₀`-periodic function, read at coset representatives, is continuous on

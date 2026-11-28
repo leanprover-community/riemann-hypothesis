@@ -1,4 +1,13 @@
-import Lib.CM.GoodReduction
+module
+
+import TauCeti.Analysis.SpecialFunctions.Elliptic.LatticeClassification
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PowerSeries.Ideal
+public import Lib.CM.GoodReduction
+public import Lib.CM.Sigma.ThetaSections
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Galois conjugates of CM curves: conjugate sections, isogenies and translates of θ
@@ -46,6 +55,8 @@ Part of a known result: Main theorem of complex multiplication for elliptic curv
 `Lib.CM.ChowlaSelberg`. No reciprocity law is used: the conjugate lattice comes from uniformisation,
 and points are matched by transporting sections.
 -/
+
+@[expose] public section
 
 /-!
 ## Transport of sections and points to a conjugate curve
@@ -230,7 +241,7 @@ lemma exists_conjugate_section (ha₁ : C'.a₁ = σ C.a₁) (z : ℂ) :
     refine ⟨C.differentiable_monomialSection j, C'.monomialSection j, C'.monomialSection_mem j,
       taylorAtZero_monomialSection σ ha₁ j, ?_⟩
     simp [monomialSection, hθ, hσ, hG, pow_add, mul_pow, pow_mul', field]
-  | zero => exact ⟨by fun_prop, 0, by simp, by simp [Pi.zero_def, taylorVia]⟩
+  | zero => exact ⟨by fun_prop, 0, by simp, by simp [Pi.zero_def]⟩
   | add f₁ f₂ _ _ ih₁ ih₂ =>
     obtain ⟨hf₁_diff, g₁, hg₁, hg₁_ser, hg₁_val⟩ := ih₁
     obtain ⟨hf₂_diff, g₂, hg₂, hg₂_ser, hg₂_val⟩ := ih₂
@@ -335,7 +346,7 @@ lemma mul_t_mem_of_conj_isogeny_mul_t_mem {C' D' : CMLattice d'} {N : ℕ}
 
 omit [PrimeSevenModEight d] in
 /-- An automorphism of `ℂ` over `K` fixes the elements of `quadInt d`, the image of `𝓞_K` in `ℂ`. -/
-@[simp, grind]
+@[simp, grind =]
 lemma map_eq_self_of_mem_quadInt (ha : a ∈ quadInt d) : σ a = a := by
   obtain ⟨x, rfl⟩ := ha
   exact σ.commutes (x : QuadField d)
@@ -354,41 +365,34 @@ carries a CM datum whose `a₁` is `σ C.a₁`. -/
 lemma exists_galConjugate_of_g₂_g₃ (L : PeriodPair) (hg₂ : L.g₂ = σ C.g₂) (hg₃ : L.g₃ = σ C.g₃) :
     ∃ C' : CMLattice d, C'.periodPair = L ∧ C'.a₁ = σ C.a₁ := by
   -- Take the point `t` of order two of `L` at which `℘` has the conjugate value.
-  obtain ⟨t, ht, ht_wp, ht_wp'⟩ : ∃ t ∉ L.lattice,
-      L.weierstrassP t = σ (C.weierstrassP C.t) ∧ L.derivWeierstrassP t = 0 :=
-    L.exists_weierstrassP_eq_of_cubic _ 0 (by grind [g₃_eq, map_ofNat])
+  obtain ⟨t, ht, ht_wp, ht_wp'⟩ := L.exists_weierstrassP_eq_of_cubic
+    (σ (C.weierstrassP C.t)) 0 (by grind [g₃_eq, map_ofNat])
   -- For `d = 0` no complex multiplication is asked, so this is already a datum `D : CMLattice 0`.
-  have h_g₂ : L.g₂ = 12 * L.weierstrassP t ^ 2 - 4 := by simp [hg₂, g₂_eq, ht_wp, map_ofNat]
-  have h_two : t + t ∈ L.lattice := by simpa [← derivWeierstrassP_eq_zero_iff, ht] using ht_wp'
-  have h_sq : σ C.a₁ ^ 2 = 12 * L.weierstrassP t := by simp [← map_pow, a₁_sq, ht_wp, map_ofNat]
-  let D : CMLattice 0 :=
-    { periodPair := L, t, a₁ := σ C.a₁, g₂_eq := h_g₂, two_t_mem := h_two, t_notMem := ht
-      a₁_sq := h_sq
-      mul_mem_of_quadInt := fun {h₀} ↦ absurd rfl h₀.out
-      quadGen_mul_t_notMem := fun {h₀} ↦ absurd rfl h₀.out }
+  let D : CMLattice 0 := {
+    periodPair := L, t, a₁ := σ C.a₁, t_notMem := ht
+    g₂_eq := by simp [hg₂, g₂_eq, ht_wp, map_ofNat]
+    two_t_mem := by simpa [← derivWeierstrassP_eq_zero_iff, ht] using ht_wp'
+    a₁_sq := by simp [← map_pow, a₁_sq, ht_wp, map_ofNat]
+    mul_mem_of_quadInt := fun {h} ↦ absurd rfl h.out
+    quadGen_mul_t_notMem := fun {h} ↦ absurd rfl h.out }
   -- Conjugating the endomorphisms `a ∈ quadInt d` of `C`, which `σ` fixes, supplies the rest.
   have h_end {a : ℂ} (ha : a ∈ quadInt d) :
-      (∀ l ∈ L.lattice, a * l ∈ L.lattice) ∧ (a * t ∈ L.lattice → a * C.t ∈ C.Λ) := by
+      (∀ l ∈ D.Λ, a * l ∈ D.Λ) ∧ (a * D.t ∈ D.Λ → a * C.t ∈ C.Λ) := by
     obtain ⟨N, hN⟩ := exists_isIsogeny_of_mul_mem_lattice (C.mul_mem_of_quadInt ha)
-    have h_per (l : ℂ) (hl : l ∈ D.Λ) : σ a * l ∈ D.Λ :=
-      conj_isogeny_mul_mem_lattice σ rfl rfl hN hl
-    have h_t : σ a * D.t ∈ D.Λ → a * C.t ∈ C.Λ :=
-      mul_t_mem_of_conj_isogeny_mul_t_mem σ rfl rfl hN
-    rw [map_eq_self_of_mem_quadInt σ ha] at h_per h_t
-    exact ⟨h_per, h_t⟩
-  obtain ⟨hω, hω_conj⟩ := C.quadGen_mul_t_notMem
-  obtain ⟨-, h_gen⟩ := h_end quadGen_mem_quadInt
-  obtain ⟨-, h_gen_conj⟩ := h_end (conj_mem_quadInt quadGen_mem_quadInt)
+    have hσ := map_eq_self_of_mem_quadInt σ ha
+    exact ⟨fun l hl ↦ hσ ▸ conj_isogeny_mul_mem_lattice σ rfl rfl hN hl,
+      fun h ↦ mul_t_mem_of_conj_isogeny_mul_t_mem σ rfl rfl hN (hσ.symm ▸ h)⟩
   exact ⟨{ D with
     mul_mem_of_quadInt := fun ha ↦ (h_end ha).1
-    quadGen_mul_t_notMem := ⟨mt h_gen hω, mt h_gen_conj hω_conj⟩ }, rfl, rfl⟩
+    quadGen_mul_t_notMem := ⟨mt (h_end quadGen_mem_quadInt).2 C.quadGen_mul_t_notMem.1,
+      mt (h_end (conj_mem_quadInt quadGen_mem_quadInt)).2 C.quadGen_mul_t_notMem.2⟩ }, rfl, rfl⟩
 
 /-- For a CM datum `C` with `d` a prime `≡ 7 (mod 8)` and an automorphism `σ` of `ℂ` over
 `K = ℚ(√-d)` there is a CM datum whose number `a₁` is the conjugate `σ C.a₁` of that of `C`.
 The proof takes the lattice with the invariants `σ g₂`, `σ g₃`. -/
 lemma exists_galConjugate : ∃ C' : CMLattice d, C'.a₁ = σ C.a₁ := by
   obtain ⟨L, hg₂, hg₃⟩ : ∃ L : PeriodPair, L.g₂ = σ C.g₂ ∧ L.g₃ = σ C.g₃ :=
-    exists_lattice_of_g₂_g₃
+    PeriodPair.exists_g₂_g₃_eq
       (by simpa [map_ofNat] using σ.injective.ne (weierstrass_disc_ne_zero C.periodPair))
   obtain ⟨C', -, h_a₁⟩ := C.exists_galConjugate_of_g₂_g₃ σ L hg₂ hg₃
   exact ⟨C', h_a₁⟩
@@ -475,7 +479,7 @@ lemma thetaQuotient_eq_one (hD : D.a₁ = σ C.a₁) : thetaQuotient C σ D = 1 
   by_contra h_ne
   obtain ⟨n, W, hW, h_fac⟩ :
       ∃ (n : ℕ) (W : ℂ⟦X⟧), ¬X ∣ W ∧ thetaQuotient C σ D - 1 = X ^ n * W :=
-    WfDvdMonoid.max_power_factor (sub_ne_zero.2 h_ne) X_irreducible
+    WfDvdMonoid.max_power_factor (sub_ne_zero.2 h_ne) irreducible_X
   let ω : ℂ := quadGen d
   have hω_mem : ω ∈ quadInt d := quadGen_mem_quadInt
   have hω_norm : 1 < ‖ω‖ := one_lt_norm_quadGen
@@ -605,7 +609,6 @@ lemma exists_forall_apply_mul_eq_pow_mul {C D : CMLattice d} {a u u' μ : ℂ} (
   refine ⟨N, fun {m f g} hf hfg hg ↦ ?_⟩
   -- Transport `f (a z)`; by uniqueness of Taylor series the result is `g (a z)`.
   obtain ⟨G, hG, hG_ser, hG_val⟩ := transport (D.comp_mul_mem_sections hN hf)
-  have hf_diff : Differentiable ℂ f := hf.1
   obtain rfl : G = fun z : ℂ ↦ g (a * z) := by
     refine eq_of_taylorAtZero_eq hG.1 (by fun_prop) ?_
     simp (disch := fun_prop) [hG_ser, hfg, taylorVia, ← rescale_map,
@@ -707,18 +710,13 @@ lemma exists_taylorVia_twistedTranslate_theta (hD : D.a₁ = σ C.a₁) (Ω : �
   -- a point `w'` of `D` matches `w`, and `v = 2 n² w'`. The transport of `(T_{s v} θ_D)(n z)`
   -- vanishes at the zeros of `(T_{s Ω} θ_C)(n z)`, so it is a multiple of it, and comparing
   -- values gives the factor 1.
-  obtain ⟨n, hn, hS⟩ : ∃ n : ℤ, n ≠ 0 ∧ ∀ s ∈ S, IsIntegral ℤ (n • s) :=
-    exists_integral_multiples ℤ ℚ S
+  obtain ⟨n, hn, hS⟩ := exists_integral_multiples ℤ ℚ S
   obtain ⟨w, rfl⟩ : (2 * n ^ 2 : ℂ) ∣ Ω := by simp [hn]
   have hC : C.a₁ = σ.symm D.a₁ := by simp [hD]
   have hΩ : 2 * n ^ 2 * w ∈ C.Λ := hΛ.2 ⟨1, by simp, mul_one _⟩
   -- As `thetaQuotient D σ.symm C = 1`, the transported series are plainly conjugate.
-  obtain ⟨w', μ, hμ, transport⟩ : ∃ w' : ℂ, ∃ μ ≠ (0 : ℂ),
-      ∀ {m : ℕ} {f : ℂ → ℂ}, f ∈ D.sections m → ∃ g ∈ C.sections m,
-        taylorAtZero g = taylorVia σ.symm f ∧ g w = μ ^ m * σ.symm (f w') := by
-    obtain ⟨w', μ, hμ, -, h_section⟩ := exists_conjugate_section σ.symm hC w
-    simp only [thetaQuotient_eq_one σ.symm hC, one_pow, one_mul] at h_section
-    exact ⟨w', μ, hμ, h_section⟩
+  obtain ⟨w', μ, hμ, -, transport⟩ := exists_conjugate_section σ.symm hC w
+  simp only [thetaQuotient_eq_one σ.symm hC, one_pow, one_mul] at transport
   have h_mon_zero {a : ℂ} (ha : a ∈ quadInt d) (j : ℕ × ℕ × ℕ) :
       C.monomialSection j (a * w) = 0 ↔ D.monomialSection j (a * w') = 0 :=
     apply_mul_eq_zero_iff_of_transport σ.symm hμ ha transport (D.monomialSection_mem j)
@@ -732,25 +730,18 @@ lemma exists_taylorVia_twistedTranslate_theta (hD : D.a₁ = σ C.a₁) (Ω : �
     ⟨⟨n * s, by simpa [zsmul_eq_mul, mem_integralClosure_iff] using hS s hsS⟩, rfl⟩
   have h_sec := D.twistedTranslate_theta_comp_intCast_mul_mem hs hv
   -- `g` is the transport of the translate by `s v` of `D.θ`, taken at `n z`.
-  obtain ⟨g, hg, hg_ser⟩ : ∃ g ∈ C.sections (1 * (n * n).natAbs), taylorAtZero g =
-      taylorVia σ.symm (fun z ↦ D.twistedTranslate 1 (s * (2 * n ^ 2 * w')) D.θ (n * z)) :=
-    (transport h_sec).imp fun _ h ↦ h.imp_right And.left
-  have h_vanish (z : ℂ) (hz : C.twistedTranslate 1 (s * (2 * n ^ 2 * w)) C.θ (n * z) = 0) :
-      g z = 0 := by
-    obtain ⟨b, hb, rfl⟩ : ∃ b ∈ quadInt d, z = (b - (n * s + n * s)) * w :=
-      C.exists_quadInt_of_twistedTranslate_theta_eq_zero hn hΛ hz
-    have h_point (u : ℂ) :
-        n * ((b - (n * s + n * s)) * u) + s * (2 * n ^ 2 * u) = n * b * u := by ring
-    have h_theta : n * b * w + C.t ∈ C.Λ ↔ n * b * w' + D.t ∈ D.Λ := by
-      simpa [monomialSection] using h_mon_zero (zsmul_mem hb n) (1, 0, 0)
-    have hbw : n * b * w + C.t ∈ C.Λ := by simpa [thetaShift_apply, h_point] using hz
-    refine (apply_mul_eq_zero_iff_of_transport σ.symm hμ (sub_mem hb (add_mem hs hs)) transport
-      h_sec hg_ser hg.1).2 ?_
-    simpa [thetaShift_apply, h_point] using h_theta.1 hbw
+  obtain ⟨g, hg, hg_ser, -⟩ := transport h_sec
   obtain ⟨c, hc⟩ := C.exists_eq_const_mul_twistedTranslate_theta C (Int.cast_ne_zero.2 hn)
-    (C.twistedTranslate_theta_comp_intCast_mul_mem hs hΩ) hg h_vanish
-  obtain rfl : g = fun z : ℂ ↦ c * C.twistedTranslate 1 (s * (2 * n ^ 2 * w)) C.θ (n * z) :=
-    funext hc
+    (C.twistedTranslate_theta_comp_intCast_mul_mem hs hΩ) hg fun z hz ↦ by
+      obtain ⟨b, hb, rfl⟩ := C.exists_quadInt_of_twistedTranslate_theta_eq_zero hn hΛ hz
+      have h_pt (u : ℂ) :
+          n * ((b - (n * s + n * s)) * u) + s * (2 * n ^ 2 * u) = n * b * u := by ring
+      refine (apply_mul_eq_zero_iff_of_transport σ.symm hμ (sub_mem hb (add_mem hs hs))
+        transport h_sec hg_ser hg.1).2 ?_
+      simpa [monomialSection, thetaShift_apply, h_pt] using
+        (h_mon_zero (zsmul_mem hb n) (1, 0, 0)).1
+          (by simpa [monomialSection, thetaShift_apply, h_pt] using hz)
+  obtain rfl : g = _ := funext hc
   obtain rfl : c = 1 := eq_one_of_taylorVia_twistedTranslate_theta σ.symm hμ hs hv
     (taylorAtZero_theta_eq_taylorVia σ.symm hC) transport hg hg_ser
   -- Apply `σ` to the `k`-th coefficient of `hg_ser` and undo the scaling by `n`.

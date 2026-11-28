@@ -1,4 +1,11 @@
-import Lib.GLn.SchurModule.Basic
+module
+
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.Algebra.Polynomial.Bivariate
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.Order.Grade
+public import Lib.GLn.SchurModule.Basic
+public import TauCeti.RingTheory.MvPolynomial.HasLeadingTerm
 
 /-!
 # A basis of minor products for Borel semi-invariants over any ring, by induction on rows
@@ -11,9 +18,9 @@ and a leading-term analysis describes the leading term of a semi-invariant.
 
 ## Main definitions and results
 
-* `New.GL.HasLeadingTerm F γ G`: `F` is `G` times the monomial of exponent `γ` plus smaller terms;
+* Leading terms are Tau Ceti's `MonomialOrder.HasLeadingTerm` for `New.GL.columnOrder`;
   `New.GL.rowExpansion x` expands in row `x`.
-* `New.GL.columnWeight`, `New.GL.ColouredTableau`, `New.GL.minorProduct`: the weight of a family of
+* `New.GL.columnWeight`, `New.GL.ColoredTableau`, `New.GL.minorProduct`: the weight of a family of
   coloured columns, its fillings by rows, and the product of the minors of a filling.
 * `New.GL.interlacing l`: the exponents `γ` with `γ i ≤ l i - l (i + 1)` (truncated subtraction).
   For antitone `l`, these are the `γ ≤ l` such that `l - γ` interlaces `l`.
@@ -49,6 +56,8 @@ Invent. Math. 56 (1980); Akin, Buchsbaum, Weyman, Schur functors and Schur compl
 See also `Lib.DiscreteSeries.Character.WeylCharacterFormula`.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-! ## Leading terms of products of minors and bordering -/
@@ -59,8 +68,7 @@ open MvPolynomial Finset MonomialOrder Finsupp Matrix Fin
 
 namespace New.GL
 
-variable {Φ J m R ι : Type} [DecidableEq m] [CommRing R]
-  {F : ι → MvPolynomial ℕ R} {δ : ι → ℕ →₀ ℕ} {G : ι → R} {t : Finset ι} {γ : ℕ →₀ ℕ} {a : R}
+variable {Φ J m R : Type} [DecidableEq m] [CommRing R] {γ : ℕ →₀ ℕ}
 
 /-! ### Leading terms -/
 
@@ -74,71 +82,18 @@ lemma columnOrder_lt_of_eq_above {γ : ℕ →₀ ℕ} (i : ℕ) (δ : ℕ →�
     (h_lt : γ i < δ i) : γ ≺[columnOrder] δ :=
   ⟨OrderDual.toDual i, h_eq, h_lt⟩
 
-/-- No monomial of F exceeds x^γ in the order `New.GL.columnOrder`, and the coefficient of x^γ in F
-is G (G = 0 is allowed). -/
-abbrev HasLeadingTerm (F : MvPolynomial ℕ R) (γ : ℕ →₀ ℕ) (G : R) : Prop :=
-  columnOrder.degree F ≼[columnOrder] γ ∧ F.coeff γ = G
-
-/-- If `F` has leading term `a * x ^ γ`, then no monomial of `F` exceeds `x ^ γ`. -/
-lemma HasLeadingTerm.degree_le {F : MvPolynomial ℕ R} (hF : HasLeadingTerm F γ a) :
-    columnOrder.degree F ≼[columnOrder] γ :=
-  hF.1
-
-lemma HasLeadingTerm.coeff_eq {F : MvPolynomial ℕ R} (hF : HasLeadingTerm F γ a) :
-    F.coeff γ = a :=
-  hF.2
-
-/-- Leading terms multiply: if `F` has leading term `a * x ^ γ` and `F'` has leading term
-`a' * x ^ γ'`, then `F * F'` has leading term `(a * a') * x ^ (γ + γ')`. -/
-lemma HasLeadingTerm.mul {F F' : MvPolynomial ℕ R} {γ' : ℕ →₀ ℕ} {a' : R}
-    (hF : HasLeadingTerm F γ a) (hF' : HasLeadingTerm F' γ' a') :
-    HasLeadingTerm (F * F') (γ + γ') (a * a') := by
-  constructor
-  · grw [degree_mul_le, map_add, map_add, hF.degree_le, hF'.degree_le]
-  · rw [coeff_mul_of_add_of_degree_le hF.degree_le hF'.degree_le, hF.coeff_eq, hF'.coeff_eq]
-
-lemma HasLeadingTerm.of_monomial : HasLeadingTerm (monomial γ a) γ a :=
-  ⟨degree_monomial_le a, by simp⟩
-
-/-- Leading terms of finite products: if each `F i` has leading term `G i * x ^ δ i`, then the
-product of the `F i` over `t` has leading term `(∏ G i) * x ^ (∑ δ i)`. -/
-lemma HasLeadingTerm.prod (h_lead : ∀ i : ι, HasLeadingTerm (F i) (δ i) (G i)) :
-    HasLeadingTerm (∏ i ∈ t, F i) (∑ i ∈ t, δ i) (∏ i ∈ t, G i) := by
-  induction t using Finset.cons_induction with
-  | empty => simpa using of_monomial (γ := 0) (a := (1 : R))
-  | cons i t hi ih => simpa only [Finset.prod_cons, Finset.sum_cons] using (h_lead i).mul ih
-
-/-- Let each `F i` have leading term `G i * x ^ δ i`. If `δ j` exceeds every other exponent `δ i`
-with `i ∈ t`, then the sum of the `F i` over `t` has leading term `G j * x ^ δ j`. The index `j`
-may lie outside `t` when `G j = 0`. -/
-lemma HasLeadingTerm.sum (h_lead : ∀ i : ι, HasLeadingTerm (F i) (δ i) (G i)) (j : ι)
-    (h_lt : ∀ i ∈ t, i ≠ j → δ i ≺[columnOrder] δ j) (h_notMem : j ∉ t → G j = 0) :
-    HasLeadingTerm (∑ i ∈ t, F i) (δ j) (G j) := by
-  -- Every summand has degree at most `δ j`; all but the `j`-th have degree below `δ j`.
-  have h_below (i : ι) (hi : i ∈ t) (hij : i ≠ j) :
-      columnOrder.degree (F i) ≺[columnOrder] δ j :=
-    (h_lead i).degree_le.trans_lt (h_lt i hi hij)
-  have h_le (i : ι) (hi : i ∈ t) : columnOrder.degree (F i) ≼[columnOrder] δ j := by
-    rcases eq_or_ne i j with rfl | hij
-    · exact (h_lead i).degree_le
-    · exact (h_below i hi hij).le
-  have h_coeff : (F j).coeff (δ j) = G j := (h_lead j).coeff_eq
-  have h_single : ∑ i ∈ t, (F i).coeff (δ j) = (F j).coeff (δ j) :=
-    Finset.sum_eq_single j (fun i hi hij ↦ coeff_eq_zero_of_lt (h_below i hi hij))
-      fun hj ↦ h_coeff.trans (h_notMem hj)
-  refine ⟨degree_sum_le.trans (Finset.sup_le h_le), ?_⟩
-  rw [coeff_sum, h_single, h_coeff]
-
 /-- If each `u j` has leading term `b j` times the variable `x j` (exponent `single j 1`),
 then the product of the powers `u j ^ n j` has leading term `∏ b j ^ n j` times the monomial of
 exponent `n`. -/
 lemma HasLeadingTerm.finsuppProd_pow {u : ℕ → MvPolynomial ℕ R} {b : ℕ → R}
-    (hu_lead : ∀ j : ℕ, HasLeadingTerm (u j) (Finsupp.single j 1) (b j)) (n : ℕ →₀ ℕ) :
-    HasLeadingTerm (n.prod fun j e : ℕ ↦ u j ^ e) n (n.prod fun j e : ℕ ↦ b j ^ e) := by
-  have h_pow (j : ℕ) : HasLeadingTerm (u j ^ n j) (Finsupp.single j (n j)) (b j ^ n j) := by
-    simpa using HasLeadingTerm.prod (t := range (n j)) fun _ ↦ hu_lead j
+    (hu_lead : ∀ j : ℕ, columnOrder.HasLeadingTerm (u j) (Finsupp.single j 1) (b j)) (n : ℕ →₀ ℕ) :
+    columnOrder.HasLeadingTerm (n.prod fun j e : ℕ ↦ u j ^ e) n (n.prod fun j e : ℕ ↦ b j ^ e) := by
+  have h_pow (j : ℕ) :
+      columnOrder.HasLeadingTerm (u j ^ n j) (Finsupp.single j (n j)) (b j ^ n j) := by
+    simpa using HasLeadingTerm.prod (s := range (n j)) fun _ _ ↦ hu_lead j
   have h_sum_single : ∑ j ∈ n.support, Finsupp.single j (n j) = n := n.sum_single
-  simpa only [Finsupp.prod, h_sum_single] using HasLeadingTerm.prod (t := n.support) h_pow
+  simpa only [Finsupp.prod, h_sum_single] using
+    HasLeadingTerm.prod (s := n.support) fun j _ ↦ h_pow j
 
 variable [Fintype J] {c : m → Φ} {τ : J → Φ} {h : J → ℕ} {x : m} (l : ℕ →₀ ℕ)
 
@@ -164,14 +119,14 @@ def columnWeight (τ : J → Φ) (h : J → ℕ) : Φ × ℕ →₀ ℕ :=
   ∑ j : J, ∑ i ∈ range (h j), Finsupp.single ((τ j : Φ), i) 1
 
 /-- The type of assignments giving each column j an h_j-tuple of rows, all of colour τ_j. -/
-abbrev ColouredTableau (c : m → Φ) (τ : J → Φ) (h : J → ℕ) : Type :=
+abbrev ColoredTableau (c : m → Φ) (τ : J → Φ) (h : J → ℕ) : Type :=
   ∀ j : J, Fin (h j) → {a // c a = τ j}
 
-variable (S : Type) [CommRing S] (I : ColouredTableau c τ h)
+variable (S : Type) [CommRing S] (I : ColoredTableau c τ h)
 
 /-- For a coloured column filling I, the polynomial over S that is the product over columns j of
 the minor with rows I_j on the first h_j columns. -/
-def minorProduct : MatrixPoly m S := ∏ j : J, minor S fun s ↦ (I j s).1
+def minorProduct : MatrixPoly m S := ∏ j : J, minor S fun s ↦ (I j s).val
 
 /-- The weight `New.diagramWeight N κ` equals the weight `New.GL.columnWeight` of the family having
 `κ τ h` columns of colour `τ` and height `h`, for every `τ` and `h < N τ`: its columns are the
@@ -198,7 +153,7 @@ lemma minorProduct_mem_nabla : minorProduct R I ∈ nabla R c (columnWeight τ h
 minor, where `X k` is the variable of row `x` in column `k`. -/
 lemma hasLeadingTerm_rowExpansion_minor_border {k e : ℕ} (I : Fin k → {a : m // a ≠ x})
     (he_le_one : e ≤ 1) :
-    HasLeadingTerm
+    columnOrder.HasLeadingTerm
       (rowExpansion x (minor S fun s : Fin (k + e) ↦ if hs : s < k then (I ⟨s, hs⟩).val else x))
       (Finsupp.single k e) (minor S I) := by
   interval_cases e
@@ -207,7 +162,7 @@ lemma hasLeadingTerm_rowExpansion_minor_border {k e : ℕ} (I : Fin k → {a : m
         if hs : s < k then (I ⟨s, hs⟩).val else x) = monomial (Finsupp.single k 0) (minor S I) := by
       simp [rowExpansion, (I _).prop, monomial_eq, minor, det_apply']
     rw [h_const]
-    exact .of_monomial
+    exact hasLeadingTerm_monomial _ _
   · -- Expand along the last row: column `s` contributes a cofactor times `X (x, s)`.
     let cofactor (s : Fin (k + 1)) : MatrixPoly {a // a ≠ x} S :=
       (-1) ^ (k + s.val) * det (of fun a t ↦ X (I a, (s.succAbove t).val))
@@ -224,8 +179,8 @@ lemma hasLeadingTerm_rowExpansion_minor_border {k e : ℕ} (I : Fin k → {a : m
         mul_assoc, det_apply']
     have h_last : cofactor (last k) = minor S I := by simp [cofactor, minor]
     rw [h_expand, ← h_last]
-    exact .sum (δ := fun s : Fin (k + 1) ↦ Finsupp.single s.val 1) (G := cofactor)
-      (fun s ↦ .of_monomial) (last k) (fun s _ ↦ h_lt s) (absurd (mem_univ (last k)))
+    exact .sum (γ := fun s : Fin (k + 1) ↦ Finsupp.single s.val 1) (a := cofactor)
+      (fun s ↦ hasLeadingTerm_monomial _ _) (last k) (fun s _ ↦ h_lt s) (absurd (mem_univ (last k)))
 
 /-- Bordering. Let `γ` lie in `interlacing` of the weight `l` of the columns at the colour of the
 row `x`, that is `γ i ≤ l i - l (i + 1)` for all `i`, so `γ` is the amount by which `l` is lowered
@@ -240,10 +195,10 @@ lemma exists_bordering (h : J → ℕ) (hγ : γ ∈ interlacing ((columnWeight 
       -- (a)
       columnWeight τ h = γ.mapDomain (fun i : ℕ ↦ (c x, i)) + columnWeight τ k ∧
       -- every filling `I` of heights `k` that avoids `x` has a lift `K` of heights `h` such that
-      ∀ I : ColouredTableau (c ∘ ((↑) : {a : m // a ≠ x} → m)) τ k, ∃ K : ColouredTableau c τ h,
+      ∀ I : ColoredTableau (c ∘ ((↑) : {a : m // a ≠ x} → m)) τ k, ∃ K : ColoredTableau c τ h,
         -- (b)
         (∀ (R : Type) [CommRing R],
-          HasLeadingTerm (rowExpansion x (minorProduct R K)) γ (minorProduct R I)) ∧
+          columnOrder.HasLeadingTerm (rowExpansion x (minorProduct R K)) γ (minorProduct R I)) ∧
         -- (c)
         ∀ y : m → ℂ,
           ∏ j : J, ∏ s : Fin (h j), y (K j s) =
@@ -339,7 +294,7 @@ lemma alternant_succ {N : ℕ} (hl_anti : Antitone l) (i : Fin (N + 1)) (x : Fin
   rw [univ.sum_comm, ite_sum_zero, ← sum_filter, ← sum_filter]
   -- Both sides are now sums over permutations `σ` of `Fin N`: on the left also over the exponents
   -- `g j` chosen from the geometric sums, on the right also over the interlacing `γ`.
-  show ∑ g ∈ Fintype.piFinset (fun j : Fin N ↦ Ico (p j.castSucc) (p j.succ)) with l (N + 1) = 0,
+  change ∑ g ∈ Fintype.piFinset (fun j : Fin N ↦ Ico (p j.castSucc) (p j.succ)) with l (N + 1) = 0,
       ∑ σ : Equiv.Perm (Fin N), (-1) ^ (i : ℕ) * x i ^ l N * (((Equiv.Perm.sign σ : ℤ) : ℂ) *
         ((∏ a : Fin N, (x (i.succAbove a) - x i)) * ((∏ j : Fin N, x (i.succAbove (σ j)) ^ g j) *
           x i ^ ∑ j : Fin N, (l (j.succ.rev : ℕ) + (j : ℕ) - g j)))) =
@@ -379,12 +334,6 @@ Throughout, `f` is a Borel semi-invariant and `G * X_x ^ γ` is its leading term
 section Interlacing
 
 open MvPolynomial Finset Finsupp Algebra MonomialOrder
-
-/-- The map `aevalTower g y` is `eval₂` with the coefficient map `g`. -/
-private lemma MvPolynomial.aevalTower_apply {S R A σ : Type*} [CommSemiring S] [CommSemiring R]
-    [CommSemiring A] [Algebra S R] [Algebra S A] (g : R →ₐ[S] A) (y : σ → A)
-    (p : MvPolynomial σ R) : aevalTower g y p = eval₂ (g : R →+* A) y p :=
-  rfl
 
 namespace New.GL
 
@@ -463,17 +412,44 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
     .restrictScalars R (Polynomial.aeval (R := Polynomial (MatrixPoly {a // a ≠ x} R)) (.C .X * .X))
   have h_factor : aeval (borelMul c b (Ψ ∘ X)) = (mapAlgHom scale).comp
       (aeval (mapAlgHom (Polynomial.aeval 0) ∘ (borelMul c b (Ψ ∘ X) - Ψ ∘ X) + Ψ ∘ X)) := by
+    -- Multiplying by `b` scales the columns `i` and `i + 1` of the colour of `x` by `s` and `T`,
+    -- and subtracts column `i` from column `i + 1`.
+    have h_mul (Y : m × ℕ → MvPolynomial ℕ P) (y : m) (j : ℕ) : borelMul c b Y (y, j) =
+        Y (y, j) * C (.C .X ^ single (c x, i) 1 (c y, j) * .X ^ single (c x, i + 1) 1 (c y, j)) -
+          if (c x, i + 1) = (c y, j) then Y (y, i) else 0 := by
+      rcases eq_or_ne (i + 1) j with rfl | hj
+      · simp [borelMul, b, mul_sub, sum_sub_distrib, single_apply, ite_and]
+      · simp [borelMul, b, mul_sub, sum_sub_distrib, single_apply, ite_and, hj]
+    -- The values of `Ψ` on the variables of the row `x` and of another row `y`.
+    have hΨx (j : ℕ) : Ψ (X (x, j)) =
+        (C Polynomial.X * X (i + 1)) ^ single i 1 j * X i ^ single (i + 1) 1 j * X j := by
+      simp [Ψ, rowExpansion]
+    have hΨy (y : m) (hy : y ≠ x) (j : ℕ) : Ψ (X (y, j)) = C (θ (X (⟨y, hy⟩, j))) := by
+      simp [Ψ, rowExpansion, hy, algHom]
     refine algHom_ext fun ⟨y, j⟩ ↦ ?_
-    -- Casework on the row `y` and on the column `j` against `i` and `i + 1`; each case is a ring
-    -- identity.
     by_cases hy : y = x
-    · simp +zetaDelta [rowExpansion, ite_and, mul_sub, hy, single_apply, algHom, mul_assoc,
-        borelMul]
-      split_ifs <;> subst_vars <;> simp_all [sub_eq_zero, mul_assoc] <;> ring
-    · simp +zetaDelta [rowExpansion, ite_and, mul_sub, hy, single_apply, algHom, mul_assoc,
-        borelMul]
-      split_ifs <;> subst_vars <;> simp_all
-      ring
+    · -- Row `x`: casework on the column `j` against `i` and `i + 1`; each case is a ring identity.
+      by_cases hj : j = i
+      · simp [h_mul, hΨx, scale, P, hy, hj]
+        ring
+      by_cases hj' : j = i + 1
+      · simp [h_mul, hΨx, scale, P, hy, hj']
+        ring
+      · simp [h_mul, hΨx, scale, P, hy, Ne.symm hj, Ne.symm hj']
+    · -- Another row: the entries are constants `C p`, so this is an identity in `P`. Casework on
+      -- `(c y, j)` against `(c x, i)` and `(c x, i + 1)`.
+      simp only [aeval_X, AlgHom.comp_apply, mapAlgHom_apply, Pi.add_apply, Pi.sub_apply,
+        Function.comp_apply, h_mul, hΨy _ hy, ← apply_ite C, ← C_0, ← C_mul, ← C_sub, ← C_add,
+        map_C]
+      refine congrArg C ?_
+      by_cases hα : (c x, i) = (c y, j)
+      · obtain ⟨hc, rfl⟩ := Prod.mk.inj hα
+        simp [θ, scale, P, hc]
+        ring
+      by_cases hβ : (c x, i + 1) = (c y, j)
+      · obtain ⟨hc, rfl⟩ := Prod.mk.inj hβ
+        simp [θ, scale, P, hc]
+      · simp [θ, scale, P, hα, hβ]
   -- After `T ↦ s T` the coefficient of `T ^ a` is divisible by `s ^ a`.
   have h_scale (p : P) {a k : ℕ} (hk : k < a) : ((scale p).coeff a).coeff k = 0 := by
     simp [P, scale, ← Polynomial.comp_eq_aeval, Polynomial.coeff_mul_X_pow', hk.not_ge]
@@ -495,7 +471,9 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
         θ ((rowExpansion x f).coeff n) *
           (.X ^ n i * (X (i + 1) ^ n i * (X i ^ n (i + 1) * monomial n 1) : MvPolynomial ℕ P).coeff
             δ) := by
-      rw [AlgHom.comp_apply, MvPolynomial.aevalTower_apply, eval₂_eq]
+      rw [AlgHom.comp_apply]
+      change (eval₂ _ _ ((rowExpansion x).toAlgHom f) : MvPolynomial ℕ P).coeff δ = _
+      rw [eval₂_eq]
       -- Flags as in `h_weight`; `-map_aeval` keeps `θ` applied to the coefficients.
       simp [prod_mul_distrib, -pow_ite, prod_pow_eq_pow_sum, -map_aeval, ↓if_mem_support,
         algHom, single_apply, mul_pow, ← map_pow, mul_assoc, ← pow_mul, ← map_prod, -C_pow]
@@ -543,16 +521,16 @@ lemma HasLeadingTerm.leadingCoeff_mem_nabla
   -- `ρ` substitutes `y β` in the rows other than `x`; `u j` is the entry `(x, j)` of `y β`.
   let ρ : MatrixPoly {a // a ≠ x} R →ₐ[R] A := aeval (borelMul (c ∘ (↑)) β X)
   let u (j : ℕ) : MvPolynomial ℕ A := borelMul c (C ∘ β) (fun p ↦ X p.2) (x, j)
-  have hu_lead (j : ℕ) : HasLeadingTerm (u j) (single j 1) (β (c x, j, j)) := by
+  have hu_lead (j : ℕ) : columnOrder.HasLeadingTerm (u j) (single j 1) (β (c x, j, j)) := by
     -- `u j` is the sum of the `X i * C (β (c x, i, j))` over `i ≤ j`.
     have h_term (i : ℕ) :
-        HasLeadingTerm (X i * C (β (c x, i, j))) (single i 1) (β (c x, i, j)) := by
+        columnOrder.HasLeadingTerm (X i * C (β (c x, i, j))) (single i 1) (β (c x, i, j)) := by
       rw [X, C_apply, monomial_mul_monomial, add_zero, one_mul]
-      exact of_monomial
+      exact hasLeadingTerm_monomial _ _
     have h_lt : ∀ i ∈ range (j + 1), i ≠ j → single i 1 ≺[columnOrder] single j 1 := by
       grind [columnOrder_lt_of_eq_above j]
     simpa only [u, borelMul, Function.comp_apply] using
-      sum (t := range (j + 1)) h_term j h_lt (absurd (self_mem_range_succ j))
+      HasLeadingTerm.sum (s := range (j + 1)) h_term j h_lt (absurd (self_mem_range_succ j))
   -- `subst` substitutes `y β` in `f` and expands along row `x`; by the definitions of
   -- `aevalTower` and `eval₂`, `subst f` is a sum over the exponents of `f` in row `x`.
   let subst : MatrixPoly m R →ₐ[R] MvPolynomial ℕ A :=
@@ -561,13 +539,13 @@ lemma HasLeadingTerm.leadingCoeff_mem_nabla
       C (ρ ((rowExpansion x f).coeff n)) * n.prod fun j e ↦ u j ^ e :=
     rfl
   -- In this sum the term of `γ` leads.
-  have h_lead : HasLeadingTerm (subst f) γ
+  have h_lead : columnOrder.HasLeadingTerm (subst f) γ
       (ρ ((rowExpansion x f).coeff γ) * γ.prod fun j e ↦ β (c x, j, j) ^ e) := by
     rw [h_eval]
-    refine sum (δ := fun n ↦ n)
-      (G := fun n ↦ ρ ((rowExpansion x f).coeff n) * n.prod _) (fun n ↦ ?_) γ
+    refine HasLeadingTerm.sum (γ := fun n ↦ n)
+      (a := fun n ↦ ρ ((rowExpansion x f).coeff n) * n.prod _) (fun n ↦ ?_) γ
       (fun n hn hne ↦ ?_) fun hγ ↦ ?_
-    · simpa using mul (of_monomial (γ := 0)) (finsuppProd_pow hu_lead n)
+    · simpa using (hasLeadingTerm_monomial 0 _).mul (finsuppProd_pow hu_lead n)
     · exact lt_of_le_of_ne (columnOrder.le_degree hn) (columnOrder.toSyn.injective.ne hne)
     · simp [MvPolynomial.notMem_support_iff.mp hγ]
   -- The semi-invariance of `f`, with both sides expanded along row `x`; `W` is the weight factor.
@@ -620,11 +598,11 @@ open MvPolynomial Finset MonomialOrder Submodule Finsupp Nat
 namespace New.GL
 
 /-- A standard family of fillings `I` for rows coloured by `c` and columns `j` of colour `τ j` and
-height `h j`: each `I i` (a `ColouredTableau`) gives column `j` an `h j`-tuple of rows of colour
+height `h j`: each `I i` (a `ColoredTableau`) gives column `j` an `h j`-tuple of rows of colour
 `τ j`; `minorProduct R (I i)` is the product of the minors on these rows and the first `h j`
 columns. -/
 structure IsStdMinorFamily {Φ J m ι : Type} [Fintype m] [Fintype J] [Fintype ι]
-    {c : m → Φ} {τ : J → Φ} {h : J → ℕ} (I : ι → ColouredTableau c τ h) : Prop where
+    {c : m → Φ} {τ : J → Φ} {h : J → ℕ} (I : ι → ColoredTableau c τ h) : Prop where
   /-- Over every commutative ring the products of minors are linearly independent. -/
   linearIndependent (R : Type) [CommRing R] :
     LinearIndependent R fun i : ι ↦ minorProduct R (I i)
@@ -645,29 +623,29 @@ variable {Φ m R : Type} [DecidableEq m] [CommRing R] {y : m}
 
 /-- If `p i` has leading term `q i` times the monomial of exponent `γ` in the row `y` for every `i`,
 then a combination of the `p i` has as leading term the same combination of the `q i`, times that
-monomial. Here `HasLeadingTerm F γ G` says that no exponent of `F` exceeds `γ` for `columnOrder`
-(lexicographic, comparing exponents at the highest column first) and that the coefficient of the
-monomial of exponent `γ` is `G`; `rowExpansion y` writes a polynomial as one in the variables of the
-row `y` over the polynomials in the other rows. -/
+monomial. Here `columnOrder.HasLeadingTerm F γ G` says that no exponent of `F` exceeds `γ` for
+`columnOrder` (lexicographic, comparing exponents at the highest column first) and that the
+coefficient of the monomial of exponent `γ` is `G`; `rowExpansion y` writes a polynomial as one in
+the variables of the row `y` over the polynomials in the other rows. -/
 lemma HasLeadingTerm.rowExpansion_combination {ι : Type} {γ : ℕ →₀ ℕ} {p : ι → MatrixPoly m R}
     {q : ι → MatrixPoly {a : m // a ≠ y} R}
-    (h_lead : ∀ i : ι, HasLeadingTerm (rowExpansion y (p i)) γ (q i)) (a : ι →₀ R) :
-    HasLeadingTerm (rowExpansion y (a.sum fun (i : ι) (r : R) ↦ r • p i)) γ
+    (h_lead : ∀ i : ι, columnOrder.HasLeadingTerm (rowExpansion y (p i)) γ (q i)) (a : ι →₀ R) :
+    columnOrder.HasLeadingTerm (rowExpansion y (a.sum fun (i : ι) (r : R) ↦ r • p i)) γ
       (a.sum fun (i : ι) (r : R) ↦ r • q i) := by
   have h_above (i : ι) (δ : ℕ →₀ ℕ) (hδ : γ ≺[columnOrder] δ) :
       (rowExpansion y (p i)).coeff δ = 0 :=
     coeff_eq_zero_of_lt ((h_lead i).degree_le.trans_lt hδ)
-  refine ⟨?_, ?_⟩
+  refine .mk ?_ ?_
   · -- No exponent above `γ` occurs in any `p i`, hence none in the combination.
     simp +contextual [Finsupp.sum, degree_le_iff, not_imp_comm, h_above]
   · simp [Finsupp.sum, fun i ↦ (h_lead i).coeff_eq]
 
-/-- Polynomials `p γ i` with leading terms `q γ i` times the monomial of exponent `γ` in the row
-`y` (`HasLeadingTerm`), for distinct exponents `γ` from a finite set `Γ`, are linearly independent
-if for each exponent `γ` the coefficients `q γ i` are. -/
+/-- Polynomials `p γ i` with leading terms `q γ i` times the monomial of exponent `γ` in the row `y`
+(`columnOrder.HasLeadingTerm`), for distinct exponents `γ` from a finite set `Γ`, are linearly
+independent if for each exponent `γ` the coefficients `q γ i` are. -/
 lemma linearIndependent_of_hasLeadingTerm {Γ : Finset (ℕ →₀ ℕ)} {ι : Γ → Type}
     {p : ∀ γ : Γ, ι γ → MatrixPoly m R} {q : ∀ γ : Γ, ι γ → MatrixPoly {a : m // a ≠ y} R}
-    (h_lead : ∀ (γ : Γ) (i : ι γ), HasLeadingTerm (rowExpansion y (p γ i)) γ (q γ i))
+    (h_lead : ∀ (γ : Γ) (i : ι γ), columnOrder.HasLeadingTerm (rowExpansion y (p γ i)) γ (q γ i))
     (h_indep : ∀ γ : Γ, LinearIndependent R (q γ)) :
     LinearIndependent R fun i : Σ γ : Γ, ι γ ↦ p i.fst i.snd := by
   -- In a relation `a ≠ 0` take the largest `γ` that occurs. The coefficient of that monomial is a
@@ -678,14 +656,14 @@ lemma linearIndependent_of_hasLeadingTerm {Γ : Finset (ℕ →₀ ℕ)} {ι : �
     a.splitSupport.exists_max_image (fun δ ↦ columnOrder.toSyn δ.val) h_nonempty
   have h_lt : ∀ δ ∈ a.splitSupport, δ ≠ γ → δ.val ≺[columnOrder] γ.val := fun δ hδ h_ne ↦
     lt_of_le_of_ne (hγ_max δ hδ) fun h_eq ↦ h_ne (Subtype.ext (columnOrder.toSyn.injective h_eq))
-  have h_top : HasLeadingTerm
+  have h_top : columnOrder.HasLeadingTerm
       (∑ δ ∈ a.splitSupport, rowExpansion y ((a.split δ).sum fun i r ↦ r • p δ i))
       γ ((a.split γ).sum fun i r ↦ r • q γ i) :=
-    .sum (fun δ ↦ .rowExpansion_combination (h_lead δ) (a.split δ)) γ h_lt (absurd hγ)
+    .sum (fun δ ↦ HasLeadingTerm.rowExpansion_combination (h_lead δ) (a.split δ)) γ h_lt (absurd hγ)
   have h_rel : (a.split γ).sum (fun i r ↦ r • q γ i) = 0 := by
     rw [linearCombination_apply, sigma_sum] at ha
     simp [← h_top.coeff_eq, ← map_sum, ha]
-  exact (mem_splitSupport_iff_nonzero a γ).mp hγ (linearIndependent_iff.mp (h_indep γ) _ h_rel)
+  exact (mem_splitSupport_iff_ne_zero a γ).mp hγ (linearIndependent_iff.mp (h_indep γ) _ h_rel)
 
 /-- Let `γ` run over the exponents interlacing the weight `l` at the colour of the row `y`, and let
 `l' γ` be `l` lowered by `γ`. Borel semi-invariants (`nabla`) `p γ i` of weight `l` with leading
@@ -700,7 +678,7 @@ lemma nabla_le_span_of_hasLeadingTerm {c : m → Φ} {l : Φ × ℕ →₀ ℕ}
       l = γ.val.mapDomain (fun k : ℕ ↦ (c y, k)) + l' γ)
     (h_mem : ∀ (γ : interlacing (l.curry (c y))) (i : ι γ), p γ i ∈ nabla R c l)
     (h_lead : ∀ (γ : interlacing (l.curry (c y))) (i : ι γ),
-      HasLeadingTerm (rowExpansion y (p γ i)) γ (q γ i))
+      columnOrder.HasLeadingTerm (rowExpansion y (p γ i)) γ (q γ i))
     (h_span : ∀ γ : interlacing (l.curry (c y)),
       nabla R (fun a : {a : m // a ≠ y} ↦ c a) (l' γ) ≤ span R (Set.range (q γ))) :
     nabla R c l ≤
@@ -729,15 +707,16 @@ lemma nabla_le_span_of_hasLeadingTerm {c : m → Φ} {l : Φ × ℕ →₀ ℕ}
         ⟨a.mapDomain (Sigma.mk γ), sum_mapDomain_index_inj sigma_mk_injective⟩
     have hg_mem : g ∈ nabla R c l := sum_mem fun i _ ↦ smul_mem _ _ (h_mem γ i)
     have hg_lead :
-        HasLeadingTerm (rowExpansion y g) γ (columnOrder.leadingCoeff (rowExpansion y f)) := by
+        columnOrder.HasLeadingTerm (rowExpansion y g) γ
+          (columnOrder.leadingCoeff (rowExpansion y f)) := by
       rw [← ha]
-      exact .rowExpansion_combination (h_lead γ) a
+      exact HasLeadingTerm.rowExpansion_combination (h_lead γ) a
     -- So `f - g` has a smaller leading exponent or is zero.
     have h_le : columnOrder.degree (rowExpansion y (f - g)) ≼[columnOrder] γ.val := by
       rw [map_sub]
       exact degree_sub_le.trans (sup_le le_rfl hg_lead.degree_le)
     have h_coeff : (rowExpansion y (f - g)).coeff γ = 0 := by
-      rw [map_sub, MvPolynomial.coeff_sub, hg_lead.coeff_eq]
+      rw [map_sub, AddMonoidAlgebra.coeff_sub_apply, hg_lead.coeff_eq]
       exact sub_self _
     refine (sub_mem_iff_left _ hg_span).mp ?_
     rcases h_le.lt_or_eq with h_lt | h_eq
@@ -761,12 +740,12 @@ lemma antitone_columnWeight_curry {Φ J : Type} [Fintype J] (τ : J → Φ) (h :
   gcongr
 
 /-- Rows `m` are coloured by `c`; column `j : J` has colour `τ j` and height `h j`, and a
-`ColouredTableau c τ h` gives it an `h j`-tuple of rows of colour `τ j`. With no rows there is a
+`ColoredTableau c τ h` gives it an `h j`-tuple of rows of colour `τ j`. With no rows there is a
 standard family (`IsStdMinorFamily`) of these: the one empty filling if all heights are zero, and
 the empty family otherwise. -/
 lemma exists_isStdMinorFamily_of_isEmpty {Φ J m : Type} [Fintype m] [IsEmpty m] [Fintype J]
     (c : m → Φ) (τ : J → Φ) (h : J → ℕ) :
-    ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColouredTableau c τ h), IsStdMinorFamily I := by
+    ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColoredTableau c τ h), IsStdMinorFamily I := by
   -- Polynomials are constants, and an enumeration `Fin N ≃ m` forces `N = 0`.
   rcases eq_or_ne h 0 with rfl | h_ne
   · refine ⟨Unit, inferInstance, nofun, ⟨?indep, ?span, ?character⟩⟩
@@ -807,7 +786,7 @@ stated for products of minors with coloured rows; the index type is not identifi
 semistandard tableaux. -/
 lemma exists_isStdMinorFamily {Φ J m : Type} [Fintype m] [Fintype J] (c : m → Φ)
     (τ : J → Φ) (h : J → ℕ) :
-    ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColouredTableau c τ h), IsStdMinorFamily I := by
+    ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColoredTableau c τ h), IsStdMinorFamily I := by
   classical
   -- Induction on the number of rows. Fix a row `y` and expand polynomials in its variables. For
   -- each exponent `γ` interlacing the weight, take the family for the other rows and the weight
@@ -818,21 +797,15 @@ lemma exists_isStdMinorFamily {Φ J m : Type} [Fintype m] [Fintype J] (c : m →
   · exact exists_isStdMinorFamily_of_isEmpty c τ h
   -- For each `γ`, the heights `k γ` give the weight lowered by `γ` (`h_weight`), and `lift γ`
   -- borders the fillings that avoid `y` (`h_lift`, `h_monomial`), by `exists_bordering`.
-  have h_border : ∀ γ : interlacing ((columnWeight τ h).curry (c y)), ∃ k : J → ℕ,
-      columnWeight τ h = γ.val.mapDomain (fun i : ℕ ↦ (c y, i)) + columnWeight τ k ∧
-      ∀ I : ColouredTableau (c ∘ (↑) : {a : m // a ≠ y} → Φ) τ k, ∃ K : ColouredTableau c τ h,
-        (∀ (R : Type) [CommRing R],
-          HasLeadingTerm (rowExpansion y (minorProduct R K)) γ (minorProduct R I)) ∧
-        ∀ z : m → ℂ, ∏ j : J, ∏ s : Fin (h j), z (K j s) =
-          z y ^ Finsupp.degree γ.val * ∏ j : J, ∏ s : Fin (k j), z (I j s) :=
-    fun γ ↦ exists_bordering h γ.prop
+  have h_border (γ : interlacing ((columnWeight τ h).curry (c y))) :=
+    exists_bordering h γ.prop
   choose k h_weight lift h_lift h_monomial using h_border
   -- The induction hypothesis: standard families `I γ` for the other rows.
   have h_fewer : Nat.card {a : m // a ≠ y} < n :=
     h_card.subst (Finite.card_subtype_lt (x := y) (not_not_intro rfl))
   have h_family : ∀ γ : interlacing ((columnWeight τ h).curry (c y)),
       ∃ (ι : Type) (_ : Fintype ι)
-        (I : ι → ColouredTableau (c ∘ (↑) : {a : m // a ≠ y} → Φ) τ (k γ)), IsStdMinorFamily I :=
+        (I : ι → ColoredTableau (c ∘ (↑) : {a : m // a ≠ y} → Φ) τ (k γ)), IsStdMinorFamily I :=
     fun γ ↦ ih _ h_fewer (c ∘ (↑) : {a : m // a ≠ y} → Φ) (k γ) rfl
   choose ι hι_fintype I hI using h_family
   refine ⟨Sigma ι, inferInstance, fun i ↦ lift i.fst (I i.fst i.snd), fun R _ ↦ ?_,
@@ -860,12 +833,10 @@ lemma exists_isStdMinorFamily {Φ J m : Type} [Fintype m] [Fintype J] (c : m →
     -- For each `γ` use the identity for the other rows, enumerated by `e` with `y` left out.
     let e' : Fin N ≃ {a : m // a ≠ y} :=
       .optionSubtype _ ⟨(finSuccEquiv' (e.symm y)).symm.trans e, e.apply_symm_apply y⟩
-    have h_rest : (∑ i : ι γ, ∏ j : J, ∏ s : Fin (k γ j), x (I γ i j s)) *
-        alternant (fun i : Fin N ↦ x (e' i)) 0 =
-          alternant (fun i : Fin N ↦ x (e' i)) fun n : ℕ ↦ columnWeight τ (k γ) (c y, n) :=
-      (hI γ).character (c y) N e' fun a ↦ x a
+    have h_rest := (hI γ).character (c y) N e' fun a ↦ x a
     -- `e'` is `e` composed with the embedding that skips the index of `y`.
-    have h_e' : (fun i : Fin N ↦ x (e' i)) = (x ∘ e) ∘ (e.symm y).succAbove := by
+    have h_e' : (fun a : {a : m // a ≠ y} ↦ x a) ∘ e' =
+        (x ∘ e) ∘ (e.symm y).succAbove := by
       simp [funext_iff, e', finSuccEquiv'_symm_some]
     rw [h_e'] at h_rest
     -- The weight lowered by `γ` is that of `k γ` (`h_weight γ`), and a lift adds `x y ^ |γ|` to the

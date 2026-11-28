@@ -1,3 +1,12 @@
+module
+
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.FieldTheory.Finite.Extension
+import Mathlib.NumberTheory.MulChar.Duality
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.Tactic.Linter.Style
+public import Lib.LocalGL.Green.HallAlgebra
+import Lib.General.NumberTheory.FrobeniusOrbits
 import Lib.LocalGL.Green.CuspidalFunctions
 
 /-!
@@ -48,6 +57,8 @@ root and a degree bound. Hall polynomials are not covered. Source: J. A. Green, 
 the finite general linear groups, Trans. AMS 80 (1955), Thms 2, 9, 12-14; for the ring on all
 matrices, Z. Chen, arXiv 2408.06191, Prop. 3.2.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -295,7 +306,7 @@ noncomputable def charName : MulChar k ℂ ≃* kˣ :=
         by simp⟩)
       (fun a b ↦ MulChar.ext fun y ↦ by
         -- At `y`, this is θ_{ab} = θ_a θ_b on the (|k| - 1)-th roots of unity.
-        show thetaChar T (Nat.card k) (algebraMap k K ↑(a * b)) (algebraMap k K y) =
+        change thetaChar T (Nat.card k) (algebraMap k K ↑(a * b)) (algebraMap k K y) =
           thetaChar T (Nat.card k) (algebraMap k K a) (algebraMap k K y) *
             thetaChar T (Nat.card k) (algebraMap k K b) (algebraMap k K y)
         simp [thetaChar_mul T one_lt_card, algebraMap_pow_card_pred_eq_one])
@@ -309,18 +320,13 @@ noncomputable def charName : MulChar k ℂ ≃* kˣ :=
             (DFunLike.congr_fun ha (y : k)).trans (MulChar.one_apply_coe y)
       exact h_inj.bijective_of_nat_card_le (card_eq_card_units_of_hasEnoughRootsOfUnity k ℂ).le))
 
-/-- The inverse of `charName T` sends a unit `a` to the restriction of θ_a to `k`. -/
-private lemma charName_symm_apply (a : kˣ) (y : k) :
-    (charName T).symm a y = thetaChar T (Nat.card k) (algebraMap k K a) (algebraMap k K y) :=
-  rfl
-
 /-- Let `T` be faithful (`K` algebraically closed, `T : K → ℂ` injective), and let θ_a = T^j
 (j = `thetaExponent`) be formed with Q = |k|. Let x_χ = `charName T χ` ∈ kˣ be the element attached
 to a multiplicative character χ of `k` by inverting the isomorphism a ↦ θ_a restricted to `k`. Then
 θ_{x_χ}(y) = χ(y) for all y ∈ k, so every χ is the restriction of θ_{x_χ} to `k`. -/
 lemma thetaChar_charName (χ : MulChar k ℂ) (y : k) :
     thetaChar T (Nat.card k) (algebraMap k K (charName T χ)) (algebraMap k K y) = χ y := by
-  rw [← charName_symm_apply, MulEquiv.symm_apply_apply]
+  exact DFunLike.congr_fun ((charName T).symm_apply_apply χ) y
 
 variable {T}
 
@@ -382,7 +388,7 @@ lemma aroots_map_frobenius_pow [IsAlgClosed K] {L : Type*} [Field L] [Algebra L 
     (σ : L →+* L) (hσ : ∀ y : L, σ y = y ^ Nat.card k ^ i) (P : L[X]) :
     (P.map σ).aroots K = (P.aroots K).map fun z : K ↦ z ^ Nat.card k ^ i := by
   -- Apply `Splits.roots_map` to the `i`-th power of the Frobenius map of `K`, which extends `σ`.
-  have h_fintype : Fintype k := Fintype.ofFinite k
+  let h_fintype : Fintype k := Fintype.ofFinite k
   have h_map : (P.map σ).map (algebraMap L K) =
       (P.map (algebraMap L K)).map (frobeniusAlgHom k K ^ i).toRingHom := by
     aesop (add simp coe_frobeniusAlgHom)
@@ -443,7 +449,7 @@ lemma greenTau_eq (hP : Irreducible P) (h0 : P.coeff 0 ≠ 0) {x : K} (hx : P.ae
     exists_pow_card_pow_eq_of_root hP hx (aeval_chosenRoot hx)
   have h_roots (c : SimClass k) :
       (c.charpoly.aroots K).map (fun z : K ↦ z ^ Nat.card k ^ i) = c.charpoly.aroots K := by
-    have h_fintype : Fintype k := Fintype.ofFinite k
+    let h_fintype : Fintype k := Fintype.ofFinite k
     rw [← aroots_map_frobenius_pow (.id k) (by simp [pow_card_pow]), c.charpoly.map_id]
   have h_brauer (η : K → ℂ) :
       brauerLift k (fun z : K ↦ η (z ^ Nat.card k ^ i)) = brauerLift k η := by
@@ -457,7 +463,7 @@ open scoped Classical in
 private lemma finMean_conj_mul_eq_ite {L : Type*} [Field L] [Finite L] (χ ξ : MulChar L ℂ) :
     finMean (fun z : Lˣ ↦ conj (χ z) * ξ z) = if χ = ξ then 1 else 0 := by
   -- the sum over `Lˣ` of the character `χ⁻¹ ξ` is `|Lˣ|` if it is trivial and `0` otherwise
-  have h_fintype : Fintype Lˣ := Fintype.ofFinite Lˣ
+  let h_fintype : Fintype Lˣ := Fintype.ofFinite Lˣ
   have h_sum : ∑ z : Lˣ, ((χ⁻¹ * ξ).comp (Units.coeHom L)) z =
       ((if (χ⁻¹ * ξ).comp (Units.coeHom L) = 1 then Fintype.card Lˣ else 0 : ℕ) : ℂ) :=
     sum_hom_units ((χ⁻¹ * ξ).comp (Units.coeHom L))
@@ -467,7 +473,7 @@ private lemma finMean_conj_mul_eq_ite {L : Type*} [Field L] [Finite L] (χ ξ : 
 /-- Let `L` be a finite extension of `k` with an embedding `φ` into `K`, and `q = |k|`. The roots in
 `K` of the characteristic polynomial of multiplication by `u` on `L` are the conjugates
 `φ(u) ^ q ^ i`, `i < [L : k]`. -/
-private lemma aroots_charpoly_mulLeft {L : Type*} [Field L] [Finite L] [Algebra k L]
+private lemma aroots_charpoly_mulLeft {L : Type*} [Field L] [Algebra k L]
     [FiniteDimensional k L] (φ : L →ₐ[k] K) (u : L) :
     (mulLeft k u).charpoly.aroots K =
       Multiset.map (fun i : ℕ ↦ φ u ^ Nat.card k ^ i) (Multiset.range (finrank k L)) := by
@@ -566,8 +572,8 @@ lemma rankInner_greenTau (hP : Irreducible P) (h0 : P.coeff 0 ≠ 0) (hm : P.Mon
           rankInner (finrank k L) (greenCuspidal k (θ χ))
             ((brauerLift k (θ ξ)).mulMoebius * constOne) := by
       have h_sign : (-1 : ℂ) ^ finrank k L * (-1) ^ finrank k L = 1 := by simp [← mul_pow]
-      simp [hS_deg, ← natCard_eq_pow_finrank, rankInner, θ, greenCuspidal, ← mul_assoc]
-      simp_rw [mul_right_comm ((-1 : ℂ) ^ finrank k L) _ ((-1 : ℂ) ^ finrank k L), h_sign, one_mul]
+      simp [hS_deg, ← natCard_eq_pow_finrank, rankInner, θ, greenCuspidal, ← mul_assoc,
+        mul_right_comm ((-1 : ℂ) ^ finrank k L) _ ((-1 : ℂ) ^ finrank k L), h_sign]
     have h_second : rankInner 0 constOne (brauerLift k (θ ξ)).mulMoebius = 0 := by
       simp [mulMoebius, brauerLift, rankInner, charpoly_monic, eq_one_of_monic_natDegree_zero,
         charpoly_natDegree]
@@ -662,7 +668,7 @@ lemma _root_.sub_mul_pow_mul_prod_le_mul_prod {q : ℝ} (hq : 1 < q) (m : ℕ) :
     -- One more factor on each side; it suffices that `q - m ≤ q ^ (m + 1)`.
     have h_factor_nonneg : 0 ≤ q ^ (m + 1) - 1 := sub_nonneg.2 (one_le_pow₀ hq.le)
     have h_key : (q - (m + 1)) * q ^ (m + 1) ≤ (q - m) * (q ^ (m + 1) - 1) := by
-      nlinarith [le_self_pow₀ hq.le m.add_one_ne_zero, (Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
+      linarith only [le_self_pow₀ hq.le m.add_one_ne_zero, (Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
     push_cast [Finset.prod_range_succ]
     calc (q - (m + 1)) * q ^ (m + 1) * ((∏ i ∈ Finset.range m, q ^ i) * q ^ m)
         ≤ (q - m) * (q ^ (m + 1) - 1) * ((∏ i ∈ Finset.range m, q ^ i) * q ^ m) := by gcongr
@@ -688,7 +694,7 @@ private lemma mulMoebius_greenCuspidal_one_mul (d : ℕ) [NeZero d] (η : K → 
       η 1 * Nat.card (End k (Fin d → k))ˣ := by
   have h := mulMoebius_greenCuspidal_lsmul (V := Fin d → k) (powerBasisOne k) η
   simp [minpoly.eq_X_sub_C'] at h
-  simpa [powerBasisOne, Nat.card_fun, ← Nat.card_congr (generalLinearEquiv ..).1] using h
+  simpa [powerBasisOne, Nat.card_fun, ← Nat.card_congr (generalLinearEquiv ..).toEquiv] using h
 
 omit [IsFaithfulMulChar K T] in
 /-- Let `δ` be the indicator function of the identity classes and `q = |k|`. Pairing with
@@ -709,19 +715,19 @@ private lemma rankInner_greenTau_mul_mulMoebius (P : Polynomial k) (hP : Irreduc
   -- Move `τ_P` to the other side of the pairing by adjunction. Conjugating turns the conjugates in
   -- `rankInner` into plain values; on both sides only the identity classes contribute.
   rw [rankInner_mul_eq_rankInner_skew greenTau_eq_zero_of_dim_ne, ← star_inj]
-  simp [identityIndicator, skew, greenTau, field, ite_div, ite_and, forall_and,
-    LinearMap.ext_iff (M := _ × _), rankInner, finMean, finsum_eq_sum_of_fintype,
-    simClassOf_out_eq_one_iff] at h_mulMu_one ⊢
-  -- The goal now reads `F(1) C(1) μ(1) μ'(1) (q ^ d - 1) = F(1) μ'(1) |GL_d|`, where `C` is
-  -- `greenCuspidal k θ_x` and `μ`, `μ'` are `moebius` at the identities of rank `d`, `m`.
-  -- This is `h_mulMu_one` at `η = θ_x`, where `θ_x 1 = 1`, multiplied by `F(1) μ'(1)`.
   set one : SimClass k := simClassOf (1 : End k (Fin P.natDegree → k))
   set one_m : SimClass k := simClassOf (1 : End k (Fin m → k))
   have h_theta_one :
       greenCuspidal k (thetaChar T (Nat.card k ^ P.natDegree) (chosenRoot K P)) one *
           moebius one * ((Nat.card k : ℂ) ^ P.natDegree - 1) =
         Fintype.card (End k (Fin P.natDegree → k))ˣ := by
-    rw [h_mulMu_one, map_one, one_mul]
+    simpa using h_mulMu_one (thetaChar T (Nat.card k ^ P.natDegree) (chosenRoot K P))
+  simp [identityIndicator, skew, greenTau, field, ite_div, ite_and, forall_and,
+    LinearMap.ext_iff (M := _ × _), rankInner, finMean, finsum_eq_sum_of_fintype,
+    simClassOf_out_eq_one_iff]
+  -- The goal now reads `F(1) C(1) μ(1) μ'(1) (q ^ d - 1) = F(1) μ'(1) |GL_d|`, where `C` is
+  -- `greenCuspidal k θ_x` and `μ`, `μ'` are `moebius` at the identities of rank `d`, `m`.
+  -- This is `h_mulMu_one` at `η = θ_x`, where `θ_x 1 = 1`, multiplied by `F(1) μ'(1)`.
   linear_combination (F one_m * moebius one_m) * h_theta_one
 
 /-- Let `c` be a label of degree `r`, `q = |k|` and `δ` the indicator function of the identity

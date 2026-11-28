@@ -1,4 +1,7 @@
-import Lib.Base
+module
+
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Lib.Speed
 
 /-!
 # Fubini and convolution lemmas; idempotent kernels
@@ -9,9 +12,8 @@ General lemmas of measure and integration, and the notion of an idempotent kerne
 * `MeasureTheory.MeasurePreserving.integral_integral_comp`: Fubini's theorem along a
   measure-preserving map from a product; `MeasureTheory.MeasurePreserving.fubini` adds the
   integrability on the product.
-* `New.integrable_integral_skew_product`, `New.integral_integral_skew_product`: Fubini's theorem
-  after a substitution that preserves the measure on the space where it acts;
-  `New.integral_skew_product` is the conjunction of the two.
+* `New.integral_skew_product`: integrability and Fubini's theorem after a substitution that
+  preserves the measure on the space where it acts.
 * `New.integral_smul_integral_swap`, `New.integral_smul_integral_eq_integral_conv_smul`: the
   integral `∫ x, k x • ∫ g, α g • F (j x * g)`, for `g` in a group, in the opposite order and as a
   pairing with a convolution; `New.integral_conv` is the conjunction of the two.
@@ -25,6 +27,8 @@ The results of this file are standard. The lemmas on iterated integrals and on c
 group are forms of Fubini's theorem, and `New.sq_lintegral_le` is the Cauchy–Schwarz inequality for
 lower integrals, deduced from Hölder's inequality.
 -/
+
+@[expose] public section
 
 open MeasureTheory ENNReal ComplexConjugate
 
@@ -96,7 +100,9 @@ lemma _root_.MeasureTheory.MeasurePreserving.integral_integral_comp {Y : Type*}
     ∫ k : W, ∫ g : Z, f (T (k, g)) ∂μ ∂ν = ∫ y : Y, f y ∂ρ :=
   calc ∫ k : W, ∫ g : Z, f (T (k, g)) ∂μ ∂ν = ∫ z : W × Z, f (T z) ∂(ν.prod μ) :=
         (integral_prod (f ∘ T) (hT.integrable_comp_of_integrable hf)).symm
-    _ = ∫ y : Y, f y ∂ρ := hT.hasLaw.integral_comp hf.aestronglyMeasurable
+    _ = ∫ y : Y, f y ∂ρ := by
+      rw [← hT.map_eq, integral_map hT.measurable.aemeasurable]
+      simpa only [hT.map_eq] using hf.aestronglyMeasurable
 
 /-- Fubini's theorem along a map `T` carrying `ν × μ` (both s-finite) to `ρ`: for a `ρ`-integrable
 `f`, the function `f ∘ T` is integrable and `∫∫ f (T (k, g)) dμ(g) dν(k) = ∫ f dρ`. -/
@@ -108,39 +114,29 @@ lemma _root_.MeasureTheory.MeasurePreserving.fubini {Y : Type*} [MeasurableSpace
   ⟨hT.integrable_comp_of_integrable hf, hT.integral_integral_comp hf⟩
 
 /-- Let `μ`, `ν` be s-finite, `T` jointly measurable with each `T k` preserving `μ`, and `f`
-integrable for `ν × μ`. Then `g ↦ ∫ f (k, T k g) dν(k)` is `μ`-integrable. -/
-lemma integrable_integral_skew_product [NormedSpace ℝ X] {T : W → Z → Z}
-    (hT_map : ∀ k : W, μ.map (T k) = μ) {f : W × Z → X} (hf : Integrable f (ν.prod μ))
-    (hT : Measurable T.uncurry := by fun_prop) :
-    Integrable (fun g : Z ↦ ∫ k : W, f (k, T k g) ∂ν) μ := by
+integrable for `ν × μ`. Then `g ↦ ∫ f (k, T k g) dν(k)` is `μ`-integrable, and its integral is
+`∫∫ f (k, g) dμ(g) dν(k)`. -/
+lemma integral_skew_product [NormedSpace ℝ X] {T : W → Z → Z} (hT_map : ∀ k : W, μ.map (T k) = μ)
+    {f : W × Z → X} (hf : Integrable f (ν.prod μ)) (hT : Measurable T.uncurry := by fun_prop) :
+    Integrable (fun g : Z ↦ ∫ k : W, f (k, T k g) ∂ν) μ ∧
+    ∫ g : Z, ∫ k : W, f (k, T k g) ∂ν ∂μ = ∫ k : W, ∫ g : Z, f (k, g) ∂μ ∂ν := by
   have h_preserving :
       MeasurePreserving (fun p : W × Z ↦ (p.1, T p.1 p.2)) (ν.prod μ) (ν.prod μ) :=
     (MeasurePreserving.id ν).skew_product hT (.of_forall hT_map)
-  exact (h_preserving.integrable_comp_of_integrable hf).integral_prod_right
+  obtain ⟨h_int, h_integral⟩ := h_preserving.fubini hf
+  refine ⟨h_int.integral_prod_right, ?_⟩
+  calc ∫ g : Z, ∫ k : W, f (k, T k g) ∂ν ∂μ = ∫ k : W, ∫ g : Z, f (k, T k g) ∂μ ∂ν :=
+        integral_integral_swap h_int.swap
+    _ = ∫ p : W × Z, f p ∂(ν.prod μ) := h_integral
+    _ = ∫ k : W, ∫ g : Z, f (k, g) ∂μ ∂ν := integral_prod f hf
 
 /-- Let `μ`, `ν` be s-finite, `T` jointly measurable with each `T k` preserving `μ`, and `f`
 integrable for `ν × μ`. Then `∫∫ f (k, T k g) dν(k) dμ(g) = ∫∫ f (k, g) dμ(g) dν(k)`. -/
 lemma integral_integral_skew_product [NormedSpace ℝ X] {T : W → Z → Z}
     (hT_map : ∀ k : W, μ.map (T k) = μ) {f : W × Z → X} (hf : Integrable f (ν.prod μ))
     (hT : Measurable T.uncurry := by fun_prop) :
-    ∫ g : Z, ∫ k : W, f (k, T k g) ∂ν ∂μ = ∫ k : W, ∫ g : Z, f (k, g) ∂μ ∂ν := by
-  -- The map `(k, g) ↦ (k, T k g)` preserves `ν.prod μ`; apply Fubini's theorem on both sides.
-  have h_preserving :
-      MeasurePreserving (fun p : W × Z ↦ (p.1, T p.1 p.2)) (ν.prod μ) (ν.prod μ) :=
-    (MeasurePreserving.id ν).skew_product hT (.of_forall hT_map)
-  calc ∫ g : Z, ∫ k : W, f (k, T k g) ∂ν ∂μ = ∫ k : W, ∫ g : Z, f (k, T k g) ∂μ ∂ν :=
-        integral_integral_swap (h_preserving.integrable_comp_of_integrable hf).swap
-    _ = ∫ p : W × Z, f p ∂(ν.prod μ) := h_preserving.integral_integral_comp hf
-    _ = ∫ k : W, ∫ g : Z, f (k, g) ∂μ ∂ν := integral_prod f hf
-
-/-- Let `μ`, `ν` be s-finite, `T` jointly measurable with each `T k` preserving `μ`, and `f`
-integrable for `ν × μ`. Then `g ↦ ∫ f (k, T k g) dν(k)` is `μ`-integrable, and its integral is
-`∫∫ f (k, g) dμ(g) dν(k)`. -/
-lemma integral_skew_product [NormedSpace ℝ X] {T : W → Z → Z} (hT_map : ∀ k : W, μ.map (T k) = μ)
-    {f : W × Z → X} (hf : Integrable f (ν.prod μ)) (hT : Measurable T.uncurry := by fun_prop) :
-    Integrable (fun g : Z ↦ ∫ k : W, f (k, T k g) ∂ν) μ ∧
     ∫ g : Z, ∫ k : W, f (k, T k g) ∂ν ∂μ = ∫ k : W, ∫ g : Z, f (k, g) ∂μ ∂ν :=
-  ⟨integrable_integral_skew_product hT_map hf hT, integral_integral_skew_product hT_map hf hT⟩
+  (integral_skew_product hT_map hf hT).2
 
 omit [SFinite μ] [SFinite ν] in
 /-- For integrable `k` and `α`, strongly measurable bounded `F` and measurable `j : W → Z` into a
@@ -156,7 +152,7 @@ lemma integrable_mul_smul_comp_mul [Group Z] [MeasurableMul₂ Z] [NormedSpace �
 group, the iterated integral of `k x • α g • F (j x * g)` does not depend on the order of
 integration. -/
 lemma integral_smul_integral_swap [Group Z] [MeasurableMul₂ Z] [NormedSpace ℂ X]
-    [CompleteSpace X] (j : W → Z) {k : W → ℂ} {α : Z → ℂ} (hk : Integrable k ν)
+    (j : W → Z) {k : W → ℂ} {α : Z → ℂ} (hk : Integrable k ν)
     (hα : Integrable α μ) (hF : IsBoundedMeasurable F) (hj : Measurable j := by fun_prop) :
     ∫ x : W, k x • ∫ g : Z, α g • F (j x * g) ∂μ ∂ν =
       ∫ g : Z, α g • ∫ x : W, k x • F (j x * g) ∂ν ∂μ := by

@@ -1,7 +1,12 @@
+module
+
+public import Lib.SiegelWeil.RallisInner.SharpData
+public import New.Spanning.Multiplicities.HeckeEigensystems
+public import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+public import New.Determinant.Norms.VectorKernel
+import Lib.GLn.SchurModule.SchurNorm
 import Lib.General.Groups.IndexOfProduct
-import Lib.SiegelWeil.RallisInner.SharpData
 import New.OneLift.HeckeValues.CharacterLift
-import New.Spanning.Multiplicities.HeckeEigensystems
 
 /-!
 # The lift Θ_W, its adjoint and its norm
@@ -24,8 +29,8 @@ definite space V_j.
   pair `New.Data.descentPair` when 1 ≤ j ≤ m and 0 otherwise.
 * `New.DescentPair.inner_thetaLift`: `New.DescentPair.normalizedDescent` is adjoint to
   `New.DescentPair.thetaLift`, for the Petersson product on `W` and the class sum product on `V`.
-* `New.Data.coe_adjoint_singleLift`, `New.Data.normalizedDescent_eq_zero_iff`: the adjoint of
-  Θ_{j,ξ} is the descent θ, so θ kills exactly the forms orthogonal to the lifts.
+* `New.Data.coe_adjoint_singleLift`, `New.Data.normalizedDescent_eq_zero_of_inner_eq_zero`: the
+  adjoint of Θ_{j,ξ} is the descent θ, so θ kills exactly the forms orthogonal to the lifts.
 * `New.Data.singleLift_injective`, `New.Data.exists_hasSum_rallisTerm_inner_singleLift`: Θ_{j,ξ} is
   injective, and its Gram form is a constant `A` times the factor `New.DescentPair.gramFactor` of
   the pair times the sum of the terms `New.Data.rallisTerm`.
@@ -51,6 +56,8 @@ Rallis, Injectivity properties of liftings associated to Weil representations, 1
 L-functions and the oscillator representation, 1987.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New
@@ -71,31 +78,6 @@ open Set MulChar Space stdLevel DescentPair
 variable {E r n : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n]
   [DecidableEq n] (O : DescentPair E r n)
 
-/-- The pair `(k, k')` scales the datum. Let `k` lie in the stabiliser of the standard lattice in
-the finite adelic group of `W`, let `s` be its reduction at the chosen places of the pair, and let
-`k'` be the lift to the finite adelic group of `V` of the family `diag(s_w, 1)`. The representation
-`O.pairThetaKernel.ω` is the Weil representation of `U(W) × U(V)` on the Schwartz space of
-`Hom(W, V)`, and `O.fockDatum ξ` is the vector of that space made of the Fock polynomial of `ξ` at
-the real places and the block datum at the finite places. Here `ξ` is any vector of the
-representation of weight `O.columnCount`, in coordinates indexed by `WeylIndex n O.columnCount`.
-Then `(k, k')` multiplies `O.fockDatum ξ` by `χ(s)⁻¹`, where `χ(s) = ∏_w ψ_w(det s_w)` and
-`ψ = O.tamePart` is the tame part of the character of the pair. -/
-lemma DescentPair.omega_fockDatum_eq_inv_prod_smul (k : stdLevel E r) {s : O.ChosenGL r}
-    (hk : reduceFamily O.chosenPlace k = s) (ξ : WeylIndex n O.columnCount → ℂ) :
-    O.pairThetaKernel.ω
-        ((1, k.val), 1, (liftResidue (firstBlockHom O.toLevelPlaces O.incl s) : stdLevel E n).val)
-        (O.fockDatum ξ) =
-      (∏ i : O.ChosenIndex, O.tamePart (O.chosenPlace i) (s i).val.det)⁻¹ • O.fockDatum ξ := by
-  let k' : stdLevel E n := liftResidue (firstBlockHom O.toLevelPlaces O.incl s)
-  have h_fin : pairWeil O.W (stdSpace E n) O.charW O.charV ((1, k.val), 1, k'.val) O.blockDatum.val
-    =
-      (∏ i : O.ChosenIndex, O.tamePart (O.chosenPlace i) (s i).val.det)⁻¹ • O.blockDatum.val := by
-    simpa only [hk, map_one, mul_one] using
-      O.omega_blockDatum_eq_smul k k' 1 (by simp [k', hk, reduceFamily_liftResidue])
-  -- Finite points act only on the finite part `O.blockDatum` of the datum.
-  change pairWeil O.W (stdSpace E n) O.charW O.charV ((1, k.val), 1, k'.val) (O.fockDatum ξ) = _
-  rw [pairWeil_integrated_fin, h_fin, map_smul]
-
 omit [WeilData E] in
 /-- An element `s` of the finite group of the chosen places acts on a form on `V` as
 `∏_w ψ_w(det s_w)` times translation by the lift of the family `diag(s_w, 1)`, whose block `s_w`
@@ -109,33 +91,6 @@ lemma DescentPair.coe_formAction (s : O.ChosenGL r) (Ξ : O.FormV) :
         (liftResidue (firstBlockHom O.toLevelPlaces O.incl s) : stdLevel E n).val Ξ.val :=
   rfl
 
-/-- Equivariance of the descent θ = `O.normalizedDescent`, which maps forms on V to functions on the
-adelic group of W. Let k lie in the stabiliser of the standard lattice in the finite adelic group of
-W, and let s be its reduction at the chosen places of the pair. Then (θΞ)(gk) = θ(ρ(s)Ξ)(g) for
-ρ = `O.formAction`, every form Ξ on V and every adelic point g. -/
-lemma DescentPair.normalizedDescent_mul_eq_normalizedDescent_formAction (k : stdLevel E r)
-    {s : O.ChosenGL r} (hk : reduceFamily O.chosenPlace k = s) (Ξ : O.FormV) (g : G E O.signs) :
-    O.normalizedDescent Ξ (g * (1, k.val)) = O.normalizedDescent (O.formAction s Ξ) g := by
-  -- Both sides are multiples of conjugates of transposed lifts. Move `k` into the datum together
-  -- with a lift `k'` of `diag(s, 1)`: the pair `(k, k')` scales the datum by `c⁻¹`, while
-  -- `O.formAction s` is `c` times translation by `k'`, where `c = ∏ ψ_w(det s_w)`.
-  let k' : stdLevel E n := liftResidue (firstBlockHom O.toLevelPlaces O.incl s)
-  let c : ℂ := ∏ i : O.ChosenIndex, O.tamePart (O.chosenPlace i) (s i).val.det
-  have h_datum : O.pairThetaKernel.swap.ω ((1, k'.val), 1, k.val)
-      (O.fockDatum (highestVector O.columnCount O.paramV)) =
-        c⁻¹ • O.fockDatum (highestVector O.columnCount O.paramV) :=
-    O.omega_fockDatum_eq_inv_prod_smul k hk _
-  have h_form : (O.formAction s Ξ).val = c • algFormRep O.columnCount O.detExp k'.val Ξ.val :=
-    O.coe_formAction s Ξ
-  have h_conj : starRingEnd ℂ c = c⁻¹ := by
-    simp [c, ← Finset.prod_inv_distrib, ← inv_apply_eq_inv', ← star_apply']
-  simp only [normalizedDescent_eq_smul_star_lift_swap, Pi.smul_apply, Pi.star_apply]
-  -- The transposed lift is equivariant under the pair `(k', k)`.
-  rw [h_form, O.pairThetaKernel.swap.lift_equivariant
-    (isAutomorphic_algFormCoeff Ξ.val).conj _ (1, k'.val), h_datum]
-  -- The scalar `c⁻¹` from the datum matches the conjugate of `c` from the conjugated form.
-  simp [lift, ← algFormCoeff_algFormRep, h_conj, mul_assoc, mul_left_comm c⁻¹]
-
 /-- If the parameter `l` on `W` fits the pair, the datum of the highest vector is an arrow from `W`
 to `V`: the theta lift by it takes forms of parameter `l` to forms of parameter `O.paramV`. -/
 lemma DescentPair.FitsParams.isArrow_fockDatum [Nonempty r] {O : DescentPair E r n}
@@ -143,14 +98,6 @@ lemma DescentPair.FitsParams.isArrow_fockDatum [Nonempty r] {O : DescentPair E r
     IsArrow O.pairThetaKernel (typeKernel l O.signs) (typeKernel O.paramV 1)
       (O.fockDatum (highestVector O.columnCount O.paramV)) :=
   (hfit.isEdge.isArrow O.charW O.charV O.blockDatum.property).left
-
-/-- If the parameter `l` on `W` fits the pair, the datum of the highest vector is an arrow from `V`
-to `W` between the conjugate types, for the transposed theta kernel. -/
-lemma DescentPair.FitsParams.isArrow_swap_fockDatum [Nonempty r] {O : DescentPair E r n}
-    {l : NumberField.InfinitePlace E → r → ℤ} (hfit : O.FitsParams l) :
-    IsArrow O.pairThetaKernel.swap (star (typeKernel O.paramV 1)) (star (typeKernel l O.signs))
-      (O.fockDatum (highestVector O.columnCount O.paramV)) :=
-  (hfit.isEdge.isArrow O.charW O.charV O.blockDatum.property).right
 
 /-- The lift `Θ_W` from forms on `W`, of any level and of a parameter `l` that fits the pair, to
 algebraic forms on `V`: the theta lift by the datum `O.fockDatum` of the highest vector, read as an
@@ -165,9 +112,9 @@ noncomputable def DescentPair.thetaLift [Nonempty r] {l : NumberField.InfinitePl
     -- The level on `V` acts on the datum through the character of `O.FormV`.
     refine mem_levelSpace.2 fun k ↦ ?_
     have h_datum := O.omega_fockDatum_star 1 k (highestVector O.columnCount O.paramV)
-    simp only [map_one, Module.End.one_apply, star_highestVector] at h_datum
+    simp only [map_one, one_apply_eq_self, star_highestVector] at h_datum
     rw [LinearMap.comp_apply, LinearEquiv.coe_coe, ← toAlgForm_formRep,
-      hfit.isArrow_fockDatum.formRep_formLift_of_eq_smul h_datum, map_one, Module.End.one_apply,
+      hfit.isArrow_fockDatum.formRep_formLift_of_eq_smul h_datum, map_one, one_apply_eq_self,
       map_smul]
 
 /-- The function on the adelic group of `V` attached to the algebraic form `Θ_W y` is the theta lift
@@ -178,15 +125,6 @@ lemma DescentPair.ofAlgForm_thetaLift [Nonempty r] {l : NumberField.InfinitePlac
       formLift O.pairThetaKernel (typeKernel l O.signs) (typeKernel O.paramV 1)
         (O.fockDatum (highestVector O.columnCount O.paramV)) y :=
   ofAlgForm_toAlgForm O.isHCParam_paramV _
-
-/-- The algebraic form underlying `Θ_W y` is the image under `New.Space.toAlgForm` of the theta
-lift of `y` by the datum of the highest vector. -/
-lemma DescentPair.coe_thetaLift [Nonempty r] {l : NumberField.InfinitePlace E → r → ℤ}
-    (hfit : O.FitsParams l) (y : O.W.Form (typeKernel l O.signs)) :
-    (O.thetaLift hfit y).val = (stdSpace E n).toAlgForm O.isHCParam_paramV
-      (formLift O.pairThetaKernel (typeKernel l O.signs) (typeKernel O.paramV 1)
-        (O.fockDatum (highestVector O.columnCount O.paramV)) y) :=
-  rfl
 
 /-- Let `y` be a form on `W` of a parameter `l` that fits the pair (`O.FitsParams l`). Let `k` lie
 in the stabiliser of the standard lattice in the finite adelic group of `W`, with reduction `s` at
@@ -203,12 +141,22 @@ lemma DescentPair.thetaLift_formRep [Nonempty r] {l : NumberField.InfinitePlace 
   let c : ℂ := ∏ i : O.ChosenIndex, O.tamePart (O.chosenPlace i) (s i).val.det
   have hc : c ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ ↦
     apply_ne_zero_iff.2 (s i).det_ne_zero.isUnit
+  have h_fin : pairWeil O.W (stdSpace E n) O.charW O.charV ((1, k.val), 1, k'.val)
+      O.blockDatum.val = c⁻¹ • O.blockDatum.val := by
+    simpa only [hk, map_one, mul_one] using
+      O.omega_blockDatum_eq_smul k k' 1 (by simp [k', hk, reduceFamily_liftResidue])
   have h_datum : O.pairThetaKernel.ω ((1, k.val), 1, k'.val)
       (O.fockDatum (highestVector O.columnCount O.paramV)) = c⁻¹ • O.fockDatum
-        (highestVector O.columnCount O.paramV) :=
-    O.omega_fockDatum_eq_inv_prod_smul k hk _
+        (highestVector O.columnCount O.paramV) := by
+    change pairWeil O.W (stdSpace E n) O.charW O.charV ((1, k.val), 1, k'.val) _ = _
+    rw [pairWeil_integrated_fin, h_fin, map_smul]
+  have h_coe (z : O.W.Form (typeKernel l O.signs)) :
+      (O.thetaLift hfit z).val = (stdSpace E n).toAlgForm O.isHCParam_paramV
+        (formLift O.pairThetaKernel (typeKernel l O.signs) (typeKernel O.paramV 1)
+          (O.fockDatum (highestVector O.columnCount O.paramV)) z) :=
+    rfl
   apply Subtype.ext
-  rw [coe_formAction, coe_thetaLift, coe_thetaLift, ← toAlgForm_formRep,
+  rw [coe_formAction, h_coe, h_coe, ← toAlgForm_formRep,
     hfit.isArrow_fockDatum.formRep_formLift_of_eq_smul h_datum, map_smul, smul_inv_smul₀ hc]
 
 /-- Let `w` be a split place such that neither `w` nor `w̄` is a chosen place or a place of the
@@ -305,11 +253,14 @@ lemma DescentPair.inner_thetaLift [WeilData E]
     ⟨ofAlgForm O.paramV 1 Ξ.val, isForm_ofAlgForm O.isHCParam_paramV Ξ.val⟩
   let c : ℂ := stdLevelIndex O.levelGroup * card (WeylIndex n O.columnCount)
   have h_star : typeKernel l O.signs = star (star (typeKernel l O.signs)) := (star_star _).symm
+  have h_swap : IsArrow O.pairThetaKernel.swap (star (typeKernel O.paramV 1))
+      (star (typeKernel l O.signs)) Φ :=
+    (hfit.isEdge.isArrow O.charW O.charV O.blockDatum.property).right
   let adjointLift : O.W.Form (typeKernel l O.signs) := conjForm h_star
     (formLift O.pairThetaKernel.swap (star (typeKernel O.paramV 1)) (star (typeKernel l O.signs)) Φ
       (conjForm rfl x))
   have h_adjointLift : adjointLift.val = star (lift O.pairThetaKernel.swap Φ (star x.val)) :=
-    congrArg star (hfit.isArrow_swap_fockDatum.coe_formLift _)
+    congrArg star (h_swap.coe_formLift _)
   have h_descent : c • adjointLift.val = O.normalizedDescent Ξ := by
     rw [h_adjointLift, O.normalizedDescent_eq_smul_star_lift_swap, mul_comm]
   calc inner ℂ (O.thetaLift hfit y) Ξ
@@ -319,7 +270,7 @@ lemma DescentPair.inner_thetaLift [WeilData E]
           (formLift O.pairThetaKernel (typeKernel l O.signs) (typeKernel O.paramV 1) Φ y) x := by
         rw [ofAlgForm_thetaLift, inner_eq_petersson]
     _ = c * inner ℂ y adjointLift := by
-        rw [hfit.isArrow_fockDatum.inner_formLift_adjoint hfit.isArrow_swap_fockDatum rfl h_star]
+        rw [hfit.isArrow_fockDatum.inner_formLift_adjoint h_swap rfl h_star]
     _ = O.W.petersson y (O.normalizedDescent Ξ) := by
         rw [← inner_smul_right, inner_eq_petersson, ← h_descent]
         rfl
@@ -412,7 +363,7 @@ lemma DescentPair.thetaLift_eq_integral [WeilData E]
 /-- Over a finite commutative ring `R`, the number of `n × r` matrices whose square block on the
 rows `ι` is invertible is `card (GL r R) · (card R) ^ ((card n − card r) · card r)`: the block is an
 element of `GL r R`, and the other rows are free. -/
-lemma card_isUnit_submatrix {R : Type} [CommRing R] [Finite R] (ι : r ↪ n) :
+lemma card_isUnit_submatrix {R : Type} [CommRing R] (ι : r ↪ n) :
     Nat.card {x : Matrix n r R // IsUnit (x.submatrix ι id)} =
       Nat.card (GL r R) * Nat.card R ^ ((card n - card r) * card r) := by
   let rows : r ⊕ {a : n // a ∉ Set.range ι} ≃ n :=
@@ -433,159 +384,6 @@ lemma card_isUnit_submatrix {R : Type} [CommRing R] [Finite R] (ι : r ↪ n) :
     _ = _ := congrArg (· * _)
         (Nat.card_congr Submonoid.unitsTypeEquivIsUnitSubmonoid.toEquiv).symm
 
-/-- The block datum as a function of `n × r` matrices `x` modulo `π_M Q = O.levelModulus 1`: with
-`x_w` the reduction of `x` at `w` (`levelResidueAt`), it is `0` unless at every chosen place `x_w`
-is the inclusion matrix of `O.incl`, the embedding of the indices of `W` into those of `V`, and then
-it is `∏ ψ_w (det x'_w)` over the places `w` of the twist, with `x'_w` the block on the rows
-`O.incl` (`New.DescentPair.residueBlockDatum`). -/
-def DescentPair.blockFn (x : Matrix n r (O.levelModulus 1).ResidueRing) : ℂ :=
-  O.residueBlockDatum fun i : O.ChosenIndex ⊕ O.TwistIndex ↦ x.map (levelResidueAt i)
-
-/-- The finite datum `O.blockDatum` of the theta kernel, defined modulo `π_M² Q`, is also the datum
-given by the function `O.blockFn` modulo `π_M Q = O.levelModulus 1` and the vacuum elsewhere. -/
-lemma DescentPair.blockDatum_eq_vacuumDatum [WeilData E] :
-    O.blockDatum = vacuumDatum O.W (stdSpace E n) (O.levelModulus 1) O.blockFn := by
-  -- The two moduli have the same places, and both functions factor through the reductions there.
-  refine Subtype.ext ?_
-  unfold blockDatum vacuumDatum blockFn
-  simp only [liftFn_eq_residueDatum places_levelModulus O.residueBlockDatum, places_levelModulus]
-
-/-- For a complex multiplicative character `χ` of a finite field and a square matrix `X` over that
-field, the squared modulus of `χ(det X)` is `1` if `X` is invertible and `0` otherwise. -/
-lemma star_mulChar_det_mul_self {F : Type} [Field F] [Finite F] (χ : MulChar F ℂ)
-    (X : Matrix r r F) [Decidable (IsUnit X)] :
-    star (χ X.det) * χ X.det = if IsUnit X then 1 else 0 := by
-  rw [MulChar.star_apply', ← MulChar.mul_apply, inv_mul_cancel]
-  split_ifs with hX
-  · exact MulChar.one_apply ((isUnit_iff_isUnit_det X).1 hX)
-  · exact MulChar.map_nonunit _ (mt (isUnit_iff_isUnit_det X).2 hX)
-
-omit [DecidableEq n] in
-/-- Chinese remainder theorem for matrices: a matrix modulo `π_M Q = O.levelModulus 1` is the same
-as the family of its reductions at the chosen places and the places of `Q`. -/
-lemma DescentPair.bijective_map_levelResidueAt :
-    Bijective fun (x : Matrix n r (O.levelModulus 1).ResidueRing)
-      (i : O.ChosenIndex ⊕ O.TwistIndex) ↦
-      (x.map (levelResidueAt i) : Matrix n r (ResField (O.placeAt i))) := by
-  have h_card : Nat.card (∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i))) ≤
-      Nat.card (Matrix n r (O.levelModulus 1).ResidueRing) := by
-    simp only [Matrix, Nat.card_pi, card_ResField, Finset.prod_const, card_univ]
-    simp [O.card_levelModulus_residueRing, prod_pow]
-  exact Injective.bijective_of_nat_card_le (fun x y h ↦ (Modulus.matrix_eq_iff_map_modulusResidue_eq
-    O.apart.injective O.ideal_levelModulus_one).2 (congrFun h)) h_card
-
-/-- The squared norm of the block datum `O.blockFn`: the sum of `|O.blockFn x|²` over the `n × r`
-matrices `x` modulo the product `π_M Q = O.levelModulus 1` of the chosen places `M` and the places
-`Q` of the twist, two finite families of places that come with the pair. The function is `0` unless
-`x` is the inclusion matrix of `O.incl` at every chosen place, and is then a product over `w ∈ Q` of
-characters of the determinant of the block on the rows `O.incl`. So it counts one matrix at each
-chosen place; at `w ∈ Q`, of norm `q_w`, it counts the matrices whose block on those rows is
-invertible, the other `O.rankDiff` rows being free. The sum is thus the order of
-`O.TwistGL r = ∏_w GL_r(k_w)` times `(∏_w q_w) ^ (O.rankDiff * r)`. -/
-lemma DescentPair.blockFn_normSq : star O.blockFn ⬝ᵥ O.blockFn =
-    Nat.card (O.TwistGL r) * (∏ i : O.TwistIndex, (O.twistPlace i).q) ^ (O.rankDiff * card r) := by
-  classical
-  let e : Matrix n r (O.levelModulus 1).ResidueRing ≃ ∀ i, Matrix n r (ResField (O.placeAt i)) :=
-    Equiv.ofBijective _ O.bijective_map_levelResidueAt
-  -- The squared modulus of `O.blockFn` is a product of local indicators.
-  let ind : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i)) → ℂ
-    | .inl _ => fun X ↦ if X = inclMatrix _ O.incl then 1 else 0
-    | .inr _ => fun X ↦ if IsUnit (X.submatrix O.incl id) then 1 else 0
-  have h_sq (x : Matrix n r (O.levelModulus 1).ResidueRing) :
-      star (O.blockFn x) * O.blockFn x = ∏ i, ind i (e x i) := by
-    rw [blockFn, residueBlockDatum, prod_sum_type]
-    split_ifs with h_chosen
-    · have h_one : ∏ i, ind (.inl i) (e x (.inl i)) = 1 :=
-        Finset.prod_eq_one fun i _ ↦ ite_eq_left (h_chosen i)
-      rw [h_one, one_mul, star_prod, ← prod_mul_distrib]
-      exact Finset.prod_congr rfl fun i _ ↦ star_mulChar_det_mul_self _ _
-    · obtain ⟨i, hi⟩ : ∃ i : O.ChosenIndex, e x (.inl i) ≠ inclMatrix _ O.incl :=
-        not_forall.1 h_chosen
-      have h_zero : ∏ i, ind (.inl i) (e x (.inl i)) = 0 :=
-        prod_eq_zero (mem_univ i) (ite_eq_right hi)
-      rw [mul_zero, h_zero, zero_mul]
-  have h_chosen (i : O.ChosenIndex) : ∑ X, ind (.inl i) X = 1 := Fintype.sum_ite_eq' _ fun _ ↦ 1
-  have h_twist (i : O.TwistIndex) : ∑ X, ind (.inr i) X =
-      Nat.card (GL r (ResField (O.twistPlace i))) * (O.twistPlace i).q ^ (O.rankDiff * card r) := by
-    rw [← card_ResField, ← Nat.cast_pow, ← Nat.cast_mul, DescentPair.rankDiff,
-      ← card_isUnit_submatrix O.incl, Nat.card_eq_fintype_card, Fintype.card_subtype]
-    exact sum_boole _ _
-  calc star O.blockFn ⬝ᵥ O.blockFn
-      = ∑ x : Matrix n r (O.levelModulus 1).ResidueRing, ∏ i, ind i (e x i) :=
-        Finset.sum_congr rfl fun x _ ↦ h_sq x
-    _ = ∑ X : ∀ i, Matrix n r (ResField (O.placeAt i)), ∏ i, ind i (X i) :=
-        e.sum_comp fun X ↦ ∏ i, ind i (X i)
-    _ = ∏ i, ∑ X, ind i X := (Fintype.prod_sum ind).symm
-    _ = ∏ i : O.TwistIndex, (Nat.card (GL r (ResField (O.twistPlace i))) *
-          (O.twistPlace i).q ^ (O.rankDiff * card r) : ℂ) := by
-        simp only [prod_sum_type, h_chosen, h_twist, prod_const_one, one_mul]
-    _ = Nat.card (O.TwistGL r) * (∏ i, (O.twistPlace i).q) ^ (O.rankDiff * card r) := by
-        simp only [prod_mul_distrib, prod_pow, TwistGL, Nat.card_pi, Nat.cast_prod]
-        rfl
-
-/-- Let `x` be an `n × r` matrix modulo the product `π_M Q = O.levelModulus 1` of the chosen places
-`M` and the places `Q` of the twist, and suppose that the block datum `O.blockFn` does not vanish at
-`x`: at each chosen place `x` is the inclusion matrix of `O.incl : r ↪ n`, and at each place of the
-twist its block on those rows is invertible. Then this block is the reduction modulo `π_M Q`
-(`reductionGL`) of an integral point `k` of the finite adelic group of `W` that lies in the level
-`J_M = levelOf O.chosenPlace ⊥` of the integral points that reduce to `1` at every chosen place. -/
-lemma DescentPair.exists_reductionGL_eq_submatrix_of_blockFn_ne_zero
-    {x : Matrix n r (O.levelModulus 1).ResidueRing} (hx : O.blockFn x ≠ 0) :
-    ∃ k : stdLevel E r, k.val ∈ levelOf O.chosenPlace ⊥ ∧
-      ((O.levelModulus 1).reductionGL k).val = x.submatrix O.incl id := by
-  -- The block is `1` at the chosen places and invertible at the places of `Q`; lift this family.
-  classical
-  let block (i : O.ChosenIndex ⊕ O.TwistIndex) : Matrix r r (ResField (O.placeAt i)) :=
-    (x.map (levelResidueAt i)).submatrix O.incl id
-  rw [blockFn, residueBlockDatum, ite_ne_right_iff, prod_ne_zero_iff] at hx
-  obtain ⟨hx_chosen, hx_twist⟩ := hx
-  have h_chosen (i : O.ChosenIndex) : block (.inl i) = 1 :=
-    calc block (.inl i) = (inclMatrix _ O.incl).submatrix O.incl id :=
-          congrArg (submatrix · O.incl id) (hx_chosen i)
-      _ = 1 := by rw [← inclMatrix_transpose_mul, inclMatrix_transpose_mul_self]
-  have h_unit : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, IsUnit (block i)
-    | .inl i => by simp only [h_chosen, isUnit_one]
-    | .inr i =>
-      (isUnit_iff_isUnit_det _).2 (MulChar.apply_ne_zero_iff.1 (hx_twist i (mem_univ i)))
-  obtain ⟨k, hk⟩ : ∃ k : stdLevel E r, stdLevel.reduceFamily O.placeAt k = fun i ↦
-    (h_unit i).unit :=
-    (exists_reduceFamily_eq _).imp fun _ ↦ And.right
-  have h_reduce (i : O.ChosenIndex ⊕ O.TwistIndex) :
-      (stdLevel.reduceAt (O.placeAt i) k).val = block i := congrArg Units.val (congrFun hk i)
-  have h_one : stdLevel.reduceFamily O.chosenPlace k = 1 :=
-    funext fun i ↦ Units.ext ((h_reduce (.inl i)).trans (h_chosen i))
-  refine ⟨k, mem_levelOf.2 ⟨k.property, h_one⟩, (Modulus.matrix_eq_iff_map_modulusResidue_eq
-    O.apart.injective O.ideal_levelModulus_one).2 fun i ↦ ?_⟩
-  rw [reductionGL_map_modulusResidue, ← submatrix_map]
-  exact h_reduce i
-
-/-- Let `π_M Q = O.levelModulus 1` be the product of the chosen places and the places of the twist.
-The block datum `O.blockFn`, which on matrices modulo `π_M Q` is the indicator of the inclusion
-matrix at the chosen places times characters of the determinant of the block on the rows `O.incl` at
-the places of the twist, is sharp for the level `J_M = levelOf O.chosenPlace ⊥`, principal at the
-chosen places and maximal elsewhere. -/
-lemma DescentPair.isSharpFn_blockFn [WeilData E] :
-    IsSharpFn O.W (stdSpace E n) O.charV (O.levelModulus 1)
-    (levelOf O.chosenPlace ⊥) O.blockFn where
-  principal_le := by
-    rintro _ ⟨k, hk, rfl⟩
-    have h_all : stdLevel.reduceFamily O.placeAt k = 1 := O.ker_reductionGL_eq.le hk
-    exact mem_levelOf.2 ⟨k.property, funext fun i ↦ congrFun h_all (.inl i)⟩
-  ne_zero h := by
-    have h_normSq : star O.blockFn ⬝ᵥ O.blockFn ≠ 0 := by
-      simp [O.blockFn_normSq, prod_eq_zero_iff, IsDedekindDomain.HeightOneSpectrum.ne_bot]
-    simp [h] at h_normSq
-  fixes k hk := by
-    -- This is the transformation law of the datum for the pair `(k, 1)`.
-    obtain ⟨hk_int, hk_one⟩ : ∃ hk_int : k ∈ stdLevel E r,
-        stdLevel.reduceFamily O.chosenPlace ⟨k, hk_int⟩ = 1 := mem_levelOf.1 hk
-    have h_law : O.pairThetaKernel.ω ((1, k), 1, 1) O.blockDatum.val = O.blockDatum.val := by
-      simpa [hk_one] using O.omega_blockDatum_eq_smul ⟨k, hk_int⟩ 1 1 (by simp [hk_one])
-    simpa [← blockDatum_eq_vacuumDatum, pairWeil_apply, Prod.mk_one_one] using h_law
-  exists_mul_eq := ⟨(inclMatrix (O.levelModulus 1).ResidueRing O.incl)ᵀ, fun x hx ↦ by
-    simpa only [inclMatrix_transpose_mul] using
-      O.exists_reductionGL_eq_submatrix_of_blockFn_ne_zero hx⟩
-
 /-- The mass `c_Ψ` of the block datum: the sum of `|O.blockFn x|²` over the `n × r` matrices `x`
 modulo `π_M Q` (`New.DescentPair.blockFn_normSq`), divided by the number of these matrices and by
 the index `∏_{w ∈ M} |GL_r(k_w)|` of the level `J_M`. -/
@@ -600,10 +398,106 @@ lemma DescentPair.isSharp_blockDatum [WeilData E]
     (hW : (∀ i j : r, O.signs i = O.signs j) ∨ Nonempty (O.levelModulus 1).places) :
     IsSharp O.charV (O.levelModulus 1).places.conjClosure O.blockDatum.val (levelOf O.chosenPlace ⊥)
       O.blockMass := by
+  classical
+  let blockFn (x : Matrix n r (O.levelModulus 1).ResidueRing) : ℂ :=
+    O.residueBlockDatum fun i : O.ChosenIndex ⊕ O.TwistIndex ↦ x.map (levelResidueAt i)
+  let e : Matrix n r (O.levelModulus 1).ResidueRing ≃ ∀ i, Matrix n r (ResField (O.placeAt i)) :=
+    Equiv.ofBijective (fun x i ↦ x.map (levelResidueAt i)) <|
+      Injective.bijective_of_nat_card_le
+        (fun _ _ h ↦ (Modulus.matrix_eq_iff_map_modulusResidue_eq
+          O.apart.injective O.ideal_levelModulus_one).2 (congrFun h)) <| by
+        simp only [Matrix, Nat.card_pi, card_ResField, Finset.prod_const, card_univ]
+        simp [O.card_levelModulus_residueRing, prod_pow]
+  let ind : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i)) → ℂ
+    | .inl _ => fun X ↦ if X = inclMatrix _ O.incl then 1 else 0
+    | .inr _ => fun X ↦ if IsUnit (X.submatrix O.incl id) then 1 else 0
+  have h_sq (x : Matrix n r (O.levelModulus 1).ResidueRing) :
+      star (blockFn x) * blockFn x = ∏ i, ind i (e x i) := by
+    dsimp only [blockFn]
+    rw [residueBlockDatum, prod_sum_type]
+    split_ifs with h_chosen
+    · have h_one : ∏ i, ind (.inl i) (e x (.inl i)) = 1 :=
+        Finset.prod_eq_one fun i _ ↦ ite_eq_left (h_chosen i)
+      rw [h_one, one_mul, star_prod, ← prod_mul_distrib]
+      refine Finset.prod_congr rfl fun i _ ↦ ?_
+      dsimp only [ind]
+      rw [MulChar.star_apply', ← MulChar.mul_apply, inv_mul_cancel]
+      split_ifs with hX
+      · exact MulChar.one_apply ((isUnit_iff_isUnit_det _).1 hX)
+      · exact MulChar.map_nonunit _ (mt (isUnit_iff_isUnit_det _).2 hX)
+    · obtain ⟨i, hi⟩ : ∃ i : O.ChosenIndex, e x (.inl i) ≠ inclMatrix _ O.incl :=
+        not_forall.1 h_chosen
+      have h_zero : ∏ i, ind (.inl i) (e x (.inl i)) = 0 :=
+        prod_eq_zero (mem_univ i) (ite_eq_right hi)
+      rw [mul_zero, h_zero, zero_mul]
+  have h_chosen (i : O.ChosenIndex) : ∑ X, ind (.inl i) X = 1 := Fintype.sum_ite_eq' _ fun _ ↦ 1
+  have h_twist (i : O.TwistIndex) : ∑ X, ind (.inr i) X =
+      Nat.card (GL r (ResField (O.twistPlace i))) * (O.twistPlace i).q ^ (O.rankDiff * card r) := by
+    rw [← card_ResField, ← Nat.cast_pow, ← Nat.cast_mul, DescentPair.rankDiff,
+      ← card_isUnit_submatrix O.incl, Nat.card_eq_fintype_card, Fintype.card_subtype]
+    exact sum_boole _ _
+  have h_normSq : star blockFn ⬝ᵥ blockFn =
+      Nat.card (O.TwistGL r) * (∏ i : O.TwistIndex, (O.twistPlace i).q) ^ (O.rankDiff * card r) :=
+    calc star blockFn ⬝ᵥ blockFn
+        = ∑ x : Matrix n r (O.levelModulus 1).ResidueRing, ∏ i, ind i (e x i) :=
+          Finset.sum_congr rfl fun x _ ↦ h_sq x
+      _ = ∑ X : ∀ i, Matrix n r (ResField (O.placeAt i)), ∏ i, ind i (X i) :=
+          e.sum_comp fun X ↦ ∏ i, ind i (X i)
+      _ = ∏ i, ∑ X, ind i X := (Fintype.prod_sum ind).symm
+      _ = ∏ i : O.TwistIndex, (Nat.card (GL r (ResField (O.twistPlace i))) *
+            (O.twistPlace i).q ^ (O.rankDiff * card r) : ℂ) := by
+          simp only [prod_sum_type, h_chosen, h_twist, prod_const_one, one_mul]
+      _ = Nat.card (O.TwistGL r) * (∏ i, (O.twistPlace i).q) ^ (O.rankDiff * card r) := by
+          simp only [prod_mul_distrib, prod_pow, TwistGL, Nat.card_pi, Nat.cast_prod]
+          rfl
+  have h_vac : O.blockDatum = vacuumDatum O.W (stdSpace E n) (O.levelModulus 1) blockFn := by
+    refine Subtype.ext ?_
+    unfold blockDatum vacuumDatum
+    dsimp only [blockFn]
+    simp only [liftFn_eq_residueDatum places_levelModulus O.residueBlockDatum, places_levelModulus]
+  have h_sharpFn : IsSharpFn O.W (stdSpace E n) O.charV (O.levelModulus 1)
+      (levelOf O.chosenPlace ⊥) blockFn :=
+    { principal_le := by
+        rintro _ ⟨k, hk, rfl⟩
+        have h_all : stdLevel.reduceFamily O.placeAt k = 1 := O.ker_reductionGL_eq.le hk
+        exact mem_levelOf.2 ⟨k.property, funext fun i ↦ congrFun h_all (.inl i)⟩
+      ne_zero := fun h ↦ by
+        have h_ne : star blockFn ⬝ᵥ blockFn ≠ 0 := by
+          simp [h_normSq, prod_eq_zero_iff, IsDedekindDomain.HeightOneSpectrum.ne_bot]
+        simp [h] at h_ne
+      fixes := fun k hk ↦ by
+        obtain ⟨hk_int, hk_one⟩ : ∃ hk_int : k ∈ stdLevel E r,
+            stdLevel.reduceFamily O.chosenPlace ⟨k, hk_int⟩ = 1 := mem_levelOf.1 hk
+        have h_law : O.pairThetaKernel.ω ((1, k), 1, 1) O.blockDatum.val = O.blockDatum.val := by
+          simpa [hk_one] using O.omega_blockDatum_eq_smul ⟨k, hk_int⟩ 1 1 (by simp [hk_one])
+        simpa [← h_vac, pairWeil_apply, Prod.mk_one_one] using h_law
+      exists_mul_eq := ⟨(inclMatrix (O.levelModulus 1).ResidueRing O.incl)ᵀ, fun x hx ↦ by
+        dsimp only [blockFn] at hx
+        rw [residueBlockDatum, ite_ne_right_iff, prod_ne_zero_iff] at hx
+        let block (i : O.ChosenIndex ⊕ O.TwistIndex) : Matrix r r (ResField (O.placeAt i)) :=
+          (x.map (levelResidueAt i)).submatrix O.incl id
+        have h_ch (i : O.ChosenIndex) : block (.inl i) = 1 := by
+          dsimp only [block]
+          rw [hx.1 i, ← inclMatrix_transpose_mul, inclMatrix_transpose_mul_self]
+        have h_unit : ∀ i, IsUnit (block i)
+          | .inl i => by simp only [h_ch, isUnit_one]
+          | .inr i => (isUnit_iff_isUnit_det _).2
+              (MulChar.apply_ne_zero_iff.1 (hx.2 i (mem_univ i)))
+        obtain ⟨k, hk⟩ : ∃ k : stdLevel E r,
+            stdLevel.reduceFamily O.placeAt k = fun i ↦ (h_unit i).unit :=
+          (exists_reduceFamily_eq _).imp fun _ ↦ And.right
+        have h_red (i) : (stdLevel.reduceAt (O.placeAt i) k).val = block i :=
+          congrArg Units.val (congrFun hk i)
+        refine ⟨k, mem_levelOf.2 ⟨k.property, funext fun i ↦ Units.ext ((h_red (.inl i)).trans
+          (h_ch i))⟩, ?_⟩
+        rw [inclMatrix_transpose_mul]
+        refine (Modulus.matrix_eq_iff_map_modulusResidue_eq
+          O.apart.injective O.ideal_levelModulus_one).2 fun i ↦ ?_
+        rw [reductionGL_map_modulusResidue, ← submatrix_map]
+        exact h_red i⟩ }
   have h_index : stdLevelIndex (levelOf (n := r) O.chosenPlace ⊥) = Nat.card (O.ChosenGL r) :=
     relIndex_levelOf.trans Subgroup.index_bot
-  simpa only [blockMass, ← O.blockFn_normSq, ← h_index, blockDatum_eq_vacuumDatum] using
-    O.isSharpFn_blockFn.isSharp hW
+  simpa only [blockMass, ← h_normSq, ← h_index, h_vac] using h_sharpFn.isSharp hW
 
 /-- The index of the level on `V`, times the sum of `|O.blockFn x|²` over the matrices `x` modulo
 `π_M Q` (`New.DescentPair.blockFn_normSq`), over the index of the level `J_M` on `W`. Divided by the
@@ -641,7 +535,8 @@ lemma DescentPair.chosenFactor_ne_zero : O.chosenFactor ≠ 0 := by
   refine prod_ne_zero_iff.2 fun w _ ↦
     div_ne_zero (prod_ne_zero_iff.2 fun i hi ↦ ?_) (Nat.cast_ne_zero.2 Nat.card_pos.ne')
   rw [sub_ne_zero, inv_pow, ne_comm, Ne, inv_eq_one]
-  exact_mod_cast (one_lt_pow₀ (O.chosenPlace w).one_lt_q (by grind : i ≠ 0)).ne'
+  have hi_ne : i ≠ 0 := Nat.ne_zero_of_lt (Finset.mem_Icc.mp hi).1
+  exact_mod_cast (one_lt_pow₀ (O.chosenPlace w).one_lt_q hi_ne).ne'
 
 /-- The index of the level on `V`, times the order of `∏_{w ∈ Q} GL_r(k_w)`, is the product over all
 places `w` of `M` and `Q` of the index in `GL_n(k_w)` of the group that fixes the basis vectors
@@ -742,20 +637,6 @@ abbrev liftSeries {s : D.RowIndex → ℤˣ} (j : ℕ) : (New.G D.E s → ℂ) �
 lemma two_mul_card_rowIndex_lt : 2 * card D.RowIndex < card (D.RowIndex ⊕ Fin D.t) := by
   grind [card_rowIndex, card_rowIndex_sum_fin]
 
-/-- The series `D.liftSeries ϑ j` of a form of level `J_M` on a space `V` of rank `r` is a form of
-level `J_M` on `V`. -/
-lemma exists_principalForms_eq_liftSeries {s : D.RowIndex → ℤˣ} (j : ℕ)
-    {V : Space D.E D.RowIndex s} (y : D.principalForms V) :
-    ∃ z : D.principalForms V, ⇑z.val = D.liftSeries ϑ j ⇑y.val := by
-  -- The block datum is sharp for `J_M`. So off `π_M Q` the character is unramified, and `J_M`
-  -- contains the integral points.
-  have h_sharp := (D.descentPair ϑ j).isSharp_blockDatum (.inr nonempty_modulus_places)
-  obtain ⟨z, hz_level, hz⟩ := exists_form_eq_rallisSeries D.two_mul_card_rowIndex_lt
-    h_sharp.isUnramifiedOn h_sharp.inf_supportedOn_le
-      (levelOf_le_stdLevel.trans stdLevel_le_localLevel)
-    (mem_levelSpace_formRep_iff.1 y.property)
-  exact ⟨⟨z, mem_levelSpace_formRep_iff.2 hz_level⟩, hz⟩
-
 /-- Fix a tame character `ϑ`, a lift index `j` and a space `V` of rank `r` with signs `s`. The forms
 `D.principalForms V` are those on `V` of the fixed parameter of `D` and of the level `J_M`,
 principal at the chosen places and maximal elsewhere. Let `x`, `y`, `z` be such forms, with `z` the
@@ -791,7 +672,15 @@ character `charV` on that side of the `j`-th pair. -/
 lemma exists_end_eq_liftSeries {s : D.RowIndex → ℤˣ} (j : ℕ) (W : Space D.E D.RowIndex s) :
     ∃ R : Module.End ℂ (D.principalForms W),
       ∀ y : D.principalForms W, ⇑(R y).val = D.liftSeries ϑ j ⇑y.val := by
-  choose seriesForm h_seriesForm using D.exists_principalForms_eq_liftSeries ϑ j (V := W)
+  have h_sharp := (D.descentPair ϑ j).isSharp_blockDatum (.inr nonempty_modulus_places)
+  have h_exists (y : D.principalForms W) :
+      ∃ z : D.principalForms W, ⇑z.val = D.liftSeries ϑ j ⇑y.val := by
+    obtain ⟨z, hz_level, hz⟩ := exists_form_eq_rallisSeries D.two_mul_card_rowIndex_lt
+      h_sharp.isUnramifiedOn h_sharp.inf_supportedOn_le
+        (levelOf_le_stdLevel.trans stdLevel_le_localLevel)
+      (mem_levelSpace_formRep_iff.1 y.property)
+    exact ⟨⟨z, mem_levelSpace_formRep_iff.2 hz_level⟩, hz⟩
+  choose seriesForm h_seriesForm using h_exists
   -- The form `seriesForm y` is determined by its inner products, which are sums of terms linear
   -- in `y`.
   have h_sum (x y : D.principalForms W) : HasSum
@@ -838,8 +727,8 @@ theorem inner_singleLift {j : D.LiftIndex} (y : D.principalForms (D.spaceW j))
     (Ξ : (D.descentPair ϑ j).FormV) :
     inner ℂ (D.singleLift ϑ j y) Ξ = (D.spaceW j).petersson y.val
       ((D.descentPair ϑ j).normalizedDescent Ξ) := by
-  rw [D.singleLift_apply]
-  exact (D.descentPair ϑ j).inner_thetaLift (D.fitsParams_descentPair ϑ j) y.val Ξ
+  simpa only [D.singleLift_apply] using!
+    (D.descentPair ϑ j).inner_thetaLift (D.fitsParams_descentPair ϑ j) y.val Ξ
 
 /-- The adjoint of the theta lift `D.singleLift ϑ j` sends a form `Ξ` on `V_j` to the form on `W_j`
 whose function on the adelic group `U(W_j)(𝔸)` is `θ Ξ`: at `g` it is the sum, over the classes `h`
@@ -853,22 +742,24 @@ theorem coe_adjoint_singleLift {j : D.LiftIndex} (Ξ : (D.descentPair ϑ j).Form
   have h_level : HasLevel (O.normalizedDescent Ξ) (levelOf D.chosenPlace ⊥) := by
     rintro _ ⟨k, hk : stdLevel.reduceFamily O.chosenPlace k = 1, rfl⟩ g
     change O.normalizedDescent Ξ (g * (1, k.val)) = O.normalizedDescent Ξ g
-    simpa using O.normalizedDescent_mul_eq_normalizedDescent_formAction k hk Ξ g
+    have h_fin : pairWeil O.W (stdSpace D.E _) O.charW O.charV ((1, k.val), 1, 1)
+        O.blockDatum.val = O.blockDatum.val := by
+      simpa [hk] using O.omega_blockDatum_eq_smul k 1 1 (by simp [hk])
+    have h_datum : O.pairThetaKernel.swap.ω ((1, 1), 1, k.val)
+        (O.fockDatum (highestVector O.columnCount O.paramV)) =
+        O.fockDatum (highestVector O.columnCount O.paramV) := by
+      change pairWeil O.W (stdSpace D.E _) O.charW O.charV ((1, k.val), 1, 1) _ = _
+      rw [pairWeil_integrated_fin, h_fin]
+    simp only [normalizedDescent_eq_smul_star_lift_swap, Pi.smul_apply, Pi.star_apply]
+    rw [O.pairThetaKernel.swap.lift_equivariant
+      (isAutomorphic_algFormCoeff Ξ.val).conj _ (1, 1), h_datum]
+    simp only [Prod.mk_one_one, mul_one]
   let descentForm : D.principalForms (D.spaceW j) :=
     ⟨⟨O.normalizedDescent Ξ, O.isForm_normalizedDescent (D.fitsParams_descentPair ϑ j) Ξ⟩,
       mem_levelSpace_formRep_iff.2 h_level⟩
   have h_eq : (D.singleLift ϑ j).adjoint Ξ = descentForm := ext_inner_left ℂ fun y ↦ by
     rw [LinearMap.adjoint_inner_right, inner_singleLift, Submodule.coe_inner, inner_eq_petersson]
   rw [h_eq]
-
-/-- The descent is the inner product with the kernel: for a form `φ` on `V_j` and `g` in
-`U(W_j)(𝔸)`, the value at `g` of the adjoint of the lift applied to `φ` is the inner product of the
-form `New.DescentPair.vectorKernelForm` at `g` with `φ`. -/
-theorem adjoint_singleLift_apply {j : D.LiftIndex} (φ : (D.descentPair ϑ j).FormV)
-    (g : New.G D.E (D.signsW j)) :
-    ((D.singleLift ϑ j).adjoint φ).val g = inner ℂ ((D.descentPair ϑ j).vectorKernelForm g) φ := by
-  rw [coe_adjoint_singleLift]
-  exact (D.descentPair ϑ j).normalizedDescent_eq_inner_vectorKernelForm φ g
 
 /-- The lift is integration against the kernel: the lift of a form `y` of level `J_M` on `W_j` is
 the integral over `g` in `[U(W_j)]` of `y(g)` times the form `New.DescentPair.vectorKernelForm` at
@@ -879,17 +770,16 @@ theorem singleLift_eq_integral {j : D.LiftIndex} (y : D.principalForms (D.spaceW
   (D.singleLift_apply ϑ j y).trans
     ((D.descentPair ϑ j).thetaLift_eq_integral (D.fitsParams_descentPair ϑ j) y.val)
 
-/-- For `1 ≤ j ≤ m`, a form `Ξ` on `V_j` has descent `θ Ξ = 0` exactly when it is orthogonal to the
-lifts of all forms of level `J_M` on `W_j`. -/
-theorem normalizedDescent_eq_zero_iff {j : D.LiftIndex} (Ξ : (D.descentPair ϑ j).FormV) :
-    (D.descentPair ϑ j).normalizedDescent Ξ = 0 ↔
-      ∀ y : D.principalForms (D.spaceW j), inner ℂ (D.singleLift ϑ j y) Ξ = 0 := by
-  have h_descent : (D.descentPair ϑ j).normalizedDescent Ξ = 0 ↔ (D.singleLift ϑ j).adjoint Ξ =
-    0 := by
-    rw [← D.coe_adjoint_singleLift]
-    exact ⟨fun h ↦ Subtype.ext (Subtype.ext h), fun h ↦ by rw [h]; rfl⟩
-  simp only [h_descent, ← LinearMap.adjoint_inner_right]
-  exact ⟨fun h y ↦ by simp [h], fun h ↦ ext_inner_left ℂ (by simpa using h)⟩
+/-- For `1 ≤ j ≤ m`, if a form `Ξ` on `V_j` is orthogonal to the lifts of all forms of level `J_M`
+on `W_j`, then its descent `θ Ξ` vanishes. -/
+theorem normalizedDescent_eq_zero_of_inner_eq_zero {j : D.LiftIndex}
+    (Ξ : (D.descentPair ϑ j).FormV)
+    (h : ∀ y : D.principalForms (D.spaceW j), inner ℂ (D.singleLift ϑ j y) Ξ = 0) :
+    (D.descentPair ϑ j).normalizedDescent Ξ = 0 := by
+  have h_adj : (D.singleLift ϑ j).adjoint Ξ = 0 :=
+    ext_inner_left ℂ fun y ↦ by simpa [LinearMap.adjoint_inner_right] using h y
+  rw [← D.coe_adjoint_singleLift, h_adj]
+  rfl
 
 /-- The function `ofAlgForm` on the adelic group of `V_j`, applied to the algebraic form
 `D.singleLift ϑ j y`, is the theta lift `formLift` of `y`. -/
@@ -911,22 +801,19 @@ the number `m = D.m` of lifts of the data. Then the theta lift `D.singleLift ϑ 
 twisted by `ϑ` is injective. -/
 theorem singleLift_injective (ϑ : D.TameChar) {j : D.LiftIndex} :
     Injective (D.singleLift ϑ j) := by
-  -- The block datum is sharp for `J_M`, so Rallis' formula gives the injectivity of the lift `L`.
+  -- The block datum is sharp for `J_M`, so Rallis' formula detects the kernel of the theta lift.
   let O : DescentPair D.E D.RowIndex (D.RowIndex ⊕ Fin D.t) := D.descentPair ϑ j
-  let L : O.W.Form (typeKernel D.paramW O.signs) →ₗ[ℂ]
-      (stdSpace D.E (D.RowIndex ⊕ Fin D.t)).Form (typeKernel O.paramV 1) :=
-    formLift O.pairThetaKernel (typeKernel D.paramW O.signs) (typeKernel O.paramV 1)
-      (O.fockDatum (highestVector O.columnCount O.paramV))
   obtain ⟨C, -, h_rallis⟩ := rallis_inner_product_cosetTerm (S := D.spaceW j)
     (T := stdSpace D.E (D.RowIndex ⊕ Fin D.t)) (D.fitsParams_descentPair ϑ j).isEdge
     D.two_mul_card_rowIndex_lt
   refine (injective_iff_map_eq_zero _).2 fun y hy ↦ ?_
-  have h_inj : L y.val = 0 → y.val = 0 :=
-    (h_rallis O.charW O.charV (O.isSharp_blockDatum (.inr nonempty_modulus_places)) y.val
-      (mem_levelSpace_formRep_iff.1 y.property)).left
-  have h_up : ofAlgForm O.paramV 1 (D.singleLift ϑ j y).val = L y.val := D.ofAlgForm_singleLift ϑ y
-  have h_zero : L y.val = 0 := Subtype.ext (by rw [← h_up, hy]; exact map_zero _)
-  exact Subtype.ext (h_inj h_zero)
+  apply Subtype.ext
+  apply (h_rallis O.charW O.charV (O.isSharp_blockDatum (.inr nonempty_modulus_places)) y.val
+    (mem_levelSpace_formRep_iff.1 y.property)).left
+  apply Subtype.ext
+  refine (D.ofAlgForm_singleLift ϑ y).symm.trans ?_
+  rw [hy]
+  exact map_zero _
 
 /-- For `1 ≤ j ≤ m` there is a constant `A ≠ 0` such that for every tame character `ϑ` the Gram form
 `⟨Θ_j x, Θ_j y⟩` of the theta lift `Θ_j = D.singleLift ϑ j` on the forms of level `J_M` on `W_j` is
@@ -975,38 +862,11 @@ theorem exists_hasSum_rallisTerm_inner_singleLift (j : D.LiftIndex) :
   calc C * dim * O.gramFactor * D.rallisTerm ϑ j (D.spaceW j) x y γ
       = C * dim * (O.gramFactor / card (D.Y 1 × D.RowIndex → (D.twistModulus ϑ 1).ResidueRing)) *
         term γ := by
-        rw [rallisTerm]; ring
-    _ = stdLevelIndex O.levelGroup * dim * (C * O.blockMass * term γ) := by rw [← h_mass]; ring
-
-/-- The Gram form of one lift, term by term: for `1 ≤ j ≤ m`, on the forms of level `J_M` on the
-rank `r` space `W_j` of the data `D`, `⟨Θ_j x, Θ_j y⟩ = ∑_γ c_j c_Q mc(γ) ⟨x, γ y⟩`, with
-`Θ_j = D.singleLift ϑ j` the theta lift to the definite space `V_j` of rank `r + t`. The constant
-`c_j ≠ 0` does not depend on the tame character `ϑ`. With `Q` the places of `ϑ`, `c_Q` is
-`New.DescentPair.twistFactor`. The sum runs over the finite points of `U(W_j)` modulo those that are
-integral away from the places of `π_M Q = D.twistModulus ϑ 1` and their conjugates. As in
-`New.SiegelWeil.cosetTerm`, a coset is represented by a point `γ` supported away from these places,
-which acts by right translation. Its coefficient `mc(γ) = (charV(det γ) · finMultiplier(γ) ^
-(r + t))⁻¹` (`New.SiegelWeil.vacuumCoeff`) is that by which `γ` changes the matrix coefficient of
-the unramified vector of the Weil representation, for the character
-`charV = (D.descentPair ϑ j).charV` on the side of `V_j`. -/
-theorem exists_hasSum_inner_singleLift (j : D.LiftIndex) :
-    ∃ c : ℂ, c ≠ 0 ∧ ∀ (ϑ : D.TameChar) (x y : D.principalForms (D.spaceW j)),
-      HasSum (fun γ : Gf D.E D.RowIndex ⧸ localLevel D.RowIndex
-        (D.twistModulus ϑ 1).places.conjClosureᶜ ↦
-          c * (D.descentPair ϑ j).twistFactor *
-            cosetTerm (card (D.Y 1)) (D.descentPair ϑ j).charV
-              (D.twistModulus ϑ 1).places.conjClosureᶜ x.val y.val γ)
-        (inner ℂ (D.singleLift ϑ j x) (D.singleLift ϑ j y)) := by
-  obtain ⟨A, hA, h_gram⟩ := D.exists_hasSum_rallisTerm_inner_singleLift j
-  refine ⟨A * (D.descentPair .one j).chosenFactor, mul_ne_zero hA (chosenFactor_ne_zero _),
-    fun ϑ x y ↦ (h_gram ϑ x y).congr_fun fun γ ↦ ?_⟩
-  -- The chosen places and the ranks do not depend on `ϑ`.
-  have h_factor : (D.descentPair ϑ j).gramFactor / card
-    (D.Y 1 × D.RowIndex → (D.twistModulus ϑ 1).ResidueRing) =
-      (D.descentPair .one j).chosenFactor * (D.descentPair ϑ j).twistFactor :=
-    (D.descentPair ϑ j).gramFactor_div_card
-  rw [mul_assoc A, ← h_factor, rallisTerm]
-  ring
+        rw [rallisTerm]
+        ring
+    _ = stdLevelIndex O.levelGroup * dim * (C * O.blockMass * term γ) := by
+        rw [← h_mass]
+        ring
 
 /-- **Norm of one lift.** For `1 ≤ j ≤ m` there is a constant `c_j ≠ 0` such that for every tame
 character `ϑ` the lift `Θ_j = D.singleLift ϑ j` satisfies `Θ_j^* Θ_j = c_j c_Q R` on the forms of
@@ -1016,10 +876,18 @@ theorem exists_adjoint_singleLift_comp_eq (j : D.LiftIndex) :
     ∃ c : ℂ, c ≠ 0 ∧ ∀ ϑ : D.TameChar,
       (D.singleLift ϑ j).adjoint ∘ₗ D.singleLift ϑ j =
         (c * (D.descentPair ϑ j).twistFactor) • D.rallisOperator ϑ j (D.spaceW j) := by
-  obtain ⟨c, hc, h_gram⟩ := D.exists_hasSum_inner_singleLift j
-  refine ⟨c, hc, fun ϑ ↦ LinearMap.ext fun y ↦ ext_inner_left ℂ fun x ↦ ?_⟩
+  obtain ⟨A, hA, h_gram⟩ := D.exists_hasSum_rallisTerm_inner_singleLift j
+  refine ⟨A * (D.descentPair .one j).chosenFactor, mul_ne_zero hA (chosenFactor_ne_zero _),
+    fun ϑ ↦ LinearMap.ext fun y ↦ ext_inner_left ℂ fun x ↦ ?_⟩
   rw [LinearMap.comp_apply, LinearMap.adjoint_inner_right, LinearMap.smul_apply, inner_smul_right]
-  exact (h_gram ϑ x y).unique ((D.hasSum_inner_rallisOperator ϑ j (D.spaceW j) x y).mul_left _)
+  have h_factor : (D.descentPair ϑ j).gramFactor /
+      card (D.Y 1 × D.RowIndex → (D.twistModulus ϑ 1).ResidueRing) =
+      (D.descentPair .one j).chosenFactor * (D.descentPair ϑ j).twistFactor :=
+    (D.descentPair ϑ j).gramFactor_div_card
+  refine (h_gram ϑ x y).unique
+    (((D.hasSum_inner_rallisOperator ϑ j (D.spaceW j) x y).mul_left _).congr_fun fun γ ↦ ?_)
+  rw [mul_assoc A (D.descentPair .one j).chosenFactor, ← h_factor, rallisTerm]
+  ring
 
 /-- Let `ϑ` be a tame character, let `1 ≤ j ≤ m`, and let `y` be a form of level `J_M` on `W_j` in
 `D.eigenPart (D.spaceW j) p`: each `D.heckeOperator (w, i)`, which is `T_{w,i}` at a split place `w`
@@ -1067,9 +935,29 @@ theorem singleLift_principalRep (ϑ : D.TameChar) {j : D.LiftIndex} (s : D.chose
     (y : D.principalForms (D.spaceW j)) :
     D.singleLift ϑ j (D.principalRep (D.spaceW j) s y) =
       (D.descentPair ϑ j).formAction s (D.singleLift ϑ j y) := by
-  rw [D.singleLift_apply, D.singleLift_apply]
-  exact (D.descentPair ϑ j).thetaLift_formRep (D.fitsParams_descentPair ϑ j) _
+  simpa only [D.singleLift_apply] using!
+    (D.descentPair ϑ j).thetaLift_formRep (D.fitsParams_descentPair ϑ j) _
     (reduceFamily_liftResidue (w := D.chosenPlace) s) y.val
+
+/-- The theta lift `D.singleLift ϑ j`, for a tame character `ϑ` and `1 ≤ j ≤ m`, commutes with the
+group algebra of `D.chosenGL`, the product of the groups `GL_r` over the residue fields of the
+chosen places. An element `x` acts through `principalRep` on `principalForms`, the forms on the
+hermitian space `W_j = D.spaceW j` fixed by the principal level at the chosen places. It acts by
+the group algebra action of `formAction` on the forms on the larger space of `D.descentPair ϑ j`,
+the datum of the lift. -/
+lemma singleLift_asAlgebraHom {ϑ : D.TameChar} {j : D.LiftIndex} {x : MonoidAlgebra ℂ D.chosenGL}
+    (y : D.principalForms (D.spaceW j)) :
+    D.singleLift ϑ j ((D.principalRep (D.spaceW j)).asAlgebraHom x y) =
+      (D.descentPair ϑ j).formAction.asAlgebraHom x (D.singleLift ϑ j y) := by
+  -- Both sides are sums over the group, and `singleLift` commutes with each group element.
+  have h_sum : (D.descentPair ϑ j).formAction.asAlgebraHom x (D.singleLift ϑ j y) =
+      ∑ g : D.chosenGL, x.coeff g • (D.descentPair ϑ j).formAction g (D.singleLift ϑ j y) :=
+    -- A term, as `rw` does not see that `D.chosenGL` is the group acting on the forms.
+    (LinearMap.congr_fun
+      (Representation.asAlgebraHom_eq_sum (D.descentPair ϑ j).formAction _) _).trans
+      (LinearMap.sum_apply ..)
+  rw [h_sum, Representation.asAlgebraHom_eq_sum]
+  simp [singleLift_principalRep]
 
 end Data
 

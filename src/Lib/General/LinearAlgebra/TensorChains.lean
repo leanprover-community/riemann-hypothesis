@@ -1,4 +1,10 @@
-import Lib.Base
+module
+
+import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.NonzeroVectors
+import TauCeti.LinearAlgebra.TensorProduct.Separation
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Matrix.Swap
+public import Lib.Speed
 
 /-!
 # Chains of linear maps, tensor products of their data, and separation by forms
@@ -9,7 +15,7 @@ steps from pure data to arbitrary tensors of the data.
 
 ## Main definitions and results
 
-* `New.index_stabilizer_GL_vector`: over a finite field `F`, the stabiliser in `GL n F` of a nonzero
+* `New.index_stabilizer_GL_vector`: over a field `F`, the stabiliser in `GL n F` of a nonzero
   vector has index `|F| ^ |n| - 1`, by orbit-stabiliser.
 * `New.TensorChain`: the tensor product `S (j-1) ⊗ (⋯ ⊗ (S 0 ⊗ ℂ))`, which is `ℂ` for `j = 0`.
 * `New.TensorChain.lift`, `New.TensorChain.lift_pure`: for `x` in `M 0`, the linear map to `M j`
@@ -21,6 +27,8 @@ steps from pure data to arbitrary tensors of the data.
   no common zero but `0` and `V` is torsion-free, then the maps `U ⊗ V → V`,
   `u ⊗ v ↦ f i u • v`, have no common zero but `0`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -66,21 +74,14 @@ lemma New.exists_GL_smul_single {v : n → R} (hv : ∃ j : n, IsUnit (v j)) (i 
   have h_det : IsUnit (updateCol 1 j v).det := by simpa [← cramer_apply] using hj
   exact ⟨.mk'' _ h_det * .swap R j i, funext fun _ ↦ by simp [Units.smul_def]⟩
 
-/-- Over a finite field `F`, the stabiliser in `GL n F` of a nonzero vector has index
-`|F| ^ |n| - 1`, the number of nonzero vectors. -/
-lemma New.index_stabilizer_GL_vector {F : Type*} [Field F] [Finite F] {u : n → F} (hu : u ≠ 0) :
+/-- Over a field `F`, the stabiliser in `GL n F` of a nonzero vector has index
+`Nat.card F ^ Fintype.card n - 1`. For finite `F`, this counts the nonzero vectors. -/
+lemma New.index_stabilizer_GL_vector {F : Type*} [Field F] {u : n → F} (hu : u ≠ 0) :
     (stabilizer (GL n F) u).index = Nat.card F ^ Fintype.card n - 1 := by
-  -- By orbit-stabiliser the index is the size of the orbit, which is the set of nonzero vectors.
-  -- Any index `j` will do (one exists as `u ≠ 0`): compute the orbit of the basis vector `e_j`.
-  obtain ⟨j, -⟩ := Function.ne_iff.1 hu
-  have h_mem_orbit (v : n → F) (hv : v ≠ 0) : v ∈ orbit (GL n F) (Pi.single j 1 : n → F) :=
-    exists_GL_smul_single (by simpa [Function.ne_iff] using hv) j
-  have h_orbit : orbit (GL n F) u = {0}ᶜ := by
-    rw [orbit_eq_iff.2 (h_mem_orbit u hu)]
-    -- An invertible matrix does not send `e_j` to `0`.
-    exact subset_antisymm (by simp [mem_orbit_iff, smul_eq_zero_iff_eq]) h_mem_orbit
-  rw [index_stabilizer, h_orbit, Set.ncard_compl]
-  simp [Nat.card_fun]
+  rw [← SubMulAction.stabilizer_of_subMul
+      (⟨u, TauCeti.mem_nonzeroVectors.2 hu⟩ : TauCeti.nonzeroVectors n F),
+    index_stabilizer_of_transitive, TauCeti.natCard_nonzeroVectors,
+    Nat.card_eq_fintype_card (α := n)]
 
 end CompositionChain
 
@@ -292,19 +293,17 @@ lemma New.tensor_eq_zero_of_separating {R : Type*} {ι : Sort*} [CommRing R] [Is
     (hf : ∀ {a : U}, (∀ i : ι, f i a = 0) → a = 0) (Z : U ⊗[R] V)
     (hZ : ∀ i : ι, lift (lsmul R V ∘ₗ f i) Z = 0) :
     Z = 0 := by
-  -- `Z` comes from `U ⊗ S` for a finitely generated `S ≤ V`, which is free; write
-  -- `Z = ∑ j, c j ⊗ e j` in a basis `e` of `S`. Applying `u ⊗ v ↦ f i u • v` gives a relation among
-  -- the `e j`, so every `f i (c j)` vanishes, hence every `c j` does.
-  obtain ⟨S, hS, Z', rfl⟩ :
+  -- `Z` comes from `U ⊗ S` for a finitely generated `S ≤ V`, which is free (hence projective).
+  obtain ⟨S, _, Z', rfl⟩ :
       ∃ S : Submodule R V, Module.Finite R S ∧ ∃ Z' : U ⊗[R] S, lTensor U S.subtype Z' = Z := by
     simpa using exists_finite_submodule_right_of_setFinite {Z}
-  let e : Basis (Fin (finrank R S)) R S := finBasis R S
-  obtain ⟨c, rfl⟩ := Z'.eq_repr_basis_right e
-  have h_relation (i : ι) : ∑ j : Fin (finrank R S), f i (c j) • e j = 0 := by
-    simpa [c.sum_fintype, Subtype.ext_iff] using hZ i
-  have hc : c = 0 := Finsupp.ext fun j ↦
-    hf fun i ↦ Fintype.linearIndependent_iff.1 e.linearIndependent _ (h_relation i) j
-  simp [hc]
+  rw [TauCeti.tensor_eq_zero_of_forall_rTensor_eq_zero (fun i : PLift ι ↦ f i.down)
+    (fun _ h ↦ hf fun i ↦ h ⟨i⟩) Z' fun ⟨i⟩ ↦ (TensorProduct.lid R S).injective <|
+    S.subtype_injective ?_, map_zero]
+  have h : S.subtype ∘ₗ (TensorProduct.lid R S).toLinearMap ∘ₗ (f i).rTensor S =
+      lift (lsmul R V ∘ₗ f i) ∘ₗ lTensor U S.subtype := TensorProduct.ext' fun _ _ ↦ rfl
+  rw [map_zero, map_zero]
+  exact (LinearMap.congr_fun h Z').trans (hZ i)
 
 end TensorSeparation
 

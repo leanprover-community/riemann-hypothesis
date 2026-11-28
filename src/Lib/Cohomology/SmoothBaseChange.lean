@@ -1,5 +1,10 @@
-import Lib.Cohomology.ProjectiveLine.ConstantLineFormula
-import Lib.PadicComparison.Duality.GoodPairs
+module
+
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Unramified.LocalStructure
+public import Lib.Cohomology.ProjectiveLine.ConstantLineFormula
+public import Lib.PadicComparison.Duality.GoodPairs
+import Lib.Cohomology.Etale.DenseSubfunctors
 
 /-!
 # Charted varieties, and smooth base change from a valuation ring to its fraction field
@@ -18,7 +23,7 @@ From local charts to whole varieties, for cohomology computed on test rings.
 
 `D.IsFiniteLerayHirsch N` says that the cohomology of `N` with locally constant `ZMod ℓ`
 coefficients is finite and computes that of the theory `D`. The functor
-`relFreeAb (offClosedFibre X)` is `ℤ[X] / ℤ[U]`, where `U` consists of the points over the tests in
+`relFreeAb (offClosedFiber X)` is `ℤ[X] / ℤ[U]`, where `U` consists of the points over the tests in
 which the maximal ideal of `A` generates the unit ideal.
 
 Notions from other files:
@@ -42,14 +47,12 @@ duality in abstract 6-functor formalisms (arXiv 2301.03821) and Li-Reinecke-Zavy
 2410.08200).
 -/
 
+@[expose] public section
+
 namespace New.Variety
 
 open CategoryTheory AlgebraicGeometry ObjectProperty Function Ideal nonZeroDivisors Algebra
   PrimeSpectrum CommRingCat Set Localization TensorProduct IsSmoothAt Comparison
-
--- Several proofs below (the universal point of `isBijective_algToBaseChange`, the units in
--- `isBijective_restrict_restrictScalars_iff`) fail without this option.
-set_option backward.isDefEq.respectTransparency false
 
 section BaseChange
 
@@ -84,7 +87,9 @@ lemma isBijective_algToBaseChange (F : AbFunctor TestRing) :
     ⟨Over.homMk _ (Spec.homEquiv.eq_symm_apply.2 congr($(y.property).down))⟩
   refine ⟨B, x, 𝟙 c, ?_, fun d z f hzf ↦ ?_, ?_⟩
   · -- The point `x` lies over `y`.
-    aesop
+    refine Eq.trans ?_
+      (ConcreteCategory.congr_hom ((testIncl ⋙ (geomPoints R A).obj Y).map_id c) y).symm
+    rfl
   · -- The ring map of `f` is a map of `A`-algebras, by the second component of `hzf`.
     have h_commutes (a : A) : f.hom.hom (algebraMap A c.obj a) = algebraMap A d.obj a :=
       congr($(hzf).val.2.down.hom' a).symm
@@ -94,9 +99,7 @@ lemma isBijective_algToBaseChange (F : AbFunctor TestRing) :
     refine ⟨g, ⟨congrArg _ (Over.OverMorphism.ext congr($(hzf).val.1.down).symm), rfl⟩, ?_⟩
     bound
   · -- On coefficients the comparison is the identity of `F c`.
-    change Bijective (F.map (𝟙 c))
-    rw [F.map_id]
-    exact bijective_id
+    exact ConcreteCategory.bijective_of_isIso (F.map (𝟙 c))
 
 end BaseChange
 
@@ -113,7 +116,7 @@ holds at `ℤ[X]`, restricted to tests over `A`. -/
 lemma ComparedTheory.mem_of_isClosedClass_of_isCharting [PreValuationRing A]
     {P : TestOver A ⥤ Ab → Prop} (hP : IsClosedClass P)
     (h_iff : ∀ {X : TestOver A ⥤ Type 1},
-      P (freeAb X) ↔ D.IsFiniteLerayHirsch (relFreeAb (offClosedFibre X)))
+      P (freeAb X) ↔ D.IsFiniteLerayHirsch (relFreeAb (offClosedFiber X)))
     {k : Type} [CommRing k] [Algebra k A] {X : CommAlg k ⥤ Type 1}
     (hV : ∃ V : Subfunctor X, IsCharting (k := k) V)
     (h_pt : P (freeAb (reprBy (TestOver.ofSelf A)))) :
@@ -126,11 +129,11 @@ lemma ComparedTheory.mem_of_isClosedClass_of_isCharting [PreValuationRing A]
       (hU : IsZariskiLocallyTop (ringOf (𝟭 _)) U)
       (h_mem : P (freeAb U.toFunctor)) : P (freeAb Y) := by
     -- A point of `U` lies in the range of `U.ι`.
-    have h_cover : IsZariskiLocallyTop (ringOf (𝟭 _)) (.range U.ι ⊔ offClosedFibre Y) := by
+    have h_cover : IsZariskiLocallyTop (ringOf (𝟭 _)) (.range U.ι ⊔ offClosedFiber Y) := by
       intro t y m hm
       refine (hU t y m hm).imp fun _ ↦ .imp_right fun h_in_U B f hf ↦ ?_
       simp [show Y.map f y ∈ U.obj B from h_in_U B f hf]
-    have h_inj : IsZariskiLocallyTop (ringOf (𝟭 _)) (sameClassLocus U.ι (offClosedFibre Y)) :=
+    have h_inj : IsZariskiLocallyTop (ringOf (𝟭 _)) (sameClassLocus U.ι (offClosedFiber Y)) :=
       isZariskiLocallyTop_sameClassLocus_of_injective _ _ fun _ ↦ Subtype.val_injective
     exact h_iff.2 ((D.isFiniteLerayHirsch_iff_of_locally_bijective U.ι h_cover h_inj).1
       (h_iff.1 h_mem))
@@ -217,21 +220,23 @@ private lemma isBijective_restrict_restrictScalars_iff {A : ClosurePlace} {p : �
       (locConstAlong (𝟭 (TestOver A)))).IsBijective
         (𝟙 (TestOver.restrictScalars A Ω ⋙ freeAb X)) ↔
       ∀ n : ℕ,
-        Subsingleton (H (relFreeAb (offClosedFibre X)) (locConstAlong (𝟭 (TestOver A))) n) := by
+        Subsingleton (H (relFreeAb (offClosedFiber X)) (locConstAlong (𝟭 (TestOver A))) n) := by
   let κ := Comparison.restrict (TestOver.restrictScalars A Ω) (locConstAlong (𝟭 (TestOver A)))
-  -- In an `Ω`-algebra `p` is a unit, so every point of `X` over it lies in `offClosedFibre X`.
-  let u : TestOver.restrictScalars A Ω ⋙ X ⟶ κ.functor ⋙ (offClosedFibre X).toFunctor :=
+  -- In an `Ω`-algebra `p` is a unit, so every point of `X` over it lies in `offClosedFiber X`.
+  let u : TestOver.restrictScalars A Ω ⋙ X ⟶ κ.functor ⋙ (offClosedFiber X).toFunctor :=
     { app c := ↾fun x ↦
         ⟨x, eq_top_of_isUnit_mem _ (mem_map_of_mem _ ((A.valuation_lt_one_iff p).2 hp))
-          ((NeZero.ne (p : Ω)).isUnit.map (algebraMap Ω c.1))⟩ }
-  -- Conversely, if a test `c` carries a point of `offClosedFibre X`, nonzero elements of `A` are
+          ((NeZero.ne (p : Ω)).isUnit.map (algebraMap Ω c.obj))⟩ }
+  -- Conversely, if a test `c` carries a point of `offClosedFiber X`, nonzero elements of `A` are
   -- units in `c` (rank one), so `A → c` extends to `Ω` in exactly one way;
   -- `hasUniversalPoints_structurePt` gives the test `B` over `Ω` that is universal under `c`.
   have h_univ : κ.HasUniversalPoints u := fun c y ↦ by
-    have h_unit (a : A⁰) : IsUnit (algebraMap A c.1 a) := by
-      -- (`using!`: the ring of `c` appears once as `c` and once as `(TestOver.toTest A).obj c`)
-      simpa [map_span] using! eq_top_mono
-        ((map_mono (maximalIdeal_le_radical_span hp a)).trans (map_radical_le _)) y.2
+    have h_unit (a : A⁰) : IsUnit (algebraMap A c.obj a) := by
+      -- (the ring of `c` appears once as `c` and once as `(TestOver.toTest A).obj c`)
+      have h := radical_eq_top.1 (eq_top_mono
+        ((map_mono (maximalIdeal_le_radical_span hp a)).trans (map_radical_le _)) y.property)
+      rw [← span_singleton_eq_top, ← Set.image_singleton (f := algebraMap A c.obj), ← map_span]
+      exact h
     obtain ⟨B, x, s, -, h_uniq, h_bij⟩ :=
       hasUniversalPoints_structurePt A Ω c
         ⟨⟨CommAlg.homOfRingHom _ (IsLocalization.lift_eq h_unit)⟩⟩
@@ -248,14 +253,14 @@ private lemma isBijective_restrict_restrictScalars_iff {A : ClosurePlace} {p : �
     -- `(Comparison.restrict _ _).functor.map g`.
     rw [← hg_comp, X.map_comp_apply]
     rfl
-  -- So `κ` is bijective on `X` iff `offClosedFibre X ⊆ X` is an equivalence iff the quotient is
+  -- So `κ` is bijective on `X` iff `offClosedFiber X ⊆ X` is an equivalence iff the quotient is
   -- acyclic.
   calc κ.IsBijective (𝟙 (κ.functor ⋙ freeAb X))
-    _ ↔ IsCohomEquiv (locConstAlong (𝟭 _)) (freeAb.map (offClosedFibre X).ι) := by
+    _ ↔ IsCohomEquiv (locConstAlong (𝟭 _)) (freeAb.map (offClosedFiber X).ι) := by
       refine (h_univ.isBijective.trans_iff (c := .id _) ?_).trans isCohomEquiv_iff_isBijective.symm
-      -- `u` followed by the inclusion of `offClosedFibre X` is the identity
+      -- `u` followed by the inclusion of `offClosedFiber X` is the identity
       exact freeAb.hom_ext fun _ _ ↦ rfl
-    _ ↔ ∀ n, Subsingleton (H (relFreeAb (offClosedFibre X)) (locConstAlong (𝟭 _)) n) :=
+    _ ↔ ∀ n, Subsingleton (H (relFreeAb (offClosedFiber X)) (locConstAlong (𝟭 _)) n) :=
       relFreeAb.isCohomEquiv_iff_subsingleton_rel _
 
 /-- Let `ℓ` be prime and `A` a valuation ring of the algebraic closure `Ω` of `ℚ` (a `ClosurePlace`)
@@ -276,7 +281,7 @@ lemma isTestCohomEquiv_baseChangeTransition [ThePrime ℓ]
   -- constant functions and for the line formula).
   have h_inverts : InvertsPrime A ℓ := .mk hℓ
   -- The line formula holds because `A ⊆ Ω` embeds in `ℂ_[ℓ]`.
-  have algebra_Ω : Algebra Ω ℂ_[ℓ] :=
+  let algebra_Ω : Algebra Ω ℂ_[ℓ] :=
     ((algebraMap (PadicAlgCl ℓ) ℂ_[ℓ]).comp Classical.ofNonempty).toAlgebra
   have h_faithful : FaithfulSMul A ℂ_[ℓ] := A.faithfulSMul
   have h_line : (Theory.locallyConstant (A := A)).HasLineFormula := hasLineFormula_locallyConstant A
@@ -296,7 +301,7 @@ lemma isTestCohomEquiv_baseChangeTransition [ThePrime ℓ]
   let κ := Comparison.restrict (TestOver.restrictScalars A Ω) (locConstAlong (𝟭 _))
   have h_iff {X : TestOver A ⥤ Type 1} :
       κ.IsBijective (𝟙 (κ.functor ⋙ freeAb X)) ↔ D.IsFiniteLerayHirsch
-        (relFreeAb (offClosedFibre X)) :=
+        (relFreeAb (offClosedFiber X)) :=
     (isBijective_restrict_restrictScalars_iff hp).trans (h_acyclic _)
   -- The point: both `A` and `Ω` are domains, so both sides are the constants `ZMod ℓ`.
   have h_pt : κ.IsBijective (freeAbMap (𝟙 (κ.functor ⋙ reprBy (TestOver.ofSelf A)))) := by

@@ -1,4 +1,8 @@
+module
+
+public import New.Spanning.Frames.Densities
 import New.Spanning.Frames.Gains
+import New.Spanning.Frames.OneFrame
 
 /-!
 # The sum over the shells
@@ -26,6 +30,8 @@ Contents of this file:
 * `New.Floors.Gauge.lintegral_le_of_shells`: the sum over the shells. The integral over a shell is
   at most a common bound times the inverse of the height, and `∑ 2⁻¹ ^ i = 2`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -69,10 +75,7 @@ lemma Gauge.IsShell.subset_positions {Γ : Gauge F} {j : ℕ} {p q : ℕ → Aˣ
     {W : T.G → EuclideanSpace ℂ I} {S : Set T.G} {height : ℝ≥0∞}
     (hS : Γ.IsShell j p q W S height) : S ⊆ F.positions := by
   obtain ⟨𝒢, -, h_subset, -⟩ := hS.exists_cover
-  intro x hx
-  obtain ⟨Γ', -, h_close⟩ := Set.mem_iUnion₂.1 (h_subset hx)
-  simp only [Gauge.positionsOfSize] at h_close
-  exact h_close.1
+  exact h_subset.trans (Set.iUnion₂_subset fun Γ' _ ↦ Set.sep_subset _ _)
 
 /-- The height of a shell is finite and not zero, so it cancels against its inverse. -/
 lemma Gauge.IsShell.inv_height_mul_height {Γ : Gauge F} {j : ℕ} {p q : ℕ → Aˣ}
@@ -126,7 +129,7 @@ theorem Gauge.IsShell.setLIntegral_le {S : Set T.G} {height : ℝ≥0∞}
           ∫⁻ x in S ∩ Γ'.val.positionsOfSize, f x ∂F.groupMeasure := by
         grw [lintegral_mono_set h_cover, lintegral_iUnion_le, ENNReal.tsum_mul_left]
     _ ≤ #𝒢 * B := by
-        grw [ENNReal.tsum_le_tsum h_piece]
+        grw [tsum_le_tsum h_piece]
         simp
     _ ≤ e * Γ.loss ^ (2 * 10 ^ 6 * 𝔰.n ^ 3) * height ^ (10 ^ 5 * 𝔰.n ^ 2) * F.shellNormalization
       W := by
@@ -269,7 +272,7 @@ theorem Gauge.lintegral_le_of_shells {S : ℕ → Set T.G}
         rw [setLIntegral_eq_of_support_subset h_cover]
     _ ≤ ∑' i : ℕ, F.headDensity j p q * ∫⁻ x in S i, f x ∂F.groupMeasure := by
         grw [lintegral_iUnion_le, ENNReal.tsum_mul_left]
-    _ ≤ ∑' i : ℕ, (2 ^ i)⁻¹ * B := ENNReal.tsum_le_tsum h_shell
+    _ ≤ ∑' i : ℕ, (2 ^ i)⁻¹ * B := tsum_le_tsum h_shell
     _ ≤ Γ.loss ^ (10 ^ 8 * 𝔰.n ^ 4) * B := by
         have h_two : (2 : ℝ≥0∞) ≤ Γ.loss ^ (10 ^ 8 * 𝔰.n ^ 4) :=
           Γ.two_le_loss.trans (le_self_pow₀ Γ.one_le_loss (by positivity))

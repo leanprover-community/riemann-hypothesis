@@ -1,7 +1,11 @@
-import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
-import Lib.GLn.SchurModule.Basic
-import Lib.General.Algebra.MultivariatePolynomials
-import Lib.Weil.Fock.Basic
+module
+
+import TauCeti.Algebra.Lie.GeneralLinear.Oscillator.Basic
+import Mathlib.Algebra.Order.Star.Int
+public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
+public import Lib.GLn.SchurModule.Basic
+public import Lib.Weil.Fock.Basic
+import Lib.Cohomology.Etale.Basic
 
 /-!
 # Fock space oscillator actions, joint harmonics and Fischer decomposition
@@ -43,6 +47,8 @@ Notions from other files:
 Known; see `Lib.DiscreteSeries.Theta.LocalCorrespondence` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 namespace New
@@ -58,38 +64,41 @@ section OscillatorDefs
 
 open Matrix Fintype Fock MvPolynomial Finset GlModule
 
-variable {R C ι : Type} [DecidableEq R] [Fintype C] [DecidableEq C] [Fintype ι]
+variable {R C ι : Type} [Fintype C] [DecidableEq C] [Fintype ι]
+
+private theorem oscRaise_eq (η : R → ℤˣ) (a : R) :
+    TauCeti.oscRaise ℂ (fun i ↦ η i = 1) a = raiseOp η a := by
+  ext P
+  by_cases h : η a = 1 <;> simp [raiseOp, h]
+
+private theorem oscLower_eq (η : R → ℤˣ) (a : R) :
+    TauCeti.oscLower ℂ (fun i ↦ η i = 1) a = lowerOp η a := by
+  ext P
+  by_cases h : η a = 1 <;> simp [lowerOp, h]
 
 /-- The raising operators of the Fock model for the signs `η` commute: `raiseOp η a` is
 multiplication by `X a` if `η a = 1` and `-∂ a` otherwise. -/
 theorem Fock.raiseOp_comm (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
     raiseOp η a (raiseOp η b P) = raiseOp η b (raiseOp η a P) := by
-  rcases eq_or_ne a b with rfl | hab
-  · rfl
-  -- For `a ≠ b`, each of `X a`, `∂ a` commutes with each of `X b`, `∂ b`.
-  by_cases ha : η a = 1 <;> by_cases hb : η b = 1 <;>
-    simp [raiseOp, ha, hb, hab, hab.symm, mul_left_comm, pderiv_comm a]
+  simpa only [oscRaise_eq, mul_apply_eq_comp] using
+    DFunLike.congr_fun (TauCeti.commute_oscRaise (K := ℂ) (p := fun i ↦ η i = 1) a b).eq P
 
 /-- The lowering operators of the Fock model for the signs `η` commute: `lowerOp η a` is `∂ a` if
 `η a = 1` and multiplication by `X a` otherwise. -/
 theorem Fock.lowerOp_comm (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
     lowerOp η a (lowerOp η b P) = lowerOp η b (lowerOp η a P) := by
-  rcases eq_or_ne a b with rfl | hab
-  · rfl
-  -- For `a ≠ b`, each of `X a`, `∂ a` commutes with each of `X b`, `∂ b`.
-  by_cases ha : η a = 1 <;> by_cases hb : η b = 1 <;>
-    simp [lowerOp, ha, hb, hab, hab.symm, mul_left_comm, pderiv_comm a]
+  simpa only [oscLower_eq, mul_apply_eq_comp] using
+    DFunLike.congr_fun (TauCeti.commute_oscLower (K := ℂ) (p := fun i ↦ η i = 1) a b).eq P
+
+variable [DecidableEq R]
 
 /-- The commutator of the lowering operator `lowerOp η a` (`∂ a` or `X a`, by the sign `η a`) with
 the raising operator `raiseOp η b` (`X b` or `-∂ b`) is the identity if `a = b`, and zero if not. -/
 theorem Fock.lowerOp_raiseOp (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
     lowerOp η a (raiseOp η b P) = raiseOp η b (lowerOp η a P) + if a = b then P else 0 := by
-  rcases eq_or_ne a b with rfl | hab
-  · -- This is Leibniz's rule `∂ (X * P) = X * ∂ P + P`, whatever the sign of `a`.
-    by_cases ha : η a = 1 <;> simp [raiseOp, lowerOp, ha, add_comm]
-  -- Operators in different variables commute.
-  by_cases ha : η a = 1 <;> by_cases hb : η b = 1 <;>
-    simp [raiseOp, lowerOp, ha, hb, hab, hab.symm, mul_left_comm, pderiv_comm a]
+  simpa only [oscRaise_eq, oscLower_eq, mul_apply_eq_comp, LinearMap.add_apply,
+    DFunLike.ite_apply, one_apply_eq_self, LinearMap.zero_apply] using DFunLike.congr_fun
+      (TauCeti.oscLower_mul_oscRaise (K := ℂ) (p := fun i ↦ η i = 1) a b) P
 
 /-- The canonical commutation relations of the Fock model for the signs `η`: raising operators
 commute, lowering operators commute, and the commutator of `lowerOp η a` with `raiseOp η b` is
@@ -170,7 +179,7 @@ abbrev relWeight (r : R) : ℤ := l.lowestKType r - T.vacuumWeight (ε r)
 /-- The integer `l r - 2γ + card C`; for `l = 2λ` it is twice the centred parameter
 `λ r - γ + card C / 2`. -/
 @[simp]
-abbrev centredParam (r : R) : ℤ := l r - 2 * T.rowShift + Fintype.card C
+abbrev centeredParam (r : R) : ℤ := l r - 2 * T.rowShift + Fintype.card C
 
 section
 
@@ -182,15 +191,8 @@ are `X i` and `∂ i` if the sign `η i` is `1`, and `-∂ i` and `X i` otherwis
 theorem _root_.New.Fock.glOp_commutator [DecidableEq ι] (η : ι → ℤˣ) (i j k m : ι) :
     glOp η i j * glOp η k m - glOp η k m * glOp η i j =
       (if j = k then glOp η i m else 0) - if i = m then glOp η k j else 0 := by
-  refine LinearMap.ext fun P ↦ ?_
-  -- Move the raising operators to the left; the terms of degree four then cancel.
-  have h_order (p q r s : ι) : glOp η p q (glOp η r s P) =
-      raiseOp η p (raiseOp η r (lowerOp η q (lowerOp η s P))) +
-        if q = r then glOp η p s P else 0 := by
-    simp [glOp, lowerOp_raiseOp, apply_ite (raiseOp η p)]
-  rw [LinearMap.sub_apply, Module.End.mul_apply, Module.End.mul_apply, h_order, h_order,
-    raiseOp_comm η i k, lowerOp_comm η j m, add_sub_add_left_eq_sub]
-  simp [DFunLike.ite_apply, eq_comm]
+  simpa only [glOp, oscRaise_eq, oscLower_eq] using
+    TauCeti.oscRaise_mul_oscLower_commutator (K := ℂ) (p := fun a ↦ η a = 1) i j k m
 
 /-- Reversing all signs exchanges raising and lowering operators up to sign, so
 `glOp (-η) i j = raiseOp (-η) i * lowerOp (-η) j` is `∓ lowerOp η i * raiseOp η j`, with the minus
@@ -305,10 +307,6 @@ section
 
 omit [Fintype ι]
 
-theorem oscRows_apply (X : Matrix R R ℂ) :
-    T.oscRows X = ∑ a : R, ∑ b : R, X a b • T.oscRowsUnit a b := by
-  simp [oscRows, liftLinear_apply]
-
 theorem oscRows_E (a b : R) : T.oscRows.E a b = T.oscRowsUnit a b := by
   simp [oscRows, E]
 
@@ -320,7 +318,7 @@ def fockLaplacian (a b : R) : Module.End ℂ (MvPolynomial ι ℂ) :=
 
 /-- The polarisation `∑ c, X_{a c} * ∂Φ/∂X_{b c}` of the polynomial `Φ`, summed over the columns `c`
 where the variable `(b, c)` has sign `s`. -/
-def polarisation (a b : R) (s : ℤˣ) : MvPolynomial ι ℂ :=
+def polarization (a b : R) (s : ℤˣ) : MvPolynomial ι ℂ :=
   ∑ c : C with T.varSign (b, c) = s, X (T.varEquiv (a, c)) * pderiv (T.varEquiv (b, c)) Φ
 
 /-! ### Matching parameters and joint harmonics -/
@@ -328,8 +326,8 @@ def polarisation (a b : R) (s : ℤˣ) : MvPolynomial ι ℂ :=
 /-- The row `r` is matched with the column `c`: with `n = card R`, `n' = card C` and
 `a = l r - 2γ + n'`, one has `a = -(l' c - 2γ' + n)` and `|n - n'| < σ * ε r * ε' c * a`. -/
 abbrev IsMatchedPair (r : R) (c : C) : Prop :=
-  T.centredParam l r = -T.swap.centredParam l' c ∧
-    |(Fintype.card R - Fintype.card C : ℤ)| < T.varSign (r, c) * T.centredParam l r
+  T.centeredParam l r = -T.swap.centeredParam l' c ∧
+    |(Fintype.card R - Fintype.card C : ℤ)| < T.varSign (r, c) * T.centeredParam l r
 
 /-- `∂_{a c} ∂_{b c} Φ = 0` whenever `ε a ≠ ε b`. This says that no monomial of `Φ` contains two
 variables of one column `c` from rows of opposite signs. -/
@@ -406,7 +404,7 @@ end
 
 end FockDualPair
 
-export FockDualPair (vacuumWeight oscRowsUnit oscRows oscRows_E fockLaplacian polarisation
+export FockDualPair (vacuumWeight oscRowsUnit oscRows oscRows_E fockLaplacian polarization
   IsMatchedPair IsTermwiseHarmonic swap_oscRows_E)
 
 /-- The parameters `l = 2λ`, `l' = 2λ'` match. With `n = card R` and `n' = card C`, both have gap
@@ -422,11 +420,11 @@ structure IsMatch : Prop where
   hasGap_column : l'.HasGap (500 * (Fintype.card C + Fintype.card R) ^ 3)
   /-- Every row `r` is matched with a column, or `|l r - 2γ + n'| < n - n'`. -/
   left (r : R) :
-    (∃ c : C, T.IsMatchedPair l l' r c) ∨ |T.centredParam l r| < Fintype.card R - Fintype.card C
+    (∃ c : C, T.IsMatchedPair l l' r c) ∨ |T.centeredParam l r| < Fintype.card R - Fintype.card C
   /-- Every column `c` is matched with a row, or `|l' c - 2γ' + n| < n' - n`. -/
   right (c : C) :
     (∃ r : R, T.IsMatchedPair l l' r c) ∨
-      |T.swap.centredParam l' c| < Fintype.card C - Fintype.card R
+      |T.swap.centeredParam l' c| < Fintype.card C - Fintype.card R
 
 /-- `Φ` is a joint harmonic: `l` and `l'` match, and `Φ ≠ 0` is `K`-highest for the row and column
 actions, of the weights of the two lowest `K`-types, and satisfies
@@ -445,7 +443,7 @@ On polynomials `⟪P, Q⟫` is the Fischer inner product `fockPairing (conj P) Q
 adjoint to `∂_i`. For it, `New.Fischer.perpInDegree j G` is the orthogonal complement of `G` in
 degree at most `j`.
 
-* `New.Fischer.oscRows_E_eq_polarisation_sub`: the compact matrix units, expressed by polarisations
+* `New.Fischer.oscRows_E_eq_polarization_sub`: the compact matrix units, expressed by polarisations
   and the vacuum weight `New.FockDualPair.vacuumWeight`.
 -/
 
@@ -466,7 +464,7 @@ theorem FockDualPair.IsMatchedPair.swap {l' : HCParam ε'} {l : HCParam ε} {r :
   -- Both the sign of the variable and the centred parameter change sign.
   have h_sign : (T.swap.varSign (c, r) : ℤ) = -T.varSign (r, c) := by
     simp [pairSign, mul_right_comm]
-  have h_neg : T.swap.centredParam l' c = -T.centredParam l r := by rw [h_param, neg_neg]
+  have h_neg : T.swap.centeredParam l' c = -T.centeredParam l r := by rw [h_param, neg_neg]
   exact ⟨by rwa [T.swap_swap], by rwa [abs_sub_comm, h_sign, h_neg, neg_mul_neg]⟩
 
 /-- The matching of parameters is symmetric: if `l` and `l'` match for `T`, then `l'` and `l` match
@@ -483,7 +481,7 @@ variable [DecidableEq R] [DecidableEq C]
 /-- Let `P ≠ 0` be termwise harmonic for both sides, and `K`-highest of weight `ν` for the rows and
 of weight `ν'` for the columns of `T`. Then it is so for `T.swap`, with the parameters `l`, `l'`
 and the weights `ν`, `ν'` exchanged. -/
-theorem FockDualPair.IsJointHighest.swap [Fintype ι]
+theorem FockDualPair.IsJointHighest.swap
     {l' : HCParam ε'} {l : HCParam ε} {P : MvPolynomial ι ℂ}
     {ν : R → ℤ} {ν' : C → ℤ} (hP : T.IsJointHighest l l' P ν ν') :
     T.swap.IsJointHighest l' l P ν' ν where
@@ -499,7 +497,7 @@ by `-σ` and swaps `γ`, `γ'`. Here a joint harmonic for matching parameters is
 that is `K`-highest of the lowest `K`-type weights for the row and column actions, and that has no
 monomial with two variables of one column from rows of opposite signs, or of one row from columns of
 opposite signs. -/
-theorem IsJointHarmonic.swap [Fintype ι] {l' : HCParam ε'} {l : HCParam ε} {P : MvPolynomial ι ℂ}
+theorem IsJointHarmonic.swap {l' : HCParam ε'} {l : HCParam ε} {P : MvPolynomial ι ℂ}
     (hP : IsJointHarmonic T l l' P) : IsJointHarmonic T.swap l' l P :=
   ⟨hP.toIsMatch.swap, hP.isJointHighest.swap⟩
 
@@ -509,9 +507,9 @@ namespace Fischer
 polarisation `∑ X_ac ∂_bc P` over the columns `c` where `(b, c)` has sign `1`, minus `∑ X_bc ∂_ac P`
 over those where it has sign `-1`, plus `T.vacuumWeight (ε a)` (the weight by which `E a a` acts on
 the constant `1`) times `P` if `a = b`. -/
-theorem oscRows_E_eq_polarisation_sub {a b : R} {P : MvPolynomial ι ℂ} (hab : ε a = ε b) :
+theorem oscRows_E_eq_polarization_sub {a b : R} {P : MvPolynomial ι ℂ} (hab : ε a = ε b) :
     T.oscRows.E a b P =
-      T.polarisation P a b 1 - T.polarisation P b a (-1) +
+      T.polarization P a b 1 - T.polarization P b a (-1) +
         (if a = b then (T.vacuumWeight (ε a) : ℂ) else 0) • P := by
   classical
   -- A column of sign `1` gives `X_a ∂_b` and one of sign `-1` gives `-∂_a X_b = -X_b ∂_a - δ_ab`.
@@ -521,7 +519,7 @@ theorem oscRows_E_eq_polarisation_sub {a b : R} {P : MvPolynomial ι ℂ} (hab :
       else -(X (T.varEquiv (b, c)) * pderiv (T.varEquiv (a, c)) P) - if a = b then P else 0 := by
     split_ifs with h h_eq <;>
       simp [glOp, raiseOp, lowerOp, *]; ring
-  simp [oscRows_E, oscRowsUnit, hab, h_term, h_sign, sum_ite, polarisation, vacuumWeight,
+  simp [oscRows_E, oscRowsUnit, hab, h_term, h_sign, sum_ite, polarization, vacuumWeight,
     pairSign, units_ne_iff_eq_neg, sum_sub_distrib, DFunLike.ite_apply]
   split_ifs <;> simp [Algebra.smul_def] <;> ring
 
@@ -544,6 +542,8 @@ scoped instance : NormedAddCommGroup (MvPolynomial ι ℂ) :=
         -- definite
         by grind [fockPairing_star_self_pos, inner]⟩)
 
+/-- The Fischer inner product `⟪P, Q⟫ = fockPairing (conj P) Q` makes the complex polynomials an
+inner product space. -/
 scoped instance : InnerProductSpace ℂ (MvPolynomial ι ℂ) := .ofCore _
 
 /-- For the Fischer inner product on complex polynomials, multiplication by `X b` is adjoint to the
@@ -619,7 +619,6 @@ theorem fockLaplacian_eq_zero {a : R} {G : Submodule ℂ (MvPolynomial ι ℂ)} 
     hQ.trans (LinearMap.sum_apply ..)
   have h_sign (c : C) : T.varSign (b, c) = -T.varSign (a, c) := by
     simp [pairSign, (units_ne_iff_eq_neg.1 hab.symm)]
-  have h_η (r : R) (c : C) : T.indexSign (T.varEquiv (r, c)) = T.varSign (r, c) := by simp
   have hQ_deg : Q ∈ polyDegreeLE (j - 2) := by
     rw [hQ_sum]
     exact sum_mem fun c hc ↦ glOp_mem_polyDegreeLE hP_deg (by grind [Units.val_neg, Units.val_one])
@@ -687,8 +686,8 @@ theorem isLaplaceHarmonic_of_isKHighest {ν : R → ℤ} {l : HCParam ε} {P : M
   · rw [h_comm x x a b rfl, h_weight]
     simp only [map_smul, Pi.add_apply, Pi.sub_apply, single_apply, eq_comm (a := b)]
     split_ifs <;> simp_all [add_smul, sub_smul]
-  · rw [h_comm x z a b hxz, h_raise x z hxz h_lt]
-    grind
+  · rw [h_comm x z a b hxz, h_raise x z hxz h_lt, map_zero, zero_add]
+    split_ifs <;> grind
 
 /-- Let `ε a = ε b`. If the compact matrix unit `E b a` of the row action maps `N` into `G`, then
 `E a b` maps `perpInDegree j G` (the orthogonal complement of `G` in degree at most `j`) into
@@ -706,7 +705,7 @@ theorem mapsTo_perpInDegree {a : R} {N G : Submodule ℂ (MvPolynomial ι ℂ)} 
     grind [smul_mem, add_mem]
   have h_adj (y z : MvPolynomial ι ℂ) : ⟪z, T.oscRows.E a b y⟫_ℂ = ⟪T.oscRows.E b a z, y⟫_ℂ := by
     obtain rfl | h_ne := eq_or_ne a b <;>
-      simp [oscRows_E_eq_polarisation_sub, polarisation, *, Ne.symm, mul_comm, pairSign]
+      simp [oscRows_E_eq_polarization_sub, polarization, *, Ne.symm, mul_comm, pairSign]
   intro y ⟨hy_perp, hy_deg⟩
   refine ⟨fun z ⟨hz_deg, hz_mem⟩ ↦ ?_, h_deg hab hy_deg⟩
   rw [h_adj, hy_perp _ ⟨h_deg hab.symm hz_deg, hN hz_mem⟩]

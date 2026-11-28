@@ -1,4 +1,12 @@
+module
+
+public import Aesop.BuiltinRules
+public import TauCeti.Analysis.Normed.Ring.Ultra
+import Mathlib.Algebra.Order.Star.Real
+public import Lib.General.Algebra.AdicCompletion
+public import Lib.General.NumberTheory.ImaginaryQuadraticField
 import Lib.General.NumberTheory.PadicLimitsValuation
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Notation at a prime, and elements of prime-power norm at split primes
@@ -40,6 +48,8 @@ The existence of `α` follows from the finiteness of the class group. The number
 the sets of exponents are notation, and the sum for `γ_p` is a geometric series.
 -/
 
+@[expose] public section
+
 section PrimeNotation
 
 open ComplexConjugate
@@ -48,7 +58,7 @@ namespace New
 /-- The number `π_p`, as a complex number: `√-d = I * √d` if `p = d`, and `p` otherwise. -/
 noncomputable def piPrime (d p : ℕ) : ℂ := if p = d then .I * √d else p
 
-lemma exists_primeNorm_eq_pow (d p : ℕ) [Fact d.Prime] [Fact p.Prime] :
+lemma exists_primeNorm_eq_pow (d p : ℕ) [Fact d.Prime] :
     ∃ e : ℕ, e ≠ 0 ∧ primeNorm d p = p ^ e := by
   by_cases h : chiK d p = -1
   · exact ⟨2, two_ne_zero, by simp [primeNorm, h]⟩
@@ -140,7 +150,6 @@ lemma gammaPrime_of_inert {d p : ℕ} [Fact d.Prime] [Fact p.Prime] (h_inert : c
   grind [gammaPrime, varpiValuation_of_inert h_inert]
 
 lemma gammaPrime_self (d : ℕ) [Fact d.Prime] : gammaPrime d d = 1 / (2 * d - 2) := by
-  have hd : (1 : ℝ) < d := mod_cast (Fact.out : d.Prime).one_lt
   grind [gammaPrime, varpiValuation_self d]
 
 lemma gammaPrime_nonneg (d p : ℕ) [Fact d.Prime] [Fact p.Prime] : 0 ≤ gammaPrime d p :=
@@ -262,7 +271,7 @@ lemma piPrime_mem_quadInt (d : ℕ) {p : ℕ} [PrimeSevenModEight d] : piPrime d
   split_ifs
   exacts [I_mul_sqrt_mem_quadInt d, natCast_mem _ p]
 
-lemma piPrime_ne_zero (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] :
+lemma piPrime_ne_zero (d : ℕ) {p : ℕ} [Fact p.Prime] :
     piPrime d p ≠ 0 := by
   have hp : p ≠ 0 := (Fact.out : p.Prime).ne_zero
   unfold piPrime

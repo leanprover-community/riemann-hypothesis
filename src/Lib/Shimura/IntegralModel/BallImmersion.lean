@@ -1,4 +1,11 @@
-import Lib.Shimura.IntegralModel.UniversalFamily
+module
+
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import TauCeti.NumberTheory.NumberField.Countable
+public import Lib.Shimura.IntegralModel.UniversalFamily
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.General.Geometry.SerreTheorem
 import Lib.Shimura.TraceFormula.DefiniteTrace
 import Lib.Shimura.Uniformisation.ModelExists
 
@@ -41,6 +48,8 @@ Notions from other files:
 Known; see `Lib.Shimura.IntegralModel.TowerExistence` and `Lib.Shimura.ThetaModuli.UniversalFamily`
 for sources.
 -/
+
+@[expose] public section
 
 open Filter in
 /-- Let `g` be a function on a complex normed space whose derivative has the derivative `D₂` at
@@ -94,7 +103,7 @@ lemma ModuliPoint.isLevelIso_act_of_inv_eq {a a' : ModuliPoint E D.Index ν} {g 
       (a.act g).IsLevelIso K z a' := by
   refine ⟨?_, by simpa [act] using h_refl, fun j ↦ by simp [act, h_P]⟩
   -- The level part `a'.frame⁻¹ * z * (a.frame * g)` is `g⁻¹ * g = 1`.
-  show a'.frame⁻¹ * toFinGL z * (a.frame * g.val) ∈ K
+  change a'.frame⁻¹ * toFinGL z * (a.frame * g.val) ∈ K
   simp [← mul_assoc, ← h_x]
 
 /-- Balls immerse. Let `f` be an analytic family of theta tori over `f.domain`, and `X` a theta
@@ -140,8 +149,6 @@ lemma AnalyticFamily.isHolomorphicImmersionAt_of_holomorphicAt {f : AnalyticFami
     -- So the `k`-th multiple of the section is the zero section over `x b'`.
     have h_mul_eq (b' : BallBase D.Index) :
         ψ (b', (k : ℂ)⁻¹ • T l b') ≫ (k • 𝟙 X.total).left = x b' ≫ (X.levelPoints 0).left := by
-      have h_exp_zero : (m b').uniformisation.expMap (T l b') = 0 :=
-        ((m b').uniformisation.eq_zero_iff (T l b')).mp (h_lattice b')
       simp_all [← (x _).isGroupBaseChange.nsmul_id_comp, ← comp_left_assoc, ← map_nsmul,
         ← Nat.cast_smul_eq_nsmul ℂ, ψ, ← (x _).isGroupBaseChange.pullSection_comp, comp_nsmul]
     have h_still :
@@ -324,8 +331,8 @@ closed point of `α` is `z`, through `ρ`. (b) Whenever `C.point b ≫ u` is the
 `U.datumPoint 𝔪 a`, the composite of `α` and `u` is a point of the universal family for `a` at level
 `𝔪`. -/
 lemma exists_arc (C : U.GraphClosure γ ν) (z : C.scheme.left) :
-    ∃ᵉ (V : ValuationSubring ℂ) (α : Spec (CommRingCat.of V) ⟶ C.scheme.left)
-      (b : ModuliPoint E D.Index ν) (ρ : C.scheme.left.residueField z →+* ResidueField V),
+    ∃ (V : ValuationSubring ℂ), ∃ (α : Spec (CommRingCat.of V) ⟶ C.scheme.left),
+      ∃ (b : ModuliPoint E D.Index ν), ∃ (ρ : C.scheme.left.residueField z →+* ResidueField V),
       -- (a)
       specMap ρ ≫ C.scheme.left.fromSpecResidueField z = specMap (residue V) ≫ α ∧
       -- (b)
@@ -345,7 +352,8 @@ lemma exists_arc (C : U.GraphClosure γ ν) (z : C.scheme.left) :
   -- In each family some member `b k` is generic: its point specialises to those of all members.
   choose b hb_mem hb using fun k ↦ exists_generic_member C.scheme.hom
     ((f k).domain.isOpen.prod isOpen_univ)
-    ((f k).isConnected.prod isConnected_univ) fun p hp ↦ C.holomorphicAt_point 0 p (Set.mem_prod.1 hp).1
+    ((f k).isConnected.prod isConnected_univ)
+    fun p hp ↦ C.holomorphicAt_point 0 p (Set.mem_prod.1 hp).1
   have h_dense : IsDenseFamily fun k ↦ (C.point ((f k).ballPoint 0 (b k))).left := by
     intro w
     refine C.isSeparatingFamily.right.induction_on w isClosed_closure fun a ↦ ?_
@@ -355,9 +363,11 @@ lemma exists_arc (C : U.GraphClosure γ ν) (z : C.scheme.left) :
   -- So an arc `α` starts at one of these points and has its centre at `z`.
   obtain ⟨k, V, α, h_start, rfl⟩ := New.exists_valuative_arc_of_isDenseFamily _ h_dense z
   -- The closed point of `V` is the image of the point of its residue field.
-  rw [← comap_closedPoint (residue V.valuationSubring)]
+  have h_pt : (specMap (residue V.valuationSubring) ≫ α) (closedPoint _) = α (closedPoint _) :=
+    congrArg α (PrimeSpectrum.comap_residue _ _)
+  rw [← h_pt]
   refine ⟨_, α, (f k).ballPoint 0 (b k), _,
-    (C.scheme.left.SpecToEquivOfField _).left_inv (specMap _ ≫ α), ?_⟩
+    Scheme.descResidueField_stalkClosedPointTo_fromSpecResidueField _ _ (specMap _ ≫ α), ?_⟩
   intro 𝔪 u a h_u
   -- The generic point of `α ≫ u` is the point of `a`.
   refine .of_generic (?_ : U.family.IsPointOf 𝔪 a
@@ -373,8 +383,8 @@ closed point of `α`, seen through `φ`, is `t`. (b) Whenever `C.point b ≫ u` 
 `𝔪`. -/
 lemma exists_arc_centre_eq (C : U.GraphClosure γ ν)
     (t : Over.mk (Spec.map (CommRingCat.ofHom (algebraMap R ℂ))) ⟶ C.scheme) :
-    ∃ᵉ (V : ValuationSubring ℂ) (α : Spec (CommRingCat.of V) ⟶ C.scheme.left)
-      (b : ModuliPoint E D.Index ν) (φ : ResidueField V →+* ℂ),
+    ∃ (V : ValuationSubring ℂ), ∃ (α : Spec (CommRingCat.of V) ⟶ C.scheme.left),
+      ∃ (b : ModuliPoint E D.Index ν), ∃ (φ : ResidueField V →+* ℂ),
       -- (a)
       specMap (φ.comp (residue V)) ≫ α = t.left ∧
       -- (b)
@@ -419,11 +429,7 @@ lemma point_surjective (C : U.GraphClosure γ ν)
   -- Pull objects and full structures back to the centre; there `y` is modelled on some `(g, ℓ)`.
   choose x h_pb using fun y' : ThetaObject U.family (Spec (CommRingCat.of V)) ↦
     exists_isPullbackAlong (X := U.family) (specMap (φ.comp (residue V))) y'
-  have h_full (y' : ThetaObject U.family (Spec (CommRingCat.of V))) (e' : y'.FullLevelStructure) :
-      ∃ f' : (x y').FullLevelStructure,
-        f'.torsionPoint = (h_pb y').isGroupBaseChange.pullSection ∘ₗ e'.torsionPoint :=
-    FullLevelStructure.exists_pullback (h_pb y') e'
-  choose f hf using h_full
+  choose f hf using fun y' e' ↦ FullLevelStructure.exists_pullback (h_pb y') e'
   -- The structure map of `x y` on `𝓞 E` is that of `R` followed by the embedding `Φ v₀` in `ℂ`.
   have h_struct (r : 𝓞 E) : (x y).baseHom r = Φ v₀ r.val := by
     calc (x y).baseHom r = algebraMap R ℂ (algebraMap (𝓞 E) R r) := by
@@ -433,10 +439,8 @@ lemma point_surjective (C : U.GraphClosure γ ν)
       _ = Φ v₀ r.val := rfl
   obtain ⟨g, ℓ, d, Y, m, hm, h_refl⟩ := exists_torusModel (f y e.fullStructure) h_struct
   have h_onto : m.π.Surjective := m.uniformisation.surjective.comp Y.realEquiv.surjective
-  have h_lift (w : RealVectors E D.Index) :
-      ∃ P' : RealVectors E D.Index, m.π P' = (h_pb y).isGroupBaseChange.pullSection (e.π w) :=
-    h_onto _
-  choose P hP using h_lift
+  choose P hP using fun w : RealVectors E D.Index ↦
+    h_onto ((h_pb y).isGroupBaseChange.pullSection (e.π w))
   -- The candidate is `(g, ℓ, P ∘ b.markedPoint)`; compare it with `t` on each component `i`.
   refine ⟨{ frame := g, reflection := ℓ, markedPoint := P ∘ b.markedPoint,
             isSignedFrame := ⟨_, Y.isSignedFrameFor⟩, isReflection := h_refl },
@@ -462,10 +466,12 @@ lemma point_surjective (C : U.GraphClosure γ ν)
     simp [(h_pb _).baseHom_eq_comp, hρ, ← m.baseHom_eq]
   obtain ⟨g', ℓ', d', Y', m', hm', h_refl'⟩ := exists_torusModel (f y' e'.fullStructure) h_struct'
   have hψ_cls : (x y').lineBundle.picClass.pull ψ.left = μ • (x y).lineBundle.picClass := by
-    -- `using!`: the point of `ψ` over the centre is its pull-back only after unfolding
-    -- `pointEquiv`.
-    simpa [(h_pb _).lineBundle_eq_pull] using!
-      congr(y'.lineBundle.picClass.pull $(hψ_pt (𝟙 _)).1).trans congr(($h_cls).pull _)
+    -- Over the centre, `ψ` followed by the pull-back map of `y'` is the pull-back map of `y`
+    -- followed by `χ`.
+    have h_left : ψ.left ≫ (h_pb y').schemeMap.left = (h_pb y).schemeMap.left ≫ χ.left := by
+      simpa [pointEquiv_apply] using congrArg Hom.left (hψ_pt (𝟙 _))
+    rw [(h_pb _).lineBundle_eq_pull, (h_pb _).lineBundle_eq_pull, ← Pic.pull_picClass,
+      ← Pic.pull_picClass, ← Pic.pull_comp, h_left, Pic.pull_comp, h_cls, map_nsmul]
   obtain ⟨z, hz_π, -, hz_ℓ⟩ := exists_matrix_of_hom m m' ψ (mod_cast h_pos.ne') hψ_cls
   -- Both descriptions of `ψ` on torsion agree, and torsion determines an adelic matrix.
   have h_matrix : (γ i).2.val⁻¹ = g'⁻¹ * toFinGL z * g := by

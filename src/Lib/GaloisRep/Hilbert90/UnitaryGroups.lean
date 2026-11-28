@@ -1,15 +1,21 @@
+module
+
+import Mathlib.Algebra.Ring.Divisibility.Lemmas
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.GaloisRep.BaseChange.Defs
 import Lib.GaloisRep.Hilbert90.TameActions
+import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # Hilbert 90 for unitary groups over profinite rings and for finite ideles
 
 This file proves Hilbert 90 for the unitary group over a profinite ring, with a congruence modulo
-`m`. On the way it constructs fixed units in `O[X]/Q`
-(`New.exists_fixed_isUnit_pow_mul_one_add_mul_eq_pow`) and orthonormal frames fixed by `τ` for
-invertible hermitian matrices (`New.exists_fixed_orthonormal_frame`). It also proves Hilbert 90 for
-the finite ideles of `L`, for an automorphism `σ` of `L/K` acting through `New.adeleMap`. This
-follows from Galois descent for the semilinear map `x ↦ u * σ x`, together with the fact that two of
-its fixed points have a common divisor that is again fixed.
+`m`. On the way it constructs twisted roots in `O[X]/Q` (`New.exists_isTwistedRoot_of_charpoly_eq`)
+and orthonormal frames fixed by `τ` for invertible hermitian matrices
+(`New.exists_fixed_orthonormal_frame`). It also proves Hilbert 90 for the finite ideles of `L`, for
+an automorphism `σ` of `L/K` acting through `New.adeleMap`. This follows from Galois descent for the
+semilinear map `x ↦ u * σ x`, together with the fact that two of its fixed points have a common
+divisor that is again fixed.
 
 The main results `New.exists_fixed_orthonormal_frame` and `New.unitary_hilbert90_at_level` share
 these hypotheses: `New.IsProfiniteRing O` (`O` is profinite); `New.IsTameAtLevel τ p 0`, which says
@@ -34,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.Hilbert90.TameActions` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Hilbert 90 for unitary groups over profinite rings
@@ -83,165 +91,6 @@ private lemma iterate_mk_eq_mk_map_pow {Q : O[X]} {θ : AdjoinRoot Q →+* Adjoi
   | zero => simp [RingHom.one_def]
   | succ i ih => simp [hθ, ih, Polynomial.map_map, pow_succ, RingHom.mul_def]
 
-omit [StarRing O] in
-/-- If `θ` acts on `O[X]/Q` by applying `τ` to the coefficients and `τ` is tame at level `x`
-(`New.IsTameAtLevel`), then `θ` is tame at level `x`, viewed as a constant of `O[X]/Q`. -/
-private lemma isTameAtLevel_adjoinRoot_of_forall_mk_eq_mk_map {Q : O[X]}
-    {θ : AdjoinRoot Q →+* AdjoinRoot Q} (hθ : ∀ q : O[X], θ (mk Q q) = mk Q (q.map τ)) {x : O}
-    (h_tame : IsTameAtLevel τ p x) : IsTameAtLevel θ p (AdjoinRoot.of Q x) := by
-  have h_semiconj : Function.Semiconj (AdjoinRoot.of Q) τ θ := fun a ↦ by simp [hθ, ← mk_C]
-  have hθ_pow : θ ^ p = 1 := by
-    refine RingHom.ext fun z ↦ ?_
-    obtain ⟨q, rfl⟩ := mk_surjective z
-    simp [iterate_mk_eq_mk_map_pow hθ, h_tame.pow_eq_one, RingHom.one_def]
-  exact h_tame.of_semiconj (AdjoinRoot.of Q) h_semiconj hθ_pow
-
-/-- Let `Q = charpoly Y`, let `w` invert `1 + m X` modulo `Q`, and let
-`Yᴴ * (1 + m Y) ^ k = (-1) ^ k * Y` with `k ≤ 1`. Then `Q` divides `Q̄ ∘ (X * (-w) ^ k)`, where `Q̄`
-applies `star` to the coefficients of `Q`: the value of `X * (-w) ^ k` at `Y` is `Yᴴ`, whose
-characteristic polynomial is `Q̄`, and `charpoly Y` divides `(charpoly q(Y)).comp q` for every `q`.
--/
-private lemma dvd_map_comp_X_mul_neg_pow_of_charpoly_eq {Y : Matrix n n O} {m : O} {Q a w : O[X]}
-    (hQ : Y.charpoly = Q) (hw₀ : a * Q + w * (1 + m • X) = 1) {k : ℕ} (hk : k ≤ 1)
-    (hY_rel : Yᴴ * (1 + m • Y) ^ k = (-1) ^ k * Y) :
-    Q ∣ (Q.map (starRingEnd O)).comp (X * (-w) ^ k) := by
-  subst hQ
-  have h_val : (X * (-w) ^ k).aeval Y = Yᴴ :=
-    aeval_X_mul_neg_pow_eq_of_mul_one_add_smul_pow_eq hw₀ hk Y.aeval_self_charpoly hY_rel
-  have h_conj : Yᵀ.map (starRingEnd O) = Yᴴ := rfl
-  have h_char : Yᴴ.charpoly = Y.charpoly.map (starRingEnd O) := by
-    rw [← h_conj, charpoly_map, charpoly_transpose]
-  have h_dvd := charpoly_dvd_charpoly_aeval_comp (Y := Y) (X * (-w) ^ k)
-  rwa [h_val, h_char] at h_dvd
-
-/-- In `O[X]/Q`, let `θ` apply `τ` to the coefficients, and let `ρ` apply `star` to the
-coefficients and send `X` to `X * (-w) ^ k`, where `w` inverts `1 + m X` and `τ m = m`. If `τ`
-commutes with `star`, then `θ` and `ρ` commute. -/
-private lemma commute_of_forall_mk_eq {Q w : O[X]} {m : O} {k : ℕ} (hm : τ m = m)
-    (hτ : ∀ x : O, τ (star x) = star (τ x)) {θ ρ : AdjoinRoot Q →+* AdjoinRoot Q}
-    (hθ : ∀ q : O[X], θ (mk Q q) = mk Q (q.map τ))
-    (hρ : ∀ q : O[X], ρ (mk Q q) = mk Q ((q.map (starRingEnd O)).comp (X * (-w) ^ k)))
-    (hw : mk Q w * (1 + mk Q (C m) * mk Q X) = 1) : Commute θ ρ := by
-  -- `θ` fixes `1 + m X`, hence also its inverse `w`.
-  have hθ_unit : θ (1 + mk Q (C m) * mk Q X) = 1 + mk Q (C m) * mk Q X := by
-    simp [hθ, hm, -mk_C, -mk_X]
-  have hθw : mk Q (w.map τ) = mk Q w := by
-    rw [← hθ]
-    refine left_inv_eq_right_inv ?_ ((mul_comm _ _).trans hw)
-    rw [← hθ_unit, ← map_mul, hw, map_one]
-  refine (commute_iff_eq θ ρ).mpr ?_
-  ext a
-  · simp [hθ, hρ, hτ, ← mk_C, starRingEnd_apply]
-  · simp [hθ, hρ, hθw, ← mk_X]
-
-/-- Let `ρ` apply `star` to the coefficients of `O[X]/Q` and send `X` to `X * (-w) ^ k`, where
-`k ≤ 1`, `w` inverts `1 + m X` and `star m = m`. Then `ρ` is an involution. -/
-private lemma sq_eq_one_of_forall_mk_eq {Q w : O[X]} {m : O} {k : ℕ} (hk : k ≤ 1)
-    (hm_star : star m = m) {ρ : AdjoinRoot Q →+* AdjoinRoot Q}
-    (hρ : ∀ q : O[X], ρ (mk Q q) = mk Q ((q.map (starRingEnd O)).comp (X * (-w) ^ k)))
-    (hw : mk Q w * (1 + mk Q (C m) * mk Q X) = 1) : ρ ^ 2 = 1 := by
-  -- `ρ` applies `star` twice to constants. On `X`, for `k = 1`: `ρ (1 + m X) = 1 - m X w = w`, so
-  -- applying `ρ` to `w * (1 + m X) = 1` gives `ρ w * w = 1`, and `ρ (ρ X) = X * (-w) * (-ρ w) = X`.
-  have hρ_X : ρ (mk Q X) = mk Q X * (-mk Q w) ^ k := by
-    rw [hρ, Polynomial.map_X, X_comp, map_mul, map_pow, map_neg]
-  have hρ_Cm : ρ (mk Q (C m)) = mk Q (C m) := by
-    rw [hρ, Polynomial.map_C, C_comp, starRingEnd_apply, hm_star]
-  interval_cases k
-  · ext a
-    · simp [hρ, ← mk_C, starRingEnd_apply]
-    · simp [hρ_X, ← mk_X]
-  · have hρw : ρ (mk Q w) * mk Q w = 1 := by
-      have h_image : ρ (mk Q w) * (1 + mk Q (C m) * (mk Q X * (-mk Q w) ^ 1)) = 1 := by
-        rw [← hρ_X, ← hρ_Cm, ← map_mul, ← map_one ρ, ← map_add, ← map_mul, hw]
-      have h_w : 1 + mk Q (C m) * (mk Q X * (-mk Q w) ^ 1) = mk Q w := by
-        linear_combination (-1 : AdjoinRoot Q) * hw
-      rwa [h_w] at h_image
-    have h_ρρX : ρ (ρ (mk Q X)) = mk Q X := by
-      rw [hρ_X, map_mul, map_pow, map_neg, hρ_X]
-      linear_combination mk Q X * hρw
-    ext a
-    · simp [hρ, ← mk_C, starRingEnd_apply]
-    · simpa [sq, ← mk_X] using h_ρρX
-
-/-- Descent in the `θ`-fixed part of the profinite ring `O[X]/Q`, for `τ` tame at level `0` fixing
-`c` (with `c - star c` a unit), `m` fixed by `τ` and `star`, and `k ≤ 1`. Here `θ` applies `τ` to
-the coefficients, and the involution `ρ`, commuting with `θ`, applies `star` to them and sends `X`
-to `X * (-w) ^ k`, where `w` inverts `1 + m X`. Some `θ`-fixed unit `g`, the class of
-`1 + m X ^ (1 - k) y` with `y` fixed by `θ`, has `g ^ (1 - k) * (1 + m X) * ρ g = g ^ k`. -/
-private lemma exists_fixed_isUnit_pow_mul_one_add_mul_eq_pow {m c : O}
-    (h_tame_zero : IsTameAtLevel τ p 0) (hc : τ c = c) (hc_unit : IsUnit (c - star c))
-    (hm_star : star m = m) (hm : τ m = m) {Q w : O[X]} (h_prof : IsProfiniteRing (AdjoinRoot Q))
-    {k : ℕ} (hk : k ≤ 1) {θ ρ : AdjoinRoot Q →+* AdjoinRoot Q}
-    (hθ : ∀ q : O[X], θ (mk Q q) = mk Q (q.map τ))
-    (hρ : ∀ q : O[X], ρ (mk Q q) = mk Q ((q.map (starRingEnd O)).comp (X * (-w) ^ k)))
-    (hw : mk Q w * (1 + mk Q (C m) * mk Q X) = 1) (h_comm : Commute θ ρ) (hρ_sq : ρ ^ 2 = 1) :
-    ∃ (y : O[X]) (g : AdjoinRoot Q), mk Q (y.map τ) = mk Q y ∧
-      g = mk Q (1 + m • (X ^ (1 - k) * y)) ∧ θ g = g ∧ IsUnit g ∧
-      g ^ (1 - k) * (1 + mk Q (C m) * mk Q X) * ρ g = g ^ k := by
-  -- The `θ`-fixed subring `F` is profinite, and `ρ` restricts to an involution `r` of `F`, tame at
-  -- the level `m X ^ (1 - k)`. Descent along `r` solves the equation: by the norm theorem for
-  -- `k = 0`, and by Hilbert 90 for `k = 1`.
-  let F : Subring (AdjoinRoot Q) := θ.eqLocus 1
-  have h_mem {q : O[X]} (hq : q.map τ = q) : mk Q q ∈ F := (hθ q).trans (congrArg _ hq)
-  have hρ_mem (x : AdjoinRoot Q) (hx : x ∈ F) : ρ x ∈ F :=
-    (RingHom.congr_fun h_comm.eq x).trans (congrArg ρ hx)
-  let r : F →+* F := ρ.restrict F F hρ_mem
-  have hr_val (x : F) : (r x : AdjoinRoot Q) = ρ x := rfl
-  have hρ_of (a : O) : ρ (AdjoinRoot.of Q a) = AdjoinRoot.of Q (star a) := by
-    rw [← mk_C, hρ, Polynomial.map_C, C_comp, starRingEnd_apply, mk_C]
-  have hρ_root : ρ (root Q) = root Q * (-mk Q w) ^ k := by
-    rw [← mk_X, hρ, Polynomial.map_X, X_comp, map_mul, map_pow, map_neg, mk_X]
-  have hCm : (C m).map τ = C m := by rw [Polynomial.map_C, hm]
-  -- `N j` is the class of `m X ^ (1 - j)`: `N 0 = m X` and `N 1 = m`
-  let N (j : ℕ) : F := ⟨mk Q (C m), h_mem hCm⟩ * ⟨mk Q X, h_mem (map_X τ)⟩ ^ (1 - j)
-  have hθ_tame : IsTameAtLevel θ p 0 := by
-    simpa using isTameAtLevel_adjoinRoot_of_forall_mk_eq_mk_map hθ h_tame_zero
-  have hF_prof : IsProfiniteRing F := h_prof.eqLocus hθ_tame
-  have hr_tame : IsTameAtLevel r 2 (N k) := by
-    let γ : F := ⟨mk Q (C c), h_mem (q := C c) (by rw [Polynomial.map_C, hc])⟩
-    have hr_sq : r ^ 2 = 1 := RingHom.ext fun x ↦ Subtype.ext (RingHom.congr_fun hρ_sq x)
-    -- `γ - r γ` is the class of the unit `c - star c`
-    have hγ_unit : IsUnit (γ - r γ) :=
-      .of_map F.subtype _ (by simp [γ, hr_val, hρ_of, hc_unit, IsUnit.map, ← map_sub])
-    have hr_N : r (N k) = N k := by
-      interval_cases k
-      · simp [N, hr_val, hρ_of, hρ_root, hm_star, Subtype.ext_iff]
-      · simp [N, hr_val, hρ_of, hm_star, Subtype.ext_iff]
-    exact .of_sq_eq_one_of_isUnit_sub hr_sq hγ_unit hr_N
-  have h_mul : mk Q w * ((1 + N 0 : F) : AdjoinRoot Q) = 1 := by simpa [N] using hw
-  have hu : IsUnit (1 + N 0) := .of_map F.subtype _ (.of_mul_eq_one_right _ h_mul)
-  -- For `k = 0` the unit `1 + m X` is fixed by `r`, hence a norm; for `k = 1` it has norm one,
-  -- hence is a coboundary. Either way a unit `g ≡ 1` modulo `N k` splits it along `r`.
-  obtain ⟨g, hg_dvd, hg⟩ : ∃ g : Fˣ, N k ∣ g - 1 ∧ g ^ (1 - k) * (1 + N 0) * r g = g ^ k := by
-    interval_cases k
-    · have hr_fix : r (1 + N 0) = 1 + N 0 := by
-        simp [N, hr_val, hρ_of, hρ_root, hm_star, Subtype.ext_iff]
-      obtain ⟨z, -, hz_lev, hz⟩ := hr_tame.exists_prod_range_pow_apply_eq (.inr hF_prof) hu hr_fix
-        (by simp)
-      -- `z⁻¹ * (z * r z) * r z⁻¹ = 1`
-      have h_split : ((z⁻¹ : Fˣ) : F) * (1 + N 0) * r ((z⁻¹ : Fˣ) : F) = 1 := by
-        simp [← hz, ← map_mul, prod_range_succ]
-      exact ⟨z⁻¹, hz_lev, by simpa using h_split⟩
-    · -- `r (1 + m X) = 1 - m X w`, and `(1 + m X) * (1 - m X w) = 1` because `w * (1 + m X) = 1`
-      have h_norm_one : (1 + N 0) * r (1 + N 0) = 1 := by
-        suffices h_val : (1 + mk Q (C m) * mk Q X) * (1 + -(mk Q (C m) * (mk Q X * mk Q w))) = 1 by
-          simpa [N, hr_val, hρ_of, hρ_root, hm_star, Subtype.ext_iff] using h_val
-        linear_combination -(mk Q (C m) * mk Q X) * hw
-      have h_lev : N 1 ∣ (1 + N 0) - 1 := ⟨⟨mk Q X, h_mem (map_X τ)⟩, by simp [N]⟩
-      have h_prod : ∏ i ∈ range 2, (r ^ i) (1 + N 0) = 1 := by
-        simpa [prod_range_succ] using h_norm_one
-      obtain ⟨g, hg_lev, hg⟩ := hr_tame.hilbert90_unit (.inr hF_prof) hu h_lev h_prod
-      exact ⟨g, hg_lev, by simpa using hg⟩
-  obtain ⟨y₀, hg_lev⟩ : ∃ y₀ : F, (g : F) - 1 = N k * y₀ := hg_dvd
-  obtain ⟨y, hy⟩ : ∃ y : O[X], mk Q y = y₀ := mk_surjective (y₀ : AdjoinRoot Q)
-  have hy_fix : mk Q (y.map τ) = mk Q y := by
-    rw [← hθ, hy]
-    exact y₀.prop
-  have hg_mk : ((g : F) : AdjoinRoot Q) = mk Q (1 + m • (X ^ (1 - k) * y)) := by
-    simpa [N, smul_eq_C_mul, mul_assoc, sub_eq_iff_eq_add', Subtype.ext_iff, hy] using hg_lev
-  refine ⟨y, g, hy_fix, hg_mk, (g : F).prop, g.isUnit.map F.subtype, ?_⟩
-  simpa [N, hr_val, Subtype.ext_iff] using hg
-
 universe w in
 /-- The polynomials `y`, `z`, `z'` over `O` solve the norm equations of
 `New.exists_isTwistedRoot_of_charpoly_eq` at an element `B` of an `O`-algebra `A` with `star`. Write
@@ -286,28 +135,110 @@ lemma exists_isTwistedRoot_of_charpoly_eq (hO : IsProfiniteRing O) {m c : O}
   obtain ⟨θ, hθ⟩ :
       ∃ θ : AdjoinRoot Q →+* AdjoinRoot Q, ∀ q : O[X], θ (mk Q q) = mk Q (q.map τ) := by
     simpa using exists_adjoinRoot_map_comp (Q := Q) τ X (by rw [comp_X, hQτ])
-  have hQ_dvd : Q ∣ (Q.map (starRingEnd O)).comp (X * (-w) ^ k) :=
-    dvd_map_comp_X_mul_neg_pow_of_charpoly_eq hQ hw₀ hk hY_rel
+  have hQ_dvd : Q ∣ (Q.map (starRingEnd O)).comp (X * (-w) ^ k) := by
+    subst hQ
+    have h_val : (X * (-w) ^ k).aeval Y = Yᴴ :=
+      aeval_X_mul_neg_pow_eq_of_mul_one_add_smul_pow_eq hw₀ hk Y.aeval_self_charpoly hY_rel
+    have h_char : Yᴴ.charpoly = Y.charpoly.map (starRingEnd O) := by
+      change (Yᵀ.map (starRingEnd O)).charpoly = _
+      rw [charpoly_map, charpoly_transpose]
+    have h_dvd := charpoly_dvd_charpoly_aeval_comp (Y := Y) (X * (-w) ^ k)
+    rwa [h_val, h_char] at h_dvd
   obtain ⟨ρ, hρ⟩ := exists_adjoinRoot_map_comp (starRingEnd O) (X * (-w) ^ k) hQ_dvd
-  have hw : mk Q w * (1 + mk Q (C m) * mk Q X) = 1 := by
+  have hw : mk Q w * (1 + AdjoinRoot.of Q m * root Q) = 1 := by
     simpa [smul_eq_C_mul] using congrArg (mk Q) hw₀
-  have h_comm : Commute θ ρ := commute_of_forall_mk_eq hm hτ hθ hρ hw
-  have hρ_sq : ρ ^ 2 = 1 := sq_eq_one_of_forall_mk_eq hk hm_star hρ hw
+  have hθ_of (a : O) : θ (AdjoinRoot.of Q a) = AdjoinRoot.of Q (τ a) := by simp [hθ, ← mk_C]
+  have hθ_root : θ (root Q) = root Q := by simp [hθ, ← mk_X]
+  have hρ_of (a : O) : ρ (AdjoinRoot.of Q a) = AdjoinRoot.of Q (star a) := by
+    rw [← mk_C, hρ, Polynomial.map_C, C_comp, starRingEnd_apply, mk_C]
+  have hρ_root : ρ (root Q) = root Q * (-mk Q w) ^ k := by
+    rw [← mk_X, hρ, Polynomial.map_X, X_comp, map_mul, map_pow, map_neg, mk_X]
+  have h_comm : Commute θ ρ := by
+    have hθw : θ (mk Q w) = mk Q w := by
+      refine left_inv_eq_right_inv ?_ ((mul_comm _ _).trans hw)
+      have h_fix : θ (1 + AdjoinRoot.of Q m * root Q) = 1 + AdjoinRoot.of Q m * root Q := by
+        simp [hθ_of, hθ_root, hm]
+      rw [← h_fix, ← map_mul, hw, map_one]
+    refine (commute_iff_eq θ ρ).mpr ?_
+    ext a
+    · simp [hθ_of, hρ_of, hτ]
+    · simp [hθ_root, hρ_root, hθw]
+  have hρ_sq : ρ ^ 2 = 1 := by
+    have hρ_root_sq : ρ (ρ (root Q)) = root Q := by
+      interval_cases k
+      · simp [hρ_root]
+      · have hρw : ρ (mk Q w) * mk Q w = 1 := by
+          have h_img : ρ (mk Q w) * (1 + AdjoinRoot.of Q m * (root Q * (-mk Q w) ^ 1)) = 1 := by
+            rw [← hρ_root, ← hm_star, ← hρ_of, ← map_mul, ← map_one ρ, ← map_add, ← map_mul, hw]
+          have h_w : 1 + AdjoinRoot.of Q m * (root Q * (-mk Q w) ^ 1) = mk Q w := by
+            linear_combination (-1 : AdjoinRoot Q) * hw
+          rwa [h_w] at h_img
+        rw [hρ_root, map_mul, map_pow, map_neg, hρ_root]
+        linear_combination root Q * hρw
+    ext a
+    · simp [sq, hρ_of]
+    · simpa [sq] using hρ_root_sq
   have h_prof : IsProfiniteRing (AdjoinRoot Q) :=
     hO.of_addEquiv_pi (powerBasisAux' hQ_monic).equivFun.toAddEquiv
-  obtain ⟨y, g, hy_fix, hg_mk, hθg, hg_unit, hg_rel⟩ :=
-    exists_fixed_isUnit_pow_mul_one_add_mul_eq_pow h_tame_zero hc hc_unit hm_star hm h_prof hk hθ
-      hρ hw h_comm hρ_sq
+  have hθ_tame {x : O} (ht : IsTameAtLevel τ p x) : IsTameAtLevel θ p (AdjoinRoot.of Q x) :=
+    ht.of_semiconj (AdjoinRoot.of Q) (fun a ↦ (hθ_of a).symm) <| RingHom.ext fun z ↦ by
+      obtain ⟨q, rfl⟩ := mk_surjective z
+      simp [iterate_mk_eq_mk_map_pow hθ, ht.pow_eq_one, RingHom.one_def]
+  -- Solve for a `θ`-fixed unit `g ≡ 1 mod m X ^ (1 - k)` by descent along `ρ` in `θ.eqLocus 1`.
+  let F : Subring (AdjoinRoot Q) := θ.eqLocus 1
+  have hρ_mem (x : AdjoinRoot Q) (hx : x ∈ F) : ρ x ∈ F :=
+    (RingHom.congr_fun h_comm.eq x).trans (congrArg ρ hx)
+  let r : F →+* F := ρ.restrict F F hρ_mem
+  have hr_val (x : F) : (r x : AdjoinRoot Q) = ρ x := rfl
+  let N (j : ℕ) : F :=
+    ⟨AdjoinRoot.of Q m, by simp [F, hθ_of, hm]⟩ * ⟨root Q, hθ_root⟩ ^ (1 - j)
+  have hF_prof : IsProfiniteRing F := h_prof.eqLocus (by simpa using hθ_tame h_tame_zero)
+  have hr_tame : IsTameAtLevel r 2 (N k) := by
+    let γ : F := ⟨AdjoinRoot.of Q c, by simp [F, hθ_of, hc]⟩
+    have hr_sq : r ^ 2 = 1 := RingHom.ext fun x ↦ Subtype.ext (RingHom.congr_fun hρ_sq x)
+    have hγ_unit : IsUnit (γ - r γ) :=
+      .of_map F.subtype _ (by simp [γ, hr_val, hρ_of, hc_unit, IsUnit.map, ← map_sub])
+    have hr_N : r (N k) = N k := by
+      interval_cases k
+      · simp [N, hr_val, hρ_of, hρ_root, hm_star, Subtype.ext_iff]
+      · simp [N, hr_val, hρ_of, hm_star, Subtype.ext_iff]
+    exact .of_sq_eq_one_of_isUnit_sub hr_sq hγ_unit hr_N
+  have hu : IsUnit (1 + N 0) :=
+    .of_map F.subtype _ (.of_mul_eq_one_right _ (by simpa [N] using hw))
+  obtain ⟨g, ⟨y₀, hg_lev⟩, hg_rel⟩ :
+      ∃ g : Fˣ, N k ∣ g - 1 ∧ g ^ (1 - k) * (1 + N 0) * r g = g ^ k := by
+    interval_cases k
+    · have hr_fix : r (1 + N 0) = 1 + N 0 := by
+        simp [N, hr_val, hρ_of, hρ_root, hm_star, Subtype.ext_iff]
+      obtain ⟨z, -, hz_lev, hz⟩ := hr_tame.exists_prod_range_pow_apply_eq (.inr hF_prof) hu hr_fix
+        (by simp)
+      have h_split : ((z⁻¹ : Fˣ) : F) * (1 + N 0) * r ((z⁻¹ : Fˣ) : F) = 1 := by
+        simp [← hz, prod_range_succ, ← map_mul]
+      exact ⟨z⁻¹, hz_lev, by simpa using h_split⟩
+    · have h_norm_one : (1 + N 0) * r (1 + N 0) = 1 := by
+        suffices h_val : (1 + AdjoinRoot.of Q m * root Q) *
+            (1 + -(AdjoinRoot.of Q m * (root Q * mk Q w))) = 1 by
+          simpa [N, hr_val, hρ_of, hρ_root, hm_star, Subtype.ext_iff] using h_val
+        linear_combination -(AdjoinRoot.of Q m * root Q) * hw
+      have h_lev : N 1 ∣ (1 + N 0) - 1 := ⟨⟨root Q, hθ_root⟩, by simp [N]⟩
+      have h_prod : ∏ i ∈ range 2, (r ^ i) (1 + N 0) = 1 := by
+        simpa [prod_range_succ] using h_norm_one
+      obtain ⟨g, hg_lev, hg⟩ := hr_tame.hilbert90_unit (.inr hF_prof) hu h_lev h_prod
+      exact ⟨g, hg_lev, by simpa using hg⟩
+  obtain ⟨y, hy⟩ : ∃ y : O[X], mk Q y = y₀ := mk_surjective (y₀ : AdjoinRoot Q)
+  have hy_fix : mk Q (y.map τ) = mk Q y := by
+    rw [← hθ, hy]
+    exact y₀.prop
+  have hg_mk : ((g : F) : AdjoinRoot Q) = mk Q (1 + m • (X ^ (1 - k) * y)) := by
+    simpa [N, smul_eq_C_mul, mul_assoc, sub_eq_iff_eq_add', Subtype.ext_iff, hy] using hg_lev
   -- At tame level `m` the `θ`-fixed unit `g ≡ 1 mod m` is a norm along `θ`.
-  have hg_lev : AdjoinRoot.of Q m ∣ g - 1 := by simp [hg_mk, ← C_mul']
+  have hg_lev' : AdjoinRoot.of Q m ∣ ((g : F) : AdjoinRoot Q) - 1 := by simp [hg_mk, ← C_mul']
   have h_norm (ht : IsTameAtLevel τ p m) : ∃ (u : (AdjoinRoot Q)ˣ) (z' z : O[X]),
       (u : AdjoinRoot Q) = 1 + mk Q (m • z) ∧ (↑u⁻¹ : AdjoinRoot Q) = 1 + mk Q (m • z') ∧
-      ∏ i ∈ range p, (θ ^ i) u = g := by
+      ∏ i ∈ range p, (θ ^ i) u = ((g : F) : AdjoinRoot Q) := by
     obtain ⟨u, ⟨a₁, ha₁⟩, ⟨b₁, hb₁⟩, hu⟩ :=
-      (isTameAtLevel_adjoinRoot_of_forall_mk_eq_mk_map hθ ht).exists_prod_range_pow_apply_eq
-        (.inr h_prof) hg_unit
-        hθg hg_lev
-    -- write the cofactors of `m` in `u - 1` and `u⁻¹ - 1` as classes of polynomials
+      (hθ_tame ht).exists_prod_range_pow_apply_eq (.inr h_prof) (g.isUnit.map F.subtype)
+        (g : F).prop hg_lev'
     obtain ⟨z, rfl⟩ := mk_surjective a₁
     obtain ⟨z', rfl⟩ := mk_surjective b₁
     refine ⟨u, z', z, ?_, ?_, hu⟩
@@ -321,20 +252,21 @@ lemma exists_isTwistedRoot_of_charpoly_eq (hO : IsProfiniteRing O) {m c : O}
   have hf (q : O[X]) : f (mk Q q) = q.aeval B := rfl
   refine ⟨?_, fun ht ↦ ?_, fun ht ↦ ?_, fun h_rel ↦ ?_⟩
   · rw [← hf, ← hf, hy_fix]
-  · -- `1 + m z'` and `1 + m z` are the classes of `u⁻¹` and `u`
-    simp [← hf, ← hz ht, ← hz' ht]
-  · -- the twisted norm of `1 + m z` is the class of the `θ`-norm of `u`, which is `g`
-    simp [← hf, ← (hu_norm ht).trans hg_mk, twistedNorm_map_eq_prod, hz ht,
+  · simp [← hf, ← hz ht, ← hz' ht]
+  · simp [← hf, ← (hu_norm ht).trans hg_mk, twistedNorm_map_eq_prod, hz ht,
       iterate_mk_eq_mk_map_pow hθ]
-  · -- `f` turns `ρ` into `star`, since `X * (-w) ^ k` has the value `star B` at `B`.
-    have h_star_root : (X * (-w) ^ k).aeval B = star B :=
+  · have h_star_root : (X * (-w) ^ k).aeval B = star B :=
       aeval_X_mul_neg_pow_eq_of_mul_one_add_smul_pow_eq hw₀ hk hB h_rel
     have hf_ρ (q : O[X]) : f (ρ (mk Q q)) = star (q.aeval B) := by
       rw [hρ, hf, aeval_comp, h_star_root, star_aeval]
-    have hf_g : f g = aeval B (1 + m • (X ^ (1 - k) * y)) := by rw [hg_mk, hf]
-    have hf_ρ_g : f (ρ g) = star (aeval B (1 + m • (X ^ (1 - k) * y))) := by rw [hg_mk, hf_ρ]
-    have h_rel_f : f (g ^ (1 - k) * (1 + mk Q (C m) * mk Q X) * ρ g) = f (g ^ k) :=
-      congrArg f hg_rel
+    have hf_g : f ((g : F) : AdjoinRoot Q) = aeval B (1 + m • (X ^ (1 - k) * y)) := by
+      rw [hg_mk, hf]
+    have hf_ρ_g : f (ρ ((g : F) : AdjoinRoot Q)) = star (aeval B (1 + m • (X ^ (1 - k) * y))) := by
+      rw [hg_mk, hf_ρ]
+    have hg_rel' : ((g : F) : AdjoinRoot Q) ^ (1 - k) * (1 + AdjoinRoot.of Q m * root Q) *
+        ρ ((g : F) : AdjoinRoot Q) = ((g : F) : AdjoinRoot Q) ^ k := by
+      simpa [N, hr_val, Subtype.ext_iff] using hg_rel
+    have h_rel_f := congrArg f hg_rel'
     have hf_of (a : O) : f (AdjoinRoot.of Q a) = algebraMap O A a := by rw [← mk_C, hf, aeval_C]
     have hf_root : f (root Q) = B := by rw [← mk_X, hf, aeval_X]
     simpa [hf_g, hf_ρ_g, hf_of, hf_root, ← Algebra.smul_def] using h_rel_f
@@ -391,7 +323,7 @@ lemma unitary_hilbert90_at_level (hO : IsProfiniteRing O) {m c : O}
   obtain ⟨g, V, hg, hg_fix, hg_frame⟩ :=
     exists_fixed_orthonormal_frame hO h_tame_zero hc hc_unit hτ hkk_unit (by simp) h_fix
   have h_lev : k.valᴴ * k.val - 1 = m • (W + Wᴴ * k.val) := by
-    simp [hk, hm_star, mul_add, add_mul, smul_add, smul_smul, add_comm, add_left_comm, add_assoc,
+    simp [hk, hm_star, mul_add, add_mul, smul_add, smul_smul, add_left_comm, add_assoc,
       sub_eq_iff_eq_add']
   refine ⟨of isUnit_one (k.val * g) (by simpa [conjTranspose_mul, Matrix.mul_assoc] using hg_frame),
     W + k.val * V * (W + Wᴴ * k.val), ?_, ?_⟩
@@ -461,7 +393,7 @@ lemma exists_dvd_dvd_mul_adeleMap_eq {a b : 𝔸f L} (ha : u * adeleMap (σ : L 
     have h_choice : v (b w) ≤ v (a w) ↔
         v (b (FinPlace.comap (σ : L →+* L) w)) ≤ v (a (FinPlace.comap (σ : L →+* L) w)) := by
       rw [← haw, ← hbw]
-      simp [zero_lt_iff, hw, v_locMap_eq_of_surjective (σ : L →+* L) rfl σ.surjective]
+      simp [pos_iff_ne_zero, hw, v_locMap_eq_of_surjective (σ : L →+* L) rfl σ.surjective]
     rw [c_apply, c_apply, if_congr h_choice rfl rfl]
     split_ifs
     exacts [haw, hbw]

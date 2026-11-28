@@ -1,6 +1,12 @@
+module
+
 import Mathlib.Probability.Kernel.Composition.IntegralCompProd
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Topology.Sheaves.Presheaf
+public import Lib.DiscreteSeries.Bruhat.QuadricBlocks
 import Lib.DiscreteSeries.Bruhat.FloorMeasures
-import Lib.DiscreteSeries.Bruhat.QuadricBlocks
+import Lib.General.Measure.IdempotentKernel
 
 /-!
 # Fourier kernels between solved measures
@@ -29,6 +35,8 @@ Notions from other files:
 Standard consequences of Fubini's theorem and the inequalities of Cauchy–Schwarz and Plancherel.
 -/
 
+@[expose] public section
+
 namespace New.Floors
 
 open Matrix MeasureTheory Measure ProbabilityTheory ENNReal Fintype Set Sum
@@ -39,12 +47,12 @@ lemma enorm_integral_sq_le {Y : Type*} [MeasurableSpace Y] {μ : Measure Y} {g :
     (hg_meas : AEStronglyMeasurable g μ) (hg_supp : ∀ y : Y, g y ≠ 0 → y ∈ S) :
     ‖∫ y : Y, g y ∂μ‖ₑ ^ 2 ≤ μ S * ∫⁻ y : Y in S, ‖g y‖ₑ ^ 2 ∂μ := by
   have h_supp : Function.support (fun y : Y ↦ ‖g y‖ₑ) ⊆ S :=
-    fun y hy ↦ hg_supp y (enorm_ne_zero.1 hy)
+    fun y hy ↦ hg_supp y (eNorm_ne_zero.1 hy)
   have h_cs : (∫⁻ y : Y in S, ‖g y‖ₑ ∂μ) ^ 2 ≤
       (∫⁻ _ : Y in S, 1 ∂μ) * ∫⁻ y : Y in S, ‖g y‖ₑ ^ 2 ∂μ :=
-    sq_lintegral_le aemeasurable_const (hg_meas.enorm.pow_const 2).restrict
+    sq_lintegral_le aemeasurable_const (hg_meas.eNorm.pow_const 2).restrict
       fun y : Y ↦ (one_mul (‖g y‖ₑ ^ 2)).ge
-  grw [enorm_integral_le_lintegral_enorm, ← setLIntegral_eq_of_support_subset h_supp, h_cs,
+  grw [eNorm_integral_le_lintegral_eNorm, ← setLIntegral_eq_of_support_subset h_supp, h_cs,
     setLIntegral_one]
 
 section Fibres
@@ -172,7 +180,7 @@ lemma lintegral_lintegral_fourier_le [DecidableEq ι] {Y : Type} [MeasurableSpac
   have h_meas : Measurable fun q : (ι → A) × Y ↦
       ‖∫ w : ι → A, P.ψ (ξ * star q.1 ⬝ᵥ w) * g (q.2, w)‖ₑ ^ 2 :=
     (StronglyMeasurable.integral_prod_right
-      (Measurable.stronglyMeasurable (by fun_prop))).measurable.enorm.pow_const 2
+      (Measurable.stronglyMeasurable (by fun_prop))).measurable.eNorm.pow_const 2
   rw [lintegral_lintegral_swap h_meas.aemeasurable, lintegral_prod _ (by fun_prop),
     ← lintegral_const_mul _ (by fun_prop)]
   refine lintegral_mono_ae (hg_int.prod_right_ae.mono fun y hy ↦ ?_)
@@ -245,7 +253,7 @@ lemma measurable_enorm_integral_fourier_sq [SFinite ρ] {φ : (κ → A) → ℂ
     (J : Matrix κ κ A) (ξ : A) :
     Measurable fun v : κ → A ↦ ‖∫ y : κ → A, P.ψ (ξ * star v ⬝ᵥ J *ᵥ y) * φ y ∂ρ‖ₑ ^ 2 :=
   (StronglyMeasurable.integral_prod_right
-    (Measurable.stronglyMeasurable (by fun_prop))).measurable.enorm.pow_const 2
+    (Measurable.stronglyMeasurable (by fun_prop))).measurable.eNorm.pow_const 2
 
 omit [Fintype κ] in
 /-- The square norm in y of the partial Fourier transform in w of the integral over z of a
@@ -262,7 +270,7 @@ lemma measurable_lintegral_fourier_integral_kernel {Y Y' Z : Type} [MeasurableSp
       (f := fun r z ↦ f r.1 (r.2, z)) (Measurable.stronglyMeasurable (by fun_prop))).measurable
   change Measurable fun q' : Y' × (ι → A) ↦
     ∫⁻ y : Y, ‖∫ w : ι → A, P.ψ (ξ * star q'.2 ⬝ᵥ w) * g q'.1 (y, w)‖ₑ ^ 2 ∂μ
-  refine Measurable.lintegral_prod_right (Measurable.pow_const (Measurable.enorm ?_) 2)
+  refine Measurable.lintegral_prod_right (Measurable.pow_const (Measurable.eNorm ?_) 2)
   exact (StronglyMeasurable.integral_prod_right
     (Measurable.stronglyMeasurable (by fun_prop))).measurable
 
@@ -353,7 +361,6 @@ lemma IsSolvedIn.exists_blockChart (h : IsSolvedIn blk ρ R M)
       e ∘ inl ∘ inr = inner ∧ e ∘ inr = blk ∧ card η = card κ - card ι - card B ∧
       MeasurePreserving (blockChart e) ((volume.prod volume) ⊗ₘ ζ) ρ ∧
       ∀ q : (η → A) × (ι → A), ζ q (coordinateBox B R) ≤ M := by
-  classical
   obtain ⟨η₀, _, e₀, ζ, rfl, _, h_chart, h_mass⟩ := h
   -- Each inner index is a free index `j i`, and `f` lists the free indices.
   have h_free (i : ι) : ∃ k : η₀, e₀ (inl k) = inner i := by
@@ -362,10 +369,8 @@ lemma IsSolvedIn.exists_blockChart (h : IsSolvedIn blk ρ R M)
     · have h_eq : (inr k : ι ⊕ B) = inl i := h_inj hk
       exact absurd h_eq inr_ne_inl
   choose j hj using h_free
-  have hj_inj : Function.Injective j := fun i i' h_eq ↦ by
-    have h_eq' : inner i = inner i' := by rw [← hj, ← hj, h_eq]
-    have h_index : (inl i : ι ⊕ B) = inl i' := h_inj h_eq'
-    exact inl_injective h_index
+  have hj_inj : Function.Injective j := .of_comp (f := e₀ ∘ inl) <| by
+    simpa [Function.comp_def, hj] using h_inj.comp inl_injective
   obtain ⟨η, _, f, rfl⟩ := exists_equiv_comp_inr_eq hj_inj
   let e : (η ⊕ ι) ⊕ B ≃ κ := (f.sumCongr (.refl B)).trans e₀
   let join (q : (η → A) × (ι → A)) : η₀ → A := (q.1 ⊕ᵥ q.2) ∘ f.symm

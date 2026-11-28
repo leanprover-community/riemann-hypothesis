@@ -1,3 +1,6 @@
+module
+
+public import Lib.General.NumberTheory.PadicLimitsValuation
 import Lib.General.NumberTheory.GaussValuation
 
 /-!
@@ -18,6 +21,8 @@ Notions from other files:
   is the ring `ℤ̄_ℓ` of integral elements; throughout, the instance `ThePrime ℓ` fixes `ℓ` as the
   prime in play.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,6 +1,13 @@
+module
+
+public import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.Topology.Algebra.Group.Units
+public import Lib.General.Measure.HaarModulus
+public import Lib.Adelic.Adeles.Basic
+public import Lib.General.Topology
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.General.Groups.ProfiniteCharacters
-import Lib.General.Measure.HaarModulus
 
 /-!
 # Finite ideles, principal ideles and the class group; finite index of open subgroups
@@ -37,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -100,9 +109,17 @@ lemma finite_setOf_valued_val_ne_one : {v : FinPlace K | Valued.v (a.val v) ≠ 
 
 /-- The ideles that are units at every place are the units of the ring of integral adeles. -/
 lemma idelesUnitOff_empty : idelesUnitOff ∅ = (Ô K).units := by
-  -- both sides consist of the ideles whose components are all units of the local integers
-  aesop (add simp [idelesUnitOff, val_inj.symm, forall_and, Submonoid.mem_units_iff, Ô,
-    HeightOneSpectrum.adicCompletionIntegers.mem_units_iff_valued_eq_one.symm])
+  -- both sides consist of the ideles whose components all have valuation one
+  ext a
+  have h_mem : a ∈ idelesUnitOff ∅ ↔ ∀ w : FinPlace K, Valued.v (a.val w) = 1 := by
+    simp [idelesUnitOff, ← val_inj, ideleAt]
+  simp only [h_mem, Submonoid.mem_units_iff, Subring.mem_toSubmonoid, mem_Ô]
+  refine ⟨fun h ↦ ⟨fun w ↦ (h w).le, fun w ↦ ?_⟩, fun ⟨h, h_inv⟩ w ↦ ?_⟩ <;>
+    obtain ⟨h_eq, h_ne⟩ := idele_inv_apply_and_ne_zero w a
+  · simp [h_eq, h w]
+  · have h_le := h_inv w
+    rw [h_eq, map_inv₀, inv_le_one₀ ((Valuation.pos_iff _).2 h_ne)] at h_le
+    exact le_antisymm (h w) h_le
 
 lemma isOpen_idelesUnitOff : (idelesUnitOff S).IsOpen := by
   -- It contains the open subgroup `idelesUnitOff ∅`, the units of `Ô K`.
@@ -382,35 +399,19 @@ lemma exists_superset_sup_idelesUnitOff_eq_top (hR : R.Finite) :
 positive elements of `Kˣ` has finite index. -/
 lemma finiteIndex_idele_subgroup_of_isOpen (H : Subgroup (𝔸f K)ˣ) (h_open : H.IsOpen)
     (h_pos : ∀ x : Kˣ, IsTotallyPositive x.val → principalIdele x ∈ H) : H.FiniteIndex := by
-  -- Climb from `H` to `H ⊔ P` to `H ⊔ P ⊔ idelesUnitOff ∅` to `⊤`, `P` the principal ideles: each
-  -- step has finite (that is, nonzero) index.
+  -- Climb `H ≤ H ⊔ P ≤ H ⊔ P ⊔ idelesUnitOff ∅ ≤ ⊤`: each step has finite (nonzero) index.
   set P : Subgroup (𝔸f K)ˣ := principalIdele.range
-  -- The preimage of `H` in `Kˣ` contains the kernel of the signs at the real embeddings,
-  -- a map to a finite group.
-  have h_index_comap_ne : (H.comap principalIdele).index ≠ 0 := by
-    let sgn : Kˣ →* ((K →+* ℝ) → SignType)ˣ :=
-      Units.map (.pi fun φ : K →+* ℝ ↦ signHom.toMonoidHom.comp φ.toMonoidHom)
-    -- an element with sign `1` at every real embedding is totally positive
-    have h_ker_le : sgn.ker ≤ H.comap principalIdele := by
-      intro x hx
-      have h_sign (φ : K →+* ℝ) : SignType.sign (φ x.val) = 1 :=
-        congrFun (congrArg Units.val hx) φ
-      exact h_pos x fun φ ↦ sign_eq_one_iff.mp (h_sign φ)
-    exact (sgn.ker.finiteIndex_of_le h_ker_le).index_ne_zero
-  -- An open subgroup meets the compact group `idelesUnitOff ∅` in a subgroup of finite index.
-  have h_relIndex_ne : (H ⊔ P).relIndex (idelesUnitOff ∅) ≠ 0 :=
-    isCompact_idelesUnitOff_empty.relIndex_ne_zero (isOpen_mono le_sup_left h_open)
-  -- The class group is finite, and `P ⊔ idelesUnitOff ∅` is the kernel of a homomorphism `c` to it.
-  obtain ⟨c, hc⟩ : ∃ c : (𝔸f K)ˣ →* ClassGroup (𝓞 K), c.ker = P ⊔ idelesUnitOff ∅ :=
-    exists_idele_classGroup_hom
-  have h_fin : (H ⊔ P ⊔ idelesUnitOff ∅).FiniteIndex :=
-    finiteIndex_of_le (hc.trans_le (sup_le_sup_right le_sup_right _))
+  let sgn : Kˣ →* ((K →+* ℝ) → SignType)ˣ :=
+    Units.map (.pi fun φ : K →+* ℝ ↦ signHom.toMonoidHom.comp φ.toMonoidHom)
+  have h_ker_le : sgn.ker ≤ H.comap principalIdele := fun x hx ↦
+    h_pos x fun φ ↦ sign_eq_one_iff.mp (congrFun (congrArg Units.val hx) φ)
+  obtain ⟨c, hc⟩ := exists_idele_classGroup_hom (K := K)
   rw [finiteIndex_iff, ← relIndex_mul_index (le_sup_left (b := P)),
     ← relIndex_mul_index (le_sup_left (a := H ⊔ P) (b := idelesUnitOff ∅))]
-  -- The first two steps are `[P : H ⊓ P]` and `[idelesUnitOff ∅ : (H ⊔ P) ⊓ idelesUnitOff ∅]`.
-  refine mul_ne_zero ?_ (mul_ne_zero ?_ h_fin.index_ne_zero)
-  · simpa [P, ← index_comap] using h_index_comap_ne
-  · simpa using h_relIndex_ne
+  refine mul_ne_zero ?_ (mul_ne_zero ?_
+    (finiteIndex_of_le (hc.trans_le (sup_le_sup_right le_sup_right _))).index_ne_zero)
+  · simpa [P, ← index_comap] using (sgn.ker.finiteIndex_of_le h_ker_le).index_ne_zero
+  · simpa using isCompact_idelesUnitOff_empty.relIndex_ne_zero (isOpen_mono le_sup_left h_open)
 
 /-- The finite ideles form a nonarchimedean group: they have the compact open subgroup
 `idelesUnitOff ∅`. -/

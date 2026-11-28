@@ -1,8 +1,17 @@
+module
+
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.Congruences.FirstOrder.TraceRelations
+public import New.Determinant.Twist.FitTwists
 import New.Congruences.FirstOrder.DenominatorBound
+import New.Congruences.GaloisRepresentations.AttachedRepresentations
 import New.Congruences.GaloisRepresentations.RowsFromEigensystems
+import New.Congruences.Selmer.ClassSums
 import New.Congruences.Selmer.TwistingTheorem
 import New.Determinant.Chain.NormOfChain
 import New.OneLift.HeckeValues.CentralAction
+import New.Reduction.Data.Sizes
+import New.UpperBound.Size.Estimates
 
 /-!
 # All data have regular families of m-fold twists
@@ -41,6 +50,8 @@ Selmer classes and that twisting lowers Selmer ranks. Related work: Prasanna, In
 of Petersson norms, 2006 (after Ribet, 1976; Wiles); Klosin, Congruences among modular forms on
 U(2,2) and the Bloch–Kato conjecture, 2009; Mazur–Rubin, Ranks of twists of elliptic curves, 2010.
 -/
+
+@[expose] public section
 
 open New Selmer Submodule Data GaloisRep Polynomial Multiset Finset Real
 
@@ -162,12 +173,13 @@ lemma New.Selmer.isNegligible_padicValNat_oddClassBound {P : Parameters} (D : Da
       ≤ log (2 ^ (4 * (D.cyclotomicConductor + D.t + 3) ^ 27) * NumberField.classNumber D.E : ℕ) :=
         sum_padicValNat_mul_log_le T hT (oddClassBound_le D)
     _ = 4 * (D.cyclotomicConductor + D.t + 3) ^ 27 * log 2 + log (NumberField.classNumber D.E) := by
-        push_cast
-        rw [log_mul (by positivity) (mod_cast NumberField.classNumber_ne_zero D.E), log_pow]
-        push_cast
-        ring
-    _ ≤ 4 * (D.cyclotomicConductor + D.t + 3) ^ 27 * log 2 + D.x ^ 30 := by
-      grw [D.log_classNumber_le]
+        generalize D.cyclotomicConductor = c
+        rw [Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat,
+          log_mul (by positivity) (Nat.cast_ne_zero.mpr (NumberField.classNumber_ne_zero D.E)),
+          log_pow]
+        simp only [Nat.cast_mul, Nat.cast_pow, Nat.cast_add, Nat.cast_ofNat]
+    _ ≤ 4 * (D.cyclotomicConductor + D.t + 3) ^ 27 * log 2 + D.x ^ 30 :=
+      add_le_add_right D.log_classNumber_le _
     _ ≤ D.x ^ 2000 := D.le_of_hasLogBound
 
 /-- The numbers `twistError l D = (4 f + 3) r v_l(D.chosenGroupOrder) + 2⁻ˡ` are negligible with
@@ -263,7 +275,7 @@ conjugate self-dual with the parameter `1`, meets the local conditions of `IsCon
 all finite places (the level is `∅`) with the single jump `0` at each embedding of `D.E` in `ℂ`, and
 inertia at each chosen place acts through the root of the label. -/
 lemma New.Selmer.isRepOfType_one {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ]
-    [PadicIso ℓ] {n : Type} [Fintype n] [DecidableEq n] (O : DescentPair D.E Unit n) :
+    [PadicIso ℓ] {n : Type} [Fintype n] (O : DescentPair D.E Unit n) :
     IsRepOfType O (Fintype.card Unit) (fun _ : D.E →+* ℂ ↦ {0})
       (fun _ : O.ChosenIndex ↦ Polynomial.X - 1) ∅ (1 : GalRep ℓ D.E Unit) := by
   -- the local clauses are those of the trivial character
@@ -280,7 +292,7 @@ lemma New.Selmer.isRepOfType_one {P : Parameters} {D : Data P} {ℓ : ℕ} [TheP
       trace_conj := by simp
       local_conditions v _ A _ :=
         ⟨h_finite A, h_jumps A, fun _ ↦ isGoodAt_iff.2 ⟨h_finite A, fun s _ ↦ h_kills A s⟩⟩
-      labelled i A s a _ := ?_ }
+      labeled i A s a _ := ?_ }
   -- the only root of the label `X - 1` is `1`
   rw [← C_1, aroots_X_sub_C]
   simpa using h_kills A s
@@ -382,10 +394,10 @@ lemma New.Selmer.exists_mFoldTwist_selmerLengthLe_inv_ratio_le {P : Parameters} 
     ∃ τ : D.MFoldTwist, ∀ j : D.LiftIndex,
       let ϑ : D.Twist := τ.powTwist j
       IsAuxTwist (badPlaces D ℓ) ϑ.Q ϑ.invAvatar (twistError ℓ D) ∧
-      (∀ a : A, ∃ (γ : AbsGal D) (ζ : intQpBar ℓ),
-        HasDivisibleSelmerLengthLe ϑ.invAvatar (R a) ϑ.Q γ ζ (twistError ℓ D)) ∧
-      (∀ b : B, ∃ (γ : AbsGal D) (ζ : intQpBar ℓ),
-        HasDivisibleSelmerLengthLe ϑ.invAvatar (R₁ b) ϑ.Q γ ζ (twistError ℓ D)) ∧
+      (∀ a : A, ∃ γ : AbsGal D,
+        HasDivisibleSelmerLengthLe ϑ.invAvatar (R a) ϑ.Q γ (twistError ℓ D)) ∧
+      (∀ b : B, ∃ γ : AbsGal D,
+        HasDivisibleSelmerLengthLe ϑ.invAvatar (R₁ b) ϑ.Q γ (twistError ℓ D)) ∧
       ∀ (p : D.CriticalPair) (s : ℤˣ), p.IsRamified →
         ‖ι.ιℓ (p.ratio ϑ s)⁻¹‖ ≤ exp (twistError ℓ D * log ℓ) := by
   -- join the families over `A ⊕ B`; `SummandCoordIndex` is the index type `D.RowIndex` on the left
@@ -419,8 +431,8 @@ lemma New.Selmer.denominatorLe_range_goodLift {P : Parameters} {D : Data P} {ℓ
       D.goodForms (D.spaceW D.m) ⊓ D.eigenPart (D.spaceW D.m) q ≠ ⊥ →
       ∃ R : GalRep ℓ D.E D.RowIndex,
         IsMainSummand (D.descentPair TameChar.one j) (fun (w : FinPlace D.E) (i : ℕ) ↦ q (w, i)) R ∧
-        ∃ (γ : AbsGal D) (ζ : intQpBar ℓ),
-          HasDivisibleSelmerLengthLe ϑ.invAvatar R ϑ.Q γ ζ (twistError ℓ D)) :
+        ∃ γ : AbsGal D,
+          HasDivisibleSelmerLengthLe ϑ.invAvatar R ϑ.Q γ (twistError ℓ D)) :
     DenominatorLe ι.ιℓ (D.descentPair ϑ j) D.e₀ (D.goodLift ϑ j).range
       (clearingBound D ℓ * log ℓ) := by
   have h_char : (D.descentPair ϑ j).u1Char = (D.descentPair TameChar.one j).u1Char *
@@ -445,8 +457,8 @@ lemma New.Selmer.denominatorLe_span_trivialLift {P : Parameters} {D : Data P} {�
     (ι : PadicIso ℓ) {ϑ : D.Twist} {p : D.CriticalPair} {j : ℕ} (hp : p.IsMainPair j)
     (h_aux : IsAuxTwist (badPlaces D ℓ) ϑ.Q ϑ.invAvatar (twistError ℓ D)) {R : GalRep ℓ D.E Unit}
     (hR : IsMainSummand (p.lValueData hp.hasLiftRank (1 : D.Twist)).descentPair 1 R)
-    (h_selmer : ∃ (γ : AbsGal D) (ζ : intQpBar ℓ),
-      HasDivisibleSelmerLengthLe ϑ.invAvatar R ϑ.Q γ ζ (twistError ℓ D)) :
+    (h_selmer : ∃ γ : AbsGal D,
+      HasDivisibleSelmerLengthLe ϑ.invAvatar R ϑ.Q γ (twistError ℓ D)) :
     open scoped Classical in
     DenominatorLe ι.ιℓ (p.lValueData hp.hasLiftRank ϑ).descentPair
       (tupleIdem Unit fun _ : (p.lValueData hp.hasLiftRank ϑ).descentPair.ChosenIndex ↦
@@ -497,7 +509,8 @@ lemma New.Selmer.exists_mFoldTwist_hasDenominatorsLe {P : Parameters} (D : Data 
   have h_coprime : ℓ.Coprime τ.normQ := by
     obtain ⟨h_auxiliary, -⟩ := h_aux ⟨1, le_rfl, D.nat_le_of_hasLogBound⟩
     exact (coprime_prod_q_of_isAuxiliary h_auxiliary).left
-  have h_lifts (j : D.LiftIndex) : DenominatorLe ι.ιℓ (D.descentPair (τ.powTwist j) j) D.e₀
+  have h_projection_denominators (j : D.LiftIndex) :
+      DenominatorLe ι.ιℓ (D.descentPair (τ.powTwist j) j) D.e₀
       (D.goodLift (τ.powTwist j) j).range (clearingBound D ℓ * log ℓ) :=
     denominatorLe_range_goodLift ι j (h_aux j) fun q hq ↦
       ⟨R (j, ⟨q, hq⟩), hR (j, ⟨q, hq⟩), h_selmer j (j, ⟨q, hq⟩)⟩
@@ -505,31 +518,33 @@ lemma New.Selmer.exists_mFoldTwist_hasDenominatorsLe {P : Parameters} (D : Data 
     D.classAut_eq_bot_of_le_chosenLevel le_rfl
       (Fintype.card_unit.trans_le D.nat_le_of_hasLogBound)
   refine ⟨τ, h_coprime, h_ratio, fun j ↦ ⟨?_, fun p hp Ξ Ξ' hΞ hΞ' ↦ ?_⟩⟩
-  · exact (h_lifts j).clearsProjection (le_add_of_nonneg_right (by positivity))
+  · exact (h_projection_denominators j).clearsProjection (le_add_of_nonneg_right (by positivity))
   · -- main pairs: the denominator for the line of `trivialLift` bounds the inner product
-    have h_line := denominatorLe_span_trivialLift ι hp (h_aux j) (hR₁ ⟨(p, j), hp⟩)
+    have h_line_denominator := denominatorLe_span_trivialLift ι hp (h_aux j) (hR₁ ⟨(p, j), hp⟩)
       (h_selmer₁ j ⟨(p, j), hp⟩)
-    exact h_line.norm_inner_starProjection_le _ h_free hΞ hΞ'
+    exact h_line_denominator.norm_inner_starProjection_le _ h_free hΞ hΞ'
 
 /-- **Twists with few congruences.** All data `D` have a regular family of `m`-fold twists `θ κ`,
 one for each pair `κ` of a prime `ℓ` and an isomorphism `ℂ ≃ ℚ̄_ℓ`. The modulus of `θ κ` is prime to
 `ℓ`. -/
 lemma New.exists_isRegularFamily {P : Parameters} (D : Data P) :
     ∃ θ : PrimePadicIso → D.MFoldTwist, D.IsRegularFamily θ := by
-  have h_twist (κ : PrimePadicIso) : ∃ τ : D.MFoldTwist, Nat.Coprime κ.1 τ.normQ ∧
+  have h_local_twist (κ : PrimePadicIso) : ∃ τ : D.MFoldTwist, Nat.Coprime κ.prime τ.normQ ∧
       (∀ (j : D.LiftIndex) (p : D.CriticalPair) (s : ℤˣ), p.IsRamified →
-        ‖κ.2 (p.ratio (τ.powTwist j) s)⁻¹‖ ≤ exp (twistError κ.1 D * log (κ.1 : ℕ))) ∧
-      ∀ j : D.LiftIndex, D.HasDenominatorsLe κ.2 (τ.powTwist j) j
-        (clearingBound D κ.1 * log (κ.1 : ℕ) +
+        ‖κ.iso (p.ratio (τ.powTwist j) s)⁻¹‖ ≤ exp (twistError κ.prime D * log (κ.prime : ℕ))) ∧
+      ∀ j : D.LiftIndex, D.HasDenominatorsLe κ.iso (τ.powTwist j) j
+        (clearingBound D κ.prime * log (κ.prime : ℕ) +
           padicValNat κ.1 (Nat.card (StdClasses (n := Unit) D.chosenLevel)) * log (κ.1 : ℕ)) :=
-    have : ThePrime κ.1 := ⟨⟩
-    exists_mFoldTwist_hasDenominatorsLe D ⟨κ.2⟩
-  choose θ h_coprime h_ratio h_denominators using h_twist
-  -- it remains to sum the bounds over the primes
-  have h_error (T : Finset ℕ) (hT : ∀ l ∈ T, l.Prime) : ∑ l ∈ T, twistError l D * log l ≤ D.x₁ :=
+    have : ThePrime κ.prime := ⟨⟩
+    exists_mFoldTwist_hasDenominatorsLe D ⟨κ.iso⟩
+  choose θ h_coprime h_ratio h_denominators using h_local_twist
+  -- Local choices need not agree at distinct embeddings. Their uniform prime-wise bounds
+  -- give the global height and denominator budgets by summing over rational primes.
+  have h_ratio_height_budget (T : Finset ℕ) (hT : ∀ l ∈ T, l.Prime) :
+      ∑ l ∈ T, twistError l D * log l ≤ D.x₁ :=
     ((isNegligible_twistError D).sum_mul_log_le T hT).trans D.le_of_hasLogBound
   exact ⟨θ,
     { coprime := h_coprime
-      height_le j p s hp := HeightLe.of_le h_error fun κ ↦ h_ratio κ j p s hp
+      height_le j p s hp := HeightLe.of_le h_ratio_height_budget fun κ ↦ h_ratio κ j p s hp
       exists_denominator_bound j := ⟨_, sum_clearingBound_add_padicValNat_le D, fun κ ↦
         h_denominators κ j⟩ }⟩

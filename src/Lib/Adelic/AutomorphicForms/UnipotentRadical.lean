@@ -1,5 +1,15 @@
-import Lib.Adelic.AutomorphicForms.RealConvolution
+module
+
+import Mathlib.Analysis.Convex.Integral
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.AutomorphicForms.RealConvolution
+import Lib.Adelic.Adeles.StrongApproximation
 import Lib.DiscreteSeries.CuspKernel
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.TotalMass
 
 /-!
 # The mean along a unipotent radical vanishes; reduction in the radical
@@ -35,6 +45,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.AutomorphicForms.Cuspidality` for sources.
 -/
+
+@[expose] public section
 
 /-! ## The mean along a unipotent radical vanishes -/
 
@@ -398,7 +410,8 @@ lemma eq_radicalElem_of_mem_dilationGroup {u : U J} (hu : (u, 1) ∈ dilationGro
     simpa [hJ, two_mul, add_mul, sub_mul, mul_assoc]
       using congrArg (·ᴴ * z) (eq_sub_of_add_eq h_split)
   have preserves_mul (z : Matrix n n R) : (u : Matrix n n R)ᴴ * (J * (u * z)) = J * z := by
-    rw [← mul_assoc, ← mul_assoc, show (u : Matrix n n R)ᴴ * J * u = J from u.2]
+    rw [← mul_assoc, ← mul_assoc,
+        show (u : Matrix n n R)ᴴ * J * u = J from mem_unitaryGroupOf_iff.1 u.property]
   -- `u` preserves `J` and fixes `a`, hence so does its adjoint for `J`.
   have adj_fixes (z : Matrix n n R) : (u : Matrix n n R)ᴴ * (J * (a * z)) = J * (a * z) := by
     simpa only [← mul_assoc (u : Matrix n n R), hu_fixes] using preserves_mul (a * z)

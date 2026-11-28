@@ -1,5 +1,14 @@
+module
+
+public import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+public import Lib.Weil.Unramified.SplitHecke
+public import Lib.Adelic.Unitary.CongruenceLevels
+public import Lib.ClassField.Places.DecompositionCompletion
 import Lib.ClassField.Global.Chebotarev
-import Lib.Weil.Unramified.SplitHecke
+import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Weights, Hecke polynomials, eigenforms and the filter of most Frobenii
@@ -24,6 +33,11 @@ polynomials built from the eigenvalues of the Hecke operators `New.heckeSplit`, 
 * `New.dense_of_mostFrobenii`: a property of most Frobenius elements holds on a dense set; hence the
   filters `New.mostFrobeniiAt` are not trivial.
 
+The cofinite condition in `mostFrobenii` applies only after shrinking each nonempty open
+set of Galois elements. It is not a density-one condition on places. Chebotarev is used
+to show that any such shrunk open set contains a Frobenius outside the exceptional set;
+this makes the localized filters suitable for taking unique limits at every Galois element.
+
 Notions from other files:
 * `New.IsFrob`: `σ` stabilises the valuation subring `A` and `σ • x ≡ x ^ q` modulo the maximal
   ideal for all `x ∈ A`.
@@ -37,6 +51,8 @@ Notions from other files:
 Known; see `Lib.GaloisRep.Main.OddRank`, `Lib.GaloisRep.LocalGlobal.LabelCompatibility` and
 `Lib.ClassField.Global.Chebotarev` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -313,7 +329,8 @@ lemma dense_of_mostFrobenii {p : Gal(Ω/E) → Prop}
   exact ⟨σ⁻¹, hOV hσ_inv, not_not.mp hw_good A σ⁻¹ h_prime hA h_frob_inv hσ_inv⟩
 
 instance {g : Gal(Ω/E)} : NeBot (mostFrobeniiAt E g) :=
-  -- a set that holds most Frobenius elements is dense, so it meets every neighbourhood of `g`
+  -- Chebotarev gives density for each set in the Frobenius filter, hence compatibility
+  -- with every neighbourhood of `g`. This is the nontriviality used for uniqueness of limits.
   neBot_inf_comap_iff_map.mpr
     (inf_neBot_iff.mpr fun _ h_most _ ↦ (dense_of_mostFrobenii h_most).inter_nhds_nonempty)
 

@@ -1,4 +1,11 @@
+module
+
+import TauCeti.RingTheory.RootsOfUnity.LocalRing
+public import Lib.Cohomology.Etale.Basic
+public import Lib.General.NumberTheory.CoefficientRings
+import Lib.ClassField.Places.TameInertia
 import Lib.General.NumberTheory.PadicLimitsValuation
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Coefficient rings with a large residue field
@@ -16,6 +23,8 @@ Notions from other files:
   by inclusion;
 * `New.ThePrime ℓ`: the class saying that `ℓ` is prime.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 
@@ -46,13 +55,14 @@ lemma addVal_ell_le_finrank (O : CoeffRing ℓ) (K : IntermediateField ℚ_[ℓ]
     addVal O (ℓ : ↑O) ≤ finrank ℚ_[ℓ] K := by
   -- For a uniformiser `ϖ` of degree `d`, `ℓ` divides `ϖ ^ d`.
   obtain ⟨ϖ, hϖ⟩ := exists_irreducible O
-  let d : ℕ := (minpoly ℚ_[ℓ] ϖ.1).natDegree
+  let d : ℕ := (minpoly ℚ_[ℓ] ϖ.val).natDegree
   have h_norm : ‖(ϖ : PadicAlgCl ℓ)‖ < 1 :=
     (O.norm_le_one ϖ).lt_of_ne (mt (O.isUnit_iff_norm_eq_one ϖ).2 hϖ.not_isUnit)
   have h_dvd : (ℓ : ↑O) ∣ ϖ ^ d := by
     simpa [O.dvd_iff_norm_le] using norm_pow_natDegree_minpoly_le h_norm
   have h_deg : d ≤ finrank ℚ_[ℓ] K := by
-    simpa only [d, K.minpoly_eq] using minpoly.natDegree_le (A := ℚ_[ℓ]) (⟨ϖ.1, hK _ ϖ.2⟩ : K)
+    simpa only [d,
+      K.minpoly_eq] using minpoly.natDegree_le (A := ℚ_[ℓ]) (⟨ϖ.val, hK _ ϖ.property⟩ : K)
   calc addVal O (ℓ : ↑O) ≤ addVal O (ϖ ^ d) := addVal_le_iff_dvd.2 h_dvd
     _ = d := hϖ.addVal_pow _
     _ ≤ finrank ℚ_[ℓ] K := Nat.cast_le.2 h_deg
@@ -62,50 +72,37 @@ lemma addVal_ell_le_finrank (O : CoeffRing ℓ) (K : IntermediateField ℚ_[ℓ]
 lemma natDegree_minpoly_le_of_pow_eq_one {k : ℕ} [NeZero k] {ζ : PadicAlgCl ℓ}
     (hζ : ζ ^ (ℓ ^ k - 1) = 1) : (minpoly ℚ_[ℓ] ζ).natDegree ≤ k := by
   -- The conjugates of `ζ` are among the `ζ ^ ℓ ^ j`, which depend only on `j` modulo `k`.
-  have h_frob : ζ ^ ℓ ^ k = ζ := by
+  have h_frob : Function.IsPeriodicPt (· ^ ℓ) k ζ := by
+    simp only [Function.IsPeriodicPt, Function.IsFixedPt, pow_iterate]
     rw [← Nat.sub_add_cancel (Nat.one_le_pow k ℓ (NeZero.pos ℓ)), pow_succ, hζ, one_mul]
-  have h_iter (q : ℕ) : ζ ^ (ℓ ^ k) ^ q = ζ := by
-    induction q with
-    | zero => simp
-    | succ q ih => rw [pow_succ, pow_mul, ih, h_frob]
   have h_roots : (minpoly ℚ_[ℓ] ζ).rootSet (PadicAlgCl ℓ) ⊆
-      Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.1 := by
+      Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.val := by
     intro y hy
     obtain ⟨σ, rfl⟩ : ∃ σ : Gp ℓ, σ ζ = y := minpoly.exists_algEquiv_of_root'
       (Algebra.IsAlgebraic.isAlgebraic ζ) (aeval_eq_zero_of_mem_rootSet hy)
     obtain ⟨j, hj⟩ : ∃ j : ℕ, σ ζ = ζ ^ ℓ ^ j := exists_apply_eq_pow not_dvd_pow_sub_one hζ σ
     refine ⟨⟨j % k, Nat.mod_lt j (NeZero.pos k)⟩, ?_⟩
-    calc ζ ^ ℓ ^ (j % k) = (ζ ^ (ℓ ^ k) ^ (j / k)) ^ ℓ ^ (j % k) := by rw [h_iter]
-      _ = ζ ^ ℓ ^ j := by rw [← pow_mul ℓ, ← pow_mul, ← pow_add, Nat.div_add_mod]
-      _ = σ ζ := hj.symm
+    simpa [pow_iterate, hj] using h_frob.iterate_mod_apply j
   calc (minpoly ℚ_[ℓ] ζ).natDegree = ((minpoly ℚ_[ℓ] ζ).rootSet (PadicAlgCl ℓ)).ncard := by
         rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card,
           card_rootSet_eq_natDegree (Algebra.IsSeparable.isSeparable _ ζ) (IsAlgClosed.splits _)]
-    _ ≤ (Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.1).ncard := Set.ncard_le_ncard h_roots
-    _ ≤ k := by simpa [Nat.card_coe_set_eq] using Finite.card_range_le fun j : Fin k ↦ ζ ^ ℓ ^ j.1
+    _ ≤ (Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.val).ncard := Set.ncard_le_ncard h_roots
+    _ ≤ k := by simpa [Nat.card_coe_set_eq] using Finite.card_range_le fun j : Fin k ↦ ζ ^ ℓ ^ j.val
 
 /-- If a coefficient ring `O`, the ring of integers of a finite Galois extension of `ℚ_ℓ`, holds a
 primitive `m`-th root of unity `ζ` of `ℚ̄_ℓ` and `m` is prime to `ℓ`, then the residue field of
 `O` has at least `m` elements. -/
 lemma le_card_residueField_of_isPrimitiveRoot {O : CoeffRing ℓ} {m : ℕ} (hm : ¬ℓ ∣ m) {ζ : ↑O}
     (hζ : IsPrimitiveRoot (ζ : PadicAlgCl ℓ) m) : m ≤ Nat.card (ResidueField O) := by
-  -- The residue of `ζ` has order `m`: if `ζ ^ j ≠ 1`, then `ζ ^ j - 1` divides the unit `m`.
   have : Finite (ResidueField O) := Ring.HasFiniteQuotients.finiteQuotient (not_a_field O)
-  have h_norm_m : ‖((m : ↑O) : PadicAlgCl ℓ)‖ = 1 := by
-    push_cast
-    rw [← map_natCast (algebraMap ℚ_[ℓ] (PadicAlgCl ℓ)), PadicAlgCl.norm_extends]
-    exact Padic.norm_natCast_eq_one_iff.2 ((Nat.Prime.coprime_iff_not_dvd Fact.out).2 hm)
-  have hζ_pow : ζ ^ m = 1 := Subtype.ext hζ.pow_eq_one
-  have h_prim : IsPrimitiveRoot (residue O ζ) m := by
-    refine ⟨by rw [← map_pow, hζ_pow, map_one], fun j hj ↦ hζ.dvd_of_pow_eq_one j ?_⟩
-    by_contra h_ne
-    have h_dvd : ζ ^ j - 1 ∣ (m : ↑O) :=
-      sub_one_dvd_natCast_of_pow_eq_one (by rw [pow_right_comm, hζ_pow, one_pow])
-        fun h ↦ h_ne (congrArg Subtype.val h)
-    have h_isUnit : IsUnit (ζ ^ j - 1) :=
-      isUnit_of_dvd_unit h_dvd ((O.isUnit_iff_norm_eq_one _).2 h_norm_m)
-    exact (h_isUnit.map (residue O)).ne_zero (by simp [hj])
-  exact h_prim.eq_orderOf.le.trans orderOf_le_card
+  have hm_unit : IsUnit (m : ↑O) := by
+    have h : IsUnit (m : ℤ_[ℓ]) :=
+      PadicInt.isUnit_iff.mpr (PadicInt.norm_natCast_eq_one_iff.mpr
+        ((Nat.Prime.coprime_iff_not_dvd Fact.out).mpr hm))
+    simpa only [map_natCast] using h.map (algebraMap ℤ_[ℓ] O)
+  have hζO : IsPrimitiveRoot ζ m :=
+    .of_map_of_injective (f := O.val.val) hζ Subtype.val_injective
+  exact (hζO.map_residue hm_unit).eq_orderOf.le.trans orderOf_le_card
 
 variable (ℓ) in
 /-- For every natural number `a` there is a positive `k` with `a k + 1 < ℓ ^ k - 1`. -/
@@ -137,22 +134,21 @@ lemma frequently_lt_card_residueField (c : ℕ) :
   have hζ_int : IsIntegral ℚ_[ℓ] ζ := Algebra.IsIntegral.isIntegral ζ
   have : IsCyclotomicExtension {ℓ ^ k - 1} ℚ_[ℓ] ℚ_[ℓ]⟮ζ⟯ :=
     hζ.intermediateField_adjoin_isCyclotomicExtension ℚ_[ℓ]
-
   have : FiniteDimensional ℚ_[ℓ] ℚ_[ℓ]⟮ζ⟯ := adjoin.finiteDimensional hζ_int
   have : IsGalois ℚ_[ℓ] ℚ_[ℓ]⟮ζ⟯ := IsCyclotomicExtension.isGalois {ℓ ^ k - 1} _ _
-  let K : FiniteGaloisIntermediateField ℚ_[ℓ] (PadicAlgCl ℓ) := ⟨K₀.1 ⊔ ℚ_[ℓ]⟮ζ⟯⟩
+  let K : FiniteGaloisIntermediateField ℚ_[ℓ] (PadicAlgCl ℓ) := ⟨K₀.toIntermediateField ⊔ ℚ_[ℓ]⟮ζ⟯⟩
   obtain ⟨O, hO⟩ : ∃ O : CoeffRing ℓ, ∀ x : PadicAlgCl ℓ,
-      x ∈ (O : Subalgebra ℤ_[ℓ] (PadicAlgCl ℓ)) ↔ ‖x‖ ≤ 1 ∧ x ∈ K.1 :=
+      x ∈ (O : Subalgebra ℤ_[ℓ] (PadicAlgCl ℓ)) ↔ ‖x‖ ≤ 1 ∧ x ∈ K.toIntermediateField :=
     ⟨⟨_, K, rfl⟩, fun x ↦ Iff.rfl⟩
   have hζ_mem : ζ ∈ (O : Subalgebra ℤ_[ℓ] (PadicAlgCl ℓ)) := (hO ζ).2
     ⟨(hζ.isOfFinOrder (NeZero.ne _)).norm_eq_one.le,
-      (le_sup_right : ℚ_[ℓ]⟮ζ⟯ ≤ K.1) (mem_adjoin_simple_self _ ζ)⟩
+      (le_sup_right : ℚ_[ℓ]⟮ζ⟯ ≤ K.toIntermediateField) (mem_adjoin_simple_self _ ζ)⟩
   have h_deg : finrank ℚ_[ℓ] K ≤ d * k :=
     (finrank_sup_le _ _).trans <| Nat.mul_le_mul_left d <|
       (adjoin.finrank hζ_int).trans_le (natDegree_minpoly_le_of_pow_eq_one hζ.pow_eq_one)
   refine ⟨O, ?_, ?_⟩
   · rintro x ⟨hx_norm, hx_mem⟩
-    exact (hO x).2 ⟨hx_norm, (le_sup_left : K₀.1 ≤ K.1) hx_mem⟩
+    exact (hO x).2 ⟨hx_norm, (le_sup_left : K₀.toIntermediateField ≤ K.toIntermediateField) hx_mem⟩
   have h_addVal : addVal O (ℓ : ↑O) ≤ (d * k : ℕ) :=
     (addVal_ell_le_finrank O K.1 fun x hx ↦ ((hO x).1 hx).2).trans (Nat.cast_le.2 h_deg)
   calc c * addVal O (ℓ : ↑O) + 1 ≤ c * (d * k : ℕ) + 1 := by gcongr

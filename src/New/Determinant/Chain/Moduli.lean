@@ -1,6 +1,9 @@
-import New.Determinant.AuxiliaryForms.GridPaths
+module
+
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.OneLift.HeckeValues.TwistedRatio
 import New.OneLift.ComparisonOperator.ExchangeData
-import New.OneLift.HeckeValues.TwistedRatio
 
 /-!
 # Ratios of Hecke values and heights of functions of the twist
@@ -25,6 +28,8 @@ Notions from other files:
 * `New.Data.CriticalPair`: an integer 1 ≤ z ≤ t and a character ν of weight −c, z ≤ c ≤ 4b, with
   tame part supported on the chosen places.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -65,15 +70,6 @@ lemma CriticalPair.L_inv (p : D.CriticalPair) :
       p.character.L {w : FinPlace D.E | D.IsChosen w} :=
   p.hasWeight.L_inv p.tamePart_eq_one
 
-/-- For the character `ν` of a critical pair and a tame character `ϑ` of modulus `Q`, the character
-`ν ϑ` and its inverse have the same `L`-function away from the chosen places, the places of `Q` and
-their conjugates. -/
-lemma CriticalPair.L_mul_inv (p : D.CriticalPair) (ϑ : D.TameChar) :
-    (p.character * ϑ.toAutChar)⁻¹.L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) =
-      (p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) := by
-  refine (p.hasWeight.mul ϑ.hasWeight).L_inv fun w hw ↦ ?_
-  simp [p.tamePart_eq_one w (fun h ↦ hw (.inl h)), ϑ.tamePart_eq_one w (fun h ↦ hw (.inr h))]
-
 lemma lRatioProd_nonneg (ν : AutChar D.E) (s : ℕ) (ϑ : D.TameChar) : 0 ≤ D.lRatioProd ν s ϑ :=
   prod_nonneg fun _ _ ↦ div_nonneg (norm_nonneg _) (norm_nonneg _)
 
@@ -85,16 +81,6 @@ lemma CriticalPair.ofReal_lRatioProd (p : D.CriticalPair) (ϑ : D.TameChar) :
   rw [lRatioProd, Complex.ofReal_prod]
   exact prod_congr rfl fun z hz ↦ by simp [CriticalPair.ratio, CriticalPair.lowerPoint,
     mem_Icc.1 hz]
-
-/-- For the character `ν` of a critical pair and a tame character `ϑ` of modulus `Q`, the product
-`lRatioProd` of the ratios of Hecke values can be written without inverses, as the product over
-`1 ≤ i ≤ s` of `|L^{MQ}(i, ν ϑ) / L^M(i, ν)|`. -/
-lemma CriticalPair.lRatioProd_eq_prod_norm_div (p : D.CriticalPair) (s : ℕ) (ϑ : D.TameChar) :
-    D.lRatioProd p.character s ϑ =
-      ∏ i ∈ Icc 1 s,
-        ‖(p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) i /
-          p.character.L {w : FinPlace D.E | D.IsChosen w} i‖ := by
-  simp only [lRatioProd, p.L_mul_inv ϑ, p.L_inv, norm_div]
 
 /-- For a critical pair `p` (a character `ν = p.character` and an integer `z = p.z`) and a tame
 character `ϑ` with places `ϑ.Q`, the number `lValueProd` up to `z` for `(ν ϑ)⁻¹` and the chosen
@@ -161,7 +147,7 @@ lemma HasAbsUpToNormPower.const (a : ℂ) : D.HasAbsUpToNormPower (fun _ : D.MFo
 
 lemma HasAbsUpToNormPower.inv (h : D.HasAbsUpToNormPower c f) : D.HasAbsUpToNormPower c⁻¹ f⁻¹ := by
   obtain ⟨C, k, hc⟩ := h
-  exact ⟨C⁻¹, -k, fun ϑ ↦ by simp [hc, zpow_neg, mul_comm, mul_left_comm]⟩
+  exact ⟨C⁻¹, -k, fun ϑ ↦ by simp [hc, zpow_neg, mul_comm]⟩
 
 /-- If each `γ a` has absolute value `F a` up to a norm power, then the product of the `γ a` has as
 absolute value up to a norm power the product of the `F a`. -/
@@ -280,7 +266,7 @@ noncomputable def quotientPair (n : D.LiftIndex) : D.CriticalPair where
   z_mem := ⟨D.nat_le_of_hasLogBound, le_rfl⟩
   le_negWeight _ := (D.nat_le_of_hasLogBound : D.t ≤ D.gap).trans (Nat.le_mul_of_pos_left _ n.2.1)
   negWeight_le _ := by
-    grw [(Set.mem_Icc.1 n.2).2]
+    grw [(Set.mem_Icc.1 n.property).2]
     exact D.le_of_hasLogBound
 
 lemma quotientPair_character (n : D.LiftIndex) (i : ℕ) :
@@ -329,7 +315,7 @@ lemma isPrimitiveMulChar_of_isTameFor {ϑ : D.TameChar} {ν : AutChar D.E}
   -- that `1 + c * a` is `x` at `w` and `1` at the other places.
   intro a ha
   obtain ⟨-, ψ, -, hψ, hχ⟩ := h_tame
-  obtain ⟨w, hw, ha'⟩ : ∃ᵉ (w : FinPlace D.E) (hw : w ∈ (D.twistModulus ϑ 1).places),
+  obtain ⟨w, hw, ha'⟩ : ∃ w : FinPlace D.E, ∃ hw : w ∈ (D.twistModulus ϑ 1).places,
       modulusResidue (D.twistModulus ϑ 1) hw a ≠ 0 := by
     -- The modulus is a product of distinct primes: Chinese remainder theorem, for `a` as a
     -- `1 × 1` matrix.
@@ -348,8 +334,8 @@ lemma isPrimitiveMulChar_of_isTameFor {ϑ : D.TameChar} {ν : AutChar D.E}
       Ideal.Quotient.mk (D.twistModulus ϑ 1).ideal b
   have h_self : modulusResidue (D.twistModulus ϑ 1) hw (1 + c * a) = x := by simp [c, hb, ha']
   have h_other (v : (D.twistModulus ϑ 1).places) (hv : v ≠ ⟨w, hw⟩) :
-      modulusResidue (D.twistModulus ϑ 1) v.2 (1 + c * a) = 1 := by
-    have h_ne : v.1 ≠ w := fun h ↦ hv (Subtype.ext h)
+      modulusResidue (D.twistModulus ϑ 1) v.property (1 + c * a) = 1 := by
+    have h_ne : v.val ≠ w := fun h ↦ hv (Subtype.ext h)
     simp [c, h_ne]
   have h_apply : χ (1 + c * a) = ψ w x := by
     rw [hχ, charOfTamePart_apply, finprod_eq_single _ (Subtype.mk w hw), h_self]

@@ -1,4 +1,13 @@
+module
+
+public import Aesop.BuiltinRules
+public import Mathlib.NumberTheory.Padics.Complex
+import Mathlib.Algebra.Ring.IsFormallyReal
+import TauCeti.NumberTheory.NumberField.Countable
+public import Lib.General.NumberTheory.ImaginaryQuadraticField
+import Lib.General.Geometry.GaloisCovers
 import Lib.General.NumberTheory.PadicLimitsValuation
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # The height of a family over all places: products, monotonicity and the product formula
@@ -12,8 +21,7 @@ A height for families of complex numbers indexed by the pairs `ι` of a prime `l
 * `New.HeightLe.of_mul_le`, `New.HeightLe.of_le`, `New.HeightLe.mono`, `New.HeightLe.mul`,
   `New.HeightLe.prod`, `New.HeightLe.pow`: the calculus of heights.
 * `New.HeightLe.nonneg_of_one`: the constant family `1` has height at least `0`, by the product
-  formula (`New.log_product_formula`) for the norm of `H`. `New.HeightLe.neg_le_of_norm_map_le` is
-  the form for a number `z ≠ 0`.
+  formula (`New.log_product_formula`) for the norm of `H`.
 
 ## Relation to the literature
 
@@ -21,6 +29,8 @@ The multiplier H, and so the bound at infinity, does not depend on ι, while y �
 may use its own twist. Related work: Gaudron, Pentes des fibrés vectoriels adéliques sur un corps
 global, 2006; Bombieri–Gubler, Heights in Diophantine Geometry, ch. 1, 2006.
 -/
+
+@[expose] public section
 
 open Algebra Module Real Finset Filter IntermediateField AdjoinSimple Padic PadicAlgCl
 
@@ -63,7 +73,7 @@ lemma log_product_formula {M : ℕ} {q : ℚ} (h_num_lt : q.num.natAbs < M) (h_d
   have log_q : log q = log q.num.natAbs - log q.den := by simp [q.cast_def, log_div, hq]
   have log_norm (p : ℕ) :
       log (padicNorm p q) = (padicValNat p q.den - padicValNat p q.num.natAbs) * log p := by
-    simp [padicNorm.eq_zpow_of_nonzero hq, padicValRat, padicValInt, Nat.padicValNat_def]
+    simp [padicNorm.eq_zpow_of_ne_zero hq, padicValRat, padicValInt, Nat.padicValNat_def]
   rw [log_q, log_nat (by simpa using hq) h_num_lt, log_nat q.den_nz h_den_lt]
   simp [log_norm, sub_mul]
 
@@ -151,7 +161,7 @@ lemma mul (hy : HeightLe c y) (hy' : HeightLe c' y') : HeightLe (c + c') (y * y'
         mul_le_mul (he ι) (he' ι) (norm_nonneg _) (by positivity)
       _ = ((ι.prime : ℕ) : ℝ) ^ (e + e') ι.prime := (rpow_add (mod_cast ι.prime.prop.pos) _ _).symm
   · simp only [Pi.add_apply, add_mul, sum_add_distrib]
-    linarith [h_sum T hT, h_sum' T hT]
+    linarith only [h_sum T hT, h_sum' T hT]
 
 /-- Heights add in finite products: if each `y i`, a family indexed by the pairs `ι` of a prime `l`
 and an isomorphism `ι.iso : ℂ ≃+* ℚ̄_l`, has height at most `c i`, then the pointwise product of the
@@ -219,15 +229,6 @@ lemma nonneg_of_one (h_one : HeightLe c 1) : 0 ≤ c := by
       add_le_add h_inf (sum_le_sum fun l hl ↦ h_fin l (mem_filter.1 hl).2)
     _ = n * (α + ∑ l ∈ range N with l.Prime, e l * log l) := by rw [mul_add, mul_sum]
     _ ≤ n * c := mul_le_mul_of_nonneg_left (h_sum _ fun l hl ↦ (mem_filter.1 hl).2) n.cast_nonneg
-
-/-- A consequence of the product formula: if `z ≠ 0`, the constant family `z` has height at most
-`c`, and `|σ z| ≤ exp c'` for all automorphisms `σ` of `ℂ`, then `-c ≤ c'`. -/
-lemma neg_le_of_norm_map_le {z : ℂ} (h_height : HeightLe c fun _ : PrimePadicIso ↦ z) (hz : z ≠ 0)
-    (h_conj : ∀ σ : ℂ ≃+* ℂ, ‖σ z‖ ≤ exp c') : -c ≤ c' := by
-  -- The product of the constant families `z⁻¹` and `z` is the constant family `1`.
-  have h_one : HeightLe (c' + c) 1 := by
-    simpa [Pi.mul_def, Pi.one_def, hz] using (inv_const hz h_conj).mul h_height
-  linarith [h_one.nonneg_of_one]
 
 end HeightLe
 

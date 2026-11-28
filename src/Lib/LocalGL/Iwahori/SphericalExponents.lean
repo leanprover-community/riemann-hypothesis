@@ -1,4 +1,11 @@
+module
+
+public import Lib.Adelic.Adeles.Basic
+public import Lib.LocalGL.Iwahori.ParahoricStructure
+import Lib.General.LinearAlgebra.HermiteForm
 import Lib.LocalGL.Iwahori.HeckeDegrees
+import Lib.LocalGL.Iwahori.QuadraticRelation
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Exponents that survive on spherical vectors, and a Hecke operator on parahoric eigenvectors
@@ -44,6 +51,8 @@ Source: Casselman, The unramified principal series of p-adic groups I, Compositi
 2.4, 2.5, 3.6; Haines–Kottwitz–Prasad, Iwahori–Hecke algebras (arXiv math/0309168) §1.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -76,7 +85,8 @@ lemma exists_v_entry_eq_one_of_mem_intGL {k : GL (Fin N) F} (hk : k ∈ intGL (F
   have h_term_lt (r : Fin N) : v (k⁻¹ m r * k r m) < 1 := by
     grind [mem_intGL, mul_lt_of_lt_of_le_one, v.mem_integer_iff]
   have h_lt : v (∑ r, k⁻¹ m r * k r m) < 1 := v.map_sum_lt' one_pos fun r _ ↦ h_term_lt r
-  have h_sum : ∑ r, k⁻¹ m r * k r m = 1 := by rw [← Matrix.mul_apply, k.inv_mul, Matrix.one_apply_eq]
+  have h_sum : ∑ r, k⁻¹ m r * k r m = 1 := by
+    rw [← Matrix.mul_apply, k.inv_mul, Matrix.one_apply_eq]
   rw [h_sum, map_one] at h_lt
   exact lt_irrefl 1 h_lt
 
@@ -114,16 +124,6 @@ private lemma permGL_swap_mem_blockParahoric_min {j : Fin N} (hj : m ≤ j) :
   refine ⟨permGL_mem_intGL _, ?_⟩
   simp
   grind [one_pos]
-
-/-- The group of level `update (min m) m N` lies in `blockParahoric (min m)`. -/
-private lemma mem_blockParahoric_min_of_mem_update {k : GL (Fin N) F}
-    (hk : k ∈ blockParahoric (update (min m) m N)) : k ∈ blockParahoric (min m) := by
-  grind
-
-/-- An element of the group of level `update (min m) m N` has row `m` in `𝔭` off the diagonal. -/
-private lemma v_apply_lt_one_of_mem_blockParahoric_update {k : GL (Fin N) F}
-    (hk : k ∈ blockParahoric (update (min m) m N)) {r : Fin N} (hr : r ≠ m) : v (k m r) < 1 := by
-  grind
 
 /-- Reduction modulo `𝔭` on `blockParahoric (min m)`, a homomorphism to `GL_N(𝓀[F])`. -/
 private def reduceParahoric (m : Fin N) :
@@ -293,9 +293,10 @@ lemma exists_compactMean_and_swap_eq_sum [IsSmoothRep ρ.ρ]
     simpa only [Y, map_sum, map_colVector_eq_sum hx hφ] using sum_by_last_nonzero_coord _ I
   refine ⟨Y ∅, Y {m}, mem_levelSpace.mpr fun k ↦ ?_, ?_, fun i hi ↦ ?_⟩
   · -- the group of level `update (min m) m N` lies in `P` and fixes `Y {m}`
-    have hk_mem : k.val ∈ blockParahoric (min m) := mem_blockParahoric_min_of_mem_update k.property
+    have hk_mem : k.val ∈ blockParahoric (min m) := by grind
     have h_row (r : Fin N) (hr : r ≠ m) : reduceParahoric m ⟨k.val, hk_mem⟩ m r = 0 := by
-      simpa [reduceParahoric] using v_apply_lt_one_of_mem_blockParahoric_update k.property hr
+      have h_val : v (k.val m r) < 1 := by grind
+      simpa [reduceParahoric] using h_val
     simpa [Y] using apply_sum_colVector hx ⟨k.val, hk_mem⟩ {m} m (by simpa using h_row)
   · -- `Y ∅` is fixed by `P`, so the mean over `P` does not change it.
     have fixed : Y ∅ ∈ levelSpace ρ.ρ (blockParahoric (min m)) :=
@@ -465,7 +466,7 @@ diagonal, and let `b = diag (1, …, ϖ⁻¹, …, 1)` with `ϖ⁻¹` at `m`, fo
 `b⁻¹ p b` lies in the parahoric subgroup `blockParahoric (update (min m) m N)`, whose row `m` lies
 in `𝔭` off the diagonal. -/
 lemma New.conj_diagGL_mulSingle_mem_blockParahoric {F : Type*} [Field F] [Valued F ℤᵐ⁰]
-    [CompactSpace 𝒪[F]] {N : ℕ} {m : Fin N} {ϖ : Fˣ} (hϖ : v ϖ.val = exp (-1))
+    {N : ℕ} {m : Fin N} {ϖ : Fˣ} (hϖ : v ϖ.val = exp (-1))
     {p : GL (Fin N) F} (hp : p ∈ blockParahoric (min (m : ℕ)))
     (hp_col : ∀ r ≠ m, v (p r m) < 1) :
     (diagGL (mulSingle m ϖ⁻¹))⁻¹ * p * diagGL (mulSingle m ϖ⁻¹) ∈
@@ -507,7 +508,7 @@ lemma New.IsExponent.apply_swap_diagGL_mulSingle {F : Type*} [Field F] [Valued F
     simp [t, σ, diagGL_mul_permGL, mulSingle_comp_equiv]
   have h_char : (torusChar θ t : ℂ) = (θ i ϖ).val⁻¹ * (Nat.card 𝓀[F] : ℂ) ^ i.rev.val := by
     simp [t, hϖ, normAbsChar]
-  rw [← Module.End.mul_apply, ← map_mul, h_prod, ← h_char]
+  rw [← mul_apply_eq_comp, ← map_mul, h_prod, ← h_char]
   exact hl.apply_monomial_translate hϖ hz And.left σ h_val_le
 
 /-- The descent step, for an exponent `(torusChar θ, l)` with `‖θ_i(ϖ)‖` non-increasing in `i`. Let
@@ -578,7 +579,7 @@ lemma New.IsExponent.eq_zero_of_apply_permGL_swap_eq_zero {F : Type*} [Field F] 
     -- Both sides of `hx'_zero` are now multiples of `q ^ N * (1 - 1 / q) * l x ≠ 0`.
     have h_root : θ j ϖ = q * θ m ϖ := by
       rw [h_shift, hz_m] at hx'_zero
-      simp only [a, swap_self, ← Perm.one_def, map_one, Module.End.one_apply] at hx'_zero
+      simp only [a, swap_self, ← Perm.one_def, map_one, one_apply_eq_self] at hx'_zero
       field_simp at hx'_zero
       grind
     simpa [h_root, hq, hq_lt.not_ge] using hθ_anti hmj
@@ -617,7 +618,7 @@ lemma New.IsExponent.eq_zero_of_eq_zero_on_spherical {F : Type*} [Field F] [Valu
       simp [d, torusChar, monoidHomMulEquiv, hθ_unit, h_val_diag, normAbsChar]
     calc l (ρ k z) = l (ρ (diagGL d) (ρ k z)) := by
           rw [hl.apply_diagGL_unit (by simp [d, h_val_diag]), h_char_d, one_mul]
-      _ = l (ρ (diagGL d * k) z) := by rw [map_mul, Module.End.mul_apply]
+      _ = l (ρ (diagGL d * k) z) := by rw [map_mul, mul_apply_eq_comp]
       _ = l z := hl.apply_proIwahori _ h_dk_mem z
   -- By induction on `m`, `l` vanishes on the averages over each parahoric `blockParahoric (min m)`.
   have h_mean_eq_zero (m : Fin (N + 1)) (y : ρ) :

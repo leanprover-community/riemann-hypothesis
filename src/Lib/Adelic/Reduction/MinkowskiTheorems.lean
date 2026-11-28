@@ -1,3 +1,13 @@
+module
+
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Data.Int.Log
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.RingTheory.PicardGroup
+public import Lib.Adelic.Adeles.IdeleModulus
+public import Lib.Adelic.Unitary.Defs
+import Lib.Adelic.Adeles.StrongApproximation
 import Lib.General.LinearAlgebra.PolarDecomposition
 import Lib.General.NumberTheory.FrobeniusOrbits
 
@@ -41,6 +51,8 @@ Part of a known result: Reduction theory, here the adelic Minkowski theorems. Fo
 compactness and finite covolume see `Lib.Adelic.Reduction.FiniteVolume`.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-! ## Minkowski's first theorem with multiplicity -/
@@ -65,10 +77,10 @@ lemma lintegral_encard_rat_points {S : Set (n → 𝔸 E)} (hS : MeasurableSet S
   -- measure of the preimage of `S` is the left side, and by Fubini it is also the right side.
   have h_scale : MeasurePreserving (y⁻¹.1 *ᵥ ·) volume (ENNReal.ofReal (ideleAbs y.det) • volume) :=
     ⟨by fun_prop, (volume_map_mulVec_adele y⁻¹).trans (by simp)⟩
-  have h_unfold : MeasurePreserving (fun p : (n → 𝔸 E) × ratVectors E n ↦ y⁻¹.1 *ᵥ (p.2 +ᵥ p.1))
+  have h_unfold : MeasurePreserving (fun p : (n → 𝔸 E) × ratVectors E n ↦ y⁻¹.val *ᵥ (p.2 +ᵥ p.1))
       ((ratVectors E n).quotMeasure.prod count) (ENNReal.ofReal (ideleAbs y.det) • volume) :=
     h_scale.comp measurePreserving_addOrbitMeasure
-  rw [← smul_eq_mul, ← Measure.smul_apply, ← h_unfold.measure_preimage hS.nullMeasurableSet,
+  rw [← smul_eq_mul, ← smul_apply, ← h_unfold.measure_preimage hS.nullMeasurableSet,
     Measure.prod_apply (h_unfold.measurable hS)]
   refine lintegral_congr fun x ↦ ?_
   -- the fibre over `x` is counted in `ratVectors E n`, the image of `n → E` under `toAdele ∘ ·`
@@ -107,9 +119,9 @@ lemma minkowski_first :
   -- `y S` differ by a point of `y` times the box of radius `1`.
   let box : Set (𝔸 E) := ball 0 2⁻¹ ×ˢ Ô E
   let S : Set (n → 𝔸 E) := univ.pi fun _ ↦ box
-  set N : ℕ∞ := {ξ : n → E | ∀ i : n, (y⁻¹.1 *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E}.encard
-  have h_count (x : n → 𝔸 E) : {ξ : n → E | y⁻¹.1 *ᵥ (toAdele ∘ ξ + x) ∈ S}.encard ≤ N := by
-    obtain h_empty | ⟨ξ₀, hξ₀⟩ := {ξ | y⁻¹.1 *ᵥ (toAdele ∘ ξ + x) ∈ S}.eq_empty_or_nonempty
+  set N : ℕ∞ := {ξ : n → E | ∀ i : n, (y⁻¹.val *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E}.encard
+  have h_count (x : n → 𝔸 E) : {ξ : n → E | y⁻¹.val *ᵥ (toAdele ∘ ξ + x) ∈ S}.encard ≤ N := by
+    obtain h_empty | ⟨ξ₀, hξ₀⟩ := {ξ | y⁻¹.val *ᵥ (toAdele ∘ ξ + x) ∈ S}.eq_empty_or_nonempty
     · simp only [h_empty, encard_empty, zero_le]
     refine encard_le_encard_of_injOn (f := (· - ξ₀)) (fun ξ hξ i ↦ ?_) sub_left_injective.injOn
     simpa [box, mulVec_add, mulVec_sub, ← two_mul] using
@@ -138,7 +150,7 @@ lemma exists_ne_zero_inv_mulVec_mem
     (h_det : ((2 * rootDiscr E) ^ Core.numInfPlaces E) ^ card n < ideleAbs y.det) :
     ∃ ξ : n → E, (∀ i : n, (y⁻¹.val *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E) ∧ ξ ≠ 0 := by
   -- more than one rational `ξ` has `y⁻¹ ξ` in the box, so one of them is not zero
-  have h_count : 1 < {ξ : n → E | ∀ i : n, (y⁻¹.1 *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E}.encard :=
+  have h_count : 1 < {ξ : n → E | ∀ i : n, (y⁻¹.val *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E}.encard :=
     mod_cast one_lt_of_lt_mul_right (α := ℝ≥0∞)
       (((ofReal_lt_ofReal_iff ideleAbs_pos).2 h_det).trans_le (minkowski_first y))
   exact exists_ne_of_one_lt_encard h_count 0
@@ -630,7 +642,7 @@ lemma tsum_prod_le_prod_tsum {α : Type*} (f : α → ℝ≥0∞) :
   -- a finite set of tuples lies in the product of its projections, over which the sum factors
   have h_sub : s ⊆ piFinset (fun i ↦ s.image (eval i)) := fun x hx ↦
     mem_piFinset.2 fun i ↦ mem_image_of_mem (eval i) hx
-  grw [h_sub, ← prod_univ_sum, ENNReal.sum_le_tsum]
+  grw [h_sub, ← prod_univ_sum, sum_le_tsum]
 
 open Pointwise in
 /-- Let `box` be the set of adelic vectors with entries of size at most `1` at infinity and

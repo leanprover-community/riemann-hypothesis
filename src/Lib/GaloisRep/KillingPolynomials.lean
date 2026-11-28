@@ -1,4 +1,12 @@
-import Lib.GaloisRep.Main.Defs
+module
+
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+public import Lib.GaloisRep.Main.Defs
+public import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # Free cocharacter weights force rank n and identify killing polynomials
@@ -46,6 +54,8 @@ Fayad–Nekovář 2019; Harris–Taylor 2001, VII.1.8.
 See also `Lib.GaloisRep.Main.OddRank`.
 -/
 
+@[expose] public section
+
 namespace New
 
 open Matrix MvPolynomial Polynomial Finset Algebra Fintype Submodule Function ConjAct
@@ -59,7 +69,7 @@ variable {k K N R S A : Type} [NormedField k] [Fintype N] [DecidableEq N] [CommR
 `N × N` whose column `j < m` lists the entries of the square matrix `y ^ j`: its entry at `(i, j)`
 is the entry of `y ^ j` at the place `a i`. -/
 noncomputable abbrev powMinor (m : ℕ) (a : Fin m → N × N) : R :=
-  (of (flip (fun j : Fin m ↦ uncurry (y ^ j.1)) ∘ a)).det
+  (of (flip (fun j : Fin m ↦ uncurry (y ^ j.val)) ∘ a)).det
 
 @[simp]
 lemma map_powMinor (a : Fin m → N × N) (φ : R →ₐ[A] S) :
@@ -132,7 +142,7 @@ private lemma powMinor_diagonal_X_mul_eq_zero {c : N → Fin n} (he : HasNoSmall
   have h_subst : ψ.mapMatrix y =
       diagonal (T ∘ e ∘ c) * (x : Matrix N N k).map LaurentPolynomial.C := by
     ext i j
-    simp [y, Matrix.mul_apply, diagonal_apply, hψ_X, LaurentPolynomial.algebraMap_apply]
+    simp [y, hψ_X, LaurentPolynomial.algebraMap_apply]
   have h_zero : ψ (powMinor y m a) = 0 := by rw [map_powMinor, h_subst, h_vanish a]
   -- The monomials of the minor have one degree `≤ (n + 1) ^ 2`, so by freeness the substitution
   -- keeps them apart.
@@ -185,11 +195,12 @@ lemma HasNoSmallRelations.inv_scalar_on_blocks {c : N → Fin n} (he : HasNoSmal
   -- In its own variable and the `X i` together, `y.charpoly` has total degree at most `card N`,
   -- its degree in its own variable.
   have h_total : ((optionEquivLeft k (Fin n)).symm y.charpoly).totalDegree ≤ card N := by
-    simp [charpoly, det_apply, y, charmatrix, diagonal_apply, apply_ite]
     -- In the Leibniz formula each of the `card N` factors has total degree at most one.
-    show MvPolynomial.totalDegree (∑ σ : Equiv.Perm N, Equiv.Perm.sign σ • ∏ i : N,
+    suffices h : MvPolynomial.totalDegree (∑ σ : Equiv.Perm N, Equiv.Perm.sign σ • ∏ i : N,
         ((if σ i = i then MvPolynomial.X none else 0) -
-          MvPolynomial.X (some (c (σ i))) * MvPolynomial.C ((x : Matrix N N k) (σ i) i))) ≤ card N
+          MvPolynomial.X (some (c (σ i))) *
+            MvPolynomial.C ((x : Matrix N N k) (σ i) i))) ≤ card N by
+      simpa [charpoly, det_apply, y, charmatrix, diagonal_apply, apply_ite] using h
     grw (transparency := .default) [totalDegree_finsetSum, totalDegree_smul_le,
       totalDegree_finsetProd, totalDegree_sub, totalDegree_mul]
     simp [ite_apply, apply_ite]
@@ -326,13 +337,10 @@ private lemma exists_eq_of_powMinor_diagonal_eq_zero (he_inj : e.Injective) {κ 
   have hκ_eq : κ (a i) = κ (a i') := by
     simpa [T, AddMonoidAlgebra.single_inj, -single_eq_C_mul_T] using h_T_eq
   -- The equal weights are at `j` and some `l i`, or at two `l i`, which `e` injective rules out.
-  cases i using Fin.cases <;> cases i' using Fin.cases
-  case zero.zero => exact absurd rfl h_ne
-  case zero.succ i' => exact ⟨i', by simpa [a, hl] using hκ_eq.symm⟩
-  case succ.zero i => exact ⟨i, by simpa [a, hl] using hκ_eq⟩
-  case succ.succ i i' =>
-    have h_e_eq : e i = e i' := by simpa [a, hl] using hκ_eq
-    exact absurd (congrArg Fin.succ (he_inj h_e_eq)) h_ne
+  have h_not_inj : ¬Injective (cons (κ j) e : Fin (n + 1) → ℤ) := by
+    rw [← show κ ∘ l = e from funext hl, ← comp_cons]
+    exact fun h_inj ↦ h_ne (h_inj hκ_eq)
+  simpa [cons_injective_iff, he_inj] using h_not_inj
 
 /-- Let `Q` be an invertible matrix over `k`, let `φ` send a matrix `M` over `K` to `Q * M * Q⁻¹`
 over `k`, and let the `K`-subspace `V` contain every diagonal matrix. Then the matrices `φ x`,
@@ -383,20 +391,6 @@ private lemma exists_surjective_comp_eq_of_powMinor_diagonal_eq_zero (he_inj : e
   choose c hc using exists_eq_of_powMinor_diagonal_eq_zero he_inj hl h_minor
   exact ⟨c, fun i ↦ ⟨l i, he_inj ((hc (l i)).trans (hl i))⟩, funext hc⟩
 
-omit [Fintype N] [DecidableEq N] in
-/-- The matrix of variables `X (i, j)`, evaluated at the entries of a matrix `M` over `k`, is
-`M`. -/
-private lemma mvPolynomialX_map_eval_uncurry (M : Matrix N N k) :
-    (mvPolynomialX N N k).map (MvPolynomial.eval (uncurry M)) = M :=
-  mvPolynomialX_map_eval₂ (RingHom.id k) M
-
-omit [Fintype N] [DecidableEq N] in
-/-- The matrix of variables `X (i, j)`, evaluated at the entries of a matrix `M` over a
-`k`-algebra `S`, is `M`. -/
-private lemma mvPolynomialX_map_aeval_uncurry {S : Type} [CommRing S] [Algebra k S]
-    (M : Matrix N N S) : (mvPolynomialX N N k).map (MvPolynomial.aeval (uncurry M)) = M :=
-  mvPolynomialX_map_eval₂ (algebraMap k S) M
-
 /-- Let `E` be a number field inside `Ω`, a fixed algebraic closure of `ℚ`, let `r` be a continuous
 representation of `Gal(Ω/E)` on `K ^ N`, and let `k` be a normed field over `K`. Suppose:
 * the span of the image of `r` contains every diagonal matrix;
@@ -444,11 +438,19 @@ lemma card_eq_and_charpoly_eq [NeZero n] {E : Type} [Field E] [NumberField E] [A
     have h_poly : (powMinor M m a).aeval
         (diagonal (T ∘ κ) * (Q : Matrix N N k).map LaurentPolynomial.C).uncurry = 0 :=
       h_torus (powMinor M m a) <| h.mono fun g hg ↦ by
-        simpa [M, φ, ρ, mvPolynomialX_map_eval_uncurry, units_smul_def, mul_assoc, ofId,
-          comp_def] using congrFun hg a
+        have h_eval (A : Matrix N N k) :
+            (mvPolynomialX N N k).map (MvPolynomial.eval A.uncurry) = A :=
+          mvPolynomialX_map_eval₂ (RingHom.id k) A
+        simpa [M, φ, ρ, h_eval, units_smul_def, mul_assoc, ofId, comp_def] using congrFun hg a
     simp only [M, map_powMinor, AlgHom.mapMatrix_apply, Matrix.map_mul, Matrix.map_map, comp_def,
-      mvPolynomialX_map_aeval_uncurry, MvPolynomial.aeval_C] at h_poly
-    simpa [mul_assoc, ← Matrix.map_mul, LaurentPolynomial.algebraMap_apply, comp_def] using h_poly
+      MvPolynomial.aeval_C] at h_poly
+    let B := diagonal (T ∘ κ) * (Q : Matrix N N k).map LaurentPolynomial.C
+    have h_eval : (mvPolynomialX N N k).map (MvPolynomial.aeval B.uncurry) = B :=
+      mvPolynomialX_map_eval₂ (algebraMap k k[T;T⁻¹]) B
+    let C := ((Q⁻¹ * ρ x : GL N k) : Matrix N N k).map LaurentPolynomial.C
+    have h_minor : powMinor (B * C) m a = 0 :=
+      (congrArg (fun X ↦ powMinor (X * C) m a) h_eval).symm.trans h_poly
+    simpa [B, C, mul_assoc, ← Matrix.map_mul] using h_minor
   -- The minors of order `n + 1` vanish at most Frobenius elements, hence everywhere.
   have h_all (g : Gal(Ω/E)) : powMinor (φ (r g)) (n + 1) = 0 := by
     refine (h_closed (n + 1)).closure_subset (dense_of_mostFrobenii (hP.mono ?_) g)

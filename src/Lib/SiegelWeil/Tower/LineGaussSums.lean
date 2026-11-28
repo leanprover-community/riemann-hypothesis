@@ -1,6 +1,11 @@
+module
+
+import TauCeti.Topology.Instances.Matrix
+public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
+public import Lib.Weil.MixedModel.Slices
+public import Lib.General.LinearAlgebra.PartnerAlgebra
+import Lib.Adelic.Witt.WittTheorem
 import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
-import Lib.Weil.MixedModel.Slices
 
 /-!
 # Standard partners, shear invariance, Gauss sums along lines and coefficients of lifts
@@ -8,7 +13,7 @@ import Lib.Weil.MixedModel.Slices
 Let `s` be an integral `b × n` matrix over a semilocal field (`New.SemilocalField`) with compact
 open subring `O`, and let `χ` be a character; where `χ` is tame (`TameLocalChar`), `invOnUnits χ` is
 locally constant and `χ` has absolute value one on units of `O`. The file constructs the standard
-pair of partners attached to `s`. Finally it describes the Fourier coefficients `H.centreCoeff T`
+pair of partners attached to `s`. Finally it describes the Fourier coefficients `H.centerCoeff T`
 along a splitting `H` of a hermitian space `X` of an equivariant lift `𝒟`
 (`New.Exchange.IsEquivariantLift`) on a space `M` of local data.
 
@@ -43,9 +48,9 @@ Notions from other files:
 * `New.schwartzBruhat`: The space of locally constant, compactly supported complex functions that
   vanish outside a given set.
 * `New.invOnUnits`: `χ⁻¹` on the units of `O`, zero elsewhere.
-* `New.Space.Splitting.centreCoeff`: `H.centreCoeff T D g` is the mean of
-  `ψ (tr (T M)) * D (H.radicalCentre M * g)` over adelic matrices `M` modulo rational ones;
-  `H.radicalCentre M` has matrix `1 + H.kAdelic * (M - Mᴴ) * H.lCoord`.
+* `New.Space.Splitting.centerCoeff`: `H.centerCoeff T D g` is the mean of
+  `ψ (tr (T M)) * D (H.radicalCenter M * g)` over adelic matrices `M` modulo rational ones;
+  `H.radicalCenter M` has matrix `1 + H.kAdelic * (M - Mᴴ) * H.lCoord`.
 * `New.Exchange.SplitTameChar`: A character ν of the idele classes of norm one with positive weight
   at every infinite place, whose tame part is non-trivial exactly on a non-empty finite set S of
   places disjoint from its conjugate.
@@ -55,6 +60,8 @@ Notions from other files:
 Known; see `Lib.SiegelWeil.Tower.LargeSideConstantTerm` and
 `Lib.SiegelWeil.SingularForms.UnimodularCoefficients` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -243,7 +250,7 @@ lemma New.Exchange.map_shear_stdColDatum_eq {F b n : Type} [V : SemilocalField F
   let Ψ (y : Matrix n b F) : ℂ := stdColDatum χ s (y + u * (r * y))
   let S : AddSubgroup (Matrix n b F) := V.O.toAddSubgroup.matrix
   have : CompactSpace S := isCompact_iff_compactSpace.1 isCompact_O.matrix
-  let τ (t : S) (y : Matrix n b F) : Matrix n b F := y + u * (r * t.1 * (s * y))
+  let τ (t : S) (y : Matrix n b F) : Matrix n b F := y + u * (r * t.val * (s * y))
   let mean (Φ : Matrix n b F → ℂ) (y : Matrix n b F) : ℂ := ⨍ t, Φ (τ t y) ∂.addHaar
   have h_mean {Φ : Matrix n b F → ℂ} (hΦ : Φ ∈ M) : Λ (mean Φ) = Λ Φ := by
     have h_loc : IsLocallyConstant fun (t : S) (y : Matrix n b F) ↦ Φ (τ t y) :=
@@ -387,15 +394,15 @@ lemma mul_stdColDatum_triangularForm (ε : ℂ) (β : Bool) (c : F) (p : Matrix 
   by_cases hM : IsIntMatrix O M
   · by_cases hc : c ∈ O
     · by_cases hz : ∀ i, z i ∈ O
-      · rw [if_pos ⟨hM, hc, hz⟩, if_pos hz, if_pos hM,
+      · rw [ite_eq_left ⟨hM, hc, hz⟩, ite_eq_left hz, ite_eq_left hM,
           invOnUnits_mul (mul_mem hc (hz _)) hM.det_mem, invOnUnits_mul hc (hz _)]
         ring
-      · rw [if_neg fun h ↦ hz h.2.2, if_neg hz]
+      · rw [ite_eq_right fun h ↦ hz h.2.2, ite_eq_right hz]
         simp
-    · have h0 : invOnUnits χ c = 0 := if_neg fun h ↦ hc h.1
-      rw [if_neg fun h ↦ hc h.2.1]
+    · have h0 : invOnUnits χ c = 0 := ite_eq_right fun h ↦ hc h.1
+      rw [ite_eq_right fun h ↦ hc h.2.1]
       split_ifs <;> simp [h0]
-  · rw [if_neg fun h ↦ hM h.1, if_neg hM]
+  · rw [ite_eq_right fun h ↦ hM h.1, ite_eq_right hM]
     simp
 
 /-- The quotient `invOnUnits χ x / invOnUnits χ y` is `χ⁻¹(x) χ(y)` if `x` and `y` are units of
@@ -440,7 +447,7 @@ lemma stdRowDatum_frameAt_lineTermSplitting (X : V'.Splitting V Unit) [IsBaseAda
     fromCols_mul_fromBlocks, fromBlocks_mul_fromRows, fromCols_mul_fromRows, Matrix.add_mul]
   -- It remains to rearrange the products and sums in each entry.
   cases β <;> congr with ⟨⟩ <;>
-    simp [Finset.mul_sum, diagonal, mul_add, mul_assoc, Matrix.mul_apply, Finset.sum_add_distrib]
+    simp [Finset.mul_sum, diagonal, mul_add, mul_assoc, Matrix.mul_apply]
   all_goals simp only [show (0 : Unit × Unit) = (PUnit.unit, PUnit.unit) from rfl] at *
   all_goals grind
 
@@ -547,7 +554,7 @@ lemma components_of_mat_eq_one_add (g : G E r) (C C' : Matrix m m (𝔸 E))
     (hg : g.adeleMatrix = 1 + ((idemAdele 𝔠.ramifiedPlaces : 𝔸 E) • C - star
       (idemAdele 𝔠.ramifiedPlaces : 𝔸 E) • C')) :
     ((1, g.2) : G E r) = g ∧ g.2 ∈ New.Gf.supportedOn m 𝔠.ramifiedPlaces ∧
-      (atPlaces 𝔠.ramifiedPlaces g.2).1 = (1 + C).map (componentsAt 𝔠) := by
+      (atPlaces 𝔠.ramifiedPlaces g.2).val = (1 + C).map (componentsAt 𝔠) := by
   refine ⟨?_, ?_, ?_⟩
   · -- both idempotents vanish at infinity
     aesop (add simp [Prod.ext_iff, funext_iff, Matrix.one_apply, ext_iff.symm])
@@ -585,7 +592,7 @@ lemma apply_shear (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) {Ψ : Matrix m b (Lo
   have h_det : (atPlaces 𝔠.ramifiedPlaces g.2).val.det = 1 := by
     rw [h_at, ← RingHom.mapMatrix_apply, ← RingHom.map_det, det_one_add_mul_comm]
     simp [← Matrix.mul_assoc, k.mul_assoc, ← adeleMatrix_mul, hkc]
-  have h_shear : (fun y ↦ Ψ ((atPlaces 𝔠.ramifiedPlaces g.2).1 * y)) = Ψ' := by
+  have h_shear : (fun y ↦ Ψ ((atPlaces 𝔠.ramifiedPlaces g.2).val * y)) = Ψ' := by
     simp [Ψ', h_at, Matrix.map_add, Matrix.add_mul, Matrix.mul_assoc]
   obtain ⟨h_mem, h_law⟩ := h𝒟.map_translate hΨ g.2 h_supp
   simp only [h_shear, h_det, h_fin] at h_mem h_law
@@ -594,7 +601,7 @@ lemma apply_shear (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) {Ψ : Matrix m b (Lo
 /-- Let `𝒟` be an equivariant lift on `M` and let `ν` in the unitary group have matrix
 `1 + e c k - ē B` (`e` the idempotent of `S`), so that it is `1 + c k` at `S`, with `k c = 0`.
 Shearing a datum in `M` by the components at `S` (`componentsAt`) of `x⁻¹ ν x` keeps it in `M` and
-moves the point at which the Fourier coefficient `H.centreCoeff T` of its lift is taken from
+moves the point at which the Fourier coefficient `H.centerCoeff T` of its lift is taken from
 `ν⁻¹ x` to `x`. -/
 lemma centreCoeff_shear (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Fintype p] [DecidableEq p] [Fintype n₀]
     [DecidableEq n₀] {s₀ : n₀ → ℤˣ} {X₀ : Space E n₀ s₀} (H : X.Splitting X₀ p) (T : Matrix p p E)
@@ -605,13 +612,13 @@ lemma centreCoeff_shear (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Fintype p] [D
     (hkc : k * c = 0) (x : G E r) :
     let Ψ' (y : Matrix m b (LocProd 𝔠.ramifiedPlaces)) : ℂ := Ψ (y +
       (adeleMatrix x⁻¹ * c).map (componentsAt 𝔠) * ((k * adeleMatrix x).map (componentsAt 𝔠) * y))
-    Ψ' ∈ M ∧ H.centreCoeff T (𝒟 Ψ') x = H.centreCoeff T (𝒟 Ψ) (ν⁻¹ * x) :=
-  (h𝒟.apply_shear hΨ hν hkc x).imp_right fun h_shift ↦ by simp only [centreCoeff, h_shift]
+    Ψ' ∈ M ∧ H.centerCoeff T (𝒟 Ψ') x = H.centerCoeff T (𝒟 Ψ) (ν⁻¹ * x) :=
+  (h𝒟.apply_shear hΨ hν hkc x).imp_right fun h_shift ↦ by simp only [centerCoeff, h_shift]
 
 /-- Let `𝒟` be an equivariant lift on `M` (functions of `m × b` matrices over the completions at the
 ramified places `S` of `𝔠`) to functions on the unitary group of `X`, and let `H` split `X` over
 `X₀`. Fix `T` a `p × p` matrix over `E`. (a) At each point `x`, the `T`-th Fourier coefficient
-`Ψ ↦ H.centreCoeff T (𝒟 Ψ) x` along the centre of the radical of `H` is, on `M`, the restriction of
+`Ψ ↦ H.centerCoeff T (𝒟 Ψ) x` along the centre of the radical of `H` is, on `M`, the restriction of
 a linear functional `L`. Here `H.kAdelic` is the adelic frame of the isotropic subspace of `H` and
 `H.lCoord` its conjugate transpose times the form, a matrix of coordinates. (b) The shear of `Ψ` by
 `z` along this frame at `x` stays in `M` and multiplies `L Ψ` by `ψ_S (tr (T_S z))`, with `ψ_S` the
@@ -622,7 +629,7 @@ lemma exists_linear_centreCoeff (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Finty
     (T : Matrix p p E) (x : G E r) :
     ∃ L : (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) →ₗ[ℂ] ℂ, ∀ Ψ ∈ M,
       -- (a)
-      L Ψ = H.centreCoeff T (𝒟 Ψ) x ∧
+      L Ψ = H.centerCoeff T (𝒟 Ψ) x ∧
       -- (b)
       ∀ z : Matrix p p (LocProd 𝔠.ramifiedPlaces),
         let Ψ' (y : Matrix m b (LocProd 𝔠.ramifiedPlaces)) : ℂ :=
@@ -632,21 +639,21 @@ lemma exists_linear_centreCoeff (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Finty
           (((invDifferentIdele E)⁻¹.val • T.map toAdele).map (componentsAt 𝔠) * z).trace • L Ψ := by
   -- The coefficient is linear on M; extend it to a functional on all functions.
   let L₀ : M →ₗ[ℂ] ℂ :=
-    { toFun Ψ := H.centreCoeff T (𝒟 Ψ) x
+    { toFun Ψ := H.centerCoeff T (𝒟 Ψ) x
       map_add' Ψ Φ := by
         simpa using H.centreCoeff_add (h𝒟.isAutFunction Ψ.2) (h𝒟.isAutFunction Φ.2) T x
-      map_smul' := by simp [centreCoeff, ← quotMean_const_mul, mul_left_comm] }
+      map_smul' := by simp [centerCoeff, mul_left_comm] }
   obtain ⟨L, hL₀ : L ∘ₗ M.subtype = L₀⟩ := L₀.exists_extend
-  have hL Φ (hΦ : Φ ∈ M) : L Φ = H.centreCoeff T (𝒟 Φ) x := LinearMap.congr_fun hL₀ ⟨Φ, hΦ⟩
+  have hL Φ (hΦ : Φ ∈ M) : L Φ = H.centerCoeff T (𝒟 Φ) x := LinearMap.congr_fun hL₀ ⟨Φ, hΦ⟩
   refine ⟨L, fun Ψ hΨ ↦ ⟨hL Ψ hΨ, fun z ↦ ?_⟩⟩
   -- Lift z to an adelic matrix N. The shear by z is the one of `centreCoeff_shear` for the central
-  -- element `ν = H.radicalCentre (idemAdele S • N)`.
+  -- element `ν = H.radicalCenter (idemAdele S • N)`.
   obtain ⟨N, rfl⟩ : ∃ N : Matrix p p (𝔸 E), N.map (componentsAt 𝔠) = z :=
     ⟨z.map (0, adeleOfLocal _ ·), ext fun i j ↦ evalPlaces_adeleOfLocal _ (z i j)⟩
   let e : 𝔸 E := idemAdele 𝔠.ramifiedPlaces
-  have h_mat : (H.radicalCentre (e • N)).adeleMatrix = 1 +
+  have h_mat : (H.radicalCenter (e • N)).adeleMatrix = 1 +
       (e • (H.kAdelic * N * H.lCoord) - star e • (H.kAdelic * Nᴴ * H.lCoord)) := by
-    rw [H.adeleMatrix_radicalCentre]
+    rw [H.adeleMatrix_radicalCenter]
     simp [Matrix.mul_sub, Matrix.sub_mul]
   obtain ⟨h_mem, h_cf⟩ := h𝒟.centreCoeff_shear H T hΨ h_mat (by simp [← Matrix.mul_assoc]) x
   -- The coefficient at `ν⁻¹ * x` is `ψ (tr (T * idemAdele S • N))` times the coefficient at `x`.
@@ -654,10 +661,10 @@ lemma exists_linear_centreCoeff (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Finty
     mul_inv_cancel_left] at h_cf
   -- The character at S is `ψf` twisted by the finite part of `invDifferentIdele E`, which cancels
   -- `(invDifferentIdele E)⁻¹`.
-  have h_char : 𝔠.readsAt.ψ (((invDifferentIdele E)⁻¹.1 • T.map toAdele * N).map
+  have h_char : 𝔠.readsAt.ψ (((invDifferentIdele E)⁻¹.val • T.map toAdele * N).map
       (componentsAt 𝔠)).trace = stdAddChar E (T.map toAdele * e • N).trace := by
     have h_δ : algebraMap E (𝔸f E) WeilData.j * WeilData.α.val * star WeilData.α.val =
-        (invDifferentIdele E).1.2 := rfl
+        (invDifferentIdele E).val.2 := rfl
     rw [← AddMonoidHom.map_trace, componentsAt, RingHom.comp_apply, ReadsAt.psi_apply,
       stdLattice.selfDualAddChar_apply, h_δ, mul_left_comm, RingHom.coe_snd, ← Prod.snd_mul]
     simp [stdAddChar, e]

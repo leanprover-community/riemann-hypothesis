@@ -1,5 +1,17 @@
-import Lib.Adelic.Reduction.FiniteVolume
-import Lib.Adelic.Reduction.FirstMinimumShortBases
+module
+
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Topology.Algebra.ProperConstSMul
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.Reduction.FiniteVolume
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
+public import Lib.Adelic.Hecke.ClassSums
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.DiscreteSeries.Haar.GramPolar
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.Measure.IdempotentKernel
 
 /-!
 # Mahler's criterion for hermitian spaces and class sums for definite spaces
@@ -41,6 +53,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.Reduction.FiniteVolume` and `Lib.Adelic.QuotientMeasure.Basic` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Mahler compactness, and finiteness of classes in the definite case
@@ -103,12 +117,12 @@ lemma exists_isCompact_of_bounded_frame {C : Set (Matrix n n (𝔸 E))} (hC : Is
     unfold c
     rw [U.gram_invariant]
     simp [gram]
-  let γ : U V.J := ⟨(rep (gram r)).val * r.val⁻¹,
+  let γ : U V.J := ⟨(rep (gram r)).val * r.val⁻¹, mem_unitaryGroupOf_iff.2 <|
     gram_mul_of_gram_eq (gram.invFun_eq ⟨r, rfl⟩) (gram_inv_of_gram_eq rfl)⟩
   refine ⟨γ, ?_, (rep (gram r) * r⁻¹).prop⟩
   have h_mat : (V.x⁻¹.val • c) * rightFactor (gram r) = (V.ratEmbed γ * g)⁻¹.adeleMatrix := by
     simp [c, γ, rep, rightFactor, ratEmbed, toRatCoords, G.adeleMatrix, mul_assoc, U.map]
-  show (V.ratEmbed γ * g)⁻¹.adeleMatrix ∈ (V.x⁻¹.val • C) * rightFactor '' gramValues
+  change (V.ratEmbed γ * g)⁻¹.adeleMatrix ∈ (V.x⁻¹.val • C) * rightFactor '' gramValues
   rw [← h_mat]
   exact Set.mul_mem_mul (Set.smul_mem_smul_set hr) (Set.mem_image_of_mem _ ⟨c, hr, h_gram_map⟩)
 
@@ -208,6 +222,19 @@ The Haar measures of `New.Gf` (finite points) and `New.G` (all adelic points) ar
 namespace New
 
 open MeasureTheory Measure Set DoubleCoset Subgroup HasFiniteType
+
+section StandardClasses
+
+variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+
+/-- The set of classes of the standard space I_n for a subgroup K: double cosets of the finite
+adelic unitary group by its rational points on the left and K on the right. -/
+abbrev StdClasses (K : Subgroup (Gf E n)) : Type := DoubleCosets (stdSpace E n).Γf K
+
+noncomputable instance {K : Subgroup (Gf E n)} [HasFiniteType stdRatPoints K] :
+    Fintype (StdClasses K) := @.ofFinite _ HasFiniteType.finite_classes
+
+end StandardClasses
 
 section FinitePart
 

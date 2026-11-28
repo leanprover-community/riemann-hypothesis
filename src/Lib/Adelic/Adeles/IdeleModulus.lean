@@ -1,5 +1,15 @@
-import Lib.ClassField.Places.Ideles
-import Lib.Weil.DualPair.Kronecker
+module
+
+public import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Algebra.Group.Units
+public import Lib.ClassField.Places.Ideles
+public import Lib.General.NumberTheory.EmbeddingsAndDifferent
+import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
 # The module of an idele, Haar measure scaling and the norm map on finite adeles
@@ -44,6 +54,8 @@ Known result: the module of an idele, the product formula and the scaling of Haa
 Part of a known result: functoriality of ideles under the norm map, restricted here to the module
 and to supports.
 -/
+
+@[expose] public section
 
 /-!
 ## The module of an idele and the product formula
@@ -372,9 +384,9 @@ lemma volume_map_mul_mul_adele (a : GL n (𝔸 E)) (b : GL Unit (𝔸 E)) :
   -- whose determinant is `b.det ^ card n * a.det`.
   let vecEquiv : Matrix n Unit (𝔸 E) ≃ₜ+ (Unit × n → 𝔸 E) :=
     { toFun := vec, invFun y i j := y (j, i), map_add' := vec_add }
-  let c : GL (Unit × n) (𝔸 E) := kroneckerGL (transposeGL b) a
+  let c : GL (Unit × n) (𝔸 E) := Matrix.GeneralLinearGroup.kronecker (transposeGL b) a
   have det_eq : c.det = b.det ^ card n * a.det :=
-    Units.ext (by simp [c, kroneckerGL, det_kronecker])
+    Units.ext (by simp [c, Matrix.GeneralLinearGroup.kronecker, det_kronecker])
   have h_semiconj (x : Matrix n Unit (𝔸 E)) : vecEquiv (a.val * x * b.val) = c.val *ᵥ vecEquiv x :=
     (kronecker_mulVec_vec a.val x b.valᵀ).symm
   rw [← det_eq]
@@ -506,7 +518,7 @@ lemma adeleNorm_locIdele (w : FinPlace L) (y : (LocField w)ˣ) :
   · -- Let `e` be the image in `𝔸f L` of the idempotent at `v`. It vanishes at `w`, and
     -- `locIdele w y` is `1` away from `w`, so `e * locIdele w y = e`.
     let e : 𝔸f L := finAdeleIncl K L (idem {v})
-    have e_mul : e * (locIdele w y).1 = e := by
+    have e_mul : e * (locIdele w y).val = e := by
       simp_all [e, DFunLike.ext_iff, ← and_forall_ne w, adeleMap_apply, eq_comm]
     -- Take norms and look at `v`, where the norm of `e`, a power of the idempotent, is `1`.
     simpa [e, adeleNorm_finAdeleIncl, hv] using congrArg (adeleNorm K L · v) e_mul

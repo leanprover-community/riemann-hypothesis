@@ -1,6 +1,10 @@
-import Lib.GaloisRep.Main.AttachedRepresentations
+module
+
+import Mathlib.FieldTheory.Galois.Profinite
+import TauCeti.Analysis.Normed.Ring.CompactMonoid
+public import New.Congruences.Selmer.AuxiliaryPrimes
+import Lib.GaloisRep.Hilbert90.UnitaryGroups
 import Lib.General.NumberTheory.GaussValuation
-import New.Congruences.Selmer.AuxiliaryPrimes
 
 /-!
 # Stickelberger systems
@@ -34,6 +38,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -106,7 +112,7 @@ are `≡ 1` at the primes of `Q`. -/
 abbrev U1ClassGroup : Type :=
   unitary (𝔸f E) ⧸ Subgroup.closure {u : unitary (𝔸f E) |
     Unitary.toUnits u ∈ principalIdele.range ∨ Unitary.toUnits u ∈ idelesUnitOff ∅ ∧
-      ∀ w ∈ Q, Valued.v ((ideleAt w (Unitary.toUnits u)).1 - 1) < 1}
+      ∀ w ∈ Q, Valued.v ((ideleAt w (Unitary.toUnits u)).val - 1) < 1}
 
 /-- The class of `y / ȳ` in `Cl_Q`, for a finite idele `y`. -/
 def divStarClass : (𝔸f E)ˣ →* U1ClassGroup Q := (QuotientGroup.mk' _).comp divStar.toMonoidHom
@@ -119,12 +125,12 @@ lemma divStarClass_surjective (Q : Finset (FinPlace E)) :
   refine QuotientGroup.mk_surjective.forall.2 fun u ↦ ?_
   let σ : Gal(E/NumberField.maximalRealSubfield E) := NumberField.IsCMField.complexConj E
   -- The adele map of complex conjugation is, by definition, the involution `star`.
-  have h_star_mul : adeleMap σ u.1 * u.1 = 1 := Unitary.coe_star_mul_self u
-  have h_norm : ∏ i ∈ range (orderOf σ), adeleMap (↑(σ ^ i) : E →+* E) u.1 = 1 := by
+  have h_star_mul : adeleMap σ u.val * u.val = 1 := Unitary.coe_star_mul_self u
+  have h_norm : ∏ i ∈ range (orderOf σ), adeleMap (↑(σ ^ i) : E →+* E) u.val = 1 := by
     simpa [σ, NumberField.IsCMField.orderOf_complexConj, range, AlgEquiv.aut_one] using h_star_mul
   obtain ⟨_, ⟨y, rfl⟩, hy⟩ := hilbert90_finite_idele h_norm
-  have h_eq : u.1 * star y.1 = y.1 := hy
-  have h_divStar : y.1 * star y⁻¹.1 = u.1 := by
+  have h_eq : u.val * star y.val = y.val := hy
+  have h_divStar : y.val * star y⁻¹.val = u.val := by
     nth_rw 1 [← h_eq, mul_assoc, ← star_mul', Units.mul_inv, star_one, mul_one]
   exact ⟨y, congrArg QuotientGroup.mk (Subtype.ext h_divStar)⟩
 
@@ -258,7 +264,7 @@ def β : ℝ≥0∞ :=
 /-- The values of the character `Y.twistChar` (written `ϑ`), read in `PadicAlgCl ℓ`, have norm one,
 as `ϑ` is continuous on a compact group. -/
 lemma norm_twistChar (g : Gal(Ω/E)) : ‖(Y.twistChar g : PadicAlgCl ℓ)‖ = 1 :=
-  norm_eq_one_of_continuous Y.continuous_twistChar g
+  ContinuousMonoidHom.norm_apply_eq_one_of_compactSpace ⟨_, Y.continuous_twistChar⟩ g
 
 /-- Let `Y` be a Stickelberger system, so `Θ_Q = Y.element Q` is an element of the group ring over
 `ℤ̄_ℓ` of the group `Cl_Q` of norm-one idele classes. The value of the trivial character at `Θ_Q`

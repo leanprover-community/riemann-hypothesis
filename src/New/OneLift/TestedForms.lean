@@ -1,5 +1,11 @@
-import Lib.LocalGL.Green.LabelCharacters
-import New.UpperBound.Objects.AuxiliaryPair
+module
+
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+public import Lib.LocalGL.Green.LabelCharacters
+public import New.UpperBound.Objects.AuxiliaryPair
+import Lib.ClassField.HeckeCharacter.TameModulus
+import Lib.GLn.SchurModule.SchurNorm
 
 /-!
 # Point forms, Hecke adjoints and false lifts on the definite space of a descent pair
@@ -51,6 +57,8 @@ Notions from other files:
 See `New.OneLift.ComparisonOperator.GluingMaps` and `New.OneLift.LiftVolumeHeight` for related
 work.
 -/
+
+@[expose] public section
 
 /-!
 ## Point forms with prescribed finite datum: inner products and descent
@@ -304,7 +312,7 @@ namespace New
 of a pairing `B` of all smooth forms of the same weight, semilinear for σ⁻¹ ∘ conj ∘ σ in the first
 variable, that is invariant under right translation `New.Space.formTranslation`. -/
 lemma DescentPair.exists_invariant_pairing_eq_innerAt {E r n : Type} [Field E] [CMType E]
-    [WeilData E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] (O : DescentPair E r n)
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] (O : DescentPair E r n)
     (σ : ℂ ≃+* ℂ) :
     ∃ B : (stdSpace E n).forms (O.columnCount, O.detExp)
         →ₛₗ[(↑σ⁻¹ : ℂ →+* ℂ).comp ((starRingEnd ℂ).comp (σ : ℂ →+* ℂ))]
@@ -338,7 +346,7 @@ polynomial ∑ (−X)^i q^{i(i−1)/2} T_{w,i} in the Hecke operators at w, q th
 for the σ-conjugate pairing `New.LevelPlaces.LevelForm.innerAt` is H_{w̄}(X'), with
 X' = σ⁻¹(conj(σX)). -/
 lemma LevelPlaces.LevelForm.innerAt_heckePolyOnForms {E r n : Type} [Field E] [CMType E]
-    [WeilData E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
     (σ : ℂ ≃+* ℂ) (φ φ' : O.FormV) {w : FinPlace E} (hw : star w ≠ w)
     (hw_off : w ∉ O.places.conjClosure) (hw_star_off : star w ∉ O.places.conjClosure) (X : ℂ) :
     innerAt σ (O.heckePolyOnForms hw hw_off X φ) φ' =
@@ -429,6 +437,7 @@ lemma isOfFinOrder_prod_tamePart_det (g : O.ChosenGL r) :
   (CommMonoid.torsion ℂ).prod_mem fun i _ ↦
     isOfFinOrder (O.tamePart (O.chosenPlace i)).toMonoidHom (g i).det.isUnit.isOfFinOrder
 
+omit [WeilData E] in
 /-- Let M = `O.ChosenIndex` be the set of chosen places w of the pair, with residue fields k_w, and
 ψ_w = `O.tamePart w` the tame part at w of the character μ of `O`, a character of k_w. In the
 action `O.formAction` of ∏_{w ∈ M} GL_r(k_w) on forms on V, an element g acts as ∏_w ψ_w(det g_w)
@@ -461,13 +470,13 @@ omit [WeilData E] in
 lemma range_groupAlgAction_mem_invtSubmodule {e₀ : MonoidAlgebra ℂ (O.ChosenGL r)}
     {f : End ℂ O.FormV} (h_comm : ∀ g : O.ChosenGL r, Commute f (O.formAction g)) :
     (O.groupAlgAction e₀).range ∈ End.invtSubmodule f := by
-  have : Fintype (O.ChosenGL r) := Fintype.ofFinite _
+  let : Fintype (O.ChosenGL r) := Fintype.ofFinite _
   rintro _ ⟨y, rfl⟩
   have h_apply (g : O.ChosenGL r) : f (O.formAction g y) = O.formAction g (f y) :=
     LinearMap.congr_fun (h_comm g).eq y
   -- `O.groupAlgAction e₀` is a linear combination of the `O.formAction g`.
   have h_alg : O.groupAlgAction e₀ (f y) = f (O.groupAlgAction e₀ y) := by
-    simp [asAlgebraHom_eq_sum, h_apply]
+    simp [Representation.asAlgebraHom_eq_sum, h_apply]
   exact ⟨f y, h_alg⟩
 
 omit [WeilData E] in
@@ -492,14 +501,16 @@ lemma heckePolyOnForms_comm {w : FinPlace E} (hw : star w ≠ w) (hw_off : w ∉
   simpa [heckePolyOp, heckePolyEval, Finset.smul_sum, smul_smul, h_comm, mul_comm] using
     Finset.sum_comm
 
+omit [WeilData E] in
 /-- A central idempotent e₀ of the group algebra of ∏_{w ∈ M} GL_r(k_w) acts on forms on V
 self-adjointly for the pairing `innerAt σ`, for every σ: ⟨e₀x, y⟩_σ = ⟨x, e₀y⟩_σ. -/
 lemma innerAt_groupAlgAction {e₀ : MonoidAlgebra ℂ (O.ChosenGL r)} (he : IsCentralProj e₀)
     (σ : ℂ ≃+* ℂ) (x y : O.FormV) :
     innerAt σ (O.groupAlgAction e₀ x) y = innerAt σ x (O.groupAlgAction e₀ y) := by
-  have : Fintype (O.ChosenGL r) := Fintype.ofFinite _
+  let : Fintype (O.ChosenGL r) := Fintype.ofFinite _
   exact he.self_adjoint O.formAction σ (innerAt σ) (O.innerAt_formAction σ) x y
 
+omit [WeilData E] in
 /-- The Hecke polynomial operator H_w(X) at a split place w off the level is normal for the pairing
 `innerAt σ`: it has an adjoint `A'` with which it commutes. -/
 lemma exists_adjoint_heckePolyOnForms_comm {w : FinPlace E} (hw : star w ≠ w)
@@ -514,6 +525,7 @@ lemma exists_adjoint_heckePolyOnForms_comm {w : FinPlace E} (hw : star w ≠ w)
     fun x y ↦ innerAt_heckePolyOnForms σ x y hw hw_off hw_star_off X,
     O.heckePolyOnForms_comm hw hw_off (star_injective.ne hw) hw_star_off X _⟩
 
+omit [WeilData E] in
 /-- The image of the Hecke polynomial operator H_w(X) is orthogonal to its kernel for the pairing
 `innerAt σ`. -/
 lemma innerAt_heckePolyOnForms_eq_zero {w : FinPlace E} (hw : star w ≠ w)
@@ -525,6 +537,7 @@ lemma innerAt_heckePolyOnForms_eq_zero {w : FinPlace E} (hw : star w ≠ w)
     simp [← h_adj, h_comm, hz]
   rw [h_adj, eq_zero_of_innerAt_self σ (A' z) h_self, map_zero]
 
+omit [WeilData E] in
 /-- A form orthogonal to the image of the Hecke polynomial operator H_w(X) lies in its kernel. -/
 lemma orthogonal_range_heckePolyOnForms_le_ker {w : FinPlace E} (hw : star w ≠ w)
     (hw_off : w ∉ O.places.conjClosure) (X : ℂ) :

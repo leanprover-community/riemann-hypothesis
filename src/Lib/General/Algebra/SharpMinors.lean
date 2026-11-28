@@ -1,4 +1,17 @@
-import Lib.General.Algebra.FittingIdealsAndLengths
+module
+
+import TauCeti.LinearAlgebra.Determinant.Basic
+import TauCeti.RingTheory.Length.Determinant
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.Algebra.Module.PID
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.OrderOfVanishing.Noetherian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+public import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
 # Maximal minors and lengths
@@ -6,8 +19,8 @@ import Lib.General.Algebra.FittingIdealsAndLengths
 Let `A` be a matrix over a discrete valuation ring `O` and let `a ≠ 0`. The length of the kernel of
 `A` on `(O / a) ^ k` is the least valuation of a maximal minor of the matrix formed by the rows of
 `A` and of `a • 1`. The kernel is isomorphic to the module of linear maps to `O / a` from the
-quotient of `O ^ k` by these rows, so it has the length of this quotient, which is computed by the
-Smith normal form and the multilinearity of the determinant.
+quotient of `O ^ k` by these rows, so it has the length of this quotient, which is computed from the
+cokernel length-determinant formula and the multilinearity of the determinant.
 
 * `New.Selmer.maximalMinors`, `New.Selmer.matrixKernel`: the minors and the kernel.
 * `New.Selmer.isLeast_length_matrixKernel`: the statement for a matrix over a commutative ring `Λ`
@@ -16,14 +29,14 @@ Smith normal form and the multilinearity of the determinant.
 Notions from other files:
 
 * `New.QuotSpan a`: the quotient ring `O / a O`.
-* `New.intGL k R`: the invertible matrices that, with their inverses, have entries in the subring
-  `R`. The Smith normal form is stated for these, and here `R` is all of `O`.
 
 ## Relation to the literature
 
 Known result: Length of a matrix kernel modulo `a` over a discrete valuation ring via maximal
 minors. A consequence of the theorem on elementary divisors.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -64,11 +77,8 @@ lemma mem_matrixKernel {A : Matrix r k O} {B : Type*} [AddCommGroup B] [Module O
   simp [matrixKernel]
 
 lemma smul_mem_rowLattice (A : Matrix r k O) (a : O) (v : k → O) : a • v ∈ rowLattice A a := by
-  rw [pi_eq_sum_univ' v, Finset.smul_sum]
-  refine sum_mem fun j _ ↦ ?_
-  rw [smul_comm]
-  exact smul_mem _ _
-    (subset_span ⟨.inr j, by ext i; simp [Matrix.one_apply, Pi.single_apply, eq_comm]⟩)
+  refine span_mono ?_ ((range_vecMulLinear (a • (1 : Matrix k k O))).le ⟨v, by simp⟩)
+  exact Set.range_subset_iff.2 fun j ↦ ⟨.inr j, rfl⟩
 
 /-- The kernel of `A` on `(O / a) ^ k` (`QuotSpan a` is `O / a`) has the length of the module of
 linear maps to `O / a` from the quotient of `O ^ k` by `rowLattice A a`, the span of the rows of
@@ -153,54 +163,6 @@ lemma length_linearMap_quotSpan {Q : Type*} [AddCommGroup Q] [Module O Q] [Modul
     _ = length O Q := by
       simp [e'.length_eq, length_pi_of_fintype, length_linearMap_quotSpan_of_dvd ha (h_dvd _)]
 
-omit [DVR O] in
-/-- A vector is a combination of the rows of `U * diagonal d * V`, with `U` and `V` invertible,
-exactly if `d i` divides the coordinate `i` of its product with `V⁻¹` for every `i`. -/
-lemma mem_span_row_mul_diagonal_mul_iff {U V : GL k O} {d v : k → O} :
-    v ∈ span O (Set.range (U.val * diagonal d * V.val).row) ↔
-      ∀ i : k, d i ∣ (v ᵥ* (V⁻¹).val) i := by
-  simp only [← range_vecMulLinear, LinearMap.mem_range, vecMulLinear_apply]
-  constructor
-  · rintro ⟨u, rfl⟩ i
-    rw [vecMul_vecMul, V.mul_inv_cancel_right, ← vecMul_vecMul, vecMul_diagonal]
-    exact dvd_mul_left _ _
-  · intro h_dvd
-    choose u hu using h_dvd
-    have h_diag : u ᵥ* diagonal d = v ᵥ* (V⁻¹).val := funext fun i ↦ by
-      rw [vecMul_diagonal, mul_comm, hu i]
-    refine ⟨u ᵥ* (U⁻¹).val, ?_⟩
-    calc u ᵥ* (U⁻¹).val ᵥ* (U.val * diagonal d * V.val) = u ᵥ* diagonal d ᵥ* V.val := by
-          rw [vecMul_vecMul, ← mul_assoc, ← mul_assoc, U.inv_mul, one_mul, ← vecMul_vecMul]
-      _ = v := by rw [h_diag, vecMul_vecMul, V.inv_mul, vecMul_one]
-
-/-- Elementary divisors: over a discrete valuation ring `O`, the quotient of `O ^ k` by the rows of
-a square matrix `N` has the valuation of `det N` as its length. -/
-lemma length_quotient_span_row (N : Matrix k k O) :
-    length O ((k → O) ⧸ span O (Set.range N.row)) = addVal O N.det := by
-  -- The Smith normal form is stated for the classical decidable equality on `k`.
-  obtain rfl : ‹DecidableEq k› = Classical.decEq k := Subsingleton.elim _ _
-  let : DecidableEq k := Classical.decEq k
-  -- For `N = Q * diagonal d * P` the rows span the kernel of the surjection onto the product of
-  -- the `O / d i` that sends `v` to the classes of the coordinates of `v P⁻¹`.
-  obtain ⟨Q, -, P, -, d, rfl⟩ : ∃ᵉ (Q ∈ intGL k (⊤ : Subring O)) (P ∈ intGL k (⊤ : Subring O))
-      (d : k → O), N = Q.val * diagonal d * P.val := isValuationPair_top.smith_normal_form N
-  let π : (k → O) →ₗ[O] ∀ i, QuotSpan (d i) :=
-    LinearMap.piMap (fun i ↦ (Ideal.span {d i}).mkQ) ∘ₗ P⁻¹.1.vecMulLinear
-  have h_surj : Function.Surjective π :=
-    (Function.Surjective.piMap fun _ ↦ mkQ_surjective _).comp fun v ↦ ⟨v ᵥ* P.1, by simp⟩
-  have h_ker : π.ker = span O (Set.range (Q.1 * diagonal d * P.1).row) := by
-    ext v
-    rw [mem_span_row_mul_diagonal_mul_iff, LinearMap.mem_ker, funext_iff]
-    exact forall_congr' fun i ↦ Ideal.Quotient.eq_zero_iff_dvd (d i) _
-  have h_unit (U : GL k O) : addVal O U.1.det = 0 :=
-    addVal_eq_zero_iff.2 ((isUnit_iff_isUnit_det _).1 U.isUnit)
-  calc length O ((k → O) ⧸ span O (Set.range (Q.1 * diagonal d * P.1).row))
-    _ = length O (∀ i, QuotSpan (d i)) := by
-        rw [← h_ker, (π.quotKerEquivOfSurjective h_surj).length_eq]
-    _ = addVal O (∏ i, d i) := by
-        simp only [length_pi_of_fintype, length_quot_span_eq_addVal, addVal_prod]
-    _ = addVal O (Q.1 * diagonal d * P.1).det := by simp [h_unit]
-
 /-- Over a discrete valuation ring and for `a ≠ 0` the lattice `rowLattice A a` of the rows of
 `A` and `a • 1` is free of full rank, so it is spanned by the rows of a square matrix. -/
 lemma exists_span_row_eq_rowLattice (A : Matrix r k O) {a : O} (ha : a ≠ 0) :
@@ -216,20 +178,6 @@ lemma exists_span_row_eq_rowLattice (A : Matrix r k O) {a : O} (ha : a ≠ 0) :
   change span O (Set.range ((rowLattice A a).subtype ∘ b)) = rowLattice A a
   rw [Set.range_comp, ← Submodule.map_span, b.span_eq, map_subtype_top]
 
-omit [DVR O] in
-/-- If every row of the square matrix `N` is a combination of the rows of `M`, then `det N` is a
-combination of the determinants of choices of rows of `M`, so each common divisor `x` of these
-divides it. -/
-lemma dvd_det_of_forall_row_mem_span {m : Type*} {M : Matrix m k O} {N : Matrix k k O} {x : O}
-    (h_minor : ∀ f : k → m, x ∣ (M.submatrix f id).det)
-    (h_row : ∀ i : k, N.row i ∈ span O (Set.range M.row)) : x ∣ N.det := by
-  choose c hc using fun i : k ↦ Finsupp.mem_span_range_iff_exists_finsupp.1 (h_row i)
-  have h_det : N.det =
-      detRowAlternating.toMultilinearMap fun i ↦ ∑ t ∈ (c i).support, c i t • M.row t :=
-    congrArg det (funext fun i ↦ (hc i).symm)
-  simp only [h_det, MultilinearMap.map_sum_finset, MultilinearMap.map_smul_univ]
-  exact Finset.dvd_sum fun f _ ↦ (h_minor f).mul_left _
-
 /-- Over a discrete valuation ring and for `a ≠ 0`, the quotient of `O ^ k` by `rowLattice A a`,
 the span of the rows of `A` and `a • 1`, has as its length the least valuation of a maximal minor
 of these rows. -/
@@ -237,22 +185,40 @@ lemma isLeast_length_quotient_rowLattice (A : Matrix r k O) {a : O} (ha : a ≠ 
     IsLeast (addVal O '' maximalMinors A a) (length O ((k → O) ⧸ rowLattice A a)) := by
   let M : Matrix (r ⊕ k) k O := A.fromRows (a • 1)
   let v (f : k → r ⊕ k) : ℕ∞ := addVal O (M.submatrix f id).det
+  have h_len (B : Matrix k k O) (hB : B.det ≠ 0) :
+      length O ((k → O) ⧸ span O (Set.range B.row)) = addVal O B.det := by
+    rw [← col_transpose, ← Bᵀ.range_mulVecLin,
+      Matrix.length_quotient_range_mulVecLin_eq_ord_det Bᵀ (by simpa), det_transpose,
+      Ring.ord_eq_addVal]
   -- The rows chosen by `f` span a sublattice, whose quotient is at least as long.
   have h_lower (f : k → r ⊕ k) : length O ((k → O) ⧸ rowLattice A a) ≤ v f := by
+    rcases eq_or_ne (M.submatrix f id).det 0 with h0 | h0
+    · simp [v, h0]
     have h_le : span O (Set.range (M.submatrix f id).row) ≤ rowLattice A a :=
       span_mono (Set.range_comp_subset_range f M.row)
-    simpa only [length_quotient_span_row] using length_le_of_surjective _ (factor_surjective h_le)
+    simpa only [h_len _ h0] using length_le_of_surjective _ (factor_surjective h_le)
   -- The length is the valuation of `det N`, for a matrix `N` whose rows span the lattice. These
   -- rows are combinations of the rows of `M`, so `det N` is a combination of minors, and the
   -- minor of least valuation `v (Function.argmin v)` divides it.
   obtain ⟨N, hN⟩ := exists_span_row_eq_rowLattice A ha
+  have hN_det : N.det ≠ 0 := by
+    choose C hC using fun i : k ↦
+      (range_vecMulLinear N).ge (hN.symm ▸ smul_mem_rowLattice A a (Pi.single i 1))
+    have hCN : of C * N = a • 1 := ext fun i j ↦ by
+      simpa [Matrix.mul_apply, vecMul, dotProduct, Matrix.one_apply, Pi.single_apply,
+        eq_comm (a := j)] using congrFun (hC i) j
+    intro h0
+    exact pow_ne_zero (Fintype.card k) ha (by simpa [h0, eq_comm] using congrArg det hCN)
   have : Nonempty (k → r ⊕ k) := ⟨.inr⟩
   let f₀ : k → r ⊕ k := Function.argmin v
-  have h_dvd : (M.submatrix f₀ id).det ∣ N.det :=
-    dvd_det_of_forall_row_mem_span (fun f ↦ addVal_le_iff_dvd.1 (Function.argmin_le v f))
-      fun i ↦ hN.le (subset_span ⟨i, rfl⟩)
+  have h_dvd : (M.submatrix f₀ id).det ∣ N.det := Ideal.mem_span_singleton.1 <|
+    TauCeti.det_mem_of_mem_span LinearMap.proj (fun i ↦ hN.le (subset_span ⟨i, rfl⟩))
+      fun w hw ↦ by
+        choose f hf using hw
+        obtain rfl : w = M.submatrix f id := (funext hf).symm
+        exact Ideal.mem_span_singleton.2 (addVal_le_iff_dvd.1 (Function.argmin_le v f))
   have h_upper : v f₀ ≤ length O ((k → O) ⧸ rowLattice A a) :=
-    (addVal_le_iff_dvd.2 h_dvd).trans_eq (by rw [← hN, length_quotient_span_row])
+    (addVal_le_iff_dvd.2 h_dvd).trans_eq (by rw [← hN, h_len N hN_det])
   exact ⟨⟨(M.submatrix f₀ id).det, ⟨f₀, rfl⟩, h_upper.antisymm (h_lower f₀)⟩,
     Set.forall_mem_image.2 (Set.forall_mem_range.2 h_lower)⟩
 

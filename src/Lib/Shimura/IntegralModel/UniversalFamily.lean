@@ -1,7 +1,15 @@
-import Lib.General.Geometry.GaloisCovers
+module
+
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.AlgebraicGeometry.Sites.Fpqc
+public import Lib.General.Geometry.GaloisCovers
+public import Lib.Shimura.HeckeTower.Model
+public import Lib.Shimura.Uniformisation.TorusModel
+public import Lib.Shimura.Uniformisation.BallModel
 import Lib.General.Geometry.SerreTheorem
-import Lib.Shimura.HeckeTower.Model
-import Lib.Shimura.Uniformisation.TorusModel
+import Lib.Shimura.AbelianScheme.Pairings
+import Lib.Shimura.ArcExtension
 
 /-!
 # The universal family: models along arcs, rigid fibres and points of linear data
@@ -55,6 +63,8 @@ base); M. Bolognesi, A. Massarenti, Comment. Math. Helv. 91 (2016), Lemma 4.1 (o
 
 See also `Lib.Shimura.ArcExtension` and `Lib.Shimura.IntegralModel.TowerExistence`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -509,10 +519,10 @@ lemma New.ThetaObject.TorusModel.hasSpanningCoords_of_specMap_comp_eq {E O W : T
   -- `m + 1` and `m + 2` differ by `1`, so they are not both zero in `k`
   obtain ⟨c, hmc, hc⟩ : ∃ c > m, (c : k) ≠ 0 := by
     by_cases h_succ : ((m + 1 : ℕ) : k) = 0
-    · refine ⟨m + 2, by omega, fun h_two ↦ one_ne_zero (α := k) ?_⟩
-      push_cast at h_two h_succ
-      linear_combination h_two - h_succ
-    · exact ⟨m + 1, by omega, h_succ⟩
+    · refine ⟨(m + 1).succ, Nat.lt_trans (Nat.lt_succ_self m) (Nat.lt_succ_self _), ?_⟩
+      rw [Nat.cast_succ, h_succ, zero_add]
+      exact one_ne_zero
+    · exact ⟨m + 1, Nat.lt_succ_self m, h_succ⟩
   -- the bundle `N ^ (c ^ 2)` of `y`, pulled back to `x`, is the one in Serre's theorem
   have h_pow_eq : (x₀.lineBundle.pull hx₀.schemeMap.left).pow (c ^ 2) =
       (y.lineBundle.pow (c ^ 2)).pull hx.schemeMap.left := by
@@ -579,10 +589,6 @@ variable {D : PEL E} {R : Subalgebra (𝓞 E) E} {κ : Sort _} {ν : ℕ} [Finit
   {O : Type} [CommRing O] [ValuativeArc O] {U : UniversalFamily D R} {𝔪 : (𝓞 E)⁰}
   {y : ThetaObject X T} {Q : κ → (𝟙_ (Over T) ⟶ y.groupScheme)} {a : ModuliPoint E D.Index ν}
 
-/-- Finite products exist in `Over S`: a diagram indexed by the finite discrete category of κ has a
-limit. -/
-instance {S : Scheme} {F : Discrete κ ⥤ Over S} : HasLimit F := inferInstance
-
 /-! ### Fibre powers and the points of linear data -/
 
 /-- For a finite set κ, the κ-fold fibre power of the abelian scheme `X.total` over its base, as a
@@ -638,8 +644,7 @@ lemma Variety.UniversalFamily.exists_isPointOf (U : UniversalFamily D R) (𝔪 :
   -- The point a is the member at the parameter 0 of some analytic family f, and the universal
   -- family carries a model of the fibre at (f, 0).
   obtain ⟨f, hf⟩ := exists_isBallFamily a
-  rw [← hf.ballPoint_zero]
-  exact ⟨homMk _, U.model (f, 0), rfl⟩
+  exact hf.ballPoint_zero ▸ ⟨homMk _, U.model (f, 0), rfl⟩
 
 /-- For a point a = (x, ℓ, P) at infinite level, a chosen complex point over R of the fibre power of
 the family that is the point of a with its 𝔪-torsion (`New.ThetaFamily.IsPointOf`): an object
@@ -689,10 +694,11 @@ lemma ThetaFamily.IsPointOf.of_generic (h_generic : IsPointOf 𝔪 a (genericPt 
 /-- A matrix over the finite adeles that sends every vector with entries in Ô to a vector with
 entries in Ô has its entries in Ô. Vectors with entries in Ô are those whose class in the torsion
 module (𝔸f / Ô)ⁿ is zero. -/
-lemma mem_Ô_of_torsionClass_mulVec_eq_zero {n : Type} [Fintype n] [DecidableEq n]
+lemma mem_Ô_of_torsionClass_mulVec_eq_zero {n : Type} [Fintype n]
     {l : Matrix n n (𝔸f E)}
     (h_zero : ∀ y : n → 𝔸f E, torsionClass y = 0 → torsionClass (l *ᵥ y) = 0) (i j : n) :
     l i j ∈ Ô E := by
+  classical
   -- Apply `l` to the `j`-th standard basis vector.
   simpa using torsionClass_eq_zero.mp (h_zero (Pi.single j 1)
     (torsionClass_eq_zero.mpr fun k ↦ by simp [Pi.single_apply, ite_mem])) i
@@ -943,8 +949,7 @@ lemma GraphClosure.exists_level_point_eq (C : U.GraphClosure γ ν) :
         (γ j).2.prop
       simpa [act] using
         realVecAction_mem_frameLattice (A := 1) (by simpa using h_int) (h_iso.sub_mem_lattice i)
-  rw [C.point_comp_proj, C.point_comp_proj]
-  exact datumPoint_eq_iff.mpr ⟨z, h_iso_γ⟩
+  simpa only [C.point_comp_proj] using! datumPoint_eq_iff.mpr ⟨z, h_iso_γ⟩
 
 /-- For κ with m elements, the κ-fold fibre power of the abelian scheme 𝒜 over the base S is smooth
 over S of relative dimension m times the dimension of 𝒜 (`New.Variety.abelianDim`). -/
