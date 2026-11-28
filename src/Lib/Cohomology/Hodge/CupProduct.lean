@@ -188,18 +188,10 @@ variable {Φ Ψ} {x : TotalH M N} (r : R) (y : TotalH N F)
 
 lemma comp_assoc (y : TotalH N F) (z : TotalH F G) : comp (comp x y) z = comp x (comp y z) := by
   -- Both sides are additive in each variable, so reduce to homogeneous classes.
-  induction z using DirectSum.induction_on with
-  | zero => simp
-  | add z z' hz hz' => simp_all
-  | of c z =>
-    induction y using DirectSum.induction_on with
-    | zero => simp
-    | add y y' hy hy' => simp_all
-    | of b y =>
-      induction x using DirectSum.induction_on with
-      | zero => simp
-      | add x x' hx hx' => simp_all
-      | of a x => simp [add_assoc, comp_of, Ext.comp_assoc]
+  refine DirectSum.induction_on z (by simp) (fun c z ↦ ?_) fun _ _ h₁ h₂ ↦ by simp [h₁, h₂]
+  refine DirectSum.induction_on y (by simp) (fun b y ↦ ?_) fun _ _ h₁ h₂ ↦ by simp [h₁, h₂]
+  refine DirectSum.induction_on x (by simp) (fun a x ↦ ?_) fun _ _ h₁ h₂ ↦ by simp [h₁, h₂]
+  simp [add_assoc, comp_of, Ext.comp_assoc]
 
 /-- A morphism f: N → F as a degree-zero element of total Ext(N,F). -/
 abbrev homClass (f : N ⟶ F) : TotalH N F := DirectSum.of (H N F) 0 (mk₀ f)

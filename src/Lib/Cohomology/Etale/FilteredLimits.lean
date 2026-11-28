@@ -262,17 +262,13 @@ lemma isFilteredColimit_locConstSpec {c : Cocone L}
     IsFilteredColimit ((locConstSpec Λ).mapCocone c) := by
   refine ⟨fun j x hx ↦ ?_, fun y ↦ ?_⟩
   · -- the zero set of `x` is that of an idempotent `e`, whose image in `c.pt` lies in every prime
-    obtain ⟨e, he, h_locus⟩ :
-        ∃ e : L.obj j, IsIdempotentElem e ∧ {p | x.toFun p = 0} = zeroLocus {e} :=
+    obtain ⟨e, he, h_locus⟩ :=
       isClopen_iff_zeroLocus.mp ((LocallyConstant.isLocallyConstant x).isClopen_fiber 0)
-    have h_nil : IsNilpotent (c.ι.app j e) := by
-      refine nilpotent_iff_mem_prime.mpr fun P hP ↦ ?_
-      -- `x` vanishes at the image of `P` in the spectrum of `L.obj j`
-      have h_val : x.toFun (comap (c.ι.app j).hom ⟨P, hP⟩) = 0 :=
-        congrArg (fun g : LocallyConstant (PrimeSpectrum c.pt) Λ ↦ g ⟨P, hP⟩) hx
-      exact h_locus.le h_val rfl
+    -- `x` vanishes at the image of `P` in the spectrum of `L.obj j`,
     -- so `e` vanishes in `c.pt`, hence at a later stage `i`, and `x` vanishes there
-    obtain ⟨i, f, hf⟩ := h_zero j e ((he.map _).eq_zero_of_isNilpotent h_nil)
+    obtain ⟨i, f, hf⟩ := h_zero j e <| (he.map _).eq_zero_of_isNilpotent <|
+      nilpotent_iff_mem_prime.mpr fun P hP ↦
+        h_locus.le (congrArg (fun g : LocallyConstant (PrimeSpectrum c.pt) Λ ↦ g ⟨P, hP⟩) hx) rfl
     exact ⟨i, f, ext fun p ↦ h_locus.ge (by simp [mem_zeroLocus, hf])⟩
   · -- it suffices to lift the function that is `a` on the locus of an idempotent and `0` elsewhere
     obtain ⟨z, hz⟩ : y ∈ (desc (C := Ab) _ ((locConstSpec Λ).mapCocone c)).hom.range := by
@@ -280,11 +276,10 @@ lemma isFilteredColimit_locConstSpec {c : Cocone L}
       obtain ⟨j, e, rfl⟩ := h_surj e
       -- a representative of the idempotent becomes idempotent at a later stage
       obtain ⟨i, f, hf⟩ := h_zero j (e * e - e) (by simp [he.eq])
-      have h_idem : IsIdempotentElem (L.map f e) := by rwa [map_sub, map_mul, sub_eq_zero] at hf
       -- the indicator of `L.map f e` at stage `i` maps to the indicator of the image of `e`
-      let ind : LocallyConstant (PrimeSpectrum (L.obj i)) Λ :=
-        indicator (LocallyConstant.const _ a) (isClopen_iff.mpr ⟨L.map f e, h_idem, rfl⟩)
-      simpa only [← c.w f] using ⟨_, ι_desc_apply ((locConstSpec Λ).mapCocone c) i ind⟩
+      simpa only [← c.w f] using ⟨_, ι_desc_apply ((locConstSpec Λ).mapCocone c) i <|
+        indicator (LocallyConstant.const _ a)
+          (isClopen_iff.mpr ⟨L.map f e, by rwa [map_sub, map_mul, sub_eq_zero] at hf, rfl⟩)⟩
     obtain ⟨j, x, rfl⟩ := colimit_exists_rep _ z
     exact ⟨j, x, by simpa using hz⟩
 

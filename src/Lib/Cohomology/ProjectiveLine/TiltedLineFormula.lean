@@ -366,22 +366,15 @@ a class that vanishes at every prime is zero, and maps of fields induce bijectio
 lemma isDetectedAtPoints_projLine [InvertsPrime A ℓ] :
     IsDetectedAtPoints (testOfPoint A projLine) (locConstAlong (testOfPoint A projLine)) := by
   -- The line is the product of lines indexed by `Unit`, which is proper over ℤ through `p`.
-  obtain ⟨p, h_prod⟩ : ∃ p : projLinePow Unit ⟶ reprBy (CommRingCat.of ℤ), IsProperOver p :=
-    ⟨_, isProperOver_projLinePow Unit⟩
+  have h_prod := isProperOver_projLinePow Unit
   let iso : projLinePow Unit ≅ projLine := ofComponents fun R ↦ (Equiv.funUnique Unit _).toIso
   -- Properness passes along the isomorphism, seen as a pull-back square over the identity.
-  have h_square : IsPullback iso.inv iso.inv (𝟙 (projLinePow Unit)) (𝟙 (projLinePow Unit)) :=
-    .of_vert_isIso ⟨rfl⟩
-  have h_line : IsProperOver (iso.inv ≫ p) :=
-    h_prod.of_isPullback (hW := h_prod) (h_pb := h_square) (hY := h_prod) (ψ := 𝟙 _) rfl
+  have h_line := h_prod.of_isPullback (hW := h_prod) (hY := h_prod) (ψ := 𝟙 _)
+    (h_pb := (IsPullback.of_vert_isIso ⟨rfl⟩ : IsPullback iso.inv iso.inv (𝟙 _) (𝟙 _))) rfl
   -- Proper base change for the zero family of ideals, whose zero locus is everything, and the
   -- identity map of coefficients.
-  let I : IdealFamily
-      (elementsProj (MonoidalCategory.tensorObj projLine (reprBy (CommRingCat.of A)))) :=
-    ⟨⊥, by simp⟩
-  have h_dense : IsCohomDense (locConstAlong (testOfPoint A projLine)) I.pullToTests.botLocus :=
-    .of_top_le fun _ _ _ ↦ rfl
-  exact I.isDetectedAtPoints_of_proper h_line (𝟙 _) (fun _ _ ↦ bijective_id) h_dense
+  exact IdealFamily.isDetectedAtPoints_of_proper ⟨⊥, by simp⟩ h_line (𝟙 _)
+    (fun _ _ ↦ bijective_id) (.of_top_le fun _ _ _ ↦ rfl)
 
 end New.Variety
 

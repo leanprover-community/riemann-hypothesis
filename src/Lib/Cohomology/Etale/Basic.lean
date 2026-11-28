@@ -572,24 +572,16 @@ lemma isTest_of_preValuationRing [IsDomain A] [PreValuationRing A] [IsAbsIntegra
 /-- A product of test rings is a test ring. -/
 lemma IsTest.pi {ι : Type*} {R : ι → Type*} [∀ i : ι, CommRing (R i)]
     (h_test : ∀ i : ι, IsTest (R i)) : IsTest (∀ i : ι, R i) := by
-  have h_red (i : ι) : IsReduced (R i) := (h_test i).isReduced
-  refine
-    { exists_root := fun P hP h_deg ↦ ?_
-      isComparableRing := fun a b ↦ ?_
-      isReduced := inferInstance }
+  have (i : ι) : IsReduced (R i) := (h_test i).isReduced
+  refine { exists_root := fun P hP h_deg ↦ ?_, isComparableRing := fun a b ↦ ?_,
+           isReduced := inferInstance }
   · -- choose a root of `P` in every factor
-    have h_root (i : ι) : ∃ x : R i, P.eval₂ (Pi.evalRingHom R i) x = 0 :=
-      (h_test i).exists_eval₂_eq_zero (Pi.evalRingHom R i) hP h_deg
-    choose x hx using h_root
+    choose x hx using fun i ↦ (h_test i).exists_eval₂_eq_zero (Pi.evalRingHom R i) hP h_deg
     -- the `i`-th component of `P(x)` is `P` evaluated at `x i` through the projection to `R i`
-    have h_eval (i : ι) : P.eval x i = P.eval₂ (Pi.evalRingHom R i) (x i) := by
-      simp [P.eval₂_eq_sum_range, Polynomial.eval]
-    exact ⟨x, funext fun i ↦ (h_eval i).trans (hx i)⟩
+    refine ⟨x, funext fun i ↦ ?_⟩
+    simpa [P.eval₂_eq_sum_range, Polynomial.eval] using hx i
   · -- choose a comparing idempotent in every factor
-    have h_idem (i : ι) :
-        ∃ e : R i, IsIdempotentElem e ∧ a i ∣ e * b i ∧ b i ∣ (1 - e) * a i :=
-      (h_test i).isComparableRing (a i) (b i)
-    choose e he_idem h_dvd_ab h_dvd_ba using h_idem
+    choose e he_idem h_dvd_ab h_dvd_ba using fun i ↦ (h_test i).isComparableRing (a i) (b i)
     exact ⟨e, funext he_idem, pi_dvd_iff.mpr h_dvd_ab, pi_dvd_iff.mpr h_dvd_ba⟩
 
 /-- Let `A` be a test ring and `f : A →+* B` a ring map such that every element of `B` is

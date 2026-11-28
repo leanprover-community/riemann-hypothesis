@@ -130,23 +130,18 @@ lemma of_top_le (h : ⊤ ≤ U) : IsCohomDense F U := by
 /-- Let U, V be subfunctors of Y. If V is dense in Y for F (`h`) and U ∩ V, the preimage of U in V,
 is dense in V (`k`), then U is dense in Y. -/
 lemma trans (h : IsCohomDense F V) (k : IsCohomDense F (U.preimage V.ι)) : IsCohomDense F U := by
-  -- Over a point `y`, compare the preimages `U_y` and `V_y` in h_A through `U_y ⊓ V_y`.
+  -- Over a point `y`, compare the preimages of `U` and `V` in `h_A` through their intersection.
   intro A y
-  let U_y : Subfunctor (reprBy A) := U.preimage (pointMap y)
-  let V_y : Subfunctor (reprBy A) := V.preimage (pointMap y)
-  -- `U_y ⊓ V_y ⊆ V_y` is an equivalence by `k`, and `V_y ⊆ h_A` is one by `h`.
-  have h_inf : IsCohomEquiv F (freeAb.map (U_y ⊓ V_y).ι) := by
-    have h_comp : IsCohomEquiv F
-        (freeAb.map ((U.preimage V.ι).preimage (V.fromPreimage (pointMap y))).ι ≫
-          freeAb.map V_y.ι) :=
-      (k.preimage (fromPreimage V (pointMap y))).isCohomEquiv.comp_iff.mpr (h A y)
-    -- the composite of the two inclusions is injective with image `U_y ⊓ V_y`
-    rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
-      at h_comp
-  -- `U_y ⊓ V_y ⊆ U_y` is an equivalence by `h`, so `U_y ⊆ h_A` is one by cancellation.
-  refine (h.preimage (U_y.ι ≫ pointMap y)).isCohomEquiv.comp_iff.mp ?_
-  -- again the composite of the two inclusions has image `U_y ⊓ V_y`
-  rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
+  -- `(U ⊓ V).preimage (pointMap y) ⊆ V.preimage (pointMap y)` is an equivalence by `k`, and
+  -- `V.preimage (pointMap y) ⊆ h_A` is one by `h`.
+  have h₁ := (k.preimage (V.fromPreimage (pointMap y))).isCohomEquiv.comp_iff.mpr (h A y)
+  -- `(U ⊓ V).preimage (pointMap y) ⊆ U.preimage (pointMap y)` is an equivalence by `h`, so
+  -- `U.preimage (pointMap y) ⊆ h_A` is one by cancellation.
+  refine (h.preimage ((U.preimage (pointMap y)).ι ≫ pointMap y)).isCohomEquiv.comp_iff.mp ?_
+  -- Both composites are injective with image `(U ⊓ V).preimage (pointMap y)`.
+  rw [← freeAb.map_comp] at h₁ ⊢
+  rw [isCohomEquiv_iff_range (U := (U ⊓ V).preimage (pointMap y)) (by aesop (add simp toFunctor))]
+  exact (isCohomEquiv_iff_range (by aesop (add simp toFunctor))).mp h₁
 
 /-- A subfunctor that contains a dense subfunctor is dense. -/
 lemma mono (h : IsCohomDense F U) (hU : U ≤ V) : IsCohomDense F V := by
@@ -404,12 +399,10 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
     (he : IsIdempotentElem e) :
     IsCohomDense F (elemKillingMaps e ⊔ elemKillingMaps (1 - e)) := by
   -- The preimage under a point `k` is the same subfunctor for the idempotent `ι.map k e`.
-  suffices h_isCohomEquiv_of_idempotent : ∀ (A : C) (e : ι.obj A), IsIdempotentElem e →
-      IsCohomEquiv F (freeAb.map (elemKillingMaps e ⊔ elemKillingMaps (1 - e)).ι) by
-    rintro B ⟨k⟩
-    rw [preimage_pointMap_elemKillingMaps_sup e k]
-    exact h_isCohomEquiv_of_idempotent B _ (he.map (ι.map k).hom)
-  intro A e he
+  rintro A ⟨k⟩
+  rw [preimage_pointMap_elemKillingMaps_sup e k]
+  set e := ι.map k e
+  replace he : IsIdempotentElem e := he.map (ι.map k).hom
   by_cases h_trivial : e = 1 ∨ e = 0
   · -- for `e = 1` or `e = 0` every map kills `e` or `1 - e`
     exact isCohomEquiv (of_top_le (by aesop))
@@ -421,53 +414,35 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
   obtain ⟨B, π, π_kill, π_univ, π_surj, π_ker⟩ := hF.exists_quotient _ _ he he_ne_one
   obtain ⟨E, ρ, ρ_kill, ρ_univ, ρ_surj, ρ_ker⟩ :=
     hF.exists_quotient _ _ he.one_sub fun h_eq ↦ he_ne_zero (sub_eq_self.mp h_eq)
-  obtain ⟨hπ_proj, hπ_rep⟩ : Projective (freeAb (elemKillingMaps e).toFunctor) ∧
-      Bijective fun s : freeAb (elemKillingMaps e).toFunctor ⟶ F ↦
-        s B (FreeAddCommGroup.of ⟨⟨π⟩, π_kill⟩) :=
-    projective_and_eval_bijective F _
-      (pointMap_bijective_of_existsUnique (elemKillingMaps e) ⟨_, π_kill⟩ π_univ)
-  obtain ⟨hρ_proj, hρ_rep⟩ : Projective (freeAb (elemKillingMaps (1 - e)).toFunctor) ∧
-      Bijective fun s : freeAb (elemKillingMaps (1 - e)).toFunctor ⟶ F ↦
-        s E (FreeAddCommGroup.of ⟨⟨ρ⟩, ρ_kill⟩) :=
-    projective_and_eval_bijective F _
-      (pointMap_bijective_of_existsUnique (elemKillingMaps (1 - e)) ⟨_, ρ_kill⟩ ρ_univ)
-  -- The ring of `A` is the product of the rings of `B` and `E`.
-  have h_ring : Bijective fun x : ι.obj A ↦ (ι.map π x, ι.map ρ x) :=
-    bijective_map_prod_map_of_idempotent e he π_kill π_surj π_ker ρ_kill ρ_surj ρ_ker
+  obtain ⟨hπ_proj, hπ_rep⟩ := projective_and_eval_bijective F _
+    (pointMap_bijective_of_existsUnique (elemKillingMaps e) ⟨_, π_kill⟩ π_univ)
+  obtain ⟨hρ_proj, hρ_rep⟩ := projective_and_eval_bijective F _
+    (pointMap_bijective_of_existsUnique (elemKillingMaps (1 - e)) ⟨_, ρ_kill⟩ ρ_univ)
   -- Mayer–Vietoris: `0 → freeAb[U ∩ V] → freeAb[U] ⊕ freeAb[V] → freeAb[U ∪ V] → 0` for the two
   -- pieces `U`, `V`.
-  obtain ⟨h_mv_comp, h_mv⟩ :=
+  obtain ⟨_, h_mv⟩ :=
     mayer_vietoris_shortExact (U := elemKillingMaps e) (V := elemKillingMaps (1 - e))
   -- Degree zero: test a section on the union by its values at `π` and `ρ`.
-  let ev (w : freeAb.obj (elemKillingMaps e ⊔ elemKillingMaps (1 - e)).toFunctor ⟶ F) :
-      F.obj B × F.obj E :=
+  let ev (w : freeAb.obj (elemKillingMaps e ⊔ elemKillingMaps (1 - e)).toFunctor ⟶ F) :=
     (w.app B (.of ⟨_, .inl π_kill⟩), w.app E (.of ⟨_, .inr ρ_kill⟩))
-  have ev_inj : Injective ev := by
-    intro w w' h_eq
+  have ev_inj : Injective ev := fun w w' h_eq ↦ by
     obtain ⟨h_π, h_ρ⟩ := Prod.ext_iff.mp h_eq
-    -- the sum of the two pieces maps onto the union, and a section on a piece is read at its cut
-    refine h_mv.epi_g.left_cancellation _ _
-      (Limits.biprod.hom_ext' _ _ (hπ_rep.injective ?_) (hρ_rep.injective ?_))
+    -- the sum of the two pieces maps onto the union, and a section on a piece is read at its cut;
     -- `aesop` reads `freeAb.map` of the inclusion on a generator and uses `h_π`, `h_ρ`
-    · aesop
-    · aesop
+    exact h_mv.epi_g.left_cancellation _ _
+      (biprod.hom_ext' _ _ (hπ_rep.injective (by aesop)) (hρ_rep.injective (by aesop)))
   -- `isBijective_reprBy_iff`: it suffices that `F A` be the sections on the union, and that the
   -- union have no cohomology in positive degrees.
   refine IsBijective.eqv
     (isBijective_reprBy_iff.mpr ⟨.of_comp_left (f := ev) ?_ ev_inj, fun n ↦ ?_⟩)
   · -- a section read at `π` and at `ρ` gives the two components of `F.map π` and `F.map ρ`
-    have h_ev : ev ∘ (Comparison.id F).homOfValue (elemKillingMaps e ⊔ elemKillingMaps (1 - e)).ι =
-        fun x ↦ (F.map π x, F.map ρ x) :=
-      funext fun x ↦ Prod.ext (homOfValue_app ..) (homOfValue_app ..)
-    rw [h_ev]
-    exact hF.bijective_prod π ρ h_ring
+    convert hF.bijective_prod π ρ
+      (bijective_map_prod_map_of_idempotent e he π_kill π_surj π_ker ρ_kill ρ_surj ρ_ker) using 1
+    exact funext fun x ↦ Prod.ext (homOfValue_app ..) (homOfValue_app ..)
   · -- Higher degrees: on the intersection `1 = e + (1 - e)` is killed, so it has no cohomology, and
     -- the union has the cohomology of the projective sum of the two pieces.
-    have h_inter_zero : ∀ D : C,
-        (elemKillingMaps e ⊓ elemKillingMaps (1 - e)).toFunctor.obj D → (0 : ι D) = 1 := by
-      simp +contextual
-    exact (isCohomEquiv_quotient_of_acyclic h_mv (hF.eq_zero_of_zero_ring h_inter_zero)
-      _).injective.subsingleton
+    exact (isCohomEquiv_quotient_of_acyclic h_mv
+      (hF.eq_zero_of_zero_ring (by simp +contextual)) _).injective.subsingleton
 
 /-- Zariski descent. Let `F` satisfy `New.Variety.HasPartitions` for the rings `ι`: idempotents of
 ι(A) cut A into two pieces, and F of A is the product of F over the pieces. Let `η : ι ⟶ κ` be a map

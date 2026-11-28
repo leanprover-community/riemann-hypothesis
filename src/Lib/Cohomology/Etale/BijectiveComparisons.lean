@@ -510,22 +510,16 @@ theorem cech_descent_step (h_four : StepwiseFourLemma f) {r : ℕ}
     Subfunctor.equalizer (ι ⊤ ≫ snd _ _ ≫ p) (ι ⊤ ≫ fst _ _ ≫ (range p).ι)
   -- `e` forgets the point of the image, which is recovered as `p` of the first witness.
   let e (m : ℕ) : witnessed R (m + 1) ≅ cech p m := NatIso.ofComponents fun A ↦ Equiv.toIso
-    { toFun := fun ⟨⟨y, x⟩, h_wit⟩ ↦ ⟨x, fun i j ↦ (h_wit i).2.trans (h_wit j).2.symm⟩
-      invFun := fun ⟨x, h_fibre⟩ ↦
-        ⟨(⟨p.app A (x 0), x 0, rfl⟩, x), fun i ↦ ⟨⟨⟩, h_fibre i 0⟩⟩
-      left_inv := fun ⟨⟨y, x⟩, h_wit⟩ ↦ Subtype.ext (Prod.ext (Subtype.ext (h_wit 0).2) rfl) }
+    { toFun := fun ⟨⟨_, x⟩, h⟩ ↦ ⟨x, fun i j ↦ (h i).2.trans (h j).2.symm⟩
+      invFun := fun ⟨x, h⟩ ↦ ⟨(⟨p.app A (x 0), x 0, rfl⟩, x), fun i ↦ ⟨⟨⟩, h i 0⟩⟩
+      left_inv := fun ⟨⟨_, _⟩, h⟩ ↦ Subtype.ext (Prod.ext (Subtype.ext (h 0).2) rfl) }
   -- The four lemma for the short exact sequence `shortExact_boundaryFromCoker_π`, its last two
   -- terms changed by isomorphisms.
   have h_four_iso {m k : ℕ} {P K : D ⥤ Ab} (eP : freeAb (witnessed R m) ≅ P)
-      (eK : abCoker (boundary R m) ≅ K) :
-      BijectiveUpTo (f P) k →
-      BijectiveUpTo (f (abCoker (boundary R (m + 1)))) (k - 1) →
-      BijectiveUpTo (f K) k := by
-    have h_comp_zero :
-        (boundaryFromCoker R m ≫ eP.hom) ≫ eP.inv ≫ π (boundary R m) ≫ eK.hom = 0 := by
-      simp [reassoc_of% boundaryFromCoker_comp_π]
-    exact h_four.bijectiveUpTo_quotient (X :=
-      ⟨boundaryFromCoker R m ≫ eP.hom, eP.inv ≫ π _ ≫ eK.hom, h_comp_zero⟩)
+      (eK : abCoker (boundary R m) ≅ K) : BijectiveUpTo (f P) k →
+      BijectiveUpTo (f (abCoker (boundary R (m + 1)))) (k - 1) → BijectiveUpTo (f K) k :=
+    h_four.bijectiveUpTo_quotient (X := ⟨boundaryFromCoker R m ≫ eP.hom,
+      eP.inv ≫ π _ ≫ eK.hom, by simp [reassoc_of% boundaryFromCoker_comp_π]⟩)
       (shortExact_of_iso (isoMk (.refl (abCoker _)) eP eK) shortExact_boundaryFromCoker_π)
   -- By induction on `k`, for all `m` at once: if `k` conditions hold on the fibre powers, they
   -- hold on the chains with at least two witnesses modulo boundaries.
@@ -534,16 +528,12 @@ theorem cech_descent_step (h_four : StepwiseFourLemma f) {r : ℕ}
     induction k generalizing m with
     | zero => simp [BijectiveUpTo]
     | succ k ih =>
-      exact h_four_iso (freeAb.mapIso (e _)) (.refl _) (hk _)
-        (ih (by grind [BijectiveUpTo]) _)
+      exact h_four_iso (freeAb.mapIso (e _)) (.refl _) (hk _) (ih (by grind [BijectiveUpTo]) _)
   -- Every point of the image has a witness, so every chain without witnesses is a boundary and
   -- the chains with one witness modulo boundaries are `freeAb` of the image.
-  have h_zero : π (boundary R 0) = 0 := by
-    refine freeAb.hom_ext fun A t ↦ proj_boundary_of_eq_zero ?_
-    obtain ⟨x, h_px⟩ := t.val.1.property
-    exact ⟨x, ⟨⟩, h_px⟩
-  have h_iso : IsIso (boundaryFromCoker R 0) :=
-    shortExact_boundaryFromCoker_π.isIso_f_iff.2 (.of_epi_eq_zero _ h_zero)
+  have : IsIso (boundaryFromCoker R 0) :=
+    shortExact_boundaryFromCoker_π.isIso_f_iff.2 <| .of_epi_eq_zero _ <|
+      freeAb.hom_ext fun _ t ↦ proj_boundary_of_eq_zero (t.val.1.property.imp fun _ h ↦ ⟨⟨⟩, h⟩)
   exact h_four_iso (freeAb.mapIso (e 0 ≪≫ asIso (proj p 0 0)))
     (asIso (boundaryFromCoker R 0) ≪≫ freeAb.mapIso (noWitness R)) hE (h_cok _ h_cech 0)
 

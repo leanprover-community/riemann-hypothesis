@@ -125,17 +125,10 @@ lemma CutsOutLocus.preimage_fieldLocus_not (h : CutsOutLocus X P x g) :
       unimodular.preimage (pointMap ⟨g⟩) := by
   ext C ⟨φ⟩
   -- Both sides say that no map `ψ` from `C` to a field kills the image of the ideal of the `g i`.
-  have h_left : ⟨φ⟩ ∈ ((fieldLocus fun (K : CommAlg k) (y : X.obj K) ↦ ¬P K y).preimage
-        (pointMap x)).obj C ↔
-      ∀ (K : CommAlg k) (ψ : C ⟶ K), IsField K → ¬span (range g) ≤ ker (φ ≫ ψ).hom := by
-    refine forall₃_congr fun K ψ _ ↦ ?_
-    rw [h K (φ ≫ ψ), X.map_comp_apply]
-    rfl
-  have h_right : ⟨φ⟩ ∈ (unimodular.preimage (pointMap ⟨g⟩)).obj C ↔
-      (span (range g)).map φ.hom = ⊤ := by
-    rw [map_span, ← range_comp]
-    rfl
-  rw [h_left, h_right, map_eq_top_iff_forall_isField]
+  change (∀ (K : CommAlg k) (ψ : C ⟶ K), IsField K → ¬P K (X.map ψ (X.map φ x))) ↔
+    span (range (φ.hom ∘ g)) = ⊤
+  rw [range_comp, ← map_span, map_eq_top_iff_forall_isField]
+  exact forall₃_congr fun K ψ _ ↦ by rw [h K (φ ≫ ψ), X.map_comp_apply]
 
 end CutsOut
 

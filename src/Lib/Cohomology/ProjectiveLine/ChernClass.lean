@@ -584,18 +584,13 @@ lemma exists_unit_smul_unimodularRow (x : B × B) :
   -- The chosen representative `y` of the class of `x` has a row of determinant zero with that of
   -- `x`. Writing `x = (u, v)` and `y = (u', v')`, the unit is `1 + (u - u') v`, with inverse
   -- `1 + (u' - u) v'`.
-  let y : B × B := (⟦x⟧ : Quotient (projLineSetoid B)).out
-  have h_det : (1 + y.fst * y.snd) * x.snd = y.snd * (1 + x.fst * x.snd) :=
-    Quotient.mk_out (s := projLineSetoid B) x
-  have h_mul_inv : (1 + (x.fst - y.fst) * x.snd) * (1 + (y.fst - x.fst) * y.snd) = 1 := by
-    linear_combination (x.fst - y.fst) * h_det
-  have h_fst : 1 + x.fst * x.snd = (1 + (x.fst - y.fst) * x.snd) * (1 + y.fst * y.snd) := by
-    linear_combination y.fst * h_det
-  have h_snd : x.snd = (1 + (x.fst - y.fst) * x.snd) * y.snd := by
-    linear_combination h_det
-  have h_row : unimodularRow (⟨⟦x⟧⟩ : projLine B) = (1 + y.fst * y.snd, y.snd) := rfl
-  refine ⟨Units.mkOfMulEqOne _ _ h_mul_inv, ?_⟩
-  simp [h_row, ← h_fst, ← h_snd]
+  let y := (⟦x⟧ : Quotient (projLineSetoid B)).out
+  have h : (1 + y.1 * y.2) * x.2 = y.2 * (1 + x.1 * x.2) := @Quotient.mk_out _ (projLineSetoid B) x
+  have h_fst : 1 + x.1 * x.2 = (1 + (x.1 - y.1) * x.2) * (1 + y.1 * y.2) := by
+    linear_combination y.1 * h
+  have h_snd : x.2 = (1 + (x.1 - y.1) * x.2) * y.2 := by linear_combination h
+  exact ⟨Units.mkOfMulEqOne (1 + (x.1 - y.1) * x.2) (1 + (y.1 - x.1) * y.2)
+    (by linear_combination (x.1 - y.1) * h), Prod.ext h_fst h_snd⟩
 
 /-- Unit multiples of chosen rows determine both the unit and the point. -/
 lemma eq_and_eq_of_smul_unimodularRow_eq {q q' : projLine.obj B} {a b : Bˣ}
