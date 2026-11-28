@@ -138,14 +138,16 @@ lemma PadicTest.bijective_generic_points {Y : Over (Spec R)} [IsProper Y.hom] (c
   -- The restriction of `x` to `c.GenericRing` and `z` agree after each `φ i`.
   refine ⟨⟨homMk x hx_over⟩,
     down_injective (OverMorphism.ext (h_sep (fun i ↦ ofHom (φ i)) (fun t ht ↦ ?_) fun i ↦ ?_))⟩
-  · -- The `φ i` are jointly injective: up to a unit, `t` comes from some `r : c.ProdRing`.
-    obtain ⟨r, u, rfl⟩ := exists_associated_localization t
-    have hr : r = 0 := funext fun i ↦ by
-      have h0 : φ i (algebraMap c.ProdRing c.GenericRing r * u) = 0 := ht i
-      rw [map_mul, IsLocalization.Away.lift_eq, (u.isUnit.map (φ i)).mul_left_eq_zero] at h0
-      exact IsFractionRing.injective (c.Cell i) (FractionRing (c.Cell i))
-        (h0.trans (map_zero _).symm)
-    rw [hr, RingHom.map_zero, zero_mul]
+  · -- Joint injectivity on the product of cells extends across localization.
+    have h_inj : Function.Injective (RingHom.pi φ) := by
+      refine (IsLocalization.injective_iff_map_algebraMap_eq
+        (Submonoid.powers (p : c.ProdRing)) _).2 fun x y ↦ ⟨congrArg (RingHom.pi φ), fun h ↦ ?_⟩
+      refine congrArg (algebraMap c.ProdRing c.GenericRing) (funext fun i ↦ ?_)
+      apply IsFractionRing.injective (c.Cell i) (FractionRing (c.Cell i))
+      simpa [φ, π, j, IsLocalization.Away.lift_eq] using congrFun h i
+    apply h_inj
+    funext i
+    simpa using ht i
   · -- after `Spec (φ i)`, the restriction of `x` to `c.GenericRing` is `x` on the cell, that is
     -- `l i`, which extends `z`
     change Spec.map (ofHom (φ i)) ≫ Spec.map (ofHom (algebraMap c.ProdRing c.GenericRing)) ≫ x =
