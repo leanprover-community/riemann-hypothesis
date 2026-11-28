@@ -653,37 +653,8 @@ lemma rescale_mem_range_seriesToCp_of_mem_multiSeriesRing (C : CMLattice d) {μ 
     (hμ : ∀ (i : J) (x : X), ‖μ i x‖ ≤ 1) {ϖ : ℂ_[p]} (hϖ : ‖ϖ‖ ≤ p ^ (-varpiValuation d p))
     {H : MvPowerSeries X ℂ_[p]} (hH : H ∈ C.multiSeriesRing μ) :
     H.rescale (fun _ : X ↦ ϖ) ∈ seriesToCp.range := by
-  obtain ⟨g, rfl⟩ := hH
-  obtain ⟨y₀, hy₀⟩ :=
-    C.rescale_mem_range_seriesToCp hϖ C.isSeriesGenerator_translatedY.generator_mem
-  -- `y₀` is the integral series `y(ϖ z)`, so `y(μ_i ϖ z)` is the integral series `Y i`
-  let Y (i : J) : MvPowerSeries X (valRingCp p) :=
-    PowerSeries.subst (linearSeries fun x ↦ (⟨μ i x, hμ i x⟩ : valRingCp p)) y₀
-  have hY (i : J) : seriesToCp (Y i) =
-      ((taylorVia ιₚ C.translatedY).subst (linearSeries (μ i))).rescale fun _ ↦ ϖ := by
-    rw [rescale_subst_linearSeries, ← hy₀, PowerSeries.map_subst (hasSubst_linearSeries _)]
-    congr 1
-    change (seriesToCp (p := p)).toAddMonoidHom (∑ x, _) = ∑ x, _
-    rw [map_sum]
-    refine sum_congr rfl fun x _ ↦ ?_
-    change seriesToCp ((⟨μ i x, hμ i x⟩ : valRingCp p) • MvPowerSeries.X x) = _
-    rw [smul_eq_C_mul, smul_eq_C_mul, map_mul, map_C, map_X]
-    rfl
-  have hY₀ (i : J) : constantCoeff (Y i) = 0 := Subtype.ext <|
-    show constantCoeff (seriesToCp (Y i)) = 0 by
-      rw [hY, rescale_subst_linearSeries,
-        PowerSeries.constantCoeff_subst_of_constantCoeff_zero (constantCoeff_linearSeries _),
-        ← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_rescale, pow_zero,
-        one_mul, PowerSeries.coeff_zero_eq_constantCoeff_apply,
-        C.isSeriesGenerator_translatedY.constantCoeff_eq_zero, RingHom.map_zero]
-  refine ⟨g.subst Y, ?_⟩
-  -- both sides substitute the series `y(μ_i ϖ z)` into `g`
-  rw [map_subst (hasSubst_of_constantCoeff_zero hY₀), RingHom.comp_apply]
-  simp only [hY, rescale_eq_subst, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, coe_substAlgHom]
-  -- the two substituted families agree by definition of composition
-  exact (subst_comp_subst_apply (hasSubst_of_constantCoeff_zero fun i ↦ by
-    rw [PowerSeries.constantCoeff_subst_of_constantCoeff_zero (constantCoeff_linearSeries _),
-      C.isSeriesGenerator_translatedY.constantCoeff_eq_zero, RingHom.map_zero]) (.smul_X _) _).symm
+  exact C.rescale_mem_range_of_mem_multiSeriesRing
+    (μ := fun i x ↦ ⟨μ i x, hμ i x⟩) hϖ hH
 
 end CMLattice
 
