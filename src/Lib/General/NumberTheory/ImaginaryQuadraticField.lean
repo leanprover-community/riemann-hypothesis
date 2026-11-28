@@ -16,6 +16,9 @@ import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Adeles.Basic
 import Lib.General.NumberTheory.EmbeddingsAndDifferent
 public import TauCeti.Data.Nat.Prime.Basic
+import TauCeti.NumberTheory.Multiquadratic.FundamentalDiscriminant.Values
+import TauCeti.NumberTheory.Multiquadratic.Prime.Discriminant.Field
+import TauCeti.NumberTheory.NumberField.Quadratic.DecompositionLaw
 
 /-!
 # The imaginary quadratic field ℚ(√−d): characters, Frobenius and splitting of primes
@@ -510,53 +513,6 @@ namespace New.QuadField
 
 variable {d p : ℕ} [Fact (d % 4 = 3)] [hp : Fact p.Prime] (w : FinPlace (QuadField d))
 
-/-- Let `d` be a prime `≡ 7 mod 8` and `w` a prime of `K = ℚ(√-d)` above the rational prime `p`.
-Then the absolute norm `w.q` of `w` is `p` if and only if the Legendre symbol
-`chiK d p = (p / d)` is not `-1`. -/
-lemma q_eq_iff_chiK_ne_neg_one (hw : (p : 𝓞 (QuadField d)) ∈ w.asIdeal) [PrimeSevenModEight d] :
-    w.q = p ↔ chiK d p ≠ -1 := by
-  have char_p : CharP (𝓞 (QuadField d) ⧸ w.asIdeal) p := w.charP_quotient hw
-  set π : 𝓞 (QuadField d) →+* 𝓞 (QuadField d) ⧸ w.asIdeal := Ideal.Quotient.mk w.asIdeal
-  -- `w.q = p ^ f`, and the residue degree `f` is the order of Frobenius on the residue field.
-  have q_iff_frob : w.q = p ↔ ∀ x : 𝓞 (QuadField d), π x ^ p ^ 1 = π x := by
-    rw [w.q_eq_pow_inertiaDeg hw, ← w.inertiaDeg_dvd_iff_forall_pow_eq hw 1]
-    simp [hp.out.pow_eq_iff]
-  -- Frobenius is a ring map and `betaK d` generates the ring of integers.
-  have frob_iff :
-      (∀ x : 𝓞 (QuadField d), π x ^ p ^ 1 = π x) ↔ π (betaK d) ^ p ^ 1 = π (betaK d) := by
-    refine ⟨fun h_all ↦ h_all (betaK d), fun h_gen x ↦ ?_⟩
-    have h_eq : ((frobenius _ p).comp π).toIntAlgHom = π.toIntAlgHom :=
-      AlgHom.ext_of_adjoin_eq_top (different_eq_span_and_adjoin_betaK d).right
-        (Set.eqOn_singleton.2 (by simpa [frobenius_def] using h_gen))
-    simpa [frobenius_def] using DFunLike.congr_fun h_eq x
-  rw [q_iff_frob, frob_iff]
-  obtain rfl | hp2 := eq_or_ne p 2
-  · -- Both sides hold: `betaK d * (1 - betaK d) = (d + 1) / 4` is even, and `2` is a square mod
-    -- `d`.
-    have h_prod : π (betaK d) * (1 - π (betaK d)) = 0 := by
-      rw [← map_one π, ← map_sub, ← map_mul, betaK_mul_one_sub, map_natCast,
-        CharP.cast_eq_zero_iff _ 2]
-      grind [PrimeSevenModEight]
-    have h_fixed : π (betaK d) ^ 2 = π (betaK d) := by linear_combination -h_prod
-    simp [h_fixed, chiK_two]
-  · -- Frobenius multiplies `2 * betaK d - 1 = √-d` by the Legendre symbol, so it fixes `betaK d`
-    -- iff the symbol is `1` in the residue field or `-d` vanishes there, that is `p = d`.
-    have h_sqrt : 2 * π (betaK d) - 1 = π (sqrtNegDInt d) := by simp [map_ofNat]
-    have h_fixed : π (betaK d) ^ p ^ 1 = π (betaK d) ↔
-        (chiK d p : _ ⧸ w.asIdeal) = 1 ∨ π (sqrtNegDInt d) = 0 := by
-      rw [eq_comm, eq_map_betaK_pow_iff hp2 π, h_sqrt, eq_comm, mul_left_eq_self₀, pow_one]
-    have h_ramified : π (sqrtNegDInt d) = 0 ↔ p = d := by
-      rw [← sq_eq_zero_iff, map_sqrtNegDInt_sq π, neg_eq_zero, CharP.cast_eq_zero_iff _ p,
-        Nat.prime_dvd_prime_iff_eq hp.out Fact.out]
-    have h_neg : (-1 : 𝓞 (QuadField d) ⧸ w.asIdeal) ≠ 1 :=
-      Ring.neg_one_ne_one_of_char_ne_two (by rwa [ringChar.eq _ p])
-    rw [h_fixed, h_ramified]
-    obtain ⟨h_eq, h_symbol⟩ | ⟨h_ne, h_symbol | h_symbol⟩ := chiK_cases d p
-    · rw [h_symbol]
-      simp [h_eq]
-    · simp [h_symbol]
-    · simp [h_ne, h_symbol, h_neg]
-
 /-- Let `d ≡ 3 mod 4` and let `w` be a place of `K = ℚ(√-d)` over the prime `p`. Write `u.q` for
 the absolute norm of a place `u`. Either `p` is inert, that is, `(p) = w` and `w` has norm `p ^ 2`,
 or `(p) = w J` for a place `J`, and `w` and `J` both have norm `p` (here `J = w` is allowed: the
@@ -579,6 +535,43 @@ lemma span_eq_or_exists_span_eq_mul (hw : (p : 𝓞 (QuadField d)) ∈ w.asIdeal
       simpa [norm_J, Nat.irreducible_iff_prime, Nat.prime_iff] using hp.out
     have J_prime : Prime J := (irreducible_of_irreducible_absNorm norm_irreducible).prime
     exact .inr ⟨ofPrime J_prime, hJ, norm_w, norm_J⟩
+
+open TauCeti.Multiquadratic in
+/-- Let `d` be a prime `≡ 7 mod 8` and `w` a prime of `K = ℚ(√-d)` above the rational prime `p`.
+Then the absolute norm `w.q` of `w` is `p` if and only if the Legendre symbol
+`chiK d p = (p / d)` is not `-1`. -/
+lemma q_eq_iff_chiK_ne_neg_one (hw : (p : 𝓞 (QuadField d)) ∈ w.asIdeal) [PrimeSevenModEight d] :
+    w.q = p ↔ chiK d p ≠ -1 := by
+  have hd_odd : Odd d := (Fact.out : d.Prime).odd_of_ne_two (by grind [PrimeSevenModEight])
+  have hD : NumberField.discr (QuadField d) = oddPrimeDiscriminant d := by
+    refine discr_adjoin_singleton_eq_primeDiscriminant
+      (isPrimeDiscriminant_oddPrimeDiscriminant Fact.out hd_odd)
+      (x := Complex.I * (Real.sqrt d : ℂ)) ?_
+    rw [primeDiscriminantRadicand_oddPrimeDiscriminant hd_odd,
+      oddPrimeDiscriminant_of_mod_four_eq_three Fact.out]
+    simp [mul_pow, ← Complex.ofReal_pow]
+  have hchar (D : ℤ) (hfund : Int.IsFundamentalDiscr D) (h : D = oddPrimeDiscriminant d) :
+      fundamentalDiscriminantChar D hfund p = chiK d p := by
+    subst D
+    simpa only [Int.cast_natCast, chiK_eq_legendreSym] using
+      fundamentalDiscriminantChar_oddPrimeDiscriminant hd_odd (p : ℤ)
+  -- TauCeti identifies the inert primes with those for which the character is -1.
+  have hinert := fundamentalDiscriminantChar_discr_eq_neg_one_iff_isPrime (finrank_eq_two d) p
+  rw [hchar _ _ hD] at hinert
+  rw [ne_eq, hinert]
+  rcases span_eq_or_exists_span_eq_mul w hw with ⟨h_span, hq⟩ | ⟨_, _, hq, _⟩
+  · simp [hq, hp.out.pow_eq_iff, h_span, w.isPrime]
+  · refine iff_of_true hq fun hprime ↦ ?_
+    have hmax : (span {(p : 𝓞 (QuadField d))}).IsMaximal :=
+      hprime.isMaximal (by simp [hp.out.ne_zero])
+    have h_eq := hmax.eq_of_le w.isPrime.ne_top (by simpa using hw)
+    have h_norm : (span {(p : 𝓞 (QuadField d))}).absNorm = p ^ 2 := by
+      rw [pow_two]
+      exact_mod_cast absNorm_span_eq_mul_star d p
+    change w.asIdeal.absNorm = p at hq
+    rw [← h_eq, h_norm] at hq
+    have := hp.out.one_lt
+    nlinarith
 
 /-- Let `d ≡ 3 mod 4` and let `w` be a place of `K = ℚ(√-d)` over the prime `p`. Write `u.q` for
 the absolute norm of a place `u`. There is a place `J` such that
