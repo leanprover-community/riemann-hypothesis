@@ -327,7 +327,7 @@ nonnegative, that is real and `≥ 0` in `ComplexOrder`, with `Δ = finMultiplie
 lemma finMultiplier_div_nonneg_of_isSplit {w : FinPlace E} (hw : w.IsSplit) {a s : Gf E ι}
     (ha : a ∈ supportedOn ι {w}) (hs : s ∈ supportedOn ι {w}) :
     0 ≤ finMultiplier a / finMultiplier (a * s) / finMultiplier s⁻¹ := by
-  let cut (x : Gf E ι) : GL ι (𝔸f E) := cutGL (idem_mul_self {w}) x.val
+  let cut (x : Gf E ι) : GL ι (𝔸f E) := (isIdempotentElem_idem {w}).cutGL x.val
   have h_eq {x : Gf E ι} (hx : x ∈ supportedOn ι {w}) :
       finMultiplier x = ‖glMultiplier (cut x)‖ ^ 2 * starRingEnd ℂ (chiFin (cut x).det) :=
     finMultiplier_eq_of_supportedOn (by simp [hw]) hx

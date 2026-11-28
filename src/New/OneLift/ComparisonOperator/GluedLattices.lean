@@ -387,13 +387,13 @@ lemma DividedLattice.exists_reducedInverse_eq (C G : Matrix n n (Ô E))
     ext
     simp [← Matrix.map_mul, hCG, apply_ite, -Subring.coe_subtype, Matrix.one_apply]
   let c : GL n (𝔸f E) :=
-    cutGL (idem_mul_self O.chosenModulusSq.places) ⟨_, _, hC, mul_eq_one_comm.1 hC⟩
+    (isIdempotentElem_idem O.chosenModulusSq.places).cutGL ⟨_, _, hC, mul_eq_one_comm.1 hC⟩
   set e := idem O.chosenModulusSq.places with he
   -- No chosen place is conjugate to a chosen place, so `c` and `cᴴ` commute and `γ` is unitary.
   have h_disj : e * star e = 0 := idem_mul_star O.chosenModulusSq.isConjDisjoint_places
   have h_comm : Commute (star c) c := Units.ext <| by
     -- Since `e * star e = 0`, both products are the same combination of `C`, `Cᴴ` and `1`.
-    simp [c, cutGL, mul_add, add_mul, smul_smul, h_disj, mul_comm, ← he]
+    simp [c, mul_add, add_mul, smul_smul, h_disj, mul_comm, ← he]
     ac_rfl
   let γ : Gf E n := ⟨star c⁻¹ * c, mem_unitaryGroupOf_iff.2 <| val_inj.2 <|
     show star (star c⁻¹ * c) * 1 * (star c⁻¹ * c) = 1 by simp [h_comm.inv_right.eq]⟩
@@ -401,8 +401,8 @@ lemma DividedLattice.exists_reducedInverse_eq (C G : Matrix n n (Ô E))
   have h_entry (a b : n) : O.genIdele * γ⁻¹.val.val a b =
       e * G a b + star e * (O.genIdele * star (C b a).val) +
         if a = b then (1 - e - star e) * O.genIdele else 0 := by
-    simp [γ, c, cutGL, mul_add, add_mul, h_disj, mul_left_comm O.genIdele.val, ← mul_assoc (star _),
-      mul_comm (star _), ← he, Matrix.one_apply]
+    simp [γ, c, ← map_inv, mul_add, add_mul, h_disj, mul_left_comm O.genIdele.val,
+      ← mul_assoc (star _), mul_comm (star _), ← he, Matrix.one_apply]
     -- The remaining identity follows from `e * star e = 0`.
     grind
   have h_support : γ ∈ supportedOn n (Set.range O.chosenPlace) := by

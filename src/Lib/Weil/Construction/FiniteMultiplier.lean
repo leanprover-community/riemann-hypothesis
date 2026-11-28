@@ -455,8 +455,8 @@ The finite part `Δ_f` of the multiplier that normalises the Weil representation
 * `New.glMultiplier_mul_diagGL_mul`: its value in terms of the elementary divisors of `g`.
 
 Notions from other files:
-* `New.cutGL`: For an idempotent e of the commutative ring A, the endomorphism g ↦ e·g + (1−e)·1 of
-  GL_n(A).
+* `IsIdempotentElem.cutGL` (Tau Ceti): for an idempotent e of the commutative ring A, the
+  endomorphism g ↦ e·g + (1−e)·1 of GL_n(A).
 -/
 
 namespace New
@@ -949,14 +949,14 @@ lemma upsilon_mul_finMultiplier (g : Gf E ι) :
 
 /-- Let E be a CM field with Weil data, S a set of finite places disjoint from its conjugate S̄, and
 g an element of the finite adelic unitary group G_f (matrices g in GL_ι(𝔸_f) with gᴴg = 1) whose
-component is 1 at every place outside S ∪ S̄. Let `a = cutGL _ g` be the invertible matrix equal to
-g at the places of S and to 1 elsewhere. Then `finMultiplier g` (that is, Δ_f of g viewed in
-GL_ι(𝔸_f)) equals |Δ_f(a)|² · conj χ_f(det a), where Δ_f(h) = `glMultiplier h` is χ_f(det u) for a
-matrix u with uÔ^ι = Ô^ι ∩ h⁻¹Ô^ι, and χ_f = υ|·|^(-1/2) is `New.chiFin`, with υ the splitting
-character of the Weil data. -/
+component is 1 at every place outside S ∪ S̄. Let `a = IsIdempotentElem.cutGL _ g` be the
+invertible matrix equal to g at the places of S and to 1 elsewhere. Then `finMultiplier g` (that
+is, Δ_f of g viewed in GL_ι(𝔸_f)) equals |Δ_f(a)|² · conj χ_f(det a), where Δ_f(h) =
+`glMultiplier h` is χ_f(det u) for a matrix u with uÔ^ι = Ô^ι ∩ h⁻¹Ô^ι, and χ_f = υ|·|^(-1/2) is
+`New.chiFin`, with υ the splitting character of the Weil data. -/
 lemma finMultiplier_eq_of_supportedOn {S : Set (FinPlace E)} (hS : Set.IsConjDisjoint S)
     {g : Gf E ι} (hg : g ∈ Gf.supportedOn ι S) :
-    let a : GL ι (𝔸f E) := cutGL (idem_mul_self S) g.val
+    let a : GL ι (𝔸f E) := (isIdempotentElem_idem S).cutGL g.val
     finMultiplier g = ‖glMultiplier a‖ ^ 2 * conj (chiFin a.det) := by
   classical
   -- `g = star a⁻¹ * a`, where `a` lives above `S` and `star a⁻¹` above the conjugate places.

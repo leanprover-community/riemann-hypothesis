@@ -219,11 +219,12 @@ lemma New.Exchange.IsAutFunction.apply_eq_apply_one {S : Set (FinPlace E)}
       Matrix.add_mul, Matrix.mul_assoc, smul_smul, Matrix.sub_mul]
     module
   obtain ⟨F, hF⟩ := h_torus (h_rad H)
+  have h_idem (R : Set (FinPlace E)) : IsIdempotentElem (idemAdele R.conjClosure) :=
+    idemAdele_conjClosure_mul_self
   have h_cut (R : Set (FinPlace E)) (t : GL Unit (𝔸 E)) (x : G E s₀) :
-      closurePart R (H.levi (t, x)) =
-        H.levi (cutGL (idemAdele_conjClosure_mul_self (S := R)) t, closurePart R x) :=
+      closurePart R (H.levi (t, x)) = H.levi ((h_idem R).cutGL t, closurePart R x) :=
     ext_adeleMatrix <| by
-      simp [Splitting.levi, cutGL, ← H.sum_frame_mul_coord_eq_one, -coe_units_inv,
+      simp [Splitting.levi, ← H.sum_frame_mul_coord_eq_one, -coe_units_inv, ← map_inv,
         Matrix.add_mul, Matrix.mul_add]
       module
   -- Weak approximation in `W₀`: up to points trivial on `R`, the rational points are dense.

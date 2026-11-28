@@ -61,12 +61,13 @@ section ComponentsAtPlaces
 
 variable {E : Type*} [Field E] [NumberField E] {n : Type*} [Fintype n] [DecidableEq n]
 
-/-- For a set `S` of places, cutting `g` along the idempotent of `S` (`cutGL`) keeps the component
-`g.map (evalAt w)` at `w` if `w ∈ S` and replaces it by `1` otherwise. -/
+/-- For a set `S` of places, cutting `g` along the idempotent of `S` (`IsIdempotentElem.cutGL`)
+keeps the component `g.map (evalAt w)` at `w` if `w ∈ S` and replaces it by `1` otherwise. -/
 lemma map_evalAt_cutGL (w : FinPlace E) (S : Set (FinPlace E)) [Decidable (w ∈ S)]
     (g : GL n (𝔸f E)) :
-    (cutGL (idem_mul_self S) g).map (evalAt w) = if w ∈ S then g.map (evalAt w) else 1 := by
-  aesop (add simp [cutGL, Matrix.one_apply])
+    ((isIdempotentElem_idem S).cutGL g).map (evalAt w) =
+      if w ∈ S then g.map (evalAt w) else 1 := by
+  aesop (add simp Matrix.one_apply)
 
 /-- A matrix over the finite adeles lies in `intGL n (Ô E) = GL_n(Ô)` (entries of `g` and `g⁻¹` in
 `Ô`), where `Ô` is the ring of integral finite adeles, if and only if its component at each place
@@ -201,7 +202,8 @@ lemma star_idem_conjClosure : star (idem S.conjClosure) = idem S.conjClosure := 
 variable (n S) in
 /-- The endomorphism of the finite adelic unitary group that keeps the components at the places
 of S ∪ S̄ and replaces the others by 1. -/
-def Gf.componentOn : Gf E n →* Gf E n := U.cutAt (idem_mul_self S.conjClosure) star_idem_conjClosure
+def Gf.componentOn : Gf E n →* Gf E n :=
+  U.cutAt (isIdempotentElem_idem S.conjClosure) star_idem_conjClosure
 
 open scoped Classical in
 @[simp]

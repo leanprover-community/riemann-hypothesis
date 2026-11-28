@@ -846,6 +846,8 @@ lemma reduceAt_idem : reduceAt w ⟨idem S, idem_mem_Ô S⟩ = if w ∈ S then 1
 
 lemma idem_mul_self : idem S * idem S = idem S := by aesop
 
+lemma isIdempotentElem_idem : IsIdempotentElem (idem S) := idem_mul_self S
+
 lemma idem_compl : idem Sᶜ = 1 - idem S := by aesop
 
 /-- For a finitely supported family of integers `d` on the finite places of `E` there is a finite

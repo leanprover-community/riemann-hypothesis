@@ -360,6 +360,7 @@ lemma New.cocyclesSplit_and_isMatchingPair_of_congruence {O R n : Type} [CommRin
   -- `ι u` is an idempotent with `ι u * ι m = ι m`. The relations with `ι m` determine `ι u` and
   -- `v`, so `star` and `σ`, which fix `ι m`, fix them too.
   have hu : ι u * ι u = ι u := by linear_combination (1 - ι u) * hmv + ι m * huv
+  have hu_idem : IsIdempotentElem (ι u) := hu
   have hum : ι u * ι m = ι m := by rw [← hm_eq, map_mul, ← mul_assoc, hu]
   have h_unique {a b : R} (hmb : ι m * b = a) (hab : a * b = b) (ham : a * ι m = ι m) :
       a = ι u ∧ b = v := by
@@ -376,9 +377,9 @@ lemma New.cocyclesSplit_and_isMatchingPair_of_congruence {O R n : Type} [CommRin
   let e : U (1 : Matrix n n O) →* U (1 : Matrix n n R) := map ι hι (one_map_ringHom ι)
   choose Y hY using fun s ↦ (hL s).mp
   have h_lift (s : U (1 : Matrix n n R)) (hs : s ∈ L) :
-      ∃ S : U (1 : Matrix n n O), S.val.val = 1 + m • Y s hs ∧ e S = cutAt hu hu_star s := by
+      ∃ S : U (1 : Matrix n n O), S.val.val = 1 + m • Y s hs ∧ e S = cutAt hu_idem hu_star s := by
     refine mem_range_map hι h_inj isUnit_one _ ?_
-    simp [hY, hmv, Matrix.map_add, map_smul', smul_smul, cutAt, cutGL]
+    simp [hY, hmv, Matrix.map_add, map_smul', smul_smul, cutAt]
     module
   choose S hS hS_cut using h_lift
   have h_norm_mem {δ : U (1 : Matrix n n R)} : δ ∈ L → twistedNorm (mapEnd hσ) p δ ∈ L :=
@@ -389,16 +390,17 @@ lemma New.cocyclesSplit_and_isMatchingPair_of_congruence {O R n : Type} [CommRin
     have h_e_comm (δ : U (1 : Matrix n n O)) : e (mapEnd hτ δ) = mapEnd hσ (e δ) :=
       Subtype.ext (Units.ext (Matrix.ext fun _ _ ↦ hιτ _))
     have h_cut_comm (δ : U (1 : Matrix n n R)) :
-        cutAt hu hu_star (mapEnd hσ δ) = mapEnd hσ (cutAt hu hu_star δ) :=
+        cutAt hu_idem hu_star (mapEnd hσ δ) = mapEnd hσ (cutAt hu_idem hu_star δ) :=
       Subtype.ext (Units.ext (by
-        change ι u • δ.val.val.map σ + (1 - ι u) • 1 = (ι u • δ.val.val + (1 - ι u) • 1).map σ
-        rw [← RingHom.mapMatrix_apply σ (ι u • δ.val.val + (1 - ι u) • 1), map_add,
+        rw [U.cutAt_val]
+        change ι u • δ.val.val.map σ + (1 - ι u) • 1 = (cutAt hu_idem hu_star δ).val.val.map σ
+        rw [U.cutAt_val, ← RingHom.mapMatrix_apply σ (ι u • δ.val.val + (1 - ι u) • 1), map_add,
           RingHom.mapMatrix_apply, RingHom.mapMatrix_apply, map_smul' (hf := map_mul σ),
           map_smul' (hf := map_mul σ), ← RingHom.mapMatrix_apply σ 1, map_one, map_sub,
           map_one, hσu]))
     have h_norm : e (twistedNorm (mapEnd hτ) p (S s hs)) = e 1 := by
       rw [map_twistedNorm (σ := mapEnd hσ) e h_e_comm, hS_cut,
-        ← map_twistedNorm (cutAt hu hu_star) h_cut_comm, hN, map_one, map_one]
+        ← map_twistedNorm (cutAt hu_idem hu_star) h_cut_comm, hN, map_one, map_one]
     obtain ⟨t, W, ht : S s hs * mapEnd hτ t = t, hW : t.val.val = 1 + m • W⟩ :=
       unitary_hilbert90_at_level hO hτ_tame hc h_unit hτ (S s hs) hm_star hm_tame (hS s hs)
         (map_injective h_inj (congrArg (fun x : U (1 : Matrix n n R) ↦ x.val.val) h_norm))
@@ -414,9 +416,9 @@ lemma New.cocyclesSplit_and_isMatchingPair_of_congruence {O R n : Type} [CommRin
         zero_smul, add_zero]
     refine ⟨e t, h_et_mem, h_et_off, ?_⟩
     -- On the `u`-part, `t⁻¹ * s * τ t = 1` is `e` applied to `t⁻¹ * S * τ t = 1`.
-    have h_cut_u : ι u • (cutAt hu hu_star s).val.val = ι u • s.val.val := by
-      change ι u • (ι u • s.val.val + (1 - ι u) • 1) = ι u • s.val.val
-      rw [smul_add, smul_smul, smul_smul, hu, mul_sub, mul_one, hu, sub_self, zero_smul, add_zero]
+    have h_cut_u : ι u • (cutAt hu_idem hu_star s).val.val = ι u • s.val.val := by
+      rw [U.cutAt_val, smul_add, smul_smul, smul_smul, hu, mul_sub, mul_one, hu, sub_self,
+        zero_smul, add_zero]
     have h_cob : ι u • (e (t⁻¹ * (S s hs * mapEnd hτ t))).val.val = ι u • 1 := by
       rw [ht, inv_mul_cancel, map_one]
       rfl

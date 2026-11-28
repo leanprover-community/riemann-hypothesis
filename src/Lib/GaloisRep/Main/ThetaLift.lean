@@ -110,7 +110,7 @@ private lemma mem_inf_stabilizer_of_integral {m : Type} [Fintype m] [DecidableEq
       refine hN_cong ⟨componentOn_mem_stdLevel (inv_mem hg), fun i j ↦ ⟨z * D i j, hzD i j, ?_⟩⟩
       -- `N` acts on the adeles through `E`; in that form `simp` computes the entry.
       change _ = (N : E) • (z * D i j)
-      simp [hz, hN, hD, componentOn, U.cutAt, cutGL, sub_smul]
+      simp [hz, hN, hD, componentOn, U.cutAt, -map_inv, sub_smul]
     refine (mul_mem_cancel_left h_cut).mp (hB_off ?_)
     simp_all [componentOn_mem_stdLevel, mul_mem]
   · -- `g` moves the translation by the integral `x * z • D`, with trivial phase as `xᴴ * x = 0`.

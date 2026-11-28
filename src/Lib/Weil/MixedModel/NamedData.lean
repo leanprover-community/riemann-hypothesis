@@ -143,19 +143,19 @@ lemma projOn_schrodingerOp_vacElem {T : Set (FinPlace E)} (hT : Disjoint S.conjC
 
 /-- For g ∈ GL_n(𝔸_f), take `localInner S` (∫ conj(Ψ) Ψ′ over the finite adelic vectors integral off
 S, for the Haar measure giving Ô^n mass one) of the indicator of vectors integral at S against its
-transform x ↦ indicator(g x). This equals `‖Δ_f(g_S)‖⁻²`, where `g_S` (`cutGL`) is `g` above `S` and
-`1` elsewhere. Here `Δ_f` (`New.glMultiplier`) is χ_f(det u) for the chosen u with uÔ^n = Ô^n ∩
-g_S⁻¹Ô^n. -/
+transform x ↦ indicator(g x). This equals `‖Δ_f(g_S)‖⁻²`, where `g_S` (`IsIdempotentElem.cutGL`)
+is `g` above `S` and `1` elsewhere. Here `Δ_f` (`New.glMultiplier`) is χ_f(det u) for the chosen u
+with uÔ^n = Ô^n ∩ g_S⁻¹Ô^n. -/
 lemma localInner_boxIndicator_mulVec (g : GL n (𝔸f E)) :
     localInner S (boxIndicator n S) (fun x : n → 𝔸f E ↦ boxIndicator n S (g.val *ᵥ x)) =
-      ((‖glMultiplier (cutGL (idem_mul_self S) g)‖ ^ 2)⁻¹ : ℝ) := by
+      ((‖glMultiplier ((isIdempotentElem_idem S).cutGL g)‖ ^ 2)⁻¹ : ℝ) := by
   classical
   -- Both sides are the volume of the set `A` of integral `x` with `g x` integral on `S`; for the
   -- right side this is `latticeMeasure_inter_eq_glMultiplier`.
   set A : Set (n → 𝔸f E) :=
-    {x | (cutGL (idem_mul_self S) g).val *ᵥ x ∈ stdLattice E n ∧ x ∈ stdLattice E n} with hA
+    {x | ((isIdempotentElem_idem S).cutGL g).val *ᵥ x ∈ stdLattice E n ∧ x ∈ stdLattice E n} with hA
   have hA_open : IsOpen A := (isOpen_stdLattice.preimage (by fun_prop)).inter isOpen_stdLattice
-  have h_volume : (((‖glMultiplier (cutGL (idem_mul_self S) g)‖ ^ 2)⁻¹ : ℝ) : ℂ) =
+  have h_volume : (((‖glMultiplier ((isIdempotentElem_idem S).cutGL g)‖ ^ 2)⁻¹ : ℝ) : ℂ) =
       ∫ x : n → 𝔸f E, ((A.indicator 1 x : ℝ) : ℂ) ∂latticeMeasure E n := by
     rw [← latticeMeasure_inter_eq_glMultiplier, ← hA, integral_complex_ofReal,
       integral_indicator_one hA_open.measurableSet]
@@ -163,7 +163,7 @@ lemma localInner_boxIndicator_mulVec (g : GL n (𝔸f E)) :
   rw [h_volume, localInner, ← integral_indicator isOpen_integralBox.measurableSet]
   congr
   -- Compare the two indicators place by place: the cut matrix acts as `g` on `S`, as one off `S`.
-  simp [hA, Set.indicator, mem_Ô, cutGL, add_mulVec, ↓idem_mul_mem_Ô, apply_ite, mem_integralBox,
+  simp [hA, Set.indicator, mem_Ô, add_mulVec, ↓idem_mul_mem_Ô, apply_ite, mem_integralBox,
     smul_mulVec, mem_stdLattice, idem_apply]
   funext x
   rw [← ite_and, ← ite_and]
@@ -548,7 +548,7 @@ lemma omega_schrodingerOp_of_mem_supportedOn {g : Gf E n} (hg : g ∈ supportedO
   -- By `omega_schrodingerOp` it suffices to find `ω g v` for the vector `v` below; compute
   -- `projOn S v` twice.
   let v : 𝒮 V := V.schrodingerOp S (fun x ↦ boxIndicator n S (↑g *ᵥ x)) f
-  let c : ℂ := (((‖glMultiplier (cutGL (idem_mul_self S) g.val)‖ ^ 2)⁻¹ : ℝ) : ℂ)
+  let c : ℂ := (((‖glMultiplier ((isIdempotentElem_idem S).cutGL g.val)‖ ^ 2)⁻¹ : ℝ) : ℂ)
   obtain ⟨h_fixed, h_omega_name⟩ : V.projOn S (V.ω g v) = V.ω g v ∧
       V.ω g (V.schrodingerOp S Ψ f) = V.schrodingerOp S (fun x ↦ Ψ (↑g⁻¹ *ᵥ x)) (V.ω g v) :=
     V.omega_schrodingerOp hS (Ψ := Ψ) g f

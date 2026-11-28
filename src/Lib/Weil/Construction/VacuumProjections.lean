@@ -561,7 +561,8 @@ lemma omega_projOn {g : G E s} (hg : ∀ w ∈ S, g.snd.atPlace w ∈ localIntGL
   have h_measure : MeasurePreserving (k : Matrix n n (𝔸f E)).mulVec (latticeMeasure E n)
       (latticeMeasure E n) := finAction.measurePreserving k
   have hk_val : (k : Matrix n n (𝔸f E)) =
-      idem S.conjClosure • (g.snd : Matrix n n (𝔸f E)) + (1 - idem S.conjClosure) • 1 := rfl
+      idem S.conjClosure • (g.snd : Matrix n n (𝔸f E)) + (1 - idem S.conjClosure) • 1 :=
+    U.cutAt_val _ _ _
   have h_move (y : n → 𝔸f E) : (g.snd : Matrix n n (𝔸f E)) *ᵥ idem S.conjClosure • y =
       idem S.conjClosure • (k : Matrix n n (𝔸f E)) *ᵥ y := by
     simp [hk_val, add_mulVec, smul_mulVec, smul_smul, mul_sub, mulVec_smul, idem_mul_self]

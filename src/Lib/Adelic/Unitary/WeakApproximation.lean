@@ -356,10 +356,14 @@ lemma _root_.New.G.tendsto_componentOn {S : Set (FinPlace E)} (hS : S.Finite) {�
     exact ((h_fin w (hS.conjClosure.mem_toFinset.1 hw)).apply_nhds j).apply_nhds k
   rw [isClosedEmbedding_adeleMatrix.tendsto_nhds_iff]
   refine tendsto_pi_nhds.2 fun j ↦ tendsto_pi_nhds.2 fun k ↦ ?_
-  -- By definition `componentOn n S` is `m ↦ e • m + (1 - e) • 1`.
+  -- `componentOn n S` is `m ↦ e • m + (1 - e) • 1`.
   let b : 𝔸f E := ((1 - e) • 1 : Matrix n n (𝔸f E)) j k
-  change Tendsto (fun i : ι ↦ (((x i).adeleMatrix j k).1, e * ((x i).adeleMatrix j k).2 + b)) l
-    (𝓝 ((g.adeleMatrix j k).1, e * (g.adeleMatrix j k).2 + b))
+  have h_cut (h : Gf E n) : (componentOn n S h).val.val j k = e * h.val.val j k + b := by
+    rw [Gf.componentOn, U.cutAt_val]
+    rfl
+  change Tendsto (fun i : ι ↦ (((x i).adeleMatrix j k).1, (componentOn n S (x i).2).val.val j k))
+    l (𝓝 ((g.adeleMatrix j k).1, (componentOn n S g.2).val.val j k))
+  simp only [h_cut]
   exact (h_entry_inf j k).prodMk_nhds ((h_entry_fin j k).add_const b)
 
 /-- Weak approximation. For a finite set `S` of finite places, the products `γ * (1, h)` are dense

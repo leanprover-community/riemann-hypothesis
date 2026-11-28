@@ -73,7 +73,7 @@ variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
 idele equal to `det g` on `A` and to `1` elsewhere. -/
 lemma Exchange.detOn_preimage_star (g : Gf E n) :
     detOn (star ⁻¹' A) g.val = star (detOn A g.val)⁻¹ := by
-  ext <;> simp [detOn, cutGL, star_idem, ← det_conjTranspose, star_eq_conjTranspose,
+  ext <;> simp [detOn, ← map_inv, star_idem, ← det_conjTranspose, star_eq_conjTranspose,
       inv_eq_left_inv (mem_unitaryGroupOf_iff.1 g.prop)]
 
 @[simp↓]

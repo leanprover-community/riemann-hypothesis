@@ -90,7 +90,7 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
       simp [← evalAt_apply, ← coeff_map, ev_idem, huB, hz_u]
   · rintro g rfl
     have h_norm : (twistedNorm (Polynomial.map (adeleMap σ)) p z).aeval g.val.val =
-        cutGL (idem_mul_self (FinPlace.below E ⁻¹' T)) g.val := by
+        (isIdempotentElem_idem (FinPlace.below E ⁻¹' T)).cutGL g.val := by
       refine matrix_ext_evalAt fun u ↦ ?_
       by_cases hu : u.below E ∈ T
       · -- the norm is `X` modulo the characteristic polynomial; use Cayley–Hamilton
@@ -98,14 +98,14 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
         have h_norm_u : (twistedNorm (Polynomial.map (adeleMap σ)) p z).map (evalAt u) =
             g.val.val.charpoly.map (evalAt u) * q + X := sub_eq_iff_eq_add.1 hq
         rw [map_aeval_matrix, h_norm_u]
-        simp [ev_idem, hu, aeval_self_charpoly, ← charpoly_map, cutGL, Matrix.map_add, map_smul']
+        simp [ev_idem, hu, aeval_self_charpoly, ← charpoly_map, Matrix.map_add, map_smul']
       · -- no conjugate of `u` lies above `T`, so every factor of the norm is `1` at `u`
         have h_conj (f : E' →+* E') : (z.map (adeleMap f)).map (evalAt u) =
             (z.map (evalAt (u.comap f))).map (locMap f rfl) :=
           (z.map_map (adeleMap f) (evalAt u)).trans
             (z.map_map (evalAt (u.comap f)) (locMap f rfl)).symm
         simp [h_conj, hz, hu, ev_idem, twistedNorm_map_eq_prod, adeleMap_gal_pow, map_aeval_matrix,
-          Polynomial.map_prod, cutGL, Matrix.map_add, map_smul']
+          Polynomial.map_prod, Matrix.map_add, map_smul']
     have h_coprime :
         IsCoprime g.val.val.charpoly (∏ i ∈ .range p, z.map (adeleMap σ ^ i)) := by
       rw [← twistedNorm_map_eq_prod, ← isUnit_aeval_iff_isCoprime, h_norm]
@@ -130,10 +130,10 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
       -- other places `1 * 1 = 1`
       rw [h_norm]
       by_cases hu : u.below E ∈ T
-      · simp [← U.inv_val_eq_conjTranspose, Matrix.map_sub, ev_idem, mem_B, hu, hT _ hu, cutGL,
+      · simp [← U.inv_val_eq_conjTranspose, Matrix.map_sub, ev_idem, mem_B, hu, hT _ hu,
           star_idem, Matrix.map_add, map_smul', below_star]
       · by_cases hu' : star (u.below E) ∈ T <;>
-          simp [← U.inv_val_eq_conjTranspose, Matrix.map_sub, ev_idem, mem_B, hu, hu', cutGL,
+          simp [← U.inv_val_eq_conjTranspose, Matrix.map_sub, ev_idem, mem_B, hu, hu',
             star_idem, Matrix.map_add, map_smul', below_star]
   · -- take `ha` at `u`: the adjoint factor comes from `star u`, not above `T`, where `z = 1`
     have h_adj (M : Matrix n n (𝔸f E')) :

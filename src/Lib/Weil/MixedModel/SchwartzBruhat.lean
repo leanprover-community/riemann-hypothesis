@@ -78,7 +78,7 @@ class IsSchwartzBruhat (Ψ : (n → 𝔸f E) → ℂ) where
 places of S and 1 elsewhere. -/
 @[simps! apply_val_fst]
 def detOn : GL n (𝔸f E) →* (𝔸 E)ˣ :=
-  finIdeleIncl.comp (GeneralLinearGroup.det.comp (cutGL (idem_mul_self S)))
+  finIdeleIncl.comp (GeneralLinearGroup.det.comp (isIdempotentElem_idem S).cutGL)
 
 /-- The indicator function of the finite adelic vectors x such that t⁻¹(x − z) is integral at
 every place of S. -/
@@ -107,7 +107,7 @@ lemma detOn_apply (w : IsDedekindDomain.HeightOneSpectrum (𝓞 E)) :
     (detOn S g.val).val.2 w = (if w ∈ S then (g.atPlace w).val.det else 1) := by
   -- The simp writes the component as the determinant of the cut matrix at `w` (`↓` so that
   -- `RingHom.map_det` applies before the matrix is expanded); at `w ∈ S` it is `g_w`, else `1`.
-  simp [detOn, ← evalAt_apply, map_add, Matrix.map_smul', cutGL, ↓ RingHom.map_det]
+  simp [detOn, ← evalAt_apply, map_add, Matrix.map_smul', ↓ RingHom.map_det]
   by_cases hw : w ∈ S
   · simp [hw, evalAt_apply, Gf.atPlace]
   · simp [hw, evalAt_apply]

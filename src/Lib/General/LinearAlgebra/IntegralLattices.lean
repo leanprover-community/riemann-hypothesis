@@ -4,6 +4,7 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.LinearAlgebra.Matrix.Swap
 import Mathlib.RingTheory.PiTensorProduct
 import TauCeti.LinearAlgebra.Matrix.Range
+public import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Idempotent
 public import Lib.Adelic.Hecke.Basic
 public import Lib.General.Groups.BesselGroups
 
@@ -107,7 +108,8 @@ end GeneralizedInverse
 /-!
 ## Valuation pairs and cutting along idempotents
 
-Cutting along an idempotent `e` of `A` replaces a matrix `g` by `e g + (1 - e)`.
+Cutting along an idempotent `e` of `A` replaces a matrix `g` by `e g + (1 - e)`; on `GL n A` this
+is Tau Ceti's `IsIdempotentElem.cutGL`.
 -/
 
 namespace New
@@ -137,28 +139,18 @@ lemma isValuationPair_valuationSubring {F : Type*} [Field F] (O : ValuationSubri
 lemma IsValuationPair.top : IsValuationPair R → IsValuationPair (⊤ : Subring R) := by
   simp_all [Subtype.ext_iff, IsValuationPair]
 
-/-- For an idempotent e of the commutative ring A, the endomorphism g ↦ e·g + (1−e)·1 of GL_n(A). -/
-def cutGL (he : IsIdempotentElem e) : GL n A →* GL n A :=
-  Units.map
-    { toFun g := e • g + (1 - e) • 1
-      map_one' := by simp
-      map_mul' := by simp [he.eq, mul_add, add_mul, smul_smul, mul_sub, sub_mul] }
-
-/-- Cutting patches two invertible matrices `c` and `d` to the invertible matrix
-`e • d + (1 - e) • c`. -/
-lemma val_mul_cutGL_inv_mul (he : IsIdempotentElem e) (c d : GL n A) :
-    (c * cutGL he (c⁻¹ * d)).val = e • d.val + (1 - e) • c.val := by
-  have cut_val (g : GL n A) : (cutGL he g).val = e • g.val + (1 - e) • 1 := rfl
-  rw [Units.val_mul, cut_val]
-  simp [mul_add, -Matrix.coe_units_inv]
-
 /-- For a self-adjoint idempotent e of A, the endomorphism g ↦ e·g + (1−e)·1 of the unitary group of
 the identity form, the g in GL_n(A) with gᴴg = 1. -/
 def U.cutAt (he : IsIdempotentElem e) [StarRing A] (hs : star e = e) :
     U (1 : Matrix n n A) →* U (1 : Matrix n n A) :=
-  ((cutGL he).comp (U 1).subtype).codRestrict (U 1) <| by
+  (he.cutGL.comp (U 1).subtype).codRestrict (U 1) <| by
     simp_all [Matrix.mem_unitaryGroupOf_iff, Matrix.star_eq_conjTranspose,
-      cutGL, he.eq, mul_add, add_mul, smul_smul, mul_sub]
+      he.eq, mul_add, add_mul, smul_smul, mul_sub]
+
+/-- The matrix of `U.cutAt he hs g` is `e • g + (1 - e) • 1`. -/
+lemma U.cutAt_val (he : IsIdempotentElem e) [StarRing A] (hs : star e = e)
+    (g : U (1 : Matrix n n A)) : (U.cutAt he hs g).val.val = e • g.val.val + (1 - e) • 1 :=
+  he.val_cutGL g.val
 
 end New
 
@@ -180,11 +172,11 @@ lemma New.IsValuationPair.directed_span_pivot {A n : Type*} [CommRing A] {R : Su
   obtain ⟨e, he, h_le⟩ : ∃ e : R, e.val * e = e ∧
       R ∙ B c c' ⊔ R ∙ B d d' ≤ R ∙ (B c c' - e * (B c c' - B d d')) := hR _ _
   have he_idem : IsIdempotentElem e := Subtype.ext he
-  let patch (a b : GL n R) : GL n R := a * cutGL he_idem (a⁻¹ * b)
+  let patch (a b : GL n R) : GL n R := a * he_idem.cutGL (a⁻¹ * b)
   have patch_val (a b : GL n R) : (map R.subtype (patch a b)).val =
       e.val • (map R.subtype b).val + (1 - e.val) • (map R.subtype a).val := by
     ext
-    simp only [patch, val_map_apply, val_mul_cutGL_inv_mul]
+    simp only [patch, val_map_apply, he_idem.val_mul_cutGL_inv_mul]
     simp
   -- The mixed terms carry the factor `e * (1 - e) = 0`.
   have patch_entry : B (patch c d) (patch c' d') = B c c' - e * (B c c' - B d d') := by
