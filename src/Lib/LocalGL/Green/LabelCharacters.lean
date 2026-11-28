@@ -6,6 +6,7 @@ import Mathlib.NumberTheory.MulChar.Lemmas
 import Mathlib.RingTheory.Artinian.Instances
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.PicardGroup
+import TauCeti.FieldTheory.Finite.FrobeniusFixed
 import TauCeti.RepresentationTheory.Character.Basic
 public import Lib.General.Geometry.GaloisCovers
 public import Lib.LocalGL.Shintani.CosetDescent
@@ -104,16 +105,9 @@ lemma labelChar_X_sub_C (χ : MulChar k ℂ) :
 algebraically closed field `K` is fixed by `x ↦ x ^ q`, where `q` is the order of `k`. -/
 lemma splits_of_forall_root_pow_card_eq [IsAlgClosed K]
     (h_roots_fixed : ∀ x : K, aeval x c = 0 → x ^ Nat.card k = x) : c.Splits := by
-  -- It suffices that each root `x` lies in `k`, that is, that its minimal polynomial is linear.
-  refine .of_splits_map_of_injective (algebraMap k K).injective (IsAlgClosed.splits _)
-    fun x hx_mem ↦ ?_
-  obtain ⟨hc_ne, hx_root⟩ : c ≠ 0 ∧ aeval x c = 0 := mem_aroots.mp hx_mem
-  have hx_fixed : x ^ Nat.card k ^ 1 = x := by rw [pow_one, h_roots_fixed x hx_root]
-  have h_irred : Irreducible (minpoly k x) :=
-    minpoly.irreducible (IsAlgebraic.isIntegral ⟨c, hc_ne, hx_root⟩)
-  have h_deg_dvd : (minpoly k x).natDegree ∣ 1 :=
-    (root_pow_card_pow_eq_self_iff h_irred (minpoly.aeval k x)).mp hx_fixed
-  exact minpoly.natDegree_eq_one_iff.mp (Nat.dvd_one.mp h_deg_dvd)
+  refine .of_splits_map_of_injective (algebraMap k K).injective (IsAlgClosed.splits _) fun x hx ↦ ?_
+  exact (TauCeti.FiniteField.pow_natCard_eq_self_iff_mem_range_algebraMap (K := k) x).mp
+    (h_roots_fixed x (mem_aroots.mp hx).2)
 
 /-- A label `c` of degree `r` that splits over `k` is the product of the `X - charName T (χ i)`
 for some `r` multiplicative characters `χ i` of `k`. -/
