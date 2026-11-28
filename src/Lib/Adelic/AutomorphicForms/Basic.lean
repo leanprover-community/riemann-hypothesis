@@ -126,6 +126,7 @@ structure IsAutomorphic where
   /-- `F` has a level: it is right invariant under an open subgroup of the finite points. -/
   exists_level : ∃ K : OpenSubgroup (Gf E n), HasLevel F K
 
+/-- A constant function on `G` is automorphic. -/
 lemma isAutomorphic_const (c : ℂ) : V.IsAutomorphic fun _ : G E s ↦ c where
   continuous := continuous_const
   rat_mul _ _ _ := rfl
@@ -161,6 +162,7 @@ lemma IsAutomorphic.map₂ (hF : V.IsAutomorphic F) (hF' : V.IsAutomorphic F') (
       -- the intersection of the two levels is a level
       exists_level := ⟨K ⊓ L, fun k hk g ↦ by simp only [hK k hk.1 g, hL k hk.2 g]⟩ }
 
+/-- The complex conjugate of an automorphic function is automorphic. -/
 lemma IsAutomorphic.conj (hF : V.IsAutomorphic F) : V.IsAutomorphic (star F) :=
   hF.map₂ hF fun _ z ↦ star z
 
@@ -193,6 +195,7 @@ lemma IsAutomorphic.eq_zero_of_petersson_self (h : V.IsAutomorphic F)
     dense_of_ae_orbitMeasure (fun (γ : V.Γ) g hg ↦ (h.rat_mul γ γ.property g).trans hg) h_ae
   exact h.continuous.ext_on h_dense continuous_zero fun _ hg ↦ hg
 
+/-- Any automorphic form in `V.IsForm e F` is bounded and measurable. -/
 lemma IsForm.isBoundedMeasurable (hF : V.IsForm e F) : IsBoundedMeasurable F :=
   .of_continuous hF.bounded hF.continuous
 
