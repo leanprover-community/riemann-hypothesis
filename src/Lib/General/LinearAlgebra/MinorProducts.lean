@@ -34,8 +34,6 @@ m_w and the closure properties of the invertible triangular matrices `New.IsBore
 * `New.hadamard_det_inequality`: for positive semidefinite z, |det z| is at most the product of
   the |z_ii|.
 * `New.det_mul_eq_sum_minors`: the Cauchy–Binet formula.
-* `New.det_fromCols_eq_sum_minors`, `New.sum_norm_det_fromCols_sq_le`: the Laplace expansion along
-  a block of columns and a bound for its complementary minors.
 -/
 
 @[expose] public section
@@ -297,9 +295,7 @@ end FischerInequality
 /-!
 ## Expansions in minors
 
-The Cauchy–Binet formula and the Laplace expansion of a determinant along a block of columns, both
-read off from the standard basis of an exterior power, and a bound for the complementary minors of
-the Laplace expansion by the Cauchy–Binet formula and Hadamard's inequality.
+The Cauchy–Binet formula expresses the determinant of a product as a sum of products of minors.
 -/
 
 section MinorExpansions
@@ -308,33 +304,10 @@ open Matrix Finset Set.powersetCard ComplexOrder
 
 namespace New
 
-variable {R I L N c : Type} [CommRing R] {k : ℕ}
+variable {R I : Type} [CommRing R] {k : ℕ}
 
 /-- The elements of a set of `k` indices (`S : Set.powersetCard I k`) in increasing order. -/
 abbrev enumSubset [LinearOrder I] (S : Set.powersetCard I k) : Fin k → I := ofFinEmbEquiv.symm S
-
-/-- The value of an alternating form `f` in `k` vectors at the columns of `X` is the sum over the
-`k`-sets `S` of rows (listed in increasing order by `enumSubset S`) of the minor of `X` on `S` times
-the value of `f` at the basis vectors of `S`. -/
-lemma alternatingMap_eq_sum_minors [Fintype I] [LinearOrder I]
-    (f : (I → R) [⋀^Fin k]→ₗ[R] R) (X : Matrix I (Fin k) R) :
-    f (fun a : Fin k ↦ X.col a) = ∑ S : Set.powersetCard I k,
-      (X.submatrix (enumSubset S) id).det * f fun a : Fin k ↦ Pi.single (enumSubset S a) 1 := by
-  -- Apply the linear map `φ` induced by `f` to the exterior product `v` of the columns, expanded
-  -- in the standard basis of the exterior power.
-  let φ : ⋀[R]^k (I → R) →ₗ[R] R := exteriorPower.alternatingMapLinearEquiv f
-  let v : ⋀[R]^k (I → R) := exteriorPower.ιMulti R k fun a ↦ X.col a
-  let B : Module.Basis (Set.powersetCard I k) R (⋀[R]^k (I → R)) :=
-    (Pi.basisFun R I).exteriorPower k
-  have h_coord (S : Set.powersetCard I k) : B.repr v S = (X.submatrix (enumSubset S) id).det := by
-    rw [exteriorPower.basis_repr_apply, exteriorPower.ιMultiDual_apply_ιMulti,
-      ← det_transpose (X.submatrix _ _)]
-    simp [submatrix, transpose]
-  have h_value (S : Set.powersetCard I k) : φ (B S) = f fun a ↦ Pi.single (enumSubset S a) 1 := by
-    simp [φ, B, exteriorPower.ιMulti_family, Function.comp_def]
-  calc f (fun a ↦ X.col a) = φ v := (exteriorPower.alternatingMapLinearEquiv_apply_ιMulti f _).symm
-    _ = φ (∑ S, B.repr v S • B S) := by rw [B.sum_repr]
-    _ = _ := by simp [h_coord, h_value]
 
 /-- The Cauchy–Binet formula: the determinant of `A * X`, with `k` rows in `A` and `k` columns in
 `X`, is the sum over the `k`-sets `S` of inner indices (listed in increasing order by
@@ -348,120 +321,6 @@ theorem det_mul_eq_sum_minors [Fintype I] [LinearOrder I] (A : Matrix (Fin k) I 
       rw [mul_comm, ← det_transpose (X.submatrix _ _)]
       exact congrArg₂ (· * ·) (TauCeti.plucker_apply (Xᵀ : Fin k → I → R) S)
         (TauCeti.plucker_apply (A : Fin k → I → R) S)
-
-/-- The determinant of the matrix with columns `(Y Z)`, made square by `e`, is an alternating form
-in the `k` columns of `Y`. -/
-lemma exists_alternatingMap_det_fromCols [Fintype L] [DecidableEq L] (e : L ≃ Fin k ⊕ c)
-    (Z : Matrix L c R) :
-    ∃ f : (L → R) [⋀^Fin k]→ₗ[R] R, ∀ Y : Matrix L (Fin k) R,
-      ((fromCols Y Z).submatrix id e).det = f fun a : Fin k ↦ Y.col a := by
-  -- The determinant `g` is an alternating form in columns indexed by `Fin k ⊕ c`. Curry it along
-  -- this sum and evaluate the arguments indexed by `c` at the columns of `Z`.
-  let g : (L → R) [⋀^Fin k ⊕ c]→ₗ[R] R := detRowAlternating.domDomCongr e
-  let atZ : MultilinearMap (RingHom.id R) (fun _ : c ↦ L → R) R →ₗ[R] R :=
-    { toFun φ := φ fun b ↦ Z.col b
-      map_add' _ _ := rfl
-      map_smul' _ _ := rfl }
-  let f : (L → R) [⋀^Fin k]→ₗ[R] R :=
-    { atZ.compMultilinearMap g.toMultilinearMap.currySum with
-      map_eq_zero_of_eq' v a b hab hne :=
-        g.map_eq_zero_of_eq _ (i := .inl a) (j := .inl b) hab (by simpa using hne) }
-  refine ⟨f, fun Y ↦ ?_⟩
-  have h_rows : ((fromCols Y Z).submatrix id e)ᵀ =
-      .of fun a ↦ Sum.elim (fun i ↦ Y.col i) (fun j ↦ Z.col j) (e a) := by
-    ext a b
-    cases h : e a <;> simp [h]
-  change _ = g (Sum.elim (fun i ↦ Y.col i) fun j ↦ Z.col j)
-  rw [← det_transpose, h_rows]
-  rfl
-
-/-- The Laplace expansion along the first `k` columns, when these are combinations, with
-coefficients `X`, of the unit columns at the rows `r`. Here `e` identifies the index set `L` with
-these `k` columns followed by those of `Z`, and `enumSubset S` lists a `k`-set `S` in increasing
-order. The determinant is the sum over `S` of the minor of `X` on `S` times the determinant with
-the unit columns at `r ∘ enumSubset S` in place of the first `k` columns. -/
-theorem det_fromCols_eq_sum_minors [Fintype L] [DecidableEq L] [Fintype N] [LinearOrder N]
-    (e : L ≃ Fin k ⊕ c) (r : N → L) (X : Matrix N (Fin k) R) (Z : Matrix L c R) :
-    ((fromCols ((1 : Matrix L L R).submatrix id r * X) Z).submatrix id e).det =
-      ∑ S : Set.powersetCard N k, (X.submatrix (enumSubset S) id).det *
-        ((fromCols ((1 : Matrix L L R).submatrix id (r ∘ enumSubset S)) Z).submatrix id e).det := by
-  -- The determinant is an alternating form `f` in its first `k` columns. Expand in minors the
-  -- form `F`, which is `f` evaluated at combinations of the unit columns `M`.
-  obtain ⟨f, hf⟩ := exists_alternatingMap_det_fromCols e Z
-  let M : Matrix L N R := (1 : Matrix L L R).submatrix id r
-  let F : (N → R) [⋀^Fin k]→ₗ[R] R := f.compLinearMap M.mulVecLin
-  have h_right (S : Set.powersetCard N k) : F (fun a ↦ Pi.single (enumSubset S a) 1) =
-      f fun a ↦ ((1 : Matrix L L R).submatrix id (r ∘ enumSubset S)).col a :=
-    congrArg f (funext fun a ↦ mulVec_single_one M (enumSubset S a))
-  simp_rw [hf, ← h_right]
-  exact alternatingMap_eq_sum_minors F X
-
-/-- If `ι` and `t` together enumerate the rows, a determinant with unit columns on `ι` has the
-modulus of the minor of `Z` on the rows `t`. -/
-lemma norm_det_fromCols_one_submatrix [Fintype L] [DecidableEq L] [Fintype c] [DecidableEq c]
-    (e : L ≃ Fin k ⊕ c) {ι : Fin k → L} {t : c → L} (h_bij : Function.Bijective (Sum.elim ι t))
-    (Z : Matrix L c ℂ) :
-    ‖((fromCols ((1 : Matrix L L ℂ).submatrix id ι) Z).submatrix id e).det‖ =
-      ‖(Z.submatrix t id).det‖ := by
-  -- After a permutation of the rows the matrix is block triangular.
-  let ε : Fin k ⊕ c ≃ L := Equiv.ofBijective _ h_bij
-  have h_block : (fromCols ((1 : Matrix L L ℂ).submatrix id ι) Z).submatrix id e =
-      ((fromBlocks 1 (Z.submatrix ι id) 0 (Z.submatrix t id)).submatrix e e).submatrix
-        (ε.symm.trans e.symm) id := by
-    ext x y
-    obtain ⟨x, rfl⟩ := ε.surjective x
-    have h_eq (a : Fin k) : Sum.elim ι t x = ι a ↔ x = .inl a := h_bij.1.eq_iff (b := .inl a)
-    simp only [Matrix.submatrix_apply, Equiv.trans_apply, Equiv.symm_apply_apply,
-      Equiv.apply_symm_apply]
-    -- compare the four blocks: `x` is a row in `ι` or in `t`, and `y` a column of `1` or of `Z`
-    cases x <;> cases h : e y <;> simp_all [ε, Matrix.one_apply]
-  rw [h_block, det_permute, det_submatrix_equiv_self, det_fromBlocks_zero₂₁]
-  simp [abs_unit_intCast]
-
-/-- The complementary minors in the Laplace expansion have squared moduli with sum at most the
-product of the squared lengths of the columns of `Z`. Here `e` identifies the index set `L` with
-`k` columns followed by those of `Z`, and the `k` unit columns are at the rows `r ∘ enumSubset S`,
-the images under the embedding `r` of the `k`-set `S` in increasing order. -/
-theorem sum_norm_det_fromCols_sq_le [Fintype L] [DecidableEq L] [Fintype c] [Fintype N]
-    [LinearOrder N] (e : L ≃ Fin k ⊕ c) (r : N ↪ L) (Z : Matrix L c ℂ) :
-    ∑ S : Set.powersetCard N k,
-        ‖((fromCols ((1 : Matrix L L ℂ).submatrix id (r ∘ enumSubset S)) Z).submatrix
-          id e).det‖ ^ 2 ≤
-      ∏ b : c, ∑ x : L, ‖Z x b‖ ^ 2 := by
-  classical
-  let _ : LinearOrder L := .lift' (Fintype.equivFin L) (Equiv.injective _)
-  let ε : c ≃ Fin (Fintype.card c) := Fintype.equivFin c
-  let Z' := Z.submatrix id ε.symm
-  have h_card : Fintype.card c + k = Fintype.card L := by simp [Fintype.card_congr e, add_comm]
-  -- `T S` is the set of rows outside `r S`.
-  let T (S : Set.powersetCard N k) := compl h_card (Set.powersetCard.map k r S)
-  have T_inj : Function.Injective T := fun S S' h ↦ by simpa [T, Subtype.ext_iff] using h
-  -- The rows `r S` and `T S` together enumerate all rows.
-  have h_bij (S : Set.powersetCard N k) :
-      Function.Bijective (Sum.elim (r ∘ enumSubset S) (enumSubset (T S) ∘ ε)) := by
-    rw [Fintype.bijective_iff_surjective_and_card, Fintype.card_congr e]
-    refine ⟨fun x ↦ ?_, rfl⟩
-    by_cases hx : x ∈ Set.powersetCard.map k r S
-    · obtain ⟨y, hy, rfl⟩ := (mem_map_iff_mem_range k r S x).1 hx
-      obtain ⟨a, rfl⟩ := (mem_range_ofFinEmbEquiv_symm_iff_mem S y).2 hy
-      exact ⟨.inl a, rfl⟩
-    · obtain ⟨b, rfl⟩ := (mem_range_ofFinEmbEquiv_symm_iff_mem (T S) x).2 (by simpa [T] using hx)
-      exact ⟨.inr (ε.symm b), by simp⟩
-  calc
-    _ = ∑ S, ‖(Z'.submatrix (enumSubset (T S)) id).det‖ ^ 2 := by
-      refine sum_congr rfl fun S _ ↦ ?_
-      rw [norm_det_fromCols_one_submatrix e (h_bij S) Z, ← det_submatrix_equiv_self ε]
-      simp [Z']
-    _ ≤ ∑ U, ‖(Z'.submatrix (enumSubset U) id).det‖ ^ 2 := by
-      rw [← sum_image (f := fun U ↦ ‖(Z'.submatrix (enumSubset U) id).det‖ ^ 2) T_inj.injOn]
-      exact sum_le_univ_sum_of_nonneg fun _ ↦ sq_nonneg _
-    -- Cauchy–Binet and Hadamard's inequality
-    _ ≤ ∏ b, ∑ x : L, ‖Z' x b‖ ^ 2 := by
-      have h (U : Set.powersetCard L (Fintype.card c)) :
-          (Z'.submatrix (enumSubset U) id).det = TauCeti.plucker Z'ᵀ U :=
-        (det_transpose _).symm.trans (TauCeti.plucker_apply (Z'ᵀ : Fin _ → L → ℂ) U).symm
-      simpa only [h, transpose_apply] using TauCeti.sum_norm_plucker_sq_le Z'ᵀ
-    _ = ∏ b : c, ∑ x : L, ‖Z x b‖ ^ 2 := Equiv.prod_comp ε.symm fun b ↦ ∑ x : L, ‖Z x b‖ ^ 2
 
 end New
 
