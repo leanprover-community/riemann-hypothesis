@@ -5,6 +5,7 @@ public import Aesop.BuiltinRules
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.LinearAlgebra.PolynomialFamily
 public import Lib.Adelic.Hecke.ClassSums
 public import Lib.Adelic.Unitary.Defs
 import Lib.Adelic.Adeles.StrongApproximation
@@ -546,13 +547,8 @@ theorem heckeSplit_mem_of_heckePolyOp (N : Submodule ℂ (Module.End ℂ W))
       have h_zero : N.mkQ (heckePolyOp π hw (-U)) = 0 :=
         (Submodule.Quotient.mk_eq_zero N).mpr (hN_mem (-U))
       simpa [a, hw, mul_smul, heckePolyOp, heckePolyEval] using h_zero
-    have h_a_zero : a i = 0 := by
-      -- test with a linear form `f`: the polynomial `∑ f (a j) X ^ j` vanishes everywhere
-      refine (Module.forall_dual_apply_eq_zero_iff ℂ (a i)).mp fun f ↦ ?_
-      have h_poly : (∑ j ∈ range (Fintype.card n + 1), f (a j) • .X ^ j : ℂ[X]) = 0 :=
-        Polynomial.funext fun U ↦ by
-          simpa [Polynomial.eval_finsetSum, mul_comm] using congrArg f (h_eval U)
-      simpa [Polynomial.coeff_X_pow, hi] using congrArg (·.coeff i) h_poly
+    have h_a_zero : a i = 0 :=
+      TauCeti.eq_zero_of_forall_sum_range_pow_smul_eq_zero h_eval (Finset.mem_range.mp hi)
     -- the factor, a power of `q`, is nonzero
     have h_mkQ : N.mkQ (heckeSplit π hw i) = 0 :=
       (smul_eq_zero.mp h_a_zero).resolve_left (by simp [w.q_bounds])
