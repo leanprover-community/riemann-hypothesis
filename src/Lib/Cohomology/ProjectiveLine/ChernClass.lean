@@ -130,12 +130,21 @@ def compatibleRootsOfUnity :
     -- system of roots χ of ζ, with χ 1 = ζ, and rescale it to s ↦ χ (ℓ * s).
     obtain ⟨ζ, hζ⟩ : ∃ ζ : A, (cyclotomic ℓ A).IsRoot ζ :=
       IsAbsIntegrallyClosed.exists_root _ (cyclotomic.monic ℓ A)
-        (by simp [natDegree_cyclotomic, pos])
-    have hζ_pow : ζ ^ ℓ = 1 := isRoot_of_unity_of_root_cyclotomic (by aesop) hζ
+        ((Nat.totient_pos.mpr (pos ℓ)).trans_eq (natDegree_cyclotomic ℓ A).symm)
+    have hζ_pow : ζ ^ ℓ = 1 :=
+      isRoot_of_unity_of_root_cyclotomic (Nat.mem_divisors_self ℓ (ne ℓ)) hζ
     obtain ⟨χ, hχ⟩ :
         ∃ χ : ℚ →+ Additive Aˣ, χ 1 = Additive.ofMul (Units.ofPowEqOne ζ ℓ hζ_pow (ne ℓ)) :=
       exists_compatible_roots _
-    exact ⟨(ℓ • χ).toMultiplicativeLeft, by simp [hχ], by simpa [← map_nsmul, hχ] using hζ⟩
+    have h_inv : ℓ • χ (1 / ℓ) = χ 1 := by
+      rw [← map_nsmul, nsmul_eq_mul, mul_one_div_cancel (Nat.cast_ne_zero.mpr (ne ℓ))]
+    -- at 1 the rescaled system is ζ ^ ℓ = 1, and at 1 / ℓ it is ζ
+    refine ⟨(ℓ • χ).toMultiplicativeLeft,
+      (congrArg (fun x : Additive Aˣ ↦ (ℓ • x).toMul) hχ).trans
+        (Units.pow_ofPowEqOne hζ_pow (ne ℓ)), ?_⟩
+    change (cyclotomic ℓ A).IsRoot ((ℓ • χ (1 / ℓ)).toMul : Aˣ)
+    rw [h_inv, hχ]
+    exact hζ
 
 lemma compatibleRootsOfUnity_ofAdd_one :
     (compatibleRootsOfUnity (A := A) (ℓ := ℓ)).val (Multiplicative.ofAdd 1) = 1 :=
@@ -395,28 +404,47 @@ lemma TorsionCoeff.mulClass_naturality [HasFlatValues S] (ξ : TotalH P (tateMod
         (mapThenComp (restrictAlong φ) T y) := by
   -- Both sides expand to the product of S ⊗ ξ, y ⊗ 𝕋, `T` ⊗ 𝕋 and the action μ (𝕋 the Tate
   -- module): restriction along φ and tensoring with 𝕋 are multiplicative, and `T` commutes with μ.
-  -- Restricting along φ and tensoring commute, as the two composite functors agree by definition.
-  have h_ξ : TotalH.map (restrictAlong φ) (TotalH.map (abTensor.obj S) ξ) =
-      TotalH.map (abTensor.obj (φ ⋙ S)) (TotalH.map (restrictAlong φ) ξ) := by
-    rw [TotalH.map_map, TotalH.map_map]
-    rfl
-  have h_y : TotalH.map (restrictAlong φ) (TotalH.map (abTensor.flip.obj (tateModule g)) y) =
-      TotalH.map (abTensor.flip.obj (tateModule (φ ⋙ g))) (TotalH.map (restrictAlong φ) y) := by
-    rw [TotalH.map_map, TotalH.map_map]
-    rfl
-  have h_step1 : mapThenComp (restrictAlong φ) T (K.mulClass ξ y) =
-      TotalH.comp (TotalH.map (abTensor.obj (φ ⋙ S)) (TotalH.map (restrictAlong φ) ξ))
-        (TotalH.comp
-          (TotalH.map (abTensor.flip.obj (tateModule (φ ⋙ g))) (TotalH.map (restrictAlong φ) y))
-          (TotalH.comp (TotalH.map (abTensor.flip.obj (tateModule (φ ⋙ g))) T)
-            M'.tateAction.toTotalH)) :=
-    ((map_comp_assoc (restrictAlong φ) T).trans
-      (congrArg _ (map_comp_assoc (restrictAlong φ) T))).trans
-      (congrArg₂ (fun a b ↦ TotalH.comp a b) h_ξ
-        (congrArg₂ (fun a b ↦ TotalH.comp a b) h_y (K.tateAction_comm φ M' T)))
-  exact h_step1.trans
-    (congrArg _
-      (map_comp_assoc (abTensor.flip.obj (tateModule (φ ⋙ g))) M'.tateAction.toTotalH).symm)
+  -- This is shown for functors N, N' with φ ⋙ N = N' in place of the Tate modules along g and
+  -- φ ⋙ g, for classes ξ' equal to ξ restricted, and for classes μ, μ' with which `T` commutes in
+  -- place of the actions.
+  have h_gen {N : AbFunctor C} {N' : AbFunctor C'} [HasFlatValues N] [HasFlatValues N']
+      (hN : φ ⋙ N = N') (ξ : TotalH P N) (ξ' : TotalH (φ ⋙ P) N')
+      (hξ : ξ' ≍ TotalH.map (restrictAlong φ) ξ)
+      (μ : TotalH ((abTensor.flip.obj N).obj K.functor) K.functor)
+      (μ' : TotalH ((abTensor.flip.obj N').obj M'.functor) M'.functor)
+      (hμ : mapThenComp (restrictAlong φ) T μ ≍
+        TotalH.comp (TotalH.map (abTensor.flip.obj N') T) μ') :
+      mapThenComp (restrictAlong φ) T
+          (TotalH.comp (TotalH.map (abTensor S) ξ) (mapThenComp (abTensor.flip N) μ y)) =
+        TotalH.comp (TotalH.map (abTensor (φ ⋙ S)) ξ')
+          (mapThenComp (abTensor.flip N') μ' (mapThenComp (restrictAlong φ) T y)) := by
+    subst hN
+    obtain rfl := eq_of_heq hξ
+    -- Restricting along φ and tensoring commute, as the two composite functors agree by
+    -- definition.
+    have h_ξ : TotalH.map (restrictAlong φ) (TotalH.map (abTensor.obj S) ξ) =
+        TotalH.map (abTensor.obj (φ ⋙ S)) (TotalH.map (restrictAlong φ) ξ) := by
+      rw [TotalH.map_map, TotalH.map_map]
+      rfl
+    have h_y : TotalH.map (restrictAlong φ) (TotalH.map (abTensor.flip.obj N) y) =
+        TotalH.map (abTensor.flip.obj (φ ⋙ N)) (TotalH.map (restrictAlong φ) y) := by
+      rw [TotalH.map_map, TotalH.map_map]
+      rfl
+    have h_step1 : mapThenComp (restrictAlong φ) T
+          (TotalH.comp (TotalH.map (abTensor S) ξ) (mapThenComp (abTensor.flip N) μ y)) =
+        TotalH.comp (TotalH.map (abTensor.obj (φ ⋙ S)) (TotalH.map (restrictAlong φ) ξ))
+          (TotalH.comp
+            (TotalH.map (abTensor.flip.obj (φ ⋙ N)) (TotalH.map (restrictAlong φ) y))
+            (TotalH.comp (TotalH.map (abTensor.flip.obj (φ ⋙ N)) T) μ')) :=
+      ((map_comp_assoc (restrictAlong φ) T).trans
+        (congrArg _ (map_comp_assoc (restrictAlong φ) T))).trans
+        (congrArg₂ (fun a b ↦ TotalH.comp a b) h_ξ
+          (congrArg₂ (fun a b ↦ TotalH.comp a b) h_y (eq_of_heq hμ)))
+    exact h_step1.trans
+      (congrArg _ (map_comp_assoc (abTensor.flip.obj (φ ⋙ N)) μ').symm)
+  -- The Tate module along φ ⋙ g is the restriction of the one along g, by definition.
+  exact h_gen (N := tateModule g) (N' := tateModule (φ ⋙ g)) rfl ξ (TotalH.map (restrictAlong φ) ξ)
+    HEq.rfl K.tateAction.toTotalH M'.tateAction.toTotalH (heq_of_eq (K.tateAction_comm φ M' T))
 
 /-- Let Θ be a theory along g (an ℓ-torsion coefficient F = Θ.functor with Zariski descent that
 behaves well on closed loci). Let J be a compatible family of ideals J_c of the rings g(c), and
@@ -435,19 +463,34 @@ lemma Theory.mulClass_congr_of_eq_on_zeros [HasFlatValues S] [HasFlatValues S'] 
   -- agree.
   let Φ : AbFunctor C ⥤ AbFunctor C := abTensor.flip.obj (relFreeAb J.topLocus)
   -- By `exists_isTensorClass`, a class w from F ⊗ U to F ⊗ 𝕋 (𝕋 the Tate module) has
-  -- z ∪ ξ = (z ⊗ U, then w).
+  -- z ∪ ξ = (z ⊗ U, then w). The family of `exists_isTensorClass` at the identity of `C` is
+  -- indexed by `𝟭 C ⋙ U` and `𝟭 C ⋙ 𝕋`. So the statement is shown for a family `fam` indexed by
+  -- functors N', K' equal to N, K, whose class for S with flat values is S ⊗ ζ', with ζ' equal
+  -- to ζ.
+  have h_tensor {N K N' K' : AbFunctor C} [HasFlatValues N] [HasFlatValues K] [HasFlatValues N']
+      [HasFlatValues K'] (hN : N' = N) (hK : K' = K) (ζ : H N K 2) (ζ' : H N' K' 2) (hζ : ζ' ≍ ζ)
+      (fam : ∀ S : AbFunctor C, H ((abTensor.flip.obj N').obj S) ((abTensor.flip.obj K').obj S) 2)
+      (h_comm : ∀ (S S' : AbFunctor C) (y : TotalH S S'),
+        TotalH.comp (TotalH.map (abTensor.flip.obj N') y) (fam S').toTotalH =
+          TotalH.comp (fam S).toTotalH (TotalH.map (abTensor.flip.obj K') y))
+      (h_flat : ∀ (S : AbFunctor C) [HasFlatValues S],
+        (fam S).toTotalH = TotalH.map (abTensor.obj S) ζ'.toTotalH) :
+      ∃ w : TotalH ((abTensor.flip.obj N).obj Θ.functor) ((abTensor.flip.obj K).obj Θ.functor),
+        ∀ (S : AbFunctor C) [HasFlatValues S] (z : TotalH S Θ.functor),
+          TotalH.comp (TotalH.map (abTensor.flip.obj N) z) w = z.cup ζ.toTotalH := by
+    subst hN hK
+    obtain rfl := eq_of_heq hζ
+    exact ⟨(fam Θ.functor).toTotalH, fun S _ z ↦ (h_comm S Θ.functor z).trans
+      (congrArg (fun a ↦ TotalH.comp a (TotalH.map (abTensor.flip.obj K') z)) (h_flat S))⟩
+  obtain ⟨family, h_family⟩ := exists_isTensorClass ξ
   obtain ⟨w, hw⟩ :
       ∃ w : TotalH (Φ.obj Θ.functor) ((abTensor.flip.obj (tateModule g)).obj Θ.functor),
         ∀ (S : AbFunctor C) [HasFlatValues S] (z : TotalH S Θ.functor),
-          TotalH.comp (.map Φ z) w = z.cup ξ.toTotalH := by
-    obtain ⟨family, h_family⟩ := exists_isTensorClass ξ
-    refine ⟨(family C (𝟭 C) Θ.functor).toTotalH, fun S _ z ↦ ?_⟩
-    -- for S with flat values the class of the family is S ⊗ ξ
-    have h_flat : (family C (𝟭 C) S).toTotalH = TotalH.map (abTensor.obj S) ξ.toTotalH :=
-      (h_family.eq_of_flat C (𝟭 C) S).trans (congrArg (TotalH.map (abTensor.obj S)) TotalH.map_id)
-    have h_comm := h_family.comm C (𝟭 C) S Θ.functor z
-    rw [h_flat] at h_comm
-    exact h_comm
+          TotalH.comp (.map Φ z) w = z.cup ξ.toTotalH :=
+    -- the class ξ restricted along `𝟭 C` is ξ
+    h_tensor (Functor.id_comp _) (Functor.id_comp _) ξ (ξ.mapExactFunctor (restrictAlong (𝟭 C)))
+      (heq_of_eq (H.mapExactFunctor_restrictAlong_id ξ)) (family C (𝟭 C)) (h_family.comm C (𝟭 C))
+      fun S _ ↦ (h_family.eq_of_flat C (𝟭 C) S).trans (congrArg _ (TotalH.map_of ξ))
   -- The sections of ker (F → F_J) ⊗ U are locally zero: locally s dies, or J is the unit ideal
   -- and then U is zero.
   have h_loc (c : C) (t : Φ (kerComplex (J.toZerosCoeff Θ.functor)).X₁ c) :
@@ -803,8 +846,24 @@ variable {C C' : Type _} [Category C] [Category C'] {ℓ : ℕ} {A : Type} [Comm
 degree. -/
 lemma etaTensorClass_naturality {S' : AbFunctor C} (y : TotalH S S') :
     comp (map (abTensor.flip (freeAb (projLineAlong g))) y) (etaTensorClass g S').toTotalH =
-      comp (etaTensorClass g S).toTotalH (map (abTensor.flip (tateModule g)) y) :=
-  TorsionCoeff.isTensorClass_etaTensor.comm C g S S' y
+      comp (etaTensorClass g S).toTotalH (map (abTensor.flip (tateModule g)) y) := by
+  -- The family `TorsionCoeff.etaTensor C g` is indexed by the restrictions along `g` of `ℤ[ℙ¹]` and
+  -- of the Tate module over all tests, which are `ℤ[ℙ¹]` and the Tate module along `g` by
+  -- definition. So the statement is shown for families `e'`, `e` indexed by equal functors.
+  have h_gen {N K N' K' : AbFunctor C} [HasFlatValues N] [HasFlatValues K] [HasFlatValues N']
+      [HasFlatValues K']
+      (e : ∀ S : AbFunctor C, H ((abTensor.flip.obj N).obj S) ((abTensor.flip.obj K).obj S) 2)
+      (e' : ∀ S : AbFunctor C, H ((abTensor.flip.obj N').obj S) ((abTensor.flip.obj K').obj S) 2)
+      (hN : N' = N) (hK : K' = K) (he : ∀ S : AbFunctor C, e' S ≍ e S)
+      (h : comp (map (abTensor.flip.obj N') y) (e' S').toTotalH =
+        comp (e' S).toTotalH (map (abTensor.flip.obj K') y)) :
+      comp (map (abTensor.flip.obj N) y) (e S').toTotalH =
+        comp (e S).toTotalH (map (abTensor.flip.obj K) y) := by
+    subst hN hK
+    obtain rfl : e' = e := funext fun S ↦ eq_of_heq (he S)
+    exact h
+  exact h_gen (etaTensorClass g) (TorsionCoeff.etaTensor C g) rfl rfl (fun _ ↦ HEq.rfl)
+    (TorsionCoeff.isTensorClass_etaTensor.comm C g S S' y)
 
 /-- The class `etaTensorClass g S` is compatible with restriction along a functor `φ`. -/
 lemma map_restrictAlong_etaTensorClass :
@@ -822,18 +881,16 @@ lemma map_restrictAlong_etaClass :
   -- Restriction along `φ` is exact, so it maps the product of the extension classes of the cocycle
   -- and of the Kummer sequence to the product of the extension classes of the restricted sequences,
   -- which are the sequences along `φ ⋙ g`.
-  have h₁ : (cocycle g).shortExact_extension.extClass.mapExactFunctor (restrictAlong φ) =
-      (cocycle (φ ⋙ g)).shortExact_extension.extClass :=
-    Ext.mapExactFunctor_extClass (restrictAlong φ) (cocycle g).shortExact_extension
-  have h₂ : ((shortExact_kummerSeq g).extClass :
-      H (cocycle g).extension.X₁ (tateModule g) 1).mapExactFunctor (restrictAlong φ) =
-      (shortExact_kummerSeq (φ ⋙ g)).extClass :=
-    Ext.mapExactFunctor_extClass (restrictAlong φ) (shortExact_kummerSeq g)
-  rw [TotalH.map_of, etaClass, etaClass]
-  exact congrArg (DirectSum.of _ 2) <|
-    (Ext.mapExactFunctor_comp (restrictAlong φ) (cocycle g).shortExact_extension.extClass
-      ((shortExact_kummerSeq g).extClass : H (cocycle g).extension.X₁ (tateModule g) 1) rfl).trans
-      (congrArg₂ (fun a b ↦ a.comp b rfl) h₁ h₂)
+  have h_eta {D : Type 1} [Category.{0} D] (g' : D ⥤ TestOver A) : (etaClass g').toTotalH =
+      comp (cocycle g').shortExact_extension.extClass.toTotalH
+        (shortExact_kummerSeq g').extClass.toTotalH := by
+    rw [etaClass]
+    exact (comp_of (cocycle g').shortExact_extension.extClass (shortExact_kummerSeq g').extClass
+      rfl).symm
+  rw [h_eta g, h_eta (φ ⋙ g)]
+  exact (TotalH.map_comp _).trans (congrArg₂ (fun a b ↦ comp a b)
+    (TotalH.map_extClass (cocycle g).shortExact_extension)
+    (TotalH.map_extClass (shortExact_kummerSeq g)))
 
 /-- If `S` has flat values, then `etaTensorClass g S` is the image of `η` under the exact functor
 `S ⊗ -`. -/
@@ -871,7 +928,9 @@ lemma map_etaClass_eq_zero_of_coboundary (b : freeAb Y ⟶ freeAb (projLineAlong
     rfl
   -- `etaClass` starts with the extension class of the cocycle, which dies on the middle term.
   have h_middle : H.map (tateModule g) g_proj 2 (etaClass g) = 0 := by
-    rw [etaClass]
+    -- (the zero class is that of Mathlib's group structure, by the definition of `addCommGroupH`)
+    rw [etaClass, show (addCommGroupH :
+      AddCommGroup (H (cocycle g).extension.X₂ (tateModule g) 2)) = Ext.instAddCommGroup from rfl]
     exact (cocycle g).shortExact_extension.comp_extClass_assoc
       ((shortExact_kummerSeq g).extClass : H (cocycle g).extension.X₁ (tateModule g) 1) rfl
   rw [h_lift, H.map_comp]
@@ -926,10 +985,19 @@ lemma exists_etaClass_supported_diagonal (q q' : (projLineAlong g).sections) :
   rw [H.map_comp] at h_dies
   -- Exactness at `H² (ℤ[pt], T)` of the sequence of the pair `(pt, J.topLocus)`.
   obtain ⟨_, h_exact : ShortComplex.ShortExact _⟩ := relFreeAb.shortExact J.topLocus
+  -- (stated for an arbitrary short exact sequence `a`, `b`; the zero class is that of Mathlib's
+  -- group structure, by the definition of `addCommGroupH`)
+  have h_lift {N N' N'' : AbFunctor C} {a : N' ⟶ N} {b : N ⟶ N''} {w : a ≫ b = 0}
+      (h : ShortComplex.ShortExact ⟨a, b, w⟩) (x : H N (tateModule g) 2)
+      (hx : H.map (tateModule g) a 2 x = 0) :
+      ∃ ξ : H N'' (tateModule g) 2, H.map (tateModule g) b 2 ξ = x := by
+    rw [show (addCommGroupH : AddCommGroup (H N' (tateModule g) 2)) = Ext.instAddCommGroup from
+      rfl] at hx
+    exact Ext.contravariant_sequence_exact₂ h _ x hx
   obtain ⟨ξ, hξ⟩ : ∃ ξ : H (relFreeAb J.topLocus) (tateModule g) 2,
       H.map (tateModule g) (relFreeAb.π J.topLocus) 2 ξ =
         H.map (tateModule g) (freeAbSectionMap q + freeAbSectionMap q') 2 (etaClass g) :=
-    Ext.contravariant_sequence_exact₂ h_exact _ _ h_dies
+    h_lift h_exact _ h_dies
   exact ⟨ξ, by rw [pullbackAlong_of, pullbackAlong_of, hξ]⟩
 
 namespace TorsionCoeff
@@ -950,7 +1018,9 @@ def etaAt : (freeAb (onePointFunctor C) ⟶ freeAb (projLineAlong g)) →+ H M.f
         M.functor := by
         ext
         apply TensorProduct.tmul_add
-      simp [H.map, h_add, Ext.mk₀_add]
+      rw [h_add]
+      exact DFunLike.congr_fun (map_add (H.mapHom M.functor _ _ 2) (tensorPoint a M.functor)
+        (tensorPoint b M.functor)) _
 
 /-- As a total class, `M.etaAt b` is the pullback along `x ↦ x ⊗ b` of the product of `M ⊗ η` and
 `M.tateAction`. -/
