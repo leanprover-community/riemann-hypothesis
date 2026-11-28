@@ -328,10 +328,9 @@ lemma frameMiddle_translateByClassReps_mul_classCoordX₀ (c c' : S.Classes) (γ
       (finAdeleMatrix (framePartX₀ γ))ᴴ := by
   -- The basis of `X₀` is orthonormal and orthogonal to `z`.
   have h_gram : ((S.classCoordX₀ c).fromCols (fromRows 0 (1 : Matrix Unit Unit (𝔸f E))))ᴴ *
-      S.latticeMiddle (𝔸f E) * S.classCoordX₀ c = (S.ratMiddle (𝔸f E)).toCols₁ :=
-    Matrix.ext fun i k ↦ by
-      simpa [classCoord_eq_fromBlocks, splitGram, fromBlocks_conjTranspose, fromBlocks_multiply]
-        using congrFun₂ (classCoord_conj_splitGram c) (.inr (.inl i)) (𝔰.indexX₀ k)
+      S.latticeMiddle (𝔸f E) * S.classCoordX₀ c = (S.ratMiddle (𝔸f E)).toCols₁ := by
+    simpa only [mul_fromCols, toCols₁_fromCols] using
+      congrArg Matrix.toCols₁ (gram_classCoordMiddle c)
   rw [frameMiddle_translateByClassReps, conjTranspose_mul,
     Matrix.mul_assoc _ _ (S.latticeMiddle (𝔸f E)), Matrix.mul_assoc, h_gram]
   exact Matrix.ext fun b k ↦ by simp [framePartX₀, middleGram, Matrix.mul_apply, Matrix.one_apply]

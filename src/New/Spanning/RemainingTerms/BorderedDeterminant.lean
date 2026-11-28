@@ -213,12 +213,22 @@ def HasIntegralLifts (m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ (�
 
 /-! ### Products in the coordinates of the lattice -/
 
+/-- The middle part of the class coordinate matrix carries the rational middle form to the
+middle form in lattice coordinates. -/
+lemma gram_classCoordMiddle :
+    ((S.classCoordX₀ c).fromCols (fromRows 0 (1 : Matrix Unit Unit (𝔸f E))))ᴴ *
+        S.latticeMiddle (𝔸f E) * ((S.classCoordX₀ c).fromCols (fromRows 0 1)) =
+      S.ratMiddle (𝔸f E) := by
+  simpa [classCoord_eq_fromBlocks, splitGram, fromBlocks_conjTranspose, fromBlocks_multiply] using!
+    congrArg (fun A : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (𝔸f E) ↦ A.toBlocks₂₂.toBlocks₁₁)
+      (classCoord_conj_splitGram c)
+
 /-- The basis `x_i` of `X₀`, written in the lattice coordinates of `c` (the columns of
 `S.classCoordX₀ c`), is orthonormal for the middle Gram matrix `S.latticeMiddle` of the lattice. -/
 lemma gram_classCoordX₀ : (S.classCoordX₀ c)ᴴ * S.latticeMiddle (𝔸f E) * S.classCoordX₀ c = 1 := by
-  -- the block of `classCoord_conj_splitGram` with rows and columns `𝔰.indexX₀`
-  simpa [classCoord_eq_fromBlocks, splitGram, fromBlocks_conjTranspose, fromBlocks_multiply] using!
-    congrArg (submatrix · 𝔰.indexX₀ 𝔰.indexX₀) (classCoord_conj_splitGram c)
+  have h := congrArg Matrix.toBlocks₁₁ (gram_classCoordMiddle c)
+  rw [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul, fromRows_mul_fromCols] at h
+  simpa only [middleGram, toBlocks_fromBlocks₁₁] using h
 
 omit [Fintype τ] [DecidableEq τ] in
 /-- The products of rational vectors `t`, `t'` for the form `S.ratGram` can be computed in the
