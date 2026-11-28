@@ -614,6 +614,30 @@ lemma negCount_signsW (j : D.LiftIndex) : negCount (D.signsW j) = D.m - j := by
   rw [negCount, Fintype.card_subtype, D.card_filter_basisNumber _ _ h_neg le_rfl, posRank]
   omega
 
+/-- Above height `D.posRank j`, the entry `ς_τ(i - 1)` lies below `-w_j - halfGap`, so
+`colsPlus` vanishes. -/
+private lemma colsPlus_descentPair_eq_zero (ϑ : D.TameChar) (τ : D.Φ) (j : D.LiftIndex)
+    {i : ℕ} (hi : D.posRank j < i) : (D.descentPair ϑ j).colsPlus τ i = 0 := by
+  have h_far := D.targetParameter_add_liftWeight_gap j τ (i - 1)
+  have h_gap : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
+  rw [ite_eq_right (by omega)] at h_far
+  dsimp only [descentPair]
+  rw [Int.toNat_eq_zero]
+  have h_le := le_max_right (D.targetParameter τ i) (D.t / 2 - D.liftWeight j τ : ℤ)
+  omega
+
+/-- When `D.r - i < D.posRank j`, the entry `ς_τ(r - i)` lies above `-w_j + halfGap`, so
+`colsMinus` vanishes. -/
+private lemma colsMinus_descentPair_eq_zero (ϑ : D.TameChar) (τ : D.Φ) (j : D.LiftIndex)
+    {i : ℕ} (hi : D.r - i < D.posRank j) : (D.descentPair ϑ j).colsMinus τ i = 0 := by
+  have h_far := D.targetParameter_add_liftWeight_gap j τ (D.r - i)
+  have h_gap : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
+  rw [ite_eq_left hi] at h_far
+  dsimp only [descentPair]
+  rw [Int.toNat_eq_zero]
+  have h_le := min_le_right (D.targetParameter τ (D.r - i - 1)) (-D.liftWeight j τ - D.t / 2 : ℤ)
+  omega
+
 /-- Let `ϑ` be a tame character, `τ` an infinite place and `1 ≤ j ≤ m`. The weight at `τ` of the
 forms on the space `V_j` of the `j`-th descent pair, of rank `r + t = card (D.RowIndex ⊕ Fin D.t)`,
 has `columnCount τ i = colsPlus τ i + colsMinus τ (r + t - i)` columns of height `i`. The number of
@@ -628,9 +652,10 @@ lemma sum_Ioo_posRank_columnCount_descentPair (ϑ : D.TameChar) (τ : D.Φ) (j :
           (D.descentPair ϑ j).colsMinus τ (D.r + D.t - i) := by
       refine sum_subset_zero_on_sdiff (by grind) (fun i hi ↦ ?_) fun i hi ↦ ?_
       · -- For `i ≤ D.posRank j` the count `colsMinus` vanishes at height `r + t - i`.
-        grind [descentPair]
+        exact D.colsMinus_descentPair_eq_zero ϑ τ j (by grind [D.t_odd.pos])
       · -- For `D.posRank j < i` the count `colsPlus` vanishes at height `i`.
-        grind [descentPair]
+        rw [DescentPair.columnCount, mixedWeight, h_card,
+          D.colsPlus_descentPair_eq_zero ϑ τ j (mem_Ioo.1 hi).1, zero_add]
     _ = ∑ i ∈ Ico 1 (card (D.RowIndex ⊕ Fin D.t)), (D.descentPair ϑ j).colsMinus τ i := by
       rw [sum_Ico_reflect ((D.descentPair ϑ j).colsMinus τ) 1 h_card.le.step, h_card]
       simp
@@ -676,11 +701,12 @@ lemma hcParameter_descentPair (ϑ : D.TameChar) (τ : D.Φ) (j : D.LiftIndex) {p
     · -- Only `colsPlus` counts: the step from `ς_p + w` to `ς_{p+1} + w` or to the string.
       have h_anti : D.targetParameter τ (p + 1) < D.targetParameter τ p :=
         D.targetParameter_strictAnti τ p.lt_add_one
-      have h_minus : (D.descentPair ϑ j).colsMinus τ (D.r + D.t - (p + 1)) = 0 := by
-        grind [descentPair]
+      have h_minus : (D.descentPair ϑ j).colsMinus τ (D.r + D.t - (p + 1)) = 0 :=
+        D.colsMinus_descentPair_eq_zero ϑ τ j (by have := D.t_odd.pos; omega)
       rw [h_minus]
       grind [descentPair]
-    have h_plus : (D.descentPair ϑ j).colsPlus τ (p + 1) = 0 := by grind [descentPair]
+    have h_plus : (D.descentPair ϑ j).colsPlus τ (p + 1) = 0 :=
+      D.colsPlus_descentPair_eq_zero ϑ τ j (by omega)
     rw [h_plus]
     -- Only `colsMinus` counts: inside the string there are no columns, and below it the step is to
     -- `ς_{p+1-t} + w` from the string or `ς_{p-t} + w`.
@@ -862,14 +888,11 @@ lemma fitsParams_descentPair (ϑ : D.TameChar) (j : D.LiftIndex) :
   · -- There are `a` vectors of sign 1; above that height `ς_(i-1)` is at most `(t - 1) / 2 - w_j`.
     have h_card : Fintype.card {c : D.RowIndex // D.signsW j c = 1} = a := by
       grind [D.card_filter_basisNumber 0 a, signsW, units_ne_neg_self, Fintype.card_subtype]
-    have h_above : a < i := h_card.symm.trans_lt hi
-    simp only [descentPair, Int.toNat_eq_zero]
-    grind
+    exact D.colsPlus_descentPair_eq_zero ϑ τ j (h_card.symm.trans_lt hi)
   · -- There are `m - j` vectors of sign -1; above that height `ς_(r-i)` is at least
     -- `-w_j - (t - 1) / 2`.
     have h_above : D.m - j < i := (D.negCount_signsW j).symm.trans_lt hi
-    simp only [descentPair, Int.toNat_eq_zero]
-    grind
+    exact D.colsMinus_descentPair_eq_zero ϑ τ j (by grind [j.prop, D.r_add_one, D.k_pos])
 
 end Parameters
 
