@@ -637,9 +637,7 @@ lemma New.Exchange.IsEquivariantLift.partialMean_shear
   intro Ψ'
   obtain ⟨h_mem, h_shift⟩ : Ψ' ∈ M ∧ ∀ y : G E r, 𝒟 Ψ' (y * x) = 𝒟 Ψ (y * (ν⁻¹ * x)) :=
     h_lift.apply_shear hΨ hν hc x
-  have h_assoc (y y' : G E r) : 𝒟 Ψ' (y * (y' * x)) = 𝒟 Ψ (y * (y' * (ν⁻¹ * x))) := by
-    simpa only [mul_assoc] using h_shift (y * y')
-  exact ⟨h_mem, by simp only [partialMean, centerCoeff, h_assoc]⟩
+  exact ⟨h_mem, by simp only [partialMean, centerCoeff, ← mul_assoc, h_shift]⟩
 
 /-- Let `𝒟` be an equivariant lift on `M`. Let `A` split one isotropic line off `X`, `B` split `b`
 planes off what remains and `D` split `X` over `W₁`, and let the adelic isotropic frame `kAdelic` of
