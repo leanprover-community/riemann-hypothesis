@@ -3,6 +3,7 @@ module
 public import Mathlib.Analysis.CStarAlgebra.CStarMatrix
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
+public import Lib.GLn.SchurModule.Basic
 public import New.Appendix.DiscreteSeries.PositionGroup
 public import New.Spanning.Bessel.Average
 public import New.Spanning.Bessel.Basic

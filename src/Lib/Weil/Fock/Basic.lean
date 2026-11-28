@@ -941,4 +941,8 @@ end FockTensor
 
 end New.Fock
 
+/-- The sign `σ * ε r * ε' c` of the variable in row `r` and column `c`, where `i = (r, c)`. -/
+def New.pairSign {R C : Type} (σ : ℤˣ) (ε : R → ℤˣ) (ε' : C → ℤˣ) (i : R × C) : ℤˣ :=
+  σ * ε i.1 * ε' i.2
+
 end

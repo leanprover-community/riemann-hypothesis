@@ -4,6 +4,7 @@ import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 import Mathlib.RingTheory.PicardGroup
 public import Lib.Weil.DualPair.Defs
 public import Lib.Weil.Unramified.HeckeGL
+import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
 # Extending columns, block matrices and block embeddings

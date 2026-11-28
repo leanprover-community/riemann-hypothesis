@@ -111,9 +111,6 @@ theorem Fock.canonical_commutation (η : R → ℤˣ) (a b : R) (P : MvPolynomia
 
 /-! ### Dual pair data and signs of the variables -/
 
-/-- The sign `σ * ε r * ε' c` of the variable in row `r` and column `c`, where `i = (r, c)`. -/
-def pairSign (σ : ℤˣ) (ε : R → ℤˣ) (ε' : C → ℤˣ) (i : R × C) : ℤˣ := σ * ε i.1 * ε' i.2
-
 /-- The data of a dual pair in Fock space for the signs `ε`, `ε'`: a sign `σ` (`globalSign`), two
 integers `γ` (`rowShift`) and `γ'` (`columnShift`), and a bijection from `R × C` to the index set
 `ι` of the variables. -/
