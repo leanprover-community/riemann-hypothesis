@@ -740,6 +740,98 @@ private lemma sum_linearFrob_apply_eq_zero {p : ℕ} [ThePrime p] {R : CommRingC
   -- The point `v i` of the image of `w` in `B` is `Frob ^ a i (u i w)`, read through `π`.
   exact (_ ≫= Category.assoc ..).trans (Spec.map_comp_assoc ..).symm
 
+/-- The periods step of `ellAdicCohom.isCrystalline_and_linearFrob_rel`, for a charting `V` of `Y`
+(`hV`). Let `algebraMap : W(k) → A_max` be the unique lift of `ℓ : k → A_max ⧸ pdIdeal A_max`
+(`h_lift`, `h_lift_unique`), where `ℓ` comes from `integersToPdQuotient` on `R` through the
+surjection `πk` (`hℓ`), and let every Weil pair `(toGp s, f)` force `z ^ p ^ f = z` on `k`
+(`h_pow`). Then the representation of `Γ` on `Vⁿ(Y)` is crystalline, and if the relation of the
+points `Frob ^ a i (u i x)` holds near every closed point of a test once `p` and `x₀` vanish
+(`h_rel_loc`), where `integersToPdQuotient` kills `x₀`, then
+`∑ m i • (u i)^* ∘ linearFrob (γ i) (a i) = 0` on `Bmax ⊗ Vⁿ(Y)`. -/
+private lemma ellAdicCohom.isCrystalline_and_linearFrob_rel_of_isCharting {p : ℕ} [ThePrime p]
+    {R : CommRingCat} [Algebra R Ω] [Algebra R OC] {e : Ω →+* PadicAlgCl p}
+    (he_algebraMap : ∀ r : R, (e (algebraMap R Ω r) : ℂ_[p]) = algebraMap R OC r)
+    {Γ : Type} [Group Γ] [OverGp Γ p] [MulSemiringAction Γ Ω] [SMulCommClass Γ R Ω]
+    (he_smul : ∀ (g : Γ) (x : Ω), toGp g (e x) = e (g • x)) [hP : CrysPeriodAlgebra]
+    [IsScalarTower ℤ_[p] Ainf Amax]
+    (h_smul : ∀ (μ : FrobGal) (b : Ainf), μ • algebraMap Ainf Amax b = algebraMap Ainf Amax (μ • b))
+    {k : Type} [Field k] [CharP k p] [PerfectRing k p] (πk : R →+* k) (hπk : Surjective πk)
+    (ℓ : k →+* Amax ⧸ pdIdeal Amax)
+    (hℓ : ∀ z : R, ℓ (πk z) = integersToPdQuotient (algebraMap R OC z))
+    [Algebra (WittVector p k) Amax]
+    (h_lift : ∀ w : WittVector p k,
+      pdQuotientMk Amax (algebraMap (WittVector p k) Amax w) = ℓ (w.coeff 0))
+    (h_lift_unique : ∀ g' : WittVector p k →+* Amax,
+      (∀ w : WittVector p k, pdQuotientMk Amax (g' w) = ℓ (w.coeff 0)) →
+        g' = algebraMap (WittVector p k) Amax)
+    (h_teichmuller : ∀ z : R,
+      pdQuotientMk Amax (algebraMap (WittVector p k) Amax (teichmuller p (πk z))) =
+        integersToPdQuotient (algebraMap R OC z))
+    {W Y : Over (Spec R)} [IsProper W.hom] [IsCharted W Ω] [IsCharted Y Ω] [IsProper Y.hom]
+    {V : Subfunctor (algPointsOf R R Y)} (hV : IsCharting V) (n : ℕ)
+    (h_pow : ∀ {s : Γ} {f : ℕ}, IsWeilPair (toGp s) f → ∀ z : k, z ^ p ^ f = z)
+    {ι : Type} [Fintype ι] (u : ι → (W ⟶ Y)) (a : ι → ℕ) (γ : ι → Γ) (m : ι → ℤ)
+    (hW : ∀ i : ι, IsWeilPair (toGp (γ i)) (a i)) (x₀ : OC) (hx_zero : integersToPdQuotient x₀ = 0)
+    (h_rel_loc : ∀ (c : PadicTest) (x : (testPoints.obj W).obj c)
+      (𝔪 : Ideal ((algFunctor ⋙ restrictAlg R OC).obj c)), 𝔪.IsMaximal →
+      ∃ b ∉ 𝔪, ∀ (D : Type) [CommRing D] (hpD : (p : D) = 0)
+        (ρ : (algFunctor ⋙ restrictAlg R OC).obj c →+* D),
+        IsUnit (ρ b) → ρ (c.structureMap x₀) = 0 →
+          Cancels m fun i : ι ↦ Spec.map (CommRingCat.ofHom ((frobPow hpD (a i)).comp ρ)) ≫
+            x.down.left ≫ (u i).left) :
+    IsCrystalline (ellAdicCohom.galoisAction R Ω Γ Y n) ∧
+      ∑ i : ι,
+        m i • (((ellAdicCohom R Ω n).map (u i).op).hom.restrictScalars ℤ_[p]).baseChange Bmax ∘ₗ
+          linearFrob (ellAdicCohom.galoisAction R Ω Γ Y n) (γ i) (a i) = 0 := by
+  let ρ := ellAdicCohom.galoisAction R Ω Γ Y n
+  -- The period maps `J` to the cohomology on `p`-adic tests with coefficients `Ψ`: natural in the
+  -- scheme, compatible with twists, and bijective on proper charted schemes.
+  let Ψ : AbFunctor PadicTest := periodCoeff (p := p)
+  choose J hJ using fun n : ℕ ↦
+    exists_period_map he_algebraMap Bmax (.refl _) n he_smul hP.toIsPeriodRingPair
+  -- `Ψ` has Zariski descent, so `V` is dense and `J` followed by restriction to `V` is bijective.
+  have h_zar : HasZariskiDescent _ Ψ := (hasPartitions_periodAlg (S := Amax) Bmax
+    (.refl _)).hasZariskiDescent (𝟙 _) (by simp) (·.isTest.isComparableRing)
+  let V' := V.whisker (algFunctor ⋙ restrictAlg R OC)
+  have hV_dense : IsCohomDense Ψ V' := h_zar (hV.1.whisker _)
+  let periodEquiv (n : ℕ) :
+      Bmax ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩ ≃ₗ[Bmax] H (freeAb.obj V'.toFunctor) Ψ n :=
+    .ofBijective (H.mapₗ .. ∘ₗ J n Y) ((hV_dense.isCohomEquiv n).comp ((hJ n).bijective Y))
+  -- `pullFrob a ha z` is the pull-back of a crystalline class `z` along the reduction of points
+  -- followed by `Frob ^ a` (`frobPowHom`); `C z` is the period with
+  -- `periodEquiv n (C z) = pullFrob 0 _ z`.
+  let pullFrob (a : ℕ) (ha : ∀ z : k, z ^ p ^ a = z) :=
+    crysComparison.pull (freeAbMap (toCrysPoints V (frobPowHom πk h_teichmuller a ha))) n
+  choose C hC using fun z ↦ (periodEquiv n).surjective (pullFrob 0 pow_one z)
+  -- The main step (`map_J_tensorAction_eq_pull`): `(a, toGp s)` together with `ρ s` sends `C z`
+  -- to the preimage of `pullFrob a ha z`.
+  have h_action (a : ℕ) (ha : ∀ z : k, z ^ p ^ a = z) s z :
+      periodEquiv n (tensorAction Bmax ((.ofAdd a, toGp s) : FrobGal) (ρ s) (C z)) =
+        pullFrob a ha z :=
+    map_J_tensorAction_eq_pull he_algebraMap he_smul h_smul πk
+      (toRingHom_algebraMap_witt_eq he_algebraMap he_smul h_smul πk hπk ℓ hℓ h_lift h_lift_unique)
+      h_teichmuller V n (hJ n) C hC a ha s z
+  -- The classes `pullFrob 0 _ z` span, since `frobPowHom _ _ 0 _` is an isomorphism; so the
+  -- periods `C z` span.
+  have h_span : Submodule.span Bmax (.range C) = ⊤ := by
+    have h_range : Submodule.span Bmax (.range (pullFrob 0 pow_one)) = ⊤ :=
+      span_range_crysComparison_pull_eq_top V _
+        (isoOfAppBijective _ (bijective_frobPowHom_zero_app πk h_teichmuller)).isIso_hom
+        (isCompleteTorsionFree_wittVector k k) hV (irreducible p)
+        (fun n ↦ .equiv (equivOfCompatibleSMul _ ℚ_[p] .. ≪≫ₗ periodEquiv n)) n
+    -- `using!`: the groups of `pullFrob 0 _` and of `periodEquiv n` agree only after unfolding.
+    simpa [← Submodule.map_eq_top_iff (e := periodEquiv n), Submodule.map_span, ← range_comp', hC]
+      using! h_range
+  -- The case `a = 0` of `h_action` says that every `s` fixes `C z`.
+  have h_fixed {𝓕 : Filter _} z : C z ∈ fixedPeriods ρ Bmax 𝓕 :=
+    .of_forall fun s ↦ (periodEquiv n).injective ((h_action 0 pow_one s z).trans (hC z).symm)
+  have h_crys : IsCrystalline ρ :=
+    eq_top_mono (Submodule.span_mono (range_subset_iff.mpr h_fixed)) h_span
+  -- The relation on each period `C z` (`sum_linearFrob_apply_eq_zero`).
+  exact ⟨h_crys, LinearMap.ext_on_range h_span fun z ↦
+    sum_linearFrob_apply_eq_zero he_algebraMap he_smul πk h_teichmuller V n (hJ n) h_zar hV_dense C
+      h_crys h_fixed h_action h_pow u a γ m hW x₀ hx_zero h_rel_loc z⟩
+
 /-- Let `R` be a noetherian ring and `K` a field. Let `Ω` be an algebraic closure of `ℚ` that is an
 algebra over `R` and over `K`, compatibly with a map `R → K`. Let `A` be the valuation ring of a
 `p`-adic place of `Ω` over `K` (`GaloisRep.PadicPlaceEmbedding`), with `R` mapping into `A`. Let
@@ -818,51 +910,10 @@ lemma ellAdicCohom.isCrystalline_and_linearFrob_rel {p : ℕ} [ThePrime p] {R : 
   -- `g` agrees with `integersToPdQuotient` on the Teichmüller lifts of the image of `R`.
   have hr (z : R) : pdQuotientMk Amax (g (teichmuller p (⟦z⟧ : k))) = integersToPdQuotient (σ z) :=
     hg _
-  -- The period maps `J` to the cohomology on `p`-adic tests with coefficients `Ψ`: natural in the
-  -- scheme, compatible with twists, and bijective on proper charted schemes.
-  let Ψ : AbFunctor PadicTest := periodCoeff (p := p)
-  choose J hJ using fun n : ℕ ↦ exists_period_map hσ Bmax (.refl _) n hj hP.toIsPeriodRingPair
-  -- `Ψ` has Zariski descent, so `V` is dense and `J` followed by restriction to `V` is bijective.
-  have h_zar : HasZariskiDescent _ Ψ := (hasPartitions_periodAlg (S := Amax) Bmax
-    (.refl _)).hasZariskiDescent (𝟙 _) (by simp) (·.isTest.isComparableRing)
-  let V' := V.whisker (algFunctor ⋙ restrictAlg R OC)
-  have hV_dense : IsCohomDense Ψ V' := h_zar (hV.1.whisker _)
-  let periodEquiv (n : ℕ) :
-      Bmax ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩ ≃ₗ[Bmax] H (freeAb.obj V'.toFunctor) Ψ n :=
-    .ofBijective (H.mapₗ .. ∘ₗ J n Y) ((hV_dense.isCohomEquiv n).comp ((hJ n).bijective Y))
-  -- `pullFrob a ha z` is the pull-back of a crystalline class `z` along the reduction of points
-  -- followed by `Frob ^ a` (`frobPowHom`); `C z` is the period with
-  -- `periodEquiv n (C z) = pullFrob 0 _ z`.
-  let pullFrob (a : ℕ) (ha : ∀ z : k, z ^ p ^ a = z) :=
-    crysComparison.pull (freeAbMap (toCrysPoints V (frobPowHom (algebraMap R k) hr a ha))) n
-  choose C hC using fun z ↦ (periodEquiv n).surjective (pullFrob 0 pow_one z)
-  -- The main step (`map_J_tensorAction_eq_pull`): `(a, toGp s)` together with `ρ s` sends `C z`
-  -- to the preimage of `pullFrob a ha z`.
-  have h_action (a : ℕ) (ha : ∀ z : k, z ^ p ^ a = z) s z :
-      periodEquiv n (tensorAction Bmax ((.ofAdd a, toGp s) : FrobGal) (ρ s) (C z)) =
-        pullFrob a ha z :=
-    map_J_tensorAction_eq_pull hσ hj h_smul (algebraMap R k)
-      (toRingHom_algebraMap_witt_eq hσ hj h_smul (algebraMap R k) Ideal.Quotient.mk_surjective ℓ
-        (fun _ ↦ rfl) hg hg_unique) hr V n (hJ n) C hC a ha s z
-  -- The classes `pullFrob 0 _ z` span, since `frobPowHom _ _ 0 _` is an isomorphism; so the
-  -- periods `C z` span.
-  have h_span : Submodule.span Bmax (.range C) = ⊤ := by
-    have h_range : Submodule.span Bmax (.range (pullFrob 0 pow_one)) = ⊤ :=
-      span_range_crysComparison_pull_eq_top V _
-        (isoOfAppBijective _ (bijective_frobPowHom_zero_app (algebraMap R k) hr)).isIso_hom
-        (isCompleteTorsionFree_wittVector k k) hV (irreducible p)
-        (fun n ↦ .equiv (equivOfCompatibleSMul _ ℚ_[p] .. ≪≫ₗ periodEquiv n)) n
-    -- `using!`: the groups of `pullFrob 0 _` and of `periodEquiv n` agree only after unfolding.
-    simpa [← Submodule.map_eq_top_iff (e := periodEquiv n), Submodule.map_span, ← range_comp', hC]
-      using! h_range
-  -- The case `a = 0` of `h_action` says that every `s` fixes `C z`.
-  have h_fixed {𝓕 : Filter _} z : C z ∈ fixedPeriods ρ Bmax 𝓕 :=
-    .of_forall fun s ↦ (periodEquiv n).injective ((h_action 0 pow_one s z).trans (hC z).symm)
-  have h_crys : IsCrystalline ρ :=
-    eq_top_mono (Submodule.span_mono (range_subset_iff.mpr h_fixed)) h_span
-  -- The relation on each period `C z` (`sum_linearFrob_apply_eq_zero`).
-  exact ⟨h_crys, LinearMap.ext_on_range h_span fun z ↦
-    sum_linearFrob_apply_eq_zero hσ hj (algebraMap R k) hr V n (hJ n) h_zar hV_dense C h_crys
-      h_fixed h_action h_pow u a γ m hW x hx_zero (hM x N hN hx_dvd) z⟩
+  -- The crystalline classes `z` on `Y` give periods that span and on which the Weil pairs act by
+  -- the pull-back along `Frob ^ a` on points (`isCrystalline_and_linearFrob_rel_of_isCharting`).
+  exact ellAdicCohom.isCrystalline_and_linearFrob_rel_of_isCharting hσ hj h_smul (algebraMap R k)
+    Ideal.Quotient.mk_surjective ℓ (fun _ ↦ rfl) hg hg_unique hr hV n h_pow u a γ m hW x hx_zero
+    (hM x N hN hx_dvd)
 
 end New.Variety
