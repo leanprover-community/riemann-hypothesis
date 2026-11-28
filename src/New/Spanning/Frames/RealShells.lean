@@ -332,13 +332,12 @@ lemma exists_sq_le_realDepth (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 
       (hF.complexData.levelUnit⁻¹.val • ((v * (y * x)).val.val - (u * y).val.val)) := by
     simpa using (Γ.hasMatrixSize_boxSet v_box).sub (Γ.hasMatrixSize_boxSet u_box)
   have h_disc (a : Fin 𝔰.ϱ) (ha : j ≤ a) :
-      ∃ c : ℂˣ, ↑c ∈ hF.complexData.stableProducts a y x ∧ ↑c⁻¹ ∈ Γ.ofSize 1 := by
-    refine ⟨(Units.mk0 (T : ℂ) (by simpa using T_pos.ne'))⁻¹, ?_,
+      ∃ c : ℂˣ, ↑c ∈ hF.complexData.stableProducts a y x ∧ ↑c⁻¹ ∈ Γ.ofSize 1 :=
+    ⟨(Units.mk0 (T : ℂ) (by simpa using T_pos.ne'))⁻¹,
+      by simpa [hF.stableProducts_eq, inv_mul_lt_one₀ (pow_pos T_pos 2)] using h_shallow a ha,
       by simp [Γ, hF.mem_ofSize_gauge, abs_of_pos T_pos]⟩
-    simpa [hF.stableProducts_eq, inv_mul_lt_one₀ (pow_pos T_pos 2)] using h_shallow a ha
-  have h_size : Γ.HasMatrixSize (99 * 𝔰.n) (hF.complexData.levelUnit⁻¹.val • (x.val.val - 1)) :=
-    Γ.hasMatrixSize_sub_one_of_stableProducts (hF.gauge hL) hj hp hq (fun _ ↦ h_level)
-      (fun _ ↦ h_subset) ⟨u, hu, v, hv, u_box, v_box, h_diff⟩ near_p near_q h_disc
+  have h_size := Γ.hasMatrixSize_sub_one_of_stableProducts (hF.gauge hL) hj hp hq (fun _ ↦ h_level)
+    (fun _ ↦ h_subset) ⟨u, hu, v, hv, u_box, v_box, h_diff⟩ near_p near_q h_disc
   exact hx fun a c ↦ by simpa [Γ, hF.mem_ofSize_gauge] using h_size a c
 
 /-- Far means deep at a real place. Let `F` be a cut Bessel function and `p`, `q` heads of length
@@ -351,8 +350,7 @@ lemma hasDeepVector_of_notMem (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤
     (hT : L ^ (11 * 𝔰.n) ≤ T) (hτ : T⁻¹ ≤ τ / 2) {x : 𝔰.G₁} (hx : x ∉ positionBall 𝔰 T) :
     hF.complexData.HasDeepVector j p q F x (.ofReal τ ^ 2)⁻¹ := by
   rintro y ⟨hy, near_p, near_q⟩
-  obtain ⟨a, ha, h_depth⟩ : ∃ a : Fin 𝔰.ϱ, j ≤ a ∧ T ^ 2 ≤ realDepth a y (y * x) :=
-    hF.exists_sq_le_realDepth hj hp hq hT hx hy near_p near_q
+  obtain ⟨a, ha, h_depth⟩ := hF.exists_sq_le_realDepth hj hp hq hT hx hy near_p near_q
   have T_pos : 0 < T := (pow_pos (by linarith [hF.four_le]) _).trans_le hT
   have τ_pos : 0 < τ := by linarith [inv_pos.2 T_pos]
   have h_le : (τ ^ 2)⁻¹ ≤ realDepth a y (y * x) / π :=

@@ -59,21 +59,16 @@ lemma _root_.New.exists_measurableSet_existsUnique_add_mem {V : Type*} [AddCommG
     .imp (measurable_const_add _ hB)
       (measurableSet_le hf.measurable (hf.measurable.comp (measurable_const_add _)))
   refine ⟨B ∩ ⋂ l : L, least l, inter_subset_left, hB.inter (.iInter h_meas), fun w ↦ ?_⟩
-  obtain ⟨l₀, hl₀, h_least⟩ : ∃ l₀ : L, l₀.val + w ∈ B ∧
-      ∀ l : L, l.val + w ∈ B → f (l₀.val + w) ≤ f (l.val + w) :=
-    exists_min_image {l : L | l.val + w ∈ B} (fun l : L ↦ f (l.val + w)) (h_finite w)
-      (h_nonempty w)
+  obtain ⟨l₀, hl₀, h_least⟩ :=
+    exists_min_image _ (fun l : L ↦ f (l.val + w)) (h_finite w) (h_nonempty w)
   refine ⟨l₀, ⟨hl₀, mem_iInter.2 fun l hl ↦ ?_⟩, ?_⟩
   · -- `l₀ + w` is least in its coset.
-    show f (l₀.val + w) ≤ f (l.val + (l₀.val + w))
     rw [← add_assoc, ← AddSubgroup.coe_add] at hl ⊢
     exact h_least (l + l₀) hl
   · -- Any least point of the coset has the same value of `f`.
     rintro l ⟨hl, hl_least⟩
-    have h_least_l : (l₀ - l).val + (l.val + w) ∈ B →
-        f (l.val + w) ≤ f ((l₀ - l).val + (l.val + w)) :=
-      mem_iInter.1 hl_least (l₀ - l)
-    rw [AddSubgroup.coe_sub, ← add_assoc, sub_add_cancel] at h_least_l
+    have h_least_l := mem_iInter.1 hl_least (l₀ - l)
+    simp only [least, mem_setOf_eq, AddSubgroup.coe_sub, ← add_assoc, sub_add_cancel] at h_least_l
     have h_eq : l.val + w = l₀.val + w :=
       hf.injective ((h_least_l hl₀).antisymm (h_least l hl))
     exact Subtype.ext (add_right_cancel h_eq)
@@ -156,20 +151,16 @@ lemma exists_isResidueDomain [S.IsAdmissible] :
   have hb : 1000 ≤ S.b := S.thousand_le_b
   have : Countable (𝓞 E) := RingOfIntegers.coe_injective.countable
   have : Countable S.levelMultiples := (countable_range _).to_subtype
-  let B : Set (InfinitePlace E → ℂ) :=
-    {w : InfinitePlace E → ℂ | ∀ v : InfinitePlace E, ‖w v‖ ≤ S.b ^ 26}
+  let B : Set (InfinitePlace E → ℂ) := {w | ∀ v, ‖w v‖ ≤ S.b ^ 26}
   -- Every tuple is within `M (2 f) ^ 2 |ϖ| ≤ b ^ 26` of a tuple in `S.levelMultiples`, where
   -- `M = S.M` is the level, `ϖ = S.deltaE` and `f = numInfPlaces E`.
   have h_nonempty (w : InfinitePlace E → ℂ) : ∃ l : S.levelMultiples, l.val + w ∈ B := by
     have h_ne : S.deltaE ≠ 0 := mod_cast S.deltaE_ne_zero
     have h_different : S.deltaE ∈ differentIdeal ℤ (𝓞 E) := by simp [S.span_deltaE]
-    obtain ⟨a, ha_int, ha_near⟩ : ∃ a : E, 0 - algebraMap E (𝔸f E) a ∈ Ô E ∧
-        ∀ v : InfinitePlace E, ‖-w v / S.M - Φ v a‖ ≤ (2 * numInfPlaces E) ^ 2 * ‖Φ v S.deltaE‖ :=
+    obtain ⟨a, ha_int, ha_near⟩ :=
       exists_principal_near_of_mem_differentIdeal h_ne h_different (fun v ↦ -w v / S.M) 0
     rw [zero_sub, neg_mem_iff, algebraMap_mem_Ô] at ha_int
-    let l : S.levelMultiples :=
-      ⟨fun v ↦ Φ v (S.M * a), mem_levelMultiples.2 ⟨⟨a, ha_int⟩, rfl⟩⟩
-    refine ⟨l, fun v ↦ ?_⟩
+    refine ⟨⟨fun v ↦ Φ v (S.M * a), mem_levelMultiples.2 ⟨⟨a, ha_int⟩, rfl⟩⟩, fun v ↦ ?_⟩
     have hM_ne : (S.M : ℂ) ≠ 0 := by simp [Nat.Prime.ne_zero]
     have h_places : 2 * (numInfPlaces E : ℝ) ≤ S.b := by linarith [S.numInfPlaces_le_div]
     calc ‖Φ v (S.M * a) + w v‖ = ‖(S.M : ℂ)‖ * ‖-w v / S.M - Φ v a‖ := by
@@ -183,8 +174,7 @@ lemma exists_isResidueDomain [S.IsAdmissible] :
   have h_finite (w : InfinitePlace E → ℂ) : {l : S.levelMultiples | l.val + w ∈ B}.Finite :=
     finite_setOf_levelMultiples_add_le (by positivity) w
   have hB : MeasurableSet B := by measurability
-  obtain ⟨D, hDB, hD_meas, hD⟩ : ∃ D ⊆ B, MeasurableSet D ∧
-      ∀ w : InfinitePlace E → ℂ, ∃! l : S.levelMultiples, l.val + w ∈ D :=
+  obtain ⟨D, hDB, hD_meas, hD⟩ :=
     exists_measurableSet_existsUnique_add_mem S.levelMultiples hB h_nonempty h_finite
   exact ⟨D, { measurableSet := hD_meas, norm_le := fun w v hw ↦ hDB hw v,
               existsUnique_add_mem := hD }⟩
