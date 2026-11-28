@@ -173,7 +173,8 @@ lemma finMultiplier_onHom_left {g : G E s} :
     (saturatingElem g.2⁻¹.val).prop.map_of_le_comap φ fun x hx i ↦ by
       aesop (add simp Matrix.one_apply)
   have h_transpose : (G.onHom (s' := s') (g, 1)).2.val.val = (φ g.2⁻¹.val.val)ᵀ := by
-    aesop (add simp [onHom_snd, Matrix.one_apply])
+    refine Matrix.ext fun ⟨i₁, j₁⟩ ⟨i₂, j₂⟩ ↦ ?_
+    simp [onHom_snd, φ, Matrix.one_apply, eq_comm]
   have h_det : (Φ u).det = u.det ^ card n' := by simp [Φ, φ, Units.ext_iff, det_kronecker]
   rw [finMultiplier, h_sat.glMultiplier_transpose h_transpose, h_det, map_pow]
   rfl
@@ -227,9 +228,10 @@ lemma pairWeil_schrodingerOp_of_mem_supportedOn (hA : A.IsConjDisjoint) {Ψ : (n
       (a.spaceChar (card n)).val (detOn A h.val) / (b.spaceChar (card n')).val (detOn A g.val) *
         √(ideleAbs (detOn A g.val)) ^ card n' / √(ideleAbs (detOn A h.val)) ^ card n := by
     rw [h_det, map_div, map_pow, map_pow]
-    simp [detFin_of_mem_supportedOn hA, AutChar.spaceChar, AutChar.baseChange_apply_coe_toFun, hg,
-      hh,
-      chiAdelic, mul_pow, field, ← Complex.inv_eq_conj, Circle.norm_coe]
+    simp [detFin_of_mem_supportedOn hA, AutChar.spaceChar,
+      AutChar.baseChange_apply_coe_toFun, hg, hh, chiAdelic, mul_pow,
+      ← Complex.inv_eq_conj, Circle.norm_coe]
+    field_simp
   -- `ω u` moves `Ψ` to `Ψ (u⁻¹ ·)`, with the factor `conj (chiAdelic (detOn A u))`
   rw [pairWeil_apply, onHom_fin, omega_schrodingerOp_of_mem_supportedOn hA _
     (onHom_mem_supportedOn hg hh), smul_smul, h_scalar]
@@ -264,9 +266,10 @@ lemma pairWeil_schrodingerOp_of_mem (hA : A.IsConjDisjoint) {Ψ : (n' × n → �
           Ψ (matrixToVec ((↑h.2⁻¹ : Matrix n' n' (𝔸f E)) * vecToMatrix x *
             (g.2 : Matrix n n (𝔸f E)))))
         (pairWeil S T a b (g, h) f) := by
-  rw [pairWeil_apply, pairWeil_apply, map_smul,
-    omega_schrodingerOp_of_mem hA fun w _ ↦ onHom_atPlace_mem (mem_stdLevel_iff.1 hg w)
-      (mem_stdLevel_iff.1 hh w)]
+  have h_mem : ∀ w ∈ A, (onHom (g, h)).2.atPlace w ∈ localIntGL (n' × n) w :=
+    fun w _ ↦ onHom_atPlace_mem (p := (g, h)) (mem_stdLevel_iff.1 hg w)
+      (mem_stdLevel_iff.1 hh w)
+  rw [pairWeil_apply, pairWeil_apply, map_smul, omega_schrodingerOp_of_mem hA h_mem]
   simp only [onHom_snd_inv_mulVec]
 
 end PairFinite
@@ -453,7 +456,8 @@ lemma pairWeil_negSource (h : G E s') (f : 𝒮 (S.hom T)) :
   -- the ratio of the multipliers (`CoordChange.map_omega`), which `conj_weilMultiplier_of_eq_neg`
   -- computes.
   have h_signs : homSigns (-s) s' = -homSigns s s' := by simp [funext_iff, pairSign]
-  have h_mat : (onHom (g.neg, h)).adeleMatrix = (onHom (g, h)).adeleMatrix := by simp [← map_inv]
+  have h_mat : (onHom (g.neg, h)).adeleMatrix = (onHom (g, h)).adeleMatrix := by
+    rw [adeleMatrix_onHom, adeleMatrix_onHom, ← map_inv, adeleMatrix_neg]
   have ω_eq : negSource.map ((S.hom T).ω (onHom (g, h)) f) =
       (upsilonU1.val (onHom (g, h)).det : ℂ) •
         (S.neg.hom T).ω (onHom (g.neg, h)) (negSource.map f) :=
@@ -463,7 +467,8 @@ lemma pairWeil_negSource (h : G E s') (f : 𝒮 (S.hom T)) :
   -- characters give the factor in `ω_eq`; conjugation inverts the values of `a` and `b`.
   have h_char : conj (pairChar a b (g, h)) * (upsilonU1.val (onHom (g, h)).det : ℂ) =
       pairChar (a⁻¹ * upsilonU1 ^ card n) (b⁻¹ * upsilonU1 ^ card n') (g.neg, h) := by
-    simp [det_onHom, Circle.norm_coe, ← Complex.inv_eq_conj, field]
+    simp [det_onHom, Circle.norm_coe, ← Complex.inv_eq_conj]
+    field_simp
   rw [pairWeil_apply, pairWeil_apply, map_smulₛₗ, ω_eq, smul_smul, h_char]
 
 variable (S T)
