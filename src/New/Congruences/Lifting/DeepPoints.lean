@@ -99,12 +99,12 @@ lemma pointsOver_nonempty_of_steps_level_zero {κ stepCost : ℕ} {i : k.Letter}
   exact pointsOver_nonempty_of_costs hx (({0} : Finset ℕ).sigma fun _ ↦ steps)
     (by simpa using h_steps) (by simpa [sum_sigma] using h_cost)
 
-private lemma steps_at_level_zero {a t : ℕ} {i : k.Letter} {steps : Finset ℤ}
-    (h : ∀ u ∈ S.jumpSet i, Ico (-u - a) (a + t - u) ⊆ steps)
+private lemma steps_at_level_zero {s a t : ℕ} {i : k.Letter} {steps : Finset ℤ}
+    (h : ∀ u ∈ S.jumpSet i, Ico (-u - s) (a + t - u) ⊆ steps)
     (l : ℕ) (u : ℤ) (hu : u ∈ S.jumpSet (i.stepBack l)) (y : ℤ)
-    (hlo : raisedOrdersAtZero (-a) l u ≤ y) (hhi : y < plainDepth a t 1 0 l u) :
+    (hlo : raisedOrdersAtZero (-s) l u ≤ y) (hhi : y < plainDepth a t 1 0 l u) :
     l = 0 ∧ y ∈ steps := by
-  obtain ⟨rfl, hy⟩ : l = 0 ∧ -u - a ≤ y ∧ y < a + t - u := by
+  obtain ⟨rfl, hy⟩ : l = 0 ∧ -u - s ≤ y ∧ y < a + t - u := by
     dsimp only [raisedOrdersAtZero, plainDepth, standardDepth] at hlo hhi
     split_ifs at hlo hhi <;> omega
   exact ⟨rfl, h u hu (mem_Ico.2 hy)⟩
@@ -125,20 +125,12 @@ lemma pointsOver_nonempty_of_gap {a κ η stepCost : ℕ} {i : k.Letter}
       (improvedOrders (raisedOrdersAtZero (-a)) (plainDepth a η 1 0)) (plainDepth a η 1 0)) :=
     pointsOver_nonempty_of_steps_level_zero (pointsOver_nonempty_of_killsCokernel h_kill c)
       (steps_at_level_zero h_steps) h_cost
-  have h_nonneg : ∀ u ∈ S.jumpSet i, -(a : ℤ) ≤ u → -0 ≤ u := fun u hu h ↦ by
-    have h' := h_gap u hu
-    rw [mem_Ico] at h'
-    omega
-  have h_no_pole :
-      x ∈ S.pointsOver c i (κ + stepCost) (raisedOrdersAtZero (-0)) (plainDepth a η 1 0) :=
-    mem_pointsOver_raisedOrdersAtZero_of_gap hx le_rfl h_nonneg
-      (fun l u _ ↦ by
-        dsimp only [improvedOrders, raisedOrdersAtZero, plainDepth, standardDepth]
-        split_ifs <;> omega)
-      fun l u _ ↦ by
-        dsimp only [improvedOrders, raisedOrdersAtZero, plainDepth, standardDepth]
-        split_ifs <;> omega
-  exact ⟨x, by simpa only [neg_zero] using h_no_pole⟩
+  refine ⟨x, mem_pointsOver_of_exponent_le hx fun l u hu ↦ ?_⟩
+  have h_out : l = 0 → ¬(-(a : ℤ) ≤ u ∧ u < 0) := by
+    rintro rfl
+    exact mem_Ico.not.1 (h_gap u hu)
+  dsimp only [improvedOrders, raisedOrdersAtZero, plainDepth, standardDepth]
+  split_ifs <;> omega
 
 private lemma mem_pointsOver_of_no_pole {i : k.Letter} {c : S.paramLattice} {e : ℕ}
     {d : ℕ → ℤ → ℤ} {x : S.extensionLattice.Ambient} (t : ℕ)
@@ -213,9 +205,8 @@ lemma pointsOver_nonempty_of_near_steps {κ : ℕ} {i : k.Letter} {c : S.paramLa
       l = 0 ∧ y ∈ twoWindows n β ∪ twoWindows n (-β))
     (h_exponent : ∀ l : ℕ, ∀ u ∈ S.jumpSet (i.stepBack l), lo' l u ≤ improvedOrders lo o' l u) :
     (S.pointsOver c i κ lo' o').Nonempty := by
-  obtain ⟨-, -, h_free : k.differentBound = 0⟩ := hk
-  have h_cost : ∑ y ∈ twoWindows n β ∪ twoWindows n (-β), k.cost 0 y ≤ 0 := by
-    rw [sum_cost_eq_card_mul hβ_gap (fun _ hy ↦ hy), h_free, Nat.mul_zero]
+  have h_cost : ∑ y ∈ twoWindows n β ∪ twoWindows n (-β), k.cost 0 y ≤ 0 :=
+    sum_nonpos fun y hy ↦ cost_le_of_isUnramified hk (hβ_gap.eq_zero_of_dvd hy)
   obtain ⟨y, hy⟩ := pointsOver_nonempty_of_steps_level_zero h_point h_steps h_cost
   exact ⟨y, mem_pointsOver_of_exponent_le hy h_exponent⟩
 
@@ -255,19 +246,14 @@ lemma pointsOver_nonempty_of_jumps_nonpos {a η t n : ℕ} {β : ℤ} (hk : k.Is
   -- As the jumps are at most `0`, the element `1 = p ^ 0 * E ^ 0` kills the cokernel.
   have h_kill : S.KillsCokernel i 0 0 := killsCokernel_zero_zero_of_small_jumps (ω := 0)
     (fun j u hu ↦ (mem_Icc.1 (h_nonpos j hu)).2) (Nat.zero_le _) i
-  -- With no pole, apply the gap lemma with pole order zero and total depth `a + t`.
-  have h_depth : plainDepth 0 (a + t) 1 0 = plainDepth a t 1 0 := by
-    funext l u
-    cases l <;> simp [plainDepth, standardDepth]
-    omega
-  rw [← h_depth]
-  refine pointsOver_nonempty_of_gap (stepCost := 0) h_kill (by simp)
-    (steps := twoWindows n β ∪ twoWindows n (-β)) ?_ ?_ c
-  · intro u hu y hy
-    have := mem_Icc.1 (h_nonpos i hu)
+  -- Deepen the resulting point without pole by free steps at the level `0`.
+  refine pointsOver_nonempty_of_near_steps hk hβ_gap (pointsOver_nonempty_of_killsCokernel h_kill c)
+    (steps_at_level_zero fun u hu y hy ↦ ?_) fun l u _ ↦ ?_
+  · have := mem_Icc.1 (h_nonpos i hu)
     have := mem_Ico.1 hy
     exact mem_twoWindows_union_iff.2 (.inl (by omega))
-  · exact sum_nonpos fun y hy ↦ cost_le_of_isUnramified hk (hβ_gap.eq_zero_of_dvd hy)
+  · dsimp only [improvedOrders, raisedOrdersAtZero, plainDepth, standardDepth]
+    split_ifs <;> omega
 
 /-- On an unramified chart let the jumps `u` of the side `S'` lie in `[-η, 0]`, and let `x₀'` be a
 point over `c'` at the letter `i.stepBack 1` before `i`, without pole and of depth `a + t - u` at
