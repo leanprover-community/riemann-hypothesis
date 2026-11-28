@@ -635,6 +635,147 @@ private lemma sum_blockAverage_mul_blockAverage_eq :
   simp [mul_simClassOf, blockAverage_simClassOf, finMean_eq, finsum_eq_sum_of_fintype,
     div_mul_div_comm, ← Nat.cast_mul, sum_mul_sum, ← sum_prod_type']
 
+omit [Finite k] [Module.Finite k V] [Module.Finite k W] in
+/-- The shear `(w, v) ↦ (w, v + s w)` of `W × V` intertwines the block maps
+`blockTriangularEnd a b (a ∘ₗ s - s ∘ₗ b + y)` and `blockTriangularEnd a b y`. -/
+lemma skewProd_blockTriangularEnd (s y : W →ₗ[k] V) (z : W × V) :
+    LinearEquiv.skewProd 1 1 s (blockTriangularEnd a b (a ∘ₗ s - s ∘ₗ b + y) z) =
+      blockTriangularEnd a b y (LinearEquiv.skewProd 1 1 s z) := by
+  obtain ⟨w, v⟩ := z
+  simp only [coprod_apply, LinearMap.prod_apply, LinearMap.coe_add, Function.prod_apply,
+    Pi.add_apply, LinearMap.sub_apply, coe_comp, Function.comp_apply, LinearMap.zero_apply,
+    Prod.mk_add_mk, add_zero, LinearEquiv.skewProd_apply, one_apply_eq_self, map_add,
+    Prod.mk.injEq, true_and]
+  grind
+
+/-- Let `A` and `B` be stable subspaces of `a` and `b`, let `y : W →ₗ[k] V` take `B` into `A`, and
+let `s` be a class of maps `W →ₗ[k] V` modulo those taking `B` into `A`. This gives the map
+`x = a ∘ₗ s.out - s.out ∘ₗ b + y` together with the preimage of `B × A` under the shear
+`(w, v) ↦ (w, v + s.out w)`, a subspace stable under `blockTriangularEnd a b x`. -/
+private def shearedStableSubspace :
+    (Σ P : StableSubspace a × StableSubspace b,
+        P.2.val.compatibleMaps P.1.val × ((W →ₗ[k] V) ⧸ P.2.val.compatibleMaps P.1.val)) →
+      Σ x : W →ₗ[k] V, StableSubspace (blockTriangularEnd a b x)
+  | ⟨⟨A, B⟩, y, s⟩ => ⟨a ∘ₗ s.out - s.out ∘ₗ b + y,
+      comap (LinearEquiv.skewProd 1 1 s.out).toLinearMap (g' := blockTriangularEnd a b y)
+        (skewProd_blockTriangularEnd a b s.out y)
+        ⟨.prod B A, fun _ hx ↦
+          ⟨add_mem (B.prop _ hx.1) (zero_mem _), add_mem (y.prop hx.1) (A.prop _ hx.2)⟩⟩⟩
+
+omit [Finite k] [Module.Finite k V] [Module.Finite k W] in
+/-- The subspace in `shearedStableSubspace a b ⟨(A, B), y, s⟩` consists of the pairs `(w, v)` with
+`w ∈ B` and `v + s.out w ∈ A`. -/
+private lemma mem_shearedStableSubspace (A : StableSubspace a) (B : StableSubspace b)
+    (y : B.val.compatibleMaps A.val) (s : (W →ₗ[k] V) ⧸ B.val.compatibleMaps A.val)
+    (w : W) (v : V) :
+    (w, v) ∈ (shearedStableSubspace a b ⟨(A, B), y, s⟩).2.val ↔
+      w ∈ B.val ∧ v + s.out w ∈ A.val := by
+  simp [shearedStableSubspace, comap]
+
+omit [Finite k] [Module.Finite k V] [Module.Finite k W] in
+/-- The map `shearedStableSubspace a b` is injective: the map `x` and the stable subspace determine
+`A`, `B`, the class `s` and then `y`. -/
+private lemma shearedStableSubspace_injective : (shearedStableSubspace a b).Injective := by
+  rintro ⟨⟨A, B⟩, y, s⟩ ⟨⟨A', B'⟩, y', s'⟩ h
+  obtain ⟨hx, hU⟩ := Sigma.subtype_ext_iff.1 h
+  have mem_iff (w : W) (v : V) :
+      w ∈ B.val ∧ v + s.out w ∈ A.val ↔ w ∈ B'.val ∧ v + s'.out w ∈ A'.val := by
+    rw [← mem_shearedStableSubspace a b A B y, ← mem_shearedStableSubspace a b A' B' y', hU]
+  have hA (v : V) : v ∈ A.val ↔ v ∈ A'.val := by simpa using mem_iff 0 v
+  obtain rfl : A = A' := Subtype.ext (SetLike.ext hA)
+  -- at `v = -s w` the left side holds for `w ∈ B`, and at `v = -s' w` the right side for `w ∈ B'`
+  have h_left (w : W) (hw : w ∈ B.val) : w ∈ B'.val ∧ -s.out w + s'.out w ∈ A.val :=
+    (mem_iff w (-s.out w)).1 ⟨hw, by simp⟩
+  have h_right (w : W) (hw : w ∈ B'.val) : w ∈ B.val :=
+    ((mem_iff w (-s'.out w)).2 ⟨hw, by simp⟩).1
+  obtain rfl : B = B' :=
+    Subtype.ext (SetLike.ext fun w ↦ ⟨fun hw ↦ (h_left w hw).left, h_right w⟩)
+  -- `-s w + s' w ∈ A` for `w ∈ B`: the two classes agree
+  obtain rfl : s = s' := s.out_equiv_out.1 (leftRel_apply.2 fun w hw ↦ (h_left w hw).right)
+  simpa [shearedStableSubspace] using hx
+
+omit [Finite k] in
+/-- The map `shearedStableSubspace a b` is surjective: every map `x : W →ₗ[k] V` together with a
+subspace stable under `blockTriangularEnd a b x` is one of its values. -/
+private lemma shearedStableSubspace_surjective : (shearedStableSubspace a b).Surjective := by
+  rintro ⟨x, U⟩
+  -- `A` is the preimage of `U` under `inr` and `B` the first projection of `U`; the map `t`
+  -- into `U` extends a section of `U → B`, and `s` is the class of minus its second component.
+  let A : StableSubspace a := U.comap (inr ..) (by simp)
+  let B : StableSubspace b := ⟨U.val.map (fst ..), fun _ ⟨z, hz, h_fst⟩ ↦
+    ⟨blockTriangularEnd a b x z, U.property z hz, by simp [← h_fst]⟩⟩
+  obtain ⟨r, hr⟩ := projective_lifting_property _ .id ((fst ..).submoduleMap_surjective U.val)
+  obtain ⟨t, rfl⟩ := r.exists_extend
+  have t_fst (w : W) (hw : w ∈ B.val) : (t w).val.fst = w := congr($hr ⟨w, hw⟩)
+  let s := (B.val.compatibleMaps A.val).mkQ (-snd .. ∘ₗ U.val.subtype ∘ₗ t)
+  -- For `w ∈ B` the vector `(w, -s.out w)` is `t w` plus an element of `0 × A`.
+  have graph_mem (w : W) (hw : w ∈ B.val) : (w, -s.out w) ∈ U.val := by
+    simpa [Prod.add_def,
+      t_fst w hw] using add_mem (t w).property (QuotientAddGroup.eq.1 s.out_eq hw)
+  have mem_U (w : W) (v : V) : w ∈ B.val ∧ v + s.out w ∈ A.val ↔ (w, v) ∈ U.val := by
+    refine (and_congr_right fun hw ↦ ?_).trans (and_iff_right_of_imp fun h ↦ ⟨_, h, rfl⟩)
+    -- membership in `A` is membership of `(0, v)` in `U`
+    have h_A_mem : v + s.out w ∈ A.val ↔ ((0 : W), v + s.out w) ∈ U.val := Iff.rfl
+    rw [h_A_mem]
+    simpa using U.val.sub_mem_iff_left (x := (w, v)) (graph_mem w hw)
+  have hy : x - (a ∘ₗ s.out - s.out ∘ₗ b) ∈ B.val.compatibleMaps A.val := fun w hw ↦ by
+    simpa [sub_add,
+      ← sub_eq_add_neg] using ((mem_U _ _).mpr (U.property _ (graph_mem w hw))).right
+  -- `(A, B)`, `y` and `s` give back the map `x`, and by `mem_U` the subspace `U`.
+  let y : B.val.compatibleMaps A.val := ⟨x - (a ∘ₗ s.out - s.out ∘ₗ b), hy⟩
+  refine ⟨⟨(A, B), y, s⟩, Sigma.subtype_ext ?_ ?_⟩
+  · exact add_sub_cancel ..
+  · exact SetLike.ext fun ⟨w, v⟩ ↦ (mem_shearedStableSubspace a b A B y s w v).trans (mem_U w v)
+
+omit [Finite k] in
+/-- Let `(x, U) = shearedStableSubspace a b ⟨(A, B), y, s⟩`. The restriction of
+`blockTriangularEnd a b x` to `U` has the class of the block map on `B × A` with diagonal blocks
+`A.endOnSub`, `B.endOnSub` and off-diagonal block the restriction `B → A` of `y`. -/
+private lemma simClassOf_endOnSub_shearedStableSubspace (A : StableSubspace a)
+    (B : StableSubspace b) (y : B.val.compatibleMaps A.val)
+    (s : (W →ₗ[k] V) ⧸ B.val.compatibleMaps A.val) :
+    simClassOf (shearedStableSubspace a b ⟨(A, B), y, s⟩).2.endOnSub =
+      simClassOf (blockTriangularEnd A.endOnSub B.endOnSub
+        (y.val.restrict fun _ hw ↦ y.prop hw)) := by
+  -- The shear is bijective, so it identifies the map on the subspace with the map on `B × A`.
+  rw [shearedStableSubspace, simClassOf_endOnSub_comap,
+      simClassOf_endOnSub (B.val.subtype.prodMap A.val.subtype)] <;>
+    simp [endOnSub, ← ker_eq_bot]
+
+omit [Finite k] in
+/-- Let `(x, U) = shearedStableSubspace a b ⟨(A, B), y, s⟩`. The map that
+`blockTriangularEnd a b x` induces on the quotient by `U` has the class of the block map on
+`(W ⧸ B) × (V ⧸ A)` with diagonal blocks `A.endOnQuot`, `B.endOnQuot` and off-diagonal block the
+map `W ⧸ B → V ⧸ A` induced by `y`. -/
+private lemma simClassOf_endOnQuot_shearedStableSubspace (A : StableSubspace a)
+    (B : StableSubspace b) (y : B.val.compatibleMaps A.val)
+    (s : (W →ₗ[k] V) ⧸ B.val.compatibleMaps A.val) :
+    simClassOf (shearedStableSubspace a b ⟨(A, B), y, s⟩).2.endOnQuot =
+      simClassOf (blockTriangularEnd A.endOnQuot B.endOnQuot
+        (B.val.mapQ A.val y.val fun _ hw ↦ y.prop hw)) := by
+  -- The shear is bijective, so it identifies the map on the quotient with the map on the quotient
+  -- by `B × A`.
+  rw [shearedStableSubspace, simClassOf_endOnQuot_comap,
+      simClassOf_endOnQuot (B.val.mkQ.prodMap A.val.mkQ)] <;>
+    simp [endOnQuot, ← range_eq_top]
+
+/-- Let `A` and `B` be subspaces of `V` and `W`, and let `G` be a function of a map `B → A` and a
+map `W ⧸ B → V ⧸ A`. Then the mean, over the maps `y : W →ₗ[k] V` taking `B` into `A`, of `G` at
+the two maps induced by `y` is the mean of `G`. -/
+lemma finMean_restrict_mapQ {A : Submodule k V} {B : Submodule k W}
+    (G : (B →ₗ[k] A) × (W ⧸ B →ₗ[k] V ⧸ A) → ℂ) :
+    finMean (fun y : B.compatibleMaps A ↦
+        G (y.val.restrict fun _ hw ↦ y.prop hw, B.mapQ A y.val fun _ hw ↦ y.prop hw)) =
+      finMean G := by
+  -- Inducing the two maps is additive, and every pair of maps occurs.
+  let induced : B.compatibleMaps A →+ (B →ₗ[k] A) × (W ⧸ B →ₗ[k] V ⧸ A) :=
+    .mk' (fun y ↦ (y.val.restrict fun _ hw ↦ y.prop hw, B.mapQ A y.val fun _ hw ↦ y.prop hw))
+      (by aesop)
+  have induced_surj : Function.Surjective induced := fun ⟨α, β⟩ ↦
+    have ⟨y, hy, hα, hβ⟩ := exists_restrict_eq_and_mapQ_eq α β
+    ⟨⟨y, hy⟩, Prod.ext hα hβ⟩
+  exact finMean_comp_surjective induced induced_surj G
+
 /-- Mackey formula for the block averaging map δ = `New.Hall.blockAverage`, where δF(x, y) averages
 `F` over block upper triangular endomorphisms with diagonal blocks x, y and arbitrary off-diagonal
 block. The claim is that δ(F * H) at the classes of `a` and `b` equals a sum over the `a`-stable
@@ -649,106 +790,36 @@ lemma blockAverage_mul :
   classical
   -- The left side sums over pairs `(x, U)` with `U` stable under `blockTriangularEnd a b x`. Such a
   -- `U` is the preimage of a product `B × A` of stable subspaces under a shear
-  -- `(w, v) ↦ (w, v + s w)`. Here `s` is unique modulo the space `S (A, B)` of maps taking `B` into
-  -- `A`, which contains `y = x - (a s - s b)`. So `φ` parametrises the pairs by `(A, B)`, `y` and
-  -- the class of `s`.
-  let S (P : StableSubspace a × StableSubspace b) : Submodule k (W →ₗ[k] V) :=
-    P.snd.val.compatibleMaps P.fst.val
-  let φ : (Σ P : StableSubspace a × StableSubspace b, S P × ((W →ₗ[k] V) ⧸ S P)) →
-      Σ x : W →ₗ[k] V, StableSubspace (blockTriangularEnd a b x)
-    | ⟨⟨A, B⟩, y, s⟩ => ⟨a ∘ₗ s.out - s.out ∘ₗ b + y,
-      comap (LinearEquiv.skewProd 1 1 s.out).toLinearMap (g' := blockTriangularEnd a b y)
-        (by
-          rintro ⟨w, v⟩
-          simp only [coprod_apply, LinearMap.prod_apply, LinearMap.coe_add, Function.prod_apply,
-            Pi.add_apply, LinearMap.sub_apply, coe_comp, Function.comp_apply, LinearMap.zero_apply,
-            Prod.mk_add_mk, add_zero, LinearEquiv.coe_coe, LinearEquiv.skewProd_apply,
-            one_apply_eq_self, map_add, Prod.mk.injEq, true_and]
-          grind)
-        ⟨.prod B A, fun _ hx ↦
-          ⟨add_mem (B.prop _ hx.1) (zero_mem _), add_mem (y.prop hx.1) (A.prop _ hx.2)⟩⟩⟩
-  have mem_φ (P : StableSubspace a × StableSubspace b) (y : S P) (s : (W →ₗ[k] V) ⧸ S P) (w : W)
-      (v : V) : (w, v) ∈ (φ ⟨P, y, s⟩).snd.val ↔ w ∈ P.snd.val ∧ v + s.out w ∈ P.fst.val := by
-    simp [φ, comap]
-  have φ_inj : φ.Injective := by
-    rintro ⟨⟨A, B⟩, y, s⟩ ⟨⟨A', B'⟩, y', s'⟩ h
-    obtain ⟨hx, hU⟩ := Sigma.subtype_ext_iff.1 h
-    have mem_iff (w : W) (v : V) :
-        w ∈ B.val ∧ v + s.out w ∈ A.val ↔ w ∈ B'.val ∧ v + s'.out w ∈ A'.val := by
-      rw [← mem_φ (A, B) y, ← mem_φ (A', B') y', hU]
-    have hA (v : V) : v ∈ A.val ↔ v ∈ A'.val := by simpa using mem_iff 0 v
-    obtain rfl : A = A' := Subtype.ext (SetLike.ext hA)
-    -- at `v = -s w` the left side holds for `w ∈ B`, and at `v = -s' w` the right side for `w ∈ B'`
-    have h_left (w : W) (hw : w ∈ B.val) : w ∈ B'.val ∧ -s.out w + s'.out w ∈ A.val :=
-      (mem_iff w (-s.out w)).1 ⟨hw, by simp⟩
-    have h_right (w : W) (hw : w ∈ B'.val) : w ∈ B.val :=
-      ((mem_iff w (-s'.out w)).2 ⟨hw, by simp⟩).1
-    obtain rfl : B = B' :=
-      Subtype.ext (SetLike.ext fun w ↦ ⟨fun hw ↦ (h_left w hw).left, h_right w⟩)
-    -- `-s w + s' w ∈ A` for `w ∈ B`: the two classes agree
-    obtain rfl : s = s' := s.out_equiv_out.1 (leftRel_apply.2 fun w hw ↦ (h_left w hw).right)
-    simpa [φ] using hx
-  have φ_surj : φ.Surjective := by
-    rintro ⟨x, U⟩
-    -- `A` is the preimage of `U` under `inr` and `B` the first projection of `U`; the map `t`
-    -- into `U` extends a section of `U → B`, and `s` is the class of minus its second component.
-    let A : StableSubspace a := U.comap (inr ..) (by simp)
-    let B : StableSubspace b := ⟨U.val.map (fst ..), fun _ ⟨z, hz, h_fst⟩ ↦
-      ⟨blockTriangularEnd a b x z, U.property z hz, by simp [← h_fst]⟩⟩
-    obtain ⟨r, hr⟩ := projective_lifting_property _ .id ((fst ..).submoduleMap_surjective U.val)
-    obtain ⟨t, rfl⟩ := r.exists_extend
-    have t_fst (w : W) (hw : w ∈ B.val) : (t w).val.fst = w := congr($hr ⟨w, hw⟩)
-    let s := (S (A, B)).mkQ (-snd .. ∘ₗ U.val.subtype ∘ₗ t)
-    -- For `w ∈ B` the vector `(w, -s.out w)` is `t w` plus an element of `0 × A`.
-    have graph_mem (w : W) (hw : w ∈ B.val) : (w, -s.out w) ∈ U.val := by
-      simpa [Prod.add_def,
-        t_fst w hw] using add_mem (t w).property (QuotientAddGroup.eq.1 s.out_eq hw)
-    have mem_U (w : W) (v : V) : w ∈ B.val ∧ v + s.out w ∈ A.val ↔ (w, v) ∈ U.val := by
-      refine (and_congr_right fun hw ↦ ?_).trans (and_iff_right_of_imp fun h ↦ ⟨_, h, rfl⟩)
-      -- membership in `A` is membership of `(0, v)` in `U`
-      have h_A_mem : v + s.out w ∈ A.val ↔ ((0 : W), v + s.out w) ∈ U.val := Iff.rfl
-      rw [h_A_mem]
-      simpa using U.val.sub_mem_iff_left (x := (w, v)) (graph_mem w hw)
-    have hy : x - (a ∘ₗ s.out - s.out ∘ₗ b) ∈ S (A, B) := fun w hw ↦ by
-      simpa [sub_add,
-        ← sub_eq_add_neg] using ((mem_U _ _).mpr (U.property _ (graph_mem w hw))).right
-    -- `(A, B)`, `y` and `s` give back the map `x`, and by `mem_U` the subspace `U`.
-    let y : S (A, B) := ⟨x - (a ∘ₗ s.out - s.out ∘ₗ b), hy⟩
-    refine ⟨⟨(A, B), y, s⟩, Sigma.subtype_ext ?_ ?_⟩
-    · exact add_sub_cancel ..
-    · exact SetLike.ext fun ⟨w, v⟩ ↦ (mem_φ (A, B) y s w v).trans (mem_U w v)
-  have φ_bij : φ.Bijective := ⟨φ_inj, φ_surj⟩
-  -- The left side is the sum over the pairs `(x, U)`, reindexed by `φ`, divided by `#(W → V)`.
+  -- `(w, v) ↦ (w, v + s w)`. Here `s` is unique modulo the space of maps taking `B` into `A`, which
+  -- contains `y = x - (a s - s b)`. So `shearedStableSubspace` parametrises the pairs by `(A, B)`,
+  -- `y` and the class of `s`.
+  have h_bij : (shearedStableSubspace a b).Bijective :=
+    ⟨shearedStableSubspace_injective a b, shearedStableSubspace_surjective a b⟩
+  -- The left side is the sum over the pairs `(x, U)`, reindexed by `shearedStableSubspace`, divided
+  -- by `#(W → V)`.
   have h_lhs : (F * H).blockAverage (simClassOf a) (simClassOf b) =
-      (∑ i, F (simClassOf (φ i).2.endOnSub) * H (simClassOf (φ i).2.endOnQuot)) /
+      (∑ i, F (simClassOf (shearedStableSubspace a b i).2.endOnSub) *
+          H (simClassOf (shearedStableSubspace a b i).2.endOnQuot)) /
         (Fintype.card (W →ₗ[k] V) : ℂ) := by
     simp [mul_simClassOf, blockAverage_simClassOf, finMean_eq, finsum_eq_sum_of_fintype,
-      ← sum_sigma', ← φ_bij.sum_comp]
+      ← sum_sigma', ← h_bij.sum_comp]
   -- The right side is a sum over the pairs `(A, B)`; compare the terms of one pair.
   rw [h_lhs, sum_blockAverage_mul_blockAverage_eq, sum_sigma, Finset.sum_div]
-  congr with ⟨⟨A, hA⟩, ⟨B, hB⟩⟩
+  congr with ⟨A, B⟩
   -- The number of all `x` is that of the `y` times that of the classes `s`.
   have h_card : Fintype.card (W →ₗ[k] V) =
-      Fintype.card (B.compatibleMaps A) * Fintype.card ((W →ₗ[k] V) ⧸ B.compatibleMaps A) := by
-    simpa using (B.compatibleMaps A).card_eq_card_quotient_mul_card
-  simp_rw [S, h_card, ← card_prod, ← finMean_eq]
+      Fintype.card (B.val.compatibleMaps A.val) *
+        Fintype.card ((W →ₗ[k] V) ⧸ B.val.compatibleMaps A.val) := by
+    simpa using (B.val.compatibleMaps A.val).card_eq_card_quotient_mul_card
+  simp_rw [h_card, ← card_prod, ← finMean_eq]
   -- So both sides are averages. The term at `(y, s)` depends only on the maps `B → A` and
-  -- `W ⧸ B → V ⧸ A` that `y` induces, and every pair of such maps occurs.
-  let induced :
-      B.compatibleMaps A × (_ ⧸ B.compatibleMaps A) →+ (B →ₗ[k] A) × (_ ⧸ B →ₗ[k] _ ⧸ A) :=
-    -- (`clear * -` keeps `aesop` fast: the context here is large.)
-    .mk' (fun (⟨y, hy⟩, _) ↦ (y.restrict fun w hw ↦ hy hw, B.mapQ A y fun w hw ↦ hy hw))
-      (by clear * -; aesop)
-  have induced_surj : Function.Surjective induced := fun ⟨α, β⟩ ↦
-    have ⟨y, hy, hα, hβ⟩ := exists_restrict_eq_and_mapQ_eq α β
-    ⟨(⟨y, hy⟩, 0), Prod.ext hα hβ⟩
-  refine (congrArg finMean (funext fun _ ↦ ?_)).trans (finMean_comp_surjective _ induced_surj _)
-  -- The shear is bijective, so it identifies the maps on `U` and on the quotient by `U` with those
-  -- for `B × A`; these are block maps on `B × A` and on the product of the quotients.
-  rw [simClassOf_endOnSub_comap, simClassOf_endOnQuot_comap,
-      simClassOf_endOnSub (B.subtype.prodMap A.subtype),
-      simClassOf_endOnQuot (B.mkQ.prodMap A.mkQ)] <;>
-    simp [induced, endOnSub, endOnQuot, ← ker_eq_bot, ← range_eq_top]
+  -- `W ⧸ B → V ⧸ A` that `y` induces, and every pair of such maps occurs equally often.
+  rw [finMean_prod]
+  simp_rw [simClassOf_endOnSub_shearedStableSubspace a b A B,
+    simClassOf_endOnQuot_shearedStableSubspace a b A B, finMean_const]
+  exact finMean_restrict_mapQ fun z ↦
+    F (simClassOf (blockTriangularEnd A.endOnSub B.endOnSub z.1)) *
+      H (simClassOf (blockTriangularEnd A.endOnQuot B.endOnQuot z.2))
 
 /-- If the class `o` has dimension `0`, the block average of `F` at `(o, a)` and at `(a, o)` is
 `F a`. -/
