@@ -560,6 +560,23 @@ class Gh(unittest.TestCase):
             self.answering(body, code=1).pull(1)
         self.assertIn("bad", str(caught.exception))
 
+    def test_graphql_internal_error_retries_the_same_read_once(self):
+        internal = subprocess.CompletedProcess([], 1, b'{"data":null,"errors":[{"type":"INTERNAL"}]}', b"")
+        success = subprocess.CompletedProcess([], 0, b'{"data":{"repository":{"pullRequest":null}}}', b"")
+        for last in (success, internal):
+            with self.subTest(last=last.returncode), mock.patch.object(inbox._rest.time, "sleep") as sleep:
+                gh = inbox.GitHub("o/r")
+                gh.run = mock.Mock(side_effect=[internal, last])
+                with contextlib.redirect_stderr(io.StringIO()):
+                    if last is success:
+                        self.assertIsNone(gh.pull(1))
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, "INTERNAL"):
+                            gh.pull(1)
+                self.assertEqual(gh.queries, 2)
+                self.assertEqual(gh.run.call_args_list[0], gh.run.call_args_list[1])
+                sleep.assert_called_once()
+
     def test_a_body_that_is_not_json_still_gives_the_status(self):
         gh = self.answering(b"HTTP/2.0 502 Bad Gateway\r\n\r\n<html>oops</html>", code=1)
         self.assertEqual(gh.call("GET", "labels/inbox"), (502, None))

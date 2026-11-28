@@ -120,18 +120,24 @@ class GitHub:
         return status, data
 
     def graphql(self, query, **variables):
-        """A GraphQL query's data. An answer with errors, or without data, is an error."""
-        done = self.run(["graphql", "--input", "-"], {"query": query, "variables": variables})
-        self.queries += 1
-        try:
-            answer = json.loads(done.stdout)
-        except json.JSONDecodeError:
-            answer = None
-        errors = answer.get("errors") if isinstance(answer, dict) else None
-        if not isinstance(answer, dict) or not answer.get("data") or errors or done.returncode != 0:
-            sys.stderr.write(done.stderr.decode("utf-8", "replace"))
-            raise RuntimeError(f"GraphQL query failed: {json.dumps(errors) if errors else 'no answer'}")
-        return answer["data"]
+        """A GraphQL query's data. Retry once if GitHub reports an internal error."""
+        for attempt in range(2):
+            done = self.run(["graphql", "--input", "-"], {"query": query, "variables": variables})
+            self.queries += 1
+            try:
+                answer = json.loads(done.stdout)
+            except json.JSONDecodeError:
+                answer = None
+            errors = answer.get("errors") if isinstance(answer, dict) else None
+            if isinstance(answer, dict) and answer.get("data") and not errors and done.returncode == 0:
+                return answer["data"]
+            if attempt or not errors or not all(isinstance(e, dict) and e.get("type") == "INTERNAL"
+                                                 for e in errors):
+                break
+            print("GitHub reported an internal error; retrying the query.", file=sys.stderr)
+            time.sleep(2)
+        sys.stderr.write(done.stderr.decode("utf-8", "replace"))
+        raise RuntimeError(f"GraphQL query failed: {json.dumps(errors) if errors else 'no answer'}")
 
     def label_exists(self, name):
         """Whether the label `name` exists, asked once a run. Adding a label that does not exist
