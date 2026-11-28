@@ -187,13 +187,9 @@ lemma New.classNumber_le (F : Type*) [Field F] [NumberField F] :
     classNumber F ≤ (2 ^ finrank ℚ F * (discr F).natAbs) ^ (finrank ℚ F + 1) := by
   set n : ℕ := finrank ℚ F
   set d : ℕ := (discr F).natAbs
-  have h_bound : classNumber F ≤ d * 4 ^ n := by
-    have h := NumberField.classNumber_le_bound F
-    rw [show |(discr F : ℝ)| = (d : ℝ) by simp [d]] at h
-    exact_mod_cast h
   have hn : 1 ≤ n := Module.finrank_pos
   calc classNumber F
-      ≤ d * 4 ^ n := h_bound
+      ≤ d * 4 ^ n := classNumber_le_nat_of_abs_discr_le F (Int.abs_eq_natAbs _).le
     _ = d * (2 ^ n) ^ 2 := by rw [← pow_mul, mul_comm n 2, pow_mul]; norm_num
     _ ≤ d ^ (n + 1) * (2 ^ n) ^ (n + 1) := by
         gcongr
