@@ -6,6 +6,7 @@ public import Lib.GaloisRep.Main.Defs
 public import New.Congruences.FirstOrder.EvenClasses
 import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import TauCeti.Topology.Algebra.ContinuousMonoidHom.Basic
 
 /-!
 # Kummer maps
@@ -284,8 +285,9 @@ variable (ℓ E) in
 /-- The module `ℤ/ℓ^ν` with `G_F` acting by `(cyc⁺) ^ (-e)`. -/
 abbrev tateTwistPlus (ν e : ℕ) : DiscreteModule (ZMod (ℓ ^ ν)) Gal(Ω/maximalRealSubfield E) :=
   .of (charRep (ZMod (ℓ ^ ν)) (cyclotomicPlusMod ℓ E ν ^ e)⁻¹)
-    (((Continuous.of_isOpen_ker _ (isOpen_ker_cyclotomicPlusMod ν)).pow e).inv.fst'.smul
-      continuous_snd)
+    (by
+      exact ((((cyclotomicPlusMod ℓ E ν).continuous_of_isOpen_ker
+        (isOpen_ker_cyclotomicPlusMod ν)).pow e).inv.fst'.smul continuous_snd))
 
 lemma tateTwistPlus_ρ (ν e : ℕ) (g : Gal(Ω/maximalRealSubfield E)) (a : ZMod (ℓ ^ ν)) :
     (tateTwistPlus ℓ E ν e).ρ g a = ((cyclotomicPlusMod ℓ E ν g ^ e)⁻¹).val * a := rfl

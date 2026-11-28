@@ -15,6 +15,7 @@ import Lib.ClassField.Local.InvariantMap
 import Lib.ClassField.LocalDuality.DualityInequality
 import Lib.ClassField.Places.LocalFields
 import Lib.ClassField.Places.TameInertia
+import TauCeti.Topology.Algebra.ContinuousMonoidHom.Basic
 
 /-!
 # Local and global Artin maps, algebraic Hecke characters and tame inertia
@@ -845,7 +846,8 @@ lemma valuation_smul_div_sub_lt_one {G k E : Type} [Group G] [TopologicalSpace G
   -- and the products `φ ^ m * i` with `i` in inertia are dense.
   have h_cyc : ∀ g : G, cyclotomicCharMod E n g = 1 := by
     obtain ⟨-, h_dense, -⟩ := L.frobenius_spec
-    refine (h_dense hφ).eq ?_ (.of_isOpen_ker _ isOpen_ker_cyclotomicCharMod.out)
+    refine (h_dense hφ).eq ?_
+      ((cyclotomicCharMod E n).continuous_of_isOpen_ker isOpen_ker_cyclotomicCharMod.out)
     simp [cyclotomicCharMod_eq_one_of_mem_inertiaGroup _ hn_unit, hφ.cyclotomicCharMod_eq hn_unit,
       hq, ← val_inj, ZMod.natCast_self]
   -- For `x` in `kˣ`, `a x` is an `n`-th root of `x` and `f x : G → ZMod n` its Kummer character.

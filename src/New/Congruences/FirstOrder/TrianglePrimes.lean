@@ -7,6 +7,7 @@ import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 import Lib.Cyclotomic.OddSha
 import Lib.GaloisRep.Main.QuadraticStep
 import Lib.General.NumberTheory.FrobeniusOrbits
+import TauCeti.Topology.Algebra.ContinuousMonoidHom.Basic
 
 /-!
 # Taylor–Wiles places in a triangle for the even classes, with prescribed Frobenii
@@ -308,7 +309,7 @@ lemma New.Selmer.evenClasses_eventually_eq_two_nsmul {ℓ : ℕ} {E : Type} [The
   let χ : Gal(Ω/E) →* (ZMod (ℓ ^ ν))ˣ := cyclotomicCharMod Ω (ℓ ^ ν)
   let V : DiscreteModule (ZMod (ℓ ^ ν)) Gal(Ω/E) :=
     .of (charRep (ZMod (ℓ ^ ν)) (χ ^ e)⁻¹)
-      ((((Continuous.of_isOpen_ker χ Fact.out).pow e).inv).fst'.smul continuous_snd)
+      (((χ.continuous_of_isOpen_ker Fact.out).pow e).inv.fst'.smul continuous_snd)
   have h_const : ∀ᶠ s in nhds σ,
       ∀ c ∈ Z1 V.ρ ⊓ .pi (inertiaAbove (placesDividing E ℓ)ᶜ) ⊥, c s = c σ :=
     (selmerZ1.finite_unramified_cocycles V (placesDividing E ℓ).toFinite).eventually_all.mpr
