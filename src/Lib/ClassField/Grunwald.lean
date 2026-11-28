@@ -491,8 +491,7 @@ lemma isStep_stepField [HasPrimitiveRoot5040 E] {p : ℕ} (hp : Nat.Prime p) (h�
     exact isOpen_mono (expUnit.ker.ker_le_comap _)
       (continuous_iff_forall_isOpen_ker_comp.mp continuous_artinMap χ)
   · -- the Artin map kills principal ideles, total positivity being void in the CM field `E`
-    simp [artinMap_principalIdele_eq_one_of_isTotallyPositive,
-      isTotallyPositive_of_isTotallyComplex]
+    simp [artinMap_principalIdele_eq_one_of_isTotallyPositive]
   · -- `ideleChar χ (z * star z)` is `expUnit` of `symmetrize χ` at the Artin symbol of `z`; this
     -- is `1` exactly on the norm group of `stepField χ` (`abelianLift_artinMap_eq_one_iff`)
     intro z
@@ -500,7 +499,7 @@ lemma isStep_stepField [HasPrimitiveRoot5040 E] {p : ℕ} (hp : Nat.Prime p) (h�
         expUnit (abelianLift (symmetrize χ) (artinMap Gal(Ω/E) z)) := by
       simp [← abelianLift_symmetrize]
     rw [h_sym, expUnit_eq_one_iff, abelianLift_artinMap_eq_one_iff (symmetrize χ)]
-    simp [isTotallyPositive_of_isTotallyComplex]
+    simp
   · -- an integer `c` with `intTrace c = 1`
     obtain ⟨c, hc⟩ := (eq_top_iff_one _).mp h_trace
     exact ⟨c, by simp [← algebraMap_intTrace (A := 𝓞 E), hc]⟩

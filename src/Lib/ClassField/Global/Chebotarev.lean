@@ -80,7 +80,7 @@ lemma New.chebotarev {K : Type} [Field K] [NumberField K] [Algebra K Ω] {W : Se
   -- many `w` of prime norm (`ϖ_w` is the uniformiser idele at `w`).
   have h_ker_open : ((abelianLift χ).comp (artinMap H)).ker.IsOpen :=
     continuous_iff_forall_isOpen_ker_comp.mp continuous_artinMap χ
-  have h_ker_pos (x : Lˣ) (hx : IsTotallyPositive x.val) :
+  have h_ker_pos (x : Lˣ) (hx : NumberField.IsTotallyPositive x.val) :
       principalIdele x ∈ ((abelianLift χ).comp (artinMap H)).ker := by
     simp [artinMap_principalIdele_eq_one_of_isTotallyPositive hx]
   have h_often : ∃ᶠ w : FinPlace L in .cofinite, w.q.Prime ∧

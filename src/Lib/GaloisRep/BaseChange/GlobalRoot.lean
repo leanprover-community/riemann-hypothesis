@@ -210,7 +210,7 @@ lemma New.IsStep.exists_isSelfAdjoint_of_mem_kerCompNorm {E E' L : Type} [Field 
         units_map_adeleNorm_star] at h_u
       exact h_u
     obtain ⟨b, v, hbv⟩ := (hμ.apply_norm_eq_one_iff _).mp h_ww
-    exact ⟨b, v, isTotallyPositive_of_isTotallyComplex _, hbv⟩
+    exact ⟨b, v, by simp, hbv⟩
   -- the Artin symbol `f` of `w` fixes `E'` and `x`, hence all of `L = E'[x]`
   have h_art : New.QZChar.abelianLift ψ (artinMap Gal(Ω/K) w) = 1 := by
     obtain ⟨f, hf⟩ := Quot.exists_rep (artinMap Gal(Ω/K) w)
@@ -252,7 +252,7 @@ lemma New.IsStep.exists_isSelfAdjoint_of_mem_kerCompNorm {E E' L : Type} [Field 
       mul_comm (principalIdele a * principalIdele b * principalIdele (star b))]
   obtain ⟨z, c, hc, h_cob⟩ : ∃ (z : Lˣ) (c : 𝔸f L), IsUnit c ∧
       ↑(principalIdele z / (s * star s / u)) * adeleMap (g : L →+* L) c = c :=
-    exists_principalIdele_div_mul_adeleMap_eq (isTotallyPositive_of_isTotallyComplex _) hk
+    exists_principalIdele_div_mul_adeleMap_eq (by simp) hk
   -- `z * u * g c = s * star s * c`, so the product is `star c * (s * star s * c)`
   have h_split : principalIdele z * u = s * star s * (principalIdele z / (s * star s / u)) := by
     rw [div_div_eq_mul_div, mul_div_cancel]

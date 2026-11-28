@@ -24,8 +24,8 @@ the Albert–Brauer–Hasse–Noether theorem.
 
 ## Main definitions and results
 
-* `New.IsTotallyPositive.exists_resH2_cyclicClass_eq_zero`: the symbol of a totally positive `x`
-  restricts to zero on an open subgroup containing every complex conjugation.
+* `NumberField.IsTotallyPositive.exists_resH2_cyclicClass_eq_zero`: the symbol of a totally
+  positive `x` restricts to zero on an open subgroup containing every complex conjugation.
 * `New.second_inequality`: for `L / K` Galois, an open subgroup `W` of the finite ideles that
   contains the totally positive principal ideles and the norms from `L` has index at most `[L : K]`.
   Each of its cosets contains the uniformiser idele `ϖ_v` for infinitely many `v` of prime norm
@@ -75,16 +75,6 @@ open NumberField Complex DiscreteUnits Cohomology QZChar DiscreteModule ComplexE
 
 variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K]
 
-/-- In a totally complex field `K` every element `x` is totally positive (`New.IsTotallyPositive`:
-`φ x > 0` for every ring homomorphism `φ : K →+* ℝ`), since there is no such `φ`. -/
-lemma Cohomology.isTotallyPositive_of_isTotallyComplex [t : IsTotallyComplex K] (x : K) :
-    IsTotallyPositive x := by
-  intro φ
-  -- There is no `φ : K →+* ℝ`: it would give a real embedding of `K` in `ℂ`.
-  refine (t.complexEmbedding_not_isReal (ofRealHom.comp φ) ?_).elim
-  ext
-  simp
-
 variable {c : Γ} [Algebra K Ω] [MulSemiringAction Γ Ω] [G : IsProGalois Γ K Ω]
 
 /-- Let `c` act on `Ω` as complex conjugation under the embedding `j : Ω →+* ℂ` (`hj`). Then `j`
@@ -119,8 +109,8 @@ lemma IsComplexConj.mul_self (hc : IsComplexConj c) : c * c = 1 := by
 (a) contains every complex conjugation (the real places of `K` stay real in its fixed field)
 and (b) on which the symbol `(χ, x) ∈ H²(Γ, Ωˣ)` restricts to zero. Here `Ω` is the field `New.Ω`,
 the algebraic closure of `ℚ`, on which `Γ` acts as the Galois group over `K`. -/
-lemma IsTotallyPositive.exists_resH2_cyclicClass_eq_zero {χ : ↥(QZChar Γ)} {x : Kˣ}
-    (hx : IsTotallyPositive x.val) :
+lemma _root_.NumberField.IsTotallyPositive.exists_resH2_cyclicClass_eq_zero {χ : ↥(QZChar Γ)}
+    {x : Kˣ} (hx : IsTotallyPositive x.val) :
     ∃ U : OpenSubgroup Γ,
       (∀ c : Γ, IsComplexConj c → c ∈ U) ∧
       (unitsModule Γ).resH2 U
@@ -141,7 +131,8 @@ lemma IsTotallyPositive.exists_resH2_cyclicClass_eq_zero {χ : ↥(QZChar Γ)} {
     have h_sq : j (y.toMul : Ω) ^ 2 = φ x := by
       simpa [φ, toMul_nsmul, val_pow_eq_pow_val] using
         congrArg (fun z : DiscreteUnits Ω ↦ j (z.toMul : Ω)) hy
-    have h_real : (j (y.toMul : Ω)).im = 0 := by simpa [← sq_nonneg_iff, h_sq] using (hx φ).le
+    have h_real : (j (y.toMul : Ω)).im = 0 := by
+      simpa [← sq_nonneg_iff, h_sq] using (isTotallyPositive_iff_forall_ringHom.mp hx φ).le
     exact j.injective ((hj _).trans (conj_eq_iff_im.mpr h_real))
   · -- `χ c + χ c = χ (c * c) = 0`, as `c` is an involution.
     exact map_mul_eq_one (toHom χ) hc.mul_self
@@ -215,7 +206,7 @@ lemma New.exists_mul_prod_eq_one {G ι : Type*} [Monoid G] [Fintype ι] (ψ : G 
 variable {K : Type*}
   (L : Type*) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] [IsGalois K L]
   {W : Subgroup (𝔸f K)ˣ} (hW_open : W.IsOpen)
-  (hW_pos : ∀ x : Kˣ, IsTotallyPositive x.val → principalIdele (x : Kˣ) ∈ W)
+  (hW_pos : ∀ x : Kˣ, NumberField.IsTotallyPositive x.val → principalIdele (x : Kˣ) ∈ W)
 
 include hW_open hW_pos
 
@@ -241,8 +232,8 @@ lemma New.exists_hasPrimeDensity_addChar_uniformizer (f : AddChar (Additive ((�
       map_one' := by simp
       map_mul' := by simp [field] }
   have h_pos (x : Kˣ) (hx : ∀ w : NumberField.InfinitePlace K, sgn w x ≠ -1) :
-      IsTotallyPositive x.val := by
-    intro φ
+      NumberField.IsTotallyPositive x.val := by
+    refine isTotallyPositive_iff_forall_ringHom.mpr fun φ ↦ ?_
     refine lt_of_not_ge fun h_neg ↦ hx (.mk (ofRealHom.comp φ)) ?_
     simp [sgn, Φ, abs_of_nonpos h_neg, IsSelfAdjoint, ext_iff]
   obtain ⟨T, hT⟩ :
