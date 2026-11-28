@@ -165,6 +165,20 @@ lemma Parameters.placeClass_sq_eq (P : Parameters) {s ℓ i q : ℕ} (hℓ : ℓ
   rw [h_val, hy, map_mul, map_pow, map_intCast, map_natCast, mul_pow, ← Int.cast_pow,
     Int.isUnit_sq ε.isUnit, Int.cast_one, one_mul, ← pow_mul']
 
+/-- If two places have classes `±ℓⁱ` and `±ℓʲ`, raising their classes to powers `2j` and
+`2i` gives the same residue modulo every divisor of `q₁` coprime to `ℓ`. Squaring removes
+both signs, leaving `ℓ ^ (2 * i * j)` on each side. -/
+lemma Parameters.placeClass_pow_eq_of_two_returns (P : Parameters) {s ℓ i j q : ℕ}
+    (hℓ : ℓ.Prime) {u v : P.Φ s} {ε δ : ℤˣ}
+    (hu : (P.placeClass (Nat.ordCompl_dvd (P.q₁ s) ℓ) u).val = (ε : ℤ) * ℓ ^ i)
+    (hv : (P.placeClass (Nat.ordCompl_dvd (P.q₁ s) ℓ) v).val = (δ : ℤ) * ℓ ^ j)
+    (hq : q ∣ P.q₁ s) (hcop : ℓ.Coprime q) :
+    P.placeClass hq u ^ (2 * j) = P.placeClass hq v ^ (2 * i) := by
+  have hi := P.placeClass_sq_eq hℓ hu hq hcop
+  have hj := P.placeClass_sq_eq hℓ hv hq hcop
+  simp only [Units.ext_iff, Units.val_pow_eq_pow_val, pow_mul _ 2, hi, hj]
+  ring
+
 /-- In a commutative group, `(g ^ e₂ / g ^ e₁) ^ (a + b) = (g ^ e₃ / g ^ e₁) ^ b` forces
 `(a + b) e₂ ≡ a e₁ + b e₃` modulo the order of `g`. -/
 lemma modEq_orderOf_of_div_pow_eq {G : Type*} [CommGroup G] {g : G} {e₁ e₂ e₃ a b : ℕ}
@@ -229,13 +243,8 @@ lemma Parameters.exists_large_isSparse (P : Parameters) {s n H L : ℕ}
   · -- `ℓ` odd: modulo `2 ^ (s + v)`, the `2 j`-th power of the first ratio and the `2 i`-th
     -- power of the second are both `ℓ ^ (2 i j)`
     have h_coprime_two (k : ℕ) : ℓ.Coprime (2 ^ k) := .pow_right _ (by simpa using h_odd)
-    have h_sq_i : (ψ (place e₂ / place e₁)).val ^ 2 = (ℓ : ZMod (2 ^ (s + v))) ^ (2 * i) :=
-      P.placeClass_sq_eq hℓ h_ratio_i hv (h_coprime_two _)
-    have h_sq_j : (ψ (place e₃ / place e₁)).val ^ 2 = (ℓ : ZMod (2 ^ (s + v))) ^ (2 * j) :=
-      P.placeClass_sq_eq hℓ h_ratio_j hv (h_coprime_two _)
-    have h_rel : ψ (place e₂ / place e₁) ^ (2 * j) = ψ (place e₃ / place e₁) ^ (2 * i) := by
-      simp only [Units.ext_iff, Units.val_pow_eq_pow_val, pow_mul _ 2, h_sq_i, h_sq_j]
-      ring
+    have h_rel : ψ (place e₂ / place e₁) ^ (2 * j) = ψ (place e₃ / place e₁) ^ (2 * i) :=
+      P.placeClass_pow_eq_of_two_returns hℓ h_ratio_i h_ratio_j hv (h_coprime_two _)
     -- compare exponents of `g`: `2 j e₂ ≡ 2 (j - i) e₁ + 2 i e₃`
     obtain ⟨a, ha, rfl⟩ : ∃ a > 0, a + i = j := ⟨j - i, by omega, by omega⟩
     have h_cong : (2 * a + 2 * i) * e₂ ≡ 2 * a * e₁ + 2 * i * e₃ [MOD orderOf (ψ g)] := by
