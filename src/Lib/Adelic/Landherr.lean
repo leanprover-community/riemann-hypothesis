@@ -570,8 +570,8 @@ lemma U.hasse_principle_coboundary [IsCMField E']
     exact (map_twistedNorm (U (1 : Matrix n n E')).subtype (fun _ ↦ rfl) _ s).symm
   -- Hilbert 90 at level `1`, where the congruence condition always holds
   obtain ⟨g, -, hg : s.val.val * g.val.map (σ : E' →+* E') = g.val, -⟩ :=
-    (isTameAtLevel_gal σ).hilbert90_gl (Y := s.val.val - 1) (.inl inferInstance) s.val
-      (by simp) h_norm
+    (σ.isTameAtLevel_orderOf (isOfFinOrder_of_finite σ)).hilbert90_gl (Y := s.val.val - 1)
+      (.inl inferInstance) s.val (by simp) h_norm
   -- `u⁻¹ g` is fixed by `σ`, since `s` is split by both `u` and `g`; so it comes from `E`.
   have hs_mat : s.1.1.map a = (u * (galoisGf σ u)⁻¹).1.1 := congrArg (fun x : Gf E' n ↦ x.1.1) hs
   have h_fixed_adelic : (u.val⁻¹ * g.map a).map (adeleMap σ) = u.val⁻¹ * g.map a := by

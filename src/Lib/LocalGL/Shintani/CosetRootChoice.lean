@@ -50,6 +50,7 @@ namespace New
 section CosetRoots
 
 open Finset Function Subgroup ComplexConjugate SemidirectProduct AddMonoidAlgebra
+open TauCeti.TameHilbert90
   ZMod
 
 attribute [local instance low] Fintype.ofFinite
@@ -202,7 +203,8 @@ theorem exists_isRootChoice {k k' S : Type*} [Field k] [Field k'] [Algebra k k']
       simp only [ev, lift_single, MonoidHom.coe_mk, OneHom.coe_mk, Algebra.smul_def,
         map_mul, hτ.eq, ← hβ, h_fix]
   have h_tame : IsTameAtLevel s (orderOf σ) (algebraMap k' k'[C] 1) := by
-    refine (isTameAtLevel_gal σ).of_semiconj (algebraMap k' k'[C]) (by simp [s, Semiconj]) ?_
+    refine (σ.isTameAtLevel_orderOf (isOfFinOrder_of_finite σ)).of_semiconj (algebraMap k' k'[C])
+      (by simp [s, Semiconj]) ?_
     -- `mapAlgAut_apply` is left out: it turns `s` into `mapAlgEquiv k C σ`, whose power simp
     -- does not evaluate
     ext <;> simp [s, ← AlgEquiv.coe_pow, ← map_pow, -mapAlgAut_apply]
