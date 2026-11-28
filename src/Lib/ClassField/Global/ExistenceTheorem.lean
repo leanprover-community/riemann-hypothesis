@@ -409,12 +409,11 @@ end
 
 section Kummer
 
-variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K] {n : ℕ} [NeZero n]
+variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] {n : ℕ} [NeZero n]
   [Algebra K Ω] [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
 
 variable (K) in
 include K in
-omit [NumberField K] in
 /-- Let `Γ` be the Galois group of `Ω/K`, where `Ω` is the fixed algebraic closure of `ℚ`, and let
 `Γ` fix the `n`-th roots of unity. Let `ζ` be the root of unity of order `n` chosen in
 `New.rootPowHom`. There is an additive map `κ` from the invariants of `Ωˣ` to the characters
@@ -448,7 +447,6 @@ noncomputable def kummerChar (h_fix : ∀ g : Γ, cyclotomicCharMod Ω n g = 1) 
       Z1 (Representation.trivial ℤ Γ (ZMod n)) :=
   (exists_kummer_hom K h_fix).choose
 
-omit [NumberField K] in
 /-- The defining property of the Kummer character `κ = kummerChar K h_fix`: if `a ^ n = x`, then
 `ζ ^ κ x g = g a / a`, where `ζ` is the root of unity of order `n` chosen in `New.rootPowHom`
 (written additively in `New.DiscreteUnits Ω`). -/
@@ -458,7 +456,6 @@ lemma rootPowHom_kummerChar (h_fix : ∀ g : Γ, cyclotomicCharMod Ω n g = 1)
     (rootPowHom Ω n).val ((kummerChar K h_fix x).val g) = unitsRep g a - a :=
   (exists_kummer_hom K h_fix).choose_spec x a ha g
 
-omit [NumberField K] in
 /-- The Kummer character of `x` vanishes at `g` exactly when `g` fixes an `n`-th root of `x`. -/
 lemma kummerChar_apply_eq_zero_iff (h_fix : ∀ g : Γ, cyclotomicCharMod Ω n g = 1)
     (x : (unitsRep : Representation ℤ Γ (DiscreteUnits Ω)).invariants) {a : DiscreteUnits Ω}
@@ -472,13 +469,15 @@ private lemma QZChar.mem_ker_iff_val_eq_zero {G : Type*} [Group G] [TopologicalS
     (χ : QZChar G) (g : G) : g ∈ ker χ ↔ χ.val g = 0 :=
   ofAdd_eq_one
 
-omit [NumberField K] [NeZero n] in
+omit [NeZero n] in
 /-- Let `x ∈ Kˣ` and let `r` be an `n`-th root of `x` in `Ωˣ` (both written additively). Then
 `r ^ n = x` in `Ω`. -/
 private lemma val_pow_eq_algebraMap_of_nsmul_eq_ofBase {x : Kˣ} {r : DiscreteUnits Ω}
     (hr : n • r = (ofBase Γ Ω (Additive.ofMul x)).val) :
     (r.toMul : Ω) ^ n = algebraMap K Ω x := by
   simpa [toMul_nsmul] using congrArg (fun z : DiscreteUnits Ω ↦ (z.toMul : Ω)) hr
+
+variable [NumberField K]
 
 /-- Let `Γ` fix the `n`-th roots of unity, and let `v` be a finite place of `K` at which `n` is a
 unit. If `x ∈ Kˣ` is a unit at `v`, its Kummer character vanishes on the inertia group at the

@@ -123,11 +123,13 @@ lemma inertia_pow_smul_div [SMulCommClass Γ k Ω] (i : ℕ) : s ^ i • y / y =
 
 end Cohomology
 
-include hπ
-
 variable [TopologicalSpace Γ] [G : IsLocalGalois Γ k A]
 
 /-! ### Transitivity of inertia on roots of a uniformiser -/
+
+section
+
+include hπ
 
 /-- For `y ≠ 0` whose orbit under inertia has `m` elements (the index of its stabiliser), the
 valuation of `y ^ m` is an integral power of that of the uniformiser `π` (the section hypothesis
@@ -238,9 +240,11 @@ private lemma IsLocalGalois.stabilizer_le_ker_of_pow_eq {P : Type*} [Monoid P] {
     A.valuation.map_sum_lt' one_pos fun i _ ↦ valuation_smul_div_sub_one_lt_one (r ^ i).2 w_unit
   simp only [sum_eq, Valuation.map_neg, hn, lt_self_iff_false] at h_sum_lt
 
+end
+
 /-! ### The tame theorem -/
 
-omit hπ [TopologicalSpace Γ] in
+omit [TopologicalSpace Γ] in
 /-- A `q`-Frobenius normalises inertia: it stabilises `A`, so it conjugates inertia into itself. -/
 lemma IsFrob.conj_mem_inertiaGroup {q : ℕ} {φ : Γ} (hφ : IsFrob A q φ) (s : inertiaGroup Γ A) :
     φ * s * φ⁻¹ ∈ inertiaGroup Γ A := by
@@ -248,7 +252,6 @@ lemma IsFrob.conj_mem_inertiaGroup {q : ℕ} {φ : Γ} (hφ : IsFrob A q φ) (s 
   open Pointwise in rw [MulAction.mem_stabilizer_iff.mp hφ.1] at h_conj
   exact h_conj
 
-omit hπ in
 /-- If `f` is trivial on the stabiliser of `y` in inertia (where `y ^ n = π`), then `f g = f s ^ i`
 whenever `g` moves `y` by the `i`-th power of the ratio by which `s` moves it. -/
 private lemma map_eq_pow_of_smul_div_eq (hn : A.valuation n = 1) (hy : y ^ n = algebraMap k Ω π)
@@ -259,7 +262,6 @@ private lemma map_eq_pow_of_smul_div_eq (hn : A.valuation n = 1) (hy : y ^ n = a
   refine (f.eq_iff.mpr (h_stab ?_)).trans (map_pow f s i)
   simp_all [mul_smul, ← inertia_pow_smul_div s.property hn hy, Subgroup.smul_def]
 
-omit hπ in
 /-- First part of the tame theorem. Let `k` be a local field (`New.IsLocalGalois Γ k A`), `π` a
 uniformiser of `k`, `n` a unit of `A` and `y ^ n = π`. A homomorphism `f` on inertia with open
 kernel and `f g ^ n = 1` for all `g` is trivial on the stabiliser of `y` in inertia, so `f g`
@@ -297,7 +299,6 @@ lemma IsLocalGalois.stabilizer_le_ker_of_pow_eq_one (hπ : IsUniformizer A π.va
     simpa [mul_smul, inv_smul_eq_iff] using ((div_left_inj₀ y₁_ne).mp h_ratio).symm
   rw [MonoidHom.mem_ker, same, map_pow, hP]
 
-omit hπ in
 /-- Second part of the tame theorem. Assume `IsLocalGalois Γ k A`: `Γ` is the Galois group of an
 algebraically closed field `Ω` of characteristic 0 over `k`, it stabilises the valuation subring
 `A`, and `A ∩ k` is a discrete valuation ring with finite residue field. Let `π` be a uniformiser of
@@ -316,7 +317,6 @@ lemma IsLocalGalois.exists_map_eq_pow_of_isPrimitiveRoot (hπ : IsUniformizer A 
   exact ⟨i, map_eq_pow_of_smul_div_eq hn hy (stabilizer_le_ker_of_pow_eq_one hπ hn hy f hf hP) s g i
     h_pow.symm⟩
 
-omit hπ in
 /-- Third part of the tame theorem. Assume `IsLocalGalois Γ k A`: `Γ` is the Galois group of an
 algebraically closed field `Ω` of characteristic 0 over `k`, it stabilises the valuation subring
 `A`, and `A ∩ k` is a discrete valuation ring with finite residue field. Let `π` be a uniformiser of
@@ -336,7 +336,7 @@ lemma IsLocalGalois.map_conj_eq_pow_of_isFrob (hπ : IsUniformizer A π.val)
   simp [smul_root_eq_ratio_mul (b := _ • y) s.property hn hy, ← smul_pow', *, mul_smul,
     ← cyclotomicCharMod_eq_iff.mp (hφ.cyclotomicCharMod_eq hn)]
 
-include hn hy in
+include hπ hn hy in
 /-- The tame theorem. Let `k` be a local field (the section instance `IsLocalGalois Γ k A`), `n` be
 a unit of `A`, `y ^ n = π` a uniformiser of `k`, and `f` a homomorphism on inertia with open kernel
 and `f g ^ n = 1` for all `g`. Then (a) `f` is trivial on the stabiliser of `y`, so `f g` depends
@@ -527,15 +527,16 @@ namespace New.Selmer
 
 open NeZero ZMod
 
-variable {p : ℕ} [ThePrime p] {f : ℕ} [NeZero f] {g : Gp p}
+variable {p : ℕ} [ThePrime p] {f : ℕ} {g : Gp p}
 
-omit [NeZero f] in
 /-- Every element of the inertia group of `ℚ̄_p` over `ℚ_p` fixes the `f`-th roots of unity in
 `ℚ̄_p`, for `f` prime to `p`. -/
 lemma apply_eq_self_of_mem_inertiaGroup (hf_coprime : ¬p ∣ f)
     (hg : g ∈ inertiaGroup (Gp p) (intQpBar p)) (ζ : PadicAlgCl p) (hζ : ζ ^ f = 1) : g ζ = ζ := by
   -- An element of inertia is a Frobenius for `1`.
   simpa using apply_eq_pow_of_isFrob (q := 1) hg hf_coprime hζ
+
+variable [NeZero f]
 
 instance : NeZero (p ^ f - 1) := by simp [of_pos, Fact.out, ne]
 

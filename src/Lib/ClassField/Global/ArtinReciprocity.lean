@@ -92,10 +92,8 @@ namespace New
 open NumberField Set Subgroup QZChar QZ Nat Algebra IsCyclotomicExtension Cohomology
   MulSemiringAction HeightOneSpectrum Polynomial Valuation IsAlgClosed ZMod
 
-variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [EmbeddedNumberField K]
-  [MulSemiringAction Γ Ω] [IsProGalois Γ K Ω]
+variable {Γ K : Type} [Group Γ] [Field K] [EmbeddedNumberField K] [MulSemiringAction Γ Ω]
 
-omit [TopologicalSpace Γ] in
 /-- Let `s` be in the inertia group of `A` and send `ζ` (with `ζ ≡ 1` and `ζ ≠ 1`) to `ζ ^ a`. For
 a unit `w` of `A` and `y = (ζ - 1) * w`, the quotient `s • y / y` is `≡ a` modulo the maximal
 ideal. -/
@@ -115,6 +113,8 @@ lemma valuation_smul_div_sub_natCast_lt_one {A : ValuationSubring Ω} {s : Γ}
     simp [geom_sum_eq hζ, ← Finset.sum_mul, mul_div_mul_comm, smul_sub, ha]
   rw [h_sum]
   exact A.valuation.map_sum_lt one_ne_zero fun i _ ↦ h_term i
+
+variable [TopologicalSpace Γ] [IsProGalois Γ K Ω]
 
 /-- A homomorphism `F` from `ℚˣ` to a monoid that is `1` at every prime and not `1` at `-1` is `1`
 exactly at the positive rationals. -/

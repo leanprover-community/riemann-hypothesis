@@ -295,17 +295,15 @@ is `ζ ^ a` for a fixed primitive `m`-th root of unity `ζ`, and `cyclotomicChar
 namespace New
 
 variable {G K R : Type} [Group G] [TopologicalSpace G] [Field K] [EmbeddedNumberField K]
-  [MulSemiringAction G Ω] [IsProGalois G K Ω] [CommRing R] {m N : ℕ} [NeZero m]
+  [MulSemiringAction G Ω] [CommRing R] {m N : ℕ} [NeZero m]
   {ι : Type} {U : OpenNormalSubgroup G} {A : ClosurePlace} {v : FinPlace K}
-  {V : DiscreteModule R G} [Module (ZMod m) V]
-  {I : Set G} (s : IsLargeLevel.SplitPlaces m N I U ι)
+  {V : DiscreteModule R G} [Module (ZMod m) V] {I : Set G}
 
 open NumberField DiscreteModule trivializedCocycles Cohomology DiscreteUnits NeZero Subgroup
   QuotientGroup InfinitePlace QZChar QZ ZModModule
 
 attribute [local instance low] Fintype.ofFinite
 
-omit [IsProGalois G K Ω] in
 /-- Let `G` act on `Ω` as the Galois group of `Ω` over a field `L`. An element `g` of `G` that fixes
 an infinite place `u` of `Ω` is `1` or a complex conjugation. -/
 lemma eq_one_or_isComplexConj {L : Type} [Field L] [Algebra L Ω] [hG : IsProGalois G L Ω]
@@ -319,6 +317,8 @@ lemma eq_one_or_isComplexConj {L : Type} [Field L] [Algebra L Ω] [hG : IsProGal
   · -- `g` acts trivially on `Ω`, and the action is faithful
     exact .inl (hG.faithful.eq_of_smul_eq_smul (by simpa [AlgEquiv.ext_iff] using h_fix))
   · exact .inr ⟨u.embedding, h_conj.eq⟩
+
+variable [IsProGalois G K Ω] (s : IsLargeLevel.SplitPlaces m N I U ι)
 
 /-- Let `A` lie over a prime `v` not dividing `m`, and let `γ` in the inertia group of `A` move an
 `m`-th root of a uniformiser by the primitive root `ζ`. A locally constant map `f` to a group

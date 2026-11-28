@@ -218,9 +218,8 @@ section Family
 
 open IsLargeLevel Set
 
-variable {q : ℕ} [NeZero q]
+variable {q : ℕ}
 
-omit [NeZero q] in
 /-- Let the primes of `S` divide `q`. A cocycle in `Z(P)` vanishes at a tame generator at the split
 prime `s.v i` when `s.v i ∉ P`, since it is unramified there. -/
 lemma apply_eq_zero_of_notMem (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal) {I : Set Gal(Ω/K)}
@@ -232,6 +231,8 @@ lemma apply_eq_zero_of_notMem (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
   have hi_notMem_S : s.v i ∉ D.localPrimes := fun h ↦ s.level_notMem i (hS _ h)
   exact hz_unram γ
     ⟨s.v i, not_or_intro hi_notMem_S hi, s.valuationSubring i, s.isPlaceOver i, hγ_inertia⟩
+
+variable [NeZero q]
 
 /-- Let the primes of `S` divide `q`, let the split primes `s` have tame generators `γ n`, and let
 `s.φ j * (g * s.φ k * g⁻¹)` act like `s.φ i` on the `m`-th roots of the `q`-units fixed by `U`.
