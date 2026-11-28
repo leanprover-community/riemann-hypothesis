@@ -3,6 +3,7 @@ module
 public import Mathlib.Algebra.Module.LinearMap.Polynomial
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Mathlib.RingTheory.MvPowerSeries.Derivative
+public import TauCeti.RingTheory.MvPolynomial.JetPairing
 public import Lib.Speed
 
 /-!
@@ -22,8 +23,8 @@ elements, so it acts on the Weyl module, and the Gram matrix is the coefficient 
 
 ## Main definitions and results
 
-* `New.jet`, `New.fockPairing`: the pairing `P(∂) F` at `0`, with power series and with polynomials;
-  `New.fockPairing_linSubst` computes adjoints of linear substitutions.
+* `MvPolynomial.jetPairing`, `New.fockPairing`: the pairing `P(∂) F` at `0`, on power series and on
+  polynomials. `New.fockPairing_linSubst` computes adjoints of linear substitutions.
 * `New.nabla`, `New.nablaFamily`: the semi-invariants under upper triangular matrices acting on
   columns.
 * `New.tableauPoly`, `New.IsTableauBasis`, `New.nablaBasis`: products of minors, and a chosen basis
@@ -90,16 +91,11 @@ abbrev Tableau (N : ℕ) (k : ℕ → ℕ) : Type := ∀ h : Fin N, Fin (k h) �
 
 variable {m} {h N : ℕ} {k : ℕ → ℕ}
 
-/-- The bilinear pairing of a polynomial P with a formal power series F giving P(∂)F(0), the sum
-over exponents d of d! times both d-th coefficients. -/
-def jet : MvPolynomial σ R →ₗ[R] MvPowerSeries σ R →ₗ[R] R :=
-  (basisMonomials σ R).constr ℕ fun d ↦ (d.prod fun _ j ↦ j !) • MvPowerSeries.coeff d
-
 /-- The bilinear form on polynomials ⟨P,Q⟩ = P(∂)Q(0), for which monomials are orthogonal and
 ⟨x^d,x^d⟩ = d!. -/
 @[local simp]
 def fockPairing : LinearMap.BilinForm R (MvPolynomial σ R) :=
-  (jet R).compl₂ (coeToMvPowerSeries.algHom R).toLinearMap
+  jetPairing.compl₂ (coeToMvPowerSeries.algHom R).toLinearMap
 
 /-- For an h-tuple I of rows, the polynomial determinant of the h×h matrix of variables in rows
 I and the first h columns. -/
@@ -286,37 +282,8 @@ lemma GL.genericMatrixAt_map_evalMatrix (z : ∀ τ : Φ, Matrix (n τ) (n τ) R
   ext a b
   simp [genericMatrixAt]
 
-/-- For a polynomial `f` and a power series `F`, the pairing `jet R f F`, that is `f(∂) F (0)`, is
-the sum of `f.coeff d * d! * F.coeff d` over the monomials `d` of `f`, where `d!` is the product of
-the factorials of the exponents. -/
-@[local simp↓ low]
-lemma jet_eq_sum :
-    jet R f F = ∑ d ∈ f.support, f.coeff d * (d.prod fun (_k : σ) (j : ℕ) ↦ ↑j !) * F.coeff d := by
-  simp [jet, Basis.constr_apply]
-  -- Both sides are the same sum; the factors of each term are in a different order.
-  ac_rfl
-
-/-- The pairing of the monomial `a * X ^ α` with the power series `F` is `a * α! * F.coeff α`,
-where `α!` is the product of the factorials of the exponents. -/
-lemma jet_monomial :
-    jet R (monomial α a) F = a * (α.prod fun (_k : σ) (j : ℕ) ↦ ↑j !) * F.coeff α := by
-  classical
-  aesop
-
-/-- For the pairing `jet R f F = f(∂) F (0)` of a polynomial with a power series, multiplication of
-`f` by `X i` is adjoint to the derivative of `F` in `X i`. -/
-@[local simp↓]
-lemma jet_mul_X : jet R (f * X i) F = jet R f (F.pderiv i) := by
-  -- The monomials of `f * X i` are those of `f` shifted by `X i`; compare term by term.
-  rw [jet_eq_sum, jet_eq_sum, support_mul_X, sum_map]
-  refine sum_congr rfl fun x _ ↦ ?_
-  -- At the exponent `x + single i 1`: `(x i + 1)! = (x i + 1) * (x i)!` matches the derivative.
-  rw [addRightEmbedding_apply, coeff_mul_X, F.coeff_pderiv,
-    ← mul_prod_erase' (x + Finsupp.single i 1) i _ (by simp), ← mul_prod_erase' x i _ (by simp),
-    Finsupp.erase_add, Finsupp.erase_single, add_zero, Finsupp.add_apply, Finsupp.single_eq_same,
-    factorial_succ]
-  push_cast
-  ring
+attribute [local simp↓ low] jetPairing_eq_sum
+attribute [local simp↓] jetPairing_mul_X
 
 /-- The Fock pairing `⟨a * X ^ α, g⟩` is `α! * a * g.coeff α`, where `α!` is the product of the
 factorials of the exponents. -/
@@ -641,7 +608,7 @@ lemma rowSubst_one [∀ τ : Φ, DecidableEq (n τ)] (f : MatrixPoly (Sigma n) R
 `p.coeff d * d! * q.coeff d`, where `d!` is the product of the factorials of the exponents. -/
 lemma fockPairing_eq_sum : fockPairing R p q =
     ∑ d ∈ p.support, p.coeff d * (d.prod fun (_k : σ) (j : ℕ) ↦ (j.factorial : R)) * q.coeff d := by
-  simp [fockPairing, jet_eq_sum]
+  simp [fockPairing, jetPairing_eq_sum]
 
 /-- The Fock pairing is symmetric. -/
 lemma fockPairing_comm : fockPairing R p q = fockPairing R q p := by
@@ -650,12 +617,6 @@ lemma fockPairing_comm : fockPairing R p q = fockPairing R q p := by
   rw [fockPairing_eq_sum, fockPairing_eq_sum]
   exact sum_congr_of_eq_on_inter (by simp +contextual) (by simp +contextual) fun d _ _ ↦ by ring
 
-lemma map_jet (F : MvPowerSeries σ R) :
-    φ (jet R p F) = jet S (MvPolynomial.map φ p) (MvPowerSeries.map φ F) := by
-  induction p using MvPolynomial.induction_on' with
-  | monomial d a => simp [jet_monomial, map_finsuppProd]
-  | add p₁ p₂ h₁ h₂ => simp [h₁, h₂]
-
 /-- The Fock pairing commutes with a change of coefficients along a ring homomorphism `φ`. -/
 lemma map_fockPairing :
     φ (fockPairing R p q) = fockPairing S (MvPolynomial.map φ p) (MvPolynomial.map φ q) := by
@@ -663,7 +624,7 @@ lemma map_fockPairing :
   have h_coe : MvPowerSeries.map φ (q : MvPowerSeries σ R) = MvPolynomial.map φ q := by
     ext d
     simp [coeff_map]
-  simp [fockPairing, map_jet, h_coe]
+  simp [fockPairing, map_jetPairing, h_coe]
 
 /-- The adjoint of substitution by `z` for the Fock pairing is substitution by the transposes. -/
 lemma fockPairing_rowSubst [∀ τ : Φ, DecidableEq (n τ)] (p : MatrixPoly ((τ : Φ) × n' τ) R) :

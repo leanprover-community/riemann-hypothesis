@@ -489,7 +489,7 @@ end ConjugatesOfJets
 ## Archimedean bounds for jets
 
 `New.Space.jetSeries V c f` is the Taylor series of the theta function of `f` at scale `c`.
-`New.jet ℂ Q` applies the differential operator `Q(∂)` at `0`.
+`jetPairing Q` applies the differential operator `Q(∂)` at `0`.
 -/
 
 namespace New
@@ -557,13 +557,13 @@ lemma norm_realVac {ι : Type} [Fintype ι] (y : ι → ℂ) :
   norm_cast
 
 /-- A factor `c` in the scale of the Taylor series can be moved into the differential operator: the
-jet along `Q` at scale `c * a` is the jet along `Q (c z)` at scale `a`. Here the jet `jet ℂ Q G` of
-a power series `G` along a polynomial `Q` is `Q(∂) G` at `0`, and `V.jetSeries a F` is the Taylor
-series at scale `a` of the theta function of `F`, a vector of the space `𝒮 V` on which the Weil
-representation acts. -/
+jet along `Q` at scale `c * a` is the jet along `Q (c z)` at scale `a`. Here `jetPairing Q G` is the
+jet of the power series `G` along `Q`, namely `Q(∂) G` at `0`. The series `V.jetSeries a F` is the
+Taylor series at scale `a` of the theta function of `F`, a vector of the space `𝒮 V` on which the
+Weil representation acts. -/
 lemma Parameters.jet_jetSeries_mul (V : Space (P.E s) (n' × n) (homSigns 1 1)) (c a : ℂ)
     (Q : MvPolynomial (P.Φ s × n' × n) ℂ) (F : 𝒮 V) :
-    jet ℂ Q (V.jetSeries (c * a) F) = jet ℂ (aeval (c • X) Q) (V.jetSeries a F) := by
+    jetPairing Q (V.jetSeries (c * a) F) = jetPairing (aeval (c • X) Q) (V.jetSeries a F) := by
   have h_scale : aeval (fun i ↦ (c * a) • X (R := ℂ) i) Q =
       aeval (fun i ↦ a • X i) (aeval (c • X (R := ℂ)) Q) := by
     rw [Q.as_sum]
@@ -580,19 +580,19 @@ places, evaluated at `t ȳ`. -/
 lemma Parameters.map_jet_eq_integral {V : Space (P.E s) (n' × n) (homSigns 1 1)} {σ : Gal(ℂ/P.K)}
     {t : ℂ} {F F' : 𝒮 V} (h_conj : IsJetConjugate σ (placePerm s σ) (P.jetScale s) t F F')
     (Q : MvPolynomial (P.Φ s × n' × n) ℂ) :
-    σ (jet ℂ Q (V.jetSeries (P.jetScale s) F)) =
+    σ (jetPairing Q (V.jetSeries (P.jetScale s) F)) =
       ∫ y : P.Φ s × n' × n → ℂ,
         eval (t • star y) (rename (Prod.map (placePerm s σ) id) (Q.map (σ : ℂ →+* ℂ))) *
           realVac y * F' (realVec y) ∂normalizedVolume (P.Φ s × n' × n) := by
   set Q' := rename (Prod.map (placePerm s σ) id) (Q.map (σ : ℂ →+* ℂ))
   have h_rename : rename (Prod.map (placePerm s σ).symm id) Q' = Q.map (σ : ℂ →+* ℂ) := by
     simp [Q', Prod.map_comp_map]
-  have h_jet : σ (jet ℂ Q (V.jetSeries (P.jetScale s) F)) = jet ℂ Q' (V.jetSeries t F') :=
-    calc _ = jet ℂ (Q.map (σ : ℂ →+* ℂ))
+  have h_jet : σ (jetPairing Q (V.jetSeries (P.jetScale s) F)) = jetPairing Q' (V.jetSeries t F') :=
+    calc _ = jetPairing (Q.map (σ : ℂ →+* ℂ))
             ((V.jetSeries t F').rename (Prod.map (placePerm s σ).symm id)) := by
           rw [← h_conj]
-          exact map_jet (σ : ℂ →+* ℂ) _ _
-      _ = jet ℂ Q' (V.jetSeries t F') :=
+          exact map_jetPairing (σ : ℂ →+* ℂ) _ _
+      _ = jetPairing Q' (V.jetSeries t F') :=
           jet_rename ((placePerm s σ).symm.prodCongr 1).toEmbedding h_rename _
   -- The jet is `θ` of an integrated operator, and the integrands agree monomial by monomial.
   rw [h_jet, jet_jetSeries_eq_theta, theta_integrated]
@@ -610,7 +610,8 @@ lemma Parameters.norm_jet_translate_le (V : Space (P.E s) (n' × n) (homSigns 1 
     (σ : Gal(ℂ/P.K)) {c : ℂ} {Q : MvPolynomial (P.Φ s × n' × n) ℂ} {L : ℕ} {w A T : ℝ}
     (hT : ‖σ c‖ ^ 2 / P.bigOmega s ≤ T) (hQ : HasConjugateGrowth σ Q T L w A)
     (x : n' × n → 𝔸f (P.E s)) (g : Gf (P.E s) (n' × n)) :
-    ‖σ (jet ℂ Q (V.jetSeries (c * P.jetScale s) (V.ϱ (finVec x) (V.ω (1, g) (intVacuum V)))))‖ ≤
+    ‖σ (jetPairing Q (V.jetSeries (c * P.jetScale s)
+      (V.ϱ (finVec x) (V.ω (1, g) (intVacuum V)))))‖ ≤
       exp (P.constantBound * (P.q₁ s * card (n' × n) + 1) ^ 2 + w) *
         (2 * L + 2) ^ card (P.Φ s × n' × n) * A := by
   -- The conjugate jet is a Gaussian integral of a conjugate of `Q` against a bounded function.
@@ -646,7 +647,7 @@ lemma Parameters.norm_jet_translate_le (V : Space (P.E s) (n' × n) (homSigns 1 
           simp only [mul_assoc, ← exp_add]
           congr 2
           field
-  calc ‖σ (jet ℂ Q (V.jetSeries (c * P.jetScale s) F))‖
+  calc ‖σ (jetPairing Q (V.jetSeries (c * P.jetScale s) F))‖
     _ = ‖∫ y : P.Φ s × n' × n → ℂ, eval (t • star y) Q' * realVac y * Λ F (realVec y)
           ∂normalizedVolume (P.Φ s × n' × n)‖ := by
         rw [P.jet_jetSeries_mul, P.map_jet_eq_integral (hΛ.isJetConjugate F hF)]
@@ -732,7 +733,7 @@ lemma Parameters.norm_jet_le_of_isVacuumCombination
     {σ : ℂ ≃+* ℂ} {c : ℂ} (g : Gf (P.E s) n) (h : Gf (P.E s) n')
     {Q : MvPolynomial (P.Φ s × n' × n) ℂ} {L : ℕ} {w A T : ℝ}
     (hA : 0 ≤ A) (hT : ‖σ c‖ ^ 2 / P.bigOmega s ≤ T) (hQ : HasConjugateGrowth σ Q T L w A) :
-    ‖σ (jet ℂ Q (jetSeries ((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')) (c * P.jetScale s)
+    ‖σ (jetPairing Q (jetSeries ((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')) (c * P.jetScale s)
         (pairWeil (stdSpace (P.E s) n) (stdSpace (P.E s) n') a b ((1, g), 1, h) f)))‖ ≤
       P.jetSizeBound s n n' B L w * A := by
   -- Expand `f` as a sum of translates of the integral vacuum and bound each one, replacing `σ` by
@@ -747,7 +748,7 @@ lemma Parameters.norm_jet_le_of_isVacuumCombination
   have hT' : ‖σ' c‖ ^ 2 / P.bigOmega s ≤ T := by rwa [← hσ' c]
   have hQ' : HasConjugateGrowth σ' Q T L w A := by simpa only [HasConjugateGrowth, hσ'] using hQ
   let J (x : n' × n → 𝔸f (P.E s)) : ℂ :=
-    jet ℂ Q (V.jetSeries (c * P.jetScale s) (W (V.finHeisenbergOp x (intVacuum V))))
+    jetPairing Q (V.jetSeries (c * P.jetScale s) (W (V.finHeisenbergOp x (intVacuum V))))
   have h_term (x : n' × n → 𝔸f (P.E s)) : ‖σ (J x)‖ ≤ C * A := by
     -- `W` is a scalar times `ω` at a finite point `k`, and `ω(k)` moves past the translation.
     -- The conjugates of the scalars have norm one.

@@ -58,7 +58,7 @@ noncomputable section
 
 A weight `κ` gives the number `κ τ h` of columns of height `h` at the place `τ`.
 `New.WeylIndexFamily (fun τ ↦ n) κ` indexes the coordinates of weight `κ` in rank `n` at each place.
-`New.schur κ z` is the matrix of `z` in these coordinates. `New.jet R P F` is `P(∂) F` at `0`.
+`New.schur κ z` is the matrix of `z` in these coordinates. `jetPairing P F` is `P(∂) F` at `0`.
 -/
 
 namespace New
@@ -104,18 +104,19 @@ def Space.jetSeries (a : ℂ) : 𝒮 V →ₗ[ℂ] MvPowerSeries (InfinitePlace 
 is the Fock vector of the polynomial `z ↦ P(a z)`. -/
 @[simp]
 lemma Space.jet_jetSeries_eq_theta (f : 𝒮 V) (P : MvPolynomial (InfinitePlace E × n) ℂ) (a : ℂ) :
-    jet ℂ P (V.jetSeries a f) =
+    jetPairing P (V.jetSeries a f) =
       V.θ
         (V.integrated (polyVector (realSigns E s) (aeval (fun i : InfinitePlace E × n ↦ a • X i) P))
           f) := by
   -- Both sides are additive in `P`, and on a monomial this is the definition of the coefficient:
-  -- the factorials of `jet` cancel those of `jetSeries`.
+  -- the factorials of `jetPairing` cancel those of `jetSeries`.
   induction P using MvPolynomial.induction_on' with
   | monomial d r =>
     have h_fact : (∏ x ∈ d.support, ((d x)! : ℂ)) ≠ 0 :=
       Finset.prod_ne_zero_iff.2 fun _ _ ↦ by exact_mod_cast factorial_ne_zero _
-    simp [jetSeries_apply, jet_monomial, aeval_monomial, Finsupp.prod, algebraMap_eq, smul_pow,
-      field, C_mul', prod_smul, prod_pow_eq_pow_sum, degree_apply, MvPowerSeries.coeff_apply]
+    simp [jetSeries_apply, jetPairing_monomial, aeval_monomial, Finsupp.prod, algebraMap_eq,
+      smul_pow, field, C_mul', prod_smul, prod_pow_eq_pow_sum, degree_apply,
+      MvPowerSeries.coeff_apply]
   | add P Q hP hQ => simp [hP, hQ]
 
 /-- The number of boxes in the columns of height below `N`, where `κ τ h` is the number of columns
@@ -128,8 +129,8 @@ entry at `(i', i)` is `P(∂) F` at `0`, for `P` the polynomial at `(i', i)` in 
 def schurJet {Φ R : Type} [Fintype Φ] [DecidableEq Φ] [CommRing R] (κ : Φ → ℕ → ℕ) :
     MvPowerSeries (Φ × n' × n) R →ₗ[R]
       Matrix (WeylIndexFamily (fun _ : Φ ↦ n') κ) (WeylIndexFamily (fun _ : Φ ↦ n) κ) R :=
-  -- `F` goes to the matrix of the `jet R P F`, with `P` an entry of `schur κ` at the variables
-  (LinearMap.mapMatrixLinear R ∘ₗ (jet R).flip).flip
+  -- `F` goes to the matrix of the `jetPairing P F`, with `P` an entry of `schur κ` at the variables
+  (LinearMap.mapMatrixLinear R ∘ₗ jetPairing.flip).flip
     (schur κ fun τ : Φ ↦ Matrix.of fun (b : n') (c : n) ↦ X (τ, b, c))
 
 end New

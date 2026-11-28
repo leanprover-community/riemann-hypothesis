@@ -18,7 +18,7 @@ Standard data of level `δ` are stable under the Heisenberg operators of finite 
 makes integral above `p`, and under the Weil operators of finite points that are integral above
 `p`. An element of `ℂ_[p]` is integral if its norm is at most `1`.
 
-* `New.jet`: the pairing `(Q(∂) F)(0)` of a polynomial `Q` with a power series `F`.
+* `MvPolynomial.jetPairing`: the pairing `(Q(∂) F)(0)` of a polynomial `Q` with a power series `F`.
 * `New.taylorVia ιₚ C.θ`: the Taylor series at `0` of the function `θ` of the CM lattice `C`, with
   coefficients sent to `ℂ_[p]` by `ιₚ`; and `New.linearSeries c`, the linear form `∑ c_x z_x`.
 * `New.CMLattice.multiSeriesRing`: the integral power series in the `y(μ_i z)`, where the parameter
@@ -49,6 +49,7 @@ The series of `New.CMLattice.norm_jet_thetaProd_pow_mul_le_one` lies in the ring
 
 section ProductJetIntegrality
 
+open MvPolynomial (jetPairing jetPairing_monomial jetPairing_mul_X)
 open MvPowerSeries
 
 namespace New
@@ -60,16 +61,16 @@ lemma norm_jet_le_one_of_pderiv_mem {p : ℕ} [Fact p.Prime] {X : Type}
     {S : Subring (MvPowerSeries X ℂ_[p])} (h_const : ∀ F ∈ S, ‖constantCoeff F‖ ≤ 1)
     (h_deriv : ∀ F ∈ S, ∀ x : X, pderiv x F ∈ S)
     {R : Type} [CommRing R] {φ : R →+* ℂ_[p]} (hφ : ∀ a : R, ‖φ a‖ ≤ 1) (Q : MvPolynomial X R)
-    {F : MvPowerSeries X ℂ_[p]} (hF : F ∈ S) : ‖jet ℂ_[p] (Q.map φ) F‖ ≤ 1 := by
+    {F : MvPowerSeries X ℂ_[p]} (hF : F ∈ S) : ‖jetPairing (Q.map φ) F‖ ≤ 1 := by
   induction Q using MvPolynomial.induction_on generalizing F with
   | C a =>
-    simpa [← MvPolynomial.monomial_zero', jet_monomial] using
+    simpa [← MvPolynomial.monomial_zero', jetPairing_monomial] using
       (mul_le_of_le_one_left (norm_nonneg _) (hφ a)).trans (h_const F hF)
   | add Q Q' hQ hQ' =>
     rw [map_add, map_add, LinearMap.add_apply]
     exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (hQ hF) (hQ' hF))
   | mul_X Q x hQ =>
-    rw [map_mul, MvPolynomial.map_X, jet_mul_X]
+    rw [map_mul, MvPolynomial.map_X, jetPairing_mul_X]
     exact hQ (h_deriv F hF x)
 
 namespace CMLattice
@@ -211,7 +212,7 @@ lemma norm_jet_thetaProd_pow_mul_le_one {ν : I → X → ℂ_[p]}
     (hν : ∀ (i : I) (x : X), ‖ν i x‖ ≤ 1) (m : I → ℕ) (N : ℕ)
     {H : MvPowerSeries X ℂ_[p]} (hH : H ∈ C.multiSeriesRing ((d : ℂ_[p]) • ν))
     {R : Type} [CommRing R] {φ : R →+* ℂ_[p]} (hφ : ∀ a : R, ‖φ a‖ ≤ 1) (Q : MvPolynomial X R) :
-    ‖jet ℂ_[p] (Q.map φ) (C.thetaProd ((d : ℂ_[p]) • ν) m ^ N * H)‖ ≤ 1 :=
+    ‖jetPairing (Q.map φ) (C.thetaProd ((d : ℂ_[p]) • ν) m ^ N * H)‖ ≤ 1 :=
   norm_jet_le_one_of_pderiv_mem (fun _ ↦ C.norm_constantCoeff_le_of_mem_jetRing)
     (fun _ ↦ C.pderiv_mem_jetRing hν) hφ Q
     (mul_mem (pow_mem (C.thetaProd_mem_jetRing m) N) (C.mem_jetRing_of_mem_multiSeriesRing hH))

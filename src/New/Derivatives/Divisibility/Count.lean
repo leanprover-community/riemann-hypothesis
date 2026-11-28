@@ -31,7 +31,7 @@ marked places and with all charges equal to one.
 Notions from other files:
 * `valRingCp p`: the valuation ring of `ℂ_[p]`; its elements are called integral, and a lower bound
   for a valuation is written as an upper bound for the norm.
-* `New.jet R Q F`: the number `(Q(∂) F)(0)`, for a polynomial `Q` and a power series `F`.
+* `jetPairing Q F`: the number `(Q(∂) F)(0)`, for a polynomial `Q` and a power series `F`.
 * `New.WeylIndex n κ`, `New.schur`, `New.schurJet`: `κ τ h` is the number of columns of height `h`
   of a diagram at the place `τ`. The standard fillings of these diagrams index the Schur matrix of a
   family of matrices `z_τ`, and `schurJet κ F` is the matrix of jets of `F` along its entries.
@@ -95,12 +95,12 @@ formula, applied to each exponent of each monomial of `Q`. -/
 lemma norm_jet_le_of_isHomogeneous {G : MvPowerSeries σ ℂ_[p]} {l : ℕ}
     (hG : ∀ d : σ →₀ ℕ, d.degree = l → ‖G.coeff d‖ ≤ 1) {Q : MvPolynomial σ (valRingCp p)}
     (hQ : Q.IsHomogeneous l) :
-    ‖jet ℂ_[p] (Q.map (valRingCp p).subtype) G‖ ≤
+    ‖jetPairing (Q.map (valRingCp p).subtype) G‖ ≤
       p ^ (card σ * (p.log l + 1) - l / (p - 1) : ℝ) := by
   rw [Q.as_sum, map_sum, map_sum, LinearMap.sum_apply]
   refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity) fun d hd ↦ ?_
   have h_deg : d.degree = l := by_contra fun h_ne ↦ mem_support_iff.1 hd (hQ.coeff_eq_zero h_ne)
-  rw [map_monomial, jet_monomial, norm_mul, norm_mul, ← h_deg]
+  rw [map_monomial, jetPairing_monomial, norm_mul, norm_mul, ← h_deg]
   grw [show ‖(valRingCp p).subtype (Q.coeff d)‖ ≤ 1 from (Q.coeff d).property, hG d h_deg,
     norm_prod_factorial_le, one_mul, mul_one]
 
@@ -207,11 +207,11 @@ box, `r` being its row. -/
 lemma jet_columnDetProd_subst [DecidableEq Φ] (i' : WeylIndex n' κ) (c : Φ → ℕ → n' → R)
     (g : Φ → ∀ h : ℕ, Matrix (Fin h) (Fin h) R) (y : Φ → n → ℕ → R)
     (F : MvPowerSeries (Φ × n' × n) R) :
-    jet R (columnDetProd R i')
+    jetPairing (columnDetProd R i')
         (F.subst fun x : Φ × n' × n ↦ linearSeries (directionSubst c (newDirection g y) x)) =
       (∏ τ : Φ, ∏ h : Fin (card n'), ∏ j : Fin (κ τ h),
         ((g τ h).det * ∏ b : Fin h, c τ h ((i' τ).val h j b))) *
-        jet R (minorProd i' y) F := by
+        jetPairing (minorProd i' y) F := by
   -- For one column, the matrix of derivatives along the `β` is that along the `y` times `gᵀ`,
   -- with the rows scaled by the `c`.
   have h_column (τ : Φ) (h : Fin (card n')) (I : Fin h → n') :
@@ -367,12 +367,12 @@ factor, and each column gives `det (g τ h)`. -/
 lemma norm_jet_columnDetProd_subst {κ : Φ → ℕ → ℕ} (i' : WeylIndex n' κ) (w : Φ → ℕ → n' → ℕ)
     (g : Φ → ∀ h : ℕ, Matrix (Fin h) (Fin h) (valRingCp p)) (y : Φ → n → ℕ → valRingCp p)
     (ϖ : ℂ_[p]) (F : MvPowerSeries (Φ × n' × n) ℂ_[p]) :
-    ‖jet ℂ_[p] (columnDetProd ℂ_[p] i') (F.subst fun x : Φ × n' × n ↦ ϖ • seriesToCp
+    ‖jetPairing (columnDetProd ℂ_[p] i') (F.subst fun x : Φ × n' × n ↦ ϖ • seriesToCp
         (linearSeries (directionSubst (fun (τ : Φ) (h : ℕ) (b : n') ↦ p ^ w τ h b)
           (newDirection g y) x)))‖ =
       ‖ϖ‖ ^ boxes κ (card n') * (p : ℝ)⁻¹ ^ fillingCharge w i' *
         (∏ τ : Φ, ∏ h : Fin (card n'), ‖((g τ h).det : ℂ_[p])‖ ^ κ τ h) *
-        ‖jet ℂ_[p] (minorProd i' fun (τ : Φ) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ := by
+        ‖jetPairing (minorProd i' fun (τ : Φ) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ := by
   let g' (τ : Φ) (h : ℕ) : Matrix (Fin h) (Fin h) ℂ_[p] := (valRingCp p).subtype.mapMatrix (g τ h)
   have h_subst (x : Φ × n' × n) : ϖ • seriesToCp
       (linearSeries (directionSubst (fun τ h b ↦ p ^ w τ h b) (newDirection g y) x)) =
@@ -588,7 +588,7 @@ theorem norm_jet_minorProd_le_of_isChargeExponent [DecidableEq n'] (hp : chiK P.
     (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p) :
     let N : ℕ := card n'
     let B : ℕ := boxes κ N
-    ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ ≤
+    ‖jetPairing (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ ≤
       p ^ (fillingCharge w i' - (gammaPrime P.d p * B -
         piPrimeValuation P.d p * ∑ e ≤ p.log B with e ∈ partnerExponents P.d p,
           ∑ τ : P.Φ s, deductionTerm p κ N marked τ (P.partner s p e τ) e -
@@ -610,8 +610,8 @@ theorem norm_jet_minorProd_le_of_isChargeExponent [DecidableEq n'] (hp : chiK P.
   let G : MvPowerSeries (DirectionVar (P.Φ s) n' N) ℂ_[p] :=
     F.subst fun x ↦ ϖ • seriesToCp (linearSeries (z x))
   let c : ℝ := ‖ϖ‖ ^ B * (p : ℝ)⁻¹ ^ m * ∏ τ, ∏ h : Fin N, ‖((g τ h).det : ℂ_[p])‖ ^ κ τ h
-  have h_chain : ‖jet ℂ_[p] (columnDetProd ℂ_[p] i') G‖ =
-      c * ‖jet ℂ_[p] (minorProd i' fun τ a k ↦ (y τ a k : ℂ_[p])) F‖ :=
+  have h_chain : ‖jetPairing (columnDetProd ℂ_[p] i') G‖ =
+      c * ‖jetPairing (minorProd i' fun τ a k ↦ (y τ a k : ℂ_[p])) F‖ :=
     norm_jet_columnDetProd_subst i' w g y ϖ F
   -- Step 2: `G` is integral in degree `B`, as `π` divides the couplings of `z` for `e ∈ S`.
   have hG (d : DirectionVar (P.Φ s) n' N →₀ ℕ) (hd : d.degree = B) : ‖G.coeff d‖ ≤ 1 :=
@@ -619,7 +619,7 @@ theorem norm_jet_minorProd_le_of_isChargeExponent [DecidableEq n'] (hp : chiK P.
       (by simp [linearSeries]) (fun e he he_le ↦ dvd_subst_coupling_directionSubst_of_charges
         hπ_dvd (hw e he) (h_pair e (by simpa [S] using And.intro he_le he))) hd.le
   -- Step 3: Legendre's bound for `G`, divided by the factor `c` of the chain rule.
-  have h_legendre : ‖jet ℂ_[p] (columnDetProd ℂ_[p] i') G‖ ≤
+  have h_legendre : ‖jetPairing (columnDetProd ℂ_[p] i') G‖ ≤
       p ^ (card (P.Φ s) * N ^ 3 * (p.log B + 1) - B / (p - 1) : ℝ) := by
     rw [← map_columnDetProd (valRingCp p).subtype]
     refine (norm_jet_le_of_isHomogeneous hG (isHomogeneous_columnDetProd i')).trans ?_
@@ -667,7 +667,7 @@ theorem norm_jet_minorProd_le_of_charges [DecidableEq n'] (hp : chiK P.d p ≠ 1
     (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p) :
     let N : ℕ := card n'
     let B : ℕ := boxes κ N
-    ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ ≤
+    ‖jetPairing (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ ≤
       p ^ (fillingCharge w i' -
         (predictedDivisibility P.d p (P.partner s p) (eraseHeightOne κ marked) N +
           gammaPrime P.d p * (B - boxes (eraseHeightOne κ marked) N) -
@@ -707,7 +707,7 @@ theorem norm_jet_minorProd_le_of_hasNormalForm [DecidableEq n'] (hp : chiK P.d p
     (hF : HasNormalForm (partnerExponents P.d p) (P.partner s p) ϖ l F)
     (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p) :
     let N : ℕ := card n'
-    ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ ≤
+    ‖jetPairing (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ ≤
       p ^ (-(predictedDivisibility P.d p (P.partner s p) κ N -
         card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max (boxes κ N) 1 : ℕ))) : ℝ) := by
   -- With no marked places and all charges equal to one, no column is removed.
@@ -799,7 +799,7 @@ lemma exists_norm_schurJet_le_norm_jet_minorProd
     (hκ : FitsRanks (fun _ : Φ ↦ n) (fun _ : Φ ↦ n') κ)
     (F : MvPowerSeries (Φ × n' × n) ℂ_[p]) (i' : WeylIndex n' κ) (i : WeylIndex n κ) :
     ∃ y : Φ → n → ℕ → valRingCp p,
-      ‖schurJet κ F i' i‖ ≤ ‖jet ℂ_[p]
+      ‖schurJet κ F i' i‖ ≤ ‖jetPairing
         (minorProd i' fun (τ : Φ) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p])) F‖ := by
   let b (t : WeylIndex n κ) : MatrixPoly (Σ _ : Φ, n) (valRingCp p) :=
     nablaBasis (valRingCp p) (fun _ ↦ n) κ t *
@@ -815,7 +815,7 @@ lemma exists_norm_schurJet_le_norm_jet_minorProd
       eval (fun x ↦ (y x : ℂ_[p])) ((b t).map (valRingCp p).subtype) :=
     map_eval (valRingCp p).subtype y (b t)
   have h_entry (t : WeylIndex n κ) : schurJet κ F i' t =
-      jet ℂ_[p] (schur κ (fun τ : Φ ↦ of fun (r : n') (a : n) ↦ X (τ, r, a)) i' t) F := rfl
+      jetPairing (schur κ (fun τ : Φ ↦ of fun (r : n') (a : n) ↦ X (τ, r, a)) i' t) F := rfl
   refine ⟨fun τ a k ↦ y (⟨τ, a⟩, k), hy.trans_eq ?_⟩
   rw [minorProd_eq_sum hκ i' fun x ↦ (y x : ℂ_[p]), map_sum, LinearMap.sum_apply]
   refine congrArg norm (sum_congr rfl fun t _ ↦ ?_)

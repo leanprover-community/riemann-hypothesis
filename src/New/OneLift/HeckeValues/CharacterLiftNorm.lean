@@ -135,6 +135,7 @@ vector of a weight.
 
 namespace New
 
+open MvPolynomial (jetPairing)
 open Matrix Fintype ComplexConjugate MeasureTheory Fock Complex SiegelWeil Rows Finset MulAction
   Space Subgroup
 
@@ -252,7 +253,7 @@ lemma LValueData.index_stabilizer_inclMatrix_col (w : FinPlace E) :
 are renamed along an injective map. -/
 lemma fockPairing_rename_rename {σ τ : Type} (e : σ ↪ τ) (P Q : MvPolynomial σ ℂ) :
     fockPairing ℂ (P.rename e) (Q.rename e) = fockPairing ℂ P Q := by
-  change jet ℂ (P.rename e) (Q.rename e : MvPolynomial τ ℂ) = jet ℂ P Q
+  change jetPairing (P.rename e) (Q.rename e : MvPolynomial τ ℂ) = jetPairing P Q
   rw [← MvPowerSeries.rename_coe, jet_rename e rfl]
 
 /-- Let `X` be lift data and `κ = X.descentPair.columnCount` the weight with one row of length

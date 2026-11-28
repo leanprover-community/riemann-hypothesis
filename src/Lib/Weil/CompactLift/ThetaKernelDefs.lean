@@ -231,7 +231,7 @@ lemma coe_map_conj_inv_eq_transpose (u : USign (1 : n → ℤˣ)) :
 applied to ξ is the jet of F along the polynomial Aᵀ S_κ(z) ξ. -/
 lemma dotProduct_schurJet_mulVec (A : WeylIndex n' κ → ℂ) (ξ : WeylIndex n κ → ℂ)
     (F : MvPowerSeries (InfinitePlace E × n' × n) ℂ) :
-    A ⬝ᵥ schurJet κ F *ᵥ ξ = jet ℂ (schurCoeffPoly A ξ) F := by
+    A ⬝ᵥ schurJet κ F *ᵥ ξ = jetPairing (schurCoeffPoly A ξ) F := by
   simp [schurCoeffPoly, schurJet, dotProduct, mulVec, C_mul', mul_comm]
 
 /-- Assume `IsLiftWeight n n' κ eb e`, i.e. the weight `(κ, e)` of rank `n` goes up to rank `n'`
@@ -242,7 +242,7 @@ lemma map_schurJet (hκ : IsLiftWeight n n' κ eb e) {R S : Type} [CommRing R] [
     (i' : WeylIndex n' κ) (i : WeylIndex n κ) (φ : R →+* S)
     (F : MvPowerSeries (InfinitePlace E × n' × n) R) :
     φ (schurJet κ F i' i) = schurJet κ (F.map φ) i' i := by
-  simp [schurJet, map_jet, map_schur hκ.1]
+  simp [schurJet, map_jetPairing, map_schur hκ.1]
 
 /-- Under `IsLiftWeight n n' κ eb e`, evaluating `schurCoeffPoly A ξ` at z gives Aᵀ S_κ(z) ξ, for
 the matrices z_τ with entries z(τ, b, c). -/

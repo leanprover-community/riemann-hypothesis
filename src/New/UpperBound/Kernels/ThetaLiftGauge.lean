@@ -58,6 +58,7 @@ See `New.UpperBound.Divisibility.LocalDivisibility` and
 
 section OneLift
 
+open MvPolynomial (jetPairing)
 open New G Matrix Function Kernel Fintype NeZero Parameters IsUltrametricDist
 
 variable {P : Parameters} {s : ℕ}
@@ -274,7 +275,7 @@ lemma omega_mem_raises_of_jet_minorProd_le
     (h_bound : ∀ f ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) δ,
       ∀ (i' : WeylIndex n' κ) (w : P.Φ s → n → ℕ → valRingCp p),
       diagonalWeight ea u i' *
-        ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (col : n) (l : ℕ) ↦ (w τ col l : ℂ_[p]))
+        ‖jetPairing (minorProd i' fun (τ : P.Φ s) (col : n) (l : ℕ) ↦ (w τ col l : ℂ_[p]))
           ((((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries c f).map ιₚ)‖ ≤ B) :
     (thetaKernel hκ c ha hb K).ω (1, x * d * y) Ψ ∈ (thetaKernel hκ c ha hb K).raises 1 1 B := by
   -- An entry of the jet matrix is bounded by the jet along a product of minors with the same rows.
@@ -282,7 +283,7 @@ lemma omega_mem_raises_of_jet_minorProd_le
   set F : MvPowerSeries (P.Φ s × n' × n) ℂ :=
     ((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries c f
   obtain ⟨w, hw⟩ : ∃ w : P.Φ s → n → ℕ → valRingCp p, ‖schurJet κ (F.map ιₚ) i' i‖ ≤
-      ‖jet ℂ_[p] (minorProd i' fun τ col l ↦ (w τ col l : ℂ_[p])) (F.map ιₚ)‖ :=
+      ‖jetPairing (minorProd i' fun τ col l ↦ (w τ col l : ℂ_[p])) (F.map ιₚ)‖ :=
     exists_norm_schurJet_le_norm_jet_minorProd hκ.1 (F.map ιₚ) i' i
   rw [map_schurJet hκ]
   exact (mul_le_mul_of_nonneg_left hw (diagonalWeight_nonneg ea u i')).trans (h_bound f hf i' w)
@@ -319,7 +320,7 @@ lemma mem_raises_of_standardData
   have hQ : Q.IsHomogeneous (boxes κ (card n')) :=
     .of_map embValRing.subtype_injective (by simpa only [h_map] using isHomogeneous_schur hκ.1 i' i)
   have h_entry (F : MvPowerSeries (P.Φ s × n' × n) ℂ) :
-      schurJet κ F i' i = jet ℂ (Q.map embValRing.subtype) F := by simp [h_map, schurJet]
+      schurJet κ F i' i = jetPairing (Q.map embValRing.subtype) F := by simp [h_map, schurJet]
   rw [h_entry, diagonalWeight_one, one_mul]
   simpa only [map_div₀, norm_div] using norm_jet_jetSeries_le_pow hδ hf c hQ
 

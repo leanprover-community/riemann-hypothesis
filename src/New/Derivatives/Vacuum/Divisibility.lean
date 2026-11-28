@@ -18,7 +18,7 @@ homogeneous integral polynomials.
   integral above `p`.
 * `V.jetSeries a f`: the Taylor series at `0` of the theta function of `f`, with the variables
   scaled by `a`; the scale `P.jetScale s` is `periodFactor * areaScale / cmPeriod`.
-* `jet R Q F`: the derivative `Q(∂) F` at `0`.
+* `jetPairing Q F`: the derivative `Q(∂) F` at `0`.
 * The normal form (`HasNormalForm`): after scaling the variables by `ϖ`, an integral series times
   the exponential of a multiple of the coupling series of the pairs of partner places.
 * `ιₚ`: the embedding of `ℂ` into `ℂ_[p]` that comes with `PadicPlace p`.
@@ -46,6 +46,8 @@ a power of the product of copies of `θ` along a resolution of the identity time
 in copies of the parameter.
 -/
 
+open MvPolynomial (jetPairing map_jetPairing)
+
 section JetIntegrality
 
 open NumberField ComplexConjugate
@@ -65,7 +67,7 @@ lemma norm_jet_jetSeries_le_one {P : Parameters} {s : ℕ} {n : Type} [Fintype n
     {ε : n → ℤˣ} {V : Space (E P s) n ε} [V.IsStd] {p : ℕ} [Fact p.Prime] [PadicPlace p]
     {δ : 𝓞 P.K} (hδ : δ ≠ 0) {f : 𝒮 V} (hf : f ∈ standardData V δ)
     (Q : MvPolynomial (InfinitePlace (P.E s) × n) embValRing) :
-    ‖ιₚ (jet ℂ (Q.map embValRing.subtype)
+    ‖ιₚ (jetPairing (Q.map embValRing.subtype)
       (V.jetSeries (star (δ : ℂ) * P.d * P.jetScale s) f))‖ ≤ 1 := by
   -- The theta function at `conj δ * (areaScale / cmPeriod) * z` is a power of the product of copies
   -- of `θ` along a resolution `u` times an integral series `H` in the parameters. Scaling `z` by
@@ -93,7 +95,7 @@ lemma norm_jet_jetSeries_le_one {P : Parameters} {s : ℕ} {n : Type} [Fintype n
     calc _ = (P.cmCurve.thetaProd (daggerForms u) m ^ N * H).rescale fun _ ↦ ιₚ a := by
           rw [h_scale, V.jetSeries_mul_eq_rescale, map_rescale, h_series]
       _ = _ := by rw [map_mul, map_pow, CMLattice.rescale_thetaProd, h_forms]
-  rw [map_jet, h_scaled, MvPolynomial.map_map]
+  rw [map_jetPairing, h_scaled, MvPolynomial.map_map]
   exact P.cmCurve.norm_jet_thetaProd_pow_mul_le_one hν m N hH' (fun x : embValRing ↦ x.property) Q
 
 /-- **Integrality at all primes.** Let `V` be a standard hermitian space over `E = P.E s`, and let
@@ -108,7 +110,7 @@ theorem norm_jet_jetSeries_le_pow {P : Parameters} {s : ℕ} {n : Type} [Fintype
     {ε : n → ℤˣ} {V : Space (E P s) n ε} [V.IsStd] {p : ℕ} [Fact p.Prime] [PadicPlace p]
     {δ : 𝓞 P.K} (hδ : δ ≠ 0) {f : 𝒮 V} (hf : f ∈ standardData V δ) (c : ℂ)
     {Q : MvPolynomial (InfinitePlace (P.E s) × n) embValRing} {l : ℕ} (hQ : Q.IsHomogeneous l) :
-    ‖ιₚ (jet ℂ (Q.map embValRing.subtype) (V.jetSeries (c * P.jetScale s) f))‖ ≤
+    ‖ιₚ (jetPairing (Q.map embValRing.subtype) (V.jetSeries (c * P.jetScale s) f))‖ ≤
       ‖ιₚ (c / (star (δ : ℂ) * P.d))‖ ^ l := by
   -- Scaling the variables by `c / (conj δ * d)` multiplies the derivative by the `l`-th power.
   have h_ne : star (δ : ℂ) * P.d ≠ 0 := mul_ne_zero (star_ne_zero.2 (mod_cast hδ)) (NeZero.ne _)
@@ -224,7 +226,7 @@ theorem norm_jet_minorProd_jetSeries_le
     (hf : f ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) 1) (hc : ‖ιₚ c‖ ≤ 1)
     (i' : WeylIndex n' κ) (y : P.Φ s → n → ℕ → valRingCp p) :
     let N : ℕ := card n'
-    ‖jet ℂ_[p] (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p]))
+    ‖jetPairing (minorProd i' fun (τ : P.Φ s) (a : n) (k : ℕ) ↦ (y τ a k : ℂ_[p]))
         ((((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries
           (c * P.jetScale s) f).map ιₚ)‖ ≤
       p ^ (-(predictedDivisibility P.d p (P.partner s p) κ N -
@@ -273,7 +275,7 @@ theorem norm_schurJet_jetSeries_le_of_charges
   obtain ⟨y, h_le_minorProd⟩ :=
     exists_norm_schurJet_le_norm_jet_minorProd hκ (F.map ιₚ) i' i
   rw [show ιₚ (schurJet κ F i' i) = schurJet κ (F.map ιₚ) i' i by
-    simp [schurJet, map_jet, map_schur hκ]]
+    simp [schurJet, map_jetPairing, map_schur hκ]]
   exact h_le_minorProd.trans (P.norm_jet_minorProd_le_of_charges s hp_nonsplit hϖ h_form
     erasedPlaces chargeExp (fun e he τ h b _ _ ↦ h_charge e he τ h b) i' y)
 

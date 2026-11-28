@@ -35,8 +35,8 @@ Notions from other files:
 * `New.modKernelStdSpace`: the theta kernel of the datum made of a function `Ψ` on matrices modulo
   `𝔪` and the Fock vector of a polynomial `Q`, for the Weil action twisted by two characters of
   `U(1)`.
-* `New.Space.jetSeries`, `New.jet`: the Taylor series of a theta function in Fock's coordinates, and
-  the pairing `P(∂) F (0)` of a polynomial `P` with a power series `F`.
+* `New.Space.jetSeries`, `MvPolynomial.jetPairing`: the Taylor series of a theta function in Fock's
+  coordinates, and the pairing `P(∂) F (0)` of a polynomial `P` with a power series `F`.
 * `New.Rows.twoSidedSubst`: the substitution `x_τ ↦ c_τᵀ x_τ g_τᵀ` on complex polynomials in the
   entries of `N × L` matrices `x_τ`.
 -/
@@ -148,7 +148,7 @@ lemma jet_jetSeries_pairWeil_vacuumDatum {P : Parameters} {D : Data P} {d : ℕ}
     {𝔪 : Modulus D.E} {Ψ : Matrix N L 𝔪.ResidueRing → ℂ}
     {Q : MvPolynomial (InfinitePlace D.E × N × L) ℂ} (hQ : Q.IsHomogeneous d) (g : Gf D.E L)
     (h : Gf D.E N) (s t : ℂ) :
-    jet ℂ Q (((stdSpace D.E L).hom (stdSpace D.E N)).jetSeries t
+    jetPairing Q (((stdSpace D.E L).hom (stdSpace D.E N)).jetSeries t
         (pairWeil (stdSpace D.E L) (stdSpace D.E N) a b ((1, g), 1, h)
           (s • (vacuumDatum (stdSpace D.E L) (stdSpace D.E N) 𝔪 Ψ).val))) =
       s * t ^ d * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h := by
@@ -190,7 +190,7 @@ lemma norm_modKernelScale_mul_modKernelStdSpace_le_one {P : Parameters} {D : Dat
   let ω : 𝒮 V →L[ℂ] 𝒮 V := pairWeil (stdSpace D.E L) (stdSpace D.E N) a b ((1, g), 1, h)
   have h_std : f ∈ standardData V δ := smul_vacuumDatum_mem_standardData hq hΨ hp
   -- Since `f` is standard of level `δ`, the scale of its series is `star δ * P.d * jetScale`.
-  have jet_eq : jet ℂ Q (V.jetSeries (star (δ : ℂ) * P.d * P.jetScale D.towerExp) (ω f)) =
+  have jet_eq : jetPairing Q (V.jetSeries (star (δ : ℂ) * P.d * P.jetScale D.towerExp) (ω f)) =
       modKernelScale L N D d * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h := by
     simp only [f, ω, V, smul_smul, jet_jetSeries_pairWeil_vacuumDatum hQ]
     simp [modKernelScale, δ, denomExp]
@@ -319,7 +319,7 @@ lemma norm_modKernelScale_mul_modKernelStdSpace_le {P : Parameters} {D : Data P}
   let V : Space D.E (N × L) (homSigns 1 1) := (stdSpace D.E L).hom (stdSpace D.E N)
   let f₀ : 𝒮 V := P.vacuumScale D.towerExp ^ card (N × L) • (vacuumDatum _ _ 𝔪 Ψ).val
   let ω : 𝒮 V →L[ℂ] 𝒮 V := pairWeil (stdSpace D.E L) (stdSpace D.E N) a b ((1, g), 1, h)
-  let J : ℂ := jet ℂ Q (V.jetSeries (D.M ^ 2 * P.d * P.jetScale D.towerExp) (ω f₀))
+  let J : ℂ := jetPairing Q (V.jetSeries (D.M ^ 2 * P.d * P.jetScale D.towerExp) (ω f₀))
   have jet_eq : modKernelScale L N D d * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h =
       (D.M ^ 2) ^ denomExp * J := by
     simp only [J, V, ω, f₀, jet_jetSeries_pairWeil_vacuumDatum hQ]

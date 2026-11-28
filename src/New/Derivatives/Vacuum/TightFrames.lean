@@ -360,6 +360,7 @@ under the finite Heisenberg operators.
 
 namespace New.Space
 
+open MvPolynomial (jetPairing jetPairing_monomial)
 open MvPowerSeries MeasureTheory Fock NormedSpace Finset
 
 variable {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
@@ -448,11 +449,11 @@ lemma taylor_line_eq_subst_jetSeries (hf : f ∈ V.finitePart) (a : ℂ)
   let T : PowerSeries ℂ := (V.jetSeries a f).subst fun p ↦ linearSeries fun _ ↦ v p
   have h_jet : k.factorial * PowerSeries.coeff k T =
       ∫ w, L w ^ k * g w ∂normalizedVolume (InfinitePlace E × n) := calc
-    _ = jet ℂ (.X () ^ k) T := by
-      simp [MvPolynomial.X_pow_eq_monomial, jet_monomial, PowerSeries.coeff]
-    _ = jet ℂ ((∑ p, v p • .X p) ^ k) (V.jetSeries a f) :=
+    _ = jetPairing (.X () ^ k) T := by
+      simp [MvPolynomial.X_pow_eq_monomial, jetPairing_monomial, PowerSeries.coeff]
+    _ = jetPairing ((∑ p, v p • .X p) ^ k) (V.jetSeries a f) :=
       (jet_subst_linearSeries (.replicateCol Unit v) _ _).trans <|
-        congrArg (fun Q ↦ jet ℂ Q (V.jetSeries a f)) (by
+        congrArg (fun Q ↦ jetPairing Q (V.jetSeries a f)) (by
           simp only [linSubst, map_pow, MvPolynomial.aeval_X, Matrix.replicateCol_apply])
     _ = ∫ w, L w ^ k * g w ∂normalizedVolume (InfinitePlace E × n) := by
       -- The jet along a polynomial `Q` is `∫ Q (a • conj w) * g w`.

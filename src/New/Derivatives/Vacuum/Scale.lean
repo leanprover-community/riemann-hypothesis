@@ -16,7 +16,7 @@ factor is `New.Data.norm_taylorScale_eq_one_of_not_dvd`.
 
 The statements use these notions:
 * `jetSeries a f`: the Taylor series of the theta function of `f`, with variables scaled by `a`;
-  `jet R Q F` is the derivative at zero of the series `F` along the polynomial `Q`.
+  `jetPairing Q F` is the derivative at zero of the series `F` along the polynomial `Q`.
 * `daggerForms u j`: the coefficients in `ℂ_p` of the linear form `z ↦ y† z` of the vector
   `y = u j`; at a pair `(v, i)` of an infinite place and a coordinate the coefficient is the image
   in `ℂ_p` of the complex conjugate of `Φ_v (y i)`, with `Φ_v` the embedding chosen at `v`.
@@ -37,12 +37,12 @@ open NumberField ComplexConjugate MvPolynomial
 
 namespace New
 
-/-- Scaling all variables of a power series `F` by `a` multiplies the derivative `jet R Q F` at
+/-- Scaling all variables of a power series `F` by `a` multiplies the derivative `jetPairing Q F` at
 zero along a homogeneous polynomial `Q` of degree `l` by `a ^ l`. -/
 lemma jet_rescale {R X : Type} [CommRing R] {Q : MvPolynomial X R} {l : ℕ}
     (hQ : Q.IsHomogeneous l) (a : R) (F : MvPowerSeries X R) :
-    jet R Q (MvPowerSeries.rescale (fun (_ : X) ↦ a) F) = a ^ l * jet R Q F := by
-  rw [jet_eq_sum, jet_eq_sum, Finset.mul_sum]
+    jetPairing Q (MvPowerSeries.rescale (fun (_ : X) ↦ a) F) = a ^ l * jetPairing Q F := by
+  rw [jetPairing_eq_sum, jetPairing_eq_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun α hα ↦ ?_
   simp only [MvPowerSeries.coeff_rescale, Finsupp.prod, Finset.prod_pow_eq_pow_sum,
     ← hQ.degree_eq_sum_deg_support hα]
@@ -60,7 +60,7 @@ series `V.jetSeries a f` has one variable for each such pair; its coefficient at
 lemma Space.jet_jetSeries_of_isHomogeneous {E n : Type} [Field E] [CMType E] [WeilData E]
     [Fintype n] [DecidableEq n] {ε : n → ℤˣ} (V : Space E n ε)
     {Q : MvPolynomial (InfinitePlace E × n) ℂ} {l : ℕ} (hQ : Q.IsHomogeneous l) (a : ℂ) (f : 𝒮 V) :
-    jet ℂ Q (V.jetSeries a f) =
+    jetPairing Q (V.jetSeries a f) =
       a ^ l * V.θ (V.integrated (Fock.polyVector (realSigns E ε) Q) f) := by
   -- Write the scale as `a * 1`, take out `a ^ l` and use the formula at the scale `1`.
   rw [← mul_one a, jetSeries_mul_eq_rescale, jet_rescale hQ, jet_jetSeries_eq_theta, mul_one]

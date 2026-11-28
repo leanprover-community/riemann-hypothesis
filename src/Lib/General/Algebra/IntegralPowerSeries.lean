@@ -26,8 +26,8 @@ with coefficients in the ring of integers of `ℂ_[p]`.
 * `New.padicValNat_factorial_mem_Icc`: `n / (p - 1) - v_p(n!)` lies in `[0, K]` for `n < p ^ K`.
 
 Notions from other files:
-* `New.jet`: the bilinear pairing `P(∂)F(0)` of a polynomial `P` with a power series `F`, the sum
-  over exponents `d` of `d!` times the product of the `d`-th coefficients of `P` and `F`.
+* `MvPolynomial.jetPairing`: the pairing `P(∂)F(0)` of a polynomial `P` with a power series `F`,
+  the sum over exponents `d` of `d!` times the product of the `d`-th coefficients of `P` and `F`.
 * `New.linearSeries`: the linear form `∑ c_i z_i`, as a power series in the variables `z_i`.
 * `New.linSubst`: for a matrix `M` over `R`, the `R`-algebra map of polynomial rings that sends
   `X_b` to `∑_t M_(t b) X_t`.
@@ -108,6 +108,8 @@ end IntegralSeries
 
 section JetChainRule
 
+open MvPolynomial (jetPairing jetPairing_eq_sum jetPairing_mul_X)
+
 open MvPowerSeries Finset WithPiTopology
 
 
@@ -117,7 +119,7 @@ along `linSubst M P`, the polynomial `P(Mᵀ x)`. -/
 lemma New.jet_subst_linearSeries {ι κ R : Type} [CommRing R] [Fintype ι] [Fintype κ]
     (M : Matrix ι κ R) (P : MvPolynomial κ R) :
     ∀ F : MvPowerSeries ι R,
-      jet R P (subst (fun i : ι ↦ linearSeries (M i)) F) = jet R (linSubst M P) F := by
+      jetPairing P (subst (fun i : ι ↦ linearSeries (M i)) F) = jetPairing (linSubst M P) F := by
   classical
   have hM : HasSubst fun i : ι ↦ linearSeries (M i) :=
     hasSubst_of_constantCoeff_zero fun i ↦ constantCoeff_linearSeries (M i)
@@ -129,7 +131,7 @@ lemma New.jet_subst_linearSeries {ι κ R : Type} [CommRing R] [Fintype ι] [Fin
       · simp
       obtain ⟨i, hi⟩ : ∃ i : ι, d i ≠ 0 := Finsupp.ne_iff.1 hd
       simp [Finsupp.prod_fintype, prod_eq_zero (mem_univ i), hi]
-    simp [jet_eq_sum, h_const]
+    simp [jetPairing_eq_sum, h_const]
   | add P Q hP hQ => simp [hP, hQ]
   | mul_X P k hP =>
     intro F
@@ -140,8 +142,8 @@ lemma New.jet_subst_linearSeries {ι κ R : Type} [CommRing R] [Fintype ι] [Fin
       simp [linearSeries, pderiv_X, Pi.single_apply]
     have h_lin : linSubst M (P * .X k) = ∑ i : ι, M i k • (linSubst M P * .X i) := by
       simp [linSubst, mul_sum]
-    simp only [h_lin, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, jet_mul_X,
-      h_chain, hP]
+    simp only [h_lin, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply,
+      jetPairing_mul_X, h_chain, hP]
 
 end JetChainRule
 
@@ -237,10 +239,10 @@ open MvPolynomial Finsupp
 are renamed along an injective map `e` of variables; `Q` is the renamed polynomial. -/
 lemma New.jet_rename {σ τ R : Type} (e : σ ↪ τ) [CommRing R] {P : MvPolynomial σ R}
     {Q : MvPolynomial τ R} (h : rename e P = Q) (F : MvPowerSeries σ R) :
-    jet R Q (F.rename e) = jet R P F := by
+    jetPairing Q (F.rename e) = jetPairing P F := by
   subst h
   induction P using MvPolynomial.induction_on' with
-  | monomial d r => simp [rename_monomial, ← embDomain_eq_mapDomain, prod, jet_monomial]
+  | monomial d r => simp [rename_monomial, ← embDomain_eq_mapDomain, prod, jetPairing_monomial]
   | add P Q hP hQ => simp [hP, hQ]
 
 end JetRename

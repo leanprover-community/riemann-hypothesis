@@ -66,11 +66,11 @@ open MvPolynomial
       (∏ x : X, c x ^ D x) • MvPolynomial.X () ^ D.degree := by
     simp only [linSubst, aeval_monomial]
     simp [prod_fintype, smul_pow, prod_smul, prod_pow_eq_pow_sum, degree_eq_sum]
-  have h_chain : jet ℂ_[p] (monomial D 1) (g.subst (linearSeries c)) =
-      jet ℂ_[p] (linSubst (fun _ : Unit ↦ c) (monomial D 1)) g :=
+  have h_chain : jetPairing (monomial D 1) (g.subst (linearSeries c)) =
+      jetPairing (linSubst (fun _ : Unit ↦ c) (monomial D 1)) g :=
     jet_subst_linearSeries (fun _ : Unit ↦ c) (monomial D 1) g
-  rw [h_monomial, X_pow_eq_monomial, map_smul, LinearMap.smul_apply, jet_monomial,
-    jet_monomial] at h_chain
+  rw [h_monomial, X_pow_eq_monomial, map_smul, LinearMap.smul_apply, jetPairing_monomial,
+    jetPairing_monomial] at h_chain
   rw [eq_div_iff (Finset.prod_ne_zero_iff.2 fun x _ ↦ mod_cast factorial_ne_zero (D x)), mul_comm]
   simpa [prod_fintype, PowerSeries.coeff] using h_chain
 
