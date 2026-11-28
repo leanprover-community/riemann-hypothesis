@@ -163,10 +163,11 @@ namespace New.Space.Splitting
 
 open Matrix MeasureTheory
 
-/-- A monoid that acts on columns acts on matrices, column by column. -/
-instance (priority := low) {m p M R : Type*} [Monoid M] [MulAction M (m → R)] :
-    MulAction M (Matrix m p R) :=
-  (Equiv.piComm _).mulAction M
+/-- The adelic unitary group `G E s` acts on adelic frames by matrix multiplication. -/
+noncomputable instance _root_.New.G.instDistribMulActionMatrix {E n p : Type*} [Field E]
+    [NumberField E] [NumberField.IsCMField E] [Fintype n] [DecidableEq n] {s : n → ℤˣ} :
+    DistribMulAction (G E s) (Matrix n p (𝔸 E)) :=
+  .compHom _ G.toUnitary.toMonoidHom
 
 /-- The unitary group acts on frames by matrix multiplication. -/
 lemma _root_.New.U.smul_matrix_eq_mul {m p E : Type*} [CommRing E] [StarRing E] [Fintype m]
