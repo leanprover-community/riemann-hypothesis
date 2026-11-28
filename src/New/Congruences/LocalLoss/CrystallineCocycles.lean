@@ -452,8 +452,19 @@ lemma New.Selmer.CrystallineSizes.hasCupExponent_of_cube_le {ℓ : ℕ} [ThePrim
     (hη : 99 * ((η + W) * Q + η + h) ≤ h ^ 3)⟩ := h_sizes
   have hQ_le : Q ≤ h ^ 3 := by omega
   -- `K` is large enough for `hasCupExponent_any_pattern`.
-  have hbK : b + δ < K * ℓ ^ 2 := by nlinarith only [h_loss, hℓ, hb, hη, hδ, hv, hK, hQ_le]
-  have hGK : 2 * (G + δ) < K * ℓ := by nlinarith only [h_loss, hℓ, hb, hη, hδ, hv, hK, hQ_le]
+  have h_scale : 2 * b < K * ℓ * Q := calc
+    2 * b < ℓ * (v + 1) := h_loss
+    _ ≤ ℓ * (K * Q) := Nat.mul_le_mul_left _ (by omega)
+    _ = _ := by ac_rfl
+  have hbK : b + δ < K * ℓ ^ 2 := calc
+    b + δ ≤ 2 * b := by omega
+    _ < K * ℓ * Q := h_scale
+    _ ≤ K * ℓ ^ 2 := by
+      simpa only [pow_two, Nat.mul_assoc] using Nat.mul_le_mul_left (K * ℓ) hℓ.le
+  have hGK : 2 * (G + δ) < K * ℓ := Nat.lt_of_mul_lt_mul_right <| calc
+    2 * (G + δ) * Q ≤ 4 * G * h ^ 3 := Nat.mul_le_mul (by omega) hQ_le
+    _ ≤ 2 * b := by rw [Nat.mul_assoc]; omega
+    _ < K * ℓ * Q := h_scale
   have hWK : W + 4 * η ≤ K := by nlinarith only [hη, hv, hK, hQ_le]
   have h_exp := k.hasCupExponent_any_pattern ζ h_open h_un h_seven (by omega) le_rfl hL hU hU'
     (by omega) (Nat.add_le_add_right (by omega) δ) hbK hGK hWK
