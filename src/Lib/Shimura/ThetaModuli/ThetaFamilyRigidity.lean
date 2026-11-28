@@ -498,7 +498,9 @@ lemma FullLevelStructure.exists_pullback {φ : R →+* ℂ}
       (hΘ : IsTranslationLift (y.lineBundle.pow m) s Θ) : ∃ a : ℂ, ∀ σ, Θ' (P σ) = a • P (Θ σ) := by
     have h_comp := hΘ'.comp hP
     rw [h_pb.isGroupBaseChange.translation_comp s] at h_comp
-    exact h_comp.exists_eq_smul (hasConstFunctions_of_isPullback .of_id_fst) (hP.comp hΘ)
+    exact h_comp.exists_eq_smul
+      (hasConstFunctions_of_isPullback (Over.w (AddMonObj.zero (X := y'.groupScheme))) .of_id_fst)
+      (hP.comp hΘ)
   obtain ⟨a, ha⟩ := h_prop hΦ hΦ₀
   obtain ⟨b, hb⟩ := h_prop hΨ hΨ₀
   have h_lin₀ : (y.lineBundle.pow m).IsLinearSystem := .pi fun _ ↦ y.isProjEmbedding.isLinearSystem

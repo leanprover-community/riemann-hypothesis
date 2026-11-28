@@ -509,7 +509,8 @@ lemma New.ThetaObject.TorusModel.hasSpanningCoords_of_specMap_comp_eq {E O W : T
     change Spec.map (CommRingCat.ofHom χ ≫ ϕ) ≫ y = x
     rwa [Spec.map_comp_assoc, hχ]
   have h_cst : HasConstFunctions x.groupScheme.hom :=
-    hasConstFunctions_of_isPullback hx₀.isGroupBaseChange.isPullback
+    hasConstFunctions_of_isPullback (Over.w (AddMonObj.zero (X := x₀.groupScheme)))
+      hx₀.isGroupBaseChange.isPullback
   -- Serre's theorem: for `n ≥ m` the monomials of degree `n` in the coordinates span `H⁰(N ^ n)`
   obtain ⟨m, h_serre⟩ :
       ∃ m : ℕ, ∀ n ≥ m, ∀ h : ((x₀.lineBundle.pull hx₀.schemeMap.left).pow n).IsLinearSystem,

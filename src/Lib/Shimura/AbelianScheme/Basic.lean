@@ -6,6 +6,7 @@ public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
+import TauCeti.AlgebraicGeometry.Morphisms.Flat.StructureSheaf
 public import Lib.General.Geometry.LineBundles
 
 /-!
@@ -535,45 +536,28 @@ def New.HasConstFunctions {X S : Scheme} (s : X ⟶ S) : Prop :=
   ∀ (c : Γ(X, ⊤)) (B : CommRingCat) (x y : Spec B ⟶ X),
     x ≫ s = y ≫ s → ofSection c B x = ofSection c B y
 
-/-- Let A be an integral abelian scheme over a field k and X = A ×_k Spec C. A function regular on
-all of X takes equal values at any two ring-valued points with the same image in Spec C. -/
+/-- Let `A` be integral, universally closed and quasi-separated over a field `k`, with a
+`k`-rational point. After any base change, every global function takes equal values
+at ring-valued points lying over the same point of the base. -/
 lemma New.Variety.hasConstFunctions_of_isPullback {k : Type} [Field k]
-    {A : Over (Spec (CommRingCat.of k))}
-    [IsAbelianScheme A] [IsIntegral A.left] {X : Scheme} {C : CommRingCat} {p : X ⟶ A.left}
-    {s : X ⟶ Spec C} {q : Spec C ⟶ Spec (CommRingCat.of k)}
-    (h_pullback : IsPullback (P := X) (Y := Spec C) p s A.hom q) :
+    {A : Over (Spec (CommRingCat.of k))} [IsIntegral A.left]
+    [UniversallyClosed A.hom] [QuasiSeparated A.hom]
+    {point : Spec (CommRingCat.of k) ⟶ A.left} (h_point : point ≫ A.hom = 𝟙 _)
+    {X T : Scheme} {p : X ⟶ A.left} {s : X ⟶ T} {q : T ⟶ Spec (CommRingCat.of k)}
+    (h_pullback : IsPullback p s A.hom q) :
     HasConstFunctions s := by
-  -- Flat base change gives `Γ(X) = Γ(A) ⊗[k] C`, and `k → Γ(A)` is onto; so `C → Γ(X)` is an
-  -- epimorphism, and evaluation at a point of `X` is determined by its image in `Spec C`.
+  -- The pullback projection induces an isomorphism on global functions.
+  have : IsIso (Limits.pullback.fst q A.hom).appTop :=
+    TauCeti.AlgebraicGeometry.isIso_app_pullback_fst_of_section A.hom h_point q ⊤
+  have : IsIso h_pullback.flip.isoPullback.hom.appTop := by
+    change IsIso (Scheme.Γ.mapIso h_pullback.flip.isoPullback.op).hom
+    infer_instance
+  have : IsIso s.appTop := by
+    rw [← h_pullback.flip.isoPullback_hom_fst, comp_appTop]
+    infer_instance
   intro f B x y hxy
-  have h_top : (⊤ : X.Opens) = p ⁻¹ᵁ ⊤ ⊓ s ⁻¹ᵁ ⊤ := by
-    rw [Scheme.Hom.preimage_top, Scheme.Hom.preimage_top, inf_idem]
-  have h_pushout : IsPushout (A.hom.appLE ⊤ ⊤ le_top) (q.appLE ⊤ ⊤ le_top) (p.appLE ⊤ ⊤ le_top)
-      (s.appLE ⊤ ⊤ le_top) :=
-    (isIso_pushoutSection_iff h_pullback le_top le_top h_top).mp <|
-      isIso_pushoutSection_of_isQuasiSeparated_of_flat_right h_pullback le_top le_top h_top
-        (isAffineOpen_top _) (isAffineOpen_top _)
-        (isCompact_preimage A.hom (U := ⊤) (isAffineOpen_top _).isCompact)
-        (isQuasiSeparated_preimage A.hom (U := ⊤) isQuasiSeparated_univ)
-  -- `Γ(A)` is a field, so evaluation at the zero section is injective; it is a retraction of
-  -- `k → Γ(A)`, which is therefore surjective.
-  let _ : Field Γ(A.left, ⊤) := (isField_of_universallyClosed _ A.hom).toField
-  have h_inj : Function.Injective ζ[A].left.appTop :=
-    RingHom.injective (S := Γ(Spec (.of k), ⊤)) ζ[A].left.appTop.hom
-  have h_sec : Function.LeftInverse ζ[A].left.appTop A.hom.appTop := fun a ↦ by
-    rw [← CommRingCat.comp_apply, ← Scheme.Hom.comp_appTop,
-      show ζ[A].left ≫ A.hom = 𝟙 _ from Over.w ζ[A], Scheme.Hom.id_appTop]
-    rfl
-  have h_epi : Epi (s.appLE ⊤ ⊤ le_top) := h_pushout.epi_inr_of_epi <| by
-    rw [show A.hom.appLE ⊤ ⊤ le_top = A.hom.appTop from appLE_eq_app A.hom]
-    exact ConcreteCategory.epi_of_surjective _ (h_sec.rightInverse_of_injective h_inj).surjective
-  -- Both evaluations agree on the sections that come from `Spec C`, since `x ≫ s = y ≫ s` (`hxy`).
-  have h_agree : s.appLE ⊤ ⊤ le_top ≫ evalSection x landsIn_top =
-      s.appLE ⊤ ⊤ le_top ≫ evalSection y landsIn_top := by
-    dsimp only [evalSection]
-    rw [appLE_comp_appLE_assoc x s ⊤ ⊤ ⊤ le_top landsIn_top,
-      appLE_comp_appLE_assoc y s ⊤ ⊤ ⊤ le_top landsIn_top, hxy]
-  rw [ofSection_eq landsIn_top, ofSection_eq landsIn_top, h_epi.left_cancellation _ _ h_agree]
+  obtain ⟨c, rfl⟩ := (ConcreteCategory.bijective_of_isIso s.appTop).surjective f
+  simp only [ofSection_appTop, hxy]
 
 end ConstantFunctions
 

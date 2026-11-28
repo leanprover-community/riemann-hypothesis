@@ -295,7 +295,8 @@ lemma New.Variety.exists_apply_lift_eq_mul_of_isFrame (hp : IsPullback p A'.hom 
   obtain ⟨h_section_x, -⟩ := frame x hxy
   obtain ⟨r, hr⟩ := (frame y rfl).exists_eq_mul h_section_x
   have const : HasConstFunctions (X := (Over.mk s ⊗ A').left) (Limits.pullback.fst s A'.hom) :=
-    hasConstFunctions_of_isPullback (.paste_horiz (.flip (.of_hasPullback ..)) hp)
+    hasConstFunctions_of_isPullback (Over.w (AddMonObj.zero (X := A₀)))
+      (.paste_horiz (.flip (.of_hasPullback ..)) hp)
   have h_over (a : Over.mk s ⟶ A') :
       (lift (𝟙 (Over.mk s)) a).left ≫ (fst (Over.mk s) A').left = 𝟙 (Over.mk s).left := by
     rw [← comp_left, lift_fst, id_left]
