@@ -79,13 +79,9 @@ a spanning set is zero. -/
 lemma characterModule_eq_zero_of_span {O X : Type*} [CommRing O] [AddCommGroup X] [Module O X]
     {s : Set X} (hs : Submodule.span O s = ⊤) {f : CharacterModule X}
     (hf : ∀ t : O, ∀ u ∈ s, f (t • u) = 0) : f = 0 := by
-  have h_all (u : X) : ∀ t : O, f (t • u) = 0 := by
-    induction Submodule.eq_top_iff'.1 hs u using Submodule.span_induction with
-    | mem u hu => exact fun t ↦ hf t u hu
-    | zero => simp
-    | add u u' _ _ hu hu' => simp [hu, hu']
-    | smul r u _ hu => simp [smul_smul, hu]
-  exact DFunLike.ext f 0 fun u ↦ by simpa using h_all u 1
+  ext u
+  obtain ⟨c, rfl⟩ := (Finsupp.mem_span_iff_linearCombination O s u).1 (hs ▸ Submodule.mem_top)
+  simp [Finsupp.linearCombination_apply, map_finsuppSum, hf]
 
 namespace SelmerDatum
 
@@ -213,7 +209,7 @@ lemma exists_isNewAuxiliaryPrime (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
     rw [hφ_char v hv, map_mul, map_eq_one_of_mem_sahGroup _ hh, mul_one,
       hp.character_tameGenerator_eq_ite hp.first_mem v hv]
   have h_triv (b : Bool) : V i (idOrConjInv b l.frob) := by
-    obtain ⟨hφ, hφ_conj⟩ := T.mem_reductionKerInfConj.1 hφU
+    obtain ⟨hφ, hφ_conj⟩ := hφU
     refine (hV _).2 (T.mem_reductionKer (N := N).1 ?_).1
     cases b
     exacts [inv_mem hφ_conj, hφ]
@@ -324,10 +320,9 @@ lemma eq_zero_of_mem_dualSelmer_of_forall_sahGroup {hp : IsTiedPrimes ℓ S₀ V
     have h_conj : T.γ * g * T.γ⁻¹ ∈ T.reductionKer M N :=
       (T.reductionKer M N).isNormal'.conj_mem g hg T.γ
     have h_mul : ⁅g, T.γ⁆ * (T.γ * g * T.γ⁻¹) = g := by simp [commutatorElement_def, mul_assoc]
-    have h_same : y g = y (T.γ * g * T.γ⁻¹) :=
-      calc y g = y ⁅g, T.γ⁆ + y (T.γ * g * T.γ⁻¹) := by
-            rw [← hy.map_mul _ (T.mem_reductionKer_of_mem_sahGroup h_comm) _ h_conj, h_mul]
-        _ = y (T.γ * g * T.γ⁻¹) := by rw [hH _ h_comm, zero_add]
+    have h_same : y g = y (T.γ * g * T.γ⁻¹) := by
+      simpa only [h_mul, hH _ h_comm, zero_add] using
+        hy.map_mul _ (T.mem_reductionKer_of_mem_sahGroup h_comm) _ h_conj
     have h_val (m : n → QuotSpan a) : y g (T.ρ T.γ • m) = y g m :=
       calc y g (T.ρ T.γ • m) = y (T.γ * g * T.γ⁻¹) (T.ρ T.γ • m) := by rw [← h_same]
         _ = y g ((cyclotomicCharIn O Ω ℓ T.γ : O) • T.ρ T.γ⁻¹ • T.ρ T.γ • m) :=
@@ -336,10 +331,9 @@ lemma eq_zero_of_mem_dualSelmer_of_forall_sahGroup {hp : IsTiedPrimes ℓ S₀ V
           rw [← mul_smul (T.ρ T.γ⁻¹), ← map_mul, inv_mul_cancel]
           simp [T.cyclotomicChar_γ]
     -- So `y(g)` kills the image of `γ_* - 1`, which is all of `(O / a) ^ n`.
-    refine DFunLike.ext _ _ fun b ↦ ?_
-    obtain ⟨m, rfl⟩ : ∃ m : n → QuotSpan a, T.ρ T.γ • m - m = b :=
-      T.bijective_γ_smul_sub.surjective b
-    rw [map_sub, h_val, sub_self, Pi.zero_apply, TauCeti.CharacterModule.zero_apply]
+    ext b
+    obtain ⟨m, rfl⟩ := T.bijective_γ_smul_sub.surjective b
+    simp [h_val]
   · exact hy.eq_zero_of_notMem g hg
 
 /-! ### First step: `Ψ(h, h) = 0` -/
@@ -367,10 +361,8 @@ lemma dualSelmer_frob_add_conj_frob_eq_zero {hp : IsTiedPrimes ℓ S₀ V W N P�
   obtain ⟨hz_coc, -, -, hz_lc⟩ := mem_selmerModule_iff.1 hz
   -- Reciprocity needs normalised generators `δ` and `δ^{-c}`; pass to a multiple of `z`.
   obtain ⟨δ, hδ⟩ := exists_isTameGeneratorFor Gal(Ω/E) (ℓ ^ N) hP_data.isPlaceOver
-  obtain ⟨k, hk, hk'⟩ :
-      ∃ k : ℕ, z l.tameGenerator = k • z δ ∧ z (conjGal l.tameGenerator)⁻¹ = k • z (conjGal δ)⁻¹ :=
-    T.exists_apply_pair_eq_nsmul hN ha hl.notMem_bad hl.star_notMem_bad hP_data.isPlaceOver
-      hP_data.tame_gen.1 hδ hz_coc hz_lc
+  obtain ⟨k, hk, hk'⟩ := T.exists_apply_pair_eq_nsmul hN ha hl.notMem_bad hl.star_notMem_bad
+    hP_data.isPlaceOver hP_data.tame_gen.1 hδ hz_coc hz_lc
   let p : SplitPrime (ℓ ^ N) (T.reductionKer M N) :=
     { prime := P, place := l.place, isPlaceOver := hP_data.isPlaceOver, frob := l.frob
       isFrob := hP_data.isFrob, frob_mem := hφ, tameGenerator := δ, isTameGeneratorFor := hδ }
@@ -412,22 +404,17 @@ lemma mirrorForm_self_eq_zero {hp : IsTiedPrimes ℓ S₀ V W N P₀ J x}
       z ∈ T.frobInTameImage J x i a P l)
     (t : O) {h : Gal(Ω/E)} (hh : h ∈ T.sahGroup) :
     mirrorForm z y t h h = 0 := by
-  classical
-  obtain ⟨hz_coc, hz_lc⟩ :
-      (∀ g g' : Gal(Ω/E), z (g * g') = z g + T.ρ g • z g') ∧ IsLocallyConstant z :=
-    (mem_selmerModule_iff.1 hz).imp_right fun ⟨_, _, h_lc⟩ ↦ h_lc
+  obtain ⟨hz_coc, -, -, hz_lc⟩ := mem_selmerModule_iff.1 hz
   -- As `z` and `y` vanish at `γ₀` and `γ₀^c`, the form has the same value at `h` and at `g = γ₀ h`.
   let g : Gal(Ω/E) := (x P₀).1.tameGenerator * h
-  obtain ⟨hγ₀, hγ₀_conj⟩ : (x P₀).1.tameGenerator ∈ T.reductionKerInfConj M N :=
-    T.γ₀_mem_reductionKerInfConj hp
+  obtain ⟨hγ₀, hγ₀_conj⟩ := T.γ₀_mem_reductionKerInfConj (M := M) hp
   obtain ⟨hU, hU_conj⟩ : h ∈ T.reductionKerInfConj M N := T.sahGroup_le_reductionKerInfConj hh
   have hz₀ : z (x P₀).1.tameGenerator = 0 :=
     T.apply_first_tameGenerator_eq_zero_of_mem_tiedSelmer hp hz true
   have hz₀_conj : z (conjGal (x P₀).1.tameGenerator) = 0 :=
     (cocycleKer _ hz_coc).inv_mem_iff.1 (T.apply_first_tameGenerator_eq_zero_of_mem_tiedSelmer hp hz
       false)
-  obtain ⟨hy₀, hy₀_conj⟩ : y (x P₀).1.tameGenerator = 0 ∧ y (conjGal (x P₀).1.tameGenerator) = 0 :=
-    apply_first_tameGenerator_eq_zero_of_mem_dualSelmer hy
+  obtain ⟨hy₀, hy₀_conj⟩ := apply_first_tameGenerator_eq_zero_of_mem_dualSelmer hy
   have h_shift : mirrorForm z y t h h = mirrorForm z y t g g := by
     simp only [mirrorForm, g, map_mul, hz_coc, hz₀, hz₀_conj, hy.map_mul _ hγ₀ _ hU,
       hy.map_mul _ hγ₀_conj _ hU_conj, hy₀, hy₀_conj, zero_add,
@@ -440,16 +427,10 @@ lemma mirrorForm_self_eq_zero {hp : IsTiedPrimes ℓ S₀ V W N P₀ J x}
       mirrorForm z y t u u = mirrorForm z y t g g ∧ u ∈ T.reductionKerInfConj M N :=
     (h_lc.eventually_eq g).and <| T.isOpen_reductionKerInfConj.eventually_mem <|
       mul_mem (T.γ₀_mem_reductionKerInfConj hp) (T.sahGroup_le_reductionKerInfConj hh)
-  obtain ⟨P, l, hl, hPR, hPR', h_same, hφ, hφ_conj⟩ :
-      ∃ (P : FinPlace E) (l : AuxPrimeData E (ℓ ^ N)),
-        IsNewAuxiliaryPrime ℓ V S₀ J P₀ x i P l ∧ P ∉ R ∧ star P ∉ R ∧
-          mirrorForm z y t l.frob l.frob = mirrorForm z y t g g ∧
-            l.frob ∈ T.reductionKerInfConj M N :=
+  obtain ⟨P, l, hl, hPR, hPR', h_same, hφ, hφ_conj⟩ :=
     T.exists_isNewAuxiliaryPrime hp hV hh R h_near
   -- By hypothesis some `z'` has `z'(γ) = z(φ)` and `z'(γ^{-c}) = z(φ^{-c}) = -z(φ^c)`.
-  obtain ⟨z', hz', h_ev⟩ : ∃ z' ∈ T.tiedSelmer (insert P J) J x i a,
-      evalConjPair (O := O) l.tameGenerator z' = evalConjPair (O := O) l.frob z :=
-    hz_frobInTameImage P l hl
+  obtain ⟨z', hz', h_ev⟩ := hz_frobInTameImage P l hl
   have h_val (b : Bool) : z' (idOrConjInv b l.tameGenerator) = z (idOrConjInv b l.frob) :=
     funext fun j ↦ by simpa only [evalConjPair_apply] using congrFun h_ev (b, j)
   have h_γ : z' l.tameGenerator = z l.frob := h_val true
@@ -675,15 +656,11 @@ theorem length_dualSelmer_le (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
       IsNewAuxiliaryPrime ℓ V S₀ J P₀ x i P l →
       z ∈ T.frobInTameImage J x i a P l) :
     length O (T.dualSelmer hp hV hN ha A R) ≤ T.globalTerm := by
-  have hz_coc : ∀ g g' : Gal(Ω/E), z (g * g') = z g + T.ρ g • z g' :=
-    (mem_selmerModule_iff.1 hz).1
+  have hz_coc := (mem_selmerModule_iff.1 hz).1
   have h_span : Submodule.span O (z '' T.sahGroup) = ⊤ :=
     span_image_sahGroup_eq_top hz_coc (T.apply_γ_eq_zero hz) hz_unit
-  have h_map (y : T.dualSelmer hp hV hN ha A R) :
-      ∃ η : (n → QuotSpan a) →ₗ[O] CharacterModule (n → QuotSpan a),
-        ∀ h ∈ T.sahGroup, η (z h) = y.val (conjGal h) :=
+  choose η hη using fun y : T.dualSelmer hp hV hN ha A R ↦
     exists_linearMap_apply_eq_dualSelmer_conj y.property hz hz_frobInTameImage h_span
-  choose η hη using h_map
   let Φ : T.dualSelmer hp hV hN ha A R →ₗ[O] conjDualHom ℓ T.ρ a :=
     { toFun y := ⟨η y, mem_conjDualHom_of_apply_eq y.property hz_coc h_span (hη y)⟩
       map_add' y y' := Subtype.ext <| LinearMap.ext_on h_span <|
