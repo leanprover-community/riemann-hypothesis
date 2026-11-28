@@ -7,6 +7,7 @@ public import Lib.LocalGL.Shintani.CosetRootChoice
 public import Lib.LocalGL.Green.HallAlgebra
 import Lib.General.LinearAlgebra.MatrixPolynomials
 import Lib.LocalGL.Green.CuspidalFunctions
+import TauCeti.LinearAlgebra.Matrix.ToLin
 
 /-!
 # Descent of class functions along a coset and lifts from GL_n(k') ⋊ Gal(k'/k)
@@ -602,8 +603,11 @@ private lemma descendsTo_induceClassFn_greenCuspidal_mulMoebius [Finite k] (hran
           h_comp ((SemidirectProduct.inl.comp ι) y) =
         (SemidirectProduct.inl.comp (Matrix.GeneralLinearGroup.map (algebraMap k k')))
           (Units.map (leftMulMatrix b).toMonoidHom y) := by
-    ext i j
-    · simp [B, ι, leftMulMatrix_eq_repr_mul]
+    ext : 1
+    · exact Units.ext (Algebra.leftMulMatrix_map b B (algebraMap k k')
+        (includeRight : L →ₐ[k] k' ⊗[k] L).toRingHom
+        (fun a ↦ by simp [IsScalarTower.algebraMap_apply k k' (k' ⊗[k] L)])
+        (fun i ↦ by simp [B]) y.val)
     · rfl
   refine .induce hr_GL hϑ_char.isClassFunction (Units.map (leftMulMatrix b).toMonoidHom) h_comm
     hr_units (fun s γ ↦ hϑ_descends σ hσ s (ι γ)) isClassFunction_evalGL fun χ hχ ↦ ?_
@@ -708,17 +712,22 @@ lemma exists_torus_induced_descendsTo (hrank : finrank k L = m) (φ : k' ⊗[k] 
   let : Fintype (k' ⊗[k] L) := fintypeOfFintype B
   -- `σ` acts on `A` through the first factor, hence on coordinates in the basis `B`
   let g (σ : Gal(k'/k)) : k' ⊗[k] L ≃ₐ[k] k' ⊗[k] L := Algebra.TensorProduct.congr σ (1 : Gal(L/k))
-  have hrepr (σ : Gal(k'/k)) (x : k' ⊗[k] L) (j : Fin m) : B.repr (g σ x) j = σ (B.repr x j) :=
-    basis_repr_congr_one_apply k k' b σ x j
   let β : Gal(k'/k) →* MulAut (k' ⊗[k] L)ˣ :=
-    .mk' (fun σ ↦ Units.mapEquiv (g σ).toMulEquiv) (by aesop (add simp B.ext_elem_iff))
+    .mk' (fun σ ↦ Units.mapEquiv (g σ).toMulEquiv) fun a b ↦ by
+      have hg_mul : g (a * b) = (g b).trans (g a) := by
+        dsimp only [g]
+        rw [← Algebra.TensorProduct.congr_trans]
+        rfl
+      rw [hg_mul]
+      rfl
   -- the matrix of `g σ x` in `B` is the matrix of `x` with `σ` applied to its entries
   have hβ_matrix (σ : Gal(k'/k)) :
       (Units.map (leftMulMatrix B).toMonoidHom).comp (β σ).toMonoidHom =
         (galActionGL k k' (Fin m) σ).toMonoidHom.comp
           (Units.map (leftMulMatrix B).toMonoidHom) := by
-    ext
-    simp [galActionGL, β, ← hrepr, B, g, Units.mapEquiv, leftMulMatrix_eq_repr_mul]
+    ext u : 1
+    exact Units.ext (Algebra.leftMulMatrix_map B B σ.toRingHom (g σ).toRingHom
+      (fun _ ↦ rfl) (fun j ↦ by simp [B, g]) u.val)
   let ρ : (k' ⊗[k] L)ˣ ⋊[β] Gal(k'/k) →* GalSemidirect k k' (Fin m) :=
     map (Units.map (leftMulMatrix B).toMonoidHom) (MonoidHom.id Gal(k'/k)) hβ_matrix
   obtain ⟨ϑ, hϑ_char, hϑ_eq_prod, hϑ_descends⟩ := exists_norm_char_semidirect β (θ.comp φ)
