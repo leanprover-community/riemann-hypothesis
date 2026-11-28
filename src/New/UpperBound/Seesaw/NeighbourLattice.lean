@@ -207,6 +207,8 @@ lemma conjTranspose_mul_one_add_smul_vecMulVec {R n : Type*} [CommRing R] [StarR
       simp [h_adj, add_mul, mul_add, smul_smul, h_sq, add_smul, add_assoc, mul_comm]
     _ = 1 := by simp [h_sum]
 
+/-- If `π` is split squarefree for `N` at the places `P`,
+then `P` does not meet its set of complex conjugate places. -/
 lemma IsSplitSquarefree.isConjDisjoint (hπ : IsSplitSquarefree P (N : E) π) :
     Set.IsConjDisjoint (P : Set (FinPlace E)) :=
   Set.disjoint_left.2 hπ.star_notMem
