@@ -674,21 +674,17 @@ lemma agreesWithStringMap_mul_iff {w : Matrix ι' ι (𝔸 E)} {γ : G E ε} (h�
   have of_mem {δ : G E ε'} (hδ : δ ∈ Y'.besselGroup) :
       Y.AgreesWithStringMap Y' (V'.ratCoordMatrix δ * (w * V.ratCoordMatrix γ)) := by
     intro b a ha hba
-    have hδ0 := Y'.hasDegreeGe_zero_of_mem_besselGroup hδ
-    have hγ0 := Y.hasDegreeGe_zero_of_mem_besselGroup hγ
-    have h_sub := Y.hasDegreeGe_zero_mul_stringMap_mul_sub hγ hδ b a (by omega)
-    rw [Matrix.sub_apply, sub_eq_zero] at h_sub
-    rw [← h_sub, ← sub_eq_zero, ← Matrix.sub_apply, ← Matrix.mul_sub, ← Matrix.sub_mul,
-      Matrix.mul_apply]
-    -- A nonzero term `δ b c * (w - T) c d * γ d a` needs `b ≥ c ≥ d ≥ a` in weight.
-    refine Finset.sum_eq_zero fun c _ ↦ ?_
-    by_cases hc : Y'.gradeOf b < Y'.gradeOf c
-    · rw [hδ0 b c (by omega), zero_mul]
-    rw [Matrix.mul_apply, Finset.mul_sum]
-    refine Finset.sum_eq_zero fun d _ ↦ ?_
-    by_cases hd : Y.gradeOf d < Y.gradeOf a
-    · rw [hγ0 d a (by omega), mul_zero, mul_zero]
-    · rw [Matrix.sub_apply, hw c d (by omega) (by omega), sub_self, zero_mul, mul_zero]
+    -- With target weights truncated below at zero, agreement says that
+    -- `w - T` has nonnegative degree.
+    let d (b : ι') := max 0 (Y'.gradeOf b)
+    have hw0 : HasDegreeGe d Y.gradeOf 0 (w - Y.stringMap Y') := by
+      simpa [HasDegreeGe, d, max_lt_iff, and_imp, sub_eq_zero, AgreesWithStringMap] using hw
+    have hδ0 : HasDegreeGe d d 0 (V'.ratCoordMatrix δ) :=
+      fun b c h ↦ Y'.hasDegreeGe_zero_of_mem_besselGroup hδ b c (by dsimp [d] at h; omega)
+    have hprod := hδ0.mul (hw0.mul (Y.hasDegreeGe_zero_of_mem_besselGroup hγ) (le_refl 0))
+      (le_refl 0) b a (by dsimp [d]; omega)
+    have hT := sub_eq_zero.mp (Y.hasDegreeGe_zero_mul_stringMap_mul_sub hγ hδ b a (by omega))
+    simpa [Matrix.mul_sub, Matrix.sub_mul, Matrix.sub_apply, sub_eq_zero, hT] using hprod
   have agrees : Y.AgreesWithStringMap Y' (w * V.ratCoordMatrix γ) := by
     simpa using of_mem (one_mem _)
   refine ⟨fun hδ ↦ Y'.mem_besselGroup_iff_sub_one.mpr fun b ↦ ?_, of_mem⟩
