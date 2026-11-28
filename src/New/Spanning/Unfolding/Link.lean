@@ -596,10 +596,9 @@ lemma finrank_link_add_finrank_commonIsotropic (γ : S.G E) :
     finrank E (link γ) + finrank E (commonIsotropic γ) = finrank E (isotropicPerp γ) := by
   have h_ker : commonIsotropic γ = isotropicPerp γ ⊓ (linkMatrix γ).mulVecLin.ker :=
     Submodule.ext fun _ ↦ mem_commonIsotropic
-  -- This is the rank-nullity formula for `linkMatrix γ` restricted to `(A + γ A)^⊥`.
-  rw [← ((linkMatrix γ).mulVecLin.domRestrict (isotropicPerp γ)).finrank_range_add_finrank_ker,
-    LinearMap.range_domRestrict, LinearMap.ker_domRestrict, ← Submodule.finrank_map_subtype_eq,
-    Submodule.map_comap_subtype, ← h_ker, link_eq_map]
+  rw [link_eq_map, h_ker]
+  simpa only [← Module.finrank_eq_rank, ← Nat.cast_add, Nat.cast_inj] using
+    (linkMatrix γ).mulVecLin.rank_map_add_rank_inf_ker (isotropicPerp γ)
 
 /-- The link `link γ` consists of the pairs of middle blocks of `y` and `γ⁻¹ y`, for `y` orthogonal
 to `A = ⟨e_1, …, e_ϱ⟩` and to `γ A`. It has rank `𝔰.k + 1`, where `𝔰.k` is the rank of `X₀`. -/

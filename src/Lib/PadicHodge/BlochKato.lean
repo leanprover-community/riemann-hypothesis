@@ -598,13 +598,6 @@ variable {p : ℕ} [ThePrime p]
   [Module ℤ_[p] T] [IsScalarTower ℤ_[p] R T] [AddCommGroup T'] [𝒥 : OverGp Γ p]
   {ρ : Representation R Γ T} [Free ℤ_[p] T] [Module.Finite ℤ_[p] T]
 
-/-- Rank–nullity for preimages: for a linear map e of modules over a domain and a submodule N of
-the target, rk e⁻¹(N) = rk (N ∩ im e) + rk ker e. -/
-lemma rank_comap_eq_add [IsDomain R] [Module R T'] {e : T →ₗ[R] T'} {N : Submodule R T'} :
-    Module.rank R (N.comap e) = Module.rank R ↥(N ⊓ e.range) + Module.rank R e.ker := by
-  rw [← (e.domRestrict _).rank_range_add_rank_ker, range_domRestrict, N.map_comap_eq, inf_comm,
-    ker_domRestrict, (comapSubtypeEquivOfLe e.ker_le_comap).rank_eq]
-
 /-- If the submodule A lies in B and every element of B has a nonzero multiple in A, then A and B
 have the same rank. -/
 lemma rank_eq_of_le_of_torsion [IsDomain R] [Module R T'] {A B : Submodule R T'} (hAB : A ≤ B)
@@ -711,7 +704,8 @@ lemma rank_comap_coboundary_eq {ι : Type} [Fintype ι] [DecidableEq ι] (ε : B
     intro f₁ f₂ h_eq
     funext g
     exact ε.ext_elem fun i ↦ h_inj_Bmax (congrFun (congrFun h_eq g) i)
-  rw [rank_comap_eq_add, ← D.range.map_comap_eq, ← hZ, rank_map_eq h_inj_incl]
+  rw [D.rank_comap, inf_comm D.range incl.range, ← D.range.map_comap_eq, ← hZ,
+    rank_map_eq h_inj_incl]
   rfl
 
 /-- The side of the fundamental exact sequence in the rank count of
@@ -771,7 +765,7 @@ lemma rank_comap_frob_sub_prod_eq {ι : Type} {k : ι → ℤ}
     rw [← (neg.quotKerEquivOfSurjective _).rank_eq, ← h_ker, (quotKerEquivRange _).rank_eq,
       range_prodMap, Z.range_subtype]
     simp [neg, surjective_id, coe_prodMap, funLeft_surjective_of_injective]
-  rw [rank_comap_eq_add, hΦ_range, inf_top_eq, hΦ_ker,
+  rw [Φ.rank_comap, hΦ_range, top_inf_eq, hΦ_ker,
     rank_range_of_injective _ (fun f₁ f₂ h ↦
       funext fun i ↦ (algebraMap ℚ_[p] Bmax).injective (congrFun h i)),
     h_prod, rank_eq_of_surjective fst_surjective, ker_fst,
