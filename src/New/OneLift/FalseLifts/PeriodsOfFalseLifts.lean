@@ -462,41 +462,6 @@ lemma stdClassSum_gramForm_kernelVector_eq_zero (hO_fits : O.FitsParams l₀)
       congrArg (fun φ : AlgForm n O.columnCount O.detExp ↦ φ.val (U.block ε (h₁, h) * x)) (hΞ k hk)
   simp only [h_kernel, h_form]
 
-/-- In rank one the idempotent `labelIdem` that the polynomial `X - 1` labels in the group algebra
-of `GL_1(k)` is the mean over the group: each coefficient is the inverse of the group order. -/
-lemma coeff_labelIdem_X_sub_one {k : Type} [Field k] [Finite k] (g : GL Unit k) :
-    (labelIdem Unit (Polynomial.X - 1 : Polynomial k)).coeff g = (Nat.card (GL Unit k) : ℂ)⁻¹ := by
-  -- The root `1` names the trivial character.
-  have h_label : IsLabel (card Unit) (Polynomial.X - 1 : Polynomial k) :=
-    ⟨Polynomial.monic_X_sub_C 1, (Polynomial.irreducible_X_sub_C 1).squarefree,
-      Polynomial.natDegree_X_sub_C 1, by simp⟩
-  have h_char : labelChar (faithfulChar k) (Polynomial.X - 1 : Polynomial k) =
-      (detChar 1).rankPart 1 := by
-    simpa using labelChar_X_sub_C (faithfulChar k) (1 : MulChar k ℂ)
-  have h_value (s : GL Unit k) :
-      (labelChar (faithfulChar k) (Polynomial.X - 1 : Polynomial k)).evalGL s = 1 := by
-    simpa [h_char, Hall.evalGL, Hall.rankPart, detChar, -Matrix.det_unique,
-      Matrix.det_eq_sign_charpoly_coeff] using MulChar.one_apply (R' := ℂ) s.det_ne_zero.isUnit
-  simp only [labelIdem, ite_eq_left h_label, h_value]
-  simp [groupAlgElem]
-
-/-- Let `k` be a finite field, `χ ≠ 1` a character of `kˣ` and `l ≠ 0` a row of length one. The
-hyperplane sum `∑ χ(det s)⁻¹ s` over the invertible `s = 1 + u l`, an element of the group algebra
-of `GL_1(k)`, annihilates the idempotent of the label `X - 1`, the mean over the group. -/
-lemma hyperplaneSum_mul_labelIdem_X_sub_one {k : Type} [Field k] [Finite k] {χ : MulChar k ℂ}
-    (hχ : χ ≠ 1) {l : Unit → k} (hl : l ≠ 0) :
-    hyperplaneSum χ l * labelIdem Unit (Polynomial.X - 1 : Polynomial k) = 0 := by
-  classical
-  -- The group fixes its mean, so a character sum remains.
-  let : Fintype (GL Unit k) := .ofFinite _
-  have h_sum : ∑ s : GL Unit k, (hyperplaneSum χ l).coeff s = 0 :=
-    calc _ = ∑ s : GL Unit k with s ∈ hyperplaneGroup l, χ⁻¹ (s : Matrix Unit Unit k).det := by
-          simp [coeff_hyperplaneSum_eq_ite, Finset.sum_filter]
-      _ = 0 := (Finset.sum_subtype _ (by simp) _).trans (sum_inv_det_hyperplaneGroup_eq_zero hχ hl)
-  ext x
-  simp [MonoidAlgebra.coeff_mul_apply_left, Finsupp.sum_fintype, coeff_labelIdem_X_sub_one,
-    ← Finset.sum_mul, h_sum]
-
 open scoped Classical in
 omit [WeilData E] in
 /-- Let `O` be a descent pair `(W, I_n)` with `W` a line (index type `Unit`), and let the residue
@@ -514,9 +479,12 @@ lemma hyperplaneSum_apply_eq_zero_of_rank_one {O : DescentPair E Unit n}
       (piTensorElem fun i : O.ChosenIndex ↦ hyperplaneSum (O.tamePart (O.chosenPlace i)) (v i)) Ξ =
       0 := by
   obtain ⟨y, rfl⟩ := hΞ
+  have h_not_root : ¬(Polynomial.X - 1 : Polynomial (ResField (O.chosenPlace i))).IsRoot
+      (charName (faithfulChar (ResField (O.chosenPlace i))) (O.tamePart (O.chosenPlace i))) := by
+    simpa [sub_eq_zero, MulEquiv.map_eq_one_iff] using h_chosen i
   have h_zero : (piTensorElem fun i ↦ hyperplaneSum (O.tamePart (O.chosenPlace i)) (v i)) *
       tupleIdem Unit (fun _ ↦ Polynomial.X - 1) = 0 :=
-    piTensorElem_mul_eq_zero i (hyperplaneSum_mul_labelIdem_X_sub_one (h_chosen i) hv)
+    piTensorElem_mul_eq_zero i (hyperplaneSum_mul_labelIdem h_not_root hv)
   rw [← mul_apply_eq_comp, ← map_mul, h_zero, map_zero, LinearMap.zero_apply]
 
 omit [WeilData E] [Nonempty r] in
