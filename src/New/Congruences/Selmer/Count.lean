@@ -435,6 +435,12 @@ lemma sum_length_localCocycles_placesDividing_le (a : O) :
     _ = (Fintype.card (placesDividing E ℓ) + Core.numInfPlaces E) • length O (n → QuotSpan a) := by
         rw [length_pi_of_fintype, sum_const, card_univ, smul_smul, nsmul_eq_mul]
 
+/-- Imposing more relations shrinks the local cocycle module. -/
+private lemma localCocycles_le_of_relations_subset {A : ClosurePlace}
+    {K L : Set (Gal(Ω/E) →₀ Matrix n n O)} (hKL : K ⊆ L) :
+    localCocycles T.ρ L A (QuotSpan a) ≤ localCocycles T.ρ K A (QuotSpan a) :=
+  Submodule.map_mono fun _ hc ↦ mem_selmerModule_of_subset hc hKL .rfl
+
 /-- For `a ≠ 0`, the modules of local cocycles with values in `T / a` that obey the local
 conditions, at the fixed places above the primes of `S = T.places`, have total length at most
 `(#S + f) len (T / a) + lt_S(T)`. Here `f` is the number of infinite places and
@@ -455,8 +461,8 @@ lemma sum_length_localCocycles_placeOver_le (ha : a ≠ 0) :
     exact T.sum_length_localCocycles_placesDividing_le a
   · -- At a place prime to `ℓ` all classes are allowed, and the local term bounds their excess.
     rw [← sum_const, placesTerm, placeTerms, ← sum_add_distrib]
-    refine sum_le_sum fun v _ ↦ (length_mono (Submodule.map_mono fun _ hc ↦
-      mem_selmerModule_of_subset hc (Set.empty_subset _) .rfl)).trans
+    refine sum_le_sum fun v _ ↦
+      (length_mono (T.localCocycles_le_of_relations_subset (Set.empty_subset _))).trans
         (tsub_le_iff_left.1 (le_iSup₂_of_le a ha le_rfl))
 
 open scoped Classical in
@@ -492,8 +498,7 @@ lemma exists_sum_length_localCocycles_tied_le (hp : IsTiedPrimes ℓ S₀ V W N 
       lenLocal (A v) ≤
         length O (localCocycles T.ρ T.localRelations (placeOver v) (QuotSpan a)) := by
     rw [hA v hv]
-    exact length_mono (Submodule.map_mono fun _ hc ↦
-      mem_selmerModule_of_subset hc Set.subset_union_left .rfl)
+    exact length_mono (T.localCocycles_le_of_relations_subset Set.subset_union_left)
   have h_S : ∑ v ∈ T.places, lenLocal (A v) ≤
       (#T.places + Core.numInfPlaces E) • lenQuot + T.placesTerm :=
     (sum_le_sum h_shrink).trans
