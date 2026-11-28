@@ -460,38 +460,40 @@ lemma descentsVanish_add_planes {A : Set (FinPlace E)} (hA : A.IsConjDisjoint)
     (hY_hecke : heckePolyOp (finRightRep E 1) hw X Y = 0)
     (h_rank : 2 * card r + 2 * card p + 3 < card n) :
     DescentsVanish W' V (a * upsilonU1 ^ card p) A.conjClosureᶜ Y := by
-  induction' hl : card p with l ih generalizing m p
-  · rw [card_eq_zero_iff] at hl
+  induction hl : card p generalizing m p with
+  | zero =>
+    rw [card_eq_zero_iff] at hl
     simpa using h_vanish.of_isEmpty D
-  -- It is enough to treat the data `φ = v_P ⊗ Ψ ⊗ vac`.
-  refine .of_schrodingerOp hA hY fun P Ψ _ ↦ ?_
-  set χ : AutChar E := a * upsilonU1 ^ (l + 1) with hχ_eq
-  set φ : 𝒮 (W'.hom V) := integrated (W'.hom V) (polyVector (realSigns E (homSigns t 1)) P)
-    (schrodingerOp (W'.hom V) A Ψ (vacElem (W'.hom V)))
-  -- The descent is bounded: split off one plane, and use the induction hypothesis for the rest.
-  have h_bdd : BddAbove (.range fun g : G E t ↦ ‖lift (pairThetaKer W' V χ 1).swap φ Y g‖) := by
-    obtain ⟨D', hD', -⟩ := exists_isBaseAdapted_comp_removePlanes D
-      (equivOfCardEq (by simp [hl, add_comm] : card (Unit ⊕ Fin l) = card p))
-    have h_below : DescentsVanish (hyperbolicSum (Fin l) W) V (a * upsilonU1 ^ l) A.conjClosureᶜ
-      Y :=
-      ih (removePlanes (Fin l) W) (by grind [Fintype.card_fin]) (Fintype.card_fin l)
-    simpa only [mul_assoc, ← pow_succ] using h_below.bddAbove_lift hA hY D' P Ψ
-  have hχ : CharUnramifiedAt χ.baseChange.finPart (star w) := fun u hu ↦ by
-    simp [hχ_eq, ha u hu, charUnramifiedAt_upsilon _ u hu]
-  have hφ : projOn (W'.hom V) {star w} φ = φ := by
-    rw [projOn_integrated,
-      projOn_schrodingerOp_vacElem _ (by simpa [or_comm, and_comm] using hw_off)]
-  have h_card : card m = card r + 2 * (l + 1) := by rw [D.card_eq, hl]
-  -- Here `|X|⁻¹ = √q ^ d` with `d = r' + 2 (t' - 1)`, and both exponents needed are at most `d`.
-  have h_one_le : 1 ≤ √(w.q : ℝ) := one_le_sqrt.2 (mod_cast w.one_lt_q.le)
-  have h_size {j : ℕ} (hj : j ≤ card r + 2 * (card n - card r - 1)) : √w.q ^ j * ‖X‖ ≤ 1 := by
-    have h_norm : ‖X‖ = (√w.q ^ (card r + 2 * (card n - card r - 1)))⁻¹ := by
-      rw [hX, pow_add, pow_mul, sq_sqrt (Nat.cast_nonneg _)]
-    rw [h_norm, mul_inv_le_iff₀ (by positivity), one_mul]
-    exact pow_le_pow_right₀ h_one_le hj
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, card n = card m + k := Nat.exists_eq_add_of_le (by omega)
-  -- So both size conditions of `lift_eq_zero_of_heckePolyOp_eq_zero` hold.
-  exact lift_eq_zero_of_heckePolyOp_eq_zero hY hw hχ hY_sph hY_hecke hφ hk (h_size (by omega))
-    (h_size (by omega)) h_bdd
+  | succ l ih =>
+    -- It is enough to treat the data `φ = v_P ⊗ Ψ ⊗ vac`.
+    refine .of_schrodingerOp hA hY fun P Ψ _ ↦ ?_
+    set χ : AutChar E := a * upsilonU1 ^ (l + 1) with hχ_eq
+    set φ : 𝒮 (W'.hom V) := integrated (W'.hom V) (polyVector (realSigns E (homSigns t 1)) P)
+      (schrodingerOp (W'.hom V) A Ψ (vacElem (W'.hom V)))
+    -- The descent is bounded: split off one plane, and use the induction hypothesis for the rest.
+    have h_bdd : BddAbove (.range fun g : G E t ↦ ‖lift (pairThetaKer W' V χ 1).swap φ Y g‖) := by
+      obtain ⟨D', hD', -⟩ := exists_isBaseAdapted_comp_removePlanes D
+        (equivOfCardEq (by simp [hl, add_comm] : card (Unit ⊕ Fin l) = card p))
+      have h_below : DescentsVanish (hyperbolicSum (Fin l) W) V (a * upsilonU1 ^ l) A.conjClosureᶜ
+        Y :=
+        ih (removePlanes (Fin l) W) (by grind [Fintype.card_fin]) (Fintype.card_fin l)
+      simpa only [mul_assoc, ← pow_succ] using h_below.bddAbove_lift hA hY D' P Ψ
+    have hχ : CharUnramifiedAt χ.baseChange.finPart (star w) := fun u hu ↦ by
+      simp [hχ_eq, ha u hu, charUnramifiedAt_upsilon _ u hu]
+    have hφ : projOn (W'.hom V) {star w} φ = φ := by
+      rw [projOn_integrated,
+        projOn_schrodingerOp_vacElem _ (by simpa [or_comm, and_comm] using hw_off)]
+    have h_card : card m = card r + 2 * (l + 1) := by rw [D.card_eq, hl]
+    -- Here `|X|⁻¹ = √q ^ d` with `d = r' + 2 (t' - 1)`, and both exponents needed are at most `d`.
+    have h_one_le : 1 ≤ √(w.q : ℝ) := one_le_sqrt.2 (mod_cast w.one_lt_q.le)
+    have h_size {j : ℕ} (hj : j ≤ card r + 2 * (card n - card r - 1)) : √w.q ^ j * ‖X‖ ≤ 1 := by
+      have h_norm : ‖X‖ = (√w.q ^ (card r + 2 * (card n - card r - 1)))⁻¹ := by
+        rw [hX, pow_add, pow_mul, sq_sqrt (Nat.cast_nonneg _)]
+      rw [h_norm, mul_inv_le_iff₀ (by positivity), one_mul]
+      exact pow_le_pow_right₀ h_one_le hj
+    obtain ⟨k, hk⟩ : ∃ k : ℕ, card n = card m + k := Nat.exists_eq_add_of_le (by omega)
+    -- So both size conditions of `lift_eq_zero_of_heckePolyOp_eq_zero` hold.
+    exact lift_eq_zero_of_heckePolyOp_eq_zero hY hw hχ hY_sph hY_hecke hφ hk (h_size (by omega))
+      (h_size (by omega)) h_bdd
 
 end New.SiegelWeil
