@@ -45,6 +45,13 @@ and for discrete subgroups. Source: O. Kallenberg, Invariant measures and disint
 applications to Palm and related kernels, Probab. Theory Related Fields 139 (2007) 285-310 (as
 cited in D. Gentner, G. Last, Math. Z. 267 (2011), §2); for the classical form, N. Bourbaki,
 Intégration VII, 1963.
+
+## Countability of discrete subgroups
+
+There is no global `Countable Γ` instance for discrete subgroups: as an instance it would apply
+to every `Countable ↥A` goal and search for `DiscreteTopology ↥A` there. Concrete discrete
+subgroups have their own `Countable` instances (for example `V.Γ`, `ratAdeles`); for a general
+discrete `Γ`, state it with `have : Countable Γ := countable_of_Lindelof_of_discrete`.
 -/
 
 @[expose] public section
@@ -428,9 +435,6 @@ variable [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology
   {S X : Type*} [TopologicalSpace X] [SecondCountableTopology X] [LocallyCompactSpace X]
   [SetLike S X] {N : S} {μ : Measure G} [IsHaarMeasure μ]
 
-@[to_additive]
-instance : Countable Γ := countable_of_Lindelof_of_discrete
-
 instance : SecondCountableTopology N := TopologicalSpace.Subtype.secondCountableTopology _
 
 /-- A closed set `N` in a locally compact space is locally compact, as a subspace. -/
@@ -459,6 +463,7 @@ integral is `∫ f dμ`. This is Weil's integration formula for a discrete subgr
 lemma integral_quotMeasure_tsum {f : G → ℂ} (hf : Integrable f μ) :
     Integrable (fun g : G ↦ ∑' γ : Γ, f (γ * g)) (Γ.quotMeasure μ) ∧
       ∫ g : G, ∑' γ : Γ, f (γ * g) ∂Γ.quotMeasure μ = ∫ g : G, f g ∂μ := by
+  have : Countable Γ := countable_of_Lindelof_of_discrete
   -- Transport the product of the quotient and counting measures along `(g, γ) ↦ γ * g`.
   -- Then integrals against the counting measure are sums.
   obtain ⟨h_prod, h_integral⟩ :
@@ -852,6 +857,7 @@ covolume of `B₀` (the mass of `B₀.quotMeasure μ`). -/
 lemma quotMean_tsum_eq_integral {F G : B → ℂ} (hF : Integrable F μ) (hG : IsContPeriodic B₀ G)
     (h_sum : ∀ x : B, HasSum (fun γ : B₀ ↦ (F (γ +ᵥ x) : ℂ)) (G x)) :
     quotMean B₀ G = ((B₀.quotMeasure μ).real Set.univ)⁻¹ • ∫ x : B, F x ∂μ := by
+  have : Countable B₀ := countable_of_Lindelof_of_discrete
   -- Average `G` against `B₀.quotMeasure μ` and unfold `∫ F` into the sums over `B₀`.
   have h_unfold : ∫ x : B, ∫ γ : B₀, F (γ +ᵥ x) ∂count ∂B₀.quotMeasure μ = ∫ x : B, F x ∂μ :=
     (measurePreserving_addOrbitMeasure.fubini hF).2

@@ -498,6 +498,7 @@ lemma integral_besselKernel_eq_zero_of_not_charsAgree {γ : S.G E} (side : FullO
       (S.ratToInf.domRestrict (S.classUnipotent c))) [DiscreteTopology Γ]
     {β : (InfinitePlace E → 𝔰.G₁) → ENNReal} (hβ : IsCutoff (H := Γ) Measure.count β) :
     ∫ y : InfinitePlace E → 𝔰.G₁, (β y).toReal • S.besselKernel side γ y = 0 := by
+  have : Countable Γ := countable_of_Lindelof_of_discrete
   -- The kernel is invariant under `Γ`, so this is its integral over the quotient by `Γ`; and some
   -- `u` twists the kernel by a scalar `≠ 1`.
   obtain ⟨u, hu, u', hu', h_comm, h_ne⟩ : ∃ u ∈ besselU, ∃ u' ∈ besselU, u * γ = γ * u' ∧

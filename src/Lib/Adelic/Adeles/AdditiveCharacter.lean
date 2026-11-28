@@ -456,6 +456,18 @@ instance isCovolOneLattice_ratMatrices [Fintype m] : IsCovolOneLattice (ratMatri
   -- a matrix is by definition a family of rows, so the power is taken twice
   exact h_dom.pi.pi.isCovolOneLattice
 
+/-- The rational adeles `New.ratAdeles E` are countable, being discrete in a second-countable
+group. -/
+instance : Countable (ratAdeles E) := countable_of_Lindelof_of_discrete
+
+/-- The rational vectors `New.ratVectors E n` are countable, being discrete in a second-countable
+group. -/
+instance : Countable (ratVectors E n) := countable_of_Lindelof_of_discrete
+
+/-- The rational matrices `New.ratMatrices E m n` are countable, being discrete in a
+second-countable group. -/
+instance [Fintype m] : Countable (ratMatrices E m n) := countable_of_Lindelof_of_discrete
+
 /-- An injective additive map `f` into a Hausdorff topological group, with discrete image, sends
 only finitely many points into a given compact set. -/
 lemma finite_preimage_of_discreteTopology_range {B I : Type*} [AddCommGroup B] [AddCommGroup I]

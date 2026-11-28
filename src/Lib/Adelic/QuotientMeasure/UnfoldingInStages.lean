@@ -100,6 +100,7 @@ lemma New.integral_quotMeasure_stages [T2Space H] {Z : Type*} [MeasurableSpace Z
     (hF_int : Integrable F (Γ.quotMeasure μ)) :
     Integrable (fun z : Z ↦ ∫ a : H, F (i a * T z) ∂Λ.quotMeasure ν) m ∧
     ∫ g : G, F g ∂Γ.quotMeasure μ = ∫ z : Z, ∫ a : H, F (i a * T z) ∂Λ.quotMeasure ν ∂m := by
+  have : Countable Λ := countable_of_Lindelof_of_discrete
   -- The map `((z, a), l) ↦ i l * (i a * T z)` unfolds `m ⊗ Λ.quotMeasure ν` to `μ`, so `F` on
   -- `Γ \ G` is distributed as `(z, a) ↦ F (i a * T z)`; Fubini's theorem finishes.
   let e : Λ ≃* Γ := (Λ.equivMapOfInjective _ hi).trans (.subgroupCongr hΓ)

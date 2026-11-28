@@ -134,9 +134,16 @@ instance discreteTopology_Gamma : DiscreteTopology V.Γ := by
     (G.continuous_adeleMatrix.comp continuous_subtypeVal)).matrix_mul continuous_const) h_mem
   exact .of_continuous_injective hf_cont (by simp [f, Injective, Units.val_inj])
 
+/-- The group `V.Γ` of rational points is countable, being discrete in a second-countable group. -/
+instance countable_Gamma : Countable V.Γ := countable_of_Lindelof_of_discrete
+
 /-- The image in the adelic group of any subgroup of the rational points is discrete. -/
 instance {S : Subgroup (U V.J)} : DiscreteTopology (Subgroup.map V.ratEmbed S) :=
   .of_subset V.discreteTopology_Gamma (S.map_le_range V.ratEmbed)
+
+/-- The image in the adelic group of any subgroup of the rational points is countable. -/
+instance {S : Subgroup (U V.J)} : Countable (Subgroup.map V.ratEmbed S) :=
+  countable_of_Lindelof_of_discrete
 
 end Space
 

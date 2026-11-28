@@ -242,6 +242,7 @@ theorem integral_unipotentRadical_eq_zero (he : IsCuspKernel B e)
   -- invariant under the real radical.
   set N : Subgroup (G E s) := unipotentRadical s a
   let ν : Measure N := (W.Γ.subgroupOf N).quotMeasure .haar
+  have : Countable (W.Γ.subgroupOf N) := countable_of_Lindelof_of_discrete
   have h_unimodular : (Measure.haar : Measure N).IsMulRightInvariant :=
     isMulRightInvariant_of_finite_covolume h_fin
   have mean_cont : Continuous fun x : GInf E s ↦ ∫ v : N, F (g * ((v : G E s) * (x, 1))) ∂ν :=

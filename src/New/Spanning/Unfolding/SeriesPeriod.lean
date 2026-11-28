@@ -567,6 +567,7 @@ theorem exists_integral_besselMeasure_eq_sum (h : S.Fits V l kw Y η) [S.IsAdmis
   -- Compute the integral over `[R]` with the cutoff `∑_c classWeight c`. The term of `c` lives on
   -- `R(F_∞) × h_c J'`, where `F` depends only on the real point.
   have : IsLevel S.stdPrincipalLevel.toSubgroup := ⟨levelOf_le_stdLevel, S.stdPrincipalLevel.isOpen⟩
+  have : Countable (Y.ratBessel.subgroupOf Y.besselGroup) := countable_of_Lindelof_of_discrete
   obtain ⟨volJ', h_vol, h_coset⟩ :=
     Y.exists_integral_eq_mul_integral_besselReal S.stdPrincipalLevel.toSubgroup
   refine ⟨volJ', h_vol, fun {F} hF hF_rat hF_level hF_int ↦ ?_⟩

@@ -6,6 +6,7 @@ import Mathlib.MeasureTheory.Integral.Pi
 public import Lib.Adelic.Adeles.Basic
 public import Lib.General.Groups.CongruenceSubgroups
 import Lib.Adelic.Adeles.AdditiveCharacter
+import TauCeti.Topology.Algebra.Group.Units
 
 /-!
 # Principal ideles and a majorant on the complex torus
@@ -49,6 +50,9 @@ instance : DiscreteTopology (principalAdeleUnits E) := by
   have h_discrete : IsDiscrete (Units.val ⁻¹' (ratAdeles E : Set (𝔸 E))) :=
     h_rat.preimage (by fun_prop) Units.val_injective
   exact (h_discrete.mono h_subset).to_subtype
+
+/-- The principal ideles are countable, being discrete in the second-countable idele group. -/
+instance : Countable (principalAdeleUnits E) := countable_of_Lindelof_of_discrete
 
 @[simp]
 lemma piUnits_val_apply_ne_zero (a : (ι → ℂ)ˣ) (x : ι) : a.val x ≠ 0 := (a.isUnit.apply x).ne_zero

@@ -578,6 +578,7 @@ lemma New.ofReal_mul_lintegral_quotMeasure_tsum
     ENNReal.ofReal (w m) *
         ∫⁻ n : N, ∑' γ : Γ, f (γ * (n * (i m * k))) ∂(Γ.subgroupOf N).quotMeasure lam =
       ∑' d : D, ∫⁻ n : N, f (i (δ d * m) * n * k) ∂lam := by
+  have : Countable (Γ.subgroupOf N) := countable_of_Lindelof_of_discrete
   -- Write the elements of `Γ` as `i (δ d) * γ` with `γ ∈ Γ ∩ N`, unfold the quotient measure to
   -- `lam`, and move `i m` past `n`.
   obtain ⟨e, he⟩ := exists_equiv_prod_subgroupOf h_triv hδ hδ_mem hΓ
@@ -619,6 +620,7 @@ lemma New.integral_quotMeasure_iwasawa [PolishSpace M] [LocallyCompactSpace M]
       Integrable F (Γ.quotMeasure μ) ∧
       ∫ g : G, F g ∂Γ.quotMeasure μ =
         c * ∫ p : M × K, (w p.1 : ℂ) * F (i p.1 * p.2) ∂α.prod κ := by
+  have : Countable Γ := countable_of_Lindelof_of_discrete
   -- The Iwasawa formula with factor `r`, unfolded along `Γ = {i (δ d) * γ}`, says that the measure
   -- `w · (α × κ) × (Γ ∩ N)\N` in the coordinates `n * i m * k` is the quotient of `r • μ` by `Γ`.
   -- The cocompact subgroup `Γ ∩ N` is a lattice in `N`, so `N` is unimodular.
