@@ -609,20 +609,9 @@ private lemma New.DiscreteModule.trivializedCocycles.map_range_eq_top_of_hasFewC
       (map X I v).range = ⊤ ∧ Nat.card A ^ k ≤ Nat.card (A.trivializedCocycles X I) :=
     (hasFewCocycles_of_isShortExact h_exact (h_upper A (hB.left_of_isShortExact h_exact))
       (h_upper C (hB.right_of_isShortExact h_exact))).right h_max
-  -- Embed `W` by constants in the module `F` of functions on a quotient of `G ⧸ U` that
-  -- `exists_diagonalPermModule_isHigmanProjective` provides; it is projective, as the indicator of
-  -- `1` has trace one.
-  obtain ⟨Z, hZ_normal, hperm⟩ := exists_diagonalPermModule_isHigmanProjective R l U hcentral
-  let Y : Type := (G ⧸ (U : Subgroup G)) ⧸ Z
-  let F : DiscreteModule R G := W.diagonalPermModule U Z Y
-  have hF : F.FiniteKilledFixedInj l U z 1 := (hperm hW Y).left
-  have hF_proj : F.IsHigmanProjective U :=
-    (hperm hW Y).right (Pi.single 1 1) fun y ↦ by simp [inv_mul_eq_one, Pi.single_apply]
-  let const : W.Hom F := ⟨LinearMap.const, fun _ ↦ rfl⟩
-  obtain ⟨-, -, h_mkQ_surj⟩ := isShortExact_submodule _ _ const.range.apply_mem_toSubmodule
-  have hW_max : Nat.card W ^ k ≤ Nat.card (W.trivializedCocycles X I) :=
-    (h_squeeze (u := const) ⟨const_injective, const.toLinearMap.exact_map_mkQ_range, h_mkQ_surj⟩ hF
-      (h_proj F hF hF_proj)).right
+  -- Embed `W` in a module with Higman's property, where the count is exact.
+  obtain ⟨F, _, _, _, h_exact, hF, hF_proj⟩ := hW.exists_shortExact_higmanProjective hcentral
+  have hW_max := (h_squeeze h_exact hF (h_proj F hF hF_proj)).right
   exact (h_squeeze hses hW hW_max).left
 
 /-- Lifting by corestriction. Let `B` be an open subgroup of finite index prime to `l` that contains
