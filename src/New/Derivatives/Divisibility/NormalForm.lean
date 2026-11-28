@@ -197,7 +197,7 @@ integral. Then, for integral `α`, the series `F(α z)` has the normal form with
 lemma HasNormalForm.rescale (hF : HasNormalForm S pr ϖ l F) (α : valRingCp p) :
     HasNormalForm S pr ϖ (fun e j : ℕ ↦ α ^ ((p ^ e + 1) * p ^ j) * l e j)
       (F.rescale fun _ : Φ × c ↦ (α : ℂ_[p])) := by
-  let Z : Φ × c → MvPowerSeries (Φ × c) (valRingCp p) := (fun _ : Φ × c ↦ α) • X
+  let Z : Φ × c → MvPowerSeries (Φ × c) (valRingCp p) := fun x ↦ α • X x
   have h_subst : (F.rescale fun _ ↦ (α : ℂ_[p])).rescale (fun _ ↦ ϖ) =
       F.subst fun x : Φ × c ↦ ϖ • seriesToCp (Z x) := by
     rw [rescale_rescale, rescale_eq_subst]
@@ -348,7 +348,7 @@ lemma dvd_pderiv_couplingSum_sub (hS : 0 ∉ S) (y : Φ × c) :
   have h_deriv :
       HasSum (fun x : S × ℕ ↦ pderiv y (l x.1 x.2 • coupling pr x.1 ^ p ^ x.2))
         (pderiv y (couplingSum S pr l)) :=
-    hasSum_couplingSum.map (pderiv y).toLinearMap (continuous_pderiv y)
+    hasSum_couplingSum.map (pderiv y).toLinearMap.toAddMonoidHom (continuous_pderiv y)
   -- The second sum, written over the pairs `(e, j)` with zero terms for `j > 0`.
   have h_main : HasSum (fun x : S × ℕ ↦ if x.2 = 0 then l x.1 0 • partnerPowerSum pr x.1 y else 0)
       (∑' e : S, l e 0 • partnerPowerSum (p := p) pr e y) := by
