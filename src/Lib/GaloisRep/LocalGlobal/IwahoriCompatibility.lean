@@ -434,7 +434,7 @@ lemma GaloisRep.Attached.local_global_of_eigencharacter_of_pos
   -- same symbol and the same order.
   obtain ⟨y, hy_val, hy_artin⟩ := hAu.exists_localArtin_eq hs'_frob k'
   have hart : localArtin Gal(Ω/E) A (u.below E) (N y) = s :=
-    (hAu.localArtin_localNorm (Γ := Gal(Ω/stepField μ))
+    (hAu.isNormCompatible (Γ := Gal(Ω/stepField μ))
       (AlgEquiv.restrictScalarsHom E)).localArtin_localNorm hy_artin
   have hNy : normAbsChar.prod (.pi ξ) (N y) = normAbsChar.prod (.pi ξ) x :=
     hf_iwahori.eq_of_localArtin_eq hA (by simp [v_norm, hx_val, hy_val]) (hart.trans hx_artin.symm)

@@ -542,10 +542,11 @@ lemma localArtin_localNorm_eq_of_isCompletionEmb {p : ℕ} [Fact p.Prime]
 of `Ω` lie over the finite place `w` of `K` (`h`). Then local class field theory is norm functorial
 here: the local Artin map at `A` over `w` and the local Artin map at `A.comap j` over the place of
 `k` below `w` are compatible with the local norm from `K_w` and with `ψ`
-(`New.IsNormCompatible`). -/
-lemma isNormCompatible (ψ : Γ →* Γ') (j : Ω →+* Ω)
-    (hψ : ∀ (g : Γ) (x : Ω), j (ψ g • x) = g • j x)
-    (hj : ∀ x : k, j (algebraMap k Ω x) = algebraMap K Ω (algebraMap k K x)) :
+(`New.IsNormCompatible`). By default `j` is the identity of `Ω`, and `hψ` and `hj` are proved by
+`tauto` and `simp`. -/
+lemma isNormCompatible (ψ : Γ →* Γ') (j : Ω →+* Ω := 1)
+    (hψ : ∀ (g : Γ) (x : Ω), j (ψ g • x) = g • j x := by tauto)
+    (hj : ∀ x : k, j (algebraMap k Ω x) = algebraMap K Ω (algebraMap k K x) := by simp) :
     IsNormCompatible (k := k) A w ψ j hψ := by
   -- Both local Artin maps are computed in one `ℚ̄_p`, where they are given by invariants of cyclic
   -- classes. Compatibility with the norm is then the behaviour of invariants under corestriction
@@ -600,15 +601,6 @@ lemma isNormCompatible (ψ : Γ →* Γ') (j : Ω →+* Ω)
         (ker_eq.trans (range_eq_fixingSubgroup_of_smul_eq_smul (L := W) φ hφ)).symm
     obtain ⟨z, hz⟩ := (cyclicClass_eq_zero_iff_norm (J := gal_ker) x).mp cyc_zero
     exact ⟨z, (norm_eq z).trans hz⟩
-
-/-- Norm compatibility of the local Artin maps (`New.IsNormCompatible`) at `A` over `w`, as in
-`New.IsPlaceOver.isNormCompatible`; `j` is the identity of `Ω` unless given, and the two hypotheses
-on `j` then default to the tactic proofs `by tauto` and `by simp`, which may fail. -/
-lemma localArtin_localNorm (ψ : Γ →* Γ') (j : Ω →+* Ω := 1)
-    (hψ : ∀ (g : Γ) (x : Ω), j (ψ g • x) = g • j x := by tauto)
-    (hj : ∀ x : k, j (algebraMap k Ω x) = algebraMap K Ω (algebraMap k K x) := by simp) :
-    IsNormCompatible (k := k) A w ψ j hψ :=
-  h.isNormCompatible ψ j hψ hj
 
 end Norm
 

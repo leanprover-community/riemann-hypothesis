@@ -75,7 +75,7 @@ lemma New.GaloisRep.avatar_baseChange {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] 
   intro y hℓ
   obtain ⟨x, -, hx⟩ := y.isPlaceOver.exists_localArtin_eq y.isFrob_inv 1
   -- `y.frob` is the Artin symbol of `x` and its restriction is that of the norm of `x`.
-  have h_norm := (y.isPlaceOver.localArtin_localNorm (restrictScalarsHom E)
+  have h_norm := (y.isPlaceOver.isNormCompatible (restrictScalarsHom E)
     (hj := IsScalarTower.algebraMap_apply E L Ω)).localArtin_localNorm hx
   ext
   calc ((θ.baseChange (E := L)).avatar y.frob).val
@@ -236,6 +236,6 @@ lemma New.GaloisRep.avatarCompatAt_of_hasPrimitiveRoot5040 {ℓ : ℕ} [ThePrime
   let s' : Gal(Ω/L) := .ofRingEquiv (f := s) fun x ↦ x.property ⟨s, h_fix (inv_mem_iff.1 hs.1)⟩
   obtain ⟨y, hy_val, hy_art, hy_poly⟩ := h_poly s' m hm (by rwa [hq])
   refine ⟨localNorm E u y, by simp [v_localNorm (f := 1), hq, hy_val],
-    (hu.localArtin_localNorm j).localArtin_localNorm hy_art, ?_⟩
+    (hu.isNormCompatible j).localArtin_localNorm hy_art, ?_⟩
   rw [← adeleNorm_locIdele]
   exact desc_poly s' (Set.mem_univ s') hy_poly
