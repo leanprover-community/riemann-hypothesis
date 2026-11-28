@@ -206,7 +206,8 @@ lemma firstFactorSize_sq_le_exp {q n : ℕ} {H : ℤ}
   grw [D.card_stdClasses_le_exp principalLevel_le_stdLevel h_carrier,
     D.card_stdClasses_le_exp principalLevel_le_stdLevel h_fin]
   grw [H_le, hn_le_M, card_eq_nat_card, card_GL_le,
-    Modulus.card_residueRing_le (levelModulus_ideal_le normQ_mul_M_pow_mem_modulus),
+    Modulus.card_residueRing_le (𝔪 := D.untwistedModulus 2)
+      (levelModulus_ideal_le (S := D.levelPlaces TameChar.one) normQ_mul_M_pow_mem_modulus),
     ← le_exp_of_log_le]
   -- The goals left are the inequality of logarithms, which is `h_scale`, and positivity conditions.
   · simp only [map_pow, map_natCast, norm_pow, RCLike.norm_natCast, ← pow_mul, Nat.reduceMul,

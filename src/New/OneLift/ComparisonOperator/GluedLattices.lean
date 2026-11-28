@@ -91,14 +91,15 @@ lemma map_block_eq_blockGL [DecidableEq m] [DecidableEq N] {R : Type*} [CommRing
 /-- The ideal `ϖ² Q` is contained in `ϖ²`, where `ϖ` generates the product of the chosen places
 and `Q` is the product of the twist places of `S`. -/
 lemma levelModulus_ideal_le : (S.levelModulus 2).ideal ≤ S.chosenModulusSq.ideal :=
-  mul_mono_right (by simp)
+  mul_le_left
 
 /-- For `c ≠ 0`, the places dividing the `c`-th power of the product of the chosen places of `S`
 are the chosen places. -/
 lemma places_levelModulus_false {c : ℕ} [NeZero c] :
     (S.levelModulus c false).places = range S.chosenPlace := by
   ext w
-  simp [Modulus.places, levelModulus, IsPrime.pow_le_iff, NeZero.ne, prod_places_le_iff]
+  simp [Modulus.places, levelModulus, placesPowModulus, IsPrime.pow_le_iff, NeZero.ne,
+    prod_places_le_iff]
 
 /-- The reduction homomorphism from the residue ring modulo `ϖ² Q` to that modulo `ϖ²`. -/
 abbrev reduceToChosenModulusSq : (S.levelModulus 2).ResidueRing →+* S.chosenModulusSq.ResidueRing :=
@@ -172,7 +173,7 @@ lemma reduction_levelModulus_eq_zero_iff {c : ℕ} {x : Ô E} :
       Valued.v (O.genIdele⁻¹.val w) ^ c := by
     have h_mult : multiplicity w.asIdeal (O.levelModulus c false).ideal =
         c * multiplicity w.asIdeal (O.levelModulus 1 false).ideal := by
-      simp_all [levelModulus, multiplicity_pow, w.prime]
+      simp_all [levelModulus, placesPowModulus, multiplicity_pow, w.prime]
     simp [DescentPair.genIdele, idele_inv_apply_and_ne_zero, valued_generator, h_mult]
   simp [h_reduction, mem_Ô, h_val]
 
