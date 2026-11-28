@@ -4,7 +4,7 @@ import Mathlib.Data.Rat.Cast.OfScientific
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Std.Tactic.BVDecide.Normalize.Bool
 public import Lib.Weil.DualPair.Flip
-public import New.Determinant.AuxiliaryForms.GridPaths
+public import TauCeti.Combinatorics.GridPath.TwoGrid
 public import New.Determinant.Chain.SquareLaw
 public import Lib.ClassField.HeckeCharacter.TameModulus
 public import Lib.Weil.Seesaw
@@ -667,7 +667,11 @@ abbrev rowEdge (z : Bool) (a b : ℕ) : GridNode × GridNode := ((z, a, b), z, a
 
 end Data
 
-open Data Exchange Space
+end New
+
+namespace TauCeti
+
+open Finset New New.Data New.Exchange New.Space
 
 variable {P : Parameters} {D : Data P} {ϑ : D.MFoldTwist} {S S' : EdgeTuple ϑ}
   {z : Bool} {a₀ b₀ a b a' b' m : ℕ}
@@ -694,15 +698,15 @@ def formMap (S : EdgeTuple ϑ) (z : Bool) :
 lemma edges_append (p : GridPath a₀ b₀ a b) (q : GridPath a b a' b') :
     (p.append q).edges z = p.edges z ∪ q.edges z := by
   induction q with
-  | nil => simp [append, edges]
-  | down q ih | right q ih => simp [append, edges, ih]
+  | nil => simp [edges]
+  | down q ih | right q ih => simp [edges, ih]
 
 /-- The map on forms along a concatenation of two paths is the composite of the two maps. -/
 lemma formMap_append (p : GridPath a₀ b₀ a b) (q : GridPath a b a' b') :
     (p.append q).formMap S z = q.formMap S z ∘ₗ p.formMap S z := by
   induction q with
-  | nil => simp [append, formMap]
-  | down q ih | right q ih => simp [append, formMap, ih, LinearMap.comp_assoc]
+  | nil => simp [formMap]
+  | down q ih | right q ih => simp [formMap, ih, LinearMap.comp_assoc]
 
 /-- The map on forms along a path depends only on the matrices at the edges of the path. -/
 lemma formMap_congr (p : GridPath a₀ b₀ a b) (h_edges : ∀ e ∈ p.edges z, S e = S' e) :
@@ -756,6 +760,16 @@ end GridPath
 the grid `z` from the node `(0, m)` to the diagonal node `(Γ.diagonalIndex, Γ.diagonalIndex)`. -/
 def TwoGridPath.edges (Γ : TwoGridPath m) : Finset (GridNode × GridNode) :=
   (Γ.half false).edges false ∪ (Γ.half true).edges true
+
+end TauCeti
+
+namespace New
+
+open Fintype Finset Function Data Exchange Space
+open TauCeti (GridPath TwoGridPath)
+
+variable {P : Parameters} {D : Data P} {ϑ : D.MFoldTwist} {S S' : EdgeTuple ϑ}
+  {z : Bool} {a₀ b₀ a b a' b' m : ℕ}
 
 namespace Data
 

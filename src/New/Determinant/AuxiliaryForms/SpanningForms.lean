@@ -64,6 +64,8 @@ noncomputable section
 
 namespace New.Data
 
+open TauCeti (GridPath TwoGridPath)
+
 open Real Matrix Fintype Submodule LevelPlaces.LevelForm Space Rows Finset Function
 
 variable {P : Parameters} (D : Data P)

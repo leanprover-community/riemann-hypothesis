@@ -47,6 +47,8 @@ noncomputable section
 
 namespace New.Data
 
+open TauCeti (GridPath TwoGridPath)
+
 open MeasureTheory Fintype Function Exchange Finset Space Matrix Submodule
 
 section Subdiagonal

@@ -43,7 +43,7 @@ Notions from other files:
 * `New.Data.EdgeTuple`: a matrix modulo `𝔪` for each pair of nodes. A `NodeFamily` of invertible
   matrices acts on it by `New.Data.tupleAction`; `New.Data.edgeCharProd` is the product of the
   characters of the edges at the determinants of such a family.
-* `New.GridPath.formMap`: the composite of the maps by the matrices of a tuple along a path.
+* `TauCeti.GridPath.formMap`: the composite of the maps by the matrices of a tuple along a path.
 -/
 
 @[expose] public section
@@ -51,6 +51,8 @@ Notions from other files:
 noncomputable section
 
 namespace New.Data
+
+open TauCeti (GridPath TwoGridPath)
 
 /-!
 ## Periods on the diagonal and translates along the first column
