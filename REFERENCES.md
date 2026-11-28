@@ -2,10 +2,10 @@
 
 Only some of the citations were compared with their sources. The table lists the 228 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
 
-- compared, place confirmed: 66
+- compared, place confirmed: 68
 - not compared, no place given: 7
 - place confirmed at second hand: 36
-- work found, no place given: 119
+- work found, no place given: 117
 
 The citations of 122 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 68 of these files give places. They are listed at the end.
 
@@ -116,7 +116,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | I. Kaplansky, The Weierstrass theorem in fields with valuations | work found, no place given | `Lib/GaloisRep/WeightCongruence` |
 | J. B. Prolla, Approximation of Vector Valued Functions | work found, no place given | `Lib/GaloisRep/WeightCongruence` |
 | J. B. Prolla, Topics in Functional Analysis over Valued Division Rings | work found, no place given | `Lib/GaloisRep/WeightCongruence` |
-| J. C. Lagarias, H. W. Lenstra, C. P. Schnorr, Korkin-Zolotarev bases and successive minima of a lattice and its reciprocal lattice, Combinatorica 10 (1990) | work found, no place given | `Lib/Adelic/Reduction/FirstMinimumShortBases` |
+| J. C. Lagarias, H. W. Lenstra, C. P. Schnorr, Korkin-Zolotarev bases and successive minima of a lattice and its reciprocal lattice, Combinatorica 10 (1990), Theorem 2.5 | compared, place confirmed | `Lib/Adelic/Reduction/FirstMinimumShortBases` |
 | J. Dieudonné 1944 | work found, no place given | `Lib/GaloisRep/WeightCongruence` |
 | J. Milne, Complex Multiplication (2020) | place confirmed at second hand | `Lib/CM/ChowlaSelberg` |
 | J. Neukirch, Algebraic Number Theory (1999) | place confirmed at second hand | `Lib/CM/ChowlaSelberg` |
@@ -189,7 +189,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Robert, no title given | work found, no place given | `Lib/CM/GoodReduction`, `Lib/CM/Integrality/TorsionValues` |
 | Rubin, Euler Systems, 2000 | compared, place confirmed | `Lib/Cyclotomic/Kolyvagin/ReciprocityComponentBounds` |
 | S. Ball, O. Serra, Punctured combinatorial Nullstellensätze | work found, no place given | `Lib/General/Algebra/MultivariatePolynomials` |
-| S. D. Miller and N. Stephens-Davidowitz, Kissing numbers and transference theorems from generalized tail bounds, SIAM J. Discrete Math. 33 (2019) | work found, no place given | `Lib/Adelic/Reduction/FirstMinimumShortBases` |
+| S. D. Miller and N. Stephens-Davidowitz, Kissing numbers and transference theorems from generalized tail bounds, arXiv 1802.05708v2, Theorem 3.2 (SIAM J. Discrete Math. 33 (2019)) | compared, place confirmed | `Lib/Adelic/Reduction/FirstMinimumShortBases` |
 | S. Helgason, Groups and Geometric Analysis | place confirmed at second hand | `Lib/DiscreteSeries/Bruhat/ComplexPlace` |
 | S. W. Shin, Galois representations arising from some compact Shimura varieties | work found, no place given | `Lib/GaloisRep/Main/AllRanks` |
 | SGA 4 XII (proper base change) | compared, place confirmed | `Lib/Cohomology/WoodsHole` |

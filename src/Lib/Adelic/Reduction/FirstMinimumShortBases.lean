@@ -55,13 +55,17 @@ Notions from other files:
 
 ## Relation to the literature
 
-Known result: Transference theorem for the covering radius of a lattice against its dual's first
-minimum. The constant here is m squared in dimension m, where the sharp forms have a constant linear
-in m. The result holds for any subgroup of a Euclidean space whose dual has no short nonzero vector,
-and is proved by projecting along a short vector. Source: Lagarias-Lenstra-Schnorr, Korkin-Zolotarev
-bases and successive minima of a lattice and its reciprocal lattice, Combinatorica 10 (1990); sharp
-forms in Banaszczyk, Math. Ann. 296 (1993), and Miller-Stephens-Davidowitz, Kissing numbers and
-transference theorems from generalized tail bounds, SIAM J. Discrete Math. 33 (2019).
+Known result: transference theorem for the covering radius of a lattice against the first minimum of
+its dual. Lagarias-Lenstra-Schnorr, Korkin-Zolotarev bases and successive minima of a lattice and
+its reciprocal lattice, Combinatorica 10 (1990), Theorem 2.5, gives the constant n^(3/2)/2 in rank
+n; its proof (Section 5) is by induction on the rank, projecting along a shortest vector. The
+constant here is m squared in dimension m, as the steps are added by the triangle inequality rather
+than in squares, each using weak transference in place of Hermite's constant. Theorem 3.2 of
+Miller-Stephens-Davidowitz, Kissing numbers and transference theorems from generalized tail bounds,
+arXiv 1802.05708v2 (SIAM J. Discrete Math. 33 (2019)), stated with the lattice and its dual
+exchanged, gives n/(2π) + 3√n/π, linear in n, after Banaszczyk, New bounds in some transference
+theorems in the geometry of numbers, Math. Ann. 296 (1993). These are stated for lattices; the
+result here holds for any subgroup of a Euclidean space whose dual has no short nonzero vector.
 
 See also `Lib.Adelic.AutomorphicForms.Cuspidality` and `Lib.Adelic.Reduction.FiniteVolume`.
 -/
@@ -174,8 +178,9 @@ lemma weak_transference (Λ : Submodule ℤ E) [Module.Finite ℝ E] {ρ : ℝ} 
 vectors of its dual (the `y` with `⟪y, x⟫ ∈ ℤ` for all `x ∈ Λ`) have length at least `ρ > 0`, then
 every vector `u` lies within distance `m ^ 2 / ρ` of some vector of `Λ`.
 
-Known result: the Lagarias–Lenstra–Schnorr transference theorem for the covering radius of a
-lattice against its dual's first minimum, here with a weaker constant. -/
+Known result: the transference theorem of Lagarias–Lenstra–Schnorr, Combinatorica 10 (1990),
+Theorem 2.5, for the covering radius of a lattice against its dual's first minimum, here with a
+weaker constant and for subgroups that need not be discrete. -/
 lemma weak_transference_covering_radius (Λ : Submodule ℤ E) [Module.Finite ℝ E] {ρ : ℝ}
     (hρ : 0 < ρ) (h_dual : ∀ y ∈ dualSubmodule (innerₗ E) Λ, y ≠ 0 → ρ ≤ ‖y‖) (u : E) :
     ∃ x ∈ Λ, ‖u - x‖ ≤ finrank ℝ E ^ 2 / ρ := by
