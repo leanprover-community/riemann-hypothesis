@@ -174,7 +174,8 @@ omit [Fintype n] in
 lemma map_rowShear (f : R →+* R') (v : r → R) (l : n → R) :
     (rowShear ι v l).map f = rowShear ι (f ∘ v) (f ∘ l) := by
   ext a b
-  simp [rowShear, inclMatrix, mulVec, dotProduct, vecMulVec_apply, Matrix.one_apply, apply_ite f]
+  simp [rowShear, RingHom.map_mulVec, map_inclMatrix,
+      vecMulVec_apply, Matrix.one_apply, apply_ite f]
 
 /-- If `tᵀ e = e sᵀ` for `e = inclMatrix R ι = (1, 0)ᵀ`, the first block of `t` is `s`. -/
 lemma submatrix_eq_of_transpose_mul_inclMatrix [DecidableEq r]
