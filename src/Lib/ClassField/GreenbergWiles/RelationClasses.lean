@@ -30,6 +30,35 @@ open NumberField DiscreteModule Finset Fintype commutatorElement
 
 variable {K R : Type} [Field K] [EmbeddedNumberField K] [CommRing R] {M : DiscreteModule R Gal(Ω/K)}
 
+variable {m : ℕ} [NeZero m] (D : RelationSetting M m)
+
+/-- The Selmer classes with the local conditions of `D` and extra ramification allowed in `P`. -/
+abbrev classes (P : Set (FinPlace K)) : Submodule R (M.H 1) :=
+  selmerH1 M D.localPrimes D.place D.allowed P
+
+/-- The class of an allowed cocycle satisfies the local Selmer conditions. -/
+def toSelmerH1 (P : Set (FinPlace K)) : D.cocycles P →ₗ[R] D.classes P :=
+  let incl : D.cocycles P →ₗ[R] Z1 M.ρ := Submodule.inclusion fun _ hz ↦ hz.1.1
+  (M.π₁.comp incl).codRestrict _ fun z ↦ by
+    change incl z ∈ (D.classes P).comap M.π₁
+    rw [classes, selmerH1.comap_π₁_eq D.unramified D.coboundary_le D.ρ_eq_one_of_isComplexConj]
+    exact z.property
+
+/-- A Selmer cocycle represents zero exactly when it is a global coboundary. -/
+lemma toSelmerH1_eq_zero_iff {P : Set (FinPlace K)} (z : D.cocycles P) :
+    D.toSelmerH1 P z = 0 ↔ ∃ b : M, ∀ g, M.ρ g b - b = z.val g := by
+  rw [Subtype.ext_iff]
+  change M.π₁ ⟨z, z.property.1.1⟩ = 0 ↔ _
+  rw [← LinearMap.mem_ker, M.ker_π₁, mem_B1_iff]
+
+/-- Every Selmer class admits a representative in `D.cocycles P`. -/
+lemma toSelmerH1_surjective (P : Set (FinPlace K)) : Function.Surjective (D.toSelmerH1 P) := by
+  rintro ⟨c, hc⟩
+  obtain ⟨z, rfl⟩ := M.π₁_surjective c
+  change z ∈ (D.classes P).comap M.π₁ at hc
+  rw [classes, selmerH1.comap_π₁_eq D.unramified D.coboundary_le D.ρ_eq_one_of_isComplexConj] at hc
+  exact ⟨⟨z, hc⟩, rfl⟩
+
 /-- A case of the formula of Greenberg and Wiles for Selmer classes: the form of
 `New.RelationSetting.exists_card_cocycles_le` for classes. Let `K` be totally complex, `M` finite
 and killed by `ℓ ^ r` with `r ≠ 0`, and let `σ` fix the `ℓ`-power roots of unity, be central modulo
