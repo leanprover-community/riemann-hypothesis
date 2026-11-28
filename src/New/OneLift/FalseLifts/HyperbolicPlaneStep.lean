@@ -69,12 +69,11 @@ namespace New.SiegelWeil
 
 open Matrix MeasureTheory WeilData Exchange Space Splitting Finset Fintype Real G Fock
 
-variable {E r n m p : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r]
+variable {E r n m p : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r]
   [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p] {s : r → ℤˣ}
   {t : m → ℤˣ} {W : Space E r s} {W' : Space E m t} {V : Space E n 1} {a : AutChar E}
   {Y : G E (1 : n → ℤˣ) → ℂ}
 
-omit [WeilData E] in
 /-- Small roots: let `F` be a bounded function on the adelic unitary group of signs `t`, of rank
 `card m`, that is spherical at the split place `w` of norm `q`. If the Hecke polynomial at `w`,
 taken at a point `X` with `q ^ (card m + 1) * |X| ≤ 1`, kills `F`, then `F` is zero. -/
@@ -110,6 +109,8 @@ lemma eq_zero_of_heckePolyOp_eq_zero {F : G E t → ℂ} {w : FinPlace E} {X : �
       norm_sum_le (univ.erase ⊥) fun U ↦ heckePolyCoeff X U * F (g / cosetRep ⊥ * cosetRep U)
   exact funext fun g ↦ norm_le_zero_iff.1 (maximum_principle hF_bdd (heckePolyCoeff X)
     (fun g U ↦ g / cosetRep ⊥ * cosetRep U) h_weight h_isolate g)
+
+variable [WeilData E]
 
 /-- The descent of a function `Y` on `U(T)(𝔸)` to `U(S)(𝔸)` by the datum `φ` is the integral of `Y`
 against the theta kernel of `φ` over the adelic quotient of `U(T)`. -/

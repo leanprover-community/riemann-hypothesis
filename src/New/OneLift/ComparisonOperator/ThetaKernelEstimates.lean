@@ -252,6 +252,26 @@ theorem firstMinimum_mul_le_hom [Nonempty n] [Nonempty n']
     simp [field]
   all_goals simp [firstMinimum_pos, le_of_lt]
 
+/-- Let `u` and `u'` be families of matrices `u τ` in `U(diag s)` and `u' τ` in `U(diag s')`, one
+for each infinite place `τ` of `E` (`GInf`). The block diagonal matrix `pairHomInf (u, u')`, which
+acts on `n' × n` matrices by `x ↦ (u' τ) x (u τ)⁻¹` at `τ`, has ℓ² operator norm at most
+`maxOpNorm u * maxOpNorm u'`, where `maxOpNorm u` is the largest of the norms `‖u τ‖`. -/
+lemma norm_pairHomInf_le_mul (u : GInf E s) (u' : GInf E s') :
+    ‖(pairHomInf (u, u') :
+        Matrix (InfinitePlace E × n' × n) (InfinitePlace E × n' × n) ℂ)‖ ≤
+      maxOpNorm u * maxOpNorm u' := by
+  -- The block diagonal map is a star homomorphism, so it does not increase norms, and each block
+  -- is a Kronecker product.
+  let B : (InfinitePlace E → Matrix (n' × n) (n' × n) ℂ) →⋆ₙₐ[ℂ]
+      Matrix (InfinitePlace E × n' × n) (InfinitePlace E × n' × n) ℂ :=
+    { blockMatrix with map_smul' := by simp [submatrix_smul], map_star' := by simp [star] }
+  refine (NonUnitalStarAlgHom.norm_apply_le B _).trans ((pi_norm_le_iff_of_nonempty _).2 fun τ ↦ ?_)
+  refine (norm_pairHom_le ..).trans ?_
+  change ‖(u τ : Matrix n n ℂ)‖ * ‖(u' τ : Matrix n' n' ℂ)‖ ≤ maxOpNorm u * maxOpNorm u'
+  gcongr
+  exacts [norm_le_pi_norm (fun w ↦ (u w : Matrix n n ℂ)) τ,
+    norm_le_pi_norm (fun w ↦ (u' w : Matrix n' n' ℂ)) τ]
+
 variable [WeilData E]
 
 /-- Let `S`, `T` be hermitian spaces over `E` with signs `s`, `s'` at the infinite places, and
@@ -311,27 +331,6 @@ lemma dataInner_traceChar {𝔪 : Modulus E} (t : Matrix n n' 𝔪.ResidueRing)
   · -- Otherwise `z_f` lies outside the support of the vacuum.
     have h_vac : vacuumFn zf = 0 := by simpa [zf, vacuumFn, finCoord] using hz
     simp [h_vac]
-
-omit [WeilData E] in
-/-- Let `u` and `u'` be families of matrices `u τ` in `U(diag s)` and `u' τ` in `U(diag s')`, one
-for each infinite place `τ` of `E` (`GInf`). The block diagonal matrix `pairHomInf (u, u')`, which
-acts on `n' × n` matrices by `x ↦ (u' τ) x (u τ)⁻¹` at `τ`, has ℓ² operator norm at most
-`maxOpNorm u * maxOpNorm u'`, where `maxOpNorm u` is the largest of the norms `‖u τ‖`. -/
-lemma norm_pairHomInf_le_mul (u : GInf E s) (u' : GInf E s') :
-    ‖(pairHomInf (u, u') :
-        Matrix (InfinitePlace E × n' × n) (InfinitePlace E × n' × n) ℂ)‖ ≤
-      maxOpNorm u * maxOpNorm u' := by
-  -- The block diagonal map is a star homomorphism, so it does not increase norms, and each block
-  -- is a Kronecker product.
-  let B : (InfinitePlace E → Matrix (n' × n) (n' × n) ℂ) →⋆ₙₐ[ℂ]
-      Matrix (InfinitePlace E × n' × n) (InfinitePlace E × n' × n) ℂ :=
-    { blockMatrix with map_smul' := by simp [submatrix_smul], map_star' := by simp [star] }
-  refine (NonUnitalStarAlgHom.norm_apply_le B _).trans ((pi_norm_le_iff_of_nonempty _).2 fun τ ↦ ?_)
-  refine (norm_pairHom_le ..).trans ?_
-  change ‖(u τ : Matrix n n ℂ)‖ * ‖(u' τ : Matrix n' n' ℂ)‖ ≤ maxOpNorm u * maxOpNorm u'
-  gcongr
-  exacts [norm_le_pi_norm (fun w ↦ (u w : Matrix n n ℂ)) τ,
-    norm_le_pi_norm (fun w ↦ (u' w : Matrix n' n' ℂ)) τ]
 
 /-- Let `V` be a hermitian space over `E` with adelic point `x` (`Space`). Its lattice
 `V.baseLattice` consists of the rational vectors `y` whose adelic vector `V.vecAtPoint y = x⁻¹ y`
@@ -680,23 +679,25 @@ lemma two_pow_mul_pow_f_le_b_pow_nStar {P : Parameters} (D : Data P) :
     _ ≤ D.b ^ (D.f * D.t ^ 3) * D.b ^ (D.f * (D.t * D.t ^ 2)) := by gcongr
     _ = _ := by ring
 
-variable {P : Parameters} {D : Data P} {n : Type} [Fintype n] [DecidableEq n] [Nonempty n]
+variable {P : Parameters} {D : Data P} {n : Type} [Fintype n]
   {s : n → ℤˣ} {o : n → ℤ} {u u' : D.Φ → n → ℤ}
 
 attribute [fun_prop] IsHolOfWeight IsHolOfWeight.continuous
 
-omit [DecidableEq n] [Nonempty n] in
 /-- For admissible data `D` and rank `n ≤ t = D.t` we have `2 n³ ≤ n_*`,
 where `n_* = nStar D = 2 f t³`, since there are `f ≥ 1` infinite places. -/
 lemma two_mul_card_pow_three_le_nStar (h_rank : card n ≤ D.t) : 2 * card n ^ 3 ≤ nStar D :=
   (by gcongr : 2 * card n ^ 3 ≤ 2 * D.t ^ 3).trans (Nat.le_mul_of_pos_left _ card_pos)
 
-omit [DecidableEq n] in
+variable [Nonempty n]
+
 /-- In rank `n ≥ 1` the order of decay `10 n³` exceeds `8 n²`, the threshold for integrability on
 `U(diag s)`. -/
 lemma eight_mul_card_sq_lt : 8 * card n ^ 2 < 10 * card n ^ 3 := by
   linarith [Nat.pow_le_pow_right (card_pos (α := n)) (Nat.le_succ 2),
     Nat.pow_pos (n := 2) (card_pos (α := n))]
+
+variable [DecidableEq n]
 
 /-- In rank `1 ≤ n ≤ t = D.t` let the order `o` put the signs `+1` first, and let the weight `v` be
 dominant within each sign block, with gap `300 n_*` between the blocks, `n_* = nStar D`. Let

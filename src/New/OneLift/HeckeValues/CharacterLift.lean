@@ -158,9 +158,8 @@ abbrev descentPair : DescentPair E Unit n :=
 
 section
 
-omit [WeilData E]
+omit [WeilData E] [DecidableEq n]
 
-omit [DecidableEq n] in
 /-- At the place `τ` the weight `colsPlus` of `X.descentPair` has `rowLength τ` columns of height
 one and no column of any other height. -/
 lemma descentPair_colsPlus_apply (τ : NumberField.InfinitePlace E) (k : ℕ) :
@@ -174,7 +173,6 @@ def kernelValue (c : ℂ) (f : 𝒮 (X.descentPair.W.hom (stdSpace E n))) (g : G
   schurJet X.descentPair.columnCount (jetSeries (X.descentPair.W.hom (stdSpace E n)) c
     (X.descentPair.pairThetaKernel.ω ((1, g), 1, h) f)) *ᵥ 1
 
-omit [DecidableEq n] in
 /-- The weight `X.descentPair.columnCount` with exponent `0` in rank `1` goes up to rank `card n`
 along the exponent `-rowLength τ` (`New.IsLiftWeight`): it has no column of height strictly between
 `1` and `card n`, `1 < card n`, and its `rowLength τ` columns of height `1` make up the difference
@@ -208,7 +206,6 @@ abbrev liftKernel :
       ↥((stdSpace E Unit).hom (stdSpace E n)).finitePart :=
   thetaKernel X.isLiftWeight 1 X.charW_hasWeight X.charV_hasWeight ⊤
 
-omit [DecidableEq n] in
 /-- Every point `x` of the archimedean unitary group `GInf E X.descentPair.signs` of the definite
 line acts trivially: `conjWeylRep` of the weight `X.descentPair.columnCount` with exponent `0` sends
 `x` to `1`. -/
@@ -515,9 +512,8 @@ end CharacterLift
 
 section DescentPairHecke
 
-variable {E r n : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n]
+variable {E r n : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n]
 
-omit [WeilData E] in
 /-- On a line, the weight of `X.descentPair` with determinant exponent `0` has the Harish-Chandra
 parameter `0`. -/
 lemma LValueData.isHCParam_zero (X : LValueData E n) :
@@ -526,7 +522,6 @@ lemma LValueData.isHCParam_zero (X : LValueData E n) :
   exact fun w ↦ ⟨Function.injective_of_subsingleton _, fun _ ↦
     ⟨0, by simp, by simp [hcParameter, diagramWeight_apply, h_empty]⟩⟩
 
-omit [WeilData E] in
 /-- Let `X` be data for a lift from `U(1)`. Its descent datum `X.descentPair` goes from the standard
 positive definite space `W` of rank `1` to the standard space `V` of rank `card n`, with a weight
 that has one row at each infinite place. The parameter `0` on `W` fits this datum. It corresponds
@@ -550,6 +545,8 @@ lemma LValueData.fitsParams_descentPair (X : LValueData E n) : X.descentPair.Fit
         have h_ne : i ≠ 1 := by simpa using h_gt.ne'
         rw [X.descentPair_colsPlus_apply, ite_eq_right h_ne]
       colsMinus_eq_zero := by simp }
+
+variable [WeilData E]
 
 /-- Let `O` be a descent datum from a space `W` of rank `card r` to the standard space `V` of rank
 `card n`, and let `w` be a split place of norm `q` with `w` and `star w` off the places of `O`. Let

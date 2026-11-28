@@ -366,13 +366,17 @@ namespace DescentPair
 
 open LinearMap Complex LevelPlaces.LevelForm Submodule IsSymmetric MonoidHom Module Matrix
 
-variable {E r n : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n]
+variable {E r n : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n]
   [DecidableEq n] (O : DescentPair E r n)
 
 /-- The operator by which e₀, in the group algebra of ∏_{w ∈ M} GL_r(k_w), acts on forms on V
 through the representation `New.DescentPair.formAction`. -/
 noncomputable abbrev groupAlgAction (e₀ : MonoidAlgebra ℂ (O.ChosenGL r)) : End ℂ O.FormV :=
   O.formAction.asAlgebraHom e₀
+
+section
+
+variable [WeilData E]
 
 /-- The false lifts for a split place `w` off the level: the forms in the image of `e₀` that are
 killed by the Hecke polynomial operator `H_w`, at the value `O.liftHeckeRoot w`, and lie in `Z`. In
@@ -428,7 +432,9 @@ def _root_.New.Selmer.DenominatorLe {ℓ : ℕ} [Fact ℓ.Prime] (ι : ℂ ≃+*
         ∀ y' : O.FormV, (∀ j : PadicPlace ℓ, y' ∈ integralForms j) →
           ‖ι (inner ℂ y' (Λ (Z.orthogonalProjectionOnto y) : O.FormV))‖ ≤ 1
 
-omit [WeilData E] [DecidableEq n] in
+end
+
+omit [DecidableEq n] in
 /-- For g in ∏_{w ∈ M} GL_r(k_w), the number ∏_w χ_w(det g_w) is a root of unity, where
 χ_w = `O.tamePart w` is the tame part at w of the character μ of `O`, a character of the residue
 field k_w. -/
@@ -437,7 +443,6 @@ lemma isOfFinOrder_prod_tamePart_det (g : O.ChosenGL r) :
   (CommMonoid.torsion ℂ).prod_mem fun i _ ↦
     isOfFinOrder (O.tamePart (O.chosenPlace i)).toMonoidHom (g i).det.isUnit.isOfFinOrder
 
-omit [WeilData E] in
 /-- Let M = `O.ChosenIndex` be the set of chosen places w of the pair, with residue fields k_w, and
 ψ_w = `O.tamePart w` the tame part at w of the character μ of `O`, a character of k_w. In the
 action `O.formAction` of ∏_{w ∈ M} GL_r(k_w) on forms on V, an element g acts as ∏_w ψ_w(det g_w)
@@ -464,7 +469,6 @@ lemma innerAt_formAction (σ : ℂ ≃+* ℂ) (g : O.ChosenGL r) (x y : O.FormV)
         rfl
     _ = innerAt σ x y := by rw [h_unit, one_smul, hB_inv, hB_eq]
 
-omit [WeilData E] in
 /-- An operator f on forms on V that commutes with the action `New.DescentPair.formAction` of
 ∏_{w ∈ M} GL_r(k_w) preserves the image of every element e₀ of the group algebra. -/
 lemma range_groupAlgAction_mem_invtSubmodule {e₀ : MonoidAlgebra ℂ (O.ChosenGL r)}
@@ -479,7 +483,6 @@ lemma range_groupAlgAction_mem_invtSubmodule {e₀ : MonoidAlgebra ℂ (O.Chosen
     simp [Representation.asAlgebraHom_eq_sum, h_apply]
   exact ⟨f y, h_alg⟩
 
-omit [WeilData E] in
 /-- The Hecke polynomial operators `New.DescentPair.heckePolyOnForms` at two split places w and u
 off the level commute: H_w(X) H_u(Y) y = H_u(Y) H_w(X) y for all complex X, Y and all forms y on V.
 The places may be equal or conjugate. -/
@@ -501,7 +504,6 @@ lemma heckePolyOnForms_comm {w : FinPlace E} (hw : star w ≠ w) (hw_off : w ∉
   simpa [heckePolyOp, heckePolyEval, Finset.smul_sum, smul_smul, h_comm, mul_comm] using
     Finset.sum_comm
 
-omit [WeilData E] in
 /-- A central idempotent e₀ of the group algebra of ∏_{w ∈ M} GL_r(k_w) acts on forms on V
 self-adjointly for the pairing `innerAt σ`, for every σ: ⟨e₀x, y⟩_σ = ⟨x, e₀y⟩_σ. -/
 lemma innerAt_groupAlgAction {e₀ : MonoidAlgebra ℂ (O.ChosenGL r)} (he : IsCentralProj e₀)
@@ -510,7 +512,6 @@ lemma innerAt_groupAlgAction {e₀ : MonoidAlgebra ℂ (O.ChosenGL r)} (he : IsC
   let : Fintype (O.ChosenGL r) := Fintype.ofFinite _
   exact he.self_adjoint O.formAction σ (innerAt σ) (O.innerAt_formAction σ) x y
 
-omit [WeilData E] in
 /-- The Hecke polynomial operator H_w(X) at a split place w off the level is normal for the pairing
 `innerAt σ`: it has an adjoint `A'` with which it commutes. -/
 lemma exists_adjoint_heckePolyOnForms_comm {w : FinPlace E} (hw : star w ≠ w)
@@ -525,7 +526,6 @@ lemma exists_adjoint_heckePolyOnForms_comm {w : FinPlace E} (hw : star w ≠ w)
     fun x y ↦ innerAt_heckePolyOnForms σ x y hw hw_off hw_star_off X,
     O.heckePolyOnForms_comm hw hw_off (star_injective.ne hw) hw_star_off X _⟩
 
-omit [WeilData E] in
 /-- The image of the Hecke polynomial operator H_w(X) is orthogonal to its kernel for the pairing
 `innerAt σ`. -/
 lemma innerAt_heckePolyOnForms_eq_zero {w : FinPlace E} (hw : star w ≠ w)
@@ -537,7 +537,6 @@ lemma innerAt_heckePolyOnForms_eq_zero {w : FinPlace E} (hw : star w ≠ w)
     simp [← h_adj, h_comm, hz]
   rw [h_adj, eq_zero_of_innerAt_self σ (A' z) h_self, map_zero]
 
-omit [WeilData E] in
 /-- A form orthogonal to the image of the Hecke polynomial operator H_w(X) lies in its kernel. -/
 lemma orthogonal_range_heckePolyOnForms_le_ker {w : FinPlace E} (hw : star w ≠ w)
     (hw_off : w ∉ O.places.conjClosure) (X : ℂ) :
@@ -548,7 +547,6 @@ lemma orthogonal_range_heckePolyOnForms_le_ker {w : FinPlace E} (hw : star w ≠
     inner_left_of_mem_orthogonal (mem_range_self _ (A' u)) hu
   exact eq_zero_of_innerAt_self 1 _ (by rw [h_adj, ← h_comm, h_orth])
 
-omit [WeilData E] in
 /-- The squared norm ‖v‖²_σ = `normSqAt v σ`, defined as the class sum of the squared Gram norms of
 the vectors σ(v(g)), is the real part of σ(⟨v, v⟩_σ), where ⟨v, v⟩_σ = `innerAt σ v v`. -/
 lemma normSqAt_eq_re_innerAt (v : O.FormV) (σ : ℂ ≃+* ℂ) :
@@ -559,7 +557,6 @@ lemma normSqAt_eq_re_innerAt (v : O.FormV) (σ : ℂ ≃+* ℂ) :
   rw [h_sum]
   exact (map_classSum reLm _).symm
 
-omit [WeilData E] in
 /-- If ⟨x, z⟩_σ = 0, then ‖z‖²_σ ≤ ‖z + x‖²_σ for the squared norm `normSqAt`, the class sum of the
 squared Gram norms of the σ-conjugated values of a form. -/
 lemma normSqAt_le_add_of_innerAt_eq_zero {σ : ℂ ≃+* ℂ} {x z : O.FormV}
@@ -568,6 +565,8 @@ lemma normSqAt_le_add_of_innerAt_eq_zero {σ : ℂ ≃+* ℂ} {x z : O.FormV}
   have h_pythagoras : normSqAt (z + x) σ = normSqAt z σ + normSqAt x σ := by
     simp [normSqAt_eq_re_innerAt, h_orth, h_orth']
   linarith [show 0 ≤ normSqAt x σ from finsum_nonneg fun c ↦ by simp [smul_nonneg]]
+
+variable [WeilData E]
 
 /-- Let e₀ be a central idempotent of the group algebra of ∏_{v ∈ M} GL_r(k_v), M the chosen places
 of the pair, acting on forms on V through `O.formAction`, and let Z be a space of forms. For a place

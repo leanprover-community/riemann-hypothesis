@@ -536,7 +536,7 @@ open Matrix ComplexConjugate Finset Fintype IsUltrametricDist Ideal Modulus
 variable {E r n N m a : Type} {l : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r]
   [Fintype n] [DecidableEq n] [Fintype N] [Fintype m] [Fintype a] [Fintype l]
   {O : DescentPair E r n} {z : r ↪ m} (V : DividedSplitting N m a O z)
-  {p : ℕ} [Fact p.Prime] [ι : PadicPlace p] {M : ℕ} [NeZero M]
+  {p : ℕ} [Fact p.Prime] {M : ℕ} [NeZero M]
 
 /-- The exponent of `M` in the denominator: at each infinite place `τ`, `card a` times the number of
 columns of `O.colsPlus` of height below `card N` (a column has distinct entries, so at most `card a`
@@ -548,7 +548,6 @@ noncomputable def denominatorExponent : ℕ :=
     (#(univ.map V.dividedEmb) * ∑ h ∈ range (Fintype.card N), O.colsPlus τ h +
       Fintype.card m * ∑ h ∈ range (Fintype.card m), O.colsMinus τ h)
 
-omit [PadicPlace p] in
 /-- For a prime `p`, a natural number `M ≠ 0` and a set `S` of indices, the Schur matrix of weight
 `κ` over `ℂ_[p]` of the diagonal matrix that is `M⁻¹` on `S` and `1` elsewhere has entries of p-adic
 norm at most `‖M‖⁻¹ ^ (Σ_τ #S · c_τ)`, with c_τ the number of columns of `κ τ` of height below
@@ -577,6 +576,8 @@ lemma norm_schur_diagonal_piecewise_inv_le [DecidableEq l] (S : Finset l)
       _ ≤ ∑ _k ∈ range #S, (range (Fintype.card l)).sum (κ τ) := sum_le_sum fun k _ ↦ by
         simpa only [diagramWeight_apply] using sum_le_sum_of_subset fun h hh ↦ by simp_all
       _ = _ := by simp
+
+variable [ι : PadicPlace p]
 
 omit [Fintype a] in
 /-- The bound for one block of columns `f : l → n`. Let `ι` be a p-adic place, with map

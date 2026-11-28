@@ -138,11 +138,10 @@ namespace New
 open Matrix Fintype ComplexConjugate MeasureTheory Fock Complex SiegelWeil Rows Finset MulAction
   Space Subgroup
 
-variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] (X : LValueData E n)
+variable {E n : Type} [Field E] [CMType E] [Fintype n] (X : LValueData E n)
 
 /-! ### The lift is a multiple of the theta lift of `1` -/
 
-omit [DecidableEq n] in
 /-- For lift data `X` let `W = X.descentPair.W` be the source of the theta lift: the standard
 positive definite hermitian space of rank one over the CM field `E`, with adelic unitary group
 `U(1) = G E X.descentPair.signs`. The constant function `1` on this group is a form of parameter
@@ -163,6 +162,8 @@ lemma LValueData.isForm_const_one :
 /-- The constant function `1` as a form of parameter `0` on the source line of `X.descentPair`. -/
 def LValueData.constForm : X.descentPair.W.Form (typeKernel 0 X.descentPair.signs) :=
   ⟨fun _ ↦ 1, X.isForm_const_one⟩
+
+variable [DecidableEq n]
 
 /-- The lift `X.trivialLift` is the theta lift `Θ_W 1` of the constant function `1` on `U(1)`, times
 the index of the principal level at the chosen places. -/

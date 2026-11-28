@@ -50,11 +50,13 @@ open Matrix Finset Fintype RingHom Space SiegelWeil Set
 
 attribute [local instance low] Fintype.ofFinite
 
-variable {E : Type} {n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
+variable {E : Type} {n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   {α : AutChar E} {c : NumberField.InfinitePlace E → ℕ} {𝔪 𝔪' : Modulus E}
   {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
 
 section Definitions
+
+variable [WeilData E]
 
 variable (n) (α : AutChar E) (c : NumberField.InfinitePlace E → ℕ) (𝔪 : Modulus E)
   (ψ : (w : FinPlace E) → MulChar (ResField w) ℂ)
@@ -77,10 +79,6 @@ noncomputable def detPeriod : ℂ :=
   stdClassSum (stdLevel E n) (detKernel n α c 𝔪 fun x ↦ 𝔪.charOfTamePart ψ (det x))
 
 end Definitions
-
-section
-
-omit [WeilData E]
 
 /-- For a square matrix `x` over the residue field at `v`, the product of `1 - q ^ l` over
 `l < card n - x.rank`, with `q = v.q` the norm of `v`, is the value of the trivial character at
@@ -137,7 +135,7 @@ lemma residueDatum_singleton_mul {𝔪 𝔪' : Modulus E}
   simp only [Pi.mul_apply, residueDatum, ite_zero_mul_ite_zero]
   exact if_congr h_int.symm h_prod.symm rfl
 
-end
+variable [WeilData E]
 
 /-- Let α have weight −c and tame part ψ. Then `detKernel n α c 𝔪 Ψ`, the theta kernel of the pair
 (I_n, I_n) with datum Ψ modulo 𝔪 and polynomial ∏_τ det ^ c_τ, is, as a function on the finite

@@ -67,17 +67,17 @@ open Matrix NumberField Finset IsLocalRing Valued Space stdLevel Gf SiegelWeil F
 
 section Blocks
 
-variable {R R' r n : Type} [CommRing R] [CommRing R'] [Fintype r] [DecidableEq n] (ι : r ↪ n)
+variable {R R' r n : Type} [CommRing R] [CommRing R'] [DecidableEq n] (ι : r ↪ n)
 
-omit [Fintype r] in
 /-- The rows `ι` of the matrix `inclMatrix R ι = (1, 0)ᵀ` form the identity matrix. -/
 lemma submatrix_inclMatrix [DecidableEq r] [Fintype n] : (inclMatrix R ι).submatrix ι id = 1 := by
   rw [← inclMatrix_transpose_mul, inclMatrix_transpose_mul_self]
 
-omit [Fintype r] in
 lemma inclMatrix_apply_of_notMem_range {a : n} (ha : a ∉ Set.range ι) (b : r) :
     inclMatrix R ι a b = 0 :=
   one_apply_ne fun h : a = ι b ↦ ha ⟨b, h.symm⟩
+
+variable [Fintype r]
 
 /-- The vector `inclMatrix R ι *ᵥ μ = (μ, 0)` has the entry `μ b` at the index `ι b`. -/
 lemma inclMatrix_mulVec_apply_embedding [DecidableEq r] (μ : r → R) (b : r) :
