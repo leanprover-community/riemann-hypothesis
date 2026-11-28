@@ -3,6 +3,7 @@ module
 public import Mathlib.LinearAlgebra.Matrix.Module
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 import TauCeti.LinearAlgebra.Determinant.Basic
+import TauCeti.RingTheory.Length
 public import Aesop.BuiltinRules
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Order.CompletePartialOrder
@@ -141,6 +142,17 @@ lemma relLength_add_length_inf : relLength S T + length A ↥(S ⊓ T) = length 
   rw [relLength, ← (T.submoduleOfEquivInf S).length_eq, add_comm]
   exact (length_eq_add_of_exact (T.submoduleOf S).subtype (T.submoduleOf S).mkQ
     (Submodule.subtype_injective _) (mkQ_surjective _) (LinearMap.exact_subtype_mkQ _)).symm
+
+/-- If `L` has length at most `m` modulo `L'` and `L'` has length at most `n` modulo `L''`, then
+`L` has length at most `m + n` modulo `L''`. -/
+lemma Lift.relLength_trans {L L' L'' : Submodule A M} {m n : ℕ}
+    (h_left : relLength L L' ≤ m) (h_right : relLength L' L'' ≤ n) :
+    relLength L L'' ≤ ↑(m + n) := by
+  calc relLength L L'' ≤ relLength L' L'' + relLength L L' := by
+        rw [relLength_eq_length_map_mkQ L L'', relLength_eq_length_map_mkQ L' L'']
+        exact TauCeti.length_map_mkQ_le_add_length_quotient L L' L''
+    _ ≤ ↑(m + n) := by simpa [Nat.cast_add, add_comm] using add_le_add h_right h_left
+
 /-- The length of `S` is the sum of the lengths of its image under `f` and the kernel of `f` on
 `S`. -/
 lemma length_map_add_length_inf_ker :
@@ -396,19 +408,6 @@ namespace New.Lift
 variable {p : ℕ}
   {V : Type*} [Fact p.Prime] [AddCommGroup V] [Module ℤ_[p] V]
   {L L' L'' : Submodule ℤ_[p] V} {m n : ℕ}
-
-/-- If `L` has length at most `m` modulo `L'` and `L'` has length at most `n` modulo `L''`, then
-`L` has length at most `m + n` modulo `L''`. -/
-lemma relLength_trans (h_left : relLength L L' ≤ m) (h_right : relLength L' L'' ≤ n) :
-    relLength L L'' ≤ ↑(m + n) :=
-  -- Work modulo `L''` and filter the image of `L` by the image of `L'`.
-  let π : V →ₗ[ℤ_[p]] V ⧸ L'' := L''.mkQ
-  calc relLength L L'' = relLength (L.map π) (L'.map π) + length ℤ_[p] ↥(L.map π ⊓ L'.map π) := by
-        rw [relLength_eq_length_map_mkQ, relLength_add_length_inf]
-    _ ≤ relLength L ((L'.map π).comap π) + relLength L' L'' := by
-        grw [length_mono inf_le_right, relLength_comap, relLength_eq_length_map_mkQ L']
-    _ ≤ relLength L L' + relLength L' L'' := by grw [relLength_mono le_rfl (le_comap_map π L')]
-    _ ≤ ↑(m + n) := by grw [h_left, h_right, Nat.cast_add]
 
 /-- Let `T` be a submodule with `p T ≤ L'`. If any `m + 1` elements `x j` of `T` have a combination
 `∑ a j • x j` in `L'` with some coefficient `a j = 1`, then `T / (T ⊓ L')` has length at
