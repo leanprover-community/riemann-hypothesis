@@ -343,17 +343,10 @@ namespace New.Exchange
 
 open Matrix MeasureTheory Space CompactlyCoherentSpace
 
-variable {E : Type} {n n' : Type} {F : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
+variable {E : Type} {n n' : Type} {F : Type} [Field E] [CMType E] [Fintype n]
   [DecidableEq n] [Fintype n'] [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ}
-  {μ : NumberField.InfinitePlace E → ℤ} (S : Space E n s) (T : Space E n' s')
-  -- `v` is the real part of a datum: a vector of the Fock model of `Hom(S, T)` at the real places
-  {v : Fock.fockSpace (realSigns E (homSigns s s'))} [SemilocalField F]
+  {μ : NumberField.InfinitePlace E → ℤ} [SemilocalField F]
   {A : Set (FinPlace E)} {φ : Matrix n' n F → ℂ} {π : 𝔸f E →+* F} {U : Set (Matrix n' n F)}
-  (𝔠 : SplitTameChar E μ)
-
-section
-
-omit [WeilData E]
 
 /-- The components at `P` of the matrix of `g`, entry by entry, form `atPlaces P g`. -/
 lemma map_evalPlaces_eq_atPlaces {P : Finset (FinPlace E)} (g : Gf E n) :
@@ -388,7 +381,9 @@ lemma ReadsAt.isSchwartzBruhat (h_read : ReadsAt A π) (hφ : φ ∈ schwartzBru
     simp [vecToMatrix, Matrix.map, ← h_idem, h_section]
   · exact ⟨(vecToMatrix x).map π, subset_closure hx, funext fun p ↦ h_idem (x p)⟩
 
-end
+variable [WeilData E] (S : Space E n s) (T : Space E n' s')
+  -- `v` is the real part of a datum: a vector of the Fock model of `Hom(S, T)` at the real places
+  {v : Fock.fockSpace (realSigns E (homSigns s s'))} (𝔠 : SplitTameChar E μ)
 
 /-! ### A growth bound, and linearity of the theta integral -/
 

@@ -54,20 +54,20 @@ open NumberField Matrix MvPolynomial ComplexConjugate WeilData Space Fock Weil C
 
 variable {E : Type} [Field E] [CMType E]
   {n n' n₁ n₂ : Type _} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype n₁]
-  [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂] [WeilData E] {s : n → ℤˣ} {s' : n' → ℤˣ}
-  {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ} (S : Space E n s) (T : Space E n' s') (a b : AutChar E)
-  (𝔪 : Modulus E) (V : Space E n₁ s₁)
+  [DecidableEq n₁] [Fintype n₂] [DecidableEq n₂]
 
 /-- Reduction modulo 𝔪, as a homomorphism from the stabiliser of Ô^n in the finite adelic
 unitary group to GL_n(O_E/𝔪). -/
 def Modulus.reductionGL {E : Type} [Field E] [NumberField E] [IsCMField E] (𝔪 : Modulus E) :
     stdLevel E n →* GL n 𝔪.ResidueRing := stdLevel.map n 𝔪.reduction
 
-omit [WeilData E] in
 @[simp]
 lemma Modulus.factor_reductionGL {𝔪 𝔫 : Modulus E} {h : 𝔫.ideal ≤ 𝔪.ideal} {k : stdLevel E n} :
     (reductionGL 𝔫 k).val.map (factor h) = (reductionGL 𝔪 k).val :=
   Matrix.ext fun i j ↦ by simp [reductionGL]
+
+variable [WeilData E] {s : n → ℤˣ} {s' : n' → ℤˣ} {s₁ : n₁ → ℤˣ} {s₂ : n₂ → ℤˣ} (S : Space E n s)
+  (T : Space E n' s') (a b : AutChar E) (𝔪 : Modulus E) (V : Space E n₁ s₁)
 
 /-- The theta kernel θ^{S,I}_{a,b}[Ψ, P](g, (1, h)), where I is the standard space I_{n′} of rank n′
 and h lies in its finite adelic unitary group. -/

@@ -110,20 +110,19 @@ structure IsShortPair (g : G E s) (h : G E s') (ℓ : 𝒮 (S.hom T) →L[ℂ] �
 
 variable {E : Type} [Field E] [CMType E] {n n' p q : Type} [Fintype n] [DecidableEq n] [Fintype n']
   [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} {R : Type*} [CommRing R] [Nontrivial R]
-  [Fintype p] [WeilData E] [Fintype q]
+  [Fintype p] [Fintype q]
 
 section ShortPair
 
 variable {S : Space E n s} {T : Space E n' s'} {g : G E s} {h : G E s'} {d : Matrix n' p E}
   {c : Matrix n q E}
 
-omit [WeilData E] [Fintype q] in
+omit [Fintype q] in
 /-- The coordinates at `g` of a column of `c` form the column of `Space.coordMatrix`. -/
 lemma Space.move_vecAtPoint_col (j : q) :
     (S.move g).vecAtPoint (c.col j) = (S.coordMatrix g c).col j :=
   S.vecAtPoint_move g (c.col j)
 
-omit [WeilData E] in
 /-- The adelic points of the span of the columns of `c` are the vectors `g c' w`, where `c'` is the
 matrix of coordinates of `c` at `g` (`Space.coordMatrix`) and `w` is an adelic vector. -/
 lemma Space.mem_adelicPoints_span_col_iff (g : G E s) (u : n → 𝔸 E) :
@@ -140,7 +139,7 @@ lemma Space.mem_adelicPoints_span_col_iff (g : G E s) (u : n → 𝔸 E) :
     simp [h_col, mulVec, dotProduct, mul_comm]
   simp only [mem_adelicPoints_span_range_iff, h_sum]
 
-omit [WeilData E] [Fintype p] [Fintype q] in
+omit [Fintype p] [Fintype q] in
 /-- At the point `(g, h)` the maps `dᵢ ⟨cⱼ, ·⟩` have the coordinates `d'ᵢ c'ⱼᴴ ε`, where `d'` and
 `c'` are the coordinates of `d` at `h` and of `c` at `g`, and `ε` is the standard form. -/
 lemma coordMatrix_rankOneMaps :
@@ -162,7 +161,7 @@ lemma coordMatrix_rankOneMaps :
     ← mul_kronecker_mul, ← transpose_mul, ← transpose_mul, Prod.fst_inv, inv_inv, h_source]
   rfl
 
-omit [WeilData E] [Fintype p] [Fintype q] in
+omit [Fintype p] [Fintype q] in
 /-- If the columns `dᵢ` and `cⱼ` are vectors of lengths at most `x` and `y` in the lattices at `h`
 and `g`, then the map `dᵢ ⟨cⱼ, ·⟩` has length at most `x y` and lies in the lattice of Hom(S, T) at
 `(g, h)`. -/
@@ -202,7 +201,6 @@ lemma col_rankOneMaps_mem_latticeBall {i : p} {j : q} {x y : ℝ}
       rfl
     _ ≤ (x * y) ^ 2 := by grw [hd_le, hc_le, mul_pow]
 
-omit [WeilData E] in
 /-- If the columns of `d`, or those of `c`, span an isotropic subspace, then the maps `dᵢ ⟨cⱼ, ·⟩`
 span an isotropic subspace of Hom(S, T). -/
 lemma isotropic_span_rankOneMaps (h_iso : dᴴ * T.J * d = 0 ∨ cᴴ * S.J * c = 0) :
@@ -216,7 +214,6 @@ lemma isotropic_span_rankOneMaps (h_iso : dᴴ * T.J * d = 0 ∨ cᴴ * S.J * c 
     mul_nonsing_inv_cancel_right _ _ ((isUnit_iff_isUnit_det _).1 S.isUnit_J)]
   rcases h_iso with h | h <;> simp [h]
 
-omit [WeilData E] in
 /-- If `d` is invertible, the maps `dᵢ ⟨cⱼ, ·⟩` span the space of all maps `z cᴴ S.J`. -/
 lemma mem_span_rankOneMaps_iff {d : Matrix n' n' E} (hd : IsUnit d) {c : Matrix n q E}
     (γ : n' × n → E) :
@@ -231,6 +228,7 @@ lemma mem_span_rankOneMaps_iff {d : Matrix n' n' E} (hd : IsUnit d) {c : Matrix 
     use matrixToVec (d⁻¹.val * z)
     simp [kronecker_mulVec_eq_matrixToVec, ← Matrix.mul_assoc]
 
+variable [WeilData E] in
 /-- For a short pair `d`, `c`, the functional `ℓ` is invariant under the Heisenberg operators of the
 span of the maps `dᵢ ⟨cⱼ, ·⟩`. -/
 lemma IsShortPair.invariant_span {ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ} {Ψ : (n' × n → 𝔸f E) → ℂ} {x y t : ℝ}
@@ -243,6 +241,8 @@ lemma IsShortPair.invariant_span {ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ} {Ψ : (n' 
   exact h_pair.invariant (d * vecToMatrix ξ) f
 
 end ShortPair
+
+variable [WeilData E]
 
 /-- Let `E` be a CM field with Weil data, `a`, `b` automorphic characters, `Ψ` Schwartz–Bruhat above
 a set `P` of finite places disjoint from its conjugate, `f₀` in the finite part of the data space of
@@ -477,9 +477,8 @@ lemma Rows.modulusResidue_reduction {w : FinPlace E} (h : w ∈ 𝔪.places) (x 
 end
 
 variable {E n n' : Type} [Field E] [CMType E] {𝔪 : Modulus E} [Fintype n] [DecidableEq n]
-  [Fintype n'] [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
+  [Fintype n']
 
-omit [DecidableEq n'] in
 /-- Suppose Ψ(y) ≠ 0 forces the matrix of entries of y arranged by e to have a left inverse
 modulo 𝔪. Then wherever the adelic lift of Ψ is nonzero, the matrix so arranged is primitive
 over O_w at each w dividing 𝔪. -/
@@ -510,6 +509,8 @@ lemma Rows.isPrimitiveMatrix_of_liftFn_ne_zero {ι : Type*} {Ψ : (ι → 𝔪.R
   refine ⟨fun _ _ ↦ idem_mul_mem_Ô.1 (h_int _) w hw, (U * L').map (LocInt w).subtype,
     by simp [IsIntMatrix], ?_⟩
   rw [← hY_coe, ← Matrix.map_mul, Matrix.mul_assoc, hU, Matrix.map_one _ (map_zero _) (map_one _)]
+
+variable [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} (S : Space E n s) (T : Space E n' s')
 
 /-- The height on the orthogonal sum of `S` and `T` is at most the product of the heights. -/
 lemma Space.height_sum_le (g : G E s) (h : G E s') :
