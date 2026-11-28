@@ -301,6 +301,18 @@ lemma New.Variety.UniversalFamily.GraphClosure.exists_point_act_eq {E : Type} [F
         simp only [act, Pi.one_apply, map_one, one_smul]
         exact hz.sub_mem_lattice i }⟩
 
+/-- Two translates of a moduli point give the same point whenever their frames differ by level. -/
+private lemma New.Variety.datumPoint_act_eq_of_level {E : Type} [Field E] [CMBase E]
+    {R : Subalgebra (𝓞 E) E} {D : PEL E} (U : UniversalFamily D R) {ν : ℕ}
+    (a : ModuliPoint E D.Index ν) (M : nonZeroDivisors (𝓞 E)) (g h : GUPlus E D.Index)
+    (hg : h.val⁻¹ * g.val ∈ levelGU D.Index D.level ⊓ levelGU D.Index M) :
+    U.datumPoint M (a.act g) = U.datumPoint M (a.act h) := by
+  refine datumPoint_eq_iff.2 ⟨1, ?_, by simp only [act, ratConj, map_one, one_smul], fun i ↦ ?_⟩
+  · simpa only [act, map_one, mul_one, mul_inv_rev, mul_assoc, inv_mul_cancel_left] using hg
+  · rw [act, act, realVecAction, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _),
+      Matrix.mulVecLin_apply, Matrix.one_mulVec, sub_self]
+    exact zero_mem _
+
 /-- A map `f` from the closure `C` to the base that translates the complex points by `g` is
 determined by the coset of `g` modulo `levelGU D.Index D.level`: there is one map `u` on all cosets
 with `f = u ⟦g⟧` for every such `f`. The map `c` witnesses that maps to the base exist. -/
@@ -330,21 +342,10 @@ lemma New.Variety.UniversalFamily.GraphClosure.exists_forall_eq_apply_mk_of_tran
         (p.fst.val : GL D.Index (𝔸f E) ⧸ levelGU D.Index D.level) := by
     rintro ⟨⟨g, hg⟩, f, hf⟩ ⟨⟨g', hg'⟩, f', hf'⟩ hpq
     refine C.isSeparatingFamily.hom_ext fun a ↦ ?_
-    -- the isomorphism is `1`; its level condition is the equality of cosets `hpq`
-    have hpt : U.datumPoint 1 (a.act ⟨g, hg⟩) = U.datumPoint 1 (a.act ⟨g', hg'⟩) := by
-      refine datumPoint_eq_iff.mpr ⟨1, ?_, by simp only [act, ratConj, map_one, one_smul],
-        fun i ↦ by
-          rw [act, act, realVecAction, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _),
-            Matrix.mulVecLin_apply, Matrix.one_mulVec, sub_self]
-          exact zero_mem _⟩
-      have hmem : g'⁻¹ * g ∈ levelGU D.Index D.level := QuotientGroup.eq.mp hpq.symm
-      have h1 : (a.frame * g')⁻¹ * toFinGL (1 : GL D.Index E) * (a.frame * g) = g'⁻¹ * g := by
-        simp only [map_one, mul_one, mul_inv_rev, mul_assoc, inv_mul_cancel_left]
-      change (a.frame * g')⁻¹ * toFinGL (1 : GL D.Index E) * (a.frame * g) ∈
-        levelGU D.Index D.level ⊓ levelGU D.Index 1
-      rw [levelGU_inf_one, h1]
-      exact hmem
-    exact (hf a).trans (hpt.trans (hf' a).symm)
+    rw [hf, hf']
+    apply datumPoint_act_eq_of_level
+    rw [OneMemClass.coe_one, levelGU_inf_one]
+    exact QuotientGroup.eq.mp hpq.symm
   have h_nonempty : Nonempty (C.scheme ⟶ (Over.map U.base.hom).obj
       (ThetaFamily.fibrePower (X := U.family) (NonzeroTorsion (E := E) 1 D.Index ⊕ Fin ν))) := ⟨c⟩
   obtain ⟨u, hu⟩ := (factorsThrough_iff _).mp factors
@@ -412,19 +413,8 @@ private lemma UniversalFamily.GraphClosure.point_comp_proj_towerPairs
     rw [Subgroup.mem_subgroupOf, Subgroup.coe_mul, Subgroup.coe_inv] at h
     exact h
   rw [point_comp_proj]
-  refine datumPoint_eq_iff.2 ⟨1, ?_, by simp only [act, ratConj, map_one, one_smul],
-    fun k ↦ by
-      rw [act, act, realVecAction, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _),
-        Matrix.mulVecLin_apply, Matrix.one_mulVec, sub_self]
-      exact zero_mem _⟩
-  have hframe :
-      (a.act (⟨κ, mem_GUPlus_of_mem_levelGU κ.2⟩ * x.1.2)).frame⁻¹ * toFinGL (1 : GL D.Index E) *
-        (a.act (towerPairs D M i (⟦κ⟧, x)).2).frame =
-      (x.val.2 : GL D.Index (𝔸f E))⁻¹ * (κ.val⁻¹ * (κ : TowerQuot D M).out.val) * x.val.2 := by
-    simp only [act, Submonoid.coe_mul, map_one, mul_one, mul_inv_rev, mul_assoc,
-      inv_mul_cancel_left]
-  rw [hframe]
-  exact hM _ x.property _ h_deep
+  apply datumPoint_act_eq_of_level
+  simpa only [towerPairs, Submonoid.coe_mul, mul_inv_rev, mul_assoc] using hM _ x.property _ h_deep
 
 open scoped Classical in
 /-- The element `κ` of `levelGU D.Index D.level` acts on the cover `C` of level `i` by a map `p`
