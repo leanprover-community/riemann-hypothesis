@@ -1,8 +1,8 @@
 module
 
 import TauCeti.Analysis.Complex.CauchyIntegralPolydisc
+import TauCeti.Analysis.Complex.ParametricIntegralHolomorphy
 import TauCeti.Analysis.Complex.WeaklyHolomorphic
-import TauCeti.MeasureTheory.Function.StronglyMeasurable.FiniteDimensional
 public import Mathlib.Analysis.CStarAlgebra.ContinuousMap
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Algebra.Module.StablyFree.Basic
@@ -307,30 +307,14 @@ lemma New.eventually_differentiableAt_integral {f : E → X → F} {z : E} {g : 
     [FiniteDimensional ℂ E] (hg : Integrable g μ) (hf : ∀ w : E, AEStronglyMeasurable (f w) μ)
     (h_dom : ∀ᶠ w : E in nhds z, ∀ x : X, DifferentiableAt ℂ (f · x) w ∧ ‖f w x‖ ≤ g x) :
     ∀ᶠ w : E in nhds z, DifferentiableAt ℂ (fun u : E ↦ ∫ x : X, f u x ∂μ) w := by
-  -- Differentiate under the integral sign at each point `w` near which the hypothesis holds;
-  -- the Schwarz lemma turns the bound `g` on a ball of radius `r` about `w` into the bound
-  -- `2 g / r * ‖u - w‖` for `‖f u - f w‖`.
-  filter_upwards [h_dom.eventually_nhds] with w hw
-  obtain ⟨r, hr, h_ball⟩ :
-      ∃ r > 0, ∀ u ∈ ball w r, ∀ x : X, DifferentiableAt ℂ (f · x) u ∧ ‖f u x‖ ≤ g x :=
-    eventually_nhds_iff_ball.1 hw
-  choose h_diff h_le using h_ball
-  have hw_mem : w ∈ ball w r := mem_ball_self hr
-  have h_deriv : ∀ᵐ x ∂μ, HasFDerivAt (f · x) (fderiv ℂ (f · x) w) w :=
-    ae_of_all μ fun x ↦ (h_diff w hw_mem x).hasFDerivAt
-  -- Each directional derivative is a limit of difference quotients, so it is measurable in `x`.
-  have h_dir (y : E) : AEStronglyMeasurable (fun x ↦ fderiv ℂ (f · x) w y) μ :=
-    aestronglyMeasurable_of_tendsto_ae _ (by fun_prop)
-      (h_deriv.mono fun _ hx ↦ (hx.hasLineDerivAt y).tendsto_slope_zero)
-  have h_int : Integrable (f w) μ := hg.mono' (hf w) (ae_of_all μ (h_le w hw_mem))
-  have h_lip : ∀ᵐ x ∂μ, ∀ u ∈ ball w r, ‖f u x - f w x‖ ≤ 2 * g x / r * ‖u - w‖ :=
-    .of_forall fun x u hu ↦ norm_sub_le_of_holomorphic_bdd (f := fun v : E ↦ f v x)
-      (fun v hv ↦ (h_diff v hv x).differentiableWithinAt) (fun v hv ↦ h_le v hv x) hu
-  have h_hasFDerivAt :
-      HasFDerivAt (fun u : E ↦ ∫ x, f u x ∂μ) (∫ x, fderiv ℂ (f · x) w ∂μ) w :=
-    (hasFDerivAt_integral_of_dominated_loc_of_lip' (ball_mem_nhds w hr) (fun u _ ↦ hf u) h_int
-      (TauCeti.aestronglyMeasurable_clm_apply_iff.mpr h_dir) h_lip (by fun_prop) h_deriv).2
-  exact h_hasFDerivAt.differentiableAt
+  obtain ⟨U, hU, h_open, hz⟩ := _root_.eventually_nhds_iff.1 h_dom
+  have h_analytic : AnalyticOnNhd ℂ (fun w : E ↦ ∫ x : X, f w x ∂μ) U :=
+    TauCeti.analyticOnNhd_integral_of_dominated h_open (fun w _ ↦ hf w)
+      (fun _ hw ↦ ⟨U, h_open.mem_nhds hw, g, hg,
+        ae_of_all μ fun x v hv ↦ (hU v hv x).2⟩)
+      (ae_of_all μ fun x w hw ↦ (hU w hw x).1.differentiableWithinAt)
+  filter_upwards [h_open.mem_nhds hz] with w hw
+  exact (h_analytic w hw).differentiableAt
 
 /-- A Mellin integral that converges at two points converges between them. Let N > 0 be a
 measurable function on X and T a complex-valued function on X. If the norm of T·N^s has finite
