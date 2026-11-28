@@ -53,9 +53,8 @@ lemma coeff_aeval_smul_X {σ : Type*} (Q : MvPolynomial σ ℂ) (t : ℂ) (m : �
   induction Q using MvPolynomial.induction_on' with
   | monomial u r =>
     have h_mon : (monomial u r).aeval (fun x ↦ t • X x) = t ^ u.degree • monomial u r := by
-      rw [aeval_monomial, monomial_eq]
-      simp [Finsupp.prod, smul_pow, prod_smul, prod_pow_eq_pow_sum, Finsupp.degree_apply,
-        -prod_X_pow_eq_monomial]
+      simpa [aeval_X_left_apply, Pi.smul_def] using
+        (isHomogeneous_monomial r rfl).aeval_smul t (X (R := ℂ))
     classical
     rw [h_mon]
     by_cases h : u = m <;> simp [h]
@@ -66,11 +65,7 @@ any `t ≠ 0` multiplies it by `t ^ d`. -/
 lemma isHomogeneous_iff_aeval_smul_X {σ : Type*} {Q : MvPolynomial σ ℂ} {d : ℕ} :
     Q.IsHomogeneous d ↔ ∀ t : ℂ, t ≠ 0 → Q.aeval (fun x : σ ↦ t • X x) = t ^ d • Q := by
   refine ⟨fun hQ t _ ↦ ?_, fun hQ m hm ↦ ?_⟩
-  · ext m
-    rw [coeff_aeval_smul_X, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul]
-    by_cases h : m.degree = d
-    · rw [h]
-    · simp [hQ.coeff_eq_zero h]
+  · simpa [aeval_X_left_apply, Pi.smul_def] using hQ.aeval_smul t (X (R := ℂ))
   · -- Compare the coefficients at `m` for `t = 2`.
     have h_pow : (2 : ℂ) ^ m.degree = 2 ^ d := mul_right_cancel₀ hm <| by
       rw [← coeff_aeval_smul_X, hQ 2 two_ne_zero, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul]
