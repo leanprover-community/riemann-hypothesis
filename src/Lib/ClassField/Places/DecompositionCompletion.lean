@@ -186,6 +186,20 @@ def GaloisRep.InducesPlace (K : Type*) [Field K] [Algebra K Ω] (A : ClosurePlac
   -- (c) `j` is an open embedding onto the elements that fix `e K` pointwise
   IsCompletionGroup (e.comp (algebraMap K Ω)) j
 
+include K in
+/-- An element of the Galois group lies in the decomposition group of the place induced by
+`ι : Ω → ℚ̄_p` exactly when it preserves the p-adic norm pulled back along `ι`. -/
+lemma mem_decompGroup_iff_nnnorm_eq (ι : Ω →+* PadicAlgCl p) {σ : Γ} :
+    σ ∈ decompGroup Γ ((intQpBar p).comap ι) ↔ ∀ x : Ω, ‖ι (σ • x)‖₊ = ‖ι x‖₊ := by
+  refine ⟨fun hσ x ↦ ?_, fun hσ ↦ mem_decompGroup_iff.mpr fun x ↦ ?_⟩
+  · exact ((PadicAlgCl.valued p).v.comap ι).isEquiv_valuation_valuationSubring.eq_iff.mpr
+      (decompGroup.val_smul hσ x)
+  · have h_mem (y : Ω) : y ∈ (intQpBar p).comap ι ↔ ‖ι y‖ ≤ 1 := by
+      rw [ValuationSubring.mem_comap, ← ValuationSubring.valuation_le_one_iff,
+        ← map_one (intQpBar p).valuation, valuation_intQpBar_le_iff, norm_one]
+    have h_norm : ‖ι (σ • x)‖ = ‖ι x‖ := congrArg (fun r : NNReal ↦ (r : ℝ)) (hσ x)
+    rw [h_mem, h_mem, h_norm]
+
 /-- Let `Γ` act on `Ω` as the Galois group over `K`, let `ι : Ω → ℚ̄_p`, and let `σ` lie in the
 decomposition group of the place that `ι` induces on `Ω`. If `ι x` lies in the closure of `ι(K)`,
 then `σ` fixes `x`. -/
@@ -193,16 +207,12 @@ lemma smul_eq_self_of_mem_decompGroup_of_mem_closure (ι : Ω →+* PadicAlgCl p
     (hσ : σ ∈ decompGroup Γ ((intQpBar p).comap ι)) {x : Ω}
     (hx : ι x ∈ closure (range (ι.comp (algebraMap K Ω)))) :
     σ • x = x := by
-  -- `σ` preserves the valuation and fixes `K`, so `ι (σ x)` and `ι x` are equally far from each
+  -- `σ` preserves the p-adic norm and fixes `K`, so `ι (σ x)` and `ι x` are equally far from each
   -- point of `ι(K)`; by continuity also from `ι x`, so they are equal.
   let k : K →+* PadicAlgCl p := ι.comp (algebraMap K Ω)
   have h_dist : EqOn (nndist (ι (σ • x))) (nndist (ι x)) (range k) := by
     rintro _ ⟨a, rfl⟩
-    have h_val : ((intQpBar p).comap ι) (σ • (x - algebraMap K Ω a)) =
-        ((intQpBar p).comap ι) (x - algebraMap K Ω a) :=
-      decompGroup.val_smul hσ (x - algebraMap K Ω a)
-    have h_eq : ‖ι (σ • (x - algebraMap K Ω a))‖₊ = ‖ι (x - algebraMap K Ω a)‖₊ :=
-      ((PadicAlgCl.valued p).v.comap ι).isEquiv_valuation_valuationSubring.eq_iff.mpr h_val
+    have h_eq := (mem_decompGroup_iff_nnnorm_eq (K := K) ι).mp hσ (x - algebraMap K Ω a)
     rw [nnDist_eq_nnNorm, nnDist_eq_nnNorm, RingHom.comp_apply, ← map_sub, ← map_sub]
     rwa [smul_sub, smul_algebraMap] at h_eq
   have h_dist_self : nndist (ι (σ • x)) (ι x) = nndist (ι x) (ι x) :=
