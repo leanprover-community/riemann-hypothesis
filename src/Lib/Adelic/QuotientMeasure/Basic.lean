@@ -1,5 +1,8 @@
 module
 
+import TauCeti.MeasureTheory.Group.OrbitCutoff.Discrete
+import TauCeti.MeasureTheory.Measure.Haar.Unimodular
+
 public import Mathlib.MeasureTheory.Group.ModularCharacter
 public import Mathlib.Probability.IdentDistrib
 public import Mathlib.Analysis.CStarAlgebra.Classes
@@ -111,6 +114,9 @@ abbrev HasCutoff (X : Type*) [MeasurableSpace X] [SMul H X] : Prop :=
 lemma isCutoff_chosenCutoff [h_cutoff : HasCutoff ν X] :
     IsCutoff ν (chosenCutoff ν : X → ENNReal) :=
   Classical.epsilon_spec h_cutoff.out
+
+private lemma IsCutoff.toTauCeti {β : X → ENNReal} (hβ : IsCutoff ν β) :
+    IsOrbitCutoff ν β := ⟨hβ.1, hβ.2⟩
 
 /-- Shortcut: the `MulAction` instance of a subgroup `N` on its ambient group `G`. -/
 @[to_additive]
@@ -232,21 +238,14 @@ chosen cutoff and stands in on `X` for the quotient measure on `H \ X`. -/
 lemma identDistrib_orbitMeasure [IsInvInvariant ν] (hβ : IsCutoff ν β) (hF : Measurable F)
     (h_inv : ∀ (h : H) (x : X), F (h • x) = F x) :
     IdentDistrib F F (orbitMeasure ν μ) (μ.withDensity β) :=
-  identDistrib_orbitMeasure_of_unfold (c := ⟨β, hβ⟩) (.id ν) hβ.measurePreserving hF measurable_id
-    h_inv
+  (isCutoff_chosenCutoff (h_cutoff := ⟨β, hβ⟩) ν).toTauCeti.identDistrib_withDensity hβ.toTauCeti
+    hF h_inv
 
 /-- A cutoff `β` for an inversion invariant s-finite measure `ν` on `H` is finite almost everywhere
 for every s-finite `H`-invariant measure `μ` on `X`. -/
 lemma IsCutoff.ae_cutoff_lt_top [IsInvInvariant ν] (hβ : IsCutoff ν β) :
-    ∀ᵐ x : X ∂μ, β x < ⊤ := by
-  -- Unfold `μ`: the integral of `β` over each orbit is finite, so `β` is finite almost everywhere.
-  have ⟨h_meas, h_one⟩ := hβ
-  have h_orbit (x : X) : ∀ᵐ h : H ∂ν, β (h • x) < ⊤ :=
-    ae_lt_top (by fun_prop) (by simp [h_one])
-  rw [← hβ.measurePreserving.hasLaw.ae_iff (by measurability)]
-  have h_prod : ∀ᵐ p : X × H ∂(μ.withDensity β).prod ν, β (p.2 • p.1) < ⊤ := by
-    simp (disch := measurability) [ae_prod_iff_ae_ae, h_orbit]
-  exact h_prod
+    ∀ᵐ x : X ∂μ, β x < ⊤ :=
+  hβ.toTauCeti.ae_lt_top
 
 /-- Let a group `H` act measurably on `X`, with `ν` an s-finite, inversion-invariant measure on `H`
 and `μ` an s-finite, `H`-invariant measure on `X`. Let `β` be a cutoff, meaning a measurable
@@ -256,9 +255,8 @@ and `μ` an s-finite, `H`-invariant measure on `X`. Let `β` be a cutoff, meanin
 lemma IsCutoff.integral_orbitMeasure [IsInvInvariant ν] (hβ : IsCutoff ν β)
     (h_inv : ∀ (h : H) (y : X), f (h • y) = f y) (hf : Measurable f := by fun_prop) :
     ∫ y : X, f y ∂orbitMeasure ν μ = ∫ y : X, (β y).toReal • f y ∂μ := by
-  have ⟨hβ_meas, _⟩ := hβ
   rw [(identDistrib_orbitMeasure hβ hf h_inv).integral_eq,
-    integral_withDensity_eq_integral_toReal_smul hβ_meas hβ.ae_cutoff_lt_top]
+    integral_withDensity_eq_integral_toReal_smul hβ.1 hβ.ae_cutoff_lt_top]
 
 /-! ### Unfolding with the chosen cutoff -/
 
@@ -565,26 +563,15 @@ countable Hausdorff group G and Γ\G has finite volume for the left Haar measure
 right invariant. -/
 lemma isMulRightInvariant_of_finite_covolume (_h_finite : IsFiniteMeasure (Γ.quotMeasure μ)) :
     IsMulRightInvariant μ := by
-  -- Right translation by `g` scales `μ` by the modular character. It commutes with the left action
-  -- of `Γ`, so the quotient has the same volume for `μ` and for the scaled measure.
-  refine ⟨fun g ↦ ?_⟩
-  have h_mod : μ.map (· * g) = modularCharacterFun g • μ :=
-    map_right_mul_eq_modularCharacterFun_smul μ g
-  have h_equiv (γ : Γ) (x : G) : γ • x * g = γ • (x * g) := smul_mul_assoc γ x g
-  have h_translate : MeasurePreserving (· * g) μ (modularCharacterFun g • μ) :=
-    ⟨measurable_mul_const g, h_mod⟩
-  have h_vol : ∫⁻ _ : G, 1 ∂Γ.quotMeasure (modularCharacterFun g • μ) =
-      ∫⁻ _ : G, 1 ∂Γ.quotMeasure μ :=
-    (identDistrib_orbitMeasure_comp (.id (count : Measure Γ)) h_translate h_equiv
-      (fun _ _ ↦ rfl) measurable_one).symm.lintegral_eq
-  -- The volume is finite and nonzero, so the factor is one. (`withDensity_apply` would expand the
-  -- quotient measures, so it is removed from `simp`.)
-  have h_scale : (modularCharacterFun g : ENNReal) * Γ.quotMeasure μ univ =
-      Γ.quotMeasure μ univ := by
-    simpa [← coe_nnreal_smul, -withDensity_apply, withDensity_smul_measure] using h_vol
-  have h_one : modularCharacterFun g = 1 := by
-    simpa [ne, ENNReal.mul_eq_right, -withDensity_apply] using h_scale
-  rw [h_mod, h_one, one_smul]
+  have h_eq : Γ.cutoffMeasure μ univ = Γ.quotMeasure μ univ := by
+    have h_id :=
+      (Measure.isOrbitCutoff_orbitCutoff (count (α := Γ)) (X := G)).identDistrib_withDensity
+        (μ := μ) (isCutoff_chosenCutoff (count (α := Γ))).toTauCeti
+        (measurable_const (a := (1 : ENNReal))) fun _ _ ↦ rfl
+    simpa [Subgroup.cutoffMeasure, Measure.cutoffMeasure_def, Subgroup.quotMeasure, orbitMeasure,
+      withDensity_apply _ .univ] using h_id.lintegral_eq
+  have : IsFiniteMeasure (Γ.cutoffMeasure μ) := ⟨h_eq.trans_lt (measure_lt_top _ _)⟩
+  exact Γ.isMulRightInvariant_of_isFiniteMeasure_cutoffMeasure
 
 instance [CompactSpace G] : IsMulRightInvariant μ := by
   -- The trivial subgroup is a lattice of a compact group.
@@ -592,17 +579,8 @@ instance [CompactSpace G] : IsMulRightInvariant μ := by
   rw [quotMeasure_bot]
   infer_instance
 
-instance [IsMulRightInvariant μ] : IsInvInvariant μ := by
-  -- `μ.inv` and `μ` are left invariant, so both are multiples of the Haar measure normalized on
-  -- `K = K₀ ∪ K₀⁻¹`; the factors agree because `K` is symmetric.
-  obtain ⟨K₀⟩ : Nonempty (TopologicalSpace.PositiveCompacts G) := inferInstance
-  let K : TopologicalSpace.PositiveCompacts G := K₀ ⊔ K₀.map _ continuous_inv (isOpenMap_inv G)
-  have h_mass : μ.inv K = μ K := by simp [K, union_comm, ← Set.inv_preimage, preimage_preimage]
-  constructor
-  calc
-    μ.inv = μ.inv K • haarMeasure K := haarMeasure_unique _ K
-    _ = μ K • haarMeasure K := by rw [h_mass]
-    _ = μ := (haarMeasure_unique μ K).symm
+instance [IsMulRightInvariant μ] : IsInvInvariant μ :=
+  Measure.isInvInvariant_of_isMulRightInvariant μ
 
 variable (μ)
 
@@ -633,22 +611,8 @@ omit [T2Space G] in
 is `d • μ` for some `d` in `[0, ∞]`. -/
 lemma exists_eq_smul_haar [μ.IsMulRightInvariant] {ν : Measure G} [SFinite ν]
     (_hν : ν.IsMulRightInvariant) :
-    ∃ d : ENNReal, ν = d • μ := by
-  -- Compare the left invariant measures `ν.inv` and `(μ V)⁻¹ • μ`, for a set `V` of finite positive
-  -- measure, by `measure_mul_lintegral_eq`.
-  obtain ⟨V, hV_meas, -, hV_pos, hV_fin⟩ :
-      ∃ V : Set G, MeasurableSet V ∧ V ⊆ univ ∧ 0 < μ V ∧ μ V < ⊤ :=
-    μ.exists_subset_measure_lt_top .univ (NeZero.pos _)
-  refine ⟨ν.inv V * (μ V)⁻¹, Eq.symm ?_⟩
-  refine ext_of_lintegral _ fun f hf ↦ ?_
-  have h_compare : ν.inv V * ∫⁻ y : G, f y ∂(μ V)⁻¹ • μ =
-      ∫⁻ x : G, ((μ V)⁻¹ • μ) ((· * x) ⁻¹' V) * f x⁻¹ ∂ν.inv :=
-    measure_mul_lintegral_eq ν.inv ((μ V)⁻¹ • μ) hV_meas f hf
-  -- Right invariance of `μ` makes the weight one.
-  have h_weight (x : G) : ((μ V)⁻¹ • μ) ((· * x) ⁻¹' V) = 1 := by
-    simp [ENNReal.inv_mul_cancel hV_pos.ne' hV_fin.ne]
-  -- The two inversions cancel.
-  simpa [h_weight, mul_assoc, measurableEmbedding_inv.lintegral_map, inv_def] using h_compare
+    ∃ d : ENNReal, ν = d • μ :=
+  Measure.exists_eq_smul_of_isMulRightInvariant μ
 
 end New
 

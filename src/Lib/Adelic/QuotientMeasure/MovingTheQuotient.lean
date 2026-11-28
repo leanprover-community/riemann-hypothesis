@@ -1,5 +1,6 @@
 module
 
+import TauCeti.MeasureTheory.Group.OrbitCutoff.Discrete
 public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
@@ -55,33 +56,8 @@ theorem integral_cutoff_swap {G Λ : Type*} [Group G] [MeasurableSpace G] [Measu
     (hF : Measurable F) (hF_inv : ∀ (l : Λ) (s : R) (x : G), F (i l * s, i l * x) = F (s, x))
     (h_int : Integrable (fun p : R × G ↦ (β p.1).toReal • F p) (ν.prod μ)) :
     ∫ x : G, (β x).toReal • ∫ s : R, F (s, x) ∂ν ∂μ =
-      ∫ s : R, (β s).toReal • ∫ x : G, F (s, x) ∂μ ∂ν := by
-  -- Both `β s` and `β x` are cutoffs for the diagonal action of `Λ` on `R × G`, and the integral of
-  -- an invariant function does not depend on the cutoff.
-  let : MeasurableSpace Λ := ⊤
-  let : MulAction Λ (R × G) := .compHom (R × G) i
-  have h_smul (l : Λ) (p : R × G) : l • p = (i l * p.1, i l * p.2) := rfl
-  have : MeasurableSMul₂ Λ (R × G) :=
-    ⟨measurable_from_prod_countable_right fun l ↦
-      (measurable_fst.const_mul (i l)).prodMk (measurable_snd.const_mul (i l : G))⟩
-  have h_pres (l : Λ) : MeasurePreserving (fun p : R × G ↦ l • p) (ν.prod μ) (ν.prod μ) :=
-    (measurePreserving_mul_left ν (i l)).prod (measurePreserving_mul_left μ (i l : G))
-  have : SMulInvariantMeasure Λ (R × G) (ν.prod μ) :=
-    ⟨fun l T hT ↦ (h_pres l).measure_preimage hT.nullMeasurableSet⟩
-  have h_fst : IsCutoff (count : Measure Λ) fun p : R × G ↦ β p.1 :=
-    ⟨by fun_prop, fun p ↦ by simpa [lintegral_count, h_smul] using hβ_one p.1⟩
-  have h_snd : IsCutoff (count : Measure Λ) fun p : R × G ↦ β p.2 :=
-    ⟨by fun_prop, fun p ↦ by simpa [lintegral_count, h_smul] using hβ_one p.2⟩
-  have h_inv (l : Λ) (p : R × G) : F (l • p) = F p := hF_inv l p.1 p.2
-  have h_int_snd : Integrable (fun p : R × G ↦ (β p.2).toReal • F p) (ν.prod μ) := by
-    rwa [← h_snd.integrable_orbitMeasure_iff h_inv hF, h_fst.integrable_orbitMeasure_iff h_inv hF]
-  calc ∫ x : G, (β x).toReal • ∫ s : R, F (s, x) ∂ν ∂μ
-      = ∫ p : R × G, (β p.2).toReal • F p ∂ν.prod μ := by
-        simp only [integral_prod_symm _ h_int_snd, integral_smul]
-    _ = ∫ p : R × G, (β p.1).toReal • F p ∂ν.prod μ := by
-        rw [← h_snd.integral_orbitMeasure h_inv hF, h_fst.integral_orbitMeasure h_inv hF]
-    _ = ∫ s : R, (β s).toReal • ∫ x : G, F (s, x) ∂μ ∂ν := by
-        simp only [integral_prod _ h_int, integral_smul]
+      ∫ s : R, (β s).toReal • ∫ x : G, F (s, x) ∂μ ∂ν :=
+  MeasureTheory.integral_cutoff_swap μ ν i hβ hβ_one hF hF_inv h_int
 
 /-- If `a` is integrable on a subgroup `R` of `G` and `e` is integrable on `G` for a left invariant
 measure, then `(s, x) ↦ a s * e (g * s⁻¹ * x)` is integrable on `R × G`. -/
