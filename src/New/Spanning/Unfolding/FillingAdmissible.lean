@@ -492,10 +492,6 @@ lemma scaledSiegelConst_le : D.filling.scaledSiegelConst ≤
     rw [volÔ_eq]
     positivity [rootDiscr_pos D.E]
   have N_pos : (0 : ℝ) < D.N := mod_cast D.N_prime.pos
-  have h_rank : ∑ a ∈ range D.ϱ, (a + (D.k + 1) + a) = D.ϱ * (D.ϱ + D.k) := by
-    induction D.ϱ with
-    | zero => simp
-    | succ n ih => grind [sum_range_succ]
   have h_covolume : D.filling.unipotentCovolume * D.filling.frameScaleProd =
       D.filling.unipotentOrder / (D.N ^ D.k) ^ D.f / volÔ D.E ^ (D.ϱ * (D.ϱ + D.k)) *
         √√|NumberField.discr D.E| ^ D.ϱ := by
@@ -505,7 +501,7 @@ lemma scaledSiegelConst_le : D.filling.scaledSiegelConst ≤
       ring
     -- The factor `frameScaleProd` cancels from the definition of the covolume.
     rw [Filling.unipotentCovolume, div_mul_cancel₀ _ D.filling.frameScaleProd_pos.ne', Shape.k,
-      card_X₀, h_rank, div_pow]
+      card_X₀, sum_unipotent_row_exponents, div_pow]
     rw [h_order]
     rfl
   have h_siegel : D.filling.siegelConst = (∏ v : D.Φ, D.frameMass v) *

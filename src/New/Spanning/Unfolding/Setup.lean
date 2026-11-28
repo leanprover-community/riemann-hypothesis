@@ -275,6 +275,13 @@ def selfDualChar : AddChar (𝔸f E) ℂ := (Circle.coeHom.compAddChar (ψf E)).
 @[simp high]
 lemma deltaE_ne_zero : S.deltaE.val ≠ 0 := mod_cast ne_zero_of_differentIdeal_eq_span S.span_deltaE
 
+/-- The counts of the free entries of the unipotent rows, in reverse order, sum to `r (r + k)`. -/
+lemma sum_unipotent_row_exponents (r k : ℕ) :
+    ∑ a ∈ range r, (a + (k + 1) + a) = r * (r + k) := by
+  induction r with
+  | zero => simp
+  | succ r ih => grind [sum_range_succ]
+
 /-- The number κ_v^(2(ϱ−a))/N, the square of the scale of the frame vector of index a at v. -/
 def frameScaleSq (v : InfinitePlace E) (a : ℕ) : ℝ := S.realM v ^ (2 * (𝔰.ϱ - a)) / S.N
 

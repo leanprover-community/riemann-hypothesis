@@ -227,11 +227,8 @@ lemma scaledSiegelConst_mul_decayConst_le [S.IsAdmissible] :
     ring
   have h_right : card S.BesselCoord * S.identitySecondMoment * S.unipotentCovolume ^ 2 =
       c * B ^ Core.numInfPlaces E := by
-    have h_sum : ∑ a ∈ range 𝔰.ϱ, (a + (𝔰.k + 1) + a) = 𝔰.ϱ * (𝔰.k + 𝔰.ϱ) := by
-      induction 𝔰.ϱ with
-      | zero => simp
-      | succ n ih => grind [sum_range_succ]
-    simp only [identitySecondMoment, sourceDim, unipotentCovolume, h_sum, h_disc, h_vol,
+    simp only [identitySecondMoment, sourceDim, unipotentCovolume, sum_unipotent_row_exponents,
+      Nat.add_comm 𝔰.ϱ 𝔰.k, h_disc, h_vol,
       Nat.cast_mul, B, c, D, mul_pow, div_pow, div_div_eq_mul_div]
     ring
   -- At one place, `A` is `B` times factors that do not depend on `k`.
