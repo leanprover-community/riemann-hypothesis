@@ -785,6 +785,22 @@ def mapₗ (F : AbFunctor C) [CoeffAction R F] (α : M ⟶ N) (n : ℕ) : H N F 
 lemma mapExactFunctor_restrictAlong_id : x.mapExactFunctor (restrictAlong (𝟭 C)) = x :=
   x.id_mapExactFunctor
 
+/-- Restriction to a category of tests commutes with push-forward of coefficients. -/
+private lemma restrict_push (φ : C' ⥤ C) (γ : F ⟶ G) (x : H N F n) :
+    (push N γ n x).mapExactFunctor (restrictAlong φ) =
+      push (φ ⋙ N) (whiskerLeft φ γ) n (x.mapExactFunctor (restrictAlong φ)) :=
+  (mapExactFunctor_comp _ x (mk₀ γ) (add_zero n)).trans
+    (congrArg (fun y ↦ (x.mapExactFunctor (restrictAlong φ)).comp y (add_zero n))
+      (mapExactFunctor_mk₀ (restrictAlong φ) γ))
+
+/-- Restriction to a category of tests commutes with pull-back in the source. -/
+private lemma restrict_map (φ : C' ⥤ C) (α : M ⟶ N) (x : H N F n) :
+    (H.map F α n x).mapExactFunctor (restrictAlong φ) =
+      H.map (φ ⋙ F) (whiskerLeft φ α) n (x.mapExactFunctor (restrictAlong φ)) :=
+  (mapExactFunctor_comp _ (mk₀ α) x (zero_add n)).trans
+    (congrArg (fun y ↦ y.comp (x.mapExactFunctor (restrictAlong φ)) (zero_add n))
+      (mapExactFunctor_mk₀ (restrictAlong φ) α))
+
 end H
 
 /-- An isomorphism `α : M ⟶ N` induces bijections `Ext^n(N,F) → Ext^n(M,F)` in every degree. -/
@@ -794,6 +810,11 @@ lemma IsCohomEquiv.of_isIso [IsIso α] : IsCohomEquiv F α := fun n ↦
     fun x ↦ by rw [← H.map_comp, IsIso.inv_hom_id, H.map_id],
     fun x ↦ by rw [← H.map_comp, IsIso.hom_inv_id, H.map_id]⟩
 
+/-- On a class, a comparison first restricts, then pushes coefficients and pulls the source back. -/
+private lemma Comparison.pull_apply (x : H N F n) :
+    c.pull a n x = H.map F' a n (push (c.functor ⋙ N) c.coeffHom n
+      (x.mapExactFunctor (restrictAlong c.functor))) := rfl
+
 /-- If `γ : F ⟶ G` and `γ' : F' ⟶ G'` intertwine the coefficient maps of two comparisons with the
 same functor `c.functor`, then the comparison maps commute with push-forward along `γ` and `γ'`. The
 target of `α` is `c.functor ⋙ N`, written through the comparison `⟨c.functor, β⟩`. -/
@@ -801,27 +822,15 @@ lemma Comparison.pull_push (β : c.functor ⋙ G ⟶ G') (γ : F ⟶ G) (γ' : F
     (h : whiskerLeft c.functor γ ≫ β = c.coeffHom ≫ γ')
     (α : N' ⟶ { functor := c.functor, coeffHom := β : Comparison G G' }.functor ⋙ N) (x : H N F n) :
     pull ⟨c.functor, β⟩ α n (push N γ n x) = push N' γ' n (c.pull α n x) := by
-  let Φ : AbFunctor C ⥤ AbFunctor C' := restrictAlong c.functor
-  -- restriction along `c.functor` commutes with push-forward along `γ`
-  have h_push : (push N γ n x).mapExactFunctor Φ =
-      push (c.functor ⋙ N) (whiskerLeft c.functor γ) n (x.mapExactFunctor Φ) :=
-    (mapExactFunctor_comp Φ x (mk₀ γ) (add_zero n)).trans
-      (congrArg (fun y ↦ (x.mapExactFunctor Φ).comp y (add_zero n)) (mapExactFunctor_mk₀ Φ γ))
   -- after unfolding, both sides push along `whiskerLeft c.functor γ ≫ β = c.coeffHom ≫ γ'`
-  have h_unfold : H.map G' α n (push (c.functor ⋙ N) β n ((push N γ n x).mapExactFunctor Φ)) =
-      push N' γ' n (H.map F' α n (push (c.functor ⋙ N) c.coeffHom n (x.mapExactFunctor Φ))) := by
-    rw [h_push, ← H.push_comp, h, H.push_comp, H.map_push]
-  apply h_unfold
+  simp only [Comparison.pull_apply]
+  rw [H.restrict_push c.functor, ← H.push_comp, h, H.push_comp, H.map_push]
 
 @[simp]
 lemma Comparison.id_pull : (id F).pull α = H.map F α := by
   ext n x
-  let Φ : AbFunctor C ⥤ AbFunctor C := restrictAlong (𝟭 C)
-  have h_id : x.mapExactFunctor Φ = x := mapExactFunctor_restrictAlong_id x
-  have h_unfold : H.map F α n ((x.mapExactFunctor Φ).comp (mk₀ (𝟙 F)) (add_zero n)) =
-      H.map F α n x := by
-    rw [h_id, x.comp_mk₀_id]
-  apply h_unfold
+  simp [Comparison.pull_apply, Comparison.id, H.mapExactFunctor_restrictAlong_id, H.push,
+    x.comp_mk₀_id]
 
 /-- The composite of comparisons (φ,β) from F to F' and (φ',β') from F' to F'': the functor φ∘φ'
 with the map Fφφ' → F'φ' → F''. -/
@@ -844,11 +853,9 @@ namespace Comparison
 /-- The comparison map of `(𝟭 C, β)` along the identity of `N` is the push-forward along `β`. -/
 lemma pull_id_eq_push : pull ⟨𝟭 C, β⟩ (𝟙 N) n = push N β n := by
   ext x
-  let Φ : AbFunctor C ⥤ AbFunctor C := restrictAlong (𝟭 C)
-  have h_id : x.mapExactFunctor Φ = x := mapExactFunctor_restrictAlong_id x
-  have h_unfold : H.map G (𝟙 N) n (push N β n (x.mapExactFunctor Φ)) = push N β n x := by
-    rw [h_id, H.map_id]
-  apply h_unfold
+  simp only [Comparison.pull_apply, H.mapExactFunctor_restrictAlong_id]
+  change H.map G (𝟙 N) n (push N β n x) = _
+  rw [H.map_id]
 
 /-- For `η : φ ⟶ ψ` and `β : ψ ⋙ F ⟶ F'`, moving `η` from the coefficient map (`η F` before
 `β`) to the source map (`η N` after `α`) does not change the comparison map. The target of `α` is
@@ -863,10 +870,8 @@ lemma pull_whiskerRight {φ ψ : C' ⥤ C} (η : φ ⟶ ψ) (β : ψ ⋙ F ⟶ F
   have h_nat : push (φ ⋙ N) (whiskerRight η F) n (x.mapExactFunctor Φ) =
       H.map (ψ ⋙ F) (whiskerRight η N) n (x.mapExactFunctor Ψ) :=
     mapExactFunctor_naturality ((whiskeringLeft C' C Ab).map η) x
-  have h_unfold : H.map F' α n (push (φ ⋙ N) (whiskerRight η F ≫ β) n (x.mapExactFunctor Φ)) =
-      H.map F' (α ≫ whiskerRight η N) n (push (ψ ⋙ N) β n (x.mapExactFunctor Ψ)) := by
-    rw [H.push_comp, h_nat, H.map_comp, ← H.map_push]
-  apply h_unfold
+  simp only [Comparison.pull_apply]
+  rw [H.push_comp, h_nat, H.map_comp, ← H.map_push]
 
 /-! ### Squares and composites of comparisons -/
 
@@ -876,53 +881,20 @@ back by `c` along `a` and then along `a'` is pulling it back along `α` and then
 lemma map_pull_eq_pull_map {a' : M' ⟶ N'} {a : N' ⟶ c.functor ⋙ N} {α : M ⟶ N}
     {b : M' ⟶ c.functor ⋙ M} (h_comm : a' ≫ a = b ≫ whiskerLeft c.functor α) (n : ℕ) (x : H N F n) :
     H.map F' a' n (c.pull a n x) = c.pull b n (H.map F α n x) := by
-  let Φ : AbFunctor C ⥤ AbFunctor C' := restrictAlong c.functor
-  -- restriction along `c.functor` commutes with pull-back along `α`
-  have h_map : (H.map F α n x).mapExactFunctor Φ =
-      H.map (c.functor ⋙ F) (whiskerLeft c.functor α) n (x.mapExactFunctor Φ) :=
-    (mapExactFunctor_comp Φ (mk₀ α) x (zero_add n)).trans
-      (congrArg (fun y ↦ y.comp (x.mapExactFunctor Φ) (zero_add n)) (mapExactFunctor_mk₀ Φ α))
   -- both sides precompose the restricted and pushed class with one side of the square
-  have h_unfold : H.map F' a' n (H.map F' a n (push (c.functor ⋙ N) c.coeffHom n
-      (x.mapExactFunctor Φ))) =
-      H.map F' b n (push (c.functor ⋙ M) c.coeffHom n ((H.map F α n x).mapExactFunctor Φ)) := by
-    rw [h_map, ← H.map_push, ← H.map_comp, ← H.map_comp, h_comm]
-  apply h_unfold
+  simp only [Comparison.pull_apply]
+  rw [H.restrict_map c.functor, ← H.map_push, ← H.map_comp, ← H.map_comp, h_comm]
 
 /-- Comparison maps compose. Applying the comparison map of c along a and then that of c' along α'
 gives the comparison map of the composite `New.Variety.Comparison.trans` c c', taken along
 `α' ≫ whiskerLeft c'.functor a`, the map `a` restricted along the functor of c'. -/
 lemma pull_trans {α' : N'' ⟶ c'.functor ⋙ N'} (x : H N F n) :
     c'.pull α' n (c.pull a n x) = (c.trans c').pull (α' ≫ whiskerLeft c'.functor a) n x := by
-  let Φ : AbFunctor C ⥤ AbFunctor C' := restrictAlong c.functor
-  let Φ' : AbFunctor C' ⥤ AbFunctor C'' := restrictAlong c'.functor
-  let Φ'' : AbFunctor C ⥤ AbFunctor C'' := restrictAlong (c'.functor ⋙ c.functor)
-  -- restricting along `c.functor` and then along `c'.functor` is restricting along
-  -- `c'.functor ⋙ c.functor`
-  have h_restrict : (x.mapExactFunctor Φ).mapExactFunctor Φ' = x.mapExactFunctor Φ'' :=
-    mapExactFunctor_mapExactFunctor x
-  -- restricting along `c'.functor` commutes with push-forward and with pull-back
-  have h_push (y : H (c.functor ⋙ N) (c.functor ⋙ F) n) :
-      (push (c.functor ⋙ N) c.coeffHom n y).mapExactFunctor Φ' =
-        push (c'.functor ⋙ c.functor ⋙ N) (whiskerLeft c'.functor c.coeffHom) n
-          (y.mapExactFunctor Φ') :=
-    (mapExactFunctor_comp Φ' y (mk₀ c.coeffHom) (add_zero n)).trans
-      (congrArg (fun z ↦ (y.mapExactFunctor Φ').comp z (add_zero n))
-        (mapExactFunctor_mk₀ Φ' c.coeffHom))
-  have h_map (y : H (c.functor ⋙ N) F' n) : (H.map F' a n y).mapExactFunctor Φ' =
-      H.map (c'.functor ⋙ F') (whiskerLeft c'.functor a) n (y.mapExactFunctor Φ') :=
-    (mapExactFunctor_comp Φ' (mk₀ a) y (zero_add n)).trans
-      (congrArg (fun z ↦ z.comp (y.mapExactFunctor Φ') (zero_add n)) (mapExactFunctor_mk₀ Φ' a))
-  -- unfold the comparison maps and move `whiskerLeft c'.functor a` and `c'.coeffHom` outside
-  have h_unfold : c'.pull α' n (H.map F' a n (push (c.functor ⋙ N) c.coeffHom n
-      (x.mapExactFunctor Φ))) =
-      H.map F'' (α' ≫ whiskerLeft c'.functor a) n
-        (push (c'.functor ⋙ c.functor ⋙ N) (whiskerLeft c'.functor c.coeffHom ≫ c'.coeffHom) n
-          (x.mapExactFunctor Φ'')) := by
-    rw [H.map_comp, H.push_comp, ← h_restrict, ← h_push,
-      H.map_push (whiskerLeft c'.functor a) c'.coeffHom, ← h_map]
-    rfl
-  apply h_unfold
+  -- Restriction commutes with pull-back and push-forward. The two successive
+  -- restrictions then agree with restriction along the composite functor.
+  simp only [Comparison.pull_apply, Comparison.trans, H.restrict_map, H.restrict_push,
+    H.map_comp, H.push_comp, H.map_push, mapExactFunctor_mapExactFunctor]
+  rfl
 
 end Comparison
 
