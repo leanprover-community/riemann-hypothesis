@@ -997,11 +997,8 @@ lemma formalDegree_mul_integral_norm_sq_besselAverage (h_cont : Continuous rep) 
           ∂𝔰.besselGraphMeasure ∂besselQuotMeasure := by
         simp_rw [h_insert, integral_const_mul, ← Complex.ofReal_pow, integral_complex_ofReal,
           Complex.ofReal_mul]
-    _ = ∫ g : 𝔰.G₁, Φ g := by
-      have h_unfold := measurePreserving_unfold_besselGraphMeasure (𝔰 := 𝔰)
-      rw [← h_unfold.map_eq] at hΦ_int ⊢
-      rw [integral_map h_unfold.aemeasurable hΦ_int.aestronglyMeasurable]
-      exact (integral_prod _ (hΦ_int.comp_measurable h_unfold.measurable)).symm
+    _ = ∫ g : 𝔰.G₁, Φ g :=
+      (measurePreserving_unfold_besselGraphMeasure (𝔰 := 𝔰)).integral_integral_comp hΦ_int
     _ = ∫ a : 𝔰.G₁, ⟪v, (l.formalDegree * l.dsCoeffInFrame a⁻¹) • W (x * a)⟫_ℂ := by
       rw [← integral_mul_left_eq_self _ x]
       simp only [Φ, inv_mul_cancel_left, inner_smul_right, ← h_kernel.apply_inv]
