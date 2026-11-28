@@ -1,8 +1,6 @@
 module
 
-import Mathlib.Dynamics.Ergodic.Action.Regular
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.Algebra.ProperAction.Torsor
+import TauCeti.MeasureTheory.Group.OrbitCutoff.Stages
 public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
@@ -56,6 +54,17 @@ variable {G H V : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   (μ : Measure G) [IsHaarMeasure μ]
   (ν : Measure H) [IsHaarMeasure ν]
 
+private lemma identDistrib_cutoffMeasure_quotMeasure {G Y : Type*} [Group G] [TopologicalSpace G]
+    [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
+    [MeasurableSpace G] [BorelSpace G] [MeasurableSpace Y]
+    {Γ : Subgroup G} [DiscreteTopology Γ] {μ : Measure G} [SFinite μ]
+    [SMulInvariantMeasure Γ G μ] {F : G → Y} (hF : Measurable F) (hF_inv : Γ.FixesLeft F) :
+    IdentDistrib F F (Γ.cutoffMeasure μ) (Γ.quotMeasure μ) := by
+  have : Countable Γ := countable_of_Lindelof_of_discrete
+  have hβ := New.isCutoff_chosenCutoff (count : Measure Γ) (X := G)
+  exact MeasureTheory.IsOrbitCutoff.identDistrib_cutoffMeasure ⟨hβ.1, hβ.2⟩ hF fun γ g ↦
+    hF_inv γ γ.property g
+
 /-- Let `π : H → G` be a continuous surjective homomorphism with `π Λ ≤ Γ` (both discrete), and let
 `μ` and `ν` be Haar measures on `G` and `H` that are also right invariant. There is a real `c` such
 that, for all measurable left `Γ`-invariant `F`, the integral of `F ∘ π` over `Λ \ H` is `c` times
@@ -65,28 +74,15 @@ lemma New.exists_integral_comp_quotMeasure_eq_smul [T2Space H]
     {π : H →* G} (hπ : Continuous π) (hπ_surj : Surjective π) (hΛ : Λ ≤ Γ.comap π) :
     ∃ c : ℝ, ∀ F : G → V, Measurable F → Γ.FixesLeft F →
       ∫ r : H, F (π r) ∂Λ.quotMeasure ν = c • ∫ g : G, F g ∂Γ.quotMeasure μ := by
-  -- The image `κ` of `Λ.quotMeasure ν ⊗ count` under `(r, γ) ↦ γ * π r` is right invariant,
-  -- hence equals `d • μ`. So for invariant `F`, `F ∘ π` on `Λ \ H` is distributed as `F` for `d`
-  -- times the measure of `Γ \ G`, and `c = d.toReal`.
-  let κ : Measure G := ((Λ.quotMeasure ν).prod count).map fun p : H × Γ ↦ (p.2 : G) * π p.1
-  have hκ : κ.IsMulRightInvariant := by
-    refine ⟨hπ_surj.forall.2 fun a ↦ ext_of_lintegral _ fun f hf ↦ ?_⟩
-    -- The sum of `f` over the orbit `Γ * π r` is a `Λ`-invariant function of `r`, as `π Λ ≤ Γ`.
-    let S (r : H) : ENNReal := ∫⁻ γ : Γ, f (γ * π r) ∂count
-    have hS (δ : Λ) (r : H) : S (δ • r) = S r := by
-      simpa [S, Subgroup.smul_def, mul_assoc] using
-        lintegral_mul_right_eq_self (μ := count) (fun γ : Γ ↦ f (γ * π r)) ⟨π δ, hΛ δ.property⟩
-    -- So its integral over `Λ \ H` is unchanged by the right translation `r ↦ r * a`.
-    have h_transl : ∫⁻ r, S (r * a) ∂Λ.quotMeasure ν = ∫⁻ r, S r ∂Λ.quotMeasure ν :=
-      (identDistrib_orbitMeasure_mul_right a hS).lintegral_eq
-    simpa (disch := fun_prop) [κ, lintegral_map, lintegral_prod, S, mul_assoc] using h_transl
-  obtain ⟨d, hd⟩ : ∃ d : ENNReal, κ = d • μ := exists_eq_smul_haar μ hκ
-  refine ⟨d.toReal, fun F hF hF_inv ↦ ?_⟩
-  -- `κ = d • μ` says that the measure of `Λ \ H` unfolds to `d • μ` along `π`.
-  have h_dist : IdentDistrib F (F ∘ π) (Γ.quotMeasure (d • μ)) (Λ.quotMeasure ν) :=
-    identDistrib_orbitMeasure_of_unfold (.id _) ⟨by fun_prop, hd⟩ hF (by fun_prop)
-      fun γ ↦ hF_inv γ γ.property
-  simpa [withDensity_smul_measure] using h_dist.integral_eq.symm
+  obtain ⟨c, hc⟩ :=
+    Subgroup.exists_integral_comp_cutoffMeasure_eq_smul (V := V) Λ μ ν hπ hπ_surj hΛ
+  refine ⟨c, fun F hF hF_inv ↦ ?_⟩
+  have hF_inv_Λ : Λ.FixesLeft (fun r ↦ F (π r)) := fun γ hγ r ↦ by
+    simpa [map_mul] using hF_inv (π γ) (hΛ hγ) (π r)
+  rw [← (identDistrib_cutoffMeasure_quotMeasure (F := fun r ↦ F (π r)) (hF.comp hπ.measurable)
+    hF_inv_Λ).integral_eq,
+    ← (identDistrib_cutoffMeasure_quotMeasure hF hF_inv).integral_eq]
+  exact hc F hF hF_inv
 
 /-- Unfolding in stages. Let `i : H → G` be an injective homomorphism with `i Λ = Γ` (both
 discrete), `ν` a Haar measure on `H`, and let `(z, h) ↦ i h * T z` carry `m ⊗ ν` to `μ`. Let `F`
@@ -328,43 +324,10 @@ lemma New.integral_quotMeasure_eq_zero_of_mean (hF_inv : Γ.FixesLeft F) (hF : C
     {a : ℂ} (ha : a ≠ (d : ℂ))
     (h_mean : ∀ (s : H) (x : G), ∫ b : C, F (↑(s * translator x b) * x) ∂κ = a • F (s * x)) :
     (Γ.quotMeasure μ)[F] = 0 := by
-  -- If the integral is nonzero, unfolding along `H` gives an `x` where the integral `I` of
-  -- `s ↦ F (s * x)` over `Γ \ H` is nonzero. Integrating `F (s * translator x b * x)` over `s`
-  -- and `b` in the two orders gives `a • I = d • I`.
-  obtain ⟨β, hβ, hβ_one⟩ : HasCutoff (haar (G := H)).inv G := inferInstance
-  contrapose ha with h_ne
   borelize V
-  -- `Λ` is `Γ` as a subgroup of `H`, and `σ` the measure of `Γ \ H`
-  let Λ : Subgroup H := Γ.subgroupOf H
-  let σ : Measure H := Λ.quotMeasure haar
-  -- `(x, s) ↦ s • x` carries `βμ ⊗ haar` to `μ`, as `β` has integral one on each orbit of `H`.
-  have h_unfold :
-      MeasurePreserving (fun p : G × H ↦ p.2 • p.1) ((μ.withDensity β).prod haar) μ := by
-    simpa [hβ_one] using measurePreserving_smul_prod (ν := haar (G := H)) (μ := μ) hβ
-  have h_integral_eq : (Γ.quotMeasure μ)[F] = ∫ x, ∫ s, F (s * x) ∂σ ∂μ.withDensity β :=
-    (integral_quotMeasure_stages Λ haar (T := fun x : G ↦ x) H.subtype_injective h_unfold
-      (map_subgroupOf_eq_of_le hΓH) hF.measurable hF_inv (.of_integral_ne_zero h_ne)).2
-  obtain ⟨x, hx⟩ : ∃ x : G, ∫ s, F (s * x) ∂σ ≠ 0 :=
-    exists_ne_zero_of_integral_ne_zero (by rwa [← h_integral_eq])
-  -- Right translation by `translator x b` multiplies the measure of `Γ \ H` by `d`.
-  have h_identDistrib (b : C) : IdentDistrib (fun s : H ↦ F (s * translator x b * x))
-      (fun s : H ↦ F (s * x)) σ (d • σ) := by
-    simpa [σ, ← coe_nnreal_smul, withDensity_smul_measure] using
-      identDistrib_orbitMeasure_comp (.id (count : Measure Λ)) (F := fun s : H ↦ F (s * x))
-        ⟨measurable_mul_const (translator x b), h_scale x b⟩
-        (fun γ s ↦ smul_mul_assoc γ s (translator x b))
-        (fun γ s ↦ by simpa [smul_def, mul_assoc] using hF_inv γ γ.property (s * x))
-  have h_prod : Integrable (Function.uncurry fun (s : H) b ↦ F (s * translator x b * x))
-      (σ.prod κ) := by
-    have h_slice (b : C) : Integrable (fun s : H ↦ F (s * translator x b * x)) σ :=
-      (h_identDistrib b).integrable_iff.2 (Integrable.of_integral_ne_zero hx).smul_measure_nnreal
-    rw [integrable_prod_iff' (by fun_prop)]
-    simp [h_slice, fun b ↦ (h_identDistrib b).norm.integral_eq]
-  apply smul_left_injective ℂ hx
-  calc a • ∫ s, F (s * x) ∂σ
-      = ∫ s, ∫ b, F (s * translator x b * x) ∂κ ∂σ := by simp [← h_mean, ← integral_smul a]
-    _ = ∫ b, ∫ s, F (s * translator x b * x) ∂σ ∂κ := integral_integral_swap h_prod
-    _ = (d : ℂ) • ∫ s, F (s * x) ∂σ := by simp [(h_identDistrib _).integral_eq, NNReal.smul_def]
+  rw [← (identDistrib_cutoffMeasure_quotMeasure hF.measurable hF_inv).integral_eq]
+  exact Subgroup.integral_cutoffMeasure_eq_zero_of_mean μ hF hF_inv inferInstance hΓH haar κ
+    translator h_meas d h_scale ha h_mean
 
 /-- Let `F` be continuous and left invariant under the discrete subgroup `Γ`. If left translation
 by some `u` multiplies `F` by a constant `c ≠ 1` of modulus one, the integral of `F` over
@@ -372,31 +335,8 @@ by some `u` multiplies `F` by a constant `c ≠ 1` of modulus one, the integral 
 lemma New.integral_quotMeasure_eq_zero_of_twist (hF_inv : Γ.FixesLeft F) (hF : Continuous F)
     {u : G} {c : ℂ} (hc : ‖c‖ = 1) (hc_ne : c ≠ 1) (hu : ∀ y : G, F (u * y) = c • F y) :
     (Γ.quotMeasure μ)[F] = 0 := by
-  -- Apply `integral_quotMeasure_eq_zero_of_mean` to the Dirac mass at `u` and the closed group `S`
-  -- of left translations that preserve `twistDefect`; it contains `Γ` and `u`.
-  let twistDefect (s y : G) : ℝ := dist (F (s * u * y)) (c • F (s * y))
-  let S : Subgroup G :=
-    { carrier := {s : G | ∀ t y : G, twistDefect (s * t) y = twistDefect t y}
-      one_mem' := by simp
-      mul_mem' := fun {r s} hr hs t y ↦ by rw [mul_assoc, hr, hs]
-      inv_mem' := fun {s} hs t y ↦ by simpa using (hs (s⁻¹ * t) y).symm }
-  have : IsClosed (S : Set G) := by
-    change IsClosed {s : G | ∀ t y : G, twistDefect (s * t) y = twistDefect t y}
-    simp only [Set.ofPred_forall]
-    exact isClosed_iInter fun t ↦ isClosed_iInter fun y ↦ isClosed_eq (by fun_prop) continuous_const
-  -- `Γ ≤ S` because `F` is left invariant under `Γ`, and `u ∈ S` because `‖c‖ = 1`.
-  have hΓS : Γ ≤ S := fun γ hγ t y ↦ by simp [twistDefect, mul_assoc, hF_inv γ hγ]
-  have huS : u ∈ S := fun t y ↦ by simp [twistDefect, mul_assoc, hu, dist_smul₀, hc]
-  -- For `s ∈ S`, the defect at `s` is the defect at `1`, which is zero.
-  have h_twist (s : S) (x : G) : F (s * u * x) = c • F (s * x) := by
-    simpa [twistDefect, hu] using s.property 1 x
-  -- `d` is the factor by which right translation by `u` scales the Haar measure of `S`.
-  obtain ⟨d, hd⟩ : ∃ d : NNReal, (haar : Measure S).map (· * ⟨u, huS⟩) = d • haar :=
-    ⟨_, isMulLeftInvariant_eq_smul _ haar⟩
-  -- If `c` were `d`, a non-negative real, then `c = ‖c‖ = 1`.
-  have hcd : c ≠ d := fun h ↦ hc_ne (by simp [← hc, h])
-  exact integral_quotMeasure_eq_zero_of_mean μ hF_inv hF hΓS (dirac u)
-    (fun _ _ ↦ ⟨u, huS⟩) (fun _ ↦ measurable_const) d (fun _ _ ↦ hd) hcd
-    fun s x ↦ by simpa using h_twist s x
+  borelize V
+  rw [← (identDistrib_cutoffMeasure_quotMeasure hF.measurable hF_inv).integral_eq]
+  exact Subgroup.integral_cutoffMeasure_eq_zero_of_twist μ hF hF_inv hc hc_ne hu
 
 end QuotientVanishing
