@@ -39,16 +39,16 @@ Known; see `Lib.ClassField.Local.ArtinMap` for sources.
 
 @[expose] public section
 
-/-- If `R ^ (l - 1) * (l * c ^ l) = (l * c) ^ l` in `ℚ`, with `l` prime and `l * c ≠ 0`, then
+/-- If `R ^ (l - 1) * (l * c ^ l) = (l * c) ^ l` in `ℚ`, with `1 < l` and `l * c ≠ 0`, then
 `R = l`. -/
-private lemma Nat.eq_of_pow_sub_one_mul_eq_mul_pow {R l c : ℕ} (hl : l.Prime)
+private lemma Nat.eq_of_pow_sub_one_mul_eq_mul_pow {R l c : ℕ} (hl : 1 < l)
     (hlc : (l : ℚ) * c ≠ 0) (h : (R : ℚ) ^ (l - 1) * (l * c ^ l) = ((l : ℚ) * c) ^ l) : R = l := by
   -- Cancel `l * c ^ l`, then take `(l - 1)`-th roots, where `l - 1 ≠ 0`.
   have h_pow : (R : ℚ) ^ (l - 1) = (l : ℚ) ^ (l - 1) := by
     refine mul_right_cancel₀ (b := (l * c ^ l : ℚ))
       (mul_ne_zero (left_ne_zero_of_mul hlc) (pow_ne_zero l (right_ne_zero_of_mul hlc))) ?_
-    rw [h, mul_pow, ← mul_assoc, pow_sub_one_mul hl.ne_zero]
-  exact Nat.pow_left_injective (Nat.sub_ne_zero_of_lt hl.one_lt) (by exact_mod_cast h_pow)
+    rw [h, mul_pow, ← mul_assoc, pow_sub_one_mul (by omega)]
+  exact Nat.pow_left_injective (Nat.sub_ne_zero_of_lt hl) (by exact_mod_cast h_pow)
 
 namespace New.IsLocalGalois
 
@@ -94,7 +94,7 @@ lemma mem_zmultiples_of_index_prime [V.Normal] {β x : (unitsModule Γ).H2} (h_p
     have tate := tate_index_formula_norm l (finrank_fixedFieldOf (QZChar.ker ψ)) ⊤ ⊤
       (comap_top _).symm (fun _ _ _ ↦ mem_top _) (fun _ _ ↦ ⟨1, mem_top _⟩) qk_ne
     rw [qK_eq, qk_eq, relIndex_top_right] at tate
-    exact Nat.eq_of_pow_sub_one_mul_eq_mul_pow h_prime (by rwa [← qk_eq]) tate
+    exact Nat.eq_of_pow_sub_one_mul_eq_mul_pow h_prime.one_lt (by rwa [← qk_eq]) tate
   -- So `z` is a power `y ^ m` modulo `N`, and applying `f` gives `(ψ, z) = m • (ψ, y)`.
   obtain ⟨m, hm⟩ : ∃ m : ℤ, (y : kˣ ⧸ N) ^ m = z := mem_zpowers_of_prime_card card_eq
     fun hy ↦ hβ_ne <| ofAdd_eq_one.mp ((congrArg f hy).trans f.map_one)
