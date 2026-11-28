@@ -92,7 +92,9 @@ lemma New.card_not_isAllowedPolynomial_le (k : Type*) [Field k] [Finite k] (M : 
     grw [card_image₂_le, card_insert_le, Multiset.toFinset_card_le, card_nthRoots, card_monics,
       add_comm M 1]
   have card_withSquare (d : ℕ) (hd : d ∈ range r) : #(withSquare d) ≤ Nat.card k ^ (r - 1) := by
-    have deg_le : (r - d) / 2 + d ≤ r - 1 := by grind
+    have deg_le : (r - d) / 2 + d ≤ r - 1 := by
+      have := mem_range.1 hd
+      lia
     grw [card_image₂_le, card_monics, card_monics, ← pow_add]
     exact Nat.pow_le_pow_right Nat.card_pos deg_le
   grw [card_le_card cover, card_union_le, card_withRoot,
