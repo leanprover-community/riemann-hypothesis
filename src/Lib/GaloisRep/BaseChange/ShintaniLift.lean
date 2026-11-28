@@ -181,60 +181,24 @@ lemma exists_mk_reduceGL_pow_eq_mk_reduceGL_twistedNorm {σ : Gal(E'/E)} (hσ_u 
   induction m with
   | zero =>
     have h_one : (twistedNorm (galoisGf σ) 0 a).atPlace u = 1 := by simp [twistedNorm]
-    have h_int : (twistedNorm (galoisGf σ) 0 a).atPlace u ∈ intGL n Valued.v.integer := by
-      rw [h_one]
-      exact one_mem _
-    have h_reduce : reduceGL ⟨(twistedNorm (galoisGf σ) 0 a).atPlace u, h_int⟩ = 1 :=
-      (congrArg reduceGL (Subtype.ext h_one)).trans (map_one reduceGL)
-    refine ⟨h_int, ?_⟩
-    rw [pow_zero, pow_zero, h_reduce]
-    rfl
+    refine ⟨h_one ▸ one_mem _, ?_⟩
+    simp [(Subgroup.mk_eq_one _).2 h_one]
   | succ m ih =>
     obtain ⟨hN_int, h_pow⟩ := ih
     set N : GL n (LocField u) := (twistedNorm (galoisGf σ) m a).atPlace u
     let σN : GL n (LocField u) := Matrix.GeneralLinearGroup.map (locMap σ hσ_u) N
     have hσN_int : σN ∈ intGL n Valued.v.integer := (map_locMap_mem_intGL_iff hσ_u).2 hN_int
-    have hσN_reduce : reduceGL ⟨σN, hσN_int⟩ = (reduceGL ⟨N, hN_int⟩).map φ :=
-      reduceGL_map_locMap hσ_u φ hσ N hσN_int
     have h_succ : (twistedNorm (galoisGf σ) (m + 1) a).atPlace u = a.atPlace u * σN := by
       rw [twistedNorm_succ', map_mul, atPlace_galoisGf (h := hσ_u)]
-    have h_int : (twistedNorm (galoisGf σ) (m + 1) a).atPlace u ∈ intGL n Valued.v.integer := by
-      rw [h_succ]
-      exact mul_mem ha hσN_int
+    have h_int : (twistedNorm (galoisGf σ) (m + 1) a).atPlace u ∈ intGL n Valued.v.integer :=
+      h_succ ▸ mul_mem ha hσN_int
     have h_reduce : reduceGL ⟨(twistedNorm (galoisGf σ) (m + 1) a).atPlace u, h_int⟩ =
         reduceGL ⟨a.atPlace u, ha⟩ * (reduceGL ⟨N, hN_int⟩).map φ := by
-      rw [← hσN_reduce, ← map_mul]
+      rw [← reduceGL_map_locMap hσ_u φ hσ N hσN_int, ← map_mul]
       exact congrArg reduceGL (Subtype.ext h_succ)
     refine ⟨h_int, ?_⟩
     rw [pow_succ', h_pow, h_reduce, pow_succ', SemidirectProduct.mul_def]
     rfl
-
-omit hμ_trivial h_residue h_degree in
-include hμ in
-/-- Let `u` be the only place of `E'` above `w`, and let `φ`, the Frobenius of the residue
-extension at `u`, be nontrivial. Then some `σ ≠ 1` in `Gal(E'/E)` fixes `u`, lies outside the
-inertia group of `u`, and induces `φ` on the residue field of `u`. -/
-private lemma exists_ne_one_and_frobeniusAlgEquivOfAlgebraic_apply_eq
-    {φ : Gal(ResField u/ResField w)}
-    (hφ : φ = frobeniusAlgEquivOfAlgebraic (ResField w) (ResField u)) (hφ_ne : φ ≠ 1) :
-    ∃ σ : Gal(E'/E), σ ≠ 1 ∧ u.comap σ = u ∧ σ ∉ Ideal.inertia Gal(E'/E) u.asIdeal ∧
-      ∀ x : 𝓞 E', φ (algebraMap (𝓞 E') (ResField u) x) =
-        algebraMap (𝓞 E') (ResField u) (σ • x) := by
-  obtain rfl : FinPlace.below E u = w := (h_unique u).2 rfl
-  obtain ⟨σ, h_frob⟩ := IsArithFrobAt.exists_of_isInvariant (𝓞 E) Gal(E'/E) u.asIdeal
-  have hσ (x : 𝓞 E') : φ (algebraMap _ _ x) = algebraMap _ _ (σ • x) := by
-    rw [hφ, eq_comm]
-    simpa [card_ResField, ← Nat.card_eq_fintype_card, ← algebraMap_ResField_eq_zero,
-      ← Ideal.absNorm_eq_natCard, sub_eq_zero] using! h_frob x
-  -- `φ ≠ 1`, so `σ` moves some residue class
-  have h_moves : ∃ x : 𝓞 E', algebraMap _ (ResField u) (σ • x) ≠ algebraMap _ _ x := by
-    simpa [hσ, AlgEquiv.ext_iff, (algebraMap_ResField_surjective u).forall] using hφ_ne
-  have hσ_ne : σ ≠ 1 := by
-    rintro rfl
-    simp at h_moves
-  have h_inertia : σ ∉ Ideal.inertia Gal(E'/E) u.asIdeal := by
-    simpa [sub_eq_zero, ← algebraMap_ResField_eq_zero]
-  exact ⟨σ, hσ_ne, (h_unique _).1 (below_comap σ u), h_inertia, hσ⟩
 
 /-- Let `E'/E` be a step with `μ` (`New.IsStep`) and let `w` be split with `μ` trivial on its
 ideles. Let `u` be the only place above `w`, split, with residue field of degree `[E' : E]` over
@@ -260,8 +224,18 @@ lemma isLocalMatching_shintani {S : GalSemidirect (ResField w) (ResField u) n �
   have h_order : orderOf φ = finrank E E' :=
     (orderOf_frobeniusAlgEquivOfAlgebraic _ _).trans h_degree
   have hφ_ne : φ ≠ 1 := by simpa [← h_order] using hμ.out.ne_one
-  obtain ⟨σ, hσ_ne, hσ_u, h_inertia, hσ⟩ :=
-    exists_ne_one_and_frobeniusAlgEquivOfAlgebraic_apply_eq h_unique (φ := φ) rfl hφ_ne
+  -- some `σ ≠ 1` fixes `u`, lies outside its inertia group and induces `φ` on its residue field
+  obtain ⟨σ, h_frob⟩ := IsArithFrobAt.exists_of_isInvariant (𝓞 E) Gal(E'/E) u.asIdeal
+  have hσ (x : 𝓞 E') : φ (algebraMap _ _ x) = algebraMap _ _ (σ • x) := by
+    rw [eq_comm]
+    simpa [φ, card_ResField, ← Nat.card_eq_fintype_card, ← algebraMap_ResField_eq_zero,
+      ← Ideal.absNorm_eq_natCard, sub_eq_zero] using! h_frob x
+  -- `φ ≠ 1`, so `σ` moves some residue class and is not in the inertia group
+  have h_inertia : σ ∉ Ideal.inertia Gal(E'/E) u.asIdeal := by
+    simpa [hσ, AlgEquiv.ext_iff, (algebraMap_ResField_surjective u).forall, sub_eq_zero,
+      ← algebraMap_ResField_eq_zero] using hφ_ne
+  have hσ_ne : σ ≠ 1 := fun h ↦ h_inertia (h ▸ one_mem _)
+  have hσ_u : u.comap σ = u := (h_unique _).1 (below_comap σ u)
   obtain ⟨h_retr, h_retr', h_level⟩ := isLocalRetraction_ofSplitPlace n h_unique hu hw
   -- The place is unramified, so the level `m` of `exists_isBaseChangeLevel` is the maximal level
   -- `K` at `u`. Hence cocycles split at `K` (`h_coh`), and the indicator functions of `K` form a
