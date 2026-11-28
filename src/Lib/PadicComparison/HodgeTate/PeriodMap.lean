@@ -210,40 +210,44 @@ lemma exists_period_map [Algebra ℤ_[p] S] [IsScalarTower ℤ_[p] Ainf S] [IsSc
     -- along `γ` after that push-forward is pulling back along the composite `cmp a`.
     simp only [J, LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.apply_symm_apply]
     exact (pull_push ⟨_, _⟩ (h := rfl) ..).trans (Abelian.Ext.comp_mk₀_id _)
+  -- Additive maps out of the source of `J Y` agree if they agree on transported pure tensors.
+  have ext_tmul (Y : Over (Spec R)) {M : Type _} [AddCommMonoid M]
+      (f g : K ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩ →+ M)
+      (h : ∀ a x, f ((E Y).symm (a ⊗ₜ x)) = g ((E Y).symm (a ⊗ₜ x))) (z) : f z = g z := by
+    obtain ⟨z, rfl⟩ := (E Y).symm.surjective z
+    induction z with
+    | tmul a x => exact h a x
+    | add x y hx hy => rw [LinearEquiv.map_add, f.map_add, g.map_add, hx, hy]
   refine ⟨J, fun W Y f x ↦ ?_, fun Y g σ β hβ x ↦ ?_, fun Y _ _ ↦ ?_⟩
   · -- Naturality in `Y`, checked on pure tensors.
-    obtain ⟨x, rfl⟩ := (E Y).symm.surjective x
-    induction x with
-    | add x y hx hy =>
-      rw [LinearEquiv.map_add, LinearMap.map_add, LinearMap.map_add, hx, hy, LinearMap.map_add,
-        AddMonoidHom.map_add]
-    | tmul a x =>
-      rw [J_tmul]
-      refine (J_tmul W a (x.map _ _ n)).trans (map_pull_eq_pull_map ?_ n x).symm
-      exact freeAb.hom_ext fun _ _ ↦ by rfl
+    refine ext_tmul Y ((J W).toAddMonoidHom.comp
+      ((((ellAdicCohom R Ω n).map f.op).hom.restrictScalars ℤ_[p]).baseChange K).toAddMonoidHom)
+      ((H.map _ _ n).comp (J Y).toAddMonoidHom) (fun a x ↦ ?_) x
+    simp only [AddMonoidHom.comp_apply, LinearMap.toAddMonoidHom_coe, J_tmul]
+    refine (J_tmul W a (x.map _ _ n)).trans (map_pull_eq_pull_map ?_ n x).symm
+    exact freeAb.hom_ext fun _ _ ↦ by rfl
   · -- Equivariance, checked on pure tensors.
-    obtain ⟨x, rfl⟩ := (E Y).symm.surjective x
-    induction x with
-    | add x y hx hy =>
-      rw [LinearEquiv.map_add, LinearMap.map_add, LinearMap.map_add, hx, hy, LinearMap.map_add,
-        AddMonoidHom.map_add]
-    | tmul a x =>
-      refine (J_tmul Y (σ a) (x.map _ _ n)).trans ?_
-      rw [J_tmul, pull_trans]
-      -- Two steps. The two pull-backs are along the same comparison by `hβ`: Witt vectors of
-      -- locally constant `𝔽_p`-valued functions are fixed by Frobenius.
-      refine (congrArg (fun φ ↦ Comparison.pull ⟨_, φ⟩ _ n _)
-        (coeffHom_eq_coeffHom_trans_of_actsAsOnFrobeniusFixed K θ γ hγ hβ a)).trans ?_
-      -- And they are along the same map of points, as `e` is equivariant.
-      refine (map_pull_eq_pull_map (a' := 𝟙 _) ((Category.id_comp _).trans (.symm ?_)) n
-        x).symm.trans (H.map_id ..)
-      refine freeAb.hom_ext fun c y ↦
-        congrArg FreeAddCommGroup.of (baseChangeOf.ext (congrArg ULift.up ?_) fun z ↦ ?_)
-      · apply Spec.map_comp_assoc (𝟙 _) (CommRingCat.ofHom (algebraMap c.ProdRing c.GenericRing))
-      · -- `genericStructureMap_twist` matches the structure map of the twisted test only up to
-        -- instances
-        exact .symm ((c.genericStructureMap_twist (j g) _).trans (congrArg c.genericStructureMap
-          ((UniformSpace.Completion.algEquiv_smul_coe ..).trans (congrArg _ (hj ..)))))
+    refine ext_tmul Y ((J Y).toAddMonoidHom.comp (TensorProduct.map σ
+      ((ellAdicCohom.galoisAction R Ω Γ Y n g).restrictScalars ℤ_[p])).toAddMonoidHom)
+      (((Comparison.of (PadicTest.twist (j g)) β).pull _ n).comp (J Y).toAddMonoidHom)
+      (fun a x ↦ ?_) x
+    simp only [AddMonoidHom.comp_apply, LinearMap.toAddMonoidHom_coe]
+    refine (J_tmul Y (σ a) (x.map _ _ n)).trans ?_
+    rw [J_tmul, pull_trans]
+    -- Two steps. The two pull-backs are along the same comparison by `hβ`: Witt vectors of
+    -- locally constant `𝔽_p`-valued functions are fixed by Frobenius.
+    refine (congrArg (fun φ ↦ Comparison.pull ⟨_, φ⟩ _ n _)
+      (coeffHom_eq_coeffHom_trans_of_actsAsOnFrobeniusFixed K θ γ hγ hβ a)).trans ?_
+    -- And they are along the same map of points, as `e` is equivariant.
+    refine (map_pull_eq_pull_map (a' := 𝟙 _) ((Category.id_comp _).trans (.symm ?_)) n
+      x).symm.trans (H.map_id ..)
+    refine freeAb.hom_ext fun c y ↦
+      congrArg FreeAddCommGroup.of (baseChangeOf.ext (congrArg ULift.up ?_) fun z ↦ ?_)
+    · apply Spec.map_comp_assoc (𝟙 _) (CommRingCat.ofHom (algebraMap c.ProdRing c.GenericRing))
+    · -- `genericStructureMap_twist` matches the structure map of the twisted test only up to
+      -- instances
+      exact .symm ((c.genericStructureMap_twist (j g) _).trans (congrArg c.genericStructureMap
+        ((UniformSpace.Completion.algEquiv_smul_coe ..).trans (congrArg _ (hj ..)))))
   · -- For `Y` proper and charted each of the three factors is bijective: `E Y` as a linear
     -- equivalence, `baseChangeMap` by flat base change, the pull-back by
     -- `finite_and_primitive_comparison`. The acyclicity hypothesis of the latter is almost descent,
