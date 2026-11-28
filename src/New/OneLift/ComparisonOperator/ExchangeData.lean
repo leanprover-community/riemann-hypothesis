@@ -381,6 +381,7 @@ lemma two_mul_r_le_b : 2 * D.r ≤ D.b := D.le_of_hasLogBound
 /-- The number `300 n_* + t`, with `n_* = nStar D = 2 f t ^ 3`, is at most `D.halfGap = r ^ 8`. -/
 lemma mul_nStar_add_t_le_halfGap : 300 * nStar D + D.t ≤ D.halfGap := D.nat_le_of_hasLogBound
 
+/-- The number `n_* = nStar D = 2 f t ^ 3` is positive. -/
 lemma nStar_pos : 0 < nStar D := D.nat_le_of_hasLogBound
 
 /-- The staircase weight at a column `c` of sign `s c = 1`. The staircase has `k η i` minors of
