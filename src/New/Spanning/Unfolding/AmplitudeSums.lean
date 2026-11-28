@@ -186,11 +186,11 @@ lemma lintegral_classCutoff_mul_prod [HasPrimitiveRoot5040 E] [S.IsAdmissible]
       exact lintegral_const_mul' _ _ ofReal_ne_top
     _ = _ := by simp (disch := measurability) [TauCeti.lintegral_fintype_prod_eq_prod]
 
-/-- Summation by layers. Let `u ≥ 1` and `K ≥ 0`. If the points with `u p ≤ R` have total weight at
+/-- Summation by layers. Let `u ≥ 1`. If the points with `u p ≤ R` have total weight at
 most `(K R ^ e) ^ d` for all `R ≥ 1`, then the weighted sum of `u p ^ (-i)` is at most `2 K ^ d` as
 soon as `2 e d < i`. -/
 lemma tsum_mul_inv_pow_le_of_layers {α : Type*} {w : α → ℝ≥0∞} {u : α → ℝ} {K : ℝ} {e d i : ℕ}
-    (hu : ∀ p : α, 1 ≤ u p) (hK : 0 ≤ K)
+    (hu : ∀ p : α, 1 ≤ u p)
     (h_count : ∀ R ≥ (1 : ℝ), ∑' p : α, {p : α | u p ≤ R}.indicator w p ≤ .ofReal ((K * R ^ e) ^ d))
     (hi : 2 * (e * d) < i) :
     ∑' p : α, w p * .ofReal ((u p)⁻¹ ^ i) ≤ .ofReal (2 * K ^ d) := by
@@ -209,7 +209,7 @@ lemma tsum_mul_inv_pow_le_of_layers {α : Type*} {w : α → ℝ≥0∞} {u : α
         lintegral_count]
       simp only [Pi.mul_apply, Real.rpow_neg (zero_le_one.trans (hu _)), Real.rpow_natCast, inv_pow]
     _ ≤ .ofReal (K ^ d * 2) * 1 :=
-      lintegral_rpow_neg_le_of_measure_sublevel_le measurable_from_top hu hK h_vol (by linarith)
+      lintegral_rpow_neg_le_of_measure_sublevel_le measurable_from_top hu h_vol (by linarith)
         (by linarith)
     _ = .ofReal (2 * K ^ d) := by rw [mul_one, mul_comm]
 
@@ -283,8 +283,7 @@ lemma tsum_classCutoff_mul_inv_pow_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
         .ofReal ((S.scaledBesselLengthProd (z p))⁻¹ ^ (𝔰.r ^ 3 * numInfPlaces E)) :=
       (tsum_sigma' _).symm
     _ ≤ .ofReal (2 * (S.b ^ (6 * 𝔰.n ^ 2)) ^ (2 * 𝔰.n * 𝔰.r * numInfPlaces E)) :=
-      tsum_mul_inv_pow_le_of_layers (fun p ↦ one_le_scaledBesselLengthProd (z p)) (by positivity)
-        h_count h_exp
+      tsum_mul_inv_pow_le_of_layers (fun p ↦ one_le_scaledBesselLengthProd (z p)) h_count h_exp
     _ = _ := by rw [← pow_mul]; ring_nf
 
 /-- Let `besselKernel γ y` be the tensor `besselFn(y) ⊗ besselFn(γ⁻¹ y)^*` of Bessel functions.

@@ -79,10 +79,10 @@ variable {S : Type*} [MeasurableSpace S] {ν : Measure S} {u : S → ℝ} {K A c
   {V : ENNReal}
 
 /-- Layer cake bound for a negative power. Let `u ≥ 1` be measurable and suppose that
-`ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`, where `K ≥ 0`. If `e d < A` and `A ≤ c (A - e d)`, then
+`ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`. If `e d < A` and `A ≤ c (A - e d)`, then
 the Lebesgue integral of `u^(-A)` is at most `K^d c V`. -/
 lemma New.lintegral_rpow_neg_le_of_measure_sublevel_le (hu_meas : Measurable u)
-    (hu : ∀ s : S, 1 ≤ u s) (_hK : 0 ≤ K)
+    (hu : ∀ s : S, 1 ≤ u s)
     (h_vol : ∀ R ≥ (1 : ℝ), ν {s : S | u s ≤ R} ≤ ENNReal.ofReal ((K * R ^ e) ^ d) * V)
     (hA : e * d < A) (hc : A ≤ c * (A - e * d)) :
     ∫⁻ s : S, ENNReal.ofReal (u s ^ (-A)) ∂ν ≤ ENNReal.ofReal (K ^ d * c) * V := by
@@ -105,16 +105,17 @@ lemma New.lintegral_rpow_neg_le_of_measure_sublevel_le (hu_meas : Measurable u)
     _ = ENNReal.ofReal (K ^ d * c) * V := by
         rw [← mul_assoc, ← ENNReal.ofReal_mul hc_nonneg, mul_comm c]
 
-/-- Let `u ≥ 1` be measurable and suppose that `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`, where
-`K ≥ 0` and `V` is finite. Then `u^(-A)` is integrable for `A > e d`. -/
+/-- Let `u ≥ 1` be measurable and suppose that `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`,
+and `V` is finite.
+Then `u^(-A)` is integrable for `A > e d`. -/
 lemma New.integrable_rpow_neg_of_measure_sublevel_le (hu_meas : Measurable u)
-    (hu : ∀ s : S, 1 ≤ u s) (hK : 0 ≤ K) (hV : V ≠ ⊤)
+    (hu : ∀ s : S, 1 ≤ u s) (hV : V ≠ ⊤)
     (h_vol : ∀ R ≥ (1 : ℝ), ν {s : S | u s ≤ R} ≤ ENNReal.ofReal ((K * R ^ e) ^ d) * V)
     (hA : e * d < A) :
     Integrable (fun s : S ↦ u s ^ (-A)) ν := by
   -- The layer cake bound with `c = A / (A - e d)` is finite.
   have h_le : ∫⁻ s : S, .ofReal (u s ^ (-A)) ∂ν ≤ .ofReal (K ^ d * (A / (A - e * d))) * V :=
-    lintegral_rpow_neg_le_of_measure_sublevel_le hu_meas hu hK h_vol hA
+    lintegral_rpow_neg_le_of_measure_sublevel_le hu_meas hu h_vol hA
       (div_mul_cancel₀ A (sub_pos.2 hA).ne').ge
   refine ⟨(hu_meas.pow_const (-A)).aestronglyMeasurable, ?_⟩
   rw [hasFiniteIntegral_iff_ofReal
@@ -135,7 +136,7 @@ lemma New.integral_rpow_neg_le_of_measure_sublevel_le (hu_meas : Measurable u)
           (hu_meas.pow_const (-A)).aestronglyMeasurable
     _ ≤ (ENNReal.ofReal (K ^ d * c) * V).toReal :=
         ENNReal.toReal_mono (by finiteness)
-          (lintegral_rpow_neg_le_of_measure_sublevel_le hu_meas hu hK h_vol hA hc)
+          (lintegral_rpow_neg_le_of_measure_sublevel_le hu_meas hu h_vol hA hc)
     _ = K ^ d * c * V.toReal := by
         rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity)]
 
@@ -147,7 +148,7 @@ lemma New.DiscreteSeries.integral_rpow_neg_le_of_measure_le {ν : Measure S} {u 
     (hV : V ≠ ⊤) (h_vol : ∀ R ≥ (1 : ℝ), ν {s : S | u s ≤ R} ≤ ENNReal.ofReal ((K * R ^ e) ^ d) * V)
     (hA : e * d < A) (hc : A ≤ c * (A - e * d)) :
     Integrable (fun s : S ↦ u s ^ (-A)) ν ∧ ∫ s : S, u s ^ (-A) ∂ν ≤ K ^ d * c * V.toReal :=
-  ⟨integrable_rpow_neg_of_measure_sublevel_le hu_meas hu hK hV h_vol hA,
+  ⟨integrable_rpow_neg_of_measure_sublevel_le hu_meas hu hV h_vol hA,
     integral_rpow_neg_le_of_measure_sublevel_le hu_meas hu hK hV h_vol hA hc⟩
 
 end LayerCake
