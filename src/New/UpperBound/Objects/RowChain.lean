@@ -18,7 +18,7 @@ j blocks of size t; `New.blockNumber` is the number of the block.
   `New.Data.lastLevel`, cut out by `New.Data.lastResidueLevel`, with the character
   `New.Data.lastLevelChar`.
 * `New.Data.algFormRep_lowerChain`: how block triangular elements act on the image;
-  `New.Data.lowerChain_principalRep`: the chain commutes with 𝖦 = ∏ GL_r(𝔽_w) (`New.Data.chosenGL`).
+  `New.Data.lowerChain_principalRep`: the chain commutes with 𝖦 = ∏ GL_r(𝔽_w) (`New.Data.ChosenGL`).
 
 Notions from other files:
 * `New.Data.TameChar`: a character of U(1)(𝔸) of weight 0 with tame part supported on a finite set Q
@@ -239,13 +239,13 @@ lemma formRep_liftY (ϑ : D.TameChar) (j : ℕ)
 
 /-- Fix a tame character `ϑ` and `j ≤ m`. Let `k` be an element of K₀ (`stdLevel`, the stabiliser of
 the standard lattice) on `Y_j` (`D.spaceY j`) whose reductions `g` at the level places are block
-upper triangular and have block 0 equal to `s` (in `chosenGL`) at the chosen places. Then the
+upper triangular and have block 0 equal to `s` (in `ChosenGL`) at the chosen places. Then the
 translate by `k` of `lowerChainUpTo ϑ j y`, the composite of the first `j` lifts applied to `y`, is
 that composite applied to `c • (s · y)`, where `s · y` is the action `principalRep`. Here `c` is the
 product over the level places and `l < j` of the tame character `chainTamePart ϑ l` of lift `l + 1`
 at the determinant of the diagonal block `l + 1` of `g`. -/
 lemma formRep_lowerChainUpTo_eq_lowerChainUpTo_smul (ϑ : D.TameChar) {j : ℕ} (hj : j ≤ D.m)
-    (s : D.chosenGL)
+    (s : D.ChosenGL)
     (y : D.principalForms (D.spaceY 0)) (k : stdLevel D.E (D.Y j)) (g : LevelReductionsY ϑ j)
     (hk : stdLevel.reduceFamily (D.levelPlaces ϑ).placeAt k = g)
     (h_tri : ∀ x : (D.levelPlaces ϑ).ChosenIndex ⊕ (D.levelPlaces ϑ).TwistIndex,
@@ -325,7 +325,7 @@ are block upper triangular at every w and have block 0 equal to s ∈ 𝖦 at th
 k·ι_μ(y) = c · ι_μ(s·y), where c is the product over all w and all l < m of the tame character
 `chainTamePart ϑ l` of lift l + 1 at w, evaluated on the determinant of the diagonal block l + 1 of
 g_w. -/
-lemma algFormRep_lowerChain (ϑ : D.TameChar) (s : D.chosenGL) (y : D.principalForms (D.spaceY 0))
+lemma algFormRep_lowerChain (ϑ : D.TameChar) (s : D.ChosenGL) (y : D.principalForms (D.spaceY 0))
     (k : stdLevel D.E (D.Y D.m)) (g : LevelReductionsY ϑ D.m)
     (hk : stdLevel.reduceFamily (D.levelPlaces ϑ).placeAt k = g)
     (h_tri : ∀ x : (D.levelPlaces ϑ).ChosenIndex ⊕ (D.levelPlaces ϑ).TwistIndex,
@@ -389,7 +389,7 @@ lemma lowerChain_mem_levelSpace (ϑ : D.TameChar) (y : D.principalForms (D.space
     mem_parabolic_of_mem_lastResidueLevel ϑ hg_mem x
   have h_first (x : (D.levelPlaces ϑ).ChosenIndex) :
       (g (Sum.inl x)).val.submatrix (BlockIndex.firstBlock D.m) (BlockIndex.firstBlock D.m) =
-        ((1 : D.chosenGL) x).val := by
+        ((1 : D.ChosenGL) x).val := by
     rw [eq_one_of_mem_lastResidueLevel ϑ hg_mem x]
     exact submatrix_one_embedding _
   -- Take `s = 1` in the law of the chain; its scalar is the value of `lastLevelChar` at `g`.
@@ -413,15 +413,15 @@ def lowerChainAtLevel (ϑ : D.TameChar) :
 
 /-- For s in 𝖦, a chosen element of K₀ on Y_m reducing to diag(s, 1) at the chosen places above p₀,
 p₁ and to 1 at Q. -/
-def firstBlockLift (ϑ : D.TameChar) (s : D.chosenGL) :
+def firstBlockLift (ϑ : D.TameChar) (s : D.ChosenGL) :
     stdLevel D.E (BlockIndex D.RowIndex (Fin D.t) D.m) :=
   liftResidue (firstBlockHom (D.levelPlaces ϑ) (BlockIndex.firstBlock (T := Fin D.t) D.m) s)
 
 /-- For a tame character ϑ with modulus Q, the chain ι_μ = `lowerChain ϑ` of the m lifts with
-characters μ_j⁰ϑ^j commutes with the group 𝖦 = `D.chosenGL`: for s in 𝖦 and a form y of principal
+characters μ_j⁰ϑ^j commutes with the group 𝖦 = `D.ChosenGL`: for s in 𝖦 and a form y of principal
 level on Y₀, ι_μ(s·y) is the right translate of ι_μ(y) by `firstBlockLift ϑ s`, an element of K₀ on
 Y_m that reduces to diag(s, 1) at the chosen places and to 1 at Q. -/
-lemma lowerChain_principalRep (ϑ : D.TameChar) (s : D.chosenGL)
+lemma lowerChain_principalRep (ϑ : D.TameChar) (s : D.ChosenGL)
     (y : D.principalForms (D.spaceY 0)) :
     lowerChain ϑ (D.principalRep (D.spaceY 0) s y) =
       algFormRep D.columnsY (D.lastEntry D.m) (firstBlockLift ϑ s) (lowerChain ϑ y) := by

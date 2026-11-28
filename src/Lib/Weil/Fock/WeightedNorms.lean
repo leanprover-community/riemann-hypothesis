@@ -9,7 +9,7 @@ import Lib.General.Analysis.HolomorphicIntegrals
 /-!
 # Moments on Fock space, approximation by polynomial vectors, bounds for functionals
 
-The Fock space `New.Fock.fockSpace` consists of functions on ℂ^ι reproduced by the Gaussian. This
+The Fock space `New.Fock.FockSpace` consists of functions on ℂ^ι reproduced by the Gaussian. This
 file defines weighted L¹ norms ∫ (1 + ‖y‖)^N |v y| dy on it, with values in [0, ∞], and proves
 growth estimates that justify integrals and limits at the real places. Vectors whose moments are all
 finite are approximated in all these norms by polynomial vectors. A functional controlled by its
@@ -33,7 +33,7 @@ differences under short Heisenberg translations is then bounded by moments.
   N-th moment of v, for every vector v.
 
 Notions from other files:
-* `New.Fock.fockSpace`: the Fock space of integrable functions c on ℂ^ι with c(x) = ∫ c(y) β(y,x)
+* `New.Fock.FockSpace`: the Fock space of integrable functions c on ℂ^ι with c(x) = ∫ c(y) β(y,x)
   e(x−y) dy, where e is the Gaussian exp(−|x|²/2), under the L¹ norm.
 * `New.Fock.realHeisenberg`: For signs ε, the Heisenberg datum on ℂ^ι given by the continuous
   unit-modulus bicharacter β(x,y) = exp((y*εx − x*εy)/2) = exp(i Im y*εx).
@@ -61,8 +61,8 @@ namespace New.Fock
 open MeasureTheory Matrix Heisenberg.IsVacuum Norms.Operator Complex Filter Finset Real
 
 variable {ι : Type _} [Fintype ι] [DecidableEq ι]
-  {ε : ι → ℤˣ} (N : ℕ) (c : ℂ) (v : fockSpace ε)
-  {Y : Type*} [MeasurableSpace Y] {ν : Measure Y} [SFinite ν] {F : Y → fockSpace ε}
+  {ε : ι → ℤˣ} (N : ℕ) (c : ℂ) (v : FockSpace ε)
+  {Y : Type*} [MeasurableSpace Y] {ν : Measure Y} [SFinite ν] {F : Y → FockSpace ε}
 
 /-! ### The weighted norms -/
 
@@ -115,7 +115,7 @@ variable {v}
 /-- A bounded functional `ℓ` that is at most `S (1 + ‖z‖)ᴺ` on the translate of the vacuum by `z`,
 for all `z`, is at most `S` times the `N`-th moment on every vector `v`. The bound is stated in [0,
 ∞], so no finiteness is assumed. -/
-lemma enorm_le_mul_fockMoment {S : ℝ} {ℓ : fockSpace ε →L[ℂ] ℂ}
+lemma enorm_le_mul_fockMoment {S : ℝ} {ℓ : FockSpace ε →L[ℂ] ℂ}
     (h_bound : ∀ z : ι → ℂ, ‖ℓ (realHeisenbergOp z vacVector)‖ / (1 + ‖z‖) ^ N ≤ S) :
     ‖ℓ v‖ₑ ≤ ENNReal.ofReal S * fockMoment N v := by
   -- Write `ℓ v = ∫ v z • ℓ (realHeisenbergOp z vacVector)` and bound the integrand by `h_bound`.
@@ -153,7 +153,7 @@ lemma fockMoment_polyVector_ne_top (P : MvPolynomial ι ℂ) :
       simp only [norm_holomorphicCoord, add_mul, Real.exp_add, Real.exp_natCast_mul]
       ring
 
-lemma isSchwartzVector_vacVector : Exchange.IsSchwartzVector (vacVector : fockSpace ε) := fun N ↦ by
+lemma isSchwartzVector_vacVector : Exchange.IsSchwartzVector (vacVector : FockSpace ε) := fun N ↦ by
   simpa only [polyVector_one] using fockMoment_polyVector_ne_top (ε := ε) N 1
 
 /-- Minkowski's inequality for moments: for a family `F t` of Fock vectors over an s-finite measure
@@ -164,7 +164,7 @@ lemma fockMoment_integral_le :
   by_cases hF : Integrable F ν
   · -- `F t y` is the value at `0` of `realHeisenbergOp (-y) (F t)`, which is jointly continuous in
     -- `y` and `F t`; hence it is jointly measurable in `t` and `y`.
-    have h_cont : Continuous (Function.uncurry fun (y : ι → ℂ) (f : fockSpace ε) ↦
+    have h_cont : Continuous (Function.uncurry fun (y : ι → ℂ) (f : FockSpace ε) ↦
         valueAt (0 : ι → ℂ) (realHeisenbergOp (-y) f)) := by fun_prop
     have h_meas :
         AEStronglyMeasurable (fun p : Y × (ι → ℂ) ↦ F p.1 p.2) (ν.prod (normalizedVolume ι)) := by
@@ -199,7 +199,7 @@ lemma isSchwartzVector_integral (hF_meas : AEStronglyMeasurable F ν)
 `C (1 + ‖y‖) ^ N`. Then `∫ fockMoment N' (v y • F y) dy` is at most `C` times the moment of order
 `N` of `v`. -/
 lemma lintegral_fockMoment_smul_le {κ : Type*} [Fintype κ] [DecidableEq κ] {η : κ → ℤˣ}
-    {F : (ι → ℂ) → fockSpace (ι := κ) η} {N N' : ℕ} {C : ENNReal}
+    {F : (ι → ℂ) → FockSpace (ι := κ) η} {N N' : ℕ} {C : ENNReal}
     (h_growth : ∀ y : ι → ℂ, fockMoment N' (F y) ≤ C * (1 + ‖y‖ₑ) ^ N) :
     ∫⁻ y : ι → ℂ, fockMoment N' (v y • F y) ∂normalizedVolume ι ≤ C * fockMoment N v := by
   calc
@@ -265,7 +265,7 @@ private noncomputable def prodX {k : ℕ} (p : Fin k → ι) : MvPolynomial ι �
 `∑_{k < n} (1 / k!) ∑_{p : Fin k → ι} ⟨w_p, ·⟩ w_p`, where `w_p` is the polynomial vector of
 `prodX p`, and `⟨a, ·⟩` is the continuous linear functional `fockInner a`, linear in the second
 slot. -/
-private noncomputable def partialKernelOp (ε : ι → ℤˣ) (n : ℕ) : fockSpace ε →L[ℂ] fockSpace ε :=
+private noncomputable def partialKernelOp (ε : ι → ℤˣ) (n : ℕ) : FockSpace ε →L[ℂ] FockSpace ε :=
   ∑ k ∈ range n, ∑ p : Fin k → ι,
     (k.factorial⁻¹ : ℂ) • (fockInner (polyVector ε (prodX p))).smulRight (polyVector ε (prodX p))
 
@@ -273,7 +273,7 @@ private noncomputable def partialKernelOp (ε : ι → ℤˣ) (n : ℕ) : fockSp
 `w`, is `e(w) e(y)` times the tail `exp s - ∑_{k < n} sᵏ / k!` of the exponential series at
 `s = ζ(y)* ζ(w)`, with `e` the Gaussian and `ζ = holomorphicCoord ε`. Here it is multiplied by
 `v y`. -/
-private lemma smul_one_sub_partialKernelOp_apply (v : fockSpace ε) (n : ℕ) (y w : ι → ℂ) :
+private lemma smul_one_sub_partialKernelOp_apply (v : FockSpace ε) (n : ℕ) (y w : ι → ℂ) :
     (v y • (1 - partialKernelOp ε n) (realHeisenbergOp y vacVector)) w =
       v y * realVac w * realVac y *
         (NormedSpace.exp (Star.star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε w) -
@@ -282,13 +282,13 @@ private lemma smul_one_sub_partialKernelOp_apply (v : fockSpace ε) (n : ℕ) (y
   set s : ℂ := Star.star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε w with hs_def
   -- Pairing with the translate of the vacuum evaluates at `y` (`modelInner_heisenbergOp_vacElem`).
   have h_apply : (v y • (1 - partialKernelOp ε n) (realHeisenbergOp y vacVector)) w =
-      v y * ((realHeisenbergOp y vacVector : fockSpace ε) w - ∑ k ∈ range n, ∑ p : Fin k → ι,
+      v y * ((realHeisenbergOp y vacVector : FockSpace ε) w - ∑ k ∈ range n, ∑ p : Fin k → ι,
         (k.factorial : ℂ)⁻¹ * starRingEnd ℂ (polyVector ε (prodX p) y) *
           polyVector ε (prodX p) w) := by
     simp [partialKernelOp, ← conj_modelInner (realHeisenbergOp _ _),
       modelInner_heisenbergOp_vacElem, ← valueAt_apply, ← mul_assoc]
   -- A translate of the vacuum is two Gaussians times `exp s` (`beta_mul_realVac`).
-  have h_translate : (realHeisenbergOp y vacVector : fockSpace ε) w =
+  have h_translate : (realHeisenbergOp y vacVector : FockSpace ε) w =
       realVac w * realVac y * NormedSpace.exp s := by
     simp [hs_def, beta_mul_realVac, exp_eq_exp_ℂ]
   -- Pairing the vectors of the monomial of a word `p` gives two Gaussians times a product.
@@ -316,7 +316,7 @@ private lemma smul_one_sub_partialKernelOp_apply (v : fockSpace ε) (n : ℕ) (y
 /-- Domination of the partial sums: with `ζ = holomorphicCoord ε`, `e = realVac` the Gaussian and
 `s = ζ(y)* ζ(w)`, the weighted `n`-th partial sum `(1 + ‖w‖)^N v(y) e(w) e(y) ∑_{k < n} sᵏ / k!` has
 norm at most `exp((m + N)²) (1 + ‖y‖)^(m + N) |v(y)| (1 + ‖w‖)^(-m)`, for every `n` and `m`. -/
-private lemma norm_smul_mul_sum_le (N m n : ℕ) (v : fockSpace ε) (y w : ι → ℂ) :
+private lemma norm_smul_mul_sum_le (N m n : ℕ) (v : FockSpace ε) (y w : ι → ℂ) :
     ‖(1 + ‖w‖) ^ N • (v y * realVac w * realVac y *
         ∑ k ∈ range n, (Star.star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε w) ^ k /
           k.factorial)‖ ≤
@@ -390,26 +390,26 @@ operator norm, for the sup norms, of the matrix of `u`. -/
 lemma fockMoment_realWeil_le (u : USign ε) :
     fockMoment N (realWeil u v) ≤
       ‖realMultiplier u‖ₑ *
-        ((1 + ‖(u : Matrix ι ι ℂ)‖ₑ) ^ N * fockMoment N (vacVector : fockSpace ε) *
+        ((1 + ‖(u : Matrix ι ι ℂ)‖ₑ) ^ N * fockMoment N (vacVector : FockSpace ε) *
           fockMoment N v) := by
   -- Write `realWeil u v` as `realMultiplier u` times the integral of
   -- `v y • realHeisenbergOp (u y) vacVector`, and bound each translate of the vacuum.
   have h_point (y : ι → ℂ) :
-      fockMoment N (realHeisenbergOp ((u : Matrix ι ι ℂ) *ᵥ y) (vacVector : fockSpace ε)) ≤
-        (1 + ‖(u : Matrix ι ι ℂ)‖ₑ) ^ N * fockMoment N (vacVector : fockSpace ε) *
+      fockMoment N (realHeisenbergOp ((u : Matrix ι ι ℂ) *ᵥ y) (vacVector : FockSpace ε)) ≤
+        (1 + ‖(u : Matrix ι ι ℂ)‖ₑ) ^ N * fockMoment N (vacVector : FockSpace ε) *
           (1 + ‖y‖ₑ) ^ N := by
     calc
-      _ ≤ (1 + ‖(u : Matrix ι ι ℂ) *ᵥ y‖ₑ) ^ N * fockMoment N (vacVector : fockSpace ε) :=
+      _ ≤ (1 + ‖(u : Matrix ι ι ℂ) *ᵥ y‖ₑ) ^ N * fockMoment N (vacVector : FockSpace ε) :=
         fockMoment_realHeisenbergOp_le N vacVector _
       _ ≤ _ := by grw [one_add_enorm_mulVec_le, mul_pow, mul_right_comm]
   calc
     fockMoment N (realWeil u v) = ‖realMultiplier u‖ₑ * fockMoment N
-        (∫ y, v y • realHeisenbergOp ((u : Matrix ι ι ℂ) *ᵥ y) (vacVector : fockSpace ε)
+        (∫ y, v y • realHeisenbergOp ((u : Matrix ι ι ℂ) *ᵥ y) (vacVector : FockSpace ε)
           ∂normalizedVolume ι) := by
       rw [realWeil, weilRep]
       exact fockMoment_smul ..
     _ ≤ ‖realMultiplier u‖ₑ * ∫⁻ y, fockMoment N
-        (v y • realHeisenbergOp ((u : Matrix ι ι ℂ) *ᵥ y) (vacVector : fockSpace ε))
+        (v y • realHeisenbergOp ((u : Matrix ι ι ℂ) *ᵥ y) (vacVector : FockSpace ε))
           ∂normalizedVolume ι := by
       grw [fockMoment_integral_le]
     _ ≤ _ := by grw [lintegral_fockMoment_smul_le h_point]
@@ -442,7 +442,7 @@ lemma New.Fock.hasDerivAt_realHeisenbergOp_realHeisenbergOp {ι : Type*} [Fintyp
   -- Along a line `ρ` is a homomorphism, so it is enough to differentiate at `0`, where
   -- `ρ(r y) ρ(z) = exp (r κ) ρ(z) ρ(r y)`.
   set κ : ℂ := star z ⬝ᵥ signMatrix ε *ᵥ y - star y ⬝ᵥ signMatrix ε *ᵥ z with hκ
-  have h_comm (r : ℝ) (v : fockSpace ε) :
+  have h_comm (r : ℝ) (v : FockSpace ε) :
       realHeisenbergOp (r • y) (realHeisenbergOp z v) = exp (r * κ) • realHeisenbergOp z
         (realHeisenbergOp (r • y) v) := by
     have h_phase : (realHeisenberg ε).β (r • y) z = exp (r * κ) * (realHeisenberg ε).β z
@@ -452,7 +452,7 @@ lemma New.Fock.hasDerivAt_realHeisenbergOp_realHeisenbergOp {ι : Type*} [Fintyp
       congr 1
       ring
     rw [Heisenberg.Rep.mul, Heisenberg.Rep.mul, h_phase, mul_smul, add_comm]
-  have h_line (r : ℝ) (v : fockSpace ε) :
+  have h_line (r : ℝ) (v : FockSpace ε) :
       realHeisenbergOp (r • y) v = realHeisenbergOp (s • y) (realHeisenbergOp ((r - s) • y) v) := by
     have h_phase : (realHeisenberg ε).β (s • y) ((r - s) • y) = 1 := by
       simp only [realHeisenberg, star_smul, star_trivial, Matrix.mulVec_smul, smul_dotProduct,
@@ -476,8 +476,8 @@ the Heisenberg translation `realHeisenbergOp`. Then `‖ℓ (ρ(z) v_P)‖ ≤ C
 all `z`, where `v_P = polyVector ε P` is the product of `P` and the Gaussian. -/
 lemma New.Fock.exists_norm_realHeisenbergOp_polyVector_le {ι : Type*} [Fintype ι] [DecidableEq ι]
     {ε : ι → ℤˣ} (N : ℕ) (P : MvPolynomial ι ℂ) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (t : ℝ) (ℓ : fockSpace ε →L[ℂ] ℂ), 0 ≤ t → t ≤ 1 →
-      (∀ (f : fockSpace ε) (B : ℝ),
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (t : ℝ) (ℓ : FockSpace ε →L[ℂ] ℂ), 0 ≤ t → t ≤ 1 →
+      (∀ (f : FockSpace ε) (B : ℝ),
         (∀ y : ι → ℂ, ‖y‖ ≤ t → ‖ℓ f - ℓ (realHeisenbergOp y f)‖ ≤ B) → ‖ℓ f‖ ≤ B) →
       ∀ z : ι → ℂ, ‖ℓ (realHeisenbergOp z (polyVector ε P))‖ ≤ C * ‖ℓ‖ * t ^ N * (1 + ‖z‖) ^ N := by
   -- A difference is at most the supremum of the derivative along the segment from `0` to `y`. The
@@ -548,26 +548,26 @@ functional on the Fock space. Suppose that, if `t < 1`, every real `B` that boun
 `f`. Then `‖ℓ v‖` is at most `C ‖ℓ‖ tᴺ` times the `N`-th moment of `v`, for every vector `v`. -/
 lemma New.Fock.exists_enorm_le_mul_fockMoment_of_norm_sub_le {ι : Type*} [Fintype ι] [DecidableEq ι]
     {ε : ι → ℤˣ} (N : ℕ) :
-    ∃ C : NNReal, ∀ (t : ℝ) (ℓ : fockSpace ε →L[ℂ] ℂ) {v : fockSpace ε}, 0 ≤ t →
-      (t < 1 → ∀ (f : fockSpace ε) (B : ℝ),
+    ∃ C : NNReal, ∀ (t : ℝ) (ℓ : FockSpace ε →L[ℂ] ℂ) {v : FockSpace ε}, 0 ≤ t →
+      (t < 1 → ∀ (f : FockSpace ε) (B : ℝ),
         (∀ y : ι → ℂ, ‖y‖ ≤ t → ‖ℓ f - ℓ (realHeisenbergOp y f)‖ ≤ B) → ‖ℓ f‖ ≤ B) →
       ‖ℓ v‖ₑ ≤ ENNReal.ofReal (C * ‖ℓ‖ * t ^ N) * fockMoment N v := by
   -- By superposition (`enorm_le_mul_fockMoment`) it is enough to bound `ℓ` on the translates of the
   -- vacuum. For `t ≥ 1` the norm of `ℓ` suffices.
   obtain ⟨C, hC, h_bound⟩ := exists_norm_realHeisenbergOp_polyVector_le (ε := ε) N 1
-  refine ⟨⟨C, hC⟩ + ‖(vacVector : fockSpace ε)‖₊, fun t ℓ v ht h_diff ↦
+  refine ⟨⟨C, hC⟩ + ‖(vacVector : FockSpace ε)‖₊, fun t ℓ v ht h_diff ↦
     enorm_le_mul_fockMoment N fun z ↦ (div_le_iff₀ (by positivity)).2 ?_⟩
   rcases lt_or_ge t 1 with ht_lt | ht_ge
   · calc ‖ℓ (realHeisenbergOp z vacVector)‖
       _ ≤ C * ‖ℓ‖ * t ^ N * (1 + ‖z‖) ^ N := by
         simpa using h_bound t ℓ ht ht_lt.le (h_diff ht_lt) z
-      _ ≤ (C + ‖(vacVector : fockSpace ε)‖) * ‖ℓ‖ * t ^ N * (1 + ‖z‖) ^ N := by
+      _ ≤ (C + ‖(vacVector : FockSpace ε)‖) * ‖ℓ‖ * t ^ N * (1 + ‖z‖) ^ N := by
         gcongr
         exact le_add_of_nonneg_right (norm_nonneg _)
   · calc ‖ℓ (realHeisenbergOp z vacVector)‖
-      _ ≤ ‖(vacVector : fockSpace ε)‖ * ‖ℓ‖ * 1 * 1 := by
+      _ ≤ ‖(vacVector : FockSpace ε)‖ * ‖ℓ‖ * 1 * 1 := by
         grw [ℓ.le_opNorm, Heisenberg.Rep.norm_map, mul_one, mul_one, mul_comm]
-      _ ≤ (C + ‖(vacVector : fockSpace ε)‖) * ‖ℓ‖ * t ^ N * (1 + ‖z‖) ^ N := by
+      _ ≤ (C + ‖(vacVector : FockSpace ε)‖) * ‖ℓ‖ * t ^ N * (1 + ‖z‖) ^ N := by
         gcongr
         · exact le_add_of_nonneg_left hC
         · exact one_le_pow₀ ht_ge

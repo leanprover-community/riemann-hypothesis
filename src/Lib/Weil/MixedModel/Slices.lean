@@ -101,7 +101,7 @@ lemma slice_vacElem_eq_vacuumFactor_smul (hD : D.IsAdapted 1 t) (x : p → 𝔸 
 /-- If `D` is adapted at `1`, two vectors `v` and `u` of the Fock space of `V₀` are equal as soon
 as `V₀.integrated v` and `V₀.integrated u` (the operators `f ↦ v ⊗ f`) agree on all zero terms
 `D.zeroTerm (V.projReal f)` of projections on the real vacuum of `V`. -/
-lemma eq_of_integrated_zeroTerm_eq (hD : D.IsAdapted 1 t) {v u : fockSpace (realSigns E s₀)}
+lemma eq_of_integrated_zeroTerm_eq (hD : D.IsAdapted 1 t) {v u : FockSpace (realSigns E s₀)}
     (h_eq : ∀ f : 𝒮 V, V₀.integrated v (D.zeroTerm (V.projReal f)) =
       V₀.integrated u (D.zeroTerm (V.projReal f))) :
     v = u := by
@@ -126,8 +126,8 @@ noncomputable def _root_.New.Space.Splitting.IsAdapted.mixedModel (h : D.IsAdapt
   -- (D.zeroTerm (V.projReal f))` (`hT`). The two laws of `slice` are tested against such vectors by
   -- `eq_of_integrated_zeroTerm_eq`.
   choose T hT using
-    show ∃ T : fockSpace (realSigns E s) →L[ℂ] fockSpace (realSigns E s₀),
-        ∀ (v : fockSpace (realSigns E s)) (f : 𝒮 V),
+    show ∃ T : FockSpace (realSigns E s) →L[ℂ] FockSpace (realSigns E s₀),
+        ∀ (v : FockSpace (realSigns E s)) (f : 𝒮 V),
           D.zeroTerm (V.integrated v f) = V₀.integrated (T v) (D.zeroTerm (V.projReal f)) by
       simpa [↓ Splitting.slice] using h.exists_apply_zero_omega_integrated_eq isMixedLaw_slice
   refine
@@ -167,7 +167,7 @@ noncomputable def _root_.New.Space.Splitting.IsAdapted.mixedModel (h : D.IsAdapt
 /-- If `D` is adapted at `1`, the zero term of `v ⊗ f` (written `V.integrated v f`) is
 `v' ⊗ f'`, where `v'` is the slice at `0` of `v` in the real mixed model and `f'` is the zero term
 of the projection of `f` on the real vacuum. -/
-lemma zeroTerm_integrated (hD : D.IsAdapted 1 t) (v : fockSpace (realSigns E s)) (f : 𝒮 V) :
+lemma zeroTerm_integrated (hD : D.IsAdapted 1 t) (v : FockSpace (realSigns E s)) (f : 𝒮 V) :
     D.zeroTerm (V.integrated v f) =
       V₀.integrated (hD.mixedModel.slice 0 v) (D.zeroTerm (V.projReal f)) := by
   -- at the point `0` the slice is the map chosen in `mixedModel`
@@ -177,7 +177,7 @@ lemma zeroTerm_integrated (hD : D.IsAdapted 1 t) (v : fockSpace (realSigns E s))
 `V.integrated v f`) is `v' ⊗ f'`, where `v'` is the slice of `v` in the real mixed model at the
 real coordinates of `x` and `f'` is the mixed term at `(t⁻¹)ᴴ` times the finite part of `x` of the
 projection of `f` on the real vacuum. -/
-lemma slice_integrated (hD : D.IsAdapted 1 t) (x : p → 𝔸 E) (v : fockSpace (realSigns E s))
+lemma slice_integrated (hD : D.IsAdapted 1 t) (x : p → 𝔸 E) (v : FockSpace (realSigns E s))
     (f : 𝒮 V) :
     D.slice (t⁻¹.valᴴ *ᵥ x) (V.integrated v f) =
       V₀.integrated (hD.mixedModel.slice (realCoord x) v)
@@ -236,8 +236,8 @@ mixed model of the splitting `lineTermSplitting A X β` of `Hom(W', V')` over `H
 point with coordinates `a` on the last coordinate (the line) and `0` elsewhere. -/
 @[irreducible]
 noncomputable def lineTermReal (β : Bool) (a : InfinitePlace E → ℂ) :
-    Fock.fockSpace (realSigns E (homSigns s' t')) →L[ℂ]
-      Fock.fockSpace (realSigns E (homSigns s t)) :=
+    Fock.FockSpace (realSigns E (homSigns s' t')) →L[ℂ]
+      Fock.FockSpace (realSigns E (homSigns s t)) :=
   (isAdapted_lineTermSplitting A X β).mixedModel.slice fun p ↦ a p.1 * p.2.isRight.toNat
 
 end TwoLineRealPart

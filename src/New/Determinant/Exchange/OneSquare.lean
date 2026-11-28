@@ -154,7 +154,7 @@ lemma integral_integral_sum_eq {A : Space E n' s'} {U₁ : Space E n₁ s₁} {U
   · simp [integral_const_mul, hF_val i hc]
 
 omit [WeilData E] in
-/-- Let `s` be any sign vector and `fockSpace s` its Fock space. For `v` in it with finite moment
+/-- Let `s` be any sign vector and `FockSpace s` its Fock space. For `v` in it with finite moment
 `fockMoment N v = ∫ (1 + ‖z‖) ^ N * |v z| dz`, let `K v` be a continuous kernel on `U₁ ⊕ U₂` and
 `A`, bounded by a multiple of that moment times a power of the height on `U₁ ⊕ U₂`, uniformly in the
 variable of `A`. Let `φ₁`, `φ₂` be rapidly decreasing functions on the adelic unitary groups of
@@ -163,11 +163,11 @@ as a function on `(U₁ × U₂) × A`, is integrable and bounded by a constant 
 lemma exists_integrable_kernel_bound {A : Space E n' s'} {U₁ : Space E n₁ s₁}
     {U₂ : Space E n₂ s₂} {φ₁ : G E s₁ → ℂ} {φ₂ : G E s₂ → ℂ} (hφ₁ : φ₁ ∈ U₁.rapidFunctions)
     (hφ₂ : φ₂ ∈ U₂.rapidFunctions) (ν₀ : AutChar E)
-    {K : fockSpace s → G E (s₁ ⊕ᵥ s₂) → G E s' → ℂ}
-    (hK_le : ∃ (B N : ℕ) (C : ℝ), ∀ (v : fockSpace s) (g : G E (s₁ ⊕ᵥ s₂)) (z : G E s'),
+    {K : FockSpace s → G E (s₁ ⊕ᵥ s₂) → G E s' → ℂ}
+    (hK_le : ∃ (B N : ℕ) (C : ℝ), ∀ (v : FockSpace s) (g : G E (s₁ ⊕ᵥ s₂)) (z : G E s'),
       fockMoment N v ≠ ⊤ → ‖K v g z‖ ≤ C * (fockMoment N v).toReal * (U₁.sum U₂).height g ^ B)
-    (hK_cont : ∀ v : fockSpace s, Continuous ↿(K v)) :
-    ∃ (N : ℕ) (C : ℝ), ∀ v : fockSpace s, fockMoment N v ≠ ⊤ →
+    (hK_cont : ∀ v : FockSpace s, Continuous ↿(K v)) :
+    ∃ (N : ℕ) (C : ℝ), ∀ v : FockSpace s, fockMoment N v ≠ ⊤ →
       let F : (G E s₁ × G E s₂) × G E s' → ℂ := fun ((g₁, g₂), z) ↦
         φ₁ g₁ * φ₂ g₂ * (ν₀.val g₂.det * K v (G.sum (g₁, g₂)) z)
       Integrable F ((U₁.quotMeasure.prod U₂.quotMeasure).prod A.quotMeasure) ∧
@@ -201,12 +201,12 @@ indexed by `n` has a Fock vector `polyVector s P`. Let numbers `Λ j v` depend o
 each being Lipschitz for one moment `fockMoment N v = ∫ (1 + ‖z‖) ^ N * |v z| dz`. If, for every
 polynomial `P`, the numbers `Λ j (polyVector s P)` are one multiple of given numbers `ρ j`, the same
 holds for every vector `x` whose moments are all finite. -/
-lemma exists_eq_mul_of_forall_polyVector {J : Type*} {Λ : J → fockSpace s → ℂ} {ρ : J → ℂ}
-    (h_lipschitz : ∀ j : J, ∃ (N : ℕ) (D : ℝ), ∀ v w : fockSpace s,
+lemma exists_eq_mul_of_forall_polyVector {J : Type*} {Λ : J → FockSpace s → ℂ} {ρ : J → ℂ}
+    (h_lipschitz : ∀ j : J, ∃ (N : ℕ) (D : ℝ), ∀ v w : FockSpace s,
       fockMoment N v ≠ ⊤ → fockMoment N w ≠ ⊤ → fockMoment N (w - v) ≠ ⊤ →
       ‖Λ j v - Λ j w‖ ≤ D * (fockMoment N (w - v)).toReal)
     (h_poly : ∀ P : MvPolynomial n ℂ, ∃ r : ℂ, ∀ j : J, Λ j (polyVector s P) = r * ρ j)
-    {x : fockSpace s} (hx : IsSchwartzVector x) : ∃ κ : ℂ, ∀ j : J, Λ j x = κ * ρ j := by
+    {x : FockSpace s} (hx : IsSchwartzVector x) : ∃ κ : ℂ, ∀ j : J, Λ j x = κ * ρ j := by
   -- The functions `j ↦ Λ j (polyVector s (P m))` lie on the line through `ρ`, which is closed.
   obtain ⟨P, hP⟩ := exists_tendsto_fockMoment hx
   have h_tendsto (j : J) :
@@ -218,7 +218,7 @@ lemma exists_eq_mul_of_forall_polyVector {J : Type*} {Λ : J → fockSpace s →
     refine tendsto_sub_nhds_zero_iff.1 (squeeze_zero_norm' ?_ h_error)
     filter_upwards [(hP N).eventually_ne ENNReal.zero_ne_top] with m hm
     exact h_le _ _ (fockMoment_polyVector_ne_top N (P m)) (hx N) hm
-  have h_span (v : fockSpace s) :
+  have h_span (v : FockSpace s) :
       (fun j : J ↦ Λ j v) ∈ Submodule.span ℂ {ρ} ↔ ∃ r : ℂ, ∀ j : J, Λ j v = r * ρ j := by
     simp [Submodule.mem_span_singleton, funext_iff, eq_comm]
   exact (h_span x).1 ((Submodule.isClosed_of_finiteDimensional _).isSeqClosed

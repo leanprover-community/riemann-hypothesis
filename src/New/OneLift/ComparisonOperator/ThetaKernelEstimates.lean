@@ -45,7 +45,7 @@ circle of peaks.
   `F` vanishes. Then `K₀ 1` is small.
 
 Notions from other files:
-* `New.Fock.fockSpace`: The Fock space: integrable functions c on ℂ^ι with c(x) = ∫ c(y)β(y,x)e(x−y)
+* `New.Fock.FockSpace`: The Fock space: integrable functions c on ℂ^ι with c(x) = ∫ c(y)β(y,x)e(x−y)
   dy, β the Heisenberg bicharacter, e the Gaussian exp(−|x|²/2), under the L¹ norm.
 * `New.Fock.fockInner`: The bounded sesquilinear form on the Fock space, conjugate-linear in the
   first variable, (c, c′) ↦ ∫ c̄ c′.
@@ -104,7 +104,7 @@ representation of U(ε), |y| = `‖toLp 2 y‖` is the Euclidean norm, ‖σ‖ 
 matrix of σ, and ⟨v, v⟩ is real. -/
 theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [DecidableEq ι]
     [Nonempty ι]
-    {ε : ι → ℤˣ} {P : MvPolynomial ι ℂ} {v : fockSpace ε} {y : ι → ℂ} (σ : USign (n := ι) ε)
+    {ε : ι → ℤˣ} {P : MvPolynomial ι ℂ} {v : FockSpace ε} {y : ι → ℂ} (σ : USign (n := ι) ε)
     (hv : v = polyVector ε P) {d A n : ℕ}
     (hP : ∀ (c : ℝ) (x : ι → ℂ), eval (c • x) P = c ^ d * eval x P) (hA : d + card ι ≤ A)
     (hy : 0 < ‖toLp 2 y‖) :
@@ -118,7 +118,7 @@ theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [De
   have A_ne : A ≠ 0 :=
     (card_pos.trans_le ((Nat.le_add_left (card ι) d).trans hA)).ne'
   let c : ℝ := √(n / A + 1)
-  let v_scaled : fockSpace ε := (c : ℂ) ^ d • v
+  let v_scaled : FockSpace ε := (c : ℂ) ^ d • v
   let G (x : ι → ℂ) : ℝ := ‖v_scaled (c⁻¹ • x)‖ ^ 2
   let K : ℝ := (4 * (A + n) * ((‖(σ : Matrix ι ι ℂ)‖ / ‖toLp 2 y‖) ^ 2 / exp 1)) ^ n
   -- Homogeneity of `P`, and `1 - c⁻² = n / (n + A)`.
@@ -270,7 +270,7 @@ the Fock coefficient `⟨v, ϱ(x) w⟩` at `x = realCoord z`, the components of 
 times `√(2π Im τ(j))`. The third is `vacuumFn` at `finVec (finCoord z) = (0, z_f)`: a complex number
 of modulus `1` if `α⁻¹ z_f` is integral, and `0` otherwise. -/
 lemma dataInner_traceChar {𝔪 : Modulus E} (t : Matrix n n' 𝔪.ResidueRing)
-    (v w : fockSpace (realSigns E (homSigns s s'))) (z : n' × n → 𝔸 E) :
+    (v w : FockSpace (realSigns E (homSigns s s'))) (z : n' × n → 𝔸 E) :
     (S.hom T).dataInner (modDatum S T 𝔪 (traceChar t) v)
         ((S.hom T).ϱ z (modDatum S T 𝔪 (traceChar t) w)) =
       𝔪.liftFn (traceChar t ∘ vecToMatrix) (finCoord z) *
@@ -426,7 +426,7 @@ components of `x` at the infinite places `τ` times `√(2π Im τ(j))`, and `ψ
 the standard additive character. The idele `α` and the imaginary `j` in `E` are fixed by
 `WeilData E`, and `traceOne = (1 - j⁻¹) / 2`. -/
 lemma sum_dataInner_traceChar_div_card {𝔪 : Modulus E} (p : G E (homSigns s s'))
-    (v w : fockSpace (realSigns E (homSigns s s'))) (y : n' × n → E) :
+    (v w : FockSpace (realSigns E (homSigns s s'))) (y : n' × n → E) :
     let x : n' × n → 𝔸 E := ((S.hom T).move p).vecAtPoint y
     (∑ t : Matrix n n' 𝔪.ResidueRing,
         (S.hom T).dataInner ((S.hom T).ω p (modDatum S T 𝔪 (traceChar t) v))
@@ -469,7 +469,7 @@ representation of the pair twisted by powers of the determinants with exponents 
 lemma modKernel_expect_traceChar {a b : AutChar E} {γ γ' : InfinitePlace E → ℤ}
     {ψ ψ' : (w : FinPlace E) → MulChar (ResField w) ℂ} {𝔪 : Modulus E}
     (ha : a.HasWeight γ ψ) (hb : b.HasWeight γ' ψ') (g : G E s) (h : G E s')
-    (Q : MvPolynomial (InfinitePlace E × n' × n) ℂ) {v : fockSpace (realSigns E (homSigns s s'))}
+    (Q : MvPolynomial (InfinitePlace E × n' × n) ℂ) {v : FockSpace (realSigns E (homSigns s s'))}
     (hv : v = polyVector (realSigns E (homSigns s s')) Q) (u : GInf E s) (u' : GInf E s') :
     modKernel S T a b 𝔪 (𝔼 t : Matrix n n' 𝔪.ResidueRing,
         conj (modKernel S T a b 𝔪 (traceChar t) Q g h) • traceChar t) Q
@@ -526,7 +526,7 @@ theorem exists_norm_modKernel_sub_fockInner_le [Nonempty n] [Nonempty n']
     (hm : ∀ w : InfinitePlace E, m * ‖Φ w c‖ ≤
       √(2 * Real.pi * (Φ w j).im) * ((S.move g).hom (T.move h)).firstMinimum)
     (hq : Fintype.card (InfinitePlace E × n' × n) < q)
-    (Q : MvPolynomial (InfinitePlace E × n' × n) ℂ) {v : fockSpace (realSigns E (homSigns s s'))}
+    (Q : MvPolynomial (InfinitePlace E × n' × n) ℂ) {v : FockSpace (realSigns E (homSigns s s'))}
     (hv : v = polyVector (realSigns E (homSigns s s')) Q) (d : ℕ)
     (hQ : ∀ (r : ℝ) (x : InfinitePlace E × n' × n → ℂ), Q.eval (r • x) = r ^ d * Q.eval x) :
     ∃ Ψ : Matrix n' n 𝔪.ResidueRing → ℂ, ∀ (u : GInf E s) (u' : GInf E s'),
@@ -551,8 +551,8 @@ theorem exists_norm_modKernel_sub_fockInner_le [Nonempty n] [Nonempty n']
       ∑' y : L, (len y)⁻¹ ^ (2 * q) ≤ (5 / m) ^ (2 * q) :=
     tsum_inv_norm_realCoord_pow_le V hc_ne hm_pos hm hq
   -- The mean over `t` of the products of thetas is a sum over rational vectors.
-  let w : fockSpace (realSigns E (homSigns s s')) := realPairWeil γ γ' (u, u') v
-  let φ (t : Matrix n n' 𝔪.ResidueRing) (f : fockSpace (realSigns E (homSigns s s'))) :
+  let w : FockSpace (realSigns E (homSigns s s')) := realPairWeil γ γ' (u, u') v
+  let φ (t : Matrix n n' 𝔪.ResidueRing) (f : FockSpace (realSigns E (homSigns s s'))) :
     𝒮 (S.hom T) :=
     (S.hom T).ω p (modDatum S T 𝔪 (traceChar t) f)
   let mean : ℂ := (∑ t, (S.hom T).θ (φ t w) * conj ((S.hom T).θ (φ t v))) /

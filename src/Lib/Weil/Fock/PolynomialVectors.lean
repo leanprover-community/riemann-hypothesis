@@ -15,7 +15,7 @@ import Lib.Weil.Fock.WeightedNorms
 /-!
 # Polynomial vectors in Fock space: inner product, density and Weil derivative
 
-The polynomial vectors v_P = `New.Fock.polyVector` ε P lie in the Fock space `New.Fock.fockSpace`
+The polynomial vectors v_P = `New.Fock.polyVector` ε P lie in the Fock space `New.Fock.FockSpace`
 with signs ε. On this space U(ε) acts by the Weil representation ω₀ = `New.Fock.realWeil`.
 
 ## Main definitions and results
@@ -88,7 +88,7 @@ lemma realWeil_vacVector_apply_zero (u : USign ε) :
 
 /-- The matrix coefficient ⟨v_P, ω₀(u)v_Q⟩ of the Weil representation, for u in U(ε) and complex
 polynomials P, Q with Fock vectors v_P, v_Q (`New.Fock.polyVector`, applied through the coercion
-of polynomials to `New.Fock.fockSpace`). It is conjugate-linear in P. -/
+of polynomials to `New.Fock.FockSpace`). It is conjugate-linear in P. -/
 @[simp]
 noncomputable abbrev fockMatrixCoeff (u : USign ε) (P Q : MvPolynomial ι ℂ) : ℂ :=
   fockInner P (realWeil u Q)
@@ -183,11 +183,11 @@ lemma denseRange_polyVector : DenseRange (polyVector ε) := by
   -- The closure `V` of the range holds every translate of the vacuum: its moments `fockMoment N`
   -- are finite, so `exists_tendsto_fockMoment` approximates it by vectors `polyVector ε (P n)`,
   -- and `fockMoment 0` is the norm.
-  let V : ClosedSubmodule ℂ (fockSpace ε) := (LinearMap.range (polyVector ε)).closure
+  let V : ClosedSubmodule ℂ (FockSpace ε) := (LinearMap.range (polyVector ε)).closure
   -- found by instance search for the quotient by `V` below
-  have V_closed : IsClosed (V : Set (fockSpace ε)) := V.isClosed'
+  have V_closed : IsClosed (V : Set (FockSpace ε)) := V.isClosed'
   have translate_mem (y : ι → ℂ) : realHeisenbergOp y vacVector ∈ V := by
-    have h_rapid : Exchange.IsSchwartzVector (realHeisenbergOp y vacVector : fockSpace ε) := fun N ↦
+    have h_rapid : Exchange.IsSchwartzVector (realHeisenbergOp y vacVector : FockSpace ε) := fun N ↦
       ne_top_of_le_ne_top (ENNReal.mul_ne_top (by simp) (isSchwartzVector_vacVector N))
         (fockMoment_realHeisenbergOp_le N vacVector y)
     obtain ⟨P, hP⟩ := exists_tendsto_fockMoment h_rapid
@@ -285,7 +285,7 @@ A_a = `New.Fock.raiseOp` ε a and B_a = `New.Fock.lowerOp` ε a. -/
 private lemma fockInner_raiseOp_eq_of_hasDerivAt [DecidableEq ι] {γ : ℝ → USign ε}
     {Y : Matrix ι ι ℂ} (hγ_zero : γ 0 = 1)
     (hγ : HasDerivAt (fun t : ℝ ↦ ((γ t : GL ι ℂ) : Matrix ι ι ℂ)) Y 0)
-    {D : MvPolynomial ι ℂ → fockSpace ε}
+    {D : MvPolynomial ι ℂ → FockSpace ε}
     (hD : ∀ Q P : MvPolynomial ι ℂ,
       HasDerivAt (fun t : ℝ ↦ fockMatrixCoeff (γ t) Q P) (fockInner Q (D P)) 0)
     (j : ι) (P Q : MvPolynomial ι ℂ) :
@@ -314,7 +314,7 @@ curve γ in U(ε) with γ(0) = 1 whose matrix has derivative Y at 0, with `hD` a
 private lemma fockInner_lowerOp_eq_of_hasDerivAt [DecidableEq ι] {γ : ℝ → USign ε}
     {Y : Matrix ι ι ℂ} (hγ_zero : γ 0 = 1)
     (hγ : HasDerivAt (fun t : ℝ ↦ ((γ t : GL ι ℂ) : Matrix ι ι ℂ)) Y 0)
-    {D : MvPolynomial ι ℂ → fockSpace ε}
+    {D : MvPolynomial ι ℂ → FockSpace ε}
     (hD : ∀ Q P : MvPolynomial ι ℂ,
       HasDerivAt (fun t : ℝ ↦ fockMatrixCoeff (γ t) Q P) (fockInner Q (D P)) 0)
     (j : ι) (P Q : MvPolynomial ι ℂ) :
@@ -337,7 +337,7 @@ private lemma fockInner_lowerOp_eq_of_hasDerivAt [DecidableEq ι] {γ : ℝ → 
       (.of_forall fun t : ℝ ↦ fockMatrixCoeff_lowerOp (γ t) P Q j))
 
 /-- If γ is a curve in U(ε) with γ(0) = 1 whose matrix has derivative Y at 0, then
-t ↦ `New.Fock.realWeil`(γ(t)) v_P has derivative v_Q at 0 in the Fock space `New.Fock.fockSpace` ε.
+t ↦ `New.Fock.realWeil`(γ(t)) v_P has derivative v_Q at 0 in the Fock space `New.Fock.FockSpace` ε.
 Here Q = `New.Fock.weilDeriv` ε Y P = Σ_{a,b} Y_ab A_a B_b P is a polynomial, viewed in the Fock
 space as v_Q, and A_a B_b is the ε-dependent quadratic operator in the X_i and ∂_i given by
 `New.Fock.glOp` ε a b.
@@ -355,7 +355,7 @@ theorem hasDerivAt_realWeil [DecidableEq ι] {γ : ℝ → USign ε} {Y : Matrix
   have skew (i j : ι) : starRingEnd ℂ (Y j i) * ε j = -(ε i * Y i j) :=
     star_mul_sign_eq_neg_sign_mul_of_hasDerivAt hγ_zero hγ i j
   have h_diff := differentiableAt_realWeil_polyVector hγ_zero hγ
-  let D : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace ε :=
+  let D : MvPolynomial ι ℂ →ₗ[ℂ] FockSpace ε :=
     { toFun := fun P ↦ deriv (fun t : ℝ ↦ realWeil (γ t) (polyVector ε P)) 0
       map_add' := by simp [h_diff]
       map_smul' := by simp [h_diff, deriv_fun_const_smul] }
@@ -425,7 +425,7 @@ theorem hasDerivAt_realWeil [DecidableEq ι] {γ : ℝ → USign ε} {Y : Matrix
   have B_zero (Q : MvPolynomial ι ℂ) : B Q P = 0 :=
     MvPolynomial.sesqForm_apply_eq_zero_of_mul_X_eq_pderiv B B_one B_mul_X_right B_mul_X_left Q P
   -- The vectors `polyVector ε Q` are dense, so `D P - weilDeriv ε Y P` is orthogonal to everything.
-  have orth (v : fockSpace ε) : fockInner v (D P - polyVector ε (weilDeriv ε Y P)) = 0 :=
+  have orth (v : FockSpace ε) : fockInner v (D P - polyVector ε (weilDeriv ε Y P)) = 0 :=
     isClosed_property denseRange_polyVector (fockInner.flip _).isClosed_ker B_zero v
   have h_D_eq : D P = polyVector ε (weilDeriv ε Y P) :=
     eq_of_sub_eq_zero (eq_zero_of_modelInner_self (orth _))

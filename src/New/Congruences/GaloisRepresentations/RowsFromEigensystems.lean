@@ -507,7 +507,7 @@ theorem exists_isMainSummand_descentPair {ℓ : ℕ} [ThePrime ℓ] (ι : PadicI
       L (W.formRep _ g y) = rightRegular ℂ _ _ g (L y) :=
     congrArg Subtype.val (toAlgForm_formRep hκ g y)
   -- the action of the product of the finite groups at the chosen places
-  let π : Representation ℂ D.chosenGL (D.principalForms W) := D.principalRep W
+  let π : Representation ℂ D.ChosenGL (D.principalForms W) := D.principalRep W
   let O : DescentPair D.E D.RowIndex (D.RowIndex ⊕ Fin D.t) := D.descentPair .one j
   -- `e₀` fixes `z` and is the sum of the `tupleIdem c` over the good tuples `c`
   have h_fixed : π.asAlgebraHom D.e₀ z = z := (D.isCentralProj_e₀.1.map _).mem_range_iff.1 hz_good

@@ -352,7 +352,7 @@ private lemma toAlgForm_formLift_ne_zero {κ κ' : InfinitePlace E → ℕ → �
     {e c : InfinitePlace E → ℤ} {s : ℕ} {b : AutChar E} (hb : b.HasWeight c 1)
     {l : InfinitePlace E → n → ℤ} {l' : InfinitePlace E → Fin (card n + s) → ℤ}
     (hl : IsHCParam (n := n) κ e l) (hl' : IsHCParam (n := Fin (card n + s)) κ' 0 l')
-    {v : Fock.fockSpace (realSigns E (homSigns 1 1))}
+    {v : Fock.FockSpace (realSigns E (homSigns 1 1))}
     (h_edge : IsEdge (realPairWeil 0 c) (typeKernel l 1) (typeKernel l' 1) v)
     (h_rank : 2 * card n < card (Fin (card n + s)))
     {S : Set (FinPlace E)} {Ψ : 𝒮 ((stdSpace E n).hom (stdSpace E (Fin (card n + s))))}

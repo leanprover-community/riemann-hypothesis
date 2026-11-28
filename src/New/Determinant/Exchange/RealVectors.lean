@@ -99,9 +99,9 @@ whose slice at each `x` is `τ x • κ` times `realWeil 1 v`, and whose slice a
 splitting with the two isotropic frames exchanged, is `v`. -/
 lemma exists_isSchwartzVector_realSlice_eq (D : X.Splitting W₁ b) [IsBaseAdapted D] {t' : a → ℤˣ}
     (V' : Space E a t') (τ : (InfinitePlace E × a × b → ℂ) → ℝ) (hτ : ContDiff ℝ ∞ τ)
-    {v : fockSpace (realSigns E (homSigns s t'))} (hv : IsSchwartzVector v)
+    {v : FockSpace (realSigns E (homSigns s t'))} (hv : IsSchwartzVector v)
     (hsupp : HasCompactSupport τ) (hτ₀ : 0 ≤ τ) (y : InfinitePlace E × a × b → ℂ) (hy : τ y ≠ 0) :
-    ∃ (κ : ℂ) (Λ : fockSpace (realSigns E (homSigns r t'))),
+    ∃ (κ : ℂ) (Λ : FockSpace (realSigns E (homSigns r t'))),
       IsSchwartzVector Λ ∧
       realSlice D.symm V' 0 Λ = v ∧
       ∀ x : InfinitePlace E × a × b → ℂ,
@@ -272,7 +272,7 @@ a splitting `e` of the coordinates compatible with the signs, is a Schwartz vect
 lemma isSchwartzVector_realBoxProd {ι ι₁ ι₂ : Type*} [Fintype ι] [DecidableEq ι] [Fintype ι₁]
     [DecidableEq ι₁] [Fintype ι₂] [DecidableEq ι₂] {ε : ι → ℤˣ} {ε₁ : ι₁ → ℤˣ} {ε₂ : ι₂ → ℤˣ}
     {e : ι₁ ⊕ ι₂ ≃ ι}
-    (he : ε ∘ e = ε₁ ⊕ᵥ ε₂) {v : fockSpace ε₁} {w : fockSpace ε₂} (hv : IsSchwartzVector v)
+    (he : ε ∘ e = ε₁ ⊕ᵥ ε₂) {v : FockSpace ε₁} {w : FockSpace ε₂} (hv : IsSchwartzVector v)
     (hw : IsSchwartzVector w) : IsSchwartzVector (realBoxProd he v w) := by
   -- `realBoxProd he v w` is an iterated integral of translates of the vacuum, against `w` and then
   -- `v`; padding a vector with zeros does not increase its maximum norm.
@@ -295,17 +295,17 @@ lemma isSchwartzVector_realBoxProd {ι ι₁ ι₂ : Type*} [Fintype ι] [Decida
     · change ‖((0 : ι₁ → ℂ) ⊕ᵥ y) (e.symm (e (Sum.inr i)))‖₊ ≤ ‖y‖₊
       rw [e.symm_apply_apply, Sum.elim_inr]
       exact nnNorm_le_pi_nnNorm y i
-  let inner : fockSpace ε := ∫ y, w y • realHeisenbergOp ((realCoordSum he).equiv (0, y))
+  let inner : FockSpace ε := ∫ y, w y • realHeisenbergOp ((realCoordSum he).equiv (0, y))
     Fock.vacVector
     ∂normalizedVolume ι₂
   have inner_le : fockMoment N inner ≤
-      fockMoment N (Fock.vacVector : fockSpace ε) * fockMoment N w := by
+      fockMoment N (Fock.vacVector : FockSpace ε) * fockMoment N w := by
     refine (fockMoment_integral_le _).trans (lintegral_fockMoment_smul_le fun y ↦ ?_)
     exact ((fockMoment_realHeisenbergOp_le _ _ _).trans
       (mul_le_mul_left (pow_le_pow_left' (add_le_add_right (pad_right y) 1) N) _)).trans_eq
       (mul_comm _ _)
   have outer_le : fockMoment N (realBoxProd he v w) ≤
-      fockMoment N (Fock.vacVector : fockSpace ε) * fockMoment N w * fockMoment N v := by
+      fockMoment N (Fock.vacVector : FockSpace ε) * fockMoment N w * fockMoment N v := by
     refine (fockMoment_integral_le _).trans (lintegral_fockMoment_smul_le fun x ↦ ?_)
     change fockMoment N (realHeisenbergOp ((realCoordSum he).equiv (x, 0)) inner) ≤ _
     exact ((fockMoment_realHeisenbergOp_le _ _ _).trans
@@ -550,7 +550,7 @@ lemma exists_isSchwartzVector_exchangeSection (D : X.Splitting W₁ b) [IsBaseAd
     {z : Matrix (b ⊕ n) b ℂ → Matrix (b ⊕ n) b ℂ} (hz : ContDiff ℝ ∞ z)
     (j : ℕ) (M : InfinitePlace E → ℕ) (κ : ℂ) {v : PairFock E s t'} {v₁ : PairFock E s s}
     (hv : IsSchwartzVector v) (hv₁ : IsSchwartzVector v₁) :
-    ∃ Φ : fockSpace (realSigns E (homSigns r (t' ⊕ᵥ s))),
+    ∃ Φ : FockSpace (realSigns E (homSigns r (t' ⊕ᵥ s))),
       IsSchwartzVector Φ ∧
       ∀ x : Matrix (b ⊕ n) b (𝔸 E), realSlice D (V'.sum W₁) x Φ =
         exchangeSection σ k j M κ v v₁ (z ∘ atRealPlace x) (atRealPlace x) := by
@@ -988,7 +988,7 @@ theorem exists_rowColExchangeIdentity_sum (D : X.Splitting W₁ b) [IsBaseAdapte
     (V' : Space E b t') (e : b ⊕ b ⊕ n ≃ m) (hn : 2 ∣ Fintype.card n) (μ : InfinitePlace E → ℤ)
     {v : PairFock E s t'} {v₁ : PairFock E s s} (hv : IsSchwartzVector v)
     (hv₁ : IsSchwartzVector v₁) :
-    ∃ (Φ : fockSpace (realSigns E (homSigns r (t' ⊕ᵥ s)))) (Λ : PairFock E r t'),
+    ∃ (Φ : FockSpace (realSigns E (homSigns r (t' ⊕ᵥ s)))) (Λ : PairFock E r t'),
       realSlice D.symm V' 0 Λ = v ∧
       RowColExchangeIdentity X (V'.sum W₁) V' μ e Φ Λ fun 𝔠 : SplitTameChar E μ ↦
         equalRankThetaRatio W₁ 𝔠 v₁ := by

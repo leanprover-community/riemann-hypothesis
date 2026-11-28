@@ -308,7 +308,7 @@ open Matrix Kronecker
 /-- The Fock space for the signs s′_i s_j of Hom(S,T), repeated at every infinite place. -/
 abbrev PairFock (E : Type) [Field E] [NumberField E] {n n' : Type} [Fintype n] [DecidableEq n]
     [Fintype n'] [DecidableEq n'] (s : n → ℤˣ) (s' : n' → ℤˣ) : Type :=
-  fockSpace (realSigns E (homSigns s s'))
+  FockSpace (realSigns E (homSigns s s'))
 
 /-- The homomorphism sending real points (x, y) to the action z ↦ y_w z x_w⁻¹ on matrices at each
 infinite place w, as one block diagonal unitary matrix (`blockU`), in `USign` for the signs of

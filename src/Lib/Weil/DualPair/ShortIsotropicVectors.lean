@@ -438,7 +438,7 @@ lemma Space.exists_rho_eq_realHeisenbergOp {E n : Type} [Field E] [CMType E] [We
       ∀ x ∈ V.adelicPoints (Submodule.span E (Set.range z)),
       ∃ γ ∈ Submodule.span E (Set.range z), ∃ y : NumberField.InfinitePlace E × n → ℂ,
         ‖y‖ ≤ C * δ ∧
-        ∀ v : fockSpace (realSigns E s),
+        ∀ v : FockSpace (realSigns E s),
           V.ϱ (g⁻¹.adeleMatrix *ᵥ (V.vecAtPoint γ + x)) (V.integrated v f₀) =
             V.integrated (realHeisenbergOp y v) f₀ := by
   obtain ⟨M, hM, h_fix⟩ : ∃ M : ℕ, M ≠ 0 ∧ ∀ u : n → 𝔸 E, (∀ k : n, (u k).2 ∈ Ô E) →
@@ -503,17 +503,17 @@ lemma Space.exists_norm_le_of_differences {E n : Type} [Field E] [CMType E] [Wei
       (∀ γ ∈ Z, ∀ f : 𝒮 V, Λ (V.ϱ (V.vecAtPoint γ) f) = Λ f) →
       (∀ (f : 𝒮 V) (B : ℝ),
         (∀ x ∈ V.adelicPoints Z, ‖Λ (V.ω g f) - Λ (V.ϱ x (V.ω g f))‖ ≤ B) → ‖Λ (V.ω g f)‖ ≤ B) →
-      ∀ v : fockSpace (realSigns E s), fockMoment l v ≠ ⊤ →
+      ∀ v : FockSpace (realSigns E s), fockMoment l v ≠ ⊤ →
       ‖Λ (V.ω g (V.integrated v f₀))‖ ≤ C * ‖Λ ∘L V.ω g‖ * δ ^ l * (fockMoment l v).toReal := by
   -- Modulo `Z`, the shifts `ϱ (g⁻¹ x)` act on `v ⊗ f₀` by real translations of size at most `C₀ δ`.
   -- On Fock space each derivative along them gains this factor and costs one moment of `v`.
   obtain ⟨C, h_fock⟩ := exists_enorm_le_mul_fockMoment_of_norm_sub_le (ε := realSigns E s) l
   obtain ⟨C₀, hC₀, h_real⟩ := exists_rho_eq_realHeisenbergOp hf₀ ι
-  let J : fockSpace (realSigns E s) →L[ℂ] 𝒮 V := V.integrated.flip f₀
+  let J : FockSpace (realSigns E s) →L[ℂ] 𝒮 V := V.integrated.flip f₀
   refine ⟨C * ‖J‖ * C₀ ^ l, by positivity, ?_⟩
   rintro g δ z _ Λ hδ hz rfl h_iso h_inv h_shifts v hv
   let L : 𝒮 V →L[ℂ] ℂ := Λ ∘L V.ω g
-  have h_diff (v : fockSpace (realSigns E s)) (B : ℝ)
+  have h_diff (v : FockSpace (realSigns E s)) (B : ℝ)
       (hB : ∀ y : NumberField.InfinitePlace E × n → ℂ, ‖y‖ ≤ C₀ * δ →
         ‖(L ∘L J) v - (L ∘L J) (realHeisenbergOp y v)‖ ≤ B) :
       ‖(L ∘L J) v‖ ≤ B := by
@@ -553,7 +553,7 @@ theorem Space.exists_norm_sub_subspaceMean_le {E n : Type} [Field E] [CMType E] 
       (∀ γ ∈ Z, ∀ η ∈ Z, star γ ⬝ᵥ V.J *ᵥ η = 0) →
       (∀ γ ∈ Z, ∀ f : 𝒮 V, Λ (V.ϱ (V.vecAtPoint γ) f) = Λ f) →
       (∀ f : 𝒮 V, Λ₀ f = V.subspaceMean Z fun x : n → 𝔸 E ↦ Λ (V.ϱ x f)) →
-      ∀ v : fockSpace (realSigns E s), fockMoment l v ≠ ⊤ →
+      ∀ v : FockSpace (realSigns E s), fockMoment l v ≠ ⊤ →
       ‖(Λ - Λ₀) (V.ω g (V.integrated v f₀))‖ ≤
         C * ‖Λ ∘L V.ω g‖ * δ ^ l * (fockMoment l v).toReal := by
   -- The functional `Λ - Λ₀` has mean zero, so it is the mean of its differences, and

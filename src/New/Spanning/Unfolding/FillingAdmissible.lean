@@ -38,7 +38,7 @@ Notions from other files:
 * `New.Data.spaceY`: for an index `j`, the hermitian space `Y_j` with its adelic frame, hence its
   lattice `𝖬_j`, chosen as in `New.Data.exists_space_isStd_of_le_and_gram_eq_of_lt`. Only `j = 0`
   occurs in this file.
-* `New.Data.chosenGL`: The finite group 𝖦 = ∏ GL_r(𝔽_w), over the chosen places w above p₀ and p₁.
+* `New.Data.ChosenGL`: The finite group 𝖦 = ∏ GL_r(𝔽_w), over the chosen places w above p₀ and p₁.
 * `New.Data.targetParameter`: The entry i (from 0) of the target parameter at v: k/2 − 1 − i for
   i < k − 1, and Δ/2 − w_{i+2−k}(v) otherwise, where Δ/2 = `D.halfGap` and
   w_j(v) = `D.liftWeight j v`.
@@ -105,10 +105,10 @@ def sourceFormCoords :
 
 /-- For s in 𝖦, the linear map from forms of parameter ς and level M on Y₀ to the image of the good
 idempotent e₀. It is the translation by s, followed by |𝖦| times the action of e₀. -/
-abbrev goodProjTranslate (s : D.chosenGL) :
+abbrev goodProjTranslate (s : D.ChosenGL) :
     ↥(D.principalForms (D.spaceY 0)) →ₗ[ℂ]
       LinearMap.range ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀) :=
-  (Nat.card D.chosenGL : ℂ) •
+  (Nat.card D.ChosenGL : ℂ) •
     ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀).rangeRestrict ∘ₗ D.principalRep (D.spaceY 0) s
 
 end New.Data

@@ -15,7 +15,7 @@ import Lib.General.Analysis.MeanValueAndTaylor
 /-!
 # Mixed Schrödinger–Fock models and rapid sections with prescribed values
 
-A mixed model reads a vector `Φ` of a large Fock space `New.Fock.fockSpace` as a function
+A mixed model reads a vector `Φ` of a large Fock space `New.Fock.FockSpace` as a function
 `x ↦ h.slice x Φ` on `ℂ ^ p` with values in a smaller Fock space. An adapted splitting of a
 hermitian space induces one at the infinite places (`New.Space.Splitting.IsAdapted.mixedModel`). A
 vector is a Schwartz vector (`New.Exchange.IsSchwartzVector`) if all its moments `fockMoment N
@@ -37,7 +37,7 @@ phase.
   `x ↦ h.slice x Φ` for a Schwartz vector `Φ`.
 
 Notions from other files:
-* `New.Fock.fockSpace`: the Fock space: integrable functions c on ℂ^ι with c(x) = ∫ c(y)β(y,x)e(x−y)
+* `New.Fock.FockSpace`: the Fock space: integrable functions c on ℂ^ι with c(x) = ∫ c(y)β(y,x)e(x−y)
   dy, e the Gaussian exp(−|x|²/2), under the L¹ norm for the measure `New.Fock.normalizedVolume` on
   ℂ^ι.
 * `New.Fock.vacVector`: the Gaussian exp(−|x|²/2) regarded as an element of the Fock space.
@@ -76,7 +76,7 @@ structure MixedModel where
   /-- The matrix of the directions that act on the values, in the small Fock space. -/
   I : Matrix ι' ι ℂ
   /-- The value at `a ∈ ℂ^p`: a bounded map from the large Fock space to the small one. -/
-  slice : (p → ℂ) → fockSpace ε' →L[ℂ] fockSpace ε
+  slice : (p → ℂ) → FockSpace ε' →L[ℂ] FockSpace ε
   /-- Every vector `y` is `L a + I w + K b` with `a`, `w`, `b` given by matrices applied to `y`, so
   that their norms are bounded by a multiple of that of `y`. -/
   exists_decomp :
@@ -84,7 +84,7 @@ structure MixedModel where
       ∀ y : ι' → ℂ, L *ᵥ A *ᵥ y + I *ᵥ W *ᵥ y + K *ᵥ B *ᵥ y = y
   /-- The Heisenberg operator of `L a' + I w + K b` translates the argument by `a'`, applies the
   operator of `w` to the value and multiplies by the phase `β (2 a + a') b`. -/
-  slice_realHeisenbergOp (a a' : p → ℂ) (w : ι → ℂ) (b : p → ℂ) (v : fockSpace ε') :
+  slice_realHeisenbergOp (a a' : p → ℂ) (w : ι → ℂ) (b : p → ℂ) (v : FockSpace ε') :
       slice a (realHeisenbergOp (L *ᵥ a' + I *ᵥ w + K *ᵥ b) v) =
         (realHeisenberg 1).β (2 • a + a') b • realHeisenbergOp w (slice (a + a') v)
   /-- The vacuum is the Gaussian `exp (-|a|²)` times the vacuum of the small space. -/
@@ -95,7 +95,7 @@ variable {ε' ε p} (h : MixedModel ε' ε p)
 /-- Rapid decay in a mixed model: for all `N`, `M` there is a finite `C` with
 `(1 + ‖a‖) ^ M * fockMoment N (slice a v) ≤ C * fockMoment (N + M) v` for all `a` and `v`. -/
 lemma MixedModel.exists_fockMoment_slice_le (N M : ℕ) :
-    ∃ C : ℝ≥0∞, C ≠ ⊤ ∧ ∀ (a : p → ℂ) (v : fockSpace ε'),
+    ∃ C : ℝ≥0∞, C ≠ ⊤ ∧ ∀ (a : p → ℂ) (v : FockSpace ε'),
       (1 + ‖a‖ₑ) ^ M * fockMoment N (h.slice a v) ≤ C * fockMoment (N + M) v := by
   -- Expand `v` into translates `realHeisenbergOp y vacVector` and split
   -- `y = L A y + I W y + K B y`. Up to a phase, `h.slice a (realHeisenbergOp y vacVector)` is
@@ -121,17 +121,17 @@ lemma MixedModel.exists_fockMoment_slice_le (N M : ℕ) :
     simpa (disch := bound) [ENNReal.ofReal_add] using
       ofReal_le_ofReal (pow_mul_realVac_le M h_tri (by positivity) (by positivity))
   set C : ℝ≥0∞ :=
-    .ofReal (.exp (M ^ 2)) * cA ^ M * (cW ^ N * fockMoment N (vacVector : fockSpace ε))
+    .ofReal (.exp (M ^ 2)) * cA ^ M * (cW ^ N * fockMoment N (vacVector : FockSpace ε))
   have h_transl (a : p → ℂ) (y : ι' → ℂ) :
       (1 + ‖a‖ₑ) ^ M * fockMoment N (h.slice a (realHeisenbergOp y vacVector)) ≤
         C * (1 + ‖y‖ₑ) ^ (N + M) := by
     calc
       _ = (1 + ‖a‖ₑ) ^ M * ‖(-(star (a + A *ᵥ y) ⬝ᵥ (a + A *ᵥ y))).exp‖ₑ *
-          fockMoment N (realHeisenbergOp (W *ᵥ y) (vacVector : fockSpace ε)) := by
+          fockMoment N (realHeisenbergOp (W *ᵥ y) (vacVector : FockSpace ε)) := by
         conv_lhs => rw [← h_span y, slice_realHeisenbergOp, slice_vac, map_smul]
         simp [fockMoment_smul, mul_assoc, ← ofReal_norm, Heisenberg.norm_eq_one]
       _ ≤ .ofReal (.exp (M ^ 2)) * (cA * (1 + ‖y‖ₑ)) ^ M *
-          ((cW * (1 + ‖y‖ₑ)) ^ N * fockMoment N (vacVector : fockSpace ε)) := by
+          ((cW * (1 + ‖y‖ₑ)) ^ N * fockMoment N (vacVector : FockSpace ε)) := by
         grw [h_gauss, fockMoment_realHeisenbergOp_le, hA, hW]
       _ = _ := by simp only [C, mul_pow, pow_add, mul_assoc, mul_comm, mul_left_comm]
   refine ⟨C, ?_, fun a v ↦ ?_⟩
@@ -144,7 +144,7 @@ lemma MixedModel.exists_fockMoment_slice_le (N M : ℕ) :
 
 /-- In a mixed model, each value of a Schwartz vector (one with all moments finite) is a Schwartz
 vector. -/
-lemma MixedModel.isSchwartzVector_slice (a : p → ℂ) {v : fockSpace ε'} (hv : IsSchwartzVector v) :
+lemma MixedModel.isSchwartzVector_slice (a : p → ℂ) {v : FockSpace ε'} (hv : IsSchwartzVector v) :
     IsSchwartzVector (h.slice a v) := fun N ↦ by
   obtain ⟨C, hC, h_le⟩ := h.exists_fockMoment_slice_le N 0
   have h_bound : fockMoment N (h.slice a v) ≤ C * fockMoment N v := by simpa using h_le a v
@@ -170,7 +170,7 @@ lemma exists_smooth_exponent_coherent {A : EuclideanSpace ℂ p → (ι → ℂ)
     (hA : ContDiff ℝ ∞ A) :
     ∃ q : ((ι → ℂ) × (ι' → ℂ)) × EuclideanSpace ℂ p → ℂ,
       (∀ (y : ι → ℂ) (w : ι' → ℂ) (x : EuclideanSpace ℂ p),
-        cexp (q ((y, w), x)) = (realHeisenbergOp (A x y) vacVector : fockSpace ε') w) ∧
+        cexp (q ((y, w), x)) = (realHeisenbergOp (A x y) vacVector : FockSpace ε') w) ∧
       ContDiff ℝ ∞ q ∧
       ∀ r > (0 : ℝ), ∀ (t : (ι → ℂ) × (ι' → ℂ)) (x : EuclideanSpace ℂ p),
         q (r⁻¹ • t, x) / (r : ℂ)⁻¹ ^ 2 = q (t, x) := by
@@ -200,7 +200,7 @@ lemma exists_norm_fourier_coherent_le {d : EuclideanSpace ℂ p → ℂ} (d_smoo
       (1 + ‖b‖) ^ M * (1 + ‖w‖) ^ n *
           ‖FourierTransform.fourier
             (fun x : EuclideanSpace ℂ p ↦
-              d x * (realHeisenbergOp (A x y) vacVector : fockSpace ε') w)
+              d x * (realHeisenbergOp (A x y) vacVector : FockSpace ε') w)
             b‖ ≤
         C * (1 + ‖y‖) ^ (2 * M + n) := by
   obtain ⟨B, B_pos, hB⟩ := (d_supp.image hA.continuous).isBounded.exists_pos_norm_le
@@ -262,18 +262,18 @@ moment `fockMoment N (realHeisenbergOp (k b) (Ĝ y b))` is finite. -/
 lemma lintegral_fockMoment_realHeisenbergOp_fourier_ne_top {d : EuclideanSpace ℂ p → ℂ}
     (d_smooth : ContDiff ℝ ∞ d) (d_supp : HasCompactSupport d)
     {A : EuclideanSpace ℂ p → (ι → ℂ) →L[ℝ] ι' → ℂ} (A_smooth : ContDiff ℝ ∞ A)
-    {ξ : fockSpace ε} (hξ : IsSchwartzVector ξ) (k : EuclideanSpace ℂ p →L[ℂ] WithLp ⊤ (ι' → ℂ))
+    {ξ : FockSpace ε} (hξ : IsSchwartzVector ξ) (k : EuclideanSpace ℂ p →L[ℂ] WithLp ⊤ (ι' → ℂ))
     (N : ℕ) :
     ∫⁻ z : (ι → ℂ) × EuclideanSpace ℂ p,
         fockMoment N (realHeisenbergOp (k z.2) (FourierTransform.fourier
           (fun x : EuclideanSpace ℂ p ↦
-            d x • ξ z.1 • (realHeisenbergOp (A x z.1) vacVector : fockSpace ε')) z.2))
+            d x • ξ z.1 • (realHeisenbergOp (A x z.1) vacVector : FockSpace ε')) z.2))
         ∂(normalizedVolume ι).prod volume ≠ ⊤ := by
-  let G (y : ι → ℂ) (x : EuclideanSpace ℂ p) : fockSpace ε' :=
+  let G (y : ι → ℂ) (x : EuclideanSpace ℂ p) : FockSpace ε' :=
     d x • ξ y • realHeisenbergOp (A x y) vacVector
   have G_int (y : ι → ℂ) : Integrable (G y) :=
     integrable_of_hasCompactSupport (by fun_prop) d_supp.smul_right
-  let Ĝ (y : ι → ℂ) : EuclideanSpace ℂ p → fockSpace ε' := FourierTransform.fourier (G y)
+  let Ĝ (y : ι → ℂ) : EuclideanSpace ℂ p → FockSpace ε' := FourierTransform.fourier (G y)
   -- The weights `(1 + ‖w‖) ^ (-r)` and `(1 + ‖b‖) ^ (-r')` are integrable.
   obtain ⟨r, int_w⟩ : (normalizedVolume ι').HasTemperateGrowth := inferInstance
   obtain ⟨r', int_b⟩ : (volume : Measure (EuclideanSpace ℂ p)).HasTemperateGrowth := inferInstance
@@ -282,7 +282,7 @@ lemma lintegral_fockMoment_realHeisenbergOp_fourier_ne_top {d : EuclideanSpace �
   -- Non-stationary phase bounds the Fourier transform of the values of the coherent states.
   obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ (y : ι → ℂ) (w : ι' → ℂ) (b : EuclideanSpace ℂ p),
       (1 + ‖b‖) ^ M * (1 + ‖w‖) ^ (r + N) * ‖FourierTransform.fourier (fun x : EuclideanSpace ℂ p ↦
-        d x * (realHeisenbergOp (A x y) vacVector : fockSpace ε') w) b‖ ≤
+        d x * (realHeisenbergOp (A x y) vacVector : FockSpace ε') w) b‖ ≤
         C * (1 + ‖y‖) ^ (2 * M + (r + N)) :=
     exists_norm_fourier_coherent_le d_smooth d_supp A_smooth M (r + N)
   -- A pointwise bound for the integrand of `(1 + ‖k b‖) ^ N * fockMoment N (Ĝ y b)`, which bounds
@@ -291,7 +291,7 @@ lemma lintegral_fockMoment_realHeisenbergOp_fourier_ne_top {d : EuclideanSpace �
       (1 + ‖k b‖) ^ N * (1 + ‖w‖) ^ N * ‖Ĝ y b w‖ ≤
       |C| * (1 + ‖y‖) ^ m * ‖ξ y‖ * ((1 + ‖b‖) ^ r')⁻¹ * ((1 + ‖w‖) ^ r)⁻¹ := by
     let f : ℂ := FourierTransform.fourier
-      (fun x ↦ d x * (realHeisenbergOp (A x y) vacVector : fockSpace ε') w) b
+      (fun x ↦ d x * (realHeisenbergOp (A x y) vacVector : FockSpace ε') w) b
     have hf : Ĝ y b w = ξ y * f := by
       -- the value at `w` is a continuous linear functional, so it passes under the integral
       change valueAt w (FourierTransform.fourier (G y) b) = ξ y * f
@@ -341,9 +341,9 @@ vector of the small Fock space. Then some Schwartz vector `Φ` of the large Fock
 `τ x • realWeil (u x) ξ` at every `x` in the mixed model `h`. -/
 lemma MixedModel.exists_isSchwartzVector_slice_eq {τ : (p → ℂ) → ℂ} (hτ : ContDiff ℝ ∞ τ)
     (hτ_supp : HasCompactSupport τ) {u : (p → ℂ) → USign ε}
-    (hu : ContDiff ℝ ∞ fun x : p → ℂ ↦ ((u x : GL ι ℂ) : Matrix ι ι ℂ)) {ξ : fockSpace ε}
+    (hu : ContDiff ℝ ∞ fun x : p → ℂ ↦ ((u x : GL ι ℂ) : Matrix ι ι ℂ)) {ξ : FockSpace ε}
     (hξ : IsSchwartzVector ξ) :
-    ∃ Φ : fockSpace ε', IsSchwartzVector Φ ∧ ∀ x : p → ℂ, h.slice x Φ = τ x • realWeil (u x) ξ := by
+    ∃ Φ : FockSpace ε', IsSchwartzVector Φ ∧ ∀ x : p → ℂ, h.slice x Φ = τ x • realWeil (u x) ξ := by
   -- `realWeil (u x) ξ` is a superposition, with density `ξ y`, of the coherent states
   -- `realHeisenbergOp (u x y) vacVector`. The slice at `x` of `G y x` is the `y`-part of
   -- `τ x • realWeil (u x) ξ`; take `Φ = ∬ realHeisenbergOp (k b) (Ĝ y b) db dy`, with `Ĝ y` the
@@ -365,15 +365,15 @@ lemma MixedModel.exists_isSchwartzVector_slice_eq {τ : (p → ℂ) → ℂ} (h�
   let A (x : EuclideanSpace ℂ p) : (ι → ℂ) →L[ℝ] ι' → ℂ :=
     (mulVecBilin ℝ ℝ).toContinuousBilinearMap (h.I * S x.ofLp)
   have A_smooth : ContDiff ℝ ∞ A := by fun_prop
-  let G (y : ι → ℂ) (x : EuclideanSpace ℂ p) : fockSpace ε' :=
+  let G (y : ι → ℂ) (x : EuclideanSpace ℂ p) : FockSpace ε' :=
     d x • ξ y • realHeisenbergOp (A x y) vacVector
   have G_int (y : ι → ℂ) : Integrable (G y) :=
     integrable_of_hasCompactSupport (by fun_prop) d_supp.smul_right
-  let Ĝ (y : ι → ℂ) : EuclideanSpace ℂ p → fockSpace ε' := FourierTransform.fourier (G y)
+  let Ĝ (y : ι → ℂ) : EuclideanSpace ℂ p → FockSpace ε' := FourierTransform.fourier (G y)
   have Ĝ_meas : StronglyMeasurable (uncurry Ĝ) := by
     simp only [uncurry_def, Ĝ, fourier_eq]
     exact .integral_prod_right (Continuous.stronglyMeasurable (by fun_prop))
-  let F (z : (ι → ℂ) × EuclideanSpace ℂ p) : fockSpace ε' := realHeisenbergOp (k z.2) (Ĝ z.1 z.2)
+  let F (z : (ι → ℂ) × EuclideanSpace ℂ p) : FockSpace ε' := realHeisenbergOp (k z.2) (Ĝ z.1 z.2)
   have h_mom (N : ℕ) : ∫⁻ z, fockMoment N (F z) ∂(normalizedVolume ι).prod volume ≠ ⊤ :=
     lintegral_fockMoment_realHeisenbergOp_fourier_ne_top d_smooth d_supp A_smooth hξ k N
   -- Finite integrated moments make `F` integrable, with integral a Schwartz vector.
@@ -385,7 +385,7 @@ lemma MixedModel.exists_isSchwartzVector_slice_eq {τ : (p → ℂ) → ℂ} (h�
     have Ĝ_int : Integrable (Ĝ y) :=
       hy.mono (by fun_prop) (.of_forall fun b ↦ by simp [F, Rep.norm_map])
     let χ (b : EuclideanSpace ℂ p) : Circle := fourierChar (inner ℝ b (.toLp 2 x))
-    have h_slice_heisOp_K (c : p → ℂ) (v : fockSpace ε') :
+    have h_slice_heisOp_K (c : p → ℂ) (v : FockSpace ε') :
         h.slice x (realHeisenbergOp (h.K *ᵥ c) v) =
           (realHeisenberg 1).β (x + x) c • h.slice x v := by
       simpa [two_mul] using h.slice_realHeisenbergOp x 0 0 c v
@@ -403,7 +403,7 @@ lemma MixedModel.exists_isSchwartzVector_slice_eq {τ : (p → ℂ) → ℂ} (h�
       _ = _ := by rw [← fourierInv_eq, fourierInv_fourier_eq (by fun_prop) (G_int y) Ĝ_int]
   rw [← integral_comp_comm _ F_int, integral_prod _ (by fun_prop),
     integral_congr_ae (F_int.prod_right_ae.mono h_inv)]
-  have h_slice_heisOp_I (w : ι → ℂ) (v : fockSpace ε') :
+  have h_slice_heisOp_I (w : ι → ℂ) (v : FockSpace ε') :
       h.slice x (realHeisenbergOp (h.I *ᵥ w) v) = realHeisenbergOp w (h.slice x v) := by
     simpa using h.slice_realHeisenbergOp x 0 w 0 v
   -- `realWeil (u x) ξ` is by definition `∫ ξ y • realHeisenbergOp (S x y) vacVector` times the

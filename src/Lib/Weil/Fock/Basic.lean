@@ -37,7 +37,7 @@ along splittings of the coordinates and over real places are compatible with pol
 * `New.Fock.realAction`: the unitary group `U(ε)` acts on the datum in the sense of
   `New.Heisenberg.MultiplierAction`, with multiplier `New.Fock.realMultiplier` (the conjugate
   determinant of the negative block) and cocycle `1`.
-* `New.Fock.fockSpace`, `New.Fock.realWeil`, `New.Fock.realHeisenbergOp`, `New.Fock.vacVector`,
+* `New.Fock.FockSpace`, `New.Fock.realWeil`, `New.Fock.realHeisenbergOp`, `New.Fock.vacVector`,
   `New.Fock.fockInner`: the space, the Weil representation of U(ε), the Heisenberg action, the
   vacuum, the inner product.
 * `New.Fock.polyVector`: the vector v_P(x) = P(ζ(x)) exp(−|x|²/2) of a polynomial P. It lies in the
@@ -532,7 +532,7 @@ end FockAction
 /-!
 ## Fock space and polynomial vectors
 
-* `New.Fock.fockSpace`, `New.Fock.realWeil`, `New.Fock.realHeisenbergOp`, `New.Fock.vacVector`,
+* `New.Fock.FockSpace`, `New.Fock.realWeil`, `New.Fock.realHeisenbergOp`, `New.Fock.vacVector`,
   `New.Fock.fockInner`: the Fock space, the Weil representation of U(ε) and the Heisenberg action
   on it, the vacuum, the inner product.
 * `New.Fock.polyVector`, `New.Fock.polyVector_injective`: the vector v_P of a polynomial P, and
@@ -552,23 +552,23 @@ variable {ι : Type _} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ}
 /-- The Fock space: integrable functions c on ℂ^ι with c(x) = ∫ c(y)β(y,x)e(x−y) dy, under the L¹
 norm. Here β is the bicharacter of `New.Fock.realHeisenberg` ε and e is the Gaussian
 exp(−|x|²/2). -/
-abbrev fockSpace (ε : ι → ℤˣ) : Type _ := Model (realHeisenberg (ι := ι) ε)
+abbrev FockSpace (ε : ι → ℤˣ) : Type _ := Model (realHeisenberg (ι := ι) ε)
 
 /-- The Weil representation of U(ε) on the Fock space 𝓕: u sends c to Δ(u) ∫ c(y) ρ(uy) e dy, where
 ρ is the Heisenberg action `New.Fock.realHeisenbergOp`, e is the Gaussian and Δ is the multiplier of
 `New.Fock.realAction`. -/
-abbrev realWeil : USign ε →* fockSpace ε →L[ℂ] fockSpace ε := weilRep (realAction ε)
+abbrev realWeil : USign ε →* FockSpace ε →L[ℂ] FockSpace ε := weilRep (realAction ε)
 
 /-- For x in ℂ^ι, the Heisenberg operator on the Fock space 𝓕 sending c to z ↦ β(x,z) c(z − x),
 where β is the bicharacter of `New.Fock.realHeisenberg` ε. -/
-abbrev realHeisenbergOp (x : ι → ℂ) : fockSpace ε →L[ℂ] fockSpace ε := heisenbergOp x
+abbrev realHeisenbergOp (x : ι → ℂ) : FockSpace ε →L[ℂ] FockSpace ε := heisenbergOp x
 
 /-- The Gaussian exp(−|x|²/2) regarded as an element of the Fock space. -/
-abbrev vacVector : fockSpace ε := vacElem
+abbrev vacVector : FockSpace ε := vacElem
 
 /-- The bounded sesquilinear form on the Fock space, conjugate-linear in the first variable:
 (c, c′) ↦ ∫ c̄ c′ for the measure `New.Fock.normalizedVolume`. -/
-abbrev fockInner : fockSpace ε →L⋆[ℂ] fockSpace ε →L[ℂ] ℂ := modelInner
+abbrev fockInner : FockSpace ε →L⋆[ℂ] FockSpace ε →L[ℂ] ℂ := modelInner
 
 /-! ### Differentiating the Heisenberg action -/
 
@@ -589,7 +589,7 @@ lemma differentiableAt_integral_smul_realHeisenbergOp (ε : ι → ℤˣ) {E : T
     DifferentiableAt ℂ
       (fun z : E ↦
         ∫ x : ι → ℂ, (eval (f z (1, x)).1 P * exp (f z (1, x)).2) •
-          realHeisenbergOp x (vacVector : fockSpace ε) ∂normalizedVolume ι)
+          realHeisenbergOp x (vacVector : FockSpace ε) ∂normalizedVolume ι)
       a := by
   -- Differentiate under the integral sign in the complex variable `z` near `a`. The integrand is
   -- dominated by `exp (k * ‖x‖)` times a Gaussian of twice the width: on the unit ball its exponent
@@ -604,7 +604,7 @@ lemma differentiableAt_integral_smul_realHeisenbergOp (ε : ι → ℤˣ) {E : T
       k * ‖y.1‖ * (‖(f z y).1‖ - ‖y.2‖) + (f z y - f a y).2.re ∈ Set.Iio 4⁻¹ :=
     (isCompact_closedBall 0 1).eventually_forall_mem _ _ fun y _ ↦ Iio_mem_nhds (by simp [hf_base])
   have h_major_int : MeasureTheory.Integrable
-      (fun x : ι → ℂ ↦ |A| * Real.exp 1 * ‖(vacVector : fockSpace ε)‖ *
+      (fun x : ι → ℂ ↦ |A| * Real.exp 1 * ‖(vacVector : FockSpace ε)‖ *
         (Real.exp (2 * k * ‖(1 / 2 : ℝ) • x‖) * ‖realVac ((1 / 2 : ℝ) • x)‖))
       (normalizedVolume ι) :=
     ((integrable_exp_mul_realVac (2 * k)).comp_smul one_half_pos.ne').const_mul _
@@ -626,14 +626,14 @@ lemma differentiableAt_integral_smul_realHeisenbergOp (ε : ι → ℤˣ) {E : T
       rcases le_total 1 ‖x‖ with h_le | h_le <;> simp [h_le]
     linarith [norm_sq_le_re_star_dotProduct_self x, sq_nonneg ‖x‖]
   calc
-    _ = ‖eval (f z (1, x)).1 P‖ * Real.exp (f z (1, x)).2.re * ‖(vacVector : fockSpace ε)‖ := by
+    _ = ‖eval (f z (1, x)).1 P‖ * Real.exp (f z (1, x)).2.re * ‖(vacVector : FockSpace ε)‖ := by
       simp [norm_smul, Rep.norm_map, norm_exp]
     _ ≤ |A| * Real.exp (k * ‖(f z (1, x)).1‖ + (f z (1, x)).2.re) *
-        ‖(vacVector : fockSpace ε)‖ := by grw [h_eval_le, Real.exp_add, mul_assoc |A|]
-    _ ≤ |A| * Real.exp (1 + k * ‖x‖ - (star x ⬝ᵥ x).re / 8) * ‖(vacVector : fockSpace ε)‖ := by
+        ‖(vacVector : FockSpace ε)‖ := by grw [h_eval_le, Real.exp_add, mul_assoc |A|]
+    _ ≤ |A| * Real.exp (1 + k * ‖x‖ - (star x ⬝ᵥ x).re / 8) * ‖(vacVector : FockSpace ε)‖ := by
       gcongr
     _ = _ := by
-      simp only [mul_right_comm _ ‖(vacVector : fockSpace ε)‖, mul_assoc |A|, realVac, norm_exp,
+      simp only [mul_right_comm _ ‖(vacVector : FockSpace ε)‖, mul_assoc |A|, realVac, norm_exp,
         ← Real.exp_add]
       congr 3
       simp [norm_smul]
@@ -663,12 +663,12 @@ lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → �
           realHeisenbergOp (t • v) ⟨(fun x : ι → ℂ ↦ P.eval (holomorphicCoord ε x)) * realVac,
             hP_mem⟩)
         (⟨(fun x : ι → ℂ ↦ (heisenbergDeriv ε v P).eval (holomorphicCoord ε x)) * realVac, h_mem⟩ :
-          fockSpace ε)
+          FockSpace ε)
         0 := by
   -- The values of `realHeisenbergOp (t • v) u` extend to complex `t`. By
   -- `differentiableAt_integral_smul_realHeisenbergOp` the curve has some derivative `D` in the Fock
   -- space, found by differentiating pointwise.
-  set u : fockSpace ε := ⟨(fun x ↦ P.eval (holomorphicCoord ε x)) * realVac, hP_mem⟩
+  set u : FockSpace ε := ⟨(fun x ↦ P.eval (holomorphicCoord ε x)) * realVac, hP_mem⟩
   -- `f t (1, w)` pairs the argument of `P` with the exponent of the Gaussian; the variable `s`
   -- makes the two components homogeneous of degrees `1` and `2`.
   let f (t : ℂ) : ℂ × (ι → ℂ) → (ι → ℂ) × ℂ := fun (s, w) ↦
@@ -686,7 +686,7 @@ lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → �
     rw [realHeisenbergOp, heisenbergOp_apply, h_u, mul_left_comm, beta_mul_realVac, h_exponent]
     simp [f, sub_eq_add_neg]
   obtain ⟨⟨D, h_mem⟩, hD⟩ :
-      ∃ D : fockSpace ε, HasDerivAt (fun t : ℝ ↦ realHeisenbergOp (t • v) u) D 0 := by
+      ∃ D : FockSpace ε, HasDerivAt (fun t : ℝ ↦ realHeisenbergOp (t • v) u) D 0 := by
     have hf_base (y : ℂ × (ι → ℂ)) :
         f (0 : ℝ) y = (holomorphicCoord ε y.2, -(star y.2 ⬝ᵥ y.2) / 2) := by simp [f]
     have hf_homog : ∀ (t : ℂ) (r : ℝ) (y : ℂ × (ι → ℂ)),
@@ -696,7 +696,7 @@ lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → �
     -- `realHeisenbergOp (t • v) u`.
     have h_integral (t : ℝ) :
         realHeisenbergOp (t • v) u = ∫ x : ι → ℂ, (eval (f t (1, x)).1 P * exp (f t (1, x)).2) •
-          realHeisenbergOp x (vacVector : fockSpace ε) ∂normalizedVolume ι := by
+          realHeisenbergOp x (vacVector : FockSpace ε) ∂normalizedVolume ι := by
       simp_rw [← h_val, ← Rep.integrated_apply, integrated_vacElem]
     simp_rw [h_integral]
     have h_diff :=
@@ -733,7 +733,7 @@ lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → �
 
 /-- The linear map P ↦ v_P from complex polynomials to the Fock space, v_P(x) = P(ζ(x))exp(−|x|²/2),
 where ζ(x)_i is x̄_i at positive and x_i at negative coordinates. -/
-def polyVector (ε : ι → ℤˣ) : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace ε :=
+def polyVector (ε : ι → ℤˣ) : MvPolynomial ι ℂ →ₗ[ℂ] FockSpace ε :=
   LinearMap.codRestrict (modelSubmodule (realHeisenberg ε))
     (LinearMap.pi fun x ↦ (aeval (holomorphicCoord ε x)).toLinearMap.smulRight (realVac x))
     fun P ↦ by
@@ -756,7 +756,7 @@ def polyVector (ε : ι → ℤˣ) : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace �
         simp_all [heisenbergDeriv, holomorphicCoord_eq, sum_eq_single i]
         split <;> simp_all [units_ne_iff_eq_neg, raiseOp, lowerOp] <;> grind [I_sq]
 
-instance : Coe (MvPolynomial ι ℂ) (fockSpace ε) := ⟨polyVector ε⟩
+instance : Coe (MvPolynomial ι ℂ) (FockSpace ε) := ⟨polyVector ε⟩
 
 /-- The Fock vector v_P = `polyVector ε P` of a complex polynomial P in the variables ι is the
 function x ↦ P(ζ(x))·exp(−|x|²/2) on ℂ^ι, where ζ(x) = `holomorphicCoord ε x` has i-th coordinate
@@ -791,7 +791,7 @@ lemma polyVector_injective : (⇑(polyVector ε)).Injective := by
   have h_inv : holomorphicCoord ε (holomorphicCoord ε x) = x := by
     ext i
     by_cases h_sign : ε i = 1 <;> simp [holomorphicCoord_eq, h_sign]
-  simpa [h_inv, realVac] using congrArg (fun c : fockSpace ε ↦ c (holomorphicCoord ε x)) h_eq
+  simpa [h_inv, realVac] using congrArg (fun c : FockSpace ε ↦ c (holomorphicCoord ε x)) h_eq
 
 end FockSpace
 
@@ -814,13 +814,13 @@ open MeasureTheory Matrix Complex MvPolynomial Finset Heisenberg IsVacuum Sum Or
 variable {ι : Type _} [Fintype ι] [DecidableEq ι] {ε}
   {ι₁ ι₂ T : Type*} [Fintype ι₁] [DecidableEq ι₁] [Fintype ι₂] [DecidableEq ι₂] [Fintype T]
   [DecidableEq T] {ε₁ ε₂} {e : ι₁ ⊕ ι₂ ≃ ι} (he : ε ∘ e = ε₁ ⊕ᵥ ε₂) (u : T → USign ε)
-  (v : T → fockSpace ε)
+  (v : T → FockSpace ε)
 
 /-- For signs ε : ι → ℤˣ and coordinates split by a bijection e : ι₁ ⊕ ι₂ ≃ ι under which ε becomes
 the signs ε₁ : ι₁ → ℤˣ on ι₁ and ε₂ : ι₂ → ℤˣ on ι₂ (`he`), the bounded bilinear map sending two
 Fock vectors c₁, c₂ to their external product x ↦ c₁(x ∘ e ∘ inl) c₂(x ∘ e ∘ inr) in the Fock
 space of ε. -/
-def realBoxProd : fockSpace ε₁ →L[ℂ] fockSpace ε₂ →L[ℂ] fockSpace ε := (realCoordSum he).tmul
+def realBoxProd : FockSpace ε₁ →L[ℂ] FockSpace ε₂ →L[ℂ] FockSpace ε := (realCoordSum he).tmul
 
 /-- Currying x : α × β → γ and evaluating at a gives the function b ↦ x (a, b). -/
 private lemma _root_.MeasurableEquiv.curry_apply_eq {α β γ : Type*} [MeasurableSpace γ]
@@ -840,7 +840,7 @@ lemma pi_normalizedVolume :
 /-- The continuous multilinear map sending (for signs ε : ι → ℤˣ) a T-indexed family of Fock vectors
 v_τ to the product function x ↦ ∏ v_τ(x_τ) in the Fock space on T × ι. -/
 def piTensor :
-    ContinuousMultilinearMap ℂ (fun _ : T ↦ fockSpace ε) (fockSpace fun p : T × ι ↦ ε p.2) :=
+    ContinuousMultilinearMap ℂ (fun _ : T ↦ FockSpace ε) (FockSpace fun p : T × ι ↦ ε p.2) :=
   -- The multilinear map sending `v` to the function `x ↦ ∏ τ, v τ (x (τ, ·))`; it has norm `≤ 1`.
   MultilinearMap.mkContinuous
     (MultilinearMap.codRestrict
@@ -870,7 +870,7 @@ lemma piTensor_polyVector (P : T → MvPolynomial ι ℂ) :
   simp [holomorphicCoord_eq, realVac, dotProduct, prod_mul_distrib, eval_rename, sum_prod_type,
     ← exp_sum, ← sum_div, comp_def]
 
-lemma fockInner_piTensor (w : T → fockSpace ε) :
+lemma fockInner_piTensor (w : T → FockSpace ε) :
     fockInner (piTensor v) (piTensor w) = ∏ τ : T, fockInner (v τ) (w τ) := by
   simp [modelInner_apply, prod_mul_distrib, integral_map_equiv, ← integral_fintype_prod_eq_prod,
     MeasurableEquiv.curry_apply_eq]

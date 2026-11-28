@@ -457,12 +457,12 @@ lemma HasSmallRatios.heightLe_inv_rpow_mul_prod_quotientRatio {D : Data P}
   grw [card_sigma_Ioc_le, Nat.cast_mul]
 
 open scoped Classical in
-/-- Let `f` be a representation of the group algebra of `D.chosenGL`, the product of the finite
+/-- Let `f` be a representation of the group algebra of `D.ChosenGL`, the product of the finite
 general linear groups at the chosen places, on a complex inner product space `U`. Let `c` be a good
 tuple family: one of the finitely many admissible labellings of the chosen places by polynomials
 over their residue fields. Then the range of the idempotent `tupleIdem D.RowIndex c` under `f` lies
 in the range of `New.Data.e₀`, the sum of these idempotents over all good tuple families. -/
-lemma range_tupleIdem_le {f : MonoidAlgebra ℂ D.chosenGL →ₐ[ℂ] End ℂ U}
+lemma range_tupleIdem_le {f : MonoidAlgebra ℂ D.ChosenGL →ₐ[ℂ] End ℂ U}
     {c : (x : Σ i : Fin 2, D.ChosenPlace i) → Polynomial (ResField (D.chosenPlace x))}
     (hc : c ∈ D.goodTupleFamilies) :
     (f (tupleIdem D.RowIndex c)).range ≤ (f D.e₀).range := by

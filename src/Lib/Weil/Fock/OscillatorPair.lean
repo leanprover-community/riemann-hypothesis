@@ -307,7 +307,7 @@ end New.Fock
 /-!
 ## Oscillator pairs on the Fock space of matrices
 
-The dual pair U(ε) × U(ε′) acts on the Fock space `New.Fock.fockSpace` of R × C matrices, with sign
+The dual pair U(ε) × U(ε′) acts on the Fock space `New.Fock.FockSpace` of R × C matrices, with sign
 ε_r ε′_c at the entry (r, c).
 -/
 
@@ -359,7 +359,7 @@ variable {ε : R → ℤˣ} {ε' : C → ℤˣ} (f : USign ε →* USign ε') (�
 
 /-- The Weil representation `realWeil` of U(ε′) on the Fock space, pulled back along a homomorphism
 `f` from U(ε) to U(ε′) and twisted by `det ^ γ`: `g` acts by `det g ^ γ • realWeil (f g)`. -/
-@[simps] noncomputable def detTwist : USign ε →* fockSpace ε' →L[ℂ] fockSpace ε' where
+@[simps] noncomputable def detTwist : USign ε →* FockSpace ε' →L[ℂ] FockSpace ε' where
   toFun g := (g : Matrix R R ℂ).det ^ γ • realWeil (f g)
   map_one' := by simp
   map_mul' := by simp [mul_zpow, mul_comm, smul_smul]
@@ -370,7 +370,7 @@ variable {f : USign ε →* USign ε'} {γ : ℤ}
 most the norm of the vacuum vector times the modulus of `realMultiplier g`, the conjugate of the
 determinant of the negative block of `g`. -/
 lemma norm_realWeil_le (g : USign ε') :
-    ‖realWeil g‖ ≤ ‖(vacVector : fockSpace ε')‖ * ‖realMultiplier g‖ :=
+    ‖realWeil g‖ ≤ ‖(vacVector : FockSpace ε')‖ * ‖realMultiplier g‖ :=
   norm_weilRep_le (realAction ε') g
 
 /-- Let `f` be a continuous homomorphism from U(ε) to U(ε′) with `‖f g‖ ≤ a * ‖g‖`. Then
@@ -384,7 +384,7 @@ lemma isUnitaryRep_detTwist {a : ℝ}
       fun_prop [kroneckerMap]) :
     IsUnitaryRep (card C) (detTwist f γ) fockInner := by
   refine ⟨fun x ↦ ?_, fun g x y ↦ ?_, conj_modelInner, fun x hx ↦ ?_,
-    ‖(vacVector : fockSpace ε')‖ * a ^ card C, fun g ↦ ?_⟩
+    ‖(vacVector : FockSpace ε')‖ * a ^ card C, fun g ↦ ?_⟩
   · -- Strong continuity.
     change Continuous fun g : USign ε ↦ (g : Matrix R R ℂ).det ^ γ • realWeil (f g) x
     fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])
@@ -398,8 +398,8 @@ lemma isUnitaryRep_detTwist {a : ℝ}
     positivity
   · -- The determinant has modulus one, and the multiplier grows at most like `‖f g‖ ^ card C`.
     calc ‖detTwist f γ g‖ = ‖realWeil (f g)‖ := by simp [norm_smul]
-      _ ≤ ‖(vacVector : fockSpace ε')‖ * ‖realMultiplier (f g)‖ := norm_realWeil_le (f g)
-      _ ≤ ‖(vacVector : fockSpace ε')‖ * a ^ card C * ‖(g : Matrix R R ℂ)‖ ^ card C := by
+      _ ≤ ‖(vacVector : FockSpace ε')‖ * ‖realMultiplier (f g)‖ := norm_realWeil_le (f g)
+      _ ≤ ‖(vacVector : FockSpace ε')‖ * a ^ card C * ‖(g : Matrix R R ℂ)‖ ^ card C := by
         grw [mul_assoc, ← mul_pow, norm_realMultiplier_le, h_norm]
 
 /-- Let `f` be a homomorphism from U(ε) to U(ε′) with `f (exp Y) = c • F (exp (c • Y))` for `Y` in
@@ -475,7 +475,7 @@ lemma fockInner_detTwist_pos {κ : Sort*} (d : C → κ) {P : MvPolynomial C ℂ
     (fockPairing_star_self_pos h_subst_ne)
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {η : ι → ℤˣ} (T : FockDualPair ε ε' ι)
-  (π : USign ε →* fockSpace η →L[ℂ] fockSpace η)
+  (π : USign ε →* FockSpace η →L[ℂ] FockSpace η)
 
 /-! ### Oscillator pairs -/
 
@@ -501,7 +501,7 @@ structure _root_.New.OscillatorRep where
 `New.OscillatorRep`. π acts on the rows, with the data `T`, whose sign is `T.globalSign` and whose
 constant on the rows is `T.rowShift`, and π′ acts on the columns, with the data `T.swap`, whose
 sign is `-T.globalSign` and whose constant on the rows is `T.columnShift`. -/
-structure _root_.New.OscillatorPair (π' : USign ε' →* fockSpace η →L[ℂ] fockSpace η) extends
+structure _root_.New.OscillatorPair (π' : USign ε' →* FockSpace η →L[ℂ] FockSpace η) extends
     OscillatorRep T π where
   /-- π' has the same properties for `T.swap`, the columns read as rows. -/
   column_rep : OscillatorRep T.swap π'

@@ -576,8 +576,8 @@ lemma Exchange.exists_continuousLinearMap_eq_integral_kernel_mul_forms
     (hk : IsConjKernelPair k) (hk' : IsConjKernelPair k') (a b : AutChar E) {𝔪 : Modulus E}
     (Ψ : Matrix n' m' 𝔪.ResidueRing → ℂ) (N : S.ModerateWeight T') (y : S.Form (k d))
     (f : S'.Form (k' d')) :
-    ∃ L : fockSpace (realSigns E (homSigns t' s')) →L[ℂ] ℂ,
-      ∀ v : fockSpace (realSigns E (homSigns t' s')),
+    ∃ L : FockSpace (realSigns E (homSigns t' s')) →L[ℂ] ℂ,
+      ∀ v : FockSpace (realSigns E (homSigns t' s')),
         L v = ∫ g : G E s, ∫ x : G E s', N.weightFn g * y g *
             ((T'.hom S').θ (pairWeil T' S' a b (N.comparisonMap g, x) (modDatum T' S' 𝔪 Ψ v)) * f x)
           ∂S'.quotMeasure ∂S.quotMeasure := by
@@ -593,10 +593,10 @@ lemma Exchange.exists_continuousLinearMap_eq_integral_kernel_mul_forms
   obtain ⟨Λ, hΛ⟩ : ∃ Λ : 𝒮 (T'.hom S') →L[ℂ] ℂ, ∀ φ : 𝒮 (T'.hom S'),
       Λ φ = ∫ p : G E s × G E s', F p φ ∂S.quotMeasure.prod S'.quotMeasure :=
     exists_continuousLinearMap_apply_eq_integral (S.quotMeasure.prod S'.quotMeasure) F F_int
-  let D : fockSpace (realSigns E (homSigns t' s')) →L[ℂ] 𝒮 (T'.hom S') :=
+  let D : FockSpace (realSigns E (homSigns t' s')) →L[ℂ] 𝒮 (T'.hom S') :=
     (T'.hom S').integrated.flip
       ((T'.hom S').schrodingerOp 𝔪.places (𝔪.liftFn (Ψ ∘ vecToMatrix)) (T'.hom S').vacElem)
-  have D_apply (v : fockSpace (realSigns E (homSigns t' s'))) : D v = modDatum T' S' 𝔪 Ψ v := rfl
+  have D_apply (v : FockSpace (realSigns E (homSigns t' s'))) : D v = modDatum T' S' 𝔪 Ψ v := rfl
   refine ⟨Λ ∘L D, fun v ↦ ?_⟩
   -- by Fubini the integral over the product is the iterated integral
   rw [ContinuousLinearMap.comp_apply, D_apply, hΛ, integral_prod _ (F_int _)]
@@ -745,21 +745,21 @@ lemma Exchange.seesaw_periods (J : Type*) {X : J → Type}
   obtain ⟨-, hk', γ, γ', ψ, hγ, hγ', -⟩ := id h_edge'
   have hk : IsConjKernelPair k := h_edge.isConjKernelPair_source
   have h_functional (o : J) (i : X o) :
-      ∃ Λ : fockSpace (realSigns E (homSigns t' s')) →L[ℂ] ℂ,
-        ∀ v : fockSpace (realSigns E (homSigns t' s')),
+      ∃ Λ : FockSpace (realSigns E (homSigns t' s')) →L[ℂ] ℂ,
+        ∀ v : FockSpace (realSigns E (homSigns t' s')),
           Λ v = ∫ g : G E s, ∫ x : G E s', (N o i).weightFn g * y o i g *
               ((T'.hom S').θ (pairWeil T' S' (a' o m') (a' o n') ((N o i).comparisonMap g, x)
                 (modDatum T' S' (𝔪 o) (Ψ' o i) v)) * f o i x) ∂S'.quotMeasure ∂S.quotMeasure :=
     exists_continuousLinearMap_eq_integral_kernel_mul_forms hk hk' (a' o m') (a' o n') (Ψ' o i)
       (N o i) (y o i) (f o i)
   choose Lᵢ hLᵢ using h_functional
-  let L : fockSpace (realSigns E (homSigns t' s')) →L[ℂ] J → ℂ :=
+  let L : FockSpace (realSigns E (homSigns t' s')) →L[ℂ] J → ℂ :=
     .pi fun o ↦ ∑ i ∈ W o, u o i • Lᵢ o i
-  have L_apply (v : fockSpace (realSigns E (homSigns t' s'))) (o : J) :
+  have L_apply (v : FockSpace (realSigns E (homSigns t' s'))) (o : J) :
       L v o = ∑ i ∈ W o, u o i * Lᵢ o i v := by
     simp only [L, ContinuousLinearMap.pi_apply, FunLike.coe_sum, Finset.sum_apply,
       FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
-  have h_line (v : fockSpace (realSigns E (homSigns t' s'))) : L v ∈ ℂ ∙ c := by
+  have h_line (v : FockSpace (realSigns E (homSigns t' s'))) : L v ∈ ℂ ∙ c := by
     -- The preimage of the line is closed and polynomials are dense; matched ones span them.
     refine denseRange_polyVector.induction_on v
       ((isClosed_of_finiteDimensional _).preimage L.continuous) fun p ↦

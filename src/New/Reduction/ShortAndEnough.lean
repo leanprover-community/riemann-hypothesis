@@ -31,7 +31,7 @@ from all source forms to ramified source forms.
 Notions from other files:
 * `D.poincare` is the Poincaré map `𝒫` from source forms to the forms on `Y₀`, without the factor
   `poincareScale`, which the number `c_ss` (`D.seesawConst`, entering as its inverse in
-  `D.scaledInclusion`) absorbs. `D.chosenGL` is the finite group `Ḡ` acting on the forms on `Y₀`,
+  `D.scaledInclusion`) absorbs. `D.ChosenGL` is the finite group `Ḡ` acting on the forms on `Y₀`,
   with the central projection `e₀` to the good part.
 * `D.Θ ϑ` is the chain of lifts `Θ_ϑ` of target forms for the twist `ϑ`.
 * `D.targetLattice` records which target forms are integral at each `ι`, and its `IndexLe y δ` says
@@ -142,14 +142,14 @@ def scaledInclusion : D.ramifiedSourceForms →ₗ[ℂ] D.SourceForm :=
   (D.seesawConst⁻¹ : ℂˣ).val • D.ramifiedSourceForms.subtype
 
 /-- The map `φ ↦ y = #Ḡ · e₀ s z`, with `z = c_ss⁻¹ 𝒫 φ`, from the source to the target. Here
-`𝒫` is the Poincaré map, `Ḡ` the finite group `D.chosenGL` and `e₀` the projection to the good
+`𝒫` is the Poincaré map, `Ḡ` the finite group `D.ChosenGL` and `e₀` the projection to the good
 part. -/
-abbrev projectedPoincare (s : D.chosenGL) : D.ramifiedSourceForms →ₗ[ℂ] D.targetForms :=
+abbrev projectedPoincare (s : D.ChosenGL) : D.ramifiedSourceForms →ₗ[ℂ] D.targetForms :=
   D.goodPoincare s ∘ₗ D.scaledInclusion
 
 /-- The map `φ ↦ c_B y`, with `y = #Ḡ · e₀ s c_ss⁻¹ 𝒫 φ`. It is the translate `s 𝔭` of
 `𝔭 = c_B c_ss⁻¹ #Ḡ · e₀ 𝒫`. -/
-def normalizedPoincare (s : D.chosenGL) : D.ramifiedSourceForms →ₗ[ℂ] D.targetForms :=
+def normalizedPoincare (s : D.ChosenGL) : D.ramifiedSourceForms →ₗ[ℂ] D.targetForms :=
   (D.invGainFactor : ℂ) • D.projectedPoincare s
 
 /-- The ramified source forms that are integral at every `ι`, where `ι` runs over the pairs of a
@@ -177,7 +177,7 @@ lemma exists_lowerChain_poincare_eq (ϑ : D.Twist) :
 map `#Ḡ · e₀ s c_ss⁻¹ 𝒫` from ramified source forms to target forms. The positive rational factor
 `c_B` multiplies the squared norm `‖Θ₁ ·‖_σ²` by `exp (2 log c_B)`, for every automorphism `σ` of
 `ℂ`. -/
-lemma normSqAt_normalizedPoincare (s : D.chosenGL) (φ : D.ramifiedSourceForms) (σ : ℂ ≃+* ℂ) :
+lemma normSqAt_normalizedPoincare (s : D.ChosenGL) (φ : D.ramifiedSourceForms) (σ : ℂ ≃+* ℂ) :
     (D.Θ 1 (D.normalizedPoincare s φ)).normSqAt σ =
       exp (2 * log D.invGainFactor) * (D.Θ 1 (D.projectedPoincare s φ)).normSqAt σ := by
   have h_norm : ‖σ D.invGainFactor‖ ^ 2 = exp (2 * log D.invGainFactor) := by
@@ -189,7 +189,7 @@ lemma normSqAt_normalizedPoincare (s : D.chosenGL) (φ : D.ramifiedSourceForms) 
 
 /-- **Theorem A (a).** The source is spanned by the forms `φ` that are integral at every prime `l`
 and `l`-adic place of `ℂ` and satisfy `‖Θ₁ s 𝔭 φ‖_σ² ≤ exp (main - m rem + f a log⁴ b)` for all `s`
-in the finite group `D.chosenGL` and all automorphisms `σ` of `ℂ`. Here
+in the finite group `D.ChosenGL` and all automorphisms `σ` of `ℂ`. Here
 `s 𝔭 = D.normalizedPoincare s` maps the source to the target, `Θ₁ = D.Θ 1` is the chain of `m = D.m`
 lifts for the trivial twist, and `‖·‖_σ²` is the squared norm of the conjugate form. In the bound:
 * `main = D.mainAmount` is `m k ∑_τ (s_∞(κ(τ)) - s_fin(κ(τ), τ))`, summed over all infinite places
@@ -200,7 +200,7 @@ lifts for the trivial twist, and `‖·‖_σ²` is the squared norm of the conj
 * `f = D.f` is the number of infinite places, `a = D.a` is the long order `x b`, and
   `log b = D.logB` is the logarithm of the weight `b`. -/
 theorem span_short_integralRamified_eq_top :
-    span ℂ {φ ∈ D.integralRamified | ∀ (s : D.chosenGL) (σ : ℂ ≃+* ℂ),
+    span ℂ {φ ∈ D.integralRamified | ∀ (s : D.ChosenGL) (σ : ℂ ≃+* ℂ),
       (D.Θ 1 (D.normalizedPoincare s φ)).normSqAt σ ≤
         exp (D.mainAmount - D.m * D.totalRemainder + D.f * D.a * D.logB ^ 4)} = ⊤ := by
   -- The short forms span the source, so it suffices to bound the lifts for a short form `φ`.
@@ -251,7 +251,7 @@ chain of lifts at `l` and `err_l = D.allowedLoss l` the error allowed in it. Sup
 whose level `ϑ.normQ` is prime to `l` and every chain datum `Ψ` of `ϑ`. Then the target form
 `y = s 𝔭 φ = D.normalizedPoincare s φ` is integral at `ι`: its lift `Θ_ϑ y` is integral at `ι` for
 every `m`-fold twist `ϑ` of level prime to `l`. -/
-lemma normalizedPoincare_mem_integralVectors {ι : PrimePadicIso} (s : D.chosenGL)
+lemma normalizedPoincare_mem_integralVectors {ι : PrimePadicIso} (s : D.ChosenGL)
     {φ : D.ramifiedSourceForms}
     (hφ : ∀ (ϑ : D.Twist) (Ψ : D.Translations →₀ ℂ), IsChainDatum ϑ Ψ →
       Nat.Coprime ι.prime ϑ.normQ → letI := ι.place
@@ -285,11 +285,11 @@ lemma normalizedPoincare_mem_integralVectors {ι : PrimePadicIso} (s : D.chosenG
   rw [h_smul]
   exact goodProjTranslate_mem_integralForms ι.place h_lift_mem s
 
-/-- Fix `s` in the finite group `D.chosenGL`. A finite family `y` of target forms
+/-- Fix `s` in the finite group `D.ChosenGL`. A finite family `y` of target forms
 `s 𝔭 φ = D.normalizedPoincare s φ`, with each `φ` a ramified source form integral at every `ι`, has
 logarithmic index at most `δ = dim src · 2 · D.errorUnit` in `D.targetLattice`. Here `src` is the
 space `D.ramifiedSourceForms`, and `D.errorUnit` is the unit of loss `D.f * D.a * D.logB ^ 3`. -/
-lemma indexLe_of_mem_image_normalizedPoincare (s : D.chosenGL) {n : ℕ} {y : Fin n → D.targetForms}
+lemma indexLe_of_mem_image_normalizedPoincare (s : D.ChosenGL) {n : ℕ} {y : Fin n → D.targetForms}
     (hy : ∀ i : Fin n, y i ∈ D.normalizedPoincare s '' D.integralRamified) :
     D.targetLattice.IndexLe y (finrank ℂ D.ramifiedSourceForms * (2 * D.errorUnit)) := by
   -- At `ι ∣ l` the map `s 𝔭` takes a submodule of colength `j ≤ err_l D_X` to integral target
@@ -321,7 +321,7 @@ lemma indexLe_of_mem_image_normalizedPoincare (s : D.chosenGL) {n : ℕ} {y : Fi
 /-- **Theorem A (b).** A finite family `y` of target forms `s 𝔭 φ = D.normalizedPoincare s φ`, with
 `s` in a set `t` of translates and `φ` in the source `src = D.ramifiedSourceForms` integral at every
 `ι`, has logarithmic index at most `δ = #t · dim src · 2 f a log³ b` in the target lattice. -/
-theorem indexLe_normalizedPoincare (t : Finset D.chosenGL) {n : ℕ} {y : Fin n → D.targetForms}
+theorem indexLe_normalizedPoincare (t : Finset D.ChosenGL) {n : ℕ} {y : Fin n → D.targetForms}
     (hy : ∀ i : Fin n, ∃ s ∈ t, y i ∈ D.normalizedPoincare s '' D.integralRamified) :
     D.targetLattice.IndexLe y (#t * finrank ℂ D.ramifiedSourceForms * (2 * D.errorUnit)) := by
   -- Sort the family by translates; indices add over a union of families.
@@ -334,7 +334,7 @@ theorem indexLe_normalizedPoincare (t : Finset D.chosenGL) {n : ℕ} {y : Fin n 
 /-- The range of `D.normalizedPoincare s` (the map `s 𝔭`) is the image of the ramified source forms
 `D.ramifiedSourceForms` under `D.goodPoincare s = #Ḡ · e₀ s 𝒫`, as the scalars `c_B` and `c_ss⁻¹` in
 `𝔭` do not vanish. -/
-lemma range_normalizedPoincare (s : D.chosenGL) :
+lemma range_normalizedPoincare (s : D.ChosenGL) :
     (D.normalizedPoincare s).range = D.ramifiedSourceForms.map (D.goodPoincare s) := by
   simp [normalizedPoincare, scaledInclusion, LinearMap.range_smul, LinearMap.range_comp,
     D.invGainFactor_pos.ne']
@@ -353,19 +353,19 @@ lemma five_halves_mul_one_add_log_le :
 
 lemma targetDim_pos : 0 < D.targetDim := D.finrank_targetForms_ne_zero.pos
 
-/-- There is a set `t` of elements of the finite group `D.chosenGL = ∏ GL_r(𝔽_w)` (product over the
+/-- There is a set `t` of elements of the finite group `D.ChosenGL = ∏ GL_r(𝔽_w)` (product over the
 chosen places `w` above the two level primes) with `#t · dim src ≤ 5 d_T log (1 + 2 b²)` such that
 the spaces `s 𝔭 src`, `s ∈ t`, span at least `(1 - 4 / b²) d_T` dimensions. Here
 `d_T = D.targetDim` is the dimension of the target, `b = D.b = exp D.logB` is the weight at the
 `b`-places, `src` is the space of ramified source forms and `s 𝔭` is `D.normalizedPoincare s`. -/
 theorem exists_le_finrank_iSup_range_normalizedPoincare :
-    ∃ t : Finset D.chosenGL,
+    ∃ t : Finset D.ChosenGL,
       #t * finrank ℂ D.ramifiedSourceForms ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2) ∧
       (1 - 4 / D.b ^ 2) * D.targetDim ≤ finrank ℂ ↥(⨆ s ∈ t, (D.normalizedPoincare s).range) := by
   have : Nontrivial D.SourceForm := D.sourceFormCoords.nontrivial
   -- For `ε = (8 b²)⁻¹ < 1 / 16`, few translates of the image of all source forms span all but the
   -- share `16 ε = 2 / b²` of the target.
-  obtain ⟨t, h_count, h_span⟩ : ∃ t : Finset D.chosenGL,
+  obtain ⟨t, h_count, h_span⟩ : ∃ t : Finset D.ChosenGL,
       #t * finrank ℂ D.SourceForm ≤ 5 / 2 * (1 + log (16 * (8 * D.b ^ 2)⁻¹)⁻¹) * D.targetDim ∧
       (1 - 16 * (8 * D.b ^ 2)⁻¹ : ℝ) * D.targetDim ≤
         finrank ℂ ↥(⨆ s ∈ t, (D.goodPoincare s).range) :=
@@ -392,13 +392,13 @@ theorem exists_le_finrank_iSup_range_normalizedPoincare :
         linarith [finrank_biSup_range_le D.goodPoincare t D.ramifiedSourceForms, h_span, h_loss]
 
 /-- **Theorem B**, the bound on the dimension spanned by few translates. The target has dimension
-`d_T = D.targetDim ≥ 1`, and there is a set `t` of elements of the finite group `D.chosenGL` with
+`d_T = D.targetDim ≥ 1`, and there is a set `t` of elements of the finite group `D.ChosenGL` with
 `#t · dim src ≤ 5 d_T log (1 + 2 b²)` such that the spaces `s 𝔭 src`, `s ∈ t`, span at least
 `(1 - 4 / b²) d_T` dimensions. Here `b = D.b = exp D.logB` is the weight at the `b`-places, `src`
 is the space of ramified source forms and `s 𝔭` is `D.normalizedPoincare s`. -/
 theorem enough_forms :
     0 < D.targetDim ∧
-    ∃ t : Finset D.chosenGL,
+    ∃ t : Finset D.ChosenGL,
       #t * finrank ℂ D.ramifiedSourceForms ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2) ∧
       (1 - 4 / D.b ^ 2) * D.targetDim ≤ finrank ℂ ↥(⨆ s ∈ t, (D.normalizedPoincare s).range) :=
   ⟨D.targetDim_pos, D.exists_le_finrank_iSup_range_normalizedPoincare⟩

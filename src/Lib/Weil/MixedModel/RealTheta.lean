@@ -88,16 +88,16 @@ lemma dataInner_integrated :
   -- With the restriction `r` to the finite coordinates, `u ⊗ f` is the product of `u` and `r f`,
   -- and the inner product of two products is the product of the inner products.
   obtain ⟨r, -, hr_integrated⟩ := (adelicSum E s).exists_restriction
-  have h_tmul (u : fockSpace (realSigns E s)) (g : 𝒮 V) :
+  have h_tmul (u : FockSpace (realSigns E s)) (g : 𝒮 V) :
       V.integrated u g = (adelicSum E s).tmul u (r g) :=
     hr_integrated u g
-  have h_product (u u' : fockSpace (realSigns E s)) :
+  have h_product (u u' : FockSpace (realSigns E s)) :
       V.dataInner (V.integrated u f) (V.integrated u' f') =
         fockInner u u' * IsVacuum.modelInner (r f) (r f') := by
     rw [h_tmul, h_tmul]
     exact (adelicSum E s).modelInner_tmul u u' (r f) (r f')
   -- `Pf = vac ⊗ f`, and the vacuum is a unit vector.
-  have h_vac : fockInner (Fock.vacVector : fockSpace (realSigns E s)) Fock.vacVector = 1 := by
+  have h_vac : fockInner (Fock.vacVector : FockSpace (realSigns E s)) Fock.vacVector = 1 := by
     have h0 := IsVacuum.modelInner_heisenbergOp_vacElem (H := realHeisenberg (realSigns E s))
       (0 : NumberField.InfinitePlace E × n → ℂ) IsVacuum.vacElem
     rw [Rep.rho_zero_apply, IsVacuum.vacElem_apply] at h0
@@ -628,7 +628,7 @@ lemma IsAdapted.exists_apply_zero_omega_integrated_eq (hT : D.IsMixedLaw T) {g :
   let χ (y : InfinitePlace E × n → ℂ) : ℂ :=
     (adelicHeisenberg E 1).β ((D.lCoord * g.adeleMatrix) *ᵥ realVec y)
       ((D.kCoord * g.adeleMatrix) *ᵥ realVec y)
-  let K (y : InfinitePlace E × n → ℂ) : fockSpace (realSigns E s₀) :=
+  let K (y : InfinitePlace E × n → ℂ) : FockSpace (realSigns E s₀) :=
     (χ y * exp (-(star (a y) ⬝ᵥ a y))) •
       realHeisenbergOp (realMatrix (D.iCoord * g.adeleMatrix) *ᵥ y) Fock.vacVector
   have h_vec (M : Matrix p n (𝔸 E)) :
@@ -652,13 +652,13 @@ lemma IsAdapted.exists_apply_zero_omega_integrated_eq (hT : D.IsMixedLaw T) {g :
       ((Heisenberg.IsVacuum.heisenbergRep (H := realHeisenberg (realSigns E s₀))).cont.comp
         (hi_cont.prodMk continuous_const))
   have hK_bdd (y : InfinitePlace E × n → ℂ) :
-      ‖K y‖ ≤ ‖(Fock.vacVector : fockSpace (realSigns E s₀))‖ := by
+      ‖K y‖ ≤ ‖(Fock.vacVector : FockSpace (realSigns E s₀))‖ := by
     -- `χ y` has modulus one, the Heisenberg operator is isometric and the Gaussian is at most 1.
     have h_gauss_le : Real.exp (-(star (a y) ⬝ᵥ a y).re) ≤ 1 :=
       Real.exp_le_one_iff.mpr
         (neg_nonpos.mpr ((sq_nonneg ‖a y‖).trans (norm_sq_le_re_star_dotProduct_self (a y))))
     rw [show ‖K y‖ = Real.exp (-(star (a y) ⬝ᵥ a y).re) *
-        ‖(Fock.vacVector : fockSpace (realSigns E s₀))‖ by
+        ‖(Fock.vacVector : FockSpace (realSigns E s₀))‖ by
       simp only [K, χ, norm_smul, norm_mul, norm_eq_one, one_mul, norm_exp, neg_re, Rep.norm_map]]
     exact mul_le_of_le_one_left (norm_nonneg _) h_gauss_le
   -- `exists_lift` gives a bounded `L` with `M ∘ L = N` once `M (K y) = N (ρ(y) vacuum)` for all

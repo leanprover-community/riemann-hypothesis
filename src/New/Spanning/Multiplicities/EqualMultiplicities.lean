@@ -36,7 +36,7 @@ traces for a test function that is cuspidal at one split place (`New.trace_eq_of
 Notions from other files:
 * `New.Data.principalForms`: the forms fixed by the principal level `D.chosenLevel` at the chosen
   places above `M`.
-* `New.Data.principalRep`: the action on them of `D.chosenGL = ∏ GL_r(𝔽_w)`, over the chosen places
+* `New.Data.principalRep`: the action on them of `D.ChosenGL = ∏ GL_r(𝔽_w)`, over the chosen places
   w.
 * `New.Data.goodForms`: the image of the idempotent `D.e₀` on these forms.
 * `New.Data.heckeAlgebra`, `New.Data.eigenPart`: the spherical Hecke operators away from `M`, and

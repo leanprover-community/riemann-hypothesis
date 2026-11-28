@@ -968,8 +968,8 @@ lemma exchange_theorem (σ : b ⊕ a ≃ n) (h_signs : negCount s = negCount t +
     (h_rank : card a = card b + 2 * e) (h_few_neg : 2 * negCount s + 2 ≤ card n)
     {μ : NumberField.InfinitePlace E → ℤ}
     (hμ : ∀ τ : NumberField.InfinitePlace E, card n ≤ 2 * μ τ + 2 * negCount s)
-    {v : Fock.fockSpace (realSigns E (homSigns t' s))} (hv : IsSchwartzVector v) :
-    ∃ (C : ℝ) (x : Fock.fockSpace (realSigns E (homSigns s t))),
+    {v : Fock.FockSpace (realSigns E (homSigns t' s))} (hv : IsSchwartzVector v) :
+    ∃ (C : ℝ) (x : Fock.FockSpace (realSigns E (homSigns s t))),
       IsSchwartzVector x ∧
       ∀ (𝔪 : Modulus E) (ν : AutChar E) (χ : MulChar 𝔪.ResidueRing ℂ), IsTameFor 𝔪 ν μ χ →
         let γ : AutChar E := rankTwist ν⁻¹ n

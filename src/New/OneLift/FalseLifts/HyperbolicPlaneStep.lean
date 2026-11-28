@@ -294,7 +294,7 @@ lemma exists_norm_theta_sub_zeroTerm_le (D : W'.Splitting W Unit) (χ : AutChar 
   -- estimate `exists_norm_pairWeil_schrodingerOp_mul_pow_le` treats small and large heights
   -- together.
   let ℓ : 𝒮 (W'.hom V) →L[ℂ] ℂ := θ (W'.hom V) - θ (W.hom V) ∘L (D.homSource V).zeroTerm
-  let v : fockSpace (realSigns E (homSigns t 1)) := polyVector (realSigns E (homSigns t 1)) P
+  let v : FockSpace (realSigns E (homSigns t 1)) := polyVector (realSigns E (homSigns t 1)) P
   obtain ⟨C, i, h_growth⟩ := (pairThetaKer W' V χ 1).swap.moderate_growth
   obtain ⟨c, h_basis⟩ := V.exists_short_basis_matrix
   obtain ⟨C', h_decay⟩ := exists_norm_pairWeil_schrodingerOp_mul_pow_le (S := W') (T := V) (p := n)

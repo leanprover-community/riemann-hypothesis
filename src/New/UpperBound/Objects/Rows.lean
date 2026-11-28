@@ -294,8 +294,8 @@ abbrev principalForms : Submodule ℂ (V.Form (typeKernel D.paramW s)) :=
 
 /-- The complex representation of 𝖦 = ∏ GL_r(𝔽_w), over the chosen places w, on the forms on V of
 principal level: an element acts through an integral lift with the given reductions. -/
-def principalRep : Representation ℂ D.chosenGL (D.principalForms V) :=
-  levelRep (V.formRep (typeKernel D.paramW s)) 1 (MonoidHom.id D.chosenGL) (by simp)
+def principalRep : Representation ℂ D.ChosenGL (D.principalForms V) :=
+  levelRep (V.formRep (typeKernel D.paramW s)) 1 (MonoidHom.id D.ChosenGL) (by simp)
 
 /-- The good forms on V: the image of the idempotent e₀ of ℂ[𝖦] acting on forms of principal
 level at the chosen places above p₀, p₁. -/

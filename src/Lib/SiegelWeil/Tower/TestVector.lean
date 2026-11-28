@@ -198,7 +198,7 @@ lemma slice_realHeisenbergOp_vacElem_apply (h : D.IsAdapted 1 b) (a : InfinitePl
     (u : InfinitePlace E × n' → ℂ) {y : InfinitePlace E × n → ℂ}
     (hy : posProj (realSigns E s) *ᵥ y = y) :
     h.mixedModel.slice a (realHeisenbergOp y vacElem) u =
-      (realHeisenbergOp y vacElem : fockSpace (realSigns E s)) (framePoint h (-a) u (-a)) := by
+      (realHeisenbergOp y vacElem : FockSpace (realSigns E s)) (framePoint h (-a) u (-a)) := by
   obtain ⟨c, z₀, rfl⟩ := exists_framePoint_eq_of_posProj_eq h hy
   set z : InfinitePlace E × n' → ℂ := posProj (realSigns E s') *ᵥ z₀
   have h_slice : h.mixedModel.slice a (realHeisenbergOp (framePoint h c z c) vacElem) u =
@@ -241,7 +241,7 @@ lemma slice_polyVector_apply (h : D.IsAdapted 1 b) (a : InfinitePlace E × r →
   have h_signs : realSigns E s ∘ Equiv.sumCompl (fun i ↦ realSigns E s i = 1) =
       (realSigns E s ∘ Subtype.val) ⊕ᵥ (realSigns E s ∘ Subtype.val) :=
     Sum.comp_elim (realSigns E s) Subtype.val Subtype.val
-  let Φ : fockSpace (fun i : {i // realSigns E s i = 1} ↦ realSigns E s i) →L[ℂ] ℂ :=
+  let Φ : FockSpace (fun i : {i // realSigns E s i = 1} ↦ realSigns E s i) →L[ℂ] ℂ :=
     (valueAt u ∘L h.mixedModel.slice a - valueAt (framePoint h (-a) u (-a))) ∘L
       (realBoxProd h_signs).flip Fock.vacVector
   have h_functional : Φ = 0 := by

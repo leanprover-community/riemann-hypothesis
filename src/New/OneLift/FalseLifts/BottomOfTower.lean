@@ -1118,7 +1118,7 @@ lemma descentPairing_translate (u : (WeylIndex n O.columnCount → ℂ) →ₗ[�
   -- The lift is equivariant under `k`, which moves `Ψ` and fixes `v_P` and the vacuum. The element
   -- `((1, 1), 1, k)` of `U(W) × U(V)` is `k` at the finite places of `U(V)` and `1` elsewhere.
   let K := (pairThetaKer O.W (stdSpace E n) O.charW 1).swap
-  let v : fockSpace (realSigns E (homSigns O.signs 1)) := polyVector _ P
+  let v : FockSpace (realSigns E (homSigns O.signs 1)) := polyVector _ P
   let vac : 𝒮 (O.W.hom (stdSpace E n)) := vacElem _
   have h_form : star (algFormCoeff 1 u y'.val) =
       fun x ↦ star (algFormCoeff 1 u y.val) (x * (1, k.val)) :=
@@ -1197,7 +1197,7 @@ lemma descentPairing_translatedBlockFn_eq_zero (u : (WeylIndex n O.columnCount �
     descentPairing u P g (O.translatedBlockFn A) y = 0 := by
   -- The descent by the block datum at `g A` is a nonzero multiple of `B(Ψ_bl(· A), y)`.
   let K := (pairThetaKer O.W (stdSpace E n) O.charW 1).swap
-  let v : fockSpace (realSigns E (homSigns O.signs 1)) := polyVector _ P
+  let v : FockSpace (realSigns E (homSigns O.signs 1)) := polyVector _ P
   let Y : G E (1 : n → ℤˣ) → ℂ := star (algFormCoeff 1 u y.val)
   obtain ⟨c, hc, h_move⟩ := exists_pairWeil_blockDatum_eq_smul hA
   obtain ⟨L, hL⟩ : ∃ L : G E O.signs → 𝒮 (O.W.hom (stdSpace E n)) →L[ℂ] ℂ,

@@ -163,11 +163,11 @@ lemma matchedPoly_smul (η : (τ : InfinitePlace E) → ι τ → Matrix p m ℂ
 
 /-- The Fock vector of a polynomial in the variables `a × m`. The map `renameRowsCols` reads them as
 variables `a × n` through the positive block of `j`, and `polyVector` sends a polynomial to its
-product with the Gaussian in the Fock space `fockSpace`. The signs of the variables are the products
+product with the Gaussian in the Fock space `FockSpace`. The signs of the variables are the products
 `homSigns` of a row sign and a column sign, repeated at every infinite place by `realSigns`. -/
 abbrev posFockVector :
     MvPolynomial (InfinitePlace E × a × m) ℂ →ₗ[ℂ]
-      fockSpace (realSigns E (homSigns (blockSigns j) (1 : a → ℤˣ))) :=
+      FockSpace (realSigns E (homSigns (blockSigns j) (1 : a → ℤˣ))) :=
   polyVector (realSigns E (homSigns (n' := a) (blockSigns j) 1)) ∘ₗ
     (renameRowsCols id (j ∘ inl)).toLinearMap
 

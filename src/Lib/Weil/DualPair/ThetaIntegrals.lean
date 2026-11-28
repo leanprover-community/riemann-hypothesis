@@ -233,7 +233,7 @@ over rational n' × p matrices x of |θ((ω_{a,b}(g,k)f)[x])| (`thetaTerm`, f[x]
 the maps sending `D.k` to x) is bounded uniformly in k ∈ G E s'. -/
 lemma exists_tsum_thetaTerm_schrodingerOp_le {P : Set (FinPlace E)} (hP : Set.IsConjDisjoint P)
     {Ψ : (n' × n → 𝔸f E) → ℂ} (hΨ : IsSchwartzBruhat P Ψ)
-    {v : Fock.fockSpace (realSigns E (homSigns s s'))} {R : Type*} [CommRing R] [Nontrivial R]
+    {v : Fock.FockSpace (realSigns E (homSigns s s'))} {R : Type*} [CommRing R] [Nontrivial R]
     (φ : 𝔸f E →+* R) (hv : Exchange.IsSchwartzVector v) {g : G E s}
     (h_supp : ∀ y : n' × n → 𝔸f E, Ψ y ≠ 0 →
       HasLeftInv ((vecToMatrix y * (S.coordMatrix g (D.k.fromCols D.i)).map Prod.snd).map φ)ᵀ) :
@@ -317,7 +317,7 @@ function h ↦ ∑_ξ |θ((ω_{a,b}(g,h)f)[ξ])| has finite integral over the ad
 sending `D.k` to ξ. -/
 lemma hasIntegrableTerms_integrated_schrodingerOp {P : Set (FinPlace E)} (hP : Set.IsConjDisjoint P)
     {Ψ : (n' × n → 𝔸f E) → ℂ} (hΨ : IsSchwartzBruhat P Ψ)
-    {v : Fock.fockSpace (realSigns E (homSigns s s'))} {R : Type*} [CommRing R] [Nontrivial R]
+    {v : Fock.FockSpace (realSigns E (homSigns s s'))} {R : Type*} [CommRing R] [Nontrivial R]
     (φ : 𝔸f E →+* R) (hv : Exchange.IsSchwartzVector v) {g : G E s}
     (h_supp : ∀ y : n' × n → 𝔸f E, Ψ y ≠ 0 →
       HasLeftInv ((vecToMatrix y * (S.coordMatrix g (D.k.fromCols D.i)).map Prod.snd).map φ)ᵀ) :
@@ -347,7 +347,7 @@ variable {E : Type} {n n' : Type} {F : Type} [Field E] [CMType E] [WeilData E] [
   [DecidableEq n] [Fintype n'] [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ}
   {μ : NumberField.InfinitePlace E → ℤ} (S : Space E n s) (T : Space E n' s')
   -- `v` is the real part of a datum: a vector of the Fock model of `Hom(S, T)` at the real places
-  {v : Fock.fockSpace (realSigns E (homSigns s s'))} [SemilocalField F]
+  {v : Fock.FockSpace (realSigns E (homSigns s s'))} [SemilocalField F]
   {A : Set (FinPlace E)} {φ : Matrix n' n F → ℂ} {π : 𝔸f E →+* F} {U : Set (Matrix n' n F)}
   (𝔠 : SplitTameChar E μ)
 

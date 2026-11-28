@@ -162,7 +162,7 @@ lemma prod_mem_holomorphicData (ho : IsPosFirstOrder s o)
   -- At each place the first group acts on Fock space by a continuous representation `ρ w` whose
   -- derivative on polynomial vectors is this action of matrices.
   let ρ (w : InfinitePlace E) :
-      USign s →* fockSpace (pairSign 1 1 s) →L[ℂ] fockSpace (pairSign 1 (1 : n' → ℤˣ) s) :=
+      USign s →* FockSpace (pairSign 1 1 s) →L[ℂ] FockSpace (pairSign 1 (1 : n' → ℤˣ) s) :=
     detTwist ((pairHom (1 : n' → ℤˣ) s).comp (MonoidHom.inl (USign s) (USign 1))) (-e w)
   have rep (w : InfinitePlace E) : OscillatorRep (pair w) (ρ w) :=
     oscillatorPair_detTwist.column_rep

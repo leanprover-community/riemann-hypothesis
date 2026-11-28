@@ -260,7 +260,7 @@ lemma exists_norm_schrodingerOp_le_of_isShortPair {S : Space E n s} {T : Space E
       ∀ (g : G E s) (h : G E s') (ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ) (d : Matrix n' p E) (c : Matrix n q E)
         (x y t : ℝ),
       IsShortPair g h ℓ Ψ d c x y t →
-      ∀ v : fockSpace (realSigns E (homSigns s s')), fockMoment l v ≠ ⊤ →
+      ∀ v : FockSpace (realSigns E (homSigns s s')), fockMoment l v ≠ ⊤ →
       ‖ℓ (pairWeil S T a b (g, h) (integrated (S.hom T) v (schrodingerOp (S.hom T) P Ψ f₀)))‖ ≤
         C * ‖ℓ ∘L pairWeil S T a b (g, h)‖ * |t| ^ l * (fockMoment l v).toReal := by
   classical
@@ -314,7 +314,7 @@ lemma exists_norm_pairWeil_schrodingerOp_mul_pow_le {S : Space E n s} {T : Space
     (a b : AutChar E) {P : Set (FinPlace E)} (hP : Set.IsConjDisjoint P) {Ψ : (n' × n → 𝔸f E) → ℂ}
     [IsSchwartzBruhat P Ψ] {f₀ : 𝒮 (S.hom T)} (hf₀ : f₀ ∈ finitePart (S.hom T)) (N A : ℕ)
     (Y Z : ℝ) :
-    ∃ C : ℝ, ∀ (v : fockSpace (realSigns E (homSigns s s'))) (g : G E s) (h : G E s')
+    ∃ C : ℝ, ∀ (v : FockSpace (realSigns E (homSigns s s'))) (g : G E s) (h : G E s')
         (ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ) (ρ H : ℝ),
       fockMoment (N + A) v ≠ ⊤ → 1 ≤ ρ → 0 < H →
       (∀ f : 𝒮 (S.hom T), ‖ℓ (pairWeil S T a b (g, h) f)‖ ≤ Y * ‖f‖ * (ρ * H) ^ A) →
@@ -326,7 +326,7 @@ lemma exists_norm_pairWeil_schrodingerOp_mul_pow_le {S : Space E n s} {T : Space
   -- `H ≤ 2` the norm of `L` suffices.
   obtain ⟨C, hC, h_pair⟩ := exists_norm_schrodingerOp_le_of_isShortPair a b hP Ψ hf₀ (N + A) p q
   -- `J v = v ⊗ Ψ ⊗ f₀`.
-  let J : fockSpace (realSigns E (homSigns s s')) →L[ℂ] 𝒮 (S.hom T) :=
+  let J : FockSpace (realSigns E (homSigns s s')) →L[ℂ] 𝒮 (S.hom T) :=
     (integrated (S.hom T)).flip (schrodingerOp (S.hom T) P Ψ f₀)
   let C' : ℝ := C * |Z| ^ (N + A) + ‖J‖
   refine ⟨C' * |Y| * 2 ^ (N + A), fun v g h ℓ ρ H hv hρ hH h_growth h_short ↦ ?_⟩
@@ -377,7 +377,7 @@ lemma pairTheta_decay_of_onto (S : Space E n s) (T : Space E n' s') (a b : AutCh
     (φ : 𝔸f E →+* R) {P : Set (FinPlace E)} (hP : Set.IsConjDisjoint P)
     {Ψ : (n' × n → 𝔸f E) → ℂ} (hΨ : IsSchwartzBruhat P Ψ)
     (h_onto : ∀ y : n' × n → 𝔸f E, Ψ y ≠ 0 → HasLeftInv ((vecToMatrix y).map φ)ᵀ) (N : ℕ) :
-    ∃ (B M : ℕ) (C : ℝ), ∀ (v : fockSpace (realSigns E (homSigns s s'))) (g : G E s) (k : G E s'),
+    ∃ (B M : ℕ) (C : ℝ), ∀ (v : FockSpace (realSigns E (homSigns s s'))) (g : G E s) (k : G E s'),
       fockMoment M v ≠ ⊤ →
       ‖pairTheta S T a b (integrated (S.hom T) v (schrodingerOp (S.hom T) P Ψ (vacElem (S.hom T))))
           (g, k)‖ * T.height k ^ N ≤
@@ -420,7 +420,7 @@ lemma pairTheta_decay_of_injective (S : Space E n s) (T : Space E n' s') (a b : 
     (φ : 𝔸f E →+* R) {P : Set (FinPlace E)} (hP : Set.IsConjDisjoint P)
     {Ψ : (n' × n → 𝔸f E) → ℂ} (hΨ : IsSchwartzBruhat P Ψ)
     (h_inj : ∀ y : n' × n → 𝔸f E, Ψ y ≠ 0 → HasLeftInv ((vecToMatrix y).map φ)) (N : ℕ) :
-    ∃ (B M : ℕ) (C : ℝ), ∀ (v : fockSpace (realSigns E (homSigns s s'))) (g : G E s) (k : G E s'),
+    ∃ (B M : ℕ) (C : ℝ), ∀ (v : FockSpace (realSigns E (homSigns s s'))) (g : G E s) (k : G E s'),
       fockMoment M v ≠ ⊤ →
       ‖pairTheta S T a b (integrated (S.hom T) v (schrodingerOp (S.hom T) P Ψ (vacElem (S.hom T))))
           (g, k)‖ * S.height g ^ N ≤
@@ -539,7 +539,7 @@ independent of `v`, `g`, `h`, such that for every `v` with finite moment
 lemma pairTheta_modDatum_decay (a b : AutChar E) {Ψ : Matrix n' n 𝔪.ResidueRing → ℂ}
     (h_ne : Nonempty 𝔪.places) (hΨ : Ψ.support ⊆ {y : Matrix n' n 𝔪.ResidueRing | HasLeftInv y})
     (M : ℕ) :
-    ∃ (B N : ℕ) (C : ℝ), ∀ (v : fockSpace (realSigns E (homSigns s s'))) (h : G E s') (g : G E s),
+    ∃ (B N : ℕ) (C : ℝ), ∀ (v : FockSpace (realSigns E (homSigns s s'))) (h : G E s') (g : G E s),
       fockMoment N v ≠ ⊤ →
       ‖pairTheta S T a b (modDatum S T 𝔪 Ψ v) (g, h)‖ * S.height g ^ M ≤
         C * (fockMoment N v).toReal * T.height h ^ B := by
@@ -566,7 +566,7 @@ there are `B`, `N`, `C`, independent of `v`, `g`, `h`, such that for every `v` w
 lemma pairTheta_modDatum_decay_of_rightInv (a b : AutChar E) {Ψ : Matrix n' n 𝔪.ResidueRing → ℂ}
     (h_ne : Nonempty 𝔪.places) (hΨ : Ψ.support ⊆ {y : Matrix n' n 𝔪.ResidueRing | HasLeftInv yᵀ})
     (M : ℕ) :
-    ∃ (B N : ℕ) (C : ℝ), ∀ (v : fockSpace (realSigns E (homSigns s s'))) (g : G E s) (h : G E s'),
+    ∃ (B N : ℕ) (C : ℝ), ∀ (v : FockSpace (realSigns E (homSigns s s'))) (g : G E s) (h : G E s'),
       fockMoment N v ≠ ⊤ →
       ‖pairTheta S T a b (modDatum S T 𝔪 Ψ v) (g, h)‖ * T.height h ^ M ≤
         C * (fockMoment N v).toReal * S.height g ^ B := by

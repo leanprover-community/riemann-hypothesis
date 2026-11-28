@@ -18,7 +18,7 @@ The archimedean Tate integral of a Fock vector over the cone of real isotropic v
 Throughout, `A` and `X` split a hyperbolic plane off `W'` and `V'`, with complements `W` and `V`.
 
 * `PairFock E s t` is the Fock space of `Hom(W, V)` at the infinite places, the type
-  `fockSpace (realSigns E (homSigns s t))` that `coneIntegrand` takes values in.
+  `FockSpace (realSigns E (homSigns s t))` that `coneIntegrand` takes values in.
 * `lineTermReal A X β a` maps the Fock space of `Hom(W', V')` to that of `Hom(W, V)`; it is the
   archimedean part of the term at `a` in Poisson's formula on the line, on the side that the Boolean
   `β` names.
@@ -66,7 +66,7 @@ archimedean component, as the element `(1, k)` of `U(W') × U(V')` in the Weil r
 weight `targetWeight n' μ` on `U(V')` and `0` on `U(W')`. The two values of `β` give the terms on
 the two sides of Poisson's formula on the line (`tsum_lineTerm`). -/
 def coneIntegrand (β : Bool) (z : ℝ) (v : PairFock E s' t')
-    (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) : fockSpace (realSigns E (homSigns s t)) :=
+    (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) : FockSpace (realSigns E (homSigns s t)) :=
   ((∏ w : InfinitePlace E, (p.2.val w / ‖p.2.val w‖) ^ (2 * μ w)) *
       (ideleAbs (realIdele p.2) ^ z : ℝ)) •
     lineTermReal A X β p.2 (realPairWeil (targetWeight n' μ) 0 (1, (p.1 : G E t').1) v)

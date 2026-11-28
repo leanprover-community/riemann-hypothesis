@@ -22,7 +22,7 @@ X_j, Y_j and W_j.
 * `New.Data.X`, `New.Data.RowIndex`, `New.Data.Y`: the basis indices of X_j (rank `New.Data.n`), of
   Y_0 (rank r, `New.Data.card_rowIndex`) and of Y_j (`New.Data.RowIndex` and j blocks of size
   `New.Data.t`).
-* `New.Data.chosenGL`, `New.Data.e₀`: the product of the groups GL_r over the residue fields at the
+* `New.Data.ChosenGL`, `New.Data.e₀`: the product of the groups GL_r over the residue fields at the
   chosen places above p₀, p₁, and the good idempotent in its group algebra. The idempotent is the
   sum of the idempotents `New.tupleIdem` over `New.Data.goodTupleFamilies`.
 * `New.Data.isCentralProj_e₀`: `e₀` is a central idempotent.
@@ -335,7 +335,7 @@ def chosenPlace (x : Σ i : Fin 2, D.ChosenPlace i) : New.FinPlace D.E := x.2.va
 /-- The finite group 𝖦 = ∏ GL_r(𝔽_w), over the chosen places w (`New.Data.ChosenPlace`) above the
 two level primes p₀ and p₁ (`D.levelPrime`), where 𝔽_w is the residue field at w and the r rows are
 indexed by `New.Data.RowIndex`. -/
-abbrev chosenGL : Type := ∀ x : (i : Fin 2) × D.ChosenPlace i,
+abbrev ChosenGL : Type := ∀ x : (i : Fin 2) × D.ChosenPlace i,
   GL D.RowIndex (ResField (D.chosenPlace x))
 
 /-- There are only finitely many chosen places above the prime p_i = `D.levelPrime i`. -/

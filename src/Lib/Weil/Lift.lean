@@ -50,7 +50,7 @@ Notions from other files:
 * `New.Space.IsForm`, `New.typeKernel`: a form of type e is a bounded automorphic function that
   right convolution (`New.realConv`) with e fixes; `typeKernel l s` is the product over the infinite
   places of the kernels `dsKernel` with parameters l.
-* `New.Fock.fockSpace`, `New.Fock.polyVector`, `New.Fock.piTensor`: the Fock space on ℂ^ι with its
+* `New.Fock.FockSpace`, `New.Fock.polyVector`, `New.Fock.piTensor`: the Fock space on ℂ^ι with its
   L¹ norm, the vector (polynomial times Gaussian) of a polynomial, and the product of Fock vectors
   in separate variables.
 * `New.integratedRep`: for a representation π of U(diag ε) by bounded operators and a function f,
@@ -254,8 +254,8 @@ variable {E n n' ι : Type} [Field E] [CMType E] [WeilData E]
   [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype ι] [DecidableEq ι]
   {s : n → ℤˣ} {t : n' → ℤˣ} (γ γ' : InfinitePlace E → ℤ) (l : InfinitePlace E → n → ℤ)
   (l' : InfinitePlace E → n' → ℤ) {η : ι → ℤˣ}
-  (Ω : GInf E s × GInf E t → fockSpace (realSigns E η) →L[ℂ] fockSpace (realSigns E η))
-  (e : GInf E s → ℂ) (e' : GInf E t → ℂ) (Φ : fockSpace (realSigns E η))
+  (Ω : GInf E s × GInf E t → FockSpace (realSigns E η) →L[ℂ] FockSpace (realSigns E η))
+  (e : GInf E s → ℂ) (e' : GInf E t → ℂ) (Φ : FockSpace (realSigns E η))
 
 omit [WeilData E] in
 private lemma star_typeKernel_of_hasGap {a : Type} [Fintype a] [DecidableEq a]
@@ -336,8 +336,8 @@ end Correspond
 `V.integrated v f` and leave its finite part `f` alone. -/
 def ThetaKernel.HasRealPart {V : Space E ι η} {S : Space E n s} {T : Space E n' t}
     (Θ : ThetaKernel (𝒮 V) S T)
-    (Ω : GInf E s × GInf E t → fockSpace (realSigns E η) →L[ℂ] fockSpace (realSigns E η)) : Prop :=
-  ∀ (x : GInf E s) (y : GInf E t) (v : fockSpace (realSigns E η)) (f : 𝒮 V),
+    (Ω : GInf E s × GInf E t → FockSpace (realSigns E η) →L[ℂ] FockSpace (realSigns E η)) : Prop :=
+  ∀ (x : GInf E s) (y : GInf E t) (v : FockSpace (realSigns E η)) (f : 𝒮 V),
     Θ.ω ((x, 1), (y, 1)) (V.integrated v f) = V.integrated (Ω (x, y) v) f
 
 /-- Half an edge from `e` to `e'`: `e` is a cusp kernel of order `0`, and the integral of
@@ -358,7 +358,7 @@ structure IsHalfEdge : Prop where
     T.IsForm e' (S.lift Θ (V.integrated Φ f) y)
   /-- Every Fock polynomial `v` has a continuous function `α` of compact support such that the lift
   with `v` of any form `y` of type `e` is the convolution with `α` of the lift with `Φ`. -/
-  exists_lift_eq_realConv (v : fockSpace (realSigns E η))
+  exists_lift_eq_realConv (v : FockSpace (realSigns E η))
     (hv : v ∈ range (polyVector (realSigns E η))) :
     ∃ α : C_c(GInf E t, ℂ), ∀ {V : Space E ι η} {S : Space E n s} {T : Space E n' t}
       {y : G E s → ℂ} {f : 𝒮 V} (Θ : ThetaKernel (𝒮 V) S T), Θ.HasRealPart Ω → S.IsForm e y →
@@ -372,10 +372,10 @@ acts on `u`, any `f`, and any form `y` of type `e` (bounded automorphic, fixed b
 `e` if `e` is integrable). Then the lift `F` of `y` with `V.integrated Φ f` is a form of type `e'`
 if it has a level, and the lift with `V.integrated v f` is `realConv α F`. -/
 theorem IsHalfEdge.lift_isForm_and_eq_realConv (h_edge : IsHalfEdge Ω e e' Φ)
-    (v : fockSpace (realSigns E η)) (hv : v ∈ range (polyVector (realSigns E η))) :
+    (v : FockSpace (realSigns E η)) (hv : v ∈ range (polyVector (realSigns E η))) :
     ∃ α : C_c(GInf E t, ℂ), ∀ {V : Space E ι η} {S : Space E n s} {T : Space E n' t}
       {y : G E s → ℂ} {f : 𝒮 V} (Θ : ThetaKernel (𝒮 V) S T),
-      (∀ (x : GInf E s) (x' : GInf E t) (u : fockSpace (realSigns E η)) (f' : 𝒮 V),
+      (∀ (x : GInf E s) (x' : GInf E t) (u : FockSpace (realSigns E η)) (f' : 𝒮 V),
         Θ.ω ((x, 1), (x', 1)) (V.integrated u f') = V.integrated (Ω (x, x') u) f') →
       S.IsForm e y →
       let F : G E t → ℂ := S.lift Θ (V.integrated Φ f) y
@@ -396,8 +396,8 @@ variable {Ω}
 
 section Oscillator
 
-variable {π : InfinitePlace E → USign s →* fockSpace η →L[ℂ] fockSpace η}
-  {π' : InfinitePlace E → USign t →* fockSpace η →L[ℂ] fockSpace η}
+variable {π : InfinitePlace E → USign s →* FockSpace η →L[ℂ] FockSpace η}
+  {π' : InfinitePlace E → USign t →* FockSpace η →L[ℂ] FockSpace η}
   {Φ : InfinitePlace E → MvPolynomial ι ℂ} [Nonempty n]
 
 section
@@ -406,8 +406,8 @@ omit [WeilData E]
 
 /-- Let `π w` be unitary representations of growth `A` of the unitary group of signs `s : n → ℤˣ` on
 the Fock space of signs `η : ι → ℤˣ`, let `k w` be continuous functions with integrable moment of
-order `A`, and let `T` be a continuous linear map from `fockSpace (realSigns E η)` to a Banach space
-`X`, and let `v w` be vectors of `fockSpace η`. The integral over the real points `x : GInf E s` of
+order `A`, and let `T` be a continuous linear map from `FockSpace (realSigns E η)` to a Banach space
+`X`, and let `v w` be vectors of `FockSpace η`. The integral over the real points `x : GInf E s` of
 the image under `T` of the pure tensor (`piTensor`) of the vectors `k w (x w) • π w (x w) (v w)`
 converges, and equals the image under `T` of the pure tensor of the local integrals
 `integratedRep (π w) (k w) (v w)`. -/
@@ -415,22 +415,22 @@ theorem integral_piTensor_eq_integratedRep {A : ℕ}
     (hπ : ∀ w : InfinitePlace E, IsUnitaryRep A (π w) fockInner)
     (k : InfinitePlace E → USign s → ℂ) (k_cont : ∀ w : InfinitePlace E, Continuous (k w))
     (hk : ∀ w : InfinitePlace E, Integrable fun g : USign s ↦ k w g * ‖(g : Matrix n n ℂ)‖ ^ A)
-    (v : InfinitePlace E → fockSpace η) {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X]
-    [CompleteSpace X] (T : fockSpace (realSigns E η) →L[ℂ] X) :
+    (v : InfinitePlace E → FockSpace η) {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X]
+    [CompleteSpace X] (T : FockSpace (realSigns E η) →L[ℂ] X) :
     let F (x : GInf E s) : X := T (piTensor fun w : InfinitePlace E ↦ k w (x w) • π w (x w) (v w))
     Integrable F ∧ ∫ x : GInf E s, F x =
       T (piTensor fun w : InfinitePlace E ↦ integratedRep (π w) (k w) (v w)) := by
   -- Bound the integrand by a product of integrable functions of one place each; then evaluate at a
   -- point `z`, where the integral of a product over the places is the product of the integrals.
-  have π_cont (w : InfinitePlace E) (x : fockSpace η) : Continuous (π w · x) := (hπ w).continuous x
-  let F₀ (x : GInf E s) : fockSpace (realSigns E η) := piTensor fun w ↦ k w (x w) • π w (x w) (v w)
+  have π_cont (w : InfinitePlace E) (x : FockSpace η) : Continuous (π w · x) := (hπ w).continuous x
+  let F₀ (x : GInf E s) : FockSpace (realSigns E η) := piTensor fun w ↦ k w (x w) • π w (x w) (v w)
   have h_factor (w : InfinitePlace E) : Integrable fun g : USign s ↦ ‖k w g • π w g (v w)‖ :=
     (integrable_smul_rep (hπ w) (hk w) (v w)).norm
   have F₀_int : Integrable F₀ := ((Integrable.fintype_prod h_factor).const_mul _).mono'
     (by fun_prop) (.of_forall fun _ ↦ piTensor.le_opNorm _)
   have F₀_eq : ∫ x, F₀ x = piTensor fun w ↦ integratedRep (π w) (k w) (v w) := ext fun z ↦ by
     -- the value of `piTensor` at `z` is the product of the values of its factors
-    let ev (w : InfinitePlace E) : fockSpace η →L[ℂ] ℂ := valueAt fun i ↦ z (w, i)
+    let ev (w : InfinitePlace E) : FockSpace η →L[ℂ] ℂ := valueAt fun i ↦ z (w, i)
     calc (∫ x, F₀ x) z = ∫ x : GInf E s, ∏ w, k w (x w) • ev w (π w (x w) (v w)) :=
         ((valueAt z).integral_comp_comm F₀_int).symm
       _ = ∏ w, ∫ g, k w g • ev w (π w g (v w)) :=
@@ -449,10 +449,10 @@ of the tensor of the vectors `π w (dsKernel (l w)) (v w)`, where `π w (f)` is 
 theorem integral_typeKernel_smul_piTensor {T : InfinitePlace E → FockDualPair s t ι}
     (hp : ∀ w : InfinitePlace E, OscillatorPair (T w) (π w) (π' w))
     (hΦ : ∀ w : InfinitePlace E, IsJointHarmonic (T w) (l w) (l' w) (Φ w))
-    (hΩ_left : ∀ (v : InfinitePlace E → fockSpace η) (x : GInf E s),
+    (hΩ_left : ∀ (v : InfinitePlace E → FockSpace η) (x : GInf E s),
       Ω (x, 1) (piTensor v) = piTensor fun w : InfinitePlace E ↦ π w (x w) (v w))
-    (v : InfinitePlace E → fockSpace η) {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X]
-    [CompleteSpace X] (L : fockSpace (realSigns E η) →L[ℂ] X) :
+    (v : InfinitePlace E → FockSpace η) {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X]
+    [CompleteSpace X] (L : FockSpace (realSigns E η) →L[ℂ] X) :
     Integrable (fun x : GInf E s ↦ typeKernel l s x • L (Ω (x, 1) (piTensor v))) ∧
       ∫ x : GInf E s, typeKernel l s x • L (Ω (x, 1) (piTensor v)) =
         L (piTensor fun w : InfinitePlace E ↦ integratedRep (π w) (dsKernel (l w)) (v w)) := by
@@ -480,11 +480,11 @@ tensor is unchanged when each factor is replaced by its projection `π w (dsKern
 theorem lift_piTensor_integratedRep {T : InfinitePlace E → FockDualPair s t ι}
     (hp : ∀ w : InfinitePlace E, OscillatorPair (T w) (π w) (π' w))
     (hΦ : ∀ w : InfinitePlace E, IsJointHarmonic (T w) (l w) (l' w) (Φ w))
-    (hΩ_left : ∀ (v : InfinitePlace E → fockSpace η) (x : GInf E s),
+    (hΩ_left : ∀ (v : InfinitePlace E → FockSpace η) (x : GInf E s),
       Ω (x, 1) (piTensor v) = piTensor fun w : InfinitePlace E ↦ π w (x w) (v w))
     {V : Space E ι η} {S : Space E n s} {S' : Space E n' t} {y : G E s → ℂ}
     (Θ : ThetaKernel (𝒮 V) S S') (hΘ : Θ.HasRealPart Ω) (hy : S.IsForm (typeKernel (-l) s) y)
-    (v : InfinitePlace E → fockSpace η) (f : 𝒮 V) (g : G E t) :
+    (v : InfinitePlace E → FockSpace η) (f : 𝒮 V) (g : G E t) :
     S.lift Θ (V.integrated (piTensor
       fun w : InfinitePlace E ↦ integratedRep (π w) (dsKernel (l w)) (v w)) f) y g =
       S.lift Θ (V.integrated (piTensor v) f) y g := by
@@ -546,13 +546,13 @@ tensor of the `v w`, at `g`. -/
 theorem integral_mul_lift_eq_lift_piTensor {T : InfinitePlace E → FockDualPair s t ι}
     (hp : ∀ w : InfinitePlace E, OscillatorPair (T w) (π w) (π' w))
     (hΦ : ∀ w : InfinitePlace E, IsJointHarmonic (T w) (l w) (l' w) (Φ w))
-    (hΩ_left : ∀ (v : InfinitePlace E → fockSpace η) (x : GInf E s),
+    (hΩ_left : ∀ (v : InfinitePlace E → FockSpace η) (x : GInf E s),
       Ω (x, 1) (piTensor v) = piTensor fun w : InfinitePlace E ↦ π w (x w) (v w))
-    (hΩ_right : ∀ (v : InfinitePlace E → fockSpace η) (y : GInf E t),
+    (hΩ_right : ∀ (v : InfinitePlace E → FockSpace η) (y : GInf E t),
       Ω (1, y) (piTensor v) = piTensor fun w : InfinitePlace E ↦ π' w (y w) (v w))
     {V : Space E ι η} {S : Space E n s} {S' : Space E n' t} {y : G E s → ℂ} {f : 𝒮 V}
     (Θ : ThetaKernel (𝒮 V) S S') (hΘ : Θ.HasRealPart Ω) (hy : S.IsForm (typeKernel (-l) s) y)
-    {k : InfinitePlace E → USign t → ℂ} {v : InfinitePlace E → fockSpace η}
+    {k : InfinitePlace E → USign t → ℂ} {v : InfinitePlace E → FockSpace η}
     (k_cont : ∀ w : InfinitePlace E, Continuous (k w))
     (k_int : ∀ w : InfinitePlace E,
       Integrable fun g : USign t ↦ k w g * ‖(g : Matrix n' n' ℂ)‖ ^ card ι)
@@ -566,11 +566,11 @@ theorem integral_mul_lift_eq_lift_piTensor {T : InfinitePlace E → FockDualPair
         S.lift Θ (V.integrated (piTensor v) f) y g := by
   -- The lift sees only the projected vector, so this is the local identity under the lift.
   intro F
-  let p (w : InfinitePlace E) : fockSpace η →L[ℂ] fockSpace η :=
+  let p (w : InfinitePlace E) : FockSpace η →L[ℂ] FockSpace η :=
     integratedRep (π w) (dsKernel (l w))
   obtain ⟨L, hL⟩ : ∃ L : G E t → 𝒮 V →L[ℂ] ℂ, ∀ (φ : 𝒮 V) (g : G E t), S.lift Θ φ y g = L g φ :=
     Θ.exists_clm_lift (hy.mem_rapidFunctions (isCuspKernel_typeKernel_neg_of_isJointHarmonic hΦ))
-  let pΦ : fockSpace (realSigns E η) := piTensor fun w ↦ p w (polyVector η (Φ w))
+  let pΦ : FockSpace (realSigns E η) := piTensor fun w ↦ p w (polyVector η (Φ w))
   let M (x : GInf E t) : ℂ := (∏ w, k w (x w)) * L g (V.integrated (Ω (1, x) pΦ) f)
   have h_mean : Integrable M ∧ ∫ x, M x = L g (V.integrated (piTensor fun w ↦ p w (v w)) f) := by
     simpa [M, pΦ, p, hk_proj, hΩ_right, ContinuousMultilinearMap.map_smul_univ] using
@@ -597,14 +597,14 @@ for `Φ₀ = ⊗ polyVector η (Φ w)` the integral over `GInf E s` of `⟨Φ₀
 theorem integral_fockInner_mul_typeKernel_ne_zero {T : InfinitePlace E → FockDualPair s t ι}
     (hp : ∀ w : InfinitePlace E, OscillatorPair (T w) (π w) (π' w))
     (hΦ : ∀ w : InfinitePlace E, IsJointHarmonic (T w) (l w) (l' w) (Φ w))
-    (hΩ_left : ∀ (v : InfinitePlace E → fockSpace η) (x : GInf E s),
+    (hΩ_left : ∀ (v : InfinitePlace E → FockSpace η) (x : GInf E s),
       Ω (x, 1) (piTensor v) = piTensor fun w : InfinitePlace E ↦ π w (x w) (v w)) :
-    let Φ₀ : fockSpace (realSigns E η) := piTensor fun w : InfinitePlace E ↦ polyVector η (Φ w)
+    let Φ₀ : FockSpace (realSigns E η) := piTensor fun w : InfinitePlace E ↦ polyVector η (Φ w)
     ∫ x : GInf E s, fockInner Φ₀ (Ω (x, 1) Φ₀) *
       (conj (typeKernel (-l) s x) / typeKernel (-l) s 1) ≠ 0 := by
   -- Up to the normalisation, it is a product of local pairings, each with positive real part.
   intro Φ₀
-  let pΦ (w : InfinitePlace E) : fockSpace η :=
+  let pΦ (w : InfinitePlace E) : FockSpace η :=
     integratedRep (π w) (dsKernel (l w)) (polyVector η (Φ w))
   have h_conj (x : GInf E s) : conj (typeKernel (-l) s x) = typeKernel l s x := by
     simpa only [Pi.star_apply, starRingEnd_apply, neg_neg] using
@@ -625,16 +625,16 @@ half edge from the kernel of type `-l` to the kernel of type `l'`. -/
 theorem isHalfEdge_of_oscillatorPair {T : InfinitePlace E → FockDualPair s t ι}
     (hp : ∀ w : InfinitePlace E, OscillatorPair (T w) (π w) (π' w))
     (hΦ : ∀ w : InfinitePlace E, IsJointHarmonic (T w) (l w) (l' w) (Φ w))
-    (hΩ_left : ∀ (v : InfinitePlace E → fockSpace η) (x : GInf E s),
+    (hΩ_left : ∀ (v : InfinitePlace E → FockSpace η) (x : GInf E s),
       Ω (x, 1) (piTensor v) = piTensor fun w : InfinitePlace E ↦ π w (x w) (v w))
-    (hΩ_right : ∀ (v : InfinitePlace E → fockSpace η) (y : GInf E t),
+    (hΩ_right : ∀ (v : InfinitePlace E → FockSpace η) (y : GInf E t),
       Ω (1, y) (piTensor v) = piTensor fun w : InfinitePlace E ↦ π' w (y w) (v w)) :
     IsHalfEdge Ω (typeKernel (-l) s) (typeKernel l' t)
       (piTensor fun w : InfinitePlace E ↦ polyVector η (Φ w)) := by
   -- Let `p w` be the projection by the kernel of `l w`, which is `conj` of the kernel of `-l w`.
   -- Local identities `π' (k) p Φ = p v` make the lift with `v` the mean against `k` of the lift
   -- with `Φ` (`integral_mul_lift_eq_lift_piTensor`), so all reduces to local facts.
-  let p (w : InfinitePlace E) : fockSpace η →L[ℂ] fockSpace η :=
+  let p (w : InfinitePlace E) : FockSpace η →L[ℂ] FockSpace η :=
     integratedRep (π w) (dsKernel (l w))
   have cusp : IsCuspKernel 0 (typeKernel (-l) s) :=
     isCuspKernel_typeKernel_neg_of_isJointHarmonic hΦ
@@ -658,7 +658,7 @@ theorem isHalfEdge_of_oscillatorPair {T : InfinitePlace E → FockDualPair s t �
       ⟨Θ.continuous_lift (hy.mem_rapidFunctions cusp), Θ.fixesLeft_lift, K, hK⟩
       fun g ↦ (h_fix g).left
   · -- local bumps `g ↦ α a w g⁻¹` carry `p Φ` to `p` of the factor `v a w` of the monomial `a`
-    let v (a : InfinitePlace E × ι →₀ ℕ) (w : InfinitePlace E) : fockSpace η :=
+    let v (a : InfinitePlace E × ι →₀ ℕ) (w : InfinitePlace E) : FockSpace η :=
       polyVector η (monomial (a.curry w) 1)
     have local_bump (a : InfinitePlace E × ι →₀ ℕ) (w : InfinitePlace E) :
         ∃ α : DiscreteSeries.Bumps t,
@@ -703,17 +703,17 @@ theorem isEdge_of_isJointHarmonic {Φ : InfinitePlace E → MvPolynomial (n' × 
       ↑(∏ w : InfinitePlace E, rename (w, ·) (Φ w)) := by
   -- On pure tensors the two groups act place by place, through the oscillator pairs `π' w`, `π w`.
   let π (w : InfinitePlace E) :
-      USign s →* fockSpace (homSigns s t) →L[ℂ] fockSpace (homSigns s t) :=
+      USign s →* FockSpace (homSigns s t) →L[ℂ] FockSpace (homSigns s t) :=
     detTwist ((pairHom t s).comp (MonoidHom.inl (USign s) (USign t))) (-γ' w)
   let π' (w : InfinitePlace E) :
-      USign t →* fockSpace (homSigns s t) →L[ℂ] fockSpace (homSigns s t) :=
+      USign t →* FockSpace (homSigns s t) →L[ℂ] FockSpace (homSigns s t) :=
     detTwist ((pairHom t s).comp (MonoidHom.inr (USign s) (USign t))) (γ w)
   have h_pair (w : InfinitePlace E) : OscillatorPair (.std t s (γ w) (-γ' w)) (π' w) (π w) :=
     oscillatorPair_detTwist
-  have hπ (v : InfinitePlace E → fockSpace (homSigns s t)) (x : GInf E s) :
+  have hπ (v : InfinitePlace E → FockSpace (homSigns s t)) (x : GInf E s) :
       realPairWeil γ γ' (x, 1) (piTensor v) = piTensor fun w ↦ π w (x w) (v w) := by
     simp [π, realPairWeil, pairHomInf, realWeil_piTensor, ContinuousMultilinearMap.map_smul_univ]
-  have hπ' (v : InfinitePlace E → fockSpace (homSigns s t)) (y : GInf E t) :
+  have hπ' (v : InfinitePlace E → FockSpace (homSigns s t)) (y : GInf E t) :
       realPairWeil γ γ' (1, y) (piTensor v) = piTensor fun w ↦ π' w (y w) (v w) := by
     simp [π', realPairWeil, pairHomInf, realWeil_piTensor, ContinuousMultilinearMap.map_smul_univ]
   rw [← piTensor_polyVector Φ]
@@ -794,7 +794,7 @@ weights γ, γ' with tame parts ψ, ψ', and let f lie in the finite part of the
 Φ ⊗ f = `integrated (S.hom T) Φ f` is an arrow e → e' (forms of type e are rapid and lift to forms
 of type e'), and for the swapped kernel it is an arrow ē' → ē. -/
 lemma IsEdge.isArrow [WeilData E] {γ γ' : NumberField.InfinitePlace E → ℤ}
-    {Φ : Fock.fockSpace (realSigns E (homSigns s t))}
+    {Φ : Fock.FockSpace (realSigns E (homSigns s t))}
     {ψ ψ' : (w : FinPlace E) → MulChar (ResField w) ℂ} {f : 𝒮 (S.hom T)}
     (hΦ : IsEdge (realPairWeil γ γ') e e' Φ) (a b : AutChar E) [a.HasWeight γ ψ] [b.HasWeight γ' ψ']
     (hf : f ∈ (S.hom T).finitePart) :
@@ -826,7 +826,7 @@ type e' once they have a level. Let a, b be automorphic characters of weights γ
 descent by Φ ⊗ f is a form of type e on S. Here the descent is the conjugate of the lift of ȳ' by
 Φ ⊗ f for the swapped kernel of `pairThetaKer S T a b`. -/
 lemma IsEdge.isForm_star_lift_swap [WeilData E] {γ γ' : NumberField.InfinitePlace E → ℤ}
-    {Φ : Fock.fockSpace (realSigns E (homSigns s t))}
+    {Φ : Fock.FockSpace (realSigns E (homSigns s t))}
     {ψ ψ' : (w : FinPlace E) → MulChar (ResField w) ℂ} {f : 𝒮 (S.hom T)}
     (hΦ : IsEdge (realPairWeil γ γ') e e' Φ) (a b : AutChar E) [a.HasWeight γ ψ] [b.HasWeight γ' ψ']
     (hf : f ∈ (S.hom T).finitePart) (y' : T.Form e') :
@@ -850,7 +850,7 @@ with the lift by Φ ⊗ f, and likewise for the product of ȳ with the transpose
 is the Fock vector of P, v ⊗ f is `integrated (S.hom T) v f`, the transposed lift is the lift for
 `K.swap`, and ȳ is the complex conjugate of y. -/
 lemma IsEdge.exists_petersson_lift_eq_mul [WeilData E] {γ γ' : InfinitePlace E → ℤ}
-    {Φ : Fock.fockSpace (realSigns E (homSigns s t))} (hΦ : IsEdge (realPairWeil γ γ') e e' Φ) :
+    {Φ : Fock.FockSpace (realSigns E (homSigns s t))} (hΦ : IsEdge (realPairWeil γ γ') e e' Φ) :
     ∃ κ : MvPolynomial (InfinitePlace E × n' × n) ℂ →ₗ[ℂ] ℂ,
       ∀ {S : Space E n s} {T : Space E n' t} {ψ ψ' : (w : FinPlace E) → MulChar (ResField w) ℂ}
         (a b : AutChar E) [a.HasWeight γ ψ] [b.HasWeight γ' ψ'] {f : 𝒮 (S.hom T)},

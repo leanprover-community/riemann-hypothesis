@@ -608,8 +608,8 @@ namespace New.OscillatorPair
 variable {R C I : Type} [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] [Fintype I]
   [DecidableEq I] {η : I → ℤˣ} {ε : R → ℤˣ} {ε' : C → ℤˣ} {l : HCParam ε} {l' : HCParam ε'}
   {Φ : MvPolynomial I ℂ} {T : FockDualPair (R := R) (C := C) ε ε' I}
-  {π : USign ε →* Fock.fockSpace η →L[ℂ] Fock.fockSpace η}
-  {π' : USign ε' →* Fock.fockSpace η →L[ℂ] Fock.fockSpace η}
+  {π : USign ε →* Fock.FockSpace η →L[ℂ] Fock.FockSpace η}
+  {π' : USign ε' →* Fock.FockSpace η →L[ℂ] Fock.FockSpace η}
 
 open DiscreteSeries Fock Finset MeasureTheory Fintype GlModule Matrix.Norms.L2Operator
 
@@ -629,10 +629,10 @@ theorem swap (hp : OscillatorPair T π π') :
 
 /-- The operator `π(e_λ)` commutes with the action of the second group. -/
 theorem map_integratedRep_dsKernel (hp : OscillatorPair T π π') [Nonempty R]
-    (hΦ : IsJointHarmonic T l l' Φ) (g' : USign ε') (x : fockSpace η) :
+    (hΦ : IsJointHarmonic T l l' Φ) (g' : USign ε') (x : FockSpace η) :
     π' g' (integratedRep π l.dsKernel x) = integratedRep π l.dsKernel (π' g' x) := by
   -- `π(e_λ)` is an integral over the first group, and `π' g'` commutes with each `π g`.
-  have h_int (L : fockSpace η →L[ℂ] fockSpace η) (y : fockSpace η) :
+  have h_int (L : FockSpace η →L[ℂ] FockSpace η) (y : FockSpace η) :
       L (integratedRep π l.dsKernel y) = ∫ g : USign ε, l.dsKernel g • L (π g y) :=
     map_integratedRep hp.unitary_rep
       ((hΦ.hasLargeGap le_rfl).integrable_dsKernel_mul_norm_pow _ (Nat.le_succ _)) L y
@@ -676,7 +676,7 @@ theorem integratedRep_integratedRep_eq_self (hp : OscillatorPair T π π') [None
   -- by rigidity it suffices that `proj Φ` has the Casimir value `l'.casimirValue`. Compare the
   -- centred Casimir elements of the two groups.
   obtain ⟨-, highest', -, ⟨h_weight, -⟩, -⟩ := hΦ.isJointHighest
-  let proj : MvPolynomial I ℂ →ₗ[ℂ] fockSpace η :=
+  let proj : MvPolynomial I ℂ →ₗ[ℂ] FockSpace η :=
     (integratedRep π l.dsKernel).toLinearMap ∘ₗ polyVector η
   have h_casimir : proj (T.oscRows.casimirK 1 Φ) = (l.casimirValue : ℂ) • proj Φ :=
     integratedRep_dsKernel_casimir (hΦ.hasLargeGap le_rfl) hp.unitary_rep hp.derives
@@ -734,12 +734,12 @@ theorem exists_bump_integratedRep_eq (hp : OscillatorPair T π π') [Nonempty R]
   -- The polynomials that `proj` sends into the range of `smearΦ` satisfy the conditions of Howe's
   -- argument `IsJointHarmonic.howe_argument`, so every polynomial is among them.
   have hrep : IsUnitaryRep (Fintype.card I) π' fockInner := hp.column_rep.unitary_rep
-  let proj : MvPolynomial I ℂ →ₗ[ℂ] fockSpace η :=
+  let proj : MvPolynomial I ℂ →ₗ[ℂ] FockSpace η :=
     (integratedRep π l.dsKernel).toLinearMap ∘ₗ polyVector η
   -- Integration by parts: `π(e_λ) = A ψ` for the generator `ψ = (-l).dsGenerator`, and
   -- `A f (Y v) = -A (Y f) v`. The generator is highest of weight `(-l).lowestKType` for `-l`.
   obtain ⟨A, hA, hA_parts⟩ :
-      ∃ A : (-l).DsModule →ₗ[ℂ] fockSpace η →L[ℂ] fockSpace η,
+      ∃ A : (-l).DsModule →ₗ[ℂ] FockSpace η →L[ℂ] FockSpace η,
         integratedRep π l.dsKernel = A (-l).dsGenerator ∧
         ∀ (Y : Matrix R R ℂ) (f : (-l).DsModule) (v : MvPolynomial I ℂ),
           A f (polyVector η (T.oscRows Y v)) = -A ((-l).dsAction Y f) (polyVector η v) :=
@@ -747,7 +747,7 @@ theorem exists_bump_integratedRep_eq (hp : OscillatorPair T π π') [Nonempty R]
   obtain ⟨hweight, hkill⟩ :
       (-l).IsKHighest (-l).dsAction (-l).lowestKType (-l).dsGenerator :=
     isKHighest_dsGenerator hΦ.hasGap_row.neg
-  let smearΦ : Bumps ε' →ₗ[ℂ] fockSpace η :=
+  let smearΦ : Bumps ε' →ₗ[ℂ] FockSpace η :=
     .proj 1 ∘ₗ smear (fun g : USign ε' ↦ π' g (proj Φ)) (hrep.continuous (proj Φ))
   have h_smear (α : Bumps ε') :
       integratedRep π' (fun g ↦ α.val.val g⁻¹) (proj Φ) = smearΦ α := by

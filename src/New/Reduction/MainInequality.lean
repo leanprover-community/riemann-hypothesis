@@ -25,7 +25,7 @@ Notions from other files:
   scales `x`, `x₁`, `b` in prescribed ranges (`D.logB = log b`), the number `D.m` of lifts, a set
   of places of the CM field `D.E`, the `b`-places, which carry the weight `b`, and primes for the
   levels. `D.a = x b`, and `D.f` is the number of infinite places of `D.E`.
-* `D.normalizedPoincare g`: the translate `g 𝔭` by `g : D.chosenGL` of a fixed linear map `𝔭` from
+* `D.normalizedPoincare g`: the translate `g 𝔭` by `g : D.ChosenGL` of a fixed linear map `𝔭` from
   the source `D.ramifiedSourceForms` to the target `D.targetForms`.
 * `D.integralRamified`: the source forms that are integral at every `ι : PrimePadicIso`.
 * `D.errorUnit`: the unit of loss `f a log³ b`.
@@ -95,7 +95,7 @@ theorem star_inequality {P : Parameters} (D : Data P) :
   -- Choose many independent images of short integral forms, bound their covolume and index from
   -- above, and compare with the lower bound `integral_forms_long`.
   obtain ⟨h_dim_pos, t, h_translate_budget, h_span_dimension⟩ :
-      0 < D.targetDim ∧ ∃ t : Finset D.chosenGL,
+      0 < D.targetDim ∧ ∃ t : Finset D.ChosenGL,
       #t * finrank ℂ D.ramifiedSourceForms ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2) ∧
       (1 - 4 / D.b ^ 2) * D.targetDim ≤ finrank ℂ ↥(⨆ g ∈ t, (D.normalizedPoincare g).range) :=
     D.enough_forms
@@ -103,7 +103,7 @@ theorem star_inequality {P : Parameters} (D : Data P) :
   let logNormBound : ℝ := D.mainAmount - D.m * D.totalRemainder + sizeError
   let indexBudgetPerDim : ℝ := 10 * log (1 + 2 * D.b ^ 2) * D.errorUnit
   let short : Set D.ramifiedSourceForms :=
-    {φ ∈ D.integralRamified | ∀ (g : D.chosenGL) (σ : ℂ ≃+* ℂ),
+    {φ ∈ D.integralRamified | ∀ (g : D.ChosenGL) (σ : ℂ ≃+* ℂ),
       (D.Θ 1 (D.normalizedPoincare g φ)).normSqAt σ ≤ exp logNormBound}
   have h_short_span : span ℂ short = ⊤ := D.span_short_integralRamified_eq_top
   -- A + B: take a basis from the images of short source forms under the chosen translates.

@@ -465,7 +465,7 @@ end SizeBound
 A form `z` of principal level on `Y₀` is replaced by the target form `|𝖦| e₀ s z`, its good part
 (`New.Data.goodProjTranslate s z`, for `s ∈ 𝖦`).
 
-Here `𝖦 = New.Data.chosenGL` is a finite product of groups `GL_r` over residue fields, `New.Data.e₀`
+Here `𝖦 = New.Data.ChosenGL` is a finite product of groups `GL_r` over residue fields, `New.Data.e₀`
 is an element of its group algebra, and `New.Data.lowerChain`, `New.Data.lowerChainAtLevel` are the
 same lift with two target types.
 -/
@@ -481,15 +481,15 @@ lemma coe_lowerChainAtLevel_apply {P : Parameters} {D : Data P} (ϑ : D.TameChar
     ((lowerChainAtLevel ϑ z).val : AlgForm (E := D.E) (D.Y D.m) D.columnsY (D.lastEntry D.m)) =
       lowerChain ϑ z := rfl
 
-/-- Let `𝖦 = D.chosenGL` be the finite group `∏ GL_r(𝔽_w)` over the chosen places `w` above `p₀`,
+/-- Let `𝖦 = D.ChosenGL` be the finite group `∏ GL_r(𝔽_w)` over the chosen places `w` above `p₀`,
 `p₁`, let `e₀ = D.e₀` be the good idempotent in `ℂ[𝖦]`, and let `ι = lowerChain ϑ` be the composite
 of the `m` lifts from `Y₀` to `Y_m` for the tame character `ϑ`. For `s ∈ 𝖦` and a form `z` of
 principal level on `Y₀`, the value at `g` of `ι (|𝖦| e₀ s z)` is the sum over `t ∈ 𝖦` of `|𝖦| e₀(t)`
 times the value of `ι z` at `g * firstBlockLift ϑ (t * s)`. -/
 lemma lowerChain_goodProjTranslate_apply {P : Parameters} {D : Data P} (ϑ : D.TameChar)
-    (s : D.chosenGL) (z : ↥(D.principalForms (D.spaceY 0))) (g : Gf D.E (D.Y D.m)) :
+    (s : D.ChosenGL) (z : ↥(D.principalForms (D.spaceY 0))) (g : Gf D.E (D.Y D.m)) :
     (lowerChain ϑ (D.goodProjTranslate s z).val).val g =
-      ∑ t : D.chosenGL, (Nat.card D.chosenGL * D.e₀.coeff t) • (lowerChain ϑ z).val
+      ∑ t : D.ChosenGL, (Nat.card D.ChosenGL * D.e₀.coeff t) • (lowerChain ϑ z).val
         (g * firstBlockLift ϑ (t * s)) := by
   -- Expand the action of `e₀` as a sum over `𝖦`; the lift turns the action of `t * s` into right
   -- translation by `firstBlockLift ϑ (t * s)` (`lowerChain_principalRep`).
@@ -500,25 +500,25 @@ lemma lowerChain_goodProjTranslate_apply {P : Parameters} {D : Data P} (ϑ : D.T
 integral at `j` if each value `φ(g)`, mapped by `j` and moved by `g⁻¹`, has coordinates of `l`-adic
 absolute value at most `1`. Let `ι = lowerChainAtLevel ϑ` be the composite of the `m` lifts from
 `Y₀` to `Y_m` for the tame character `ϑ`, with values in the forms of given level and character.
-Let `𝖦 = D.chosenGL` be a finite product of groups `GL_r` over residue fields and `e₀ = D.e₀` the
+Let `𝖦 = D.ChosenGL` be a finite product of groups `GL_r` over residue fields and `e₀ = D.e₀` the
 central idempotent of `ℂ[𝖦]` that cuts out the good part. For `c ∈ ℂ`, `s ∈ 𝖦` and `z` of principal
 level on `Y₀`, if `c • ι z` is integral at `j`, so is `c • ι (|𝖦| e₀ s z)`. -/
 lemma goodProjTranslate_mem_integralForms {P : Parameters} {D : Data P} {l : ℕ} [Fact l.Prime]
     (j : PadicPlace l) {ϑ : D.TameChar} {c : ℂ} {z : ↥(D.principalForms (D.spaceY 0))}
-    (h_integral : c • lowerChainAtLevel ϑ z ∈ integralForms j) (s : D.chosenGL) :
+    (h_integral : c • lowerChainAtLevel ϑ z ∈ integralForms j) (s : D.ChosenGL) :
     c • lowerChainAtLevel ϑ (D.goodProjTranslate s z).val ∈ integralForms j := by
   -- The value at `g` is a sum of values of `c • lowerChainAtLevel ϑ z` at integral right translates
   -- of `g`, with algebraic integers as coefficients; the gauge is ultrametric.
   intro g
   have h_value : (c • lowerChainAtLevel ϑ (D.goodProjTranslate s z).val).val.val g =
-      ∑ t : D.chosenGL, (Nat.card D.chosenGL * D.e₀.coeff t) •
+      ∑ t : D.ChosenGL, (Nat.card D.ChosenGL * D.e₀.coeff t) •
         c • (lowerChain ϑ z).val (g * firstBlockLift ϑ (t * s)) := by
     change c • (lowerChainAtLevel ϑ (D.goodProjTranslate s z).val).val.val g = _
     simp only [coe_lowerChainAtLevel_apply, lowerChain_goodProjTranslate_apply, smul_sum,
       smul_comm c]
   rw [h_value]
   refine weylGauge_sum_le _ zero_le_one fun t _ ↦ ?_
-  have h_int : IsIntegral ℤ (Nat.card D.chosenGL * D.e₀.coeff t) :=
+  have h_int : IsIntegral ℤ (Nat.card D.ChosenGL * D.e₀.coeff t) :=
     D.isCentralProj_e₀.isChar_card_mul_coeff.isIntegral _
   rw [weylGauge_smul, ← weylGauge_mul_of_mem_integralAbove
     (hk := stdLevel_le_localLevel (firstBlockLift ϑ (t * s)).property)]
@@ -529,30 +529,30 @@ lemma goodProjTranslate_mem_integralForms {P : Parameters} {D : Data P} {l : ℕ
 the composite of the `m` lifts from forms of principal level on `Y₀` to algebraic forms on `Y_m`. If
 every value of `lowerChain TameChar.one z`, conjugated by `σ`, has squared norm at most `exp B`,
 then the lift `φ` of `D.goodProjTranslate s z`, that is of `|𝖦| e₀ s z`, has
-`normSqAt φ σ ≤ exp (x ^ 99 + B)`. Here `x = D.x` is the scale, `𝖦 = D.chosenGL` is a finite product
+`normSqAt φ σ ≤ exp (x ^ 99 + B)`. Here `x = D.x` is the scale, `𝖦 = D.ChosenGL` is a finite product
 of groups `GL_r` over residue fields and `e₀ = D.e₀` is the central idempotent of `ℂ[𝖦]` that cuts
 out the good part. -/
 lemma normSqAt_goodProjTranslate_le {P : Parameters} {D : Data P} {σ : ℂ ≃+* ℂ}
-    {z : ↥(D.principalForms (D.spaceY 0))} {s : D.chosenGL} {B : ℝ}
+    {z : ↥(D.principalForms (D.spaceY 0))} {s : D.ChosenGL} {B : ℝ}
     (hB : ∀ g : Gf D.E (D.Y D.m), weylNormSq (σ ∘ (D.lowerChain TameChar.one z).val g) ≤ exp B) :
     (D.lowerChainAtLevel TameChar.one (D.goodProjTranslate s z).val).normSqAt σ ≤
       exp (D.x ^ 99 + B) := by
   classical
   -- The coefficients of the central idempotent `σ e₀` have norm at most `1`, since `|𝖦| σ e₀` is
   -- the character of a representation of dimension at most `|𝖦|`.
-  have h_coeff (t : D.chosenGL) : ‖σ (D.e₀.coeff t)‖ ≤ 1 := by
+  have h_coeff (t : D.ChosenGL) : ‖σ (D.e₀.coeff t)‖ ≤ 1 := by
     simpa using (D.isCentralProj_e₀.map σ).norm_coeff_le_one t
   -- So each value is a sum of `|𝖦|` terms, each of norm at most `|𝖦| * √(exp B)`.
   have h_value (g : Gf D.E (D.Y D.m)) :
       √(weylNormSq (σ ∘ D.lowerChainAtLevel TameChar.one (D.goodProjTranslate s z).val g)) ≤
-        Nat.card D.chosenGL * (Nat.card D.chosenGL * √(exp B)) := by
-    let v (t : D.chosenGL) : WeylIndex (D.Y D.m) D.columnsY → ℂ :=
+        Nat.card D.ChosenGL * (Nat.card D.ChosenGL * √(exp B)) := by
+    let v (t : D.ChosenGL) : WeylIndex (D.Y D.m) D.columnsY → ℂ :=
       (lowerChain TameChar.one z).val (g * firstBlockLift TameChar.one (t * s))
-    have h_term (t : D.chosenGL) : √(weylNormSq (σ ∘ ((Nat.card D.chosenGL * D.e₀.coeff t) • v t)))
-        ≤ Nat.card D.chosenGL * √(exp B) := by
-      calc _ = Nat.card D.chosenGL * ‖σ (D.e₀.coeff t)‖ * √(weylNormSq (σ ∘ v t)) := by
+    have h_term (t : D.ChosenGL) : √(weylNormSq (σ ∘ ((Nat.card D.ChosenGL * D.e₀.coeff t) • v t)))
+        ≤ Nat.card D.ChosenGL * √(exp B) := by
+      calc _ = Nat.card D.ChosenGL * ‖σ (D.e₀.coeff t)‖ * √(weylNormSq (σ ∘ v t)) := by
             simp [-Fintype.card_pi, sqrt_sq_eq_abs]
-        _ ≤ Nat.card D.chosenGL * √(exp B) := by grw [hB, h_coeff, mul_one]
+        _ ≤ Nat.card D.ChosenGL * √(exp B) := by grw [hB, h_coeff, mul_one]
     rw [coe_lowerChainAtLevel_apply, lowerChain_goodProjTranslate_apply]
     grw [sqrt_weylNormSq_sum_le, sum_le_sum fun t _ ↦ h_term t]
     simp [← Nat.card_eq_fintype_card]
@@ -563,7 +563,7 @@ lemma normSqAt_goodProjTranslate_le {P : Parameters} {D : Data P} {σ : ℂ ≃+
     exacts [Ideal.mul_mem_right _ _ h_above, nomatch hv]
   grw [normSqAt, classSum_le_card_mul_sq h_value,
     D.card_stdClasses_le_exp (principalLevel_le_levelOf h_mem) (D.card_Y_le le_rfl)]
-  suffices exp (D.x ^ 30) * Nat.card D.chosenGL ^ 4 ≤ exp (D.x ^ 99) by
+  suffices exp (D.x ^ 30) * Nat.card D.ChosenGL ^ 4 ≤ exp (D.x ^ 99) by
     simpa [exp_add, ← Nat.card_eq_fintype_card, field, exp_nonneg]
   -- The order of `𝖦` divides `D.chosenGroupOrder`, and
   -- `x ^ 30 + 4 * log D.chosenGroupOrder < x ^ 99`.

@@ -10,7 +10,7 @@ public import New.UpperBound.Objects.Rows
 The level `M` is the product of the primes `D.levelPrime 0`, `D.levelPrime 1`, and `D.chosenPlace`
 runs through the chosen places above it. The spherical Hecke operators away from `M` form an algebra
 that acts at once on the forms `D.principalForms V` of principal level for all hermitian spaces `V`.
-It commutes with the finite group `D.chosenGL`, so it acts on the good forms `D.goodForms V`, the
+It commutes with the finite group `D.ChosenGL`, so it acts on the good forms `D.goodForms V`, the
 image of the idempotent `D.e₀`.
 
 ## Main definitions and results
@@ -378,22 +378,22 @@ lemma exists_hecke_proj_eigenPart (q : FinPlace D.E × ℕ → ℂ) (F : Finset 
     · simp only [hd_eq_q, ↓reduceIte, inv_mul_cancel₀ (sub_ne_zero.2 hx), one_smul]
     · simp only [hd_eq_q, ↓reduceIte, smul_zero]
 
-/-- An element `g` of `D.chosenGL` acts on forms of principal level through its integral lift
+/-- An element `g` of `D.ChosenGL` acts on forms of principal level through its integral lift
 `liftResidue g` to `G_f`. -/
-lemma coe_principalRep_apply (g : D.chosenGL) (y : D.principalForms V) :
+lemma coe_principalRep_apply (g : D.ChosenGL) (y : D.principalForms V) :
     (D.principalRep V g y).val = V.formRep (typeKernel D.paramW s) (liftResidue g).val y := rfl
 
 /-- The lift to the group algebra of `G_f` of an element of the group algebra of the finite group
-`D.chosenGL`: each group element is replaced by an integral lift that is `1` off `M`. -/
-def liftGroupAlgebra (x : ℂ[D.chosenGL]) : ℂ[Gf D.E D.RowIndex] :=
+`D.ChosenGL`: each group element is replaced by an integral lift that is `1` off `M`. -/
+def liftGroupAlgebra (x : ℂ[D.ChosenGL]) : ℂ[Gf D.E D.RowIndex] :=
   mapDomain (fun g ↦ (liftResidue g).val) x
 
-lemma liftGroupAlgebra_add (x x' : ℂ[D.chosenGL]) :
+lemma liftGroupAlgebra_add (x x' : ℂ[D.ChosenGL]) :
     D.liftGroupAlgebra (x + x') = D.liftGroupAlgebra x + D.liftGroupAlgebra x' := mapDomain_add ..
 
-/-- An element `x` of the group algebra of `D.chosenGL` acts on forms of principal level through its
+/-- An element `x` of the group algebra of `D.ChosenGL` acts on forms of principal level through its
 lift to the group algebra of `G_f`. -/
-lemma coe_principalRep_asAlgebraHom_apply (x : ℂ[D.chosenGL]) (y : D.principalForms V) :
+lemma coe_principalRep_asAlgebraHom_apply (x : ℂ[D.ChosenGL]) (y : D.principalForms V) :
     ((D.principalRep V).asAlgebraHom x y).val =
       (V.formRep (typeKernel D.paramW s)).asAlgebraHom (D.liftGroupAlgebra x) y := by
   induction x using induction_linear with
@@ -401,22 +401,22 @@ lemma coe_principalRep_asAlgebraHom_apply (x : ℂ[D.chosenGL]) (y : D.principal
   | add x x' hx hx' => simp [liftGroupAlgebra_add, hx, hx']
   | single g c => simp [liftGroupAlgebra, coe_principalRep_apply]
 
-/-- The integral lift `liftResidue g` of `g : D.chosenGL` normalises the principal level
+/-- The integral lift `liftResidue g` of `g : D.ChosenGL` normalises the principal level
 `D.chosenLevel`. So in every representation `ρ` of `G_f` it maps `levelSpace ρ D.chosenLevel`, the
 vectors fixed by that level, into itself. -/
 lemma liftResidue_apply_mem_levelSpace {M : Type} [AddCommGroup M] [Module ℂ M]
-    {ρ : Representation ℂ (Gf D.E D.RowIndex) M} (g : D.chosenGL) {y : M}
+    {ρ : Representation ℂ (Gf D.E D.RowIndex) M} (g : D.ChosenGL) {y : M}
     (hy : y ∈ levelSpace ρ D.chosenLevel) :
     ρ (liftResidue g).val y ∈ levelSpace ρ D.chosenLevel := by
-  -- The representation `levelRep` of `D.chosenGL` on these vectors lets `g` act by
+  -- The representation `levelRep` of `D.ChosenGL` on these vectors lets `g` act by
   -- `ρ (liftResidue g)`.
-  let π : Representation ℂ D.chosenGL (levelSpace ρ D.chosenLevel) :=
-    levelRep ρ (1 : (⊥ : Subgroup D.chosenGL) →* ℂ) (.id D.chosenGL) (by simp)
+  let π : Representation ℂ D.ChosenGL (levelSpace ρ D.chosenLevel) :=
+    levelRep ρ (1 : (⊥ : Subgroup D.ChosenGL) →* ℂ) (.id D.ChosenGL) (by simp)
   exact (π g ⟨y, hy⟩).prop
 
-/-- The lift to `G_f` of an element of the group algebra of `D.chosenGL` keeps the vectors fixed by
+/-- The lift to `G_f` of an element of the group algebra of `D.ChosenGL` keeps the vectors fixed by
 the principal level `D.chosenLevel` in every representation. -/
-lemma liftGroupAlgebra_mem_universalLevelAlgebra (x : ℂ[D.chosenGL]) :
+lemma liftGroupAlgebra_mem_universalLevelAlgebra (x : ℂ[D.ChosenGL]) :
     D.liftGroupAlgebra x ∈ universalLevelAlgebra D.chosenLevel := by
   induction x using induction_linear with
   | zero => simp [liftGroupAlgebra]
@@ -425,14 +425,14 @@ lemma liftGroupAlgebra_mem_universalLevelAlgebra (x : ℂ[D.chosenGL]) :
     refine mem_universalLevelAlgebra.2 fun M _ _ ρ ↦ mem_levelAlgebra.2 fun y hy ↦ ?_
     simpa [liftGroupAlgebra] using smul_mem _ c (D.liftResidue_apply_mem_levelSpace g hy)
 
-/-- Let `D.chosenGL` be the finite group `∏ GL(𝔽_w)` over the chosen places `w` above the two primes
+/-- Let `D.ChosenGL` be the finite group `∏ GL(𝔽_w)` over the chosen places `w` above the two primes
 of the level `M`, with `𝔽_w` the residue field and rows indexed by `D.RowIndex`. The action of every
 `x` of its group algebra commutes with every member `T` of `D.heckeAlgebra`, the spherical Hecke
 operators away from `M`, which are given by elements of `G_f` that are `1` at the chosen places. -/
-lemma commute_heckeAlgebra_principalRep (T : D.heckeAlgebra) (x : ℂ[D.chosenGL]) :
+lemma commute_heckeAlgebra_principalRep (T : D.heckeAlgebra) (x : ℂ[D.ChosenGL]) :
     Commute (T.val V) ((D.principalRep V).asAlgebraHom x) := by
   obtain ⟨a, -, ha⟩ := D.mem_heckeAlgebra.1 T.prop
-  refine Representation.commute_asAlgebraHom_of_forall_commute _ (fun g : D.chosenGL ↦ ?_) x
+  refine Representation.commute_asAlgebraHom_of_forall_commute _ (fun g : D.ChosenGL ↦ ?_) x
   -- `T` acts as `A`, from `G^M`, and `g` as `ρ (liftResidue g).val`, whose lift `liftResidue g` is
   -- `1` off `M`; these commute.
   set ρ := V.formRep (typeKernel D.paramW s)
@@ -463,9 +463,9 @@ lemma coe_heckeOnGood_apply (T : D.heckeAlgebra) (y : D.goodForms V) :
     (D.heckeOnGood V T y).val = T.val V y := rfl
 
 /-- The forms of principal level with eigensystem `p` are stable under the group algebra of
-`D.chosenGL`. -/
+`D.ChosenGL`. -/
 lemma principalRep_mem_eigenPart {p : FinPlace D.E × ℕ → ℂ} {y : D.principalForms V}
-    (hy : y ∈ D.eigenPart V p) (x : ℂ[D.chosenGL]) :
+    (hy : y ∈ D.eigenPart V p) (x : ℂ[D.ChosenGL]) :
     (D.principalRep V).asAlgebraHom x y ∈ D.eigenPart V p := by
   refine (D.mem_eigenPart V).2 fun z ↦ ?_
   rw [← mul_apply_eq_comp, (D.commute_heckeAlgebra_principalRep V _ x).eq, mul_apply_eq_comp,
