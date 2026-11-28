@@ -114,8 +114,8 @@ lemma thetaGeneric_algebraMap_ainf (a : Ainf) :
       c.genericStructureMap (theta a) := by
   -- On `A_inf` the algebra map to `W(R♭)` is induced by the tilt of `O_C → R`, by definition.
   change c.thetaGeneric (algebraMap (WittVector p c.TiltRing) _
-    (WittVector.map (tiltMap c.structureMap) a)) = _
-  rw [thetaGeneric, IsLocalization.map_eq, fontaineTheta_map_tiltMap, genericStructureMap_coe]
+    (WittVector.map (PreTilt.map p c.structureMap) a)) = _
+  rw [thetaGeneric, IsLocalization.map_eq, WittVector.theta_natural, genericStructureMap_coe]
 
 /-- `θ` kills the element `μ = [ε] - 1` of `A_inf`. -/
 lemma thetaGeneric_mu :
@@ -244,7 +244,7 @@ lemma thickeningProj_mapThickening :
       d.thickeningProj (mapThickening f x) = mapGeneric f (c.thickeningProj x) := by
   rintro ⟨x⟩
   change d.thetaGeneric _ = mapGeneric f (c.thetaGeneric x)
-  simp [thetaGeneric, mapGeneric, IsLocalization.map_map, RingHom.comp, fontaineTheta_map_tiltMap,
+  simp [thetaGeneric, mapGeneric, IsLocalization.map_map, RingHom.comp, WittVector.theta_natural,
     tilt, wittFunctor]
 
 lemma mapThickening_uniqueLift (z : PadicAlgCl p) :
@@ -438,11 +438,12 @@ lemma isLeftRegular_xi {p : ℕ} [ThePrime p] (c : PadicTest) :
       (algebraMap Ainf (WittVector p c.TiltRing) xi).coeff 0 ^ p ^ j * y.coeff 0 = 0 := by
     simpa [← smul_eq_mul, hx] using
       (iterate_verschiebung_mul_coeff (algebraMap Ainf (WittVector p c.TiltRing) xi) y 0 j).symm
-  change tiltMap c.structureMap pFlat ^ p ^ j * y.coeff 0 = tiltMap c.structureMap pFlat ^ p ^ j * 0
+  change PreTilt.map p c.structureMap pFlat ^ p ^ j * y.coeff 0 =
+    PreTilt.map p c.structureMap pFlat ^ p ^ j * 0
   rw [mul_zero]
   -- The zeroth coordinate of `ξ` in `W(R♭)` is the image of `pFlat`.
   have h_xi_coeff : (algebraMap Ainf (WittVector p c.TiltRing) xi).coeff 0 =
-      tiltMap c.structureMap pFlat := rfl
+      PreTilt.map p c.structureMap pFlat := rfl
   rwa [h_xi_coeff] at h_coeff
 
 /-- For a `p`-adic test `c` with ring `R`, `proj c : W(R♭)[1/p] / (ker θ)² → R[1/p]` is the map

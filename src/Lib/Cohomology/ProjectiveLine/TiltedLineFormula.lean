@@ -979,13 +979,14 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
   let ρ (c : PadicTest) : PadicTest.tilt c →*₀ c.GenericRing :=
     .comp (.ofClass (algebraMap ..)) (Perfection.teichmuller₀ ..)
   have ρ_nat (c d : PadicTest) (f : c ⟶ d) (x : PadicTest.tilt c) :
-      R.map f (ρ c x) = ρ d (tiltMap f.toRingHom x) := by
+      R.map f (ρ c x) = ρ d (PreTilt.map _ f.toRingHom x) := by
     -- These lemmas match `R.map f` and `ρ` only up to unfolding definitions.
-    exact (c.mapGeneric_algebraMap _ _).trans (congrArg _ (untilt_tiltMap ..).symm)
+    exact (c.mapGeneric_algebraMap _ _).trans (congrArg _ (PreTilt.untilt_natural ..).symm)
   have ρ_const (c : PadicTest) (s : OFlat) :
       ρ c (algebraMap _ _ s) = c.genericStructureMap s.untilt := by
     -- As for `ρ_nat`, these lemmas match only up to unfolding definitions.
-    exact ((c.genericStructureMap_coe _).trans (congrArg _ (untilt_tiltMap c.structureMap s).symm)).symm
+    exact ((c.genericStructureMap_coe _).trans
+      (congrArg _ (PreTilt.untilt_natural c.structureMap s).symm)).symm
   -- With `X` the untilt of the coordinate, `f` is `[(1, 0)] - [(X, 1)]` on the disc `true` and
   -- `[(1, 0)] - [(1, X)]` on the other one.
   let f : freeAb twoDiscs ⟶ (cocycle (genericTestOver A)).extension.X₂ := desc
@@ -996,13 +997,13 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
       -- On each disc, `twoDiscs.map` keeps the disc and composes the point, by definition.
       rintro c d j ⟨⟨_ | _⟩, y⟩
       · let x := y.down.hom (single 1 1)
-        change F d (0, 0) - F d (0, ρ d (tiltMap j.toRingHom x)) =
+        change F d (0, 0) - F d (0, ρ d (PreTilt.map _ j.toRingHom x)) =
           ((cocycle _).extension.X₂.map j).hom (F c (0, 0) - F c (0, ρ c x))
         rw [_root_.map_sub, F_nat c d j (0, 0), F_nat c d j (0, ρ c x)]
         simp [ρ_nat]
       · let x := y.down.hom (single 1 1)
         let xc : R c := ρ c x
-        let xd : R d := ρ d (tiltMap j.toRingHom x)
+        let xd : R d := ρ d (PreTilt.map _ j.toRingHom x)
         change F d (0, 0) - F d (xd - 1, 1) =
           ((cocycle _).extension.X₂.map j).hom (F c (0, 0) - F c (xc - 1, 1))
         rw [_root_.map_sub, F_nat c d j (0, 0), F_nat c d j (xc - 1, 1)]

@@ -268,9 +268,9 @@ lemma exists_smul_teichmuller_eq (C : Subgroup (Gp p)) [hC : IsClosed (C : Set (
   refine ⟨g, hg_C, (map_teichmuller ..).trans (congrArg _ (Perfection.ext fun n ↦ ?_))⟩
   -- the `n`-th coefficient is the class of the `n`-th component modulo `p`
   change Perfection.coeff (ModP OC p) p n (g • u) = _
-  have h_tilt : g • u = tiltMap (MulSemiringAction.toRingHom (Gp p) OC g) u := pow_one _
+  have h_tilt : g • u = PreTilt.map p (MulSemiringAction.toRingHom (Gp p) OC g) u := pow_one _
   refine (congrArg (Perfection.coeff (ModP OC p) p n) h_tilt).trans ?_
-  refine (coeff_tiltMap _ (u.mk_untiltRoot n)).symm.trans ?_
+  rw [← PreTilt.coeff_def, PreTilt.coeff_map, ← u.mk_untiltRoot n, ModP.map_mk]
   have hg_n : ((g • b u n : PadicAlgCl p) : ℂ_[p]) = (v.untiltRoot n).val := (hg n).right
   have h_root_eq : g • untiltRoot n u = untiltRoot n v :=
     Subtype.ext (by simpa [← hb] using hg_n)

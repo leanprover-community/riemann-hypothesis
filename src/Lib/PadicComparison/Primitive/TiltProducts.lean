@@ -71,9 +71,14 @@ lemma bijective_prod_tilt {p : ℕ} [ThePrime p] {c d d' : PadicTest} (f : c ⟶
     simp [seqs, forall_and, ← hfg.injective.eq_iff]
   let perf : Perfection c.ProdRing p ≃ Perfection d.ProdRing p × Perfection d'.ProdRing p :=
     (seqs.subtypeEquiv compatible_iff).trans subtypeProdEquivProd
-  -- By definition of the tilt of a map, the map in question composed with `e` is `perf` followed
-  -- by `e × e`.
-  exact (e.bijective_comp _).mp (perf.trans (e.prodCongr e)).bijective
+  -- The map in question composed with `e` is `perf` followed by `e × e`: coordinatewise, the map of
+  -- tilts reduces the map of rings modulo `p` (`PreTilt.coeff_map`).
+  have h_eq : (fun x ↦ ((asModules tilt).map f x, (asModules tilt).map g x)) ∘ e =
+      perf.trans (e.prodCongr e) :=
+    funext fun x ↦ Prod.ext
+      (PreTilt.ext fun n ↦ (PreTilt.coeff_map _ _ n).trans (ModP.map_mk p _ _))
+      (PreTilt.ext fun n ↦ (PreTilt.coeff_map _ _ n).trans (ModP.map_mk p _ _))
+  exact (e.bijective_comp _).mp (h_eq ▸ (perf.trans (e.prodCongr e)).bijective)
 
 end TiltProducts
 

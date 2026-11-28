@@ -623,9 +623,10 @@ private def PadicTest.baseOfHom {c D : PadicTest}
   tilt.preimage (X := c) (ofHom (ϕ.comp (toAlgHom OFlat c.TiltRing (periodicSeq c.TiltRing))))
 
 /-- The tilt of `PadicTest.baseOfHom ϕ` is `ϕ` on constant sequences. -/
-private lemma PadicTest.tiltMap_baseOfHom_apply {c D : PadicTest}
+private lemma PadicTest.preTiltMap_baseOfHom_apply {c D : PadicTest}
     (ϕ : periodicSeq c.TiltRing →ₐ[OFlat] D.TiltRing) (y : c.TiltRing) :
-    tiltMap (baseOfHom ϕ).toRingHom y = ϕ (algebraMap c.TiltRing (periodicSeq c.TiltRing) y) :=
+    PreTilt.map p (baseOfHom ϕ).toRingHom y =
+      ϕ (algebraMap c.TiltRing (periodicSeq c.TiltRing) y) :=
   ConcreteCategory.congr_hom (tilt.map_preimage _) y
 
 /-- `PadicTest.baseOfHom ϕ` is the map of tests `f` whose tilt agrees with `ϕ` on constant
@@ -633,10 +634,11 @@ sequences. -/
 private lemma PadicTest.baseOfHom_eq_of_forall_algebraMap {c D : PadicTest}
     {ϕ : periodicSeq c.TiltRing →ₐ[OFlat] D.TiltRing} {f : c ⟶ D}
     (h_const :
-      ∀ y : c.TiltRing, ϕ (algebraMap c.TiltRing (periodicSeq c.TiltRing) y) = tiltMap f.1 y) :
+      ∀ y : c.TiltRing,
+        ϕ (algebraMap c.TiltRing (periodicSeq c.TiltRing) y) = PreTilt.map p f.1 y) :
     baseOfHom ϕ = f :=
   tilt.map_injective <| hom_ext <| AlgHom.ext fun y ↦
-    (tiltMap_baseOfHom_apply ϕ y).trans (h_const y)
+    (preTiltMap_baseOfHom_apply ϕ y).trans (h_const y)
 
 /-- A termwise relation between the untilts `♯` of two periodic sequences passes through `ϕ`: if
 `(w k)^♯ = t * (w' k)^♯` for every `k`, then `(ϕ w)^♯ = t' * (ϕ w')^♯`, where `t'` is the image of
@@ -649,14 +651,14 @@ private lemma PadicTest.untilt_map_eq_mul_of_forall {c D : PadicTest}
   -- (`exists_eq_eval`).
   funext j
   let ev_j : D.ProdRing →+* D.Cell j := Pi.evalRingHom D.Cell j
-  obtain ⟨k, hk⟩ := exists_eq_eval ((tiltMap ev_j).comp ϕ.toRingHom) ![w, w']
+  obtain ⟨k, hk⟩ := exists_eq_eval ((PreTilt.map p ev_j).comp ϕ.toRingHom) ![w, w']
   -- where `ϕ y` agrees on the cell with `ϕ` of the constant `y k`, its untilt is that of `y k`
   -- mapped by `baseOfHom ϕ`
   have h_at_k (y : periodicSeq c.TiltRing)
-      (hy : tiltMap ev_j (ϕ y) =
-        tiltMap ev_j (ϕ (algebraMap c.TiltRing (periodicSeq c.TiltRing) (y.val k)))) :
+      (hy : PreTilt.map p ev_j (ϕ y) =
+        PreTilt.map p ev_j (ϕ (algebraMap c.TiltRing (periodicSeq c.TiltRing) (y.val k)))) :
       (ϕ y).untilt j = (baseOfHom ϕ).toRingHom (y.val k).untilt j := by
-    simpa [ev_j, untilt_tiltMap, ← tiltMap_baseOfHom_apply] using congrArg untilt hy
+    simpa [ev_j, PreTilt.untilt_natural, ← preTiltMap_baseOfHom_apply] using congrArg untilt hy
   rw [Pi.mul_apply, h_at_k w (hk 0), h_at_k w' (hk 1), hw, map_mul, Pi.mul_apply]
 
 /-- Let `ζ` be the character `a ↦ (ε ^ a)^♯`, `r` a character of `ℚ≥0` with `r 1` a unit, and let
@@ -676,48 +678,49 @@ private lemma PadicTest.existsUnique_baseOfHom_eq_and_untilt_eq {c D : PadicTest
   -- On one cell this is `existsUnique_hom`; `ζ` stays faithful as `OC` embeds in the cell.
   have h_cell (j : D.Index) : ∃! ϕ : periodicSeq c.TiltRing →+* PreTilt (D.Cell j) p,
       ϕ.comp (algebraMap c.TiltRing (periodicSeq c.TiltRing)) =
-          tiltMap ((Pi.evalRingHom D.Cell j).comp f.toRingHom) ∧
+          PreTilt.map p ((Pi.evalRingHom D.Cell j).comp f.toRingHom) ∧
         ∀ n : Multiplicative ℚ≥0, (ϕ (x n)).untilt = u n j := by
     let g : c.ProdRing →+* D.Cell j := (Pi.evalRingHom D.Cell j).comp f.toRingHom
     let ζ_j : Multiplicative ℚ≥0 →* D.Cell j :=
       g.toMonoidHom.comp (c.structureMap.toMonoidHom.comp (untilt.comp epsPowNNRat))
     have h_inj : Injective (g.comp c.structureMap) := injective_of_isCell _
     have hx_j (n : Multiplicative ℚ≥0) (k : ℕ) :
-        untilt (tiltMap g ((x n).val k)) = (ζ_j ^ k * g.toMonoidHom.comp r) n := by
+        untilt (PreTilt.map p g ((x n).val k)) = (ζ_j ^ k * g.toMonoidHom.comp r) n := by
       simp [ζ_j, hx]
     have hζ_j (a : Multiplicative ℚ≥0) : IsPrimitiveRoot (ζ_j a) a.toAdd.den :=
       (isPrimitiveRoot_untilt_epsPow (ofAdd (a.toAdd : ℚ))).map_of_injective h_inj
-    exact existsUnique_hom (tiltMap g) untilt ζ_j (g.toMonoidHom.comp r)
+    exact existsUnique_hom (PreTilt.map p g) untilt ζ_j (g.toMonoidHom.comp r)
       ((Pi.evalRingHom D.Cell j).toMonoidHom.comp u) x hx_j (hr_unit.map g).ne_zero hζ_j
       (congrFun hu j)
   -- The tilt of `D` is the product of the tilts of its cells.
   choose ϕ hϕ h_unique using h_cell
   let ψ : periodicSeq c.TiltRing →+* D.TiltRing := D.tiltPiEquiv.symm.toRingHom.comp (.pi ϕ)
   have hψ_cell (j : D.Index) (y : periodicSeq c.TiltRing) :
-      tiltMap (Pi.evalRingHom D.Cell j) (ψ y) = ϕ j y :=
+      PreTilt.map p (Pi.evalRingHom D.Cell j) (ψ y) = ϕ j y :=
     congrFun (D.tiltPiEquiv.right_inv fun j ↦ ϕ j y) j
   have hψ_const (y : c.TiltRing) :
-      ψ (algebraMap c.TiltRing (periodicSeq c.TiltRing) y) = tiltMap f.toRingHom y :=
+      ψ (algebraMap c.TiltRing (periodicSeq c.TiltRing) y) = PreTilt.map p f.toRingHom y :=
     D.tiltPiEquiv.symm_apply_eq.mpr
-      (funext fun j ↦ (RingHom.congr_fun (hϕ j).left y).trans (tiltMap_comp ..))
+      (funext fun j ↦
+        (RingHom.congr_fun (hϕ j).left y).trans (RingHom.congr_fun (PreTilt.map_comp ..) _))
   have hψ_commutes (a : OFlat) :
       ψ (algebraMap OFlat (periodicSeq c.TiltRing) a) = algebraMap OFlat D.TiltRing a :=
     (hψ_const (algebraMap OFlat c.TiltRing a)).trans ((tilt.map f).hom.commutes a)
   refine ⟨⟨ψ, hψ_commutes⟩, ⟨baseOfHom_eq_of_forall_algebraMap hψ_const, fun n ↦ ?_⟩, ?_⟩
   · funext j
     have h_cell_x : ((ϕ j) (x n)).untilt = u n j := (hϕ j).right n
-    rwa [← hψ_cell, untilt_tiltMap] at h_cell_x
+    rwa [← hψ_cell, PreTilt.untilt_natural] at h_cell_x
   · rintro ψ' ⟨rfl, hψ'⟩
     -- on constants, `ψ'` followed by the tilt of the projection to the cell `j` is the tilt of
     -- `baseOfHom ψ'` followed by that projection
     have h_const (j : D.Index) :
-        ((tiltMap (Pi.evalRingHom D.Cell j)).comp ψ'.toRingHom).comp
+        ((PreTilt.map p (Pi.evalRingHom D.Cell j)).comp ψ'.toRingHom).comp
             (algebraMap c.TiltRing (periodicSeq c.TiltRing)) =
-          tiltMap ((Pi.evalRingHom D.Cell j).comp (baseOfHom ψ').toRingHom) := by
+          PreTilt.map p ((Pi.evalRingHom D.Cell j).comp (baseOfHom ψ').toRingHom) := by
       ext y
-      simp [tiltMap_comp, ← tiltMap_baseOfHom_apply]
-    have h_eq (j : D.Index) : (tiltMap (Pi.evalRingHom D.Cell j)).comp ψ'.toRingHom = ϕ j :=
-      h_unique j _ ⟨h_const j, fun n ↦ (untilt_tiltMap ..).trans (congrFun (hψ' n) j)⟩
+      simp [PreTilt.map_comp, ← preTiltMap_baseOfHom_apply]
+    have h_eq (j : D.Index) : (PreTilt.map p (Pi.evalRingHom D.Cell j)).comp ψ'.toRingHom = ϕ j :=
+      h_unique j _ ⟨h_const j, fun n ↦ (PreTilt.untilt_natural ..).trans (congrFun (hψ' n) j)⟩
     exact AlgHom.ext fun y ↦
       D.tiltPiEquiv.eq_symm_apply.mpr (funext fun j ↦ RingHom.congr_fun (h_eq j) y)
 
@@ -839,10 +842,11 @@ lemma PadicTest.isLine_compatibleRoots
     NatIso.ofComponents (fun D ↦ (Equiv.ofBijective _ (h_bij D)).toIso) fun f ↦ by
       ext ⟨⟨ϕ⟩⟩
       have h_sys_map : sys ((tilt.map f).hom.comp ϕ) = f.toRingHom.toMonoidHom.comp (sys ϕ) :=
-        MonoidHom.ext fun _ ↦ untilt_tiltMap f.toRingHom _
+        MonoidHom.ext fun _ ↦ PreTilt.untilt_natural f.toRingHom _
       have h_base_map : baseOfHom ((tilt.map f).hom.comp ϕ) = baseOfHom ϕ ≫ f :=
         baseOfHom_eq_of_forall_algebraMap fun y ↦
-          ((tiltMap_comp ..).trans (congrArg _ (tiltMap_baseOfHom_apply ϕ y))).symm
+          ((RingHom.congr_fun (PreTilt.map_comp p f.toRingHom (baseOfHom ϕ).toRingHom) y).trans
+            (congrArg (PreTilt.map p f.toRingHom) (preTiltMap_baseOfHom_apply ϕ y))).symm
       exact Subtype.ext (Prod.ext (congrArg ULift.up h_sys_map) (congrArg ULift.up h_base_map))
   -- Flat base change: by `homTiltIso` the functor is that of points of an `OC`-algebra. The line:
   -- `IsLine.of_acyclic` asks for acyclicity, the actions of constants and shift, and

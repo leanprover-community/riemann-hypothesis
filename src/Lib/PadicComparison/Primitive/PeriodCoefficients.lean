@@ -493,7 +493,14 @@ def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restr
     -- Compare the images in the localisation of `d.ProdRing/p` at each prime `q`; by `hφ` both are
     -- the value of the function at the image of `q`.
     ext x
-    refine Perfection.ext fun n ↦ toPiLocalization_injective _ (funext fun q ↦ .trans ?_
+    refine Perfection.ext fun n ↦ ?_
+    -- `f♭` reduces `f` modulo `p` in each coordinate
+    have h_map : ModP.map p f.1 = quotientMap _ f.1 (by simp) :=
+      Ideal.Quotient.ringHom_ext (RingHom.ext fun _ ↦ by simp)
+    simp only [CommAlgCat.hom_comp, AlgHom.coe_comp, Function.comp_apply]
+    -- `erw`: the goal matches `ModP d.ProdRing p` with `d.ProdRing ⧸ span {p}` only up to unfolding
+    erw [← PreTilt.coeff_def, PreTilt.coeff_map, h_map]
+    refine toPiLocalization_injective _ (funext fun q ↦ .trans ?_
       (Localization.localRingHom_to_map _ _ (quotientMap _ f.1 (by simp)) (comap_asIdeal ..) _))
     let ρ := quotientMap (I := Ideal.span {(p : c.ProdRing)})
       (Ideal.span {(p : d.ProdRing)}) f.toRingHom (by simp)
@@ -551,10 +558,12 @@ lemma PadicTest.le_ker_of_tiltNearZeros_le_ker {d : PadicTest} (f : c ⟶ d)
     rw [_root_.map_sub, map_one, sub_eq_self, c.mapGeneric_algebraMap g e] at h_one
     have h_kill : g.toRingHom e = 0 := d'.eq_zero_of_algebraMap_genericRing _ h_one
     -- Every coordinate of `g♭ ε` is the class of `g e = 0`.
-    exact Subtype.ext (funext fun _ ↦ (congrArg (Ideal.Quotient.mk _) h_kill).trans (map_zero _))
+    refine PreTilt.ext fun n ↦ ((PreTilt.coeff_map _ ε n).trans ?_).trans (map_zero _).symm
+    exact (ModP.map_mk p _ e).trans ((congrArg (Ideal.Quotient.mk _) h_kill).trans (map_zero _))
   -- So `f♭ ε = 0`, and its zeroth coordinate says that `f e` vanishes modulo `p`.
   have h_mod : f.toRingHom e ∈ Ideal.span {(p : d.ProdRing)} := eq_zero_iff_mem.mp <|
-    (congrArg (Perfection.coeff (ModP d.ProdRing p) p 0) (hf hε)).trans (map_zero _)
+    (ModP.map_mk p f.toRingHom e).symm.trans <| (PreTilt.coeff_map _ ε 0).symm.trans <|
+      (congrArg (PreTilt.coeff 0) (hf hε)).trans (map_zero _)
   -- Then `f e` lies in the Jacobson radical, `1 - f e` is a unit, and `p ^ n ∣ (1 - f e) * f r`
   -- gives `p ^ n ∣ f r`.
   have h_unit : IsUnit (1 - f.toRingHom e) := by

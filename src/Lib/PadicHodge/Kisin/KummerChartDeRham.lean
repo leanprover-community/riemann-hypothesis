@@ -234,7 +234,7 @@ lemma zTau_mul_E_dvd_smul_sub (s : k.S) : k.zTau * k.E ∣ g • s - s := by
   rw [h_z] at hz
   generalize a • k.varpiFlat = ϖ' at h_fix' ⊢
   have h_untilt_dvd : k.varpiFlat.untilt ∣ ϖ'.untilt := by simpa using h_fix'.symm.dvd
-  obtain ⟨η, hη⟩ : k.varpiFlat ∣ ϖ' := Variety.untilt_dvd_iff.mp h_untilt_dvd
+  obtain ⟨η, hη⟩ : k.varpiFlat ∣ ϖ' := PreTilt.untilt_dvd_untilt_iff.mp h_untilt_dvd
   -- `η` has untilt `1`, as `ϖ` and `ϖ η` have the same nonzero untilt; so `θ (φ ^ n ([η] - 1)) = 0`
   -- for all `n`, which makes `[η] - 1` a multiple of `μ` (`mu_dvd_of_theta_frobEnd`)
   have hη_one : η.untilt = 1 := by
