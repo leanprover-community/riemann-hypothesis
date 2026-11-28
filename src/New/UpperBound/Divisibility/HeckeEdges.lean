@@ -762,6 +762,104 @@ end Columns
 
 /-! ### The bound for the scaled Hecke operator -/
 
+/-- Given Hecke edges `C` at `l` and a Frobenius cycle `T` matching the a-places `Q` above `l` and
+`star l`, there exist a splitting `J` of the weight space and `EdgeCoordinates` `𝓔` on the classes
+with the same origins as `C` whose per-edge matrix coefficients match `p ^ heckeScalingExponent l`
+times the Schur matrices of the rational parts of `C`. -/
+private lemma exists_edgeCoordinates {P : Parameters} {p : ℕ} {D : Data P} [Fact p.Prime]
+    [PadicPlace p] {l : FinPlace D.E} {hl : l.IsSplit} {N r : ℕ} {Q : D.Φ → Prop} [NeZero N]
+    [DecidablePred Q] (T : FrobeniusCycle N (valuationRingAt l) embValRing) (hTp : T.p = p)
+    (t : ZMod N ≃ Subtype Q)
+    (hQ : ∀ σ : D.Φ, Q σ ↔ σ ∈ D.aPlaces ∧ (inducedPlace σ = l ∨ inducedPlace σ = star l))
+    (hι : ∀ (i : ZMod N) (x : valuationRingAt l),
+      T.embedding i x = (if T.isEven i then Φ (t i).val else (Φ (t i)).comp conj) x)
+    (h_exponent : heckeScalingExponent l = D.a * #{i : ZMod N | T.isEven i})
+    (C : HeckeEdges D.k p r (D.levelX 0) hl) (hp_val : l.valuation D.E p = exp (-1))
+    (hK : maxCompactAt (D.X 0) l ≤ D.levelX 0) :
+    ∃ (J : WeylIndex (D.X 0) D.columnCount ≃
+        Exponents N D.k D.a × WeylIndex (D.X 0) fun τ : {τ : D.Φ // ¬Q τ} ↦ D.columnCount τ)
+      (𝓔 : EdgeCoordinates (valuationRingAt l) embValRing D.k r (StdClasses (D.levelX 0))
+        (WeylIndex (D.X 0) fun τ : {τ : D.Φ // ¬Q τ} ↦ D.columnCount τ)),
+      C.origin = 𝓔.origin ∧
+      ∀ (x : StdClasses (D.levelX 0)) (b : ParahoricCosets (valuationRingAt l) D.k r)
+        (i j : WeylIndex (D.X 0) D.columnCount),
+        (p : ℂ) ^ heckeScalingExponent l *
+            schur D.columnCount (fun τ ↦ (C.rationalPart (x, b)).val.val.map ((Φ τ).comp conj))
+              i j =
+          𝓔.transition (x, b) (J i).2 (J j).2 *
+            (T.letterRep D.a (𝓔.originBasisChange (x, b)) * T.depthPower D.k D.a r *
+              T.letterRep D.a (𝓔.terminusBasisChange b)) (J j).1 (J i).1 := by
+  have h_aPlace (i : ZMod N) : (t i).val ∈ D.aPlaces := ((hQ (t i)).1 (t i).property).1
+  let H : Type := WeylIndex (D.X 0) fun τ : {τ : D.Φ // ¬Q τ} ↦ D.columnCount τ
+  obtain ⟨J, hJ⟩ := exists_weylIndex_equiv C.numbering t h_aPlace
+  -- The integral matrices `m e` by which the rational parts of the edges act outside `Q`.
+  have h_off (e : ClassEdges (D.levelX 0) l D.k r) :
+      ∃ m : GL H embValRing,
+        schur (fun τ : {τ : D.Φ // ¬Q τ} ↦ D.columnCount τ)
+          (fun τ ↦ (C.rationalPart e).val.val.map ((Φ τ.val).comp conj)) =
+            m.val.map embValRing.subtype := by
+    refine exists_schur_eq_map fun τ hτ hτQ ↦ ?_
+    obtain ⟨h_ne, h_ne_star⟩ : inducedPlace τ ≠ l ∧ inducedPlace τ ≠ star l := by
+      simpa [hQ, hτ] using hτQ
+    exact C.localGL_rationalPart_mem_localIntGL e (by simpa using D.p_mem_inducedPlace τ)
+      (star_involutive.eq_iff.not.2 h_ne_star) (by rwa [star_star])
+  choose m hm using h_off
+  let 𝓔 : EdgeCoordinates (valuationRingAt l) embValRing D.k r (StdClasses (D.levelX 0)) H :=
+    { origin := C.origin
+      originBasisChange := C.originBasisChange
+      terminusBasisChange b := b.out⁻¹
+      transition := m
+      mk_terminusBasisChange_inv b := by rw [inv_inv, QuotientGroup.out_eq']
+      eq_of_origin_eq := C.eq_of_origin_eq_of_mem_parahoric hp_val hK
+        D.classAut_levelX_zero_eq_bot }
+  refine ⟨J, 𝓔, rfl, fun x b i j ↦ ?_⟩
+  rw [h_exponent, pow_mul', ← prod_const, prod_filter, hJ, hm,
+    kroneckerPi_symPowMatrix_eq_letterRep T hTp C.numbering D.a (fun i : ZMod N ↦ Φ (t i).val) hι
+      (C.rationalPart_inv x b)]
+  -- it remains to unfold the fields of `𝓔`
+  rfl
+
+/-- If the scaled Schur matrix of each Hecke edge agrees with the matrix coefficient of `𝓔` under
+the weight-space splitting `J`, then `sourceFormOfValues C.mk_rep` intertwines the edge Hecke
+operator of `𝓔` with the scaled Hecke operator at `l`. -/
+private lemma scaledHeckeOperator_comp_sourceFormOfValues {P : Parameters} {p : ℕ} {D : Data P}
+    [Fact p.Prime] [PadicPlace p] {Λ : Finset (FinPlace D.E)} {l : FinPlace D.E} {N : ℕ}
+    {H : Type} [NeZero N] [Fintype H] [DecidableEq H]
+    [Fintype (ParahoricCosets (valuationRingAt l) D.k (D.ceilLogLifts p))]
+    (hΛ : D.IsMarked Λ) (hlΛ : l ∈ Λ) (T : FrobeniusCycle N (valuationRingAt l) embValRing)
+    (hr : D.ceilLogLifts p < D.k)
+    (C : HeckeEdges D.k p (D.ceilLogLifts p) (D.levelX 0) (hΛ.isSplit hlΛ))
+    (J : WeylIndex (D.X 0) D.columnCount ≃ Exponents N D.k D.a × H)
+    (𝓔 : EdgeCoordinates (valuationRingAt l) embValRing D.k (D.ceilLogLifts p)
+      (StdClasses (D.levelX 0)) H)
+    (h_origin : C.origin = 𝓔.origin)
+    (h_edge : ∀ (x : StdClasses (D.levelX 0))
+        (b : ParahoricCosets (valuationRingAt l) D.k (D.ceilLogLifts p))
+        (i j : WeylIndex (D.X 0) D.columnCount),
+      (p : ℂ) ^ heckeScalingExponent l *
+          schur D.columnCount (fun τ ↦ (C.rationalPart (x, b)).val.val.map ((Φ τ).comp conj))
+            i j =
+        𝓔.transition (x, b) (J i).2 (J j).2 *
+          (T.letterRep D.a (𝓔.originBasisChange (x, b)) *
+            T.depthPower D.k D.a (D.ceilLogLifts p) *
+            T.letterRep D.a (𝓔.terminusBasisChange b)) (J j).1 (J i).1) :
+    hΛ.scaledHeckeOperator ⟨l, hlΛ⟩ ∘ₗ sourceFormOfValues C.mk_rep =
+      sourceFormOfValues C.mk_rep ∘ₗ T.edgeHeckeOperator D.a J 𝓔 := by
+  -- At the representative of `x` both operators are sums over the edges into `x`.
+  refine LinearMap.ext fun F ↦ levelSpace_ext_doubleCosets C.mk_rep fun x ↦ ?_
+  change (p : ℂ) ^ heckeScalingExponent l •
+      (heckeSplit (algFormRep D.columnCount (D.lastEntry 0)) (hΛ.isSplit hlΛ) (D.ceilLogLifts p)
+        (sourceFormOfValues C.mk_rep F).val).val (C.rep x) =
+    (sourceFormOfValues C.mk_rep (T.edgeHeckeOperator D.a J 𝓔 F)).val.val (C.rep x)
+  rw [C.heckeSplit_apply_rep (hΛ.valuation_natCast_eq_exp_neg_one hlΛ) hr
+      (hΛ.maxCompactAt_le_levelX hlΛ) (sourceFormOfValues C.mk_rep F).property,
+    sourceFormOfValues_apply_rep, edgeHeckeOperator_apply]
+  -- In each coordinate, `h_edge` identifies the two matrix coefficients of every edge.
+  ext i
+  push_cast
+  simp only [sourceFormOfValues_apply_rep, weightRep_column_apply, Pi.smul_apply, smul_eq_mul,
+    Finset.sum_apply, mulVec, dotProduct, mul_sum, ← mul_assoc, h_edge, h_origin]
+
 /-- Let `Λ` be a marked set of primes above `p` and `l ∈ Λ`. Let `T` be a Frobenius cycle on the
 valuation ring `W` of `l`: ring maps `T.embedding i` to `embValRing` for `i` modulo `N`, alternately
 even and odd, each congruent modulo `p` to the `P`-th power of the one before, with
@@ -797,72 +895,20 @@ lemma isOntoUpToColength_scaledHeckeOperator_of_frobeniusCycle {P : Parameters} 
   set r : ℕ := D.ceilLogLifts p
   have hr : r < D.k := by linarith [h_size.block_pos, h_size.two_mul_block_le]
   have hl : l.IsSplit := hΛ.isSplit hlΛ
-  have hp_val : l.valuation D.E p = exp (-1) := hΛ.valuation_natCast_eq_exp_neg_one hlΛ
-  have hK : maxCompactAt (D.X 0) l ≤ D.levelX 0 := hΛ.maxCompactAt_le_levelX hlΛ
   have := T.finite_residueField
   let : Fintype (ParahoricCosets (valuationRingAt l) D.k r) := .ofFinite _
-  -- The edges, the splitting `J` of the weight space, and the integral matrices `m e` by which the
-  -- rational parts of the edges act outside `Q`.
   let q : D.X 0 ≃ Fin D.k := Fintype.equivFinOfCardEq (by simp [D.card_X 0, Data.n])
   obtain ⟨C⟩ : Nonempty (HeckeEdges D.k p r (D.levelX 0) hl) :=
     nonempty_heckeEdges r (D.levelX 0) hl q (hΛ.natCast_mem_asIdeal hlΛ)
-  have h_aPlace (i : ZMod N) : (t i).val ∈ D.aPlaces := ((hQ (t i)).1 (t i).property).1
-  let H : Type := WeylIndex (D.X 0) fun τ : {τ : D.Φ // ¬Q τ} ↦ D.columnCount τ
-  obtain ⟨J, hJ⟩ := exists_weylIndex_equiv C.numbering t h_aPlace
-  have h_off (e : ClassEdges (D.levelX 0) l D.k r) :
-      ∃ m : GL H embValRing,
-        schur (fun τ : {τ : D.Φ // ¬Q τ} ↦ D.columnCount τ)
-          (fun τ ↦ (C.rationalPart e).val.val.map ((Φ τ.val).comp conj)) =
-            m.val.map embValRing.subtype := by
-    refine exists_schur_eq_map fun τ hτ hτQ ↦ ?_
-    obtain ⟨h_ne, h_ne_star⟩ : inducedPlace τ ≠ l ∧ inducedPlace τ ≠ star l := by
-      simpa [hQ, hτ] using hτQ
-    exact C.localGL_rationalPart_mem_localIntGL e (by simpa using D.p_mem_inducedPlace τ)
-      (star_involutive.eq_iff.not.2 h_ne_star) (by rwa [star_star])
-  choose m hm using h_off
-  let 𝓔 : EdgeCoordinates (valuationRingAt l) embValRing D.k r (StdClasses (D.levelX 0)) H :=
-    { origin := C.origin
-      originBasisChange := C.originBasisChange
-      terminusBasisChange b := b.out⁻¹
-      transition := m
-      mk_terminusBasisChange_inv b := by rw [inv_inv, QuotientGroup.out_eq']
-      eq_of_origin_eq := C.eq_of_origin_eq_of_mem_parahoric hp_val hK
-        D.classAut_levelX_zero_eq_bot }
-  let f : (StdClasses (D.levelX 0) → WeylIndex (D.X 0) D.columnCount → embValRing)
-      →ₗ[embValRing] D.SourceForm := sourceFormOfValues C.mk_rep
-  -- The matrix of a rational part on the weight space, times `p ^ heckeScalingExponent l`, is the
-  -- term of its edge in the edge Hecke operator.
-  have h_edge (x : StdClasses (D.levelX 0)) (b : ParahoricCosets (valuationRingAt l) D.k r)
-      (i j : WeylIndex (D.X 0) D.columnCount) :
-      (p : ℂ) ^ heckeScalingExponent l *
-          schur D.columnCount (fun τ ↦ (C.rationalPart (x, b)).val.val.map ((Φ τ).comp conj)) i j =
-        𝓔.transition (x, b) (J i).2 (J j).2 *
-          (T.letterRep D.a (𝓔.originBasisChange (x, b)) * T.depthPower D.k D.a r *
-            T.letterRep D.a (𝓔.terminusBasisChange b)) (J j).1 (J i).1 := by
-    rw [h_exponent, pow_mul', ← prod_const, prod_filter, hJ, hm,
-      kroneckerPi_symPowMatrix_eq_letterRep T hTp C.numbering D.a (fun i : ZMod N ↦ Φ (t i).val) hι
-        (C.rationalPart_inv x b)]
-    -- it remains to unfold the fields of `𝓔`
-    rfl
-  -- At the representative of `x` both operators are sums over the edges into `x`.
-  have h_lift : hΛ.scaledHeckeOperator ⟨l, hlΛ⟩ ∘ₗ f = f ∘ₗ T.edgeHeckeOperator D.a J 𝓔 := by
-    refine LinearMap.ext fun F ↦ levelSpace_ext_doubleCosets C.mk_rep fun x ↦ ?_
-    change (p : ℂ) ^ heckeScalingExponent l •
-        (heckeSplit (algFormRep D.columnCount (D.lastEntry 0)) hl r (f F).val).val (C.rep x) =
-      (f (T.edgeHeckeOperator D.a J 𝓔 F)).val.val (C.rep x)
-    have h_origin : C.origin = 𝓔.origin := rfl
-    rw [C.heckeSplit_apply_rep hp_val hr hK (f F).property, sourceFormOfValues_apply_rep,
-      edgeHeckeOperator_apply]
-    -- In each coordinate, `h_edge` identifies the two matrix coefficients of every edge.
-    ext i
-    push_cast
-    simp only [f, sourceFormOfValues_apply_rep, weightRep_column_apply, Pi.smul_apply, smul_eq_mul,
-      Finset.sum_apply, mulVec, dotProduct, mul_sum, ← mul_assoc, h_edge, h_origin]
+  obtain ⟨J, 𝓔, h_origin, h_edge⟩ := exists_edgeCoordinates T hTp t hQ hι h_exponent C
+    (hΛ.valuation_natCast_eq_exp_neg_one hlΛ) (hΛ.maxCompactAt_le_levelX hlΛ)
+  have h_lift :=
+    scaledHeckeOperator_comp_sourceFormOfValues hΛ hlΛ T hr C J 𝓔 h_origin h_edge
   have h_dim : (Module.finrank ℂ D.SourceForm : ℝ) =
       Nat.card (StdClasses (D.levelX 0)) * Nat.card (WeylIndex (D.X 0) D.columnCount) := by
     simp [finrank_levelSpace_smoothFormRep D.classAut_levelX_zero_eq_bot]
   rw [h_dim, ← range_sourceFormOfValues C.mk_rep C.rep_mem_integralAbove]
-  exact T.elementary_divisors hp_nonunit h_size J 𝓔 f h_lift j₀
+  exact T.elementary_divisors hp_nonunit h_size J 𝓔 (sourceFormOfValues C.mk_rep) h_lift j₀
 
 end New.Columns
 
