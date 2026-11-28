@@ -177,7 +177,7 @@ lemma QuadField.exists_cmLattice_latticeModule_eq_scaledIdeal [PrimeSevenModEigh
   -- `𝔠` is a lattice `L 1` in `ℂ`. Neither `ω / 2` nor `ω̄ / 2` preserves it, so some `t = l / 2`,
   -- `l ∈ L 1`, has `ω t, ω̄ t ∉ L 1`. Then `℘''(t) ≠ 0`, and scaling the lattice makes
   -- `℘''(t) = 2`.
-  have b : Basis (Fin 2) ℤ 𝔠.val :=
+  let b : Basis (Fin 2) ℤ 𝔠.val :=
     finBasisOfFinrankEq ℤ 𝔠 (by rw [fractionalIdeal_rank, rank, finrank_eq_two])
   let L (c : ℂˣ) : PeriodPair := ⟨c * b 0, c * b 1, linearIndependent_mul_basis b c⟩
   have mem_iff (c : ℂˣ) (z : ℂ) : z ∈ (L c).lattice ↔ z ∈ scaledIdeal d (c, 𝔠) := by
