@@ -103,9 +103,15 @@ lemma negCount_gridSigns_add_lt {P : Parameters} (D : Data P) (z : Bool) {i n : 
       card (D.GridIndex z 0 (n + 1)) := by
   have h_neg (j : ℕ) : negCount (D.gridSigns z j 0 (n + 1)) ≤ D.r + z.toNat := by
     simpa [negCount_gridSigns_eq_sum] using Finset.card_filter_le (.range (D.r + z.toNat)) _
-  have h_block : D.r + z.toNat < D.t - z.toNat := by grind [D.r_add_six_le_t, z.toNat_le]
-  rw [card_gridIndex]
-  nlinarith [h_neg i, h_neg (i + 1)]
+  have h_block : D.r + z.toNat < D.t - z.toNat := by
+    have h_size := D.r_add_six_le_t
+    have h_flag := z.toNat_le
+    omega
+  rw [card_gridIndex, zero_mul, add_zero]
+  calc
+    _ ≤ (D.r + z.toNat) + (D.r + z.toNat) := Nat.add_le_add (h_neg i) (h_neg (i + 1))
+    _ < (D.r + z.toNat) + (D.t - z.toNat) := Nat.add_lt_add_left h_block _
+    _ ≤ _ := Nat.add_le_add_left (Nat.le_mul_of_pos_left _ (Nat.succ_pos n)) _
 
 /-- The ranks along a row of the triangle form an arithmetic progression. -/
 lemma card_gridIndex_add_card_gridIndex {P : Parameters} (D : Data P) (z : Bool) (n : ℕ) :
