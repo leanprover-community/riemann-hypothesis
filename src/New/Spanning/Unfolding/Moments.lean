@@ -6,7 +6,7 @@ import Mathlib.Analysis.InnerProductSpace.Trace
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import TauCeti.Analysis.Normed.Ring.Ultra
 import TauCeti.NumberTheory.NumberField.Countable
-public import New.Spanning.SecondMoment.FewTranslates
+public import New.Spanning.SecondMoment.HilbertSchmidt
 public import Lib.General.Groups.CharacterTheory
 public import Lib.Shimura.ComplexTheta.AppellHumbertData
 public import New.Spanning.Frames.FixedLines

@@ -4,6 +4,7 @@ import Mathlib.Data.Rat.Cast.OfScientific
 import TauCeti.NumberTheory.Padics.Complex.Basic
 public import New.Reduction.IntegralTargetForms
 public import New.Spanning.SecondMoment.SpanningTheorem
+import New.Spanning.SecondMoment.Spread
 public import New.Reduction.PrimeSums
 public import New.UpperBound.Divisibility.MarkedPrimes
 public import New.UpperBound.Size.Estimates
