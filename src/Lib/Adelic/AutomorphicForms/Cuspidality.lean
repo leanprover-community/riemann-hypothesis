@@ -4,6 +4,7 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.MeasureTheory.Integral.CompactlySupported
 import Mathlib.RingTheory.PicardGroup
+import TauCeti.LinearAlgebra.Matrix.Rank
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.AutomorphicForms.UnipotentRadical
@@ -17,7 +18,6 @@ import Lib.Adelic.Unitary.WeakApproximation
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import Lib.General.Analysis.GaussianIntegral
 import Lib.General.Analysis.MeanValueAndTaylor
-import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Cuspidality bounds, unipotent reduction, rapid decay and finite dimension of forms
