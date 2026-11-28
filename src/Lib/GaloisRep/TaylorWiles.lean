@@ -349,9 +349,8 @@ instance : FiniteDimensional ℂ (D.formsOfLevel L) := by
     have h_split : componentOn n D.places k * componentOn n (.conjClosure D.places)ᶜ k = k := by
       refine Gf.ext fun w ↦ ?_
       -- At `w` one factor keeps the component of `k` and the other is `1`.
-      simp only [map_mul, atPlace_componentOn, Set.mem_union, Set.mem_preimage, Set.mem_compl_iff,
-        Finset.mem_coe, star_star]
-      grind
+      by_cases hw : w ∈ D.places <;> by_cases hsw : star w ∈ D.places <;>
+        simp [map_mul, atPlace_componentOn, hw, hsw]
     have h_fix : V.formTranslation κ (componentOn n (.conjClosure D.places)ᶜ k) f = f := by
       simpa using mem_levelSpace.mp hf_lev ⟨k, hk_lev⟩
     have h_char : V.formTranslation κ (componentOn n D.places k) f = χ ⟨k, hk_K⟩ • f :=
@@ -448,12 +447,12 @@ lemma diagOp_apply (x : Eigensystem L) {f : ↥(V.forms κ)} (hf : f ∈ (x : Is
   -- The isotypic spaces are independent, so the sum map is injective and its left inverse sends
   -- `f` to the family supported at `x`.
   have h_inv :
-      (lsum ℕ fun y : D.Eigensystem L ↦ (y : Isotypic V κ).val.subtype).leftInverse f =
+      (DFinsupp.lsum ℕ fun y : D.Eigensystem L ↦ y.val.val.subtype).leftInverse f =
         .single x ⟨f, hf⟩ := by
     simpa using
       leftInverse_apply_of_inj (ker_eq_bot.mpr Isotypic.iSupIndep_val.dfinsupp_lsum_injective)
         (.single x ⟨f, hf⟩)
-  simp [diagOp, h_inv]
+  rw [diagOp, comp_apply, h_inv, DFinsupp.lsum_single ℕ, LinearMap.smul_apply, subtype_apply]
 
 /-- The space `New.Patching.BaseLevel.formsOfLevel` is spanned by its eigenforms: a subspace N
 containing its intersection with every isotypic space of level L contains all of it. -/
@@ -625,7 +624,9 @@ def residueRep : (∀ j : J, GL (Fin (card n)) (ResField (Q.place j))) →* D.in
   { toFun g :=
       ⟨(D.repOff (liftResidue ((reindexResidueGL Q).toMonoidHom g))).restrict fun y hy ↦
           -- the type `D.forms` is kept, as `D.repOff` commutes with the components at `D.places`
-          ⟨D.map_mem_forms _ (fun _ ↦ Commute.map (Gf.ext (by aesop)) (V.formTranslation κ)) hy.1,
+          ⟨D.map_mem_forms _ (fun _ ↦ Commute.map (Gf.ext fun w ↦ by
+            by_cases hw : w ∈ D.places <;> by_cases hsw : star w ∈ D.places <;>
+              simp [map_mul, atPlace_componentOn, hw, hsw]) (V.formTranslation κ)) hy.1,
             (R g ⟨y, hy.2⟩).property⟩,
         -- integral forms are kept, as the lift is integral above `ℓ`
         fun y hy x hx ↦ hy _ (mul_mem hx (stdLevel_le_localLevel
@@ -694,7 +695,9 @@ lemma residueRep_mulSingle [DecidableEq J] (hQ : ∀ j : J, D.IsOffLevel (ℓ :=
   let k' : localIntGL n (Q.place j) := ⟨(reindexGL (equivFin n)).symm k, hk'_int⟩
   let x : stdLevel E n := ⟨ofSplitPlace (Q.apart.star_ne j j) k', by simp⟩
   have x_red : reduceFamily Q.place x = reindexResidueGL Q (mulSingle j (reduceGL k)) :=
-    (reduceFamily_ofSplitPlace j k').trans (Function.update_eq_iff.2 (by aesop))
+    (reduceFamily_ofSplitPlace j k').trans (Function.update_eq_iff.2
+      ⟨by simp only [reindexResidueGL, MulEquiv.piCongrRight_apply, mulSingle_eq_same]
+          exact Units.ext (Matrix.ext fun _ _ ↦ rfl), fun j' hj' ↦ by simp [hj']⟩)
   obtain ⟨h_w_notMem, h_star_w_notMem, -, -⟩ := hQ j
   have x_off : (x : Gf E n) ∈ trivialOn n D.places :=
     supportedOn_compl.le (supportedOn_mono (by simp [h_w_notMem, h_star_w_notMem])
@@ -728,7 +731,8 @@ private lemma reindexGL_atPlace_mem_proIwahori_of_mem_levelOf {k : Gf E n}
   have h_entries := fun a b ↦ reduceAt_eq_zero.1 ((map_eq_one n).1 (congrFun h_red_one j) a b)
   simp [reindex_equiv (equivFin n), Gf.atPlace, apply_ite, ite_apply,
     Matrix.one_apply] at h_entries ⊢
-  grind
+  refine ⟨fun x y hxy ↦ ?_, fun x ↦ by simpa using h_entries x x⟩
+  simpa [show x ≠ y from fun h ↦ hxy.ne (congrArg _ h.symm)] using h_entries x y
 
 omit [Fintype J] in
 /-- Let `w j = Q.place j` be the Taylor–Wiles places, all off the base level
