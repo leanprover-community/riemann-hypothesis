@@ -211,6 +211,35 @@ lemma forall_gt_of_chain_counterexample {α : Type*} [PartialOrder α] {a : α}
   by_contra hd_fail
   exact h_max.not_gt ⟨ha_m.trans hd, hd_fail⟩ hd
 
+/-- Downward induction along cocones for a predicate `P` on `F : α ⥤ Ab`. Suppose every nonempty
+directed subset `c` of `α` has a cocone satisfying `Q c` (`h_colim`), that `P` holding at the
+vertex of such a cocone over `a` implies `P` at some member of `c` (`h_desc`), and that `P` holds
+at `m` whenever it holds strictly above `m` (`h_step`). Then `P` holds at `a`. -/
+private lemma prop_of_cocone_descent {α : Type} [PartialOrder α] {F : α ⥤ Ab}
+    {P : ∀ b : α, F.obj b → Prop} {a : α} {y : F.obj a}
+    {Q : ∀ c : Set α, Limits.Cocone (Subtype.mono_coe fun a : α ↦ a ∈ c).functor → Prop}
+    (h_colim : ∀ {c : Set α} [IsDirectedOrder c] [Nonempty c], ∃ m, Q c m)
+    (h_desc : ∀ {c} (t) (_ : Q c t) (hc : ∀ b : c, a < b), c → ∀ hat : a < t.pt,
+      P t.pt (F.map hat.le.hom y) → ∃ b : c, P b (F.map (hc b).le.hom y))
+    (h_step : ∀ m u, (∀ b (hb : m < b), P b (F.map hb.le.hom u)) → P m u) : P a y := by
+  refine h_step a y (forall_gt_of_chain_counterexample
+    (P := fun b hab ↦ P b (F.map hab.le.hom y)) ?_ ?_)
+  · -- a chain of counterexamples is bounded by the vertex of a colimit cocone
+    intro c hc_sub h_chain ⟨z, hz⟩
+    have hc_directed : IsDirectedOrder c := ⟨h_chain.directed⟩
+    have hc_nonempty : Nonempty c := ⟨⟨z, hz⟩⟩
+    obtain ⟨t, ht⟩ := h_colim (c := c)
+    have hc : ∀ b : c, a < b := fun b ↦ (hc_sub b b.property).1
+    have h_le_vertex : ∀ b ∈ c, b ≤ t.pt := fun b hb ↦ leOfHom (t.ι.app ⟨b, hb⟩)
+    have hat : a < t.pt := (hc ⟨z, hz⟩).trans_le (h_le_vertex z hz)
+    refine ⟨t.pt, hat, fun h_pt ↦ ?_, h_le_vertex⟩
+    obtain ⟨d, hd⟩ := h_desc t ht hc ⟨z, hz⟩ hat h_pt
+    exact (hc_sub d d.property).2 hd
+  · -- if `P` holds strictly above `m`, it holds at `m`
+    refine fun m ham hm ↦ h_step m (F.map ham.le.hom y) fun b hb ↦ ?_
+    rw [← F.map_comp_apply]
+    exact hm b hb
+
 /-- Downward induction, injective half. Let `π` be a natural map (`h_nat`) between functors `G`, `K`
 from a partial order `α` to abelian groups, such that every nonempty directed subset has a cocone
 whose images under `G` and `K` are filtered colimits (`h_colim`). If each element of the kernel of
@@ -225,29 +254,14 @@ lemma injective_of_isFilteredColimit_of_map_eq_zero {α : Type} [PartialOrder α
       (∀ (b : α) (hab : a < b), G.map hab.le.hom x = 0) → x = 0)
     (a : α) :
     Injective (π a) := by
-  refine (injective_iff_map_eq_zero _).2 fun x hx ↦ h_step a x hx ?_
-  -- Downward induction: a chain of indices at which `x` survives is bounded by the vertex of a
-  -- colimit cocone, and `x` survives there too.
-  refine forall_gt_of_chain_counterexample (P := fun b hab ↦ G.map hab.le.hom x = 0) ?_ ?_
-  · intro c hc_sub h_chain ⟨z, hz⟩
-    have hc_directed : IsDirectedOrder c := ⟨h_chain.directed⟩
-    have hc_nonempty : Nonempty c := ⟨⟨z, hz⟩⟩
-    -- `hG_ker`: an element that maps to `0` at the vertex dies at a later member of `c`
-    obtain ⟨t, ⟨hG_ker, -⟩, -⟩ := h_colim (c := c)
-    obtain ⟨haz, -⟩ := hc_sub z hz
-    have h_le_vertex : ∀ b ∈ c, b ≤ t.pt := fun b hb ↦ leOfHom (t.ι.app ⟨b, hb⟩)
-    refine ⟨t.pt, haz.trans_le (h_le_vertex z hz), fun h_zero ↦ ?_, h_le_vertex⟩
-    -- if `x` dies at the vertex, it dies at some member `b` of the chain
-    have h_zero_vertex : (G.mapCocone t).ι.app ⟨z, hz⟩ (G.map haz.le.hom x) = 0 :=
-      (G.map_comp_apply haz.le.hom (t.ι.app ⟨z, hz⟩) x).symm.trans h_zero
-    obtain ⟨b, f, hb⟩ := hG_ker ⟨z, hz⟩ (G.map haz.le.hom x) h_zero_vertex
-    obtain ⟨hab, hb_survives⟩ := hc_sub b b.property
-    exact hb_survives ((G.map_comp_apply haz.le.hom (homOfLE (leOfHom f)) x).trans hb)
-  · -- if `x` dies at every `b > m`, its image at `m` is in the kernel of `π m` and dies above `m`
-    intro m ham hm
-    refine h_step m (G.map ham.le.hom x) (by rw [← h_nat, hx, map_zero]) fun b hb ↦ ?_
-    rw [← G.map_comp_apply]
-    exact hm b hb
+  refine (injective_iff_map_eq_zero _).2 fun x hx ↦ prop_of_cocone_descent (F := G)
+    (P := fun b u ↦ π b u = 0 → u = 0) (y := x) h_colim (fun t ⟨⟨hG_ker, _⟩, _⟩ hc z _ h_zero ↦ ?_)
+    (fun m u hm hu ↦ h_step m u hu fun b hb ↦ hm b hb (by rw [← h_nat, hu, map_zero])) hx
+  -- if `x` dies at the vertex, it dies at some member `b` of the chain
+  have h_zero_vertex : (G.mapCocone t).ι.app z (G.map (hc z).le.hom x) = 0 :=
+    (G.map_comp_apply _ (t.ι.app z) x).symm.trans (h_zero (by rw [← h_nat, hx, map_zero]))
+  obtain ⟨b, f, hb⟩ := hG_ker z (G.map (hc z).le.hom x) h_zero_vertex
+  exact ⟨b, fun _ ↦ (G.map_comp_apply (hc z).le.hom (homOfLE (leOfHom f)) x).trans hb⟩
 
 /-- Downward induction, surjective half. Let `G, K : α ⥤ Ab` be functors on a partial order `α`,
 with homomorphisms `π a : G a → K a` natural in `a` (`h_nat`). Suppose that every nonempty directed
@@ -266,39 +280,17 @@ lemma surjective_of_isFilteredColimit_of_exists_lift {α : Type} [PartialOrder �
       ∃ x : G.obj a, π a x = y)
     (a : α) :
     Surjective (π a) := by
-  refine fun y ↦ h_step a y ?_
-  -- Downward induction: a chain of indices at which the image of `y` has no lift is bounded by
-  -- the vertex of a colimit cocone, and it has no lift there either.
-  refine forall_gt_of_chain_counterexample
-    (P := fun b hab ↦ ∃ x : G.obj b, π b x = K.map hab.le.hom y) ?_ ?_
-  · intro c hc_sub h_chain ⟨z, hz⟩
-    have hc_directed : IsDirectedOrder c := ⟨h_chain.directed⟩
-    have hc_nonempty : Nonempty c := ⟨⟨z, hz⟩⟩
-    -- `hG_surj`: every element at the vertex comes from a member of `c`; `hK_ker`: an element
-    -- that maps to `0` at the vertex dies at a later member of `c`
-    obtain ⟨t, ⟨-, hG_surj⟩, ⟨hK_ker, -⟩⟩ := h_colim (c := c)
-    obtain ⟨haz, -⟩ := hc_sub z hz
-    have h_le_vertex : ∀ b ∈ c, b ≤ t.pt := fun b hb ↦ leOfHom (t.ι.app ⟨b, hb⟩)
-    refine ⟨t.pt, haz.trans_le (h_le_vertex z hz), ?_, h_le_vertex⟩
-    -- A lift `x₀` at the vertex comes from some `x` at a member `b` of the chain. The difference
-    -- of `π b x` and the image of `y` dies at the vertex, so at a later member `d`.
-    rintro ⟨x₀, hx₀⟩
-    obtain ⟨b, x, rfl⟩ := hG_surj x₀
-    obtain ⟨hab, -⟩ := hc_sub b b.property
-    have h_diff_vertex : (K.mapCocone t).ι.app b (π b x - K.map hab.le.hom y) = 0 := by
-      change K.map (homOfLE (h_le_vertex b b.property)) (π b x - K.map hab.le.hom y) = 0
-      rw [map_sub, ← K.map_comp_apply, sub_eq_zero]
-      exact (h_nat _ x).trans hx₀
-    obtain ⟨d, f, hd⟩ := hK_ker b (π b x - K.map hab.le.hom y) h_diff_vertex
-    obtain ⟨had, hd_no_lift⟩ := hc_sub d d.property
-    have h_bd : (b : α) ≤ d := leOfHom f
-    have h_diff_d : K.map (homOfLE h_bd) (π b x - K.map hab.le.hom y) = 0 := hd
-    rw [map_sub, ← K.map_comp_apply, sub_eq_zero] at h_diff_d
-    exact hd_no_lift ⟨G.map (homOfLE h_bd) x, (h_nat _ x).symm.trans h_diff_d⟩
-  · -- if the images of `y` lift at every `b > m`, the image of `y` at `m` satisfies `h_step`
-    refine fun m ham hm ↦ h_step m (K.map ham.le.hom y) fun b hb ↦ ?_
-    rw [← K.map_comp_apply]
-    exact hm b hb
+  refine fun y ↦ prop_of_cocone_descent (F := K) (P := fun b u ↦ ∃ x, π b x = u) (y := y)
+    h_colim (fun t ⟨⟨_, hG_surj⟩, ⟨hK_ker, _⟩⟩ hc _ hat ⟨x₀, hx₀⟩ ↦ ?_) h_step
+  -- A lift `x₀` at the vertex comes from some `x` at a member `b` of the chain. The difference
+  -- of `π b x` and the image of `y` dies at the vertex, so at a later member `d`.
+  obtain ⟨b, x, rfl⟩ := hG_surj x₀
+  have h_eq {d} (h : b.1 ≤ d) (had : a < d) : K.map h.hom (π b x - K.map (hc b).le.hom y) = 0 ↔
+      π d (G.map h.hom x) = K.map had.le.hom y := by
+    rw [map_sub, ← K.map_comp_apply, sub_eq_zero, h_nat]
+    rfl
+  obtain ⟨d, f, hd⟩ := hK_ker b _ ((h_eq (leOfHom (t.ι.app b)) hat).2 hx₀)
+  exact ⟨d, G.map (leOfHom f).hom x, (h_eq (leOfHom f) (hc d)).1 hd⟩
 
 /-- The subfunctors `U a ⊆ Y`, for ideals `a` of `R`, behave like the zero loci `V(a)` of the
 ideals in `Spec R`. -/
