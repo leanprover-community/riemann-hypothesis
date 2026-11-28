@@ -5,6 +5,7 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.AdicCompletion.Completeness
 import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.Analysis.Normed.Ring.Ultra
 import TauCeti.RingTheory.PowerSeries.Rescale
 import TauCeti.RingTheory.PowerSeries.Substitution
 public import Lib.General.Algebra.IntegralPowerSeries
@@ -446,9 +447,8 @@ lemma integralBelow_anti {k n : ℕ} (hkn : k ≤ n) : integralBelow p n ≤ int
 
 lemma norm_pow_sub_one_eq_one {π : ℂ_[p]} (hπ : ‖π‖ < 1) {n : ℕ} (hn : n ≠ 0) :
     ‖π ^ n - 1‖ = 1 := by
-  have h_lt : ‖π ^ n‖ < ‖(-1 : ℂ_[p])‖ := by simpa using pow_lt_one₀ (norm_nonneg π) hπ hn
-  rw [sub_eq_add_neg, IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm h_lt.ne,
-    max_eq_right h_lt.le, norm_neg, norm_one]
+  rw [norm_sub_rev, TauCeti.norm_one_sub_of_norm_lt_one]
+  simpa using pow_lt_one₀ (norm_nonneg π) hπ hn
 
 /-- Let `0 < |π| < 1` and let `G = z + ⋯` be a series over the valuation ring of `ℂ_[p]`, which
 `seriesToCp` maps to `ℂ_[p]⟦X⟧`. A series `Y = z + ⋯` with `Y(π z) = π G(Y)` has coefficients in
