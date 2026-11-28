@@ -323,12 +323,13 @@ lemma gram_topEichlerMatrix {u : 𝔰.BesselIndex → A}
     (hu_dual : star u ᵥ* T.splitGram = Pi.single (𝔰.besselFrame 𝔰.top) 1)
     (hu_last : u (𝔰.besselFrame 𝔰.top) = 0) (e : 𝔰.BesselIndex → A) :
     (topEichlerMatrix T u e)ᴴ * T.splitGram * topEichlerMatrix T u e = T.splitGram := by
+  have hJ : T.splitGram.IsHermitian := IsHermitianUnit.conjTranspose_eq
   have pair_left (y : 𝔰.BesselIndex → A) :
       star u ⬝ᵥ T.splitGram *ᵥ y = y (𝔰.besselFrame 𝔰.top) := by
     simp [dotProduct_mulVec, hu_dual]
   have pair_right (y : 𝔰.BesselIndex → A) :
       star y ⬝ᵥ T.splitGram *ᵥ u = star (y (𝔰.besselFrame 𝔰.top)) := by
-    rw [← star_dotProduct_mulVec_comm IsHermitianUnit.conjTranspose_eq, pair_left]
+    rw [← hJ.star_dotProduct_mulVec_comm, pair_left]
   -- It is enough that `h(Mx, My) = h(x, y)` for the matrix `M` of the map, a scalar identity. If
   -- `e l` is not a unit, its inverse is `0` and `M = 1`.
   have h_isometry (x y : 𝔰.BesselIndex → A) :
@@ -338,8 +339,8 @@ lemma gram_topEichlerMatrix {u : 𝔰.BesselIndex → A}
     simp [topEichlerMatrix, vecMulVec_mulVec, ← dotProduct_mulVec, ↓op_smul_eq_smul, pair_left,
       pair_right, -mulVec_single, -Pi.star_single, add_mulVec, smul_mulVec, sub_mulVec, mulVec_add,
       mulVec_sub, mulVec_smul]
-    grind [star_dotProduct_mulVec_comm, IsHermitianUnit.conjTranspose_eq, inverse_non_unit,
-      besselFrame_top]
+    grind [IsHermitian.star_dotProduct_mulVec_comm, IsHermitian, IsHermitianUnit.conjTranspose_eq,
+      inverse_non_unit, besselFrame_top]
   ext i j
   have h_row : (topEichlerMatrix T u e)ᴴ i = star ((topEichlerMatrix T u e).col i) := rfl
   rw [mul_mul_apply, h_row]
@@ -536,7 +537,7 @@ lemma IntegralPlace.setIntegral_eq_slab (hJ : Jᴴ = J) (hψ : ∀ x : A, P.ψ (
       ∫ b in M, f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - α)) ∂P.skewMeasure =
       (P.skewMeasure.real M * slab.indicator (fun x ↦ (f x : ℝ)) x : ℝ) := by
     have hy : star (star x ⬝ᵥ J *ᵥ x - α) = star x ⬝ᵥ J *ᵥ x - α := by
-      simp [star_dotProduct_mulVec_comm hJ, hα]
+      simp [IsHermitian.star_dotProduct_mulVec_comm hJ, hα]
     have h_char (b b' : skewAdjoint A) :
         P.ψ (P.element * ↑(b + b') * (star x ⬝ᵥ J *ᵥ x - α)) =
           P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - α)) *

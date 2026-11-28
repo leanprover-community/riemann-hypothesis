@@ -449,7 +449,7 @@ lemma exists_mem_besselU_eq_eichlerMap {v : 𝔰.BesselIndex → A} [hJ : IsHerm
       obtain h | h := h_low b b le_rfl <;> simp [h]
     simp [hx, splitGram, mulVec, dotProduct, Matrix.one_apply, h_term]
   have hς : ς + star ς = star v ⬝ᵥ T.splitGram *ᵥ v := by
-    simp [ς, star_dotProduct_mulVec_comm hJ.conjTranspose_eq, ← add_mul]
+    simp [ς, IsHermitian.star_dotProduct_mulVec_comm hJ.conjTranspose_eq, ← add_mul]
   obtain ⟨u, hu⟩ := exists_unitary_eq_eichlerMap hJ.conjTranspose_eq hxx hvx hς
   refine ⟨u, ?_, ?_, hu⟩
   · -- block by block, the entries on and below the diagonal are those of `1`, by `h_low`

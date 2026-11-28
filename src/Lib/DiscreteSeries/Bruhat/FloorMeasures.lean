@@ -86,7 +86,7 @@ def _root_.New.Floors.TraceOne.heisenbergElem : U T.splitGram :=
     have h_trace : element * star v ⬝ᵥ T.splitGram *ᵥ v - p.2 +
         star (element * star v ⬝ᵥ T.splitGram *ᵥ v - (p.2 : A)) =
           star (-v) ⬝ᵥ T.splitGram *ᵥ (-v) := by
-      simp [IsHermitianUnit.conjTranspose_eq, ↓ star_dotProduct_mulVec_comm, mulVec_neg]
+      simp [↓ IsHermitian.star_dotProduct_mulVec_comm H.conjTranspose_eq, mulVec_neg]
       grind
     obtain ⟨e, he⟩ :=
       exists_unitary_eq_eichlerMap (x := Pi.single (inl a) 1) H.conjTranspose_eq (by simp)
@@ -174,7 +174,7 @@ lemma heisenbergElem_mul :
   have hv_coord : v (eStar a) = 0 := by simp [v, inclMatrix_val_mulVec]
   have hv'_coord : v' (eStar a) = 0 := by simp [v', inclMatrix_val_mulVec]
   have h_star : star (star v' ⬝ᵥ T.splitGram *ᵥ v) = star v ⬝ᵥ T.splitGram *ᵥ v' :=
-    star_dotProduct_mulVec_comm IsHermitianUnit.conjTranspose_eq v' v
+    IsHermitian.star_dotProduct_mulVec_comm H.conjTranspose_eq v' v
   refine Subtype.ext (Units.ext ?_)
   refine ext_iff_mulVec.2 fun w ↦ ?_
   simp [← hv, ← hv', ← mulVec_mulVec, mulVec_add, mulVec_smul, hv_coord, hv'_coord, h_star,

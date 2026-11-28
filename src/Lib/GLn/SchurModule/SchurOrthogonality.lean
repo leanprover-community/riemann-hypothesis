@@ -186,7 +186,7 @@ lemma star_highestVector : star (highestVector κ l) = highestVector κ l := by
 
 /-- The form `gramForm` is hermitian: swapping the arguments conjugates the value. -/
 lemma conj_gramForm (ξ η : WeylIndex n κ → ℂ) : conj (gramForm ξ η) = gramForm η ξ :=
-  star_dotProduct_mulVec_comm weylGramOver_posDef.1 ξ η
+  weylGramOver_posDef.1.star_dotProduct_mulVec_comm ξ η
 
 open ComplexOrder in
 /-- The Gram form is non-degenerate: a vector is determined by its pairings with all vectors. -/

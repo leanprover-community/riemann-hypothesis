@@ -290,7 +290,7 @@ lemma Core.exists_form_eq_one [HasPrimitiveRoot5040 E]
     (hz : zᴴ * K.map toAdele * z = 1) : ∃ w : Matrix n Unit E, wᴴ * K * w = 1 := by
   let N (u : Matrix n Unit E) : maximalRealSubfield E :=
     ⟨(uᴴ * (K * u)) () (), mem_maximalRealSubfield_iff_star_eq.2
-      (star_dotProduct_mulVec_comm hK _ _)⟩
+      (IsHermitian.star_dotProduct_mulVec_comm hK _ _)⟩
   -- First `u` with `N u` positive at infinity, then `v` with `N v` a unit at the finitely many
   -- places where `N u` is not, and at their conjugates.
   obtain ⟨u, hu_pos, -⟩ := exists_form_pos_and_unit z hz finite_empty

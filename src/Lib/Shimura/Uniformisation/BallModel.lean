@@ -384,9 +384,8 @@ lemma exists_eq_formReflection [DecidableEq n]
     simpa only [← mulVec_mulVec, h_fix] using hHJ.dotProduct_mulVec_pos h_u_ne
   -- As `H` and `H * J` are Hermitian, `H(u, x) = H(u, J x) = (w ⬝ᵥ x) H(u, u) - H(u, x)`.
   have h_symm (x : n → ℂ) : star u ⬝ᵥ H *ᵥ x = w ⬝ᵥ x * star u ⬝ᵥ H *ᵥ u - star u ⬝ᵥ H *ᵥ x := by
-    simpa [h_fix, star_dotProduct_mulVec_comm hH, ← mulVec_mulVec, sub_mulVec, vecMulVec_mulVec,
-      mulVec_sub,
-      mulVec_smul] using star_dotProduct_mulVec_comm hHJ.1 x u
+    simpa [h_fix, hH.star_dotProduct_mulVec_comm, ← mulVec_mulVec, sub_mulVec, vecMulVec_mulVec,
+      mulVec_sub, mulVec_smul] using hHJ.1.star_dotProduct_mulVec_comm x u
   have h_w : w = (2 / star u ⬝ᵥ H *ᵥ u) • star u ᵥ* H := dotProduct_eq _ _ fun x ↦ by
     grind [smul_dotProduct, dotProduct_mulVec, smul_eq_mul]
   exact ⟨u, h_pos, by rw [h_w]⟩
@@ -412,7 +411,7 @@ lemma re_form_lt_of_mem_positiveBall (hH : H.IsHermitian)
   have h_expand :
       (star y' ⬝ᵥ H *ᵥ y').re =
         (star y ⬝ᵥ H *ᵥ y).re - 2 * (s * (x ⬝ᵥ H *ᵥ y)).re + normSq s * (x ⬝ᵥ H *ᵥ star x).re := by
-    simp [y', normSq, ← star_dotProduct_mulVec_comm hH (star x), mulVec_sub, mulVec_smul]
+    simp [y', normSq, ← hH.star_dotProduct_mulVec_comm (star x), mulVec_sub, mulVec_smul]
     ring
   linarith
 
@@ -524,7 +523,7 @@ lemma exists_form_along_ballPeriod (e : (D.Index → ℂ) ≃L[ℂ] ℂ × BallB
           (2 * (Φ v D.ξ * star (z · v) ⬝ᵥ β.map (Φ v) *ᵥ (y · v)).re : ℝ) := by
       set a : ℂ := star (z · v) ⬝ᵥ β.map (Φ v) *ᵥ (y · v) with ha
       have diff : f v y (P b z) - f v z (P b y) = 2 * π * (Φ v D.ξ).im * (star a - a) := by
-        rw [f_P, f_P, ha, star_dotProduct_mulVec_comm h_frame.isHermitian_map]
+        rw [f_P, f_P, ha, h_frame.isHermitian_map.star_dotProduct_mulVec_comm]
         split_ifs with h
         · rw [h, hH]
           ring
@@ -742,7 +741,7 @@ lemma exists_ball_chart (hH : H.IsHermitian) {u : n → ℂ} {a : ℂ} (ha : sta
     e.injective (by simp [hx, ← he₀, ← Complex.coe_smul])
   have x_u : x ⬝ᵥ H *ᵥ u = a := by simp [hx, ← he]
   have u_x : star u ⬝ᵥ H *ᵥ star x = star a := by
-    rw [← star_dotProduct_mulVec_comm hH (star x), star_star, x_u]
+    rw [← hH.star_dotProduct_mulVec_comm (star x), star_star, x_u]
   have ha_re : 0 < a.re := (Complex.lt_def.1 hu).1
   have convex : 0 < a.re + t ^ 2 * ((x ⬝ᵥ H *ᵥ star x).re - a.re) :=
     (convex_Ioi 0).add_smul_sub_mem ha_re hb ⟨sq_nonneg t, by bound⟩

@@ -404,7 +404,7 @@ lemma form_flatChart (hT : Tᴴ = T) {p : (A × (ι → A)) × skewAdjoint A} (h
       t * (t⁻¹ʳ * star P.element * (skewUnit⁻¹.val * b - q) - star t * a) + q = skewUnit⁻¹.val * b
         by
     simpa [flatChart, fromBlocks_mulVec, star_sumElim, inverse_star,
-      star_dotProduct_mulVec_comm hT w w,
+      IsHermitian.star_dotProduct_mulVec_comm hT w w,
       ← sub_eq_add_neg]
   linear_combination (skewUnit⁻¹.val * b - q) * (P.element * inverse_mul_cancel (star t) hp.star +
     star P.element * inverse_mul_cancel t hp + P.element_add_star)
@@ -580,7 +580,8 @@ lemma continuous_lintegral_flatChart (hT : Tᴴ = T) {f : (Fin 2 ⊕ ι → A) �
     fun b a h_ne ↦ ⟨flatChart T b (p, a), subset_closure h_ne, ?_⟩
   · simp only [flatChart, continuous_pi_iff, Sum.forall, elim_inl, elim_inr]
     exact ⟨by fun_prop, by fun_prop⟩
-  · simp [Subtype.ext_iff, π, flatChart, inverse_star, star_dotProduct_mulVec_comm hT p.2 p.2]
+  · simp [Subtype.ext_iff, π, flatChart, inverse_star,
+      IsHermitian.star_dotProduct_mulVec_comm hT p.2 p.2]
     have h_inv := inverse_mul_cancel p.1 hp
     have h_inv_star : star p.1⁻¹ʳ * star p.1 = 1 := by rw [← star_mul', h_inv, star_one]
     linear_combination a.val * (star P.element * h_inv + P.element * h_inv_star +

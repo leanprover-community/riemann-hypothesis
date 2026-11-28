@@ -146,7 +146,8 @@ lemma dualColumnGaussian_succ_mul_heisenbergElem {a : Fin 𝔰.ϱ} {ν : 𝔰.G�
     simp [inclMatrix_val_mulVec, i.property, h_ne (.inl a) rfl, h_ne (eStar a) rfl]
   have col_im : (col (.inl a)).im = (β : ℂ).im := by
     have form_real (w : 𝔰.BesselIndex → ℂ) : (star w ⬝ᵥ 𝔰.J₁ *ᵥ w).im = 0 :=
-      Complex.conj_eq_iff_im.1 (star_dotProduct_mulVec_comm IsHermitianUnit.conjTranspose_eq w w)
+      Complex.conj_eq_iff_im.1
+        (IsHermitian.star_dotProduct_mulVec_comm (A := 𝔰.J₁) IsHermitianUnit.conjTranspose_eq w w)
     simp only [col, heisenbergElem_mulVec_single_eStar]
     simp [inclMatrix_val_mulVec, -mulVec_mulVec, form_real]
   have col_zero (b : Fin 𝔰.ϱ) (hb : b.val < a) : col (eStar b) = 0 := by

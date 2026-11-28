@@ -71,13 +71,6 @@ namespace New
 
 variable {R n : Type*} [CommRing R] [Fintype n] [DecidableEq n] [StarRing R] {J : Matrix n n R}
 
-omit [DecidableEq n] in
-/-- The form h(u, v) = uᴴ J v of a hermitian matrix `J` is hermitian: the conjugate of h(u, v) is
-h(v, u). -/
-lemma star_dotProduct_mulVec_comm (hJ : Jᴴ = J) (u v : n → R) :
-    star (star u ⬝ᵥ J *ᵥ v) = star v ⬝ᵥ J *ᵥ u := by
-  grind [star_dotProduct, star_mulVec_dotProduct]
-
 /-- The quasi-reflection x ↦ x − v σ⁻¹ h(v, x) in U(J), where h(v, x) = vᴴJx, J is hermitian and
 invertible, and σ is a unit with σ + σ̄ = h(v, v). -/
 noncomputable def quasiReflection (hJ : Jᴴ = J) (hJ' : IsUnit J) (v : n → R) (σ : Rˣ)
@@ -175,7 +168,7 @@ lemma witt_of_quasiReflection_mem (hz : ∃ z : R, IsUnit (z - star z)) {J : Mat
   let V : TauCeti.SignedHermitianSpace R (n → R) (starRingEnd R) 1 :=
     { form := B
       form_swap := fun v w ↦ by
-          simpa [hB, starRingEnd_apply] using (star_dotProduct_mulVec_comm hJ v w).symm
+          simpa [hB, starRingEnd_apply] using (IsHermitian.star_dotProduct_mulVec_comm hJ v w).symm
       separatingLeft := fun v hv ↦ funext fun i ↦ by
         obtain ⟨w, hw⟩ := mulVec_surjective_iff_isUnit.2 hJ' (Pi.single i 1)
         simpa [hB, hw] using hv w }
@@ -674,7 +667,8 @@ lemma exists_unitary_eq_eichlerMap {J : Matrix n n A} {x u : n → A} {ς : A} (
   -- form of `J`. Each matrix identity is applied to a vector and expanded.
   set e : Matrix n n A := eichlerMap J x u ς with he
   set e' : Matrix n n A := eichlerMap J x (-u) (star ς) with he'
-  have hxu : star x ⬝ᵥ J *ᵥ u = 0 := by rw [← star_dotProduct_mulVec_comm hJ, hux, star_zero]
+  have hxu : star x ⬝ᵥ J *ᵥ u = 0 := by
+    rw [← IsHermitian.star_dotProduct_mulVec_comm hJ, hux, star_zero]
   have mul_inv : e * e' = 1 := by
     refine ext_iff_mulVec.2 fun v ↦ ?_
     simp only [he, he', ← mulVec_mulVec, one_mulVec, eichlerMap_mulVec, mulVec_add, mulVec_sub,

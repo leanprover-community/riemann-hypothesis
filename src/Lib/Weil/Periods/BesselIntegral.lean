@@ -243,7 +243,8 @@ lemma exists_ratCoordMatrix_eq_eichlerMap (x y : ι → 𝔸 E) (k : ℤ)
   -- The form is hermitian, so `h(y, y)` is fixed by `star` and is the trace of its half.
   have half : toAdele 2⁻¹ * star y ⬝ᵥ J *ᵥ y + star (toAdele 2⁻¹ * star y ⬝ᵥ J *ᵥ y) =
       star y ⬝ᵥ J *ᵥ y := by
-    norm_num [star_mul', star_dotProduct_mulVec_comm herm y y, star_toAdele, ← add_mul, ← map_add]
+    norm_num [star_mul', IsHermitian.star_dotProduct_mulVec_comm herm y y, star_toAdele, ← add_mul,
+      ← map_add]
   obtain ⟨u, hu⟩ : ∃ u : G E ε,
       V.ratCoordMatrix u = eichlerMap J x y (toAdele 2⁻¹ * star y ⬝ᵥ J *ᵥ y) :=
     V.toRatCoords.surjective.exists.mp (New.exists_unitary_eq_eichlerMap herm h_iso h_orth half)
@@ -584,8 +585,10 @@ lemma formAdjoint_mul_self_mulVec_apply_eq_of_survives {w : Matrix ι' ι (𝔸 
     simp [u_mat, formAdjoint, ← dotProduct_mulVec, dotProduct_comm _ (_ ᵥ* _), ← Matrix.mul_assoc,
       mul_eq_one_symm V.map_J_inv_mul_map_J, (isHermitian_J _).eq, ← trace_conjTranspose,
       conjTranspose_nonsing_inv, trace_mul_comm _ (map _ _), Matrix.mulVec_add, Matrix.mulVec_smul,
-      Matrix.mul_add, eichlerMap, mul_sub, mul_vecMulVec,
-        star_dotProduct_mulVec_comm, neg_div, ← h_half]
+      Matrix.mul_add, eichlerMap, mul_sub, mul_vecMulVec, neg_div, ← h_half,
+      (V.isHermitian_J.map toAdele fun a ↦ (star_toAdele a).symm).star_dotProduct_mulVec_comm,
+      (isHermitian_conjTranspose_mul_mul y (V'.isHermitian_J.map toAdele fun a ↦
+        (star_toAdele a).symm)).star_dotProduct_mulVec_comm]
     -- The trace terms and the terms in `star x ⬝ᵥ J *ᵥ x` cancel; the pairings of `x` with `v`
     -- add up.
     ring

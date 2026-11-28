@@ -567,7 +567,7 @@ lemma LevelForm.innerAt_eq_stdClassSum :
 lemma LevelForm.conj_innerAt : σ⁻¹ (conj (σ (φ'.innerAt σ φ))) = φ.innerAt σ φ' := by
   -- The Gram matrix is Hermitian.
   simp [innerAt_eq_stdClassSum, starRingEnd_apply, map_classSum, gramForm_apply,
-    star_dotProduct_mulVec_comm weylGramOver_posDef.1]
+    weylGramOver_posDef.1.star_dotProduct_mulVec_comm]
 
 /-- The pairing `innerAt σ` is definite: a form whose pairing with itself is zero is zero. -/
 lemma LevelForm.eq_zero_of_innerAt_self (h_zero : φ.innerAt σ φ = 0) : φ = 0 := by
