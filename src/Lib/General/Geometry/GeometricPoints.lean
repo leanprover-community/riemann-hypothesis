@@ -479,7 +479,8 @@ lemma IsSeparatingFamily.prod {S : Scheme} [IsReduced S] {A B : Over S} {V W J :
   obtain ⟨u, rfl⟩ : t ∈ range (A ◁ y w).left := by simpa [range_map, whiskerLeft_left] using ht
   refine map_mem_closure (by fun_prop) (he w u) (forall_mem_range.2 fun v ↦ ⟨(w, v), ?_⟩)
   -- The map `A ◁ y w` from the fibre sends `(e w v, 𝟙)` to `(e w v, y w)`.
-  have h_lift : lift (e w v) (𝟙 _) ≫ A ◁ y w = lift (e w v) (y w) := by simp
+  have h_lift : CartesianMonoidalCategory.lift (e w v) (𝟙 _) ≫ A ◁ y w =
+      CartesianMonoidalCategory.lift (e w v) (y w) := by simp
   exact congrArg (fun m : Over.mk (η w) ⟶ A ⊗ B ↦ m.left (IsLocalRing.closedPoint ℂ)) h_lift.symm
 
 end New
