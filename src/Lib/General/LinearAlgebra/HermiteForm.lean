@@ -125,14 +125,15 @@ lemma IsValuationPair.exists_clear_col (hR : IsValuationPair R) (y : Matrix n k 
       have W_col : ∀ r : n, (W.val * y) r j = y r j := W_keep j hj₀ hjt
       rw [V_keep r j ((W_col i₀).trans hj₀) ((W_col i).trans hji), W_col]
 
-variable [Fintype k]
+variable [Fintype k] {α : Type*} [LinearOrder α]
 
 /-- Hermite form: let `(A, R)` be a valuation pair (any `u, v` in `A` are `R`-multiples of
 `u - e * (u - v)` for some idempotent `e` of `R`), and let `ι` embed `k` in `n`.
 Then an `n × k` matrix `y` over `A` is `U_ι * D` with `U ∈ GL_n(R)` and `U_ι` its columns at `ι`.
-Here `D` is the rows at `ι` of `U⁻¹ * y`, and it is block upper triangular for the weight `wt`. -/
+Here `D` consists of the rows at `ι` of `U⁻¹ * y` and is block upper triangular for the given
+column weight `wt : k → α`, where `α` is any linear order. The default weight is constant. -/
 lemma IsValuationPair.hermite (hR : IsValuationPair R) (ι : k ↪ n) (y : Matrix n k A)
-    (wt : k → ℕ := 0) :
+    (wt : k → α := by exact fun _ ↦ (0 : ℕ)) :
     ∃ U ∈ intGL n R, ∃ D : Matrix k k A,
       -- (a) `D` is block triangular for the weight
       D.BlockTriangular wt ∧
@@ -176,7 +177,7 @@ some idempotent e of R) and the n × k matrix X over A has a left inverse, there
 b, block upper triangular for wt, such that X b has entries in R and a left inverse with entries
 in R. -/
 lemma IsValuationPair.exists_isPrimitiveMatrix_mul (hR : IsValuationPair R) [DecidableEq k]
-    {X : Matrix n k A} (hX : HasLeftInv X) (wt : k → ℕ := 0) :
+    {X : Matrix n k A} (hX : HasLeftInv X) (wt : k → α := by exact fun _ ↦ (0 : ℕ)) :
     ∃ b : GL k A, b.val.BlockTriangular wt ∧ IsPrimitiveMatrix R (X * b.val) := by
   -- Take the Hermite form of `X` with a zero block below it: `X = U₁₂ * D` for an integral `U`.
   -- `D` is invertible because `X` has a left inverse, so `X * D⁻¹ = U₁₂`; the zero block makes

@@ -204,12 +204,11 @@ lemma exists_basis_hasDegreeGe (Z : GL ι (𝔸f E)) :
       Z⁻¹ * b ∈ intGL ι (Ô E) ∧
       HasDegreeGe Y.gradeOf Y.gradeOf 0 b.val ∧
       HasDegreeGe Y.gradeOf Y.gradeOf 0 b⁻¹.val := by
-  obtain ⟨B, hB⟩ : ∃ B : ℤ, ∀ i : ι, Y.gradeOf i ≤ B := Finite.exists_le _
-  -- Grades decrease as `wt` increases, so block triangular means not lowering grades.
-  let wt (i : ι) : ℕ := (B - Y.gradeOf i).toNat
+  -- Upper triangularity for the reverse order on grades means that the basis does not lower grades.
+  let wt : ι → ℤᵒᵈ := OrderDual.toDual ∘ Y.gradeOf
   have h_deg {A : Matrix ι ι (𝔸f E)} (hA : A.BlockTriangular wt) :
-      HasDegreeGe Y.gradeOf Y.gradeOf 0 A :=
-    fun i k h_lt ↦ hA (show wt k < wt i by grind [hB k])
+      HasDegreeGe Y.gradeOf Y.gradeOf 0 A := by
+    simpa [HasDegreeGe, Matrix.BlockTriangular, wt] using hA
   obtain ⟨b, h_tri, h_prim⟩ : ∃ b : GL ι (𝔸f E),
       b.val.BlockTriangular wt ∧ IsPrimitiveMatrix (Ô E) (Z⁻¹.val * b.val) :=
     isValuationPair_Ô.exists_isPrimitiveMatrix_mul (X := Z⁻¹.val) ⟨Z, Z.mul_inv⟩ wt
