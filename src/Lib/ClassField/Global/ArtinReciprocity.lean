@@ -286,11 +286,13 @@ lemma artin_reciprocity_cyclotomic {q : ℕ} [P : Fact q.Prime] (hq : Fact (2 < 
 
 /-! ### The law in general -/
 
+/-- The abelian lift of the sum of two characters is the product of their abelian lifts. -/
 lemma abelianLift_add_eq_mul (χ ψ : QZChar Γ) :
     abelianLift (χ + ψ) = abelianLift χ * abelianLift ψ := by
   aesop
 
 omit [MulSemiringAction Γ Ω] in
+/-- Evaluating a `QZChar` character at `g ^ n` equals `n` times its value at `g`. -/
 lemma QZChar.apply_pow (χ : QZChar Γ) (g : Γ) (n : ℕ) : χ.val (g ^ n) = n • χ.val g := by
   apply Multiplicative.ofAdd.injective
   simpa only [ofAdd_nsmul, toHom_apply] using map_pow (toHom χ) g n
