@@ -36,7 +36,7 @@ rings.
 
 ## Main definitions and results
 
-* `New.mem_normPairClosure_of_pow_eq`: an element `ζ` of `ℂ_p` of norm 1 with `ζ ^ q_p = ζ` is a
+* `New.mem_normPairClosure_of_pow_eq`: an element `ζ` of `ℂ_p` with `ζ ^ q_p = ζ` is a
   limit of images of integers `α` of `K`, in such a way that the image of `α ᾱ` tends to
   `ζ ^ (p + 1)`.
 * `New.CoeffRing.normLength`, `New.CoeffRing.normLength_addVal`: the rescaling of lengths of
@@ -113,16 +113,34 @@ lemma tendsto_pow_pow_of_norm_sub_one_lt {u : ℂ_[p]} (hu : ‖u - 1‖ < 1) {q
   simpa [Function.comp_def, ← hκ] using (κ.prop.tendsto 0).comp
     (tendsto_pow_atTop_nhds_zero_of_norm_lt_one (norm_natCast_lt_one_iff.mpr hq))
 
-/-- If `x` and `y` in the valuation ring of `ℂ_p` have the same residue, `‖y‖ = 1`, `p ∣ q` and
-`y ^ q ^ n = y` for all `n`, then `x ^ q ^ n` tends to `y`. -/
+/-- A nonzero fixed point of the `q`-th power map, with `p ∣ q`, has norm one. -/
+private lemma norm_eq_one_of_pow_eq_self_of_dvd {q : ℕ} (hq : p ∣ q) {y : ℂ_[p]}
+    (hy_ne : y ≠ 0) (hy : y ^ q = y) : ‖y‖ = 1 := by
+  have hq_one : q ≠ 1 := fun h ↦ hp.out.not_dvd_one (h ▸ hq)
+  by_contra h_norm
+  apply hq_one
+  apply pow_right_injective₀ (norm_pos_iff.mpr hy_ne) h_norm
+  simpa only [norm_pow, pow_one] using congrArg norm hy
+
+/-- If `x` and `y` have the same residue in the valuation ring of `ℂ_p`, `p ∣ q`, and `y ^ q = y`,
+then the powers `x ^ (q ^ n)` tend to `y`. -/
 lemma tendsto_pow_pow_of_residue_eq {q : ℕ} (hq : p ∣ q) {x y : valRingCp p}
-    (hxy : residue (valRingCp p) x = residue (valRingCp p) y) (hy : ‖y.val‖ = 1)
-    (hy_fixed : ∀ n : ℕ, y.val ^ q ^ n = y.val) :
+    (hxy : residue (valRingCp p) x = residue (valRingCp p) y) (hy : y.val ^ q = y.val) :
     Filter.Tendsto (fun n : ℕ ↦ x.val ^ q ^ n) Filter.atTop (nhds y.val) := by
-  have hy_ne : y.val ≠ 0 := norm_pos_iff.1 (one_pos.trans_eq hy.symm)
   have h_sub : ‖x.val - y.val‖ < 1 := residue_eq_iff_valuation_sub_lt_one.1 hxy
-  have h_div : ‖x.val / y.val - 1‖ < 1 := by simpa [div_sub_one hy_ne, hy] using h_sub
-  simpa [div_pow, hy_fixed, hy_ne] using
+  obtain rfl | hy_ne := eq_or_ne y 0
+  · -- A lift of zero has norm less than one, and the exponents tend to infinity.
+    have hq_ne : q ≠ 0 := fun h ↦ by simp [h] at hy
+    have h_small : ‖x.val‖ < 1 := by simpa using h_sub
+    have hq_gt : 1 < q := hp.out.one_lt.trans_le (Nat.le_of_dvd (Nat.pos_of_ne_zero hq_ne) hq)
+    exact (tendsto_pow_atTop_nhds_zero_of_norm_lt_one h_small).comp
+      (tendsto_pow_atTop_atTop_of_one_lt hq_gt)
+  have hy_val : y.val ≠ 0 := fun h ↦ hy_ne (Subtype.ext h)
+  have hy_norm := norm_eq_one_of_pow_eq_self_of_dvd hq hy_val hy
+  have hy_fixed (n : ℕ) : y.val ^ q ^ n = y.val := by
+    simpa using Function.iterate_fixed (f := (· ^ q)) hy n
+  have h_div : ‖x.val / y.val - 1‖ < 1 := by simpa [div_sub_one hy_val, hy_norm] using h_sub
+  simpa [div_pow, hy_fixed, hy_val] using
     (tendsto_pow_pow_of_norm_sub_one_lt h_div hq).mul_const y.val
 
 variable (d : ℕ) [PrimeSevenModEight d]
@@ -184,11 +202,16 @@ integer of `K = ℚ(√-d)`. -/
 noncomputable def normPairClosure : Set (ℂ_[p] × ℂ_[p]) :=
   closure {(ιₚ a, ιₚ (a * conj a)) | a ∈ quadInt d}
 
-/-- If `ζ` is an element of `ℂ_p` of norm `1` with `ζ ^ q_p = ζ`, where `q_p = primeNorm d p`
+/-- If `ζ` is an element of `ℂ_p` with `ζ ^ q_p = ζ`, where `q_p = primeNorm d p`
 (`p ^ 2` if `chiK d p = -1`, else `p`), then `(ζ, ζ ^ (p + 1))` lies in `normPairClosure d`: it is a
 limit of images under `ιₚ` of pairs `(α, α ᾱ)` with `α` an integer of `K = ℚ(√-d)`. -/
-lemma mem_normPairClosure_of_pow_eq {ζ : ℂ_[p]} (hζ_norm : ‖ζ‖ = 1)
-    (hζ_pow : ζ ^ primeNorm d p = ζ) : (ζ, ζ ^ (p + 1)) ∈ normPairClosure d := by
+lemma mem_normPairClosure_of_pow_eq {ζ : ℂ_[p]} (hζ_pow : ζ ^ primeNorm d p = ζ) :
+    (ζ, ζ ^ (p + 1)) ∈ normPairClosure d := by
+  obtain rfl | hζ_ne := eq_or_ne ζ 0
+  · exact subset_closure ⟨0, (quadInt d).zero_mem, by simp⟩
+  set q := primeNorm d p
+  have hq : p ∣ q := by simp [q, apply_ite]
+  have hζ_norm := norm_eq_one_of_pow_eq_self_of_dvd hq hζ_ne hζ_pow
   -- Lift the residue of `ζ` to an integer `a` of `K` whose conjugate lifts that of `ζ ^ p`.
   let φ : 𝓞 (QuadField d) →+* valRingCp p :=
     ((ιₚ.domRestrict (QuadField d)).comp (algebraMap _ _)).codRestrict (valRingCp p)
@@ -197,12 +220,11 @@ lemma mem_normPairClosure_of_pow_eq {ζ : ℂ_[p]} (hζ_norm : ‖ζ‖ = 1)
   obtain ⟨a, ha, ha_star⟩ := exists_map_eq_and_map_star_eq_pow d
     ((residue (valRingCp p)).comp φ) (residue _ z)
     ((map_pow (residue _) z _).symm.trans (congrArg _ (Subtype.ext hζ_pow)))
-  set q := primeNorm d p
-  have hq : p ∣ q := by simp [q, apply_ite]
-  have hζ_fixed n : ζ ^ q ^ n = ζ := by simpa using Function.iterate_fixed (f := (· ^ q)) hζ_pow n
-  have lim_a := tendsto_pow_pow_of_residue_eq hq ha hζ_norm hζ_fixed
-  have lim_star := tendsto_pow_pow_of_residue_eq (y := z ^ p) hq ha_star
-    (by simp [z, hζ_norm]) (by simp [z, pow_right_comm _ p, hζ_fixed])
+  have lim_a := tendsto_pow_pow_of_residue_eq hq ha hζ_pow
+  have hz_p_pow : (z ^ p).val ^ q = (z ^ p).val := by
+    change (ζ ^ p) ^ q = ζ ^ p
+    rw [pow_right_comm, hζ_pow]
+  have lim_star := tendsto_pow_pow_of_residue_eq hq ha_star hz_p_pow
   refine mem_closure_iff_seq_limit.2 ⟨_, fun n ↦ ⟨_, ⟨a ^ q ^ n, rfl⟩, rfl⟩, ?_⟩
   simpa [φ, RingHom.codRestrict, pow_succ'] using lim_a.prodMk_nhds (lim_a.mul lim_star)
 

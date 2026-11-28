@@ -50,8 +50,7 @@ variable {d p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] [PadicPlace p]
 `ℂ_[p] × ℂ_[p]` of pairs `(α, α ᾱ)` with `α` an integer of `ℚ(√-d)`. -/
 lemma mem_normPairClosure_of_pow_eq_one {ζ : ℂ_[p]} (hζ : ζ ^ (primeNorm d p - 1) = 1) :
     (ζ, ζ ^ (p + 1)) ∈ normPairClosure d := by
-  refine mem_normPairClosure_of_pow_eq d
-    (isOfFinOrder_iff_pow_eq_one.2 ⟨_, NeZero.pos _, hζ⟩).norm_eq_one ?_
+  apply mem_normPairClosure_of_pow_eq d
   rw [← pow_sub_one_mul (Nat.ne_zero_of_lt (one_lt_primeNorm d p)), hζ, one_mul]
 
 /-- The number `π_p` (`√-d` if `p = d`, and `p` otherwise) is not a unit of the valuation ring of
