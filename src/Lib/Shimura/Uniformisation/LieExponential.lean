@@ -163,6 +163,12 @@ private lemma tendsto_norm_natCast_hyperfilter :
     Tendsto (fun n : ℕ ↦ ‖(n : ℝ)‖) (hyperfilter ℕ) atTop :=
   tendsto_norm_atTop_atTop.comp (tendsto_natCast_atTop_iff.mpr Nat.hyperfilter_le_atTop)
 
+/-- Along the hyperfilter, multiplying the rescaled vector `n⁻¹ • v` by `n` recovers `v`. -/
+private lemma eventually_natCast_smul_inv_smul {V : Type*} [MulAction ℝ V] (v : V) :
+    (fun n : ℕ ↦ (n : ℝ) • ((n : ℝ)⁻¹ • v)) =ᶠ[hyperfilter ℕ] fun _ ↦ v := by
+  filter_upwards [(eventually_ne_atTop 0).filter_mono Nat.hyperfilter_le_atTop] with n hn
+  exact smul_inv_smul₀ (Nat.cast_ne_zero.mpr hn) v
+
 /-- For a map `ψ : V → G`, `x` is an exponential limit of `v` when some sequence `b` has
 `n • b n → v` and `n • ψ (b n) → x`, both along the hyperfilter of `ℕ`. -/
 private def New.IsExpLimit {G V : Type*} [AddCommGroup G] [TopologicalSpace G] [FinComplexSpace V]
@@ -269,9 +275,9 @@ private lemma New.isExpLimit_fderiv_apply {G V P : Type*} [AddCommGroup G] [Topo
   have near : ∀ᶠ n : ℕ in hyperfilter ℕ, ψ (φ (γ (‖(n : ℝ)‖⁻¹ • z))) = γ (‖(n : ℝ)‖⁻¹ • z) :=
     (tendsto_norm_natCast_hyperfilter.inv_tendsto_atTop.zero_smul_const z).eventually
       (γ_cont.eventually (by rwa [map_zero]))
-  filter_upwards [near, tendsto_norm_natCast_hyperfilter.eventually_ne_atTop 0] with n ψφγ n_ne
-  -- For `n ≠ 0`, `n • ψ (φ (γ (n⁻¹ • z))) = n • γ (n⁻¹ • z) = γ (n • n⁻¹ • z) = γ z`.
-  simp_all [← map_nsmul, ← Nat.cast_smul_eq_nsmul ℝ]
+  filter_upwards [near, eventually_natCast_smul_inv_smul z] with n ψφγ hscale
+  simp only [Real.norm_natCast] at ψφγ
+  simpa [← map_nsmul, ← Nat.cast_smul_eq_nsmul ℝ, ψφγ, h0] using congrArg γ hscale
 
 /-- The exponential map. Let `G` be a compact commutative topological group and `φ : G → V` a chart
 at `0`: `φ 0 = 0`, and `φ`, `ψ` are inverse to each other near `0`, with `φ` continuous near `0` and
@@ -319,13 +325,11 @@ lemma New.exists_lie_exponential {G V : Type*} [AddCommGroup G] [TopologicalSpac
       ∀ᶠ v : V in 𝓝 0, ∀ {x : G}, IsExpLimit ψ v x → ψ (φ x) = x ∧ ‖φ x - v‖ ≤ ε * ‖v‖ :=
     eventually_norm_sub_le_of_isExpLimit h0 ψ_zero (mem_of_mem_nhds C_nhds) C_closed hC_inv
       (fun x hx ↦ (hC hx).right) add_mem_C add_deriv hε
-  -- Existence: take `b n = n⁻¹ • v` and the limit of the ultrafilter in the compact group `G`.
-  have h_exists (v : V) : ∃ x : G, IsExpLimit ψ v x := by
-    let b (n : ℕ) : V := id (0 + (n : ℝ)⁻¹ • v) - id 0
-    -- The image of the hyperfilter under `n ↦ n • ψ (b n)` converges, as `G` is compact.
-    exact ⟨(Ultrafilter.map (fun n ↦ n • ψ (b n)) (hyperfilter ℕ)).lim, b,
-      (hasFDerivAt_id 0).lim v tendsto_norm_natCast_hyperfilter, Ultrafilter.le_nhds_lim _⟩
-  choose f hf using h_exists
+  -- Compactness gives the limit of the sequence `n • ψ (n⁻¹ • v)` along the hyperfilter.
+  let f (v : V) : G := (Ultrafilter.map (fun n : ℕ ↦ n • ψ ((n : ℝ)⁻¹ • v)) (hyperfilter ℕ)).lim
+  have hf (v : V) : IsExpLimit ψ v (f v) :=
+    ⟨fun n ↦ (n : ℝ)⁻¹ • v, (eventually_natCast_smul_inv_smul v).tendsto,
+      Ultrafilter.le_nhds_lim _⟩
   -- Uniqueness: `IsExpLimit ψ 0 y` forces `y = 0`; apply this to `y = x + f (-v)`.
   have isExp_unique {v : V} {x : G} (h : IsExpLimit ψ v x) : x = -f (-v) := by
     have h_sum : IsExpLimit ψ 0 (x + f (-v)) := by simpa using isExp_add h (hf (-v))
