@@ -1,7 +1,7 @@
 module
 
 import Mathlib.Algebra.Azumaya.Basic
-public import Lib.GaloisRep.TaylorWiles
+public import Lib.GaloisRep.Main.Defs
 public import New.Congruences.FirstOrder.KummerMaps
 import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 import Lib.Cyclotomic.OddSha

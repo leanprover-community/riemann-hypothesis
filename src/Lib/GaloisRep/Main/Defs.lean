@@ -28,6 +28,8 @@ polynomials built from the eigenvalues of the Hecke operators `New.heckeSplit`, 
   split places outside a finite set and its conjugate.
 * `New.HasHeckePolyAt.isMonicOfDegree`: the Hecke polynomial of a nonzero spherical eigenvector
   (`New.HasHeckePolyAt`) of rank `n` is monic of degree `n`.
+* `New.Patching.TaylorWilesPlaces` records Frobenius data at distinct places, no two conjugate,
+  with residue-field sizes congruent to `1` modulo `m`.
 * `New.mostFrobenii`: the filter. `New.mostFrobeniiAt` adds that the Frobenius element `frob` tends
   to `g`.
 * `New.dense_of_mostFrobenii`: a property of most Frobenius elements holds on a dense set; hence the
@@ -218,6 +220,32 @@ structure FrobeniusDatum where
   isPlaceOver : IsPlaceOver valuationSubring place
   /-- The inverse of the element is an arithmetic Frobenius at the valuation subring. -/
   isFrob_inv : IsFrob valuationSubring place.q frob⁻¹
+
+namespace Patching
+
+/-- Auxiliary places as in the Taylor–Wiles method: for each index `j` a Frobenius datum at a
+finite place `w j` of `E`, such that no two of these places are equal or conjugate and `m` divides
+`q_j − 1`, where `q_j` is the order of the residue field at `w j`. -/
+structure TaylorWilesPlaces (E J : Type) [Field E] [NumberField E] [NumberField.IsCMField E] (m : ℕ)
+    [Algebra E Ω] where
+  /-- For each index `j`, the Frobenius datum at the place `w j`. -/
+  frobData : J → FrobeniusDatum E
+  /-- No two of the places `w j` are equal or conjugate. -/
+  apart : IsConjApart (frobData · |>.place)
+  /-- `m` divides `q_j − 1` for each `j`. -/
+  dvd_q_sub_one (j : J) : m ∣ (frobData j).place.q - 1
+
+variable {J : Type}
+
+/-- The place `w j` of `Q`: the finite place of its Frobenius datum with index `j`. -/
+abbrev TaylorWilesPlaces.place {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
+    {m : ℕ} [Algebra E Ω] (Q : TaylorWilesPlaces E J m) (j : J) :
+    FinPlace E :=
+  (Q.frobData j).place
+
+attribute [instance] TaylorWilesPlaces.apart
+
+end Patching
 
 /-- The filter 'most Frobenii' on `New.FrobeniusDatum E`. A set `X` of data `(w, A, s)` belongs to
 it if each nonempty open `V ⊆ Gal(Ω/E)` has a nonempty open part `O` such that, for almost all `w`,
