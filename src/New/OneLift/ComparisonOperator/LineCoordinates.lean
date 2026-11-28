@@ -729,21 +729,17 @@ lemma exists_isHomogeneousOverEntries_smul_stackedDetProdCoords (j : D.LiftIndex
         (f := map (map A.subtype) F) ?_ (by simp [coeff_map]) k
       rw [hF, ← toPoly_stackedDetProdCoords j i Y, ← nablaCombination_weylGramOver_mulVec]
       simp [detPow, Fintype.linearCombination_apply, κ]
-    choose c hc using h_coord
-    -- Over the polynomials with coefficients in `A`, the combination with coordinates `c`, times
-    -- `H`, is the polynomial of a vector `ζ`.
-    obtain ⟨ζ, hζ⟩ : ∃ ζ : WeylIndex (FirstFactorIndex j) κ →
-        MvPolynomial (D.Φ × FirstFactorIndex j × AddedIndex j) A,
-        toPoly (fun _ ↦ FirstFactorIndex j) κ ζ = H • nablaCombination κ c :=
-      exists_toPoly_eq_hookNumber_dual_smul (fun _ _ _ ↦ rfl) (range_nablaCombination.le ⟨c, rfl⟩)
-    have h_map : map (map A.subtype) (nablaCombination κ c) =
-        toPoly (fun _ ↦ FirstFactorIndex j) κ (stackedDetProdCoords j i Y) := by
-      rw [← nablaCombination_weylGramOver_mulVec, ← funext hc]
-      simp [Fintype.linearCombination_apply, ← C_mul']
-    -- A vector is determined by its polynomial, so `ζ` maps to `H • stackedDetProdCoords`.
-    have h_eq : map A.subtype ∘ ζ = H • stackedDetProdCoords j i Y :=
-      toPoly_injective (by rw [← map_toPoly, hζ, map_zsmul, h_map, map_zsmul])
-    exact ⟨ζ l, congrFun h_eq l⟩
+    -- Since the Gram matrix is symmetric, transposing its integral right inverse up to H
+    -- recovers H times the coordinates from their Gram products.
+    obtain ⟨B, hB⟩ := exists_weylGram_mul_eq_hookNumber_dual_smul
+      (n := fun _ : D.Φ ↦ FirstFactorIndex j) (κ := κ)
+      (κ' := fun τ h ↦ κ τ (N - h)) (fun _ _ _ ↦ rfl)
+    have h_left := congrArg Matrix.transpose hB
+    simp only [transpose_mul, weylGram_isSymm.eq, transpose_smul, transpose_one] at h_left
+    have h_mem : (Bᵀ.map (↑) *ᵥ weylGramOver *ᵥ stackedDetProdCoords j i Y) l ∈
+        (map A.subtype).range := IsIntMatrix.mulVec (fun _ _ ↦ intCast_mem _ _) h_coord l
+    rw [← map_intCast_mul_mulVec Bᵀ (weylGram _ κ), h_left] at h_mem
+    simpa [← diagonal_intCast] using h_mem
 
 end LineCoordinates
 
