@@ -75,6 +75,12 @@ the record is computed from the commit's Git objects, the map and manifest must 
 `ci-cache-get.py`'s checks for those inputs, the modules must be exactly the source files under
 `src`, and every artifact (staged, or else downloaded from the public cache) must have the
 manifest's SHA-256, be named by its stock Lake content hash, and extract with stock leantar.
+
+Staging reads `git ls-tree -r -z --name-only HEAD:src`. The publisher reads `src` at the commit
+being checked. Each path ends in a NUL byte (`0x00`, U+0000). Staging selects the `.lean` paths.
+The publisher requires a nonempty listing consisting entirely of Lean files. It drops `.lean`,
+replaces `/` with `.`, and checks the resulting module names.
+
 Only then does the job, in the environment `ci-cache-publish` (deployable from `main` only),
 read `R2_ACCOUNT_TOKEN` and write the new artifacts, the map, the manifest and the record, each
 with `If-None-Match`, so nothing is overwritten. A second fresh runner then runs
