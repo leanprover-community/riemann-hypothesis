@@ -208,6 +208,8 @@ lemma JumpLattice.mem_withOrders_raisedOrdersAtZero_of_gap {L : k.JumpLattice O}
 
 namespace PairingSide
 
+attribute [local instance low] NormedAlgebra.toAlgebra
+
 section Definitions
 
 lemma stepBack_zero (i : k.Letter) : i.stepBack 0 = i := rfl
@@ -332,7 +334,10 @@ lemma wittPairing_wittFst_mulZeta (x : S.extensionLattice.Ambient)
     P.wittPairing (S.wittFst (S.extensionLattice.mulZeta.wittMap x)) (S'.wittFst y) =
       P.wittPairing (S.wittFst x) (S'.wittFst (S'.extensionLattice.mulZeta.wittMap y)) := by
   revert x y
-  exact diagTensor_induction fun _ _ ↦ diagTensor_induction (by simp [mulZeta, modPairing])
+  exact diagTensor_induction
+    (fun _ _ ↦ diagTensor_induction (by simp [mulZeta, modPairing])
+      fun _ _ h₁ h₂ ↦ by simp only [map_add, h₁, h₂])
+    fun _ _ h₁ h₂ y ↦ by simp only [map_add, LinearMap.add_apply, h₁, h₂]
 
 /-- The Teichmüller lifts `k.letterTeich` of two distinct letters differ by a unit of the ring `k.S`
 of the chart. -/
@@ -799,7 +804,7 @@ lemma phi_pow_smul_mem_pointsOver (hw : w ∈ S.pointsOver c (i.stepBack l) e o 
     simp [← frobGroup_smul_smul, ← zTauUnit_smul, smul_sub, smul_phi_pow_comm]]
   refine mem_withOrders_of_mem_hodgeFil (smul_mem _ _ quot) fun a u hu h_lt μ hμ ↦ ?_
   -- the order to reach differs from the order of the quotient only at the levels below `l`
-  have ha : a < l := by lia
+  have ha : a < l := by by_contra h; simp [h] at h_lt
   simpa [ha] using mul_mem_hodgeFil (phiInvToBdR_mem_hodgeFil_one_iff.2 <| by
     simpa [zTau, smul_mul'] using (frobE_dvd_phi_pow_tau ha).mul_right _) (quot.2 a u hu μ hμ)
 
@@ -827,7 +832,11 @@ lemma map_wittPairing_extensionForm (n : P.tateDualSide.extensionLattice.Ambient
         (P.tateDualSide.projTrivial.wittMap n) w) y := by
   -- Both sides are linear in each variable: compare them on pure tensors.
   revert n w y
-  refine diagTensor_induction fun _ _ ↦ diagTensor_induction fun _ _ ↦ diagTensor_induction ?_
+  refine diagTensor_induction
+    (fun _ _ ↦ diagTensor_induction
+      (fun _ _ ↦ diagTensor_induction ?_ fun _ _ h₁ h₂ ↦ by simp only [map_add, h₁, h₂])
+      fun _ _ h₁ h₂ y ↦ by simp only [map_add, LinearMap.add_apply, h₁, h₂])
+    fun _ _ h₁ h₂ w y ↦ by simp only [map_add, LinearMap.add_apply, h₁, h₂]
   -- `extensionForm (λ, o) = p ^ m • λ + o • ψ`: the terms in `ψ` agree, and `p ^ m • λ` is `0`
   -- modulo `p ^ m`
   have h_kill (a : WittCFlat) (z : Rep.of (charRep (QuotSpan ((p : ℤ_[p]) ^ P.exponent)) χ)) :
