@@ -161,9 +161,10 @@ lemma riemannForm_apply_beta_eq_sub (h : IsHermitianAction L B F β) (u w : V) :
 
 /-- For hermitian data `h`, the canonical multiplier of `F β` (`h.multiplier`) and `B` are
 Appell–Humbert data (`New.IsAppellHumbert`). -/
-lemma isAppellHumbert (h : IsHermitianAction L B F β) : IsAppellHumbert B h.multiplier := by
-  grind [isAppellHumbert_canonicalMultiplier, riemannForm_apply_beta_eq_sub, IsHermitianAction,
-    conj_re]
+lemma isAppellHumbert (h : IsHermitianAction L B F β) : IsAppellHumbert B h.multiplier :=
+  isAppellHumbert_canonicalMultiplier h.riemannForm_apply_beta_eq_sub
+    (fun x y ↦ by rw [h.conj_symm x y, conj_re])
+    (fun u hu w hw ↦ h.riemannForm_integral _ (h.map_mem β u hu) _ hw)
 
 /-- Let `x` lie in the dual lattice of `B` (`E(x, l)` is an integer for `l ∈ L`, `E` the Riemann
 form) and let `F (star a) y ∈ L`. Then the phase `exp (2πi E(F a x, y))` is `1`. -/
@@ -422,12 +423,12 @@ lemma isSelfAdjoint_quotMean_pow (c : R) {κ : R} [NeZero κ] (hκ : κ = c - st
   -- sum over `h.MulKernel κ` times a Gaussian integral over `V`, divided by the covolume of `L`.
   -- The integral is `1 / conj (det (M κ) * det c̄)`, with `M κ` the matrix of `B x (κ y)`; the
   -- Gauss sum and `det (M κ)` have real fourth powers.
+  have : DiscreteTopology L.toAddSubgroup := (inferInstance : DiscreteTopology L)
   borelize V
   -- `μ` is Lebesgue measure on `V` in the coordinates `e` of a basis `b`, divided by `π ^ dim V`.
   let b : Basis (Fin (finrank ℂ V)) ℂ V := finBasis ℂ V
   let e : (Fin (finrank ℂ V) → ℂ) ≃L[ℂ] V := b.equivFun.symm.toContinuousLinearEquiv
   let μ : Measure V := (normalizedVolume _).map e
-  have : DiscreteTopology L.toAddSubgroup := inferInstanceAs (DiscreteTopology L)
   have : IsFiniteMeasure (L.toAddSubgroup.quotMeasure μ) :=
     isFiniteMeasure_addOrbitMeasure μ isCocompact_of_isFullRankLattice
   -- `M a` is the matrix of the form `(x, y) ↦ B x (a y)` in the basis `b`.
