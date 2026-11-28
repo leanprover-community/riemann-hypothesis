@@ -177,6 +177,84 @@ noncomputable abbrev indicatorDatum {P : Parameters} (D : Data P) (𝔪 : Modulu
     (y₀ : Matrix (Fin 12) Unit 𝔪.ResidueRing) : 𝒮 D.twelveSpace :=
   modDatum (stdSpace D.E Unit) (stdSpace D.E (Fin 12)) 𝔪 (Pi.single y₀ 1) Fock.vacVector
 
+/-- For `e * 3 ≤ c`, the Taylor series at `0` of `P.cmCurve.monomialSection (c - e * 3, 0, e)`
+equals `taylorAtZero P.cmCurve.translatedY ^ e * taylorAtZero P.cmCurve.θ ^ c`. -/
+private lemma taylorAtZero_monomialSection_eq {P : Parameters} {c e : ℕ} (hce : e * 3 ≤ c) :
+    taylorAtZero (P.cmCurve.monomialSection (c - e * 3, 0, e)) =
+      taylorAtZero P.cmCurve.translatedY ^ e * taylorAtZero P.cmCurve.θ ^ c := by
+  have hθ : AnalyticAt ℂ P.cmCurve.θ 0 := P.cmCurve.differentiable_theta.analyticAt 0
+  have h_eq : ∀ z : ℂ, z + P.cmCurve.t ∉ P.cmCurve.Λ →
+      P.cmCurve.monomialSection (c - e * 3, 0, e) z =
+        P.cmCurve.θ z ^ c * P.cmCurve.translatedY z ^ e := by
+    intro z hz
+    rw [P.cmCurve.monomialSection_eq (c - e * 3, 0, e) z hz]
+    dsimp only [monomialDeg]
+    rw [zero_mul, add_zero, Nat.sub_add_cancel hce, pow_zero, one_mul]
+  rw [P.cmCurve.taylorAtZero_congr h_eq,
+    taylorAtZero_mul (hθ.fun_pow _) (P.cmCurve.analyticAt_translatedY_zero.fun_pow _),
+    taylorAtZero_pow hθ, taylorAtZero_pow P.cmCurve.analyticAt_translatedY_zero, mul_comm]
+
+/-- For a resolution product `F` on `D.twelveSpace` at scale `P.cmPeriod / conj ↑D.piMBar`,
+evaluating `D.twelveTaylor F` cancels the scaling factors to `P.periodFactor D.towerExp` and
+gives the product over `J × Fin 12 × Unit` of the Taylor series of `monomialSection` composed with
+`resolutionFormCoeff`. -/
+private lemma twelveTaylor_eq_prod_of_isResolutionProduct {P : Parameters} (D : Data P)
+    {J : Type} [Fintype J] {w : J → D.E} {c : J → ℕ}
+    {monomialDegrees : J × Fin 12 × Unit → ℕ × ℕ × ℕ} {F : 𝒮 D.twelveSpace}
+    (hF : IsResolutionProduct D.twelveSpace P.cmCurve (P.cmPeriod / conj (D.piMBar : ℂ)) w c
+      (fun x : J × Fin 12 × Unit ↦ P.cmCurve.monomialSection (monomialDegrees x)) F) :
+    D.twelveTaylor F = ∏ x : J × Fin 12 × Unit,
+      (taylorAtZero (P.cmCurve.monomialSection (monomialDegrees x))).subst
+        (linearSeries (resolutionFormCoeff (P.periodFactor D.towerExp) w x)) := by
+  have h_scale : P.cmPeriod / conj ↑D.piMBar / P.areaScale *
+      (conj ↑D.piMBar * P.jetScale D.towerExp) = P.periodFactor D.towerExp := by
+    have hπ : conj (D.piMBar : ℂ) ≠ 0 := star_ne_zero.2 D.coe_piMBar_ne_zero
+    rw [jetScale, div_div, div_mul_eq_mul_div, mul_left_comm (P.cmPeriod : ℂ),
+      mul_div_mul_left _ _ hπ, mul_comm (P.cmPeriod : ℂ),
+      div_mul_cancel₀ _ P.cmPeriod.ne_zero, mul_div_cancel_right₀ _ P.areaScale.ne_zero]
+  have h_shift (x : J × Fin 12 × Unit) :
+      resolutionShift (P.cmPeriod / conj ↑D.piMBar) w (0 : Fin 12 × Unit → D.E) x = 0 := by
+    rw [resolutionShift, Pi.zero_apply,
+      Finset.sum_eq_zero fun τ _ ↦ by rw [map_zero, zero_mul], neg_zero, mul_zero]
+  have h := hF.jetSeries_translate 0 (conj ↑D.piMBar * P.jetScale D.towerExp)
+  rw [map_zero, finVec_zero, Space.ϱ, Heisenberg.Rep.rho_zero_apply, h_scale] at h
+  refine h.trans (prod_congr rfl fun x _ ↦ ?_)
+  rw [h_shift x, twistedTranslate, thetaShift_zero]
+
+/-- Applying `ιₚ : ℂ → ℂ_[p]` to the product over `J × Fin 12 × Unit` of the Taylor series of
+`P.cmCurve.monomialSection (c i - e b i * 3, 0, e b i)` along `resolutionFormCoeff` separates it
+into the product over the twelve copies `b : Fin 12` of
+`(∏ i, (taylorVia ιₚ translatedY).subst (linearSeries (μ i)) ^ e b i) * thetaProd μ c`. -/
+private lemma map_prod_subst_monomialSection_eq {P : Parameters} {p : ℕ} [Fact p.Prime]
+    [PadicPlace p] (D : Data P) {J : Type} [Fintype J] {w : J → D.E} {c : J → ℕ}
+    {e : Fin 12 → J → ℕ} (he : ∀ (b : Fin 12) (i : J), e b i * 3 ≤ c i) :
+    (∏ x : J × Fin 12 × Unit,
+      (taylorAtZero (P.cmCurve.monomialSection
+        (c x.1 - e x.2.1 x.1 * 3, 0, e x.2.1 x.1))).subst
+        (linearSeries (resolutionFormCoeff (P.periodFactor D.towerExp) w x))).map ιₚ =
+      ∏ b : Fin 12, rename (copyEmbedding b)
+        ((∏ i : J, (taylorVia ιₚ P.cmCurve.translatedY).subst
+          (linearSeries (P.resolutionForms (p := p) D.towerExp w i)) ^ e b i) *
+          P.cmCurve.thetaProd (P.resolutionForms D.towerExp w) c) := by
+  let copyForm : J × Fin 12 × Unit → D.Φ × Fin 12 × Unit → ℂ :=
+    resolutionFormCoeff (P.periodFactor D.towerExp) w
+  have h_copy (f : ℂ → ℂ) (i : J) (b : Fin 12) :
+      ((taylorAtZero f).subst (linearSeries (copyForm (i, b, ())))).map ιₚ =
+        rename (copyEmbedding b)
+          ((taylorVia ιₚ f).subst
+            (linearSeries (P.resolutionForms (p := p) D.towerExp w i))) :=
+    map_subst_linearSeries_copy f (fun τ ↦ P.periodFactor D.towerExp * conj (New.Φ τ (w i))) b
+  have h_subst (x : J × Fin 12 × Unit) : PowerSeries.HasSubst (linearSeries (copyForm x)) :=
+    .of_constantCoeff_zero (constantCoeff_linearSeries _)
+  rw [map_prod, prod_prod_type_right, prod_prod_type_right, Fintype.prod_unique,
+    PUnit.default_eq_unit]
+  refine prod_congr rfl fun b _ ↦ ?_
+  rw [thetaProd, map_mul, map_prod, map_prod, ← prod_mul_distrib]
+  refine prod_congr rfl fun i _ ↦ ?_
+  rw [taylorAtZero_monomialSection_eq (he b i), PowerSeries.subst_mul (h_subst _),
+    PowerSeries.subst_pow (h_subst _), PowerSeries.subst_pow (h_subst _), map_mul, map_pow,
+    map_pow, h_copy, h_copy, map_pow, map_pow]
+
 /-- Let `D` be admissible data for the parameters `P`, with `K = P.K = ℚ(√-d)` and `E = D.E` the
 cyclotomic extension `P.E D.towerExp` of `K`; `D.Φ` is the set of its infinite places `τ`. Let `w`
 be a tight frame of length `M = D.M` with multiplicities `c`. Let
@@ -203,7 +281,7 @@ lemma exists_integral_isThetaFunction_twelveTaylor_eq {P : Parameters} {p : ℕ}
     (∀ x : Fin 12 × Unit → 𝔸f D.E, ‖(ιₚ (F (finVec x)) : ℂ_[p])‖ ≤ 1) ∧
     IsThetaFunction (star (algebraMap P.K D.E D.piMBar) • idealLattice D.E (Fin 12 × Unit))
       (Space.entireTheta F) := by
-  -- `y ^ e θ ^ c = (y θ ^ 3) ^ e θ ^ (c - 3 e)` is a monomial section of degree `c`
+  -- `y ^ e θ ^ c = (y θ ^ 3) ^ e θ ^ (c - 3 e)` is a monomial section of degree `c`.
   let monomialDegrees (x : J × Fin 12 × Unit) : ℕ × ℕ × ℕ :=
     (c x.1 - e x.2.1 x.1 * 3, 0, e x.2.1 x.1)
   have h_area : P.cmCurve.area = ‖(P.cmPeriod : ℂ)‖ ^ 2 / D.M * D.M * √P.d / 2 := by
@@ -215,55 +293,8 @@ lemma exists_integral_isThetaFunction_twelveTaylor_eq {P : Parameters} {p : ℕ}
     D.piMBar (NeZero.ne D.M) D.piMBar_mul_conj hw monomialDegrees
     (fun x ↦ Nat.sub_add_cancel (he x.2.1 x.1)) cmPeriod_mem_cmCurve_lattice h_area
   refine ⟨F, ?_, hF_int p, h_periods⟩
-  have h_scale : P.cmPeriod / conj ↑D.piMBar / P.areaScale *
-      (conj ↑D.piMBar * P.jetScale D.towerExp) = P.periodFactor D.towerExp := by
-    have hπ : conj (D.piMBar : ℂ) ≠ 0 := star_ne_zero.2 D.coe_piMBar_ne_zero
-    rw [jetScale, div_div, div_mul_eq_mul_div, mul_left_comm (P.cmPeriod : ℂ),
-      mul_div_mul_left _ _ hπ, mul_comm (P.cmPeriod : ℂ),
-      div_mul_cancel₀ _ P.cmPeriod.ne_zero, mul_div_cancel_right₀ _ P.areaScale.ne_zero]
-  -- the form `μ_i` in the variables of copy `b`
-  let copyForm : J × Fin 12 × Unit → D.Φ × Fin 12 × Unit → ℂ :=
-    resolutionFormCoeff (P.periodFactor D.towerExp) w
-  have h_taylor : D.twelveTaylor F = ∏ x : J × Fin 12 × Unit,
-      (taylorAtZero (P.cmCurve.monomialSection (monomialDegrees x))).subst
-        (linearSeries (copyForm x)) := by
-    have h_shift (x : J × Fin 12 × Unit) :
-        resolutionShift (P.cmPeriod / conj ↑D.piMBar) w (0 : Fin 12 × Unit → D.E) x = 0 := by
-      rw [resolutionShift, Pi.zero_apply,
-        Finset.sum_eq_zero fun τ _ ↦ by rw [map_zero, zero_mul], neg_zero, mul_zero]
-    have h := hF.jetSeries_translate 0 (conj ↑D.piMBar * P.jetScale D.towerExp)
-    rw [map_zero, finVec_zero, Space.ϱ, Heisenberg.Rep.rho_zero_apply, h_scale] at h
-    refine h.trans (prod_congr rfl fun x _ ↦ ?_)
-    rw [h_shift x, twistedTranslate, thetaShift_zero]
-  have hθ : AnalyticAt ℂ P.cmCurve.θ 0 := P.cmCurve.differentiable_theta.analyticAt 0
-  have h_monomial (x : J × Fin 12 × Unit) :
-      taylorAtZero (P.cmCurve.monomialSection (monomialDegrees x)) =
-      taylorAtZero P.cmCurve.translatedY ^ e x.2.1 x.1 * taylorAtZero P.cmCurve.θ ^ c x.1 := by
-    have h_eq : ∀ z : ℂ, z + P.cmCurve.t ∉ P.cmCurve.Λ →
-        P.cmCurve.monomialSection (monomialDegrees x) z =
-          P.cmCurve.θ z ^ c x.1 * P.cmCurve.translatedY z ^ e x.2.1 x.1 := by
-      intro z hz
-      rw [P.cmCurve.monomialSection_eq (monomialDegrees x) z hz]
-      dsimp only [monomialDegrees, monomialDeg]
-      rw [zero_mul, add_zero, Nat.sub_add_cancel (he x.2.1 x.1), pow_zero, one_mul]
-    rw [P.cmCurve.taylorAtZero_congr h_eq,
-      taylorAtZero_mul (hθ.fun_pow _) (P.cmCurve.analyticAt_translatedY_zero.fun_pow _),
-      taylorAtZero_pow hθ, taylorAtZero_pow P.cmCurve.analyticAt_translatedY_zero, mul_comm]
-  have h_copy (f : ℂ → ℂ) (i : J) (b : Fin 12) :
-      ((taylorAtZero f).subst (linearSeries (copyForm (i, b, ())))).map ιₚ =
-        rename (copyEmbedding b)
-          ((taylorVia ιₚ f).subst (linearSeries (P.resolutionForms (p := p) D.towerExp w i))) :=
-    map_subst_linearSeries_copy f (fun τ ↦ P.periodFactor D.towerExp * conj (New.Φ τ (w i))) b
-  have h_subst (x : J × Fin 12 × Unit) : PowerSeries.HasSubst (linearSeries (copyForm x)) :=
-    .of_constantCoeff_zero (constantCoeff_linearSeries _)
-  rw [h_taylor, map_prod, prod_prod_type_right, prod_prod_type_right, Fintype.prod_unique,
-    PUnit.default_eq_unit]
-  refine prod_congr rfl fun b _ ↦ ?_
-  rw [thetaProd, map_mul, map_prod, map_prod, ← prod_mul_distrib]
-  refine prod_congr rfl fun i _ ↦ ?_
-  rw [h_monomial (i, b, ()), PowerSeries.subst_mul (h_subst _), PowerSeries.subst_pow (h_subst _),
-    PowerSeries.subst_pow (h_subst _), map_mul, map_pow, map_pow, h_copy, h_copy, map_pow,
-    map_pow]
+  rw [D.twelveTaylor_eq_prod_of_isResolutionProduct hF]
+  exact D.map_prod_subst_monomialSection_eq he
 
 /-- Let `D` be admissible data for the parameters `P`, with CM field `E = D.E` over `K = P.K`, and
 let `F` lie in `𝒮 D.twelveSpace`, the Heisenberg model of functions on the adelic `12 × 1` matrices
