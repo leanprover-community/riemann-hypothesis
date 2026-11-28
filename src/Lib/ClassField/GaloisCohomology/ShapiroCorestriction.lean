@@ -1,9 +1,10 @@
 module
 
-import Mathlib.CategoryTheory.Shift.Basic
-import Mathlib.GroupTheory.IndexNormal
-import Mathlib.Topology.Sheaves.Presheaf
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+import TauCeti.GroupTheory.Coset.Basic
+import TauCeti.GroupTheory.Index.Basic
+import TauCeti.GroupTheory.TransversalWord
+import Mathlib.GroupTheory.IndexNormal
 import Lib.General.Groups.ProfiniteCharacters
 
 /-!
@@ -124,29 +125,16 @@ lemma exists_coset_section :
       (∀ g ∈ U.toSubgroup, s g = 1) ∧
       (∀ x : Γ ⧸ (U : Subgroup Γ), (s x)⁻¹ • x = ⟦1⟧) ∧
       ∀ (x : Γ ⧸ (U : Subgroup Γ)) (g : Γ), (s x)⁻¹ * g * s (g⁻¹ • x) ∈ U.toSubgroup := by
-  -- Correct the chosen representatives by the inverse of the representative of `U`. Membership in
-  -- `U` is tested as fixing the coset `U`.
-  -- (`stabilizer_quotient` is removed from the simp set so that it does not undo the rewrite.)
-  have hq : (mk 1 : Γ ⧸ U.toSubgroup).out ∈ U.toSubgroup := by
-    have h := QuotientGroup.eq.mp (QuotientGroup.out_eq' (mk 1 : Γ ⧸ U.toSubgroup)).symm
-    rwa [inv_one, one_mul] at h
-  refine ⟨fun x ↦ x.out * (mk 1 : Γ ⧸ U.toSubgroup).out⁻¹, ?_, ?_, ?_⟩
-  · intro g hg
-    have hg' : (g : Γ ⧸ U.toSubgroup) = mk 1 := QuotientGroup.eq.mpr (by simpa using hg)
-    simp only [hg', mul_inv_cancel]
-  · intro x
-    rw [← MulAction.Quotient.mk_smul_out]
-    refine QuotientGroup.eq.mpr ?_
-    convert inv_mem hq using 1
-    simp only [smul_eq_mul]
-    group
-  · intro x g
-    have hx : (x.out⁻¹ * g) * (g⁻¹ • x).out ∈ U.toSubgroup := by
-      have h := QuotientGroup.out_eq' (g⁻¹ • x)
-      conv_rhs at h => rw [← QuotientGroup.out_eq' x]
-      simpa [mul_assoc] using QuotientGroup.eq.mp h.symm
-    convert mul_mem (mul_mem hq hx) (inv_mem hq) using 1
-    group
+  -- Correct the chosen representatives by the inverse of the representative of `U` to obtain a
+  -- transversal normalized at `U`; the other clauses follow from `inv_smul_of_mk_eq` and
+  -- `TauCeti.lWord_mem`.
+  let s (x : Γ ⧸ U.toSubgroup) : Γ := x.out * (mk 1 : Γ ⧸ U.toSubgroup).out⁻¹
+  have hq : (mk 1 : Γ ⧸ U.toSubgroup).out ∈ U.toSubgroup := by simp
+  have hs (x : Γ ⧸ U.toSubgroup) : (s x : Γ ⧸ U.toSubgroup) = x := by
+    rw [mk_mul_of_mem _ (inv_mem hq), out_eq']
+  refine ⟨s, fun g hg ↦ ?_, fun x ↦ inv_smul_of_mk_eq (hs x), fun x g ↦ ?_⟩
+  · simp [s, show (g : Γ ⧸ U.toSubgroup) = mk 1 from QuotientGroup.eq.mpr (by simpa using hg)]
+  · exact TauCeti.lWord_def U.toSubgroup s x g ▸ TauCeti.lWord_mem U.toSubgroup s hs x g
 
 /-- Shapiro's lemma in degree zero. A `Γ`-invariant element `F` of the module of functions
 `Γ ⧸ U → M` (an equivariant function) is `x ↦ x.out y` for some `U`-invariant `y` in `M`, where
@@ -390,12 +378,11 @@ lemma mem_of_prime_step (S : AddSubgroup M.H2) {α : M.H2} {W : OpenSubgroup Γ}
       _ = Nat.card (Γ ⧸ W.toSubgroup) := K.card_mul_index
   obtain ⟨L, card_L, K_le⟩ : ∃ L : Subgroup (Γ ⧸ W.toSubgroup), Nat.card L = l ^ (n + 1) ∧ K ≤ L :=
     Sylow.exists_subgroup_card_pow_succ (hp := ⟨l_prime⟩) pow_dvd card_K
-  have index_eq : K.relIndex L = l := by
-    -- Indices multiply along `⊥ ≤ K ≤ L`: `l ^ n * [L : K] = l ^ (n + 1)`.
-    have h_mul : Nat.card K * K.relIndex L = Nat.card L := by
-      simp only [← relIndex_bot_left, relIndex_mul_relIndex ⊥ K L bot_le K_le]
-    rw [card_K, card_L, pow_succ] at h_mul
-    exact Nat.eq_of_mul_eq_mul_left (pow_pos l_prime.pos n) h_mul
+  -- Indices multiply along `⊥ ≤ K ≤ L`: `l ^ n * [L : K] = l ^ (n + 1)`.
+  have index_eq : K.relIndex L = l :=
+    TauCeti.index_eq_of_natCard_eq_mul (pow_pos l_prime.pos n)
+      ((Nat.card_congr (subgroupOfEquivOfLe K_le).toEquiv).trans card_K)
+      (card_L.trans (pow_succ l n))
   -- `K` is normal of index `l` in `L`, so `h_step` lifts the vanishing to `L`, against maximality.
   have h_minFac : l = (Nat.card L).minFac := by simp [card_L, l_prime.pow_minFac]
   have hK_normal : (K.subgroupOf L).Normal :=
