@@ -14,9 +14,10 @@ import New.UpperBound.Divisibility.HeckeEdges
 Let `l` be a place of a marked set `Λ` above a prime `p`, and write `o₀ = D.o₀ p`. This file
 applies the theorem on elementary divisors, `New.FrobeniusCycle.elementary_divisors`, to the
 normalised Hecke operator `New.Data.IsMarked.scaledHeckeOperator` at `l`, acting on the integral
-source forms `New.Data.integralSourceForms`. The a-places that induce `l` or its conjugate form one
-orbit under the place named by `-p ^ o₀` (`New.Data.exists_orbit_of_mem_aPlaces`), where the place
-named by an integer acts on infinite places by multiplication. This orbit gives a Frobenius cycle.
+source forms `New.Data.integralSourceForms`. The a-places that induce `l` or its conjugate
+form one orbit under the `o₀`-th power of the place named by `-p`
+(`New.Data.exists_orbit_of_mem_aPlaces`). Places act by multiplication. This orbit gives a
+Frobenius cycle.
 
 ## Main definitions and results
 
@@ -149,29 +150,26 @@ theorem three_mul_divisorConstant_le {P : Parameters} (D : Data P) {N ℓ : ℕ}
       push_cast
       ring
 
-/-- Let `p` be inert in the imaginary quadratic field of discriminant datum `P.d`
-(`chiK P.d p = -1`), let `o₀` be odd, let `τ` be an a-place and let `N` be the order of the `o₀`-th
-power of the place named by `-p`. Then some injective family `t` of places, indexed modulo `N`, goes
-from each member to the next by multiplication with the place named by `-p ^ o₀` and consists of
-exactly the a-places that induce the same prime as `τ` or its conjugate prime. -/
+/-- For an inert prime `p` and an a-place `τ`, the a-places inducing the same prime as `τ`
+or its conjugate form one orbit. Its step is the `o₀`-th power of the place named by `-p`,
+where `o₀` is the order of `-p` modulo `q₀`. Index the orbit by the integers modulo the order
+of its step. -/
 theorem exists_orbit_of_mem_aPlaces {P : Parameters} {p : ℕ} (D : Data P) [Fact p.Prime]
-    [PadicPlace p]
-    (h_inert : chiK P.d p = -1) (ho₀_odd : Odd (D.o₀ p)) {τ : D.Φ} (hτ : τ ∈ D.aPlaces)
-    [NeZero (orderOf (D.placeOfInt (-p) ^ D.o₀ p))] :
+    [PadicPlace p] (h_inert : chiK P.d p = -1) {τ : D.Φ} (hτ : τ ∈ D.aPlaces) :
     ∃ t : ZMod (orderOf (D.placeOfInt (-p) ^ D.o₀ p)) → D.Φ,
       t.Injective ∧
       (∀ i : ZMod (orderOf (D.placeOfInt (-p) ^ D.o₀ p)),
-        t (i + 1) = D.placeOfInt (-p ^ D.o₀ p) * t i) ∧
+        t (i + 1) = D.placeOfInt (-p) ^ D.o₀ p * t i) ∧
       ∀ σ : D.Φ,
         σ ∈ Set.range t ↔
           σ ∈ D.aPlaces ∧
           (inducedPlace σ = inducedPlace τ ∨ inducedPlace σ = star (inducedPlace τ)) := by
   set o : ℕ := D.o₀ p
   let c : D.Φ := D.placeOfInt (-p) ^ o
+  have : NeZero (orderOf c) := .of_pos (orderOf_pos _)
   refine ⟨fun i ↦ c ^ i.val * τ, fun _ _ ↦ ?_, fun i ↦ ?_, fun σ ↦ ?_⟩
   · simp [c, pow_inj_mod, ← natCast_eq_natCast_iff']
-  · simp [← ho₀_odd.neg_pow, ← placeOfInt_pow, c, _root_.pow_succ', val_add, val_one_eq_one_mod,
-      mul_assoc]
+  · simp [c, _root_.pow_succ', val_add, val_one_eq_one_mod, mul_assoc]
   · -- The places inducing `inducedPlace τ` or its conjugate are the `placeOfInt (-p) ^ i * τ`, and
     -- such a place is an a-place exactly if `o ∣ i`.
     have h_aPlace_iff (i : ℕ) : D.placeOfInt (-p) ^ i * τ ∈ D.aPlaces ↔ o ∣ i := by
@@ -375,7 +373,8 @@ theorem IsMarked.isOntoUpToColength_scaledHeckeOperator {P : Parameters} {p : �
       (∀ i : ZMod N, t (i + 1) = D.placeOfInt (-p ^ D.o₀ p) * t i) ∧
       ∀ σ : D.Φ, σ ∈ Set.range t ↔
         σ ∈ D.aPlaces ∧ (inducedPlace σ = l ∨ inducedPlace σ = star l) := by
-    simpa only [hτl] using D.exists_orbit_of_mem_aPlaces hΛ.isExceptional.chiK_eq_neg_one h_odd hτ
+    simpa only [Parameters.placeOfInt_pow, h_odd.neg_pow, hτl] using
+      D.exists_orbit_of_mem_aPlaces hΛ.isExceptional.chiK_eq_neg_one hτ
   have ht_ind (i : ZMod N) : inducedPlace (t i) = l ∨ inducedPlace (t i) = star l :=
     ((ht_range _).1 ⟨i, rfl⟩).2
   obtain ⟨T, hT_p, hT_o₀, hT_even, hT_ι⟩ :
