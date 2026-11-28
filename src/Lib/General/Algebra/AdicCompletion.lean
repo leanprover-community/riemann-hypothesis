@@ -1,6 +1,7 @@
 module
 
 import TauCeti.RingTheory.AdicCompletion.Pi
+import TauCeti.RingTheory.AdicCompletion.Regular
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.RingTheory.AdicCompletion.Algebra
@@ -397,19 +398,10 @@ lemma isAdicComplete :
 `X`, then it acts injectively on the `n`-adic completion of `X`. -/
 lemma isSMulRegular_completion {n : ℕ} (h_reg : IsSMulRegular X n) :
     IsSMulRegular (AdicCompletion (span {(n : R)}) X) n := by
-  -- Multiplication by `n` is an isomorphism `e` of `X` onto `n X`. On completions it becomes
-  -- the isomorphism induced by `e` followed by the injection of the completion of `n X`.
-  let J : Ideal R := span {(n : R)}
-  have h_range : LinearMap.range (n : Module.End R X) = J ^ 1 • ⊤ := by
-    ext
-    simp [J, Submodule.ideal_span_singleton_smul, Submodule.pointwise_smul_def,
-      Nat.cast_smul_eq_nsmul]
-  let e : X ≃ₗ[R] ↥(J ^ 1 • (⊤ : Submodule R X)) :=
-    .ofInjective (n : Module.End R X) h_reg ≪≫ₗ .ofEq _ _ h_range
-  -- both sides are determined by their effect on Cauchy sequences, where they agree termwise
-  have h_comp : ofPowSMul J X 1 ∘ congr J e = fun x ↦ n • x := map_ext _ fun _ ↦ rfl
-  rw [IsSMulRegular, ← h_comp]
-  exact (ofPowSMul_injective _ 1).comp (congr _ e).injective
+  -- The natural number `n` acts on `X` and on the completion as the ring element `(n : R)`.
+  have h_cast : IsSMulRegular X (n : R) := by
+    simpa [IsSMulRegular, Nat.cast_smul_eq_nsmul] using h_reg
+  simpa [IsSMulRegular, Nat.cast_smul_eq_nsmul] using h_cast.adicCompletion
 
 end Adic
 
