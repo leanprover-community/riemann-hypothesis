@@ -316,7 +316,7 @@ lemma sum_ite_targetParameter_sub_sum_ite_mem_Icc (x : ℤ) :
     D.targetParameter_sub_one_add τ 0
   have h_centre : D.gap ≤ D.liftWeight 1 τ := D.nat_le_of_hasLogBound
   have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-  have h_gap : D.gap = 2 * D.halfGap := rfl
+  have h_gap := D.gap_eq_two_mul_halfGap
   rw [sum_range_succ, sum_range, sum_range, mem_Icc]
   simp only [h_falling, h_rising, sum_ite_lt_sub_two_mul, sum_ite_lt_add_two_mul, h_next]
   omega
@@ -342,7 +342,7 @@ lemma gridParam_interlace (x : ℤ) :
   have h_rising (A : ℤ) (n : ℕ) : ∑ b : Fin n, φ (A + 2 * b) = g n (A + 2 * n - 1) :=
     sum_ite_lt_add_two_mul x A n
   have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-  have h_gap : D.gap = 2 * D.halfGap := rfl
+  have h_gap := D.gap_eq_two_mul_halfGap
   -- the counts on `Y^m_m` and on `Ỹ^m_m`, for a base of `Y` with `r` entries
   let countY (r m : ℕ) : ℤ := ∑ n ∈ range r, φ (2 * D.targetParameter τ n) +
     ∑ l ∈ range m, g D.t (2 * D.liftWeight (l + 1) τ + D.t) + ∑ l ∈ range m,
@@ -443,7 +443,7 @@ lemma halfGap_le_targetParameter_add_liftWeight {p : ℕ} (hp : p < D.posRank j)
   rw [targetParameter_eq]
   have h_large : D.gap ≤ D.liftWeight j τ := D.nat_le_of_hasLogBound
   have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-  have h_gap : D.gap = 2 * D.halfGap := rfl
+  have h_gap := D.gap_eq_two_mul_halfGap
   grind
 
 /-- For `D.posRank j = D.k + j - 1 ≤ p`, the entry `p` of the target parameter lies at least
@@ -454,7 +454,7 @@ lemma targetParameter_add_liftWeight_le_neg_halfGap {p : ℕ} (hp : D.posRank j 
   -- `D.gap = 2 halfGap`.
   rw [posRank] at hp
   have h_k : 0 < D.k := D.k_pos
-  have h_gap : D.gap = 2 * D.halfGap := rfl
+  have h_gap := D.gap_eq_two_mul_halfGap
   have h_above : D.liftWeight j τ + (if j + 1 < p + 2 - D.k then 2 else 1) * D.gap ≤ D.liftWeight
     (p + 2 - D.k) τ :=
     D.liftWeight_add_gap_le τ j (p + 2 - D.k) (by omega)
@@ -522,7 +522,7 @@ private lemma isSeparated_gridCentres_on {P : Parameters} (D : Data P) (τ : D.�
       (D.gap - D.t - 2) := by
   have h_z : z.toNat ≤ 1 := z.toNat_le
   have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-  have h_gap : D.gap = 2 * D.halfGap := rfl
+  have h_gap := D.gap_eq_two_mul_halfGap
   refine ⟨?length_mod_two, ?odd_add_card, ?stem_far, ?block_far⟩
   case length_mod_two =>
     rw [card_stem_gridCentres]
@@ -635,7 +635,7 @@ lemma three_mul_halfGap_le_abs_targetParameter_add_liftWeight {n l : ℕ} (hl : 
     (h_sign : entrySign o j (n + 1 - D.k) ≠ 1) :
     3 * D.halfGap ≤ |D.targetParameter τ n + D.liftWeight (o + l + 1) τ| := by
   have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-  have h_gap : D.gap = 2 * D.halfGap := rfl
+  have h_gap := D.gap_eq_two_mul_halfGap
   have h_ne : n + 1 - D.k ≠ o + l ∧ n + 1 - D.k ≠ o + l + 1 := by grind [entrySign_eq_ite]
   have h_above : n + 2 - D.k < o + l + 1 →
       D.liftWeight (n + 2 - D.k) τ + D.gap ≤ D.liftWeight (o + l + 1) τ := by
@@ -702,7 +702,7 @@ lemma two_mul_gap_le_abs_gridParam_sub {x y : D.GridIndex z i j}
     2 * D.gap ≤ |D.gridParam z o i j τ x - D.gridParam z o i j τ y| := by
   have h_z : z.toNat ≤ 1 := z.toNat_le
   have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-  have h_gap : D.gap = 2 * D.halfGap := rfl
+  have h_gap := D.gap_eq_two_mul_halfGap
   wlog h_neg : D.gridSigns z o i j x ≠ 1 generalizing x y with h_main
   · rw [abs_sub_comm]
     exact h_main h_sign.symm (by grind)
@@ -744,7 +744,7 @@ lemma gridSigns_eq_mul_sign (hj : o + j ≤ D.m) (h_zero : o = 0 ∨ i = 0) (x :
       (D.gridParam z o i j τ x + (D.gridCentres τ z).lowering (gridBlocks o i j)) := by
   have h_z : z.toNat ≤ 1 := z.toNat_le
   have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-  have h_gap : D.gap = 2 * D.halfGap := rfl
+  have h_gap := D.gap_eq_two_mul_halfGap
   rw [gridParam_add_lowering, gridSigns]
   rcases D.gridBlockEquiv x with (⟨n, hn⟩ | ⟨⟨l, hl⟩, b, hb⟩) | ⟨⟨l, hl⟩, b, hb⟩
   all_goals simp only [Sum.elim_inl, Sum.elim_inr, Pi.one_apply]

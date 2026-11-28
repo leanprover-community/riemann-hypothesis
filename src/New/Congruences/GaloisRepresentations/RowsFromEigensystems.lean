@@ -114,7 +114,7 @@ lemma le_natAbs_descentPair_jump_and_le {j : ℕ} (hj : j ∈ D.LiftIndex) (σ :
   obtain ⟨i, hi⟩ : ∃ i : ℕ, q + 2 - D.k = i := ⟨_, rfl⟩
   have h_rank : D.r + 1 = D.k + D.m := D.r_add_one
   have ht_le : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-  have h_gap : D.gap = 2 * D.halfGap := rfl
+  have h_gap := D.gap_eq_two_mul_halfGap
   have hi_bound : D.gap ≤ i * D.gap ∧ i * D.gap ≤ D.m * D.gap :=
     ⟨Nat.le_mul_of_pos_left _ (by omega), Nat.mul_le_mul_right _ (by omega)⟩
   have hj_bound : D.gap ≤ j * D.gap ∧ j * D.gap ≤ D.m * D.gap :=

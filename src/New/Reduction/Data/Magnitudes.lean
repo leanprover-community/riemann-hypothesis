@@ -623,6 +623,9 @@ lemma r_add_six_le_t : D.r + 6 ≤ D.t := by
   rw [t]
   omega
 
+/-- The gap `gap = 2 r ^ 8` is twice the half-gap `halfGap = r ^ 8`. -/
+lemma gap_eq_two_mul_halfGap : D.gap = 2 * D.halfGap := rfl
+
 /-- The number `k + t + 1` is at most the half-gap `halfGap = r ^ 8`. -/
 lemma k_add_t_add_one_le_halfGap : D.k + D.t + 1 ≤ D.halfGap := D.nat_le_of_hasLogBound
 
