@@ -743,19 +743,17 @@ lemma range_sourceFormOfValues {ρ : StdClasses (D.levelX 0) → Gf D.E (D.X 0)}
       ∀ g : Gf D.E (D.X 0), weylGauge D.columnCount (D.lastEntry 0) g (φ.val.val g) ≤ 1 := by
     change φ.val ∈ D.SourceForm ∧ GaugeLe 1 1 φ.val ↔ _
     simp [GaugeLe]
+  have h_rep (φ : D.SourceForm) : φ ∈ D.integralSourceForms ↔
+      ∀ x i, ‖ιₚ (φ.val.val (ρ x) i)‖ ≤ 1 :=
+    (h_mem φ).trans
+      (weylGauge_le_one_iff_forall_rep (fun k ↦ by simp) hρ hρ_int φ)
   refine le_antisymm ?_ fun φ hφ ↦ ?_
-  · -- The gauge of a source form at `η * ρ x * u` equals its gauge at `ρ x`.
-    rintro _ ⟨F, rfl⟩
-    refine (h_mem _).2 fun g ↦ ?_
-    obtain ⟨x, η, u, rfl⟩ := exists_eq_map_mul_rep_mul _ _ hρ g
-    rw [levelSpace_smoothFormRep_apply (sourceFormOfValues hρ F).property, MonoidHom.one_apply,
-      one_smul,
-      weylGauge_mul_of_mem_integralAbove _ (stdLevel_le_localLevel (IsLevel.le u.property)),
-        weylGauge_embFin,
-      weylGauge_le_one_iff _ (hρ_int x), sourceFormOfValues_apply_rep]
-    exact fun i ↦ (F x i).property
+  · rintro _ ⟨F, rfl⟩
+    exact (h_rep _).2 fun x i ↦ by
+      rw [sourceFormOfValues_apply_rep]
+      exact (F x i).property
   · let F (x : StdClasses (D.levelX 0)) (i : WeylIndex (D.X 0) D.columnCount) : embValRing :=
-      ⟨φ.val.val (ρ x) i, (weylGauge_le_one_iff _ (hρ_int x)).1 ((h_mem φ).1 hφ (ρ x)) i⟩
+      ⟨φ.val.val (ρ x) i, (h_rep φ).1 hφ x i⟩
     exact ⟨F, levelSpace_ext_doubleCosets hρ (sourceFormOfValues_apply_rep hρ F)⟩
 
 end Columns

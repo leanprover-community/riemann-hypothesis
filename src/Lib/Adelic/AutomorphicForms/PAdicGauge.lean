@@ -248,6 +248,25 @@ lemma exists_reps_integralAbove (p : ℕ) [Fact p.Prime] :
   -- `γ c * c.out` lies in the double coset of `c.out`.
   exact (c.eq_mk_iff_out.2 (rel_iff.2 ⟨_, ⟨γ c, rfl⟩, 1, K.one_mem, by simp⟩)).symm
 
+open Space in
+/-- For a finite-order level character, integrality can be checked coordinatewise on a system
+of double-coset representatives that are integral above `p`. -/
+lemma weylGauge_le_one_iff_forall_rep [IsLevel K] {p : ℕ} [Fact p.Prime] [PadicPlace p]
+    (hχ : ∀ k : K, IsOfFinOrder (χ k))
+    {r : StdClasses K → Gf E n} (hr : ∀ c, DoubleCoset.mk stdRatPoints K (r c) = c)
+    (hr_int : ∀ c, r c ∈ integralAbove n p)
+    (φ : levelSpace (smoothFormRep stdEmbFin ((stdSpace E n).weightRep κ e)) K χ) :
+    (∀ g : Gf E n, weylGauge κ e g (φ.val.val g) ≤ 1) ↔
+      ∀ c i, ‖ιₚ (φ.val.val (r c) i)‖ ≤ 1 := by
+  refine ⟨fun h c ↦ (weylGauge_le_one_iff _ (hr_int c)).1 (h (r c)), fun h g ↦ ?_⟩
+  -- Transport the gauge to the representative using the two level-form actions.
+  obtain ⟨c, γ, k, rfl⟩ := exists_eq_map_mul_rep_mul _ K hr g
+  have h_norm : ‖ιₚ (χ k)‖ = 1 := (ιₚ.isOfFinOrder (hχ k)).norm_eq_one
+  rw [levelSpace_smoothFormRep_apply φ.property, weylGauge_smul, h_norm, one_mul,
+    weylGauge_mul_of_mem_integralAbove _ (stdLevel_le_localLevel (IsLevel.le k.property)),
+    weylGauge_embFin, weylGauge_le_one_iff _ (hr_int c)]
+  exact h c
+
 variable [HasFiniteType stdRatPoints K] [Fact (χ =ᶠ[nhds 1] 1)]
 
 /-- For a level K (an open subgroup of the stabiliser of the standard lattice) and χ with values of

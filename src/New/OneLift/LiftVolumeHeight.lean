@@ -140,28 +140,14 @@ lemma _root_.New.DescentPair.exists_smul_mem_integralForms_maximal {E r n : Type
   have hx : 0 < ‖ι.ιₚ (φ (s x.1) x.2)‖ := lt_of_lt_of_le (by simpa using hx₁) (h_max x₁)
   have hx_ne : φ (s x.1) x.2 ≠ 0 := by simpa using hx
   have h_smul (c : ℂ) (ψ : O.FormV) (g : Gf E n) : (c • ψ) g = c • ψ g := rfl
-  refine ⟨(φ (s x.1) x.2)⁻¹, inv_ne_zero hx_ne, fun g ↦ ?_, fun α hα ↦ ?_⟩
-  · -- Write `g = γ (s q) k` with `γ` rational and `k` in the level; the gauge is that at `s q`.
-    let q : StdClasses K := DoubleCoset.mk _ _ g
-    let ψ : O.FormV := (φ (s x.1) x.2)⁻¹ • φ
-    obtain ⟨_, ⟨γ, rfl⟩, k, hk, hg⟩ :
-        ∃ γ' ∈ (stdSpace E n).Γf, ∃ k ∈ K, g = γ' * s q * k :=
-      (DoubleCoset.eq ..).1 (hs_mk q)
-    have h_char : ‖ι.ιₚ (O.levelChar ⟨k, hk⟩)‖ = 1 :=
-      (ι.ιₚ.isOfFinOrder (LevelPlaces.isOfFinOrder_level_char _)).norm_eq_one
-    have h_bound (i : WeylIndex n O.columnCount) : ‖ι.ιₚ (ψ (s q) i)‖ ≤ 1 := by
-      simpa [ψ, h_smul, ← div_eq_inv_mul] using (div_le_one hx).2 (h_max (q, i))
-    have h_value : ψ g =
-        O.levelChar ⟨k, hk⟩ • (stdSpace E n).weightRep O.columnCount O.detExp γ (ψ (s q)) := by
-      rw [hg]
-      exact levelSpace_smoothFormRep_apply ψ.property γ (s q) ⟨k, hk⟩
-    calc weylGauge O.columnCount O.detExp g (ψ g)
-      _ = weylGauge O.columnCount O.detExp (s q) (ψ (s q)) := by
-        rw [h_value, weylGauge_smul, h_char, one_mul, hg,
-          weylGauge_mul_of_mem_integralAbove _ (stdLevel_le_localLevel (levelOf_le_stdLevel hk)),
-            weylGauge_embFin]
-      _ ≤ 1 := (weylGauge_le_one_iff _ (hs_int q)).2 h_bound
-  · simpa [h_smul, hx_ne] using (weylGauge_le_one_iff _ (hs_int x.1)).1 (hα (s x.1)) x.2
+  have h_rep (ψ : O.FormV) : ψ ∈ integralForms ι ↔
+      ∀ q i, ‖ι.ιₚ (ψ (s q) i)‖ ≤ 1 :=
+    weylGauge_le_one_iff_forall_rep LevelPlaces.isOfFinOrder_level_char hs_mk hs_int
+      ⟨ψ.val, ψ.property⟩
+  refine ⟨(φ (s x.1) x.2)⁻¹, inv_ne_zero hx_ne, (h_rep _).2 ?_, fun α hα ↦ ?_⟩
+  · intro q i
+    simpa [h_smul, ← div_eq_inv_mul] using (div_le_one hx).2 (h_max (q, i))
+  · simpa [h_smul, hx_ne] using (h_rep _).1 hα x.1 x.2
 
 section Operator
 
