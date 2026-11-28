@@ -242,7 +242,7 @@ lemma riemann_relation {p : K → 𝓞 E × 𝓞 E} (hp : IsRiemannTuple p D)
   have h_le : x.latticeOver D.rTorsion ≤ x.latticeOver D.lagrangian :=
     x.latticeOver_mono D.torsion_mem_lagrangian
   have h_dual : (D.paddedNorm • x.automorphyForm).dualLattice (L := x.latticeOver D.rTorsion) =
-    x.latticeOver D.dualTorsion := by
+      x.latticeOver D.dualTorsion := by
     rw [← x.dualLattice_periodLattice]
     refine le_antisymm (dualLattice_nsmul_le hr fun _ ↦ (x.nsmul_mem_latticeOver hr).mp) ?_
     intro u hu l hl
@@ -269,16 +269,14 @@ lemma riemann_relation {p : K → 𝓞 E × 𝓞 E} (hp : IsRiemannTuple p D)
       thetaShift_of_mem (x.thetaCoord_mem_thetaSpace_lagrangian _) (h_mem k)]
     simp [field, thetaShift_apply, exp_add, exp_neg]
   let pt (s : D.dualTorsion) : (D.paddedNorm • x.automorphyForm).dualLattice
-    (L := x.latticeOver D.rTorsion) :=
+      (L := x.latticeOver D.rTorsion) :=
     ⟨x.torsionLift s, h_dual.ge (x.torsionLift_mem_latticeOver s)⟩
   -- Adding `u` permutes the lifts `pt s` modulo `x.latticeOver D.rTorsion`: `u` is the image of a
   -- rational vector `y`, and `s` goes to the class of `y` plus `s`.
   have h_perm (u : (D.paddedNorm • x.automorphyForm).dualLattice (L := x.latticeOver D.rTorsion)) :
       ∃ e : D.dualTorsion ≃ D.dualTorsion, ∀ s : D.dualTorsion,
         ↑(u + pt s - pt (e s)) ∈ x.latticeOver D.rTorsion := by
-    obtain ⟨y, hy, hyu⟩ : ∃ y : D.Index → E,
-      frameTorsionClass g y ∈ D.dualTorsion ∧ x.periodPoint y = u :=
-      h_dual.le u.property
+    obtain ⟨y, hy, hyu⟩ := h_dual.le u.property
     use .addLeft ⟨_, hy⟩
     have h_class_zero (a : AdelicTorsion E D.Index) :
         frameTorsionClass g (y + ratLift g a - ratLift g (frameTorsionClass g y + a)) = 0 := by simp
@@ -298,26 +296,21 @@ lemma riemann_relation {p : K → 𝓞 E × 𝓞 E} (hp : IsRiemannTuple p D)
     exact h_datum.sum_shift_mul_shift (hp := x.isPosRiemann.nsmul hr) D.dualTorsion pt h_perm
       ⟨_, h_theta hq ht'⟩ ⟨_, h_theta hp ht⟩ 0 z
   rw [← h_appell]
+  dsimp only [pt]
   congr with s
   -- The factors for `-s` and `s` cancel: the multiplier at the lift of `s`, written as an
   -- exponential, has `2 r`-th power `1` (`PeriodMap.riemannPhase_rescaledBeta_eq`).
-  have h_phase : x.automorphyForm.riemannPhase (x.intAction D.rescaledBeta (x.torsionLift s))
-        (x.periodPoint (ratLift g s)) =
-      x.automorphyForm.riemannPhase (x.periodPoint (ratLift g s))
-        ((Nat.card D.dualTorsion / 2) • x.torsionLift s) :=
-    x.riemannPhase_rescaledBeta_eq (x.torsionLift_mem_latticeOver s)
-      (x.torsionLift_mem_latticeOver s) rfl
   have h_multiplier_sq :
       (cexp (Real.pi * I *
         (x.automorphyForm.riemannForm (x.intAction D.rescaledBeta
           (x.realEquiv (toRealVectors (ratLift g s))))
           (x.realEquiv (toRealVectors (ratLift g s))) : ℂ)) ^ D.paddedNorm) ^ 2 = 1 := by
     simpa [two_mul, add_mul, sq, torsionLift, periodPoint, canonicalMultiplier, exp_add, mul_pow]
-      using congrArg (fun c : ℂ ↦ c ^ D.paddedNorm) h_phase
+      using congrArg (fun c : ℂ ↦ c ^ D.paddedNorm)
+        (x.riemannPhase_rescaledBeta_eq (x.torsionLift_mem_latticeOver s)
+          (x.torsionLift_mem_latticeOver s) rfl)
   have h_neg : -x.torsionLift s = x.periodPoint (-ratLift g s) := by simp [torsionLift, periodPoint]
   have h_neg_s : (⟨-s.val, neg_mem s.property⟩ : D.dualTorsion) = -s := rfl
-  change (D.paddedNorm • x.automorphyForm).thetaShift (-x.torsionLift s) (x.thetaProduct p μ w) 0 *
-      (D.paddedNorm • x.automorphyForm).thetaShift (x.torsionLift s) (x.thetaProduct q μ' w) z = _
   -- Translation by `∓` the lift of `s` shifts the indices (`thetaShift_periodPoint_thetaProduct`).
   rw [h_neg, torsionLift, x.thetaShift_periodPoint_thetaProduct (y := -ratLift g s) (by simp) hp,
     x.thetaShift_periodPoint_thetaProduct (y := ratLift g s) (by simp) hq]
@@ -332,15 +325,14 @@ private lemma valuation_thetaCoord_le_of_le_inf {s u o : D.dualTorsion}
     (h_best : v (x.thetaCoord o 0) ≤ v (x.thetaCoord (s - u) 0) ⊓ v (x.thetaCoord (-u) 0)) :
     ∀ i ∈ [u, -u, s - u], ∀ t : D.dualTorsion, v (x.thetaCoord t 0) ≤ v (x.thetaCoord i 0) := by
   -- The symmetry `PeriodMap.exists_thetaCoord_sign_smul`, used twice at `0`, carries the bound
-  -- from `-u` to `u`.
+  -- from `-u` to `u`; for `-u` and `s - u` the bound is `h_best` with `ho`.
   obtain ⟨η, hη⟩ := x.exists_thetaCoord_sign_smul (-1)
   have h_symm (t : D.dualTorsion) : x.thetaCoord t 0 = η * x.thetaCoord (-t) 0 := by
     simpa using hη 0 t
-  -- For `-u` and `s - u` the bound is `h_best` with `ho`.
-  have h_rest : ∀ i ∈ [-u, s - u], ∀ t : D.dualTorsion,
-    v (x.thetaCoord t 0) ≤ v (x.thetaCoord i 0) := by
-    grind
-  refine List.forall_mem_cons.mpr ⟨fun t ↦ ?_, h_rest⟩
+  refine List.forall_mem_cons.mpr ⟨fun t ↦ ?_,
+    List.forall_mem_cons.mpr ⟨fun t ↦ (ho t).trans (h_best.trans inf_le_right),
+      List.forall_mem_cons.mpr ⟨fun t ↦ (ho t).trans (h_best.trans inf_le_left),
+        fun _ h ↦ nomatch h⟩⟩⟩
   calc v (x.thetaCoord t 0) = v η * v (x.thetaCoord (-t) 0) := by rw [h_symm, map_mul]
     _ ≤ v η * v (x.thetaCoord (-u) 0) := by grw [ho (-t), h_best.trans inf_le_right]
     _ = v (x.thetaCoord u 0) := by rw [h_symm u, map_mul]
@@ -383,46 +375,36 @@ private lemma mul_sizeAt_le_inf_mul_thetaNorm_pow [Fintype D.dualTorsion] {s o u
   -- product of the `θ_{μ i}`.
   have h_sum : ∑ i : κ, star (oneZero i).1 • μ i = ∑ i : κ, star (oneZero i).1 • const κ o i := by
     simp [oneZero, κ, μ, hr_eq]
-  let term (t : D.dualTorsion) : ℂ :=
-    x.thetaProduct oneZero (μ - (fun c : 𝓞 E × 𝓞 E ↦ c.1 • t) ∘ oneZero) 0 0 *
-      x.thetaProduct oneZero (const κ o + (fun c : 𝓞 E × 𝓞 E ↦ c.1 • t) ∘ oneZero) 0 z
-  have h_rel :
-      (Fintype.card D.dualTorsion : ℂ) * x.thetaProduct oneZero (const κ o) 0 0 *
-          x.thetaProduct oneZero μ 0 z = (D.rTorsion.relIndex D.dualTorsion).sqrt * ∑ t :
-            D.dualTorsion, term t :=
-    x.riemann_relation (w := 0) h_one h_sum h_one rfl z
   have h_bound :
-      v (card D.dualTorsion * x.thetaProduct oneZero (const κ o) 0 0 * x.thetaProduct oneZero μ 0 z)
-        ≤
+      v (card D.dualTorsion * x.thetaProduct oneZero (const κ o) 0 0 *
+          x.thetaProduct oneZero μ 0 z) ≤
         best * top ^ (k + 2) * (v (exp (x.automorphyForm z z / 2)) * ρ) ^ D.paddedNorm := by
-    -- Bound each term on the right of `h_rel` (ultrametric inequality): one constant is at most
-    -- `best`, the others at most `top`. `v.leSubmodule c` is the set of `y` with `v y ≤ c`.
-    rw [h_rel]
-    suffices h_terms : ∑ t : D.dualTorsion, term t ∈
-          v.leSubmodule (best * top ^ (k + 2) * (v (exp (x.automorphyForm z z / 2)) * ρ) ^
-            D.paddedNorm) from
-      (v.leSubmodule _).smul_mem (Nat.cast (D.rTorsion.relIndex D.dualTorsion).sqrt) h_terms
-    refine sum_mem fun t _ ↦ ?_
+    -- Bound each term on the right of Riemann's relation (ultrametric inequality): one constant is
+    -- at most `best`, the others at most `top`. `v.leSubmodule c` is the set of `y` with `v y ≤ c`.
+    rw [x.riemann_relation (w := 0) h_one h_sum h_one rfl z]
+    change _ ∈ v.leSubmodule _
+    refine Submodule.smul_mem _ (Nat.cast (D.rTorsion.relIndex D.dualTorsion).sqrt)
+      (sum_mem fun t _ ↦ ?_)
     have h_pair : v (x.thetaCoord (s - t) 0) * v (x.thetaCoord (-t) 0) ≤ best * top := by
       grw [← min_mul_max, hu t, max_le (ho (s - t)) (ho (-t))]
     calc v _ = v (x.thetaCoord (D.paddedNorm • o - s - t) 0) *
           (v (x.thetaCoord (s - t) 0) * v (x.thetaCoord (-t) 0) * v (x.thetaCoord (-t) 0) ^ k) *
           v (x.thetaCoord (o + t) z) ^ D.paddedNorm := by
-            simp [term, oneZero, κ, μ, hr_eq, thetaProduct]
-      _ ≤ top * (best * top * top ^ k) * (v (exp (x.automorphyForm z z / 2)) * ρ) ^
-        D.paddedNorm := by
+            simp [oneZero, κ, μ, hr_eq, thetaProduct]
+      _ ≤ top * (best * top * top ^ k) *
+          (v (exp (x.automorphyForm z z / 2)) * ρ) ^ D.paddedNorm := by
         grw [h_pair, ho (D.paddedNorm • o - s - t), ho (-t), h_le]
       _ = _ := by ring
   -- Compare `h_bound` with the goal: with `e = v (exp (B(z, z) / 2))`, the product for `μ` has
   -- valuation `φ z * e ^ r`, and the constant factor has valuation `top ^ r`.
-  have h_φ : φ z * v (exp (x.automorphyForm z z / 2)) ^ D.paddedNorm = v
-    (x.thetaProduct oneZero μ 0 z) := by
+  have h_φ : φ z * v (exp (x.automorphyForm z z / 2)) ^ D.paddedNorm =
+      v (x.thetaProduct oneZero μ 0 z) := by
     simp only [φ, Pi.mul_apply, sizeAt_pow, Pi.pow_apply]
     simp [sizeAt, thetaProduct, oneZero, κ, μ, hr_eq, thetaShift_apply, exp_neg, field, pow_add,
       mul_pow]
   have h_const :
-      v ((Fintype.card D.dualTorsion : ℂ) * x.thetaProduct oneZero (const κ o) 0 0) = top ^
-        D.paddedNorm := by
+      v ((Fintype.card D.dualTorsion : ℂ) * x.thetaProduct oneZero (const κ o) 0 0) =
+        top ^ D.paddedNorm := by
     simp [thetaProduct, oneZero, κ, hv, hr_eq, top]
   have h_e_pos : 0 < v (exp (x.automorphyForm z z / 2)) := by simp [Valuation.pos_iff, exp_ne_zero]
   have h_top_pos : 0 < top := by simpa [top, Valuation.pos_iff] using h_top
@@ -435,15 +417,15 @@ private lemma mul_sizeAt_le_inf_mul_thetaNorm_pow [Fintype D.dualTorsion] {s o u
         ring
     _ ≤ best * top ^ (k + 2) * (v (exp (x.automorphyForm z z / 2)) * ρ) ^ D.paddedNorm := h_bound
     _ = top ^ (k + 2) * v (exp (x.automorphyForm z z / 2)) ^ D.paddedNorm *
-      (best * ρ ^ D.paddedNorm) := by ring
+          (best * ρ ^ D.paddedNorm) := by ring
 
 /-- Under good reduction at `v` (`h_good`, see `New.ThetaTori.HasGoodReduction`) and
 `v |T| = 1` (`hv`), for every `s` in `T = D.dualTorsion` there is `u` such that each of the theta
 constants `θ_u(0)`, `θ_{-u}(0)`, `θ_{s-u}(0)` has the largest valuation among all `θ_t(0)`. So `s`
 is both a sum `u + (s - u)` and a difference `(s - u) - (-u)` of such indices. -/
-lemma exists_forall_valuation_thetaCoord_zero_le (h_good : HasGoodReduction x.automorphyForm
-  x.multiplier v D.paddedNorm) (hv : v (Nat.card D.dualTorsion) = 1)
-    (s : D.dualTorsion) :
+lemma exists_forall_valuation_thetaCoord_zero_le
+    (h_good : HasGoodReduction x.automorphyForm x.multiplier v D.paddedNorm)
+    (hv : v (Nat.card D.dualTorsion) = 1) (s : D.dualTorsion) :
     ∃ u : D.dualTorsion, ∀ i ∈ [u, -u, s - u], ∀ t : D.dualTorsion,
       v (x.thetaCoord t 0) ≤ v (x.thetaCoord i 0) := by
   -- Let `top` be the largest of the `v (θ_t 0)`, taken at `o`, and `best` the largest of the minima
@@ -465,7 +447,7 @@ lemma exists_forall_valuation_thetaCoord_zero_le (h_good : HasGoodReduction x.au
   have h_top : x.thetaCoord o 0 ≠ 0 := fun h_zero ↦ x.thetaCoord_vector_ne_zero 0 <|
     funext fun t ↦ by simpa [top, h_zero] using ho t
   have h_size_mem (t : D.dualTorsion) : x.automorphyForm.sizeAt v (x.thetaCoord t) ∈
-    x.automorphyForm.sizes v :=
+      x.automorphyForm.sizes v :=
     .of_mem_thetaSpace h_good.toIsAmpleType (x.thetaCoord_mem_thetaSpace t)
   have h_le (t : D.dualTorsion) (z : torsionPoints x.periodLattice) :
       v (x.thetaCoord t z) ≤ v (exp (x.automorphyForm z z / 2)) * ρ := by
@@ -476,8 +458,7 @@ lemma exists_forall_valuation_thetaCoord_zero_le (h_good : HasGoodReduction x.au
     (x.thetaCoord (D.paddedNorm • o - s)) *
     ((k + 1) • x.automorphyForm).sizeAt v (x.thetaCoord 0 ^ (k + 1))
   have h_sz_mul : x.automorphyForm.sizeAt v (x.thetaCoord s) * x.automorphyForm.sizeAt v
-    (x.thetaCoord (D.paddedNorm • o - s)) ∈
-      (x.automorphyForm + x.automorphyForm).sizes v := by
+      (x.thetaCoord (D.paddedNorm • o - s)) ∈ (x.automorphyForm + x.automorphyForm).sizes v := by
     simpa [Pi.mul_def] using mul_shift_mem_sizes (h_size_mem s) (h_size_mem (D.paddedNorm • o - s))
       0
   have h_norm : iSup φ = ρ ^ D.paddedNorm := by
@@ -487,9 +468,8 @@ lemma exists_forall_valuation_thetaCoord_zero_le (h_good : HasGoodReduction x.au
     grind [thetaNorm_pow, thetaNorm_thetaCoord]
   -- It suffices to bound the values of `φ`: take the supremum and cancel `ρ ^ r`.
   suffices h_value : ∀ z : torsionPoints x.periodLattice, top * φ z ≤ best * ρ ^ D.paddedNorm by
-    have h_sup : top * ρ ^ D.paddedNorm ≤ best * ρ ^ D.paddedNorm := by
-      simpa [h_norm] using mul_iSup_le h_value
-    exact le_of_mul_le_mul_right h_sup (pow_pos hρ D.paddedNorm)
+    exact le_of_mul_le_mul_right (by simpa [h_norm] using mul_iSup_le h_value)
+      (pow_pos hρ D.paddedNorm)
   exact x.mul_sizeAt_le_inf_mul_thetaNorm_pow hr_eq (by simpa using hv) ho hu h_top h_le
 
 /-- Along a surjective ring map `φ : A →+* B`, every form of degree `d` over `B` is the image of a
@@ -554,9 +534,7 @@ private lemma isSmallForm_iff_forall_eval_map_eq_zero [Field k] {φ : v.valuatio
   -- By homogeneity the values of the forms at `p b` are integral coordinates of their values at
   -- `a b`; the power of a unit coordinate is a unit.
   have h_aff (b : I) : IsIntegralCoords (fun g ↦ ev g (a b)) fun g ↦ g.val.eval (p b) := by
-    obtain ⟨s, hs_eq, i, hi_unit⟩ : ∃ s : ℂ,
-      (∀ t : D.dualTorsion, (p b t : ℂ) = x.thetaCoord t (a b) / s) ∧
-        ∃ i : D.dualTorsion, v (p b i) = 1 := hp b
+    obtain ⟨s, hs_eq, i, hi_unit⟩ := hp b
     refine ⟨s ^ D.paddedNorm ^ j, fun g ↦ ?_, ⟨_, isHomogeneous_X_pow i _⟩, by simp [hi_unit]⟩
     simpa [ev, eval_eq, aeval_def, eval₂_eq, hs_eq, div_eq_inv_mul] using
       g.property.eval₂_const_mul (algebraMap ..) _ s⁻¹
@@ -586,14 +564,11 @@ private lemma isSmallForm_iff_forall_eval_map_eq_zero_of_ne_zero [Field k]
   -- Multiplying `f` by `X c ^ e` to reach degree `r ^ (j + 1)` multiplies norm and radius by the
   -- same factor. In that degree all points of `V` may be used, and `X c ^ e` vanishes exactly
   -- where the coordinate `c` does.
-  obtain ⟨e, he_pos, h_deg⟩ : ∃ e > 0, D.paddedNorm ^ (j + 1) = D.paddedNorm ^ j + e :=
-    lt_iff_exists_add.mp (Nat.pow_lt_pow_succ (n := j) h_good.one_lt)
+  obtain ⟨e, he_pos, h_deg⟩ := lt_iff_exists_add.mp (Nat.pow_lt_pow_succ (n := j) h_good.one_lt)
   have hρ : 0 < x.automorphyForm.thetaNorm v (x.thetaCoord c) :=
     h_good.thetaNorm_pos (x.thetaCoord_mem_thetaSpace c) (x.thetaCoord_ne_zero c)
-  have h_hom : IsHomogeneous (f.val * X c ^ e) (D.paddedNorm ^ (j + 1)) := by
-    simpa [h_deg] using f.property.mul (isHomogeneous_X_pow c e)
   let f' : homogeneousSubmodule D.dualTorsion v.valuationSubring (D.paddedNorm ^ (j + 1)) :=
-    ⟨f.val * X c ^ e, h_hom⟩
+    ⟨f.val * X c ^ e, by simpa [h_deg] using f.property.mul (isHomogeneous_X_pow c e)⟩
   have h_mul : (D.paddedNorm ^ (j + 1) • x.automorphyForm).thetaNorm v
     (aeval x.thetaCoord (f.val * X c ^ e)) =
       (D.paddedNorm ^ j • x.automorphyForm).thetaNorm v (aeval x.thetaCoord f.val) *
