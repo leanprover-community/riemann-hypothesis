@@ -458,7 +458,8 @@ lemma exists_tameChar_invAvatar_eq {I : Finset (FinPlace D.E)} (hI : IsAuxiliary
     simp [η', h, η_rat]
   have int_le : integralU1 I ≤ η'.ker := fun u ⟨hu, hu_red⟩ ↦
     η_int _ (idelesUnitOff_mono bot_le (idelesUnitOff_empty.ge ⟨hu, star_mem_Ô hu⟩))
-      fun w hw ↦ residue_eq_iff_valuation_sub_lt_one.1 (hu_red w hw.1)
+      fun w hw ↦
+        (residue_eq_iff_valuation_sub_lt_one (a := ⟨_, mem_Ô.1 hu w⟩) (b := 1)).1 (hu_red w hw.1)
   obtain ⟨μ, hμ⟩ := AutChar.exists_mem_tameChars
     (MonoidHom.comp ιℓ.symm (QuotientGroup.lift _ η' (sup_le rat_le int_le)))
   refine ⟨tameCharOfAuxiliary I hI μ⁻¹, rfl, MonoidHom.ext fun g ↦ ?_⟩
