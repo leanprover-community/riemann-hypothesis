@@ -475,7 +475,6 @@ entries in row e_a and column x_i or e*_b with b > a, together with the imaginar
 theorem injective_freeEntries_besselU0 :
     Injective fun u : (𝔰.middleGram (1 : ℂ)).besselU0 ↦
       freeEntries IsFreeEntry₀ (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) := by
-  classical
   obtain ⟨E, c, -, -, h_coord⟩ := exists_freeEntries_unipotentOf_eq_shear (𝔰 := 𝔰)
   rintro ⟨u, hu⟩ ⟨v, hv⟩ huv
   -- Every element of 𝖴⁰ is some `unipotentOf q`, and `E` and the shear are injective.
