@@ -157,10 +157,9 @@ fixed by raising to the power `q ^ j`, with `q = T.q = P ^ N`. -/
 lemma FrobeniusCycle.embedding_pow_q_pow (T : FrobeniusCycle N W K) [CharP K T.p]
     (s : ZMod N) (y : W) (j : ℕ) :
     T.embedding s y ^ T.q ^ j = T.embedding s y := by
-  have h_dvd := T.frobenius_pow_congr (N * j) s y
-  rw [show s + (N * j : ℕ) = s by simp [ZMod.natCast_self], CharP.cast_eq_zero K T.p,
-    zero_dvd_iff, sub_eq_zero] at h_dvd
-  rw [q, ← pow_mul, ← h_dvd]
+  symm
+  simpa [q, ← pow_mul, mul_assoc, ZMod.natCast_self, CharP.cast_eq_zero K T.p, sub_eq_zero] using
+    T.frobenius_pow_congr (N * j) s y
 
 /-- In characteristic `T.p`, the linear substitution `T.polyAction g` by which a matrix `g` acts on
 polynomials over `K` commutes with the substitution `x ↦ x ^ m` of the variables, for every power
@@ -292,11 +291,10 @@ lemma FrobeniusCycle.polyAction_powerPacking (T : FrobeniusCycle N W K) {n m j :
       ∑ u : Fin k × ZMod N → Fin m, ∑ δ : Exponents N k n,
         monomial (m • exponentOf δ) ((T.letterRep n g *ᵥ F u) δ) *
           T.polyAction g (monomial (residueExponent a u) 1) := by
-  have h_comm (f : MvPolynomial (Fin k × ZMod N) K) :
-      T.polyAction g (expand m f) = expand m (T.polyAction g f) :=
-    AlgHom.congr_fun (T.polyAction_commute_expand hm g).eq f
-  simp only [powerPacking_apply, map_sum, map_mul, h_comm, polyAction_polyOfCoeffs,
-    expand_polyOfCoeffs (m := m) (G := T.letterRep n g *ᵥ _), Finset.sum_mul]
+  have h_comm : ∀ f, T.polyAction g (expand m f) = expand m (T.polyAction g f) :=
+    AlgHom.congr_fun (T.polyAction_commute_expand hm g).eq
+  rw [powerPacking_apply, map_sum]
+  simp_rw [map_mul, h_comm, polyAction_polyOfCoeffs, expand_polyOfCoeffs, Finset.sum_mul]
 
 /-- Let `T` be a Frobenius cycle over a field `K` of characteristic `T.p`, and let `m` be a power of
 the number `T.q` of elements of the residue field of `W`. The forms `F u`, of degree `n` in each
@@ -429,26 +427,26 @@ lemma FrobeniusCycle.coeff_polyAction_of_mem_parahoric (T : FrobeniusCycle N W K
       rw [h_monomial, coeff_monomial, coeff_monomial]
       split_ifs with h_eq <;> simp [h_eq]
     | add f₁ f₂ ih₁ ih₂ => simp [ih₁, ih₂, mul_add]
-  have h_level (u : Fin k × ZMod N) :
-      diag (X u) ∈ gaussFiltration (adicFiltration T.sqrtPrime) height (height u) := by
-    rw [aeval_X, C_mul_X_eq_monomial]
-    exact monomial_mem_gaussFiltration
-      (mem_adicFiltration_of_nonpos fun _ ↦ by simp [weight_single])
-  -- The gain `1` is weakened to the gain `20⁻¹` of `algHom_sub_mem_of_mem_gaussFiltration`.
-  have h_higher (u : Fin k × ZMod N) : T.polyAction g (X u) - diag (X u) ∈
-      gaussFiltration (adicFiltration T.sqrtPrime) height (height u + 20⁻¹) := by
-    simpa [diag] using IsRealFiltration.antitone (by linarith)
-      (T.polyAction_X_sub_mem_gaussFiltration hg h_height u)
   have h_gain : T.polyAction g f - diag f ∈
-      gaussFiltration (adicFiltration T.sqrtPrime) height (weight height α + 20⁻¹) :=
-    (algHom_sub_mem_of_mem_gaussFiltration diag _ hf h_level _ h_higher C_mem_gaussFiltration).right
+      gaussFiltration (adicFiltration T.sqrtPrime) height (weight height α + 20⁻¹) := by
+    have h_diag_X (u : Fin k × ZMod N) :
+        diag (X u) ∈ gaussFiltration (adicFiltration T.sqrtPrime) height (height u) := by
+      rw [aeval_X, C_mul_X_eq_monomial]
+      exact monomial_mem_gaussFiltration
+        (mem_adicFiltration_of_nonpos fun _ ↦ by simp [weight_single])
+    have h_sub_X (u : Fin k × ZMod N) :
+        T.polyAction g (X u) - diag (X u) ∈
+          gaussFiltration (adicFiltration T.sqrtPrime) height (height u + 20⁻¹) := by
+      -- The gain `1` is weakened to the gain `20⁻¹` of `algHom_sub_mem_of_mem_gaussFiltration`.
+      simpa [diag] using IsRealFiltration.antitone (by linarith)
+        (T.polyAction_X_sub_mem_gaussFiltration hg h_height u)
+    exact (algHom_sub_mem_of_mem_gaussFiltration diag _ hf h_diag_X _ h_sub_X
+      C_mem_gaussFiltration).2
   -- As `T.sqrtPrime = 0`, a coefficient of positive order vanishes.
-  have sqrtPrime_eq_zero : T.sqrtPrime = 0 := (pow_eq_zero_iff two_ne_zero).1
-    (T.sqrtPrime_sq.trans (CharP.cast_eq_zero K _))
-  have h_dvd : T.sqrtPrime ^ ⌈weight height α + 20⁻¹ - weight height α⌉₊ ∣
-      (T.polyAction g f - diag f).coeff α :=
+  have sqrtPrime_eq_zero : T.sqrtPrime = 0 :=
+    (pow_eq_zero_iff two_ne_zero).1 (T.sqrtPrime_sq.trans (CharP.cast_eq_zero K _))
+  simpa [sqrtPrime_eq_zero, sub_eq_zero, h_diag] using
     mem_adicFiltration_iff.1 (mem_gaussFiltration_iff.1 h_gain α)
-  simpa [sqrtPrime_eq_zero, sub_eq_zero, h_diag] using h_dvd
 
 /-- Let `L = levi W τ` be the group of matrices whose entry `(b, c)` vanishes for `τ b ≠ τ c`, and
 let `R` represent the right cosets in `L` of its intersection with the lower Iwahori subgroup
@@ -508,21 +506,16 @@ lemma FrobeniusCycle.defectWeight_dotProduct_permStep (T : FrobeniusCycle N W K)
   have hq : ((T.p : ℝ) ^ T.frobExp) ^ N - 1 ≠ 0 := mod_cast (sub_pos.2 T.one_lt_q).ne'
   let telescope (s : ZMod N) : ℝ :=
     T.P ^ (1 + (s - i).val) * (ν (a, s + 1) - ν (a', s + 1)) / (T.q - 1)
-  have h_prev (s : ZMod N) : telescope (s - 1) =
-      T.P ^ (if s = i then N else (s - i).val) * (ν (a, s) - ν (a', s)) / (T.q - 1) := by
-    simp [telescope, one_add_val_sub_one_sub]
   have h_letter (s : ZMod N) :
       ∑ b : Fin k, T.defectWeight i a a' (b, s) * permStep T.isEven T.P 1 ν (b, s) =
         telescope (s - 1) - telescope s +
         if s = i then permStep T.isEven T.P 1 ν (T.rootVar a a' i) - (ν (a, i) - ν (a', i))
         else 0 := by
-    rw [h_prev]
-    simp only [telescope, defectWeight, rootVar, one_add_val_sub_one_sub]
+    simp only [telescope, defectWeight, rootVar, one_add_val_sub_one_sub, sub_add_cancel]
     -- Only the rows a and a' contribute; the cases are s = i or not, and the parity of s.
     rcases eq_or_ne s i with rfl | hs <;> by_cases h_even : T.isEven s <;>
       simp [div_eq_mul_inv, sub_mul, *] <;> field
-  have h_circle : ∑ s : ZMod N, telescope (s - 1) = ∑ s : ZMod N, telescope s :=
-    (Equiv.subRight 1).sum_comp telescope
+  have h_circle : ∑ s, telescope (s - 1) = ∑ s, telescope s := (Equiv.subRight 1).sum_comp _
   rw [dotProduct, Fintype.sum_prod_type_right, sum_congr rfl fun s _ ↦ h_letter s]
   simp [sum_add_distrib, h_circle, -permStep_apply]
 
@@ -555,7 +548,8 @@ lemma FrobeniusCycle.exists_mem_defectCone_sum_le (T : FrobeniusCycle N W K) (a 
     · simp [μ, h_gt.ne', show ¬b' ≤ a by omega, h_gt.not_ge]
   have hσ (b : Fin k) (i : ZMod N) :
       permStep T.isEven T.P 1 ν (b, i) = if T.isEven i then (T.P ^ 2 - 1) * μ b else 0 := by
-    by_cases h_even : T.isEven i <;> simp [ν, T.isEven_succ, h_even]; ring
+    by_cases h_even : T.isEven i <;> simp [ν, T.isEven_succ, h_even]
+    ring
   refine ⟨permStep T.isEven T.P 1 ν, fun i b b' hb ↦ ?_, fun (b, i) ↦ ?_, fun (b, i) ↦ ?_,
     fun s ↦ ?_⟩
   · -- The defects are `P ^ 2 μ b' - μ b` at even and `P (μ b' - μ b)` at odd letters.
@@ -587,16 +581,13 @@ lemma FrobeniusCycle.smul_add_mem_defectCone_inter_degreeSlab (T : FrobeniusCycl
     (hβ : β ∈ T.defectCone a h ∩ degreeSlab k fun _ : ZMod N ↦ d) :
     h • σ + β ∈
       T.defectCone a 0 ∩ degreeSlab k fun s : ZMod N ↦ d + ∑ b : Fin k, (h • σ) (b, s) := by
-  obtain ⟨h_cone, h_nonneg, h_deg⟩ := hβ
-  refine ⟨fun i b b' hb ↦ ?_, add_nonneg (smul_nonneg h_factor hσ_nonneg) h_nonneg, fun s ↦ ?_⟩
-  · have hβ_le : T.defectWeight i b b' ⬝ᵥ β ≤ if b = a then h else 0 := h_cone i b b' hb
-    have hσ_le : h * T.defectWeight i b b' ⬝ᵥ σ ≤ h * if b = a then -1 else 0 :=
-      mul_le_mul_of_nonneg_left (hσ_cone i b b' hb) h_factor
+  refine ⟨fun i b b' hb ↦ ?_, add_nonneg (smul_nonneg h_factor hσ_nonneg) hβ.2.1, fun s ↦ ?_⟩
+  · have hβ_le := hβ.1 i b b' hb
+    have hσ_le := mul_le_mul_of_nonneg_left (hσ_cone i b b' hb) h_factor
     rw [dotProduct_add, dotProduct_smul, smul_eq_mul, ite_self]
     split_ifs at hβ_le hσ_le <;> linarith
-  · obtain ⟨h_low, h_up⟩ := h_deg s
-    simp only [Pi.add_apply, sum_add_distrib]
-    constructor <;> linarith
+  · simp only [Pi.add_apply, sum_add_distrib, Set.mem_Icc]
+    exact ⟨by linarith [(hβ.2.2 s).1], by linarith [(hβ.2.2 s).2]⟩
 
 /-! ### The count -/
 
@@ -645,9 +636,8 @@ lemma FrobeniusCycle.div_mem_defectCone_inter_degreeSlab (T : FrobeniusCycle N W
     · have h_block : twoBlock k a' b = twoBlock k a' b' := by grind [twoBlock, Fin.val_inj]
       simpa using h_nonpos i b b' hb h_block
   · obtain ⟨h_low, h_up⟩ := T.sum_mem_Icc_of_coeff_polyAction_powerPacking hm hα s
-    rw [← sum_div, ← cast_sum, Set.mem_Icc, le_div_iff₀' hm_pos, div_le_iff₀' hm_pos,
+    simp only [← sum_div, ← cast_sum, Set.mem_Icc, le_div_iff₀' hm_pos, div_le_iff₀' hm_pos,
       add_sub_cancel_right]
-    beta_reduce
     exact ⟨mod_cast h_low, mod_cast h_up⟩
 
 open Pointwise in
@@ -764,11 +754,9 @@ lemma FrobeniusCycle.exists_finrank_defectConditions_le_volume (T : FrobeniusCyc
   refine ⟨D, fun s ↦ ?_, ?_⟩
   · have h_shift : 4 * t * ∑ b : Fin k, σ (b, s) ≤ 4 * t * (T.P ^ (2 * a'.val) - 1) := by
       grw [hσ_le s, ha]
-    have h_nonneg : 0 ≤ 4 * t * ∑ b : Fin k, σ (b, s) :=
-      mul_nonneg (by positivity) (sum_nonneg fun b _ ↦ hσ_nonneg (b, s))
-    have ht_real : (2 * (k + 1) : ℝ) ≤ t := mod_cast ht
-    simp only [D, Pi.smul_apply, smul_eq_mul, ← Finset.mul_sum]
-    constructor <;> linarith
+    have h_nonneg : 0 ≤ ∑ b : Fin k, σ (b, s) := sum_nonneg fun b _ ↦ hσ_nonneg (b, s)
+    simp only [D, Pi.smul_apply, smul_eq_mul, ← Finset.mul_sum, Set.mem_Icc]
+    exact ⟨by nlinarith, by linarith [show (2 * (k + 1) : ℝ) ≤ t by exact_mod_cast ht]⟩
   -- The set `Y` is bounded and convex, so the number of its points in `m⁻¹ ℤ ^ (k N)`, divided
   -- by `m ^ (k N)`, tends to its volume. It suffices to bound the dimension along `m = q ^ j`.
   set Y : Set (Fin k × ZMod N → ℝ) := T.defectCone a 0 ∩ degreeSlab k D
@@ -957,8 +945,7 @@ lemma FrobeniusCycle.index_mul_finrank_defectConditions_le (T : FrobeniusCycle N
         _ ≤ 2 * N * (k' + 1 : ℕ) * E / n := by gcongr; exact k'.le_succ
         _ ≤ θ := (div_le_iff₀ hn_real).2 hE_le
     have h_bound : rexp x ≤ 1 + x * 2 := by
-      simpa [one_add_one_eq_two] using
-        exp_bound' (show 0 ≤ x by positivity) (show x ≤ 1 by linarith) one_pos
+      simpa [one_add_one_eq_two] using exp_bound' (by positivity) (by linarith) one_pos
     linarith
   calc ((parahoric W (twoBlock (k' + 1) a')).index *
           finrank K (T.defectConditions n a a' ⊥ (3 * t)) : ℝ)
