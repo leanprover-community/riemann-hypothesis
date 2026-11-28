@@ -12,7 +12,7 @@ workflow_dispatch run of <commit> is used, waiting up to --wait-minutes for one 
 --run-id selects one run, which must pass the same checks.
 
 queue-tested writes tested=true to $GITHUB_OUTPUT if a merge_group run of build.yml for <commit>
-succeeded, so the push build of the same commit need not build it again.
+succeeded and its cache artifact is still available for the publisher.
 
 Adapted from scripts/ci-github.py of branch alpoge. It reads GITHUB_REPOSITORY and GH_TOKEN.
 """
@@ -114,7 +114,8 @@ def find_run(args):
 
 
 def queue_tested(args):
-    tested = any(run.get("event") == "merge_group" and problem(run, args.sha) is None for run in runs(args.sha))
+    tested = any(run.get("event") == "merge_group" and problem(run, args.sha) is None
+                 and artifact(run, args.sha) for run in runs(args.sha))
     outputs(tested=str(tested).lower())
 
 

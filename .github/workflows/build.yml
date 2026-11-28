@@ -72,8 +72,8 @@ jobs:
           persist-credentials: false
 
       - name: Check whether the merge queue has built this commit
-        # The merge queue moves main to the exact commit it built, and that build's artifact is
-        # what gets published, so the push build of that commit has nothing left to do.
+        # The merge queue moves main to the exact commit it built. Skip the push build only
+        # while that build's artifact is available for publication.
         id: queue
         if: github.event_name == 'push'
         env:
