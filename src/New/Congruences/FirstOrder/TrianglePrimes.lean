@@ -85,10 +85,7 @@ lemma New.Selmer.mul_prod_pow_sub_pow_dvd {ℓ : ℕ} [ThePrime ℓ] {t y h : �
     (hn : n ∣ ℓ ^ (3 * h)) :
     n * ∏ k ∈ {a}ᶜ, ((u ^ a.val).val - (u ^ k.val).val) ∣ ℓ ^ (y * h) := by
   have h_lt (b k : Fin t) (hkb : k < b) : (u ^ b.val).val - (u ^ k.val).val ∣ ℓ ^ h := by
-    have h_eq : (u ^ b.val).val - (u ^ k.val).val =
-        ((u ^ (b.val - k.val)).val - 1) * (u ^ k.val).val := by
-      rw [sub_one_mul, ← Units.val_mul, ← pow_add, Nat.sub_add_cancel hkb.le]
-    rw [h_eq, Units.mul_right_dvd]
+    rw [← Nat.sub_add_cancel hkb.le, pow_add, Units.val_mul, ← sub_one_mul, Units.mul_right_dvd]
     exact hu _ ⟨Nat.sub_pos_of_lt hkb, by omega⟩
   have h_ne (k : Fin t) (hk : k ∈ ({a}ᶜ : Finset (Fin t))) :
       (u ^ a.val).val - (u ^ k.val).val ∣ ℓ ^ h := by
@@ -144,10 +141,8 @@ lemma New.Selmer.surjective_of_linearIndependent_cast {ℓ ν : ℕ} [Fact ℓ.P
     rw [show v = Ψ a + (ℓ : ZMod (ℓ ^ ν)) • t from funext fun i ↦ by simp [← ht i]]
     exact Submodule.add_mem_sup ⟨a, rfl⟩
       (Submodule.smul_mem_smul (Ideal.mem_span_singleton_self _) Submodule.mem_top)
-  have h_jacobson : 𝔪 ≤ Ring.jacobson (ZMod (ℓ ^ ν)) := by
-    rw [← Ideal.jacobson_bot]
-    exact (Ideal.span_singleton_le_iff_mem _).2
-      (Ideal.radical_le_jacobson ⟨ν, (Nat.cast_pow ℓ ν).symm.trans (ZMod.natCast_self _)⟩)
+  have h_jacobson : 𝔪 ≤ Ring.jacobson (ZMod (ℓ ^ ν)) := (Ideal.span_singleton_le_iff_mem _).2
+    (nilradical_le_jacobson _ ⟨ν, (Nat.cast_pow ℓ ν).symm.trans (ZMod.natCast_self _)⟩)
   intro v
   obtain ⟨a, ha⟩ : v ∈ N := Submodule.le_of_le_smul_of_le_jacobson Module.Finite.fg_top
     h_jacobson h_sup Submodule.mem_top
@@ -232,11 +227,9 @@ lemma New.Selmer.exists_separating_element {ℓ : ℕ} {E : Type} [ThePrime ℓ]
     refine surjective_of_linearIndependent_cast hν ?_ ?_
     · rintro (_ | i) a b
       exacts [hψ₀.map_mul a.property b.property, (hψ i).map_mul a.property b.property]
-    · have h_eq : (fun o g ↦ ((Ψ o g).cast : ZMod ℓ)) =
-          fun o ↦ o.casesOn' (reductionModL ψ₀) fun i ↦ reductionModL (ψ i) := by
-        funext o
-        cases o <;> rfl
-      simpa only [h_eq] using h_indep.option h_notMem
+    · convert h_indep.option h_notMem using 1
+      funext o
+      cases o <;> rfl
   obtain ⟨g, hg⟩ := h_onto fun o ↦ o.elim 1 fun _ ↦ 0
   have hg₀ : ψ₀ g = 1 := congrFun hg none
   have hg_zero (i : I) (hi : ty i = e) : ψ i g = 0 := congrFun hg (some ⟨i, hi⟩)
@@ -291,8 +284,7 @@ lemma New.Selmer.HasKummerType.eventually_eq_two_mul {ℓ : ℕ} {E : Type} [The
         hψ.map_mul (by simp [cyclotomicCharMod_prime_pow_eq, ha]) hb,
       hψ.map_conjGal hu, hψ.map_conjGal (a := g) (by simp [cyclotomicCharMod_prime_pow_eq, hg])]
     ring
-  rw [← h_val]
-  exact hψ.isLocallyConstant.eventually_eq _
+  exact h_val ▸ hψ.isLocallyConstant.eventually_eq _
 
 /-- Let `Ω` be the algebraic closure of `ℚ`, let `δ, g : Gal(Ω/E)` have trivial cyclotomic character
 and let `u` fix `μ_{ℓ^ν}`; let `conjGal` be conjugation by complex conjugation. Near
@@ -464,12 +456,10 @@ lemma New.Selmer.TriangleEntry.exists_mayFollow {ℓ : ℕ} {E : Type} [ThePrime
   obtain ⟨x₀, hW₀, ⟨h_off, hT'⟩, hψ₀x, hψx, h_even, h_cyc⟩ :=
     nonempty_of_mem (inter_mem hσW (inter_mem_inf h_most (preimage_mem_comap h_near)))
   have h_dvd : 2 * ψ₀ x₀.frob ∣ ↑(ℓ ^ (y * h)) := by
-    have h_int : (4 : ℤ_[ℓ]) * ∏ k ∈ {e}ᶜ,
-        ((cyclotomicChar Ω ℓ γ ^ e.val).val - (cyclotomicChar Ω ℓ γ ^ k.val).val) ∣ ℓ ^ (y * h) :=
-      mul_prod_pow_sub_pow_dvd hty hγ_dvd e h_four
     rw [hψ₀x, hψ₀u, ← mul_assoc, show (2 * 2 : ZMod (ℓ ^ ν)) = 4 by norm_num]
-    -- This is the divisibility `h_int` reduced modulo `ℓ ^ ν`.
-    simpa [cyclotomicCharMod_prime_pow_eq, map_ofNat] using map_dvd (toZModPow ν) h_int
+    -- This is `mul_prod_pow_sub_pow_dvd` reduced modulo `ℓ ^ ν`.
+    simpa [cyclotomicCharMod_prime_pow_eq, map_ofNat] using
+      map_dvd (toZModPow ν) (mul_prod_pow_sub_pow_dvd hty hγ_dvd e h_four)
   obtain ⟨h_notMem₀, h_avoid⟩ : primeBelowPlus x₀.place ∉ T₀ ∧ ∀ i : I,
       primeBelowPlus (f i).frobeniusDatum.place ≠ primeBelowPlus x₀.place ∧
         primeBelowPlus x₀.place ∉ (f i).avoidedPrimes := by simpa [T', eq_comm] using hT'
@@ -711,6 +701,5 @@ lemma New.Selmer.exists_isPrimeTriangle {ℓ : ℕ} {E : Type} [ThePrime ℓ] [F
   · -- At the place of index `(e, i)` the even classes take twice their value at `i`.
     exact ⟨toLex (e, ⟨i, hi⟩), rfl, (hf (toLex (e, ⟨i, hi⟩))).even_apply⟩
   · simpa using mul_prod_pow_sub_pow_dvd hty hγ_dvd e (one_dvd _)
-  · have h_int : (4 * ((cyclotomicChar Ω ℓ γ ^ (e : ℕ)).val - 1) ^ 2 : ℤ_[ℓ]) ∣ ℓ ^ (y * h) :=
-      dvd_of_mul_right_dvd (mul_prod_pow_sub_pow_dvd hty hγ_dvd e.val (h_four e))
-    simpa [cyclotomicInv, map_ofNat] using map_dvd (algebraMap _ O) h_int
+  · simpa [cyclotomicInv, map_ofNat] using map_dvd (algebraMap _ O)
+      (dvd_of_mul_right_dvd (mul_prod_pow_sub_pow_dvd hty hγ_dvd e.val (h_four e)))
