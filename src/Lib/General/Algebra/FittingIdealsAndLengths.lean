@@ -335,7 +335,7 @@ lemma exists_matrix_addVal_det_le_length (L : Submodule O (n → O)) (ha : a ≠
   -- some `N`. Take the matrix `Mᵀ`, and for `S` the image of `Nᵀ` on `n → O ⧸ a`.
   let g : (n → O) →ₗ[O] L := (lsmul O _ a).codRestrict L h_smul
   have hg : Function.Injective g := (lsmul_injective ha).codRestrict h_smul
-  have b : (n → O) ≃ₗ[O] L :=
+  let b : (n → O) ≃ₗ[O] L :=
     ofFinrankEq _ _ (L.finrank_le.antisymm' (g.finrank_le_finrank_of_injective hg))
   obtain ⟨M, N, rfl, hNM⟩ : ∃ M N : Matrix n n O, L = M.toLin'.range ∧ N * M = a • 1 := by
     refine ⟨(L.subtype ∘ₗ b).toMatrix', (b.symm ∘ₗ g).toMatrix', by simp [LinearMap.range_comp],
@@ -627,7 +627,7 @@ lemma mem_of_forall_form_eq_zero [Finite n] (hp : p ≠ 0) (hN : ∀ v : n → O
     (h_kill : ∀ Ψ : (n → O) →ₗ[O] Unit → QuotSpan p, (∀ ⦃u : n → O⦄, Φ u ∈ N → Ψ u = 0) → Ψ v = 0) :
     Φ v ∈ N := by
   classical
-  have := Fintype.ofFinite n
+  let := Fintype.ofFinite n
   -- `Φ⁻¹ N` is the annihilator of a module `S` of vectors modulo `p`, and each `w ∈ S` gives a
   -- linear form that vanishes on `Φ⁻¹ N`.
   obtain ⟨-, S, -, (hS : ∀ u : n → O, Φ u ∈ N ↔ ∀ w ∈ S, ∑ j : n, u j • w j = 0), -⟩ :=

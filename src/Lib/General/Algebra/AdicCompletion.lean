@@ -607,7 +607,7 @@ lemma New.free_finite_of_rank_le {S M : Type} [CommRing S] [Nontrivial S] [AddCo
     linearIndependent_iff.2 fun f hf ↦ f.ext fun i ↦ by simp [← c.dual i f, hf]
   have : Finite c.Index :=
     Cardinal.mk_lt_aleph0_iff.1 ((h_indep.cardinal_le_rank.trans h_rank).trans_lt (by simp))
-  have e : (c.Index →₀ S) ≃ₗ[S] M :=
+  let e : (c.Index →₀ S) ≃ₗ[S] M :=
     .ofBijective _ ⟨h_indep, surjective_of_mkQ_comp_surjective c.dense⟩
   exact ⟨.of_equiv e, .equiv e⟩
 

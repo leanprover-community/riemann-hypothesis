@@ -103,7 +103,7 @@ lemma setIntegral_eq_finsum [IsFiniteMeasureOnCompacts ν] [CompleteSpace X] [T2
     ∫ x : V in M, F x ∂ν = ν.real (L ∩ M) • ∑ᶠ q : M ⧸ L.addSubgroupOf M, F q.out := by
   classical
   -- `M` is compact and `L` is open, so there are finitely many cosets.
-  have : Fintype (M ⧸ L.addSubgroupOf M) := fintypeOfIndexNeZero (hM.relIndex_ne_zero_add hL)
+  let : Fintype (M ⧸ L.addSubgroupOf M) := fintypeOfIndexNeZero (hM.relIndex_ne_zero_add hL)
   -- On `M`, `F` is the sum over the cosets `q` of the constant `F q.out` on `q.out + L`.
   let G (q : M ⧸ L.addSubgroupOf M) (x : V) : X := indicator L (fun _ ↦ F q.out) (-q.out + x)
   have h_sum : EqOn F (fun x : V ↦ ∑ q : M ⧸ L.addSubgroupOf M, G q x) M := by

@@ -101,9 +101,6 @@ abbrev LevelPlaces.ChosenGL (r : Type) [Fintype r] [DecidableEq r] : Type :=
 
 /-! ### Levels at the places of M and Q -/
 
--- Two spellings of one place are compared without unfolding its ring of integers.
-attribute [local irreducible] IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers
-
 /-- The homomorphism sending (g_w) in ∏_M GL_r(k_w) to the family equal to diag(g_w, 1) at the
 places of M and 1 at those of Q. -/
 def firstBlockHom :

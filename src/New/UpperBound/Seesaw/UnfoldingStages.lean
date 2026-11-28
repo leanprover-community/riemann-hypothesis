@@ -838,8 +838,6 @@ lemma exists_zeroTerm_eq_integrated (ξ : ∀ k : ℕ, GInf D.E (D.signsY k))
   -- Both sides are now pure tensors with one finite factor; `v` is the real factor on the left.
   exact ⟨_, fun _ _ ↦ rfl⟩
 
--- Without this, comparing the index types of neighbouring stages unfolds `Finset.univ`.
-seal Finset.univ in
 /-- A double unfolding step. Let `R` be data for the two lifts `Y_{2i} → Y_{2i+1} → Y_{2i+2}`, the
 last space with a grading `Y` of definite part `X`. Suppose that `D.doubleLiftEvalY i`, the linear
 map that turns finite data for the spaces `Y_k` into finite data for their definite parts `X_k`, is

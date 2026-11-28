@@ -346,7 +346,7 @@ lemma mul_t_mem_of_conj_isogeny_mul_t_mem {C' D' : CMLattice d'} {N : ℕ}
 
 omit [PrimeSevenModEight d] in
 /-- An automorphism of `ℂ` over `K` fixes the elements of `quadInt d`, the image of `𝓞_K` in `ℂ`. -/
-@[simp, grind]
+@[simp, grind =]
 lemma map_eq_self_of_mem_quadInt (ha : a ∈ quadInt d) : σ a = a := by
   obtain ⟨x, rfl⟩ := ha
   exact σ.commutes (x : QuadField d)

@@ -135,8 +135,6 @@ lemma besselLength_le_norm_mul_add_one (hs : s ∈ besselS) :
     besselLength y ≤ ‖(s * y).val.val‖ + 1 :=
   csInf_le ⟨1, Set.forall_mem_range.mpr (by simp)⟩ ⟨⟨s, hs⟩, rfl⟩
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- If `besselLength y ≤ T`, then some `u` in the unipotent group `besselU` gives `‖u * y‖ ≤ T` in
 operator norm. -/
 lemma RealPlace.exists_norm_le_of_besselLength_le {T : ℝ} (hT : besselLength y ≤ T) :

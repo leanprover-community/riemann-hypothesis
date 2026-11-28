@@ -46,7 +46,7 @@ lemma _root_.Function.Bijective.map_prod {S : Type*} [Ring S] {X Y Z : ModuleCat
   -- `X` with `f` and `g` is a product of `Y` and `Z`, so its image under `U` is a product of types.
   have h_iso : IsIso ((Y.binaryProductLimitCone Z).isLimit.lift (BinaryFan.mk f g)) :=
     (ConcreteCategory.isIso_iff_bijective _).mpr hfg
-  have h_prod : IsLimit (BinaryFan.mk f g) := (Y.binaryProductLimitCone Z).isLimit.ofPointIso
+  let h_prod : IsLimit (BinaryFan.mk f g) := (Y.binaryProductLimitCone Z).isLimit.ofPointIso
   exact ((mapIsLimitOfPreservesOfIsLimit U _ _ h_prod).conePointUniqueUpToIso
     (Types.binaryProductLimit (U.obj Y) (U.obj Z))).toEquiv.bijective
 
@@ -108,7 +108,7 @@ lemma hasPartitions_periodAlg (θ : asModules (tilt ⋙ periodAlg S) ⋙ tensorW
       (moduleCompletion S p ⋙ tensorWith K K ⋙ forget _)
   -- The composite `Φ` is isomorphic to `Ψ`, by `moduleCompletionIso` and `θ`. The whiskering `κ`
   -- is stated for any functors `Q`, `Q'` in place of the two completions.
-  have κ {Q : ModuleCat S ⥤ ModuleCat S} {Q' : CommAlg S ⥤ CommAlg S}
+  let κ {Q : ModuleCat S ⥤ ModuleCat S} {Q' : CommAlg S ⥤ CommAlg S}
       (ι : asModules (𝟭 (CommAlg S)) ⋙ Q ≅ asModules Q') :
       asModules (tilt ⋙ wittFunctor ⋙ algBaseChange S) ⋙ Q ⋙ tensorWith K K ≅
         asModules (tilt ⋙ wittFunctor ⋙ algBaseChange S ⋙ Q') ⋙ tensorWith K K :=

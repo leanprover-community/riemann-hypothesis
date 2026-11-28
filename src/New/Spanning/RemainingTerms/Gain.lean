@@ -352,8 +352,6 @@ lemma levelGauge_pos [HasPrimitiveRoot5040 E] (h_over : γ ∈ S.termsOver c s c
   unfold levelGauge
   positivity
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- **Congruence and cut.** Let `γ`, `γ'` be rational terms over one block. Let `s` agree, let `x`
 be at most `S.meetNorm s`, the product of the norms of the places at which `s` meets, and let `j`,
 `j'` be the cell ranks of the terms: `S.HasCellRank j γ` puts `γ` in normal form from the index `j`
@@ -811,8 +809,6 @@ lemma pairLattice_comm : S.pairLattice c c' γ γ' = S.pairLattice c c' γ' γ :
 lemma pairDiscriminant_comm : S.pairDiscriminant c c' γ γ' = S.pairDiscriminant c c' γ' γ := by
   rw [pairDiscriminant, pairDiscriminant, commonLink_comm, pairLattice_comm]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- **Gain.** Let `γ`, `γ'` be rational terms of cell ranks `j`, `j'` over one block: two classes
 `c`, `c'` and an element `s` of `S.ResidueGL` to which both reduce after translation to the lattices
 of the classes. Let `s` agree and let `x` be at most `S.meetNorm s`, the product of the norms of the

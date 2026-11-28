@@ -534,7 +534,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 ### Analytic: Analytic number theory
 
-- `Lib/Analytic/ZeroSymmetry` (47): Zeros of L(s, χ) and of L(1 − s, χ⁻¹)
+- `Lib/Analytic/ZeroSymmetry` (16): Dirichlet characters and the primitive characters that induce them
 - `Lib/Analytic/PolyaVinogradov` (146): Gauss sums of primitive characters and the Pólya–Vinogradov bound
 - `Lib/Analytic/DirichletTheta` (373): Theta series of Dirichlet characters, Poisson summation, and `L(s, χ)` as a Mellin transform
 - `Lib/Analytic/EntireLFunction` (123): Quadratic twists, polar functions and logarithmic derivatives of Dirichlet L-functions
@@ -867,7 +867,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 **Analysis**: Real and complex analysis
 
 - `Lib/General/Analysis/FiniteFourier` (148): Orthogonality, Fourier inversion and matrix Gauss sums over a finite ring
-- `Lib/General/Analysis/GaussianIntegral` (146): Matrix norm estimates, the Ostrowski–Taussky inequality, and the complex Gaussian integral
+- `Lib/General/Analysis/GaussianIntegral` (146): Matrix norm estimates and the complex Gaussian integral
 - `Lib/General/Analysis/FourierTransforms` (207): Fourier inversion for periodic functions and decay of Fourier transforms
 - `Lib/General/Analysis/HolomorphicIntegrals` (456): Strong operator integrals, analyticity of parameter integrals, and Hua's integral bound
 - `Lib/General/Analysis/PackingAndSobolev` (173): Packing bounds for separated points and Sobolev trace inequalities

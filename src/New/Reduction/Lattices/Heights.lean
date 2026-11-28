@@ -21,8 +21,7 @@ A height for families of complex numbers indexed by the pairs `ι` of a prime `l
 * `New.HeightLe.of_mul_le`, `New.HeightLe.of_le`, `New.HeightLe.mono`, `New.HeightLe.mul`,
   `New.HeightLe.prod`, `New.HeightLe.pow`: the calculus of heights.
 * `New.HeightLe.nonneg_of_one`: the constant family `1` has height at least `0`, by the product
-  formula (`New.log_product_formula`) for the norm of `H`. `New.HeightLe.neg_le_of_norm_map_le` is
-  the form for a number `z ≠ 0`.
+  formula (`New.log_product_formula`) for the norm of `H`.
 
 ## Relation to the literature
 
@@ -230,15 +229,6 @@ lemma nonneg_of_one (h_one : HeightLe c 1) : 0 ≤ c := by
       add_le_add h_inf (sum_le_sum fun l hl ↦ h_fin l (mem_filter.1 hl).2)
     _ = n * (α + ∑ l ∈ range N with l.Prime, e l * log l) := by rw [mul_add, mul_sum]
     _ ≤ n * c := mul_le_mul_of_nonneg_left (h_sum _ fun l hl ↦ (mem_filter.1 hl).2) n.cast_nonneg
-
-/-- A consequence of the product formula: if `z ≠ 0`, the constant family `z` has height at most
-`c`, and `|σ z| ≤ exp c'` for all automorphisms `σ` of `ℂ`, then `-c ≤ c'`. -/
-lemma neg_le_of_norm_map_le {z : ℂ} (h_height : HeightLe c fun _ : PrimePadicIso ↦ z) (hz : z ≠ 0)
-    (h_conj : ∀ σ : ℂ ≃+* ℂ, ‖σ z‖ ≤ exp c') : -c ≤ c' := by
-  -- The product of the constant families `z⁻¹` and `z` is the constant family `1`.
-  have h_one : HeightLe (c' + c) 1 := by
-    simpa [Pi.mul_def, Pi.one_def, hz] using (inv_const hz h_conj).mul h_height
-  linarith only [h_one.nonneg_of_one]
 
 end HeightLe
 

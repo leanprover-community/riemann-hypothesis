@@ -262,7 +262,7 @@ open NumberField Polynomial ComplexEmbedding InfinitePlace Finset IsTotallyCompl
 
 namespace New.Variety
 
-@[simp, grind]
+@[simp, grind .]
 lemma conjugate_ne_self {E : Type*} [Field E] [IsTotallyComplex E] (σ : E →+* ℂ) :
     conjugate σ ≠ σ :=
   complexEmbedding_not_isReal _

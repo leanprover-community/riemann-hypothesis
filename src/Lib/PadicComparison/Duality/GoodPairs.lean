@@ -514,8 +514,6 @@ private lemma isZariskiLocallyTop_range_rootPairsToProdLine_sup :
 
 /-! ### Principal open sets of affine space and standard étale charts -/
 
--- Keeps definitional checks from unfolding the Ext groups.
-seal CategoryTheory.Abelian.Ext in
 /-- Alexander duality for a principal open set of `Spec T ⊆ (ℙ¹)^d`, embedded by the presentation
 `e` of `T` as a polynomial ring. `D.IsFiniteLerayHirsch N` requires, among other things, that
 `w ↦ ∑ i, (w i restricted along g) · D.comparison i` be a bijection from families in total
@@ -580,7 +578,7 @@ lemma isFiniteLerayHirsch_principal_open
       let Φ : AbFunctor (TestOver A) ⥤ AbFunctor X.Elements := restrictAlong p
       let π := Q.toZerosCoeff (locConstAlong (𝟭 (TestOver A)))
       change comp (TotalH.map Φ (comp x (homClass π))) (θ i).toTotalH =
-        comp (TotalH.map Φ x) i.1.2.toTotalH
+        comp (TotalH.map Φ x) i.val.2.toTotalH
       refine (map_comp_assoc Φ (θ i).toTotalH).trans (congrArg (comp (TotalH.map Φ x)) ?_)
       refine (congrArg (fun y ↦ comp y (θ i).toTotalH) (map_homClass (f := π) (Φ := Φ))).trans ?_
       exact (pullbackAlong_of (f := Φ.map π) (θ i)).trans

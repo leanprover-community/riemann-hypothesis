@@ -19,7 +19,7 @@ field, the places, the scales and the primes in turn.
 
 * `New.Parameters.IsAdmissibleData`: admissible data, with explicit values of the ranks and scales
   and any `b`-places and primes that have the required properties.
-* `New.eventually_exists_data_of_isAdmissibleData`: at every large `x` such data give the ranks,
+* `New.Parameters.IsAdmissibleData.exists_hasFields`: at a large scale such data give the ranks,
   scales and tower exponent (`New.Data.HasFields`) of the data `New.Data`.
 * `New.eventually_exists_data`: admissible data exist at every large `x`.
 
@@ -38,12 +38,17 @@ Notions from other files:
 
 ## Relation to the literature
 
-Known result: Behrend's construction for several equations at once. Source: Shapira, Behrend-type
-constructions for sets of linear equations, Acta Arith. 2006 (after Behrend, PNAS 32, 1946); compare
-Alon–Shapira, A characterization of easily testable induced subgraphs (2006), Lemma 4.1 (preprint
-numbering). Form here: all weights up to a given bound are avoided at once, modulo an
-integer, with a fixed number of digits and the explicit count of points on a sphere. This concerns
-`exists_three_term_free`.
+Alon–Shapira, *A characterization of easily testable induced subgraphs* (2006),
+[Lemma 4.1, pp. 6–7 of the authors' version](https://web.math.princeton.edu/~nalon/PDFS/testindfull2.pdf#page=6),
+construct one set of integers on which every equation `a x + b y = (a + b) z` with
+`1 ≤ a, b ≤ h` has only the solutions `x = y = z`. Their proof uses Behrend's digit sphere
+(PNAS 32, 1946). Shapira, *Behrend-type constructions for sets of linear equations*
+(Acta Arith. 2006), also treats individual equations and systems of equations.
+
+`exists_three_term_free` bounds the sum of the positive weights by `L` and states the result
+modulo `o`, with a prescribed digit count `n` and digit bound `H`. Both weighted sums have
+base-`L * H` digits less than `L * H`, so their values are below `(L * H) ^ n ≤ o` and a
+congruence gives an equality. The sphere count gives the bound `H ^ n / (n * H ^ 2)`.
 -/
 
 @[expose] public section
@@ -791,22 +796,6 @@ lemma Parameters.IsAdmissibleData.exists_hasFields {P : Parameters} {x n m r s b
       piMBar_mul_star := h_adm.α_mul_star, piN_mul_star := h_adm.β_mul_star }
   have h_fields : D.HasFields x W m r s b := ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
   exact ⟨D, h_fields, hx₁_lower, h_log_b⟩
-
-/-- **Admissible data are fields of the data.** Let `0 < ε < 1 / 100`. For every large enough
-integer `x`, any admissible data (`Parameters.IsAdmissibleData`) at `x` and `W = x ^ (ε / 6)` give
-the ranks, scales and tower exponent of some `D : Data P` (`Data.HasFields`). This `D` has
-`x ^ (ε / 6) - 1 ≤ D.logX₁`, and `D.logB` lies in `[x ^ ε, x ^ ε + 1]`. -/
-theorem eventually_exists_data_of_isAdmissibleData (P : Parameters) {ε : ℝ} (hε : 0 < ε)
-    (hε_lt : ε < 1 / 100) :
-    ∀ᶠ x : ℕ in atTop, ∀ (m r s b : ℕ) (T : Finset (P.Φ s)) (g : Fin 2 → ℕ) (α : 𝓞 P.K) (N : ℕ)
-      (β : 𝓞 (P.E s)), P.IsAdmissibleData x ((x : ℝ) ^ (ε / 6)) m r s b T g α N β →
-      ∃ D : Data P,
-        D.HasFields x ((x : ℝ) ^ (ε / 6)) m r s b ∧
-        (x : ℝ) ^ (ε / 6) - 1 ≤ D.logX₁ ∧
-        D.logB ∈ Set.Icc ((x : ℝ) ^ ε) ((x : ℝ) ^ ε + 1) := by
-  obtain ⟨n, h_scale⟩ := P.exists_eventually_isLargeScale hε hε_lt
-  filter_upwards [h_scale] with x hx m r s b T g α N β h_adm
-  simpa only [rpow_div_six_pow_six] using h_adm.exists_hasFields hx
 
 /-- Let `W` be a large scale for `y = log x` with exponent `n`. Let the windows `[U, U + W]` with
 `W ≤ U ≤ W ^ (n + 7)` hold logarithms of primes `≡ 1` modulo the powers `(q₀ d) ^ k ≤ W ^ (n + 7)`,

@@ -249,7 +249,7 @@ lemma exists_faithfullyFlat_padicTest (V : CommAlg OFlat) [IsDomain V] [Valuatio
   -- The ring `c.fst.ProdRing ≃ W` of the test is a valuation ring, hence so is its tilt
   -- `c.fst.TiltRing`. The image of `V` in the tilt is a valuation ring too, so the inclusion is
   -- flat.
-  have e_prod : c.fst.ProdRing ≃+* W := .piUnique fun () ↦ W
+  let e_prod : c.fst.ProdRing ≃+* W := .piUnique fun () ↦ W
   have h_prod_domain : IsDomain c.fst.ProdRing := e_prod.injective.isDomain
   have h_prod_valuationRing : ValuationRing c.fst.ProdRing :=
     e_prod.symm.surjective.valuationRing e_prod.symm.toRingHom

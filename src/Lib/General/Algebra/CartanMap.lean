@@ -619,7 +619,7 @@ lemma IsMultiplicative.eq_one_of_eq_one_on_isHigmanProjective (l : ℕ) [Fact l.
   -- `A` is the module of functions on the point `Δ ⧸ ⊤`
   have h_point : φ A hA = f (Δ ⧸ (⊤ : Subgroup Δ)) := by
     have : Subsingleton (Δ ⧸ (⊤ : Subgroup Δ)) := subsingleton_quotient_top
-    have : Unique (Δ ⧸ (⊤ : Subgroup Δ)) := uniqueOfSubsingleton ⟦1⟧
+    let : Unique (Δ ⧸ (⊤ : Subgroup Δ)) := uniqueOfSubsingleton ⟦1⟧
     exact apply_eq_of_equiv h_mul h_higman (.mk (LinearEquiv.funUnique _ R A).symm fun _ ↦ rfl)
   have h_zero : (0 : V) ∈ MulAction.fixedPoints Δ V := fun g ↦
     Subtype.ext <| funext fun d ↦ (hyperplaneAction_toPerm_apply 0 g 0 d).trans (by simp)

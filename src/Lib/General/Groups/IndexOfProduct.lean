@@ -22,7 +22,7 @@ lemma New.Seesaw.index_pi_univ {I : Type*} {G : I → Type*} [Fintype I] [∀ i 
     (H : ∀ i : I, Subgroup (G i)) :
     (Subgroup.pi Set.univ H).index = ∏ i : I, (H i).index := by
   -- The cosets of a product subgroup are the tuples of cosets.
-  have cosets : (∀ i : I, G i ⧸ H i) ≃ (∀ i : I, G i) ⧸ Subgroup.pi Set.univ H :=
+  let cosets : (∀ i : I, G i ⧸ H i) ≃ (∀ i : I, G i) ⧸ Subgroup.pi Set.univ H :=
     (Setoid.piQuotientEquiv fun i : I ↦ QuotientGroup.leftRel (H i)).trans
       (Quotient.congrRight fun x y ↦ by rw [QuotientGroup.leftRel_pi H])
   simp only [Subgroup.index_eq_card]

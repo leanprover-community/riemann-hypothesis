@@ -356,7 +356,7 @@ lemma CoeffCompBijective.periodAlg_of_almostCoeff {C C' : Type 1} [Category C] [
   -- Transport along `U` and along `moduleCompletionIso`, which compares the completions of
   -- modules and of algebras. The whiskering `κ` is stated for any functors `Q`, `Q'` in place of
   -- the two completions.
-  have κ {Q : ModuleCat S ⥤ ModuleCat S} {Q' : CommAlg S ⥤ CommAlg S}
+  let κ {Q : ModuleCat S ⥤ ModuleCat S} {Q' : CommAlg S ⥤ CommAlg S}
       (ι : asModules (𝟭 (CommAlg S)) ⋙ Q ≅ asModules Q') :
       asModules B ⋙ Q ⋙ tensorWith K K ≅
         asModules (wittFunctor (k := OFlat) ⋙ algBaseChange S ⋙ Q') ⋙ tensorWith K K :=
@@ -496,7 +496,7 @@ def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restr
     refine Perfection.ext fun n ↦ toPiLocalization_injective _ (funext fun q ↦ .trans ?_
       (Localization.localRingHom_to_map _ _ (quotientMap _ f.1 (by simp)) (comap_asIdeal ..) _))
     let ρ := quotientMap (I := Ideal.span {(p : c.ProdRing)})
-      (Ideal.span {(p : d.ProdRing)}) f.1 (by simp)
+      (Ideal.span {(p : d.ProdRing)}) f.toRingHom (by simp)
     let r := PrimeSpectrum.comap ρ q
     let L := Localization.localRingHom r.asIdeal q.asIdeal ρ (comap_asIdeal ..)
     let restrict (a : PadicTest) := locConstAlg.map (CommRingCat.ofHom (Ideal.Quotient.mk

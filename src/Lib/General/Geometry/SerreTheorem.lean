@@ -405,7 +405,7 @@ lemma HasProjEmbedding.of_isClosedImmersion_pi {S : Scheme} {ι : Type} {W : Ove
     (i : W ⟶ ∏ᶜ A) [IsClosedImmersion i.left] [h : ∀ l : ι, HasProjEmbedding (A l).hom] :
     HasProjEmbedding W.hom := by
   choose κ N _ hN using fun l ↦ (hasProjEmbedding_iff (A l).hom).1 (h l)
-  have := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   -- The Segre product embeds the fibre product; restrict it to the closed subscheme `W`.
   have h_prod : (LineBundle.pi fun l ↦ (N l).pull (Pi.π A l).left).IsProjEmbedding (∏ᶜ A).hom :=
     isProjEmbedding_pi (Pi.π A) hN (Pi.hom_ext _ _)

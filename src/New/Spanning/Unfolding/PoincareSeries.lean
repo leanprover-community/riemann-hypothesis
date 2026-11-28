@@ -136,8 +136,6 @@ adelic points of the unitary group of S. -/
 def adelicEquiv : New.G E ε ≃* S.G (𝔸 E) :=
   V.toRatCoords.trans (MulEquiv.subgroupCongr (by simp [X.J_eq_ratGram, map_splitGram_ratMiddle]))
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- For γ a rational point of the unitary group of S, `X.adelicEquiv` applied to the image
 `X.ratEquiv γ` of γ in Γ equals `S.ratToAdelic γ`, the diagonal embedding of γ into the adelic
 group. -/

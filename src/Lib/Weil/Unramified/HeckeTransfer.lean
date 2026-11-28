@@ -540,8 +540,6 @@ lemma hecke_transfer_of_pairing (hk : card m = card n + k)
           B f (heckePolyOp π hw (w.q ^ k * a.frobValue n w / b.frobValue m w * X) v) := by
       rw [h_hecke, LinearMap.smul_apply, h_adjoint]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Hecke transfer through the transposed theta lift, which sends functions on the group of T to
 functions on the group of S. Let w be split of norm q, S of rank n, T of rank m = n + k, and a, b
 unramified at w̄. Let f be a vacuum at w̄, that is, fixed by the averaging operator `projOn {w̄}`

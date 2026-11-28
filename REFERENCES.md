@@ -3,8 +3,8 @@
 Only some of the citations were compared with their sources. The table lists the 228 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
 
 - compared, place confirmed: 66
-- not compared, no place given: 8
-- place confirmed at second hand: 35
+- not compared, no place given: 7
+- place confirmed at second hand: 36
 - work found, no place given: 119
 
 The citations of 122 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 68 of these files give places. They are listed at the end.
@@ -56,7 +56,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | C. L. Siegel, Über die analytische Theorie der quadratischen Formen | work found, no place given | `Lib/DiscreteSeries/Haar/GramFibre`, `Lib/DiscreteSeries/Haar/GramPolar` |
 | Carter, Finite groups of Lie type (1985) | work found, no place given | `Lib/LocalGL/Green/CuspidalFunctions` |
 | Coates–Sinnott, An analogue of Stickelberger's theorem for the higher K-groups, Invent. Math. 24 (1974) | place confirmed at second hand | `Lib/Cyclotomic/Kolyvagin/ReciprocityComponentBounds` |
-| Crapo, complementation theorem (1966) | not compared, no place given | `Lib/LocalGL/Green/CuspidalFunctions` |
+| Crapo, [The Möbius function of a lattice](https://doi.org/10.1016/S0021-9800(66)80009-1), corollary to Theorem 3 | place confirmed at second hand | `Lib/LocalGL/Green/CuspidalFunctions` |
 | D. Blasius, J. Rogawski, Motives for Hilbert modular forms | work found, no place given | `Lib/GaloisRep/Main/ThetaLift` |
 | D. Cox, Primes of the form x²+ny² (1989) | place confirmed at second hand | `Lib/CM/ChowlaSelberg` |
 | D. R. Heath-Brown, A mean value estimate for real character sums, Acta Arith. 72 (1995) | work found, no place given | `Lib/Analytic/QuadraticTwist` |
@@ -250,7 +250,6 @@ A star marks a file that gives places.
 - `Lib/Adelic/Unitary/CongruenceLevels`*
 - `Lib/Adelic/Unitary/WeakApproximation`*
 - `Lib/Analytic/Landau`*
-- `Lib/Analytic/ZeroSymmetry`
 - `Lib/CM/FormalGroup/IntegralParameter`
 - `Lib/CM/KroneckerLimit`*
 - `Lib/CM/Sigma/Basic`*

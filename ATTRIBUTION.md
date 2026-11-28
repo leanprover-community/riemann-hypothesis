@@ -24,15 +24,12 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/Analytic/Primes.lean` | `New.hasSum_residueClass_one` | `ArithmeticFunction.vonMangoldt.residueClass_eq`, `ArithmeticFunction.vonMangoldt.LSeries_residueClass_eq` | `Mathlib/NumberTheory/LSeries/PrimesInAP.lean` |
 | `src/Lib/Analytic/ZeroSymmetry.lean` | `New.prod_euler_factor_ne_zero` | `DirichletCharacter.LFunction_changeLevel` | `Mathlib/NumberTheory/LSeries/DirichletContinuation.lean` |
 | `src/Lib/CM/Integrality/LogTheta.lean` | `New.CMLattice.subst_mem_multiSeriesRing` | `PowerSeries.subst_toMvPowerSeries` | `Mathlib/RingTheory/MvPowerSeries/Equiv.lean` |
-| `src/Lib/CM/KroneckerLimit.lean` | `New.summable_norm_mul_add_rpow` | `EisensteinSeries.summable_norm_eisSummand` | `Mathlib/NumberTheory/ModularForms/EisensteinSeries/IsBoundedAtImInfty.lean` |
-| `src/Lib/CM/Sigma/Basic.lean` | `New.exists_eq_zero_of_weight_twelve_of_tendsto_one` | `CuspForm.discriminantEquiv` | `Mathlib/NumberTheory/ModularForms/LevelOne/DimensionFormula.lean` |
 | `src/Lib/ClassField/GaloisCohomology/ContinuousCocycles.lean` | `New.DiscreteModule.quotient` | `Submodule.continuousSMul_quotient` | `Mathlib/Topology/Algebra/Module/Basic.lean` |
 | `src/Lib/ClassField/Global/AlbertBrauerHasseNoether.lean` | `New.albert_brauer_hasse_noether` | `IsTopologicalGroup.exist_openNormalSubgroup_sub_clopen_nhds_of_one` | `Mathlib/Topology/Algebra/ClopenNhdofOne.lean` |
 | `src/Lib/ClassField/Global/ArtinReciprocity.lean` | `New.exists_prime_dvd_orderOf` | `Nat.exists_prime_gt_modEq_one` | `Mathlib/NumberTheory/PrimesCongruentOne.lean` |
 | `src/Lib/ClassField/GreenbergWiles/SplitPrimeReciprocity.lean` | `out_inv_mul_mul_out_mem` | `QuotientGroup.out_conj_pow_minimalPeriod_mem` | `Mathlib/GroupTheory/GroupAction/Quotient.lean` |
 | `src/Lib/ClassField/Grunwald.lean` | `New.exists_mem_ker_cyclotomicCharMod_smul_ne_of_forall_pow_ne` | `X_pow_sub_C_irreducible_of_prime` | `Mathlib/FieldTheory/KummerPolynomial.lean` |
 | `src/Lib/ClassField/Grunwald.lean` | `New.range_intTrace_stepField_eq_top` | `pow_sub_one_dvd_differentIdeal_aux`, `dvd_differentIdeal_of_not_isSeparable` | `Mathlib/RingTheory/DedekindDomain/Different.lean` |
-| `src/Lib/ClassField/HeckeL/EulerProduct.lean` | `New.ncard_primesOver_le_finrank` | `Ideal.card_primesOverFinset_le_finrank` | `Mathlib/NumberTheory/RamificationInertia/Basic.lean` |
 | `src/Lib/ClassField/Places/DecompositionCyclotomic.lean` | `New.cyclotomicCharMod_eq_of_isPrimitiveRoot` | `IsPrimitiveRoot.autToPow_eq_modularCyclotomicCharacter` | `Mathlib/NumberTheory/Cyclotomic/CyclotomicCharacter.lean` |
 | `src/Lib/ClassField/Places/ValuationSubrings.lean` | `New.FinPlace.ncard_mul_ramificationIdx_mul_inertiaDeg` | `Ideal.ncard_primesOver_mul_ramificationIdxIn_mul_inertiaDegIn` | `Mathlib/NumberTheory/RamificationInertia/Galois.lean` |
 | `src/Lib/Cohomology/Etale/Basic.lean` | `New.Variety.H.dimension_shift_induction` | `CategoryTheory.hasExt_of_enoughInjectives` | `Mathlib/Algebra/Homology/DerivedCategory/Ext/EnoughInjectives.lean` |
@@ -48,20 +45,15 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/DiscreteSeries/Haar/CayleyChart.lean` | `New.Haar.det_eq_mul_of_fst_eq_of_snd_eq` | `LinearMap.det_prodMap` | `Mathlib/LinearAlgebra/Determinant.lean` |
 | `src/Lib/DiscreteSeries/Haar/TotalMass.lean` | `IsProperMap.monoidHom_id` | `isProperMap_id` | `Mathlib/Topology/Maps/Proper/Basic.lean` |
 | `src/Lib/DiscreteSeries/Haar/TotalMass.lean` | `New.measurePreserving_normSq_sphereDensity` | `MeasureTheory.Measure.volumeIoiPow_apply_Iio` | `Mathlib/MeasureTheory/Constructions/HaarToSphere.lean` |
-| `src/Lib/GLn/Branching/NormBound.lean` | `New.GL.frontPermutation_val` | `Fin.cycleRange_apply` | `Mathlib/GroupTheory/Perm/Fin.lean` |
 | `src/Lib/GaloisRep/KillingPolynomials.lean` | `New.powMinor_diagonal_X_mul_eq_zero` | `Matrix.charpoly.optionEquivLeft_symm_univ_isHomogeneous` | `Mathlib/LinearAlgebra/Matrix/Charpoly/Univ.lean` |
 | `src/Lib/GaloisRep/Pseudocharacter/SemisimpleRepresentations.lean` | `New.blockDiagonalAlgHom` | `Matrix.blockDiagonal'RingHom` | `Mathlib/Data/Matrix/Block.lean` |
-| `src/Lib/GaloisRep/Pseudocharacter/SemisimpleRepresentations.lean` | `New.eq_zero_iff_trace_eq_zero_of_isIdempotentElem` | `LinearMap.IsIdempotentElem.trace_eq_zero_iff` | `Mathlib/LinearAlgebra/Trace.lean` |
 | `src/Lib/GaloisRep/Pseudocharacter/SemisimpleRepresentations.lean` | `New.trace_of_idempotent` | `LinearMap.IsIdempotentElem.trace_eq_zero_iff` | `Mathlib/LinearAlgebra/Trace.lean` |
-| `src/Lib/General/Algebra/AdicCompletion.lean` | `New.norm_p_lt_one` | `Padic.norm_p_lt_one` | `Mathlib/NumberTheory/Padics/PadicNumbers.lean` |
 | `src/Lib/General/Algebra/FittingIdealsAndLengths.lean` | `New.exists_matrix_addVal_det_le_length` | `Submodule.finiteQuotient_iff` | `Mathlib/LinearAlgebra/FreeModule/Finite/Quotient.lean` |
 | `src/Lib/General/Algebra/IntegralPowerSeries.lean` | `New.jet_subst_linearSeries` | `MvPowerSeries.constantCoeff_subst_eq_zero` | `Mathlib/RingTheory/MvPowerSeries/Substitution.lean` |
-| `src/Lib/General/Algebra/IntegralPowerSeries.lean` | `New.pderiv_subst` | `PowerSeries.derivative_subst` | `Mathlib/RingTheory/PowerSeries/Derivative.lean` |
 | `src/Lib/General/Algebra/LongExactSequences.lean` | `New.Variety.H.sigma_bijective` | `CategoryTheory.Functor.mapExt_bijective_of_preservesInjectiveObjects`, `CategoryTheory.hasExt_of_enoughInjectives` | `Mathlib/Algebra/Homology/DerivedCategory/Ext/EnoughInjectives.lean`, `Mathlib/Algebra/Homology/DerivedCategory/Ext/MapBijective.lean` |
 | `src/Lib/General/Algebra/MultivariatePolynomials.lean` | `New.Variety.IsAbsIntegrallyClosedLocal.multivariate_hensel` | the `Algebra.Etale` instance | `Mathlib/RingTheory/Polynomial/UniversalFactorizationRing.lean` |
 | `src/Lib/General/Algebra/MultivariatePolynomials.lean` | `New.nullstellensatz_exists_le_ker` | `finite_of_algHom_finiteType_of_isJacobsonRing`, `MvPolynomial.eq_vanishingIdeal_singleton_of_isMaximal` | `Mathlib/RingTheory/Jacobson/Ring.lean`, `Mathlib/RingTheory/Nullstellensatz.lean` |
 | `src/Lib/General/Algebra/PerfectAlgebras.lean` | `New.Variety.exists_etale_lift` | the `Algebra.Etale` instance | `Mathlib/RingTheory/Polynomial/UniversalFactorizationRing.lean` |
-| `src/Lib/General/Algebra/SeriesCongruences.lean` | `New.degree_le_order_prod_pow` | `MvPowerSeries.truncTotal_subst_eq_truncTotal_subst_sum` | `Mathlib/RingTheory/MvPowerSeries/Substitution.lean` |
 | `src/Lib/General/Algebra/SharpMinors.lean` | `New.Selmer.exists_span_row_eq_rowLattice` | `Submodule.finiteQuotient_iff` | `Mathlib/LinearAlgebra/FreeModule/Finite/Quotient.lean` |
 | `src/Lib/General/Analysis/FourierTransforms.lean` | `New.IsDualFamily.fourier_inversion` | `UnitAddTorus.hasSum_mFourier_series_of_summable` | `Mathlib/Analysis/Fourier/AddCircleMulti.lean` |
 | `src/Lib/General/Analysis/HolomorphicIntegrals.lean` | `New.eventually_differentiableAt_integral` | `hasFDerivAt_integral_of_dominated_loc_of_lip` | `Mathlib/Analysis/Calculus/ParametricIntegral.lean` |
@@ -84,7 +76,6 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/General/LinearAlgebra/PolarDecomposition.lean` | `New.exists_orthonormal_mul` | `LDL.lowerInv`, `IsWellFounded.wellOrderExtension` | `Mathlib/Analysis/Matrix/LDL.lean`, `Mathlib/Order/Extension/Well.lean` |
 | `src/Lib/General/Measure/IntegralOperators.lean` | `New.IsL2Contraction.pi_fin` | `MeasureTheory.Integrable.fin_nat_prod`, `MeasureTheory.integral_fin_nat_prod_eq_prod` | `Mathlib/MeasureTheory/Integral/Pi.lean` |
 | `src/Lib/General/Measure/IntegralOperators.lean` | `New.IsL2Contraction.pi` | `MeasureTheory.integral_fintype_prod_eq_prod` | `Mathlib/MeasureTheory/Integral/Pi.lean` |
-| `src/Lib/General/Measure/IntegralOperators.lean` | `New.lintegral_pi_prod` | `MeasureTheory.integral_fintype_prod_eq_prod` | `Mathlib/MeasureTheory/Integral/Pi.lean` |
 | `src/Lib/General/Measure/IntegralOperators.lean` | `New.measurePreserving_sigma` | `MeasureTheory.measurePreserving_piEquivPiSubtypeProd`, `MeasureTheory.Measure.infinitePi_map_piCurry` | `Mathlib/MeasureTheory/Constructions/Pi.lean`, `Mathlib/Probability/ProductMeasure.lean` |
 | `src/Lib/General/Measure/QuadricDisintegration.lean` | `New.Floors.continuous_lintegral_and_lt_top` | `continuousOn_integral_of_compact_support` | `Mathlib/MeasureTheory/Integral/Bochner/Set.lean` |
 | `src/Lib/General/Measure/QuadricDisintegration.lean` | `New.Floors.continuous_lintegral_of_compact_support` | `continuousOn_integral_of_compact_support` | `Mathlib/MeasureTheory/Integral/Bochner/Set.lean` |
@@ -115,7 +106,6 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/Shimura/Uniformisation/HolomorphicFamilies.lean` | `New.relIndex_comap_eq_det_mul_conj_det` | `ZLattice.covolume_div_covolume_eq_relIndex` | `Mathlib/Algebra/Module/ZLattice/Covolume.lean` |
 | `src/Lib/SiegelWeil/Tower/LineGaussSums.lean` | `New.Exchange.stdColDatum_one_mul_mul` | `Matrix.det_conj_of_mul_eq_one` | `Mathlib/LinearAlgebra/Determinant.lean` |
 | `src/Lib/Weil/Construction/FourierInversion.lean` | `New.relIndex_map_nsmul_toAddSubgroup` | `AddSubgroup.relIndex_map_nsmul` | `Mathlib/GroupTheory/IndexNSmul.lean` |
-| `src/Lib/Weil/DualPair/Kronecker.lean` | `New.kroneckerGL` | `Matrix.GeneralLinearGroup.kronecker` | `Mathlib/LinearAlgebra/Matrix/GeneralLinearGroup/Defs.lean` |
 | `src/Lib/Weil/Unramified/HeckeGL.lean` | `New.eventually_localCongruence_subset` | `Valued.tendsto_zero_pow_of_v_lt_one` | `Mathlib/Topology/Algebra/Valued/WithZeroMulInt.lean` |
 | `src/New/Congruences/FirstOrder/OnePrime.lean` | `New.Patching.commutingProd` | `Subgroup.noncommPiCoprod` | `Mathlib/GroupTheory/NoncommPiCoprod.lean` |
 | `src/New/Congruences/FirstOrder/OnePrime.lean` | `New.Patching.transfer_eq_prod_cosetComponent` | `MonoidHom.transfer_def`, `Subgroup.leftTransversals.diff` | `Mathlib/GroupTheory/Transfer.lean` |
@@ -128,7 +118,7 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/New/Spanning/Bessel/GramSection.lean` | `IsBoundedInCell.isUnit_det_and_norm_inv_le` | `Units.add` | `Mathlib/Analysis/Normed/Ring/Units.lean` |
 | `src/New/Spanning/Bessel/GramSection.lean` | `New.RealPlace.norm_fderiv_sectionMatrix_le` | `Complex.norm_fderiv_le_div_of_mapsTo_ball` | `Mathlib/Analysis/Complex/Schwarz.lean` |
 | `src/New/Spanning/RemainingTerms/OneRealPlace.lean` | `New.RealPlace.norm_det_subframeBlock` | `Matrix.mulVec_cramer` | `Mathlib/LinearAlgebra/Matrix/Adjugate.lean` |
-| `src/New/Spanning/SecondMoment/PositiveType.lean` | `New.expect_addChar_dotProduct` | `AddChar.expect_eq_ite` | `Mathlib/Analysis/Fourier/FiniteAbelian/Orthogonality.lean` |
+| `src/New/Spanning/SecondMoment/PositiveType.lean` | `New.card_mul_sum_det_eq_zero_le` | `AddChar.expect_eq_ite` | `Mathlib/Analysis/Fourier/FiniteAbelian/Orthogonality.lean` |
 | `src/New/UpperBound/Seesaw/IntegralAsCosetSum.lean` | `New.Seesaw.exists_index_dvd_pow_of_pow_mem` | `IsPGroup.index` | `Mathlib/GroupTheory/PGroup.lean` |
 
 ## Copyright and author lines of these Mathlib files

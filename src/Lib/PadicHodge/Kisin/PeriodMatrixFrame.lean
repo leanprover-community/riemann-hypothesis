@@ -207,7 +207,7 @@ lemma not_dvd_det_of_frobenius {Q ρ : Matrix d d Ainf} {B : Matrix d d c.S}
     ((add_right_injective M).nat_tendsto_atTop.eventually h_eventually).exists
   choose n s hs using approx
   -- `C = B · φ B ⋯ φⁿ⁻¹ B` carries `a ^ p ^ n` to the kernel, and `K · det C ∣ K ^ p ^ n`.
-  have ⟨C, hCK, hCa⟩ : ∃ C : Matrix d d c.S,
+  let ⟨C, hCK, hCa⟩ : ∃ C : Matrix d d c.S,
       K * R (det C) ∣ K ^ p ^ n ∧ Q.map π *ᵥ C.map R *ᵥ a ^ p ^ n = 0 := by
     clear hs
     induction n with

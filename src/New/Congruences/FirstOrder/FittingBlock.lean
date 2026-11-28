@@ -316,9 +316,6 @@ def IsCommonRibetElement [Fintype J] {I : Type*} (β : I → Y → L) {𝓧 : Se
 
 end Definitions
 
--- The coefficientwise map makes `MvPolynomial J L` an algebra over `MvPolynomial J O`.
-attribute [local instance] algebraMvPolynomial
-
 section SmallLemmas
 
 variable {O L Y G J σ W : Type} [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ]

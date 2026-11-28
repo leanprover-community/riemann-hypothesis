@@ -299,7 +299,7 @@ noncomputable def blockScalar (τ : Φ) : Matrix (n' τ) (n' τ) R :=
 omit [DecidableEq Φ] in
 /-- The weight at `(τ, i)` is the weight at `(τ, i + 1)` plus `κ τ (i + 1)` when `i + 1 < N τ`:
 the columns of height `i + 1` are counted at `i` but not at `i + 1`. -/
-@[grind]
+@[grind =]
 lemma diagramWeight_eq_succ_add (τ : Φ) (i : ℕ) :
     diagramWeight N κ (τ, i) =
       diagramWeight N κ (τ, i + 1) + if i + 1 < N τ then κ τ (i + 1) else 0 := by
