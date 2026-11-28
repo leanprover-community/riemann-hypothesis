@@ -68,6 +68,16 @@ class New.DiscreteSeries.UnitarySignFrame (𝔰 : Shape)
   /-- The matrix `p` is unitary. -/
   mem_unitary : matrix.val ∈ unitary (Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)
 
+open scoped Matrix.Norms.L2Operator in
+/-- Conjugating a matrix by the unitary sign frame preserves its operator norm. -/
+lemma New.DiscreteSeries.UnitarySignFrame.norm_conj {𝔰 : Shape} {ε : 𝔰.BesselIndex → ℤˣ}
+    (p : New.DiscreteSeries.UnitarySignFrame 𝔰 ε)
+    (A : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) :
+    ‖p.matrix⁻¹.val * A * p.matrix.val‖ = ‖A‖ := by
+  rw [Units.inv_eq_of_mul_eq_one_left (Unitary.star_mul_self_of_mem p.mem_unitary),
+    CStarRing.norm_mul_mem_unitary _ p.mem_unitary,
+    CStarRing.norm_mem_unitary_mul _ (Unitary.star_mem p.mem_unitary)]
+
 /-- The Bessel system `B` has type `(l, kw)`: its full function is the Bessel function of the
 discrete series of parameter `l`, with values in the representation of `H` of weight `kw`. -/
 structure New.Filling.IsDiscreteSeriesBessel {𝔰 : Shape} {ε : 𝔰.BesselIndex → ℤˣ} {b : ℝ} {f : ℕ}

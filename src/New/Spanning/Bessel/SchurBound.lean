@@ -71,9 +71,7 @@ lemma isBoundedMeasurable_formalDegree_mul_dsCoeffInFrame (h_gap : l.HasLargeGap
 `p.matrix⁻¹ * Matrix.single i j 1 * p.matrix`, has norm one. -/
 lemma norm_frame_conj_single (i j : 𝔰.BesselIndex) :
     ‖p.matrix⁻¹.val * Matrix.single i j (1 : ℂ) * p.matrix.val‖ = 1 := by
-  rw [Units.inv_eq_of_mul_eq_one_left (Unitary.star_mul_self_of_mem p.mem_unitary),
-    norm_mul_mem_unitary _ p.mem_unitary,
-    norm_mem_unitary_mul _ (Unitary.star_mem p.mem_unitary)]
+  rw [p.norm_conj]
   simp [l2_opNorm_single]
 
 /-- Let `l = 2λ` be a doubled Harish-Chandra parameter with `l.HasLargeGap A` (gap `500 r³ + A`) and
