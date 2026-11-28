@@ -11,6 +11,7 @@ import Mathlib.Geometry.Manifold.Algebra.SMul
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.SimpleRing.Principal
+public import TauCeti.Analysis.Matrix.ContDiff
 public import Lib.Speed
 import Lib.General.Measure.IdempotentKernel
 
@@ -224,7 +225,7 @@ open Matrix ContDiff Norms.Elementwise NormedSpace
 
 namespace New
 
-variable {X l m o : Type*}
+variable {X l m : Type*}
   {N : ℕ∞ω} [NormedAddCommGroup X] [NormedSpace ℝ X] [Fintype l] [Fintype m]
 
 /-- A map from a finite-dimensional real normed space to a real normed space that is of class
@@ -244,14 +245,6 @@ lemma exists_contDiff_eventuallyEq {Y : Type*} [FiniteDimensional ℝ X] [Normed
 /-- Complex conjugation is smooth over `ℝ`, of every order `N`. -/
 @[fun_prop]
 lemma contDiff_conj : ContDiff ℝ N (starRingEnd ℂ) := Complex.conjCLE.contDiff
-
-/-- Matrix multiplication of complex matrices is smooth over `ℝ` for the elementwise norm. -/
-@[fun_prop]
-lemma contDiff_matrix_mul [Fintype o] :
-    ContDiff ℝ N fun p : Matrix l m ℂ × Matrix m o ℂ ↦ p.1 * p.2 := by
-  refine contDiff_pi' fun i ↦ contDiff_pi' fun j ↦ ?_
-  simp only [Matrix.mul_apply]
-  fun_prop
 
 /-- The conjugate transpose of complex matrices is smooth over `ℝ` for the elementwise norm. -/
 @[fun_prop]

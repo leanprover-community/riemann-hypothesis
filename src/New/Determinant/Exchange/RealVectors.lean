@@ -61,12 +61,12 @@ private lemma contDiff_mat_mul {X l o k : Type*} {N : ℕ∞ω} [NormedAddCommGr
     [NormedSpace ℝ X] [Fintype l] [Fintype o] [Fintype k]
     {f : X → Matrix l o ℂ} {g : X → Matrix o k ℂ}
     (hf : ContDiff ℝ N f) (hg : ContDiff ℝ N g) : ContDiff ℝ N fun x ↦ f x * g x :=
-  contDiff_matrix_mul.comp (hf.prodMk hg)
+  hf.matrix_mul hg
 
 private lemma continuous_mat_mul {X l o k : Type*} [TopologicalSpace X] [Fintype l] [Fintype o]
     [Fintype k] {f : X → Matrix l o ℂ} {g : X → Matrix o k ℂ}
     (hf : Continuous f) (hg : Continuous g) : Continuous fun x ↦ f x * g x :=
-  (contDiff_matrix_mul (N := 0)).continuous.comp (hf.prodMk hg)
+  hf.matrix_mul hg
 
 private lemma contDiff_finset_prod {ι X : Type*} {N : ℕ∞ω} [NormedAddCommGroup X] [NormedSpace ℝ X]
     {s : Finset ι} {f : ι → X → ℂ} (hf : ∀ i ∈ s, ContDiff ℝ N (f i)) :
