@@ -90,8 +90,12 @@ class ValuativeArc (O : Type) [CommRing.{0} O] extends
   /-- The generic point is the morphism induced by the algebra map `O → ℂ`. -/
   genericPt_eq : genericPt = specMap algebraMap := by rfl
 
--- The projection ranks low, so that other algebra structures on `ℂ` are found first.
+-- The projections rank low, so that other instances on `ℂ` are found first. Those to classes of
+-- propositions rank below Mathlib's fallback instances (priority 100), such as
+-- `ValuationRing.of_field`.
 attribute [instance 100] ValuativeArc.toAlgebra
+attribute [instance 10] ValuativeArc.toIsDomain ValuativeArc.toValuationRing
+  ValuativeArc.toIsLocalization'
 
 instance : ValuativeArc ℂ where
   genericPt := 𝟙 _
