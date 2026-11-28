@@ -541,6 +541,55 @@ lemma exists_isCommonRibetElement_ellVal_le {P : Parameters} {D : Data P} {ℓ :
         rw [ellVal_pow, ellVal_natCast (NeZero.ne _), add_comm, Nat.cast_ofNat]
     _ ≤ liftValuationBound ℓ O ram sel := hd_le
 
+/-- Let the normalised representations `N x` (`New.Selmer.normalizedRep`) of the systems `x` of
+base level of `B` have integral characteristic polynomials. There are finitely many Galois elements
+`elt k` and nonzero elements `value k` of the valuation ring of `ℚ̄_ℓ` such that
+`∏ k, (value k - det (1 - N x (elt k)))` vanishes at every system `x` of base level that is not a
+weak lift (`New.Selmer.IsWeakLift`). -/
+lemma exists_prod_sub_det_one_sub_eq_zero_of_not_isWeakLift {P : Parameters} {D : Data P}
+    {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {r n : Type} [Fintype r] [DecidableEq r] [Fintype n]
+    [DecidableEq n] {O : DescentPair D.E r n}
+    (B : BaseLevel (stdSpace D.E n) (O.columnCount, O.detExp) D.chosenGroupOrder)
+    (h_int : ∀ (x : B.Eigensystem ![]) (g : Gal(Ω/D.E)) (i : ℕ),
+      ‖(normalizedRep O x.val.galRep g).val.charpoly.coeff i‖ ≤ 1) :
+    ∃ (K : Type) (_ : Fintype K) (elt : K → Gal(Ω/D.E)) (value : K → EllAdicIntegers),
+      (∀ k : K, value k ≠ 0) ∧ ∀ x : B.Eigensystem ![], ¬IsWeakLift O x.val →
+        ∏ k : K, (algebraMap EllAdicIntegers (PadicAlgCl ℓ) (value k) -
+          (1 - (normalizedRep O x.val.galRep (elt k)).val).det) = 0 := by
+  simpa only [IsWeakLift, not_forall] using
+    exists_prod_sub_det_one_sub_eq_zero
+      (fun (x : B.Eigensystem ![]) g ↦ (normalizedRep O x.val.galRep g).val) h_int
+
+/-- Let `value k` be finitely many nonzero `ℓ`-adic integers and `c` a nonzero natural number. Then
+`2 m! ((∏ k, value k) c²) ^ (t + 1)`, of the shape of the constant in
+`New.Patching.BaseLevel.exists_diagOp_mem_ellIntegralForms`, divides a positive power of `ℓ`. -/
+private lemma exists_natCast_mul_prod_mul_pow_dvd_prime_pow_succ {ℓ : ℕ} [ThePrime ℓ] {K : Type}
+    [Fintype K] {value : K → EllAdicIntegers} (h_ne : ∀ k : K, value k ≠ 0) (m t c : ℕ)
+    [NeZero c] :
+    ∃ ν : ℕ, ((2 * m.factorial : ℕ) : EllAdicIntegers) * ((∏ k : K, value k) * c ^ 2) ^ (t + 1) ∣
+      (ℓ : EllAdicIntegers) ^ (ν + 1) := by
+  refine exists_dvd_prime_pow_succ ?_
+  have coe_eq (a : EllAdicIntegers) : a.val = algebraMap EllAdicIntegers (PadicAlgCl ℓ) a := rfl
+  have h_prod : ∏ k : K, (value k).val ≠ 0 :=
+    Finset.prod_ne_zero_iff.2 fun k _ h_zero ↦ h_ne k (Subtype.ext h_zero)
+  simpa [NeZero.ne, coe_eq, map_ofNat] using h_prod
+
+/-- The normalising character `New.Selmer.normalizingAvatar O` is a continuous character of the
+compact Galois group, so its values have norm `1`. -/
+lemma norm_normalizingAvatar {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] (O : DescentPair D.E r n)
+    (g : Gal(Ω/D.E)) : ‖(normalizingAvatar O g : PadicAlgCl ℓ)‖ = 1 :=
+  ContinuousMonoidHom.norm_apply_eq_one_of_compactSpace
+    ⟨normalizingAvatar O, (by fun_prop : Continuous (normalizingAvatar O))⟩ g
+
+/-- A system of base level is a system of every level `L`, since the forms of base level are forms
+of level `L` (`New.Patching.BaseLevel.formsOfLevel_base_le`). -/
+lemma _root_.New.Patching.BaseLevel.eigensystem_base_subset {E J n : Type} [Field E] [CMType E]
+    [Fintype n] [DecidableEq n] {V : Space E n 1} {κ : Weight E} {m : ℕ} {B : BaseLevel V κ m}
+    (L : J → FinPlace E) : B.Eigensystem ![] ⊆ B.Eigensystem L := by
+  rintro x ⟨f, ⟨hf_sys, hf_level⟩, hf_ne⟩
+  exact ⟨f, ⟨hf_sys, B.formsOfLevel_base_le L hf_level⟩, hf_ne⟩
+
 /-- The operator at a base system `x₀ ∈ 𝓧`. Let the types `c` form a lift setting for the pair `O`
 and the twist `ϑ`, of ramification at most `ram`. Let each system in `𝓧` lift a row with a twisted
 lattice, the Selmer length for `x₀` being at most the finite `sel`. Let `B` be base data. At every
@@ -599,39 +648,26 @@ lemma exists_ellVal_le_and_diagOp_mem_ellIntegralForms {P : Parameters} {D : Dat
     norm_charpoly_coeff_le_one_of_continuous (h_isRepOfType K u hu x x.prop).continuous g i
   have h_int_base : ∀ (x : B.Eigensystem ![]) (g : Gal(Ω/D.E)) (i : ℕ),
       ‖(N x g).val.charpoly.coeff i‖ ≤ 1 := h_int (by simp)
-  obtain ⟨K, _, elt, value, h_value_ne, h_factor⟩ :
-      ∃ (K : Type) (_ : Fintype K) (elt : K → Gal(Ω/D.E)) (value : K → EllAdicIntegers),
-        (∀ k : K, value k ≠ 0) ∧ ∀ x : B.Eigensystem ![], ¬IsWeakLift O x.val →
-          ∏ k : K, (algebraMap EllAdicIntegers (PadicAlgCl ℓ) (value k) -
-            (1 - (N x (elt k)).val).det) = 0 := by
-    simpa only [IsWeakLift, not_forall] using
-      exists_prod_sub_det_one_sub_eq_zero (fun (x : B.Eigensystem ![]) g ↦ (N x g).val) h_int_base
-  -- A triangle of places of level `ℓ ^ (ν + 1)`, a power that the constant `bound` divides.
+  obtain ⟨K, _, elt, value, h_value_ne, h_factor⟩ :=
+    exists_prod_sub_det_one_sub_eq_zero_of_not_isWeakLift B h_int_base
+  -- A triangle of places of level `ℓ ^ (ν + 1)`, a power that the constant
+  -- `2 * (card n)! * ((∏ k, value k) * D.chosenGroupOrder ^ 2) ^ (card J + 1)` divides.
   choose h h_le h_small g₁ hg₁_gen hg₁_dvd using exists_cyclotomicChar_pow_sub_one_dvd D ℓ
   choose τ₀ R₀ hR₀ h_trace₀ _ using h_lift x₀ hx₀
   choose J _ _ exponent h_places using
     exists_taylorWilesPlaces_hasRootChain hc hϑ B h_int_base hR₀ h_trace₀ h_small hg₁_gen hg₁_dvd
-  let bound : EllAdicIntegers := (2 * (card n).factorial : ℕ) *
-    ((∏ k : K, value k) * D.chosenGroupOrder ^ 2) ^ (card J + 1)
-  have h_bound_ne : bound.val ≠ 0 := by
-    have coe_eq (a : EllAdicIntegers) : a.val = algebraMap EllAdicIntegers (PadicAlgCl ℓ) a := rfl
-    have h_prod : ∏ k : K, (value k).val ≠ 0 :=
-      Finset.prod_ne_zero_iff.2 fun k _ h_zero ↦ h_value_ne k (Subtype.ext h_zero)
-    simpa [bound, NeZero.ne, coe_eq, map_ofNat] using h_prod
-  choose ν h_dvd using exists_dvd_prime_pow_succ h_bound_ne
+  choose ν h_dvd using exists_natCast_mul_prod_mul_pow_dvd_prime_pow_succ h_value_ne (card n)
+    (card J) D.chosenGroupOrder
   choose Q h_tri h_good h_offLevel e he h_string using h_places (ν + 1) ν.succ_pos
   -- `N x` is the twist of `x.galRep` by `normalizingAvatar O`, which is continuous, so integral.
   let a : AbsGal D →* EllAdicIntegers :=
     ((coeHom (PadicAlgCl ℓ)).comp (normalizingAvatar O)).codRestrict (intQpBar ℓ)
-      fun g ↦ (ContinuousMonoidHom.norm_apply_eq_one_of_compactSpace
-        ⟨normalizingAvatar O, (by fun_prop : Continuous (normalizingAvatar O))⟩ g).le
+      fun g ↦ (norm_normalizingAvatar O g).le
   have h_twist : BaseLevel.IsGalRepTwist N a := fun _ _ ↦ rfl
   have h_tame (j : J) : a (Q.frobData j).isPlaceOver.tameGenerator = 1 := by
     obtain ⟨h_notMem, -⟩ := h_tri.isTameGeneratorFamily j
     exact Subtype.ext (normalizingAvatar_tameGenerator O (Q.frobData j).isPlaceOver h_notMem)
-  have hx₀Q : x₀ ∈ B.Eigensystem Q.place := by
-    obtain ⟨f, ⟨hf_sys, hf_level⟩, hf_ne⟩ := hx₀B
-    exact ⟨f, ⟨hf_sys, B.formsOfLevel_base_le Q.place hf_level⟩, hf_ne⟩
+  have hx₀Q : x₀ ∈ B.Eigensystem Q.place := B.eigensystem_base_subset Q.place hx₀B
   let 𝓨 : Set (B.Eigensystem Q.place) := Subtype.val ⁻¹' 𝓧
   let x₁ : 𝓨 := ⟨⟨x₀, hx₀Q⟩, hx₀⟩
   -- A base system at which `δ₀` does not vanish is a weak lift.
