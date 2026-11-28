@@ -69,22 +69,15 @@ lemma iteratedDeriv_transform {R : ℝ → ℝ} {C : ℝ} {Φ : ℂ → ℂ} (hR
     have h_diff (v : ℝ) (z : ℂ) : HasDerivAt (fun z : ℂ ↦ G z v) (-v * G z v) z := by
       simpa [G, mul_comm, mul_left_comm] using
         (((hasDerivAt_id z).const_sub 1).mul_const (v : ℂ)).cexp.const_mul ((-v : ℂ) ^ k * R v)
-    have h_meas : ∀ᶠ z in 𝓝 s, AEStronglyMeasurable (G z) (volume.restrict (Ioi 0)) :=
-      .mono h_nhds fun z hz ↦ (ih z hz).left.aestronglyMeasurable
-    have h_bound_int : IntegrableOn (fun v : ℝ ↦ ‖G (ε + 2) v‖ / ε) (Ioi 0) :=
-      (ih (ε + 2) (by simpa)).left.norm.div_const ε
-    obtain ⟨h_int, h_deriv⟩ : IntegrableOn (fun v : ℝ ↦ -v * G s v) (Ioi 0) volume ∧
-        HasDerivAt (fun z : ℂ ↦ ∫ v in Ioi 0, G z v) (∫ v in Ioi 0, -v * G s v) s :=
-      hasDerivAt_integral_of_dominated_loc_of_deriv_le
-        ((isOpen_re_gt _).mem_nhds (lt_tsub_iff_right.1 hεs)) h_meas (ih s hs).left (by fun_prop)
-        (ae_restrict_of_forall_mem measurableSet_Ioi h_dom) h_bound_int
-        (.of_forall fun v z _ ↦ h_diff v z)
-    have h_eq : iteratedDeriv k Φ =ᶠ[𝓝 s] fun z : ℂ ↦ ∫ v in Ioi 0, G z v :=
-      .mono h_nhds fun z hz ↦ (ih z hz).right
+    obtain ⟨h_int, h_deriv⟩ := hasDerivAt_integral_of_dominated_loc_of_deriv_le
+      ((isOpen_re_gt _).mem_nhds (lt_tsub_iff_right.1 hεs))
+      (.mono h_nhds fun z hz ↦ (ih z hz).1.aestronglyMeasurable) (ih s hs).1 (by fun_prop)
+      (ae_restrict_of_forall_mem measurableSet_Ioi h_dom)
+      ((ih (ε + 2) (by simpa)).1.norm.div_const ε) (.of_forall fun v z _ ↦ h_diff v z)
     have h_succ (v : ℝ) : (-v : ℂ) ^ (k + 1) * R v * cexp ((1 - s) * v) = -v * G s v := by
       simp [G, pow_succ', mul_assoc]
     simp only [h_succ, iteratedDeriv_succ]
-    exact ⟨h_int, (h_deriv.congr_of_eventuallyEq h_eq).deriv⟩
+    exact ⟨h_int, (h_deriv.congr_of_eventuallyEq (.mono h_nhds fun z hz ↦ (ih z hz).2)).deriv⟩
 
 /-- For `H > 0` the moments of `e^{-H v}` on `(0, ∞)` exist: the function `v ^ j e^{-H v}` is
 integrable there, with integral `j! / H ^ (j + 1)`. -/
@@ -103,19 +96,17 @@ lemma integrableOn_and_integral_gamma_mul_quadratic {H : ℝ} (hH : 0 < H) (k : 
       ∫ v in Ioi (0 : ℝ), v ^ k * rexp (-H * v) * (a + b * (v - (k + 1) / H) ^ 2) =
         k ! / H ^ (k + 1) * (a + b * ((k + 1) / H ^ 2)) := by
   let f (j : ℕ) (v : ℝ) : ℝ := v ^ j * rexp (-H * v)
-  have h_moment (j : ℕ) : IntegrableOn (f j) (Ioi 0) ∧
-      ∫ v in Ioi (0 : ℝ), f j v = j ! / H ^ (j + 1) :=
-    integrableOn_and_integral_pow_mul_exp_neg_mul hH j
+  have h_moment := integrableOn_and_integral_pow_mul_exp_neg_mul hH
   have h_expand (v : ℝ) : v ^ k * rexp (-H * v) * (a + b * (v - (k + 1) / H) ^ 2) =
       (a + b * ((k + 1) / H) ^ 2) * f k v - 2 * b * ((k + 1) / H) * f (k + 1) v +
         b * f (k + 2) v := by ring
   have h_int (j : ℕ) (c : ℝ) : IntegrableOn (fun v : ℝ ↦ c * f j v) (Ioi 0) :=
-    (h_moment j).left.const_mul c
+    (h_moment j).1.const_mul c
   simp only [h_expand]
   refine ⟨((h_int k _).sub (h_int (k + 1) _)).add (h_int (k + 2) _), ?_⟩
   rw [integral_add ((h_int k _).sub' (h_int (k + 1) _)) (h_int (k + 2) _),
     integral_sub (h_int k _) (h_int (k + 1) _)]
-  simp only [integral_const_mul, (h_moment _).right, Nat.factorial_succ]
+  simp only [integral_const_mul, f, (h_moment _).2, Nat.factorial_succ]
   push_cast
   field
 
@@ -176,24 +167,20 @@ lemma norm_taylorCoeff_transform_sub_le (hR : Measurable R)
 lemma norm_iteratedDeriv_dslope_le {H η M : ℝ} (hH : 0 ≤ H) (hη : 0 < η)
     (hF : ∀ s ∈ closedBall (1 + H : ℂ) (H + η), DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ M) (k : ℕ) :
     ‖iteratedDeriv k (dslope F 1) (1 + H)‖ ≤ k ! * (2 * M / η) / (H + η) ^ k := by
-  have h_one : (1 : ℂ) ∈ ball (1 + H : ℂ) (H + η) := by
-    simp [dist_eq_norm, abs_of_nonneg hH, hη]
+  have h_one : (1 : ℂ) ∈ ball (1 + H : ℂ) (H + η) := by simp [dist_eq_norm, abs_of_nonneg hH, hη]
   have h_nhds : closedBall (1 + H : ℂ) (H + η) ∈ 𝓝 1 :=
     mem_of_superset (isOpen_ball.mem_nhds h_one) ball_subset_closedBall
   have h_diff : DifferentiableOn ℂ (dslope F 1) (closedBall (1 + H) (H + η)) :=
-    (differentiableOn_dslope h_nhds).2 fun s hs ↦ (hF s hs).left.differentiableWithinAt
+    (differentiableOn_dslope h_nhds).2 fun s hs ↦ (hF s hs).1.differentiableWithinAt
   refine norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le k (by positivity)
     (h_diff.diffContOnCl_ball le_rfl) fun s hs ↦ ?_
-  have h_centre : dist (1 : ℂ) (1 + H) = H := by simp [dist_eq_norm, hH]
   have h_far : η ≤ ‖s - 1‖ := by
-    linarith [dist_triangle s 1 (1 + H), mem_sphere.1 hs, dist_eq_norm s 1]
+    linarith [dist_triangle s 1 (1 + H), mem_sphere.1 hs, dist_eq_norm s 1,
+      show dist (1 : ℂ) (1 + H) = H by simp [dist_eq_norm, hH]]
   rw [le_div_iff₀' hη]
-  calc η * ‖dslope F 1 s‖ ≤ ‖(s - 1) • dslope F 1 s‖ := by grw [norm_smul, h_far]
-    _ = ‖F s - F 1‖ := by rw [sub_smul_dslope]
-    _ ≤ ‖F s‖ + ‖F 1‖ := norm_sub_le _ _
-    _ ≤ 2 * M := by
-        linarith [(hF s (sphere_subset_closedBall hs)).right,
-          (hF 1 (ball_subset_closedBall h_one)).right]
+  calc η * ‖dslope F 1 s‖ ≤ ‖F s - F 1‖ := by grw [← sub_smul_dslope, norm_smul, h_far]
+    _ ≤ 2 * M := by linarith [norm_sub_le (F s) (F 1),
+        (hF s (sphere_subset_closedBall hs)).2, (hF 1 (ball_subset_closedBall h_one)).2]
 
 /-- The normalised Taylor coefficient `(-H) ^ k H / k! · g⁽ᵏ⁾(1 + H)` of the slope `g = dslope F 1`,
 that is `(F s - F 1) / (s - 1)`, is at most `4 M H / η · exp (-(k + 1) η / (2 H))` in norm if `F`
