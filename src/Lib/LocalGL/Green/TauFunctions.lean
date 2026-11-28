@@ -499,6 +499,18 @@ private lemma count_aroots_eq_ite {S : k[X]} (hP : Irreducible P) (hm : P.Monic)
   rw [count_eq_of_nodup h_nodup]
   simp [h_mem_iff]
 
+/-- Pairing the cuspidal function `greenCuspidal k η` with the product `B.mulMoebius * constOne`
+obeys the Leibniz rule: it is the mean of `B` over the units of `L` times the rank `0` pairing of
+`constOne` with itself, plus the rank `0` pairing of `B.mulMoebius` with `constOne`. -/
+private lemma rankInner_greenCuspidal_mulMoebius_one {L : Type*} [Field L] [Algebra k L]
+    [Finite L] [Algebra L K] [IsScalarTower k L K] (η : MulChar K ℂ) (B : Hall k) :
+    rankInner (finrank k L) (greenCuspidal k η) (B.mulMoebius * constOne) =
+      finMean (fun z : Lˣ ↦ conj (η (algebraMap L K z)) * B (simClassOf (mulLeft k z.val))) *
+        rankInner 0 (constOne : Hall k) constOne +
+      rankInner 0 constOne B.mulMoebius * rankInner (finrank k L) (greenCuspidal k η) constOne := by
+  simp [rankInner_mul_of_isCuspidal (isCuspidal_greenCuspidal η) finrank_pos.ne',
+    rankInner_greenCuspidal_mulMoebius η (IsScalarTower.toAlgHom k L K)]
+
 open scoped Classical in
 /-- Let `T` be a faithful multiplicative character of the algebraically closed field `K ⊇ k`
 (`IsFaithfulMulChar`), and let `P` be monic irreducible with `P(0) ≠ 0`. Let `τ_P = greenTau T P` be
@@ -541,14 +553,7 @@ lemma rankInner_greenTau (hP : Irreducible P) (h0 : P.coeff 0 ≠ 0) (hm : P.Mon
     simp only [finMean_conj_mul_eq_ite, h_j_iff]
   -- `greenCuspidal k (θ χ)` is cuspidal, so pairing with it obeys the Leibniz rule on the product
   -- `B.mulMoebius * constOne` (`rankInner_mul_of_isCuspidal`).
-  have h_pair (B : Hall k) :
-      rankInner (finrank k L) (greenCuspidal k (θ χ)) (B.mulMoebius * constOne) =
-        finMean (fun z : Lˣ ↦ conj (θ χ (algebraMap L K z)) * B (simClassOf (mulLeft k z.val))) *
-            rankInner 0 (constOne : Hall k) constOne +
-          rankInner 0 constOne B.mulMoebius *
-            rankInner (finrank k L) (greenCuspidal k (θ χ)) constOne := by
-    simp [rankInner_mul_of_isCuspidal (isCuspidal_greenCuspidal _) finrank_pos.ne',
-      rankInner_greenCuspidal_mulMoebius _ (IsScalarTower.toAlgHom k L K)]
+  have h_pair (B : Hall k) := rankInner_greenCuspidal_mulMoebius_one (L := L) (θ χ) B
   rw [greenTau_eq hP h0 hχ, h_deg, ← natCard_eq_pow_finrank]
   refine ⟨fun S hS hSm hS0 ↦ ?_, fun h1 ↦ ?_⟩
   · obtain hS_deg | hS_deg := ne_or_eq S.natDegree (finrank k L)
