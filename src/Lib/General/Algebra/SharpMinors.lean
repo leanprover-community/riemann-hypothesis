@@ -3,7 +3,7 @@ module
 import TauCeti.LinearAlgebra.Determinant.Basic
 import TauCeti.RingTheory.Length.Determinant
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-import Mathlib.Algebra.Module.PID
+import TauCeti.RingTheory.DiscreteValuationRing.MatlisDual
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
@@ -142,26 +142,27 @@ lemma length_linearMap_quotSpan_of_dvd {a d : O} (ha : a ≠ 0) (hd : d ∣ a) :
   exact ((quotEquivOfEq _ _ h_ker.symm).trans (φ.quotKerEquivOfSurjective h_surj)).length_eq.symm
 
 /-- Over a discrete valuation ring `O`, a finitely generated module `Q` that `a ≠ 0` annihilates
-has the same length as the module of its linear maps to `QuotSpan a`, that is, `O / a`. This
-follows from the structure theorem for such modules. -/
+has the same length as the module of its linear maps to `O / a`. Its Matlis dual consists of maps
+with values in the `a`-torsion of `Frac(O) / O`, which is isomorphic to `O / a`. -/
 lemma length_linearMap_quotSpan {Q : Type*} [AddCommGroup Q] [Module O Q] [Module.Finite O Q]
     {a : O} (ha : a ≠ 0) (h_kill : ∀ x : Q, a • x = 0) :
     length O (Q →ₗ[O] QuotSpan a) = length O Q := by
-  classical
-  -- `Q` is a product of cyclic modules `O / d i`, and `d i ∣ a` as `a` kills each factor.
-  have h_torsion : IsTorsion O Q := fun x ↦ ⟨⟨a, mem_nonZeroDivisors_of_ne_zero ha⟩, h_kill x⟩
-  -- The structure theorem: `e` maps `Q` onto the sum of the modules `O / p i ^ n i`.
-  obtain ⟨ι, _, p, -, n, ⟨e⟩⟩ := equiv_directSum_of_isTorsion h_torsion
-  let d (i : ι) : O := p i ^ n i
-  let e' : Q ≃ₗ[O] ∀ i, QuotSpan (d i) := e.trans DFinsupp.linearEquivFunOnFintype
-  have h_dvd (i : ι) : d i ∣ a := by
-    have h_one : a • (1 : QuotSpan (d i)) = 0 := by
-      simpa using congrFun (congrArg e' (h_kill (e'.symm (Pi.single i 1)))) i
-    simpa [← Ideal.Quotient.eq_zero_iff_dvd, Algebra.smul_def] using h_one
-  calc length O (Q →ₗ[O] QuotSpan a) = length O (∀ i, QuotSpan (d i) →ₗ[O] QuotSpan a) :=
-      ((LinearMap.lsum O _ O).trans (e'.symm.congrLeft _ O)).length_eq.symm
-    _ = length O Q := by
-      simp [e'.length_eq, length_pi_of_fintype, length_linearMap_quotSpan_of_dvd ha (h_dvd _)]
+  let E := FractionRing O ⧸ LinearMap.range (Algebra.linearMap O (FractionRing O))
+  let S := torsionBySet O E (Ideal.span {a})
+  let e : QuotSpan a ≃ₗ[O] S := quotientEquivTorsionBySet (K := FractionRing O) ha
+  let incl : (Q →ₗ[O] S) →ₗ[O] (Q →ₗ[O] E) := LinearMap.llcomp O Q S E S.subtype
+  have hi : Function.Injective incl := fun f g h ↦
+    LinearMap.ext fun x ↦ Subtype.ext (LinearMap.congr_fun h x)
+  have hs : Function.Surjective incl := by
+    intro f
+    have hf (x : Q) : f x ∈ S := by
+      change f x ∈ torsionBySet O E (Ideal.span {a})
+      rw [torsionBySet_span_singleton_eq, mem_torsionBy_iff, ← map_smul, h_kill x, map_zero]
+    exact ⟨f.codRestrict S hf, LinearMap.ext fun _ ↦ rfl⟩
+  calc length O (Q →ₗ[O] QuotSpan a) = length O (Q →ₗ[O] S) :=
+        (LinearEquiv.congrRight (M := Q) e).length_eq
+    _ = length O (Q →ₗ[O] E) := (LinearEquiv.ofBijective incl ⟨hi, hs⟩).length_eq
+    _ = length O Q := length_linearMap_fractionRing_quotient (K := FractionRing O) Q
 
 /-- Over a discrete valuation ring and for `a ≠ 0` the lattice `rowLattice A a` of the rows of
 `A` and `a • 1` is free of full rank, so it is spanned by the rows of a square matrix. -/
