@@ -423,56 +423,82 @@ lemma simClassOf_eq_dualMap : simClassOf g = simClassOf g.dualMap := by
     mul_apply_apply, Algebra.smul_mul_assoc, LinearMap.dualMap_apply, Algebra.mul_smul_comm,
     implies_true, D, E]
 
-open scoped Classical in
-/-- For finite `k`, the induction product makes the class functions a commutative ring. -/
-instance : CommRing (Hall k) := by
-  refine' { mul_assoc := _, .. } <;> intros <;> ext _ g
-  -- The laws of `0` and distributivity hold term by term; in `1 * a` only `W = ⊥` contributes,
-  -- in `a * 1` only `W = ⊤`.
-  any_goals solve
-    | simp [simClassOf_endOnQuot (g' := g) 1 _ ⟨⊥, _⟩ surjective_id rfl,
-        simClassOf_endOnSub (g := g) .id, finsum_eq_sum_of_fintype, injective_id, finrank_zero_iff,
-        subsingleton_iff_eq_bot, Subtype.coe_eq_iff, mul_add, sum_add_distrib, add_mul]
-  · -- Associativity. Both sides are sums over chains `U ≤ W` of stable subspaces: those of `W`
-    -- are those of the whole space below `W`, those of a quotient are those above its kernel.
-    have h_sums_sub (W : StableSubspace g) :=
-      sum_comap (g := W.endOnSub) W.val.subtype (congrFun rfl)
-    have h_sums_quot (W : StableSubspace g) :=
-      sum_comap (g := g) (g' := W.endOnQuot) W.val.mkQ (by intro; rfl)
-    simp_all only [ker_subtype, bot_le, filter_true, range_subtype, Subtype.coe_le_coe, sum_filter,
-      Subtype.forall, ker_mkQ, range_mkQ, le_top, Hall.mul_simClassOf, finsum_eq_sum_of_fintype,
-      Subtype.coe_eta, simClassOf_endOnSub_comap, sum_mul, ite_mul, mul_assoc, zero_mul, sum_comm,
-      simClassOf_endOnQuot_comap, mul_sum]
-    -- For `U ≤ W`, the quotient of `W` by `U` is the image of `W` in the quotient by `U`.
-    congr!
-    apply simClassOf_endOnQuot ((mkQ _).submoduleComap _) ?h_comm _ ?h_surj
+section
+open scoped Classical
+
+/-- Multiplication in `Hall k` is associative. -/
+lemma hall_mul_assoc (a b c : Hall k) : a * b * c = a * (b * c) := by
+  ext _ g
+  -- Associativity. Both sides are sums over chains `U ≤ W` of stable subspaces: those of `W`
+  -- are those of the whole space below `W`, those of a quotient are those above its kernel.
+  have h_sums_sub (W : StableSubspace g) :=
+    sum_comap (g := W.endOnSub) W.val.subtype (congrFun rfl)
+  have h_sums_quot (W : StableSubspace g) :=
+    sum_comap (g := g) (g' := W.endOnQuot) W.val.mkQ (by intro; rfl)
+  simp_all only [ker_subtype, bot_le, filter_true, range_subtype, Subtype.coe_le_coe, sum_filter,
+    Subtype.forall, ker_mkQ, range_mkQ, le_top, Hall.mul_simClassOf, finsum_eq_sum_of_fintype,
+    Subtype.coe_eta, simClassOf_endOnSub_comap, sum_mul, ite_mul, mul_assoc, zero_mul, sum_comm,
+    mul_sum]
+  -- For `U ≤ W`, the quotient of `W` by `U` is the image of `W` in the quotient by `U`.
+  congr!
+  · apply simClassOf_endOnQuot ((mkQ _).submoduleComap _) ?h_comm _ ?h_surj
     case h_comm => tauto
     case h_surj =>
       rintro ⟨⟨x⟩⟩
       tauto
     simp [submoduleComap, ker_restrict]
     rfl
-  · -- Commutativity. Replace `g` by its transpose on the right. Taking annihilators matches the
-    -- stable subspaces of `g` and of its transpose, and exchanges restriction and quotient up to
-    -- transposition.
-    nth_rw 2 [simClassOf_eq_dualMap]
-    rw [Hall.mul_simClassOf, Hall.mul_simClassOf, finsum_eq_sum_of_fintype,
-      finsum_eq_sum_of_fintype]
-    refine sum_nbij' (⟨dualAnnihilator ·, by aesop⟩)
-      (⟨dualCoannihilator ·, by grind [mem_dualCoannihilator, g.dualMap_apply]⟩) ?_ ?_ ?_ ?_ ?_
-    all_goals simp_intro W [Subspace.dualCoannihilator_dualAnnihilator_eq]
-    rw [simClassOf_eq_dualMap, mul_comm, simClassOf_eq_dualMap,
-      simClassOf_endOnSub W.val.mkQ.dualMap, simClassOf_endOnQuot W.val.subtype.dualMap]
-    · -- The transpose of the inclusion of `W` intertwines the transposes.
-      aesop
-    · exact dualMap_surjective_of_injective (Submodule.injective_subtype _)
-    · -- The kernel of the transposed inclusion is the annihilator of `W`.
-      aesop
-    · -- The transpose of the quotient map intertwines the transposes.
-      aesop
-    · exact dualMap_injective_of_surjective (mkQ_surjective _)
-    · -- The image of the transposed quotient map is the annihilator of `W`.
-      aesop (add simp [range_dualMap_mkQ_eq])
+  · exact simClassOf_endOnQuot_comap _ _ (range_mkQ _) _
+
+/-- Multiplication in `Hall k` is commutative. -/
+lemma hall_mul_comm (a b : Hall k) : a * b = b * a := by
+  ext _ g
+  -- Commutativity. Replace `g` by its transpose on the right. Taking annihilators matches the
+  -- stable subspaces of `g` and of its transpose, and exchanges restriction and quotient up to
+  -- transposition.
+  nth_rw 2 [simClassOf_eq_dualMap]
+  rw [Hall.mul_simClassOf, Hall.mul_simClassOf, finsum_eq_sum_of_fintype,
+    finsum_eq_sum_of_fintype]
+  refine sum_nbij' (⟨dualAnnihilator ·, by aesop⟩)
+    (⟨dualCoannihilator ·, by grind [mem_dualCoannihilator, g.dualMap_apply]⟩) ?_ ?_ ?_ ?_ ?_
+  all_goals simp_intro W [Subspace.dualCoannihilator_dualAnnihilator_eq]
+  rw [simClassOf_eq_dualMap, _root_.mul_comm, simClassOf_eq_dualMap,
+    simClassOf_endOnSub W.val.mkQ.dualMap, simClassOf_endOnQuot W.val.subtype.dualMap]
+  · -- The transpose of the inclusion of `W` intertwines the transposes.
+    aesop
+  · exact dualMap_surjective_of_injective (Submodule.injective_subtype _)
+  · -- The kernel of the transposed inclusion is the annihilator of `W`.
+    aesop
+  · -- The transpose of the quotient map intertwines the transposes.
+    aesop
+  · exact dualMap_injective_of_surjective (mkQ_surjective _)
+  · -- The image of the transposed quotient map is the annihilator of `W`.
+    aesop (add simp [range_dualMap_mkQ_eq])
+
+/-- For finite `k`, the induction product makes the class functions a commutative ring. -/
+instance : CommRing (Hall k) := by
+  refine'
+    { mul_assoc := hall_mul_assoc
+      mul_comm := hall_mul_comm
+      -- The laws of `0` and distributivity hold term by term; in `1 * a` only `W = ⊥` contributes,
+      -- in `a * 1` only `W = ⊤`.
+      zero_mul := fun _ ↦ by ext _ g; simp
+      mul_zero := fun _ ↦ by ext _ g; simp
+      left_distrib := fun _ _ _ ↦ by
+        ext _ g; simp [finsum_eq_sum_of_fintype, mul_add, sum_add_distrib]
+      right_distrib := fun _ _ _ ↦ by
+        ext _ g; simp [finsum_eq_sum_of_fintype, add_mul, sum_add_distrib]
+      one_mul := fun _ ↦ by
+        ext _ g
+        simp [simClassOf_endOnQuot (g' := g) 1 _ ⟨⊥, _⟩ surjective_id rfl,
+          finsum_eq_sum_of_fintype, finrank_zero_iff, subsingleton_iff_eq_bot, Subtype.coe_eq_iff]
+      mul_one := fun _ ↦ by
+        ext _ g
+        simp [simClassOf_endOnSub (g := g) .id, finsum_eq_sum_of_fintype, injective_id,
+          finrank_zero_iff, Subtype.coe_eq_iff]
+      .. }
+
+end
 
 /-! ### The constant function 1 is a unit -/
 
@@ -493,10 +519,11 @@ lemma Hall.one_sub_constOne_pow_apply_eq_zero (m : ℕ) :
     simpa only [pow_succ] using mul_apply_eq_zero_of_dim_lt ih h_zero c hc
 
 /-- The class functions form a `ℂ`-algebra: scalars act pointwise. -/
-instance : Algebra ℂ (Hall k) := by
+instance : Algebra ℂ (Hall k) :=
   -- At each class, a scalar comes out of every term of the finite sum defining the product.
-  refine Algebra.ofModule ?_ ?_ <;>
-    aesop (add simp [mul_sum, finsum_eq_sum_of_fintype]) (add 1% (by ring))
+  Algebra.ofModule
+    (fun _ _ _ ↦ by ext _ g; simp [finsum_eq_sum_of_fintype, mul_sum, mul_assoc])
+    (fun _ _ _ ↦ by ext _ g; simp [finsum_eq_sum_of_fintype, mul_sum, mul_left_comm])
 
 /-- Over a finite field `k`, the constant function `𝟙` on similarity classes of square matrices of
 all sizes is invertible for the induction product. -/
@@ -1084,8 +1111,11 @@ lemma classInner_evalGL_prod [Finite k] {s : Finset ι} (hs : ∀ i : n, b i ∈
   -- has a zero upper right block and invertible diagonal blocks.
   let e := sumCompl (b · = m)
   let M (g : parabolic (R := k) b) := g.val.val.submatrix e e
+  let b' (i : {i // ¬b i = m}) := b i
+  have hs' (i : {i // ¬b i = m}) : b' i ∈ s := (mem_insert.mp (hs i.1)).resolve_left i.2
+  have h_notMem : m ∉ s := fun h ↦ (hm m h).false
   have h_zero (g : parabolic (R := k) b) : (M g).toBlocks₁₂ = 0 :=
-    ext fun _ _ ↦ g.property (by grind [sumCompl_apply_inl, sumCompl_apply_inr])
+    ext fun i j ↦ g.property (by simpa [e, i.2] using hm _ (hs' j))
   have h_blocks (g : parabolic (R := k) b) :
       fromBlocks (M g).toBlocks₁₁ 0 (M g).toBlocks₂₁ (M g).toBlocks₂₂ =
         g.val.val.submatrix e e := by
@@ -1097,16 +1127,15 @@ lemma classInner_evalGL_prod [Finite k] {s : Finset ι} (hs : ∀ i : n, b i ∈
     exact isUnit_fromBlocks_zero₁₂.1 h_M_unit
   -- Move the factor of level `m` to the other side (`rankInner_mul_eq_rankInner_skew`) and apply
   -- the induction hypothesis to the indices of the other levels.
-  let b' (i : {i // ¬b i = m}) := b i
   have h_card (a : ι) (ha : a ∈ s) : card {i // b i = a} = card {i // b' i = a} :=
-    card_congr (subtypeSubtypeEquivSubtype (q := (b · = a)) (by grind)).symm
+    card_congr
+      (subtypeSubtypeEquivSubtype (q := (b · = a)) fun h hx ↦ (hm a ha).ne (h.symm.trans hx)).symm
   have h_prod : ∏ a ∈ s, (F a).rankPart (card {i // b i = a}) =
       ∏ a ∈ s, (F a).rankPart (card {i // b' i = a}) :=
     prod_congr rfl fun a ha ↦ by rw [h_card a ha]
-  have hs' (i : {i // ¬b i = m}) : b' i ∈ s := by grind
-  have h_notMem : m ∉ s := by grind
   rw [classInner_evalGL, prod_insert h_notMem, ← card_congr e, card_sum,
-    rankInner_mul_eq_rankInner_skew (by grind [rankPart]), ← classInner_evalGL, h_prod, ih b' hs']
+    rankInner_mul_eq_rankInner_skew (fun c hc ↦ by simp [Hall.rankPart, hc]),
+    ← classInner_evalGL, h_prod, ih b' hs']
   simp [skew, ← classInner_evalGL, classInner, blockAverage_simClassOf, ← finMean_const_mul,
     ← finMean_prod (Prod.rec _), Hall.evalGL]
   -- A matrix with invertible diagonal blocks and a zero upper right block is invertible, and it is
@@ -1118,17 +1147,19 @@ lemma classInner_evalGL_prod [Finite k] {s : Finset ι} (hs : ∀ i : n, b i ∈
   have h_tri_inv (t : parabolic (R := k) b' × GL {i // b i = m} k ×
       (({i // b i = m} → k) →ₗ[k] {i // ¬b i = m} → k)) :
       BlockTriangular (fromBlocks t.2.1 0 t.2.2.toMatrix' t.1.val) (b ∘ e) := by
-    have h_tri : BlockTriangular t.1.val.val b' := t.1.property
-    simp [e, BlockTriangular]
-    grind [BlockTriangular]
+    rintro (i | i) (j | j) hij
+    · simp [e, i.2, j.2] at hij
+    · rfl
+    · exact absurd (by simpa [e, j.2] using hij) (hm _ (hs' i)).not_gt
+    · exact t.1.property hij
   -- The left side is now a mean over the two diagonal blocks and the lower left block, which
   -- parametrise `parabolic b`.
   let blocks : parabolic (R := k) b ≃ parabolic (R := k) b' ×
       GL {i // b i = m} k × (({i // b i = m} → k) →ₗ[k] {i // ¬b i = m} → k) :=
     { toFun g := (⟨(h_unit g).2.unit, g.2.submatrix⟩, (h_unit g).1.unit, (M g).toBlocks₂₁.toLin')
       invFun t := ⟨(h_unit_inv t).unit, blockTriangular_reindex_iff.2 (h_tri_inv t)⟩
-      left_inv := by aesop_cat
-      right_inv := by aesop_cat }
+      left_inv g := Subtype.ext (Units.ext (by simp [M, h_blocks g]))
+      right_inv := by rintro ⟨⟨a, ha⟩, d, c⟩; ext <;> simp [M] }
   apply finMean_equiv blocks
   simp_intro g [blocks, ← mul_assoc, h_notMem]
   rw [mul_comm (∏ x ∈ s, _)]
