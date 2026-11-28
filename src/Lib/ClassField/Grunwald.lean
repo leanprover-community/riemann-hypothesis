@@ -18,6 +18,7 @@ import Lib.ClassField.Global.NormTheorems
 import Lib.General.NumberTheory.CMFields
 import Lib.General.NumberTheory.FrobeniusOrbits
 import Lib.General.NumberTheory.SUnitsAndClassNumber
+import TauCeti.Topology.Algebra.ContinuousMonoidHom.Basic
 
 /-!
 # Grunwald's theorem in prime degree and CM steps with prescribed local behaviour
@@ -149,7 +150,7 @@ private lemma exists_nsmul_eq_zero_abelianLift_artinMap_eq_of_apply_principalIde
   -- `θ` is continuous: its kernel contains the open subgroup `ker ψ ⊓ U`.
   have h_le_ker : ψ.ker ⊓ U ≤ θ.ker := fun a ⟨ha_ker, ha_U⟩ ↦ (hθ ⟨a, ha_U⟩).trans ha_ker
   have hθ_cont : Continuous θ :=
-    .of_isOpen_ker _ ((ψ.ker ⊓ U).isOpen_mono h_le_ker (hψ_open.inter hU_open))
+    θ.continuous_of_isOpen_ker ((ψ.ker ⊓ U).isOpen_mono h_le_ker (hψ_open.inter hU_open))
   obtain ⟨μ, hμ_cont : Continuous μ,
     hμ : ∀ (a : (𝔸f E)ˣ) (g : Gal(Ω/E)), artinMap Gal(Ω/E) a = g → μ g = θ a⟩ :=
     exists_comp_artinMap Gal(Ω/E) θ hθ_cont fun x ↦ hθ_rat ⟨x, rfl⟩

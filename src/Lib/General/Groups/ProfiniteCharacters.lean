@@ -11,6 +11,7 @@ import Mathlib.Topology.Separation.Connected
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 public import Lib.General.Topology
 import TauCeti.Algebra.Module.CharacterModule
+import TauCeti.Topology.Algebra.ContinuousMonoidHom.Basic
 
 /-!
 # ℚ/ℤ, characters of profinite groups, and extension of homomorphisms
@@ -58,15 +59,8 @@ section RatModInt
 
 open Nat Function QuotientAddGroup AddCircle CharacterModule ZMod NeZero AddMonoidHom AddMonoid
 
-variable {n : ℕ}
-  {G H A B W : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Monoid H]
-  [TopologicalSpace H] [ContinuousMul H] [AddCommGroup A] [AddCommGroup B] [AddCommGroup W]
-
-/-- A homomorphism from a topological group to a topological monoid is continuous as soon as its
-kernel is open. -/
-lemma Continuous.of_isOpen_ker (f : G →* H) (h_open : f.ker.IsOpen) : Continuous f :=
-  continuous_of_tendsto_nhds_one f (tendsto_nhds_of_eventually_eq (h_open.mem_nhds f.map_one))
-
+variable {n : ℕ} {G A B W : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+  [AddCommGroup A] [AddCommGroup B] [AddCommGroup W]
 
 namespace New.QZ
 
@@ -248,7 +242,7 @@ lemma exists_apply_ne_zero_of_notMem_ker [NonarchimedeanGroup G] (f : G →* C) 
     intro g hg
     have h_one : π (f g) = 1 := (QuotientGroup.eq_one_iff (f g)).2 (mem_map_of_mem f hg)
     simp [ψ, h_one]
-  have h_cont : Continuous ψ := .of_isOpen_ker ψ (isOpen_mono h_le V.isOpen)
+  have h_cont : Continuous ψ := ψ.continuous_of_isOpen_ker (isOpen_mono h_le V.isOpen)
   let χ : QZChar G := ⟨fun g ↦ (ψ g).toAdd, continuous_toAdd.comp h_cont, by simp⟩
   have χ_apply (g : G) : χ.val g = u (.ofMul (π (f g))) := rfl
   exact ⟨χ, fun g hg ↦ by simp [χ_apply, mem_ker.1 hg], by rwa [χ_apply]⟩
@@ -378,7 +372,7 @@ lemma continuous_iff_forall_isOpen_ker_comp [TopologicalSpace C] [IsTopologicalG
       abelianization_ext (congrFun h_eq)
   rw [h_emb.continuous_iff, continuous_pi_iff]
   exact forall_congr' fun χ ↦ ⟨fun h_cont ↦ h_cont.isOpen_preimage {1} (isOpen_discrete _),
-    .of_isOpen_ker ((abelianLift χ).comp f)⟩
+    ((abelianLift χ).comp f).continuous_of_isOpen_ker⟩
 
 end QZChar
 

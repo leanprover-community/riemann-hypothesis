@@ -17,6 +17,7 @@ import Lib.ClassField.Places.DecompositionCyclotomic
 import Lib.ClassField.Places.ProfiniteGalois
 import Lib.ClassField.Places.ValuationSubrings
 import Lib.General.Groups.ProfiniteCharacters
+import TauCeti.Topology.Algebra.ContinuousMonoidHom.Basic
 
 /-!
 # Local fields: Frobenius, uniformisers, normalised valuation, extensions, unramified characters
@@ -670,8 +671,9 @@ lemma existsUnique_unramified_char {φ : Γ} (hφ : IsFrob A (residueCard k A) �
   obtain ⟨e, he⟩ :
       ∃ e : Additive (ZMod N)ˣ →+ QZ, ∀ i : ℤ, e (i • .ofMul (cyclotomicCharMod Ω N φ)) = i • r :=
     QZ.exists_extend _ _ h_ker
+  have h_cont := (cyclotomicCharMod Ω N : Γ →* (ZMod N)ˣ).continuous_of_isOpen_ker Fact.out
   let χ : QZChar Γ :=
-    ⟨(e ∘ .ofMul) ∘ cyclotomicCharMod Ω N, .comp (by fun_prop) (.of_isOpen_ker _ Fact.out), by simp⟩
+    ⟨(e ∘ .ofMul) ∘ cyclotomicCharMod Ω N, .comp (by fun_prop) h_cont, by simp⟩
   refine existsUnique_of_exists_of_unique ⟨χ, fun g hg ↦ ?_, ?_⟩ fun a b ha hb ↦ ?_
   · simp [χ, cyclotomicCharMod_eq_one_of_mem_inertiaGroup hg hN]
   · simpa [χ] using he 1

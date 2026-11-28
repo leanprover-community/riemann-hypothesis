@@ -25,6 +25,7 @@ import Lib.PadicComparison.Descent.TestCategory
 import Lib.PadicHodge.Crystalline.HodgeTateForms
 import Lib.PadicHodge.Crystalline.HodgeTateJumps
 import Lib.PadicHodge.Crystalline.Regularity
+import TauCeti.Topology.Algebra.ContinuousMonoidHom.Basic
 
 /-!
 # p-adic avatars of Hecke characters and local conditions for twists and characters
@@ -128,7 +129,8 @@ lemma exists_avatar :
       Units.map (adeleExtension (ιℓ.toRingHom.comp σ)).toMonoidHom ^ θ.infinityType σ
   have hψ_cont (θ : AlgHeckeChar K) : Continuous (ψ θ) := by
     -- `θ` has open kernel, and the embeddings `adeleExtension` are continuous.
-    refine .mul (.of_isOpen_ker _ (isOpen_mono (fun x hx ↦ ?_) θ.property.1)) ?_
+    refine .mul
+      (MonoidHom.continuous_of_isOpen_ker _ (isOpen_mono (fun x hx ↦ ?_) θ.property.1)) ?_
     · simp [MonoidHom.mem_ker.1 hx]
     · simp only [MonoidHom.coe_finsetProd, Finset.prod_fn]
       exact continuous_finsetProd _ fun σ _ ↦ (continuous_adeleExtension _).units_map.zpow _

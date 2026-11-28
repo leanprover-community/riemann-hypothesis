@@ -8,6 +8,7 @@ import Lib.ClassField.Global.ExistenceTheorem
 import Lib.ClassField.Places.TameInertia
 import Lib.General.NumberTheory.FrobeniusOrbits
 import Lib.General.NumberTheory.SUnitsAndClassNumber
+import TauCeti.Topology.Algebra.ContinuousMonoidHom.Basic
 
 /-!
 # Auxiliary primes, anticyclotomic characters, slopes and ties
@@ -262,8 +263,8 @@ lemma New.Selmer.exists_anticyclotomicChar_of_frob_fixes_roots {E : Type} [Field
   have hlg_unit (x : Eˣ) (hx : x ∈ T.unit E) : lg (ideleAt P (principalIdele x)) = 1 :=
     Submodule.eq_top_iff'.1 h_ker (Additive.ofMul ⟨x, hx⟩)
   -- `lg.ker` is open, as it contains all powers with exponent its finite index
-  have hlg_cont : Continuous lg :=
-    .of_isOpen_ker lg (isOpen_of_forall_pow_mem index_ne_zero_of_finite lg.ker.pow_index_mem)
+  have hlg_open := isOpen_of_forall_pow_mem index_ne_zero_of_finite lg.ker.pow_index_mem
+  have hlg_cont : Continuous lg := lg.continuous_of_isOpen_ker hlg_open
   obtain ⟨θ, hθ_cont, hθ_rat, hθ⟩ := exists_ideleClassChar_of_local h_gen hlg_cont hlg_unit
   let θ' : (𝔸f E)ˣ →* Multiplicative (ZMod q) := θ.comp (.id _ / starMulAut.toMonoidHom)
   have hθ'_rat (x : Eˣ) : θ' (principalIdele x) = 1 := by
