@@ -42,7 +42,7 @@ so that `π` has order `1`; it is defined on `DiscreteUnits Ω`, which is `Ωˣ`
 * `New.existsUnique_unramified_char`: for a local field `k` and `r ∈ ℚ/ℤ` there is exactly one
   continuous character of its absolute Galois group that is trivial on inertia and sends a given
   Frobenius to `r`. It comes from the action on roots of unity of order dividing `q ^ m - 1`, `m`
-  the order of `r`.
+  the order of `r`. `New.unramifiedCharOfFrobValue` assigns this character to `r` additively.
 
 Notions from other files:
 * `New.IsFrob`: `σ` stabilises the valuation subring `A` and `σ • x ≡ x ^ q` modulo the maximal
@@ -685,6 +685,31 @@ lemma existsUnique_unramified_char {φ : Γ} (hφ : IsFrob A (residueCard k A) �
     induction n with
     | zero => simp_all
     | succ n ih => simp_all [pow_succ]
+
+/-- The additive map sending `r` to the unramified character with Frobenius value `r`. -/
+noncomputable def unramifiedCharOfFrobValue {φ : Γ}
+    (hφ : IsFrob A (residueCard k A) φ) : QZ →+ QZChar Γ := by
+  choose χ hχ h_unique using existsUnique_unramified_char hφ
+  refine AddMonoidHom.mk' χ fun r s ↦ (h_unique _ _ ⟨?_, ?_⟩).symm
+  · intro g hg
+    change (χ r).val g + (χ s).val g = 0
+    rw [(hχ r).1 g hg, (hχ s).1 g hg, add_zero]
+  · change (χ r).val φ + (χ s).val φ = r + s
+    rw [(hχ r).2, (hχ s).2]
+
+/-- The character assigned to `r` vanishes on inertia and sends Frobenius to `r`. -/
+lemma unramifiedCharOfFrobValue_spec {φ : Γ} (hφ : IsFrob A (residueCard k A) φ) (r : QZ) :
+    (∀ g ∈ inertiaGroup Γ A, (unramifiedCharOfFrobValue hφ r).val g = 0) ∧
+      (unramifiedCharOfFrobValue hφ r).val φ = r :=
+  (existsUnique_unramified_char hφ r).choose_spec.1
+
+/-- An unramified character is recovered from its value at any arithmetic Frobenius. -/
+lemma unramifiedCharOfFrobValue_eq {φ φ' : Γ} (hφ : IsFrob A (residueCard k A) φ)
+    (hφ' : IsFrob A (residueCard k A) φ') {χ : QZChar Γ}
+    (hχ : inertiaGroup Γ A ≤ QZChar.ker χ) :
+    unramifiedCharOfFrobValue hφ (χ.val φ') = χ :=
+  ((existsUnique_unramified_char hφ (χ.val φ')).choose_spec.2 χ
+    ⟨hχ, (QZChar.toHom χ).eq_iff.mpr (hχ (hφ'.inv_mul_mem_inertiaGroup hφ))⟩).symm
 
 end UnramifiedCharacters
 

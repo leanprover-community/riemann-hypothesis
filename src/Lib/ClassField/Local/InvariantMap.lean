@@ -161,7 +161,7 @@ lemma exists_isClassOfInvariant :
   obtain ⟨π, hπ⟩ : ∃ π : (unitsModule Γ).H0, ordRat k A π.val = 1 :=
     ⟨_, L.exists_isUniformizer.choose_spec.ordRat_eq_one L⟩
   obtain ⟨φ₀, hφ₀⟩ : ∃ φ : Γ, IsFrob A (residueCard k A) φ := L.frobenius_spec.left
-  choose c hc c_unique using existsUnique_unramified_char hφ₀
+  let c := unramifiedCharOfFrobValue hφ₀
   -- If `(χ, w) = 0` then `w` is a norm from the fixed field of `χ`. For unramified `χ`, the order
   -- of a norm is a sum of `[Γ : ker χ]` equal integers.
   have index_dvd {χ : QZChar Γ} (hχ : inertiaGroup Γ A ≤ QZChar.ker χ) (w : (unitsModule Γ).H0)
@@ -180,20 +180,13 @@ lemma exists_isClassOfInvariant :
     · intro x _
       dsimp only [LinearMap.proj_apply]
       simp [← hj, eq_iff, ↓L.ordRat_eq_zero, decompGroup.val_smul, L.mem_decompGroup]
-  -- `c` is additive by the uniqueness in `c_unique`.
-  have c_add (r s : QZ) : c (r + s) = c r + c s :=
-    (c_unique _ _ ⟨fun g hg ↦ by
-        change (c r).val g + (c s).val g = 0
-        rw [(hc r).1 g hg, (hc s).1 g hg, add_zero],
-      by
-        change (c r).val φ₀ + (c s).val φ₀ = r + s
-        rw [(hc r).2, (hc s).2]⟩).symm
-  refine ⟨((cyclicClass _).flip π).comp (.mk' c c_add),
+  refine ⟨((cyclicClass _).flip π).comp c,
     (injective_iff_map_eq_zero _).mpr fun r h ↦ ?_, fun χ hχ φ hφ w n hn ↦ ?_⟩
   · -- If `(c r, π) = 0`, the kernel of `c r` has index one, so `r = c r φ₀ = 0`.
-    have h_index : (ker (c r)).index ∣ 1 := Int.ofNat_dvd.mp (index_dvd (hc r).left π 1 hπ h)
+    obtain ⟨hc_inertia, hc_frob⟩ := unramifiedCharOfFrobValue_spec hφ₀ r
+    have h_index : (ker (c r)).index ∣ 1 := Int.ofNat_dvd.mp (index_dvd hc_inertia π 1 hπ h)
     have h_frob : φ₀ ∈ ker (c r) := (index_eq_one.mp (Nat.dvd_one.mp h_index)).ge (mem_top φ₀)
-    exact (hc r).right.symm.trans h_frob
+    exact hc_frob.symm.trans h_frob
   -- All classes `(χ, w)` are split by `ker χ`, and `(χ, π)` generates the split classes.
   have h_split (w : (unitsModule Γ).H0) :
       (unitsModule Γ).resH2 (ker χ) (cyclicClass _ χ w) = 0 := by
@@ -213,11 +206,10 @@ lemma exists_isClassOfInvariant :
   have h_class_diff : cyclicClass _ χ (j • π - w) = 0 := by
     rw [map_sub, map_zsmul, hj, sub_self]
   obtain ⟨i, hi⟩ : ↑(ker χ).index ∣ j - n := index_dvd hχ (j • π - w) _ h_ord_diff h_class_diff
-  have χ_eq : χ = c (χ.val φ) := c_unique _ χ
-    ⟨hχ, (toHom χ).eq_iff.mpr (hχ _ (hφ.inv_mul_mem_inertiaGroup hφ₀))⟩
+  have χ_eq : c (χ.val φ) = χ := unramifiedCharOfFrobValue_eq hφ₀ hφ hχ
   rw [← hj]
   change (j • cyclicClass _ χ π) = n • cyclicClass _ (c (χ.val φ)) π
-  rw [← χ_eq, eq_add_of_sub_eq hi, add_zsmul, mul_zsmul', natCast_zsmul,
+  rw [χ_eq, eq_add_of_sub_eq hi, add_zsmul, mul_zsmul', natCast_zsmul,
     index_smul_eq_zero_of_resH2 ⟨_, isOpen_ker χ⟩ (h_split π), zsmul_zero, zero_add]
 
 /-- The chosen map `classOfInvariant` from `ℚ/ℤ` to `H²(Γ, Ωˣ)` is injective, and the cyclic class
@@ -250,8 +242,8 @@ lemma pairMapH2_classOfInvariant_of_ordRat_eq (φ : Γ' →ₜ* Γ) (j : Ω →+
   -- `χ ∘ φ` takes the value `f • r` on a Frobenius `τ` of `k'`.
   obtain ⟨σ, hσ⟩ : ∃ σ : Γ, IsFrob A (residueCard k A) σ := L.frobenius_spec.left
   obtain ⟨τ, hτ⟩ : ∃ τ : Γ', IsFrob A' (residueCard k' A') τ := L'.frobenius_spec.left
-  obtain ⟨χ, χ_unr, rfl⟩ : ∃ χ : QZChar Γ, (∀ g ∈ inertiaGroup Γ A, χ.val g = 0) ∧ χ.val σ = r :=
-    (existsUnique_unramified_char hσ r).exists
+  let χ := unramifiedCharOfFrobValue hσ r
+  obtain ⟨χ_unr, χ_frob⟩ := unramifiedCharOfFrobValue_spec hσ r
   subst hA
   let χ' : QZChar Γ' := comap φ χ
   -- The image of `w` in `Ω'ˣ` is fixed by `Γ'`, as `w` is fixed by `Γ` and `j` is compatible.
@@ -277,7 +269,7 @@ lemma pairMapH2_classOfInvariant_of_ordRat_eq (φ : Γ' →ₜ* Γ) (j : Ω →+
   have h_map : (pairMapH2 φ (Units.map (j : Ω →* Ω')).toAdditive.toIntLinearMap h_eq)
       (cyclicClass unitsRep χ w) = cyclicClass unitsRep χ' w' :=
     congrArg (Quotient.mk _) (Subtype.ext (funext fun _ ↦ map_zsmul _ _ _))
-  rwa [h_cyc, h_cyc', one_zsmul, χ'_frob, natCast_zsmul, ← map_nsmul, ← mul_smul] at h_map
+  rwa [h_cyc, h_cyc', one_zsmul, χ'_frob, χ_frob, natCast_zsmul, ← map_nsmul, ← mul_smul] at h_map
 
 /-- For two local Galois data `Γ, k, A` and `Γ', k', A'`, let `φ : Γ' →ₜ* Γ` be continuous and
 `j : Ω →+* Ω'` a ring map with `A'.comap j = A` and `j (φ g • x) = g • j x`. Suppose a `Γ`-invariant

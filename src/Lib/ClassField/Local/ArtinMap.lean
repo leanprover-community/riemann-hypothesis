@@ -688,9 +688,8 @@ lemma exists_localArtin_eq_of_isFrob_pow {g : Γ} {n : ℕ} (hg : IsFrob A (w.q 
   -- `uniformizer w` and of all units, hence on the dense range of `localArtin`; so `χ s = ψ s = 0`.
   have hφ_residue : IsFrob A (residueCard (fixedFieldOf (K := K) (decompGroup Γ A)) A) φ := by
     rwa [q_eq]
-  obtain ⟨ψ, ⟨ψ_unr, ψ_frob⟩, -⟩ : ∃! ψ : QZChar (decompGroup Γ A),
-      (∀ t ∈ inertiaGroup (decompGroup Γ A) A, ψ.val t = 0) ∧ ψ.val φ = χ.val φ :=
-    existsUnique_unramified_char hφ_residue (χ.val φ)
+  let ψ := unramifiedCharOfFrobValue hφ_residue (χ.val φ)
+  obtain ⟨ψ_unr, ψ_frob⟩ := unramifiedCharOfFrobValue_spec hφ_residue (χ.val φ)
   let E : Subgroup (LocField w)ˣ :=
     ((abelianLift ψ).eqLocus (abelianLift χ)).comap (localArtin Γ A w)
   have unif_mem : uniformizer w ∈ E := by simpa [E, φ_art]
