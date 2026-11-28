@@ -75,15 +75,16 @@ open Matrix Fin Fintype New.Floors FloorGroups Sum Function
 
 namespace New
 
-variable {F : Type*} [CommRing F] [StarRing F] {𝔰 : Shape} {T : Shape.Form 𝔰 F}
+variable {F : Type*} [CommRing F] {𝔰 : Shape} {T : Shape.Form 𝔰 F}
 
-omit [StarRing F] in
 /-- The form `T.splitGram` exchanges the first and last blocks of coordinates of `v` and applies `T`
 to the middle block. -/
 lemma splitGram_mulVec (v : 𝔰.BesselIndex → F) :
     T.splitGram *ᵥ v = (fun a : Fin 𝔰.ϱ ↦ v (eStar a)) ⊕ᵥ
       (T *ᵥ (fun b : 𝔰.MiddleIndex ↦ v (inr (inl b))) ⊕ᵥ fun a : Fin 𝔰.ϱ ↦ v (inl a)) := by
   simp [funext_iff, splitGram, fromBlocks_mulVec, comp_def]
+
+variable [StarRing F]
 
 /-- The matrix `linkMatrix γ` sends `t` to the pair of the middle blocks of `t` and of `γ⁻¹ t`. -/
 @[simp↓]

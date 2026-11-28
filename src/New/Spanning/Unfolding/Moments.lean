@@ -596,7 +596,6 @@ theorem HasAmplitudeBlocks.sum_hilbertSchmidtNorm_sq_le [WeilData E] (hP : S.Has
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
 open scoped Classical in
-omit ok in
 /-- **The remainder.** Let `S` be admissible filling data (`Filling`, `IsAdmissible`) for a unitary
 group `G` over the CM field `E`, which contains a primitive `5040`-th root of unity, and let
 `Ḡ = S.ResidueGL` be the product of the general linear groups over the residue fields at the chosen
@@ -616,7 +615,7 @@ central idempotent `x = ∑ x(t) t` of `ℂ[G_i]` (an idempotent whose coefficie
 function; it is then self-adjoint) we have `‖∑ x(t) (P_t - r_ψ(t))‖² ≤ b⁻¹² D_X` in Hilbert–Schmidt
 norm, the sum being over `t` in `G_i`. Here `b = S.b ≥ 1000` is the size parameter of `S` and
 `D_X = S.sourceDim` is the dimension of the source. -/
-lemma HasAmplitudeBlocks.hilbertSchmidtNorm_sum_smul_sub_besselTranslate_sq_le [S.IsAdmissible]
+lemma HasAmplitudeBlocks.hilbertSchmidtNorm_sum_smul_sub_besselTranslate_sq_le
     [HasPrimitiveRoot5040 E] {ρ : Representation ℂ S.ResidueGL V}
     {P : EuclideanSpace ℂ (S.Classes × S.BesselCoord) →ₗ[ℂ] V} (hP : S.HasAmplitudeBlocks ρ P)
     (hρ : ∀ (s : S.ResidueGL) (v v' : V), ⟪ρ s v, ρ s v'⟫_ℂ = ⟪v, v'⟫_ℂ) (i : Fin 2)
@@ -686,8 +685,7 @@ open scoped Classical
 
 open scoped BigOperators
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {𝔰 : Shape}
-  (S : Filling E 𝔰) [ok : S.IsAdmissible]
+variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
 
 /-- For a finite group `G` and a central idempotent `x` of the complex group algebra
 `MonoidAlgebra ℂ G` (`IsCentralProj x`), `∑ s, ‖x.coeff s‖² = (x.coeff 1).re`. -/
@@ -700,8 +698,6 @@ lemma sum_norm_sq_coeff_of_isCentralProj {G : Type*} [Group G] [Fintype G] {x : 
   simpa [h_inv, x.coeff_mul_apply_left, Complex.sq_norm, Finsupp.sum_fintype, mul_conj] using
     congr_arg (fun y ↦ (y.coeff 1).re) hx.1
 
-omit ok in
-omit [WeilData E] in
 /-- Let `S` be filling data over a CM field `E`. Let `γ` be in the Bessel
 subgroup and `k = translateByClassReps c c γ`, that is `h_c⁻¹ γ h_c` for the representative `h_c` of
 the class `c`. If `k` lies in the stabilizer `latticeStabilizer` of the lattice and reduces to `1`
@@ -751,7 +747,6 @@ finite group `S.ResidueGL`. -/
 noncomputable def reducedCharMean (s : S.ResidueGL) : ℂ := 𝔼 g : S.ResidueGL,
   S.reducedChar (g * s * g⁻¹)
 
-omit ok [WeilData E] in
 /-- The mean `ψ_U^♮` of `ψ_U` over conjugates is a class function. -/
 lemma reducedCharMean_conj (g s : S.ResidueGL) :
     S.reducedCharMean (g * s * g⁻¹) = S.reducedCharMean s :=
@@ -762,7 +757,8 @@ lemma reducedCharMean_conj (g s : S.ResidueGL) :
 translation of the source by `s` twisted by the Bessel character, is `D_X ψ_U(s)`. Here
 `D_X = S.sourceDim` and `ψ_U = S.reducedChar` is the character of the integral unipotent group, read
 on reductions and extended by `0` off its image. -/
-lemma trace_besselTranslate_eq_mul_reducedChar {j : Fin 2} {s : S.ResidueGL} (hs : s j = 1) :
+lemma trace_besselTranslate_eq_mul_reducedChar [WeilData E] [S.IsAdmissible] {j : Fin 2}
+    {s : S.ResidueGL} (hs : s j = 1) :
     LinearMap.trace ℂ (EuclideanSpace ℂ (S.Classes × S.BesselCoord)) (S.besselTranslate s) =
       S.sourceDim * S.reducedChar s := by
   rw [trace_besselTranslate, reducedChar]
@@ -781,7 +777,6 @@ lemma trace_besselTranslate_eq_mul_reducedChar {j : Fin 2} {s : S.ResidueGL} (hs
         S.mem_besselU_of_reduction_eq_one (j := j) hγ hk (by simp [hk_red, hs]), by simp [hk_red]⟩⟩
     simp [amplitudeSum, tsum_empty]
 
-omit ok [WeilData E] in
 /-- Let `S` be filling data for a unitary group `G` over the CM field `E`, with level primes `p₀`,
 `p₁`, and let `Ḡ = S.ResidueGL` be the product of the general linear groups over the residue fields
 at the chosen places above them. Let `M = p₀ p₁`, and let `T` be a finite conjugation-stable set of
@@ -828,7 +823,6 @@ lemma extendedBesselChar_toPlaces_eq_reducedChar {T : Finset (FinPlace E)} [T.St
         div_mem (mem_latticeStabilizer_iff.mp l.prop).2 (unitaryLevel_le_unitaryLevel_one hul)
     exact h ⟨⟨k, hk_int⟩, hk_unip hu, (hF.reduction_eq_iff ⟨k, hk_int⟩ l).mpr hul⟩
 
-omit [WeilData E] in
 /-- Let `S` be admissible filling data for a unitary group `G` over the CM field `E`, and let
 `Ḡ = S.ResidueGL` be the product of the general linear groups over the residue fields at the chosen
 places above the two level primes `p₀`, `p₁`. Let `M = p₀ p₁`, and let `T` be a finite
@@ -845,8 +839,8 @@ off `𝖴 K(M)`. Then for `l` in the stabilizer of the lattice, `∫_K χ_M(y l 
 the mean of `ψ_U` over conjugates. Here `ψ_U = S.reducedChar` is the character
 `u ↦ ψ_f(-σ(u) / (M ϖ))` of the integral points of `𝖴`, read on their reductions in `Ḡ` and extended
 by `0`. -/
-lemma integral_extendedBesselChar_conj_eq {T : Finset (FinPlace E)} [T.StarStable]
-    [Fact (S.ideleM⁻¹.val ∈ integralOff T)] [hInt : IntegralPlace (LocProd T)]
+lemma integral_extendedBesselChar_conj_eq [ok : S.IsAdmissible] {T : Finset (FinPlace E)}
+    [T.StarStable] [Fact (S.ideleM⁻¹.val ∈ integralOff T)] [hInt : IntegralPlace (LocProd T)]
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}
     (hF : S.IsFillingData T F) (l : S.latticeStabilizer) :
@@ -890,7 +884,6 @@ lemma integral_extendedBesselChar_conj_eq {T : Finset (FinPlace E)} [T.StarStabl
         rw [setIntegral_congr_fun measurableSet_unitaryLevel h_const, setIntegral_const,
           mul_smul_comm]
 
-omit [WeilData E] ok in
 /-- Let `S` be admissible filling data for a unitary group `G` over the CM field `E`, which carries
 Weil data, and let `Ḡ = S.ResidueGL` be the product of the general linear groups over the residue
 fields at the chosen places above the two level primes `p₀`, `p₁`. Let `M = p₀ p₁`, and let `T` be a
@@ -972,7 +965,6 @@ lemma sum_sq_norm_integral_extendedBesselChar_conjugate_le {T : Finset (FinPlace
     toReal_mono (by simp [mul_eq_top, K, hF.groupMeasure_ne_top unitaryLevel_le_unitaryLevel_one])
       h_lintegral
 
-omit ok [WeilData E] in
 /-- Let `S` be filling data over the CM field `E`, with level primes `p₀`, `p₁` and, for each `p_i`,
 a chosen set `S.chosenPlaces i` of places of norm `p_i`, such that the chosen places and their
 conjugates have product `M = p₀ p₁`. If a finite set `T` of finite places contains all of these,
@@ -992,7 +984,6 @@ lemma inv_ideleM_mem_integralOff {T : Finset (FinPlace E)}
     · rw [reduceAboveM_true, RingHom.comp_apply, starRingEnd_apply, (h_vanish i w).2]
   exact (mem_integralOff T).2 (idem_mul_mem_Ô.1 (by rwa [mul_comm]))
 
-omit ok in
 /-- **The induced character.** Let `S` be admissible filling data for a unitary group `G` over the
 CM field `E`, which carries Weil data, and let `Ḡ = S.ResidueGL` be the product of the general
 linear groups over the residue fields at the chosen places above the two level primes `p₀`, `p₁`.
@@ -1000,7 +991,7 @@ Let `ψ_U = S.reducedChar` be the additive character (`unipotentChar`) of the in
 unitriangular elements of `G`, read on their reductions in `Ḡ` and extended by `0`, and let
 `ψ_U^♮(s) = S.reducedCharMean s` be its mean over the conjugates of `s`. Then `∑ |ψ_U^♮(s)|² ≤ 2`,
 the sum being over all `s` in `Ḡ`. -/
-theorem sum_norm_reducedCharMean_sq_le [ok : S.IsAdmissible] :
+theorem sum_norm_reducedCharMean_sq_le [WeilData E] [ok : S.IsAdmissible] :
     ∑ s : S.ResidueGL, ‖S.reducedCharMean s‖ ^ 2 ≤ 2 := by
   -- Work at the set `T` of the chosen places and their conjugates, with a lift `σ s` of each `s`.
   choose σ hσ using ok.reduction_surjective
@@ -1042,7 +1033,7 @@ whose blocks are the complex conjugates of the normalised amplitude sums of the 
 the Bessel subgroup `besselS`. Let `x` be a central idempotent of the group algebra of the factor of
 `Ḡ` above `p_i`, made of matrices indexed by the basis `𝔰.BesselIndex` of the hermitian space, with
 `Re x(1) ≤ b⁻⁸ / 2`. Then the trace of `r_ψ(x) = ∑ x(s) r_ψ(s)` has real part at most `b⁻⁴ D_X`. -/
-lemma re_sum_coeff_mul_trace_besselTranslate_le {i : Fin 2}
+lemma re_sum_coeff_mul_trace_besselTranslate_le [WeilData E] [S.IsAdmissible] {i : Fin 2}
     {x : MonoidAlgebra ℂ (∀ w : S.chosenPlaces i, GL 𝔰.BesselIndex (ResField w.val))}
     (hx : IsCentralProj x) (hx_small : (x.coeff 1).re ≤ (S.b ^ 8)⁻¹ / 2) :
     (∑ s : ∀ w : S.chosenPlaces i, GL 𝔰.BesselIndex (ResField w.val), x.coeff s *

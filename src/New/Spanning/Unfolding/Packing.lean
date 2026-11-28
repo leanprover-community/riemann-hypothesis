@@ -335,9 +335,6 @@ lemma frameImage_eq_frameImage_one_of_close {g : S.G E} {d : S.Classes} {r : S.R
     _ ≤ S.N * (S.frameBoxRadius * R) * δ v b := by
         grw [h_exp, ← S.N_prime.one_le, Nat.cast_one, one_mul]
 
-variable [HasPrimitiveRoot5040 E]
-
-omit [HasPrimitiveRoot5040 E] in
 /-- **Packing of frames.** Let `E` be a CM field, `𝔰` a shape (`𝔰.ϱ` hyperbolic planes), and `S`
 admissible data of the filling theorem over `E` (`IsAdmissible`), with parameter `b = S.b`. Let
 `n = 𝔰.n`, `R ≥ 1` and `frameBoxRadius = b ^ (37 n)`. The frame is `f = (e₁, …, e_ϱ, z)`, and the
@@ -427,6 +424,8 @@ theorem encard_image_frameImage_le {c : S.Classes} {y : NumberField.InfinitePlac
             nlinarith
   rw [image_eq_range, ← h_image, h_inj.encard_image]
   grw [encard_le_of_separated (inv_pos.2 hNρ) (add_pos hρ hρ).le h_sep h_ball, h_ratio]
+
+variable [HasPrimitiveRoot5040 E]
 
 /-- **Packing of weights.** Let `E` be a CM field with a primitive 5040-th root of unity and `S`
 admissible filling data over `E` (`IsAdmissible`). Let `k p` be classes and `γ p` rational elements

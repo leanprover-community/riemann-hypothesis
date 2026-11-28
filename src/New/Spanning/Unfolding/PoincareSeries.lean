@@ -70,7 +70,7 @@ open MeasureTheory Matrix Complex Subgroup Finset PiLp
 namespace New.Filling
 
 variable {E : Type} {𝔰 : Shape} {ε : 𝔰.BesselIndex → ℤˣ}
-  [Field E] [CMType E] [HasPrimitiveRoot5040 E] [p : DiscreteSeries.UnitarySignFrame 𝔰 ε]
+  [Field E] [CMType E] [p : DiscreteSeries.UnitarySignFrame 𝔰 ε]
 
 /-- The hermitian space V, with grading Y, fits the filling data S: the Bessel system of S at each
 infinite place v has type (l v, kw v), Y is standardly indexed, and `typeKernel l ε` is an
@@ -113,10 +113,6 @@ variable (X : S.Fits V l kw Y η) (a : S.Classes × S.BesselCoord)
   (φ : EuclideanSpace ℂ (S.Classes × S.BesselCoord)) (g : New.G E ε)
 
 /-! ### Identifying the groups of `V` and of `S` -/
-
-section
-
-omit [HasPrimitiveRoot5040 E]
 
 /-- If V fits S, the Gram matrix of V is the rational Gram matrix of S. -/
 theorem J_eq_ratGram (X : S.Fits V l kw Y η) : V.J = S.ratGram := by
@@ -308,15 +304,13 @@ theorem enorm_cutBessel_ratEquiv_mul_le (γ : S.G E) :
   · grw [enorm_toReal_smul_le, h_coord]
   · simp
 
-end
-
 /-- The Poincaré series of φ: g ↦ ∑_a φ_a ∑_{γ∈Γ} `New.Filling.Fits.cutBessel` a (γg), where
 Γ = `V.Γ` is the group of rational points and a runs over pairs (class, coordinate). -/
 @[local simp]
 def poincareSeries (φ : EuclideanSpace ℂ (S.Classes × S.BesselCoord)) (g : New.G E ε) : ℂ :=
   ∑ a : S.Classes × S.BesselCoord, φ a * ∑' γ : V.Γ, X.cutBessel a (γ * g)
 
-variable {X} [S.IsAdmissible]
+variable {X} [HasPrimitiveRoot5040 E] [S.IsAdmissible]
 
 /-- For admissible filling data, the cut-off Bessel function of a is measurable on the adelic
 group. -/
@@ -538,12 +532,11 @@ def poincareMap :
   (basisFun 2 ℂ (S.Classes × S.BesselCoord)).constr ℂ fun a : S.Classes × S.BesselCoord ↦
     (X.exists_levelSpace_tsum_cutBessel_eq a).choose
 
-omit [S.IsAdmissible] in
 /-- Let the hermitian space V fit the admissible filling data S (the hypothesis X), and let φ be a
 vector with coordinates φ_a indexed by pairs a = (class, Bessel coordinate). The form
 `X.poincareMap φ` on V, of type `typeKernel l ε` and level `S.stdPrincipalLevel`, is as a function
 on the adelic group the Poincaré series `X.poincareSeries φ`. -/
-theorem coe_poincareMap (X : S.Fits V l kw Y η) [S.IsAdmissible]
+theorem coe_poincareMap (X : S.Fits V l kw Y η)
     (φ : EuclideanSpace ℂ (S.Classes × S.BesselCoord)) :
     ⇑(X.poincareMap φ : V.Form (typeKernel l ε)) = X.poincareSeries φ := by
   funext g
@@ -628,7 +621,7 @@ theorem integral_mul_poincareSeries_eq_sum_classes {e : GInf E ε → ℂ} {z : 
 
 end Series
 
-omit [HasPrimitiveRoot5040 E] p in
+omit p in
 /-- The principal level `S.stdPrincipalLevel` is normalised by the integral group `New.stdLevel`, so
 the translate by an integral k of a function of principal level has principal level. -/
 theorem hasLevel_mul_right {S : Filling E 𝔰} {z : New.G E ε → ℂ}
@@ -642,7 +635,6 @@ theorem hasLevel_mul_right {S : Filling E 𝔰} {z : New.G E ε → ℂ}
     simp [mul_assoc]
   exact (congrArg z h_swap).trans (hz _ h_conj (g * (1, k.val)))
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let S be filling data, K = `S.latticeStabilizer` the integral points of its finite adelic
 unitary group, and K(M) = `S.principalLevel` the elements of K whose reduction at the chosen places
 is 1. Let c, c' be classes with representatives h_c = `S.classRep c` and h_c', let x be a finite
@@ -683,8 +675,9 @@ the integrals over y ∈ ∏_v `𝔰.G₁` of β_c(y) β_c'(γ⁻¹y) `S.besselK
 i = (i₁, i₂) sum and integral can be exchanged. Here `𝔰.G₁` is the complex unitary group of the
 hermitian form of the shape 𝔰, β_c is the cutoff `S.classCutoff c`, and the entry i of the kernel is
 W_{i₁}(y) conj(W_{i₂}(γ⁻¹y)), with W the full Bessel function. -/
-theorem amplitudeSum_apply_eq_integral_tsum {S : Filling E 𝔰} [S.IsAdmissible] (T : Set (S.G E))
-    (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes) (i : S.BesselCoord × S.BesselCoord) :
+theorem amplitudeSum_apply_eq_integral_tsum [HasPrimitiveRoot5040 E] {S : Filling E 𝔰}
+    [S.IsAdmissible] (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) (c' : S.Classes)
+    (i : S.BesselCoord × S.BesselCoord) :
     S.amplitudeSum .full T c s c' i =
       ∫ y : NumberField.InfinitePlace E → 𝔰.G₁, ∑' γ : ↥(T ∩ S.termsOver c s c'),
         (S.classCutoff c y * S.classCutoff c' ((S.ratToInf γ)⁻¹ * y)).toReal •
@@ -706,7 +699,7 @@ a' = (c', i') and k in `New.stdLevel` with reduction s at the chosen places, the
 γ h_c' lies in `S.latticeStabilizer` and has reduction s, y runs over ∏_v `𝔰.G₁`,
 h_c = `S.classRep c`, β_c = `S.classCutoff c`, and W is the full Bessel function
 `S.besselFn .full`. -/
-theorem petersson_poincare {S : Filling E 𝔰} {V : Space E 𝔰.BesselIndex ε}
+theorem petersson_poincare [HasPrimitiveRoot5040 E] {S : Filling E 𝔰} {V : Space E 𝔰.BesselIndex ε}
     {l : NumberField.InfinitePlace E → HCParam ε} {kw : NumberField.InfinitePlace E → ℕ → ℕ}
     {Y : Grading V S.N 𝔰.κ (2 * 𝔰.ϱ + 1)} {η : Gf E 𝔰.κ} {X : S.Fits V l kw Y η} [S.IsAdmissible]
     (c c' : S.Classes) (i i' : S.BesselCoord) {k : stdLevel E 𝔰.BesselIndex} {s : S.ResidueGL}
