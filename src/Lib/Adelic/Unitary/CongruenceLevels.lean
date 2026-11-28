@@ -336,7 +336,8 @@ lemma principalLevel_le_levelOf (ha_mem : ∀ i : ι, a ∈ (w i).asIdeal) :
     principalLevel n a ≤ levelOf w H :=
   -- `a` vanishes in each residue field, so an element of the level reduces to `1 ∈ H`.
   fun _ hg ↦ mem_levelOf.2 ⟨hg.1, H.ker_le_comap _ <| funext fun i ↦
-    map_eq_one_of_mem_principalLevel hg (algebraMap_ResField_eq_zero.2 (ha_mem i))⟩
+    map_eq_one_of_mem_principalLevel hg
+      ((reduceAt_algebraMap (w i) a).trans (algebraMap_ResField_eq_zero.2 (ha_mem i)))⟩
 
 /-- For a finite family of places, the level `levelOf w H` is open in G_f. -/
 lemma isOpen_levelOf [Finite ι] : (levelOf w H).IsOpen := by
