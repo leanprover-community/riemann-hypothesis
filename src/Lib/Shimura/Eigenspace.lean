@@ -295,6 +295,122 @@ lemma IsEigenQuotient.isKilledBy {f : ℕ} {g : Γ} (hg : IsWeilPair (toGp g) f)
   simp only [eval₂_finsetSum, C_mul_X_pow_eq_monomial, eval₂_monomial, LinearMap.sum_apply,
     mul_apply_eq_comp, h_frob, h_coef, map_sum]
 
+omit hρ in
+/-- Let `r` with the maps `F i` be the largest quotient on which `T` acts by `θ` (`h`). If `u` is
+not a Hodge–Tate jump of `r` at `γ : ℚ̄_ℓ → ℂ_ℓ`, then a family `f` of forms of weight `u` on the
+`V i` that turns each `T i s` into the scalar `γ (θ s)` is zero. -/
+lemma IsEigenQuotient.eq_zero_of_jump_eq_zero {γ : PadicAlgCl ℓ →ₐ[ℤ_[ℓ]] ℂ_[ℓ]} {u : ℤ}
+    (h_jump : jump (matrixRep r) γ u = 0)
+    {f : ∀ i : ι, hodgeTateMaps (ρ i) (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) u}
+    (hf : ∀ (i : ι) (s : σ) (x : V i), (f i).val (T i s x) = γ (θ s) * (f i).val x) : f = 0 := by
+  obtain ⟨h_equiv, h_span, -, h_univ⟩ := h
+  -- By the universal property of the quotient, `f` factors through a `γ`-semilinear form `φ`,
+  -- which has weight `u` for `r` and so vanishes.
+  obtain ⟨φ, hφ⟩ : ∃ φ : (Fin N → PadicAlgCl ℓ) →ₛₗ[(γ : PadicAlgCl ℓ →+* ℂ_[ℓ])] ℂ_[ℓ],
+      ∀ (i : ι) (x : V i), φ (F i x) = (f i).val x := by
+    -- let `ℚ̄_ℓ` act on `ℂ_ℓ` through `γ`, so that a `γ`-semilinear form is linear
+    let := γ.toModule
+    -- the instances are passed by hand, since `ℂ_ℓ` carries another action of `ℚ̄_ℓ`
+    obtain ⟨φ, hφ⟩ := @h_univ ℂ_[ℓ] _ _ _ (.of_algHom (γ.extendScalarsOfIsLocalization _ _⁰))
+      (fun i ↦ ⟨(f i).val.toAddHom, by
+        simp only [AddHom.toFun_eq_coe, coe_toAddHom, LinearMap.map_smulₛₗ, coe_toAlgHom,
+          smul_eq_mul, RingHom.id_apply, Algebra.smul_def, implies_true]⟩) hf
+    exact ⟨⟨φ.toAddHom, φ.map_smul'⟩, hφ⟩
+  have h_mem : φ ∈ hodgeTateMaps (matrixRep r) γ u :=
+    mem_hodgeTateMaps_of_span h_span fun ⟨i, x⟩ ↦ by simpa [↓h_equiv, ← hφ] using! (f i).prop x
+  ext
+  simp [← hφ, jump_eq_zero_iff.1 h_jump φ h_mem]
+
+omit h hρ in
+/-- Let `z` be a `γ`-semilinear form on `W` of weight `w` for `π`, and `φ` the `ℂ_ℓ`-linear form
+`e ⊗ x ↦ e * z x` on `ℂ_ℓ ⊗ W`. Then `φ` kills the vectors of Hodge–Tate weight `u ≠ w`. -/
+lemma apply_eq_zero_of_hasHodgeTateWeight {R W : Type*} [CommRing R] [AddCommGroup W]
+    [Module R W] [Algebra ℤ_[ℓ] R] [Module ℤ_[ℓ] W] [IsScalarTower ℤ_[ℓ] R W]
+    {π : Representation R Γ W} {γ : R →ₐ[ℤ_[ℓ]] ℂ_[ℓ]} {u w : ℤ} (hw : w ≠ u)
+    {z : W →ₛₗ[(γ : R →+* ℂ_[ℓ])] ℂ_[ℓ]} (hz : z ∈ hodgeTateMaps π γ w)
+    {φ : ℂ_[ℓ] ⊗[ℤ_[ℓ]] W →ₗ[ℂ_[ℓ]] ℂ_[ℓ]} (hφ : ∀ (e : ℂ_[ℓ]) (x : W), φ (e ⊗ₜ x) = e * z x)
+    {y : ℂ_[ℓ] ⊗[ℤ_[ℓ]] W} (hy : HasHodgeTateWeight π u y) : φ y = 0 := by
+  -- The pairing `φ y` of `y` with `z` transforms by two different powers of the cyclotomic
+  -- character, so it vanishes by Tate's theorem.
+  obtain ⟨_, e, x, rfl⟩ := y.exists_sum_tmul_eq
+  refine tate_eq_zero_of_cyclotomicGp_twist (neg_injective.ne hw) (nhds_one_le_map_nearOne Γ
+    ((Filter.eventually_all.mpr fun k ↦ hz (x k)).mono fun g hg ↦ ?_))
+  -- Pair both sides of the weight condition `hy g` with `z`.
+  have h_pair := congrArg φ (hy g)
+  simpa only [zpow_neg, map_sum, hφ, LinearMap.coe_restrictScalars, smul_eq_mul, Finset.smul_sum,
+    smul_mul', Set.mem_ofPred_eq, tensorAction, map_tmul, DistribSMul.toLinearMap_apply, hg,
+    MonoidHom.coe_comp, Function.comp_apply, Algebra.mul_smul_comm, map_smul_of_tower] using h_pair
+
+omit h hρ in
+/-- Let `π` be a potentially crystalline representation of `Γ` on a finite-dimensional `ℚ_ℓ`-space
+`W`. A vector `y` of `ℂ_ℓ ⊗ W` is zero if, for every form `z` on `W` of some Hodge–Tate weight, the
+`ℂ_ℓ`-linear form `e ⊗ x ↦ e * z x` on `ℂ_ℓ ⊗ W` kills `y`. -/
+lemma eq_zero_of_forall_mem_hodgeTateMaps {W : Type*} [AddCommGroup W] [Module ℚ_[ℓ] W]
+    [Module ℤ_[ℓ] W] [IsScalarTower ℤ_[ℓ] ℚ_[ℓ] W] [Module.Finite ℚ_[ℓ] W]
+    {π : Representation ℚ_[ℓ] Γ W} (hπ : IsPotentiallyCrystalline π) {y : ℂ_[ℓ] ⊗[ℤ_[ℓ]] W}
+    (hy : ∀ (v : ℤ), ∀ z ∈ hodgeTateMaps π (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) v,
+      ∀ φ : ℂ_[ℓ] ⊗[ℤ_[ℓ]] W →ₗ[ℂ_[ℓ]] ℂ_[ℓ], (∀ e x, φ (e ⊗ₜ x) = e * z x) → φ y = 0) :
+    y = 0 := by
+  have h_alg : Algebra.IsAlgebraic ℤ_[ℓ] ℚ_[ℓ] := IsLocalization.isAlgebraic ℚ_[ℓ] ℤ_[ℓ]⁰
+  -- A basis `b` of the forms on `W`, with `b l` of weight `w l` (`hb`).
+  obtain ⟨-, w, -, -, b, hb, -⟩ := hπ.exists_isHodgeTateFrame (finBasis ..) (toAlgHom ..)
+  -- `Λ` is the pairing of `e ⊗ₜ x` with a form `z`, with value `e * z x`.
+  let Λ : ℂ_[ℓ] ⊗[ℤ_[ℓ]] W →ₗ[ℂ_[ℓ]]
+      (W →ₛₗ[(toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ] : ℚ_[ℓ] →+* ℂ_[ℓ])] ℂ_[ℓ]) →ₗ[ℂ_[ℓ]] ℂ_[ℓ] :=
+    liftBaseChange ℂ_[ℓ]
+      (.restrictScalars ℤ_[ℓ] (S := ℚ_[ℓ]) ⟨(b.constr ℕ b).flip.toAddHom, by
+        simp only [AddHom.toFun_eq_coe, coe_toAddHom, LinearMap.map_smulₛₗ, coe_toAlgHom,
+          _root_.algebraMap_smul, RingHom.id_apply, implies_true]⟩)
+  -- The pairing with each `b l`, a form of weight `w l`, kills `y`.
+  have h_basis (l : Fin (finrank ℚ_[ℓ] W)) : Λ y (b l) = 0 :=
+    hy (w l) (b l) (hb l) (Λ.flip (b l)) fun e x ↦ by simp [Λ]
+  -- Every linear form on `ℂ_ℓ ⊗ W` is the pairing with some form.
+  have := Module.Free.of_divisionRing ℂ_[ℓ] (ℂ_[ℓ] ⊗[ℤ_[ℓ]] W)
+  refine (forall_dual_apply_eq_zero_iff ℂ_[ℓ] _).1 fun φ ↦ ?_
+  -- The form on `W` that `φ` restricts to, as a `ℚ_ℓ`-semilinear map.
+  let ψ : W →ₛₗ[(toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ] : ℚ_[ℓ] →+* ℂ_[ℓ])] ℂ_[ℓ] :=
+    ⟨(((liftBaseChangeEquiv _).symm φ).extendScalarsOfIsLocalization ℤ_[ℓ]⁰ ℚ_[ℓ]).toAddHom,
+      by simp [Algebra.smul_def]⟩
+  have hφ : φ = Λ.flip ψ := by
+    ext
+    simp [Λ, ψ]
+  rw [hφ, flip_apply, b.ext (f₁ := Λ y) (f₂ := 0) h_basis, LinearMap.zero_apply]
+
+omit h hρ in
+/-- Let `π` be a potentially crystalline representation of `Γ` on a finite-dimensional `ℚ_ℓ`-space
+`W`, and let the operators `A s` on `W` commute with `Γ` (`hA`). If a combination `c` of words in
+`σ` kills, by composition, every form of weight `u` on `W` (`hc`), then `c(A)` kills the vectors of
+Hodge–Tate weight `u` in `ℂ_ℓ ⊗ W`. -/
+lemma sum_baseChange_apply_eq_zero_of_hasHodgeTateWeight {W : Type*} [AddCommGroup W]
+    [Module ℚ_[ℓ] W] [Module ℤ_[ℓ] W] [IsScalarTower ℤ_[ℓ] ℚ_[ℓ] W] [Module.Finite ℚ_[ℓ] W]
+    {π : Representation ℚ_[ℓ] Γ W} (hπ : IsPotentiallyCrystalline π) {A : σ → End ℚ_[ℓ] W}
+    (hA : ∀ (s : σ) (g : Γ), Commute (A s) (π g)) {u : ℤ} {c : List σ →₀ PadicAlgCl ℓ}
+    (hc : ∀ f ∈ hodgeTateMaps π (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) u,
+      (c.sum fun (L : List σ) (z : PadicAlgCl ℓ) ↦ z • f ∘ₛₗ (L.map A).prod) = 0)
+    {y : ℂ_[ℓ] ⊗[ℤ_[ℓ]] W} (hy : HasHodgeTateWeight π u y) :
+    (c.sum fun (L : List σ) (z : PadicAlgCl ℓ) ↦
+      z • ((L.map A).prod.restrictScalars ℤ_[ℓ]).baseChange ℂ_[ℓ]) y = 0 := by
+  -- Pair `c(A) y` with a form `f` of a weight `v`: this is the pairing of `y` with
+  -- `f' = f ∘ c(A)`, again a form of weight `v`.
+  refine eq_zero_of_forall_mem_hodgeTateMaps hπ fun v f hf φ hφ ↦ ?_
+  set cT := c.sum fun (L : List σ) (z : PadicAlgCl ℓ) ↦
+    z • ((L.map A).prod.restrictScalars ℤ_[ℓ]).baseChange ℂ_[ℓ]
+  set f' := c.sum fun (L : List σ) (z : PadicAlgCl ℓ) ↦ z • f ∘ₛₗ (L.map A).prod
+  have hf' : f' ∈ hodgeTateMaps π (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) v :=
+    sum_mem fun L _ ↦ smul_mem _ _ (hodgeTateMaps.pull (L.map A).prod (by
+      simp [← mul_apply_eq_comp, -FunLike.coe_mul_eq_comp, (Commute.list_prod_left ..).eq, hA])
+      ⟨f, hf⟩).prop
+  have h_adj (e : ℂ_[ℓ]) (x : W) : (φ ∘ₗ cT) (e ⊗ₜ x) = e * f' x := by
+    simp [cT, f', Finsupp.sum, hφ, Finset.mul_sum]
+  rw [← comp_apply]
+  obtain rfl | hv := eq_or_ne v u
+  · -- For `v = u`, the form `f'` vanishes by `hc`, and so does the pairing with it.
+    have h_zero : φ ∘ₗ cT = 0 :=
+      AlgebraTensorModule.ext fun e x ↦ by simp [h_adj, show f' = 0 from hc f hf]
+    simp [h_zero]
+  -- For `v ≠ u`, the pairing with `f'` kills `y` by Tate's theorem.
+  exact apply_eq_zero_of_hasHodgeTateWeight hv hf' h_adj hy
+
 /-- Let `r` with the maps `F i` be the largest quotient on which `T` acts by `θ` (`h`), the `ρ i`
 crystalline (`hρ`), `toGp` (from `[OverGp Γ ℓ]`) of open image, and the `T i s` commuting with each
 other and with `Γ`. Let `γ : ℚ̄_ℓ → ℂ_ℓ` agree with `a ∈ Gal(ℚ̄_ℓ/ℚ_ℓ)`. If `u` is not a Hodge–Tate
@@ -316,35 +432,20 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
   classical
   -- Words in `T` act by composition on the finite-dimensional space of families of forms of weight
   -- `u`. There is no joint eigenvector for `a ∘ θ`, so `exists_words_comb_eq_zero` gives `c`
-  -- killing this space. Then pair `c(T) y` with a basis of forms, each of some weight.
-  obtain ⟨h_equiv, h_span, -, h_univ⟩ := h
+  -- killing this space. By duality with the forms of each weight, `c(T)` kills the vectors of
+  -- weight `u`.
   let Φ (v : ℤ) (L : List σ) :
       End (PadicAlgCl ℓ) (∀ i, hodgeTateMaps (ρ i) (toAlgHom ..) v) :=
     piMap fun i ↦ hodgeTateMaps.pull (L.map (T i)).prod
       (by simp [← mul_apply_eq_comp, -FunLike.coe_mul_eq_comp, (Commute.list_prod_left ..).eq, *])
-  have h_alg : Algebra.IsAlgebraic ℤ_[ℓ] ℚ_[ℓ] := IsLocalization.isAlgebraic ℚ_[ℓ] ℤ_[ℓ]⁰
   have h_no_eigen (f : ∀ i : ι, hodgeTateMaps (ρ i) (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) u)
       (hf : ∀ s : σ, Φ u [s] f = (a ∘ θ) s • f) : f = 0 := by
-    -- By the universal property of the quotient, `f` factors through a `γ`-semilinear form `φ`,
-    -- which has weight `u` for `r` and so vanishes.
-    obtain ⟨φ, hφ⟩ : ∃ φ : (Fin N → PadicAlgCl ℓ) →ₛₗ[(γ : PadicAlgCl ℓ →+* ℂ_[ℓ])] ℂ_[ℓ],
-        ∀ (i : ι) (x : V i), φ (F i x) = (f i).val x := by
-      -- let `ℚ̄_ℓ` act on `ℂ_ℓ` through `γ`, so that a `γ`-semilinear form is linear
-      let := γ.toModule
-      have h_eig (i : ι) (s : σ) (x : V i) : (f i).val (T i s x) = γ (θ s) * (f i).val x := by
-        have h_f_apply := DFunLike.congr_fun (congrArg Subtype.val (congrFun (hf s) i)) x
-        simpa only [ha, Function.comp_apply, Pi.smul_apply, SetLike.val_smul, LinearMap.smul_apply,
-          Algebra.smul_def] using! h_f_apply
-      -- the instances are passed by hand, since `ℂ_ℓ` carries another action of `ℚ̄_ℓ`
-      obtain ⟨φ, hφ⟩ := @h_univ ℂ_[ℓ] _ _ _ (.of_algHom (γ.extendScalarsOfIsLocalization _ _⁰))
-        (fun i ↦ ⟨(f i).val.toAddHom, by
-          simp only [AddHom.toFun_eq_coe, coe_toAddHom, LinearMap.map_smulₛₗ, coe_toAlgHom,
-            smul_eq_mul, RingHom.id_apply, Algebra.smul_def, implies_true]⟩) h_eig
-      exact ⟨⟨φ.toAddHom, φ.map_smul'⟩, hφ⟩
-    have h_mem : φ ∈ hodgeTateMaps (matrixRep r) γ u :=
-      mem_hodgeTateMaps_of_span h_span fun ⟨i, x⟩ ↦ by simpa [↓h_equiv, ← hφ] using! (f i).prop x
-    ext
-    simp [← hφ, jump_eq_zero_iff.1 h_jump φ h_mem]
+    -- `f` turns each `T i s` into the scalar `γ (θ s) = a (θ s)`, so it vanishes.
+    have h_eig (i : ι) (s : σ) (x : V i) : (f i).val (T i s x) = γ (θ s) * (f i).val x := by
+      have h_f_apply := DFunLike.congr_fun (congrArg Subtype.val (congrFun (hf s) i)) x
+      simpa only [ha, Function.comp_apply, Pi.smul_apply, SetLike.val_smul, LinearMap.smul_apply,
+        Algebra.smul_def] using! h_f_apply
+    exact h.eq_zero_of_jump_eq_zero h_jump h_eig
   have h_comm (s t : σ) : Commute (Φ u [s]) (Φ u [t]) := by
     -- Both sides apply the same form to `x` moved by `T j s` and `T j t`, which commute.
     ext i f j x
@@ -352,66 +453,11 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
   obtain ⟨c, h_one, h_kill⟩ := exists_words_comb_eq_zero (Φ u) (fun s L ↦ by simp [Φ]; rfl) h_comm
     h_no_eigen
   refine ⟨c, h_one, fun i y hy ↦ ?_⟩
-  -- A basis `b` of the forms on `V i`, with `b l` of weight `w l` (`hb`).
-  obtain ⟨-, w, -, -, b, hb, -⟩ :=
-    (hρ i).isPotentiallyCrystalline.exists_isHodgeTateFrame (finBasis ..) (toAlgHom ..)
-  -- `Λ` is the pairing of `e ⊗ₜ x` with a form `z`, with value `e * z x`.
-  let Λ : ℂ_[ℓ] ⊗[ℤ_[ℓ]] V i →ₗ[ℂ_[ℓ]]
-      (V i →ₛₗ[(toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ] : ℚ_[ℓ] →+* ℂ_[ℓ])] ℂ_[ℓ]) →ₗ[ℂ_[ℓ]] ℂ_[ℓ] :=
-    liftBaseChange ℂ_[ℓ]
-      (.restrictScalars ℤ_[ℓ] (S := ℚ_[ℓ]) ⟨(b.constr ℕ b).flip.toAddHom, by
-        simp only [AddHom.toFun_eq_coe, coe_toAddHom, LinearMap.map_smulₛₗ, coe_toAlgHom,
-          _root_.algebraMap_smul, RingHom.id_apply, implies_true]⟩)
-  set cT := c.sum fun (L : List σ) (z : PadicAlgCl ℓ) ↦
-    z • ((L.map (T i)).prod.restrictScalars ℤ_[ℓ]).baseChange ℂ_[ℓ]
-  have h_basis (l : Fin (finrank ℚ_[ℓ] (V i))) : Λ (cT y) (b l) = 0 := by
-    -- Move `c(T)` to the form: `z = b l ∘ c(T)` has the weight `w l` of `b l`.
-    let z : hodgeTateMaps (ρ i) (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) (w l) :=
-      c.sum (fun L e ↦ e • Φ (w l) L) (Pi.single i ⟨b l, hb l⟩) i
-    have h_adj : Λ.flip (b l) ∘ₗ cT = Λ.flip z :=
-      AlgebraTensorModule.ext (by
-        simp only [Finsupp.sum, coe_comp, LinearMap.coe_sum, LinearMap.coe_smul,
-          Function.comp_apply, Finset.sum_apply, Pi.smul_apply, baseChange_tmul,
-          LinearMap.coe_restrictScalars, map_sum, flip_apply, map_smul_of_tower,
-          liftBaseChange_tmul, LinearMap.coe_mk, coe_toAddHom, LinearMap.smul_apply,
-          Basis.constr_apply_fintype, Basis.equivFun_self, ite_smul, one_smul, zero_smul,
-          Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, smul_eq_mul, finsupp_sum_apply,
-          hodgeTateMaps.pull, coe_piMap, AddHom.coe_mk, Pi.map_apply, Pi.single_eq_same,
-          SetLike.mk_smul_mk, AddSubmonoidClass.coe_finsetSum, Basis.equivFun_apply,
-          Basis.sum_repr, implies_true, Λ, cT, z, Φ])
-    rw [← flip_apply, ← comp_apply, h_adj]
-    obtain rfl | hw := eq_or_ne (w l) u
-    · -- For `w l = u`, the combination `c(Φ u)` is zero, so `z = 0`.
-      have h_z : z = 0 := by simp only [z, h_kill, LinearMap.zero_apply, Pi.zero_apply]
-      simp [h_z]
-    -- For `w l ≠ u` the pairing of `y` with `z` transforms by two different powers of the
-    -- cyclotomic character, so it vanishes by Tate's theorem.
-    obtain ⟨_, e, x, rfl⟩ := y.exists_sum_tmul_eq
-    refine tate_eq_zero_of_cyclotomicGp_twist (neg_injective.ne hw) (nhds_one_le_map_nearOne Γ
-      ((Filter.eventually_all.mpr fun k ↦ z.prop (x k)).mono fun g hg ↦ ?_))
-    -- Pair both sides of the weight condition `hy g` with `z`.
-    have h_pair : Λ (tensorAction ℂ_[ℓ] (toGp g) (ρ i g) (∑ k, e k ⊗ₜ[ℤ_[ℓ]] x k)) z =
-        Λ ((cyclotomicGp (toGp g) ^ (-u)).val • ∑ k, e k ⊗ₜ[ℤ_[ℓ]] x k) z :=
-      congrArg (fun y' ↦ Λ y' z) (hy g)
-    -- Only the underlying form and its transformation law matter in this calculation.
-    generalize (z.val) = form at hg h_pair ⊢
-    simpa only [zpow_neg, map_sum, flip_apply, liftBaseChange_tmul, LinearMap.coe_restrictScalars,
-      LinearMap.coe_mk, coe_toAddHom, LinearMap.smul_apply, Basis.constr_apply_fintype,
-      Basis.equivFun_apply, Basis.sum_repr, smul_eq_mul, Finset.smul_sum, smul_mul',
-      Set.mem_ofPred_eq, tensorAction, map_tmul, DistribSMul.toLinearMap_apply, LinearMap.coe_sum,
-      LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply, hg, MonoidHom.coe_comp,
-      Function.comp_apply, Algebra.mul_smul_comm, map_smul_of_tower, Λ] using h_pair
-  -- Every linear form on `ℂ_ℓ ⊗ V i` is the pairing with some form.
-  have := Module.Free.of_divisionRing ℂ_[ℓ] (ℂ_[ℓ] ⊗[ℤ_[ℓ]] V i)
-  refine (forall_dual_apply_eq_zero_iff ℂ_[ℓ] _).1 fun φ ↦ ?_
-  -- The form on `V i` that `φ` restricts to, as a `ℚ_ℓ`-semilinear map.
-  let ψ : V i →ₛₗ[(toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ] : ℚ_[ℓ] →+* ℂ_[ℓ])] ℂ_[ℓ] :=
-    ⟨(((liftBaseChangeEquiv _).symm φ).extendScalarsOfIsLocalization ℤ_[ℓ]⁰ ℚ_[ℓ]).toAddHom,
-      by simp [Algebra.smul_def]⟩
-  have hφ : φ = Λ.flip ψ := by
-    ext
-    simp [Λ, ψ]
-  rw [hφ, flip_apply, b.ext (f₁ := Λ (cT y)) (f₂ := 0) h_basis, LinearMap.zero_apply]
+  -- `c(T)` kills the forms of weight `u` on `V i`, since `c(Φ u)` is zero.
+  refine sum_baseChange_apply_eq_zero_of_hasHodgeTateWeight (hρ i).isPotentiallyCrystalline
+    (hTρ i) (fun f hf ↦ ?_) hy
+  simpa [Finsupp.sum, Φ, hodgeTateMaps.pull, finsupp_sum_apply] using
+    congr(($h_kill (Pi.single i ⟨f, hf⟩) i).val)
 
 end New.Variety
 
