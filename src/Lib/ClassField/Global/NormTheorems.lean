@@ -2,6 +2,7 @@ module
 
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.NumberTheory.NumberField.Global.Ideles.Norm.Open
 public import Lib.ClassField.Local.ArtinMap
 import Lib.ClassField.Global.AlbertBrauerHasseNoether
 import Lib.ClassField.Global.ArtinMap
@@ -178,6 +179,29 @@ lemma index_ker_abelianLift_comp_artinMap :
     _ = (ker χ).index := (index_comap_of_surjective _ (mk'_surjective _)).symm
     _ = finrank K L := (eq_fixingSubgroup_of_isProGalois (Γ := Γ) (L := L)).right
 
+open scoped NumberField in
+/-- The norm group in the finite ideles of a number field is open. -/
+private lemma isOpen_range_finite_idele_norm (K L : Type*) [Field K] [NumberField K]
+    [Field L] [NumberField L] [Algebra K L] :
+    IsOpen ((Units.map (adeleNorm K L)).range : Set (𝔸f K)ˣ) := by
+  -- The two finite adele norms are continuous and agree with the field norm on diagonal elements.
+  have h_norm : (adeleNorm K L : 𝔸f L → 𝔸f K) = TauCeti.GlobalNumberFields.finiteAdeleNorm K L :=
+    denseRange_algebraMap_finAdele.equalizer (continuous_adeleNorm K L)
+      (TauCeti.GlobalNumberFields.continuous_finiteAdeleNorm K L) (funext fun x ↦ by simp)
+  -- The pullback of the full norm group along the inclusion of finite ideles is open.
+  let U := (TauCeti.GlobalNumberFields.ideleNormMap K L).toMonoidHom.range.comap
+    (NumberField.IdeleGroup.ofFiniteIdele (𝓞 K) K)
+  have hU : IsOpen (U : Set (𝔸f K)ˣ) :=
+    (TauCeti.GlobalNumberFields.isOpen_range_ideleNormMap K L).preimage
+      (NumberField.IdeleGroup.continuous_ofFiniteIdele (𝓞 K) K)
+  -- The finite part of a full norm is the norm of the finite part.
+  refine isOpen_mono ?_ hU
+  rintro x ⟨z, hz⟩
+  refine ⟨NumberField.IdeleGroup.toFiniteIdele (𝓞 L) L z, Units.ext ?_⟩
+  change adeleNorm K L _ = x.val
+  rw [h_norm]
+  simpa using congrArg (fun a : NumberField.IdeleGroup (𝓞 K) K ↦ a.val.2) hz
+
 /-- The norm group of the extension `L / K` cut out by `χ`: a finite idele `a` of `K` is killed by
 `χ ∘ artinMap` exactly when it is a totally positive element of `Kˣ` times the norm of a finite
 idele of `L`. A case of the Artin reciprocity law. -/
@@ -191,33 +215,8 @@ lemma abelianLift_artinMap_eq_one_iff (a : (𝔸f K)ˣ) :
   let P : Subgroup Kˣ := ⨅ φ : K →+* ℝ, (Units.posSubgroup ℝ).comap (Units.map φ)
   have h_mem_P (x : Kˣ) : x ∈ P ↔ IsTotallyPositive x.val := mem_iInf
   let W : Subgroup (𝔸f K)ˣ := P.map principalIdele ⊔ (Units.map (adeleNorm K L)).range
-  -- `W` is open: an idele `b` near `1` is a unit everywhere and `χ` kills its local symbols,
-  -- so it is a norm.
-  have h_norms_closed :
-      IsClosed ((idelesUnitOff ∅).map (Units.map (adeleNorm K L)) : Set (𝔸f K)ˣ) :=
-    (isCompact_idelesUnitOff_empty.image (by fun_prop)).isClosed
-  have hW_open : IsOpen (W : Set (𝔸f K)ˣ) := by
-    refine isOpen_of_mem_nhds _
-      ((eventually_artinAt_eq_one χ).mono fun b ⟨hb_unit, hb_loc⟩ ↦ mem_sup_right ?_)
-    -- The norms of the unit ideles form a closed group, so it suffices to treat the ideles with a
-    -- single component of `b` (`mem_of_locIdele_mem`). Such a component, killed by `χ`, is the
-    -- local norm of some `y` (`exists_localNorm_of_abelianLift_artinAt`), and `y` is a unit
-    -- because its norm is.
-    apply map_le_range _ (idelesUnitOff ∅)
-    apply mem_of_locIdele_mem h_norms_closed
-    intro v
-    obtain ⟨w, rfl⟩ : ∃ w : FinPlace L, w.below K = v :=
-      FinPlace.comap_surjective (algebraMap K L) v
-    obtain ⟨y, hy_norm⟩ : ∃ y : (LocField w)ˣ, localNorm K w y = ideleAt (w.below K) b :=
-      exists_localNorm_of_abelianLift_artinAt (hb_loc (w.below K))
-    -- The norm of `y` has absolute value one, as `b` is a unit at every place.
-    have h_norm_one : ‖(localNorm K w y).val‖ = 1 ↔ ‖(ideleAt (w.below K) b).val‖ = 1 := by
-      rw [hy_norm]
-    have hy_unit : Valued.v y.val = 1 := by
-      simpa [mem_idelesUnitOff.mp hb_unit, ideleAt, le_antisymm_iff] using h_norm_one
-    refine ⟨locIdele w y, locIdele_mem_idelesUnitOff hy_unit, ?_⟩
-    rw [← hy_norm]
-    exact adeleNorm_locIdele w y
+  have hW_open : IsOpen (W : Set (𝔸f K)ˣ) :=
+    isOpen_mono le_sup_right (isOpen_range_finite_idele_norm K L)
   have hW_pos (x : Kˣ) (hx : IsTotallyPositive x.val) : principalIdele x ∈ W :=
     mem_sup_left ⟨x, (h_mem_P x).mpr hx, rfl⟩
   have hW_norm (y : (𝔸f L)ˣ) : Units.map (adeleNorm K L) y ∈ W := mem_sup_right ⟨y, rfl⟩
