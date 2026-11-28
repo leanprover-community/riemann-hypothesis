@@ -744,15 +744,9 @@ lemma Exchange.seesaw_periods (J : Type*) {X : J → Type}
   -- not depend on `o`.
   obtain ⟨-, hk', γ, γ', ψ, hγ, hγ', -⟩ := id h_edge'
   have hk : IsConjKernelPair k := h_edge.isConjKernelPair_source
-  have h_functional (o : J) (i : X o) :
-      ∃ Λ : fockSpace (realSigns E (homSigns t' s')) →L[ℂ] ℂ,
-        ∀ v : fockSpace (realSigns E (homSigns t' s')),
-          Λ v = ∫ g : G E s, ∫ x : G E s', (N o i).weightFn g * y o i g *
-              ((T'.hom S').θ (pairWeil T' S' (a' o m') (a' o n') ((N o i).comparisonMap g, x)
-                (modDatum T' S' (𝔪 o) (Ψ' o i) v)) * f o i x) ∂S'.quotMeasure ∂S.quotMeasure :=
+  choose Lᵢ hLᵢ using fun (o : J) (i : X o) ↦
     exists_continuousLinearMap_eq_integral_kernel_mul_forms hk hk' (a' o m') (a' o n') (Ψ' o i)
       (N o i) (y o i) (f o i)
-  choose Lᵢ hLᵢ using h_functional
   let L : fockSpace (realSigns E (homSigns t' s')) →L[ℂ] J → ℂ :=
     .pi fun o ↦ ∑ i ∈ W o, u o i • Lᵢ o i
   have L_apply (v : fockSpace (realSigns E (homSigns t' s'))) (o : J) :
@@ -770,18 +764,14 @@ lemma Exchange.seesaw_periods (J : Type*) {X : J → Type}
     let P (o : J) (i : X o) (r : GInf E t) : ℂ := periodPairing hk' (M o i) r (f o i) (U o i)
     choose β hβ using show ∀ r, ∃ β : ℂ, ∀ o, ∑ i ∈ W o, u o i * P o i r = β * c o from h_period
     -- the lift with datum `Q` is the average against `α` of real translates of that with `Φ`
-    obtain ⟨α, h_avg⟩ : ∃ α : CompactlySupportedContinuousMap (GInf E t) ℂ, ∀ (o : J) (i : X o),
-        lift (pairThetaKer S T (a o n) (a o m))
-            (modDatum S T (𝔪 o) (Ψ o i) (polyVector (realSigns E (homSigns s t)) Q)) (y o i) =
-          realConv α (U o i) :=
-      (h_edge.exists_lift_eq_realConv Q).imp fun α hα o i ↦ hα o S T (𝔪 o) (Ψ o i) (y o i)
+    obtain ⟨α, h_avg⟩ := h_edge.exists_lift_eq_realConv Q
     have h_int (o : J) (i : X o) : Integrable fun r : GInf E t ↦ α r * P o i r :=
       (integrable_mul_weight_mul_forms hk' α (M o i) (f o i) (U o i)).integral_prod_left.congr
         (.of_forall fun r ↦ integral_const_mul (α r) _)
     -- the see-saw: each double integral in `L` is the `α`-average of the periods of the lift
     have h_seesaw (o : J) (i : X o) : Lᵢ o i (polyVector _ p) = ∫ r, α r * P o i r :=
       (hLᵢ o i _).trans <| integral_kernel_mul_forms_eq_integral_periodPairing hk hk' (f o i)
-        (h_avg o i) (h_kernel o i)
+        (h_avg o S T (𝔪 o) (Ψ o i) (y o i)) (h_kernel o i)
     -- average `hβ` against `α` and exchange the finite sum with the integral over `r`
     refine mem_span_singleton.2 ⟨∫ r, α r * β r, funext fun o ↦ ?_⟩
     calc (∫ r, α r * β r) * c o = ∫ r, ∑ i ∈ W o, u o i * (α r * P o i r) := by

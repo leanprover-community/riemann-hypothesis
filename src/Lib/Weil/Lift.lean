@@ -867,13 +867,8 @@ lemma IsEdge.exists_petersson_lift_eq_mul [WeilData E] {γ γ' : InfinitePlace E
   -- function `α m` of compact support. As `y'` and that form have type `e'`, this scales their
   -- product by a number `c m`. Extend these numbers linearly.
   have he' : IsCuspKernel 0 e' := by simpa using hΦ.swapped.isCuspKernel_source.star
-  have h_conv (m : InfinitePlace E × n' × n →₀ ℕ) : ∃ α : C_c(GInf E t, ℂ),
-      ∀ {V : Space E (n' × n) (homSigns s t)} {S : Space E n s} {T : Space E n' t} {y : G E s → ℂ}
-        {f : 𝒮 V} (Θ : ThetaKernel (𝒮 V) S T), Θ.HasRealPart (realPairWeil γ γ') → S.IsForm e y →
-        lift Θ (integrated V (Fock.polyVector (realSigns E (homSigns s t)) (monomial m 1)) f) y =
-          realConv α (lift Θ (integrated V Φ f) y) :=
+  choose α hα using fun m : InfinitePlace E × n' × n →₀ ℕ ↦
     hΦ.exists_lift_eq_realConv _ ⟨monomial m 1, rfl⟩
-  choose α hα using h_conv
   let c (m : InfinitePlace E × n' × n →₀ ℕ) : ℂ := ∫ x : GInf E t, α m x * (conj (e' x) / e' 1)
   let κ : MvPolynomial (InfinitePlace E × n' × n) ℂ →ₗ[ℂ] ℂ := (basisMonomials _ ℂ).constr ℂ c
   refine ⟨κ, fun {S T ψ ψ'} a b _ _ f hf P y y' ↦ ?_⟩
