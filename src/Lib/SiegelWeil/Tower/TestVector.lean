@@ -3,6 +3,7 @@ module
 import Mathlib.LinearAlgebra.AffineSpace.MidpointZero
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Algebra.Ring.Int.Units
 public import Lib.SiegelWeil.Tower.RealConeIntegral
 import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 import Lib.SiegelWeil.Tower.PrincipalIdeles
@@ -274,11 +275,6 @@ lemma det_unit_sum_unit (N : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ) :
   rw [← det_submatrix_equiv_self e, det_fin_two]
   rfl
 
-/-- Two signs have product `1` exactly when they are equal. -/
-lemma units_int_mul_eq_one_iff (a b : ℤˣ) : a * b = 1 ↔ a = b := by
-  revert a b
-  decide
-
 omit [Fintype r] in
 /-- The diagonal projection on the indices of sign `σ` is `(1 + σ S) / 2`, with `S` the matrix of
 signs. -/
@@ -390,7 +386,7 @@ lemma detVector_apply (k : ℕ) (m : InfinitePlace E → ℕ) (F : InfinitePlace
       (starRingEnd ℂ) (F w j l) * (starRingEnd ℂ) (if σ * s j = 1 then u (w, i, j) else 0)
     have h_zero : ∑ j : {j : n // ¬s j = σ},
         (starRingEnd ℂ) (F w j l) * (starRingEnd ℂ) (if σ * s j = 1 then u (w, i, j) else 0) = 0 :=
-      Fintype.sum_eq_zero _ fun j ↦ by simp [units_int_mul_eq_one_iff, Ne.symm j.property]
+      Fintype.sum_eq_zero _ fun j ↦ by simp [← Int.units_eq_iff_mul_eq_one, Ne.symm j.property]
     rw [h_zero, add_zero] at h_split
     simp [detPolyMatrix, posCoordMatrix, toSquareBlockProp, Matrix.mul_apply, holomorphicCoord_eq,
       posProj, mulVec_diagonal, pairSign, i.property, mul_comm, ← h_split,
