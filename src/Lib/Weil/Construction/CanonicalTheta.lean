@@ -84,9 +84,8 @@ lemma _root_.New.CoordChange.exists_theta_omega_map [RingHomInvPair σ σ] (V : 
     -- each term of the mean of `θ_{V₁}` is `c c̄` times the term of the mean of `F`
     simpa only [hc, _root_.smul_apply, smul_eq_mul, map_mul, mul_mul_mul_comm c,
       quotMean_const_mul, h_mean, mul_one] using h_mean₁
-  have h_sq_real : ‖c‖ ^ 2 = 1 := by exact_mod_cast (Complex.mul_conj' c).symm.trans h_sq
   simp only [theta_eq_rawTheta]
-  exact ⟨c, (pow_eq_one_iff_of_nonneg (norm_nonneg c) two_ne_zero).mp h_sq_real,
+  exact ⟨c, CStarRing.norm_of_mem_unitary (Unitary.mem_iff_self_mul_star.mpr h_sq),
     fun f ↦ DFunLike.congr_fun hc f⟩
 
 /-- Let `V` and `W` be two hermitian spaces with a point (a matrix `J` over `E` and a point `x` in
@@ -148,8 +147,7 @@ lemma theta_eq_theta_omega {W V : Space E n s} {g : G E s}
     (h_rat : ∀ y ∈ W.ratVectors, g • y ∈ V.ratVectors) (f : 𝒮 V) : W.θ f = V.θ (V.ω g f) := by
   -- Let `p` carry the sum of lines to `W`; then `g p` carries it to `V`, and both sides are the
   -- theta functional of the sum of lines at `ω(p⁻¹) f`.
-  obtain ⟨p, hp⟩ : ∃ p : G E s, ∀ y ∈ (signedSpace E s).ratVectors, p • y ∈ W.ratVectors :=
-    exists_mapsTo_ratVectors
+  obtain ⟨p, hp⟩ := exists_mapsTo_ratVectors (V := signedSpace E s) (W := W)
   have hgp (y : n → 𝔸 E) (hy : y ∈ (signedSpace E s).ratVectors) :
       (g * p) • y ∈ V.ratVectors := by
     simpa only [mul_smul] using h_rat _ (hp y hy)
