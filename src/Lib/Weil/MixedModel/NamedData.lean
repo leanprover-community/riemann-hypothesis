@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Topology.Sheaves.Presheaf
+public import TauCeti.LinearAlgebra.LinearMap.PseudoInverse
 public import Lib.Weil.Construction.ProductsAndTransport
 public import Lib.Weil.Construction.VacuumProjections
 import Lib.General.Measure.HaarNormalisation
@@ -82,7 +83,7 @@ def heisenbergCombination (S : Set (FinPlace E)) : ((n → 𝔸f E) →₀ ℂ) 
 `New.Space.heisenbergCombination` of chosen coefficients c, with `New.schrodingerCombination` c = Ψ
 when such exist. -/
 def schrodingerOp (S : Set (FinPlace E)) : ((n → 𝔸f E) → ℂ) →ₗ[ℂ] 𝒮 V →L[ℂ] 𝒮 V :=
-  V.heisenbergCombination S ∘ₗ (exists_generalized_inverse (schrodingerCombination S)).choose
+  V.heisenbergCombination S ∘ₗ (schrodingerCombination S).exists_comp_comp_eq_self.choose
 
 /-- `V.schrodingerOp S Ψ` is the operator `Ψ⊗` on `𝒮 V`: a combination of Heisenberg operators
 composed with the projection `V.projOn S`, with chosen coefficients whose Schrödinger combination is

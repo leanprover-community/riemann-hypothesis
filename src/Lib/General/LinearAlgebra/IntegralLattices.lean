@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.LinearAlgebra.Matrix.Swap
 import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.LinearAlgebra.LinearMap.PseudoInverse
 import TauCeti.LinearAlgebra.Matrix.Range
 public import Lib.Adelic.Hecke.Basic
 public import Lib.General.Groups.BesselGroups
@@ -61,7 +62,7 @@ Witt's extension theorem for unimodular hermitian lattices and for the Iwasawa d
 noncomputable section
 
 /-!
-## Generalised inverses and matrix factorisations over a field
+## Matrix factorisations over a field
 
 * `New.exists_mul_add_mul_eq_one`: if the kernel of `x` lies in the column space of `y`, then
   `y * e + b * x = 1` for some matrices `e` and `b`.
@@ -75,26 +76,16 @@ open Matrix
 
 variable {k l m n : Type*} [Field k] [Fintype n] {x : Matrix m n k}
 
-/-- Let `f` be a linear map between vector spaces over a field. Then `f` has a generalised inverse:
-a linear map `s` with f(s(f x)) = f x for all x. -/
-lemma New.exists_generalized_inverse {M N : Type*} [AddCommGroup M] [AddCommGroup N] [Module k M]
-    [Module k N] (f : M →ₗ[k] N) :
-    ∃ s : N →ₗ[k] M, ∀ x : M, f (s (f x)) = f x := by
-  -- extend a right inverse of `f`, viewed as a map onto its range, to all of `N`
-  obtain ⟨g, hg⟩ := f.rangeRestrict.exists_rightInverse_of_surjective (by simp)
-  obtain ⟨s, rfl⟩ := g.exists_extend
-  exact ⟨s, fun x ↦ congrArg Subtype.val (LinearMap.congr_fun hg ⟨f x, x, rfl⟩)⟩
-
 /-- Let `x` and `y` be matrices over a field. If the kernel of `x` lies in the column space of `y`,
 then `y * e + b * x = 1` for some matrices `e` and `b`. -/
 lemma New.exists_mul_add_mul_eq_one [Fintype l] [Fintype m] [DecidableEq n] {y : Matrix n l k}
     (h_range : x.mulVecLin.ker ≤ y.mulVecLin.range) :
     ∃ (e : Matrix l n k) (b : Matrix n m k), y * e + b * x = 1 := by
   classical
-  -- Take a generalised inverse `b` of `x`. Then `v - b (x v)` is killed by `x`, so it lies in the
+  -- Take a pseudo-inverse `b` of `x`. Then `v - b (x v)` is killed by `x`, so it lies in the
   -- column space of `y`; that is, the columns of `1 - b x` lie there.
   obtain ⟨b, hb⟩ : ∃ b : (m → k) →ₗ[k] n → k, ∀ v : n → k, x *ᵥ b (x *ᵥ v) = x *ᵥ v :=
-    exists_generalized_inverse x.toLin'
+    x.toLin'.exists_comp_comp_eq_self.imp fun _ hb ↦ LinearMap.congr_fun hb
   have h_ker (v : n → k) : v - b (x *ᵥ v) ∈ x.mulVecLin.ker := by simp [mulVec_sub, hb]
   obtain ⟨e, he⟩ : ∃ e : Matrix l n k, y * e = 1 - b.toMatrix' * x := by
     refine exists_mul_eq_of_range_le fun j ↦ ?_

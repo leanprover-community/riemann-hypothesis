@@ -4,6 +4,7 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.MeasureTheory.Integral.CompactlySupported
 import Mathlib.RingTheory.PicardGroup
+import TauCeti.LinearAlgebra.LinearMap.PseudoInverse
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.AutomorphicForms.UnipotentRadical
@@ -460,9 +461,10 @@ lemma Space.exists_mem_Gamma_adeleMatrix_mul_eq_radicalElem (W : Space E n s)
 take `2 b` to be a generalised inverse of `Xᴴ J`. -/
 lemma exists_orthogonal_one_sub (J X : Matrix n n E) :
     ∃ b : Matrix n n E, Xᴴ * (J * (1 - 2 * b * (Xᴴ * J))) = 0 := by
-  obtain ⟨σ, hσ⟩ := exists_generalized_inverse (Xᴴ * J).toLin'
+  obtain ⟨σ, hσ⟩ := (Xᴴ * J).toLin'.exists_comp_comp_eq_self
   have h_inv : Xᴴ * J * (σ.toMatrix' * (Xᴴ * J)) = Xᴴ * J := ext_iff_mulVec.2 fun v ↦ by
-    simpa only [← mulVec_mulVec, LinearMap.toMatrix'_mulVec, toLin'_apply] using hσ v
+    simpa only [← mulVec_mulVec, LinearMap.toMatrix'_mulVec, LinearMap.comp_apply, toLin'_apply]
+      using LinearMap.congr_fun hσ v
   have h_half : 2 * ((2⁻¹ : E) • σ.toMatrix') = σ.toMatrix' := by norm_num [two_mul, ← add_smul]
   exact ⟨(2⁻¹ : E) • σ.toMatrix', by rw [h_half, ← mul_assoc, mul_sub, mul_one, h_inv, sub_self]⟩
 
