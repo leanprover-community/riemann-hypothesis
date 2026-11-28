@@ -111,7 +111,7 @@ lemma exists_card_parabolic_blockNumber_eq.{u} (j : ℕ) :
     refine ⟨0, fun R _ ↦ ?_⟩
     have h_top : parabolic (R := R) (blockNumber (R := N) (T := T) 0) = (⊤ : Subgroup (GL N R)) :=
       eq_top_iff.mpr fun g _ a b hlt ↦ by simp [blockNumber] at hlt
-    rw [h_top, pow_zero, pow_zero, mul_one, mul_one]
+    simp only [h_top, pow_zero, mul_one]
     exact Subgroup.card_top
   | succ j ih =>
     obtain ⟨k, hk⟩ := ih

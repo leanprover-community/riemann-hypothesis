@@ -212,15 +212,7 @@ squares between `Γ` and the path `first m` through `(0, 0)`, each named by its 
 the least indices, has only members with `i, j < m`. -/
 lemma squares_subset (Γ : TwoGridPath m) : Γ.squares ⊆ range m ×ˢ range m := by
   rintro ⟨i, j⟩ hs
-  suffices i < m ∧ j < m by simpa
-  have hl : Γ.diagonalIndex ≤ m := Γ.diagonalIndex_le
-  obtain ⟨hi : i < Γ.diagonalIndex, hj : j < Γ.diagonalIndex⟩ | h_false | h_true :=
-    mem_squares.mp hs
-  · omega
-  · obtain ⟨hi : i < Γ.diagonalIndex, -, hj : j < m⟩ := GridPath.bounds_of_mem_squares h_false
-    omega
-  · obtain ⟨hj : j < Γ.diagonalIndex, -, hi : i < m⟩ := GridPath.bounds_of_mem_squares h_true
-    omega
+  grind [mem_squares, Γ.diagonalIndex_le, → GridPath.bounds_of_mem_squares]
 
 /-- No unit square lies between the first path, through `(0, 0)`, and itself. -/
 lemma squares_first : (first m).squares = ∅ := by
@@ -286,9 +278,7 @@ lemma Turn.exists_eq_down_and_eq_right {j : ℕ} (h_turn : Γ.Turn (j, j) Γ') :
       Γ' = ⟨j + 1, fun z : Bool ↦ (q z).right⟩ := by
   generalize hs : (j, j) = s at h_turn
   cases h_turn with
-  | @inner _ z a b q r hΓ =>
-    have hab : a + 1 ≤ Γ.diagonalIndex ∧ Γ.diagonalIndex ≤ b := r.le_and_le
-    grind
+  | inner _ _ _ r _ => grind [r.le_and_le]
   | diagonal q =>
     cases hs
     exact ⟨q, rfl, rfl⟩
@@ -302,14 +292,10 @@ lemma exists_turn (hΓ : Γ ≠ last m) : ∃ (s : ℕ × ℕ) (Γ' : TwoGridPat
     exact ⟨_, _, .inner Γ z q r h_eq⟩
   obtain ⟨l, half⟩ := Γ
   obtain rfl | hl := eq_or_ne l m
-  · obtain rfl : half = fun _ : Bool ↦ .row l l := funext fun z ↦ (half z).eq_row
-    exact absurd rfl hΓ
+  · exact absurd (congrArg (TwoGridPath.mk l) (funext fun z ↦ (half z).eq_row)) hΓ
   -- Without corners, and below the last row, both halves end with a step down.
-  have h_down (z : Bool) : ∃ q : GridPath 0 m l (l + 1), half z = q.down := by
-    obtain h_has_corner | h_ends_down | h_last_row := (half z).exists_corner_or_eq_down_or_eq
-    · exact absurd ⟨z, h_has_corner⟩ h_corner
-    · exact h_ends_down
-    · exact absurd h_last_row hl
+  have h_down (z : Bool) : ∃ q : GridPath 0 m l (l + 1), half z = q.down :=
+    ((half z).exists_corner_or_eq_down_or_eq.resolve_left fun h ↦ h_corner ⟨z, h⟩).resolve_right hl
   choose q hq using h_down
   obtain rfl : half = fun z ↦ (q z).down := funext hq
   exact ⟨(l, l), ⟨l + 1, fun z ↦ (q z).right⟩, .diagonal q⟩
