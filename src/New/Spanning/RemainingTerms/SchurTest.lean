@@ -90,6 +90,21 @@ lemma inCut_of_besselKernel_ne_zero {γ : S.G E} {y : NumberField.InfinitePlace 
   exact h_factors.imp ((S.besselSystem v).isCutPair.inCut_of_ne_zero _)
     ((S.besselSystem v).isCutPair.inCut_of_ne_zero _)
 
+omit [HasPrimitiveRoot5040 E] in
+/-- Where the cut amplitude integrand is nonzero, both points lie in the boxed set. -/
+lemma mem_boxedPoints_of_cut_integrand_ne_zero {c c' : S.Classes} {γ : S.G E}
+    {y : NumberField.InfinitePlace E → 𝔰.G₁}
+    (h : S.classCutoff c y * S.classCutoff c' ((S.ratToInf γ)⁻¹ * y) *
+      ‖S.besselKernel .cut γ y‖ₑ ≠ 0) :
+    y ∈ S.boxedPoints ∧ (S.ratToInf γ)⁻¹ * y ∈ S.boxedPoints := by
+  obtain ⟨h_cutoffs, h_norm⟩ := mul_ne_zero_iff.mp h
+  obtain ⟨hc, hc'⟩ := mul_ne_zero_iff.mp h_cutoffs
+  have h_kernel := eNorm_ne_zero.mp h_norm
+  exact ⟨mem_boxedPoints_of_classCutoff_ne_zero hc
+      (fun v ↦ (inCut_of_besselKernel_ne_zero h_kernel v).1),
+    mem_boxedPoints_of_classCutoff_ne_zero hc'
+      (fun v ↦ (inCut_of_besselKernel_ne_zero h_kernel v).2)⟩
+
 @[fun_prop]
 lemma measurable_boxCutoff {c : S.Classes} [S.IsAdmissible] : Measurable (S.boxCutoff c) :=
   (measurable_classCutoff c).indicator measurableSet_boxedPoints
@@ -121,19 +136,12 @@ lemma amplitudeMajorant_sq_le {c c' : S.Classes} {γ : S.G E} [S.IsAdmissible] (
   by_cases h_zero :
       S.classCutoff c y * S.classCutoff c' ((S.ratToInf γ)⁻¹ * y) * ‖S.besselKernel .cut γ y‖ₑ = 0
   · simp [h_zero]
-  simp only [mul_eq_zero, eNorm_eq_zero, not_or] at h_zero
-  obtain ⟨⟨h_cutoff, h_cutoff'⟩, h_ker⟩ := h_zero
-  -- Where the integrand is nonzero, `y` and `γ⁻¹y` lie in `S.boxedPoints`, so there `boxCutoff`
-  -- equals `classCutoff`.
-  have h_box {d : S.Classes} {z : NumberField.InfinitePlace E → 𝔰.G₁}
-      (hz : S.classCutoff d z ≠ 0) (h_cut : ∀ v : NumberField.InfinitePlace E, InCut (z v) S.b) :
-      S.boxCutoff d z = S.classCutoff d z :=
-    Set.indicator_of_mem (mem_boxedPoints_of_classCutoff_ne_zero hz h_cut) _
-  have h_box_y : S.boxCutoff c y = S.classCutoff c y :=
-    h_box h_cutoff fun v ↦ (inCut_of_besselKernel_ne_zero h_ker v).1
+  obtain ⟨hy, hγy⟩ := mem_boxedPoints_of_cut_integrand_ne_zero h_zero
+  -- On the support of the integrand, the boxed cutoff equals the class cutoff.
+  have h_box_y : S.boxCutoff c y = S.classCutoff c y := Set.indicator_of_mem hy _
   have h_box_γy :
       S.boxCutoff c' ((S.ratToInf γ)⁻¹ * y) = S.classCutoff c' ((S.ratToInf γ)⁻¹ * y) :=
-    h_box h_cutoff' fun v ↦ (inCut_of_besselKernel_ne_zero h_ker v).2
+    Set.indicator_of_mem hγy _
   -- The volume ratios in the two weights `schurWeight` are inverse to each other, so the product of
   -- the two integrands is exactly the square of the integrand of `amplitudeMajorant`.
   have h_cancel :

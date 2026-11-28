@@ -557,28 +557,18 @@ lemma enorm_amplitudeSum_le_orbitBound_top (hT : S.IsStable T)
       fun h_same ↦ h_nearRep (by simpa [h_rep] using h_maximal h_same (fun _ ↦ hδ) hδ)
     simp [ω, toReal_smul_besselKernel_eq_zero h_none]
 
+omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 /-- If the majorant `S.amplitudeMajorant .cut c c' γ` of the amplitude of `γ` over the classes `c`,
 `c'` is nonzero, then `γ` is near (`S.IsNear γ`): some archimedean point `y` has both `y` and
 `γ⁻¹ y` in `S.boxedPoints`. -/
 lemma isNear_of_amplitudeMajorant_ne_zero {c c' : S.Classes} {γ : S.G E}
     (hγ : S.amplitudeMajorant .cut c c' γ ≠ 0) : S.IsNear γ := by
   by_contra h_far
-  -- If `γ` is not near, the boxed cutoffs at `y` and at `γ⁻¹ y` are never both nonzero, so the
-  -- first factor in the bound of Schur's test vanishes.
-  have h_cutoff (y : NumberField.InfinitePlace E → 𝔰.G₁) :
-      S.boxCutoff c y = 0 ∨ S.boxCutoff c' ((S.ratToInf γ)⁻¹ * y) = 0 := by
-    by_contra! ⟨hy, hγy⟩
-    exact h_far ⟨y, mem_of_indicator_ne_zero hy, mem_of_indicator_ne_zero hγy⟩
-  have h_integral : S.schurIntegral c c' γ 0 = 0 := by
-    rw [schurIntegral, ← lintegral_zero]
-    refine lintegral_congr fun y ↦ ?_
-    obtain hy | hγy := h_cutoff y
-    · simp [hy]
-    · simp [schurWeight, hγy]
-  have h_schur : S.amplitudeMajorant .cut c c' γ ^ 2 ≤
-      S.schurIntegral c c' γ 0 * S.schurIntegral c' c γ⁻¹ 0 := amplitudeMajorant_sq_le 0
-  rw [h_integral, zero_mul] at h_schur
-  exact pow_ne_zero 2 hγ (nonpos_iff_eq_zero.1 h_schur)
+  apply hγ
+  rw [amplitudeMajorant, ← lintegral_zero]
+  refine lintegral_congr fun y ↦ ?_
+  by_contra hy
+  exact h_far ⟨y, mem_boxedPoints_of_cut_integrand_ne_zero hy⟩
 
 open scoped Classical in
 /-- The bound for a block by Schur's test. Write `D_l(γ)` for the leading minors of the matrix of
