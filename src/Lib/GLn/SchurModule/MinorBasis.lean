@@ -136,7 +136,8 @@ lemma diagramWeight_eq_columnWeight [Fintype Φ] (N : Φ → ℕ) (κ : Φ → �
       columnWeight (fun j : Σ τ : Φ, Σ h : Fin (N τ), Fin (κ τ h) ↦ j.fst)
         fun j : Σ τ : Φ, Σ h : Fin (N τ), Fin (κ τ h) ↦ (j.snd.fst : ℕ) := by
   -- `↓`: the sums over the sigma type must be split before the definitions unfold
-  simp [↓Fintype.sum_sigma, diagramWeight, sum_range, columnWeight]
+  simp only [diagramWeight, sum_range, columnWeight, ↓Fintype.sum_sigma, Finset.sum_const,
+    card_univ, Fintype.card_fin]
 
 omit [DecidableEq m] in
 /-- For an assignment I of h_j rows of colour τ_j to each column j, the product of minors
@@ -160,7 +161,12 @@ lemma hasLeadingTerm_rowExpansion_minor_border {k e : ℕ} (I : Fin k → {a : m
   · -- the minor does not involve row `x`
     have h_const : rowExpansion x (minor S fun s : Fin (k + 0) ↦
         if hs : s < k then (I ⟨s, hs⟩).val else x) = monomial (Finsupp.single k 0) (minor S I) := by
-      simp [rowExpansion, (I _).prop, monomial_eq, minor, det_apply']
+      simp only [ne_eq, rowExpansion, minor, Nat.add_zero, is_lt, ↓reduceDIte, Fin.eta, det_apply',
+        of_apply, map_sum, AlgEquiv.trans_apply, renameEquiv_apply, Equiv.coe_trans,
+        Equiv.prodCongr_apply, Equiv.Perm.coe_one, map_mul, map_intCast, map_prod, rename_X,
+        Function.comp_apply, Prod.map_apply, Equiv.optionSubtypeNe_symm_apply, (I _).prop,
+        Subtype.coe_eta, id_eq, optionProdEquiv_mk_some, sumAlgEquiv_X_inr, Finsupp.single_zero,
+        monomial_eq, prod_zero_index, mul_one]
     rw [h_const]
     exact hasLeadingTerm_monomial _ _
   · -- Expand along the last row: column `s` contributes a cofactor times `X (x, s)`.
@@ -169,15 +175,40 @@ lemma hasLeadingTerm_rowExpansion_minor_border {k e : ℕ} (I : Fin k → {a : m
     -- The variable of the last column is the largest.
     have h_lt (s : Fin (k + 1)) (hs : s ≠ last k) :
         Finsupp.single s.val 1 ≺[columnOrder] Finsupp.single k 1 := by
-      grind [columnOrder_lt_of_eq_above k]
+      refine columnOrder_lt_of_eq_above k _ (fun a ha ↦ ?_) ?_
+      · simp only [Finsupp.single_eq_of_ne' (by omega : s.val ≠ a),
+          Finsupp.single_eq_of_ne' (by omega : k ≠ a)]
+      · have hs' : s.val ≠ k := by simpa only [val_last] using Fin.val_ne_of_ne hs
+        simp only [Finsupp.single_eq_of_ne' hs', Finsupp.single_eq_same]
+        omega
     have h_expand : rowExpansion x (minor S fun s : Fin (k + 1) ↦
         if hs : s < k then (I ⟨s, hs⟩).val else x) =
           ∑ s : Fin (k + 1), monomial (Finsupp.single s.val 1) (cofactor s) := by
       rw [minor, det_succ_row _ (last k), map_sum]
       refine sum_congr rfl fun s _ ↦ ?_
-      simp [cofactor, rowExpansion, (I _).prop, monomial_eq, mul_comm, mul_left_comm,
-        mul_assoc, det_apply']
-    have h_last : cofactor (last k) = minor S I := by simp [cofactor, minor]
+      have hX : rowExpansion x (X (x, s.val) : MatrixPoly m S) = MvPolynomial.X s.val := by
+        simp only [rowExpansion, AlgEquiv.trans_apply, renameEquiv_apply, Equiv.coe_trans,
+          Equiv.prodCongr_apply, Equiv.Perm.coe_one, rename_X, Function.comp_apply, Prod.map_apply,
+          Equiv.optionSubtypeNe_symm_apply, ↓reduceDIte, id_eq, optionProdEquiv_mk_none,
+          sumAlgEquiv_X_inl]
+      have hdet : rowExpansion x (det ((of fun a t : Fin (k + 1) ↦
+          (X ((if hs : a.val < k then (I ⟨a.val, hs⟩).val else x), t.val) :
+            MatrixPoly m S)).submatrix (last k).succAbove s.succAbove)) =
+          C (det (of fun a t ↦ (X (I a, (s.succAbove t).val) : MatrixPoly {a // a ≠ x} S))) := by
+        rw [det_apply', map_sum, det_apply', map_sum]
+        refine sum_congr rfl fun σ _ ↦ ?_
+        simp only [submatrix_apply, of_apply, succAbove_last, val_castSucc, Fin.is_lt, ↓reduceDIte,
+          Fin.eta, rowExpansion, AlgEquiv.trans_apply, renameEquiv_apply, Equiv.coe_trans,
+          Equiv.prodCongr_apply, Equiv.Perm.coe_one, map_mul, map_intCast, map_prod, rename_X,
+          Function.comp_apply, Prod.map_apply, Equiv.optionSubtypeNe_symm_apply, (I _).prop,
+          Subtype.coe_eta, id_eq, optionProdEquiv_mk_some, sumAlgEquiv_X_inr]
+      simp only [of_apply, val_last, lt_self_iff_false, ↓reduceDIte, map_mul, map_pow, map_neg,
+        map_one, hX, hdet, cofactor, monomial_eq, mul_assoc]
+      rw [mul_comm (MvPolynomial.X s.val),
+        Finsupp.prod_single_index (h := fun n e ↦ MvPolynomial.X n ^ e) (pow_zero _), pow_one]
+    have h_last : cofactor (last k) = minor S I := by
+      simp only [ne_eq, val_last, Even.add_self, Even.neg_pow, one_pow, succAbove_last,
+        val_castSucc, one_mul, minor, cofactor]
     rw [h_expand, ← h_last]
     exact .sum (γ := fun s : Fin (k + 1) ↦ Finsupp.single s.val 1) (a := cofactor)
       (fun s ↦ hasLeadingTerm_monomial _ _) (last k) (fun s _ ↦ h_lt s) (absurd (mem_univ (last k)))
@@ -208,7 +239,10 @@ lemma exists_bordering (h : J → ℕ) (hγ : γ ∈ interlacing ((columnWeight 
   -- one. A filling `I` of the shortened columns is lifted by putting `x` back at the end.
   let taller (i : ℕ) : Finset J := {j ∈ {j | τ j = c x} | i < h j}
   have h_weight (i : ℕ) : (columnWeight τ h).curry (c x) i = #(taller i) := by
-    simp [columnWeight, taller, Finsupp.single_apply, sum_ite, ite_and]
+    simp only [columnWeight, curry_apply, coe_finsetSum, Finset.sum_apply,
+      Finsupp.single_apply, Prod.mk.injEq, ite_and, sum_ite_irrel, Finset.sum_ite_eq',
+      mem_range, sum_const_zero, sum_ite, add_zero, Finset.sum_const, smul_eq_mul, mul_one,
+      taller]
   -- interlacing says that at least `γ i` columns of this colour have height exactly `i + 1`
   have h_count (i : ℕ) : γ i ≤ #(taller i) - #(taller (i + 1)) := by
     simpa only [h_weight] using (mem_interlacing_iff _).mp hγ i
@@ -251,7 +285,12 @@ lemma exists_bordering (h : J → ℕ) (hγ : γ ∈ interlacing ((columnWeight 
                              (fun s ↦ (I j s).val) (h_e_le_one j)
   case entries =>
     -- in each column, the lifted filling adds `e j` copies of `x`
-    simp [prod_univ_add, mul_comm, prod_mul_distrib, prod_pow_eq_pow_sum]
+    intro y
+    simp only [Pi.add_apply, ne_eq, Function.comp_apply, prod_univ_add, val_castAdd, is_lt,
+      ↓reduceDIte, Fin.eta, val_natAdd, add_lt_iff_neg_left, _root_.not_lt_zero,
+      Finset.prod_const, card_univ, Fintype.card_fin, prod_mul_distrib,
+      prod_pow_eq_pow_sum, map_sum, degree_single]
+    rw [mul_comm (y x ^ ∑ i, e i)]
 
 /-! ### The recursion for alternants -/
 
@@ -285,12 +324,17 @@ lemma alternant_succ {N : ℕ} (hl_anti : Antitone l) (i : Fin (N + 1)) (x : Fin
   -- used by `grind` in the bijection below
   have h_beyond {n : ℕ} (hn : N + 1 ≤ n) : l n ≤ l (N + 1) := hl_anti hn
   let p (j : Fin (N + 1)) : ℕ := l j.rev + j
-  have h_mono (j : Fin N) : p j.castSucc ≤ p j.succ := add_le_add (hl_anti (by grind)) (by simp)
+  have h_mono (j : Fin N) : p j.castSucc ≤ p j.succ :=
+    add_le_add (hl_anti (by simp only [val_castSucc, val_succ, val_rev]; omega))
+      (Nat.le_succ _)
   rw [alternant, interlacing, det_pow_eq_det_sub_mul_geom_sum x i p h_mono, det_succ_row _ i]
   -- Write both sides as sums over permutations, the left side also over the exponents `g`.
-  simp [p, alternant, sum_univ_succ, det_apply', prod_univ_sum, Finset.mul_sum,
-    Equiv.prod_comp _ fun a ↦ x (i.succAbove a) - x i, -val_rev, prod_mul_distrib,
-    prod_pow_eq_pow_sum]
+  simp only [Nat.succ_eq_add_one, rev_zero, val_last, coe_ofNat_eq_mod, Nat.zero_mod, add_zero,
+    val_castSucc, val_succ, Nat.add_succ_sub_one, Finset.mul_sum, of_apply, sub_self, zero_mul,
+    sum_const_zero, det_apply', submatrix_apply, sum_univ_succ, cons_val_zero, zero_succAbove,
+    cons_val_succ, prod_univ_sum, prod_mul_distrib,
+    Equiv.prod_comp _ fun a ↦ x (i.succAbove a) - x i, prod_pow_eq_pow_sum, mul_zero, alternant,
+    Pi.sub_apply, Function.comp_apply, mul_ite, p]
   rw [univ.sum_comm, ite_sum_zero, ← sum_filter, ← sum_filter]
   -- Both sides are now sums over permutations `σ` of `Fin N`: on the left also over the exponents
   -- `g j` chosen from the geometric sums, on the right also over the interlacing `γ`.
@@ -310,15 +354,82 @@ lemma alternant_succ {N : ℕ} (hl_anti : Antitone l) (i : Fin (N + 1)) (x : Fin
   let μ (g : Fin N → ℕ) (n : ℕ) : ℕ := if hn : n < N then g (rev ⟨n, hn⟩) - rev ⟨n, hn⟩ else 0
   refine sum_bij' (fun g hg ↦ onFinset (range (N + 1)) (fun n ↦ l n - μ g n) ?support)
     (fun γ _ j ↦ (l - γ) j.rev + j) ?to_mem ?inv_mem ?left_inv ?right_inv ?terms
-  case support => grind
+  case support =>
+    intro n hn
+    by_contra hmem
+    have hge : N + 1 ≤ n := by simpa only [mem_range, not_lt] using hmem
+    have hl_0 : l n ≤ l (N + 1) := h_beyond hge
+    have hμ0 : μ g n = 0 := dite_eq_right_iff.mpr fun h ↦ absurd h (by omega)
+    simp only [hμ0, tsub_zero] at hn
+    exact absurd (Nat.eq_zero_of_le_zero (hl_0.trans (Nat.le_of_eq (mem_filter.mp hg).2))) hn
   -- the four conditions of the bijection are one computation with `μ`
-  case to_mem | inv_mem | left_inv | right_inv =>
-    simp [μ, interlacing, le_tsub_iff_left (hl_anti _), -val_rev, Finsupp.le_def]
+  case to_mem =>
+    simp only [filter_const, interlacing, mem_filter, mem_Icc, _root_.zero_le, Finsupp.le_def,
+      onFinset_apply, coe_tsub, Pi.sub_apply, comapDomain_apply, Nat.succ_eq_add_one,
+      le_add_iff_nonneg_right, le_tsub_iff_left (hl_anti _), true_and, lt_self_iff_false,
+      ↓reduceDIte, tsub_zero, tsub_self, and_true, μ]
+    grind
+  case inv_mem =>
+    simp only [interlacing, mem_filter, mem_Icc, _root_.zero_le, Finsupp.le_def, coe_tsub,
+      Pi.sub_apply, comapDomain_apply, Nat.succ_eq_add_one, le_add_iff_nonneg_right,
+      le_tsub_iff_left (hl_anti _), true_and, filter_const, and_imp]
+    grind
+  case left_inv =>
+    simp only [filter_const, coe_tsub, coe_onFinset, Pi.sub_apply, is_lt, ↓reduceDIte, Fin.eta,
+      rev_rev, μ]
+    grind
+  case right_inv =>
+    simp only [interlacing, mem_filter, mem_Icc, _root_.zero_le, Finsupp.le_def, coe_tsub,
+      Pi.sub_apply, comapDomain_apply, Nat.succ_eq_add_one, le_add_iff_nonneg_right,
+      le_tsub_iff_left (hl_anti _), true_and, rev_rev, add_tsub_cancel_right, dite_eq_ite,
+      forall_and_index, μ]
     grind
   case terms =>
-    simp [μ, degree_eq_weight_one, weight_apply, sum_range_succ, sum_range,
-      ← rev_bijective.sum_comp (l · - _), -val_rev]
-    grind
+    intro g hg
+    simp only [degree_eq_weight_one, weight_apply, smul_eq_mul, mul_one, mem_range,
+      Order.lt_add_one_iff, implies_true, sum_onFinset, sum_range_succ, sum_range, is_lt,
+      ↓reduceDIte, Fin.eta, ← rev_bijective.sum_comp (l · - _), rev_rev, lt_self_iff_false,
+      tsub_zero, onFinset_apply, μ]
+    have hg_mem := Fintype.mem_piFinset.mp (mem_filter.mp hg).1
+    have h_l_sub (j : Fin N) : l j.rev.val - (l j.rev.val - (g j - j.val)) + j.val = g j := by
+      have hj := mem_Ico.mp (hg_mem j)
+      have hj_le : l (j.castSucc.rev : ℕ) + j.val ≤ g j := hj.1
+      have hj_lt : g j < l (j.succ.rev : ℕ) + (j.val + 1) := hj.2
+      have hrev_succ : (j.succ.rev : ℕ) = (j.rev : ℕ) := by simp only [val_rev, val_succ]; omega
+      rw [hrev_succ] at hj_lt
+      omega
+    have h_sum_eq :
+        ∑ j : Fin N, (l (j.succ.rev : ℕ) + j.val - g j) =
+          ∑ j : Fin N, (l j.rev.val - (g j - j.val)) := by
+      refine sum_congr rfl fun j _ ↦ ?_
+      have hj := mem_Ico.mp (hg_mem j)
+      have hj_le : l (j.castSucc.rev : ℕ) + j.val ≤ g j := hj.1
+      have hrev : (j.succ.rev : ℕ) = (j.rev : ℕ) := by simp only [val_rev, val_succ]; omega
+      rw [hrev]
+      omega
+    have h_xi_pow :
+        x i ^ l N * x i ^ ∑ j : Fin N, (l (j.succ.rev : ℕ) + (j : ℕ) - g j) =
+          x i ^ ((∑ j : Fin N, (l j.rev.val - (g j - j.val))) + l N) := by
+      rw [h_sum_eq, add_comm _ (l N), pow_add]
+    refine sum_congr rfl fun σ _ ↦ ?_
+    have h_prod_eq :
+        ∏ j : Fin N, x (i.succAbove (σ j)) ^ g j =
+          ∏ j : Fin N, x (i.succAbove (σ j)) ^ (l j.rev.val - (l j.rev.val - (g j - j.val)) +
+            j.val) :=
+      prod_congr rfl fun j _ ↦ congrArg (x (i.succAbove (σ j)) ^ ·) (h_l_sub j).symm
+    rw [← h_prod_eq]
+    calc (-1) ^ (i : ℕ) * x i ^ l N * (((Equiv.Perm.sign σ : ℤ) : ℂ) *
+          ((∏ a : Fin N, (x (i.succAbove a) - x i)) *
+            ((∏ j : Fin N, x (i.succAbove (σ j)) ^ g j) *
+              x i ^ ∑ j : Fin N, (l (j.succ.rev : ℕ) + (j : ℕ) - g j))))
+        = ((-1) ^ (i : ℕ) * ∏ a : Fin N, (x (i.succAbove a) - x i)) *
+            ((x i ^ l N * x i ^ ∑ j : Fin N, (l (j.succ.rev : ℕ) + (j : ℕ) - g j)) *
+              (((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ j : Fin N, x (i.succAbove (σ j)) ^ g j)) := by
+          ring
+      _ = ((-1) ^ (i : ℕ) * ∏ a : Fin N, (x (i.succAbove a) - x i)) *
+            (x i ^ ((∑ j : Fin N, (l j.rev.val - (g j - j.val))) + l N) *
+              (((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ j : Fin N, x (i.succAbove (σ j)) ^ g j)) := by
+          rw [h_xi_pow]
 
 end New.GL
 
@@ -353,10 +464,11 @@ private lemma columnOrder_lt_of_forall_add_ite_eq {γ n : ℕ →₀ ℕ} {i : �
     rcases eq_or_ne a i with rfl | ha
     · exact h_eq_i
     rcases eq_or_ne a (i + 1) with rfl | ha'
-    · lia
+    · omega
     exact h_off a ha ha'
-  have h_lt_succ : γ (i + 1) < n (i + 1) := by lia
-  exact columnOrder_lt_of_eq_above (i + 1) n (fun a ha ↦ (h_off a (by lia) (by lia)).symm) h_lt_succ
+  have h_lt_succ : γ (i + 1) < n (i + 1) := by omega
+  exact columnOrder_lt_of_eq_above (i + 1) n (fun a ha ↦ (h_off a (by omega) (by omega)).symm)
+    h_lt_succ
 
 variable {Φ m : Type} [DecidableEq m] {R : Type} [CommRing R]
   {c : m → Φ} {x : m} {l : Φ × ℕ →₀ ℕ} {f : MatrixPoly m R}
@@ -381,18 +493,30 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
   rw [Finsupp.curry_apply, Finsupp.curry_apply]
   by_contra! h_lt : l (c x, i) - l (c x, i + 1) < γ i
   -- As `γ ≠ 0`, the polynomial `rowExpansion x f` is not zero, nor is its leading coefficient `G`.
-  have hG : (rowExpansion x f).coeff γ ≠ 0 := by grind [degree_zero, coeff_degree_eq_zero_iff]
+  have hG : (rowExpansion x f).coeff γ ≠ 0 := by
+    intro h0
+    have hγ0 : γ = 0 := by
+      change columnOrder.degree (rowExpansion x f) = 0
+      rw [coeff_degree_eq_zero_iff.mp h0, degree_zero]
+    simp only [hγ0, Finsupp.coe_zero, Pi.zero_apply, Nat.not_lt_zero] at h_lt
   -- Coefficients lie in `P`, polynomials in `s` and `T`: `T` is `Polynomial.X` and `s` is `.C .X`.
   -- `θ` replaces `v` by `v + T v'` in the rows other than `x`.
   let P : Type _ := Polynomial (Polynomial (MatrixPoly {a // a ≠ x} R))
+  let sP : P := Polynomial.C Polynomial.X
+  let tP : P := Polynomial.X
   let θ : MatrixPoly {a // a ≠ x} R →ₐ[R] P :=
     aeval fun y ↦ .CC (X y) + .X * .CC (single (c x, i) (X (y.1, i + 1)) (c y.1, y.2))
   have hθ (p : MatrixPoly {a // a ≠ x} R) : (θ p).coeff 0 = .C p := by
     induction p using MvPolynomial.induction_on with
-    | C r => simp [P, θ, Polynomial.algebraMap_apply]
+    | C r =>
+      simp only [ne_eq, Polynomial.X_mul_C, algHom_C, Polynomial.algebraMap_apply, algebraMap_eq,
+        Polynomial.coeff_C_zero, P, θ]
     | add p q hp hq => rw [map_add, Polynomial.coeff_add, hp, hq, map_add]
     | mul_X p y hp =>
-      have h_X : (θ (X y)).coeff 0 = .C (X y) := by simp [P, θ]
+      have h_X : (θ (X y)).coeff 0 = .C (X y) := by
+        simp only [ne_eq, Polynomial.X_mul_C, aeval_X, AddMonoidAlgebra.coeff_add,
+          Finsupp.coe_add, Pi.add_apply, Polynomial.coeff_C_zero, Polynomial.mul_coeff_zero,
+          Polynomial.coeff_X_zero, mul_zero, add_zero, P, θ]
       rw [map_mul, Polynomial.mul_coeff_zero, hp, h_X, map_mul]
   -- `Ψ` does the same in row `x`, at `v = 0` and `v' = X i * X (i + 1)`.
   let Ψ : MatrixPoly m R →ₐ[R] MvPolynomial ℕ P :=
@@ -402,40 +526,71 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
       (rowExpansion x).toAlgHom
   -- `b` is the identity matrix but for the block `!![s, -1; 0, T]`.
   let b : Φ × ℕ × ℕ → MvPolynomial ℕ P := fun (τ, j, k) ↦
-    single j (C (.C .X ^ single (c x, i) 1 (τ, j) * .X ^ single (c x, i + 1) 1 (τ, j))) k -
+    single j (C (sP ^ single (c x, i) 1 (τ, j) * tP ^ single (c x, i + 1) 1 (τ, j))) k -
       single (c x, i) (single (j + 1) 1 k) (τ, j)
   -- `Ψ` sends `X_x ^ γ` to `T ^ γ i` times the monomial of exponent `δ`.
   let δ : ℕ →₀ ℕ := single (i + 1) (γ i) + (single i (γ (i + 1)) + γ)
   -- Left side: the substitution factors through `scale : T ↦ s T`. An entry of `y b` (`y = Ψ ∘ X`)
   -- is `scale` of the entry of `y` plus the value at `T = 0` of the entry of `y b - y`.
   let scale : P →ₐ[R] P :=
-    .restrictScalars R (Polynomial.aeval (R := Polynomial (MatrixPoly {a // a ≠ x} R)) (.C .X * .X))
+    .restrictScalars R (Polynomial.aeval (R := Polynomial (MatrixPoly {a // a ≠ x} R)) (sP * tP))
   have h_factor : aeval (borelMul c b (Ψ ∘ X)) = (mapAlgHom scale).comp
       (aeval (mapAlgHom (Polynomial.aeval 0) ∘ (borelMul c b (Ψ ∘ X) - Ψ ∘ X) + Ψ ∘ X)) := by
     -- Multiplying by `b` scales the columns `i` and `i + 1` of the colour of `x` by `s` and `T`,
     -- and subtracts column `i` from column `i + 1`.
     have h_mul (Y : m × ℕ → MvPolynomial ℕ P) (y : m) (j : ℕ) : borelMul c b Y (y, j) =
-        Y (y, j) * C (.C .X ^ single (c x, i) 1 (c y, j) * .X ^ single (c x, i + 1) 1 (c y, j)) -
+        Y (y, j) * C (sP ^ single (c x, i) 1 (c y, j) * tP ^ single (c x, i + 1) 1 (c y, j)) -
           if (c x, i + 1) = (c y, j) then Y (y, i) else 0 := by
       rcases eq_or_ne (i + 1) j with rfl | hj
-      · simp [borelMul, b, mul_sub, sum_sub_distrib, single_apply, ite_and]
-      · simp [borelMul, b, mul_sub, sum_sub_distrib, single_apply, ite_and, hj]
+      · simp only [borelMul, single_apply, Prod.mk.injEq, ite_and, pow_ite, pow_one, pow_zero,
+          mul_ite, ite_mul, one_mul, mul_one, Nat.add_right_cancel_iff, mul_sub, mul_zero,
+          sum_sub_distrib, Finset.sum_ite_eq', mem_range, lt_add_iff_pos_right, Order.lt_one_iff,
+          ↓reduceIte, Nat.left_eq_add, one_ne_zero, ite_self, sum_ite_irrel, Finset.sum_ite_eq,
+          Order.lt_add_one_iff, le_add_iff_nonneg_right, _root_.zero_le, sum_const_zero, and_false,
+          and_true, b]
+      · simp only [borelMul, single_apply, Prod.mk.injEq, ite_and, pow_ite, pow_one, pow_zero,
+          mul_ite, ite_mul, one_mul, mul_one, mul_sub, mul_zero, sum_sub_distrib,
+          Finset.sum_ite_eq', mem_range, lt_add_iff_pos_right, Order.lt_one_iff, ↓reduceIte, hj,
+          ite_self, sum_ite_irrel, Finset.sum_ite_eq, Order.lt_add_one_iff, sum_const_zero,
+          sub_zero, and_false, b]
     -- The values of `Ψ` on the variables of the row `x` and of another row `y`.
     have hΨx (j : ℕ) : Ψ (X (x, j)) =
         (C Polynomial.X * X (i + 1)) ^ single i 1 j * X i ^ single (i + 1) 1 j * X j := by
-      simp [Ψ, rowExpansion]
+      simp only [ne_eq, rowExpansion, AlgHom.coe_comp, AlgEquiv.coe_toAlgHom, AlgEquiv.coe_trans,
+        Function.comp_apply, renameEquiv_apply, Equiv.coe_trans, Equiv.prodCongr_apply,
+        Equiv.Perm.coe_one, rename_X, Prod.map_apply, Equiv.optionSubtypeNe_symm_apply, ↓reduceDIte,
+        id_eq, optionProdEquiv_mk_none, sumAlgEquiv_X_inl, aevalTower_X, Ψ]
     have hΨy (y : m) (hy : y ≠ x) (j : ℕ) : Ψ (X (y, j)) = C (θ (X (⟨y, hy⟩, j))) := by
-      simp [Ψ, rowExpansion, hy, algHom]
+      simp only [ne_eq, algHom, rowExpansion, AlgHom.coe_comp, AlgEquiv.coe_toAlgHom,
+        AlgEquiv.coe_trans, Function.comp_apply, renameEquiv_apply, Equiv.coe_trans,
+        Equiv.prodCongr_apply, Equiv.Perm.coe_one, rename_X, Prod.map_apply,
+        Equiv.optionSubtypeNe_symm_apply, hy, ↓reduceDIte, id_eq, optionProdEquiv_mk_some,
+        sumAlgEquiv_X_inr, aevalTower_C, IsScalarTower.coe_toAlgHom', algebraMap_eq,
+        mapAlgHom_apply, map_C, RingHom.coe_coe, Ψ]
     refine algHom_ext fun ⟨y, j⟩ ↦ ?_
-    by_cases hy : y = x
+    rcases eq_or_ne y x with rfl | hy
     · -- Row `x`: casework on the column `j` against `i` and `i + 1`; each case is a ring identity.
       by_cases hj : j = i
-      · simp [h_mul, hΨx, scale, P, hy, hj]
+      · simp only [ne_eq, hj, aeval_X, h_mul, Function.comp_apply, hΨx, single_eq_same, pow_one,
+          Nat.left_eq_add, one_ne_zero, not_false_eq_true, single_eq_of_ne, pow_zero, mul_one,
+          Prod.mk.injEq, and_false, Nat.add_eq_left, ↓reduceIte, sub_zero, map_comp_sub,
+          AlgHom.coe_comp, Pi.add_apply, Pi.sub_apply, mapAlgHom_apply, map_mul, map_C,
+          RingHom.coe_coe, Polynomial.aeval_X, C_0, map_X, zero_mul, Polynomial.aeval_C,
+          Polynomial.algebraMap_eq, sub_self, zero_add, AlgHom.coe_restrictScalars, sP, tP, P,
+          scale]
         ring
       by_cases hj' : j = i + 1
-      · simp [h_mul, hΨx, scale, P, hy, hj']
+      · simp only [ne_eq, hj', aeval_X, h_mul, Function.comp_apply, hΨx, Nat.add_eq_left,
+          one_ne_zero, not_false_eq_true, single_eq_of_ne, pow_zero, single_eq_same, pow_one,
+          one_mul, Prod.mk.injEq, and_false, ↓reduceIte, Nat.left_eq_add, mul_one, map_comp_sub,
+          AlgHom.coe_comp, Pi.add_apply, Pi.sub_apply, mapAlgHom_apply, map_sub, map_mul, map_X,
+          map_C, RingHom.coe_coe, Polynomial.aeval_X, mul_zero, zero_mul, sub_self, zero_sub,
+          neg_add_cancel, map_zero, sP, tP, P, scale]
         ring
-      · simp [h_mul, hΨx, scale, P, hy, Ne.symm hj, Ne.symm hj']
+      · simp only [ne_eq, aeval_X, h_mul, Function.comp_apply, hΨx, Ne.symm hj, not_false_eq_true,
+          single_eq_of_ne', pow_zero, Ne.symm hj', mul_one, one_mul, Prod.mk.injEq, and_false, C_1,
+          ↓reduceIte, sub_zero, map_comp_sub, AlgHom.coe_comp, Pi.add_apply, Pi.sub_apply,
+          mapAlgHom_apply, map_X, sub_self, zero_add, AlgHom.coe_restrictScalars, sP, tP, P, scale]
     · -- Another row: the entries are constants `C p`, so this is an identity in `P`. Casework on
       -- `(c y, j)` against `(c x, i)` and `(c x, i + 1)`.
       simp only [aeval_X, AlgHom.comp_apply, mapAlgHom_apply, Pi.add_apply, Pi.sub_apply,
@@ -444,27 +599,40 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
       refine congrArg C ?_
       by_cases hα : (c x, i) = (c y, j)
       · obtain ⟨hc, rfl⟩ := Prod.mk.inj hα
-        simp [θ, scale, P, hc]
+        simp only [ne_eq, hc, Polynomial.X_mul_C, aeval_X, single_eq_same, pow_one, Prod.mk.injEq,
+          Nat.left_eq_add, one_ne_zero, and_false, not_false_eq_true, single_eq_of_ne, pow_zero,
+          mul_one, Nat.add_eq_left, ↓reduceIte, sub_zero, AlgHom.coe_restrictScalars,
+          RingHom.coe_coe, Polynomial.aeval_sub, map_mul, map_add, Polynomial.aeval_C,
+          Polynomial.algebraMap_eq, Polynomial.aeval_X, mul_zero, add_zero, sP, tP, P, θ, scale]
         ring
       by_cases hβ : (c x, i + 1) = (c y, j)
       · obtain ⟨hc, rfl⟩ := Prod.mk.inj hβ
-        simp [θ, scale, P, hc]
-      · simp [θ, scale, P, hα, hβ]
+        simp only [ne_eq, hc, Polynomial.X_mul_C, aeval_X, Prod.mk.injEq, Nat.add_eq_left,
+          one_ne_zero, and_false, not_false_eq_true, single_eq_of_ne, map_zero, zero_mul, add_zero,
+          pow_zero, single_eq_same, pow_one, one_mul, ↓reduceIte, sub_add_cancel_right,
+          AlgHom.coe_restrictScalars, RingHom.coe_coe, Polynomial.aeval_sub, Polynomial.aeval_neg,
+          Polynomial.aeval_C, Polynomial.algebraMap_eq, sub_add_cancel, sP, tP, P, θ, scale]
+      · simp only [ne_eq, Polynomial.X_mul_C, aeval_X, hα, not_false_eq_true, single_eq_of_ne',
+          map_zero, zero_mul, add_zero, pow_zero, hβ, mul_one, ↓reduceIte, sub_zero,
+          AlgHom.coe_restrictScalars, sub_self, RingHom.coe_coe, zero_add, Polynomial.aeval_C,
+          Polynomial.algebraMap_eq, sP, tP, P, θ, scale]
   -- After `T ↦ s T` the coefficient of `T ^ a` is divisible by `s ^ a`.
   have h_scale (p : P) {a k : ℕ} (hk : k < a) : ((scale p).coeff a).coeff k = 0 := by
-    simp [P, scale, ← Polynomial.comp_eq_aeval, Polynomial.coeff_mul_X_pow', hk.not_ge]
+    simp only [ne_eq, AlgHom.coe_restrictScalars', ← Polynomial.comp_eq_aeval,
+      Polynomial.comp_C_mul_X_coeff, Polynomial.coeff_mul_X_pow', hk.not_ge, ↓reduceIte, sP, tP, P,
+      scale]
   have h_left : (((aeval (borelMul c b (Ψ ∘ X)) f).coeff δ).coeff (l (c x, i + 1) + γ i)).coeff
       (l (c x, i)) = 0 := by
-    have h_deg_lt : l (c x, i) < l (c x, i + 1) + γ i := by lia
+    have h_deg_lt : l (c x, i) < l (c x, i + 1) + γ i := by omega
     rw [h_factor, AlgHom.comp_apply, mapAlgHom_apply, coeff_map]
     exact h_scale _ h_deg_lt
   -- Right side: the weight factor, and the coefficient of `T ^ γ i` at `δ` in `Ψ f`.
   have h_weight :
-      (l.prod fun p k ↦ b (p.1, p.2, p.2) ^ k) = C (.C .X ^ l (c x, i) * .X ^ l (c x, i + 1)) := by
-    -- The flags stop `simp` from splitting the powers `s ^ [p = (c x, i)]` into cases, and from
-    -- rewriting `C (a ^ n)` as `C a ^ n`.
-    simp [b, prod_mul_distrib, -pow_ite, -Prod.mk.injEq, prod_pow_eq_pow_sum, ↓if_mem_support, prod,
-      single_apply, mul_pow, ← pow_mul, -C_pow]
+      (l.prod fun p k ↦ b (p.1, p.2, p.2) ^ k) = C (sP ^ l (c x, i) * tP ^ l (c x, i + 1)) := by
+    simp only [prod, single_apply, C_mul, map_pow, single_mul, Finsupp.mul_apply, mul_ite,
+      ite_mul, zero_mul, mul_zero, ↓reduceIte, Prod.mk.eta, Nat.add_eq_left, one_ne_zero, ite_self,
+      sub_zero, mul_pow, ← pow_mul, one_mul, prod_mul_distrib, prod_pow_eq_pow_sum,
+      Finset.sum_ite_eq, ↓if_mem_support, b]
   have h_top : (((Ψ f).coeff δ).coeff (γ i)).coeff 0 = (rowExpansion x f).coeff γ := by
     -- Expand `f` along row `x` and apply `Ψ` term by term; only the term of `γ` contributes.
     have h_expand : (Ψ f).coeff δ = ∑ n ∈ (rowExpansion x f).support,
@@ -474,11 +642,16 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
       rw [AlgHom.comp_apply]
       change (eval₂ _ _ ((rowExpansion x).toAlgHom f) : MvPolynomial ℕ P).coeff δ = _
       rw [eval₂_eq]
-      -- Flags as in `h_weight`; `-map_aeval` keeps `θ` applied to the coefficients.
-      simp [prod_mul_distrib, -pow_ite, prod_pow_eq_pow_sum, -map_aeval, ↓if_mem_support,
-        algHom, single_apply, mul_pow, ← map_pow, mul_assoc, ← pow_mul, ← map_prod, -C_pow]
+      simp only [ne_eq, AlgEquiv.coe_toAlgHom, algHom, RingHom.coe_coe, AlgHom.coe_comp,
+        IsScalarTower.coe_toAlgHom', algebraMap_eq, Function.comp_apply, mapAlgHom_apply, map_C,
+        single_apply, mul_pow, ← map_pow, mul_assoc, ← pow_mul, ite_mul, one_mul, zero_mul,
+        prod_mul_distrib, ← map_prod, prod_pow_eq_pow_sum, Finset.sum_ite_eq, ↓if_mem_support,
+        prod_X_pow_eq_monomial, AddMonoidAlgebra.coeff_sum, coe_finsetSum, Finset.sum_apply,
+        coeff_C_mul]
     rw [h_expand, Polynomial.finsetSum_coeff, Polynomial.finsetSum_coeff, Finset.sum_eq_single γ]
-    · simp [P, δ, hθ, X_pow_eq_monomial, Polynomial.coeff_mul_X_pow']
+    · simp only [ne_eq, X_pow_eq_monomial, monomial_mul_monomial, mul_one, coeff_monomial,
+        ↓reduceIte, Polynomial.coeff_mul_X_pow', Std.le_refl, tsub_self, hθ,
+        Polynomial.coeff_C_zero, P, δ]
     · -- Another exponent `n` reaching `δ` with `n i ≤ γ i` has `n i < γ i`, hence
       -- `γ (i + 1) < n (i + 1)` and equal entries beyond: it exceeds the leading exponent `γ`.
       intro n hn hne
@@ -489,9 +662,11 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
           (if i + 1 = a then n i else 0) + ((if i = a then n (i + 1) else 0) + n a) =
             (if i + 1 = a then γ i else 0) + ((if i = a then γ (i + 1) else 0) + γ a)) →
           n i ≤ γ i → ((θ ((rowExpansion x f).coeff n)).coeff (γ i - n i)).coeff 0 = 0 by
-        simpa [P, δ, X_pow_eq_monomial, Polynomial.coeff_mul_X_pow', Finsupp.ext_iff,
-          apply_ite AddMonoidAlgebra.coeff, DFunLike.ite_apply, single_apply, ite_apply] using
-          h_vanish
+        simpa only [ne_eq, X_pow_eq_monomial, monomial_mul_monomial, mul_one, coeff_monomial,
+          Finsupp.ext_iff, Finsupp.coe_add, Pi.add_apply, single_apply, mul_ite, mul_zero,
+          apply_ite AddMonoidAlgebra.coeff, AddMonoidAlgebra.coeff_zero, DFunLike.ite_apply,
+          Polynomial.coeff_mul_X_pow', Finsupp.coe_zero, Pi.zero_apply, ite_eq_right_iff, P, δ]
+          using h_vanish
       intro h_shape h_le
       exact absurd (columnOrder_lt_of_forall_add_ite_eq h_shape h_le hne) h_not_lt
     · intro hγ
@@ -499,8 +674,9 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
   -- By semi-invariance the coefficient in `h_left` is the one in `h_top`, so `G = 0`.
   apply hG
   rw [← h_top, ← h_left, mem_nabla.mp hf (MvPolynomial ℕ P) b (Ψ ∘ X), h_weight, ← aeval_unique]
-  -- `← map_pow` gathers powers inside `C`, which `C_pow` would undo.
-  simp [P, Polynomial.coeff_X_pow_mul', ← map_pow, mul_assoc, -C_pow]
+  simp only [ne_eq, ← map_pow, C_mul, mul_assoc, coeff_C_mul, Polynomial.coeff_C_mul,
+    Polynomial.coeff_X_pow_mul', le_add_iff_nonneg_right, _root_.zero_le, ↓reduceIte,
+    add_tsub_cancel_left, Std.le_refl, tsub_self, sP, tP, P]
 
 /-- Let `γ` be the leading exponent of `f` in the variables of the row `x` (for `columnOrder`, the
 lexicographic order that compares exponents at the highest column first), and let `f` be a Borel
@@ -528,7 +704,12 @@ lemma HasLeadingTerm.leadingCoeff_mem_nabla
       rw [X, C_apply, monomial_mul_monomial, add_zero, one_mul]
       exact hasLeadingTerm_monomial _ _
     have h_lt : ∀ i ∈ range (j + 1), i ≠ j → single i 1 ≺[columnOrder] single j 1 := by
-      grind [columnOrder_lt_of_eq_above j]
+      intro i hi hne
+      have hi_le : i ≤ j := Nat.lt_succ_iff.mp (mem_range.mp hi)
+      refine columnOrder_lt_of_eq_above j _ (fun k hk ↦ ?_) ?_
+      · simp only [single_eq_of_ne' (by omega : i ≠ k), single_eq_of_ne' (by omega : j ≠ k)]
+      · simp only [single_eq_of_ne' hne, single_eq_same]
+        omega
     simpa only [u, borelMul, Function.comp_apply] using
       HasLeadingTerm.sum (s := range (j + 1)) h_term j h_lt (absurd (self_mem_range_succ j))
   -- `subst` substitutes `y β` in `f` and expands along row `x`; by the definitions of
@@ -555,7 +736,18 @@ lemma HasLeadingTerm.leadingCoeff_mem_nabla
     fun (p : Φ × ℕ) (k : ℕ) ↦ (C ∘ β) (p.1, p.2, p.2) ^ k
   have h_subst : aeval (borelMul c (C ∘ β) (Ψ ∘ X)) = subst := by
     refine algHom_ext fun ⟨y, j⟩ ↦ ?_
-    by_cases hy : y = x <;> simp [rowExpansion, Ψ, ρ, u, subst, hy, borelMul, algHom]
+    rcases eq_or_ne y x with rfl | hy
+    · simp only [ne_eq, rowExpansion, AlgHom.coe_comp, AlgEquiv.coe_toAlgHom, AlgEquiv.coe_trans,
+        aeval_X, borelMul, Function.comp_apply, renameEquiv_apply, Equiv.coe_trans,
+        Equiv.prodCongr_apply, Equiv.Perm.coe_one, rename_X, Prod.map_apply,
+        Equiv.optionSubtypeNe_symm_apply, ↓reduceDIte, id_eq, optionProdEquiv_mk_none,
+        sumAlgEquiv_X_inl, mapAlgHom_apply, map_X, algHom, aevalTower_X, Ψ, subst, ρ, u]
+    · simp only [ne_eq, rowExpansion, AlgHom.coe_comp, AlgEquiv.coe_toAlgHom, AlgEquiv.coe_trans,
+        aeval_X, borelMul, Function.comp_apply, renameEquiv_apply, Equiv.coe_trans,
+        Equiv.prodCongr_apply, Equiv.Perm.coe_one, rename_X, Prod.map_apply,
+        Equiv.optionSubtypeNe_symm_apply, hy, ↓reduceDIte, id_eq, optionProdEquiv_mk_some,
+        sumAlgEquiv_X_inr, mapAlgHom_apply, map_C, RingHom.coe_coe, algHom, aevalTower_C,
+        IsScalarTower.coe_toAlgHom', algebraMap_eq, map_sum, C_mul, Ψ, subst, ρ, u]
   have h_semi : subst f = W * Ψ f := by
     have h_nabla : aeval (borelMul c (C ∘ β) (Ψ ∘ X)) f = W * aeval (Ψ ∘ X) f :=
       mem_nabla.mp hf (MvPolynomial ℕ A) (C ∘ β) (Ψ ∘ X)
@@ -573,9 +765,10 @@ lemma HasLeadingTerm.leadingCoeff_mem_nabla
         γ.prod fun j e ↦ β (c x, j, j) ^ e := by
     -- `W` is a constant, so it comes out of the coefficient; it is the product of the factors for
     -- `l` and for `γ`. `↓` splits this product before the definitions unfold.
-    simp [A, β, Ψ, γ, W, leadingCoeff, ↓prod_add_index', pow_add, ↓prod_mapDomain_index,
-      ← map_pow, Finsupp.prod, ← map_prod, mul_assoc, coeff_map, -C_pow, Algebra.smul_def,
-      MvPolynomial.algebraMap_eq]
+    simp only [ne_eq, Function.comp_apply, pow_zero, implies_true, pow_add, ← map_pow,
+      ↓prod_add_index', ↓prod_mapDomain_index, prod, ← map_prod, AlgHom.coe_comp,
+      AlgEquiv.coe_toAlgHom, mapAlgHom_apply, mul_assoc, coeff_C_mul, coeff_map, RingHom.coe_coe,
+      leadingCoeff, Algebra.smul_def, algebraMap_eq, A, β, γ, Ψ, W]
     ring
   rw [← h_semi, h_lead.coeff_eq] at h_rhs
   exact h_reg.right h_rhs
@@ -751,15 +944,21 @@ lemma exists_isStdMinorFamily_of_isEmpty {Φ J m : Type} [Fintype m] [IsEmpty m]
   · refine ⟨Unit, inferInstance, nofun, ⟨?indep, ?span, ?character⟩⟩
     case indep =>
       intro R _
-      simp [Fintype.linearIndependent_iff, minorProduct, minor, ← C_mul', Unique.forall_iff]
+      simp only [minorProduct, minor, Pi.zero_apply, Matrix.det_fin_zero, prod_const_one,
+        Fintype.linearIndependent_iff, univ_unique, PUnit.default_eq_unit, ← C_mul', mul_one,
+        sum_singleton, C_eq_zero, Unique.forall_iff, imp_self, implies_true]
     case span =>
       intro R _ f _
       rw [f.eq_C_of_isEmpty]
-      simp [minorProduct, minor, ← one_eq_span]
+      simp only [minorProduct, minor, Pi.zero_apply, Matrix.det_fin_zero, prod_const_one,
+        Set.range_const, ← one_eq_span, Submodule.mem_one, algebraMap_eq, C_inj, exists_eq]
     case character =>
       intro _ t N e x
       obtain rfl : N = 0 := by simpa using Fintype.card_congr e
-      simp [alternant, columnWeight, univ_eq_empty]
+      simp only [univ_unique, PUnit.default_eq_unit, Pi.zero_apply, univ_eq_empty, prod_empty,
+        prod_const_one, sum_const, card_singleton, one_smul, alternant, ↓reduceIte,
+        Function.comp_apply, zero_add, Matrix.det_fin_zero, mul_one, columnWeight, range_zero,
+        sum_empty, smul_zero, Finsupp.coe_zero, Pi.zero_apply, Fin.val_rev, zero_tsub]
   · have h_sum : ∑ j, h j ≠ 0 := by simpa using Function.ne_iff.mp h_ne
     refine ⟨Empty, inferInstance, nofun,
       fun R _ ↦ linearIndependent_empty_type, fun R _ f hf ↦ ?_, fun t N e x ↦ ?_⟩
@@ -768,11 +967,18 @@ lemma exists_isStdMinorFamily_of_isEmpty {Φ J m : Type} [Fintype m] [IsEmpty m]
       have h_semi : r = ((columnWeight τ h).prod fun (p : Φ × ℕ) (k : ℕ) ↦ (0 : R) ^ k) * r := by
         simpa using mem_nabla.mp hf R 0 0
       have h_prod_zero : ((columnWeight τ h).prod fun (p : Φ × ℕ) (k : ℕ) ↦ (0 : R) ^ k) = 0 := by
-        simp [columnWeight, pow_add, ← prod_finsetSum_index, prod_pow_eq_pow_sum, h_sum]
+        simp only [columnWeight, pow_zero, implies_true, pow_add, ← prod_finsetSum_index,
+          prod_single_index, pow_one, prod_const, card_range, prod_pow_eq_pow_sum, ne_eq, h_sum,
+          not_false_eq_true, zero_pow]
       have h_r : r = 0 := by rwa [h_prod_zero, zero_mul] at h_semi
       simp [h_r]
     · obtain rfl : N = 0 := by simpa using Fintype.card_congr e
-      simpa [alternant, columnWeight, univ_eq_empty, Subsingleton.elim _ t, single_apply] using
+      simpa only [univ_eq_empty, sum_empty, alternant, Pi.zero_apply, ↓reduceIte,
+        Function.comp_apply, zero_add, Matrix.det_fin_zero, mul_one, columnWeight,
+        Subsingleton.elim _ t, coe_finsetSum, Finset.sum_apply, single_apply, Prod.mk.injEq,
+        true_and, Finset.sum_ite_eq', mem_range, sum_boole, cast_id, Finset.card_eq_zero,
+        filter_eq_empty_iff, mem_univ, not_lt, nonpos_iff_eq_zero, forall_const, Fin.val_rev,
+        zero_tsub, right_eq_ite_iff, zero_ne_one, imp_false, not_forall, ne_eq] using
         Function.ne_iff.mp h_ne
 
 /-- Take finitely many rows coloured by `c`, and finitely many columns `j` of colour `τ j` and
