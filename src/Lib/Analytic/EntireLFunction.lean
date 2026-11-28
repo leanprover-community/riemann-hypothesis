@@ -2,6 +2,7 @@ module
 
 import TauCeti.Analysis.Contour.Residue.LogDeriv
 import TauCeti.Analysis.LaplaceTransform.Elementary
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.LogDeriv.Basic
 public import Mathlib.Analysis.Meromorphic.Basic
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.NumberTheory.LSeries.Nonvanishing
@@ -152,16 +153,14 @@ lemma LSeriesHasSum_mul_vonMangoldt (hs : 1 < s.re) :
   -- The series is `-L' / L`; for `χ = 1` the factor `s - 1` of `entireL` adds `1 / (s - 1)` to the
   -- logarithmic derivative.
   have hs_ne : s ≠ 1 := ne_of_apply_ne re hs.ne'
-  have h_series : LSeries (fun n : ℕ ↦ χ n * Λ n) s = -deriv χ.LFunction s / χ.LFunction s := by
-    rw [χ.deriv_LFunction_eq_deriv_LSeries hs, χ.LFunction_eq_LSeries hs]
-    exact χ.LSeries_twist_vonMangoldt_eq hs
-  have hL_ne : χ.LFunction s ≠ 0 := χ.LFunction_ne_zero_of_one_le_re (.inr hs_ne) hs.le
-  rw [h_series, entireL, logDeriv_apply]
+  change LSeries ((fun n : ℕ ↦ χ n) * fun n : ℕ ↦ (Λ n : ℂ)) s = _
+  rw [neg_eq_iff_eq_neg.mp (χ.logDeriv_LFunction_eq_neg_LSeries hs).symm, entireL]
   obtain rfl | hχ := eq_or_ne χ 1
-  · rw [ite_eq_left rfl, ite_eq_left rfl, deriv_LFunctionTrivChar₁_apply_of_ne_one N hs_ne,
-      LFunctionTrivChar₁, Function.update_of_ne hs_ne, LFunctionTrivChar]
-    field [sub_ne_zero.2 hs_ne]
-  · simp [hχ, neg_div]
+  · rw [ite_eq_left rfl, ite_eq_left rfl, logDeriv_apply, logDeriv_apply,
+      deriv_LFunctionTrivChar₁_apply_of_ne_one N hs_ne, LFunctionTrivChar₁,
+      Function.update_of_ne hs_ne, LFunctionTrivChar]
+    field [sub_ne_zero.2 hs_ne, LFunction_ne_zero_of_one_le_re 1 (.inr hs_ne) hs.le]
+  · simp [hχ]
 
 /-- A function continuous at `s` has residue zero there. -/
 lemma tendsto_sub_mul_of_continuousAt {f : ℂ → ℂ} (hf : ContinuousAt f s) :
