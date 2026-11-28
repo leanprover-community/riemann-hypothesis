@@ -58,7 +58,6 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/General/Analysis/FourierTransforms.lean` | `New.IsDualFamily.fourier_inversion` | `UnitAddTorus.hasSum_mFourier_series_of_summable` | `Mathlib/Analysis/Fourier/AddCircleMulti.lean` |
 | `src/Lib/General/Analysis/HolomorphicIntegrals.lean` | `New.eventually_differentiableAt_integral` | `hasFDerivAt_integral_of_dominated_loc_of_lip` | `Mathlib/Analysis/Calculus/ParametricIntegral.lean` |
 | `src/Lib/General/Analysis/MeanValueAndTaylor.lean` | `New.exists_contDiff_eventuallyEq` | `SmoothBumpFunction.contMDiff_smul`, `SmoothPartitionOfUnity.contMDiff_smul` | `Mathlib/Geometry/Manifold/BumpFunction.lean`, `Mathlib/Geometry/Manifold/PartitionOfUnity.lean` |
-| `src/Lib/General/Analysis/MeanValueAndTaylor.lean` | `New.taylorAtZero_mul` | `UpperHalfPlane.qExpansion_mul` | `Mathlib/NumberTheory/ModularForms/QExpansion.lean` |
 | `src/Lib/General/Analysis/PackingAndSobolev.lean` | `New.encard_le_of_separated` | `Besicovitch.card_le_of_separated` | `Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean` |
 | `src/Lib/General/Combinatorics.lean` | `rootCoeffEval_map` | `WittVector.IsPoly.map` | `Mathlib/RingTheory/WittVector/IsPoly.lean` |
 | `src/Lib/General/Geometry/DenseComplexPoints.lean` | `New.IsSeparatingFamily.hom_ext` | `AlgebraicGeometry.ext_of_isDominant_of_isSeparated`, `AlgebraicGeometry.ext_of_fromSpecResidueField_eq` | `Mathlib/AlgebraicGeometry/Morphisms/Separated.lean` |

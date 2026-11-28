@@ -3,6 +3,7 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.Analysis.CStarAlgebra.Classes
+import TauCeti.Analysis.Analytic.TaylorSeries
 import TauCeti.Analysis.Calculus.Deriv.Second
 import Mathlib.Analysis.Complex.MeanValue
 import Mathlib.Analysis.Complex.TaylorSeries
@@ -109,7 +110,7 @@ entire function.
 
 section TaylorSeries
 
-open PowerSeries Finset Nat AnalyticAt Complex
+open PowerSeries Nat AnalyticAt Complex
 
 attribute [fun_prop] Differentiable.analyticAt
 
@@ -148,26 +149,33 @@ lemma eq_of_taylorAtZero_eq {f g : ℂ → ℂ} (hf_diff : Differentiable ℂ f)
   rw [← taylorSeries_eq_of_entire' 0 z hf_diff, ← taylorSeries_eq_of_entire' 0 z hg_diff]
   simp [inv_mul_eq_div, ← coeff_taylorAtZero, h_eq]
 
+/-- For a function analytic at zero, the derivative formula for the Taylor series agrees
+with Tau Ceti's construction by iterated divided differences. -/
+private lemma taylorAtZero_eq_taylorSeries {f : ℂ → ℂ} (hf : AnalyticAt ℂ f 0) :
+    taylorAtZero f = TauCeti.taylorSeries f 0 := by
+  ext n
+  rw [coeff_taylorAtZero, ← hf.factorial_smul_coeff_taylorSeries n, nsmul_eq_mul,
+    mul_comm, mul_div_cancel_right₀ _ (Nat.cast_ne_zero.mpr (factorial_ne_zero n))]
+
 /-- The Taylor series at 0 of a sum of two functions analytic at 0 is the sum of their Taylor
 series. -/
 @[simp]
 lemma taylorAtZero_add {f g : ℂ → ℂ} (hf : AnalyticAt ℂ f 0) (hg : AnalyticAt ℂ g 0) :
     taylorAtZero (fun z : ℂ ↦ f z + g z) = taylorAtZero f + taylorAtZero g := by
-  ext n
-  simp [iteratedDeriv_fun_add, hf.contDiffAt, hg.contDiffAt, add_div]
+  change taylorAtZero (f + g) = _
+  rw [taylorAtZero_eq_taylorSeries (hf.add hg), taylorAtZero_eq_taylorSeries hf,
+    taylorAtZero_eq_taylorSeries hg]
+  exact TauCeti.taylorSeries_add hf hg
 
 /-- The Taylor series at 0 of a product of two functions analytic at 0 is the product of their
 Taylor series. -/
 @[simp]
 lemma taylorAtZero_mul {f g : ℂ → ℂ} (hf : AnalyticAt ℂ f 0) (hg : AnalyticAt ℂ g 0) :
     taylorAtZero (fun z : ℂ ↦ f z * g z) = taylorAtZero f * taylorAtZero g := by
-  ext n
-  -- Leibniz's rule for `(f g)⁽ⁿ⁾`, with `n.choose i / n ! = 1 / (i ! * (n - i)!)` in each term
-  simp only [coeff_mul, coeff_taylorAtZero, iteratedDeriv_fun_mul hf.contDiffAt hg.contDiffAt,
-    sum_div, Nat.sum_antidiagonal_eq_sum_range_succ_mk]
-  refine sum_congr rfl fun i hi ↦ ?_
-  rw [cast_choose ℂ (mem_range_succ_iff.1 hi)]
-  field [factorial_ne_zero]
+  change taylorAtZero (f * g) = _
+  rw [taylorAtZero_eq_taylorSeries (hf.mul hg), taylorAtZero_eq_taylorSeries hf,
+    taylorAtZero_eq_taylorSeries hg]
+  exact TauCeti.taylorSeries_mul hf hg
 
 /-- Let `f` be analytic at 0 and `P` a polynomial. Then the Taylor series of `P ∘ f` is `P`
 evaluated at the Taylor series of `f`. -/
