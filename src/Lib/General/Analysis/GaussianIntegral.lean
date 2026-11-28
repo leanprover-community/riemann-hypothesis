@@ -1,8 +1,9 @@
 module
 
-import TauCeti.Analysis.SpecialFunctions.Gaussian.Reproducing
+import TauCeti.Analysis.Matrix.Accretive
+import TauCeti.Analysis.SpecialFunctions.Gaussian.Accretive
 import TauCeti.Analysis.Matrix.L2OpNorm
-import TauCeti.Analysis.Matrix.OstrowskiTaussky
+import TauCeti.MeasureTheory.Measure.Lebesgue.EqHaar
 public import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Algebra.Algebra.Field
 import Mathlib.Algebra.Module.StablyFree.Basic
@@ -23,7 +24,8 @@ import Lib.Base
 This file proves estimates for complex matrices and computes the complex Gaussian integral on
 `ι → ℂ`. Here `‖A‖` is the `ℓ²` operator norm. For accretive `A`, the integral of
 `exp (-x* A (x - a))` against normalised Lebesgue measure is `(det A)⁻¹`.
-Nonvanishing of accretive determinants follows from Tau Ceti's Ostrowski–Taussky inequality.
+The accretive matrix results and change of variables follow from Tau Ceti. Its Gaussian
+integral against Lebesgue measure gives the normalised formula by rescaling.
 
 ## Main definitions and results
 
@@ -41,7 +43,7 @@ Nonvanishing of accretive determinants follows from Tau Ceti's Ostrowski–Tauss
 
 ## Relation to the literature
 
-The Ostrowski–Taussky inequality and the complex Gaussian integral are known results.
+The complex Gaussian integral and the change-of-variables formulas are known results.
 -/
 
 @[expose] public section
@@ -83,10 +85,8 @@ omit [Fintype ι] in
 lemma Matrix.PosDef.isAccretive (hA : A.PosDef) : A.IsAccretive := hA.add hA.conjTranspose
 
 lemma Matrix.IsAccretive.det_ne_zero [DecidableEq ι]
-    (hA : A.IsAccretive) : A.det ≠ 0 := fun h_det ↦ by
-  have h_le : ‖(A + Aᴴ).det‖ ≤ 2 ^ Fintype.card ι * ‖A.det‖ :=
-    hA.posSemidef.norm_det_le_two_pow_mul (by simpa using PosSemidef.zero)
-  simp [h_det, hA.det_pos.ne'] at h_le
+    (hA : A.IsAccretive) : A.det ≠ 0 :=
+  Matrix.IsStrictlyAccretive.det_ne_zero (Matrix.isStrictlyAccretive_iff_posDef.mpr hA)
 
 namespace New.Fock
 
@@ -100,23 +100,15 @@ instance : (normalizedVolume ι).IsAddHaarMeasure := .nnreal_smul _ (by simp [pi
 `|det u|⁻² μ`. -/
 lemma map_mulVec_addHaar_eq_smul [DecidableEq ι]
     {μ : Measure (ι → ℂ)} [μ.IsAddHaarMeasure] {u : Matrix ι ι ℂ} (hu : det u ≠ 0) :
-    μ.map (fun x : ι → ℂ ↦ u *ᵥ x) = (ENNReal.ofReal (‖u.det‖ ^ 2))⁻¹ • μ := by
-  let f : (ι → ℂ) →ₗ[ℝ] (ι → ℂ) := u.toLin'.restrictScalars ℝ
-  -- the real determinant of the complex linear map `u` is `‖det u‖ ^ 2`
-  have h_det : LinearMap.det f = ‖u.det‖ ^ 2 := by
-    simp [f, LinearMap.det_restrictScalars, Algebra.norm_complex_eq, ← Complex.sq_norm]
-  change μ.map f = _
-  simp [μ.map_linearMap_addHaar_eq_smul_addHaar, h_det, hu]
+    μ.map (fun x : ι → ℂ ↦ u *ᵥ x) = (ENNReal.ofReal (‖u.det‖ ^ 2))⁻¹ • μ :=
+  TauCeti.map_mulVec_addHaar_eq_smul hu
 
 /-- Change of variables on `ι → ℂ`: for a complex square matrix `u` with `det u ≠ 0` and any
 `g : (ι → ℂ) → [0, ∞]`, one has `∫ g(y) dy = |det u|² ∫ g(u y) dy` (lower Lebesgue integrals). -/
 lemma _root_.New.lintegral_eq_norm_det_sq_mul_lintegral_mulVec [DecidableEq ι]
     (u : Matrix ι ι ℂ) (hu : u.det ≠ 0) (g : (ι → ℂ) → ENNReal) :
-    ∫⁻ y : ι → ℂ, g y = ENNReal.ofReal (‖u.det‖ ^ 2) * ∫⁻ y : ι → ℂ, g (u *ᵥ y) := by
-  have h_emb : MeasurableEmbedding (fun y : ι → ℂ ↦ u *ᵥ y) :=
-    Continuous.measurableEmbedding (by fun_prop) (mulVec_injective_of_det_ne_zero hu)
-  rw [← h_emb.lintegral_map, map_mulVec_addHaar_eq_smul hu]
-  simp [ENNReal.mul_inv_cancel_left, hu]
+    ∫⁻ y : ι → ℂ, g y = ENNReal.ofReal (‖u.det‖ ^ 2) * ∫⁻ y : ι → ℂ, g (u *ᵥ y) :=
+  TauCeti.lintegral_eq_norm_det_sq_mul_lintegral_mulVec hu g
 
 lemma star_dotProduct_self_eq_sum : star x ⬝ᵥ x = (∑ i : ι, ‖x i‖ ^ 2 : ℝ) := by
   simp [dotProduct, conj_mul']
@@ -130,70 +122,14 @@ lemma norm_sq_le_re_star_dotProduct_self : ‖x‖ ^ 2 ≤ (star x ⬝ᵥ x).re 
   gcongr
   exact (pi_norm_le_iff_of_nonneg (norm_nonneg _)).2 (PiLp.norm_apply_le (toLp 2 x))
 
-/-- An accretive matrix `A` (that is, `A + Aᴴ` is positive definite) is congruent to a diagonal
-matrix whose entries have positive real part. -/
-lemma exists_eq_conjTranspose_mul_diagonal_mul [DecidableEq ι] (hA : A.IsAccretive) :
-    ∃ (p : GL ι ℂ) (d : ι → ℂ),
-      A = (p : Matrix ι ι ℂ)ᴴ * diagonal d * (p : Matrix ι ι ℂ) ∧ ∀ i : ι, 0 < (d i).re := by
-  -- Write `A + Aᴴ = Bᴴ B` and diagonalise `H = B⁻ᴴ (Im A) B⁻¹` by a unitary `U`, with real
-  -- eigenvalues `λ`. Then `p = U⁻¹ B` and `d = i λ + 1 / 2`.
-  obtain ⟨b, hb_unit, hb : A + Aᴴ = star b * b⟩ :=
-    isStrictlyPositive_iff_eq_star_mul_self.mp hA.isStrictlyPositive
-  lift b to GL ι ℂ using hb_unit with B
-  set H : Matrix ι ι ℂ := star (B : Matrix ι ι ℂ)⁻¹ * imaginaryPart A * (B : Matrix ι ι ℂ)⁻¹
-  have hH : H.IsHermitian := ((imaginaryPart A).prop.conjugate' B⁻¹).isHermitian
-  set U : Matrix ι ι ℂ := ↑hH.eigenvectorUnitary
-  have h_spectral : U * diagonal (ofReal ∘ hH.eigenvalues) * star U = H := by
-    simpa using hH.spectral_theorem.symm
-  let d : ι → ℂ := fun i ↦ I * hH.eigenvalues i + 2⁻¹
-  have hd : diagonal d = I • diagonal (ofReal ∘ hH.eigenvalues) + (2⁻¹ : ℂ) • 1 := by
-    simp [smul_one_eq_diagonal, ← diagonal_smul, d]
-  refine ⟨Unitary.toUnits hH.eigenvectorUnitary⁻¹ * B, d, ?_, by simp [d]⟩
-  calc
-    A = I • (imaginaryPart A : Matrix ι ι ℂ) + (2⁻¹ : ℂ) • (A + Aᴴ) := by
-      rw [imaginaryPart_apply_coe, smul_smul, mul_neg, I_mul_I, neg_neg, star_eq_conjTranspose]
-      module
-    _ = star (B : Matrix ι ι ℂ) * (I • H + (2⁻¹ : ℂ) • 1) * B := by
-      simp [mul_add, add_mul, hb, H, ← mul_assoc, ← star_mul]
-    _ = star (B : Matrix ι ι ℂ) * (U * diagonal d * star U) * B := by
-      simp [hd, mul_add, add_mul, h_spectral, U]
-    _ = _ := by simp [U, star_eq_conjTranspose, mul_assoc]
-
-/-- The complex Gaussian integral in one variable: if `0 < re d`, then `exp (-z̄ d (z - a))` has
-integral `π / d` over `ℂ`. -/
-lemma integral_cexp_neg_star_mul {d : ℂ} (hd : 0 < d.re) (a : ℂ) :
-    ∫ z : ℂ, exp (-(star z * (d * (z - a)))) = Real.pi / d := by
-  convert TauCeti.integral_cexp_neg_mul_norm_sq_add hd 0 (d * a) using 1
-  · congr 1; ext z; congr 1
-    rw [← conj_mul', star_def]
-    ring
-  · simp
-
 /-- The complex Gaussian integral: if `A` is accretive (that is, `A + Aᴴ` is positive definite),
 then `exp (-x* A (x - a))` has integral `(det A)⁻¹` for `normalizedVolume ι`, Lebesgue measure on
 `ι → ℂ` divided by `π ^ card ι`. -/
 lemma integral_gauss [DecidableEq ι] (hA : A.IsAccretive) (a : ι → ℂ) :
     ∫ x : ι → ℂ, exp (-(star x ⬝ᵥ A *ᵥ (x - a))) ∂normalizedVolume ι = A.det⁻¹ := by
-  -- Write `A = pᴴ diagonal d p`. After the change of variables `y = p x` the integrand is a
-  -- product of Gaussians in one variable.
-  obtain ⟨p, d, rfl, hd⟩ := exists_eq_conjTranspose_mul_diagonal_mul hA
-  set P : Matrix ι ι ℂ := (p : Matrix ι ι ℂ)
-  let g (i : ι) (z : ℂ) : ℂ := exp (-(star z * (d i * (z - (P *ᵥ a) i))))
-  have h_form (x : ι → ℂ) :
-      exp (-(star x ⬝ᵥ (Pᴴ * diagonal d * P) *ᵥ (x - a))) = ∏ i : ι, g i ((P *ᵥ x) i) := by
-    rw [← mulVec_mulVec, ← mulVec_mulVec, ← star_mulVec_dotProduct, mulVec_sub]
-    simp [g, dotProduct, mulVec_diagonal, ← exp_sum]
-  have h_prod : ∫ y : ι → ℂ, ∏ i : ι, g i (y i) = ∏ i : ι, Real.pi / d i := by
-    simp only [integral_fintype_prod_volume_eq_prod g, g, integral_cexp_neg_star_mul (hd _)]
-  have h_det : (Pᴴ * diagonal d * P).det = ‖P.det‖ ^ 2 * ∏ i : ι, d i := by
-    simp [← mul_conj', mul_comm, mul_left_comm]
-  calc
-    _ = ∫ y : ι → ℂ, ∏ i : ι, g i (y i) ∂(normalizedVolume ι).map (fun x : ι → ℂ ↦ P *ᵥ x) := by
-      rw [integral_map (by fun_prop) (Continuous.aestronglyMeasurable (by fun_prop)), funext h_form]
-    _ = (‖P.det‖ ^ 2 * Real.pi ^ Fintype.card ι)⁻¹ * ∏ i : ι, Real.pi / d i := by
-      rw [map_mulVec_addHaar_eq_smul p.det_ne_zero]
-      simp [normalizedVolume, P, h_prod, NNReal.smul_def, field]
-    _ = (Pᴴ * diagonal d * P).det⁻¹ := by simp [h_det, field]
+  have hA' := Matrix.isStrictlyAccretive_iff_posDef.mpr hA
+  simp [normalizedVolume, NNReal.smul_def,
+    TauCeti.integral_cexp_neg_star_dotProduct_mulVec hA' a, field]
 
 end New.Fock
 
